@@ -37,7 +37,7 @@
     "@oakai/exports": "*",
     "@oakai/logger": "*",
     "@oakai/prettier-config": "*",
-    "@oaknational/oak-components": "^1.0.0",
+    "@oaknational/oak-components": "^1.26.0",
     "@oaknational/oak-consent-client": "^2.1.0",
     "@prisma/client": "^5.13.0",
     "@prisma/extension-accelerate": "^1.0.0",

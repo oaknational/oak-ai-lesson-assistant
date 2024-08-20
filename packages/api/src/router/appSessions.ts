@@ -344,4 +344,8 @@ export const appSessionsRouter = router({
 
       return chat;
     }),
+  flagSection: protectedProcedure.query(async ({ ctx }) => {
+    console.log("flagging section");
+    return "flagged";
+  }),
 });

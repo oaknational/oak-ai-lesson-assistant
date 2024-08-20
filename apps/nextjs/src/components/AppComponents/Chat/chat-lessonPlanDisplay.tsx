@@ -7,7 +7,7 @@ import { cva } from "class-variance-authority";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
 import Skeleton from "../common/Skeleton";
-import DropDownSection from "./chat-dropdownsection";
+import DropDownSection from "./drop-down-section";
 import { GuidanceRequired } from "./guidance-required";
 
 // @todo move these somewhere more sensible
