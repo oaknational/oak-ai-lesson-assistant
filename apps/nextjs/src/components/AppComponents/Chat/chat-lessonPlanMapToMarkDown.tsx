@@ -4,7 +4,6 @@ import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
 
-import { humanizeCamelCaseString } from "./chat-dropdownsection";
 import { notEmpty } from "./chat-lessonPlanDisplay";
 import { MemoizedReactMarkdownWithStyles } from "./markdown";
 
