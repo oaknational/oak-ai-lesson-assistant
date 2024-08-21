@@ -2,6 +2,7 @@ import { useRef } from "react";
 
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
+import { humanizeCamelCaseString } from "@oakai/core/src/utils/humanizeCamelCaseString";
 import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
 
 import { notEmpty } from "./chat-lessonPlanDisplay";
