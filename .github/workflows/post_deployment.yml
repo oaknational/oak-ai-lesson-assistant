@@ -1,0 +1,40 @@
+name: Deployment Actions
+
+on: deployment_status
+
+jobs:
+  dump_github_event:
+    uses: ./.github/workflows/dump_event.yml
+
+  # Do a find-and-replace to add a link to the deployment to the PR body
+  update_pr_description:
+    # Only want to run on success, otherwise it might be "pending", or "failure".
+    # Filter out storybook deployments and temporarily Netlify deployments
+    if: ${{ (github.event.deployment.ref != 'main') && (github.event.deployment_status.state == 'success') && !startsWith(github.event.deployment_status.environment, 'storybook')}}
+    name: Add deploy URL to PR description
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Note we can't use caching here, because caching needs GITHUB_REF to be defined,
+      # and Vercel deployment_status events set deployment.ref to the SHA, not the triggering
+      # branch or pull request.
+      # https://github.com/actions/cache/issues/319
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: "npm"
+      - run: npm ci
+
+      - uses: ./.github/actions/ref_from_sha
+        name: Get PR Ref from SHA
+        id: ref_from_sha
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: mcky/find-and-replace-pull-request-body@v1.1.6-mcky
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          prNumber: ${{ steps.ref_from_sha.outputs.pr_number }}
+          find: "{deployment_url}"
+          replace: ${{ github.event.deployment_status.environment_url }}
