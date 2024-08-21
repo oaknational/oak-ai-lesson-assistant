@@ -10,7 +10,6 @@ module.exports = {
         releaseRules: [
           { type: "chore", release: "patch" },
           { type: "refactor", release: "patch" },
-          { type: "build", release: "patch" },
         ],
       },
     ],
