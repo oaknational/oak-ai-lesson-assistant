@@ -47,43 +47,61 @@ export const authRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { userId } = ctx.auth;
       if (typeof userId === "string") {
-        const user = await clerkClient.users.getUser(userId);
-
-        const { region, isDemoRegion: isDemoUser } =
-          await demoUsers.getUserRegion(
-            user,
-            ctx.req.headers.get("cf-ipcountry"),
-          );
-
         await clerkClient.users.updateUserMetadata(userId, {
           publicMetadata: {
-            // legacy field for demo users. To remove after transition to labs namespace
-            isDemoUser,
             labs: {
-              isDemoUser,
               isOnboarded: !!input.termsOfUse,
             },
           },
           privateMetadata: {
             acceptedPrivacyPolicy: input.privacyPolicy,
             acceptedTermsOfUse: input.termsOfUse,
-            region,
           },
         });
 
         const updatedUser = await clerkClient.users.getUser(userId);
 
-        await posthogServerClient.identify({
-          distinctId: userId,
-          properties: {
-            isDemoUser,
-          },
-        });
-
         const { acceptedPrivacyPolicy, acceptedTermsOfUse } =
           updatedUser.privateMetadata;
 
-        return { acceptedPrivacyPolicy, acceptedTermsOfUse, isDemoUser };
+        return { acceptedPrivacyPolicy, acceptedTermsOfUse };
       }
     }),
+
+  setDemoStatus: protectedProcedure.mutation(async ({ ctx }) => {
+    const { userId } = ctx.auth;
+    if (typeof userId === "string") {
+      const user = await clerkClient.users.getUser(userId);
+
+      if (demoUsers.isDemoStatusSet(user)) {
+        return { isDemoUser: user.publicMetadata.labs };
+      }
+
+      const { region, isDemoRegion: isDemoUser } =
+        await demoUsers.getUserRegion(
+          user,
+          ctx.req.headers.get("cf-ipcountry"),
+        );
+
+      await clerkClient.users.updateUserMetadata(userId, {
+        publicMetadata: {
+          labs: {
+            isDemoUser,
+          },
+        },
+        privateMetadata: {
+          region,
+        },
+      });
+
+      await posthogServerClient.identify({
+        distinctId: userId,
+        properties: {
+          isDemoUser,
+        },
+      });
+
+      return { isDemoUser };
+    }
+  }),
 });

@@ -1,6 +1,9 @@
 import { useMemo } from "react";
 
 import { useUser } from "#clerk/nextjs";
+import { addBreadcrumb } from "@sentry/nextjs";
+
+type User = ReturnType<typeof useUser>["user"];
 
 type UseClerkDemoMetadataReturn =
   | {
@@ -11,6 +14,28 @@ type UseClerkDemoMetadataReturn =
       isSet: false;
       userType: undefined;
     };
+
+type LabsUser = User & {
+  publicMetadata: {
+    labs?: {
+      isDemoUser?: boolean;
+      isOnboarded?: boolean;
+    };
+  };
+};
+
+type UserWithDemoStatus = User & {
+  publicMetadata: {
+    labs: {
+      isDemoUser: boolean;
+    };
+  };
+};
+
+export function isDemoStatusSet(user: LabsUser): user is UserWithDemoStatus {
+  const labsMetadata = user.publicMetadata.labs || {};
+  return "isDemoUser" in labsMetadata;
+}
 
 function getResult(
   user: ReturnType<typeof useUser>,
@@ -32,8 +57,8 @@ function getResult(
   }
 
   // User is logged in, but has not completed onboarding
-  if (!("isDemoUser" in user.user.publicMetadata)) {
-    console.warn("User demo status is unknown");
+  if (!isDemoStatusSet(user.user)) {
+    addBreadcrumb({ message: "User demo status is unknown" });
     return {
       isSet: false,
       userType: undefined,
@@ -43,7 +68,9 @@ function getResult(
   // User is logged in and has completed onboarding
   return {
     isSet: true,
-    userType: Boolean(user.user.publicMetadata.isDemoUser) ? "Demo" : "Full",
+    userType: Boolean(user.user.publicMetadata.labs.isDemoUser)
+      ? "Demo"
+      : "Full",
   };
 }
 

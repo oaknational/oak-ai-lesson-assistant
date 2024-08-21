@@ -5,7 +5,7 @@ const mockUser = {
   firstName: "John",
   lastName: "Doe",
   emailAddresses: [{ emailAddress: "john@example.com" }],
-  publicMetadata: { isDemoUser: true },
+  publicMetadata: { labs: { isDemoUser: true } },
   // Add other user properties as needed
 };
 
