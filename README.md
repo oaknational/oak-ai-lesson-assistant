@@ -1,29 +1,42 @@
-# Oak AI Experiments
+# Oak AI Lesson Assistant
 
 ![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen)
 
 > **Disclaimer**  
 > This project is intended primarily for internal use by Oak National Academy. While the repository is public, there is no expectation for external users to run the application. The installation instructions and other documentation are currently tailored for internal use and may not be comprehensive for external users.
 
-Oak AI Experiments is a project focused on experimenting with AI models and their applications. This repository contains several components designed to facilitate AI research and development.
+Oak AI Lesson Assistant is a project focused on experimenting with AI models and their applications. This repository contains several components designed to facilitate AI research and development.
 
 ## Table of contents
 
-1. Introduction
-2. Installation
-3. Postgres setup
-4. Doppler
-5. Start the development server
-6. Testing
-7. Release process
-8. PNPM / dependency problems
-9. External contributions
-10. Open source acknowledgements
-11. License
+- [Oak AI Lesson Assistant](#oak-ai-lesson-assistant)
+  - [Table of contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Turborepo](#turborepo)
+  - [Postgres setup](#postgres-setup)
+    - [With Docker](#with-docker)
+    - [With Homebrew](#with-homebrew)
+  - [Doppler](#doppler)
+  - [Start the development server](#start-the-development-server)
+  - [Testing](#testing)
+    - [Jest tests](#jest-tests)
+    - [End-to-end tests](#end-to-end-tests)
+      - [Playwright tags](#playwright-tags)
+    - [Testing in VSCode](#testing-in-vscode)
+  - [Release process](#release-process)
+  - [PNPM / dependency problems](#pnpm--dependency-problems)
+  - [External contributions](#external-contributions)
+    - [Security](#security)
+    - [Contributing to the code](#contributing-to-the-code)
+  - [Open source acknowledgements](#open-source-acknowledgements)
+  - [License](#license)
+
 
 ## Introduction
 
-Oak AI Experiments is a project designed to facilitate the development and testing of AI models. The project is structured as a Turborepo monorepo, leveraging various open-source tools and libraries.
+Oak AI Lesson Assistant is a project designed to facilitate the development and testing of AI tools and models. The project is structured as a Turborepo monorepo, leveraging various open-source tools and libraries.
 
 ## Installation
 
