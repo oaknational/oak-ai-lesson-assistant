@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+import { AilaUserFlagType } from "@oakai/db";
 import {
   OakBox,
   OakP,
@@ -11,6 +12,7 @@ import {
 } from "@oaknational/oak-components";
 import styled from "styled-components";
 
+import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
@@ -32,18 +34,28 @@ const FlagButton = ({}) => {
   const [selectedRadio, setSelectedRadio] = useState<string | null>(null);
   const [displayTextBox, setDisplayTextBox] =
     useState<FlagButtonOptions | null>(null);
+
   const [userFeedbackText, setUserFeedbackText] = useState("");
+  const chat = useLessonChat();
 
-  const { error, data, isLoading } =
-    trpc.chat.appSessions.flagSection.useQuery();
+  const { id } = chat;
 
-  async function flagSectionContent(value: string) {
-    const userFeedback = {
-      flat: selectedRadio,
-      feedback: userFeedbackText,
-    };
-    console.log("Flag content", userFeedback);
-  }
+  const { mutateAsync, isLoading, error } =
+    trpc.chat.appSessions.flagSection.useMutation();
+
+  const flagSectionContent = useCallback(async () => {
+    if (selectedRadio) {
+      const payload = {
+        chatId: id,
+        messageId: "asdf",
+        flagType: selectedRadio
+          .toUpperCase()
+          .replace(" ", "_") as AilaUserFlagType,
+        userComment: userFeedbackText,
+      };
+      await mutateAsync(payload);
+    }
+  }, [selectedRadio, userFeedbackText, mutateAsync, id]);
 
   useEffect(() => {
     !isOpen && setDisplayTextBox(null);

@@ -27,7 +27,7 @@ const ModifyButton = ({ section }: { section: string }) => {
   const chat = useLessonChat();
   const { append } = chat;
 
-  async function appendToChat(value: string) {
+  async function modifySection(value: string) {
     await append({
       id: "lessonPlan",
       content: `For the ${section}, ${value}`,
@@ -46,7 +46,7 @@ const ModifyButton = ({ section }: { section: string }) => {
 
       {isOpen && (
         <DropDownFormWrapper
-          onClickActions={appendToChat}
+          onClickActions={modifySection}
           setIsOpen={setIsOpen}
           selectedRadio={selectedRadio}
           title={"Ask Aila to modify learning outcome:"}

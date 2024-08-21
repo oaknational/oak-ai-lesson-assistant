@@ -223,6 +223,37 @@ export const appSessionsRouter = router({
     const remaining = await rateLimits.appSessions.demo.getRemaining(userId);
     return { remaining };
   }),
+  flagSection: protectedProcedure
+    .input(
+      z.object({
+        chatId: z.string(),
+        messageId: z.string(),
+        flagType: z.enum([
+          "INAPPROPRIATE",
+          "INACCURATE",
+          "TOO_HARD",
+          "TOO_EASY",
+          "OTHER",
+        ]),
+        userComment: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // return "hello";
+      const { chatId, messageId, flagType, userComment } = input;
+      const { userId } = ctx.auth;
+      const response = await ctx.prisma.ailaUserFlag.create({
+        data: {
+          userId,
+          chatId,
+          messageId,
+          flagType,
+          userComment,
+        },
+      });
+
+      return response;
+    }),
   getSidebarChats: protectedProcedure.query(async ({ ctx }) => {
     const { userId } = ctx.auth;
 
@@ -344,8 +375,4 @@ export const appSessionsRouter = router({
 
       return chat;
     }),
-  flagSection: protectedProcedure.query(async ({ ctx }) => {
-    console.log("flagging section");
-    return "flagged";
-  }),
 });
