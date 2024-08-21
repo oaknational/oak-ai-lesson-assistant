@@ -19,6 +19,7 @@ jobs:
           cache: "pnpm"
       - name: Install dependencies
         run: pnpm install
+
       - uses: ./.github/actions/ref_from_sha
         name: Get PR Ref from SHA
         id: ref_from_sha
@@ -26,6 +27,12 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Playwright
         run: npx playwright install --with-deps
+      - name: Inject Doppler env vars
+        uses: dopplerhq/secrets-fetch-action@v1.2.0
+        id: doppler
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          inject-env-vars: true
       - name: Run Playwright tests
         working-directory: apps/nextjs
         # Only include @openai tests on RC branches
@@ -37,11 +44,11 @@ jobs:
           fi
         env:
           TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
-          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
-          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          TEST_USER_EMAIL: ${{ steps.doppler.outputs.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ steps.doppler.outputs.TEST_USER_PASSWORD }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ steps.doppler.outputs.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ steps.doppler.outputs.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ steps.doppler.outputs.CLERK_SECRET_KEY }}
       - name: Upload Playwright report
         id: upload-report
         uses: actions/upload-artifact@v4

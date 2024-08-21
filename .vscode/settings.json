@@ -180,5 +180,9 @@
     "titleBar.inactiveBackground": "#8da0d399",
     "titleBar.inactiveForeground": "#15202b99"
   },
-  "peacock.color": "8DA0D3"
+  "peacock.color": "8DA0D3",
+  "yaml.schemas": {
+    "file:///c%3A/Users/Simon/.vscode/extensions/atlassian.atlascode-2.8.6/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml",
+    "https://www.artillery.io/schema.json": []
+  }
 }
