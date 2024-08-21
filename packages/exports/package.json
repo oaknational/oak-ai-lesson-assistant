@@ -1,0 +1,12 @@
+{
+  "name": "@oakai/exports",
+  "version": "0.0.1",
+  "scripts": {
+    "lint": "eslint . --ext .ts,.tsx",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "typescript": "5.3.3"
+  },
+  "prettier": "@oakai/prettier-config"
+}

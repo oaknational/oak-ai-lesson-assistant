@@ -1,0 +1,1 @@
+alter table if exists "answers_and_distractors_for_judgment" rename to "answers_and_distractors_for_judgement";

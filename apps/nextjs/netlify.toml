@@ -1,0 +1,41 @@
+
+[[context.production.plugins]]
+package = "./apps/nextjs/plugins/netlify-plugin-oak-inngest"
+  [context.production.plugins.inputs]
+  host = "https://labs.thenational.academy"
+  path = "/api/inngest"
+
+[[context.deploy-preview.plugins]]
+package = "./apps/nextjs/plugins/netlify-plugin-oak-inngest"
+  [context.deploy-preview.plugins.inputs]
+  path = "/api/inngest"
+
+# Force all access through the managed TLD (default). HTTP
+[[redirects]]
+from = 'http://oak-ai-beta.netlify.app/*'
+to = 'https://oak-ai-beta.thenational.academy/:splat'
+status = 302
+force = true
+# Force all access through the managed TLD (default). HTTPS
+[[redirects]]
+from = 'https://oak-ai-beta.netlify.app/*'
+to = 'https://oak-ai-beta.thenational.academy/:splat'
+status = 302
+force = true
+
+# Force all access through the managed TLD (main branch). HTTP
+[[redirects]]
+from = 'http://main--oak-ai-beta.netlify.app/*'
+to = 'https://oak-ai-beta.thenational.academy/:splat'
+status = 302
+force = true
+# Force all access through the managed TLD (main branch). HTTPS
+[[redirects]]
+from = 'https://main--oak-ai-beta.netlify.app/*'
+to = 'https://oak-ai-beta.thenational.academy/:splat'
+status = 302
+force = true
+
+# On preview and branch deploys, use the subdomain redirect edge function
+# to force all access through our managed TLD.
+# See middleware

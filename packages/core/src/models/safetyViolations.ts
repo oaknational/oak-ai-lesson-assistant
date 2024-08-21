@@ -1,0 +1,126 @@
+import { clerkClient } from "@clerk/nextjs/server";
+import {
+  SafetyViolationAction,
+  SafetyViolationRecordType,
+  SafetyViolationSource,
+  PrismaClientWithAccelerate,
+} from "@oakai/db";
+import defaultLogger, { Logger } from "@oakai/logger";
+import { Logger as InngestLogger } from "inngest/middleware/logger";
+
+import { posthogServerClient } from "../analytics/posthogServerClient";
+import { inngest } from "../client";
+
+const ALLOWED_VIOLATIONS = parseInt(
+  process.env.SAFETY_VIOLATIONS_MAX_ALLOWED || "5",
+  10,
+);
+const CHECK_WINDOW_DAYS = parseInt(
+  process.env.SAFETY_VIOLATION_WINDOW_DAYS || "30",
+  10,
+);
+const checkWindowMs = 1000 * 60 * 60 * 24 * CHECK_WINDOW_DAYS;
+
+export class UserBannedError extends Error {
+  constructor(userId: string) {
+    super(`User banned: ${userId}`);
+  }
+}
+
+/**
+ * SafetyViolations records safety violations and bans users who exceed the
+ * allowed number of violations in a given time window.
+ * The source of truth for user data is Clerk, so we don't record the ban in
+ * Prisma.
+ * However, if we lift a ban it does not reset the violation count, so it's
+ * possible for a user to be banned again immediately after being unbanned if
+ * they trigger another violation.
+ */
+export class SafetyViolations {
+  constructor(
+    private readonly prisma: PrismaClientWithAccelerate,
+    // inngest's logger doesn't allow child logger creation, so make
+    // sure we accept instances of that too
+    private readonly logger: Logger | InngestLogger = defaultLogger,
+  ) {}
+
+  async recordViolation(
+    userId: string,
+    userAction: SafetyViolationAction,
+    detectionSource: SafetyViolationSource,
+    recordType: SafetyViolationRecordType,
+    recordId: string,
+  ): Promise<void> {
+    this.logger.info(`Recording safety violation for user ${userId}`);
+    await this.prisma.safetyViolation.create({
+      data: {
+        userId,
+        userAction,
+        detectionSource,
+        recordType,
+        recordId,
+      },
+    });
+
+    posthogServerClient.capture({
+      distinctId: userId,
+      event: "Safety Violation",
+      properties: {
+        userAction,
+        detectionSource,
+        recordType,
+        recordId,
+      },
+    });
+
+    const shouldBanUser = await this.isOverThreshold(userId);
+    if (shouldBanUser) {
+      const isSafetyTester = await posthogServerClient.isFeatureEnabled(
+        "safety-testing",
+        userId,
+      );
+      if (isSafetyTester) {
+        this.logger.info(
+          `Not banning user ${userId} as they are a safety tester`,
+        );
+        return;
+      }
+
+      await this.banUser(userId);
+      throw new UserBannedError(userId);
+    }
+  }
+
+  async isOverThreshold(userId: string): Promise<boolean> {
+    const recentViolationsCount = await this.prisma.safetyViolation.count({
+      where: {
+        userId,
+        createdAt: {
+          gte: new Date(Date.now() - checkWindowMs),
+        },
+      },
+    });
+    return recentViolationsCount > ALLOWED_VIOLATIONS;
+  }
+
+  async banUser(userId: string): Promise<void> {
+    this.logger.info(`Banning user ${userId}`);
+    // NOTE: Clerk is the source of truth for user data, so we don't record the ban in prisma
+    await clerkClient.users.banUser(userId);
+
+    posthogServerClient.capture({
+      distinctId: userId,
+      event: "User Banned",
+    });
+    posthogServerClient.identify({
+      distinctId: userId,
+      properties: { banned: true },
+    });
+
+    await inngest.send({
+      name: "app/slack.notifyUserBan",
+      user: { id: userId },
+      data: {},
+    });
+  }
+}

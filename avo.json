@@ -1,0 +1,25 @@
+{
+  "avo": {
+    "version": 3
+  },
+  "schema": {
+    "id": "5PhajbVijwhXVKIJtGMT",
+    "name": "Oak's Tracking Plan"
+  },
+  "branch": {
+    "id": "master",
+    "name": "main"
+  },
+  "sources": [
+    {
+      "id": "dOs03aBc9",
+      "name": "Aila Beta",
+      "path": "apps/nextjs/src/lib/avo/Avo.ts",
+      "interfacePath": "apps/nextjs/src/lib/avo/Avo.ts",
+      "actionId": "DOybSoUlLtBa0JsX8nVs",
+      "branchId": "master",
+      "updatedAt": "2024-07-17T15:40:49.176Z"
+    }
+  ],
+  "force": false
+}

@@ -1,0 +1,69 @@
+import { AilaGeneration } from ".";
+import { Aila } from "../..";
+import { AilaChat, Message } from "../../core/chat";
+
+const ailaArgs = {
+  plugins: [],
+};
+
+describe("calculateTokenUsage", () => {
+  // correctly calculates prompt tokens from chat messages
+  it("should correctly calculate prompt tokens from chat messages", () => {
+    const messages: Message[] = [
+      { id: "1", role: "user", content: "Hello" },
+      { id: "2", role: "user", content: "How are you?" },
+    ];
+
+    const mockEncoding = {
+      encode: jest.fn().mockImplementation((text) => text.split(" ").length),
+    };
+    jest.mock("js-tiktoken", () => ({
+      getEncoding: () => mockEncoding,
+    }));
+
+    const aila = new Aila(ailaArgs);
+    const chat = new AilaChat({ messages, aila });
+    const ailaGeneration = new AilaGeneration({
+      aila,
+      id: "test-id",
+      status: "PENDING",
+      chat,
+      systemPrompt: "Test system prompt",
+    });
+    ailaGeneration.complete({
+      status: "SUCCESS",
+      responseText: "I am fine, thank you!",
+    });
+    expect(ailaGeneration.tokenUsage.promptTokens).toBe(5);
+  });
+
+  // correctly calculates completion tokens from response text
+  it("should correctly calculate completion tokens from response text", () => {
+    const messages: Message[] = [
+      { id: "1", role: "user", content: "Hello" },
+      { id: "2", role: "user", content: "How are you?" },
+    ];
+
+    const mockEncoding = {
+      encode: jest.fn().mockImplementation((text) => text.split(" ").length),
+    };
+    jest.mock("js-tiktoken", () => ({
+      getEncoding: () => mockEncoding,
+    }));
+
+    const aila = new Aila(ailaArgs);
+    const chat = new AilaChat({ messages, aila });
+    const ailaGeneration = new AilaGeneration({
+      aila,
+      id: "test-id",
+      status: "PENDING",
+      chat,
+      systemPrompt: "Test system prompt",
+    });
+    ailaGeneration.complete({
+      status: "SUCCESS",
+      responseText: "I am fine, thank you!",
+    });
+    expect(ailaGeneration.tokenUsage.completionTokens).toBe(7);
+  });
+});

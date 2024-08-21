@@ -1,0 +1,48 @@
+# .github/workflows/release.yml
+name: Production Release Workflow
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Git
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+
+      - name: Extract version from commit message
+        id: get-version
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+          VERSION_TAG=$(echo "$COMMIT_MSG" | grep -Eo '[vV][0-9]+\.[0-9]+\.[0-9]+')
+
+          if [[ -z "$VERSION_TAG" ]]; then
+            echo "No valid version extracted"
+            exit 1
+          else
+            echo "::set-output name=version::$VERSION_TAG"
+          fi
+
+      - name: Create and push tag
+        if: steps.get-version.outputs.version
+        run: |
+          git tag ${{ steps.get-version.outputs.version }}
+          git push origin ${{ steps.get-version.outputs.version }}
+
+      - name: Create release
+        if: steps.get-version.outputs.version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.get-version.outputs.version }}" \
+            --repo="$GITHUB_REPOSITORY" \
+            --title="${{ steps.get-version.outputs.version }}" \
+            --generate-notes

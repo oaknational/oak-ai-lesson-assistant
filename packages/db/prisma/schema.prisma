@@ -1,0 +1,856 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("PRISMA_ACCELERATE_DATABASE_URL")
+  directUrl  = env("DIRECT_DATABASE_URL")
+  extensions = [vector, pg_trgm]
+}
+
+generator zod {
+  provider = "zod-prisma"
+  output   = "./zod-schemas"
+
+  relationModel         = true
+  modelCase             = "camelCase"
+  modelSuffix           = "Model"
+  useDecimalJs          = false
+  // imports               = null
+  prismaJsonNullability = true
+}
+
+model App {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  generations Generation[]
+  prompts     Prompt[]
+  appSessions AppSession[]
+  statistics  Statistics[]
+
+  @@map("apps")
+}
+
+model Prompt {
+  id           String       @id @default(cuid())
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  name         String
+  slug         String
+  identifier   String?
+  version      Int          @default(0)
+  app          App          @relation(fields: [appId], references: [id], onDelete: Cascade)
+  appId        String       @map("app_id")
+  hash         String       @unique
+  variant      String?
+  current      Boolean      @default(true)
+  gitSha       String?      @map("git_sha")
+  template     String // The prompt body
+  Generation   Generation[]
+  inputSchema  Json         @map("input_schema") // A JSON-schema to apply to prompt inputs
+  outputSchema Json         @map("output_schema") // A JSON-schema to apply to completions
+
+  statistics                        Statistics[]
+  AnswersAndDistractorsForJudgement AnswersAndDistractorsForJudgement[]
+
+  @@map("prompts")
+}
+
+// Clerk users
+// Clerk is to be considered the source of truth for this table,
+// but we're storing the derived data as joining against clerk's
+// API makes analysis and filtering harder
+//
+// n.b. user_id colummns are not currently set as relations
+//      but will be in future once this is complete
+model User {
+  id        String   @id // Defined by clerk, aka user_*****
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  isOakUser Boolean @map("is_oak_user")
+
+  // Email addresses should ONLY be stored when isOakUser is
+  // true. A constraint has been manually added via migrations
+  // to make sure we only track internal users emails
+  emailAddress String? @map("email_address")
+
+  @@map("users")
+}
+
+model KeyStage {
+  id                    String                  @id @default(cuid())
+  title                 String
+  slug                  String                  @unique
+  createdAt             DateTime                @default(now()) @map("created_at")
+  updatedAt             DateTime                @updatedAt @map("updated_at")
+  KeyStageSubjects      KeyStageSubject[]
+  Lessons               Lesson[]
+  Snippet               Snippet[]
+  LessonSummary         LessonSummary[]
+  QuestionsForJudgement QuestionsForJudgement[]
+  LessonPlanParts       LessonPlanPart[]
+  LessonPlan            LessonPlan[]
+
+  @@map("key_stages")
+}
+
+model KeyStageSubject {
+  id               String   @id @default(cuid())
+  keyStageId       String   @map("key_stage_id")
+  subjectId        String   @map("subject_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  contentAvailable Boolean  @default(false)
+
+  keyStage KeyStage @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
+  subject  Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([keyStageId, subjectId])
+  @@map("key_stage_subjects")
+}
+
+model Subject {
+  id                    String                  @id @default(cuid())
+  title                 String
+  slug                  String                  @unique
+  createdAt             DateTime                @default(now()) @map("created_at")
+  updatedAt             DateTime                @updatedAt @map("updated_at")
+  KeyStageSubjects      KeyStageSubject[]
+  Lessons               Lesson[]
+  Snippet               Snippet[]
+  LessonSummary         LessonSummary[]
+  QuestionsForJudgement QuestionsForJudgement[]
+  LessonPlanParts       LessonPlanPart[]
+  LessonPlans           LessonPlan[]
+
+  @@map("subjects")
+}
+
+model Lesson {
+  id               String   @id @default(cuid())
+  title            String
+  slug             String   @unique
+  keyStageName     String   @map("key_stage")
+  keyStageId       String?  @map("key_stage_id")
+  subjectId        String?  @map("subject_id")
+  content          Json?
+  newLessonContent Json?    @map("new_lesson_content")
+  captions         Json?
+  isNewLesson      Boolean  @default(false) @map("is_new_lesson")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  snippets    Snippet[]
+  transcripts Transcript[]
+  summaries   LessonSummary[]
+  questions   QuizQuestion[]
+  answers     QuizAnswer[]
+  keyStage    KeyStage?       @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
+  subject     Subject?        @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  Downloads   Downloads[]
+  lessonPlans LessonPlan[]
+
+  @@map("lessons")
+}
+
+model SummarisationStrategy {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name        String
+  description String
+  prompt      String
+  promptHash  String @map("prompt_hash")
+  chunkSize   Int?   @map("chunk_size")
+
+  summaries LessonSummary[]
+
+  @@map("summarisation_strategies")
+}
+
+model LessonSummary {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  lessonId           String                       @map("lesson_id")
+  strategyId         String?                      @map("strategy_id")
+  content            String?
+  topics             String[]
+  learningObjectives String[]
+  concepts           String[]
+  keywords           String[]
+  reasoning          String?
+  errorMessage       String?
+  captions           Json?
+  subjectId          String?                      @map("subject_id")
+  keyStageId         String?                      @map("key_stage_id")
+  subjectSlug        String?
+  keyStageSlug       String?
+  embedding          Unsupported("vector(1536)")?
+  status             LessonSummaryStatus          @default(PENDING)
+  error              String?
+
+  lesson   Lesson                 @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  strategy SummarisationStrategy? @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+  keyStage KeyStage?              @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
+  subject  Subject?               @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@map("lesson_summaries")
+}
+
+model LessonPlan {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  lessonId     String                       @map("lesson_id")
+  subjectId    String?                      @map("subject_id")
+  keyStageId   String?                      @map("key_stage_id")
+  content      Json?
+  errorMessage String?
+  embedding    Unsupported("vector(1536)")?
+  status       LessonPlanStatus             @default(PENDING)
+  parts        LessonPlanPart[]
+
+  lesson   Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  subject  Subject?  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  keyStage KeyStage? @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
+
+  @@map("lesson_plans")
+}
+
+model LessonPlanPart {
+  id           String                       @id @default(cuid())
+  lessonPlanId String                       @map("lesson_plan_id")
+  subjectId    String?                      @map("subject_id")
+  keyStageId   String?                      @map("key_stage_id")
+  key          String
+  content      String
+  json         Json?
+  createdAt    DateTime                     @default(now()) @map("created_at")
+  updatedAt    DateTime                     @updatedAt @map("updated_at")
+  lessonPlan   LessonPlan                   @relation(fields: [lessonPlanId], references: [id], onDelete: Cascade)
+  subject      Subject?                     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  keyStage     KeyStage?                    @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
+  embedding    Unsupported("vector(1536)")?
+  status       LessonPlanPartStatus         @default(PENDING)
+
+  @@unique([lessonPlanId, key])
+  @@map("lesson_plan_parts")
+}
+
+model Transcript {
+  id        String            @id @default(cuid())
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+  variant   TranscriptVariant @default(ORIGINAL)
+  lessonId  String            @map("lesson_id")
+  content   Json?             @map("content")
+  status    TranscriptStatus  @default(PENDING)
+  snippets  Snippet[]
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonId, variant])
+  @@map("transcripts")
+}
+
+// The aggregate of many Generations, combined into
+// one final output, e.g. a quiz or a document
+model AppSession {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  app   App    @relation(fields: [appId], references: [id], onDelete: Cascade)
+  appId String @map("app_id")
+
+  userId String @map("user_id") // The user that requested this generation
+
+  output Json? // The final output of the session
+
+  generations Generation[]
+
+  userTweaks          UserTweak[]
+  reGenerations       ReGeneration[]
+  generationUserFlags GenerationUserFlag[]
+  moderations         Moderation[]
+
+  @@map("app_sessions")
+}
+
+model SharedContent {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  userId       String   @map("user_id")
+  content      Json
+  appSessionId String   @map("app_session_id")
+
+  @@map("shared_content")
+}
+
+// A single request & response cycle from the user
+// to an AI model. The result of "applying" a Prompt
+model Generation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  app          App         @relation(fields: [appId], references: [id], onDelete: Cascade)
+  appId        String      @map("app_id")
+  prompt       Prompt      @relation(fields: [promptId], references: [id], onDelete: Cascade)
+  promptId     String      @map("prompt_id")
+  appSession   AppSession? @relation(fields: [appSessionId], references: [id], onDelete: Cascade)
+  appSessionId String?     @map("app_session_id")
+  userId       String      @map("user_id") // The user that requested this generation
+
+  status               GenerationStatus @default(REQUESTED)
+  promptInputs         Json?            @map("prompt_inputs") // Stores the prompt inputs used to generate the response
+  promptText           String?          @map("prompt_text") // Stores the prompt that was used to generate the response
+  response             Json? // Stores the raw text response
+  llmTimeTaken         Int?             @map("llm_time_taken") // LLM time taken
+  completedAt          DateTime?        @map("completed_at") // When we finished the generation, duration = completedAt-createdAt
+  error                String? // The error message associated with this
+  moderationType       ModerationType?  @map("moderation_type")
+  moderationMeta       Json?            @map("moderation_meta") // Useful metadata about the moderation
+  moderationResults    Json? // The OpenAI moderation scores for the user input
+  promptTokensUsed     Int?             @map("prompt_tokens_used")
+  completionTokensUsed Int?             @map("completion_tokens_used")
+  promptInputsHash     String?          @map("prompt_inputs_hash") // A hash of the prompt input to be used for replaying past responses
+
+  userTweaks             UserTweak[]
+  originalGenerations    ReGeneration[]       @relation("previous_generation")
+  generationUserFlags    GenerationUserFlag[]
+  replacementGenerations ReGeneration[]       @relation("replacement_generation")
+
+  @@index([promptInputsHash, promptId, status])
+  @@map("generations")
+}
+
+model UserTweak {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  appSession   AppSession? @relation(fields: [appSessionId], references: [id], onDelete: Cascade)
+  appSessionId String?     @map("app_session_id")
+
+  generation   Generation @relation(fields: [generationId], references: [id], onDelete: Cascade)
+  generationId String     @map("generation_id")
+
+  // The manual tweak a user has made, note this is currently for a part of a generation
+  // e.g. a single quiz distractor, rather than the whole updated JSON object
+  tweakedValue  Json  @map("tweaked_value")
+  originalValue Json? @map("original_value") // Optional for back-compat / non breaking changes
+
+  @@map("user_tweaks")
+}
+
+model ReGeneration {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  appSession   AppSession? @relation(fields: [appSessionId], references: [id], onDelete: Cascade)
+  appSessionId String?     @map("app_session_id")
+
+  previousGeneration   Generation @relation(fields: [previousGenerationId], references: [id], name: "previous_generation", onDelete: Cascade)
+  previousGenerationId String     @map("previous_generation_id")
+
+  replacementGeneration   Generation @relation(fields: [replacementGenerationId], references: [id], name: "replacement_generation", onDelete: Cascade)
+  replacementGenerationId String     @map("replacement_generation_id")
+
+  @@map("re_generations")
+}
+
+model GenerationUserFlag {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  appSession   AppSession? @relation(fields: [appSessionId], references: [id], onDelete: Cascade)
+  appSessionId String?     @map("app_session_id")
+
+  generation   Generation @relation(fields: [generationId], references: [id], onDelete: Cascade)
+  generationId String     @map("generation_id")
+
+  feedbackMessage String @map("feedback_message")
+  feedbackValue   String @map("feedback_value") // The fragment of the generation that feedback was given on
+  feedbackReasons Json
+
+  @@map("generation_user_flags")
+}
+
+model Snippet {
+  id            String                       @id @default(cuid())
+  lessonId      String                       @map("lesson_id")
+  transcriptId  String?                      @map("transcript_id")
+  questionId    String?                      @map("question_id")
+  index         Int?
+  variant       SnippetVariant               @default(SENTENCE)
+  timestamp     Int?
+  sourceContent String                       @map("source_content")
+  content       String
+  embedding     Unsupported("vector(1536)")?
+  compression   SnippetCompression?
+  status        SnippetStatus                @default(PENDING)
+  createdAt     DateTime                     @default(now()) @map("created_at")
+  updatedAt     DateTime                     @updatedAt @map("updated_at")
+  keyStageSlug  String?                      @map("key_stage_slug")
+  subjectSlug   String?                      @map("subject_slug")
+  keyStageId    String?                      @map("key_stage_id")
+  subjectId     String?                      @map("subject_id")
+
+  lesson     Lesson        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  transcript Transcript?   @relation(fields: [transcriptId], references: [id], onDelete: Cascade)
+  question   QuizQuestion? @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  keyStage   KeyStage?     @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
+  subject    Subject?      @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonId, transcriptId, index, compression, variant])
+  @@map("snippets")
+}
+
+model QuizQuestion {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  originalQuestionId Int                          @unique @map("original_question_id")
+  lessonId           String                       @map("lesson_id")
+  question           String
+  embedding          Unsupported("vector(1536)")?
+  status             QuizQuestionStatus           @default(PENDING)
+
+  lesson   Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  answers  QuizAnswer[]
+  snippets Snippet[]
+
+  QuestionsForJudgement             QuestionsForJudgement[]
+  AnswersAndDistractorsForJudgement AnswersAndDistractorsForJudgement[]
+
+  @@map("questions")
+}
+
+model QuizAnswer {
+  id         String                       @id @default(cuid())
+  createdAt  DateTime                     @default(now()) @map("created_at")
+  updatedAt  DateTime                     @updatedAt @map("updated_at")
+  questionId String                       @map("question_id")
+  lessonId   String                       @map("lesson_id")
+  answer     String
+  distractor Boolean                      @default(false)
+  embedding  Unsupported("vector(1536)")?
+  status     QuizAnswerStatus             @default(PENDING)
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  question QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonId, questionId, answer])
+  @@map("answers")
+}
+
+model Statistics {
+  id          String   @id @default(uuid())
+  name        String
+  value       Int
+  lastUpdated DateTime @map("last_updated")
+
+  apps     App[]
+  appId    String?  @map("app_id")
+  prompts  Prompt[]
+  promptId String?  @map("prompt_id")
+
+  @@unique([name, appId, promptId])
+  @@map("statistics")
+}
+
+model QuestionsForJudgement {
+  id                   String                 @id @default(cuid())
+  createdAt            DateTime               @default(now()) @map("created_at")
+  updatedAt            DateTime               @updatedAt @map("updated_at")
+  quizQuestionId       String?                @map("quiz_question_id")
+  quizQuestion         QuizQuestion?          @relation(fields: [quizQuestionId], references: [id], onDelete: Cascade)
+  subjectId            String                 @map("subject_id")
+  subject              Subject                @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  keyStageId           String                 @map("key_stage_id")
+  keyStage             KeyStage               @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
+  ComparativeJudgement ComparativeJudgement[]
+
+  @@map("questions_for_judgement")
+}
+
+model AnswersAndDistractorsForJudgement {
+  id                  String        @id @default(cuid())
+  createdAt           DateTime      @default(now()) @map("created_at")
+  updatedAt           DateTime      @updatedAt @map("updated_at")
+  quizQuestionId      String?       @map("quiz_question_id")
+  quizQuestion        QuizQuestion? @relation(fields: [quizQuestionId], references: [id], onDelete: Cascade)
+  answerAndDistractor Json          @map("answer_and_distractor")
+  isOakQuestion       Boolean?      @map("is_oak_question")
+  promptId            String?       @map("prompt_id")
+  prompt              Prompt?       @relation(fields: [promptId], references: [id], onDelete: Cascade)
+
+  comparativeJudgementA ComparativeJudgement[] @relation("OptionA")
+  comparativeJudgementB ComparativeJudgement[] @relation("OptionB")
+
+  ComparativeJudgementResult ComparativeJudgementResult[]
+  ComparativeJudgementFlag   ComparativeJudgementFlag[]
+
+  @@map("answers_and_distractors_for_judgement")
+}
+
+model ComparativeJudgement {
+  id                          String                            @id @default(cuid())
+  createdAt                   DateTime                          @default(now()) @map("created_at")
+  updatedAt                   DateTime                          @updatedAt @map("updated_at")
+  questionForJudgementId      String                            @map("question_for_judgement_id")
+  questionForJudgement        QuestionsForJudgement             @relation(fields: [questionForJudgementId], references: [id], onDelete: Cascade)
+  optionAId                   String                            @map("option_a_id")
+  optionA                     AnswersAndDistractorsForJudgement @relation("OptionA", fields: [optionAId], references: [id], onDelete: Cascade)
+  optionBId                   String                            @map("option_b_id")
+  optionB                     AnswersAndDistractorsForJudgement @relation("OptionB", fields: [optionBId], references: [id], onDelete: Cascade)
+  ComparativeJudgementResults ComparativeJudgementResult[]
+  ComparativeJudgementFlag    ComparativeJudgementFlag[]
+
+  @@map("comparative_judgements")
+}
+
+model ComparativeJudgementResult {
+  id                      String                             @id @default(cuid())
+  createdAt               DateTime                           @default(now()) @map("created_at")
+  updatedAt               DateTime                           @updatedAt @map("updated_at")
+  judgementId             String                             @map("judgement_id")
+  judgement               ComparativeJudgement               @relation(fields: [judgementId], references: [id], onDelete: Cascade)
+  winnerId                String?                            @map("winner_id")
+  winner                  AnswersAndDistractorsForJudgement? @relation(fields: [winnerId], references: [id], onDelete: Cascade)
+  userId                  String                             @map("user_id")
+  flaggedOrSkipped        FlaggedOrSkipped?                  @map("flagged_or_skipped")
+  reasonForChoosingWinner String?                            @map("decision_reason")
+
+  @@map("comparative_judgement_results")
+}
+
+model ComparativeJudgementFlag {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  flaggedJudgementId String               @map("flagged_judgement_id")
+  flaggedJudgement   ComparativeJudgement @relation(fields: [flaggedJudgementId], references: [id], onDelete: Cascade)
+
+  flaggedAnswerAndDistractorId String                            @map("flagged_answer_and_distractor_id")
+  flaggedAnswerAndDistractor   AnswersAndDistractorsForJudgement @relation(fields: [flaggedAnswerAndDistractorId], references: [id], onDelete: Cascade)
+
+  feedbackMessage String @map("feedback_message")
+  feedbackReasons Json
+
+  @@map("comparative_judgement_flags")
+}
+
+model Downloads {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
+  lessonSlug String   @map("lesson_slug")
+  download   Json
+
+  lesson Lesson @relation(fields: [lessonSlug], references: [slug], onDelete: Cascade)
+
+  @@map("downloads")
+}
+
+model UsersAllowedToViewNewFeatures {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  emailAddress String @map("email_address")
+
+  @@map("users_allowed_to_view_new_features")
+}
+
+model LessonExportDownload {
+  id             String   @id @default(cuid())
+  ext            String   @map("ext")
+  lessonExportId String   @map("lesson_export_id")
+  downloadedBy   String   @map("downloaded_by")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  lessonExport LessonExport @relation(fields: [lessonExportId], references: [id], onDelete: Cascade)
+
+  @@map("lesson_export_downloads")
+}
+
+model QdExportDownload {
+  id           String   @id @default(cuid())
+  ext          String   @map("ext")
+  qdExportId   String   @map("qd_export_id")
+  downloadedBy String   @map("downloaded_by")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  qdExport QdExport @relation(fields: [qdExportId], references: [id], onDelete: Cascade)
+
+  @@map("qd_export_downloads")
+}
+
+model QdExport {
+  id                    String           @id @default(cuid())
+  snapshotId            String           @map("lesson_snapshot_id")
+  exportType            LessonExportType @map("export_type")
+  templateGdriveFileId  String           @map("template_gdrive_file_id")
+  gdriveFileId          String           @map("gdrive_file_id")
+  gdriveFileUrl         String           @map("gdrive_file_url")
+  createdAt             DateTime         @default(now()) @map("created_at")
+  updatedAt             DateTime         @updatedAt @map("updated_at")
+  expiredAt             DateTime?        @map("expired_at")
+  // generally this is if the user's email is associated with a Google Drive account
+  userCanViewGdriveFile Boolean          @map("user_can_view_gdrive_file")
+  userId                String           @map("user_id")
+
+  qdSnapshot        QdSnapshot         @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  qdExportDownloads QdExportDownload[]
+
+  @@index([userId, gdriveFileId], name: "idx_qd_user_grdive_file_id")
+  @@map("qd_exports")
+}
+
+model QdSnapshot {
+  id        String @id @default(cuid())
+  sessionId String @map("session_id")
+  messageId String @map("message_id")
+  qdJson    Json   @map("qd_json") @db.JsonB
+
+  // sha256 hash of the lessonJson
+  hash      String
+  trigger   LessonSnapshotTrigger @map("trigger")
+  createdAt DateTime              @default(now()) @map("created_at")
+  updatedAt DateTime              @updatedAt @map("updated_at")
+  userId    String?               @map("user_id")
+
+  qdExports QdExport[]
+
+  @@index([userId, sessionId, hash], name: "idx_qd_user_session_hash")
+  @@map("qd_snapshots")
+}
+
+model LessonExport {
+  id                    String           @id @default(cuid())
+  lessonSnapshotId      String           @map("lesson_snapshot_id")
+  exportType            LessonExportType @map("export_type")
+  templateGdriveFileId  String           @map("template_gdrive_file_id")
+  gdriveFileId          String           @map("gdrive_file_id")
+  gdriveFileUrl         String           @map("gdrive_file_url")
+  createdAt             DateTime         @default(now()) @map("created_at")
+  updatedAt             DateTime         @updatedAt @map("updated_at")
+  expiredAt             DateTime?        @map("expired_at")
+  // generally this is if the user's email is associated with a Google Drive account
+  userCanViewGdriveFile Boolean          @map("user_can_view_gdrive_file")
+  userId                String           @map("user_id")
+
+  lessonSnapshot        LessonSnapshot         @relation(fields: [lessonSnapshotId], references: [id], onDelete: Cascade)
+  lessonExportDownloads LessonExportDownload[]
+
+  @@index([userId, gdriveFileId], name: "idx_user_grdive_file_id")
+  @@map("lesson_exports")
+}
+
+model LessonSnapshot {
+  id             String                @id @default(cuid())
+  chatId         String                @map("chat_id")
+  messageId      String                @map("message_id")
+  lessonJson     Json                  @map("lesson_json") @db.JsonB
+  lessonSchemaId Int                   @map("lesson_schema_id")
+  // sha256 hash of the lessonJson
+  hash           String
+  trigger        LessonSnapshotTrigger @map("trigger")
+  createdAt      DateTime              @default(now()) @map("created_at")
+  updatedAt      DateTime              @updatedAt @map("updated_at")
+  userId         String?               @map("user_id")
+
+  lessonSchema  LessonSchema   @relation(fields: [lessonSchemaId], references: [id], onDelete: Cascade)
+  lessonExports LessonExport[]
+  moderations   Moderation[]
+
+  @@index([userId, chatId, hash], name: "idx_user_chat_hash")
+  @@map("lesson_snapshots")
+}
+
+model Moderation {
+  id               String   @id @default(cuid())
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  userId           String   @map("user_id")
+  appSessionId     String   @map("app_session_id")
+  messageId        String   @map("message_id")
+  categories       Json[]
+  justification    String?
+  lessonSnapshotId String?  @map("lesson_snapshot_id")
+  // A user's comment in relation to the moderation. Likely they are contesting it.
+  userComment      String?  @map("user_comment")
+
+  appSession     AppSession?     @relation(fields: [appSessionId], references: [id], onDelete: Cascade)
+  lessonSnapshot LessonSnapshot? @relation(fields: [lessonSnapshotId], references: [id], onDelete: Cascade)
+
+  @@map("moderations")
+}
+
+model LessonSchema {
+  id              Int              @id @default(autoincrement())
+  // sha256 hash of the jsonSchema
+  hash            String
+  jsonSchema      Json             @map("json_schema") @db.JsonB
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  lessonSnapshots LessonSnapshot[]
+
+  @@index([hash])
+  @@map("lesson_schemas")
+}
+
+model SafetyViolation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  userId          String                    @map("user_id")
+  userAction      SafetyViolationAction     @map("user_action")
+  detectionSource SafetyViolationSource     @map("detection_source")
+  recordType      SafetyViolationRecordType @map("record_type")
+  recordId        String                    @map("record_id")
+
+  @@map("policy_violations")
+}
+
+enum SafetyViolationAction {
+  CHAT_MESSAGE
+  QUIZ_GENERATION
+}
+
+enum SafetyViolationSource {
+  HELICONE
+  OPENAI
+  MODERATION
+}
+
+enum SafetyViolationRecordType {
+  CHAT_SESSION
+  GENERATION
+  MODERATION
+}
+
+enum LessonExportType {
+  STARTER_QUIZ_DOC
+  EXIT_QUIZ_DOC
+  LESSON_PLAN_DOC
+  LESSON_SLIDES_SLIDES
+  WORKSHEET_SLIDES
+  ADDITIONAL_MATERIALS_DOCS
+}
+
+enum LessonSnapshotTrigger {
+  EXPORT_BY_USER
+  MODERATION
+}
+
+enum FlaggedOrSkipped {
+  FLAGGED
+  SKIPPED
+}
+
+enum SnippetVariant {
+  SENTENCE
+  PARAGRAPH
+  SECTION
+  CHUNK
+  VTT
+  QUESTION_AND_ANSWER
+}
+
+enum GenerationStatus {
+  REQUESTED //  User has requested a generation
+  PENDING //    The backend has picked up the request and began processing
+  MODERATING // The request is undergoing moderation
+  GENERATING // The request is being generated by the LLM
+  FAILED //     An error occurred processing the generation
+  SUCCESS //    We got a valid response from the LLM
+  FLAGGED //    It failed moderation, or the LLM refused to answer. See ModerationType
+}
+
+enum ModerationType {
+  NOT_ENGLISH
+  PROFANITY
+  OPENAI_FLAGGED
+  OPENAI_OVER_THRESHOLD
+  LLM_REFUSAL
+}
+
+enum TranscriptVariant {
+  ORIGINAL
+  COMPRESSED
+}
+
+enum TranscriptStatus {
+  PENDING
+  FAILED
+  SUCCESS
+}
+
+enum SnippetStatus {
+  PENDING
+  FAILED
+  SUCCESS
+}
+
+enum LessonSummaryStatus {
+  PENDING
+  GENERATED
+  FAILED
+  SUCCESS
+}
+
+enum LessonPlanStatus {
+  PENDING
+  GENERATED
+  FAILED
+  SUCCESS
+}
+
+enum LessonPlanPartStatus {
+  PENDING
+  GENERATED
+  FAILED
+  SUCCESS
+}
+
+enum SnippetCompression {
+  BREVITY
+  SIMPLIFICATION
+  RELEVANCE
+}
+
+enum QuizQuestionStatus {
+  PENDING
+  FAILED
+  SUCCESS
+}
+
+enum QuizAnswerStatus {
+  PENDING
+  FAILED
+  SUCCESS
+}

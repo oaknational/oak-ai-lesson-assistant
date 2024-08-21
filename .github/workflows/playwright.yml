@@ -1,0 +1,76 @@
+name: Playwright
+on:
+  deployment_status:
+jobs:
+  test-e2e:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    if: github.event.deployment_status.state == 'success' && contains(github.event.deployment_status.target_url, 'ai-beta-nextjs')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install
+      - uses: ./.github/actions/ref_from_sha
+        name: Get PR Ref from SHA
+        id: ref_from_sha
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        working-directory: apps/nextjs
+        # Only include @openai tests on RC branches
+        run: |
+          if [[ "${{ steps.ref_from_sha.outputs.branch_name }}" =~ ^v[0-9\.]+-rc[0-9]+-branch$ ]]; then
+            pnpm test-e2e
+          else
+            pnpm test-e2e --grep-invert @openai
+          fi
+        env:
+          TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      - name: Upload Playwright report
+        id: upload-report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: apps/nextjs/playwright-report
+          retention-days: 30
+      - name: Comment PR with playwright report
+        uses: thollander/actions-comment-pull-request@v2
+        if: ${{ !cancelled() }}
+        with:
+          pr_number: ${{ steps.ref_from_sha.outputs.pr_number }}
+          message: |
+            ### Playwright e2e tests
+
+            [Job summary](https://github.com/oaknational/ai-beta/actions/runs/${{github.run_id}})
+
+            [Download report](${{ steps.upload-report.outputs.artifact-url }})
+
+            To view traces locally, unzip the report and run:
+            ```bash
+            npx playwright show-report ~/Downloads/playwright-report
+            ```
+          comment_tag: playwright-report
+      - name: Upload playwright screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-failure-screenshots
+          path: apps/nextjs/tests-e2e/test-results ## Folder used in playwright.config.js `outputDir`
+          retention-days: 30

@@ -1,0 +1,22 @@
+{
+  "name": "@oakai/logger",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "main": "./index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint . --ext .ts,.tsx",
+    "type-check": "tsc --noEmit"
+  },
+  "prettier": "@oakai/prettier-config",
+  "dependencies": {
+    "pino": "^8.15.1"
+  },
+  "devDependencies": {
+    "pino-pretty": "^10.2.0",
+    "prettier-config": "*"
+  }
+}

@@ -1,0 +1,3 @@
+setup:
+  project: oak-ai-beta
+  config: dev

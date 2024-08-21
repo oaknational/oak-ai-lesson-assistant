@@ -1,0 +1,1 @@
+export { AilaPersistence } from "./AilaPersistence";

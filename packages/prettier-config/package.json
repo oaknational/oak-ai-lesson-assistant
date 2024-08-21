@@ -1,0 +1,15 @@
+{
+  "name": "@oakai/prettier-config",
+  "version": "0.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "prettier-plugin-tailwindcss": "^0.5.9"
+  },
+  "devDependencies": {
+    "prettier": "^3.1.1"
+  },
+  "peerDependencies": {
+    "prettier": "^3.1.1"
+  }
+}

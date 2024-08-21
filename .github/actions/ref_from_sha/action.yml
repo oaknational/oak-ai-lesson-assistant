@@ -1,0 +1,16 @@
+name: "Get branch Ref from SHA"
+description: "Given a SHA, find a PR with a matching head, else check head of `main`, and return the ref."
+inputs:
+  github_token:
+    description: "A Github token, e.g. secrets.GITHUB_TOKEN"
+    required: true
+outputs:
+  branch_name:
+    description: "The *branch name* (e.g. feature/new_buttons) of the PR source branch with the SHA as the head commit, or branch if there is no PR (typically 'main')"
+  head_ref:
+    description: "The *ref* (e.g. refs/heads/feature/new_buttons) of the PR source branch with the SHA as the head commit, or branch if there is no PR (typically 'main')"
+  pr_number:
+    description: "The number of the PR if one is found"
+runs:
+  using: "node20"
+  main: "index.js"
