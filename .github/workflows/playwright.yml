@@ -1,11 +1,14 @@
 name: Playwright
 on:
   deployment_status:
+  push:
+    branches:
+      - production
 jobs:
   test-e2e:
     timeout-minutes: 20
     runs-on: ubuntu-latest
-    if: github.event.deployment_status.state == 'success' && contains(github.event.deployment_status.target_url, 'ai-beta-nextjs')
+    if: github.event.deployment_status.state == 'success' && contains(github.event.deployment_status.target_url, 'oak-ai-lesson-assistant')
     steps:
       - uses: actions/checkout@v4
       - name: Setup pnpm
