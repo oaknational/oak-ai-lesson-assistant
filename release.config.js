@@ -1,5 +1,5 @@
 module.exports = {
-  branches: ["release"],
+  branches: ["production"],
   plugins: [
     // Analyse commits.
     // https://github.com/semantic-release/commit-analyzer/#rules-definition
