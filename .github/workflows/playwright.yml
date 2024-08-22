@@ -46,10 +46,10 @@ jobs:
             pnpm test-e2e --grep-invert @openai
           fi
         env:
-          TEST_BASE_URL: ${{ github.event.deployment_status.environment_url }}
+          TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
           TEST_USER_EMAIL: ${{ steps.doppler.outputs.TEST_USER_EMAIL }}
           TEST_USER_PASSWORD: ${{ steps.doppler.outputs.TEST_USER_PASSWORD }}
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ steps.doppler.outputs.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ steps.doppler.outputs.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           CLERK_SECRET_KEY: ${{ steps.doppler.outputs.CLERK_SECRET_KEY }}
       - name: Upload Playwright report
