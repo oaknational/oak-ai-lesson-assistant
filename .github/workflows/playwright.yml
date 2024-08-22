@@ -1,11 +1,14 @@
 name: Playwright
 on:
   deployment_status:
+  push:
+    branches:
+      - production
 jobs:
   test-e2e:
     timeout-minutes: 20
     runs-on: ubuntu-latest
-    if: github.event.deployment_status.state == 'success' && contains(github.event.deployment_status.target_url, 'ai-beta-nextjs')
+    if: github.event.deployment_status.state == 'success' && contains(github.event.deployment_status.target_url, 'oak-ai-lesson-assistant')
     steps:
       - uses: actions/checkout@v4
       - name: Setup pnpm
@@ -37,7 +40,7 @@ jobs:
         working-directory: apps/nextjs
         # Only include @openai tests on RC branches
         run: |
-          if [[ "${{ steps.ref_from_sha.outputs.branch_name }}" =~ ^v[0-9\.]+-rc[0-9]+-branch$ ]]; then
+          if [[ "${{ steps.ref_from_sha.outputs.branch_name }}" =~ ^rc$ ]]; then
             pnpm test-e2e
           else
             pnpm test-e2e --grep-invert @openai
@@ -46,7 +49,7 @@ jobs:
           TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
           TEST_USER_EMAIL: ${{ steps.doppler.outputs.TEST_USER_EMAIL }}
           TEST_USER_PASSWORD: ${{ steps.doppler.outputs.TEST_USER_PASSWORD }}
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ steps.doppler.outputs.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ steps.doppler.outputs.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           CLERK_SECRET_KEY: ${{ steps.doppler.outputs.CLERK_SECRET_KEY }}
       - name: Upload Playwright report
@@ -65,7 +68,7 @@ jobs:
           message: |
             ### Playwright e2e tests
 
-            [Job summary](https://github.com/oaknational/ai-beta/actions/runs/${{github.run_id}})
+            [Job summary](https://github.com/oaknational/oak-ai-lesson-assistant/actions/runs/${{github.run_id}})
 
             [Download report](${{ steps.upload-report.outputs.artifact-url }})
 

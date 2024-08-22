@@ -15,16 +15,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # Note we can't use caching here, because caching needs GITHUB_REF to be defined,
-      # and Vercel deployment_status events set deployment.ref to the SHA, not the triggering
-      # branch or pull request.
-      # https://github.com/actions/cache/issues/319
-      - name: Use Node.js
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Setup Node 20
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
-          cache: "npm"
-      - run: npm ci
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install deps (with cache)
+        run: pnpm install
 
       - uses: ./.github/actions/ref_from_sha
         name: Get PR Ref from SHA
