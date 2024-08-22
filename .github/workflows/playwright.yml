@@ -68,7 +68,7 @@ jobs:
           message: |
             ### Playwright e2e tests
 
-            [Job summary](https://github.com/oaknational/ai-beta/actions/runs/${{github.run_id}})
+            [Job summary](https://github.com/oaknational/oak-ai-lesson-assistant/actions/runs/${{github.run_id}})
 
             [Download report](${{ steps.upload-report.outputs.artifact-url }})
 
