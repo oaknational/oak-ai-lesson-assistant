@@ -40,13 +40,13 @@ jobs:
         working-directory: apps/nextjs
         # Only include @openai tests on RC branches
         run: |
-          if [[ "${{ steps.ref_from_sha.outputs.branch_name }}" =~ ^v[0-9\.]+-rc[0-9]+-branch$ ]]; then
+          if [[ "${{ steps.ref_from_sha.outputs.branch_name }}" =~ ^rc$ ]]; then
             pnpm test-e2e
           else
             pnpm test-e2e --grep-invert @openai
           fi
         env:
-          TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
+          TEST_BASE_URL: ${{ github.event.deployment_status.environment_url }}
           TEST_USER_EMAIL: ${{ steps.doppler.outputs.TEST_USER_EMAIL }}
           TEST_USER_PASSWORD: ${{ steps.doppler.outputs.TEST_USER_PASSWORD }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ steps.doppler.outputs.VERCEL_AUTOMATION_BYPASS_SECRET }}
