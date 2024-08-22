@@ -4,7 +4,6 @@ import {
   OakBox,
   OakFlex,
   OakP,
-  OakPrimaryButton,
   OakSmallPrimaryButton,
 } from "@oaknational/oak-components";
 
@@ -84,7 +83,7 @@ export const DropDownFormWrapper = ({
         <OakP $font="heading-6">{title}</OakP>
         {children}
         <OakBox>
-          <OakPrimaryButton>{buttonText}</OakPrimaryButton>
+          <OakSmallPrimaryButton>{buttonText}</OakSmallPrimaryButton>
         </OakBox>
       </OakFlex>
     </form>

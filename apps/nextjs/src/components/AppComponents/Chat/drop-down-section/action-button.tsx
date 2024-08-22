@@ -1,11 +1,12 @@
-import { Children, useState } from "react";
+import { useState } from "react";
 
 import {
   OakBox,
+  OakSmallSecondaryButton,
   OakSpan,
-  OakTertiaryButton,
   OakTooltip,
 } from "@oaknational/oak-components";
+import styled from "styled-components";
 
 const ActionButton = ({
   children,
@@ -26,9 +27,9 @@ const ActionButton = ({
       $background="black"
       $color="white"
     >
-      <div
+      <OakBox
         onMouseEnter={async () => {
-          await waitThenExecute(200).then(() => {
+          await waitThenExecute(0).then(() => {
             setShowTooltip(true);
           });
         }}
@@ -36,21 +37,19 @@ const ActionButton = ({
           setShowTooltip(false);
         }}
       >
-        <OakTertiaryButton onClick={onClick}>
-          <OakSpan
-            $borderColor="border-neutral-lighter"
-            $ba="border-solid-m"
-            $ph="inner-padding-xs"
-            $pv="inner-padding-ssx"
-            $borderRadius="border-radius-s"
-          >
-            {children}
-          </OakSpan>
-        </OakTertiaryButton>
-      </div>
+        <OakSmallSecondaryWithOpaqueBorder onClick={onClick}>
+          {children}
+        </OakSmallSecondaryWithOpaqueBorder>
+      </OakBox>
     </OakTooltip>
   );
 };
+
+const OakSmallSecondaryWithOpaqueBorder = styled(OakSmallSecondaryButton)`
+  button {
+    border-color: rgba(0, 0, 0, 0.3);
+  }
+`;
 
 async function waitThenExecute(ms: number) {
   return new Promise((resolve) => {

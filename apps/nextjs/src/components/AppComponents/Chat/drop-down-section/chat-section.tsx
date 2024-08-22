@@ -24,7 +24,12 @@ const ChatSection = ({
         markdown={`${sectionToMarkdown(objectKey, value)}`}
       />
       <OakFlex $gap="all-spacing-3" $mt="space-between-s" $position="relative">
-        <ModifyButton section={humanizeCamelCaseString(objectKey)} />
+        <ModifyButton
+          section={humanizeCamelCaseString(objectKey)}
+          sectionContent={
+            lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
+          }
+        />
         <FlagButton />
       </OakFlex>
     </OakFlex>

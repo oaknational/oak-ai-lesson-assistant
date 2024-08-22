@@ -10,10 +10,7 @@ import LoadingWheel from "@/components/LoadingWheel";
 import { scrollToRef } from "@/utils/scrollToRef";
 
 import Skeleton from "../../common/Skeleton";
-import { MemoizedReactMarkdownWithStyles } from "../markdown";
 import ChatSection from "./chat-section";
-import FlagButton from "./flag-button";
-import ModifyButton from "./modify-button";
 
 const DropDownSection = ({
   objectKey,

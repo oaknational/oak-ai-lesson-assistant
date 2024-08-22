@@ -223,6 +223,36 @@ export const appSessionsRouter = router({
     const remaining = await rateLimits.appSessions.demo.getRemaining(userId);
     return { remaining };
   }),
+  modifySection: protectedProcedure
+    .input(
+      z.object({
+        chatId: z.string(),
+        messageId: z.string(),
+        textForMod: z.string(),
+        action: z.enum([
+          "MAKE_IT_HARDER",
+          "MAKE_IT_EASIER",
+          "SHORTEN_CONTENT",
+          "ADD_MORE_DETAIL",
+          "OTHER",
+        ]),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { userId } = ctx.auth;
+      try {
+        const response = await ctx.prisma.ailaUserModification.create({
+          data: {
+            userId,
+            ...input,
+          },
+        });
+        return response;
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    }),
   flagSection: protectedProcedure
     .input(
       z.object({
@@ -242,17 +272,22 @@ export const appSessionsRouter = router({
       // return "hello";
       const { chatId, messageId, flagType, userComment } = input;
       const { userId } = ctx.auth;
-      const response = await ctx.prisma.ailaUserFlag.create({
-        data: {
-          userId,
-          chatId,
-          messageId,
-          flagType,
-          userComment,
-        },
-      });
+      try {
+        const response = await ctx.prisma.ailaUserFlag.create({
+          data: {
+            userId,
+            chatId,
+            messageId,
+            flagType,
+            userComment,
+          },
+        });
 
-      return response;
+        return response;
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
     }),
   getSidebarChats: protectedProcedure.query(async ({ ctx }) => {
     const { userId } = ctx.auth;

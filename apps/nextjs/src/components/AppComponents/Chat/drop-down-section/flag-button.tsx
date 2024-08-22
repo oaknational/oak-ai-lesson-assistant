@@ -17,6 +17,7 @@ import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
 import { DropDownFormWrapper } from "./drop-down-form-wrapper";
+import { SmallRadioButton } from "./small-radio-button";
 
 const flagOptions = [
   "Inappropriate",
@@ -83,7 +84,7 @@ const FlagButton = ({}) => {
           <OakRadioGroup
             name={`drop-down-${flagOptions[0]}`}
             $flexDirection="column"
-            $gap="space-between-m"
+            $gap="space-between-s"
             $background="white"
           >
             {flagOptions.map((option) => (
@@ -118,7 +119,7 @@ const FlagButtonFormItem = ({
 }) => {
   return (
     <>
-      <OakRadioButton
+      <SmallRadioButton
         id={option}
         key={option}
         value={option}

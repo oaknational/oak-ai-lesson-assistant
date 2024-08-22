@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import {
   OakBox,
@@ -7,13 +7,23 @@ import {
   OakSpan,
   OakTertiaryButton,
 } from "@oaknational/oak-components";
+import { AilaUserModificationAction } from "@prisma/client";
+import styled from "styled-components";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
 import { DropDownFormWrapper } from "./drop-down-form-wrapper";
+import { SmallRadioButton } from "./small-radio-button";
 
-const ModifyButton = ({ section }: { section: string }) => {
+const ModifyButton = ({
+  section,
+  sectionContent,
+}: {
+  section: string;
+  sectionContent: string;
+}) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRadio, setSelectedRadio] = useState<string | null>(null);
@@ -27,12 +37,32 @@ const ModifyButton = ({ section }: { section: string }) => {
   const chat = useLessonChat();
   const { append } = chat;
 
+  const { id } = chat;
+
+  const { mutateAsync, isLoading, error } =
+    trpc.chat.appSessions.modifySection.useMutation();
+
+  const recordUserModifySectionContent = useCallback(async () => {
+    if (selectedRadio) {
+      const payload = {
+        chatId: id,
+        messageId: "asdf",
+        textForMod: sectionContent,
+        action: selectedRadio
+          .toUpperCase()
+          .replace(" ", "_") as AilaUserModificationAction,
+      };
+      await mutateAsync(payload);
+    }
+  }, [selectedRadio, sectionContent, mutateAsync, id]);
+
   async function modifySection(value: string) {
     await append({
       id: "lessonPlan",
       content: `For the ${section}, ${value}`,
       role: "user",
     });
+    await recordUserModifySectionContent();
   }
 
   return (
@@ -41,7 +71,7 @@ const ModifyButton = ({ section }: { section: string }) => {
         onClick={() => setIsOpen(!isOpen)}
         tooltip="Aila can help improve this section"
       >
-        Modify {section}
+        Modify
       </ActionButton>
 
       {isOpen && (
@@ -57,11 +87,11 @@ const ModifyButton = ({ section }: { section: string }) => {
           <OakRadioGroup
             name={`drop-down-${modifyOptions[0]}`}
             $flexDirection="column"
-            $gap="space-between-m"
+            $gap="space-between-s"
             $background="white"
           >
             {modifyOptions.map((option) => (
-              <OakRadioButton
+              <SmallRadioButton
                 id={option}
                 key={option}
                 value={option}
