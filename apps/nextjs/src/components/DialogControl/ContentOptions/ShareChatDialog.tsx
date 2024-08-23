@@ -1,22 +1,29 @@
 import { useCallback, useState } from "react";
 
+import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { Flex } from "@radix-ui/themes";
 import * as Sentry from "@sentry/react";
 
 import { DialogTypes } from "@/components/AppComponents/Chat/Chat/types";
 import { openSharePage } from "@/components/AppComponents/Chat/Chat/utils";
 import ChatButton from "@/components/AppComponents/Chat/ui/chat-button";
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { getLessonTrackingProps } from "@/lib/analytics/helpers";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
 
 type ShareChatProps = {
+  chatId: string;
   setOpenExportDialog: (open: DialogTypes) => void;
+  lesson: LooseLessonPlan;
+  isShared: boolean | undefined;
 };
 
-const ShareChatDialog = ({ setOpenExportDialog }: Readonly<ShareChatProps>) => {
-  const { id, lessonPlan, isShared } = useLessonChat();
+const ShareChat = ({
+  chatId,
+  setOpenExportDialog,
+  lesson,
+  isShared,
+}: Readonly<ShareChatProps>) => {
   const closeDialog = useCallback(() => {
     setOpenExportDialog("");
   }, [setOpenExportDialog]);
@@ -28,19 +35,19 @@ const ShareChatDialog = ({ setOpenExportDialog }: Readonly<ShareChatProps>) => {
 
   const attemptToShareChat = async () => {
     track.lessonPlanShared({
-      ...getLessonTrackingProps({ lesson: lessonPlan }),
+      ...getLessonTrackingProps({ lesson }),
       componentType: "go_to_share_page_button",
     });
     if (isShared) {
-      openSharePage({ id });
+      openSharePage({ id: chatId });
     } else {
       try {
         setShareLoading(true);
-        await shareChat({ id });
+        await shareChat({ id: chatId });
 
-        openSharePage({ id });
+        openSharePage({ id: chatId });
       } catch (error) {
-        Sentry.captureException(error, { extra: { chatId: id } });
+        Sentry.captureException(error, { extra: { chatId } });
       } finally {
         setShareLoading(false);
       }
@@ -75,4 +82,4 @@ const ShareChatDialog = ({ setOpenExportDialog }: Readonly<ShareChatProps>) => {
   );
 };
 
-export default ShareChatDialog;
+export default ShareChat;

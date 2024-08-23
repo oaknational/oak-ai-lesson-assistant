@@ -86,7 +86,11 @@ export function ChatStart() {
 
   return (
     <DialogRoot>
-      <DialogContents submit={interstitialSubmit} />
+      <DialogContents
+        chatId={undefined}
+        lesson={{}}
+        submit={interstitialSubmit}
+      />
       <Flex
         direction="column"
         justify="center"

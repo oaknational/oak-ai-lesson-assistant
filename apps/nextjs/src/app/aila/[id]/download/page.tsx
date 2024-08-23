@@ -47,5 +47,5 @@ export default async function DownloadPage({
 
   const featureFlag = await serverSideFeatureFlag("lesson-planning-assistant");
 
-  return <DownloadView featureFlag={featureFlag} />;
+  return <DownloadView chat={chat} featureFlag={featureFlag} />;
 }

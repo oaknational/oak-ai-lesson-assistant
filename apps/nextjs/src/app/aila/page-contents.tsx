@@ -33,13 +33,12 @@ const ChatPageContents = ({
         <ChatProvider
           key={`chat-${id}`}
           id={id}
-          isShared={isShared}
           initialMessages={initialMessages}
           initialLessonPlan={initialLessonPlan}
           initialModerations={initialModerations}
           startingMessage={startingMessage}
         >
-          <Chat featureFlag={featureFlag} />
+          <Chat featureFlag={featureFlag} isShared={isShared} />
         </ChatProvider>
       </LessonPlanTrackingProvider>
     </Layout>

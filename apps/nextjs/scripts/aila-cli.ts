@@ -11,6 +11,9 @@ const cliPlugin: AilaPlugin = {
   },
 };
 
-const aila = new Aila({ chat: { id: "my chat id" }, plugins: [cliPlugin] });
+const aila = new Aila({
+  chat: { id: "my chat id", userId: undefined },
+  plugins: [cliPlugin],
+});
 console.log("Hello from Next.js CLI!");
 console.log(aila.chatId);

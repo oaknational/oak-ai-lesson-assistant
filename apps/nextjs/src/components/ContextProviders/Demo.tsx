@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo } from "react";
 
-import { useUser } from "#clerk/nextjs";
+import { useClerkDemoMetadata } from "hooks/useClerkDemoMetadata";
 
 import { trpc } from "@/utils/trpc";
 
@@ -29,31 +29,15 @@ export type DemoContextProps =
 
 const DemoContext = createContext<DemoContextProps | null>(null);
 
-function useIsDemoClerkUser(): boolean {
-  const user = useUser();
-
-  if (process.env.NEXT_PUBLIC_DEMO_ACCOUNTS_ENABLED !== "true") {
-    return false;
-  }
-
-  if (!user.isSignedIn) {
-    return false;
-  }
-
-  if (!("isDemoUser" in user.user.publicMetadata)) {
-    console.warn("User metadata is missing isDemoUser field");
-    return true;
-  }
-  return Boolean(user.user.publicMetadata.isDemoUser);
-}
-
 export type DemoProviderProps = Readonly<{ children: React.ReactNode }>;
 
 export function DemoProvider({ children }: Readonly<DemoProviderProps>) {
-  const isDemoUser = useIsDemoClerkUser();
+  const clerkMetadata = useClerkDemoMetadata();
+  const isDemoUser = !clerkMetadata.isSet || clerkMetadata.userType === "Demo";
+
   const remainingAppSessions = trpc.chat.appSessions.remainingLimit.useQuery(
     undefined,
-    { enabled: isDemoUser },
+    { enabled: clerkMetadata.isSet && isDemoUser },
   );
 
   const isSharingEnabled =
@@ -63,7 +47,7 @@ export function DemoProvider({ children }: Readonly<DemoProviderProps>) {
     ? remainingAppSessions.data.remaining
     : undefined;
 
-  const value = useMemo(
+  const value: DemoContextProps = useMemo(
     () =>
       isDemoUser
         ? {

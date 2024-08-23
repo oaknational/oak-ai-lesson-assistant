@@ -33,18 +33,7 @@ export function ChatHistory() {
           New Lesson
         </Link>
       </div>
-      <React.Suspense
-        fallback={
-          <div className="flex flex-1 flex-col space-y-10 overflow-auto px-10">
-            {Array.from({ length: 10 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-14 w-full shrink-0 animate-pulse rounded-md bg-black bg-opacity-25"
-              />
-            ))}
-          </div>
-        }
-      >
+      <React.Suspense>
         <SidebarList />
       </React.Suspense>
     </div>

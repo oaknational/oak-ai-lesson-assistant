@@ -1,3 +1,4 @@
+import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { Box } from "@radix-ui/themes";
 import Link from "next/link";
 
@@ -5,7 +6,6 @@ import { getLessonTrackingProps } from "@/lib/analytics/helpers";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { ResourceFileTypeValueType } from "@/lib/avo/Avo";
 
-import { useLessonChat } from "./ContextProviders/ChatProvider";
 import {
   ExportsType,
   getExportsConfig,
@@ -18,6 +18,7 @@ import SlidesIcon from "./SVGParts/SlidesIcon";
 
 export const DownloadButton = ({
   onClick,
+  lesson,
   title,
   subTitle,
   downloadAvailable,
@@ -27,6 +28,7 @@ export const DownloadButton = ({
   "data-testid": dataTestId,
 }: {
   onClick: () => void;
+  lesson: LooseLessonPlan;
   title: string;
   subTitle: string;
   downloadAvailable: boolean;
@@ -35,7 +37,6 @@ export const DownloadButton = ({
   exportsType: ExportsType;
   "data-testid"?: string;
 }) => {
-  const { lessonPlan: lesson } = useLessonChat();
   const lessonTitle = lesson.title;
   const link = data && "link" in data ? data.link : "";
   const hasError = data && "message" in data;

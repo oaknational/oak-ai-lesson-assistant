@@ -1,5 +1,7 @@
+import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Box, Flex } from "@radix-ui/themes";
+import { Message } from "ai";
 
 import { useDialog } from "../AppComponents/DialogContext";
 import { Icon } from "../Icon";
@@ -15,11 +17,19 @@ import {
 } from "./dialogStyles";
 
 const DialogContents = ({
+  chatId,
+  lesson,
   children,
+  messages,
   submit,
+  isShared,
 }: {
+  chatId: string | undefined;
+  lesson: LooseLessonPlan;
   children?: React.ReactNode;
+  messages?: Message[];
   submit?: () => void;
+  isShared?: boolean | undefined;
 }) => {
   const { dialogWindow, setDialogWindow } = useDialog();
   const closeDialog = () => setDialogWindow("");
@@ -39,8 +49,13 @@ const DialogContents = ({
               </button>
             </Flex>
             {children}
-            {dialogWindow === "share-chat" && (
-              <ShareChatDialog setOpenExportDialog={setDialogWindow} />
+            {dialogWindow === "share-chat" && chatId && (
+              <ShareChatDialog
+                lesson={lesson}
+                chatId={chatId}
+                setOpenExportDialog={setDialogWindow}
+                isShared={isShared}
+              />
             )}
             {dialogWindow === "demo-share-locked" && (
               <DemoShareLockedDialog closeDialog={closeDialog} />
@@ -49,7 +64,11 @@ const DialogContents = ({
               <ChatActions closeDialog={closeDialog} />
             )}
             {dialogWindow === "report-content" && (
-              <ReportContentDialog closeDialog={closeDialog} />
+              <ReportContentDialog
+                chatId={chatId}
+                closeDialog={closeDialog}
+                messages={messages}
+              />
             )}
             {dialogWindow === "demo-interstitial" && (
               <DemoInterstitialDialog

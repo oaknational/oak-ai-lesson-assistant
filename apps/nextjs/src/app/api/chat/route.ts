@@ -3,7 +3,7 @@ import {
   AilaAuthenticationError,
   AilaThreatDetectionError,
 } from "@oakai/aila";
-import type { AilaPublicChatOptions, Message } from "@oakai/aila";
+import type { AilaOptions, AilaPublicChatOptions, Message } from "@oakai/aila";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { handleHeliconeError } from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
 import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
@@ -49,18 +49,17 @@ async function postHandler(req: NextRequest) {
   } = json;
 
   const userLookup = await fetchAndCheckUser(id);
+
   if ("failureResponse" in userLookup) {
     return userLookup.failureResponse;
   }
   const userId = userLookup.userId;
 
-  const options = {
+  const options: AilaOptions = {
     useRag: chatOptions.useRag ?? true,
     temperature: chatOptions.temperature ?? 0.7,
     numberOfLessonPlansInRag: chatOptions.numberOfLessonPlansInRag ?? 5,
-    useRateLimiting: true, // Do not allow the user to specify rate limiting
     usePersistence: true, // Do not allow the user to specify persistence
-    useMetrics: true, // Do not allow the user to specify metrics
     useModeration: true,
   };
 
@@ -77,7 +76,6 @@ async function postHandler(req: NextRequest) {
     prisma,
     plugins: [webActionsPlugin],
   });
-
   try {
     const abortController = handleConnectionAborted(req);
     const stream = await aila.generate({ abortController });

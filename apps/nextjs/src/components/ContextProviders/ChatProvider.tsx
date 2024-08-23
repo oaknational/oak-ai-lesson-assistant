@@ -37,7 +37,6 @@ import {
 
 export type ChatContextProps = {
   id: string;
-  isShared: boolean | undefined;
   initialModerations: Moderation[];
   toxicModeration: PersistedModerationBase | null;
   lastModeration: PersistedModerationBase | null;
@@ -64,7 +63,6 @@ export type ChatProviderProps = {
   initialMessages?: Message[];
   initialLessonPlan?: LooseLessonPlan;
   id: string;
-  isShared: boolean | undefined;
   initialModerations: Moderation[];
   children: React.ReactNode;
 };
@@ -107,7 +105,6 @@ function getModerationFromMessage(message?: { content: string }) {
 
 export function ChatProvider({
   id,
-  isShared,
   initialLessonPlan,
   initialModerations,
   initialMessages,
@@ -333,10 +330,9 @@ export function ChatProvider({
   const value: ChatContextProps = useMemo(
     () => ({
       id,
-      isShared,
       initialModerations,
       toxicModeration,
-      lessonPlan,
+      lessonPlan: tempLessonPlan ?? lessonPlan ?? {},
       setLessonPlan,
       hasFinished,
       hasAppendedInitialMessage,
@@ -354,10 +350,10 @@ export function ChatProvider({
     }),
     [
       id,
-      isShared,
       initialModerations,
       toxicModeration,
       lessonPlan,
+      tempLessonPlan,
       setLessonPlan,
       hasFinished,
       hasAppendedInitialMessage,

@@ -231,7 +231,7 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   }, [track, trackEvent, identify, reset, page, posthogDistinctId]);
 
   const onClerkIdentify = useCallback(
-    (user: { userId: string; email: string; isDemoUser: boolean }) => {
+    (user: { userId: string; email: string; isDemoUser?: boolean }) => {
       identify(user.userId, { email: user.email, isDemoUser: user.isDemoUser });
     },
     [identify],

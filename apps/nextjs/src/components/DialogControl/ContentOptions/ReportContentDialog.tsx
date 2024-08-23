@@ -1,19 +1,23 @@
 import { useState } from "react";
 
 import { Flex } from "@radix-ui/themes";
+import { Message } from "ai";
 import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey";
 
 import ChatButton from "@/components/AppComponents/Chat/ui/chat-button";
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
 
 type ShareChatProps = {
+  chatId: string | undefined;
   closeDialog: () => void;
+  messages?: Message[];
 };
 
-const ReportContentDialog = ({ closeDialog }: Readonly<ShareChatProps>) => {
-  const chat = useLessonChat();
-  const { id, messages } = chat;
+const ReportContentDialog = ({
+  chatId,
+  messages,
+  closeDialog,
+}: Readonly<ShareChatProps>) => {
   const [userHasSubmitted, setUserHasSubmitted] = useState(false);
 
   const [userInput, setUserInput] = useState("");
@@ -41,7 +45,7 @@ const ReportContentDialog = ({ closeDialog }: Readonly<ShareChatProps>) => {
         ? messages[messages.length - 1]?.id
         : "No chat history",
       // Chat Id
-      $survey_response_2: id,
+      $survey_response_2: chatId,
       // Comment
       $survey_response_3: userInput,
     });

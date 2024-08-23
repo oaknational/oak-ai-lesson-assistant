@@ -1,8 +1,7 @@
 import { useRef, useEffect } from "react";
 
 import { useUser, useAuth } from "#clerk/nextjs";
-
-import { useDemoUser } from "@/components/ContextProviders/Demo";
+import { useClerkDemoMetadata } from "hooks/useClerkDemoMetadata";
 
 type UseClerkIdentifyProps = {
   /**
@@ -12,7 +11,7 @@ type UseClerkIdentifyProps = {
   onIdentify: (user: {
     userId: string;
     email: string;
-    isDemoUser: boolean;
+    isDemoUser?: boolean;
   }) => void;
   /**
    * Callback to reset the user when the user is logged out.
@@ -30,7 +29,7 @@ export const useClerkIdentify = ({
 }: UseClerkIdentifyProps) => {
   const user = useUser();
   const auth = useAuth();
-  const demo = useDemoUser();
+  const clerkDemoMetadata = useClerkDemoMetadata();
   const hasIdentified = useRef(false);
 
   const userId = auth.userId;
@@ -44,12 +43,22 @@ export const useClerkIdentify = ({
       onIdentify({
         userId,
         email,
-        isDemoUser: demo.isDemoUser,
+        ...(clerkDemoMetadata.isSet && {
+          isDemoUser: clerkDemoMetadata.userType === "Demo",
+        }),
       });
       hasIdentified.current = true;
     } else if (hasLoggedOut) {
       onLogout();
       hasIdentified.current = false;
     }
-  }, [hasUser, hasLoggedOut, userId, email, onIdentify, onLogout, demo]);
+  }, [
+    hasUser,
+    hasLoggedOut,
+    userId,
+    email,
+    onIdentify,
+    onLogout,
+    clerkDemoMetadata,
+  ]);
 };

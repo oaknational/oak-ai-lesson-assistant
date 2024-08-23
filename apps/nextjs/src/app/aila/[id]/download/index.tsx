@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { Box, Flex, Grid } from "@radix-ui/themes";
 import { lessonSections } from "ai-apps/lesson-planner/lessonSection";
 import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey";
@@ -10,7 +11,6 @@ import { setLessonPlanProgress } from "@/components/AppComponents/Chat/Chat/util
 import { useDialog } from "@/components/AppComponents/DialogContext";
 import Layout from "@/components/AppComponents/Layout";
 import Button from "@/components/Button";
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import { DownloadButton } from "@/components/DownloadButton";
@@ -21,25 +21,27 @@ import { useExportQuizDoc } from "@/components/ExportsDialogs/useExportQuizDoc";
 import { useExportWorksheetSlides } from "@/components/ExportsDialogs/useExportWorksheetSlides";
 import { Icon } from "@/components/Icon";
 
-export interface DownloadPageProps {
+interface DownloadPageProps {
+  chat: AilaPersistedChat;
   featureFlag: boolean;
 }
 export default function DownloadPage({
+  chat,
   featureFlag,
 }: Readonly<DownloadPageProps>) {
   return (
-    <Layout featureFlag={featureFlag}>
-      <DownloadPageContents />
+    <Layout featureFlag>
+      <DownloadPageContents chat={chat} featureFlag={featureFlag} />
     </Layout>
   );
 }
 
-export function DownloadPageContents() {
+export function DownloadPageContents({ chat }: Readonly<DownloadPageProps>) {
   const { setDialogWindow } = useDialog();
-  const { id, messages, lessonPlan } = useLessonChat();
 
   const [undefinedLessonPlanSections, setUndefinedLessonPlanSections] =
     useState<string[]>([]);
+  const lessonPlan = chat.lessonPlan;
   useEffect(() => {
     setLessonPlanProgress({
       lessonPlan: lessonPlan,
@@ -50,8 +52,8 @@ export function DownloadPageContents() {
   const exportProps = {
     onStart: () => null,
     lesson: lessonPlan,
-    chatId: id,
-    messageId: messages.length,
+    chatId: chat.id,
+    messageId: chat.messages.length,
     active: true,
   };
 
@@ -89,13 +91,17 @@ export function DownloadPageContents() {
 
   return (
     <DialogRoot>
-      <DialogContents />
+      <DialogContents
+        chatId={chat.id}
+        lesson={lessonPlan}
+        isShared={chat.isShared}
+      />
       <div className="mx-auto mb-26 mt-30 w-full max-w-[1280px] px-9">
         <Box width="100%">
           <Box className="w-full">
             <Button
               variant="text-link"
-              href={`/aila/${id}`}
+              href={`/aila/${chat.id}`}
               icon="chevron-left"
               iconPosition="leading"
               size="sm"
@@ -130,6 +136,7 @@ export function DownloadPageContents() {
                   data={lessonPlanExport.data}
                   exportsType="lessonPlanDoc"
                   data-testid="chat-download-lesson-plan"
+                  lesson={lessonPlan}
                 />
                 <DownloadButton
                   onClick={() => starterQuizExport.start()}
@@ -139,6 +146,7 @@ export function DownloadPageContents() {
                   downloadLoading={starterQuizExport.status === "loading"}
                   data={starterQuizExport.data}
                   exportsType="starterQuiz"
+                  lesson={lessonPlan}
                 />
                 <DownloadButton
                   onClick={() => lessonSlidesExport.start()}
@@ -149,6 +157,7 @@ export function DownloadPageContents() {
                   downloadLoading={lessonSlidesExport.status === "loading"}
                   data={lessonSlidesExport.data}
                   exportsType="lessonSlides"
+                  lesson={lessonPlan}
                 />
                 <DownloadButton
                   onClick={() => worksheetExport.start()}
@@ -157,6 +166,7 @@ export function DownloadPageContents() {
                   downloadAvailable={!!worksheetExport.readyToExport}
                   downloadLoading={worksheetExport.status === "loading"}
                   data={worksheetExport.data}
+                  lesson={lessonPlan}
                   exportsType="worksheet"
                 />
                 <DownloadButton
@@ -167,6 +177,7 @@ export function DownloadPageContents() {
                   downloadLoading={exitQuizExport.status === "loading"}
                   data={exitQuizExport.data}
                   exportsType="exitQuiz"
+                  lesson={lessonPlan}
                 />
                 {lessonPlan.additionalMaterials &&
                   lessonPlan.additionalMaterials !== "None" && (
@@ -182,6 +193,7 @@ export function DownloadPageContents() {
                       }
                       data={additionalMaterialsExport.data}
                       exportsType="additionalMaterials"
+                      lesson={lessonPlan}
                     />
                   )}
               </Flex>

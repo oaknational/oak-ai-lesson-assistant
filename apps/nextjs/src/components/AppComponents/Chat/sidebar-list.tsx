@@ -12,18 +12,9 @@ export async function SidebarList() {
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <div className="flex-1 overflow-auto">
-        {!chats?.length ? (
-          <div className="p-18 text-center">
-            <p className="text-sm text-muted-foreground">
-              {chatsRequest.isLoading ? "Loading" : "No history"}
-            </p>
-          </div>
-        ) : null}
-        {chats?.length ? (
-          <div className="space-y-7 px-7">
-            <SidebarItems chats={chats} />
-          </div>
-        ) : null}
+        <div className="space-y-7 px-7">
+          {chats?.length ? <SidebarItems chats={chats} /> : null}
+        </div>
       </div>
       <div className="flex items-center justify-end p-10">
         <ClearHistory isEnabled={chats ? chats?.length > 0 : false} />
