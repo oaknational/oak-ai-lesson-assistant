@@ -1,0 +1,69 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "pipeline": {
+    "db-generate": {
+      "inputs": ["prisma/schema.prisma"],
+      "cache": false
+    },
+    "db-push": {
+      "inputs": ["prisma/schema.prisma"],
+      "cache": false
+    },
+    "db-seed": {
+      "inputs": ["prisma/schema.prisma"],
+      "cache": false
+    },
+    "dev": {
+      "dependsOn": ["^db-generate"],
+      "cache": false
+    },
+    "build": {
+      "cache": true,
+      "dependsOn": ["^build", "^db-generate"],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "apps/nextjs/.next/**",
+        "apps/openai/.next/**",
+        "!apps/nextjs/.next/cache/**",
+        "!apps/openai/.next/cache/**"
+      ]
+    },
+    "lint": {
+      "outputs": []
+    },
+    "clean": {
+      "cache": false
+    },
+    "//#clean": {
+      "cache": false
+    },
+    "prompts": {
+      "cache": false
+    },
+    "type-check": {
+      "dependsOn": ["^db-generate"],
+      "cache": false
+    },
+    "test": {
+      "cache": false,
+      "outputs": ["packages/aila/**/*.spec.js", "packages/aila/**/*.test.js"]
+    },
+    "test-e2e": {
+      "cache": false
+    },
+    "test-e2e-ui": {
+      "cache": false
+    },
+    "storybook": {
+      "cache": false
+    }
+  },
+  "globalEnv": [
+    "DATABASE_URL",
+    "DIRECT_DATABASE_URL",
+    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+    "CLERK_SECRET_KEY",
+    "PRISMA_ACCELERATE_DATABASE_URL"
+  ]
+}

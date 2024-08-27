@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "answers_and_distractors_for_judgement" RENAME CONSTRAINT "answers_and_distractors_for_judgment_pkey" TO "answers_and_distractors_for_judgement_pkey";
+
+-- RenameForeignKey
+ALTER TABLE "answers_and_distractors_for_judgement" RENAME CONSTRAINT "answers_and_distractors_for_judgment_prompt_id_fkey" TO "answers_and_distractors_for_judgement_prompt_id_fkey";
+
+-- RenameForeignKey
+ALTER TABLE "answers_and_distractors_for_judgement" RENAME CONSTRAINT "answers_and_distractors_for_judgment_quiz_question_id_fkey" TO "answers_and_distractors_for_judgement_quiz_question_id_fkey";

@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "index.ts",
+    "*.ts",
+    "tests/**/*.ts",
+    "../core/src/utils/subjects/index.ts"
+  ],
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "types": ["jest"],
+    "typeRoots": ["./../../node_modules/@types", "./src/types"],
+    "paths": {
+      "@/lib/*": ["./src/lib/*"],
+      "@/utils/*": ["./src/utils/*"]
+    }
+  }
+}

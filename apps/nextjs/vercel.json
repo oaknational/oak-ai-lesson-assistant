@@ -1,0 +1,12 @@
+{
+  "functions": {
+    "src/app/api/**/*": {
+      "maxDuration": 300
+    }
+  },
+  "git": {
+    "deploymentEnabled": {
+      "release": false
+    }
+  }
+}

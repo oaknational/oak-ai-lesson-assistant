@@ -1,0 +1,90 @@
+// {
+//   "extends": "../../tsconfig.json",
+//   "exclude": ["node_modules"],
+//   "include": [
+//     "next-env.d.ts",
+//     "**/*.ts",
+//     "**/*.tsx",
+//     "**/*.cjs",
+//     "**/*.mjs",
+//     ".next/types/**/*.ts"
+//   ],
+//   "compilerOptions": {
+//     "baseUrl": "./src",
+//     "allowJs": true,
+//     "skipLibCheck": true,
+//     "strict": true,
+//     "forceConsistentCasingInFileNames": true,
+//     "noEmit": true,
+//     "incremental": true,
+//     "esModuleInterop": true,
+//     "module": "esnext",
+//     "moduleResolution": "node",
+//     "resolveJsonModule": true,
+//     "isolatedModules": true,
+//     "noImplicitAny": false,
+//     "jsx": "preserve",
+//     "paths": {
+//       "@/components/*": ["components/*"],
+//       "@/app/*": ["app/*"],
+//       "@/lib/*": ["lib/*"],
+//       "@/utils/*": ["utils/*"],
+//       "@/assets/*": ["assets/*"]
+//     },
+//     "plugins": [
+//       {
+//         "name": "next"
+//       }
+//     ],
+//     "strictNullChecks": true
+//   }
+// }
+
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noImplicitAny": false,
+    "jsx": "preserve",
+    /* Path Aliases */
+    "baseUrl": "./src",
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/app/*": ["app/*"],
+      "@/lib/*": ["lib/*"],
+      "@/utils/*": ["utils/*"],
+      "@/assets/*": ["assets/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true,
+    "types": ["jest", "node", "@testing-library/jest-dom", "@storybook/react"]
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.cjs",
+    "**/*.mjs",
+    ".next/types/**/*.ts",
+    "../../packages/aila/src/utils/types/chatApi.ts",
+    "../../packages/core/src/analytics/posthogServerClient.ts",
+    "../../packages/aila/src/rateLimiting/rate-limiting.ts",
+    "jest.setup.js"
+  ],
+  "exclude": ["node_modules"],
+  "extends": "../../tsconfig.json"
+}

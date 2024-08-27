@@ -1,0 +1,4 @@
+# Redirects from what the browser requests to what we serve
+
+/security.txt https://www.thenational.academy/security.txt
+/.well-known/security.txt https://www.thenational.academy/security.txt
