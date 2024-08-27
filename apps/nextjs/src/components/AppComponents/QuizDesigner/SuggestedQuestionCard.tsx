@@ -1,0 +1,118 @@
+import { Dispatch, useState } from "react";
+
+import { Flex, Text } from "@radix-ui/themes";
+import {
+  QuizAppAction,
+  QuizAppActions,
+} from "ai-apps/quiz-designer/state/actions";
+import { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
+
+import { Icon } from "@/components/Icon";
+
+const SuggestedLessonCard = ({
+  answer: question,
+  dispatch,
+
+  potentialNewQuestions,
+  setPotentialNewQuestions,
+}: {
+  answer: PotentialQuestionsType[0];
+  dispatch: Dispatch<QuizAppAction>;
+
+  potentialNewQuestions: PotentialQuestionsType;
+  setPotentialNewQuestions: React.Dispatch<PotentialQuestionsType>;
+}) => {
+  const [showAnswers, setShowAnswers] = useState(false);
+  return (
+    <Flex
+      className="rounded border border-black border-opacity-10 p-10"
+      direction="column"
+      justify="between"
+    >
+      <Flex direction="row" justify="between" align="center" mb="3">
+        <Text className="text-sm">Question:</Text>
+        <button
+          onClick={() => {
+            removeQuestionFromArray(
+              question,
+              potentialNewQuestions,
+              setPotentialNewQuestions,
+            );
+          }}
+        >
+          <Icon icon="cross" size="sm" />
+        </button>
+      </Flex>
+      <Flex gap="2" direction="column">
+        <Text className="text-lg">{question.question}</Text>
+      </Flex>
+
+      <Flex direction="row" justify="between" mt="5">
+        <button onClick={() => setShowAnswers((i) => !i)}>
+          <Flex align="center" gap="1">
+            <span>Answers & distractors</span>
+            <Icon
+              icon={showAnswers ? "chevron-up" : "chevron-down"}
+              size="sm"
+            />
+          </Flex>
+        </button>
+        <button
+          onClick={() => {
+            dispatch({
+              type: QuizAppActions.AddPopulatedQuestion,
+              question: question,
+            });
+            removeQuestionFromArray(
+              question,
+              potentialNewQuestions,
+              setPotentialNewQuestions,
+            );
+          }}
+          className="font-bold"
+        >
+          Add to quiz
+        </button>
+      </Flex>
+      {showAnswers && (
+        <Flex className="w-full gap-12" direction="column" mt="5">
+          {question.answers.map((answer) => {
+            return (
+              <Flex key={answer} align="center" gap="2">
+                <Flex className="rounded-full bg-pupilsGreen p-6">
+                  <Icon icon="tick" size="sm" />
+                </Flex>
+                <p>{answer}</p>
+              </Flex>
+            );
+          })}
+          {question.distractors.map((distractor) => {
+            return (
+              <Flex key={distractor} align="center" gap="2">
+                <Flex className="rounded-full bg-warning p-6">
+                  <Icon icon="cross" size="sm" />
+                </Flex>
+                <p>{distractor}</p>
+              </Flex>
+            );
+          })}
+        </Flex>
+      )}
+    </Flex>
+  );
+};
+
+function removeQuestionFromArray(
+  question: PotentialQuestionsType[0],
+  potentialNewQuestions: PotentialQuestionsType,
+  setPotentialNewQuestions: React.Dispatch<PotentialQuestionsType>,
+) {
+  const newArr = [...potentialNewQuestions];
+  const index = newArr.indexOf(question);
+  if (index > -1) {
+    newArr.splice(index, 1);
+  }
+  setPotentialNewQuestions(newArr);
+}
+
+export default SuggestedLessonCard;

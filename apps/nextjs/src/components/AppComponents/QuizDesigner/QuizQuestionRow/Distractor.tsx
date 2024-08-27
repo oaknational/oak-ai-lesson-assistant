@@ -1,0 +1,226 @@
+import { Dispatch, useCallback, useState } from "react";
+
+import { GenerationPart, GenerationPartType } from "@oakai/core/src/types";
+import browserLogger from "@oakai/logger/browser";
+import { Flex } from "@radix-ui/themes";
+import {
+  QuizAppAction,
+  QuizAppActions,
+} from "ai-apps/quiz-designer/state/actions";
+import {
+  QuizAppDistractor,
+  QuizAppState,
+  QuizAppStateQuestion,
+} from "ai-apps/quiz-designer/state/types";
+import {
+  UseGenerationStatus,
+  isGenerationHookLoading,
+} from "hooks/useGeneration";
+import useGenerationCallbacks from "hooks/useGenerationCallbacks";
+import { z } from "zod";
+
+import { GenerationErrorBox } from "@/components/AppComponents/QuizDesigner/ErrorBox";
+import useAnalytics from "@/lib/analytics/useAnalytics";
+import { getAgesFromKeyStage } from "@/utils/getAgesFromKeyStage";
+import { trpc } from "@/utils/trpc";
+
+import ActionButtonsGroup from "../../common/SingleGeneration/ActionButtonsGroup";
+import GenerationInputAndText from "../../common/SingleGeneration/GenerationInputAndText";
+import GenerationWrapper from "../../common/SingleGeneration/GenerationWrapper";
+
+const Distractor = ({
+  distractor,
+  questionRow,
+  questionIdx,
+  distractorIdx,
+  dispatch,
+  state,
+}: Readonly<DistractorProps>) => {
+  const { trackEvent } = useAnalytics();
+
+  const [userIsEditing, setUserIsEditing] = useState(false);
+
+  const { requestGeneration, status, error } = useGenerationCallbacks(
+    "quiz-generator",
+    "regenerate-distractor-rag",
+    quizDistractorRegenerationResultSchema,
+    { timeout: 90000 },
+    {
+      onStart: ({ rateLimit }) => {
+        dispatch({
+          type: QuizAppActions.UpdateGenerationRateLimit,
+          rateLimit,
+        });
+      },
+      onSuccess: ({ data }) => {
+        dispatch({
+          type: QuizAppActions.RegeneratedDistractor,
+          questionIdx,
+          distractorIdx,
+          generationId: data.id,
+          distractor: data.response.regeneratedDistractor,
+        });
+      },
+    },
+  );
+  const recordUserTweak = trpc.generations.recordUserTweak.useMutation();
+
+  const requestRegenerateDistractorGeneration = useCallback(() => {
+    /**
+     * @TODO: This isn't handling multiple answers very well
+     */
+
+    const otherQuestions = state.questions
+      .filter((q) => q.question.value !== questionRow.question.value)
+      .map(
+        (q) =>
+          `* Question: "${q.question.value}" / Correct: ${q.answers
+            .map((a) => a.value)
+            .join(", ")} / Distractors: ${q.distractors
+            .map((d) => d.value)
+            .join(", ")}`,
+      )
+      .join("\n");
+
+    const extraContext = `${state.topic} : ${questionRow.question.value}. Other questions include: ${otherQuestions}`;
+
+    requestGeneration({
+      lastGenerationId: distractor.lastGenerationId,
+      sessionId: state.sessionId as string,
+      factQuestion: `${state.topic}: ${questionRow.question.value}`,
+      addKnowledge: extraContext,
+      addTranscript: extraContext,
+      promptInputs: {
+        question: questionRow.question.value,
+        otherQuestions,
+        subject: state.subject,
+        keyStage: state.keyStage,
+        ageRange: getAgesFromKeyStage(state.keyStage),
+        topic: state.topic,
+        numberOfCorrectAnswers: questionRow.numberOfAnswers,
+        numberOfDistractors: 4 - questionRow.numberOfAnswers,
+        distractorToRegenerate: distractor.value,
+        answers: questionRow.answers.map((answer) => answer.value),
+        distractors: questionRow.distractors.map(
+          (distractor) => distractor.value,
+        ),
+      },
+    });
+  }, [
+    requestGeneration,
+    distractor.lastGenerationId,
+    distractor.value,
+    state.sessionId,
+    state.subject,
+    state.keyStage,
+    state.topic,
+    state.questions,
+    questionRow.question.value,
+    questionRow.numberOfAnswers,
+    questionRow.answers,
+    questionRow.distractors,
+  ]);
+
+  const isLoading = isGenerationHookLoading(status);
+
+  const hasError = status === UseGenerationStatus.ERROR && error;
+
+  const tweakDistractor = useCallback(
+    async (distractorIdx: number, tweakedDistractor: string) => {
+      trackEvent("quiz_designer:tweak_distractor", {
+        previous_distractor: distractor.value,
+        new_distractor: tweakDistractor,
+      });
+
+      dispatch({
+        type: QuizAppActions.TweakedDistractor,
+        questionIdx: questionIdx,
+        distractorIdx: distractorIdx,
+        tweakedDistractor: tweakedDistractor,
+      });
+
+      try {
+        if (distractor.lastGenerationId) {
+          // @TODO: De-dupe this same logic that happens in the reducer
+          await recordUserTweak.mutateAsync({
+            sessionId: state.sessionId as string,
+            tweakedItem: {
+              type: GenerationPartType.UserTweaked,
+              value: tweakedDistractor,
+              originalValue:
+                distractor.type === GenerationPartType.UserTweaked
+                  ? distractor.originalValue
+                  : distractor.value,
+              lastGenerationId: distractor.lastGenerationId,
+            },
+          });
+        } else {
+          browserLogger.error(
+            "User attempted to tweak distractor with missing lastGenerationId",
+          );
+        }
+      } catch (err) {
+        browserLogger.error("Failed to log distractor tweak");
+      }
+    },
+    [
+      dispatch,
+      distractor.lastGenerationId,
+      // TODO This looks like a bug
+      // distractor?.originalValue,
+      distractor.type,
+      distractor.value,
+      questionIdx,
+      recordUserTweak,
+      state.sessionId,
+      trackEvent,
+    ],
+  );
+
+  return (
+    <GenerationWrapper
+      generatedItem={distractor}
+      sessionId={state.sessionId as string}
+    >
+      <Flex direction={{ initial: "column", sm: "row" }} gap="3">
+        <Flex direction="column" className="w-full">
+          <Flex direction="row" gap="2" py="1" justify="start">
+            <GenerationInputAndText
+              item={distractor}
+              userIsEditing={userIsEditing}
+              isLoading={isLoading}
+              index={distractorIdx}
+              tweak={tweakDistractor}
+              setUserIsEditing={setUserIsEditing}
+            >
+              {distractor.value}
+            </GenerationInputAndText>
+          </Flex>
+          <ActionButtonsGroup
+            userIsEditing={userIsEditing}
+            toggleEditState={() => setUserIsEditing(!userIsEditing)}
+            isLoading={isLoading}
+            requestRegenerate={requestRegenerateDistractorGeneration}
+          />
+
+          {hasError && error && <GenerationErrorBox error={error} />}
+        </Flex>
+      </Flex>
+    </GenerationWrapper>
+  );
+};
+
+type DistractorProps = {
+  distractor: GenerationPart<QuizAppDistractor>;
+  questionRow: QuizAppStateQuestion;
+  questionIdx: number;
+  distractorIdx: number;
+  dispatch: Dispatch<QuizAppAction>;
+  lastGenerationId: string | null;
+  state: QuizAppState;
+};
+
+const quizDistractorRegenerationResultSchema = z.object({
+  regeneratedDistractor: z.string(),
+});
+export default Distractor;

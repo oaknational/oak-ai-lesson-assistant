@@ -1,0 +1,7 @@
+{
+  "extends": "../../tsconfig.json",
+  "ts-node": {
+    "files": true
+  },
+  "include": ["src/**/*.ts", "index.ts", "*.ts"]
+}

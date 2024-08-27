@@ -1,0 +1,46 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+# Oak National Academy - reporting security vulnerabilities to the Oak National team
+
+# Please report any security vulnerabilities to us via the contact method(s) below, only after reading our security disclosure policy.
+Contact: mailto:security@thenational.academy
+Contact: https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability
+Preferred-Languages: en
+
+# Encrypt your messages to Oak National Academy using the PGP key below
+Encryption: https://www.thenational.academy/.well-known/pgp-key.txt
+Encryption: https://keys.openpgp.org/vks/v1/by-fingerprint/E925058764BF1E055A95CFA7971F062051B60B7D
+
+# This security is annually reviewed
+Expires: 2024-07-31T20:59:00.000Z
+
+# Oak National Academy Security Disclosure Policy
+Policy: https://www.thenational.academy/legal/security-disclosure-policy/
+
+# Our security.txt is hosted at the following canonical locations
+Canonical: https://www.thenational.academy/.well-known/security.txt
+
+# Our security acknowledgments page
+Acknowledgments: https://www.thenational.academy/.well-known/security-credits.txt
+
+# We're continually recruiting at Oak National Academy, please visit the link below
+Hiring: https://jobs.thenational.academy
+
+# Please see https://securitytxt.org/ for details of the specification of this file
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE6SUFh2S/HgValc+nlx8GIFG2C30FAmSHDA0ACgkQlx8GIFG2
+C3342w/+K5DuDMWdMGlwfsrMRXZYfrShWpxsHf8IsRC1wd7ZQBdeotXuhWpRw6Rt
+KZYZxwYOutXe2alqM3R2aFveTaIg8gV/zFtfFXQGucr/ggNJ012uIhWlzU9wmMD5
+A0GwTyqMcUXhKNhdMZ5sURuIhqpwT+NE/UJyhfi7aAUATqzws1gZ0gk1ivTzW4dv
+f6hG7ZoKb45S8koEEN5tKRTVGFvjSJcpT59XeNN3Edl0GbjJf7JdgTeDc0DJ54Fc
+be5pI2Zoux0AXWGrYgbVfwFZlUpwRm6f7C+FwzO08dnVpCBlFUqnJEI88w8oczHy
+EocWWj+NLsdbKIoORuvNBLBobL2QqjUwuWGNdMDLey3tQe2Fg2WG9YqlnLUDT9e+
+Lmp1SBjCzFR/t2GfnMpqOecENFJ8fuG64SX4stsSx0PeAcs/Nsv35YL8Xw0iAg/T
+StjzqXgwDLnZFzAtZfdrBPl1Iz04Ozr+146ep0ZZygBFvgiP9rc3yTLzWHDHZQDI
+BUZfOwXUdmzGLX0Zbh2oQ2uNTvCoD4xM3lvF45yVIvzaXP86OqWIO31+FbIhX7aZ
+sWjLghb9wpwVmDB4GVaqByPDJJuRDuyHrGtf/NZ10BcqKgwapWPYxAh6mKpVna/D
+JmCcRRK9J3/IbtPIoAvWgkgQIdQ0Q32HvEl7l62E3gGCLTmc3Bs=
+=Ac16
+-----END PGP SIGNATURE-----

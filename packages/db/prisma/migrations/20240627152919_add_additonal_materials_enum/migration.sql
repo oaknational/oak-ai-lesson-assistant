@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "LessonExportType" ADD VALUE 'ADDITIONAL_MATERIALS_DOCS';

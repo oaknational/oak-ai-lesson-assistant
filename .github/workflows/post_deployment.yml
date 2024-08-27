@@ -1,0 +1,44 @@
+name: Deployment Actions
+
+on: deployment_status
+
+jobs:
+  dump_github_event:
+    uses: ./.github/workflows/dump_event.yml
+
+  # Do a find-and-replace to add a link to the deployment to the PR body
+  update_pr_description:
+    # Only want to run on success, otherwise it might be "pending", or "failure".
+    # Filter out storybook deployments and temporarily Netlify deployments
+    if: ${{ (github.event.deployment.ref != 'main') && (github.event.deployment_status.state == 'success') && !startsWith(github.event.deployment_status.environment, 'storybook')}}
+    name: Add deploy URL to PR description
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install deps (with cache)
+        run: pnpm install
+
+      - uses: ./.github/actions/ref_from_sha
+        name: Get PR Ref from SHA
+        id: ref_from_sha
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: mcky/find-and-replace-pull-request-body@v1.1.6-mcky
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          prNumber: ${{ steps.ref_from_sha.outputs.pr_number }}
+          find: "{deployment_url}"
+          replace: ${{ github.event.deployment_status.environment_url }}

@@ -1,0 +1,69 @@
+{
+  "name": "oak-ai-web-app",
+  "private": true,
+  "scripts": {
+    "FIXME:lint": "turbo lint && manypkg check",
+    "build": "turbo build",
+    "build:dev": "pnpm with-env turbo build:dev",
+    "check": "turbo type-check",
+    "clean": "rm -rf node_modules",
+    "clean:workspaces": "turbo clean",
+    "db-export:dev": "doppler run --config dev -- bash scripts/db_export.sh",
+    "db-generate": "turbo db-generate",
+    "db-migrate": "turbo db-migrate",
+    "db-publish:stg": "doppler run --config stg -- bash scripts/db_publish.sh",
+    "db-push": "turbo db-push",
+    "db-push-force": "turbo db-push-force",
+    "db-seed": "turbo db-seed",
+    "dev": "FORCE_COLOR=1 turbo dev --parallel --filter=!db",
+    "doppler:pull:dev": "doppler secrets download --no-file --format env > .env",
+    "doppler:pull:stg": "doppler secrets download --config stg --no-file --format env > .env",
+    "doppler:run:stg": "doppler run -c stg --silent",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "turbo lint",
+    "prompts": "turbo prompts --filter=core",
+    "sort-package-json": "sort-package-json \"package.json\" \"packages/*/package.json\" \"apps/*/package.json\"",
+    "type-check": "turbo type-check",
+    "node-version": "node -v",
+    "with-env": "dotenv -e ../../.env --",
+    "test": "turbo test --",
+    "test-e2e": "turbo test-e2e --",
+    "test-e2e-ui": "turbo test-e2e-ui --",
+    "storybook": "turbo storybook"
+  },
+  "prettier": "@oakai/prettier-config",
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0",
+    "@manypkg/cli": "^0.21.1",
+    "@next/env": "14.2.5",
+    "@oakai/prettier-config": "*",
+    "@prisma/client": "^5.13.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@types/jest": "^29.5.12",
+    "autoprefixer": "^10.4.16",
+    "eslint-config-custom": "0.0.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "next": "14.2.5",
+    "postcss": "^8.4.32",
+    "prettier": "^3.1.1",
+    "semantic-release": "^21.1.1",
+    "sort-package-json": "^2.6.0",
+    "tailwindcss": "^3.3.7",
+    "turbo": "^1.11.2",
+    "typescript": "5.3.3"
+  },
+  "packageManager": "pnpm@8.6.12",
+  "engines": {
+    "node": ">=20.9.0",
+    "pnpm": ">=8"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@clerk/nextjs@5.1.0": "patches/@clerk__nextjs@5.1.0.patch"
+    }
+  }
+}

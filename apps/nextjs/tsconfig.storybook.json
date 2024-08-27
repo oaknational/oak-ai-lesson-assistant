@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/app/*": ["app/*"],
+      "@/lib/*": ["lib/*"],
+      "@/utils/*": ["utils/*"],
+      "@/assets/*": ["assets/*"],
+      "#next/*": ["mocks/next/*"],
+      "#oakai/*": ["mocks/oakai/*"],
+      "#clerk/*": ["mocks/clerk/*"]
+    }
+  }
+}

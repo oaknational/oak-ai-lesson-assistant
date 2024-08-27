@@ -1,0 +1,1 @@
+ALTER TABLE "generations" ALTER COLUMN "status" SET DEFAULT 'REQUESTED';
