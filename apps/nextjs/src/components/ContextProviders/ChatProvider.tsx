@@ -10,13 +10,14 @@ import React, {
 import { toast } from "react-hot-toast";
 
 import { usePathname, useRouter } from "#next/navigation";
+import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { Moderation } from "@oakai/db";
 import * as Sentry from "@sentry/nextjs";
 import { Message } from "ai";
-import { ChatRequestOptions, CreateMessage, nanoid } from "ai";
+import { ChatRequestOptions, CreateMessage } from "ai";
 import { useChat } from "ai/react";
 import { deepClone } from "fast-json-patch";
 import { useTemporaryLessonPlanWithStreamingEdits } from "hooks/useTemporaryLessonPlanWithStreamingEdits";
@@ -125,8 +126,7 @@ export function ChatProvider({
   const chatAreaRef = useRef<HTMLDivElement>(null);
   const [hasFinished, setHasFinished] = useState(true);
 
-  const [hasAppendedInitialMessage, setHasAppendedInitialMessage] =
-    useState(false);
+  const hasAppendedInitialMessage = useRef<boolean>(false);
 
   /******************* Functions *******************/
 
@@ -153,7 +153,9 @@ export function ChatProvider({
     setInput,
     setMessages,
   } = useChat({
+    sendExtraMessageFields: true,
     initialMessages,
+    generateId: generateMessageId,
     id,
     body: {
       id,
@@ -218,32 +220,6 @@ export function ChatProvider({
     },
   });
 
-  const messageIdsRef = useRef<Map<number, string>>(new Map());
-
-  const messagesWithIds = useMemo(() => {
-    return messages.map((msg, index) => {
-      if (!messageIdsRef.current.has(index)) {
-        messageIdsRef.current.set(index, nanoid(16));
-      }
-      return { ...msg, id: messageIdsRef.current.get(index)! };
-    });
-  }, [messages]);
-
-  const appendWithId = useCallback<ChatContextProps["append"]>(
-    (message, chatRequestOptions) => {
-      const newId = nanoid(16);
-      messageIdsRef.current.set(messages.length, newId);
-      return append(
-        {
-          ...message,
-          id: newId,
-        },
-        chatRequestOptions,
-      );
-    },
-    [append, messages.length],
-  );
-
   const { tempLessonPlan } = useTemporaryLessonPlanWithStreamingEdits({
     lessonPlan,
     messages,
@@ -266,22 +242,16 @@ export function ChatProvider({
   }, [initialLessonPlan, setLessonPlanWithLogging]);
 
   useEffect(() => {
-    if (startingMessage && !hasAppendedInitialMessage) {
+    if (startingMessage && !hasAppendedInitialMessage.current) {
+      console.log("Appending starting message", startingMessage);
+
       append({
         content: startingMessage,
         role: "user",
-        id: nanoid(16),
       });
-      setHasAppendedInitialMessage(true);
+      hasAppendedInitialMessage.current = true;
     }
-  }, [
-    startingMessage,
-    append,
-    router,
-    path,
-    hasAppendedInitialMessage,
-    setHasAppendedInitialMessage,
-  ]);
+  }, [startingMessage, append, router, path, hasAppendedInitialMessage]);
 
   // Clear the hash cache each completed message
   useEffect(() => {
@@ -337,8 +307,8 @@ export function ChatProvider({
       hasFinished,
       hasAppendedInitialMessage,
       chatAreaRef,
-      append: appendWithId,
-      messages: messagesWithIds,
+      append,
+      messages,
       ailaStreamingStatus,
       isLoading,
       isStreaming: !hasFinished,
@@ -358,8 +328,7 @@ export function ChatProvider({
       hasFinished,
       hasAppendedInitialMessage,
       chatAreaRef,
-      appendWithId,
-      messagesWithIds,
+      messages,
       ailaStreamingStatus,
       isLoading,
       lastModeration,
@@ -367,6 +336,7 @@ export function ChatProvider({
       stop,
       input,
       setInput,
+      append,
     ],
   );
 

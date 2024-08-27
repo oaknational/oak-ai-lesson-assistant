@@ -39,8 +39,7 @@ const ModifyButton = ({
 
   const { id } = chat;
 
-  const { mutateAsync, isLoading, error } =
-    trpc.chat.appSessions.modifySection.useMutation();
+  const { mutateAsync } = trpc.chat.appSessions.modifySection.useMutation();
 
   const recordUserModifySectionContent = useCallback(async () => {
     if (selectedRadio) {
@@ -58,7 +57,6 @@ const ModifyButton = ({
 
   async function modifySection(value: string) {
     await append({
-      id: "lessonPlan",
       content: `For the ${section}, ${value}`,
       role: "user",
     });

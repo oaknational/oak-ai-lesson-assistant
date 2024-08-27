@@ -118,7 +118,7 @@ const EmptyScreenAccordion = () => {
       </AccordionItem>
       <AccordionItem value="item-4">
         <div className="flex w-full items-center justify-between ">
-          <span className="flex w-full items-center gap-10 text-base font-bold">
+          <span className="flex w-full items-center gap-10 text-left text-base font-bold">
             <LessonIcon />1 worksheet
           </span>
         </div>
@@ -164,7 +164,7 @@ const AccordionTrigger = React.forwardRef<
     {...props}
     className="flex w-full items-center justify-between "
   >
-    <span className="flex w-full items-center gap-10 text-base font-bold">
+    <span className="flex w-full items-center gap-10 text-left text-base font-bold">
       {children}
     </span>
     <Icon icon="chevron-down" size="sm" />

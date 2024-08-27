@@ -2,7 +2,6 @@
 // @see https://github.com/mckaywrigley/chatbot-ui/blob/main/components/Chat/ChatMessage.tsx
 import { ReactNode, useState } from "react";
 
-import { getMessageId } from "@oakai/aila/src/helpers/chat/getMessageId";
 import {
   ActionDocument,
   BadDocument,
@@ -62,7 +61,7 @@ export function ChatMessage({
       | PersistedModerationBase
       | undefined;
 
-  const messageId = getMessageId(message);
+  const messageId = message.id;
 
   const matchingPersistedModeration: PersistedModerationBase | undefined =
     persistedModerations.find((m) => m.messageId === messageId);
