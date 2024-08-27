@@ -57,7 +57,12 @@ export const authRouter = router({
 
         await clerkClient.users.updateUserMetadata(userId, {
           publicMetadata: {
+            // legacy field for demo users. To remove after transition to labs namespace
             isDemoUser,
+            labs: {
+              isDemoUser,
+              isOnboarded: !!input.termsOfUse,
+            },
           },
           privateMetadata: {
             acceptedPrivacyPolicy: input.privacyPolicy,

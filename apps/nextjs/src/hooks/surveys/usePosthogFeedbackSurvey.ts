@@ -10,7 +10,8 @@ type UsePosthogFeedbackSurveyProps = {
     | "Chat Feedback"
     | "Moderation feedback"
     | "Chat Feedback With Stats"
-    | "Report Content";
+    | "Report Content"
+    | "End of Aila generation survey launch aug24";
 };
 export const usePosthogFeedbackSurvey = ({
   closeDialog,
@@ -19,9 +20,11 @@ export const usePosthogFeedbackSurvey = ({
   const [survey, setSurvey] = useState<Survey | undefined>(undefined);
 
   const posthog = usePostHog();
+
   useEffect(() => {
     posthog.getSurveys((surveys) => {
       const filteredSurveys = surveys.filter((survey) => survey.type === "api");
+
       const matchingSurvey = filteredSurveys.find(
         (survey) => survey.name === surveyName,
       );

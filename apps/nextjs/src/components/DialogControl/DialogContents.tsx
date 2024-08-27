@@ -5,9 +5,9 @@ import { Message } from "ai";
 
 import { useDialog } from "../AppComponents/DialogContext";
 import { Icon } from "../Icon";
-import ChatActions from "./ContentOptions/ChatActions";
 import DemoInterstitialDialog from "./ContentOptions/DemoInterstitialDialog";
 import DemoShareLockedDialog from "./ContentOptions/DemoShareLockedDialog";
+import EndOfLessonFeedback from "./ContentOptions/EndOfLessonFeedback";
 import ReportContentDialog from "./ContentOptions/ReportContentDialog";
 import ShareChatDialog from "./ContentOptions/ShareChatDialog";
 import {
@@ -61,7 +61,7 @@ const DialogContents = ({
               <DemoShareLockedDialog closeDialog={closeDialog} />
             )}
             {dialogWindow === "feedback" && (
-              <ChatActions closeDialog={closeDialog} />
+              <EndOfLessonFeedback closeDialog={closeDialog} />
             )}
             {dialogWindow === "report-content" && (
               <ReportContentDialog

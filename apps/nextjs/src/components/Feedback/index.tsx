@@ -13,22 +13,24 @@ const FeedBack = ({
   closeDialogWithPostHogDismiss,
 }: {
   survey: Survey;
-  submitSurvey: (usersResponse: {
-    $survey_response: string;
-    $survey_response_1: string;
-    $survey_response_2: string;
-  }) => void;
+  submitSurvey: (usersResponse: { [key: string]: string }) => void;
   closeDialogWithPostHogDismiss: () => void;
   onSubmit: () => void;
 }) => {
-  const numbersOfHoursSaved = [0, 1, 2, 3, 4, 5, 6];
-  const [usersResponse, setUsersResponse] = useState({
-    $survey_response: "",
-    $survey_response_1: "",
-    $survey_response_2: "",
-  });
+  const rating = [
+    { text: "Poor", number: 1 },
+    { text: "Needs Improvement", number: 2 },
+    { text: "Satisfactory", number: 3 },
+    { text: "Good", number: 4 },
+    { text: "Excellent", number: 5 },
+  ];
 
+  const [usersResponse, setUsersResponse] = useState<{ [key: string]: string }>(
+    {},
+  );
+  console.log("usersResponse", usersResponse);
   if (!survey?.id) return null;
+
   return (
     <Flex
       className="h-full w-full"
@@ -36,7 +38,7 @@ const FeedBack = ({
       justify="start"
       align="start"
     >
-      <p className="mb-20 text-3xl  font-bold">Before you continue...</p>
+      <p className="mb-20 text-3xl font-bold">Before you continue...</p>
 
       <form
         onSubmit={async (e) => {
@@ -44,32 +46,7 @@ const FeedBack = ({
         }}
         className="flex w-full flex-col gap-14"
       >
-        {survey?.questions.map((question) => {
-          if (question.type === "open") {
-            return (
-              <div
-                key={question.question}
-                className="flex flex-col items-start justify-start"
-              >
-                <label
-                  htmlFor={question.question}
-                  className="mb-16 text-center text-xl "
-                >
-                  {question.question}
-                </label>
-                <textarea
-                  className="h-32 w-full min-w-[300px] rounded border-2 border-black p-10"
-                  onChange={(e) => {
-                    setUsersResponse({
-                      ...usersResponse,
-                      $survey_response_1: e.target.value,
-                    });
-                  }}
-                  id={question.question}
-                />
-              </div>
-            );
-          }
+        {survey?.questions.map((question, i) => {
           if (question.type === "rating") {
             return (
               <div
@@ -78,32 +55,38 @@ const FeedBack = ({
               >
                 <label
                   htmlFor={question.question}
-                  className="mb-16 text-left text-xl "
+                  className="mb-16 text-left text-2xl font-bold"
                 >
                   {question.question}
                 </label>
                 <div className="flex w-full justify-between gap-6">
-                  {numbersOfHoursSaved.map((number) => {
+                  {rating.map((feedback) => {
                     return (
                       <button
-                        key={number}
-                        className={`flex flex-col items-center justify-center gap-6 `}
+                        key={feedback.text}
+                        className={`flex flex-col items-center justify-center gap-6`}
                         onClick={() => {
-                          setUsersResponse({
-                            ...usersResponse,
-                            $survey_response: number.toString(),
-                          });
+                          setUsersResponse((prevState) => ({
+                            ...prevState,
+                            [`$survey_response_${i}`]:
+                              feedback.number.toString(),
+                          }));
                         }}
                       >
                         <span
-                          className={`text-2xl font-bold ${usersResponse.$survey_response === number.toString() ? `text-[#287C34]` : `text-black`}`}
+                          className={`text-lg ${
+                            usersResponse[`$survey_response_${i}`] ===
+                            feedback.toString()
+                              ? `text-[#287C34]`
+                              : `text-black`
+                          }`}
                         >
-                          {number}
-                          {number === numbersOfHoursSaved.length - 1 ? "+" : ""}
+                          {feedback.text}
                         </span>
                         <span
                           className={
-                            usersResponse.$survey_response === number.toString()
+                            usersResponse[`$survey_response_${i}`] ===
+                            feedback.toString()
                               ? "opacity-100"
                               : "opacity-0"
                           }
@@ -118,7 +101,7 @@ const FeedBack = ({
             );
           }
         })}
-        <div className="flex justify-between ">
+        <div className="flex justify-between">
           <ChatButton
             variant="text-link"
             onClick={() => closeDialogWithPostHogDismiss()}
