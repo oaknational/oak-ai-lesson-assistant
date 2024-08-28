@@ -3,7 +3,6 @@ import { useState } from "react";
 import {
   OakBox,
   OakSmallSecondaryButton,
-  OakSpan,
   OakTooltip,
 } from "@oaknational/oak-components";
 import styled from "styled-components";

@@ -1,14 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 
-import {
-  OakBox,
-  OakRadioButton,
-  OakRadioGroup,
-  OakSpan,
-  OakTertiaryButton,
-} from "@oaknational/oak-components";
+import { OakBox, OakRadioGroup } from "@oaknational/oak-components";
 import { AilaUserModificationAction } from "@prisma/client";
-import styled from "styled-components";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { trpc } from "@/utils/trpc";

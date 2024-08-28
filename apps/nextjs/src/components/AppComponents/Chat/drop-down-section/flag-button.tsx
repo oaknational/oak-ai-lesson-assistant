@@ -1,15 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { AilaUserFlagType } from "@oakai/db";
-import {
-  OakBox,
-  OakP,
-  OakRadioButton,
-  OakRadioGroup,
-  OakSpan,
-  OakTertiaryButton,
-  OakTextInput,
-} from "@oaknational/oak-components";
+import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
 import styled from "styled-components";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
@@ -29,7 +21,7 @@ const flagOptions = [
 
 type FlagButtonOptions = (typeof flagOptions)[number];
 
-const FlagButton = ({}) => {
+const FlagButton = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRadio, setSelectedRadio] = useState<string | null>(null);
@@ -41,8 +33,7 @@ const FlagButton = ({}) => {
 
   const { id } = chat;
 
-  const { mutateAsync, isLoading, error } =
-    trpc.chat.appSessions.flagSection.useMutation();
+  const { mutateAsync } = trpc.chat.appSessions.flagSection.useMutation();
 
   const flagSectionContent = useCallback(async () => {
     if (selectedRadio) {

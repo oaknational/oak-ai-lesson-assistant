@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
-import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
 import styled from "styled-components";
 
 import { Icon } from "@/components/Icon";
@@ -121,15 +119,7 @@ const valuesAreEqual = (
   val1: Record<string, unknown>,
   val2: Record<string, unknown>,
 ): boolean => {
-  if (typeof val1 !== typeof val2) return false;
-  if (typeof val1 === "object" && val1 !== null && val2 !== null) {
-    if (Array.isArray(val1) && Array.isArray(val2)) {
-      return JSON.stringify(val1) === JSON.stringify(val2);
-    } else {
-      return JSON.stringify(val1) === JSON.stringify(val2);
-    }
-  }
-  return val1 === val2;
+  return JSON.stringify(val1) === JSON.stringify(val2);
 };
 
 export function humanizeCamelCaseString(str: string) {
