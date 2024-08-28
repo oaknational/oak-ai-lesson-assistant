@@ -14,7 +14,6 @@ import {
   AilaPersistenceFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
-import { fetchCategorisedInput } from "../utils/lessonPlan/fetchCategorisedInput";
 import { AilaAuthenticationError, AilaGenerationError } from "./AilaError";
 import { AilaFeatureFactory } from "./AilaFeatureFactory";
 import {
