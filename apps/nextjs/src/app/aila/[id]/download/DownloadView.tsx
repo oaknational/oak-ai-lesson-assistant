@@ -61,9 +61,7 @@ export function DownloadView({
               <div>
                 <h1 className="my-24 text-4xl font-bold">Download resources</h1>
                 <p className="mb-24 max-w-[600px]">
-                  Complete all 12 sections of your lesson to unlock resources
-                  below. If a section is missing, just ask Aila to help you
-                  complete your lesson.
+                  Choose the resources you would like to generate and download.
                 </p>
               </div>
               <Grid
@@ -76,8 +74,8 @@ export function DownloadView({
                 <Flex direction="column" className="gap-14">
                   <DownloadButton
                     onClick={() => lessonPlanExport.start()}
-                    title="Lesson plan"
-                    subTitle="All sections"
+                    title="Lesson"
+                    subTitle="Overview of the complete lesson"
                     downloadAvailable={!!lessonPlanExport.readyToExport}
                     downloadLoading={lessonPlanExport.status === "loading"}
                     data={lessonPlanExport.data}
@@ -88,7 +86,7 @@ export function DownloadView({
                   <DownloadButton
                     onClick={() => starterQuizExport.start()}
                     title="Starter quiz"
-                    subTitle="Questions and answers"
+                    subTitle="Questions and answers to assess prior knowledge"
                     downloadAvailable={!!starterQuizExport.readyToExport}
                     downloadLoading={starterQuizExport.status === "loading"}
                     data={starterQuizExport.data}
@@ -99,7 +97,7 @@ export function DownloadView({
                     onClick={() => lessonSlidesExport.start()}
                     data-testid="chat-download-slides-btn"
                     title="Slide deck"
-                    subTitle="Outcomes, key words, 1-3 learning cycles, summary"
+                    subTitle="Learning outcome, key words and learning cycles"
                     downloadAvailable={lessonSlidesExport.readyToExport}
                     downloadLoading={lessonSlidesExport.status === "loading"}
                     data={lessonSlidesExport.data}
@@ -109,7 +107,7 @@ export function DownloadView({
                   <DownloadButton
                     onClick={() => worksheetExport.start()}
                     title="Worksheet"
-                    subTitle="Interactive activities"
+                    subTitle="Practice tasks"
                     downloadAvailable={!!worksheetExport.readyToExport}
                     downloadLoading={worksheetExport.status === "loading"}
                     data={worksheetExport.data}
@@ -119,7 +117,7 @@ export function DownloadView({
                   <DownloadButton
                     onClick={() => exitQuizExport.start()}
                     title="Exit quiz"
-                    subTitle="Questions and answers"
+                    subTitle="Questions and answers to assess understanding"
                     downloadAvailable={!!exitQuizExport.readyToExport}
                     downloadLoading={exitQuizExport.status === "loading"}
                     data={exitQuizExport.data}
