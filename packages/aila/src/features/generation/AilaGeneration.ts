@@ -4,6 +4,7 @@ import {
   generateAilaPromptVersionVariantSlug,
 } from "@oakai/core/src/prompts/lesson-assistant/variants";
 import { prisma, Prompt } from "@oakai/db";
+import { kv } from "@vercel/kv";
 import { getEncoding } from "js-tiktoken";
 
 import { AilaServices } from "../../core";
@@ -160,14 +161,42 @@ export class AilaGeneration {
     );
 
     let prompt: Prompt | null = null;
-    prompt = await prisma.prompt.findFirst({
-      where: {
-        variant: variantSlug,
-        appId: appSlug,
-        slug: promptSlug,
-        current: true,
-      },
-    });
+
+    if (
+      process.env.NODE_ENV === "production" &&
+      process.env.VERCEL_GIT_COMMIT_SHA
+    ) {
+      const cacheKey = `prompt:${appSlug}:${promptSlug}:${variantSlug}:${process.env.VERCEL_GIT_COMMIT_SHA}`;
+      prompt = await kv.get(cacheKey);
+
+      if (!prompt) {
+        prompt = await prisma.prompt.findFirst({
+          where: {
+            variant: variantSlug,
+            appId: appSlug,
+            slug: promptSlug,
+            current: true,
+          },
+        });
+
+        if (prompt) {
+          // We can't use Prisma Accelerate to cache the result
+          // Because we need to ensure that each deployment
+          // we have fresh prompt data if the prompt has been updated
+          // Instead, use KV to cache the result for 5 minutes
+          await kv.set(cacheKey, prompt, { ex: 60 * 5 });
+        }
+      }
+    } else {
+      prompt = await prisma.prompt.findFirst({
+        where: {
+          variant: variantSlug,
+          appId: appSlug,
+          slug: promptSlug,
+          current: true,
+        },
+      });
+    }
     if (!prompt) {
       // If the prompt does not exist for this variant, we need to generate it
       const prompts = new PromptVariants(prisma, ailaGenerate, promptSlug);
@@ -177,6 +206,7 @@ export class AilaGeneration {
           variant: variantSlug,
           appId: appSlug,
           slug: promptSlug,
+          current: true,
         },
       });
     }
