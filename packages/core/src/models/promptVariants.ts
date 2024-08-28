@@ -130,7 +130,7 @@ export function promptHash({
   variant: string;
   template: string;
 }) {
-  return `${slug}-${variant}-${Md5.hashStr(template)}`;
+  return `${slug}-${variant}-${Md5.hashStr(template)}-${process.env.VERCEL_GIT_COMMIT_SHA ?? "dev"}`;
 }
 
 export function promptIdentifier({
