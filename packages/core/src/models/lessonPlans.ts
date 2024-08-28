@@ -67,7 +67,7 @@ export class LessonPlans {
   private _prisma: PrismaClientWithAccelerate;
   constructor(private readonly prisma: PrismaClientWithAccelerate) {
     this._prisma = prisma;
-    this._rag = new RAG(this._prisma);
+    this._rag = new RAG(this._prisma, { chatId: "none" });
   }
 
   async embedAllParts(): Promise<void> {
