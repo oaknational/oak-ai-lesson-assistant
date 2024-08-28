@@ -3,7 +3,6 @@ import {
   unsupportedSubjects,
   subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
-import { nanoid } from "nanoid";
 import invariant from "tiny-invariant";
 
 import { AilaChatService, AilaServices } from "../..";
@@ -12,6 +11,7 @@ import {
   AilaGeneration,
   AilaGenerationStatus,
 } from "../../features/generation";
+import { generateMessageId } from "../../helpers/chat/generateMessageId";
 import { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
@@ -123,7 +123,7 @@ export class AilaChat implements AilaChatService {
   public async systemMessage() {
     invariant(this._generation?.systemPrompt, "System prompt not initialised");
     return {
-      id: nanoid(16),
+      id: generateMessageId({ role: "system" }),
       content: this._generation?.systemPrompt,
       role: "system" as const,
     };
@@ -139,7 +139,7 @@ export class AilaChat implements AilaChatService {
 
     if (this._aila?.lesson.hasSetInitialState) {
       applicableMessages.push({
-        id: nanoid(16),
+        id: generateMessageId({ role: "user" }),
         role: "user",
         content:
           "Now that you have the title, key stage and subject, let's start planning the lesson. Could you tell me if there are Oak lessons I could base my lesson on, or if there are none available let's get going with the first step of the lesson plan creation process!",
@@ -256,7 +256,7 @@ export class AilaChat implements AilaChatService {
       return;
     }
     const assistantMessage: Message = {
-      id: nanoid(16),
+      id: generateMessageId({ role: "assistant" }),
       role: "assistant",
       content,
     };

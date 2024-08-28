@@ -6,11 +6,11 @@ import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userB
 import { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
 import * as Sentry from "@sentry/nextjs";
 import { TRPCError } from "@trpc/server";
-import { nanoid } from "nanoid";
 import { isTruthy } from "remeda";
 import { z } from "zod";
 
 import { getSessionModerations } from "../../../aila/src/features/moderation/getSessionModerations";
+import { generateChatId } from "../../../aila/src/helpers/chat/generateChatId";
 import {
   AilaPersistedChat,
   chatSchema,
@@ -135,11 +135,11 @@ export const appSessionsRouter = router({
 
       await checkMutationPermissions(userId);
 
-      const id = nanoid(16);
+      const chatId = generateChatId();
 
       const output: AilaPersistedChat = {
-        id,
-        path: `/aila/${id}`,
+        id: chatId,
+        path: `/aila/${chatId}`,
         title: "",
         topic: "",
         userId,
@@ -154,7 +154,7 @@ export const appSessionsRouter = router({
 
       const appSession = {
         data: {
-          id: nanoid(16),
+          id: chatId,
           appId,
           userId,
           output,

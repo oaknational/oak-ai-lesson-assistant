@@ -155,7 +155,7 @@ export function ChatProvider({
   } = useChat({
     sendExtraMessageFields: true,
     initialMessages,
-    generateId: generateMessageId,
+    generateId: () => generateMessageId({ role: "user" }),
     id,
     body: {
       id,
