@@ -50,7 +50,7 @@ export const notifyModeration = inngest.createFunction(
               },
               {
                 type: "mrkdwn",
-                text: `*Categories*: ${args.categories.join("`, `")}`,
+                text: `*Categories*: \`${args.categories.join("`, `")}\``,
               },
             ],
           },
