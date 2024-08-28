@@ -20,6 +20,7 @@ export class Apps {
           },
         },
       },
+      cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
     });
   }
 
@@ -37,6 +38,7 @@ export class Apps {
   async getSharedContent(shareId: string) {
     return this.prisma.sharedContent.findFirst({
       where: { id: shareId },
+      cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
     });
   }
   async getSingleSessionOutput(sessionId: string, userId: string) {

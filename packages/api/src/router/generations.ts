@@ -119,6 +119,7 @@ export const generationRouter = router({
           current: true,
         },
         select: { id: true, appId: true },
+        cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
       });
 
       if (!promptAndAppId) {
@@ -311,6 +312,7 @@ export const generationRouter = router({
         where: {
           id: flaggedItem.lastGenerationId,
         },
+        cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
       });
 
       await sendQuizFeedbackEmail({

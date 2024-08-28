@@ -37,7 +37,6 @@ model App {
   statistics  Statistics[]
 
   @@map("apps")
-  @@cacheStrategy(ttl: 300)
 }
 
 model Prompt {
@@ -62,7 +61,6 @@ model Prompt {
   AnswersAndDistractorsForJudgement AnswersAndDistractorsForJudgement[]
 
   @@map("prompts")
-  @@cacheStrategy(ttl: 300)
 }
 
 // Clerk users
@@ -102,7 +100,6 @@ model KeyStage {
   LessonPlan            LessonPlan[]
 
   @@map("key_stages")
-  @@cacheStrategy(ttl: 300)
 }
 
 model KeyStageSubject {
@@ -118,7 +115,6 @@ model KeyStageSubject {
 
   @@unique([keyStageId, subjectId])
   @@map("key_stage_subjects")
-  @@cacheStrategy(ttl: 300)
 }
 
 model AilaUserFlag {
@@ -179,7 +175,6 @@ model Subject {
   LessonPlans           LessonPlan[]
 
   @@map("subjects")
-  @@cacheStrategy(ttl: 300)
 }
 
 model Lesson {
@@ -254,7 +249,6 @@ model LessonSummary {
   subject  Subject?               @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
   @@map("lesson_summaries")
-  @@cacheStrategy(ttl: 300)
 }
 
 model LessonPlan {
@@ -750,7 +744,6 @@ model Moderation {
   lessonSnapshot LessonSnapshot? @relation(fields: [lessonSnapshotId], references: [id], onDelete: Cascade)
 
   @@map("moderations")
-  @@cacheStrategy(ttl: 300)
 }
 
 model LessonSchema {
