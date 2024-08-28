@@ -68,14 +68,14 @@ const FeedBack = ({
                         onClick={() => {
                           setUsersResponse((prevState) => ({
                             ...prevState,
-                            [`$survey_response_${i}`]:
+                            [`$survey_response_${i + 1}`]:
                               feedback.number.toString(),
                           }));
                         }}
                       >
                         <span
                           className={`text-lg ${
-                            usersResponse[`$survey_response_${i}`] ===
+                            usersResponse[`$survey_response_${i + 1}`] ===
                             feedback.number.toString()
                               ? `text-[#287C34]`
                               : `text-black`
@@ -85,7 +85,7 @@ const FeedBack = ({
                         </span>
                         <span
                           className={
-                            usersResponse[`$survey_response_${i}`] ===
+                            usersResponse[`$survey_response_${i + 1}`] ===
                             feedback.number.toString()
                               ? "opacity-100"
                               : "opacity-0"
@@ -97,6 +97,31 @@ const FeedBack = ({
                     );
                   })}
                 </div>
+              </div>
+            );
+          }
+          if (question.type === "open") {
+            return (
+              <div
+                key={question.question}
+                className="flex flex-col items-start justify-start"
+              >
+                <label
+                  htmlFor={question.question}
+                  className="mb-16 text-center text-xl "
+                >
+                  {question.question}
+                </label>
+                <textarea
+                  className="h-32 w-full min-w-[300px] rounded border-2 border-black p-10"
+                  onChange={(e) => {
+                    setUsersResponse({
+                      ...usersResponse,
+                      $survey_response_3: e.target.value,
+                    });
+                  }}
+                  id={question.question}
+                />
               </div>
             );
           }
