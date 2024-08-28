@@ -76,7 +76,7 @@ const FeedBack = ({
                         <span
                           className={`text-lg ${
                             usersResponse[`$survey_response_${i}`] ===
-                            feedback.toString()
+                            feedback.text.toString()
                               ? `text-[#287C34]`
                               : `text-black`
                           }`}
@@ -86,7 +86,7 @@ const FeedBack = ({
                         <span
                           className={
                             usersResponse[`$survey_response_${i}`] ===
-                            feedback.toString()
+                            feedback.text.toString()
                               ? "opacity-100"
                               : "opacity-0"
                           }
