@@ -165,6 +165,7 @@ export class AilaGeneration {
         variant: variantSlug,
         appId: appSlug,
         slug: promptSlug,
+        current: true,
       },
     });
     if (!prompt) {
