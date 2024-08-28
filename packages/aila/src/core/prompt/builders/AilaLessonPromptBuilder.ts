@@ -6,7 +6,11 @@ import { prisma as globalPrisma } from "@oakai/db";
 
 import { DEFAULT_RAG_LESSON_PLANS } from "../../../constants";
 import { tryWithErrorReporting } from "../../../helpers/errorReporting";
-import { LooseLessonPlan } from "../../../protocol/schema";
+import { LLMResponseJsonSchema } from "../../../protocol/jsonPatchProtocol";
+import {
+  LessonPlanJsonSchema,
+  LooseLessonPlan,
+} from "../../../protocol/schema";
 import { findAmericanisms } from "../../../utils/language/findAmericanisms";
 import { compressedLessonPlanForRag } from "../../../utils/lessonPlan/compressedLessonPlanForRag";
 import { fetchLessonPlan } from "../../../utils/lessonPlan/fetchLessonPlan";
@@ -86,6 +90,8 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
       baseLessonPlan: baseLessonPlan
         ? compressedLessonPlanForRag(baseLessonPlan)
         : undefined,
+      lessonPlanJsonSchema: JSON.stringify(LessonPlanJsonSchema),
+      llmResponseJsonSchema: JSON.stringify(LLMResponseJsonSchema),
     };
 
     return template(args);

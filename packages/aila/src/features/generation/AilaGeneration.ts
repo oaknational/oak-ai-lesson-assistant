@@ -1,13 +1,10 @@
+import { prisma } from "@oakai/db";
 import { kv } from "@vercel/kv";
 import { getEncoding } from "js-tiktoken";
 
 import { AilaServices } from "../../core";
 import { AilaChat } from "../../core/chat";
 import { AilaGenerationStatus } from "./types";
-
-// While we migrate to versioned prompts, we need to retain the fallback prompt ID
-// #TODO Remove this fallback prompt ID once we are all set up to use versioned prompts
-const fallbackPromptID = "clnnbmzso0000vgtj13dydvs7";
 
 export class AilaGeneration {
   private _aila: AilaServices;
@@ -22,7 +19,7 @@ export class AilaGeneration {
   private _completionTokens: number = 0;
   private _totalTokens: number = 0;
   private _systemPrompt: string = "";
-  private _promptId: string = fallbackPromptID;
+  private _promptId: string | null = null;
 
   constructor({
     aila,
@@ -45,7 +42,9 @@ export class AilaGeneration {
     this._startedAt = new Date();
     this._systemPrompt = systemPrompt;
     this._aila = aila;
-    this._promptId = promptId ?? fallbackPromptID;
+    if (promptId) {
+      this._promptId = promptId;
+    }
   }
 
   async complete({
@@ -74,10 +73,8 @@ export class AilaGeneration {
   }
 
   public async setupPromptId(): Promise<string | null> {
-    // This is the prompt ID for the default prompt.
-    // We should have a fallback prompt ID in case the prompt is not available in KV.
     if (!this._promptId) {
-      this._promptId = (await this.fetchPromptId()) ?? fallbackPromptID;
+      this._promptId = await this.fetchPromptId();
     }
     return this._promptId;
   }
@@ -154,9 +151,17 @@ export class AilaGeneration {
 
     // This key is defined in the setupPrompts script in core
     const variantSlug = `${responseMode}-${basedOn ? "basedOn" : "notBasedOn"}-${useRag ? "rag" : "noRag"}`;
-    const kvKey = `prompt:${appSlug}:${promptSlug}:${variantSlug}`;
-    console.log("Fetching prompt ID from KV", kvKey);
-    const promptId = await kv.get<string>(kvKey);
-    return promptId;
+
+    const prompt = await prisma.prompt.findFirst({
+      where: {
+        variant: variantSlug,
+        appId: appSlug,
+        slug: promptSlug,
+      },
+    });
+    if (!prompt) {
+      throw new Error(`Prompt not found - have you run pnpm prompts:dev?`);
+    }
+    return prompt?.id;
   }
 }

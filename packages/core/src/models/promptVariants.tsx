@@ -1,4 +1,5 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
+import { kv } from "@vercel/kv";
 import dedent from "ts-dedent";
 import { Md5 } from "ts-md5";
 
@@ -24,25 +25,26 @@ export class PromptVariants {
     this.variant = foundVariant;
   }
 
-  async setCurrent() {
-    const template = this.format();
-    const hash = Md5.hashStr(template);
+  async setCurrent(variant: string, raw = false) {
+    const template = this.format(raw);
+    const { slug } = this.definition;
+    const hash = `${slug}-${variant}-${Md5.hashStr(template)}`;
+    console.log("*** setCurrent ***");
+    console.log("Hash", hash);
+    console.log("Slug", slug);
+    console.log("Variant", variant);
+    console.log("-----");
     const existing = await this.prisma.prompt.findFirst({
       where: {
-        hash,
+        AND: [{ hash }, { slug }, { variant }],
       },
     });
     if (existing) {
       return;
     }
-    const {
-      name,
-      slug,
-      appId: appSlug,
-      inputSchema,
-      outputSchema,
-    } = this.definition;
+    const { name, appId: appSlug, inputSchema, outputSchema } = this.definition;
 
+    console.log("Connecting to app", appSlug);
     const app = await this.prisma.app.findFirstOrThrow({
       where: { slug: appSlug },
     });
@@ -52,7 +54,6 @@ export class PromptVariants {
     }[];
     const maxVersion = maxVersionRows?.[0]?.max_version ?? 0;
     const version = maxVersion + 1;
-    const variant = "main"; // TODO enable support for more than one variant
     const created = await this.prisma.prompt.create({
       data: {
         hash,
@@ -68,9 +69,17 @@ export class PromptVariants {
         variant,
         identifier: `${slug}-${variant}-${version}`,
         version,
-        gitSha: process.env.CACHED_COMMIT_REF ?? null, // Netlify-specific environment variable for the latest git commit
+        gitSha:
+          process.env.VERCEL_GIT_COMMIT_SHA ??
+          process.env.CACHED_COMMIT_REF ??
+          null, // Vercel- and Netlify-specific environment variable for the latest git commit
       },
     });
+
+    // Store the prompt version ID in KV
+    const kvKey = `prompt:${appSlug}:${slug}:${variant}`;
+    await kv.set(kvKey, created.id);
+
     // Mark previous prompts as historic
     await this.prisma.prompt.updateMany({
       data: {
@@ -90,24 +99,29 @@ export class PromptVariants {
     });
   }
 
-  format() {
+  format(raw = false) {
     const { parts } = this.variant;
     const { body, context, output, task } = parts;
+
+    if (raw) {
+      return body;
+    }
+
     return dedent`CONTEXT 
     ${context}
-
+  
     PROMPT INJECTION
     ${promptInjection}
-
+  
     TASK
     ${task}
-
+  
     INSTRUCTIONS
     ${body}
-
+  
     OUTPUT
     ${output}
-
+  
     ERROR HANDLING
     ${errorHandling}`;
   }
