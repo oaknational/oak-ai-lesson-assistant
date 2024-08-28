@@ -37,6 +37,7 @@ model App {
   statistics  Statistics[]
 
   @@map("apps")
+  @@cacheStrategy(ttl: 300)
 }
 
 model Prompt {
@@ -61,6 +62,7 @@ model Prompt {
   AnswersAndDistractorsForJudgement AnswersAndDistractorsForJudgement[]
 
   @@map("prompts")
+  @@cacheStrategy(ttl: 300)
 }
 
 // Clerk users
@@ -68,7 +70,7 @@ model Prompt {
 // but we're storing the derived data as joining against clerk's
 // API makes analysis and filtering harder
 //
-// n.b. user_id colummns are not currently set as relations
+// n.b. user_id columns are not currently set as relations
 //      but will be in future once this is complete
 model User {
   id        String   @id // Defined by clerk, aka user_*****
@@ -100,6 +102,7 @@ model KeyStage {
   LessonPlan            LessonPlan[]
 
   @@map("key_stages")
+  @@cacheStrategy(ttl: 300)
 }
 
 model KeyStageSubject {
@@ -115,6 +118,7 @@ model KeyStageSubject {
 
   @@unique([keyStageId, subjectId])
   @@map("key_stage_subjects")
+  @@cacheStrategy(ttl: 300)
 }
 
 model AilaUserFlag {
@@ -175,6 +179,7 @@ model Subject {
   LessonPlans           LessonPlan[]
 
   @@map("subjects")
+  @@cacheStrategy(ttl: 300)
 }
 
 model Lesson {
@@ -249,6 +254,7 @@ model LessonSummary {
   subject  Subject?               @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
   @@map("lesson_summaries")
+  @@cacheStrategy(ttl: 300)
 }
 
 model LessonPlan {
@@ -744,6 +750,7 @@ model Moderation {
   lessonSnapshot LessonSnapshot? @relation(fields: [lessonSnapshotId], references: [id], onDelete: Cascade)
 
   @@map("moderations")
+  @@cacheStrategy(ttl: 300)
 }
 
 model LessonSchema {
