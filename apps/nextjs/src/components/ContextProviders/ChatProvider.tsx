@@ -243,8 +243,6 @@ export function ChatProvider({
 
   useEffect(() => {
     if (startingMessage && !hasAppendedInitialMessage.current) {
-      console.log("Appending starting message", startingMessage);
-
       append({
         content: startingMessage,
         role: "user",
