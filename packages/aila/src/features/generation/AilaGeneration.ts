@@ -1,4 +1,6 @@
-import { prisma } from "@oakai/db";
+import { PromptVariants } from "@oakai/core/src/models/promptVariants";
+import { ailaGenerate } from "@oakai/core/src/prompts/lesson-assistant/variants";
+import { prisma, Prompt } from "@oakai/db";
 import { getEncoding } from "js-tiktoken";
 
 import { AilaServices } from "../../core";
@@ -151,7 +153,8 @@ export class AilaGeneration {
     // This key is defined in the setupPrompts script in core
     const variantSlug = `${responseMode}-${basedOn ? "basedOn" : "notBasedOn"}-${useRag ? "rag" : "noRag"}`;
 
-    const prompt = await prisma.prompt.findFirst({
+    let prompt: Prompt | null = null;
+    prompt = await prisma.prompt.findFirst({
       where: {
         variant: variantSlug,
         appId: appSlug,
@@ -159,7 +162,21 @@ export class AilaGeneration {
       },
     });
     if (!prompt) {
-      throw new Error(`Prompt not found - have you run pnpm prompts:dev?`);
+      // If the prompt does not exist for this variant, we need to generate it
+      const prompts = new PromptVariants(prisma, ailaGenerate, promptSlug);
+      prompts.setCurrent(variantSlug, true);
+      prompt = await prisma.prompt.findFirst({
+        where: {
+          variant: variantSlug,
+          appId: appSlug,
+          slug: promptSlug,
+        },
+      });
+    }
+    if (!prompt) {
+      throw new Error(
+        "Prompt not found - please run pnpm prompts or pnpm prompts:dev in development",
+      );
     }
     return prompt?.id;
   }
