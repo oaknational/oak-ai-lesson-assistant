@@ -63,7 +63,7 @@ export function useProgressForDownloads(lessonPlan: LooseLessonPlan) {
         complete: getCompleteness(errors, ["starterQuiz"]),
       },
       {
-        label: "Cycles 1 to 3",
+        label: "Learning cycles",
         key: "cycle1",
         complete: getCompleteness(errors, ["cycle1", "cycle2", "cycle3"]),
       },
