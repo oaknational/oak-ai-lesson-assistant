@@ -24,15 +24,10 @@ export class PromptVariants {
     this.variant = foundVariant;
   }
 
-  async setCurrent(variant: string, raw = false) {
-    const template = this.format(raw);
+  async setCurrent(variant: string, storeAsJson = false) {
+    const template = this.format({ storeAsJson });
     const { slug } = this.definition;
-    const hash = `${slug}-${variant}-${Md5.hashStr(template)}`;
-    console.log("*** setCurrent ***");
-    console.log("Hash", hash);
-    console.log("Slug", slug);
-    console.log("Variant", variant);
-    console.log("-----");
+    const hash = promptHash({ slug, variant, template });
     const existing = await this.prisma.prompt.findFirst({
       where: {
         AND: [{ hash }, { slug }, { variant }],
@@ -41,9 +36,12 @@ export class PromptVariants {
     if (existing) {
       return;
     }
+    console.log(
+      `Storing new prompt version for ${slug} / ${variant} with hash ${hash}`,
+    );
+
     const { name, appId: appSlug, inputSchema, outputSchema } = this.definition;
 
-    console.log("Connecting to app", appSlug);
     const app = await this.prisma.app.findFirstOrThrow({
       where: { slug: appSlug },
     });
@@ -66,7 +64,7 @@ export class PromptVariants {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         variant,
-        identifier: `${slug}-${variant}-${version}`,
+        identifier: promptIdentifier({ slug, variant, version }),
         version,
         gitSha:
           process.env.VERCEL_GIT_COMMIT_SHA ??
@@ -94,11 +92,11 @@ export class PromptVariants {
     });
   }
 
-  format(raw = false) {
+  format({ storeAsJson = false }: { storeAsJson?: boolean }) {
     const { parts } = this.variant;
     const { body, context, output, task } = parts;
 
-    if (raw) {
+    if (storeAsJson) {
       return body;
     }
 
@@ -120,4 +118,28 @@ export class PromptVariants {
     ERROR HANDLING
     ${errorHandling}`;
   }
+}
+
+export function promptHash({
+  slug,
+  variant,
+  template,
+}: {
+  slug: string;
+  variant: string;
+  template: string;
+}) {
+  return `${slug}-${variant}-${Md5.hashStr(template)}`;
+}
+
+export function promptIdentifier({
+  slug,
+  variant,
+  version,
+}: {
+  slug: string;
+  variant: string;
+  version: number;
+}): string {
+  return `${slug}-${variant}-${version}`;
 }

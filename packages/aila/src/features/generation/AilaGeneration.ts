@@ -1,5 +1,8 @@
 import { PromptVariants } from "@oakai/core/src/models/promptVariants";
-import { ailaGenerate } from "@oakai/core/src/prompts/lesson-assistant/variants";
+import {
+  ailaGenerate,
+  generateAilaPromptVersionVariantSlug,
+} from "@oakai/core/src/prompts/lesson-assistant/variants";
 import { prisma, Prompt } from "@oakai/db";
 import { getEncoding } from "js-tiktoken";
 
@@ -150,8 +153,11 @@ export class AilaGeneration {
     const basedOn = !!this._aila.lesson.plan.basedOn;
     const useRag = this._aila.options.useRag ?? true;
 
-    // This key is defined in the setupPrompts script in core
-    const variantSlug = `${responseMode}-${basedOn ? "basedOn" : "notBasedOn"}-${useRag ? "rag" : "noRag"}`;
+    const variantSlug = generateAilaPromptVersionVariantSlug(
+      responseMode,
+      basedOn,
+      useRag,
+    );
 
     let prompt: Prompt | null = null;
     prompt = await prisma.prompt.findFirst({

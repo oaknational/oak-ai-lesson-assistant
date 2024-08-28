@@ -23,7 +23,7 @@ const generatePromptParts = (
   };
 };
 
-const generateSlug = (
+export const generateAilaPromptVersionVariantSlug = (
   responseMode: string,
   basedOn: boolean,
   useRag: boolean,
@@ -41,7 +41,11 @@ const variants = [
   { responseMode: "generate", basedOn: false, useRag: true },
   { responseMode: "generate", basedOn: false, useRag: false },
 ].map(({ responseMode, basedOn, useRag }) => {
-  const slug = generateSlug(responseMode, basedOn, useRag);
+  const slug = generateAilaPromptVersionVariantSlug(
+    responseMode,
+    basedOn,
+    useRag,
+  );
   return generatePromptParts(
     {
       responseMode: responseMode as "interactive" | "generate",
