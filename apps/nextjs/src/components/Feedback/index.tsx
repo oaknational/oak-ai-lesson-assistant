@@ -28,7 +28,7 @@ const FeedBack = ({
   const [usersResponse, setUsersResponse] = useState<{ [key: string]: string }>(
     {},
   );
-  console.log("usersResponse", usersResponse);
+
   if (!survey?.id) return null;
 
   return (
@@ -76,7 +76,7 @@ const FeedBack = ({
                         <span
                           className={`text-lg ${
                             usersResponse[`$survey_response_${i}`] ===
-                            feedback.text.toString()
+                            feedback.number.toString()
                               ? `text-[#287C34]`
                               : `text-black`
                           }`}
@@ -86,7 +86,7 @@ const FeedBack = ({
                         <span
                           className={
                             usersResponse[`$survey_response_${i}`] ===
-                            feedback.text.toString()
+                            feedback.number.toString()
                               ? "opacity-100"
                               : "opacity-0"
                           }
