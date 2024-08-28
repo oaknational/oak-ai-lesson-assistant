@@ -161,6 +161,7 @@ export class AilaGeneration {
     );
 
     let prompt: Prompt | null = null;
+    let promptId: string | undefined = undefined;
 
     if (
       process.env.NODE_ENV === "production" &&
@@ -200,21 +201,16 @@ export class AilaGeneration {
     if (!prompt) {
       // If the prompt does not exist for this variant, we need to generate it
       const prompts = new PromptVariants(prisma, ailaGenerate, promptSlug);
-      await prompts.setCurrent(variantSlug, true);
-      prompt = await prisma.prompt.findFirst({
-        where: {
-          variant: variantSlug,
-          appId: appSlug,
-          slug: promptSlug,
-          current: true,
-        },
-      });
+      const created = await prompts.setCurrent(variantSlug, true);
+      promptId = created?.id;
     }
-    if (!prompt) {
+
+    promptId = promptId ?? prompt?.id;
+    if (!promptId) {
       throw new Error(
-        "Prompt not found - please run pnpm prompts or pnpm prompts:dev in development",
+        "Prompt not found or created - please run pnpm prompts or pnpm prompts:dev in development",
       );
     }
-    return prompt.id;
+    return promptId;
   }
 }

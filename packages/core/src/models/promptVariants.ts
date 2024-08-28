@@ -34,7 +34,7 @@ export class PromptVariants {
       },
     });
     if (existing) {
-      return;
+      existing;
     }
     console.log(
       `Storing new prompt version for ${slug} / ${variant} with hash ${hash}`,
@@ -90,6 +90,7 @@ export class PromptVariants {
         },
       },
     });
+    return created;
   }
 
   format({ storeAsJson = false }: { storeAsJson?: boolean }) {
