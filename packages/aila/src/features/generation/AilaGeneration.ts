@@ -76,7 +76,7 @@ export class AilaGeneration {
     return this._chat;
   }
 
-  public async setupPromptId(): Promise<string | null> {
+  public async setupPromptId(): Promise<string> {
     if (!this._promptId) {
       this._promptId = await this.fetchPromptId();
     }
@@ -146,7 +146,7 @@ export class AilaGeneration {
     this._totalTokens = this._promptTokens + this._completionTokens;
   }
 
-  private async fetchPromptId(): Promise<string | null> {
+  private async fetchPromptId(): Promise<string> {
     const appSlug = "lesson-planner";
     const promptSlug = "generate-lesson-plan";
     const responseMode = "interactive";
@@ -184,6 +184,6 @@ export class AilaGeneration {
         "Prompt not found - please run pnpm prompts or pnpm prompts:dev in development",
       );
     }
-    return prompt?.id;
+    return prompt.id;
   }
 }
