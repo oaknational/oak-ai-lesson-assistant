@@ -1,21 +1,11 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 import defaultLogger, { Logger } from "@oakai/logger";
 import { Logger as InngestLogger } from "inngest/middleware/logger";
-import { ChatOpenAI } from "langchain/chat_models/openai";
 import { PromptTemplate } from "langchain/prompts";
 import { BaseMessage, SystemMessage } from "langchain/schema";
 import untruncateJson from "untruncate-json";
 
-const checkProductionOpenAiUsage = () => {
-  if (
-    process.env.VERCEL_ENV === "production" &&
-    process.env.BYPASS_HELICONE_CHECK !== "true"
-  ) {
-    throw new Error(
-      "Security: Helicone is required for production OpenAI calls",
-    );
-  }
-};
+import { createOpenAILangchainChatClient } from "../llm/openai";
 
 type CompletionMeta = {
   timeTaken: number;
@@ -85,13 +75,13 @@ export class Prompts {
 
     const streaming = typeof onPartialResponse !== "undefined";
 
-    checkProductionOpenAiUsage();
-    const model = new ChatOpenAI({
-      // TODO The temperature should be a variable we can pass per prompt
-      temperature: 0.2,
-      // TODO The model should be a variable we can pass per prompt
-      modelName: "gpt-4",
-      streaming,
+    const model = createOpenAILangchainChatClient({
+      app: "quiz-designer",
+      fields: {
+        temperature: 0.2,
+        modelName: "gpt-4",
+        streaming,
+      },
     });
 
     const llmInput = [new SystemMessage(promptText)];

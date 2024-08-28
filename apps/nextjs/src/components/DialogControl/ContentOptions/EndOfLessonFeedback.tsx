@@ -3,11 +3,11 @@ import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey
 
 import FeedBack from "@/components/Feedback";
 
-const ChatActions = ({ closeDialog }: { closeDialog: () => void }) => {
+const EndOfLessonFeedback = ({ closeDialog }: { closeDialog: () => void }) => {
   const { survey, submitSurvey, closeDialogWithPostHogDismiss } =
     usePosthogFeedbackSurvey({
       closeDialog,
-      surveyName: "Chat Feedback With Stats",
+      surveyName: "End of Aila generation survey launch aug24",
     });
 
   return (
@@ -26,4 +26,4 @@ const ChatActions = ({ closeDialog }: { closeDialog: () => void }) => {
   );
 };
 
-export default ChatActions;
+export default EndOfLessonFeedback;

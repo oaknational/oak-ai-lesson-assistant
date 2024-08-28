@@ -77,7 +77,7 @@ export function DownloadPageContents({ chat }: Readonly<DownloadPageProps>) {
 
   const { survey } = usePosthogFeedbackSurvey({
     closeDialog: () => null,
-    surveyName: "Chat Feedback With Stats",
+    surveyName: "End of Aila generation survey launch aug24",
   });
 
   useEffect(() => {
