@@ -68,9 +68,7 @@ function getResult(
   // User is logged in and has completed onboarding
   return {
     isSet: true,
-    userType: Boolean(user.user.publicMetadata.labs.isDemoUser)
-      ? "Demo"
-      : "Full",
+    userType: user.user.publicMetadata.labs.isDemoUser ? "Demo" : "Full",
   };
 }
 

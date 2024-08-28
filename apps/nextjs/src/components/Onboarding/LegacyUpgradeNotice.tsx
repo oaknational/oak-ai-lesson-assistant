@@ -5,7 +5,7 @@ import { OakBox, OakFlex, OakHeading } from "@oaknational/oak-components";
 import LoadingWheel from "@/components/LoadingWheel";
 import SignUpSignInLayout from "@/components/SignUpSignInLayout";
 
-export const LegacyUpgradeNotice = ({}) => {
+export const LegacyUpgradeNotice = () => {
   return (
     <SignUpSignInLayout loaded>
       <OakBox

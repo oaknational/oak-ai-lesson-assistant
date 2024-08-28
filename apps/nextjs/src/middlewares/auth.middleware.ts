@@ -130,7 +130,6 @@ function conditionallyProtectRoute(
   }
 
   log("Protected route: ALLOW");
-  return;
 }
 
 export async function authMiddleware(

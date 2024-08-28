@@ -22,7 +22,7 @@ import SignUpSignInLayout from "@/components/SignUpSignInLayout";
 import TermsContent from "@/components/TermsContent";
 import { trpc } from "@/utils/trpc";
 
-export const AcceptTermsForm = ({}) => {
+export const AcceptTermsForm = () => {
   const [dropDownOpen, setDropDownOpen] = useState(true);
   const { isLoaded } = useUser();
   const reloadSession = useReloadSession();
