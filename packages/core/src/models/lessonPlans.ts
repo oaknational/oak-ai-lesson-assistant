@@ -14,6 +14,8 @@ import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { PrismaVectorStore } from "langchain/vectorstores/prisma";
 import yaml from "yaml";
 
+import { LLMResponseJsonSchema } from "../../../aila/src/protocol/jsonPatchProtocol";
+import { LessonPlanJsonSchema } from "../../../aila/src/protocol/schema";
 import { inngest } from "../client";
 import { createOpenAIClient } from "../llm/openai";
 import { template } from "../prompts/lesson-assistant";
@@ -152,6 +154,8 @@ export class LessonPlans {
       relevantLessonPlans: "None",
       summaries: "None",
       responseMode: "generate",
+      lessonPlanJsonSchema: JSON.stringify(LessonPlanJsonSchema),
+      llmResponseJsonSchema: JSON.stringify(LLMResponseJsonSchema),
     });
 
     const systemPrompt = compiledTemplate;
