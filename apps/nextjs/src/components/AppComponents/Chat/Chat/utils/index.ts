@@ -1,33 +1,5 @@
 import { type LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import { findListOfUndefinedKeysFromZod } from "@oakai/exports/src/dataHelpers/findListOfUndefinedKeysFromZod";
-import { lessonPlanSectionsSchema } from "@oakai/exports/src/schema/input.schema";
 import { type Message } from "ai/react";
-
-export function setLessonPlanProgress({
-  lessonPlan,
-  setUndefinedItems,
-}: {
-  lessonPlan: LooseLessonPlan;
-  setUndefinedItems: React.Dispatch<React.SetStateAction<string[]>>;
-}) {
-  const parseForProgress = lessonPlanSectionsSchema.safeParse(lessonPlan);
-
-  if (!parseForProgress.success) {
-    const undefinedItems = findListOfUndefinedKeysFromZod(
-      parseForProgress.error.errors as {
-        expected: string;
-        received: string;
-        code: string;
-        path: (string | number)[];
-        message: string;
-      }[],
-    );
-
-    setUndefinedItems(undefinedItems);
-  } else {
-    setUndefinedItems([]);
-  }
-}
 
 export function findLatestServerSideState(workingMessages: Message[]) {
   console.log("Finding latest server-side state", { workingMessages });
