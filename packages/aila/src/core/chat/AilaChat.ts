@@ -210,7 +210,7 @@ export class AilaChat implements AilaChatService {
       systemPrompt,
       status: "PENDING",
     });
-    this._generation.setupPromptId();
+    await this._generation.setupPromptId();
     this._chunks = [];
   }
 

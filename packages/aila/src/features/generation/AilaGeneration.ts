@@ -164,7 +164,7 @@ export class AilaGeneration {
     if (!prompt) {
       // If the prompt does not exist for this variant, we need to generate it
       const prompts = new PromptVariants(prisma, ailaGenerate, promptSlug);
-      prompts.setCurrent(variantSlug, true);
+      await prompts.setCurrent(variantSlug, true);
       prompt = await prisma.prompt.findFirst({
         where: {
           variant: variantSlug,
