@@ -68,14 +68,14 @@ const FeedBack = ({
                         onClick={() => {
                           setUsersResponse((prevState) => ({
                             ...prevState,
-                            [`$survey_response_${i + 1}`]:
+                            [`$survey_response_${i}`]:
                               feedback.number.toString(),
                           }));
                         }}
                       >
                         <span
                           className={`text-lg ${
-                            usersResponse[`$survey_response_${i + 1}`] ===
+                            usersResponse[`$survey_response_${i}`] ===
                             feedback.number.toString()
                               ? `text-[#287C34]`
                               : `text-black`
@@ -85,7 +85,7 @@ const FeedBack = ({
                         </span>
                         <span
                           className={
-                            usersResponse[`$survey_response_${i + 1}`] ===
+                            usersResponse[`$survey_response_${i}`] ===
                             feedback.number.toString()
                               ? "opacity-100"
                               : "opacity-0"
@@ -117,7 +117,7 @@ const FeedBack = ({
                   onChange={(e) => {
                     setUsersResponse({
                       ...usersResponse,
-                      $survey_response_3: e.target.value,
+                      $survey_response_2: e.target.value,
                     });
                   }}
                   id={question.question}
