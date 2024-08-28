@@ -1,6 +1,8 @@
 name: Deployment Actions
 
-on: deployment_status
+on:
+  pull_request:
+    branches: ["*"]
 
 jobs:
   dump_github_event:
@@ -10,7 +12,6 @@ jobs:
   update_pr_description:
     # Only want to run on success, otherwise it might be "pending", or "failure".
     # Filter out storybook deployments and temporarily Netlify deployments
-    if: ${{ github.ref != 'refs/heads/production' && github.ref != 'refs/heads/main' && (github.event.deployment_status.state == 'success') && !startsWith(github.event.deployment_status.environment, 'storybook')}}
     name: Add deploy URL to PR description
     runs-on: ubuntu-latest
     steps:
