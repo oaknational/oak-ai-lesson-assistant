@@ -1,21 +1,42 @@
 import { deepClone } from "fast-json-patch";
 
+import { AilaCategorisation } from "../../features/categorisation/categorisers/AilaCategorisation";
+import { AilaCategorisationFeature } from "../../features/types";
 import {
   PatchDocument,
   applyLessonPlanPatch,
   extractPatches,
 } from "../../protocol/jsonPatchProtocol";
 import { LooseLessonPlan } from "../../protocol/schema";
-import { AilaLessonService } from "../AilaServices";
+import { AilaLessonService, AilaServices } from "../AilaServices";
+import { Message } from "../chat";
 
 export class AilaLesson implements AilaLessonService {
+  private _aila: AilaServices;
   private _plan: LooseLessonPlan;
   private _hasSetInitialState = false;
   private _appliedPatches: PatchDocument[] = [];
   private _invalidPatches: PatchDocument[] = [];
+  private _categoriser: AilaCategorisationFeature;
 
-  constructor({ lessonPlan }: { lessonPlan?: LooseLessonPlan }) {
+  constructor({
+    aila,
+    lessonPlan,
+    categoriser,
+  }: {
+    aila: AilaServices;
+    lessonPlan?: LooseLessonPlan;
+    categoriser?: AilaCategorisationFeature;
+  }) {
+    this._aila = aila;
     this._plan = lessonPlan ?? {};
+    this._categoriser =
+      categoriser ??
+      new AilaCategorisation({
+        aila,
+        userId: aila.userId,
+        chatId: aila.chatId,
+      });
   }
 
   public get plan(): LooseLessonPlan {
@@ -73,5 +94,21 @@ export class AilaLesson implements AilaLessonService {
     }
 
     this._plan = workingLessonPlan;
+  }
+
+  public async setUpInitialLessonPlan(messages: Message[]) {
+    const shouldCategoriseBasedOnInitialMessages = Boolean(
+      !this._plan.subject && !this._plan.keyStage && !this._plan.title,
+    );
+
+    // The initial lesson plan is blank, so we take the first messages
+    // and attempt to deduce the lesson plan key stage, subject, title and topic
+    if (shouldCategoriseBasedOnInitialMessages) {
+      const result = await this._categoriser.categorise(messages, this._plan);
+
+      if (result) {
+        this.initialise(result);
+      }
+    }
   }
 }

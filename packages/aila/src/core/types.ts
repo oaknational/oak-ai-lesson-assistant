@@ -5,6 +5,7 @@ import { AilaPersistence } from "../features/persistence";
 import { AilaThreatDetector } from "../features/threatDetection";
 import {
   AilaAnalyticsFeature,
+  AilaCategorisationFeature,
   AilaErrorReportingFeature,
   AilaModerationFeature,
   AilaThreatDetectionFeature,
@@ -67,4 +68,7 @@ export type AilaInitializationOptions = {
   errorReporter?: AilaErrorReportingFeature;
   promptBuilder?: AilaPromptBuilder;
   plugins: AilaPlugin[];
+  services?: {
+    chatCategoriser?: AilaCategorisationFeature;
+  };
 };

@@ -42,7 +42,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
 
   private async fetchRelevantLessonPlans(): Promise<string> {
     const noRelevantLessonPlans = "None";
-    const chatId = this._aila?.chatId;
+    const { chatId, userId } = this._aila;
     if (!this._aila?.options.useRag) {
       return noRelevantLessonPlans;
     }
@@ -63,6 +63,8 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
           this._aila?.options.numberOfLessonPlansInRag ??
           DEFAULT_RAG_LESSON_PLANS,
         prisma: globalPrisma,
+        chatId,
+        userId,
       });
     }, "Did not fetch RAG content. Continuing");
 
