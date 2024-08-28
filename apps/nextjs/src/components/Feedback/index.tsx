@@ -108,7 +108,7 @@ const FeedBack = ({
               >
                 <label
                   htmlFor={question.question}
-                  className="mb-16 text-center text-xl "
+                  className="mb-16 text-left text-2xl font-bold"
                 >
                   {question.question}
                 </label>
