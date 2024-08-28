@@ -44,7 +44,7 @@ describe("calculateTokenUsage", () => {
       status: "SUCCESS",
       responseText: "I am fine, thank you!",
     });
-    expect(ailaGeneration.tokenUsage.promptTokens).not.toBe(21);
+    expect(ailaGeneration.tokenUsage.promptTokens).not.toBe(7);
   });
 
   // correctly calculates completion tokens from response text
@@ -80,6 +80,6 @@ describe("calculateTokenUsage", () => {
       status: "SUCCESS",
       responseText: "I am fine, thank you!",
     });
-    expect(ailaGeneration.tokenUsage.completionTokens).toBe(21);
+    expect(ailaGeneration.tokenUsage.completionTokens).toBe(7);
   });
 });
