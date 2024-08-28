@@ -62,7 +62,7 @@ jobs:
           retention-days: 30
       - name: Comment PR with playwright report
         uses: thollander/actions-comment-pull-request@v2
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && github.ref != 'refs/heads/production' && github.ref != 'refs/heads/main' }}
         with:
           pr_number: ${{ steps.ref_from_sha.outputs.pr_number }}
           message: |
