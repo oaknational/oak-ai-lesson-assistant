@@ -46,7 +46,6 @@ export class PromptVariants {
 
     const app = await this.prisma.app.findFirstOrThrow({
       where: { slug: appSlug },
-      cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
     });
     const maxVersionRows = (await this.prisma
       .$queryRaw`select max(version) as max_version from prompts where slug = ${slug}`) as {

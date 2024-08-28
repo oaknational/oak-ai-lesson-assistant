@@ -119,7 +119,6 @@ export const generationRouter = router({
           current: true,
         },
         select: { id: true, appId: true },
-        cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
       });
 
       if (!promptAndAppId) {
