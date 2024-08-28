@@ -30,11 +30,11 @@ export class PromptVariants {
     const hash = promptHash({ slug, variant, template });
     const existing = await this.prisma.prompt.findFirst({
       where: {
-        AND: [{ hash }, { slug }, { variant }],
+        AND: [{ hash }, { slug }, { variant }, { current: true }],
       },
     });
     if (existing) {
-      existing;
+      return existing;
     }
     console.log(
       `Storing new prompt version for ${slug} / ${variant} with hash ${hash}`,
