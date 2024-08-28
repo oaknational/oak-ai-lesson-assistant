@@ -1,5 +1,4 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
-import { kv } from "@vercel/kv";
 import dedent from "ts-dedent";
 import { Md5 } from "ts-md5";
 
@@ -75,10 +74,6 @@ export class PromptVariants {
           null, // Vercel- and Netlify-specific environment variable for the latest git commit
       },
     });
-
-    // Store the prompt version ID in KV
-    const kvKey = `prompt:${appSlug}:${slug}:${variant}`;
-    await kv.set(kvKey, created.id);
 
     // Mark previous prompts as historic
     await this.prisma.prompt.updateMany({

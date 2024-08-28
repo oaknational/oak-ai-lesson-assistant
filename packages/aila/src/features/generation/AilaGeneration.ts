@@ -1,5 +1,4 @@
 import { prisma } from "@oakai/db";
-import { kv } from "@vercel/kv";
 import { getEncoding } from "js-tiktoken";
 
 import { AilaServices } from "../../core";
