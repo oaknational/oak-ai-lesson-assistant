@@ -83,6 +83,9 @@ export class PromptVariants {
         slug: {
           equals: slug,
         },
+        variant: {
+          equals: variant,
+        },
         id: {
           not: {
             equals: created.id,

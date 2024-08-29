@@ -11,7 +11,6 @@ A well-thought-out lesson plan should:
 * Include some engaging activities to help reinforce the learning points.
 
 Ensure that the keywords relevant to the topic are repeated throughout the different sections of the lesson plan.
-
 Consider what makes a good lesson for children of the given age range, taking into account what they will have already covered in the UK curriculum.
 Put thought into how the different sections of the lessons link together to keep pupils informed and engaged.
 
