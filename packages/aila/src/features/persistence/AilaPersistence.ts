@@ -71,6 +71,7 @@ export abstract class AilaPersistence {
     } = generation;
 
     invariant(userId, "userId is required for generation persistence");
+    invariant(promptId, "promptId is required for generation persistence");
     return {
       id,
       userId,

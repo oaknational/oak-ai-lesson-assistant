@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
+import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
 import styled from "styled-components";
 
@@ -94,7 +95,7 @@ const DropDownSection = ({
 
         <FullWidthButton onClick={() => setIsOpen(!isOpen)}>
           <OakFlex $width="100%" $justifyContent="space-between">
-            <OakP $font="heading-6">{humanizeCamelCaseString(objectKey)}</OakP>
+            <OakP $font="heading-6">{sectionTitle(objectKey)}</OakP>
             <Icon icon={isOpen ? "chevron-up" : "chevron-down"} size="sm" />
           </OakFlex>
         </FullWidthButton>
@@ -122,13 +123,12 @@ const valuesAreEqual = (
   return JSON.stringify(val1) === JSON.stringify(val2);
 };
 
-export function humanizeCamelCaseString(str: string) {
+export function sectionTitle(str: string) {
   if (str.startsWith("cycle")) {
-    return "Cycle " + str.split("cycle")[1];
+    return "Learning cycle " + str.split("cycle")[1];
   }
-  return str.replace(/([A-Z])/g, " $1").replace(/^./, function (str) {
-    return str.toUpperCase();
-  });
+
+  return camelCaseToSentenceCase(str);
 }
 
 const FullWidthButton = styled.button`

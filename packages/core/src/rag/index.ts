@@ -66,13 +66,18 @@ export type CategorisedKeyStageAndSubject = z.infer<
 
 export class RAG {
   prisma: PrismaClientWithAccelerate;
-  constructor(prisma: PrismaClientWithAccelerate) {
+  private _chatMeta: OpenAICompletionWithLoggingOptions;
+  constructor(
+    prisma: PrismaClientWithAccelerate,
+    chatMeta: OpenAICompletionWithLoggingOptions,
+  ) {
     this.prisma = prisma;
+    this._chatMeta = chatMeta;
   }
 
   async categoriseKeyStageAndSubject(
     input: string,
-    chatMeta?: OpenAICompletionWithLoggingOptions,
+    chatMeta: OpenAICompletionWithLoggingOptions,
   ) {
     console.log("Categorise input", JSON.stringify(input));
 
@@ -394,7 +399,7 @@ Thank you and happy classifying!`;
     let plans: LessonPlan[] = [];
 
     try {
-      const rag = new RAG(this.prisma);
+      const rag = new RAG(this.prisma, { chatId });
       plans = await rag.searchLessonPlans({
         title,
         keyStage,
@@ -603,14 +608,19 @@ Thank you and happy classifying!`;
           { slug: { equals: keyStage.toLowerCase(), mode: "insensitive" } },
         ],
       },
+      cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
     });
     if (!foundKeyStage) {
-      const categorisation = await this.categoriseKeyStageAndSubject(keyStage);
+      const categorisation = await this.categoriseKeyStageAndSubject(
+        keyStage,
+        this._chatMeta,
+      );
       if (categorisation.keyStage) {
         foundKeyStage = await this.prisma.subject.findFirst({
           where: {
             slug: categorisation.keyStage,
           },
+          cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
         });
       }
     }
@@ -654,6 +664,7 @@ Thank you and happy classifying!`;
           { title: { equals: subject.toLowerCase(), mode: "insensitive" } },
         ],
       },
+      cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
     });
 
     // If none of that works, fall back to categorising the subject based on free text
@@ -661,12 +672,16 @@ Thank you and happy classifying!`;
       // console.log(
       //   "No subject found. Categorise the input to try to work out what it is using categoriseKeyStageAndSubject",
       // );
-      const categorisation = await this.categoriseKeyStageAndSubject(subject);
+      const categorisation = await this.categoriseKeyStageAndSubject(
+        subject,
+        this._chatMeta,
+      );
       if (categorisation.subject) {
         foundSubject = await this.prisma.subject.findFirst({
           where: {
             slug: categorisation.subject,
           },
+          cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
         });
       }
     }

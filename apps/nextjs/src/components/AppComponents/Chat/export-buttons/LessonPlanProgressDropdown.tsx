@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
@@ -7,52 +7,21 @@ import { Flex } from "@radix-ui/themes";
 import { Icon } from "@/components/Icon";
 import { scrollToRef } from "@/utils/scrollToRef";
 
-export const LESSON_PLAN_SECTIONS = [
-  { key: "title", title: "Title" },
-  { key: "subject", title: "Subject" },
-  { key: "keyStage", title: "Key Stage" },
-  { key: "learningOutcome", title: "Learning Outcome" },
-  { key: "learningCycles", title: "Learning Cycles" },
-  { key: "priorKnowledge", title: "Prior Knowledge" },
-  { key: "keyLearningPoints", title: "Key Learning Points" },
-  { key: "misconceptions", title: "Misconceptions" },
-  { key: "keywords", title: "Keywords" },
-  { key: "starterQuiz", title: "Starter Quiz" },
-  { key: "cycles", title: "Cycles 1-3" },
-  { key: "exitQuiz", title: "Exit Quiz" },
-  // { key: "additionalMaterials", title: "Additional Materials" }, Do not show the additional materials section
-] as const;
+import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 
-export type LessonPlanSectionKey = (typeof LESSON_PLAN_SECTIONS)[number]["key"];
-
-export type LessonPlanProgressDropdownProps = {
+type LessonPlanProgressDropdownProps = Readonly<{
   lessonPlan: LooseLessonPlan;
+  isStreaming: boolean;
   sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
-};
-
-export const lessonPlanSectionIsComplete = (
-  lessonPlan: LooseLessonPlan,
-  key: LessonPlanSectionKey,
-) => {
-  if (key === "cycles") {
-    return lessonPlan.cycle1 && lessonPlan.cycle2 && lessonPlan.cycle3;
-  }
-  return lessonPlan[key] !== undefined && lessonPlan[key] !== null;
-};
+}>;
 
 export const LessonPlanProgressDropdown: React.FC<
   LessonPlanProgressDropdownProps
-> = ({ lessonPlan, sectionRefs, documentContainerRef }) => {
+> = ({ lessonPlan, sectionRefs, documentContainerRef, isStreaming }) => {
+  const { sections, totalSections, totalSectionsComplete } =
+    useProgressForDownloads({ lessonPlan, isStreaming });
   const [openProgressDropDown, setOpenProgressDropDown] = useState(false);
-
-  const completedSections = useMemo(() => {
-    return LESSON_PLAN_SECTIONS.filter(({ key }) =>
-      lessonPlanSectionIsComplete(lessonPlan, key),
-    ).length;
-  }, [lessonPlan]);
-
-  const allCyclesComplete = lessonPlanSectionIsComplete(lessonPlan, "cycles");
 
   return (
     <DropdownMenu.Root
@@ -68,7 +37,7 @@ export const LessonPlanProgressDropdown: React.FC<
           data-testid="chat-progress"
         >
           <span>
-            {`${completedSections} of ${LESSON_PLAN_SECTIONS.length} sections complete`}
+            {`${totalSectionsComplete} of ${totalSections} sections complete`}
           </span>
           <Icon
             icon={openProgressDropDown ? "chevron-up" : "chevron-down"}
@@ -86,20 +55,20 @@ export const LessonPlanProgressDropdown: React.FC<
             gap="7"
             data-testid="lesson-plan-progress-dropdown-content"
           >
-            {LESSON_PLAN_SECTIONS.map(({ key, title }) => (
-              <DropdownMenu.Item key={key}>
+            {sections.map(({ label, complete, key }) => (
+              <DropdownMenu.Item key={`progress-download-dropdown-${key}`}>
                 <button
-                  disabled={!lessonPlanSectionIsComplete(lessonPlan, key)}
+                  disabled={!complete}
                   className="mb-7 flex gap-6"
                   onClick={() => {
-                    if (key === "cycles" && allCyclesComplete) {
+                    if (key === "cycles" && complete) {
                       if (sectionRefs["cycle-1"]) {
                         scrollToRef({
                           ref: sectionRefs["cycle-1"],
                           containerRef: documentContainerRef,
                         });
                       }
-                    } else if (lessonPlanSectionIsComplete(lessonPlan, key)) {
+                    } else if (complete) {
                       if (sectionRefs[key]) {
                         scrollToRef({
                           ref: sectionRefs[key] as React.RefObject<HTMLElement>,
@@ -110,11 +79,11 @@ export const LessonPlanProgressDropdown: React.FC<
                   }}
                 >
                   <span className="flex w-14 items-center justify-center">
-                    {lessonPlanSectionIsComplete(lessonPlan, key) && (
+                    {complete && (
                       <Icon icon="tick" className="mr-2" size="sm" />
                     )}
                   </span>
-                  <p>{title}</p>
+                  <p>{label}</p>
                 </button>
               </DropdownMenu.Item>
             ))}

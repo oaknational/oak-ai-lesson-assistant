@@ -6,6 +6,7 @@ import {
   DEFAULT_TEMPERATURE,
   DEFAULT_RAG_LESSON_PLANS,
 } from "../constants";
+import { AilaCategorisation } from "../features/categorisation";
 import {
   AilaAnalyticsFeature,
   AilaErrorReportingFeature,
@@ -13,7 +14,6 @@ import {
   AilaPersistenceFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
-import { fetchCategorisedInput } from "../utils/lessonPlan/fetchCategorisedInput";
 import { AilaAuthenticationError, AilaGenerationError } from "./AilaError";
 import { AilaFeatureFactory } from "./AilaFeatureFactory";
 import {
@@ -23,6 +23,8 @@ import {
 } from "./AilaServices";
 import { AilaChat, Message } from "./chat";
 import { AilaLesson } from "./lesson";
+import { LLMService } from "./llm/LLMService";
+import { OpenAIService } from "./llm/OpenAIService";
 import { AilaPlugin } from "./plugins/types";
 import {
   AilaGenerateLessonPlanOptions,
@@ -37,24 +39,45 @@ export class Aila implements AilaServices {
   private _errorReporter?: AilaErrorReportingFeature;
   private _isShutdown: boolean = false;
   private _lesson: AilaLessonService;
+  private _chatLlmService: LLMService;
   private _moderation?: AilaModerationFeature;
   private _options: AilaOptionsWithDefaultFallbackValues;
   private _persistence: AilaPersistenceFeature[] = [];
   private _threatDetection?: AilaThreatDetectionFeature;
   private _prisma: PrismaClientWithAccelerate;
   private _plugins: AilaPlugin[];
+  private _userId!: string | undefined;
+  private _chatId!: string;
 
   constructor(options: AilaInitializationOptions) {
+    this._userId = options.chat.userId;
+    this._chatId = options.chat.id;
     this._options = this.initialiseOptions(options.options);
 
+    this._chatLlmService =
+      options.services?.chatLlmService ??
+      new OpenAIService({ userId: this._userId, chatId: this._chatId });
     this._chat = new AilaChat({
       ...options.chat,
       aila: this,
       promptBuilder: options.promptBuilder,
+      llmService: this._chatLlmService,
     });
 
-    this._lesson = new AilaLesson({ lessonPlan: options.lessonPlan ?? {} });
     this._prisma = options.prisma ?? globalPrisma;
+
+    this._lesson = new AilaLesson({
+      aila: this,
+      lessonPlan: options.lessonPlan ?? {},
+      categoriser:
+        options.services?.chatCategoriser ??
+        new AilaCategorisation({
+          aila: this,
+          prisma: this._prisma,
+          chatId: this._chatId,
+          userId: this._userId,
+        }),
+    });
 
     this._analytics = AilaFeatureFactory.createAnalytics(this, this._options);
     this._moderation = AilaFeatureFactory.createModeration(this, this._options);
@@ -81,7 +104,7 @@ export class Aila implements AilaServices {
   // Initialization methods
   public async initialise() {
     this.checkUserIdPresentIfPersisting();
-    await this.setUpInitialLessonPlan();
+    await this._lesson.setUpInitialLessonPlan(this._chat.messages);
   }
 
   private initialiseOptions(options?: AilaOptions) {
@@ -128,11 +151,11 @@ export class Aila implements AilaServices {
   }
 
   public get chatId() {
-    return this._chat.id;
+    return this._chatId;
   }
 
   public get userId() {
-    return this._chat.userId;
+    return this._userId;
   }
 
   public get messages() {
@@ -159,46 +182,16 @@ export class Aila implements AilaServices {
     return this._plugins;
   }
 
+  public get chatLlmService() {
+    return this._chatLlmService;
+  }
+
   // Check methods
   public checkUserIdPresentIfPersisting() {
     if (!this._chat.userId && this._options.usePersistence) {
       throw new AilaAuthenticationError(
         "User ID not set, but usePersistence is enabled",
       );
-    }
-  }
-
-  // Setup methods
-
-  // #TODO this is in the wrong place and should be
-  // moved to be hook into the initialisation of the lesson
-  // or chat
-  public async setUpInitialLessonPlan() {
-    const shouldRequestInitialState = Boolean(
-      !this.lesson.plan.subject &&
-        !this.lesson.plan.keyStage &&
-        !this.lesson.plan.title,
-    );
-
-    if (shouldRequestInitialState) {
-      const { title, subject, keyStage, topic } = this.lesson.plan;
-      const input = this.chat.messages.map((i) => i.content).join("\n\n");
-      const categorisationInput = [title, subject, keyStage, topic, input]
-        .filter((i) => i)
-        .join(" ");
-
-      const result = await fetchCategorisedInput({
-        input: categorisationInput,
-        prisma: this._prisma,
-        chatMeta: {
-          userId: this._chat.userId,
-          chatId: this._chat.id,
-        },
-      });
-
-      if (result) {
-        this.lesson.initialise(result);
-      }
     }
   }
 

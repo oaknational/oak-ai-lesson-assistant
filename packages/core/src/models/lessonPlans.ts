@@ -14,12 +14,14 @@ import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { PrismaVectorStore } from "langchain/vectorstores/prisma";
 import yaml from "yaml";
 
+import { LLMResponseJsonSchema } from "../../../aila/src/protocol/jsonPatchProtocol";
+import { LessonPlanJsonSchema } from "../../../aila/src/protocol/schema";
 import { inngest } from "../client";
 import { createOpenAIClient } from "../llm/openai";
 import { template } from "../prompts/lesson-assistant";
 import { RAG } from "../rag";
+import { camelCaseToSentenceCase } from "../utils/camelCaseToSentenceCase";
 import { embedWithCache } from "../utils/embeddings";
-import { humanizeCamelCaseString } from "../utils/humanizeCamelCaseString";
 import { Caption, CaptionsSchema } from "./types/caption";
 
 // Simplifies the input to a string for embedding
@@ -65,7 +67,7 @@ export class LessonPlans {
   private _prisma: PrismaClientWithAccelerate;
   constructor(private readonly prisma: PrismaClientWithAccelerate) {
     this._prisma = prisma;
-    this._rag = new RAG(this._prisma);
+    this._rag = new RAG(this._prisma, { chatId: "none" });
   }
 
   async embedAllParts(): Promise<void> {
@@ -152,6 +154,8 @@ export class LessonPlans {
       relevantLessonPlans: "None",
       summaries: "None",
       responseMode: "generate",
+      lessonPlanJsonSchema: JSON.stringify(LessonPlanJsonSchema),
+      llmResponseJsonSchema: JSON.stringify(LLMResponseJsonSchema),
     });
 
     const systemPrompt = compiledTemplate;
@@ -315,7 +319,7 @@ ${part.content}`;
     }
     const text = lessonPlan.parts
       .map(
-        (p) => `${humanizeCamelCaseString(p.key)}
+        (p) => `${camelCaseToSentenceCase(p.key)}
 ${p.content}`,
       )
       .join("\n\n");

@@ -70,6 +70,7 @@ async function ailaGetOrSaveSnapshot({
     orderBy: {
       createdAt: "desc",
     },
+    cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
   });
 
   if (!lessonSchema) {
