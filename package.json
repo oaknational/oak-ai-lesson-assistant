@@ -29,7 +29,8 @@
     "test": "turbo test --",
     "test-e2e": "turbo test-e2e --",
     "test-e2e-ui": "turbo test-e2e-ui --",
-    "storybook": "turbo storybook"
+    "storybook": "turbo storybook",
+    "telemetry": "open http://localhost:3301"
   },
   "prettier": "@oakai/prettier-config",
   "dependencies": {

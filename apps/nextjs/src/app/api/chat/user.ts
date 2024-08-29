@@ -2,10 +2,46 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { ErrorDocument } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { demoUsers, inngest } from "@oakai/core";
 import { posthogServerClient } from "@oakai/core/src/analytics/posthogServerClient";
+import { tracer } from "@oakai/core/src/tracing/serverTracing";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting/rateLimit";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
+import { Span, SpanStatusCode } from "@opentelemetry/api";
+import invariant from "tiny-invariant";
 
 import { streamingJSON } from "./protocol";
+
+export async function handleUserLookup(span: Span, id: string) {
+  return await tracer.startActiveSpan(
+    "chat-user-lookup",
+    async (userLookupSpan) => {
+      try {
+        invariant(id, "Chat ID is required");
+
+        const result = await fetchAndCheckUser(id);
+        if (!result) {
+          userLookupSpan.setStatus({
+            code: SpanStatusCode.ERROR,
+            message: "user lookup failed",
+          });
+          return {
+            failureResponse: new Response("User lookup failed", {
+              status: 400,
+            }),
+          };
+        }
+        if ("failureResponse" in result) {
+          userLookupSpan.setStatus({
+            code: SpanStatusCode.ERROR,
+            message: "user lookup failed",
+          });
+        }
+        return result;
+      } finally {
+        userLookupSpan.end();
+      }
+    },
+  );
+}
 
 async function checkRateLimit(
   userId: string,
