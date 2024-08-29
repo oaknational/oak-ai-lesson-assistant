@@ -207,9 +207,13 @@ export const appSessionsRouter = router({
           },
         });
         return response;
-      } catch (error) {
-        console.log(error);
-        return error;
+      } catch (cause) {
+        const err = new Error("Failed to create user modification");
+        err.cause = cause;
+        Sentry.captureException(err, {
+          extra: input,
+        });
+        return err;
       }
     }),
   flagSection: protectedProcedure
@@ -228,7 +232,6 @@ export const appSessionsRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // return "hello";
       const { chatId, messageId, flagType, userComment } = input;
       const { userId } = ctx.auth;
       try {
@@ -243,9 +246,13 @@ export const appSessionsRouter = router({
         });
 
         return response;
-      } catch (error) {
-        console.log(error);
-        return error;
+      } catch (cause) {
+        const err = new Error("Failed to flag section");
+        err.cause = cause;
+        Sentry.captureException(err, {
+          extra: { chatId, messageId, flagType },
+        });
+        return err;
       }
     }),
   getSidebarChats: protectedProcedure.query(async ({ ctx }) => {
