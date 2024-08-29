@@ -608,6 +608,7 @@ Thank you and happy classifying!`;
           { slug: { equals: keyStage.toLowerCase(), mode: "insensitive" } },
         ],
       },
+      cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
     });
     if (!foundKeyStage) {
       const categorisation = await this.categoriseKeyStageAndSubject(
@@ -619,6 +620,7 @@ Thank you and happy classifying!`;
           where: {
             slug: categorisation.keyStage,
           },
+          cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
         });
       }
     }
@@ -662,6 +664,7 @@ Thank you and happy classifying!`;
           { title: { equals: subject.toLowerCase(), mode: "insensitive" } },
         ],
       },
+      cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
     });
 
     // If none of that works, fall back to categorising the subject based on free text
@@ -678,6 +681,7 @@ Thank you and happy classifying!`;
           where: {
             slug: categorisation.subject,
           },
+          cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
         });
       }
     }
