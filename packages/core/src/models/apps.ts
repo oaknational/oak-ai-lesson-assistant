@@ -20,7 +20,6 @@ export class Apps {
           },
         },
       },
-      cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
     });
   }
 
