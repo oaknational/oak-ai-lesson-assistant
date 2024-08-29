@@ -17,27 +17,27 @@ const ChatStartAccordion = () => {
   const slidesLessonSections = lessonSections.filter(
     (section) =>
       section !== "Title" &&
-      section !== "Key Stage" &&
+      section !== "Key stage" &&
       section !== "Subject" &&
-      section !== "Prior Knowledge" &&
-      section !== "Key Learning Points" &&
+      section !== "Prior knowledge" &&
+      section !== "Key learning points" &&
       section !== "Misconceptions" &&
-      section !== "Starter Quiz" &&
+      section !== "Starter quiz" &&
       section !== "Exit Quiz",
   );
 
   const quizLessonSections = lessonSections.filter(
     (section) =>
       section !== "Title" &&
-      section !== "Key Stage" &&
+      section !== "Key stage" &&
       section !== "Subject" &&
-      section !== "Prior Knowledge" &&
-      section !== "Key Learning Points" &&
+      section !== "Prior lnowledge" &&
+      section !== "Key learning points" &&
       section !== "Misconceptions" &&
-      section !== "Cycle 1" &&
+      section !== "Learning cycle 1" &&
       section !== "Keywords" &&
-      section !== "Learning Cycles" &&
-      section !== "Learning Outcome",
+      section !== "Learning cycles" &&
+      section !== "Learning outcome",
   );
 
   return (
@@ -51,7 +51,7 @@ const ChatStartAccordion = () => {
             {lessonSections.map((section) => {
               if (
                 section == "Title" ||
-                section == "Key Stage" ||
+                section == "Key stage" ||
                 section == "Subject"
               ) {
                 return null;
@@ -79,7 +79,7 @@ const ChatStartAccordion = () => {
             {slidesLessonSections.map((section) => {
               if (
                 section == "Title" ||
-                section == "Key Stage" ||
+                section == "Key stage" ||
                 section == "Subject"
               ) {
                 return null;
@@ -107,7 +107,7 @@ const ChatStartAccordion = () => {
             {quizLessonSections.map((section) => {
               if (
                 section == "Title" ||
-                section == "Key Stage" ||
+                section == "Key stage" ||
                 section == "Subject"
               ) {
                 return null;

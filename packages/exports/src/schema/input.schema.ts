@@ -78,6 +78,7 @@ export const lessonPlanSectionsSchema = z.object({
   cycle3: cycleSchema.nullish(),
   additionalMaterials: z.string().nullish(),
 });
+export type LessonPlanSections = z.infer<typeof lessonPlanSectionsSchema>;
 
 export type LessonPlanDocInputData = z.infer<typeof lessonPlanDocInputSchema>;
 
