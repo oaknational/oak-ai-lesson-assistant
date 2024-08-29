@@ -1,5 +1,5 @@
 import OnBoarding from "./onboarding";
 
-export default async function OnBoardingPage() {
+export default function OnBoardingPage() {
   return <OnBoarding />;
 }

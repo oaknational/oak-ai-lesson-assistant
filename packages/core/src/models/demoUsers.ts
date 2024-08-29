@@ -19,7 +19,7 @@ type LabsUser = User & {
   };
 };
 
-type UserWithDemoStatus = User & {
+type UserWithDemoStatus = LabsUser & {
   publicMetadata: {
     labs: {
       isDemoUser: boolean;

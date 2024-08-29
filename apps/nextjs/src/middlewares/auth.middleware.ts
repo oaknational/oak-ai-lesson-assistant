@@ -58,9 +58,8 @@ const isPreloadableRoute = createRouteMatcher([
   "/aila",
 ]);
 
-const onboardingUrl = "/onboarding";
 const isOnboardingRoute = createRouteMatcher([
-  onboardingUrl,
+  "/onboarding",
   "/sign-in",
   // NOTE: Be careful that this request doesn't batch as it will change the path
   "/api/trpc/main/auth.setDemoStatus",
