@@ -22,28 +22,18 @@ export function initializeTracer(options: DatadogOptions) {
     options?.hostname ??
     "localhost";
 
-  if (isTest) {
-    // Use a no-op tracer for tests
+  if (isTest || isLocalDev) {
     tracer.init({
-      logInjection: true,
-      runtimeMetrics: true,
-      sampleRate: 1,
-      // This ensures no data is actually sent to Datadog during tests
+      logInjection: false,
+      runtimeMetrics: false,
+      sampleRate: 0,
       profiling: false,
       plugins: false,
     });
-  } else if (isLocalDev) {
-    // Use local agent for development
-    tracer.init({
-      env: "development",
-      service: "oak-ai",
-      hostname,
-      logInjection: true,
-      runtimeMetrics: true,
-      sampleRate: 1,
-    });
+    console.log(
+      `Initialized no-op tracer for ${isTest ? "test" : "local development"} environment`,
+    );
   } else {
-    // Production configuration
     tracer.init({
       env: options.env || environment,
       service: options.service || "oak-ai",
