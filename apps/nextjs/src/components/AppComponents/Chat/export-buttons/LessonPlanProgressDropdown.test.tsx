@@ -27,9 +27,7 @@ describe("LessonPlanProgressDropdown", () => {
 
   it("renders the PartiallyCompleted story with correct closed state", () => {
     render(<PartiallyCompleted />);
-    // expect(screen.getByText("4 of 10 sections complete")).toBeInTheDocument();
-    expect(screen.getByText("5 of 10 sections complete")).toBeInTheDocument();
-    expect(screen.getByText("6 of 10 sections complete")).toBeInTheDocument();
+    expect(screen.getByText("7 of 10 sections complete")).toBeInTheDocument();
   });
 
   it("renders the FullyCompleted story with correct closed state", () => {
@@ -39,7 +37,7 @@ describe("LessonPlanProgressDropdown", () => {
 
   it("renders the PartialCycles story with correct closed state", () => {
     render(<PartialCycles />);
-    expect(screen.getByText("4 of 10 sections complete")).toBeInTheDocument();
+    expect(screen.getByText("5 of 10 sections complete")).toBeInTheDocument();
   });
 
   it("displays the dropdown menu when clicked and shows correct completed sections", async () => {
@@ -72,9 +70,9 @@ describe("LessonPlanProgressDropdown", () => {
       { name: "Prior knowledge", completed: true },
       { name: "Key learning points", completed: true },
       { name: "Misconceptions", completed: true },
-      { name: "Keywords", completed: false },
+      { name: "Key words", completed: false },
       { name: "Starter quiz", completed: false },
-      { name: "Learning cycles", completed: false },
+      { name: "Learning cycles", completed: true },
       { name: "Exit quiz", completed: false },
     ];
 
@@ -114,7 +112,7 @@ describe("LessonPlanProgressDropdown", () => {
       "Prior knowledge",
       "Key learning points",
       "Misconceptions",
-      "Keywords",
+      "Key words",
       "Starter quiz",
       "Learning cycles",
       "Exit quiz",
@@ -151,9 +149,9 @@ describe("LessonPlanProgressDropdown", () => {
       { name: "Prior knowledge", completed: true },
       { name: "Key learning points", completed: false },
       { name: "Misconceptions", completed: false },
-      { name: "Keywords", completed: false },
+      { name: "Key words", completed: false },
       { name: "Starter quiz", completed: false },
-      { name: "Learning cycles", completed: false },
+      { name: "Learning cycles", completed: true },
       { name: "Exit quiz", completed: false },
     ];
 
