@@ -1,6 +1,7 @@
 import { Aila } from ".";
 import { MockLLMService } from "../../tests/mocks/MockLLMService";
 import { setupPolly } from "../../tests/mocks/setupPolly";
+import { MockCategoriser } from "../features/categorisation/categorisers/MockCategoriser";
 import { AilaAuthenticationError } from "./AilaError";
 
 describe("Aila", () => {
@@ -284,5 +285,38 @@ describe("Aila", () => {
 
       expect(ailaInstance.lesson.plan.title).toBe(newTitle);
     }, 20000);
+  });
+
+  describe("categorisation", () => {
+    it("should use the provided MockCategoriser", async () => {
+      const mockedLessonPlan = {
+        title: "Mocked Lesson Plan",
+        subject: "Mocked Subject",
+        keyStage: "key-stage-3",
+      };
+
+      const mockCategoriser = new MockCategoriser({ mockedLessonPlan });
+
+      const ailaInstance = new Aila({
+        lessonPlan: {},
+        chat: { id: "123", userId: "user123" },
+        options: {
+          usePersistence: false,
+          useRag: false,
+          useAnalytics: false,
+          useModeration: false,
+        },
+        services: {
+          chatCategoriser: mockCategoriser,
+        },
+        plugins: [],
+      });
+
+      await ailaInstance.initialise();
+
+      expect(ailaInstance.lesson.plan.title).toBe("Mocked Lesson Plan");
+      expect(ailaInstance.lesson.plan.subject).toBe("Mocked Subject");
+      expect(ailaInstance.lesson.plan.keyStage).toBe("key-stage-3");
+    });
   });
 });

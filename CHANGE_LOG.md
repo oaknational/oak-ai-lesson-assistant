@@ -1,3 +1,17 @@
+# [1.2.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.1.42...v1.2.0) (2024-08-28)
+
+
+### Bug Fixes
+
+* quoting of moderation categories ([5dcf4df](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5dcf4df9c986e3b1594575041a0c70ff54088a6b))
+
+
+### Features
+
+* end of session survey ([ac9bbc0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ac9bbc00fe76a705715a0f80abb972fda1ef0ae5))
+* send quiz designer langchain ChatOpenAI calls through helicone ([5a798fa](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5a798fa7bed2cba51a29c37f6027bcd5c1c46a47))
+* start populating metadata under labs prefix ([efffd02](https://github.com/oaknational/oak-ai-lesson-assistant/commit/efffd02fff380c1df2854dddf8cc68b1a5ff02fd))
+
 ## [1.1.42](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.1.41...v1.1.42) (2024-08-22)
 
 
