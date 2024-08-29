@@ -70,5 +70,6 @@ export type AilaInitializationOptions = {
   plugins: AilaPlugin[];
   services?: {
     chatCategoriser?: AilaCategorisationFeature;
+    chatLlmService?: LLMService;
   };
 };
