@@ -21,23 +21,25 @@ const { Default, PartiallyCompleted, FullyCompleted, PartialCycles } =
 describe("LessonPlanProgressDropdown", () => {
   it("renders the Default story with correct closed state", () => {
     render(<Default />);
-    expect(screen.getByText("6 of 12 sections complete")).toBeInTheDocument();
+    expect(screen.getByText("4 of 10 sections complete")).toBeInTheDocument();
     expect(screen.queryByText("Cycles")).not.toBeInTheDocument();
   });
 
   it("renders the PartiallyCompleted story with correct closed state", () => {
     render(<PartiallyCompleted />);
-    expect(screen.getByText("8 of 12 sections complete")).toBeInTheDocument();
+    // expect(screen.getByText("4 of 10 sections complete")).toBeInTheDocument();
+    expect(screen.getByText("5 of 10 sections complete")).toBeInTheDocument();
+    expect(screen.getByText("6 of 10 sections complete")).toBeInTheDocument();
   });
 
   it("renders the FullyCompleted story with correct closed state", () => {
     render(<FullyCompleted />);
-    expect(screen.getByText("12 of 12 sections complete")).toBeInTheDocument();
+    expect(screen.getByText("10 of 10 sections complete")).toBeInTheDocument();
   });
 
   it("renders the PartialCycles story with correct closed state", () => {
     render(<PartialCycles />);
-    expect(screen.getByText("6 of 12 sections complete")).toBeInTheDocument();
+    expect(screen.getByText("4 of 10 sections complete")).toBeInTheDocument();
   });
 
   it("displays the dropdown menu when clicked and shows correct completed sections", async () => {
@@ -59,23 +61,21 @@ describe("LessonPlanProgressDropdown", () => {
       "lesson-plan-progress-dropdown-content",
     );
     expect(cyclesSection).toBeInTheDocument();
-    expect(cyclesSection).toHaveTextContent("Cycles 1-3");
+    expect(cyclesSection).toHaveTextContent("Learning cycles");
     const dropdownContent = screen.getByTestId(
       "lesson-plan-progress-dropdown-content",
     );
     const sectionStates = [
-      { name: "Title", completed: true },
-      { name: "Subject", completed: true },
-      { name: "Key Stage", completed: true },
-      { name: "Learning Outcome", completed: true },
-      { name: "Learning Cycles", completed: true },
-      { name: "Prior Knowledge", completed: true },
-      { name: "Key Learning Points", completed: true },
+      { name: "Lesson details", completed: true },
+      { name: "Lesson learning outcome", completed: true },
+      { name: "Learning cycle outcomes", completed: true },
+      { name: "Prior knowledge", completed: true },
+      { name: "Key learning points", completed: true },
       { name: "Misconceptions", completed: true },
       { name: "Keywords", completed: false },
-      { name: "Starter Quiz", completed: false },
-      { name: "Cycles 1-3", completed: false },
-      { name: "Exit Quiz", completed: false },
+      { name: "Starter quiz", completed: false },
+      { name: "Learning cycles", completed: false },
+      { name: "Exit quiz", completed: false },
     ];
 
     sectionStates.forEach(({ name, completed }) => {
@@ -108,18 +108,16 @@ describe("LessonPlanProgressDropdown", () => {
       "lesson-plan-progress-dropdown-content",
     );
     const allSections = [
-      "Title",
-      "Subject",
-      "Key Stage",
-      "Learning Outcome",
-      "Learning Cycles",
-      "Prior Knowledge",
-      "Key Learning Points",
+      "Lesson details",
+      "Lesson learning outcome",
+      "Learning cycle outcomes",
+      "Prior knowledge",
+      "Key learning points",
       "Misconceptions",
       "Keywords",
-      "Starter Quiz",
-      "Cycles 1-3",
-      "Exit Quiz",
+      "Starter quiz",
+      "Learning cycles",
+      "Exit quiz",
     ];
 
     allSections.forEach((name) => {
@@ -147,18 +145,16 @@ describe("LessonPlanProgressDropdown", () => {
       "lesson-plan-progress-dropdown-content",
     );
     const sectionStates = [
-      { name: "Title", completed: true },
-      { name: "Subject", completed: true },
-      { name: "Key Stage", completed: true },
-      { name: "Learning Outcome", completed: true },
-      { name: "Learning Cycles", completed: true },
-      { name: "Prior Knowledge", completed: true },
-      { name: "Key Learning Points", completed: false },
+      { name: "Lesson details", completed: true },
+      { name: "Lesson learning outcome", completed: true },
+      { name: "Learning cycle outcomes", completed: true },
+      { name: "Prior knowledge", completed: true },
+      { name: "Key learning points", completed: false },
       { name: "Misconceptions", completed: false },
       { name: "Keywords", completed: false },
-      { name: "Starter Quiz", completed: false },
-      { name: "Cycles 1-3", completed: false },
-      { name: "Exit Quiz", completed: false },
+      { name: "Starter quiz", completed: false },
+      { name: "Learning cycles", completed: false },
+      { name: "Exit quiz", completed: false },
     ];
 
     sectionStates.forEach(({ name, completed }) => {
