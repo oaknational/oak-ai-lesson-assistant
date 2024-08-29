@@ -93,8 +93,6 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
                   <CookieConsentProvider>
                     <AnalyticsProvider
                       avoOptions={{
-                        webDebugger: false,
-                        inspector: undefined,
                         webDebuggerOptions: {
                           position: WebDebuggerPosition.BottomLeft({
                             bottom: 0,
