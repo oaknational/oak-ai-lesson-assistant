@@ -61,6 +61,8 @@ const FeedBack = ({
                 </label>
                 <div className="flex w-full justify-between gap-6">
                   {rating.map((feedback) => {
+                    // first survey key should be $survey_response
+                    // see https://posthog.com/docs/surveys/implementing-custom-surveys under Capturing multiple responses
                     const surveyResponseKey =
                       i === 0 ? `$survey_response` : `$survey_response_${i}`;
 
