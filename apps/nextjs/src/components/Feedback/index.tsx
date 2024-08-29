@@ -28,7 +28,7 @@ const FeedBack = ({
   const [usersResponse, setUsersResponse] = useState<{ [key: string]: string }>(
     {},
   );
-  console.log("usersResponse", usersResponse);
+
   if (!survey?.id) return null;
 
   return (
@@ -47,6 +47,10 @@ const FeedBack = ({
         className="flex w-full flex-col gap-14"
       >
         {survey?.questions.map((question, i) => {
+          // first survey key should be $survey_response
+          // see https://posthog.com/docs/surveys/implementing-custom-surveys under Capturing multiple responses
+          const surveyResponseKey =
+            i === 0 ? `$survey_response` : `$survey_response_${i}`;
           if (question.type === "rating") {
             return (
               <div
@@ -68,15 +72,14 @@ const FeedBack = ({
                         onClick={() => {
                           setUsersResponse((prevState) => ({
                             ...prevState,
-                            [`$survey_response_${i}`]:
-                              feedback.number.toString(),
+                            [surveyResponseKey]: feedback.number.toString(),
                           }));
                         }}
                       >
                         <span
                           className={`text-lg ${
-                            usersResponse[`$survey_response_${i}`] ===
-                            feedback.toString()
+                            usersResponse[surveyResponseKey] ===
+                            feedback.number.toString()
                               ? `text-[#287C34]`
                               : `text-black`
                           }`}
@@ -85,8 +88,8 @@ const FeedBack = ({
                         </span>
                         <span
                           className={
-                            usersResponse[`$survey_response_${i}`] ===
-                            feedback.toString()
+                            usersResponse[surveyResponseKey] ===
+                            feedback.number.toString()
                               ? "opacity-100"
                               : "opacity-0"
                           }
@@ -97,6 +100,31 @@ const FeedBack = ({
                     );
                   })}
                 </div>
+              </div>
+            );
+          }
+          if (question.type === "open") {
+            return (
+              <div
+                key={question.question}
+                className="flex flex-col items-start justify-start"
+              >
+                <label
+                  htmlFor={question.question}
+                  className="mb-16 text-left text-2xl font-bold"
+                >
+                  {question.question}
+                </label>
+                <textarea
+                  className="h-32 w-full min-w-[300px] rounded border-2 border-black p-10"
+                  onChange={(e) => {
+                    setUsersResponse({
+                      ...usersResponse,
+                      [surveyResponseKey]: e.target.value,
+                    });
+                  }}
+                  id={question.question}
+                />
               </div>
             );
           }

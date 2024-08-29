@@ -53,3 +53,10 @@ export interface AilaErrorReportingFeature {
     breadcrumbs?: { category: string; message: string },
   ): T | null;
 }
+
+export interface AilaCategorisationFeature {
+  categorise(
+    messages: Message[],
+    lessonPlan: LooseLessonPlan,
+  ): Promise<LooseLessonPlan | undefined>;
+}
