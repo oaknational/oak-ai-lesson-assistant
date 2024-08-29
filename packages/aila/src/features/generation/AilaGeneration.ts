@@ -1,3 +1,10 @@
+import { PromptVariants } from "@oakai/core/src/models/promptVariants";
+import {
+  ailaGenerate,
+  generateAilaPromptVersionVariantSlug,
+} from "@oakai/core/src/prompts/lesson-assistant/variants";
+import { prisma, Prompt } from "@oakai/db";
+import { kv } from "@vercel/kv";
 import { getEncoding } from "js-tiktoken";
 
 import { AilaServices } from "../../core";
@@ -17,7 +24,7 @@ export class AilaGeneration {
   private _completionTokens: number = 0;
   private _totalTokens: number = 0;
   private _systemPrompt: string = "";
-  private _promptId: string = "clnnbmzso0000vgtj13dydvs7"; // #TODO fake the prompt id
+  private _promptId: string | null = null;
 
   constructor({
     aila,
@@ -25,12 +32,14 @@ export class AilaGeneration {
     status,
     chat,
     systemPrompt,
+    promptId,
   }: {
     aila: AilaServices;
     id: string;
     status: AilaGenerationStatus;
     chat: AilaChat;
     systemPrompt: string;
+    promptId?: string;
   }) {
     this._id = id;
     this._status = status;
@@ -38,9 +47,12 @@ export class AilaGeneration {
     this._startedAt = new Date();
     this._systemPrompt = systemPrompt;
     this._aila = aila;
+    if (promptId) {
+      this._promptId = promptId;
+    }
   }
 
-  complete({
+  async complete({
     status,
     responseText,
   }: {
@@ -50,7 +62,7 @@ export class AilaGeneration {
     this._status = status;
     this._completedAt = new Date();
     this._responseText = responseText;
-    this.calculateTokenUsage();
+    await this.calculateTokenUsage();
   }
 
   get id() {
@@ -63,6 +75,13 @@ export class AilaGeneration {
 
   get chat() {
     return this._chat;
+  }
+
+  public async setupPromptId(): Promise<string> {
+    if (!this._promptId) {
+      this._promptId = await this.fetchPromptId();
+    }
+    return this._promptId;
   }
 
   get promptId() {
@@ -115,7 +134,7 @@ export class AilaGeneration {
     );
   }
 
-  private calculateTokenUsage(): void {
+  private async calculateTokenUsage(): Promise<void> {
     if (!this._responseText) {
       return;
     }
@@ -126,5 +145,72 @@ export class AilaGeneration {
       this._responseText,
     ).length;
     this._totalTokens = this._promptTokens + this._completionTokens;
+  }
+
+  private async fetchPromptId(): Promise<string> {
+    const appSlug = "lesson-planner";
+    const promptSlug = "generate-lesson-plan";
+    const responseMode = "interactive";
+    const basedOn = !!this._aila.lesson.plan.basedOn;
+    const useRag = this._aila.options.useRag ?? true;
+
+    const variantSlug = generateAilaPromptVersionVariantSlug(
+      responseMode,
+      basedOn,
+      useRag,
+    );
+
+    let prompt: Prompt | null = null;
+    let promptId: string | undefined = undefined;
+
+    if (
+      process.env.NODE_ENV === "production" &&
+      process.env.VERCEL_GIT_COMMIT_SHA
+    ) {
+      const cacheKey = `prompt:${appSlug}:${promptSlug}:${variantSlug}:${process.env.VERCEL_GIT_COMMIT_SHA}`;
+      prompt = await kv.get(cacheKey);
+
+      if (!prompt) {
+        prompt = await prisma.prompt.findFirst({
+          where: {
+            variant: variantSlug,
+            appId: appSlug,
+            slug: promptSlug,
+            current: true,
+          },
+        });
+
+        if (prompt) {
+          // We can't use Prisma Accelerate to cache the result
+          // Because we need to ensure that each deployment
+          // we have fresh prompt data if the prompt has been updated
+          // Instead, use KV to cache the result for 5 minutes
+          await kv.set(cacheKey, prompt, { ex: 60 * 5 });
+        }
+      }
+    } else {
+      prompt = await prisma.prompt.findFirst({
+        where: {
+          variant: variantSlug,
+          appId: appSlug,
+          slug: promptSlug,
+          current: true,
+        },
+      });
+    }
+    if (!prompt) {
+      // If the prompt does not exist for this variant, we need to generate it
+      const prompts = new PromptVariants(prisma, ailaGenerate, promptSlug);
+      const created = await prompts.setCurrent(variantSlug, true);
+      promptId = created?.id;
+    }
+
+    promptId = promptId ?? prompt?.id;
+    if (!promptId) {
+      throw new Error(
+        "Prompt not found or created - please run pnpm prompts or pnpm prompts:dev in development",
+      );
+    }
+    return promptId;
   }
 }

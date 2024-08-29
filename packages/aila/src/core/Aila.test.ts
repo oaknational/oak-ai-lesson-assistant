@@ -1,7 +1,8 @@
 import { Aila } from ".";
-import { MockLLMService } from "../../tests/mocks/MockLLMService";
 import { setupPolly } from "../../tests/mocks/setupPolly";
+import { MockCategoriser } from "../features/categorisation/categorisers/MockCategoriser";
 import { AilaAuthenticationError } from "./AilaError";
+import { MockLLMService } from "./llm/MockLLMService";
 
 describe("Aila", () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -252,10 +253,9 @@ describe("Aila", () => {
           value: newTitle,
         },
       };
-      const llmService = new MockLLMService(
-        `${JSON.stringify(mockedResponse)}␞\n`,
-      );
-
+      const chatLlmService = new MockLLMService([
+        JSON.stringify(mockedResponse),
+      ]);
       const ailaInstance = new Aila({
         lessonPlan: {
           title: "Roman Britain",
@@ -266,7 +266,6 @@ describe("Aila", () => {
         chat: {
           id: "123",
           userId: "user123",
-          llmService,
         },
         options: {
           usePersistence: false,
@@ -275,6 +274,9 @@ describe("Aila", () => {
           useModeration: false,
         },
         plugins: [],
+        services: {
+          chatLlmService,
+        },
       });
 
       await ailaInstance.generateSync({
@@ -284,5 +286,87 @@ describe("Aila", () => {
 
       expect(ailaInstance.lesson.plan.title).toBe(newTitle);
     }, 20000);
+  });
+
+  describe("categorisation", () => {
+    it("should use the provided MockCategoriser", async () => {
+      const mockedLessonPlan = {
+        title: "Mocked Lesson Plan",
+        subject: "Mocked Subject",
+        keyStage: "key-stage-3",
+      };
+
+      const mockCategoriser = new MockCategoriser({ mockedLessonPlan });
+
+      const ailaInstance = new Aila({
+        lessonPlan: {},
+        chat: { id: "123", userId: "user123" },
+        options: {
+          usePersistence: false,
+          useRag: false,
+          useAnalytics: false,
+          useModeration: false,
+        },
+        services: {
+          chatLlmService: new MockLLMService(),
+          chatCategoriser: mockCategoriser,
+        },
+        plugins: [],
+      });
+
+      await ailaInstance.initialise();
+
+      expect(ailaInstance.lesson.plan.title).toBe("Mocked Lesson Plan");
+      expect(ailaInstance.lesson.plan.subject).toBe("Mocked Subject");
+      expect(ailaInstance.lesson.plan.keyStage).toBe("key-stage-3");
+    });
+  });
+
+  describe("categorisation and LLM service", () => {
+    it("should use both MockCategoriser and MockLLMService", async () => {
+      const mockedLessonPlan = {
+        title: "Mocked Lesson Plan",
+        subject: "Mocked Subject",
+        keyStage: "key-stage-3",
+      };
+
+      const mockCategoriser = new MockCategoriser({ mockedLessonPlan });
+
+      const mockLLMResponse = [
+        '{"type":"patch","reasoning":"Update title","value":{"op":"replace","path":"/title","value":"Updated Mocked Lesson Plan"}}␞\n',
+        '{"type":"patch","reasoning":"Update subject","value":{"op":"replace","path":"/subject","value":"Updated Mocked Subject"}}␞\n',
+      ];
+      const mockLLMService = new MockLLMService(mockLLMResponse);
+
+      const ailaInstance = new Aila({
+        lessonPlan: {},
+        chat: { id: "123", userId: "user123" },
+        options: {
+          usePersistence: false,
+          useRag: false,
+          useAnalytics: false,
+          useModeration: false,
+        },
+        services: {
+          chatCategoriser: mockCategoriser,
+          chatLlmService: mockLLMService,
+        },
+        plugins: [],
+      });
+
+      await ailaInstance.initialise();
+
+      // Check if MockCategoriser was used
+      expect(ailaInstance.lesson.plan.title).toBe("Mocked Lesson Plan");
+      expect(ailaInstance.lesson.plan.subject).toBe("Mocked Subject");
+      expect(ailaInstance.lesson.plan.keyStage).toBe("key-stage-3");
+
+      // Use MockLLMService to generate a response
+      await ailaInstance.generateSync({ input: "Test input" });
+
+      // Check if MockLLMService updates were applied
+      expect(ailaInstance.lesson.plan.title).toBe("Updated Mocked Lesson Plan");
+      expect(ailaInstance.lesson.plan.subject).toBe("Updated Mocked Subject");
+    });
   });
 });

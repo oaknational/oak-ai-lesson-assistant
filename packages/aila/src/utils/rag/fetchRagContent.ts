@@ -12,6 +12,8 @@ export async function fetchRagContent({
   id,
   k = 5,
   prisma,
+  chatId,
+  userId,
 }: {
   title: string;
   subject?: string;
@@ -20,10 +22,12 @@ export async function fetchRagContent({
   id: string;
   k: number;
   prisma: PrismaClientWithAccelerate;
+  chatId: string;
+  userId?: string;
 }) {
   let content = "[]";
 
-  const rag = new RAG(prisma);
+  const rag = new RAG(prisma, { chatId, userId });
   const ragLessonPlans = await tryWithErrorReporting(
     () => {
       return title && keyStage && subject
