@@ -189,20 +189,25 @@ export class AilaGeneration {
         }
       }
     } else {
-      prompt = await prisma.prompt.findFirst({
+      const promptQuery = {
         where: {
           variant: variantSlug,
           appId: appSlug,
           slug: promptSlug,
           current: true,
         },
-      });
+      };
+      prompt = await prisma.prompt.findFirst(promptQuery);
     }
     if (!prompt) {
-      // If the prompt does not exist for this variant, we need to generate it
-      const prompts = new PromptVariants(prisma, ailaGenerate, promptSlug);
-      const created = await prompts.setCurrent(variantSlug, true);
-      promptId = created?.id;
+      throw new Error(
+        "Prompt not found - please run pnpm prompts:dev in development or pnpm prompts in production/staging",
+      );
+
+      // // If the prompt does not exist for this variant, we need to generate it
+      // const prompts = new PromptVariants(prisma, ailaGenerate, promptSlug);
+      // const created = await prompts.setCurrent(variantSlug, true);
+      // promptId = created?.id;
     }
 
     promptId = promptId ?? prompt?.id;
