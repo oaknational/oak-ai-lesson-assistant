@@ -1,5 +1,6 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { demoUsers } from "@oakai/core";
+import { createHubspotCustomer } from "@oakai/core/src/analytics/hubspotClient";
 import { posthogServerClient } from "@oakai/core/src/analytics/posthogServerClient";
 import { z } from "zod";
 
@@ -78,6 +79,20 @@ export const authRouter = router({
           properties: {
             isDemoUser,
           },
+        });
+
+        const email = updatedUser.emailAddresses[0]?.emailAddress;
+        if (!email) {
+          throw new Error("Email address is expected on clerk user");
+        }
+
+        await createHubspotCustomer({
+          email,
+          firstName: updatedUser.firstName,
+          lastName: updatedUser.lastName,
+          marketingAccepted: Boolean(
+            updatedUser.privateMetadata.acceptedPrivacyPolicy,
+          ),
         });
 
         const { acceptedPrivacyPolicy, acceptedTermsOfUse } =
