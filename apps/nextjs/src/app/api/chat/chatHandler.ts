@@ -242,7 +242,6 @@ export async function handleChatPostRequest(
 
     const abortController = handleConnectionAborted(req);
     const stream = await generateChatStream(aila, abortController);
-    console.log("Completed handleChatPostRequest. Returning response");
     return new StreamingTextResponse(stream);
   } catch (e) {
     return handleChatException(span, e, userId, chatId, prisma);

@@ -107,6 +107,4 @@ if (isLocalDev) {
   const testSpan = tracer.startSpan("server-test-span");
   testSpan.setAttribute("test-attribute", "server-test-value");
   testSpan.end();
-
-  console.log("Server test span created and ended");
 }
