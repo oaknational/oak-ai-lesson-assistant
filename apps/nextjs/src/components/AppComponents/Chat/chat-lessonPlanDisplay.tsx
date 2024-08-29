@@ -173,6 +173,7 @@ export const LessonPlanDisplay = ({
                     value={value}
                     userHasCancelledAutoScroll={userHasCancelledAutoScroll}
                     documentContainerRef={documentContainerRef}
+                    showLessonMobile={showLessonMobile}
                   />
                 );
               }

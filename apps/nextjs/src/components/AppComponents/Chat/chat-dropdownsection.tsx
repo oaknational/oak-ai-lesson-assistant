@@ -16,6 +16,7 @@ const DropDownSection = ({
   value,
   documentContainerRef,
   userHasCancelledAutoScroll,
+  showLessonMobile,
 }: {
   objectKey: string;
   sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
@@ -23,6 +24,7 @@ const DropDownSection = ({
   value: any;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
   userHasCancelledAutoScroll: boolean;
+  showLessonMobile: boolean;
 }) => {
   const sectionRef = useRef(null);
   if (sectionRefs) sectionRefs[objectKey] = sectionRef;
@@ -32,6 +34,12 @@ const DropDownSection = ({
   );
   const [prevValue, setPrevValue] = useState<Record<string, unknown>>({});
   const [sectionHasFired, setSectionHasFired] = useState(false);
+
+  useEffect(() => {
+    if (!showLessonMobile) {
+      setIsOpen(false);
+    }
+  }, [showLessonMobile]);
 
   useEffect(() => {
     if (value === null || value === undefined || !value) {
