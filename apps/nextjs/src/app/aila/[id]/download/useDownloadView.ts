@@ -39,7 +39,7 @@ export function useDownloadView({
   const additionalMaterialsExport = useExportAdditionalMaterials(exportProps);
 
   const { sections, totalSections, totalSectionsComplete } =
-    useProgressForDownloads(lessonPlan);
+    useProgressForDownloads({ lessonPlan, isStreaming: false });
 
   return {
     lessonSlidesExport,

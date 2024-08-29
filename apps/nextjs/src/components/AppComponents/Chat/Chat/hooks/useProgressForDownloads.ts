@@ -16,11 +16,50 @@ function getCompleteness(errors: ZodIssue[], fields: string[]) {
 
   return !hasErrorInSomeField;
 }
+type ProgressSections = {
+  label: string;
+  key: string;
+  complete: boolean;
+}[];
+type ProgressForDownloads = {
+  sections: ProgressSections;
+  totalSections: number;
+  totalSectionsComplete: number;
+};
 
-export function useProgressForDownloads(lessonPlan: LooseLessonPlan) {
+export function useProgressForDownloads({
+  lessonPlan,
+  isStreaming,
+}: {
+  lessonPlan: LooseLessonPlan;
+  isStreaming: boolean;
+}): ProgressForDownloads {
   return useMemo(() => {
     const parsedLessonPlan = lessonPlanSectionsSchema.safeParse(lessonPlan);
-    const errors = parsedLessonPlan.error?.errors || [];
+    const errors =
+      parsedLessonPlan.error?.errors.filter((error) => {
+        if (isStreaming) {
+          /**
+           * When we have partial data, we get errors about nested
+           * properties. We want to filter these out during streaming to avoid a
+           * flickering progress bar.
+           */
+          return error.path.length === 1;
+        }
+        if (!isStreaming) {
+          /**
+           * When not streaming, we want to check that each section is successfully
+           * parsed, so we keep all errors.
+           *
+           * This means we know it's in the correct structure for exports.
+           *
+           * Most of the time, this will be the same as the above condition because
+           * we don't expect to have errors in the data structure when Aila is not
+           * streaming.
+           */
+          return true;
+        }
+      }) || [];
     const sections = [
       {
         label: "Lesson details",
@@ -84,5 +123,5 @@ export function useProgressForDownloads(lessonPlan: LooseLessonPlan) {
       totalSections,
       totalSectionsComplete,
     };
-  }, [lessonPlan]);
+  }, [lessonPlan, isStreaming]);
 }

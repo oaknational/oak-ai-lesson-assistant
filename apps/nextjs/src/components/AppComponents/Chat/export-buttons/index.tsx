@@ -29,6 +29,7 @@ const ExportButtons = ({
         <div className="flex items-center space-x-14">
           <LessonPlanProgressDropdown
             lessonPlan={lessonPlan}
+            isStreaming={isStreaming}
             sectionRefs={sectionRefs}
             documentContainerRef={documentContainerRef}
           />

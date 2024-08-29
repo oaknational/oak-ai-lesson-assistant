@@ -11,15 +11,16 @@ import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 
 type LessonPlanProgressDropdownProps = Readonly<{
   lessonPlan: LooseLessonPlan;
+  isStreaming: boolean;
   sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
 }>;
 
 export const LessonPlanProgressDropdown: React.FC<
   LessonPlanProgressDropdownProps
-> = ({ lessonPlan, sectionRefs, documentContainerRef }) => {
+> = ({ lessonPlan, sectionRefs, documentContainerRef, isStreaming }) => {
   const { sections, totalSections, totalSectionsComplete } =
-    useProgressForDownloads(lessonPlan);
+    useProgressForDownloads({ lessonPlan, isStreaming });
   const [openProgressDropDown, setOpenProgressDropDown] = useState(false);
 
   return (
