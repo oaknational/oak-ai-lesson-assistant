@@ -1,4 +1,4 @@
-import { humanizeCamelCaseString } from "@oakai/core/src/utils/humanizeCamelCaseString";
+import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
 import { isArray, isNumber, isObject, isString } from "remeda";
 
 import {
@@ -20,18 +20,18 @@ export function sortIgnoringSpecialChars(strings: string[]): string[] {
 }
 
 const keyToHeadingMappings = {
-  spokenExplanation: "Teacher Explanation",
-  imagePrompt: "Image Search Suggestion",
-  cycle1: "Learning Cycle 1",
-  cycle2: "Learning Cycle 2",
-  cycle3: "Learning Cycle 3",
+  spokenExplanation: "Teacher explanation",
+  imagePrompt: "Image search suggestion",
+  cycle1: "Learning cycle 1",
+  cycle2: "Learning cycle 2",
+  cycle3: "Learning cycle 3",
 };
 
 export function keyToHeading(key: string) {
   if (key in keyToHeadingMappings) {
     return keyToHeadingMappings[key as keyof typeof keyToHeadingMappings];
   }
-  return humanizeCamelCaseString(key);
+  return camelCaseToSentenceCase(key);
 }
 export function sectionToMarkdown(
   key: string,

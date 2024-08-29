@@ -9,6 +9,6 @@ export const lessonSections = [
   "Misconceptions",
   "Keywords",
   "Starter quiz",
-  "Cycle 1",
+  "Learning cycle 1",
   "Exit quiz",
 ];

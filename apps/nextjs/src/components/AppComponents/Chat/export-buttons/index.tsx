@@ -80,7 +80,7 @@ const ExportButtons = ({
 export default ExportButtons;
 
 export function handleRewordingSections(section: string) {
-  if (section.includes("Cycle 1")) {
+  if (section.includes("Learning cycle 1")) {
     return "Learning cycles";
   }
   if (section === "Learning cycles") {
