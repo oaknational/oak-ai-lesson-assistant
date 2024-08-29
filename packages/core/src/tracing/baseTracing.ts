@@ -23,7 +23,10 @@ export function initializeTracer(options: DatadogOptions) {
     options?.hostname ??
     "localhost";
 
-  const debugMode = true; //options.debug || process.env.DD_TRACE_DEBUG === 'true';
+  const debugMode =
+    !isTest && !isLocalDev
+      ? true
+      : options.debug || process.env.DD_TRACE_DEBUG === "true";
 
   const logLevel: "debug" | "error" = debugMode ? "debug" : "error";
   if (isTest || isLocalDev) {
@@ -36,14 +39,14 @@ export function initializeTracer(options: DatadogOptions) {
     });
   } else {
     const initialisationOptions = {
-      env: options.env || environment,
-      service: options.service || "oak-ai",
+      env: options.env ?? environment,
+      service: options.service ?? "oak-ai",
       hostname,
       logInjection:
         options.logInjection !== undefined ? options.logInjection : true,
       runtimeMetrics:
         options.runtimeMetrics !== undefined ? options.runtimeMetrics : true,
-      sampleRate: options.sampleRate || 1,
+      sampleRate: options.sampleRate ?? 1,
       profiling: options.profiling !== undefined ? options.profiling : true,
       plugins: options.plugins !== undefined ? options.plugins : false,
       debug: true,

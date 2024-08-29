@@ -12,5 +12,5 @@ export const datadogApi = new v2.MetricsApi(configuration);
 export const serverRuntimeConfig = {
   DATADOG_API_KEY: process.env.DD_API_KEY,
   DATADOG_APPLICATION_KEY: process.env.DD_APP_KEY,
-  DATADOG_SITE: process.env.DD_SITE || "datadoghq.eu",
+  DATADOG_SITE: process.env.DD_SITE ?? "datadoghq.eu",
 };
