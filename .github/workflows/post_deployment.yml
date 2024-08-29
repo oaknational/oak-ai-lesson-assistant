@@ -37,6 +37,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: mcky/find-and-replace-pull-request-body@v1.1.6-mcky
+        if: ${{ steps.ref_from_sha.outputs.pr_number }}
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           prNumber: ${{ steps.ref_from_sha.outputs.pr_number }}
