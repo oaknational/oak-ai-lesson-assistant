@@ -1,7 +1,7 @@
 import { initializeTracer, tracer as baseTracer, isTest } from "./baseTracing";
 import { mockTracer } from "./mockTracer";
 
-initializeTracer();
+initializeTracer({});
 
 export interface TracingSpan {
   setTag: (key: string, value: any) => void;

@@ -4,7 +4,24 @@ export const environment = process.env.NODE_ENV || "development";
 export const isTest = environment === "test";
 export const isLocalDev = environment === "development";
 
-export function initializeTracer() {
+interface DatadogOptions {
+  env?: string;
+  service?: string;
+  hostname?: string;
+  logInjection?: boolean;
+  runtimeMetrics?: boolean;
+  sampleRate?: number;
+  profiling?: boolean;
+  plugins?: boolean;
+}
+
+export function initializeTracer(options: DatadogOptions) {
+  const hostname =
+    process.env.NEXT_PUBLIC_VERCEL_URL ??
+    process.env.VERCEL_URL ??
+    options?.hostname ??
+    "localhost";
+
   if (isTest) {
     // Use a no-op tracer for tests
     tracer.init({
@@ -20,6 +37,7 @@ export function initializeTracer() {
     tracer.init({
       env: "development",
       service: "oak-ai",
+      hostname,
       logInjection: true,
       runtimeMetrics: true,
       sampleRate: 1,
@@ -27,11 +45,16 @@ export function initializeTracer() {
   } else {
     // Production configuration
     tracer.init({
-      env: environment,
-      service: "oak-ai",
-      logInjection: true,
-      runtimeMetrics: true,
-      sampleRate: 1,
+      env: options.env || environment,
+      service: options.service || "oak-ai",
+      hostname,
+      logInjection:
+        options.logInjection !== undefined ? options.logInjection : true,
+      runtimeMetrics:
+        options.runtimeMetrics !== undefined ? options.runtimeMetrics : true,
+      sampleRate: options.sampleRate || 1,
+      profiling: options.profiling !== undefined ? options.profiling : true,
+      plugins: options.plugins !== undefined ? options.plugins : true,
     });
   }
 }
