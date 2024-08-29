@@ -7,12 +7,17 @@ import {
   NoopSpanProcessor,
 } from "@opentelemetry/sdk-trace-base";
 
-export const isTest = process.env.NODE_ENV === "test";
-export const isLocalDev = process.env.NODE_ENV === "development";
-export const telemetryEnabled =
-  isTest ?? process.env.TELEMETRY_ENABLED === "true";
 export const environment =
   process.env.NEXT_PUBLIC_VERCEL_ENV || process.env.NODE_ENV || "production";
+export const isTest = environment === "test";
+export const isLocalDev = environment === "development";
+export const enableTelemetryInLocalDev =
+  environment === "development" && process.env.TELEMETRY_ENABLED === "true";
+
+// Enable telemetry by default, but allow local devs to disable it
+export const telemetryEnabled =
+  ["test", "staging", "production"].includes(environment) ||
+  enableTelemetryInLocalDev;
 
 export function createExporter(isServer: boolean) {
   if (!telemetryEnabled) {
