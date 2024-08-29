@@ -210,6 +210,7 @@ export class AilaChat implements AilaChatService {
       systemPrompt,
       status: "PENDING",
     });
+    await this._generation.setupPromptId();
     this._chunks = [];
   }
 
@@ -230,7 +231,7 @@ export class AilaChat implements AilaChatService {
     if (status === "SUCCESS") {
       const responseText = this.accumulatedText();
       invariant(responseText, "Response text not set");
-      this._generation.complete({ status, responseText });
+      await this._generation.complete({ status, responseText });
     }
     this._generation.persist(status);
   }

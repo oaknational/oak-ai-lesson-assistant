@@ -8,7 +8,7 @@ import { LooseLessonPlan } from "../../protocol/schema";
 import { minifyLessonPlanForRelevantLessons } from "../../utils/lessonPlan/minifyLessonPlanForRelevantLessons";
 
 export class AilaRag {
-  private _aila?: AilaServices;
+  private _aila: AilaServices;
   private _rag: RAG;
   private _prisma: PrismaClientWithAccelerate;
 
@@ -16,12 +16,15 @@ export class AilaRag {
     aila,
     prisma,
   }: {
-    aila?: AilaServices;
+    aila: AilaServices;
     prisma?: PrismaClientWithAccelerate;
   }) {
     this._aila = aila;
     this._prisma = prisma ?? globalPrisma;
-    this._rag = new RAG(this._prisma);
+    this._rag = new RAG(this._prisma, {
+      userId: aila.userId,
+      chatId: aila.chatId,
+    });
   }
 
   public async fetchRagContent({
