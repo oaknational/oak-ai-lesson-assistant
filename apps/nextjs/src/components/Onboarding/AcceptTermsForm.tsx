@@ -50,7 +50,7 @@ export const AcceptTermsForm = () => {
       await reloadSession();
       logger.debug("Session token refreshed successfully. Redirecting");
 
-      window.location.href = "/";
+      window.location.href = "/?reason=onboarded";
     } catch (error) {
       logger.error(error, "An error occurred while accepting terms of use");
     }
