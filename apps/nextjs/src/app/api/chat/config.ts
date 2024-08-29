@@ -1,9 +1,9 @@
 import { Aila, AilaInitializationOptions } from "@oakai/aila";
+import { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import {
   prisma as globalPrisma,
   type PrismaClientWithAccelerate,
 } from "@oakai/db";
-import { Span } from "@opentelemetry/api";
 import { nanoid } from "ai";
 
 import { handleUserLookup as defaultHandleUserLookup } from "./user";
@@ -12,10 +12,7 @@ import { createWebActionsPlugin } from "./webActionsPlugin";
 export interface Config {
   shouldPerformUserLookup: boolean;
   mockUserId?: string;
-  handleUserLookup: (
-    span: Span,
-    id: string,
-  ) => Promise<
+  handleUserLookup: (chatId: string) => Promise<
     | {
         userId: string;
       }

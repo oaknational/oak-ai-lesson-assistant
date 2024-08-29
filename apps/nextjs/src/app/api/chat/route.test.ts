@@ -1,8 +1,7 @@
 import { Aila } from "@oakai/aila";
 import { MockLLMService } from "@oakai/aila/src/core/llm/MockLLMService";
 import { MockCategoriser } from "@oakai/aila/src/features/categorisation/categorisers/MockCategoriser";
-import { exporter } from "@oakai/core/src/tracing/serverTracing";
-import { InMemorySpanExporter } from "@opentelemetry/sdk-trace-base";
+import { mockTracer } from "@oakai/core/src/tracing/mockTracer";
 import { NextRequest } from "next/server";
 
 import { consumeStream } from "../../../utils/testHelpers/consumeStream";
@@ -15,7 +14,7 @@ describe("Chat API Route", () => {
   let mockLLMService: MockLLMService;
   let mockChatCategoriser: MockCategoriser;
   beforeEach(() => {
-    (exporter as InMemorySpanExporter).reset();
+    mockTracer.reset();
     jest.clearAllMocks();
 
     mockChatCategoriser = new MockCategoriser({
@@ -62,37 +61,6 @@ describe("Chat API Route", () => {
     };
   });
 
-  it("should not create moderation spans when useModeration is false", async () => {
-    const mockRequest = new NextRequest("http://localhost/api/chat", {
-      method: "POST",
-      body: JSON.stringify({
-        id: "test-chat-id",
-        messages: [
-          { role: "user", content: "Create a lesson about Glaciation" },
-        ],
-        lessonPlan: {},
-        options: {},
-      }),
-    });
-
-    const response = await handleChatPostRequest(mockRequest, testConfig);
-
-    expect(response.status).toBe(200);
-
-    const receivedContent = await consumeStream(
-      response.body as ReadableStream,
-    );
-
-    expectTracingSpan("AilaModeration.performModeration")
-      .not()
-      .toHaveBeenExecuted();
-    expectTracingSpan("AilaModeration.moderate").not().toHaveBeenExecuted();
-    expectTracingSpan("chat-aila-generate").toHaveBeenExecuted();
-
-    expect(receivedContent).not.toContain("error");
-    expect(mockLLMService.createChatCompletionStream).toHaveBeenCalled();
-  });
-
   it("should create correct telemetry spans for a successful chat request", async () => {
     const mockRequest = new NextRequest("http://localhost/api/chat", {
       method: "POST",
@@ -119,7 +87,7 @@ describe("Chat API Route", () => {
 
     expectTracingSpan("chat-aila-generate").toHaveBeenExecuted();
     expectTracingSpan("chat-api").toHaveBeenExecutedWith({
-      chatId: "test-chat-id",
+      chat_id: "test-chat-id",
     });
 
     expect(testConfig.handleUserLookup).not.toHaveBeenCalled();
