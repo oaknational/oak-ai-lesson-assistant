@@ -38,7 +38,7 @@ function basedOnTitle(basedOn: string | BasedOnOptional) {
 }
 
 const displayStyles = cva(
-  "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24 sm:pt-29",
+  "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24 ",
 );
 
 const organiseSections = [

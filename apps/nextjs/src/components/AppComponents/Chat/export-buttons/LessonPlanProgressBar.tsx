@@ -1,11 +1,6 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Flex } from "@radix-ui/themes";
-
-import { Icon } from "@/components/Icon";
-import { scrollToRef } from "@/utils/scrollToRef";
 
 export const LESSON_PLAN_SECTIONS = [
   { key: "title", title: "Title" },

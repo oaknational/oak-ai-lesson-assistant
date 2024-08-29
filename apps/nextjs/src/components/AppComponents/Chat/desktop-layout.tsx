@@ -7,11 +7,11 @@ import { useDemoLocking } from "hooks/useDemoLocking";
 import { useMobileLessonPullOutControl } from "hooks/useMobileLessonPullOutControl";
 
 import AiIcon from "@/components/AiIcon";
-import Button from "@/components/Button";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import { cn } from "@/lib/utils";
 
+import { useDialog } from "../DialogContext";
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
 import { ChatList } from "./chat-list";
 import { ChatPanel } from "./chat-panel";
@@ -19,7 +19,6 @@ import { ChatPanelArea } from "./chat-panel-area";
 import QuickActionButtons from "./chat-quick-buttons";
 import ExportButtons from "./export-buttons";
 import { LessonPlanProgressBar } from "./export-buttons/LessonPlanProgressBar";
-import { LessonPlanProgressDropdown } from "./export-buttons/LessonPlanProgressDropdown";
 import ChatButton from "./ui/chat-button";
 
 export interface DesktopChatLayoutProps {
@@ -51,7 +50,7 @@ export const DesktopChatLayout = ({
     ailaStreamingStatus,
     messages,
   });
-
+  const { setDialogWindow } = useDialog();
   const scrollToBottom = () => {
     if (chatEndRef.current) {
       setShowScrollButton(false);
@@ -110,7 +109,7 @@ export const DesktopChatLayout = ({
               New lesson
             </ChatButton>
           </div>
-          <div className="mt-6 flex justify-end">
+          <div className="mt-6 flex justify-end sm:hidden">
             <button
               onClick={() => setShowLessonMobile(!showLessonMobile)}
               className="flex items-center gap-5"
@@ -138,18 +137,18 @@ export const DesktopChatLayout = ({
         </Flex>
 
         <div
-          className={`fixed bottom-0 ${showLessonMobile ? `right-0` : `right-[-100%]`} right-0 top-0 z-30 w-[95%] bg-white duration-300 sm:relative  sm:z-0  sm:w-[50%] lg:w-full`}
+          className={`fixed bottom-0 ${showLessonMobile ? `right-0` : `right-[-100%] sm:right-0`} right-0 top-0 z-30 w-[95%] bg-white shadow-md duration-300 sm:relative  sm:z-0  sm:w-[50%] sm:shadow-none lg:w-full`}
           ref={documentContainerRef}
           onScroll={handleScroll}
           style={{ overflowY: "auto" }}
         >
-          <div className="hidden sm:block">
+          <div className="mt-26 hidden sm:block">
             <ExportButtons
               sectionRefs={sectionRefs}
               documentContainerRef={documentContainerRef}
             />
           </div>
-          <div className="ml-[-10px] mt-30 flex px-14 sm:hidden">
+          <div className="ml-[-10px] mt-30 flex justify-between px-14 sm:hidden">
             <button
               onClick={() => {
                 setShowLessonMobile(false);
@@ -162,8 +161,20 @@ export const DesktopChatLayout = ({
               </span>
               <span className="text-base font-bold">Hide lesson</span>
             </button>
+            <button
+              className="scale-75"
+              onClick={() => {
+                if (demo.isSharingEnabled) {
+                  setDialogWindow("share-chat");
+                } else {
+                  setDialogWindow("demo-share-locked");
+                }
+              }}
+            >
+              <OakIcon iconName="share" />
+            </button>
           </div>
-          <div className="px-14 pb-9 pt-12">
+          <div className="block px-14 pb-9 pt-12 sm:hidden">
             <LessonPlanProgressBar lessonPlan={lessonPlan} />
           </div>
 

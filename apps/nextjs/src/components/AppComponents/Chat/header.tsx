@@ -7,7 +7,6 @@ import Link from "next/link";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import { Icon } from "@/components/Icon";
-import { Logo } from "@/components/Logo";
 import OakIconLogo from "@/components/OakIconLogo";
 
 import BetaTag from "./beta-tag";
@@ -56,11 +55,11 @@ export function Header() {
             <span className="hidden font-bold sm:block">
               AI lesson assistant
             </span>
-            <span className="flex items-center justify-center gap-8  sm:hidden">
+            <span className="flex items-center justify-center gap-9  sm:hidden">
               <Link href="/" aria-label="go to home page">
                 <OakIconLogo />
               </Link>
-              <span className="font-bold">Aila</span>
+              <span className="text-xl font-bold">Aila</span>
             </span>
             <div className="hidden sm:flex">
               <BetaTag />
@@ -79,9 +78,9 @@ export function Header() {
         </div>
         <div className="flex items-center justify-end space-x-12">
           <div className="flex sm:hidden">
-            <button>
+            <Link href="/aila/help">
               <OakIcon iconName="question-mark" />
-            </button>
+            </Link>
           </div>
           <div className="= flex items-center">
             <UserOrLogin />
