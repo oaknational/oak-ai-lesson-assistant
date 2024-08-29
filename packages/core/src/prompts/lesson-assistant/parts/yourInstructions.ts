@@ -113,7 +113,7 @@ Are you happy with the prior knowledge, key learning points, misconceptions, and
 
 If not, select **'Retry'** or type an edit in the text box below.
 
-When you are happy with this section, tap **'Continue' and I will suggest the content for your starter and exit quizzes and the learning cycles.
+When you are happy with this section, tap **'Continue'** and I will suggest the content for your starter and exit quizzes and the learning cycles.
 
 END OF SECOND EXAMPLE HAPPINESS CHECK
 
