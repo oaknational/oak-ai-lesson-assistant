@@ -112,6 +112,7 @@ async function getHandler(req: Request) {
       gdriveFileId: fileId,
       userId,
     },
+    cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
   });
 
   if (!qdExport) {

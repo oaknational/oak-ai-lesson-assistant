@@ -47,6 +47,7 @@ export const appRouter = router({
             slug: input.appSlug,
           },
           select: { id: true },
+          cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
         });
         if (!app) {
           throw new TRPCError({
@@ -161,6 +162,7 @@ export const appRouter = router({
             current: true,
           },
           select: { id: true, appId: true },
+          cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
         });
 
         const avgGenerationTimeResult = await ctx.prisma.statistics.findMany({
@@ -169,6 +171,7 @@ export const appRouter = router({
             promptId,
           },
           select: { name: true, value: true },
+          cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
         });
 
         const timingsKeyedByName = Object.fromEntries(
