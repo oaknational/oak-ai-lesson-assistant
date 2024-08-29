@@ -29,7 +29,7 @@ export const OnBoarding = () => {
         logger.debug("Demo status set successfully");
         await reloadSession();
         logger.debug("Session token refreshed successfully. Redirecting");
-        window.location.href = "/";
+        window.location.href = "/?reason=metadata-upgraded";
       }
     }
     handleDemoStatusSet();
