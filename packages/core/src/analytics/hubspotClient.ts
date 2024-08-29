@@ -33,10 +33,10 @@ export const createHubspotCustomer = async ({
     );
     id = result.id;
   } catch (e) {
-    if (e instanceof ApiException && e.code === 404) {
-      return;
+    const isNotFoundError = e instanceof ApiException && e.code === 404;
+    if (!isNotFoundError) {
+      throw e;
     }
-    throw e;
   }
 
   const properties = {
