@@ -13,6 +13,7 @@ interface DatadogOptions {
   sampleRate?: number;
   profiling?: boolean;
   plugins?: boolean;
+  debug?: boolean;
 }
 
 export function initializeTracer(options: DatadogOptions) {
@@ -22,6 +23,9 @@ export function initializeTracer(options: DatadogOptions) {
     options?.hostname ??
     "localhost";
 
+  const debugMode = true; //options.debug || process.env.DD_TRACE_DEBUG === 'true';
+
+  const logLevel: "debug" | "error" = debugMode ? "debug" : "error";
   if (isTest || isLocalDev) {
     tracer.init({
       logInjection: false,
@@ -42,6 +46,18 @@ export function initializeTracer(options: DatadogOptions) {
       sampleRate: options.sampleRate || 1,
       profiling: options.profiling !== undefined ? options.profiling : true,
       plugins: options.plugins !== undefined ? options.plugins : false,
+      debug: true,
+      logLevel,
+      logger: {
+        debug: (message: string | Error) =>
+          console.debug(`[dd-trace debug] ${message}`),
+        info: (message: string | Error) =>
+          console.info(`[dd-trace info] ${message}`),
+        warn: (message: string | Error) =>
+          console.warn(`[dd-trace warn] ${message}`),
+        error: (message: string | Error) =>
+          console.error(`[dd-trace error] ${message}`),
+      },
     };
     console.log(
       "Initializing Datadog tracer with options",

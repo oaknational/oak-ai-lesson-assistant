@@ -28,6 +28,7 @@
     "contrib",
     "cuid",
     "dashify",
+    "datadoghq",
     "dialog",
     "Dialogs",
     "distractor",
