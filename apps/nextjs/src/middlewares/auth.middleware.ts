@@ -7,6 +7,15 @@ import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 import { sentrySetUser } from "@/lib/sentry/sentrySetUser";
 
+declare global {
+  interface CustomJwtSessionClaims {
+    labs: {
+      isDemoUser: boolean | null;
+      isOnboarded: boolean | null;
+    };
+  }
+}
+
 const publicRoutes = [
   "/api/health",
   "/aila/health",
@@ -38,26 +47,88 @@ const publicRoutes = [
   "/sign-up(.*)",
 ];
 
-if (process.env.NODE_ENV === "development") {
-  // This allows us to warm up the chat server with live reload
-  // So we get something closer to the live experience
-  // Without having to wait for each page to compile as we navigate
-  publicRoutes.push("/api/chat");
-  publicRoutes.push("/aila");
-}
-
 const isPublicRoute = createRouteMatcher(publicRoutes);
+
+// This allows us to warm up the chat server with live reload
+// So we get something closer to the live experience
+// Without having to wait for each page to compile as we navigate
+const isPreloadableRoute = createRouteMatcher([
+  ...publicRoutes,
+  "/api/chat",
+  "/aila",
+]);
+
+const isOnboardingRoute = createRouteMatcher([
+  "/onboarding",
+  "/sign-in",
+  // NOTE: Be careful that this request doesn't batch as it will change the path
+  "/api/trpc/main/auth.setDemoStatus",
+  "/api/trpc/main/auth.acceptTerms",
+  "/api/trpc/main",
+]);
+
+const isHomepage = createRouteMatcher(["/"]);
+
+const shouldInterceptRouteForOnboarding = (req: NextRequest) => {
+  if (isOnboardingRoute(req)) {
+    return false;
+  }
+  if (isHomepage(req)) {
+    return true;
+  }
+  if (isPublicRoute(req)) {
+    return false;
+  }
+  return true;
+};
+
+const needsToCompleteOnboarding = (sessionClaims: CustomJwtSessionClaims) => {
+  const labs = sessionClaims.labs;
+  return !labs.isOnboarded || labs.isDemoUser === null;
+};
+
+const LOG = false;
+const logger = (request: NextRequest) => (message: string) => {
+  if (LOG) {
+    console.log(`[AUTH] ${request.url} ${message}`);
+  }
+};
 
 function conditionallyProtectRoute(
   auth: ClerkMiddlewareAuth,
-  request: NextRequest,
+  req: NextRequest,
 ) {
   const authObject = auth();
+  const { userId, redirectToSignIn, sessionClaims } = authObject;
+  const log = logger(req);
+
   sentrySetUser(authObject);
 
-  if (!isPublicRoute(request)) {
-    authObject.protect();
+  if (userId && needsToCompleteOnboarding(sessionClaims)) {
+    if (shouldInterceptRouteForOnboarding(req)) {
+      log("Incomplete onboarding: REDIRECT");
+      return NextResponse.redirect(new URL("/onboarding", req.url));
+    }
   }
+
+  if (isPublicRoute(req)) {
+    log("Public route: ALLOW");
+    return;
+  }
+
+  if (process.env.NODE_ENV === "development" && req.headers["x-dev-preload"]) {
+    if (isPreloadableRoute(req)) {
+      log("Dev preload route: ALLOW");
+      return;
+    }
+  }
+
+  if (!userId) {
+    log("Protected route: REDIRECT");
+    return redirectToSignIn({ returnBackUrl: req.url });
+  }
+
+  log("Protected route: ALLOW");
 }
 
 export async function authMiddleware(
@@ -67,10 +138,9 @@ export async function authMiddleware(
   const configuredClerkMiddleware = clerkMiddleware(conditionallyProtectRoute);
 
   const response = await configuredClerkMiddleware(request, event);
-
-  if (!response) {
-    return NextResponse.next({ request });
+  if (response) {
+    return response;
   }
 
-  return response;
+  return NextResponse.next({ request });
 }
