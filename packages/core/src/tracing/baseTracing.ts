@@ -30,9 +30,6 @@ export function initializeTracer(options: DatadogOptions) {
       profiling: false,
       plugins: false,
     });
-    console.log(
-      `Initialized no-op tracer for ${isTest ? "test" : "local development"} environment`,
-    );
   } else {
     const initialisationOptions = {
       env: options.env || environment,
