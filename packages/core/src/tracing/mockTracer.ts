@@ -1,8 +1,8 @@
 import { TracingSpan } from "./serverTracing";
 
 class MockSpan implements TracingSpan {
-  tags: Record<string, any> = {};
-  setTag(key: string, value: any) {
+  tags: Record<string, string | number | boolean | undefined> = {};
+  setTag(key: string, value: string | number | boolean | undefined) {
     this.tags[key] = value;
   }
   finish() {}
@@ -13,8 +13,8 @@ class MockTracer {
 
   trace(
     name: string,
-    options: any,
-    callback: (span: TracingSpan) => Promise<any>,
+    options: Record<string, string | number>,
+    callback: (span: TracingSpan) => Promise<unknown>,
   ) {
     const span = new MockSpan();
     span.setTag("operation.name", name);

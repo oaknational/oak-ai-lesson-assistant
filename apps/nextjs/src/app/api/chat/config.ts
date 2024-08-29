@@ -1,5 +1,4 @@
 import { Aila, AilaInitializationOptions } from "@oakai/aila";
-import { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import {
   prisma as globalPrisma,
   type PrismaClientWithAccelerate,

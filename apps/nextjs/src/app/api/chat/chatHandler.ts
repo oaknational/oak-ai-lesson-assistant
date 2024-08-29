@@ -66,7 +66,10 @@ function reportErrorTelemetry(
   error: Error,
   errorType: string,
   statusMessage: string,
-  additionalAttributes: Record<string, unknown> = {},
+  additionalAttributes: Record<
+    string,
+    string | number | boolean | undefined
+  > = {},
 ) {
   span.setTag("error", true);
   span.setTag("error.type", errorType);

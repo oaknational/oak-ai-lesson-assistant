@@ -4,7 +4,7 @@ import { mockTracer } from "./mockTracer";
 initializeTracer({});
 
 export interface TracingSpan {
-  setTag: (key: string, value: any) => void;
+  setTag: (key: string, value: string | number | boolean | undefined) => void;
   finish: () => void;
 }
 
@@ -13,17 +13,29 @@ export const tracer = isTest
   : (baseTracer as unknown as {
       trace: (
         name: string,
-        options: any,
-        callback: (span: TracingSpan) => Promise<any>,
-      ) => Promise<any>;
+        options: Record<string, string | number | boolean>,
+        callback: (span: TracingSpan) => Promise<unknown>,
+      ) => Promise<unknown>;
     });
 
 export function withTelemetry<T>(
   operationName: string,
-  options: Record<string, any>,
+  options: Record<string, string | number | boolean | undefined>,
   handler: (span: TracingSpan) => Promise<T>,
 ): Promise<T> {
-  return tracer.trace(operationName, options, async (span) => {
+  const stringifiedOptions: Record<string, string | number> = Object.entries(
+    options,
+  ).reduce((acc, [key, value]) => {
+    if (value !== undefined) {
+      return {
+        ...acc,
+        [key]: typeof value === "boolean" ? value.toString() : value,
+      };
+    }
+    return acc;
+  }, {});
+
+  return tracer.trace(operationName, stringifiedOptions, async (span) => {
     try {
       return await handler(span);
     } catch (error) {
@@ -31,7 +43,9 @@ export function withTelemetry<T>(
       if (error instanceof Error) {
         span.setTag("error_type", error.constructor.name);
         span.setTag("error_message", error.message);
-        span.setTag("error_stack", error.stack);
+        if (error.stack) {
+          span.setTag("error_stack", error.stack);
+        }
       } else {
         span.setTag("error_message", String(error));
       }
@@ -39,5 +53,5 @@ export function withTelemetry<T>(
     } finally {
       span.finish();
     }
-  });
+  }) as Promise<T>;
 }

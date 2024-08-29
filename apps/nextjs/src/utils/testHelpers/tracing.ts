@@ -18,7 +18,7 @@ export function expectTracingSpan(operationName: string) {
         ).toBeFalsy();
       },
     },
-    toHaveBeenExecutedWith: (expectedTags: Record<string, any>) => {
+    toHaveBeenExecutedWith: (expectedTags: Record<string, string | number>) => {
       const span = mockTracer.spans.find(
         (span) => span.tags["operation.name"] === operationName,
       );
