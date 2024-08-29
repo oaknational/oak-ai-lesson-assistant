@@ -58,7 +58,7 @@ export function PromptForm({
       }}
       ref={formRef}
     >
-      <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden border-2 border-black bg-white pr-20 sm:rounded-md">
+      <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden rounded-md border-2 border-black bg-white pr-20">
         <Textarea
           data-testid="chat-input"
           ref={inputRef}
@@ -69,9 +69,9 @@ export function PromptForm({
           onChange={(e) => setInput(e.target.value)}
           placeholder={handlePlaceholder(isEmptyScreen, placeholder)}
           spellCheck={false}
-          className="min-h-[60px] w-full resize-none bg-transparent px-10 py-[1.3rem] focus-within:outline-none"
+          className="min-h-[60px] w-full resize-none bg-transparent px-10 py-[1.3rem] text-base focus-within:outline-none"
         />
-        <div className="absolute bottom-10 right-0 top-10 flex items-center justify-center sm:right-10">
+        <div className="absolute bottom-10 right-10 top-10 flex items-center justify-center">
           <Tooltip>
             <TooltipTrigger asChild>
               <button

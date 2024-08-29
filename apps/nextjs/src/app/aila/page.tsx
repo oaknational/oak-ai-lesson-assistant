@@ -3,7 +3,6 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 import { ChatStart } from "@/components/AppComponents/Chat/chat-start";
-import { MobileSupportBlocker } from "@/components/AppComponents/Chat/mobile-support-blocker";
 import Layout from "@/components/AppComponents/Layout";
 import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
@@ -26,10 +25,7 @@ export default async function IndexPage() {
       <SignedIn>
         {userCanViewFeature && (
           <Layout featureFlag={userCanViewFeature}>
-            <div className="hidden md:block">
-              <ChatStart />
-            </div>
-            <MobileSupportBlocker />
+            <ChatStart />
           </Layout>
         )}
       </SignedIn>

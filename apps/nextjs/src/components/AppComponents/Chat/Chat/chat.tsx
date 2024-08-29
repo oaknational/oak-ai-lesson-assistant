@@ -5,7 +5,6 @@ import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 
 import { DesktopChatLayout } from "../desktop-layout";
-import { MobileSupportBlocker } from "../mobile-support-blocker";
 import ChatModeration from "./ChatModeration";
 import ChatUserAccessCheck from "./ChatUserAccessCheck";
 
@@ -34,7 +33,6 @@ export function Chat({
             isShared={isShared}
           />
           <DesktopChatLayout className={className} />
-          <MobileSupportBlocker />
         </DialogRoot>
       </ChatModeration>
     </ChatUserAccessCheck>

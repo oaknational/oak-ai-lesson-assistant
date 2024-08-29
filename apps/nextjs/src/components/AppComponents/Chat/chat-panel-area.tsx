@@ -14,7 +14,7 @@ export const ChatPanelArea = ({
   return (
     <div
       ref={chatAreaRef}
-      className={`relative mb-11 ${demo.isDemoUser && !isDemoLocked ? "h-[calc(100vh-448px)]" : "h-[calc(100vh-400px)]"} w-[calc(100%+12px)] overflow-y-auto rounded-tl-lg rounded-tr-lg pr-9 `}
+      className={`relative mb-11 h-[calc(100vh-340px)] ${demo.isDemoUser && !isDemoLocked ? "sm:h-[calc(100vh-448px)]" : "sm:h-[calc(100vh-400px)]"} w-[calc(100%+12px)] overflow-y-auto rounded-tl-lg rounded-tr-lg pr-9 `}
     >
       {children}
     </div>
