@@ -120,7 +120,7 @@ export function organiseAnswersAndDistractors(quiz: QuizOptional) {
         ...answers,
         ...distractors,
       ]).join("\n");
-      return `### ${i + 1}: ${v.question ?? "…"}\n\n${answersAndDistractors}`;
+      return `### ${i + 1}. ${v.question ?? "…"}\n\n${answersAndDistractors}`;
     })
     .join("\n\n");
 }
