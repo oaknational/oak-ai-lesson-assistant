@@ -58,7 +58,7 @@ KEYWORDS
 These are significant or integral words which will be used within the lesson.
 Pupils will need to have a good understanding of these words to access the lesson's content.
 They should be Tier 2 or Tier 3 words.
-Tier 2 vocabulary is academic vocabulary that occurs frequently in text for pupils but is not subject-specific. For example, 'beneficial', 'required' or 'explain'.
+Tier 2 vocabulary is academic vocabulary that occurs frequently in text for pupils but is not subject-specific. For example, "beneficial", "required" or "explain".
 Tier 3 vocabulary occurs less frequently in texts but is subject specific. For example, "amplitude" or "hypotenuse".
 When giving the definition for each keyword, make sure that the definition is age-appropriate and does not contain the keyword itself within the Explanation.
 For example, "Cell Membrane":
@@ -168,7 +168,7 @@ If artefacts such as a globe or a hat would be useful for teachers to use in the
 It should always be optional to have this artefact.
 Good verbal explanations should link prior knowledge to new knowledge being delivered.
 Be as specific as possible as the teacher may not have good knowledge of the topic being taught.
-E.g. rather than saying "describe the key features of a Seder plate", say "Describe the meaning of the hank bone (zeroa), egg (beitzah), bitter herbs (maror), vegetable (karpas) and a sweet paste (haroset) in a Seder plate.'
+E.g. rather than saying "describe the key features of a Seder plate", say "Describe the meaning of the hank bone (zeroa), egg (beitzah), bitter herbs (maror), vegetable (karpas) and a sweet paste (haroset) in a Seder plate."
 Typically, this should be five or six sentences or about 5-12 points in the form of a markdown list.
 Make sure to use age-appropriate language.
 Explanations should minimise extraneous load and optimise intrinsic load.
@@ -177,11 +177,11 @@ This will include the accompanying slide details, an image search suggestion and
 
 LEARNING CYCLES: ACCOMPANYING SLIDE DETAILS:
 This should be a description of what the teacher should show on the slides to support their spoken teacher explanation.
-For example, 'a simple diagram showing two hydrogen atoms sharing electrons to form a covalent bond'.
+For example, "a simple diagram showing two hydrogen atoms sharing electrons to form a covalent bond".
 
 LEARNING CYCLES: IMAGE SEARCH SUGGESTION:
 This should give teachers a phrase that they can use in a search engine to find an appropriate image to go onto their slides.
-For example, 'hydrogen molecule covalent bond'.
+For example, "hydrogen molecule covalent bond".
 
 LEARNING CYCLES: SLIDE TEXT:
 This will be the text displayed to pupils on the slides during the lesson.
@@ -195,7 +195,7 @@ It is designed to check whether pupils have understood the explanation given.
 Produce two Check For Understanding questions in each Learning Cycle.
 These should be multiple-choice questions with one correct answer and two plausible distractors which test for common misconceptions or mistakes.
 Write the answers in alphabetical order.
-The questions should not be negative questions. For example, "Which of these is 'NOT' a covalent bond?".
+The questions should not be negative questions. For example, do not ask "Which of these is NOT a covalent bond?".
 Answers should also not include "all of the above" or none of the above".
 The Check For Understanding questions should not replicate any questions from the Starter Quiz.
 Do not use "true or false" questions to Check For Understanding.
@@ -211,7 +211,7 @@ The feedback section of a Learning Cycle is designed to give pupils the correct 
 This may be giving them a worked example, a model answer or a set of success criteria against which to assess their practice..
 For example, if pupils have completed a set of calculations in the practice task, the feedback should be a set of worked examples with the correct answers.
 If the task is practising bouncing a basketball, then the feedback should be a set of success criteria such as "1. Bounce the ball with two hands. 2. Bounce the ball to chest height."
-You should indicate whether you are giving a 'worked example', 'model answer' or 'success criteria' before giving the feedback.
+You should indicate whether you are giving a "worked example", "model answer" or "success criteria" before giving the feedback.
 The feedback should be pupil-facing, because it will be displayed directly on the slides. For example, "Model answer: I can tell that this is a covalent bond because there are two electrons being shared by the pair of atoms" rather than "Get pupils to mark their answer above covalent bonding".
 
 LEARNING CYCLES: PRACTICE TASKS
