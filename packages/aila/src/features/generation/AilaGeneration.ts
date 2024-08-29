@@ -200,14 +200,14 @@ export class AilaGeneration {
       prompt = await prisma.prompt.findFirst(promptQuery);
     }
     if (!prompt) {
-      throw new Error(
-        "Prompt not found - please run pnpm prompts:dev in development or pnpm prompts in production/staging",
-      );
-
-      // // If the prompt does not exist for this variant, we need to generate it
-      // const prompts = new PromptVariants(prisma, ailaGenerate, promptSlug);
-      // const created = await prompts.setCurrent(variantSlug, true);
-      // promptId = created?.id;
+      // // If the prompt does not exist for this variant, we can try to generate it
+      try {
+        const prompts = new PromptVariants(prisma, ailaGenerate, promptSlug);
+        const created = await prompts.setCurrent(variantSlug, true);
+        promptId = created?.id;
+      } catch (e) {
+        console.error("Error creating prompt", e);
+      }
     }
 
     promptId = promptId ?? prompt?.id;
