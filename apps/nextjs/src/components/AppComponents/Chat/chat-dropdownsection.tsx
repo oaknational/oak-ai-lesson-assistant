@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
+import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
 import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
 
 import { Icon } from "@/components/Icon";
@@ -94,9 +95,7 @@ const DropDownSection = ({
           onClick={() => setIsOpen(!isOpen)}
           className="flex w-full justify-between"
         >
-          <p className="text-xl font-bold">
-            {humanizeCamelCaseString(objectKey)}
-          </p>
+          <p className="text-xl font-bold">{sectionTitle(objectKey)}</p>
           <Icon icon={isOpen ? "chevron-up" : "chevron-down"} size="sm" />
         </button>
       </div>
@@ -153,13 +152,12 @@ const valuesAreEqual = (
   return val1 === val2;
 };
 
-export function humanizeCamelCaseString(str: string) {
+export function sectionTitle(str: string) {
   if (str.startsWith("cycle")) {
-    return "Cycle " + str.split("cycle")[1];
+    return "Learning cycle " + str.split("cycle")[1];
   }
-  return str.replace(/([A-Z])/g, " $1").replace(/^./, function (str) {
-    return str.toUpperCase();
-  });
+
+  return camelCaseToSentenceCase(str);
 }
 
 export default DropDownSection;
