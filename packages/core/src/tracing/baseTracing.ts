@@ -34,7 +34,7 @@ export function initializeTracer(options: DatadogOptions) {
       `Initialized no-op tracer for ${isTest ? "test" : "local development"} environment`,
     );
   } else {
-    tracer.init({
+    const initialisationOptions = {
       env: options.env || environment,
       service: options.service || "oak-ai",
       hostname,
@@ -45,7 +45,12 @@ export function initializeTracer(options: DatadogOptions) {
       sampleRate: options.sampleRate || 1,
       profiling: options.profiling !== undefined ? options.profiling : true,
       plugins: options.plugins !== undefined ? options.plugins : false,
-    });
+    };
+    console.log(
+      "Initializing Datadog tracer with options",
+      initialisationOptions,
+    );
+    tracer.init(initialisationOptions);
   }
 }
 

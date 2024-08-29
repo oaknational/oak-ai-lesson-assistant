@@ -9,6 +9,7 @@
     "clean": "rm -rf .next .turbo node_modules",
     "dev": "concurrently \"pnpm dev-server\" \"node scripts/local-dev.mjs\"",
     "dev-server": "pnpm with-env next dev --port 2525 | pino-pretty -C",
+    "dev-trace-deprecation": "NODE_OPTIONS=\"--trace-deprecation\" next dev --port 2525 | pino-pretty -C",
     "lint": "next lint",
     "lint-fix": "next lint --fix",
     "start": "next start",
