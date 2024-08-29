@@ -68,7 +68,7 @@ model Prompt {
 // but we're storing the derived data as joining against clerk's
 // API makes analysis and filtering harder
 //
-// n.b. user_id colummns are not currently set as relations
+// n.b. user_id columns are not currently set as relations
 //      but will be in future once this is complete
 model User {
   id        String   @id // Defined by clerk, aka user_*****

@@ -32,6 +32,7 @@ export class PromptVariants {
       where: {
         AND: [{ hash }, { slug }, { variant }, { current: true }],
       },
+      cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
     });
     if (existing) {
       return existing;
