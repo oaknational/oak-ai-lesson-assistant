@@ -11,6 +11,10 @@ const routesToPreBuild = [
   "/aila",
 ];
 
+const headers = {
+  "x-dev-preload": "true",
+};
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const preBuildRoutes = async (
@@ -29,7 +33,7 @@ const preBuildRoutes = async (
     return limit(() => {
       if (typeof route === "string") {
         return axios
-          .get(`http://localhost:2525${route}`)
+          .get(`http://localhost:2525${route}`, { headers })
           .then(() => console.log(`Pre-built route: ${route}`))
           .catch((error) => {
             console.log(`Error pre-building route: ${route}`, error.message);
@@ -39,6 +43,7 @@ const preBuildRoutes = async (
         return axios({
           method: route.method,
           url: `http://localhost:2525${route.url}`,
+          headers,
         })
           .then(() =>
             console.log(

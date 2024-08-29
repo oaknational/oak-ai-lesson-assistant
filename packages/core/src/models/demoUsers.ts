@@ -10,6 +10,23 @@ if (process.env.NODE_ENV === "production" && DEVELOPMENT_USER_REGION) {
 const GEO_RESTRICTIONS_ENABLED =
   process.env.NEXT_PUBLIC_DEMO_ACCOUNTS_ENABLED === "true";
 
+type LabsUser = User & {
+  publicMetadata: {
+    labs?: {
+      isDemoUser?: boolean;
+      isOnboarded?: boolean;
+    };
+  };
+};
+
+type UserWithDemoStatus = LabsUser & {
+  publicMetadata: {
+    labs: {
+      isDemoUser: boolean;
+    };
+  };
+};
+
 function isOakDemoUser(user: User) {
   return user.emailAddresses.some(
     (email) =>
@@ -44,14 +61,19 @@ class DemoUsers {
     return { region, isDemoRegion };
   }
 
+  isDemoStatusSet(user: LabsUser): user is UserWithDemoStatus {
+    const labsMetadata = user.publicMetadata.labs || {};
+    return "isDemoUser" in labsMetadata && labsMetadata.isDemoUser !== null;
+  }
+
   isDemoUser(user: User): boolean {
     if (!GEO_RESTRICTIONS_ENABLED) {
       return false;
     }
-    if (!("isDemoUser" in user.publicMetadata)) {
+    if (!this.isDemoStatusSet(user)) {
       throw new Error("User metadata is missing isDemoUser field");
     }
-    return Boolean(user.publicMetadata.isDemoUser);
+    return Boolean(user.publicMetadata.labs.isDemoUser);
   }
 }
 

@@ -1,5 +1,6 @@
 import { User, clerkClient } from "@clerk/nextjs/server";
 import { getSessionModerations } from "@oakai/aila/src/features/moderation/getSessionModerations";
+import { demoUsers } from "@oakai/core";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { type Metadata } from "next";
@@ -25,8 +26,10 @@ export async function generateMetadata({
 }
 
 function userCanShare(user: User) {
-  const isDemoUser = Boolean(user.publicMetadata.isDemoUser ?? "true");
-
+  if (!demoUsers.isDemoStatusSet(user)) {
+    return false;
+  }
+  const isDemoUser = Boolean(user.publicMetadata.labs.isDemoUser ?? "true");
   if (!isDemoUser) {
     return true;
   }

@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.2.0...v1.2.1) (2024-08-29)
+
+
+### Bug Fixes
+
+* user feedback on selection in the feedback dialog and mapping responses in posthog correctly ([#13](https://github.com/oaknational/oak-ai-lesson-assistant/issues/13)) ([0d9b6bc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0d9b6bcfb1760447b3950e2bb1f349ad24061d82))
+
 # [1.2.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.1.42...v1.2.0) (2024-08-28)
 
 

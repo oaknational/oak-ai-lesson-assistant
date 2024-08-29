@@ -22,6 +22,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",
     "prompts": "turbo prompts --filter=core",
+    "prompts:dev": "turbo prompts:dev --filter=core",
     "sort-package-json": "sort-package-json \"package.json\" \"packages/*/package.json\" \"apps/*/package.json\"",
     "type-check": "turbo type-check",
     "node-version": "node -v",

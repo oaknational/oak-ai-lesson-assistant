@@ -14,6 +14,7 @@ export async function fetchLessonPlanContentById(
     where: {
       id,
     },
+    cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
   });
 
   if (!lessonPlanRecord) {
