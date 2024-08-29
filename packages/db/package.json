@@ -67,7 +67,7 @@
     "@oakai/prettier-config": "*",
     "dotenv-cli": "^6.0.0",
     "prisma": "^5.13.0",
-    "typescript": "5.3.3",
+    "typescript": "5.5.4",
     "zod-prisma": "^0.5.4"
   },
   "engines": {
