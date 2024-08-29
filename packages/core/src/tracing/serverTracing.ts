@@ -1,7 +1,5 @@
-import { initializeTracer, tracer as baseTracer, isTest } from "./baseTracing";
+import { tracer as baseTracer, isTest } from "./baseTracing";
 import { mockTracer } from "./mockTracer";
-
-initializeTracer({});
 
 export interface TracingSpan {
   setTag: (key: string, value: string | number | boolean | undefined) => void;

@@ -44,7 +44,7 @@ export function initializeTracer(options: DatadogOptions) {
         options.runtimeMetrics !== undefined ? options.runtimeMetrics : true,
       sampleRate: options.sampleRate || 1,
       profiling: options.profiling !== undefined ? options.profiling : true,
-      plugins: options.plugins !== undefined ? options.plugins : true,
+      plugins: options.plugins !== undefined ? options.plugins : false,
     });
   }
 }
