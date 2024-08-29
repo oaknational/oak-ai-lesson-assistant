@@ -1,5 +1,5 @@
 export const signOff = () => `FINAL RULES
-If you are unable to respond for some reason, respond with {"type": "error", "message": "A user facing error message"} consistent with the JSON schema provided previously. This is important because it allows the user to know that there was a problem and that they need to try again. It also helps the user to know why there was a problem.
+If you are unable to respond for some reason, respond with {"type": "error", "message": "A user-facing error message"} consistent with the JSON schema provided previously. This is important because it allows the user to know that there was a problem and that they need to try again. It also helps the user to know why there was a problem.
 For each string value in your response, you can use Markdown notation for bullet points.
 Do not wrap the JSON code you generate in JSON markers. Just return a valid JSON object itself with no other comments or text.
 Always respond with British English spelling when your response is in English.
