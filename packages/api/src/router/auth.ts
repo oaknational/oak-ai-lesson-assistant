@@ -70,38 +70,35 @@ export const authRouter = router({
 
   setDemoStatus: protectedProcedure.mutation(async ({ ctx }) => {
     const { userId } = ctx.auth;
-    if (typeof userId === "string") {
-      const user = await clerkClient.users.getUser(userId);
+    const user = await clerkClient.users.getUser(userId);
 
-      if (demoUsers.isDemoStatusSet(user)) {
-        return { isDemoUser: user.publicMetadata.labs };
-      }
+    if (demoUsers.isDemoStatusSet(user)) {
+      return { isDemoUser: user.publicMetadata.labs };
+    }
 
-      const { region, isDemoRegion: isDemoUser } =
-        await demoUsers.getUserRegion(
-          user,
-          ctx.req.headers.get("cf-ipcountry"),
-        );
+    const { region, isDemoRegion: isDemoUser } = await demoUsers.getUserRegion(
+      user,
+      ctx.req.headers.get("cf-ipcountry"),
+    );
 
-      await clerkClient.users.updateUserMetadata(userId, {
-        publicMetadata: {
-          labs: {
-            isDemoUser,
-          },
-        },
-        privateMetadata: {
-          region,
-        },
-      });
-
-      await posthogServerClient.identify({
-        distinctId: userId,
-        properties: {
+    await clerkClient.users.updateUserMetadata(userId, {
+      publicMetadata: {
+        labs: {
           isDemoUser,
         },
-      });
+      },
+      privateMetadata: {
+        region,
+      },
+    });
 
-      return { isDemoUser };
-    }
+    posthogServerClient.identify({
+      distinctId: userId,
+      properties: {
+        isDemoUser,
+      },
+    });
+
+    return { isDemoUser };
   }),
 });

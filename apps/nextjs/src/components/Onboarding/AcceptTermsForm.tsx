@@ -37,9 +37,10 @@ export const AcceptTermsForm = () => {
       await setDemoStatus.mutateAsync();
       logger.debug("Demo status set successfully");
 
+      const now = new Date();
       const response = await acceptTerms.mutateAsync({
-        termsOfUse: new Date(),
-        privacyPolicy: privacyAcceptedLocal ? new Date() : false,
+        termsOfUse: now,
+        privacyPolicy: privacyAcceptedLocal ? now : false,
       });
 
       if (!response?.acceptedTermsOfUse) {
@@ -97,7 +98,7 @@ export const AcceptTermsForm = () => {
         {termsAcceptedLocal ? (
           <OakFlex $flexDirection="column" $gap="all-spacing-7">
             <p>
-              Terms accepted, if the page does not reload please refresh and
+              Terms accepted. If the page does not reload please refresh and
               navigate to home.
             </p>
           </OakFlex>
