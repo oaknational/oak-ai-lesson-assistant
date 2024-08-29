@@ -11,9 +11,9 @@
   ],
   "dependencies": {
     "@rushstack/eslint-patch": "^1.6.1",
-    "@typescript-eslint/eslint-plugin": "^8.3.0",
-    "@typescript-eslint/parser": "^8.3.0",
-    "@typescript-eslint/typescript-estree": "^8.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "@typescript-eslint/typescript-estree": "^7.18.0",
     "eslint-config-next": "14.0.4",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jest": "^27.6.0",
@@ -24,7 +24,7 @@
   "devDependencies": {
     "eslint": "^8.56.0",
     "prettier": "^3.1.1",
-    "typescript": "5.5.4"
+    "typescript": "5.3.3"
   },
   "peerDependencies": {
     "eslint": "^8.36.0",
