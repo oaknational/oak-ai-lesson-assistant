@@ -61,6 +61,9 @@ const FeedBack = ({
                 </label>
                 <div className="flex w-full justify-between gap-6">
                   {rating.map((feedback) => {
+                    const surveyResponseKey =
+                      i === 0 ? `$survey_response` : `$survey_response_${i}`;
+
                     return (
                       <button
                         key={feedback.text}
@@ -68,14 +71,13 @@ const FeedBack = ({
                         onClick={() => {
                           setUsersResponse((prevState) => ({
                             ...prevState,
-                            [`$survey_response_${i}`]:
-                              feedback.number.toString(),
+                            [surveyResponseKey]: feedback.number.toString(),
                           }));
                         }}
                       >
                         <span
                           className={`text-lg ${
-                            usersResponse[`$survey_response_${i}`] ===
+                            usersResponse[surveyResponseKey] ===
                             feedback.number.toString()
                               ? `text-[#287C34]`
                               : `text-black`
@@ -85,7 +87,7 @@ const FeedBack = ({
                         </span>
                         <span
                           className={
-                            usersResponse[`$survey_response_${i}`] ===
+                            usersResponse[surveyResponseKey] ===
                             feedback.number.toString()
                               ? "opacity-100"
                               : "opacity-0"
