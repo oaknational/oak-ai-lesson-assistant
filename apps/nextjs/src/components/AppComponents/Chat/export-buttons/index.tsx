@@ -81,9 +81,9 @@ export default ExportButtons;
 
 export function handleRewordingSections(section: string) {
   if (section.includes("Cycle 1")) {
-    return "Learning Cycles";
+    return "Learning cycles";
   }
-  if (section === "Learning Cycles") {
+  if (section === "Learning cycles") {
     return "Learning Cycle Outcomes";
   }
   return section;
