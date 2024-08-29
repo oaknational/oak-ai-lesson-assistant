@@ -148,10 +148,6 @@ async function getUserId(config: Config, chatId: string): Promise<string> {
         const userLookup = await config.handleUserLookup(chatId);
         userIdSpan.setTag("user.lookup.performed", true);
 
-        if (!userLookup) {
-          throw new Error("User lookup failed");
-        }
-
         if ("failureResponse" in userLookup) {
           if (userLookup.failureResponse) {
             throw new Error("User lookup failed: failureResponse received");

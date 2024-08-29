@@ -5,7 +5,6 @@ import { posthogServerClient } from "@oakai/core/src/analytics/posthogServerClie
 import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting/rateLimit";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
-import invariant from "tiny-invariant";
 
 import { streamingJSON } from "./protocol";
 
@@ -14,18 +13,8 @@ export async function handleUserLookup(chatId: string) {
     "chat-user-lookup",
     { chat_id: chatId },
     async (userLookupSpan) => {
-      invariant(chatId, "Chat ID is required");
-
       const result = await fetchAndCheckUser(chatId);
-      if (!result) {
-        userLookupSpan.setTag("error", true);
-        userLookupSpan.setTag("error.message", "user lookup failed");
-        return {
-          failureResponse: new Response("User lookup failed", {
-            status: 400,
-          }),
-        };
-      }
+
       if ("failureResponse" in result) {
         userLookupSpan.setTag("error", true);
         userLookupSpan.setTag("error.message", "user lookup failed");
