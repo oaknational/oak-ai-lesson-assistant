@@ -28,7 +28,7 @@ export function useProgressForDownloads(lessonPlan: LooseLessonPlan) {
         complete: getCompleteness(errors, ["title", "subject", "keyStage"]),
       },
       {
-        label: "Lesson learning outcome",
+        label: "Learning outcome",
         key: "learningOutcome",
         complete: getCompleteness(errors, ["learningOutcome"]),
       },
@@ -53,7 +53,7 @@ export function useProgressForDownloads(lessonPlan: LooseLessonPlan) {
         complete: getCompleteness(errors, ["misconceptions"]),
       },
       {
-        label: "Key words",
+        label: "Keywords",
         key: "keywords",
         complete: getCompleteness(errors, ["keywords"]),
       },

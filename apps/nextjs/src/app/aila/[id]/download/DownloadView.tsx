@@ -97,7 +97,7 @@ export function DownloadView({
                     onClick={() => lessonSlidesExport.start()}
                     data-testid="chat-download-slides-btn"
                     title="Slide deck"
-                    subTitle="Learning outcome, key words and learning cycles"
+                    subTitle="Learning outcome, keywords and learning cycles"
                     downloadAvailable={lessonSlidesExport.readyToExport}
                     downloadLoading={lessonSlidesExport.status === "loading"}
                     data={lessonSlidesExport.data}

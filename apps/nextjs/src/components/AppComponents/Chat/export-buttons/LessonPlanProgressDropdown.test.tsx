@@ -65,12 +65,12 @@ describe("LessonPlanProgressDropdown", () => {
     );
     const sectionStates = [
       { name: "Lesson details", completed: true },
-      { name: "Lesson learning outcome", completed: true },
+      { name: "Learning outcome", completed: true },
       { name: "Learning cycle outcomes", completed: true },
       { name: "Prior knowledge", completed: true },
       { name: "Key learning points", completed: true },
       { name: "Misconceptions", completed: true },
-      { name: "Key words", completed: false },
+      { name: "Keywords", completed: false },
       { name: "Starter quiz", completed: false },
       { name: "Learning cycles", completed: true },
       { name: "Exit quiz", completed: false },
@@ -107,12 +107,12 @@ describe("LessonPlanProgressDropdown", () => {
     );
     const allSections = [
       "Lesson details",
-      "Lesson learning outcome",
+      "Learning outcome",
       "Learning cycle outcomes",
       "Prior knowledge",
       "Key learning points",
       "Misconceptions",
-      "Key words",
+      "Keywords",
       "Starter quiz",
       "Learning cycles",
       "Exit quiz",
@@ -144,12 +144,12 @@ describe("LessonPlanProgressDropdown", () => {
     );
     const sectionStates = [
       { name: "Lesson details", completed: true },
-      { name: "Lesson learning outcome", completed: true },
+      { name: "Learning outcome", completed: true },
       { name: "Learning cycle outcomes", completed: true },
       { name: "Prior knowledge", completed: true },
       { name: "Key learning points", completed: false },
       { name: "Misconceptions", completed: false },
-      { name: "Key words", completed: false },
+      { name: "Keywords", completed: false },
       { name: "Starter quiz", completed: false },
       { name: "Learning cycles", completed: true },
       { name: "Exit quiz", completed: false },
