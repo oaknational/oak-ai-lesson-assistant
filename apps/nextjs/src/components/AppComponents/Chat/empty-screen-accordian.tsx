@@ -16,18 +16,18 @@ const EmptyScreenAccordion = () => {
     (section) =>
       ![
         "Title",
-        "Key Stage",
+        "Key stage",
         "Subject",
-        "Prior Knowledge",
-        "Key Learning Points",
+        "Prior knowledge",
+        "Key learning points",
         "Misconceptions",
-        "Starter Quiz",
-        "Exit Quiz",
+        "Starter quiz",
+        "Exit quiz",
       ].includes(section),
   );
 
   const quizLessonSections = lessonSections.filter(
-    (section) => !["Title", "Key Stage", "Subject"].includes(section),
+    (section) => !["Title", "Key stage", "Subject"].includes(section),
   );
 
   return (
@@ -41,7 +41,7 @@ const EmptyScreenAccordion = () => {
             {lessonSections.map((section) => {
               if (
                 section === "Title" ||
-                section === "Key Stage" ||
+                section === "Key stage" ||
                 section === "Subject"
               ) {
                 return null;
@@ -69,7 +69,7 @@ const EmptyScreenAccordion = () => {
             {slidesLessonSections.map((section) => {
               if (
                 section == "Title" ||
-                section == "Key Stage" ||
+                section == "Key stage" ||
                 section == "Subject"
               ) {
                 return null;
@@ -97,7 +97,7 @@ const EmptyScreenAccordion = () => {
             {quizLessonSections.map((section) => {
               if (
                 section == "Title" ||
-                section == "Key Stage" ||
+                section == "Key stage" ||
                 section == "Subject"
               ) {
                 return null;

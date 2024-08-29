@@ -5,7 +5,7 @@ import { type Metadata } from "next";
 import { getChatById } from "@/app/actions";
 import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
-import DownloadView from ".";
+import { DownloadView } from "./DownloadView";
 
 export interface DownloadPageProps {
   params: {
