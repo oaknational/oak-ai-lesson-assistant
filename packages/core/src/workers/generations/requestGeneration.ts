@@ -35,24 +35,50 @@ const redis = new Redis({
 // NOTE: MODERATE_ENGLISH_LANGUAGE isn't in doppler envs anywhere
 const MODERATE_LANGUAGE = Boolean(process.env.MODERATE_ENGLISH_LANGUAGE);
 
-type InvokeArgs = {
+type RequestGenerationArgs = {
   data: z.infer<(typeof requestGenerationSchema)["data"]>;
   user: z.infer<(typeof requestGenerationSchema)["user"]>;
 };
 
-export async function requestGenerationWorker({ data, user }: InvokeArgs) {
-  try {
-    return await invoke({ data, user });
-  } catch (e) {
-    await onFailure({
-      error: e as Error,
-      event: { data: { event: { data } } },
-      logger: baseLogger,
-    });
-  }
+type WorkerResponse = {
+  /**
+   * Async workers perform work in the background.
+   * On Vercel Edge or Cloudflare workers, you need to explicitly handle the pending Promise like this:
+   *
+   * ```ts
+   * const { pending } = requestGenerationWorker({ ... });
+   * context.waitUntil(pending)
+   * ```
+   *
+   * See `waitUntil` documentation in
+   * [Cloudflare](https://developers.cloudflare.com/workers/runtime-apis/handlers/fetch/#contextwaituntil)
+   * and [Vercel](https://vercel.com/docs/functions/edge-middleware/middleware-api#waituntil)
+   * for more details.
+   * ```
+   */
+  pending: Promise<void>;
+};
+
+export function requestGenerationWorker({
+  data,
+  user,
+}: RequestGenerationArgs): WorkerResponse {
+  const promise = (async () => {
+    try {
+      await invoke({ data, user });
+    } catch (e) {
+      await onFailure({
+        error: e as Error,
+        event: { data: { event: { data } } },
+        logger: baseLogger,
+      });
+    }
+  })();
+
+  return { pending: promise };
 }
 
-async function invoke({ data, user }: InvokeArgs) {
+async function invoke({ data, user }: RequestGenerationArgs) {
   baseLogger.info(
     `Requesting generation for promptId %s`,
     data?.promptId ?? "Unknown prompt",

@@ -191,7 +191,7 @@ export const generationRouter = router({
         ctx.auth.userId,
       );
 
-      const workerInvocation = requestGenerationWorker({
+      const { pending } = requestGenerationWorker({
         data: {
           appId,
           promptId,
@@ -203,7 +203,7 @@ export const generationRouter = router({
           external_id: ctx.auth.userId,
         },
       });
-      waitUntil(workerInvocation);
+      waitUntil(pending);
 
       /**
        * Track if a generation is a re-generation
