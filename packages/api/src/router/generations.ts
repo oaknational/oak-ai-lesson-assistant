@@ -1,4 +1,4 @@
-import { LessonSummaries, Lessons, Snippets, inngest } from "@oakai/core";
+import { LessonSummaries, Lessons, Snippets } from "@oakai/core";
 import { Feedback } from "@oakai/core/src/models/feedback";
 import { Generations } from "@oakai/core/src/models/generations";
 import { Prompts } from "@oakai/core/src/models/prompts";
@@ -12,9 +12,11 @@ import {
   generationPartUserTweakedSchema,
 } from "@oakai/core/src/types";
 import { sendQuizFeedbackEmail } from "@oakai/core/src/utils/sendQuizFeedbackEmail";
+import { requestGenerationWorker } from "@oakai/core/src/workers/generations/requestGeneration";
 import logger from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 import { Redis } from "@upstash/redis";
+import { waitUntil } from "@vercel/functions";
 import { uniq } from "remeda";
 import { z } from "zod";
 
@@ -189,8 +191,7 @@ export const generationRouter = router({
         ctx.auth.userId,
       );
 
-      await inngest.send({
-        name: "app/generation.requested",
+      const { pending } = requestGenerationWorker({
         data: {
           appId,
           promptId,
@@ -202,6 +203,7 @@ export const generationRouter = router({
           external_id: ctx.auth.userId,
         },
       });
+      waitUntil(pending);
 
       /**
        * Track if a generation is a re-generation

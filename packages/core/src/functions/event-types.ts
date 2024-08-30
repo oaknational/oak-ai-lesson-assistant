@@ -2,7 +2,6 @@ import { ZodEventSchemas } from "inngest";
 import { z } from "zod";
 
 import { populateDemoStatusesSchema } from "./demo/populateDemoStatuses.schema";
-import { requestGenerationSchema } from "./generation/requestGeneration.schema";
 import { generateLessonQuizEmbeddingsSchema } from "./lesson/generateLessonQuizEmbeddings.schema";
 import { generatePlanForLessonSchema } from "./lesson/generatePlan.schema";
 import { summariseLessonSchema } from "./lesson/summarise.schema";
@@ -37,7 +36,6 @@ import { generateTranscriptEmbeddingsSchema } from "./transcript/generateTranscr
 
 const schemas = {
   "app/healthcheck": { data: z.any() },
-  "app/generation.requested": requestGenerationSchema,
   "app/transcript.embed": generateTranscriptEmbeddingsSchema,
   "app/snippet.embed": embedSnippetSchema,
   "app/quizQuestion.embed": embedQuizQuestionSchema,
