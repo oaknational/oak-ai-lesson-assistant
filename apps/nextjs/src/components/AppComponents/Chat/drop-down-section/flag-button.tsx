@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { AilaUserFlagType } from "@oakai/db";
+import type { AilaUserFlagType } from "@oakai/db";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
 import styled from "styled-components";
 
@@ -8,46 +8,48 @@ import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
-import { DropDownFormWrapper } from "./drop-down-form-wrapper";
+import { DropDownFormWrapper, FeedbackOption } from "./drop-down-form-wrapper";
 import { SmallRadioButton } from "./small-radio-button";
 
-const flagOptions = [
-  "Inappropriate",
-  "Inaccurate",
-  "Too hard",
-  "Too easy",
-  "Other",
-];
+const flagOptions: {
+  label: string;
+  enumValue: AilaUserFlagType;
+}[] = [
+  { label: "Inappropriate", enumValue: "INAPPROPRIATE" },
+  { label: "Inaccurate", enumValue: "INACCURATE" },
+  { label: "Too hard", enumValue: "TOO_HARD" },
+  { label: "Too easy", enumValue: "TOO_EASY" },
+  { label: "Other", enumValue: "OTHER" },
+] as const;
 
-type FlagButtonOptions = (typeof flagOptions)[number];
+type FlagButtonOptions = typeof flagOptions;
 
 const FlagButton = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedRadio, setSelectedRadio] = useState<string | null>(null);
-  const [displayTextBox, setDisplayTextBox] =
-    useState<FlagButtonOptions | null>(null);
+  const [selectedRadio, setSelectedRadio] =
+    useState<FeedbackOption<AilaUserFlagType> | null>(null);
+  const [displayTextBox, setDisplayTextBox] = useState<string | null>(null);
 
   const [userFeedbackText, setUserFeedbackText] = useState("");
   const chat = useLessonChat();
 
-  const { id } = chat;
+  const { id, messages } = chat;
+  const lastAssistantMessage = messages[messages.length - 1];
 
   const { mutateAsync } = trpc.chat.appSessions.flagSection.useMutation();
 
   const flagSectionContent = useCallback(async () => {
-    if (selectedRadio) {
+    if (selectedRadio && lastAssistantMessage) {
       const payload = {
         chatId: id,
-        messageId: "asdf",
-        flagType: selectedRadio
-          .toUpperCase()
-          .replace(" ", "_") as AilaUserFlagType,
+        messageId: lastAssistantMessage.id,
+        flagType: selectedRadio.enumValue,
         userComment: userFeedbackText,
       };
       await mutateAsync(payload);
     }
-  }, [selectedRadio, userFeedbackText, mutateAsync, id]);
+  }, [selectedRadio, userFeedbackText, mutateAsync, id, lastAssistantMessage]);
 
   useEffect(() => {
     !isOpen && setDisplayTextBox(null);
@@ -80,7 +82,7 @@ const FlagButton = () => {
           >
             {flagOptions.map((option) => (
               <FlagButtonFormItem
-                key={option}
+                key={`flagbuttonformitem-${option.enumValue}`}
                 option={option}
                 setSelectedRadio={setSelectedRadio}
                 setDisplayTextBox={setDisplayTextBox}
@@ -102,25 +104,25 @@ const FlagButtonFormItem = ({
   displayTextBox,
   setUserFeedbackText,
 }: {
-  option: string;
-  setSelectedRadio: (value: string) => void;
-  setDisplayTextBox: (value: FlagButtonOptions | null) => void;
-  displayTextBox: FlagButtonOptions | null;
+  option: FlagButtonOptions[number];
+  setSelectedRadio: (value: FeedbackOption<AilaUserFlagType>) => void;
+  setDisplayTextBox: (value: string | null) => void;
+  displayTextBox: string | null;
   setUserFeedbackText: (value: string) => void;
 }) => {
   return (
     <>
       <SmallRadioButton
-        id={option}
-        key={option}
-        value={option}
-        label={option}
+        id={`flag-options-${option.enumValue}`}
+        key={`flag-options-${option.enumValue}`}
+        value={option.enumValue}
+        label={option.label}
         onClick={() => {
-          setDisplayTextBox(option);
+          setDisplayTextBox(option.label);
           setSelectedRadio(option);
         }}
       />
-      {displayTextBox === option && (
+      {displayTextBox === option.label && (
         <>
           <OakP $font="body-3">Provide details below:</OakP>
           <TextArea onChange={(e) => setUserFeedbackText(e.target.value)} />

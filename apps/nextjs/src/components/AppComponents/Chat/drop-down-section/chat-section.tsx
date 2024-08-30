@@ -1,8 +1,8 @@
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
-import { humanizeCamelCaseString } from "@oakai/core/src/utils/humanizeCamelCaseString";
 import { OakFlex } from "@oaknational/oak-components";
 import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
 
+import { sectionTitle } from ".";
 import { MemoizedReactMarkdownWithStyles } from "../markdown";
 import FlagButton from "./flag-button";
 import ModifyButton from "./modify-button";
@@ -12,8 +12,7 @@ const ChatSection = ({
   value,
 }: {
   objectKey: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
+  value: unknown;
 }) => {
   return (
     <OakFlex $flexDirection="column">
@@ -25,7 +24,7 @@ const ChatSection = ({
       />
       <OakFlex $gap="all-spacing-3" $mt="space-between-s" $position="relative">
         <ModifyButton
-          section={humanizeCamelCaseString(objectKey)}
+          section={sectionTitle(objectKey)}
           sectionContent={
             lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
           }

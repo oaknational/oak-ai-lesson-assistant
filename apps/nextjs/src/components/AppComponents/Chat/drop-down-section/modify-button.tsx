@@ -1,14 +1,37 @@
 import { useCallback, useRef, useState } from "react";
 
+import type { AilaUserModificationAction } from "@oakai/db";
 import { OakBox, OakRadioGroup } from "@oaknational/oak-components";
-import { AilaUserModificationAction } from "@prisma/client";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
-import { DropDownFormWrapper } from "./drop-down-form-wrapper";
+import { DropDownFormWrapper, FeedbackOption } from "./drop-down-form-wrapper";
 import { SmallRadioButton } from "./small-radio-button";
+
+const modifyOptions: {
+  label: string;
+  enumValue: AilaUserModificationAction;
+}[] = [
+  {
+    label: "Make it easier",
+    enumValue: "MAKE_IT_EASIER",
+  },
+  {
+    label: "Make it harder",
+    enumValue: "MAKE_IT_HARDER",
+  },
+  {
+    label: "Shorten content",
+    enumValue: "SHORTEN_CONTENT",
+  },
+  {
+    label: "Add more detail",
+    enumValue: "ADD_MORE_DETAIL",
+  },
+  { label: "Other", enumValue: "OTHER" },
+] as const;
 
 const ModifyButton = ({
   section,
@@ -19,14 +42,9 @@ const ModifyButton = ({
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedRadio, setSelectedRadio] = useState<string | null>(null);
-  const modifyOptions = [
-    "Make it easier",
-    "Make it harder",
-    "Shorten content",
-    "Add more detail",
-    "Other",
-  ];
+  const [selectedRadio, setSelectedRadio] =
+    useState<FeedbackOption<AilaUserModificationAction> | null>(null);
+
   const chat = useLessonChat();
   const { append } = chat;
 
@@ -34,23 +52,28 @@ const ModifyButton = ({
 
   const { mutateAsync } = trpc.chat.appSessions.modifySection.useMutation();
 
+  const lastAssistantMessage = chat.messages[chat.messages.length - 1];
+
   const recordUserModifySectionContent = useCallback(async () => {
-    if (selectedRadio) {
+    console.log("sectionContent", sectionContent);
+    console.log("selectedRadio", selectedRadio);
+    console.log("lastAssistentMessage", lastAssistantMessage);
+    if (selectedRadio && lastAssistantMessage) {
       const payload = {
         chatId: id,
-        messageId: "asdf",
+        messageId: lastAssistantMessage.id,
         textForMod: sectionContent,
-        action: selectedRadio
-          .toUpperCase()
-          .replace(" ", "_") as AilaUserModificationAction,
+        action: selectedRadio.enumValue,
       };
       await mutateAsync(payload);
     }
-  }, [selectedRadio, sectionContent, mutateAsync, id]);
+  }, [selectedRadio, sectionContent, mutateAsync, id, lastAssistantMessage]);
 
-  async function modifySection(value: string) {
+  async function modifySection(
+    option: FeedbackOption<AilaUserModificationAction>,
+  ) {
     await append({
-      content: `For the ${section}, ${value}`,
+      content: `For the ${section}, ${option.label}`,
       role: "user",
     });
     await recordUserModifySectionContent();
@@ -83,10 +106,10 @@ const ModifyButton = ({
           >
             {modifyOptions.map((option) => (
               <SmallRadioButton
-                id={option}
-                key={option}
-                value={option}
-                label={option}
+                id={`${id}-modify-options-${option.enumValue}`}
+                key={`${id}-modify-options-${option.enumValue}`}
+                value={option.enumValue}
+                label={option.label}
                 onClick={() => {
                   setSelectedRadio(option);
                 }}

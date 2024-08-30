@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 
+import type { AilaUserFlagType, AilaUserModificationAction } from "@oakai/db";
 import {
   OakBox,
   OakFlex,
@@ -7,7 +8,14 @@ import {
   OakSmallPrimaryButton,
 } from "@oaknational/oak-components";
 
-export const DropDownFormWrapper = ({
+export type FeedbackOption<T> = {
+  label: string;
+  enumValue: T;
+};
+
+export const DropDownFormWrapper = <
+  T extends AilaUserModificationAction | AilaUserFlagType,
+>({
   children,
   onClickActions,
   setIsOpen,
@@ -18,9 +26,9 @@ export const DropDownFormWrapper = ({
   dropdownRef,
 }: {
   children: React.ReactNode;
-  onClickActions: (option: string) => void;
+  onClickActions: (option: FeedbackOption<T>) => void;
   setIsOpen: (value: boolean) => void;
-  selectedRadio: string | null;
+  selectedRadio: FeedbackOption<T> | null;
   title: string;
   buttonText: string;
   isOpen: boolean;
