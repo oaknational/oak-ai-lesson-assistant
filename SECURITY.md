@@ -10,4 +10,4 @@ We continously update and improve Oak National Academy's product and codebase in
 
 ## Reporting a Vulnerability
 
-To report any vulnerability please see our [security.txt](public/.well-known/security.txt) file
+To report any vulnerability please see our [security.txt](https://www.thenational.academy/.well-known/security.txt) file
