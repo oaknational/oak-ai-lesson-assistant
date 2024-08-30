@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.2.1...v1.2.2) (2024-08-30)
+
+
+### Bug Fixes
+
+* replace Inngest app/generation.requested with an async worker function ([#34](https://github.com/oaknational/oak-ai-lesson-assistant/issues/34)) ([eee2b1e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/eee2b1efff8aa71e59333b3d0780a826286c34d5))
+
 ## [1.2.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.2.0...v1.2.1) (2024-08-29)
 
 
