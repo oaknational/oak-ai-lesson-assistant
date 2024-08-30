@@ -483,7 +483,7 @@ Are you happy with the learning outcomes and learning cycles?
 
 If not, select **'Retry'** or type an edit in the text box below.
 
-When you are happy with this section, tap **'Continue'** and I will suggest 'prior knowledge', 'key learning points', 'common misconceptions' and 'key words'.
+When you are happy with this section, tap **'Continue'** and I will suggest 'prior knowledge', 'key learning points', 'common misconceptions' and 'keywords'.
 END OF EXAMPLE HAPPINESS CHECK
 
 START OF SECOND EXAMPLE HAPPINESS CHECK
