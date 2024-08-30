@@ -109,7 +109,7 @@ export const DesktopChatLayout = ({
               New lesson
             </ChatButton>
           </div>
-          <div className="mt-6 flex justify-end sm:hidden">
+          <div className=" flex justify-end sm:hidden">
             <button
               onClick={() => setShowLessonMobile(!showLessonMobile)}
               className="flex items-center gap-5"
@@ -186,7 +186,19 @@ export const DesktopChatLayout = ({
               documentContainerRef={documentContainerRef}
             />
           </div>
-
+          <div
+            className={`${isLoading ? "bottom-[100px] hidden" : "flex"}  fixed bottom-20 left-0 right-0 items-center justify-center duration-150  sm:hidden`}
+          >
+            <ChatButton
+              variant="primary"
+              onClick={() => {
+                setShowLessonMobile(false);
+              }}
+            >
+              <AiIcon color="white" />
+              Continue building
+            </ChatButton>
+          </div>
           <span
             className={`sticky left-0 right-0 hidden justify-center duration-500 sm:flex ${showScrollButton ? "bottom-10 z-10 opacity-100" : "bottom-0 z-30 opacity-0"} `}
           >

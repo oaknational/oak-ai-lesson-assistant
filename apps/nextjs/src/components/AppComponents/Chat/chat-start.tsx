@@ -102,7 +102,7 @@ export function ChatStart() {
             <div className="mx-auto flex h-full max-w-[580px] flex-col justify-between">
               <div className="flex h-full flex-col justify-center gap-18">
                 <div>
-                  <div className="mb-13 block w-fit sm:hidden">
+                  <div className="mb-13   block w-fit sm:hidden">
                     <BetaTag />
                   </div>
                   <h1

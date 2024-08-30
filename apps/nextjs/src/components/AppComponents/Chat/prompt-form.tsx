@@ -58,7 +58,12 @@ export function PromptForm({
       }}
       ref={formRef}
     >
-      <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden rounded-md border-2 border-black bg-white pr-20">
+      <div
+        className={`${isLoading ? "block" : "hidden"} h-[60px] w-full rounded-md  border-2 border-oakGrey3 sm:hidden`}
+      />
+      <div
+        className={`${isLoading ? "hidden" : "flex"} relative max-h-60 w-full grow flex-col overflow-hidden rounded-md border-2 border-black bg-white pr-20 sm:flex`}
+      >
         <Textarea
           data-testid="chat-input"
           ref={inputRef}

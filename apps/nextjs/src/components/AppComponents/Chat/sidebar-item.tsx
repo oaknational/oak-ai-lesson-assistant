@@ -25,7 +25,7 @@ import { constructChatPath } from "./Chat/utils";
 interface SidebarItemProps {
   index: number;
   chat: SideBarChatItem;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export function SidebarItem({ index, chat, children }: SidebarItemProps) {

@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { usePathname } from "#next/navigation";
+import { OakIcon } from "@oaknational/oak-components";
 import Link from "next/link";
 
 import { SidebarList } from "@/components/AppComponents/Chat/sidebar-list";
@@ -10,6 +11,8 @@ import { buttonVariants } from "@/components/AppComponents/Chat/ui/button";
 import { IconPlus } from "@/components/AppComponents/Chat/ui/icons";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { cn } from "@/lib/utils";
+
+import ChatButton from "./ui/chat-button";
 
 export function ChatHistory() {
   const { trackEvent } = useAnalytics();
@@ -19,19 +22,9 @@ export function ChatHistory() {
   return (
     <div className="flex h-full flex-col">
       <div className="my-10 px-7">
-        <Link
-          href="/aila"
-          onClick={() => {
-            trackEvent("chat:new_lesson_plan", { id: idFromUrl });
-          }}
-          className={cn(
-            buttonVariants({ variant: "outline" }),
-            "h-20 w-full justify-start bg-zinc-50 px-10 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10",
-          )}
-        >
-          <IconPlus className="-translate-x-2 stroke-2" />
+        <ChatButton href="/aila" variant="primary">
           New Lesson
-        </Link>
+        </ChatButton>
       </div>
       <React.Suspense>
         <SidebarList />
