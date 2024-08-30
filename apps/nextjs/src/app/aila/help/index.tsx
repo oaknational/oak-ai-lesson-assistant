@@ -115,7 +115,7 @@ const Help = () => {
               include the following sections:
             </p>
             <ul className="mb-6 list-disc pl-12">
-              <li>Lesson learning outcome</li>
+              <li>Learning outcome</li>
               <li>Learning cycle outcomes</li>
               <li>Prior knowledge</li>
               <li>Key learning points</li>

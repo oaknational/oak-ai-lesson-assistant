@@ -20,8 +20,8 @@ import { inngest } from "../client";
 import { createOpenAIClient } from "../llm/openai";
 import { template } from "../prompts/lesson-assistant";
 import { RAG } from "../rag";
+import { camelCaseToSentenceCase } from "../utils/camelCaseToSentenceCase";
 import { embedWithCache } from "../utils/embeddings";
-import { humanizeCamelCaseString } from "../utils/humanizeCamelCaseString";
 import { Caption, CaptionsSchema } from "./types/caption";
 
 // Simplifies the input to a string for embedding
@@ -319,7 +319,7 @@ ${part.content}`;
     }
     const text = lessonPlan.parts
       .map(
-        (p) => `${humanizeCamelCaseString(p.key)}
+        (p) => `${camelCaseToSentenceCase(p.key)}
 ${p.content}`,
       )
       .join("\n\n");

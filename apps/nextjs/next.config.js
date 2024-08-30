@@ -101,7 +101,7 @@ const getConfig = async (phase) => {
       BRANCH: process.env.BRANCH,
       DEPLOY_CONTEXT: process.env.CONTEXT,
     },
-    webpack: (config, { dev }) => {
+    webpack: (config, { dev, isServer }) => {
       if (!dev && isProductionBuild && isNextjsProductionBuildPhase) {
         config.devtool = "source-map";
         config.plugins.push(
@@ -113,6 +113,21 @@ const getConfig = async (phase) => {
           }),
         );
       }
+
+      // dd-trace outputs the following warning in the browser console:
+      // Critical dependency: the request of a dependency is an expression
+      // This is due to the use of `require` in the dd-trace codebase.
+      // This can be safely ignored.
+      // Start of dd-trace fix
+      if (!isServer) {
+        config.resolve.fallback = {
+          ...config.resolve.fallback,
+          "dd-trace": false,
+        };
+      }
+      config.module = config.module || {};
+      config.module.exprContextCritical = false;
+      // End of dd-trace fix
 
       return config;
     },
