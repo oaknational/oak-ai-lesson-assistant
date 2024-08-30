@@ -209,29 +209,6 @@ async function invoke({ data, user }: RequestGenerationArgs) {
       return;
     }
 
-    //logger.info("Running step: Detect profanity");
-    //const [isProfane, profanity] = detectProfanity(userInput);
-
-    // if (isProfane) {
-    //   logger.info("Running step: Save flagged generation (profanity)");
-    //   console.log(JSON.stringify(Object.keys(process.env)));
-    //   await generations.flagGeneration(
-    //     generationId,
-    //     `It looks like your input contains profanity ${
-    //       process.env.DOPPLER_ENVIRONMENT
-    //     } ${
-    //       process.env.DOPPLER_ENVIRONMENT === "dev" ? ` - ${profanity}` : "."
-    //     }`,
-    //     ModerationType.PROFANITY,
-    //     {
-    //       moderationMeta: { profanity },
-    //     },
-    //   );
-
-    //   // Return early and don't process generation further
-    //   return;
-    // }
-
     logger.info("Running step: Moderate inputs");
     const { moderationResults, isFlagged, isOverModerationThreshold } =
       await doOpenAIModeration(openaiModeration, userInput);
