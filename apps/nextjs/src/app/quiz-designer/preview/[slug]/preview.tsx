@@ -33,7 +33,7 @@ export default function QuizPreview(questions, featureFlag) {
 
             return (
               <div key={index} className="copy-to-clipboard my-14">
-                <p>Question {index + 1}:</p>
+                <p>Question {index + 1}.</p>
                 <p className="mb-8 text-xl font-semibold">
                   {question.question.value}
                 </p>

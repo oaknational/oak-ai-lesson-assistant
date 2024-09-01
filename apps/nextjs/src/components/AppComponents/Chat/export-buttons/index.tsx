@@ -29,6 +29,7 @@ const ExportButtons = ({
         <div className="flex items-center space-x-14">
           <LessonPlanProgressDropdown
             lessonPlan={lessonPlan}
+            isStreaming={isStreaming}
             sectionRefs={sectionRefs}
             documentContainerRef={documentContainerRef}
           />
@@ -79,10 +80,10 @@ const ExportButtons = ({
 export default ExportButtons;
 
 export function handleRewordingSections(section: string) {
-  if (section.includes("Cycle 1")) {
-    return "Learning Cycles";
+  if (section.includes("Learning cycle 1")) {
+    return "Learning cycles";
   }
-  if (section === "Learning Cycles") {
+  if (section === "Learning cycles") {
     return "Learning Cycle Outcomes";
   }
   return section;
