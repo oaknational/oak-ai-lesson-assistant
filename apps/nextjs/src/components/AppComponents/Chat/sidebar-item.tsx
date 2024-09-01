@@ -6,6 +6,7 @@ import { usePathname } from "#next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
+import AiIcon from "@/components/AiIcon";
 import { buttonVariants } from "@/components/AppComponents/Chat/ui/button";
 import {
   IconMessage,
@@ -33,7 +34,6 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
 
   const isActive = pathname.includes(chat.id);
   const [newChatId, setNewChatId] = useLocalStorage("newChatId", null);
-  const shouldAnimate = index === 0 && isActive && newChatId;
 
   return (
     <motion.div
@@ -48,14 +48,12 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
           opacity: 1,
         },
       }}
-      initial={shouldAnimate ? "initial" : undefined}
-      animate={shouldAnimate ? "animate" : undefined}
       transition={{
         duration: 0.25,
         ease: "easeIn",
       }}
     >
-      <div className="absolute left-7 top-5 flex h-14 w-14 items-center justify-center">
+      <div className="absolute left-7 top-5 mr-7 flex h-14 w-14 items-center justify-center">
         {chat.isShared ? (
           <Tooltip delayDuration={1000}>
             <TooltipTrigger
@@ -67,7 +65,7 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
             <TooltipContent>This is a shared chat.</TooltipContent>
           </Tooltip>
         ) : (
-          <IconMessage className="mr-7" />
+          <AiIcon />
         )}
       </div>
       <Link
@@ -79,44 +77,11 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
         )}
       >
         <div
-          className="relative flex-1 select-none overflow-hidden text-ellipsis break-all"
+          className="relative ml-7 flex-1 select-none overflow-hidden text-ellipsis break-all"
           title={chat.title}
         >
           <span className="whitespace-nowrap">
-            {shouldAnimate ? (
-              chat.title.split("").map((character, index) => (
-                <motion.span
-                  key={index}
-                  variants={{
-                    initial: {
-                      opacity: 0,
-                      x: -100,
-                    },
-                    animate: {
-                      opacity: 1,
-                      x: 0,
-                    },
-                  }}
-                  initial={shouldAnimate ? "initial" : undefined}
-                  animate={shouldAnimate ? "animate" : undefined}
-                  transition={{
-                    duration: 0.25,
-                    ease: "easeIn",
-                    delay: index * 0.05,
-                    staggerChildren: 0.05,
-                  }}
-                  onAnimationComplete={() => {
-                    if (index === chat.title.length - 1) {
-                      setNewChatId(null);
-                    }
-                  }}
-                >
-                  {character}
-                </motion.span>
-              ))
-            ) : (
-              <span>{chat.title}</span>
-            )}
+            <span>{chat.title}</span>
           </span>
         </div>
       </Link>

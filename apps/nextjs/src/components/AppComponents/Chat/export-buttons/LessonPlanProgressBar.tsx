@@ -55,7 +55,7 @@ export const LessonPlanProgressBar: React.FC<LessonPlanProgressBarProps> = ({
       >
         <span
           className={`
-          absolute bottom-0 left-0 top-0 rounded-full bg-black
+          absolute bottom-0 left-0 top-0 rounded-full bg-oakGreen
           `}
           style={{
             width: `${(completedSections / LESSON_PLAN_SECTIONS.length) * 100}%`,
