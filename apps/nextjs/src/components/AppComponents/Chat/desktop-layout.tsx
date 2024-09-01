@@ -130,7 +130,10 @@ export const DesktopChatLayout = ({
               chatAreaRef={chatAreaRef}
               isDemoLocked={isDemoLocked}
             >
-              <ChatList isDemoLocked={isDemoLocked} />
+              <ChatList
+                isDemoLocked={isDemoLocked}
+                showLessonMobile={showLessonMobile}
+              />
             </ChatPanelArea>
             {!isDemoLocked && (
               <QuickActionButtons isEmptyScreen={!!messages.length} />
@@ -155,7 +158,7 @@ export const DesktopChatLayout = ({
               documentContainerRef={documentContainerRef}
             />
           </div>
-          <div className="ml-[-10px] mt-30 flex justify-between px-14 sm:hidden">
+          <div className="ml-[-10px] mt-27 flex justify-between px-14 pt-6 sm:hidden">
             <button
               onClick={() => {
                 setShowLessonMobile(false);
@@ -208,7 +211,7 @@ export const DesktopChatLayout = ({
             />
           </div>
           <div
-            className={`${isLoading ? "bottom-[100px] hidden" : "flex"}  fixed bottom-20 left-0 right-0 items-center justify-center duration-150  sm:hidden`}
+            className={`${messages.length > 1 && showLessonMobile ? "flex" : "hidden"}  fixed bottom-20 left-0 right-0 items-center justify-center duration-150  sm:hidden`}
           >
             <ChatButton
               variant="primary"

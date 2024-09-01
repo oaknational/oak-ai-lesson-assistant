@@ -84,7 +84,12 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
             GeistMono.variable,
           )}
         >
-          <Theme accentColor="blue" grayColor="olive" scaling="110%">
+          <Theme
+            accentColor="blue"
+            grayColor="olive"
+            scaling="110%"
+            color="#22222"
+          >
             <TRPCReactProvider>
               <FontProvider>
                 <Toaster />

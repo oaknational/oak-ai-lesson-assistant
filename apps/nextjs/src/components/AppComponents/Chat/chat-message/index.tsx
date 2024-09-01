@@ -177,13 +177,16 @@ function MessageWrapper({
   return (
     <div
       className={cn(
-        "relative mt-14 flex w-full items-start rounded-md",
+        "relative mt-14 w-full items-start rounded-md",
         errorType && ERROR_TYPE_COLOR_MAP[errorType],
         errorType && "p-9",
         className,
         type === "user" && "bg-teachersLilac p-9",
       )}
     >
+      {type !== "user" && (
+        <span className="block font-bold sm:hidden">Aila: </span>
+      )}
       {children}
     </div>
   );
