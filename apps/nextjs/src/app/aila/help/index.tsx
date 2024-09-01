@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 
-import { OakBackLink, OakLink } from "@oaknational/oak-components";
+import { OakLink } from "@oaknational/oak-components";
 
 import { Header } from "@/components/AppComponents/Chat/header";
 import GetInTouchBox from "@/components/AppComponents/GetInTouchBox";

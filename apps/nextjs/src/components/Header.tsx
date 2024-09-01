@@ -18,13 +18,6 @@ const HamburgerButton = styled.button`
   height: 28px;
 `;
 
-const StyledOakP = styled(OakP)`
-  display: none;
-  /* @media (min-width: 550px) {
-    display: block;
-  } */
-`;
-
 const Header = ({
   menuOpen,
   setMenuOpen,

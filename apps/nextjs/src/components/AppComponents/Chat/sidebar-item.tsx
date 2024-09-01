@@ -8,32 +8,26 @@ import Link from "next/link";
 
 import AiIcon from "@/components/AiIcon";
 import { buttonVariants } from "@/components/AppComponents/Chat/ui/button";
-import {
-  IconMessage,
-  IconUsers,
-} from "@/components/AppComponents/Chat/ui/icons";
+import { IconUsers } from "@/components/AppComponents/Chat/ui/icons";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/AppComponents/Chat/ui/tooltip";
-import { useLocalStorage } from "@/lib/hooks/use-local-storage";
 import { SideBarChatItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 import { constructChatPath } from "./Chat/utils";
 
 interface SidebarItemProps {
-  index: number;
   chat: SideBarChatItem;
   children?: React.ReactNode;
 }
 
-export function SidebarItem({ index, chat, children }: SidebarItemProps) {
+export function SidebarItem({ chat, children }: SidebarItemProps) {
   const pathname = usePathname();
 
   const isActive = pathname.includes(chat.id);
-  const [newChatId, setNewChatId] = useLocalStorage("newChatId", null);
 
   return (
     <motion.div

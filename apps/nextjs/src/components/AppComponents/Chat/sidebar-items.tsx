@@ -23,7 +23,7 @@ export function SidebarItems({ chats }: Readonly<SidebarItemsProps>) {
               height: 0,
             }}
           >
-            <SidebarItem index={index} chat={chat} />
+            <SidebarItem chat={chat} />
           </motion.div>
         );
       })}
