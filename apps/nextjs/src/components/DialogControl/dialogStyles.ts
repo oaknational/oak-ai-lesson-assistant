@@ -5,7 +5,7 @@ export const dialogContent = cva([
   "data-[state=open]:animate-contentShow z-50",
 ]);
 export const dialogContentInner = cva([
-  "mx-20 border-2 border-black",
+  "sm:mx-20 sm:border-2 sm:border-black",
   "h-full w-full  sm:w-[80%] md:w-[680px]",
   "flex w-full flex-col items-center justify-between",
   "data-[state=open]:animate-contentShow bg-white p-10 pb-24 focus:outline-none md:p-22",
@@ -16,8 +16,8 @@ export const dialogOverlay = cva(
   {
     variants: {
       opacity: {
-        true: "bg-lavender30/80 bg-opacity-90", // Adjust opacity class as needed
-        false: "bg-lavender30 bg-opacity-90",
+        true: "bg-white sm:bg-lavender30/80 sm:bg-opacity-90", // Adjust opacity class as needed
+        false: "bg-white sm:bg-lavender30 sm:bg-opacity-90",
       },
     },
     defaultVariants: {

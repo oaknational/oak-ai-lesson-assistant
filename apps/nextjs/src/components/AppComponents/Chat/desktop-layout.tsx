@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useRouter } from "#next/navigation";
-import { OakIcon } from "@oaknational/oak-components";
+import { OakIcon, OakSmallSecondaryButton } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 import { useDemoLocking } from "hooks/useDemoLocking";
 import { useMobileLessonPullOutControl } from "hooks/useMobileLessonPullOutControl";
+import Link from "next/link";
 
 import AiIcon from "@/components/AiIcon";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
@@ -30,8 +31,14 @@ export const DesktopChatLayout = ({
 }: Readonly<DesktopChatLayoutProps>) => {
   const chat = useLessonChat();
 
-  const { messages, isLoading, chatAreaRef, lessonPlan, ailaStreamingStatus } =
-    chat;
+  const {
+    id,
+    messages,
+    isLoading,
+    chatAreaRef,
+    lessonPlan,
+    ailaStreamingStatus,
+  } = chat;
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -161,8 +168,22 @@ export const DesktopChatLayout = ({
               </span>
               <span className="text-base font-bold">Hide lesson</span>
             </button>
-            <button
-              className="scale-75"
+          </div>
+          <div className="flex gap-10 p-12 sm:hidden">
+            <OakSmallSecondaryButton
+              element={Link}
+              iconName="download"
+              href={demo.isSharingEnabled ? `/aila/download/${id}` : "#"}
+              onClick={() => {
+                if (!demo.isSharingEnabled) {
+                  setDialogWindow("demo-share-locked");
+                }
+              }}
+            >
+              Download
+            </OakSmallSecondaryButton>
+            <OakSmallSecondaryButton
+              iconName="share"
               onClick={() => {
                 if (demo.isSharingEnabled) {
                   setDialogWindow("share-chat");
@@ -171,8 +192,8 @@ export const DesktopChatLayout = ({
                 }
               }}
             >
-              <OakIcon iconName="share" />
-            </button>
+              Share
+            </OakSmallSecondaryButton>
           </div>
           <div className="block px-14 pb-9 pt-12 sm:hidden">
             <LessonPlanProgressBar lessonPlan={lessonPlan} />

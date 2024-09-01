@@ -44,7 +44,7 @@ export function Header() {
         </div>
       )}
 
-      <div className="flex h-26 w-full shrink-0 items-center justify-between bg-white px-10 sm:w-fit sm:border-b-2  sm:border-black  ">
+      <div className="flex h-26  shrink-0 items-center justify-between border-b-2 border-black  bg-white  px-10  ">
         <div className="flex items-center gap-10">
           <div className="hidden sm:flex">
             <SidebarMobile>
