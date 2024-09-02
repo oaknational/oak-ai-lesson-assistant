@@ -1,0 +1,168 @@
+import React, { useEffect, useRef, useState } from "react";
+
+import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { OakIcon, OakSmallSecondaryButton } from "@oaknational/oak-components";
+import { Message } from "ai";
+import Link from "next/link";
+
+import AiIcon from "../../AiIcon";
+import { DemoContextProps } from "../../ContextProviders/Demo";
+import { useDialog } from "../DialogContext";
+import LessonPlanDisplay from "./chat-lessonPlanDisplay";
+import ExportButtons from "./export-buttons";
+import { LessonPlanProgressBar } from "./export-buttons/LessonPlanProgressBar";
+import ChatButton from "./ui/chat-button";
+
+type ChatRightHandSideLessonProps = {
+  id: string;
+  messages: Message[];
+  lessonPlan: LooseLessonPlan;
+  showLessonMobile: boolean;
+  closeMobileLessonPullOut: () => void;
+  demo: DemoContextProps;
+};
+
+const ChatRightHandSideLesson = ({
+  id,
+  messages,
+  lessonPlan,
+  showLessonMobile,
+  closeMobileLessonPullOut,
+  demo,
+}: Readonly<ChatRightHandSideLessonProps>) => {
+  const { setDialogWindow } = useDialog();
+
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  const documentContainerRef = useRef<HTMLDivElement>(null);
+
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const sectionRefs = {};
+  const scrollToBottom = () => {
+    if (chatEndRef.current) {
+      setShowScrollButton(false);
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleScroll = () => {
+    if (endOfDocRef.current) {
+      const isAtBottom =
+        endOfDocRef.current.getBoundingClientRect().bottom <=
+        window.innerHeight;
+      if (isAtBottom) {
+        setShowScrollButton(false);
+      } else {
+        setShowScrollButton(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (chatEndRef.current) {
+      const isAtBottom =
+        chatEndRef.current.getBoundingClientRect().bottom <= window.innerHeight;
+
+      if (!isAtBottom) {
+        setShowScrollButton(true);
+      }
+    }
+  }, [setShowScrollButton, chatEndRef, lessonPlan]);
+
+  const endOfDocRef = useRef<HTMLDivElement>(null);
+  return (
+    <div
+      className={`fixed bottom-0 ${showLessonMobile ? `right-0` : `right-[-100%] sm:right-0`} right-0 top-0 z-30 w-[95%] bg-white shadow-md duration-300 sm:relative  sm:z-0  sm:w-[50%] sm:shadow-none lg:w-full`}
+      ref={documentContainerRef}
+      onScroll={handleScroll}
+      style={{ overflowY: "auto" }}
+    >
+      <div className="mt-26 hidden sm:block">
+        <ExportButtons
+          sectionRefs={sectionRefs}
+          documentContainerRef={documentContainerRef}
+        />
+      </div>
+      <div className="ml-[-10px] mt-27 flex justify-between px-14 pt-6 sm:hidden">
+        <button
+          onClick={() => {
+            closeMobileLessonPullOut();
+          }}
+          className="flex items-center justify-center gap-3"
+        >
+          <span className="scale-75">
+            <OakIcon iconName="cross" />
+          </span>
+          <span className="text-base font-bold">Hide lesson</span>
+        </button>
+      </div>
+      <div className="flex gap-10 p-12 sm:hidden">
+        <OakSmallSecondaryButton
+          element={Link}
+          iconName="download"
+          href={demo.isSharingEnabled ? `/aila/download/${id}` : "#"}
+          onClick={() => {
+            if (!demo.isSharingEnabled) {
+              setDialogWindow("demo-share-locked");
+            }
+          }}
+        >
+          Download
+        </OakSmallSecondaryButton>
+        <OakSmallSecondaryButton
+          iconName="share"
+          onClick={() => {
+            if (demo.isSharingEnabled) {
+              setDialogWindow("share-chat");
+            } else {
+              setDialogWindow("demo-share-locked");
+            }
+          }}
+        >
+          Share
+        </OakSmallSecondaryButton>
+      </div>
+      <div className="sticky top-25 z-10 block bg-white px-14 pb-9 pt-12 sm:hidden">
+        <LessonPlanProgressBar lessonPlan={lessonPlan} />
+      </div>
+
+      <div className="w-full pt-9 sm:pt-20">
+        <LessonPlanDisplay
+          showLessonMobile={showLessonMobile}
+          chatEndRef={chatEndRef}
+          sectionRefs={sectionRefs}
+          documentContainerRef={documentContainerRef}
+        />
+      </div>
+      <div
+        className={`${messages.length > 1 && showLessonMobile ? "flex" : "hidden"}  fixed bottom-20 left-0 right-0 items-center justify-center duration-150  sm:hidden`}
+      >
+        <ChatButton
+          variant="primary"
+          onClick={() => {
+            closeMobileLessonPullOut();
+          }}
+        >
+          <AiIcon color="white" />
+          Continue building
+        </ChatButton>
+      </div>
+      <span
+        className={`sticky left-0 right-0 hidden justify-center duration-500 sm:flex ${showScrollButton ? "bottom-10 z-10 opacity-100" : "bottom-0 z-30 opacity-0"} `}
+      >
+        <ChatButton
+          variant="primary"
+          icon="arrow-down"
+          onClick={() => {
+            scrollToBottom();
+          }}
+        >
+          View more
+        </ChatButton>
+      </span>
+      <div ref={endOfDocRef} />
+    </div>
+  );
+};
+
+export default ChatRightHandSideLesson;
