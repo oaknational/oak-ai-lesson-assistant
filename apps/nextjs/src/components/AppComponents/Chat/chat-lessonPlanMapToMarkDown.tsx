@@ -4,7 +4,7 @@ import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
 
-import { humanizeCamelCaseString } from "./chat-dropdownsection";
+import { sectionTitle } from "./chat-dropdownsection";
 import { notEmpty } from "./chat-lessonPlanDisplay";
 import { MemoizedReactMarkdownWithStyles } from "./markdown";
 
@@ -72,7 +72,7 @@ const ChatSection = ({ sectionRefs, objectKey, value }) => {
         lessonPlanSectionDescription={
           lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
         }
-        markdown={`# ${objectKey.includes("cycle") ? "Cycle " + objectKey.split("cycle")[1] : humanizeCamelCaseString(objectKey)}
+        markdown={`# ${sectionTitle(objectKey)}
 ${sectionToMarkdown(objectKey, value)}`}
       />
     </div>

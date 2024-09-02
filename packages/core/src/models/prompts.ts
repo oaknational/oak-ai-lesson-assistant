@@ -44,6 +44,7 @@ export class Prompts {
         current: true,
       },
       include: { app: true },
+      cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
     });
   }
 
