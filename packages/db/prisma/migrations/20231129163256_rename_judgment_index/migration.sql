@@ -1,2 +1,0 @@
--- RenameForeignKey
-ALTER TABLE "comparative_judgements" RENAME CONSTRAINT "comparative_judgements_question_for_judgment_id_fkey" TO "comparative_judgements_question_for_judgement_id_fkey";
