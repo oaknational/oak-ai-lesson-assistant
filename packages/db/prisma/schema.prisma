@@ -426,8 +426,8 @@ model GenerationUserFlag {
   generation   Generation @relation(fields: [generationId], references: [id], onDelete: Cascade)
   generationId String     @map("generation_id")
 
-  feedbackMessage String @map("feedback_message")
-  feedbackValue   String @map("feedback_value") // The fragment of the generation that feedback was given on
+  feedbackMessage String? @map("feedback_message")
+  feedbackValue   String  @map("feedback_value") // The fragment of the generation that feedback was given on
   feedbackReasons Json
 
   @@map("generation_user_flags")
