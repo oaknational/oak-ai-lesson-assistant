@@ -116,6 +116,7 @@ export const DownloadButton = ({
           className="flex w-full items-center  justify-start gap-15 hover:underline sm:hidden"
           onClick={async () => {
             const lessonTitle = lesson.title;
+            if (!lessonTitle) return;
             mutateAsync({
               lessonTitle,
               title,
