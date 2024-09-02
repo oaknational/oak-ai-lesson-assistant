@@ -1003,6 +1003,7 @@ export const exportsRouter = router({
         const res = await sendEmail({
           from: "aila@thenational.academy",
           to: userEmail,
+          name: "Oak National Academy",
           subject: "Download your lesson made with Aila: " + lessonTitle,
           body: `
 Hi ${userFirstName},
