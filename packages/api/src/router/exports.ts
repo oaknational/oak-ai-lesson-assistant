@@ -1003,13 +1003,13 @@ export const exportsRouter = router({
         const res = await sendEmail({
           from: "aila@thenational.academy",
           to: userEmail,
-          subject: "Aila:" + title.toLowerCase() + " to my Google Drive",
+          subject: "Download your lesson made with Aila: " + lessonTitle,
           body: `
 Hi ${userFirstName},
 
 We made the lesson: ${lessonTitle}
 
-You can use the following link to copy the lesson resources ${title.toLowerCase()} to your Google Drive: ${link.split("/edit")[0]}/copy}
+You can use the following link to copy the lesson resources ${title.toLowerCase()} to your Google Drive: ${`${link.split("/edit")[0]}/copy`}
 
 We hope the lesson goes well for you and your class. If you have any feedback for us, please let us know. You can simply reply to this email.
 
