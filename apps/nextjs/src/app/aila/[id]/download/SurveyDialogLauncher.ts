@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey";
 
 import { useDialog } from "@/components/AppComponents/DialogContext";
+import { mobileWidth } from "@/utils/mobileWidth";
 
 export function SurveyDialogLauncher() {
   const { survey } = usePosthogFeedbackSurvey({
@@ -14,7 +15,7 @@ export function SurveyDialogLauncher() {
   useEffect(() => {
     if (survey) {
       const timer = setTimeout(() => {
-        if (window.innerWidth < 768) {
+        if (window.innerWidth < mobileWidth) {
           setDialogWindow("");
         }
       }, 3000);

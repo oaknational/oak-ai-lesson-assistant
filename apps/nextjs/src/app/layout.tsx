@@ -102,8 +102,6 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
                         inspector: undefined,
                         webDebuggerOptions: {
                           position: WebDebuggerPosition.BottomLeft({
-                            // stop this from being displayed at all
-
                             bottom: 0,
                             left: 0,
                           }),

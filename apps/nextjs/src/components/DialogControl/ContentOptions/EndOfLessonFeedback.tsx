@@ -4,6 +4,7 @@ import { Box, Flex } from "@radix-ui/themes";
 import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey";
 
 import FeedBack from "@/components/Feedback";
+import { mobileWidth } from "@/utils/mobileWidth";
 
 const EndOfLessonFeedback = ({ closeDialog }: { closeDialog: () => void }) => {
   const { survey, submitSurvey, closeDialogWithPostHogDismiss } =
@@ -16,7 +17,7 @@ const EndOfLessonFeedback = ({ closeDialog }: { closeDialog: () => void }) => {
 
   // @TODO delete this before go live. This is for the purpose of the press launch as we do not have mobile designs for this page.
   useEffect(() => {
-    setUserIsOnMobile(window.innerWidth < 768);
+    setUserIsOnMobile(window.innerWidth < mobileWidth);
     if (userIsOnMobile) {
       closeDialog();
     }
