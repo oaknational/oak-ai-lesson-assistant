@@ -990,6 +990,7 @@ export const exportsRouter = router({
     .mutation(async ({ input, ctx }) => {
       const user = await clerkClient.users.getUser(ctx.auth.userId);
       const userEmail = user?.emailAddresses[0]?.emailAddress;
+      const userFirstName = user?.firstName;
       const { title, link } = input;
       try {
         if (!userEmail) {
@@ -1002,7 +1003,17 @@ export const exportsRouter = router({
           from: "aila@thenational.academy",
           to: userEmail,
           subject: "Aila:" + title.toLowerCase() + " to my Google Drive",
-          body: `You can use the following link to copy the ${title.toLowerCase()} to your Google Drive: ${link.split("/edit")[0]}/copy`,
+          body: `
+Hi ${userFirstName},
+
+We made the lesson: ${title.toLowerCase()}
+
+You can use the following link to copy the lesson resources ${title.toLowerCase()} to your Google Drive: ${link.split("/edit")[0]}/copy}
+
+We hope the lesson goes well for you and your class. If you have any feedback for us, please let us know. You can simply reply to this email.
+
+Aila,
+Oak National Academy`,
         });
         return res;
       } catch (error) {

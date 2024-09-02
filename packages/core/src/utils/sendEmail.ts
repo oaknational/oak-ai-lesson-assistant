@@ -23,6 +23,7 @@ export const sendEmail = async ({ from, to, subject, body }: EmailParams) => {
     From: from,
     To: to,
     Subject: subject,
+    ReplyTo: "help@thenational.academy",
     TextBody: body,
     HtmlBody: `<html><body><pre>${body}</pre></body></html>`,
     MessageStream: "outbound",
