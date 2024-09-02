@@ -77,7 +77,7 @@ export function PromptForm({
               <button
                 data-testid="send-message"
                 type="submit"
-                className="rounded-full bg-black p-4"
+                className={`rounded-full bg-black p-4 ${isLoading ? "cursor-not-allowed opacity-50" : ""}`}
                 disabled={isLoading}
               >
                 <Icon icon="chevron-right" color="white" size="sm" />

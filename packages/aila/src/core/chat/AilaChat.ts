@@ -262,6 +262,8 @@ export class AilaChat implements AilaChatService {
       content,
     };
     this.addMessage(assistantMessage);
+
+    return assistantMessage;
   }
 
   private async enqueueFinalState() {
@@ -269,6 +271,13 @@ export class AilaChat implements AilaChatService {
       type: "state",
       reasoning: "final",
       value: this._aila.lesson.plan,
+    });
+  }
+
+  private async enqueueMessageId(messageId: string) {
+    await this.enqueue({
+      type: "id",
+      value: messageId,
     });
   }
 
@@ -283,7 +292,10 @@ export class AilaChat implements AilaChatService {
   public async complete() {
     await this.reportUsageMetrics();
     this.applyEdits();
-    this.appendAssistantMessage();
+    const assistantMessage = this.appendAssistantMessage();
+    if (assistantMessage) {
+      await this.enqueueMessageId(assistantMessage.id);
+    }
     await this.moderate();
     await this.enqueueFinalState();
     await this.persistChat();

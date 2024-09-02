@@ -216,6 +216,7 @@ function ChatMessagePart({
     text: TextMessagePart,
     action: ActionMessagePart,
     moderation: ModerationMessagePart,
+    id: IdMessagePart,
   }[part.type];
 
   if (!PartComponent) {
@@ -274,6 +275,10 @@ function PatchMessagePart({ part }: Readonly<{ part: PatchDocument }>) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function StateMessagePart({ part }: Readonly<{ part: StateDocument }>) {
+  return null;
+}
+
+function IdMessagePart() {
   return null;
 }
 

@@ -1,6 +1,20 @@
 import { type LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { type Message } from "ai/react";
 
+export function findMessageIdFromContent({ content }: { content: string }) {
+  return content
+    .split(`␞`)
+    .map((s) => {
+      try {
+        return JSON.parse(s.trim());
+      } catch (e) {
+        // ignore invalid JSON
+        return null;
+      }
+    })
+    .find((i) => i?.type === "id")?.value;
+}
+
 export function findLatestServerSideState(workingMessages: Message[]) {
   console.log("Finding latest server-side state", { workingMessages });
   const lastMessage = workingMessages[workingMessages.length - 1];

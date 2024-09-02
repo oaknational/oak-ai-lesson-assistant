@@ -1,4 +1,8 @@
-import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
+import {
+  Prisma,
+  PrismaClientWithAccelerate,
+  prisma as globalPrisma,
+} from "@oakai/db";
 
 import { AilaPersistence } from "../..";
 import { AilaChatService, AilaServices } from "../../../../core";
@@ -52,15 +56,20 @@ export class AilaPrismaPersistence extends AilaPersistence {
     }
 
     if (payload.id) {
+      const updatePayload: Prisma.GenerationUpdateInput = {
+        status: payload.status,
+        response: payload.response,
+        completedAt: payload.completedAt,
+        llmTimeTaken: payload.llmTimeTaken,
+      };
+      if (payload.messageId) {
+        // Only update messageId if it exists
+        updatePayload.messageId = payload.messageId;
+      }
       await this._prisma.generation.upsert({
         where: { id: payload.id },
         create: payload,
-        update: {
-          status: payload.status,
-          response: payload.response,
-          completedAt: payload.completedAt,
-          llmTimeTaken: payload.llmTimeTaken,
-        },
+        update: updatePayload,
       });
     } else {
       const result = await this._prisma.generation.create({

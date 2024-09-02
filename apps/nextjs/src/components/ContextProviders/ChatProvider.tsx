@@ -16,7 +16,7 @@ import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { Moderation } from "@oakai/db";
 import * as Sentry from "@sentry/nextjs";
-import { Message } from "ai";
+import { Message, nanoid } from "ai";
 import { ChatRequestOptions, CreateMessage } from "ai";
 import { useChat } from "ai/react";
 import { deepClone } from "fast-json-patch";
@@ -29,7 +29,10 @@ import {
   AilaStreamingStatus,
   useAilaStreamingStatus,
 } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
-import { findLatestServerSideState } from "../AppComponents/Chat/Chat/utils";
+import {
+  findLatestServerSideState,
+  findMessageIdFromContent,
+} from "../AppComponents/Chat/Chat/utils";
 import {
   isAccountLocked,
   isModeration,
@@ -219,6 +222,33 @@ export function ChatProvider({
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
     },
   });
+
+  useEffect(() => {
+    /**
+     * This is a hack to ensure that the assistant messages have a stable id
+     * across server and client.
+     * We should move away from this either when the vercel/ai package supports it
+     * natively, or when we move away from streaming.
+     */
+    return messages.forEach((message) => {
+      if (message.role !== "assistant") {
+        return;
+      }
+
+      const idIsStable = message.id.startsWith("a-");
+      if (idIsStable) {
+        return;
+      }
+
+      const idFromContent = findMessageIdFromContent(message);
+      if (idFromContent) {
+        message.id = idFromContent;
+        return;
+      }
+
+      message.id = "TEMP_PENDING_" + nanoid();
+    });
+  }, [messages]);
 
   const { tempLessonPlan } = useTemporaryLessonPlanWithStreamingEdits({
     lessonPlan,

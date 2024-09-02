@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { AilaUserFlagType } from "@oakai/db";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
@@ -11,10 +11,7 @@ import ActionButton from "./action-button";
 import { DropDownFormWrapper, FeedbackOption } from "./drop-down-form-wrapper";
 import { SmallRadioButton } from "./small-radio-button";
 
-const flagOptions: {
-  label: string;
-  enumValue: AilaUserFlagType;
-}[] = [
+const flagOptions = [
   { label: "Inappropriate", enumValue: "INAPPROPRIATE" },
   { label: "Inaccurate", enumValue: "INACCURATE" },
   { label: "Too hard", enumValue: "TOO_HARD" },
@@ -35,11 +32,12 @@ const FlagButton = () => {
   const chat = useLessonChat();
 
   const { id, messages } = chat;
-  const lastAssistantMessage = messages[messages.length - 1];
+  const assistantMessages = messages.filter((m) => m.role === "assistant");
+  const lastAssistantMessage = assistantMessages[assistantMessages.length - 1];
 
   const { mutateAsync } = trpc.chat.appSessions.flagSection.useMutation();
 
-  const flagSectionContent = useCallback(async () => {
+  const flagSectionContent = async () => {
     if (selectedRadio && lastAssistantMessage) {
       const payload = {
         chatId: id,
@@ -49,7 +47,7 @@ const FlagButton = () => {
       };
       await mutateAsync(payload);
     }
-  }, [selectedRadio, userFeedbackText, mutateAsync, id, lastAssistantMessage]);
+  };
 
   useEffect(() => {
     !isOpen && setDisplayTextBox(null);
@@ -75,7 +73,7 @@ const FlagButton = () => {
           dropdownRef={dropdownRef}
         >
           <OakRadioGroup
-            name={`drop-down-${flagOptions[0]}`}
+            name={`drop-down-${flagOptions[0].enumValue}`}
             $flexDirection="column"
             $gap="space-between-s"
             $background="white"

@@ -1,6 +1,11 @@
 import { moderationCategoriesSchema } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import * as Sentry from "@sentry/nextjs";
-import { Operation, applyPatch, deepClone } from "fast-json-patch";
+import {
+  Operation,
+  applyPatch,
+  deepClone,
+  JsonPatchError,
+} from "fast-json-patch";
 import untruncateJson from "untruncate-json";
 import { z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
@@ -237,6 +242,11 @@ export const BadDocumentSchema = z.object({
 
 export type BadDocument = z.infer<typeof BadDocumentSchema>;
 
+export const MessageIdDocumentSchema = z.object({
+  type: z.literal("id"),
+  value: z.string(),
+});
+
 export const JsonPatchDocumentSchema = z.discriminatedUnion("type", [
   PatchDocumentSchema,
   PromptDocumentSchema,
@@ -245,6 +255,7 @@ export const JsonPatchDocumentSchema = z.discriminatedUnion("type", [
   ErrorDocumentSchema,
   ActionDocumentSchema,
   ModerationDocumentSchema,
+  MessageIdDocumentSchema,
 ]);
 
 // #TODO these optional schemas are perhaps not correct - they should be marked as optional
@@ -257,9 +268,12 @@ export const JsonPatchDocumentOptionalSchema = z.discriminatedUnion("type", [
   ErrorDocumentSchema,
   ActionDocumentSchema,
   ModerationDocumentSchema,
+  MessageIdDocumentSchema,
 ]);
 
-export type JsonPatchDocumentOptional = z.infer<typeof JsonPatchDocumentSchema>;
+export type JsonPatchDocumentOptional = z.infer<
+  typeof JsonPatchDocumentOptionalSchema
+>;
 
 export type JsonPatchDocument = z.infer<typeof JsonPatchDocumentSchema>;
 
@@ -398,10 +412,16 @@ export function applyLessonPlanPatch(
     );
     updatedLessonPlan = { ...newUpdatedLessonPlan };
   } catch (e) {
+    const extra: Record<string, unknown> = {};
+    if (e instanceof JsonPatchError) {
+      extra["index"] = e.index;
+      extra["operation"] = e.operation;
+      extra["tree"] = e.tree;
+    }
     console.error("Failed to apply patch", e);
     Sentry.withScope(function (scope) {
       scope.setLevel("info");
-      Sentry.captureException(e);
+      Sentry.captureException(e, { extra });
     });
   }
 

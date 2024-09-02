@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import type { AilaUserModificationAction } from "@oakai/db";
 import { OakBox, OakRadioGroup } from "@oaknational/oak-components";
@@ -10,26 +10,11 @@ import ActionButton from "./action-button";
 import { DropDownFormWrapper, FeedbackOption } from "./drop-down-form-wrapper";
 import { SmallRadioButton } from "./small-radio-button";
 
-const modifyOptions: {
-  label: string;
-  enumValue: AilaUserModificationAction;
-}[] = [
-  {
-    label: "Make it easier",
-    enumValue: "MAKE_IT_EASIER",
-  },
-  {
-    label: "Make it harder",
-    enumValue: "MAKE_IT_HARDER",
-  },
-  {
-    label: "Shorten content",
-    enumValue: "SHORTEN_CONTENT",
-  },
-  {
-    label: "Add more detail",
-    enumValue: "ADD_MORE_DETAIL",
-  },
+const modifyOptions = [
+  { label: "Make it easier", enumValue: "MAKE_IT_EASIER" },
+  { label: "Make it harder", enumValue: "MAKE_IT_HARDER" },
+  { label: "Shorten content", enumValue: "SHORTEN_CONTENT" },
+  { label: "Add more detail", enumValue: "ADD_MORE_DETAIL" },
   { label: "Other", enumValue: "OTHER" },
 ] as const;
 
@@ -48,16 +33,14 @@ const ModifyButton = ({
   const chat = useLessonChat();
   const { append } = chat;
 
-  const { id } = chat;
+  const { id, messages } = chat;
 
   const { mutateAsync } = trpc.chat.appSessions.modifySection.useMutation();
 
-  const lastAssistantMessage = chat.messages[chat.messages.length - 1];
+  const assistantMessages = messages.filter((m) => m.role === "assistant");
+  const lastAssistantMessage = assistantMessages[assistantMessages.length - 1];
 
-  const recordUserModifySectionContent = useCallback(async () => {
-    console.log("sectionContent", sectionContent);
-    console.log("selectedRadio", selectedRadio);
-    console.log("lastAssistentMessage", lastAssistantMessage);
+  const recordUserModifySectionContent = async () => {
     if (selectedRadio && lastAssistantMessage) {
       const payload = {
         chatId: id,
@@ -67,16 +50,18 @@ const ModifyButton = ({
       };
       await mutateAsync(payload);
     }
-  }, [selectedRadio, sectionContent, mutateAsync, id, lastAssistantMessage]);
+  };
 
   async function modifySection(
     option: FeedbackOption<AilaUserModificationAction>,
   ) {
-    await append({
-      content: `For the ${section}, ${option.label}`,
-      role: "user",
-    });
-    await recordUserModifySectionContent();
+    await Promise.all([
+      append({
+        content: `For the ${section}, ${option.label}`,
+        role: "user",
+      }),
+      recordUserModifySectionContent(),
+    ]);
   }
 
   return (
@@ -93,13 +78,13 @@ const ModifyButton = ({
           onClickActions={modifySection}
           setIsOpen={setIsOpen}
           selectedRadio={selectedRadio}
-          title={"Ask Aila to modify learning outcome:"}
+          title={`Ask Aila to modify ${section}:`}
           buttonText={"Modify section"}
           isOpen={isOpen}
           dropdownRef={dropdownRef}
         >
           <OakRadioGroup
-            name={`drop-down-${modifyOptions[0]}`}
+            name={`drop-down-${modifyOptions[0].enumValue}`}
             $flexDirection="column"
             $gap="space-between-s"
             $background="white"

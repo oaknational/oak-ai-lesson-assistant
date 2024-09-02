@@ -8,6 +8,8 @@ import {
   OakSmallPrimaryButton,
 } from "@oaknational/oak-components";
 
+import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+
 export type FeedbackOption<T> = {
   label: string;
   enumValue: T;
@@ -34,6 +36,7 @@ export const DropDownFormWrapper = <
   isOpen: boolean;
   dropdownRef: React.RefObject<HTMLDivElement>;
 }) => {
+  const { isStreaming } = useLessonChat();
   const firstButtonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (isOpen && firstButtonRef.current) {
@@ -91,7 +94,9 @@ export const DropDownFormWrapper = <
         <OakP $font="heading-6">{title}</OakP>
         {children}
         <OakBox>
-          <OakSmallPrimaryButton>{buttonText}</OakSmallPrimaryButton>
+          <OakSmallPrimaryButton disabled={isStreaming}>
+            {buttonText}
+          </OakSmallPrimaryButton>
         </OakBox>
       </OakFlex>
     </form>

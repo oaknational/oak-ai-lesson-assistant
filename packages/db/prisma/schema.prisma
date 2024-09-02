@@ -40,22 +40,22 @@ model App {
 }
 
 model Prompt {
-  id           String       @id @default(cuid())
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime     @updatedAt @map("updated_at")
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
   name         String
   slug         String
   identifier   String?
-  version      Int          @default(0)
-  app          App          @relation(fields: [appId], references: [id], onDelete: Cascade)
-  appId        String       @map("app_id")
-  hash         String       @unique
+  version      Int      @default(0)
+  app          App      @relation(fields: [appId], references: [id], onDelete: Cascade)
+  appId        String   @map("app_id")
+  hash         String   @unique
   variant      String?
-  current      Boolean      @default(true)
-  gitSha       String?      @map("git_sha")
+  current      Boolean  @default(true)
+  gitSha       String?  @map("git_sha")
   template     String // The prompt body
-  inputSchema  Json         @map("input_schema") // A JSON-schema to apply to prompt inputs
-  outputSchema Json         @map("output_schema") // A JSON-schema to apply to completions
+  inputSchema  Json     @map("input_schema") // A JSON-schema to apply to prompt inputs
+  outputSchema Json     @map("output_schema") // A JSON-schema to apply to completions
 
   statistics                        Statistics[]
   AnswersAndDistractorsForJudgement AnswersAndDistractorsForJudgement[]
@@ -144,11 +144,11 @@ model AilaUserModification {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId    String                     @map("user_id")
-  chatId    String                     @map("chat_id")
-  messageId String                     @map("message_id")
+  userId     String                     @map("user_id")
+  chatId     String                     @map("chat_id")
+  messageId  String                     @map("message_id")
   textForMod String                     @map("text_for_mod")
-  action    AilaUserModificationAction @map("action")
+  action     AilaUserModificationAction @map("action")
 
   @@map("aila_user_modifications")
 }
@@ -349,11 +349,12 @@ model Generation {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  appId    String @map("app_id")
-  
+  appId String @map("app_id")
+
   promptId String @map("prompt_id")
 
   appSessionId String? @map("app_session_id")
+  messageId    String? @map("message_id")
   userId       String  @map("user_id") // The user that requested this generation
 
   status               GenerationStatus @default(REQUESTED)
