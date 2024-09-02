@@ -1,5 +1,4 @@
 import { populateDemoStatuses } from "./src/functions/demo/populateDemoStatuses";
-import { requestGeneration } from "./src/functions/generation/requestGeneration";
 import { generateLessonQuizEmbeddings } from "./src/functions/lesson/generateLessonQuizEmbeddings";
 import { generatePlanForLesson } from "./src/functions/lesson/generatePlan";
 import { summariseLesson } from "./src/functions/lesson/summarise";
@@ -38,7 +37,6 @@ export * from "./src/models";
 //export * from "./src/models/promptVariants";
 
 export const functions = [
-  requestGeneration,
   generateTranscriptEmbeddings,
   generateSnippetEmbeddings,
   generateQuizQuestionEmbeddings,
