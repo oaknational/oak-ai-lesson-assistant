@@ -2,7 +2,6 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 
-import { SidebarActions } from "@/components/AppComponents/Chat/sidebar-actions";
 import { SidebarItem } from "@/components/AppComponents/Chat/sidebar-item";
 import { SideBarChatItem } from "@/lib/types";
 
@@ -15,7 +14,7 @@ export function SidebarItems({ chats }: Readonly<SidebarItemsProps>) {
 
   return (
     <AnimatePresence>
-      {chats.map((chat, index) => {
+      {chats.map((chat) => {
         return (
           <motion.div
             key={chat?.id}
@@ -24,9 +23,7 @@ export function SidebarItems({ chats }: Readonly<SidebarItemsProps>) {
               height: 0,
             }}
           >
-            <SidebarItem index={index} chat={chat}>
-              <SidebarActions chat={chat} />
-            </SidebarItem>
+            <SidebarItem chat={chat} />
           </motion.div>
         );
       })}

@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { OakSmallPrimaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
 import {
@@ -23,6 +26,17 @@ export default function ShareChat({
   creatorsName,
   moderation,
 }: Readonly<ShareChatProps>) {
+  const [userHasCopiedLink, setUserHasCopiedLink] = useState(false);
+
+  useEffect(() => {
+    if (userHasCopiedLink) {
+      const timeout = setTimeout(() => {
+        setUserHasCopiedLink(false);
+      }, 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [userHasCopiedLink, setUserHasCopiedLink]);
+
   const keyStageSubjectTuple = [
     keyStageToTitle(lessonPlan.keyStage ?? ""),
     subjectToTitle(lessonPlan.subject ?? ""),
@@ -41,8 +55,8 @@ export default function ShareChat({
       <div className="flex items-start justify-between bg-lavender30 px-9 py-9 lg:px-24">
         <Logo />
       </div>
-      <div className="flex items-center bg-lavender30 px-9 py-14 md:px-14 md:py-18">
-        <div className="absolute hidden h-38 w-38 items-center justify-center rounded-lg bg-lavender50 xl:left-24 xl:flex">
+      <div className="flex items-center bg-lavender30 px-9  py-18 pb-27 md:px-14">
+        <div className="absolute hidden h-38 w-38 items-center justify-center rounded-lg xl:left-24 xl:flex">
           <Icon
             className="flex items-center justify-center"
             icon="ai-lesson"
@@ -51,10 +65,21 @@ export default function ShareChat({
           />
         </div>
         <div className="mx-auto flex h-24 w-full max-w-2xl flex-col items-start justify-center lg:h-32 xl:h-38 ">
-          <h2 className="mb-6 text-base font-medium">
+          <h2 className="mb-6 pt-20 text-base font-medium sm:mt-0">
             {keyStageSubjectTuple.join(" • ")}
           </h2>
           <h1 className="text-3xl font-bold">{lessonPlan.title}</h1>
+          <div className="mt-10 pb-20">
+            <OakSmallPrimaryButton
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                  setUserHasCopiedLink(true);
+                });
+              }}
+            >
+              {userHasCopiedLink ? " Link copied" : "Copy link"}
+            </OakSmallPrimaryButton>
+          </div>
         </div>
       </div>
       <div className="mx-auto max-w-2xl px-9 py-14 pb-30 sm:px-0">
