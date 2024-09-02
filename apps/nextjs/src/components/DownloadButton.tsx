@@ -1,5 +1,4 @@
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import { sendEmail } from "@oakai/core/src/utils/sendEmail";
 import { Box } from "@radix-ui/themes";
 import Link from "next/link";
 

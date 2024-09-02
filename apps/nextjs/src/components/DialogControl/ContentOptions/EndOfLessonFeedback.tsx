@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 import { Box, Flex } from "@radix-ui/themes";
-import { use } from "dd-trace";
 import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey";
 
 import FeedBack from "@/components/Feedback";
