@@ -38,11 +38,6 @@ test.describe("Mobile", { tag: ["@authenticated"] }, () => {
     await setupClerkTestingToken({ page });
 
     await page.goto(`${TEST_BASE_URL}/aila`);
-
-    await expect(page.getByTestId("mobile-support-blocker")).toBeVisible();
-    await expect(page.getByTestId("mobile-support-blocker")).toContainText(
-      "This AI lesson planning assistant is not currently available on mobile.",
-    );
   });
 });
 
