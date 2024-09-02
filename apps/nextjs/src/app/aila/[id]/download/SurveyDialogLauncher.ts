@@ -14,7 +14,9 @@ export function SurveyDialogLauncher() {
   useEffect(() => {
     if (survey) {
       const timer = setTimeout(() => {
-        setDialogWindow("feedback");
+        if (window.innerWidth < 768) {
+          setDialogWindow("");
+        }
       }, 3000);
       return () => clearTimeout(timer);
     }

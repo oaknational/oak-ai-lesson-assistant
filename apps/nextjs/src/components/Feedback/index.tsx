@@ -33,18 +33,18 @@ const FeedBack = ({
 
   return (
     <Flex
-      className="hidden w-full overflow-y-scroll sm:h-full"
+      className="h-full w-full"
       direction="column"
       justify="start"
       align="start"
     >
-      <p className="mb-20  text-3xl font-bold ">Before you continue...</p>
+      <p className="mb-20 text-3xl font-bold">Before you continue...</p>
 
       <form
         onSubmit={async (e) => {
           e.preventDefault();
         }}
-        className="flex h-[700px] w-full flex-col gap-14"
+        className="flex w-full flex-col gap-14"
       >
         {survey?.questions.map((question, i) => {
           // first survey key should be $survey_response
@@ -63,7 +63,7 @@ const FeedBack = ({
                 >
                   {question.question}
                 </label>
-                <div className="flex w-full flex-wrap justify-between gap-6">
+                <div className="flex w-full justify-between gap-6">
                   {rating.map((feedback) => {
                     return (
                       <button

@@ -999,7 +999,7 @@ export const exportsRouter = router({
           };
         }
         const res = await sendEmail({
-          from: "ai.noreply@thenational.academy",
+          from: "aila@thenational.academy",
           to: userEmail,
           subject: "Aila:" + title.toLowerCase() + " to my Google Drive",
           body: `You can use the following link to copy the ${title.toLowerCase()} to your Google Drive: ${link.split("/edit")[0]}/copy`,
