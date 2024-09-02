@@ -121,7 +121,7 @@ export class Aila implements AilaServices {
       useThreatDetection: options?.useThreatDetection ?? true,
       useErrorReporting: options?.useErrorReporting ?? true,
       model: options?.model ?? DEFAULT_MODEL,
-      mode: options?.mode ?? "full",
+      mode: options?.mode ?? "interactive",
     };
   }
 

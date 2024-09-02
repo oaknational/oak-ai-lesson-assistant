@@ -77,16 +77,11 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
     baseLessonPlan: LooseLessonPlan | undefined,
   ): string {
     const lessonPlan = this._aila?.lessonPlan ?? {};
-    const { title, subject, keyStage, topic } = lessonPlan;
     const args: TemplateProps = {
-      subject,
-      lessonTitle: title,
-      keyStage,
-      topic,
-      currentLessonPlan: compressedLessonPlanForRag(lessonPlan),
+      lessonPlan,
       relevantLessonPlans,
       summaries: "None",
-      responseMode: "interactive",
+      responseMode: this._aila?.options.mode ?? "interactive",
       useRag: this._aila?.options.useRag ?? true,
       americanisms: findAmericanisms(lessonPlan),
       baseLessonPlan: baseLessonPlan

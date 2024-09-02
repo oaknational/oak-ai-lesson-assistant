@@ -12,7 +12,10 @@ import {
   AilaGeneration,
   AilaGenerationStatus,
 } from "../../features/generation";
-import { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
+import {
+  JsonPatchDocumentOptional,
+  parseMessageParts,
+} from "../../protocol/jsonPatchProtocol";
 import { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
@@ -80,6 +83,10 @@ export class AilaChat implements AilaChatService {
 
   public get messages() {
     return this._messages;
+  }
+
+  public get parsedMessages() {
+    return this._messages.map((m) => parseMessageParts(m.content));
   }
 
   public getPatchEnqueuer(): PatchEnqueuer {
@@ -244,7 +251,6 @@ export class AilaChat implements AilaChatService {
 
   private applyEdits() {
     const patches = this.accumulatedText();
-    console.log("Apply edits", patches);
     if (!patches) {
       return;
     }

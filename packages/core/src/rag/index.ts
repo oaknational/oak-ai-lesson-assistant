@@ -742,13 +742,34 @@ Thank you and happy classifying!`;
 
     const similaritySearchTerm = topic ? `${title}. ${topic}` : title;
 
-    const result = await vectorStore.similaritySearchWithScore(
-      similaritySearchTerm,
-      k * 5, // search for more records than we need
-    );
+    let result:
+      | [
+          import("@langchain/core/documents").DocumentInterface<
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            Record<string, any>
+          >,
+          number,
+        ][]
+      | undefined = undefined;
+    try {
+      result = await vectorStore.similaritySearchWithScore(
+        similaritySearchTerm,
+        k * 5, // search for more records than we need
+      );
+    } catch (e) {
+      if (e instanceof TypeError && e.message.includes("join([])")) {
+        console.warn("Caught TypeError with join([]), returning empty array");
+        return [];
+      }
+      throw e;
+    }
 
     const relevantResults = result.filter((r) => r[1] > 0.1).map((r) => r[0]);
 
+    if (relevantResults.length === 0) {
+      // Avoids a TypeError when there are no relevant results
+      return [];
+    }
     const lessonPlans: LessonPlanWithPartialLesson[] =
       await this.prisma.lessonPlan.findMany({
         where: {

@@ -1,10 +1,12 @@
+import stringify from "json-stringify-safe";
+
 import { TemplateProps } from "..";
 
 export const yourInstructions = ({
-  currentLessonPlan,
+  lessonPlan,
 }: TemplateProps) => `THE CURRENT LESSON PLAN
 This is where we have got to with the lesson plan so far:
-${currentLessonPlan}
+${stringify(lessonPlan, null, 2)}
 
 YOUR INSTRUCTIONS
 This is the most important part of the prompt.

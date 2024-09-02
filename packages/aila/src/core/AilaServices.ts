@@ -6,6 +6,7 @@ import {
   AilaPersistenceFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
+import { MessagePart } from "../protocol/jsonPatchProtocol";
 import { LooseLessonPlan } from "../protocol/schema";
 import { Message } from "./chat";
 import { AilaOptionsWithDefaultFallbackValues } from "./index";
@@ -30,6 +31,7 @@ export interface AilaChatService {
   readonly userId: string | undefined;
   readonly id: string;
   readonly messages: Message[];
+  readonly parsedMessages: MessagePart[][];
   addMessage(message: Message): void;
   startStreaming(abortController?: AbortController): ReadableStream;
 }

@@ -1,5 +1,6 @@
 import crypto from "crypto";
 
+import { LooseLessonPlan } from "../../../../aila/src/protocol/schema";
 import {
   americanToBritish,
   basedOn,
@@ -16,13 +17,9 @@ import {
 } from "./parts";
 
 export interface TemplateProps {
-  subject?: string;
-  keyStage?: string;
-  topic?: string;
   relevantLessonPlans?: string;
-  currentLessonPlan?: string;
+  lessonPlan: LooseLessonPlan;
   summaries?: string;
-  lessonTitle?: string;
   responseMode?: "interactive" | "generate";
   baseLessonPlan?: string;
   useRag?: boolean;
@@ -77,6 +74,7 @@ export const template = function (props: TemplateProps) {
 };
 
 export const generatePromptPartsHash = (props: TemplateProps): string => {
+  console.log("Generate prompt parts hash");
   const parts = getPromptParts(props);
   const partsString = parts.map((part) => part.toString()).join("");
   const hash = crypto.createHash("md5").update(partsString).digest("hex");

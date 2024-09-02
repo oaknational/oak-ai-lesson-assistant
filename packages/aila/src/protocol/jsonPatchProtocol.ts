@@ -2,7 +2,7 @@ import { moderationCategoriesSchema } from "@oakai/core/src/utils/ailaModeration
 import * as Sentry from "@sentry/nextjs";
 import { Operation, applyPatch, deepClone } from "fast-json-patch";
 import untruncateJson from "untruncate-json";
-import { z } from "zod";
+import { ZodError, z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 
 import {
@@ -304,6 +304,18 @@ interface PartialMessage {
       }
     | string;
 }
+
+export type MessagePart =
+  | (ModerationDocument & { isPartial?: boolean })
+  | (ErrorDocument & { isPartial?: boolean })
+  | (PatchDocument & { isPartial?: boolean })
+  | (StateDocument & { isPartial?: boolean })
+  | (CommentDocument & { isPartial?: boolean })
+  | (PromptDocument & { isPartial?: boolean })
+  | (TextDocument & { isPartial?: boolean })
+  | (ActionDocument & { isPartial?: boolean })
+  | (BadDocument & { isPartial?: boolean });
+
 export function parseMessagePart(part: string): PartialMessage | undefined {
   const trimmed = part.trim();
   if (!trimmed.startsWith("{")) {
@@ -453,4 +465,59 @@ export function parseJsonSafely(jsonStr: string, logging: boolean = false) {
 
   // Return null if no valid JSON could be extracted
   return null;
+}
+
+export function parseMessageParts(content: string): MessagePart[] {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const schemaMap: { [key: string]: z.ZodSchema<any> } = {
+    moderation: ModerationDocumentSchema,
+    error: ErrorDocumentSchema,
+    patch: PatchDocumentSchema,
+    prompt: PromptDocumentSchema,
+    state: StateDocumentSchema,
+    comment: CommentDocumentSchema,
+    action: ActionDocumentSchema,
+    text: TextDocumentSchema,
+    bad: BadDocumentSchema,
+  };
+
+  const parts = extractMessageParts(content)
+    .filter((line) => line.length > 15) // Strips out streaming / empty lines from the protocol
+    .map((part) => parseMessagePart(part))
+    .map((part) => {
+      if (!part) {
+        return null;
+      }
+      if (!part.type) {
+        return null;
+      }
+
+      const schema = schemaMap[part.type] || BadDocumentSchema;
+      let parsedDoc: MessagePart | null = null;
+
+      try {
+        parsedDoc = schema.parse(part);
+      } catch (e) {
+        const isPartial = part.isPartial ?? false;
+        if (!isPartial) {
+          const errorDoc: BadDocument & { isPartial?: boolean } = {
+            type: "bad",
+            originalType: part.type,
+            value: part,
+            isPartial: isPartial,
+            issues: e instanceof ZodError ? e.issues : undefined,
+          };
+          if (e instanceof ZodError) {
+            console.error("Error parsing", part, e.format());
+          }
+
+          parsedDoc = errorDoc;
+        }
+      }
+
+      return parsedDoc;
+    })
+    .filter((part): part is MessagePart => part !== null);
+
+  return parts;
 }

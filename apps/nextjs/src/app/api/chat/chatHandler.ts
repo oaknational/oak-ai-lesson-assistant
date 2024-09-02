@@ -225,15 +225,16 @@ export async function handleChatPostRequest(
         "chat-create-aila",
         { chat_id: chatId, user_id: userId },
         async (): Promise<Aila> => {
-          const result = await config.createAila({
+          const ailaOptions = {
             options,
             chat: {
               id: chatId,
               userId,
               messages,
             },
-            lessonPlan,
-          });
+            lessonPlan: lessonPlan ?? {},
+          };
+          const result = await config.createAila(ailaOptions);
           return result;
         },
       );

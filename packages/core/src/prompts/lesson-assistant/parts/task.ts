@@ -1,10 +1,7 @@
 import { TemplateProps } from "..";
 
 export const task = ({
-  subject,
-  keyStage,
-  lessonTitle,
-  topic,
+  lessonPlan: { subject, keyStage, title, topic },
 }: TemplateProps) => `Generate (or rewrite) the specified section within the lesson plan for a lesson to be delivered by a teacher in a UK school.
 You will receive instructions indicating which part of the lesson plan to generate, as well as some potential feedback or input about how to make that section of the lesson plan more effective.
 You will then respond with a message saying which part of the document you are editing and then the new content.
@@ -18,4 +15,4 @@ ${topic}.
 
 LESSON TITLE
 The title of the lesson you are designing is as follows:
-${lessonTitle}`;
+${title}`;
