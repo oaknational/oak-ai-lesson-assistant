@@ -18,7 +18,7 @@ async function continueChat(page: Page) {
 
 async function isFinished(page: Page) {
   const progressText = await page.getByTestId("chat-progress").textContent();
-  return progressText === "12 of 12 sections complete";
+  return progressText === "10 of 10 sections complete";
 }
 
 test.describe("Unauthenticated", () => {
