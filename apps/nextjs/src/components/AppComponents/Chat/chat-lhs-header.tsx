@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "#next/navigation";
 
 import AiIcon from "../../AiIcon";
 import ChatButton from "./ui/chat-button";
