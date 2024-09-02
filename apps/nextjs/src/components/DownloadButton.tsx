@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getLessonTrackingProps } from "@/lib/analytics/helpers";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { ResourceFileTypeValueType } from "@/lib/avo/Avo";
+import { trpc } from "@/utils/trpc";
 
 import {
   ExportsType,
@@ -44,6 +45,9 @@ export const DownloadButton = ({
   const { track } = useAnalytics();
 
   const { icon, ext, analyticsResourceType } = getExportsConfig(exportsType);
+
+  const { mutateAsync, isLoading } =
+    trpc.exports.sendUserExportLink.useMutation();
 
   function trackDownload(resourceFileType: ResourceFileTypeValueType) {
     track.lessonPlanResourcesDownloaded({
@@ -93,7 +97,7 @@ export const DownloadButton = ({
 
         <Link
           onClick={() => trackDownload("share to google drive")}
-          className="flex w-full items-center justify-start  gap-15 hover:underline"
+          className="hidden w-full items-center  justify-start gap-15 hover:underline sm:flex"
           target="_blank"
           href={`${link.split("/edit")[0]}/copy`}
           data-testid={`${dataTestId}-open-google-drive`}
@@ -108,6 +112,26 @@ export const DownloadButton = ({
             </span>
           </div>
         </Link>
+        <button
+          className="flex w-full items-center  justify-start gap-15 hover:underline sm:hidden"
+          onClick={async () => {
+            const lessonTitle = lesson.title;
+            if (!lessonTitle) return;
+            mutateAsync({
+              lessonTitle,
+              title,
+              link,
+            });
+          }}
+        >
+          {isLoading ? <LoadingWheel /> : <Icon icon="external" size="sm" />}
+          <div className="flex flex-col gap-6">
+            <span className="text-left font-bold">Email me {ext}</span>
+            <span className="text-left opacity-80">
+              Google account needed for this option
+            </span>
+          </div>
+        </button>
       </div>
     );
   }

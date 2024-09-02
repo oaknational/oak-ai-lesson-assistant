@@ -1,5 +1,6 @@
 import { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
+import { sendEmail } from "@oakai/core/src/utils/sendEmail";
 import { PrismaClientWithAccelerate } from "@oakai/db";
 import {
   LessonDeepPartial,
@@ -979,7 +980,49 @@ export const exportsRouter = router({
         };
       }
     }),
+  sendUserExportLink: protectedProcedure
+    .input(
+      z.object({
+        lessonTitle: z.string(),
+        title: z.string(),
+        link: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const user = await clerkClient.users.getUser(ctx.auth.userId);
+      const userEmail = user?.emailAddresses[0]?.emailAddress;
+      const userFirstName = user?.firstName;
+      const { title, link, lessonTitle } = input;
+      try {
+        if (!userEmail) {
+          return {
+            error: new Error("User email not found"),
+            message: "User email not found",
+          };
+        }
+        const res = await sendEmail({
+          from: "aila@thenational.academy",
+          to: userEmail,
+          name: "Oak National Academy",
+          subject: "Download your lesson made with Aila: " + lessonTitle,
+          body: `
+Hi ${userFirstName},
 
+We made the lesson: ${lessonTitle}
+
+You can use the following link to copy the lesson resources ${title.toLowerCase()} to your Google Drive: ${`${link.split("/edit")[0]}/copy`}
+
+We hope the lesson goes well for you and your class. If you have any feedback for us, please let us know. You can simply reply to this email.
+
+Aila,
+Oak National Academy
+`,
+        });
+        return res;
+      } catch (error) {
+        return error;
+      }
+    }),
   pollKvForLink: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {

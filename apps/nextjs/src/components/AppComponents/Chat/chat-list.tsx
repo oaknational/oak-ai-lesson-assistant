@@ -7,6 +7,7 @@ import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
 export interface ChatListProps {
   isDemoLocked: boolean;
+  showLessonMobile: boolean;
 }
 
 function DemoLimitMessage({ id }: Readonly<{ id: string }>) {
@@ -27,7 +28,10 @@ function DemoLimitMessage({ id }: Readonly<{ id: string }>) {
   );
 }
 
-export function ChatList({ isDemoLocked }: Readonly<ChatListProps>) {
+export function ChatList({
+  isDemoLocked,
+  showLessonMobile,
+}: Readonly<ChatListProps>) {
   const chat = useLessonChat();
 
   const { id, messages, ailaStreamingStatus, lastModeration } = chat;
@@ -37,7 +41,7 @@ export function ChatList({ isDemoLocked }: Readonly<ChatListProps>) {
   const [autoScroll, setAutoScroll] = useState(true);
 
   const scrollToBottom = useCallback(() => {
-    if (chatEndRef.current && messages.length > 3) {
+    if (chatEndRef.current && messages.length > 1) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chatEndRef, messages]);
@@ -45,6 +49,10 @@ export function ChatList({ isDemoLocked }: Readonly<ChatListProps>) {
   useEffect(() => {
     autoScroll && scrollToBottom();
   }, [messages, autoScroll, ailaStreamingStatus, scrollToBottom]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [showLessonMobile, scrollToBottom]);
 
   useEffect(() => {
     scrollToBottom();
