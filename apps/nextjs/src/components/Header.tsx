@@ -48,12 +48,11 @@ const Header = ({
         <OakP $font={["body-2", "heading-light-6"]}>Oak AI Experiments</OakP>
       </OakFlex>
       <OakFlex $alignItems={"center"} $gap={"all-spacing-8"}>
-        {(typeof featureFlag === "boolean" && featureFlag) ||
-          (typeof featureFlag === "object" && featureFlag.featureFlag && (
-            <Link href="/faqs">
-              <OakP $font="body-2">FAQs</OakP>
-            </Link>
-          ))}
+        {featureFlag && (
+          <Link href="/faqs">
+            <OakP $font="body-2">FAQs</OakP>
+          </Link>
+        )}
 
         <HeaderAuth />
 
