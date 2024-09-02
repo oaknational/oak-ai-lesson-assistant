@@ -4,7 +4,7 @@ import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 
-import { DesktopChatLayout } from "../desktop-layout";
+import { ChatLayout } from "../chat-layout";
 import ChatModeration from "./ChatModeration";
 import ChatUserAccessCheck from "./ChatUserAccessCheck";
 
@@ -32,7 +32,7 @@ export function Chat({
             messages={messages}
             isShared={isShared}
           />
-          <DesktopChatLayout className={className} />
+          <ChatLayout className={className} />
         </DialogRoot>
       </ChatModeration>
     </ChatUserAccessCheck>

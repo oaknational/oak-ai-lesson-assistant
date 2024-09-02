@@ -22,13 +22,11 @@ import ExportButtons from "./export-buttons";
 import { LessonPlanProgressBar } from "./export-buttons/LessonPlanProgressBar";
 import ChatButton from "./ui/chat-button";
 
-export interface DesktopChatLayoutProps {
+export interface ChatLayoutProps {
   className?: string;
 }
 
-export const DesktopChatLayout = ({
-  className,
-}: Readonly<DesktopChatLayoutProps>) => {
+export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
   const chat = useLessonChat();
 
   const {
@@ -49,14 +47,11 @@ export const DesktopChatLayout = ({
   const demo = useDemoUser();
   const isDemoLocked = useDemoLocking(messages, isLoading);
 
-  const {
-    showLessonMobile,
-    setShowLessonMobile,
-    setUserHasOverRiddenAutoPullOut,
-  } = useMobileLessonPullOutControl({
-    ailaStreamingStatus,
-    messages,
-  });
+  const { showLessonMobile, setShowLessonMobile, closeMobileLessonPullOut } =
+    useMobileLessonPullOutControl({
+      ailaStreamingStatus,
+      messages,
+    });
   const { setDialogWindow } = useDialog();
   const scrollToBottom = () => {
     if (chatEndRef.current) {
@@ -161,8 +156,7 @@ export const DesktopChatLayout = ({
           <div className="ml-[-10px] mt-27 flex justify-between px-14 pt-6 sm:hidden">
             <button
               onClick={() => {
-                setShowLessonMobile(false);
-                setUserHasOverRiddenAutoPullOut(true);
+                closeMobileLessonPullOut();
               }}
               className="flex items-center justify-center gap-3"
             >
@@ -198,7 +192,7 @@ export const DesktopChatLayout = ({
               Share
             </OakSmallSecondaryButton>
           </div>
-          <div className="block px-14 pb-9 pt-12 sm:hidden">
+          <div className="sticky top-25 z-10 block bg-white px-14 pb-9 pt-12 sm:hidden">
             <LessonPlanProgressBar lessonPlan={lessonPlan} />
           </div>
 
@@ -216,7 +210,7 @@ export const DesktopChatLayout = ({
             <ChatButton
               variant="primary"
               onClick={() => {
-                setShowLessonMobile(false);
+                closeMobileLessonPullOut();
               }}
             >
               <AiIcon color="white" />

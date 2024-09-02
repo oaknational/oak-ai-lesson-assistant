@@ -7,7 +7,7 @@ export const dialogContent = cva([
 export const dialogContentInner = cva([
   "sm:mx-20 sm:border-2 sm:border-black",
   "h-full w-full  sm:w-[80%] md:w-[680px]",
-  "flex w-full flex-col items-center justify-between",
+  "flex w-full flex-col items-center justify-between ",
   "data-[state=open]:animate-contentShow bg-white p-10 pb-24 focus:outline-none md:p-22",
 ]);
 

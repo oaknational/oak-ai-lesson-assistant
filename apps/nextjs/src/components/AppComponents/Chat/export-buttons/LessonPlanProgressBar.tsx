@@ -44,7 +44,7 @@ export const LessonPlanProgressBar: React.FC<LessonPlanProgressBarProps> = ({
   }, [lessonPlan]);
 
   return (
-    <div className="flex items-center justify-center gap-10">
+    <div className="flex items-center justify-center gap-10 ">
       <span className="flex items-center justify-center whitespace-nowrap text-base">
         {`${completedSections} of ${LESSON_PLAN_SECTIONS.length} sections`}
       </span>

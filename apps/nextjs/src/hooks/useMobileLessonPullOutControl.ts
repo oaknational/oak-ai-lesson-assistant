@@ -31,7 +31,13 @@ export const useMobileLessonPullOutControl = ({
     setShowLessonMobile,
   ]);
 
+  function closeMobileLessonPullOut() {
+    setShowLessonMobile(false);
+    setUserHasOverRiddenAutoPullOut(true);
+  }
+
   return {
+    closeMobileLessonPullOut,
     showLessonMobile,
     setShowLessonMobile,
     userHasOverRiddenAutoPullOut,
