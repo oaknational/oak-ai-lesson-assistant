@@ -84,14 +84,14 @@ test.describe("Authenticated", { tag: "@authenticated" }, () => {
       await page.waitForURL(/\/aila\/.+/);
       await waitForGeneration(page);
 
-      for (let i = 0; i < 12; i++) {
+      for (let i = 0; i < 10; i++) {
         await continueChat(page);
         await waitForGeneration(page);
         if (await isFinished(page)) {
           break;
         }
-        if (i === 11) {
-          throw new Error("Failed to finish the lesson plan after 12 tries");
+        if (i === 9) {
+          throw new Error("Failed to finish the lesson plan after 10 tries");
         }
       }
     });
