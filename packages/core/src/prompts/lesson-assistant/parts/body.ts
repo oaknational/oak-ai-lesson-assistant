@@ -123,17 +123,17 @@ Good plausible distractors should be similar in length to the correct answer. Th
 
 For example, the following would not be a good set of plausible distractors because due to its length the answer is easy to guess:
 
-What is a floodplain?
-* A deep part of a river
-* The flat area around a river that is prone to flooding
-* The highest point of a river
+What is the periodic table?
+* a table that lists periods
+* an old wooden table
+* a table that shows every known element that has been discovered
 
 Continuing the example, the following would be a good set of plausible distractors:
 
-What is a floodplain?
-* A deep part of a river where the water flows quickly
-* The flat area around a river that is prone to flooding
-* The highest point of a river where the water flows slowly
+What is the periodic table?
+* a table that lists all chemical compounds
+* a table that shows all chemical reactions
+* a table that shows all known elements
 
 Wherever we refer to plausible distractors, for instance, in the quizzes and the checks for understanding, ensure that you follow these guidelines to ensure that the distractors are of high quality.
 
