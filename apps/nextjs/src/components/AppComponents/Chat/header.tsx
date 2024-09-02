@@ -49,16 +49,6 @@ export function Header() {
             <span className="font-bold">AI lesson assistant</span>
             <BetaTag />
           </div>
-          <p className="text-sm">
-            <a
-              href="https://docs.google.com/forms/d/1yRiO9DOGuCXR6Phyr8gaKFh7-Lr_4sFpVxXZ2igQH7A/edit"
-              target="_blank"
-              className="font-bold text-blue underline"
-            >
-              Give feedback
-            </a>{" "}
-            to help us improve!
-          </p>
         </div>
         <div className="flex items-center justify-end space-x-10">
           <div className="hidden items-center sm:flex">

@@ -23,6 +23,7 @@ export interface AilaLessonService {
   readonly hasSetInitialState: boolean;
   applyPatches(patches: string): void;
   initialise(plan: LooseLessonPlan): void;
+  setUpInitialLessonPlan(messages: Message[]): Promise<void>;
 }
 
 export interface AilaChatService {

@@ -41,6 +41,9 @@
     "prompts": {
       "cache": false
     },
+    "prompts:dev": {
+      "cache": false
+    },
     "type-check": {
       "dependsOn": ["^db-generate"],
       "cache": false

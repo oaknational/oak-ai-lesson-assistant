@@ -115,6 +115,7 @@ async function getHandler(req: Request): Promise<Response> {
       gdriveFileId: fileId,
       userId,
     },
+    cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
   });
 
   if (!lessonExport) {
