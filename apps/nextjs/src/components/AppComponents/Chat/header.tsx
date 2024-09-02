@@ -65,16 +65,6 @@ export function Header() {
               <BetaTag />
             </div>
           </div>
-          <p className="hidden text-sm sm:block">
-            <a
-              href="https://docs.google.com/forms/d/1yRiO9DOGuCXR6Phyr8gaKFh7-Lr_4sFpVxXZ2igQH7A/edit"
-              target="_blank"
-              className="font-bold text-blue underline"
-            >
-              Give feedback
-            </a>{" "}
-            to help us improve!
-          </p>
         </div>
         <div className="flex items-center justify-end space-x-12">
           <div className="flex sm:hidden">
