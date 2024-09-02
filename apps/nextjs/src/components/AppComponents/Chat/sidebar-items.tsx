@@ -14,7 +14,7 @@ export function SidebarItems({ chats }: Readonly<SidebarItemsProps>) {
 
   return (
     <AnimatePresence>
-      {chats.map((chat, index) => {
+      {chats.map((chat) => {
         return (
           <motion.div
             key={chat?.id}
