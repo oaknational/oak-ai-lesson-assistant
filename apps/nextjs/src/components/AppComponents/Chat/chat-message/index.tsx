@@ -184,9 +184,10 @@ function MessageWrapper({
         type === "user" && "bg-teachersLilac p-9",
       )}
     >
-      {type !== "user" && (
-        <span className="block font-bold sm:hidden">Aila: </span>
-      )}
+      {type === "aila" ||
+        (type === "editing" && (
+          <span className="block font-bold sm:hidden">Aila: </span>
+        ))}
       {children}
     </div>
   );
