@@ -1,5 +1,4 @@
 import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
-import { nanoid } from "nanoid";
 
 import {
   DEFAULT_MODEL,
