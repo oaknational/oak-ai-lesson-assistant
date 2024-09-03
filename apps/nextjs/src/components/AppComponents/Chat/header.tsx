@@ -2,8 +2,12 @@
 
 import * as React from "react";
 
+import { OakIcon } from "@oaknational/oak-components";
+import Link from "next/link";
+
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import { Icon } from "@/components/Icon";
+import OakIconLogo from "@/components/OakIconLogo";
 
 import BetaTag from "./beta-tag";
 import { ChatHistory } from "./chat-history";
@@ -40,19 +44,41 @@ export function Header() {
         </div>
       )}
 
-      <div className="flex h-26 shrink-0 items-center justify-between border-b-2 border-black bg-white  px-10 ">
+      <div className="flex h-26  shrink-0 items-center justify-between border-b-2 border-black  bg-white  px-10  ">
         <div className="flex items-center gap-10">
-          <SidebarMobile>
-            <ChatHistory />
-          </SidebarMobile>
+          <div className="hidden sm:flex">
+            <SidebarMobile>
+              <ChatHistory />
+            </SidebarMobile>
+          </div>
           <div className="flex items-center gap-10">
-            <span className="font-bold">AI lesson assistant</span>
-            <BetaTag />
+            <span className="hidden font-bold sm:block">
+              AI lesson assistant
+            </span>
+            <span className="flex items-center justify-center gap-9  sm:hidden">
+              <Link href="/" aria-label="go to home page">
+                <OakIconLogo />
+              </Link>
+              <span className="text-xl font-bold">Aila</span>
+            </span>
+            <div className="hidden sm:flex">
+              <BetaTag />
+            </div>
           </div>
         </div>
-        <div className="flex items-center justify-end space-x-10">
-          <div className="hidden items-center sm:flex">
+        <div className="flex items-center justify-end space-x-12">
+          <div className="flex sm:hidden">
+            <Link href="/aila/help">
+              <OakIcon iconName="question-mark" />
+            </Link>
+          </div>
+          <div className="= flex items-center">
             <UserOrLogin />
+          </div>
+          <div className="flex sm:hidden">
+            <SidebarMobile>
+              <ChatHistory />
+            </SidebarMobile>
           </div>
         </div>
       </div>
