@@ -75,7 +75,6 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
           trackEvent("chat:continue");
           lessonPlanTracking.onClickContinue();
           await append({
-            id,
             content: "Continue",
             role: "user",
           });

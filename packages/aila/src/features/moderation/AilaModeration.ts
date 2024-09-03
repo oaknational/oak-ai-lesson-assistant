@@ -16,7 +16,6 @@ import invariant from "tiny-invariant";
 import { AilaServices } from "../../core";
 import { Message } from "../../core/chat";
 import { AilaPluginContext } from "../../core/plugins/types";
-import { getMessageId } from "../../helpers/chat/getMessageId";
 import { ModerationDocument } from "../../protocol/jsonPatchProtocol";
 import { LooseLessonPlan } from "../../protocol/schema";
 import { AilaModerationFeature } from "../types";
@@ -69,7 +68,7 @@ export class AilaModeration implements AilaModerationFeature {
     const moderation = await this._moderations.create({
       userId,
       appSessionId: chatId,
-      messageId: getMessageId(lastUserMessage),
+      messageId: lastUserMessage.id,
       categories: moderationResult.categories,
       justification: moderationResult.justification,
       lesson: lessonPlan,

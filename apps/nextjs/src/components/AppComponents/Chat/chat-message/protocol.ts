@@ -7,6 +7,7 @@ import {
   CommentDocumentSchema,
   ErrorDocument,
   ErrorDocumentSchema,
+  MessageIdDocumentSchema,
   ModerationDocument,
   ModerationDocumentSchema,
   PatchDocument,
@@ -54,6 +55,7 @@ export function parseMessageParts(content: string): MessagePart[] {
     action: ActionDocumentSchema,
     text: TextDocumentSchema,
     bad: BadDocumentSchema,
+    id: MessageIdDocumentSchema,
   };
 
   const parts = extractMessageParts(content)

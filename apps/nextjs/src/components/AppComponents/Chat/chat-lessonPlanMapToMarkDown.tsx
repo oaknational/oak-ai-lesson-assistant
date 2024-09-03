@@ -4,8 +4,8 @@ import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
 
-import { sectionTitle } from "./chat-dropdownsection";
 import { notEmpty } from "./chat-lessonPlanDisplay";
+import { sectionTitle } from "./drop-down-section";
 import { MemoizedReactMarkdownWithStyles } from "./markdown";
 
 const LessonPlanMapToMarkDown = ({
