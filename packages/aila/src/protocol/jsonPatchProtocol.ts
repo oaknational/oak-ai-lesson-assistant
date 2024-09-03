@@ -269,6 +269,7 @@ export const JsonPatchDocumentJsonSchema = zodToJsonSchema(
 );
 
 const LLMResponseSchema = z.discriminatedUnion("type", [
+  PatchDocumentSchema,
   PromptDocumentSchema,
   StateDocumentSchema,
   CommentDocumentSchema,
