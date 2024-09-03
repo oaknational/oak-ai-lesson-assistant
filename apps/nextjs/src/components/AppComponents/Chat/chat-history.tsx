@@ -2,36 +2,34 @@
 
 import * as React from "react";
 
-import { usePathname } from "#next/navigation";
-import Link from "next/link";
+import { OakIcon } from "@oaknational/oak-components";
 
 import { SidebarList } from "@/components/AppComponents/Chat/sidebar-list";
-import { buttonVariants } from "@/components/AppComponents/Chat/ui/button";
-import { IconPlus } from "@/components/AppComponents/Chat/ui/icons";
-import useAnalytics from "@/lib/analytics/useAnalytics";
-import { cn } from "@/lib/utils";
+
+import ChatButton from "./ui/chat-button";
 
 export function ChatHistory() {
-  const { trackEvent } = useAnalytics();
-  const path = usePathname();
-
-  const idFromUrl = path.split("chat/")[1];
   return (
-    <div className="flex h-full flex-col">
-      <div className="my-10 px-7">
-        <Link
-          href="/aila"
-          onClick={() => {
-            trackEvent("chat:new_lesson_plan", { id: idFromUrl });
-          }}
-          className={cn(
-            buttonVariants({ variant: "outline" }),
-            "h-20 w-full justify-start bg-zinc-50 px-10 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10",
-          )}
-        >
-          <IconPlus className="-translate-x-2 stroke-2" />
-          New Lesson
-        </Link>
+    <div className="mt-20 flex h-full flex-col">
+      <div className="my-10 flex flex-col px-7">
+        <ChatButton href="/aila" variant="text-link">
+          <span className="rotate-45 scale-90">
+            <OakIcon iconName="cross" />
+          </span>
+          <span>New Lesson</span>
+        </ChatButton>
+        <ChatButton href="/aila" variant="text-link">
+          <span className="scale-90">
+            <OakIcon iconName="home" />
+          </span>
+          Ai experiments page
+        </ChatButton>
+        <ChatButton href="/aila" variant="text-link">
+          <span className="scale-90">
+            <OakIcon iconName="question-mark" />
+          </span>
+          Help
+        </ChatButton>
       </div>
       <React.Suspense>
         <SidebarList />

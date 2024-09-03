@@ -1,3 +1,10 @@
+## [1.3.3](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.3.2...v1.3.3) (2024-09-03)
+
+
+### Bug Fixes
+
+* revert onboarding redirect fix now we've updated clerk session claims ([0363334](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0363334b7629e0c4a56feab6b5c693758d606750))
+
 # [1.3.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.2.2...v1.3.0) (2024-09-02)
 
 
