@@ -18,11 +18,11 @@ const FeedBack = ({
   onSubmit: () => void;
 }) => {
   const rating = [
-    { text: "Poor", number: 1 },
-    { text: "Needs Improvement", number: 2 },
-    { text: "Satisfactory", number: 3 },
-    { text: "Good", number: 4 },
-    { text: "Excellent", number: 5 },
+    { number: 1 },
+    { number: 2 },
+    { number: 3 },
+    { number: 4 },
+    { number: 5 },
   ];
 
   const [usersResponse, setUsersResponse] = useState<{ [key: string]: string }>(
@@ -57,17 +57,20 @@ const FeedBack = ({
                 key={question.question}
                 className="flex flex-col items-start justify-start"
               >
-                <label
-                  htmlFor={question.question}
-                  className="mb-16 text-left text-2xl font-bold"
-                >
-                  {question.question}
-                </label>
-                <div className="flex w-full justify-between gap-6">
+                <span className="mb-7">
+                  <label
+                    htmlFor={question.question}
+                    className="mb-16 text-left text-2xl font-bold"
+                  >
+                    {question.question}
+                  </label>
+                  <p className="opacity-90">1=Poor, 5=Excellent</p>
+                </span>
+                <div className="flex w-full justify-start gap-5">
                   {rating.map((feedback) => {
                     return (
                       <button
-                        key={feedback.text}
+                        key={feedback.number}
                         className={`flex flex-col items-center justify-center gap-6`}
                         onClick={() => {
                           setUsersResponse((prevState) => ({
@@ -77,14 +80,14 @@ const FeedBack = ({
                         }}
                       >
                         <span
-                          className={`text-lg ${
+                          className={`rounded-sm border-2 border-oakGrey3 p-8 text-lg ${
                             usersResponse[surveyResponseKey] ===
                             feedback.number.toString()
-                              ? `text-[#287C34]`
-                              : `text-black`
+                              ? `border-black bg-black text-white`
+                              : ` bg-white text-black`
                           }`}
                         >
-                          {feedback.text}
+                          {feedback.number}
                         </span>
                         <span
                           className={

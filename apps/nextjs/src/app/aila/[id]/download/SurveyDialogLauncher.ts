@@ -13,8 +13,10 @@ export function SurveyDialogLauncher() {
   const { setDialogWindow } = useDialog();
 
   useEffect(() => {
+    setDialogWindow("feedback");
     if (survey) {
       const timer = setTimeout(() => {
+        setDialogWindow("feedback");
         if (window.innerWidth < mobileWidth) {
           setDialogWindow("");
         }
