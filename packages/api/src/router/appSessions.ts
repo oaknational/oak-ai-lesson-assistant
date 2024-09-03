@@ -226,33 +226,48 @@ export const appSessionsRouter = router({
   getSidebarChats: protectedProcedure.query(async ({ ctx }) => {
     const { userId } = ctx.auth;
 
-    const sessions = await ctx.prisma?.appSession.findMany({
-      where: {
-        userId,
-        appId: "lesson-planner",
-      },
-      orderBy: {
-        updatedAt: "desc",
-      },
-    });
+    /**
+     * Context for $queryRaw usage:
+     * @hannah-bethclark experienced an issue where chat history was empty.
+     * This was caused by Prisma's response size limit of 5mb
+     * @see https://www.prisma.io/docs/accelerate/limitations#response-size-limit
+     * Since the JSONB column 'output' is so large, we need to use $queryRaw to
+     * get only the data we need.
+     * @see https://github.com/prisma/prisma/issues/2431
+     *
+     * Part of database refactoring will include not storing all out chat data
+     * in a single JSONB column, which will remove the need for this workaround.
+     */
+    const sessions = await ctx.prisma.$queryRaw`
+      SELECT
+        id,
+        output->>'title' as title,
+        output->>'isShared' as "isShared"
+      FROM
+        "app_sessions"
+      WHERE
+        "user_id" = ${userId} AND "app_id" = 'lesson-planner'
+      ORDER BY
+        "updated_at" DESC
+    `;
+
+    if (!Array.isArray(sessions)) {
+      return [];
+    }
 
     return sessions
-      ?.map((session) => {
-        const parsedChat = parseChatAndReportError({
-          id: session.id,
-          userId: session.userId,
-          sessionOutput: session.output,
-        });
-
-        if (!parsedChat) {
+      .map((session) => {
+        try {
+          return z
+            .object({
+              id: z.string(),
+              title: z.string(),
+              isShared: z.boolean().nullish(),
+            })
+            .parse(session);
+        } catch (error) {
           return null;
         }
-
-        return {
-          id: session.id,
-          title: parsedChat.title,
-          isShared: parsedChat.isShared,
-        };
       })
       .filter(isTruthy);
   }),
