@@ -1,9 +1,10 @@
-import { OakFlex, OakIcon, OakP } from "@oaknational/oak-components";
+import { OakBox, OakFlex, OakIcon, OakP } from "@oaknational/oak-components";
 import Link from "next/link";
 import styled from "styled-components";
 
 import HeaderAuth from "./HeaderAuth";
 import { Logo } from "./Logo";
+import OakIconLogo from "./OakIconLogo";
 
 type HeaderProps = {
   menuOpen: boolean;
@@ -43,21 +44,30 @@ const Header = ({
         $gap={["all-spacing-5", "all-spacing-7"]}
       >
         <Link href="/" aria-label="go to home page">
-          <Logo />
+          <OakBox $display={["none", "block"]}>
+            <Logo />
+          </OakBox>
+          <OakBox $display={["block", "none"]}>
+            <OakIconLogo />
+          </OakBox>
         </Link>
-        <OakP $font={["body-2", "heading-light-6"]}>Oak AI Experiments</OakP>
+        <OakBox $display={["none", "block"]}>
+          <OakP $font={["body-2", "heading-light-6"]}>Oak AI Experiments</OakP>
+        </OakBox>
       </OakFlex>
-      <OakFlex $alignItems={"center"} $gap={"all-spacing-8"}>
+      <OakFlex $alignItems={"center"} $gap={["all-spacing-4", "all-spacing-8"]}>
         {(typeof featureFlag === "boolean" && featureFlag) ||
           (typeof featureFlag === "object" && featureFlag.featureFlag && (
-            <Link href="/faqs">
-              <OakP $font="body-2">FAQs</OakP>
-            </Link>
+            <OakBox $display={["none", "block"]}>
+              <Link href="/faqs">
+                <OakP $font="body-2">FAQs</OakP>
+              </Link>
+            </OakBox>
           ))}
 
         <HeaderAuth />
 
-        <div className="h-22 py-8">
+        <div className=" h-22 py-8">
           <HamburgerButton onClick={() => setMenuOpen(!menuOpen)}>
             <OakIcon $colorFilter={"black"} iconName="hamburger" />
           </HamburgerButton>
