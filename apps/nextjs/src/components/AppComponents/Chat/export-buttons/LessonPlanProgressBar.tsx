@@ -1,52 +1,21 @@
-import React, { useMemo } from "react";
+import React from "react";
 
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
-export const LESSON_PLAN_SECTIONS = [
-  { key: "title", title: "Title" },
-  { key: "subject", title: "Subject" },
-  { key: "keyStage", title: "Key Stage" },
-  { key: "learningOutcome", title: "Learning Outcome" },
-  { key: "learningCycles", title: "Learning Cycles" },
-  { key: "priorKnowledge", title: "Prior Knowledge" },
-  { key: "keyLearningPoints", title: "Key Learning Points" },
-  { key: "misconceptions", title: "Misconceptions" },
-  { key: "keywords", title: "Keywords" },
-  { key: "starterQuiz", title: "Starter Quiz" },
-  { key: "cycles", title: "Cycles 1-3" },
-  { key: "exitQuiz", title: "Exit Quiz" },
-  // { key: "additionalMaterials", title: "Additional Materials" }, Do not show the additional materials section
-] as const;
+import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 
-export type LessonPlanSectionKey = (typeof LESSON_PLAN_SECTIONS)[number]["key"];
+export const LessonPlanProgressBar = () => {
+  const { lessonPlan, isStreaming } = useLessonChat();
 
-export type LessonPlanProgressBarProps = {
-  lessonPlan: LooseLessonPlan;
-};
-
-export const lessonPlanSectionIsComplete = (
-  lessonPlan: LooseLessonPlan,
-  key: LessonPlanSectionKey,
-) => {
-  if (key === "cycles") {
-    return lessonPlan.cycle1 && lessonPlan.cycle2 && lessonPlan.cycle3;
-  }
-  return lessonPlan[key] !== undefined && lessonPlan[key] !== null;
-};
-
-export const LessonPlanProgressBar: React.FC<LessonPlanProgressBarProps> = ({
-  lessonPlan,
-}) => {
-  const completedSections = useMemo(() => {
-    return LESSON_PLAN_SECTIONS.filter(({ key }) =>
-      lessonPlanSectionIsComplete(lessonPlan, key),
-    ).length;
-  }, [lessonPlan]);
+  const { totalSections, totalSectionsComplete } = useProgressForDownloads({
+    lessonPlan,
+    isStreaming,
+  });
 
   return (
     <div className="flex items-center justify-center gap-10 ">
       <span className="flex items-center justify-center whitespace-nowrap text-base">
-        {`${completedSections} of ${LESSON_PLAN_SECTIONS.length} sections`}
+        {`${totalSectionsComplete} of ${totalSections} sections`}
       </span>
       <span
         className={`
@@ -58,7 +27,7 @@ export const LessonPlanProgressBar: React.FC<LessonPlanProgressBarProps> = ({
           absolute bottom-0 left-0 top-0 rounded-full bg-oakGreen
           `}
           style={{
-            width: `${(completedSections / LESSON_PLAN_SECTIONS.length) * 100}%`,
+            width: `${(totalSectionsComplete / totalSections) * 100}%`,
           }}
         />
       </span>
