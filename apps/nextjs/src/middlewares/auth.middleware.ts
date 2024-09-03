@@ -106,9 +106,8 @@ function conditionallyProtectRoute(
 
   if (userId && needsToCompleteOnboarding(sessionClaims)) {
     if (shouldInterceptRouteForOnboarding(req)) {
-      // TODO: Fix redirect loop
-      // log("Incomplete onboarding: REDIRECT");
-      // return NextResponse.redirect(new URL("/onboarding", req.url));
+      log("Incomplete onboarding: REDIRECT");
+      return NextResponse.redirect(new URL("/onboarding", req.url));
     }
   }
 
