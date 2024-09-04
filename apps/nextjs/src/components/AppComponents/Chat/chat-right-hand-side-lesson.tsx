@@ -122,7 +122,7 @@ const ChatRightHandSideLesson = ({
         </OakSmallSecondaryButton>
       </div>
       <button
-        className="sticky top-31 z-10 block w-full bg-white px-14 pb-9 pt-12 sm:hidden"
+        className="sticky top-32 z-10 block w-full bg-white px-14 pb-9 pt-12 sm:hidden"
         onClick={() => {
           documentContainerRef.current?.scrollTo({
             top: 0,
