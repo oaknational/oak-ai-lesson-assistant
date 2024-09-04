@@ -72,7 +72,7 @@ export default function HomePage() {
               tailoring content to your class, Aila can help speed things along.
             </OakP>
             <HomePageCTA />
-          </OakFlexWithCustomMaxWidth>
+          </OakFlexCustomMaxWidth>
 
           <OakBoxCustomMaxWidth
             $display={["none", "flex"]}
