@@ -16,7 +16,7 @@ import { Icon } from "../Icon";
 import { MobileListItem } from "./MobileListItem";
 
 const MainNavigationWithRef = (
-  { menuOpen, setMenuOpen, featureFlag }: Readonly<MainNavigationProps>,
+  { menuOpen, setMenuOpen }: Readonly<MainNavigationProps>,
   ref: Ref<HTMLElement>,
 ) => {
   const pathname = usePathname();
@@ -48,7 +48,6 @@ const MainNavigationWithRef = (
                   });
                 }
               }}
-              featureFlag={featureFlag}
               key={tool.id}
               item={tool}
               setMenuOpen={setMenuOpen}
@@ -56,13 +55,11 @@ const MainNavigationWithRef = (
             />
           ))}
           <MobileListItem
-            featureFlag={featureFlag}
             key="ai-blogs"
             item={{
               title: "AI blogs",
               href: "https://www.thenational.academy/blog/categories/ai-in-education",
               id: "ai-blogs",
-              external: true,
             }}
             setMenuOpen={setMenuOpen}
             menuOpen={menuOpen}

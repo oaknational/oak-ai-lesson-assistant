@@ -1,8 +1,6 @@
 import { Apps } from "@oakai/core";
 import { prisma } from "@oakai/db";
 
-import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
-
 import { LessonPlanPreview } from "./preview";
 
 async function getData(slug: string) {
@@ -30,11 +28,6 @@ export default async function QuizPreviewPage({
   console.log("params", params);
 
   const planSections = await getData(params.slug);
-  const featureFlag = await serverSideFeatureFlag("lesson-planning-assistant");
-  return (
-    <LessonPlanPreview
-      planSections={planSections}
-      featureFlag={!!featureFlag}
-    />
-  );
+
+  return <LessonPlanPreview planSections={planSections} />;
 }

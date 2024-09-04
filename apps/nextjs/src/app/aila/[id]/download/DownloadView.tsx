@@ -15,12 +15,8 @@ import { useDownloadView } from "./useDownloadView";
 
 type DownloadViewProps = Readonly<{
   chat: AilaPersistedChat;
-  featureFlag: boolean;
 }>;
-export function DownloadView({
-  chat,
-  featureFlag,
-}: Readonly<DownloadViewProps>) {
+export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
   const { lessonPlan } = chat;
   const {
     lessonSlidesExport,
@@ -37,7 +33,7 @@ export function DownloadView({
   const isLessonComplete = totalSectionsComplete >= totalSections;
 
   return (
-    <Layout featureFlag={featureFlag}>
+    <Layout>
       <DialogRoot>
         <DialogContents
           chatId={chat.id}
