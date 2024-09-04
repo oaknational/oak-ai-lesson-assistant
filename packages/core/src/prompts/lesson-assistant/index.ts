@@ -74,7 +74,6 @@ export const template = function (props: TemplateProps) {
 };
 
 export const generatePromptPartsHash = (props: TemplateProps): string => {
-  console.log("Generate prompt parts hash");
   const parts = getPromptParts(props);
   const partsString = parts.map((part) => part.toString()).join("");
   const hash = crypto.createHash("md5").update(partsString).digest("hex");

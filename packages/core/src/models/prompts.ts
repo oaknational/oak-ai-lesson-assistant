@@ -52,7 +52,6 @@ export class Prompts {
     promptTemplate: string,
     promptInputs: Record<string, unknown>,
   ): Promise<string> {
-    console.log("formatPrompt");
     const template = PromptTemplate.fromTemplate(promptTemplate);
 
     return await template.format(promptInputs);
