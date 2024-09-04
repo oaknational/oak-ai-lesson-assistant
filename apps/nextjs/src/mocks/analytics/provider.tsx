@@ -33,7 +33,6 @@ const mockAnalyticsContext: AnalyticsContext = {
   reset: () => {
     console.log("Mock reset called");
   },
-  posthogDistinctId: "mock-distinct-id",
 };
 
 export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({
