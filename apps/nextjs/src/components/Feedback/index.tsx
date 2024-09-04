@@ -64,9 +64,9 @@ const FeedBack = ({
                   >
                     {question.question}
                   </label>
-                  <p className="opacity-90">1=Poor, 5=Excellent</p>
+                  <p className="mt-6 opacity-90">1=Poor, 5=Excellent</p>
                 </span>
-                <div className="flex w-full justify-start gap-5">
+                <div className="mt-7 flex w-full justify-start gap-5">
                   {rating.map((feedback) => {
                     return (
                       <button
@@ -80,11 +80,11 @@ const FeedBack = ({
                         }}
                       >
                         <span
-                          className={`rounded-sm border-2 border-oakGrey3 p-8 text-lg ${
+                          className={`rounded-sm border-2  p-8 px-9 text-lg sm:px-15 ${
                             usersResponse[surveyResponseKey] ===
                             feedback.number.toString()
                               ? `border-black bg-black text-white`
-                              : ` bg-white text-black`
+                              : ` border-oakGrey3 bg-white text-black`
                           }`}
                         >
                           {feedback.number}
