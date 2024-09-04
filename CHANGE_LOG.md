@@ -1,3 +1,16 @@
+# [1.4.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.3.3...v1.4.0) (2024-09-04)
+
+
+### Bug Fixes
+
+* large chat history ([#39](https://github.com/oaknational/oak-ai-lesson-assistant/issues/39)) ([de21cef](https://github.com/oaknational/oak-ai-lesson-assistant/commit/de21ceff838ea9e3fb7c0826ec128ee39099a63f))
+* mobile view progress ([#50](https://github.com/oaknational/oak-ai-lesson-assistant/issues/50)) ([e0955c0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e0955c0b5fedd1542d4947da46a94da156095304))
+
+
+### Features
+
+* **feedback:** chat and message level feedback ([#20](https://github.com/oaknational/oak-ai-lesson-assistant/issues/20)) ([bd4462a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/bd4462aa0e212bb9d10b25868d25abb09b7e6428))
+
 ## [1.3.3](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.3.2...v1.3.3) (2024-09-03)
 
 
