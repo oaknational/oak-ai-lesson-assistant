@@ -6,13 +6,13 @@ import Link from "next/link";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
-export const HomePageCTA = ({ featureFlag }: { featureFlag: boolean }) => {
+export const HomePageCTA = () => {
   const user = useUser();
   const { track } = useAnalytics();
 
   return (
     <OakBox $mt="space-between-s">
-      {(user.isLoaded && !user.isSignedIn) || !featureFlag ? (
+      {user.isLoaded && !user.isSignedIn ? (
         <OakPrimaryButton
           iconName="arrow-right"
           isTrailingIcon={true}

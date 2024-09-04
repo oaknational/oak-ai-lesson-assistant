@@ -30,10 +30,7 @@ function ManageCookiesButton() {
   return <FooterButton onClick={openSettings}>Manage cookies</FooterButton>;
 }
 
-type FooterProps = {
-  featureFlag: boolean;
-};
-const Footer = ({ featureFlag }: FooterProps) => {
+const Footer = () => {
   const { track } = useAnalytics();
   const { isSignedIn } = useAuth();
   return (
@@ -77,9 +74,6 @@ const Footer = ({ featureFlag }: FooterProps) => {
                           }
                         }}
                         href={tool.href}
-                        disabled={
-                          !tool.href || (tool.behindFeatureFlag && !featureFlag)
-                        }
                       >
                         {tool.title}
                       </FooterButton>

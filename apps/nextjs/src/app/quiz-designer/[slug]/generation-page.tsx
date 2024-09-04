@@ -13,7 +13,7 @@ import { trpc } from "@/utils/trpc";
 
 import { initialState } from "../quiz-designer-page";
 
-export default function QuizDesignerPage({ data, featureFlag }) {
+export default function QuizDesignerPage({ data }) {
   const stateFromProps = data;
 
   const [state, dispatch] = useReducer(quizAppReducer, initialState);
@@ -91,7 +91,6 @@ export default function QuizDesignerPage({ data, featureFlag }) {
       shareContent={shareContent}
       shareId={shareId}
       shareLoading={shareLoading}
-      featureFlag={featureFlag}
     />
   );
 }

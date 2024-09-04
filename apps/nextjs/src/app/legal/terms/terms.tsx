@@ -5,9 +5,9 @@ import React from "react";
 import Layout from "@/components/Layout";
 import TermsContent from "@/components/TermsContent";
 
-export const TermsAndConditions = (featureFlag) => {
+export const TermsAndConditions = () => {
   return (
-    <Layout featureFlag={featureFlag}>
+    <Layout>
       <TermsContent />
     </Layout>
   );

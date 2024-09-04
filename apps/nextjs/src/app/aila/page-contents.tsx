@@ -11,7 +11,6 @@ import { ChatProvider } from "@/components/ContextProviders/ChatProvider";
 import LessonPlanTrackingProvider from "@/lib/analytics/lessonPlanTrackingContext";
 
 const ChatPageContents = ({
-  featureFlag,
   id,
   isShared,
   startingMessage,
@@ -24,11 +23,10 @@ const ChatPageContents = ({
   initialLessonPlan?: object;
   id: string;
   isShared: boolean | undefined;
-  featureFlag: boolean;
   initialModerations: Moderation[];
 }) => {
   return (
-    <Layout featureFlag={featureFlag}>
+    <Layout>
       <LessonPlanTrackingProvider chatId={id}>
         <ChatProvider
           key={`chat-${id}`}
@@ -38,7 +36,7 @@ const ChatPageContents = ({
           initialModerations={initialModerations}
           startingMessage={startingMessage}
         >
-          <Chat featureFlag={featureFlag} isShared={isShared} />
+          <Chat isShared={isShared} />
         </ChatProvider>
       </LessonPlanTrackingProvider>
     </Layout>

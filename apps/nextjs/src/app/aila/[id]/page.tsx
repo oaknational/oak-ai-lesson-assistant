@@ -54,7 +54,6 @@ export default function ChatPage({ params }: Readonly<ChatPageProps>) {
       isShared={chat.isShared}
       initialMessages={chat.messages}
       initialLessonPlan={chat.lessonPlan}
-      featureFlag={true}
       initialModerations={moderations ?? []}
       startingMessage={chat.startingMessage}
     />
