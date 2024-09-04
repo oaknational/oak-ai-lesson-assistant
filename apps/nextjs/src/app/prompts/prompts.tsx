@@ -20,10 +20,9 @@ import { slugify } from "@/utils/slugify";
 
 type PromptsPageData = {
   apps: SerializedAppWithPrompt[];
-  featureFlag: boolean;
 };
 
-const Prompts = ({ apps, featureFlag }: PromptsPageData) => {
+const Prompts = ({ apps }: PromptsPageData) => {
   const pathname = usePathname();
   const itemRefs: { [key: string]: React.RefObject<HTMLLIElement> } = useMemo(
     () => ({}),
@@ -49,7 +48,7 @@ const Prompts = ({ apps, featureFlag }: PromptsPageData) => {
   }, [pathname, itemRefs]);
 
   return (
-    <Layout featureFlag={featureFlag}>
+    <Layout>
       <OakMaxWidth>
         <HeroContainer>
           <OakBox>

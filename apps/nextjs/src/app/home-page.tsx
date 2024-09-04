@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import {
   OakBox,
   OakFlex,
@@ -35,15 +35,13 @@ export const metadata: Metadata = {
   title: "Oak ai experiments",
 };
 
-export default function HomePage({ featureFlag }) {
+export default function HomePage() {
   const user = useUser();
-  const auth = useAuth();
 
-  const { userId } = auth;
   const { track } = useAnalytics();
 
   return (
-    <Layout featureFlag={featureFlag}>
+    <Layout>
       <HeroContainer>
         <OakFlex
           $flexDirection={"row"}
@@ -69,7 +67,7 @@ export default function HomePage({ featureFlag }) {
               assistant. Whether it&apos;s creating bespoke resources or
               tailoring content to your class, Aila can help speed things along.
             </OakP>
-            <HomePageCTA featureFlag={featureFlag} />
+            <HomePageCTA />
           </OakFlexCustomMaxWidth>
 
           <OakBoxCustomMaxWidth
@@ -180,26 +178,19 @@ export default function HomePage({ featureFlag }) {
                 resources.
               </OakP>
 
-              {!userId || !featureFlag ? (
-                <BoldOakLink variant="text-link" href="#">
-                  Coming soon...
-                </BoldOakLink>
-              ) : (
-                <BoldOakLink
-                  href="/aila"
-                  element={Link}
-                  onClick={() => {
-                    track.lessonAssistantAccessed({
-                      product: "ai lesson assistant",
-                      isLoggedIn: !!user.isSignedIn,
-                      componentType:
-                        "homepage_secondary_create_a_lesson_button",
-                    });
-                  }}
-                >
-                  Create a lesson
-                </BoldOakLink>
-              )}
+              <BoldOakLink
+                href="/aila"
+                element={Link}
+                onClick={() => {
+                  track.lessonAssistantAccessed({
+                    product: "ai lesson assistant",
+                    isLoggedIn: !!user.isSignedIn,
+                    componentType: "homepage_secondary_create_a_lesson_button",
+                  });
+                }}
+              >
+                Create a lesson
+              </BoldOakLink>
             </OakFlex>
           </OakFlex>
           <OakFlex $flexDirection={"column"} $gap={"all-spacing-5"}>
@@ -214,11 +205,10 @@ export default function HomePage({ featureFlag }) {
               high-quality results that are geared to UK pupils, schools and
               classrooms.
             </OakP>
-            {featureFlag && (
-              <BoldOakLink element={Link} href="/faqs">
-                Find out more about Aila
-              </BoldOakLink>
-            )}
+
+            <BoldOakLink element={Link} href="/faqs">
+              Find out more about Aila
+            </BoldOakLink>
           </OakFlex>
           <OakFlex $flexDirection={"column"} $gap={"all-spacing-5"}>
             <OakHeading $font="heading-5" tag="h3">
@@ -235,14 +225,6 @@ export default function HomePage({ featureFlag }) {
               and that&apos;s where your feedback and suggestions come in to
               help us get there.
             </OakP>
-            {featureFlag && (
-              <BoldOakLink
-                element={Link}
-                href="https://docs.google.com/forms/d/1yRiO9DOGuCXR6Phyr8gaKFh7-Lr_4sFpVxXZ2igQH7A/edit"
-              >
-                Give feedback here
-              </BoldOakLink>
-            )}
           </OakFlex>
         </OakFlexWithWidth65>
       </OakFlex>

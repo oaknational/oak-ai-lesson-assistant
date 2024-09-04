@@ -5,9 +5,9 @@ import Link from "next/link";
 
 import Layout from "@/components/Layout";
 
-export const CookiePolicyContent = (featureFlag) => {
+export const CookiePolicyContent = () => {
   return (
-    <Layout featureFlag={featureFlag}>
+    <Layout>
       <OakBox $ph="inner-padding-xl">
         <OakHeading tag="h1" $font="heading-4" $mb="space-between-s">
           Cookies Policy

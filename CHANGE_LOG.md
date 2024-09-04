@@ -1,3 +1,23 @@
+# [1.5.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.4.0...v1.5.0) (2024-09-04)
+
+
+### Bug Fixes
+
+* fix flash of demo banner when loading ([c8a63e0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c8a63e0383757cbb4853f682269f3976cba4312b))
+* mobile launch bugs fixes ([#52](https://github.com/oaknational/oak-ai-lesson-assistant/issues/52)) ([d828c11](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d828c11d4cac4a51d0d2656c797e7e90b38df410))
+* remove sideways scroll on mobile ([7038e70](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7038e7048611b243874c58c9d917d8a4f299aab7))
+
+
+### Features
+
+* add homepage link to AI blogs ([d77ab56](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d77ab56a19729b31ffabb2f7d9c98ca2bd7899b8))
+* add main oak posthog client ([#60](https://github.com/oaknational/oak-ai-lesson-assistant/issues/60)) ([c56fa84](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c56fa8450f153584920b8d0b3cb499e35cb6b4f6))
+* bring nav in line with latest design ([49c8689](https://github.com/oaknational/oak-ai-lesson-assistant/commit/49c8689102eb4d211f7580b19280e2381bc4ca39))
+* help text when downloading an unfinished lesson ([7ef494f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7ef494fa5d412d17acc5c06f1fd340bf8adacd61))
+* launch ([#61](https://github.com/oaknational/oak-ai-lesson-assistant/issues/61)) ([d9b19f7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d9b19f722d79fa67528662c696dfcfdf69d9077e))
+* new home page copy ([#54](https://github.com/oaknational/oak-ai-lesson-assistant/issues/54)) ([a17a685](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a17a6851c884662a7993e29e376c05d03675168b))
+* override styles for gleap button ([4f57760](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4f57760884b5cf11e24bf006fb6b19f3af1759a8))
+
 # [1.4.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.3.3...v1.4.0) (2024-09-04)
 
 

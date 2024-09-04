@@ -89,6 +89,7 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
             grayColor="olive"
             scaling="110%"
             color="#22222"
+            style={{ overflowX: "hidden" }}
           >
             <TRPCReactProvider>
               <FontProvider>
