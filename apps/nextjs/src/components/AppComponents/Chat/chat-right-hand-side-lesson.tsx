@@ -131,7 +131,7 @@ const ChatRightHandSideLesson = ({
           });
         }}
       >
-        <LessonPlanProgressBar lessonPlan={lessonPlan} />
+        <LessonPlanProgressBar />
       </button>
 
       <div className="w-full pt-9 sm:pt-20">

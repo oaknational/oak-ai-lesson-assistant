@@ -33,7 +33,7 @@ export abstract class AilaPromptBuilder {
                   const parsed = JSON.parse(toParse);
 
                   if (
-                    ["state", "comment", "moderation", "action"].includes(
+                    ["state", "comment", "moderation", "action", "id"].includes(
                       parsed.type,
                     )
                   ) {

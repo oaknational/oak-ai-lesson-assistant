@@ -41,7 +41,6 @@ export function ChatPanel({
               });
 
               await append({
-                id,
                 content: value,
                 role: "user",
               });

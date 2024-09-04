@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 
-import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
-import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
+import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
+import styled from "styled-components";
 
 import { Icon } from "@/components/Icon";
 import LoadingWheel from "@/components/LoadingWheel";
 import { scrollToRef } from "@/utils/scrollToRef";
 
-import Skeleton from "../common/Skeleton";
-import { MemoizedReactMarkdownWithStyles } from "./markdown";
+import Skeleton from "../../common/Skeleton";
+import ChatSection from "./chat-section";
 
 const DropDownSection = ({
   objectKey,
@@ -88,32 +88,31 @@ const DropDownSection = ({
   ]);
 
   return (
-    <div
-      className="border-b border-black py-17 first:border-t last:mb-30"
+    <DropDownSectionWrapper
+      $borderColor="black"
+      $bb="border-solid-m"
+      $pv="inner-padding-xl"
       ref={sectionRef}
     >
-      <div className="flex gap-9">
-        <div>
+      <OakFlex $gap="all-spacing-2">
+        <OakBox>
           {status === "empty" && <div className="w-14"></div>}
           {status === "isStreaming" && <LoadingWheel />}
           {status === "isLoaded" && <Icon icon="tick" size="sm" />}
-        </div>
+        </OakBox>
 
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex w-full justify-between"
-        >
-          <p className="text-xl font-bold">{sectionTitle(objectKey)}</p>
-          <Icon icon={isOpen ? "chevron-up" : "chevron-down"} size="sm" />
-        </button>
-      </div>
+        <FullWidthButton onClick={() => setIsOpen(!isOpen)}>
+          <OakFlex $width="100%" $justifyContent="space-between">
+            <OakP $font="heading-6">{sectionTitle(objectKey)}</OakP>
+            <Icon icon={isOpen ? "chevron-up" : "chevron-down"} size="sm" />
+          </OakFlex>
+        </FullWidthButton>
+      </OakFlex>
 
       {isOpen && (
         <div className="mt-12 w-full">
           {status === "isLoaded" ? (
-            <>
-              <ChatSection objectKey={objectKey} value={value} />
-            </>
+            <ChatSection objectKey={objectKey} value={value} />
           ) : (
             <Skeleton loaded={false} numberOfRows={1}>
               <p>Loading</p>
@@ -121,27 +120,7 @@ const DropDownSection = ({
           )}
         </div>
       )}
-    </div>
-  );
-};
-
-const ChatSection = ({
-  objectKey,
-  value,
-}: {
-  objectKey: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
-}) => {
-  return (
-    <div>
-      <MemoizedReactMarkdownWithStyles
-        lessonPlanSectionDescription={
-          lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
-        }
-        markdown={`${sectionToMarkdown(objectKey, value)}`}
-      />
-    </div>
+    </DropDownSectionWrapper>
   );
 };
 
@@ -149,15 +128,7 @@ const valuesAreEqual = (
   val1: Record<string, unknown>,
   val2: Record<string, unknown>,
 ): boolean => {
-  if (typeof val1 !== typeof val2) return false;
-  if (typeof val1 === "object" && val1 !== null && val2 !== null) {
-    if (Array.isArray(val1) && Array.isArray(val2)) {
-      return JSON.stringify(val1) === JSON.stringify(val2);
-    } else {
-      return JSON.stringify(val1) === JSON.stringify(val2);
-    }
-  }
-  return val1 === val2;
+  return JSON.stringify(val1) === JSON.stringify(val2);
 };
 
 export function sectionTitle(str: string) {
@@ -167,5 +138,15 @@ export function sectionTitle(str: string) {
 
   return camelCaseToSentenceCase(str);
 }
+
+const FullWidthButton = styled.button`
+  width: 100%;
+`;
+
+const DropDownSectionWrapper = styled(OakBox)`
+  &:first-child {
+    border-top: 2px solid black;
+  }
+`;
 
 export default DropDownSection;
