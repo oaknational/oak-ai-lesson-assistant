@@ -16,10 +16,10 @@ interface ChatPageProps {
 export default function ChatPage({ params }: Readonly<ChatPageProps>) {
   const user = useUser();
   const { id } = params;
-  const { data: chat } = trpc.chat.appSessions.getChat.useQuery({ id });
-  const { data: moderations } = trpc.chat.appSessions.getModerations.useQuery({
-    id,
-  });
+  const { data: chat, isLoading: isChatLoading } =
+    trpc.chat.appSessions.getChat.useQuery({ id });
+  const { data: moderations, isLoading: isModerationsLoading } =
+    trpc.chat.appSessions.getModerations.useQuery({ id });
 
   // For local development so that we can warm up the server
   if (id === "health") {
@@ -28,6 +28,10 @@ export default function ChatPage({ params }: Readonly<ChatPageProps>) {
 
   if (user.isLoaded && !user.isSignedIn) {
     redirect(`/sign-in?next=/aila/${params.id}`);
+  }
+
+  if (isChatLoading || isModerationsLoading) {
+    return null;
   }
 
   if (!chat) {
