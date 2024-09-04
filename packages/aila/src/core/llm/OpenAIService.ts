@@ -1,7 +1,5 @@
-import {
-  HeliconeChatMeta,
-  createOpenAIClient,
-} from "@oakai/core/src/llm/openai";
+import { HeliconeChatMeta } from "@oakai/core/src/llm/helicone";
+import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { OpenAIStream } from "ai";
 import OpenAI from "openai";
 import { Stream } from "openai/streaming";
