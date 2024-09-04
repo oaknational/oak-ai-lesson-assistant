@@ -5,8 +5,9 @@ export const dialogContent = cva([
   "data-[state=open]:animate-contentShow z-50",
 ]);
 export const dialogContentInner = cva([
+  "h-[100vh] overflow-y-scroll",
   "sm:mx-20 sm:border-2 sm:border-black",
-  "h-full w-full  sm:w-[80%] md:w-[680px]",
+  "w-full sm:h-full  sm:w-[80%] md:w-[680px]",
   "flex w-full flex-col items-center justify-between ",
   "data-[state=open]:animate-contentShow bg-white p-10 pb-24 focus:outline-none md:p-22",
 ]);
