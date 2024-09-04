@@ -22,6 +22,10 @@ import BetaTag from "@/components/AppComponents/Chat/beta-tag";
 import HeroContainer from "@/components/HeroContainer";
 import { HomePageCTA } from "@/components/Home/HomePageCTA";
 import Layout from "@/components/Layout";
+import {
+  OakBoxCustomMaxWidth,
+  OakFlexCustomMaxWidth,
+} from "@/components/OakBoxCustomMaxWidth";
 import AiIcon from "@/components/SVGParts/AiIcon";
 import LessonIcon from "@/components/SVGParts/LessonIcon";
 import QuizIcon from "@/components/SVGParts/QuizIcon";
@@ -31,10 +35,6 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 export const metadata: Metadata = {
   title: "Oak ai experiments",
 };
-
-const OakFlexWithCustomMaxWidth = styled(OakFlex)`
-  max-width: 640px;
-`;
 
 export default function HomePage({ featureFlag }) {
   const user = useUser();
@@ -46,10 +46,15 @@ export default function HomePage({ featureFlag }) {
   return (
     <Layout featureFlag={featureFlag}>
       <HeroContainer>
-        <OakFlex $flexDirection={"row"} $justifyContent={"space-between"}>
-          <OakFlexWithCustomMaxWidth
+        <OakFlex
+          $flexDirection={"row"}
+          $justifyContent={"space-between"}
+          $alignItems={["center", "flex-end"]}
+        >
+          <OakFlexCustomMaxWidth
             $flexDirection={"column"}
             $gap={"all-spacing-5"}
+            customMaxWidth={550}
           >
             <OakBox $width="fit-content">
               <BetaTag />
@@ -66,11 +71,25 @@ export default function HomePage({ featureFlag }) {
               tailoring content to your class, Aila can help speed things along.
             </OakP>
             <HomePageCTA featureFlag={featureFlag} />
-          </OakFlexWithCustomMaxWidth>
+          </OakFlexCustomMaxWidth>
 
-          <OakBox $display={["none", "flex"]}>
-            <Image src={jigsaw} alt="jigsaw image" priority />
-          </OakBox>
+          <OakBoxCustomMaxWidth
+            $display={["none", "flex"]}
+            $borderColor="black"
+            $borderStyle={"solid"}
+            $ba={"border-solid-l"}
+            customMaxWidth={600}
+            $height="fit-content"
+          >
+            <Image
+              src={"/images/aila-home-page-still.jpg"}
+              alt="jigsaw image"
+              width={700}
+              height={400}
+              priority
+              objectFit="cover"
+            />
+          </OakBoxCustomMaxWidth>
         </OakFlex>
       </HeroContainer>
 
