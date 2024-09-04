@@ -16,12 +16,15 @@ import Image from "next/image";
 import Link from "next/link";
 import styled from "styled-components";
 
-import jigsaw from "@/assets/svg/illustration/jigsaw.svg";
 import oakSupporting from "@/assets/svg/illustration/oak_supporting.svg";
 import { BetaTagPage } from "@/components/AppComponents/Chat/beta-tag";
 import HeroContainer from "@/components/HeroContainer";
 import { HomePageCTA } from "@/components/Home/HomePageCTA";
 import Layout from "@/components/Layout";
+import {
+  OakBoxCustomMaxWidth,
+  OakFlexCustomMaxWidth,
+} from "@/components/OakBoxCustomMaxWidth";
 import AiIcon from "@/components/SVGParts/AiIcon";
 import LessonIcon from "@/components/SVGParts/LessonIcon";
 import QuizIcon from "@/components/SVGParts/QuizIcon";
@@ -31,10 +34,6 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 export const metadata: Metadata = {
   title: "Oak ai experiments",
 };
-
-const OakFlexWithCustomMaxWidth = styled(OakFlex)`
-  max-width: 640px;
-`;
 
 export default function HomePage({ featureFlag }) {
   const user = useUser();
@@ -46,31 +45,50 @@ export default function HomePage({ featureFlag }) {
   return (
     <Layout featureFlag={featureFlag}>
       <HeroContainer>
-        <OakFlex $flexDirection={"row"} $justifyContent={"space-between"}>
-          <OakFlexWithCustomMaxWidth
+        <OakFlex
+          $flexDirection={"row"}
+          $justifyContent={"space-between"}
+          $alignItems={["center", "flex-end"]}
+        >
+          <OakFlexCustomMaxWidth
             $flexDirection={"column"}
             $gap={"all-spacing-5"}
+            customMaxWidth={550}
           >
             <OakBox $width="fit-content">
               <BetaTagPage />
             </OakBox>
             <OakHeading tag="h1" $font={"heading-2"}>
-              Introducing Aila{" "}
+              Introducing Aila
             </OakHeading>
             <OakHeading tag="h2" $font={"heading-5"}>
-              Create lessons with Oak&apos;s new AI lesson assistant
+              Build a tailor-made lesson plan and resources in minutes
             </OakHeading>
             <OakP $textAlign="left" $font="body-1">
-              Try out Oak&apos;s latest AI Labs experiment, Aila, a free
-              AI-powered lesson assistant that can help you create high-quality
-              lessons and editable resources in minutes.
+              Transform your lesson prep with our free AI-powered lesson
+              assistant. Whether it&apos;s creating bespoke resources or
+              tailoring content to your class, Aila can help speed things along.
             </OakP>
             <HomePageCTA featureFlag={featureFlag} />
-          </OakFlexWithCustomMaxWidth>
+          </OakFlexCustomMaxWidth>
 
-          <OakBox $display={["none", "flex"]}>
-            <Image src={jigsaw} alt="jigsaw image" priority />
-          </OakBox>
+          <OakBoxCustomMaxWidth
+            $display={["none", "flex"]}
+            $borderColor="black"
+            $borderStyle={"solid"}
+            $ba={"border-solid-xl"}
+            customMaxWidth={600}
+            $height="fit-content"
+          >
+            <Image
+              src={"/images/aila-home-page-still.jpg"}
+              alt="Image of a computer screen offering to help with a teachers to do list"
+              width={700}
+              height={400}
+              priority
+              objectFit="cover"
+            />
+          </OakBoxCustomMaxWidth>
         </OakFlex>
       </HeroContainer>
 
