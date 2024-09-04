@@ -76,7 +76,7 @@ export default function HomePage({ featureFlag }) {
             $display={["none", "flex"]}
             $borderColor="black"
             $borderStyle={"solid"}
-            $ba={"border-solid-l"}
+            $ba={"border-solid-xl"}
             customMaxWidth={600}
             $height="fit-content"
           >
