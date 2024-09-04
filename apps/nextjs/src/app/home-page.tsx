@@ -35,10 +35,6 @@ export const metadata: Metadata = {
   title: "Oak ai experiments",
 };
 
-const OakFlexWithCustomMaxWidth = styled(OakFlex)`
-  max-width: 640px;
-`;
-
 export default function HomePage() {
   const user = useUser();
 
