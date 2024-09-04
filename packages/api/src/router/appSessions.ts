@@ -6,16 +6,14 @@ import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userB
 import { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
 import * as Sentry from "@sentry/nextjs";
 import { TRPCError } from "@trpc/server";
-import { nanoid } from "nanoid";
 import { isTruthy } from "remeda";
 import { z } from "zod";
 
 import { getSessionModerations } from "../../../aila/src/features/moderation/getSessionModerations";
+import { generateChatId } from "../../../aila/src/helpers/chat/generateChatId";
 import {
   AilaPersistedChat,
-  AilaPersistedChatWithMissingMessageIds,
   chatSchema,
-  chatSchemaWithMissingMessageIds,
 } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
@@ -36,7 +34,7 @@ function parseChatAndReportError({
   if (typeof sessionOutput !== "object") {
     throw new Error(`sessionOutput is not an object`);
   }
-  const parseResult = chatSchemaWithMissingMessageIds.safeParse({
+  const parseResult = chatSchema.safeParse({
     ...sessionOutput,
     userId,
     id,
@@ -79,27 +77,6 @@ async function checkMutationPermissions(userId: string) {
   }
 }
 
-function assertChatMessageIdsAreUniqueWithinTheScopeOfThisChat(
-  chat: AilaPersistedChatWithMissingMessageIds,
-) {
-  let updated = false;
-  const usedIds = new Set<string>();
-  chat.messages = chat.messages.map((message) => {
-    if (!message.id || usedIds.has(message.id)) {
-      let newId = nanoid(16);
-      while (usedIds.has(newId)) {
-        newId = nanoid(16);
-      }
-      message.id = newId;
-      updated = true;
-    }
-    usedIds.add(message.id);
-    return message;
-  });
-  const updatedChat = chatSchema.parse(chat);
-  return { updated, updatedChat };
-}
-
 export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
   const chatRecord = await prisma.appSession.findUnique({
     where: {
@@ -110,29 +87,11 @@ export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
     return undefined;
   }
 
-  const validatedChat = parseChatAndReportError({
+  return parseChatAndReportError({
     id,
     userId: chatRecord.userId,
     sessionOutput: chatRecord.output,
   });
-
-  if (!validatedChat) {
-    return undefined;
-  }
-
-  // Check if messages have IDs. If not, assign them and update the chat.
-  // This is a migration step that should be removed after all chats have unique IDs.
-  const { updated, updatedChat } =
-    assertChatMessageIdsAreUniqueWithinTheScopeOfThisChat(validatedChat);
-
-  if (updated) {
-    await prisma?.appSession.update({
-      where: { id },
-      data: { output: updatedChat },
-    });
-  }
-
-  return updatedChat;
 }
 
 export const appSessionsRouter = router({
@@ -176,11 +135,11 @@ export const appSessionsRouter = router({
 
       await checkMutationPermissions(userId);
 
-      const id = nanoid(16);
+      const chatId = generateChatId();
 
       const output: AilaPersistedChat = {
-        id,
-        path: `/aila/${id}`,
+        id: chatId,
+        path: `/aila/${chatId}`,
         title: "",
         topic: "",
         userId,
@@ -195,7 +154,7 @@ export const appSessionsRouter = router({
 
       const appSession = {
         data: {
-          id: nanoid(16),
+          id: chatId,
           appId,
           userId,
           output,
@@ -223,36 +182,124 @@ export const appSessionsRouter = router({
     const remaining = await rateLimits.appSessions.demo.getRemaining(userId);
     return { remaining };
   }),
+  modifySection: protectedProcedure
+    .input(
+      z.object({
+        chatId: z.string(),
+        messageId: z.string(),
+        textForMod: z.string(),
+        action: z.enum([
+          "MAKE_IT_HARDER",
+          "MAKE_IT_EASIER",
+          "SHORTEN_CONTENT",
+          "ADD_MORE_DETAIL",
+          "OTHER",
+        ]),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { userId } = ctx.auth;
+      try {
+        const response = await ctx.prisma.ailaUserModification.create({
+          data: {
+            userId,
+            ...input,
+          },
+        });
+        return response;
+      } catch (cause) {
+        const err = new Error("Failed to create user modification");
+        err.cause = cause;
+        Sentry.captureException(err, {
+          extra: input,
+        });
+        return err;
+      }
+    }),
+  flagSection: protectedProcedure
+    .input(
+      z.object({
+        chatId: z.string(),
+        messageId: z.string(),
+        flagType: z.enum([
+          "INAPPROPRIATE",
+          "INACCURATE",
+          "TOO_HARD",
+          "TOO_EASY",
+          "OTHER",
+        ]),
+        userComment: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { chatId, messageId, flagType, userComment } = input;
+      const { userId } = ctx.auth;
+      try {
+        const response = await ctx.prisma.ailaUserFlag.create({
+          data: {
+            userId,
+            chatId,
+            messageId,
+            flagType,
+            userComment,
+          },
+        });
+
+        return response;
+      } catch (cause) {
+        const err = new Error("Failed to flag section");
+        err.cause = cause;
+        Sentry.captureException(err, {
+          extra: { chatId, messageId, flagType },
+        });
+        return err;
+      }
+    }),
   getSidebarChats: protectedProcedure.query(async ({ ctx }) => {
     const { userId } = ctx.auth;
 
-    const sessions = await ctx.prisma?.appSession.findMany({
-      where: {
-        userId,
-        appId: "lesson-planner",
-      },
-      orderBy: {
-        updatedAt: "desc",
-      },
-    });
+    /**
+     * Context for $queryRaw usage:
+     * @hannah-bethclark experienced an issue where chat history was empty.
+     * This was caused by Prisma's response size limit of 5mb
+     * @see https://www.prisma.io/docs/accelerate/limitations#response-size-limit
+     * Since the JSONB column 'output' is so large, we need to use $queryRaw to
+     * get only the data we need.
+     * @see https://github.com/prisma/prisma/issues/2431
+     *
+     * Part of database refactoring will include not storing all out chat data
+     * in a single JSONB column, which will remove the need for this workaround.
+     */
+    const sessions = await ctx.prisma.$queryRaw`
+      SELECT
+        id,
+        output->>'title' as title,
+        output->>'isShared' as "isShared"
+      FROM
+        "app_sessions"
+      WHERE
+        "user_id" = ${userId} AND "app_id" = 'lesson-planner'
+      ORDER BY
+        "updated_at" DESC
+    `;
+
+    if (!Array.isArray(sessions)) {
+      return [];
+    }
 
     return sessions
-      ?.map((session) => {
-        const parsedChat = parseChatAndReportError({
-          id: session.id,
-          userId: session.userId,
-          sessionOutput: session.output,
-        });
-
-        if (!parsedChat) {
+      .map((session) => {
+        try {
+          return z
+            .object({
+              id: z.string(),
+              title: z.string(),
+              isShared: z.boolean().nullish(),
+            })
+            .parse(session);
+        } catch (error) {
           return null;
         }
-
-        return {
-          id: session.id,
-          title: parsedChat.title,
-          isShared: parsedChat.isShared,
-        };
       })
       .filter(isTruthy);
   }),

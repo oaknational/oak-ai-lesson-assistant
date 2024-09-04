@@ -1,5 +1,4 @@
 import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
-import { nanoid } from "nanoid";
 
 import {
   DEFAULT_MODEL,
@@ -14,6 +13,7 @@ import {
   AilaPersistenceFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
+import { generateMessageId } from "../helpers/chat/generateMessageId";
 import { AilaAuthenticationError, AilaGenerationError } from "./AilaError";
 import { AilaFeatureFactory } from "./AilaFeatureFactory";
 import {
@@ -230,7 +230,11 @@ export class Aila implements AilaServices {
       );
     }
     if (input) {
-      const message: Message = { id: nanoid(16), role: "user", content: input };
+      const message: Message = {
+        id: generateMessageId({ role: "user" }),
+        role: "user",
+        content: input,
+      };
       this._chat.addMessage(message);
     }
     if (title) {

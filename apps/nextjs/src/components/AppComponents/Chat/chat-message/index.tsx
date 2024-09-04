@@ -2,7 +2,6 @@
 // @see https://github.com/mckaywrigley/chatbot-ui/blob/main/components/Chat/ChatMessage.tsx
 import { ReactNode, useState } from "react";
 
-import { getMessageId } from "@oakai/aila/src/helpers/chat/getMessageId";
 import {
   ActionDocument,
   BadDocument,
@@ -62,7 +61,7 @@ export function ChatMessage({
       | PersistedModerationBase
       | undefined;
 
-  const messageId = getMessageId(message);
+  const messageId = message.id;
 
   const matchingPersistedModeration: PersistedModerationBase | undefined =
     persistedModerations.find((m) => m.messageId === messageId);
@@ -221,6 +220,7 @@ function ChatMessagePart({
     text: TextMessagePart,
     action: ActionMessagePart,
     moderation: ModerationMessagePart,
+    id: IdMessagePart,
   }[part.type];
 
   if (!PartComponent) {
@@ -279,6 +279,10 @@ function PatchMessagePart({ part }: Readonly<{ part: PatchDocument }>) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function StateMessagePart({ part }: Readonly<{ part: StateDocument }>) {
+  return null;
+}
+
+function IdMessagePart() {
   return null;
 }
 
