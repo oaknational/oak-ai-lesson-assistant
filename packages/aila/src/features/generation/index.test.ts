@@ -7,6 +7,7 @@ const ailaArgs: AilaInitializationOptions = {
   chat: {
     id: "chat_1",
     userId: "user_1",
+    isShared: false,
   },
 };
 
@@ -31,6 +32,7 @@ describe("calculateTokenUsage", () => {
       aila,
       id: aila.chat.id,
       userId: aila.chat.userId,
+      isShared: aila.chat.isShared,
     });
     const ailaGeneration = new AilaGeneration({
       aila,
@@ -67,6 +69,7 @@ describe("calculateTokenUsage", () => {
       aila,
       id: ailaArgs.chat.id,
       userId: ailaArgs.chat.userId,
+      isShared: ailaArgs.chat.isShared,
     });
     const ailaGeneration = new AilaGeneration({
       aila,

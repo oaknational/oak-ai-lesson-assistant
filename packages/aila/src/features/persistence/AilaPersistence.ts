@@ -34,7 +34,7 @@ export abstract class AilaPersistence {
   }
 
   protected createChatPayload(): ChatPersistencePayload {
-    const { id, userId, messages } = this._chat;
+    const { id, userId, messages, isShared } = this._chat;
     invariant(userId, "userId is required for chat persistence");
 
     const { lesson, options } = this._aila;
@@ -48,6 +48,7 @@ export abstract class AilaPersistence {
       keyStage,
       topic,
       createdAt: Date.now(),
+      isShared,
       path: `/aila/${id}`,
       lessonPlan: lesson.plan,
       messages: messages.filter((m) => ["assistant", "user"].includes(m.role)),
@@ -119,6 +120,7 @@ export interface ChatPersistencePayload {
   keyStage: string;
   topic: string;
   createdAt: number;
+  isShared: boolean | undefined;
   path: string;
   lessonPlan: LooseLessonPlan;
   messages: Message[];

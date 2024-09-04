@@ -20,7 +20,7 @@ describe("Aila", () => {
     it("should initialise Aila instance with persistence", () => {
       const ailaInstance = new Aila({
         lessonPlan: {},
-        chat: { id: "123", userId: "user123" },
+        chat: { id: "123", userId: "user123", isShared: false },
         options: {
           useAnalytics: false,
           useModeration: false,
@@ -36,7 +36,7 @@ describe("Aila", () => {
     it("should initialize Aila instance with analytics", () => {
       const ailaInstance = new Aila({
         lessonPlan: {},
-        chat: { id: "123", userId: "user123" },
+        chat: { id: "123", userId: "user123", isShared: false },
         options: {
           useAnalytics: true,
           useModeration: false,
@@ -58,7 +58,7 @@ describe("Aila", () => {
           subject: "history",
           keyStage: "key-stage-2",
         },
-        chat: { id: "123", userId: "user123" },
+        chat: { id: "123", userId: "user123", isShared: false },
         options: {
           usePersistence: false,
           useRag: false,
@@ -79,7 +79,7 @@ describe("Aila", () => {
     it("should successfully initialize the Aila instance when calling the initialise method, and by default not set the lesson plan to initial values", async () => {
       const ailaInstance = new Aila({
         lessonPlan: {},
-        chat: { id: "123", userId: "user123" },
+        chat: { id: "123", userId: "user123", isShared: false },
         options: {
           useAnalytics: false,
           usePersistence: false,
@@ -102,7 +102,7 @@ describe("Aila", () => {
     // Throws AilaAuthenticationError when userId is not set and usePersistence is true
     it("should throw AilaAuthenticationError when userId is not set and usePersistence is true", () => {
       const ailaInstance = new Aila({
-        chat: { id: "123", userId: undefined },
+        chat: { id: "123", userId: undefined, isShared: false },
         options: { usePersistence: true, useAnalytics: false },
         plugins: [],
       });
@@ -117,7 +117,7 @@ describe("Aila", () => {
     // userId is an empty string and usePersistence is true
     it("should throw AilaAuthenticationError when userId is an empty string and usePersistence is true", () => {
       const ailaInstance = new Aila({
-        chat: { id: "123", userId: "" },
+        chat: { id: "123", userId: "", isShared: false },
         options: { usePersistence: true, useAnalytics: false },
         plugins: [],
       });
@@ -130,7 +130,7 @@ describe("Aila", () => {
     // userId is an empty string and usePersistence is true
     it("should not throw AilaAuthenticationError when userId is not set and usePersistence is false", () => {
       const ailaInstance = new Aila({
-        chat: { id: "123", userId: "" },
+        chat: { id: "123", userId: "", isShared: false },
         options: { usePersistence: false, useAnalytics: false },
         plugins: [],
       });
@@ -142,7 +142,7 @@ describe("Aila", () => {
     // Throws AilaAuthenticationError when userId is an empty string and usePersistence is true
     it("should throw AilaAuthenticationError when userId is an empty string and usePersistence is true", () => {
       const ailaInstance = new Aila({
-        chat: { id: "123", userId: "" },
+        chat: { id: "123", userId: "", isShared: false },
         options: { usePersistence: true, useAnalytics: false },
         plugins: [],
       });
@@ -155,7 +155,7 @@ describe("Aila", () => {
     // Does not throw AilaAuthenticationError when userId is not set and usePersistence is false
     it("should not throw AilaAuthenticationError when userId is not set and usePersistence is false", () => {
       const ailaInstance = new Aila({
-        chat: { id: "123", userId: undefined },
+        chat: { id: "123", userId: undefined, isShared: false },
         options: { usePersistence: false, useAnalytics: false },
         plugins: [],
       });
@@ -168,7 +168,7 @@ describe("Aila", () => {
     // Throws AilaAuthenticationError when userId is an empty string and usePersistence is true
     it("should throw AilaAuthenticationError when userId is an empty string and usePersistence is true", () => {
       const ailaInstance = new Aila({
-        chat: { id: "123", userId: "" },
+        chat: { id: "123", userId: "", isShared: false },
         options: { usePersistence: true, useAnalytics: false },
         plugins: [],
       });
@@ -181,7 +181,7 @@ describe("Aila", () => {
     // Does not throw AilaAuthenticationError when userId is not set and usePersistence is false
     it("should not throw AilaAuthenticationError when userId is not set and usePersistence is false", () => {
       const ailaInstance = new Aila({
-        chat: { id: "123", userId: undefined },
+        chat: { id: "123", userId: undefined, isShared: false },
         options: { usePersistence: false, useAnalytics: false },
         plugins: [],
       });
@@ -197,7 +197,7 @@ describe("Aila", () => {
     it("should set the initial title, subject and key stage when presented with a valid initial user input", async () => {
       const ailaInstance = new Aila({
         lessonPlan: {},
-        chat: { id: "123", userId: "user123" },
+        chat: { id: "123", userId: "user123", isShared: false },
         options: {
           usePersistence: false,
           useRag: false,
@@ -231,6 +231,7 @@ describe("Aila", () => {
         chat: {
           id: "chat_1",
           userId: undefined,
+          isShared: false,
         },
       });
       ailaInstance.handleShutdown = shutdownMock;
@@ -266,6 +267,7 @@ describe("Aila", () => {
         chat: {
           id: "123",
           userId: "user123",
+          isShared: false,
         },
         options: {
           usePersistence: false,
@@ -300,7 +302,7 @@ describe("Aila", () => {
 
       const ailaInstance = new Aila({
         lessonPlan: {},
-        chat: { id: "123", userId: "user123" },
+        chat: { id: "123", userId: "user123", isShared: false },
         options: {
           usePersistence: false,
           useRag: false,
@@ -340,7 +342,7 @@ describe("Aila", () => {
 
       const ailaInstance = new Aila({
         lessonPlan: {},
-        chat: { id: "123", userId: "user123" },
+        chat: { id: "123", userId: "user123", isShared: false },
         options: {
           usePersistence: false,
           useRag: false,

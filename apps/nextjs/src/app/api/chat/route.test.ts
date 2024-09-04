@@ -1,13 +1,29 @@
 import { Aila } from "@oakai/aila";
 import { MockLLMService } from "@oakai/aila/src/core/llm/MockLLMService";
 import { MockCategoriser } from "@oakai/aila/src/features/categorisation/categorisers/MockCategoriser";
+import { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { mockTracer } from "@oakai/core/src/tracing/mockTracer";
+import { prisma } from "@oakai/db";
 import { NextRequest } from "next/server";
 
 import { consumeStream } from "../../../utils/testHelpers/consumeStream";
 import { expectTracingSpan } from "../../../utils/testHelpers/tracing";
 import { handleChatPostRequest } from "./chatHandler";
 import { Config } from "./config";
+
+const chatId = "test-chat-id";
+const userId = "test-user-id";
+
+const persistedChat: AilaPersistedChat = {
+  id: chatId,
+  userId,
+  messages: [],
+  isShared: false,
+  path: "",
+  title: "",
+  lessonPlan: {},
+  createdAt: new Date(),
+};
 
 describe("Chat API Route", () => {
   let testConfig: Config;
@@ -16,6 +32,9 @@ describe("Chat API Route", () => {
   beforeEach(() => {
     mockTracer.reset();
     jest.clearAllMocks();
+    jest
+      .spyOn(prisma.appSession, "findFirst")
+      .mockResolvedValue({ output: persistedChat });
 
     mockChatCategoriser = new MockCategoriser({
       mockedLessonPlan: {
@@ -31,7 +50,7 @@ describe("Chat API Route", () => {
     testConfig = {
       shouldPerformUserLookup: false,
       handleUserLookup: jest.fn(),
-      mockUserId: "test-user-id",
+      mockUserId: userId,
       createAila: jest.fn().mockImplementation(async (options) => {
         const ailaConfig = {
           options: {
@@ -44,9 +63,10 @@ describe("Chat API Route", () => {
             useRateLimiting: false,
           },
           chat: {
-            id: "test-chat-id",
-            userId: "test-user-id",
+            id: chatId,
+            userId,
             messages: options.chat.messages ?? [],
+            isShared: options.chat.isShared ?? false,
           },
           plugins: [],
           services: {
@@ -59,6 +79,10 @@ describe("Chat API Route", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       prisma: {} as any,
     };
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it("should create correct telemetry spans for a successful chat request", async () => {

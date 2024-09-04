@@ -17,13 +17,14 @@ import { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
-import { AilaStreamHandler } from "./AilaStreamHander";
+import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 import { Message } from "./types";
 
 export class AilaChat implements AilaChatService {
   private _id: string;
   private _messages: Message[];
+  private _isShared: boolean | undefined;
   private _userId: string | undefined;
   private _aila: AilaServices;
   private _generation?: AilaGeneration;
@@ -35,6 +36,7 @@ export class AilaChat implements AilaChatService {
   constructor({
     id,
     userId,
+    isShared,
     messages,
     aila,
     llmService,
@@ -42,6 +44,7 @@ export class AilaChat implements AilaChatService {
   }: {
     id: string;
     userId: string | undefined;
+    isShared: boolean | undefined;
     messages?: Message[];
     aila: AilaServices;
     llmService?: LLMService;
@@ -49,6 +52,7 @@ export class AilaChat implements AilaChatService {
   }) {
     this._id = id;
     this._userId = userId;
+    this._isShared = isShared;
     this._messages = messages ?? [];
     this._aila = aila;
     this._llmService =
@@ -76,6 +80,10 @@ export class AilaChat implements AilaChatService {
 
   public get userId(): string | undefined {
     return this._userId;
+  }
+
+  public get isShared(): boolean | undefined {
+    return this._isShared;
   }
 
   public get messages() {
