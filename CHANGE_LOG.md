@@ -1,3 +1,12 @@
+## [1.5.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.5.0...v1.5.1) (2024-09-04)
+
+
+### Bug Fixes
+
+* delete client side feature flag ([#71](https://github.com/oaknational/oak-ai-lesson-assistant/issues/71)) ([82d26a2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/82d26a2ff37d7449e7429fd98ffd7c444eb9b550))
+* downloads page auth check ([#73](https://github.com/oaknational/oak-ai-lesson-assistant/issues/73)) ([e123cc9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e123cc974973fd2370d235ed63306eed3e19be60))
+* include patch schema in llm response schema ([#45](https://github.com/oaknational/oak-ai-lesson-assistant/issues/45)) ([1c6c1ac](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1c6c1ac63bf47422c5860f9680e615510af122dc))
+
 # [1.5.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.4.0...v1.5.0) (2024-09-04)
 
 
