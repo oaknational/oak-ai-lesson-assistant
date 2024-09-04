@@ -55,7 +55,7 @@ export default function ShareChat({
       <div className="flex items-start justify-between bg-lavender30 px-9 py-9 lg:px-24">
         <Logo />
       </div>
-      <div className="flex items-center bg-lavender30 px-9  py-18 pb-27 md:px-14">
+      <div className="flex items-center bg-lavender30 px-9  py-18 pb-32 md:px-14">
         <div className="absolute hidden h-38 w-38 items-center justify-center rounded-lg xl:left-24 xl:flex">
           <Icon
             className="flex items-center justify-center"
@@ -65,11 +65,11 @@ export default function ShareChat({
           />
         </div>
         <div className="mx-auto flex h-24 w-full max-w-2xl flex-col items-start justify-center lg:h-32 xl:h-38 ">
-          <h2 className="mb-6 pt-20 text-base font-medium sm:mt-0">
+          <h2 className="mb-10 pt-36 text-base font-medium sm:mt-0">
             {keyStageSubjectTuple.join(" • ")}
           </h2>
           <h1 className="text-3xl font-bold">{lessonPlan.title}</h1>
-          <div className="mt-10 pb-20">
+          <div className="mt-10 pb-30">
             <OakSmallPrimaryButton
               onClick={() => {
                 navigator.clipboard.writeText(window.location.href).then(() => {

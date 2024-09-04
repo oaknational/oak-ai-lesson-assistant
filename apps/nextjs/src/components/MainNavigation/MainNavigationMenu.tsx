@@ -54,6 +54,18 @@ const MainNavigationWithRef = (
               menuOpen={menuOpen}
             />
           ))}
+          <MobileListItem
+            featureFlag={featureFlag}
+            key="ai-blogs"
+            item={{
+              title: "AI blogs",
+              href: "https://www.thenational.academy/blog/categories/ai-in-education",
+              id: "ai-blogs",
+              external: true,
+            }}
+            setMenuOpen={setMenuOpen}
+            menuOpen={menuOpen}
+          />
 
           {!isSignedIn && (
             <>
@@ -92,7 +104,7 @@ const MainNavigationWithRef = (
             href="https://thenational.academy"
             icon="external"
           >
-            Back to Oak
+            Back to Oak&nbsp;
           </Button>
           <div className="flex gap-5">
             {socialMenuItems.map((item) => {

@@ -30,6 +30,8 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
     totalSectionsComplete,
   } = useDownloadView(chat);
 
+  const isLessonComplete = totalSectionsComplete >= totalSections;
+
   return (
     <Layout>
       <DialogRoot>
@@ -57,7 +59,18 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
               <div>
                 <h1 className="my-24 text-4xl font-bold">Download resources</h1>
                 <p className="mb-24 max-w-[600px]">
-                  Choose the resources you would like to generate and download.
+                  {isLessonComplete ? (
+                    <>
+                      Choose the resources you would like to generate and
+                      download.
+                    </>
+                  ) : (
+                    <>
+                      Complete all {totalSections} sections of your lesson to
+                      unlock resources below. If a section is missing, just ask
+                      Aila to help you complete your lesson.
+                    </>
+                  )}
                 </p>
               </div>
               <Grid
@@ -70,7 +83,7 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                 <Flex direction="column" className="gap-14">
                   <DownloadButton
                     onClick={() => lessonPlanExport.start()}
-                    title="Lesson"
+                    title="Lesson plan"
                     subTitle="Overview of the complete lesson"
                     downloadAvailable={!!lessonPlanExport.readyToExport}
                     downloadLoading={lessonPlanExport.status === "loading"}

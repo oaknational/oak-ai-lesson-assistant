@@ -34,7 +34,7 @@ export const HomePageCTA = () => {
             });
           }}
         >
-          Create a lesson
+          Get started
         </OakPrimaryButton>
       )}
     </OakBox>

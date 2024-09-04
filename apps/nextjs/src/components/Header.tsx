@@ -47,7 +47,7 @@ const Header = ({ menuOpen, setMenuOpen }: Readonly<HeaderProps>) => {
           </OakBox>
         </Link>
         <OakBox $display={["none", "block"]}>
-          <OakP $font={["body-2", "heading-light-6"]}>Oak AI Experiments</OakP>
+          <OakP $font={["body-2", "heading-6"]}>AI Experiments</OakP>
         </OakBox>
       </OakFlex>
       <OakFlex $alignItems={"center"} $gap={["all-spacing-4", "all-spacing-8"]}>

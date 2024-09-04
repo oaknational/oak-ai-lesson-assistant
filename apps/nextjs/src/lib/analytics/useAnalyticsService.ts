@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 
-import { AnalyticsService } from "@/components/ContextProviders/AnalyticsProvider";
+import {
+  AnalyticsService,
+  ServiceName,
+} from "@/components/ContextProviders/AnalyticsProvider";
 import { ConsentState } from "@/components/ContextProviders/CookieConsentProvider";
 
 import { MaybeDistinctId } from "../posthog/posthog";
 
-export const useAnalyticsService = <T>({
+export const useAnalyticsService = <T, S extends ServiceName>({
   service,
   config,
   consentState,
   setPosthogDistinctId,
   scriptLoaded = false,
 }: {
-  service: AnalyticsService<T>;
+  service: AnalyticsService<T, S>;
   config: T;
   /**
    * using consent state from props rather than service.state() because otherwise
@@ -33,6 +36,7 @@ export const useAnalyticsService = <T>({
     const attemptInit = async () => {
       setHasAttemptedInit(true);
       const distinctId = await service.init(config);
+
       if (distinctId && setPosthogDistinctId) {
         setPosthogDistinctId(distinctId);
         setLoaded(true);

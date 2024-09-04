@@ -35,7 +35,10 @@ const Footer = () => {
   const { isSignedIn } = useAuth();
   return (
     <StyledFooter>
-      <OakMaxWidth $pv="inner-padding-xl7">
+      <OakMaxWidth
+        $pv="inner-padding-xl7"
+        $ph={["inner-padding-xl", "inner-padding-xs"]}
+      >
         <OakFlex
           $flexDirection={["column-reverse", "row"]}
           $pv="inner-padding-xl4"
@@ -49,8 +52,9 @@ const Footer = () => {
           >
             <OakFlex
               $flexDirection="column"
-              $justifyContent="center"
-              $alignItems={["center", "start"]}
+              $justifyContent={["start", "center"]}
+              $alignItems={"start"}
+              $width={["100%", "unset"]}
             >
               <OakP $font="body-1" $mb={"space-between-s"}>
                 Menu
@@ -89,8 +93,9 @@ const Footer = () => {
             </OakFlex>
             <OakFlex
               $flexDirection="column"
-              $justifyContent="center"
-              $alignItems={["center", "start"]}
+              $justifyContent={["start", "center"]}
+              $alignItems={"start"}
+              $width={["100%", "unset"]}
             >
               <OakP $font="body-1" $mb={"space-between-s"}>
                 AI Experiments Legal
@@ -118,7 +123,7 @@ const Footer = () => {
                     );
                   }
                   return (
-                    <li key={item.id} className="my-6 text-center sm:text-left">
+                    <li key={item.id} className="my-6 text-left">
                       <FooterButton href={item.href} target={item.target}>
                         {item.title}
                       </FooterButton>
