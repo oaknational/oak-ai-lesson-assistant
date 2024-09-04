@@ -18,7 +18,7 @@ import styled from "styled-components";
 
 import jigsaw from "@/assets/svg/illustration/jigsaw.svg";
 import oakSupporting from "@/assets/svg/illustration/oak_supporting.svg";
-import BetaTag from "@/components/AppComponents/Chat/beta-tag";
+import { BetaTagPage } from "@/components/AppComponents/Chat/beta-tag";
 import HeroContainer from "@/components/HeroContainer";
 import { HomePageCTA } from "@/components/Home/HomePageCTA";
 import Layout from "@/components/Layout";
@@ -52,7 +52,7 @@ export default function HomePage({ featureFlag }) {
             $gap={"all-spacing-5"}
           >
             <OakBox $width="fit-content">
-              <BetaTag />
+              <BetaTagPage />
             </OakBox>
             <OakHeading tag="h1" $font={"heading-2"}>
               Introducing Aila{" "}
