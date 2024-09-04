@@ -13,8 +13,12 @@ export function ChatHistory() {
     <div className="rel mt-20 flex h-full flex-col">
       <div className="my-10 flex flex-col px-7">
         <ChatButton href="/aila" variant="text-link">
-          <span className="rotate-45 scale-90">
-            <OakIcon iconName="cross" />
+          <span className="rotate-45">
+            <OakIcon
+              iconName="cross"
+              $width="all-spacing-6"
+              $height="all-spacing-6"
+            />
           </span>
           <span>Create new lesson</span>
         </ChatButton>
