@@ -14,7 +14,7 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
 
 import { useDialog } from "../DialogContext";
-import BetaTag from "./beta-tag";
+import { BetaTagPage } from "./beta-tag";
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 import { ChatStartForm } from "./chat-start-form";
 import EmptyScreenAccordion from "./empty-screen-accordian";
@@ -103,7 +103,7 @@ export function ChatStart() {
               <div className="flex h-full flex-col justify-center gap-18">
                 <div>
                   <div className="mb-13   block w-fit sm:hidden">
-                    <BetaTag />
+                    <BetaTagPage />
                   </div>
                   <h1
                     data-testid="chat-h1"
