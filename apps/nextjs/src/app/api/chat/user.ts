@@ -1,7 +1,7 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { ErrorDocument } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { demoUsers, inngest } from "@oakai/core";
-import { posthogServerClient } from "@oakai/core/src/analytics/posthogServerClient";
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting/rateLimit";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
@@ -59,11 +59,10 @@ export async function handleRateLimitError(
     "handle-rate-limit-error",
     { chatId, userId },
     async (span) => {
-      // Report to posthog
-      posthogServerClient.identify({
+      posthogAiBetaServerClient.identify({
         distinctId: userId,
       });
-      posthogServerClient.capture({
+      posthogAiBetaServerClient.capture({
         distinctId: userId,
         event: "open_ai_completion_rate_limited",
         properties: {
@@ -72,7 +71,7 @@ export async function handleRateLimitError(
           resets_at: error.reset,
         },
       });
-      await posthogServerClient.shutdown();
+      await posthogAiBetaServerClient.shutdown();
 
       await inngest.send({
         name: "app/slack.notifyRateLimit",
