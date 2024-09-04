@@ -4,9 +4,9 @@ import Image from "next/image";
 
 import Layout from "@/components/Layout";
 
-export const LessonPlannerPage = (featureFlag) => {
+export const LessonPlannerPage = () => {
   return (
-    <Layout featureFlag={featureFlag}>
+    <Layout>
       <div
         className="
        relative -mt-26 w-full bg-lemon30 py-28 before:absolute before:left-[-50vw] before:top-0 before:z-[-1] before:h-full before:w-[150vw] before:bg-lemon30

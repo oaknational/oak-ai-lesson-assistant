@@ -8,7 +8,7 @@ import {
 import defaultLogger, { Logger } from "@oakai/logger";
 import { Logger as InngestLogger } from "inngest/middleware/logger";
 
-import { posthogServerClient } from "../analytics/posthogServerClient";
+import { posthogAiBetaServerClient } from "../analytics/posthogAiBetaServerClient";
 import { inngest } from "../client";
 
 const ALLOWED_VIOLATIONS = parseInt(
@@ -62,7 +62,7 @@ export class SafetyViolations {
       },
     });
 
-    posthogServerClient.capture({
+    posthogAiBetaServerClient.capture({
       distinctId: userId,
       event: "Safety Violation",
       properties: {
@@ -75,7 +75,7 @@ export class SafetyViolations {
 
     const shouldBanUser = await this.isOverThreshold(userId);
     if (shouldBanUser) {
-      const isSafetyTester = await posthogServerClient.isFeatureEnabled(
+      const isSafetyTester = await posthogAiBetaServerClient.isFeatureEnabled(
         "safety-testing",
         userId,
       );
@@ -108,11 +108,11 @@ export class SafetyViolations {
     // NOTE: Clerk is the source of truth for user data, so we don't record the ban in prisma
     await clerkClient.users.banUser(userId);
 
-    posthogServerClient.capture({
+    posthogAiBetaServerClient.capture({
       distinctId: userId,
       event: "User Banned",
     });
-    posthogServerClient.identify({
+    posthogAiBetaServerClient.identify({
       distinctId: userId,
       properties: { banned: true },
     });

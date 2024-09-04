@@ -18,7 +18,7 @@ const getQueue = (): HubspotEvent[] => {
   return _hsq;
 };
 
-export const hubspotClient: AnalyticsService<null> = {
+export const hubspotClient: AnalyticsService<null, "hubspot"> = {
   name: "hubspot",
 
   init: async () => {

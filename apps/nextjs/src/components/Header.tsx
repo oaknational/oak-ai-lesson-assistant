@@ -9,7 +9,6 @@ import OakIconLogo from "./OakIconLogo";
 type HeaderProps = {
   menuOpen: boolean;
   setMenuOpen: (open: boolean) => void;
-  featureFlag: boolean | { featureFlag: boolean };
 };
 
 const HamburgerButton = styled.button`
@@ -18,11 +17,7 @@ const HamburgerButton = styled.button`
   height: 28px;
 `;
 
-const Header = ({
-  menuOpen,
-  setMenuOpen,
-  featureFlag,
-}: Readonly<HeaderProps>) => {
+const Header = ({ menuOpen, setMenuOpen }: Readonly<HeaderProps>) => {
   return (
     <OakFlex
       as="header"
@@ -52,18 +47,15 @@ const Header = ({
           </OakBox>
         </Link>
         <OakBox $display={["none", "block"]}>
-          <OakP $font={["body-2", "heading-light-6"]}>Oak AI Experiments</OakP>
+          <OakP $font={["body-2", "heading-6"]}>AI Experiments</OakP>
         </OakBox>
       </OakFlex>
       <OakFlex $alignItems={"center"} $gap={["all-spacing-4", "all-spacing-8"]}>
-        {(typeof featureFlag === "boolean" && featureFlag) ||
-          (typeof featureFlag === "object" && featureFlag.featureFlag && (
-            <OakBox $display={["none", "block"]}>
-              <Link href="/faqs">
-                <OakP $font="body-2">FAQs</OakP>
-              </Link>
-            </OakBox>
-          ))}
+        <OakBox $display={["none", "block"]}>
+          <Link href="/faqs">
+            <OakP $font="body-2">FAQs</OakP>
+          </Link>
+        </OakBox>
 
         <HeaderAuth />
 

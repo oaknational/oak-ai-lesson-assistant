@@ -49,8 +49,10 @@ const SheetContent = React.forwardRef<
     >
       {children}
       <SheetPrimitive.Close className="absolute left-16 top-16 rounded-sm  ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
-        <div className="rounded-full bg-black p-6">
-          <Icon icon="cross-white" size="sm" />
+        <div className="-m-6 p-6">
+          <div className="rounded-full bg-black p-5">
+            <Icon icon="cross-white" size="sm" />
+          </div>
         </div>
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>

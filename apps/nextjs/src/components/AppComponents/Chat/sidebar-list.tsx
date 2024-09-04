@@ -19,7 +19,7 @@ export async function SidebarList() {
           {chats?.length ? <SidebarItems chats={chats} /> : null}
         </div>
       </div>
-      <div className="flex items-center justify-start p-10">
+      <div className="relative flex w-full items-center justify-start p-10">
         <ClearHistory isEnabled={chats ? chats?.length > 0 : false} />
       </div>
     </div>

@@ -28,7 +28,6 @@ type Props = {
   shareContent: () => void;
   shareId: string | null;
   shareLoading: boolean;
-  featureFlag: boolean;
 };
 
 const QuizDesignerPageContent = ({
@@ -42,7 +41,6 @@ const QuizDesignerPageContent = ({
   shareContent,
   shareId,
   shareLoading,
-  featureFlag,
 }: Props) => {
   const {
     error: suggestedQuestionsError,
@@ -62,7 +60,7 @@ const QuizDesignerPageContent = ({
         toggleIsOpen={toggleExportMenu}
         quizData={state}
       />
-      <Layout featureFlag={featureFlag}>
+      <Layout>
         <RateLimitNotification rateLimit={state.rateLimit} />
 
         <Container className="min-h-[800px]">

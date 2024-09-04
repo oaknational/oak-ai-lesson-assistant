@@ -11,9 +11,9 @@ import {
 
 import Layout from "@/components/Layout";
 
-export const AccessibilityStatementContent = (featureFlag) => {
+export const AccessibilityStatementContent = () => {
   return (
-    <Layout featureFlag={featureFlag}>
+    <Layout>
       <OakBox $pt="inner-padding-l">
         <OakHeading tag="h1" $font="heading-4" $mb="space-between-s">
           Accessibility Statement

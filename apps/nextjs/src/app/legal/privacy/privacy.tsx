@@ -12,9 +12,9 @@ import Link from "next/link";
 
 import Layout from "@/components/Layout";
 
-const TermsContent = (featureFlag) => {
+const TermsContent = () => {
   return (
-    <Layout featureFlag={featureFlag}>
+    <Layout>
       <OakBox $pt="inner-padding-l">
         <OakHeading tag="h1" $font="heading-4" $mb="space-between-s">
           Terms and Conditions
