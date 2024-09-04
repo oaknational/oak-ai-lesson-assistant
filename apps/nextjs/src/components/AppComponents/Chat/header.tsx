@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { OakIcon } from "@oaknational/oak-components";
+import { useClerkDemoMetadata } from "hooks/useClerkDemoMetadata";
 import Link from "next/link";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
@@ -17,9 +18,12 @@ import { UserOrLogin } from "./user-or-login";
 export function Header() {
   const demo = useDemoUser();
 
+  // Check whether clerk metadata has loaded to prevent the banner from flashing
+  const clerkMetadata = useClerkDemoMetadata();
+
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      {demo.isDemoUser && (
+      {clerkMetadata.isSet && demo.isDemoUser && (
         <div className="flex h-28 items-center border-b-2 border-black bg-lemon px-15 py-6 sm:h-26 md:h-22">
           <div>
             <strong className="font-semibold">

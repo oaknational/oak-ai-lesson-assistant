@@ -225,13 +225,6 @@ export default function HomePage() {
               and that&apos;s where your feedback and suggestions come in to
               help us get there.
             </OakP>
-
-            <BoldOakLink
-              element={Link}
-              href="https://docs.google.com/forms/d/1yRiO9DOGuCXR6Phyr8gaKFh7-Lr_4sFpVxXZ2igQH7A/edit"
-            >
-              Give feedback here
-            </BoldOakLink>
           </OakFlex>
         </OakFlexWithWidth65>
       </OakFlex>
