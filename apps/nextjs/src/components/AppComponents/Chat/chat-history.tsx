@@ -22,7 +22,7 @@ export function ChatHistory() {
           </span>
           <span>New lesson</span>
         </ChatButton>
-        <ChatButton href="/aila" variant="text-link">
+        <ChatButton href="/" variant="text-link">
           <OakIcon
             iconName="home"
             $width="all-spacing-6"
@@ -30,7 +30,7 @@ export function ChatHistory() {
           />
           AI Experiments
         </ChatButton>
-        <ChatButton href="/aila" variant="text-link">
+        <ChatButton href="/aila/help" variant="text-link">
           <OakIcon
             iconName="question-mark"
             $width="all-spacing-6"
