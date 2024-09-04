@@ -55,13 +55,11 @@ const MainNavigationWithRef = (
             />
           ))}
           <MobileListItem
-            featureFlag={featureFlag}
             key="ai-blogs"
             item={{
               title: "AI blogs",
               href: "https://www.thenational.academy/blog/categories/ai-in-education",
               id: "ai-blogs",
-              external: true,
             }}
             setMenuOpen={setMenuOpen}
             menuOpen={menuOpen}
