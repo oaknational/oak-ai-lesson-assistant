@@ -82,7 +82,7 @@ export default function HomePage({ featureFlag }) {
           >
             <Image
               src={"/images/aila-home-page-still.jpg"}
-              alt="jigsaw image"
+              alt="Image of a computer screen offering to help with a teachers to do list"
               width={700}
               height={400}
               priority
