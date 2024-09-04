@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import { MenuItem } from "data/menus";
 import { usePathname } from "#next/navigation";
+import { MenuItem } from "data/menus";
 
 import Button from "../Button";
 
@@ -41,8 +41,10 @@ export const MobileListItem = ({
         }}
         active={pathname === item.href}
         disabled={item.behindFeatureFlag && !handleFeatureFlagType(featureFlag)}
+        icon={item.external ? "external" : undefined}
+        target={item.external ? "_blank" : undefined}
       >
-        <span className="flex flex-col items-center gap-8 sm:flex-row">
+        <span className="mr-8 flex flex-col items-center gap-8 sm:flex-row">
           {item.title}
           {item.behindFeatureFlag && !handleFeatureFlagType(featureFlag) && (
             <span
