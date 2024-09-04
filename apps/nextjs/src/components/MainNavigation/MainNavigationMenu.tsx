@@ -16,7 +16,7 @@ import { Icon } from "../Icon";
 import { MobileListItem } from "./MobileListItem";
 
 const MainNavigationWithRef = (
-  { menuOpen, setMenuOpen, featureFlag }: Readonly<MainNavigationProps>,
+  { menuOpen, setMenuOpen }: Readonly<MainNavigationProps>,
   ref: Ref<HTMLElement>,
 ) => {
   const pathname = usePathname();
@@ -48,7 +48,6 @@ const MainNavigationWithRef = (
                   });
                 }
               }}
-              featureFlag={featureFlag}
               key={tool.id}
               item={tool}
               setMenuOpen={setMenuOpen}

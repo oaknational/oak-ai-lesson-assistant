@@ -10,10 +10,10 @@ import HeroContainer from "@/components/HeroContainer";
 import { Icon } from "@/components/Icon";
 import Layout from "@/components/Layout";
 
-export const LessonPlanPreview = ({ planSections, featureFlag }) => {
+export const LessonPlanPreview = ({ planSections }) => {
   if (!planSections) return null;
   return (
-    <Layout featureFlag={featureFlag}>
+    <Layout>
       <Container px="0" className="min-h-[800px]">
         <HeroContainer>
           <Flex direction="column" gap="4" mt="7">

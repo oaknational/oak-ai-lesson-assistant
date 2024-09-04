@@ -2,8 +2,6 @@ import { auth } from "@clerk/nextjs/server";
 import getSessionOutput from "ai-apps/common/getSessionOutput";
 import { quizAppStateSchema } from "ai-apps/quiz-designer/state/types";
 
-import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
-
 import QuizDesignerPage from "./generation-page";
 
 const quizStateSchema = quizAppStateSchema.omit({
@@ -26,7 +24,6 @@ export default async function GenerationsPage({
 }: {
   params: { slug: string };
 }) {
-  const featureFlag = await serverSideFeatureFlag("lesson-planning-assistant");
   const data = await getData(params.slug);
-  return <QuizDesignerPage data={data} featureFlag={!!featureFlag} />;
+  return <QuizDesignerPage data={data} />;
 }

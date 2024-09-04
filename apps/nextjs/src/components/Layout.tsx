@@ -4,14 +4,13 @@ import Main from "./Main";
 
 type LayoutProps = {
   children: React.ReactNode;
-  featureFlag: boolean;
 };
-const Layout = ({ children, featureFlag }: Readonly<LayoutProps>) => {
+const Layout = ({ children }: Readonly<LayoutProps>) => {
   return (
     <>
-      <HeaderManager featureFlag={featureFlag} />
+      <HeaderManager />
       <Main>{children}</Main>
-      <Footer featureFlag={featureFlag} />
+      <Footer />
     </>
   );
 };

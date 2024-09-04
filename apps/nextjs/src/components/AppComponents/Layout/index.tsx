@@ -7,11 +7,9 @@ import { DialogProvider } from "../DialogContext";
 
 const Layout = ({
   children,
-  featureFlag,
   includeFooter,
 }: {
   children: React.ReactNode;
-  featureFlag: boolean;
   includeFooter?: boolean;
 }) => {
   return (
@@ -20,7 +18,7 @@ const Layout = ({
       <main className="flex h-full flex-1 flex-col bg-muted/50 bg-white">
         <DialogProvider>{children}</DialogProvider>
       </main>
-      {includeFooter && <Footer featureFlag={featureFlag} />}
+      {includeFooter && <Footer />}
     </div>
   );
 };

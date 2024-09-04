@@ -1,7 +1,5 @@
-import { useState } from "react";
-
-import { MenuItem } from "data/menus";
 import { usePathname } from "#next/navigation";
+import { MenuItem } from "data/menus";
 
 import Button from "../Button";
 
@@ -9,26 +7,20 @@ type MobileListItemProps = {
   item: MenuItem;
   setMenuOpen: (menuOpen: boolean) => void;
   menuOpen: boolean;
-  featureFlag: boolean | { featureFlag: boolean };
+
   onClick?: () => void;
 };
 export const MobileListItem = ({
   item,
   setMenuOpen,
   menuOpen,
-  featureFlag,
+
   onClick,
 }: Readonly<MobileListItemProps>) => {
-  console.log("featureFlag", handleFeatureFlagType(featureFlag), featureFlag);
   const pathname = usePathname();
-  const [hover, setHover] = useState(false);
+
   return (
-    <li
-      key={item.id}
-      className="py-5"
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-    >
+    <li key={item.id} className="py-5">
       <Button
         variant="text-link"
         href={item.href}
@@ -40,31 +32,11 @@ export const MobileListItem = ({
           setMenuOpen(!menuOpen);
         }}
         active={pathname === item.href}
-        disabled={item.behindFeatureFlag && !handleFeatureFlagType(featureFlag)}
       >
         <span className="flex flex-col items-center gap-8 sm:flex-row">
           {item.title}
-          {item.behindFeatureFlag && !handleFeatureFlagType(featureFlag) && (
-            <span
-              className={`ml-5 pt-4 text-base no-underline delay-100 duration-300 ${hover ? `opacity-100` : `opacity-0`}`}
-            >
-              Coming soon!
-            </span>
-          )}
         </span>
       </Button>
     </li>
   );
 };
-
-function handleFeatureFlagType(
-  featureFlag: boolean | { featureFlag: boolean },
-) {
-  if (typeof featureFlag === "boolean" && featureFlag) {
-    return true;
-  }
-  if (typeof featureFlag === "object" && featureFlag.featureFlag) {
-    return true;
-  }
-  return false;
-}
