@@ -16,7 +16,6 @@ import Image from "next/image";
 import Link from "next/link";
 import styled from "styled-components";
 
-import jigsaw from "@/assets/svg/illustration/jigsaw.svg";
 import oakSupporting from "@/assets/svg/illustration/oak_supporting.svg";
 import BetaTag from "@/components/AppComponents/Chat/beta-tag";
 import HeroContainer from "@/components/HeroContainer";
