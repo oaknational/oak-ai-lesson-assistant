@@ -135,12 +135,14 @@ export const CheckForUnderstandingSchema = z.object({
   answers: z
     .array(z.string())
     .length(1)
-    .describe("The correct answer to the question"),
+    .describe(
+      "The correct answer to the question. If this is of length ANSWER_LENGTH, then all distractor strings should be very close in length to ANSWER_LENGTH.",
+    ),
   distractors: z
     .array(z.string())
     .min(2)
     .describe(
-      "Two incorrect distractors which could be the answer to the question but are not correct",
+      "Two incorrect distractors which could be the answer to the question but are not correct. These strings should be of similar length to ANSWER_LENGTH so that the correct answer does not stand out because it is obviously longer than the distractors.",
     ),
 });
 
