@@ -12,8 +12,10 @@ export function SurveyDialogLauncher() {
   const { setDialogWindow } = useDialog();
 
   useEffect(() => {
+    console.log("survey", survey);
     if (survey) {
       const timer = setTimeout(() => {
+        console.log("this fired");
         setDialogWindow("feedback");
       }, 3000);
       return () => clearTimeout(timer);
