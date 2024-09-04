@@ -1,6 +1,6 @@
 // #TODO This file has been pulled into this library and needs
 // refactoring - we will probably delete it?
-import { posthogServerClient } from "@oakai/core/src/analytics/posthogServerClient";
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import OpenAI from "openai";
 import type { PostHog } from "posthog-node";
@@ -80,7 +80,7 @@ export async function reportCompletionAnalyticsEvent(
   if (!process.env.NEXT_PUBLIC_POSTHOG_API_KEY) {
     return;
   }
-  const posthogClient = posthog ?? posthogServerClient;
+  const posthogClient = posthog ?? posthogAiBetaServerClient;
   posthogClient.identify({
     distinctId: payload.userId ?? payload.prompt ?? "bot",
   });

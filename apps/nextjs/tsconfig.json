@@ -81,7 +81,7 @@
     "**/*.mjs",
     ".next/types/**/*.ts",
     "../../packages/aila/src/utils/types/chatApi.ts",
-    "../../packages/core/src/analytics/posthogServerClient.ts",
+    "../../packages/core/src/analytics/posthogAiBetaServerClient.ts",
     "../../packages/aila/src/rateLimiting/rate-limiting.ts",
     "jest.setup.js"
   ],
