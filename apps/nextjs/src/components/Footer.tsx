@@ -98,7 +98,6 @@ const Footer = ({ featureFlag }: FooterProps) => {
               </OakUL>
             </OakFlex>
             <OakFlex
-              akFlex
               $flexDirection="column"
               $justifyContent={["start", "center"]}
               $alignItems={"start"}
