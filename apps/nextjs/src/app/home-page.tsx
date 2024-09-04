@@ -55,15 +55,15 @@ export default function HomePage({ featureFlag }) {
               <BetaTag />
             </OakBox>
             <OakHeading tag="h1" $font={"heading-2"}>
-              Introducing Aila{" "}
+              Introducing Aila
             </OakHeading>
             <OakHeading tag="h2" $font={"heading-5"}>
-              Create lessons with Oak&apos;s new AI lesson assistant
+              Build a tailor-made lesson plan and resources in minutes
             </OakHeading>
             <OakP $textAlign="left" $font="body-1">
-              Try out Oak&apos;s latest AI Labs experiment, Aila, a free
-              AI-powered lesson assistant that can help you create high-quality
-              lessons and editable resources in minutes.
+              Transform your lesson prep with our free AI-powered lesson
+              assistant. Whether it&apos;s creating bespoke resources or
+              tailoring content to your class, Aila can help speed things along.
             </OakP>
             <HomePageCTA featureFlag={featureFlag} />
           </OakFlexWithCustomMaxWidth>

@@ -34,7 +34,7 @@ export const HomePageCTA = ({ featureFlag }: { featureFlag: boolean }) => {
             });
           }}
         >
-          Create a lesson
+          Get started
         </OakPrimaryButton>
       )}
     </OakBox>
