@@ -12,6 +12,7 @@ export interface MenuItem {
   id: string;
   target?: string;
   behindFeatureFlag?: boolean;
+  external?: boolean;
 }
 
 export const menuItems: MenuItem[] = [];
