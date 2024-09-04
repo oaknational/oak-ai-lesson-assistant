@@ -77,12 +77,11 @@ const ChatRightHandSideLesson = ({
       onScroll={handleScroll}
       style={{ overflowY: "auto" }}
     >
-      <div className="mt-26 hidden sm:block">
-        <ExportButtons
-          sectionRefs={sectionRefs}
-          documentContainerRef={documentContainerRef}
-        />
-      </div>
+      <ExportButtons
+        sectionRefs={sectionRefs}
+        documentContainerRef={documentContainerRef}
+      />
+
       <div className="ml-[-10px] mt-27 flex justify-between px-14 pt-6 sm:hidden">
         <button
           onClick={() => {
@@ -96,7 +95,7 @@ const ChatRightHandSideLesson = ({
           <span className="text-base font-bold">Hide lesson</span>
         </button>
       </div>
-      <div className="flex gap-10 p-12 sm:hidden">
+      <div className="sticky top-25 z-10 flex gap-10 bg-white p-12 sm:hidden">
         <OakSmallSecondaryButton
           element={Link}
           iconName="download"
@@ -123,7 +122,7 @@ const ChatRightHandSideLesson = ({
         </OakSmallSecondaryButton>
       </div>
       <button
-        className="sticky top-25 z-10 block w-full bg-white px-14 pb-9 pt-12 sm:hidden"
+        className="sticky top-32 z-10 block w-full bg-white px-14 pb-9 pt-12 sm:hidden"
         onClick={() => {
           documentContainerRef.current?.scrollTo({
             top: 0,

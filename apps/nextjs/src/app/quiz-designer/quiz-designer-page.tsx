@@ -29,7 +29,7 @@ export const initialState: QuizAppState = {
   rateLimit: null,
 };
 
-export const QuizDesignerPage = (featureFlag) => {
+export const QuizDesignerPage = () => {
   const router = useRouter();
   const user = useUser();
   useEffect(() => {
@@ -37,10 +37,10 @@ export const QuizDesignerPage = (featureFlag) => {
       router.replace("/sign-up");
     }
   }, [user.isLoaded, user.isSignedIn, router]);
-  return <QuizDesignerPageContent featureFlag={featureFlag} />;
+  return <QuizDesignerPageContent />;
 };
 
-function QuizDesignerPageContent(featureFlag) {
+function QuizDesignerPageContent() {
   const [state, dispatch] = useReducer(quizAppReducer, initialState);
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const toggleExportMenu = useCallback(() => {
@@ -70,7 +70,7 @@ function QuizDesignerPageContent(featureFlag) {
         toggleIsOpen={toggleExportMenu}
         quizData={state}
       />
-      <Layout featureFlag={featureFlag}>
+      <Layout>
         <RateLimitNotification rateLimit={state.rateLimit} />
         <QuizContent
           state={state}

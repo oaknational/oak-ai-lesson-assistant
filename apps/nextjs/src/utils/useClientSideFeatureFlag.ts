@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
-import { usePostHog } from "posthog-js/react";
+
+import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import { checkFeatureFlag } from "./checkFeatureFlag";
 
@@ -10,7 +11,8 @@ export function useClientSideFeatureFlag(
   featureFlagId: string,
 ): [boolean, boolean] {
   const { user, isLoaded } = useUser();
-  const posthogClient = usePostHog();
+
+  const { posthogAiBetaClient } = useAnalytics();
 
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
   const [isCheckComplete, setIsCheckComplete] = useState<boolean>(false);
@@ -25,18 +27,20 @@ export function useClientSideFeatureFlag(
 
       if (isLoaded && user) {
         if (!isUserIdentified) {
-          const distinctId = posthogClient.get_distinct_id();
+          const distinctId = posthogAiBetaClient.get_distinct_id();
+
           if (distinctId !== user.id) {
-            posthogClient.identify(user.id, {
+            posthogAiBetaClient.identify(user.id, {
               email: user.primaryEmailAddress?.emailAddress,
             });
           }
           isUserIdentified = true;
         }
         const isFeatureFlagEnabled = checkFeatureFlag(
-          posthogClient,
+          posthogAiBetaClient,
           featureFlagId,
         );
+
         setIsEnabled(isFeatureFlagEnabled);
         setIsCheckComplete(true);
       } else if (isLoaded && !user) {
@@ -47,7 +51,7 @@ export function useClientSideFeatureFlag(
     }
 
     checkFeatureFlagStatus();
-  }, [user, isLoaded, featureFlagId, posthogClient]);
+  }, [user, isLoaded, featureFlagId, posthogAiBetaClient]);
 
   return [isEnabled, isCheckComplete];
 }

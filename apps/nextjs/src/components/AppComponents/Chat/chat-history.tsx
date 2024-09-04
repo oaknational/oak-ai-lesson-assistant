@@ -10,21 +10,25 @@ import ChatButton from "./ui/chat-button";
 
 export function ChatHistory() {
   return (
-    <div className="mt-20 flex h-full flex-col">
+    <div className="rel mt-20 flex h-full flex-col">
       <div className="my-10 flex flex-col px-7">
         <ChatButton href="/aila" variant="text-link">
-          <span className="rotate-45 scale-90">
-            <OakIcon iconName="cross" />
+          <span className="rotate-45">
+            <OakIcon
+              iconName="cross"
+              $width="all-spacing-6"
+              $height="all-spacing-6"
+            />
           </span>
-          <span>New Lesson</span>
+          <span>Create new lesson</span>
         </ChatButton>
-        <ChatButton href="/aila" variant="text-link">
+        <ChatButton href="/" variant="text-link">
           <span className="scale-90">
             <OakIcon iconName="home" />
           </span>
-          Ai experiments page
+          AI experiments page
         </ChatButton>
-        <ChatButton href="/aila" variant="text-link">
+        <ChatButton href="/aila/help" variant="text-link">
           <span className="scale-90">
             <OakIcon iconName="question-mark" />
           </span>

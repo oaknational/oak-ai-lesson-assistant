@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import {
   OakBox,
   OakFlex,
@@ -16,12 +16,15 @@ import Image from "next/image";
 import Link from "next/link";
 import styled from "styled-components";
 
-import jigsaw from "@/assets/svg/illustration/jigsaw.svg";
 import oakSupporting from "@/assets/svg/illustration/oak_supporting.svg";
-import BetaTag from "@/components/AppComponents/Chat/beta-tag";
+import { BetaTagPage } from "@/components/AppComponents/Chat/beta-tag";
 import HeroContainer from "@/components/HeroContainer";
 import { HomePageCTA } from "@/components/Home/HomePageCTA";
 import Layout from "@/components/Layout";
+import {
+  OakBoxCustomMaxWidth,
+  OakFlexCustomMaxWidth,
+} from "@/components/OakBoxCustomMaxWidth";
 import AiIcon from "@/components/SVGParts/AiIcon";
 import LessonIcon from "@/components/SVGParts/LessonIcon";
 import QuizIcon from "@/components/SVGParts/QuizIcon";
@@ -32,45 +35,58 @@ export const metadata: Metadata = {
   title: "Oak ai experiments",
 };
 
-const OakFlexWithCustomMaxWidth = styled(OakFlex)`
-  max-width: 640px;
-`;
-
-export default function HomePage({ featureFlag }) {
+export default function HomePage() {
   const user = useUser();
-  const auth = useAuth();
 
-  const { userId } = auth;
   const { track } = useAnalytics();
 
   return (
-    <Layout featureFlag={featureFlag}>
+    <Layout>
       <HeroContainer>
-        <OakFlex $flexDirection={"row"} $justifyContent={"space-between"}>
-          <OakFlexWithCustomMaxWidth
+        <OakFlex
+          $flexDirection={"row"}
+          $justifyContent={"space-between"}
+          $alignItems={["center", "flex-end"]}
+        >
+          <OakFlexCustomMaxWidth
             $flexDirection={"column"}
             $gap={"all-spacing-5"}
+            customMaxWidth={550}
           >
             <OakBox $width="fit-content">
-              <BetaTag />
+              <BetaTagPage />
             </OakBox>
             <OakHeading tag="h1" $font={"heading-2"}>
-              Introducing Aila{" "}
+              Introducing Aila
             </OakHeading>
             <OakHeading tag="h2" $font={"heading-5"}>
-              Create lessons with Oak&apos;s new AI lesson assistant
+              Build a tailor-made lesson plan and resources in minutes
             </OakHeading>
             <OakP $textAlign="left" $font="body-1">
-              Try out Oak&apos;s latest AI Labs experiment, Aila, a free
-              AI-powered lesson assistant that can help you create high-quality
-              lessons and editable resources in minutes.
+              Transform your lesson prep with our free AI-powered lesson
+              assistant. Whether it&apos;s creating bespoke resources or
+              tailoring content to your class, Aila can help speed things along.
             </OakP>
-            <HomePageCTA featureFlag={featureFlag} />
-          </OakFlexWithCustomMaxWidth>
+            <HomePageCTA />
+          </OakFlexCustomMaxWidth>
 
-          <OakBox $display={["none", "flex"]}>
-            <Image src={jigsaw} alt="jigsaw image" priority />
-          </OakBox>
+          <OakBoxCustomMaxWidth
+            $display={["none", "flex"]}
+            $borderColor="black"
+            $borderStyle={"solid"}
+            $ba={"border-solid-xl"}
+            customMaxWidth={600}
+            $height="fit-content"
+          >
+            <Image
+              src={"/images/aila-home-page-still.jpg"}
+              alt="Image of a computer screen offering to help with a teachers to do list"
+              width={700}
+              height={400}
+              priority
+              objectFit="cover"
+            />
+          </OakBoxCustomMaxWidth>
         </OakFlex>
       </HeroContainer>
 
@@ -162,26 +178,19 @@ export default function HomePage({ featureFlag }) {
                 resources.
               </OakP>
 
-              {!userId || !featureFlag ? (
-                <BoldOakLink variant="text-link" href="#">
-                  Coming soon...
-                </BoldOakLink>
-              ) : (
-                <BoldOakLink
-                  href="/aila"
-                  element={Link}
-                  onClick={() => {
-                    track.lessonAssistantAccessed({
-                      product: "ai lesson assistant",
-                      isLoggedIn: !!user.isSignedIn,
-                      componentType:
-                        "homepage_secondary_create_a_lesson_button",
-                    });
-                  }}
-                >
-                  Create a lesson
-                </BoldOakLink>
-              )}
+              <BoldOakLink
+                href="/aila"
+                element={Link}
+                onClick={() => {
+                  track.lessonAssistantAccessed({
+                    product: "ai lesson assistant",
+                    isLoggedIn: !!user.isSignedIn,
+                    componentType: "homepage_secondary_create_a_lesson_button",
+                  });
+                }}
+              >
+                Create a lesson
+              </BoldOakLink>
             </OakFlex>
           </OakFlex>
           <OakFlex $flexDirection={"column"} $gap={"all-spacing-5"}>
@@ -196,11 +205,10 @@ export default function HomePage({ featureFlag }) {
               high-quality results that are geared to UK pupils, schools and
               classrooms.
             </OakP>
-            {featureFlag && (
-              <BoldOakLink element={Link} href="/faqs">
-                Find out more about Aila
-              </BoldOakLink>
-            )}
+
+            <BoldOakLink element={Link} href="/faqs">
+              Find out more about Aila
+            </BoldOakLink>
           </OakFlex>
           <OakFlex $flexDirection={"column"} $gap={"all-spacing-5"}>
             <OakHeading $font="heading-5" tag="h3">
@@ -217,14 +225,6 @@ export default function HomePage({ featureFlag }) {
               and that&apos;s where your feedback and suggestions come in to
               help us get there.
             </OakP>
-            {featureFlag && (
-              <BoldOakLink
-                element={Link}
-                href="https://docs.google.com/forms/d/1yRiO9DOGuCXR6Phyr8gaKFh7-Lr_4sFpVxXZ2igQH7A/edit"
-              >
-                Give feedback here
-              </BoldOakLink>
-            )}
           </OakFlex>
         </OakFlexWithWidth65>
       </OakFlex>

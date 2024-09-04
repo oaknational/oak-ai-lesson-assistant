@@ -1,4 +1,4 @@
-import { posthogServerClient } from "@oakai/core/src/analytics/posthogServerClient";
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import * as Sentry from "@sentry/node";
 
 import { BOT_USER_ID } from "../constants";
@@ -16,15 +16,15 @@ export async function safelyReportAnalyticsEvent({
     if (!process.env.NEXT_PUBLIC_POSTHOG_API_KEY) {
       return;
     }
-    posthogServerClient.identify({
+    posthogAiBetaServerClient.identify({
       distinctId: userId ?? BOT_USER_ID,
     });
-    posthogServerClient.capture({
+    posthogAiBetaServerClient.capture({
       distinctId: userId ?? BOT_USER_ID,
       event: eventName,
       properties: payload,
     });
-    await posthogServerClient.shutdown();
+    await posthogAiBetaServerClient.shutdown();
   } catch (error) {
     Sentry.captureException(error);
   }

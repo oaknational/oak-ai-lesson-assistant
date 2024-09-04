@@ -22,7 +22,12 @@ const ChatSection = ({
         }
         markdown={`${sectionToMarkdown(objectKey, value)}`}
       />
-      <OakFlex $gap="all-spacing-3" $mt="space-between-s" $position="relative">
+      <OakFlex
+        $gap="all-spacing-3"
+        $mt="space-between-s"
+        $position="relative"
+        $display={["none", "flex"]}
+      >
         <ModifyButton
           section={sectionTitle(objectKey)}
           sectionContent={

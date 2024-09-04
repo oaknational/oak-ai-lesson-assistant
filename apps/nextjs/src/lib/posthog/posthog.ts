@@ -16,7 +16,7 @@ export type PosthogConfig = {
 
 export const posthogToAnalyticsService = (
   client: PostHog,
-): AnalyticsService<PosthogConfig> => ({
+): AnalyticsService<PosthogConfig, "posthog"> => ({
   name: "posthog",
   init: ({ apiKey, apiHost, uiHost }) =>
     new Promise((resolve) => {
@@ -74,4 +74,5 @@ export const posthogToAnalyticsService = (
         return "pending";
     }
   },
+  client,
 });

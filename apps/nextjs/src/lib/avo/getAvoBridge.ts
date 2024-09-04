@@ -10,7 +10,7 @@ import { PosthogConfig } from "../posthog/posthog";
 import { CustomDestination } from "./Avo";
 
 type AnalyticsServices = {
-  posthog: Pick<AnalyticsService<PosthogConfig>, "track">;
+  posthog: Pick<AnalyticsService<PosthogConfig, "posthog">, "track">;
 };
 /**
  * getAvoBridge returns the bridge between Avo and our analytics services.
