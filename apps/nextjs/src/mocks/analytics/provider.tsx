@@ -4,6 +4,8 @@ See the readme for why this is needed.
 */
 import React from "react";
 
+import { PostHog } from "posthog-js";
+
 import Avo from "@/lib/avo/Avo";
 
 import {
@@ -33,6 +35,11 @@ const mockAnalyticsContext: AnalyticsContext = {
   reset: () => {
     console.log("Mock reset called");
   },
+  posthogAiBetaClient: {
+    isFeatureEnabled: () => true,
+    identify: () => {},
+    get_distinct_id: () => "mock-distinct-id",
+  } as unknown as PostHog,
 };
 
 export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({
