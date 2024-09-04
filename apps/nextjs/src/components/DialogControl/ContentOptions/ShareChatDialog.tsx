@@ -7,6 +7,7 @@ import * as Sentry from "@sentry/react";
 import { DialogTypes } from "@/components/AppComponents/Chat/Chat/types";
 import { openSharePage } from "@/components/AppComponents/Chat/Chat/utils";
 import ChatButton from "@/components/AppComponents/Chat/ui/chat-button";
+import { DialogTitle } from "@/components/AppComponents/Chat/ui/dialog";
 import { getLessonTrackingProps } from "@/lib/analytics/helpers";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
@@ -57,6 +58,7 @@ const ShareChat = ({
   return (
     <Flex className="h-full w-full" direction="column" justify="between">
       <div>
+        <DialogTitle className="sr-only">Share Chat</DialogTitle>
         <p className="mb-12 text-2xl">Share Chat</p>
         <p className="mb-18">
           Please be aware that while our AI lesson planning tool aims to assist

@@ -5,6 +5,7 @@ import { Message } from "ai";
 import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey";
 
 import ChatButton from "@/components/AppComponents/Chat/ui/chat-button";
+import { DialogTitle } from "@/components/AppComponents/Chat/ui/dialog";
 import { Icon } from "@/components/Icon";
 
 type ShareChatProps = {
@@ -63,6 +64,7 @@ const ReportContentDialog = ({
         <Icon icon="warning" size="lg" />
         {userHasSubmitted ? (
           <>
+            <DialogTitle className="sr-only">Thank you</DialogTitle>
             <p className="text-2xl">Thank you</p>
             <p>Your feedback has been submitted.</p>
             <div className=" flex w-full justify-end gap-7">
@@ -74,6 +76,7 @@ const ReportContentDialog = ({
         ) : (
           <>
             <div className="flex w-full flex-col gap-9">
+              <DialogTitle className="sr-only">Report content</DialogTitle>
               <p className="text-2xl font-semibold">Report content</p>
               <p className="">Please provide details below.</p>
             </div>
