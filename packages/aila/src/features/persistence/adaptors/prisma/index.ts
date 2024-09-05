@@ -29,7 +29,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
     this._prisma = prisma ?? globalPrisma;
   }
 
-  async userOwnsPersistedChat(): Promise<AilaPersistedChat | null> {
+  async loadChat(): Promise<AilaPersistedChat | null> {
     const { id, userId } = this._chat;
 
     const appSession = await this._prisma.appSession.findFirst({

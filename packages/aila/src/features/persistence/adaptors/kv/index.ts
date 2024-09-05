@@ -26,7 +26,7 @@ export class AilaKVPersistence extends AilaPersistence {
   async upsertGeneration(): Promise<void> {
     throw new Error("Not implemented");
   }
-  async userOwnsPersistedChat(): Promise<null> {
+  async loadChat(): Promise<null> {
     throw new Error("Not implemented");
   }
 }

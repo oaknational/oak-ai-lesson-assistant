@@ -66,7 +66,6 @@ describe("Chat API Route", () => {
             id: chatId,
             userId,
             messages: options.chat.messages ?? [],
-            isShared: options.chat.isShared ?? false,
           },
           plugins: [],
           services: {

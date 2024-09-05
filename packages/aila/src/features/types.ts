@@ -24,7 +24,7 @@ export interface AilaAnalyticsFeature {
 
 export interface AilaPersistenceFeature {
   name: string;
-  userOwnsPersistedChat(): Promise<AilaPersistedChat | null>;
+  loadChat(): Promise<AilaPersistedChat | null>;
   upsertChat(): Promise<void>;
   upsertGeneration(generation?: AilaGeneration): Promise<void>;
 }

@@ -108,7 +108,7 @@ export abstract class AilaPersistence {
     return payload;
   }
 
-  abstract userOwnsPersistedChat(): Promise<AilaPersistedChat | null>;
+  abstract loadChat(): Promise<AilaPersistedChat | null>;
   abstract upsertChat(): Promise<void>;
   abstract upsertGeneration(generation?: AilaGeneration): Promise<void>;
 }

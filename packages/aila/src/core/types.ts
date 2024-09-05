@@ -49,7 +49,6 @@ export type AilaOptionsWithDefaultFallbackValues = Required<AilaOptions>;
 export type AilaChatInitializationOptions = {
   id: string;
   userId: string | undefined;
-  isShared: boolean | undefined;
   messages?: Message[];
   llmService?: LLMService;
   onStreamError?: (error: unknown) => void;

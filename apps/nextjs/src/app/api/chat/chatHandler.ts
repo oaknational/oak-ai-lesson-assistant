@@ -26,41 +26,6 @@ export async function GET() {
   return new Response("Chat API is working", { status: 200 });
 }
 
-async function authoriseAndGetChat({
-  userId,
-  chatId,
-}: {
-  userId: string;
-  chatId: string;
-}) {
-  return await withTelemetry(
-    "chat-authorise-and-get-chat",
-    { chat_id: chatId, user_id: userId },
-    async (span: TracingSpan) => {
-      span.setTag("chat_id", chatId);
-      span.setTag("user_id", userId);
-      const appSession = await prisma.appSession.findFirst({
-        where: {
-          id: chatId,
-          userId,
-        },
-      });
-
-      if (!appSession?.output) {
-        throw new Error("Chat not found or user not authorised");
-      }
-
-      const parsedChat = chatSchema.safeParse(appSession.output);
-
-      if (!parsedChat.success) {
-        throw new Error("Chat not in a valid state");
-      }
-
-      return parsedChat.data;
-    },
-  );
-}
-
 async function setupChatHandler(req: NextRequest) {
   return await withTelemetry(
     "chat-setup-chat-handler",
@@ -256,7 +221,6 @@ export async function handleChatPostRequest(
 
     try {
       userId = await getUserId(config, chatId);
-      const persistedChat = await authoriseAndGetChat({ userId, chatId });
       span.setTag("user_id", userId);
       aila = await withTelemetry(
         "chat-create-aila",
@@ -268,7 +232,6 @@ export async function handleChatPostRequest(
               id: chatId,
               userId,
               messages,
-              isShared: persistedChat.isShared,
             },
             lessonPlan,
           });

@@ -36,40 +36,8 @@ export const defaultConfig: Config = {
       chat: options.chat || {
         id: nanoid(),
         userId: undefined,
-        isShared: false,
       },
     });
-
-    console.log(`
-      
-      
-      LOADING CHAT .....
-      
-
-
-
-      
-      
-      
-      `);
-
-    await aila.userOwnsPersistedChat({ store: "AilaPrismaPersistence" });
-
-    console.log(`
-      
-      
-      
-      
-      
-      LOADED CHAT .....
-      
-      
-      
-      
-      
-      
-      
-      `);
 
     return aila;
   },

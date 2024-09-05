@@ -5,7 +5,12 @@ import {
 } from "@oakai/core/src/utils/subjects";
 import invariant from "tiny-invariant";
 
-import { AilaChatService, AilaError, AilaServices } from "../..";
+import {
+  AilaAuthenticationError,
+  AilaChatService,
+  AilaError,
+  AilaServices,
+} from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import {
   AilaGeneration,
@@ -36,7 +41,6 @@ export class AilaChat implements AilaChatService {
   constructor({
     id,
     userId,
-    isShared,
     messages,
     aila,
     llmService,
@@ -44,7 +48,6 @@ export class AilaChat implements AilaChatService {
   }: {
     id: string;
     userId: string | undefined;
-    isShared: boolean | undefined;
     messages?: Message[];
     aila: AilaServices;
     llmService?: LLMService;
@@ -52,7 +55,6 @@ export class AilaChat implements AilaChatService {
   }) {
     this._id = id;
     this._userId = userId;
-    this._isShared = isShared;
     this._messages = messages ?? [];
     this._aila = aila;
     this._llmService =
@@ -250,22 +252,31 @@ export class AilaChat implements AilaChatService {
     );
   }
 
-  private async userOwnsPersistedChat({
-    persistenceFeatureName,
-  }: {
-    persistenceFeatureName: string;
-  }) {
+  /**
+   * This method attempts to load the chat from the chosen store.
+   * Applicable properties from the loaded chat are then set on the chat
+   * instance.
+   * @throws {AilaError} If the persistence feature is not found
+   * @throws {AilaAuthenticationError} If the chat does not belong to the user
+   *
+   */
+  public async loadChat({ store }: { store: string }) {
     const persistenceFeature = this._aila.persistence?.find(
-      (p) => p.constructor.name === persistenceFeatureName,
+      (p) => p.constructor.name === store,
     );
 
     if (!persistenceFeature) {
-      throw new AilaError(
-        `Persistence feature ${persistenceFeatureName} not found`,
-      );
+      console.log(this._aila.persistence);
+      return;
+      // @todo throw if not found
+      // throw new AilaError(`Persistence feature ${store} not found`);
     }
 
-    return persistenceFeature.userOwnsPersistedChat();
+    const persistedChat = await persistenceFeature.loadChat();
+
+    if (persistedChat) {
+      this._isShared = persistedChat.isShared;
+    }
   }
 
   private applyEdits() {
@@ -344,6 +355,7 @@ export class AilaChat implements AilaChatService {
   }
 
   public async setupGeneration() {
+    await this.loadChat({ store: "AilaPrismaPersistence" });
     await this.startNewGeneration();
     await this.persistChat();
     await this.persistGeneration("REQUESTED");
