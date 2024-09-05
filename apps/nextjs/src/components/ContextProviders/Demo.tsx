@@ -51,14 +51,14 @@ export function DemoProvider({ children }: Readonly<DemoProviderProps>) {
     () =>
       isDemoUser
         ? {
-            isDemoUser: true,
+            isDemoUser,
             appSessionsRemaining,
             appSessionsPerMonth: DEMO_APP_SESSIONS_PER_30D,
             contactHref: "mailto:help@thenational.academy",
             isSharingEnabled,
           }
         : {
-            isDemoUser: true,
+            isDemoUser,
             isSharingEnabled,
           },
     [isDemoUser, appSessionsRemaining, isSharingEnabled],
