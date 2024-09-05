@@ -257,7 +257,7 @@ export class AilaChat implements AilaChatService {
    */
   public async loadChat({ store }: { store: string }) {
     const persistenceFeature = this._aila.persistence?.find(
-      (p) => p.constructor.name === store,
+      (p) => p.name === store,
     );
 
     if (!persistenceFeature) {
