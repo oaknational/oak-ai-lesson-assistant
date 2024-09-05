@@ -56,10 +56,7 @@ export class AilaFeatureFactory {
     options: AilaOptions,
   ): AilaPersistenceFeature[] {
     if (options.usePersistence) {
-      return [
-        new AilaKVPersistence({ chat: aila.chat, aila }),
-        new AilaPrismaPersistence({ chat: aila.chat, aila }),
-      ];
+      return [new AilaPrismaPersistence({ chat: aila.chat, aila })];
     }
     return [];
   }

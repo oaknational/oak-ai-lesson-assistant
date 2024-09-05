@@ -14,7 +14,11 @@ import {
   AilaThreatDetectionFeature,
 } from "../features/types";
 import { generateMessageId } from "../helpers/chat/generateMessageId";
-import { AilaAuthenticationError, AilaGenerationError } from "./AilaError";
+import {
+  AilaAuthenticationError,
+  AilaError,
+  AilaGenerationError,
+} from "./AilaError";
 import { AilaFeatureFactory } from "./AilaFeatureFactory";
 import {
   AilaChatService,
@@ -184,6 +188,26 @@ export class Aila implements AilaServices {
 
   public get chatLlmService() {
     return this._chatLlmService;
+  }
+
+  public async userOwnsPersistedChat({ store }: { store: string }) {
+    const persistenceFeature = this.persistence?.find(
+      (p) => p.constructor.name === store,
+    );
+
+    if (!persistenceFeature) {
+      throw new AilaError(`Persistence feature ${store} not found`);
+    }
+
+    return persistenceFeature.userOwnsPersistedChat();
+  }
+
+  public async checkUserIdAgainstPersistedChat() {
+    if (this._chat.userId && this._userId !== this._chat.userId) {
+      throw new AilaAuthenticationError(
+        "User ID does not match the user ID of the chat",
+      );
+    }
   }
 
   // Check methods

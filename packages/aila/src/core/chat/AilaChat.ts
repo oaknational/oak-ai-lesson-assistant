@@ -5,7 +5,7 @@ import {
 } from "@oakai/core/src/utils/subjects";
 import invariant from "tiny-invariant";
 
-import { AilaChatService, AilaServices } from "../..";
+import { AilaChatService, AilaError, AilaServices } from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import {
   AilaGeneration,
@@ -248,6 +248,24 @@ export class AilaChat implements AilaChatService {
     await Promise.all(
       (this._aila.persistence ?? []).map((p) => p.upsertChat()),
     );
+  }
+
+  private async userOwnsPersistedChat({
+    persistenceFeatureName,
+  }: {
+    persistenceFeatureName: string;
+  }) {
+    const persistenceFeature = this._aila.persistence?.find(
+      (p) => p.constructor.name === persistenceFeatureName,
+    );
+
+    if (!persistenceFeature) {
+      throw new AilaError(
+        `Persistence feature ${persistenceFeatureName} not found`,
+      );
+    }
+
+    return persistenceFeature.userOwnsPersistedChat();
   }
 
   private applyEdits() {

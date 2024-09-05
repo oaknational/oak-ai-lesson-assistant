@@ -29,7 +29,7 @@ export const defaultConfig: Config = {
   prisma: globalPrisma,
   createAila: async (options) => {
     const webActionsPlugin = createWebActionsPlugin(globalPrisma);
-    return new Aila({
+    const aila = new Aila({
       ...options,
       plugins: [...(options.plugins || []), webActionsPlugin],
       prisma: options.prisma ?? globalPrisma,
@@ -39,5 +39,38 @@ export const defaultConfig: Config = {
         isShared: false,
       },
     });
+
+    console.log(`
+      
+      
+      LOADING CHAT .....
+      
+
+
+
+      
+      
+      
+      `);
+
+    await aila.userOwnsPersistedChat({ store: "AilaPrismaPersistence" });
+
+    console.log(`
+      
+      
+      
+      
+      
+      LOADED CHAT .....
+      
+      
+      
+      
+      
+      
+      
+      `);
+
+    return aila;
   },
 };

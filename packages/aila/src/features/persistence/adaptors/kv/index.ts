@@ -2,7 +2,6 @@ import { kv } from "@vercel/kv";
 
 import { AilaPersistence } from "../..";
 import { AilaChatService, AilaServices } from "../../../../core";
-import { AilaGeneration } from "../../../generation";
 
 export class AilaKVPersistence extends AilaPersistence {
   constructor({ chat, aila }: { chat: AilaChatService; aila: AilaServices }) {
@@ -24,8 +23,10 @@ export class AilaKVPersistence extends AilaPersistence {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async upsertGeneration(generation?: AilaGeneration): Promise<void> {
-    // Not implemented;
+  async upsertGeneration(): Promise<void> {
+    throw new Error("Not implemented");
+  }
+  async userOwnsPersistedChat(): Promise<null> {
+    throw new Error("Not implemented");
   }
 }

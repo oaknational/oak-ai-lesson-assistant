@@ -3,7 +3,7 @@ import invariant from "tiny-invariant";
 
 import { AilaChatService, AilaError, AilaServices, Message } from "../../core";
 import { AilaOptionsWithDefaultFallbackValues } from "../../core/types";
-import { LooseLessonPlan } from "../../protocol/schema";
+import { AilaPersistedChat, LooseLessonPlan } from "../../protocol/schema";
 import { AilaGeneration } from "../generation";
 
 export abstract class AilaPersistence {
@@ -108,6 +108,7 @@ export abstract class AilaPersistence {
     return payload;
   }
 
+  abstract userOwnsPersistedChat(): Promise<AilaPersistedChat | null>;
   abstract upsertChat(): Promise<void>;
   abstract upsertGeneration(generation?: AilaGeneration): Promise<void>;
 }

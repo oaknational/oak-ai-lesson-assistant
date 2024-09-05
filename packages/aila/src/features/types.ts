@@ -1,7 +1,7 @@
 import { Message } from "../core/chat";
 import { AilaPluginContext } from "../core/plugins";
 import { ModerationDocument } from "../protocol/jsonPatchProtocol";
-import { LooseLessonPlan } from "../protocol/schema";
+import { AilaPersistedChat, LooseLessonPlan } from "../protocol/schema";
 import { AilaErrorBreadcrumb, AilaErrorSeverity } from "./errorReporting/types";
 import { AilaGeneration } from "./generation";
 import { AilaThreatDetector } from "./threatDetection";
@@ -23,6 +23,8 @@ export interface AilaAnalyticsFeature {
 }
 
 export interface AilaPersistenceFeature {
+  name: string;
+  userOwnsPersistedChat(): Promise<AilaPersistedChat | null>;
   upsertChat(): Promise<void>;
   upsertGeneration(generation?: AilaGeneration): Promise<void>;
 }
