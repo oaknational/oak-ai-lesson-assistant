@@ -76,7 +76,6 @@ describe("AilaModeration", () => {
         id: "123",
         userId: "456",
         messages,
-        isShared: false,
       };
       const lessonPlan = {};
 
@@ -111,7 +110,6 @@ describe("AilaModeration", () => {
         id: "123",
         userId: "456",
         messages,
-        isShared: false,
       };
       const lessonPlan = {};
 
@@ -143,7 +141,6 @@ describe("AilaModeration", () => {
         id: "123",
         userId: "456",
         messages,
-        isShared: false,
       };
 
       const lessonPlan = {};
@@ -180,7 +177,6 @@ describe("AilaModeration", () => {
         id: "123",
         userId: "456",
         messages,
-        isShared: false,
       };
       const moderations = {
         create: jest.fn((mod) => ({ id: "ABC", ...mod })),
