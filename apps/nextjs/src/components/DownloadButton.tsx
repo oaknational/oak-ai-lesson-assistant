@@ -46,7 +46,7 @@ export const DownloadButton = ({
 
   const { icon, ext, analyticsResourceType } = getExportsConfig(exportsType);
 
-  const { mutateAsync, isLoading } =
+  const { isSuccess, mutateAsync, isLoading } =
     trpc.exports.sendUserExportLink.useMutation();
 
   function trackDownload(resourceFileType: ResourceFileTypeValueType) {
@@ -124,9 +124,14 @@ export const DownloadButton = ({
             });
           }}
         >
-          {isLoading ? <LoadingWheel /> : <Icon icon="external" size="sm" />}
+          {handleSendEmailIcon({ isSuccess, isLoading })}
           <div className="flex flex-col gap-6">
-            <span className="text-left font-bold">Email me {ext}</span>
+            <span className="text-left font-bold">
+              Email me {ext} {isSuccess && `- Email sent`}{" "}
+              {typeof isSuccess !== undefined &&
+                !isSuccess &&
+                `- There was an error sending the email!`}
+            </span>
             <span className="text-left opacity-80">
               Google account needed for this option
             </span>
@@ -217,4 +222,21 @@ function handleIcon({
     );
   }
   return null;
+}
+
+function handleSendEmailIcon({
+  isSuccess,
+  isLoading,
+}: {
+  isSuccess: boolean | undefined;
+  isLoading: boolean;
+}) {
+  if (isLoading) {
+    return <LoadingWheel />;
+  } else if (isSuccess) {
+    return <Icon icon="tick" size="sm" />;
+  } else if (typeof isSuccess !== undefined && !isSuccess) {
+    return <Icon icon="cross" size="sm" />;
+  }
+  return <Icon icon="external" size="sm" />;
 }
