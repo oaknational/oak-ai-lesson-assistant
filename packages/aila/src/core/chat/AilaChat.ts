@@ -5,7 +5,7 @@ import {
 } from "@oakai/core/src/utils/subjects";
 import invariant from "tiny-invariant";
 
-import { AilaChatService, AilaServices } from "../..";
+import { AilaChatService, AilaError, AilaServices } from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import {
   AilaGeneration,
@@ -261,46 +261,10 @@ export class AilaChat implements AilaChatService {
     );
 
     if (!persistenceFeature) {
-      console.log(this._aila.persistence);
-      return;
-      // @todo throw if not found
-      // throw new AilaError(`Persistence feature ${store} not found`);
+      throw new AilaError(`Persistence feature ${store} not found`);
     }
 
     const persistedChat = await persistenceFeature.loadChat();
-
-    console.log(`
-      
-
-
-
-
-
-
-
-
-      
-      
-      LOADED CHAT
-      
-      
-      ${JSON.stringify(persistedChat)}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-      `);
 
     if (persistedChat) {
       this._isShared = persistedChat.isShared;

@@ -36,7 +36,6 @@ export abstract class AilaPersistence {
   protected createChatPayload(): ChatPersistencePayload {
     const { id, userId, messages, isShared } = this._chat;
 
-    console.log("this._chat.isShared", this._chat.isShared);
     invariant(userId, "userId is required for chat persistence");
 
     const { lesson, options } = this._aila;
