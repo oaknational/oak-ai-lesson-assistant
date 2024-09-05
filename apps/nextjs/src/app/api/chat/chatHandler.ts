@@ -12,7 +12,7 @@ import {
 } from "@oakai/core/src/tracing/serverTracing";
 import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
 import { StreamingTextResponse } from "ai";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
 
 import { Config } from "./config";
