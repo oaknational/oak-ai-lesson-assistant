@@ -50,6 +50,10 @@ const devConsentPolicies =
       }
     : {};
 
+const mux = {
+  "connect-src": ["https://mux.com", "https://*.mux.com"],
+};
+
 const vercelPolicies =
   process.env.VERCEL_ENV === "preview"
     ? {
@@ -131,6 +135,9 @@ const buildCspHeaders = (nonce: string) => {
       }
       if (devConsentPolicies[policy]) {
         value.push(...devConsentPolicies[policy]);
+      }
+      if (mux[policy]) {
+        value.push(...mux[policy]);
       }
       return `${policy} ${value.join(" ")}`;
     })
