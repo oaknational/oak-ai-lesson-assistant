@@ -37,7 +37,7 @@ export const metadata: Metadata = {
 };
 
 const StyledMuxPlayer = styled(MuxPlayer)`
-  width: 700px;
+  width: 600px;
   height: 334px;
   @media (max-width: 1000px) {
     width: 100%;
