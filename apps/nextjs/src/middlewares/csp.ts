@@ -86,6 +86,7 @@ const buildCspHeaders = (nonce: string) => {
 
   const baseCsp = {
     "default-src": ["'self'"],
+    "media-src": ["'self'"],
     "script-src": [
       "'self'",
       `'nonce-${nonce}'`,
@@ -120,6 +121,7 @@ const buildCspHeaders = (nonce: string) => {
       "'self'",
       "*.thenational.academy",
       "https://challenges.cloudflare.com",
+      "https://*.mux.com",
     ],
     "form-action": ["'self'"],
     "frame-ancestors": ["'none'"],
