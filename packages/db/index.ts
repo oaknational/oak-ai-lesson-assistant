@@ -1,13 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 
-export const extendedPrisma = new PrismaClient({
-  log:
-    process.env.NODE_ENV === "development"
-      ? ["query", "error", "warn"]
-      : ["error"],
-}).$extends(withAccelerate());
+const createPrismaClient = () =>
+  new PrismaClient({
+    log:
+      process.env.NODE_ENV === "development"
+        ? ["query", "error", "warn"]
+        : ["error"],
+  }).$extends(withAccelerate());
 
+// Create an instance to extract the type
+const extendedPrisma = createPrismaClient();
 export type PrismaClientWithAccelerate = typeof extendedPrisma;
 
 declare global {
@@ -16,14 +19,19 @@ declare global {
   var prisma: PrismaClientWithAccelerate | undefined;
 }
 
-export * from "@prisma/client";
+let prisma: PrismaClientWithAccelerate;
 
-export * from "./prisma/zod-schemas";
-export * from "./schemas";
-
-if (process.env.NODE_ENV !== "production") {
-  global.prisma = extendedPrisma;
+if (process.env.NODE_ENV === "production") {
+  prisma = createPrismaClient();
+} else {
+  if (!global.prisma) {
+    global.prisma = createPrismaClient();
+  }
+  prisma = global.prisma;
 }
 
-export const prisma: PrismaClientWithAccelerate =
-  global.prisma ?? extendedPrisma;
+export { prisma };
+
+export * from "@prisma/client";
+export * from "./prisma/zod-schemas";
+export * from "./schemas";
