@@ -30,7 +30,7 @@ export class PatchEnqueuer {
         throw new Error("Controller not set");
       }
       const patch = this.createPatch(path, value);
-      const encodedPatch = this.encoder.encode(this.formatPatch(patch));
+      const encodedPatch = this.formatPatch(patch);
       try {
         this.controller.enqueue(encodedPatch);
       } catch (error) {
@@ -45,7 +45,7 @@ export class PatchEnqueuer {
       if (!this.controller) {
         throw new Error("Controller not set");
       }
-      const encodedMessage = this.encoder.encode(this.formatPatch(message));
+      const encodedMessage = this.formatPatch(message);
       this.controller.enqueue(encodedMessage);
     });
   }

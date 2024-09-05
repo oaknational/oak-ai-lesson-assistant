@@ -1,4 +1,4 @@
-import { createOpenAI } from "@ai-sdk/openai";
+import { createOpenAI, OpenAIProvider } from "@ai-sdk/openai";
 import { ChatOpenAI as LangchainChatOpenAI } from "langchain/chat_models/openai";
 import { BaseLLMParams } from "langchain/llms/base";
 import {
@@ -6,6 +6,7 @@ import {
   OpenAIInput,
   OpenAI as OpenAILangchain,
 } from "langchain/llms/openai";
+import OpenAI from "openai";
 import { ClientOptions } from "openai";
 
 import { HeliconeChatMeta, heliconeHeaders } from "./helicone";
@@ -19,7 +20,18 @@ export type CreateOpenAIClientProps =
       app: "legacy-lesson-planner" | "image-alt-text";
     };
 
-function createOpenAIClient(props: CreateOpenAIClientProps) {
+function createOpenAIClient(props: CreateOpenAIClientProps): OpenAI {
+  const openAiFields: ClientOptions = {
+    apiKey: process.env.OPENAI_API_KEY,
+    baseURL: process.env.HELICONE_EU_HOST,
+    defaultHeaders: {
+      ...heliconeHeaders(props),
+    },
+  };
+  return new OpenAI(openAiFields);
+}
+
+function createOpenAIProvider(props: CreateOpenAIClientProps): OpenAIProvider {
   const headers = heliconeHeaders(props);
   return createOpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -32,11 +44,12 @@ function createOpenAIClient(props: CreateOpenAIClientProps) {
 // The helicone proxy throws a 500: "Failed to parse the latest message" error
 // on moderations.create calls. Use openAI directly for these
 function createOpenAIModerationsClient() {
-  return createOpenAI({
+  const openAiFields = {
     apiKey: process.env.OPENAI_API_KEY,
     baseURL: process.env.OPENAI_MODERATIONS_API_BASE,
-    compatibility: "strict",
-  });
+  };
+  const openAi = new OpenAI(openAiFields);
+  return openAi.moderations;
 }
 
 function createOpenAILangchainClient({
@@ -85,6 +98,7 @@ function createOpenAILangchainChatClient({
 
 export {
   createOpenAIClient,
+  createOpenAIProvider,
   createOpenAIModerationsClient,
   createOpenAILangchainClient,
   createOpenAILangchainChatClient,

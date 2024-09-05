@@ -4,6 +4,7 @@ import {
   subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
 import invariant from "tiny-invariant";
+import { ZodSchema } from "zod";
 
 import { AilaChatService, AilaServices } from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
@@ -90,13 +91,12 @@ export class AilaChat implements AilaChatService {
     this._messages.push(message);
   }
 
-  public async appendChunk(value?: Uint8Array) {
+  public async appendChunk(value?: string) {
     invariant(this._chunks, "Chunks not initialised");
     if (!value) {
       return;
     }
-    const decoded = new TextDecoder().decode(value);
-    this._chunks.push(decoded);
+    this._chunks.push(value);
   }
 
   public async generationFailed(error: unknown) {
@@ -284,6 +284,18 @@ export class AilaChat implements AilaChatService {
   public async createChatCompletionStream(messages: Message[]) {
     return this._llmService.createChatCompletionStream({
       model: this._aila.options.model ?? DEFAULT_MODEL,
+      messages,
+      temperature: this._aila.options.temperature ?? DEFAULT_TEMPERATURE,
+    });
+  }
+
+  public async createChatCompletionObjectStream(
+    messages: Message[],
+    schema: ZodSchema,
+  ) {
+    return this._llmService.createChatCompletionObjectStream({
+      model: this._aila.options.model ?? DEFAULT_MODEL,
+      schema,
       messages,
       temperature: this._aila.options.temperature ?? DEFAULT_TEMPERATURE,
     });

@@ -172,7 +172,7 @@ export function ChatProvider({
       Sentry.captureException(new Error("Use chat error"), {
         extra: { originalError: error },
       });
-      console.error("UseChat error", { error });
+      console.error("UseChat error", { error, messages });
       setHasFinished(true);
     },
     onResponse(response) {
@@ -303,7 +303,13 @@ export function ChatProvider({
       });
       shouldTrackStreamFinished.current = false;
     }
-  }, [hasFinished, messages, setLessonPlanWithLogging, lessonPlanTracking]);
+  }, [
+    hasFinished,
+    messages,
+    setLessonPlanWithLogging,
+    lessonPlanTracking,
+    //lessonPlan, Deliberately do not add this dependency
+  ]);
 
   /**
    * Get the sensitive moderation id and pass to dialog

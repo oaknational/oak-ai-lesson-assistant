@@ -12,7 +12,7 @@ import {
 } from "@oakai/core/src/tracing/serverTracing";
 import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
 import { StreamingTextResponse } from "ai";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import invariant from "tiny-invariant";
 
 import { Config } from "./config";
@@ -179,7 +179,14 @@ async function generateChatStream(
     async () => {
       invariant(aila, "Aila instance is required");
       const result = await aila.generate({ abortController });
-      return result;
+      const transformStream = new TransformStream({
+        transform(chunk, controller) {
+          const formattedChunk = `0:${JSON.stringify(chunk)}\n`;
+          controller.enqueue(formattedChunk);
+        },
+      });
+
+      return result.pipeThrough(transformStream);
     },
   );
 }

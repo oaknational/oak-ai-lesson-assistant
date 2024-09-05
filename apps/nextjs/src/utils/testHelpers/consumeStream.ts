@@ -6,7 +6,7 @@ export async function consumeStream(stream: ReadableStream): Promise<string> {
     const { value, done } = await reader.read();
     if (done) break;
     if (value) {
-      result += new TextDecoder().decode(value);
+      result += value;
     }
   }
 
