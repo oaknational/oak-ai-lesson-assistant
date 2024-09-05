@@ -97,7 +97,6 @@ export function ChatMessage({
         <MessageWrapper errorType="moderation" type={getAvatarType()}>
           <MessageTextWrapper>
             <aside className="pt-3 text-sm">
-              <span className="font-bold">Sensitive content:</span> View{" "}
               <a
                 href="#"
                 onClick={() => {
@@ -108,7 +107,7 @@ export function ChatMessage({
                 }}
                 className="underline"
               >
-                content guidance
+                View content guidance
               </a>
             </aside>
           </MessageTextWrapper>
