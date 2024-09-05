@@ -33,7 +33,10 @@ export const defaultConfig: Config = {
       ...options,
       plugins: [...(options.plugins || []), webActionsPlugin],
       prisma: options.prisma ?? globalPrisma,
-      chat: options.chat || { id: nanoid(), userId: undefined },
+      chat: options.chat || {
+        id: nanoid(),
+        userId: undefined,
+      },
     });
   },
 };
