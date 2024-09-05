@@ -355,7 +355,6 @@ export class AilaChat implements AilaChatService {
   }
 
   public async setupGeneration() {
-    await this.loadChat({ store: "AilaPrismaPersistence" });
     await this.startNewGeneration();
     await this.persistChat();
     await this.persistGeneration("REQUESTED");

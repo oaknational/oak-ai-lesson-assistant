@@ -38,13 +38,9 @@ export class AilaPrismaPersistence extends AilaPersistence {
       },
     });
 
-    console.log("appSession", appSession?.id, appSession?.userId);
-
     if (!appSession) {
       return null;
     }
-
-    console.log("userId", userId);
 
     if (userId && userId !== appSession.userId) {
       throw new AilaAuthenticationError("User not authorised to access chat");
