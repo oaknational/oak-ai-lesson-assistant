@@ -200,6 +200,12 @@
         "title": "Encouragement of Violence",
         "userDescription": "encouragement of violence",
         "llmDescription": "Encouragement of violence"
+      },
+      {
+        "code": "t/dummy-smoke-test",
+        "title": "",
+        "userDescription": "",
+        "llmDescription": "no content matches this category"
       }
     ]
   }

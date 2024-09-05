@@ -2,15 +2,6 @@ import moderationCategories from "./moderationCategories.json";
 import { ModerationBase, ModerationResult } from "./moderationSchema";
 
 export function isToxic(result: ModerationBase): boolean {
-  // FIX: Sometimes the LLM returns all available categories. Until we fix this edge case, we can assume it's not toxic'
-  const allCategoryCount = moderationCategories.reduce(
-    (acc, category) => acc + category.categories.length,
-    0,
-  );
-  if (result.categories.length === allCategoryCount) {
-    return false;
-  }
-
   return result.categories.some((category) =>
     typeof category === "string" ? category.startsWith("t/") : false,
   );
