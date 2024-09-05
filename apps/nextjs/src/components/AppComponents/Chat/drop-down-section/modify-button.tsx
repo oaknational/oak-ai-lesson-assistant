@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
 
 import type { AilaUserModificationAction } from "@oakai/db";
-import { OakBox, OakRadioGroup } from "@oaknational/oak-components";
+import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
+import { TextArea } from "@radix-ui/themes";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { trpc } from "@/utils/trpc";
@@ -27,6 +28,7 @@ const ModifyButton = ({
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [userFeedbackText, setUserFeedbackText] = useState("");
   const [selectedRadio, setSelectedRadio] =
     useState<FeedbackOption<AilaUserModificationAction> | null>(null);
 
@@ -57,7 +59,7 @@ const ModifyButton = ({
   ) {
     await Promise.all([
       append({
-        content: `For the ${section}, ${option.label}`,
+        content: `For the ${section}, ${option.label === "Other" ? userFeedbackText : option.label}`,
         role: "user",
       }),
       recordUserModifySectionContent(),
@@ -89,17 +91,31 @@ const ModifyButton = ({
             $gap="space-between-s"
             $background="white"
           >
-            {modifyOptions.map((option) => (
-              <SmallRadioButton
-                id={`${id}-modify-options-${option.enumValue}`}
-                key={`${id}-modify-options-${option.enumValue}`}
-                value={option.enumValue}
-                label={option.label}
-                onClick={() => {
-                  setSelectedRadio(option);
-                }}
-              />
-            ))}
+            {modifyOptions.map((option) => {
+              console.log("selectedRadio", selectedRadio);
+              return (
+                <>
+                  <SmallRadioButton
+                    id={`${id}-modify-options-${option.enumValue}`}
+                    key={`${id}-modify-options-${option.enumValue}`}
+                    value={option.enumValue}
+                    label={option.label}
+                    onClick={() => {
+                      setSelectedRadio(option);
+                    }}
+                  />
+                </>
+              );
+            })}
+
+            {selectedRadio?.label === "Other" && (
+              <>
+                <OakP $font="body-3">Provide details below:</OakP>
+                <TextArea
+                  onChange={(e) => setUserFeedbackText(e.target.value)}
+                />
+              </>
+            )}
           </OakRadioGroup>
         </DropDownFormWrapper>
       )}
