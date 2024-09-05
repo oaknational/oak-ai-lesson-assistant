@@ -56,13 +56,12 @@ const mux = {
     "https://mux.com",
     "https://*.mux.com",
     "https://stream.mux.com",
-    "https://*.litix.io",
   ],
   "connect-src": [
     "https://mux.com",
     "https://*.mux.com",
     "https://stream.mux.com",
-    "https://*.litix.io",
+    "https://inferred.litix.io",
   ],
   "img-src": ["https://*.mux.com", "https://stream.mux.com"],
   "style-src": ["https://*.mux.com"],
@@ -70,11 +69,10 @@ const mux = {
     "'self'",
     "https://*.mux.com",
     "https://stream.mux.com",
-    "https://*.litix.io",
-    "https://*.litix.io",
+
     "blob:",
   ],
-  "frame-src": ["https://stream.mux.com", "https://*.litix.io"],
+  "frame-src": ["https://stream.mux.com"],
 };
 
 const vercelPolicies =
