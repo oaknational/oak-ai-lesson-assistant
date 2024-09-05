@@ -130,7 +130,10 @@ export const DownloadButton = ({
           {handleSendEmailIcon({ sendUserExportLinkSent, isLoading })}
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
-              Email me {ext} {!!sendUserExportLinkSent && `- Email sent`}
+              Email me {ext} {!!sendUserExportLinkSent && `- Email sent`}{" "}
+              {typeof sendUserExportLinkSent !== undefined &&
+                !sendUserExportLinkSent &&
+                `- There was an error sending the email!`}
             </span>
             <span className="text-left opacity-80">
               Google account needed for this option
@@ -235,6 +238,11 @@ function handleSendEmailIcon({
     return <LoadingWheel />;
   } else if (sendUserExportLinkSent) {
     return <Icon icon="tick" size="sm" />;
+  } else if (
+    typeof sendUserExportLinkSent !== undefined &&
+    !sendUserExportLinkSent
+  ) {
+    return <Icon icon="cross" size="sm" />;
   }
   return <Icon icon="external" size="sm" />;
 }
