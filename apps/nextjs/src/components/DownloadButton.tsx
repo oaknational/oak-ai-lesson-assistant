@@ -46,8 +46,11 @@ export const DownloadButton = ({
 
   const { icon, ext, analyticsResourceType } = getExportsConfig(exportsType);
 
-  const { mutateAsync, isLoading } =
-    trpc.exports.sendUserExportLink.useMutation();
+  const {
+    data: sendUserExportLinkSent,
+    mutateAsync,
+    isLoading,
+  } = trpc.exports.sendUserExportLink.useMutation();
 
   function trackDownload(resourceFileType: ResourceFileTypeValueType) {
     track.lessonPlanResourcesDownloaded({
@@ -124,9 +127,11 @@ export const DownloadButton = ({
             });
           }}
         >
-          {isLoading ? <LoadingWheel /> : <Icon icon="external" size="sm" />}
+          {handleSendEmailIcon({ sendUserExportLinkSent, isLoading })}
           <div className="flex flex-col gap-6">
-            <span className="text-left font-bold">Email me {ext}</span>
+            <span className="text-left font-bold">
+              Email me {ext} {!!sendUserExportLinkSent && `- Email sent`}
+            </span>
             <span className="text-left opacity-80">
               Google account needed for this option
             </span>
@@ -217,4 +222,19 @@ function handleIcon({
     );
   }
   return null;
+}
+
+function handleSendEmailIcon({
+  sendUserExportLinkSent,
+  isLoading,
+}: {
+  sendUserExportLinkSent: boolean | undefined;
+  isLoading: boolean;
+}) {
+  if (isLoading) {
+    return <LoadingWheel />;
+  } else if (sendUserExportLinkSent) {
+    return <Icon icon="tick" size="sm" />;
+  }
+  return <Icon icon="external" size="sm" />;
 }
