@@ -1015,8 +1015,7 @@ You can use the following link to copy the lesson resources ${title.toLowerCase(
 We hope the lesson goes well for you and your class. If you have any feedback for us, please let us know. You can simply reply to this email.
 
 Aila,
-Oak National Academy
-        `,
+Oak National Academy`,
         });
 
         return emailSent ? true : false;
