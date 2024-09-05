@@ -269,6 +269,39 @@ export class AilaChat implements AilaChatService {
 
     const persistedChat = await persistenceFeature.loadChat();
 
+    console.log(`
+      
+
+
+
+
+
+
+
+
+      
+      
+      LOADED CHAT
+      
+      
+      ${JSON.stringify(persistedChat)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+      `);
+
     if (persistedChat) {
       this._isShared = persistedChat.isShared;
     }

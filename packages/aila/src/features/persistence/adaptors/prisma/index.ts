@@ -69,7 +69,9 @@ export class AilaPrismaPersistence extends AilaPersistence {
         appId: "lesson-planner",
         output: payload,
       },
-      update: { output: payload },
+      update: {
+        output: payload,
+      },
     });
   }
 
