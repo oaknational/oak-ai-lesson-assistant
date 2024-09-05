@@ -94,6 +94,13 @@ export class OpenAiModerator extends AilaModerator {
       });
       throw new AilaModerationError(`No moderation response`);
     }
+
+    // FIX: Sometimes the LLM incorrectly flags all available categories.
+    // The dummy smoke test shouldn't be triggered in normal use, and indicates this bug
+    if (response.data.categories.includes("t/dummy-smoke-test")) {
+      return await this.moderate(input);
+    }
+
     return response.data;
   }
 }
