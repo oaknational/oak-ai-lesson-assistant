@@ -46,11 +46,8 @@ export const DownloadButton = ({
 
   const { icon, ext, analyticsResourceType } = getExportsConfig(exportsType);
 
-  const {
-    data: sendUserExportLinkSent,
-    mutateAsync,
-    isLoading,
-  } = trpc.exports.sendUserExportLink.useMutation();
+  const { isSuccess, mutateAsync, isLoading } =
+    trpc.exports.sendUserExportLink.useMutation();
 
   function trackDownload(resourceFileType: ResourceFileTypeValueType) {
     track.lessonPlanResourcesDownloaded({
@@ -127,12 +124,12 @@ export const DownloadButton = ({
             });
           }}
         >
-          {handleSendEmailIcon({ sendUserExportLinkSent, isLoading })}
+          {handleSendEmailIcon({ isSuccess, isLoading })}
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
-              Email me {ext} {!!sendUserExportLinkSent && `- Email sent`}{" "}
-              {typeof sendUserExportLinkSent !== undefined &&
-                !sendUserExportLinkSent &&
+              Email me {ext} {isSuccess && `- Email sent`}{" "}
+              {typeof isSuccess !== undefined &&
+                !isSuccess &&
                 `- There was an error sending the email!`}
             </span>
             <span className="text-left opacity-80">
@@ -228,20 +225,17 @@ function handleIcon({
 }
 
 function handleSendEmailIcon({
-  sendUserExportLinkSent,
+  isSuccess,
   isLoading,
 }: {
-  sendUserExportLinkSent: boolean | undefined;
+  isSuccess: boolean | undefined;
   isLoading: boolean;
 }) {
   if (isLoading) {
     return <LoadingWheel />;
-  } else if (sendUserExportLinkSent) {
+  } else if (isSuccess) {
     return <Icon icon="tick" size="sm" />;
-  } else if (
-    typeof sendUserExportLinkSent !== undefined &&
-    !sendUserExportLinkSent
-  ) {
+  } else if (typeof isSuccess !== undefined && !isSuccess) {
     return <Icon icon="cross" size="sm" />;
   }
   return <Icon icon="external" size="sm" />;
