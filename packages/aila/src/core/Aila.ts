@@ -128,7 +128,7 @@ export class Aila implements AilaServices {
 
   private async loadChatIfPersisting() {
     if (this._options.usePersistence) {
-      return this._chat.loadChat({ store: "prisma" });
+      await this._chat.loadChat({ store: "AilaPrismaPersistence" });
     }
   }
 
