@@ -29,7 +29,7 @@ export const defaultConfig: Config = {
   prisma: globalPrisma,
   createAila: async (options) => {
     const webActionsPlugin = createWebActionsPlugin(globalPrisma);
-    const aila = new Aila({
+    return new Aila({
       ...options,
       plugins: [...(options.plugins || []), webActionsPlugin],
       prisma: options.prisma ?? globalPrisma,
@@ -38,7 +38,5 @@ export const defaultConfig: Config = {
         userId: undefined,
       },
     });
-
-    return aila;
   },
 };

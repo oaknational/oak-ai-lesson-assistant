@@ -1,9 +1,7 @@
 import { Aila } from "@oakai/aila";
 import { MockLLMService } from "@oakai/aila/src/core/llm/MockLLMService";
 import { MockCategoriser } from "@oakai/aila/src/features/categorisation/categorisers/MockCategoriser";
-import { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { mockTracer } from "@oakai/core/src/tracing/mockTracer";
-import { prisma } from "@oakai/db";
 import { NextRequest } from "next/server";
 
 import { consumeStream } from "../../../utils/testHelpers/consumeStream";
@@ -14,17 +12,6 @@ import { Config } from "./config";
 const chatId = "test-chat-id";
 const userId = "test-user-id";
 
-const persistedChat: AilaPersistedChat = {
-  id: chatId,
-  userId,
-  messages: [],
-  isShared: false,
-  path: "",
-  title: "",
-  lessonPlan: {},
-  createdAt: new Date(),
-};
-
 describe("Chat API Route", () => {
   let testConfig: Config;
   let mockLLMService: MockLLMService;
@@ -32,9 +19,6 @@ describe("Chat API Route", () => {
   beforeEach(() => {
     mockTracer.reset();
     jest.clearAllMocks();
-    jest
-      .spyOn(prisma.appSession, "findFirst")
-      .mockResolvedValue({ output: persistedChat });
 
     mockChatCategoriser = new MockCategoriser({
       mockedLessonPlan: {
@@ -78,10 +62,6 @@ describe("Chat API Route", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       prisma: {} as any,
     };
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
   });
 
   it("should create correct telemetry spans for a successful chat request", async () => {
