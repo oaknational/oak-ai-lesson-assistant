@@ -51,6 +51,7 @@ const devConsentPolicies =
     : {};
 
 const mux = {
+  "script-src": ["https://cdn.mux.com", "https://mux.com", "https://*.mux.com"],
   "connect-src": ["https://mux.com", "https://*.mux.com"],
 };
 
