@@ -5,12 +5,7 @@ import {
 } from "@oakai/core/src/utils/subjects";
 import invariant from "tiny-invariant";
 
-import {
-  AilaAuthenticationError,
-  AilaChatService,
-  AilaError,
-  AilaServices,
-} from "../..";
+import { AilaChatService, AilaServices } from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import {
   AilaGeneration,
