@@ -107,7 +107,13 @@ const buildCspHeaders = (nonce: string) => {
       "https://*.hubspot.com",
       "https://*.hsforms.com",
     ],
-    "font-src": ["'self'", "gstatic-fonts.thenational.academy"],
+    "font-src": [
+      "'self'",
+      // Oak font subdomain
+      "gstatic-fonts.thenational.academy",
+      // Google fonts used by third party tools
+      "fonts.gstatic.com",
+    ],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
     "frame-src": [
