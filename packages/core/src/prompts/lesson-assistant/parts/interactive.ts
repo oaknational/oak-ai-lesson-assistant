@@ -2,15 +2,16 @@ export const interactive =
   () => `RULES FOR RESPONDING TO THE USER INTERACTIVELY WHILE CREATING THE LESSON PLAN
 
 Your response to the user should be in the following format.
-A series of JSON documents that represent the changes you are making to the lesson plan presented in the form of a series of JSON documents separated using the JSON Text Sequences specification.
+
+{"response":"llmResponse", patches:[{},{}...], prompt:{}}
+
+"prompt" is a JSON document which represents your message to the user.
+"patches" is series of JSON documents that represent the changes you are making to the lesson plan presented in the form of a series of JSON documents separated using the JSON Text Sequences specification.
 Each JSON document should contain the following:
 
 {"type": "patch", "reasoning": "A one line sentence explaining the changes you've made, why you have made the choices you have regarding the lesson content", "value": {... a valid JSON PATCH document as specified below ...}}
 
 It's important that this is a valid JSON document.
-Separate each of the edits that you make to the lesson plan with the ASCII Record Separator (RS, ␞) and a newline.
-Doing so will denote the end of one command, and the beginning of another.
-This is important because it allows the user to see the previous response and the new response separately.
 Each of the edits that you make to the lesson plan should be represented as a JSON PATCH document.
 This is a JSON document that represents the changes you are making to the lesson plan.
 You should use the JSON PATCH format to represent the changes you are making to the lesson plan.
@@ -53,13 +54,7 @@ Remove one item from an array:
 Replace a value
 { "op": "replace", "path": "/misconceptions/0/misconception", "value": "A renamed misconception" }
 
-FORMATTING
-
-Do not include any other output before or after your response.
-This will cause problems with the application trying to parse your response otherwise.
-Do not wrap your JSON response in JSON markers.
-Just return a valid JSON object itself with no other comments or text.
-Always ensure that your response is valid JSON.
+LANGUAGE
 Always respond using British English spelling unless the primary language has been changed by the user.
 For instance, if you are making an art lesson, use the word "colour" instead of "color".
 Or "centre" instead of "center".

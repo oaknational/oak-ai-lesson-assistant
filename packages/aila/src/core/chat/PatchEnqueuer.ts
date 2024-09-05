@@ -24,7 +24,10 @@ export class PatchEnqueuer {
     return this.enqueuePromise;
   }
 
-  public enqueuePatch(path: string, value: unknown): Promise<void> {
+  public enqueuePatch(
+    path: string,
+    value: string | number | string[] | object,
+  ): Promise<void> {
     return this.enqueueOperation(() => {
       if (!this.controller) {
         throw new Error("Controller not set");
@@ -50,7 +53,10 @@ export class PatchEnqueuer {
     });
   }
 
-  private createPatch(path: string, value: unknown): JsonPatchDocumentOptional {
+  private createPatch(
+    path: string,
+    value: string | number | string[] | object,
+  ): JsonPatchDocumentOptional {
     return {
       type: "patch",
       reasoning: "generated",

@@ -39,12 +39,15 @@ export class OpenAIService implements LLMService {
   async createChatCompletionObjectStream(params: {
     model: string;
     schema: ZodSchema;
+    schemaName: string;
     messages: Message[];
     temperature: number;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }): Promise<AsyncIterable<any>> {
-    const { partialObjectStream: stream } = await streamObject({
-      model: this._openAIProvider(params.model),
+  }): Promise<ReadableStreamDefaultReader<string>> {
+    console.log("Stream object");
+    const { textStream: stream } = await streamObject({
+      model: this._openAIProvider(params.model, { structuredOutputs: true }),
+      output: "object",
       schema: params.schema,
       messages: params.messages.map((m) => ({
         role: m.role,
@@ -53,6 +56,6 @@ export class OpenAIService implements LLMService {
       temperature: params.temperature,
     });
 
-    return stream;
+    return stream.getReader();
   }
 }

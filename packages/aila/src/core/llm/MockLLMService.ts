@@ -32,21 +32,20 @@ export class MockLLMService implements LLMService {
     });
     return stream.getReader();
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async createChatCompletionObjectStream(): Promise<AsyncIterable<any>> {
-    const obj = this.responseObject;
-    return {
-      async *[Symbol.asyncIterator]() {
-        const keys = Object.keys(obj);
-        const partialObject: Record<string, unknown> = {};
-
-        for (const key of keys) {
-          partialObject[key] = obj[key];
-          yield partialObject;
-          await new Promise((resolve) => setTimeout(resolve, 100));
+  async createChatCompletionObjectStream(): Promise<
+    ReadableStreamDefaultReader<string>
+  > {
+    const responseChunks = this.responseChunks;
+    const stream = new ReadableStream({
+      async start(controller) {
+        for (const chunk of responseChunks) {
+          controller.enqueue(chunk);
+          await new Promise((resolve) => setTimeout(resolve, 4));
         }
+        controller.close();
       },
-    };
+    });
+    return stream.getReader();
   }
 
   setResponse(chunks: string[]) {

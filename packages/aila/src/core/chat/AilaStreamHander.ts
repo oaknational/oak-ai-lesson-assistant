@@ -76,7 +76,8 @@ export class AilaStreamHandler {
 
   private async startLLMStream() {
     const messages = await this._chat.completionMessages();
-    this._streamReader = await this._chat.createChatCompletionStream(messages);
+    this._streamReader =
+      await this._chat.createChatCompletionObjectStream(messages);
     this._isStreaming = true;
   }
 

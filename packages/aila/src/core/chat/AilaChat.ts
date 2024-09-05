@@ -4,7 +4,8 @@ import {
   subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
 import invariant from "tiny-invariant";
-import { ZodSchema } from "zod";
+import { z } from "zod";
+import { zodToJsonSchema } from "zod-to-json-schema";
 
 import { AilaChatService, AilaServices } from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
@@ -13,7 +14,11 @@ import {
   AilaGenerationStatus,
 } from "../../features/generation";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
-import { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
+import {
+  JsonPatchDocumentOptional,
+  LLMPatchDocumentSchema,
+  TextDocumentSchema,
+} from "../../protocol/jsonPatchProtocol";
 import { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
@@ -197,7 +202,10 @@ export class AilaChat implements AilaChatService {
     await this._patchEnqueuer.enqueueMessage(message);
   }
 
-  public async enqueuePatch(path: string, value: unknown) {
+  public async enqueuePatch(
+    path: string,
+    value: string | string[] | number | object,
+  ) {
     await this._patchEnqueuer.enqueuePatch(path, value);
   }
 
@@ -289,13 +297,27 @@ export class AilaChat implements AilaChatService {
     });
   }
 
-  public async createChatCompletionObjectStream(
-    messages: Message[],
-    schema: ZodSchema,
-  ) {
+  public async createChatCompletionObjectStream(messages: Message[]) {
+    const schema = z.object({
+      type: z.literal("llmResponse"),
+      patches: z
+        .array(LLMPatchDocumentSchema)
+        .describe(
+          "This is the set of patches you have generated to edit the lesson plan.",
+        ),
+      prompt: TextDocumentSchema.describe(
+        "If you imagine the user talking to you, this is where you would put your human-readable reply that would explain the changes you have made (if any), ask them questions, and prompt them to send their next message. This should not contain any of the lesson plan content. That should all be delivered in patches.",
+      ),
+    });
+
+    const jsonSchema = zodToJsonSchema(schema);
+    console.log("JSON Schema");
+    console.log(JSON.stringify(jsonSchema, null, 2));
+
     return this._llmService.createChatCompletionObjectStream({
       model: this._aila.options.model ?? DEFAULT_MODEL,
       schema,
+      schemaName: "response",
       messages,
       temperature: this._aila.options.temperature ?? DEFAULT_TEMPERATURE,
     });

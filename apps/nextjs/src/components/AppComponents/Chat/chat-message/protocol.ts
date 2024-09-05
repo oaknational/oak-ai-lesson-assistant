@@ -58,7 +58,8 @@ export function parseMessageParts(content: string): MessagePart[] {
     id: MessageIdDocumentSchema,
   };
 
-  const parts = extractMessageParts(content)
+  const extracted = extractMessageParts(content);
+  const parts = extracted
     .filter((line) => line.length > 15) // Strips out streaming / empty lines from the protocol
     .map((part) => parseMessagePart(part))
     .map((part) => {
@@ -95,6 +96,6 @@ export function parseMessageParts(content: string): MessagePart[] {
       return parsedDoc;
     })
     .filter((part): part is MessagePart => part !== null);
-
+  console.log("Extracted parts", parts);
   return parts;
 }

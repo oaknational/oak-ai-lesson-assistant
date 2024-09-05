@@ -12,8 +12,9 @@ export interface LLMService {
   createChatCompletionObjectStream(params: {
     model: string;
     schema: ZodSchema;
+    schemaName: string;
     messages: Message[];
     temperature: number;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }): Promise<AsyncIterable<any>>;
+  }): Promise<ReadableStreamDefaultReader<string>>;
 }

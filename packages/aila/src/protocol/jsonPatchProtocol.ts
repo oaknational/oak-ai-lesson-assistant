@@ -7,12 +7,13 @@ import {
   JsonPatchError,
 } from "fast-json-patch";
 import untruncateJson from "untruncate-json";
-import { z } from "zod";
+import { ZodError, z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 
 import {
   BasedOnOptionalSchema,
   BasedOnSchema,
+  CheckForUnderstandingOptionalSchema,
   CycleOptionalSchema,
   CycleSchema,
   KeywordsOptionalSchema,
@@ -125,14 +126,14 @@ export const JsonPatchRemoveSchema = z.object({
 export const JsonPatchAddSchema = z.object({
   op: z.literal("add"),
   path: z.string(),
-  value: z.unknown(), // TODO - Allows any value type
+  value: z.union([z.string(), z.object({}), z.number(), z.array(z.string())]), // TODO - Allows any value type
 });
 
 // Potentially remove this once stable
 export const JsonPatchReplaceSchema = z.object({
   op: z.literal("replace"),
   path: z.string(),
-  value: z.unknown(), // TODO - Allows any value type
+  value: z.union([z.string(), z.object({}), z.number(), z.array(z.string())]), // TODO - Allows any value type
 });
 
 export const JsonPatchValueSchema = z.union([
@@ -167,6 +168,18 @@ export const PatchDocumentSchema = z.object({
   value: JsonPatchValueSchema,
 });
 
+// We have a permissive type that just specifies that it is making
+// somewhat valid patches for now
+export const LLMPatchDocumentSchema = z.object({
+  type: z.literal("patch"),
+  reasoning: z.string(),
+  value: z.discriminatedUnion("op", [
+    JsonPatchAddSchema,
+    JsonPatchRemoveSchema,
+    JsonPatchReplaceSchema,
+  ]),
+});
+
 export type PatchDocument = z.infer<typeof PatchDocumentSchema>;
 
 const PatchDocumentOptionalSchema = z.object({
@@ -181,6 +194,11 @@ export const PromptDocumentSchema = z.object({
   type: z.literal("prompt"),
   message: z.string(),
   options: z.array(z.object({ id: z.string(), title: z.string() })).optional(),
+});
+
+export const PromptDocumentSchemaWithoutOptions = z.object({
+  type: z.literal("prompt"),
+  message: z.string(),
 });
 
 export type PromptDocument = z.infer<typeof PromptDocumentSchema>;
@@ -282,7 +300,7 @@ export const JsonPatchDocumentJsonSchema = zodToJsonSchema(
   "patchDocumentSchema",
 );
 
-const LLMResponseSchema = z.discriminatedUnion("type", [
+export const LLMResponseSchema = z.discriminatedUnion("type", [
   PromptDocumentSchema,
   StateDocumentSchema,
   CommentDocumentSchema,
@@ -294,12 +312,44 @@ export const LLMResponseJsonSchema = zodToJsonSchema(
 );
 
 export function extractMessageParts(message: string): string[] {
-  // Note that sometimes the LLM does not respond with the record separator
-  return message
+  const initialParts = message
     .replaceAll("\n\n{", "\n␞\n{")
     .split("␞")
     .map((r) => r.trim())
     .filter((r) => r?.length > 0);
+  const result: string[] = [];
+
+  for (const part of initialParts) {
+    if (part.startsWith("{")) {
+      try {
+        const parsed = JSON.parse(untruncateJson(part));
+        if (parsed.type === "llmResponse") {
+          // Extract patches
+          if (Array.isArray(parsed.patches)) {
+            for (const patch of parsed.patches) {
+              result.push(JSON.stringify(patch));
+            }
+          }
+          // Extract prompt
+          if (parsed.prompt) {
+            result.push(JSON.stringify(parsed.prompt));
+          }
+        } else {
+          // If it's not a jsonResponse, keep the original JSON string
+          result.push(part);
+        }
+      } catch (error) {
+        // If parsing fails, keep the original string
+        result.push(part);
+      }
+    } else {
+      // For non-JSON lines, keep them as is
+      result.push(part);
+    }
+  }
+
+  console.log("Result", result);
+  return result;
 }
 
 interface PotentialMessage {
@@ -318,12 +368,36 @@ interface PartialMessage {
       }
     | string;
 }
+
+const AnyValidDocumentSchema = z.discriminatedUnion("type", [
+  ModerationDocumentSchema,
+  ErrorDocumentSchema,
+  PatchDocumentSchema,
+  PromptDocumentSchema,
+  StateDocumentSchema,
+  CommentDocumentSchema,
+  ActionDocumentSchema,
+  TextDocumentSchema,
+  BadDocumentSchema,
+  MessageIdDocumentSchema,
+]);
+
 export function parseMessagePart(part: string): PartialMessage | undefined {
   const trimmed = part.trim();
   if (!trimmed.startsWith("{")) {
     return { type: "text", value: trimmed, isPartial: false };
   }
-  const isPartial = !trimmed.endsWith("}");
+  const isPartial = (() => {
+    try {
+      const parsed = JSON.parse(trimmed);
+      return !AnyValidDocumentSchema.safeParse(parsed).success;
+    } catch (error) {
+      return true;
+    }
+  })();
+
+  console.log("IsPartial?", isPartial, trimmed);
+
   const untruncated = untruncateJson(trimmed);
   const parsed: PotentialMessage = parseJsonSafely(untruncated);
   if (typeof parsed !== "object") {
@@ -352,6 +426,7 @@ export function extractPatches(
   validDocuments: PatchDocument[];
   partialDocuments: PatchDocument[];
 } {
+  console.log("Extract patches");
   const validDocuments: PatchDocument[] = [];
   const partialDocuments: PatchDocument[] = [];
   const parts = extractMessageParts(edit);
@@ -377,8 +452,35 @@ export function extractPatches(
         }
       }
     } catch (e) {
-      console.error("Failed to parse patch", e);
-      Sentry.captureException(e);
+      if (e instanceof ZodError) {
+        console.log(
+          "Failed to parse patch due to Zod validation errors:",
+          parsed,
+        );
+        e.errors.forEach((error, index) => {
+          console.log(`Error ${index + 1}:`);
+          console.log(`  Path: ${error.path.join(".")}`);
+          console.log(`  Message: ${error.message}`);
+          if (error.code) console.log(`  Code: ${error.code}`);
+          const errorValue = error.path.reduce(
+            // @ts-ignore
+            (obj, key) => obj && obj[key],
+            parsed,
+          );
+          console.error(`  Invalid value:`, errorValue);
+        });
+      } else {
+        console.error("Failed to parse patch:", e);
+      }
+
+      Sentry.withScope(function (scope) {
+        scope.setLevel("error");
+        if (e instanceof ZodError) {
+          scope.setExtra("zodErrors", e.errors);
+        }
+        scope.setExtra("parsedData", parsed);
+        Sentry.captureException(e);
+      });
     }
   }
 
@@ -418,7 +520,7 @@ export function applyLessonPlanPatch(
       extra["operation"] = e.operation;
       extra["tree"] = e.tree;
     }
-    console.error("Failed to apply patch", e);
+    console.error("Failed to apply patch", patch, e);
     Sentry.withScope(function (scope) {
       scope.setLevel("info");
       Sentry.captureException(e, { extra });
