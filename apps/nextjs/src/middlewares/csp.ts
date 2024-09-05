@@ -61,6 +61,7 @@ const mux = {
     "https://mux.com",
     "https://*.mux.com",
     "https://stream.mux.com",
+    "https://inferred.litix.io",
   ],
   "img-src": ["https://*.mux.com", "https://stream.mux.com"],
   "style-src": ["https://*.mux.com"],
