@@ -7,7 +7,6 @@ import { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import { SentryErrorReporter } from "../features/errorReporting/reporters/SentryErrorReporter";
 import { AilaModeration } from "../features/moderation";
 import { OpenAiModerator } from "../features/moderation/moderators/OpenAiModerator";
-import { AilaKVPersistence } from "../features/persistence/adaptors/kv";
 import { AilaPrismaPersistence } from "../features/persistence/adaptors/prisma";
 import { AilaThreatDetection } from "../features/threatDetection";
 import {
@@ -56,10 +55,7 @@ export class AilaFeatureFactory {
     options: AilaOptions,
   ): AilaPersistenceFeature[] {
     if (options.usePersistence) {
-      return [
-        new AilaKVPersistence({ chat: aila.chat, aila }),
-        new AilaPrismaPersistence({ chat: aila.chat, aila }),
-      ];
+      return [new AilaPrismaPersistence({ chat: aila.chat, aila })];
     }
     return [];
   }
