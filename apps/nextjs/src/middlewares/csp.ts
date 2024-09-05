@@ -64,7 +64,12 @@ const mux = {
   ],
   "img-src": ["https://*.mux.com", "https://stream.mux.com"],
   "style-src": ["https://*.mux.com"],
-  "media-src": ["https://*.mux.com", "https://stream.mux.com"],
+  "media-src": [
+    "'self'",
+    "https://*.mux.com",
+    "https://stream.mux.com",
+    "blob:",
+  ],
   "frame-src": ["https://stream.mux.com"],
 };
 
