@@ -195,7 +195,8 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
       const allServices = !services;
       if (allServices || services?.includes("posthog")) {
         posthogAiBeta.identify(userId, properties);
-        posthogOak.identify(userId, properties);
+        const { email, ...nonPiiProperties } = properties;
+        posthogOak.identify(userId, nonPiiProperties);
       }
       if (allServices || services?.includes("hubspot")) {
         hubspot.identify(userId, properties);
