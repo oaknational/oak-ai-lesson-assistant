@@ -4,7 +4,7 @@ import {
   AilaThreatDetectionError,
 } from "@oakai/aila";
 import type { AilaOptions, AilaPublicChatOptions, Message } from "@oakai/aila";
-import { LooseLessonPlan, chatSchema } from "@oakai/aila/src/protocol/schema";
+import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { handleHeliconeError } from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
 import {
   TracingSpan,
