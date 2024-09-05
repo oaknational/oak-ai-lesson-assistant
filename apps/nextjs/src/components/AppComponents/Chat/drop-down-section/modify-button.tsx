@@ -92,7 +92,6 @@ const ModifyButton = ({
             $background="white"
           >
             {modifyOptions.map((option) => {
-              console.log("selectedRadio", selectedRadio);
               return (
                 <>
                   <SmallRadioButton
