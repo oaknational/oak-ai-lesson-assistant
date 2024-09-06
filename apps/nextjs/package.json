@@ -33,6 +33,7 @@
     "@fontsource/lexend": "^5.0.12",
     "@headlessui/react": "^1.7.17",
     "@langchain/community": "^0.0.26",
+    "@mux/mux-player-react": "^2.9.1",
     "@oakai/aila": "*",
     "@oakai/api": "*",
     "@oakai/core": "*",

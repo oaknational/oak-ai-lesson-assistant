@@ -6,9 +6,17 @@ import * as Sentry from "@sentry/nextjs";
 
 export function reportErrorToSentry(
   error: unknown,
-  message: string,
-  level: Sentry.SeverityLevel = "error",
-  reportToSentry: boolean = true,
+  {
+    message,
+    level = "error",
+    reportToSentry = true,
+    extra,
+  }: {
+    message: string;
+    level: Sentry.SeverityLevel;
+    reportToSentry?: boolean;
+    extra?: Record<string, unknown>;
+  },
 ) {
   console.error(message, error);
   if (reportToSentry) {
@@ -16,7 +24,7 @@ export function reportErrorToSentry(
 
     Sentry.withScope(function (scope) {
       scope.setLevel(level);
-      Sentry.captureException(error);
+      Sentry.captureException(error, { extra });
     });
   }
 }
@@ -29,6 +37,7 @@ export const tryWithErrorReporting = <T>(
     category: string;
     message: string;
   },
+  extra?: Record<string, unknown>,
 ): T | null => {
   try {
     return fn();
@@ -36,7 +45,11 @@ export const tryWithErrorReporting = <T>(
     if (breadcrumbs) {
       Sentry.addBreadcrumb({ ...breadcrumbs, level });
     }
-    reportErrorToSentry(e, message ?? "An error was handled", level);
+    reportErrorToSentry(e, {
+      message: message ?? "An error was handled",
+      level,
+      extra,
+    });
     return null;
   }
 };

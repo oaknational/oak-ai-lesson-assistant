@@ -18,4 +18,9 @@ export class AilaFilePersistence extends AilaPersistence {
     // Implementation goes here
     throw new Error("Not implemented");
   }
+
+  async loadChat(): Promise<null> {
+    // Implementation goes here
+    throw new Error("Not implemented");
+  }
 }

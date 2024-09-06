@@ -50,6 +50,30 @@ const devConsentPolicies =
       }
     : {};
 
+const mux = {
+  "script-src": [
+    "https://cdn.mux.com",
+    "https://mux.com",
+    "https://*.mux.com",
+    "https://stream.mux.com",
+  ],
+  "connect-src": [
+    "https://mux.com",
+    "https://*.mux.com",
+    "https://stream.mux.com",
+    "https://inferred.litix.io",
+  ],
+  "img-src": ["https://*.mux.com", "https://stream.mux.com"],
+  "style-src": ["https://*.mux.com"],
+  "media-src": [
+    "'self'",
+    "https://*.mux.com",
+    "https://stream.mux.com",
+    "blob:",
+  ],
+  "frame-src": ["https://stream.mux.com"],
+};
+
 const vercelPolicies =
   process.env.VERCEL_ENV === "preview"
     ? {
@@ -78,6 +102,7 @@ const buildCspHeaders = (nonce: string) => {
 
   const baseCsp = {
     "default-src": ["'self'"],
+    "media-src": ["'self'"],
     "script-src": [
       "'self'",
       `'nonce-${nonce}'`,
@@ -99,13 +124,20 @@ const buildCspHeaders = (nonce: string) => {
       "https://*.hubspot.com",
       "https://*.hsforms.com",
     ],
-    "font-src": ["'self'", "gstatic-fonts.thenational.academy"],
+    "font-src": [
+      "'self'",
+      // Oak font subdomain
+      "gstatic-fonts.thenational.academy",
+      // Google fonts used by third party tools
+      "fonts.gstatic.com",
+    ],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
     "frame-src": [
       "'self'",
       "*.thenational.academy",
       "https://challenges.cloudflare.com",
+      "https://*.mux.com",
     ],
     "form-action": ["'self'"],
     "frame-ancestors": ["'none'"],
@@ -131,6 +163,9 @@ const buildCspHeaders = (nonce: string) => {
       }
       if (devConsentPolicies[policy]) {
         value.push(...devConsentPolicies[policy]);
+      }
+      if (mux[policy]) {
+        value.push(...mux[policy]);
       }
       return `${policy} ${value.join(" ")}`;
     })

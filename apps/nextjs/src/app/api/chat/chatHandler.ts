@@ -213,6 +213,7 @@ export async function handleChatPostRequest(
   return await withTelemetry("chat-api", {}, async (span: TracingSpan) => {
     const { chatId, messages, lessonPlan, options } =
       await setupChatHandler(req);
+
     setTelemetryMetadata(span, chatId, messages, lessonPlan, options);
 
     let userId: string | undefined;
