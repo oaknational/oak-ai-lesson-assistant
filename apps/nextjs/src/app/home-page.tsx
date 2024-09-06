@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 const StyledMuxPlayer = styled(MuxPlayer)`
   width: 600px;
   height: 334px;
-  @media (max-width: 1000px) {
+  @media (max-width: 1100px) {
     width: 100%;
     height: fit-content;
   }
@@ -57,6 +57,7 @@ export default function HomePage() {
           $flexDirection={["column", "row"]}
           $justifyContent={"space-between"}
           $alignItems={["center"]}
+          $gap={"all-spacing-5"}
         >
           <OakFlexCustomMaxWidth
             $flexDirection={"column"}
@@ -99,6 +100,7 @@ export default function HomePage() {
             $ba={"border-solid-xl"}
             customMaxWidth={600}
             $height="fit-content"
+            $width="100%"
           >
             <StyledMuxPlayer playbackId="XjKNXfXcZqEIb3sRmgqqw901S3AoN8mllBS5yUnKSvb4" />
           </OakBoxCustomMaxWidth>
@@ -190,7 +192,10 @@ export default function HomePage() {
                 customMaxWidth={600}
                 $height="fit-content"
               >
-                <StyledMuxPlayer playbackId="a3fYrjh33z00LbjMRCTFQCxFRMvGU00LmoL11ln4QtV2A" />
+                <StyledMuxPlayer
+                  playbackId="a3fYrjh33z00LbjMRCTFQCxFRMvGU00LmoL11ln4QtV2A"
+                  thumbnailTime={3.67}
+                />
               </OakBoxCustomMaxWidth>
               <OakP $textAlign="left" $font="body-1">
                 Tell Aila what you want to teach and it will guide you through
