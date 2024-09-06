@@ -14,16 +14,22 @@ import {
   BasedOnOptionalSchema,
   BasedOnSchema,
   CheckForUnderstandingOptionalSchema,
+  CheckForUnderstandingSchemaWithNoLength,
   CycleOptionalSchema,
   CycleSchema,
+  CycleSchemaWithoutLength,
   KeywordsOptionalSchema,
   KeywordsSchema,
+  KeywordsSchemaWithNoLength,
   LessonPlanSchemaWhilstStreaming,
   LooseLessonPlan,
   MisconceptionsOptionalSchema,
   MisconceptionsSchema,
+  MisconceptionsSchemaWithoutLength,
   QuizOptionalSchema,
+  QuizQuestionSchemaWithoutArrayLength,
   QuizSchema,
+  QuizSchemaWithoutLength,
 } from "./schema";
 
 export const PatchString = z.object({
@@ -39,7 +45,32 @@ export const PatchString = z.object({
   value: z.string(),
 });
 
+export const PatchStringForLLM = z.object({
+  type: z.literal("string"),
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([
+    z.literal("/title"),
+    z.literal("/keyStage"),
+    z.literal("/topic"),
+    z.literal("/subject"),
+    z.literal("/additionalMaterials"),
+    z.literal("/learningOutcome"),
+  ]),
+  value: z.string(),
+});
+
 export const PatchStringArray = z.object({
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([
+    z.literal("/priorKnowledge"),
+    z.literal("/learningCycles"),
+    z.literal("/keyLearningPoints"),
+  ]),
+  value: z.array(z.string()),
+});
+
+export const PatchStringArrayForLLM = z.object({
+  type: z.literal("string-array"),
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([
     z.literal("/priorKnowledge"),
@@ -69,6 +100,19 @@ export const PatchCycle = z.object({
   value: CycleSchema,
 });
 
+export const PatchCycleForLLM = z.object({
+  type: z.literal("cycle"),
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([
+    z.literal("/cycle1"),
+    z.literal("/cycle2"),
+    z.literal("/cycle3"),
+  ]),
+  value: CycleSchemaWithoutLength.describe(
+    "This is the definition of the learning cycle that you are proposing. You MUST include this definition for the patch to be valid.",
+  ),
+});
+
 export const PatchQuizOptional = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
@@ -81,6 +125,13 @@ export const PatchQuiz = z.object({
   value: QuizSchema,
 });
 
+export const PatchQuizForLLM = z.object({
+  type: z.literal("quiz"),
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
+  value: QuizSchemaWithoutLength,
+});
+
 export const PatchBasedOnOptional = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.literal("/basedOn"),
@@ -88,6 +139,13 @@ export const PatchBasedOnOptional = z.object({
 });
 
 export const PatchBasedOn = z.object({
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.literal("/basedOn"),
+  value: BasedOnSchema,
+});
+
+export const PatchBasedOnForLLM = z.object({
+  type: z.literal("basedOn"),
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.literal("/basedOn"),
   value: BasedOnSchema,
@@ -105,6 +163,13 @@ export const PatchMisconceptions = z.object({
   value: MisconceptionsSchema,
 });
 
+export const PatchMisconceptionsForLLM = z.object({
+  type: z.literal("misconceptions"),
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.literal("/misconceptions"),
+  value: MisconceptionsSchemaWithoutLength,
+});
+
 export const PatchKeywordsOptional = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.literal("/keywords"),
@@ -117,7 +182,20 @@ export const PatchKeywords = z.object({
   value: KeywordsSchema,
 });
 
+export const PatchKeywordsForLLM = z.object({
+  type: z.literal("keywords"),
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.literal("/keywords"),
+  value: KeywordsSchemaWithNoLength,
+});
+
 export const JsonPatchRemoveSchema = z.object({
+  op: z.literal("remove"),
+  path: z.string(),
+});
+
+export const JsonPatchRemoveSchemaForLLM = z.object({
+  type: z.literal("remove"),
   op: z.literal("remove"),
   path: z.string(),
 });
@@ -168,15 +246,21 @@ export const PatchDocumentSchema = z.object({
   value: JsonPatchValueSchema,
 });
 
+// This is the type schema that we send for Structured Outputs
 // We have a permissive type that just specifies that it is making
 // somewhat valid patches for now
 export const LLMPatchDocumentSchema = z.object({
   type: z.literal("patch"),
   reasoning: z.string(),
-  value: z.discriminatedUnion("op", [
-    JsonPatchAddSchema,
-    JsonPatchRemoveSchema,
-    JsonPatchReplaceSchema,
+  value: z.discriminatedUnion("type", [
+    PatchStringArrayForLLM,
+    PatchStringForLLM,
+    PatchBasedOnForLLM,
+    PatchMisconceptionsForLLM,
+    PatchQuizForLLM,
+    PatchKeywordsForLLM,
+    PatchCycleForLLM,
+    JsonPatchRemoveSchemaForLLM,
   ]),
 });
 

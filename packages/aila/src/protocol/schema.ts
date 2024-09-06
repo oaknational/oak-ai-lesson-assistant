@@ -38,6 +38,19 @@ export const MisconceptionSchema = z.object({
     .describe("Not to be used. Only included here for legacy support."), // There is some confusion here about what the LLM generates
 });
 
+export const MisconceptionSchemaWithoutLength = z.object({
+  misconception: z
+    .string()
+    .describe(
+      "a single sentence describing a common misconception about the topic. Do not end with a full stop.",
+    ),
+  description: z
+    .string()
+    .describe(
+      "No more than 2 sentences addressing the reason for the misconception and how it can be addressed in the lesson. Maximum 250 characters in length.",
+    ),
+});
+
 export const MisconceptionOptionalSchema = z.object({
   misconception: z.string().optional(),
   description: z.string().optional(),
@@ -50,6 +63,12 @@ export const MisconceptionsSchema = z
   .max(3)
   .describe(
     "An array of misconceptions which a student might have about the topic covered in the lesson.",
+  );
+
+export const MisconceptionsSchemaWithoutLength = z
+  .array(MisconceptionSchemaWithoutLength)
+  .describe(
+    "An array of misconceptions which a student might have about the topic covered in the lesson. Minimum 1, maximum 3 items.",
   );
 export const MisconceptionsOptionalSchema = z.array(
   MisconceptionOptionalSchema,
@@ -70,10 +89,21 @@ export const QuizQuestionSchema = z.object({
   distractors: z.array(z.string()).length(2).describe("A set of distractors."),
 });
 
+export const QuizQuestionSchemaWithoutLength = z.object({
+  question: z.string().describe("The question to be asked in the quiz."),
+  answers: z
+    .array(z.string())
+    .describe("The correct answer. This should be an array of only one item."),
+  distractors: z
+    .array(z.string())
+    .describe("A set of distractors. This must be an array with two items."),
+});
+
 export type QuizQuestion = z.infer<typeof QuizQuestionSchema>;
 export type QuizQuestionOptional = z.infer<typeof QuizQuestionOptionalSchema>;
 
 export const QuizSchema = z.array(QuizQuestionSchema);
+export const QuizSchemaWithoutLength = z.array(QuizQuestionSchemaWithoutLength);
 export const QuizOptionalSchema = z.array(QuizQuestionOptionalSchema);
 
 export type Quiz = z.infer<typeof QuizSchema>;
@@ -144,6 +174,24 @@ export const CheckForUnderstandingSchema = z.object({
     ),
 });
 
+export const CheckForUnderstandingSchemaWithNoLength = z.object({
+  question: z
+    .string()
+    .describe(
+      "A multiple choice question to ask as a check to see if the students have understood the content of this cycle. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
+    ),
+  answers: z
+    .array(z.string())
+    .describe(
+      "The correct answer to the question. This should be an array with one item.",
+    ),
+  distractors: z
+    .array(z.string())
+    .describe(
+      "Two incorrect distractors which could be the answer to the question but are not correct. This should be an array of two items.",
+    ),
+});
+
 export const CheckForUnderstandingOptionalSchema = z.object({
   question: z.string().optional(),
   answers: z.array(z.string()).optional(),
@@ -163,6 +211,33 @@ export const CycleSchema = z.object({
   checkForUnderstanding: z
     .array(CheckForUnderstandingSchema)
     .min(2)
+    .describe(
+      "Two or more questions to check that students have understood the content of this cycle. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
+    ),
+  practice: z
+    .string()
+    .describe(
+      "The activity that the pupils are asked to do to practice what they have learnt. Should be pupil facing and include all details that the pupils need to complete the task. Should be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle. Should include calculations if this is appropriate. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
+    ),
+  feedback: z
+    .string()
+    .describe(
+      "Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task. This should adhere to the rules as specified in the LEARNING CYCLES: FEEDBACK section of the lesson plan guidance. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
+    ),
+});
+
+export const CycleSchemaWithoutLength = z.object({
+  title: z.string().describe("The title of the learning cycle"),
+  durationInMinutes: z
+    .number()
+    .describe(
+      "An estimated duration for how long it would take the teacher to deliver this part of the lesson.",
+    ),
+  explanation: ExplanationSchema.describe(
+    "An object describing how the teacher would explain the content of this cycle to the students. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
+  ),
+  checkForUnderstanding: z
+    .array(CheckForUnderstandingSchemaWithNoLength)
     .describe(
       "Two or more questions to check that students have understood the content of this cycle. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
     ),
@@ -216,6 +291,23 @@ export const KeywordSchema = z
     "A keyword that is used in the lesson. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
   );
 
+export const KeywordSchemaWithoutLength = z
+  .object({
+    keyword: z
+      .string()
+      .describe(
+        "The keyword itself. Should be in sentence case starting with a capital letter and not end with a full stop. Maximum 30 characters long.",
+      ),
+    definition: z
+      .string()
+      .describe(
+        "A short definition of the keyword including the keyword itself. Should be in sentence case starting with a capital letter and not end with a full stop. Written in TEACHER_TO_PUPIL_SLIDES voice. Maximum 200 characters long.",
+      ),
+  })
+  .describe(
+    "A keyword that is used in the lesson. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
+  );
+
 export const KeywordOptionalSchema = z.object({
   keyword: z.string().optional(),
   definition: z.string().optional(),
@@ -228,6 +320,12 @@ export const KeywordsSchema = z
   .max(5)
   .describe(
     "A set of keywords where each is a word to be included throughout the lesson.",
+  );
+
+export const KeywordsSchemaWithNoLength = z
+  .array(KeywordSchemaWithoutLength)
+  .describe(
+    "A set of keywords where each is a word to be included throughout the lesson. Minimum 1 keyword, maximum 5.",
   );
 export const KeywordsOptionalSchema = z.array(KeywordOptionalSchema);
 
