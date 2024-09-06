@@ -46,7 +46,7 @@ export function ClearHistory({ isEnabled = false }: ClearHistoryProps) {
         <Button
           variant="ghost"
           disabled={!isEnabled || isPending}
-          className="fixed bottom-0 left-0 z-40 flex w-full justify-center  bg-white p-16 pl-0 sm:w-[298px]"
+          className="fixed bottom-0 right-0 z-40 flex w-full justify-center bg-white p-16 pl-0 sm:w-[298px]"
         >
           {isPending && <IconSpinner className="mr-7" />}
           <span className="text-teachersRed">Clear history</span>
