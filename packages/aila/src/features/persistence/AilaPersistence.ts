@@ -3,7 +3,7 @@ import invariant from "tiny-invariant";
 
 import { AilaChatService, AilaError, AilaServices, Message } from "../../core";
 import { AilaOptionsWithDefaultFallbackValues } from "../../core/types";
-import { LooseLessonPlan } from "../../protocol/schema";
+import { AilaPersistedChat, LooseLessonPlan } from "../../protocol/schema";
 import { AilaGeneration } from "../generation";
 
 export abstract class AilaPersistence {
@@ -34,7 +34,8 @@ export abstract class AilaPersistence {
   }
 
   protected createChatPayload(): ChatPersistencePayload {
-    const { id, userId, messages } = this._chat;
+    const { id, userId, messages, isShared } = this._chat;
+
     invariant(userId, "userId is required for chat persistence");
 
     const { lesson, options } = this._aila;
@@ -48,6 +49,7 @@ export abstract class AilaPersistence {
       keyStage,
       topic,
       createdAt: Date.now(),
+      isShared,
       path: `/aila/${id}`,
       lessonPlan: lesson.plan,
       messages: messages.filter((m) => ["assistant", "user"].includes(m.role)),
@@ -107,6 +109,7 @@ export abstract class AilaPersistence {
     return payload;
   }
 
+  abstract loadChat(): Promise<AilaPersistedChat | null>;
   abstract upsertChat(): Promise<void>;
   abstract upsertGeneration(generation?: AilaGeneration): Promise<void>;
 }
@@ -119,6 +122,7 @@ export interface ChatPersistencePayload {
   keyStage: string;
   topic: string;
   createdAt: number;
+  isShared: boolean | undefined;
   path: string;
   lessonPlan: LooseLessonPlan;
   messages: Message[];

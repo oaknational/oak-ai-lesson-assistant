@@ -23,6 +23,11 @@ export async function fetchLessonPlanContentById(
   const parsedPlan = tryWithErrorReporting(
     () => LessonPlanSchemaWhilstStreaming.parse(lessonPlanRecord.content),
     "Failed to parse lesson plan content",
+    undefined,
+    undefined,
+    {
+      lessonPlanContent: lessonPlanRecord.content,
+    },
   );
 
   return parsedPlan;
