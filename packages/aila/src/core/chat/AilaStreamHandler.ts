@@ -123,8 +123,7 @@ export class AilaStreamHandler {
 
   private async fetchChunkFromStream() {
     if (this._streamReader) {
-      const { done, value }: { done: boolean; value?: string } =
-        await this._streamReader.read();
+      const { done, value } = await this._streamReader.read();
       if (value) {
         await this._chat.appendChunk(value);
         this._controller?.enqueue(value);

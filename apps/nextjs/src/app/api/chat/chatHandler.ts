@@ -15,6 +15,7 @@ import invariant from "tiny-invariant";
 
 import { Config } from "./config";
 import { handleChatException } from "./errorHandling";
+import { getFixtureLLMService } from "./fixtures";
 import { fetchAndCheckUser } from "./user";
 
 export const maxDuration = 300;
@@ -40,6 +41,7 @@ async function setupChatHandler(req: NextRequest) {
         id: string;
         messages: Message[];
         lessonPlan?: LooseLessonPlan;
+        // TODO: how is this restricted to public chat options?
         options?: AilaPublicChatOptions;
       } = json;
 
@@ -51,11 +53,13 @@ async function setupChatHandler(req: NextRequest) {
         useModeration: true,
       };
 
+      const llmService = getFixtureLLMService(req.headers, chatId);
+
       span.setTag("chat_id", chatId);
       span.setTag("messages.count", messages.length);
       span.setTag("options", JSON.stringify(options));
 
-      return { chatId, messages, lessonPlan, options };
+      return { chatId, messages, lessonPlan, options, llmService };
     },
   );
 }
@@ -119,7 +123,7 @@ export async function handleChatPostRequest(
   config: Config,
 ): Promise<Response> {
   return await withTelemetry("chat-api", {}, async (span: TracingSpan) => {
-    const { chatId, messages, lessonPlan, options } =
+    const { chatId, messages, lessonPlan, options, llmService } =
       await setupChatHandler(req);
 
     setTelemetryMetadata(span, chatId, messages, lessonPlan, options);
@@ -141,6 +145,7 @@ export async function handleChatPostRequest(
               id: chatId,
               userId,
               messages,
+              llmService,
             },
             lessonPlan: lessonPlan ?? {},
           };
