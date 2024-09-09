@@ -9,7 +9,7 @@ jobs:
     name: Merge Release Candidate
     if: |
       github.event.review.state == 'approved' &&
-      startsWith(github.event.pull_request.base.ref, "rc")
+      startsWith(github.event.pull_request.head.ref, 'rc')
     runs-on: ubuntu-latest
     steps:
       - name: "Merge pull request"
