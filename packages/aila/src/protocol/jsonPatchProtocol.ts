@@ -441,9 +441,19 @@ const LLMMessageSchemaWhileStreaming = z.object({
   prompt: TextDocumentSchema.optional(),
 });
 
-function tryParseJson(str: string): { parsed: unknown; isPartial: boolean } {
+function tryParseJson(str: string): {
+  parsed: { type: string } | null;
+  isPartial: boolean;
+} {
   try {
-    return { parsed: JSON.parse(str), isPartial: false };
+    const parsed = JSON.parse(str);
+    if (typeof parsed !== "object") {
+      throw new Error("Parsed JSON is not an object");
+    }
+    if (!("type" in parsed)) {
+      throw new Error("The JSON object does not have a type");
+    }
+    return { parsed, isPartial: false };
   } catch (e) {
     // If parsing fails, assume it's partial
     return { parsed: null, isPartial: true };
@@ -542,7 +552,7 @@ export function parseMessageRow(row: string, index: number): MessagePart[] {
       }
 
       if (llmMessage.prompt) {
-        const parsedPrompt = tryParseText(parsed.prompt);
+        const parsedPrompt = tryParseText(llmMessage.prompt);
         result.push({
           type: "message-part",
           document: parsedPrompt,
@@ -616,11 +626,13 @@ export function extractPatches(
             console.log(`  Path: ${error.path.join(".")}`);
             console.log(`  Message: ${error.message}`);
             if (error.code) console.log(`  Code: ${error.code}`);
-            const errorValue = error.path.reduce(
-              // @ts-expect-error We are assuming keys are strings in the error path
-              (obj, key) => obj && obj[key],
-              part,
-            );
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const errorValue = error.path.reduce((obj: any, key) => {
+              if (obj && typeof obj === "object" && key in obj) {
+                return (obj as Record<string, unknown>)[key];
+              }
+              return undefined;
+            }, part);
             console.error(`  Invalid value:`, errorValue);
           });
         } else {

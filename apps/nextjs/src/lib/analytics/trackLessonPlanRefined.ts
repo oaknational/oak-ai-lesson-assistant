@@ -62,9 +62,11 @@ export function trackLessonPlanRefined({
   action: UserAction | null;
 }) {
   const messageParts = parseMessageParts(ailaMessageContent);
-  const patches = messageParts.filter(isPatch);
-  const moderation = messageParts.find(isModeration);
-  const accountLocked = messageParts.some(isAccountLocked);
+  const patches = messageParts.map((p) => p.document).filter(isPatch);
+  const moderation = messageParts.map((p) => p.document).find(isModeration);
+  const accountLocked = messageParts
+    .map((p) => p.document)
+    .some(isAccountLocked);
   const componentType = actionToComponentType(action);
 
   /**
