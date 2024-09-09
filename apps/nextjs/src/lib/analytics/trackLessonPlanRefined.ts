@@ -1,9 +1,9 @@
+import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import * as Sentry from "@sentry/nextjs";
 
 import {
-  parseMessageParts,
   isPatch,
   isModeration,
   isAccountLocked,

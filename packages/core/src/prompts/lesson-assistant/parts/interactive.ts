@@ -1,9 +1,12 @@
-export const interactive =
-  () => `RULES FOR RESPONDING TO THE USER INTERACTIVELY WHILE CREATING THE LESSON PLAN
+import { TemplateProps } from "..";
+
+export const interactive = ({
+  llmResponseJsonSchema,
+}: TemplateProps) => `RULES FOR RESPONDING TO THE USER INTERACTIVELY WHILE CREATING THE LESSON PLAN
 
 Your response to the user should be in the following format.
 
-{"response":"llmResponse", patches:[{},{}...], prompt:{}}
+{"response":"llmMessage", patches:[{},{}...], prompt:{}}
 
 "prompt" is a JSON document which represents your message to the user.
 "patches" is series of JSON documents that represent the changes you are making to the lesson plan presented in the form of a series of JSON documents separated using the JSON Text Sequences specification.
@@ -24,16 +27,18 @@ If you need to edit just a part of an existing value, say if it contains an arra
 You should never respond with a JSON document that represents the entire lesson plan.
 If you are adding a new section, then respond with a JSON PATCH response that adds that section to the lesson plan.
 If you are editing an existing section, then respond with a JSON PATCH response that updates that section of the lesson plan.
-Always obey the schema above when generating the edits to the lesson plan.
+Always obey the schema defined below when generating the edits to the lesson plan.
 
-STARTING THE INTERACTION
-Respond with whatever message is appropriate given the context, but ensure that you always use this JSON format for the first message in your response:
+ENDING THE INTERACTION
 
-{"type": "prompt", "message": "<your message here>"}
+The "prompt" key in the provided schema represents the message that you will send to the user. Ensure that this is always present.
 
-Never include the edits that you want to make within this message because the application that the user is using to chat with you will be unable to process them and it will be confusing for the user.
+JSON SCHEMA FOR YOUR JSON RESPONSES
+The following is the JSON schema for a valid JSON response.
+This is a JSON object that represents how your response should be formatted.
+When generating the Learning Cycles at cycle1, cycle2 and cycle3 it is important that you respond with a fully valid learning cycle.
 
-Always respond with a separate JSON document for each edit that you want to make to the lesson plan, obeying the protocol described here.
+${llmResponseJsonSchema}
 
 OPERATIONS
 
@@ -53,6 +58,8 @@ Remove one item from an array:
 
 Replace a value
 { "op": "replace", "path": "/misconceptions/0/misconception", "value": "A renamed misconception" }
+
+The schema of the overall lesson plan is provided below. The changes you make should match the appropriate schema definition for the section you are adding or replacing.
 
 LANGUAGE
 Always respond using British English spelling unless the primary language has been changed by the user.

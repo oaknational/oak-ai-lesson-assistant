@@ -6,15 +6,12 @@ import {
   deepClone,
   JsonPatchError,
 } from "fast-json-patch";
-import untruncateJson from "untruncate-json";
-import { ZodError, z } from "zod";
+import { ZodError, ZodSchema, z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 
 import {
   BasedOnOptionalSchema,
   BasedOnSchema,
-  CheckForUnderstandingOptionalSchema,
-  CheckForUnderstandingSchemaWithNoLength,
   CycleOptionalSchema,
   CycleSchema,
   CycleSchemaWithoutLength,
@@ -27,7 +24,6 @@ import {
   MisconceptionsSchema,
   MisconceptionsSchemaWithoutLength,
   QuizOptionalSchema,
-  QuizQuestionSchemaWithoutArrayLength,
   QuizSchema,
   QuizSchemaWithoutLength,
 } from "./schema";
@@ -109,7 +105,7 @@ export const PatchCycleForLLM = z.object({
     z.literal("/cycle3"),
   ]),
   value: CycleSchemaWithoutLength.describe(
-    "This is the definition of the learning cycle that you are proposing. You MUST include this definition for the patch to be valid.",
+    "This is the definition of the learning cycle that you are proposing. You MUST include this definition for the patch to be valid. It should never be just an empty object {}.",
   ),
 });
 
@@ -246,9 +242,10 @@ export const PatchDocumentSchema = z.object({
   value: JsonPatchValueSchema,
 });
 
-// This is the type schema that we send for Structured Outputs
-// We have a permissive type that just specifies that it is making
-// somewhat valid patches for now
+// This is the schema that we send when requesting Structured Outputs
+// From the LLM. We are limited to not having min, max and we also
+// have constraints about ensuring each object has a type attribute
+// as its first attribute in the definition
 export const LLMPatchDocumentSchema = z.object({
   type: z.literal("patch"),
   reasoning: z.string(),
@@ -344,10 +341,20 @@ export const BadDocumentSchema = z.object({
 
 export type BadDocument = z.infer<typeof BadDocumentSchema>;
 
+export const UnknownDocumentSchema = z.object({
+  type: z.literal("unknown"),
+  value: z.unknown().optional(),
+  error: z.unknown().optional(),
+});
+
+export type UnknownDocument = z.infer<typeof UnknownDocumentSchema>;
+
 export const MessageIdDocumentSchema = z.object({
   type: z.literal("id"),
   value: z.string(),
 });
+
+export type MessageIdDocument = z.infer<typeof MessageIdDocumentSchema>;
 
 export const JsonPatchDocumentSchema = z.discriminatedUnion("type", [
   PatchDocumentSchema,
@@ -390,185 +397,248 @@ export const LLMResponseSchema = z.discriminatedUnion("type", [
   CommentDocumentSchema,
   ErrorDocumentSchema,
 ]);
+
 export const LLMResponseJsonSchema = zodToJsonSchema(
   LLMResponseSchema,
   "llmResponseSchema",
 );
 
-export function extractMessageParts(message: string): string[] {
-  const initialParts = message
-    .replaceAll("\n\n{", "\n␞\n{")
-    .split("␞")
-    .map((r) => r.trim())
-    .filter((r) => r?.length > 0);
-  const result: string[] = [];
-
-  for (const part of initialParts) {
-    if (part.startsWith("{")) {
-      try {
-        const parsed = JSON.parse(untruncateJson(part));
-        if (parsed.type === "llmResponse") {
-          // Extract patches
-          if (Array.isArray(parsed.patches)) {
-            for (const patch of parsed.patches) {
-              result.push(JSON.stringify(patch));
-            }
-          }
-          // Extract prompt
-          if (parsed.prompt) {
-            result.push(JSON.stringify(parsed.prompt));
-          }
-        } else {
-          // If it's not a jsonResponse, keep the original JSON string
-          result.push(part);
-        }
-      } catch (error) {
-        // If parsing fails, keep the original string
-        result.push(part);
-      }
-    } else {
-      // For non-JSON lines, keep them as is
-      result.push(part);
-    }
-  }
-
-  console.log("Result", result);
-  return result;
-}
-
-interface PotentialMessage {
-  type?: string;
-  content?: string;
-}
-interface PartialMessage {
-  type?: string;
-  path?: string;
-  isPartial: boolean;
-  value?:
-    | {
-        path?: string;
-        op?: string;
-        value?: unknown;
-      }
-    | string;
-}
-
-const AnyValidDocumentSchema = z.discriminatedUnion("type", [
+const MessagePartDocumentSchema = z.discriminatedUnion("type", [
   ModerationDocumentSchema,
   ErrorDocumentSchema,
   PatchDocumentSchema,
-  PromptDocumentSchema,
   StateDocumentSchema,
   CommentDocumentSchema,
-  ActionDocumentSchema,
+  PromptDocumentSchema,
   TextDocumentSchema,
+  ActionDocumentSchema,
   BadDocumentSchema,
+  UnknownDocumentSchema,
   MessageIdDocumentSchema,
 ]);
 
-export function parseMessagePart(part: string): PartialMessage | undefined {
-  const trimmed = part.trim();
-  if (!trimmed.startsWith("{")) {
-    return { type: "text", value: trimmed, isPartial: false };
-  }
-  const isPartial = (() => {
-    try {
-      const parsed = JSON.parse(trimmed);
-      return !AnyValidDocumentSchema.safeParse(parsed).success;
-    } catch (error) {
-      return true;
-    }
-  })();
+export type MessagePartDocument = z.infer<typeof MessagePartDocumentSchema>;
 
-  console.log("IsPartial?", isPartial, trimmed);
+const MessagePartSchema = z.object({
+  type: z.literal("message-part"),
+  id: z.string(),
+  isPartial: z.boolean(),
+  document: MessagePartDocumentSchema,
+});
 
-  const untruncated = untruncateJson(trimmed);
-  const parsed: PotentialMessage = parseJsonSafely(untruncated);
-  if (typeof parsed !== "object") {
-    return undefined;
+export type MessagePart = z.infer<typeof MessagePartSchema>;
+
+export const LLMMessageSchema = z.object({
+  type: z.literal("llmMessage"),
+  patches: z.array(PatchDocumentSchema),
+  prompt: TextDocumentSchema,
+});
+
+const LLMMessageSchemaWhileStreaming = z.object({
+  type: z.literal("llmMessage"),
+  patches: z.array(z.object({}).passthrough()).optional(),
+  prompt: TextDocumentSchema.optional(),
+});
+
+function tryParseJson(str: string): { parsed: unknown; isPartial: boolean } {
+  try {
+    return { parsed: JSON.parse(str), isPartial: false };
+  } catch (e) {
+    // If parsing fails, assume it's partial
+    return { parsed: null, isPartial: true };
   }
-  const parsedObject: PartialMessage = { isPartial, ...parsed };
-  if (!parsedObject.type) {
-    return undefined;
-  }
-  return parsedObject;
 }
 
-export function extractState(edit: string): StateDocument | null {
-  const parsedDocuments: ({ type?: string; path?: string } | undefined)[] =
-    extractMessageParts(edit).map((part) => parseMessagePart(part));
-  const stateDocuments = parsedDocuments
-    .filter((parsed) => parsed?.type === "state")
-    .map((parsed) => StateDocumentSchema.parse(parsed));
-  return stateDocuments[0] ?? null;
+function tryParsePart(
+  obj: object,
+  schema: ZodSchema,
+): MessagePartDocument | UnknownDocument {
+  console.log("Try parse part", obj);
+  const parsed = schema.safeParse(obj);
+  if (parsed.success) {
+    return parsed.data;
+  } else {
+    return { type: "unknown", value: JSON.stringify(obj), error: parsed.error };
+  }
+}
+
+function tryParsePatch(obj: object): PatchDocument | UnknownDocument {
+  const parsed = PatchDocumentSchema.safeParse(obj);
+  if (parsed.success) {
+    const patchDocument: PatchDocument = parsed.data;
+    return patchDocument;
+  } else {
+    return { type: "unknown", value: JSON.stringify(obj), error: parsed.error };
+  }
+}
+
+function tryParseText(obj: object): TextDocument | UnknownDocument {
+  const parsed = TextDocumentSchema.safeParse(obj);
+  if (parsed.success) {
+    return parsed.data;
+  } else {
+    return { type: "unknown", value: JSON.stringify(obj), error: parsed.error };
+  }
+}
+
+// Each Message that is sent back from the server contains the following
+// (separated by the record-separator character and a newline):
+// * An llmMessage matching the LLMMessageSchema, and containing multiple messageParts
+// * A moderation messagePart
+// * An ID messagePart
+// * A state messagePart
+// (Potentially more)
+// So we split the message into rows and parse each one.
+// The message is streaming in, so we evaluate each row to see if it is
+// valid JSON. If it is not, then we assume that the row is streaming
+// and set an isPartial boolean on the resulting object.
+// This helps us not to re-process past messageParts after they have
+// fully streamed in.
+export function parseMessageRow(row: string, index: number): MessagePart[] {
+  console.log("Parse message row", row);
+  // Handle legacy plain text content
+  if (!row.startsWith("{")) {
+    return [
+      {
+        type: "message-part",
+        document: { type: "text", value: row.trim() },
+        id: `${index}`,
+        isPartial: false,
+      },
+    ];
+  }
+
+  const { parsed, isPartial } = tryParseJson(row);
+
+  if (!parsed) {
+    // If parsing fails, treat the entire row as a partial unknown message
+    // and assume that once it streams in it will gain a type.
+    return [
+      {
+        type: "message-part",
+        document: { type: "unknown", value: row },
+        id: `${index}`,
+        isPartial: true,
+      },
+    ];
+  }
+
+  if (parsed.type === "llmMessage") {
+    try {
+      const llmMessage = LLMMessageSchemaWhileStreaming.parse(parsed);
+      const result: MessagePart[] = [];
+      let i = 0;
+      for (const patch of llmMessage.patches ?? []) {
+        console.log("Parse patch", patch);
+        const parsedPatch = tryParsePatch(patch);
+        result.push({
+          type: "message-part",
+          document: parsedPatch,
+          isPartial,
+          id: `${index}-patch-${i}`,
+        });
+        i++;
+      }
+
+      if (llmMessage.prompt) {
+        const parsedPrompt = tryParseText(parsed.prompt);
+        result.push({
+          type: "message-part",
+          document: parsedPrompt,
+          isPartial,
+          id: `${index}-prompt`,
+        });
+      }
+      return result;
+    } catch (e) {
+      console.error("LLM Message parsing error", e);
+      return [
+        {
+          type: "message-part",
+          document: { type: "unknown", value: JSON.stringify(parsed) },
+          isPartial,
+          id: `${index}`,
+        },
+      ];
+    }
+  }
+  const parsedPart = tryParsePart(parsed, MessagePartDocumentSchema);
+
+  // For non-llmResponse objects, return the entire row as a single message part
+  return [
+    { type: "message-part", document: parsedPart, isPartial, id: `${index}` },
+  ];
+}
+
+export function parseMessageParts(content: string): MessagePart[] {
+  const messageParts = content
+    .split("␞")
+    .map((r) => r.trim())
+    .filter((r) => r.length > 5)
+    .flatMap((row, index) => parseMessageRow(row, index))
+    .filter((part) => part !== undefined)
+    .flat();
+  console.log("Message parts", messageParts);
+  return messageParts;
 }
 
 export function extractPatches(
   edit: string,
   mostRecent: number = 2,
 ): {
-  validDocuments: PatchDocument[];
-  partialDocuments: PatchDocument[];
+  validPatches: PatchDocument[];
+  partialPatches: PatchDocument[];
 } {
-  console.log("Extract patches");
-  const validDocuments: PatchDocument[] = [];
-  const partialDocuments: PatchDocument[] = [];
-  const parts = extractMessageParts(edit);
-  const parsedDocuments: (PartialMessage | undefined)[] = parts
-    .filter((_, i) => i >= parts.length - mostRecent)
-    .map((part) => parseMessagePart(part))
-    .filter((r) => r && r !== undefined)
-    .filter((r) => r?.type === "patch");
+  const validPatches: PatchDocument[] = [];
+  const partialPatches: PatchDocument[] = [];
 
-  for (const parsed of parsedDocuments) {
-    try {
-      if (parsed?.type === "patch") {
-        if (parsed.isPartial) {
-          // This row is still streaming in
-          try {
-            partialDocuments.push(PatchDocumentSchema.parse(parsed));
-          } catch (e) {
-            // The patch isn't valid yet
-          }
+  const messageParts = parseMessageParts(edit);
+  const relevantParts = messageParts.slice(-mostRecent);
+
+  for (const part of relevantParts) {
+    if (part.document.type === "patch") {
+      try {
+        const validatedPatch = PatchDocumentSchema.parse(part.document);
+        if (part.isPartial) {
+          partialPatches.push(validatedPatch);
         } else {
-          // This row is complete
-          validDocuments.push(PatchDocumentSchema.parse(parsed));
+          validPatches.push(validatedPatch);
         }
-      }
-    } catch (e) {
-      if (e instanceof ZodError) {
-        console.log(
-          "Failed to parse patch due to Zod validation errors:",
-          parsed,
-        );
-        e.errors.forEach((error, index) => {
-          console.log(`Error ${index + 1}:`);
-          console.log(`  Path: ${error.path.join(".")}`);
-          console.log(`  Message: ${error.message}`);
-          if (error.code) console.log(`  Code: ${error.code}`);
-          const errorValue = error.path.reduce(
-            // @ts-ignore
-            (obj, key) => obj && obj[key],
-            parsed,
-          );
-          console.error(`  Invalid value:`, errorValue);
-        });
-      } else {
-        console.error("Failed to parse patch:", e);
-      }
-
-      Sentry.withScope(function (scope) {
-        scope.setLevel("error");
+      } catch (e) {
         if (e instanceof ZodError) {
-          scope.setExtra("zodErrors", e.errors);
+          console.log(
+            "Failed to parse patch due to Zod validation errors:",
+            part,
+          );
+          e.errors.forEach((error, index) => {
+            console.log(`Error ${index + 1}:`);
+            console.log(`  Path: ${error.path.join(".")}`);
+            console.log(`  Message: ${error.message}`);
+            if (error.code) console.log(`  Code: ${error.code}`);
+            const errorValue = error.path.reduce(
+              // @ts-expect-error We are assuming keys are strings in the error path
+              (obj, key) => obj && obj[key],
+              part,
+            );
+            console.error(`  Invalid value:`, errorValue);
+          });
+        } else {
+          console.error("Failed to parse patch:", e);
         }
-        scope.setExtra("parsedData", parsed);
-        Sentry.captureException(e);
-      });
+
+        Sentry.withScope(function (scope) {
+          scope.setLevel("error");
+          if (e instanceof ZodError) {
+            scope.setExtra("zodErrors", e.errors);
+          }
+          scope.setExtra("parsedData", part);
+          Sentry.captureException(e);
+        });
+      }
     }
   }
 
-  return { validDocuments, partialDocuments };
+  return { validPatches, partialPatches };
 }
 
 function isValidPatch(patch: Operation): boolean {
@@ -585,10 +655,19 @@ export function applyLessonPlanPatch(
   lessonPlan: LooseLessonPlan,
   command: JsonPatchDocument,
 ) {
+  console.log(
+    "Apply patch",
+    "value" in command
+      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (command as { value: { path: any } }).value?.path
+      : undefined,
+  );
+  console.log(JSON.stringify(command, null, 2));
   let updatedLessonPlan = { ...lessonPlan };
   if (command.type !== "patch") return lessonPlan;
   const patch = command.value as Operation;
   if (!isValidPatch(patch)) {
+    console.error("Invalid patch");
     return;
   }
 
@@ -660,3 +739,8 @@ export function parseJsonSafely(jsonStr: string, logging: boolean = false) {
   // Return null if no valid JSON could be extracted
   return null;
 }
+
+// Handles parsing the message parts that are part of a message
+// Each row is separated by the record separator character
+// Rows can either be a valid document OR an object that looks like this:
+// {"type":"llmMessage","patches":[{...},{...}]},"prompt":{"type":"text","message":"Some message"}}

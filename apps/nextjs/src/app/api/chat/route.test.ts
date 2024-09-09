@@ -26,7 +26,7 @@ describe("Chat API Route", () => {
       },
     });
     mockLLMService = new MockLLMService();
-    jest.spyOn(mockLLMService, "createChatCompletionStream");
+    jest.spyOn(mockLLMService, "createChatCompletionObjectStream");
 
     testConfig = {
       shouldPerformUserLookup: false,
@@ -83,7 +83,7 @@ describe("Chat API Route", () => {
     );
 
     expect(receivedContent).not.toContain("error");
-    expect(mockLLMService.createChatCompletionStream).toHaveBeenCalled();
+    expect(mockLLMService.createChatCompletionObjectStream).toHaveBeenCalled();
 
     expectTracingSpan("chat-aila-generate").toHaveBeenExecuted();
     expectTracingSpan("chat-api").toHaveBeenExecutedWith({

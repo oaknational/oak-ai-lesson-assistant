@@ -6,11 +6,13 @@ import {
   ActionDocument,
   BadDocument,
   ErrorDocument,
+  MessagePart,
   ModerationDocument,
   PatchDocument,
   PromptDocument,
   StateDocument,
   TextDocument,
+  parseMessageParts,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { isSafe } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
@@ -22,7 +24,7 @@ import { cn } from "@/lib/utils";
 
 import { ModerationModalHelpers } from "../../FeedbackForms/ModerationFeedbackModal";
 import { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
-import { MessagePart, isModeration, parseMessageParts } from "./protocol";
+import { isModeration } from "./protocol";
 
 export interface ChatMessageProps {
   chatId: string; // Needed for when we refactor to use a moderation provider
@@ -43,10 +45,17 @@ export function ChatMessage({
 
   const messageParts: MessagePart[] =
     message.role === "user" || message.id === "working-on-it-initial"
-      ? [{ type: "text", value: message.content }]
+      ? [
+          {
+            type: "message-part",
+            id: "working-on-it-initial",
+            document: { type: "text", value: message.content },
+            isPartial: false,
+          },
+        ]
       : parseMessageParts(message.content);
 
-  const hasError = messageParts.some((part) => part.type === "error");
+  const hasError = messageParts.some((part) => part.document.type === "error");
   const [inspect, setInspect] = useState(false);
 
   const isEditing =
@@ -57,9 +66,8 @@ export function ChatMessage({
       ).length === 0);
 
   const moderationMessagePart: PersistedModerationBase | undefined =
-    messageParts.find((m) => isModeration(m) && m.id) as
-      | PersistedModerationBase
-      | undefined;
+    messageParts.find((m) => isModeration(m.document) && m.document?.id)
+      ?.document as PersistedModerationBase | undefined;
 
   const messageId = message.id;
 
@@ -69,7 +77,7 @@ export function ChatMessage({
   const matchingModeration =
     matchingPersistedModeration ?? moderationMessagePart;
 
-  if (messageParts.every((part) => part.type === "action")) {
+  if (messageParts.every((part) => part.document.type === "action")) {
     return null;
   }
 
