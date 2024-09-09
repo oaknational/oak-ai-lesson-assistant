@@ -8,22 +8,6 @@ import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userB
 
 import { streamingJSON } from "./protocol";
 
-export async function handleUserLookup(chatId: string) {
-  return await withTelemetry(
-    "chat-user-lookup",
-    { chat_id: chatId },
-    async (userLookupSpan) => {
-      const result = await fetchAndCheckUser(chatId);
-
-      if ("failureResponse" in result) {
-        userLookupSpan.setTag("error", true);
-        userLookupSpan.setTag("error.message", "user lookup failed");
-      }
-      return result;
-    },
-  );
-}
-
 async function checkRateLimit(
   userId: string,
   isDemoUser: boolean,

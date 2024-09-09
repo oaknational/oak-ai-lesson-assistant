@@ -139,36 +139,6 @@ async function handleGenericError(span: TracingSpan, e: Error) {
   });
 }
 
-async function getUserId(config: Config, chatId: string): Promise<string> {
-  return await withTelemetry(
-    "chat-get-user-id",
-    { chat_id: chatId },
-    async (userIdSpan: TracingSpan) => {
-      if (config.shouldPerformUserLookup) {
-        const userLookup = await config.handleUserLookup(chatId);
-        userIdSpan.setTag("user.lookup.performed", true);
-
-        if ("failureResponse" in userLookup) {
-          if (userLookup.failureResponse) {
-            throw new Error("User lookup failed: failureResponse received");
-          }
-        }
-
-        if ("userId" in userLookup) {
-          userIdSpan.setTag("user_id", userLookup.userId);
-          return userLookup.userId;
-        }
-
-        throw new Error("User lookup failed: userId not found");
-      }
-      invariant(config.mockUserId, "User ID is required");
-      userIdSpan.setTag("user_id", config.mockUserId);
-      userIdSpan.setTag("user.mock", true);
-      return config.mockUserId;
-    },
-  );
-}
-
 async function generateChatStream(
   aila: Aila,
   abortController: AbortController,
@@ -220,7 +190,12 @@ export async function handleChatPostRequest(
     let aila: Aila | undefined;
 
     try {
-      userId = await getUserId(config, chatId);
+      const userLookup = await config.handleUserLookup(chatId);
+      // The user lookup can either return a userId or a response like a streaming protocol message
+      if ("failureResponse" in userLookup) {
+        return userLookup.failureResponse;
+      }
+
       span.setTag("user_id", userId);
       aila = await withTelemetry(
         "chat-create-aila",
