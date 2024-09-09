@@ -79,7 +79,6 @@ export class OpenAiModerator extends AilaModerator {
 
     console.log(
       "Moderation response: ",
-      input,
       JSON.stringify(moderationResponse, null, 2),
     );
 
