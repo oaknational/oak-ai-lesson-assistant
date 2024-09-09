@@ -5,6 +5,7 @@ import {
   moderationResponseSchema,
 } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import OpenAI from "openai";
+import zodToJsonSchema from "zod-to-json-schema";
 
 import { AilaModerator, AilaModerationError } from ".";
 import {
@@ -67,7 +68,14 @@ export class OpenAiModerator extends AilaModerator {
           { role: "user", content: input },
         ],
         temperature: this._temperature,
-        response_format: { type: "json_object" },
+        response_format: {
+          type: "json_schema",
+          json_schema: {
+            name: "moderationResponse",
+            strict: true,
+            schema: zodToJsonSchema(moderationResponseSchema),
+          },
+        },
       },
       {
         headers: {
@@ -101,16 +109,6 @@ export class OpenAiModerator extends AilaModerator {
         data: { moderationResponse },
       });
       throw new AilaModerationError(`No moderation response`);
-    }
-
-    // FIX: Sometimes the LLM incorrectly flags all available categories.
-    // The dummy smoke test shouldn't be triggered in normal use, and indicates this bug
-    if (response.data.categories.includes("t/dummy-smoke-test")) {
-      console.log(
-        "Moderation: dummy-smoke-test detected, retrying. Attempts: ",
-        attempts + 1,
-      );
-      return await this._moderate(input, attempts + 1);
     }
 
     return response.data;
