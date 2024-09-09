@@ -1,3 +1,60 @@
+# [1.6.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.5.1...v1.6.0) (2024-09-06)
+
+
+### Bug Fixes
+
+* add dummy-smoke-test moderation category to detect incorrect moderation ([0ec0ab2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0ec0ab2b984de5c6632ed1cabf0ea8f63cc71766))
+* add litix to csp ([#88](https://github.com/oaknational/oak-ai-lesson-assistant/issues/88)) ([3f621d5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3f621d5232b382dd85486b9b8f3abb4f81c0ecbc))
+* allow the user to input other text ([#90](https://github.com/oaknational/oak-ai-lesson-assistant/issues/90)) ([271f6b0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/271f6b07758a74ae151721a0e722d6b23abd7d50))
+* clear history button position ([9d67dd8](https://github.com/oaknational/oak-ai-lesson-assistant/commit/9d67dd8ff6ec0bb3edf330b60dd032a87739a38e))
+* don't send user email to main PostHog ([#84](https://github.com/oaknational/oak-ai-lesson-assistant/issues/84)) ([0f18c46](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0f18c465bf3ea84cceaed09fe7779ae0363fa9b2))
+* downgrade moderation if all categories triggered at same time ([ca5a830](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ca5a83033cf1ce1e5994d8195928b0b28b323be9))
+* email error message only on error ([b6919e9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b6919e9629d43e218e0f8553c1ea01b3398bdb15))
+* ensure prompt variants are initialised correctly ([#57](https://github.com/oaknational/oak-ai-lesson-assistant/issues/57)) ([4d80a62](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4d80a622f91dacb2fab9b8e06724a3991eadd545))
+* fix homepage video reponsive layout ([4342d9f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4342d9f728679cfd299c9441bcd50de23ab15684))
+* hotfix incorrect top position in mobile view ([#97](https://github.com/oaknational/oak-ai-lesson-assistant/issues/97)) ([e0003bb](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e0003bb97faaf795a4afa5cae0bcac71ac8baa1b))
+* mobile downloads blocked on demo ([#82](https://github.com/oaknational/oak-ai-lesson-assistant/issues/82)) ([cfdf59c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cfdf59c1fe0157ec5d78a14d51c23673c2999b68))
+* prisma init singleton ([#56](https://github.com/oaknational/oak-ai-lesson-assistant/issues/56)) ([4a3a7f4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4a3a7f478b924eaabd9e821eb03eaa95714676cf))
+* remove demo header margin on mobile ([3f5739b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3f5739b25ede0bc139a9f97783f4d6fb6746c224))
+* remove duplicate beta tag on mobile ([53221a4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/53221a490fd3af0049f4ca2a25312e332be6ab95))
+* **share:** fix share bug ([#70](https://github.com/oaknational/oak-ai-lesson-assistant/issues/70)) ([11e6148](https://github.com/oaknational/oak-ai-lesson-assistant/commit/11e61488e0e50e67868db34e2d1fe734d64df6f1))
+
+
+### Features
+
+* add retry limit and log ([238cf26](https://github.com/oaknational/oak-ai-lesson-assistant/commit/238cf26523eeb9d4326ac5e7cf56f595d1042a3c))
+* add videos to home page ([#77](https://github.com/oaknational/oak-ai-lesson-assistant/issues/77)) ([54edf80](https://github.com/oaknational/oak-ai-lesson-assistant/commit/54edf80b58f100d8c6a16b4ea6384c6accf70de0))
+* give user feedback when download email is sent ([#89](https://github.com/oaknational/oak-ai-lesson-assistant/issues/89)) ([573c542](https://github.com/oaknational/oak-ai-lesson-assistant/commit/573c542d60b2701d3add905a89b30b9b5f590100))
+
+## [1.5.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.5.0...v1.5.1) (2024-09-04)
+
+
+### Bug Fixes
+
+* delete client side feature flag ([#71](https://github.com/oaknational/oak-ai-lesson-assistant/issues/71)) ([82d26a2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/82d26a2ff37d7449e7429fd98ffd7c444eb9b550))
+* downloads page auth check ([#73](https://github.com/oaknational/oak-ai-lesson-assistant/issues/73)) ([e123cc9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e123cc974973fd2370d235ed63306eed3e19be60))
+* include patch schema in llm response schema ([#45](https://github.com/oaknational/oak-ai-lesson-assistant/issues/45)) ([1c6c1ac](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1c6c1ac63bf47422c5860f9680e615510af122dc))
+
+# [1.5.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.4.0...v1.5.0) (2024-09-04)
+
+
+### Bug Fixes
+
+* fix flash of demo banner when loading ([c8a63e0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c8a63e0383757cbb4853f682269f3976cba4312b))
+* mobile launch bugs fixes ([#52](https://github.com/oaknational/oak-ai-lesson-assistant/issues/52)) ([d828c11](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d828c11d4cac4a51d0d2656c797e7e90b38df410))
+* remove sideways scroll on mobile ([7038e70](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7038e7048611b243874c58c9d917d8a4f299aab7))
+
+
+### Features
+
+* add homepage link to AI blogs ([d77ab56](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d77ab56a19729b31ffabb2f7d9c98ca2bd7899b8))
+* add main oak posthog client ([#60](https://github.com/oaknational/oak-ai-lesson-assistant/issues/60)) ([c56fa84](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c56fa8450f153584920b8d0b3cb499e35cb6b4f6))
+* bring nav in line with latest design ([49c8689](https://github.com/oaknational/oak-ai-lesson-assistant/commit/49c8689102eb4d211f7580b19280e2381bc4ca39))
+* help text when downloading an unfinished lesson ([7ef494f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7ef494fa5d412d17acc5c06f1fd340bf8adacd61))
+* launch ([#61](https://github.com/oaknational/oak-ai-lesson-assistant/issues/61)) ([d9b19f7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d9b19f722d79fa67528662c696dfcfdf69d9077e))
+* new home page copy ([#54](https://github.com/oaknational/oak-ai-lesson-assistant/issues/54)) ([a17a685](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a17a6851c884662a7993e29e376c05d03675168b))
+* override styles for gleap button ([4f57760](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4f57760884b5cf11e24bf006fb6b19f3af1759a8))
+
 # [1.4.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.3.3...v1.4.0) (2024-09-04)
 
 

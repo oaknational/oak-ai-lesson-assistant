@@ -30,6 +30,8 @@ export interface AilaChatService {
   readonly userId: string | undefined;
   readonly id: string;
   readonly messages: Message[];
+  readonly isShared: boolean | undefined;
+  loadChat({ store }: { store: string }): Promise<void>;
   addMessage(message: Message): void;
   startStreaming(abortController?: AbortController): ReadableStream;
 }

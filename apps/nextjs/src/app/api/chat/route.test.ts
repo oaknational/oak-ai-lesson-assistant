@@ -9,6 +9,9 @@ import { expectTracingSpan } from "../../../utils/testHelpers/tracing";
 import { handleChatPostRequest } from "./chatHandler";
 import { Config } from "./config";
 
+const chatId = "test-chat-id";
+const userId = "test-user-id";
+
 describe("Chat API Route", () => {
   let testConfig: Config;
   let mockLLMService: MockLLMService;
@@ -31,7 +34,7 @@ describe("Chat API Route", () => {
     testConfig = {
       shouldPerformUserLookup: false,
       handleUserLookup: jest.fn(),
-      mockUserId: "test-user-id",
+      mockUserId: userId,
       createAila: jest.fn().mockImplementation(async (options) => {
         const ailaConfig = {
           options: {
@@ -44,8 +47,8 @@ describe("Chat API Route", () => {
             useRateLimiting: false,
           },
           chat: {
-            id: "test-chat-id",
-            userId: "test-user-id",
+            id: chatId,
+            userId,
             messages: options.chat.messages ?? [],
           },
           plugins: [],
