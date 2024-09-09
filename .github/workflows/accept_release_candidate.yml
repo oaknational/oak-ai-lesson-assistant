@@ -10,7 +10,7 @@ jobs:
     if: |
       github.event.review.state == 'approved' &&
       github.event.pull_request.merged == false &&
-      github.event.pull_request.base.ref == 'chore/test-automations' &&
+      github.event.pull_request.base.ref == 'production' &&
       startsWith(github.event.pull_request.head.ref, 'rc')
 
     runs-on: ubuntu-latest
