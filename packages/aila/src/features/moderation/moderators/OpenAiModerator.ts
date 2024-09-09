@@ -47,7 +47,15 @@ export class OpenAiModerator extends AilaModerator {
     this._model = model;
     this._aila = aila;
   }
-  async moderate(input: string): Promise<ModerationResult> {
+
+  private async _moderate(
+    input: string,
+    attempts: number,
+  ): Promise<ModerationResult> {
+    if (attempts > 3) {
+      throw new AilaModerationError("Failed to moderate after 3 attempts");
+    }
+
     const moderationResponse = await this._openAIClient.chat.completions.create(
       {
         model: this._model,
@@ -71,7 +79,6 @@ export class OpenAiModerator extends AilaModerator {
 
     console.log(
       "Moderation response: ",
-      input,
       JSON.stringify(moderationResponse, null, 2),
     );
 
@@ -94,6 +101,21 @@ export class OpenAiModerator extends AilaModerator {
       });
       throw new AilaModerationError(`No moderation response`);
     }
+
+    // FIX: Sometimes the LLM incorrectly flags all available categories.
+    // The dummy smoke test shouldn't be triggered in normal use, and indicates this bug
+    if (response.data.categories.includes("t/dummy-smoke-test")) {
+      console.log(
+        "Moderation: dummy-smoke-test detected, retrying. Attempts: ",
+        attempts + 1,
+      );
+      return await this._moderate(input, attempts + 1);
+    }
+
     return response.data;
+  }
+
+  async moderate(input: string): Promise<ModerationResult> {
+    return await this._moderate(input, 0);
   }
 }

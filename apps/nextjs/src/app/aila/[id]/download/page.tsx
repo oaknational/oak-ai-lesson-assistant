@@ -40,6 +40,10 @@ export default async function DownloadPage({
 
   const chat = await getChatById(id);
 
+  if (chat?.userId !== userId) {
+    return notFound();
+  }
+
   if (!chat) {
     return notFound();
   }

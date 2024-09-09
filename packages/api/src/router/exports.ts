@@ -989,18 +989,18 @@ export const exportsRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const user = await clerkClient.users.getUser(ctx.auth.userId);
-      const userEmail = user?.emailAddresses[0]?.emailAddress;
-      const userFirstName = user?.firstName;
-      const { title, link, lessonTitle } = input;
       try {
+        const user = await clerkClient.users.getUser(ctx.auth.userId);
+        const userEmail = user?.emailAddresses[0]?.emailAddress;
+        const userFirstName = user?.firstName;
+        const { title, link, lessonTitle } = input;
+
         if (!userEmail) {
-          return {
-            error: new Error("User email not found"),
-            message: "User email not found",
-          };
+          console.error("User email not found");
+          return false;
         }
-        const res = await sendEmail({
+
+        const emailSent = await sendEmail({
           from: "aila@thenational.academy",
           to: userEmail,
           name: "Oak National Academy",
@@ -1015,12 +1015,13 @@ You can use the following link to copy the lesson resources ${title.toLowerCase(
 We hope the lesson goes well for you and your class. If you have any feedback for us, please let us know. You can simply reply to this email.
 
 Aila,
-Oak National Academy
-`,
+Oak National Academy`,
         });
-        return res;
+
+        return emailSent ? true : false;
       } catch (error) {
-        return error;
+        console.error("Error sending email:", error);
+        return false;
       }
     }),
   pollKvForLink: protectedProcedure
