@@ -62,7 +62,7 @@ export function ChatMessage({
     ailaStreamingStatus !== "Idle" &&
     (messageParts.some((part) => part.isPartial) ||
       messageParts.filter((part) =>
-        ["bad", "text", "prompt"].includes(part.type),
+        ["bad", "text", "prompt"].includes(part.document.type),
       ).length === 0);
 
   const moderationMessagePart: PersistedModerationBase | undefined =
@@ -229,17 +229,17 @@ function ChatMessagePart({
     action: ActionMessagePart,
     moderation: ModerationMessagePart,
     id: IdMessagePart,
-  }[part.type];
+  }[part.document.type];
 
   if (!PartComponent) {
-    console.log("Unknown part type", part.type, part); // eslint-disable-line no-console
+    console.log("Unknown part type", part.document.type, part); // eslint-disable-line no-console
     return null;
   }
 
   return (
     <div className="w-full">
       <PartComponent
-        part={part}
+        part={part.document}
         moderationModalHelpers={moderationModalHelpers}
       />
 
