@@ -18,6 +18,7 @@ import { Message } from "ai";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 import { useChatModeration } from "@/components/ContextProviders/ChatModerationContext";
+import { Icon } from "@/components/Icon";
 import { cn } from "@/lib/utils";
 
 import { ModerationModalHelpers } from "../../FeedbackForms/ModerationFeedbackModal";
@@ -96,20 +97,23 @@ export function ChatMessage({
       {matchingModeration && !isSafe(matchingModeration) && (
         <MessageWrapper errorType="moderation" type={getAvatarType()}>
           <MessageTextWrapper>
-            <aside className="pt-3 text-sm">
-              <a
-                href="#"
-                onClick={() => {
-                  moderationModalHelpers.openModal({
-                    moderation: matchingModeration,
-                    closeModal: moderationModalHelpers.closeModal,
-                  });
-                }}
-                className="underline"
-              >
-                View content guidance
-              </a>
-            </aside>
+            <div className="flex items-center">
+              <Icon icon="warning" size="sm" className="mr-6" />
+              <aside className="pt-3 text-sm">
+                <a
+                  href="#"
+                  onClick={() => {
+                    moderationModalHelpers.openModal({
+                      moderation: matchingModeration,
+                      closeModal: moderationModalHelpers.closeModal,
+                    });
+                  }}
+                  className="underline"
+                >
+                  View content guidance
+                </a>
+              </aside>
+            </div>
           </MessageTextWrapper>
         </MessageWrapper>
       )}
