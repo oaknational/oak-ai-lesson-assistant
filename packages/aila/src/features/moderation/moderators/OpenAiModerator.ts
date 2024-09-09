@@ -111,7 +111,25 @@ export class OpenAiModerator extends AilaModerator {
       throw new AilaModerationError(`No moderation response`);
     }
 
-    return response.data;
+    const { categories, justification, scores } = response.data;
+
+    return {
+      justification,
+      categories: categories.filter((category) => {
+        /**
+         * We only want to include the category if the parent category scores below a certain threshold.
+         * Seems to improve accuracy of the moderation.
+         * In future we may want to adjust this threshold based on subject and key-stage, and the
+         * category itself.
+         */
+        const parentKey = category[0];
+        for (const [key, score] of Object.entries(scores)) {
+          if (key === parentKey && score < 5) {
+            return true;
+          }
+        }
+      }),
+    };
   }
 
   async moderate(input: string): Promise<ModerationResult> {
