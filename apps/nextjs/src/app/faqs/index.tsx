@@ -123,7 +123,7 @@ const FAQPage = () => {
                 How do I sign up for Aila?
               </OakHeading>
               <OakP>
-                You can sign up to access Aila and our other AI experiments
+                You can sign up to access Aila and our other AI experiments{" "}
                 <OakLink href="/aila">here</OakLink>.
               </OakP>
               <OakHeading
