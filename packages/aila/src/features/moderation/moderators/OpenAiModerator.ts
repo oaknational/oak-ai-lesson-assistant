@@ -79,7 +79,6 @@ export class OpenAiModerator extends AilaModerator {
 
     console.log(
       "Moderation response: ",
-      input,
       JSON.stringify(moderationResponse, null, 2),
     );
 
@@ -103,20 +102,36 @@ export class OpenAiModerator extends AilaModerator {
       throw new AilaModerationError(`No moderation response`);
     }
 
-    // FIX: Sometimes the LLM incorrectly flags all available categories.
-    // The dummy smoke test shouldn't be triggered in normal use, and indicates this bug
-    if (response.data.categories.includes("t/dummy-smoke-test")) {
-      console.log(
-        "Moderation: dummy-smoke-test detected, retrying. Attempts: ",
-        attempts + 1,
-      );
-      return await this._moderate(input, attempts + 1);
-    }
+    const { justification, categories, scores } = response.data;
 
-    return response.data;
+    return {
+      justification,
+      categories: categories.filter((category) => {
+        /**
+         * We only want to include the category if the parent category scores below a certain threshold.
+         * Seems to improve accuracy of the moderation.
+         * In future we may want to adjust this threshold based on subject and key-stage, and the
+         * category itself.
+         */
+        const key = category[0];
+        for (const [scoreKey, score] of Object.entries(scores)) {
+          if (scoreKey === key && score < 5) {
+            return true;
+          }
+        }
+      }),
+    };
   }
 
   async moderate(input: string): Promise<ModerationResult> {
-    return await this._moderate(input, 0);
+    try {
+      return await this._moderate(input, 0);
+    } catch (error) {
+      console.log("Moderation error: ", error);
+      if (error instanceof AilaModerationError) {
+        throw error;
+      }
+      return await this._moderate(input, 1);
+    }
   }
 }
