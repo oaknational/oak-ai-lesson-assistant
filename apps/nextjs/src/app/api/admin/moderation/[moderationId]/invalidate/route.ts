@@ -3,8 +3,6 @@ import { Moderations, SafetyViolations } from "@oakai/core";
 import { prisma } from "@oakai/db";
 import { NextRequest } from "next/server";
 
-// import { withSentry } from "@/lib/sentry/withSentry";
-
 async function handler(
   req: NextRequest,
   { params }: { params: { moderationId: string } },

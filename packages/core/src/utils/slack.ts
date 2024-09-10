@@ -60,7 +60,7 @@ export function userButtonsBlock(userId: string): ActionsBlock {
         type: "button",
         text: {
           type: "plain_text",
-          text: "Posthog User",
+          text: "Posthog user",
         },
         url: `https://eu.posthog.com/project/${posthogProject}/person/${userId}`,
       },
@@ -68,9 +68,27 @@ export function userButtonsBlock(userId: string): ActionsBlock {
         type: "button",
         text: {
           type: "plain_text",
-          text: "Clerk User",
+          text: "Clerk user",
         },
         url: `https://dashboard.clerk.com/apps/${clerkAppId}/instances/${clerkInstanceId}/users/${userId}`,
+      },
+    ],
+  };
+}
+
+export function invalidateModerationButtonBlock(
+  moderationId: string,
+): ActionsBlock {
+  return {
+    type: "actions",
+    elements: [
+      {
+        type: "button",
+        text: {
+          type: "plain_text",
+          text: "Invalidate moderation",
+        },
+        url: `${process.env.VERCEL_URL}/api/admin/moderation/${moderationId}/invalidate`,
       },
     ],
   };

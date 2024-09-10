@@ -1,5 +1,6 @@
 import { inngest } from "../../client";
 import {
+  invalidateModerationButtonBlock,
   slackNotificationChannelId,
   slackWebClient,
   userButtonsBlock,
@@ -11,6 +12,7 @@ import { notifyModerationSchema } from "./notifyModeration.schema";
 // {
 //   "chatId": "chat_abc",
 //   "userId": "user_abc",
+//   "moderationId": "moderation_abc",
 //   "justification": "This is a justification",
 //   "categories": ["t/category1", "u/category2"]
 // }
@@ -55,6 +57,7 @@ export const notifyModeration = inngest.createFunction(
             ],
           },
           userButtonsBlock(event.user.id),
+          invalidateModerationButtonBlock(event.data.moderationId),
         ],
       });
 
