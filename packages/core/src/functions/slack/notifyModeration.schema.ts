@@ -5,7 +5,6 @@ export const notifyModerationSchema = {
     id: z.string(),
   }),
   data: z.object({
-    baseUrl: z.string(),
     chatId: z.string(),
     moderationId: z.string(),
     justification: z.string(),

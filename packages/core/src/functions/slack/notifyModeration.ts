@@ -27,9 +27,6 @@ export const notifyModeration = inngest.createFunction(
     await step.run("Send message to slack", async () => {
       const args = notifyModerationSchema.data.parse(event.data);
 
-      console.log(">>>>>> EVENT DATA", event.data);
-      console.log(">>>>>> VERCEL_URL", process.env.VERCEL_URL);
-
       const response = await slackWebClient.chat.postMessage({
         channel: slackNotificationChannelId,
         text: "Toxic user input detected",
@@ -47,7 +44,7 @@ export const notifyModeration = inngest.createFunction(
             fields: [
               {
                 type: "mrkdwn",
-                text: `*Chat*: <${process.env.VERCEL_URL}/aila/${args.chatId}|aila/${args.chatId}>`,
+                text: `*Chat*: <https://${process.env.VERCEL_URL}/aila/${args.chatId}|aila/${args.chatId}>`,
               },
               {
                 type: "mrkdwn",

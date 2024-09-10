@@ -64,7 +64,6 @@ export const createWebActionsPlugin: PluginCreator = (
         moderationId: moderation.id,
         categories: moderation.categories as string[],
         justification: moderation.justification || "Unknown",
-        baseUrl: process.env.VERCEL_URL || "https://labs.thenational.academy",
       },
     });
 

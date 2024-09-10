@@ -88,7 +88,7 @@ export function moderationActionButtonBlock(
           type: "plain_text",
           text: "Invalidate moderation",
         },
-        url: `${process.env.VERCEL_URL}/api/admin/moderation/${moderationId}/invalidate`,
+        url: `https://${process.env.VERCEL_URL}/api/admin/moderation/${moderationId}/invalidate`,
       },
     ],
   };
