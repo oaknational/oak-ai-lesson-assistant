@@ -67,7 +67,7 @@ export function Header() {
         <div className="flex items-center justify-end space-x-12">
           <Link
             className="hidden items-center sm:flex"
-            href={ailaId ? `/help/${ailaId}` : "/help"}
+            href={ailaId ? `/help/?ailaId=${ailaId}` : "/help"}
             target="_blank"
           >
             <OakIcon iconName="question-mark" $width="all-spacing-6" />
