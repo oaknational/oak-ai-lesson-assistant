@@ -72,7 +72,7 @@ export default function HomePage() {
             $flexDirection={"column"}
             $gap={"all-spacing-5"}
             customMaxWidth={550}
-            $width={["100%", ""]}
+            $width={"100%"}
           >
             <OakBox $width="fit-content">
               <BetaTagPage />
