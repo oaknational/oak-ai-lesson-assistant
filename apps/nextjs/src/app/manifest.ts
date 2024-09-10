@@ -2,9 +2,9 @@ import type { MetadataRoute } from 'next'
  
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "AI Lesson Assistant (Aila)",
+    name: "Oak AI Experiments",
     short_name: 'Aila',
-    description: 'AI lesson assistant chatbot for UK teachers to create lessons personalised for their classes, with the aim of reducing teacher workload.',
+    description: 'Oak AI experiments offers some experimental generative AI tools designed for and freely available to teachers. We are actively looking for your feedback to refine and optimise these tools, making them more effective and time-saving.',
     start_url: '/',
     display: 'minimal-ui',
     background_color: '#BEF2BD',
