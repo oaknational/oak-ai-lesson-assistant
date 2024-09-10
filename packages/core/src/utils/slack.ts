@@ -52,44 +52,49 @@ export function userIdBlock(userId: string): SectionBlock {
   };
 }
 
-export function userButtonsBlock(userId: string): ActionsBlock {
-  return {
-    type: "actions",
-    elements: [
-      {
-        type: "button",
-        text: {
-          type: "plain_text",
-          text: "Posthog user",
+export function actionsBlock({
+  userActionsProps,
+  moderationActionsProps,
+}: {
+  userActionsProps?: { userId: string };
+  moderationActionsProps?: { moderationId: string };
+}): ActionsBlock {
+  const userActions: ActionsBlock["elements"] = userActionsProps
+    ? [
+        {
+          type: "button",
+          text: {
+            type: "plain_text",
+            text: "Posthog user",
+          },
+          url: `https://eu.posthog.com/project/${posthogProject}/person/${userActionsProps.userId}`,
         },
-        url: `https://eu.posthog.com/project/${posthogProject}/person/${userId}`,
-      },
-      {
-        type: "button",
-        text: {
-          type: "plain_text",
-          text: "Clerk user",
+        {
+          type: "button",
+          text: {
+            type: "plain_text",
+            text: "Clerk user",
+          },
+          url: `https://dashboard.clerk.com/apps/${clerkAppId}/instances/${clerkInstanceId}/users/${userActionsProps.userId}`,
         },
-        url: `https://dashboard.clerk.com/apps/${clerkAppId}/instances/${clerkInstanceId}/users/${userId}`,
-      },
-    ],
-  };
-}
+      ]
+    : [];
 
-export function moderationActionButtonBlock(
-  moderationId: string,
-): ActionsBlock {
+  const moderationActions: ActionsBlock["elements"] = moderationActionsProps
+    ? [
+        {
+          type: "button",
+          text: {
+            type: "plain_text",
+            text: "Invalidate moderation",
+          },
+          url: `https://${process.env.VERCEL_URL}/api/admin/moderation/${moderationActionsProps.moderationId}/invalidate`,
+        },
+      ]
+    : [];
+
   return {
     type: "actions",
-    elements: [
-      {
-        type: "button",
-        text: {
-          type: "plain_text",
-          text: "Invalidate moderation",
-        },
-        url: `https://${process.env.VERCEL_URL}/api/admin/moderation/${moderationId}/invalidate`,
-      },
-    ],
+    elements: [...userActions, ...moderationActions],
   };
 }

@@ -1,9 +1,8 @@
 import { inngest } from "../../client";
 import {
-  moderationActionButtonBlock,
   slackNotificationChannelId,
   slackWebClient,
-  userButtonsBlock,
+  actionsBlock,
   userIdBlock,
 } from "../../utils/slack";
 import { notifyModerationSchema } from "./notifyModeration.schema";
@@ -56,8 +55,10 @@ export const notifyModeration = inngest.createFunction(
               },
             ],
           },
-          userButtonsBlock(event.user.id),
-          moderationActionButtonBlock(event.data.moderationId),
+          actionsBlock({
+            userActionsProps: { userId: event.user.id },
+            moderationActionsProps: { moderationId: args.moderationId },
+          }),
         ],
       });
 
