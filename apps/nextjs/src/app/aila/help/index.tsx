@@ -25,7 +25,7 @@ const Help = () => {
       window.scrollTo({ top: y, behavior: "smooth" });
     }
   };
-  // Check weather the url has a param called ailaId
+
   const ailaId = useParams().ailaId;
 
   return (
