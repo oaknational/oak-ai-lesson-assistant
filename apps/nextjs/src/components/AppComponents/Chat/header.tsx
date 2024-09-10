@@ -5,6 +5,7 @@ import * as React from "react";
 import { OakIcon } from "@oaknational/oak-components";
 import { useClerkDemoMetadata } from "hooks/useClerkDemoMetadata";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import { Icon } from "@/components/Icon";
@@ -20,6 +21,8 @@ export function Header() {
 
   // Check whether clerk metadata has loaded to prevent the banner from flashing
   const clerkMetadata = useClerkDemoMetadata();
+
+  const ailaId = usePathname().split("aila/")[1];
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
@@ -64,7 +67,7 @@ export function Header() {
         <div className="flex items-center justify-end space-x-12">
           <Link
             className="hidden items-center sm:flex"
-            href={"/aila/help"}
+            href={ailaId ? `aila/help/?ailaId=${ailaId}` : "/help"}
             target="_blank"
           >
             <OakIcon iconName="question-mark" $width="all-spacing-6" />
