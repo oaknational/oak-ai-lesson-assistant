@@ -1,7 +1,4 @@
-import zodToJsonSchema from "zod-to-json-schema";
-
 import moderationCategories from "./moderationCategories.json";
-import { moderationResponseSchema } from "./moderationSchema";
 
 export const moderationPrompt = `
 OBJECTIVE:
@@ -38,12 +35,12 @@ Rating Criteria:
   )
   .join("")}
 
-NOTE: Your objective is to provide content guidance to ensure that certain content can be flagged with a 'adult supervision recommended/required' label. Regardless of the educational context, the score must be adjusted to reflect the presence of such content, even if the content is presented in a careful, considerate manner.
+NOTE:
 
-INSTRUCTION: Use the above  to classify the lesson provided, providing a justification for your scores. Your justification should be concise, precise and directly support your rating. A detailed justification is crucial, even for a score of 5. For category groups with a score less than 5, you must list the categories on which the lesson plan failed to meet the criteria.
+Your objective is to provide content guidance to ensure that certain content can be flagged with a 'adult supervision recommended/required' label. Regardless of the educational context, the score must be adjusted to reflect the presence of such content, even if the content is presented in a careful, considerate manner.
 
-OUTPUT: Ensure that your response is a valid JSON document that conforms to the following JSON schema: ${JSON.stringify(
-  zodToJsonSchema(moderationResponseSchema),
-)}
+INSTRUCTION:
 
-Do not include backticks in your response -- I should be able JSON parse your response.`;
+Use the above to classify the lesson provided, providing a justification for your scores. Your justification should be concise, precise and directly support your rating. A detailed justification is crucial, even for a score of 5.
+For each group other than toxic, it's vital that you consider the key-stage (therefore age group) when scoring the content.
+`;

@@ -3,12 +3,14 @@
 import * as React from "react";
 
 import { OakIcon } from "@oaknational/oak-components";
+import { usePathname } from "next/navigation";
 
 import { SidebarList } from "@/components/AppComponents/Chat/sidebar-list";
 
 import ChatButton from "./ui/chat-button";
 
 export function ChatHistory() {
+  const ailaId = usePathname().split("aila/")[1];
   return (
     <div className="rel mt-20 flex h-full flex-col">
       <div className="my-10 flex flex-col px-7">
@@ -28,7 +30,10 @@ export function ChatHistory() {
           </span>
           AI experiments page
         </ChatButton>
-        <ChatButton href="/aila/help" variant="text-link">
+        <ChatButton
+          href={ailaId ? `aila/help/?ailaId=${ailaId}` : "/help"}
+          variant="text-link"
+        >
           <span className="scale-90">
             <OakIcon iconName="question-mark" />
           </span>
