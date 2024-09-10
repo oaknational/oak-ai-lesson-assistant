@@ -98,7 +98,10 @@ const ModifyButton = ({
                     id={`${id}-modify-options-${option.enumValue}`}
                     key={`${id}-modify-options-${option.enumValue}`}
                     value={option.enumValue}
-                    label={option.label}
+                    label={handleLabelText({
+                      text: option.label,
+                      section,
+                    })}
                     onClick={() => {
                       setSelectedRadio(option);
                     }}
@@ -121,5 +124,24 @@ const ModifyButton = ({
     </OakBox>
   );
 };
+
+function handleLabelText({
+  text,
+  section,
+}: {
+  text: string;
+  section: string;
+}): string {
+  if (
+    section === "Misconceptions" ||
+    section === "Keyword learning points" ||
+    section === "Learning cycles"
+  ) {
+    if (text.includes("it")) {
+      return text.replace("it", "them");
+    }
+  }
+  return text;
+}
 
 export default ModifyButton;
