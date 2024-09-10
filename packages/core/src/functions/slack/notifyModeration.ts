@@ -44,7 +44,7 @@ export const notifyModeration = inngest.createFunction(
             fields: [
               {
                 type: "mrkdwn",
-                text: `*Chat*: <https://labs.thenational.academy/aila/${args.chatId}|aila/${args.chatId}>`,
+                text: `*Chat*: <${process.env.VERCEL_URL}/aila/${args.chatId}|aila/${args.chatId}>`,
               },
               {
                 type: "mrkdwn",
