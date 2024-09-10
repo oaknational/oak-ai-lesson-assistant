@@ -211,8 +211,8 @@ export const JsonPatchReplaceSchema = z.object({
 });
 
 export const JsonPatchValueSchema = z.union([
-  JsonPatchAddSchema, // Generic add for any path
-  JsonPatchReplaceSchema, // Generic replace for any path
+  //JsonPatchAddSchema, // Generic add for any path
+  //JsonPatchReplaceSchema, // Generic replace for any path
   JsonPatchRemoveSchema, // Generic remove for any path
   PatchBasedOn,
   PatchString,
@@ -221,6 +221,19 @@ export const JsonPatchValueSchema = z.union([
   PatchQuiz,
   PatchMisconceptions,
   PatchKeywords,
+]);
+
+export const JsonPatchValueForLLMSchema = z.union([
+  //JsonPatchAddSchema, // Generic add for any path
+  //JsonPatchReplaceSchema, // Generic replace for any path
+  JsonPatchRemoveSchemaForLLM, // Generic remove for any path
+  PatchBasedOnForLLM,
+  PatchStringForLLM,
+  PatchStringArrayForLLM,
+  PatchCycleForLLM,
+  PatchQuizForLLM,
+  PatchMisconceptionsForLLM,
+  PatchKeywordsForLLM,
 ]);
 
 export const JsonPatchValueOptionalSchema = z.union([
@@ -245,7 +258,10 @@ export const PatchDocumentSchema = z.object({
 // This is the schema that we send when requesting Structured Outputs
 // From the LLM. We are limited to not having min, max and we also
 // have constraints about ensuring each object has a type attribute
-// as its first attribute in the definition
+// as its first attribute in the definition.
+// Note, that unless/until we migrate all past messages we won't be
+// able to use this to validate the patches currently in the database
+// because they would be missing a "type" attribute.
 export const LLMPatchDocumentSchema = z.object({
   type: z.literal("patch"),
   reasoning: z.string(),
@@ -404,7 +420,7 @@ export const LLMResponseJsonSchema = zodToJsonSchema(
   "llmResponseSchema",
 );
 
-const MessagePartDocumentSchema = z.discriminatedUnion("type", [
+export const MessagePartDocumentSchema = z.discriminatedUnion("type", [
   ModerationDocumentSchema,
   ErrorDocumentSchema,
   PatchDocumentSchema,
@@ -419,6 +435,36 @@ const MessagePartDocumentSchema = z.discriminatedUnion("type", [
 ]);
 
 export type MessagePartDocument = z.infer<typeof MessagePartDocumentSchema>;
+
+export type MessagePartType =
+  | "moderation"
+  | "error"
+  | "patch"
+  | "state"
+  | "comment"
+  | "prompt"
+  | "text"
+  | "action"
+  | "bad"
+  | "unknown"
+  | "id";
+
+export const MessagePartDocumentSchemaByType: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [K in MessagePartType]: z.ZodSchema<any>;
+} = {
+  moderation: ModerationDocumentSchema,
+  error: ErrorDocumentSchema,
+  patch: PatchDocumentSchema,
+  state: StateDocumentSchema,
+  comment: CommentDocumentSchema,
+  prompt: PromptDocumentSchema,
+  text: TextDocumentSchema,
+  action: ActionDocumentSchema,
+  bad: BadDocumentSchema,
+  unknown: UnknownDocumentSchema,
+  id: MessageIdDocumentSchema,
+};
 
 const MessagePartSchema = z.object({
   type: z.literal("message-part"),
@@ -460,12 +506,22 @@ function tryParseJson(str: string): {
   }
 }
 
-function tryParsePart(
+export function tryParsePart(
   obj: object,
-  schema: ZodSchema,
 ): MessagePartDocument | UnknownDocument {
-  console.log("Try parse part", obj);
-  const parsed = schema.safeParse(obj);
+  const { type } = obj as { type: string };
+  // Assert the message part type is allowed
+  if (!MessagePartDocumentSchemaByType[type as MessagePartType]) {
+    console.error("Invalid message part type", type);
+    return {
+      type: "unknown",
+      value: JSON.stringify,
+      error: "Invalid message part type",
+    };
+  }
+  // Parse the object with the correct schema
+  const parsed =
+    MessagePartDocumentSchemaByType[type as MessagePartType].safeParse(obj);
   if (parsed.success) {
     return parsed.data;
   } else {
@@ -473,12 +529,13 @@ function tryParsePart(
   }
 }
 
-function tryParsePatch(obj: object): PatchDocument | UnknownDocument {
+export function tryParsePatch(obj: object): PatchDocument | UnknownDocument {
   const parsed = PatchDocumentSchema.safeParse(obj);
   if (parsed.success) {
     const patchDocument: PatchDocument = parsed.data;
     return patchDocument;
   } else {
+    console.log("Unable to parse patch", parsed, parsed.error);
     return { type: "unknown", value: JSON.stringify(obj), error: parsed.error };
   }
 }
@@ -506,7 +563,6 @@ function tryParseText(obj: object): TextDocument | UnknownDocument {
 // This helps us not to re-process past messageParts after they have
 // fully streamed in.
 export function parseMessageRow(row: string, index: number): MessagePart[] {
-  console.log("Parse message row", row);
   // Handle legacy plain text content
   if (!row.startsWith("{")) {
     return [
@@ -540,7 +596,6 @@ export function parseMessageRow(row: string, index: number): MessagePart[] {
       const result: MessagePart[] = [];
       let i = 0;
       for (const patch of llmMessage.patches ?? []) {
-        console.log("Parse patch", patch);
         const parsedPatch = tryParsePatch(patch);
         result.push({
           type: "message-part",
@@ -573,7 +628,7 @@ export function parseMessageRow(row: string, index: number): MessagePart[] {
       ];
     }
   }
-  const parsedPart = tryParsePart(parsed, MessagePartDocumentSchema);
+  const parsedPart = tryParsePart(parsed);
 
   // For non-llmResponse objects, return the entire row as a single message part
   return [
@@ -589,7 +644,6 @@ export function parseMessageParts(content: string): MessagePart[] {
     .flatMap((row, index) => parseMessageRow(row, index))
     .filter((part) => part !== undefined)
     .flat();
-  console.log("Message parts", messageParts);
   return messageParts;
 }
 
@@ -668,14 +722,6 @@ export function applyLessonPlanPatch(
   lessonPlan: LooseLessonPlan,
   command: JsonPatchDocument,
 ) {
-  console.log(
-    "Apply patch",
-    "value" in command
-      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (command as { value: { path: any } }).value?.path
-      : undefined,
-  );
-  console.log(JSON.stringify(command, null, 2));
   let updatedLessonPlan = { ...lessonPlan };
   if (command.type !== "patch") return lessonPlan;
   const patch = command.value as Operation;
