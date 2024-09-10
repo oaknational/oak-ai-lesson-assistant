@@ -6,8 +6,7 @@ import {
   OpenAIInput,
   OpenAI as OpenAILangchain,
 } from "langchain/llms/openai";
-import OpenAI from "openai";
-import { ClientOptions } from "openai";
+import OpenAI, { ClientOptions } from "openai";
 
 import { HeliconeChatMeta, heliconeHeaders } from "./helicone";
 

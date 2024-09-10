@@ -5,7 +5,6 @@ import {
 } from "@oakai/core/src/utils/subjects";
 import invariant from "tiny-invariant";
 import { z } from "zod";
-import { zodToJsonSchema } from "zod-to-json-schema";
 
 import { AilaChatService, AilaError, AilaServices } from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
