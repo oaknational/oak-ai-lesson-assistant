@@ -57,6 +57,8 @@ export class OpenAiModerator extends AilaModerator {
       throw new AilaModerationError("Failed to moderate after 3 attempts");
     }
 
+    const schema = zodToJsonSchema(moderationResponseSchema);
+
     const moderationResponse = await this._openAIClient.chat.completions.create(
       {
         model: this._model,
@@ -72,8 +74,13 @@ export class OpenAiModerator extends AilaModerator {
           type: "json_schema",
           json_schema: {
             name: "moderationResponse",
-            strict: true,
-            schema: zodToJsonSchema(moderationResponseSchema),
+            /**
+             * Currently `strict` mode does not support minimum/maxiumum integer types, which
+             * we use for the likert scale in the moderation schema.
+             * @see https://community.openai.com/t/new-function-calling-with-strict-has-a-problem-with-minimum-integer-type/903258
+             */
+            // strict: true,
+            schema,
           },
         },
       },
