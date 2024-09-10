@@ -123,7 +123,7 @@ const FAQPage = () => {
                 How do I sign up for Aila?
               </OakHeading>
               <OakP>
-                You can sign up to access Aila and our other AI experiments{" "}
+                You can sign up to access Aila and our other AI experiments
                 <OakLink href="/aila">here</OakLink>.
               </OakP>
               <OakHeading
@@ -398,7 +398,7 @@ const FAQPage = () => {
 
               <OakP $mb="space-between-s">
                 Yes, we provide comprehensive support to assist with any issues
-                or questions users may have. You can contact us via
+                or questions users may have. You can contact us via{" "}
                 <OakLink href="mailto:help@thenational.academy">email.</OakLink>
               </OakP>
               <OakHeading
