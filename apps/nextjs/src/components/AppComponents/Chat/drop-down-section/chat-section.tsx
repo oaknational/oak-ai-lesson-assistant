@@ -34,7 +34,7 @@ const ChatSection = ({
             lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
           }
         />
-        <FlagButton />
+        <FlagButton section={sectionTitle(objectKey)} />
       </OakFlex>
     </OakFlex>
   );
