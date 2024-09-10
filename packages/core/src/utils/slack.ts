@@ -76,7 +76,7 @@ export function userButtonsBlock(userId: string): ActionsBlock {
   };
 }
 
-export function invalidateModerationButtonBlock(
+export function moderationActionButtonBlock(
   moderationId: string,
 ): ActionsBlock {
   return {

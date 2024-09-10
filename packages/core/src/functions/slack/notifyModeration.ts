@@ -1,6 +1,6 @@
 import { inngest } from "../../client";
 import {
-  invalidateModerationButtonBlock,
+  moderationActionButtonBlock,
   slackNotificationChannelId,
   slackWebClient,
   userButtonsBlock,
@@ -26,6 +26,9 @@ export const notifyModeration = inngest.createFunction(
   async ({ event, step }) => {
     await step.run("Send message to slack", async () => {
       const args = notifyModerationSchema.data.parse(event.data);
+
+      console.log(">>>>>> EVENT DATA", event.data);
+      console.log(">>>>>> VERCEL_URL", process.env.VERCEL_URL);
 
       const response = await slackWebClient.chat.postMessage({
         channel: slackNotificationChannelId,
@@ -57,7 +60,7 @@ export const notifyModeration = inngest.createFunction(
             ],
           },
           userButtonsBlock(event.user.id),
-          invalidateModerationButtonBlock(event.data.moderationId),
+          moderationActionButtonBlock(event.data.moderationId),
         ],
       });
 
