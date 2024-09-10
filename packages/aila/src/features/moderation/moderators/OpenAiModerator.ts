@@ -5,6 +5,7 @@ import {
   moderationResponseSchema,
 } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import OpenAI from "openai";
+import zodToJsonSchema from "zod-to-json-schema";
 
 import { AilaModerator, AilaModerationError } from ".";
 import {
@@ -56,6 +57,8 @@ export class OpenAiModerator extends AilaModerator {
       throw new AilaModerationError("Failed to moderate after 3 attempts");
     }
 
+    const schema = zodToJsonSchema(moderationResponseSchema);
+
     const moderationResponse = await this._openAIClient.chat.completions.create(
       {
         model: this._model,
@@ -67,7 +70,19 @@ export class OpenAiModerator extends AilaModerator {
           { role: "user", content: input },
         ],
         temperature: this._temperature,
-        response_format: { type: "json_object" },
+        response_format: {
+          type: "json_schema",
+          json_schema: {
+            name: "moderationResponse",
+            /**
+             * Currently `strict` mode does not support minimum/maxiumum integer types, which
+             * we use for the likert scale in the moderation schema.
+             * @see https://community.openai.com/t/new-function-calling-with-strict-has-a-problem-with-minimum-integer-type/903258
+             */
+            // strict: true,
+            schema,
+          },
+        },
       },
       {
         headers: {
@@ -102,7 +117,7 @@ export class OpenAiModerator extends AilaModerator {
       throw new AilaModerationError(`No moderation response`);
     }
 
-    const { justification, categories, scores } = response.data;
+    const { categories, justification, scores } = response.data;
 
     return {
       justification,
@@ -113,9 +128,9 @@ export class OpenAiModerator extends AilaModerator {
          * In future we may want to adjust this threshold based on subject and key-stage, and the
          * category itself.
          */
-        const key = category[0];
-        for (const [scoreKey, score] of Object.entries(scores)) {
-          if (scoreKey === key && score < 5) {
+        const parentKey = category[0];
+        for (const [key, score] of Object.entries(scores)) {
+          if (key === parentKey && score < 5) {
             return true;
           }
         }
