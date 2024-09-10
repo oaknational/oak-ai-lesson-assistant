@@ -19,12 +19,16 @@ async function handler(
 
   const { userId } = auth();
   if (!userId) {
-    throw new Error("User is not authenticated");
+    return new Response("Unauthorized", {
+      status: 401,
+    });
   }
 
   const userIsAuthorised = await isAuthorised({ userId });
   if (!userIsAuthorised) {
-    throw new Error("User is not authorised");
+    return new Response("Unauthorized", {
+      status: 401,
+    });
   }
 
   try {
@@ -41,7 +45,7 @@ async function handler(
     );
   }
 
-  return new Response("Moderation invalidated", {
+  return new Response("Moderation invalidated and safety violation removed", {
     status: 200,
   });
 }
