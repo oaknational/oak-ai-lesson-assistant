@@ -31,7 +31,7 @@ export function ChatHistory() {
           AI experiments page
         </ChatButton>
         <ChatButton
-          href={ailaId ? `/help/?ailaId=${ailaId}` : "/help"}
+          href={ailaId ? `aila/help/?ailaId=${ailaId}` : "/help"}
           variant="text-link"
         >
           <span className="scale-90">
