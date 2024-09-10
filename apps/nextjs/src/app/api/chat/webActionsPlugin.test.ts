@@ -76,6 +76,7 @@ describe("webActionsPlugin", () => {
         },
         data: {
           chatId: "chat_abc",
+          moderationId: "ABC",
           justification: "Test justification",
           categories: ["t/encouragement-illegal-activity"],
         },
