@@ -237,8 +237,12 @@ export const JsonPatchValueForLLMSchema = z.union([
 ]);
 
 export const JsonPatchValueOptionalSchema = z.union([
-  JsonPatchAddSchema, // Generic add for any path
-  JsonPatchReplaceSchema, // Generic replace for any path
+  // These generate "add" and "replace" patches could potentially be
+  // quite dangerous. Zod will validate anything you pass as a value
+  // here, which means it will ignore the schema that is defined in the
+  // subsequent schemas. Leaving these commented for now.
+  // JsonPatchAddSchema, // Generic add for any path
+  // JsonPatchReplaceSchema, // Generic replace for any path
   JsonPatchRemoveSchema, // Generic remove for any path
   PatchBasedOnOptional,
   PatchString,
