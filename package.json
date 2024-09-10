@@ -1,5 +1,5 @@
 {
-  "name": "oak-ai-lesson-assistant",
+  "name": "oak-ai-web-app",
   "private": true,
   "scripts": {
     "FIXME:lint": "turbo lint && manypkg check",
