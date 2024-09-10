@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { Moderations, SafetyViolations } from "@oakai/core";
 import { prisma } from "@oakai/db";
 import { NextRequest } from "next/server";
@@ -53,12 +53,10 @@ async function handler(
 export const GET = handler;
 
 async function isAuthorised({ userId }: { userId: string }) {
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-  });
-  return user?.isOakUser;
+  const user = await clerkClient.users.getUser(userId);
+  return user?.emailAddresses.some((email) =>
+    email.emailAddress.endsWith("@thenational.academy"),
+  );
 }
 
 async function invalidateToxicModerationAndRemoveSafetyViolation({
