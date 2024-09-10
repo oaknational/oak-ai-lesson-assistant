@@ -28,6 +28,7 @@ export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
     useMobileLessonPullOutControl({
       ailaStreamingStatus,
       messages,
+      lessonPlan,
     });
 
   return (
