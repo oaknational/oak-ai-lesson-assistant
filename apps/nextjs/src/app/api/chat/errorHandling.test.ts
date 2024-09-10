@@ -21,13 +21,12 @@ describe("handleChatException", () => {
         });
 
       const span = { setTag: jest.fn() } as unknown as TracingSpan;
-      const error = new AilaThreatDetectionError("test error");
+      const error = new AilaThreatDetectionError("user_abc", "test error");
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
       const response = await handleChatException(
         span,
         error,
-        "test-user-id",
         "test-chat-id",
         prisma,
       );
@@ -54,7 +53,6 @@ describe("handleChatException", () => {
       const response = await handleChatException(
         span,
         error,
-        "test-user-id",
         "test-chat-id",
         prisma,
       );
@@ -69,13 +67,16 @@ describe("handleChatException", () => {
   describe("RateLimitExceededError", () => {
     it("should return an error chat message", async () => {
       const span = { setTag: jest.fn() } as unknown as TracingSpan;
-      const error = new RateLimitExceededError(100, Date.now() + 3600 * 1000);
+      const error = new RateLimitExceededError(
+        "user_abc",
+        100,
+        Date.now() + 3600 * 1000,
+      );
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
       const response = await handleChatException(
         span,
         error,
-        "test-user-id",
         "test-chat-id",
         prisma,
       );
@@ -103,7 +104,6 @@ describe("handleChatException", () => {
       const response = await handleChatException(
         span,
         error,
-        "test-user-id",
         "test-chat-id",
         prisma,
       );

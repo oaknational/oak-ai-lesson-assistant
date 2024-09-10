@@ -33,11 +33,15 @@ function reportErrorTelemetry(
 async function handleThreatDetectionError(
   span: TracingSpan,
   e: AilaThreatDetectionError,
-  userId: string,
   id: string,
   prisma: PrismaClientWithAccelerate,
 ) {
-  const heliconeErrorMessage = await handleHeliconeError(userId, id, e, prisma);
+  const heliconeErrorMessage = await handleHeliconeError(
+    e.userId,
+    id,
+    e,
+    prisma,
+  );
   reportErrorTelemetry(span, e, "AilaThreatDetectionError", "Threat detected");
   return streamingJSON(heliconeErrorMessage);
 }
@@ -87,7 +91,6 @@ async function handleGenericError(span: TracingSpan, e: Error) {
 export async function handleChatException(
   span: TracingSpan,
   e: unknown,
-  userId: string | undefined,
   chatId: string,
   prisma: PrismaClientWithAccelerate,
 ): Promise<Response> {
@@ -95,11 +98,11 @@ export async function handleChatException(
     return handleAilaAuthenticationError(span, e);
   }
 
-  if (e instanceof AilaThreatDetectionError && userId) {
-    return handleThreatDetectionError(span, e, userId, chatId, prisma);
+  if (e instanceof AilaThreatDetectionError) {
+    return handleThreatDetectionError(span, e, chatId, prisma);
   }
 
-  if (e instanceof RateLimitExceededError && userId) {
+  if (e instanceof RateLimitExceededError) {
     return handleRateLimitError(span, e);
   }
 

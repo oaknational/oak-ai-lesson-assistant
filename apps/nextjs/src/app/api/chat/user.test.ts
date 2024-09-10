@@ -17,9 +17,14 @@ describe("chat route user functions", () => {
       jest.spyOn(posthogAiBetaServerClient, "identify");
       jest.spyOn(posthogAiBetaServerClient, "capture");
       jest.spyOn(posthogAiBetaServerClient, "shutdown");
-      const error = new RateLimitExceededError(100, Date.now() + 3600 * 1000);
-      const chatId = "testChatId";
+
       const userId = "testUserId";
+      const error = new RateLimitExceededError(
+        userId,
+        100,
+        Date.now() + 3600 * 1000,
+      );
+      const chatId = "testChatId";
 
       await reportRateLimitError(error, userId, chatId);
 
@@ -48,9 +53,13 @@ describe("chat route user functions", () => {
         posthogAiBetaServerClient: mockPosthogClient,
       }));
 
-      const error = new RateLimitExceededError(10, Date.now() + 3600 * 1000);
-      const chatId = "testChatId";
       const userId = "testUserId";
+      const error = new RateLimitExceededError(
+        userId,
+        10,
+        Date.now() + 3600 * 1000,
+      );
+      const chatId = "testChatId";
 
       await reportRateLimitError(error, userId, chatId);
 

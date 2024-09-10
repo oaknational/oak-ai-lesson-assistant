@@ -141,7 +141,7 @@ export async function handleChatPostRequest(
       const stream = await generateChatStream(aila, abortController);
       return new StreamingTextResponse(stream);
     } catch (e) {
-      return handleChatException(span, e, userId, chatId, prisma);
+      return handleChatException(span, e, chatId, prisma);
     } finally {
       if (aila) {
         await aila.ensureShutdown();
