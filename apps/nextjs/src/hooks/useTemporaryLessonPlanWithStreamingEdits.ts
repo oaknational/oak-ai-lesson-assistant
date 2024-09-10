@@ -75,7 +75,6 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
     patch: PatchDocumentWithHash,
     workingLessonPlan: LooseLessonPlan,
   ) {
-    console.log("Apply to temp", patch);
     const newLessonPlan: LooseLessonPlan | undefined = applyLessonPlanPatch(
       workingLessonPlan,
       patch,

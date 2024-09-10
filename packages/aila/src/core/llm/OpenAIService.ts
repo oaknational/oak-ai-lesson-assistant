@@ -44,7 +44,6 @@ export class OpenAIService implements LLMService {
     temperature: number;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }): Promise<ReadableStreamDefaultReader<string>> {
-    console.log("Stream object");
     const { textStream: stream } = await streamObject({
       model: this._openAIProvider(params.model, { structuredOutputs: true }),
       output: "object",

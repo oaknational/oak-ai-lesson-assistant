@@ -339,10 +339,6 @@ export class AilaChat implements AilaChatService {
       ),
     });
 
-    const jsonSchema = zodToJsonSchema(schema);
-    console.log("JSON Schema");
-    console.log(JSON.stringify(jsonSchema, null, 2));
-
     return this._llmService.createChatCompletionObjectStream({
       model: this._aila.options.model ?? DEFAULT_MODEL,
       schema,
