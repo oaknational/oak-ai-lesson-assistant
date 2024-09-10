@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
  
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Oak AI Experiments",
+    name: "Aila: Oak's AI Lesson Assistant",
     short_name: 'Aila',
     description: 'Oak AI experiments offers some experimental generative AI tools designed for and freely available to teachers. We are actively looking for your feedback to refine and optimise these tools, making them more effective and time-saving.',
     start_url: '/',
