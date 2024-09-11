@@ -1,4 +1,6 @@
-export async function consumeStream(stream: ReadableStream): Promise<string> {
+export async function consumeStream(
+  stream: ReadableStream<Uint8Array>,
+): Promise<string> {
   const reader = stream.getReader();
   let result = "";
 
@@ -6,7 +8,7 @@ export async function consumeStream(stream: ReadableStream): Promise<string> {
     const { value, done } = await reader.read();
     if (done) break;
     if (value) {
-      result += value;
+      result += new TextDecoder().decode(value);
     }
   }
 
