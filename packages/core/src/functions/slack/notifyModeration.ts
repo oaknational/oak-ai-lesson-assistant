@@ -2,9 +2,10 @@ import { inngest } from "../../client";
 import {
   slackNotificationChannelId,
   slackWebClient,
-  userButtonsBlock,
+  actionsBlock,
   userIdBlock,
 } from "../../utils/slack";
+import { getExternalFacingUrl } from "./getExternalFacingUrl";
 import { notifyModerationSchema } from "./notifyModeration.schema";
 
 // Example event data:
@@ -42,7 +43,7 @@ export const notifyModeration = inngest.createFunction(
             fields: [
               {
                 type: "mrkdwn",
-                text: `*Chat*: <https://labs.thenational.academy/aila/${args.chatId}|aila/${args.chatId}>`,
+                text: `*Chat*: <https://${getExternalFacingUrl()}/aila/${args.chatId}|aila/${args.chatId}>`,
               },
               {
                 type: "mrkdwn",
@@ -54,7 +55,10 @@ export const notifyModeration = inngest.createFunction(
               },
             ],
           },
-          userButtonsBlock(event.user.id),
+          actionsBlock({
+            userActionsProps: { userId: event.user.id },
+            chatActionsProps: { chatId: args.chatId },
+          }),
         ],
       });
 
