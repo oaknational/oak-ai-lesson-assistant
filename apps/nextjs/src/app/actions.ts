@@ -1,6 +1,5 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { AilaPersistedChat, chatSchema } from "@oakai/aila/src/protocol/schema";
 import { Prisma, prisma } from "@oakai/db";
 import * as Sentry from "@sentry/nextjs";
@@ -56,26 +55,6 @@ export async function getChatById(
       userId: session.userId,
     }) || null
   );
-}
-
-export async function getChatForAuthenticatedUser(
-  id: string,
-): Promise<AilaPersistedChat | null> {
-  const { userId } = auth();
-
-  const chat = await getChatById(id);
-
-  if (!chat) {
-    return null;
-  }
-
-  const userIsOwner = chat.userId === userId;
-
-  if (!userIsOwner) {
-    return null;
-  }
-
-  return chat;
 }
 
 export async function getSharedChatById(
