@@ -38,6 +38,7 @@ export const MisconceptionSchema = z.object({
     .describe("Not to be used. Only included here for legacy support."), // There is some confusion here about what the LLM generates
 });
 
+// When using Structured Outputs we cannot specify the length of arrays or strings
 export const MisconceptionSchemaWithoutLength = z.object({
   misconception: z
     .string()
@@ -65,6 +66,7 @@ export const MisconceptionsSchema = z
     "An array of misconceptions which a student might have about the topic covered in the lesson.",
   );
 
+// When using Structured Outputs we cannot specify the length of arrays or strings
 export const MisconceptionsSchemaWithoutLength = z
   .array(MisconceptionSchemaWithoutLength)
   .describe(
@@ -89,6 +91,7 @@ export const QuizQuestionSchema = z.object({
   distractors: z.array(z.string()).length(2).describe("A set of distractors."),
 });
 
+// When using Structured Outputs we cannot specify the length of arrays or strings
 export const QuizQuestionSchemaWithoutLength = z.object({
   question: z.string().describe("The question to be asked in the quiz."),
   answers: z
@@ -174,7 +177,8 @@ export const CheckForUnderstandingSchema = z.object({
     ),
 });
 
-export const CheckForUnderstandingSchemaWithNoLength = z.object({
+// When using Structured Outputs we cannot specify the length of arrays or strings
+export const CheckForUnderstandingSchemaWithoutLength = z.object({
   question: z
     .string()
     .describe(
@@ -226,6 +230,7 @@ export const CycleSchema = z.object({
     ),
 });
 
+// When using Structured Outputs we cannot specify the length of arrays or strings
 export const CycleSchemaWithoutLength = z.object({
   title: z.string().describe("The title of the learning cycle"),
   durationInMinutes: z
@@ -237,7 +242,7 @@ export const CycleSchemaWithoutLength = z.object({
     "An object describing how the teacher would explain the content of this cycle to the students. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
   ),
   checkForUnderstanding: z
-    .array(CheckForUnderstandingSchemaWithNoLength)
+    .array(CheckForUnderstandingSchemaWithoutLength)
     .describe(
       "Two or more questions to check that students have understood the content of this cycle. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
     ),
@@ -291,6 +296,7 @@ export const KeywordSchema = z
     "A keyword that is used in the lesson. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
   );
 
+// When using Structured Outputs we cannot specify the length of arrays or strings
 export const KeywordSchemaWithoutLength = z
   .object({
     keyword: z
@@ -322,7 +328,8 @@ export const KeywordsSchema = z
     "A set of keywords where each is a word to be included throughout the lesson.",
   );
 
-export const KeywordsSchemaWithNoLength = z
+// When using Structured Outputs we cannot specify the length of arrays or strings
+export const KeywordsSchemaWithoutLength = z
   .array(KeywordSchemaWithoutLength)
   .describe(
     "A set of keywords where each is a word to be included throughout the lesson. Minimum 1 keyword, maximum 5.",
