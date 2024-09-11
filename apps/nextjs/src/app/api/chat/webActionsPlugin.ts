@@ -61,7 +61,6 @@ export const createWebActionsPlugin: PluginCreator = (
       },
       data: {
         chatId: aila.chatId || "Unknown",
-        moderationId: moderation.id,
         categories: moderation.categories as string[],
         justification: moderation.justification || "Unknown",
       },

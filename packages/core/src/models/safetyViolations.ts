@@ -116,7 +116,7 @@ export class SafetyViolations {
       distinctId: userId,
       properties: { banned: true },
     });
-
+    await posthogAiBetaServerClient.flush();
     await inngest.send({
       name: "app/slack.notifyUserBan",
       user: { id: userId },
@@ -169,6 +169,7 @@ export class SafetyViolations {
         distinctId: userId,
         properties: { banned: false },
       });
+      await posthogAiBetaServerClient.flush();
     }
   }
 }

@@ -5,13 +5,13 @@ import {
   actionsBlock,
   userIdBlock,
 } from "../../utils/slack";
+import { getExternalFacingUrl } from "./getExternalFacingUrl";
 import { notifyModerationSchema } from "./notifyModeration.schema";
 
 // Example event data:
 // {
 //   "chatId": "chat_abc",
 //   "userId": "user_abc",
-//   "moderationId": "moderation_abc",
 //   "justification": "This is a justification",
 //   "categories": ["t/category1", "u/category2"]
 // }
@@ -43,7 +43,7 @@ export const notifyModeration = inngest.createFunction(
             fields: [
               {
                 type: "mrkdwn",
-                text: `*Chat*: <https://${process.env.VERCEL_URL}/aila/${args.chatId}|aila/${args.chatId}>`,
+                text: `*Chat*: <https://${getExternalFacingUrl()}/aila/${args.chatId}|aila/${args.chatId}>`,
               },
               {
                 type: "mrkdwn",
@@ -57,7 +57,7 @@ export const notifyModeration = inngest.createFunction(
           },
           actionsBlock({
             userActionsProps: { userId: event.user.id },
-            moderationActionsProps: { moderationId: args.moderationId },
+            chatActionsProps: { chatId: args.chatId },
           }),
         ],
       });

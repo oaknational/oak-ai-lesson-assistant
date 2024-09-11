@@ -6,6 +6,8 @@ import {
   animals,
 } from "unique-names-generator";
 
+import { getExternalFacingUrl } from "../functions/slack/getExternalFacingUrl";
+
 if (!process.env.SLACK_NOTIFICATION_CHANNEL_ID) {
   throw new Error("Missing env var SLACK_NOTIFICATION_CHANNEL_ID");
 }
@@ -54,10 +56,10 @@ export function userIdBlock(userId: string): SectionBlock {
 
 export function actionsBlock({
   userActionsProps,
-  moderationActionsProps,
+  chatActionsProps,
 }: {
   userActionsProps?: { userId: string };
-  moderationActionsProps?: { moderationId: string };
+  chatActionsProps?: { chatId: string };
 }): ActionsBlock {
   const userActions: ActionsBlock["elements"] = userActionsProps
     ? [
@@ -80,21 +82,21 @@ export function actionsBlock({
       ]
     : [];
 
-  const moderationActions: ActionsBlock["elements"] = moderationActionsProps
+  const chatActions: ActionsBlock["elements"] = chatActionsProps
     ? [
         {
           type: "button",
           text: {
             type: "plain_text",
-            text: "Invalidate moderation",
+            text: "Admin chat",
           },
-          url: `https://${process.env.VERCEL_URL}/api/admin/moderation/${moderationActionsProps.moderationId}/invalidate`,
+          url: `https://${getExternalFacingUrl()}/admin/aila/${chatActionsProps.chatId}`,
         },
       ]
     : [];
 
   return {
     type: "actions",
-    elements: [...userActions, ...moderationActions],
+    elements: [...userActions, ...chatActions],
   };
 }
