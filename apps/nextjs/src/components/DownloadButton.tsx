@@ -127,7 +127,8 @@ export const DownloadButton = ({
           {handleSendEmailIcon({ isSuccess, isLoading, isError })}
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
-              Email me {ext} {isSuccess && `- Email sent`}{" "}
+              Email me {ext === "docx" ? `doc` : `slides`}{" "}
+              {isSuccess && `- Email sent`}{" "}
               {isError && `- There was an error sending the email!`}
             </span>
             <span className="text-left opacity-80">
