@@ -15,6 +15,5 @@ export interface LLMService {
     schemaName: string;
     messages: Message[];
     temperature: number;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }): Promise<ReadableStreamDefaultReader<string>>;
 }

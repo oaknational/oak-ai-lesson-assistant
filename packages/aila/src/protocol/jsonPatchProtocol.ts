@@ -240,7 +240,9 @@ export const JsonPatchValueOptionalSchema = z.union([
   // These generate "add" and "replace" patches could potentially be
   // quite dangerous. Zod will validate anything you pass as a value
   // here, which means it will ignore the schema that is defined in the
-  // subsequent schemas. Leaving these uncommented for now.
+  // subsequent schemas.
+  // #TODO we should probably remove these and update the code that
+  // relies on these loose types
   JsonPatchAddSchema, // Generic add for any path
   JsonPatchReplaceSchema, // Generic replace for any path
   JsonPatchRemoveSchema, // Generic remove for any path
@@ -640,6 +642,11 @@ export function parseMessageRow(row: string, index: number): MessagePart[] {
   ];
 }
 
+// Handles parsing the message parts that are part of a message
+// Each row is separated by the record separator character
+// Rows can either be a valid document OR an object that looks like this:
+// {"type":"llmMessage","patches":[{...},{...}]},"prompt":{"type":"text","message":"Some message"}}
+
 export function parseMessageParts(content: string): MessagePart[] {
   const messageParts = content
     .split("␞")
@@ -712,6 +719,9 @@ export function extractPatches(
   return { validPatches, partialPatches };
 }
 
+// This isValidatePatch function only tells us if it contains an add / replace and a value
+// and must date back to when we were allowing a very loose schema for patches
+// #TODO we should probably rename this or add Zod validation or it could lead to bugs
 function isValidPatch(patch: Operation): boolean {
   if (!patch?.path) return false;
   if (patch.op === "add" && !patch.value) {
@@ -802,8 +812,3 @@ export function parseJsonSafely(jsonStr: string, logging: boolean = false) {
   // Return null if no valid JSON could be extracted
   return null;
 }
-
-// Handles parsing the message parts that are part of a message
-// Each row is separated by the record separator character
-// Rows can either be a valid document OR an object that looks like this:
-// {"type":"llmMessage","patches":[{...},{...}]},"prompt":{"type":"text","message":"Some message"}}
