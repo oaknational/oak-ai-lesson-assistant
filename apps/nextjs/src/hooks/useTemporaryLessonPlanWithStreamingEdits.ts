@@ -23,17 +23,14 @@ const hashFor = (obj: object, messageHashes) => {
 };
 
 function extractPatchesFromMessage(message: Message) {
-  const { validDocuments, partialDocuments } = extractPatches(
-    message.content,
-    100,
-  );
-  return { validDocuments, partialDocuments };
+  const { validPatches, partialPatches } = extractPatches(message.content, 100);
+  return { validPatches, partialPatches };
 }
 
 function patchHasBeenApplied(
   patch: PatchDocument,
   appliedPatches: PatchDocumentWithHash[],
-  messageHashes,
+  messageHashes: Record<string, string>,
 ): { patch: PatchDocumentWithHash | null; hasBeenApplied: boolean } {
   const hash = hashFor(patch, messageHashes);
   const hasBeenApplied = appliedPatches.some(
@@ -52,7 +49,11 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
   messages?: Message[];
   isStreaming?: boolean;
   messageHashes: Record<string, string>;
-}): { tempLessonPlan: LooseLessonPlan } => {
+}): {
+  tempLessonPlan: LooseLessonPlan;
+  validPatches: PatchDocument[];
+  partialPatches: PatchDocument[];
+} => {
   const throttledAssistantMessages = useThrottle(messages, 100);
   const [tempLessonPlan, setTempLessonPlan] = useState<LooseLessonPlan>({
     ...lessonPlan,
@@ -98,17 +99,19 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
     return newLessonPlan ?? workingLessonPlan;
   }
 
-  if (!throttledAssistantMessages) return { tempLessonPlan };
+  if (!throttledAssistantMessages)
+    return { tempLessonPlan, partialPatches: [], validPatches: [] };
   const lastMessage =
     throttledAssistantMessages[throttledAssistantMessages.length - 1];
-  if (!lastMessage?.content) return { tempLessonPlan };
+  if (!lastMessage?.content)
+    return { tempLessonPlan, partialPatches: [], validPatches: [] };
 
-  const { validDocuments, partialDocuments } =
+  const { validPatches, partialPatches } =
     extractPatchesFromMessage(lastMessage);
 
   let workingLessonPlan = { ...tempLessonPlan };
 
-  for (const patch of validDocuments) {
+  for (const patch of validPatches) {
     // These documents are complete and should be applied once and update the temp lesson plan
     const { patch: patchToApply, hasBeenApplied } = patchHasBeenApplied(
       patch,
@@ -122,8 +125,8 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
   }
 
   const streamingPatch =
-    partialDocuments.length > 0
-      ? partialDocuments[partialDocuments.length - 1]
+    partialPatches.length > 0
+      ? partialPatches[partialPatches.length - 1]
       : undefined;
 
   if (streamingPatch) {
@@ -133,5 +136,9 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
     });
   }
 
-  return { tempLessonPlan: workingLessonPlan };
+  return {
+    tempLessonPlan: workingLessonPlan,
+    validPatches,
+    partialPatches,
+  };
 };

@@ -272,6 +272,7 @@ describe("Aila", () => {
           useRag: false,
           useAnalytics: false,
           useModeration: false,
+          useThreatDetection: false,
         },
         plugins: [],
         services: {

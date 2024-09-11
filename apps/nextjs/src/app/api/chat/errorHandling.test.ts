@@ -4,6 +4,7 @@ import { UserBannedError } from "@oakai/core/src/models/safetyViolations";
 import { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
 import { PrismaClientWithAccelerate } from "@oakai/db";
+import invariant from "tiny-invariant";
 
 import { consumeStream } from "@/utils/testHelpers/consumeStream";
 
@@ -33,9 +34,8 @@ describe("handleChatException", () => {
 
       expect(response.status).toBe(200);
 
-      const message = JSON.parse(
-        await consumeStream(response.body as ReadableStream),
-      );
+      invariant(response.body instanceof ReadableStream);
+      const message = JSON.parse(await consumeStream(response.body));
       expect(message).toEqual({
         type: "error",
         value: "Threat detected",
@@ -83,9 +83,9 @@ describe("handleChatException", () => {
 
       expect(response.status).toBe(200);
 
-      const message = JSON.parse(
-        await consumeStream(response.body as ReadableStream),
-      );
+      const consumed = await consumeStream(response.body as ReadableStream);
+      expect(consumed).toMatch(/^\{/);
+      const message = JSON.parse(consumed);
       expect(message).toEqual({
         type: "error",
         value: "Rate limit exceeded",
