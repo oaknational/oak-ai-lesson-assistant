@@ -30,7 +30,9 @@ function createOpenAIClient(props: CreateOpenAIClientProps): OpenAI {
   return new OpenAI(openAiFields);
 }
 
-function createOpenAIProvider(props: CreateOpenAIClientProps): OpenAIProvider {
+function createVercelOpenAIClient(
+  props: CreateOpenAIClientProps,
+): OpenAIProvider {
   const headers = heliconeHeaders(props);
   return createOpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -97,7 +99,7 @@ function createOpenAILangchainChatClient({
 
 export {
   createOpenAIClient,
-  createOpenAIProvider,
+  createVercelOpenAIClient,
   createOpenAIModerationsClient,
   createOpenAILangchainClient,
   createOpenAILangchainChatClient,
