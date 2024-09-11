@@ -17,7 +17,7 @@ import {
   CycleSchemaWithoutLength,
   KeywordsOptionalSchema,
   KeywordsSchema,
-  KeywordsSchemaWithNoLength,
+  KeywordsSchemaWithoutLength,
   LessonPlanSchemaWhilstStreaming,
   LooseLessonPlan,
   MisconceptionsOptionalSchema,
@@ -41,6 +41,9 @@ export const PatchString = z.object({
   value: z.string(),
 });
 
+// When using Structured Outputs we must include a "type" attribute as the first
+// attribute in the object, otherwise it results in an error when generating the
+// JSON Schema
 export const PatchStringForLLM = z.object({
   type: z.literal("string"),
   op: z.union([z.literal("add"), z.literal("replace")]),
@@ -65,6 +68,9 @@ export const PatchStringArray = z.object({
   value: z.array(z.string()),
 });
 
+// When using Structured Outputs we must include a "type" attribute as the first
+// attribute in the object, otherwise it results in an error when generating the
+// JSON Schema
 export const PatchStringArrayForLLM = z.object({
   type: z.literal("string-array"),
   op: z.union([z.literal("add"), z.literal("replace")]),
@@ -96,6 +102,8 @@ export const PatchCycle = z.object({
   value: CycleSchema,
 });
 
+// When using Structured Outputs we cannot specify the length of arrays or strings
+// so we have to use a different schema and pass in the spec with a description and in the prompt
 export const PatchCycleForLLM = z.object({
   type: z.literal("cycle"),
   op: z.union([z.literal("add"), z.literal("replace")]),
@@ -121,6 +129,8 @@ export const PatchQuiz = z.object({
   value: QuizSchema,
 });
 
+// When using Structured Outputs we cannot specify the length of arrays or strings
+// so we have to use a different schema and pass in the spec with a description and in the prompt
 export const PatchQuizForLLM = z.object({
   type: z.literal("quiz"),
   op: z.union([z.literal("add"), z.literal("replace")]),
@@ -140,6 +150,8 @@ export const PatchBasedOn = z.object({
   value: BasedOnSchema,
 });
 
+// When using Structured Outputs we cannot specify the length of arrays or strings
+// so we have to use a different schema and pass in the spec with a description and in the prompt
 export const PatchBasedOnForLLM = z.object({
   type: z.literal("basedOn"),
   op: z.union([z.literal("add"), z.literal("replace")]),
@@ -159,6 +171,8 @@ export const PatchMisconceptions = z.object({
   value: MisconceptionsSchema,
 });
 
+// When using Structured Outputs we cannot specify the length of arrays or strings
+// so we have to use a different schema and pass in the spec with a description and in the prompt
 export const PatchMisconceptionsForLLM = z.object({
   type: z.literal("misconceptions"),
   op: z.union([z.literal("add"), z.literal("replace")]),
@@ -178,11 +192,13 @@ export const PatchKeywords = z.object({
   value: KeywordsSchema,
 });
 
+// When using Structured Outputs we cannot specify the length of arrays or strings
+// so we have to use a different schema and pass in the spec with a description and in the prompt
 export const PatchKeywordsForLLM = z.object({
   type: z.literal("keywords"),
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.literal("/keywords"),
-  value: KeywordsSchemaWithNoLength,
+  value: KeywordsSchemaWithoutLength,
 });
 
 export const JsonPatchRemoveSchema = z.object({
@@ -190,6 +206,8 @@ export const JsonPatchRemoveSchema = z.object({
   path: z.string(),
 });
 
+// When using Structured Outputs we cannot specify the length of arrays or strings
+// so we have to use a different schema and pass in the spec with a description and in the prompt
 export const JsonPatchRemoveSchemaForLLM = z.object({
   type: z.literal("remove"),
   op: z.literal("remove"),
@@ -223,6 +241,8 @@ export const JsonPatchValueSchema = z.union([
   PatchKeywords,
 ]);
 
+// Because we cannot use min/max lengths for arrays and strings we have a separate schema
+// when we are using Structured Outputs
 export const JsonPatchValueForLLMSchema = z.union([
   //JsonPatchAddSchema, // Generic add for any path
   //JsonPatchReplaceSchema, // Generic replace for any path
