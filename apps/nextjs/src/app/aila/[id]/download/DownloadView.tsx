@@ -9,7 +9,6 @@ import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import { DownloadButton } from "@/components/DownloadButton";
 import { Icon } from "@/components/Icon";
-import { trpc } from "@/utils/trpc";
 
 import { SurveyDialogLauncher } from "./SurveyDialogLauncher";
 import { useDownloadView } from "./useDownloadView";
