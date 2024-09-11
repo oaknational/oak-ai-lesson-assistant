@@ -13,11 +13,14 @@ export class Moderations {
 
   lessonSnapshots: LessonSnapshots;
 
-  async byAppSessionId(appSessionId: string): Promise<Moderation[]> {
+  async byAppSessionId(
+    appSessionId: string,
+    { includeInvalidated }: { includeInvalidated?: boolean },
+  ): Promise<Moderation[]> {
     return this.prisma.moderation.findMany({
       where: {
         appSessionId,
-        invalidatedAt: null,
+        invalidatedAt: includeInvalidated ? undefined : null,
       },
     });
   }
