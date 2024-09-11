@@ -11,6 +11,7 @@ import { toast } from "react-hot-toast";
 
 import { usePathname, useRouter } from "#next/navigation";
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
+import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
@@ -36,7 +37,6 @@ import {
 import {
   isAccountLocked,
   isModeration,
-  parseMessageParts,
 } from "../AppComponents/Chat/chat-message/protocol";
 
 export type ChatContextProps = {
@@ -86,8 +86,9 @@ function useActionMessages() {
 
   return {
     invokeActionMessages: (messageContent: string) => {
-      const shouldShowLockedPage =
-        parseMessageParts(messageContent).some(isAccountLocked);
+      const shouldShowLockedPage = parseMessageParts(messageContent)
+        .map((p) => p.document)
+        .some(isAccountLocked);
 
       if (shouldShowLockedPage) {
         posthog.reset();
@@ -102,7 +103,7 @@ function getModerationFromMessage(message?: { content: string }) {
     return;
   }
   const messageParts = parseMessageParts(message.content);
-  const moderation = messageParts.find(isModeration);
+  const moderation = messageParts.map((p) => p.document).find(isModeration);
 
   return moderation;
 }
@@ -172,7 +173,7 @@ export function ChatProvider({
       Sentry.captureException(new Error("Use chat error"), {
         extra: { originalError: error },
       });
-      console.error("UseChat error", { error });
+      console.error("UseChat error", { error, messages });
       setHasFinished(true);
     },
     onResponse(response) {
@@ -250,12 +251,13 @@ export function ChatProvider({
     });
   }, [messages]);
 
-  const { tempLessonPlan } = useTemporaryLessonPlanWithStreamingEdits({
-    lessonPlan,
-    messages,
-    isStreaming: !hasFinished,
-    messageHashes,
-  });
+  const { tempLessonPlan, partialPatches, validPatches } =
+    useTemporaryLessonPlanWithStreamingEdits({
+      lessonPlan,
+      messages,
+      isStreaming: !hasFinished,
+      messageHashes,
+    });
 
   const setLessonPlanFromTempLessonPlan = useCallback(() => {
     setLessonPlanWithLogging(tempLessonPlan, "setLessonPlanFromTempLessonPlan");
@@ -303,7 +305,13 @@ export function ChatProvider({
       });
       shouldTrackStreamFinished.current = false;
     }
-  }, [hasFinished, messages, setLessonPlanWithLogging, lessonPlanTracking]);
+  }, [
+    hasFinished,
+    messages,
+    setLessonPlanWithLogging,
+    lessonPlanTracking,
+    //lessonPlan, Deliberately do not add this dependency
+  ]);
 
   /**
    * Get the sensitive moderation id and pass to dialog
@@ -345,6 +353,8 @@ export function ChatProvider({
       stop,
       input,
       setInput,
+      partialPatches,
+      validPatches,
     }),
     [
       id,
@@ -365,6 +375,8 @@ export function ChatProvider({
       input,
       setInput,
       append,
+      partialPatches,
+      validPatches,
     ],
   );
 

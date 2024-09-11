@@ -1,3 +1,4 @@
+import { createOpenAI, OpenAIProvider } from "@ai-sdk/openai";
 import { ChatOpenAI as LangchainChatOpenAI } from "langchain/chat_models/openai";
 import { BaseLLMParams } from "langchain/llms/base";
 import {
@@ -7,52 +8,9 @@ import {
 } from "langchain/llms/openai";
 import OpenAI, { ClientOptions } from "openai";
 
-export type HeliconeChatMeta = {
-  chatId: string;
-  userId: string | undefined;
-};
-function heliconeHeaders({
-  chatMeta,
-  app,
-}: {
-  chatMeta?: HeliconeChatMeta;
-  app: string;
-}) {
-  if (
-    !process.env.HELICONE_EU_API_KEY ||
-    !process.env.HELICONE_EU_HOST?.includes("hconeai")
-  ) {
-    throw new Error("Missing required environment variables for Helicone");
-  }
+import { HeliconeChatMeta, heliconeHeaders } from "./helicone";
 
-  const heliconeSecurityEnabled =
-    process.env.HELICONE_LLM_SECURITY_ENABLED === "true";
-
-  const userId = chatMeta?.userId;
-  const chatId = chatMeta?.chatId;
-
-  const headers = {
-    "Helicone-Auth": `Bearer ${process.env.HELICONE_EU_API_KEY}`,
-    "Helicone-Posthog-Key": `${process.env.HELICONE_POSTHOG_KEY}`,
-    "Helicone-Posthog-Host": `${process.env.HELICONE_POSTHOG_HOST}`,
-    "Helicone-Property-App": app,
-    "Helicone-Property-Environment": `${process.env.NEXT_PUBLIC_SENTRY_ENV}`,
-    ...(heliconeSecurityEnabled && {
-      "Helicone-LLM-Security-Enabled": "true",
-    }),
-    ...(userId && {
-      "Helicone-Property-User": userId,
-      "Helicone-User-Id": userId,
-    }),
-    ...(chatId && {
-      "Helicone-Property-Chat": chatId,
-      "Helicone-Session-Id": chatId,
-    }),
-  };
-  return headers;
-}
-
-type CreateOpenAIClientProps =
+export type CreateOpenAIClientProps =
   | {
       chatMeta: HeliconeChatMeta;
       app: "lesson-assistant" | "moderation";
@@ -60,7 +18,8 @@ type CreateOpenAIClientProps =
   | {
       app: "legacy-lesson-planner" | "image-alt-text";
     };
-function createOpenAIClient(props: CreateOpenAIClientProps) {
+
+function createOpenAIClient(props: CreateOpenAIClientProps): OpenAI {
   const openAiFields: ClientOptions = {
     apiKey: process.env.OPENAI_API_KEY,
     baseURL: process.env.HELICONE_EU_HOST,
@@ -69,6 +28,18 @@ function createOpenAIClient(props: CreateOpenAIClientProps) {
     },
   };
   return new OpenAI(openAiFields);
+}
+
+function createVercelOpenAIClient(
+  props: CreateOpenAIClientProps,
+): OpenAIProvider {
+  const headers = heliconeHeaders(props);
+  return createOpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    baseURL: process.env.HELICONE_EU_HOST,
+    headers,
+    compatibility: "strict",
+  });
 }
 
 // The helicone proxy throws a 500: "Failed to parse the latest message" error
@@ -128,6 +99,7 @@ function createOpenAILangchainChatClient({
 
 export {
   createOpenAIClient,
+  createVercelOpenAIClient,
   createOpenAIModerationsClient,
   createOpenAILangchainClient,
   createOpenAILangchainChatClient,

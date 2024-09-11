@@ -6,6 +6,9 @@ import {
   withTelemetry,
 } from "@oakai/core/src/tracing/serverTracing";
 import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
+// #TODO StreamingTextResponse is deprecated. If we choose to adopt the "ai" package
+// more fully, we should refactor to support its approach to streaming
+// but this could be a significant change given we have our record-separator approach
 import { StreamingTextResponse } from "ai";
 import { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
@@ -97,7 +100,16 @@ async function generateChatStream(
     async () => {
       invariant(aila, "Aila instance is required");
       const result = await aila.generate({ abortController });
-      return result;
+      const transformStream = new TransformStream({
+        transform(chunk, controller) {
+          const formattedChunk = new TextEncoder().encode(
+            `0:${JSON.stringify(chunk)}\n`,
+          );
+          controller.enqueue(formattedChunk);
+        },
+      });
+
+      return result.pipeThrough(transformStream);
     },
   );
 }
