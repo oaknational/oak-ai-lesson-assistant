@@ -1,11 +1,11 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { extraQuizPromptInfo } from "ai-apps/quiz-designer/extraQuizPromptInfo";
 import {
   QuizAppAction,
   QuizAppActions,
 } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppState } from "ai-apps/quiz-designer/state/types";
+import { QuizAppState, QuizAppStatus } from "ai-apps/quiz-designer/state/types";
 import { z } from "zod";
 
 import { answersAndDistractorOutputSchema } from "@/components/AppComponents/QuizDesigner/QuizQuestionRow";
@@ -34,6 +34,15 @@ const useSuggestedQuestions = ({
 }: UseSuggestedQuestionsProps) => {
   const [potentialNewQuestions, setPotentialNewQuestion] =
     useState<PotentialQuestionsType>([]);
+
+  useEffect(() => {
+    if (
+      state.status === QuizAppStatus.EditingSubjectAndKS ||
+      state.status === QuizAppStatus.Initial
+    ) {
+      setPotentialNewQuestion([]);
+    }
+  }, [state]);
 
   const {
     requestGeneration: requestSuggestedQuestionsGeneration,
@@ -81,6 +90,7 @@ const useSuggestedQuestions = ({
         otherQuestions,
         subject: state.subject,
         keyStage: state.keyStage,
+        numberOfDistractors: 2,
         ageRange: getAgesFromKeyStage(state.keyStage),
         topic: state.topic,
       },
