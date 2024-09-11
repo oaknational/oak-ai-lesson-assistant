@@ -1,6 +1,6 @@
 import { OpenAIProvider } from "@ai-sdk/openai";
 import { HeliconeChatMeta } from "@oakai/core/src/llm/helicone";
-import { createOpenAIProvider } from "@oakai/core/src/llm/openai";
+import { createVercelOpenAIClient } from "@oakai/core/src/llm/openai";
 import { streamObject, streamText } from "ai";
 import { ZodSchema } from "zod";
 
@@ -13,7 +13,7 @@ export class OpenAIService implements LLMService {
   public name = "OpenAIService";
 
   constructor({ userId, chatId }: HeliconeChatMeta) {
-    this._openAIProvider = createOpenAIProvider({
+    this._openAIProvider = createVercelOpenAIClient({
       chatMeta: { userId, chatId },
       app: "lesson-assistant",
     });
