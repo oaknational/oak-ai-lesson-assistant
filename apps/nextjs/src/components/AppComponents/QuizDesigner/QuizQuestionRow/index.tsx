@@ -30,6 +30,7 @@ type QuizQuestionRowProps = {
   dispatch: Dispatch<QuizAppAction>;
   isLessonPlan?: boolean;
   suggestedQuestionsGeneration: () => void;
+  ref: React.RefCallback<HTMLDivElement>;
 };
 
 function isOddOrEven(i: number) {
@@ -69,6 +70,7 @@ export function QuizQuestionRow({
   dispatch,
   isLessonPlan,
   suggestedQuestionsGeneration,
+  ref,
 }: Readonly<QuizQuestionRowProps>) {
   const { trackEvent } = useAnalytics();
 
@@ -111,6 +113,7 @@ export function QuizQuestionRow({
 
   return (
     <div
+      ref={ref}
       key={questionIdx}
       className={quizQuestionRows({ oddOrEven: isRowOddOrEvenOrLessonPlan })}
     >
