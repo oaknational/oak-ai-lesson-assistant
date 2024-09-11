@@ -1,4 +1,5 @@
 import { ReadableStreamDefaultController } from "stream/web";
+import invariant from "tiny-invariant";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { AilaChatError } from "../AilaError";
@@ -98,7 +99,12 @@ export class AilaStreamHandler {
 
     if (error instanceof Error) {
       if (this._chat.aila.threatDetection?.detector.isThreat(error)) {
-        throw new AilaThreatDetectionError("Threat detected", { cause: error });
+        invariant(this._chat.userId, "User ID is required");
+        throw new AilaThreatDetectionError(
+          this._chat.userId,
+          "Threat detected",
+          { cause: error },
+        );
       } else {
         this._chat.aila.errorReporter?.reportError(error);
         throw new AilaChatError(error.message, { cause: error });

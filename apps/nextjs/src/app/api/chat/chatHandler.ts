@@ -1,11 +1,6 @@
-import {
-  Aila,
-  AilaAuthenticationError,
-  AilaThreatDetectionError,
-} from "@oakai/aila";
+import { Aila } from "@oakai/aila";
 import type { AilaOptions, AilaPublicChatOptions, Message } from "@oakai/aila";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import { handleHeliconeError } from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
 import {
   TracingSpan,
   withTelemetry,
@@ -16,7 +11,8 @@ import { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
 
 import { Config } from "./config";
-import { streamingJSON } from "./protocol";
+import { handleChatException } from "./errorHandling";
+import { fetchAndCheckUser } from "./user";
 
 export const maxDuration = 300;
 
@@ -61,25 +57,6 @@ async function setupChatHandler(req: NextRequest) {
   );
 }
 
-function reportErrorTelemetry(
-  span: TracingSpan,
-  error: Error,
-  errorType: string,
-  statusMessage: string,
-  additionalAttributes: Record<
-    string,
-    string | number | boolean | undefined
-  > = {},
-) {
-  span.setTag("error", true);
-  span.setTag("error.type", errorType);
-  span.setTag("error.message", statusMessage);
-  span.setTag("error.stack", error.stack);
-  Object.entries(additionalAttributes).forEach(([key, value]) => {
-    span.setTag(key, value);
-  });
-}
-
 function setTelemetryMetadata(
   span: TracingSpan,
   id: string,
@@ -110,65 +87,6 @@ function handleConnectionAborted(req: NextRequest) {
   return abortController;
 }
 
-async function handleThreatDetectionError(
-  span: TracingSpan,
-  e: AilaThreatDetectionError,
-  userId: string,
-  id: string,
-  prisma: PrismaClientWithAccelerate,
-) {
-  const heliconeErrorMessage = await handleHeliconeError(userId, id, e, prisma);
-  reportErrorTelemetry(span, e, "AilaThreatDetectionError", "Threat detected");
-  return streamingJSON(heliconeErrorMessage);
-}
-
-async function handleAilaAuthenticationError(
-  span: TracingSpan,
-  e: AilaAuthenticationError,
-) {
-  reportErrorTelemetry(span, e, "AilaAuthenticationError", "Unauthorized");
-  return new Response("Unauthorized", { status: 401 });
-}
-
-async function handleGenericError(span: TracingSpan, e: Error) {
-  reportErrorTelemetry(span, e, e.name, e.message);
-  return streamingJSON({
-    type: "error",
-    message: e.message,
-    value: `Sorry, an error occurred: ${e.message}`,
-  });
-}
-
-async function getUserId(config: Config, chatId: string): Promise<string> {
-  return await withTelemetry(
-    "chat-get-user-id",
-    { chat_id: chatId },
-    async (userIdSpan: TracingSpan) => {
-      if (config.shouldPerformUserLookup) {
-        const userLookup = await config.handleUserLookup(chatId);
-        userIdSpan.setTag("user.lookup.performed", true);
-
-        if ("failureResponse" in userLookup) {
-          if (userLookup.failureResponse) {
-            throw new Error("User lookup failed: failureResponse received");
-          }
-        }
-
-        if ("userId" in userLookup) {
-          userIdSpan.setTag("user_id", userLookup.userId);
-          return userLookup.userId;
-        }
-
-        throw new Error("User lookup failed: userId not found");
-      }
-      invariant(config.mockUserId, "User ID is required");
-      userIdSpan.setTag("user_id", config.mockUserId);
-      userIdSpan.setTag("user.mock", true);
-      return config.mockUserId;
-    },
-  );
-}
-
 async function generateChatStream(
   aila: Aila,
   abortController: AbortController,
@@ -182,28 +100,6 @@ async function generateChatStream(
       return result;
     },
   );
-}
-
-async function handleChatException(
-  span: TracingSpan,
-  e: unknown,
-  userId: string | undefined,
-  chatId: string,
-  prisma: PrismaClientWithAccelerate,
-): Promise<Response> {
-  if (e instanceof AilaAuthenticationError) {
-    return handleAilaAuthenticationError(span, e);
-  }
-
-  if (e instanceof AilaThreatDetectionError && userId) {
-    return handleThreatDetectionError(span, e, userId, chatId, prisma);
-  }
-
-  if (e instanceof Error) {
-    return handleGenericError(span, e);
-  }
-
-  throw e;
 }
 
 export async function handleChatPostRequest(
@@ -220,7 +116,8 @@ export async function handleChatPostRequest(
     let aila: Aila | undefined;
 
     try {
-      userId = await getUserId(config, chatId);
+      userId = await fetchAndCheckUser(chatId);
+
       span.setTag("user_id", userId);
       aila = await withTelemetry(
         "chat-create-aila",
@@ -244,7 +141,7 @@ export async function handleChatPostRequest(
       const stream = await generateChatStream(aila, abortController);
       return new StreamingTextResponse(stream);
     } catch (e) {
-      return handleChatException(span, e, userId, chatId, prisma);
+      return handleChatException(span, e, chatId, prisma);
     } finally {
       if (aila) {
         await aila.ensureShutdown();
