@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Aila: Oak's AI Lesson Assistant",
     short_name: 'Aila',
-    description: 'Oak AI experiments offers some experimental generative AI tools designed for and freely available to teachers. We are actively looking for your feedback to refine and optimise these tools, making them more effective and time-saving.',
+    description: 'An AI lesson assistant chatbot for UK teachers to create lessons personalised for their classes, with the aim of reducing teacher workload.',
     start_url: '/',
     display: 'minimal-ui',
     background_color: '#BEF2BD',
