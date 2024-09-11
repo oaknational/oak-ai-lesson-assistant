@@ -4,6 +4,7 @@ import { Flex } from "@radix-ui/themes";
 import { Survey } from "posthog-js";
 
 import ChatButton from "../AppComponents/Chat/ui/chat-button";
+import { DialogTitle } from "../AppComponents/Chat/ui/dialog";
 import { Icon } from "../Icon";
 
 const FeedBack = ({
@@ -38,6 +39,7 @@ const FeedBack = ({
       justify="start"
       align="start"
     >
+      <DialogTitle className="sr-only">Before you continue...</DialogTitle>
       <p className="mb-20 text-3xl font-bold">Before you continue...</p>
 
       <form

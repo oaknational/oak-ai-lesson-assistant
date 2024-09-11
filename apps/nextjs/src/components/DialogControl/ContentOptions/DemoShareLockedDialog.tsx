@@ -1,5 +1,6 @@
 import { Flex } from "@radix-ui/themes";
 
+import { DialogTitle } from "@/components/AppComponents/Chat/ui/dialog";
 import Button from "@/components/Button";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 
@@ -37,6 +38,7 @@ const DemoShareLockedDialog = ({
 
   return (
     <DialogContainer>
+      <DialogTitle className="sr-only">Sharing and downloading</DialogTitle>
       <Heading>Sharing and downloading</Heading>
       <Content>
         Share and download options are not available to users outside of the UK.

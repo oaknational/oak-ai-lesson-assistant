@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Flex } from "@radix-ui/themes";
 import { captureMessage } from "@sentry/nextjs";
 
+import { DialogTitle } from "@/components/AppComponents/Chat/ui/dialog";
 import Button from "@/components/Button";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import LoadingWheel from "@/components/LoadingWheel";
@@ -42,7 +43,12 @@ function DialogContainer({ children }: { children: React.ReactNode }) {
 }
 
 function Heading({ children }: { children: React.ReactNode }) {
-  return <p className="text-2xl font-bold">{children}</p>;
+  return (
+    <>
+      <DialogTitle className="sr-only">{children}</DialogTitle>
+      <p className="text-2xl font-bold">{children}</p>
+    </>
+  );
 }
 
 function Content({ children }: { children: React.ReactNode }) {
