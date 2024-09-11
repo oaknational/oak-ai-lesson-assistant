@@ -45,18 +45,15 @@ function getSnapshotHash(snapshot: LessonDeepPartial) {
 
   return hash;
 }
-
-async function ailaGetOrSaveSnapshot({
+async function ailaCheckIfSnapshotExists({
   prisma,
   userId,
   chatId,
-  messageId,
   snapshot,
 }: {
   prisma: Pick<PrismaClientWithAccelerate, "lessonSchema" | "lessonSnapshot">;
   userId: string;
   chatId: string;
-  messageId: string;
   snapshot: LessonDeepPartial;
 }) {
   /**
@@ -97,6 +94,33 @@ async function ailaGetOrSaveSnapshot({
       createdAt: "desc",
     },
   });
+
+  return {
+    existingSnapshot,
+    lessonSchema,
+    hash,
+  };
+}
+async function ailaGetOrSaveSnapshot({
+  prisma,
+  userId,
+  chatId,
+  messageId,
+  snapshot,
+}: {
+  prisma: Pick<PrismaClientWithAccelerate, "lessonSchema" | "lessonSnapshot">;
+  userId: string;
+  chatId: string;
+  messageId: string;
+  snapshot: LessonDeepPartial;
+}) {
+  const { existingSnapshot, lessonSchema, hash } =
+    await ailaCheckIfSnapshotExists({
+      prisma,
+      userId,
+      chatId,
+      snapshot,
+    });
 
   if (existingSnapshot) {
     return existingSnapshot;
@@ -411,7 +435,49 @@ export const exportsRouter = router({
         };
       }
     }),
-
+  checkIfSlideDownloadExists: protectedProcedure
+    .input(
+      z.object({
+        data: exportSlidesFullLessonSchema.passthrough(),
+        chatId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userId = ctx.auth.userId;
+        const { chatId, data } = input;
+        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
+          prisma: ctx.prisma,
+          userId,
+          chatId,
+          snapshot: data,
+        });
+        if (!existingSnapshot) {
+          console.log("No existing snapshot found");
+          return;
+        }
+        // find the latest export for this snapshot
+        const exportData = await ailaGetExportBySnapshotId({
+          prisma: ctx.prisma,
+          snapshotId: existingSnapshot.id,
+          exportType: "LESSON_SLIDES_SLIDES",
+        });
+        if (exportData) {
+          const output: OutputSchema = {
+            link: exportData.gdriveFileUrl,
+            canViewSourceDoc: exportData.userCanViewGdriveFile,
+          };
+          return output;
+        }
+      } catch (error) {
+        console.error("Error checking if download exists:", error);
+        const message = "Failed to check if download exists";
+        return {
+          error,
+          message,
+        };
+      }
+    }),
   exportQuizDesignerSlides: protectedProcedure
     .input(
       z.object({
@@ -636,7 +702,49 @@ export const exportsRouter = router({
         };
       }
     }),
+  checkIfAdditionalMaterialsDownloadExists: protectedProcedure
+    .input(
+      z.object({
+        data: exportDocLessonPlanSchema.passthrough(),
+        chatId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userId = ctx.auth.userId;
+        const { chatId, data } = input;
+        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
+          prisma: ctx.prisma,
+          userId,
+          chatId,
+          snapshot: data,
+        });
+        if (!existingSnapshot) {
+          console.log("No existing snapshot found");
+          return;
+        }
 
+        const exportData = await ailaGetExportBySnapshotId({
+          prisma: ctx.prisma,
+          snapshotId: existingSnapshot.id,
+          exportType: "ADDITIONAL_MATERIALS_DOCS",
+        });
+        if (exportData) {
+          const output: OutputSchema = {
+            link: exportData.gdriveFileUrl,
+            canViewSourceDoc: exportData.userCanViewGdriveFile,
+          };
+          return output;
+        }
+      } catch (error) {
+        console.error("Error checking if download exists:", error);
+        const message = "Failed to check if download exists";
+        return {
+          error,
+          message,
+        };
+      }
+    }),
   exportWorksheetDocs: protectedProcedure
     .input(
       z.object({
@@ -744,6 +852,49 @@ export const exportsRouter = router({
       } catch (error) {
         const message = "Failed to export worksheet";
         reportErrorResult({ error, message }, input);
+        return {
+          error,
+          message,
+        };
+      }
+    }),
+  checkIfWorksheetDownloadExists: protectedProcedure
+    .input(
+      z.object({
+        data: exportDocsWorksheetSchema.passthrough(),
+        chatId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userId = ctx.auth.userId;
+        const { chatId, data } = input;
+        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
+          prisma: ctx.prisma,
+          userId,
+          chatId,
+          snapshot: data,
+        });
+        if (!existingSnapshot) {
+          console.log("No existing snapshot found");
+          return;
+        }
+
+        const exportData = await ailaGetExportBySnapshotId({
+          prisma: ctx.prisma,
+          snapshotId: existingSnapshot.id,
+          exportType: "WORKSHEET_SLIDES",
+        });
+        if (exportData) {
+          const output: OutputSchema = {
+            link: exportData.gdriveFileUrl,
+            canViewSourceDoc: exportData.userCanViewGdriveFile,
+          };
+          return output;
+        }
+      } catch (error) {
+        console.error("Error checking if download exists:", error);
+        const message = "Failed to check if download exists";
         return {
           error,
           message,
@@ -865,7 +1016,53 @@ export const exportsRouter = router({
         };
       }
     }),
+  checkIfQuizDownloadExists: protectedProcedure
+    .input(
+      z.object({
+        data: exportDocQuizSchema.passthrough(),
+        lessonSnapshot: z.object({}).passthrough(),
+        chatId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userId = ctx.auth.userId;
+        const { chatId, data, lessonSnapshot } = input;
+        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
+          prisma: ctx.prisma,
+          userId,
+          chatId,
+          snapshot: lessonSnapshot,
+        });
+        if (!existingSnapshot) {
+          console.log("No existing snapshot found");
+          return;
+        }
 
+        const exportType =
+          data.quizType === "exit" ? "EXIT_QUIZ_DOC" : "STARTER_QUIZ_DOC";
+
+        const exportData = await ailaGetExportBySnapshotId({
+          prisma: ctx.prisma,
+          snapshotId: existingSnapshot.id,
+          exportType,
+        });
+        if (exportData) {
+          const output: OutputSchema = {
+            link: exportData.gdriveFileUrl,
+            canViewSourceDoc: exportData.userCanViewGdriveFile,
+          };
+          return output;
+        }
+      } catch (error) {
+        console.error("Error checking if download exists:", error);
+        const message = "Failed to check if download exists";
+        return {
+          error,
+          message,
+        };
+      }
+    }),
   exportLessonPlanDoc: protectedProcedure
     .input(
       z.object({
@@ -974,6 +1171,49 @@ export const exportsRouter = router({
       } catch (error) {
         const message = "Failed to export lesson plan";
         reportErrorResult({ error, message }, input);
+        return {
+          error,
+          message,
+        };
+      }
+    }),
+  checkIfLessonPlanDownloadExists: protectedProcedure
+    .input(
+      z.object({
+        data: exportDocLessonPlanSchema.passthrough(),
+        chatId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userId = ctx.auth.userId;
+        const { chatId, data } = input;
+        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
+          prisma: ctx.prisma,
+          userId,
+          chatId,
+          snapshot: data,
+        });
+        if (!existingSnapshot) {
+          console.log("No existing snapshot found");
+          return;
+        }
+
+        const exportData = await ailaGetExportBySnapshotId({
+          prisma: ctx.prisma,
+          snapshotId: existingSnapshot.id,
+          exportType: "LESSON_PLAN_DOC",
+        });
+        if (exportData) {
+          const output: OutputSchema = {
+            link: exportData.gdriveFileUrl,
+            canViewSourceDoc: exportData.userCanViewGdriveFile,
+          };
+          return output;
+        }
+      } catch (error) {
+        console.error("Error checking if download exists:", error);
+        const message = "Failed to check if download exists";
         return {
           error,
           message,
