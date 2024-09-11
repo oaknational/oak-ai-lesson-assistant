@@ -2,7 +2,7 @@ import { inngest } from "../../client";
 import {
   slackNotificationChannelId,
   slackWebClient,
-  userButtonsBlock,
+  actionsBlock,
   userIdBlock,
 } from "../../utils/slack";
 
@@ -31,7 +31,9 @@ export const notifyUserBan = inngest.createFunction(
             },
           },
           userIdBlock(event.user.id),
-          userButtonsBlock(event.user.id),
+          actionsBlock({
+            userActionsProps: { userId: event.user.id },
+          }),
         ],
       });
 

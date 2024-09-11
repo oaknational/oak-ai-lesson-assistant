@@ -2,7 +2,7 @@ import { inngest } from "../../client";
 import {
   slackNotificationChannelId,
   slackWebClient,
-  userButtonsBlock,
+  actionsBlock,
   userIdBlock,
 } from "../../utils/slack";
 import { notifyRateLimitSchema } from "./notifyRateLimit.schema";
@@ -53,7 +53,9 @@ export const notifyRateLimit = inngest.createFunction(
               },
             ],
           },
-          userButtonsBlock(event.user.id),
+          actionsBlock({
+            userActionsProps: { userId: event.user.id },
+          }),
         ],
       });
 
