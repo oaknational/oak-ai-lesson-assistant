@@ -1,11 +1,10 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { Flex } from "@radix-ui/themes";
 import * as Sentry from "@sentry/react";
 
 import { DialogTypes } from "@/components/AppComponents/Chat/Chat/types";
-import { openSharePage } from "@/components/AppComponents/Chat/Chat/utils";
 import ChatButton from "@/components/AppComponents/Chat/ui/chat-button";
 import { getLessonTrackingProps } from "@/lib/analytics/helpers";
 import useAnalytics from "@/lib/analytics/useAnalytics";
@@ -29,28 +28,19 @@ const ShareChat = ({
   }, [setOpenExportDialog]);
 
   const { track } = useAnalytics();
-  const shareChat = trpc.chat.appSessions.shareChat.useMutation().mutateAsync;
-
-  const [shareLoading, setShareLoading] = useState(false);
+  const { mutateAsync, isSuccess, isError, isLoading } =
+    trpc.chat.appSessions.shareChat.useMutation();
 
   const attemptToShareChat = async () => {
     track.lessonPlanShared({
       ...getLessonTrackingProps({ lesson }),
       componentType: "go_to_share_page_button",
     });
-    if (isShared) {
-      openSharePage({ id: chatId });
-    } else {
-      try {
-        setShareLoading(true);
-        await shareChat({ id: chatId });
 
-        openSharePage({ id: chatId });
-      } catch (error) {
-        Sentry.captureException(error, { extra: { chatId } });
-      } finally {
-        setShareLoading(false);
-      }
+    try {
+      await mutateAsync({ id: chatId });
+    } catch (error) {
+      Sentry.captureException(error, { extra: { chatId } });
     }
   };
 
@@ -70,13 +60,26 @@ const ShareChat = ({
         <ChatButton variant="secondary" onClick={() => closeDialog()}>
           Cancel
         </ChatButton>
-        <ChatButton
-          variant="primary"
-          onClick={attemptToShareChat}
-          disabled={shareLoading}
-        >
-          Go to share page
-        </ChatButton>
+        {!isShared && !isSuccess && (
+          <ChatButton
+            variant="primary"
+            onClick={attemptToShareChat}
+            disabled={isLoading}
+          >
+            Create shareable link
+          </ChatButton>
+        )}
+        {isError && <p>There has been an error, please try again</p>}
+        {(isSuccess || isShared) && (
+          <ChatButton
+            variant="primary"
+            href={`/aila/${chatId}/share`}
+            disabled={isLoading}
+            target="_blank"
+          >
+            Go to share page
+          </ChatButton>
+        )}
       </div>
     </Flex>
   );
