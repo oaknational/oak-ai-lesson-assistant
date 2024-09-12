@@ -12,17 +12,26 @@ These
  prior
  knowledge
  points
- ensure
- that
+ provide
+ a
+ foundation
+ for
+ understanding
+ Roman
+ Britain's
+ end
+,
+ ensuring
  pupils
  have
- the
- foundational
- understanding
- necessary
- for
- this
- lesson
+ a
+ basic
+ grasp
+ of
+ Roman
+ influence
+ and
+ legacy
 .","
 value":{"
 type":"
@@ -36,34 +45,53 @@ Knowledge
 ","value":["
 The
  Romans
- ruled
+ invaded
  Britain
- for
- several
- centuries
-","
+ in
+ AD
+ 
+43
+.","
 Roman
- Britain
- had
+ society
+ included
  roads
 ,
  towns
 ,
  and
- baths
-","
+ villas
+ in
+ Britain
+.","
 The
  Romans
- built
- Had
-rian
-'s
- Wall
+ introduced
+ new
+ technologies
+ and
+ ideas
  to
- protect
- against
- northern
- tribes
+ Britain
+.","
+Roman
+ Britain
+ lasted
+ for
+ nearly
+ 
+400
+ years
+.","
+The
+ Roman
+ army
+ protected
+ Britain
+ from
+ invas
+ions
+.
 "]}},{"
 type":"
 patch
@@ -76,6 +104,11 @@ These
  the
  main
  aspects
+ of
+ Roman
+ Britain's
+ decline
+ that
  pupils
  should
  understand
@@ -97,61 +130,83 @@ key
 Learning
 Points
 ","value":["
+Roman
+ Britain
+ ended
+ in
+ AD
+ 
+410
+ when
+ the
+ Roman
+ army
+ left
+.","
+Economic
+ problems
+ weakened
+ Roman
+ control
+ over
+ Britain
+.","
+Rome
+ faced
+ threats
+ from
+ inv
+aders
+,
+ leading
+ to
+ their
+ withdrawal
+.","
 The
+ departure
+ of
  Romans
  left
  Britain
- around
- 
-410
- AD
-","
-Roman
- withdrawal
- led
+ vulnerable
  to
- social
- and
- economic
- changes
+ invas
+ions
+.","
+Roman
+ leg
+acies
  in
  Britain
-","
-Post
--R
-oman
- Britain
- saw
- the
- rise
- of
- new
- groups
- such
- as
- the
- Anglo
--S
-ax
-ons
+ include
+ architecture
+ and
+ language
+.
 "]}},{"
 type":"
 patch
 ","reasoning":"
-These
+Mis
+con
+ceptions
+ address
  common
- misconceptions
- may
- arise
- due
- to
+ misunderstand
+ings
+ about
  the
- complexity
- of
+ Roman
+ withdrawal
+ and
+ its
+ impacts
+,
+ helping
+ clarify
  historical
  events
- and
- timelines
 .","
 value":{"
 type":"
@@ -171,87 +226,105 @@ The
  Romans
  left
  Britain
- suddenly
-","description":"
-P
-up
-ils
- might
- think
+ because
+ they
+ were
+ defeated
+ by
  the
+ Brit
+ons
+","description":"
+The
  Romans
  left
- overnight
-.
- Explain
- that
- it
- was
- a
- gradual
- process
+ Britain
+ primarily
  due
  to
  pressures
  elsewhere
  in
  the
- empire
+ Roman
+ Empire
+,
+ such
+ as
+ invas
+ions
+ and
+ economic
+ troubles
+,
+ rather
+ than
+ being
+ defeated
+ by
+ the
+ Brit
+ons
 ."
 },{"
 misconception":"
-Life
+Roman
+ Britain
+ immediately
+ became
+ a
+ different
+ country
+ after
+ Roman
+ withdrawal
+","description":"
+The
+ Roman
+ withdrawal
+ did
+ not
+ immediately
+ change
+ the
+ culture
+;
+ Roman
+ influence
+ continued
+ in
+ many
+ aspects
+ of
+ life
  in
  Britain
- returned
- to
- pre
--R
-oman
- ways
- immediately
-","description":"
-P
-up
-ils
- might
- assume
- that
- Britain
- reverted
- quickly
-.
- Explain
- that
- Roman
- influences
- remained
  for
- many
- years
+ a
+ while
 ."
 }]}},{"
 type":"
 patch
 ","reasoning":"
-The
- keywords
- are
- chosen
+Keywords
+ focus
+ on
+ essential
+ terms
+ related
  to
- support
+ Roman
+ Britain's
+ end
+,
+ aiding
  pupils
 '
  understanding
  of
- key
- terms
- and
- concepts
- related
- to
  the
- lesson
+ topic
 .","
 value":{"
 type":"
@@ -265,48 +338,53 @@ keywords
 keyword":"
 Withdrawal
 ","definition":"
-When
- a
- group
- or
- army
- leaves
+The
+ act
+ of
+ leaving
  a
  place
-"},{"
-keyword":"
-Ang
-lo
--S
-ax
-ons
-","definition":"
-People
- who
- migrated
- to
- Britain
- after
+,
+ such
+ as
  the
- Romans
- left
-"},{"
+ Roman
+ army
+ leaving
+ Britain
+."
+},{"
 keyword":"
-Empire
+In
+vasion
+","definition":"
+An
+ unw
+elcome
+ entry
+ into
+ a
+ place
+,
+ often
+ by
+ an
+ army
+."
+},{"
+keyword":"
+Leg
+ion
 ","definition":"
 A
- group
+ large
+ unit
  of
- countries
- or
- regions
- controlled
- by
- one
- ruler
- or
- government
-"}]}}],"prompt":{"
+ the
+ Roman
+ army
+."
+}]}}],"prompt":{"
 type":"
 text
 ","value":"

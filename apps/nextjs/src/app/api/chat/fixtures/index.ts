@@ -1,4 +1,4 @@
-import { FixtureLoggerLLMService } from "./FixtureLoggerLLMService";
+import { FixtureRecordLLMService } from "./FixtureRecordLLMService";
 import { FixtureReplayLLMService } from "./FixtureReplayLLMService";
 
 const fixturesEnabled = process.env.AILA_FIXTURES_ENABLED === "true";
@@ -17,7 +17,7 @@ export function getFixtureLLMService(headers: Headers, chatId: string) {
 
   if (fixtureMode === "record") {
     console.log("Using fixtureMode=record");
-    return new FixtureLoggerLLMService(fixtureName, chatId);
+    return new FixtureRecordLLMService(fixtureName, chatId);
   }
 
   if (fixtureMode === "replay") {

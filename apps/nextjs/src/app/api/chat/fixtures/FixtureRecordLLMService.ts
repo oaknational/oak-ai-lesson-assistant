@@ -4,8 +4,8 @@ import { OpenAIService } from "@oakai/aila/src/core/llm/OpenAIService";
 import fs from "fs/promises";
 import { ZodSchema } from "zod";
 
-export class FixtureLoggerLLMService implements LLMService {
-  name = "FixureLoggerLLM";
+export class FixtureRecordLLMService implements LLMService {
+  name = "FixureRecordLLM";
   public fixtureName: string;
   private _openAIService: OpenAIService;
 

@@ -1,0 +1,33 @@
+{
+  "type": "llmMessage",
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "There are no existing Oak lessons on the topic of 'The End of Roman Britain'. Therefore, I am proceeding to generate new lesson learning outcomes and learning cycles from scratch.",
+      "value": {
+        "type": "string",
+        "op": "add",
+        "path": "/learningOutcome",
+        "value": "I can describe why and how Roman Britain came to an end."
+      }
+    },
+    {
+      "type": "patch",
+      "reasoning": "These learning cycles progressively guide pupils through understanding the reasons, events, and consequences of the end of Roman Britain.",
+      "value": {
+        "type": "string-array",
+        "op": "add",
+        "path": "/learningCycles",
+        "value": [
+          "Identify the reasons for the decline of Roman Britain.",
+          "Describe the key events that marked the end of Roman rule.",
+          "Understand the impact of the Roman withdrawal on Britain."
+        ]
+      }
+    }
+  ],
+  "prompt": {
+    "type": "text",
+    "value": "I have added the learning outcomes and learning cycles for the lesson. Are you happy with the learning outcomes and learning cycles?\n\nIf not, select **'Retry'** or type an edit in the text box below.\n\nWhen you are happy with this section, tap **'Continue'** and I will suggest 'prior knowledge', 'key learning points', 'common misconceptions' and 'keywords'."
+  }
+}

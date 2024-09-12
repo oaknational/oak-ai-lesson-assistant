@@ -41,7 +41,6 @@ async function setupChatHandler(req: NextRequest) {
         id: string;
         messages: Message[];
         lessonPlan?: LooseLessonPlan;
-        // TODO: how is this restricted to public chat options?
         options?: AilaPublicChatOptions;
       } = json;
 
