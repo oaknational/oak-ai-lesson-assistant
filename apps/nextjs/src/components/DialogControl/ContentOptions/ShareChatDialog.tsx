@@ -6,10 +6,10 @@ import * as Sentry from "@sentry/react";
 
 import { DialogTypes } from "@/components/AppComponents/Chat/Chat/types";
 import ChatButton from "@/components/AppComponents/Chat/ui/chat-button";
+import LoadingWheel from "@/components/LoadingWheel";
 import { getLessonTrackingProps } from "@/lib/analytics/helpers";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
-import LoadingWheel from "@/components/LoadingWheel";
 
 type ShareChatProps = {
   chatId: string;
@@ -45,6 +45,32 @@ const ShareChat = ({
     }
   };
 
+  function handleShareButtonState() {
+    if (isLoading) {
+      return <LoadingWheel />;
+    } else if (isSuccess || isShared) {
+      return (
+        <ChatButton
+          variant="primary"
+          href={`/aila/${chatId}/share`}
+          disabled={isLoading}
+          target="_blank"
+        >
+          Go to share page
+        </ChatButton>
+      );
+    }
+    return (
+      <ChatButton
+        variant="primary"
+        onClick={attemptToShareChat}
+        disabled={isLoading}
+      >
+        Create shareable link
+      </ChatButton>
+    );
+  }
+
   return (
     <Flex className="h-full w-full" direction="column" justify="between">
       <div>
@@ -61,27 +87,7 @@ const ShareChat = ({
         <ChatButton variant="secondary" onClick={() => closeDialog()}>
           Cancel
         </ChatButton>
-        {!isShared && !isSuccess && (
-          <ChatButton
-            variant="primary"
-            onClick={attemptToShareChat}
-            disabled={isLoading}
-          >
-            Create shareable link
-          </ChatButton>
-        )}
-        {isLoading && <LoadingWheel />}
-        {isError && <p>There has been an error, please try again</p>}
-        {(isSuccess || isShared) ? (
-          <ChatButton
-            variant="primary"
-            href={`/aila/${chatId}/share`}
-            disabled={isLoading}
-            target="_blank"
-          >
-            Go to share page
-          </ChatButton>
-        )}
+        {handleShareButtonState()}
       </div>
     </Flex>
   );
