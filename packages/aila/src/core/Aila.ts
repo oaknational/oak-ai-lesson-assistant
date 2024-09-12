@@ -23,6 +23,8 @@ import {
 } from "./AilaServices";
 import { AilaChat, Message } from "./chat";
 import { AilaLesson } from "./lesson";
+import { LLMService } from "./llm/LLMService";
+import { OpenAIService } from "./llm/OpenAIService";
 import { AilaPlugin } from "./plugins/types";
 import {
   AilaGenerateLessonPlanOptions,
@@ -37,6 +39,7 @@ export class Aila implements AilaServices {
   private _errorReporter?: AilaErrorReportingFeature;
   private _isShutdown: boolean = false;
   private _lesson: AilaLessonService;
+  private _chatLlmService: LLMService;
   private _moderation?: AilaModerationFeature;
   private _options: AilaOptionsWithDefaultFallbackValues;
   private _persistence: AilaPersistenceFeature[] = [];
@@ -51,10 +54,14 @@ export class Aila implements AilaServices {
     this._chatId = options.chat.id;
     this._options = this.initialiseOptions(options.options);
 
+    this._chatLlmService =
+      options.services?.chatLlmService ??
+      new OpenAIService({ userId: this._userId, chatId: this._chatId });
     this._chat = new AilaChat({
       ...options.chat,
       aila: this,
       promptBuilder: options.promptBuilder,
+      llmService: this._chatLlmService,
     });
 
     this._prisma = options.prisma ?? globalPrisma;
@@ -180,6 +187,10 @@ export class Aila implements AilaServices {
 
   public get plugins() {
     return this._plugins;
+  }
+
+  public get chatLlmService() {
+    return this._chatLlmService;
   }
 
   // Check methods

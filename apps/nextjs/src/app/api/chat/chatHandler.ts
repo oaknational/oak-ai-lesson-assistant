@@ -144,7 +144,9 @@ export async function handleChatPostRequest(
               id: chatId,
               userId,
               messages,
-              llmService,
+            },
+            services: {
+              chatLlmService: llmService,
             },
             lessonPlan: lessonPlan ?? {},
           };

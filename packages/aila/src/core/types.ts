@@ -56,7 +56,7 @@ export type AilaChatInitializationOptions = {
 
 export type AilaInitializationOptions = {
   lessonPlan?: LooseLessonPlan;
-  chat: AilaChatInitializationOptions;
+  chat: Omit<AilaChatInitializationOptions, "llmService">;
   options?: AilaOptions;
   prisma?: PrismaClientWithAccelerate;
   moderator?: AilaModerator;
