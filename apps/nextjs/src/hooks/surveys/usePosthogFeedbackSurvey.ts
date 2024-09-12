@@ -31,9 +31,9 @@ export const usePosthogFeedbackSurvey = ({
       );
 
       if (!matchingSurvey) {
-        Sentry.captureException(
-          new Error(`Survey with name ${surveyName} not found`),
-        );
+        const error = new Error(`Survey with name ${surveyName} not found`);
+        console.error(error);
+        Sentry.captureException(error);
 
         return;
       }
@@ -63,11 +63,13 @@ export const usePosthogFeedbackSurvey = ({
           ...data,
         });
       } else {
-        Sentry.captureException(new Error("Survey not found"));
+        const error = new Error(`Survey not found: ${surveyName}`);
+        console.error(error);
+        Sentry.captureException(error);
       }
       closeDialog?.();
     },
-    [posthogAiBetaClient, closeDialog, survey],
+    [posthogAiBetaClient, closeDialog, survey, surveyName],
   );
 
   const submitSurveyWithOutClosing = useCallback(
@@ -78,10 +80,12 @@ export const usePosthogFeedbackSurvey = ({
           ...data,
         });
       } else {
-        Sentry.captureException(new Error("Survey not found"));
+        const error = new Error(`Survey not found: ${surveyName}`);
+        console.error(error);
+        Sentry.captureException(error);
       }
     },
-    [posthogAiBetaClient, survey],
+    [posthogAiBetaClient, survey, surveyName],
   );
 
   return {
