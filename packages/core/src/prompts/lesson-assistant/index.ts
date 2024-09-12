@@ -61,16 +61,18 @@ export const getPromptParts = (props: TemplateProps): TemplatePart[] => {
     context,
     currentLessonPlan,
     task,
+    body,
     props.useRag ? rag : undefined,
     props.baseLessonPlan ? basedOn : undefined,
     props.responseMode === "interactive" ? interactingWithTheUser : undefined,
-    body,
-    schema,
-    americanToBritishSection,
-    endingTheInteractionSection,
-    response,
-    languageAndVoice,
     props.responseMode === "interactive" ? lessonComplete : undefined,
+    props.responseMode === "interactive"
+      ? endingTheInteractionSection
+      : undefined,
+    americanToBritishSection,
+    languageAndVoice,
+    schema,
+    response,
     signOff,
   ];
 
