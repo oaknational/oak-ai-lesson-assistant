@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { useUser } from "@clerk/nextjs";
 import MuxPlayer from "@mux/mux-player-react";
 import {
@@ -58,6 +60,13 @@ export default function HomePage() {
   const user = useUser();
 
   const { track } = useAnalytics();
+
+  useEffect(() => {
+    // wait a few seconds before throwing an error
+    setTimeout(() => {
+      throw new Error("test error in home-page.tsx");
+    }, 5000);
+  }, []);
 
   return (
     <Layout>
