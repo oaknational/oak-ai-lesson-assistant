@@ -730,17 +730,19 @@ model LessonSnapshot {
 }
 
 model Moderation {
-  id               String   @id @default(cuid())
-  createdAt        DateTime @default(now()) @map("created_at")
-  updatedAt        DateTime @updatedAt @map("updated_at")
-  userId           String   @map("user_id")
-  appSessionId     String   @map("app_session_id")
-  messageId        String   @map("message_id")
+  id               String    @id @default(cuid())
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  userId           String    @map("user_id")
+  appSessionId     String    @map("app_session_id")
+  messageId        String    @map("message_id")
   categories       Json[]
   justification    String?
-  lessonSnapshotId String?  @map("lesson_snapshot_id")
+  lessonSnapshotId String?   @map("lesson_snapshot_id")
   // A user's comment in relation to the moderation. Likely they are contesting it.
-  userComment      String?  @map("user_comment")
+  userComment      String?   @map("user_comment")
+  invalidatedAt    DateTime? @map("invalidated_at")
+  invalidatedBy    String?   @map("invalidated_by")
 
   appSession     AppSession?     @relation(fields: [appSessionId], references: [id], onDelete: Cascade)
   lessonSnapshot LessonSnapshot? @relation(fields: [lessonSnapshotId], references: [id], onDelete: Cascade)

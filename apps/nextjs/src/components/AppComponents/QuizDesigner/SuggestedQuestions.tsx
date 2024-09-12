@@ -19,6 +19,8 @@ type SuggestedQuestionsProps = {
   dispatch: Dispatch<QuizAppAction>;
   suggestedQuestionsGeneration: () => void;
   setPotentialNewQuestions: React.Dispatch<PotentialQuestionsType>;
+  questionsWrapperRef: React.RefObject<HTMLDivElement>;
+  questionRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
 };
 
 const SuggestedQuestions = ({
@@ -29,6 +31,8 @@ const SuggestedQuestions = ({
   potentialNewQuestions,
   setPotentialNewQuestions,
   dispatch,
+  questionsWrapperRef,
+  questionRefs,
 }: SuggestedQuestionsProps) => {
   return (
     <>
@@ -62,6 +66,8 @@ const SuggestedQuestions = ({
                           key={answer.question}
                           potentialNewQuestions={potentialNewQuestions}
                           setPotentialNewQuestions={setPotentialNewQuestions}
+                          questionsWrapperRef={questionsWrapperRef}
+                          questionRefs={questionRefs}
                         />
                       );
                   })}

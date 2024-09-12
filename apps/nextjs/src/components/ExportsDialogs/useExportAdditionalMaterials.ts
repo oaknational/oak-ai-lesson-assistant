@@ -41,6 +41,37 @@ export function useExportAdditionalMaterials({
     }
   }, [lesson, setParseResult, active]);
 
+  const checkForSnapShotAndPreloadQuery =
+    trpc.exports.checkIfAdditionalMaterialsDownloadExists.useMutation();
+  const [checked, setChecked] = useState(false);
+  const check = useCallback(async () => {
+    if (
+      debouncedParseResult?.success &&
+      debouncedParseResult.data &&
+      !checked
+    ) {
+      try {
+        checkForSnapShotAndPreloadQuery.mutate({
+          chatId,
+          data: debouncedParseResult.data,
+        });
+        setChecked(true);
+      } catch (error) {
+        console.error("Error during check:", error);
+      }
+    }
+  }, [
+    debouncedParseResult?.success,
+    debouncedParseResult?.data,
+    chatId,
+    checkForSnapShotAndPreloadQuery,
+    checked,
+  ]);
+
+  useEffect(() => {
+    check();
+  }, [check]);
+
   const start = useCallback(() => {
     if (!active) {
       return;
@@ -77,9 +108,10 @@ export function useExportAdditionalMaterials({
       dialogOpen,
       closeDialog,
       status: query.status,
-      data: query.data,
+      data: checkForSnapShotAndPreloadQuery.data || query.data,
     }),
     [
+      checkForSnapShotAndPreloadQuery.data,
       active,
       debouncedParseResult,
       dialogOpen,
