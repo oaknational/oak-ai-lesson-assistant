@@ -2,7 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 
 import * as Sentry from "@sentry/react";
 import { Survey } from "posthog-js";
-import { usePostHog } from "posthog-js/react";
+
+import useAnalytics from "@/lib/analytics/useAnalytics";
 
 type UsePosthogFeedbackSurveyProps = {
   closeDialog?: () => void;
@@ -19,10 +20,10 @@ export const usePosthogFeedbackSurvey = ({
 }: UsePosthogFeedbackSurveyProps) => {
   const [survey, setSurvey] = useState<Survey | undefined>(undefined);
 
-  const posthog = usePostHog();
+  const { posthogAiBetaClient } = useAnalytics();
 
   useEffect(() => {
-    posthog.getSurveys((surveys) => {
+    posthogAiBetaClient.getSurveys((surveys) => {
       const filteredSurveys = surveys.filter((survey) => survey.type === "api");
 
       const matchingSurvey = filteredSurveys.find(
@@ -39,25 +40,25 @@ export const usePosthogFeedbackSurvey = ({
 
       setSurvey(matchingSurvey);
 
-      posthog.capture("survey shown", {
+      posthogAiBetaClient.capture("survey shown", {
         $survey_id: matchingSurvey.id,
       });
     }, true);
-  }, [posthog, setSurvey, surveyName]);
+  }, [posthogAiBetaClient, setSurvey, surveyName]);
 
   const closeDialogWithPostHogDismiss = useCallback(() => {
     if (survey) {
-      posthog.capture("survey dismissed", {
+      posthogAiBetaClient.capture("survey dismissed", {
         survey_id: survey.id,
       });
     }
     closeDialog?.();
-  }, [posthog, closeDialog, survey]);
+  }, [posthogAiBetaClient, closeDialog, survey]);
 
   const submitSurvey = useCallback(
     (data: Record<string, unknown>) => {
       if (survey) {
-        posthog.capture("survey sent", {
+        posthogAiBetaClient.capture("survey sent", {
           $survey_id: survey.id,
           ...data,
         });
@@ -66,13 +67,13 @@ export const usePosthogFeedbackSurvey = ({
       }
       closeDialog?.();
     },
-    [posthog, closeDialog, survey],
+    [posthogAiBetaClient, closeDialog, survey],
   );
 
   const submitSurveyWithOutClosing = useCallback(
     (data: Record<string, unknown>) => {
       if (survey) {
-        posthog.capture("survey sent", {
+        posthogAiBetaClient.capture("survey sent", {
           $survey_id: survey.id,
           ...data,
         });
@@ -80,7 +81,7 @@ export const usePosthogFeedbackSurvey = ({
         Sentry.captureException(new Error("Survey not found"));
       }
     },
-    [posthog, survey],
+    [posthogAiBetaClient, survey],
   );
 
   return {
