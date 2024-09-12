@@ -3,7 +3,7 @@
 import { useRef } from "react";
 
 import { OakLink } from "@oaknational/oak-components";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 import { Header } from "@/components/AppComponents/Chat/header";
 import GetInTouchBox from "@/components/AppComponents/GetInTouchBox";
@@ -26,7 +26,8 @@ const Help = () => {
     }
   };
 
-  const ailaId = useParams().ailaId;
+  const searchParams = useSearchParams();
+  const ailaId = searchParams.get("ailaId");
 
   return (
     <>
