@@ -347,7 +347,20 @@ export const CompletedLessonPlanSchema = z.object({
       "The title of the lesson. Lesson titles should be a unique and succinct statement, not a question. Can include special characters if appropriate but should not use & sign instead of 'and'. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
     ),
   keyStage: z
-    .string()
+    .union([
+      z.enum([
+        "key-stage-1",
+        "key-stage-2",
+        "key-stage-3",
+        "key-stage-4",
+        "key-stage-5",
+        "early-years-foundation-stage",
+        "specialist",
+        "further-education",
+        "higher-education",
+      ]),
+      z.string(),
+    ])
     .describe(
       "The lesson's Key Stage as defined by UK educational standards. In slug format (kebab-case).",
     ),
