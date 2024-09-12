@@ -9,6 +9,7 @@ import ChatButton from "@/components/AppComponents/Chat/ui/chat-button";
 import { getLessonTrackingProps } from "@/lib/analytics/helpers";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
+import LoadingWheel from "@/components/LoadingWheel";
 
 type ShareChatProps = {
   chatId: string;
@@ -69,8 +70,9 @@ const ShareChat = ({
             Create shareable link
           </ChatButton>
         )}
+        {isLoading && <LoadingWheel />}
         {isError && <p>There has been an error, please try again</p>}
-        {(isSuccess || isShared) && (
+        {(isSuccess || isShared) ? (
           <ChatButton
             variant="primary"
             href={`/aila/${chatId}/share`}
