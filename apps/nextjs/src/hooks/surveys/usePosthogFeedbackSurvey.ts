@@ -2,7 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 
 import * as Sentry from "@sentry/react";
 import { Survey } from "posthog-js";
-import { usePostHog } from "posthog-js/react";
+
+import useAnalytics from "@/lib/analytics/useAnalytics";
 
 type UsePosthogFeedbackSurveyProps = {
   closeDialog?: () => void;
@@ -19,10 +20,10 @@ export const usePosthogFeedbackSurvey = ({
 }: UsePosthogFeedbackSurveyProps) => {
   const [survey, setSurvey] = useState<Survey | undefined>(undefined);
 
-  const posthog = usePostHog();
+  const { posthogAiBetaClient } = useAnalytics();
 
   useEffect(() => {
-    posthog.getSurveys((surveys) => {
+    posthogAiBetaClient.getSurveys((surveys) => {
       const filteredSurveys = surveys.filter((survey) => survey.type === "api");
 
       const matchingSurvey = filteredSurveys.find(
@@ -30,57 +31,61 @@ export const usePosthogFeedbackSurvey = ({
       );
 
       if (!matchingSurvey) {
-        Sentry.captureException(
-          new Error(`Survey with name ${surveyName} not found`),
-        );
+        const error = new Error(`Survey with name ${surveyName} not found`);
+        console.error(error);
+        Sentry.captureException(error);
 
         return;
       }
 
       setSurvey(matchingSurvey);
 
-      posthog.capture("survey shown", {
+      posthogAiBetaClient.capture("survey shown", {
         $survey_id: matchingSurvey.id,
       });
     }, true);
-  }, [posthog, setSurvey, surveyName]);
+  }, [posthogAiBetaClient, setSurvey, surveyName]);
 
   const closeDialogWithPostHogDismiss = useCallback(() => {
     if (survey) {
-      posthog.capture("survey dismissed", {
+      posthogAiBetaClient.capture("survey dismissed", {
         survey_id: survey.id,
       });
     }
     closeDialog?.();
-  }, [posthog, closeDialog, survey]);
+  }, [posthogAiBetaClient, closeDialog, survey]);
 
   const submitSurvey = useCallback(
     (data: Record<string, unknown>) => {
       if (survey) {
-        posthog.capture("survey sent", {
+        posthogAiBetaClient.capture("survey sent", {
           $survey_id: survey.id,
           ...data,
         });
       } else {
-        Sentry.captureException(new Error("Survey not found"));
+        const error = new Error(`Survey not found: ${surveyName}`);
+        console.error(error);
+        Sentry.captureException(error);
       }
       closeDialog?.();
     },
-    [posthog, closeDialog, survey],
+    [posthogAiBetaClient, closeDialog, survey, surveyName],
   );
 
   const submitSurveyWithOutClosing = useCallback(
     (data: Record<string, unknown>) => {
       if (survey) {
-        posthog.capture("survey sent", {
+        posthogAiBetaClient.capture("survey sent", {
           $survey_id: survey.id,
           ...data,
         });
       } else {
-        Sentry.captureException(new Error("Survey not found"));
+        const error = new Error(`Survey not found: ${surveyName}`);
+        console.error(error);
+        Sentry.captureException(error);
       }
     },
-    [posthog, survey],
+    [posthogAiBetaClient, survey, surveyName],
   );
 
   return {
