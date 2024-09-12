@@ -616,7 +616,7 @@ Thank you and happy classifying!`;
         this._chatMeta,
       );
       if (categorisation.keyStage) {
-        foundKeyStage = await this.prisma.subject.findFirst({
+        foundKeyStage = await this.prisma.keyStage.findFirst({
           where: {
             slug: categorisation.keyStage,
           },
