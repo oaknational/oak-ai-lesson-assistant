@@ -29,7 +29,7 @@ const ShareChat = ({
   }, [setOpenExportDialog]);
 
   const { track } = useAnalytics();
-  const { mutateAsync, isSuccess, isError, isLoading } =
+  const { mutateAsync, isSuccess, isLoading, isError } =
     trpc.chat.appSessions.shareChat.useMutation();
 
   const attemptToShareChat = async () => {
@@ -89,6 +89,7 @@ const ShareChat = ({
         </ChatButton>
         {handleShareButtonState()}
       </div>
+      {isError && <p>There was an error sharing the chat.</p>}
     </Flex>
   );
 };
