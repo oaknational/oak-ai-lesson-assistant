@@ -348,7 +348,9 @@ export const CompletedLessonPlanSchema = z.object({
     ),
   keyStage: z
     .string()
-    .describe("The lesson's Key Stage as defined by UK educational standards."),
+    .describe(
+      "The lesson's Key Stage as defined by UK educational standards. In slug format (kebab-case).",
+    ),
   subject: z
     .string()
     .describe(
