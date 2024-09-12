@@ -5,10 +5,8 @@ export class FixtureReplayLLMService extends MockLLMService {
   name = "FixureReplayLLM";
 
   constructor(fixtureName: string) {
-    const fileUrl = new URL(
-      `recordings/${fixtureName}.chunks.txt`,
-      import.meta.url,
-    );
+    const fileUrl = `tests-e2e/recordings/${fixtureName}.chunks.txt`;
+    console.log("Fixtures: Loading chunks from", fileUrl);
     const fixture = fs.readFileSync(fileUrl, "utf8");
 
     const chunks = fixture

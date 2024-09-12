@@ -46,22 +46,16 @@ export class FixtureRecordLLMService implements LLMService {
           controller.enqueue(value);
         }
 
-        const formattedUrl = new URL(
-          `recordings/${fixtureName}.formatted.txt`,
-          import.meta.url,
-        );
+        const formattedUrl = `tests-e2e/recordings/${fixtureName}.formatted.txt`;
         const formatted = JSON.stringify(JSON.parse(chunks.join("")), null, 2);
-        console.log("Fixtures: Writing formatted to", formattedUrl.pathname);
+        console.log("Fixtures: Writing formatted to", formattedUrl);
         await fs.writeFile(formattedUrl, formatted);
 
-        const chunksUrl = new URL(
-          `recordings/${fixtureName}.chunks.txt`,
-          import.meta.url,
-        );
+        const chunksUrl = `tests-e2e/recordings/${fixtureName}.chunks.txt`;
         const encodedChunks = chunks
           .map((c) => c.replaceAll("\n", "__NEWLINE__"))
           .join("\n");
-        console.log("Fixtures: Writing chunks to", chunksUrl.pathname);
+        console.log("Fixtures: Writing chunks to", chunksUrl);
         await fs.writeFile(chunksUrl, encodedChunks);
 
         controller.close();
