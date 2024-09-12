@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.6.0...v1.6.1) (2024-09-12)
+
+
+### Bug Fixes
+
+* survey not found bug ([#121](https://github.com/oaknational/oak-ai-lesson-assistant/issues/121)) ([e22cfa5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e22cfa5cf15765fec20928aedb806645dd32895f))
+
 # [1.6.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.5.1...v1.6.0) (2024-09-06)
 
 
