@@ -95,7 +95,7 @@ describe("Aila", () => {
       expect(ailaInstance.lesson.plan.title).not.toBeDefined();
       expect(ailaInstance.lesson.plan.subject).not.toBeDefined();
       expect(ailaInstance.lesson.plan.keyStage).not.toBeDefined();
-    }, 10000);
+    });
   });
 
   describe("checkUserIdPresentIfPersisting", () => {
@@ -218,7 +218,7 @@ describe("Aila", () => {
       expect(ailaInstance.lesson.plan.title).toBeDefined();
       expect(ailaInstance.lesson.plan.subject).toBeDefined();
       expect(ailaInstance.lesson.plan.keyStage).toBeDefined();
-    }, 20000);
+    });
   });
 
   describe("shutdown", () => {
@@ -286,7 +286,7 @@ describe("Aila", () => {
       });
 
       expect(ailaInstance.lesson.plan.title).toBe(newTitle);
-    }, 20000);
+    });
   });
 
   describe("categorisation", () => {

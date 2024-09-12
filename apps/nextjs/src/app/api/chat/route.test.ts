@@ -62,7 +62,7 @@ describe("Chat API Route", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       prisma: {} as any,
     };
-  }, 60000);
+  });
 
   it("should create correct telemetry spans for a successful chat request", async () => {
     const mockRequest = new NextRequest("http://localhost/api/chat", {
@@ -90,5 +90,5 @@ describe("Chat API Route", () => {
     expectTracingSpan("chat-api").toHaveBeenExecutedWith({
       chat_id: "test-chat-id",
     });
-  }, 60000);
+  });
 });
