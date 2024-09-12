@@ -7,13 +7,16 @@ import {
   context,
   endingTheInteraction,
   generateResponse,
-  interactive,
+  protocol,
   rag,
   schema,
   signOff,
   task,
-  yourInstructions,
+  interactingWithTheUser,
 } from "./parts";
+import { currentLessonPlan } from "./parts/currentLessonPlan";
+import { languageAndVoice } from "./parts/languageAndVoice";
+import { lessonComplete } from "./parts/lessonComplete";
 
 export interface TemplateProps {
   subject?: string;
@@ -37,7 +40,7 @@ export const getPromptParts = (props: TemplateProps): TemplatePart[] => {
   let response: TemplatePart | undefined;
   switch (props.responseMode) {
     case "interactive":
-      response = interactive;
+      response = protocol;
       break;
     case "generate":
       response = generateResponse;
@@ -56,15 +59,18 @@ export const getPromptParts = (props: TemplateProps): TemplatePart[] => {
 
   const parts: (TemplatePart | undefined)[] = [
     context,
+    currentLessonPlan,
     task,
     props.useRag ? rag : undefined,
     props.baseLessonPlan ? basedOn : undefined,
-    yourInstructions,
+    props.responseMode === "interactive" ? interactingWithTheUser : undefined,
     body,
     schema,
     americanToBritishSection,
     endingTheInteractionSection,
     response,
+    languageAndVoice,
+    props.responseMode === "interactive" ? lessonComplete : undefined,
     signOff,
   ];
 
