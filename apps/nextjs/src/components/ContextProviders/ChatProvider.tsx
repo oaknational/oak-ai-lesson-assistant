@@ -22,9 +22,9 @@ import { ChatRequestOptions, CreateMessage } from "ai";
 import { useChat } from "ai/react";
 import { deepClone } from "fast-json-patch";
 import { useTemporaryLessonPlanWithStreamingEdits } from "hooks/useTemporaryLessonPlanWithStreamingEdits";
-import { usePostHog } from "posthog-js/react";
 
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
+import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import {
   AilaStreamingStatus,
@@ -82,7 +82,7 @@ function clearHashCache() {
 }
 
 function useActionMessages() {
-  const posthog = usePostHog();
+  const analytics = useAnalytics();
 
   return {
     invokeActionMessages: (messageContent: string) => {
@@ -91,7 +91,7 @@ function useActionMessages() {
         .some(isAccountLocked);
 
       if (shouldShowLockedPage) {
-        posthog.reset();
+        analytics.reset();
         window.location.href = "/legal/account-locked";
       }
     },
