@@ -33,7 +33,6 @@ Oak AI Lesson Assistant is a project focused on experimenting with AI models and
   - [Open source acknowledgements](#open-source-acknowledgements)
   - [License](#license)
 
-
 ## Introduction
 
 Oak AI Lesson Assistant is a project designed to facilitate the development and testing of AI tools and models. The project is structured as a Turborepo monorepo, leveraging various open-source tools and libraries.
@@ -80,17 +79,30 @@ To run `psql`, ssh into the box using:
 pnpm run docker-psql
 ```
 
-To seed the database:
+To seed your database you have two options,
+
+Option 1:
+This will import the schema from production and every table. This could take a long time as the database is over 20gb
+
+```shell
+pnpm run db-restore-from:prd
+```
+
+Option 2:
+
+Apply schema to db:
 
 ```shell
 pnpm run db-push
-pnpm run db-seed
 ```
 
-From the repo root, then run:
+Remove the snippets table from tables.txt
+
+Seed from stg/prd
+where `:prd` can be either `:prd` or `:stg` (the Doppler environments).
 
 ```shell
-pnpm run prompts
+pnpm run db-seed-local-from:stg
 ```
 
 To reset and start fresh:
@@ -98,49 +110,6 @@ To reset and start fresh:
 ```shell
 pnpm run docker-reset
 ```
-
-To import a snapshot of production or staging databases into your local instance:
-
-```shell
-pnpm run docker-reset
-pnpm run db-restore-from:prd
-```
-
-where `:prd` can be either `:prd` or `:stg` (the Doppler environments).
-
-### With Homebrew
-
-Install and start PostgreSQL:
-
-```shell
-brew install postgresql
-brew services start postgresql
-createdb oai
-psql
-```
-
-In PSQL:
-
-```sql
-sudo -u postgres psql
-CREATE USER oai WITH ENCRYPTED PASSWORD 'oai';
-GRANT ALL PRIVILEGES ON DATABASE oai TO oai;
-ALTER USER oai WITH SUPERUSER;
-```
-
-**Note:** Running in superuser mode is not ideal; consider separate users for migrations and queries.
-
-Exit PSQL using `\quit`.
-
-Install PG Vector:
-
-```shell
-brew install pgvector
-psql postgres
-CREATE EXTENSION vector;
-```
-
-Quit PSQL.
 
 ## Doppler
 
