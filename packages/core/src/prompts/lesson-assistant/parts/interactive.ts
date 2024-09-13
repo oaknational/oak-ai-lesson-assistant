@@ -1,12 +1,22 @@
 import { TemplateProps } from "..";
 
+const STRUCTURED_OUTPUTS_ENABLED =
+  process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true" ? true : false;
+
+const responseFormatWithStructuredOutputs = `{"response":"llmMessage", patches:[{},{}...], prompt:{}}`;
+const responseFormatWithoutStructuredOutputs = `A series of JSON documents separated using the JSON Text Sequences specification, where each row is separated by the ␞ character and ends with a new line character.
+Your response should be a series of patches followed by one and only one prompt to the user.`;
+
+const responseFormat = STRUCTURED_OUTPUTS_ENABLED
+  ? responseFormatWithStructuredOutputs
+  : responseFormatWithoutStructuredOutputs;
 export const interactive = ({
   llmResponseJsonSchema,
 }: TemplateProps) => `RULES FOR RESPONDING TO THE USER INTERACTIVELY WHILE CREATING THE LESSON PLAN
 
 Your response to the user should be in the following format.
 
-{"response":"llmMessage", patches:[{},{}...], prompt:{}}
+${responseFormat}
 
 "prompt" is a JSON document which represents your message to the user.
 "patches" is series of JSON documents that represent the changes you are making to the lesson plan presented in the form of a series of JSON documents separated using the JSON Text Sequences specification.
