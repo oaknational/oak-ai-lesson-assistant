@@ -435,8 +435,8 @@ importers:
   packages/aila:
     dependencies:
       '@ai-sdk/openai':
-        specifier: ^0.0.55
-        version: 0.0.55(zod@3.23.8)
+        specifier: ^0.0.60
+        version: 0.0.60(zod@3.23.8)
       '@clerk/nextjs':
         specifier: 5.1.0
         version: 5.1.0(patch_hash=svgzfjgl5zy2gm2avo4dkdk6u4)(next@14.2.5)(react-dom@18.2.0)(react@18.2.0)
@@ -817,14 +817,14 @@ packages:
   /@adobe/css-tools@4.4.0:
     resolution: {integrity: sha512-Ff9+ksdQQB3rMncgqDK78uLznstjyfIf2Arnh22pW8kBpLs6rpKDwgnZT46hin5Hl1WzazzK64DOrhSwYpS7bQ==}
 
-  /@ai-sdk/openai@0.0.55(zod@3.23.8):
-    resolution: {integrity: sha512-mYKe5Zqgq+vTtVeyBNLw34TLsWL924q0V6w0x76OgV+tpcyO+MmIc/m6Ego393yRDol2V9BDjmTAfD5jiFv5jw==}
+  /@ai-sdk/openai@0.0.60(zod@3.23.8):
+    resolution: {integrity: sha512-NEdDdv3o76jT6UeWHxP6I/lMYcjFQhQGQi/U2gVqW1PEU4Pjaud7tAVSy27IPbiRakg6GOzWrltI2JhZgAI1wg==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.0.0
     dependencies:
-      '@ai-sdk/provider': 0.0.22
-      '@ai-sdk/provider-utils': 1.0.17(zod@3.23.8)
+      '@ai-sdk/provider': 0.0.23
+      '@ai-sdk/provider-utils': 1.0.19(zod@3.23.8)
       zod: 3.23.8
     dev: false
 
@@ -844,8 +844,31 @@ packages:
       zod: 3.23.8
     dev: false
 
+  /@ai-sdk/provider-utils@1.0.19(zod@3.23.8):
+    resolution: {integrity: sha512-p02Fq5Mnc8T6nwRBN1Iaou8YXvN1sDS6hbmJaD5UaRbXjizbh+8rpFS/o7jqAHTwf3uHCDitP3pnODyHdc/CDQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
+    peerDependenciesMeta:
+      zod:
+        optional: true
+    dependencies:
+      '@ai-sdk/provider': 0.0.23
+      eventsource-parser: 1.1.2
+      nanoid: 3.3.6
+      secure-json-parse: 2.7.0
+      zod: 3.23.8
+    dev: false
+
   /@ai-sdk/provider@0.0.22:
     resolution: {integrity: sha512-smZ1/2jL/JSKnbhC6ama/PxI2D/psj+YAe0c0qpd5ComQCNFltg72VFf0rpUSFMmFuj1pCCNoBOCrvyl8HTZHQ==}
+    engines: {node: '>=18'}
+    dependencies:
+      json-schema: 0.4.0
+    dev: false
+
+  /@ai-sdk/provider@0.0.23:
+    resolution: {integrity: sha512-oAc49O5+xypVrKM7EUU5P/Y4DUL4JZUWVxhejoAVOTOl3WZUEWsMbP3QZR+TrimQIsS0WR/n9UuF6U0jPdp0tQ==}
     engines: {node: '>=18'}
     dependencies:
       json-schema: 0.4.0
