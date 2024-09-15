@@ -1,7 +1,6 @@
 import React, {
   createContext,
   useContext,
-  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -9,7 +8,7 @@ import React, {
 } from "react";
 import { toast } from "react-hot-toast";
 
-import { usePathname, useRouter } from "#next/navigation";
+import { redirect, usePathname, useRouter } from "#next/navigation";
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
@@ -20,20 +19,17 @@ import * as Sentry from "@sentry/nextjs";
 import { Message, nanoid } from "ai";
 import { ChatRequestOptions, CreateMessage } from "ai";
 import { useChat } from "ai/react";
-import { deepClone } from "fast-json-patch";
 import { useTemporaryLessonPlanWithStreamingEdits } from "hooks/useTemporaryLessonPlanWithStreamingEdits";
 
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { trpc } from "@/utils/trpc";
 
 import {
   AilaStreamingStatus,
   useAilaStreamingStatus,
 } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
-import {
-  findLatestServerSideState,
-  findMessageIdFromContent,
-} from "../AppComponents/Chat/Chat/utils";
+import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
 import {
   isAccountLocked,
   isModeration,
@@ -63,11 +59,7 @@ export type ChatContextProps = {
 const ChatContext = createContext<ChatContextProps | null>(null);
 
 export type ChatProviderProps = {
-  startingMessage?: string;
-  initialMessages?: Message[];
-  initialLessonPlan?: LooseLessonPlan;
   id: string;
-  initialModerations: Moderation[];
   children: React.ReactNode;
 };
 
@@ -108,21 +100,19 @@ function getModerationFromMessage(message?: { content: string }) {
   return moderation;
 }
 
-export function ChatProvider({
-  id,
-  initialLessonPlan,
-  initialModerations,
-  initialMessages,
-  startingMessage,
-  children,
-}: Readonly<ChatProviderProps>) {
-  const [lessonPlan, setLessonPlan] = useState<LooseLessonPlan>({});
+export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
+  const { data: chat, isLoading: isChatLoading } =
+    trpc.chat.appSessions.getChat.useQuery({ id });
+  const { data: moderations, isLoading: isModerationsLoading } =
+    trpc.chat.appSessions.getModerations.useQuery({ id });
+  const trpcUtils = trpc.useUtils();
+
   const lessonPlanTracking = useLessonPlanTracking();
   const shouldTrackStreamFinished = useRef(false);
 
   const [lastModeration, setLastModeration] =
     useState<PersistedModerationBase | null>(
-      initialModerations[initialModerations.length - 1] ?? null,
+      moderations?.[moderations.length - 1] ?? null,
     );
 
   const router = useRouter();
@@ -133,15 +123,6 @@ export function ChatProvider({
   const hasAppendedInitialMessage = useRef<boolean>(false);
 
   /******************* Functions *******************/
-
-  const setLessonPlanWithLogging = useCallback(
-    (newLessonPlan: LooseLessonPlan, reason: string) => {
-      const lessonToSet = deepClone(newLessonPlan);
-      console.log("Set lesson plan", reason, { lessonToSet });
-      setLessonPlan(lessonToSet);
-    },
-    [setLessonPlan],
-  );
 
   const { invokeActionMessages } = useActionMessages();
 
@@ -158,12 +139,12 @@ export function ChatProvider({
     setMessages,
   } = useChat({
     sendExtraMessageFields: true,
-    initialMessages,
+    initialMessages: chat?.messages ?? [],
     generateId: () => generateMessageId({ role: "user" }),
     id,
     body: {
       id,
-      lessonPlan,
+      lessonPlan: chat?.lessonPlan,
       options: {
         useRag: true,
         temperature: 0.7,
@@ -207,16 +188,7 @@ export function ChatProvider({
 
       invokeActionMessages(response.content);
 
-      if (messages) {
-        const state = findLatestServerSideState(messages);
-        if (state) {
-          console.log("On Finish: Applying server-side state", { state });
-          setLessonPlanWithLogging(state, "hasFinished");
-        } else {
-          console.log("On Finish: No server state found");
-          setLessonPlanFromTempLessonPlan();
-        }
-      }
+      trpcUtils.chat.appSessions.getChat.invalidate({ id });
 
       setHasFinished(true);
       shouldTrackStreamFinished.current = true;
@@ -253,35 +225,25 @@ export function ChatProvider({
 
   const { tempLessonPlan, partialPatches, validPatches } =
     useTemporaryLessonPlanWithStreamingEdits({
-      lessonPlan,
+      lessonPlan: chat?.lessonPlan ?? {},
       messages,
       isStreaming: !hasFinished,
       messageHashes,
     });
-
-  const setLessonPlanFromTempLessonPlan = useCallback(() => {
-    setLessonPlanWithLogging(tempLessonPlan, "setLessonPlanFromTempLessonPlan");
-  }, [tempLessonPlan, setLessonPlanWithLogging]);
 
   /**
    *  If the state is being restored from a previous lesson plan, set the lesson plan
    */
 
   useEffect(() => {
-    if (initialLessonPlan) {
-      setLessonPlanWithLogging(initialLessonPlan, "initial");
-    }
-  }, [initialLessonPlan, setLessonPlanWithLogging]);
-
-  useEffect(() => {
-    if (startingMessage && !hasAppendedInitialMessage.current) {
+    if (chat?.startingMessage && !hasAppendedInitialMessage.current) {
       append({
-        content: startingMessage,
+        content: chat.startingMessage,
         role: "user",
       });
       hasAppendedInitialMessage.current = true;
     }
-  }, [startingMessage, append, router, path, hasAppendedInitialMessage]);
+  }, [chat?.startingMessage, append, router, path, hasAppendedInitialMessage]);
 
   // Clear the hash cache each completed message
   useEffect(() => {
@@ -294,21 +256,20 @@ export function ChatProvider({
    */
   useEffect(() => {
     if (!hasFinished || !messages) return;
-    const state = findLatestServerSideState(messages);
-    if (!state) return;
-    setLessonPlanWithLogging(state, "hasFinished");
+    trpcUtils.chat.appSessions.getChat.invalidate({ id });
     if (shouldTrackStreamFinished.current) {
-      lessonPlanTracking.onStreamFinished({
-        prevLesson: lessonPlan,
-        nextLesson: state,
-        messages,
-      });
+      // lessonPlanTracking.onStreamFinished({
+      //   prevLesson: lessonPlan,
+      //   nextLesson: state,
+      //   messages,
+      // }); // #TODO reinstate analytics
       shouldTrackStreamFinished.current = false;
     }
   }, [
+    id,
+    trpcUtils.chat.appSessions.getChat,
     hasFinished,
     messages,
-    setLessonPlanWithLogging,
     lessonPlanTracking,
     //lessonPlan, Deliberately do not add this dependency
   ]);
@@ -317,7 +278,7 @@ export function ChatProvider({
    * Get the sensitive moderation id and pass to dialog
    */
 
-  const toxicInitialModeration = initialModerations.find(isToxic) ?? null;
+  const toxicInitialModeration = moderations?.find(isToxic) ?? null;
 
   const toxicModeration =
     lastModeration && isToxic(lastModeration)
@@ -329,17 +290,16 @@ export function ChatProvider({
   useEffect(() => {
     if (toxicModeration) {
       setMessages([]);
-      setLessonPlan({});
+      //setLessonPlan({}); #TODO what to do here
     }
   }, [toxicModeration, setMessages]);
 
   const value: ChatContextProps = useMemo(
     () => ({
       id,
-      initialModerations,
+      initialModerations: moderations ?? [],
       toxicModeration,
-      lessonPlan: tempLessonPlan ?? lessonPlan ?? {},
-      setLessonPlan,
+      lessonPlan: tempLessonPlan,
       hasFinished,
       hasAppendedInitialMessage,
       chatAreaRef,
@@ -358,11 +318,9 @@ export function ChatProvider({
     }),
     [
       id,
-      initialModerations,
+      moderations,
       toxicModeration,
-      lessonPlan,
       tempLessonPlan,
-      setLessonPlan,
       hasFinished,
       hasAppendedInitialMessage,
       chatAreaRef,
@@ -380,7 +338,15 @@ export function ChatProvider({
     ],
   );
 
-  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
+  if (!chat && !isChatLoading) {
+    redirect("/aila");
+  }
+
+  return (
+    <ChatContext.Provider value={value}>
+      {isChatLoading || isModerationsLoading ? null : children}
+    </ChatContext.Provider>
+  );
 }
 
 export function useLessonChat(): ChatContextProps {
