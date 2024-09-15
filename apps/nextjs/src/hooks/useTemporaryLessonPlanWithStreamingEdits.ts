@@ -42,7 +42,7 @@ function patchHasBeenApplied(
 export const useTemporaryLessonPlanWithStreamingEdits = ({
   lessonPlan,
   messages,
-  isStreaming,
+  //isStreaming, // unused now?
   messageHashes,
 }: {
   lessonPlan?: LooseLessonPlan;

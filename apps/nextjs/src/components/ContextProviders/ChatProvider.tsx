@@ -11,7 +11,10 @@ import { toast } from "react-hot-toast";
 import { redirect, usePathname, useRouter } from "#next/navigation";
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import {
+  AilaPersistedChat,
+  LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { Moderation } from "@oakai/db";
@@ -37,6 +40,7 @@ import {
 
 export type ChatContextProps = {
   id: string;
+  chat: AilaPersistedChat | undefined;
   initialModerations: Moderation[];
   toxicModeration: PersistedModerationBase | null;
   lastModeration: PersistedModerationBase | null;
@@ -297,6 +301,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const value: ChatContextProps = useMemo(
     () => ({
       id,
+      chat: chat ?? undefined,
       initialModerations: moderations ?? [],
       toxicModeration,
       lessonPlan: tempLessonPlan,
@@ -318,6 +323,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     }),
     [
       id,
+      chat,
       moderations,
       toxicModeration,
       tempLessonPlan,
