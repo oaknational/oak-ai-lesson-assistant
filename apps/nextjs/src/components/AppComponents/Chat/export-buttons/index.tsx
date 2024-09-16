@@ -8,7 +8,6 @@ import { useDemoUser } from "@/components/ContextProviders/Demo";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import { useDialog } from "../../DialogContext";
-import ChatButton from "../ui/chat-button";
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
 export type ExportButtonsProps = {
