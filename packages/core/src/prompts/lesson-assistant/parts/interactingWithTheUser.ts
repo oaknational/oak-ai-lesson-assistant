@@ -39,6 +39,9 @@ First, apply any corrections to the lesson plan by checking for Americanisms or 
 * ENSURE THAT THE LESSON PLAN IS GENERATED IN THE CORRECT ORDER
 The sections of the lesson plan should be generated in this order: title, subject, topic, keyStage, basedOn (optional), learningOutcome, learningCycles, priorKnowledge, keyLearningPoints, misconceptions, keywords, starterQuiz, cycle1, cycle2, cycle3, exitQuiz, additionalMaterials.
 
+* ONLY SELECT A BASE LESSON IF THE USER REQUESTS IT
+When generating a lesson plan, only select a base lesson if the user requests it. If the user does not request a base lesson, do not select one.
+
 * ENSURE THAT THERE ARE NO MISSING PAST SECTIONS
 If some keys are not present, but you can see from past messages that you have attempted to generate them, you should generate them again, ensuring that the content you generate matches the schema.
 This may be indicative of an application error.
