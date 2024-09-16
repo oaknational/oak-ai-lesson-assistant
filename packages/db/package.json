@@ -61,6 +61,7 @@
     "@types/chunk-text": "^1.0.0",
     "cheerio": "1.0.0-rc.12",
     "chunk-text": "^2.0.1",
+    "csv-parser": "^3.0.0",
     "graphql-request": "^6.1.0",
     "openai": "^4.58.1",
     "p-queue": "^7.4.1",
