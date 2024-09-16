@@ -10,12 +10,12 @@ import { trpc } from "@/utils/trpc";
 import {
   ExportsType,
   getExportsConfig,
-} from "./ExportsDialogs/exports.helpers";
-import { Icon } from "./Icon";
-import LoadingWheel from "./LoadingWheel";
-import LessonIcon from "./SVGParts/LessonIcon";
-import QuizIcon from "./SVGParts/QuizIcon";
-import SlidesIcon from "./SVGParts/SlidesIcon";
+} from "../../ExportsDialogs/exports.helpers";
+import { Icon } from "../../Icon";
+import LoadingWheel from "../../LoadingWheel";
+import LessonIcon from "../../SVGParts/LessonIcon";
+import QuizIcon from "../../SVGParts/QuizIcon";
+import SlidesIcon from "../../SVGParts/SlidesIcon";
 
 export const DownloadButton = ({
   onClick,

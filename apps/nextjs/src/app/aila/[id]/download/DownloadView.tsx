@@ -4,10 +4,12 @@ import { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { Box, Flex, Grid } from "@radix-ui/themes";
 
 import Layout from "@/components/AppComponents/Layout";
+import { DownloadButton } from "@/components/AppComponents/download/DownloadButton";
+import SectionsCompleteDownloadNotice from "@/components/AppComponents/download/SectionsCompleteDownloadNotice";
+import SectionsNotCompleteDownloadNotice from "@/components/AppComponents/download/SectionsNotCompleteDownloadNotice";
 import Button from "@/components/Button";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
-import { DownloadButton } from "@/components/DownloadButton";
 import { Icon } from "@/components/Icon";
 
 import { SurveyDialogLauncher } from "./SurveyDialogLauncher";
@@ -60,16 +62,9 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                 <h1 className="my-24 text-4xl font-bold">Download resources</h1>
                 <p className="mb-24 max-w-[600px]">
                   {isLessonComplete ? (
-                    <>
-                      Choose the resources you would like to generate and
-                      download.
-                    </>
+                    <SectionsCompleteDownloadNotice />
                   ) : (
-                    <>
-                      Complete all {totalSections} sections of your lesson to
-                      unlock resources below. If a section is missing, just ask
-                      Aila to help you complete your lesson.
-                    </>
+                    <SectionsNotCompleteDownloadNotice sections={sections} />
                   )}
                 </p>
               </div>
