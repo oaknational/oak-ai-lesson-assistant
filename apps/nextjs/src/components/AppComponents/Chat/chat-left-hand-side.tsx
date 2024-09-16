@@ -3,6 +3,8 @@ import React from "react";
 import { Flex } from "@radix-ui/themes";
 import { Message } from "ai";
 
+import { DemoContextProps } from "@/components/ContextProviders/Demo";
+
 import ChatLhsHeader from "./chat-lhs-header";
 import { ChatList } from "./chat-list";
 import { ChatPanel } from "./chat-panel";
@@ -15,6 +17,7 @@ type ChatLeftHandSideProps = {
   isDemoLocked: boolean;
   showLessonMobile: boolean;
   setShowLessonMobile: (value: boolean) => void;
+  demo: DemoContextProps;
 };
 
 const ChatLeftHandSide = ({
@@ -23,6 +26,7 @@ const ChatLeftHandSide = ({
   isDemoLocked,
   showLessonMobile,
   setShowLessonMobile,
+  demo,
 }: Readonly<ChatLeftHandSideProps>) => {
   return (
     <Flex
@@ -41,6 +45,7 @@ const ChatLeftHandSide = ({
           <ChatList
             isDemoLocked={isDemoLocked}
             showLessonMobile={showLessonMobile}
+            demo={demo}
           />
         </ChatPanelArea>
         {!isDemoLocked && (
