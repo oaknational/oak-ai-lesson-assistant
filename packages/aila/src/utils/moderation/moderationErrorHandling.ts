@@ -56,6 +56,6 @@ export async function handleHeliconeError(
     type: "error",
     value: "Threat detected",
     message:
-      "I wasn't able to process your request because a potentially malicious input was detected.",
+      "I wasn’t able to process your request because a potentially malicious input was detected.",
   };
 }

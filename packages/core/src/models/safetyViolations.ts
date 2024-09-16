@@ -116,11 +116,60 @@ export class SafetyViolations {
       distinctId: userId,
       properties: { banned: true },
     });
-
+    await posthogAiBetaServerClient.flush();
     await inngest.send({
       name: "app/slack.notifyUserBan",
       user: { id: userId },
       data: {},
     });
+  }
+
+  async removeViolationsByRecordId(recordId: string): Promise<void> {
+    const safetyViolations = await this.prisma.safetyViolation.findMany({
+      where: {
+        recordId,
+      },
+    });
+
+    await this.prisma.safetyViolation.deleteMany({
+      where: {
+        recordId,
+      },
+    });
+
+    await Promise.all(
+      /**
+       * With our current API, there will be maximum 1 safety violation per record,
+       * but this pattern future-proofs in case a record is cached and so associated
+       * with multiple users/violations.
+       */
+      safetyViolations.map(async (violation) => {
+        const { userId } = violation;
+        const isUnderThreshold = !(await this.isOverThreshold(userId));
+
+        if (isUnderThreshold) {
+          await this.unbanUser(userId);
+        }
+      }),
+    );
+  }
+
+  async unbanUser(userId: string): Promise<void> {
+    const user = await clerkClient.users.getUser(userId);
+
+    if (user.banned) {
+      this.logger.info(`Unbanning user ${userId}`);
+      await clerkClient.users.unbanUser(userId);
+
+      posthogAiBetaServerClient.capture({
+        distinctId: userId,
+        event: "User Unbanned",
+      });
+      posthogAiBetaServerClient.identify({
+        distinctId: userId,
+        properties: { banned: false },
+      });
+      await posthogAiBetaServerClient.flush();
+    }
   }
 }

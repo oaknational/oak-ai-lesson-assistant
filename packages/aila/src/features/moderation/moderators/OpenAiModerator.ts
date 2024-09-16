@@ -5,6 +5,7 @@ import {
   moderationResponseSchema,
 } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import OpenAI from "openai";
+import zodToJsonSchema from "zod-to-json-schema";
 
 import { AilaModerator, AilaModerationError } from ".";
 import {
@@ -56,6 +57,8 @@ export class OpenAiModerator extends AilaModerator {
       throw new AilaModerationError("Failed to moderate after 3 attempts");
     }
 
+    const schema = zodToJsonSchema(moderationResponseSchema);
+
     const moderationResponse = await this._openAIClient.chat.completions.create(
       {
         model: this._model,
@@ -67,7 +70,19 @@ export class OpenAiModerator extends AilaModerator {
           { role: "user", content: input },
         ],
         temperature: this._temperature,
-        response_format: { type: "json_object" },
+        response_format: {
+          type: "json_schema",
+          json_schema: {
+            name: "moderationResponse",
+            /**
+             * Currently `strict` mode does not support minimum/maxiumum integer types, which
+             * we use for the likert scale in the moderation schema.
+             * @see https://community.openai.com/t/new-function-calling-with-strict-has-a-problem-with-minimum-integer-type/903258
+             */
+            // strict: true,
+            schema,
+          },
+        },
       },
       {
         headers: {
@@ -79,7 +94,6 @@ export class OpenAiModerator extends AilaModerator {
 
     console.log(
       "Moderation response: ",
-      input,
       JSON.stringify(moderationResponse, null, 2),
     );
 
@@ -103,20 +117,36 @@ export class OpenAiModerator extends AilaModerator {
       throw new AilaModerationError(`No moderation response`);
     }
 
-    // FIX: Sometimes the LLM incorrectly flags all available categories.
-    // The dummy smoke test shouldn't be triggered in normal use, and indicates this bug
-    if (response.data.categories.includes("t/dummy-smoke-test")) {
-      console.log(
-        "Moderation: dummy-smoke-test detected, retrying. Attempts: ",
-        attempts + 1,
-      );
-      return await this._moderate(input, attempts + 1);
-    }
+    const { categories, justification, scores } = response.data;
 
-    return response.data;
+    return {
+      justification,
+      categories: categories.filter((category) => {
+        /**
+         * We only want to include the category if the parent category scores below a certain threshold.
+         * Seems to improve accuracy of the moderation.
+         * In future we may want to adjust this threshold based on subject and key-stage, and the
+         * category itself.
+         */
+        const parentKey = category[0];
+        for (const [key, score] of Object.entries(scores)) {
+          if (key === parentKey && score < 5) {
+            return true;
+          }
+        }
+      }),
+    };
   }
 
   async moderate(input: string): Promise<ModerationResult> {
-    return await this._moderate(input, 0);
+    try {
+      return await this._moderate(input, 0);
+    } catch (error) {
+      console.log("Moderation error: ", error);
+      if (error instanceof AilaModerationError) {
+        throw error;
+      }
+      return await this._moderate(input, 1);
+    }
   }
 }

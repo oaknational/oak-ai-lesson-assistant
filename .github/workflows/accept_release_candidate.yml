@@ -1,0 +1,27 @@
+name: Accept Release Candidate
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  merge:
+    name: Merge Release Candidate
+    if: |
+      github.event.review.state == 'approved' &&
+      github.event.pull_request.merged == false &&
+      github.event.pull_request.base.ref == 'production' &&
+      startsWith(github.event.pull_request.head.ref, 'rc')
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Merge pull request"
+        uses: "actions/github-script@v7"
+        with:
+          script: |
+            await github.rest.pulls.merge({
+              merge_method: "merge",
+              owner: context.repo.owner,
+              pull_number: context.issue.number,
+              repo: context.repo.repo,
+            })

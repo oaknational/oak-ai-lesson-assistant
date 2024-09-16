@@ -80,7 +80,7 @@ const ModifyButton = ({
           onClickActions={modifySection}
           setIsOpen={setIsOpen}
           selectedRadio={selectedRadio}
-          title={`Ask Aila to modify ${section}:`}
+          title={`Ask Aila to modify ${section.toLowerCase()}:`}
           buttonText={"Modify section"}
           isOpen={isOpen}
           dropdownRef={dropdownRef}
@@ -98,7 +98,10 @@ const ModifyButton = ({
                     id={`${id}-modify-options-${option.enumValue}`}
                     key={`${id}-modify-options-${option.enumValue}`}
                     value={option.enumValue}
-                    label={option.label}
+                    label={handleLabelText({
+                      text: option.label,
+                      section,
+                    })}
                     onClick={() => {
                       setSelectedRadio(option);
                     }}
@@ -121,5 +124,24 @@ const ModifyButton = ({
     </OakBox>
   );
 };
+
+function handleLabelText({
+  text,
+  section,
+}: {
+  text: string;
+  section: string;
+}): string {
+  if (
+    section === "Misconceptions" ||
+    section === "Keyword learning points" ||
+    section === "Learning cycles"
+  ) {
+    if (text.includes("it")) {
+      return text.replace("it", "them");
+    }
+  }
+  return text;
+}
 
 export default ModifyButton;

@@ -12,3 +12,12 @@ export async function consumeStream(stream: ReadableStream): Promise<string> {
 
   return result;
 }
+
+export function extractStreamMessage(streamedText: string) {
+  const content = streamedText.match(/0:"(.*)"/);
+  if (!content?.[1]) {
+    throw new Error("No message found in streamed text");
+  }
+  const strippedContent = content[1].replace(/\\"/g, '"');
+  return JSON.parse(strippedContent);
+}

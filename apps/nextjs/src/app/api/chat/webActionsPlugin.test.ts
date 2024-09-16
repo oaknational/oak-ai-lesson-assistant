@@ -133,7 +133,7 @@ describe("onStreamError", () => {
     const plugin = createWebActionsPlugin(prisma, safetyViolations);
     await expect(async () => {
       await plugin.onStreamError(
-        new AilaThreatDetectionError("test"),
+        new AilaThreatDetectionError("user_abc", "test"),
         pluginContext,
       );
     }).rejects.toThrow("test");
@@ -149,7 +149,7 @@ describe("onStreamError", () => {
       type: "error",
       value: "Threat detected",
       message:
-        "I wasn't able to process your request because a potentially malicious input was detected.",
+        "I wasn’t able to process your request because a potentially malicious input was detected.",
     });
   });
 
@@ -170,7 +170,7 @@ describe("onStreamError", () => {
     const plugin = createWebActionsPlugin(prisma, safetyViolations);
     await expect(async () => {
       await plugin.onStreamError(
-        new AilaThreatDetectionError("test"),
+        new AilaThreatDetectionError("user_abc", "test"),
         pluginContext,
       );
     }).rejects.toThrow("test");

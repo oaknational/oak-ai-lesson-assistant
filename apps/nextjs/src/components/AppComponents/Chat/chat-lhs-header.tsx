@@ -17,9 +17,7 @@ const ChatLhsHeader = ({
   const router = useRouter();
   return (
     <>
-      <div className="mt-6 hidden items-center justify-between gap-5 sm:flex">
-        <p className="text-2xl font-bold">Aila</p>
-
+      <div className="mt-6 hidden items-center justify-end gap-5 sm:flex">
         <ChatButton
           variant="secondary"
           onClick={() => {
