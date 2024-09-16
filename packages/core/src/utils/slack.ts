@@ -6,6 +6,8 @@ import {
   animals,
 } from "unique-names-generator";
 
+import { getExternalFacingUrl } from "../functions/slack/getExternalFacingUrl";
+
 if (!process.env.SLACK_NOTIFICATION_CHANNEL_ID) {
   throw new Error("Missing env var SLACK_NOTIFICATION_CHANNEL_ID");
 }
@@ -52,26 +54,49 @@ export function userIdBlock(userId: string): SectionBlock {
   };
 }
 
-export function userButtonsBlock(userId: string): ActionsBlock {
+export function actionsBlock({
+  userActionsProps,
+  chatActionsProps,
+}: {
+  userActionsProps?: { userId: string };
+  chatActionsProps?: { chatId: string };
+}): ActionsBlock {
+  const userActions: ActionsBlock["elements"] = userActionsProps
+    ? [
+        {
+          type: "button",
+          text: {
+            type: "plain_text",
+            text: "Posthog user",
+          },
+          url: `https://eu.posthog.com/project/${posthogProject}/person/${userActionsProps.userId}`,
+        },
+        {
+          type: "button",
+          text: {
+            type: "plain_text",
+            text: "Clerk user",
+          },
+          url: `https://dashboard.clerk.com/apps/${clerkAppId}/instances/${clerkInstanceId}/users/${userActionsProps.userId}`,
+        },
+      ]
+    : [];
+
+  const chatActions: ActionsBlock["elements"] = chatActionsProps
+    ? [
+        {
+          type: "button",
+          text: {
+            type: "plain_text",
+            text: "Admin chat",
+          },
+          url: `https://${getExternalFacingUrl()}/admin/aila/${chatActionsProps.chatId}`,
+        },
+      ]
+    : [];
+
   return {
     type: "actions",
-    elements: [
-      {
-        type: "button",
-        text: {
-          type: "plain_text",
-          text: "Posthog User",
-        },
-        url: `https://eu.posthog.com/project/${posthogProject}/person/${userId}`,
-      },
-      {
-        type: "button",
-        text: {
-          type: "plain_text",
-          text: "Clerk User",
-        },
-        url: `https://dashboard.clerk.com/apps/${clerkAppId}/instances/${clerkInstanceId}/users/${userId}`,
-      },
-    ],
+    elements: [...userActions, ...chatActions],
   };
 }

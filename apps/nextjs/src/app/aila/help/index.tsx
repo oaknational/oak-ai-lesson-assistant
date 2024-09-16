@@ -3,6 +3,7 @@
 import { useRef } from "react";
 
 import { OakLink } from "@oaknational/oak-components";
+import { useSearchParams } from "next/navigation";
 
 import { Header } from "@/components/AppComponents/Chat/header";
 import GetInTouchBox from "@/components/AppComponents/GetInTouchBox";
@@ -24,6 +25,9 @@ const Help = () => {
       window.scrollTo({ top: y, behavior: "smooth" });
     }
   };
+
+  const searchParams = useSearchParams();
+  const ailaId = searchParams.get("ailaId");
 
   return (
     <>
@@ -94,7 +98,10 @@ const Help = () => {
 
           <div className="mb-40 max-w-[800px]">
             <div className="mb-20 mt-10 sm:hidden">
-              <OakLink href="/aila" iconName="chevron-left">
+              <OakLink
+                href={ailaId ? `/aila/${ailaId}` : `/aila`}
+                iconName="chevron-left"
+              >
                 Back to Aila
               </OakLink>
             </div>

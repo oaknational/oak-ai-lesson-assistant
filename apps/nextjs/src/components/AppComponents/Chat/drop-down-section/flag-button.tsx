@@ -21,7 +21,7 @@ const flagOptions = [
 
 type FlagButtonOptions = typeof flagOptions;
 
-const FlagButton = () => {
+const FlagButton = ({ section }: { section: string }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRadio, setSelectedRadio] =
@@ -67,7 +67,7 @@ const FlagButton = () => {
           onClickActions={flagSectionContent}
           setIsOpen={setIsOpen}
           selectedRadio={selectedRadio}
-          title={"Flag issue with learning outcome:"}
+          title={`Flag issue with ${section.toLowerCase()}:`}
           buttonText={"Send feedback"}
           isOpen={isOpen}
           dropdownRef={dropdownRef}

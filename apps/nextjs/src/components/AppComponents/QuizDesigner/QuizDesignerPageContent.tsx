@@ -1,4 +1,4 @@
-import { Dispatch } from "react";
+import { Dispatch, useRef } from "react";
 
 import { Box, Container } from "@radix-ui/themes";
 import useSuggestedQuestions from "hooks/useSuggestedQuestions";
@@ -53,6 +53,8 @@ const QuizDesignerPageContent = ({
     state,
     dispatch,
   });
+
+  const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
   return (
     <>
       <ExportMenu
@@ -85,6 +87,9 @@ const QuizDesignerPageContent = ({
                     questionIdx={questionIdx}
                     state={state}
                     dispatch={dispatch}
+                    ref={(el) => {
+                      questionRefs.current[questionIdx] = el;
+                    }}
                     suggestedQuestionsGeneration={suggestedQuestionsGeneration}
                   />
                 );
@@ -99,6 +104,8 @@ const QuizDesignerPageContent = ({
               dispatch={dispatch}
               setPotentialNewQuestions={setPotentialNewQuestion}
               suggestedQuestionsGeneration={suggestedQuestionsGeneration}
+              questionRefs={questionRefs}
+              questionsWrapperRef={questionsWrapperRef}
             />
 
             {state.questions[0]?.answers !== undefined &&

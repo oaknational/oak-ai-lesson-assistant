@@ -12,6 +12,10 @@ import { Config } from "./config";
 const chatId = "test-chat-id";
 const userId = "test-user-id";
 
+jest.mock("./user", () => ({
+  fetchAndCheckUser: jest.fn().mockResolvedValue("test-user-id"),
+}));
+
 describe("Chat API Route", () => {
   let testConfig: Config;
   let mockLLMService: MockLLMService;
@@ -32,9 +36,6 @@ describe("Chat API Route", () => {
     jest.spyOn(mockLLMService, "createChatCompletionStream");
 
     testConfig = {
-      shouldPerformUserLookup: false,
-      handleUserLookup: jest.fn(),
-      mockUserId: userId,
       createAila: jest.fn().mockImplementation(async (options) => {
         const ailaConfig = {
           options: {
@@ -92,7 +93,5 @@ describe("Chat API Route", () => {
     expectTracingSpan("chat-api").toHaveBeenExecutedWith({
       chat_id: "test-chat-id",
     });
-
-    expect(testConfig.handleUserLookup).not.toHaveBeenCalled();
-  }, 30000);
+  });
 });
