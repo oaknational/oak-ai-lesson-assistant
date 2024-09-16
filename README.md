@@ -15,9 +15,9 @@ Oak AI Lesson Assistant is a project focused on experimenting with AI models and
   - [Installation](#installation)
     - [Prerequisites](#prerequisites)
     - [Turborepo](#turborepo)
-  - [Postgres setup](#postgres-setup)
-    - [With Docker](#with-docker)
-    - [With Homebrew](#with-homebrew)
+  - [Postgres Setup](#postgres-setup)
+    - [Prerequisites:](#prerequisites-1)
+    - [Steps](#steps)
   - [Doppler](#doppler)
   - [Start the development server](#start-the-development-server)
   - [Testing](#testing)
@@ -55,22 +55,49 @@ This application is structured as a Turborepo monorepo. Install the "turbo" comm
 pnpm install turbo --global
 ```
 
-## Postgres setup
+## Postgres Setup
 
-Instructions are available for both Homebrew and Dockerized setups.
+### Prerequisites:
+- Docker installed.
 
-### With Docker
+### Steps
 
-Navigate to the `packages/db` directory:
+1. Navigate to the `packages/db` directory:
 
 ```shell
 cd packages/db
 ```
 
-Build and run the Docker container to create a database named `oai`, with the username and password both as `oai`, bound to port 5432. It will also install `pgvector` and `postgresql-contrib`.
+2. Build and run the Docker container to create a database named `oai`, with the username and password both as `oai`, bound to port 5432. It will also install `pgvector` and `postgresql-contrib`.
 
 ```shell
 pnpm run docker-bootstrap
+```
+
+3. Seed your database, to do this you have two options:
+
+3a. Replicate Production
+
+This will import the schema and tables from production. Note: due to the size of the production database this could take a significant amount of time.
+
+```shell
+pnpm run db-restore-from:prd
+```
+3b. Local Prisma with Live Environment Seed
+
+1. Apply the Prisma schema to your local database:
+
+```shell
+pnpm run db-push
+```
+
+2. Remove the snippets table from tables.txt (Snippets is the largest table in the database and takes the majority of the time).
+
+3. Seed from stg/prd
+where `:prd` can be either `:prd` or `:stg` (the Doppler environments).
+
+```shell
+pnpm run db-seed-local-from:stg
 ```
 
 To run `psql`, ssh into the box using:
@@ -79,33 +106,7 @@ To run `psql`, ssh into the box using:
 pnpm run docker-psql
 ```
 
-To seed your database you have two options,
-
-Option 1:
-This will import the schema from production and every table. This could take a long time as the database is over 20gb
-
-```shell
-pnpm run db-restore-from:prd
-```
-
-Option 2:
-
-Apply schema to db:
-
-```shell
-pnpm run db-push
-```
-
-Remove the snippets table from tables.txt
-
-Seed from stg/prd
-where `:prd` can be either `:prd` or `:stg` (the Doppler environments).
-
-```shell
-pnpm run db-seed-local-from:stg
-```
-
-To reset and start fresh:
+If you need to reset and start fresh:
 
 ```shell
 pnpm run docker-reset
