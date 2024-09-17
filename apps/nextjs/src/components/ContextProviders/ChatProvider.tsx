@@ -126,6 +126,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const hasAppendedInitialMessage = useRef<boolean>(false);
 
+  const lessonPlanSnapshot = useRef<LooseLessonPlan>({});
+
   /******************* Functions *******************/
 
   const { invokeActionMessages } = useActionMessages();
@@ -153,6 +155,10 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
         useRag: true,
         temperature: 0.7,
       },
+    },
+    fetch(input: RequestInfo | URL, init?: RequestInit | undefined) {
+      lessonPlanSnapshot.current = chat?.lessonPlan ?? {};
+      return fetch(input, init);
     },
     onError(error) {
       Sentry.captureException(new Error("Use chat error"), {
