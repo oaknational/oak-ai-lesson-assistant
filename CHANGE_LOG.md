@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.7.0...v1.7.1) (2024-09-17)
+
+
+### Bug Fixes
+
+* revert error to previous protocol ([#139](https://github.com/oaknational/oak-ai-lesson-assistant/issues/139)) ([e053b89](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e053b895503d5a29522404ce14e13239b6db7852))
+
 # [1.7.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.6.1...v1.7.0) (2024-09-16)
 
 
