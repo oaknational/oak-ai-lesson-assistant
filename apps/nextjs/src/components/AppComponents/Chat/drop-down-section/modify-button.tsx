@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 
+import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import type { AilaUserModificationAction } from "@oakai/db";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
 import { TextArea } from "@radix-ui/themes";
@@ -39,8 +40,7 @@ const ModifyButton = ({
 
   const { mutateAsync } = trpc.chat.appSessions.modifySection.useMutation();
 
-  const assistantMessages = messages.filter((m) => m.role === "assistant");
-  const lastAssistantMessage = assistantMessages[assistantMessages.length - 1];
+  const lastAssistantMessage = getLastAssistantMessage(messages);
 
   const recordUserModifySectionContent = async () => {
     if (selectedRadio && lastAssistantMessage) {

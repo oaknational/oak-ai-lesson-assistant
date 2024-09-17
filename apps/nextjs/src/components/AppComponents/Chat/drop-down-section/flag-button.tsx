@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
+import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import type { AilaUserFlagType } from "@oakai/db";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
 import styled from "styled-components";
@@ -32,8 +33,7 @@ const FlagButton = ({ section }: { section: string }) => {
   const chat = useLessonChat();
 
   const { id, messages } = chat;
-  const assistantMessages = messages.filter((m) => m.role === "assistant");
-  const lastAssistantMessage = assistantMessages[assistantMessages.length - 1];
+  const lastAssistantMessage = getLastAssistantMessage(messages);
 
   const { mutateAsync } = trpc.chat.appSessions.flagSection.useMutation();
 

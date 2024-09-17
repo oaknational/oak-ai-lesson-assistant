@@ -16,6 +16,7 @@ import invariant from "tiny-invariant";
 import { AilaServices } from "../../core";
 import { Message } from "../../core/chat";
 import { AilaPluginContext } from "../../core/plugins/types";
+import { getLastAssistantMessage } from "../../helpers/chat/getLastAssistantMessage";
 import { ModerationDocument } from "../../protocol/jsonPatchProtocol";
 import { LooseLessonPlan } from "../../protocol/schema";
 import { AilaModerationFeature } from "../types";
@@ -57,7 +58,7 @@ export class AilaModeration implements AilaModerationFeature {
 
   public async persistModerationResult(
     moderationResult: ModerationResult,
-    lastUserMessage: Message,
+    lastAssistantMessage: Message,
     lessonPlan: LooseLessonPlan,
   ) {
     const userId = this._aila.userId;
@@ -68,7 +69,7 @@ export class AilaModeration implements AilaModerationFeature {
     const moderation = await this._moderations.create({
       userId,
       appSessionId: chatId,
-      messageId: lastUserMessage.id,
+      messageId: lastAssistantMessage.id,
       categories: moderationResult.categories,
       justification: moderationResult.justification,
       lesson: lessonPlan,
@@ -86,8 +87,8 @@ export class AilaModeration implements AilaModerationFeature {
     messages: Message[];
     pluginContext: AilaPluginContext;
   }) {
-    const lastUserMessage = messages.findLast((m) => m.role === "user");
-    if (!lastUserMessage) {
+    const lastAssistantMessage = getLastAssistantMessage(messages);
+    if (!lastAssistantMessage) {
       const defaultMessage: ModerationDocument = {
         type: "moderation",
         categories: [],
@@ -104,7 +105,7 @@ export class AilaModeration implements AilaModerationFeature {
     if (this._shouldPersist) {
       const moderation = await this.persistModerationResult(
         moderationResult,
-        lastUserMessage,
+        lastAssistantMessage,
         lessonPlan,
       );
       this.reportModerationToAnalytics(moderationResult, moderation);
@@ -149,12 +150,12 @@ export class AilaModeration implements AilaModerationFeature {
   }
 
   public mockedResponse(messages: Message[]) {
-    const lastUserMessage: Message | undefined = messages.findLast(
+    const lastAssistantMessage: Message | undefined = messages.findLast(
       (m) => m.role === "user",
     );
-    if (lastUserMessage) {
+    if (lastAssistantMessage) {
       const mockModerationResult = getMockModerationResult(
-        lastUserMessage?.content,
+        lastAssistantMessage?.content,
       );
       if (mockModerationResult) {
         console.log("Returning mockModerationResult", mockModerationResult);

@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import {
-  LessonDeepPartial,
-  exportDocLessonPlanSchema,
-} from "@oakai/exports/browser";
+import { exportDocLessonPlanSchema } from "@oakai/exports/browser";
 import { LessonPlanDocInputData } from "@oakai/exports/src/schema/input.schema";
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
@@ -11,19 +8,15 @@ import { ZodError } from "zod";
 
 import { trpc } from "@/utils/trpc";
 
+import { ExportsHookProps } from "./exports.types";
+
 export function useExportLessonPlanDoc({
   onStart,
   lesson,
   active,
   chatId,
   messageId,
-}: {
-  onStart: () => void;
-  lesson: LessonDeepPartial;
-  chatId: string;
-  messageId: number;
-  active: boolean;
-}) {
+}: ExportsHookProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const query = trpc.exports.exportLessonPlanDoc.useMutation();
 
@@ -75,6 +68,18 @@ export function useExportLessonPlanDoc({
     if (!active) {
       return;
     }
+    if (!messageId) {
+      Sentry.captureException(
+        new Error("Failed to start export: messageId is undefined"),
+        {
+          extra: {
+            chatId,
+            lesson,
+          },
+        },
+      );
+      return;
+    }
 
     if (!debouncedParseResult?.success) {
       Sentry.captureException(
@@ -90,7 +95,7 @@ export function useExportLessonPlanDoc({
       query.mutate({
         data: debouncedParseResult.data,
         chatId,
-        messageId: messageId.toString(),
+        messageId,
       });
       onStart();
       setDialogOpen(true);
