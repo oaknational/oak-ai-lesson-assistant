@@ -5,8 +5,7 @@ import {
 import { StreamingTextResponse } from "ai";
 
 export function streamingJSON(message: ErrorDocument | ActionDocument) {
-  const jsonContent = JSON.stringify(message);
-  const errorMessage = `0:"${jsonContent.replace(/"/g, '\\"')}"`;
+  const errorMessage = JSON.stringify(message);
 
   const errorEncoder = new TextEncoder();
 
