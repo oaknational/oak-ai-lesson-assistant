@@ -50,7 +50,9 @@ const SectionsNotCompleteDownloadNotice = ({
           isTrailingIcon={true}
           onClick={() => setShowMissingSections(!showMissingSections)}
         >
-          <OakSpan $font="body-2">Hide missing sections</OakSpan>
+          <OakSpan $font="body-2">
+            {showMissingSections ? "Hide" : "Show"} missing sections
+          </OakSpan>
         </OakLink>
         {showMissingSections && (
           <>
