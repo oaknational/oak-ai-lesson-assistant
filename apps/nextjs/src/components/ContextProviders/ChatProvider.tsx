@@ -128,6 +128,10 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const lessonPlanSnapshot = useRef<LooseLessonPlan>({});
 
+  const [overrideLessonPlan, setOverrideLessonPlan] = useState<
+    LooseLessonPlan | undefined
+  >(undefined);
+
   /******************* Functions *******************/
 
   const { invokeActionMessages } = useActionMessages();
@@ -268,11 +272,11 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     if (!hasFinished || !messages) return;
     trpcUtils.chat.appSessions.getChat.invalidate({ id });
     if (shouldTrackStreamFinished.current) {
-      // lessonPlanTracking.onStreamFinished({
-      //   prevLesson: lessonPlan,
-      //   nextLesson: state,
-      //   messages,
-      // }); // #TODO reinstate analytics
+      lessonPlanTracking.onStreamFinished({
+        prevLesson: lessonPlanSnapshot.current,
+        nextLesson: tempLessonPlan,
+        messages,
+      });
       shouldTrackStreamFinished.current = false;
     }
   }, [
@@ -281,7 +285,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     hasFinished,
     messages,
     lessonPlanTracking,
-    //lessonPlan, Deliberately do not add this dependency
+    tempLessonPlan,
   ]);
 
   /**
@@ -300,7 +304,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   useEffect(() => {
     if (toxicModeration) {
       setMessages([]);
-      //setLessonPlan({}); #TODO what to do here
+      setOverrideLessonPlan({});
     }
   }, [toxicModeration, setMessages]);
 
@@ -310,7 +314,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       chat: chat ?? undefined,
       initialModerations: moderations ?? [],
       toxicModeration,
-      lessonPlan: tempLessonPlan,
+      lessonPlan: overrideLessonPlan ?? tempLessonPlan,
       hasFinished,
       hasAppendedInitialMessage,
       chatAreaRef,
