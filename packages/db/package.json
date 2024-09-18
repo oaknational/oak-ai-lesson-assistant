@@ -23,6 +23,8 @@
     "db-migrate": "pnpm with-env prisma migrate dev",
     "db-migrate:dev": "pnpm with-env prisma migrate dev",
     "db-migrate:status": "pnpm with-env prisma migrate status",
+    "db-migrate:status:stg": "DB_ENV=stg doppler run --config stg prisma migrate status",
+    "db-migrate:status:prd": "DB_ENV=prd doppler run --config prd prisma migrate status",
     "db-migrate-resolve-applied:prd": "doppler run --config prd -- prisma migrate resolve --applied",
     "db-migrate-resolve-applied:stg": "doppler run --config stg -- prisma migrate resolve --applied",
     "db-migrate-resolve-rolled-back:prd": "doppler run --config prd -- prisma migrate resolve --rolled-back",
