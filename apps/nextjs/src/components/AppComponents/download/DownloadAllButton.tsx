@@ -80,7 +80,21 @@ export const DownloadAllButton = ({
     });
   }
 
-  if (!!data) {
+  if (data) {
+    const fileIdsAndFormats:
+      | ({ fileId: string | undefined; formats: string[] } | undefined)[]
+      | undefined = data
+      ? Object.entries(data).map(([key, value]) => {
+          if (typeof value === "string") {
+            return {
+              fileId: value?.split("/edit")[0]?.split("/d/")?.[1],
+              formats:
+                key === "lessonSlides" ? ["pptx", "pdf"] : ["docx", "pdf"],
+            };
+          }
+        })
+      : undefined;
+
     return (
       <div
         className="flex flex-col items-start rounded-md border-2 border-black px-14 py-14"
@@ -89,7 +103,7 @@ export const DownloadAllButton = ({
         <Link
           onClick={() => trackDownload(ext)}
           className="flex w-full items-center justify-start  gap-15 hover:underline"
-          href={`#`}
+          href={`/api/aila-download-all?fileIds=${encodeURIComponent(JSON.stringify(fileIdsAndFormats))}&lessonTitle=${encodeURIComponent(title)}`}
           target="_blank"
         >
           <Icon icon="download" size="sm" />
