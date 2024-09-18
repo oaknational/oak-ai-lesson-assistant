@@ -7,7 +7,6 @@ import { PassThrough } from "stream";
 
 import { withSentry } from "@/lib/sentry/withSentry";
 
-// Converts the export type to a readable name
 function getReadableExportType(exportType: LessonExportType) {
   switch (exportType) {
     case "EXIT_QUIZ_DOC":
@@ -25,7 +24,6 @@ function getReadableExportType(exportType: LessonExportType) {
   }
 }
 
-// Save the download event in the database
 async function saveDownloadEvent({
   lessonExportId,
   downloadedBy,
@@ -51,7 +49,6 @@ async function saveDownloadEvent({
   }
 }
 
-// Convert Node.js PassThrough stream to web ReadableStream
 function nodePassThroughToReadableStream(passThrough: PassThrough) {
   return new ReadableStream({
     start(controller) {
@@ -71,7 +68,6 @@ function nodePassThroughToReadableStream(passThrough: PassThrough) {
   });
 }
 
-// Main handler for the download request
 async function getHandler(req: Request): Promise<Response> {
   const { searchParams } = new URL(req.url);
   const fileIdsParam = searchParams.get("fileIds");
@@ -88,13 +84,11 @@ async function getHandler(req: Request): Promise<Response> {
     return new Response("Invalid or missing fileIds", { status: 400 });
   }
 
-  // Extract the nonce from the request headers
   const nonce = req.headers.get("x-middleware-csp-nonce");
   if (!nonce) {
     return new Response("Missing nonce", { status: 400 });
   }
 
-  // Prepare the HTML with the "Loading" message and the nonce for the inline script
   const prepareDownload = searchParams.get("prepareDownload");
   if (!prepareDownload) {
     const loadingHtml = `
@@ -148,9 +142,6 @@ Please wait while we prepare your files for download. This can take up to 1 minu
     return new Response("Invalid fileIds format", { status: 400 });
   }
 
-  console.log("fileIdsAndFormats", fileIdsAndFormats);
-
-  // Create a pass-through stream for zipping files
   const zipStream = new PassThrough();
   const archive = archiver("zip", { zlib: { level: 9 } });
   archive.pipe(zipStream);
@@ -181,7 +172,6 @@ Please wait while we prepare your files for download. This can take up to 1 minu
 
         const { data } = res;
 
-        // Pass the Node.js stream directly to archiver
         const shortId = lessonExport.id.slice(-8);
         const filename = `${lessonTitle} - ${shortId} - ${getReadableExportType(
           lessonExport.exportType,
@@ -189,7 +179,6 @@ Please wait while we prepare your files for download. This can take up to 1 minu
 
         archive.append(data.stream, { name: filename });
 
-        // Log the download event
         await saveDownloadEvent({
           lessonExportId: lessonExport.id,
           downloadedBy: userId,
@@ -209,7 +198,6 @@ Please wait while we prepare your files for download. This can take up to 1 minu
 
   archive.finalize();
 
-  // Convert the Node.js PassThrough stream to a browser-compatible ReadableStream
   const readableStream = nodePassThroughToReadableStream(zipStream);
 
   return new Response(readableStream, {
