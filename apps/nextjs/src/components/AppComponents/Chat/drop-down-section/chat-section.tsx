@@ -33,7 +33,11 @@ const ChatSection = ({
           sectionPath={objectKey}
           sectionValue={value}
         />
-        <FlagButton section={sectionTitle(objectKey)} />
+        <FlagButton
+          sectionTitle={sectionTitle(objectKey)}
+          sectionPath={objectKey}
+          sectionValue={value}
+        />
       </OakFlex>
     </OakFlex>
   );

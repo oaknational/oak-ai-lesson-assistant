@@ -22,7 +22,17 @@ const flagOptions = [
 
 type FlagButtonOptions = typeof flagOptions;
 
-const FlagButton = ({ section }: { section: string }) => {
+type FlagButtonProps = {
+  sectionTitle: string;
+  sectionPath: string;
+  sectionValue: Record<string, unknown> | string | Array<unknown>;
+};
+
+const FlagButton = ({
+  sectionTitle,
+  sectionPath,
+  sectionValue,
+}: FlagButtonProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRadio, setSelectedRadio] =
@@ -44,6 +54,8 @@ const FlagButton = ({ section }: { section: string }) => {
         messageId: lastAssistantMessage.id,
         flagType: selectedRadio.enumValue,
         userComment: userFeedbackText,
+        sectionPath,
+        sectionValue,
       };
       await mutateAsync(payload);
     }
@@ -67,7 +79,7 @@ const FlagButton = ({ section }: { section: string }) => {
           onClickActions={flagSectionContent}
           setIsOpen={setIsOpen}
           selectedRadio={selectedRadio}
-          title={`Flag issue with ${section.toLowerCase()}:`}
+          title={`Flag issue with ${sectionTitle.toLowerCase()}:`}
           buttonText={"Send feedback"}
           isOpen={isOpen}
           dropdownRef={dropdownRef}

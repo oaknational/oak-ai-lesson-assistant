@@ -68,6 +68,16 @@ export const chatFeedbackRouter = router({
       z.object({
         chatId: z.string(),
         messageId: z.string(),
+        /**
+         * sectionPath is a string that represents the path to the section in the lesson content.
+         * E.g. "learningOutcome" or "cycle2.title"
+         */
+        sectionPath: z.string(),
+        sectionValue: z.union([
+          z.string(),
+          z.array(z.any()),
+          z.object({}).passthrough(),
+        ]),
         flagType: z.enum([
           "INAPPROPRIATE",
           "INACCURATE",
@@ -80,7 +90,14 @@ export const chatFeedbackRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { userId } = ctx.auth;
-      const { chatId, messageId, flagType, userComment } = input;
+      const {
+        chatId,
+        messageId,
+        flagType,
+        userComment,
+        sectionPath,
+        sectionValue,
+      } = input;
       try {
         const response = await ctx.prisma.ailaUserFlag.create({
           data: {
@@ -89,6 +106,8 @@ export const chatFeedbackRouter = router({
             messageId,
             flagType,
             userComment,
+            sectionPath,
+            sectionValue,
           },
         });
 

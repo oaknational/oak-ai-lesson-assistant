@@ -122,11 +122,13 @@ model AilaUserFlag {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId      String           @map("user_id")
-  chatId      String           @map("chat_id")
-  messageId   String           @map("message_id")
-  flagType    AilaUserFlagType @map("flag_type")
-  userComment String?          @map("user_comment")
+  userId       String           @map("user_id")
+  chatId       String           @map("chat_id")
+  messageId    String           @map("message_id")
+  sectionPath  String?          @map("section_path")
+  sectionValue Json?            @map("section_value") @db.JsonB
+  flagType     AilaUserFlagType @map("flag_type")
+  userComment  String?          @map("user_comment")
 
   @@map("chat_user_flags")
 }
