@@ -11,7 +11,6 @@ const generatePromptParts = (
   props: TemplateProps,
   slug: string,
 ): OakPromptVariant => {
-  console.log("Calling generatePromptParts in variants");
   const parts = getPromptParts(props);
   return {
     slug,
