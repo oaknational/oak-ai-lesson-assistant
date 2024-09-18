@@ -98,36 +98,22 @@ async function getHandler(req: Request): Promise<Response> {
   const prepareDownload = searchParams.get("prepareDownload");
   if (!prepareDownload) {
     const loadingHtml = `
-      <html>
-         <style>
-        /* Basic styles for centering and appearance */
-        body {
-          font-family: Arial, sans-serif;
-          text-align: center;
-          margin-top: 50px;
-        }
-        /* Loader animation for the dots */
-        .loading-dots span {
-          display: inline-block;
-          animation: blink 1.5s infinite;
-        }
-        .loading-dots span:nth-child(2) {
-          animation-delay: 0.3s;
-        }
-        .loading-dots span:nth-child(3) {
-          animation-delay: 0.6s;
-        }
-        @keyframes blink {
-          0% { opacity: 0; }
-          50% { opacity: 1; }
-          100% { opacity: 0; }
-        }
-      </style>
-    </head>
+    <html>   
     <body>
-      <h1>Loading<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></h1>
+         <h1>Loading<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></h1>
           <p>Please wait while we prepare your files for download. This can take up to 1 minute.</p>
           <script nonce="${nonce}">
+
+             const dots = document.querySelectorAll('.loading-dots span');
+              let dotIndex = 0;
+              
+              setInterval(() => {
+                dots.forEach((dot, i) => {
+                  dot.style.opacity = i === dotIndex ? '1' : '0';
+                });
+                dotIndex = (dotIndex + 1) % dots.length;
+              }, 500);
+
             // Trigger the actual download by fetching the same URL but with the prepareDownload flag
             fetch(window.location.href + '&prepareDownload=true')
               .then(response => response.blob())
@@ -228,7 +214,7 @@ async function getHandler(req: Request): Promise<Response> {
   return new Response(readableStream, {
     status: 200,
     headers: new Headers({
-      "content-disposition": `attachment; filename=${lessonTitle || "export"}.zip`,
+      "content-disposition": `attachment; filename=aila: ${lessonTitle} all resources.zip`,
       "content-type": "application/zip",
     }),
   });
