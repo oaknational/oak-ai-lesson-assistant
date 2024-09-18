@@ -189,12 +189,12 @@ export const CheckForUnderstandingSchemaWithoutLength = z.object({
   answers: z
     .array(z.string())
     .describe(
-      "The correct answer to the question. This should be an array with one item.",
+      "The correct answer to the question. If this is of length ANSWER_LENGTH, then all distractor strings should be very close in length to ANSWER_LENGTH.",
     ),
   distractors: z
     .array(z.string())
     .describe(
-      "Two incorrect distractors which could be the answer to the question but are not correct. This should be an array of two items.",
+      "Two incorrect distractors which could be the answer to the question but are not correct. These strings should be of similar length to ANSWER_LENGTH so that the correct answer does not stand out because it is obviously longer than the distractors.",
     ),
 });
 
