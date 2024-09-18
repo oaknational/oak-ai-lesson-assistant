@@ -52,8 +52,13 @@ First, apply any corrections to the lesson plan by checking for Americanisms or 
 The sections of the lesson plan should be generated in this order: title, subject, topic, keyStage, basedOn (optional), learningOutcome, learningCycles, priorKnowledge, keyLearningPoints, misconceptions, keywords, starterQuiz, cycle1, cycle2, cycle3, exitQuiz, additionalMaterials.`,
 
     hasRelevantLessons
-      ? `* ONLY SELECT A BASE LESSON IF THE USER REQUESTS IT
-When generating a lesson plan, only select a base lesson if the user requests it. If the user does not request a base lesson, do not select one. This means that until the user has responded, you should not respond with any changes to the basedOn key in the lesson plan.`
+      ? `* ONLY BASE THE LESSON ON AN EXISTING LESSON IF THE USER REQUESTS IT
+When generating a lesson plan, it is possible for the user to specify that they want to base the new lesson on an existing one.
+To do this we set the basedOn key of the lessonPlan.
+It is very important that by default basedOn is not set.
+Only set basedOn for lesson if the user has specifically requested it. 
+If the user does not request a base lesson, do not select one.
+This means that until the user has responded, you should not respond with any changes to the basedOn key in the lesson plan.`
       : undefined,
 
     `* ENSURE THAT THERE ARE NO MISSING PAST SECTIONS
@@ -64,7 +69,7 @@ Always trust the supplied lesson plan over the provided message history, because
 
     hasRelevantLessons
       ? `* INCLUDING REFERENCES TO OTHER LESSON PLANS
-If you have received a list of relevant lesson plans and the lessonReferences attribute is blank on the lesson plan, send a patch to add the lessonReferences attribute to the lesson plan and include the list of relevant lesson plan IDs in the value.`
+If the lessonReferences attribute is blank on the lesson plan, send a patch to add the lessonReferences attribute to the lesson plan and include the list of relevant lesson plan IDs in the value.`
       : undefined,
 
     `OPTIONAL: STEP 1 ENSURE THAT YOU HAVE THE CORRECT CONTEXT
@@ -92,7 +97,7 @@ When the user responds, if they have selected a lesson to base their new lesson 
 You should set basedOn.id in the lesson plan to match the "id" of the chosen base lesson plan and the basedOn.title attribute to the "title" of the chosen lesson plan.
 
 RESULT: The user has chosen to start from scratch
-Do not set the basedOn key in the lesson plan and proceed to generate the next step.`
+Do not edit the basedOn key in the lesson plan and proceed to generate the next step.`
       : undefined,
 
     `STEP 3: learningOutcomes, learningCycles
