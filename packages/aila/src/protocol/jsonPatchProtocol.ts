@@ -679,41 +679,6 @@ export function parseMessageParts(content: string): MessagePart[] {
   return messageParts;
 }
 
-interface PotentialMessage {
-  type?: string;
-  content?: string;
-}
-interface PartialMessage {
-  type?: string;
-  path?: string;
-  isPartial: boolean;
-  value?:
-    | {
-        path?: string;
-        op?: string;
-        value?: unknown;
-      }
-    | string;
-}
-
-export function parseMessagePart(part: string): PartialMessage | undefined {
-  const trimmed = part.trim();
-  if (!trimmed.startsWith("{")) {
-    return { type: "text", value: trimmed, isPartial: false };
-  }
-  const isPartial = !trimmed.endsWith("}");
-  const untruncated = untruncateJson(trimmed);
-  const parsed: PotentialMessage = parseJsonSafely(untruncated);
-  if (typeof parsed !== "object") {
-    return undefined;
-  }
-  const parsedObject: PartialMessage = { isPartial, ...parsed };
-  if (!parsedObject.type) {
-    return undefined;
-  }
-  return parsedObject;
-}
-
 export function extractPatches(
   edit: string,
   mostRecent: number = 2,
