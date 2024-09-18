@@ -36,6 +36,7 @@ describe("handleChatException", () => {
 
       invariant(response.body instanceof ReadableStream);
       const message = JSON.parse(await consumeStream(response.body));
+
       expect(message).toEqual({
         type: "error",
         value: "Threat detected",
@@ -86,6 +87,7 @@ describe("handleChatException", () => {
       const consumed = await consumeStream(response.body as ReadableStream);
       expect(consumed).toMatch(/^\{/);
       const message = JSON.parse(consumed);
+
       expect(message).toEqual({
         type: "error",
         value: "Rate limit exceeded",

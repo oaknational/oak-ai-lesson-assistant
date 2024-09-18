@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
+import { equals } from "ramda";
 import styled from "styled-components";
 
 import { Icon } from "@/components/Icon";
@@ -45,7 +46,7 @@ const DropDownSection = ({
   useEffect(() => {
     if (value === null || value === undefined || !value) {
       setStatus("empty");
-    } else if (!valuesAreEqual(value, prevValue)) {
+    } else if (!equals(value, prevValue)) {
       setStatus("isStreaming");
 
       if (sectionRef && sectionHasFired === false && status === "isStreaming") {
@@ -66,7 +67,6 @@ const DropDownSection = ({
       setIsOpen(true);
       const timer = setTimeout(() => {
         setStatus("isLoaded");
-
         setPrevValue(value);
       }, 500); // 0.5 seconds delay
 
@@ -122,13 +122,6 @@ const DropDownSection = ({
       )}
     </DropDownSectionWrapper>
   );
-};
-
-const valuesAreEqual = (
-  val1: Record<string, unknown>,
-  val2: Record<string, unknown>,
-): boolean => {
-  return JSON.stringify(val1) === JSON.stringify(val2);
 };
 
 export function sectionTitle(str: string) {

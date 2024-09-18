@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useMemo, useCallback } from "react";
 
 import {
   PatchDocument,
@@ -55,90 +55,108 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
   partialPatches: PatchDocument[];
 } => {
   const throttledAssistantMessages = useThrottle(messages, 100);
-  const [tempLessonPlan, setTempLessonPlan] = useState<LooseLessonPlan>({
-    ...lessonPlan,
-  });
-  const [appliedPatches, setAppliedPatches] = useState<PatchDocumentWithHash[]>(
-    [],
-  );
+  const tempLessonPlanRef = useRef<LooseLessonPlan>({});
+  const appliedPatchesRef = useRef<PatchDocumentWithHash[]>([]);
 
+  // Update the ref when lessonPlan changes
   useEffect(() => {
-    if (!isStreaming && lessonPlan) {
-      if (!equals(lessonPlan, tempLessonPlan)) {
-        console.log("Reset the temp lesson plan to the lesson plan");
-        setTempLessonPlan(deepClone(lessonPlan));
-      }
+    if (lessonPlan && !equals(lessonPlan, tempLessonPlanRef.current)) {
+      // Update existing keys and add new ones
+      Object.keys(lessonPlan).forEach((key) => {
+        tempLessonPlanRef.current[key] = deepClone(lessonPlan[key]);
+      });
+      // Remove keys that are no longer in lessonPlan
+      Object.keys(tempLessonPlanRef.current).forEach((key) => {
+        if (!(key in lessonPlan)) {
+          delete tempLessonPlanRef.current[key];
+        }
+      });
+      appliedPatchesRef.current = [];
     }
-  }, [lessonPlan, isStreaming, tempLessonPlan]);
+  }, [lessonPlan]);
 
-  function applyPatch(
+  const applyPatch = (
     patch: PatchDocumentWithHash,
     workingLessonPlan: LooseLessonPlan,
-  ) {
+  ) => {
     const newLessonPlan: LooseLessonPlan | undefined = applyLessonPlanPatch(
       workingLessonPlan,
       patch,
     );
     if (newLessonPlan) {
-      setTempLessonPlan(newLessonPlan);
-    } else {
-      return workingLessonPlan;
+      Object.assign(tempLessonPlanRef.current, newLessonPlan);
+      appliedPatchesRef.current.push(patch);
     }
-    setAppliedPatches([...appliedPatches, patch]);
-    return newLessonPlan;
-  }
-
-  function applyPatchWhileStillStreaming(
-    patch: PatchDocument,
-    workingLessonPlan: LooseLessonPlan,
-  ) {
-    const newLessonPlan: LooseLessonPlan | undefined = applyLessonPlanPatch(
-      { ...workingLessonPlan },
-      patch,
-    );
     return newLessonPlan ?? workingLessonPlan;
-  }
-
-  if (!throttledAssistantMessages)
-    return { tempLessonPlan, partialPatches: [], validPatches: [] };
-  const lastMessage =
-    throttledAssistantMessages[throttledAssistantMessages.length - 1];
-  if (!lastMessage?.content)
-    return { tempLessonPlan, partialPatches: [], validPatches: [] };
-
-  const { validPatches, partialPatches } =
-    extractPatchesFromMessage(lastMessage);
-
-  let workingLessonPlan = { ...tempLessonPlan };
-
-  for (const patch of validPatches) {
-    // These documents are complete and should be applied once and update the temp lesson plan
-    const { patch: patchToApply, hasBeenApplied } = patchHasBeenApplied(
-      patch,
-      appliedPatches,
-      messageHashes,
-    );
-
-    if (!hasBeenApplied && patchToApply) {
-      workingLessonPlan = applyPatch(patchToApply, { ...workingLessonPlan });
-    }
-  }
-
-  const streamingPatch =
-    partialPatches.length > 0
-      ? partialPatches[partialPatches.length - 1]
-      : undefined;
-
-  if (streamingPatch) {
-    // This document is incomplete so apply on each render but do not update the temp lesson plan
-    workingLessonPlan = applyPatchWhileStillStreaming(streamingPatch, {
-      ...workingLessonPlan,
-    });
-  }
-
-  return {
-    tempLessonPlan: workingLessonPlan,
-    validPatches,
-    partialPatches,
   };
+
+  const applyPatchWhileStillStreaming = useCallback(
+    (patch: PatchDocument, workingLessonPlan: LooseLessonPlan) => {
+      if (!isStreaming) {
+        return workingLessonPlan;
+      }
+      const newLessonPlan: LooseLessonPlan | undefined = applyLessonPlanPatch(
+        { ...workingLessonPlan },
+        patch,
+      );
+      return newLessonPlan ?? workingLessonPlan;
+    },
+    [isStreaming],
+  );
+
+  return useMemo(() => {
+    if (!throttledAssistantMessages || !throttledAssistantMessages.length) {
+      return {
+        tempLessonPlan: tempLessonPlanRef.current,
+        partialPatches: [],
+        validPatches: [],
+      };
+    }
+
+    const lastMessage =
+      throttledAssistantMessages[throttledAssistantMessages.length - 1];
+    if (!lastMessage?.content) {
+      return {
+        tempLessonPlan: tempLessonPlanRef.current,
+        partialPatches: [],
+        validPatches: [],
+      };
+    }
+
+    const { validPatches, partialPatches } =
+      extractPatchesFromMessage(lastMessage);
+
+    let workingLessonPlan = { ...tempLessonPlanRef.current };
+
+    for (const patch of validPatches) {
+      const { patch: patchToApply, hasBeenApplied } = patchHasBeenApplied(
+        patch,
+        appliedPatchesRef.current,
+        messageHashes,
+      );
+
+      if (!hasBeenApplied && patchToApply) {
+        workingLessonPlan = applyPatch(patchToApply, workingLessonPlan);
+      }
+    }
+
+    const streamingPatch = partialPatches[partialPatches.length - 1];
+
+    if (streamingPatch) {
+      workingLessonPlan = applyPatchWhileStillStreaming(
+        streamingPatch,
+        workingLessonPlan,
+      );
+    }
+
+    return {
+      tempLessonPlan: workingLessonPlan,
+      validPatches,
+      partialPatches,
+    };
+  }, [
+    throttledAssistantMessages,
+    messageHashes,
+    applyPatchWhileStillStreaming,
+  ]);
 };

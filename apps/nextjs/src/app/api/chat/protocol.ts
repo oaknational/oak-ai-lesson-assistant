@@ -6,6 +6,7 @@ import { StreamingTextResponse } from "ai";
 
 export function streamingJSON(message: ErrorDocument | ActionDocument) {
   const errorMessage = JSON.stringify(message);
+
   const errorEncoder = new TextEncoder();
 
   return new StreamingTextResponse(
