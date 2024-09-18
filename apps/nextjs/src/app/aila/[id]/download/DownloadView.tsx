@@ -4,6 +4,7 @@ import { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { Box, Flex, Grid } from "@radix-ui/themes";
 
 import Layout from "@/components/AppComponents/Layout";
+import { DownloadAllButton } from "@/components/AppComponents/download/DownloadAllButton";
 import { DownloadButton } from "@/components/AppComponents/download/DownloadButton";
 import SectionsCompleteDownloadNotice from "@/components/AppComponents/download/SectionsCompleteDownloadNotice";
 import SectionsNotCompleteDownloadNotice from "@/components/AppComponents/download/SectionsNotCompleteDownloadNotice";
@@ -30,6 +31,7 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
     sections,
     totalSections,
     totalSectionsComplete,
+    exportAllAssets,
   } = useDownloadView(chat);
 
   const isLessonComplete = totalSectionsComplete >= totalSections;
@@ -76,6 +78,17 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                 className="gap-26"
               >
                 <Flex direction="column" className="gap-14">
+                  <DownloadAllButton
+                    onClick={() => exportAllAssets.start()}
+                    title="Download all"
+                    subTitle="Overview of the complete lesson"
+                    downloadAvailable={!!exportAllAssets.readyToExport}
+                    downloadLoading={exportAllAssets.status === "loading"}
+                    data={exportAllAssets.data}
+                    exportsType="lessonPlanDoc"
+                    data-testid="chat-download-lesson-plan"
+                    lesson={lessonPlan}
+                  />
                   <DownloadButton
                     onClick={() => lessonPlanExport.start()}
                     title="Lesson plan"
