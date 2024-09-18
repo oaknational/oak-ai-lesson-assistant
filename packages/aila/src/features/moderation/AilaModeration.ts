@@ -87,6 +87,13 @@ export class AilaModeration implements AilaModerationFeature {
     messages: Message[];
     pluginContext: AilaPluginContext;
   }) {
+    if (messages.length === 0) {
+      const defaultMessage: ModerationDocument = {
+        type: "moderation",
+        categories: [],
+      };
+      return defaultMessage;
+    }
     const lastAssistantMessage = getLastAssistantMessage(messages);
     if (!lastAssistantMessage) {
       throw new Error("Failed to moderate, no assistant message found");
