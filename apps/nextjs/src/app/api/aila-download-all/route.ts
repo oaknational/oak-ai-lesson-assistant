@@ -98,38 +98,39 @@ async function getHandler(req: Request): Promise<Response> {
   const prepareDownload = searchParams.get("prepareDownload");
   if (!prepareDownload) {
     const loadingHtml = `
-    <html>   
-    <body>
-         <h1>Loading<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></h1>
-          <p>Please wait while we prepare your files for download. This can take up to 1 minute.</p>
-          <script nonce="${nonce}">
+<html>
+  <body>
+    <pre>
+Loading...
+| 
+Please wait while we prepare your files for download. This can take up to 1 minute.
 
-             const dots = document.querySelectorAll('.loading-dots span');
-              let dotIndex = 0;
-              
-              setInterval(() => {
-                dots.forEach((dot, i) => {
-                  dot.style.opacity = i === dotIndex ? '1' : '0';
-                });
-                dotIndex = (dotIndex + 1) % dots.length;
-              }, 500);
-
-            // Trigger the actual download by fetching the same URL but with the prepareDownload flag
-            fetch(window.location.href + '&prepareDownload=true')
-              .then(response => response.blob())
-              .then(blob => {
-                const link = document.createElement('a');
-                link.href = window.URL.createObjectURL(blob);
-                link.download = '${lessonTitle || "export"}.zip';
-                link.click();
-              })
-              .catch(err => {
-                document.body.innerHTML = '<h1>Something went wrong. Please try again later.</h1>';
-              });
-          </script>
-        </body>
-      </html>
-    `;
+<script nonce="${nonce}">
+  const spinnerChars = ['|', '/', '-', '\\\\'];
+  let spinnerIndex = 0;
+  
+  setInterval(() => {
+    document.querySelector('pre').textContent = 'Loading...\\n' + spinnerChars[spinnerIndex] + '\\nPlease wait while we prepare your files for download. This can take up to 1 minute.';
+    spinnerIndex = (spinnerIndex + 1) % spinnerChars.length;
+  }, 200);
+  
+  // Trigger the actual download by fetching the same URL but with the prepareDownload flag
+  fetch(window.location.href + '&prepareDownload=true')
+    .then(response => response.blob())
+    .then(blob => {
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = '${lessonTitle || "export"}.zip';
+      link.click();
+    })
+    .catch(err => {
+      document.body.innerHTML = '<h1>Something went wrong. Please try again later.</h1>';
+    });
+</script>
+    </pre>
+  </body>
+</html>
+`;
 
     return new Response(loadingHtml, {
       status: 200,
