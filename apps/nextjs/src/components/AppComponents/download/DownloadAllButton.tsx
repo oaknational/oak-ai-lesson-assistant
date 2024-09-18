@@ -126,6 +126,7 @@ export const DownloadAllButton = ({
           className="flex w-full items-center justify-start  gap-15 hover:underline"
           href={`/api/aila-download-all?fileIds=${encodeURIComponent(JSON.stringify(fileIdsAndFormats))}&lessonTitle=${encodeURIComponent(lesson.title as string)}`}
           target="_blank"
+          prefetch={false}
         >
           <Icon icon="download" size="sm" />
           <div className="flex flex-col gap-6">

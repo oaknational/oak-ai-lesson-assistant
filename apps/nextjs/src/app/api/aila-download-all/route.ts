@@ -71,8 +71,11 @@ function nodePassThroughToReadableStream(passThrough: PassThrough) {
 async function getHandler(req: Request): Promise<Response> {
   const { searchParams } = new URL(req.url);
   const fileIdsParam = searchParams.get("fileIds");
-  const lessonTitle = searchParams.get("lessonTitle") ?? "";
-  const { userId }: { userId: string | null } = auth();
+  const lessonTitle = searchParams.get("lessonTitle");
+  if (!lessonTitle) {
+    return new Response("Invalid or missing lessonTitle", { status: 400 });
+  }
+  const { userId } = auth();
 
   if (!userId) {
     const error = new Error("Download attempt without userId");
@@ -84,7 +87,8 @@ async function getHandler(req: Request): Promise<Response> {
     return new Response("Invalid or missing fileIds", { status: 400 });
   }
 
-  const nonce = req.headers.get("x-middleware-csp-nonce");
+  const cookies = req.headers.get("cookie");
+  const nonce = cookies?.match(/csp-nonce=([^;]+)/)?.[1];
   if (!nonce) {
     return new Response("Missing nonce", { status: 400 });
   }
@@ -95,16 +99,13 @@ async function getHandler(req: Request): Promise<Response> {
 <html>
   <body>
     <pre>
-Loading...
-| 
-Please wait while we prepare your files for download. This can take up to 1 minute.
 
 <script nonce="${nonce}">
   const spinnerChars = ['|', '/', '-', '\\\\'];
   let spinnerIndex = 0;
   
   setInterval(() => {
-    document.querySelector('pre').textContent = 'Loading...\\n' + spinnerChars[spinnerIndex] + '\\nPlease wait while we prepare your files for download. This can take up to 1 minute.';
+    document.querySelector('pre').textContent = spinnerChars[spinnerIndex] + ' Please wait while we prepare your files for download. This can take up to 1 minute.';
     spinnerIndex = (spinnerIndex + 1) % spinnerChars.length;
   }, 200);
   
@@ -172,8 +173,7 @@ Please wait while we prepare your files for download. This can take up to 1 minu
 
         const { data } = res;
 
-        const shortId = lessonExport.id.slice(-8);
-        const filename = `${lessonTitle} - ${shortId} - ${getReadableExportType(
+        const filename = `${lessonTitle} - ${lessonExport.id} - ${getReadableExportType(
           lessonExport.exportType,
         )}.${ext}`;
 
