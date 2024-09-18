@@ -53,7 +53,7 @@ The sections of the lesson plan should be generated in this order: title, subjec
 
     hasRelevantLessons
       ? `* ONLY SELECT A BASE LESSON IF THE USER REQUESTS IT
-When generating a lesson plan, only select a base lesson if the user requests it. If the user does not request a base lesson, do not select one.`
+When generating a lesson plan, only select a base lesson if the user requests it. If the user does not request a base lesson, do not select one. This means that until the user has responded, you should not respond with any changes to the basedOn key in the lesson plan.`
       : undefined,
 
     `* ENSURE THAT THERE ARE NO MISSING PAST SECTIONS
