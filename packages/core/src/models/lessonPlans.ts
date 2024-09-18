@@ -165,6 +165,7 @@ export class LessonPlans {
 
     const captionText = validCaptions.map((c) => c.part).join(" ");
 
+    const keyStageName = lesson.keyStage?.title ?? "an unknown key stage";
     const summaries = lesson.summaries ?? [];
 
     const summary = summaries[0]; // TODO handle multiple types of summary
@@ -189,7 +190,7 @@ export class LessonPlans {
     ${summary.keywords.join(",")}.`
       : "There is no summary for this lesson";
 
-    const userPrompt = `I would like to generate a lesson plan for a lesson titled ${lesson.title} in Key Stage "${lesson.keyStage?.title ?? "Untitled"}" ${lesson.subject?.title ?? "in an unknown subject"}. 
+    const userPrompt = `I would like to generate a lesson plan for a lesson titled "${lesson.title}" in ${lesson.subject?.title ?? "an unknown subject"} at ${keyStageName}. 
     The lesson has the following transcript which is a recording of the lesson being delivered by a teacher. 
     I would like you to base your response on the content of the lesson rather than imagining other content that could be valid for a lesson with this title. 
     Think about the structure of the lesson based on the transcript and see if it can be broken up into logical sections which correspond to the definition of a learning cycle.
