@@ -144,11 +144,14 @@ model AilaUserModification {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId     String                     @map("user_id")
-  chatId     String                     @map("chat_id")
-  messageId  String                     @map("message_id")
-  textForMod String                     @map("text_for_mod")
-  action     AilaUserModificationAction @map("action")
+  userId          String                     @map("user_id")
+  chatId          String                     @map("chat_id")
+  messageId       String                     @map("message_id")
+  textForMod      String?                    @map("text_for_mod")
+  sectionPath     String?                    @map("section_path")
+  sectionValue    Json?                      @map("section_value") @db.JsonB
+  actionOtherText String?                    @map("action_other_text")
+  action          AilaUserModificationAction @map("action")
 
   @@map("aila_user_modifications")
 }

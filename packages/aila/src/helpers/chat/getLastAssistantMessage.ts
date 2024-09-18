@@ -13,7 +13,7 @@ interface AssistantMessage extends AilaMessage {
 export function getLastAssistantMessage(
   messages: AiMessage[],
 ): AssistantMessage | undefined {
-  const lastAssistantMessage = messages.find(
+  const lastAssistantMessage = messages.findLast(
     (m): m is AssistantMessage => m.role === "assistant",
   );
 

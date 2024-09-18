@@ -35,7 +35,7 @@ const FlagButton = ({ section }: { section: string }) => {
   const { id, messages } = chat;
   const lastAssistantMessage = getLastAssistantMessage(messages);
 
-  const { mutateAsync } = trpc.chat.appSessions.flagSection.useMutation();
+  const { mutateAsync } = trpc.chat.chatFeedback.flagSection.useMutation();
 
   const flagSectionContent = async () => {
     if (selectedRadio && lastAssistantMessage) {

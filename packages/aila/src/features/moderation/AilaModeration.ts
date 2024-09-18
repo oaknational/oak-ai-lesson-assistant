@@ -89,11 +89,7 @@ export class AilaModeration implements AilaModerationFeature {
   }) {
     const lastAssistantMessage = getLastAssistantMessage(messages);
     if (!lastAssistantMessage) {
-      const defaultMessage: ModerationDocument = {
-        type: "moderation",
-        categories: [],
-      };
-      return defaultMessage;
+      throw new Error("Failed to moderate, no assistant message found");
     }
 
     const moderationResult: ModerationResult = await this.performModeration({
@@ -150,12 +146,12 @@ export class AilaModeration implements AilaModerationFeature {
   }
 
   public mockedResponse(messages: Message[]) {
-    const lastAssistantMessage: Message | undefined = messages.findLast(
+    const lastUserMessage: Message | undefined = messages.findLast(
       (m) => m.role === "user",
     );
-    if (lastAssistantMessage) {
+    if (lastUserMessage) {
       const mockModerationResult = getMockModerationResult(
-        lastAssistantMessage?.content,
+        lastUserMessage?.content,
       );
       if (mockModerationResult) {
         console.log("Returning mockModerationResult", mockModerationResult);

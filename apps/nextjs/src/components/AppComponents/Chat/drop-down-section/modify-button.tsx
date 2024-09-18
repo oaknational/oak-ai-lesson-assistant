@@ -20,13 +20,17 @@ const modifyOptions = [
   { label: "Other", enumValue: "OTHER" },
 ] as const;
 
+type ModifyButtonProps = {
+  sectionTitle: string;
+  sectionPath: string;
+  sectionValue: Record<string, unknown> | string | Array<unknown>;
+};
+
 const ModifyButton = ({
-  section,
-  sectionContent,
-}: {
-  section: string;
-  sectionContent: string;
-}) => {
+  sectionTitle,
+  sectionPath,
+  sectionValue,
+}: ModifyButtonProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [userFeedbackText, setUserFeedbackText] = useState("");
@@ -38,7 +42,7 @@ const ModifyButton = ({
 
   const { id, messages } = chat;
 
-  const { mutateAsync } = trpc.chat.appSessions.modifySection.useMutation();
+  const { mutateAsync } = trpc.chat.chatFeedback.modifySection.useMutation();
 
   const lastAssistantMessage = getLastAssistantMessage(messages);
 
@@ -47,8 +51,10 @@ const ModifyButton = ({
       const payload = {
         chatId: id,
         messageId: lastAssistantMessage.id,
-        textForMod: sectionContent,
+        sectionPath,
+        sectionValue,
         action: selectedRadio.enumValue,
+        actionOtherText: userFeedbackText || null,
       };
       await mutateAsync(payload);
     }
@@ -59,7 +65,7 @@ const ModifyButton = ({
   ) {
     await Promise.all([
       append({
-        content: `For the ${section}, ${option.label === "Other" ? userFeedbackText : option.label}`,
+        content: `For the ${sectionTitle}, ${option.label === "Other" ? userFeedbackText : option.label}`,
         role: "user",
       }),
       recordUserModifySectionContent(),
@@ -80,7 +86,7 @@ const ModifyButton = ({
           onClickActions={modifySection}
           setIsOpen={setIsOpen}
           selectedRadio={selectedRadio}
-          title={`Ask Aila to modify ${section.toLowerCase()}:`}
+          title={`Ask Aila to modify ${sectionTitle.toLowerCase()}:`}
           buttonText={"Modify section"}
           isOpen={isOpen}
           dropdownRef={dropdownRef}
@@ -93,20 +99,18 @@ const ModifyButton = ({
           >
             {modifyOptions.map((option) => {
               return (
-                <>
-                  <SmallRadioButton
-                    id={`${id}-modify-options-${option.enumValue}`}
-                    key={`${id}-modify-options-${option.enumValue}`}
-                    value={option.enumValue}
-                    label={handleLabelText({
-                      text: option.label,
-                      section,
-                    })}
-                    onClick={() => {
-                      setSelectedRadio(option);
-                    }}
-                  />
-                </>
+                <SmallRadioButton
+                  id={`${id}-modify-options-${option.enumValue}`}
+                  key={`${id}-modify-options-${option.enumValue}`}
+                  value={option.enumValue}
+                  label={handleLabelText({
+                    text: option.label,
+                    section: sectionTitle,
+                  })}
+                  onClick={() => {
+                    setSelectedRadio(option);
+                  }}
+                />
               );
             })}
 

@@ -40,6 +40,9 @@ export class LessonSnapshots {
   async create(
     userId: string,
     chatId: string,
+    /**
+     * This is the message ID of the most recent assistant message
+     */
     messageId: string,
     snapshot: Snapshot,
   ): Promise<LessonSnapshot> {
