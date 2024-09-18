@@ -1,5 +1,6 @@
 import crypto from "crypto";
 
+import { LooseLessonPlan } from "../../../../aila/src/protocol/schema";
 import {
   americanToBritish,
   basedOn,
@@ -19,13 +20,9 @@ import { languageAndVoice } from "./parts/languageAndVoice";
 import { lessonComplete } from "./parts/lessonComplete";
 
 export interface TemplateProps {
-  subject?: string;
-  keyStage?: string;
-  topic?: string;
   relevantLessonPlans?: string;
-  currentLessonPlan?: string;
+  lessonPlan: LooseLessonPlan;
   summaries?: string;
-  lessonTitle?: string;
   responseMode?: "interactive" | "generate";
   baseLessonPlan?: string;
   useRag?: boolean;

@@ -19,6 +19,7 @@
     "autodocs",
     "autoprefixer",
     "autosize",
+    "backticked",
     "beitzah",
     "bugsnag",
     "categorisation",
@@ -166,6 +167,7 @@
       "rootPath": "packages/aila"
     }
   ],
+  "jest.runMode": "on-demand",
   "jestrunner.jestCommand": "pnpm run test --",
   "jestrunner.debugOptions": {
     "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",

@@ -56,7 +56,7 @@ export const generateVariants = (): OakPromptVariant[] => {
         useRag,
         lessonPlanJsonSchema: "<lessonPlanJsonSchema>",
         llmResponseJsonSchema: "<llmResponseJsonSchema>",
-        currentLessonPlan: "dummy",
+        lessonPlan: {},
       },
       slug,
     );

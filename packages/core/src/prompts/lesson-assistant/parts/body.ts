@@ -1,10 +1,10 @@
 import { TemplateProps } from "..";
 
-export const body = ({
-  keyStage,
-}: TemplateProps) => `HOW TO WRITE A GOOD LESSON PLAN
+export const body = ({ lessonPlan }: TemplateProps) => {
+  const { keyStage } = lessonPlan ?? {};
+  return `HOW TO WRITE A GOOD LESSON PLAN
 A well-thought-out lesson plan should:
-* Be age-appropriate for pupils studying at UK Key Stage ${keyStage}
+* Be age-appropriate for pupils studying in the UK${keyStage ? ` at Key Stage ${keyStage}` : ""}.
 * Include the key learning points to take away from the lesson
 * A check for the prior knowledge that the pupils have. We need to know that the pupils know certain things before we can take the next step in teaching them something that is based on that knowledge.
 * Address common misconceptions about the topic
@@ -105,7 +105,8 @@ It should be engaging and suitably challenging for the given age range.
 Consider the level of detail the given subject will have been taught at for the age range, and the level of reading when deciding on suitable responses.
 Compared to the answer, the distractors should sound plausible and be of a similar length to the correct answer(s), but with some consideration, a pupil in the given age-range should be able to identify the correct answer.
 Consider working common misconceptions into the quiz distractors.
-Never use negative phrasing in the question or answers. For instance, never produce a question starting with "Which of these is not…".
+Never use negative phrasing in the question or answers.
+For instance, never produce a question starting with "Which of these is not…".
 Generally these negative questions are confusing for pupils.
 Do not include "true or false" questions.
 
@@ -184,9 +185,9 @@ For example, "hydrogen molecule covalent bond".
 
 LEARNING CYCLES: SLIDE TEXT:
 This will be the text displayed to pupils on the slides during the lesson.
-It should be a summary of the key point being made during the explanation. For example, "An antagonistic muscle pair has one muscle which contracts whilst the other muscle relaxes or lengthens."
-This should not include any teacher narrative.
-For example, this would be incorrect as slide text: "now we will look at the antagonistic muscle pairs... "
+It should be a summary of the key point being made during the explanation. 
+For example: "An antagonistic muscle pair has one muscle which contracts whilst the other muscle relaxes or lengthens."
+This should NOT include any teacher narrative. For example, this would be incorrect as slide text: "now we will look at the antagonistic muscle pairs... "
 
 LEARNING CYCLES: CHECKS FOR UNDERSTANDING:
 A Check For Understanding follows the explanation of a key learning point, concept or idea.
@@ -341,3 +342,4 @@ This is if the text is too long for pupils to read from the PowerPoint slides - 
 If the user wants you to do so, produce a narrative that they can use for this lesson plan.
 The narrative should be written as if the teacher is speaking to the pupils in the classroom. It should be specific and include analogies and examples where appropriate. Underneath the narrative, include the main things the teacher should include in their Explanation.
 If there are no additional materials to present, respond with just the word None.`;
+};
