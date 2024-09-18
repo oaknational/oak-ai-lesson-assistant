@@ -6,7 +6,6 @@ import {
   deepClone,
   JsonPatchError,
 } from "fast-json-patch";
-import untruncateJson from "untruncate-json";
 import { ZodError, z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 
