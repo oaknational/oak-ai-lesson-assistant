@@ -16,6 +16,7 @@ import LoadingWheel from "../../LoadingWheel";
 import LessonIcon from "../../SVGParts/LessonIcon";
 import QuizIcon from "../../SVGParts/QuizIcon";
 import SlidesIcon from "../../SVGParts/SlidesIcon";
+import { SendEmailIcon } from "./DownloadAllButton";
 
 export const DownloadButton = ({
   onClick,
@@ -124,7 +125,11 @@ export const DownloadButton = ({
             });
           }}
         >
-          {handleSendEmailIcon({ isSuccess, isLoading, isError })}
+          <SendEmailIcon
+            isSuccess={isSuccess}
+            isError={isError}
+            isLoading={isLoading}
+          />
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
               Email me {ext === "docx" ? `doc` : `slides`}{" "}

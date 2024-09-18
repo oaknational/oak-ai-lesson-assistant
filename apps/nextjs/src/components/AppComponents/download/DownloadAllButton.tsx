@@ -28,17 +28,7 @@ const allexportLinksObject = z.object({
   exitQuiz: z.string(),
 });
 
-export const DownloadAllButton = ({
-  onClick,
-  lesson,
-  title,
-  subTitle,
-  downloadAvailable,
-  downloadLoading,
-  data,
-  exportsType,
-  "data-testid": dataTestId,
-}: {
+type DownloadAllButtonProps = {
   onClick: () => void;
   lesson: LooseLessonPlan;
   title: string;
@@ -61,7 +51,19 @@ export const DownloadAllButton = ({
     | undefined;
   exportsType: ExportsType;
   "data-testid"?: string;
-}) => {
+};
+
+export const DownloadAllButton = ({
+  onClick,
+  lesson,
+  title,
+  subTitle,
+  downloadAvailable,
+  downloadLoading,
+  data,
+  exportsType,
+  "data-testid": dataTestId,
+}: Readonly<DownloadAllButtonProps>) => {
   const link = data && "link" in data ? data.link : "";
   const hasError = data && "message" in data;
   const errorMessage = data && "message" in data ? data.message : "";
@@ -78,6 +80,25 @@ export const DownloadAllButton = ({
       resourceType: [analyticsResourceType],
       resourceFileType,
     });
+  }
+
+  function sendAllLinksEmail() {
+    try {
+      const lessonTitle = lesson.title;
+      if (!lessonTitle) return;
+      const parsedData = allexportLinksObject.parse(data);
+      mutateAsync({
+        lessonTitle,
+        slidesLink: parsedData.lessonSlides,
+        worksheetLink: parsedData.worksheet,
+        starterQuizLink: parsedData.starterQuiz,
+        exitQuizLink: parsedData.exitQuiz,
+        additionalMaterialsLink: parsedData.additionalMaterials,
+        lessonPlanLink: parsedData.lessonPlan,
+      });
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   }
 
   if (data) {
@@ -118,26 +139,13 @@ export const DownloadAllButton = ({
 
         <button
           className="flex w-full items-center justify-start gap-15 hover:underline"
-          onClick={async () => {
-            try {
-              const lessonTitle = lesson.title;
-              if (!lessonTitle) return;
-              const parsedData = allexportLinksObject.parse(data);
-              mutateAsync({
-                lessonTitle,
-                slidesLink: parsedData.lessonSlides,
-                worksheetLink: parsedData.worksheet,
-                starterQuizLink: parsedData.starterQuiz,
-                exitQuizLink: parsedData.exitQuiz,
-                additionalMaterialsLink: parsedData.additionalMaterials,
-                lessonPlanLink: parsedData.lessonPlan,
-              });
-            } catch (error) {
-              Sentry.captureException(error);
-            }
-          }}
+          onClick={() => sendAllLinksEmail()}
         >
-          {handleSendEmailIcon({ isSuccess, isLoading, isError })}
+          <SendEmailIcon
+            isSuccess={isSuccess}
+            isError={isError}
+            isLoading={isLoading}
+          />
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
               Email me {ext === "docx" ? `doc` : `slides`}{" "}
@@ -236,7 +244,7 @@ function handleIcon({
   return null;
 }
 
-function handleSendEmailIcon({
+export function SendEmailIcon({
   isSuccess,
   isError,
   isLoading,
