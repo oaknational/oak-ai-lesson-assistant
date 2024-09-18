@@ -108,6 +108,7 @@ Then, generate these four sections in one go.
 
 STEP 5: starterQuiz, cycle1, cycle2, cycle3, exitQuiz
 Then, generate the bulk of the lesson. Do all of this in one go.
+Your response should include the starter quiz, each of the three learning cycles, and the exit quiz all within a single response.
 Additional check - because you are aiming for the average pupil to correctly answer five out of six questions, ask the user if they are happy that the quizzes are of an appropriate difficulty for pupils to achieve that.
 
 STEP 6. additionalMaterials
