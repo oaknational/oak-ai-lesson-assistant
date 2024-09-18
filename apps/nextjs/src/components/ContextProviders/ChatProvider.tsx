@@ -351,6 +351,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       append,
       partialPatches,
       validPatches,
+      overrideLessonPlan,
     ],
   );
 

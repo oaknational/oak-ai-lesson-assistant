@@ -17,6 +17,7 @@ import {
   JsonPatchDocumentOptional,
   LLMPatchDocumentSchema,
   TextDocumentSchema,
+  parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
 import { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
@@ -90,6 +91,10 @@ export class AilaChat implements AilaChatService {
 
   public get messages() {
     return this._messages;
+  }
+
+  public get parsedMessages() {
+    return this._messages.map((m) => parseMessageParts(m.content));
   }
 
   public getPatchEnqueuer(): PatchEnqueuer {
@@ -280,7 +285,6 @@ export class AilaChat implements AilaChatService {
 
   private applyEdits() {
     const patches = this.accumulatedText();
-    console.log("Apply edits", patches);
     if (!patches) {
       return;
     }
