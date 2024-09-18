@@ -43,13 +43,14 @@ export function expectPatch(
 
 export function expectText(message: MessagePart[], expectedText: string) {
   const textMessage = message.find(
-    (part): part is TextDocument => part.type === "text",
+    (part): part is MessagePart & { document: TextDocument } =>
+      part.document.type === "text",
   );
   expect(textMessage).toBeDefined();
   expect(textMessage).toHaveProperty("type", "text");
   expect(textMessage).toHaveProperty("value");
   invariant(textMessage, "Text message is not defined");
-  expect(textMessage.value).toContain(expectedText);
+  expect(textMessage.document.value).toContain(expectedText);
 }
 
 export function checkLastMessage(aila: Aila): MessagePart[] {
