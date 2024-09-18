@@ -44,6 +44,14 @@ export interface LessonPlanWithPartialLesson extends LessonPlan {
   };
 }
 
+export type SimilarityResultWithScore = [
+  import("@langchain/core/documents").DocumentInterface<
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Record<string, any>
+  >,
+  number,
+];
+
 export interface KeyStageAndSubject {
   keyStage?: KeyStage;
   subject?: Subject;
@@ -742,15 +750,7 @@ Thank you and happy classifying!`;
 
     const similaritySearchTerm = topic ? `${title}. ${topic}` : title;
 
-    let result:
-      | [
-          import("@langchain/core/documents").DocumentInterface<
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            Record<string, any>
-          >,
-          number,
-        ][]
-      | undefined = undefined;
+    let result: SimilarityResultWithScore[] | undefined = undefined;
     try {
       result = await vectorStore.similaritySearchWithScore(
         similaritySearchTerm,
