@@ -99,7 +99,33 @@ async function getHandler(req: Request): Promise<Response> {
   if (!prepareDownload) {
     const loadingHtml = `
       <html>
-        <body>
+         <style>
+        /* Basic styles for centering and appearance */
+        body {
+          font-family: Arial, sans-serif;
+          text-align: center;
+          margin-top: 50px;
+        }
+        /* Loader animation for the dots */
+        .loading-dots span {
+          display: inline-block;
+          animation: blink 1.5s infinite;
+        }
+        .loading-dots span:nth-child(2) {
+          animation-delay: 0.3s;
+        }
+        .loading-dots span:nth-child(3) {
+          animation-delay: 0.6s;
+        }
+        @keyframes blink {
+          0% { opacity: 0; }
+          50% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Loading<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></h1>
           <p>Please wait while we prepare your files for download. This can take up to 1 minute.</p>
           <script nonce="${nonce}">
             // Trigger the actual download by fetching the same URL but with the prepareDownload flag
