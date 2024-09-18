@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo, useCallback } from "react";
 
 import {
   PatchDocument,
@@ -42,7 +42,7 @@ function patchHasBeenApplied(
 export const useTemporaryLessonPlanWithStreamingEdits = ({
   lessonPlan,
   messages,
-  //isStreaming, // unused now?
+  isStreaming,
   messageHashes,
 }: {
   lessonPlan?: LooseLessonPlan;
@@ -90,16 +90,19 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
     return newLessonPlan ?? workingLessonPlan;
   };
 
-  const applyPatchWhileStillStreaming = (
-    patch: PatchDocument,
-    workingLessonPlan: LooseLessonPlan,
-  ) => {
-    const newLessonPlan: LooseLessonPlan | undefined = applyLessonPlanPatch(
-      { ...workingLessonPlan },
-      patch,
-    );
-    return newLessonPlan ?? workingLessonPlan;
-  };
+  const applyPatchWhileStillStreaming = useCallback(
+    (patch: PatchDocument, workingLessonPlan: LooseLessonPlan) => {
+      if (!isStreaming) {
+        return workingLessonPlan;
+      }
+      const newLessonPlan: LooseLessonPlan | undefined = applyLessonPlanPatch(
+        { ...workingLessonPlan },
+        patch,
+      );
+      return newLessonPlan ?? workingLessonPlan;
+    },
+    [isStreaming],
+  );
 
   return useMemo(() => {
     if (!throttledAssistantMessages || !throttledAssistantMessages.length) {
@@ -151,5 +154,9 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
       validPatches,
       partialPatches,
     };
-  }, [throttledAssistantMessages, messageHashes]);
+  }, [
+    throttledAssistantMessages,
+    messageHashes,
+    applyPatchWhileStillStreaming,
+  ]);
 };
