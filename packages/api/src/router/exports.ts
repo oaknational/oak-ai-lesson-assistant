@@ -4,12 +4,8 @@ import { sendEmail } from "@oakai/core/src/utils/sendEmail";
 import { PrismaClientWithAccelerate } from "@oakai/db";
 import {
   LessonDeepPartial,
-  exportAdditionalMaterials,
   exportDocLessonPlanSchema,
-  exportDocQuiz,
   exportDocQuizSchema,
-  exportDocsWorksheet,
-  exportSlidesFullLesson,
   exportSlidesFullLessonSchema,
   exportDocsWorksheetSchema,
   exportQuizDesignerSlides,
@@ -17,7 +13,6 @@ import {
 import {
   ExportableQuizAppState,
   exportableQuizAppStateSchema,
-  LessonSlidesInputData,
 } from "@oakai/exports/src/schema/input.schema";
 import { DeepPartial } from "@oakai/exports/src/types";
 import { LessonExportType } from "@prisma/client";
