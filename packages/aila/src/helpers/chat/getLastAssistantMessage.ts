@@ -8,7 +8,6 @@ interface AssistantMessage extends AilaMessage {
 
 /**
  * This function takes an array of messages, and returns the last message from the assistant.
- * If the last message is not from the assistant, it synthesises an ID and reports an error.
  */
 export function getLastAssistantMessage(
   messages: AiMessage[],
