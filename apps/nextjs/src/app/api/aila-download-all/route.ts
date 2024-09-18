@@ -88,6 +88,47 @@ async function getHandler(req: Request): Promise<Response> {
     return new Response("Invalid or missing fileIds", { status: 400 });
   }
 
+  const prepareDownload = searchParams.get("prepareDownload");
+  if (!prepareDownload) {
+    const loadingHtml = `
+<html>
+  <body>
+    <p>Loading<span id="dots">...</span></p>
+    <p>Please wait while we prepare your files for download. This can take up to 1 minute.</p>
+    <script>
+      // Animate the dots
+      const dots = document.getElementById('dots');
+      let dotCount = 0;
+      setInterval(() => {
+        dotCount = (dotCount + 1) % 4;
+        dots.textContent = '.'.repeat(dotCount);
+      }, 500);
+
+      // Trigger the actual download by fetching the same URL but with the prepareDownload flag
+      fetch(window.location.href + '&prepareDownload=true')
+        .then(response => response.blob())
+        .then(blob => {
+          const link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = '${lessonTitle || "export"}.zip';
+          link.click();
+        })
+        .catch(err => {
+          document.body.innerHTML = '<h1>Something went wrong. Please try again later.</h1>';
+        });
+    </script>
+  </body>
+</html>
+`;
+
+    return new Response(loadingHtml, {
+      status: 200,
+      headers: new Headers({
+        "content-type": "text/html",
+      }),
+    });
+  }
+
   let fileIdsAndFormats;
   try {
     fileIdsAndFormats = JSON.parse(decodeURIComponent(fileIdsParam));

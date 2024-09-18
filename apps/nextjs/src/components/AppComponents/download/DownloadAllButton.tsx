@@ -103,7 +103,7 @@ export const DownloadAllButton = ({
         <Link
           onClick={() => trackDownload(ext)}
           className="flex w-full items-center justify-start  gap-15 hover:underline"
-          href={`/api/aila-download-all?fileIds=${encodeURIComponent(JSON.stringify(fileIdsAndFormats))}&lessonTitle=${encodeURIComponent(title)}`}
+          href={`/api/aila-download-all?fileIds=${encodeURIComponent(JSON.stringify(fileIdsAndFormats))}&lessonTitle=${encodeURIComponent(lesson.title as string)}`}
           target="_blank"
         >
           <Icon icon="download" size="sm" />
