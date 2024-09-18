@@ -398,7 +398,7 @@ const FAQPage = () => {
 
               <OakP $mb="space-between-s">
                 Yes, we provide comprehensive support to assist with any issues
-                or questions users may have. You can contact us via
+                or questions users may have. You can contact us via{" "}
                 <OakLink href="mailto:help@thenational.academy">email.</OakLink>
               </OakP>
               <OakHeading

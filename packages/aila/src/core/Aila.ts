@@ -104,6 +104,7 @@ export class Aila implements AilaServices {
   // Initialization methods
   public async initialise() {
     this.checkUserIdPresentIfPersisting();
+    await this.loadChatIfPersisting();
     await this._lesson.setUpInitialLessonPlan(this._chat.messages);
   }
 
@@ -121,8 +122,14 @@ export class Aila implements AilaServices {
       useThreatDetection: options?.useThreatDetection ?? true,
       useErrorReporting: options?.useErrorReporting ?? true,
       model: options?.model ?? DEFAULT_MODEL,
-      mode: options?.mode ?? "full",
+      mode: options?.mode ?? "interactive",
     };
+  }
+
+  private async loadChatIfPersisting() {
+    if (this._options.usePersistence) {
+      await this._chat.loadChat({ store: "AilaPrismaPersistence" });
+    }
   }
 
   // Getter methods

@@ -1,6 +1,7 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
+import MuxPlayer from "@mux/mux-player-react";
 import {
   OakBox,
   OakFlex,
@@ -35,6 +36,24 @@ export const metadata: Metadata = {
   title: "Oak ai experiments",
 };
 
+const StyledMuxPlayer = styled(MuxPlayer)`
+  width: 600px;
+  height: 334px;
+  @media (max-width: 1100px) {
+    width: 100%;
+    height: fit-content;
+  }
+`;
+
+const OakFlexCustomMaxWidthWithHalfWidth = styled(OakFlexCustomMaxWidth)`
+  @media (max-width: 1200px) {
+    width: 50%;
+  }
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
 export default function HomePage() {
   const user = useUser();
 
@@ -44,14 +63,16 @@ export default function HomePage() {
     <Layout>
       <HeroContainer>
         <OakFlex
-          $flexDirection={"row"}
+          $flexDirection={["column", "row"]}
           $justifyContent={"space-between"}
-          $alignItems={["center", "flex-end"]}
+          $alignItems={["center"]}
+          $gap={"all-spacing-5"}
         >
-          <OakFlexCustomMaxWidth
+          <OakFlexCustomMaxWidthWithHalfWidth
             $flexDirection={"column"}
             $gap={"all-spacing-5"}
             customMaxWidth={550}
+            $width={"100%"}
           >
             <OakBox $width="fit-content">
               <BetaTagPage />
@@ -62,31 +83,37 @@ export default function HomePage() {
             <OakHeading tag="h2" $font={"heading-5"}>
               Build a tailor-made lesson plan and resources in minutes
             </OakHeading>
+
+            <OakBoxCustomMaxWidth
+              $display={["flex", "none"]}
+              $borderColor="black"
+              $borderStyle={"solid"}
+              $ba={"border-solid-xl"}
+              customMaxWidth={600}
+              $height="fit-content"
+            >
+              <StyledMuxPlayer playbackId="XjKNXfXcZqEIb3sRmgqqw901S3AoN8mllBS5yUnKSvb4" />
+            </OakBoxCustomMaxWidth>
+
             <OakP $textAlign="left" $font="body-1">
               Transform your lesson prep with our free AI-powered lesson
               assistant. Whether it&apos;s creating bespoke resources or
               tailoring content to your class, Aila can help speed things along.
             </OakP>
             <HomePageCTA />
-          </OakFlexCustomMaxWidth>
+          </OakFlexCustomMaxWidthWithHalfWidth>
 
-          <OakBoxCustomMaxWidth
+          <OakFlexCustomMaxWidthWithHalfWidth
             $display={["none", "flex"]}
             $borderColor="black"
             $borderStyle={"solid"}
             $ba={"border-solid-xl"}
             customMaxWidth={600}
             $height="fit-content"
+            $width="100%"
           >
-            <Image
-              src={"/images/aila-home-page-still.jpg"}
-              alt="Image of a computer screen offering to help with a teachers to do list"
-              width={700}
-              height={400}
-              priority
-              objectFit="cover"
-            />
-          </OakBoxCustomMaxWidth>
+            <StyledMuxPlayer playbackId="XjKNXfXcZqEIb3sRmgqqw901S3AoN8mllBS5yUnKSvb4" />
+          </OakFlexCustomMaxWidthWithHalfWidth>
         </OakFlex>
       </HeroContainer>
 
@@ -167,6 +194,19 @@ export default function HomePage() {
               How do I create a lesson with Aila?
             </OakHeading>
             <OakFlex $flexDirection={"column"} $gap={"all-spacing-7"}>
+              <OakBoxCustomMaxWidth
+                $display={["flex"]}
+                $borderColor="black"
+                $borderStyle={"solid"}
+                $ba={"border-solid-xl"}
+                customMaxWidth={600}
+                $height="fit-content"
+              >
+                <StyledMuxPlayer
+                  playbackId="a3fYrjh33z00LbjMRCTFQCxFRMvGU00LmoL11ln4QtV2A"
+                  thumbnailTime={3.67}
+                />
+              </OakBoxCustomMaxWidth>
               <OakP $textAlign="left" $font="body-1">
                 Tell Aila what you want to teach and it will guide you through
                 creating a lesson, starting with your learning outcome. At each
@@ -177,7 +217,6 @@ export default function HomePage() {
                 activities to suit your pupils, and download the editable lesson
                 resources.
               </OakP>
-
               <BoldOakLink
                 href="/aila"
                 element={Link}

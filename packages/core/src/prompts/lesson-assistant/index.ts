@@ -1,5 +1,6 @@
 import crypto from "crypto";
 
+import { LooseLessonPlan } from "../../../../aila/src/protocol/schema";
 import {
   americanToBritish,
   basedOn,
@@ -7,22 +8,21 @@ import {
   context,
   endingTheInteraction,
   generateResponse,
-  interactive,
+  protocol,
   rag,
   schema,
   signOff,
   task,
-  yourInstructions,
+  interactingWithTheUser,
 } from "./parts";
+import { currentLessonPlan } from "./parts/currentLessonPlan";
+import { languageAndVoice } from "./parts/languageAndVoice";
+import { lessonComplete } from "./parts/lessonComplete";
 
 export interface TemplateProps {
-  subject?: string;
-  keyStage?: string;
-  topic?: string;
   relevantLessonPlans?: string;
-  currentLessonPlan?: string;
+  lessonPlan: LooseLessonPlan;
   summaries?: string;
-  lessonTitle?: string;
   responseMode?: "interactive" | "generate";
   baseLessonPlan?: string;
   useRag?: boolean;
@@ -37,7 +37,7 @@ export const getPromptParts = (props: TemplateProps): TemplatePart[] => {
   let response: TemplatePart | undefined;
   switch (props.responseMode) {
     case "interactive":
-      response = interactive;
+      response = protocol;
       break;
     case "generate":
       response = generateResponse;
@@ -56,14 +56,19 @@ export const getPromptParts = (props: TemplateProps): TemplatePart[] => {
 
   const parts: (TemplatePart | undefined)[] = [
     context,
+    currentLessonPlan,
     task,
+    body,
     props.useRag ? rag : undefined,
     props.baseLessonPlan ? basedOn : undefined,
-    yourInstructions,
-    body,
-    schema,
+    props.responseMode === "interactive" ? interactingWithTheUser : undefined,
+    props.responseMode === "interactive" ? lessonComplete : undefined,
+    props.responseMode === "interactive"
+      ? endingTheInteractionSection
+      : undefined,
     americanToBritishSection,
-    endingTheInteractionSection,
+    languageAndVoice,
+    schema,
     response,
     signOff,
   ];

@@ -31,7 +31,7 @@ export const generateAilaPromptVersionVariantSlug = (
   return `${responseMode}-${basedOn ? "basedOn" : "notBasedOn"}-${useRag ? "rag" : "noRag"}`;
 };
 
-const variants = [
+const variantConfigs = [
   { responseMode: "interactive", basedOn: true, useRag: true },
   { responseMode: "interactive", basedOn: true, useRag: false },
   { responseMode: "interactive", basedOn: false, useRag: true },
@@ -40,29 +40,36 @@ const variants = [
   { responseMode: "generate", basedOn: true, useRag: false },
   { responseMode: "generate", basedOn: false, useRag: true },
   { responseMode: "generate", basedOn: false, useRag: false },
-].map(({ responseMode, basedOn, useRag }) => {
-  const slug = generateAilaPromptVersionVariantSlug(
-    responseMode,
-    basedOn,
-    useRag,
-  );
-  return generatePromptParts(
-    {
-      responseMode: responseMode as "interactive" | "generate",
-      baseLessonPlan: basedOn ? "dummy" : undefined,
+];
+
+export const generateVariants = (): OakPromptVariant[] => {
+  return variantConfigs.map(({ responseMode, basedOn, useRag }) => {
+    const slug = generateAilaPromptVersionVariantSlug(
+      responseMode,
+      basedOn,
       useRag,
-      lessonPlanJsonSchema: "<lessonPlanJsonSchema>",
-      llmResponseJsonSchema: "<llmResponseJsonSchema>",
-    },
-    slug,
-  );
-});
+    );
+    return generatePromptParts(
+      {
+        responseMode: responseMode as "interactive" | "generate",
+        baseLessonPlan: basedOn ? "dummy" : undefined,
+        useRag,
+        lessonPlanJsonSchema: "<lessonPlanJsonSchema>",
+        llmResponseJsonSchema: "<llmResponseJsonSchema>",
+        lessonPlan: {},
+      },
+      slug,
+    );
+  });
+};
 
 const ailaGenerate: OakPromptDefinition = {
   appId: "lesson-planner",
   name: "Generate lesson plan",
   slug: "generate-lesson-plan",
-  variants,
+  get variants() {
+    return generateVariants();
+  },
   inputSchema,
   outputSchema,
 };

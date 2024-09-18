@@ -35,14 +35,13 @@ export default function Choose({
   useEffect(() => {
     setTopic(debouncedTopic);
   }, [debouncedTopic, setTopic]);
+
+  useEffect(() => {
+    if (topic === "") {
+      setTempTopic("");
+    }
+  }, [topic, setTempTopic]);
   return (
-    // TODO reintroduce form submission
-    // <form
-    //   onSubmit={(e) => {
-    //     e.preventDefault();
-    //     setTopic(tempTopic);
-    //   }}
-    // >
     <Flex gap="0" direction="column" mt="9" className="w-full">
       <p className="font-bold">
         Choose your subject and key stage to get started.
@@ -70,6 +69,5 @@ export default function Choose({
         />
       </Box>
     </Flex>
-    // </form>
   );
 }

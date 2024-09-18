@@ -1,4 +1,5 @@
 import { ReadableStreamDefaultController } from "stream/web";
+import invariant from "tiny-invariant";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { AilaChatError } from "../AilaError";
@@ -10,7 +11,7 @@ export class AilaStreamHandler {
   private _controller?: ReadableStreamDefaultController;
   private _patchEnqueuer: PatchEnqueuer;
   private _isStreaming: boolean = false;
-  private _streamReader?: ReadableStreamDefaultReader<Uint8Array | undefined>;
+  private _streamReader?: ReadableStreamDefaultReader<string>;
   private _abortController?: AbortController;
 
   constructor(chat: AilaChat) {
@@ -76,7 +77,8 @@ export class AilaStreamHandler {
 
   private async startLLMStream() {
     const messages = await this._chat.completionMessages();
-    this._streamReader = await this._chat.createChatCompletionStream(messages);
+    this._streamReader =
+      await this._chat.createChatCompletionObjectStream(messages);
     this._isStreaming = true;
   }
 
@@ -98,7 +100,12 @@ export class AilaStreamHandler {
 
     if (error instanceof Error) {
       if (this._chat.aila.threatDetection?.detector.isThreat(error)) {
-        throw new AilaThreatDetectionError("Threat detected", { cause: error });
+        invariant(this._chat.userId, "User ID is required");
+        throw new AilaThreatDetectionError(
+          this._chat.userId,
+          "Threat detected",
+          { cause: error },
+        );
       } else {
         this._chat.aila.errorReporter?.reportError(error);
         throw new AilaChatError(error.message, { cause: error });
@@ -116,7 +123,7 @@ export class AilaStreamHandler {
 
   private async fetchChunkFromStream() {
     if (this._streamReader) {
-      const { done, value }: { done: boolean; value?: Uint8Array } =
+      const { done, value }: { done: boolean; value?: string } =
         await this._streamReader.read();
       if (value) {
         await this._chat.appendChunk(value);

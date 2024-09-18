@@ -122,11 +122,13 @@ model AilaUserFlag {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId      String           @map("user_id")
-  chatId      String           @map("chat_id")
-  messageId   String           @map("message_id")
-  flagType    AilaUserFlagType @map("flag_type")
-  userComment String?          @map("user_comment")
+  userId       String           @map("user_id")
+  chatId       String           @map("chat_id")
+  messageId    String           @map("message_id")
+  sectionPath  String?          @map("section_path")
+  sectionValue Json?            @map("section_value") @db.JsonB
+  flagType     AilaUserFlagType @map("flag_type")
+  userComment  String?          @map("user_comment")
 
   @@map("chat_user_flags")
 }
@@ -144,11 +146,14 @@ model AilaUserModification {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId     String                     @map("user_id")
-  chatId     String                     @map("chat_id")
-  messageId  String                     @map("message_id")
-  textForMod String                     @map("text_for_mod")
-  action     AilaUserModificationAction @map("action")
+  userId          String                     @map("user_id")
+  chatId          String                     @map("chat_id")
+  messageId       String                     @map("message_id")
+  textForMod      String?                    @map("text_for_mod")
+  sectionPath     String?                    @map("section_path")
+  sectionValue    Json?                      @map("section_value") @db.JsonB
+  actionOtherText String?                    @map("action_other_text")
+  action          AilaUserModificationAction @map("action")
 
   @@map("aila_user_modifications")
 }
@@ -730,17 +735,19 @@ model LessonSnapshot {
 }
 
 model Moderation {
-  id               String   @id @default(cuid())
-  createdAt        DateTime @default(now()) @map("created_at")
-  updatedAt        DateTime @updatedAt @map("updated_at")
-  userId           String   @map("user_id")
-  appSessionId     String   @map("app_session_id")
-  messageId        String   @map("message_id")
+  id               String    @id @default(cuid())
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  userId           String    @map("user_id")
+  appSessionId     String    @map("app_session_id")
+  messageId        String    @map("message_id")
   categories       Json[]
   justification    String?
-  lessonSnapshotId String?  @map("lesson_snapshot_id")
+  lessonSnapshotId String?   @map("lesson_snapshot_id")
   // A user's comment in relation to the moderation. Likely they are contesting it.
-  userComment      String?  @map("user_comment")
+  userComment      String?   @map("user_comment")
+  invalidatedAt    DateTime? @map("invalidated_at")
+  invalidatedBy    String?   @map("invalidated_by")
 
   appSession     AppSession?     @relation(fields: [appSessionId], references: [id], onDelete: Cascade)
   lessonSnapshot LessonSnapshot? @relation(fields: [lessonSnapshotId], references: [id], onDelete: Cascade)

@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import {
-  LessonDeepPartial,
-  exportSlidesFullLessonSchema,
-} from "@oakai/exports/browser";
+import { exportSlidesFullLessonSchema } from "@oakai/exports/browser";
 import { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
@@ -11,19 +8,15 @@ import { ZodError } from "zod";
 
 import { trpc } from "@/utils/trpc";
 
+import { ExportsHookProps } from "./exports.types";
+
 export function useExportLessonSlides({
   onStart,
   lesson,
   chatId,
   messageId,
   active,
-}: {
-  onStart: () => void;
-  lesson: LessonDeepPartial;
-  chatId: string;
-  messageId: number;
-  active: boolean;
-}) {
+}: ExportsHookProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const query = trpc.exports.exportLessonSlides.useMutation();
 
@@ -40,11 +33,54 @@ export function useExportLessonSlides({
       setParseResult(res);
     }
   }, [lesson, setParseResult, active]);
+
+  const checkForSnapShotAndPreloadQuery =
+    trpc.exports.checkIfSlideDownloadExists.useMutation();
+  const [checked, setChecked] = useState(false);
+  const check = useCallback(async () => {
+    if (
+      debouncedParseResult?.success &&
+      debouncedParseResult.data &&
+      !checked
+    ) {
+      try {
+        checkForSnapShotAndPreloadQuery.mutate({
+          chatId,
+          data: debouncedParseResult.data,
+        });
+        setChecked(true);
+      } catch (error) {
+        console.error("Error during check:", error);
+      }
+    }
+  }, [
+    debouncedParseResult?.success,
+    debouncedParseResult?.data,
+    chatId,
+    checkForSnapShotAndPreloadQuery,
+    checked,
+  ]);
+
+  useEffect(() => {
+    check();
+  }, [check]);
+
   const start = useCallback(() => {
     if (!active) {
       return;
     }
-    console.log("STARTING");
+    if (!messageId) {
+      Sentry.captureException(
+        new Error("Failed to start export: messageId is undefined"),
+        {
+          extra: {
+            chatId,
+            lesson,
+          },
+        },
+      );
+      return;
+    }
 
     if (!debouncedParseResult?.success) {
       Sentry.captureException(
@@ -60,7 +96,7 @@ export function useExportLessonSlides({
       query.mutate({
         data: debouncedParseResult.data,
         chatId,
-        messageId: messageId.toString(),
+        messageId,
       });
       onStart();
       setDialogOpen(true);
@@ -76,7 +112,7 @@ export function useExportLessonSlides({
       dialogOpen,
       closeDialog,
       status: query.status,
-      data: query.data,
+      data: checkForSnapShotAndPreloadQuery.data || query.data,
     }),
     [
       active,
@@ -84,6 +120,7 @@ export function useExportLessonSlides({
       dialogOpen,
       query.status,
       query.data,
+      checkForSnapShotAndPreloadQuery.data,
       start,
       closeDialog,
     ],

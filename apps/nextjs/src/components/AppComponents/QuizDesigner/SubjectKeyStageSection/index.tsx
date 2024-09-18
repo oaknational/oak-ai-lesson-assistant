@@ -15,7 +15,6 @@ interface SubjectKeyStageInputProps {
   setTopic: (topic: string) => void;
   hasStartedApp: boolean;
   direction?: "row" | "column";
-  app?: "lesson-planner" | "quiz-designer";
 }
 
 const SubjectKeyStageSection = ({
@@ -27,14 +26,11 @@ const SubjectKeyStageSection = ({
   setTopic,
   hasStartedApp,
   direction,
-  app,
 }: Readonly<SubjectKeyStageInputProps>) => {
   return (
     <div className="w-full">
       {hasStartedApp ? (
-        app !== "lesson-planner" && (
-          <Confirmed subject={subject} keyStage={keyStage} topic={topic} />
-        )
+        <Confirmed subject={subject} keyStage={keyStage} topic={topic} />
       ) : (
         <Choose
           keyStage={keyStage}
