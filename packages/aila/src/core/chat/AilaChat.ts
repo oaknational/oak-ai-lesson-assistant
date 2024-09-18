@@ -354,6 +354,7 @@ export class AilaChat implements AilaChatService {
     if (assistantMessage) {
       await this.enqueueMessageId(assistantMessage.id);
     }
+
     await this.moderate();
     await this.enqueueFinalState();
     await this.persistChat();
