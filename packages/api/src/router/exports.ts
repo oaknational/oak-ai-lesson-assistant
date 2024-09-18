@@ -343,6 +343,49 @@ export const exportsRouter = router({
         };
       }
     }),
+  checkIfLessonPlanDownloadExists: protectedProcedure
+    .input(
+      z.object({
+        data: exportDocLessonPlanSchema.passthrough(),
+        chatId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userId = ctx.auth.userId;
+        const { chatId, data } = input;
+        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
+          prisma: ctx.prisma,
+          userId,
+          chatId,
+          snapshot: data,
+        });
+        if (!existingSnapshot) {
+          console.log("No existing snapshot found");
+          return;
+        }
+
+        const exportData = await ailaGetExportBySnapshotId({
+          prisma: ctx.prisma,
+          snapshotId: existingSnapshot.id,
+          exportType: "LESSON_PLAN_DOC",
+        });
+        if (exportData) {
+          const output: OutputSchema = {
+            link: exportData.gdriveFileUrl,
+            canViewSourceDoc: exportData.userCanViewGdriveFile,
+          };
+          return output;
+        }
+      } catch (error) {
+        console.error("Error checking if download exists:", error);
+        const message = "Failed to check if download exists";
+        return {
+          error,
+          message,
+        };
+      }
+    }),
   checkIfSlideDownloadExists: protectedProcedure
     .input(
       z.object({
