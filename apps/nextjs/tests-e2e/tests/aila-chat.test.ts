@@ -18,7 +18,7 @@ async function continueChat(page: Page) {
 
 async function isFinished(page: Page) {
   const progressText = await page.getByTestId("chat-progress").textContent();
-  return progressText === "12 of 12 sections complete";
+  return progressText === "10 of 10 sections complete";
 }
 
 test.describe("Unauthenticated", () => {
@@ -38,11 +38,6 @@ test.describe("Mobile", { tag: ["@authenticated"] }, () => {
     await setupClerkTestingToken({ page });
 
     await page.goto(`${TEST_BASE_URL}/aila`);
-
-    await expect(page.getByTestId("mobile-support-blocker")).toBeVisible();
-    await expect(page.getByTestId("mobile-support-blocker")).toContainText(
-      "This AI lesson planning assistant is not currently available on mobile.",
-    );
   });
 });
 

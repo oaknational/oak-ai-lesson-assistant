@@ -11,7 +11,7 @@ import {
 
 import { usePathname, useSearchParams } from "#next/navigation";
 import { useOakConsent } from "@oaknational/oak-consent-client";
-import { usePostHog } from "posthog-js/react";
+import { PostHog } from "posthog-js";
 
 import { hubspotClient } from "@/lib/analytics/hubspot/HubspotClient";
 import HubspotLoader from "@/lib/analytics/hubspot/HubspotLoader";
@@ -21,12 +21,9 @@ import getAvoBridge from "@/lib/avo/getAvoBridge";
 import getAvoEnv from "@/lib/avo/getAvoEnv";
 import { useClerkIdentify } from "@/lib/clerk/useClerkIdentify";
 import { ServicePolicyMap } from "@/lib/cookie-consent/ServicePolicyMap";
-import {
-  PosthogDistinctId,
-  posthogToAnalyticsService,
-} from "@/lib/posthog/posthog";
+import { posthogToAnalyticsService } from "@/lib/posthog/posthog";
 
-type ServiceName = "posthog" | "hubspot";
+export type ServiceName = "posthog" | "hubspot";
 
 export type EventName = string;
 export type EventProperties = Record<string, unknown>;
@@ -55,11 +52,11 @@ export type AnalyticsContext = {
   identify: IdentifyFn;
   page: PageFn;
   reset: ResetFn;
-  posthogDistinctId: PosthogDistinctId | null;
+  posthogAiBetaClient: PostHog;
 };
 
-export type AnalyticsService<ServiceConfig> = {
-  name: ServiceName;
+export type AnalyticsService<ServiceConfig, SN extends ServiceName> = {
+  name: SN;
   init: (config: ServiceConfig) => Promise<string | null>;
   state: () => "enabled" | "disabled" | "pending";
   track: EventFn;
@@ -68,7 +65,7 @@ export type AnalyticsService<ServiceConfig> = {
   reset: ResetFn;
   optOut: () => void;
   optIn: () => void;
-};
+} & (SN extends "posthog" ? { client: PostHog } : object);
 
 type AvoOptions = Parameters<typeof initAvo>[0];
 
@@ -80,14 +77,26 @@ export type AnalyticsProviderProps = {
 };
 
 if (
+  // Main Oak posthog key
+  !process.env.NEXT_PUBLIC_POSTHOG_OAK_API_KEY ||
+  // Ai-beta posthog key
   !process.env.NEXT_PUBLIC_POSTHOG_API_KEY ||
+  // Posthog shared config
   !process.env.NEXT_PUBLIC_POSTHOG_HOST ||
   !process.env.NEXT_PUBLIC_POSTHOG_UI_HOST
 ) {
-  throw new Error("Missing required environment variables for PostHog.");
+  throw new Error(
+    "Missing required environment variables for PostHog instances",
+  );
 }
-const posthogConfig = {
+const posthogAiBetaConfig = {
   apiKey: process.env.NEXT_PUBLIC_POSTHOG_API_KEY,
+  apiHost: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+  uiHost: process.env.NEXT_PUBLIC_POSTHOG_UI_HOST,
+};
+
+const posthogOakConfig = {
+  apiKey: process.env.NEXT_PUBLIC_POSTHOG_OAK_API_KEY,
   apiHost: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   uiHost: process.env.NEXT_PUBLIC_POSTHOG_UI_HOST,
 };
@@ -115,36 +124,46 @@ const useNavigationTracking = (onNavigationChange: PageFn) => {
   }, [path, onNavigationChange]);
 };
 
+const posthogClientOak = new PostHog();
+const posthogClientAiBeta = new PostHog();
+
 export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   children,
   avoOptions,
 }) => {
-  const [posthogDistinctId, setPosthogDistinctId] =
-    useState<PosthogDistinctId | null>(null);
   const [hubspotScriptLoaded, setHubspotScriptLoadedFn] = useState(false);
   const setHubspotScriptLoaded = useCallback(() => {
     setHubspotScriptLoadedFn(true);
   }, []);
 
   /**
-   * Posthog
+   * Posthog - main AI beta instance
    */
-  const posthogClient = usePostHog();
-  if (!posthogClient) {
-    throw new Error(
-      "AnalyticsProvider should be contained within PostHogProvider",
-    );
-  }
-
-  const posthogService = useRef(
-    posthogToAnalyticsService(posthogClient),
+  const posthogServiceOak = useRef(
+    posthogToAnalyticsService(posthogClientOak),
   ).current;
-  const posthogConsent = useOakConsent().getConsent(ServicePolicyMap.POSTHOG);
-  const posthog = useAnalyticsService({
-    service: posthogService,
-    config: posthogConfig,
-    consentState: posthogConsent,
-    setPosthogDistinctId,
+  const posthogConsentOak = useOakConsent().getConsent(
+    ServicePolicyMap.POSTHOG,
+  );
+  const posthogOak = useAnalyticsService({
+    service: posthogServiceOak,
+    config: posthogOakConfig,
+    consentState: posthogConsentOak,
+  });
+
+  /**
+   * Posthog - main Oak instance
+   */
+  const posthogServiceAiBeta = useRef(
+    posthogToAnalyticsService(posthogClientAiBeta),
+  ).current;
+  const posthogConsentAiBeta = useOakConsent().getConsent(
+    ServicePolicyMap.POSTHOG,
+  );
+  const posthogAiBeta = useAnalyticsService({
+    service: posthogServiceAiBeta,
+    config: posthogAiBetaConfig,
+    consentState: posthogConsentAiBeta,
   });
 
   /**
@@ -161,7 +180,12 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   /**
    * Avo
    */
-  initAvo({ env: getAvoEnv(), ...avoOptions }, {}, getAvoBridge({ posthog }));
+  initAvo(
+    { env: getAvoEnv(), ...avoOptions },
+    {},
+    getAvoBridge({ posthog: posthogOak }),
+    getAvoBridge({ posthog: posthogAiBeta }),
+  );
 
   /**
    * Identify
@@ -170,22 +194,26 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
     (userId, properties, services) => {
       const allServices = !services;
       if (allServices || services?.includes("posthog")) {
-        posthog.identify(userId, properties);
+        posthogAiBeta.identify(userId, properties);
+        const { ...nonPiiProperties } = properties;
+        delete nonPiiProperties.email;
+        posthogOak.identify(userId, nonPiiProperties);
       }
       if (allServices || services?.includes("hubspot")) {
         hubspot.identify(userId, properties);
       }
     },
-    [posthog, hubspot],
+    [posthogOak, posthogAiBeta, hubspot],
   );
 
   /**
    * Reset
    */
   const reset = useCallback(() => {
-    posthog.reset();
+    posthogOak.reset();
+    posthogAiBeta.reset();
     hubspot.reset();
-  }, [posthog, hubspot]);
+  }, [posthogOak, posthogAiBeta, hubspot]);
 
   /**
    * Event tracking
@@ -205,10 +233,11 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
    */
   const trackEvent = useCallback(
     (name: EventName, properties?: EventProperties) => {
-      posthog.track(name, properties);
+      // **Note: we are not sending legacy events to the Oak PostHog instance**
+      posthogAiBeta.track(name, properties);
       hubspot.track(name, properties);
     },
-    [posthog, hubspot],
+    [posthogAiBeta, hubspot],
   );
 
   /**
@@ -216,10 +245,11 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
    */
   const page: PageFn = useCallback(
     (path) => {
-      posthog.page(path);
+      posthogOak.page(path);
+      posthogAiBeta.page(path);
       hubspot.page(path);
     },
-    [posthog, hubspot],
+    [posthogOak, posthogAiBeta, hubspot],
   );
 
   /**
@@ -227,8 +257,15 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
    * The analytics instance returned by useAnalytics hooks
    */
   const analytics: AnalyticsContext = useMemo(() => {
-    return { track, trackEvent, identify, reset, page, posthogDistinctId };
-  }, [track, trackEvent, identify, reset, page, posthogDistinctId]);
+    return {
+      track,
+      trackEvent,
+      identify,
+      reset,
+      page,
+      posthogAiBetaClient: posthogAiBeta.client,
+    };
+  }, [track, trackEvent, identify, reset, page]);
 
   const onClerkIdentify = useCallback(
     (user: { userId: string; email: string; isDemoUser?: boolean }) => {

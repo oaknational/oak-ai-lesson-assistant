@@ -97,7 +97,7 @@ export function ChatStart() {
         className="h-[100vh] min-h-screen bg-lavender30 pt-26"
       >
         <div className="flex h-full justify-between">
-          <div className="h-full w-[66%]  overflow-y-scroll  p-18 px-10">
+          <div className="h-full w-full overflow-y-scroll  p-18  px-10 sm:w-[66%]">
             <div className="mx-auto flex h-full max-w-[580px] flex-col justify-between">
               <div className="flex h-full flex-col justify-center gap-18">
                 <div>
@@ -141,7 +141,7 @@ export function ChatStart() {
                           await submit(message.message);
                         }}
                       >
-                        <span className="pb-7 text-base font-light underline">
+                        <span className="mt-14 pb-7 text-left text-base font-light underline sm:mt-0">
                           {message.heading}
                         </span>
                       </Button>
@@ -152,7 +152,7 @@ export function ChatStart() {
               <ChatPanelDisclaimer size="sm" />
             </div>
           </div>
-          <div className="flex h-full w-[34%] items-center overflow-y-scroll bg-white  px-25 pb-9">
+          <div className="hidden h-full w-[34%] items-center overflow-y-scroll bg-white px-25  pb-9 sm:flex">
             <div className="relative -mt-45 w-full">
               <p className="mb-10 text-xl font-bold">Lesson downloads</p>
               <div className="absolute inset-x-0 top-full">

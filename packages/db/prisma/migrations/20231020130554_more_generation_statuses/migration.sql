@@ -1,3 +1,0 @@
-ALTER TYPE "GenerationStatus" ADD VALUE 'REQUESTED';
-ALTER TYPE "GenerationStatus" ADD VALUE 'MODERATING';
-ALTER TYPE "GenerationStatus" ADD VALUE 'GENERATING';

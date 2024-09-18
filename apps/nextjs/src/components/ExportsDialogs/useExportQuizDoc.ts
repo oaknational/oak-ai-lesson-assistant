@@ -43,6 +43,39 @@ export function useExportQuizDoc({
     }
   }, [setParseResult, active, lesson, quizType, quiz]);
 
+  const checkForSnapShotAndPreloadQuery =
+    trpc.exports.checkIfQuizDownloadExists.useMutation();
+  const [checked, setChecked] = useState(false);
+  const check = useCallback(async () => {
+    if (
+      debouncedParseResult?.success &&
+      debouncedParseResult.data &&
+      !checked
+    ) {
+      try {
+        checkForSnapShotAndPreloadQuery.mutate({
+          chatId,
+          lessonSnapshot: lesson,
+          data: debouncedParseResult.data,
+        });
+        setChecked(true);
+      } catch (error) {
+        console.error("Error during check:", error);
+      }
+    }
+  }, [
+    lesson,
+    debouncedParseResult?.success,
+    debouncedParseResult?.data,
+    chatId,
+    checkForSnapShotAndPreloadQuery,
+    checked,
+  ]);
+
+  useEffect(() => {
+    check();
+  }, [check]);
+
   const start = useCallback(() => {
     if (!active) {
       return;
@@ -80,9 +113,10 @@ export function useExportQuizDoc({
       dialogOpen,
       closeDialog,
       status: query.status,
-      data: query.data,
+      data: checkForSnapShotAndPreloadQuery.data || query.data,
     }),
     [
+      checkForSnapShotAndPreloadQuery.data,
       active,
       debouncedParseResult,
       dialogOpen,

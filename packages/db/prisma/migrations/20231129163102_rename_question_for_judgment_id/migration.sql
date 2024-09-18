@@ -1,1 +1,0 @@
-alter table "comparative_judgements" rename column "question_for_judgment_id" to "question_for_judgement_id";

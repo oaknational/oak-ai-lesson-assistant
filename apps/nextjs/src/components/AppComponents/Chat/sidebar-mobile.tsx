@@ -21,16 +21,22 @@ export function SidebarMobile({ children }: Readonly<SidebarMobileProps>) {
       <SheetTrigger asChild>
         <Button
           variant="ghost"
-          className="-ml-7 flex h-19 w-19 p-0 "
+          className="flex items-center px-5"
           onClick={() => {
             trackEvent("chat:toggle_sidebar");
           }}
         >
           <Icon icon="sidebar" size="md" />
-          <span className="sr-only">Toggle Sidebar</span>
+          <div className="ml-4 hidden pr-5 font-semibold text-black sm:block">
+            Menu
+          </div>
+          <span className="sr-only block sm:hidden">Toggle Sidebar</span>
         </Button>
       </SheetTrigger>
-      <SheetContent className="inset-y-0 flex h-auto w-[300px] flex-col p-0">
+      <SheetContent
+        side="right"
+        className="inset-y-0 flex h-auto w-full flex-col p-0 sm:w-[300px]"
+      >
         <Sidebar className="flex">{children}</Sidebar>
       </SheetContent>
     </Sheet>

@@ -129,9 +129,14 @@ const Hero = ({
                     trackEvent("quiz_designer:begin");
                     dispatch({ type: QuizAppActions.Begin });
                   }
-                  questionsWrapperRef.current?.scrollIntoView({
-                    behavior: "smooth",
-                  });
+                  const questionsWrapper = questionsWrapperRef.current;
+                  if (questionsWrapper) {
+                    const { top } = questionsWrapper.getBoundingClientRect();
+                    window.scrollTo({
+                      top: top + window.pageYOffset - 200,
+                      behavior: "smooth",
+                    });
+                  }
                 }
               }}
             >

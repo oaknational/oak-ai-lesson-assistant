@@ -24,7 +24,7 @@ const ExportButtons = ({
   const demo = useDemoUser();
 
   return (
-    <div className="sticky left-0 right-10 top-26 z-10 bg-white p-14 px-24 shadow-md">
+    <div className=" sticky left-0 right-10 top-26 z-10 mt-26 hidden bg-white p-14 px-24 shadow-md sm:block">
       <div className="flex flex-col">
         <div className="flex items-center space-x-14">
           <LessonPlanProgressDropdown

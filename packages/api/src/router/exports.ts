@@ -1,5 +1,6 @@
 import { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
+import { sendEmail } from "@oakai/core/src/utils/sendEmail";
 import { PrismaClientWithAccelerate } from "@oakai/db";
 import {
   LessonDeepPartial,
@@ -44,18 +45,15 @@ function getSnapshotHash(snapshot: LessonDeepPartial) {
 
   return hash;
 }
-
-async function ailaGetOrSaveSnapshot({
+async function ailaCheckIfSnapshotExists({
   prisma,
   userId,
   chatId,
-  messageId,
   snapshot,
 }: {
   prisma: Pick<PrismaClientWithAccelerate, "lessonSchema" | "lessonSnapshot">;
   userId: string;
   chatId: string;
-  messageId: string;
   snapshot: LessonDeepPartial;
 }) {
   /**
@@ -96,6 +94,33 @@ async function ailaGetOrSaveSnapshot({
       createdAt: "desc",
     },
   });
+
+  return {
+    existingSnapshot,
+    lessonSchema,
+    hash,
+  };
+}
+async function ailaGetOrSaveSnapshot({
+  prisma,
+  userId,
+  chatId,
+  messageId,
+  snapshot,
+}: {
+  prisma: Pick<PrismaClientWithAccelerate, "lessonSchema" | "lessonSnapshot">;
+  userId: string;
+  chatId: string;
+  messageId: string;
+  snapshot: LessonDeepPartial;
+}) {
+  const { existingSnapshot, lessonSchema, hash } =
+    await ailaCheckIfSnapshotExists({
+      prisma,
+      userId,
+      chatId,
+      snapshot,
+    });
 
   if (existingSnapshot) {
     return existingSnapshot;
@@ -410,7 +435,49 @@ export const exportsRouter = router({
         };
       }
     }),
-
+  checkIfSlideDownloadExists: protectedProcedure
+    .input(
+      z.object({
+        data: exportSlidesFullLessonSchema.passthrough(),
+        chatId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userId = ctx.auth.userId;
+        const { chatId, data } = input;
+        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
+          prisma: ctx.prisma,
+          userId,
+          chatId,
+          snapshot: data,
+        });
+        if (!existingSnapshot) {
+          console.log("No existing snapshot found");
+          return;
+        }
+        // find the latest export for this snapshot
+        const exportData = await ailaGetExportBySnapshotId({
+          prisma: ctx.prisma,
+          snapshotId: existingSnapshot.id,
+          exportType: "LESSON_SLIDES_SLIDES",
+        });
+        if (exportData) {
+          const output: OutputSchema = {
+            link: exportData.gdriveFileUrl,
+            canViewSourceDoc: exportData.userCanViewGdriveFile,
+          };
+          return output;
+        }
+      } catch (error) {
+        console.error("Error checking if download exists:", error);
+        const message = "Failed to check if download exists";
+        return {
+          error,
+          message,
+        };
+      }
+    }),
   exportQuizDesignerSlides: protectedProcedure
     .input(
       z.object({
@@ -635,7 +702,49 @@ export const exportsRouter = router({
         };
       }
     }),
+  checkIfAdditionalMaterialsDownloadExists: protectedProcedure
+    .input(
+      z.object({
+        data: exportDocLessonPlanSchema.passthrough(),
+        chatId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userId = ctx.auth.userId;
+        const { chatId, data } = input;
+        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
+          prisma: ctx.prisma,
+          userId,
+          chatId,
+          snapshot: data,
+        });
+        if (!existingSnapshot) {
+          console.log("No existing snapshot found");
+          return;
+        }
 
+        const exportData = await ailaGetExportBySnapshotId({
+          prisma: ctx.prisma,
+          snapshotId: existingSnapshot.id,
+          exportType: "ADDITIONAL_MATERIALS_DOCS",
+        });
+        if (exportData) {
+          const output: OutputSchema = {
+            link: exportData.gdriveFileUrl,
+            canViewSourceDoc: exportData.userCanViewGdriveFile,
+          };
+          return output;
+        }
+      } catch (error) {
+        console.error("Error checking if download exists:", error);
+        const message = "Failed to check if download exists";
+        return {
+          error,
+          message,
+        };
+      }
+    }),
   exportWorksheetDocs: protectedProcedure
     .input(
       z.object({
@@ -743,6 +852,49 @@ export const exportsRouter = router({
       } catch (error) {
         const message = "Failed to export worksheet";
         reportErrorResult({ error, message }, input);
+        return {
+          error,
+          message,
+        };
+      }
+    }),
+  checkIfWorksheetDownloadExists: protectedProcedure
+    .input(
+      z.object({
+        data: exportDocsWorksheetSchema.passthrough(),
+        chatId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userId = ctx.auth.userId;
+        const { chatId, data } = input;
+        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
+          prisma: ctx.prisma,
+          userId,
+          chatId,
+          snapshot: data,
+        });
+        if (!existingSnapshot) {
+          console.log("No existing snapshot found");
+          return;
+        }
+
+        const exportData = await ailaGetExportBySnapshotId({
+          prisma: ctx.prisma,
+          snapshotId: existingSnapshot.id,
+          exportType: "WORKSHEET_SLIDES",
+        });
+        if (exportData) {
+          const output: OutputSchema = {
+            link: exportData.gdriveFileUrl,
+            canViewSourceDoc: exportData.userCanViewGdriveFile,
+          };
+          return output;
+        }
+      } catch (error) {
+        console.error("Error checking if download exists:", error);
+        const message = "Failed to check if download exists";
         return {
           error,
           message,
@@ -864,7 +1016,53 @@ export const exportsRouter = router({
         };
       }
     }),
+  checkIfQuizDownloadExists: protectedProcedure
+    .input(
+      z.object({
+        data: exportDocQuizSchema.passthrough(),
+        lessonSnapshot: z.object({}).passthrough(),
+        chatId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userId = ctx.auth.userId;
+        const { chatId, data, lessonSnapshot } = input;
+        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
+          prisma: ctx.prisma,
+          userId,
+          chatId,
+          snapshot: lessonSnapshot,
+        });
+        if (!existingSnapshot) {
+          console.log("No existing snapshot found");
+          return;
+        }
 
+        const exportType =
+          data.quizType === "exit" ? "EXIT_QUIZ_DOC" : "STARTER_QUIZ_DOC";
+
+        const exportData = await ailaGetExportBySnapshotId({
+          prisma: ctx.prisma,
+          snapshotId: existingSnapshot.id,
+          exportType,
+        });
+        if (exportData) {
+          const output: OutputSchema = {
+            link: exportData.gdriveFileUrl,
+            canViewSourceDoc: exportData.userCanViewGdriveFile,
+          };
+          return output;
+        }
+      } catch (error) {
+        console.error("Error checking if download exists:", error);
+        const message = "Failed to check if download exists";
+        return {
+          error,
+          message,
+        };
+      }
+    }),
   exportLessonPlanDoc: protectedProcedure
     .input(
       z.object({
@@ -979,7 +1177,93 @@ export const exportsRouter = router({
         };
       }
     }),
+  checkIfLessonPlanDownloadExists: protectedProcedure
+    .input(
+      z.object({
+        data: exportDocLessonPlanSchema.passthrough(),
+        chatId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userId = ctx.auth.userId;
+        const { chatId, data } = input;
+        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
+          prisma: ctx.prisma,
+          userId,
+          chatId,
+          snapshot: data,
+        });
+        if (!existingSnapshot) {
+          console.log("No existing snapshot found");
+          return;
+        }
 
+        const exportData = await ailaGetExportBySnapshotId({
+          prisma: ctx.prisma,
+          snapshotId: existingSnapshot.id,
+          exportType: "LESSON_PLAN_DOC",
+        });
+        if (exportData) {
+          const output: OutputSchema = {
+            link: exportData.gdriveFileUrl,
+            canViewSourceDoc: exportData.userCanViewGdriveFile,
+          };
+          return output;
+        }
+      } catch (error) {
+        console.error("Error checking if download exists:", error);
+        const message = "Failed to check if download exists";
+        return {
+          error,
+          message,
+        };
+      }
+    }),
+  sendUserExportLink: protectedProcedure
+    .input(
+      z.object({
+        lessonTitle: z.string(),
+        title: z.string(),
+        link: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const user = await clerkClient.users.getUser(ctx.auth.userId);
+        const userEmail = user?.emailAddresses[0]?.emailAddress;
+        const userFirstName = user?.firstName;
+        const { title, link, lessonTitle } = input;
+
+        if (!userEmail) {
+          console.error("User email not found");
+          return false;
+        }
+
+        const emailSent = await sendEmail({
+          from: "aila@thenational.academy",
+          to: userEmail,
+          name: "Oak National Academy",
+          subject: "Download your lesson made with Aila: " + lessonTitle,
+          body: `
+Hi ${userFirstName},
+
+We made the lesson: ${lessonTitle}
+
+You can use the following link to copy the lesson resources ${title.toLowerCase()} to your Google Drive: ${`${link.split("/edit")[0]}/copy`}
+
+We hope the lesson goes well for you and your class. If you have any feedback for us, please let us know. You can simply reply to this email.
+
+Aila,
+Oak National Academy`,
+        });
+
+        return emailSent ? true : false;
+      } catch (error) {
+        console.error("Error sending email:", error);
+        return false;
+      }
+    }),
   pollKvForLink: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {

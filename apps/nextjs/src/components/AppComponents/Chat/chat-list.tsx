@@ -2,11 +2,17 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { Message } from "ai";
+
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
+import { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
+
 export interface ChatListProps {
   isDemoLocked: boolean;
+  showLessonMobile: boolean;
 }
 
 function DemoLimitMessage({ id }: Readonly<{ id: string }>) {
@@ -27,7 +33,10 @@ function DemoLimitMessage({ id }: Readonly<{ id: string }>) {
   );
 }
 
-export function ChatList({ isDemoLocked }: Readonly<ChatListProps>) {
+export function ChatList({
+  isDemoLocked,
+  showLessonMobile,
+}: Readonly<ChatListProps>) {
   const chat = useLessonChat();
 
   const { id, messages, ailaStreamingStatus, lastModeration } = chat;
@@ -37,7 +46,7 @@ export function ChatList({ isDemoLocked }: Readonly<ChatListProps>) {
   const [autoScroll, setAutoScroll] = useState(true);
 
   const scrollToBottom = useCallback(() => {
-    if (chatEndRef.current && messages.length > 3) {
+    if (chatEndRef.current && messages.length > 1) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chatEndRef, messages]);
@@ -45,6 +54,10 @@ export function ChatList({ isDemoLocked }: Readonly<ChatListProps>) {
   useEffect(() => {
     autoScroll && scrollToBottom();
   }, [messages, autoScroll, ailaStreamingStatus, scrollToBottom]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [showLessonMobile, scrollToBottom]);
 
   useEffect(() => {
     scrollToBottom();
@@ -73,6 +86,35 @@ export function ChatList({ isDemoLocked }: Readonly<ChatListProps>) {
 
   return (
     <div className="relative flex w-full flex-col " onScroll={handleScroll}>
+      <ChatMessagesDisplay
+        messages={messages}
+        id={id}
+        lastModeration={lastModeration}
+        persistedModerations={persistedModerations}
+        ailaStreamingStatus={ailaStreamingStatus}
+      />
+
+      {isDemoLocked && <DemoLimitMessage id={id} />}
+      <div ref={chatEndRef} />
+    </div>
+  );
+}
+
+export const ChatMessagesDisplay = ({
+  messages,
+  id,
+  lastModeration,
+  persistedModerations = [],
+  ailaStreamingStatus,
+}: {
+  id: string;
+  messages: Message[];
+  lastModeration: PersistedModerationBase | null;
+  persistedModerations: PersistedModerationBase[];
+  ailaStreamingStatus: AilaStreamingStatus;
+}) => {
+  return (
+    <>
       {messages.map((message) => {
         // Check if the most recent message in the messages array is from the role user if so add a working on it message
 
@@ -155,9 +197,6 @@ export function ChatList({ isDemoLocked }: Readonly<ChatListProps>) {
             />
           </div>
         )}
-
-      {isDemoLocked && <DemoLimitMessage id={id} />}
-      <div ref={chatEndRef} />
-    </div>
+    </>
   );
-}
+};

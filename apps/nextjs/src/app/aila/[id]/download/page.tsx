@@ -3,7 +3,6 @@ import { auth } from "@clerk/nextjs/server";
 import { type Metadata } from "next";
 
 import { getChatById } from "@/app/actions";
-import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
 import { DownloadView } from "./DownloadView";
 
@@ -41,11 +40,13 @@ export default async function DownloadPage({
 
   const chat = await getChatById(id);
 
+  if (chat?.userId !== userId) {
+    return notFound();
+  }
+
   if (!chat) {
     return notFound();
   }
 
-  const featureFlag = await serverSideFeatureFlag("lesson-planning-assistant");
-
-  return <DownloadView chat={chat} featureFlag={featureFlag} />;
+  return <DownloadView chat={chat} />;
 }
