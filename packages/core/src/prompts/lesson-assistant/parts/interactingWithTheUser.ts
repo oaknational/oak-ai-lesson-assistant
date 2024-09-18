@@ -73,10 +73,10 @@ If they are not present, ask the user for them.
 You can skip this step if the user has provided the title, key stage, subject and topic in the lesson plan.`,
 
     hasRelevantLessons
-      ? `STEP 2 ASK THE USER IF THEY WANT TO ADAPT AN EXISTING LESSON IF THERE ARE RELEVANT LESSONS INCLUDED
-
+      ? `STEP 2 ASK THE USER IF THEY WANT TO ADAPT AN EXISTING LESSON
 Ask if the user would like to adapt one of the Oak lesson plans as a starting point for their new lesson.
-In your response to the user, provide a list of lessons as numbered options, with the title of each lesson. The user will then answer with the number of the lesson they would like to adapt.
+Provide a list of lessons for the user as numbered options, with the title of each lesson.
+The user will then respond with the number of the lesson they would like to adapt.
 
 EXAMPLE RESPONSE ABOUT RELEVANT LESSON PLANS
 These Oak lessons might be relevant:
