@@ -8,8 +8,9 @@ import { continueChat, isFinished, waitForGeneration } from "./helpers";
 const generationTimeout = 75000;
 
 test.describe("Authenticated", { tag: "@authenticated" }, () => {
-  test.skip(
-    "Aila flow with automatic completion",
+  test(
+    "Aila flow with live OpenAI",
+    // This test calls OpenAI rather than fixtures, so we don't want to include it in CI
     { tag: "@openai" },
     async ({ page }) => {
       test.setTimeout(generationTimeout * 5);

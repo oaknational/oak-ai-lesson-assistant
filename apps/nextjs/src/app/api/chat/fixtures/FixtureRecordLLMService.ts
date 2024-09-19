@@ -6,11 +6,12 @@ import { ZodSchema } from "zod";
 
 export class FixtureRecordLLMService implements LLMService {
   name = "FixureRecordLLM";
-  public fixtureName: string;
   private _openAIService: OpenAIService;
 
-  constructor(fixtureName: string, chatId: string) {
-    this.fixtureName = fixtureName;
+  constructor(
+    public fixtureName: string,
+    chatId: string,
+  ) {
     this._openAIService = new OpenAIService({ userId: undefined, chatId });
   }
 
@@ -46,10 +47,18 @@ export class FixtureRecordLLMService implements LLMService {
           controller.enqueue(value);
         }
 
-        const formattedUrl = `tests-e2e/recordings/${fixtureName}.formatted.txt`;
-        const formatted = JSON.stringify(JSON.parse(chunks.join("")), null, 2);
-        console.log("Fixtures: Writing formatted to", formattedUrl);
-        await fs.writeFile(formattedUrl, formatted);
+        try {
+          const formattedUrl = `tests-e2e/recordings/${fixtureName}.formatted.txt`;
+          const formatted = JSON.stringify(
+            JSON.parse(chunks.join("")),
+            null,
+            2,
+          );
+          console.log("Fixtures: Writing formatted to", formattedUrl);
+          await fs.writeFile(formattedUrl, formatted);
+        } catch (e) {
+          console.error("Error writing formatted file", e);
+        }
 
         const chunksUrl = `tests-e2e/recordings/${fixtureName}.chunks.txt`;
         const encodedChunks = chunks

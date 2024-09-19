@@ -1,5 +1,10 @@
 import { Aila } from "@oakai/aila";
-import type { AilaOptions, AilaPublicChatOptions, Message } from "@oakai/aila";
+import type {
+  AilaInitializationOptions,
+  AilaOptions,
+  AilaPublicChatOptions,
+  Message,
+} from "@oakai/aila";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import {
   TracingSpan,
@@ -15,7 +20,10 @@ import invariant from "tiny-invariant";
 
 import { Config } from "./config";
 import { handleChatException } from "./errorHandling";
-import { getFixtureLLMService } from "./fixtures";
+import {
+  getFixtureLLMService,
+  getFixtureModerationOpenAiClient,
+} from "./fixtures";
 import { fetchAndCheckUser } from "./user";
 
 export const maxDuration = 300;
@@ -53,12 +61,23 @@ async function setupChatHandler(req: NextRequest) {
       };
 
       const llmService = getFixtureLLMService(req.headers, chatId);
+      const moderationAiClient = getFixtureModerationOpenAiClient(
+        req.headers,
+        chatId,
+      );
 
       span.setTag("chat_id", chatId);
       span.setTag("messages.count", messages.length);
       span.setTag("options", JSON.stringify(options));
 
-      return { chatId, messages, lessonPlan, options, llmService };
+      return {
+        chatId,
+        messages,
+        lessonPlan,
+        options,
+        llmService,
+        moderationAiClient,
+      };
     },
   );
 }
@@ -122,8 +141,14 @@ export async function handleChatPostRequest(
   config: Config,
 ): Promise<Response> {
   return await withTelemetry("chat-api", {}, async (span: TracingSpan) => {
-    const { chatId, messages, lessonPlan, options, llmService } =
-      await setupChatHandler(req);
+    const {
+      chatId,
+      messages,
+      lessonPlan,
+      options,
+      llmService,
+      moderationAiClient,
+    } = await setupChatHandler(req);
 
     setTelemetryMetadata(span, chatId, messages, lessonPlan, options);
 
@@ -138,7 +163,7 @@ export async function handleChatPostRequest(
         "chat-create-aila",
         { chat_id: chatId, user_id: userId },
         async (): Promise<Aila> => {
-          const ailaOptions = {
+          const ailaOptions: Partial<AilaInitializationOptions> = {
             options,
             chat: {
               id: chatId,
@@ -147,6 +172,7 @@ export async function handleChatPostRequest(
             },
             services: {
               chatLlmService: llmService,
+              moderationAiClient,
             },
             lessonPlan: lessonPlan ?? {},
           };

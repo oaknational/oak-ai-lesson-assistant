@@ -105,7 +105,7 @@ export class AilaChat implements AilaChatService {
     this._messages.push(message);
   }
 
-  public async appendChunk(value?: string) {
+  public appendChunk(value?: string) {
     invariant(this._chunks, "Chunks not initialised");
     if (!value) {
       return;

@@ -29,72 +29,67 @@ const applyFixtures = async (page: Page) => {
 };
 
 test.describe("Authenticated", { tag: "@authenticated" }, () => {
-  test(
-    "Full aila flow with Romans fixture",
-    { tag: "@openai" },
-    async ({ page }) => {
-      test.setTimeout(generationTimeout * 5);
+  test("Full aila flow with Romans fixture", async ({ page }) => {
+    test.setTimeout(generationTimeout * 5);
 
-      await test.step("Setup", async () => {
-        await clerkSetup();
-        await bypassVercelProtection(page);
-        await setupClerkTestingToken({ page });
+    await test.step("Setup", async () => {
+      await clerkSetup();
+      await bypassVercelProtection(page);
+      await setupClerkTestingToken({ page });
 
-        await page.goto(`${TEST_BASE_URL}/aila`);
-        await expect(page.getByTestId("chat-h1")).toBeInViewport();
-      });
+      await page.goto(`${TEST_BASE_URL}/aila`);
+      await expect(page.getByTestId("chat-h1")).toBeInViewport();
+    });
 
-      const { setFixture } = await applyFixtures(page);
+    const { setFixture } = await applyFixtures(page);
 
-      await test.step("Fill in the chat box", async () => {
-        const textbox = page.getByTestId("chat-input");
-        const sendMessage = page.getByTestId("send-message");
-        const message = "Create a KS1 lesson on the end of Roman Britain";
-        await textbox.fill(message);
-        await expect(textbox).toContainText(message);
+    await test.step("Fill in the chat box", async () => {
+      const textbox = page.getByTestId("chat-input");
+      const sendMessage = page.getByTestId("send-message");
+      const message = "Create a KS1 lesson on the end of Roman Britain";
+      await textbox.fill(message);
+      await expect(textbox).toContainText(message);
 
-        // TODO: the demo status doesn't seem to have been loaded yet so a demo modal is shown
-        await page.waitForTimeout(500);
+      // Temporary fix: The test goes quicker than a real user and submits before the demo status has loaded
+      // This means that a demo modal would be shown when submitting
+      await page.waitForTimeout(250);
 
-        setFixture("roman-britain-1-intro");
-        await sendMessage.click();
-      });
+      setFixture("roman-britain-1-intro");
+      await sendMessage.click();
+    });
 
-      await test.step("Iterate through the fixtures", async () => {
-        await page.waitForURL(/\/aila\/.+/);
-        await waitForGeneration(page, generationTimeout);
+    await test.step("Iterate through the fixtures", async () => {
+      await page.waitForURL(/\/aila\/.+/);
+      await waitForGeneration(page, generationTimeout);
 
-        setFixture("roman-britain-2-quiz-cycles");
-        await continueChat(page);
-        await waitForGeneration(page, generationTimeout);
+      setFixture("roman-britain-2-quiz-cycles");
+      await continueChat(page);
+      await waitForGeneration(page, generationTimeout);
 
-        setFixture("roman-britain-3-consistency");
-        await continueChat(page);
-        await waitForGeneration(page, generationTimeout);
+      setFixture("roman-britain-3-consistency");
+      await continueChat(page);
+      await waitForGeneration(page, generationTimeout);
 
-        setFixture("roman-britain-4-done");
-        await continueChat(page);
-        await waitForGeneration(page, generationTimeout);
+      setFixture("roman-britain-4-done");
+      await continueChat(page);
+      await waitForGeneration(page, generationTimeout);
 
-        await isFinished(page);
-      });
+      await isFinished(page);
+    });
 
-      await test.step("Go to downloads page", async () => {
-        // Open 'download resources' menu
-        const downloadResources = page.getByTestId("chat-download-resources");
-        await downloadResources.click();
-        page.waitForURL(/\aila\/.*\/download/);
+    await test.step("Go to downloads page", async () => {
+      // Open 'download resources' menu
+      const downloadResources = page.getByTestId("chat-download-resources");
+      await downloadResources.click();
+      page.waitForURL(/\aila\/.*\/download/);
 
-        // Click to download lesson plan
-        const downloadLessonPlan = page.getByTestId(
-          "chat-download-lesson-plan",
-        );
-        await downloadLessonPlan.click();
+      // Click to download lesson plan
+      const downloadLessonPlan = page.getByTestId("chat-download-lesson-plan");
+      await downloadLessonPlan.click();
 
-        // Skip feedback form
-        await page.getByLabel("Skip").click();
-        page.getByRole("heading", { name: "Download resources" });
-      });
-    },
-  );
+      // Skip feedback form
+      await page.getByLabel("Skip").click();
+      page.getByRole("heading", { name: "Download resources" });
+    });
+  });
 });
