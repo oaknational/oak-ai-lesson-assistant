@@ -1,0 +1,8 @@
+overwrite: true
+schema: "https://cuvjke51.api.sanity.io/v1/graphql/production/default"
+documents: "src/cms/queries/**/*.graphql"
+generates:
+  ./src/types/sanity-generated.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"

@@ -1,0 +1,24 @@
+query AiHomepage {
+  allAiHomepage {
+    heading
+    heroVideo {
+      _id
+      title
+      url
+    }
+    belowTheFoldVideo {
+      _id
+      title
+      url
+    }
+    seo {
+      metaTitle
+      metaDescription
+      openGraphImage {
+        asset {
+          url
+        }
+      }
+    }
+  }
+}
