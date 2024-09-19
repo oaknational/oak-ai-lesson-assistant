@@ -261,6 +261,7 @@ function BadMessagePart({ part }: Readonly<{ part: BadDocument }>) {
   return null;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function CommentMessagePart({ part }: Readonly<{ part: CommentDocument }>) {
   return null;
 }
