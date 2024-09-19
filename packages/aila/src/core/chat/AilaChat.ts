@@ -352,6 +352,10 @@ export class AilaChat implements AilaChatService {
   }
 
   public async complete() {
+    await this.enqueue({
+      type: "comment",
+      value: "CHAT_COMPLETE",
+    });
     await this.reportUsageMetrics();
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
@@ -360,7 +364,6 @@ export class AilaChat implements AilaChatService {
     }
 
     await this.moderate();
-    await this.enqueueFinalState();
     await this.persistChat();
     await this.persistGeneration("SUCCESS");
   }
@@ -370,7 +373,7 @@ export class AilaChat implements AilaChatService {
       invariant(this._aila.moderation, "Moderation not initialised");
       await this.enqueue({
         type: "comment",
-        value: "STARTING_MODERATION",
+        value: "MODERATION_START",
       });
       const message = await this._aila.moderation.moderate({
         lessonPlan: this._aila.lesson.plan,

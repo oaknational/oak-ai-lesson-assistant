@@ -17,45 +17,31 @@ export const useAilaStreamingStatus = ({
   messages: Message[];
 }): AilaStreamingStatus => {
   const prevStatusRef = useRef<AilaStreamingStatus | null>(null);
-
-  const possibleTypePatch = `"type":"patch"`;
-  const possibleTypePrompt = `"type":"prompt"`;
-  const possibleTypeModeration = `STARTING_MODERATION`;
-
   const ailaStreamingStatus = useMemo<AilaStreamingStatus>(() => {
+    const moderationStart = `MODERATION_START`;
+    const chatStart = `CHAT_START`;
+    if (messages.length === 0) return "Idle";
     const lastMessage = messages[messages.length - 1];
-    const contentSplitByRs = lastMessage?.content.split("␞");
-    const lastSectionOfStreamingContent = contentSplitByRs
-      ? contentSplitByRs[contentSplitByRs?.length - 1]
-      : "";
+
     if (isLoading) {
       if (!lastMessage) return "Loading";
+      const { content } = lastMessage;
       if (lastMessage.role === "user") {
         return "RequestMade";
-      } else if (lastMessage.content.includes(possibleTypeModeration)) {
+      } else if (content.includes(moderationStart)) {
         return "Moderating";
       } else if (
-        lastMessage.role === "assistant" &&
-        lastSectionOfStreamingContent?.includes(possibleTypePatch)
-      ) {
-        return "StreamingLessonPlan";
-      } else if (
-        lastMessage.content.includes(possibleTypePatch) &&
-        lastMessage.content.includes(possibleTypePrompt) &&
-        lastSectionOfStreamingContent !== ""
+        content.includes(`"type":"prompt"`) ||
+        content.includes('"type":"prompt"')
       ) {
         return "StreamingChatResponse";
+      } else if (content.includes(chatStart)) {
+        return "StreamingLessonPlan";
       }
       return "Loading";
     }
     return "Idle";
-  }, [
-    isLoading,
-    messages,
-    possibleTypeModeration,
-    possibleTypePatch,
-    possibleTypePrompt,
-  ]);
+  }, [isLoading, messages]);
 
   useEffect(() => {
     if (prevStatusRef.current !== ailaStreamingStatus) {
