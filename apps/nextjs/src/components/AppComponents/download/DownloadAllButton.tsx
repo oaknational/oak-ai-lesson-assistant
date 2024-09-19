@@ -1,6 +1,9 @@
+import { useState } from "react";
+
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { Box } from "@radix-ui/themes";
 import * as Sentry from "@sentry/nextjs";
+import { kv } from "@vercel/kv";
 import Link from "next/link";
 import { z } from "zod";
 
@@ -53,6 +56,8 @@ type DownloadAllButtonProps = {
   "data-testid"?: string;
 };
 
+type zipDownloadStatus = "idle" | "loading" | "complete" | "error";
+
 export const DownloadAllButton = ({
   onClick,
   lesson,
@@ -68,38 +73,14 @@ export const DownloadAllButton = ({
   const hasError = data && "message" in data;
   const errorMessage = data && "message" in data ? data.message : "";
   const { track } = useAnalytics();
-
+  const [zipStatus, setZipStatus] = useState<zipDownloadStatus>("idle");
   const { icon, ext, analyticsResourceType } = getExportsConfig(exportsType);
 
   const { isSuccess, isError, mutateAsync, isLoading } =
     trpc.exports.sendUserAllAssetsEmail.useMutation();
 
-  function trackDownload(resourceFileType: ResourceFileTypeValueType) {
-    track.lessonPlanResourcesDownloaded({
-      ...getLessonTrackingProps({ lesson }),
-      resourceType: [analyticsResourceType],
-      resourceFileType,
-    });
-  }
-
-  function sendAllLinksEmail() {
-    try {
-      const lessonTitle = lesson.title;
-      if (!lessonTitle) return;
-      const parsedData = allexportLinksObject.parse(data);
-      mutateAsync({
-        lessonTitle,
-        slidesLink: parsedData.lessonSlides,
-        worksheetLink: parsedData.worksheet,
-        starterQuizLink: parsedData.starterQuiz,
-        exitQuizLink: parsedData.exitQuiz,
-        additionalMaterialsLink: parsedData.additionalMaterials,
-        lessonPlanLink: parsedData.lessonPlan,
-      });
-    } catch (error) {
-      Sentry.captureException(error);
-    }
-  }
+  const { data: zipResponseStatus, mutateAsync: zipStatusMutateAsync } =
+    trpc.exports.checkDownloadAllStatus.useMutation();
 
   if (data) {
     const fileIdsAndFormats:
@@ -116,24 +97,77 @@ export const DownloadAllButton = ({
         })
       : undefined;
 
+    const taskId = `download-all-${JSON.stringify(fileIdsAndFormats)}`;
+
+    function trackDownload(resourceFileType: ResourceFileTypeValueType) {
+      track.lessonPlanResourcesDownloaded({
+        ...getLessonTrackingProps({ lesson }),
+        resourceType: [analyticsResourceType],
+        resourceFileType,
+      });
+    }
+
+    function sendAllLinksEmail() {
+      try {
+        const lessonTitle = lesson.title;
+        if (!lessonTitle) return;
+        const parsedData = allexportLinksObject.parse(data);
+        mutateAsync({
+          lessonTitle,
+          slidesLink: parsedData.lessonSlides,
+          worksheetLink: parsedData.worksheet,
+          starterQuizLink: parsedData.starterQuiz,
+          exitQuizLink: parsedData.exitQuiz,
+          additionalMaterialsLink: parsedData.additionalMaterials,
+          lessonPlanLink: parsedData.lessonPlan,
+        });
+      } catch (error) {
+        Sentry.captureException(error);
+      }
+    }
+    function handleZipDownloadStatus() {
+      const timer = setInterval(async () => {
+        setZipStatus("loading");
+        try {
+          const response = await zipStatusMutateAsync({ taskId });
+          if (response === "complete") {
+            setZipStatus("complete");
+            clearInterval(timer);
+          }
+        } catch (error) {
+          clearInterval(timer);
+        }
+      }, 1000);
+    }
+
     return (
       <div
         className="flex flex-col items-start rounded-md border-2 border-black px-14 py-14"
         data-testid={dataTestId}
       >
         <Link
-          onClick={() => trackDownload(ext)}
+          onClick={() => {
+            trackDownload(ext);
+            handleZipDownloadStatus();
+          }}
           className="flex w-full items-center justify-start  gap-15 hover:underline"
           href={`/api/aila-download-all?fileIds=${encodeURIComponent(JSON.stringify(fileIdsAndFormats))}&lessonTitle=${encodeURIComponent(lesson.title as string)}`}
-          target="_blank"
           prefetch={false}
+          download
         >
-          <Icon icon="download" size="sm" />
+          {zipStatus === "loading" ? (
+            <LoadingWheel />
+          ) : (
+            <Icon icon="download" size="sm" />
+          )}
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
               Download all resources in pdf and docx/pptx
             </span>
-            <span className="text-left opacity-80">All sections</span>
+            <span className="text-left opacity-80">
+              All sections{" "}
+              {zipStatus === "loading" && "- this can take up to 60s"}
+            </span>
           </div>
         </Link>
         <span className="my-12 h-[2px] w-full bg-black opacity-15" />

@@ -971,4 +971,12 @@ Oak National Academy`,
       console.log("***data", data);
       return data;
     }),
+  checkDownloadAllStatus: protectedProcedure
+    .input(z.object({ taskId: z.string() }))
+    .mutation(async ({ input }) => {
+      const { taskId } = input;
+      const status: "loading" | "error" | "complete" | null =
+        await kv.get(taskId);
+      return status;
+    }),
 });

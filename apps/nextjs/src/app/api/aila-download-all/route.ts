@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { LessonExportType, prisma } from "@oakai/db";
 import { downloadDriveFile } from "@oakai/exports";
 import * as Sentry from "@sentry/node";
+import { kv } from "@vercel/kv";
 import archiver from "archiver";
 import { PassThrough } from "stream";
 
@@ -86,53 +87,12 @@ async function getHandler(req: Request): Promise<Response> {
   if (!fileIdsParam) {
     return new Response("Invalid or missing fileIds", { status: 400 });
   }
+  const taskId = `download-all-${fileIdsParam.toString()}`;
 
   const cookies = req.headers.get("cookie");
   const nonce = cookies?.match(/csp-nonce=([^;]+)/)?.[1];
   if (!nonce) {
     return new Response("Missing nonce", { status: 400 });
-  }
-
-  const prepareDownload = searchParams.get("prepareDownload");
-  if (!prepareDownload) {
-    const loadingHtml = `
-<html>
-  <body>
-    <pre>
-
-<script nonce="${nonce}">
-  const spinnerChars = ['|', '/', '-', '\\\\'];
-  let spinnerIndex = 0;
-  
-  setInterval(() => {
-    document.querySelector('pre').textContent = spinnerChars[spinnerIndex] + ' Please wait while we prepare your files for download. This can take up to 1 minute.';
-    spinnerIndex = (spinnerIndex + 1) % spinnerChars.length;
-  }, 200);
-  
-  // Trigger the actual download by fetching the same URL but with the prepareDownload flag
-  fetch(window.location.href + '&prepareDownload=true')
-    .then(response => response.blob())
-    .then(blob => {
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = '${lessonTitle || "export"}.zip';
-      link.click();
-    })
-    .catch(err => {
-      document.body.innerHTML = '<h1>Something went wrong. Please try again later.</h1>';
-    });
-</script>
-    </pre>
-  </body>
-</html>
-`;
-
-    return new Response(loadingHtml, {
-      status: 200,
-      headers: new Headers({
-        "content-type": "text/html",
-      }),
-    });
   }
 
   let fileIdsAndFormats;
@@ -142,6 +102,8 @@ async function getHandler(req: Request): Promise<Response> {
     Sentry.captureException(error, { level: "error" });
     return new Response("Invalid fileIds format", { status: 400 });
   }
+
+  await kv.set(taskId, "loading");
 
   const zipStream = new PassThrough();
   const archive = archiver("zip", { zlib: { level: 9 } });
@@ -193,12 +155,15 @@ async function getHandler(req: Request): Promise<Response> {
   }
 
   if (filesProcessed === 0) {
+    await kv.set(taskId, "failed");
     return new Response("No files found or processed", { status: 404 });
   }
 
   archive.finalize();
 
   const readableStream = nodePassThroughToReadableStream(zipStream);
+
+  await kv.set(taskId, "complete");
 
   return new Response(readableStream, {
     status: 200,
