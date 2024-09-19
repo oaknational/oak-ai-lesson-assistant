@@ -227,22 +227,3 @@ function handleIcon({
   }
   return null;
 }
-
-function handleSendEmailIcon({
-  isSuccess,
-  isError,
-  isLoading,
-}: {
-  isSuccess: boolean;
-  isError: boolean;
-  isLoading: boolean;
-}) {
-  if (isLoading) {
-    return <LoadingWheel />;
-  } else if (isSuccess) {
-    return <Icon icon="tick" size="sm" />;
-  } else if (isError) {
-    return <Icon icon="cross" size="sm" />;
-  }
-  return <Icon icon="external" size="sm" />;
-}

@@ -3,7 +3,6 @@ import { useState } from "react";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { Box } from "@radix-ui/themes";
 import * as Sentry from "@sentry/nextjs";
-import { kv } from "@vercel/kv";
 import Link from "next/link";
 import { z } from "zod";
 
@@ -79,7 +78,7 @@ export const DownloadAllButton = ({
   const { isSuccess, isError, mutateAsync, isLoading } =
     trpc.exports.sendUserAllAssetsEmail.useMutation();
 
-  const { data: zipResponseStatus, mutateAsync: zipStatusMutateAsync } =
+  const { mutateAsync: zipStatusMutateAsync } =
     trpc.exports.checkDownloadAllStatus.useMutation();
 
   if (data) {
