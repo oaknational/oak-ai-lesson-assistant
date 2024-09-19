@@ -5,6 +5,7 @@ import { ReactNode, useState } from "react";
 import {
   ActionDocument,
   BadDocument,
+  CommentDocument,
   ErrorDocument,
   MessagePart,
   ModerationDocument,
@@ -223,6 +224,7 @@ function ChatMessagePart({
   moderationModalHelpers,
 }: Readonly<ChatMessagePartProps>) {
   const PartComponent = {
+    comment: CommentMessagePart,
     prompt: PromptMessagePart,
     error: ErrorMessagePart,
     bad: BadMessagePart,
@@ -256,6 +258,10 @@ function ChatMessagePart({
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function BadMessagePart({ part }: Readonly<{ part: BadDocument }>) {
+  return null;
+}
+
+function CommentMessagePart({ part }: Readonly<{ part: CommentDocument }>) {
   return null;
 }
 

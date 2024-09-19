@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useEffect, useRef } from "react";
 
 import { Message } from "ai";
 
@@ -16,8 +16,11 @@ export const useAilaStreamingStatus = ({
   isLoading: boolean;
   messages: Message[];
 }): AilaStreamingStatus => {
+  const prevStatusRef = useRef<AilaStreamingStatus | null>(null);
+
   const possibleTypePatch = `"type":"patch"`;
   const possibleTypePrompt = `"type":"prompt"`;
+  const possibleTypeModeration = `STARTING_MODERATION`;
 
   const ailaStreamingStatus = useMemo<AilaStreamingStatus>(() => {
     const lastMessage = messages[messages.length - 1];
@@ -29,6 +32,8 @@ export const useAilaStreamingStatus = ({
       if (!lastMessage) return "Loading";
       if (lastMessage.role === "user") {
         return "RequestMade";
+      } else if (lastMessage.content.includes(possibleTypeModeration)) {
+        return "Moderating";
       } else if (
         lastMessage.role === "assistant" &&
         lastSectionOfStreamingContent?.includes(possibleTypePatch)
@@ -40,22 +45,24 @@ export const useAilaStreamingStatus = ({
         lastSectionOfStreamingContent !== ""
       ) {
         return "StreamingChatResponse";
-      } else if (
-        lastMessage.content.includes(possibleTypePatch) &&
-        lastMessage.content.includes(possibleTypePrompt) &&
-        lastSectionOfStreamingContent === ""
-      ) {
-        return "Moderating";
       }
       return "Loading";
     }
     return "Idle";
-  }, [isLoading, messages, possibleTypePatch, possibleTypePrompt]);
+  }, [
+    isLoading,
+    messages,
+    possibleTypeModeration,
+    possibleTypePatch,
+    possibleTypePrompt,
+  ]);
 
-  // @todo lets build a logger
-  if (process.env.NODE_ENV !== "development") {
-    console.log("ailaStreamingStatus", ailaStreamingStatus);
-  }
+  useEffect(() => {
+    if (prevStatusRef.current !== ailaStreamingStatus) {
+      console.log("ailaStreamingStatus changed:", ailaStreamingStatus);
+      prevStatusRef.current = ailaStreamingStatus;
+    }
+  }, [ailaStreamingStatus]);
 
   return ailaStreamingStatus;
 };

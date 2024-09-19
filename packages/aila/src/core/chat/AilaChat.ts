@@ -368,6 +368,10 @@ export class AilaChat implements AilaChatService {
   public async moderate() {
     if (this._aila.options.useModeration) {
       invariant(this._aila.moderation, "Moderation not initialised");
+      await this.enqueue({
+        type: "comment",
+        value: "STARTING_MODERATION",
+      });
       const message = await this._aila.moderation.moderate({
         lessonPlan: this._aila.lesson.plan,
         messages: this._aila.messages,
