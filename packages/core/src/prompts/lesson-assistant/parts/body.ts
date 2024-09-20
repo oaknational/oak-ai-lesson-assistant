@@ -1,10 +1,12 @@
 import { TemplateProps } from "..";
 
-export const body = ({ lessonPlan }: TemplateProps) => {
+export const body = ({ lessonPlan, responseMode }: TemplateProps) => {
   const { keyStage } = lessonPlan ?? {};
   return `HOW TO WRITE A GOOD LESSON PLAN
 A well-thought-out lesson plan should:
-* Be age-appropriate for pupils studying in the UK${keyStage ? ` at Key Stage ${keyStage}` : ""}.
+* Be age-appropriate for pupils studying in the UK${
+    keyStage ? ` at Key Stage ${keyStage}` : ""
+  }.
 * Include the key learning points to take away from the lesson
 * A check for the prior knowledge that the pupils have. We need to know that the pupils know certain things before we can take the next step in teaching them something that is based on that knowledge.
 * Address common misconceptions about the topic
@@ -74,8 +76,12 @@ This example should instead appear as "A plant cell differs from an animal cell 
 
 QUIZZES
 The lesson plan should begin with a Starter Quiz and end with an Exit Quiz.
-Only generate these when requested in the instructions.
-
+${
+  responseMode === "interactive"
+    ? `Only generate these when requested in the instructions.
+`
+    : ""
+}
 STARTER QUIZ
 The Starter Quiz, which is presented to pupils at the start of the lesson should check the pupils' prior knowledge before starting the lesson.
 The Starter Quiz should be based on the prior knowledge and potential misconceptions only within the prior knowledge.

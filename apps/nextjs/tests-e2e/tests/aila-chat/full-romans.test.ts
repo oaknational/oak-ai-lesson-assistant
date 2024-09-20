@@ -8,7 +8,6 @@ import { continueChat, isFinished, waitForGeneration } from "./helpers";
 type FixtureMode = "record" | "replay";
 const FIXTURE_MODE = "replay" as FixtureMode;
 
-// TODO: enable shorter timeouts for replays when they include moderations
 const generationTimeout = FIXTURE_MODE === "record" ? 75000 : 50000;
 
 const applyFixtures = async (page: Page) => {
