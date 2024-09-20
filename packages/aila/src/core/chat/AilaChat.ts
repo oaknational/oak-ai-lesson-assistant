@@ -209,6 +209,7 @@ export class AilaChat implements AilaChatService {
 
   public async enqueue(message: JsonPatchDocumentOptional) {
     await this._patchEnqueuer.enqueueMessage(message);
+    await this._patchEnqueuer.flush();
   }
 
   public async enqueuePatch(

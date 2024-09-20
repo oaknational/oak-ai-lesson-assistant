@@ -67,4 +67,8 @@ export class PatchEnqueuer {
   private formatPatch(patch: JsonPatchDocumentOptional): string {
     return `\n␞\n${JSON.stringify(patch)}\n␞\n`; // #TODO remove duplicate separators
   }
+
+  public async flush(): Promise<void> {
+    await this.enqueuePromise;
+  }
 }
