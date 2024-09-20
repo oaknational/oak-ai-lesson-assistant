@@ -89,6 +89,10 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
         : undefined,
       lessonPlanJsonSchema: JSON.stringify(LessonPlanJsonSchema),
       llmResponseJsonSchema: JSON.stringify(LLMResponseJsonSchema),
+      isUsingStructuredOutput:
+        process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true"
+          ? true
+          : false,
     };
 
     return template(args);
