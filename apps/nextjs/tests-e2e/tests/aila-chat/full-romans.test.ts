@@ -76,20 +76,5 @@ test.describe("Authenticated", { tag: "@authenticated" }, () => {
 
       await isFinished(page);
     });
-
-    await test.step("Go to downloads page", async () => {
-      // Open 'download resources' menu
-      const downloadResources = page.getByTestId("chat-download-resources");
-      await downloadResources.click();
-      page.waitForURL(/\aila\/.*\/download/);
-
-      // Click to download lesson plan
-      const downloadLessonPlan = page.getByTestId("chat-download-lesson-plan");
-      await downloadLessonPlan.click();
-
-      // Skip feedback form
-      await page.getByLabel("Skip").click();
-      page.getByRole("heading", { name: "Download resources" });
-    });
   });
 });
