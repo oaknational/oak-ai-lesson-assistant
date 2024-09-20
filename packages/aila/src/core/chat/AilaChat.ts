@@ -376,6 +376,10 @@ export class AilaChat implements AilaChatService {
         type: "comment",
         value: "MODERATION_START",
       });
+      await this.enqueue({
+        type: "comment",
+        value: "MODERATING",
+      });
       const message = await this._aila.moderation.moderate({
         lessonPlan: this._aila.lesson.plan,
         messages: this._aila.messages,

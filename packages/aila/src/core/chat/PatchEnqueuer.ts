@@ -70,5 +70,8 @@ export class PatchEnqueuer {
 
   public async flush(): Promise<void> {
     await this.enqueuePromise;
+    if (this.controller) {
+      this.controller.desiredSize;
+    }
   }
 }
