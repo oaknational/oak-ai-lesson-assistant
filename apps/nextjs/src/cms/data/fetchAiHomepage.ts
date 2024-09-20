@@ -1,33 +1,11 @@
-import { graphqlClient } from "cms/graphQlClient";
+import { homePageQuery } from "cms/queries/homePageQuery";
+import { sanityClient } from "cms/sanityClient";
+import { AiHomepage } from "cms/types/aiHomePageType";
 
-export async function fetchAiHomepage(): Promise<any> {
-  const homePageQuery = `
-    query AiHomepage {
-      aiHomepage {
-        heading
-        heroVideo {
-          _id
-          title
-          url
-        }
-        belowTheFoldVideo {
-          _id
-          title
-          url
-        }
-        seo {
-          metaTitle
-          metaDescription
-          openGraphImage {
-            asset {
-              url
-            }
-          }
-        }
-      }
-    }
-  `;
+export async function fetchAiHomepage(): Promise<AiHomepage | null> {
+  const query = homePageQuery;
 
-  const result: any = await graphqlClient.request(homePageQuery);
-  return result.aiHomepage ? result.aiHomepage : null;
+  const result = await sanityClient.fetch(query);
+
+  return result;
 }

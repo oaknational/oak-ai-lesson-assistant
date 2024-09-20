@@ -12,6 +12,7 @@ import {
   oakColorTokens,
   OakPrimaryButton,
 } from "@oaknational/oak-components";
+import { AiHomepage } from "cms/types/aiHomePageType";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -54,7 +55,11 @@ const OakFlexCustomMaxWidthWithHalfWidth = styled(OakFlexCustomMaxWidth)`
   }
 `;
 
-export default function HomePage() {
+export default function HomePage({
+  pageData,
+}: {
+  pageData: AiHomepage | null;
+}) {
   const user = useUser();
 
   const { track } = useAnalytics();
@@ -92,7 +97,7 @@ export default function HomePage() {
               customMaxWidth={600}
               $height="fit-content"
             >
-              <StyledMuxPlayer playbackId="XjKNXfXcZqEIb3sRmgqqw901S3AoN8mllBS5yUnKSvb4" />
+              <StyledMuxPlayer playbackId={pageData?.heroVideo._id} />
             </OakBoxCustomMaxWidth>
 
             <OakP $textAlign="left" $font="body-1">
@@ -112,7 +117,7 @@ export default function HomePage() {
             $height="fit-content"
             $width="100%"
           >
-            <StyledMuxPlayer playbackId="XjKNXfXcZqEIb3sRmgqqw901S3AoN8mllBS5yUnKSvb4" />
+            <StyledMuxPlayer playbackId={pageData?.belowTheFoldVideo._id} />
           </OakFlexCustomMaxWidthWithHalfWidth>
         </OakFlex>
       </HeroContainer>
