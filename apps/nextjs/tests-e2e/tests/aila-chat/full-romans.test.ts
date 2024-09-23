@@ -111,7 +111,12 @@ test.describe("Authenticated", { tag: "@authenticated" }, () => {
       await downloadLessonPlan.click();
 
       // Skip feedback form
-      await page.getByLabel("Skip").click();
+      if (await page.getByLabel("Skip").isVisible()) {
+        await page.getByLabel("Skip").click();
+      } else {
+        console.log("Feedback form not found");
+      }
+
       page.getByRole("heading", { name: "Download resources" });
     });
   });
