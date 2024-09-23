@@ -48,7 +48,7 @@ export class FixtureRecordLLMService implements LLMService {
         }
 
         try {
-          const formattedUrl = `tests-e2e/recordings/${fixtureName}.formatted.txt`;
+          const formattedUrl = `tests-e2e/recordings/${fixtureName}.formatted.json`;
           const formatted = JSON.stringify(
             JSON.parse(chunks.join("")),
             null,
