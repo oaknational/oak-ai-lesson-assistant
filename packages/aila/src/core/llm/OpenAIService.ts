@@ -50,6 +50,7 @@ export class OpenAIService implements LLMService {
     if (!STRUCTURED_OUTPUTS_ENABLED) {
       return this.createChatCompletionStream({ model, messages, temperature });
     }
+    const startTime = Date.now();
     const { textStream: stream } = await streamObject({
       model: this._openAIProvider(model, { structuredOutputs: true }),
       output: "object",
@@ -62,6 +63,25 @@ export class OpenAIService implements LLMService {
       temperature,
     });
 
-    return stream.getReader();
+    const reader = stream.getReader();
+    const { value } = await reader.read();
+    const timeToFirstToken = Date.now() - startTime;
+    console.log(`Time to first token: ${timeToFirstToken}ms`);
+
+    const newStream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(value);
+      },
+      async pull(controller) {
+        const { done, value } = await reader.read();
+        if (done) {
+          controller.close();
+        } else {
+          controller.enqueue(value);
+        }
+      },
+    });
+
+    return newStream.getReader();
   }
 }

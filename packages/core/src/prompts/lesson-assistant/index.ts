@@ -1,5 +1,6 @@
 import crypto from "crypto";
 
+import { LooseLessonPlan } from "../../../../aila/src/protocol/schema";
 import {
   americanToBritish,
   basedOn,
@@ -19,19 +20,16 @@ import { languageAndVoice } from "./parts/languageAndVoice";
 import { lessonComplete } from "./parts/lessonComplete";
 
 export interface TemplateProps {
-  subject?: string;
-  keyStage?: string;
-  topic?: string;
   relevantLessonPlans?: string;
-  currentLessonPlan?: string;
+  lessonPlan: LooseLessonPlan;
   summaries?: string;
-  lessonTitle?: string;
   responseMode?: "interactive" | "generate";
   baseLessonPlan?: string;
   useRag?: boolean;
   americanisms?: object[];
   lessonPlanJsonSchema: string;
   llmResponseJsonSchema: string;
+  isUsingStructuredOutput: boolean;
 }
 
 type TemplatePart = (props: TemplateProps) => string;
@@ -71,7 +69,7 @@ export const getPromptParts = (props: TemplateProps): TemplatePart[] => {
       : undefined,
     americanToBritishSection,
     languageAndVoice,
-    schema,
+    props.isUsingStructuredOutput ? undefined : schema,
     response,
     signOff,
   ];
@@ -88,5 +86,7 @@ export const generatePromptPartsHash = (props: TemplateProps): string => {
   const parts = getPromptParts(props);
   const partsString = parts.map((part) => part.toString()).join("");
   const hash = crypto.createHash("md5").update(partsString).digest("hex");
-  return `${props.responseMode}-${props.useRag ? "rag" : "noRag"}-${props.baseLessonPlan ? "basedOn" : "notBasedOn"}-${hash}`;
+  return `${props.responseMode}-${props.useRag ? "rag" : "noRag"}-${
+    props.baseLessonPlan ? "basedOn" : "notBasedOn"
+  }-${hash}`;
 };

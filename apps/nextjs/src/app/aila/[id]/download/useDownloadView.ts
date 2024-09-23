@@ -1,6 +1,8 @@
+import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 
 import { useProgressForDownloads } from "@/components/AppComponents/Chat/Chat/hooks/useProgressForDownloads";
+import { ExportsHookProps } from "@/components/ExportsDialogs/exports.types";
 import { useExportAdditionalMaterials } from "@/components/ExportsDialogs/useExportAdditionalMaterials";
 import { useExportAllLessonAssets } from "@/components/ExportsDialogs/useExportAllLessonAssets";
 import { useExportLessonPlanDoc } from "@/components/ExportsDialogs/useExportLessonPlanDoc";
@@ -13,11 +15,11 @@ export function useDownloadView({
   lessonPlan,
   messages,
 }: AilaPersistedChat) {
-  const exportProps = {
+  const exportProps: ExportsHookProps = {
     onStart: () => null,
     lesson: lessonPlan,
     chatId: id,
-    messageId: messages.length,
+    messageId: getLastAssistantMessage(messages)?.id,
     active: true,
   };
 

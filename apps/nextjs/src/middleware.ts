@@ -11,7 +11,7 @@ function handleError(error: unknown): Response {
   wrappedError.cause = error;
   Sentry.captureException(wrappedError, { originalException: error });
 
-  return NextResponse.error();
+  return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
 }
 
 const nextMiddleware: NextMiddleware = async (request, event) => {

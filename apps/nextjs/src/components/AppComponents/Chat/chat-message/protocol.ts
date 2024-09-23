@@ -5,6 +5,8 @@ import {
   PatchDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 
+export { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
+
 export function isPatch(part: MessagePartDocument): part is PatchDocument {
   return part.type === "patch";
 }

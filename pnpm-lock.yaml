@@ -610,6 +610,9 @@ importers:
       '@slack/web-api':
         specifier: ^7.3.1
         version: 7.3.1
+      '@types/json-stringify-safe':
+        specifier: ^5.0.3
+        version: 5.0.3
       '@upstash/ratelimit':
         specifier: ^2.0.1
         version: 2.0.1
@@ -631,6 +634,9 @@ importers:
       inngest:
         specifier: ^3.16.1
         version: 3.16.1(typescript@5.3.3)
+      json-stringify-safe:
+        specifier: ^5.0.1
+        version: 5.0.1
       langchain:
         specifier: ^0.0.184
         version: 0.0.184(@google-cloud/storage@7.7.0)(@upstash/redis@1.22.0)(google-auth-library@9.7.0)(lodash@4.17.21)
@@ -8233,6 +8239,10 @@ packages:
 
   /@types/json-schema@7.0.13:
     resolution: {integrity: sha512-RbSSoHliUbnXj3ny0CNFOoxrIDV6SUGyStHsvDqosw6CkdPV8TtWGlfecuK4ToyMEAql6pzNxgCFKanovUzlgQ==}
+
+  /@types/json-stringify-safe@5.0.3:
+    resolution: {integrity: sha512-oNOjRxLfPeYbBSQ60maucaFNqbslVOPU4WWs5t/sHvAh6tyo/CThXSG+E24tEzkgh/fzvxyDrYdOJufgeNy1sQ==}
+    dev: false
 
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
