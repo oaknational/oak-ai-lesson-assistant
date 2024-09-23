@@ -32,7 +32,7 @@ export const useAilaStreamingStatus = ({
         return "Moderating";
       } else if (
         content.includes(`"type":"prompt"`) ||
-        content.includes('"type":"prompt"')
+        content.includes(`\"type\":\"prompt\"`)
       ) {
         return "StreamingChatResponse";
       } else if (content.includes(chatStart)) {
