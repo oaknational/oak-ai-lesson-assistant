@@ -245,13 +245,6 @@ export const addCspHeaders = (
     }),
   });
 
-  if (nonce && !request.nextUrl.pathname.includes("clerk")) {
-    response.headers.set(
-      "Set-Cookie",
-      `csp-nonce=${nonce}; Path=/; HttpOnly; Secure; SameSite=None`,
-    );
-  }
-
   response.headers.set("Content-Security-Policy", csp.policy);
   if (csp.reportOnly) {
     response.headers.set("Content-Security-Policy-Report-Only", csp.reportOnly);

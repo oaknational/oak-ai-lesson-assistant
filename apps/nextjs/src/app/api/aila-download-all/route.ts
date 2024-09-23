@@ -89,12 +89,6 @@ async function getHandler(req: Request): Promise<Response> {
   }
   const taskId = `download-all-${fileIdsParam.toString()}`;
 
-  const cookies = req.headers.get("cookie");
-  const nonce = cookies?.match(/csp-nonce=([^;]+)/)?.[1];
-  if (!nonce) {
-    return new Response("Missing nonce", { status: 400 });
-  }
-
   let fileIdsAndFormats;
   try {
     fileIdsAndFormats = JSON.parse(decodeURIComponent(fileIdsParam));
