@@ -209,7 +209,6 @@ export class AilaChat implements AilaChatService {
 
   public async enqueue(message: JsonPatchDocumentOptional) {
     await this._patchEnqueuer.enqueueMessage(message);
-    await this._patchEnqueuer.flush();
   }
 
   public async enqueuePatch(
@@ -372,10 +371,19 @@ export class AilaChat implements AilaChatService {
   public async moderate() {
     if (this._aila.options.useModeration) {
       invariant(this._aila.moderation, "Moderation not initialised");
+      // #TODO there seems to be a bug or a delay
+      // in the streaming logic, which means that
+      // the call to the moderation service
+      // locks up the stream until it gets a response,
+      // leaving the previous message half-sent until then.
+      // Since the front end relies on MODERATION_START
+      // to appear in the stream, we need to send two
+      // comment messages to ensure that it is received.
       await this.enqueue({
         type: "comment",
         value: "MODERATION_START",
       });
+
       await this.enqueue({
         type: "comment",
         value: "MODERATING",
