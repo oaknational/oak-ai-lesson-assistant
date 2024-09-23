@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getLessonTrackingProps } from "@/lib/analytics/helpers";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { ResourceFileTypeValueType } from "@/lib/avo/Avo";
+import { trackDownload } from "@/utils/trackDownload";
 import { trpc } from "@/utils/trpc";
 
 import {
@@ -50,14 +51,6 @@ export const DownloadButton = ({
   const { isSuccess, isError, mutateAsync, isLoading } =
     trpc.exports.sendUserExportLink.useMutation();
 
-  function trackDownload(resourceFileType: ResourceFileTypeValueType) {
-    track.lessonPlanResourcesDownloaded({
-      ...getLessonTrackingProps({ lesson }),
-      resourceType: [analyticsResourceType],
-      resourceFileType,
-    });
-  }
-
   if (link) {
     const fileId =
       data && "link" in data && data.link?.split("/edit")[0]?.split("/d/")[1];
@@ -68,7 +61,9 @@ export const DownloadButton = ({
         data-testid={dataTestId}
       >
         <Link
-          onClick={() => trackDownload(ext)}
+          onClick={() =>
+            trackDownload(ext, analyticsResourceType, lesson, track)
+          }
           className="flex w-full items-center justify-start  gap-15 hover:underline"
           href={`/api/aila-download?fileId=${fileId}&ext=${ext}&lessonTitle=${lessonTitle}`}
           target="_blank"
@@ -83,7 +78,9 @@ export const DownloadButton = ({
         </Link>
         <span className="my-12 h-[2px] w-full bg-black opacity-15" />
         <Link
-          onClick={() => trackDownload("pdf")}
+          onClick={() =>
+            trackDownload("pdf", analyticsResourceType, lesson, track)
+          }
           className="flex w-full items-center justify-start  gap-15 hover:underline"
           href={`/api/aila-download?fileId=${fileId}&ext=pdf&lessonTitle=${lessonTitle}`}
           target="_blank"
@@ -97,7 +94,14 @@ export const DownloadButton = ({
         <span className="my-12 h-[2px] w-full bg-black opacity-15" />
 
         <Link
-          onClick={() => trackDownload("share to google drive")}
+          onClick={() =>
+            trackDownload(
+              "share to google drive",
+              analyticsResourceType,
+              lesson,
+              track,
+            )
+          }
           className="hidden w-full items-center  justify-start gap-15 hover:underline sm:flex"
           target="_blank"
           href={`${link.split("/edit")[0]}/copy`}

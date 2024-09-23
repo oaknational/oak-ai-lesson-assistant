@@ -85,7 +85,6 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                     downloadAvailable={!!exportAllAssets.readyToExport}
                     downloadLoading={exportAllAssets.status === "loading"}
                     data={exportAllAssets.data}
-                    exportsType="lessonPlanDoc"
                     data-testid="chat-download-lesson-plan"
                     lesson={lessonPlan}
                   />

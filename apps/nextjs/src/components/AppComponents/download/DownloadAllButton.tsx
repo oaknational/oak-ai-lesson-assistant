@@ -6,15 +6,11 @@ import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
 import { z } from "zod";
 
-import { getLessonTrackingProps } from "@/lib/analytics/helpers";
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { ResourceFileTypeValueType } from "@/lib/avo/Avo";
+import { trackDownload } from "@/utils/trackDownload";
 import { trpc } from "@/utils/trpc";
 
-import {
-  ExportsType,
-  getExportsConfig,
-} from "../../ExportsDialogs/exports.helpers";
+import { getExportsConfig } from "../../ExportsDialogs/exports.helpers";
 import { Icon } from "../../Icon";
 import LoadingWheel from "../../LoadingWheel";
 import LessonIcon from "../../SVGParts/LessonIcon";
@@ -51,7 +47,7 @@ type DownloadAllButtonProps = {
         message: string;
       }
     | undefined;
-  exportsType: ExportsType;
+
   "data-testid"?: string;
 };
 
@@ -65,19 +61,18 @@ export const DownloadAllButton = ({
   downloadAvailable,
   downloadLoading,
   data,
-  exportsType,
+
   "data-testid": dataTestId,
 }: Readonly<DownloadAllButtonProps>) => {
   const link = data && "link" in data ? data.link : "";
   const hasError = data && "message" in data;
   const errorMessage = data && "message" in data ? data.message : "";
-  const { track } = useAnalytics();
-  const [zipStatus, setZipStatus] = useState<zipDownloadStatus>("idle");
-  const { icon, ext, analyticsResourceType } = getExportsConfig(exportsType);
 
+  const [zipStatus, setZipStatus] = useState<zipDownloadStatus>("idle");
+  const { icon, ext, analyticsResourceType } = getExportsConfig("all");
   const { isSuccess, isError, mutateAsync, isLoading } =
     trpc.exports.sendUserAllAssetsEmail.useMutation();
-
+  const { track } = useAnalytics();
   const { mutateAsync: zipStatusMutateAsync } =
     trpc.exports.checkDownloadAllStatus.useMutation();
 
@@ -97,14 +92,6 @@ export const DownloadAllButton = ({
       : undefined;
 
     const taskId = `download-all-${JSON.stringify(fileIdsAndFormats)}`;
-
-    function trackDownload(resourceFileType: ResourceFileTypeValueType) {
-      track.lessonPlanResourcesDownloaded({
-        ...getLessonTrackingProps({ lesson }),
-        resourceType: [analyticsResourceType],
-        resourceFileType,
-      });
-    }
 
     function sendAllLinksEmail() {
       try {
@@ -146,7 +133,7 @@ export const DownloadAllButton = ({
       >
         <Link
           onClick={() => {
-            trackDownload(ext);
+            trackDownload(ext, analyticsResourceType, lesson, track);
             handleZipDownloadStatus();
           }}
           className="flex w-full items-center justify-start  gap-15 hover:underline"
@@ -182,7 +169,7 @@ export const DownloadAllButton = ({
           />
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
-              Email me {ext === "docx" ? `doc` : `slides`}{" "}
+              Email me
               {isSuccess && `- Email sent`}{" "}
               {isError && `- There was an error sending the email!`}
             </span>
@@ -282,11 +269,11 @@ export function SendEmailIcon({
   isSuccess,
   isError,
   isLoading,
-}: {
+}: Readonly<{
   isSuccess: boolean;
   isError: boolean;
   isLoading: boolean;
-}) {
+}>) {
   if (isLoading) {
     return <LoadingWheel />;
   } else if (isSuccess) {
