@@ -383,7 +383,6 @@ export class AilaChat implements AilaChatService {
         type: "comment",
         value: "MODERATION_START",
       });
-
       await this.enqueue({
         type: "comment",
         value: "MODERATING",
