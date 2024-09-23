@@ -85,6 +85,13 @@ async function getHandler(req: Request): Promise<Response> {
   }
 
   if (!fileIdsParam) {
+    Sentry.addBreadcrumb({
+      message: "Missing fileIds",
+      data: {
+        lessonTitle,
+        fileIdsParam,
+      },
+    });
     return new Response("Invalid or missing fileIds", { status: 400 });
   }
   const taskId = `download-all-${fileIdsParam.toString()}`;
@@ -106,7 +113,13 @@ async function getHandler(req: Request): Promise<Response> {
   let filesProcessed = 0;
 
   for (const { fileId, formats } of fileIdsAndFormats) {
-    if (!fileId || !Array.isArray(formats)) continue;
+    if (!fileId || !Array.isArray(formats)) {
+      const error = new Error(
+        `Invalid fileId or formats for fileId: ${fileId}`,
+      );
+      Sentry.captureException(error, { level: "warning" });
+      continue;
+    }
 
     const lessonExport = await prisma.lessonExport.findFirst({
       where: { gdriveFileId: fileId, userId },
@@ -123,7 +136,9 @@ async function getHandler(req: Request): Promise<Response> {
         const res = await downloadDriveFile({ fileId, ext });
 
         if ("error" in res) {
-          Sentry.captureException(res.error);
+          const err = new Error("Error downloading file, not included in zip");
+          err.cause = res.error;
+          Sentry.captureException(err, { level: "error" });
           continue;
         }
 
@@ -143,7 +158,9 @@ async function getHandler(req: Request): Promise<Response> {
 
         filesProcessed++;
       } catch (error) {
-        Sentry.captureException(error, { level: "error" });
+        const err = new Error("Error downloading file, not included in zip");
+        err.cause = error;
+        Sentry.captureException(err, { level: "error" });
       }
     }
   }
