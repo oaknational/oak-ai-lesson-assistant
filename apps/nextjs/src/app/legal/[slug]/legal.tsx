@@ -5,7 +5,7 @@ import { PortableText } from "@portabletext/react";
 import { PolicyDocument } from "cms/types/policyDocument";
 
 import Layout from "@/components/Layout";
-import { protableTextComponents } from "@/components/PortableText/protableTextComponents";
+import { portableTextComponents } from "@/components/PortableText/portableTextComponents";
 
 interface LegalContentProps {
   pageData: PolicyDocument;
@@ -17,7 +17,7 @@ export const LegalContent = ({ pageData }: LegalContentProps) => {
       <OakBox $ph="inner-padding-xl">
         <PortableText
           value={pageData.body}
-          components={protableTextComponents}
+          components={portableTextComponents}
         />
       </OakBox>
     </Layout>

@@ -4,7 +4,7 @@ import { OakHeading, OakLink } from "@oaknational/oak-components";
 import { PortableTextComponents } from "@portabletext/react";
 import Link from "next/link";
 
-export const protableTextComponents: PortableTextComponents = {
+export const portableTextComponents: PortableTextComponents = {
   block: {
     h1: ({ children }) => (
       <OakHeading
