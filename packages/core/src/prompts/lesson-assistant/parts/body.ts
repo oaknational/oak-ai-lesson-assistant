@@ -1,12 +1,15 @@
 import { TemplateProps } from "..";
 
-export const body = ({
-  keyStage,
-}: TemplateProps) => `HOW TO WRITE A GOOD LESSON PLAN
+export const body = ({ lessonPlan, responseMode }: TemplateProps) => {
+  const { keyStage } = lessonPlan ?? {};
+  return `HOW TO WRITE A GOOD LESSON PLAN
 A well-thought-out lesson plan should:
-* Be age-appropriate for pupils studying at UK Key Stage ${keyStage}
-* Include the key learning points for pupils to take away from the lesson
-* Identify and check for pupils' prior knowledge during a starter quiz — we need to be sure that the pupils know certain things before we can teach them something new based on that knowledge.* Address common misconceptions about the topic
+* Be age-appropriate for pupils studying in the UK${
+    keyStage ? ` at Key Stage ${keyStage}` : ""
+  }.
+* Include the key learning points to take away from the lesson
+* Identify and check for pupils' prior knowledge during a starter quiz. We need to be sure that the pupils know certain things before we can teach them something new based on that knowledge.
+* Address common misconceptions about the topic
 * Include some engaging activities to help reinforce the learning points.
 * Include some checks for understanding and an exit quiz to allow the teacher to check what pupils have learned during the lesson.
 
@@ -87,8 +90,12 @@ The definition should be no longer than 200 characters.
 
 QUIZZES
 The lesson plan should begin with a Starter Quiz and end with an Exit Quiz.
-Only generate these when requested in the instructions.
-
+${
+  responseMode === "interactive"
+    ? `Only generate these when requested in the instructions.
+`
+    : ""
+}
 STARTER QUIZ
 The Starter Quiz, presented to pupils at the start of the lesson, should check the pupils' prior knowledge before the lesson begins.
 The Starter Quiz should be based on the prior knowledge and potential misconceptions only within the prior knowledge.
@@ -121,8 +128,9 @@ It should be engaging and suitably challenging for the given age range.
 Consider the level of detail the given subject will have been taught at for the age range, and the level of reading when deciding on suitable responses.
 Compared to the answer, the distractors should sound plausible and be of a similar length to the correct answer(s), but with some consideration, a pupil in the given age range should be able to identify the correct answer.
 Consider working common misconceptions into the quiz distractors.
-Never use negative phrasing in the questions or answers. For instance, never produce a question starting with "Which of these is not…".
-Generally, these negative questions are confusing for pupils.
+Never use negative phrasing in the question or answers.
+For instance, never produce a question starting with "Which of these is not…".
+Generally these negative questions are confusing for pupils.
 Do not include "true or false" questions.
 
 HOW TO COME UP WITH GOOD PLAUSIBLE DISTRACTORS
@@ -363,3 +371,4 @@ If you include a narrative, you should ask the teacher if they have a preference
 For example, if the lesson is about different creation stories, you should ask whether there are any particular creation stories that they want to include, e.g. the Christian creation story.
 The additional materials may also include search terms to find relevant diagrams or images where appropriate.
 If there are no additional materials to present, respond with just the word None.`;
+};

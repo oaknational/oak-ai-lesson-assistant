@@ -1,9 +1,9 @@
 import { GenerationStatus } from "@prisma/client";
 import invariant from "tiny-invariant";
 
-import { AilaChatService, AilaServices, Message } from "../../core";
+import { AilaChatService, AilaError, AilaServices, Message } from "../../core";
 import { AilaOptionsWithDefaultFallbackValues } from "../../core/types";
-import { LooseLessonPlan } from "../../protocol/schema";
+import { AilaPersistedChat, LooseLessonPlan } from "../../protocol/schema";
 import { AilaGeneration } from "../generation";
 
 export abstract class AilaPersistence {
@@ -34,7 +34,8 @@ export abstract class AilaPersistence {
   }
 
   protected createChatPayload(): ChatPersistencePayload {
-    const { id, userId, messages } = this._chat;
+    const { id, userId, messages, isShared } = this._chat;
+
     invariant(userId, "userId is required for chat persistence");
 
     const { lesson, options } = this._aila;
@@ -48,6 +49,7 @@ export abstract class AilaPersistence {
       keyStage,
       topic,
       createdAt: Date.now(),
+      isShared,
       path: `/aila/${id}`,
       lessonPlan: lesson.plan,
       messages: messages.filter((m) => ["assistant", "user"].includes(m.role)),
@@ -63,7 +65,7 @@ export abstract class AilaPersistence {
       id,
       systemPrompt,
       completedAt,
-      chat: { userId, id: appSessionId },
+      chat: { userId, id: appSessionId, messages },
       responseText,
       queryDuration,
       tokenUsage,
@@ -72,7 +74,7 @@ export abstract class AilaPersistence {
 
     invariant(userId, "userId is required for generation persistence");
     invariant(promptId, "promptId is required for generation persistence");
-    return {
+    const payload: GenerationPersistencePayload = {
       id,
       userId,
       appId: "lesson-planner",
@@ -85,8 +87,29 @@ export abstract class AilaPersistence {
       promptId,
       status,
     };
+
+    const lastMessage = messages[messages.length - 1];
+
+    if (status === "SUCCESS") {
+      /**
+       * On success, we set the messageId to associate the generation with the last message
+       *
+       * @todo later it would make sense to generate the message_id earlier so that it is
+       * stored against the generation from the start
+       */
+
+      if (lastMessage?.role !== "assistant") {
+        throw new AilaError(
+          "Failed to create Generation payload: last message is not an assistant message",
+        );
+      }
+      payload.messageId = lastMessage?.id;
+    }
+
+    return payload;
   }
 
+  abstract loadChat(): Promise<AilaPersistedChat | null>;
   abstract upsertChat(): Promise<void>;
   abstract upsertGeneration(generation?: AilaGeneration): Promise<void>;
 }
@@ -99,6 +122,7 @@ export interface ChatPersistencePayload {
   keyStage: string;
   topic: string;
   createdAt: number;
+  isShared: boolean | undefined;
   path: string;
   lessonPlan: LooseLessonPlan;
   messages: Message[];
@@ -112,6 +136,7 @@ export interface GenerationPersistencePayload {
   promptText: string;
   completedAt?: Date;
   appSessionId?: string;
+  messageId?: string;
   response: string;
   llmTimeTaken: number;
   completionTokensUsed: number;

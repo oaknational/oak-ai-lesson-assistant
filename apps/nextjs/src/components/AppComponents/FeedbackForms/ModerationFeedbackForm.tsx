@@ -35,7 +35,7 @@ export const ModerationFeedbackForm = ({
   }, [hasSubmitted, closeModal]);
 
   return (
-    <div className="m-18 flex  max-w-[600px] flex-col gap-13 border-2 border-gray-900 bg-white p-18">
+    <div className="flex max-w-[600px] flex-col  gap-13 overflow-y-scroll bg-white p-18 sm:m-18 sm:border-2 sm:border-gray-900">
       <div className="flex justify-between">
         <Icon icon="warning" size="md" />
         <Button

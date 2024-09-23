@@ -7,13 +7,11 @@ import { MainNavigationMenu } from "./MainNavigationMenu";
 export type MainNavigationProps = {
   menuOpen: boolean;
   setMenuOpen: Dispatch<React.SetStateAction<boolean>>;
-  featureFlag: boolean | { featureFlag: boolean };
 };
 
 export default function MainNavigation({
   menuOpen,
   setMenuOpen,
-  featureFlag,
 }: Readonly<MainNavigationProps>) {
   return (
     <Transition show={menuOpen} as={Fragment}>
@@ -50,7 +48,6 @@ export default function MainNavigation({
                 menuOpen={menuOpen}
                 setMenuOpen={setMenuOpen}
                 ref={ref}
-                featureFlag={featureFlag}
               />
             )}
           </Transition.Child>

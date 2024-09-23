@@ -4,10 +4,16 @@ import { MockCategoriser } from "@oakai/aila/src/features/categorisation/categor
 import { mockTracer } from "@oakai/core/src/tracing/mockTracer";
 import { NextRequest } from "next/server";
 
-import { consumeStream } from "../../../utils/testHelpers/consumeStream";
 import { expectTracingSpan } from "../../../utils/testHelpers/tracing";
 import { handleChatPostRequest } from "./chatHandler";
 import { Config } from "./config";
+
+const chatId = "test-chat-id";
+const userId = "test-user-id";
+
+jest.mock("./user", () => ({
+  fetchAndCheckUser: jest.fn().mockResolvedValue("test-user-id"),
+}));
 
 describe("Chat API Route", () => {
   let testConfig: Config;
@@ -26,12 +32,9 @@ describe("Chat API Route", () => {
       },
     });
     mockLLMService = new MockLLMService();
-    jest.spyOn(mockLLMService, "createChatCompletionStream");
+    jest.spyOn(mockLLMService, "createChatCompletionObjectStream");
 
     testConfig = {
-      shouldPerformUserLookup: false,
-      handleUserLookup: jest.fn(),
-      mockUserId: "test-user-id",
       createAila: jest.fn().mockImplementation(async (options) => {
         const ailaConfig = {
           options: {
@@ -44,8 +47,8 @@ describe("Chat API Route", () => {
             useRateLimiting: false,
           },
           chat: {
-            id: "test-chat-id",
-            userId: "test-user-id",
+            id: chatId,
+            userId,
             messages: options.chat.messages ?? [],
           },
           plugins: [],
@@ -59,7 +62,7 @@ describe("Chat API Route", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       prisma: {} as any,
     };
-  });
+  }, 60000);
 
   it("should create correct telemetry spans for a successful chat request", async () => {
     const mockRequest = new NextRequest("http://localhost/api/chat", {
@@ -78,18 +81,14 @@ describe("Chat API Route", () => {
 
     expect(response.status).toBe(200);
 
-    const receivedContent = await consumeStream(
-      response.body as ReadableStream,
-    );
+    const receivedContent = await response.text();
 
     expect(receivedContent).not.toContain("error");
-    expect(mockLLMService.createChatCompletionStream).toHaveBeenCalled();
+    expect(mockLLMService.createChatCompletionObjectStream).toHaveBeenCalled();
 
     expectTracingSpan("chat-aila-generate").toHaveBeenExecuted();
     expectTracingSpan("chat-api").toHaveBeenExecutedWith({
       chat_id: "test-chat-id",
     });
-
-    expect(testConfig.handleUserLookup).not.toHaveBeenCalled();
-  }, 30000);
+  }, 60000);
 });

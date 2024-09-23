@@ -1,6 +1,7 @@
 "use client";
 
-import { useAuth, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
+import MuxPlayer from "@mux/mux-player-react";
 import {
   OakBox,
   OakFlex,
@@ -16,12 +17,15 @@ import Image from "next/image";
 import Link from "next/link";
 import styled from "styled-components";
 
-import jigsaw from "@/assets/svg/illustration/jigsaw.svg";
 import oakSupporting from "@/assets/svg/illustration/oak_supporting.svg";
-import BetaTag from "@/components/AppComponents/Chat/beta-tag";
+import { BetaTagPage } from "@/components/AppComponents/Chat/beta-tag";
 import HeroContainer from "@/components/HeroContainer";
 import { HomePageCTA } from "@/components/Home/HomePageCTA";
 import Layout from "@/components/Layout";
+import {
+  OakBoxCustomMaxWidth,
+  OakFlexCustomMaxWidth,
+} from "@/components/OakBoxCustomMaxWidth";
 import AiIcon from "@/components/SVGParts/AiIcon";
 import LessonIcon from "@/components/SVGParts/LessonIcon";
 import QuizIcon from "@/components/SVGParts/QuizIcon";
@@ -32,45 +36,84 @@ export const metadata: Metadata = {
   title: "Oak ai experiments",
 };
 
-const OakFlexWithCustomMaxWidth = styled(OakFlex)`
-  max-width: 640px;
+const StyledMuxPlayer = styled(MuxPlayer)`
+  width: 600px;
+  height: 334px;
+  @media (max-width: 1100px) {
+    width: 100%;
+    height: fit-content;
+  }
 `;
 
-export default function HomePage({ featureFlag }) {
-  const user = useUser();
-  const auth = useAuth();
+const OakFlexCustomMaxWidthWithHalfWidth = styled(OakFlexCustomMaxWidth)`
+  @media (max-width: 1200px) {
+    width: 50%;
+  }
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
 
-  const { userId } = auth;
+export default function HomePage() {
+  const user = useUser();
+
   const { track } = useAnalytics();
 
   return (
-    <Layout featureFlag={featureFlag}>
+    <Layout>
       <HeroContainer>
-        <OakFlex $flexDirection={"row"} $justifyContent={"space-between"}>
-          <OakFlexWithCustomMaxWidth
+        <OakFlex
+          $flexDirection={["column", "row"]}
+          $justifyContent={"space-between"}
+          $alignItems={["center"]}
+          $gap={"all-spacing-5"}
+        >
+          <OakFlexCustomMaxWidthWithHalfWidth
             $flexDirection={"column"}
             $gap={"all-spacing-5"}
+            customMaxWidth={550}
+            $width={"100%"}
           >
             <OakBox $width="fit-content">
-              <BetaTag />
+              <BetaTagPage />
             </OakBox>
             <OakHeading tag="h1" $font={"heading-2"}>
-              Introducing Aila{" "}
+              Introducing Aila
             </OakHeading>
             <OakHeading tag="h2" $font={"heading-5"}>
-              Create lessons with Oak&apos;s new AI lesson assistant
+              Build a tailor-made lesson plan and resources in minutes
             </OakHeading>
-            <OakP $textAlign="left" $font="body-1">
-              Try out Oak&apos;s latest AI Labs experiment, Aila, a free
-              AI-powered lesson assistant that can help you create high-quality
-              lessons and editable resources in minutes.
-            </OakP>
-            <HomePageCTA featureFlag={featureFlag} />
-          </OakFlexWithCustomMaxWidth>
 
-          <OakBox $display={["none", "flex"]}>
-            <Image src={jigsaw} alt="jigsaw image" priority />
-          </OakBox>
+            <OakBoxCustomMaxWidth
+              $display={["flex", "none"]}
+              $borderColor="black"
+              $borderStyle={"solid"}
+              $ba={"border-solid-xl"}
+              customMaxWidth={600}
+              $height="fit-content"
+            >
+              <StyledMuxPlayer playbackId="XjKNXfXcZqEIb3sRmgqqw901S3AoN8mllBS5yUnKSvb4" />
+            </OakBoxCustomMaxWidth>
+
+            <OakP $textAlign="left" $font="body-1">
+              Transform your lesson prep with our free AI-powered lesson
+              assistant. Whether it&apos;s creating bespoke resources or
+              tailoring content to your class, Aila can help speed things along.
+            </OakP>
+            <HomePageCTA />
+          </OakFlexCustomMaxWidthWithHalfWidth>
+
+          <OakFlexCustomMaxWidthWithHalfWidth
+            $display={["none", "flex"]}
+            $borderColor="black"
+            $borderStyle={"solid"}
+            $ba={"border-solid-xl"}
+            customMaxWidth={600}
+            $height="fit-content"
+            $width="100%"
+          >
+            <StyledMuxPlayer playbackId="XjKNXfXcZqEIb3sRmgqqw901S3AoN8mllBS5yUnKSvb4" />
+          </OakFlexCustomMaxWidthWithHalfWidth>
         </OakFlex>
       </HeroContainer>
 
@@ -151,6 +194,19 @@ export default function HomePage({ featureFlag }) {
               How do I create a lesson with Aila?
             </OakHeading>
             <OakFlex $flexDirection={"column"} $gap={"all-spacing-7"}>
+              <OakBoxCustomMaxWidth
+                $display={["flex"]}
+                $borderColor="black"
+                $borderStyle={"solid"}
+                $ba={"border-solid-xl"}
+                customMaxWidth={600}
+                $height="fit-content"
+              >
+                <StyledMuxPlayer
+                  playbackId="a3fYrjh33z00LbjMRCTFQCxFRMvGU00LmoL11ln4QtV2A"
+                  thumbnailTime={3.67}
+                />
+              </OakBoxCustomMaxWidth>
               <OakP $textAlign="left" $font="body-1">
                 Tell Aila what you want to teach and it will guide you through
                 creating a lesson, starting with your learning outcome. At each
@@ -161,27 +217,19 @@ export default function HomePage({ featureFlag }) {
                 activities to suit your pupils, and download the editable lesson
                 resources.
               </OakP>
-
-              {!userId || !featureFlag ? (
-                <BoldOakLink variant="text-link" href="#">
-                  Coming soon...
-                </BoldOakLink>
-              ) : (
-                <BoldOakLink
-                  href="/aila"
-                  element={Link}
-                  onClick={() => {
-                    track.lessonAssistantAccessed({
-                      product: "ai lesson assistant",
-                      isLoggedIn: !!user.isSignedIn,
-                      componentType:
-                        "homepage_secondary_create_a_lesson_button",
-                    });
-                  }}
-                >
-                  Create a lesson
-                </BoldOakLink>
-              )}
+              <BoldOakLink
+                href="/aila"
+                element={Link}
+                onClick={() => {
+                  track.lessonAssistantAccessed({
+                    product: "ai lesson assistant",
+                    isLoggedIn: !!user.isSignedIn,
+                    componentType: "homepage_secondary_create_a_lesson_button",
+                  });
+                }}
+              >
+                Create a lesson
+              </BoldOakLink>
             </OakFlex>
           </OakFlex>
           <OakFlex $flexDirection={"column"} $gap={"all-spacing-5"}>
@@ -196,11 +244,10 @@ export default function HomePage({ featureFlag }) {
               high-quality results that are geared to UK pupils, schools and
               classrooms.
             </OakP>
-            {featureFlag && (
-              <BoldOakLink element={Link} href="/faqs">
-                Find out more about Aila
-              </BoldOakLink>
-            )}
+
+            <BoldOakLink element={Link} href="/faqs">
+              Find out more about Aila
+            </BoldOakLink>
           </OakFlex>
           <OakFlex $flexDirection={"column"} $gap={"all-spacing-5"}>
             <OakHeading $font="heading-5" tag="h3">
@@ -217,14 +264,6 @@ export default function HomePage({ featureFlag }) {
               and that&apos;s where your feedback and suggestions come in to
               help us get there.
             </OakP>
-            {featureFlag && (
-              <BoldOakLink
-                element={Link}
-                href="https://docs.google.com/forms/d/1yRiO9DOGuCXR6Phyr8gaKFh7-Lr_4sFpVxXZ2igQH7A/edit"
-              >
-                Give feedback here
-              </BoldOakLink>
-            )}
           </OakFlex>
         </OakFlexWithWidth65>
       </OakFlex>

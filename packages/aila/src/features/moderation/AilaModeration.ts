@@ -16,7 +16,7 @@ import invariant from "tiny-invariant";
 import { AilaServices } from "../../core";
 import { Message } from "../../core/chat";
 import { AilaPluginContext } from "../../core/plugins/types";
-import { getMessageId } from "../../helpers/chat/getMessageId";
+import { getLastAssistantMessage } from "../../helpers/chat/getLastAssistantMessage";
 import { ModerationDocument } from "../../protocol/jsonPatchProtocol";
 import { LooseLessonPlan } from "../../protocol/schema";
 import { AilaModerationFeature } from "../types";
@@ -58,7 +58,7 @@ export class AilaModeration implements AilaModerationFeature {
 
   public async persistModerationResult(
     moderationResult: ModerationResult,
-    lastUserMessage: Message,
+    lastAssistantMessage: Message,
     lessonPlan: LooseLessonPlan,
   ) {
     const userId = this._aila.userId;
@@ -69,7 +69,7 @@ export class AilaModeration implements AilaModerationFeature {
     const moderation = await this._moderations.create({
       userId,
       appSessionId: chatId,
-      messageId: getMessageId(lastUserMessage),
+      messageId: lastAssistantMessage.id,
       categories: moderationResult.categories,
       justification: moderationResult.justification,
       lesson: lessonPlan,
@@ -87,13 +87,16 @@ export class AilaModeration implements AilaModerationFeature {
     messages: Message[];
     pluginContext: AilaPluginContext;
   }) {
-    const lastUserMessage = messages.findLast((m) => m.role === "user");
-    if (!lastUserMessage) {
+    if (messages.length === 0) {
       const defaultMessage: ModerationDocument = {
         type: "moderation",
         categories: [],
       };
       return defaultMessage;
+    }
+    const lastAssistantMessage = getLastAssistantMessage(messages);
+    if (!lastAssistantMessage) {
+      throw new Error("Failed to moderate, no assistant message found");
     }
 
     const moderationResult: ModerationResult = await this.performModeration({
@@ -105,7 +108,7 @@ export class AilaModeration implements AilaModerationFeature {
     if (this._shouldPersist) {
       const moderation = await this.persistModerationResult(
         moderationResult,
-        lastUserMessage,
+        lastAssistantMessage,
         lessonPlan,
       );
       this.reportModerationToAnalytics(moderationResult, moderation);

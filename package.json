@@ -16,7 +16,7 @@
     "db-push-force": "turbo db-push-force",
     "db-seed": "turbo db-seed",
     "dev": "FORCE_COLOR=1 turbo dev --parallel --filter=!db",
-    "doppler:pull:dev": "doppler secrets download --no-file --format env > .env",
+    "doppler:pull:dev": "doppler secrets download --config dev --no-file --format env > .env",
     "doppler:pull:stg": "doppler secrets download --config stg --no-file --format env > .env",
     "doppler:run:stg": "doppler run -c stg --silent",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",

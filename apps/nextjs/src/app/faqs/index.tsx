@@ -17,7 +17,7 @@ import GetInTouchBox from "@/components/AppComponents/GetInTouchBox";
 import Layout from "@/components/Layout";
 import { OakBoxCustomMaxWidth } from "@/components/OakBoxCustomMaxWidth";
 
-const FAQPage = (featureFlag) => {
+const FAQPage = () => {
   const startingRef = useRef(null);
   const featuresRef = useRef(null);
   const supportRef = useRef(null);
@@ -36,7 +36,7 @@ const FAQPage = (featureFlag) => {
     }
   };
   return (
-    <Layout featureFlag={featureFlag}>
+    <Layout>
       <OakMaxWidth>
         <OakFlex $justifyContent="space-between">
           <OakBox $display={["none", "block"]}>
@@ -398,7 +398,7 @@ const FAQPage = (featureFlag) => {
 
               <OakP $mb="space-between-s">
                 Yes, we provide comprehensive support to assist with any issues
-                or questions users may have. You can contact us via
+                or questions users may have. You can contact us via{" "}
                 <OakLink href="mailto:help@thenational.academy">email.</OakLink>
               </OakP>
               <OakHeading

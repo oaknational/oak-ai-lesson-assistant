@@ -19,6 +19,7 @@
     "autodocs",
     "autoprefixer",
     "autosize",
+    "backticked",
     "beitzah",
     "bugsnag",
     "categorisation",
@@ -63,6 +64,7 @@
     "initialise",
     "inngest",
     "Jayne",
+    "jsonparse",
     "jsonrepair",
     "karpas",
     "keystage",
@@ -126,6 +128,7 @@
     "textnodes",
     "thenational",
     "tiktoken",
+    "timeframe",
     "transpiles",
     "trivago",
     "trpc",
@@ -135,6 +138,7 @@
     "unsummarised",
     "untruncate",
     "untruncated",
+    "untruncating",
     "Upserting",
     "upstash",
     "usehooks",
@@ -163,6 +167,7 @@
       "rootPath": "packages/aila"
     }
   ],
+  "jest.runMode": "on-demand",
   "jestrunner.jestCommand": "pnpm run test --",
   "jestrunner.debugOptions": {
     "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",

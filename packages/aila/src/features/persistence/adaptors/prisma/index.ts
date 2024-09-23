@@ -1,7 +1,16 @@
-import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
+import {
+  Prisma,
+  PrismaClientWithAccelerate,
+  prisma as globalPrisma,
+} from "@oakai/db";
 
 import { AilaPersistence } from "../..";
-import { AilaChatService, AilaServices } from "../../../../core";
+import {
+  AilaAuthenticationError,
+  AilaChatService,
+  AilaServices,
+} from "../../../../core";
+import { AilaPersistedChat, chatSchema } from "../../../../protocol/schema";
 import { AilaGeneration } from "../../../generation";
 
 export class AilaPrismaPersistence extends AilaPersistence {
@@ -20,6 +29,28 @@ export class AilaPrismaPersistence extends AilaPersistence {
     this._prisma = prisma ?? globalPrisma;
   }
 
+  async loadChat(): Promise<AilaPersistedChat | null> {
+    const { id, userId } = this._chat;
+
+    const appSession = await this._prisma.appSession.findFirst({
+      where: {
+        id,
+      },
+    });
+
+    if (!appSession) {
+      return null;
+    }
+
+    if (userId && userId !== appSession.userId) {
+      throw new AilaAuthenticationError("User not authorised to access chat");
+    }
+
+    const parsedChat = chatSchema.parse(appSession?.output);
+
+    return parsedChat;
+  }
+
   async upsertChat(): Promise<void> {
     const payload = this.createChatPayload();
     if (!payload.id || !payload.userId) {
@@ -28,14 +59,19 @@ export class AilaPrismaPersistence extends AilaPersistence {
     }
 
     await this._prisma.appSession.upsert({
-      where: { id: payload.id },
+      where: {
+        id: payload.id,
+        userId: payload.userId,
+      },
       create: {
         id: payload.id,
         userId: payload.userId,
         appId: "lesson-planner",
         output: payload,
       },
-      update: { output: payload },
+      update: {
+        output: payload,
+      },
     });
   }
 
@@ -52,15 +88,23 @@ export class AilaPrismaPersistence extends AilaPersistence {
     }
 
     if (payload.id) {
+      const updatePayload: Prisma.GenerationUpdateInput = {
+        status: payload.status,
+        response: payload.response,
+        completedAt: payload.completedAt,
+        llmTimeTaken: payload.llmTimeTaken,
+      };
+      if (payload.messageId) {
+        // Only update messageId if it exists
+        updatePayload.messageId = payload.messageId;
+      }
       await this._prisma.generation.upsert({
-        where: { id: payload.id },
-        create: payload,
-        update: {
-          status: payload.status,
-          response: payload.response,
-          completedAt: payload.completedAt,
-          llmTimeTaken: payload.llmTimeTaken,
+        where: {
+          id: payload.id,
+          userId: payload.userId,
         },
+        create: payload,
+        update: updatePayload,
       });
     } else {
       const result = await this._prisma.generation.create({

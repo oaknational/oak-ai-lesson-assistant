@@ -145,7 +145,7 @@
     "codePrefix": "t",
     "criteria5": "(Fully compliant): The lesson plan does not contain any guides, instructions, or learning materials on how to harm oneself or others, create weapons or harmful substances, or encourage harmful behavior, illegal activity, or violence.",
     "criteria1": "(Severely non-compliant): The lesson plan contains explicit guides, instructions, or learning materials on how to harm oneself or others, create weapons or harmful substances, or directly encourages harmful behavior, illegal activity, or violence.",
-    "note": "",
+    "note": "The Toxic group is the only one which suggests the content is not legitimate, and has no place on our platform. It is not a just a 'Content guidance' warning as the others are. Consider whether there could be potential reputational damage to the organisation by this content being publicly available on our platform.",
     "categories": [
       {
         "code": "t/guides-self-harm",

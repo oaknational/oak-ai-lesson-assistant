@@ -7,7 +7,7 @@ import { cva } from "class-variance-authority";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
 import Skeleton from "../common/Skeleton";
-import DropDownSection from "./chat-dropdownsection";
+import DropDownSection from "./drop-down-section";
 import { GuidanceRequired } from "./guidance-required";
 
 // @todo move these somewhere more sensible
@@ -38,7 +38,7 @@ function basedOnTitle(basedOn: string | BasedOnOptional) {
 }
 
 const displayStyles = cva(
-  "relative flex flex-col space-y-10 px-24 pb-28 pt-29 opacity-100",
+  "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24 ",
 );
 
 const organiseSections = [
@@ -66,10 +66,12 @@ export const LessonPlanDisplay = ({
   chatEndRef,
   sectionRefs,
   documentContainerRef,
+  showLessonMobile,
 }: {
   chatEndRef: React.MutableRefObject<HTMLDivElement | null>;
   sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
+  showLessonMobile: boolean;
 }) => {
   const chat = useLessonChat();
   const { lessonPlan, ailaStreamingStatus, lastModeration } = chat;
@@ -121,21 +123,26 @@ export const LessonPlanDisplay = ({
     <div className={displayStyles()}>
       {lessonPlan["title"] && (
         <Flex direction="column" gap="2">
-          <Flex direction="row" gap="2">
+          <Flex direction="row" gap="2" className="opacity-90">
             {notEmpty(lessonPlan.keyStage) && (
               <Text className="font-bold">
                 {keyStageToTitle(lessonPlan.keyStage ?? "")}
               </Text>
             )}
+            <span>•</span>
             {notEmpty(lessonPlan.subject) && (
               <Text className="font-bold">
                 {subjectToTitle(lessonPlan.subject ?? "")}
               </Text>
             )}
           </Flex>
-          <h1 className="pb-12 pt-8 text-4xl font-bold">{lessonPlan.title}</h1>{" "}
+          <h1 className="text-2xl font-bold sm:pb-12 sm:pt-8 sm:text-4xl">
+            {lessonPlan.title}
+          </h1>{" "}
           {notEmpty(lessonPlan) && lessonPlan.topic !== lessonPlan.title && (
-            <h2 className="text-lg font-bold">{lessonPlan.topic}</h2>
+            <h2 className="text-lg font-bold placeholder-opacity-90">
+              {lessonPlan.topic}
+            </h2>
           )}
         </Flex>
       )}
@@ -166,6 +173,7 @@ export const LessonPlanDisplay = ({
                     value={value}
                     userHasCancelledAutoScroll={userHasCancelledAutoScroll}
                     documentContainerRef={documentContainerRef}
+                    showLessonMobile={showLessonMobile}
                   />
                 );
               }

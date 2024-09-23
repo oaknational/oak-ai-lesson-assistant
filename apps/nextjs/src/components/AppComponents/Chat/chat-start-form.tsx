@@ -42,7 +42,7 @@ export function ChatStartForm({
 
   return (
     <form onSubmit={handleSubmit} ref={formRef}>
-      <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden border-2 border-black bg-white pr-20 sm:rounded-md">
+      <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden rounded-md border-2 border-black bg-white pr-20">
         <Textarea
           required
           data-testid="chat-input"
@@ -52,12 +52,12 @@ export function ChatStartForm({
           rows={1}
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder={"Type a subject, key stage and title"}
+          placeholder={"Subject, key stage and title"}
           spellCheck={false}
-          className="min-h-[60px] w-full resize-none bg-transparent px-10 py-[1.3rem] focus-within:outline-none"
+          className="min-h-[60px] w-full resize-none bg-transparent px-10 py-[1.3rem] text-lg focus-within:outline-none"
           disabled={isSubmitting}
         />
-        <div className="absolute bottom-10 right-0 top-10 flex items-center justify-center sm:right-10">
+        <div className="absolute bottom-10 right-10 top-10 flex items-center justify-center ">
           <Tooltip>
             <TooltipTrigger asChild>
               {isSubmitting ? (

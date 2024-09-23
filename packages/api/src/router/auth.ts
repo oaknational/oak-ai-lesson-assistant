@@ -1,7 +1,7 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { demoUsers } from "@oakai/core";
 import { createHubspotCustomer } from "@oakai/core/src/analytics/hubspotClient";
-import { posthogServerClient } from "@oakai/core/src/analytics/posthogServerClient";
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
@@ -107,7 +107,7 @@ export const authRouter = router({
       },
     });
 
-    posthogServerClient.identify({
+    posthogAiBetaServerClient.identify({
       distinctId: userId,
       properties: {
         isDemoUser,

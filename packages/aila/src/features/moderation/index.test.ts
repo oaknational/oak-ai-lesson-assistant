@@ -70,7 +70,8 @@ describe("AilaModeration", () => {
       const moderator = new MockModerator([moderationResult]);
 
       const messages: Message[] = [
-        { id: "1", role: "user", content: "test message" },
+        { id: "1", role: "user", content: "test user message" },
+        { id: "2", role: "assistant", content: "test assistant message" },
       ];
       const chat = {
         id: "123",
@@ -136,6 +137,7 @@ describe("AilaModeration", () => {
 
       const messages: Message[] = [
         { id: "1", role: "user", content: specialCode },
+        { id: "2", role: "assistant", content: "test assistant message" },
       ];
       const chat = {
         id: "123",
@@ -171,7 +173,8 @@ describe("AilaModeration", () => {
       const moderator = new MockModerator([moderationResult]);
 
       const messages: Message[] = [
-        { id: "1", role: "user", content: "test message" },
+        { id: "1", role: "user", content: "test user message" },
+        { id: "2", role: "assistant", content: "test assistant message" },
       ];
       const chat = {
         id: "123",

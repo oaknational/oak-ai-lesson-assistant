@@ -1,6 +1,6 @@
 const GetInTouchBox = () => {
   return (
-    <div className="flex items-center gap-14 rounded bg-lavender30 p-19">
+    <div className="flex flex-col items-center gap-14 rounded bg-lavender30 p-19 sm:flex-row">
       <div>
         <svg
           width="36"

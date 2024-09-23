@@ -15,14 +15,12 @@ describe("PatchEnqueuer", () => {
     await patchEnqueuer.enqueuePatch(path, value);
 
     expect(controller.enqueue).toHaveBeenCalled();
-    const encodedPatch = new TextEncoder().encode(
-      `\n␞\n${JSON.stringify({
-        type: "patch",
-        reasoning: "generated",
-        value: { op: "add", path, value },
-      })}\n␞\n`,
-    );
-    expect(controller.enqueue).toHaveBeenCalledWith(encodedPatch);
+    const expectedPatch = `\n␞\n${JSON.stringify({
+      type: "patch",
+      reasoning: "generated",
+      value: { op: "add", path, value },
+    })}\n␞\n`;
+    expect(controller.enqueue).toHaveBeenCalledWith(expectedPatch);
   });
 
   // enqueuePatch should handle null or undefined value gracefully

@@ -30,15 +30,15 @@ function ManageCookiesButton() {
   return <FooterButton onClick={openSettings}>Manage cookies</FooterButton>;
 }
 
-type FooterProps = {
-  featureFlag: boolean;
-};
-const Footer = ({ featureFlag }: FooterProps) => {
+const Footer = () => {
   const { track } = useAnalytics();
   const { isSignedIn } = useAuth();
   return (
     <StyledFooter>
-      <OakMaxWidth $pv="inner-padding-xl7">
+      <OakMaxWidth
+        $pv="inner-padding-xl7"
+        $ph={["inner-padding-xl", "inner-padding-xs"]}
+      >
         <OakFlex
           $flexDirection={["column-reverse", "row"]}
           $pv="inner-padding-xl4"
@@ -52,8 +52,9 @@ const Footer = ({ featureFlag }: FooterProps) => {
           >
             <OakFlex
               $flexDirection="column"
-              $justifyContent="center"
-              $alignItems={["center", "start"]}
+              $justifyContent={["start", "center"]}
+              $alignItems={"start"}
+              $width={["100%", "unset"]}
             >
               <OakP $font="body-1" $mb={"space-between-s"}>
                 Menu
@@ -73,9 +74,6 @@ const Footer = ({ featureFlag }: FooterProps) => {
                           }
                         }}
                         href={tool.href}
-                        disabled={
-                          !tool.href || (tool.behindFeatureFlag && !featureFlag)
-                        }
                       >
                         {tool.title}
                       </FooterButton>
@@ -95,8 +93,9 @@ const Footer = ({ featureFlag }: FooterProps) => {
             </OakFlex>
             <OakFlex
               $flexDirection="column"
-              $justifyContent="center"
-              $alignItems={["center", "start"]}
+              $justifyContent={["start", "center"]}
+              $alignItems={"start"}
+              $width={["100%", "unset"]}
             >
               <OakP $font="body-1" $mb={"space-between-s"}>
                 AI Experiments Legal
@@ -124,7 +123,7 @@ const Footer = ({ featureFlag }: FooterProps) => {
                     );
                   }
                   return (
-                    <li key={item.id} className="my-6 text-center sm:text-left">
+                    <li key={item.id} className="my-6 text-left">
                       <FooterButton href={item.href} target={item.target}>
                         {item.title}
                       </FooterButton>

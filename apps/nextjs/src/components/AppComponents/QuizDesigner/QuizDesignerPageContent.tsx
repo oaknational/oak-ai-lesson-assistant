@@ -1,4 +1,4 @@
-import { Dispatch } from "react";
+import { Dispatch, useRef } from "react";
 
 import { Box, Container } from "@radix-ui/themes";
 import useSuggestedQuestions from "hooks/useSuggestedQuestions";
@@ -28,7 +28,6 @@ type Props = {
   shareContent: () => void;
   shareId: string | null;
   shareLoading: boolean;
-  featureFlag: boolean;
 };
 
 const QuizDesignerPageContent = ({
@@ -42,7 +41,6 @@ const QuizDesignerPageContent = ({
   shareContent,
   shareId,
   shareLoading,
-  featureFlag,
 }: Props) => {
   const {
     error: suggestedQuestionsError,
@@ -55,6 +53,8 @@ const QuizDesignerPageContent = ({
     state,
     dispatch,
   });
+
+  const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
   return (
     <>
       <ExportMenu
@@ -62,7 +62,7 @@ const QuizDesignerPageContent = ({
         toggleIsOpen={toggleExportMenu}
         quizData={state}
       />
-      <Layout featureFlag={featureFlag}>
+      <Layout>
         <RateLimitNotification rateLimit={state.rateLimit} />
 
         <Container className="min-h-[800px]">
@@ -87,6 +87,9 @@ const QuizDesignerPageContent = ({
                     questionIdx={questionIdx}
                     state={state}
                     dispatch={dispatch}
+                    ref={(el) => {
+                      questionRefs.current[questionIdx] = el;
+                    }}
                     suggestedQuestionsGeneration={suggestedQuestionsGeneration}
                   />
                 );
@@ -101,6 +104,8 @@ const QuizDesignerPageContent = ({
               dispatch={dispatch}
               setPotentialNewQuestions={setPotentialNewQuestion}
               suggestedQuestionsGeneration={suggestedQuestionsGeneration}
+              questionRefs={questionRefs}
+              questionsWrapperRef={questionsWrapperRef}
             />
 
             {state.questions[0]?.answers !== undefined &&
