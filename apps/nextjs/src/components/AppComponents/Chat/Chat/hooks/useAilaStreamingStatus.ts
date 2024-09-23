@@ -16,7 +16,6 @@ export const useAilaStreamingStatus = ({
   isLoading: boolean;
   messages: Message[];
 }): AilaStreamingStatus => {
-  const prevStatusRef = useRef<AilaStreamingStatus | null>(null);
   const ailaStreamingStatus = useMemo<AilaStreamingStatus>(() => {
     const moderationStart = `MODERATION_START`;
     const chatStart = `CHAT_START`;
@@ -44,10 +43,7 @@ export const useAilaStreamingStatus = ({
   }, [isLoading, messages]);
 
   useEffect(() => {
-    if (prevStatusRef.current !== ailaStreamingStatus) {
-      console.log("ailaStreamingStatus changed:", ailaStreamingStatus);
-      prevStatusRef.current = ailaStreamingStatus;
-    }
+    console.log("ailaStreamingStatus set:", ailaStreamingStatus);
   }, [ailaStreamingStatus]);
 
   return ailaStreamingStatus;
