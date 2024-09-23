@@ -14,3 +14,13 @@ export async function isFinished(page: Page) {
   const progressText = await page.getByTestId("chat-progress").textContent();
   return progressText === "10 of 10 sections complete";
 }
+
+export async function expectSectionsComplete(
+  page: Page,
+  numberOfSections: number,
+) {
+  const locator = page.getByTestId("chat-progress");
+  await expect(locator).toHaveText(
+    `${numberOfSections} of 10 sections complete`,
+  );
+}

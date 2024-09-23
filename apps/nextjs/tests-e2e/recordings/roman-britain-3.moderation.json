@@ -1,0 +1,27 @@
+{
+  "id": "chatcmpl-AAdCU7gblV63CXLpunQCC7o2hxAZh",
+  "object": "chat.completion",
+  "created": 1727097330,
+  "model": "gpt-4o-2024-08-06",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan on 'End of Roman Britain' for key-stage-1 students is fully compliant across all categories. There is no use of discriminatory or offensive language, nor is there any depiction or discussion of violence, serious conflict, or sexual violence. The content does not contain upsetting, sensitive, or distressing topics, such as criminal behavior or mental health issues, which are not appropriate for the intended young audience. Additionally, there is no depiction or discussion of nudity or sexual content. The lesson plan does not involve exploration of objects, use of potentially hazardous equipment, imitable behaviors, or physical activities that would require supervision. Finally, there is no presence of toxic content such as guides or encouragements of harmful or illegal activities. The lesson content is entirely appropriate for the key-stage-1 age group.\",\"categories\":[]}",
+        "refusal": null
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 2530,
+    "completion_tokens": 195,
+    "total_tokens": 2725,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "system_fingerprint": "fp_7568d46099"
+}
