@@ -58,10 +58,13 @@ export function useExportAllLessonAssets({
         },
       );
     } else if (debouncedParseResult.data) {
+      if (!messageId) {
+        throw new Error("messageId is undefined");
+      }
       query.mutate({
         data: debouncedParseResult.data,
         chatId,
-        messageId: messageId.toString(),
+        messageId: messageId,
       });
       onStart();
       setDialogOpen(true);
