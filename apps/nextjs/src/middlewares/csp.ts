@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { none } from "ramda";
 
 const sentryEnv = process.env.NEXT_PUBLIC_SENTRY_ENV;
 const sentryRelease = process.env.NEXT_PUBLIC_APP_VERSION;
@@ -243,6 +244,10 @@ export const addCspHeaders = (
       "Content-Security-Policy-Report-Only": csp.reportOnly,
     }),
   });
+
+  if (nonce) {
+    response.headers.set("Set-Cookie", `csp-nonce=${nonce}; Path=/; HttpOnly`);
+  }
 
   response.headers.set("Content-Security-Policy", csp.policy);
   if (csp.reportOnly) {
