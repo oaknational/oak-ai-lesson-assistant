@@ -70,26 +70,31 @@ test.describe("Authenticated", { tag: "@authenticated" }, () => {
     await test.step("Iterate through the fixtures", async () => {
       await page.waitForURL(/\/aila\/.+/);
       await waitForGeneration(page, generationTimeout);
+      await page.waitForTimeout(20);
       await expectSectionsComplete(page, 1);
 
       setFixture("roman-britain-2");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
+      await page.waitForTimeout(20);
       await expectSectionsComplete(page, 3);
 
       setFixture("roman-britain-3");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
+      await page.waitForTimeout(20);
       await expectSectionsComplete(page, 7);
 
       setFixture("roman-britain-4");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
+      await page.waitForTimeout(20);
       await expectSectionsComplete(page, 10);
 
       setFixture("roman-britain-5");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
+      await page.waitForTimeout(20);
       await expectSectionsComplete(page, 10);
 
       await isFinished(page);
