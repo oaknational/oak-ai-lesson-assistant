@@ -48,7 +48,7 @@ export class FixtureRecordLLMService implements LLMService {
         }
 
         try {
-          const formattedUrl = `tests-e2e/recordings/${fixtureName}.formatted.json`;
+          const formattedUrl = `${process.cwd()}/tests-e2e/recordings/${fixtureName}.formatted.json`;
           const formatted = JSON.stringify(
             JSON.parse(chunks.join("")),
             null,
@@ -60,7 +60,7 @@ export class FixtureRecordLLMService implements LLMService {
           console.error("Error writing formatted file", e);
         }
 
-        const chunksUrl = `tests-e2e/recordings/${fixtureName}.chunks.txt`;
+        const chunksUrl = `${process.cwd()}/tests-e2e/recordings/${fixtureName}.chunks.txt`;
         const encodedChunks = chunks
           .map((c) => c.replaceAll("\n", "__NEWLINE__"))
           .join("\n");
