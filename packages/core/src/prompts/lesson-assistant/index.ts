@@ -29,6 +29,7 @@ export interface TemplateProps {
   americanisms?: object[];
   lessonPlanJsonSchema: string;
   llmResponseJsonSchema: string;
+  isUsingStructuredOutput: boolean;
 }
 
 type TemplatePart = (props: TemplateProps) => string;
@@ -68,7 +69,7 @@ export const getPromptParts = (props: TemplateProps): TemplatePart[] => {
       : undefined,
     americanToBritishSection,
     languageAndVoice,
-    schema,
+    props.isUsingStructuredOutput ? undefined : schema,
     response,
     signOff,
   ];
@@ -85,5 +86,7 @@ export const generatePromptPartsHash = (props: TemplateProps): string => {
   const parts = getPromptParts(props);
   const partsString = parts.map((part) => part.toString()).join("");
   const hash = crypto.createHash("md5").update(partsString).digest("hex");
-  return `${props.responseMode}-${props.useRag ? "rag" : "noRag"}-${props.baseLessonPlan ? "basedOn" : "notBasedOn"}-${hash}`;
+  return `${props.responseMode}-${props.useRag ? "rag" : "noRag"}-${
+    props.baseLessonPlan ? "basedOn" : "notBasedOn"
+  }-${hash}`;
 };
