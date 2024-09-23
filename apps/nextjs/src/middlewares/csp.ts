@@ -105,11 +105,11 @@ const buildCspHeaders = (nonce: string) => {
     "media-src": ["'self'"],
     "script-src": [
       "'self'",
-      `'nonce-${nonce}'`, // Include nonce in script-src
+      `'nonce-${nonce}'`,
       "'strict-dynamic'",
       "https:",
       "http:",
-      "'unsafe-inline'", // NOTE: unsafe-inline is ignored in browsers that support nonce
+      "'unsafe-inline'", // NOTE: unsafe-inline is ignored in browser that support nonce
       process.env.NODE_ENV === "production" ? "" : "'unsafe-eval'",
     ],
     "style-src": ["'self'", "'unsafe-inline'"],
@@ -186,18 +186,26 @@ const buildCspHeaders = (nonce: string) => {
 const OVERRIDE_HEADERS = "x-middleware-override-headers";
 const MIDDLEWARE_HEADER_PREFIX = "x-middleware-request" as string;
 
+// The nextjs CSP example passes request headers to the NextResponse.next() constructor
+// We already have a NextResponse, so we need to replicate that behaviour
+// See https://github.com/vercel/next.js/blob/918af1667aa0770088446952bc607b9a972e6128/packages/next/src/server/web/spec-extension/response.ts#L21-L27
+// Implementation copied from https://github.com/clerk/javascript/blob/c489ee1c95596af2e39636f02ee748e74011ce19/packages/nextjs/src/server/utils.ts#L80
 const setRequestHeadersOnNextResponse = (
   res: NextResponse | Response,
   req: Request,
   newHeaders: Record<string, string>,
 ) => {
   if (!res.headers.get(OVERRIDE_HEADERS)) {
-    res.headers.set(OVERRIDE_HEADERS, [...req.headers.keys()].join(","));
+    // Emulate a user setting overrides by explicitly adding the required nextjs headers
+    // https://github.com/vercel/next.js/pull/41380
+    // @ts-expect-error Argument of type 'string[]' is not assignable to parameter of type 'string'.ts(2345)
+    res.headers.set(OVERRIDE_HEADERS, [...req.headers.keys()]);
     req.headers.forEach((val, key) => {
       res.headers.set(`${MIDDLEWARE_HEADER_PREFIX}-${key}`, val);
     });
   }
 
+  // Now that we have normalised res to include overrides, just append the new header
   Object.entries(newHeaders).forEach(([key, val]) => {
     res.headers.set(
       OVERRIDE_HEADERS,
@@ -213,6 +221,7 @@ export const addCspHeaders = (
 ): Response => {
   if (
     request.nextUrl.pathname.match(
+      // NOTE: We're keeping CSP headers for /api routes in case they return an HTML response like 404
       /(_next\/static|_next\/image|favicon.ico)/,
     ) ||
     request.headers.has("next-router-prefetch") ||
@@ -234,6 +243,11 @@ export const addCspHeaders = (
       "Content-Security-Policy-Report-Only": csp.reportOnly,
     }),
   });
+
+  response.headers.set("Content-Security-Policy", csp.policy);
+  if (csp.reportOnly) {
+    response.headers.set("Content-Security-Policy-Report-Only", csp.reportOnly);
+  }
 
   response.headers.set("Set-Cookie", `csp-nonce=${nonce}; Path=/; HttpOnly`);
 
