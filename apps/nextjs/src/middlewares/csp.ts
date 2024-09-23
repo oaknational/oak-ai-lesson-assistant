@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { none } from "ramda";
 
 const sentryEnv = process.env.NEXT_PUBLIC_SENTRY_ENV;
 const sentryRelease = process.env.NEXT_PUBLIC_APP_VERSION;
