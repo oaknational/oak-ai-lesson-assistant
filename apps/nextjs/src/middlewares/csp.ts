@@ -245,7 +245,7 @@ export const addCspHeaders = (
     }),
   });
 
-  if (nonce) {
+  if (nonce && !request.nextUrl.pathname.includes("clerk")) {
     response.headers.set(
       "Set-Cookie",
       `csp-nonce=${nonce}; Path=/; HttpOnly; Secure; SameSite=Lax`,
