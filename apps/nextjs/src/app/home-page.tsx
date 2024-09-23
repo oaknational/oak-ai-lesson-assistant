@@ -120,7 +120,7 @@ export default function HomePage({
             $width="100%"
           >
             <StyledMuxPlayer
-              playbackId={pageData?.belowTheFoldVideo.video.asset.playbackId}
+              playbackId={pageData?.heroVideo.video.asset.playbackId}
             />
           </OakFlexCustomMaxWidthWithHalfWidth>
         </OakFlex>
@@ -212,7 +212,9 @@ export default function HomePage({
                 $height="fit-content"
               >
                 <StyledMuxPlayer
-                  playbackId="a3fYrjh33z00LbjMRCTFQCxFRMvGU00LmoL11ln4QtV2A"
+                  playbackId={
+                    pageData?.belowTheFoldVideo.video.asset.playbackId
+                  }
                   thumbnailTime={3.67}
                 />
               </OakBoxCustomMaxWidth>
