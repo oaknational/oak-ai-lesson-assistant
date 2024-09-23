@@ -2,7 +2,7 @@
 
 import { OakBox } from "@oaknational/oak-components";
 import { PortableText } from "@portabletext/react";
-import { PolicyDocument } from "cms/data/fetchPolicyDocument";
+import { PolicyDocument } from "cms/types/policyDocument";
 
 import Layout from "@/components/Layout";
 import { protableTextComponents } from "@/components/PortableText/protableTextComponents";
