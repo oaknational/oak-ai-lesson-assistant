@@ -1,3 +1,10 @@
+## [1.7.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.7.1...v1.7.2) (2024-09-23)
+
+
+### Bug Fixes
+
+* use NextResponse.json() in case of middleware errors ([#150](https://github.com/oaknational/oak-ai-lesson-assistant/issues/150)) ([73259a2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/73259a258d7ce571bb1e8de464a631f55acfd684))
+
 ## [1.7.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.7.0...v1.7.1) (2024-09-17)
 
 
