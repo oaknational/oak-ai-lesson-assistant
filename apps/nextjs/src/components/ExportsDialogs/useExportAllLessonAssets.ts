@@ -21,7 +21,7 @@ export function useExportAllLessonAssets({
   onStart: () => void;
   lesson: LessonDeepPartial;
   chatId: string;
-  messageId: number;
+  messageId: string | undefined;
   active: boolean;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
