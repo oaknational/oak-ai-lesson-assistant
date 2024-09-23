@@ -12,7 +12,7 @@ import {
   oakColorTokens,
   OakPrimaryButton,
 } from "@oaknational/oak-components";
-import { AiHomepage, HomePageQueryResult } from "cms/types/aiHomePageType";
+import { HomePageQueryResult } from "cms/types/aiHomePageType";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
