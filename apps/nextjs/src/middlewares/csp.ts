@@ -251,7 +251,10 @@ export const addCspHeaders = (
 
   response.headers.set("Content-Security-Policy", csp.policy);
   if (csp.reportOnly) {
-    response.headers.set("Content-Security-Policy-Report-Only", csp.reportOnly);
+    response.headers.set(
+      "Set-Cookie",
+      `csp-nonce=${nonce}; Path=/; HttpOnly; Secure; SameSite=Lax`,
+    );
   }
 
   return response;
