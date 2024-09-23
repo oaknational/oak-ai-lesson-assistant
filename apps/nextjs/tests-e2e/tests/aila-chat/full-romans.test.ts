@@ -17,7 +17,7 @@ const applyFixtures = async (page: Page) => {
     const headers = route.request().headers();
     headers["x-e2e-fixture-name"] = fixtureName;
     headers["x-e2e-fixture-mode"] = FIXTURE_MODE;
-    await route.continue({ headers });
+    await route.fallback({ headers });
   });
 
   return {
