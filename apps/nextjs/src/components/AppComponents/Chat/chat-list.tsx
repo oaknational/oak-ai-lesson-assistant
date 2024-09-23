@@ -159,7 +159,7 @@ export const ChatMessagesDisplay = ({
               chatId={id}
               ailaStreamingStatus={ailaStreamingStatus}
               message={
-                ailaStreamingStatus !== "Idle" &&
+                !["Moderating", "Idle"].includes(ailaStreamingStatus) &&
                 message.role === "assistant" &&
                 messages !== undefined &&
                 message.id === (messages?.[messages?.length - 1]?.id ?? "")

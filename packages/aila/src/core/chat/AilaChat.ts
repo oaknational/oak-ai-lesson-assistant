@@ -352,6 +352,10 @@ export class AilaChat implements AilaChatService {
   }
 
   public async complete() {
+    await this.enqueue({
+      type: "comment",
+      value: "CHAT_COMPLETE",
+    });
     await this.reportUsageMetrics();
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
@@ -360,7 +364,6 @@ export class AilaChat implements AilaChatService {
     }
 
     await this.moderate();
-    await this.enqueueFinalState();
     await this.persistChat();
     await this.persistGeneration("SUCCESS");
   }
@@ -368,6 +371,22 @@ export class AilaChat implements AilaChatService {
   public async moderate() {
     if (this._aila.options.useModeration) {
       invariant(this._aila.moderation, "Moderation not initialised");
+      // #TODO there seems to be a bug or a delay
+      // in the streaming logic, which means that
+      // the call to the moderation service
+      // locks up the stream until it gets a response,
+      // leaving the previous message half-sent until then.
+      // Since the front end relies on MODERATION_START
+      // to appear in the stream, we need to send two
+      // comment messages to ensure that it is received.
+      await this.enqueue({
+        type: "comment",
+        value: "MODERATION_START",
+      });
+      await this.enqueue({
+        type: "comment",
+        value: "MODERATING",
+      });
       const message = await this._aila.moderation.moderate({
         lessonPlan: this._aila.lesson.plan,
         messages: this._aila.messages,
