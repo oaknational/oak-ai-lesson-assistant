@@ -246,15 +246,15 @@ export const addCspHeaders = (
   });
 
   if (nonce) {
-    response.headers.set("Set-Cookie", `csp-nonce=${nonce}; Path=/; HttpOnly`);
-  }
-
-  response.headers.set("Content-Security-Policy", csp.policy);
-  if (csp.reportOnly) {
     response.headers.set(
       "Set-Cookie",
       `csp-nonce=${nonce}; Path=/; HttpOnly; Secure; SameSite=Lax`,
     );
+  }
+
+  response.headers.set("Content-Security-Policy", csp.policy);
+  if (csp.reportOnly) {
+    response.headers.set("Content-Security-Policy-Report-Only", csp.reportOnly);
   }
 
   return response;
