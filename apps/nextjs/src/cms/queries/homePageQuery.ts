@@ -3,12 +3,26 @@ export const homePageQuery = `*[_type == "aiHomepage"] {
     heroVideo->{
       _id,
       title,
-      url
+      url,
+      video {
+        asset->{
+          assetId,
+          thumbTime,
+          playbackId
+        }
+      }
     },
     belowTheFoldVideo->{
       _id,
       title,
-      url
+      url,
+      video {
+        asset->{
+          assetId,
+          thumbTime,
+          playbackId
+        }
+      }
     },
     "seo": {
       "metaTitle": seo.metaTitle,

@@ -139,6 +139,9 @@ importers:
       '@oaknational/oak-consent-client':
         specifier: ^2.1.0
         version: 2.1.0(react-dom@18.2.0)(react@18.2.0)(zod@3.23.8)
+      '@portabletext/react':
+        specifier: ^3.1.0
+        version: 3.1.0(react@18.2.0)
       '@prisma/client':
         specifier: ^5.13.0
         version: 5.13.0(prisma@5.16.1)
@@ -5654,6 +5657,29 @@ packages:
       qs: 6.11.2
       url-parse: 1.5.10
     dev: true
+
+  /@portabletext/react@3.1.0(react@18.2.0):
+    resolution: {integrity: sha512-ZGHlvS+NvId9RSqnflN8xF2KVZgAgD399dK1GaycurnGNZGZYTd5nZmc8by1yL76Ar8n/dbVtouUDJIkO4Tupw==}
+    engines: {node: ^14.13.1 || >=16.0.0}
+    peerDependencies:
+      react: ^17 || ^18 || >=19.0.0-rc
+    dependencies:
+      '@portabletext/toolkit': 2.0.15
+      '@portabletext/types': 2.0.13
+      react: 18.2.0
+    dev: false
+
+  /@portabletext/toolkit@2.0.15:
+    resolution: {integrity: sha512-KRNEUAd6eOxE9y591qC0sE24ZG2q27OHXe0dsPclj4IoEzf8aEuDcHR64wfFtB0aHq9Wdx3pIinmhZZcl35/vg==}
+    engines: {node: ^14.13.1 || >=16.0.0}
+    dependencies:
+      '@portabletext/types': 2.0.13
+    dev: false
+
+  /@portabletext/types@2.0.13:
+    resolution: {integrity: sha512-5xk5MSyQU9CrDho3Rsguj38jhijhD36Mk8S6mZo3huv6PM+t4M/5kJN2KFIxgvt4ONpvOEs1pVIZAV0cL0Vi+Q==}
+    engines: {node: ^14.13.1 || >=16.0.0 || >=18.0.0}
+    dev: false
 
   /@prisma/client@5.13.0(prisma@5.16.1):
     resolution: {integrity: sha512-uYdfpPncbZ/syJyiYBwGZS8Gt1PTNoErNYMuqHDa2r30rNSFtgTA/LXsSk55R7pdRTMi5pHkeP9B14K6nHmwkg==}

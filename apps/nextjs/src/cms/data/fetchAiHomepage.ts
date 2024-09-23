@@ -1,8 +1,8 @@
 import { homePageQuery } from "cms/queries/homePageQuery";
 import { sanityClient } from "cms/sanityClient";
-import { AiHomepage } from "cms/types/aiHomePageType";
+import { HomePageQueryResult } from "cms/types/aiHomePageType";
 
-export async function fetchAiHomepage(): Promise<AiHomepage | null> {
+export async function fetchAiHomepage(): Promise<HomePageQueryResult | null> {
   const query = homePageQuery;
 
   const result = await sanityClient.fetch(query);
