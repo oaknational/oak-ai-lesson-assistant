@@ -12,6 +12,7 @@ import {
   oakColorTokens,
   OakPrimaryButton,
 } from "@oaknational/oak-components";
+import { HomePageQueryResult } from "cms/types/aiHomePageType";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -54,7 +55,11 @@ const OakFlexCustomMaxWidthWithHalfWidth = styled(OakFlexCustomMaxWidth)`
   }
 `;
 
-export default function HomePage() {
+export default function HomePage({
+  pageData,
+}: {
+  pageData: HomePageQueryResult | null;
+}) {
   const user = useUser();
 
   const { track } = useAnalytics();
@@ -92,7 +97,9 @@ export default function HomePage() {
               customMaxWidth={600}
               $height="fit-content"
             >
-              <StyledMuxPlayer playbackId="XjKNXfXcZqEIb3sRmgqqw901S3AoN8mllBS5yUnKSvb4" />
+              <StyledMuxPlayer
+                playbackId={pageData?.heroVideo.video.asset.playbackId}
+              />
             </OakBoxCustomMaxWidth>
 
             <OakP $textAlign="left" $font="body-1">
@@ -112,7 +119,9 @@ export default function HomePage() {
             $height="fit-content"
             $width="100%"
           >
-            <StyledMuxPlayer playbackId="XjKNXfXcZqEIb3sRmgqqw901S3AoN8mllBS5yUnKSvb4" />
+            <StyledMuxPlayer
+              playbackId={pageData?.heroVideo.video.asset.playbackId}
+            />
           </OakFlexCustomMaxWidthWithHalfWidth>
         </OakFlex>
       </HeroContainer>
@@ -203,7 +212,9 @@ export default function HomePage() {
                 $height="fit-content"
               >
                 <StyledMuxPlayer
-                  playbackId="a3fYrjh33z00LbjMRCTFQCxFRMvGU00LmoL11ln4QtV2A"
+                  playbackId={
+                    pageData?.belowTheFoldVideo.video.asset.playbackId
+                  }
                   thumbnailTime={3.67}
                 />
               </OakBoxCustomMaxWidth>

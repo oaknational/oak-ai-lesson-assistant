@@ -1,5 +1,9 @@
+import { fetchAiHomepage } from "cms/data/fetchAiHomepage";
+
 import HomePage from "./home-page";
 
 export default async function Page() {
-  return <HomePage />;
+  const result = await fetchAiHomepage();
+
+  return <HomePage pageData={result} />;
 }
