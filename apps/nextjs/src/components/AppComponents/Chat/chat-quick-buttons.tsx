@@ -85,58 +85,61 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
 
   return (
     <div className="-ml-7 flex justify-between space-x-7 rounded-bl rounded-br pt-8">
-      {shouldAllowUserAction && (
-        <div className="flex items-center">
-          <ChatButton
-            data-testid="chat-continue"
-            size="sm"
-            variant="text-link"
-            onClick={() => {
-              if (shouldQueueUserAction) {
-                queueUserAction("regenerate");
-                return;
-              }
-              handleRegenerate();
-            }}
-          >
-            <span className="opacity-70">
-              <IconRefresh className="mr-3" />
-            </span>
-            <span className="font-light text-[#575757]">Retry</span>
-          </ChatButton>
-          <ChatButton
-            variant="text-link"
-            onClick={() => setDialogWindow("report-content")}
-          >
-            <span className="opacity-70">
-              <Icon icon="warning" className="mr-3" size="xs" />
-            </span>
-            <span className="font-light text-[#575757]">Report</span>
-          </ChatButton>
-        </div>
-      )}
-      {[
-        "Loading",
-        "RequestMade",
-        "StreamingLessonPlan",
-        "StreamingChatResponse",
-      ].includes(ailaStreamingStatus) &&
-        isEmptyScreen && (
-          <ChatButton
-            size="sm"
-            variant="text-link"
-            onClick={() => {
-              trackEvent("chat:stop_generating");
-              stop();
-            }}
-            testId="chat-stop"
-          >
-            <span className="opacity-50">
-              <IconStop className="mr-3" />
-            </span>
-            <span className="font-light text-[#575757]">Stop</span>
-          </ChatButton>
+      <div className="flex items-center">
+        {shouldAllowUserAction && (
+          <>
+            <ChatButton
+              data-testid="chat-continue"
+              size="sm"
+              variant="text-link"
+              onClick={() => {
+                if (shouldQueueUserAction) {
+                  queueUserAction("regenerate");
+                  return;
+                }
+                handleRegenerate();
+              }}
+            >
+              <span className="opacity-70">
+                <IconRefresh className="mr-3" />
+              </span>
+              <span className="font-light text-[#575757]">Retry</span>
+            </ChatButton>
+            <ChatButton
+              variant="text-link"
+              onClick={() => setDialogWindow("report-content")}
+            >
+              <span className="opacity-70">
+                <Icon icon="warning" className="mr-3" size="xs" />
+              </span>
+              <span className="font-light text-[#575757]">Report</span>
+            </ChatButton>
+          </>
         )}
+
+        {[
+          "Loading",
+          "RequestMade",
+          "StreamingLessonPlan",
+          "StreamingChatResponse",
+        ].includes(ailaStreamingStatus) &&
+          isEmptyScreen && (
+            <ChatButton
+              size="sm"
+              variant="text-link"
+              onClick={() => {
+                trackEvent("chat:stop_generating");
+                stop();
+              }}
+              testId="chat-stop"
+            >
+              <span className="opacity-50">
+                <IconStop className="mr-3" />
+              </span>
+              <span className="font-light text-[#575757]">Stop</span>
+            </ChatButton>
+          )}
+      </div>
       <ChatButton
         size="sm"
         variant="primary"
