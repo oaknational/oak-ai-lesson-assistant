@@ -2,24 +2,13 @@
 
 import { OakBox } from "@oaknational/oak-components";
 import { PortableText } from "@portabletext/react";
+import { PolicyDocument } from "cms/data/fetchPolicyDocument";
 
 import Layout from "@/components/Layout";
 import { protableTextComponents } from "@/components/PortableText/protableTextComponents";
 
-interface PortableText {
-  _key: string;
-  _type: string;
-  children: unknown[];
-  markDefs: unknown[];
-  style: string;
-}
 interface LegalContentProps {
-  pageData: {
-    title: string;
-    slug: string;
-    fake_updatedAt: string;
-    body: PortableText[];
-  };
+  pageData: PolicyDocument;
 }
 
 export const LegalContent = ({ pageData }: LegalContentProps) => {
