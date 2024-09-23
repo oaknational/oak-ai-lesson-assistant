@@ -248,7 +248,7 @@ export const addCspHeaders = (
   if (nonce && !request.nextUrl.pathname.includes("clerk")) {
     response.headers.set(
       "Set-Cookie",
-      `csp-nonce=${nonce}; Path=/; HttpOnly; Secure; SameSite=Lax`,
+      `csp-nonce=${nonce}; Path=/; HttpOnly; Secure; SameSite=None`,
     );
   }
 
