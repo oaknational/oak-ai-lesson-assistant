@@ -16,8 +16,9 @@ Oak AI Lesson Assistant is a project focused on experimenting with AI models and
     - [Prerequisites](#prerequisites)
     - [Turborepo](#turborepo)
   - [Postgres Setup](#postgres-setup)
-    - [Prerequisites:](#prerequisites-1)
+    - [Prerequisites](#prerequisites-1)
     - [Steps](#steps)
+    - [Utility Commands](#utility-commands)
   - [Doppler](#doppler)
   - [Start the development server](#start-the-development-server)
   - [Testing](#testing)
@@ -57,8 +58,10 @@ pnpm install turbo --global
 
 ## Postgres Setup
 
-### Prerequisites:
+### Prerequisites
+- This project set up following the Installation steps.
 - Docker installed.
+- Optional: A Postgres GUI tool (such as pgAdmin or Postico) to view the data.
 
 ### Steps
 
@@ -76,29 +79,31 @@ pnpm run docker-bootstrap
 
 3. Seed your database, to do this you have two options:
 
-3a. Replicate Production
+    3a. Replicate Production
 
-This will import the schema and tables from production. Note: due to the size of the production database this could take a significant amount of time.
+    This will import the schema and tables from production. Note: due to the size of the production database this could take a significant amount of time.
 
-```shell
-pnpm run db-restore-from:prd
-```
-3b. Local Prisma with Live Environment Seed
+    ```shell
+    pnpm run db-restore-from:prd
+    ```
 
-1. Apply the Prisma schema to your local database:
+    3b. Local Prisma with Live Environment Seed
 
-```shell
-pnpm run db-push
-```
+    1. Apply the Prisma schema to your local database:
 
-2. Remove the snippets table from tables.txt (Snippets is the largest table in the database and takes the majority of the time).
+    ```shell
+    pnpm run db-push
+    ```
 
-3. Seed from stg/prd
-where `:prd` can be either `:prd` or `:stg` (the Doppler environments).
+    2. Remove the snippets table from tables.txt, which lists the tables to be pulled from staging or production. Snippets is the largest table in the database and takes the majority of the time.
 
-```shell
-pnpm run db-seed-local-from:stg
-```
+    3. Seed from stg/prd (where `:prd` can be either `:prd` or `:stg`, matching the Doppler environments).
+
+    ```shell
+    pnpm run db-seed-local-from:stg
+    ```
+
+### Utility Commands
 
 To run `psql`, ssh into the box using:
 
