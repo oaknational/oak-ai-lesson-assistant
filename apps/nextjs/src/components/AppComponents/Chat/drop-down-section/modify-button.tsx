@@ -13,10 +13,26 @@ import { DropDownFormWrapper, FeedbackOption } from "./drop-down-form-wrapper";
 import { SmallRadioButton } from "./small-radio-button";
 
 const modifyOptions = [
-  { label: "Make it easier", enumValue: "MAKE_IT_EASIER" },
-  { label: "Make it harder", enumValue: "MAKE_IT_HARDER" },
-  { label: "Shorten content", enumValue: "SHORTEN_CONTENT" },
-  { label: "Add more detail", enumValue: "ADD_MORE_DETAIL" },
+  {
+    label: "Make it easier",
+    enumValue: "MAKE_IT_EASIER",
+    chatMessage: "easier",
+  },
+  {
+    label: "Make it harder",
+    enumValue: "MAKE_IT_HARDER",
+    chatMessage: "harder",
+  },
+  {
+    label: "Shorten content",
+    enumValue: "SHORTEN_CONTENT",
+    chatMessage: "shorter",
+  },
+  {
+    label: "Add more detail",
+    enumValue: "ADD_MORE_DETAIL",
+    chatMessage: "more detailed",
+  },
   { label: "Other", enumValue: "OTHER" },
 ] as const;
 
@@ -63,9 +79,14 @@ const ModifyButton = ({
   async function modifySection(
     option: FeedbackOption<AilaUserModificationAction>,
   ) {
+    const message =
+      option.label === "Other"
+        ? `For the ${sectionTitle}, ${userFeedbackText}`
+        : `Make the ${sectionTitle} ${option.chatMessage.toLowerCase()}`;
+
     await Promise.all([
       append({
-        content: `For the ${sectionTitle}, ${option.label === "Other" ? userFeedbackText : option.label}`,
+        content: message,
         role: "user",
       }),
       recordUserModifySectionContent(),
@@ -86,11 +107,7 @@ const ModifyButton = ({
           onClickActions={modifySection}
           setIsOpen={setIsOpen}
           selectedRadio={selectedRadio}
-<<<<<<< HEAD
-          title={`Ask Aila to modify ${section.toLowerCase()}:`}
-=======
           title={`Ask Aila to modify ${sectionTitle.toLowerCase()}:`}
->>>>>>> main
           buttonText={"Modify section"}
           isOpen={isOpen}
           dropdownRef={dropdownRef}
@@ -103,22 +120,6 @@ const ModifyButton = ({
           >
             {modifyOptions.map((option) => {
               return (
-<<<<<<< HEAD
-                <>
-                  <SmallRadioButton
-                    id={`${id}-modify-options-${option.enumValue}`}
-                    key={`${id}-modify-options-${option.enumValue}`}
-                    value={option.enumValue}
-                    label={handleLabelText({
-                      text: option.label,
-                      section,
-                    })}
-                    onClick={() => {
-                      setSelectedRadio(option);
-                    }}
-                  />
-                </>
-=======
                 <SmallRadioButton
                   id={`${id}-modify-options-${option.enumValue}`}
                   key={`${id}-modify-options-${option.enumValue}`}
@@ -131,7 +132,6 @@ const ModifyButton = ({
                     setSelectedRadio(option);
                   }}
                 />
->>>>>>> main
               );
             })}
 
@@ -157,10 +157,12 @@ function handleLabelText({
   text: string;
   section: string;
 }): string {
+  console.log("section", section);
   if (
     section === "Misconceptions" ||
-    section === "Keyword learning points" ||
-    section === "Learning cycles"
+    section === "Key learning points" ||
+    section === "Learning cycles" ||
+    "additional materials"
   ) {
     if (text.includes("it")) {
       return text.replace("it", "them");
