@@ -1,4 +1,4 @@
-import { AppRouter } from "@oakai/api/src/router";
+import { TestSupportRouter } from "@oakai/api/src/router/testSupport";
 import { transformer } from "@oakai/api/transformer";
 import { test, expect, Page } from "@playwright/test";
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
@@ -11,17 +11,17 @@ const getBaseUrl = () => {
   return `http://localhost:${process.env.PORT ?? 2525}`; // dev SSR should use localhost
 };
 
-const trpc = createTRPCProxyClient<AppRouter>({
+const trpc = createTRPCProxyClient<TestSupportRouter>({
   transformer,
   links: [
     httpBatchLink({
-      url: `${getBaseUrl()}/api/trpc/main`,
+      url: `${getBaseUrl()}/api/trpc/test-support`,
     }),
   ],
 });
 
 async function prepareUser(page: Page) {
-  const login = await trpc.testSupport.prepareUser.mutate({
+  const login = await trpc.prepareUser.mutate({
     variant: "demo",
   });
   console.log("prepareUser", login);
