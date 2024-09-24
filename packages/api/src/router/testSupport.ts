@@ -23,6 +23,9 @@ const variants = {
   },
 } as const;
 
+// Used a fixed password for all users for now
+const password = "TEST_USER_PASSWORD123";
+
 export const testSupportRouter = router({
   prepareUser: testSupportMiddleware
     .input(
@@ -43,7 +46,10 @@ export const testSupportRouter = router({
       if (userId) {
         console.log("Test user already exists", { email, variant });
         // TODO: Clear existing user data
-        return;
+        return {
+          email,
+          password,
+        };
       }
 
       // Create new user
@@ -52,6 +58,9 @@ export const testSupportRouter = router({
         emailAddress: [email],
         firstName: "Test User",
         lastName: `${branch}/${input.variant}`,
+
+        // TODO: we don't need a password if we use sign in tokens
+        password,
 
         publicMetadata: {
           labs: {
@@ -65,5 +74,10 @@ export const testSupportRouter = router({
           region: variant.region,
         },
       });
+
+      return {
+        email,
+        password,
+      };
     }),
 });
