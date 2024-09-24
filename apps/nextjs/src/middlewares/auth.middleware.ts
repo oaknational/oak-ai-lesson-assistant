@@ -46,6 +46,12 @@ const publicRoutes = [
   "/sign-in(.*)",
   "/sign-up(.*)",
 ];
+if (
+  process.env.NODE_ENV === "development" ||
+  process.env.VERCEL_ENV === "preview"
+) {
+  publicRoutes.push("/api/trpc/main/testSupport.prepareUser");
+}
 
 const isPublicRoute = createRouteMatcher(publicRoutes);
 
