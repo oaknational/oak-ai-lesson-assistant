@@ -47,27 +47,17 @@ const ChatRightHandSideLesson = ({
 
   const handleScroll = () => {
     if (endOfDocRef.current) {
-      const isAtBottom =
+      const distanceFromBottom = 300;
+      const isNearBottom =
         endOfDocRef.current.getBoundingClientRect().bottom <=
-        window.innerHeight;
-      if (isAtBottom) {
+        window.innerHeight + distanceFromBottom;
+      if (isNearBottom) {
         setShowScrollButton(false);
       } else {
         setShowScrollButton(true);
       }
     }
   };
-
-  useEffect(() => {
-    if (chatEndRef.current) {
-      const isAtBottom =
-        chatEndRef.current.getBoundingClientRect().bottom <= window.innerHeight;
-
-      if (!isAtBottom) {
-        setShowScrollButton(true);
-      }
-    }
-  }, [setShowScrollButton, chatEndRef, lessonPlan]);
 
   const endOfDocRef = useRef<HTMLDivElement>(null);
   return (
