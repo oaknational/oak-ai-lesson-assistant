@@ -4,12 +4,7 @@ import { z } from "zod";
 
 import { publicProcedure } from "../../trpc";
 
-const branch = process.env.VERCEL_GIT_COMMIT_SHA ?? os.hostname();
-
-// TODO: set demo user status
-// TODO: set/clear KV ratelimits
-// TODO: set/clear violations
-// TODO: unban users
+const branch = process.env.VERCEL_GIT_COMMIT_REF ?? os.hostname();
 
 const variants = {
   typical: {
@@ -22,6 +17,53 @@ const variants = {
   },
 } as const;
 
+const getSignInToken = async (userId: string) => {
+  const response = await clerkClient.signInTokens.createSignInToken({
+    userId,
+    expiresInSeconds: 60 * 5,
+  });
+
+  return response.token;
+};
+
+const findOrCreateUser = async (
+  email: string,
+  variantName: keyof typeof variants,
+) => {
+  const variant = variants[variantName];
+
+  const existingUser = (
+    await clerkClient.users.getUserList({
+      emailAddress: [email],
+    })
+  ).data[0];
+
+  if (existingUser) {
+    return existingUser;
+  }
+
+  console.log("Creating test user", { email });
+  const newUser = await clerkClient.users.createUser({
+    emailAddress: [email],
+    firstName: "Test User",
+    lastName: `${branch}/${variantName}`,
+
+    publicMetadata: {
+      labs: {
+        isOnboarded: true,
+        isDemoUser: variant.isDemoUser,
+      },
+    },
+    privateMetadata: {
+      acceptedPrivacyPolicy: new Date(),
+      acceptedTermsOfUse: new Date(),
+      region: variant.region,
+    },
+  });
+
+  return newUser;
+};
+
 export const prepareUser = publicProcedure
   .input(
     z.object({
@@ -29,44 +71,12 @@ export const prepareUser = publicProcedure
     }),
   )
   .mutation(async ({ ctx, input }) => {
-    const email = `test-${branch}-${input.variant}@thenational.academy`;
-    const variant = variants[input.variant];
+    const email = `test+${branch}-${input.variant}@thenational.academy`;
 
-    const userId = (
-      await clerkClient.users.getUserList({
-        emailAddress: [email],
-      })
-    ).data[0]?.id;
-
-    if (userId) {
-      console.log("Test user already exists", { email, variant });
-      // TODO: Clear existing user data
-      return {
-        email,
-      };
-    }
-
-    // Create new user
-    console.log("Creating test user", { email, variant });
-    await clerkClient.users.createUser({
-      emailAddress: [email],
-      firstName: "Test User",
-      lastName: `${branch}/${input.variant}`,
-
-      publicMetadata: {
-        labs: {
-          isOnboarded: true,
-          isDemoUser: variant.isDemoUser,
-        },
-      },
-      privateMetadata: {
-        acceptedPrivacyPolicy: new Date(),
-        acceptedTermsOfUse: new Date(),
-        region: variant.region,
-      },
-    });
+    const user = await findOrCreateUser(email, input.variant);
 
     return {
       email,
+      signInToken: await getSignInToken(user.id),
     };
   });

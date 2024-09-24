@@ -7,7 +7,6 @@ import { publicProcedure, t } from "../trpc";
  * Middleware to limit test support routes to testable environments like Vercel previews
  */
 const isTestMiddleware = t.middleware(async ({ next, ctx }) => {
-  console.log("testSupportMiddleware");
   if (
     process.env.NODE_ENV === "development" ||
     process.env.VERCEL_ENV === "preview"
@@ -30,4 +29,3 @@ const isTestMiddleware = t.middleware(async ({ next, ctx }) => {
 });
 
 export const testSupportMiddleware = publicProcedure.use(isTestMiddleware);
-// export const testSupportMiddleware = t.procedure.use(isTestMiddleware);
