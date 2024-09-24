@@ -12,7 +12,7 @@ const ChatSection = ({
   value,
 }: {
   objectKey: string;
-  value: unknown;
+  value: Record<string, unknown> | string | Array<unknown>;
 }) => {
   return (
     <OakFlex $flexDirection="column">
@@ -29,12 +29,19 @@ const ChatSection = ({
         $display={["none", "flex"]}
       >
         <ModifyButton
-          section={sectionTitle(objectKey)}
-          sectionContent={
-            lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
-          }
+          sectionTitle={sectionTitle(objectKey)}
+          sectionPath={objectKey}
+          sectionValue={value}
         />
+        <FlagButton
+          sectionTitle={sectionTitle(objectKey)}
+          sectionPath={objectKey}
+          sectionValue={value}
+        />
+<<<<<<< HEAD
         <FlagButton section={sectionTitle(objectKey)} />
+=======
+>>>>>>> main
       </OakFlex>
     </OakFlex>
   );

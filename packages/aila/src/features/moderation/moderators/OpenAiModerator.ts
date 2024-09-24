@@ -139,6 +139,14 @@ export class OpenAiModerator extends AilaModerator {
   }
 
   async moderate(input: string): Promise<ModerationResult> {
-    return await this._moderate(input, 0);
+    try {
+      return await this._moderate(input, 0);
+    } catch (error) {
+      console.log("Moderation error: ", error);
+      if (error instanceof AilaModerationError) {
+        throw error;
+      }
+      return await this._moderate(input, 1);
+    }
   }
 }

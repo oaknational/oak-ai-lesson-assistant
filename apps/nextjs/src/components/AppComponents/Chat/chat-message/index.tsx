@@ -5,12 +5,15 @@ import { ReactNode, useState } from "react";
 import {
   ActionDocument,
   BadDocument,
+  CommentDocument,
   ErrorDocument,
+  MessagePart,
   ModerationDocument,
   PatchDocument,
   PromptDocument,
   StateDocument,
   TextDocument,
+  parseMessageParts,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { isSafe } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
@@ -18,11 +21,12 @@ import { Message } from "ai";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 import { useChatModeration } from "@/components/ContextProviders/ChatModerationContext";
+import { Icon } from "@/components/Icon";
 import { cn } from "@/lib/utils";
 
 import { ModerationModalHelpers } from "../../FeedbackForms/ModerationFeedbackModal";
 import { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
-import { MessagePart, isModeration, parseMessageParts } from "./protocol";
+import { isModeration } from "./protocol";
 
 export interface ChatMessageProps {
   chatId: string; // Needed for when we refactor to use a moderation provider
@@ -43,23 +47,29 @@ export function ChatMessage({
 
   const messageParts: MessagePart[] =
     message.role === "user" || message.id === "working-on-it-initial"
-      ? [{ type: "text", value: message.content }]
+      ? [
+          {
+            type: "message-part",
+            id: "working-on-it-initial",
+            document: { type: "text", value: message.content },
+            isPartial: false,
+          },
+        ]
       : parseMessageParts(message.content);
 
-  const hasError = messageParts.some((part) => part.type === "error");
+  const hasError = messageParts.some((part) => part.document.type === "error");
   const [inspect, setInspect] = useState(false);
 
   const isEditing =
     ailaStreamingStatus !== "Idle" &&
     (messageParts.some((part) => part.isPartial) ||
       messageParts.filter((part) =>
-        ["bad", "text", "prompt"].includes(part.type),
+        ["bad", "text", "prompt"].includes(part.document.type),
       ).length === 0);
 
   const moderationMessagePart: PersistedModerationBase | undefined =
-    messageParts.find((m) => isModeration(m) && m.id) as
-      | PersistedModerationBase
-      | undefined;
+    messageParts.find((m) => isModeration(m.document) && m.document?.id)
+      ?.document as PersistedModerationBase | undefined;
 
   const messageId = message.id;
 
@@ -69,7 +79,7 @@ export function ChatMessage({
   const matchingModeration =
     matchingPersistedModeration ?? moderationMessagePart;
 
-  if (messageParts.every((part) => part.type === "action")) {
+  if (messageParts.every((part) => part.document.type === "action")) {
     return null;
   }
 
@@ -96,21 +106,23 @@ export function ChatMessage({
       {matchingModeration && !isSafe(matchingModeration) && (
         <MessageWrapper errorType="moderation" type={getAvatarType()}>
           <MessageTextWrapper>
-            <aside className="pt-3 text-sm">
-              <span className="font-bold">Sensitive content:</span> View{" "}
-              <a
-                href="#"
-                onClick={() => {
-                  moderationModalHelpers.openModal({
-                    moderation: matchingModeration,
-                    closeModal: moderationModalHelpers.closeModal,
-                  });
-                }}
-                className="underline"
-              >
-                content guidance
-              </a>
-            </aside>
+            <div className="flex items-center">
+              <Icon icon="warning" size="sm" className="mr-6" />
+              <aside className="pt-3 text-sm">
+                <a
+                  href="#"
+                  onClick={() => {
+                    moderationModalHelpers.openModal({
+                      moderation: matchingModeration,
+                      closeModal: moderationModalHelpers.closeModal,
+                    });
+                  }}
+                  className="underline"
+                >
+                  View content guidance
+                </a>
+              </aside>
+            </div>
           </MessageTextWrapper>
         </MessageWrapper>
       )}
@@ -177,10 +189,10 @@ function MessageWrapper({
     <div
       className={cn(
         "relative mt-14 w-full items-start rounded-md",
+        type === "user" && "bg-teachersLilac p-9",
         errorType && ERROR_TYPE_COLOR_MAP[errorType],
         errorType && "p-9",
         className,
-        type === "user" && "bg-teachersLilac p-9",
       )}
     >
       {type === "aila" ||
@@ -212,6 +224,7 @@ function ChatMessagePart({
   moderationModalHelpers,
 }: Readonly<ChatMessagePartProps>) {
   const PartComponent = {
+    comment: CommentMessagePart,
     prompt: PromptMessagePart,
     error: ErrorMessagePart,
     bad: BadMessagePart,
@@ -221,17 +234,17 @@ function ChatMessagePart({
     action: ActionMessagePart,
     moderation: ModerationMessagePart,
     id: IdMessagePart,
-  }[part.type];
+  }[part.document.type];
 
   if (!PartComponent) {
-    console.log("Unknown part type", part.type, part); // eslint-disable-line no-console
+    console.log("Unknown part type", part.document.type, part); // eslint-disable-line no-console
     return null;
   }
 
   return (
     <div className="w-full">
       <PartComponent
-        part={part}
+        part={part.document}
         moderationModalHelpers={moderationModalHelpers}
       />
 
@@ -245,6 +258,11 @@ function ChatMessagePart({
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function BadMessagePart({ part }: Readonly<{ part: BadDocument }>) {
+  return null;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function CommentMessagePart({ part }: Readonly<{ part: CommentDocument }>) {
   return null;
 }
 

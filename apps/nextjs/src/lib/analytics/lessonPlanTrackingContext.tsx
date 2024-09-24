@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 
+import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { Message } from "ai";
 
@@ -44,9 +45,7 @@ const LessonPlanTrackingProvider: FC<{
   }, [chatId]);
   const onStreamFinished = useCallback(
     ({ prevLesson, nextLesson, messages }: OnStreamFinishedProps) => {
-      const ailaMessageContent = messages.findLast(
-        (m) => m.role === "assistant",
-      )?.content;
+      const ailaMessageContent = getLastAssistantMessage(messages)?.content;
       if (!ailaMessageContent) {
         return;
       }

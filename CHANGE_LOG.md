@@ -1,3 +1,50 @@
+## [1.7.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.7.1...v1.7.2) (2024-09-23)
+
+
+### Bug Fixes
+
+* use NextResponse.json() in case of middleware errors ([#150](https://github.com/oaknational/oak-ai-lesson-assistant/issues/150)) ([73259a2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/73259a258d7ce571bb1e8de464a631f55acfd684))
+
+## [1.7.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.7.0...v1.7.1) (2024-09-17)
+
+
+### Bug Fixes
+
+* revert error to previous protocol ([#139](https://github.com/oaknational/oak-ai-lesson-assistant/issues/139)) ([e053b89](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e053b895503d5a29522404ce14e13239b6db7852))
+
+# [1.7.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.6.1...v1.7.0) (2024-09-16)
+
+
+### Bug Fixes
+
+* change extensions in mobile button ([#115](https://github.com/oaknational/oak-ai-lesson-assistant/issues/115)) ([36b26ba](https://github.com/oaknational/oak-ai-lesson-assistant/commit/36b26ba3154a0b9738f625c7c47dd1b0c9666a76))
+* correct paths for help ([#118](https://github.com/oaknational/oak-ai-lesson-assistant/issues/118)) ([cbbf4d2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cbbf4d246a48ca2b4cdbb48a9e2d52955797527c))
+* error colour precedence in message wrapper ([#112](https://github.com/oaknational/oak-ai-lesson-assistant/issues/112)) ([18bfccc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/18bfcccf2dd366ec8d6da5b5f355694a63bc936b))
+* exports page overlap ([#105](https://github.com/oaknational/oak-ai-lesson-assistant/issues/105)) ([f2d1a57](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f2d1a57a7084203bda8fa8996082a3b1798555e3))
+* help button ([#120](https://github.com/oaknational/oak-ai-lesson-assistant/issues/120)) ([a492838](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a492838cc4ce367226458a63400985ee45e3b02f))
+* in app feedback snags ([#108](https://github.com/oaknational/oak-ai-lesson-assistant/issues/108)) ([45e5a63](https://github.com/oaknational/oak-ai-lesson-assistant/commit/45e5a63c6634254ac765624ecd5c83988ce4a722))
+* mobile video sizing ([#106](https://github.com/oaknational/oak-ai-lesson-assistant/issues/106)) ([c235310](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c235310b8e3e07fd2ba3fe71f19ea24af3db9a57))
+* **moderation prompt:** lower false positives in toxic category ([#102](https://github.com/oaknational/oak-ai-lesson-assistant/issues/102)) ([76e3cd5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/76e3cd5c10d31a0dd56335a6382301c3555763c1))
+* quiz designer snags ([#113](https://github.com/oaknational/oak-ai-lesson-assistant/issues/113)) ([db1b0d8](https://github.com/oaknational/oak-ai-lesson-assistant/commit/db1b0d81d69d7ee81a6d19b7ef1e7b43cc2e447d))
+* return protocol error messages for user restrictions ([#111](https://github.com/oaknational/oak-ai-lesson-assistant/issues/111)) ([741c935](https://github.com/oaknational/oak-ai-lesson-assistant/commit/741c93525bb46cbfa735487a938e3dc047a45128))
+* sidebar getting stuck at 0 ([#107](https://github.com/oaknational/oak-ai-lesson-assistant/issues/107)) ([dedfd24](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dedfd2426073397539ed49ec74917fd092251b32))
+* survey not found bug ([#121](https://github.com/oaknational/oak-ai-lesson-assistant/issues/121)) ([705a267](https://github.com/oaknational/oak-ai-lesson-assistant/commit/705a2671ff79dce91ca36941d7b6814455c282e2))
+* use new AI protocol format for friendly errors ([#122](https://github.com/oaknational/oak-ai-lesson-assistant/issues/122)) ([7402e72](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7402e724b161039f309279b94a8cb4a7b2bae0bf))
+
+
+### Features
+
+* add pwa manifest ([#101](https://github.com/oaknational/oak-ai-lesson-assistant/issues/101)) ([c066f97](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c066f971535fc9256e9cbcdf9b38a6c9168e5344))
+* invalidate moderation and unblock user ([#109](https://github.com/oaknational/oak-ai-lesson-assistant/issues/109)) ([5094c47](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5094c47b53d89564ef06d69ba7195399db728b9c))
+* update content guidance text ([#75](https://github.com/oaknational/oak-ai-lesson-assistant/issues/75)) ([b02ce31](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b02ce3128e249a52e5be8106aab87987230a1a93))
+
+## [1.6.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.6.0...v1.6.1) (2024-09-12)
+
+
+### Bug Fixes
+
+* survey not found bug ([#121](https://github.com/oaknational/oak-ai-lesson-assistant/issues/121)) ([e22cfa5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e22cfa5cf15765fec20928aedb806645dd32895f))
+
 # [1.6.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.5.1...v1.6.0) (2024-09-06)
 
 

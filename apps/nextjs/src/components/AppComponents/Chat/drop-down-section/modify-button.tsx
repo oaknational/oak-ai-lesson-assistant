@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 
+import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import type { AilaUserModificationAction } from "@oakai/db";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
 import { TextArea } from "@radix-ui/themes";
@@ -19,13 +20,17 @@ const modifyOptions = [
   { label: "Other", enumValue: "OTHER" },
 ] as const;
 
+type ModifyButtonProps = {
+  sectionTitle: string;
+  sectionPath: string;
+  sectionValue: Record<string, unknown> | string | Array<unknown>;
+};
+
 const ModifyButton = ({
-  section,
-  sectionContent,
-}: {
-  section: string;
-  sectionContent: string;
-}) => {
+  sectionTitle,
+  sectionPath,
+  sectionValue,
+}: ModifyButtonProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [userFeedbackText, setUserFeedbackText] = useState("");
@@ -37,18 +42,19 @@ const ModifyButton = ({
 
   const { id, messages } = chat;
 
-  const { mutateAsync } = trpc.chat.appSessions.modifySection.useMutation();
+  const { mutateAsync } = trpc.chat.chatFeedback.modifySection.useMutation();
 
-  const assistantMessages = messages.filter((m) => m.role === "assistant");
-  const lastAssistantMessage = assistantMessages[assistantMessages.length - 1];
+  const lastAssistantMessage = getLastAssistantMessage(messages);
 
   const recordUserModifySectionContent = async () => {
     if (selectedRadio && lastAssistantMessage) {
       const payload = {
         chatId: id,
         messageId: lastAssistantMessage.id,
-        textForMod: sectionContent,
+        sectionPath,
+        sectionValue,
         action: selectedRadio.enumValue,
+        actionOtherText: userFeedbackText || null,
       };
       await mutateAsync(payload);
     }
@@ -59,7 +65,7 @@ const ModifyButton = ({
   ) {
     await Promise.all([
       append({
-        content: `For the ${section}, ${option.label === "Other" ? userFeedbackText : option.label}`,
+        content: `For the ${sectionTitle}, ${option.label === "Other" ? userFeedbackText : option.label}`,
         role: "user",
       }),
       recordUserModifySectionContent(),
@@ -80,7 +86,11 @@ const ModifyButton = ({
           onClickActions={modifySection}
           setIsOpen={setIsOpen}
           selectedRadio={selectedRadio}
+<<<<<<< HEAD
           title={`Ask Aila to modify ${section.toLowerCase()}:`}
+=======
+          title={`Ask Aila to modify ${sectionTitle.toLowerCase()}:`}
+>>>>>>> main
           buttonText={"Modify section"}
           isOpen={isOpen}
           dropdownRef={dropdownRef}
@@ -93,6 +103,7 @@ const ModifyButton = ({
           >
             {modifyOptions.map((option) => {
               return (
+<<<<<<< HEAD
                 <>
                   <SmallRadioButton
                     id={`${id}-modify-options-${option.enumValue}`}
@@ -107,6 +118,20 @@ const ModifyButton = ({
                     }}
                   />
                 </>
+=======
+                <SmallRadioButton
+                  id={`${id}-modify-options-${option.enumValue}`}
+                  key={`${id}-modify-options-${option.enumValue}`}
+                  value={option.enumValue}
+                  label={handleLabelText({
+                    text: option.label,
+                    section: sectionTitle,
+                  })}
+                  onClick={() => {
+                    setSelectedRadio(option);
+                  }}
+                />
+>>>>>>> main
               );
             })}
 

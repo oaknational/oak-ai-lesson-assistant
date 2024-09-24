@@ -12,15 +12,17 @@ import { Icon } from "@/components/Icon";
 const SuggestedLessonCard = ({
   answer: question,
   dispatch,
-
+  questionsWrapperRef,
   potentialNewQuestions,
   setPotentialNewQuestions,
+  questionRefs,
 }: {
   answer: PotentialQuestionsType[0];
   dispatch: Dispatch<QuizAppAction>;
-
+  questionsWrapperRef: React.RefObject<HTMLDivElement>;
   potentialNewQuestions: PotentialQuestionsType;
   setPotentialNewQuestions: React.Dispatch<PotentialQuestionsType>;
+  questionRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
 }) => {
   const [showAnswers, setShowAnswers] = useState(false);
   return (
@@ -58,16 +60,30 @@ const SuggestedLessonCard = ({
           </Flex>
         </button>
         <button
-          onClick={() => {
+          onClick={async () => {
             dispatch({
               type: QuizAppActions.AddPopulatedQuestion,
               question: question,
             });
-            removeQuestionFromArray(
+            await removeQuestionFromArray(
               question,
               potentialNewQuestions,
               setPotentialNewQuestions,
-            );
+            ).then(() => {
+              const questionsWrapper = questionsWrapperRef.current;
+              if (questionsWrapper) {
+                const questionRef = questionRefs.current.find(
+                  (q) => q?.id === question.question,
+                );
+                if (questionRef) {
+                  const { top } = questionRef.getBoundingClientRect();
+                  window.scrollTo({
+                    top: top + window.pageYOffset - 200,
+                    behavior: "smooth",
+                  });
+                }
+              }
+            });
           }}
           className="font-bold"
         >
@@ -102,7 +118,7 @@ const SuggestedLessonCard = ({
   );
 };
 
-function removeQuestionFromArray(
+async function removeQuestionFromArray(
   question: PotentialQuestionsType[0],
   potentialNewQuestions: PotentialQuestionsType,
   setPotentialNewQuestions: React.Dispatch<PotentialQuestionsType>,

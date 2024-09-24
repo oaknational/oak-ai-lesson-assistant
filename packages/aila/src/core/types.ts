@@ -16,7 +16,7 @@ import { LLMService } from "./llm/LLMService";
 import { AilaPlugin } from "./plugins/types";
 import { AilaPromptBuilder } from "./prompt/AilaPromptBuilder";
 
-export type AilaGenerateLessonPlanMode = "full" | "repeat" | "single";
+export type AilaGenerateLessonPlanMode = "interactive" | "generate";
 
 export type AilaGenerateLessonPlanOptions = {
   mode?: AilaGenerateLessonPlanMode;

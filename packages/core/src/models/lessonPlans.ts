@@ -146,16 +146,16 @@ export class LessonPlans {
     }
 
     const compiledTemplate = template({
-      subject: lesson.subject?.title ?? "None",
-      lessonTitle: lesson.title,
-      keyStage: lesson.keyStage?.title ?? "None",
-      topic: lesson.subject?.title ?? "None", // TODO: Ingest topics
-      currentLessonPlan: JSON.stringify(lessonPlan),
+      lessonPlan: {},
       relevantLessonPlans: "None",
       summaries: "None",
       responseMode: "generate",
       lessonPlanJsonSchema: JSON.stringify(LessonPlanJsonSchema),
       llmResponseJsonSchema: JSON.stringify(LLMResponseJsonSchema),
+      isUsingStructuredOutput:
+        process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true"
+          ? true
+          : false,
     });
 
     const systemPrompt = compiledTemplate;
@@ -169,6 +169,7 @@ export class LessonPlans {
 
     const captionText = validCaptions.map((c) => c.part).join(" ");
 
+    const keyStageName = lesson.keyStage?.title ?? "an unknown key stage";
     const summaries = lesson.summaries ?? [];
 
     const summary = summaries[0]; // TODO handle multiple types of summary
@@ -193,7 +194,7 @@ export class LessonPlans {
     ${summary.keywords.join(",")}.`
       : "There is no summary for this lesson";
 
-    const userPrompt = `I would like to generate a lesson plan for the lesson titled ${lesson.title} for a lesson titled "${lesson.keyStage?.title ?? "Untitled"}" in ${lesson.subject?.title ?? "an unknown subject"}. 
+    const userPrompt = `I would like to generate a lesson plan for a lesson titled "${lesson.title}" in ${lesson.subject?.title ?? "an unknown subject"} at ${keyStageName}. 
     The lesson has the following transcript which is a recording of the lesson being delivered by a teacher. 
     I would like you to base your response on the content of the lesson rather than imagining other content that could be valid for a lesson with this title. 
     Think about the structure of the lesson based on the transcript and see if it can be broken up into logical sections which correspond to the definition of a learning cycle.

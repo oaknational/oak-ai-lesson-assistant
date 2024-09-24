@@ -2,8 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { Message } from "ai";
+
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+
+import { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
 
 export interface ChatListProps {
   isDemoLocked: boolean;
@@ -81,6 +86,35 @@ export function ChatList({
 
   return (
     <div className="relative flex w-full flex-col " onScroll={handleScroll}>
+      <ChatMessagesDisplay
+        messages={messages}
+        id={id}
+        lastModeration={lastModeration}
+        persistedModerations={persistedModerations}
+        ailaStreamingStatus={ailaStreamingStatus}
+      />
+
+      {isDemoLocked && <DemoLimitMessage id={id} />}
+      <div ref={chatEndRef} />
+    </div>
+  );
+}
+
+export const ChatMessagesDisplay = ({
+  messages,
+  id,
+  lastModeration,
+  persistedModerations = [],
+  ailaStreamingStatus,
+}: {
+  id: string;
+  messages: Message[];
+  lastModeration: PersistedModerationBase | null;
+  persistedModerations: PersistedModerationBase[];
+  ailaStreamingStatus: AilaStreamingStatus;
+}) => {
+  return (
+    <>
       {messages.map((message) => {
         // Check if the most recent message in the messages array is from the role user if so add a working on it message
 
@@ -125,7 +159,7 @@ export function ChatList({
               chatId={id}
               ailaStreamingStatus={ailaStreamingStatus}
               message={
-                ailaStreamingStatus !== "Idle" &&
+                !["Moderating", "Idle"].includes(ailaStreamingStatus) &&
                 message.role === "assistant" &&
                 messages !== undefined &&
                 message.id === (messages?.[messages?.length - 1]?.id ?? "")
@@ -163,9 +197,6 @@ export function ChatList({
             />
           </div>
         )}
-
-      {isDemoLocked && <DemoLimitMessage id={id} />}
-      <div ref={chatEndRef} />
-    </div>
+    </>
   );
-}
+};

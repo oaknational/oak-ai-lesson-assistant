@@ -12,6 +12,7 @@ import {
   oakColorTokens,
   OakPrimaryButton,
 } from "@oaknational/oak-components";
+import { HomePageQueryResult } from "cms/types/aiHomePageType";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -45,7 +46,20 @@ const StyledMuxPlayer = styled(MuxPlayer)`
   }
 `;
 
-export default function HomePage() {
+const OakFlexCustomMaxWidthWithHalfWidth = styled(OakFlexCustomMaxWidth)`
+  @media (max-width: 1200px) {
+    width: 50%;
+  }
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+export default function HomePage({
+  pageData,
+}: {
+  pageData: HomePageQueryResult | null;
+}) {
   const user = useUser();
 
   const { track } = useAnalytics();
@@ -59,10 +73,11 @@ export default function HomePage() {
           $alignItems={["center"]}
           $gap={"all-spacing-5"}
         >
-          <OakFlexCustomMaxWidth
+          <OakFlexCustomMaxWidthWithHalfWidth
             $flexDirection={"column"}
             $gap={"all-spacing-5"}
             customMaxWidth={550}
+            $width={"100%"}
           >
             <OakBox $width="fit-content">
               <BetaTagPage />
@@ -82,7 +97,9 @@ export default function HomePage() {
               customMaxWidth={600}
               $height="fit-content"
             >
-              <StyledMuxPlayer playbackId="XjKNXfXcZqEIb3sRmgqqw901S3AoN8mllBS5yUnKSvb4" />
+              <StyledMuxPlayer
+                playbackId={pageData?.heroVideo.video.asset.playbackId}
+              />
             </OakBoxCustomMaxWidth>
 
             <OakP $textAlign="left" $font="body-1">
@@ -91,9 +108,9 @@ export default function HomePage() {
               tailoring content to your class, Aila can help speed things along.
             </OakP>
             <HomePageCTA />
-          </OakFlexCustomMaxWidth>
+          </OakFlexCustomMaxWidthWithHalfWidth>
 
-          <OakBoxCustomMaxWidth
+          <OakFlexCustomMaxWidthWithHalfWidth
             $display={["none", "flex"]}
             $borderColor="black"
             $borderStyle={"solid"}
@@ -102,8 +119,10 @@ export default function HomePage() {
             $height="fit-content"
             $width="100%"
           >
-            <StyledMuxPlayer playbackId="XjKNXfXcZqEIb3sRmgqqw901S3AoN8mllBS5yUnKSvb4" />
-          </OakBoxCustomMaxWidth>
+            <StyledMuxPlayer
+              playbackId={pageData?.heroVideo.video.asset.playbackId}
+            />
+          </OakFlexCustomMaxWidthWithHalfWidth>
         </OakFlex>
       </HeroContainer>
 
@@ -193,7 +212,9 @@ export default function HomePage() {
                 $height="fit-content"
               >
                 <StyledMuxPlayer
-                  playbackId="a3fYrjh33z00LbjMRCTFQCxFRMvGU00LmoL11ln4QtV2A"
+                  playbackId={
+                    pageData?.belowTheFoldVideo.video.asset.playbackId
+                  }
                   thumbnailTime={3.67}
                 />
               </OakBoxCustomMaxWidth>

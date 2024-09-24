@@ -24,6 +24,8 @@ const QuizContent = ({
   toggleExportMenu,
 }: Readonly<QuizContentProps>) => {
   const questionsWrapperRef = useRef<HTMLDivElement>(null);
+  const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
+
   const { shareContent, shareId, shareLoading } = useShareContent({
     state,
   });
@@ -63,6 +65,7 @@ const QuizContent = ({
             return (
               <QuizQuestionRow
                 key={`QuizContent-QuestionRow-${questionIdx}`}
+                ref={(el) => (questionRefs.current[questionIdx] = el)}
                 questionRow={questionRow}
                 questionIdx={questionIdx}
                 state={state}
@@ -81,6 +84,8 @@ const QuizContent = ({
           dispatch={dispatch}
           suggestedQuestionsGeneration={suggestedQuestionsGeneration}
           setPotentialNewQuestions={setPotentialNewQuestion}
+          questionsWrapperRef={questionsWrapperRef}
+          questionRefs={questionRefs}
         />
 
         {state.questions[0]?.answers !== undefined &&
