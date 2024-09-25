@@ -25,7 +25,6 @@ type ChatRightHandSideLessonProps = {
 const ChatRightHandSideLesson = ({
   id,
   messages,
-  lessonPlan,
   showLessonMobile,
   closeMobileLessonPullOut,
   demo,
