@@ -9,9 +9,6 @@ import {
   PrismaClientWithAccelerate,
   Subject,
 } from "@oakai/db";
-import { Prisma } from "@prisma/client";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { PrismaVectorStore } from "langchain/vectorstores/prisma";
 import yaml from "yaml";
 
 import { LLMResponseJsonSchema } from "../../../aila/src/protocol/jsonPatchProtocol";
@@ -56,11 +53,6 @@ type LessonWithKeyStageSubjectAndSummaries = Lesson & {
 type LessonPlanWithParts = LessonPlan & {
   parts: LessonPlanPart[] | null;
 };
-
-interface FilterOptions {
-  key_stage_id?: object;
-  subject_id?: object;
-}
 
 export class LessonPlans {
   private _rag: RAG;
@@ -334,76 +326,5 @@ ${p.content}`,
       SET embedding = ${vector}::vector, status = 'SUCCESS'
       WHERE id = ${id}`;
     return result;
-  }
-
-  async search(
-    query: string,
-    keyStage: string | undefined,
-    subject: string | undefined,
-    perPage: number,
-  ): Promise<LessonPlanWithLesson[]> {
-    const filter: FilterOptions = {};
-
-    if (keyStage) {
-      const keyStageRecord = await this._rag.fetchKeyStage(keyStage);
-
-      if (keyStageRecord) {
-        filter["key_stage_id"] = {
-          equals: keyStageRecord.id,
-        };
-      }
-    }
-    if (subject) {
-      const subjectRecord = await this._rag.fetchSubject(subject);
-      if (subjectRecord) {
-        filter["subject_id"] = {
-          equals: subjectRecord.id,
-        };
-      }
-    }
-    const vectorStore = PrismaVectorStore.withModel<LessonPlan>(
-      this._prisma,
-    ).create(new OpenAIEmbeddings(), {
-      prisma: Prisma,
-      tableName: "lesson_plans" as "LessonPlan",
-      vectorColumnName: "embedding",
-      columns: {
-        id: PrismaVectorStore.IdColumn,
-        content: PrismaVectorStore.ContentColumn,
-      },
-      // @ts-expect-error TODO Bug in PrismaVectorStore which doesn't allow mapped column names
-      filter,
-    });
-    const result = await vectorStore.similaritySearch(query, perPage);
-
-    const lessonPlans: LessonPlanWithLesson[] =
-      await this._prisma.lessonPlan.findMany({
-        where: {
-          id: { in: result.map((r) => r.metadata.id) },
-        },
-        include: {
-          lesson: {
-            select: {
-              id: true,
-              slug: true,
-              title: true,
-              subjectId: true,
-              keyStageId: true,
-              isNewLesson: true,
-              newLessonContent: true,
-            },
-          },
-        },
-      });
-
-    const hydrated: LessonPlanWithLesson[] = [];
-    for (const entry of result) {
-      const lessonPlan = lessonPlans.find((ls) => ls.id === entry.metadata.id);
-      if (!lessonPlan) {
-        throw new Error("Lesson summary not found");
-      }
-      hydrated.push(lessonPlan);
-    }
-    return hydrated;
   }
 }
