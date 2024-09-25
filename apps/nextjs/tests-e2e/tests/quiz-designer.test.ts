@@ -3,7 +3,7 @@ import { clerkSetup } from "@clerk/testing/playwright";
 import { test, expect } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../config/config";
-import { bypassVercelProtection } from "../helpers";
+import { bypassVercelProtection } from "../helpers/vercel";
 
 test(
   "navigate to /quiz-designer as a signed-in user",

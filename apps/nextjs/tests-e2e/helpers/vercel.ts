@@ -3,7 +3,7 @@ import { Page } from "@playwright/test";
 import {
   TEST_BASE_URL,
   VERCEL_AUTOMATION_BYPASS_SECRET,
-} from "./config/config";
+} from "../config/config";
 
 export async function bypassVercelProtection(page: Page) {
   if (!VERCEL_AUTOMATION_BYPASS_SECRET) {
