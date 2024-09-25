@@ -974,7 +974,7 @@ _avo_invoke = function _avo_invoke(env: AvoEnv, eventId: string, hash: string, m
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-          "ac": "bnaTrXb38bMBU0AyETFk",
+          "ac": "X0YySdFz8CwPakKuFZn4",
           "br": "master",
           "en": env,
           "ev": eventId,
@@ -1001,7 +1001,7 @@ _avo_invoke_meta = function _avo_invoke_meta(env: AvoEnv, type: string, messages
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-          "ac": "bnaTrXb38bMBU0AyETFk",
+          "ac": "X0YySdFz8CwPakKuFZn4",
           "br": "master",
           "en": env,
           "ty": type,
@@ -1352,6 +1352,7 @@ export interface LessonPlanInitiatedProperties {
   keyStageSlug: string | null | undefined;
   lessonPlanTitle: string | null | undefined;
   product: ProductValueType;
+  chatId: string;
 }
 /**
  * Lesson Plan Initiated: A user begins a new lesson plan via the AI Lesson Assistant by typing a text input on the first page of the Lesson Assistant and clicking 'Send Message', selects an example lesson to get started, or begins a new lesson
@@ -1370,6 +1371,7 @@ export interface LessonPlanInitiatedProperties {
  * @param properties.keyStageSlug: Human-readable unique ID of the current key stage.
  * @param properties.lessonPlanTitle: Title of the lesson plan
  * @param properties.product: Product that the event was sent from to clear distinguish between Oak products
+ * @param properties.chatId: Distinct ID of the Lesson Plan Chat
  *
  * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/6LvrtHjncf}
  */
@@ -1392,6 +1394,7 @@ export function lessonPlanInitiated(properties: LessonPlanInitiatedProperties
     eventPropertiesArray.push({id: "t0gm_zGXX", name: "Lesson Plan Title", value: properties.lessonPlanTitle}) :
     eventPropertiesArray.push({id: "t0gm_zGXX", name: "Lesson Plan Title", value: null});
   eventPropertiesArray.push({id: "JmUs_uxup", name: "Product", value: properties.product});
+  eventPropertiesArray.push({id: "CdWOPZ-mn", name: "Chat ID", value: properties.chatId});
   let eventProperties = convertPropertiesArrayToMap(eventPropertiesArray)
   // @ts-ignore
   let userPropertiesArray: array = [];
@@ -1401,7 +1404,7 @@ export function lessonPlanInitiated(properties: LessonPlanInitiatedProperties
     let messages: AvoAssertMessage[] = [];
     // debug console in Avo
     if (!__AVO_NOOP__) {
-      _avo_invoke(__AVO_ENV__, "6LvrtHjncf", "ff9daea1c54925979b5aedc36ebafe719873c42d33309c45bff7d0114af8b6af", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
+      _avo_invoke(__AVO_ENV__, "6LvrtHjncf", "ea5fcb7fcdbb3ff05c160e41c7c0726e6c40eccdaf063799f41f3ff364468b6b", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
     }
     InternalAvoLogger.logEventSent("Lesson Plan Initiated", eventProperties, userProperties);
     if (__WEB_DEBUGGER__) {
@@ -1412,7 +1415,7 @@ export function lessonPlanInitiated(properties: LessonPlanInitiatedProperties
   if (!__AVO_NOOP__) {
     if (__INSPECTOR__ != null) {
       // @ts-ignore
-      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Lesson Plan Initiated", eventProperties, "6LvrtHjncf", "ff9daea1c54925979b5aedc36ebafe719873c42d33309c45bff7d0114af8b6af");
+      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Lesson Plan Initiated", eventProperties, "6LvrtHjncf", "ea5fcb7fcdbb3ff05c160e41c7c0726e6c40eccdaf063799f41f3ff364468b6b");
     }
     // destination PostHogEU
     PostHogEU.logEvent("Lesson Plan Initiated", (Object as any).assign({}, eventProperties));
@@ -1430,6 +1433,7 @@ export interface LessonPlanCompletedProperties {
   lessonPlanTitle: string | null | undefined;
   moderatedContentType: ModeratedContentTypeValueType[] | null | undefined;
   product: ProductValueType;
+  chatId: string;
 }
 /**
  * Lesson Plan Completed: A user has reached the end of the lesson plan creation and all lesson resources have become available for download/sharing
@@ -1440,6 +1444,7 @@ export interface LessonPlanCompletedProperties {
  * @param properties.lessonPlanTitle: Title of the lesson plan
  * @param properties.moderatedContentType: The flag displayed to the user if the content they are looking at is sensitive/blocked
  * @param properties.product: Product that the event was sent from to clear distinguish between Oak products
+ * @param properties.chatId: Distinct ID of the Lesson Plan Chat
  *
  * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/bpddOGEuH6}
  */
@@ -1460,6 +1465,7 @@ export function lessonPlanCompleted(properties: LessonPlanCompletedProperties
     eventPropertiesArray.push({id: "0NVQREqVg", name: "Moderated Content Type", value: properties.moderatedContentType}) :
     eventPropertiesArray.push({id: "0NVQREqVg", name: "Moderated Content Type", value: null});
   eventPropertiesArray.push({id: "JmUs_uxup", name: "Product", value: properties.product});
+  eventPropertiesArray.push({id: "CdWOPZ-mn", name: "Chat ID", value: properties.chatId});
   let eventProperties = convertPropertiesArrayToMap(eventPropertiesArray)
   // @ts-ignore
   let userPropertiesArray: array = [];
@@ -1469,7 +1475,7 @@ export function lessonPlanCompleted(properties: LessonPlanCompletedProperties
     let messages: AvoAssertMessage[] = [];
     // debug console in Avo
     if (!__AVO_NOOP__) {
-      _avo_invoke(__AVO_ENV__, "bpddOGEuH6", "7c84b29ef645df3640506cc411dc57894b1ee4afe090a6cdd61ccbb8954b54b8", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
+      _avo_invoke(__AVO_ENV__, "bpddOGEuH6", "30f4cb467ffc96d2ed9182214d32a3ea2a2453b7c7fb90a6ec52c399056d14b5", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
     }
     InternalAvoLogger.logEventSent("Lesson Plan Completed", eventProperties, userProperties);
     if (__WEB_DEBUGGER__) {
@@ -1480,7 +1486,7 @@ export function lessonPlanCompleted(properties: LessonPlanCompletedProperties
   if (!__AVO_NOOP__) {
     if (__INSPECTOR__ != null) {
       // @ts-ignore
-      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Lesson Plan Completed", eventProperties, "bpddOGEuH6", "7c84b29ef645df3640506cc411dc57894b1ee4afe090a6cdd61ccbb8954b54b8");
+      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Lesson Plan Completed", eventProperties, "bpddOGEuH6", "30f4cb467ffc96d2ed9182214d32a3ea2a2453b7c7fb90a6ec52c399056d14b5");
     }
     // destination PostHogEU
     PostHogEU.logEvent("Lesson Plan Completed", (Object as any).assign({}, eventProperties));
@@ -1499,6 +1505,7 @@ export interface LessonPlanResourcesDownloadedProperties {
   product: ProductValueType;
   resourceType: ResourceTypeValueType[];
   resourceFileType: ResourceFileTypeValueType;
+  chatId: string;
 }
 /**
  * Lesson Plan Resources Downloaded: A user clicks on one of the lesson resources to download them
@@ -1514,6 +1521,7 @@ export interface LessonPlanResourcesDownloadedProperties {
  * @param properties.product: Product that the event was sent from to clear distinguish between Oak products
  * @param properties.resourceType: The lesson resources a teacher selected for download.
  * @param properties.resourceFileType: The file type of the resource related to the event
+ * @param properties.chatId: Distinct ID of the Lesson Plan Chat
  *
  * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/3JLctzBEI}
  */
@@ -1533,6 +1541,7 @@ export function lessonPlanResourcesDownloaded(
   eventPropertiesArray.push({id: "JmUs_uxup", name: "Product", value: properties.product});
   eventPropertiesArray.push({id: "H_kc7WuVNP", name: "Resource Type", value: properties.resourceType});
   eventPropertiesArray.push({id: "6_1GeCgXu", name: "Resource File Type", value: properties.resourceFileType});
+  eventPropertiesArray.push({id: "CdWOPZ-mn", name: "Chat ID", value: properties.chatId});
   let eventProperties = convertPropertiesArrayToMap(eventPropertiesArray)
   // @ts-ignore
   let userPropertiesArray: array = [];
@@ -1542,7 +1551,7 @@ export function lessonPlanResourcesDownloaded(
     let messages: AvoAssertMessage[] = [];
     // debug console in Avo
     if (!__AVO_NOOP__) {
-      _avo_invoke(__AVO_ENV__, "3JLctzBEI", "5e14df101e778bd1f937d759ce067c744b50cc5dcf4d962b3c60aec8dfd571e0", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
+      _avo_invoke(__AVO_ENV__, "3JLctzBEI", "1a183e9cb963e3d012c7ba68ce8c6f19ea71195311ef846209596b19f421c673", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
     }
     InternalAvoLogger.logEventSent("Lesson Plan Resources Downloaded", eventProperties, userProperties);
     if (__WEB_DEBUGGER__) {
@@ -1553,7 +1562,7 @@ export function lessonPlanResourcesDownloaded(
   if (!__AVO_NOOP__) {
     if (__INSPECTOR__ != null) {
       // @ts-ignore
-      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Lesson Plan Resources Downloaded", eventProperties, "3JLctzBEI", "5e14df101e778bd1f937d759ce067c744b50cc5dcf4d962b3c60aec8dfd571e0");
+      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Lesson Plan Resources Downloaded", eventProperties, "3JLctzBEI", "1a183e9cb963e3d012c7ba68ce8c6f19ea71195311ef846209596b19f421c673");
     }
     // destination PostHogEU
     PostHogEU.logEvent("Lesson Plan Resources Downloaded", (Object as any).assign({}, eventProperties));
@@ -1571,6 +1580,7 @@ export interface LessonPlanSharedProperties {
   lessonPlanTitle: string;
   keyStageSlug: string;
   product: ProductValueType;
+  chatId: string;
 }
 /**
  * Lesson Plan Shared: A user shares a lesson plan
@@ -1585,6 +1595,7 @@ export interface LessonPlanSharedProperties {
  * @param properties.lessonPlanTitle: Title of the lesson plan
  * @param properties.keyStageSlug: Human-readable unique ID of the current key stage.
  * @param properties.product: Product that the event was sent from to clear distinguish between Oak products
+ * @param properties.chatId: Distinct ID of the Lesson Plan Chat
  *
  * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/_SfSF_WDX}
  */
@@ -1596,6 +1607,7 @@ export function lessonPlanShared(properties: LessonPlanSharedProperties) {
   eventPropertiesArray.push({id: "t0gm_zGXX", name: "Lesson Plan Title", value: properties.lessonPlanTitle});
   eventPropertiesArray.push({id: "XMx9WMqh0H", name: "Key Stage Slug", value: properties.keyStageSlug});
   eventPropertiesArray.push({id: "JmUs_uxup", name: "Product", value: properties.product});
+  eventPropertiesArray.push({id: "CdWOPZ-mn", name: "Chat ID", value: properties.chatId});
   let eventProperties = convertPropertiesArrayToMap(eventPropertiesArray)
   // @ts-ignore
   let userPropertiesArray: array = [];
@@ -1605,7 +1617,7 @@ export function lessonPlanShared(properties: LessonPlanSharedProperties) {
     let messages: AvoAssertMessage[] = [];
     // debug console in Avo
     if (!__AVO_NOOP__) {
-      _avo_invoke(__AVO_ENV__, "_SfSF_WDX", "d52e541e7d61830980216259863c9cfa656af6435d2d173463a551733f3b1f3f", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
+      _avo_invoke(__AVO_ENV__, "_SfSF_WDX", "dbb3f4dd24ee49f05ad6a95712ffd8cf1f2ae3652a51469868b28c2fb7edd129", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
     }
     InternalAvoLogger.logEventSent("Lesson Plan Shared", eventProperties, userProperties);
     if (__WEB_DEBUGGER__) {
@@ -1616,7 +1628,7 @@ export function lessonPlanShared(properties: LessonPlanSharedProperties) {
   if (!__AVO_NOOP__) {
     if (__INSPECTOR__ != null) {
       // @ts-ignore
-      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Lesson Plan Shared", eventProperties, "_SfSF_WDX", "d52e541e7d61830980216259863c9cfa656af6435d2d173463a551733f3b1f3f");
+      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Lesson Plan Shared", eventProperties, "_SfSF_WDX", "dbb3f4dd24ee49f05ad6a95712ffd8cf1f2ae3652a51469868b28c2fb7edd129");
     }
     // destination PostHogEU
     PostHogEU.logEvent("Lesson Plan Shared", (Object as any).assign({}, eventProperties));
@@ -1637,6 +1649,7 @@ export interface LessonPlanRefinedProperties {
   text: string | null | undefined;
   moderatedContentType: ModeratedContentTypeValueType[] | null | undefined;
   refinements: Refinements[];
+  chatId: string;
 }
 /**
  * Lesson Plan Refined: The user alters or sways the Lesson Assistant's Lesson Plan output in some way
@@ -1658,6 +1671,7 @@ export interface LessonPlanRefinedProperties {
  * @param properties.text: Text captured during the event action e.g. when a user types into a text box and hits enter
  * @param properties.moderatedContentType: The flag displayed to the user if the content they are looking at is sensitive/blocked
  * @param properties.refinements: An array that outlines the refinements made on an object and what part of the object has been impacted by the refinement
+ * @param properties.chatId: Distinct ID of the Lesson Plan Chat
  *
  * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/KbUf1Z4y1}
  */
@@ -1680,6 +1694,7 @@ export function lessonPlanRefined(properties: LessonPlanRefinedProperties) {
       "Refinement Type": value.refinementType,
     }
   })});
+  eventPropertiesArray.push({id: "CdWOPZ-mn", name: "Chat ID", value: properties.chatId});
   let eventProperties = convertPropertiesArrayToMap(eventPropertiesArray)
   // @ts-ignore
   let userPropertiesArray: array = [];
@@ -1690,7 +1705,7 @@ export function lessonPlanRefined(properties: LessonPlanRefinedProperties) {
     messages = messages.concat(assertRefinements(properties.refinements));
     // debug console in Avo
     if (!__AVO_NOOP__) {
-      _avo_invoke(__AVO_ENV__, "KbUf1Z4y1", "9cb0cb62a38549ed7c743b365b1fe50635597f9183b352376b8fb10aa5002d7a", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
+      _avo_invoke(__AVO_ENV__, "KbUf1Z4y1", "01520d0dffebb3646d2cdb26bd1e5486a93df17b7b0b02b1a41e25b9efbc814a", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
     }
     InternalAvoLogger.logEventSent("Lesson Plan Refined", eventProperties, userProperties);
     if (__WEB_DEBUGGER__) {
@@ -1712,7 +1727,7 @@ export function lessonPlanRefined(properties: LessonPlanRefinedProperties) {
   if (!__AVO_NOOP__) {
     if (__INSPECTOR__ != null) {
       // @ts-ignore
-      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Lesson Plan Refined", eventProperties, "KbUf1Z4y1", "9cb0cb62a38549ed7c743b365b1fe50635597f9183b352376b8fb10aa5002d7a");
+      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Lesson Plan Refined", eventProperties, "KbUf1Z4y1", "01520d0dffebb3646d2cdb26bd1e5486a93df17b7b0b02b1a41e25b9efbc814a");
     }
     // destination PostHogEU
     PostHogEU.logEvent("Lesson Plan Refined", (Object as any).assign({}, eventProperties));
@@ -1728,6 +1743,7 @@ export interface LessonPlanTerminatedProperties {
   isUserBlocked: boolean;
   isToxicContent: boolean;
   isThreatDetected: boolean;
+  chatId: string;
 }
 /**
  * Lesson Plan Terminated: The generation of a lesson plan comes to an end due to the user being blocked, reaching the API limit, or the lesson being 'red flagged' and should not be proceeded with.
@@ -1736,6 +1752,7 @@ export interface LessonPlanTerminatedProperties {
  * @param properties.isUserBlocked: no description
  * @param properties.isToxicContent: no description
  * @param properties.isThreatDetected: no description
+ * @param properties.chatId: Distinct ID of the Lesson Plan Chat
  *
  * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/v4cCB-DHB}
  */
@@ -1746,6 +1763,7 @@ export function lessonPlanTerminated(
   eventPropertiesArray.push({id: "7W4aqahJq", name: "Is User Blocked", value: properties.isUserBlocked});
   eventPropertiesArray.push({id: "DjR2n3j5u", name: "Is Toxic Content", value: properties.isToxicContent});
   eventPropertiesArray.push({id: "GtZ6dCZGc", name: "Is Threat Detected", value: properties.isThreatDetected});
+  eventPropertiesArray.push({id: "CdWOPZ-mn", name: "Chat ID", value: properties.chatId});
   let eventProperties = convertPropertiesArrayToMap(eventPropertiesArray)
   // @ts-ignore
   let userPropertiesArray: array = [];
@@ -1755,7 +1773,7 @@ export function lessonPlanTerminated(
     let messages: AvoAssertMessage[] = [];
     // debug console in Avo
     if (!__AVO_NOOP__) {
-      _avo_invoke(__AVO_ENV__, "v4cCB-DHB", "408e6691ea868d0d12f05ab45305a2602308a1baeee3bc4e2e754e52f0a4ca06", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
+      _avo_invoke(__AVO_ENV__, "v4cCB-DHB", "c729a5e69f119e4c9bf75cb6b2816a4165352c6658c8732154f5b61fbab280f1", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
     }
     InternalAvoLogger.logEventSent("Lesson Plan Terminated", eventProperties, userProperties);
     if (__WEB_DEBUGGER__) {
@@ -1766,7 +1784,7 @@ export function lessonPlanTerminated(
   if (!__AVO_NOOP__) {
     if (__INSPECTOR__ != null) {
       // @ts-ignore
-      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Lesson Plan Terminated", eventProperties, "v4cCB-DHB", "408e6691ea868d0d12f05ab45305a2602308a1baeee3bc4e2e754e52f0a4ca06");
+      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Lesson Plan Terminated", eventProperties, "v4cCB-DHB", "c729a5e69f119e4c9bf75cb6b2816a4165352c6658c8732154f5b61fbab280f1");
     }
     // destination PostHogEU
     PostHogEU.logEvent("Lesson Plan Terminated", (Object as any).assign({}, eventProperties));
