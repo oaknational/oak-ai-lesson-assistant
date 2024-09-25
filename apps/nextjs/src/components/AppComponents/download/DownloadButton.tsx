@@ -18,6 +18,7 @@ import SlidesIcon from "../../SVGParts/SlidesIcon";
 import { SendEmailIcon } from "./DownloadAllButton";
 
 export const DownloadButton = ({
+  chatId,
   onClick,
   lesson,
   title,
@@ -28,6 +29,7 @@ export const DownloadButton = ({
   exportsType,
   "data-testid": dataTestId,
 }: {
+  chatId: string;
   onClick: () => void;
   lesson: LooseLessonPlan;
   title: string;
@@ -60,7 +62,7 @@ export const DownloadButton = ({
       >
         <Link
           onClick={() =>
-            trackDownload(ext, analyticsResourceType, lesson, track)
+            trackDownload(ext, analyticsResourceType, lesson, track, chatId)
           }
           className="flex w-full items-center justify-start  gap-15 hover:underline"
           href={`/api/aila-download?fileId=${fileId}&ext=${ext}&lessonTitle=${lessonTitle}`}
@@ -77,7 +79,7 @@ export const DownloadButton = ({
         <span className="my-12 h-[2px] w-full bg-black opacity-15" />
         <Link
           onClick={() =>
-            trackDownload("pdf", analyticsResourceType, lesson, track)
+            trackDownload("pdf", analyticsResourceType, lesson, track, chatId)
           }
           className="flex w-full items-center justify-start  gap-15 hover:underline"
           href={`/api/aila-download?fileId=${fileId}&ext=pdf&lessonTitle=${lessonTitle}`}
@@ -98,6 +100,7 @@ export const DownloadButton = ({
               analyticsResourceType,
               lesson,
               track,
+              chatId,
             )
           }
           className="hidden w-full items-center  justify-start gap-15 hover:underline sm:flex"

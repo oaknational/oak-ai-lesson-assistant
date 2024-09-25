@@ -49,6 +49,7 @@ type DownloadAllButtonProps = {
     | undefined;
 
   "data-testid"?: string;
+  chatId: string;
 };
 
 type zipDownloadStatus = "idle" | "loading" | "complete" | "error";
@@ -61,7 +62,7 @@ export const DownloadAllButton = ({
   downloadAvailable,
   downloadLoading,
   data,
-
+  chatId,
   "data-testid": dataTestId,
 }: Readonly<DownloadAllButtonProps>) => {
   const link = data && "link" in data ? data.link : "";
@@ -133,7 +134,7 @@ export const DownloadAllButton = ({
       >
         <Link
           onClick={() => {
-            trackDownload(ext, analyticsResourceType, lesson, track);
+            trackDownload(ext, analyticsResourceType, lesson, track, chatId);
             handleZipDownloadStatus();
           }}
           className="flex w-full items-center justify-start  gap-15 hover:underline"

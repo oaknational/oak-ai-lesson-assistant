@@ -87,6 +87,7 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                     data={exportAllAssets.data}
                     data-testid="chat-download-lesson-plan"
                     lesson={lessonPlan}
+                    chatId={id}
                   />
                   <DownloadButton
                     chatId={id}

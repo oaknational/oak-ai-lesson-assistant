@@ -12,8 +12,10 @@ export function trackDownload(
   analyticsResourceType: ResourceTypeValueType | ResourceTypeValueType[],
   lesson: LooseLessonPlan,
   track: ReturnType<typeof useAnalytics>["track"],
+  chatId: string,
 ) {
   track.lessonPlanResourcesDownloaded({
+    chatId,
     ...getLessonTrackingProps({ lesson }),
     resourceType: Array.isArray(analyticsResourceType)
       ? analyticsResourceType
