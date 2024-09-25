@@ -7,11 +7,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { withSentry } from "@/lib/sentry/withSentry";
 
-export const testSupportEnabled =
+const testSupportEnabled =
   process.env.NODE_ENV === "development" ||
   process.env.VERCEL_ENV === "preview";
 
-export const testSupportRouter = testSupportEnabled
+const testSupportRouter = testSupportEnabled
   ? testSupportRouterInternal
   : router({});
 

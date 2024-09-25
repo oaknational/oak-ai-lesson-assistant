@@ -70,7 +70,7 @@ export const prepareUser = publicProcedure
       variant: z.enum(["typical", "demo"]),
     }),
   )
-  .mutation(async ({ ctx, input }) => {
+  .mutation(async ({ input }) => {
     const email = `test+${branch}-${input.variant}@thenational.academy`;
 
     const user = await findOrCreateUser(email, input.variant);
