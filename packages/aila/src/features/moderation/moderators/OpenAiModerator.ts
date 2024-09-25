@@ -5,6 +5,10 @@ import {
   moderationResponseSchema,
 } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import OpenAI from "openai";
+import {
+  ChatCompletion,
+  ChatCompletionCreateParamsNonStreaming,
+} from "openai/resources/index.mjs";
 import zodToJsonSchema from "zod-to-json-schema";
 
 import { AilaModerator, AilaModerationError } from ".";
@@ -14,8 +18,28 @@ import {
 } from "../../../constants";
 import { AilaServices } from "../../../core";
 
+export type OpenAiModeratorArgs = {
+  chatId: string;
+  userId: string | undefined;
+  temperature?: number;
+  model?: OpenAI.Chat.ChatModel;
+  aila?: AilaServices;
+  openAiClient?: OpenAILike;
+};
+
+export interface OpenAILike {
+  chat: {
+    completions: {
+      create(
+        body: ChatCompletionCreateParamsNonStreaming,
+        options?: OpenAI.RequestOptions,
+      ): Promise<ChatCompletion>;
+    };
+  };
+}
+
 export class OpenAiModerator extends AilaModerator {
-  private _openAIClient: OpenAI;
+  protected _openAIClient: OpenAILike;
   private _temperature: number = DEFAULT_MODERATION_TEMPERATURE;
   private _model: string = DEFAULT_MODERATION_MODEL;
   private _aila?: AilaServices;
@@ -26,27 +50,32 @@ export class OpenAiModerator extends AilaModerator {
     temperature = DEFAULT_MODERATION_TEMPERATURE,
     model = DEFAULT_MODERATION_MODEL,
     aila,
-  }: {
-    chatId: string;
-    userId: string | undefined;
-    temperature?: number;
-    model?: OpenAI.Chat.ChatModel;
-    aila?: AilaServices;
-  }) {
+    openAiClient,
+  }: OpenAiModeratorArgs) {
     super({ chatId, userId });
-    this._openAIClient = createOpenAIClient({
-      app: "moderation",
-      chatMeta: {
-        chatId,
-        userId,
-      },
-    });
+
+    this._openAIClient =
+      openAiClient ??
+      createOpenAIClient({
+        app: "moderation",
+        chatMeta: {
+          chatId,
+          userId,
+        },
+      });
     if (temperature < 0 || temperature > 2) {
       throw new Error("Temperature must be between 0 and 2.");
     }
     this._temperature = temperature;
     this._model = model;
     this._aila = aila;
+  }
+
+  protected async _callOpenAi(
+    args: OpenAI.Chat.ChatCompletionCreateParamsNonStreaming,
+    options?: OpenAI.RequestOptions,
+  ) {
+    return this._openAIClient.chat.completions.create(args, options);
   }
 
   private async _moderate(
@@ -59,7 +88,7 @@ export class OpenAiModerator extends AilaModerator {
 
     const schema = zodToJsonSchema(moderationResponseSchema);
 
-    const moderationResponse = await this._openAIClient.chat.completions.create(
+    const moderationResponse = await this._callOpenAi(
       {
         model: this._model,
         messages: [
