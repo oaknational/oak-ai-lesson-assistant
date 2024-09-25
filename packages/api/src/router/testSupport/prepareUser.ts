@@ -12,13 +12,14 @@ const variants = {
   typical: {
     isDemoUser: false,
     region: "GB",
-    seedChat: true,
+    chatFixture: "typical",
   },
   // A user from a demo region
   demo: {
     isDemoUser: true,
     region: "US",
     seedChat: false,
+    chatFixture: null,
   },
 } as const;
 
@@ -84,10 +85,10 @@ export const prepareUser = publicProcedure
     const email = calculateEmailAddress(input.variant);
     const user = await findOrCreateUser(email, input.variant);
 
-    const shouldSeedChat = variants[input.variant].seedChat;
+    const chatFixture = variants[input.variant].chatFixture;
     let chatId: string | undefined;
-    if (shouldSeedChat) {
-      chatId = await seedChat(user.id);
+    if (chatFixture) {
+      chatId = await seedChat(user.id, chatFixture);
     }
 
     return {

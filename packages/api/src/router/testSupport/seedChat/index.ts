@@ -1,9 +1,18 @@
 import { prisma } from "@oakai/db";
 
-import { typicalChat } from "./typical";
+import typicalChatJson from "./typical.json";
 
-export const seedChat = async (userId: string) => {
+const fixtures = {
+  typical: typicalChatJson,
+};
+
+export const seedChat = async (
+  userId: string,
+  fixtureName: keyof typeof fixtures,
+) => {
   const id = `e2e-typical-user${userId}`;
+  const output = fixtures[fixtureName];
+
   await prisma.appSession.upsert({
     where: {
       id,
@@ -11,11 +20,11 @@ export const seedChat = async (userId: string) => {
     create: {
       id,
       appId: "lesson-planner",
-      userId: userId,
-      output: typicalChat,
+      userId,
+      output,
     },
     update: {
-      output: typicalChat,
+      output,
     },
   });
   return id;
