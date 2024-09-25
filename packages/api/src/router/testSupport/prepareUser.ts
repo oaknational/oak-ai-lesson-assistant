@@ -17,6 +17,11 @@ const variants = {
   },
 } as const;
 
+const calculateEmailAddress = (variantName: keyof typeof variants) => {
+  const sanitisedBranchName = branch.replace(/[^a-zA-Z0-9]/g, "-");
+  return `test+${sanitisedBranchName}-${variantName}@thenational.academy`;
+};
+
 const getSignInToken = async (userId: string) => {
   const response = await clerkClient.signInTokens.createSignInToken({
     userId,
@@ -45,8 +50,8 @@ const findOrCreateUser = async (
   console.log("Creating test user", { email });
   const newUser = await clerkClient.users.createUser({
     emailAddress: [email],
-    firstName: "Test User",
-    lastName: `${branch}/${variantName}`,
+    firstName: branch,
+    lastName: variantName,
 
     publicMetadata: {
       labs: {
@@ -71,8 +76,7 @@ export const prepareUser = publicProcedure
     }),
   )
   .mutation(async ({ input }) => {
-    const email = `test+${branch}-${input.variant}@thenational.academy`;
-
+    const email = calculateEmailAddress(input.variant);
     const user = await findOrCreateUser(email, input.variant);
 
     return {

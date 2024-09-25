@@ -1,15 +1,22 @@
 import { TestSupportRouter } from "@oakai/api/src/router/testSupport";
 import { transformer } from "@oakai/api/transformer";
 import { test, Page } from "@playwright/test";
-import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
+import { createTRPCProxyClient, httpBatchLink, loggerLink } from "@trpc/client";
 
-import { TEST_BASE_URL } from "../config/config";
+import {
+  TEST_BASE_URL,
+  VERCEL_AUTOMATION_BYPASS_SECRET,
+} from "../config/config";
 
 const trpc = createTRPCProxyClient<TestSupportRouter>({
   transformer,
   links: [
+    loggerLink(),
     httpBatchLink({
       url: `${TEST_BASE_URL}/api/trpc/test-support`,
+      headers: {
+        "x-vercel-protection-bypass": VERCEL_AUTOMATION_BYPASS_SECRET,
+      },
     }),
   ],
 });
