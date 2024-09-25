@@ -44,7 +44,6 @@ export class OpenAIService implements LLMService {
     schemaName: string;
     messages: Message[];
     temperature: number;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }): Promise<ReadableStreamDefaultReader<string>> {
     const { model, messages, temperature, schema, schemaName } = params;
     if (!STRUCTURED_OUTPUTS_ENABLED) {

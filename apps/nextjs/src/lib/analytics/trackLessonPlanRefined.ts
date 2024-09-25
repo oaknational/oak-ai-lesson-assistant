@@ -45,6 +45,7 @@ function actionToComponentType(
  * changes, we still need to track the lesson plan as it progresses.
  */
 export function trackLessonPlanRefined({
+  chatId,
   prevLesson,
   nextLesson,
   userMessageContent,
@@ -53,6 +54,7 @@ export function trackLessonPlanRefined({
   track,
   action,
 }: {
+  chatId: string;
   prevLesson: LooseLessonPlan;
   nextLesson: LooseLessonPlan;
   userMessageContent: string;
@@ -75,6 +77,7 @@ export function trackLessonPlanRefined({
   if (isFirstMessage) {
     track.lessonPlanInitiated({
       ...getLessonTrackingProps({ lesson: nextLesson }),
+      chatId,
       moderatedContentType: getModerationTypes(moderation),
       text: userMessageContent,
       componentType,
@@ -89,6 +92,7 @@ export function trackLessonPlanRefined({
     );
     track.lessonPlanRefined({
       ...getLessonTrackingProps({ lesson: nextLesson }),
+      chatId,
       moderatedContentType: getModerationTypes(moderation),
       text: userMessageContent,
       componentType: isSelectingOakLesson ? "select_oak_lesson" : componentType,
@@ -104,6 +108,7 @@ export function trackLessonPlanRefined({
   if (!isLessonComplete(prevLesson) && isLessonComplete(nextLesson)) {
     track.lessonPlanCompleted({
       ...getLessonTrackingProps({ lesson: nextLesson }),
+      chatId,
       moderatedContentType: getModerationTypes(moderation),
     });
   }
@@ -113,6 +118,7 @@ export function trackLessonPlanRefined({
   const isTerminated = accountLocked || (moderation && isToxic(moderation));
   if (isTerminated) {
     track.lessonPlanTerminated({
+      chatId,
       isUserBlocked: accountLocked,
       isToxicContent: moderation ? isToxic(moderation) : false,
       isThreatDetected: false, // @fixme currently we can't access threat detection here

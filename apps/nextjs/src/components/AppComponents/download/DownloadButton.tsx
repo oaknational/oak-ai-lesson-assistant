@@ -20,6 +20,7 @@ import SlidesIcon from "../../SVGParts/SlidesIcon";
 import { SendEmailIcon } from "./DownloadAllButton";
 
 export const DownloadButton = ({
+  chatId,
   onClick,
   lesson,
   title,
@@ -30,6 +31,7 @@ export const DownloadButton = ({
   exportsType,
   "data-testid": dataTestId,
 }: {
+  chatId: string;
   onClick: () => void;
   lesson: LooseLessonPlan;
   title: string;

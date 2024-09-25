@@ -36,6 +36,7 @@ const ShareChat = ({
   const attemptToShareChat = async () => {
     track.lessonPlanShared({
       ...getLessonTrackingProps({ lesson }),
+      chatId,
       componentType: "go_to_share_page_button",
     });
     if (isShared) {
