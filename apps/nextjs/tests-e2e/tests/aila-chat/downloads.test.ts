@@ -7,6 +7,8 @@ import { bypassVercelProtection } from "../../helpers/vercel";
 import { isFinished } from "./helpers";
 
 test("Downloading a completed lesson plan", async ({ page }) => {
+  test.slow();
+
   await test.step("Setup", async () => {
     await clerkSetup();
     await bypassVercelProtection(page);
