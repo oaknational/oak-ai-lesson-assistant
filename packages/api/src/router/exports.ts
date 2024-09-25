@@ -896,9 +896,8 @@ export const exportsRouter = router({
           body: `
 Hi ${userFirstName},
 
-We made the lesson: ${lessonTitle}
-
-You can use the following links to copy the lesson resources  to your Google Drive: 
+These are the lesson resources that you created with Aila.
+You can use the following links to copy the lesson resources to your Google Drive.
 
 Lesson plan: ${`${lessonPlanLink.split("/edit")[0]}/copy`}
 Slides: ${`${slidesLink.split("/edit")[0]}/copy`}

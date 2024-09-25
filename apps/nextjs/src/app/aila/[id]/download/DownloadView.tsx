@@ -80,8 +80,8 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                 <Flex direction="column" className="gap-14">
                   <DownloadAllButton
                     onClick={() => exportAllAssets.start()}
-                    title="Download all"
-                    subTitle="Overview of the complete lesson"
+                    title="Download all resources"
+                    subTitle="Lesson plan, starter and exit quiz, slides and worksheet"
                     downloadAvailable={!!exportAllAssets.readyToExport}
                     downloadLoading={exportAllAssets.status === "loading"}
                     data={exportAllAssets.data}
