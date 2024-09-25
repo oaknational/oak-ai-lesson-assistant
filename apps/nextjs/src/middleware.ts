@@ -7,8 +7,7 @@ import { NextMiddleware, NextResponse } from "next/server";
 import { sentryCleanup } from "./lib/sentry/sentryCleanup";
 
 function handleError(error: unknown, extra: Record<string, unknown>): Response {
-  const wrappedError = new Error("Error in nextMiddleware");
-  wrappedError.cause = error;
+  const wrappedError = new Error("Error in nextMiddleware", { cause: error });
   Sentry.captureException(wrappedError, { extra });
 
   return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
