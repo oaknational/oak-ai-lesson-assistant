@@ -9,9 +9,6 @@ import {
   PrismaClientWithAccelerate,
   Subject,
 } from "@oakai/db";
-import { Prisma } from "@prisma/client";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { PrismaVectorStore } from "langchain/vectorstores/prisma";
 import yaml from "yaml";
 
 import { LLMResponseJsonSchema } from "../../../aila/src/protocol/jsonPatchProtocol";
@@ -56,11 +53,6 @@ type LessonWithKeyStageSubjectAndSummaries = Lesson & {
 type LessonPlanWithParts = LessonPlan & {
   parts: LessonPlanPart[] | null;
 };
-
-interface FilterOptions {
-  key_stage_id?: object;
-  subject_id?: object;
-}
 
 export class LessonPlans {
   private _rag: RAG;
