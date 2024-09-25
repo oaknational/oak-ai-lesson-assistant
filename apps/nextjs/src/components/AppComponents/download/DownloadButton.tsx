@@ -2,9 +2,7 @@ import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { Box } from "@radix-ui/themes";
 import Link from "next/link";
 
-import { getLessonTrackingProps } from "@/lib/analytics/helpers";
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { ResourceFileTypeValueType } from "@/lib/avo/Avo";
 import { trackDownload } from "@/utils/trackDownload";
 import { trpc } from "@/utils/trpc";
 
@@ -20,7 +18,6 @@ import SlidesIcon from "../../SVGParts/SlidesIcon";
 import { SendEmailIcon } from "./DownloadAllButton";
 
 export const DownloadButton = ({
-  chatId,
   onClick,
   lesson,
   title,
@@ -31,7 +28,6 @@ export const DownloadButton = ({
   exportsType,
   "data-testid": dataTestId,
 }: {
-  chatId: string;
   onClick: () => void;
   lesson: LooseLessonPlan;
   title: string;
