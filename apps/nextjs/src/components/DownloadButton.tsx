@@ -18,6 +18,7 @@ import QuizIcon from "./SVGParts/QuizIcon";
 import SlidesIcon from "./SVGParts/SlidesIcon";
 
 export const DownloadButton = ({
+  chatId,
   onClick,
   lesson,
   title,
@@ -28,6 +29,7 @@ export const DownloadButton = ({
   exportsType,
   "data-testid": dataTestId,
 }: {
+  chatId: string;
   onClick: () => void;
   lesson: LooseLessonPlan;
   title: string;
@@ -51,6 +53,7 @@ export const DownloadButton = ({
 
   function trackDownload(resourceFileType: ResourceFileTypeValueType) {
     track.lessonPlanResourcesDownloaded({
+      chatId,
       ...getLessonTrackingProps({ lesson }),
       resourceType: [analyticsResourceType],
       resourceFileType,

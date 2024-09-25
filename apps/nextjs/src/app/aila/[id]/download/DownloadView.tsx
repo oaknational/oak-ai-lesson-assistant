@@ -17,7 +17,7 @@ type DownloadViewProps = Readonly<{
   chat: AilaPersistedChat;
 }>;
 export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
-  const { lessonPlan } = chat;
+  const { lessonPlan, id } = chat;
   const {
     lessonSlidesExport,
     worksheetExport,
@@ -82,6 +82,7 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
               >
                 <Flex direction="column" className="gap-14">
                   <DownloadButton
+                    chatId={id}
                     onClick={() => lessonPlanExport.start()}
                     title="Lesson plan"
                     subTitle="Overview of the complete lesson"
@@ -93,6 +94,7 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                     lesson={lessonPlan}
                   />
                   <DownloadButton
+                    chatId={id}
                     onClick={() => starterQuizExport.start()}
                     title="Starter quiz"
                     subTitle="Questions and answers to assess prior knowledge"
@@ -103,6 +105,7 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                     lesson={lessonPlan}
                   />
                   <DownloadButton
+                    chatId={id}
                     onClick={() => lessonSlidesExport.start()}
                     data-testid="chat-download-slides-btn"
                     title="Slide deck"
@@ -114,6 +117,7 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                     lesson={lessonPlan}
                   />
                   <DownloadButton
+                    chatId={id}
                     onClick={() => worksheetExport.start()}
                     title="Worksheet"
                     subTitle="Practice tasks"
@@ -124,6 +128,7 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                     exportsType="worksheet"
                   />
                   <DownloadButton
+                    chatId={id}
                     onClick={() => exitQuizExport.start()}
                     title="Exit quiz"
                     subTitle="Questions and answers to assess understanding"
@@ -136,6 +141,7 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                   {lessonPlan.additionalMaterials &&
                     lessonPlan.additionalMaterials !== "None" && (
                       <DownloadButton
+                        chatId={id}
                         onClick={() => additionalMaterialsExport.start()}
                         title="Additional materials"
                         subTitle="Document containing any additional materials"
