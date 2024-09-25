@@ -85,12 +85,14 @@ export const prepareUser = publicProcedure
     const user = await findOrCreateUser(email, input.variant);
 
     const shouldSeedChat = variants[input.variant].seedChat;
+    let chatId: string | undefined;
     if (shouldSeedChat) {
-      await seedChat(user.id);
+      chatId = await seedChat(user.id);
     }
 
     return {
       email,
       signInToken: await getSignInToken(user.id),
+      chatId: chatId,
     };
   });

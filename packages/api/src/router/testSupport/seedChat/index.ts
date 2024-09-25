@@ -18,4 +18,5 @@ export const seedChat = async (userId: string) => {
       output: typicalChat,
     },
   });
+  return id;
 };

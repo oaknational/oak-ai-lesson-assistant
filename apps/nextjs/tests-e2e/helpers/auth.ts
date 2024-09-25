@@ -22,7 +22,7 @@ const trpc = createTRPCProxyClient<TestSupportRouter>({
 });
 
 export async function prepareUser(page: Page, variant: "typical" | "demo") {
-  await test.step("Prepare user", async () => {
+  return await test.step("Prepare user", async () => {
     const login = await test.step("tRPC.prepareUser", async () => {
       return await trpc.prepareUser.mutate({ variant });
     });
@@ -31,5 +31,7 @@ export async function prepareUser(page: Page, variant: "typical" | "demo") {
       `${TEST_BASE_URL}/test-support/sign-in?token=${login.signInToken}`,
     );
     await page.waitForSelector(".success");
+
+    return login;
   });
 }

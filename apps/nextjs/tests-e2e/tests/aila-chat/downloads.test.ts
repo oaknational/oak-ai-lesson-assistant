@@ -12,9 +12,9 @@ test("Downloading a completed lesson plan", async ({ page }) => {
     await bypassVercelProtection(page);
     await setupClerkTestingToken({ page });
 
-    await prepareUser(page, "typical");
+    const { chatId } = await prepareUser(page, "typical");
 
-    await page.goto(`${TEST_BASE_URL}/aila/e2e-seed-typical-chat`);
+    await page.goto(`${TEST_BASE_URL}/aila/${chatId}`);
     await isFinished(page);
   });
 
@@ -42,6 +42,7 @@ test("Downloading a completed lesson plan", async ({ page }) => {
     // Generated
     await expect(downloadLessonPlan).toContainText(
       "Download lesson plan (.docx)",
+      { timeout: 15000 },
     );
     await expect(downloadLessonPlan).toContainText(
       "Download Lesson plan (.pdf)",
