@@ -5,17 +5,11 @@ import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
 
 import { TEST_BASE_URL } from "../config/config";
 
-const getBaseUrl = () => {
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
-
-  return `http://localhost:${process.env.PORT ?? 2525}`; // dev SSR should use localhost
-};
-
 const trpc = createTRPCProxyClient<TestSupportRouter>({
   transformer,
   links: [
     httpBatchLink({
-      url: `${getBaseUrl()}/api/trpc/test-support`,
+      url: `${TEST_BASE_URL}/api/trpc/test-support`,
     }),
   ],
 });
