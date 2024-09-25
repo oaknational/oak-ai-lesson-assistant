@@ -1,0 +1,18 @@
+{
+  "name": "@oakai/ingest",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "main": "./index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint . --ext .ts,.tsx",
+    "type-check": "tsc --noEmit"
+  },
+  "prettier": "@oakai/prettier-config",
+  "devDependencies": {
+    "prettier-config": "*"
+  }
+}
