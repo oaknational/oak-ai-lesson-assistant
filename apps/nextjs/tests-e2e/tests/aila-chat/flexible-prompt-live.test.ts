@@ -2,7 +2,7 @@ import { clerkSetup, setupClerkTestingToken } from "@clerk/testing/playwright";
 import { test, expect } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
-import { bypassVercelProtection } from "../../helpers";
+import { bypassVercelProtection } from "../../helpers/vercel";
 import { continueChat, isFinished, waitForGeneration } from "./helpers";
 
 const generationTimeout = 75000;
