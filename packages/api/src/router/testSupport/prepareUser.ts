@@ -3,17 +3,22 @@ import os from "os";
 import { z } from "zod";
 
 import { publicProcedure } from "../../trpc";
+import { seedChat } from "./seedChat";
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? os.hostname();
 
 const variants = {
+  // A user with no issues and a completed lesson plan
   typical: {
     isDemoUser: false,
     region: "GB",
+    seedChat: true,
   },
+  // A user from a demo region
   demo: {
     isDemoUser: true,
     region: "US",
+    seedChat: false,
   },
 } as const;
 
@@ -78,6 +83,11 @@ export const prepareUser = publicProcedure
   .mutation(async ({ input }) => {
     const email = calculateEmailAddress(input.variant);
     const user = await findOrCreateUser(email, input.variant);
+
+    const shouldSeedChat = variants[input.variant].seedChat;
+    if (shouldSeedChat) {
+      await seedChat(user.id);
+    }
 
     return {
       email,
