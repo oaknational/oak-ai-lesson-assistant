@@ -56,7 +56,7 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                 size="sm"
               >
                 <span className="text-base font-light underline">
-                  {lessonPlan.title ? lessonPlan.title : "Back to lesson"}
+                  Back to lesson
                 </span>
               </Button>
 
