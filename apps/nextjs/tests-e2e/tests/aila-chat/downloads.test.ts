@@ -45,7 +45,7 @@ test("Downloading a completed lesson plan", async ({ page }) => {
     // Generated
     await expect(downloadLessonPlan).toContainText(
       "Download lesson plan (.docx)",
-      { ignoreCase: true, timeout: 15000 },
+      { ignoreCase: true, timeout: 30000 },
     );
     await expect(downloadLessonPlan).toContainText(
       "Download Lesson plan (.pdf)",

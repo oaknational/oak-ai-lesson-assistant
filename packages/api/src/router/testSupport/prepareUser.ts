@@ -7,7 +7,7 @@ import { seedChat } from "./seedChat";
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? os.hostname();
 
-const variants = {
+const personas = {
   // A user with no issues and a completed lesson plan
   typical: {
     isDemoUser: false,
@@ -23,9 +23,9 @@ const variants = {
   },
 } as const;
 
-const calculateEmailAddress = (variantName: keyof typeof variants) => {
+const calculateEmailAddress = (personaName: keyof typeof personas) => {
   const sanitisedBranchName = branch.replace(/[^a-zA-Z0-9]/g, "-");
-  return `test+${sanitisedBranchName}-${variantName}@thenational.academy`;
+  return `test+${sanitisedBranchName}-${personaName}@thenational.academy`;
 };
 
 const getSignInToken = async (userId: string) => {
@@ -39,9 +39,9 @@ const getSignInToken = async (userId: string) => {
 
 const findOrCreateUser = async (
   email: string,
-  variantName: keyof typeof variants,
+  personaName: keyof typeof personas,
 ) => {
-  const variant = variants[variantName];
+  const persona = personas[personaName];
 
   const existingUser = (
     await clerkClient.users.getUserList({
@@ -57,18 +57,18 @@ const findOrCreateUser = async (
   const newUser = await clerkClient.users.createUser({
     emailAddress: [email],
     firstName: branch,
-    lastName: variantName,
+    lastName: personaName,
 
     publicMetadata: {
       labs: {
         isOnboarded: true,
-        isDemoUser: variant.isDemoUser,
+        isDemoUser: persona.isDemoUser,
       },
     },
     privateMetadata: {
       acceptedPrivacyPolicy: new Date(),
       acceptedTermsOfUse: new Date(),
-      region: variant.region,
+      region: persona.region,
     },
   });
 
@@ -78,14 +78,14 @@ const findOrCreateUser = async (
 export const prepareUser = publicProcedure
   .input(
     z.object({
-      variant: z.enum(["typical", "demo"]),
+      persona: z.enum(["typical", "demo"]),
     }),
   )
   .mutation(async ({ input }) => {
-    const email = calculateEmailAddress(input.variant);
-    const user = await findOrCreateUser(email, input.variant);
+    const email = calculateEmailAddress(input.persona);
+    const user = await findOrCreateUser(email, input.persona);
 
-    const chatFixture = variants[input.variant].chatFixture;
+    const chatFixture = personas[input.persona].chatFixture;
     let chatId: string | undefined;
     if (chatFixture) {
       chatId = await seedChat(user.id, chatFixture);
