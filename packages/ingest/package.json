@@ -12,7 +12,15 @@
     "type-check": "tsc --noEmit"
   },
   "prettier": "@oakai/prettier-config",
+  "dependencies": {
+    "@google-cloud/storage": "^7.7.0",
+    "@oakai/db": "*",
+    "graphql-request": "^6.1.0",
+    "webvtt-parser": "^2.2.0",
+    "zod": "3.23.8"
+  },
   "devDependencies": {
+    "@types/webvtt-parser": "^2.2.0",
     "prettier-config": "*"
   }
 }
