@@ -143,9 +143,14 @@ export async function authMiddleware(
 ): Promise<Response> {
   const configuredClerkMiddleware = clerkMiddleware(conditionallyProtectRoute);
 
-  const response = await configuredClerkMiddleware(request, event);
-  if (response) {
-    return response;
+  try {
+    const response = await configuredClerkMiddleware(request, event);
+    if (response) {
+      return response;
+    }
+  } catch (error) {
+    console.error("Error in authMiddleware", error);
+    throw new Error("Error in authMiddleware", { cause: error });
   }
 
   return NextResponse.next({ request });
