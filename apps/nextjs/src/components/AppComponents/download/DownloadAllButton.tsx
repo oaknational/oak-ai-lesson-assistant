@@ -202,7 +202,7 @@ export const DownloadAllButton = ({
             <span className="text-left font-bold">{title}</span>
             {downloadLoading ? (
               <span className="text-left text-[#287C34] opacity-80">
-                Generating for exports
+                Generating exports
               </span>
             ) : (
               <span className="text-left opacity-80">{subTitle}</span>
