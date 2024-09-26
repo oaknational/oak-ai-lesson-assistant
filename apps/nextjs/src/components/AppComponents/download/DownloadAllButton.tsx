@@ -149,10 +149,10 @@ export const DownloadAllButton = ({
           )}
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
-              Download all resources in pdf and docx/pptx
+              Download all resources (.docx, .ppt, .pdf)
             </span>
             <span className="text-left opacity-80">
-              All sections{" "}
+              {subTitle}
               {zipStatus === "loading" && "- this can take up to 60s"}
             </span>
           </div>
@@ -171,7 +171,7 @@ export const DownloadAllButton = ({
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
               Email me
-              {isSuccess && `- Email sent`}{" "}
+              {isSuccess && `- email sent`}{" "}
               {isError && `- There was an error sending the email!`}
             </span>
             <span className="text-left opacity-80">

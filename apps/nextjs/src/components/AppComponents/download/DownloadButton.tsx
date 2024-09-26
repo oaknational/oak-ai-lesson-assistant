@@ -73,7 +73,7 @@ export const DownloadButton = ({
             <span className="text-left font-bold">
               Download {title.toLocaleLowerCase()} (.{ext})
             </span>
-            <span className="text-left opacity-80">All sections</span>
+            <span className="text-left opacity-80">{subTitle}</span>
           </div>
         </Link>
         <span className="my-12 h-[2px] w-full bg-black opacity-15" />
@@ -88,7 +88,7 @@ export const DownloadButton = ({
           <Icon icon="download" size="sm" />
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">Download {title} (.pdf)</span>
-            <span className="text-left opacity-80">All sections</span>
+            <span className="text-left opacity-80">{subTitle}</span>
           </div>
         </Link>
         <span className="my-12 h-[2px] w-full bg-black opacity-15" />
@@ -169,7 +169,7 @@ export const DownloadButton = ({
             <span className="text-left font-bold">{title}</span>
             {downloadLoading ? (
               <span className="text-left text-[#287C34] opacity-80">
-                Generating {title} for export
+                Generating {title.toLowerCase()} for export
               </span>
             ) : (
               <span className="text-left opacity-80">{subTitle}</span>
