@@ -225,9 +225,12 @@ export const ChatMessagesDisplay = ({
       {totalSectionsComplete >= totalSections &&
         messages.some(
           (message) =>
-            message.role !== "user" &&
-            message.content.includes("download") &&
-            message.content.includes("slides"),
+            (message.role !== "user" &&
+              message.content.includes("download") &&
+              message.content.includes("slides")) ||
+            (message.role !== "user" &&
+              message.content.includes("download") &&
+              message.content.includes("share")),
         ) && <InChatDownloadButtons {...{ demo, id, setDialogWindow }} />}
     </>
   );
