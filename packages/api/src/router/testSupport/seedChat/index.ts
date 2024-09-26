@@ -10,7 +10,7 @@ export const seedChat = async (
   userId: string,
   fixtureName: keyof typeof fixtures,
 ) => {
-  const id = `e2e-typical-user${userId}`;
+  const id = `e2e-typical-${userId}`;
   const output = fixtures[fixtureName];
 
   await prisma.appSession.upsert({
