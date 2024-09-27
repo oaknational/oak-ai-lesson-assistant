@@ -42,7 +42,7 @@ function patchHasBeenApplied(
 export const useTemporaryLessonPlanWithStreamingEdits = ({
   lessonPlan,
   messages,
-  //isStreaming,
+  //isStreaming, // Disable partial patches for now
   messageHashes,
 }: {
   lessonPlan?: LooseLessonPlan;
@@ -54,7 +54,6 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
   validPatches: PatchDocument[];
   partialPatches: PatchDocument[];
 } => {
-  console.log("useTemporaryLessonPlanWithStreamingEdits", lessonPlan);
   const throttledAssistantMessages = useThrottle(messages, 100);
   const tempLessonPlanRef = useRef<LooseLessonPlan>(lessonPlan ?? {});
   const appliedPatchesRef = useRef<PatchDocumentWithHash[]>([]);
