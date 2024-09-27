@@ -18,6 +18,7 @@ type ChatLeftHandSideProps = {
   showLessonMobile: boolean;
   setShowLessonMobile: (value: boolean) => void;
   demo: DemoContextProps;
+  isDemoUser: boolean;
 };
 
 const ChatLeftHandSide = ({
@@ -27,6 +28,7 @@ const ChatLeftHandSide = ({
   showLessonMobile,
   setShowLessonMobile,
   demo,
+  isDemoUser,
 }: Readonly<ChatLeftHandSideProps>) => {
   return (
     <Flex
@@ -39,6 +41,7 @@ const ChatLeftHandSide = ({
       <ChatLhsHeader
         setShowLessonMobile={setShowLessonMobile}
         showLessonMobile={showLessonMobile}
+        isDemoUser={isDemoUser}
       />
       <div>
         <ChatPanelArea chatAreaRef={chatAreaRef} isDemoLocked={isDemoLocked}>

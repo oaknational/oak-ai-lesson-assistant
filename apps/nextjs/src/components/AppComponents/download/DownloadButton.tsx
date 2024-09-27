@@ -137,7 +137,7 @@ export const DownloadButton = ({
           />
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
-              Email me {ext === "docx" ? `doc` : `slides`}{" "}
+              Email me {ext === "docx" ? `gdoc` : `gslides`}{" "}
               {isSuccess && `- Email sent`}{" "}
               {isError && `- There was an error sending the email!`}
             </span>
