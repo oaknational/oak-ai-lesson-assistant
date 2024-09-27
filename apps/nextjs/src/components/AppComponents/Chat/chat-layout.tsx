@@ -42,6 +42,7 @@ export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
           isDemoLocked={isDemoLocked}
           showLessonMobile={showLessonMobile}
           setShowLessonMobile={setShowLessonMobile}
+          isDemoUser={demo.isDemoUser}
         />
         <ChatRightHandSideLesson
           id={id}
