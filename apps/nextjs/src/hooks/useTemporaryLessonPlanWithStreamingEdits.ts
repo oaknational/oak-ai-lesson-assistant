@@ -54,6 +54,7 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
   validPatches: PatchDocument[];
   partialPatches: PatchDocument[];
 } => {
+  console.log("useTemporaryLessonPlanWithStreamingEdits", lessonPlan);
   const throttledAssistantMessages = useThrottle(messages, 100);
   const tempLessonPlanRef = useRef<LooseLessonPlan>({});
   const appliedPatchesRef = useRef<PatchDocumentWithHash[]>([]);
@@ -90,19 +91,20 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
     return newLessonPlan ?? workingLessonPlan;
   };
 
-  const applyPatchWhileStillStreaming = useCallback(
-    (patch: PatchDocument, workingLessonPlan: LooseLessonPlan) => {
-      if (!isStreaming) {
-        return workingLessonPlan;
-      }
-      const newLessonPlan: LooseLessonPlan | undefined = applyLessonPlanPatch(
-        { ...workingLessonPlan },
-        patch,
-      );
-      return newLessonPlan ?? workingLessonPlan;
-    },
-    [isStreaming],
-  );
+  // Disable partial patches for now
+  // const applyPatchWhileStillStreaming = useCallback(
+  //   (patch: PatchDocument, workingLessonPlan: LooseLessonPlan) => {
+  //     if (!isStreaming) {
+  //       return workingLessonPlan;
+  //     }
+  //     const newLessonPlan: LooseLessonPlan | undefined = applyLessonPlanPatch(
+  //       { ...workingLessonPlan },
+  //       patch,
+  //     );
+  //     return newLessonPlan ?? workingLessonPlan;
+  //   },
+  //   [isStreaming],
+  // );
 
   return useMemo(() => {
     if (!throttledAssistantMessages || !throttledAssistantMessages.length) {
@@ -140,7 +142,9 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
       }
     }
 
-    // Do not apply partial patches
+    // Do not apply partial patches for now
+    // Keeping this commented out for now because we
+    // will probably want to reintroduce this feature
     // const streamingPatch = partialPatches[partialPatches.length - 1];
 
     // if (streamingPatch) {
@@ -155,9 +159,5 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
       validPatches,
       partialPatches,
     };
-  }, [
-    throttledAssistantMessages,
-    messageHashes,
-    applyPatchWhileStillStreaming,
-  ]);
+  }, [throttledAssistantMessages, messageHashes]);
 };
