@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import Textarea from "react-textarea-autosize";
 
 import { UseChatHelpers } from "ai/react";
