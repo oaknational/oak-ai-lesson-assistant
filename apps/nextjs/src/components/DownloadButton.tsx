@@ -92,7 +92,9 @@ export const DownloadButton = ({
         >
           <Icon icon="download" size="sm" />
           <div className="flex flex-col gap-6">
-            <span className="text-left font-bold">Download {title} (.pdf)</span>
+            <span className="text-left font-bold">
+              Download {title.toLowerCase()} (.pdf)
+            </span>
             <span className="text-left opacity-80">All sections</span>
           </div>
         </Link>
@@ -130,7 +132,7 @@ export const DownloadButton = ({
           {handleSendEmailIcon({ isSuccess, isLoading, isError })}
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
-              Email me {ext === "docx" ? `doc` : `slides`}{" "}
+              Email me {ext === "docx" ? `gdoc` : `gslides`}{" "}
               {isSuccess && `- Email sent`}{" "}
               {isError && `- There was an error sending the email!`}
             </span>

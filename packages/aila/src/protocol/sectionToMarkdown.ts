@@ -41,7 +41,7 @@ export function sectionToMarkdown(
   if (key.includes("cycle")) {
     try {
       const cycle = CycleOptionalSchema.parse(value);
-      const content = `## ${cycle.title ?? "…"}\n\n**${cycle.durationInMinutes ?? "…"} minutes**\n\n`;
+      const content = `## ${cycle.title ?? "…"}\n\n`;
       return `${content}\n\n### Explanation\n\n${sectionToMarkdown("explanation", cycle.explanation ?? "…")}\n\n### Check for Understanding\n\n${cycle.checkForUnderstanding ? organiseAnswersAndDistractors(cycle.checkForUnderstanding) : "…"}\n\n### Practice\n\n${cycle.practice ?? "…"}\n\n### Feedback\n\n${cycle.feedback ?? "…"}`;
     } catch (e) {
       // Invalid schema
