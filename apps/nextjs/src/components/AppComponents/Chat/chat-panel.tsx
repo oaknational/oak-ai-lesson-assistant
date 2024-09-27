@@ -23,7 +23,16 @@ export function ChatPanel({
   isDemoLocked,
 }: Readonly<ChatPanelProps>) {
   const chat = useLessonChat();
-  const { id, isLoading, input, setInput, append, ailaStreamingStatus } = chat;
+  const {
+    id,
+    isLoading,
+    input,
+    setInput,
+    append,
+    ailaStreamingStatus,
+    queueUserAction,
+    queuedUserAction,
+  } = chat;
 
   const { trackEvent } = useAnalytics();
   const containerClass = `grid w-full grid-cols-1 ${isEmptyScreen ? "sm:grid-cols-1" : ""} peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]`;
@@ -49,6 +58,8 @@ export function ChatPanel({
             setInput={setInput}
             ailaStreamingStatus={ailaStreamingStatus}
             isEmptyScreen={isEmptyScreen}
+            queueUserAction={queueUserAction}
+            queuedUserAction={queuedUserAction}
           />
         )}
         {isDemoLocked && <LockedPromptForm />}

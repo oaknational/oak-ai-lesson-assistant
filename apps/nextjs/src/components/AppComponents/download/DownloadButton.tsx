@@ -2,20 +2,20 @@ import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { Box } from "@radix-ui/themes";
 import Link from "next/link";
 
-import { getLessonTrackingProps } from "@/lib/analytics/helpers";
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { ResourceFileTypeValueType } from "@/lib/avo/Avo";
+import { trackDownload } from "@/utils/trackDownload";
 import { trpc } from "@/utils/trpc";
 
 import {
   ExportsType,
   getExportsConfig,
-} from "./ExportsDialogs/exports.helpers";
-import { Icon } from "./Icon";
-import LoadingWheel from "./LoadingWheel";
-import LessonIcon from "./SVGParts/LessonIcon";
-import QuizIcon from "./SVGParts/QuizIcon";
-import SlidesIcon from "./SVGParts/SlidesIcon";
+} from "../../ExportsDialogs/exports.helpers";
+import { Icon } from "../../Icon";
+import LoadingWheel from "../../LoadingWheel";
+import LessonIcon from "../../SVGParts/LessonIcon";
+import QuizIcon from "../../SVGParts/QuizIcon";
+import SlidesIcon from "../../SVGParts/SlidesIcon";
+import { SendEmailIcon } from "./DownloadAllButton";
 
 export const DownloadButton = ({
   chatId,
@@ -51,15 +51,6 @@ export const DownloadButton = ({
   const { isSuccess, isError, mutateAsync, isLoading } =
     trpc.exports.sendUserExportLink.useMutation();
 
-  function trackDownload(resourceFileType: ResourceFileTypeValueType) {
-    track.lessonPlanResourcesDownloaded({
-      chatId,
-      ...getLessonTrackingProps({ lesson }),
-      resourceType: [analyticsResourceType],
-      resourceFileType,
-    });
-  }
-
   if (link) {
     const fileId =
       data && "link" in data && data.link?.split("/edit")[0]?.split("/d/")[1];
@@ -70,7 +61,9 @@ export const DownloadButton = ({
         data-testid={dataTestId}
       >
         <Link
-          onClick={() => trackDownload(ext)}
+          onClick={() =>
+            trackDownload(ext, analyticsResourceType, lesson, track, chatId)
+          }
           className="flex w-full items-center justify-start  gap-15 hover:underline"
           href={`/api/aila-download?fileId=${fileId}&ext=${ext}&lessonTitle=${lessonTitle}`}
           target="_blank"
@@ -80,28 +73,36 @@ export const DownloadButton = ({
             <span className="text-left font-bold">
               Download {title.toLocaleLowerCase()} (.{ext})
             </span>
-            <span className="text-left opacity-80">All sections</span>
+            <span className="text-left opacity-80">{subTitle}</span>
           </div>
         </Link>
         <span className="my-12 h-[2px] w-full bg-black opacity-15" />
         <Link
-          onClick={() => trackDownload("pdf")}
+          onClick={() =>
+            trackDownload("pdf", analyticsResourceType, lesson, track, chatId)
+          }
           className="flex w-full items-center justify-start  gap-15 hover:underline"
           href={`/api/aila-download?fileId=${fileId}&ext=pdf&lessonTitle=${lessonTitle}`}
           target="_blank"
         >
           <Icon icon="download" size="sm" />
           <div className="flex flex-col gap-6">
-            <span className="text-left font-bold">
-              Download {title.toLowerCase()} (.pdf)
-            </span>
-            <span className="text-left opacity-80">All sections</span>
+            <span className="text-left font-bold">Download {title} (.pdf)</span>
+            <span className="text-left opacity-80">{subTitle}</span>
           </div>
         </Link>
         <span className="my-12 h-[2px] w-full bg-black opacity-15" />
 
         <Link
-          onClick={() => trackDownload("share to google drive")}
+          onClick={() =>
+            trackDownload(
+              "share to google drive",
+              analyticsResourceType,
+              lesson,
+              track,
+              chatId,
+            )
+          }
           className="hidden w-full items-center  justify-start gap-15 hover:underline sm:flex"
           target="_blank"
           href={`${link.split("/edit")[0]}/copy`}
@@ -129,7 +130,11 @@ export const DownloadButton = ({
             });
           }}
         >
-          {handleSendEmailIcon({ isSuccess, isLoading, isError })}
+          <SendEmailIcon
+            isSuccess={isSuccess}
+            isError={isError}
+            isLoading={isLoading}
+          />
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
               Email me {ext === "docx" ? `gdoc` : `gslides`}{" "}
@@ -164,7 +169,7 @@ export const DownloadButton = ({
             <span className="text-left font-bold">{title}</span>
             {downloadLoading ? (
               <span className="text-left text-[#287C34] opacity-80">
-                Generating {title} for export
+                Generating {title.toLowerCase()} for export
               </span>
             ) : (
               <span className="text-left opacity-80">{subTitle}</span>
@@ -226,23 +231,4 @@ function handleIcon({
     );
   }
   return null;
-}
-
-function handleSendEmailIcon({
-  isSuccess,
-  isError,
-  isLoading,
-}: {
-  isSuccess: boolean;
-  isError: boolean;
-  isLoading: boolean;
-}) {
-  if (isLoading) {
-    return <LoadingWheel />;
-  } else if (isSuccess) {
-    return <Icon icon="tick" size="sm" />;
-  } else if (isError) {
-    return <Icon icon="cross" size="sm" />;
-  }
-  return <Icon icon="external" size="sm" />;
 }

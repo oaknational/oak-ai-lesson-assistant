@@ -4,13 +4,8 @@ import { sendEmail } from "@oakai/core/src/utils/sendEmail";
 import { PrismaClientWithAccelerate } from "@oakai/db";
 import {
   LessonDeepPartial,
-  exportAdditionalMaterials,
-  exportDocLessonPlan,
   exportDocLessonPlanSchema,
-  exportDocQuiz,
   exportDocQuizSchema,
-  exportDocsWorksheet,
-  exportSlidesFullLesson,
   exportSlidesFullLessonSchema,
   exportDocsWorksheetSchema,
   exportQuizDesignerSlides,
@@ -27,6 +22,11 @@ import crypto from "crypto";
 import { z } from "zod";
 
 import { LessonPlanJsonSchema } from "../../../aila/src/protocol/schema";
+import { exportAdditionalMaterialsDoc } from "../export/exportAdditionalMaterialsDoc";
+import { exportLessonPlan } from "../export/exportLessonPlan";
+import { exportLessonSlides } from "../export/exportLessonSlides";
+import { exportQuizDoc } from "../export/exportQuizDoc";
+import { exportWorksheets } from "../export/exportWorksheets";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 
@@ -45,7 +45,7 @@ function getSnapshotHash(snapshot: LessonDeepPartial) {
 
   return hash;
 }
-async function ailaCheckIfSnapshotExists({
+export async function ailaCheckIfSnapshotExists({
   prisma,
   userId,
   chatId,
@@ -101,7 +101,7 @@ async function ailaCheckIfSnapshotExists({
     hash,
   };
 }
-async function ailaGetOrSaveSnapshot({
+export async function ailaGetOrSaveSnapshot({
   prisma,
   userId,
   chatId,
@@ -143,7 +143,7 @@ async function ailaGetOrSaveSnapshot({
   return lessonSnapshot;
 }
 
-async function qdGetOrSaveSnapshot({
+export async function qdGetOrSaveSnapshot({
   prisma,
   userId,
   sessionId,
@@ -192,7 +192,7 @@ async function qdGetOrSaveSnapshot({
   return lessonSnapshot;
 }
 
-async function ailaSaveExport({
+export async function ailaSaveExport({
   auth,
   prisma,
   lessonSnapshotId,
@@ -223,7 +223,7 @@ async function ailaSaveExport({
   });
 }
 
-async function qdSaveExport({
+export async function qdSaveExport({
   auth,
   prisma,
   snapshotId,
@@ -254,7 +254,7 @@ async function qdSaveExport({
   });
 }
 
-async function ailaGetExportBySnapshotId({
+export async function ailaGetExportBySnapshotId({
   prisma,
   snapshotId,
   exportType,
@@ -276,7 +276,7 @@ async function ailaGetExportBySnapshotId({
   return exportData;
 }
 
-async function qdGetExportBySnapshotId({
+export async function qdGetExportBySnapshotId({
   prisma,
   snapshotId,
   exportType,
@@ -298,7 +298,7 @@ async function qdGetExportBySnapshotId({
   return exportData;
 }
 
-const reportErrorResult = (
+export const reportErrorResult = (
   result: { error: unknown; message: string },
   extra: object,
 ) => {
@@ -315,11 +315,12 @@ const outputSchema = z.union([
   z.object({ link: z.string(), canViewSourceDoc: z.boolean() }),
   z.object({ error: z.unknown(), message: z.string() }),
 ]);
-type OutputSchema = z.infer<typeof outputSchema>;
+export type OutputSchema = z.infer<typeof outputSchema>;
 
 /**
  * @todo refactor this router to for less duplication
  */
+
 export const exportsRouter = router({
   exportLessonSlides: protectedProcedure
     .input(
@@ -332,43 +333,43 @@ export const exportsRouter = router({
     .output(outputSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        const user = await clerkClient.users.getUser(ctx.auth.userId);
-        const userEmail = user?.emailAddresses[0]?.emailAddress;
-        const exportType = "LESSON_SLIDES_SLIDES";
-
-        if (!userEmail) {
-          return {
-            error: new Error("User email not found"),
-            message: "User email not found",
-          };
-        }
-
-        const lessonSnapshot = await ailaGetOrSaveSnapshot({
+        return await exportLessonSlides({ input, ctx });
+      } catch (error) {
+        const message = "Failed to export lesson";
+        reportErrorResult({ error, message }, input);
+        return {
+          error,
+          message,
+        };
+      }
+    }),
+  checkIfLessonPlanDownloadExists: protectedProcedure
+    .input(
+      z.object({
+        data: exportDocLessonPlanSchema.passthrough(),
+        chatId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userId = ctx.auth.userId;
+        const { chatId, data } = input;
+        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
           prisma: ctx.prisma,
-          userId: ctx.auth.userId,
-          chatId: input.chatId,
-          messageId: input.messageId,
-          snapshot: input.data,
+          userId,
+          chatId,
+          snapshot: data,
         });
-
-        Sentry.addBreadcrumb({
-          category: "exportLessonSlides",
-          message: "Got or saved snapshot",
-          data: { lessonSnapshot },
-        });
+        if (!existingSnapshot) {
+          console.log("No existing snapshot found");
+          return;
+        }
 
         const exportData = await ailaGetExportBySnapshotId({
           prisma: ctx.prisma,
-          snapshotId: lessonSnapshot.id,
-          exportType,
+          snapshotId: existingSnapshot.id,
+          exportType: "LESSON_PLAN_DOC",
         });
-
-        Sentry.addBreadcrumb({
-          category: "exportLessonSlides",
-          message: "Got export data",
-          data: { exportData },
-        });
-
         if (exportData) {
           const output: OutputSchema = {
             link: exportData.gdriveFileUrl,
@@ -376,59 +377,9 @@ export const exportsRouter = router({
           };
           return output;
         }
-
-        /**
-         * User hasn't yet exported the lesson in this state, so we'll do it now
-         * and store the result in the database
-         */
-
-        const result = await exportSlidesFullLesson({
-          snapshotId: lessonSnapshot.id,
-          userEmail,
-          onStateChange: (state) => {
-            console.log(state);
-
-            Sentry.addBreadcrumb({
-              category: "exportWorksheetDocs",
-              message: "Export state change",
-              data: state,
-            });
-          },
-          lesson: input.data,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportLessonSlides",
-          message: "Got export result",
-          data: { result },
-        });
-
-        if ("error" in result) {
-          reportErrorResult(result, input);
-          return {
-            error: result.error,
-            message: "Failed to export lesson",
-          };
-        }
-
-        const { data } = result;
-
-        await ailaSaveExport({
-          auth: ctx.auth,
-          prisma: ctx.prisma,
-          lessonSnapshotId: lessonSnapshot.id,
-          exportType,
-          data,
-        });
-
-        const output: OutputSchema = {
-          link: data.fileUrl,
-          canViewSourceDoc: data.userCanViewGdriveFile,
-        };
-        return output;
       } catch (error) {
-        const message = "Failed to export lesson";
-        reportErrorResult({ error, message }, input);
+        console.error("Error checking if download exists:", error);
+        const message = "Failed to check if download exists";
         return {
           error,
           message,
@@ -604,95 +555,7 @@ export const exportsRouter = router({
     .output(outputSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        const user = await clerkClient.users.getUser(ctx.auth.userId);
-        const userEmail = user?.emailAddresses[0]?.emailAddress;
-        const exportType = "ADDITIONAL_MATERIALS_DOCS";
-
-        if (!userEmail) {
-          return {
-            error: new Error("User email not found"),
-            message: "User email not found",
-          };
-        }
-
-        const lessonSnapshot = await ailaGetOrSaveSnapshot({
-          prisma: ctx.prisma,
-          userId: ctx.auth.userId,
-          chatId: input.chatId,
-          messageId: input.messageId,
-          snapshot: input.data,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportAdditionalMaterialsDoc",
-          message: "Got or saved snapshot",
-          data: { lessonSnapshot },
-        });
-
-        const exportData = await ailaGetExportBySnapshotId({
-          prisma: ctx.prisma,
-          snapshotId: lessonSnapshot.id,
-          exportType,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportAdditionalMaterialsDoc",
-          message: "Got export data",
-          data: { exportData },
-        });
-
-        if (exportData) {
-          const output: OutputSchema = {
-            link: exportData.gdriveFileUrl,
-            canViewSourceDoc: exportData.userCanViewGdriveFile,
-          };
-          return output;
-        }
-
-        const result = await exportAdditionalMaterials({
-          snapshotId: lessonSnapshot.id,
-          userEmail,
-          onStateChange: (state) => {
-            console.log(state);
-
-            Sentry.addBreadcrumb({
-              category: "exportAdditionalMaterialsDoc",
-              message: "Export state change",
-              data: state,
-            });
-          },
-          lesson: input.data,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportAdditionalMaterialsDoc",
-          message: "Got export result",
-          data: { result },
-        });
-
-        if ("error" in result) {
-          reportErrorResult(result, input);
-          return {
-            error: result.error,
-            message: "Failed to export lesson",
-          };
-        }
-
-        const { data } = result;
-
-        await ailaSaveExport({
-          auth: ctx.auth,
-          prisma: ctx.prisma,
-          lessonSnapshotId: lessonSnapshot.id,
-          exportType,
-          data,
-        });
-
-        const output: OutputSchema = {
-          link: data.fileUrl,
-          canViewSourceDoc: data.userCanViewGdriveFile,
-        };
-        return output;
+        return await exportAdditionalMaterialsDoc({ input, ctx });
       } catch (error) {
         const message = "Failed to export lesson";
         reportErrorResult({ error, message }, input);
@@ -756,99 +619,7 @@ export const exportsRouter = router({
     .output(outputSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        const user = await clerkClient.users.getUser(ctx.auth.userId);
-        const userEmail = user?.emailAddresses[0]?.emailAddress;
-        const exportType = "WORKSHEET_SLIDES";
-
-        if (!userEmail) {
-          return {
-            error: new Error("User email not found"),
-            message: "User email not found",
-          };
-        }
-
-        const lessonSnapshot = await ailaGetOrSaveSnapshot({
-          prisma: ctx.prisma,
-          userId: ctx.auth.userId,
-          chatId: input.chatId,
-          messageId: input.messageId,
-          snapshot: input.data,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportWorksheetDocs",
-          message: "Got or saved snapshot",
-          data: { lessonSnapshot },
-        });
-
-        const exportData = await ailaGetExportBySnapshotId({
-          prisma: ctx.prisma,
-          snapshotId: lessonSnapshot.id,
-          exportType,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportWorksheetDocs",
-          message: "Got export data",
-          data: { exportData },
-        });
-
-        if (exportData) {
-          const output: OutputSchema = {
-            link: exportData.gdriveFileUrl,
-            canViewSourceDoc: exportData.userCanViewGdriveFile,
-          };
-          return output;
-        }
-
-        /**
-         * User hasn't yet exported the lesson in this state, so we'll do it now
-         * and store the result in the database
-         */
-        const result = await exportDocsWorksheet({
-          snapshotId: lessonSnapshot.id,
-          userEmail,
-          onStateChange: (state) => {
-            console.log(state);
-
-            Sentry.addBreadcrumb({
-              category: "exportWorksheetDocs",
-              message: "Export state change",
-              data: state,
-            });
-          },
-          data: input.data,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportWorksheetDocs",
-          message: "Got export result",
-          data: { result },
-        });
-
-        if ("error" in result) {
-          reportErrorResult(result, input);
-          return {
-            error: result.error,
-            message: "Failed to export worksheet",
-          };
-        }
-
-        const { data } = result;
-
-        await ailaSaveExport({
-          auth: ctx.auth,
-          prisma: ctx.prisma,
-          lessonSnapshotId: lessonSnapshot.id,
-          exportType,
-          data,
-        });
-
-        const output: OutputSchema = {
-          link: data.fileUrl,
-          canViewSourceDoc: data.userCanViewGdriveFile,
-        };
-        return output;
+        return await exportWorksheets({ input, ctx });
       } catch (error) {
         const message = "Failed to export worksheet";
         reportErrorResult({ error, message }, input);
@@ -913,100 +684,7 @@ export const exportsRouter = router({
     .output(outputSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        const user = await clerkClient.users.getUser(ctx.auth.userId);
-        const userEmail = user?.emailAddresses[0]?.emailAddress;
-        const exportType =
-          input.data.quizType === "exit" ? "EXIT_QUIZ_DOC" : "STARTER_QUIZ_DOC";
-
-        if (!userEmail) {
-          return {
-            error: new Error("User email not found"),
-            message: "User email not found",
-          };
-        }
-
-        const lessonSnapshot = await ailaGetOrSaveSnapshot({
-          prisma: ctx.prisma,
-          userId: ctx.auth.userId,
-          chatId: input.chatId,
-          messageId: input.messageId,
-          snapshot: input.lessonSnapshot,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportQuizDoc",
-          message: "Got or saved snapshot",
-          data: { lessonSnapshot },
-        });
-
-        const exportData = await ailaGetExportBySnapshotId({
-          prisma: ctx.prisma,
-          snapshotId: lessonSnapshot.id,
-          exportType,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportQuizDoc",
-          message: "Got export data",
-          data: { exportData },
-        });
-
-        if (exportData) {
-          const output: OutputSchema = {
-            link: exportData.gdriveFileUrl,
-            canViewSourceDoc: exportData.userCanViewGdriveFile,
-          };
-          return output;
-        }
-
-        /**
-         * User hasn't yet exported the lesson in this state, so we'll do it now
-         * and store the result in the database
-         */
-        const result = await exportDocQuiz({
-          snapshotId: lessonSnapshot.id,
-          userEmail,
-          onStateChange: (state) => {
-            console.log(state);
-
-            Sentry.addBreadcrumb({
-              category: "exportWorksheetDocs",
-              message: "Export state change",
-              data: state,
-            });
-          },
-          data: input.data,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportQuizDoc",
-          message: "Got export result",
-          data: { result },
-        });
-
-        if ("error" in result) {
-          reportErrorResult(result, input);
-          return {
-            error: result.error,
-            message: "Failed to export quiz",
-          };
-        }
-
-        const { data } = result;
-
-        await ailaSaveExport({
-          auth: ctx.auth,
-          prisma: ctx.prisma,
-          lessonSnapshotId: lessonSnapshot.id,
-          exportType,
-          data,
-        });
-
-        const output: OutputSchema = {
-          link: data.fileUrl,
-          canViewSourceDoc: data.userCanViewGdriveFile,
-        };
-        return output;
+        return await exportQuizDoc({ input, ctx });
       } catch (error) {
         const message = "Failed to export quiz";
         reportErrorResult({ error, message }, input);
@@ -1074,143 +752,7 @@ export const exportsRouter = router({
     .output(outputSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        const user = await clerkClient.users.getUser(ctx.auth.userId);
-        const userEmail = user?.emailAddresses[0]?.emailAddress;
-        const exportType = "LESSON_PLAN_DOC";
-
-        if (!userEmail) {
-          return {
-            error: new Error("User email not found"),
-            message: "User email not found",
-          };
-        }
-
-        const lessonSnapshot = await ailaGetOrSaveSnapshot({
-          prisma: ctx.prisma,
-          userId: ctx.auth.userId,
-          chatId: input.chatId,
-          messageId: input.messageId,
-          snapshot: input.data,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportLessonPlanDoc",
-          message: "Got or saved snapshot",
-          data: { lessonSnapshot },
-        });
-
-        const exportData = await ailaGetExportBySnapshotId({
-          prisma: ctx.prisma,
-          snapshotId: lessonSnapshot.id,
-          exportType,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportLessonPlanDoc",
-          message: "Got export data",
-          data: { exportData },
-        });
-
-        if (exportData) {
-          const output: OutputSchema = {
-            link: exportData.gdriveFileUrl,
-            canViewSourceDoc: exportData.userCanViewGdriveFile,
-          };
-          return output;
-        }
-
-        /**
-         * User hasn't yet exported the lesson in this state, so we'll do it now
-         * and store the result in the database
-         */
-
-        const result = await exportDocLessonPlan({
-          snapshotId: lessonSnapshot.id,
-          lessonPlan: input.data,
-          userEmail,
-          onStateChange: (state) => {
-            console.log(state);
-
-            Sentry.addBreadcrumb({
-              category: "exportWorksheetDocs",
-              message: "Export state change",
-              data: state,
-            });
-          },
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportLessonPlanDoc",
-          message: "Got export result",
-          data: { result },
-        });
-
-        if ("error" in result) {
-          reportErrorResult(result, input);
-          return {
-            error: result.error,
-            message: "Failed to export lesson plan",
-          };
-        }
-
-        const { data } = result;
-
-        await ailaSaveExport({
-          auth: ctx.auth,
-          prisma: ctx.prisma,
-          lessonSnapshotId: lessonSnapshot.id,
-          exportType,
-          data,
-        });
-
-        const output: OutputSchema = {
-          link: data.fileUrl,
-          canViewSourceDoc: data.userCanViewGdriveFile,
-        };
-        return output;
-      } catch (error) {
-        const message = "Failed to export lesson plan";
-        reportErrorResult({ error, message }, input);
-        return {
-          error,
-          message,
-        };
-      }
-    }),
-  checkIfLessonPlanDownloadExists: protectedProcedure
-    .input(
-      z.object({
-        data: exportDocLessonPlanSchema.passthrough(),
-        chatId: z.string(),
-      }),
-    )
-    .mutation(async ({ input, ctx }) => {
-      try {
-        const userId = ctx.auth.userId;
-        const { chatId, data } = input;
-        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
-          prisma: ctx.prisma,
-          userId,
-          chatId,
-          snapshot: data,
-        });
-        if (!existingSnapshot) {
-          console.log("No existing snapshot found");
-          return;
-        }
-
-        const exportData = await ailaGetExportBySnapshotId({
-          prisma: ctx.prisma,
-          snapshotId: existingSnapshot.id,
-          exportType: "LESSON_PLAN_DOC",
-        });
-        if (exportData) {
-          const output: OutputSchema = {
-            link: exportData.gdriveFileUrl,
-            canViewSourceDoc: exportData.userCanViewGdriveFile,
-          };
-          return output;
-        }
+        return await exportLessonPlan({ input, ctx });
       } catch (error) {
         console.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
@@ -1218,6 +760,162 @@ export const exportsRouter = router({
           error,
           message,
         };
+      }
+    }),
+  generateAllAssetExports: protectedProcedure
+    .input(
+      z.object({
+        data: exportDocLessonPlanSchema.passthrough(),
+        messageId: z.string(),
+        chatId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const [
+          lessonSlides,
+          lessonPlan,
+          worksheet,
+          additionalMaterials,
+          starterQuiz,
+          exitQuiz,
+        ] = await Promise.all([
+          exportLessonSlides({ input, ctx }),
+          exportLessonPlan({ input, ctx }),
+          exportWorksheets({ input, ctx }),
+          exportAdditionalMaterialsDoc({ input, ctx }),
+          exportQuizDoc({
+            input: {
+              data: {
+                lessonTitle: input.data.title,
+                quizType: "starter",
+                quiz: input.data.starterQuiz,
+              },
+              lessonSnapshot: input.data,
+              chatId: input.chatId,
+              messageId: input.messageId,
+            },
+            ctx,
+          }),
+          exportQuizDoc({
+            input: {
+              data: {
+                lessonTitle: input.data.title,
+                quizType: "exit",
+                quiz: input.data.exitQuiz,
+              },
+              lessonSnapshot: input.data,
+              chatId: input.chatId,
+              messageId: input.messageId,
+            },
+            ctx,
+          }),
+        ]);
+
+        function getValidLink(
+          data:
+            | {
+                link: string;
+                canViewSourceDoc: boolean;
+              }
+            | {
+                error: unknown;
+                message: string;
+              },
+        ): string | undefined {
+          if (data && "link" in data && typeof data.link === "string") {
+            return data.link;
+          }
+          if ("error" in data && "message" in data) {
+            Sentry.captureException(data.error, {
+              extra: {
+                error: data.error,
+                message: data.message,
+              },
+            });
+            throw new Error(data.message);
+          }
+        }
+
+        const allExports = {
+          lessonSlides: getValidLink(lessonSlides),
+          lessonPlan: getValidLink(lessonPlan),
+          worksheet: getValidLink(worksheet),
+          additionalMaterials: getValidLink(additionalMaterials),
+          starterQuiz: getValidLink(starterQuiz),
+          exitQuiz: getValidLink(exitQuiz),
+        };
+
+        return allExports;
+      } catch (error) {
+        console.error("Error generating all asset exports:", error);
+        return {
+          error,
+          message: "Failed to generate all asset exports",
+        };
+      }
+    }),
+  sendUserAllAssetsEmail: protectedProcedure
+    .input(
+      z.object({
+        lessonTitle: z.string(),
+        lessonPlanLink: z.string(),
+        slidesLink: z.string(),
+        worksheetLink: z.string(),
+        starterQuizLink: z.string(),
+        exitQuizLink: z.string(),
+        additionalMaterialsLink: z.string(),
+      }),
+    )
+    .output(z.boolean())
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const user = await clerkClient.users.getUser(ctx.auth.userId);
+        const userEmail = user?.emailAddresses[0]?.emailAddress;
+        const userFirstName = user?.firstName;
+        const {
+          lessonTitle,
+          lessonPlanLink,
+          slidesLink,
+          worksheetLink,
+          starterQuizLink,
+          exitQuizLink,
+          additionalMaterialsLink,
+        } = input;
+
+        if (!userEmail) {
+          console.error("User email not found");
+          return false;
+        }
+
+        const emailSent = await sendEmail({
+          from: "aila@thenational.academy",
+          to: userEmail,
+          name: "Oak National Academy",
+          subject: "Download your lesson made with Aila: " + lessonTitle,
+          body: `
+Hi ${userFirstName},
+
+These are the lesson resources that you created with Aila.
+You can use the following links to copy the lesson resources to your Google Drive.
+
+Lesson plan: ${`${lessonPlanLink.split("/edit")[0]}/copy`}
+Slides: ${`${slidesLink.split("/edit")[0]}/copy`}
+Worksheet: ${`${worksheetLink.split("/edit")[0]}/copy`}
+Starter quiz: ${`${starterQuizLink.split("/edit")[0]}/copy`}
+Exit quiz: ${`${exitQuizLink.split("/edit")[0]}/copy`}
+Additional materials: ${`${additionalMaterialsLink.split("/edit")[0]}/copy`}
+
+We hope the lesson goes well for you and your class. If you have any feedback for us, please let us know. You can simply reply to this email.
+
+Aila,
+Oak National Academy`,
+        });
+
+        return emailSent ? true : false;
+      } catch (error) {
+        console.error("Error sending email:", error);
+        return false;
       }
     }),
   sendUserExportLink: protectedProcedure
@@ -1271,5 +969,13 @@ Oak National Academy`,
       console.log("***id", input.id);
       console.log("***data", data);
       return data;
+    }),
+  checkDownloadAllStatus: protectedProcedure
+    .input(z.object({ taskId: z.string() }))
+    .mutation(async ({ input }) => {
+      const { taskId } = input;
+      const status: "loading" | "error" | "complete" | null =
+        await kv.get(taskId);
+      return status;
     }),
 });

@@ -4,6 +4,7 @@ import { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { useProgressForDownloads } from "@/components/AppComponents/Chat/Chat/hooks/useProgressForDownloads";
 import { ExportsHookProps } from "@/components/ExportsDialogs/exports.types";
 import { useExportAdditionalMaterials } from "@/components/ExportsDialogs/useExportAdditionalMaterials";
+import { useExportAllLessonAssets } from "@/components/ExportsDialogs/useExportAllLessonAssets";
 import { useExportLessonPlanDoc } from "@/components/ExportsDialogs/useExportLessonPlanDoc";
 import { useExportLessonSlides } from "@/components/ExportsDialogs/useExportLessonSlides";
 import { useExportQuizDoc } from "@/components/ExportsDialogs/useExportQuizDoc";
@@ -21,6 +22,8 @@ export function useDownloadView({
     messageId: getLastAssistantMessage(messages)?.id,
     active: true,
   };
+
+  const exportAllAssets = useExportAllLessonAssets(exportProps);
 
   const lessonSlidesExport = useExportLessonSlides(exportProps);
 
@@ -53,5 +56,6 @@ export function useDownloadView({
     sections,
     totalSections,
     totalSectionsComplete,
+    exportAllAssets,
   };
 }

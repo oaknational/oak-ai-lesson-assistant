@@ -6,17 +6,31 @@ export type ExportsType =
   | "starterQuiz"
   | "exitQuiz"
   | "worksheet"
-  | "additionalMaterials";
+  | "additionalMaterials"
+  | "all";
 
 const EXPORTS_CONFIG: Record<
   ExportsType,
   {
     title: string;
-    analyticsResourceType: ResourceTypeValueType;
+    analyticsResourceType: ResourceTypeValueType | ResourceTypeValueType[];
     icon: "slides" | "lesson" | "quiz";
-    ext: "pptx" | "docx";
+    ext: "pptx" | "docx" | "all";
   }
 > = {
+  all: {
+    title: "All resources",
+    icon: "lesson",
+    ext: "all",
+    analyticsResourceType: [
+      "slide deck",
+      "lesson plan",
+      "exit quiz",
+      "starter quiz",
+      "worksheet",
+      "additional materials",
+    ],
+  },
   lessonSlides: {
     title: "Slide deck",
     icon: "slides",
