@@ -13,7 +13,7 @@ import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 export type FeedbackOption<T> = {
   label: string;
   enumValue: T;
-  chatMessage: string;
+  chatMessage?: string;
 };
 
 export const DropDownFormWrapper = <

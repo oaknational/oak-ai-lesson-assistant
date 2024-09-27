@@ -82,7 +82,7 @@ const ModifyButton = ({
     const message =
       option.label === "Other"
         ? `For the ${sectionTitle}, ${userFeedbackText}`
-        : `Make the ${sectionTitle} ${option.chatMessage.toLowerCase()}`;
+        : `Make the ${sectionTitle} ${option.chatMessage?.toLowerCase()}`;
 
     await Promise.all([
       append({
