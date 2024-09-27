@@ -64,6 +64,7 @@
     "@uidotdev/usehooks": "^2.4.1",
     "ai": "^3.3.26",
     "american-british-english-translator": "^0.2.1",
+    "archiver": "^7.0.1",
     "axios": "^1.6.8",
     "base64url": "^3.0.1",
     "class-variance-authority": "^0.7.0",
