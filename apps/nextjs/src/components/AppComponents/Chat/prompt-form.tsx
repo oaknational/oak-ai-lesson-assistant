@@ -121,7 +121,7 @@ export function PromptForm({
 }
 
 function handlePlaceholder(isEmptyScreen: boolean, placeholder?: string) {
-  if (placeholder) {
+  if (placeholder && !["continue", "regenerate"].includes(placeholder)) {
     return placeholder;
   }
   return !isEmptyScreen
