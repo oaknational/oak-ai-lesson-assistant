@@ -140,14 +140,15 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
       }
     }
 
-    const streamingPatch = partialPatches[partialPatches.length - 1];
+    // Do not apply partial patches
+    // const streamingPatch = partialPatches[partialPatches.length - 1];
 
-    if (streamingPatch) {
-      workingLessonPlan = applyPatchWhileStillStreaming(
-        streamingPatch,
-        workingLessonPlan,
-      );
-    }
+    // if (streamingPatch) {
+    //   workingLessonPlan = applyPatchWhileStillStreaming(
+    //     streamingPatch,
+    //     workingLessonPlan,
+    //   );
+    // }
 
     return {
       tempLessonPlan: workingLessonPlan,

@@ -105,10 +105,35 @@ function getModerationFromMessage(message?: { content: string }) {
 }
 
 export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
-  const { data: chat, isLoading: isChatLoading } =
-    trpc.chat.appSessions.getChat.useQuery({ id });
-  const { data: moderations, isLoading: isModerationsLoading } =
-    trpc.chat.appSessions.getModerations.useQuery({ id });
+  const {
+    data: chat,
+    isLoading: isChatLoading,
+    refetch: refetchChat,
+  } = trpc.chat.appSessions.getChat.useQuery(
+    { id },
+    {
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+      staleTime: 0,
+    },
+  );
+  const {
+    data: moderations,
+    isLoading: isModerationsLoading,
+    refetch: refetchModerations,
+  } = trpc.chat.appSessions.getModerations.useQuery(
+    { id },
+    {
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+      staleTime: 0,
+    },
+  );
+  // Ensure that we re-fetch on mount
+  useEffect(() => {
+    refetchChat();
+    refetchModerations();
+  }, [refetchChat, refetchModerations]);
   const trpcUtils = trpc.useUtils();
 
   const lessonPlanTracking = useLessonPlanTracking();
