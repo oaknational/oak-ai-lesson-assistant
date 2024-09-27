@@ -42,7 +42,7 @@ function patchHasBeenApplied(
 export const useTemporaryLessonPlanWithStreamingEdits = ({
   lessonPlan,
   messages,
-  isStreaming,
+  //isStreaming,
   messageHashes,
 }: {
   lessonPlan?: LooseLessonPlan;
@@ -56,7 +56,7 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
 } => {
   console.log("useTemporaryLessonPlanWithStreamingEdits", lessonPlan);
   const throttledAssistantMessages = useThrottle(messages, 100);
-  const tempLessonPlanRef = useRef<LooseLessonPlan>({});
+  const tempLessonPlanRef = useRef<LooseLessonPlan>(lessonPlan ?? {});
   const appliedPatchesRef = useRef<PatchDocumentWithHash[]>([]);
 
   // Update the ref when lessonPlan changes
