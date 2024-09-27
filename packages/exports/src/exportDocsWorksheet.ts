@@ -21,7 +21,7 @@ export const exportDocsWorksheet = async ({
     const templateId = getDocsTemplateIdWorksheet();
 
     const result = await exportGeneric({
-      newFileName: `${inputData.title} - ${snapshotId} - Worksheet slides`,
+      newFileName: `${inputData.title} - ${snapshotId} - Worksheet docs`,
       data: inputData,
       prepData: prepWorksheetForSlides,
       templateId,

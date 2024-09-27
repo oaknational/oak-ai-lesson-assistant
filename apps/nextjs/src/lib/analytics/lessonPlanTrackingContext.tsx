@@ -35,7 +35,7 @@ const lessonPlanTrackingContext =
 
 const LessonPlanTrackingProvider: FC<{
   children?: React.ReactNode;
-  chatId?: string;
+  chatId: string;
 }> = ({ children, chatId }) => {
   const { track } = useAnalytics();
   const [action, setAction] = useState<UserAction | null>(null);
@@ -51,6 +51,7 @@ const LessonPlanTrackingProvider: FC<{
       }
       const isFirstMessage = messages.length === 2;
       trackLessonPlanRefined({
+        chatId,
         prevLesson,
         nextLesson,
         ailaMessageContent,

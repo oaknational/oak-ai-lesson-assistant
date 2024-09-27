@@ -291,7 +291,7 @@ model LessonPlanPart {
   lessonPlan   LessonPlan                   @relation(fields: [lessonPlanId], references: [id], onDelete: Cascade)
   subject      Subject?                     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   keyStage     KeyStage?                    @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
-  embedding    Unsupported("vector(1536)")?
+  embedding    Unsupported("vector(256)")?
   status       LessonPlanPartStatus         @default(PENDING)
 
   @@unique([lessonPlanId, key])

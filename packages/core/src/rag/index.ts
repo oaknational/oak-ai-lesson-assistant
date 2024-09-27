@@ -733,20 +733,26 @@ Thank you and happy classifying!`;
 
     const vectorStore = PrismaVectorStore.withModel<LessonPlanPart>(
       this.prisma,
-    ).create(new OpenAIEmbeddings(), {
-      prisma: Prisma,
-      tableName: "lesson_plan_parts" as "LessonPlanPart",
-      vectorColumnName: "embedding",
-      verbose: true,
-      openAIApiKey: process.env.OPENAI_API_KEY,
-      columns: {
-        id: PrismaVectorStore.IdColumn,
-        lesson_plan_id: PrismaVectorStore.IdColumn,
-        content: PrismaVectorStore.ContentColumn,
+    ).create(
+      new OpenAIEmbeddings({
+        modelName: "text-embedding-3-large",
+        dimensions: 256,
+      }),
+      {
+        prisma: Prisma,
+        tableName: "lesson_plan_parts" as "LessonPlanPart",
+        vectorColumnName: "embedding",
+        verbose: true,
+        openAIApiKey: process.env.OPENAI_API_KEY,
+        columns: {
+          id: PrismaVectorStore.IdColumn,
+          lesson_plan_id: PrismaVectorStore.IdColumn,
+          content: PrismaVectorStore.ContentColumn,
+        },
+        // @ts-expect-error TODO Bug in PrismaVectorStore which doesn't allow mapped column names
+        filter,
       },
-      // @ts-expect-error TODO Bug in PrismaVectorStore which doesn't allow mapped column names
-      filter,
-    });
+    );
 
     const similaritySearchTerm = topic ? `${title}. ${topic}` : title;
 

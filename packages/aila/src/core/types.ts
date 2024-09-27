@@ -1,6 +1,7 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { AilaModerator } from "../features/moderation/moderators";
+import { OpenAILike } from "../features/moderation/moderators/OpenAiModerator";
 import { AilaPersistence } from "../features/persistence";
 import { AilaThreatDetector } from "../features/threatDetection";
 import {
@@ -56,7 +57,7 @@ export type AilaChatInitializationOptions = {
 
 export type AilaInitializationOptions = {
   lessonPlan?: LooseLessonPlan;
-  chat: AilaChatInitializationOptions;
+  chat: Omit<AilaChatInitializationOptions, "llmService">;
   options?: AilaOptions;
   prisma?: PrismaClientWithAccelerate;
   moderator?: AilaModerator;
@@ -71,5 +72,6 @@ export type AilaInitializationOptions = {
   services?: {
     chatCategoriser?: AilaCategorisationFeature;
     chatLlmService?: LLMService;
+    moderationAiClient?: OpenAILike;
   };
 };
