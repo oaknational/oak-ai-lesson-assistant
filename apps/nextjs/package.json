@@ -124,7 +124,7 @@
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/typescript": "^4.0.9",
     "@graphql-codegen/typescript-operations": "^4.2.3",
-    "@playwright/test": "^1.42.1",
+    "@playwright/test": "^1.47.0",
     "@sentry/webpack-plugin": "^2.21.1",
     "@storybook/addon-essentials": "^8.2.6",
     "@storybook/addon-interactions": "^8.2.6",
