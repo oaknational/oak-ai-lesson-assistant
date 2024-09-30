@@ -1,6 +1,6 @@
 import { prisma } from "@oakai/db";
 
-import { LessonSchema } from "../zod-schema/zodSchema";
+import { RawLessonSchema } from "../zod-schema/zodSchema";
 import { graphqlClient } from "./graphql/client";
 import { query } from "./graphql/query";
 
@@ -14,7 +14,7 @@ export async function importRawLessons({ ingestId }: ImportRawLessonsProps) {
   const lessonData = await graphqlClient.request<{ lessons: unknown[] }>(query);
 
   const data = lessonData.lessons.map((lesson) => {
-    return LessonSchema.parse(lesson);
+    return RawLessonSchema.parse(lesson);
   });
 
   await prisma.ingestRawLesson.createMany({

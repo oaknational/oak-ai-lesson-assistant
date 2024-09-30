@@ -3,6 +3,7 @@ import { gql } from "graphql-request";
 export const query = gql`
   query OakLesons {
     published_mv_lesson_openapi_1_1_0(limit: 10, distinct_on: lessonSlug) {
+      lessonId
       lessonSlug
       lessonTitle
       programmeSlug

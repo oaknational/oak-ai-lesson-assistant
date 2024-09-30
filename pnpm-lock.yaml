@@ -805,6 +805,9 @@ importers:
       '@google-cloud/storage':
         specifier: ^7.7.0
         version: 7.7.0
+      '@oakai/aila':
+        specifier: '*'
+        version: link:../aila
       '@oakai/db':
         specifier: '*'
         version: link:../db

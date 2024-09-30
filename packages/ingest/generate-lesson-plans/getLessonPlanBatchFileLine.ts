@@ -1,15 +1,17 @@
 import fs from "node:fs";
 import { zodResponseFormat } from "openai/helpers/zod";
 
-export function getBatchFileLine({
-  lesson,
+import { Captions, RawLesson } from "../zod-schema/zodSchema";
+
+export function getLessonPlanBatchFileLine({
+  rawLesson,
   captions,
 }: {
-  lesson: Lesson;
-  captions: Caption[];
+  rawLesson: RawLesson;
+  captions: Captions;
 }) {
   const lessonPlan = {
-    title: lesson.title,
+    title: lesson.lessonTitle,
   };
 
   for (const [key, value] of Object.entries(lessonPlan)) {

@@ -28,7 +28,8 @@ const QuizSchema = z.object({
   questionType: z.string(),
 });
 
-export const LessonSchema = z.object({
+export const RawLessonSchema = z.object({
+  lessonId: z.number(),
   lessonSlug: z.string(),
   lessonTitle: z.string(),
   keyStageTitle: z.string(),
@@ -37,3 +38,15 @@ export const LessonSchema = z.object({
   starterQuiz: z.array(QuizSchema),
   exitQuiz: z.array(QuizSchema),
 });
+
+export type RawLesson = z.infer<typeof RawLessonSchema>;
+
+export const CaptionsSchema = z.array(
+  z.object({
+    end: z.number(),
+    part: z.string(),
+    start: z.number(),
+  }),
+);
+
+export type Captions = z.infer<typeof CaptionsSchema>;
