@@ -11,7 +11,7 @@ export class AilaStreamHandler {
   private _controller?: ReadableStreamDefaultController;
   private _patchEnqueuer: PatchEnqueuer;
   private _isStreaming: boolean = false;
-  private _streamReader?: ReadableStreamDefaultReader<Uint8Array | undefined>;
+  private _streamReader?: ReadableStreamDefaultReader<string>;
   private _abortController?: AbortController;
 
   constructor(chat: AilaChat) {
@@ -76,8 +76,13 @@ export class AilaStreamHandler {
   }
 
   private async startLLMStream() {
+    await this._chat.enqueue({
+      type: "comment",
+      value: "CHAT_START",
+    });
     const messages = await this._chat.completionMessages();
-    this._streamReader = await this._chat.createChatCompletionStream(messages);
+    this._streamReader =
+      await this._chat.createChatCompletionObjectStream(messages);
     this._isStreaming = true;
   }
 
@@ -122,10 +127,9 @@ export class AilaStreamHandler {
 
   private async fetchChunkFromStream() {
     if (this._streamReader) {
-      const { done, value }: { done: boolean; value?: Uint8Array } =
-        await this._streamReader.read();
+      const { done, value } = await this._streamReader.read();
       if (value) {
-        await this._chat.appendChunk(value);
+        this._chat.appendChunk(value);
         this._controller?.enqueue(value);
       }
       if (done) {

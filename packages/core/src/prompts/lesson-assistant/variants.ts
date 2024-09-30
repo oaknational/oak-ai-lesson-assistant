@@ -56,7 +56,11 @@ export const generateVariants = (): OakPromptVariant[] => {
         useRag,
         lessonPlanJsonSchema: "<lessonPlanJsonSchema>",
         llmResponseJsonSchema: "<llmResponseJsonSchema>",
-        currentLessonPlan: "dummy",
+        lessonPlan: {},
+        isUsingStructuredOutput:
+          process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true"
+            ? true
+            : false,
       },
       slug,
     );

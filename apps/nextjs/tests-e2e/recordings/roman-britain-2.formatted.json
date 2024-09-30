@@ -1,0 +1,33 @@
+{
+  "type": "llmMessage",
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "Establishing a clear learning outcome to focus the lesson on the specific impact of the end of Roman rule in Britain.",
+      "value": {
+        "type": "string",
+        "op": "add",
+        "path": "/learningOutcome",
+        "value": "I can describe the changes in Britain after the Romans left."
+      }
+    },
+    {
+      "type": "patch",
+      "reasoning": "Defining learning cycles to structure the lesson effectively, increasing complexity as the lesson progresses.",
+      "value": {
+        "type": "string-array",
+        "op": "add",
+        "path": "/learningCycles",
+        "value": [
+          "Identify key reasons why the Romans left Britain.",
+          "Describe the immediate effects on local communities.",
+          "Explain how Britain changed in the years following Roman departure."
+        ]
+      }
+    }
+  ],
+  "prompt": {
+    "type": "text",
+    "value": "I've set the learning outcome to focus on describing the changes in Britain after the Romans left and outlined the learning cycles. Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit below."
+  }
+}

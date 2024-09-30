@@ -6,7 +6,10 @@ import {
 import { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import { SentryErrorReporter } from "../features/errorReporting/reporters/SentryErrorReporter";
 import { AilaModeration } from "../features/moderation";
-import { OpenAiModerator } from "../features/moderation/moderators/OpenAiModerator";
+import {
+  OpenAILike,
+  OpenAiModerator,
+} from "../features/moderation/moderators/OpenAiModerator";
 import { AilaPrismaPersistence } from "../features/persistence/adaptors/prisma";
 import { AilaThreatDetection } from "../features/threatDetection";
 import {
@@ -39,11 +42,13 @@ export class AilaFeatureFactory {
   static createModeration(
     aila: AilaServices,
     options: AilaOptions,
+    openAiClient?: OpenAILike,
   ): AilaModerationFeature | undefined {
     if (options.useModeration) {
       const moderator = new OpenAiModerator({
         userId: aila.userId,
         chatId: aila.chatId,
+        openAiClient,
       });
       return new AilaModeration({ aila, moderator });
     }

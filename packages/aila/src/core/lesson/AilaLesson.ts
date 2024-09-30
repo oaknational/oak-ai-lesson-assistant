@@ -74,12 +74,12 @@ export class AilaLesson implements AilaLessonService {
     let workingLessonPlan = deepClone(this._plan);
 
     // TODO do we need to apply all patches even if they are partial?
-    const { validDocuments, partialDocuments } = extractPatches(patches, 100);
-    for (const patch of partialDocuments) {
+    const { validPatches, partialPatches } = extractPatches(patches, 100);
+    for (const patch of partialPatches) {
       this._invalidPatches.push(patch);
     }
 
-    for (const patch of validDocuments) {
+    for (const patch of validPatches) {
       const newWorkingLessonPlan = applyLessonPlanPatch(
         workingLessonPlan,
         patch,
@@ -89,7 +89,7 @@ export class AilaLesson implements AilaLessonService {
       }
     }
 
-    for (const patch of validDocuments) {
+    for (const patch of validPatches) {
       this._appliedPatches.push(patch);
     }
 
