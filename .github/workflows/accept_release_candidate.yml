@@ -18,6 +18,7 @@ jobs:
       - name: "Merge pull request"
         uses: "actions/github-script@v7"
         with:
+          github-token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
           script: |
             await github.rest.pulls.merge({
               merge_method: "merge",
