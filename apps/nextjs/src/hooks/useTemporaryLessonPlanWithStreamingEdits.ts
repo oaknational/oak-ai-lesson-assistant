@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo, useCallback } from "react";
+import { useEffect, useRef, useMemo } from "react";
 
 import {
   PatchDocument,
@@ -42,7 +42,7 @@ function patchHasBeenApplied(
 export const useTemporaryLessonPlanWithStreamingEdits = ({
   lessonPlan,
   messages,
-  isStreaming,
+  //isStreaming, // Disable partial patches for now
   messageHashes,
 }: {
   lessonPlan?: LooseLessonPlan;
@@ -55,7 +55,7 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
   partialPatches: PatchDocument[];
 } => {
   const throttledAssistantMessages = useThrottle(messages, 100);
-  const tempLessonPlanRef = useRef<LooseLessonPlan>({});
+  const tempLessonPlanRef = useRef<LooseLessonPlan>(lessonPlan ?? {});
   const appliedPatchesRef = useRef<PatchDocumentWithHash[]>([]);
 
   // Update the ref when lessonPlan changes
@@ -90,19 +90,20 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
     return newLessonPlan ?? workingLessonPlan;
   };
 
-  const applyPatchWhileStillStreaming = useCallback(
-    (patch: PatchDocument, workingLessonPlan: LooseLessonPlan) => {
-      if (!isStreaming) {
-        return workingLessonPlan;
-      }
-      const newLessonPlan: LooseLessonPlan | undefined = applyLessonPlanPatch(
-        { ...workingLessonPlan },
-        patch,
-      );
-      return newLessonPlan ?? workingLessonPlan;
-    },
-    [isStreaming],
-  );
+  // Disable partial patches for now
+  // const applyPatchWhileStillStreaming = useCallback(
+  //   (patch: PatchDocument, workingLessonPlan: LooseLessonPlan) => {
+  //     if (!isStreaming) {
+  //       return workingLessonPlan;
+  //     }
+  //     const newLessonPlan: LooseLessonPlan | undefined = applyLessonPlanPatch(
+  //       { ...workingLessonPlan },
+  //       patch,
+  //     );
+  //     return newLessonPlan ?? workingLessonPlan;
+  //   },
+  //   [isStreaming],
+  // );
 
   return useMemo(() => {
     if (!throttledAssistantMessages || !throttledAssistantMessages.length) {
@@ -140,23 +141,22 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
       }
     }
 
-    const streamingPatch = partialPatches[partialPatches.length - 1];
+    // Do not apply partial patches for now
+    // Keeping this commented out for now because we
+    // will probably want to reintroduce this feature
+    // const streamingPatch = partialPatches[partialPatches.length - 1];
 
-    if (streamingPatch) {
-      workingLessonPlan = applyPatchWhileStillStreaming(
-        streamingPatch,
-        workingLessonPlan,
-      );
-    }
+    // if (streamingPatch) {
+    //   workingLessonPlan = applyPatchWhileStillStreaming(
+    //     streamingPatch,
+    //     workingLessonPlan,
+    //   );
+    // }
 
     return {
       tempLessonPlan: workingLessonPlan,
       validPatches,
       partialPatches,
     };
-  }, [
-    throttledAssistantMessages,
-    messageHashes,
-    applyPatchWhileStillStreaming,
-  ]);
+  }, [throttledAssistantMessages, messageHashes]);
 };
