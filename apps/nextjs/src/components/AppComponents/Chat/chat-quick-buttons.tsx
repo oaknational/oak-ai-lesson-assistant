@@ -6,12 +6,40 @@ import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import { useDialog } from "../DialogContext";
+import { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
 import ChatButton from "./ui/chat-button";
 import { IconRefresh, IconStop } from "./ui/icons";
 
 interface QuickActionButtonsProps {
   isEmptyScreen: boolean;
 }
+
+const shouldAllowStop = (
+  ailaStreamingStatus: AilaStreamingStatus,
+  isEmptyScreen: boolean,
+  queuedUserAction: string | null,
+) => {
+  if (!isEmptyScreen) {
+    return false;
+  }
+
+  if (
+    [
+      "Loading",
+      "RequestMade",
+      "StreamingLessonPlan",
+      "StreamingChatResponse",
+    ].includes(ailaStreamingStatus)
+  ) {
+    return true;
+  }
+
+  if (queuedUserAction) {
+    return true;
+  }
+
+  return false;
+};
 
 const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
   const chat = useLessonChat();
@@ -74,28 +102,26 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
           </>
         )}
 
-        {[
-          "Loading",
-          "RequestMade",
-          "StreamingLessonPlan",
-          "StreamingChatResponse",
-        ].includes(ailaStreamingStatus) &&
-          isEmptyScreen && (
-            <ChatButton
-              size="sm"
-              variant="text-link"
-              onClick={() => {
-                trackEvent("chat:stop_generating");
-                stop();
-              }}
-              testId="chat-stop"
-            >
-              <span className="opacity-50">
-                <IconStop className="mr-3" />
-              </span>
-              <span className="font-light text-[#575757]">Stop</span>
-            </ChatButton>
-          )}
+        {shouldAllowStop(
+          ailaStreamingStatus,
+          isEmptyScreen,
+          queuedUserAction,
+        ) && (
+          <ChatButton
+            size="sm"
+            variant="text-link"
+            onClick={() => {
+              trackEvent("chat:stop_generating");
+              stop();
+            }}
+            testId="chat-stop"
+          >
+            <span className="opacity-50">
+              <IconStop className="mr-3" />
+            </span>
+            <span className="font-light text-[#575757]">Stop</span>
+          </ChatButton>
+        )}
       </div>
       <ChatButton
         size="sm"
