@@ -4,6 +4,7 @@ import {
   subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 
 import { AilaChatService, AilaError, AilaServices } from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
@@ -12,7 +13,12 @@ import {
   AilaGenerationStatus,
 } from "../../features/generation";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
-import { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
+import {
+  JsonPatchDocumentOptional,
+  LLMPatchDocumentSchema,
+  TextDocumentSchema,
+  parseMessageParts,
+} from "../../protocol/jsonPatchProtocol";
 import { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
@@ -87,6 +93,10 @@ export class AilaChat implements AilaChatService {
     return this._messages;
   }
 
+  public get parsedMessages() {
+    return this._messages.map((m) => parseMessageParts(m.content));
+  }
+
   public getPatchEnqueuer(): PatchEnqueuer {
     return this._patchEnqueuer;
   }
@@ -95,13 +105,12 @@ export class AilaChat implements AilaChatService {
     this._messages.push(message);
   }
 
-  public async appendChunk(value?: Uint8Array) {
+  public appendChunk(value?: string) {
     invariant(this._chunks, "Chunks not initialised");
     if (!value) {
       return;
     }
-    const decoded = new TextDecoder().decode(value);
-    this._chunks.push(decoded);
+    this._chunks.push(value);
   }
 
   public async generationFailed(error: unknown) {
@@ -202,7 +211,10 @@ export class AilaChat implements AilaChatService {
     await this._patchEnqueuer.enqueueMessage(message);
   }
 
-  public async enqueuePatch(path: string, value: unknown) {
+  public async enqueuePatch(
+    path: string,
+    value: string | string[] | number | object,
+  ) {
     await this._patchEnqueuer.enqueuePatch(path, value);
   }
 
@@ -273,7 +285,6 @@ export class AilaChat implements AilaChatService {
 
   private applyEdits() {
     const patches = this.accumulatedText();
-    console.log("Apply edits", patches);
     if (!patches) {
       return;
     }
@@ -318,15 +329,41 @@ export class AilaChat implements AilaChatService {
     });
   }
 
+  public async createChatCompletionObjectStream(messages: Message[]) {
+    const schema = z.object({
+      type: z.literal("llmMessage"),
+      patches: z
+        .array(LLMPatchDocumentSchema)
+        .describe(
+          "This is the set of patches you have generated to edit the lesson plan. Follow the instructions in the system prompt to ensure that you produce a valid patch. For instance, if you are providing a patch to add a cycle, the op should be 'add' and the value should be the JSON object representing the full, valid cycle. The same applies for all of the other parts of the lesson plan. This should not include more than one 'add' patch for the same section of the lesson plan. These edits will overwrite each other and result in unexpected results. If you want to do multiple updates on the same section, it is best to generate one 'add' patch with all of your edits included.",
+        ),
+      prompt: TextDocumentSchema.describe(
+        "If you imagine the user talking to you, this is where you would put your human-readable reply that would explain the changes you have made (if any), ask them questions, and prompt them to send their next message. This should not contain any of the lesson plan content. That should all be delivered in patches.",
+      ),
+    });
+
+    return this._llmService.createChatCompletionObjectStream({
+      model: this._aila.options.model ?? DEFAULT_MODEL,
+      schema,
+      schemaName: "response",
+      messages,
+      temperature: this._aila.options.temperature ?? DEFAULT_TEMPERATURE,
+    });
+  }
+
   public async complete() {
+    await this.enqueue({
+      type: "comment",
+      value: "CHAT_COMPLETE",
+    });
     await this.reportUsageMetrics();
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
     if (assistantMessage) {
       await this.enqueueMessageId(assistantMessage.id);
     }
+
     await this.moderate();
-    await this.enqueueFinalState();
     await this.persistChat();
     await this.persistGeneration("SUCCESS");
   }
@@ -334,6 +371,22 @@ export class AilaChat implements AilaChatService {
   public async moderate() {
     if (this._aila.options.useModeration) {
       invariant(this._aila.moderation, "Moderation not initialised");
+      // #TODO there seems to be a bug or a delay
+      // in the streaming logic, which means that
+      // the call to the moderation service
+      // locks up the stream until it gets a response,
+      // leaving the previous message half-sent until then.
+      // Since the front end relies on MODERATION_START
+      // to appear in the stream, we need to send two
+      // comment messages to ensure that it is received.
+      await this.enqueue({
+        type: "comment",
+        value: "MODERATION_START",
+      });
+      await this.enqueue({
+        type: "comment",
+        value: "MODERATING",
+      });
       const message = await this._aila.moderation.moderate({
         lessonPlan: this._aila.lesson.plan,
         messages: this._aila.messages,

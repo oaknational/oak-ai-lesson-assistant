@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import {
-  LessonDeepPartial,
-  exportDocLessonPlanSchema,
-} from "@oakai/exports/browser";
+import { exportDocLessonPlanSchema } from "@oakai/exports/browser";
 import { LessonPlanDocInputData } from "@oakai/exports/src/schema/input.schema";
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
@@ -11,19 +8,15 @@ import { ZodError } from "zod";
 
 import { trpc } from "@/utils/trpc";
 
+import { ExportsHookProps } from "./exports.types";
+
 export function useExportLessonPlanDoc({
   onStart,
   lesson,
   active,
   chatId,
   messageId,
-}: {
-  onStart: () => void;
-  lesson: LessonDeepPartial;
-  chatId: string;
-  messageId: number;
-  active: boolean;
-}) {
+}: ExportsHookProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const query = trpc.exports.exportLessonPlanDoc.useMutation();
 
@@ -39,8 +32,52 @@ export function useExportLessonPlanDoc({
       setParseResult(res);
     }
   }, [lesson, setParseResult, active]);
+
+  const checkForSnapShotAndPreloadQuery =
+    trpc.exports.checkIfLessonPlanDownloadExists.useMutation();
+  const [checked, setChecked] = useState(false);
+  const check = useCallback(async () => {
+    if (
+      debouncedParseResult?.success &&
+      debouncedParseResult.data &&
+      !checked
+    ) {
+      try {
+        checkForSnapShotAndPreloadQuery.mutate({
+          chatId,
+          data: debouncedParseResult.data,
+        });
+        setChecked(true);
+      } catch (error) {
+        console.error("Error during check:", error);
+      }
+    }
+  }, [
+    debouncedParseResult?.success,
+    debouncedParseResult?.data,
+    chatId,
+    checkForSnapShotAndPreloadQuery,
+    checked,
+  ]);
+
+  useEffect(() => {
+    check();
+  }, [check]);
+
   const start = useCallback(() => {
     if (!active) {
+      return;
+    }
+    if (!messageId) {
+      Sentry.captureException(
+        new Error("Failed to start export: messageId is undefined"),
+        {
+          extra: {
+            chatId,
+            lesson,
+          },
+        },
+      );
       return;
     }
 
@@ -58,7 +95,7 @@ export function useExportLessonPlanDoc({
       query.mutate({
         data: debouncedParseResult.data,
         chatId,
-        messageId: messageId.toString(),
+        messageId,
       });
       onStart();
       setDialogOpen(true);
@@ -74,9 +111,10 @@ export function useExportLessonPlanDoc({
       dialogOpen,
       closeDialog,
       status: query.status,
-      data: query.data,
+      data: checkForSnapShotAndPreloadQuery.data || query.data,
     }),
     [
+      checkForSnapShotAndPreloadQuery.data,
       active,
       debouncedParseResult,
       dialogOpen,

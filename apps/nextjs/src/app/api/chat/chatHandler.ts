@@ -1,17 +1,29 @@
 import { Aila } from "@oakai/aila";
-import type { AilaOptions, AilaPublicChatOptions, Message } from "@oakai/aila";
+import type {
+  AilaInitializationOptions,
+  AilaOptions,
+  AilaPublicChatOptions,
+  Message,
+} from "@oakai/aila";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import {
   TracingSpan,
   withTelemetry,
 } from "@oakai/core/src/tracing/serverTracing";
 import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
+// #TODO StreamingTextResponse is deprecated. If we choose to adopt the "ai" package
+// more fully, we should refactor to support its approach to streaming
+// but this could be a significant change given we have our record-separator approach
 import { StreamingTextResponse } from "ai";
 import { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
 
 import { Config } from "./config";
 import { handleChatException } from "./errorHandling";
+import {
+  getFixtureLLMService,
+  getFixtureModerationOpenAiClient,
+} from "./fixtures";
 import { fetchAndCheckUser } from "./user";
 
 export const maxDuration = 300;
@@ -48,11 +60,24 @@ async function setupChatHandler(req: NextRequest) {
         useModeration: true,
       };
 
+      const llmService = getFixtureLLMService(req.headers, chatId);
+      const moderationAiClient = getFixtureModerationOpenAiClient(
+        req.headers,
+        chatId,
+      );
+
       span.setTag("chat_id", chatId);
       span.setTag("messages.count", messages.length);
       span.setTag("options", JSON.stringify(options));
 
-      return { chatId, messages, lessonPlan, options };
+      return {
+        chatId,
+        messages,
+        lessonPlan,
+        options,
+        llmService,
+        moderationAiClient,
+      };
     },
   );
 }
@@ -97,7 +122,16 @@ async function generateChatStream(
     async () => {
       invariant(aila, "Aila instance is required");
       const result = await aila.generate({ abortController });
-      return result;
+      const transformStream = new TransformStream({
+        transform(chunk, controller) {
+          const formattedChunk = new TextEncoder().encode(
+            `0:${JSON.stringify(chunk)}\n`,
+          );
+          controller.enqueue(formattedChunk);
+        },
+      });
+
+      return result.pipeThrough(transformStream);
     },
   );
 }
@@ -107,8 +141,14 @@ export async function handleChatPostRequest(
   config: Config,
 ): Promise<Response> {
   return await withTelemetry("chat-api", {}, async (span: TracingSpan) => {
-    const { chatId, messages, lessonPlan, options } =
-      await setupChatHandler(req);
+    const {
+      chatId,
+      messages,
+      lessonPlan,
+      options,
+      llmService,
+      moderationAiClient,
+    } = await setupChatHandler(req);
 
     setTelemetryMetadata(span, chatId, messages, lessonPlan, options);
 
@@ -123,15 +163,20 @@ export async function handleChatPostRequest(
         "chat-create-aila",
         { chat_id: chatId, user_id: userId },
         async (): Promise<Aila> => {
-          const result = await config.createAila({
+          const ailaOptions: Partial<AilaInitializationOptions> = {
             options,
             chat: {
               id: chatId,
               userId,
               messages,
             },
-            lessonPlan,
-          });
+            services: {
+              chatLlmService: llmService,
+              moderationAiClient,
+            },
+            lessonPlan: lessonPlan ?? {},
+          };
+          const result = await config.createAila(ailaOptions);
           return result;
         },
       );

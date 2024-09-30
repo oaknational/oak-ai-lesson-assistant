@@ -1,9 +1,9 @@
+import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import * as Sentry from "@sentry/nextjs";
 
 import {
-  parseMessageParts,
   isPatch,
   isModeration,
   isAccountLocked,
@@ -45,6 +45,7 @@ function actionToComponentType(
  * changes, we still need to track the lesson plan as it progresses.
  */
 export function trackLessonPlanRefined({
+  chatId,
   prevLesson,
   nextLesson,
   userMessageContent,
@@ -53,6 +54,7 @@ export function trackLessonPlanRefined({
   track,
   action,
 }: {
+  chatId: string;
   prevLesson: LooseLessonPlan;
   nextLesson: LooseLessonPlan;
   userMessageContent: string;
@@ -62,9 +64,11 @@ export function trackLessonPlanRefined({
   action: UserAction | null;
 }) {
   const messageParts = parseMessageParts(ailaMessageContent);
-  const patches = messageParts.filter(isPatch);
-  const moderation = messageParts.find(isModeration);
-  const accountLocked = messageParts.some(isAccountLocked);
+  const patches = messageParts.map((p) => p.document).filter(isPatch);
+  const moderation = messageParts.map((p) => p.document).find(isModeration);
+  const accountLocked = messageParts
+    .map((p) => p.document)
+    .some(isAccountLocked);
   const componentType = actionToComponentType(action);
 
   /**
@@ -73,6 +77,7 @@ export function trackLessonPlanRefined({
   if (isFirstMessage) {
     track.lessonPlanInitiated({
       ...getLessonTrackingProps({ lesson: nextLesson }),
+      chatId,
       moderatedContentType: getModerationTypes(moderation),
       text: userMessageContent,
       componentType,
@@ -87,6 +92,7 @@ export function trackLessonPlanRefined({
     );
     track.lessonPlanRefined({
       ...getLessonTrackingProps({ lesson: nextLesson }),
+      chatId,
       moderatedContentType: getModerationTypes(moderation),
       text: userMessageContent,
       componentType: isSelectingOakLesson ? "select_oak_lesson" : componentType,
@@ -102,6 +108,7 @@ export function trackLessonPlanRefined({
   if (!isLessonComplete(prevLesson) && isLessonComplete(nextLesson)) {
     track.lessonPlanCompleted({
       ...getLessonTrackingProps({ lesson: nextLesson }),
+      chatId,
       moderatedContentType: getModerationTypes(moderation),
     });
   }
@@ -111,6 +118,7 @@ export function trackLessonPlanRefined({
   const isTerminated = accountLocked || (moderation && isToxic(moderation));
   if (isTerminated) {
     track.lessonPlanTerminated({
+      chatId,
       isUserBlocked: accountLocked,
       isToxicContent: moderation ? isToxic(moderation) : false,
       isThreatDetected: false, // @fixme currently we can't access threat detection here

@@ -1,26 +1,23 @@
-import {
-  HeliconeChatMeta,
-  createOpenAIClient,
-} from "@oakai/core/src/llm/openai";
-import { OpenAIStream } from "ai";
-import OpenAI from "openai";
-import { Stream } from "openai/streaming";
+import { OpenAIProvider } from "@ai-sdk/openai";
+import { HeliconeChatMeta } from "@oakai/core/src/llm/helicone";
+import { createVercelOpenAIClient } from "@oakai/core/src/llm/openai";
+import { streamObject, streamText } from "ai";
+import { ZodSchema } from "zod";
 
 import { Message } from "../chat";
 import { LLMService } from "./LLMService";
 
+const STRUCTURED_OUTPUTS_ENABLED =
+  process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true" ? true : false;
 export class OpenAIService implements LLMService {
-  private _openAIClient: OpenAI;
+  private _openAIProvider: OpenAIProvider;
 
   public name = "OpenAIService";
 
   constructor({ userId, chatId }: HeliconeChatMeta) {
-    this._openAIClient = createOpenAIClient({
+    this._openAIProvider = createVercelOpenAIClient({
+      chatMeta: { userId, chatId },
       app: "lesson-assistant",
-      chatMeta: {
-        userId,
-        chatId,
-      },
     });
   }
 
@@ -28,23 +25,62 @@ export class OpenAIService implements LLMService {
     model: string;
     messages: Message[];
     temperature: number;
-  }): Promise<ReadableStreamDefaultReader<Uint8Array | undefined>> {
-    const res = await this._openAIClient.chat.completions.create({
-      stream: true,
-      stream_options: {
-        include_usage: true,
-      },
-      ...params,
+  }): Promise<ReadableStreamDefaultReader<string>> {
+    const { textStream: stream } = await streamText({
+      model: this._openAIProvider(params.model),
+      messages: params.messages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      })),
+      temperature: params.temperature,
     });
-    if (res instanceof Stream) {
-      const openAiStream: ReadableStream<Uint8Array | undefined> =
-        OpenAIStream(res);
-      return openAiStream.getReader();
-    } else if (res) {
-      // Handle the ChatCompletion case here if necessary
-      throw new Error("Received ChatCompletion instead of a Stream.");
-    } else {
-      throw new Error("Failed to create chat completion stream.");
+
+    return stream.getReader();
+  }
+
+  async createChatCompletionObjectStream(params: {
+    model: string;
+    schema: ZodSchema;
+    schemaName: string;
+    messages: Message[];
+    temperature: number;
+  }): Promise<ReadableStreamDefaultReader<string>> {
+    const { model, messages, temperature, schema, schemaName } = params;
+    if (!STRUCTURED_OUTPUTS_ENABLED) {
+      return this.createChatCompletionStream({ model, messages, temperature });
     }
+    const startTime = Date.now();
+    const { textStream: stream } = await streamObject({
+      model: this._openAIProvider(model, { structuredOutputs: true }),
+      output: "object",
+      schema,
+      schemaName,
+      messages: messages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      })),
+      temperature,
+    });
+
+    const reader = stream.getReader();
+    const { value } = await reader.read();
+    const timeToFirstToken = Date.now() - startTime;
+    console.log(`Time to first token: ${timeToFirstToken}ms`);
+
+    const newStream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(value);
+      },
+      async pull(controller) {
+        const { done, value } = await reader.read();
+        if (done) {
+          controller.close();
+        } else {
+          controller.enqueue(value);
+        }
+      },
+    });
+
+    return newStream.getReader();
   }
 }

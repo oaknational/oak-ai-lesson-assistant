@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
@@ -16,68 +18,91 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
   const { trackEvent } = useAnalytics();
   const lessonPlanTracking = useLessonPlanTracking();
   const { setDialogWindow } = useDialog();
+  const {
+    messages,
+    id,
+    stop,
+    ailaStreamingStatus,
+    queueUserAction,
+    queuedUserAction,
+  } = chat;
 
-  const { isLoading, messages, reload, append, id, stop } = chat;
+  const shouldAllowUserAction =
+    ["Idle", "Moderating"].includes(ailaStreamingStatus) && !queuedUserAction;
+
+  const handleRegenerate = useCallback(() => {
+    trackEvent("chat:regenerate", { id: id });
+    const lastUserMessage =
+      messages.findLast((m) => m.role === "user")?.content || "";
+    lessonPlanTracking.onClickRetry(lastUserMessage);
+    queueUserAction("regenerate");
+  }, [queueUserAction, lessonPlanTracking, messages, trackEvent, id]);
+
+  const handleContinue = useCallback(async () => {
+    trackEvent("chat:continue");
+    lessonPlanTracking.onClickContinue();
+    queueUserAction("continue");
+  }, [queueUserAction, lessonPlanTracking, trackEvent]);
 
   return (
     <div className="-ml-7 flex justify-between space-x-7 rounded-bl rounded-br pt-8">
-      {!isLoading && (
-        <div className="flex items-center">
-          <ChatButton
-            data-testid="chat-continue"
-            size="sm"
-            variant="text-link"
-            onClick={() => {
-              trackEvent("chat:regenerate", { id: id });
-              const lastUserMessage =
-                messages.findLast((m) => m.role === "user")?.content || "";
-              lessonPlanTracking.onClickRetry(lastUserMessage);
-              reload();
-            }}
-          >
-            <span className="opacity-70">
-              <IconRefresh className="mr-3" />
-            </span>
-            <span className="font-light text-[#575757]">Retry</span>
-          </ChatButton>
-          <ChatButton
-            variant="text-link"
-            onClick={() => setDialogWindow("report-content")}
-          >
-            <span className="opacity-70">
-              <Icon icon="warning" className="mr-3" size="xs" />
-            </span>
-            <span className="font-light text-[#575757]">Report</span>
-          </ChatButton>
-        </div>
-      )}
-      {isLoading && isEmptyScreen && (
-        <ChatButton
-          size="sm"
-          variant="text-link"
-          onClick={() => {
-            trackEvent("chat:stop_generating");
-            stop();
-          }}
-          testId="chat-stop"
-        >
-          <span className="opacity-50">
-            <IconStop className="mr-3" />
-          </span>
-          <span className="font-light text-[#575757]">Stop</span>
-        </ChatButton>
-      )}
+      <div className="flex items-center">
+        {shouldAllowUserAction && (
+          <>
+            <ChatButton
+              data-testid="chat-continue"
+              size="sm"
+              variant="text-link"
+              onClick={() => {
+                handleRegenerate();
+              }}
+            >
+              <span className="opacity-70">
+                <IconRefresh className="mr-3" />
+              </span>
+              <span className="font-light text-[#575757]">Retry</span>
+            </ChatButton>
+            <ChatButton
+              variant="text-link"
+              onClick={() => setDialogWindow("report-content")}
+            >
+              <span className="opacity-70">
+                <Icon icon="warning" className="mr-3" size="xs" />
+              </span>
+              <span className="font-light text-[#575757]">Report</span>
+            </ChatButton>
+          </>
+        )}
+
+        {[
+          "Loading",
+          "RequestMade",
+          "StreamingLessonPlan",
+          "StreamingChatResponse",
+        ].includes(ailaStreamingStatus) &&
+          isEmptyScreen && (
+            <ChatButton
+              size="sm"
+              variant="text-link"
+              onClick={() => {
+                trackEvent("chat:stop_generating");
+                stop();
+              }}
+              testId="chat-stop"
+            >
+              <span className="opacity-50">
+                <IconStop className="mr-3" />
+              </span>
+              <span className="font-light text-[#575757]">Stop</span>
+            </ChatButton>
+          )}
+      </div>
       <ChatButton
         size="sm"
         variant="primary"
-        disabled={isLoading}
+        disabled={!shouldAllowUserAction}
         onClick={async () => {
-          trackEvent("chat:continue");
-          lessonPlanTracking.onClickContinue();
-          await append({
-            content: "Continue",
-            role: "user",
-          });
+          await handleContinue();
         }}
         testId="chat-continue"
       >

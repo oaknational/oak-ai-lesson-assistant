@@ -1,0 +1,293 @@
+{
+  "type": "llmMessage",
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "Creating a Starter Quiz to check prior knowledge before the lesson begins.",
+      "value": {
+        "type": "quiz",
+        "op": "add",
+        "path": "/starterQuiz",
+        "value": [
+          {
+            "question": "When did the Romans invade Britain?",
+            "answers": [
+              "43 AD"
+            ],
+            "distractors": [
+              "410 AD",
+              "1066 AD"
+            ]
+          },
+          {
+            "question": "What was Hadrian's Wall?",
+            "answers": [
+              "A wall built by Romans in the north of Britain"
+            ],
+            "distractors": [
+              "A wall built by Britons to keep Romans out",
+              "A wall in Rome"
+            ]
+          },
+          {
+            "question": "What connected towns across Roman Britain?",
+            "answers": [
+              "Roman roads"
+            ],
+            "distractors": [
+              "Canals",
+              "Rivers"
+            ]
+          },
+          {
+            "question": "What did Romans introduce to Britain?",
+            "answers": [
+              "New food and customs"
+            ],
+            "distractors": [
+              "The English language",
+              "Modern technology"
+            ]
+          },
+          {
+            "question": "Who adopted Roman ways of life?",
+            "answers": [
+              "Some Britons"
+            ],
+            "distractors": [
+              "All Britons",
+              "None of the Britons"
+            ]
+          },
+          {
+            "question": "What year did the Romans leave Britain?",
+            "answers": [
+              "410 AD"
+            ],
+            "distractors": [
+              "43 AD",
+              "1066 AD"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "patch",
+      "reasoning": "Designing the first learning cycle to introduce why the Romans left Britain.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle1",
+        "value": {
+          "title": "Reasons for Roman Departure",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Discuss the internal struggles of the Roman Empire around 410 AD.",
+              "Explain how these struggles led to the withdrawal from Britain.",
+              "Introduce the concept of 'withdrawal' as a strategic move by the Romans.",
+              "Link how the Roman Empire's focus shifted elsewhere due to these struggles."
+            ],
+            "accompanyingSlideDetails": "A map showing the Roman Empire and its extent, highlighting Britain.",
+            "imagePrompt": "Roman Empire map 410 AD",
+            "slideText": "The Romans left Britain around 410 AD due to internal struggles. They withdrew strategically."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "Why did the Romans leave Britain?",
+              "answers": [
+                "Internal struggles in the Roman Empire"
+              ],
+              "distractors": [
+                "British rebellion",
+                "Barbarian invasion"
+              ]
+            },
+            {
+              "question": "What does 'withdrawal' mean in this context?",
+              "answers": [
+                "Leaving a place or position"
+              ],
+              "distractors": [
+                "Attacking a place",
+                "Building a wall"
+              ]
+            }
+          ],
+          "practice": "List two reasons why the Romans decided to withdraw from Britain, using the slide for guidance.",
+          "feedback": "Model answer: 1. Internal struggles in the Roman Empire. 2. Shifted focus to other regions."
+        }
+      }
+    },
+    {
+      "type": "patch",
+      "reasoning": "Organizing the second learning cycle to cover the immediate effects on local communities after Roman withdrawal.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle2",
+        "value": {
+          "title": "Immediate Effects on Local Communities",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Describe how Roman withdrawal left Britain vulnerable to invasions.",
+              "Explain the immediate impact on local communities, such as lack of Roman support.",
+              "Discuss the decline of Roman structures and roads over time."
+            ],
+            "accompanyingSlideDetails": "Images of Roman ruins and a map of Britain showing vulnerable areas after Roman withdrawal.",
+            "imagePrompt": "Roman ruins Britain",
+            "slideText": "Roman withdrawal left Britain vulnerable to invasions and local communities without support."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "What happened to Roman structures after the Romans left?",
+              "answers": [
+                "They fell into disrepair"
+              ],
+              "distractors": [
+                "They were improved",
+                "They turned into castles"
+              ]
+            },
+            {
+              "question": "How did Roman withdrawal affect local communities?",
+              "answers": [
+                "Communities lacked Roman support"
+              ],
+              "distractors": [
+                "Communities became wealthier",
+                "Communities built new structures"
+              ]
+            }
+          ],
+          "practice": "Describe one immediate effect on local communities after the Romans left. Use examples from the slide to help your understanding.",
+          "feedback": "Model answer: Local communities lacked Roman support and faced invasions."
+        }
+      }
+    },
+    {
+      "type": "patch",
+      "reasoning": "Creating the third learning cycle to focus on how Britain changed in the years following Roman departure.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle3",
+        "value": {
+          "title": "Long-term Changes in Britain",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Explain how Britain adapted and changed culturally and technologically post-Roman rule.",
+              "Discuss the blend of Roman and local traditions that emerged.",
+              "Highlight the technological changes that occurred as a result of Roman influence."
+            ],
+            "accompanyingSlideDetails": "A timeline showing cultural and technological changes in Britain after Romans.",
+            "imagePrompt": "Post-Roman Britain timeline",
+            "slideText": "Post-Roman Britain saw cultural and technological changes, blending Roman and local traditions."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "How did Britain's culture change after the Romans left?",
+              "answers": [
+                "Blended Roman and local traditions"
+              ],
+              "distractors": [
+                "Became entirely Roman",
+                "Forgot Roman ways"
+              ]
+            },
+            {
+              "question": "What type of changes occurred in Britain after Roman rule?",
+              "answers": [
+                "Cultural and technological"
+              ],
+              "distractors": [
+                "Only political",
+                "Only economical"
+              ]
+            }
+          ],
+          "practice": "Explain one cultural or technological change in Britain after the Romans left. Provide an example from the slide.",
+          "feedback": "Model answer: The blend of Roman and local traditions led to new cultural practices."
+        }
+      }
+    },
+    {
+      "type": "patch",
+      "reasoning": "Creating an Exit Quiz to assess understanding of the lesson topics.",
+      "value": {
+        "type": "quiz",
+        "op": "add",
+        "path": "/exitQuiz",
+        "value": [
+          {
+            "question": "When did the Romans leave Britain?",
+            "answers": [
+              "Around 410 AD"
+            ],
+            "distractors": [
+              "43 AD",
+              "1066 AD"
+            ]
+          },
+          {
+            "question": "What was a reason for Roman withdrawal?",
+            "answers": [
+              "Internal struggles"
+            ],
+            "distractors": [
+              "British alliance",
+              "Roman expansion"
+            ]
+          },
+          {
+            "question": "How were Roman structures affected after withdrawal?",
+            "answers": [
+              "Fell into disrepair"
+            ],
+            "distractors": [
+              "Became museums",
+              "Were exported"
+            ]
+          },
+          {
+            "question": "What did local communities lack after Roman withdrawal?",
+            "answers": [
+              "Roman support"
+            ],
+            "distractors": [
+              "Water supply",
+              "New roads"
+            ]
+          },
+          {
+            "question": "What cultural changes occurred after Roman rule?",
+            "answers": [
+              "Blended Roman and local traditions"
+            ],
+            "distractors": [
+              "Adopted only Roman traditions",
+              "Eliminated Roman influence"
+            ]
+          },
+          {
+            "question": "What kind of changes did Britain experience post-Roman rule?",
+            "answers": [
+              "Cultural and technological"
+            ],
+            "distractors": [
+              "Only military",
+              "Only agricultural"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "prompt": {
+    "type": "text",
+    "value": "The quizzes and learning cycles have been created. These include questions to test understanding at each stage. Are the quizzes and learning cycles at an appropriate difficulty level for your pupils? Let me know if you need any adjustments!"
+  }
+}

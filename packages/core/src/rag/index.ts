@@ -44,6 +44,14 @@ export interface LessonPlanWithPartialLesson extends LessonPlan {
   };
 }
 
+export type SimilarityResultWithScore = [
+  import("@langchain/core/documents").DocumentInterface<
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Record<string, any>
+  >,
+  number,
+];
+
 export interface KeyStageAndSubject {
   keyStage?: KeyStage;
   subject?: Subject;
@@ -616,7 +624,7 @@ Thank you and happy classifying!`;
         this._chatMeta,
       );
       if (categorisation.keyStage) {
-        foundKeyStage = await this.prisma.subject.findFirst({
+        foundKeyStage = await this.prisma.keyStage.findFirst({
           where: {
             slug: categorisation.keyStage,
           },
@@ -725,30 +733,49 @@ Thank you and happy classifying!`;
 
     const vectorStore = PrismaVectorStore.withModel<LessonPlanPart>(
       this.prisma,
-    ).create(new OpenAIEmbeddings(), {
-      prisma: Prisma,
-      tableName: "lesson_plan_parts" as "LessonPlanPart",
-      vectorColumnName: "embedding",
-      verbose: true,
-      openAIApiKey: process.env.OPENAI_API_KEY,
-      columns: {
-        id: PrismaVectorStore.IdColumn,
-        lesson_plan_id: PrismaVectorStore.IdColumn,
-        content: PrismaVectorStore.ContentColumn,
+    ).create(
+      new OpenAIEmbeddings({
+        modelName: "text-embedding-3-large",
+        dimensions: 256,
+      }),
+      {
+        prisma: Prisma,
+        tableName: "lesson_plan_parts" as "LessonPlanPart",
+        vectorColumnName: "embedding",
+        verbose: true,
+        openAIApiKey: process.env.OPENAI_API_KEY,
+        columns: {
+          id: PrismaVectorStore.IdColumn,
+          lesson_plan_id: PrismaVectorStore.IdColumn,
+          content: PrismaVectorStore.ContentColumn,
+        },
+        // @ts-expect-error TODO Bug in PrismaVectorStore which doesn't allow mapped column names
+        filter,
       },
-      // @ts-expect-error TODO Bug in PrismaVectorStore which doesn't allow mapped column names
-      filter,
-    });
+    );
 
     const similaritySearchTerm = topic ? `${title}. ${topic}` : title;
 
-    const result = await vectorStore.similaritySearchWithScore(
-      similaritySearchTerm,
-      k * 5, // search for more records than we need
-    );
+    let result: SimilarityResultWithScore[] | undefined = undefined;
+    try {
+      result = await vectorStore.similaritySearchWithScore(
+        similaritySearchTerm,
+        k * 5, // search for more records than we need
+      );
+    } catch (e) {
+      if (e instanceof TypeError && e.message.includes("join([])")) {
+        console.warn("Caught TypeError with join([]), returning empty array");
+        return [];
+      }
+      throw e;
+    }
 
     const relevantResults = result.filter((r) => r[1] > 0.1).map((r) => r[0]);
 
+    if (relevantResults.length === 0) {
+      // Avoids a TypeError when there are no relevant results
+      return [];
+    }
     const lessonPlans: LessonPlanWithPartialLesson[] =
       await this.prisma.lessonPlan.findMany({
         where: {

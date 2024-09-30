@@ -1,3 +1,5 @@
+import { ZodSchema } from "zod";
+
 import { Message } from "../chat";
 
 export interface LLMService {
@@ -6,5 +8,12 @@ export interface LLMService {
     model: string;
     messages: Message[];
     temperature: number;
-  }): Promise<ReadableStreamDefaultReader<Uint8Array | undefined>>;
+  }): Promise<ReadableStreamDefaultReader<string>>;
+  createChatCompletionObjectStream(params: {
+    model: string;
+    schema: ZodSchema;
+    schemaName: string;
+    messages: Message[];
+    temperature: number;
+  }): Promise<ReadableStreamDefaultReader<string>>;
 }

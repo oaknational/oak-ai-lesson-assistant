@@ -22,6 +22,9 @@ export class Moderations {
         appSessionId,
         invalidatedAt: includeInvalidated ? undefined : null,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
   }
 

@@ -49,3 +49,7 @@ yarn-error.log*
 
 # asdf version manager
 .tool-versions
+
+# Allow each developer to have personal settings, but ignore these files
+.vscode/launch.json 
+.vscode/*.settings.json

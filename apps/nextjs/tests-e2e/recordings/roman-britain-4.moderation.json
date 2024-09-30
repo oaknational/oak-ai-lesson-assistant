@@ -1,0 +1,27 @@
+{
+  "id": "chatcmpl-AAdCsMbt9HTt6nlyK1VwS7c30H6ma",
+  "object": "chat.completion",
+  "created": 1727097354,
+  "model": "gpt-4o-2024-08-06",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan titled 'End of Roman Britain' is designed for Key Stage 1 history students. It focuses on the historical events surrounding the end of Roman rule in Britain and its effects, aiming to describe changes in Britain after the Romans left. The content is age-appropriate and free from any discriminatory language, offensive language, or strong language. There is no depiction or discussion of violence, serious violence, or sexual violence. The lesson does not contain upsetting, sensitive, or distressing content, such as depictions of criminal behavior, unsafe situations, or sensitive topics like mental health or death. There is no depiction or discussion of nudity or sexual content. The lesson does not involve exploration of objects, use of equipment requiring supervision, imitable behaviors, external content, or physical activity. Finally, the lesson plan does not contain any guides or encouragement of harmful behaviors, illegal activity, or violence. Overall, the lesson is fully compliant across all categories.\",\"categories\":[]}",
+        "refusal": null
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 3627,
+    "completion_tokens": 224,
+    "total_tokens": 3851,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "system_fingerprint": "fp_7568d46099"
+}
