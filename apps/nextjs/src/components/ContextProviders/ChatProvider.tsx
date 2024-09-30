@@ -118,7 +118,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     {
       refetchOnMount: true,
       refetchOnWindowFocus: true,
-      staleTime: 0,
     },
   );
   const {
@@ -130,7 +129,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     {
       refetchOnMount: true,
       refetchOnWindowFocus: true,
-      staleTime: 0,
     },
   );
   // Ensure that we re-fetch on mount
