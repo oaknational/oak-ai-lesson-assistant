@@ -21,7 +21,7 @@ export const useMobileLessonPullOutControl = ({
   useEffect(() => {
     if (
       !userHasOverRiddenAutoPullOut &&
-      ailaStreamingStatus === "Loading" &&
+      ailaStreamingStatus === "StreamingLessonPlan" &&
       lessonPlan.title
     ) {
       setShowLessonMobile(true);
