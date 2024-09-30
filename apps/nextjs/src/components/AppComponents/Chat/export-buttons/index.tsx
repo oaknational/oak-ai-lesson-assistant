@@ -1,11 +1,13 @@
 "use client";
 
+import { OakSmallSecondaryButton } from "@oaknational/oak-components";
+import Link from "next/link";
+
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import { useDialog } from "../../DialogContext";
-import ChatButton from "../ui/chat-button";
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
 export type ExportButtonsProps = {
@@ -34,9 +36,7 @@ const ExportButtons = ({
             documentContainerRef={documentContainerRef}
           />
           <div className="flex space-x-10">
-            <ChatButton
-              variant="primary"
-              size="sm"
+            <OakSmallSecondaryButton
               disabled={isStreaming}
               title={demo.isSharingEnabled ? undefined : "Not available"}
               onClick={() => {
@@ -51,13 +51,13 @@ const ExportButtons = ({
               }}
             >
               Share lesson
-            </ChatButton>
-            <ChatButton
-              variant="primary"
-              size="sm"
+            </OakSmallSecondaryButton>
+            <OakSmallSecondaryButton
+              element={!isStreaming ? Link : "button"}
+              disabled={isStreaming}
+              data-testId="chat-download-resources"
               href={demo.isSharingEnabled ? `/aila/download/${id}` : "#"}
               title={demo.isSharingEnabled ? undefined : "Not available"}
-              disabled={isStreaming}
               onClick={() => {
                 trackEvent("chat:open_chat_actions", {
                   id,
@@ -66,10 +66,9 @@ const ExportButtons = ({
                   setDialogWindow("demo-share-locked");
                 }
               }}
-              testId="chat-download-resources"
             >
               Download resources
-            </ChatButton>
+            </OakSmallSecondaryButton>
           </div>
         </div>
       </div>

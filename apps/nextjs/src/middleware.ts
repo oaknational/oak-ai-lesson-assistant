@@ -6,12 +6,11 @@ import { NextMiddleware, NextResponse } from "next/server";
 
 import { sentryCleanup } from "./lib/sentry/sentryCleanup";
 
-function handleError(error: unknown): Response {
-  const wrappedError = new Error("Error in nextMiddleware");
-  wrappedError.cause = error;
-  Sentry.captureException(wrappedError, { originalException: error });
+function handleError(error: unknown, extra: Record<string, unknown>): Response {
+  const wrappedError = new Error("Error in nextMiddleware", { cause: error });
+  Sentry.captureException(wrappedError, { extra });
 
-  return NextResponse.error();
+  return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
 }
 
 const nextMiddleware: NextMiddleware = async (request, event) => {
@@ -21,7 +20,7 @@ const nextMiddleware: NextMiddleware = async (request, event) => {
     response = await authMiddleware(request, event);
     response = addCspHeaders(response, request);
   } catch (error) {
-    response = handleError(error);
+    response = handleError(error, { request, event });
   } finally {
     await sentryCleanup();
   }

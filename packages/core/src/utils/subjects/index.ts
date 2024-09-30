@@ -1,8 +1,8 @@
 export const subjectWarnings = {
   unsupportedSubject:
-    "The lesson subject you’ve chosen is in an area where AI tools like me don’t work at our best. I’m trying to get better on my accuracy here, but please double-check everything before using this plan in the classroom. Thank you!",
+    "You've selected a subject for which I am developing my accuracy. Please check the content carefully.",
   unknownSubject:
-    "The lesson you’ve chosen isn't covered by Oak. I can still make you a plan, but it might not be up to the standard you’re expecting, so please double-check everything before using it in the classroom. Thank you!",
+    "The lesson you’ve chosen isn't covered by Oak. I can still make you a plan, but it might not be up to the standard you’re expecting, so please double-check everything before using it in the classroom.",
 };
 
 export const subjects = [

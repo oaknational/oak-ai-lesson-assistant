@@ -1,0 +1,19 @@
+{
+  "type": "llmMessage",
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "Adding a placeholder for potential additional materials or narratives that may support the lesson plan.",
+      "value": {
+        "type": "string",
+        "op": "add",
+        "path": "/additionalMaterials",
+        "value": "None"
+      }
+    }
+  ],
+  "prompt": {
+    "type": "text",
+    "value": "Would you like to add any additional materials, such as a narrative to support your explanations, instructions for practicals, or extra homework questions?"
+  }
+}

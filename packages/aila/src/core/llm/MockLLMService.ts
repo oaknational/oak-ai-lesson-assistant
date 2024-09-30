@@ -1,5 +1,9 @@
 import { LLMService } from "./LLMService";
 
+async function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export class MockLLMService implements LLMService {
   name = "MockLLM";
   private responseChunks: string[];
@@ -25,7 +29,7 @@ export class MockLLMService implements LLMService {
       async start(controller) {
         for (const chunk of responseChunks) {
           controller.enqueue(chunk);
-          await new Promise((resolve) => setTimeout(resolve, 4));
+          await sleep(0);
         }
         controller.close();
       },
@@ -40,7 +44,7 @@ export class MockLLMService implements LLMService {
       async start(controller) {
         for (const chunk of responseChunks) {
           controller.enqueue(chunk);
-          await new Promise((resolve) => setTimeout(resolve, 4));
+          await sleep(0);
         }
         controller.close();
       },

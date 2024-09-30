@@ -80,7 +80,11 @@ export class Aila implements AilaServices {
     });
 
     this._analytics = AilaFeatureFactory.createAnalytics(this, this._options);
-    this._moderation = AilaFeatureFactory.createModeration(this, this._options);
+    this._moderation = AilaFeatureFactory.createModeration(
+      this,
+      this._options,
+      options.services?.moderationAiClient,
+    );
     this._persistence = AilaFeatureFactory.createPersistence(
       this,
       this._options,
@@ -122,7 +126,7 @@ export class Aila implements AilaServices {
       useThreatDetection: options?.useThreatDetection ?? true,
       useErrorReporting: options?.useErrorReporting ?? true,
       model: options?.model ?? DEFAULT_MODEL,
-      mode: options?.mode ?? "full",
+      mode: options?.mode ?? "interactive",
     };
   }
 
