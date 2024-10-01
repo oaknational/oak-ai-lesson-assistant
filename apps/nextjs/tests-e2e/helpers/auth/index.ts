@@ -1,4 +1,4 @@
-import { clerk } from "@clerk/testing/playwright";
+import { setupClerkTestingToken } from "@clerk/testing/playwright";
 import { TestSupportRouter } from "@oakai/api/src/router/testSupport";
 import { transformer } from "@oakai/api/transformer";
 import { test, Page } from "@playwright/test";
@@ -7,7 +7,8 @@ import { createTRPCProxyClient, httpBatchLink, loggerLink } from "@trpc/client";
 import {
   TEST_BASE_URL,
   VERCEL_AUTOMATION_BYPASS_SECRET,
-} from "../config/config";
+} from "../../config/config";
+import { clerkSignInHelper, cspSafeWaitForFunction } from "./clerkHelpers";
 
 const trpc = createTRPCProxyClient<TestSupportRouter>({
   transformer,
@@ -32,13 +33,10 @@ export async function prepareUser(page: Page, persona: "typical" | "demo") {
     ]);
 
     await test.step("clerk.signIn", async () => {
-      await clerk.signIn({
-        page,
-        signInParams: {
-          strategy: "email_code",
-          identifier: login.email,
-        },
-      });
+      await setupClerkTestingToken({ page });
+
+      await cspSafeWaitForFunction(page, () => window.Clerk?.loaded);
+      await page.evaluate(clerkSignInHelper, login.email);
     });
 
     return login;
