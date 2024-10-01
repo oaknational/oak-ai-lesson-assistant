@@ -8,6 +8,11 @@ import { PassThrough } from "stream";
 
 import { withSentry } from "@/lib/sentry/withSentry";
 
+type FileIdsAndFormats = {
+  fileId: string;
+  formats: ReadonlyArray<"pptx" | "docx" | "pdf">;
+}[];
+
 function getReadableExportType(exportType: LessonExportType) {
   switch (exportType) {
     case "EXIT_QUIZ_DOC":
@@ -96,7 +101,7 @@ async function getHandler(req: Request): Promise<Response> {
   }
   const taskId = `download-all-${fileIdsParam.toString()}`;
 
-  let fileIdsAndFormats;
+  let fileIdsAndFormats: FileIdsAndFormats;
   try {
     fileIdsAndFormats = JSON.parse(decodeURIComponent(fileIdsParam));
   } catch (error) {
@@ -136,8 +141,9 @@ async function getHandler(req: Request): Promise<Response> {
         const res = await downloadDriveFile({ fileId, ext });
 
         if ("error" in res) {
-          const err = new Error("Error downloading file, not included in zip");
-          err.cause = res.error;
+          const err = new Error("Error downloading file, not included in zip", {
+            cause: res.error,
+          });
           Sentry.captureException(err, { level: "error" });
           continue;
         }
@@ -158,8 +164,9 @@ async function getHandler(req: Request): Promise<Response> {
 
         filesProcessed++;
       } catch (error) {
-        const err = new Error("Error downloading file, not included in zip");
-        err.cause = error;
+        const err = new Error("Error downloading file, not included in zip", {
+          cause: error,
+        });
         Sentry.captureException(err, { level: "error" });
       }
     }
