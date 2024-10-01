@@ -29,7 +29,7 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         storageState: "tests-e2e/.auth/user.json",
       },
-      dependencies: ["auth-setup"],
+      dependencies: ["setup", "auth-setup"],
     },
   ],
   reporter: process.env.CI
