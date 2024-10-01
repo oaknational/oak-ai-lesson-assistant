@@ -11,6 +11,7 @@ export default defineConfig({
     {
       name: "auth-setup",
       testMatch: "ui-auth.setup.ts",
+      dependencies: ["setup"],
     },
     {
       name: "public",
@@ -28,7 +29,7 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         storageState: "tests-e2e/.auth/user.json",
       },
-      dependencies: ["setup", "auth-setup"],
+      dependencies: ["auth-setup"],
     },
   ],
   reporter: process.env.CI

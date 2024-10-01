@@ -13,7 +13,7 @@ import { clerkSignInHelper, cspSafeWaitForFunction } from "./clerkHelpers";
 const trpc = createTRPCProxyClient<TestSupportRouter>({
   transformer,
   links: [
-    loggerLink(),
+    loggerLink({ enabled: () => process.env.NODE_ENV === "development" }),
     httpBatchLink({
       url: `${TEST_BASE_URL}/api/trpc/test-support`,
       headers: {
