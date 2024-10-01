@@ -8,8 +8,11 @@ export function useClientSideFeatureFlag(flag: string): boolean {
   const [featureEnabled, setFeatureEnabled] = useState<boolean | undefined>();
 
   useEffect(() => {
+    const isDebug = process.env.NEXT_PUBLIC_POSTHOG_DEBUG === "true";
+
     return client.onFeatureFlags(() => {
-      setFeatureEnabled(client.isFeatureEnabled(flag));
+      const isEnabled = isDebug ? true : client.isFeatureEnabled(flag);
+      setFeatureEnabled(isEnabled);
     });
   }, [client, flag]);
 

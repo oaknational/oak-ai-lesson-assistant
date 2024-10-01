@@ -9,6 +9,7 @@ import { z } from "zod";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trackDownload } from "@/utils/trackDownload";
 import { trpc } from "@/utils/trpc";
+import { useClientSideFeatureFlag } from "@/utils/useClientSideFeatureFlag";
 
 import { getExportsConfig } from "../../ExportsDialogs/exports.helpers";
 import { Icon } from "../../Icon";
@@ -76,6 +77,12 @@ export const DownloadAllButton = ({
   const { track } = useAnalytics();
   const { mutateAsync: zipStatusMutateAsync } =
     trpc.exports.checkDownloadAllStatus.useMutation();
+
+  const isFeatureEnabled = useClientSideFeatureFlag("download-all-button");
+  if (!isFeatureEnabled) {
+    console.log("Download all button is disabled");
+    return null;
+  }
 
   if (data) {
     const fileIdsAndFormats:
