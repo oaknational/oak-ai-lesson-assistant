@@ -2,7 +2,12 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "tests-e2e",
+
   projects: [
+    {
+      name: "setup",
+      testMatch: "global.setup.ts",
+    },
     {
       name: "auth-setup",
       testMatch: "ui-auth.setup.ts",
@@ -13,6 +18,7 @@ export default defineConfig({
       use: {
         ...devices["Desktop Chrome"],
       },
+      dependencies: ["setup"],
     },
     {
       name: "authenticated",
@@ -22,7 +28,7 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         storageState: "tests-e2e/.auth/user.json",
       },
-      dependencies: ["auth-setup"],
+      dependencies: ["setup", "auth-setup"],
     },
   ],
   reporter: process.env.CI

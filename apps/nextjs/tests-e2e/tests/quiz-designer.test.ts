@@ -1,5 +1,4 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
-import { clerkSetup } from "@clerk/testing/playwright";
 import { test, expect } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../config/config";
@@ -9,7 +8,6 @@ test(
   "navigate to /quiz-designer as a signed-in user",
   { tag: "@authenticated" },
   async ({ page }) => {
-    await clerkSetup();
     await bypassVercelProtection(page);
     await setupClerkTestingToken({ page });
 

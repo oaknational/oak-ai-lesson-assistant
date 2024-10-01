@@ -1,4 +1,4 @@
-import { clerkSetup, setupClerkTestingToken } from "@clerk/testing/playwright";
+import { setupClerkTestingToken } from "@clerk/testing/playwright";
 import { test, expect } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
@@ -10,10 +10,7 @@ test("Downloading a completed lesson plan", async ({ page }) => {
   test.slow();
 
   await test.step("Setup", async () => {
-    await clerkSetup();
     await bypassVercelProtection(page);
-    await setupClerkTestingToken({ page });
-
     const { chatId } = await prepareUser(page, "typical");
 
     await page.goto(`${TEST_BASE_URL}/aila/${chatId}`);

@@ -23,18 +23,21 @@ const personas = {
   },
 } as const;
 
-const calculateEmailAddress = (personaName: keyof typeof personas) => {
-  const sanitisedBranchName = branch.replace(/[^a-zA-Z0-9]/g, "-");
-  return `test+${sanitisedBranchName}-${personaName}@thenational.academy`;
-};
-
-const getSignInToken = async (userId: string) => {
-  const response = await clerkClient.signInTokens.createSignInToken({
-    userId,
-    expiresInSeconds: 60 * 5,
-  });
-
-  return response.token;
+/**
+ * @example test+adams-macbook-pro-local+typical+clerk_test@thenational.academy
+ */
+const generateEmailAddress = (personaName: keyof typeof personas) => {
+  const parts = [
+    // All users use the "test@thenational.academy" mailbox with a `+` alias
+    "test",
+    // Replace non-alphanumeric characters with -
+    branch.replace(/\W+/g, "-"),
+    // A new login for each persona
+    personaName,
+    // Allows signing in with the email_code strategy
+    "clerk_test",
+  ];
+  return `${parts.join("+")}@thenational.academy`;
 };
 
 const findOrCreateUser = async (
@@ -82,7 +85,7 @@ export const prepareUser = publicProcedure
     }),
   )
   .mutation(async ({ input }) => {
-    const email = calculateEmailAddress(input.persona);
+    const email = generateEmailAddress(input.persona);
     const user = await findOrCreateUser(email, input.persona);
 
     const chatFixture = personas[input.persona].chatFixture;
@@ -91,9 +94,5 @@ export const prepareUser = publicProcedure
       chatId = await seedChat(user.id, chatFixture);
     }
 
-    return {
-      email,
-      signInToken: await getSignInToken(user.id),
-      chatId: chatId,
-    };
+    return { email, chatId };
   });

@@ -1,3 +1,4 @@
+import { clerk } from "@clerk/testing/playwright";
 import { TestSupportRouter } from "@oakai/api/src/router/testSupport";
 import { transformer } from "@oakai/api/transformer";
 import { test, Page } from "@playwright/test";
@@ -23,14 +24,22 @@ const trpc = createTRPCProxyClient<TestSupportRouter>({
 
 export async function prepareUser(page: Page, persona: "typical" | "demo") {
   return await test.step("Prepare user", async () => {
-    const login = await test.step("tRPC.prepareUser", async () => {
-      return await trpc.prepareUser.mutate({ persona });
-    });
+    const [login] = await Promise.all([
+      test.step("tRPC.prepareUser", async () => {
+        return await trpc.prepareUser.mutate({ persona });
+      }),
+      page.goto(`${TEST_BASE_URL}/test-support/clerk`),
+    ]);
 
-    await page.goto(
-      `${TEST_BASE_URL}/test-support/sign-in?token=${login.signInToken}`,
-    );
-    await page.waitForSelector(".success");
+    await test.step("clerk.signIn", async () => {
+      await clerk.signIn({
+        page,
+        signInParams: {
+          strategy: "email_code",
+          identifier: login.email,
+        },
+      });
+    });
 
     return login;
   });
