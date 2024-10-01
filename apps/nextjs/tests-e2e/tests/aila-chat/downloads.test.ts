@@ -1,5 +1,9 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
+<<<<<<< HEAD
 import { test, expect, Page } from "@playwright/test";
+=======
+import { test, expect } from "@playwright/test";
+>>>>>>> 1cfb186 (Update @clerk/testing to 1.3.7 to use sign-in helper)
 
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
@@ -11,6 +15,7 @@ const getTestChatIdFromCookie = async (page: Page) => {
   return chatId;
 };
 
+<<<<<<< HEAD
 test(
   "Downloading a completed lesson plan",
   { tag: "@common-auth" },
@@ -20,6 +25,11 @@ test(
     await test.step("Setup", async () => {
       await bypassVercelProtection(page);
       await setupClerkTestingToken({ page });
+=======
+  await test.step("Setup", async () => {
+    await bypassVercelProtection(page);
+    const { chatId } = await prepareUser(page, "typical");
+>>>>>>> 1cfb186 (Update @clerk/testing to 1.3.7 to use sign-in helper)
 
       const chatId = await getTestChatIdFromCookie(page);
       await page.goto(`${TEST_BASE_URL}/aila/${chatId}`);
