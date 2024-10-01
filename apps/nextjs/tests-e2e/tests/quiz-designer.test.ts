@@ -6,7 +6,7 @@ import { bypassVercelProtection } from "../helpers/vercel";
 
 test(
   "navigate to /quiz-designer as a signed-in user",
-  { tag: "@authenticated" },
+  { tag: "@common-auth" },
   async ({ page }) => {
     await bypassVercelProtection(page);
     await setupClerkTestingToken({ page });

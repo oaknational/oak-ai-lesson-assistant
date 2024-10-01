@@ -12,7 +12,7 @@ test.describe("Unauthenticated", () => {
   });
 });
 
-test.describe("Authenticated", { tag: "@authenticated" }, () => {
+test.describe("Authenticated", { tag: "@common-auth" }, () => {
   test("navigate to /aila as a signed-in user", async ({ page }) => {
     await bypassVercelProtection(page);
     await setupClerkTestingToken({ page });

@@ -2,7 +2,7 @@ import { expect, Page } from "@playwright/test";
 
 export async function waitForGeneration(page: Page, generationTimeout: number) {
   const loadingElement = page.getByTestId("chat-stop");
-  await expect(loadingElement).toBeVisible();
+  await expect(loadingElement).toBeVisible({ timeout: 10000 });
   await expect(loadingElement).not.toBeVisible({ timeout: generationTimeout });
 }
 
