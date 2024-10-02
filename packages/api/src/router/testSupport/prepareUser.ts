@@ -3,23 +3,40 @@ import os from "os";
 import { z } from "zod";
 
 import { publicProcedure } from "../../trpc";
+import { setSafetyViolations } from "./safetyViolations";
 import { seedChat } from "./seedChat";
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? os.hostname();
 
-const personas = {
+type PersonaName = "typical" | "demo" | "nearly-banned";
+type Persona = {
+  isDemoUser: boolean;
+  region: "GB" | "US";
+  chatFixture: "typical" | null;
+  safetyViolations: number;
+};
+
+const personas: Record<PersonaName, Persona> = {
   // A user with no issues and a completed lesson plan
   typical: {
     isDemoUser: false,
     region: "GB",
     chatFixture: "typical",
+    safetyViolations: 0,
   },
   // A user from a demo region
   demo: {
     isDemoUser: true,
     region: "US",
-    seedChat: false,
     chatFixture: null,
+    safetyViolations: 0,
+  },
+  // A user with 3 safety violations - wil be benned with one more
+  "nearly-banned": {
+    isDemoUser: false,
+    region: "GB",
+    chatFixture: null,
+    safetyViolations: 3,
   },
 } as const;
 
@@ -53,6 +70,9 @@ const findOrCreateUser = async (
   ).data[0];
 
   if (existingUser) {
+    if (existingUser.banned) {
+      await clerkClient.users.unbanUser(existingUser.id);
+    }
     return existingUser;
   }
 
@@ -81,18 +101,20 @@ const findOrCreateUser = async (
 export const prepareUser = publicProcedure
   .input(
     z.object({
-      persona: z.enum(["typical", "demo"]),
+      persona: z.enum(["typical", "demo", "nearly-banned"]),
     }),
   )
   .mutation(async ({ input }) => {
     const email = generateEmailAddress(input.persona);
     const user = await findOrCreateUser(email, input.persona);
 
-    const chatFixture = personas[input.persona].chatFixture;
+    const persona = personas[input.persona];
+
     let chatId: string | undefined;
-    if (chatFixture) {
-      chatId = await seedChat(user.id, chatFixture);
+    if (persona.chatFixture) {
+      chatId = await seedChat(user.id, persona.chatFixture);
     }
+    await setSafetyViolations(user.id, persona.safetyViolations);
 
     return { email, chatId };
   });
