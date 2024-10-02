@@ -1,4 +1,4 @@
-import { clerkSetup, setupClerkTestingToken } from "@clerk/testing/playwright";
+import { setupClerkTestingToken } from "@clerk/testing/playwright";
 import { Page, expect, test as setup } from "@playwright/test";
 import path from "path";
 
@@ -30,7 +30,6 @@ async function signInThroughUI(page: Page) {
 }
 
 setup("authenticate through UI setup", async ({ page }) => {
-  await clerkSetup();
   await bypassVercelProtection(page);
 
   await page.context().clearCookies();
