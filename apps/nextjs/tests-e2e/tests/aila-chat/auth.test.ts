@@ -1,4 +1,4 @@
-import { clerkSetup, setupClerkTestingToken } from "@clerk/testing/playwright";
+import { setupClerkTestingToken } from "@clerk/testing/playwright";
 import { test, expect } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
@@ -14,7 +14,6 @@ test.describe("Unauthenticated", () => {
 
 test.describe("Authenticated", { tag: "@authenticated" }, () => {
   test("navigate to /aila as a signed-in user", async ({ page }) => {
-    await clerkSetup();
     await bypassVercelProtection(page);
     await setupClerkTestingToken({ page });
 
