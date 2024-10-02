@@ -55,8 +55,7 @@ export const chatFeedbackRouter = router({
         });
         return response;
       } catch (cause) {
-        const err = new Error("Failed to create user modification");
-        err.cause = cause;
+        const err = new Error("Failed to create user modification", { cause });
         Sentry.captureException(err, {
           extra: input,
         });
@@ -113,8 +112,7 @@ export const chatFeedbackRouter = router({
 
         return response;
       } catch (cause) {
-        const err = new Error("Failed to flag section");
-        err.cause = cause;
+        const err = new Error("Failed to flag section", { cause });
         Sentry.captureException(err, {
           extra: { chatId, messageId, flagType },
         });

@@ -2,7 +2,7 @@ import { clerkSetup, setupClerkTestingToken } from "@clerk/testing/playwright";
 import { Page, expect, test as setup } from "@playwright/test";
 import path from "path";
 
-import { bypassVercelProtection } from "../helpers";
+import { bypassVercelProtection } from "../helpers/vercel";
 import { TEST_USER_EMAIL, TEST_USER_PASSWORD, TEST_BASE_URL } from "./config";
 
 const authFile = path.join(__dirname, "../.auth/user.json");

@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useRef } from "react";
-import Textarea from "react-textarea-autosize";
-
 import { UseChatHelpers } from "ai/react";
 
 import {
@@ -84,7 +82,7 @@ export function PromptForm({
       <div
         className={`${!shouldAllowUserInput ? "hidden" : "flex"} relative max-h-60 w-full grow flex-col overflow-hidden rounded-md border-2 border-black bg-white pr-20 sm:flex`}
       >
-        <Textarea
+        <textarea
           data-testid="chat-input"
           disabled={!shouldAllowUserInput}
           ref={inputRef}

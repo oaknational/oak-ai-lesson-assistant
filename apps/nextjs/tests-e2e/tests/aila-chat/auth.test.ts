@@ -2,7 +2,7 @@ import { clerkSetup, setupClerkTestingToken } from "@clerk/testing/playwright";
 import { test, expect } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
-import { bypassVercelProtection } from "../../helpers";
+import { bypassVercelProtection } from "../../helpers/vercel";
 
 test.describe("Unauthenticated", () => {
   test("redirects to /sign-in", async ({ page }) => {
