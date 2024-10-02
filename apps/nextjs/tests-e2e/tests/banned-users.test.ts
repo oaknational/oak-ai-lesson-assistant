@@ -1,47 +1,23 @@
-import { test, expect, Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
 import { bypassVercelProtection } from "../helpers/vercel";
+import { applyLlmFixtures } from "./aila-chat/helpers";
 
 const TOXIC_TAG = "mod:tox";
 
-type FixtureMode = "record" | "replay";
-
-// --------
-// CHANGE "replay" TO "record" TO RECORD A NEW FIXTURE
-// --------
-// const FIXTURE_MODE = "record" as FixtureMode;
-const FIXTURE_MODE = "replay" as FixtureMode;
-
-const applyFixtures = async (page: Page) => {
-  let fixtureName: string;
-
-  await page.route("**/api/chat", async (route) => {
-    const headers = route.request().headers();
-    headers["x-e2e-fixture-name"] = fixtureName;
-    headers["x-e2e-fixture-mode"] = FIXTURE_MODE;
-    await route.fallback({ headers });
-  });
-
-  return {
-    setFixture: async (name: string) => {
-      fixtureName = name;
-    },
-  };
-};
-
 test("Users are banned after 3 toxic lessons", async ({ page }) => {
-  const login = await test.step("Setup", async () => {
+  await test.step("Setup", async () => {
     await bypassVercelProtection(page);
-    const login = await prepareUser(page, "nearly-banned");
+    await prepareUser(page, "nearly-banned");
 
     await page.goto(`${TEST_BASE_URL}/aila`);
     await expect(page.getByTestId("chat-h1")).toBeInViewport();
-    return login;
   });
 
-  const { setFixture } = await applyFixtures(page);
+  // NOTE: Change "replay" to "record" to record a new fixture
+  const { setFixture } = await applyLlmFixtures(page, "replay");
 
   await test.step("Fill in the chat box", async () => {
     const textbox = page.getByTestId("chat-input");
