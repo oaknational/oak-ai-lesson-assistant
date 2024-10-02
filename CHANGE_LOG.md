@@ -1,3 +1,24 @@
+# [1.9.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.8.0...v1.9.0) (2024-10-02)
+
+
+### Bug Fixes
+
+* close sidebar on new lesson ([#116](https://github.com/oaknational/oak-ai-lesson-assistant/issues/116)) ([90a2a73](https://github.com/oaknational/oak-ai-lesson-assistant/commit/90a2a73e8400ae43c0a6aff29d27c7454f36a5a8))
+* detect StreamingLessonPlan for mobile modal ([#168](https://github.com/oaknational/oak-ai-lesson-assistant/issues/168)) ([ef56658](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ef56658d08c89604119e798948d8b3ff3b596dd2))
+* dialog window bug ([#155](https://github.com/oaknational/oak-ai-lesson-assistant/issues/155)) ([443a398](https://github.com/oaknational/oak-ai-lesson-assistant/commit/443a398a031bd7b0895575ff8b664d8417656470))
+* feature flag "download all" button ([#178](https://github.com/oaknational/oak-ai-lesson-assistant/issues/178)) ([60b4247](https://github.com/oaknational/oak-ai-lesson-assistant/commit/60b42477272e67ad4119bbf651b2969d59a60eec))
+* in app feedback snags ([#153](https://github.com/oaknational/oak-ai-lesson-assistant/issues/153)) ([b1e625a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b1e625a1b56d3716e5090db4cfd47761aaa527dc))
+* refetch chat on mount to fix the blank chat issue on back navigation ([#166](https://github.com/oaknational/oak-ai-lesson-assistant/issues/166)) ([c2f74d7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c2f74d72fc3e8b86214ff57e62b5cc7c481188d3))
+* robust handling of incomplete data in download all ([#177](https://github.com/oaknational/oak-ai-lesson-assistant/issues/177)) ([06b15ae](https://github.com/oaknational/oak-ai-lesson-assistant/commit/06b15ae22698ee94e720a548e2da7e38c087722c))
+* safari blocking share page as it was an async window pop up ([#131](https://github.com/oaknational/oak-ai-lesson-assistant/issues/131)) ([7365ea0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7365ea0813cd46e3f271ad3dbcdbc77a1b548ee0))
+* small bugs ([#159](https://github.com/oaknational/oak-ai-lesson-assistant/issues/159)) ([712bf12](https://github.com/oaknational/oak-ai-lesson-assistant/commit/712bf128f2f4141ba37f8001b6a23b06cfbf2596))
+* stop interaction except in moderation or idle ([#165](https://github.com/oaknational/oak-ai-lesson-assistant/issues/165)) ([a162ff3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a162ff3177d01754c47d2c9792a0e328abbb7b17))
+
+
+### Features
+
+* donwload all button ([#152](https://github.com/oaknational/oak-ai-lesson-assistant/issues/152)) ([732b778](https://github.com/oaknational/oak-ai-lesson-assistant/commit/732b7785530be9edcb952b4465395b171c913717))
+
 # [1.8.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.7.3...v1.8.0) (2024-09-30)
 
 
