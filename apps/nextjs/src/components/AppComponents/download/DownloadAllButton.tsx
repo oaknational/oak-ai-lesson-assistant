@@ -27,6 +27,15 @@ const allexportLinksObject = z.object({
   exitQuiz: z.string(),
 });
 
+type Data = {
+  lessonSlides: string | undefined;
+  lessonPlan: string | undefined;
+  worksheet: string | undefined;
+  additionalMaterials: string | undefined;
+  starterQuiz: string | undefined;
+  exitQuiz: string | undefined;
+};
+
 type DownloadAllButtonProps = {
   onClick: () => void;
   lesson: LooseLessonPlan;
@@ -35,25 +44,34 @@ type DownloadAllButtonProps = {
   downloadAvailable: boolean;
   downloadLoading: boolean;
   data:
-    | {
-        lessonSlides: string | undefined;
-        lessonPlan: string | undefined;
-        worksheet: string | undefined;
-        additionalMaterials: string | undefined;
-        starterQuiz: string | undefined;
-        exitQuiz: string | undefined;
-      }
+    | Data
     | {
         error: unknown;
         message: string;
       }
     | undefined;
-
   "data-testid"?: string;
   chatId: string;
 };
 
 type zipDownloadStatus = "idle" | "loading" | "complete" | "error";
+
+type FileIdsAndFormats = { fileId: string; formats: string[] }[];
+
+const getFileIdsAndFormats = (data: Data): FileIdsAndFormats => {
+  return Object.entries(data)
+    .filter(([, value]) => !!value)
+    .map(([key, value]) => {
+      const fileId = value?.split("/edit")[0]?.split("/d/")?.[1];
+      if (!fileId) {
+        throw new Error("File ID not found");
+      }
+      return {
+        fileId,
+        formats: key === "lessonSlides" ? ["pptx", "pdf"] : ["docx", "pdf"],
+      };
+    });
+};
 
 export const DownloadAllButton = ({
   onClick,
@@ -84,20 +102,8 @@ export const DownloadAllButton = ({
     return null;
   }
 
-  if (data) {
-    const fileIdsAndFormats:
-      | ({ fileId: string | undefined; formats: string[] } | undefined)[]
-      | undefined = data
-      ? Object.entries(data).map(([key, value]) => {
-          if (typeof value === "string") {
-            return {
-              fileId: value?.split("/edit")[0]?.split("/d/")?.[1],
-              formats:
-                key === "lessonSlides" ? ["pptx", "pdf"] : ["docx", "pdf"],
-            };
-          }
-        })
-      : undefined;
+  if (data && !("error" in data)) {
+    const fileIdsAndFormats = getFileIdsAndFormats(data);
 
     const taskId = `download-all-${JSON.stringify(fileIdsAndFormats)}`;
 
@@ -116,6 +122,7 @@ export const DownloadAllButton = ({
           lessonPlanLink: parsedData.lessonPlan,
         });
       } catch (error) {
+        console.error(error);
         Sentry.captureException(error);
       }
     }
