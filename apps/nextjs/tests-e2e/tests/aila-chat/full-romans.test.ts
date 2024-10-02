@@ -35,8 +35,10 @@ const applyFixtures = async (page: Page) => {
   };
 };
 
-test.describe("Authenticated", { tag: "@authenticated" }, () => {
-  test("Full aila flow with Romans fixture", async ({ page }) => {
+test(
+  "Full aila flow with Romans fixture",
+  { tag: "@common-auth" },
+  async ({ page }) => {
     const generationTimeout = FIXTURE_MODE === "record" ? 75000 : 50000;
     test.setTimeout(generationTimeout * 5);
 
@@ -98,5 +100,5 @@ test.describe("Authenticated", { tag: "@authenticated" }, () => {
 
       await isFinished(page);
     });
-  });
-});
+  },
+);
