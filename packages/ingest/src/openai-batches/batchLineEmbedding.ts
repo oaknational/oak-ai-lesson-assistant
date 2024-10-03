@@ -5,7 +5,7 @@ export function batchLineEmbedding({
   lineId: string;
   textToEmbed: string;
 }) {
-  const line = {
+  return {
     custom_id: lineId,
     method: "POST",
     url: "/v1/embeddings",
@@ -15,6 +15,4 @@ export function batchLineEmbedding({
       dimensions: 256,
     },
   };
-
-  return line;
 }
