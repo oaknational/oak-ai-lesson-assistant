@@ -38,6 +38,13 @@ export async function lpChunking({
     stepStatus: "started",
   });
 
+  if (lessons.length === 0) {
+    console.log("No lessons to chunk, exiting early");
+    return;
+  }
+
+  console.log(`Chunking lesson plans for ${lessons.length} lesson`);
+
   const lessonIdsFailed: string[] = [];
   const lessonIdsCompleted: string[] = [];
 
@@ -63,10 +70,10 @@ export async function lpChunking({
           lessonId: lesson.id,
           lessonPlanId: lessonPlanRecord.id,
           key: part.key,
-          textContent: part.content,
-          data: part.json,
-          batchId: null,
-          embedding: null,
+          valueText: part.content,
+          valueJson: part.json,
+          // batchId: null,
+          // embedding: null,
         })),
       });
       lessonIdsCompleted.push(lesson.id);
@@ -90,4 +97,7 @@ export async function lpChunking({
     step: "chunking",
     stepStatus: "completed",
   });
+
+  console.log(`Chunking ${lessons.length} lesson plans completed`);
+  console.log(`Failed: ${lessonIdsFailed.length}`);
 }

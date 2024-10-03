@@ -34,7 +34,7 @@ export function getLessonPlanParts({
       content: textContent,
       json: value,
     };
-    if (!textContent.trim() || !value) {
+    if (!textContent.trim() || !value || value === "None") {
       // Skip empty content
       console.log("Skipping empty content");
       continue;

@@ -4,7 +4,11 @@ import { prisma, PrismaClientWithAccelerate } from "@oakai/db";
 import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
 import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
 import { CompletionBatchResponseSchema } from "../zod-schema/zodSchema";
-import { getLatestIngestId, updateLessonsState } from "./helpers";
+import {
+  getLatestIngestId,
+  handleOpenAIBatchErrorFile,
+  updateLessonsState,
+} from "./helpers";
 
 lpBatchSync({ prisma });
 
@@ -40,27 +44,10 @@ export async function lpBatchSync({
         {
           if (openaiBatch.error_file_id) {
             // create error record
-            const lessonPlans = await prisma.ingestLessonPlan.findMany({
-              where: {
-                batchId: batch.id,
-              },
-            });
-
-            await updateLessonsState({
+            await handleOpenAIBatchErrorFile({
               prisma,
-              ingestId,
-              lessonIds: lessonPlans.map((l) => l.lessonId),
-              step: "lesson_plan_generation",
-              stepStatus: "failed",
-            });
-            await prisma.ingestOpenAiBatch.update({
-              where: {
-                id: batch.id,
-              },
-              data: {
-                errorFileId: openaiBatch.error_file_id,
-                status: "completed",
-              },
+              batchId: batch.id,
+              errorFileId: openaiBatch.error_file_id,
             });
           }
 

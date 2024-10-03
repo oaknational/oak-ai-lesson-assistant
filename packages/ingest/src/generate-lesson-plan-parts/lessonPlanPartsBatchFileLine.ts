@@ -1,21 +1,17 @@
-import { getEmbeddingCustomId } from "../steps/helpers";
-
 export function lessonPlanPartsBatchFileLine({
-  lessonId,
-  key,
-  textContent,
+  lessonPlanPartId,
+  textToEmbed,
 }: {
-  lessonId: string;
-  key: string;
-  textContent: string;
+  lessonPlanPartId: string;
+  textToEmbed: string;
 }) {
   const line = {
-    custom_id: getEmbeddingCustomId({ lessonId, partKey: key }),
+    custom_id: lessonPlanPartId,
     method: "POST",
     url: "/v1/embeddings",
     body: {
       model: "text-embedding-3-large",
-      input: textContent,
+      input: textToEmbed,
       dimensions: 256,
     },
   };

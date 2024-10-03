@@ -42,17 +42,24 @@ export async function lpPartsEmbedStart({
     stepStatus: "started",
   });
 
-  const allParts = lessons.map((lesson) => lesson.lessonPlanParts).flat();
+  const allPartsToEmbed = lessons
+    .map((lesson) =>
+      lesson.lessonPlanParts.map((part) => ({
+        lessonPlanPartId: part.id,
+        textToEmbed: part.valueText,
+      })),
+    )
+    .flat();
 
-  if (allParts.length === 0) {
-    console.log("No lesson plan parts to embed");
+  if (allPartsToEmbed.length === 0) {
+    console.log("No lesson plan parts to embed, exiting early");
     return;
   }
 
   const { filePath, batchDir } = await writeBatchFile({
     ingestId,
-    data: allParts,
-    getBatchFileLine: (part) => lessonPlanPartsBatchFileLine(part),
+    data: allPartsToEmbed,
+    getBatchFileLine: lessonPlanPartsBatchFileLine,
   });
 
   const { filePaths } = await splitJsonlByRowsOrSize({
@@ -78,6 +85,16 @@ export async function lpPartsEmbedStart({
         openaiBatchId: openaiBatch.id,
         inputFilePath: filePath,
         status: "pending",
+      },
+    });
+    await prisma.ingestLessonPlanPart.updateMany({
+      where: {
+        id: {
+          in: allPartsToEmbed.map((p) => p.lessonPlanPartId),
+        },
+      },
+      data: {
+        batchId: openaiBatch.id,
       },
     });
   }

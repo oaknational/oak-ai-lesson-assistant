@@ -14,8 +14,9 @@
     "1": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/steps/1-captions.ts",
     "2": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/steps/2-lp-batch-start.ts",
     "3": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/steps/3-lp-batch-sync.ts",
-    "4": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/steps/4-lp-batch-handle-results.ts",
-    "5": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/steps/5-lp-gen-start.ts",
+    "5": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/steps/5-lp-chunking.ts",
+    "6": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/steps/6-lp-parts-embed-start.ts",
+    "7": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/steps/7-lp-parts-embed-sync.ts",
     "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@oakai/prettier-config",

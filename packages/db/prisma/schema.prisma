@@ -1063,8 +1063,8 @@ model IngestLessonPlanPart {
   ingestId     String                      @map("ingest_id")
   batchId      String?                     @map("batch_id")
   key          String
-  data         Json                        @map("data") @db.JsonB
-  textContent  String
+  valueJson    Json                        @map("data") @db.JsonB
+  valueText    String
   embedding    Unsupported("vector(256)")?
   createdAt    DateTime                    @default(now()) @map("created_at")
   updatedAt    DateTime                    @updatedAt @map("updated_at")
