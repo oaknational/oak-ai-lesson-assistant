@@ -1,39 +1,22 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
-import { test, expect, Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
 import {
+  FixtureMode,
+  applyLlmFixtures,
   continueChat,
   expectSectionsComplete,
   isFinished,
   waitForGeneration,
 } from "./helpers";
 
-type FixtureMode = "record" | "replay";
-
 // --------
 // CHANGE "replay" TO "record" TO RECORD A NEW FIXTURE
 // --------
 // const FIXTURE_MODE = "record" as FixtureMode;
 const FIXTURE_MODE = "replay" as FixtureMode;
-
-const applyFixtures = async (page: Page) => {
-  let fixtureName: string;
-
-  await page.route("**/api/chat", async (route) => {
-    const headers = route.request().headers();
-    headers["x-e2e-fixture-name"] = fixtureName;
-    headers["x-e2e-fixture-mode"] = FIXTURE_MODE;
-    await route.fallback({ headers });
-  });
-
-  return {
-    setFixture: async (name: string) => {
-      fixtureName = name;
-    },
-  };
-};
 
 test(
   "Full aila flow with Romans fixture",
@@ -50,7 +33,7 @@ test(
       await expect(page.getByTestId("chat-h1")).toBeInViewport();
     });
 
-    const { setFixture } = await applyFixtures(page);
+    const { setFixture } = await applyLlmFixtures(page, FIXTURE_MODE);
 
     await test.step("Fill in the chat box", async () => {
       const textbox = page.getByTestId("chat-input");
