@@ -1,32 +1,32 @@
 import { z } from "zod";
 
-const QuizSchema = z.object({
-  hint: z.string(),
-  active: z.boolean(),
-  answers: z.object({
-    "multiple-choice": z.array(
-      z.object({
-        answer: z.array(
-          z.object({
-            text: z.string(),
-            type: z.string(),
-          }),
-        ),
-        answer_is_correct: z.boolean(),
-      }),
-    ),
-  }),
-  feedback: z.string(),
-  questionId: z.number(),
-  questionUid: z.string(),
-  questionStem: z.array(
-    z.object({
-      text: z.string(),
-      type: z.string(),
-    }),
-  ),
-  questionType: z.string(),
-});
+// const QuizSchema = z.object({
+//   hint: z.string(),
+//   active: z.boolean(),
+//   answers: z.object({
+//     "multiple-choice": z.array(
+//       z.object({
+//         answer: z.array(
+//           z.object({
+//             text: z.string(),
+//             type: z.string(),
+//           }),
+//         ),
+//         answer_is_correct: z.boolean(),
+//       }),
+//     ),
+//   }),
+//   feedback: z.string(),
+//   questionId: z.number(),
+//   questionUid: z.string(),
+//   questionStem: z.array(
+//     z.object({
+//       text: z.string(),
+//       type: z.string(),
+//     }),
+//   ),
+//   questionType: z.string(),
+// });
 
 const MisconceptionSchema = z.object({
   misconception: z.string(),
