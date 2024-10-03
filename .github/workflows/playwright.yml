@@ -4,6 +4,15 @@ on:
   push:
     branches:
       - production
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  # checks: write # for dorny/test-reporter
+  pull-requests: write # for leaving a comment on PR
+
 jobs:
   test-e2e:
     timeout-minutes: 20
@@ -52,6 +61,7 @@ jobs:
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ steps.doppler.outputs.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           CLERK_SECRET_KEY: ${{ steps.doppler.outputs.CLERK_SECRET_KEY }}
+
       - name: Upload Playwright report
         id: upload-report
         uses: actions/upload-artifact@v4
@@ -84,3 +94,26 @@ jobs:
           name: playwright-failure-screenshots
           path: apps/nextjs/tests-e2e/test-results ## Folder used in playwright.config.js `outputDir`
           retention-days: 30
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload HTML report for Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: github-pages
+          path: playwright-report
+          retention-days: 14
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Message PR of Artifact Published
+        if: ${{ always() && github.event_name == 'pull_request' }}
+        uses: thollander/actions-comment-pull-request@main
+        with:
+          message: |
+            [Click here for Github Pages Playwright Report](${{ steps.deployment.outputs.page_url }})
+          comment_tag: playwright_message
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
