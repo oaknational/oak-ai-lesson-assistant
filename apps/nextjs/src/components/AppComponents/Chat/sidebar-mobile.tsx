@@ -21,6 +21,7 @@ export function SidebarMobile({ children }: Readonly<SidebarMobileProps>) {
       <SheetTrigger asChild>
         <Button
           variant="ghost"
+          data-testid="sidebar-button"
           className="flex items-center px-5"
           onClick={() => {
             trackEvent("chat:toggle_sidebar");
