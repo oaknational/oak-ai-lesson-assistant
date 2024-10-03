@@ -1,5 +1,9 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
+import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
+import { getLessonsByState } from "../db-helpers/getLessonsByState";
+import { Step, getPrevStep } from "../db-helpers/step";
+import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { getLessonPlanBatchFileLine } from "../generate-lesson-plans/getLessonPlanBatchFileLine";
 import {
   OPEN_AI_BATCH_MAX_SIZE_MB,
@@ -10,13 +14,6 @@ import { uploadOpenAiBatchFile } from "../openai-batches/uploadOpenAiBatchFile";
 import { writeBatchFile } from "../openai-batches/writeBatchFile";
 import { splitJsonlByRowsOrSize } from "../utils/splitJsonlByRowsOrSize";
 import { CaptionsSchema } from "../zod-schema/zodSchema";
-import {
-  getLatestIngestId,
-  getLessonsByState,
-  getPrevStep,
-  Step,
-  updateLessonsState,
-} from "./helpers";
 
 const step: Step = "lesson_plan_generation";
 const prevStep = getPrevStep(step);
@@ -70,7 +67,6 @@ export async function lpBatchStart({
       maxFileSizeMB: OPEN_AI_BATCH_MAX_SIZE_MB,
     });
 
-    // submit batches and add records in db
     for (const filePath of filePaths) {
       const { file } = await uploadOpenAiBatchFile({
         filePath,

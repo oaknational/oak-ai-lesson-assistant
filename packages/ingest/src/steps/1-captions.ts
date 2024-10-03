@@ -3,19 +3,20 @@ import { PrismaClientWithAccelerate } from "@oakai/db";
 import { IngestError } from "../IngestError";
 import { getCaptionsByFileName } from "../captions/getCaptionsByFileName";
 import { getCaptionsFileNameForLesson } from "../captions/getCaptionsFileNameForLesson";
-import {
-  Step,
-  createCaptionsRecord,
-  createErrorRecord,
-  getLatestIngestId,
-  getLessonsByState,
-  getPrevStep,
-  updateLessonsState,
-} from "./helpers";
+import { createCaptionsRecord } from "../db-helpers/createCaptionsRecord";
+import { createErrorRecord } from "../db-helpers/createErrorRecord";
+import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
+import { getLessonsByState } from "../db-helpers/getLessonsByState";
+import { Step, getPrevStep } from "../db-helpers/step";
+import { updateLessonsState } from "../db-helpers/updateLessonsState";
 
 const step: Step = "captions_fetch";
 const prevStep = getPrevStep(step);
 
+/**
+ * This function fetches and stores captions for the lessons imported in the most recent ingest.
+ * @todo allow ingestId to be passed in as an argument
+ */
 export async function captions({
   prisma,
 }: {
@@ -32,8 +33,6 @@ export async function captions({
     stepStatus: "completed",
   });
 
-  console.log(`Fetching captions for ${lessons.length} lessons`);
-
   /**
    * Update status to fetching
    */
@@ -45,8 +44,10 @@ export async function captions({
     stepStatus: "started",
   });
 
+  console.log(`Fetching captions for ${lessons.length} lessons`);
+
   /**
-   * Fetch transcript for each lesson
+   * Fetch captions for each lesson, and store them in the database
    */
   for (const lesson of lessons) {
     try {

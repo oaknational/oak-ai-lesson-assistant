@@ -1,14 +1,12 @@
 import { CompletedLessonPlanSchema } from "@oakai/aila/src/protocol/schema";
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
+import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
+import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
 import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
 import { CompletionBatchResponseSchema } from "../zod-schema/zodSchema";
-import {
-  getLatestIngestId,
-  handleOpenAIBatchErrorFile,
-  updateLessonsState,
-} from "./helpers";
+import { handleOpenAIBatchErrorFile } from "./helpers";
 
 /**
  * Check status of lesson plan generation batches and action

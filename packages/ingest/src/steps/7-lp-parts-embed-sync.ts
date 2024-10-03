@@ -1,13 +1,11 @@
 import { prisma, PrismaClientWithAccelerate } from "@oakai/db";
 
+import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
+import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
 import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
 import { EmbeddingsBatchResponseSchema } from "../zod-schema/zodSchema";
-import {
-  getLatestIngestId,
-  handleOpenAIBatchErrorFile,
-  updateLessonsState,
-} from "./helpers";
+import { handleOpenAIBatchErrorFile } from "./helpers";
 
 lpPartsEmbedSync({
   prisma,

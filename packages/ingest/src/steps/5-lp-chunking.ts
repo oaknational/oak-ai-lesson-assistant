@@ -5,13 +5,10 @@ import {
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { getLessonPlanParts } from "../chunking/getLessonPlanParts";
-import {
-  Step,
-  getLatestIngestId,
-  getLessonsByState,
-  getPrevStep,
-  updateLessonsState,
-} from "./helpers";
+import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
+import { getLessonsByState } from "../db-helpers/getLessonsByState";
+import { Step, getPrevStep } from "../db-helpers/step";
+import { updateLessonsState } from "../db-helpers/updateLessonsState";
 
 const step: Step = "chunking";
 const prevStep = getPrevStep(step);

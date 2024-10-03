@@ -1,5 +1,9 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
+import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
+import { getLessonsByState } from "../db-helpers/getLessonsByState";
+import { Step, getPrevStep } from "../db-helpers/step";
+import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { getPartEmbeddingBatchFileLine } from "../embedding/getPartEmbeddingBatchFileLine";
 import {
   OPEN_AI_BATCH_MAX_ROWS,
@@ -9,13 +13,6 @@ import { submitOpenAiBatch } from "../openai-batches/submitOpenAiBatch";
 import { uploadOpenAiBatchFile } from "../openai-batches/uploadOpenAiBatchFile";
 import { writeBatchFile } from "../openai-batches/writeBatchFile";
 import { splitJsonlByRowsOrSize } from "../utils/splitJsonlByRowsOrSize";
-import {
-  getLatestIngestId,
-  getLessonsByState,
-  getPrevStep,
-  Step,
-  updateLessonsState,
-} from "./helpers";
 
 const step: Step = "embedding";
 const prevStep = getPrevStep(step);
