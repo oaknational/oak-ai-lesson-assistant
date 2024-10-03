@@ -9,12 +9,20 @@
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint . --ext .ts,.tsx",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "0": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/steps/0-ingest-start.ts",
+    "1": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/steps/1-captions.ts",
+    "2": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/steps/2-lp-batch-start.ts",
+    "3": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/steps/3-lp-batch-sync.ts",
+    "4": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/steps/4-lp-batch-handle-results.ts",
+    "5": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/steps/5-lp-gen-start.ts",
+    "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@oakai/prettier-config",
   "dependencies": {
     "@google-cloud/storage": "^7.7.0",
     "@oakai/aila": "*",
+    "@oakai/core": "*",
     "@oakai/db": "*",
     "graphql-request": "^6.1.0",
     "webvtt-parser": "^2.2.0",

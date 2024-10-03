@@ -989,7 +989,7 @@ model Ingest {
   updatedAt   DateTime  @updatedAt @map("updated_at")
   completedAt DateTime? @map("completed_at")
 
-  ingestRawLessons        IngestRawLesson[]
+  ingestLessons           IngestLesson[]
   ingestLessonTranscripts IngestLessonCaptions[]
   ingestLessonPlans       IngestLessonPlan[]
   ingestLessonPlanParts   IngestLessonPlanPart[]
@@ -1000,20 +1000,26 @@ model Ingest {
   @@schema("ingest")
 }
 
-model IngestRawLesson {
-  id         String   @id @default(cuid())
-  ingestId   String   @map("ingest_id")
-  data       Json     @map("data") @db.JsonB
-  captionsId String?  @unique @map("captions_id")
-  status     String
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+model IngestLesson {
+  id           String   @id @default(cuid())
+  oakLessonId  Int      @map("oak_lesson_id")
+  ingestId     String   @map("ingest_id")
+  data         Json     @map("data") @db.JsonB
+  dataHash     String   @map("data_hash")
+  step         String
+  stepStatus   String   @map("step_status")
+  captionsId   String?  @unique @map("captions_id")
+  lessonPlanId String?  @map("lesson_plan_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
-  ingest     Ingest                @relation(fields: [ingestId], references: [id])
-  lessonPlan IngestLessonPlan[]
-  captions   IngestLessonCaptions?
+  ingest          Ingest                 @relation(fields: [ingestId], references: [id])
+  ingestErrors    IngestError[]
+  lessonPlanParts IngestLessonPlanPart[]
+  captions        IngestLessonCaptions?
+  lessonPlan      IngestLessonPlan?
 
-  @@map("ingest_raw_lesson")
+  @@map("ingest_lesson")
   @@schema("ingest")
 }
 
@@ -1021,13 +1027,13 @@ model IngestLessonCaptions {
   id        String   @id @default(cuid())
   ingestId  String   @map("ingest_id")
   lessonId  String   @unique @map("lesson_id")
-  status    String
   data      Json     @map("data") @db.JsonB
+  dataHash  String   @map("data_hash")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  ingest       Ingest          @relation(fields: [ingestId], references: [id])
-  ingestLesson IngestRawLesson @relation(fields: [lessonId], references: [id])
+  ingest       Ingest       @relation(fields: [ingestId], references: [id])
+  ingestLesson IngestLesson @relation(fields: [lessonId], references: [id])
 
   @@map("ingest_lesson_captions")
   @@schema("ingest")
@@ -1037,15 +1043,14 @@ model IngestLessonPlan {
   id        String   @id @default(cuid())
   ingestId  String   @map("ingest_id")
   batchId   String   @map("batch_id")
-  lessonId  String   @map("lesson_id")
-  status    String
+  lessonId  String   @unique @map("lesson_id")
   data      Json?    @map("data") @db.JsonB
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   ingest                Ingest                 @relation(fields: [ingestId], references: [id])
+  ingestLesson          IngestLesson           @relation(fields: [lessonId], references: [id])
   ingestLessonPlanParts IngestLessonPlanPart[]
-  ingestLesson          IngestRawLesson        @relation(fields: [lessonId], references: [id])
 
   @@map("ingest_lesson_plan")
   @@schema("ingest")
@@ -1053,10 +1058,10 @@ model IngestLessonPlan {
 
 model IngestLessonPlanPart {
   id           String                      @id @default(cuid())
+  lessonId     String                      @map("lesson_id")
   lessonPlanId String                      @map("lesson_plan_id")
   ingestId     String                      @map("ingest_id")
-  status       String
-  batchId      String                      @map("batch_id")
+  batchId      String?                     @map("batch_id")
   key          String
   data         Json                        @map("data") @db.JsonB
   textContent  String
@@ -1064,24 +1069,26 @@ model IngestLessonPlanPart {
   createdAt    DateTime                    @default(now()) @map("created_at")
   updatedAt    DateTime                    @updatedAt @map("updated_at")
 
-  ingestLessonPlan IngestLessonPlan @relation(fields: [lessonPlanId], references: [id])
   ingest           Ingest           @relation(fields: [ingestId], references: [id])
+  lesson           IngestLesson?    @relation(fields: [lessonId], references: [id])
+  ingestLessonPlan IngestLessonPlan @relation(fields: [lessonPlanId], references: [id])
 
   @@map("ingest_lesson_plan_part")
   @@schema("ingest")
 }
 
 model IngestOpenAiBatch {
-  id             String    @id @default(cuid())
-  ingestId       String    @map("ingest_id")
-  inputFilePath  String    @map("input_file_path")
-  outputFilePath String?   @map("output_file_path")
-  openaiBatchId  String    @map("openai_batch_id")
-  status         String
-  submittedAt    DateTime  @default(now()) @map("submitted_at")
-  receivedAt     DateTime? @map("received_at")
-  errorMessage   String?   @map("error_message")
-  batchType      String    @map("batch_type") // e.g., "generate_lesson_plans" or "embed_lesson_plan_parts"
+  id            String    @id @default(cuid())
+  ingestId      String    @map("ingest_id")
+  inputFilePath String    @map("input_file_path")
+  outputFileId  String?   @map("output_file_id")
+  errorFileId   String?   @map("error_file_id")
+  openaiBatchId String    @map("openai_batch_id")
+  status        String
+  submittedAt   DateTime  @default(now()) @map("submitted_at")
+  receivedAt    DateTime? @map("received_at")
+  errorMessage  String?   @map("error_message")
+  batchType     String    @map("batch_type") // e.g., "generate_lesson_plans" or "embed_lesson_plan_parts"
 
   ingest Ingest @relation(fields: [ingestId], references: [id])
 
@@ -1092,13 +1099,13 @@ model IngestOpenAiBatch {
 model IngestError {
   id           String   @id @default(cuid())
   ingestId     String   @map("ingest_id")
-  recordType   String   @map("record_type")
-  recordId     String   @map("record_id")
-  stage        String
+  lessonId     String?  @map("lesson_id")
+  step         String
   errorMessage String   @map("error_message")
   createdAt    DateTime @default(now()) @map("created_at")
 
-  ingest Ingest @relation(fields: [ingestId], references: [id])
+  ingest Ingest        @relation(fields: [ingestId], references: [id])
+  lesson IngestLesson? @relation(fields: [lessonId], references: [id])
 
   @@map("ingest_error")
   @@schema("ingest")
