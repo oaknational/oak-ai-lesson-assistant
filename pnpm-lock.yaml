@@ -808,6 +808,9 @@ importers:
       '@oakai/aila':
         specifier: '*'
         version: link:../aila
+      '@oakai/core':
+        specifier: '*'
+        version: link:../core
       '@oakai/db':
         specifier: '*'
         version: link:../db
