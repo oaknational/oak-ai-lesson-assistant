@@ -5,6 +5,7 @@ import { getLessonsByState } from "../db-helpers/getLessonsByState";
 import { Step, getPrevStep } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { getPartEmbeddingBatchFileLine } from "../embedding/getPartEmbeddingBatchFileLine";
+import { startEmbedding } from "../embedding/startEmbedding";
 import {
   OPEN_AI_BATCH_MAX_ROWS,
   OPEN_AI_BATCH_MAX_SIZE_MB,
@@ -54,46 +55,32 @@ export async function lpPartsEmbedStart({
     return;
   }
 
-  const { filePath, batchDir } = await writeBatchFile({
+  await startEmbedding({
     ingestId,
-    data: allParts,
-    getBatchFileLine: getPartEmbeddingBatchFileLine,
-  });
-
-  const { filePaths } = await splitJsonlByRowsOrSize({
-    inputFilePath: filePath,
-    outputDir: batchDir,
-    maxRows: OPEN_AI_BATCH_MAX_ROWS,
-    maxFileSizeMB: OPEN_AI_BATCH_MAX_SIZE_MB,
-  });
-
-  // submit batches and add records in db
-  for (const filePath of filePaths) {
-    const { file } = await uploadOpenAiBatchFile({
-      filePath,
-    });
-    const { batch: openaiBatch } = await submitOpenAiBatch({
-      fileId: file.id,
-      endpoint: "/v1/embeddings",
-    });
-    await prisma.ingestOpenAiBatch.create({
-      data: {
-        ingestId,
-        batchType: "embedding",
-        openaiBatchId: openaiBatch.id,
-        inputFilePath: filePath,
-        status: "pending",
-      },
-    });
-    await prisma.ingestLessonPlanPart.updateMany({
-      where: {
-        id: {
-          in: allParts.map((p) => p.lessonPlanPartId),
+    parts: allParts,
+    onSubmitted: async ({ openaiBatchId, filePath }) => {
+      /**
+       * Create batch record
+       */
+      const batch = await prisma.ingestOpenAiBatch.create({
+        data: {
+          ingestId,
+          batchType: "embedding",
+          openaiBatchId,
+          inputFilePath: filePath,
+          status: "pending",
         },
-      },
-      data: {
-        batchId: openaiBatch.id,
-      },
-    });
-  }
+      });
+      await prisma.ingestLessonPlanPart.updateMany({
+        where: {
+          id: {
+            in: allParts.map((p) => p.lessonPlanPartId),
+          },
+        },
+        data: {
+          batchId: batch.id, // @todo this should not update all parts ids!!
+        },
+      });
+    },
+  });
 }
