@@ -341,10 +341,6 @@ export const KeywordsOptionalSchema = z.array(KeywordOptionalSchema);
 export type KeywordOptional = z.infer<typeof KeywordOptionalSchema>;
 export type Keyword = z.infer<typeof KeywordSchema>;
 
-function length(l: number) {
-  return `Exactly ${l} elements`;
-}
-
 function minMaxText({
   min,
   max,
