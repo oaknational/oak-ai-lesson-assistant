@@ -1,4 +1,4 @@
-import { PrismaClientWithAccelerate, prisma } from "@oakai/db";
+import { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { IngestError } from "../IngestError";
 import { getCaptionsByFileName } from "../captions/getCaptionsByFileName";
@@ -9,10 +9,12 @@ import {
   createErrorRecord,
   getLatestIngestId,
   getLessonsByState,
+  getPrevStep,
   updateLessonsState,
 } from "./helpers";
 
-captions({ prisma });
+const step: Step = "captions_fetch";
+const prevStep = getPrevStep(step);
 
 export async function captions({
   prisma,
@@ -26,13 +28,11 @@ export async function captions({
   const lessons = await getLessonsByState({
     prisma,
     ingestId,
-    step: "import",
+    step: prevStep,
     stepStatus: "completed",
   });
 
   console.log(`Fetching captions for ${lessons.length} lessons`);
-
-  const step: Step = "captions_fetch";
 
   /**
    * Update status to fetching

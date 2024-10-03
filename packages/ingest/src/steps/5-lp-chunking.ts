@@ -2,18 +2,19 @@ import {
   CompletedLessonPlan,
   CompletedLessonPlanSchema,
 } from "@oakai/aila/src/protocol/schema";
-import { prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { getLessonPlanParts } from "../chunking/getLessonPlanParts";
 import {
+  Step,
   getLatestIngestId,
   getLessonsByState,
+  getPrevStep,
   updateLessonsState,
 } from "./helpers";
 
-lpChunking({
-  prisma,
-});
+const step: Step = "chunking";
+const prevStep = getPrevStep(step);
 
 /**
  * Create lesson plan 'parts' from lesson plans
@@ -27,14 +28,14 @@ export async function lpChunking({
   const lessons = await getLessonsByState({
     prisma,
     ingestId,
-    step: "lesson_plan_generation",
+    step: prevStep,
     stepStatus: "completed",
   });
   await updateLessonsState({
     prisma,
     ingestId,
     lessonIds: lessons.map((l) => l.id),
-    step: "chunking",
+    step,
     stepStatus: "started",
   });
 
@@ -72,8 +73,6 @@ export async function lpChunking({
           key: part.key,
           valueText: part.content,
           valueJson: part.json,
-          // batchId: null,
-          // embedding: null,
         })),
       });
       lessonIdsCompleted.push(lesson.id);
@@ -86,7 +85,7 @@ export async function lpChunking({
     prisma,
     ingestId,
     lessonIds: lessonIdsFailed,
-    step: "chunking",
+    step,
     stepStatus: "failed",
   });
 
@@ -94,7 +93,7 @@ export async function lpChunking({
     prisma,
     ingestId,
     lessonIds: lessonIdsCompleted,
-    step: "chunking",
+    step,
     stepStatus: "completed",
   });
 

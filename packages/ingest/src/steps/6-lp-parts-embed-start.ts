@@ -1,4 +1,4 @@
-import { prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { getPartEmbeddingBatchFileLine } from "../embedding/getPartEmbeddingBatchFileLine";
 import {
@@ -12,12 +12,13 @@ import { splitJsonlByRowsOrSize } from "../utils/splitJsonlByRowsOrSize";
 import {
   getLatestIngestId,
   getLessonsByState,
+  getPrevStep,
+  Step,
   updateLessonsState,
 } from "./helpers";
 
-lpPartsEmbedStart({
-  prisma,
-});
+const step: Step = "embedding";
+const prevStep = getPrevStep(step);
 
 /**
  * Start the process of embedding lesson plan parts
@@ -31,14 +32,14 @@ export async function lpPartsEmbedStart({
   const lessons = await getLessonsByState({
     prisma,
     ingestId,
-    step: "chunking",
+    step: prevStep,
     stepStatus: "completed",
   });
   await updateLessonsState({
     prisma,
     ingestId,
     lessonIds: lessons.map((l) => l.id),
-    step: "embedding",
+    step,
     stepStatus: "started",
   });
 

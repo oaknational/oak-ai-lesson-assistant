@@ -1,4 +1,4 @@
-import { prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { getLessonPlanBatchFileLine } from "../generate-lesson-plans/getLessonPlanBatchFileLine";
 import {
@@ -11,16 +11,15 @@ import { writeBatchFile } from "../openai-batches/writeBatchFile";
 import { splitJsonlByRowsOrSize } from "../utils/splitJsonlByRowsOrSize";
 import { CaptionsSchema } from "../zod-schema/zodSchema";
 import {
-  createErrorRecord,
   getLatestIngestId,
   getLessonsByState,
+  getPrevStep,
   Step,
   updateLessonsState,
 } from "./helpers";
 
-lpBatchStart({
-  prisma,
-});
+const step: Step = "lesson_plan_generation";
+const prevStep = getPrevStep(step);
 /**
  * Get all lessons which are ready for lesson plan generation, and write
  * request batch, upload it, and submit it
@@ -34,11 +33,9 @@ export async function lpBatchStart({
   const lessons = await getLessonsByState({
     prisma,
     ingestId,
-    step: "captions_fetch",
+    step: prevStep,
     stepStatus: "completed",
   });
-
-  const step: Step = "lesson_plan_generation";
 
   await updateLessonsState({
     prisma,

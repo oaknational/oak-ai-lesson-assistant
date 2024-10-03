@@ -4,7 +4,6 @@ import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
 import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
 import { EmbeddingsBatchResponseSchema } from "../zod-schema/zodSchema";
 import {
-  parseEmbeddingCustomId,
   getLatestIngestId,
   handleOpenAIBatchErrorFile,
   updateLessonsState,

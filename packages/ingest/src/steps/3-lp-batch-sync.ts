@@ -1,5 +1,5 @@
 import { CompletedLessonPlanSchema } from "@oakai/aila/src/protocol/schema";
-import { prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
 import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
@@ -9,8 +9,6 @@ import {
   handleOpenAIBatchErrorFile,
   updateLessonsState,
 } from "./helpers";
-
-lpBatchSync({ prisma });
 
 /**
  * Check status of lesson plan generation batches and action
