@@ -1088,7 +1088,7 @@ model IngestOpenAiBatch {
   submittedAt   DateTime  @default(now()) @map("submitted_at")
   receivedAt    DateTime? @map("received_at")
   errorMessage  String?   @map("error_message")
-  batchType     String    @map("batch_type") // e.g., "generate_lesson_plans" or "embed_lesson_plan_parts"
+  batchType     String    @map("batch_type")
 
   ingest Ingest @relation(fields: [ingestId], references: [id])
 

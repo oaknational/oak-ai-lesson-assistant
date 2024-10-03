@@ -11,6 +11,7 @@ import { writeBatchFile } from "../openai-batches/writeBatchFile";
 import { splitJsonlByRowsOrSize } from "../utils/splitJsonlByRowsOrSize";
 import { CaptionsSchema } from "../zod-schema/zodSchema";
 import {
+  createErrorRecord,
   getLatestIngestId,
   getLessonsByState,
   Step,
@@ -93,14 +94,6 @@ export async function lpBatchStart({
     }
   } catch (error) {
     console.error("Error generating lesson plans", error);
-    // await createErrorRecord({
-    //   prisma,
-    // ingestId,
-    //   ingestId: lessons[0].ingestId,
-    //   lessonId: lessons[0].id,
-    //   step,
-    //   errorMessage: error.message,
-    // });
     await updateLessonsState({
       prisma,
       ingestId,

@@ -137,6 +137,7 @@ export async function lpBatchSync({
               },
               data: {
                 outputFileId: openaiBatch.output_file_id,
+                receivedAt: new Date(),
                 status: "completed",
               },
             });

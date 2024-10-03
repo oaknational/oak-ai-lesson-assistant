@@ -133,6 +133,7 @@ export async function lpPartsEmbedSync({
               },
               data: {
                 outputFileId: openaiBatch.output_file_id,
+                receivedAt: new Date(),
                 status: "completed",
               },
             });

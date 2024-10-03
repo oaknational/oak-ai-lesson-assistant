@@ -201,6 +201,7 @@ export async function handleOpenAIBatchErrorFile({
     },
     data: {
       errorFileId: errorFileId,
+      receivedAt: new Date(),
       status: "completed",
     },
   });
