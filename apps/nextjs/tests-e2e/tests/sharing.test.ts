@@ -53,6 +53,7 @@ test(
       const context = await browser.newContext();
 
       const anonymousPage = await context.newPage();
+      await bypassVercelProtection(anonymousPage);
       await anonymousPage.goto(`${TEST_BASE_URL}/aila/${chatId}/share`);
 
       const title = anonymousPage.locator("h1");
@@ -86,6 +87,7 @@ test(
       const context = await browser.newContext();
 
       const anonymousPage = await context.newPage();
+      await bypassVercelProtection(anonymousPage);
       await anonymousPage.goto(`${TEST_BASE_URL}/aila/${chatId}/share`);
 
       await checkPage(anonymousPage);
