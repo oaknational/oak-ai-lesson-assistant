@@ -2,27 +2,34 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "tests-e2e",
+
   projects: [
     {
-      name: "auth-setup",
-      testMatch: "ui-auth.setup.ts",
+      name: "setup",
+      testMatch: "global.setup.ts",
     },
     {
-      name: "public",
-      grepInvert: /@authenticated/,
+      name: "common-auth",
+      testMatch: "common-auth.setup.ts",
+      dependencies: ["setup"],
+    },
+    {
+      name: "individually-authenticated",
+      grepInvert: /@common-auth/,
       use: {
         ...devices["Desktop Chrome"],
       },
+      dependencies: ["setup"],
     },
     {
-      name: "authenticated",
-      grep: /@authenticated/,
+      name: "common-authenticated",
+      grep: /@common-auth/,
 
       use: {
         ...devices["Desktop Chrome"],
-        storageState: "tests-e2e/.auth/user.json",
+        storageState: "tests-e2e/.auth/common-user.json",
       },
-      dependencies: ["auth-setup"],
+      dependencies: ["common-auth"],
     },
   ],
   reporter: process.env.CI
@@ -31,6 +38,9 @@ export default defineConfig({
   use: {
     trace: "retain-on-failure",
   },
+  retries: process.env.CI ? 1 : 0,
+  maxFailures: process.env.CI ? 10 : undefined,
+  workers: process.env.NODE_ENV === "development" ? 5 : undefined,
   outputDir: "./tests-e2e/test-results",
   forbidOnly: process.env.CI === "true",
 });

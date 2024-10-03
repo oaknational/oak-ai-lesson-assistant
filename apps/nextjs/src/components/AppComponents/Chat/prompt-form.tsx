@@ -1,6 +1,4 @@
-import { useCallback, useState, useEffect, useRef } from "react";
-import Textarea from "react-textarea-autosize";
-
+import { useCallback, useEffect, useRef } from "react";
 import { UseChatHelpers } from "ai/react";
 
 import {
@@ -21,6 +19,8 @@ export interface PromptFormProps
   isEmptyScreen: boolean;
   placeholder?: string;
   ailaStreamingStatus: AilaStreamingStatus;
+  queuedUserAction?: string | null;
+  queueUserAction?: (action: string) => void;
 }
 
 export function PromptForm({
@@ -30,12 +30,12 @@ export function PromptForm({
   setInput,
   isEmptyScreen,
   placeholder,
+  queuedUserAction,
+  queueUserAction,
 }: Readonly<PromptFormProps>) {
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const lessonPlanTracking = useLessonPlanTracking();
-  const [queuedUserInput, setQueuedUserInput] = useState<string | null>(null);
-  const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -45,22 +45,6 @@ export function PromptForm({
 
   const sidebar = useSidebar();
 
-  const queueSubmission = useCallback(
-    (value: string) => {
-      setQueuedUserInput(value);
-      timeoutRef.current = window.setTimeout(() => {
-        setQueuedUserInput(null);
-      }, 10000);
-
-      return () => {
-        if (timeoutRef.current !== null) {
-          window.clearTimeout(timeoutRef.current);
-        }
-      };
-    },
-    [timeoutRef],
-  );
-
   const handleSubmit = useCallback(
     async (value: string) => {
       setInput("");
@@ -69,34 +53,23 @@ export function PromptForm({
       }
 
       lessonPlanTracking.onSubmitText(value);
-      onSubmit(value);
+      if (queueUserAction) {
+        queueUserAction(value);
+      } else {
+        onSubmit(value);
+      }
     },
-    [lessonPlanTracking, onSubmit, setInput, sidebar],
+    [lessonPlanTracking, queueUserAction, onSubmit, setInput, sidebar],
   );
 
-  useEffect(() => {
-    if (ailaStreamingStatus === "Idle" && queuedUserInput) {
-      handleSubmit(queuedUserInput);
-      setQueuedUserInput(null);
-      if (timeoutRef.current !== null) {
-        window.clearTimeout(timeoutRef.current);
-      }
-    }
-  }, [ailaStreamingStatus, handleSubmit, queuedUserInput]);
-
   const shouldAllowUserInput =
-    ["Idle", "Moderating"].includes(ailaStreamingStatus) || queuedUserInput;
-  const shouldQueueUserInput = ailaStreamingStatus === "Moderating";
+    ["Idle", "Moderating"].includes(ailaStreamingStatus) && !queuedUserAction;
 
   return (
     <form
       onSubmit={async (e) => {
         e.preventDefault();
         if (!input?.trim()) {
-          return;
-        }
-        if (shouldQueueUserInput) {
-          queueSubmission(input);
           return;
         }
         handleSubmit(input);
@@ -109,15 +82,19 @@ export function PromptForm({
       <div
         className={`${!shouldAllowUserInput ? "hidden" : "flex"} relative max-h-60 w-full grow flex-col overflow-hidden rounded-md border-2 border-black bg-white pr-20 sm:flex`}
       >
-        <Textarea
+        <textarea
           data-testid="chat-input"
+          disabled={!shouldAllowUserInput}
           ref={inputRef}
           tabIndex={0}
           onKeyDown={onKeyDown}
           rows={1}
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder={handlePlaceholder(isEmptyScreen, placeholder)}
+          placeholder={handlePlaceholder(
+            isEmptyScreen,
+            queuedUserAction ?? placeholder,
+          )}
           spellCheck={false}
           className="min-h-[60px] w-full resize-none bg-transparent px-10 py-[1.3rem] text-base focus-within:outline-none"
         />
@@ -142,7 +119,7 @@ export function PromptForm({
 }
 
 function handlePlaceholder(isEmptyScreen: boolean, placeholder?: string) {
-  if (placeholder) {
+  if (placeholder && !["continue", "regenerate"].includes(placeholder)) {
     return placeholder;
   }
   return !isEmptyScreen

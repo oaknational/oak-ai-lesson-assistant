@@ -32,7 +32,6 @@ export function useExportQuizDesignerSlides({
   const debouncedParseResult = useDebounce(parseResult, 500);
 
   useEffect(() => {
-    console.log("Use Export Lesson Slides");
     if (active) {
       const res = exportableQuizAppStateSchema.safeParse(quiz);
       setParseResult(res);

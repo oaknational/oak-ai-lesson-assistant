@@ -1,11 +1,12 @@
-import { clerkSetup, setupClerkTestingToken } from "@clerk/testing/playwright";
-import { Page, expect, test as setup } from "@playwright/test";
-import path from "path";
+import { setupClerkTestingToken } from "@clerk/testing/playwright";
+import { Page, expect, test } from "@playwright/test";
 
-import { bypassVercelProtection } from "../helpers";
-import { TEST_USER_EMAIL, TEST_USER_PASSWORD, TEST_BASE_URL } from "./config";
-
-const authFile = path.join(__dirname, "../.auth/user.json");
+import {
+  TEST_USER_EMAIL,
+  TEST_USER_PASSWORD,
+  TEST_BASE_URL,
+} from "../config/config";
+import { bypassVercelProtection } from "../helpers/vercel";
 
 async function signInThroughUI(page: Page) {
   if (!TEST_USER_EMAIL || !TEST_USER_PASSWORD) {
@@ -29,8 +30,7 @@ async function signInThroughUI(page: Page) {
   await page.getByRole("button", { name: "Continue", exact: true }).click();
 }
 
-setup("authenticate through UI setup", async ({ page }) => {
-  await clerkSetup();
+test("authenticate through Clerk UI", async ({ page }) => {
   await bypassVercelProtection(page);
 
   await page.context().clearCookies();
@@ -46,6 +46,4 @@ setup("authenticate through UI setup", async ({ page }) => {
   await signInThroughUI(page);
 
   await page.waitForURL(TEST_BASE_URL);
-
-  await page.context().storageState({ path: authFile });
 });

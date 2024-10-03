@@ -1,8 +1,8 @@
-import { clerkSetup, setupClerkTestingToken } from "@clerk/testing/playwright";
+import { setupClerkTestingToken } from "@clerk/testing/playwright";
 import { test, expect } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
-import { bypassVercelProtection } from "../../helpers";
+import { bypassVercelProtection } from "../../helpers/vercel";
 
 test.describe("Unauthenticated", () => {
   test("redirects to /sign-in", async ({ page }) => {
@@ -12,9 +12,8 @@ test.describe("Unauthenticated", () => {
   });
 });
 
-test.describe("Authenticated", { tag: "@authenticated" }, () => {
+test.describe("Authenticated", { tag: "@common-auth" }, () => {
   test("navigate to /aila as a signed-in user", async ({ page }) => {
-    await clerkSetup();
     await bypassVercelProtection(page);
     await setupClerkTestingToken({ page });
 

@@ -4,10 +4,13 @@ import { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { Box, Flex, Grid } from "@radix-ui/themes";
 
 import Layout from "@/components/AppComponents/Layout";
+import { DownloadAllButton } from "@/components/AppComponents/download/DownloadAllButton";
+import { DownloadButton } from "@/components/AppComponents/download/DownloadButton";
+import SectionsCompleteDownloadNotice from "@/components/AppComponents/download/SectionsCompleteDownloadNotice";
+import SectionsNotCompleteDownloadNotice from "@/components/AppComponents/download/SectionsNotCompleteDownloadNotice";
 import Button from "@/components/Button";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
-import { DownloadButton } from "@/components/DownloadButton";
 import { Icon } from "@/components/Icon";
 
 import { SurveyDialogLauncher } from "./SurveyDialogLauncher";
@@ -28,6 +31,7 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
     sections,
     totalSections,
     totalSectionsComplete,
+    exportAllAssets,
   } = useDownloadView(chat);
 
   const isLessonComplete = totalSectionsComplete >= totalSections;
@@ -52,7 +56,7 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                 size="sm"
               >
                 <span className="text-base font-light underline">
-                  {lessonPlan.title ? lessonPlan.title : "Back to lesson"}
+                  Back to lesson
                 </span>
               </Button>
 
@@ -60,16 +64,9 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                 <h1 className="my-24 text-4xl font-bold">Download resources</h1>
                 <p className="mb-24 max-w-[600px]">
                   {isLessonComplete ? (
-                    <>
-                      Choose the resources you would like to generate and
-                      download.
-                    </>
+                    <SectionsCompleteDownloadNotice />
                   ) : (
-                    <>
-                      Complete all {totalSections} sections of your lesson to
-                      unlock resources below. If a section is missing, just ask
-                      Aila to help you complete your lesson.
-                    </>
+                    <SectionsNotCompleteDownloadNotice sections={sections} />
                   )}
                 </p>
               </div>
@@ -81,6 +78,17 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
                 className="gap-26"
               >
                 <Flex direction="column" className="gap-14">
+                  <DownloadAllButton
+                    onClick={() => exportAllAssets.start()}
+                    title="Download all resources"
+                    subTitle="Lesson plan, starter and exit quiz, slides and worksheet"
+                    downloadAvailable={!!exportAllAssets.readyToExport}
+                    downloadLoading={exportAllAssets.status === "loading"}
+                    data={exportAllAssets.data}
+                    data-testid="chat-download-all-resources"
+                    lesson={lessonPlan}
+                    chatId={id}
+                  />
                   <DownloadButton
                     chatId={id}
                     onClick={() => lessonPlanExport.start()}
