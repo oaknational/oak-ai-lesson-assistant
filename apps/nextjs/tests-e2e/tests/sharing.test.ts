@@ -74,7 +74,9 @@ test(
 
       const pagePromise = context.waitForEvent("page");
       await modal.getByText("Go to share page").click();
-      return await pagePromise;
+      const sharePage = await pagePromise;
+      await bypassVercelProtection(sharePage);
+      return sharePage;
     });
 
     await test.step("Share page", async () => {
