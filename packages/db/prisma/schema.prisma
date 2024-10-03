@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions"]
+  previewFeatures = ["postgresqlExtensions", "multiSchema"]
 }
 
 datasource db {
@@ -11,6 +11,7 @@ datasource db {
   url        = env("PRISMA_ACCELERATE_DATABASE_URL")
   directUrl  = env("DIRECT_DATABASE_URL")
   extensions = [vector, pg_trgm]
+  schemas    = ["public", "ingest"]
 }
 
 generator zod {
@@ -37,6 +38,7 @@ model App {
   statistics  Statistics[]
 
   @@map("apps")
+  @@schema("public")
 }
 
 model Prompt {
@@ -61,6 +63,7 @@ model Prompt {
   AnswersAndDistractorsForJudgement AnswersAndDistractorsForJudgement[]
 
   @@map("prompts")
+  @@schema("public")
 }
 
 // Clerk users
@@ -83,6 +86,7 @@ model User {
   emailAddress String? @map("email_address")
 
   @@map("users")
+  @@schema("public")
 }
 
 model KeyStage {
@@ -100,6 +104,7 @@ model KeyStage {
   LessonPlan            LessonPlan[]
 
   @@map("key_stages")
+  @@schema("public")
 }
 
 model KeyStageSubject {
@@ -115,6 +120,7 @@ model KeyStageSubject {
 
   @@unique([keyStageId, subjectId])
   @@map("key_stage_subjects")
+  @@schema("public")
 }
 
 model AilaUserFlag {
@@ -131,6 +137,7 @@ model AilaUserFlag {
   userComment  String?          @map("user_comment")
 
   @@map("chat_user_flags")
+  @@schema("public")
 }
 
 enum AilaUserFlagType {
@@ -139,6 +146,8 @@ enum AilaUserFlagType {
   TOO_HARD
   TOO_EASY
   OTHER
+
+  @@schema("public")
 }
 
 model AilaUserModification {
@@ -156,6 +165,7 @@ model AilaUserModification {
   action          AilaUserModificationAction @map("action")
 
   @@map("aila_user_modifications")
+  @@schema("public")
 }
 
 enum AilaUserModificationAction {
@@ -164,6 +174,8 @@ enum AilaUserModificationAction {
   SHORTEN_CONTENT
   ADD_MORE_DETAIL
   OTHER
+
+  @@schema("public")
 }
 
 model Subject {
@@ -181,6 +193,7 @@ model Subject {
   LessonPlans           LessonPlan[]
 
   @@map("subjects")
+  @@schema("public")
 }
 
 model Lesson {
@@ -208,6 +221,7 @@ model Lesson {
   lessonPlans LessonPlan[]
 
   @@map("lessons")
+  @@schema("public")
 }
 
 model SummarisationStrategy {
@@ -224,6 +238,7 @@ model SummarisationStrategy {
   summaries LessonSummary[]
 
   @@map("summarisation_strategies")
+  @@schema("public")
 }
 
 model LessonSummary {
@@ -255,6 +270,7 @@ model LessonSummary {
   subject  Subject?               @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
   @@map("lesson_summaries")
+  @@schema("public")
 }
 
 model LessonPlan {
@@ -276,26 +292,28 @@ model LessonPlan {
   keyStage KeyStage? @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
 
   @@map("lesson_plans")
+  @@schema("public")
 }
 
 model LessonPlanPart {
-  id           String                       @id @default(cuid())
-  lessonPlanId String                       @map("lesson_plan_id")
-  subjectId    String?                      @map("subject_id")
-  keyStageId   String?                      @map("key_stage_id")
+  id           String                      @id @default(cuid())
+  lessonPlanId String                      @map("lesson_plan_id")
+  subjectId    String?                     @map("subject_id")
+  keyStageId   String?                     @map("key_stage_id")
   key          String
   content      String
   json         Json?
-  createdAt    DateTime                     @default(now()) @map("created_at")
-  updatedAt    DateTime                     @updatedAt @map("updated_at")
-  lessonPlan   LessonPlan                   @relation(fields: [lessonPlanId], references: [id], onDelete: Cascade)
-  subject      Subject?                     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  keyStage     KeyStage?                    @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
+  createdAt    DateTime                    @default(now()) @map("created_at")
+  updatedAt    DateTime                    @updatedAt @map("updated_at")
+  lessonPlan   LessonPlan                  @relation(fields: [lessonPlanId], references: [id], onDelete: Cascade)
+  subject      Subject?                    @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  keyStage     KeyStage?                   @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
   embedding    Unsupported("vector(256)")?
-  status       LessonPlanPartStatus         @default(PENDING)
+  status       LessonPlanPartStatus        @default(PENDING)
 
   @@unique([lessonPlanId, key])
   @@map("lesson_plan_parts")
+  @@schema("public")
 }
 
 model Transcript {
@@ -312,6 +330,7 @@ model Transcript {
 
   @@unique([lessonId, variant])
   @@map("transcripts")
+  @@schema("public")
 }
 
 // The aggregate of many Generations, combined into
@@ -334,6 +353,7 @@ model AppSession {
   moderations         Moderation[]
 
   @@map("app_sessions")
+  @@schema("public")
 }
 
 model SharedContent {
@@ -345,6 +365,7 @@ model SharedContent {
   appSessionId String   @map("app_session_id")
 
   @@map("shared_content")
+  @@schema("public")
 }
 
 // A single request & response cycle from the user
@@ -383,6 +404,7 @@ model Generation {
 
   @@index([promptInputsHash, promptId, status])
   @@map("generations")
+  @@schema("public")
 }
 
 model UserTweak {
@@ -402,6 +424,7 @@ model UserTweak {
   originalValue Json? @map("original_value") // Optional for back-compat / non breaking changes
 
   @@map("user_tweaks")
+  @@schema("public")
 }
 
 model ReGeneration {
@@ -418,6 +441,7 @@ model ReGeneration {
   replacementGeneration   Generation @relation("replacement_generation", fields: [replacementGenerationId], references: [id], onDelete: Cascade)
 
   @@map("re_generations")
+  @@schema("public")
 }
 
 model GenerationUserFlag {
@@ -436,6 +460,7 @@ model GenerationUserFlag {
   feedbackReasons Json
 
   @@map("generation_user_flags")
+  @@schema("public")
 }
 
 model Snippet {
@@ -466,6 +491,7 @@ model Snippet {
 
   @@unique([lessonId, transcriptId, index, compression, variant])
   @@map("snippets")
+  @@schema("public")
 }
 
 model QuizQuestion {
@@ -487,6 +513,7 @@ model QuizQuestion {
   AnswersAndDistractorsForJudgement AnswersAndDistractorsForJudgement[]
 
   @@map("questions")
+  @@schema("public")
 }
 
 model QuizAnswer {
@@ -506,6 +533,7 @@ model QuizAnswer {
 
   @@unique([lessonId, questionId, answer])
   @@map("answers")
+  @@schema("public")
 }
 
 model Statistics {
@@ -521,6 +549,7 @@ model Statistics {
 
   @@unique([name, appId, promptId])
   @@map("statistics")
+  @@schema("public")
 }
 
 model QuestionsForJudgement {
@@ -536,6 +565,7 @@ model QuestionsForJudgement {
   ComparativeJudgement ComparativeJudgement[]
 
   @@map("questions_for_judgement")
+  @@schema("public")
 }
 
 model AnswersAndDistractorsForJudgement {
@@ -556,6 +586,7 @@ model AnswersAndDistractorsForJudgement {
   ComparativeJudgementFlag   ComparativeJudgementFlag[]
 
   @@map("answers_and_distractors_for_judgement")
+  @@schema("public")
 }
 
 model ComparativeJudgement {
@@ -572,6 +603,7 @@ model ComparativeJudgement {
   ComparativeJudgementFlag    ComparativeJudgementFlag[]
 
   @@map("comparative_judgements")
+  @@schema("public")
 }
 
 model ComparativeJudgementResult {
@@ -587,6 +619,7 @@ model ComparativeJudgementResult {
   reasonForChoosingWinner String?                            @map("decision_reason")
 
   @@map("comparative_judgement_results")
+  @@schema("public")
 }
 
 model ComparativeJudgementFlag {
@@ -604,6 +637,7 @@ model ComparativeJudgementFlag {
   feedbackReasons Json
 
   @@map("comparative_judgement_flags")
+  @@schema("public")
 }
 
 model Downloads {
@@ -616,6 +650,7 @@ model Downloads {
   lesson Lesson @relation(fields: [lessonSlug], references: [slug], onDelete: Cascade)
 
   @@map("downloads")
+  @@schema("public")
 }
 
 model UsersAllowedToViewNewFeatures {
@@ -626,6 +661,7 @@ model UsersAllowedToViewNewFeatures {
   emailAddress String @map("email_address")
 
   @@map("users_allowed_to_view_new_features")
+  @@schema("public")
 }
 
 model LessonExportDownload {
@@ -638,6 +674,7 @@ model LessonExportDownload {
   lessonExport LessonExport @relation(fields: [lessonExportId], references: [id], onDelete: Cascade)
 
   @@map("lesson_export_downloads")
+  @@schema("public")
 }
 
 model QdExportDownload {
@@ -650,6 +687,7 @@ model QdExportDownload {
   qdExport QdExport @relation(fields: [qdExportId], references: [id], onDelete: Cascade)
 
   @@map("qd_export_downloads")
+  @@schema("public")
 }
 
 model QdExport {
@@ -671,6 +709,7 @@ model QdExport {
 
   @@index([userId, gdriveFileId], name: "idx_qd_user_grdive_file_id")
   @@map("qd_exports")
+  @@schema("public")
 }
 
 model QdSnapshot {
@@ -690,6 +729,7 @@ model QdSnapshot {
 
   @@index([userId, sessionId, hash], name: "idx_qd_user_session_hash")
   @@map("qd_snapshots")
+  @@schema("public")
 }
 
 model LessonExport {
@@ -711,6 +751,7 @@ model LessonExport {
 
   @@index([userId, gdriveFileId], name: "idx_user_grdive_file_id")
   @@map("lesson_exports")
+  @@schema("public")
 }
 
 model LessonSnapshot {
@@ -732,6 +773,7 @@ model LessonSnapshot {
 
   @@index([userId, chatId, hash], name: "idx_user_chat_hash")
   @@map("lesson_snapshots")
+  @@schema("public")
 }
 
 model Moderation {
@@ -753,6 +795,7 @@ model Moderation {
   lessonSnapshot LessonSnapshot? @relation(fields: [lessonSnapshotId], references: [id], onDelete: Cascade)
 
   @@map("moderations")
+  @@schema("public")
 }
 
 model LessonSchema {
@@ -766,6 +809,7 @@ model LessonSchema {
 
   @@index([hash])
   @@map("lesson_schemas")
+  @@schema("public")
 }
 
 model SafetyViolation {
@@ -780,23 +824,30 @@ model SafetyViolation {
   recordId        String                    @map("record_id")
 
   @@map("policy_violations")
+  @@schema("public")
 }
 
 enum SafetyViolationAction {
   CHAT_MESSAGE
   QUIZ_GENERATION
+
+  @@schema("public")
 }
 
 enum SafetyViolationSource {
   HELICONE
   OPENAI
   MODERATION
+
+  @@schema("public")
 }
 
 enum SafetyViolationRecordType {
   CHAT_SESSION
   GENERATION
   MODERATION
+
+  @@schema("public")
 }
 
 enum LessonExportType {
@@ -806,16 +857,22 @@ enum LessonExportType {
   LESSON_SLIDES_SLIDES
   WORKSHEET_SLIDES
   ADDITIONAL_MATERIALS_DOCS
+
+  @@schema("public")
 }
 
 enum LessonSnapshotTrigger {
   EXPORT_BY_USER
   MODERATION
+
+  @@schema("public")
 }
 
 enum FlaggedOrSkipped {
   FLAGGED
   SKIPPED
+
+  @@schema("public")
 }
 
 enum SnippetVariant {
@@ -825,6 +882,8 @@ enum SnippetVariant {
   CHUNK
   VTT
   QUESTION_AND_ANSWER
+
+  @@schema("public")
 }
 
 enum GenerationStatus {
@@ -835,6 +894,8 @@ enum GenerationStatus {
   FAILED //     An error occurred processing the generation
   SUCCESS //    We got a valid response from the LLM
   FLAGGED //    It failed moderation, or the LLM refused to answer. See ModerationType
+
+  @@schema("public")
 }
 
 enum ModerationType {
@@ -843,23 +904,31 @@ enum ModerationType {
   OPENAI_FLAGGED
   OPENAI_OVER_THRESHOLD
   LLM_REFUSAL
+
+  @@schema("public")
 }
 
 enum TranscriptVariant {
   ORIGINAL
   COMPRESSED
+
+  @@schema("public")
 }
 
 enum TranscriptStatus {
   PENDING
   FAILED
   SUCCESS
+
+  @@schema("public")
 }
 
 enum SnippetStatus {
   PENDING
   FAILED
   SUCCESS
+
+  @@schema("public")
 }
 
 enum LessonSummaryStatus {
@@ -867,6 +936,8 @@ enum LessonSummaryStatus {
   GENERATED
   FAILED
   SUCCESS
+
+  @@schema("public")
 }
 
 enum LessonPlanStatus {
@@ -874,6 +945,8 @@ enum LessonPlanStatus {
   GENERATED
   FAILED
   SUCCESS
+
+  @@schema("public")
 }
 
 enum LessonPlanPartStatus {
@@ -881,22 +954,159 @@ enum LessonPlanPartStatus {
   GENERATED
   FAILED
   SUCCESS
+
+  @@schema("public")
 }
 
 enum SnippetCompression {
   BREVITY
   SIMPLIFICATION
   RELEVANCE
+
+  @@schema("public")
 }
 
 enum QuizQuestionStatus {
   PENDING
   FAILED
   SUCCESS
+
+  @@schema("public")
 }
 
 enum QuizAnswerStatus {
   PENDING
   FAILED
   SUCCESS
+
+  @@schema("public")
+}
+
+model Ingest {
+  id          String    @id @default(cuid())
+  status      String
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  completedAt DateTime? @map("completed_at")
+
+  ingestLessons           IngestLesson[]
+  ingestLessonTranscripts IngestLessonCaptions[]
+  ingestLessonPlans       IngestLessonPlan[]
+  ingestLessonPlanParts   IngestLessonPlanPart[]
+  ingestErrors            IngestError[]
+  ingestOpenAiBatches     IngestOpenAiBatch[]
+
+  @@map("ingest")
+  @@schema("ingest")
+}
+
+model IngestLesson {
+  id           String   @id @default(cuid())
+  oakLessonId  Int      @map("oak_lesson_id")
+  ingestId     String   @map("ingest_id")
+  data         Json     @map("data") @db.JsonB
+  dataHash     String   @map("data_hash")
+  step         String
+  stepStatus   String   @map("step_status")
+  captionsId   String?  @unique @map("captions_id")
+  lessonPlanId String?  @map("lesson_plan_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  ingest          Ingest                 @relation(fields: [ingestId], references: [id])
+  ingestErrors    IngestError[]
+  lessonPlanParts IngestLessonPlanPart[]
+  captions        IngestLessonCaptions?
+  lessonPlan      IngestLessonPlan?
+
+  @@map("ingest_lesson")
+  @@schema("ingest")
+}
+
+model IngestLessonCaptions {
+  id        String   @id @default(cuid())
+  ingestId  String   @map("ingest_id")
+  lessonId  String   @unique @map("lesson_id")
+  data      Json     @map("data") @db.JsonB
+  dataHash  String   @map("data_hash")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  ingest       Ingest       @relation(fields: [ingestId], references: [id])
+  ingestLesson IngestLesson @relation(fields: [lessonId], references: [id])
+
+  @@map("ingest_lesson_captions")
+  @@schema("ingest")
+}
+
+model IngestLessonPlan {
+  id        String   @id @default(cuid())
+  ingestId  String   @map("ingest_id")
+  batchId   String   @map("batch_id")
+  lessonId  String   @unique @map("lesson_id")
+  data      Json?    @map("data") @db.JsonB
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  ingest                Ingest                 @relation(fields: [ingestId], references: [id])
+  ingestLesson          IngestLesson           @relation(fields: [lessonId], references: [id])
+  ingestLessonPlanParts IngestLessonPlanPart[]
+
+  @@map("ingest_lesson_plan")
+  @@schema("ingest")
+}
+
+model IngestLessonPlanPart {
+  id           String                      @id @default(cuid())
+  lessonId     String                      @map("lesson_id")
+  lessonPlanId String                      @map("lesson_plan_id")
+  ingestId     String                      @map("ingest_id")
+  batchId      String?                     @map("batch_id")
+  key          String
+  valueJson    Json                        @map("data") @db.JsonB
+  valueText    String
+  embedding    Unsupported("vector(256)")?
+  createdAt    DateTime                    @default(now()) @map("created_at")
+  updatedAt    DateTime                    @updatedAt @map("updated_at")
+
+  ingest           Ingest           @relation(fields: [ingestId], references: [id])
+  lesson           IngestLesson?    @relation(fields: [lessonId], references: [id])
+  ingestLessonPlan IngestLessonPlan @relation(fields: [lessonPlanId], references: [id])
+
+  @@map("ingest_lesson_plan_part")
+  @@schema("ingest")
+}
+
+model IngestOpenAiBatch {
+  id            String    @id @default(cuid())
+  ingestId      String    @map("ingest_id")
+  inputFilePath String    @map("input_file_path")
+  outputFileId  String?   @map("output_file_id")
+  errorFileId   String?   @map("error_file_id")
+  openaiBatchId String    @map("openai_batch_id")
+  status        String
+  submittedAt   DateTime  @default(now()) @map("submitted_at")
+  receivedAt    DateTime? @map("received_at")
+  errorMessage  String?   @map("error_message")
+  batchType     String    @map("batch_type")
+
+  ingest Ingest @relation(fields: [ingestId], references: [id])
+
+  @@map("ingest_openai_batch")
+  @@schema("ingest")
+}
+
+model IngestError {
+  id           String   @id @default(cuid())
+  ingestId     String   @map("ingest_id")
+  lessonId     String?  @map("lesson_id")
+  step         String
+  errorMessage String   @map("error_message")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  ingest Ingest        @relation(fields: [ingestId], references: [id])
+  lesson IngestLesson? @relation(fields: [lessonId], references: [id])
+
+  @@map("ingest_error")
+  @@schema("ingest")
 }
