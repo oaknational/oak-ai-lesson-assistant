@@ -2,6 +2,8 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import * as readline from "node:readline";
 
+import { IngestError } from "../IngestError";
+
 /**
  * Splits a large .jsonl file into multiple files, based on whichever limit is hit first: max rows or max file size.
  * @param options - An object containing the options for splitting the file
@@ -28,6 +30,7 @@ export async function splitJsonlByRowsOrSize({
   let currentFileSize = 0;
   let currentFileStream: fs.WriteStream;
   const outputFilePaths: string[] = [];
+  const inputFileName = path.basename(inputFilePath);
 
   try {
     const readStream = fs.createReadStream(inputFilePath, {
@@ -35,18 +38,18 @@ export async function splitJsonlByRowsOrSize({
     });
     const rl = readline.createInterface({ input: readStream });
 
-    // Helper to create a new write stream
     const createNewWriteStream = (): fs.WriteStream => {
       if (currentFileStream) {
         currentFileStream.end(); // Close the old file stream
       }
+
       const outputFilePath = path.join(
         outputDir,
-        `split_${currentFileIndex}.jsonl`,
+        `${inputFileName}_${currentFileIndex}.jsonl`,
       );
       const newWriteStream = fs.createWriteStream(outputFilePath);
       console.log(`Creating new file: ${outputFilePath}`);
-      outputFilePaths.push(outputFilePath); // Track the new file path
+      outputFilePaths.push(outputFilePath);
       currentFileIndex++;
       currentRowCount = 0;
       currentFileSize = 0;
@@ -54,13 +57,11 @@ export async function splitJsonlByRowsOrSize({
       return newWriteStream;
     };
 
-    currentFileStream = createNewWriteStream(); // Start the first file
+    currentFileStream = createNewWriteStream();
 
-    // Process the file line by line
     for await (const line of rl) {
       const lineSize = Buffer.byteLength(line, "utf-8") + 1; // +1 for the newline
 
-      // Check if either max rows or max file size is reached
       if (
         currentRowCount >= maxRows ||
         currentFileSize + lineSize > maxFileSizeBytes
@@ -74,12 +75,13 @@ export async function splitJsonlByRowsOrSize({
     }
 
     if (currentFileStream) {
-      currentFileStream.end(); // Close the last stream
+      currentFileStream.end();
     }
     console.log(`Splitting complete! Files created in ${outputDir}`);
   } catch (error) {
     console.error(`Error splitting JSONL: ${(error as Error).message}`);
+    throw new IngestError("Error splitting JSONL");
   }
 
-  return { filePaths: outputFilePaths }; // Return the file paths of the created files
+  return { filePaths: outputFilePaths };
 }

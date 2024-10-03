@@ -1,7 +1,7 @@
 import fs from "node:fs";
 
 function getBatchDataDir({ ingestId }: { ingestId: string }) {
-  return `${__dirname}/batches/ingest_${ingestId}`;
+  return `${__dirname}/data/ingest_${ingestId}`;
 }
 
 export function writeBatchFile<T>({

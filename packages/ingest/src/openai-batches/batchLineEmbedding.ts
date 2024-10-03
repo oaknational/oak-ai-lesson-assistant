@@ -1,12 +1,12 @@
-export function lessonPlanPartsBatchFileLine({
-  lessonPlanPartId,
+export function batchLineEmbedding({
+  lineId,
   textToEmbed,
 }: {
-  lessonPlanPartId: string;
+  lineId: string;
   textToEmbed: string;
 }) {
   const line = {
-    custom_id: lessonPlanPartId,
+    custom_id: lineId,
     method: "POST",
     url: "/v1/embeddings",
     body: {

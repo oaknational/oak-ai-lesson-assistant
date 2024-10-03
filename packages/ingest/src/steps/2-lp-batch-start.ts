@@ -1,7 +1,6 @@
 import { prisma, PrismaClientWithAccelerate } from "@oakai/db";
 
 import { getLessonPlanBatchFileLine } from "../generate-lesson-plans/getLessonPlanBatchFileLine";
-import { splitJsonlByRowsOrSize } from "../jsonl-helpers/splitJsonlByRowsOrSize";
 import {
   OPEN_AI_BATCH_MAX_SIZE_MB,
   OPEN_AI_BATCH_MAX_ROWS,
@@ -9,6 +8,7 @@ import {
 import { submitOpenAiBatch } from "../openai-batches/submitOpenAiBatch";
 import { uploadOpenAiBatchFile } from "../openai-batches/uploadOpenAiBatchFile";
 import { writeBatchFile } from "../openai-batches/writeBatchFile";
+import { splitJsonlByRowsOrSize } from "../utils/splitJsonlByRowsOrSize";
 import { CaptionsSchema } from "../zod-schema/zodSchema";
 import {
   getLatestIngestId,

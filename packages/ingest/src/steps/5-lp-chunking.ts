@@ -4,7 +4,7 @@ import {
 } from "@oakai/aila/src/protocol/schema";
 import { prisma, PrismaClientWithAccelerate } from "@oakai/db";
 
-import { getLessonPlanParts } from "../generate-lesson-plan-parts/getLessonPlanParts";
+import { getLessonPlanParts } from "../chunking/getLessonPlanParts";
 import {
   getLatestIngestId,
   getLessonsByState,
