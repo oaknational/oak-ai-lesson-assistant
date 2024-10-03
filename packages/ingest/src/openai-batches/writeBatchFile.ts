@@ -32,7 +32,6 @@ export function writeBatchFile<T>({
 
       for (const datum of data) {
         try {
-          console.log("Getting batch file line");
           const line = getBatchFileLine(datum);
 
           writeStream.write(`${JSON.stringify(line)}\n`);

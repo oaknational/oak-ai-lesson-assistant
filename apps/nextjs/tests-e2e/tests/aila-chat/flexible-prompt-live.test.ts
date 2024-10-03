@@ -1,4 +1,4 @@
-import { clerkSetup, setupClerkTestingToken } from "@clerk/testing/playwright";
+import { setupClerkTestingToken } from "@clerk/testing/playwright";
 import { test, expect } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
@@ -15,7 +15,6 @@ test(
     test.setTimeout(generationTimeout * 5);
 
     await test.step("Setup", async () => {
-      await clerkSetup();
       await bypassVercelProtection(page);
       await setupClerkTestingToken({ page });
 
