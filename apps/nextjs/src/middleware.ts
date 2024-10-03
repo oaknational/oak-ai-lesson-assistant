@@ -7,6 +7,11 @@ import { NextMiddleware, NextResponse } from "next/server";
 import { sentryCleanup } from "./lib/sentry/sentryCleanup";
 
 function handleError(error: unknown, extra: Record<string, unknown>): Response {
+  if (error instanceof SyntaxError) {
+    console.error("Handled SyntaxError in nextMiddleware", error);
+    return NextResponse.json({ error: "Bad Request" }, { status: 400 });
+  }
+
   const wrappedError = new Error("Error in nextMiddleware", { cause: error });
   Sentry.captureException(wrappedError, { extra });
 
