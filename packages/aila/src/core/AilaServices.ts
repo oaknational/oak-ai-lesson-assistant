@@ -52,4 +52,5 @@ export interface AilaServices {
   readonly persistence?: AilaPersistenceFeature[];
   readonly moderation?: AilaModerationFeature;
   readonly plugins: AilaPlugin[];
+  readonly registerBackgroundPromise: (promise: Promise<unknown>) => void;
 }

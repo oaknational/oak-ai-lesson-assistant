@@ -74,4 +74,7 @@ export type AilaInitializationOptions = {
     chatLlmService?: LLMService;
     moderationAiClient?: OpenAILike;
   };
+  platform: {
+    registerBackgroundPromise: (promise: Promise<unknown>) => void;
+  };
 };

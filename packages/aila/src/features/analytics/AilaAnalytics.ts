@@ -22,11 +22,12 @@ export class AilaAnalytics {
   }
 
   public async reportUsageMetrics(responseBody: string, startedAt?: number) {
-    await Promise.all(
+    const promise = Promise.all(
       this._adapters.map((adapter) =>
         adapter.reportUsageMetrics(responseBody, startedAt),
       ),
     );
+    this._aila.registerBackgroundPromise(promise);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
