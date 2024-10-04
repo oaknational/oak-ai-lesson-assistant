@@ -171,7 +171,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     messages,
     append,
     reload,
-    stop,
+    stop: stopStreaming,
     isLoading,
     input,
     setInput,
@@ -317,6 +317,14 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       executeQueuedAction();
     }
   }, [hasFinished, executeQueuedAction]);
+
+  const stop = useCallback(() => {
+    if (queuedUserAction) {
+      setQueuedUserAction(null);
+    } else {
+      stopStreaming();
+    }
+  }, [queuedUserAction, setQueuedUserAction, stopStreaming]);
 
   /**
    *  If the state is being restored from a previous lesson plan, set the lesson plan
