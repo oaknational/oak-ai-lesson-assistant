@@ -55,6 +55,7 @@ const ExportButtons = ({
             <OakSmallSecondaryButton
               element={!isStreaming ? Link : "button"}
               disabled={isStreaming}
+              data-testId="chat-download-resources"
               href={demo.isSharingEnabled ? `/aila/download/${id}` : "#"}
               title={demo.isSharingEnabled ? undefined : "Not available"}
               onClick={() => {
