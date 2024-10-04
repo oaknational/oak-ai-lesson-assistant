@@ -97,8 +97,16 @@ const vercelPolicies =
       }
     : {};
 
+const addUpgradeInsecure = (csp: string) => {
+  // safari looks at upgrade-insecure-requests on localhost and will upgrade resources to https
+  if (process.env.NODE_ENV === "development") {
+    return csp;
+  }
+  return `${csp}; upgrade-insecure-requests`;
+};
+
 const buildCspHeaders = (nonce: string) => {
-  const legacyCspHeader = `upgrade-insecure-requests; frame-ancestors 'self';script-src-next-nonce 'nonce-${nonce}'`;
+  const legacyCspHeader = `frame-ancestors 'self';script-src-next-nonce 'nonce-${nonce}'`;
 
   const baseCsp = {
     "default-src": ["'self'"],
@@ -141,7 +149,6 @@ const buildCspHeaders = (nonce: string) => {
     ],
     "form-action": ["'self'"],
     "frame-ancestors": ["'none'"],
-    "upgrade-insecure-requests": [],
     "report-uri": [getReportUri()],
   };
 
@@ -173,12 +180,12 @@ const buildCspHeaders = (nonce: string) => {
 
   if (process.env.STRICT_CSP === "true") {
     return {
-      policy: cspString,
+      policy: addUpgradeInsecure(cspString),
     };
   } else {
     return {
-      policy: legacyCspHeader,
-      reportOnly: cspString.replace("upgrade-insecure-requests ;", ""),
+      policy: addUpgradeInsecure(legacyCspHeader),
+      reportOnly: cspString,
     };
   }
 };
