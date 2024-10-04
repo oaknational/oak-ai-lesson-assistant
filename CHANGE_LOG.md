@@ -1,3 +1,18 @@
+## [1.9.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.9.0...v1.9.1) (2024-10-04)
+
+
+### Bug Fixes
+
+* enable stop button to clear queuedAction ([#173](https://github.com/oaknational/oak-ai-lesson-assistant/issues/173)) ([98937a3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/98937a33dc183f2cd477fe7fd75e692a457435fd))
+* feature flag "download all" button ([#178](https://github.com/oaknational/oak-ai-lesson-assistant/issues/178)) ([2676283](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2676283ca90e6dc51475755953bdc77ae9a8ffec))
+* return a 400 for invalid input to middleware ([#185](https://github.com/oaknational/oak-ai-lesson-assistant/issues/185)) ([b3de13b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b3de13be9792691225923bf0c7c9f02b7f5d0352))
+* robust handling of incomplete data in download all ([#177](https://github.com/oaknational/oak-ai-lesson-assistant/issues/177)) ([7db415b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7db415b4f265b8aea7bbbb4cc7ebc02add5241d1))
+
+
+### Performance Improvements
+
+* add fts index to snippets table ([#180](https://github.com/oaknational/oak-ai-lesson-assistant/issues/180)) ([64b2493](https://github.com/oaknational/oak-ai-lesson-assistant/commit/64b2493f5c9e59d899b13f9ac10fecf796a4482f))
+
 # [1.9.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.8.0...v1.9.0) (2024-10-02)
 
 
