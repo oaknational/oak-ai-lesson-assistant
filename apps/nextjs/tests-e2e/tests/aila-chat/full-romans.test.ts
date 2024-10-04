@@ -7,8 +7,8 @@ import {
   FixtureMode,
   applyLlmFixtures,
   continueChat,
+  expectFinished,
   expectSectionsComplete,
-  isFinished,
   waitForGeneration,
 } from "./helpers";
 
@@ -55,33 +55,28 @@ test(
       await page.waitForURL(/\/aila\/.+/);
       await waitForGeneration(page, generationTimeout);
       await expectSectionsComplete(page, 1);
-      await page.waitForTimeout(500);
 
       setFixture("roman-britain-2");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectSectionsComplete(page, 3);
-      await page.waitForTimeout(500);
 
       setFixture("roman-britain-3");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectSectionsComplete(page, 7);
-      await page.waitForTimeout(500);
 
       setFixture("roman-britain-4");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectSectionsComplete(page, 10);
-      await page.waitForTimeout(500);
 
       setFixture("roman-britain-5");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectSectionsComplete(page, 10);
-      await page.waitForTimeout(500);
 
-      await isFinished(page);
+      await expectFinished(page);
     });
   },
 );
