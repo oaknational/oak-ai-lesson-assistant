@@ -36,6 +36,7 @@ export default defineConfig({
     ? [["github"], ["@estruyf/github-actions-reporter"], ["html"]]
     : "list",
   use: {
+    screenshot: "only-on-failure",
     trace: "retain-on-failure",
   },
   retries: process.env.CI ? 1 : 0,
