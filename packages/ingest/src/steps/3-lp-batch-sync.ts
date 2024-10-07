@@ -43,6 +43,7 @@ export async function lpBatchSync({
             prisma,
             batchId: batch.id,
             errorFileId: openaiBatch.error_file_id,
+            task: "generate-lesson-plans",
           });
         }
 

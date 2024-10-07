@@ -44,7 +44,7 @@ export async function handleOpenAIBatchErrorFile({
       id: batchId,
     },
     data: {
-      errorFileId: errorFileId,
+      errorFileId,
       receivedAt: new Date(),
       status: "completed",
     },

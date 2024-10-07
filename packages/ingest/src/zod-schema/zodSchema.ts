@@ -1,32 +1,41 @@
 import { z } from "zod";
 
-// const QuizSchema = z.object({
-//   hint: z.string(),
-//   active: z.boolean(),
-//   answers: z.object({
-//     "multiple-choice": z.array(
-//       z.object({
-//         answer: z.array(
-//           z.object({
-//             text: z.string(),
-//             type: z.string(),
-//           }),
-//         ),
-//         answer_is_correct: z.boolean(),
-//       }),
-//     ),
-//   }),
-//   feedback: z.string(),
-//   questionId: z.number(),
-//   questionUid: z.string(),
-//   questionStem: z.array(
-//     z.object({
-//       text: z.string(),
-//       type: z.string(),
-//     }),
-//   ),
-//   questionType: z.string(),
-// });
+const QuizQuestionSchema = z.object({
+  hint: z.string().nullish(),
+  active: z.boolean().nullish(),
+  answers: z.object({
+    "multiple-choice": z
+      .array(
+        z
+          .object({
+            answer: z
+              .array(
+                z
+                  .object({
+                    text: z.string().nullish(),
+                    type: z.string().nullish(),
+                  })
+                  .nullish(),
+              )
+              .nullish(),
+            answer_is_correct: z.boolean().nullish(),
+          })
+          .nullish(),
+      )
+      .nullish(),
+  }),
+  feedback: z.string().nullish(),
+  questionId: z.number().nullish(),
+  questionUid: z.string().nullish(),
+  questionStem: z.array(
+    z.object({
+      text: z.string().nullish(),
+      type: z.string().nullish(),
+    }),
+  ),
+  questionType: z.string().nullish(),
+});
+export type OakLessonQuiz = z.infer<typeof QuizQuestionSchema>[];
 
 const MisconceptionSchema = z.object({
   misconception: z.string(),
@@ -56,8 +65,8 @@ export const RawLessonSchema = z.object({
   pupilLessonOutcome: z.string().nullish(),
   lessonKeywords: z.array(LessonKeywordSchema).nullish(),
   copyrightContent: z.array(z.string()).nullish(),
-  // starterQuiz: z.array(QuizSchema).nullish(),
-  // exitQuiz: z.array(QuizSchema).nullish(),
+  starterQuiz: z.array(QuizQuestionSchema).nullish(),
+  exitQuiz: z.array(QuizQuestionSchema).nullish(),
   yearTitle: z.string().nullish(),
   videoTitle: z.string(),
   transcriptSentences: z.string().nullish(),
