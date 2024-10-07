@@ -10,6 +10,7 @@
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint . --ext .ts,.tsx",
     "type-check": "tsc --noEmit",
+    "ingest": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/index.ts",
     "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@oakai/prettier-config",
