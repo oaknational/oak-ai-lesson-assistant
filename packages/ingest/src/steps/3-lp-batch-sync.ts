@@ -5,9 +5,9 @@ import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { parseBatchLessonPlan } from "../generate-lesson-plans/parseBatchLessonPlan";
 import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
+import { handleOpenAIBatchErrorFile } from "../openai-batches/handleOpenAiBatchErrorFile";
 import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
 import { jsonlToArray } from "../utils/jsonlToArray";
-import { handleOpenAIBatchErrorFile } from "./helpers";
 
 /**
  * Check status of lesson plan generation batches and action
@@ -40,6 +40,7 @@ export async function lpBatchSync({
       case "completed":
         if (openaiBatch.error_file_id) {
           await handleOpenAIBatchErrorFile({
+            ingestId,
             prisma,
             batchId: batch.id,
             errorFileId: openaiBatch.error_file_id,

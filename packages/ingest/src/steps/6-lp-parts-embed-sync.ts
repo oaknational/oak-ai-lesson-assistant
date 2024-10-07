@@ -5,9 +5,9 @@ import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { parseBatchEmbedding } from "../embedding/parseBatchEmbedding";
 import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
+import { handleOpenAIBatchErrorFile } from "../openai-batches/handleOpenAiBatchErrorFile";
 import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
 import { jsonlToArray } from "../utils/jsonlToArray";
-import { handleOpenAIBatchErrorFile } from "./helpers";
 
 export async function lpPartsEmbedSync({
   prisma,
@@ -50,6 +50,7 @@ export async function lpPartsEmbedSync({
           // create error record
           await handleOpenAIBatchErrorFile({
             prisma,
+            ingestId,
             batchId: batch.id,
             errorFileId: openaiBatch.error_file_id,
             task: "embed-lesson-plan-parts",

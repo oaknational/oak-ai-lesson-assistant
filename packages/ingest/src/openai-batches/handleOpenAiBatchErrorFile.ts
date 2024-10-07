@@ -1,16 +1,29 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { BatchTask, parseCustomId } from "../openai-batches/customId";
-import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
+import { Step } from "../db-helpers/step";
+import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { jsonlToArray } from "../utils/jsonlToArray";
+import { BatchTask, parseCustomId } from "./customId";
+import { downloadOpenAiFile } from "./downloadOpenAiFile";
+
+function getStepFromTask(task: BatchTask): Step {
+  switch (task) {
+    case "generate-lesson-plans":
+      return "lesson_plan_generation";
+    case "embed-lesson-plan-parts":
+      return "embedding";
+  }
+}
 
 export async function handleOpenAIBatchErrorFile({
   prisma,
+  ingestId,
   batchId,
   errorFileId,
   task,
 }: {
   prisma: PrismaClientWithAccelerate;
+  ingestId: string;
   batchId: string;
   errorFileId: string;
   task: BatchTask;
@@ -27,6 +40,14 @@ export async function handleOpenAIBatchErrorFile({
         customId: json.custom_id,
       }).lessonId,
   );
+
+  await updateLessonsState({
+    ingestId,
+    prisma,
+    lessonIds,
+    step: getStepFromTask(task),
+    stepStatus: "failed",
+  });
 
   await prisma.ingestLesson.updateMany({
     where: {
