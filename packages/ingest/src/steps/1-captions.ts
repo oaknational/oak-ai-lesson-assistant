@@ -45,6 +45,8 @@ export async function captions({
   });
 
   console.log(`Fetching captions for ${lessons.length} lessons`);
+  const failedLessonIds: string[] = [];
+  const completedLessonIds: string[] = [];
 
   /**
    * Fetch captions for each lesson, and store them in the database
@@ -67,10 +69,12 @@ export async function captions({
         step,
         stepStatus: "completed",
       });
+      completedLessonIds.push(lesson.id);
     } catch (cause) {
       const error = new IngestError("Failed to fetch captions", {
         cause,
       });
+      failedLessonIds.push(lesson.id);
       await createErrorRecord({
         prisma,
         ingestId,
@@ -87,4 +91,7 @@ export async function captions({
       });
     }
   }
+
+  console.log(`Failed: ${failedLessonIds.length} lessons`);
+  console.log(`Completed: ${completedLessonIds.length} lessons`);
 }

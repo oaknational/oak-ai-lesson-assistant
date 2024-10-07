@@ -3,30 +3,38 @@ import { PrismaClientWithAccelerate } from "@oakai/db";
 import { IngestError } from "../IngestError";
 import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
-import { parseBatchLessonPlan } from "../generate-lesson-plans/parseBatchLessonPlan";
+import { parseBatchEmbedding } from "../embedding/parseBatchEmbedding";
 import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
 import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
 import { jsonlToArray } from "../utils/jsonlToArray";
 import { handleOpenAIBatchErrorFile } from "./helpers";
 
-/**
- * Check status of lesson plan generation batches and action
- */
-export async function lpBatchSync({
+export async function lpPartsEmbedSync({
   prisma,
 }: {
   prisma: PrismaClientWithAccelerate;
 }) {
   const ingestId = await getLatestIngestId({ prisma });
-  const batches = await prisma.ingestOpenAiBatch.findMany({
+
+  /**
+   * Check status of lesson plan generation batches and action
+   */
+  const embeddingsBatches = await prisma.ingestOpenAiBatch.findMany({
     where: {
       ingestId,
-      batchType: "lesson_plan_generation",
+      batchType: "embedding",
       status: "pending",
     },
   });
-  console.log(`Found ${batches.length} pending lesson plan generation batches`);
-  for (const batch of batches) {
+
+  if (embeddingsBatches.length === 0) {
+    console.log("No embedding batches to check, exiting early");
+    return;
+  }
+
+  console.log(`Checking ${embeddingsBatches.length} embedding batches`);
+
+  for (const batch of embeddingsBatches) {
     const { batch: openaiBatch } = await retrieveOpenAiBatch({
       batchId: batch.openaiBatchId,
     });
@@ -39,6 +47,7 @@ export async function lpBatchSync({
 
       case "completed":
         if (openaiBatch.error_file_id) {
+          // create error record
           await handleOpenAIBatchErrorFile({
             prisma,
             batchId: batch.id,
@@ -51,58 +60,58 @@ export async function lpBatchSync({
             fileId: openaiBatch.output_file_id,
           });
           const text = await file.text();
-          const lessonIdsFailed: string[] = [];
-          const lessonIdsCompleted: string[] = [];
           const jsonArray = jsonlToArray(text);
 
+          const lessonIdsFailed: Set<string> = new Set();
+          const lessonIdsCompleted: Set<string> = new Set();
+
           for (const json of jsonArray) {
+            let lessonId: string | undefined = undefined;
             try {
-              const { lessonPlan, lessonId } = parseBatchLessonPlan(json);
+              const batchEmbedding = parseBatchEmbedding(json);
+              lessonId = batchEmbedding.lessonId;
+              const { lessonPlanPartId, embedding } = batchEmbedding;
 
-              const lessonPlanRecord = await prisma.ingestLessonPlan.create({
-                data: {
-                  ingestId,
-                  batchId: batch.id,
-                  lessonId,
-                  data: lessonPlan,
-                },
-              });
+              const vector = `[${embedding.join(",")}]`;
+              const res = await prisma.$executeRaw`
+                  UPDATE ingest.ingest_lesson_plan_part
+                  SET embedding = ${vector}::vector 
+                  WHERE id = ${lessonPlanPartId}`;
 
-              await prisma.ingestLesson.update({
-                where: {
-                  id: lessonPlanRecord.lessonId,
-                },
-                data: {
-                  lessonPlanId: lessonPlanRecord.id,
-                },
-              });
-
-              lessonIdsCompleted.push(lessonId);
-            } catch (cause) {
-              if (cause instanceof IngestError && cause.lessonId) {
-                lessonIdsFailed.push(cause.lessonId);
+              if (res !== 1) {
+                lessonIdsFailed.add(lessonId);
                 continue;
               }
-              throw new IngestError("Failed to process jsonl line", {
-                cause,
-                errorDetail: json,
-              });
+            } catch (error) {
+              if (error instanceof IngestError && error.lessonId) {
+                lessonId = error.lessonId;
+              }
+              if (lessonId) {
+                lessonIdsFailed.add(lessonId);
+              }
+              continue;
             }
+
+            lessonIdsCompleted.add(lessonId);
           }
 
           await updateLessonsState({
             prisma,
             ingestId,
-            lessonIds: lessonIdsFailed,
-            step: "lesson_plan_generation",
-            stepStatus: "failed",
+            lessonIds: Array.from(lessonIdsCompleted),
+            step: "embedding",
+            stepStatus: "completed",
           });
+          /**
+           * In the very unlikely event that some parts failed to embed
+           * and others didn't, we mark the lesson as failed.
+           */
           await updateLessonsState({
             prisma,
             ingestId,
-            lessonIds: lessonIdsCompleted,
-            step: "lesson_plan_generation",
-            stepStatus: "completed",
+            lessonIds: Array.from(lessonIdsFailed),
+            step: "embedding",
+            stepStatus: "failed",
           });
           await prisma.ingestOpenAiBatch.update({
             where: {
@@ -115,12 +124,9 @@ export async function lpBatchSync({
             },
           });
 
-          console.log(
-            `Updated ${lessonIdsCompleted.length} lessons with lesson plans`,
-          );
-          console.log(
-            `Failed to update ${lessonIdsFailed.length} lessons with lesson plans`,
-          );
+          console.log(`Batch ${batch.id} completed`);
+          console.log(`Failed: ${lessonIdsFailed.size} lessons`);
+          console.log(`Completed: ${lessonIdsCompleted.size} lessons`);
         }
 
         break;

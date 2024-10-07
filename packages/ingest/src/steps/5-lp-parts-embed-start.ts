@@ -4,16 +4,7 @@ import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
 import { getLessonsByState } from "../db-helpers/getLessonsByState";
 import { Step, getPrevStep } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
-import { getPartEmbeddingBatchFileLine } from "../embedding/getPartEmbeddingBatchFileLine";
 import { startEmbedding } from "../embedding/startEmbedding";
-import {
-  OPEN_AI_BATCH_MAX_ROWS,
-  OPEN_AI_BATCH_MAX_SIZE_MB,
-} from "../openai-batches/constants";
-import { submitOpenAiBatch } from "../openai-batches/submitOpenAiBatch";
-import { uploadOpenAiBatchFile } from "../openai-batches/uploadOpenAiBatchFile";
-import { writeBatchFile } from "../openai-batches/writeBatchFile";
-import { splitJsonlByRowsOrSize } from "../utils/splitJsonlByRowsOrSize";
 
 const step: Step = "embedding";
 const prevStep = getPrevStep(step);

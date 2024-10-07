@@ -34,3 +34,7 @@ export async function getLessonsByState({
     data: RawLessonSchema.parse(lesson.data),
   }));
 }
+
+export type PersistedIngestLesson = Awaited<
+  ReturnType<typeof getLessonsByState>
+>[number];
