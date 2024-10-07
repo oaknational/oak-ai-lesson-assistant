@@ -1,12 +1,12 @@
 export function batchLineEmbedding({
-  lineId,
+  customId,
   textToEmbed,
 }: {
-  lineId: string;
+  customId: string;
   textToEmbed: string;
 }) {
   return {
-    custom_id: lineId,
+    custom_id: customId,
     method: "POST",
     url: "/v1/embeddings",
     body: {

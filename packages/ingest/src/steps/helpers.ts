@@ -1,50 +1,38 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { IngestError } from "../IngestError";
+import { BatchTask, parseCustomId } from "../openai-batches/customId";
 import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
+import { jsonlToArray } from "../utils/jsonlToArray";
 
 export async function handleOpenAIBatchErrorFile({
   prisma,
   batchId,
   errorFileId,
+  task,
 }: {
   prisma: PrismaClientWithAccelerate;
   batchId: string;
   errorFileId: string;
+  task: BatchTask;
 }) {
   const { file } = await downloadOpenAiFile({
     fileId: errorFileId,
   });
   const text = await file.text();
-  const lines = text.split("\n");
-  const jsonArray = lines
-    .filter((line) => line.trim() !== "")
-    .map((line) => JSON.parse(line));
+  const jsonArray = jsonlToArray(text);
+  const lessonIds = jsonArray.map(
+    (json) =>
+      parseCustomId({
+        task,
+        customId: json.custom_id,
+      }).lessonId,
+  );
 
   await prisma.ingestLesson.updateMany({
     where: {
-      OR: [
-        {
-          /**
-           * In case of lesson plan generation, custom_id is lessonId
-           */
-          lessonPlanId: {
-            in: jsonArray.map((json) => json.custom_id),
-          },
-        },
-        {
-          /**
-           * In case of embedding, custom_id is lessonPlanPartId
-           */
-          lessonPlanParts: {
-            some: {
-              id: {
-                in: jsonArray.map((json) => json.custom_id),
-              },
-            },
-          },
-        },
-      ],
+      lessonPlanId: {
+        in: lessonIds,
+      },
     },
     data: {
       stepStatus: "failed",
@@ -61,33 +49,4 @@ export async function handleOpenAIBatchErrorFile({
       status: "completed",
     },
   });
-}
-
-export function parseEmbeddingCustomId(customId: string) {
-  const [lessonId, lessonPlanPartId, partKey] = customId.split("-");
-  if (!lessonId || !lessonPlanPartId || !partKey) {
-    throw new IngestError("Invalid customId");
-  }
-  return { lessonId, lessonPlanPartId, partKey };
-}
-
-export function stringifyEmbeddingCustomId({
-  lessonId,
-  lessonPlanId,
-  partKey,
-}: {
-  lessonId: string;
-  lessonPlanId: string;
-  partKey: string;
-}) {
-  const invalidKV = Object.entries({ lessonId, lessonPlanId, partKey }).find(
-    ([, v]) => v.includes("-"),
-  );
-  if (invalidKV) {
-    throw new IngestError(
-      `Cannot create custom_id: ${invalidKV[0]} contains '-'`,
-    );
-  }
-
-  return `${lessonId}-${lessonPlanId}-${partKey}`;
 }

@@ -4,6 +4,7 @@ import {
 } from "@oakai/aila/src/protocol/schema";
 import { zodResponseFormat } from "openai/helpers/zod";
 
+import { createCustomId } from "../openai-batches/customId";
 import { Captions, RawLesson } from "../zod-schema/zodSchema";
 import { getSystemPrompt } from "./getSystemPrompt";
 import { getUserPrompt } from "./getUserPrompt";
@@ -39,7 +40,7 @@ export function getLessonPlanBatchFileLine({
   });
 
   const batchRequest = {
-    custom_id: lessonId,
+    custom_id: createCustomId({ task: "generate-lesson-plans", lessonId }),
     method: "POST",
     url: "/v1/chat/completions",
     body: {

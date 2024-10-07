@@ -14,7 +14,12 @@ export async function startEmbedding({
   onSubmitted,
 }: {
   ingestId: string;
-  parts: { lessonPlanPartId: string; textToEmbed: string }[];
+  parts: {
+    lessonId: string;
+    partKey: string;
+    lessonPlanPartId: string;
+    textToEmbed: string;
+  }[];
   onSubmitted: (args: {
     openaiBatchId: string;
     filePath: string;

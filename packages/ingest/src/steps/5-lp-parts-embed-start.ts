@@ -35,6 +35,8 @@ export async function lpPartsEmbedStart({
   const allParts = lessons
     .map((lesson) =>
       lesson.lessonPlanParts.map((part) => ({
+        lessonId: lesson.id,
+        partKey: part.key,
         lessonPlanPartId: part.id,
         textToEmbed: part.valueText,
       })),

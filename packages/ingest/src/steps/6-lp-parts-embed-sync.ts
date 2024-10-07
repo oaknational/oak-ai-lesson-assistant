@@ -66,10 +66,12 @@ export async function lpPartsEmbedSync({
           const lessonIdsCompleted: Set<string> = new Set();
 
           for (const json of jsonArray) {
+            console.log("Embed");
             let lessonId: string | undefined = undefined;
             try {
               const batchEmbedding = parseBatchEmbedding(json);
               lessonId = batchEmbedding.lessonId;
+              console.log(`Embedding lesson ${lessonId}`);
               const { lessonPlanPartId, embedding } = batchEmbedding;
 
               const vector = `[${embedding.join(",")}]`;
@@ -83,6 +85,7 @@ export async function lpPartsEmbedSync({
                 continue;
               }
             } catch (error) {
+              console.log(error);
               if (error instanceof IngestError && error.lessonId) {
                 lessonId = error.lessonId;
               }

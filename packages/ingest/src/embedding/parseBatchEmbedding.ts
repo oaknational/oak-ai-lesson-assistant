@@ -1,5 +1,5 @@
 import { IngestError } from "../IngestError";
-import { parseEmbeddingCustomId } from "../steps/helpers";
+import { parseCustomId } from "../openai-batches/customId";
 import { EmbeddingsBatchResponseSchema } from "../zod-schema/zodSchema";
 
 export function parseBatchEmbedding(line: unknown) {
@@ -12,9 +12,10 @@ export function parseBatchEmbedding(line: unknown) {
       errorDetail: line,
     });
   }
-  const { lessonPlanPartId, lessonId, partKey } = parseEmbeddingCustomId(
-    result.custom_id,
-  );
+  const { lessonPlanPartId, lessonId, partKey } = parseCustomId({
+    task: "embed-lesson-plan-parts",
+    customId: result.custom_id,
+  });
 
   if (result.error) {
     throw new IngestError("Embedding batch response contains error", {
