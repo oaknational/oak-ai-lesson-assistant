@@ -17,3 +17,8 @@ export async function submitOpenAiBatch({
 
   return { batch };
 }
+
+export type OpenAiBatchSubmitCallback = (args: {
+  openaiBatchId: string;
+  filePath: string;
+}) => Promise<void>;
