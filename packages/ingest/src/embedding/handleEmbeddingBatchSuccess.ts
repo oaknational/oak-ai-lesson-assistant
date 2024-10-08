@@ -27,7 +27,6 @@ export async function handleEmbeddingBatchSuccess({
   const lessonIdsCompleted: Set<string> = new Set();
 
   for (const json of jsonArray) {
-    console.log("Embed");
     let lessonId: string | undefined = undefined;
     try {
       const batchEmbedding = parseBatchEmbedding(json);
@@ -46,7 +45,6 @@ export async function handleEmbeddingBatchSuccess({
         continue;
       }
     } catch (error) {
-      console.log(error);
       if (error instanceof IngestError && error.lessonId) {
         lessonId = error.lessonId;
       }
