@@ -3,7 +3,10 @@ import {
   OPEN_AI_BATCH_MAX_ROWS,
   OPEN_AI_BATCH_MAX_SIZE_MB,
 } from "../openai-batches/constants";
-import { submitOpenAiBatch } from "../openai-batches/submitOpenAiBatch";
+import {
+  OpenAiBatchSubmitCallback,
+  submitOpenAiBatch,
+} from "../openai-batches/submitOpenAiBatch";
 import { uploadOpenAiBatchFile } from "../openai-batches/uploadOpenAiBatchFile";
 import { writeBatchFile } from "../openai-batches/writeBatchFile";
 import { splitJsonlByRowsOrSize } from "../utils/splitJsonlByRowsOrSize";
@@ -17,10 +20,7 @@ export async function startGenerating({
 }: {
   ingestId: string;
   lessons: PersistedIngestLesson[];
-  onSubmitted: (args: {
-    openaiBatchId: string;
-    filePath: string;
-  }) => Promise<void>;
+  onSubmitted: OpenAiBatchSubmitCallback;
 }) {
   const { filePath, batchDir } = await writeBatchFile({
     ingestId,

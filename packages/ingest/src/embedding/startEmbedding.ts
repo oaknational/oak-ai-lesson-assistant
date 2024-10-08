@@ -2,11 +2,17 @@ import {
   OPEN_AI_BATCH_MAX_ROWS,
   OPEN_AI_BATCH_MAX_SIZE_MB,
 } from "../openai-batches/constants";
-import { submitOpenAiBatch } from "../openai-batches/submitOpenAiBatch";
+import {
+  OpenAiBatchSubmitCallback,
+  submitOpenAiBatch,
+} from "../openai-batches/submitOpenAiBatch";
 import { uploadOpenAiBatchFile } from "../openai-batches/uploadOpenAiBatchFile";
 import { writeBatchFile } from "../openai-batches/writeBatchFile";
 import { splitJsonlByRowsOrSize } from "../utils/splitJsonlByRowsOrSize";
-import { getPartEmbeddingBatchFileLine } from "./getPartEmbeddingBatchFileLine";
+import {
+  EmbeddingBatchLineProps,
+  getPartEmbeddingBatchFileLine,
+} from "./getPartEmbeddingBatchFileLine";
 
 export async function startEmbedding({
   ingestId,
@@ -14,16 +20,8 @@ export async function startEmbedding({
   onSubmitted,
 }: {
   ingestId: string;
-  parts: {
-    lessonId: string;
-    partKey: string;
-    lessonPlanPartId: string;
-    textToEmbed: string;
-  }[];
-  onSubmitted: (args: {
-    openaiBatchId: string;
-    filePath: string;
-  }) => Promise<void>;
+  parts: EmbeddingBatchLineProps[];
+  onSubmitted: OpenAiBatchSubmitCallback;
 }) {
   const { filePath, batchDir } = await writeBatchFile({
     ingestId,

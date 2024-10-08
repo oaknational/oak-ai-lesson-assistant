@@ -1,5 +1,5 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
@@ -18,9 +18,20 @@ import {
 // const FIXTURE_MODE = "record" as FixtureMode;
 const FIXTURE_MODE = "replay" as FixtureMode;
 
+async function closePreview(page: Page) {
+  await page.getByTestId("continue-building").click();
+}
+
+async function expectPreviewVisible(page: Page) {
+  await expect(page.getByTestId("chat-right-hand-side-lesson")).toBeVisible();
+  await expect(
+    page.getByTestId("chat-right-hand-side-lesson"),
+  ).toBeInViewport();
+}
+
 test(
   "Full aila flow with Romans fixture",
-  { tag: "@common-auth" },
+  { tag: "@mobile-common-auth" },
   async ({ page }) => {
     const generationTimeout = FIXTURE_MODE === "record" ? 75000 : 50000;
     test.setTimeout(generationTimeout * 5);
@@ -53,29 +64,38 @@ test(
 
     await test.step("Iterate through the fixtures", async () => {
       await page.waitForURL(/\/aila\/.+/);
+
       await waitForGeneration(page, generationTimeout);
+      await expectPreviewVisible(page);
       await expectSectionsComplete(page, 1);
+      await closePreview(page);
 
       setFixture("roman-britain-2");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
+      await expectPreviewVisible(page);
       await expectSectionsComplete(page, 3);
+      await closePreview(page);
 
       setFixture("roman-britain-3");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
+      await expectPreviewVisible(page);
       await expectSectionsComplete(page, 7);
+      await closePreview(page);
 
       setFixture("roman-britain-4");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
+      await expectPreviewVisible(page);
       await expectSectionsComplete(page, 10);
+      await closePreview(page);
 
       setFixture("roman-britain-5");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
+      await expectPreviewVisible(page);
       await expectSectionsComplete(page, 10);
-
       await expectFinished(page);
     });
   },
