@@ -87,46 +87,52 @@ fi
 TABLE_COUNT=$(echo "$TABLES" | wc -w)
 echo "Found $TABLE_COUNT tables to export."
 
-# Loop through all tables and export each one
-for table in $TABLES; do
-  # Check if the table exists in the tables.txt
-  if ! grep -q "^$table$" "$TABLES_FILE"; then
-    echo "Table $table is not listed in $TABLES_FILE, skipping export."
-    continue
-  fi
+# Check for table export
+read -p "Do you want to export tables? (y/n) " confirm_export
+if [ "$confirm_export" == "y" ]; then
+  # Loop through all tables and export each one
+  for table in $TABLES; do
+    # Check if the table exists in the tables.txt
+    if ! grep -q "^$table$" "$TABLES_FILE"; then
+      echo "Table $table is not listed in $TABLES_FILE, skipping export."
+      continue
+    fi
 
-  echo "Exporting table: $table..."
-  OUTPUT_PATH="$SCRIPTPATH/data/$table.csv"
-  
-  # Execute the export command and check if it succeeded
-  if psql "$SOURCE_URL_WITHOUT_SCHEMA" -c "\copy $table to $OUTPUT_PATH delimiter ',' csv header;"; then
-    echo "Successfully exported $table to $OUTPUT_PATH"
-  else
-    echo "Failed to export $table" >&2
-  fi
-done
+    echo "Exporting table: $table..."
+    OUTPUT_PATH="$SCRIPTPATH/data/$table.csv"
+    
+    # Execute the export command and check if it succeeded
+    if psql "$SOURCE_URL_WITHOUT_SCHEMA" -c "\copy $table to $OUTPUT_PATH delimiter ',' csv header;"; then
+      echo "Successfully exported $table to $OUTPUT_PATH"
+    else
+      echo "Failed to export $table" >&2
+    fi
+  done
 
-# Log the completion of the export process
-echo "Export process completed."
+  # Log the completion of the export process
+  echo "Export process completed."
+else 
+  echo "Export process skipped."
+fi
 
 # Ask the user if they want to validate the data
 read -p "Do you want to validate the exported data? (y/n) " confirm_validate
-if [ "$confirm_validate" != "y" ]; then
-  echo "Validation skipped."
-  exit 0
-fi
+if [ "$confirm_validate" == "y" ]; then
+  # Run validation before truncating data
+  echo "Running data validation..."
+  if pnpm run validate-data; then
+    echo "Data validation successful."
+  else
+    echo "Data validation failed." >&2
+    exit 1
+  fi
 
-# Run validation before truncating data
-echo "Running data validation..."
-if pnpm run validate-data; then
-  echo "Data validation successful."
+  echo "Data is valid."
 else
-  echo "Data validation failed." >&2
-  exit 1
+  echo "Validation skipped."
 fi
 
 # Ask the user if they want to proceed with seeding
-echo "Data is valid."
 echo "You are about to seed the data into the $TARGET_ENV environment."
 read -p "Do you want to continue with the seeding process? (y/n) " confirm_seed
 if [ "$confirm_seed" != "y" ]; then
