@@ -51,8 +51,10 @@ export async function handleOpenAIBatchErrorFile({
 
   await prisma.ingestLesson.updateMany({
     where: {
-      lessonPlanId: {
-        in: lessonIds,
+      lessonPlan: {
+        id: {
+          in: lessonIds,
+        },
       },
     },
     data: {
