@@ -1,6 +1,7 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { IngestError } from "../IngestError";
+import { createErrorRecord } from "../db-helpers/createErrorRecord";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
 import { jsonlToArray } from "../utils/jsonlToArray";
@@ -45,13 +46,17 @@ export async function handleLessonPlanBatchSuccess({
 
       lessonIdsCompleted.push(lessonId);
     } catch (cause) {
+      let lessonId;
       if (cause instanceof IngestError && cause.lessonId) {
         lessonIdsFailed.push(cause.lessonId);
         continue;
       }
-      throw new IngestError("Failed to process jsonl line", {
-        cause,
-        errorDetail: json,
+      await createErrorRecord({
+        prisma,
+        ingestId,
+        lessonId,
+        step: "lesson_plan_generation",
+        errorMessage: cause instanceof Error ? cause.message : String(cause),
       });
     }
   }
