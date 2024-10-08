@@ -42,6 +42,12 @@ export async function prepareUser(
       await page.evaluate(clerkSignInHelper, login.email);
     });
 
+    await test.step("Accept cookie consent", async () => {
+      try {
+        await page.getByTestId("cookie-banner-accept").click();
+      } catch {}
+    });
+
     return login;
   });
 }
