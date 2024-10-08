@@ -39,7 +39,10 @@ export class AilaAnalytics {
 
   public async shutdown() {
     if (!this._isShutdown) {
-      await Promise.all(this._adapters.map((adapter) => adapter.shutdown()));
+      const promise = Promise.all(
+        this._adapters.map((adapter) => adapter.shutdown()),
+      );
+      this._aila.plugins.forEach((plugin) => plugin.onBackgroundWork(promise));
       this._isShutdown = true;
     }
   }
