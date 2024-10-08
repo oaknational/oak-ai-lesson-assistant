@@ -260,7 +260,7 @@ model LessonSummary {
   keyStageId         String?                      @map("key_stage_id")
   subjectSlug        String?
   keyStageSlug       String?
-  embedding          Unsupported("vector(1536)")?
+  embedding          Unsupported("vector(1536)")? 
   status             LessonSummaryStatus          @default(PENDING)
   error              String?
 
@@ -269,6 +269,11 @@ model LessonSummary {
   keyStage KeyStage?              @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
   subject  Subject?               @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
+  @@index([keyStageId, subjectId])
+  // Note - Prisma does not support Ivfflat indexes, which are created 
+  // separately in db/scripts/vector_indexes.sql
+  // Eg. this would be the notation if it supported it:
+  // @@index([embedding(ops: VectorCosineOps)], type: Ivfflat)
   @@map("lesson_summaries")
   @@schema("public")
 }
@@ -283,7 +288,7 @@ model LessonPlan {
   keyStageId   String?                      @map("key_stage_id")
   content      Json?
   errorMessage String?
-  embedding    Unsupported("vector(1536)")?
+  embedding    Unsupported("vector(1536)")? 
   status       LessonPlanStatus             @default(PENDING)
   parts        LessonPlanPart[]
 
@@ -291,6 +296,10 @@ model LessonPlan {
   subject  Subject?  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   keyStage KeyStage? @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
 
+  // Note - Prisma does not support Ivfflat indexes, which are created 
+  // separately in db/scripts/vector_indexes.sql
+  // Eg. this would be the notation if it supported it:
+  // @@index([embedding(ops: VectorCosineOps)], type: Ivfflat)
   @@map("lesson_plans")
   @@schema("public")
 }
@@ -308,10 +317,14 @@ model LessonPlanPart {
   lessonPlan   LessonPlan                  @relation(fields: [lessonPlanId], references: [id], onDelete: Cascade)
   subject      Subject?                    @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   keyStage     KeyStage?                   @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
-  embedding    Unsupported("vector(256)")?
+  embedding    Unsupported("vector(256)")? 
   status       LessonPlanPartStatus        @default(PENDING)
 
   @@unique([lessonPlanId, key])
+  // Note - Prisma does not support Ivfflat indexes, which are created 
+  // separately in db/scripts/vector_indexes.sql
+  // Eg. this would be the notation if it supported it:
+  // @@index([embedding(ops: VectorCosineOps)], type: Ivfflat)
   @@map("lesson_plan_parts")
   @@schema("public")
 }
@@ -473,7 +486,7 @@ model Snippet {
   timestamp     Int?
   sourceContent String                       @map("source_content")
   content       String
-  embedding     Unsupported("vector(1536)")?
+  embedding     Unsupported("vector(1536)")? 
   compression   SnippetCompression?
   status        SnippetStatus                @default(PENDING)
   createdAt     DateTime                     @default(now()) @map("created_at")
@@ -490,6 +503,12 @@ model Snippet {
   subject    Subject?      @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
   @@unique([lessonId, transcriptId, index, compression, variant])
+  @@index([keyStageId, subjectId])
+  // Note - Prisma does not support Ivfflat indexes, which are created 
+  // separately in db/scripts/vector_indexes.sql
+  // Eg. this would be the notation if it supported it:
+  // @@index([embedding(ops: VectorCosineOps)], type: Ivfflat)
+
   @@map("snippets")
   @@schema("public")
 }
@@ -502,7 +521,7 @@ model QuizQuestion {
   originalQuestionId Int                          @unique @map("original_question_id")
   lessonId           String                       @map("lesson_id")
   question           String
-  embedding          Unsupported("vector(1536)")?
+  embedding          Unsupported("vector(1536)")? 
   status             QuizQuestionStatus           @default(PENDING)
 
   lesson   Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
@@ -512,6 +531,10 @@ model QuizQuestion {
   QuestionsForJudgement             QuestionsForJudgement[]
   AnswersAndDistractorsForJudgement AnswersAndDistractorsForJudgement[]
 
+  // Note - Prisma does not support Ivfflat indexes, which are created 
+  // separately in db/scripts/vector_indexes.sql
+  // Eg. this would be the notation if it supported it:
+  // @@index([embedding(ops: VectorCosineOps)], type: Ivfflat)
   @@map("questions")
   @@schema("public")
 }
@@ -524,12 +547,17 @@ model QuizAnswer {
   lessonId   String                       @map("lesson_id")
   answer     String
   distractor Boolean                      @default(false)
-  embedding  Unsupported("vector(1536)")?
+  embedding  Unsupported("vector(1536)")? 
   status     QuizAnswerStatus             @default(PENDING)
 
   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   question QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  // Note - Prisma does not support Ivfflat indexes, which are created 
+  // separately in db/scripts/vector_indexes.sql
+  // Eg. this would be the notation if it supported it:
+  // @@index([embedding(ops: VectorCosineOps)], type: Ivfflat)
 
   @@unique([lessonId, questionId, answer])
   @@map("answers")
