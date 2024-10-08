@@ -1,5 +1,7 @@
 import fs from "node:fs";
 
+import { IngestError } from "../IngestError";
+
 function getBatchDataDir({ ingestId }: { ingestId: string }) {
   return `${__dirname}/data/ingest_${ingestId}`;
 }
@@ -35,7 +37,12 @@ export function writeBatchFile<T>({
           const line = getBatchFileLine(datum);
 
           writeStream.write(`${JSON.stringify(line)}\n`);
-        } catch (error) {
+        } catch (cause) {
+          const error = new IngestError("Failed to write batch file", {
+            ingestId,
+            errorDetail: data,
+            cause,
+          });
           reject(error);
         }
       }

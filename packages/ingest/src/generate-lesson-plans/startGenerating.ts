@@ -3,6 +3,7 @@ import {
   OPEN_AI_BATCH_MAX_ROWS,
   OPEN_AI_BATCH_MAX_SIZE_MB,
 } from "../openai-batches/constants";
+import { getCustomIdsFromJsonlFile } from "../openai-batches/getCustomIdsFromJsonlFile";
 import {
   OpenAiBatchSubmitCallback,
   submitOpenAiBatch,
@@ -47,6 +48,10 @@ export async function startGenerating({
       endpoint: "/v1/chat/completions",
     });
 
-    await onSubmitted({ openaiBatchId: openaiBatch.id, filePath });
+    const customIds = await getCustomIdsFromJsonlFile({
+      filePath,
+    });
+
+    await onSubmitted({ openaiBatchId: openaiBatch.id, filePath, customIds });
   }
 }
