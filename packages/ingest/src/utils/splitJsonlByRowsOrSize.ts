@@ -30,7 +30,7 @@ export async function splitJsonlByRowsOrSize({
   let currentFileSize = 0;
   let currentFileStream: fs.WriteStream;
   const outputFilePaths: string[] = [];
-  const inputFileName = path.basename(inputFilePath);
+  const inputFileName = path.basename(inputFilePath).split(".")[0];
 
   try {
     const readStream = fs.createReadStream(inputFilePath, {
