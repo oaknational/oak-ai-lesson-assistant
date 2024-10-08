@@ -3,38 +3,72 @@ import os from "os";
 import { z } from "zod";
 
 import { publicProcedure } from "../../trpc";
+import { setSafetyViolations } from "./safetyViolations";
 import { seedChat } from "./seedChat";
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? os.hostname();
 
-const personas = {
+const personaNames = [
+  "typical",
+  "demo",
+  "nearly-banned",
+  "sharing-chat",
+] as const;
+
+type PersonaName = (typeof personaNames)[number];
+type Persona = {
+  isDemoUser: boolean;
+  region: "GB" | "US";
+  chatFixture: "typical" | null;
+  safetyViolations: number;
+};
+
+const personas: Record<PersonaName, Persona> = {
   // A user with no issues and a completed lesson plan
   typical: {
     isDemoUser: false,
     region: "GB",
     chatFixture: "typical",
+    safetyViolations: 0,
   },
   // A user from a demo region
   demo: {
     isDemoUser: true,
     region: "US",
-    seedChat: false,
     chatFixture: null,
+    safetyViolations: 0,
+  },
+  // A user with 3 safety violations - will be banned with one more
+  "nearly-banned": {
+    isDemoUser: false,
+    region: "GB",
+    chatFixture: null,
+    safetyViolations: 3,
+  },
+  // Allows `chat.isShared` to be set/reset without leaking between tests/retries
+  "sharing-chat": {
+    isDemoUser: false,
+    region: "GB",
+    chatFixture: "typical",
+    safetyViolations: 0,
   },
 } as const;
 
-const calculateEmailAddress = (personaName: keyof typeof personas) => {
-  const sanitisedBranchName = branch.replace(/[^a-zA-Z0-9]/g, "-");
-  return `test+${sanitisedBranchName}-${personaName}@thenational.academy`;
-};
-
-const getSignInToken = async (userId: string) => {
-  const response = await clerkClient.signInTokens.createSignInToken({
-    userId,
-    expiresInSeconds: 60 * 5,
-  });
-
-  return response.token;
+/**
+ * @example test+adams-macbook-pro-local+typical+clerk_test@thenational.academy
+ */
+const generateEmailAddress = (personaName: keyof typeof personas) => {
+  const parts = [
+    // All users use the "test@thenational.academy" mailbox with a `+` alias
+    "test",
+    // Replace non-alphanumeric characters with -
+    branch.replace(/\W+/g, "-"),
+    // A new login for each persona
+    personaName,
+    // Allows signing in with the email_code strategy
+    "clerk_test",
+  ];
+  return `${parts.join("+")}@thenational.academy`;
 };
 
 const findOrCreateUser = async (
@@ -50,6 +84,9 @@ const findOrCreateUser = async (
   ).data[0];
 
   if (existingUser) {
+    if (existingUser.banned) {
+      await clerkClient.users.unbanUser(existingUser.id);
+    }
     return existingUser;
   }
 
@@ -78,22 +115,20 @@ const findOrCreateUser = async (
 export const prepareUser = publicProcedure
   .input(
     z.object({
-      persona: z.enum(["typical", "demo"]),
+      persona: z.enum(personaNames),
     }),
   )
   .mutation(async ({ input }) => {
-    const email = calculateEmailAddress(input.persona);
+    const email = generateEmailAddress(input.persona);
     const user = await findOrCreateUser(email, input.persona);
 
-    const chatFixture = personas[input.persona].chatFixture;
-    let chatId: string | undefined;
-    if (chatFixture) {
-      chatId = await seedChat(user.id, chatFixture);
-    }
+    const persona = personas[input.persona];
 
-    return {
-      email,
-      signInToken: await getSignInToken(user.id),
-      chatId: chatId,
-    };
+    let chatId: string | undefined;
+    if (persona.chatFixture) {
+      chatId = await seedChat(user.id, persona.chatFixture);
+    }
+    await setSafetyViolations(user.id, persona.safetyViolations);
+
+    return { email, chatId };
   });

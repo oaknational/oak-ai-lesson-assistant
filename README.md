@@ -195,7 +195,7 @@ pnpm test-e2e
 
 Our Playwright tests are organised with tags:
 
-- `@authenticated`: Tests with this tag use a pre-created test user, reused without cleanup between tests.
+- `@common-auth`: Tests with this tag use the same test user ("typical" persona). Test run concurrently so shouldn't modify user state.
 - `@openai`: Indicates that the test calls the OpenAI API without a mock. These are excluded from CI runs due to potential slowness, flakiness, or expense. We aim to use mocks for these tests in the future.
 
 ### Testing in VSCode

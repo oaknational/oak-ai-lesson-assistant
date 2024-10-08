@@ -341,13 +341,36 @@ export const KeywordsOptionalSchema = z.array(KeywordOptionalSchema);
 export type KeywordOptional = z.infer<typeof KeywordOptionalSchema>;
 export type Keyword = z.infer<typeof KeywordSchema>;
 
+function minMaxText({
+  min,
+  max,
+  entity = "elements",
+}: {
+  min?: number;
+  max?: number;
+  entity?: "elements" | "characters";
+}) {
+  if (typeof min !== "number" && typeof max !== "number") {
+    throw new Error("min or max must be provided");
+  }
+  if (typeof min === "number" && typeof max === "number") {
+    return `Minimum ${min}, maximum ${max} ${entity}`;
+  }
+  if (typeof min === "number") {
+    return `Minimum ${min} ${entity}`;
+  }
+  return `Maximum ${max} ${entity}`;
+}
+
 export const CompletedLessonPlanSchema = z.object({
-  title: z
-    .string()
-    .max(80)
-    .describe(
-      "The title of the lesson. Lesson titles should be a unique and succinct statement, not a question. Can include special characters if appropriate but should not use & sign instead of 'and'. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
-    ),
+  title: z.string().describe(
+    `The title of the lesson. Lesson titles should be a unique and succinct statement, not a question. Can include special characters if appropriate but should not use & sign instead of 'and'. Written in the TEACHER_TO_PUPIL_SLIDES voice. ${minMaxText(
+      {
+        max: 80,
+        entity: "characters",
+      },
+    )}`,
+  ),
   keyStage: z
     .union([
       z.enum([
@@ -377,52 +400,70 @@ export const CompletedLessonPlanSchema = z.object({
     .describe(
       "A topic that this lesson would sit within, which might cover several lessons with a shared theme.",
     ),
-  learningOutcome: z
-    .string()
-    .max(190)
-    .describe(
-      "What the pupils will have learnt by the end of the lesson. Should start with 'I can' and outline what pupils should be able to know/and or be able to do by the end of the lesson. Written in age appropriate language. May include a command word. Written in the PUPIL voice.",
-    ),
+  learningOutcome: z.string().describe(
+    `What the pupils will have learnt by the end of the lesson. Should start with 'I can' and outline what pupils should be able to know/and or be able to do by the end of the lesson. Written in age appropriate language. May include a command word. Written in the PUPIL voice. ${minMaxText(
+      {
+        max: 190,
+        entity: "characters",
+      },
+    )}`,
+  ),
   learningCycles: z
-    .array(z.string().max(120))
-    .min(1)
-    .max(3)
+    .array(z.string().describe(minMaxText({ max: 120, entity: "characters" })))
     .describe(
-      "An array of learning cycle outcomes. Should include a command word. Should be succinct. Should outline what pupils should be able to do/understand/know by the end of the learning cycle. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
+      `An array of learning cycle outcomes. Should include a command word. Should be succinct. Should outline what pupils should be able to do/understand/know by the end of the learning cycle. Written in the TEACHER_TO_PUPIL_SLIDES voice. ${minMaxText(
+        {
+          min: 1,
+          max: 3,
+          entity: "elements",
+        },
+      )}`,
     ),
   priorKnowledge: z
-    .array(z.string().max(190))
-    .min(1)
-    .max(5)
+    .array(z.string().describe(minMaxText({ max: 190, entity: "characters" })))
     .describe(
-      "An array of prior knowledge statements, each being a succinct sentence. Written in the EXPERT_TEACHER voice.",
+      `An array of prior knowledge statements, each being a succinct sentence. Written in the EXPERT_TEACHER voice. ${minMaxText(
+        {
+          min: 1,
+          max: 5,
+          entity: "elements",
+        },
+      )}`,
     ),
   keyLearningPoints: z
     .array(
-      z
-        .string()
-        .max(120)
-        .describe(
-          "The misconception itself, in a single sentence, not ending with a full stop. Written in the EXPERT_TEACHER voice.",
-        ),
+      z.string().describe(
+        `The misconception itself, in a single sentence, not ending with a full stop. Written in the EXPERT_TEACHER voice. ${minMaxText(
+          {
+            max: 120,
+            entity: "characters",
+          },
+        )}`,
+      ),
     )
-    .min(3)
-    .max(5)
-    .describe("An array of learning points, each being a succinct sentence."),
-  misconceptions: MisconceptionsSchema.describe(
+    .describe(
+      `An array of learning points, each being a succinct sentence. ${minMaxText(
+        {
+          min: 3,
+          max: 5,
+          entity: "elements",
+        },
+      )}`,
+    ),
+  misconceptions: MisconceptionsSchemaWithoutLength.describe(
     "A set of potential misconceptions which students might have about the content that is delivered in the lesson. Written in the EXPERT_TEACHER voice.",
   ),
-  keywords: KeywordsSchema.describe(
+  keywords: KeywordsSchemaWithoutLength.describe(
     "The keywords that are used in the lesson. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
   ),
   basedOn: BasedOnSchema.optional(),
-  starterQuiz: QuizSchema.describe(
+  starterQuiz: QuizSchemaWithoutLength.describe(
     "The starter quiz for the lesson, which tests prior knowledge only, ignoring the content that is delivered in the lesson. Obey the rules as specified in the STARTER QUIZ section of the lesson plan guidance. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
   ),
-  cycle1: CycleSchema.describe("The first learning cycle"),
-  cycle2: CycleSchema.describe("The second learning cycle"),
-  cycle3: CycleSchema.describe("The third learning cycle"),
-  exitQuiz: QuizSchema.describe(
+  cycle1: CycleSchemaWithoutLength.describe("The first learning cycle"),
+  cycle2: CycleSchemaWithoutLength.describe("The second learning cycle"),
+  cycle3: CycleSchemaWithoutLength.describe("The third learning cycle"),
+  exitQuiz: QuizSchemaWithoutLength.describe(
     "The exit quiz for the lesson, which tests the content that is delivered in the lesson. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
   ),
   additionalMaterials: z
@@ -432,6 +473,8 @@ export const CompletedLessonPlanSchema = z.object({
       "Any additional materials or notes that are required or useful for the lesson",
     ),
 });
+
+export type CompletedLessonPlan = z.infer<typeof CompletedLessonPlanSchema>;
 
 export const LessonPlanSchema = z.object({
   title: z.string().optional(),

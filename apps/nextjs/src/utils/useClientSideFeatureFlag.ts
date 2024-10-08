@@ -1,57 +1,24 @@
 import { useEffect, useState } from "react";
 
-import { useUser } from "@clerk/nextjs";
-
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
-import { checkFeatureFlag } from "./checkFeatureFlag";
+export function useClientSideFeatureFlag(flag: string): boolean {
+  const { posthogAiBetaClient: client } = useAnalytics();
 
-let isUserIdentified = false;
-export function useClientSideFeatureFlag(
-  featureFlagId: string,
-): [boolean, boolean] {
-  const { user, isLoaded } = useUser();
-
-  const { posthogAiBetaClient } = useAnalytics();
-
-  const [isEnabled, setIsEnabled] = useState<boolean>(false);
-  const [isCheckComplete, setIsCheckComplete] = useState<boolean>(false);
+  const [featureEnabled, setFeatureEnabled] = useState<boolean | undefined>();
 
   useEffect(() => {
-    function checkFeatureFlagStatus() {
-      if (process.env.NEXT_PUBLIC_ENVIRONMENT !== "prd") {
-        setIsEnabled(true);
-        setIsCheckComplete(true);
-        return;
-      }
+    const isDebug = process.env.NEXT_PUBLIC_POSTHOG_DEBUG === "true";
 
-      if (isLoaded && user) {
-        if (!isUserIdentified) {
-          const distinctId = posthogAiBetaClient.get_distinct_id();
-
-          if (distinctId !== user.id) {
-            posthogAiBetaClient.identify(user.id, {
-              email: user.primaryEmailAddress?.emailAddress,
-            });
-          }
-          isUserIdentified = true;
-        }
-        const isFeatureFlagEnabled = checkFeatureFlag(
-          posthogAiBetaClient,
-          featureFlagId,
-        );
-
-        setIsEnabled(isFeatureFlagEnabled);
-        setIsCheckComplete(true);
-      } else if (isLoaded && !user) {
-        console.log("User is not signed in");
-        setIsEnabled(false);
-        setIsCheckComplete(true);
-      }
+    if (isDebug) {
+      console.info(`Feature flag ${flag} is enabled in debug mode`);
+      setFeatureEnabled(true);
+    } else {
+      return client.onFeatureFlags(() => {
+        setFeatureEnabled(client.isFeatureEnabled(flag));
+      });
     }
+  }, [client, flag]);
 
-    checkFeatureFlagStatus();
-  }, [user, isLoaded, featureFlagId, posthogAiBetaClient]);
-
-  return [isEnabled, isCheckComplete];
+  return featureEnabled ?? false;
 }
