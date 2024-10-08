@@ -30,7 +30,7 @@ const checkPage = async (page: Page) => {
 
 test("sharing a lesson", async ({ page, context, browser }) => {
   const chatId = await test.step("Setup", async () => {
-    // NOTE: we need to intercept traffix on whe context rather than page as
+    // NOTE: we need to intercept traffic on the context rather than page as
     // clicking an about:blank link opens a new page
     await bypassVercelProtection(context);
     const login = await prepareUser(page, "sharing-chat");
