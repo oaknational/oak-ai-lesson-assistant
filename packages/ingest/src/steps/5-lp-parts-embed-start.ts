@@ -1,13 +1,13 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
-import { getLessonsByState } from "../db-helpers/getLessonsByState";
+import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
 import { Step, getPrevStep } from "../db-helpers/step";
-import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { startEmbedding } from "../embedding/startEmbedding";
+import { parseCustomId } from "../openai-batches/customId";
 
-const step: Step = "embedding";
-const prevStep = getPrevStep(step);
+const currentStep: Step = "embedding";
+const prevStep = getPrevStep(currentStep);
 
 /**
  * Start the process of embedding lesson plan parts
@@ -18,18 +18,11 @@ export async function lpPartsEmbedStart({
   prisma: PrismaClientWithAccelerate;
 }) {
   const ingestId = await getLatestIngestId({ prisma });
-  const lessons = await getLessonsByState({
+  const lessons = await loadLessonsAndUpdateState({
     prisma,
     ingestId,
-    step: prevStep,
-    stepStatus: "completed",
-  });
-  await updateLessonsState({
-    prisma,
-    ingestId,
-    lessonIds: lessons.map((l) => l.id),
-    step,
-    stepStatus: "started",
+    prevStep,
+    currentStep,
   });
 
   const allParts = lessons
@@ -51,10 +44,7 @@ export async function lpPartsEmbedStart({
   await startEmbedding({
     ingestId,
     parts: allParts,
-    onSubmitted: async ({ openaiBatchId, filePath }) => {
-      /**
-       * Create batch record
-       */
+    onSubmitted: async ({ openaiBatchId, filePath, customIds }) => {
       const batch = await prisma.ingestOpenAiBatch.create({
         data: {
           ingestId,
@@ -64,14 +54,24 @@ export async function lpPartsEmbedStart({
           status: "pending",
         },
       });
+
+      const lessonPlanPartIds = customIds
+        .map((customId) =>
+          parseCustomId({
+            task: "embed-lesson-plan-parts",
+            customId,
+          }),
+        )
+        .map(({ lessonPlanPartId }) => lessonPlanPartId);
+
       await prisma.ingestLessonPlanPart.updateMany({
         where: {
           id: {
-            in: allParts.map((p) => p.lessonPlanPartId),
+            in: lessonPlanPartIds,
           },
         },
         data: {
-          batchId: batch.id, // @todo this should not update all parts ids!!
+          batchId: batch.id,
         },
       });
     },

@@ -1,13 +1,13 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
-import { getLessonsByState } from "../db-helpers/getLessonsByState";
+import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
 import { Step, getPrevStep } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { startGenerating } from "../generate-lesson-plans/startGenerating";
 
-const step: Step = "lesson_plan_generation";
-const prevStep = getPrevStep(step);
+const currentStep: Step = "lesson_plan_generation";
+const prevStep = getPrevStep(currentStep);
 
 /**
  * Get all lessons which are ready for lesson plan generation, and write
@@ -19,19 +19,11 @@ export async function lpBatchStart({
   prisma: PrismaClientWithAccelerate;
 }) {
   const ingestId = await getLatestIngestId({ prisma });
-  const lessons = await getLessonsByState({
+  const lessons = await loadLessonsAndUpdateState({
     prisma,
     ingestId,
-    step: prevStep,
-    stepStatus: "completed",
-  });
-
-  await updateLessonsState({
-    prisma,
-    ingestId,
-    lessonIds: lessons.map((l) => l.id),
-    step,
-    stepStatus: "started",
+    prevStep,
+    currentStep,
   });
 
   if (lessons.length === 0) {
@@ -63,7 +55,7 @@ export async function lpBatchStart({
       prisma,
       ingestId,
       lessonIds: lessons.map((l) => l.id),
-      step,
+      step: currentStep,
       stepStatus: "failed",
     });
   }

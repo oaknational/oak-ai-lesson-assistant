@@ -3,7 +3,7 @@ import { PrismaClientWithAccelerate } from "@oakai/db";
 import { Step } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { jsonlToArray } from "../utils/jsonlToArray";
-import { BatchTask, parseCustomId } from "./customId";
+import { BatchTask, getLessonIdFromCustomId } from "./customId";
 import { downloadOpenAiFile } from "./downloadOpenAiFile";
 
 function getStepFromTask(task: BatchTask): Step {
@@ -33,12 +33,8 @@ export async function handleOpenAiBatchErrorFile({
   });
   const text = await file.text();
   const jsonArray = jsonlToArray(text);
-  const lessonIds = jsonArray.map(
-    (json) =>
-      parseCustomId({
-        task,
-        customId: json.custom_id,
-      }).lessonId,
+  const lessonIds = jsonArray.map((json) =>
+    getLessonIdFromCustomId(json.custom_id),
   );
 
   await updateLessonsState({

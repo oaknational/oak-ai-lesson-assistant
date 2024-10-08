@@ -1,14 +1,9 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { IngestError } from "../IngestError";
 import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
-import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { handleEmbeddingBatchSuccess } from "../embedding/handleEmbeddingBatchSuccess";
-import { parseBatchEmbedding } from "../embedding/parseBatchEmbedding";
-import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
 import { handleOpenAiBatchErrorFile } from "../openai-batches/handleOpenAiBatchErrorFile";
 import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
-import { jsonlToArray } from "../utils/jsonlToArray";
 
 /**
  * Check status of lesson plan generation batches and action

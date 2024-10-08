@@ -6,16 +6,16 @@ import { getCaptionsFileNameForLesson } from "../captions/getCaptionsFileNameFor
 import { createCaptionsRecord } from "../db-helpers/createCaptionsRecord";
 import { createErrorRecord } from "../db-helpers/createErrorRecord";
 import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
-import { getLessonsByState } from "../db-helpers/getLessonsByState";
+import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
 import { Step, getPrevStep } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
+import { Captions } from "../zod-schema/zodSchema";
 
-const step: Step = "captions_fetch";
-const prevStep = getPrevStep(step);
+const currentStep: Step = "captions_fetch";
+const prevStep = getPrevStep(currentStep);
 
 /**
  * This function fetches and stores captions for the lessons imported in the most recent ingest.
- * @todo allow ingestId to be passed in as an argument
  */
 export async function captions({
   prisma,
@@ -23,28 +23,16 @@ export async function captions({
   prisma: PrismaClientWithAccelerate;
 }) {
   const ingestId = await getLatestIngestId({ prisma });
-  /**
-   * Get all raw lessons which are ready for transcripts
-   */
-  const lessons = await getLessonsByState({
-    prisma,
-    ingestId,
-    step: prevStep,
-    stepStatus: "completed",
-  });
 
-  /**
-   * Update status to fetching
-   */
-  await updateLessonsState({
+  const lessons = await loadLessonsAndUpdateState({
     prisma,
     ingestId,
-    lessonIds: lessons.map((l) => l.id),
-    step,
-    stepStatus: "started",
+    prevStep,
+    currentStep,
   });
 
   console.log(`Fetching captions for ${lessons.length} lessons`);
+
   const failedLessonIds: string[] = [];
   const completedLessonIds: string[] = [];
 
@@ -54,44 +42,83 @@ export async function captions({
   for (const lesson of lessons) {
     try {
       const fileName = getCaptionsFileNameForLesson(lesson.data);
-      const { caption: data } = await getCaptionsByFileName(fileName);
+      const { caption: captions } = await getCaptionsByFileName(fileName);
 
-      await createCaptionsRecord({
-        prisma,
-        ingestId: lesson.ingestId,
-        lessonId: lesson.id,
-        captions: data,
-      });
-      await updateLessonsState({
+      await persistOnSuccess({
         prisma,
         ingestId,
-        lessonIds: [lesson.id],
-        step,
-        stepStatus: "completed",
+        lesson,
+        captions,
       });
+
       completedLessonIds.push(lesson.id);
     } catch (cause) {
       const error = new IngestError("Failed to fetch captions", {
         cause,
       });
-      failedLessonIds.push(lesson.id);
-      await createErrorRecord({
+      await persistOnError({
         prisma,
         ingestId,
         lessonId: lesson.id,
-        step,
-        errorMessage: error.message,
+        error,
       });
-      await updateLessonsState({
-        prisma,
-        ingestId,
-        lessonIds: [lesson.id],
-        step,
-        stepStatus: "failed",
-      });
+      failedLessonIds.push(lesson.id);
     }
   }
 
   console.log(`Failed: ${failedLessonIds.length} lessons`);
   console.log(`Completed: ${completedLessonIds.length} lessons`);
+}
+
+async function persistOnSuccess({
+  prisma,
+  ingestId,
+  lesson,
+  captions,
+}: {
+  prisma: PrismaClientWithAccelerate;
+  ingestId: string;
+  lesson: { id: string; ingestId: string };
+  captions: Captions;
+}) {
+  await createCaptionsRecord({
+    prisma,
+    ingestId: lesson.ingestId,
+    lessonId: lesson.id,
+    captions,
+  });
+  await updateLessonsState({
+    prisma,
+    ingestId,
+    lessonIds: [lesson.id],
+    step: currentStep,
+    stepStatus: "completed",
+  });
+}
+
+async function persistOnError({
+  prisma,
+  ingestId,
+  lessonId,
+  error,
+}: {
+  prisma: PrismaClientWithAccelerate;
+  ingestId: string;
+  lessonId: string;
+  error: IngestError;
+}) {
+  await createErrorRecord({
+    prisma,
+    ingestId,
+    lessonId,
+    step: currentStep,
+    errorMessage: error.message,
+  });
+  await updateLessonsState({
+    prisma,
+    ingestId,
+    lessonIds: [lessonId],
+    step: currentStep,
+    stepStatus: "failed",
+  });
 }
