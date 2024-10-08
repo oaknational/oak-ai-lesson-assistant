@@ -27,7 +27,7 @@ export class AilaAnalytics {
         adapter.reportUsageMetrics(responseBody, startedAt),
       ),
     );
-    this._aila.registerBackgroundPromise(promise);
+    this._aila.registerBackgroundWork(promise);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

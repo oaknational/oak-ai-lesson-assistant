@@ -75,6 +75,6 @@ export type AilaInitializationOptions = {
     moderationAiClient?: OpenAILike;
   };
   platform: {
-    registerBackgroundPromise: (promise: Promise<unknown>) => void;
+    registerBackgroundWork: (promise: Promise<unknown>) => void;
   };
 };

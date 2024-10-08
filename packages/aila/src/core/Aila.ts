@@ -48,14 +48,13 @@ export class Aila implements AilaServices {
   private _plugins: AilaPlugin[];
   private _userId!: string | undefined;
   private _chatId!: string;
-  private _registerBackgroundPromise: (promise: Promise<unknown>) => void;
+  private _registerBackgroundWork: (promise: Promise<unknown>) => void;
 
   constructor(options: AilaInitializationOptions) {
     this._userId = options.chat.userId;
     this._chatId = options.chat.id;
     this._options = this.initialiseOptions(options.options);
-    this._registerBackgroundPromise =
-      options.platform.registerBackgroundPromise;
+    this._registerBackgroundWork = options.platform.registerBackgroundWork;
 
     this._chatLlmService =
       options.services?.chatLlmService ??
@@ -200,8 +199,8 @@ export class Aila implements AilaServices {
     return this._chatLlmService;
   }
 
-  public get registerBackgroundPromise() {
-    return this._registerBackgroundPromise;
+  public get registerBackgroundWork() {
+    return this._registerBackgroundWork;
   }
 
   // Check methods

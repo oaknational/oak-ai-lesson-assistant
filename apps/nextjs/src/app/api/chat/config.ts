@@ -26,7 +26,7 @@ export const defaultConfig: Config = {
         userId: undefined,
       },
       platform: {
-        registerBackgroundPromise: waitUntil,
+        registerBackgroundWork: waitUntil,
       },
     });
   },
