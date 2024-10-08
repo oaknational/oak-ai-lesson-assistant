@@ -14,25 +14,6 @@ export async function createCaptionsRecord({
   lessonId: string;
   captions: Captions;
 }) {
-<<<<<<< HEAD
-  await prisma.$transaction(async () => {
-    const captionsRecord = await prisma.ingestLessonCaptions.create({
-      data: {
-        ingestId,
-        lessonId,
-        data: captions,
-        dataHash: getDataHash(captions),
-      },
-    });
-    await prisma.ingestLesson.update({
-      where: {
-        id: lessonId,
-      },
-      data: {
-        captionsId: captionsRecord.id,
-      },
-    });
-=======
   return await prisma.ingestLessonCaptions.create({
     data: {
       ingestId,
@@ -40,6 +21,5 @@ export async function createCaptionsRecord({
       data: captions,
       dataHash: getDataHash(captions),
     },
->>>>>>> main
   });
 }
