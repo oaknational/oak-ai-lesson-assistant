@@ -61,21 +61,12 @@ export async function lpBatchSync({
             try {
               const { lessonPlan, lessonId } = parseBatchLessonPlan(json);
 
-              const lessonPlanRecord = await prisma.ingestLessonPlan.create({
+              await prisma.ingestLessonPlan.create({
                 data: {
                   ingestId,
                   batchId: batch.id,
                   lessonId,
                   data: lessonPlan,
-                },
-              });
-
-              await prisma.ingestLesson.update({
-                where: {
-                  id: lessonPlanRecord.lessonId,
-                },
-                data: {
-                  lessonPlanId: lessonPlanRecord.id,
                 },
               });
 
