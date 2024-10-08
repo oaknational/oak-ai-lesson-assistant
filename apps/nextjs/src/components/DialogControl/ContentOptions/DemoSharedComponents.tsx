@@ -22,9 +22,5 @@ export function DialogHeading({ children }: { children: React.ReactNode }) {
 }
 
 export function DialogContent({ children }: { children: React.ReactNode }) {
-  return (
-    <OakP $font={"body-3"} $color={"grey50"}>
-      {children}
-    </OakP>
-  );
+  return <OakP $font={"body-3"}>{children}</OakP>;
 }
