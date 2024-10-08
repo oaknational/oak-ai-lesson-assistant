@@ -42,6 +42,7 @@ export function Header() {
           $background={"lemon"}
           $pv={"inner-padding-s"}
           $ph={"inner-padding-xl"}
+          data-testid="demo-banner"
         >
           <OakSpan $font={"body-1"}>
             <OakSpan $font={"body-1-bold"}>
