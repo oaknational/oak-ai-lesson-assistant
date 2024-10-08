@@ -4,6 +4,7 @@ import { AnalyticsAdapter } from "./adapters/AnalyticsAdapter";
 export class AilaAnalytics {
   private _aila: AilaServices;
   private _adapters: AnalyticsAdapter[];
+  private _operations: Promise<unknown>[] = [];
   private _isShutdown: boolean = false;
 
   constructor({
@@ -27,6 +28,7 @@ export class AilaAnalytics {
         adapter.reportUsageMetrics(responseBody, startedAt),
       ),
     );
+    this._operations.push(promise);
     this._aila.plugins.forEach((plugin) => plugin.onBackgroundWork(promise));
   }
 
@@ -39,9 +41,11 @@ export class AilaAnalytics {
 
   public async shutdown() {
     if (!this._isShutdown) {
-      const promise = Promise.all(
-        this._adapters.map((adapter) => adapter.shutdown()),
-      );
+      const promise = (async () => {
+        await Promise.all(this._operations);
+        await Promise.all(this._adapters.map((adapter) => adapter.shutdown()));
+      })();
+
       this._aila.plugins.forEach((plugin) => plugin.onBackgroundWork(promise));
       this._isShutdown = true;
     }
