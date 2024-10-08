@@ -39,6 +39,7 @@ const ExportButtons = ({
             <OakSmallSecondaryButton
               disabled={isStreaming}
               title={demo.isSharingEnabled ? undefined : "Not available"}
+              data-testid="chat-share-button"
               onClick={() => {
                 trackEvent("chat:share_chat", {
                   id,

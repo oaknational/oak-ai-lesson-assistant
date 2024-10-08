@@ -73,7 +73,12 @@ const ShareChat = ({
   }
 
   return (
-    <Flex className="h-full w-full" direction="column" justify="between">
+    <Flex
+      data-testid="chat-share-dialog"
+      className="h-full w-full"
+      direction="column"
+      justify="between"
+    >
       <div>
         <p className="mb-12 text-2xl">Share Chat</p>
         <p className="mb-18">
