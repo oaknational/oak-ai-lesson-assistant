@@ -7,15 +7,15 @@ get_local_database_admin_url() {
 
 
 SOURCE_ENV="${1:-dev}"
-TARGET_ENV="${2:-stg}"
+TARGET_ENV="${2:-live}"
 
 if [ "$SOURCE_ENV" != "dev" ] && [ "$SOURCE_ENV" != "stg" ] && [ "$SOURCE_ENV" != "prd" ]; then
-  echo "Error: Invalid source environment. You must specify 'dev', 'stg', or 'prd' as the source environment."
+  echo "Error: Invalid source environment. You must specify 'dev' or 'live' as the source environment."
   exit 1
 fi
 
 if [ "$TARGET_ENV" != "dev" ] && [ "$TARGET_ENV" != "stg" ] && [ "$TARGET_ENV" != "prd" ]; then
-  echo "Error: Invalid target environment. You must specify 'dev', 'stg', or 'prd' as the target environment."
+  echo "Error: Invalid target environment. You must specify 'dev' or 'live' as the target environment."
   exit 1
 fi
 
@@ -89,6 +89,12 @@ echo "Found $TABLE_COUNT tables to export."
 
 # Loop through all tables and export each one
 for table in $TABLES; do
+  # Check if the table exists in the tables.txt
+  if ! grep -q "^$table$" "$TABLES_FILE"; then
+    echo "Table $table is not listed in $TABLES_FILE, skipping export."
+    continue
+  fi
+
   echo "Exporting table: $table..."
   OUTPUT_PATH="$SCRIPTPATH/data/$table.csv"
   

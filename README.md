@@ -79,15 +79,15 @@ pnpm run docker-bootstrap
 
 3. Seed your database, to do this you have two options:
 
-    3a. Replicate Production
+    3a. Replicate Production/Staging (Slow)
 
     This will import the schema and tables from production. Note: due to the size of the production database this could take a significant amount of time.
 
     ```shell
-    pnpm run db-restore-from:prd
+    pnpm run db-restore-from:prd or pnpm run db-restore-from:stg
     ```
 
-    3b. Local Prisma with Live Environment Seed
+    3b. Local Prisma with Essential Tables Seeded from a Live Environment (Fast)
 
     1. Apply the Prisma schema to your local database:
 
@@ -95,12 +95,10 @@ pnpm run docker-bootstrap
     pnpm run db-push
     ```
 
-    2. Remove the snippets table from tables.txt, which lists the tables to be pulled from staging or production. Snippets is the largest table in the database and takes the majority of the time.
-
-    3. Seed from stg/prd (where `:prd` can be either `:prd` or `:stg`, matching the Doppler environments).
+    2. Seed from stg/prd (where `:prd` can be either `:prd` or `:stg`, matching the Doppler environments). This will only seed the apps table and lesson tables (used for RAG).
 
     ```shell
-    pnpm run db-seed-local-from:stg
+    pnpm run db-seed-local-from:prd
     ```
 
 ### Utility Commands
