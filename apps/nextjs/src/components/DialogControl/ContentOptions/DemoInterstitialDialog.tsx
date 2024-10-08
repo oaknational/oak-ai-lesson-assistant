@@ -112,8 +112,8 @@ const CreatingChatDialog = ({
         demo lesson…
       </DialogHeading>
       <DialogContent>
-        You can create {demo.appSessionsPerMonth} chats per month. If you are a
-        teacher in the UK and want to create more lessons,{" "}
+        You can create {demo.appSessionsPerMonth} lessons per month. If you are
+        a teacher in the UK and want to create more lessons,{" "}
         <OakLink color="inherit" href={demo.contactHref}>
           contact us for full access.
         </OakLink>
