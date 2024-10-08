@@ -55,9 +55,6 @@ describe("Chat API Route", () => {
             chatLlmService: mockLLMService,
             chatCategoriser: mockChatCategoriser,
           },
-          platform: {
-            registerBackgroundWork: jest.fn(),
-          },
         };
         return new Aila(ailaConfig);
       }),

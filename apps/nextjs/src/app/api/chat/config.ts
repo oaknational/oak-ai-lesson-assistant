@@ -3,7 +3,6 @@ import {
   prisma as globalPrisma,
   type PrismaClientWithAccelerate,
 } from "@oakai/db";
-import { waitUntil } from "@vercel/functions";
 import { nanoid } from "ai";
 
 import { createWebActionsPlugin } from "./webActionsPlugin";
@@ -24,9 +23,6 @@ export const defaultConfig: Config = {
       chat: options.chat || {
         id: nanoid(),
         userId: undefined,
-      },
-      platform: {
-        registerBackgroundWork: waitUntil,
       },
     });
   },
