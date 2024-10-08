@@ -1,5 +1,5 @@
 import { Quiz } from "@oakai/aila/src/protocol/schema";
-import { isTruthy } from "remeda";
+import { isTruthy, partition } from "remeda";
 
 import { IngestError } from "../IngestError";
 import { OakLessonQuiz } from "../zod-schema/zodSchema";
@@ -30,22 +30,28 @@ export function transformQuiz(oakQuiz: OakLessonQuiz): Quiz {
       continue;
     }
 
-    const answers = question.answers["multiple-choice"]
-      .filter((a) => a?.answer_is_correct)
+    const [correctAnswers, incorrectAnswers] = partition(
+      question.answers["multiple-choice"],
+      (a) => Boolean(a?.answer_is_correct),
+    );
+
+    const answers = correctAnswers
       .map((a) => a?.answer?.map((a) => a?.text).join(" "))
       .filter(isTruthy);
-
-    const distractors = question.answers["multiple-choice"]
-      .filter((a) => !a?.answer_is_correct)
+    const distractors = incorrectAnswers
       .map((a) => a?.answer?.map((a) => a?.text).join(" "))
       .filter(isTruthy);
 
     quiz.push({
-      question: question.questionStem.map((stem) => stem.text).join(" "),
+      question: getQuestionText(question),
       answers,
       distractors,
     });
   }
 
   return quiz;
+}
+
+function getQuestionText(question: OakLessonQuiz[number]): string {
+  return question.questionStem.map((stem) => stem.text).join(" ");
 }
