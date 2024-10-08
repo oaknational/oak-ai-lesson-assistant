@@ -15,7 +15,7 @@ function getStepFromTask(task: BatchTask): Step {
   }
 }
 
-export async function handleOpenAIBatchErrorFile({
+export async function handleOpenAiBatchErrorFile({
   prisma,
   ingestId,
   batchId,
