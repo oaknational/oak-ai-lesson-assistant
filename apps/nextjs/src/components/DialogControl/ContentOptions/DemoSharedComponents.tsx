@@ -15,7 +15,7 @@ export function DialogContainer({ children }: { children: React.ReactNode }) {
 
 export function DialogHeading({ children }: { children: React.ReactNode }) {
   return (
-    <OakHeading tag="h1" $font={"heading-6"}>
+    <OakHeading tag="h1" $font={"heading-5"}>
       {children}
     </OakHeading>
   );
