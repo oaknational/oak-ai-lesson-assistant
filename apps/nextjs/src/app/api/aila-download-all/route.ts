@@ -8,6 +8,8 @@ import { PassThrough } from "stream";
 
 import { withSentry } from "@/lib/sentry/withSentry";
 
+import { sanitizeFilename } from "../sanitizeFilename";
+
 type FileIdsAndFormats = {
   fileId: string;
   formats: ReadonlyArray<"pptx" | "docx" | "pdf">;
@@ -183,10 +185,12 @@ async function getHandler(req: Request): Promise<Response> {
 
   await kv.set(taskId, "complete");
 
+  const sanitizedLessonTitle = sanitizeFilename(lessonTitle);
+
   return new Response(readableStream, {
     status: 200,
     headers: new Headers({
-      "content-disposition": `attachment; filename=aila: ${lessonTitle} all resources.zip`,
+      "content-disposition": `attachment; filename=aila: ${sanitizedLessonTitle} all resources.zip`,
       "content-type": "application/zip",
     }),
   });
