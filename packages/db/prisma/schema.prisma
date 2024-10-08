@@ -1001,17 +1001,15 @@ model Ingest {
 }
 
 model IngestLesson {
-  id           String   @id @default(cuid())
-  oakLessonId  Int      @map("oak_lesson_id")
-  ingestId     String   @map("ingest_id")
-  data         Json     @map("data") @db.JsonB
-  dataHash     String   @map("data_hash")
-  step         String
-  stepStatus   String   @map("step_status")
-  captionsId   String?  @unique @map("captions_id")
-  lessonPlanId String?  @map("lesson_plan_id")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id          String   @id @default(cuid())
+  oakLessonId Int      @map("oak_lesson_id")
+  ingestId    String   @map("ingest_id")
+  data        Json     @map("data") @db.JsonB
+  dataHash    String   @map("data_hash")
+  step        String
+  stepStatus  String   @map("step_status")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   ingest          Ingest                 @relation(fields: [ingestId], references: [id])
   ingestErrors    IngestError[]
@@ -1042,8 +1040,8 @@ model IngestLessonCaptions {
 model IngestLessonPlan {
   id        String   @id @default(cuid())
   ingestId  String   @map("ingest_id")
-  batchId   String   @map("batch_id")
   lessonId  String   @unique @map("lesson_id")
+  batchId   String   @map("batch_id")
   data      Json?    @map("data") @db.JsonB
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

@@ -4,37 +4,48 @@ export default defineConfig({
   testDir: "tests-e2e",
 
   projects: [
+    // Setup projects: Run before other tests
     {
-      name: "setup",
+      name: "global-setup",
       testMatch: "global.setup.ts",
     },
     {
-      name: "common-auth",
-      testMatch: "common-auth.setup.ts",
-      dependencies: ["setup"],
+      name: "common-persona-setup",
+      testMatch: "common-persona.setup.ts",
+      dependencies: ["global-setup"],
     },
+
+    // Projects by tag: Auth options
     {
-      name: "individually-authenticated",
-      grepInvert: /@common-auth/,
+      name: "No persona",
+      grepInvert: /@(mobile-)?common-auth/,
       use: {
         ...devices["Desktop Chrome"],
       },
-      dependencies: ["setup"],
+      dependencies: ["global-setup"],
     },
     {
-      name: "common-authenticated",
+      name: "Common persona",
       grep: /@common-auth/,
-
       use: {
         ...devices["Desktop Chrome"],
         storageState: "tests-e2e/.auth/common-user.json",
       },
-      dependencies: ["common-auth"],
+      dependencies: ["common-persona-setup"],
+    },
+    {
+      name: "Common persona - mobile",
+      grep: /@mobile-common-auth/,
+      use: {
+        ...devices["iPhone 14"],
+        storageState: "tests-e2e/.auth/common-user.json",
+      },
+      dependencies: ["common-persona-setup"],
     },
   ],
   reporter: process.env.CI
     ? [["github"], ["@estruyf/github-actions-reporter"], ["html"]]
-    : "list",
+    : [["list"], ["html"]],
   use: {
     trace: "retain-on-failure",
   },

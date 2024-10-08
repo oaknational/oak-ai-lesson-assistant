@@ -5,6 +5,8 @@ import * as Sentry from "@sentry/node";
 
 import { withSentry } from "@/lib/sentry/withSentry";
 
+import { sanitizeFilename } from "../sanitizeFilename";
+
 // From: https://www.ericburel.tech/blog/nextjs-stream-files
 async function* nodeStreamToIterator(stream: NodeJS.ReadableStream) {
   for await (const chunk of stream) {
@@ -155,7 +157,8 @@ async function getHandler(req: Request): Promise<Response> {
   const stream = iteratorToStream(iterator);
 
   const shortId = lessonExport.id.slice(-8);
-  const filename = `${lessonTitle} - ${shortId} - ${getReadableExportType(lessonExport.exportType)}`;
+  const sanitizedLessonTitle = sanitizeFilename(lessonTitle);
+  const filename = `${sanitizedLessonTitle} - ${shortId} - ${getReadableExportType(lessonExport.exportType)}`;
 
   return new Response(stream, {
     status: 200,

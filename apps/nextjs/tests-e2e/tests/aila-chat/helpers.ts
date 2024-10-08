@@ -1,9 +1,13 @@
-import { expect, Page } from "@playwright/test";
+import { expect, Page, test } from "@playwright/test";
 
 export async function waitForGeneration(page: Page, generationTimeout: number) {
-  const loadingElement = page.getByTestId("chat-stop");
-  await expect(loadingElement).toBeVisible({ timeout: 10000 });
-  await expect(loadingElement).not.toBeVisible({ timeout: generationTimeout });
+  return await test.step("Wait for generation", async () => {
+    const loadingElement = page.getByTestId("chat-stop");
+    await expect(loadingElement).toBeVisible({ timeout: 10000 });
+    await expect(loadingElement).not.toBeVisible({
+      timeout: generationTimeout,
+    });
+  });
 }
 
 export async function continueChat(page: Page) {
@@ -13,6 +17,12 @@ export async function continueChat(page: Page) {
 export async function isFinished(page: Page) {
   const progressText = await page.getByTestId("chat-progress").textContent();
   return progressText === "10 of 10 sections complete";
+}
+
+export async function expectFinished(page: Page) {
+  await expect(page.getByTestId("chat-progress")).toHaveText(
+    "10 of 10 sections complete",
+  );
 }
 
 export async function expectSectionsComplete(
