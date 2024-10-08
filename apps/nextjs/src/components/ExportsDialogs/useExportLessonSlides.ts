@@ -27,7 +27,6 @@ export function useExportLessonSlides({
   const debouncedParseResult = useDebounce(parseResult, 500);
 
   useEffect(() => {
-    console.log("Use Export Lesson Slides");
     if (active) {
       const res = exportSlidesFullLessonSchema.safeParse(lesson);
       setParseResult(res);

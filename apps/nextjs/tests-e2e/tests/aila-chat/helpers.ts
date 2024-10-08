@@ -1,9 +1,13 @@
-import { expect, Page } from "@playwright/test";
+import { expect, Page, test } from "@playwright/test";
 
 export async function waitForGeneration(page: Page, generationTimeout: number) {
-  const loadingElement = page.getByTestId("chat-stop");
-  await expect(loadingElement).toBeVisible();
-  await expect(loadingElement).not.toBeVisible({ timeout: generationTimeout });
+  return await test.step("Wait for generation", async () => {
+    const loadingElement = page.getByTestId("chat-stop");
+    await expect(loadingElement).toBeVisible({ timeout: 10000 });
+    await expect(loadingElement).not.toBeVisible({
+      timeout: generationTimeout,
+    });
+  });
 }
 
 export async function continueChat(page: Page) {
@@ -15,6 +19,12 @@ export async function isFinished(page: Page) {
   return progressText === "10 of 10 sections complete";
 }
 
+export async function expectFinished(page: Page) {
+  await expect(page.getByTestId("chat-progress")).toHaveText(
+    "10 of 10 sections complete",
+  );
+}
+
 export async function expectSectionsComplete(
   page: Page,
   numberOfSections: number,
@@ -24,3 +34,25 @@ export async function expectSectionsComplete(
     `${numberOfSections} of 10 sections complete`,
   );
 }
+
+export type FixtureMode = "record" | "replay";
+
+export const applyLlmFixtures = async (
+  page: Page,
+  fixtureMode: FixtureMode,
+) => {
+  let fixtureName: string;
+
+  await page.route("**/api/chat", async (route) => {
+    const headers = route.request().headers();
+    headers["x-e2e-fixture-name"] = fixtureName;
+    headers["x-e2e-fixture-mode"] = fixtureMode;
+    await route.fallback({ headers });
+  });
+
+  return {
+    setFixture: async (name: string) => {
+      fixtureName = name;
+    },
+  };
+};

@@ -1,16 +1,16 @@
-import { clerkSetup, setupClerkTestingToken } from "@clerk/testing/playwright";
-import { test, expect, Page } from "@playwright/test";
+import { setupClerkTestingToken } from "@clerk/testing/playwright";
+import { test, expect } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
 import {
+  FixtureMode,
+  applyLlmFixtures,
   continueChat,
+  expectFinished,
   expectSectionsComplete,
-  isFinished,
   waitForGeneration,
 } from "./helpers";
-
-type FixtureMode = "record" | "replay";
 
 // --------
 // CHANGE "replay" TO "record" TO RECORD A NEW FIXTURE
@@ -18,30 +18,14 @@ type FixtureMode = "record" | "replay";
 // const FIXTURE_MODE = "record" as FixtureMode;
 const FIXTURE_MODE = "replay" as FixtureMode;
 
-const applyFixtures = async (page: Page) => {
-  let fixtureName: string;
-
-  await page.route("**/api/chat", async (route) => {
-    const headers = route.request().headers();
-    headers["x-e2e-fixture-name"] = fixtureName;
-    headers["x-e2e-fixture-mode"] = FIXTURE_MODE;
-    await route.fallback({ headers });
-  });
-
-  return {
-    setFixture: async (name: string) => {
-      fixtureName = name;
-    },
-  };
-};
-
-test.describe("Authenticated", { tag: "@authenticated" }, () => {
-  test("Full aila flow with Romans fixture", async ({ page }) => {
+test(
+  "Full aila flow with Romans fixture",
+  { tag: "@common-auth" },
+  async ({ page }) => {
     const generationTimeout = FIXTURE_MODE === "record" ? 75000 : 50000;
     test.setTimeout(generationTimeout * 5);
 
     await test.step("Setup", async () => {
-      await clerkSetup();
       await bypassVercelProtection(page);
       await setupClerkTestingToken({ page });
 
@@ -49,7 +33,7 @@ test.describe("Authenticated", { tag: "@authenticated" }, () => {
       await expect(page.getByTestId("chat-h1")).toBeInViewport();
     });
 
-    const { setFixture } = await applyFixtures(page);
+    const { setFixture } = await applyLlmFixtures(page, FIXTURE_MODE);
 
     await test.step("Fill in the chat box", async () => {
       const textbox = page.getByTestId("chat-input");
@@ -71,33 +55,28 @@ test.describe("Authenticated", { tag: "@authenticated" }, () => {
       await page.waitForURL(/\/aila\/.+/);
       await waitForGeneration(page, generationTimeout);
       await expectSectionsComplete(page, 1);
-      await page.waitForTimeout(500);
 
       setFixture("roman-britain-2");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectSectionsComplete(page, 3);
-      await page.waitForTimeout(500);
 
       setFixture("roman-britain-3");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectSectionsComplete(page, 7);
-      await page.waitForTimeout(500);
 
       setFixture("roman-britain-4");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectSectionsComplete(page, 10);
-      await page.waitForTimeout(500);
 
       setFixture("roman-britain-5");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectSectionsComplete(page, 10);
-      await page.waitForTimeout(500);
 
-      await isFinished(page);
+      await expectFinished(page);
     });
-  });
-});
+  },
+);

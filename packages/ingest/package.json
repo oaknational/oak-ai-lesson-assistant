@@ -1,0 +1,30 @@
+{
+  "name": "@oakai/ingest",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "main": "./index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint . --ext .ts,.tsx",
+    "type-check": "tsc --noEmit",
+    "ingest": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/index.ts",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "prettier": "@oakai/prettier-config",
+  "dependencies": {
+    "@google-cloud/storage": "^7.7.0",
+    "@oakai/aila": "*",
+    "@oakai/core": "*",
+    "@oakai/db": "*",
+    "graphql-request": "^6.1.0",
+    "webvtt-parser": "^2.2.0",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@types/webvtt-parser": "^2.2.0",
+    "prettier-config": "*"
+  }
+}

@@ -1,0 +1,70 @@
+{"
+type":"
+ll
+m
+Message
+","patches":[]
+,"prompt":{"
+type":"
+text
+","value":"
+There
+ are
+ no
+ existing
+ Oak
+ lessons
+ specifically
+ for
+ the
+ topic
+ of
+ \"
+Introduction
+ to
+ Romans
+\"
+ at
+ Key
+ Stage
+ 
+1
+.
+ Let's
+ start
+ from
+ scratch
+ and
+ create
+ a
+ new
+ lesson
+ plan
+.
+ We'll
+ begin
+ by
+ establishing
+ the
+ learning
+ outcome
+ and
+ learning
+ cycles
+ for
+ this
+ lesson
+.
+ Tap
+ **
+Continue
+**
+ to
+ move
+ on
+ to
+ the
+ next
+ step
+."
+}}
