@@ -16,7 +16,7 @@ export async function loadLessonsAndUpdateState({
   currentStep: Step;
 }) {
   /**
-   * Get all raw lessons which are ready for chunking
+   * Get lessons which have completed the previous step
    */
   const lessons = await getLessonsByState({
     prisma,
@@ -26,7 +26,7 @@ export async function loadLessonsAndUpdateState({
   });
 
   /**
-   * Update status to chunking started
+   * Update lessons step to the current step, and set status to started
    */
   await updateLessonsState({
     prisma,

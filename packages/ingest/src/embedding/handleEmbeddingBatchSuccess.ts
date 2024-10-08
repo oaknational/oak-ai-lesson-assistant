@@ -6,6 +6,10 @@ import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
 import { jsonlToArray } from "../utils/jsonlToArray";
 import { parseBatchEmbedding } from "./parseBatchEmbedding";
 
+/**
+ * When an embedding batch is successfully processed, this function
+ * extracts the embeddings and updates the lesson plan parts with them.
+ */
 export async function handleEmbeddingBatchSuccess({
   prisma,
   ingestId,

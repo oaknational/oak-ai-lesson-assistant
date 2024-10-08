@@ -6,6 +6,11 @@ import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
 import { jsonlToArray } from "../utils/jsonlToArray";
 import { parseBatchLessonPlan } from "./parseBatchLessonPlan";
 
+/**
+ * When a lesson plan batch is successfully processed, this function
+ * extracts the generated lesson plans and stores them in the
+ * database.
+ */
 export async function handleLessonPlanBatchSuccess({
   prisma,
   ingestId,
