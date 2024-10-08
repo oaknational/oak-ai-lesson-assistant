@@ -62,10 +62,6 @@ export async function importLessons({
 
     console.log(`Imported ${data.length} lessons`);
 
-    if (true) {
-      break;
-    }
-
     if (lessonData.lessons.length < limit) {
       break;
     }
