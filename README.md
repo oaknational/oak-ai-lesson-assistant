@@ -95,7 +95,7 @@ pnpm run docker-bootstrap
     pnpm run db-push
     ```
 
-    2. Seed from stg/prd (where `:prd` can be either `:prd` or `:stg`, matching the Doppler environments). This will only seed the apps table and lesson tables (used for RAG).
+    2. Seed from stg/prd (where `:prd` can be either `:prd` or `:stg`, matching the Doppler environments). This will only seed the apps table and lesson-related tables used for RAG.
 
     ```shell
     pnpm run db-seed-local-from:prd
