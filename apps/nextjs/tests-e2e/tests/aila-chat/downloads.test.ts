@@ -3,7 +3,7 @@ import { test, expect, Page } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
-import { isFinished } from "./helpers";
+import { expectFinished } from "./helpers";
 
 const getTestChatIdFromCookie = async (page: Page) => {
   const cookies = await page.context().cookies();
@@ -23,7 +23,7 @@ test(
 
       const chatId = await getTestChatIdFromCookie(page);
       await page.goto(`${TEST_BASE_URL}/aila/${chatId}`);
-      await isFinished(page);
+      await expectFinished(page);
     });
 
     await test.step("Go to downloads page", async () => {
