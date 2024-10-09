@@ -10,13 +10,12 @@ import ChatModeration from "./ChatModeration";
 export interface ChatProps extends React.ComponentProps<"div"> {
   className?: string;
   featureFlag?: boolean;
-  isShared: boolean | undefined;
 }
 
-export function Chat({ className, isShared }: Readonly<ChatProps>) {
-  const chat = useLessonChat();
-  const { id, lessonPlan, messages } = chat;
-
+export function Chat({ className }: Readonly<ChatProps>) {
+  const chatContext = useLessonChat();
+  const { id, lessonPlan, messages, chat } = chatContext;
+  const isShared = chat?.isShared || false;
   return (
     <ChatModeration>
       <DialogRoot>

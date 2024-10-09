@@ -16,7 +16,7 @@ function getCompleteness(errors: ZodIssue[], fields: string[]) {
 
   return !hasErrorInSomeField;
 }
-type ProgressSections = {
+export type ProgressSections = {
   label: string;
   key: string;
   complete: boolean;

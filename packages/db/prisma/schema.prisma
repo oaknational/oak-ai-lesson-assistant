@@ -122,11 +122,13 @@ model AilaUserFlag {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId      String           @map("user_id")
-  chatId      String           @map("chat_id")
-  messageId   String           @map("message_id")
-  flagType    AilaUserFlagType @map("flag_type")
-  userComment String?          @map("user_comment")
+  userId       String           @map("user_id")
+  chatId       String           @map("chat_id")
+  messageId    String           @map("message_id")
+  sectionPath  String?          @map("section_path")
+  sectionValue Json?            @map("section_value") @db.JsonB
+  flagType     AilaUserFlagType @map("flag_type")
+  userComment  String?          @map("user_comment")
 
   @@map("chat_user_flags")
 }
@@ -144,11 +146,14 @@ model AilaUserModification {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId     String                     @map("user_id")
-  chatId     String                     @map("chat_id")
-  messageId  String                     @map("message_id")
-  textForMod String                     @map("text_for_mod")
-  action     AilaUserModificationAction @map("action")
+  userId          String                     @map("user_id")
+  chatId          String                     @map("chat_id")
+  messageId       String                     @map("message_id")
+  textForMod      String?                    @map("text_for_mod")
+  sectionPath     String?                    @map("section_path")
+  sectionValue    Json?                      @map("section_value") @db.JsonB
+  actionOtherText String?                    @map("action_other_text")
+  action          AilaUserModificationAction @map("action")
 
   @@map("aila_user_modifications")
 }
@@ -286,7 +291,7 @@ model LessonPlanPart {
   lessonPlan   LessonPlan                   @relation(fields: [lessonPlanId], references: [id], onDelete: Cascade)
   subject      Subject?                     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   keyStage     KeyStage?                    @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
-  embedding    Unsupported("vector(1536)")?
+  embedding    Unsupported("vector(256)")?
   status       LessonPlanPartStatus         @default(PENDING)
 
   @@unique([lessonPlanId, key])

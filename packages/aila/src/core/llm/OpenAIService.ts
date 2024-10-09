@@ -7,6 +7,8 @@ import { ZodSchema } from "zod";
 import { Message } from "../chat";
 import { LLMService } from "./LLMService";
 
+const STRUCTURED_OUTPUTS_ENABLED =
+  process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true" ? true : false;
 export class OpenAIService implements LLMService {
   private _openAIProvider: OpenAIProvider;
 
@@ -42,19 +44,43 @@ export class OpenAIService implements LLMService {
     schemaName: string;
     messages: Message[];
     temperature: number;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }): Promise<ReadableStreamDefaultReader<string>> {
+    const { model, messages, temperature, schema, schemaName } = params;
+    if (!STRUCTURED_OUTPUTS_ENABLED) {
+      return this.createChatCompletionStream({ model, messages, temperature });
+    }
+    const startTime = Date.now();
     const { textStream: stream } = await streamObject({
-      model: this._openAIProvider(params.model, { structuredOutputs: true }),
+      model: this._openAIProvider(model, { structuredOutputs: true }),
       output: "object",
-      schema: params.schema,
-      messages: params.messages.map((m) => ({
+      schema,
+      schemaName,
+      messages: messages.map((m) => ({
         role: m.role,
         content: m.content,
       })),
-      temperature: params.temperature,
+      temperature,
     });
 
-    return stream.getReader();
+    const reader = stream.getReader();
+    const { value } = await reader.read();
+    const timeToFirstToken = Date.now() - startTime;
+    console.log(`Time to first token: ${timeToFirstToken}ms`);
+
+    const newStream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(value);
+      },
+      async pull(controller) {
+        const { done, value } = await reader.read();
+        if (done) {
+          controller.close();
+        } else {
+          controller.enqueue(value);
+        }
+      },
+    });
+
+    return newStream.getReader();
   }
 }

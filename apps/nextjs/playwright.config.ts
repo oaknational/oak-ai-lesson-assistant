@@ -31,6 +31,7 @@ export default defineConfig({
   use: {
     trace: "retain-on-failure",
   },
+  retries: process.env.CI ? 1 : 0,
   outputDir: "./tests-e2e/test-results",
   forbidOnly: process.env.CI === "true",
 });

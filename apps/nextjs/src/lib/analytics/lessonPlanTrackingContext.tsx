@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 
+import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { Message } from "ai";
 
@@ -34,7 +35,7 @@ const lessonPlanTrackingContext =
 
 const LessonPlanTrackingProvider: FC<{
   children?: React.ReactNode;
-  chatId?: string;
+  chatId: string;
 }> = ({ children, chatId }) => {
   const { track } = useAnalytics();
   const [action, setAction] = useState<UserAction | null>(null);
@@ -44,14 +45,13 @@ const LessonPlanTrackingProvider: FC<{
   }, [chatId]);
   const onStreamFinished = useCallback(
     ({ prevLesson, nextLesson, messages }: OnStreamFinishedProps) => {
-      const ailaMessageContent = messages.findLast(
-        (m) => m.role === "assistant",
-      )?.content;
+      const ailaMessageContent = getLastAssistantMessage(messages)?.content;
       if (!ailaMessageContent) {
         return;
       }
       const isFirstMessage = messages.length === 2;
       trackLessonPlanRefined({
+        chatId,
         prevLesson,
         nextLesson,
         ailaMessageContent,

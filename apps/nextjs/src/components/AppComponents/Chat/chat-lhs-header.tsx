@@ -8,13 +8,16 @@ import ChatButton from "./ui/chat-button";
 type ChatLhsHeaderProps = {
   setShowLessonMobile: (value: boolean) => void;
   showLessonMobile: boolean;
+  isDemoUser: boolean;
 };
 
 const ChatLhsHeader = ({
   setShowLessonMobile,
   showLessonMobile,
+  isDemoUser,
 }: Readonly<ChatLhsHeaderProps>) => {
   const router = useRouter();
+
   return (
     <>
       <div className="mt-6 hidden items-center justify-end gap-5 sm:flex">
@@ -34,7 +37,9 @@ const ChatLhsHeader = ({
           className="flex items-center gap-5"
         >
           <AiIcon />{" "}
-          <span className="text-base font-bold">View lesson &gt;</span>
+          <span className={`text-base font-bold ${isDemoUser && `mt-24`}`}>
+            View lesson &gt;
+          </span>
         </button>
       </div>
     </>

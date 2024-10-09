@@ -177,23 +177,12 @@ Install the Jest and Playwright extensions recommended in the workspace config. 
 
 ## Release process
 
-To create a new release, follow these steps:
+The current release process is fully documented [in Notion](https://www.notion.so/oaknationalacademy/Branch-Strategy-and-Release-Process-ceeb32937af0426ba495565288e18844?pvs=4), but broadly works as follows:
 
-1. Create a new **pre-release**:
-
-   1. Go to [this page](https://github.com/oaknational/ai-beta/releases/new).
-   2. Select a new tag with the following syntax `v{sem_ver}-rc`. If there is more than one pre-release for this version, use `v{sem_ver}-rcX`, e.g., `v1.2.4-rc3`.
-   3. Click “Generate release notes”.
-   4. Select **Set as a pre-release**.
-   5. Click “Publish release”.
-
-2. Wait for a pull request titled **Release candidate v1.2.4-rc3**:
-
-   1. This pull request will have a deployment to Vercel, which will appear in the PR request messages.
-   2. Test this deployment.
-
-3. When ready to **release**:
-   1. Merge the request with a 'Merge commit'.
+- Work is completed in branches that are merged to `main` using squash merge, with the commit message (set by the PR title) matching [conventional commit convention](https://www.conventionalcommits.org/en/v1.0.0/).
+- When ready to release, a 'release candidate' branch is created from `main` and a PR opened to merge that branch into `production` (where the live site is deployed from).
+- The PR then contains all the commits to be released. This is manually tested.
+- Once approved, the PR is merged into `production` and [semantic release](https://github.com/semantic-release/semantic-release?tab=readme-ov-file) creates a tagged version commit, also updating the change log from the merged commits. The `production` branch is the merged back into `main` to ensure tags, change log, and hotfixes (raised to `production` directly from a working branch) are on the `main` branch.
 
 ## PNPM / dependency problems
 
