@@ -25,7 +25,7 @@ const trpc = createTRPCProxyClient<TestSupportRouter>({
 
 export async function prepareUser(
   page: Page,
-  persona: "typical" | "demo" | "nearly-banned",
+  persona: "typical" | "demo" | "nearly-banned" | "sharing-chat",
 ) {
   return await test.step("Prepare user", async () => {
     const [login] = await Promise.all([
@@ -40,6 +40,12 @@ export async function prepareUser(
 
       await cspSafeWaitForFunction(page, () => window.Clerk?.loaded);
       await page.evaluate(clerkSignInHelper, login.email);
+    });
+
+    await test.step("Accept cookie consent", async () => {
+      try {
+        await page.getByTestId("cookie-banner-accept").click();
+      } catch {}
     });
 
     return login;

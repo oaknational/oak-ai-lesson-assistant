@@ -8,7 +8,14 @@ import { seedChat } from "./seedChat";
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? os.hostname();
 
-type PersonaName = "typical" | "demo" | "nearly-banned";
+const personaNames = [
+  "typical",
+  "demo",
+  "nearly-banned",
+  "sharing-chat",
+] as const;
+
+type PersonaName = (typeof personaNames)[number];
 type Persona = {
   isDemoUser: boolean;
   region: "GB" | "US";
@@ -31,12 +38,19 @@ const personas: Record<PersonaName, Persona> = {
     chatFixture: null,
     safetyViolations: 0,
   },
-  // A user with 3 safety violations - wil be benned with one more
+  // A user with 3 safety violations - will be banned with one more
   "nearly-banned": {
     isDemoUser: false,
     region: "GB",
     chatFixture: null,
     safetyViolations: 3,
+  },
+  // Allows `chat.isShared` to be set/reset without leaking between tests/retries
+  "sharing-chat": {
+    isDemoUser: false,
+    region: "GB",
+    chatFixture: "typical",
+    safetyViolations: 0,
   },
 } as const;
 
@@ -101,7 +115,7 @@ const findOrCreateUser = async (
 export const prepareUser = publicProcedure
   .input(
     z.object({
-      persona: z.enum(["typical", "demo", "nearly-banned"]),
+      persona: z.enum(personaNames),
     }),
   )
   .mutation(async ({ input }) => {
