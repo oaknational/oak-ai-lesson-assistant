@@ -15,9 +15,10 @@ Oak AI Lesson Assistant is a project focused on experimenting with AI models and
   - [Installation](#installation)
     - [Prerequisites](#prerequisites)
     - [Turborepo](#turborepo)
-  - [Postgres setup](#postgres-setup)
-    - [With Docker](#with-docker)
-    - [With Homebrew](#with-homebrew)
+  - [Postgres Setup](#postgres-setup)
+    - [Prerequisites](#prerequisites-1)
+    - [Steps](#steps)
+    - [Utility Commands](#utility-commands)
   - [Doppler](#doppler)
   - [Start the development server](#start-the-development-server)
   - [Testing](#testing)
@@ -32,7 +33,6 @@ Oak AI Lesson Assistant is a project focused on experimenting with AI models and
     - [Contributing to the code](#contributing-to-the-code)
   - [Open source acknowledgements](#open-source-acknowledgements)
   - [License](#license)
-
 
 ## Introduction
 
@@ -56,23 +56,52 @@ This application is structured as a Turborepo monorepo. Install the "turbo" comm
 pnpm install turbo --global
 ```
 
-## Postgres setup
+## Postgres Setup
 
-Instructions are available for both Homebrew and Dockerized setups.
+### Prerequisites
+- This project set up following the Installation steps.
+- Docker installed.
+- Optional: A Postgres GUI tool (such as pgAdmin or Postico) to view the data.
 
-### With Docker
+### Steps
 
-Navigate to the `packages/db` directory:
+1. Navigate to the `packages/db` directory:
 
 ```shell
 cd packages/db
 ```
 
-Build and run the Docker container to create a database named `oai`, with the username and password both as `oai`, bound to port 5432. It will also install `pgvector` and `postgresql-contrib`.
+2. Build and run the Docker container to create a database named `oai`, with the username and password both as `oai`, bound to port 5432. It will also install `pgvector` and `postgresql-contrib`.
 
 ```shell
 pnpm run docker-bootstrap
 ```
+
+3. Seed your database, to do this you have two options:
+
+    3a. Replicate Production/Staging (Slow)
+
+    This will import the schema and tables from production. Note: due to the size of the production database this could take a significant amount of time.
+
+    ```shell
+    pnpm run db-restore-from:prd or pnpm run db-restore-from:stg
+    ```
+
+    3b. Local Prisma with Essential Tables Seeded from a Live Environment (Fast)
+
+    1. Apply the Prisma schema to your local database:
+
+    ```shell
+    pnpm run db-push
+    ```
+
+    2. Seed from stg/prd (where `:prd` can be either `:prd` or `:stg`, matching the Doppler environments). This will only seed the apps table and lesson-related tables used for RAG.
+
+    ```shell
+    pnpm run db-seed-local-from:prd
+    ```
+
+### Utility Commands
 
 To run `psql`, ssh into the box using:
 
@@ -80,67 +109,11 @@ To run `psql`, ssh into the box using:
 pnpm run docker-psql
 ```
 
-To seed the database:
-
-```shell
-pnpm run db-push
-pnpm run db-seed
-```
-
-From the repo root, then run:
-
-```shell
-pnpm run prompts
-```
-
-To reset and start fresh:
+If you need to reset and start fresh:
 
 ```shell
 pnpm run docker-reset
 ```
-
-To import a snapshot of production or staging databases into your local instance:
-
-```shell
-pnpm run docker-reset
-pnpm run db-restore-from:prd
-```
-
-where `:prd` can be either `:prd` or `:stg` (the Doppler environments).
-
-### With Homebrew
-
-Install and start PostgreSQL:
-
-```shell
-brew install postgresql
-brew services start postgresql
-createdb oai
-psql
-```
-
-In PSQL:
-
-```sql
-sudo -u postgres psql
-CREATE USER oai WITH ENCRYPTED PASSWORD 'oai';
-GRANT ALL PRIVILEGES ON DATABASE oai TO oai;
-ALTER USER oai WITH SUPERUSER;
-```
-
-**Note:** Running in superuser mode is not ideal; consider separate users for migrations and queries.
-
-Exit PSQL using `\quit`.
-
-Install PG Vector:
-
-```shell
-brew install pgvector
-psql postgres
-CREATE EXTENSION vector;
-```
-
-Quit PSQL.
 
 ## Doppler
 
