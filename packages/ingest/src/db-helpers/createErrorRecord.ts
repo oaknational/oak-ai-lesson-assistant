@@ -11,7 +11,7 @@ export async function createErrorRecord({
 }: {
   prisma: PrismaClientWithAccelerate;
   ingestId: string;
-  lessonId: string;
+  lessonId: string | undefined;
   step: Step;
   errorMessage: string;
 }) {
