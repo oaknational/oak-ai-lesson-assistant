@@ -165,10 +165,8 @@ function useQueueUserAction({
   reload,
 }: {
   hasFinished: boolean;
-  append: (
-    message: Message | CreateMessage,
-  ) => Promise<string | null | undefined>;
-  reload: () => void;
+  append: (message: Message | CreateMessage) => Promise<unknown>;
+  reload: () => Promise<unknown>;
 }) {
   const [queuedUserAction, setQueuedUserAction] = useState<string | null>(null);
   const isExecutingAction = useRef(false);
