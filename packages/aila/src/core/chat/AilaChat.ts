@@ -6,7 +6,12 @@ import {
 import invariant from "tiny-invariant";
 import { z } from "zod";
 
-import { AilaChatService, AilaError, AilaServices } from "../..";
+import {
+  AilaChatService,
+  AilaError,
+  AilaQuizService,
+  AilaServices,
+} from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import {
   AilaGeneration,
@@ -23,6 +28,7 @@ import { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
+import { AilaQuiz } from "../quiz/AilaQuiz";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 import { Message } from "./types";
@@ -66,8 +72,10 @@ export class AilaChat implements AilaChatService {
       });
     this._patchEnqueuer = new PatchEnqueuer();
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
+    // this._quizService = new AilaQuiz();
   }
 
+  private quizService = new AilaQuiz();
   public get aila() {
     return this._aila;
   }
@@ -352,6 +360,14 @@ export class AilaChat implements AilaChatService {
   }
 
   public async complete() {
+    // TODO: We set lesson plan here
+    const starterPatch = await this.quizService.generateStarterQuizPatch(
+      this._aila.lesson.plan,
+    );
+
+    await this.enqueue(starterPatch);
+    this._aila.lesson.applyPatches(JSON.stringify(starterPatch));
+
     await this.enqueue({
       type: "comment",
       value: "CHAT_COMPLETE",

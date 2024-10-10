@@ -88,7 +88,7 @@ export const QuizQuestionOptionalSchema = z.object({
 export const QuizQuestionSchema = z.object({
   question: z.string().describe("The question to be asked in the quiz."),
   answers: z.array(z.string()).length(1).describe("The correct answer."),
-  distractors: z.array(z.string()).length(2).describe("A set of distractors."),
+  distractors: z.array(z.string()).describe("A set of distractors."),
 });
 
 // When using Structured Outputs we cannot specify the length of arrays or strings

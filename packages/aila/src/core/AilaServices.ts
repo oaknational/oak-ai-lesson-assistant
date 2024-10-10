@@ -6,7 +6,8 @@ import {
   AilaPersistenceFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
-import { MessagePart } from "../protocol/jsonPatchProtocol";
+import { JsonPatchDocument, MessagePart } from "../protocol/jsonPatchProtocol";
+import { QuizQuestion } from "../protocol/schema";
 import { LooseLessonPlan } from "../protocol/schema";
 import { Message } from "./chat";
 import { AilaOptionsWithDefaultFallbackValues } from "./index";
@@ -52,4 +53,15 @@ export interface AilaServices {
   readonly persistence?: AilaPersistenceFeature[];
   readonly moderation?: AilaModerationFeature;
   readonly plugins: AilaPlugin[];
+}
+
+export interface AilaQuizService {
+  generateStarterQuizArray(
+    lessonPlan: LooseLessonPlan,
+  ): Promise<QuizQuestion[]>;
+  // generateExitQuizArray(lessonPlan: LooseLessonPlan): Promise<QuizQuestion[]>;
+  generateStarterQuizPatch(
+    lessonPlan: LooseLessonPlan,
+  ): Promise<JsonPatchDocument>;
+  // generateExitQuiz(lessonPlan: LooseLessonPlan): Promise<JsonPatchDocument>;
 }
