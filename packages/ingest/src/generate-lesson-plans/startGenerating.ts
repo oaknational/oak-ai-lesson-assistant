@@ -1,3 +1,4 @@
+import { PersistedIngest } from "../db-helpers/getIngestById";
 import { PersistedIngestLesson } from "../db-helpers/getLessonsByState";
 import {
   OPEN_AI_BATCH_MAX_ROWS,
@@ -14,21 +15,25 @@ import { splitJsonlByRowsOrSize } from "../utils/splitJsonlByRowsOrSize";
 import { CaptionsSchema } from "../zod-schema/zodSchema";
 import { getLessonPlanBatchFileLine } from "./getLessonPlanBatchFileLine";
 
+type StartGeneratingProps = {
+  ingestId: string;
+  lessons: PersistedIngestLesson[];
+  onSubmitted: OpenAiBatchSubmitCallback;
+  ingest: PersistedIngest;
+};
 export async function startGenerating({
   ingestId,
   lessons,
   onSubmitted,
-}: {
-  ingestId: string;
-  lessons: PersistedIngestLesson[];
-  onSubmitted: OpenAiBatchSubmitCallback;
-}) {
+  ingest,
+}: StartGeneratingProps) {
   const { filePath, batchDir } = await writeBatchFile({
     ingestId,
     data: lessons.map((lesson) => ({
       lessonId: lesson.id,
       rawLesson: lesson.data,
       captions: CaptionsSchema.parse(lesson.captions?.data),
+      ingest,
     })),
     getBatchFileLine: getLessonPlanBatchFileLine,
   });

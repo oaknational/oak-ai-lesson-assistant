@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+export const LessonTitleSubjectKeyStageSchema = z.object({
+  lessonTitle: z.string(),
+  subjectSlug: z.string(),
+  keyStageSlug: z.string(),
+});
+
 const QuizQuestionSchema = z.object({
   hint: z.string().nullish(),
   active: z.boolean().nullish(),

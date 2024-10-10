@@ -984,6 +984,7 @@ enum QuizAnswerStatus {
 
 model Ingest {
   id          String    @id @default(cuid())
+  config      Json      @default("{}") @map("config") @db.JsonB
   status      String
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")

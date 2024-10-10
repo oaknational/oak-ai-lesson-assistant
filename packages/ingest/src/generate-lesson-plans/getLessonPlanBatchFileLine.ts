@@ -4,16 +4,20 @@ import {
 } from "@oakai/aila/src/protocol/schema";
 import { zodResponseFormat } from "openai/helpers/zod";
 
+import { PersistedIngest } from "../db-helpers/getIngestById";
+import { batchLineCompletion } from "../openai-batches/batchLineCompletion";
 import { createCustomId } from "../openai-batches/customId";
 import { Captions, RawLesson } from "../zod-schema/zodSchema";
 import { getSystemPrompt } from "./getSystemPrompt";
 import { getUserPrompt } from "./getUserPrompt";
 
 export function getLessonPlanBatchFileLine({
+  ingest,
   lessonId,
   rawLesson,
   captions,
 }: {
+  ingest: PersistedIngest;
   lessonId: string;
   rawLesson: RawLesson;
   captions: Captions;
@@ -37,24 +41,16 @@ export function getLessonPlanBatchFileLine({
   const userPrompt = getUserPrompt({
     rawLesson,
     captions,
+    sourcePartsToInclude: ingest.config.sourcePartsToInclude,
   });
 
-  const batchRequest = {
-    custom_id: createCustomId({ task: "generate-lesson-plans", lessonId }),
-    method: "POST",
-    url: "/v1/chat/completions",
-    body: {
-      model: "gpt-4o-2024-08-06",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      response_format: zodResponseFormat(
-        CompletedLessonPlanSchema,
-        "lesson_plan",
-      ),
-    },
-  };
+  const batchLine = batchLineCompletion({
+    customId: createCustomId({ task: "generate-lesson-plans", lessonId }),
+    model: ingest.config.completionModel,
+    systemPrompt,
+    userPrompt,
+    responseFormat: zodResponseFormat(CompletedLessonPlanSchema, "lesson_plan"),
+  });
 
-  return batchRequest;
+  return batchLine;
 }

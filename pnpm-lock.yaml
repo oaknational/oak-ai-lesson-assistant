@@ -827,12 +827,27 @@ importers:
         specifier: 3.23.8
         version: 3.23.8
     devDependencies:
+      '@types/jest':
+        specifier: ^29.5.12
+        version: 29.5.12
       '@types/webvtt-parser':
         specifier: ^2.2.0
         version: 2.2.0
+      eslint:
+        specifier: ^8.56.0
+        version: 8.56.0
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@18.18.5)(ts-node@10.9.2)
       prettier-config:
         specifier: '*'
         version: 1.0.0
+      setup-polly-jest:
+        specifier: ^0.11.0
+        version: 0.11.0(@pollyjs/core@6.0.6)
+      ts-jest:
+        specifier: ^29.1.4
+        version: 29.1.4(@babel/core@7.24.5)(esbuild@0.21.5)(jest@29.7.0)(typescript@5.3.3)
 
   packages/logger:
     dependencies:

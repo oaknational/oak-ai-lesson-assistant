@@ -1,5 +1,6 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
+import { getIngestById } from "../db-helpers/getIngestById";
 import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
 import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
 import { Step, getPrevStep } from "../db-helpers/step";
@@ -19,6 +20,7 @@ export async function lpBatchStart({
   prisma: PrismaClientWithAccelerate;
 }) {
   const ingestId = await getLatestIngestId({ prisma });
+  const ingest = await getIngestById({ prisma, ingestId });
   const lessons = await loadLessonsAndUpdateState({
     prisma,
     ingestId,
@@ -36,6 +38,7 @@ export async function lpBatchStart({
   try {
     await startGenerating({
       ingestId,
+      ingest,
       lessons,
       onSubmitted: async ({ openaiBatchId, filePath }) => {
         await prisma.ingestOpenAiBatch.create({

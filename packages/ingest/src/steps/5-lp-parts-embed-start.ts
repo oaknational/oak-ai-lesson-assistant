@@ -1,5 +1,6 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
+import { getIngestById } from "../db-helpers/getIngestById";
 import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
 import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
 import { Step, getPrevStep } from "../db-helpers/step";
@@ -18,6 +19,7 @@ export async function lpPartsEmbedStart({
   prisma: PrismaClientWithAccelerate;
 }) {
   const ingestId = await getLatestIngestId({ prisma });
+  const ingest = await getIngestById({ prisma, ingestId });
   const lessons = await loadLessonsAndUpdateState({
     prisma,
     ingestId,
@@ -32,6 +34,7 @@ export async function lpPartsEmbedStart({
         partKey: part.key,
         lessonPlanPartId: part.id,
         textToEmbed: part.valueText,
+        ingest,
       })),
     )
     .flat();
