@@ -7,6 +7,7 @@ import {
 } from "@oakai/core";
 import { UserBannedError } from "@oakai/core/src/models/safetyViolations";
 import { PrismaClientWithAccelerate } from "@oakai/db";
+import { waitUntil } from "@vercel/functions";
 
 type PluginCreator = (
   prisma: PrismaClientWithAccelerate,
@@ -88,8 +89,13 @@ export const createWebActionsPlugin: PluginCreator = (
     }
   };
 
+  const onBackgroundWork: AilaPlugin["onBackgroundWork"] = (promise) => {
+    waitUntil(promise);
+  };
+
   return {
     onStreamError,
     onToxicModeration,
+    onBackgroundWork,
   };
 };
