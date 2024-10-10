@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import { toast } from "react-hot-toast";
 
-import { redirect, usePathname, useRouter } from "#next/navigation";
+import { redirect, usePathname } from "#next/navigation";
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import {
@@ -137,6 +137,28 @@ function useStableMessageId(messages: Message[]) {
   }, [messages]);
 }
 
+function useAppendInitialMessage({
+  startingMessage,
+  append,
+}: {
+  startingMessage: string | undefined;
+  append: (
+    message: Message | CreateMessage,
+  ) => Promise<string | null | undefined>;
+}) {
+  const hasAppendedInitialMessage = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (startingMessage && !hasAppendedInitialMessage.current) {
+      append({
+        content: startingMessage,
+        role: "user",
+      });
+      hasAppendedInitialMessage.current = true;
+    }
+  }, [startingMessage, append, hasAppendedInitialMessage]);
+}
+
 export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const {
     data: chat,
@@ -163,12 +185,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       moderations?.[moderations.length - 1] ?? null,
     );
 
-  const router = useRouter();
   const path = usePathname();
   const chatAreaRef = useRef<HTMLDivElement>(null);
   const [hasFinished, setHasFinished] = useState(true);
-
-  const hasAppendedInitialMessage = useRef<boolean>(false);
 
   const lessonPlanSnapshot = useRef<LooseLessonPlan>({});
 
@@ -255,6 +274,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   });
 
   useStableMessageId(messages);
+  useAppendInitialMessage({ startingMessage: chat?.startingMessage, append });
 
   const { tempLessonPlan, partialPatches, validPatches } =
     useTemporaryLessonPlanWithStreamingEdits({
@@ -315,20 +335,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       stopStreaming();
     }
   }, [queuedUserAction, setQueuedUserAction, stopStreaming]);
-
-  /**
-   *  If the state is being restored from a previous lesson plan, set the lesson plan
-   */
-
-  useEffect(() => {
-    if (chat?.startingMessage && !hasAppendedInitialMessage.current) {
-      append({
-        content: chat.startingMessage,
-        role: "user",
-      });
-      hasAppendedInitialMessage.current = true;
-    }
-  }, [chat?.startingMessage, append, router, path, hasAppendedInitialMessage]);
 
   // Clear the hash cache each completed message
   useEffect(() => {
