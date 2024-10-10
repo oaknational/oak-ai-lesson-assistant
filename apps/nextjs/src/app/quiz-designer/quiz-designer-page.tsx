@@ -3,11 +3,9 @@
 import { memo, useCallback, useEffect, useReducer, useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
-import { buildClerkProps, getAuth } from "@clerk/nextjs/server";
 import { quizAppReducer } from "ai-apps/quiz-designer/state/reducer";
 import { QuizAppState, QuizAppStatus } from "ai-apps/quiz-designer/state/types";
 import { useQuizSession } from "hooks/useQuizSession";
-import { GetServerSideProps } from "next";
 import { useRouter } from "next/navigation";
 import { equals } from "remeda";
 
@@ -118,20 +116,5 @@ const MemoizedStatePersistence = memo(
     return equals(oldProps.state, newProps.state);
   },
 );
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { userId } = getAuth(ctx.req);
-
-  if (!userId) {
-    return {
-      redirect: {
-        destination: "/sign-up",
-        permanent: false,
-      },
-    };
-  }
-
-  return { props: { ...buildClerkProps(ctx.req) } };
-};
 
 export default QuizDesignerPage;
