@@ -1,28 +1,16 @@
-import { Flex } from "@radix-ui/themes";
+import {
+  OakFlex,
+  OakLink,
+  OakPrimaryButton,
+} from "@oaknational/oak-components";
 
-import Button from "@/components/Button";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 
-function DialogContainer({ children }: { children: React.ReactNode }) {
-  return (
-    <Flex
-      className="h-full w-full gap-10"
-      direction="column"
-      justify="start"
-      align="start"
-    >
-      {children}
-    </Flex>
-  );
-}
-
-function Heading({ children }: { children: React.ReactNode }) {
-  return <p className="text-2xl font-bold">{children}</p>;
-}
-
-function Content({ children }: { children: React.ReactNode }) {
-  return <p className="text-sm text-muted-foreground">{children}</p>;
-}
+import {
+  DialogContainer,
+  DialogContent,
+  DialogHeading,
+} from "./DemoSharedComponents";
 
 const DemoShareLockedDialog = ({
   closeDialog,
@@ -37,21 +25,24 @@ const DemoShareLockedDialog = ({
 
   return (
     <DialogContainer>
-      <Heading>Sharing and downloading</Heading>
-      <Content>
+      <DialogHeading>Sharing and downloading</DialogHeading>
+      <DialogContent>
         Share and download options are not available to users outside of the UK.
         If you are a teacher in the UK,{" "}
-        <a href={demo.contactHref} className="underline">
+        <OakLink color="inherit" href={demo.contactHref}>
           contact us for full access.
-        </a>
-      </Content>
+        </OakLink>
+      </DialogContent>
 
-      <div className="flex w-full items-center justify-between">
-        <div />
-        <Button variant="primary" onClick={closeDialog}>
+      <OakFlex
+        $width={"100%"}
+        $alignItems={"center"}
+        $justifyContent={"space-between"}
+      >
+        <OakPrimaryButton onClick={closeDialog}>
           Back to lesson
-        </Button>
-      </div>
+        </OakPrimaryButton>
+      </OakFlex>
     </DialogContainer>
   );
 };

@@ -1,11 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { Flex } from "@radix-ui/themes";
+import {
+  OakFlex,
+  OakLink,
+  OakPrimaryButton,
+  OakSecondaryLink,
+} from "@oaknational/oak-components";
 import { captureMessage } from "@sentry/nextjs";
 
-import Button from "@/components/Button";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
-import LoadingWheel from "@/components/LoadingWheel";
+
+import {
+  DialogContainer,
+  DialogContent,
+  DialogHeading,
+} from "./DemoSharedComponents";
 
 function friendlyNumber(
   appSessionsRemaining: number | undefined,
@@ -26,27 +35,6 @@ function friendlyNumber(
     captureMessage(`Unknown number of sessions remaining: ${number}`);
     return "";
   }
-}
-
-function DialogContainer({ children }: { children: React.ReactNode }) {
-  return (
-    <Flex
-      className="h-full w-full gap-10"
-      direction="column"
-      justify="start"
-      align="start"
-    >
-      {children}
-    </Flex>
-  );
-}
-
-function Heading({ children }: { children: React.ReactNode }) {
-  return <p className="text-2xl font-bold">{children}</p>;
-}
-
-function Content({ children }: { children: React.ReactNode }) {
-  return <p className="text-sm text-muted-foreground">{children}</p>;
 }
 
 const CreatingChatDialog = ({
@@ -91,58 +79,59 @@ const CreatingChatDialog = ({
   if (appSessionsRemaining === 0) {
     return (
       <DialogContainer>
-        <Heading>Lesson limit reached</Heading>
-        <Content>
+        <DialogHeading>Lesson limit reached</DialogHeading>
+        <DialogContent>
           You have created {demo.appSessionsPerMonth} of your{" "}
           {demo.appSessionsPerMonth} lessons available this month. If you are a
           teacher in the UK, please{" "}
-          <a href={demo.contactHref} className="underline">
+          <OakLink color="inherit" href={demo.contactHref}>
             contact us for full access.
-          </a>
-        </Content>
+          </OakLink>
+        </DialogContent>
 
-        <div className="flex w-full items-center justify-between">
-          <Button variant="text-link" onClick={closeDialog}>
+        <OakFlex
+          $width={"100%"}
+          $alignItems={"center"}
+          $justifyContent="space-between"
+        >
+          <OakSecondaryLink element="button" onClick={closeDialog}>
             Cancel
-          </Button>
-          <Button variant="primary" onClick={closeDialog}>
+          </OakSecondaryLink>
+          <OakPrimaryButton onClick={closeDialog}>
             Back to Aila
-          </Button>
-        </div>
+          </OakPrimaryButton>
+        </OakFlex>
       </DialogContainer>
     );
   }
 
   return (
     <DialogContainer>
-      <Heading>
+      <DialogHeading>
         Your {friendlyNumber(appSessionsRemaining, demo.appSessionsPerMonth)}
         demo lesson…
-      </Heading>
-      <Content>
+      </DialogHeading>
+      <DialogContent>
         You can create {demo.appSessionsPerMonth} chats per month. If you are a
         teacher in the UK and want to create more lessons,{" "}
-        <a href={demo.contactHref} className="underline">
+        <OakLink color="inherit" href={demo.contactHref}>
           contact us for full access.
-        </a>
-      </Content>
+        </OakLink>
+      </DialogContent>
 
-      <div className="flex w-full items-center justify-between">
-        <Button variant="text-link" onClick={closeDialog}>
+      <OakFlex
+        $width={"100%"}
+        $alignItems={"center"}
+        $justifyContent={"space-between"}
+      >
+        <OakSecondaryLink element="button" onClick={closeDialog}>
           Cancel
-        </Button>
-        {!isSubmitting && (
-          <Button variant="primary" onClick={() => createAppSession()}>
-            Continue with lesson
-          </Button>
-        )}
-        {isSubmitting && (
-          <Button variant="primary" onClick={() => {}}>
-            <LoadingWheel icon="reload-white" size="sm" />
-            Continue with lesson
-          </Button>
-        )}
-      </div>
+        </OakSecondaryLink>
+
+        <OakPrimaryButton isLoading={isSubmitting} onClick={createAppSession}>
+          Continue with lesson
+        </OakPrimaryButton>
+      </OakFlex>
     </DialogContainer>
   );
 };
