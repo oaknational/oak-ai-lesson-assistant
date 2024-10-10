@@ -1,6 +1,7 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { IngestError } from "../IngestError";
+import { createErrorRecord } from "../db-helpers/createErrorRecord";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
 import { jsonlToArray } from "../utils/jsonlToArray";
@@ -27,6 +28,7 @@ export async function handleEmbeddingBatchSuccess({
   const text = await file.text();
   const jsonArray = jsonlToArray(text);
 
+  const errors: IngestError[] = [];
   const lessonIdsFailed: Set<string> = new Set();
   const lessonIdsCompleted: Set<string> = new Set();
 
@@ -51,10 +53,19 @@ export async function handleEmbeddingBatchSuccess({
     } catch (error) {
       if (error instanceof IngestError && error.lessonId) {
         lessonId = error.lessonId;
+        errors.push(error);
       }
       if (lessonId) {
         lessonIdsFailed.add(lessonId);
       }
+      await createErrorRecord({
+        prisma,
+        ingestId,
+        lessonId,
+        step: "embedding",
+        errorMessage: error instanceof Error ? error.message : String(error),
+      });
+
       continue;
     }
 

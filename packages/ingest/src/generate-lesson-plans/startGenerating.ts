@@ -1,17 +1,7 @@
 import { PersistedIngest } from "../db-helpers/getIngestById";
 import { PersistedIngestLesson } from "../db-helpers/getLessonsByState";
-import {
-  OPEN_AI_BATCH_MAX_ROWS,
-  OPEN_AI_BATCH_MAX_SIZE_MB,
-} from "../openai-batches/constants";
-import { getCustomIdsFromJsonlFile } from "../openai-batches/getCustomIdsFromJsonlFile";
-import {
-  OpenAiBatchSubmitCallback,
-  submitOpenAiBatch,
-} from "../openai-batches/submitOpenAiBatch";
-import { uploadOpenAiBatchFile } from "../openai-batches/uploadOpenAiBatchFile";
-import { writeBatchFile } from "../openai-batches/writeBatchFile";
-import { splitJsonlByRowsOrSize } from "../utils/splitJsonlByRowsOrSize";
+import { startBatch } from "../openai-batches/startBatch";
+import { OpenAiBatchSubmitCallback } from "../openai-batches/submitOpenAiBatch";
 import { CaptionsSchema } from "../zod-schema/zodSchema";
 import { getLessonPlanBatchFileLine } from "./getLessonPlanBatchFileLine";
 
@@ -23,11 +13,11 @@ type StartGeneratingProps = {
 };
 export async function startGenerating({
   ingestId,
+  ingest,
   lessons,
   onSubmitted,
-  ingest,
 }: StartGeneratingProps) {
-  const { filePath, batchDir } = await writeBatchFile({
+  return startBatch({
     ingestId,
     data: lessons.map((lesson) => ({
       lessonId: lesson.id,
@@ -35,28 +25,8 @@ export async function startGenerating({
       captions: CaptionsSchema.parse(lesson.captions?.data),
       ingest,
     })),
+    endpoint: "/v1/chat/completions",
     getBatchFileLine: getLessonPlanBatchFileLine,
+    onSubmitted,
   });
-  const { filePaths } = await splitJsonlByRowsOrSize({
-    inputFilePath: filePath,
-    outputDir: batchDir,
-    maxRows: OPEN_AI_BATCH_MAX_ROWS,
-    maxFileSizeMB: OPEN_AI_BATCH_MAX_SIZE_MB,
-  });
-
-  for (const filePath of filePaths) {
-    const { file } = await uploadOpenAiBatchFile({
-      filePath,
-    });
-    const { batch: openaiBatch } = await submitOpenAiBatch({
-      fileId: file.id,
-      endpoint: "/v1/chat/completions",
-    });
-
-    const customIds = await getCustomIdsFromJsonlFile({
-      filePath,
-    });
-
-    await onSubmitted({ openaiBatchId: openaiBatch.id, filePath, customIds });
-  }
 }

@@ -6,6 +6,8 @@ function getBatchDataDir({ ingestId }: { ingestId: string }) {
   return `${__dirname}/data/ingest_${ingestId}`;
 }
 
+export type GetBatchFileLine<T> = (datum: T) => Record<string, unknown>;
+
 export function writeBatchFile<T>({
   ingestId,
   data,
@@ -13,7 +15,7 @@ export function writeBatchFile<T>({
 }: {
   ingestId: string;
   data: T[];
-  getBatchFileLine: (datum: T) => Record<string, unknown>;
+  getBatchFileLine: GetBatchFileLine<T>;
 }) {
   return new Promise<{ filePath: string; batchDir: string }>(
     (resolve, reject) => {
