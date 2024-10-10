@@ -154,26 +154,27 @@ const buildCspHeaders = (nonce: string) => {
 
   const cspString = Object.keys(baseCsp)
     .map((policy) => {
-      const value = [...baseCsp[policy]];
+      const value = [...(baseCsp[policy as keyof typeof baseCsp] || [])];
 
-      if (vercelPolicies[policy]) {
-        value.push(...vercelPolicies[policy]);
+      const addPolicyIfExists = (
+        policyObject: Record<string, string[] | undefined>,
+      ) => {
+        const policyValue = policyObject[policy as keyof typeof policyObject];
+        if (Array.isArray(policyValue)) {
+          value.push(...policyValue);
+        }
+      };
+
+      addPolicyIfExists(vercelPolicies);
+      addPolicyIfExists(clerkPolicies);
+      addPolicyIfExists(avoPolicies);
+      addPolicyIfExists(posthogPolicies);
+      addPolicyIfExists(devConsentPolicies);
+
+      if (policy in mux) {
+        addPolicyIfExists(mux);
       }
-      if (clerkPolicies[policy]) {
-        value.push(...clerkPolicies[policy]);
-      }
-      if (avoPolicies[policy]) {
-        value.push(...avoPolicies[policy]);
-      }
-      if (posthogPolicies[policy]) {
-        value.push(...posthogPolicies[policy]);
-      }
-      if (devConsentPolicies[policy]) {
-        value.push(...devConsentPolicies[policy]);
-      }
-      if (mux[policy]) {
-        value.push(...mux[policy]);
-      }
+
       return `${policy} ${value.join(" ")}`;
     })
     .join(";");
