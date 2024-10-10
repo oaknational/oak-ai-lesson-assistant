@@ -9,27 +9,29 @@ export const LessonTitleSubjectKeyStageSchema = z.object({
 const QuizQuestionSchema = z.object({
   hint: z.string().nullish(),
   active: z.boolean().nullish(),
-  answers: z.object({
-    "multiple-choice": z
-      .array(
-        z
-          .object({
-            answer: z
-              .array(
-                z
-                  .object({
-                    text: z.string().nullish(),
-                    type: z.string().nullish(),
-                  })
-                  .nullish(),
-              )
-              .nullish(),
-            answer_is_correct: z.boolean().nullish(),
-          })
-          .nullish(),
-      )
-      .nullish(),
-  }),
+  answers: z
+    .object({
+      "multiple-choice": z
+        .array(
+          z
+            .object({
+              answer: z
+                .array(
+                  z
+                    .object({
+                      text: z.string().nullish(),
+                      type: z.string().nullish(),
+                    })
+                    .nullish(),
+                )
+                .nullish(),
+              answer_is_correct: z.boolean().nullish(),
+            })
+            .nullish(),
+        )
+        .nullish(),
+    })
+    .nullish(),
   feedback: z.string().nullish(),
   questionId: z.number().nullish(),
   questionUid: z.string().nullish(),
@@ -55,6 +57,15 @@ const LessonKeywordSchema = z.object({
   description: z.string(),
 });
 
+const ContentGuidanceSchema = z.array(
+  z.object({
+    contentGuidanceArea: z.string(),
+    supervisionlevel_id: z.number(),
+    contentGuidanceLabel: z.string(),
+    contentGuidanceDescription: z.string(),
+  }),
+);
+
 export const RawLessonSchema = z.object({
   oakLessonId: z.number(),
   lessonTitle: z.string(),
@@ -70,7 +81,8 @@ export const RawLessonSchema = z.object({
   keyLearningPoints: z.array(KeyLearningPointSchema).nullish(),
   pupilLessonOutcome: z.string().nullish(),
   lessonKeywords: z.array(LessonKeywordSchema).nullish(),
-  copyrightContent: z.array(z.string()).nullish(),
+  contentGuidance: ContentGuidanceSchema.nullish(),
+  // copyrightContent: z.array(z.string()).nullish(),
   starterQuiz: z.array(QuizQuestionSchema).nullish(),
   exitQuiz: z.array(QuizQuestionSchema).nullish(),
   yearTitle: z.string().nullish(),

@@ -18,15 +18,16 @@ export async function importLessons({
   onError,
 }: ImportRawLessonsProps) {
   let pageNumber = 0; // Start at page 0
-  const limit = 10; // Number of lessons per page
-  const offset = pageNumber * limit; // Calculate offset based on the current page
+  const perPage = 100; // Number of lessons per page
 
-  const variables = {
-    limit,
-    offset,
-  };
+  let imported = 0;
 
   while (true) {
+    const offset = pageNumber * perPage; // Calculate offset based on the current page
+    const variables = {
+      limit: perPage,
+      offset,
+    };
     const lessonData = await graphqlClient.request<{ lessons: unknown[] }>(
       query,
       variables,
@@ -54,15 +55,14 @@ export async function importLessons({
       };
     });
 
-    console.log(`Importing ${data.length} lessons`);
-
     await prisma.ingestLesson.createMany({
       data,
     });
 
-    console.log(`Imported ${data.length} lessons`);
+    imported += data.length;
+    console.log(`Imported ${imported} lessons`);
 
-    if (lessonData.lessons.length < limit) {
+    if (lessonData.lessons.length < perPage) {
       break;
     }
 
