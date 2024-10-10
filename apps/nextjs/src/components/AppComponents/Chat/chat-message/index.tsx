@@ -185,6 +185,9 @@ function MessageWrapper({
   children,
   type,
 }: MessageWrapperProps) {
+  const testId = errorType
+    ? `chat-message-wrapper-error-${errorType}`
+    : `chat-message-wrapper-${type}`;
   return (
     <div
       className={cn(
@@ -194,6 +197,7 @@ function MessageWrapper({
         errorType && "p-9",
         className,
       )}
+      data-testid={testId}
     >
       {type === "aila" ||
         (type === "editing" && (
