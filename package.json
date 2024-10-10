@@ -61,10 +61,5 @@
   "engines": {
     "node": ">=20.9.0",
     "pnpm": ">=8"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "@clerk/nextjs@5.1.0": "patches/@clerk__nextjs@5.1.0.patch"
-    }
   }
 }
