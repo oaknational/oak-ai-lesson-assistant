@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import { toast } from "react-hot-toast";
 
-import { redirect, usePathname } from "#next/navigation";
+import { redirect, usePathname, useRouter } from "#next/navigation";
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import {
@@ -108,133 +108,31 @@ function getModerationFromMessage(message?: { content: string }) {
   return moderation;
 }
 
-/**
- * This is a hack to ensure that the assistant messages have a stable id
- * across server and client.
- * We should move away from this either when the vercel/ai package supports it
- * natively, or when we move away from streaming.
- */
-function useStableMessageId(messages: Message[]) {
-  useEffect(() => {
-    return messages.forEach((message) => {
-      if (message.role !== "assistant") {
-        return;
-      }
-
-      const idIsStable = message.id.startsWith("a-");
-      if (idIsStable) {
-        return;
-      }
-
-      const idFromContent = findMessageIdFromContent(message);
-      if (idFromContent) {
-        message.id = idFromContent;
-        return;
-      }
-
-      message.id = "TEMP_PENDING_" + nanoid();
-    });
-  }, [messages]);
-}
-
-function useAppendInitialMessage({
-  startingMessage,
-  append,
-}: {
-  startingMessage: string | undefined;
-  append: (
-    message: Message | CreateMessage,
-  ) => Promise<string | null | undefined>;
-}) {
-  const hasAppendedInitialMessage = useRef<boolean>(false);
-
-  useEffect(() => {
-    if (startingMessage && !hasAppendedInitialMessage.current) {
-      append({
-        content: startingMessage,
-        role: "user",
-      });
-      hasAppendedInitialMessage.current = true;
-    }
-  }, [startingMessage, append, hasAppendedInitialMessage]);
-}
-
-function useQueueUserAction({
-  hasFinished,
-  append,
-  reload,
-}: {
-  hasFinished: boolean;
-  append: (
-    message: Message | CreateMessage,
-  ) => Promise<string | null | undefined>;
-  reload: () => void;
-}) {
-  const [queuedUserAction, setQueuedUserAction] = useState<string | null>(null);
-  const isExecutingAction = useRef(false);
-
-  const queueUserAction = useCallback((action: string) => {
-    setQueuedUserAction(action);
-  }, []);
-
-  const clearQueuedUserAction = useCallback(() => {
-    setQueuedUserAction(null);
-  }, []);
-
-  const executeQueuedAction = useCallback(async () => {
-    if (!queuedUserAction || !hasFinished || isExecutingAction.current) return;
-
-    isExecutingAction.current = true;
-    const actionToExecute = queuedUserAction;
-    setQueuedUserAction(null);
-
-    try {
-      if (actionToExecute === "continue") {
-        await append({
-          content: "Continue",
-          role: "user",
-        });
-      } else if (actionToExecute === "regenerate") {
-        reload();
-      } else {
-        // Assume it's a user message
-        await append({
-          content: actionToExecute,
-          role: "user",
-        });
-      }
-    } catch (error) {
-      console.error("Error handling queued action:", error);
-    } finally {
-      isExecutingAction.current = false;
-    }
-  }, [queuedUserAction, hasFinished, append, reload]);
-
-  useEffect(() => {
-    if (hasFinished) {
-      executeQueuedAction();
-    }
-  }, [hasFinished, executeQueuedAction]);
-
-  return {
-    queueUserAction,
-    clearQueuedUserAction,
-    queuedUserAction,
-    executeQueuedAction,
-  };
-}
-
 export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const {
     data: chat,
     isLoading: isChatLoading,
     refetch: refetchChat,
-  } = trpc.chat.appSessions.getChat.useQuery({ id });
+  } = trpc.chat.appSessions.getChat.useQuery(
+    { id },
+    {
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+      staleTime: 0,
+    },
+  );
   const {
     data: moderations,
     isLoading: isModerationsLoading,
     refetch: refetchModerations,
-  } = trpc.chat.appSessions.getModerations.useQuery({ id });
+  } = trpc.chat.appSessions.getModerations.useQuery(
+    { id },
+    {
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+      staleTime: 0,
+    },
+  );
   // Ensure that we re-fetch on mount
   useEffect(() => {
     refetchChat();
@@ -243,16 +141,21 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const trpcUtils = trpc.useUtils();
 
   const lessonPlanTracking = useLessonPlanTracking();
-  const lessonPlanSnapshot = useRef<LooseLessonPlan>({});
+  const shouldTrackStreamFinished = useRef(false);
 
   const [lastModeration, setLastModeration] =
     useState<PersistedModerationBase | null>(
       moderations?.[moderations.length - 1] ?? null,
     );
 
+  const router = useRouter();
   const path = usePathname();
   const chatAreaRef = useRef<HTMLDivElement>(null);
   const [hasFinished, setHasFinished] = useState(true);
+
+  const hasAppendedInitialMessage = useRef<boolean>(false);
+
+  const lessonPlanSnapshot = useRef<LooseLessonPlan>({});
 
   const [overrideLessonPlan, setOverrideLessonPlan] = useState<
     LooseLessonPlan | undefined
@@ -308,6 +211,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       if (hasFinished) {
         setHasFinished(false);
       }
+      if (!path?.includes("chat/[id]")) {
+        window.history.pushState({}, "", `/aila/${id}`);
+      }
     },
     onFinish(response) {
       console.log("Chat: On Finish", new Date().toISOString(), {
@@ -326,55 +232,155 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       invokeActionMessages(response.content);
 
       trpcUtils.chat.appSessions.getChat.invalidate({ id });
-      clearHashCache();
 
       setHasFinished(true);
+      shouldTrackStreamFinished.current = true;
+      chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
+    },
+  });
 
+  useEffect(() => {
+    /**
+     * This is a hack to ensure that the assistant messages have a stable id
+     * across server and client.
+     * We should move away from this either when the vercel/ai package supports it
+     * natively, or when we move away from streaming.
+     */
+    return messages.forEach((message) => {
+      if (message.role !== "assistant") {
+        return;
+      }
+
+      const idIsStable = message.id.startsWith("a-");
+      if (idIsStable) {
+        return;
+      }
+
+      const idFromContent = findMessageIdFromContent(message);
+      if (idFromContent) {
+        message.id = idFromContent;
+        return;
+      }
+
+      message.id = "TEMP_PENDING_" + nanoid();
+    });
+  }, [messages]);
+
+  const { tempLessonPlan, partialPatches, validPatches } =
+    useTemporaryLessonPlanWithStreamingEdits({
+      lessonPlan: chat?.lessonPlan ?? {},
+      messages,
+      isStreaming: !hasFinished,
+      messageHashes,
+    });
+
+  // Handle queued user actions and messages
+
+  const [queuedUserAction, setQueuedUserAction] = useState<string | null>(null);
+  const isExecutingAction = useRef(false);
+
+  const queueUserAction = useCallback((action: string) => {
+    setQueuedUserAction(action);
+  }, []);
+
+  const executeQueuedAction = useCallback(async () => {
+    if (!queuedUserAction || !hasFinished || isExecutingAction.current) return;
+
+    isExecutingAction.current = true;
+    const actionToExecute = queuedUserAction;
+    setQueuedUserAction(null);
+
+    try {
+      if (actionToExecute === "continue") {
+        await append({
+          content: "Continue",
+          role: "user",
+        });
+      } else if (actionToExecute === "regenerate") {
+        reload();
+      } else {
+        // Assume it's a user message
+        await append({
+          content: actionToExecute,
+          role: "user",
+        });
+      }
+    } catch (error) {
+      console.error("Error handling queued action:", error);
+    } finally {
+      isExecutingAction.current = false;
+    }
+  }, [queuedUserAction, hasFinished, append, reload]);
+
+  useEffect(() => {
+    if (hasFinished) {
+      executeQueuedAction();
+    }
+  }, [hasFinished, executeQueuedAction]);
+
+  const stop = useCallback(() => {
+    if (queuedUserAction) {
+      setQueuedUserAction(null);
+    } else {
+      stopStreaming();
+    }
+  }, [queuedUserAction, setQueuedUserAction, stopStreaming]);
+
+  /**
+   *  If the state is being restored from a previous lesson plan, set the lesson plan
+   */
+
+  useEffect(() => {
+    if (chat?.startingMessage && !hasAppendedInitialMessage.current) {
+      append({
+        content: chat.startingMessage,
+        role: "user",
+      });
+      hasAppendedInitialMessage.current = true;
+    }
+  }, [chat?.startingMessage, append, router, path, hasAppendedInitialMessage]);
+
+  // Clear the hash cache each completed message
+  useEffect(() => {
+    clearHashCache();
+  }, [hasFinished]);
+
+  /**
+   *  Update the lesson plan if the chat has finished updating
+   *  Fetch the state from the last "state" command in the most recent assistant message
+   */
+  useEffect(() => {
+    if (!hasFinished || !messages) return;
+    trpcUtils.chat.appSessions.getChat.invalidate({ id });
+    if (shouldTrackStreamFinished.current) {
       lessonPlanTracking.onStreamFinished({
         prevLesson: lessonPlanSnapshot.current,
         nextLesson: tempLessonPlan,
         messages,
       });
-
-      chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
-    },
-  });
-
-  useStableMessageId(messages);
-  useAppendInitialMessage({ startingMessage: chat?.startingMessage, append });
-
-  // NOTE: this hook also returns validPatches and partialPatches, but we don't use them
-  const { tempLessonPlan } = useTemporaryLessonPlanWithStreamingEdits({
-    lessonPlan: chat?.lessonPlan ?? {},
-    messages,
-    isStreaming: !hasFinished,
-    messageHashes,
-  });
-
-  // Handle queued user actions and messages
-  const {
-    queuedUserAction,
-    queueUserAction,
-    clearQueuedUserAction,
-    executeQueuedAction,
-  } = useQueueUserAction({ hasFinished, append, reload });
-
-  const stop = useCallback(() => {
-    if (queuedUserAction) {
-      clearQueuedUserAction();
-    } else {
-      stopStreaming();
+      shouldTrackStreamFinished.current = false;
     }
-  }, [queuedUserAction, clearQueuedUserAction, stopStreaming]);
+  }, [
+    id,
+    trpcUtils.chat.appSessions.getChat,
+    hasFinished,
+    messages,
+    lessonPlanTracking,
+    tempLessonPlan,
+  ]);
 
   /**
    * Get the sensitive moderation id and pass to dialog
    */
+
   const toxicInitialModeration = moderations?.find(isToxic) ?? null;
+
   const toxicModeration =
     lastModeration && isToxic(lastModeration)
       ? lastModeration
       : toxicInitialModeration;
+
+  const ailaStreamingStatus = useAilaStreamingStatus({ isLoading, messages });
 
   useEffect(() => {
     if (toxicModeration) {
@@ -383,8 +389,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     }
   }, [toxicModeration, setMessages]);
 
-  const ailaStreamingStatus = useAilaStreamingStatus({ isLoading, messages });
-
   const value: ChatContextProps = useMemo(
     () => ({
       id,
@@ -392,6 +396,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       initialModerations: moderations ?? [],
       toxicModeration,
       lessonPlan: overrideLessonPlan ?? tempLessonPlan,
+      hasFinished,
+      hasAppendedInitialMessage,
       chatAreaRef,
       append,
       messages,
@@ -403,6 +409,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       stop,
       input,
       setInput,
+      partialPatches,
+      validPatches,
       queuedUserAction,
       queueUserAction,
       executeQueuedAction,
@@ -413,6 +421,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       moderations,
       toxicModeration,
       tempLessonPlan,
+      hasFinished,
+      hasAppendedInitialMessage,
       chatAreaRef,
       messages,
       ailaStreamingStatus,
@@ -423,6 +433,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       input,
       setInput,
       append,
+      partialPatches,
+      validPatches,
       overrideLessonPlan,
       queuedUserAction,
       queueUserAction,
