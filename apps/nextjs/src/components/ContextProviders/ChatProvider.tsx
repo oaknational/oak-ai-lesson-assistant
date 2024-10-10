@@ -159,6 +159,71 @@ function useAppendInitialMessage({
   }, [startingMessage, append, hasAppendedInitialMessage]);
 }
 
+function useQueueUserAction({
+  hasFinished,
+  append,
+  reload,
+}: {
+  hasFinished: boolean;
+  append: (
+    message: Message | CreateMessage,
+  ) => Promise<string | null | undefined>;
+  reload: () => void;
+}) {
+  const [queuedUserAction, setQueuedUserAction] = useState<string | null>(null);
+  const isExecutingAction = useRef(false);
+
+  const queueUserAction = useCallback((action: string) => {
+    setQueuedUserAction(action);
+  }, []);
+
+  const clearQueuedUserAction = useCallback(() => {
+    setQueuedUserAction(null);
+  }, []);
+
+  const executeQueuedAction = useCallback(async () => {
+    if (!queuedUserAction || !hasFinished || isExecutingAction.current) return;
+
+    isExecutingAction.current = true;
+    const actionToExecute = queuedUserAction;
+    setQueuedUserAction(null);
+
+    try {
+      if (actionToExecute === "continue") {
+        await append({
+          content: "Continue",
+          role: "user",
+        });
+      } else if (actionToExecute === "regenerate") {
+        reload();
+      } else {
+        // Assume it's a user message
+        await append({
+          content: actionToExecute,
+          role: "user",
+        });
+      }
+    } catch (error) {
+      console.error("Error handling queued action:", error);
+    } finally {
+      isExecutingAction.current = false;
+    }
+  }, [queuedUserAction, hasFinished, append, reload]);
+
+  useEffect(() => {
+    if (hasFinished) {
+      executeQueuedAction();
+    }
+  }, [hasFinished, executeQueuedAction]);
+
+  return {
+    queueUserAction,
+    clearQueuedUserAction,
+    queuedUserAction,
+    executeQueuedAction,
+  };
+}
+
 export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const {
     data: chat,
@@ -285,56 +350,20 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     });
 
   // Handle queued user actions and messages
-
-  const [queuedUserAction, setQueuedUserAction] = useState<string | null>(null);
-  const isExecutingAction = useRef(false);
-
-  const queueUserAction = useCallback((action: string) => {
-    setQueuedUserAction(action);
-  }, []);
-
-  const executeQueuedAction = useCallback(async () => {
-    if (!queuedUserAction || !hasFinished || isExecutingAction.current) return;
-
-    isExecutingAction.current = true;
-    const actionToExecute = queuedUserAction;
-    setQueuedUserAction(null);
-
-    try {
-      if (actionToExecute === "continue") {
-        await append({
-          content: "Continue",
-          role: "user",
-        });
-      } else if (actionToExecute === "regenerate") {
-        reload();
-      } else {
-        // Assume it's a user message
-        await append({
-          content: actionToExecute,
-          role: "user",
-        });
-      }
-    } catch (error) {
-      console.error("Error handling queued action:", error);
-    } finally {
-      isExecutingAction.current = false;
-    }
-  }, [queuedUserAction, hasFinished, append, reload]);
-
-  useEffect(() => {
-    if (hasFinished) {
-      executeQueuedAction();
-    }
-  }, [hasFinished, executeQueuedAction]);
+  const {
+    queuedUserAction,
+    queueUserAction,
+    clearQueuedUserAction,
+    executeQueuedAction,
+  } = useQueueUserAction({ hasFinished, append, reload });
 
   const stop = useCallback(() => {
     if (queuedUserAction) {
-      setQueuedUserAction(null);
+      clearQueuedUserAction();
     } else {
       stopStreaming();
     }
-  }, [queuedUserAction, setQueuedUserAction, stopStreaming]);
+  }, [queuedUserAction, clearQueuedUserAction, stopStreaming]);
 
   // Clear the hash cache each completed message
   useEffect(() => {
