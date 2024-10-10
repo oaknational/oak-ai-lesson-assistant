@@ -2,8 +2,6 @@ import { NextRequest, NextFetchEvent } from "next/server";
 
 import { handleError } from "./middleware";
 
-// Adjust the import path as needed
-
 describe("handleError", () => {
   let mockRequest: NextRequest;
   let mockEvent: NextFetchEvent;
