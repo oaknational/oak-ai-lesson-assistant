@@ -243,6 +243,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const trpcUtils = trpc.useUtils();
 
   const lessonPlanTracking = useLessonPlanTracking();
+  const lessonPlanSnapshot = useRef<LooseLessonPlan>({});
 
   const [lastModeration, setLastModeration] =
     useState<PersistedModerationBase | null>(
@@ -252,8 +253,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const path = usePathname();
   const chatAreaRef = useRef<HTMLDivElement>(null);
   const [hasFinished, setHasFinished] = useState(true);
-
-  const lessonPlanSnapshot = useRef<LooseLessonPlan>({});
 
   const [overrideLessonPlan, setOverrideLessonPlan] = useState<
     LooseLessonPlan | undefined
@@ -344,13 +343,13 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   useStableMessageId(messages);
   useAppendInitialMessage({ startingMessage: chat?.startingMessage, append });
 
-  const { tempLessonPlan, partialPatches, validPatches } =
-    useTemporaryLessonPlanWithStreamingEdits({
-      lessonPlan: chat?.lessonPlan ?? {},
-      messages,
-      isStreaming: !hasFinished,
-      messageHashes,
-    });
+  // NOTE: this hook also returns validPatches and partialPatches, but we don't use them
+  const { tempLessonPlan } = useTemporaryLessonPlanWithStreamingEdits({
+    lessonPlan: chat?.lessonPlan ?? {},
+    messages,
+    isStreaming: !hasFinished,
+    messageHashes,
+  });
 
   // Handle queued user actions and messages
   const {
@@ -371,15 +370,11 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   /**
    * Get the sensitive moderation id and pass to dialog
    */
-
   const toxicInitialModeration = moderations?.find(isToxic) ?? null;
-
   const toxicModeration =
     lastModeration && isToxic(lastModeration)
       ? lastModeration
       : toxicInitialModeration;
-
-  const ailaStreamingStatus = useAilaStreamingStatus({ isLoading, messages });
 
   useEffect(() => {
     if (toxicModeration) {
@@ -387,6 +382,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       setOverrideLessonPlan({});
     }
   }, [toxicModeration, setMessages]);
+
+  const ailaStreamingStatus = useAilaStreamingStatus({ isLoading, messages });
 
   const value: ChatContextProps = useMemo(
     () => ({
