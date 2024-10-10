@@ -310,9 +310,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       if (hasFinished) {
         setHasFinished(false);
       }
-      if (!path?.includes("chat/[id]")) {
-        window.history.pushState({}, "", `/aila/${id}`);
-      }
     },
     onFinish(response) {
       console.log("Chat: On Finish", new Date().toISOString(), {
