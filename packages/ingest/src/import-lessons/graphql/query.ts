@@ -6,7 +6,11 @@ export const query = gql`
       limit: $limit
       offset: $offset
       distinct_on: lessonSlug
-      where: { videoTitle: { _is_null: false }, isLegacy: { _eq: false } }
+      where: {
+        videoTitle: { _is_null: false }
+        isLegacy: { _eq: false }
+        subjectSlug: { _neq: "english" }
+      }
     ) {
       oakLessonId: lessonId
       lessonSlug

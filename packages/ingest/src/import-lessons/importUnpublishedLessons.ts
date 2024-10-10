@@ -4,7 +4,7 @@ import { IngestError } from "../IngestError";
 import { getDataHash } from "../utils/getDataHash";
 import { RawLesson, RawLessonSchema } from "../zod-schema/zodSchema";
 import { graphqlClient } from "./graphql/client";
-import { query } from "./graphql/query";
+import { unpublishedLessonsQuery } from "./graphql/unpublishedLessons.query";
 
 type ImportRawLessonsProps = {
   ingestId: string;
@@ -18,18 +18,17 @@ export async function importLessons({
   onError,
 }: ImportRawLessonsProps) {
   let pageNumber = 0; // Start at page 0
-  const perPage = 100; // Number of lessons per page
+  const limit = 10; // Number of lessons per page
+  const offset = pageNumber * limit; // Calculate offset based on the current page
 
-  let imported = 0;
+  const variables = {
+    limit,
+    offset,
+  };
 
   while (true) {
-    const offset = pageNumber * perPage; // Calculate offset based on the current page
-    const variables = {
-      limit: perPage,
-      offset,
-    };
     const lessonData = await graphqlClient.request<{ lessons: unknown[] }>(
-      query,
+      unpublishedLessonsQuery,
       variables,
     );
 
@@ -55,14 +54,19 @@ export async function importLessons({
       };
     });
 
+    console.log(`Importing ${data.length} lessons`);
+
     await prisma.ingestLesson.createMany({
       data,
     });
 
-    imported += data.length;
-    console.log(`Imported ${imported} lessons`);
+    console.log(`Imported ${data.length} lessons`);
 
-    if (lessonData.lessons.length < perPage) {
+    if (pageNumber === 2) {
+      break;
+    }
+
+    if (lessonData.lessons.length < limit) {
       break;
     }
 

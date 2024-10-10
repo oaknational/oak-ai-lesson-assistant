@@ -19,7 +19,7 @@ export function transformQuiz(oakQuiz: OakLessonQuiz): Quiz {
       // We want to know if this is not the case so that we can handle it appropriately.
       throw new IngestError("Question stem must have at most one part");
     }
-    if (!question.answers["multiple-choice"]) {
+    if (!question.answers?.["multiple-choice"]) {
       continue;
     }
     if (

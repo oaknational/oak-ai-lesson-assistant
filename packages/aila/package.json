@@ -4,7 +4,6 @@
   "license": "MIT",
   "main": "./index.ts",
   "types": "./index.ts",
-  "type": "module",
   "scripts": {
     "check": "tsc --noEmit",
     "clean": "rm -rf .turbo node_modules",

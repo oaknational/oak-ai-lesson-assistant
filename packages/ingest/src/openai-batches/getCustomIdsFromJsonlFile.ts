@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import readline from "node:readline";
 
+import { IngestError } from "../IngestError";
+
 export function getCustomIdsFromJsonlFile({
   filePath,
 }: {
@@ -15,11 +17,20 @@ export function getCustomIdsFromJsonlFile({
       input: fileStream,
     });
     rl.on("line", (line) => {
+      if (!line) {
+        return;
+      }
       try {
-        const customId = JSON.parse(line).customId;
+        const customId = JSON.parse(line).custom_id;
+        if (typeof customId !== "string") {
+          throw new IngestError("custom_id is not a string");
+        }
         ids.push(customId);
       } catch (cause) {
-        const error = new Error("Failed to parse customId", { cause });
+        const error = new IngestError("Failed to parse customId", {
+          cause,
+          errorDetail: line,
+        });
         reject(error);
       }
     });
