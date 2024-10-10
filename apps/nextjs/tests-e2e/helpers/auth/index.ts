@@ -26,7 +26,12 @@ const trpc = createTRPCProxyClient<TestSupportRouter>({
 
 export async function prepareUser(
   page: Page,
-  persona: "typical" | "demo" | "nearly-banned" | "sharing-chat",
+  persona:
+    | "typical"
+    | "demo"
+    | "nearly-banned"
+    | "nearly-rate-limited"
+    | "sharing-chat",
 ) {
   return await test.step("Prepare user", async () => {
     const [login] = await Promise.all([

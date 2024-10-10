@@ -92,6 +92,7 @@ function userHasOakEmail(user: User) {
     (email) =>
       email.emailAddress.endsWith("@thenational.academy") &&
       !email.emailAddress.includes("rate-limit-me") &&
+      !email.emailAddress.includes("rate-limited") &&
       !email.emailAddress.includes("demo"),
   );
 }
