@@ -243,7 +243,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const trpcUtils = trpc.useUtils();
 
   const lessonPlanTracking = useLessonPlanTracking();
-  const shouldTrackStreamFinished = useRef(false);
 
   const [lastModeration, setLastModeration] =
     useState<PersistedModerationBase | null>(
@@ -328,9 +327,18 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       invokeActionMessages(response.content);
 
       trpcUtils.chat.appSessions.getChat.invalidate({ id });
+      clearHashCache();
 
       setHasFinished(true);
-      shouldTrackStreamFinished.current = true;
+
+      trpcUtils.chat.appSessions.getChat.invalidate({ id });
+
+      lessonPlanTracking.onStreamFinished({
+        prevLesson: lessonPlanSnapshot.current,
+        nextLesson: tempLessonPlan,
+        messages,
+      });
+
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
     },
   });
@@ -361,35 +369,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       stopStreaming();
     }
   }, [queuedUserAction, clearQueuedUserAction, stopStreaming]);
-
-  // Clear the hash cache each completed message
-  useEffect(() => {
-    clearHashCache();
-  }, [hasFinished]);
-
-  /**
-   *  Update the lesson plan if the chat has finished updating
-   *  Fetch the state from the last "state" command in the most recent assistant message
-   */
-  useEffect(() => {
-    if (!hasFinished || !messages) return;
-    trpcUtils.chat.appSessions.getChat.invalidate({ id });
-    if (shouldTrackStreamFinished.current) {
-      lessonPlanTracking.onStreamFinished({
-        prevLesson: lessonPlanSnapshot.current,
-        nextLesson: tempLessonPlan,
-        messages,
-      });
-      shouldTrackStreamFinished.current = false;
-    }
-  }, [
-    id,
-    trpcUtils.chat.appSessions.getChat,
-    hasFinished,
-    messages,
-    lessonPlanTracking,
-    tempLessonPlan,
-  ]);
 
   /**
    * Get the sensitive moderation id and pass to dialog
