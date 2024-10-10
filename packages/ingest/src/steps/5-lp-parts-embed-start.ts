@@ -6,6 +6,7 @@ import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateSta
 import { Step, getPrevStep } from "../db-helpers/step";
 import { startEmbedding } from "../embedding/startEmbedding";
 import { parseCustomId } from "../openai-batches/customId";
+import { chunkAndPromiseAll } from "../utils/chunkAndPromiseAll";
 
 const currentStep: Step = "embedding";
 const prevStep = getPrevStep(currentStep);
@@ -67,15 +68,21 @@ export async function lpPartsEmbedStart({
         )
         .map(({ lessonPlanPartId }) => lessonPlanPartId);
 
-      await prisma.ingestLessonPlanPart.updateMany({
-        where: {
-          id: {
-            in: lessonPlanPartIds,
-          },
+      await chunkAndPromiseAll({
+        data: lessonPlanPartIds,
+        fn: async (lessonPlanPartIds) => {
+          await prisma.ingestLessonPlanPart.updateMany({
+            where: {
+              id: {
+                in: lessonPlanPartIds,
+              },
+            },
+            data: {
+              batchId: batch.id,
+            },
+          });
         },
-        data: {
-          batchId: batch.id,
-        },
+        chunkSize: 25000,
       });
     },
   });
