@@ -1,4 +1,5 @@
 import type { Message as AiMessage } from "ai";
+import { findLast } from "remeda";
 
 import type { Message as AilaMessage } from "../../core/chat/types";
 
@@ -12,9 +13,10 @@ interface AssistantMessage extends AilaMessage {
 export function getLastAssistantMessage(
   messages: AiMessage[],
 ): AssistantMessage | undefined {
-  const lastAssistantMessage = messages.findLast(
+  const lastAssistantMessage = findLast(
+    messages,
     (m): m is AssistantMessage => m.role === "assistant",
-  );
+  ) as AssistantMessage | undefined;
 
   return lastAssistantMessage;
 }
