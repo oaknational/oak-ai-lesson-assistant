@@ -331,8 +331,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
       setHasFinished(true);
 
-      trpcUtils.chat.appSessions.getChat.invalidate({ id });
-
       lessonPlanTracking.onStreamFinished({
         prevLesson: lessonPlanSnapshot.current,
         nextLesson: tempLessonPlan,
