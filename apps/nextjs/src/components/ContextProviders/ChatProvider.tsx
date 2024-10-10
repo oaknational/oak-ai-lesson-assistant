@@ -108,6 +108,35 @@ function getModerationFromMessage(message?: { content: string }) {
   return moderation;
 }
 
+/**
+ * This is a hack to ensure that the assistant messages have a stable id
+ * across server and client.
+ * We should move away from this either when the vercel/ai package supports it
+ * natively, or when we move away from streaming.
+ */
+function useStableMessageId(messages: Message[]) {
+  useEffect(() => {
+    return messages.forEach((message) => {
+      if (message.role !== "assistant") {
+        return;
+      }
+
+      const idIsStable = message.id.startsWith("a-");
+      if (idIsStable) {
+        return;
+      }
+
+      const idFromContent = findMessageIdFromContent(message);
+      if (idFromContent) {
+        message.id = idFromContent;
+        return;
+      }
+
+      message.id = "TEMP_PENDING_" + nanoid();
+    });
+  }, [messages]);
+}
+
 export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const {
     data: chat,
@@ -225,32 +254,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     },
   });
 
-  useEffect(() => {
-    /**
-     * This is a hack to ensure that the assistant messages have a stable id
-     * across server and client.
-     * We should move away from this either when the vercel/ai package supports it
-     * natively, or when we move away from streaming.
-     */
-    return messages.forEach((message) => {
-      if (message.role !== "assistant") {
-        return;
-      }
-
-      const idIsStable = message.id.startsWith("a-");
-      if (idIsStable) {
-        return;
-      }
-
-      const idFromContent = findMessageIdFromContent(message);
-      if (idFromContent) {
-        message.id = idFromContent;
-        return;
-      }
-
-      message.id = "TEMP_PENDING_" + nanoid();
-    });
-  }, [messages]);
+  useStableMessageId(messages);
 
   const { tempLessonPlan, partialPatches, validPatches } =
     useTemporaryLessonPlanWithStreamingEdits({
