@@ -113,26 +113,12 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     data: chat,
     isLoading: isChatLoading,
     refetch: refetchChat,
-  } = trpc.chat.appSessions.getChat.useQuery(
-    { id },
-    {
-      refetchOnMount: true,
-      refetchOnWindowFocus: true,
-      staleTime: 0,
-    },
-  );
+  } = trpc.chat.appSessions.getChat.useQuery({ id });
   const {
     data: moderations,
     isLoading: isModerationsLoading,
     refetch: refetchModerations,
-  } = trpc.chat.appSessions.getModerations.useQuery(
-    { id },
-    {
-      refetchOnMount: true,
-      refetchOnWindowFocus: true,
-      staleTime: 0,
-    },
-  );
+  } = trpc.chat.appSessions.getModerations.useQuery({ id });
   // Ensure that we re-fetch on mount
   useEffect(() => {
     refetchChat();
