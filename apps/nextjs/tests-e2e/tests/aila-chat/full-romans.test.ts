@@ -18,65 +18,73 @@ import {
 // const FIXTURE_MODE = "record" as FixtureMode;
 const FIXTURE_MODE = "replay" as FixtureMode;
 
-test(
-  "Full aila flow with Romans fixture",
-  { tag: "@common-auth" },
-  async ({ page }) => {
-    const generationTimeout = FIXTURE_MODE === "record" ? 75000 : 50000;
-    test.setTimeout(generationTimeout * 5);
+test.describe(() => {
+  // NOTE(2024-10-10): This test is flaky, with the "10 of 10" check often returning 6-8 sections
+  // Remove extra retries when it becomes more stable
+  if (process.env.CI === "true") {
+    test.describe.configure({ retries: 4 });
+  }
 
-    await test.step("Setup", async () => {
-      await bypassVercelProtection(page);
-      await setupClerkTestingToken({ page });
+  test(
+    "Full aila flow with Romans fixture",
+    { tag: "@common-auth" },
+    async ({ page }) => {
+      const generationTimeout = FIXTURE_MODE === "record" ? 75000 : 50000;
+      test.setTimeout(generationTimeout * 5);
 
-      await page.goto(`${TEST_BASE_URL}/aila`);
-      await expect(page.getByTestId("chat-h1")).toBeInViewport();
-    });
+      await test.step("Setup", async () => {
+        await bypassVercelProtection(page);
+        await setupClerkTestingToken({ page });
 
-    const { setFixture } = await applyLlmFixtures(page, FIXTURE_MODE);
+        await page.goto(`${TEST_BASE_URL}/aila`);
+        await expect(page.getByTestId("chat-h1")).toBeInViewport();
+      });
 
-    await test.step("Fill in the chat box", async () => {
-      const textbox = page.getByTestId("chat-input");
-      const sendMessage = page.getByTestId("send-message");
-      const message =
-        "Create a KS1 lesson on the end of Roman Britain. Ask a question for each quiz and cycle";
-      await textbox.fill(message);
-      await expect(textbox).toContainText(message);
+      const { setFixture } = await applyLlmFixtures(page, FIXTURE_MODE);
 
-      // Temporary fix: The test goes quicker than a real user and submits before the demo status has loaded
-      // This means that a demo modal would be shown when submitting
-      await page.waitForTimeout(500);
+      await test.step("Fill in the chat box", async () => {
+        const textbox = page.getByTestId("chat-input");
+        const sendMessage = page.getByTestId("send-message");
+        const message =
+          "Create a KS1 lesson on the end of Roman Britain. Ask a question for each quiz and cycle";
+        await textbox.fill(message);
+        await expect(textbox).toContainText(message);
 
-      setFixture("roman-britain-1");
-      await sendMessage.click();
-    });
+        // Temporary fix: The test goes quicker than a real user and submits before the demo status has loaded
+        // This means that a demo modal would be shown when submitting
+        await page.waitForTimeout(500);
 
-    await test.step("Iterate through the fixtures", async () => {
-      await page.waitForURL(/\/aila\/.+/);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 1);
+        setFixture("roman-britain-1");
+        await sendMessage.click();
+      });
 
-      setFixture("roman-britain-2");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 3);
+      await test.step("Iterate through the fixtures", async () => {
+        await page.waitForURL(/\/aila\/.+/);
+        await waitForGeneration(page, generationTimeout);
+        await expectSectionsComplete(page, 1);
 
-      setFixture("roman-britain-3");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 7);
+        setFixture("roman-britain-2");
+        await continueChat(page);
+        await waitForGeneration(page, generationTimeout);
+        await expectSectionsComplete(page, 3);
 
-      setFixture("roman-britain-4");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 10);
+        setFixture("roman-britain-3");
+        await continueChat(page);
+        await waitForGeneration(page, generationTimeout);
+        await expectSectionsComplete(page, 7);
 
-      setFixture("roman-britain-5");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 10);
+        setFixture("roman-britain-4");
+        await continueChat(page);
+        await waitForGeneration(page, generationTimeout);
+        await expectSectionsComplete(page, 10);
 
-      await expectFinished(page);
-    });
-  },
-);
+        setFixture("roman-britain-5");
+        await continueChat(page);
+        await waitForGeneration(page, generationTimeout);
+        await expectSectionsComplete(page, 10);
+
+        await expectFinished(page);
+      });
+    },
+  );
+});
