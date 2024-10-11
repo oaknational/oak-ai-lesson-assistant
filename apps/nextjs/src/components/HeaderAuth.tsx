@@ -1,6 +1,5 @@
 import { UserButton, useAuth } from "@clerk/nextjs";
 import { OakP } from "@oaknational/oak-components";
-import Link from "next/link";
 
 const HeaderAuth = () => {
   const { isSignedIn } = useAuth();
@@ -9,9 +8,9 @@ const HeaderAuth = () => {
     <>
       {isSignedIn && <UserButton />}
       {!isSignedIn && (
-        <Link href="/sign-in">
+        <a href="/sign-in">
           <OakP $font="body-2">Sign in</OakP>
-        </Link>
+        </a>
       )}
     </>
   );
