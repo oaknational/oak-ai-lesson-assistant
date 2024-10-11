@@ -1,5 +1,4 @@
-import { User } from "@clerk/backend";
-import { clerkClient } from "@clerk/nextjs/server";
+import { clerkClient, User } from "@clerk/nextjs/server";
 import { default as oakLogger } from "@oakai/logger";
 import { Ratelimit } from "@upstash/ratelimit";
 import { waitUntil } from "@vercel/functions";

@@ -1,4 +1,4 @@
-import { Aila } from "@oakai/aila";
+import { Aila, AilaInitializationOptions } from "@oakai/aila";
 import { MockLLMService } from "@oakai/aila/src/core/llm/MockLLMService";
 import { MockCategoriser } from "@oakai/aila/src/features/categorisation/categorisers/MockCategoriser";
 import { mockTracer } from "@oakai/core/src/tracing/mockTracer";
@@ -36,7 +36,7 @@ describe("Chat API Route", () => {
 
     testConfig = {
       createAila: jest.fn().mockImplementation(async (options) => {
-        const ailaConfig = {
+        const ailaConfig: AilaInitializationOptions = {
           options: {
             usePersistence: false,
             useRag: false,
@@ -44,7 +44,6 @@ describe("Chat API Route", () => {
             useModeration: false,
             useErrorReporting: false,
             useThreatDetection: false,
-            useRateLimiting: false,
           },
           chat: {
             id: chatId,
