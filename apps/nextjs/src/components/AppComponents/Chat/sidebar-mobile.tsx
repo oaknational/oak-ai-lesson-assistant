@@ -1,7 +1,5 @@
 "use client";
 
-import { OakFlex, OakSpan } from "@oaknational/oak-components";
-
 import { Sidebar } from "@/components/AppComponents/Chat/sidebar";
 import { Button } from "@/components/AppComponents/Chat/ui/button";
 import {
@@ -30,10 +28,9 @@ export function SidebarMobile({ children }: Readonly<SidebarMobileProps>) {
           }}
         >
           <Icon icon="sidebar" size="md" />
-          <OakFlex $pl={"inner-padding-ssx"} $display={["none", "flex"]}>
-            <OakSpan $font={"body-1-bold"}>Menu</OakSpan>
-          </OakFlex>
-
+          <div className="ml-4 hidden pr-5 font-semibold text-black sm:block">
+            Menu
+          </div>
           <span className="sr-only block sm:hidden">Toggle Sidebar</span>
         </Button>
       </SheetTrigger>
