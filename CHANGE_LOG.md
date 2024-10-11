@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.9.1...v1.9.2) (2024-10-09)
+
+
+### Bug Fixes
+
+* sanitize file names before downloading ([#201](https://github.com/oaknational/oak-ai-lesson-assistant/issues/201)) ([05da00e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/05da00e52653f02fbed5291b85ac25ba0e55ac57))
+
 ## [1.9.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.9.0...v1.9.1) (2024-10-04)
 
 
