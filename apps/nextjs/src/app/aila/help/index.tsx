@@ -2,12 +2,11 @@
 
 import { useRef } from "react";
 
-import { OakFlex, OakLink } from "@oaknational/oak-components";
+import { OakLink } from "@oaknational/oak-components";
 import { useSearchParams } from "next/navigation";
 
 import { Header } from "@/components/AppComponents/Chat/header";
 import GetInTouchBox from "@/components/AppComponents/GetInTouchBox";
-import { useDemoUser } from "@/components/ContextProviders/Demo";
 
 const Help = () => {
   const startingRef = useRef(null);
@@ -29,19 +28,11 @@ const Help = () => {
 
   const searchParams = useSearchParams();
   const ailaId = searchParams.get("ailaId");
-  const demo = useDemoUser();
-  const marginTop = demo.isDemoUser ? "200px" : "125px";
+
   return (
     <>
       <Header />
-      <OakFlex
-        $maxWidth={"all-spacing-24"}
-        $ml="auto"
-        $mr="auto"
-        style={{ marginTop: marginTop }}
-        $width={"100%"}
-        $ph={"inner-padding-s"}
-      >
+      <div className="mx-auto mt-30 h-[100vh] w-full max-w-[1280px] px-9">
         <div className="mb-27 flex justify-between gap-3">
           <div className="hidden  sm:block sm:min-w-[300px]">
             <h1 className="mb-24 text-4xl font-bold">Help</h1>
@@ -228,7 +219,7 @@ const Help = () => {
             </p>
           </div>
         </div>
-      </OakFlex>
+      </div>
     </>
   );
 };
