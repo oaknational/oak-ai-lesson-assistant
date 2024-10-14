@@ -1,0 +1,14 @@
+default-src 'self'
+media-src 'self' 'self' https://*.mux.com https://stream.mux.com blob:
+script-src 'self' 'nonce-AAAAAAAAAAAAAAAAAAAAAA==' 'strict-dynamic' https: http: 'unsafe-inline' 'unsafe-eval' https://cdn.mux.com https://mux.com https://*.mux.com https://stream.mux.com
+style-src 'self' 'unsafe-inline' https://*.mux.com
+connect-src 'self' *.thenational.academy *.hubspot.com *.clerk.accounts.dev https://api.avo.app/ https://eu.i.posthog.com https://europe-west2-oak-ai-beta-staging.cloudfunctions.net https://mux.com https://*.mux.com https://stream.mux.com https://inferred.litix.io
+worker-src 'self' blob:
+img-src 'self' blob: data: https://img.clerk.com https://res.cloudinary.com https://*.hubspot.com https://*.hsforms.com https://*.mux.com https://stream.mux.com
+font-src 'self' gstatic-fonts.thenational.academy fonts.gstatic.com
+object-src 'none'
+base-uri 'self'
+frame-src 'self' *.thenational.academy https://challenges.cloudflare.com https://*.mux.com https://www.avo.app/ https://stream.mux.com
+form-action 'self'
+frame-ancestors 'none'
+report-uri https://sentry.io/report&sentry_environment=test&sentry_release=1.0.0

@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 function generateNonce(): string {
   if (typeof crypto !== "undefined" && crypto.getRandomValues) {
-    return btoa(
-      String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))),
-    );
+    const array = new Uint8Array(16);
+    crypto.getRandomValues(array);
+    return btoa(String.fromCharCode.apply(null, array as unknown as number[]));
   } else if (typeof require !== "undefined") {
     // We are running this in a test Node.js environment
     // for testing purposes
