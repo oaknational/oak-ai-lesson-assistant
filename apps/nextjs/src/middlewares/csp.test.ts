@@ -65,6 +65,7 @@ const mockedCrypto = {
 
 // Mock the global require function
 const originalRequire = jest.requireActual<NodeRequire>("module");
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).require = Object.assign(
   jest.fn((moduleName: string) => {
     if (moduleName === "crypto") {
@@ -81,6 +82,7 @@ const originalRequire = jest.requireActual<NodeRequire>("module");
 );
 
 // Mock the global crypto object
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).crypto = {
   getRandomValues: jest.fn((array) => {
     for (let i = 0; i < array.length; i++) {
@@ -101,6 +103,7 @@ describe("CSP Policies Snapshot", () => {
 
   afterAll(() => {
     jest.restoreAllMocks();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (global as any).require = originalRequire;
   });
 
