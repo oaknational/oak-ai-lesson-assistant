@@ -1,0 +1,393 @@
+{
+  "exitQuiz": [
+    {
+      "hint": "This word can be used to describe the experience of enslaved people working on plantations in Saint-Domingue.",
+      "active": false,
+      "answers": {},
+      "feedback": "Intolerable refers to being unable to bear an experience any longer.",
+      "questionId": 259037,
+      "questionUid": "QUES-MLGE2-59037",
+      "questionStem": [
+        {
+          "text": "What term refers to being unable to bear an experience any longer?",
+          "type": "text"
+        }
+      ],
+      "questionType": "short-answer"
+    },
+    {
+      "hint": "These things intensified British public opposition to enslavement.",
+      "active": false,
+      "answers": {
+        "multiple-choice": [
+          {
+            "answer": [
+              {
+                "text": "revolts spreading around European colonies in the Caribbean",
+                "type": "text"
+              }
+            ],
+            "answer_is_correct": true
+          },
+          {
+            "answer": [
+              {
+                "text": "the direct experiences that members of the British public had of enslavement",
+                "type": "text"
+              }
+            ],
+            "answer_is_correct": false
+          },
+          {
+            "answer": [{ "text": "the Zong massacre", "type": "text" }],
+            "answer_is_correct": true
+          },
+          {
+            "answer": [{ "text": "slave-owners' testimony", "type": "text" }],
+            "answer_is_correct": false
+          },
+          {
+            "answer": [
+              { "text": "Olaudah Equiano's autobiography", "type": "text" }
+            ],
+            "answer_is_correct": true
+          }
+        ]
+      },
+      "feedback": "Revolts spreading around European colonies in the Caribbean, the Zong massacre, and Olaudah Equiano's autobiography all intensified British public opposition to enslavement.",
+      "questionId": 259038,
+      "questionUid": "QUES-VWLK2-59038",
+      "questionStem": [
+        {
+          "text": "What was the proof for the British public that life for enslaved people was horrific?",
+          "type": "text"
+        }
+      ],
+      "questionType": "multiple-choice"
+    },
+    {
+      "hint": "These were three key abolitionist figures at the time.",
+      "active": false,
+      "answers": {},
+      "feedback": "William Wilberforce and Olaudah Equiano worked for abolition in Britain, while Toussaint L'Ouverture fought for abolition in Saint-Domingue.",
+      "questionId": 259039,
+      "questionUid": "QUES-BNXO2-59039",
+      "questionStem": [
+        {
+          "text": "Match the key figures of abolition to the correct description.",
+          "type": "text"
+        }
+      ],
+      "questionType": "match"
+    },
+    {
+      "hint": "This is a Latin phrase literally translated as meaning: \"that you have the body\".",
+      "active": false,
+      "answers": {
+        "multiple-choice": [
+          {
+            "answer": [{ "text": "carpe diem", "type": "text" }],
+            "answer_is_correct": false
+          },
+          {
+            "answer": [{ "text": "habeas corpus", "type": "text" }],
+            "answer_is_correct": true
+          },
+          {
+            "answer": [{ "text": "veni vidi vici", "type": "text" }],
+            "answer_is_correct": false
+          },
+          {
+            "answer": [{ "text": "pro bono", "type": "text" }],
+            "answer_is_correct": false
+          }
+        ]
+      },
+      "feedback": "Habeas corpus is the fundamental right in English law that prevents people from unlawful imprisonment.",
+      "questionId": 259040,
+      "questionUid": "QUES-DVLZ2-59040",
+      "questionStem": [
+        {
+          "text": "What term is used to refer to the fundamental right in English law that prevents people from unlawful imprisonment?",
+          "type": "text"
+        }
+      ],
+      "questionType": "multiple-choice"
+    },
+    {
+      "hint": "The Zong Massacre occurred towards the end of the 18th century.",
+      "active": false,
+      "answers": {
+        "multiple-choice": [
+          {
+            "answer": [{ "text": "1681", "type": "text" }],
+            "answer_is_correct": false
+          },
+          {
+            "answer": [{ "text": "1781", "type": "text" }],
+            "answer_is_correct": true
+          },
+          {
+            "answer": [{ "text": "1881", "type": "text" }],
+            "answer_is_correct": false
+          },
+          {
+            "answer": [{ "text": "1981", "type": "text" }],
+            "answer_is_correct": false
+          }
+        ]
+      },
+      "feedback": "The Zong Massacre occurred in 1781 and intensified British public opinion against enslavement.",
+      "questionId": 259041,
+      "questionUid": "QUES-UUDM2-59041",
+      "questionStem": [
+        { "text": "In what year did the Zong Massacre occur?", "type": "text" }
+      ],
+      "questionType": "multiple-choice"
+    },
+    {
+      "hint": "His owner was a man named Charles Stewart, whom he deserted before being recaptured after a month of living in England as a free man.",
+      "active": false,
+      "answers": {},
+      "feedback": "After the Somerset v Stewart case (1772), James Somerset's 'detention' was considered unlawful, and set a precedent of outlawing enslavement in England and Wales.",
+      "questionId": 259042,
+      "questionUid": "QUES-JXMF2-59042",
+      "questionStem": [
+        {
+          "text": "James {{}} was the enslaved man whose court case helped to establish in 1772 that enslavement in England and Wales was unlawful.",
+          "type": "text"
+        }
+      ],
+      "questionType": "short-answer"
+    }
+  ],
+  "unitSlug": "the-haitian-revolution-what-was-its-role-in-the-abolition-of-the-slave-trade",
+  "tierTitle": null,
+  "yearTitle": "Year 8",
+  "lessonSlug": "abolitionist-movements-in-britain",
+  "videoTitle": "LESS-TXQOZ-G5333-abolitionist-movements-in-britain-v2",
+  "lessonTitle": "Abolitionist movements in Britain",
+  "oakLessonId": 5333,
+  "starterQuiz": [
+    {
+      "hint": "This place is located in the Americas.",
+      "active": false,
+      "answers": {},
+      "feedback": "Saint-Domingue had been France's most prosperous colony in the Caribbean during the 18th century.",
+      "questionId": 259031,
+      "questionUid": "QUES-NRIW2-59031",
+      "questionStem": [
+        {
+          "text": "Complete the following sentence: Saint-Domingue had been France's most prosperous colony in the {{}} during the 18th century.",
+          "type": "text"
+        }
+      ],
+      "questionType": "short-answer"
+    },
+    {
+      "hint": "France withdrew from Haiti late in 1803.",
+      "active": false,
+      "answers": {},
+      "feedback": "Haiti declared its independence on 1st January 1804.",
+      "questionId": 259032,
+      "questionUid": "QUES-HHKM2-59032",
+      "questionStem": [
+        {
+          "text": "In what year did Haiti declare its independence?",
+          "type": "text"
+        }
+      ],
+      "questionType": "short-answer"
+    },
+    {
+      "hint": "This person had served as one of Toussaint L'Ouverture's key lieutenants throughout the conflict up until this time.",
+      "active": false,
+      "answers": {
+        "multiple-choice": [
+          {
+            "answer": [{ "text": "Charles Leclerc", "type": "text" }],
+            "answer_is_correct": false
+          },
+          {
+            "answer": [{ "text": "Jean-Jacques Dessalines", "type": "text" }],
+            "answer_is_correct": true
+          },
+          {
+            "answer": [{ "text": "Napoleon Bonaparte", "type": "text" }],
+            "answer_is_correct": false
+          },
+          {
+            "answer": [{ "text": "General Maitland", "type": "text" }],
+            "answer_is_correct": false
+          }
+        ]
+      },
+      "feedback": "Jean-Jacques Dessalines took over the leadership of the rebels, securing victory at the Battle of Vertieres and dispelling the French threat finally.",
+      "questionId": 259033,
+      "questionUid": "QUES-DSXM2-59033",
+      "questionStem": [
+        {
+          "text": "After Toussaint L'Ouverture was captured and transported back to France where he faced imprisonment and death, who took over the resistance in Saint-Domingue against France?",
+          "type": "text"
+        }
+      ],
+      "questionType": "multiple-choice"
+    },
+    {
+      "hint": "Toussaint L'Ouverture was careful not to go too far in opposing such a strong military leader like Napoleon, but did continue with his reforms.",
+      "active": false,
+      "answers": {
+        "multiple-choice": [
+          {
+            "answer": [
+              {
+                "text": "He declared a new slavery law for Saint-Domingue.",
+                "type": "text"
+              }
+            ],
+            "answer_is_correct": false
+          },
+          {
+            "answer": [
+              {
+                "text": "He became an enemy of Napoleon and declared independence for Haiti.",
+                "type": "text"
+              }
+            ],
+            "answer_is_correct": false
+          },
+          {
+            "answer": [
+              {
+                "text": "He declared a new constitution for Saint-Domingue and prepared for independence.",
+                "type": "text"
+              }
+            ],
+            "answer_is_correct": true
+          },
+          {
+            "answer": [
+              {
+                "text": "He asked Britain for military assistance.",
+                "type": "text"
+              }
+            ],
+            "answer_is_correct": false
+          }
+        ]
+      },
+      "feedback": "Toussaint L'Ouverture declared a new constitution for Saint-Domingue and prepared for independence for Haiti, knowing that his people would never accept the return of enslavement as proposed by Napoleon.",
+      "questionId": 259034,
+      "questionUid": "QUES-NVRQ2-59034",
+      "questionStem": [
+        {
+          "text": "What did Toussaint L’Ouverture do when he learned of Napoleon’s plan to reinstate slavery in 1802?",
+          "type": "text"
+        }
+      ],
+      "questionType": "multiple-choice"
+    },
+    {
+      "hint": "These events all occurred after Britain's withdrawal from the island.",
+      "active": false,
+      "answers": {},
+      "feedback": "Napoleon's decision to reinstate slavery transformed France, from being L'Ouverture's ally, back into being his enemy.",
+      "questionId": 259035,
+      "questionUid": "QUES-USXE2-59035",
+      "questionStem": [
+        {
+          "text": "Put the below events in chronological order, starting with the earliest:",
+          "type": "text"
+        }
+      ],
+      "questionType": "order"
+    },
+    {
+      "hint": "This group of soldiers were lied to, with Napoleon telling them that they were travelling to Saint-Domingue to put down a prison revolt.",
+      "active": false,
+      "answers": {
+        "multiple-choice": [
+          {
+            "answer": [{ "text": "British", "type": "text" }],
+            "answer_is_correct": false
+          },
+          {
+            "answer": [{ "text": "German", "type": "text" }],
+            "answer_is_correct": false
+          },
+          {
+            "answer": [{ "text": "Polish", "type": "text" }],
+            "answer_is_correct": true
+          },
+          {
+            "answer": [{ "text": "French", "type": "text" }],
+            "answer_is_correct": false
+          },
+          {
+            "answer": [{ "text": "Spanish", "type": "text" }],
+            "answer_is_correct": false
+          }
+        ]
+      },
+      "feedback": "When the Polish soldiers realised they had been lied to, they switched sides. Some Poles settled in Saint-Domingue and there is still a community of Polish Haitians in Haiti today.",
+      "questionId": 259036,
+      "questionUid": "QUES-EOFT2-59036",
+      "questionStem": [
+        {
+          "text": "What nationality were the portion of Leclerc's troops who switched sides to fight for the rebels against France?",
+          "type": "text"
+        }
+      ],
+      "questionType": "multiple-choice"
+    }
+  ],
+  "subjectSlug": "history",
+  "keyStageSlug": "ks3",
+  "subjectTitle": "History",
+  "programmeSlug": "history-secondary-ks3",
+  "examBoardTitle": null,
+  "lessonKeywords": [
+    {
+      "keyword": "habeas corpus",
+      "description": "English law declaring detention or imprisonment as illegal if you have not committed a crime"
+    },
+    {
+      "keyword": "massacre",
+      "description": "when many people are killed purposely in a violent manner"
+    },
+    {
+      "keyword": "abolition",
+      "description": "the outlawing of enslavement by a particular country"
+    },
+    {
+      "keyword": "intolerable",
+      "description": "being unable to bear an experience any longer"
+    }
+  ],
+  "copyrightContent": [],
+  "keyLearningPoints": [
+    {
+      "keyLearningPoint": "In 1772 it was established that slavery went against English law and many people felt uneasy about Britain's role in it."
+    },
+    {
+      "keyLearningPoint": "People in Britain began to criticise the conditions on slave ships across the 'Middle Passage' to the Americas."
+    },
+    {
+      "keyLearningPoint": "The case of the Zong Massacre created public outrage in Britain at the conditions in which enslaved people were living."
+    },
+    {
+      "keyLearningPoint": "Groups and individuals such as Olaudah Equiano and William Wilberforce worked for abolition in Britain and its colonies."
+    },
+    {
+      "keyLearningPoint": "The Haitian Revolution created fear amongst British plantation owners about similar uprisings across the Caribbean."
+    }
+  ],
+  "pupilLessonOutcome": "I can explain British campaigns for abolition of slavery and the Haitian Revolution's role in strengthening these movements. ",
+  "transcriptSentences": null,
+  "misconceptionsAndCommonMistakes": [
+    {
+      "response": "Abolition of slavery in Britain and its colonies was a response to a number of events and an ever-growing public demand for change.",
+      "misconception": "Abolition of slavery in Britain and its colonies was a response to a single event."
+    }
+  ]
+}
