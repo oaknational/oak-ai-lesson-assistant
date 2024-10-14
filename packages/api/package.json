@@ -12,7 +12,7 @@
   },
   "prettier": "@oakai/prettier-config",
   "dependencies": {
-    "@clerk/nextjs": "5.1.0",
+    "@clerk/nextjs": "5.7.2",
     "@oakai/core": "*",
     "@oakai/db": "*",
     "@oakai/exports": "*",

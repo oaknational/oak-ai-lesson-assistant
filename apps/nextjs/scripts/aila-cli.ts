@@ -9,6 +9,9 @@ const cliPlugin: AilaPlugin = {
   onToxicModeration: async (moderation, { aila, enqueue }) => {
     // ...
   },
+  onBackgroundWork: (promise) => {
+    // ...
+  },
 };
 
 const aila = new Aila({
