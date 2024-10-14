@@ -6,10 +6,10 @@ import {
   NextResponse,
 } from "next/server";
 
-import { logError } from "./lib/errors/server/middlewareErrorLogging";
 import { sentryCleanup } from "./lib/sentry/sentryCleanup";
 import { authMiddleware } from "./middlewares/auth.middleware";
 import { CspConfig, addCspHeaders } from "./middlewares/csp";
+import { logError } from "./middlewares/middlewareErrorLogging";
 
 export type ErrorWithPotentialCause = Error & {
   cause?: unknown;

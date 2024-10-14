@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { NextFetchEvent, NextRequest } from "next/server";
 
-import { ErrorWithPotentialCause } from "../../../middleware";
+import { ErrorWithPotentialCause } from "../middleware";
 
 export async function logError(
   error: unknown,
