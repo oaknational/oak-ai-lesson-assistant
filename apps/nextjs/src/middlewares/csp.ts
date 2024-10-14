@@ -89,7 +89,7 @@ const mux: Record<string, string[]> = {
 };
 
 const vercelPolicies: Record<string, string[]> = {
-  "script-src": ["https://vercel.live/", "https://vercel.com"],
+  "script-src": ["https://vercel.live", "https://vercel.com"],
   "connect-src": [
     "https://vercel.live/",
     "https://vercel.com",
