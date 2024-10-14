@@ -1,3 +1,16 @@
+# [1.10.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.9.2...v1.10.0) (2024-10-14)
+
+
+### Bug Fixes
+
+* add missing test id ([d8108ff](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d8108fff76d29c03fbbb11cebc8dcad0f64e6c87))
+* revert Oak components for demo UI ([#204](https://github.com/oaknational/oak-ai-lesson-assistant/issues/204)) ([#221](https://github.com/oaknational/oak-ai-lesson-assistant/issues/221)) ([c6d7d7e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c6d7d7e73f74f52127a00f60e442031983c74499))
+
+
+### Features
+
+* move aila analytics calls to background ([#206](https://github.com/oaknational/oak-ai-lesson-assistant/issues/206)) ([eaf8559](https://github.com/oaknational/oak-ai-lesson-assistant/commit/eaf8559be326c1a81c27f24d835c8eb55358cd40))
+
 ## [1.9.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.9.1...v1.9.2) (2024-10-09)
 
 
