@@ -65,20 +65,19 @@ jobs:
 
           DEPLOYMENT_URL=$(npx vercel deploy --cwd=apps/nextjs/playwright-report --yes --token=${{ secrets.TEST_REPORT_VERCEL_TOKEN }})
           echo "deployment-url=${DEPLOYMENT_URL}" >> "$GITHUB_OUTPUT"
-      - name: Comment PR with playwright report
+
+      - name: Generate PR comment
+        id: generate-pr-comment
+        uses: daun/playwright-report-summary@v3
+        if: ${{ !cancelled() }}
+        with:
+          report-file: apps/nextjs/results.json
+          report-url: ${{ steps.deploy-report.outputs.deployment-url }}
+          job-summary: true
+      - name: Set PR comment
         uses: thollander/actions-comment-pull-request@v2
         if: ${{ !cancelled() && steps.ref_from_sha.outputs.pr_number }}
         with:
           pr_number: ${{ steps.ref_from_sha.outputs.pr_number }}
-          message: |
-            ### ${{ steps.run-tests.outcome == 'success' && '✅ Playwright tests passed' || '❌ Playwright tests failed' }}
-
-            [View interactive report](${{ steps.deploy-report.outputs.deployment-url }})
+          message: ${{ steps.generate-pr-comment.outputs.summary }}
           comment_tag: playwright-report
-      - name: Upload playwright screenshots
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-failure-screenshots
-          path: apps/nextjs/tests-e2e/test-results ## Folder used in playwright.config.js `outputDir`
-          retention-days: 30
