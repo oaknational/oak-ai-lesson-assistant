@@ -1,10 +1,8 @@
 import * as Sentry from "@sentry/nextjs";
 import { NextFetchEvent, NextRequest } from "next/server";
 
-import { ErrorWithPotentialCause } from "../middleware";
-
 export async function logError(
-  error: unknown,
+  rootError: unknown,
   request: NextRequest,
   event: NextFetchEvent,
 ): Promise<void> {
@@ -33,21 +31,11 @@ export async function logError(
     bodyText = "Failed to read request body";
   }
 
-  const errorWithCause = error as ErrorWithPotentialCause;
-
-  if (
-    error instanceof SyntaxError ||
-    errorWithCause.cause instanceof SyntaxError
-  ) {
-    const syntaxError =
-      error instanceof SyntaxError
-        ? error
-        : (errorWithCause.cause as SyntaxError);
-
+  if (rootError instanceof SyntaxError) {
     // Log the error so it is picked up by the log drain (eg. DataDog)
     console.warn({
       event: "middleware.syntaxError",
-      error: syntaxError.message,
+      error: rootError.message,
       url: requestInfo.url,
       request: requestInfo,
     });
@@ -56,9 +44,9 @@ export async function logError(
   }
 
   const wrappedError =
-    error instanceof Error
-      ? error
-      : new Error("Error in nextMiddleware", { cause: error });
+    rootError instanceof Error
+      ? rootError
+      : new Error("Error in nextMiddleware", { cause: rootError });
 
   Sentry.captureException(wrappedError, {
     extra: {

@@ -6,27 +6,11 @@ import {
   NextResponse,
 } from "next/server";
 
+import { getRootErrorCause } from "./lib/errors/getRootErrorCause";
 import { sentryCleanup } from "./lib/sentry/sentryCleanup";
 import { authMiddleware } from "./middlewares/auth.middleware";
 import { CspConfig, addCspHeaders } from "./middlewares/csp";
 import { logError } from "./middlewares/middlewareErrorLogging";
-
-export type ErrorWithPotentialCause = Error & {
-  cause?: unknown;
-};
-
-function determineErrorResponse(error: unknown): Response {
-  const errorWithCause = error as ErrorWithPotentialCause;
-
-  if (
-    error instanceof SyntaxError ||
-    errorWithCause.cause instanceof SyntaxError
-  ) {
-    return NextResponse.json({ error: "Bad Request" }, { status: 400 });
-  }
-
-  return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
-}
 
 const cspConfig: CspConfig = {
   strictCsp: process.env.STRICT_CSP === "true",
@@ -51,8 +35,15 @@ export async function handleError(
   request: NextRequest,
   event: NextFetchEvent,
 ): Promise<Response> {
-  await logError(error, request, event);
-  return determineErrorResponse(error);
+  const rootError = getRootErrorCause(error);
+
+  await logError(rootError, request, event);
+
+  if (rootError instanceof SyntaxError) {
+    return NextResponse.json({ error: "Bad Request" }, { status: 400 });
+  }
+
+  return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
 }
 
 const nextMiddleware: NextMiddleware = async (request, event) => {
