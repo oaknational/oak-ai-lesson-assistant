@@ -146,6 +146,7 @@ export const buildCspHeaders = (nonce: string, config: CspConfig) => {
       "'self'",
       "gstatic-fonts.thenational.academy",
       "fonts.gstatic.com",
+      "data:",
     ],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
