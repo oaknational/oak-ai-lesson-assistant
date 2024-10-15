@@ -19,6 +19,7 @@ import {
   TextDocumentSchema,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
+import { AilaRagRelevantLesson } from "../../protocol/schema";
 import { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
@@ -30,6 +31,7 @@ import { Message } from "./types";
 export class AilaChat implements AilaChatService {
   private _id: string;
   private _messages: Message[];
+  private _relevantLessons: AilaRagRelevantLesson[];
   private _isShared: boolean | undefined;
   private _userId: string | undefined;
   private _aila: AilaServices;
@@ -66,6 +68,7 @@ export class AilaChat implements AilaChatService {
       });
     this._patchEnqueuer = new PatchEnqueuer();
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
+    this._relevantLessons = [];
   }
 
   public get aila() {
@@ -95,6 +98,14 @@ export class AilaChat implements AilaChatService {
 
   public get parsedMessages() {
     return this._messages.map((m) => parseMessageParts(m.content));
+  }
+
+  public get relevantLessons() {
+    return this._relevantLessons;
+  }
+
+  public set relevantLessons(lessons: AilaRagRelevantLesson[]) {
+    this._relevantLessons = lessons;
   }
 
   public getPatchEnqueuer(): PatchEnqueuer {

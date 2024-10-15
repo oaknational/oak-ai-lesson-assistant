@@ -573,6 +573,14 @@ export const LessonPlanJsonSchema = zodToJsonSchema(
   "lessonPlanSchema",
 );
 
+const AilaRagRelevantLessonSchema = z.object({
+  oakLessonId: z.number(),
+  lessonPlanId: z.string(),
+  title: z.string(),
+});
+
+export type AilaRagRelevantLesson = z.infer<typeof AilaRagRelevantLessonSchema>;
+
 export const chatSchema = z
   .object({
     id: z.string(),
@@ -580,7 +588,8 @@ export const chatSchema = z
     title: z.string(),
     userId: z.string(),
     lessonPlan: LessonPlanSchemaWhilstStreaming,
-    sharePath: z.string().optional(), // deprecated, will remove after migration
+    relevantLessons: z.array(AilaRagRelevantLessonSchema).optional(),
+    // sharePath: z.string().optional(), // @todo remove this deprecated field (first confirm it doesn't exist)
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]),
     startingMessage: z.string().optional(),

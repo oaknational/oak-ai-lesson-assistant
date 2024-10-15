@@ -51,9 +51,9 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
     }
     const { title, subject, keyStage, topic } = this._aila?.lessonPlan ?? {};
 
-    let relevantLessonPlans = noRelevantLessonPlans;
+    let relevantLessonPlans: Partial<LooseLessonPlan>[] = [];
     await tryWithErrorReporting(async () => {
-      relevantLessonPlans = await fetchRagContent({
+      const ragContent = await fetchRagContent({
         title: title ?? "unknown",
         subject,
         topic,
@@ -66,10 +66,25 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
         chatId,
         userId,
       });
+      relevantLessonPlans = ragContent.results;
     }, "Did not fetch RAG content. Continuing");
 
     console.log("Fetched relevant lesson plans", relevantLessonPlans.length);
-    return relevantLessonPlans;
+    // Set lesson plan on AilaChat class
+    this._aila.chat.relevantLessons = [];
+
+    const stringifiedRelevantLessonPlans = JSON.stringify(
+      relevantLessonPlans,
+      null,
+      2,
+    );
+
+    console.log(
+      "Got RAG content, length:",
+      stringifiedRelevantLessonPlans.length,
+    );
+
+    return stringifiedRelevantLessonPlans;
   }
 
   private systemPrompt(

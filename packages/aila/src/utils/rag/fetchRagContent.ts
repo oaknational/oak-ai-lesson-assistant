@@ -25,8 +25,6 @@ export async function fetchRagContent({
   chatId: string;
   userId?: string;
 }) {
-  let content = "[]";
-
   const rag = new RAG(prisma, { chatId, userId });
   const ragLessonPlans = await tryWithErrorReporting(
     () => {
@@ -45,14 +43,11 @@ export async function fetchRagContent({
     "info",
   );
 
-  if (ragLessonPlans) {
-    const minifiedLessons = ragLessonPlans.map((l) => {
-      return minifyLessonPlanForRelevantLessons(l);
-    });
-    content = JSON.stringify(minifiedLessons, null, 2);
-  }
+  const minifiedLessons = ragLessonPlans?.map((l) => {
+    return minifyLessonPlanForRelevantLessons(l);
+  });
 
-  console.log("Got RAG content, length:", content.length);
-
-  return content;
+  return {
+    results: minifiedLessons ?? [],
+  };
 }
