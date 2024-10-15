@@ -18,10 +18,11 @@ const prevStep = getPrevStep(currentStep);
  */
 export async function lpChunking({
   prisma,
+  ingestId,
 }: {
   prisma: PrismaClientWithAccelerate;
+  ingestId: string;
 }) {
-  const ingestId = await getLatestIngestId({ prisma });
   const lessons = await loadLessonsAndUpdateState({
     prisma,
     ingestId,

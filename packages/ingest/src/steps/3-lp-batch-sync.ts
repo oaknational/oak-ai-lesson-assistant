@@ -1,6 +1,5 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
 import { handleLessonPlanBatchSuccess } from "../generate-lesson-plans/handleLessonPlanBatchSuccess";
 import { handleOpenAiBatchErrorFile } from "../openai-batches/handleOpenAiBatchErrorFile";
 import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
@@ -10,10 +9,11 @@ import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
  */
 export async function lpBatchSync({
   prisma,
+  ingestId,
 }: {
   prisma: PrismaClientWithAccelerate;
+  ingestId: string;
 }) {
-  const ingestId = await getLatestIngestId({ prisma });
   const batches = await prisma.ingestOpenAiBatch.findMany({
     where: {
       ingestId,

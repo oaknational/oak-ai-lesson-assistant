@@ -21,6 +21,7 @@
     "@oakai/aila": "*",
     "@oakai/core": "*",
     "@oakai/db": "*",
+    "csv-parser": "^3.0.0",
     "graphql-request": "^6.1.0",
     "webvtt-parser": "^2.2.0",
     "zod": "3.23.8"

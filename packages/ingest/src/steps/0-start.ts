@@ -1,12 +1,25 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
+import { IngestError } from "../IngestError";
+import { IngestConfig } from "../config/ingestConfig";
 import { createIngestRecord } from "../db-helpers/createIngestRecord";
-import { importLessons } from "../import-lessons/importLessons";
+import { importLessonsFromCSV } from "../import-lessons/importLessonsFromCSV";
+import { importLessonsFromOakDB } from "../import-lessons/importLessonsFromOakDB";
+
+const config: IngestConfig = {
+  completionModel: "gpt-4o-2024-08-06",
+  completionTemperature: 0.7,
+  embeddingDimensions: 256,
+  embeddingModel: "text-embedding-3-large",
+  sourcePartsToInclude: "all",
+  source: {
+    type: "oak-db",
+  },
+};
 
 /**
  * This function starts an ingest process.
  * It creates a new ingest record in the database, and imports lessons from the Oak API.
- * @todo add configuration for which lessons to import including retrying failed lessons from a previous ingest.
  */
 export async function ingestStart({
   prisma,
@@ -15,13 +28,31 @@ export async function ingestStart({
 }) {
   const { id: ingestId } = await createIngestRecord({
     prisma,
-    config: {
-      completionModel: "gpt-4o-2024-08-06",
-      embeddingDimensions: 256,
-      embeddingModel: "text-embedding-3-large",
-      sourcePartsToInclude: "all",
-    },
+    config,
   });
 
-  await importLessons({ ingestId, onError: console.error });
+  switch (config.source.type) {
+    case "oak-db":
+      await importLessonsFromOakDB({
+        ingestId,
+        onError: console.error,
+      });
+      break;
+    case "csv":
+      if (config.sourcePartsToInclude !== "title-subject-key-stage") {
+        throw new IngestError(
+          `sourcePartsToInclude must be "title-subject-key-stage" when importing from a CSV file`,
+        );
+      }
+      await importLessonsFromCSV({
+        ingestId,
+        filePath: config.source.filePath,
+        onError: console.error,
+      });
+      break;
+    default:
+      throw new IngestError(`Unsupported source type: ${config.source}`);
+  }
+
+  console.log(`Ingest started with id: ${ingestId}`);
 }

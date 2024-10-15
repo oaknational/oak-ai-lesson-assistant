@@ -1,6 +1,5 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
 import { handleEmbeddingBatchSuccess } from "../embedding/handleEmbeddingBatchSuccess";
 import { handleOpenAiBatchErrorFile } from "../openai-batches/handleOpenAiBatchErrorFile";
 import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
@@ -10,11 +9,11 @@ import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
  */
 export async function lpPartsEmbedSync({
   prisma,
+  ingestId,
 }: {
   prisma: PrismaClientWithAccelerate;
+  ingestId: string;
 }) {
-  const ingestId = await getLatestIngestId({ prisma });
-
   const embeddingsBatches = await prisma.ingestOpenAiBatch.findMany({
     where: {
       ingestId,

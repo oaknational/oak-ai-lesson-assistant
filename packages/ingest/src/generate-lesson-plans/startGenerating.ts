@@ -22,7 +22,9 @@ export async function startGenerating({
     data: lessons.map((lesson) => ({
       lessonId: lesson.id,
       rawLesson: lesson.data,
-      captions: CaptionsSchema.parse(lesson.captions?.data),
+      captions: lesson.captions
+        ? CaptionsSchema.parse(lesson.captions?.data)
+        : undefined,
       ingest,
     })),
     endpoint: "/v1/chat/completions",

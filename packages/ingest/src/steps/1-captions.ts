@@ -5,7 +5,7 @@ import { getCaptionsByFileName } from "../captions/getCaptionsByFileName";
 import { getCaptionsFileNameForLesson } from "../captions/getCaptionsFileNameForLesson";
 import { createCaptionsRecord } from "../db-helpers/createCaptionsRecord";
 import { createErrorRecord } from "../db-helpers/createErrorRecord";
-import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
+import { getIngestById } from "../db-helpers/getIngestById";
 import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
 import { Step, getPrevStep } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
@@ -19,10 +19,12 @@ const prevStep = getPrevStep(currentStep);
  */
 export async function captions({
   prisma,
+  ingestId,
 }: {
   prisma: PrismaClientWithAccelerate;
+  ingestId: string;
 }) {
-  const ingestId = await getLatestIngestId({ prisma });
+  const ingest = await getIngestById({ prisma, ingestId });
 
   const lessons = await loadLessonsAndUpdateState({
     prisma,
@@ -30,6 +32,18 @@ export async function captions({
     prevStep,
     currentStep,
   });
+
+  if (ingest.config.sourcePartsToInclude === "title-subject-key-stage") {
+    console.log("Skipping captions fetch for title-subject-key-stage ingest");
+    await updateLessonsState({
+      prisma,
+      ingestId,
+      lessonIds: lessons.map((lesson) => lesson.id),
+      step: currentStep,
+      stepStatus: "completed",
+    });
+    return;
+  }
 
   console.log(`Fetching captions for ${lessons.length} lessons`);
 
@@ -41,7 +55,9 @@ export async function captions({
    */
   for (const lesson of lessons) {
     try {
-      const fileName = getCaptionsFileNameForLesson(lesson.data);
+      const fileName = getCaptionsFileNameForLesson({
+        videoTitle: lesson.data.videoTitle,
+      });
       const { caption: captions } = await getCaptionsByFileName(fileName);
 
       await persistOnSuccess({

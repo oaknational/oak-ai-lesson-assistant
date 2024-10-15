@@ -1,5 +1,6 @@
 import { isTruthy } from "remeda";
 
+import { IngestError } from "../IngestError";
 import { RawLesson, Captions } from "../zod-schema/zodSchema";
 import { exitQuizPromptPart } from "./user-prompt-parts/exitQuiz.promptPart";
 import { keyLearningPointsPromptPart } from "./user-prompt-parts/keyLearningPoints.promptPart";
@@ -18,7 +19,7 @@ export function getUserPrompt({
   sourcePartsToInclude = "all",
 }: {
   rawLesson: RawLesson;
-  captions: Captions;
+  captions?: Captions;
   sourcePartsToInclude?: SourcePartsToInclude;
 }): string {
   switch (sourcePartsToInclude) {
@@ -26,6 +27,11 @@ export function getUserPrompt({
       return titleSubjectKeyStagePromptPart(rawLesson);
 
     case "all":
+      if (!captions) {
+        throw new IngestError(
+          "Captions are required for sourcePartsToInclude 'all'",
+        );
+      }
       return [
         titleSubjectKeyStagePromptPart(rawLesson),
         yearPromptPart(rawLesson),

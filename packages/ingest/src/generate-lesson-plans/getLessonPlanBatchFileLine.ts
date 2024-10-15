@@ -20,7 +20,7 @@ export function getLessonPlanBatchFileLine({
   ingest: PersistedIngest;
   lessonId: string;
   rawLesson: RawLesson;
-  captions: Captions;
+  captions?: Captions;
 }) {
   const { lessonTitle, keyStageSlug, subjectSlug } = rawLesson;
   const lessonPlan: LooseLessonPlan = {
@@ -47,6 +47,7 @@ export function getLessonPlanBatchFileLine({
   const batchLine = batchLineCompletion({
     customId: createCustomId({ task: "generate-lesson-plans", lessonId }),
     model: ingest.config.completionModel,
+    temperature: ingest.config.completionTemperature,
     systemPrompt,
     userPrompt,
     responseFormat: zodResponseFormat(CompletedLessonPlanSchema, "lesson_plan"),
