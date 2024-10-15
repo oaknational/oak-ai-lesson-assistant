@@ -46,7 +46,7 @@ export async function handleLessonPlanBatchSuccess({
 
       lessonIdsCompleted.push(lessonId);
     } catch (cause) {
-      let lessonId;
+      let lessonId: string | undefined;
       if (cause instanceof IngestError && cause.lessonId) {
         lessonIdsFailed.push(cause.lessonId);
         continue;
