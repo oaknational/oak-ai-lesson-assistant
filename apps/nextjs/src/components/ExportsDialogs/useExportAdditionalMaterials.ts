@@ -9,6 +9,7 @@ import { ZodError } from "zod";
 import { trpc } from "@/utils/trpc";
 
 import { ExportsHookProps } from "./exports.types";
+import { useExistenceCheck } from "./useExistenceCheck";
 
 export function useExportAdditionalMaterials({
   onStart,
@@ -35,30 +36,14 @@ export function useExportAdditionalMaterials({
 
   const checkForSnapShotAndPreloadQuery =
     trpc.exports.checkIfAdditionalMaterialsDownloadExists.useMutation();
-  const [checked, setChecked] = useState(false);
-  const check = useCallback(async () => {
-    if (
-      debouncedParseResult?.success &&
-      debouncedParseResult.data &&
-      !checked
-    ) {
-      try {
-        checkForSnapShotAndPreloadQuery.mutate({
-          chatId,
-          data: debouncedParseResult.data,
-        });
-        setChecked(true);
-      } catch (error) {
-        console.error("Error during check:", error);
-      }
-    }
-  }, [
-    debouncedParseResult?.success,
-    debouncedParseResult?.data,
+
+  const check = useExistenceCheck({
+    success: debouncedParseResult?.success,
+    data: debouncedParseResult?.data,
     chatId,
-    checkForSnapShotAndPreloadQuery,
-    checked,
-  ]);
+    messageId,
+    checkFn: checkForSnapShotAndPreloadQuery.mutate,
+  });
 
   useEffect(() => {
     check();

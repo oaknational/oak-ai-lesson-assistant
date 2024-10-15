@@ -9,6 +9,7 @@ import { ZodError } from "zod";
 import { trpc } from "@/utils/trpc";
 
 import { ExportsHookProps } from "./exports.types";
+import { useExistenceCheck } from "./useExistenceCheck";
 
 export function useExportQuizDoc({
   onStart,
@@ -40,32 +41,26 @@ export function useExportQuizDoc({
 
   const checkForSnapShotAndPreloadQuery =
     trpc.exports.checkIfQuizDownloadExists.useMutation();
-  const [checked, setChecked] = useState(false);
-  const check = useCallback(async () => {
-    if (
-      debouncedParseResult?.success &&
-      debouncedParseResult.data &&
-      !checked
-    ) {
-      try {
-        checkForSnapShotAndPreloadQuery.mutate({
-          chatId,
-          lessonSnapshot: lesson,
-          data: debouncedParseResult.data,
-        });
-        setChecked(true);
-      } catch (error) {
-        console.error("Error during check:", error);
-      }
-    }
-  }, [
-    lesson,
-    debouncedParseResult?.success,
-    debouncedParseResult?.data,
+  const checkFn = useCallback(
+    (
+      args: Omit<
+        Parameters<typeof checkForSnapShotAndPreloadQuery.mutate>[0],
+        "lessonSnapshot"
+      >,
+    ) =>
+      checkForSnapShotAndPreloadQuery.mutate({
+        ...args,
+        lessonSnapshot: lesson,
+      }),
+    [lesson, checkForSnapShotAndPreloadQuery],
+  );
+  const check = useExistenceCheck({
+    success: debouncedParseResult?.success,
+    data: debouncedParseResult?.data,
     chatId,
-    checkForSnapShotAndPreloadQuery,
-    checked,
-  ]);
+    messageId,
+    checkFn,
+  });
 
   useEffect(() => {
     check();

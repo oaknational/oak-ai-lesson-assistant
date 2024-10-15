@@ -1,5 +1,6 @@
 import { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import { AilaErrorReporter } from "../features/errorReporting";
+import { AilaSnapshotStore } from "../features/snapshotStore";
 import {
   AilaAnalyticsFeature,
   AilaModerationFeature,
@@ -49,6 +50,7 @@ export interface AilaServices {
   readonly threatDetection?: AilaThreatDetectionFeature;
   readonly chat: AilaChatService;
   readonly lesson: AilaLessonService;
+  readonly snapshotStore: AilaSnapshotStore;
   readonly persistence?: AilaPersistenceFeature[];
   readonly moderation?: AilaModerationFeature;
   readonly plugins: AilaPlugin[];
