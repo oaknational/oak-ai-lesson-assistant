@@ -39,8 +39,7 @@ export class AilaSnapshotStore {
     trigger: LessonSnapshotTrigger;
   }) {
     invariant(this._aila.userId, "userId is required for saving snapshots");
-    // invariant(this._aila.chatId, "chatId is required for saving snapshots");
-    // invariant(this._aila.lesson, "lesson is required for saving snapshots");
+
     const lessonSnapshots = new LessonSnapshots(this._prisma);
     await lessonSnapshots.create({
       userId: this._aila.userId,
