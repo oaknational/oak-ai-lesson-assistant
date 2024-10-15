@@ -77,7 +77,7 @@ export default function ShareChat({
           <h1 className="text-3xl font-bold">{lessonPlan.title}</h1>
           <div className="mt-10 pb-30">
             <OakSmallPrimaryButton
-              data-testId="copy-link"
+              data-testid="copy-link"
               onClick={() => {
                 navigator.clipboard.writeText(window.location.href).then(() => {
                   setUserHasCopiedLink(true);

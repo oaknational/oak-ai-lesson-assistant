@@ -1,5 +1,7 @@
 import { useCallback } from "react";
 
+import { findLast } from "remeda";
+
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
@@ -61,7 +63,7 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
   const handleRegenerate = useCallback(() => {
     trackEvent("chat:regenerate", { id: id });
     const lastUserMessage =
-      messages.findLast((m) => m.role === "user")?.content || "";
+      findLast(messages, (m) => m.role === "user")?.content || "";
     lessonPlanTracking.onClickRetry(lastUserMessage);
     queueUserAction("regenerate");
   }, [queueUserAction, lessonPlanTracking, messages, trackEvent, id]);

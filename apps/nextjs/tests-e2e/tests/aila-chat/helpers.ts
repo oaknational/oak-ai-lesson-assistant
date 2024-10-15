@@ -52,7 +52,7 @@ export const applyLlmFixtures = async (
   });
 
   return {
-    setFixture: async (name: string) => {
+    setFixture: (name: string) => {
       fixtureName = name;
     },
   };
