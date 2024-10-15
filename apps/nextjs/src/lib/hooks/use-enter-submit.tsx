@@ -15,7 +15,13 @@ export function useEnterSubmit(): {
       !event.nativeEvent.isComposing
     ) {
       try {
-        formRef.current?.requestSubmit();
+        if (formRef.current?.requestSubmit) {
+          formRef.current.requestSubmit();
+        } else if (formRef.current?.submit) {
+          formRef.current.submit();
+        } else {
+          throw new Error("Form submission not supported");
+        }
       } catch (error) {
         console.error("Failed to submit form:", error);
       }
