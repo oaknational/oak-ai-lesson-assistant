@@ -77,7 +77,7 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
 
   return (
     <html lang="en" suppressHydrationWarning className={lexend.variable}>
-      <ClerkProvider nonce={nonce ?? undefined}>
+      <ClerkProvider>
         <body
           className={cn(
             "overflow-x-hidden font-sans antialiased",

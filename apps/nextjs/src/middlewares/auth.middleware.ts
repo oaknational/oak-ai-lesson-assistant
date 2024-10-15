@@ -122,7 +122,10 @@ function conditionallyProtectRoute(
     return;
   }
 
-  if (process.env.NODE_ENV === "development" && req.headers["x-dev-preload"]) {
+  if (
+    process.env.NODE_ENV === "development" &&
+    req.headers.get("x-dev-preload")
+  ) {
     if (isPreloadableRoute(req)) {
       log("Dev preload route: ALLOW");
       return;
@@ -149,7 +152,7 @@ export async function authMiddleware(
       return response;
     }
   } catch (error) {
-    console.error("Error in authMiddleware", error);
+    console.error({ event: "middleware.auth.error", error });
     throw new Error("Error in authMiddleware", { cause: error });
   }
 

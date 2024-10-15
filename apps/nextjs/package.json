@@ -24,7 +24,7 @@
   },
   "prettier": "@oakai/prettier-config",
   "dependencies": {
-    "@clerk/nextjs": "5.1.0",
+    "@clerk/nextjs": "5.7.2",
     "@clerk/testing": "^1.3.7",
     "@cloudinary/react": "^1.11.2",
     "@cloudinary/url-gen": "^1.14.0",
