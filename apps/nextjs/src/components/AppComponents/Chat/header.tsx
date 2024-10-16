@@ -88,7 +88,7 @@ export function Header() {
             <OakLink href="/" aria-label="go to home page">
               <OakIconLogo />
             </OakLink>
-            <OakSpan $font="heading-5">Aila</OakSpan>
+            <OakSpan $font="heading-6">Aila</OakSpan>
           </OakFlex>
           <OakFlex>
             <BetaTagHeader />
@@ -112,7 +112,7 @@ export function Header() {
                   $mr={"space-between-sssx"}
                   iconName={"question-mark"}
                 />
-                <OakSpan $font={"body-1-bold"} $color={"black"}>
+                <OakSpan $font="body-2" $color={"black"}>
                   Help
                 </OakSpan>
               </OakFlex>

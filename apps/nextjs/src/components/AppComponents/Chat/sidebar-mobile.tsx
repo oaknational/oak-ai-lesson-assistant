@@ -31,7 +31,7 @@ export function SidebarMobile({ children }: Readonly<SidebarMobileProps>) {
         >
           <Icon icon="sidebar" size="md" />
           <OakFlex $pl={"inner-padding-ssx"} $display={["none", "flex"]}>
-            <OakSpan $font={"body-1-bold"}>Menu</OakSpan>
+            <OakSpan $font={"body-2"}>Menu</OakSpan>
           </OakFlex>
 
           <span className="sr-only block sm:hidden">Toggle Sidebar</span>
