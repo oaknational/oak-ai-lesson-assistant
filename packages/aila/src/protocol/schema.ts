@@ -580,7 +580,6 @@ export const chatSchema = z
     title: z.string(),
     userId: z.string(),
     lessonPlan: LessonPlanSchemaWhilstStreaming,
-    sharePath: z.string().optional(), // deprecated, will remove after migration
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]),
     startingMessage: z.string().optional(),
@@ -612,7 +611,6 @@ export const chatSchemaWithMissingMessageIds = z
     title: z.string(),
     userId: z.string(),
     lessonPlan: LessonPlanSchemaWhilstStreaming,
-    sharePath: z.string().optional(), // deprecated, will remove after migration
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]),
     startingMessage: z.string().optional(),
