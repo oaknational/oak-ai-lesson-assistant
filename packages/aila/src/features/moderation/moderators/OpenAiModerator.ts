@@ -171,7 +171,7 @@ export class OpenAiModerator extends AilaModerator {
     try {
       return await this._moderate(input, 0);
     } catch (error) {
-      log("Moderation error: ", error);
+      console.error("Moderation error: ", error);
       if (error instanceof AilaModerationError) {
         throw error;
       }

@@ -14,6 +14,7 @@ type ChildKey =
   | "aila:protocol"
   | "aila:rag"
   | "aila:testing"
+  | "admin"
   | "analytics"
   | "app"
   | "auth"

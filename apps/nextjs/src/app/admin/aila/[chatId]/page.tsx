@@ -15,7 +15,7 @@ interface AdminChatProps {
   };
 }
 
-const log = aiLogger("aila:admin-chat");
+const log = aiLogger("admin");
 
 export default function AdminChat({ params }: Readonly<AdminChatProps>) {
   const user = useUser();
