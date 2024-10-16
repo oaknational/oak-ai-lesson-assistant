@@ -299,7 +299,7 @@ async function invoke({ data, user }: RequestGenerationArgs) {
           ex: 60 * 10,
         });
       } catch (err) {
-        log("Failed to write to redis");
+        logger.error("Failed to write to redis");
         logger.error(err, "Error caching generation stream");
       }
     };

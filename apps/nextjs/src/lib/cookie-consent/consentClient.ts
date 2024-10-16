@@ -19,7 +19,7 @@ export const consentClient = new OakConsentClient({
   consentLogUrl,
   userLogUrl,
   onError: (error) => {
-    log("Oak consent client error", error);
+    console.error("Oak consent client error", error);
     Sentry.captureException(error);
   },
 });

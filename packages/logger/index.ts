@@ -30,6 +30,7 @@ type ChildKey =
   | "ingest"
   | "inngest"
   | "judgements"
+  | "lessons"
   | "middleware:auth"
   | "qd"
   | "rag"

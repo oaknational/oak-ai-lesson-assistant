@@ -13,6 +13,7 @@ import {
 } from "@oakai/core/src/types";
 import { sendQuizFeedbackEmail } from "@oakai/core/src/utils/sendQuizFeedbackEmail";
 import { requestGenerationWorker } from "@oakai/core/src/workers/generations/requestGeneration";
+import { legacyLogger as logger } from "@oakai/logger";
 import { aiLogger } from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 import { Redis } from "@upstash/redis";
@@ -233,7 +234,10 @@ export const generationRouter = router({
           }
         }
       } catch (err) {
-        log("Failed to save re-generation, generationId=%s", generation.id);
+        logger.error(
+          "Failed to save re-generation, generationId=%s",
+          generation.id,
+        );
       }
 
       log("Generation complete");
@@ -295,7 +299,7 @@ export const generationRouter = router({
       const flaggedItem = input.flaggedItem as GenerationPart;
 
       if (!flaggedItem.lastGenerationId) {
-        log(
+        logger.error(
           "User tried to flag generation but did not provide a valid generation part %o",
           flaggedItem,
         );
@@ -335,7 +339,7 @@ export const generationRouter = router({
         );
       } catch (err) {
         // Swallow the error for now as the FE swallows them to not interrupt
-        log(
+        logger.error(
           err,
           "Failed to record user flagging %s",
           flaggedItem.lastGenerationId,
@@ -359,7 +363,7 @@ export const generationRouter = router({
       const feedbackModel = new Feedback(ctx.prisma);
 
       if (!tweakedItem.lastGenerationId) {
-        log(
+        logger.error(
           "User tried to flag generation but did not provide a valid generation part %o",
           tweakedItem,
         );
@@ -378,7 +382,7 @@ export const generationRouter = router({
         );
       } catch (err) {
         // Swallow the error for now as the FE swallows them to not interrupt
-        log(
+        logger.error(
           err,
           "Failed to record user tweak for generation=%s",
           tweakedItem.lastGenerationId,

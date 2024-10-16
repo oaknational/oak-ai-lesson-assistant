@@ -24,11 +24,11 @@ export const OnBoarding = () => {
     async function handleDemoStatusSet() {
       if (userHasAlreadyAcceptedTerms && !isHandlingLegacyCase.current) {
         isHandlingLegacyCase.current = true;
-        logger.log("User has already accepted terms");
+        logger.debug("User has already accepted terms");
         await setDemoStatus.mutateAsync();
-        logger.log("Demo status set successfully");
+        logger.debug("Demo status set successfully");
         await reloadSession();
-        logger.log("Session token refreshed successfully. Redirecting");
+        logger.debug("Session token refreshed successfully. Redirecting");
         window.location.href = "/?reason=metadata-upgraded";
       }
     }

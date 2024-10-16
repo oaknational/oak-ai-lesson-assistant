@@ -9,6 +9,7 @@ import {
   ZLesson,
 } from "@oakai/db";
 import { ZNewLesson } from "@oakai/db/schemas/lesson";
+import { aiLogger } from "@oakai/logger";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { PromptTemplate } from "langchain/prompts";
 import { RunnableSequence } from "langchain/schema/runnable";
@@ -18,6 +19,8 @@ import { inngest } from "../client";
 import { createOpenAILangchainClient } from "../llm/openai";
 import { SnippetWithLesson, Snippets } from "./snippets";
 import { Caption, CaptionsSchema } from "./types/caption";
+
+const log = aiLogger("lessons");
 
 const EMBED_AFTER_CREATION = false;
 
@@ -324,7 +327,7 @@ export class Lessons {
         log("Created quiz question answer", quizAnswer);
       } catch (e) {
         // For now, swallow the error until we can change the unique index
-        log(e);
+        console.error(e);
       }
 
       if (quizAnswerId && EMBED_AFTER_CREATION) {

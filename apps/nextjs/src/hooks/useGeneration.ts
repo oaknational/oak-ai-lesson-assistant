@@ -15,8 +15,6 @@ import { DeepPartial } from "@/utils/types/DeepPartial";
 import { RouterInputs, trpc } from "../utils/trpc";
 import { useDidTransition } from "./useDidTransition";
 
-const log = aiLogger("generation");
-
 export type AdditionalUseGenerationOptions = {
   timeout: number;
   stream?: boolean;
@@ -72,7 +70,7 @@ export const useGeneration = <TSchema extends z.Schema>(
               UGErrorCode.PARSE_ERROR,
               err as Error,
             );
-            log("Badly formatted response", { data });
+            console.error("Badly formatted response", { data });
             dispatch({
               type: UGActionType.GenerationFailed,
               error: error,
