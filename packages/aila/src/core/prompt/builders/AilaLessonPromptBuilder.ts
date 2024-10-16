@@ -28,8 +28,18 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
 
   public async build(): Promise<string> {
     const relevantLessonPlans = await this.fetchRelevantLessonPlans();
+    this._aila.chat.relevantLessons = relevantLessonPlans.ragLessonPlans.map(
+      (lesson) => ({
+        lessonPlanId: lesson.id,
+        title: lesson.title,
+      }),
+    );
+
     const baseLessonPlan = await this.fetchBaseLessonPlan();
-    return this.systemPrompt(relevantLessonPlans, baseLessonPlan);
+    return this.systemPrompt(
+      relevantLessonPlans.stringifiedRelevantLessonPlans,
+      baseLessonPlan,
+    );
   }
 
   private async fetchBaseLessonPlan(): Promise<LooseLessonPlan | undefined> {
@@ -43,15 +53,19 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
     }
   }
 
-  private async fetchRelevantLessonPlans(): Promise<string> {
+  private async fetchRelevantLessonPlans(): Promise<{
+    ragLessonPlans: RagLessonPlan[];
+    stringifiedRelevantLessonPlans: string;
+  }> {
     const noRelevantLessonPlans = "None";
     const { chatId, userId } = this._aila;
-    if (!this._aila?.options.useRag) {
-      return noRelevantLessonPlans;
+    if (!this._aila?.options.useRag || !chatId) {
+      return {
+        ragLessonPlans: [],
+        stringifiedRelevantLessonPlans: noRelevantLessonPlans,
+      };
     }
-    if (!chatId) {
-      return noRelevantLessonPlans;
-    }
+
     const { title, subject, keyStage, topic } = this._aila?.lessonPlan ?? {};
 
     let relevantLessonPlans: RagLessonPlan[] = [];
@@ -72,11 +86,6 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
     }, "Did not fetch RAG content. Continuing");
 
     console.log("Fetched relevant lesson plans", relevantLessonPlans.length);
-      this._aila.chat.relevantLessons = relevantLessonPlans.map((lesson) => ({
-      lessonPlanId: lesson.id,
-      title: lesson.title,
-    }));
-
     const stringifiedRelevantLessonPlans = JSON.stringify(
       relevantLessonPlans,
       null,
@@ -88,7 +97,10 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
       stringifiedRelevantLessonPlans.length,
     );
 
-    return stringifiedRelevantLessonPlans;
+    return {
+      ragLessonPlans: relevantLessonPlans,
+      stringifiedRelevantLessonPlans,
+    };
   }
 
   private systemPrompt(
