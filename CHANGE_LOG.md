@@ -1,3 +1,10 @@
+## [1.10.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.10.1...v1.10.2) (2024-10-16)
+
+
+### Bug Fixes
+
+* spacing on onboarding upgrade screen [AI-500] ([#232](https://github.com/oaknational/oak-ai-lesson-assistant/issues/232)) ([0d2a2fd](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0d2a2fd291962e6fb134293f91deded96c49743a))
+
 ## [1.10.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.10.0...v1.10.1) (2024-10-15)
 
 
