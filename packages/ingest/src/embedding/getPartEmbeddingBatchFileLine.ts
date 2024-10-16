@@ -1,3 +1,4 @@
+import { PersistedIngest } from "../db-helpers/getIngestById";
 import { batchLineEmbedding } from "../openai-batches/batchLineEmbedding";
 import { createCustomId } from "../openai-batches/customId";
 
@@ -6,12 +7,14 @@ export type EmbeddingBatchLineProps = {
   partKey: string;
   lessonPlanPartId: string;
   textToEmbed: string;
+  ingest: PersistedIngest;
 };
 export function getPartEmbeddingBatchFileLine({
   lessonPlanPartId,
   lessonId,
   partKey,
   textToEmbed,
+  ingest,
 }: EmbeddingBatchLineProps) {
   return batchLineEmbedding({
     customId: createCustomId({
@@ -21,5 +24,7 @@ export function getPartEmbeddingBatchFileLine({
       partKey,
     }),
     textToEmbed,
+    embeddingModel: ingest.config.embeddingModel,
+    embeddingDimensions: ingest.config.embeddingDimensions,
   });
 }
