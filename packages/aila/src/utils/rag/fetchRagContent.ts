@@ -2,7 +2,15 @@ import { RAG } from "@oakai/core/src/rag";
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
+import { CompletedLessonPlan } from "../../protocol/schema";
 import { minifyLessonPlanForRelevantLessons } from "../lessonPlan/minifyLessonPlanForRelevantLessons";
+
+export type RagLessonPlan = Omit<
+  CompletedLessonPlan,
+  "starterQuiz" | "exitQuiz"
+> & {
+  id: string;
+};
 
 export async function fetchRagContent({
   title,
@@ -24,7 +32,7 @@ export async function fetchRagContent({
   prisma: PrismaClientWithAccelerate;
   chatId: string;
   userId?: string;
-}) {
+}): Promise<RagLessonPlan[]> {
   const rag = new RAG(prisma, { chatId, userId });
   const ragLessonPlans = await tryWithErrorReporting(
     () => {
@@ -43,11 +51,5 @@ export async function fetchRagContent({
     "info",
   );
 
-  const minifiedLessons = ragLessonPlans?.map((l) => {
-    return minifyLessonPlanForRelevantLessons(l);
-  });
-
-  return {
-    results: minifiedLessons ?? [],
-  };
+  return ragLessonPlans?.map(minifyLessonPlanForRelevantLessons) ?? [];
 }

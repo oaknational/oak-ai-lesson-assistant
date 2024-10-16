@@ -14,7 +14,10 @@ import {
 import { findAmericanisms } from "../../../utils/language/findAmericanisms";
 import { compressedLessonPlanForRag } from "../../../utils/lessonPlan/compressedLessonPlanForRag";
 import { fetchLessonPlan } from "../../../utils/lessonPlan/fetchLessonPlan";
-import { fetchRagContent } from "../../../utils/rag/fetchRagContent";
+import {
+  fetchRagContent,
+  RagLessonPlan,
+} from "../../../utils/rag/fetchRagContent";
 import { AilaServices } from "../../AilaServices";
 import { AilaPromptBuilder } from "../AilaPromptBuilder";
 
@@ -51,9 +54,9 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
     }
     const { title, subject, keyStage, topic } = this._aila?.lessonPlan ?? {};
 
-    let relevantLessonPlans: Partial<LooseLessonPlan>[] = [];
+    let relevantLessonPlans: RagLessonPlan[] = [];
     await tryWithErrorReporting(async () => {
-      const ragContent = await fetchRagContent({
+      relevantLessonPlans = await fetchRagContent({
         title: title ?? "unknown",
         subject,
         topic,
@@ -66,12 +69,13 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
         chatId,
         userId,
       });
-      relevantLessonPlans = ragContent.results;
     }, "Did not fetch RAG content. Continuing");
 
     console.log("Fetched relevant lesson plans", relevantLessonPlans.length);
-    // Set lesson plan on AilaChat class
-    this._aila.chat.relevantLessons = [];
+      this._aila.chat.relevantLessons = relevantLessonPlans.map((lesson) => ({
+      lessonPlanId: lesson.id,
+      title: lesson.title,
+    }));
 
     const stringifiedRelevantLessonPlans = JSON.stringify(
       relevantLessonPlans,
