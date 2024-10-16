@@ -1,0 +1,52 @@
+I would like to generate a lesson plan with the title "Abolitionist movements in Britain", subject "history" and key stage "ks3".
+
+
+The lesson is intended for Year 8.
+
+
+The lesson has the following transcript which is a recording of the lesson being delivered by a teacher.
+I would like you to base your response on the content of the lesson rather than imagining other content that could be valid for a lesson with this title.
+Think about the structure of the lesson based on the transcript and see if it can be broken up into logical sections which correspond to the definition of a learning cycle.
+The transcript may include introductory and exit quizzes, so include these if they are multiple choice. Otherwise generate the multiple choice quiz questions based on the content of the rawLesson.
+The transcript is as follows:
+
+<lesson-transcript>
+These are the captions
+</lesson-transcript>
+
+
+One ore more of the learning cycles could be guided by the following:
+
+- I can explain British campaigns for abolition of slavery and the Haitian Revolution's role in strengthening these movements. 
+
+
+The lesson should include the following key learning points. Include these in the lesson plan:
+
+- In 1772 it was established that slavery went against English law and many people felt uneasy about Britain's role in it.
+- People in Britain began to criticise the conditions on slave ships across the 'Middle Passage' to the Americas.
+- The case of the Zong Massacre created public outrage in Britain at the conditions in which enslaved people were living.
+- Groups and individuals such as Olaudah Equiano and William Wilberforce worked for abolition in Britain and its colonies.
+- The Haitian Revolution created fear amongst British plantation owners about similar uprisings across the Caribbean.
+
+
+The lesson should include the following misconceptions. Include these in the lesson plan:
+
+- **Misconception**: Abolition of slavery in Britain and its colonies was a response to a single event., **Description**: Abolition of slavery in Britain and its colonies was a response to a number of events and an ever-growing public demand for change.
+
+
+The lesson should include the following keywords. Include these in the lesson plan:
+
+- **habeas corpus**: English law declaring detention or imprisonment as illegal if you have not committed a crime
+- **massacre**: when many people are killed purposely in a violent manner
+- **abolition**: the outlawing of enslavement by a particular country
+- **intolerable**: being unable to bear an experience any longer
+
+
+The lesson should include the following starter quiz questions. Include them within the lesson plan's starter quiz:
+
+[{"question":"After Toussaint L'Ouverture was captured and transported back to France where he faced imprisonment and death, who took over the resistance in Saint-Domingue against France?","answers":["Jean-Jacques Dessalines"],"distractors":["Charles Leclerc","Napoleon Bonaparte","General Maitland"]},{"question":"What did Toussaint L’Ouverture do when he learned of Napoleon’s plan to reinstate slavery in 1802?","answers":["He declared a new constitution for Saint-Domingue and prepared for independence."],"distractors":["He declared a new slavery law for Saint-Domingue.","He became an enemy of Napoleon and declared independence for Haiti.","He asked Britain for military assistance."]},{"question":"What nationality were the portion of Leclerc's troops who switched sides to fight for the rebels against France?","answers":["Polish"],"distractors":["British","German","French","Spanish"]}]
+
+
+The lesson should include the following exit quiz questions. Include them within the lesson plan's exit quiz:
+
+[{"question":"What was the proof for the British public that life for enslaved people was horrific?","answers":["revolts spreading around European colonies in the Caribbean","the Zong massacre","Olaudah Equiano's autobiography"],"distractors":["the direct experiences that members of the British public had of enslavement","slave-owners' testimony"]},{"question":"What term is used to refer to the fundamental right in English law that prevents people from unlawful imprisonment?","answers":["habeas corpus"],"distractors":["carpe diem","veni vidi vici","pro bono"]},{"question":"In what year did the Zong Massacre occur?","answers":["1781"],"distractors":["1681","1881","1981"]}]

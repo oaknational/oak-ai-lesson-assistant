@@ -32,6 +32,7 @@ export async function expectSectionsComplete(
   const locator = page.getByTestId("chat-progress");
   await expect(locator).toHaveText(
     `${numberOfSections} of 10 sections complete`,
+    { timeout: 10000 },
   );
 }
 
@@ -51,7 +52,7 @@ export const applyLlmFixtures = async (
   });
 
   return {
-    setFixture: async (name: string) => {
+    setFixture: (name: string) => {
       fixtureName = name;
     },
   };

@@ -6,7 +6,10 @@ import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userB
 import { PrismaClientWithAccelerate } from "@oakai/db";
 import invariant from "tiny-invariant";
 
-import { consumeStream } from "@/utils/testHelpers/consumeStream";
+import {
+  consumeStream,
+  extractStreamMessage,
+} from "@/utils/testHelpers/consumeStream";
 
 import { handleChatException } from "./errorHandling";
 
@@ -35,7 +38,7 @@ describe("handleChatException", () => {
       expect(response.status).toBe(200);
 
       invariant(response.body instanceof ReadableStream);
-      const message = JSON.parse(await consumeStream(response.body));
+      const message = extractStreamMessage(await consumeStream(response.body));
 
       expect(message).toEqual({
         type: "error",
@@ -85,8 +88,7 @@ describe("handleChatException", () => {
       expect(response.status).toBe(200);
 
       const consumed = await consumeStream(response.body as ReadableStream);
-      expect(consumed).toMatch(/^\{/);
-      const message = JSON.parse(consumed);
+      const message = extractStreamMessage(consumed);
 
       expect(message).toEqual({
         type: "error",
@@ -112,7 +114,7 @@ describe("handleChatException", () => {
 
       expect(response.status).toBe(200);
 
-      const message = JSON.parse(
+      const message = extractStreamMessage(
         await consumeStream(response.body as ReadableStream),
       );
       expect(message).toEqual({

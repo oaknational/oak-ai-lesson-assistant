@@ -13,4 +13,5 @@ export type AilaPlugin = {
     moderation: Moderation,
     context: AilaPluginContext,
   ): Promise<void>;
+  onBackgroundWork(promise: Promise<unknown>): void;
 };

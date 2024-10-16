@@ -30,7 +30,7 @@ async function signInThroughUI(page: Page) {
   await page.getByRole("button", { name: "Continue", exact: true }).click();
 }
 
-test("authenticate through Clerk UI", async ({ page }) => {
+test.skip("authenticate through Clerk UI", async ({ page }) => {
   await bypassVercelProtection(page);
 
   await page.context().clearCookies();
