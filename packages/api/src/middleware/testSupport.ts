@@ -1,4 +1,3 @@
-import logger from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 
 import { publicProcedure, t } from "../trpc";
@@ -21,7 +20,7 @@ const isTestMiddleware = t.middleware(async ({ next, ctx }) => {
     });
   }
 
-  logger.error("testSupport: Not in a testable environment");
+  console.error("testSupport: Not in a testable environment");
   throw new TRPCError({
     code: "UNAUTHORIZED",
     message: "Not authenticated",
