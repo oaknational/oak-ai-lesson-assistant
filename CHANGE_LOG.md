@@ -1,3 +1,22 @@
+## [1.10.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.10.1...v1.10.2) (2024-10-16)
+
+
+### Bug Fixes
+
+* spacing on onboarding upgrade screen [AI-500] ([#232](https://github.com/oaknational/oak-ai-lesson-assistant/issues/232)) ([0d2a2fd](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0d2a2fd291962e6fb134293f91deded96c49743a))
+
+## [1.10.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.10.0...v1.10.1) (2024-10-15)
+
+
+### Bug Fixes
+
+* add fallback if requestSubmit is not available ([#227](https://github.com/oaknational/oak-ai-lesson-assistant/issues/227)) ([e9b02c6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e9b02c61deaec766bde6bf8494e7b724946f05e3))
+* findLast is not available for all browsers (WIP) ([#211](https://github.com/oaknational/oak-ai-lesson-assistant/issues/211)) ([a94e0f4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a94e0f4570b0bfbd6642d6cb36380b5eaf4b2e52))
+* reduce middleware syntax error logs, send to logs, tests for CSP in each env ([#213](https://github.com/oaknational/oak-ai-lesson-assistant/issues/213)) ([d18a7d2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d18a7d22d3adef8537663f34944edb5b32de4432))
+* remove lookbehind in regex for camelcase conversion ([#226](https://github.com/oaknational/oak-ai-lesson-assistant/issues/226)) ([dc747c3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dc747c3dd0a496f38b55846b40a787da8e92e05a))
+* revert "fix: revert error to previous protocol ([#139](https://github.com/oaknational/oak-ai-lesson-assistant/issues/139)) ([#218](https://github.com/oaknational/oak-ai-lesson-assistant/issues/218)) ([dccba58](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dccba587fe8b5b06b4e2a34a92c45c9aa7597851))
+* silence unknown part type errors ([#229](https://github.com/oaknational/oak-ai-lesson-assistant/issues/229)) ([2e3e56b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2e3e56bbc9c0c8dd2f6d3bf6be9b167eb445ee97))
+
 # [1.10.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.9.2...v1.10.0) (2024-10-14)
 
 

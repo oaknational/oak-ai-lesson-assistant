@@ -1,12 +1,4 @@
-import { createRequire } from "module";
-import { pathsToModuleNameMapper } from "ts-jest";
-
-/* eslint-disable */
-// prettier-ignore
-// @ts-nocheck
-const require = createRequire(import.meta.url);
-/* eslint-enable */
-
+const { pathsToModuleNameMapper } = require("ts-jest");
 const { compilerOptions } = require("./tsconfig.test.json");
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
@@ -33,4 +25,4 @@ const config = {
   resetMocks: true,
 };
 
-export default config;
+module.exports = config;
