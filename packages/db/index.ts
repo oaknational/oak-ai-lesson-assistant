@@ -1,12 +1,16 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
+
+// Prisma supports debug strings like prisma* and prisma:client, but they're very noisy.
+// Instead, add "query" based on our own prisma:query
+const DEBUG = process.env.DEBUG ?? "";
+const logLevels: Prisma.LogLevel[] = DEBUG.split(",").includes("prisma:query")
+  ? ["query", "warn", "error"]
+  : ["error"];
 
 const createPrismaClient = () =>
   new PrismaClient({
-    log:
-      process.env.NODE_ENV === "development"
-        ? ["query", "error", "warn"]
-        : ["error"],
+    log: logLevels,
   }).$extends(withAccelerate());
 
 // Create an instance to extract the type

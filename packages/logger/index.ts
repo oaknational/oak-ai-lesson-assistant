@@ -3,6 +3,7 @@ import debug from "debug";
 const baseLogger = debug("ai");
 
 type ChildKey =
+  | "admin"
   | "aila"
   | "aila:analytics"
   | "aila:errors"
@@ -13,26 +14,26 @@ type ChildKey =
   | "aila:protocol"
   | "aila:rag"
   | "aila:testing"
-  | "app"
   | "analytics"
+  | "app"
   | "auth"
-  | "admin"
   | "chat"
-  | "consent"
   | "cloudinary"
+  | "consent"
   | "demo"
   | "exports"
-  | "ingest"
   | "feedback"
   | "fixtures"
   | "generation"
+  | "ingest"
   | "inngest"
   | "judgements"
+  | "middleware:auth"
   | "qd"
   | "rag"
   | "rate-limiting"
-  | "ui"
-  | "testing";
+  | "testing"
+  | "ui";
 
 export function aiLogger(childKey: ChildKey) {
   return baseLogger.extend(childKey);

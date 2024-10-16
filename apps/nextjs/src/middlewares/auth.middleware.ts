@@ -8,7 +8,7 @@ import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 import { sentrySetUser } from "@/lib/sentry/sentrySetUser";
 
-const log = aiLogger("auth");
+const log = aiLogger("middleware:auth");
 
 declare global {
   interface CustomJwtSessionClaims {
