@@ -590,7 +590,6 @@ export const chatSchema = z
     userId: z.string(),
     lessonPlan: LessonPlanSchemaWhilstStreaming,
     relevantLessons: z.array(AilaRagRelevantLessonSchema).optional(),
-    // sharePath: z.string().optional(), // @todo remove this deprecated field (first confirm it doesn't exist)
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]),
     startingMessage: z.string().optional(),
@@ -622,7 +621,6 @@ export const chatSchemaWithMissingMessageIds = z
     title: z.string(),
     userId: z.string(),
     lessonPlan: LessonPlanSchemaWhilstStreaming,
-    sharePath: z.string().optional(), // deprecated, will remove after migration
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]),
     startingMessage: z.string().optional(),
