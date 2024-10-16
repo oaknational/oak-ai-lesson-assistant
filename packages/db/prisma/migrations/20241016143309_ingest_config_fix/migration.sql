@@ -4,4 +4,4 @@ DROP COLUMN IF EXISTS config;
 
 -- Add the config column to the correct ingest table
 ALTER TABLE "ingest"."ingest"
-ADD COLUMN config JSONB NOT NULL DEFAULT '{}'::JSONB;
+ADD COLUMN config JSONB NOT NULL;
