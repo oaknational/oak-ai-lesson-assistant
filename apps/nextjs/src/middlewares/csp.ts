@@ -139,6 +139,7 @@ export const buildCspHeaders = (nonce: string, config: CspConfig) => {
       "data:",
       "https://img.clerk.com",
       "https://res.cloudinary.com",
+      "https://res.cloudinary.com/oak-web-application/image/upload/",
       "https://*.hubspot.com",
       "https://*.hsforms.com",
     ],
