@@ -40,12 +40,12 @@ export function Header() {
           $alignItems={"center"}
           $bb={"border-solid-m"}
           $background={"lemon"}
-          $pv={"inner-padding-s"}
+          $pv={["inner-padding-ssx", "inner-padding-xs"]}
           $ph={"inner-padding-xl"}
           data-testid="demo-banner"
         >
-          <OakSpan $font={"body-1"}>
-            <OakSpan $font={"body-1-bold"}>
+          <OakSpan $font={["body-2", "body-2", "body-1"]}>
+            <OakSpan $font={["body-2-bold", "body-2-bold", "body-1-bold"]}>
               Create {demo.appSessionsPerMonth} lessons per month •
             </OakSpan>{" "}
             If you are a teacher in the UK,{" "}
