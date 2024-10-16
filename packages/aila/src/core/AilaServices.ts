@@ -8,7 +8,7 @@ import {
   AilaThreatDetectionFeature,
 } from "../features/types";
 import { MessagePart } from "../protocol/jsonPatchProtocol";
-import { LooseLessonPlan } from "../protocol/schema";
+import { AilaRagRelevantLesson, LooseLessonPlan } from "../protocol/schema";
 import { Message } from "./chat";
 import { AilaOptionsWithDefaultFallbackValues } from "./index";
 import { AilaPlugin } from "./plugins";
@@ -32,6 +32,8 @@ export interface AilaChatService {
   readonly userId: string | undefined;
   readonly id: string;
   readonly messages: Message[];
+  get relevantLessons(): AilaRagRelevantLesson[];
+  set relevantLessons(lessons: AilaRagRelevantLesson[]);
   readonly parsedMessages: MessagePart[][];
   readonly isShared: boolean | undefined;
   loadChat({ store }: { store: string }): Promise<void>;
