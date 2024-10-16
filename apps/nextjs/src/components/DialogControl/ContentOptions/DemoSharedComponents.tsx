@@ -4,9 +4,11 @@ export function DialogContainer({ children }: { children: React.ReactNode }) {
   return (
     <OakFlex
       $flexDirection={"column"}
-      $justifyContent={"center"}
-      $alignItems={"start"}
+      $justifyContent={"flex-start"}
+      $alignItems={"flex-start"}
       $gap="all-spacing-4"
+      $height={"100%"}
+      $width={"100%"}
     >
       {children}
     </OakFlex>
