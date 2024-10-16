@@ -84,19 +84,14 @@ const CreatingChatDialog = ({
           You have created {demo.appSessionsPerMonth} of your{" "}
           {demo.appSessionsPerMonth} lessons available this month. If you are a
           teacher in the UK, please{" "}
-          <OakLink color="inherit" href={demo.contactHref}>
-            contact us for full access.
-          </OakLink>
+          <OakLink href={demo.contactHref}>contact us for full access.</OakLink>
         </DialogContent>
 
         <OakFlex
           $width={"100%"}
           $alignItems={"center"}
-          $justifyContent="space-between"
+          $justifyContent="flex-end"
         >
-          <OakSecondaryLink element="button" onClick={closeDialog}>
-            Cancel
-          </OakSecondaryLink>
           <OakPrimaryButton onClick={closeDialog}>
             Back to Aila
           </OakPrimaryButton>
@@ -114,9 +109,7 @@ const CreatingChatDialog = ({
       <DialogContent>
         You can create {demo.appSessionsPerMonth} lessons per month. If you are
         a teacher in the UK and want to create more lessons,{" "}
-        <OakLink color="inherit" href={demo.contactHref}>
-          contact us for full access.
-        </OakLink>
+        <OakLink href={demo.contactHref}>contact us for full access.</OakLink>
       </DialogContent>
 
       <OakFlex
