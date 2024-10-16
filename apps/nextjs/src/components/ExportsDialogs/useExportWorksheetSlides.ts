@@ -9,7 +9,7 @@ import { ZodError } from "zod";
 import { trpc } from "@/utils/trpc";
 
 import { ExportsHookProps } from "./exports.types";
-import { useExistenceCheck } from "./useExistenceCheck";
+import { useExportsExistenceCheck } from "./useExportsExistenceCheck";
 
 export function useExportWorksheetSlides({
   onStart,
@@ -36,7 +36,7 @@ export function useExportWorksheetSlides({
 
   const checkForSnapShotAndPreloadQuery =
     trpc.exports.checkIfWorksheetDownloadExists.useMutation();
-  const check = useExistenceCheck({
+  const check = useExportsExistenceCheck({
     success: debouncedParseResult?.success,
     data: debouncedParseResult?.data,
     chatId,

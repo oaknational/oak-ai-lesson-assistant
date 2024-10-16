@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 
 import * as Sentry from "@sentry/react";
 
-export const useExistenceCheck = <T>({
+export const useExportsExistenceCheck = <T>({
   success,
   data,
   chatId,
