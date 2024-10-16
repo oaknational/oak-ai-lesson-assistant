@@ -1,4 +1,4 @@
-import logger from "@oakai/logger";
+import { legacyLogger } from "@oakai/logger";
 import { EventSchemas, Inngest } from "inngest";
 import getConfig from "next/config";
 
@@ -43,7 +43,7 @@ export const inngest = new Inngest({
   schemas: new EventSchemas().fromZod(types),
   eventKey: inngestEventKey,
   env: inngestEnv,
-  logger: logger,
+  logger: legacyLogger,
   middleware: [eventLogger(inngestEnv, inngestEventKey)],
   isDev: process.env.NODE_ENV === "development" && !isJestEnvironment(),
 });

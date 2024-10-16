@@ -1,8 +1,11 @@
 import { Message } from "@oakai/aila";
 import { LLMService } from "@oakai/aila/src/core/llm/LLMService";
 import { OpenAIService } from "@oakai/aila/src/core/llm/OpenAIService";
+import { aiLogger } from "@oakai/logger";
 import fs from "fs/promises";
 import { ZodSchema } from "zod";
+
+const log = aiLogger("fixtures");
 
 export class FixtureRecordLLMService implements LLMService {
   name = "FixureRecordLLM";
@@ -54,7 +57,7 @@ export class FixtureRecordLLMService implements LLMService {
             null,
             2,
           );
-          console.log("Fixtures: Writing formatted to", formattedUrl);
+          log("Writing formatted to", formattedUrl);
           await fs.writeFile(formattedUrl, formatted);
         } catch (e) {
           console.error("Error writing formatted file", e);
@@ -64,7 +67,7 @@ export class FixtureRecordLLMService implements LLMService {
         const encodedChunks = chunks
           .map((c) => c.replaceAll("\n", "__NEWLINE__"))
           .join("\n");
-        console.log("Fixtures: Writing chunks to", chunksUrl);
+        log("Writing chunks to", chunksUrl);
         await fs.writeFile(chunksUrl, encodedChunks);
 
         controller.close();

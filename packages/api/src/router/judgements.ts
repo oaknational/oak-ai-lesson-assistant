@@ -1,10 +1,12 @@
 import { KeyStageName, SubjectName, subjectsAndKeyStages } from "@oakai/core";
 import { sendJudgementFeedbackEmail } from "@oakai/core/src/utils/sendJudgementFeedbackEmail";
-import logger from "@oakai/logger";
+import { aiLogger } from "@oakai/logger";
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
+
+const log = aiLogger("judgements");
 
 interface QuestionForJudgement {
   questionForJudgement: {
@@ -154,7 +156,7 @@ export const judgementRouter = router({
             },
           });
       } catch (err) {
-        logger.error("User tried to vote for a question", err);
+        log("User tried to vote for a question", err);
       }
 
       return true;
@@ -181,7 +183,7 @@ export const judgementRouter = router({
             },
           });
       } catch (err) {
-        logger.error("User tried to flag or skip a question", err);
+        log("User tried to flag or skip a question", err);
       }
       return true;
     }),
@@ -246,9 +248,9 @@ export const judgementRouter = router({
             },
           },
         });
-        console.log("Flagged in comparative judgement successfully");
+        log("Flagged in comparative judgement successfully");
       } catch (err) {
-        logger.error("User tried to flag or skip a question", err);
+        log("User tried to flag or skip a question", err);
         return err;
       }
       return true;

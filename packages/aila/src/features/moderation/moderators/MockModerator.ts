@@ -1,6 +1,9 @@
 import { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { aiLogger } from "@oakai/logger";
 
 import { AilaModerator, AilaModerationError } from ".";
+
+const log = aiLogger("aila:testing");
 
 export class MockModerator extends AilaModerator {
   private _mockedResults: ModerationResult[] = [];
@@ -12,7 +15,7 @@ export class MockModerator extends AilaModerator {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async moderate(input: string): Promise<ModerationResult> {
     const result = this._mockedResults.shift();
-    console.log("Mock moderation: ", input, result);
+    log("Mock moderation: ", input, result);
 
     if (!result) {
       throw new AilaModerationError("No more mocked results");

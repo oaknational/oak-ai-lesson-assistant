@@ -3,6 +3,7 @@ import {
   PrismaClientWithAccelerate,
   prisma as globalPrisma,
 } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
 import { AilaPersistence } from "../..";
 import {
@@ -12,6 +13,8 @@ import {
 } from "../../../../core";
 import { AilaPersistedChat, chatSchema } from "../../../../protocol/schema";
 import { AilaGeneration } from "../../../generation";
+
+const log = aiLogger("aila:persistence");
 
 export class AilaPrismaPersistence extends AilaPersistence {
   private _prisma: PrismaClientWithAccelerate;
@@ -54,7 +57,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
   async upsertChat(): Promise<void> {
     const payload = this.createChatPayload();
     if (!payload.id || !payload.userId) {
-      console.log("No ID or userId found for chat. Not persisting.");
+      log("No ID or userId found for chat. Not persisting.");
       return;
     }
 
@@ -80,7 +83,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
 
     const payload = this.createGenerationPayload(generation);
     if (!payload.id || !payload.userId) {
-      console.log(
+      log(
         "No ID or userId found for generation. Not persisting.",
         generation.id,
       );

@@ -3,6 +3,7 @@ import {
   template,
 } from "@oakai/core/src/prompts/lesson-assistant";
 import { prisma as globalPrisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
 import { DEFAULT_RAG_LESSON_PLANS } from "../../../constants";
 import { tryWithErrorReporting } from "../../../helpers/errorReporting";
@@ -17,6 +18,8 @@ import { fetchLessonPlan } from "../../../utils/lessonPlan/fetchLessonPlan";
 import { fetchRagContent } from "../../../utils/rag/fetchRagContent";
 import { AilaServices } from "../../AilaServices";
 import { AilaPromptBuilder } from "../AilaPromptBuilder";
+
+const log = aiLogger("aila:prompt");
 
 export class AilaLessonPromptBuilder extends AilaPromptBuilder {
   constructor(aila: AilaServices) {
@@ -68,7 +71,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
       });
     }, "Did not fetch RAG content. Continuing");
 
-    console.log("Fetched relevant lesson plans", relevantLessonPlans.length);
+    log("Fetched relevant lesson plans", relevantLessonPlans.length);
     return relevantLessonPlans;
   }
 

@@ -34,7 +34,7 @@ const ReportContentDialog = ({
   }
 
   async function onSubmit(e?: React.FormEvent<HTMLFormElement>) {
-    console.log("submitting");
+    log("submitting");
     e?.preventDefault();
     setUserHasSubmitted(true);
     submitSurveyWithOutClosing({

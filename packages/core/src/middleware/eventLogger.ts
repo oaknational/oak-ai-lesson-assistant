@@ -1,5 +1,7 @@
-import logger from "@oakai/logger";
+import { aiLogger } from "@oakai/logger";
 import { InngestMiddleware } from "inngest";
+
+const log = aiLogger("inngest");
 
 /**
  * Log out the names and some meta of all events sent to inngest
@@ -16,7 +18,7 @@ export function eventLogger(env: string, eventKey: string) {
           return {
             transformInput({ payloads }): void {
               for (const payload of payloads) {
-                logger.debug(
+                log(
                   {
                     inngestClientId: client.id,
                     inngestEventKey: lazyRedact(eventKey, 5),

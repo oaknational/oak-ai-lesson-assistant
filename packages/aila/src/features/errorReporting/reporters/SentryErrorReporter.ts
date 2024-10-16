@@ -1,7 +1,10 @@
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 
 import { AilaErrorSeverity, AilaErrorBreadcrumb } from "../types";
 import { AilaErrorReporter } from "./AilaErrorReporter";
+
+const log = aiLogger("aila:errors");
 
 export class SentryErrorReporter extends AilaErrorReporter {
   public captureException(
@@ -17,7 +20,7 @@ export class SentryErrorReporter extends AilaErrorReporter {
   }
 
   public captureMessage(message: string, level: AilaErrorSeverity): void {
-    console.log(message);
+    log(message);
     Sentry.captureMessage(message, level as Sentry.SeverityLevel);
   }
 

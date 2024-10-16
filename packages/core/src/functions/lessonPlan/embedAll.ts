@@ -22,7 +22,7 @@ export const embedAllLessonPlans = inngest.createFunction(
       },
     );
 
-    console.log("planIds", planIds);
+    log("planIds", planIds);
 
     for (const planId of planIds) {
       await step.run("Get OpenAI embeddings of the lesson plan", async () => {

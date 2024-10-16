@@ -1,7 +1,9 @@
 import { clerkClient, User } from "@clerk/nextjs/server";
-import { default as oakLogger } from "@oakai/logger";
+import { aiLogger } from "@oakai/logger";
 import { Ratelimit } from "@upstash/ratelimit";
 import { waitUntil } from "@vercel/functions";
+
+const log = aiLogger("rate-limiting");
 
 // NOTE: Duplicates RateLimitInfo in packages/api/src/types.ts
 export type RateLimitInfo =
@@ -34,8 +36,6 @@ export class RateLimitExceededError extends Error {
   }
 }
 
-const logger = process.browser ? console : oakLogger;
-
 /**
  * Function to create a user-based rate limiter with a given rate limit
  * @returns A function enforcing user rate limits
@@ -53,7 +53,7 @@ export const userBasedRateLimiter = (rateLimit: Ratelimit): RateLimiter => {
       }
 
       if (await isLimitFreeOakUser(userId)) {
-        logger.debug("Bypassing rate-limit for oak user %s", userId);
+        log("Bypassing rate-limit for oak user %s", userId);
         return { isSubjectToRateLimiting: false };
       }
 
@@ -62,7 +62,7 @@ export const userBasedRateLimiter = (rateLimit: Ratelimit): RateLimiter => {
       waitUntil(pending);
 
       if (!success) {
-        logger.warn("Rate limit exceeded for user %s", userId);
+        log("Rate limit exceeded for user %s", userId);
         throw new RateLimitExceededError(userId, rest.limit, rest.reset);
       }
 

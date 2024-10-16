@@ -4,6 +4,7 @@ import React, { useCallback, useState } from "react";
 
 import { useRouter } from "#next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { aiLogger } from "@oakai/logger";
 import { Flex } from "@radix-ui/themes";
 
 import { Button } from "@/components/AppComponents/Chat/ui/button";
@@ -17,6 +18,8 @@ import { useDialog } from "../DialogContext";
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 import { ChatStartForm } from "./chat-start-form";
 import EmptyScreenAccordion from "./empty-screen-accordian";
+
+const log = aiLogger("chat");
 
 const exampleMessages = [
   {
@@ -49,7 +52,7 @@ export function ChatStart() {
           },
         );
 
-        console.log("App session created:", result);
+        log("App session created:", result);
         trackEvent("chat:send_message", {
           id: result.id,
           message,

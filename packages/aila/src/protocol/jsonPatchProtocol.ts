@@ -1,4 +1,5 @@
 import { moderationCategoriesSchema } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import {
   Operation,
@@ -27,6 +28,8 @@ import {
   QuizSchema,
   QuizSchemaWithoutLength,
 } from "./schema";
+
+const log = aiLogger("aila:protocol");
 
 export const PatchString = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
@@ -561,7 +564,7 @@ export function tryParsePatch(obj: object): PatchDocument | UnknownDocument {
     const patchDocument: PatchDocument = parsed.data;
     return patchDocument;
   } else {
-    console.log("Unable to parse patch", parsed, parsed.error);
+    log("Unable to parse patch", parsed, parsed.error);
     return { type: "unknown", value: JSON.stringify(obj), error: parsed.error };
   }
 }
@@ -702,15 +705,12 @@ export function extractPatches(
         }
       } catch (e) {
         if (e instanceof ZodError) {
-          console.log(
-            "Failed to parse patch due to Zod validation errors:",
-            part,
-          );
+          log("Failed to parse patch due to Zod validation errors:", part);
           e.errors.forEach((error, index) => {
-            console.log(`Error ${index + 1}:`);
-            console.log(`  Path: ${error.path.join(".")}`);
-            console.log(`  Message: ${error.message}`);
-            if (error.code) console.log(`  Code: ${error.code}`);
+            log(`Error ${index + 1}:`);
+            log(`  Path: ${error.path.join(".")}`);
+            log(`  Message: ${error.message}`);
+            if (error.code) log(`  Code: ${error.code}`);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const errorValue = error.path.reduce((obj: any, key) => {
               if (obj && typeof obj === "object" && key in obj) {
@@ -805,7 +805,7 @@ export function applyLessonPlanPatch(
 export function parseJsonSafely(jsonStr: string, logging: boolean = false) {
   function log(...args: unknown[]) {
     if (logging) {
-      console.log("JSON", ...args);
+      log("JSON", ...args);
     }
   }
   if (!jsonStr.trim().startsWith("{") || !jsonStr.includes('":')) {

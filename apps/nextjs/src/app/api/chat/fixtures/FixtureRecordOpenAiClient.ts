@@ -1,8 +1,11 @@
 import { OpenAILike } from "@oakai/aila/src/features/moderation/moderators/OpenAiModerator";
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
+import { aiLogger } from "@oakai/logger";
 import fs from "fs/promises";
 import OpenAI from "openai";
 import { ChatCompletionCreateParamsNonStreaming } from "openai/resources/index.mjs";
+
+const log = aiLogger("fixtures");
 
 export class FixtureRecordOpenAiClient implements OpenAILike {
   constructor(
@@ -30,7 +33,7 @@ export class FixtureRecordOpenAiClient implements OpenAILike {
 
         const responseText = JSON.stringify(response, null, 2);
         const fileUrl = `${process.cwd()}/tests-e2e/recordings/${this.fixtureName}.moderation.json`;
-        console.log("Fixtures: Writing moderation to", fileUrl);
+        log("Writing moderation to", fileUrl);
         await fs.writeFile(fileUrl, responseText);
 
         return response;

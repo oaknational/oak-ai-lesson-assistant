@@ -44,7 +44,7 @@ export function useExportAllLessonAssets({
     if (!active) {
       return;
     }
-    console.log("STARTING");
+    log("STARTING");
 
     if (!debouncedParseResult?.success) {
       Sentry.captureException(

@@ -37,7 +37,7 @@ export class PromptVariants {
     if (existing) {
       return existing;
     }
-    console.log(
+    log(
       `Storing new prompt version for ${slug} / ${variant} with hash ${hash}`,
     );
 

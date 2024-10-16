@@ -3,15 +3,6 @@ import debug from "debug";
 const baseLogger = debug("ai");
 
 type ChildKey =
-  // | "api"
-  // | "db"
-  // | "errors"
-  // | "exports"
-  // | "kv"
-  // | "moderation"
-  // | "prompts"
-  // | "sentry"
-  // | "tracing"
   | "aila"
   | "aila:analytics"
   | "aila:errors"
@@ -40,6 +31,7 @@ type ChildKey =
   | "qd"
   | "rag"
   | "rate-limiting"
+  | "ui"
   | "testing";
 
 export function aiLogger(childKey: ChildKey) {

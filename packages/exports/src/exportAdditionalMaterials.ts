@@ -1,3 +1,5 @@
+import { aiLogger } from "@oakai/logger";
+
 import { prepLessonForAdditionalMaterialsDoc } from "./dataHelpers/prepLessonForSlides";
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
@@ -5,6 +7,8 @@ import { populateDoc } from "./gSuite/docs/populateDoc";
 import { LessonSlidesInputData } from "./schema/input.schema";
 import { getSlidesTemplateIdAdditionalMaterials as getDocsTemplateIdAdditionalMaterials } from "./templates";
 import { OutputData, Result, State } from "./types";
+
+const log = aiLogger("exports");
 
 export const exportAdditionalMaterials = async ({
   snapshotId,
@@ -24,7 +28,7 @@ export const exportAdditionalMaterials = async ({
       prepData: prepLessonForAdditionalMaterialsDoc,
       templateId: getDocsTemplateIdAdditionalMaterials(),
       updateTemplate: async ({ templateCopyId }) => {
-        console.log("templateCopyId", templateCopyId);
+        log("templateCopyId", templateCopyId);
       },
       populateTemplate: async ({ data, templateCopyId }) => {
         const client = await getDocsClient();

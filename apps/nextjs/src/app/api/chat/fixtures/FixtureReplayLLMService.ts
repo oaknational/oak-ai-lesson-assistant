@@ -1,12 +1,15 @@
 import { MockLLMService } from "@oakai/aila/src/core/llm/MockLLMService";
+import { aiLogger } from "@oakai/logger";
 import fs from "fs";
+
+const log = aiLogger("fixtures");
 
 export class FixtureReplayLLMService extends MockLLMService {
   name = "FixureReplayLLM";
 
   constructor(fixtureName: string) {
     const fileUrl = `${process.cwd()}/tests-e2e/recordings/${fixtureName}.chunks.txt`;
-    console.log("Fixtures: Loading chunks from", fileUrl);
+    log("Loading chunks from", fileUrl);
     const fixture = fs.readFileSync(fileUrl, "utf8");
 
     const chunks = fixture

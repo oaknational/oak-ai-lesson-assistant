@@ -1,16 +1,15 @@
 import { SignedInAuthObject } from "@clerk/backend/internal";
-import logger from "@oakai/logger";
+import { aiLogger } from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 
 import { t } from "../trpc";
 import { applyApiKeyMiddleware } from "./apiKeyAuth";
 
+const log = aiLogger("auth");
+
 export const isLoggedInMiddleware = t.middleware(async ({ next, ctx }) => {
   if (!ctx.auth.userId) {
-    logger.debug(
-      { auth: ctx.auth, url: ctx.req.url },
-      `User not authenticated`,
-    );
+    log({ auth: ctx.auth, url: ctx.req.url }, `User not authenticated`);
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "Not authenticated",

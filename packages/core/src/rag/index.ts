@@ -6,6 +6,7 @@ import {
   PrismaClientWithAccelerate,
   Subject,
 } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import {
   LessonPlan,
   LessonSummary,
@@ -30,6 +31,8 @@ import {
 import { JsonValue } from "../models/prompts";
 import { slugify } from "../utils/slugify";
 import { keyStages, subjects } from "../utils/subjects";
+
+const log = aiLogger("rag");
 
 interface FilterOptions {
   key_stage_id?: object;
@@ -87,7 +90,7 @@ export class RAG {
     input: string,
     chatMeta: OpenAICompletionWithLoggingOptions,
   ) {
-    console.log("Categorise input", JSON.stringify(input));
+    log("Categorise input", JSON.stringify(input));
 
     const systemMessage = `You are a classifier which can help me categorise the intent of the user's input for an application which helps a teacher build a lesson plan their students in a UK school.
 You accept a string as input and return an object with the keys keyStage, subject, title and topic.
@@ -179,7 +182,7 @@ Thank you and happy classifying!`;
       const parsedResponse = CategoriseKeyStageAndSubjectResponse.parse(
         JSON.parse(content),
       );
-      console.log("Categorisation results", parsedResponse);
+      log("Categorisation results", parsedResponse);
       return parsedResponse;
     } catch (e) {
       return { error: "Error parsing response" };
@@ -268,7 +271,7 @@ Thank you and happy classifying!`;
       const hash = Md5.hashStr(hashInput);
       const key = `${keyPrefix}:${hash}`;
       const result: string | object | null = await kv.get(key);
-      console.log("getCachedValueByHash: Got result!", result);
+      log("getCachedValueByHash: Got result!", result);
       return result;
     } catch (e) {
       console.error("Error getting cached value by hash", e);
@@ -280,20 +283,20 @@ Thank you and happy classifying!`;
     keyPrefix: string,
     hashInput: string,
   ): Promise<T | null> {
-    console.log("getCachedValueByHash", keyPrefix, hashInput);
+    log("getCachedValueByHash", keyPrefix, hashInput);
     const cachedValue = await this.getCachedValueByHash(keyPrefix, hashInput);
-    console.log("Got cached value", { cachedValue });
+    log("Got cached value", { cachedValue });
     if (
       typeof cachedValue === "string" &&
       cachedValue?.includes("[object Object")
     ) {
-      console.log("Removing cached value because it has badly serialised");
+      log("Removing cached value because it has badly serialised");
       await this.removeCachedValueByHash(keyPrefix, hashInput);
       return null;
     }
     if (cachedValue) {
-      console.log("Got cached serialised by hash", { cachedValue });
-      console.log("Typeof cachedValue", typeof cachedValue);
+      log("Got cached serialised by hash", { cachedValue });
+      log("Typeof cachedValue", typeof cachedValue);
       if (typeof cachedValue === "string") {
         return JSON.parse(cachedValue) as T;
       }
@@ -312,7 +315,7 @@ Thank you and happy classifying!`;
     value: T,
     options = {},
   ): Promise<string | null> {
-    console.log("Set cached serialised by hash", {
+    log("Set cached serialised by hash", {
       keyPrefix,
       hashInput,
       //value,
@@ -386,19 +389,19 @@ Thank you and happy classifying!`;
   }): Promise<LessonPlan[]> {
     const cacheHash = `${keyStage}-${subject}-${title}-${topic}-${k}`;
     const cacheKey = `rag:plans:${chatId}`;
-    console.log("getCachedSerialisedByHash");
+    log("getCachedSerialisedByHash");
     const cached = await this.getCachedSerialisedByHash<LessonPlan[]>(
       cacheKey,
       cacheHash,
     );
 
     if (cached && withCaching) {
-      console.log("normaliseLessonPlan");
+      log("normaliseLessonPlan");
       return cached; //.map((p) => this.normaliseLessonPlan(p));
     }
 
     if (cached && !withCaching) {
-      console.log("Fetch Lessons: Cache hit but not using cache", {
+      log("Fetch Lessons: Cache hit but not using cache", {
         cacheKey,
         cacheHash,
       });
@@ -420,7 +423,7 @@ Thank you and happy classifying!`;
       Sentry.captureException(e);
     }
 
-    console.log("Got plans", { planIds: plans.map((p) => p.id) });
+    log("Got plans", { planIds: plans.map((p) => p.id) });
 
     if (plans.length === 0 || !plans?.filter) {
       return []; // Do not cache empty results
@@ -539,7 +542,7 @@ Thank you and happy classifying!`;
     try {
       const cached = await kv.get<T>(cacheKey);
       if (cached) {
-        console.log(`Cache hit for key: ${cacheKey}`);
+        log(`Cache hit for key: ${cacheKey}`);
         return cached;
       }
     } catch (e) {
@@ -547,7 +550,7 @@ Thank you and happy classifying!`;
       await kv.del(cacheKey); // Remove potentially corrupted cache entry
     }
 
-    console.log(`Cache miss for key: ${cacheKey}, fetching from Prisma`);
+    log(`Cache miss for key: ${cacheKey}, fetching from Prisma`);
     const record = await fetcher();
     if (record) {
       await kv.set<T>(cacheKey, record, { ex: cacheExpiry });
@@ -677,7 +680,7 @@ Thank you and happy classifying!`;
 
     // If none of that works, fall back to categorising the subject based on free text
     if (!foundSubject) {
-      // console.log(
+      //  log(
       //   "No subject found. Categorise the input to try to work out what it is using categoriseKeyStageAndSubject",
       // );
       const categorisation = await this.categoriseKeyStageAndSubject(

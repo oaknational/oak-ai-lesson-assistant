@@ -1,9 +1,12 @@
 import { useState } from "react";
 
+import { aiLogger } from "@oakai/logger";
 import { optionSchema } from "ai-apps/comparative-judgement/state/types";
 import { z } from "zod";
 
 import { trpc } from "@/utils/trpc";
+
+const log = aiLogger("judgements");
 
 type FlaggedOrSkipped = "FLAGGED" | "SKIPPED";
 
@@ -73,10 +76,10 @@ const useQuestionsForJudgement = ({
     };
     const result = await flagOrSkipQuestion.mutateAsync(flaggedInfo);
     if (result) {
-      console.log("Flagged question");
+      log("Flagged question");
       await clearReasonForChoice();
     } else {
-      console.log("Failure flag did not work");
+      log("Failure flag did not work");
     }
   };
 
@@ -88,10 +91,10 @@ const useQuestionsForJudgement = ({
 
     const result = await flagOrSkipQuestion.mutateAsync(skippedInfo);
     if (result) {
-      console.log("Skipped question", result);
+      log("Skipped question", result);
       await clearReasonForChoice();
     } else {
-      console.log("Failure skip did not work");
+      log("Failure skip did not work");
     }
   };
 
@@ -113,10 +116,10 @@ const useQuestionsForJudgement = ({
     const result = await selectedQuestion.mutateAsync(selectedQuestionInfo);
 
     if (result) {
-      console.log("success");
+      log("success");
       await clearReasonForChoice();
     } else {
-      console.log("failure");
+      log("failure");
     }
   };
 

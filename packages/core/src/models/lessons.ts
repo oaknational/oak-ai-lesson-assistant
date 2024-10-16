@@ -113,8 +113,8 @@ export class Lessons {
     if (!lesson) {
       throw new Error("Lesson not found");
     }
-    console.log("Summarising lesson", lesson.slug);
-    console.log("new lesson", lesson.isNewLesson);
+    log("Summarising lesson", lesson.slug);
+    log("new lesson", lesson.isNewLesson);
     let zLesson;
     let description;
     let transcript;
@@ -218,7 +218,7 @@ export class Lessons {
       format_instructions: parser.getFormatInstructions(),
     });
 
-    console.log(response);
+    log(response);
 
     const { summary, topics, learningObjectives, concepts, keywords } =
       response;
@@ -253,7 +253,7 @@ export class Lessons {
       },
     });
 
-    console.log("Created quiz question", quizQuestion);
+    log("Created quiz question", quizQuestion);
     await inngest.send({
       name: "app/quizQuestion.embed",
       data: { quizQuestionId: quizQuestion.id },
@@ -275,7 +275,7 @@ export class Lessons {
     const questionString: string = question.description
       ? `${questionTitleWithPunctuation} ${question.description}`
       : title;
-    console.log("Create question", question, lesson.id);
+    log("Create question", question, lesson.id);
 
     let quizQuestionId: string | undefined;
     const existingQuestion = await this.prisma.quizQuestion.findFirst({
@@ -305,7 +305,7 @@ export class Lessons {
     lessonId: string;
     quizQuestionId: string;
   }) {
-    console.log("Create answer", answer, lessonId);
+    log("Create answer", answer, lessonId);
     const existingAnswer = await this.prisma.quizAnswer.findFirst({
       where: { answer, lessonId, questionId: quizQuestionId },
     });
@@ -321,10 +321,10 @@ export class Lessons {
           },
         });
         quizAnswerId = quizAnswer.id;
-        console.log("Created quiz question answer", quizAnswer);
+        log("Created quiz question answer", quizAnswer);
       } catch (e) {
         // For now, swallow the error until we can change the unique index
-        console.log(e);
+        log(e);
       }
 
       if (quizAnswerId && EMBED_AFTER_CREATION) {
@@ -384,8 +384,8 @@ export class Lessons {
       },
     });
 
-    console.log("Created transcript", transcript);
-    console.log("With captions", lesson.captions);
+    log("Created transcript", transcript);
+    log("With captions", lesson.captions);
     let validCaptions: Caption[];
     try {
       validCaptions = CaptionsSchema.parse(lesson.captions);
@@ -395,7 +395,7 @@ export class Lessons {
     }
     let index = 1;
     for (const caption of validCaptions) {
-      console.log("Creating snippet", caption);
+      log("Creating snippet", caption);
       const snippetAttributes = {
         sourceContent: caption.part,
         content: caption.part,
@@ -416,7 +416,7 @@ export class Lessons {
       } catch (err) {
         console.error("Failed to create snippet", err);
       }
-      console.log("Created snippet", snippet);
+      log("Created snippet", snippet);
       if (snippet && EMBED_AFTER_CREATION) {
         await inngest.send({
           name: "app/snippet.embed",

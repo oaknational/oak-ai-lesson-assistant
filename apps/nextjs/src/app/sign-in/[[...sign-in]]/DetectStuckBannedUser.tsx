@@ -3,7 +3,10 @@
 import { useEffect, useRef } from "react";
 
 import { useClerk } from "@clerk/nextjs";
+import { aiLogger } from "@oakai/logger";
 import { useRouter } from "next/navigation";
+
+const log = aiLogger("auth");
 
 // Clerk has a bug where banned users aren't properly handled when returning from Google auth
 // Instead, they see an indefinite loading spinner
@@ -33,7 +36,7 @@ const DetectStuckBannedUser = () => {
       if (spinnerActive && firstFactorStuck) {
         if (isStuck.current) {
           // After 500ms the user is still stuck
-          console.log("Detected stuck user. Reloading");
+          log("Detected stuck user. Reloading");
 
           // The page will be /sign-in/factor-two...
           // Redirect back to /sign-in root to reset clerk UI and show the correct error

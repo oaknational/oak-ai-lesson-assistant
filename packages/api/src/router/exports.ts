@@ -15,6 +15,7 @@ import {
   exportableQuizAppStateSchema,
 } from "@oakai/exports/src/schema/input.schema";
 import { DeepPartial } from "@oakai/exports/src/types";
+import { aiLogger } from "@oakai/logger";
 import { LessonExportType } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
 import { kv } from "@vercel/kv";
@@ -29,6 +30,8 @@ import { exportQuizDoc } from "../export/exportQuizDoc";
 import { exportWorksheets } from "../export/exportWorksheets";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
+
+const log = aiLogger("exports");
 
 const JsonSchemaString = JSON.stringify(LessonPlanJsonSchema);
 
@@ -361,7 +364,7 @@ export const exportsRouter = router({
           snapshot: data,
         });
         if (!existingSnapshot) {
-          console.log("No existing snapshot found");
+          log("No existing snapshot found");
           return;
         }
 
@@ -404,7 +407,7 @@ export const exportsRouter = router({
           snapshot: data,
         });
         if (!existingSnapshot) {
-          console.log("No existing snapshot found");
+          log("No existing snapshot found");
           return;
         }
         // find the latest export for this snapshot
@@ -494,7 +497,7 @@ export const exportsRouter = router({
           snapshotId: "lessonSnapshot.id",
           userEmail,
           onStateChange: (state) => {
-            console.log(state);
+            log(state);
 
             Sentry.addBreadcrumb({
               category: "exportWorksheetSlides",
@@ -583,7 +586,7 @@ export const exportsRouter = router({
           snapshot: data,
         });
         if (!existingSnapshot) {
-          console.log("No existing snapshot found");
+          log("No existing snapshot found");
           return;
         }
 
@@ -647,7 +650,7 @@ export const exportsRouter = router({
           snapshot: data,
         });
         if (!existingSnapshot) {
-          console.log("No existing snapshot found");
+          log("No existing snapshot found");
           return;
         }
 
@@ -713,7 +716,7 @@ export const exportsRouter = router({
           snapshot: lessonSnapshot,
         });
         if (!existingSnapshot) {
-          console.log("No existing snapshot found");
+          log("No existing snapshot found");
           return;
         }
 
@@ -966,8 +969,8 @@ Oak National Academy`,
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       const data = await kv.get(input.id);
-      console.log("***id", input.id);
-      console.log("***data", data);
+      log("***id", input.id);
+      log("***data", data);
       return data;
     }),
   checkDownloadAllStatus: protectedProcedure

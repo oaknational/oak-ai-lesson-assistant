@@ -3,6 +3,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { PrismaClientWithAccelerate } from "@oakai/db";
 import { exportDocQuiz } from "@oakai/exports";
 import { QuizDocInputData } from "@oakai/exports/src/schema/input.schema";
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 
@@ -13,6 +14,8 @@ import {
   OutputSchema,
   reportErrorResult,
 } from "../router/exports";
+
+const log = aiLogger("exports");
 
 const lessonSnapshotSchema = z.object({}).passthrough();
 
@@ -87,7 +90,7 @@ export async function exportQuizDoc({
     snapshotId: lessonSnapshot.id,
     userEmail,
     onStateChange: (state) => {
-      console.log(state);
+      log(state);
 
       Sentry.addBreadcrumb({
         category: "exportWorksheetDocs",

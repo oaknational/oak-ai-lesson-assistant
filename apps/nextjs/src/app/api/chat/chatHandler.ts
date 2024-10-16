@@ -11,6 +11,7 @@ import {
   withTelemetry,
 } from "@oakai/core/src/tracing/serverTracing";
 import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 // #TODO StreamingTextResponse is deprecated. If we choose to adopt the "ai" package
 // more fully, we should refactor to support its approach to streaming
 // but this could be a significant change given we have our record-separator approach
@@ -25,6 +26,8 @@ import {
   getFixtureModerationOpenAiClient,
 } from "./fixtures";
 import { fetchAndCheckUser } from "./user";
+
+const log = aiLogger("chat");
 
 export const maxDuration = 300;
 
@@ -106,7 +109,7 @@ function handleConnectionAborted(req: NextRequest) {
   const abortController = new AbortController();
 
   req.signal.addEventListener("abort", () => {
-    console.log("Client has disconnected");
+    log("Client has disconnected");
     abortController.abort();
   });
   return abortController;

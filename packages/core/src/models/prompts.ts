@@ -1,5 +1,5 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
-import defaultLogger, { Logger } from "@oakai/logger";
+import { legacyLogger, LegacyLogger } from "@oakai/logger";
 import { Logger as InngestLogger } from "inngest/middleware/logger";
 import { PromptTemplate } from "langchain/prompts";
 import { BaseMessage, SystemMessage } from "langchain/schema";
@@ -33,7 +33,7 @@ export class Prompts {
     private readonly prisma: PrismaClientWithAccelerate,
     // inngest's logger doesn't allow child logger creation, so make
     // sure we accept instances of that too
-    private readonly logger: Logger | InngestLogger = defaultLogger,
+    private readonly logger: LegacyLogger | InngestLogger = legacyLogger,
   ) {}
 
   async get(promptId: string, appId: string) {

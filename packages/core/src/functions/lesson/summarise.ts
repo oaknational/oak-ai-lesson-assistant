@@ -16,7 +16,7 @@ export const summariseLesson = inngest.createFunction(
       "Get an OpenAI summarisation for a lesson",
       async () => {
         const result = await new Lessons(prisma).summarise(lessonId);
-        console.log("result", result);
+        log("result", result);
         return result?.id;
       },
     );

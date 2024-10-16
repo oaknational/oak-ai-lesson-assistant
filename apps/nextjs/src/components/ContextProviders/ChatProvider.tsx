@@ -19,6 +19,7 @@ import {
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { Moderation } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { Message, nanoid } from "ai";
 import { ChatRequestOptions, CreateMessage } from "ai";
@@ -38,6 +39,8 @@ import {
   isAccountLocked,
   isModeration,
 } from "../AppComponents/Chat/chat-message/protocol";
+
+const log = aiLogger("chat");
 
 export type ChatContextProps = {
   id: string;
@@ -201,7 +204,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       setHasFinished(true);
     },
     onResponse(response) {
-      console.log("Chat: On Response");
+      log("Chat: On Response");
 
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
       if (response.status === 401) {
@@ -216,7 +219,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       }
     },
     onFinish(response) {
-      console.log("Chat: On Finish", new Date().toISOString(), {
+      log("Chat: On Finish", new Date().toISOString(), {
         response,
         path,
       });

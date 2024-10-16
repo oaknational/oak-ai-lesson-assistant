@@ -1,4 +1,5 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
 import { IngestError } from "../IngestError";
 import { createErrorRecord } from "../db-helpers/createErrorRecord";
@@ -6,6 +7,8 @@ import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
 import { jsonlToArray } from "../utils/jsonlToArray";
 import { parseBatchEmbedding } from "./parseBatchEmbedding";
+
+const log = aiLogger("ingest");
 
 /**
  * When an embedding batch is successfully processed, this function
@@ -37,7 +40,7 @@ export async function handleEmbeddingBatchSuccess({
     try {
       const batchEmbedding = parseBatchEmbedding(json);
       lessonId = batchEmbedding.lessonId;
-      console.log(`Embedding lesson ${lessonId}`);
+      log(`Embedding lesson ${lessonId}`);
       const { lessonPlanPartId, embedding } = batchEmbedding;
 
       const vector = `[${embedding.join(",")}]`;
@@ -101,7 +104,7 @@ export async function handleEmbeddingBatchSuccess({
     },
   });
 
-  console.log(`Batch ${batchId} completed`);
-  console.log(`Failed: ${lessonIdsFailed.size} lessons`);
-  console.log(`Completed: ${lessonIdsCompleted.size} lessons`);
+  log(`Batch ${batchId} completed`);
+  log(`Failed: ${lessonIdsFailed.size} lessons`);
+  log(`Completed: ${lessonIdsCompleted.size} lessons`);
 }

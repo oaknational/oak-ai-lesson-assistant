@@ -1,5 +1,9 @@
 import { RefObject } from "react";
 
+import { aiLogger } from "@oakai/logger";
+
+const log = aiLogger("ui");
+
 export interface ScrollToRefParams {
   ref: RefObject<HTMLElement>;
   containerRef: RefObject<HTMLElement>;
@@ -40,15 +44,15 @@ export const scrollToRef = ({
         }
 
         // Debug: Log progress and scroll position
-        // console.log(`Time Elapsed: ${timeElapsed}`);
-        // console.log(`Progress: ${progress}`);
-        // console.log(`ScrollTop: ${containerRef.current.scrollTop}`);
+        //  log(`Time Elapsed: ${timeElapsed}`);
+        //  log(`Progress: ${progress}`);
+        //  log(`ScrollTop: ${containerRef.current.scrollTop}`);
 
         if (progress < 1) {
           requestAnimationFrame(scroll);
         } else {
           // Debug: Log completion
-          console.log("Scrolling completed");
+          log("Scrolling completed");
         }
       };
 

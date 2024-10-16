@@ -1,9 +1,11 @@
 import { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
-import logger from "@oakai/logger";
+import { aiLogger } from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 
 import { t } from "../trpc";
+
+const log = aiLogger("auth");
 
 /**
  * Currently this is (1) an expensive check that makes a round trip to Clerk,
@@ -13,7 +15,7 @@ import { t } from "../trpc";
  */
 const isAdminMiddleware = t.middleware(async ({ next, ctx }) => {
   if (!ctx.auth.userId) {
-    logger.debug({ auth: ctx.auth, url: ctx.req.url }, `User not an admin`);
+    log({ auth: ctx.auth, url: ctx.req.url }, `User not an admin`);
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "Not an admin",
@@ -27,7 +29,7 @@ const isAdminMiddleware = t.middleware(async ({ next, ctx }) => {
       email.emailAddress.endsWith("@thenational.academy"),
     )
   ) {
-    logger.debug({ auth: ctx.auth, url: ctx.req.url }, `User not an admin`);
+    log({ auth: ctx.auth, url: ctx.req.url }, `User not an admin`);
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "Not an admin",

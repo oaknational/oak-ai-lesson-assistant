@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react";
 
+import { useRouter } from "#next/navigation";
 import { Box, Flex } from "@radix-ui/themes";
 import { Resource } from "ai-apps/image-alt-generation/types";
 import encode from "base64url";
 import Image from "next/image";
-import { useRouter } from "#next/navigation";
 
 import { trpc } from "@/utils/trpc";
 
@@ -76,7 +76,7 @@ const ImageRow = ({
     };
 
     const encodedResource = encode(JSON.stringify(shareData));
-    console.log("encodedResource", encodedResource);
+    log("encodedResource", encodedResource);
     router.push(`/image-alt-generations/${encodedResource}`);
   }
 

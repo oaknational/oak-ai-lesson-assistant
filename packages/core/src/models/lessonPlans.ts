@@ -227,7 +227,7 @@ export class LessonPlans {
 
     const content = await this.generateContent(lessonPlan.id);
 
-    console.log("Generated content", content);
+    log("Generated content", content);
     if (!content) {
       throw new Error("Unable to generate lesson summary");
     }

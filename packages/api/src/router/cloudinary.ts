@@ -1,9 +1,12 @@
 import { requestImageDescription } from "@oakai/core/src/functions/generation/imageAltTextRequestGeneration.ts/requestImageDescription";
+import { aiLogger } from "@oakai/logger";
 import { v2 as cloudinary } from "cloudinary";
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
+
+const log = aiLogger("cloudinary");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -78,7 +81,8 @@ export const cloudinaryRouter = router({
       const response = await cloudinary.api.update(publicId, {
         context: `alt=${alt}|gptGenerated=true`,
       });
-      console.log("Response from cloudinary", response);
+
+      log("Response from cloudinary", response);
       return true;
     }),
 });

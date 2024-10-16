@@ -7,7 +7,10 @@ import {
 } from "@oakai/core";
 import { UserBannedError } from "@oakai/core/src/models/safetyViolations";
 import { PrismaClientWithAccelerate } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import { waitUntil } from "@vercel/functions";
+
+const log = aiLogger("chat");
 
 type PluginCreator = (
   prisma: PrismaClientWithAccelerate,
@@ -78,7 +81,7 @@ export const createWebActionsPlugin: PluginCreator = (
       );
     } catch (error) {
       if (error instanceof UserBannedError) {
-        console.log("User is banned, queueing account lock message");
+        log("User is banned, queueing account lock message");
         enqueue({
           type: "action",
           action: "SHOW_ACCOUNT_LOCKED",

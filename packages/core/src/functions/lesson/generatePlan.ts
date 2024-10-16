@@ -14,7 +14,7 @@ export const generatePlanForLesson = inngest.createFunction(
 
     await step.run("Create a plan for a lesson", async () => {
       const result = await new LessonPlans(prisma).createFromLesson(lessonId);
-      console.log("result", result);
+      log("result", result);
       return result?.id;
     });
   },

@@ -1,21 +1,24 @@
-/* 
+/*
 Mocks next/navigation for use in Storybook.
-See the readme for more context on why this is needed. 
+See the readme for more context on why this is needed.
 */
+import { aiLogger } from "@oakai/logger";
+
+const log = aiLogger("testing");
 
 export const useRouter = () => ({
   push: (path: string) => {
-    console.log("Mocked push to", path);
+    log("Mocked push to", path);
   },
   redirect: (path: string) => {
-    console.log("Mocked redirect to", path);
+    log("Mocked redirect to", path);
   },
   replace: () => {},
   prefetch: () => {},
 });
 
 export const redirect = (path: string) => {
-  console.log("Mocked redirect to", path);
+  log("Mocked redirect to", path);
 };
 
 export const usePathname = () => "/";

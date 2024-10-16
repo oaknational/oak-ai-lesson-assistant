@@ -1,10 +1,13 @@
 import { prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
 import { IngestError } from "../IngestError";
 import { getDataHash } from "../utils/getDataHash";
 import { RawLesson, RawLessonSchema } from "../zod-schema/zodSchema";
 import { graphqlClient } from "./graphql/client";
 import { query } from "./graphql/query";
+
+const log = aiLogger("ingest");
 
 type ImportRawLessonsProps = {
   ingestId: string;
@@ -54,13 +57,13 @@ export async function importLessons({
       };
     });
 
-    console.log(`Importing ${data.length} lessons`);
+    log(`Importing ${data.length} lessons`);
 
     await prisma.ingestLesson.createMany({
       data,
     });
 
-    console.log(`Imported ${data.length} lessons`);
+    log(`Imported ${data.length} lessons`);
 
     if (lessonData.lessons.length < limit) {
       break;

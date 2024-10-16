@@ -1,5 +1,9 @@
 import { GenerationStatus, ModerationType, Prisma, prisma } from "@oakai/db";
-import baseLogger, { Logger } from "@oakai/logger";
+import {
+  LegacyLogger as Logger,
+  legacyLogger as baseLogger,
+  aiLogger,
+} from "@oakai/logger";
 import { Redis } from "@upstash/redis";
 import { NonRetriableError } from "inngest";
 import { z } from "zod";
@@ -20,6 +24,8 @@ import {
   moderationConfig,
 } from "../../utils/moderation";
 import { requestGenerationSchema } from "./requestGeneration.schema";
+
+const log = aiLogger("generation");
 
 /**
  * Worker converted from an Inngest function
@@ -286,14 +292,14 @@ async function invoke({ data, user }: RequestGenerationArgs) {
      * to work around streaming limitations with netlify
      */
     const onNewToken = async (partialJson: string) => {
-      console.log("onNewToken", partialJson);
+      log("onNewToken", partialJson);
       try {
         await redis.set(`partial-generation-${generationId}`, partialJson, {
           // Expire after 10 minutes
           ex: 60 * 10,
         });
       } catch (err) {
-        console.log("Failed to write to redis");
+        log("Failed to write to redis");
         logger.error(err, "Error caching generation stream");
       }
     };

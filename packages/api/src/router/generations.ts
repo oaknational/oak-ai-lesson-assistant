@@ -13,7 +13,7 @@ import {
 } from "@oakai/core/src/types";
 import { sendQuizFeedbackEmail } from "@oakai/core/src/utils/sendQuizFeedbackEmail";
 import { requestGenerationWorker } from "@oakai/core/src/workers/generations/requestGeneration";
-import logger from "@oakai/logger";
+import { aiLogger } from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 import { Redis } from "@upstash/redis";
 import { waitUntil } from "@vercel/functions";
@@ -25,6 +25,8 @@ import { protectedProcedure } from "../middleware/auth";
 import { userBasedRateLimitProcedure } from "../middleware/rateLimiter";
 import { router } from "../trpc";
 import { rateLimitInfoSchema } from "../types";
+
+const log = aiLogger("generation");
 
 const redis = new Redis({
   url: process.env.KV_REST_API_URL as string,
@@ -217,10 +219,7 @@ export const generationRouter = router({
          * differently
          */
         if (promptSlug.includes("regenerate-")) {
-          logger.info(
-            "Logging re-generation for generation %s",
-            lastGenerationId,
-          );
+          log("Logging re-generation for generation %s", lastGenerationId);
           if (lastGenerationId) {
             await feedbackModel.recordReGeneration(
               lastGenerationId,
@@ -228,19 +227,16 @@ export const generationRouter = router({
               generation.id,
             );
           } else {
-            logger.error(
+            log(
               "User tried to trigger re-generation generation but did not provide a lastGenerationId",
             );
           }
         }
       } catch (err) {
-        logger.error(
-          "Failed to save re-generation, generationId=%s",
-          generation.id,
-        );
+        log("Failed to save re-generation, generationId=%s", generation.id);
       }
 
-      console.log("Generation complete");
+      log("Generation complete");
 
       return {
         generation: serializeGeneration(generation),
@@ -299,7 +295,7 @@ export const generationRouter = router({
       const flaggedItem = input.flaggedItem as GenerationPart;
 
       if (!flaggedItem.lastGenerationId) {
-        logger.error(
+        log(
           "User tried to flag generation but did not provide a valid generation part %o",
           flaggedItem,
         );
@@ -323,10 +319,7 @@ export const generationRouter = router({
         generationResponse: JSON.stringify(flaggedGenerationResponse?.response),
       });
 
-      logger.debug(
-        "Giving feedback for generation %s",
-        flaggedItem.lastGenerationId,
-      );
+      log("Giving feedback for generation %s", flaggedItem.lastGenerationId);
 
       try {
         await feedbackModel.recordUserFlag(
@@ -342,7 +335,7 @@ export const generationRouter = router({
         );
       } catch (err) {
         // Swallow the error for now as the FE swallows them to not interrupt
-        logger.error(
+        log(
           err,
           "Failed to record user flagging %s",
           flaggedItem.lastGenerationId,
@@ -361,15 +354,12 @@ export const generationRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { tweakedItem, sessionId } = input;
-      logger.info(
-        "Logging user tweak for generation %s",
-        tweakedItem.lastGenerationId,
-      );
+      log("Logging user tweak for generation %s", tweakedItem.lastGenerationId);
 
       const feedbackModel = new Feedback(ctx.prisma);
 
       if (!tweakedItem.lastGenerationId) {
-        logger.error(
+        log(
           "User tried to flag generation but did not provide a valid generation part %o",
           tweakedItem,
         );
@@ -388,7 +378,7 @@ export const generationRouter = router({
         );
       } catch (err) {
         // Swallow the error for now as the FE swallows them to not interrupt
-        logger.error(
+        log(
           err,
           "Failed to record user tweak for generation=%s",
           tweakedItem.lastGenerationId,

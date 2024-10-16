@@ -1,10 +1,13 @@
 import { clerkClient } from "@clerk/nextjs/server";
+import { aiLogger } from "@oakai/logger";
 import os from "os";
 import { z } from "zod";
 
 import { publicProcedure } from "../../trpc";
 import { setSafetyViolations } from "./safetyViolations";
 import { seedChat } from "./seedChat";
+
+const log = aiLogger("testing");
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? os.hostname();
 
@@ -90,7 +93,7 @@ const findOrCreateUser = async (
     return existingUser;
   }
 
-  console.log("Creating test user", { email });
+  log("Creating test user", { email });
   const newUser = await clerkClient.users.createUser({
     emailAddress: [email],
     firstName: branch,

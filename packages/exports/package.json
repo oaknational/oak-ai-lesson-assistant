@@ -6,7 +6,8 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "@oakai/logger": "*"
   },
   "prettier": "@oakai/prettier-config"
 }

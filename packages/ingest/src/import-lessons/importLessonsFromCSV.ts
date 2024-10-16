@@ -1,4 +1,5 @@
 import { prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import csv from "csv-parser";
 import fs from "node:fs";
 
@@ -6,6 +7,8 @@ import { IngestError } from "../IngestError";
 import { chunkAndPromiseAll } from "../utils/chunkAndPromiseAll";
 import { getDataHash } from "../utils/getDataHash";
 import { RawLesson, RawLessonSchema } from "../zod-schema/zodSchema";
+
+const log = aiLogger("ingest");
 
 type ImportLessonsFromCSVProps = {
   ingestId: string;
@@ -66,7 +69,7 @@ export function importLessonsFromCSV({
             chunkSize: 30000,
           });
 
-          console.log(`Imported ${parsedLessons.length} lessons from CSV`);
+          log(`Imported ${parsedLessons.length} lessons from CSV`);
           resolve();
         })
         .on("error", (cause) => {

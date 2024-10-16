@@ -17,6 +17,8 @@ import { RestoreDialogRoot } from "@/components/AppComponents/common/RestoreDial
 import Layout from "@/components/Layout";
 import { trpc } from "@/utils/trpc";
 
+const log = aiLogger("qd");
+
 export const initialState: QuizAppState = {
   status: QuizAppStatus.Initial,
   sessionId: null,
@@ -93,12 +95,12 @@ const StatePersistence = ({ state }: Readonly<{ state: QuizAppState }>) => {
 
     if (state.status === QuizAppStatus.EditingQuestions) {
       const formatState = JSON.stringify(state);
-      console.log("Store state in local storage");
+      log("Store state in local storage");
       localStorage.setItem("quizData", formatState);
     }
 
     if (state.sessionId) {
-      console.log("Update session state", { state });
+      log("Update session state", { state });
       updateSessionStateMutationCall({
         sessionId: state.sessionId,
         output: restOfState,
@@ -112,7 +114,7 @@ const StatePersistence = ({ state }: Readonly<{ state: QuizAppState }>) => {
 const MemoizedStatePersistence = memo(
   StatePersistence,
   (oldProps, newProps) => {
-    console.log({ oldProps, newProps });
+    log({ oldProps, newProps });
     return equals(oldProps.state, newProps.state);
   },
 );
