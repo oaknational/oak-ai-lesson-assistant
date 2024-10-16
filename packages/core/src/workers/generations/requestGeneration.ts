@@ -1,7 +1,7 @@
 import { GenerationStatus, ModerationType, Prisma, prisma } from "@oakai/db";
 import {
-  LegacyLogger as Logger,
-  legacyLogger as baseLogger,
+  structuredLogger as Logger,
+  structuredLogger as baseLogger,
   aiLogger,
 } from "@oakai/logger";
 import { Redis } from "@upstash/redis";

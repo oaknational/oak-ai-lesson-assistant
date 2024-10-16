@@ -5,7 +5,7 @@ import {
   SafetyViolationSource,
   PrismaClientWithAccelerate,
 } from "@oakai/db";
-import { legacyLogger, LegacyLogger } from "@oakai/logger";
+import { structuredLogger, StructuredLogger } from "@oakai/logger";
 import { Logger as InngestLogger } from "inngest/middleware/logger";
 
 import { posthogAiBetaServerClient } from "../analytics/posthogAiBetaServerClient";
@@ -41,7 +41,9 @@ export class SafetyViolations {
     private readonly prisma: PrismaClientWithAccelerate,
     // inngest's logger doesn't allow child logger creation, so make
     // sure we accept instances of that too
-    private readonly logger: LegacyLogger | InngestLogger = legacyLogger,
+    private readonly logger:
+      | StructuredLogger
+      | InngestLogger = structuredLogger,
   ) {}
 
   async recordViolation(

@@ -1,6 +1,6 @@
 import { KeyStageName, SubjectName, subjectsAndKeyStages } from "@oakai/core";
 import { sendJudgementFeedbackEmail } from "@oakai/core/src/utils/sendJudgementFeedbackEmail";
-import { legacyLogger as logger, aiLogger } from "@oakai/logger";
+import { structuredLogger as logger, aiLogger } from "@oakai/logger";
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";

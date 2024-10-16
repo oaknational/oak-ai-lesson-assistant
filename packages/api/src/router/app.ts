@@ -2,7 +2,7 @@ import { Apps } from "@oakai/core";
 import { serializeApp } from "@oakai/core/src/models/serializers";
 import { sendEmailRequestingMoreGenerations } from "@oakai/core/src/utils/sendEmailRequestingMoreGenerations";
 import { prisma } from "@oakai/db";
-import { legacyLogger as logger, aiLogger } from "@oakai/logger";
+import { structuredLogger as logger, aiLogger } from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 

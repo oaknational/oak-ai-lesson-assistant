@@ -42,5 +42,5 @@ export function aiLogger(childKey: ChildKey) {
   return baseLogger.extend(childKey);
 }
 
-export { default as legacyLogger } from "./legacyLogger";
-export type { Logger as LegacyLogger } from "./legacyLogger";
+export { default as structuredLogger } from "./structuredLogger";
+export type { Logger as StructuredLogger } from "./structuredLogger";

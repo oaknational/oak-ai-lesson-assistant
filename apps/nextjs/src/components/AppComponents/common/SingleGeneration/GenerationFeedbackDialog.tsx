@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { useUser } from "#clerk/nextjs";
 import { GenerationPart } from "@oakai/core/src/types";
-import { legacyLogger as logger } from "@oakai/logger";
+import { structuredLogger as logger } from "@oakai/logger";
 import * as Dialog from "@radix-ui/react-dialog";
 
 import { trpc } from "@/utils/trpc";
