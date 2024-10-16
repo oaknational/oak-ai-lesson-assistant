@@ -5,7 +5,6 @@ import {
 import { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { getLessonPlanParts } from "../chunking/getLessonPlanParts";
-import { getLatestIngestId } from "../db-helpers/getLatestIngestId";
 import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
 import { Step, getPrevStep } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
