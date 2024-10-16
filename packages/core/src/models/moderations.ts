@@ -43,12 +43,14 @@ export class Moderations {
     justification?: string;
     lesson: Snapshot;
   }): Promise<Moderation> {
-    const lessonSnapshot = await this.lessonSnapshots.createModerationSnapshot({
-      userId,
-      chatId: appSessionId,
-      messageId,
-      snapshot: lesson,
-    });
+    const { id: lessonSnapshotId } =
+      await this.lessonSnapshots.getOrSaveSnapshot({
+        userId,
+        chatId: appSessionId,
+        messageId,
+        snapshot: lesson,
+        trigger: "MODERATION",
+      });
 
     return this.prisma.moderation.create({
       data: {
@@ -57,7 +59,7 @@ export class Moderations {
         justification,
         appSessionId,
         messageId,
-        lessonSnapshotId: lessonSnapshot.id,
+        lessonSnapshotId,
       },
     });
   }

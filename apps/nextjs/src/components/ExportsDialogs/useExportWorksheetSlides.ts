@@ -9,6 +9,7 @@ import { ZodError } from "zod";
 import { trpc } from "@/utils/trpc";
 
 import { ExportsHookProps } from "./exports.types";
+import { useExportsExistenceCheck } from "./useExportsExistenceCheck";
 
 export function useExportWorksheetSlides({
   onStart,
@@ -35,30 +36,13 @@ export function useExportWorksheetSlides({
 
   const checkForSnapShotAndPreloadQuery =
     trpc.exports.checkIfWorksheetDownloadExists.useMutation();
-  const [checked, setChecked] = useState(false);
-  const check = useCallback(async () => {
-    if (
-      debouncedParseResult?.success &&
-      debouncedParseResult.data &&
-      !checked
-    ) {
-      try {
-        checkForSnapShotAndPreloadQuery.mutate({
-          chatId,
-          data: debouncedParseResult.data,
-        });
-        setChecked(true);
-      } catch (error) {
-        console.error("Error during check:", error);
-      }
-    }
-  }, [
-    debouncedParseResult?.success,
-    debouncedParseResult?.data,
+  const check = useExportsExistenceCheck({
+    success: debouncedParseResult?.success,
+    data: debouncedParseResult?.data,
     chatId,
-    checkForSnapShotAndPreloadQuery,
-    checked,
-  ]);
+    messageId,
+    checkFn: checkForSnapShotAndPreloadQuery.mutate,
+  });
 
   useEffect(() => {
     check();

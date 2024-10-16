@@ -862,6 +862,7 @@ enum LessonExportType {
 }
 
 enum LessonSnapshotTrigger {
+  ASSISTANT_MESSAGE
   EXPORT_BY_USER
   MODERATION
 
