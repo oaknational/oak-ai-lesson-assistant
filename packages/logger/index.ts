@@ -1,27 +1,50 @@
-import pino from "pino";
+import debug from "debug";
 
-const logger = pino({
-  level: process.env.NEXT_PUBLIC_PINO_LOG_LEVEL || "info",
-  browser: {
-    write(obj) {
-      const msg = "msg" in obj && obj.msg;
-      console.warn(
-        `Invalid use of @oakai/logger, use logger/browser, logMessage=${msg}`,
-      );
-    },
-  },
-  formatters: {
-    // Pino logs the level as a syslog number, so make sure
-    // it sends error/warn/info etc instead
-    level: (label) => {
-      return { level: label.toUpperCase() };
-    },
-  },
-  // Pino's default key of `time` is ignored by datadog, so explicitly set
-  // `timestamp`
-  timestamp: () => `,"timestamp":"${new Date(Date.now()).toISOString()}"`,
-});
+const baseLogger = debug("ai");
 
-export type Logger = typeof logger;
+type ChildKey =
+  // | "api"
+  // | "db"
+  // | "errors"
+  // | "exports"
+  // | "kv"
+  // | "moderation"
+  // | "prompts"
+  // | "sentry"
+  // | "tracing"
+  | "aila"
+  | "aila:analytics"
+  | "aila:errors"
+  | "aila:llm"
+  | "aila:moderation"
+  | "aila:persistence"
+  | "aila:prompt"
+  | "aila:protocol"
+  | "aila:rag"
+  | "aila:testing"
+  | "app"
+  | "analytics"
+  | "auth"
+  | "admin"
+  | "chat"
+  | "consent"
+  | "cloudinary"
+  | "demo"
+  | "exports"
+  | "ingest"
+  | "feedback"
+  | "fixtures"
+  | "generation"
+  | "inngest"
+  | "judgements"
+  | "qd"
+  | "rag"
+  | "rate-limiting"
+  | "testing";
 
-export default logger;
+export function aiLogger(childKey: ChildKey) {
+  return baseLogger.extend(childKey);
+}
+
+export { default as legacyLogger } from "./legacyLogger";
+export type { Logger as LegacyLogger } from "./legacyLogger";
