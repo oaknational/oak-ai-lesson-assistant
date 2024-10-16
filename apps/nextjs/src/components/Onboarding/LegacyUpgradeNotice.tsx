@@ -10,7 +10,7 @@ export const LegacyUpgradeNotice = () => {
     <SignUpSignInLayout loaded>
       <OakBox
         $mh="auto"
-        $ml="space-between-l"
+        $ml={[null, "space-between-l"]}
         $borderRadius="border-radius-m"
         $background="white"
         $pa="inner-padding-xl2"
