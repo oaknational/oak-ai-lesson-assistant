@@ -39,21 +39,24 @@ function patchHasBeenApplied(
   return { hasBeenApplied, patch: { ...patch, hash } };
 }
 
+type UseTemporaryLessonPlanWithStreamingEditsProps = {
+  lessonPlan?: LooseLessonPlan;
+  messages?: Message[];
+  isStreaming?: boolean;
+  messageHashes: Record<string, string>;
+};
+type UseTemporaryLessonPlanWithStreamingEditsReturn = {
+  tempLessonPlan: LooseLessonPlan;
+  validPatches: PatchDocument[];
+  partialPatches: PatchDocument[];
+};
+
 export const useTemporaryLessonPlanWithStreamingEdits = ({
   lessonPlan,
   messages,
   //isStreaming, // Disable partial patches for now
   messageHashes,
-}: {
-  lessonPlan?: LooseLessonPlan;
-  messages?: Message[];
-  isStreaming?: boolean;
-  messageHashes: Record<string, string>;
-}): {
-  tempLessonPlan: LooseLessonPlan;
-  validPatches: PatchDocument[];
-  partialPatches: PatchDocument[];
-} => {
+}: UseTemporaryLessonPlanWithStreamingEditsProps): UseTemporaryLessonPlanWithStreamingEditsReturn => {
   const throttledAssistantMessages = useThrottle(messages, 100);
   const tempLessonPlanRef = useRef<LooseLessonPlan>(lessonPlan ?? {});
   const appliedPatchesRef = useRef<PatchDocumentWithHash[]>([]);
