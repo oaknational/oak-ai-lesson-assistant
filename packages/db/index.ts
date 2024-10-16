@@ -1,17 +1,29 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { aiLogger } from "@oakai/logger";
+import { PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 
-// Prisma supports debug strings like prisma* and prisma:client, but they're very noisy.
-// Instead, add "query" based on our own prisma:query
-const DEBUG = process.env.DEBUG ?? "";
-const logLevels: Prisma.LogLevel[] = DEBUG.split(",").includes("prisma:query")
-  ? ["query", "warn", "error"]
-  : ["error"];
+const log = aiLogger("db");
 
-const createPrismaClient = () =>
-  new PrismaClient({
-    log: logLevels,
-  }).$extends(withAccelerate());
+const createPrismaClient = () => {
+  const client = new PrismaClient({
+    log: [
+      { emit: "stdout", level: "error" },
+      // Prisma supports DEBUG strings (eg: prisma*, prisma:client), but they're noisy debug messages.
+      // Instead, we forward the typical logs based on ai:db
+      { emit: "event", level: "query" },
+      { emit: "event", level: "warn" },
+    ],
+  });
+
+  client.$on("query", (e) => {
+    log(e.query);
+  });
+  client.$on("warn", (e) => {
+    log(e.message);
+  });
+
+  return client.$extends(withAccelerate());
+};
 
 // Create an instance to extract the type
 const extendedPrisma = createPrismaClient();

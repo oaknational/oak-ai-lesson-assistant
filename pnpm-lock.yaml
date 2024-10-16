@@ -702,6 +702,9 @@ importers:
 
   packages/db:
     dependencies:
+      '@oakai/logger':
+        specifier: '*'
+        version: link:../logger
       '@prisma/client':
         specifier: ^5.13.0
         version: 5.21.0(prisma@5.21.0)
@@ -855,6 +858,9 @@ importers:
 
   packages/logger:
     dependencies:
+      debug:
+        specifier: ^4.3.7
+        version: 4.3.7(supports-color@5.5.0)
       pino:
         specifier: ^8.15.1
         version: 8.21.0
