@@ -11,7 +11,7 @@ import { Icon } from "@/components/Icon";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 interface SidebarMobileProps {
-  children: React.ReactNode;
+  children: "banana";
 }
 
 export function SidebarMobile({ children }: Readonly<SidebarMobileProps>) {
