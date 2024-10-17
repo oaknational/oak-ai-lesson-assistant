@@ -13,6 +13,7 @@ type ChildKey =
   | "aila:errors"
   | "aila:llm"
   | "aila:moderation"
+  | "aila:moderation:response"
   | "aila:persistence"
   | "aila:prompt"
   | "aila:protocol"

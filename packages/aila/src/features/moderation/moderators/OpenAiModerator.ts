@@ -124,6 +124,7 @@ export class OpenAiModerator extends AilaModerator {
       },
     );
 
+    const log = aiLogger("aila:moderation:response");
     log.info(
       "Moderation response: ",
       JSON.stringify(moderationResponse, null, 2),
