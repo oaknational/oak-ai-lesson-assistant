@@ -801,34 +801,3 @@ export function applyLessonPlanPatch(
   }
   return updatedLessonPlan;
 }
-
-export function parseJsonSafely(jsonStr: string, logging: boolean = false) {
-  function log(...args: unknown[]) {
-    if (logging) {
-      log("JSON", ...args);
-    }
-  }
-  if (!jsonStr.trim().startsWith("{") || !jsonStr.includes('":')) {
-    log("Not JSON", jsonStr);
-    return null; // Early return if it doesn't look like JSON
-  }
-  while (jsonStr.length > 0) {
-    try {
-      log("Parse", { jsonStr });
-      // Attempt to parse the JSON
-      return JSON.parse(jsonStr);
-    } catch (error) {
-      if (error instanceof SyntaxError) {
-        log("Syntax error, try with reduced length", error);
-        // If there's a syntax error, remove the last character and try again
-        jsonStr = jsonStr.substring(0, jsonStr.length - 1);
-      } else {
-        // If the error is not a syntax error, rethrow it
-        throw error;
-      }
-    }
-  }
-
-  // Return null if no valid JSON could be extracted
-  return null;
-}
