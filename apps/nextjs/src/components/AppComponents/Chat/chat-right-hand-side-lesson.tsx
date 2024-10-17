@@ -77,7 +77,7 @@ const ChatRightHandSideLesson = ({
           onClick={() => {
             closeMobileLessonPullOut();
           }}
-          className="flex items-center justify-center gap-3"
+          className="mt-22 flex items-center justify-center gap-3 "
         >
           <span className="scale-75">
             <OakIcon iconName="cross" />
