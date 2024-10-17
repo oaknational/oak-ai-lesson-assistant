@@ -3,6 +3,7 @@
 import * as React from "react";
 import { toast } from "react-hot-toast";
 
+import { aiLogger } from "@oakai/logger";
 import { type DialogProps } from "@radix-ui/react-dialog";
 
 import { Button } from "@/components/AppComponents/Chat/ui/button";
@@ -20,6 +21,8 @@ import { SideBarChatItem } from "@/lib/types";
 import { trpc } from "@/utils/trpc";
 
 import { constructSharePath } from "./Chat/utils";
+
+const log = aiLogger("chat");
 
 interface ChatShareDialogProps extends DialogProps {
   chat: SideBarChatItem;

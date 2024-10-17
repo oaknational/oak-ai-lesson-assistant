@@ -35,7 +35,7 @@ export const AcceptTermsForm = () => {
   const handleAcceptTermsOfUse = async () => {
     try {
       await setDemoStatus.mutateAsync();
-      logger.log("Demo status set successfully");
+      logger.debug("Demo status set successfully");
 
       const now = new Date();
       const response = await acceptTerms.mutateAsync({
@@ -46,10 +46,10 @@ export const AcceptTermsForm = () => {
       if (!response?.acceptedTermsOfUse) {
         throw new Error("Could not accept terms of use");
       }
-      logger.log("Terms of use accepted successfully.");
+      logger.debug("Terms of use accepted successfully.");
 
       await reloadSession();
-      logger.log("Session token refreshed successfully. Redirecting");
+      logger.debug("Session token refreshed successfully. Redirecting");
 
       window.location.href = "/?reason=onboarded";
     } catch (error) {

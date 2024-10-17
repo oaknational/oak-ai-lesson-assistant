@@ -6,7 +6,6 @@ const debugBase = debug("ai");
 
 type ChildKey =
   | "admin"
-  | "admin"
   | "aila"
   | "aila:analytics"
   | "aila:errors"
@@ -27,6 +26,7 @@ type ChildKey =
   | "db"
   | "demo"
   | "exports"
+  | "feature-flags"
   | "feedback"
   | "fixtures"
   | "generation"
@@ -35,6 +35,7 @@ type ChildKey =
   | "judgements"
   | "lessons"
   | "middleware:auth"
+  | "moderation"
   | "prompts"
   | "qd"
   | "rag"

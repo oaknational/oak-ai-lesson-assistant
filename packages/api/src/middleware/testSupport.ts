@@ -1,6 +1,9 @@
+import { aiLogger } from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 
 import { publicProcedure, t } from "../trpc";
+
+const log = aiLogger("testing");
 
 /**
  * Middleware to limit test support routes to testable environments like Vercel previews

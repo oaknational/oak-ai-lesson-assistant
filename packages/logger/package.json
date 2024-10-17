@@ -13,8 +13,8 @@
   },
   "prettier": "@oakai/prettier-config",
   "dependencies": {
-    "pino": "^8.15.1",
-    "debug": "^4.3.7"
+    "debug": "^4.3.7",
+    "pino": "^8.15.1"
   },
   "devDependencies": {
     "pino-pretty": "^10.2.0",
