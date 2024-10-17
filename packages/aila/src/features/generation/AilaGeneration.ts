@@ -4,12 +4,15 @@ import {
   generateAilaPromptVersionVariantSlug,
 } from "@oakai/core/src/prompts/lesson-assistant/variants";
 import { prisma, Prompt } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import { kv } from "@vercel/kv";
 import { getEncoding } from "js-tiktoken";
 
 import { AilaServices } from "../../core";
 import { AilaChat } from "../../core/chat";
 import { AilaGenerationStatus } from "./types";
+
+const log = aiLogger("generation");
 
 export class AilaGeneration {
   private _aila: AilaServices;

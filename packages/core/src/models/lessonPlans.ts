@@ -9,6 +9,7 @@ import {
   PrismaClientWithAccelerate,
   Subject,
 } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import yaml from "yaml";
 
 import { LLMResponseJsonSchema } from "../../../aila/src/protocol/jsonPatchProtocol";
@@ -20,6 +21,8 @@ import { RAG } from "../rag";
 import { camelCaseToSentenceCase } from "../utils/camelCaseToSentenceCase";
 import { embedWithCache } from "../utils/embeddings";
 import { Caption, CaptionsSchema } from "./types/caption";
+
+const log = aiLogger("lessons");
 
 // Simplifies the input to a string for embedding
 export function textify(input: string | string[] | object): string {

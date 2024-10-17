@@ -1,6 +1,5 @@
 import { GenerationStatus, ModerationType, Prisma, prisma } from "@oakai/db";
 import {
-  structuredLogger as Logger,
   structuredLogger as baseLogger,
   aiLogger,
   StructuredLogger,

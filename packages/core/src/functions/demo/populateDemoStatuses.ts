@@ -5,7 +5,7 @@ import { inngest } from "../../client";
 import { populateDemoStatusesSchema } from "./populateDemoStatuses.schema";
 
 const log = aiLogger("demo");
-log.enabled = true;
+log.info.enabled = true;
 
 export const populateDemoStatuses = inngest.createFunction(
   {

@@ -3,7 +3,6 @@ import debug from "debug";
 import structuredLogger, { StructuredLogger } from "./structuredLogger";
 
 const debugBase = debug("ai");
-// logger.log = structuredLogger.info.bind(structuredLogger);
 
 type ChildKey =
   | "admin"
@@ -47,9 +46,25 @@ type ChildKey =
   | "trpc"
   | "ui";
 
+/**
+ * The AI logger uses namespaces so that we can selectively toggle noisy logs.
+ * Logs are selected with the DEBUG environment variable.
+ * Error logs are always shown.
+ *
+ * @example Include all logs except prisma
+ * DEBUG=ai:*,-ai:db
+ *
+ * @example Usage in a module
+ * import { aiLogger } from "@ai-jsx/logger";
+ *
+ * const log = aiLogger("db");
+ * log.info("Hello world");
+ */
 export function aiLogger(childKey: ChildKey) {
+  const debugLogger = debugBase.extend(childKey);
   return {
-    info: debugBase.extend(childKey),
+    info: debugLogger,
+    warn: debugLogger,
     error: structuredLogger.error,
   };
 }

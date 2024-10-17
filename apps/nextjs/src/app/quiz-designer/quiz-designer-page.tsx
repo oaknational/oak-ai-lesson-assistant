@@ -3,6 +3,7 @@
 import { memo, useCallback, useEffect, useReducer, useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
+import { aiLogger } from "@oakai/logger";
 import { quizAppReducer } from "ai-apps/quiz-designer/state/reducer";
 import { QuizAppState, QuizAppStatus } from "ai-apps/quiz-designer/state/types";
 import { useQuizSession } from "hooks/useQuizSession";
