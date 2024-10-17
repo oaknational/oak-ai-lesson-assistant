@@ -72,7 +72,7 @@ export const appRouter = router({
           },
         });
 
-        log("session", session);
+        log.info("session", session);
         return session;
       } catch (error) {
         logger.error("Error creating session", error);
@@ -181,7 +181,7 @@ export const appRouter = router({
           avgGenerationTimeResult.map((res) => [res.name, res.value]),
         );
         logger.info("timingsKeyedByName", timingsKeyedByName);
-        log("timingsKeyedByName", timingsKeyedByName);
+        log.info("timingsKeyedByName", timingsKeyedByName);
         return timingsKeyedByName;
       } catch (error) {
         logger.error("Error fetching timings", error);

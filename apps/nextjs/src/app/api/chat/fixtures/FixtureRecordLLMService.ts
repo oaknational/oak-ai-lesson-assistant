@@ -57,17 +57,17 @@ export class FixtureRecordLLMService implements LLMService {
             null,
             2,
           );
-          log("Writing formatted to", formattedUrl);
+          log.info("Writing formatted to", formattedUrl);
           await fs.writeFile(formattedUrl, formatted);
         } catch (e) {
-          console.error("Error writing formatted file", e);
+          log.error("Error writing formatted file", e);
         }
 
         const chunksUrl = `${process.cwd()}/tests-e2e/recordings/${fixtureName}.chunks.txt`;
         const encodedChunks = chunks
           .map((c) => c.replaceAll("\n", "__NEWLINE__"))
           .join("\n");
-        log("Writing chunks to", chunksUrl);
+        log.info("Writing chunks to", chunksUrl);
         await fs.writeFile(chunksUrl, encodedChunks);
 
         controller.close();

@@ -20,7 +20,7 @@ const isTestMiddleware = t.middleware(async ({ next, ctx }) => {
     });
   }
 
-  console.error("testSupport: Not in a testable environment");
+  log.error("testSupport: Not in a testable environment");
   throw new TRPCError({
     code: "UNAUTHORIZED",
     message: "Not authenticated",

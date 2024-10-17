@@ -80,9 +80,9 @@ export async function splitJsonlByRowsOrSize({
     if (currentFileStream) {
       currentFileStream.end();
     }
-    log(`Splitting complete! Files created in ${outputDir}`);
+    log.info(`Splitting complete! Files created in ${outputDir}`);
   } catch (error) {
-    console.error(`Error splitting JSONL: ${(error as Error).message}`);
+    log.error(`Error splitting JSONL: ${(error as Error).message}`);
     throw new IngestError("Error splitting JSONL");
   }
 

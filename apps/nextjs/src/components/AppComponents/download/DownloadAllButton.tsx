@@ -101,7 +101,7 @@ export const DownloadAllButton = ({
 
   const isFeatureEnabled = useClientSideFeatureFlag("download-all-button");
   if (!isFeatureEnabled) {
-    log("Download all button is disabled");
+    log.info("Download all button is disabled");
     return null;
   }
 
@@ -125,7 +125,7 @@ export const DownloadAllButton = ({
           lessonPlanLink: parsedData.lessonPlan,
         });
       } catch (error) {
-        console.error(error);
+        log.error(error);
         Sentry.captureException(error);
       }
     }

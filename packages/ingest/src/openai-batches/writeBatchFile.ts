@@ -33,7 +33,7 @@ export function writeBatchFile<T>({
       writeStream.on("finish", () => {
         resolve({ filePath, batchDir });
 
-        log("Finished writing batch file", filePath);
+        log.info("Finished writing batch file", filePath);
       });
 
       writeStream.on("error", reject);

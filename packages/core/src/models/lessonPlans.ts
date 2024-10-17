@@ -156,7 +156,7 @@ export class LessonPlans {
     try {
       validCaptions = CaptionsSchema.parse(lesson.captions);
     } catch (err) {
-      console.error("Failed to parse captions", err);
+      log.error("Failed to parse captions", err);
     }
 
     const captionText = validCaptions.map((c) => c.part).join(" ");
@@ -227,7 +227,7 @@ export class LessonPlans {
 
     const content = await this.generateContent(lessonPlan.id);
 
-    log("Generated content", content);
+    log.info("Generated content", content);
     if (!content) {
       throw new Error("Unable to generate lesson summary");
     }

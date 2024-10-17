@@ -116,8 +116,8 @@ export class Lessons {
     if (!lesson) {
       throw new Error("Lesson not found");
     }
-    log("Summarising lesson", lesson.slug);
-    log("new lesson", lesson.isNewLesson);
+    log.info("Summarising lesson", lesson.slug);
+    log.info("new lesson", lesson.isNewLesson);
     let zLesson;
     let description;
     let transcript;
@@ -221,7 +221,7 @@ export class Lessons {
       format_instructions: parser.getFormatInstructions(),
     });
 
-    log(response);
+    log.info(response);
 
     const { summary, topics, learningObjectives, concepts, keywords } =
       response;
@@ -256,7 +256,7 @@ export class Lessons {
       },
     });
 
-    log("Created quiz question", quizQuestion);
+    log.info("Created quiz question", quizQuestion);
     await inngest.send({
       name: "app/quizQuestion.embed",
       data: { quizQuestionId: quizQuestion.id },
@@ -278,7 +278,7 @@ export class Lessons {
     const questionString: string = question.description
       ? `${questionTitleWithPunctuation} ${question.description}`
       : title;
-    log("Create question", question, lesson.id);
+    log.info("Create question", question, lesson.id);
 
     let quizQuestionId: string | undefined;
     const existingQuestion = await this.prisma.quizQuestion.findFirst({
@@ -308,7 +308,7 @@ export class Lessons {
     lessonId: string;
     quizQuestionId: string;
   }) {
-    log("Create answer", answer, lessonId);
+    log.info("Create answer", answer, lessonId);
     const existingAnswer = await this.prisma.quizAnswer.findFirst({
       where: { answer, lessonId, questionId: quizQuestionId },
     });
@@ -324,10 +324,10 @@ export class Lessons {
           },
         });
         quizAnswerId = quizAnswer.id;
-        log("Created quiz question answer", quizAnswer);
+        log.info("Created quiz question answer", quizAnswer);
       } catch (e) {
         // For now, swallow the error until we can change the unique index
-        console.error(e);
+        log.error(e);
       }
 
       if (quizAnswerId && EMBED_AFTER_CREATION) {
@@ -387,18 +387,18 @@ export class Lessons {
       },
     });
 
-    log("Created transcript", transcript);
-    log("With captions", lesson.captions);
+    log.info("Created transcript", transcript);
+    log.info("With captions", lesson.captions);
     let validCaptions: Caption[];
     try {
       validCaptions = CaptionsSchema.parse(lesson.captions);
     } catch (err) {
-      console.error("Failed to parse captions", err);
+      log.error("Failed to parse captions", err);
       return transcript;
     }
     let index = 1;
     for (const caption of validCaptions) {
-      log("Creating snippet", caption);
+      log.info("Creating snippet", caption);
       const snippetAttributes = {
         sourceContent: caption.part,
         content: caption.part,
@@ -417,9 +417,9 @@ export class Lessons {
           data: snippetAttributes,
         });
       } catch (err) {
-        console.error("Failed to create snippet", err);
+        log.error("Failed to create snippet", err);
       }
-      log("Created snippet", snippet);
+      log.info("Created snippet", snippet);
       if (snippet && EMBED_AFTER_CREATION) {
         await inngest.send({
           name: "app/snippet.embed",

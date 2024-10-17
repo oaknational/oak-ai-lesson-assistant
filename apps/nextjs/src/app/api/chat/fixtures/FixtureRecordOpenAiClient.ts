@@ -33,7 +33,7 @@ export class FixtureRecordOpenAiClient implements OpenAILike {
 
         const responseText = JSON.stringify(response, null, 2);
         const fileUrl = `${process.cwd()}/tests-e2e/recordings/${this.fixtureName}.moderation.json`;
-        log("Writing moderation to", fileUrl);
+        log.info("Writing moderation to", fileUrl);
         await fs.writeFile(fileUrl, responseText);
 
         return response;

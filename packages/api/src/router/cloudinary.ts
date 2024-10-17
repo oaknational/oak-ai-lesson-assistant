@@ -82,7 +82,7 @@ export const cloudinaryRouter = router({
         context: `alt=${alt}|gptGenerated=true`,
       });
 
-      log("Response from cloudinary", response);
+      log.info("Response from cloudinary", response);
       return true;
     }),
 });

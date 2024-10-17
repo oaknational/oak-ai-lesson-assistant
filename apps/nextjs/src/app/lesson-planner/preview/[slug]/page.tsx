@@ -28,7 +28,7 @@ export default async function QuizPreviewPage({
 }: {
   params: { slug: string };
 }) {
-  log("params", params);
+  log.info("params", params);
 
   const planSections = await getData(params.slug);
 

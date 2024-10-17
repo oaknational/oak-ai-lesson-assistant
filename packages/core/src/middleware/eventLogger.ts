@@ -18,7 +18,7 @@ export function eventLogger(env: string, eventKey: string) {
           return {
             transformInput({ payloads }): void {
               for (const payload of payloads) {
-                log(
+                log.info(
                   {
                     inngestClientId: client.id,
                     inngestEventKey: lazyRedact(eventKey, 5),

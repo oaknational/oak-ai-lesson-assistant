@@ -73,7 +73,7 @@ export class AilaRag {
       content = JSON.stringify(minifiedLessons, null, 2);
     }
 
-    log("Got RAG content, length:", content.length);
+    log.info("Got RAG content, length:", content.length);
 
     return content;
   }

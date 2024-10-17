@@ -88,7 +88,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
       });
     }, "Did not fetch RAG content. Continuing");
 
-    log("Fetched relevant lesson plans", relevantLessonPlans.length);
+    log.info("Fetched relevant lesson plans", relevantLessonPlans.length);
     const stringifiedRelevantLessonPlans = JSON.stringify(
       relevantLessonPlans,
       null,

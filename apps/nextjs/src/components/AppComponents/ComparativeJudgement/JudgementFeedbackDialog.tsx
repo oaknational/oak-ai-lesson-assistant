@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { useUser } from "#clerk/nextjs";
+import { aiLogger } from "@oakai/logger";
 import * as Dialog from "@radix-ui/react-dialog";
 
 import { trpc } from "@/utils/trpc";
@@ -9,6 +10,8 @@ import FeedbackDialog from "../common/FeedbackDialog";
 
 export const FeedbackDialogRoot = Dialog.Root;
 export const FeedbackDialogTrigger = Dialog.Trigger;
+
+const log = aiLogger("feedback");
 
 type FeedbackDialogProps = {
   flaggedItem?: string;
@@ -39,12 +42,12 @@ function JudgementFeedbackDialog({
 
     if (!email) {
       // This case really shouldn't happen as the user should be logged in
-      console.error("User attempted to give feedback without an email address");
+      log.error("User attempted to give feedback without an email address");
       return null;
     }
 
     if (!flaggedItems) {
-      console.error("User attempted to give feedback but flaggedItem was null");
+      log.error("User attempted to give feedback but flaggedItem was null");
       return null;
     }
 
@@ -66,7 +69,7 @@ function JudgementFeedbackDialog({
     if (typeof result === "boolean" && result) {
       setHasSubmitted(true);
     } else {
-      console.error("Error submitting feedback", result);
+      log.error("Error submitting feedback", result);
     }
   };
 

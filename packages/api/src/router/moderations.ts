@@ -30,7 +30,7 @@ export const moderationsRouter = router({
         Sentry.captureException(e, {
           extra: { comment, moderationId, userId },
         });
-        console.error("Error", e);
+        log.error("Error", e);
       }
     }),
   moderationById: protectedProcedure

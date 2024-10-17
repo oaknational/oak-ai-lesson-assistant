@@ -76,10 +76,10 @@ const useQuestionsForJudgement = ({
     };
     const result = await flagOrSkipQuestion.mutateAsync(flaggedInfo);
     if (result) {
-      log("Flagged question");
+      log.info("Flagged question");
       await clearReasonForChoice();
     } else {
-      log("Failure flag did not work");
+      log.info("Failure flag did not work");
     }
   };
 
@@ -91,10 +91,10 @@ const useQuestionsForJudgement = ({
 
     const result = await flagOrSkipQuestion.mutateAsync(skippedInfo);
     if (result) {
-      log("Skipped question", result);
+      log.info("Skipped question", result);
       await clearReasonForChoice();
     } else {
-      log("Failure skip did not work");
+      log.info("Failure skip did not work");
     }
   };
 
@@ -116,10 +116,10 @@ const useQuestionsForJudgement = ({
     const result = await selectedQuestion.mutateAsync(selectedQuestionInfo);
 
     if (result) {
-      log("success");
+      log.info("success");
       await clearReasonForChoice();
     } else {
-      log("failure");
+      log.info("failure");
     }
   };
 

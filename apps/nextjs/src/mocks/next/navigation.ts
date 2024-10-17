@@ -8,17 +8,17 @@ const log = aiLogger("testing");
 
 export const useRouter = () => ({
   push: (path: string) => {
-    log("Mocked push to", path);
+    log.info("Mocked push to", path);
   },
   redirect: (path: string) => {
-    log("Mocked redirect to", path);
+    log.info("Mocked redirect to", path);
   },
   replace: () => {},
   prefetch: () => {},
 });
 
 export const redirect = (path: string) => {
-  log("Mocked redirect to", path);
+  log.info("Mocked redirect to", path);
 };
 
 export const usePathname = () => "/";

@@ -46,7 +46,7 @@ export const useAilaStreamingStatus = ({
   }, [isLoading, messages]);
 
   useEffect(() => {
-    log("ailaStreamingStatus set:", ailaStreamingStatus);
+    log.info("ailaStreamingStatus set:", ailaStreamingStatus);
   }, [ailaStreamingStatus]);
 
   return ailaStreamingStatus;

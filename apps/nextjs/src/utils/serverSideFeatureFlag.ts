@@ -54,7 +54,7 @@ export async function serverSideFeatureFlag(
 
     return isFeatureFlagEnabled;
   } catch (e) {
-    console.error("Error checking feature flag:", e);
+    log.error("Error checking feature flag:", e);
     return false;
   }
 }

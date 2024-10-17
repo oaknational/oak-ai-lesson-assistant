@@ -16,10 +16,10 @@ const createPrismaClient = () => {
   });
 
   client.$on("query", (e) => {
-    log(e.query);
+    log.info(e.query);
   });
   client.$on("warn", (e) => {
-    log(e.message);
+    log.info(e.message);
   });
 
   return client.$extends(withAccelerate());

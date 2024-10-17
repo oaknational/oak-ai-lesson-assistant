@@ -541,7 +541,7 @@ export function tryParsePart(
   const { type } = obj as { type: string };
   // Assert the message part type is allowed
   if (!MessagePartDocumentSchemaByType[type as MessagePartType]) {
-    console.error("Invalid message part type", type);
+    log.error("Invalid message part type", type);
     return {
       type: "unknown",
       value: JSON.stringify,
@@ -564,7 +564,7 @@ export function tryParsePatch(obj: object): PatchDocument | UnknownDocument {
     const patchDocument: PatchDocument = parsed.data;
     return patchDocument;
   } else {
-    log("Unable to parse patch", parsed, parsed.error);
+    log.info("Unable to parse patch", parsed, parsed.error);
     return { type: "unknown", value: JSON.stringify(obj), error: parsed.error };
   }
 }
@@ -646,7 +646,7 @@ export function parseMessageRow(row: string, index: number): MessagePart[] {
       }
       return result;
     } catch (e) {
-      console.error("LLM Message parsing error", e);
+      log.error("LLM Message parsing error", e);
       return [
         {
           type: "message-part",
@@ -705,12 +705,12 @@ export function extractPatches(
         }
       } catch (e) {
         if (e instanceof ZodError) {
-          log("Failed to parse patch due to Zod validation errors:", part);
+          log.info("Failed to parse patch due to Zod validation errors:", part);
           e.errors.forEach((error, index) => {
-            log(`Error ${index + 1}:`);
-            log(`  Path: ${error.path.join(".")}`);
-            log(`  Message: ${error.message}`);
-            if (error.code) log(`  Code: ${error.code}`);
+            log.info(`Error ${index + 1}:`);
+            log.info(`  Path: ${error.path.join(".")}`);
+            log.info(`  Message: ${error.message}`);
+            if (error.code) log.info(`  Code: ${error.code}`);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const errorValue = error.path.reduce((obj: any, key) => {
               if (obj && typeof obj === "object" && key in obj) {
@@ -718,10 +718,10 @@ export function extractPatches(
               }
               return undefined;
             }, part);
-            console.error(`  Invalid value:`, errorValue);
+            log.error(`  Invalid value:`, errorValue);
           });
         } else {
-          console.error("Failed to parse patch:", e);
+          log.error("Failed to parse patch:", e);
         }
 
         Sentry.withScope(function (scope) {
@@ -760,7 +760,7 @@ export function applyLessonPlanPatch(
   if (command.type !== "patch") return lessonPlan;
   const patch = command.value as Operation;
   if (!isValidPatch(patch)) {
-    console.error("Invalid patch");
+    log.error("Invalid patch");
     return;
   }
 
@@ -776,7 +776,7 @@ export function applyLessonPlanPatch(
       extra["operation"] = e.operation;
       extra["tree"] = e.tree;
     }
-    console.error("Failed to apply patch", patch, e);
+    log.error("Failed to apply patch", patch, e);
     Sentry.withScope(function (scope) {
       scope.setLevel("info");
       Sentry.captureException(e, { extra });

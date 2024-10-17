@@ -3,6 +3,7 @@ import {
   structuredLogger as Logger,
   structuredLogger as baseLogger,
   aiLogger,
+  StructuredLogger,
 } from "@oakai/logger";
 import { Redis } from "@upstash/redis";
 import { NonRetriableError } from "inngest";
@@ -292,7 +293,7 @@ async function invoke({ data, user }: RequestGenerationArgs) {
      * to work around streaming limitations with netlify
      */
     const onNewToken = async (partialJson: string) => {
-      log("onNewToken", partialJson);
+      log.info("onNewToken", partialJson);
       try {
         await redis.set(`partial-generation-${generationId}`, partialJson, {
           // Expire after 10 minutes
@@ -398,7 +399,7 @@ type OnFailureArgs = {
       event: { data: z.infer<(typeof requestGenerationSchema)["data"]> };
     };
   };
-  logger: Logger;
+  logger: StructuredLogger;
 };
 
 async function onFailure({ error, event, logger }: OnFailureArgs) {

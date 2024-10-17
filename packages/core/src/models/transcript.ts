@@ -7,6 +7,9 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { z } from "zod";
 
 import { createOpenAILangchainClient } from "../llm/openai";
+import { aiLogger } from "@oakai/logger";
+
+const log = aiLogger("transcripts")
 
 interface TranscriptWithRaw {
   raw: string;
@@ -73,7 +76,7 @@ export class Transcripts {
         },
       });
 
-      log("Schedule snippet embedding", {
+      log.info("Schedule snippet embedding", {
         snippetId: createdSnippet.id,
       });
 
@@ -127,7 +130,7 @@ export class Transcripts {
   Your response should match the following schema definition:
   {format_instructions}`;
 
-    log(template);
+    log.info(template);
 
     const parser = StructuredOutputParser.fromZodSchema(
       z.object({
@@ -149,7 +152,7 @@ export class Transcripts {
 
     const format_instructions = parser.getFormatInstructions();
 
-    log("Format instructions", format_instructions);
+    log.info("Format instructions", format_instructions);
 
     const transcript_text = (transcript.content as unknown as TranscriptWithRaw)
       .raw;
@@ -158,7 +161,7 @@ export class Transcripts {
       format_instructions,
     });
 
-    log("Got response", { response });
+    log.info("Got response", { response });
 
     const { snippets } = response;
 

@@ -22,6 +22,6 @@ const logger = pino({
   timestamp: () => `,"timestamp":"${new Date(Date.now()).toISOString()}"`,
 });
 
-export type Logger = typeof logger;
+export type StructuredLogger = typeof logger;
 
 export default logger;

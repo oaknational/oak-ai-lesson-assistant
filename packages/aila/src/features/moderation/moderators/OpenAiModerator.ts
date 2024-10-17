@@ -124,7 +124,10 @@ export class OpenAiModerator extends AilaModerator {
       },
     );
 
-    log("Moderation response: ", JSON.stringify(moderationResponse, null, 2));
+    log.info(
+      "Moderation response: ",
+      JSON.stringify(moderationResponse, null, 2),
+    );
 
     const response = moderationResponseSchema.safeParse(
       JSON.parse(moderationResponse.choices[0]?.message.content ?? "null"),
@@ -171,7 +174,7 @@ export class OpenAiModerator extends AilaModerator {
     try {
       return await this._moderate(input, 0);
     } catch (error) {
-      console.error("Moderation error: ", error);
+      log.error("Moderation error: ", error);
       if (error instanceof AilaModerationError) {
         throw error;
       }

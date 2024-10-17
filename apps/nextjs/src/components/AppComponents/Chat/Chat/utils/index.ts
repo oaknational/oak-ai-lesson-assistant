@@ -19,10 +19,10 @@ export function findMessageIdFromContent({ content }: { content: string }) {
 }
 
 export function findLatestServerSideState(workingMessages: Message[]) {
-  log("Finding latest server-side state", { workingMessages });
+  log.info("Finding latest server-side state", { workingMessages });
   const lastMessage = workingMessages[workingMessages.length - 1];
   if (!lastMessage?.content.includes(`"type":"state"`)) {
-    log("No server state found");
+    log.info("No server state found");
     return;
   }
   const state: LooseLessonPlan = lastMessage.content
@@ -38,7 +38,7 @@ export function findLatestServerSideState(workingMessages: Message[]) {
     .filter((i) => i !== null)
     .filter((i) => i.type === "state")
     .map((i) => i.value)[0];
-  log("Got latest server state", { state });
+  log.info("Got latest server state", { state });
   return state;
 }
 

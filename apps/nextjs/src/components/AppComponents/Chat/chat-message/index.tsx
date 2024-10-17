@@ -245,7 +245,7 @@ function ChatMessagePart({
   }>;
 
   if (!PartComponent) {
-    log("Unknown part type", part.document.type, JSON.stringify(part));
+    log.info("Unknown part type", part.document.type, JSON.stringify(part));
     return null;
   }
 

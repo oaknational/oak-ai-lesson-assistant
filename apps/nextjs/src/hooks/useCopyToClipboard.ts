@@ -11,10 +11,10 @@ export function useCopyToClipboard(text: string) {
     navigator.clipboard.writeText(text).then(
       () => {
         setCopySuccess(true);
-        log("Link copied to clipboard!");
+        log.info("Link copied to clipboard!");
       },
       (err) => {
-        log("Unable to copy to clipboard", err);
+        log.info("Unable to copy to clipboard", err);
       },
     );
   };

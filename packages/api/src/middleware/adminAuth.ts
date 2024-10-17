@@ -15,7 +15,7 @@ const log = aiLogger("auth");
  */
 const isAdminMiddleware = t.middleware(async ({ next, ctx }) => {
   if (!ctx.auth.userId) {
-    log({ auth: ctx.auth, url: ctx.req.url }, `User not an admin`);
+    log.info({ auth: ctx.auth, url: ctx.req.url }, `User not an admin`);
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "Not an admin",
@@ -29,7 +29,7 @@ const isAdminMiddleware = t.middleware(async ({ next, ctx }) => {
       email.emailAddress.endsWith("@thenational.academy"),
     )
   ) {
-    log({ auth: ctx.auth, url: ctx.req.url }, `User not an admin`);
+    log.info({ auth: ctx.auth, url: ctx.req.url }, `User not an admin`);
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "Not an admin",

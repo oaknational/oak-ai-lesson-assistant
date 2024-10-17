@@ -19,7 +19,7 @@ const log = aiLogger("analytics");
 const mockTrack: typeof Avo = new Proxy(Avo, {
   get: (target, prop) => {
     return (...args: unknown[]) => {
-      log(`Mock Avo.${String(prop)} called with:`, target, ...args);
+      log.info(`Mock Avo.${String(prop)} called with:`, target, ...args);
     };
   },
 });
@@ -27,16 +27,16 @@ const mockTrack: typeof Avo = new Proxy(Avo, {
 const mockAnalyticsContext: AnalyticsContext = {
   track: mockTrack,
   trackEvent: (eventName: string, properties?: Record<string, unknown>) => {
-    log("Mock trackEvent called:", eventName, properties);
+    log.info("Mock trackEvent called:", eventName, properties);
   },
   identify: (userId: string, properties: { email?: string }) => {
-    log("Mock identify called:", userId, properties);
+    log.info("Mock identify called:", userId, properties);
   },
   page: (path: string) => {
-    log("Mock page view:", path);
+    log.info("Mock page view:", path);
   },
   reset: () => {
-    log("Mock reset called");
+    log.info("Mock reset called");
   },
   posthogAiBetaClient: {
     isFeatureEnabled: () => true,

@@ -109,7 +109,7 @@ function handleConnectionAborted(req: NextRequest) {
   const abortController = new AbortController();
 
   req.signal.addEventListener("abort", () => {
-    log("Client has disconnected");
+    log.info("Client has disconnected");
     abortController.abort();
   });
   return abortController;

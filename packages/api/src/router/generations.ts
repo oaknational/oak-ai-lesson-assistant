@@ -220,7 +220,7 @@ export const generationRouter = router({
          * differently
          */
         if (promptSlug.includes("regenerate-")) {
-          log("Logging re-generation for generation %s", lastGenerationId);
+          log.info("Logging re-generation for generation %s", lastGenerationId);
           if (lastGenerationId) {
             await feedbackModel.recordReGeneration(
               lastGenerationId,
@@ -228,7 +228,7 @@ export const generationRouter = router({
               generation.id,
             );
           } else {
-            log(
+            log.info(
               "User tried to trigger re-generation generation but did not provide a lastGenerationId",
             );
           }
@@ -240,7 +240,7 @@ export const generationRouter = router({
         );
       }
 
-      log("Generation complete");
+      log.info("Generation complete");
 
       return {
         generation: serializeGeneration(generation),
@@ -323,7 +323,10 @@ export const generationRouter = router({
         generationResponse: JSON.stringify(flaggedGenerationResponse?.response),
       });
 
-      log("Giving feedback for generation %s", flaggedItem.lastGenerationId);
+      log.info(
+        "Giving feedback for generation %s",
+        flaggedItem.lastGenerationId,
+      );
 
       try {
         await feedbackModel.recordUserFlag(
@@ -358,7 +361,10 @@ export const generationRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { tweakedItem, sessionId } = input;
-      log("Logging user tweak for generation %s", tweakedItem.lastGenerationId);
+      log.info(
+        "Logging user tweak for generation %s",
+        tweakedItem.lastGenerationId,
+      );
 
       const feedbackModel = new Feedback(ctx.prisma);
 

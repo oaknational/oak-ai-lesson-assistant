@@ -81,7 +81,7 @@ export const createWebActionsPlugin: PluginCreator = (
       );
     } catch (error) {
       if (error instanceof UserBannedError) {
-        log("User is banned, queueing account lock message");
+        log.info("User is banned, queueing account lock message");
         enqueue({
           type: "action",
           action: "SHOW_ACCOUNT_LOCKED",

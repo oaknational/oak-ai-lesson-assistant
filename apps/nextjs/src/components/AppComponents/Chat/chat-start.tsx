@@ -52,7 +52,7 @@ export function ChatStart() {
           },
         );
 
-        log("App session created:", result);
+        log.info("App session created:", result);
         trackEvent("chat:send_message", {
           id: result.id,
           message,
@@ -60,7 +60,7 @@ export function ChatStart() {
 
         router.push(`/aila/${result.id}`);
       } catch (error) {
-        console.error("Error creating app session:", error);
+        log.error("Error creating app session:", error);
       }
     },
     [

@@ -69,7 +69,7 @@ export class OpenAIService implements LLMService {
     const { value } = await reader.read();
     const timeToFirstToken = Date.now() - startTime;
 
-    log(`Time to first token: ${timeToFirstToken}ms`);
+    log.info(`Time to first token: ${timeToFirstToken}ms`);
 
     const newStream = new ReadableStream({
       start(controller) {

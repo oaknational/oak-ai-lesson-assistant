@@ -34,7 +34,7 @@ export default function AdminChat({ params }: Readonly<AdminChatProps>) {
     return <LoadingWheel />;
   }
 
-  log("chat", chat);
+  log.info("chat", chat);
 
   if (!chat) {
     return <div>No chat found</div>;

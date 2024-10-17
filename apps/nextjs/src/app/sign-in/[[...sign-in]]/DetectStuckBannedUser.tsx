@@ -36,7 +36,7 @@ const DetectStuckBannedUser = () => {
       if (spinnerActive && firstFactorStuck) {
         if (isStuck.current) {
           // After 500ms the user is still stuck
-          log("Detected stuck user. Reloading");
+          log.info("Detected stuck user. Reloading");
 
           // The page will be /sign-in/factor-two...
           // Redirect back to /sign-in root to reset clerk UI and show the correct error

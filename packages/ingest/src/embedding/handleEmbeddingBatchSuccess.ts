@@ -40,7 +40,7 @@ export async function handleEmbeddingBatchSuccess({
     try {
       const batchEmbedding = parseBatchEmbedding(json);
       lessonId = batchEmbedding.lessonId;
-      log(`Embedding lesson ${lessonId}`);
+      log.info(`Embedding lesson ${lessonId}`);
       const { lessonPlanPartId, embedding } = batchEmbedding;
 
       const vector = `[${embedding.join(",")}]`;
@@ -104,7 +104,7 @@ export async function handleEmbeddingBatchSuccess({
     },
   });
 
-  log(`Batch ${batchId} completed`);
-  log(`Failed: ${lessonIdsFailed.size} lessons`);
-  log(`Completed: ${lessonIdsCompleted.size} lessons`);
+  log.info(`Batch ${batchId} completed`);
+  log.info(`Failed: ${lessonIdsFailed.size} lessons`);
+  log.info(`Completed: ${lessonIdsCompleted.size} lessons`);
 }

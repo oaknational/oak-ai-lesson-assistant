@@ -11,7 +11,7 @@ import { ZodError } from "zod";
 
 import { trpc } from "@/utils/trpc";
 
-const log = aiLogger("qd");
+const log = aiLogger("exports");
 
 export function useExportQuizDesignerSlides({
   onStart,
@@ -48,7 +48,7 @@ export function useExportQuizDesignerSlides({
         return;
       }
 
-      log("STARTING");
+      log.info("STARTING");
 
       if (!debouncedParseResult?.success) {
         Sentry.captureException(

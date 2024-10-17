@@ -53,7 +53,7 @@ export const userBasedRateLimiter = (rateLimit: Ratelimit): RateLimiter => {
       }
 
       if (await isLimitFreeOakUser(userId)) {
-        log("Bypassing rate-limit for oak user %s", userId);
+        log.info("Bypassing rate-limit for oak user %s", userId);
         return { isSubjectToRateLimiting: false };
       }
 
@@ -62,7 +62,7 @@ export const userBasedRateLimiter = (rateLimit: Ratelimit): RateLimiter => {
       waitUntil(pending);
 
       if (!success) {
-        log("Rate limit exceeded for user %s", userId);
+        log.info("Rate limit exceeded for user %s", userId);
         throw new RateLimitExceededError(userId, rest.limit, rest.reset);
       }
 

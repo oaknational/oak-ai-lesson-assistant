@@ -39,7 +39,7 @@ export async function startBatch<T>({
   });
 
   for (const filePath of filePaths) {
-    log(`Submitting batch for ${filePath}`);
+    log.info(`Submitting batch for ${filePath}`);
     const { file } = await uploadOpenAiBatchFile({
       filePath,
     });
@@ -52,7 +52,7 @@ export async function startBatch<T>({
       filePath,
     });
 
-    log(`Submitted batch ${openaiBatch.id} for ${filePath}`);
+    log.info(`Submitted batch ${openaiBatch.id} for ${filePath}`);
     await onSubmitted({ openaiBatchId: openaiBatch.id, filePath, customIds });
   }
 }

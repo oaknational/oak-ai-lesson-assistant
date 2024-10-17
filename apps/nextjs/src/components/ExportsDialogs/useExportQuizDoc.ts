@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { exportDocQuizSchema } from "@oakai/exports/browser";
 import { QuizDocInputData } from "@oakai/exports/src/schema/input.schema";
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
 import { ZodError } from "zod";
@@ -9,6 +10,8 @@ import { ZodError } from "zod";
 import { trpc } from "@/utils/trpc";
 
 import { ExportsHookProps } from "./exports.types";
+
+const log = aiLogger("exports");
 
 export function useExportQuizDoc({
   onStart,
@@ -55,7 +58,7 @@ export function useExportQuizDoc({
         });
         setChecked(true);
       } catch (error) {
-        console.error("Error during check:", error);
+        log.error("Error during check:", error);
       }
     }
   }, [

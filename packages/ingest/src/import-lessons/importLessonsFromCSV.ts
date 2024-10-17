@@ -69,7 +69,7 @@ export function importLessonsFromCSV({
             chunkSize: 30000,
           });
 
-          log(`Imported ${parsedLessons.length} lessons from CSV`);
+          log.info(`Imported ${parsedLessons.length} lessons from CSV`);
           resolve();
         })
         .on("error", (cause) => {

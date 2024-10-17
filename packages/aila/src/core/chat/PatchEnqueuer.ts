@@ -37,7 +37,7 @@ export class PatchEnqueuer {
       try {
         this.controller.enqueue(encodedPatch);
       } catch (error) {
-        console.error("Error enqueuing patch", error);
+        log.error("Error enqueuing patch", error);
         throw error;
       }
     });

@@ -57,7 +57,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
   async upsertChat(): Promise<void> {
     const payload = this.createChatPayload();
     if (!payload.id || !payload.userId) {
-      log("No ID or userId found for chat. Not persisting.");
+      log.info("No ID or userId found for chat. Not persisting.");
       return;
     }
 
@@ -83,7 +83,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
 
     const payload = this.createGenerationPayload(generation);
     if (!payload.id || !payload.userId) {
-      log(
+      log.info(
         "No ID or userId found for generation. Not persisting.",
         generation.id,
       );

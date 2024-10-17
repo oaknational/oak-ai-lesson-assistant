@@ -160,7 +160,7 @@ function handleLabelText({
   text: string;
   section: string;
 }): string {
-  log("section", section);
+  log.info("section", section);
   if (
     section === "Misconceptions" ||
     section === "Key learning points" ||

@@ -89,6 +89,8 @@ export async function handleLessonPlanBatchSuccess({
     },
   });
 
-  log(`Updated ${lessonIdsCompleted.length} lessons with lesson plans`);
-  log(`Failed to update ${lessonIdsFailed.length} lessons with lesson plans`);
+  log.info(`Updated ${lessonIdsCompleted.length} lessons with lesson plans`);
+  log.info(
+    `Failed to update ${lessonIdsFailed.length} lessons with lesson plans`,
+  );
 }

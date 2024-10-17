@@ -164,7 +164,7 @@ export class AilaModeration implements AilaModerationFeature {
         lastUserMessage?.content,
       );
       if (mockModerationResult) {
-        log("Returning mockModerationResult", mockModerationResult);
+        log.info("Returning mockModerationResult", mockModerationResult);
         return mockModerationResult;
       }
     }

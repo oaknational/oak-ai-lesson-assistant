@@ -12,7 +12,7 @@ export class SentryErrorReporter extends AilaErrorReporter {
     level?: AilaErrorSeverity,
     context?: Record<string, unknown>,
   ): void {
-    console.error(error);
+    log.error(error);
     Sentry.withScope(function (scope) {
       scope.setLevel(level ?? "error");
       Sentry.captureException(error, { extra: context });
@@ -20,7 +20,7 @@ export class SentryErrorReporter extends AilaErrorReporter {
   }
 
   public captureMessage(message: string, level: AilaErrorSeverity): void {
-    log(message);
+    log.info(message);
     Sentry.captureMessage(message, level as Sentry.SeverityLevel);
   }
 

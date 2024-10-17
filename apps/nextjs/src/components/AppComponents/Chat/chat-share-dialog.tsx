@@ -56,7 +56,7 @@ export function ChatShareDialog({
       toast.success("Link copied to clipboard");
     },
     onError(error) {
-      console.error(error); // TODO sentry?
+      log.error(error); // TODO sentry?
       toast.error("Failed to share chat");
     },
   });

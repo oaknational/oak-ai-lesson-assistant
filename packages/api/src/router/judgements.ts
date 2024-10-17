@@ -248,7 +248,7 @@ export const judgementRouter = router({
             },
           },
         });
-        log("Flagged in comparative judgement successfully");
+        log.info("Flagged in comparative judgement successfully");
       } catch (err) {
         logger.error("User tried to flag or skip a question", err);
         return err;

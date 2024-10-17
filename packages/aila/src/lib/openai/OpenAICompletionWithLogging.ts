@@ -6,7 +6,7 @@ import { aiLogger } from "@oakai/logger";
 import OpenAI from "openai";
 import type { PostHog } from "posthog-node";
 
-const log = aiLogger("aila:openai");
+const log = aiLogger("aila:llm");
 
 export interface OpenAICompletionWithLoggingOptions {
   chatId?: string;
@@ -73,7 +73,7 @@ export async function OpenAICompletionWithLogging(
   const metrics = await reportMetrics(metricsPayload);
   await reportCompletionAnalyticsEvent(metricsPayload);
 
-  log("Open AI Metrics", metrics);
+  log.info("Open AI Metrics", metrics);
   return { completion, metrics };
 }
 
@@ -173,7 +173,7 @@ export async function reportMetrics(payload: MetricsPayload) {
       body: JSON.stringify(body),
     });
 
-    log("Datadog status", result.status);
+    log.info("Datadog status", result.status);
   }
 
   return {

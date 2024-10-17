@@ -98,7 +98,7 @@ export class DatadogAnalyticsAdapter extends AnalyticsAdapter {
         body: JSON.stringify(body),
       });
 
-      log("Datadog status", result.status);
+      log.info("Datadog status", result.status);
     }
   }
 

@@ -95,12 +95,12 @@ const StatePersistence = ({ state }: Readonly<{ state: QuizAppState }>) => {
 
     if (state.status === QuizAppStatus.EditingQuestions) {
       const formatState = JSON.stringify(state);
-      log("Store state in local storage");
+      log.info("Store state in local storage");
       localStorage.setItem("quizData", formatState);
     }
 
     if (state.sessionId) {
-      log("Update session state", { state });
+      log.info("Update session state", { state });
       updateSessionStateMutationCall({
         sessionId: state.sessionId,
         output: restOfState,
@@ -114,7 +114,7 @@ const StatePersistence = ({ state }: Readonly<{ state: QuizAppState }>) => {
 const MemoizedStatePersistence = memo(
   StatePersistence,
   (oldProps, newProps) => {
-    log({ oldProps, newProps });
+    log.info({ oldProps, newProps });
     return equals(oldProps.state, newProps.state);
   },
 );

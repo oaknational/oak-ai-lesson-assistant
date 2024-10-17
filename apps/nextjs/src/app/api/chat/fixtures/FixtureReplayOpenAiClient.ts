@@ -12,7 +12,7 @@ export class FixtureReplayOpenAiClient implements OpenAILike {
     completions: {
       create: async () => {
         const fileUrl = `${process.cwd()}/tests-e2e/recordings/${this.fixtureName}.moderation.json`;
-        log("Loading moderation from", fileUrl);
+        log.info("Loading moderation from", fileUrl);
         const fixture = await fs.readFile(fileUrl, "utf8");
         return JSON.parse(fixture) as OpenAI.Chat.ChatCompletion;
       },

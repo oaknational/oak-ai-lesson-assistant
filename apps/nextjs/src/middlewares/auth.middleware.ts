@@ -97,7 +97,7 @@ const needsToCompleteOnboarding = (sessionClaims: CustomJwtSessionClaims) => {
 };
 
 const logger = (request: NextRequest) => (message: string) => {
-  log(`${request.url} ${message}`);
+  log.info(`${request.url} ${message}`);
 };
 
 function conditionallyProtectRoute(
@@ -152,7 +152,7 @@ export async function authMiddleware(
       return response;
     }
   } catch (error) {
-    console.error({ event: "middleware.auth.error", error });
+    log.error({ event: "middleware.auth.error", error });
     throw new Error("Error in authMiddleware", { cause: error });
   }
 

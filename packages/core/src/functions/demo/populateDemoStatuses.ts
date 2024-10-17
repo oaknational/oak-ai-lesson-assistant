@@ -18,11 +18,11 @@ export const populateDemoStatuses = inngest.createFunction(
     const DRY_RUN = args.dryRun;
 
     if (DRY_RUN) {
-      log("Running in dry run mode");
+      log.info("Running in dry run mode");
     }
 
     async function updateUser(id: string) {
-      log("Updating user", id);
+      log.info("Updating user", id);
 
       if (!DRY_RUN) {
         await clerkClient.users.updateUserMetadata(id, {
@@ -42,13 +42,13 @@ export const populateDemoStatuses = inngest.createFunction(
           offset,
           orderBy: "created_at",
         });
-        log(`${data.length} records fetched at ${offset} offset`);
+        log.info(`${data.length} records fetched at ${offset} offset`);
 
         if (data.length === 0) {
           return { continue: false as const };
         }
 
-        log(data.map((user) => user.publicMetadata.isDemoUser));
+        log.info(data.map((user) => user.publicMetadata.isDemoUser));
 
         await Promise.all(
           data
@@ -71,6 +71,6 @@ export const populateDemoStatuses = inngest.createFunction(
       }
     }
 
-    log("Done");
+    log.info("Done");
   },
 );

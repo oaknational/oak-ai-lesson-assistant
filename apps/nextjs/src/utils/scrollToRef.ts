@@ -44,24 +44,24 @@ export const scrollToRef = ({
         }
 
         // Debug: Log progress and scroll position
-        //  log(`Time Elapsed: ${timeElapsed}`);
-        //  log(`Progress: ${progress}`);
-        //  log(`ScrollTop: ${containerRef.current.scrollTop}`);
+        //  log.info(`Time Elapsed: ${timeElapsed}`);
+        //  log.info(`Progress: ${progress}`);
+        //  log.info(`ScrollTop: ${containerRef.current.scrollTop}`);
 
         if (progress < 1) {
           requestAnimationFrame(scroll);
         } else {
           // Debug: Log completion
-          log("Scrolling completed");
+          log.info("Scrolling completed");
         }
       };
 
       requestAnimationFrame(scroll);
     } catch (error) {
-      console.error("Error scrolling to ref", error);
+      log.error("Error scrolling to ref", error);
     }
   } else {
     // Debug: Log ref or containerRef not found
-    console.error("Ref or containerRef not found");
+    log.error("Ref or containerRef not found");
   }
 };

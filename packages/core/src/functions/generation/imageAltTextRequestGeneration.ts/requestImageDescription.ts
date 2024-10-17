@@ -1,4 +1,8 @@
+import { aiLogger } from "@oakai/logger";
+
 import { createOpenAIClient } from "../../../llm/openai";
+
+const log = aiLogger("generation");
 
 const openai = createOpenAIClient({ app: "image-alt-text" });
 
@@ -20,11 +24,11 @@ export async function requestImageDescription(
   inQuizMode?: boolean,
 ) {
   try {
-    log("Requesting image description...");
+    log.info("Requesting image description...");
 
     // Assuming you have a loading state variable to manage the loading state
     // Set loading state to true"openai": "^4.24.1",
-    log("Loading");
+    log.info("Loading");
 
     const promptInUse = inQuizMode ? promptInQuizMode : prompt;
 
@@ -57,12 +61,12 @@ export async function requestImageDescription(
         ],
       });
 
-      log("Image description received:", response);
-      log("Image description received:", response.choices[0]);
+      log.info("Image description received:", response);
+      log.info("Image description received:", response.choices[0]);
 
       return response.choices[0]?.message.content;
     }
   } catch (error) {
-    console.error("Error requesting image description:", error);
+    log.error("Error requesting image description:", error);
   }
 }

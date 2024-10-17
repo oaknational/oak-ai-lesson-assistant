@@ -1,8 +1,12 @@
 import debug from "debug";
 
-const baseLogger = debug("ai");
+import structuredLogger, { StructuredLogger } from "./structuredLogger";
+
+const debugBase = debug("ai");
+// logger.log = structuredLogger.info.bind(structuredLogger);
 
 type ChildKey =
+  | "admin"
   | "admin"
   | "aila"
   | "aila:analytics"
@@ -14,7 +18,6 @@ type ChildKey =
   | "aila:protocol"
   | "aila:rag"
   | "aila:testing"
-  | "admin"
   | "analytics"
   | "app"
   | "auth"
@@ -32,15 +35,23 @@ type ChildKey =
   | "judgements"
   | "lessons"
   | "middleware:auth"
+  | "prompts"
   | "qd"
   | "rag"
   | "rate-limiting"
+  | "snippets"
   | "testing"
+  | "tracing"
+  | "transcripts"
+  | "trpc"
   | "ui";
 
 export function aiLogger(childKey: ChildKey) {
-  return baseLogger.extend(childKey);
+  return {
+    info: debugBase.extend(childKey),
+    error: structuredLogger.error,
+  };
 }
 
-export { default as structuredLogger } from "./structuredLogger";
-export type { Logger as StructuredLogger } from "./structuredLogger";
+export { structuredLogger };
+export type { StructuredLogger };

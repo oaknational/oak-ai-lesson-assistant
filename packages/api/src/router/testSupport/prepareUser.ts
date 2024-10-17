@@ -93,7 +93,7 @@ const findOrCreateUser = async (
     return existingUser;
   }
 
-  log("Creating test user", { email });
+  log.info("Creating test user", { email });
   const newUser = await clerkClient.users.createUser({
     emailAddress: [email],
     firstName: branch,

@@ -200,11 +200,11 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       Sentry.captureException(new Error("Use chat error"), {
         extra: { originalError: error },
       });
-      console.error("UseChat error", { error, messages });
+      log.error("UseChat error", { error, messages });
       setHasFinished(true);
     },
     onResponse(response) {
-      log("Chat: On Response");
+      log.info("Chat: On Response");
 
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
       if (response.status === 401) {
@@ -219,7 +219,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       }
     },
     onFinish(response) {
-      log("Chat: On Finish", new Date().toISOString(), {
+      log.info("Chat: On Finish", new Date().toISOString(), {
         response,
         path,
       });
@@ -309,7 +309,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
         });
       }
     } catch (error) {
-      console.error("Error handling queued action:", error);
+      log.error("Error handling queued action:", error);
     } finally {
       isExecutingAction.current = false;
     }

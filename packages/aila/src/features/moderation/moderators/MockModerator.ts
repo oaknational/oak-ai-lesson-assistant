@@ -15,7 +15,7 @@ export class MockModerator extends AilaModerator {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async moderate(input: string): Promise<ModerationResult> {
     const result = this._mockedResults.shift();
-    log("Mock moderation: ", input, result);
+    log.info("Mock moderation: ", input, result);
 
     if (!result) {
       throw new AilaModerationError("No more mocked results");

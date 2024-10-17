@@ -57,13 +57,13 @@ export async function importLessons({
       };
     });
 
-    log(`Importing ${data.length} lessons`);
+    log.info(`Importing ${data.length} lessons`);
 
     await prisma.ingestLesson.createMany({
       data,
     });
 
-    log(`Imported ${data.length} lessons`);
+    log.info(`Imported ${data.length} lessons`);
 
     if (lessonData.lessons.length < limit) {
       break;

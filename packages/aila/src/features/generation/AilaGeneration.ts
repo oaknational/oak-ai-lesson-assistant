@@ -206,7 +206,7 @@ export class AilaGeneration {
         const created = await prompts.setCurrent(variantSlug, true);
         promptId = created?.id;
       } catch (e) {
-        console.error("Error creating prompt", e);
+        log.error("Error creating prompt", e);
       }
     }
 

@@ -79,7 +79,7 @@ export async function exportAdditionalMaterialsDoc({
     snapshotId: lessonSnapshot.id,
     userEmail,
     onStateChange: (state) => {
-      log(state);
+      log.info(state);
 
       Sentry.addBreadcrumb({
         category: "exportAdditionalMaterialsDoc",

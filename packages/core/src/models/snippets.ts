@@ -5,6 +5,7 @@ import {
   SnippetStatus,
   SnippetVariant,
 } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import { LLMChain, RetrievalQAChain } from "langchain/chains";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import {
@@ -25,6 +26,8 @@ import { difference } from "remeda";
 import { inngest } from "../client";
 import { createOpenAILangchainClient } from "../llm/openai";
 import { embedWithCache } from "../utils/embeddings";
+
+const log = aiLogger("snippets");
 
 export type DisplayFormat = "plain" | "markdown";
 
@@ -165,7 +168,7 @@ If you don't know the answer, just respond with "None", don't try to make up an 
 
     const theAnswer = await chain.invoke(question);
 
-    log("Generated this answer to the question", question, theAnswer);
+    log.info("Generated this answer to the question", question, theAnswer);
     return theAnswer;
   }
 
@@ -340,7 +343,7 @@ Respond to the prompt as if it is the main prompt you are being given rather tha
       prompt: template,
     });
     const res = await chain.call({ prompt, snippetText, displayFormatPrompt });
-    log("Prompt result", {
+    log.info("Prompt result", {
       res,
       prompt,
       snippetText,
@@ -372,14 +375,14 @@ Respond to the prompt as if it is the main prompt you are being given rather tha
     });
 
     if (snippets.length > 0) {
-      log("Already has a snippet. Exiting");
+      log.info("Already has a snippet. Exiting");
       return;
     }
 
     const correctAnswer = question.answers.find((a) => !a.distractor);
 
     if (!correctAnswer) {
-      log("Cannot find the correct answer. Exiting");
+      log.info("Cannot find the correct answer. Exiting");
       return;
     }
 

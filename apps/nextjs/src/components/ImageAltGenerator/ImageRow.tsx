@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 
 import { useRouter } from "#next/navigation";
+import { aiLogger } from "@oakai/logger";
 import { Box, Flex } from "@radix-ui/themes";
 import { Resource } from "ai-apps/image-alt-generation/types";
 import encode from "base64url";
@@ -10,6 +11,8 @@ import { trpc } from "@/utils/trpc";
 
 import Button from "../Button";
 import LoadingWheel from "../LoadingWheel";
+
+const log = aiLogger("ui");
 
 const ImageRow = ({
   resource,
@@ -76,7 +79,7 @@ const ImageRow = ({
     };
 
     const encodedResource = encode(JSON.stringify(shareData));
-    log("encodedResource", encodedResource);
+    log.info("encodedResource", encodedResource);
     router.push(`/image-alt-generations/${encodedResource}`);
   }
 
