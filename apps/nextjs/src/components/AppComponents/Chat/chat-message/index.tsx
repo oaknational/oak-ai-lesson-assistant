@@ -18,6 +18,7 @@ import {
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { isSafe } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { aiLogger } from "@oakai/logger";
 import { Message } from "ai";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
@@ -28,6 +29,8 @@ import { cn } from "@/lib/utils";
 import { ModerationModalHelpers } from "../../FeedbackForms/ModerationFeedbackModal";
 import { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import { isModeration } from "./protocol";
+
+const log = aiLogger("chat");
 
 export interface ChatMessageProps {
   chatId: string; // Needed for when we refactor to use a moderation provider
@@ -242,7 +245,7 @@ function ChatMessagePart({
   }>;
 
   if (!PartComponent) {
-    console.log("Unknown part type", part.document.type, JSON.stringify(part)); // eslint-disable-line no-console
+    log.info("Unknown part type", part.document.type, JSON.stringify(part));
     return null;
   }
 

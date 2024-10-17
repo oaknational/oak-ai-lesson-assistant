@@ -1,3 +1,4 @@
+import { structuredLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { NextFetchEvent, NextRequest } from "next/server";
 
@@ -33,7 +34,7 @@ export async function logError(
 
   if (rootError instanceof SyntaxError) {
     // Log the error so it is picked up by the log drain (eg. DataDog)
-    console.warn({
+    structuredLogger.warn({
       event: "middleware.syntaxError",
       error: rootError.message,
       url: requestInfo.url,

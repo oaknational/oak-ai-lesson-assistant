@@ -2,7 +2,10 @@
 // and instead these methods should take an Aila instance
 // Then, we can use the errorReporting feature instance
 // to report errors using the correct error reporting back-end
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
+
+const log = aiLogger("aila:errors");
 
 export function reportErrorToSentry(
   error: unknown,
@@ -18,7 +21,7 @@ export function reportErrorToSentry(
     extra?: Record<string, unknown>;
   },
 ) {
-  console.error(message, error);
+  log.error(message, error);
   if (reportToSentry) {
     Sentry.captureMessage(message, level);
 

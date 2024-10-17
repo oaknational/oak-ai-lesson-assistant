@@ -1,7 +1,10 @@
 import { Apps } from "@oakai/core";
 import { prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
 import QuizPreview from "./preview";
+
+const log = aiLogger("qd");
 
 async function getData(slug: string) {
   const appsModel = new Apps(prisma);
@@ -24,7 +27,7 @@ export default async function QuizPreviewPage({
 }: {
   params: { slug: string };
 }) {
-  console.log("params", params);
+  log.info("params", params);
 
   const questions = await getData(params.slug);
 

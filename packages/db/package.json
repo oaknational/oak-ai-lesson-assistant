@@ -54,6 +54,7 @@
   },
   "prettier": "@oakai/prettier-config",
   "dependencies": {
+    "@oakai/logger": "*",
     "@prisma/client": "^5.13.0",
     "@types/chunk-text": "^1.0.0",
     "cheerio": "1.0.0-rc.12",

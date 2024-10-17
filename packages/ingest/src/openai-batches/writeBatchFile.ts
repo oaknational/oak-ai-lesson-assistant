@@ -1,6 +1,9 @@
+import { aiLogger } from "@oakai/logger";
 import fs from "node:fs";
 
 import { IngestError } from "../IngestError";
+
+const log = aiLogger("ingest");
 
 function getBatchDataDir({ ingestId }: { ingestId: string }) {
   return `${__dirname}/data/ingest_${ingestId}`;
@@ -29,7 +32,8 @@ export function writeBatchFile<T>({
 
       writeStream.on("finish", () => {
         resolve({ filePath, batchDir });
-        console.log("Finished writing batch file", filePath);
+
+        log.info("Finished writing batch file", filePath);
       });
 
       writeStream.on("error", reject);

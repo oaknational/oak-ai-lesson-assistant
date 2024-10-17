@@ -1,5 +1,6 @@
 import { Moderations, SafetyViolations } from "@oakai/core";
 import { Moderation } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import { z } from "zod";
 
 import { getSessionModerations } from "../../../aila/src/features/moderation/getSessionModerations";
@@ -9,6 +10,8 @@ import {
 } from "../../../aila/src/protocol/schema";
 import { adminProcedure } from "../middleware/adminAuth";
 import { router } from "../trpc";
+
+const log = aiLogger("admin");
 
 export const adminRouter = router({
   getModerations: adminProcedure
@@ -61,7 +64,7 @@ export const adminRouter = router({
       const { userId: invalidatedBy } = auth;
 
       // invalidate toxic moderation
-      console.log("Invalidating moderation", { moderationId, invalidatedBy });
+      log.info("Invalidating moderation", { moderationId, invalidatedBy });
       const moderations = new Moderations(prisma);
       await moderations.invalidateModeration({
         moderationId,
@@ -69,7 +72,7 @@ export const adminRouter = router({
       });
 
       // remove associated safety violation (and potentially unban user)
-      console.log("Removing safety violation", { moderationId });
+      log.info("Removing safety violation", { moderationId });
       const safetyViolations = new SafetyViolations(prisma);
       await safetyViolations.removeViolationsByRecordId(moderationId);
     }),

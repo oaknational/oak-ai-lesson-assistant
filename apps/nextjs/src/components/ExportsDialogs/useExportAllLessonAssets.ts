@@ -5,11 +5,14 @@ import {
   exportSlidesFullLessonSchema,
 } from "@oakai/exports/browser";
 import { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
 import { ZodError } from "zod";
 
 import { trpc } from "@/utils/trpc";
+
+const log = aiLogger("exports");
 
 export function useExportAllLessonAssets({
   onStart,
@@ -44,7 +47,7 @@ export function useExportAllLessonAssets({
     if (!active) {
       return;
     }
-    console.log("STARTING");
+    log.info("STARTING");
 
     if (!debouncedParseResult?.success) {
       Sentry.captureException(

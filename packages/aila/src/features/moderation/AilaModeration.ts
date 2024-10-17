@@ -11,6 +11,7 @@ import {
   PrismaClientWithAccelerate,
   prisma as globalPrisma,
 } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
 import { AilaServices } from "../../core";
@@ -22,6 +23,8 @@ import { LooseLessonPlan } from "../../protocol/schema";
 import { AilaModerationFeature } from "../types";
 import { AilaModerator } from "./moderators";
 import { OpenAiModerator } from "./moderators/OpenAiModerator";
+
+const log = aiLogger("aila:moderation");
 
 export class AilaModeration implements AilaModerationFeature {
   private _prisma: PrismaClientWithAccelerate;
@@ -161,7 +164,7 @@ export class AilaModeration implements AilaModerationFeature {
         lastUserMessage?.content,
       );
       if (mockModerationResult) {
-        console.log("Returning mockModerationResult", mockModerationResult);
+        log.info("Returning mockModerationResult", mockModerationResult);
         return mockModerationResult;
       }
     }

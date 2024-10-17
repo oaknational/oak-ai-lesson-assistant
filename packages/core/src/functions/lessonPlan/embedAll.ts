@@ -1,7 +1,10 @@
 import { LessonPlanStatus, prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
 import { inngest } from "../../client";
 import { LessonPlans } from "../../models";
+
+const log = aiLogger("lessons");
 
 export const embedAllLessonPlans = inngest.createFunction(
   {
@@ -22,7 +25,7 @@ export const embedAllLessonPlans = inngest.createFunction(
       },
     );
 
-    console.log("planIds", planIds);
+    log.info("planIds", planIds);
 
     for (const planId of planIds) {
       await step.run("Get OpenAI embeddings of the lesson plan", async () => {

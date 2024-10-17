@@ -1,13 +1,16 @@
+import { aiLogger } from "@oakai/logger";
 import { initTRPC } from "@trpc/server";
 import { ZodError } from "zod";
 
 import { transformer } from "../transformer";
 import { type Context } from "./context";
 
+const log = aiLogger("trpc");
+
 export const t = initTRPC.context<Context>().create({
   transformer: transformer,
   errorFormatter({ shape, error }) {
-    console.error("trpc error", { shape, error });
+    log.error("trpc error", { shape, error });
 
     // this shouldn't happen before landing in production, but
     // by putting this ahead of the generic catch all ISE500 handler
