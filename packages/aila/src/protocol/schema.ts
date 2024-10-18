@@ -78,6 +78,9 @@ export const MisconceptionsOptionalSchema = z.array(
 
 export type Misconception = z.infer<typeof MisconceptionSchema>;
 export type MisconceptionOptional = z.infer<typeof MisconceptionOptionalSchema>;
+export type MisconceptionsOptional = z.infer<
+  typeof MisconceptionsOptionalSchema
+>;
 
 export const QuizQuestionOptionalSchema = z.object({
   question: z.string().optional(),
@@ -646,3 +649,13 @@ export const chatSchemaWithMissingMessageIds = z
 export type AilaPersistedChatWithMissingMessageIds = z.infer<
   typeof chatSchemaWithMissingMessageIds
 >;
+
+export type LessonPlanSectionWhileStreaming =
+  | BasedOnOptional
+  | MisconceptionsOptional
+  | KeywordOptional[]
+  | QuizOptional
+  | CycleOptional
+  | string
+  | string[]
+  | number;

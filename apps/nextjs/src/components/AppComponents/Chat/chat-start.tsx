@@ -16,7 +16,7 @@ import { trpc } from "@/utils/trpc";
 import { useDialog } from "../DialogContext";
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 import { ChatStartForm } from "./chat-start-form";
-import EmptyScreenAccordion from "./empty-screen-accordian";
+import EmptyScreenAccordion from "./empty-screen-accordion";
 
 const exampleMessages = [
   {

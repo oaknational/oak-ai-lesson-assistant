@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
+import {
+  BasedOnOptional,
+  LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
@@ -62,6 +65,24 @@ const organiseSections = [
   { trigger: "additionalMaterials", dependants: ["additionalMaterials"] },
 ];
 
+function getSectionsToDisplay(
+  lessonPlan: LooseLessonPlan,
+  streamingSections: string[] | undefined,
+) {
+  return organiseSections.flatMap((section) => {
+    const trigger = lessonPlan[section.trigger];
+    if (trigger || streamingSections?.includes(section.trigger)) {
+      return section.dependants.filter(
+        (dependant) =>
+          streamingSections?.includes(dependant) ||
+          (lessonPlan[dependant] !== null &&
+            lessonPlan[dependant] !== undefined),
+      );
+    }
+    return [];
+  });
+}
+
 export const LessonPlanDisplay = ({
   chatEndRef,
   sectionRefs,
@@ -73,8 +94,22 @@ export const LessonPlanDisplay = ({
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
   showLessonMobile: boolean;
 }) => {
+  const [lessonPlan, setLessonPlan] = useState<LooseLessonPlan>({});
+
   const chat = useLessonChat();
-  const { lessonPlan, ailaStreamingStatus, lastModeration } = chat;
+  const {
+    lessonPlan: incomingLessonPlan,
+    ailaStreamingStatus,
+    lastModeration,
+    streamingSections,
+  } = chat;
+
+  useEffect(() => {
+    if (Object.keys(incomingLessonPlan).length > 0) {
+      console.log("Update with incoming lesson plan", incomingLessonPlan);
+      setLessonPlan(incomingLessonPlan);
+    }
+  }, [incomingLessonPlan]);
 
   const [userHasCancelledAutoScroll, setUserHasCancelledAutoScroll] =
     useState(false);
@@ -109,7 +144,24 @@ export const LessonPlanDisplay = ({
     documentContainerRef,
   ]);
 
+  const sectionsToDisplay = getSectionsToDisplay(lessonPlan, streamingSections);
+
+  const [prevSectionsToDisplay, setPrevSectionsToDisplay] = useState<string[]>(
+    [],
+  );
+
+  useEffect(() => {
+    if (
+      JSON.stringify(sectionsToDisplay) !==
+      JSON.stringify(prevSectionsToDisplay)
+    ) {
+      console.log("Render LessonPlanDisplay with sections", sectionsToDisplay);
+      setPrevSectionsToDisplay(sectionsToDisplay);
+    }
+  }, [sectionsToDisplay, prevSectionsToDisplay]);
+
   if (Object.keys(lessonPlan).length === 0) {
+    console.log("Display Skeleton");
     return (
       <div className="w-full gap-5 px-23 pt-26">
         <Skeleton loaded={false} numberOfRows={2}>
@@ -121,7 +173,7 @@ export const LessonPlanDisplay = ({
 
   return (
     <div className={displayStyles()}>
-      {lessonPlan["title"] && (
+      {lessonPlan.title && (
         <Flex direction="column" gap="2">
           <Flex direction="row" gap="2" className="opacity-90">
             {notEmpty(lessonPlan.keyStage) && (
@@ -158,28 +210,17 @@ export const LessonPlanDisplay = ({
       )}
 
       <div className="flex w-full flex-col justify-center">
-        {organiseSections.map((section) => {
-          const trigger = lessonPlan[section.trigger];
-          return (
-            !!trigger &&
-            section.dependants.map((dependant) => {
-              const value = lessonPlan[dependant];
-              if (value !== null && value !== undefined) {
-                return (
-                  <DropDownSection
-                    key={dependant}
-                    objectKey={dependant}
-                    sectionRefs={sectionRefs}
-                    value={value}
-                    userHasCancelledAutoScroll={userHasCancelledAutoScroll}
-                    documentContainerRef={documentContainerRef}
-                    showLessonMobile={showLessonMobile}
-                  />
-                );
-              }
-            })
-          );
-        })}
+        {sectionsToDisplay.map((section) => (
+          <DropDownSection
+            key={section}
+            objectKey={section}
+            sectionRefs={sectionRefs}
+            value={lessonPlan[section]}
+            userHasCancelledAutoScroll={userHasCancelledAutoScroll}
+            documentContainerRef={documentContainerRef}
+            showLessonMobile={showLessonMobile}
+          />
+        ))}
       </div>
       <div ref={chatEndRef} />
     </div>

@@ -59,19 +59,16 @@ export function ChatStartForm({
         />
         <div className="absolute bottom-10 right-10 top-10 flex items-center justify-center ">
           <Tooltip>
+            <LoadingWheel visible={isSubmitting} />
             <TooltipTrigger asChild>
-              {isSubmitting ? (
-                <LoadingWheel />
-              ) : (
-                <button
-                  data-testid="send-message"
-                  type="submit"
-                  className="rounded-full bg-black p-4"
-                  disabled={isSubmitting}
-                >
-                  <Icon icon="chevron-right" color="white" size="sm" />
-                </button>
-              )}
+              <button
+                data-testid="send-message"
+                type="submit"
+                className={`${isSubmitting ? "hidden" : "inline-block"} rounded-full bg-black p-4`}
+                disabled={isSubmitting}
+              >
+                <Icon icon="chevron-right" color="white" size="sm" />
+              </button>
             </TooltipTrigger>
             <TooltipContent>Send message</TooltipContent>
           </Tooltip>

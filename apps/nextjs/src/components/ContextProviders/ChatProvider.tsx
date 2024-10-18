@@ -23,10 +23,10 @@ import * as Sentry from "@sentry/nextjs";
 import { Message, nanoid } from "ai";
 import { ChatRequestOptions, CreateMessage } from "ai";
 import { useChat } from "ai/react";
-import { useTemporaryLessonPlanWithStreamingEdits } from "hooks/useTemporaryLessonPlanWithStreamingEdits";
 
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { LessonPlanManager } from "@/lib/lessonPlan/LessonPlanManager";
 import { trpc } from "@/utils/trpc";
 
 import {
@@ -41,7 +41,7 @@ import {
 
 export type ChatContextProps = {
   id: string;
-  chat: AilaPersistedChat | undefined;
+  chat: AilaPersistedChat | undefined | null;
   initialModerations: Moderation[];
   toxicModeration: PersistedModerationBase | null;
   lastModeration: PersistedModerationBase | null;
@@ -62,6 +62,8 @@ export type ChatContextProps = {
   queuedUserAction: string | null;
   queueUserAction: (action: string) => void;
   executeQueuedAction: () => Promise<void>;
+  streamingSection: string | undefined;
+  streamingSections: string[] | undefined;
 };
 
 const ChatContext = createContext<ChatContextProps | null>(null);
@@ -70,16 +72,6 @@ export type ChatProviderProps = {
   id: string;
   children: React.ReactNode;
 };
-
-const messageHashes = {};
-
-function clearHashCache() {
-  for (const key in messageHashes) {
-    if (messageHashes.hasOwnProperty(key)) {
-      delete messageHashes[key];
-    }
-  }
-}
 
 function useActionMessages() {
   const analytics = useAnalytics();
@@ -156,6 +148,10 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const hasAppendedInitialMessage = useRef<boolean>(false);
 
   const lessonPlanSnapshot = useRef<LooseLessonPlan>({});
+  const lessonPlanManager = useRef(new LessonPlanManager({}));
+  const [lessonPlan, setLessonPlan] = useState(
+    lessonPlanManager.current.getLessonPlan(),
+  );
 
   const [overrideLessonPlan, setOverrideLessonPlan] = useState<
     LooseLessonPlan | undefined
@@ -240,6 +236,21 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   });
 
   useEffect(() => {
+    if (chat?.lessonPlan) {
+      lessonPlanManager.current.updateFromServer(chat.lessonPlan);
+      setLessonPlan(lessonPlanManager.current.getLessonPlan());
+    }
+  }, [chat?.lessonPlan]);
+
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage) {
+      lessonPlanManager.current.applyPatchesFromMessage(lastMessage);
+    }
+    setLessonPlan(lessonPlanManager.current.getLessonPlan());
+  }, [messages]);
+
+  useEffect(() => {
     /**
      * This is a hack to ensure that the assistant messages have a stable id
      * across server and client.
@@ -265,14 +276,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       message.id = "TEMP_PENDING_" + nanoid();
     });
   }, [messages]);
-
-  const { tempLessonPlan, partialPatches, validPatches } =
-    useTemporaryLessonPlanWithStreamingEdits({
-      lessonPlan: chat?.lessonPlan ?? {},
-      messages,
-      isStreaming: !hasFinished,
-      messageHashes,
-    });
 
   // Handle queued user actions and messages
 
@@ -340,11 +343,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     }
   }, [chat?.startingMessage, append, router, path, hasAppendedInitialMessage]);
 
-  // Clear the hash cache each completed message
-  useEffect(() => {
-    clearHashCache();
-  }, [hasFinished]);
-
   /**
    *  Update the lesson plan if the chat has finished updating
    *  Fetch the state from the last "state" command in the most recent assistant message
@@ -355,7 +353,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     if (shouldTrackStreamFinished.current) {
       lessonPlanTracking.onStreamFinished({
         prevLesson: lessonPlanSnapshot.current,
-        nextLesson: tempLessonPlan,
+        nextLesson: lessonPlan,
         messages,
       });
       shouldTrackStreamFinished.current = false;
@@ -366,7 +364,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     hasFinished,
     messages,
     lessonPlanTracking,
-    tempLessonPlan,
+    lessonPlan,
   ]);
 
   /**
@@ -380,7 +378,11 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       ? lastModeration
       : toxicInitialModeration;
 
-  const ailaStreamingStatus = useAilaStreamingStatus({ isLoading, messages });
+  const {
+    status: ailaStreamingStatus,
+    streamingSection,
+    streamingSections,
+  } = useAilaStreamingStatus({ isLoading, messages });
 
   useEffect(() => {
     if (toxicModeration) {
@@ -391,54 +393,54 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const value: ChatContextProps = useMemo(
     () => ({
-      id,
-      chat: chat ?? undefined,
-      initialModerations: moderations ?? [],
-      toxicModeration,
-      lessonPlan: overrideLessonPlan ?? tempLessonPlan,
-      hasFinished,
-      hasAppendedInitialMessage,
-      chatAreaRef,
-      append,
-      messages,
       ailaStreamingStatus,
+      append,
+      chat,
+      chatAreaRef,
+      executeQueuedAction,
+      hasAppendedInitialMessage,
+      hasFinished,
+      id,
+      initialModerations: moderations ?? [],
+      input,
       isLoading,
       isStreaming: !hasFinished,
       lastModeration,
-      reload,
-      stop,
-      input,
-      setInput,
-      partialPatches,
-      validPatches,
+      lessonPlan: overrideLessonPlan ?? lessonPlan,
+      messages,
       queuedUserAction,
       queueUserAction,
-      executeQueuedAction,
+      reload,
+      setInput,
+      stop,
+      streamingSection,
+      streamingSections,
+      toxicModeration,
     }),
     [
-      id,
-      chat,
-      moderations,
-      toxicModeration,
-      tempLessonPlan,
-      hasFinished,
-      hasAppendedInitialMessage,
-      chatAreaRef,
-      messages,
       ailaStreamingStatus,
+      append,
+      chat,
+      chatAreaRef,
+      executeQueuedAction,
+      hasAppendedInitialMessage,
+      hasFinished,
+      id,
+      input,
       isLoading,
       lastModeration,
-      reload,
-      stop,
-      input,
-      setInput,
-      append,
-      partialPatches,
-      validPatches,
+      lessonPlan,
+      messages,
+      moderations,
       overrideLessonPlan,
       queuedUserAction,
       queueUserAction,
-      executeQueuedAction,
+      reload,
+      setInput,
+      stop,
+      streamingSection,
+      streamingSections,
+      toxicModeration,
     ],
   );
 

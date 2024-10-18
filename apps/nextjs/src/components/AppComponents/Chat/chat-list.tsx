@@ -131,7 +131,7 @@ export const ChatMessagesDisplay = ({
   ailaStreamingStatus: AilaStreamingStatus;
   demo: DemoContextProps;
 }) => {
-  const { lessonPlan, isStreaming } = useLessonChat();
+  const { lessonPlan, isStreaming, streamingSection } = useLessonChat();
   const { setDialogWindow } = useDialog();
   const { totalSections, totalSectionsComplete } = useProgressForDownloads({
     lessonPlan,
@@ -164,7 +164,9 @@ export const ChatMessagesDisplay = ({
                 message={{
                   id: "working-on-it-initial",
                   role: "assistant",
-                  content: "Working on it…",
+                  content: streamingSection
+                    ? `Editing ${streamingSection}…`
+                    : "Working on it…",
                 }}
                 lastModeration={lastModeration}
                 persistedModerations={[]}
@@ -191,7 +193,9 @@ export const ChatMessagesDisplay = ({
                   ? {
                       id: "working-on-it-initial",
                       role: "assistant",
-                      content: "Working on it…",
+                      content: streamingSection
+                        ? `Editing ${streamingSection}…`
+                        : "Working on it…",
                     }
                   : message
               }

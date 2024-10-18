@@ -11,8 +11,8 @@ const ChatPageContents = ({ id }: { id: string }) => {
   return (
     <Layout>
       <LessonPlanTrackingProvider chatId={id}>
-        <ChatProvider key={`chat-${id}`} id={id}>
-          <Chat />
+        <ChatProvider key={`chat-provider-${id}`} id={id}>
+          <Chat key={`chat-${id}`} />
         </ChatProvider>
       </LessonPlanTrackingProvider>
     </Layout>
