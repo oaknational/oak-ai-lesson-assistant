@@ -2,12 +2,14 @@ import { Apps } from "@oakai/core";
 import { serializeApp } from "@oakai/core/src/models/serializers";
 import { sendEmailRequestingMoreGenerations } from "@oakai/core/src/utils/sendEmailRequestingMoreGenerations";
 import { prisma } from "@oakai/db";
-import logger from "@oakai/logger";
+import { structuredLogger as logger, aiLogger } from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
 import { publicProcedure, router } from "../trpc";
+
+const log = aiLogger("app");
 
 export const appRouter = router({
   all: publicProcedure.query(async ({ ctx }) => {
@@ -69,7 +71,8 @@ export const appRouter = router({
             userId,
           },
         });
-        console.log("session", session);
+
+        log.info("session", session);
         return session;
       } catch (error) {
         logger.error("Error creating session", error);
@@ -178,7 +181,7 @@ export const appRouter = router({
           avgGenerationTimeResult.map((res) => [res.name, res.value]),
         );
         logger.info("timingsKeyedByName", timingsKeyedByName);
-        console.log("timingsKeyedByName", timingsKeyedByName);
+        log.info("timingsKeyedByName", timingsKeyedByName);
         return timingsKeyedByName;
       } catch (error) {
         logger.error("Error fetching timings", error);

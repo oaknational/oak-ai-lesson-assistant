@@ -3,6 +3,7 @@
 import { memo, useCallback, useEffect, useReducer, useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
+import { aiLogger } from "@oakai/logger";
 import { quizAppReducer } from "ai-apps/quiz-designer/state/reducer";
 import { QuizAppState, QuizAppStatus } from "ai-apps/quiz-designer/state/types";
 import { useQuizSession } from "hooks/useQuizSession";
@@ -16,6 +17,8 @@ import RateLimitNotification from "@/components/AppComponents/common/RateLimitNo
 import { RestoreDialogRoot } from "@/components/AppComponents/common/RestoreDialog";
 import Layout from "@/components/Layout";
 import { trpc } from "@/utils/trpc";
+
+const log = aiLogger("qd");
 
 export const initialState: QuizAppState = {
   status: QuizAppStatus.Initial,
@@ -93,12 +96,12 @@ const StatePersistence = ({ state }: Readonly<{ state: QuizAppState }>) => {
 
     if (state.status === QuizAppStatus.EditingQuestions) {
       const formatState = JSON.stringify(state);
-      console.log("Store state in local storage");
+      log.info("Store state in local storage");
       localStorage.setItem("quizData", formatState);
     }
 
     if (state.sessionId) {
-      console.log("Update session state", { state });
+      log.info("Update session state", { state });
       updateSessionStateMutationCall({
         sessionId: state.sessionId,
         output: restOfState,
@@ -112,7 +115,7 @@ const StatePersistence = ({ state }: Readonly<{ state: QuizAppState }>) => {
 const MemoizedStatePersistence = memo(
   StatePersistence,
   (oldProps, newProps) => {
-    console.log({ oldProps, newProps });
+    log.info({ oldProps, newProps });
     return equals(oldProps.state, newProps.state);
   },
 );
