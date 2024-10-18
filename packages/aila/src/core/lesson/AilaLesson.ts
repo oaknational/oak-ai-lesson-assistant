@@ -74,7 +74,7 @@ export class AilaLesson implements AilaLessonService {
     let workingLessonPlan = deepClone(this._plan);
 
     // TODO do we need to apply all patches even if they are partial?
-    const { validPatches, partialPatches } = extractPatches(patches, 100);
+    const { validPatches, partialPatches } = extractPatches(patches);
     for (const patch of partialPatches) {
       this._invalidPatches.push(patch);
     }
