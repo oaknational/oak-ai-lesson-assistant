@@ -1,6 +1,9 @@
 import { useMemo, useEffect } from "react";
 
+import { aiLogger } from "@oakai/logger";
 import { Message } from "ai";
+
+const log = aiLogger("chat");
 
 export type AilaStreamingStatus =
   | "Loading"
@@ -43,7 +46,7 @@ export const useAilaStreamingStatus = ({
   }, [isLoading, messages]);
 
   useEffect(() => {
-    console.log("ailaStreamingStatus set:", ailaStreamingStatus);
+    log.info("ailaStreamingStatus set:", ailaStreamingStatus);
   }, [ailaStreamingStatus]);
 
   return ailaStreamingStatus;

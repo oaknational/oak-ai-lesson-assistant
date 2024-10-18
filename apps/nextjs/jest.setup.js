@@ -1,7 +1,5 @@
 require("@testing-library/jest-dom");
 
-console.log("Use Testing library jest-dom/extend-expect");
-
 // Mock Next.js Image component
 jest.mock("next/image", () => ({
   __esModule: true,
