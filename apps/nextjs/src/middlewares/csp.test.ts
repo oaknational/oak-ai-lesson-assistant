@@ -2,11 +2,6 @@ import { NextRequest } from "next/server";
 
 import { addCspHeaders, CspConfig } from "./csp";
 
-// Mock the uuid module
-jest.mock("uuid", () => ({
-  v4: jest.fn(() => "mocked-uuid"),
-}));
-
 const environments = ["development", "production", "preview"] as const;
 type Environment = (typeof environments)[number];
 
@@ -34,7 +29,13 @@ function generatePoliciesForEnvironment(env: Environment): string {
 
   const result = addCspHeaders(mockResponse, mockRequest, config);
   const cspHeader = result.headers.get("Content-Security-Policy") || "";
-  return cspHeader
+
+  const sanitizedCspHeader = cspHeader.replace(
+    /'nonce-[^']+'/g,
+    "'nonce-REPLACED_NONCE'",
+  );
+
+  return sanitizedCspHeader
     .split(";")
     .map((policy) => policy.trim())
     .join("\n");
