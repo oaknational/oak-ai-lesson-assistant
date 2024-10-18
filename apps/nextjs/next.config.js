@@ -41,9 +41,6 @@ const getConfig = async (phase) => {
 
     isProductionBuild = releaseStage === RELEASE_STAGE_PRODUCTION;
     appVersion = getAppVersion({ isProductionBuild });
-    console.log(
-      `Release stage: "${releaseStage}". App version: "${appVersion}"`,
-    );
   }
 
   /** @type {import('next').NextConfig} */

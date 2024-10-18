@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import { toast } from "react-hot-toast";
 
-import { redirect, usePathname, useRouter } from "#next/navigation";
+import { usePathname, useRouter } from "#next/navigation";
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import {

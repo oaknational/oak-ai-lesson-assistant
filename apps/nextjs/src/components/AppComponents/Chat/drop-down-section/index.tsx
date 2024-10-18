@@ -38,21 +38,11 @@ const DropDownSection = ({
   );
   const [sectionHasFired, setSectionHasFired] = useState(false);
 
-  const prevStatusRef = useRef(status);
-
   useEffect(() => {
     if (!showLessonMobile) {
       setIsOpen(false);
     }
   }, [showLessonMobile]);
-
-  useEffect(() => {
-    // Log only when the status changes
-    if (status !== prevStatusRef.current) {
-      console.log("Section", objectKey, streamingSection, status);
-      prevStatusRef.current = status;
-    }
-  }, [status, objectKey, streamingSection]);
 
   useEffect(() => {
     if (

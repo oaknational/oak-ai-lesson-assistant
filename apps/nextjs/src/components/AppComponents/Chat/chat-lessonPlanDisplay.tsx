@@ -106,7 +106,6 @@ export const LessonPlanDisplay = ({
 
   useEffect(() => {
     if (Object.keys(incomingLessonPlan).length > 0) {
-      console.log("Update with incoming lesson plan", incomingLessonPlan);
       setLessonPlan(incomingLessonPlan);
     }
   }, [incomingLessonPlan]);
@@ -146,22 +145,7 @@ export const LessonPlanDisplay = ({
 
   const sectionsToDisplay = getSectionsToDisplay(lessonPlan, streamingSections);
 
-  const [prevSectionsToDisplay, setPrevSectionsToDisplay] = useState<string[]>(
-    [],
-  );
-
-  useEffect(() => {
-    if (
-      JSON.stringify(sectionsToDisplay) !==
-      JSON.stringify(prevSectionsToDisplay)
-    ) {
-      console.log("Render LessonPlanDisplay with sections", sectionsToDisplay);
-      setPrevSectionsToDisplay(sectionsToDisplay);
-    }
-  }, [sectionsToDisplay, prevSectionsToDisplay]);
-
   if (Object.keys(lessonPlan).length === 0) {
-    console.log("Display Skeleton");
     return (
       <div className="w-full gap-5 px-23 pt-26">
         <Skeleton loaded={false} numberOfRows={2}>
