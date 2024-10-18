@@ -55,6 +55,7 @@ const getConfig = async (phase) => {
        * @see https://docs.sentry.io/platforms/javascript/guides/nextjs/migration/v7-to-v8/#updated-sdk-initialization
        */
       instrumentationHook: true,
+      serverComponentsExternalPackages: [`require-in-the-middle`],
       turbo: {
         resolveAlias: {
           "#next/navigation": {
