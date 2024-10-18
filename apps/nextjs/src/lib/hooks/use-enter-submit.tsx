@@ -1,5 +1,9 @@
 import { useRef, type RefObject } from "react";
 
+import { aiLogger } from "@oakai/logger";
+
+const log = aiLogger("ui");
+
 export function useEnterSubmit(): {
   formRef: RefObject<HTMLFormElement>;
   onKeyDown: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
@@ -23,7 +27,7 @@ export function useEnterSubmit(): {
           throw new Error("Form submission not supported");
         }
       } catch (error) {
-        console.error("Failed to submit form:", error);
+        log.error("Failed to submit form:", error);
       }
       event.preventDefault();
     }

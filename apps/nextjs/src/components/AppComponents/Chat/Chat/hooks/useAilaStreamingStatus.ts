@@ -1,6 +1,9 @@
 import { useMemo, useEffect } from "react";
 
+import { aiLogger } from "@oakai/logger";
 import { Message } from "ai";
+
+const log = aiLogger("chat");
 
 export type AilaStreamingStatus =
   | "Loading"
@@ -51,11 +54,9 @@ export const useAilaStreamingStatus = ({
           const pathMatches = [
             ...content.matchAll(/"path":"\/([^/"]*)(?:\/|")/g),
           ];
-          console.log("Path matches", pathMatches);
           streamingSections = pathMatches
             .map((match) => match[1])
             .filter((i): i is string => i !== undefined);
-          console.log("Streaming sections", streamingSections);
           const lastMatch = pathMatches[pathMatches.length - 1];
           streamingSection = lastMatch ? lastMatch[1] : undefined;
         } else {
@@ -68,11 +69,8 @@ export const useAilaStreamingStatus = ({
   }, [isLoading, messages]);
 
   useEffect(() => {
-    console.log("ailaStreamingStatus set:", status);
-    if (streamingSection) {
-      console.log("streamingSection:", streamingSection);
-    }
-  }, [status, streamingSection]);
+    log.info("ailaStreamingStatus set:", status);
+  }, [status]);
 
   return { status, streamingSection, streamingSections };
 };

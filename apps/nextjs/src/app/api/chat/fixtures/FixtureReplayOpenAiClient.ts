@@ -1,6 +1,9 @@
 import { OpenAILike } from "@oakai/aila/src/features/moderation/moderators/OpenAiModerator";
+import { aiLogger } from "@oakai/logger";
 import fs from "fs/promises";
 import OpenAI from "openai";
+
+const log = aiLogger("fixtures");
 
 export class FixtureReplayOpenAiClient implements OpenAILike {
   constructor(public fixtureName: string) {}
@@ -9,7 +12,7 @@ export class FixtureReplayOpenAiClient implements OpenAILike {
     completions: {
       create: async () => {
         const fileUrl = `${process.cwd()}/tests-e2e/recordings/${this.fixtureName}.moderation.json`;
-        console.log("Fixtures: Loading moderation from", fileUrl);
+        log.info("Loading moderation from", fileUrl);
         const fixture = await fs.readFile(fileUrl, "utf8");
         return JSON.parse(fixture) as OpenAI.Chat.ChatCompletion;
       },

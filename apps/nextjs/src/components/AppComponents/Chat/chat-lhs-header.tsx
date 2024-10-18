@@ -26,10 +26,9 @@ const ChatLhsHeader = ({
         {process.env.NEXT_PUBLIC_ENVIRONMENT !== "production" && (
           <div
             className="flex-grow text-left text-xs"
-            data-test="chat-aila-streaming-status"
+            data-testid="chat-aila-streaming-status"
           >
             {chat.ailaStreamingStatus}
-            {chat.streamingSection && `: ${chat.streamingSection}`}
           </div>
         )}
         <ChatButton
