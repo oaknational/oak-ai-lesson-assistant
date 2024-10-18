@@ -1,4 +1,5 @@
 import { clerkClient } from "@clerk/nextjs/server";
+import { waitUntil } from "@vercel/functions";
 import os from "os";
 import { z } from "zod";
 
@@ -71,6 +72,27 @@ const generateEmailAddress = (personaName: keyof typeof personas) => {
   return `${parts.join("+")}@thenational.academy`;
 };
 
+const deleteLastUsedTestUser = async () => {
+  const users = await clerkClient.users.getUserList({
+    orderBy: "+last_active_at",
+    limit: 500,
+  });
+
+  const NUMBERS_USER = /\d{5,10}.*@/; // jim+010203@thenational.academy
+  const lastUsedTestUser = users.data.find((u) => {
+    const email = u.primaryEmailAddress?.emailAddress ?? "";
+    return email.startsWith("test+") || email.match(NUMBERS_USER);
+  });
+
+  if (lastUsedTestUser) {
+    console.log(
+      "Deleting oldest test user",
+      lastUsedTestUser.primaryEmailAddress?.emailAddress,
+    );
+    await clerkClient.users.deleteUser(lastUsedTestUser.id);
+  }
+};
+
 const findOrCreateUser = async (
   email: string,
   personaName: keyof typeof personas,
@@ -108,6 +130,8 @@ const findOrCreateUser = async (
       region: persona.region,
     },
   });
+
+  waitUntil(deleteLastUsedTestUser());
 
   return newUser;
 };
