@@ -105,8 +105,12 @@ const DropDownSection = ({
       <OakFlex $gap="all-spacing-2">
         <OakBox>
           {status === "empty" && <div className="w-14"></div>}
-          {status === "isStreaming" && <LoadingWheel />}
-          {status === "isLoaded" && <Icon icon="tick" size="sm" />}
+          <LoadingWheel visible={status === "isStreaming"} />
+          <Icon
+            icon="tick"
+            size="sm"
+            className={status === "isStreaming" ? "hidden" : "block"}
+          />
         </OakBox>
 
         <FullWidthButton onClick={() => setIsOpen(!isOpen)}>

@@ -3,81 +3,33 @@
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Establishing key prior knowledge to ensure pupils have the foundational understanding necessary for this lesson.",
+      "reasoning": "I have chosen these learning outcomes and cycles to ensure that pupils understand the key historical events and concepts related to the end of Roman Britain.",
+      "value": {
+        "type": "string",
+        "op": "add",
+        "path": "/learningOutcome",
+        "value": "I can describe the main reasons for the end of Roman rule in Britain."
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "These learning cycles are designed to build on each other, starting with identifying key events and moving to understanding their impact.",
       "value": {
         "type": "string-array",
         "op": "add",
-        "path": "/priorKnowledge",
+        "path": "/learningCycles",
         "value": [
-          "Romans invaded Britain in 43 AD.",
-          "Roman roads connected towns across Britain.",
-          "Romans built Hadrian's Wall in the north of Britain.",
-          "Romans introduced new food and customs to Britain.",
-          "Some Britons adopted Roman ways of life."
+          "Identify key events leading to the end of Roman Britain.",
+          "Describe the impact of these events on life in Britain.",
+          "Explain the transition from Roman Britain to Anglo-Saxon rule."
         ]
-      }
-    },
-    {
-      "type": "patch",
-      "reasoning": "Identifying key learning points to ensure the lesson covers the most important aspects of the topic.",
-      "value": {
-        "type": "string-array",
-        "op": "add",
-        "path": "/keyLearningPoints",
-        "value": [
-          "The Romans left Britain around 410 AD.",
-          "Roman withdrawal left Britain vulnerable to invasions.",
-          "Many Roman structures fell into disrepair.",
-          "Local communities had to adapt without Roman support.",
-          "Cultural and technological changes occurred post-Roman rule."
-        ]
-      }
-    },
-    {
-      "type": "patch",
-      "reasoning": "Addressing common misconceptions to ensure they are clarified in the lesson.",
-      "value": {
-        "type": "misconceptions",
-        "op": "add",
-        "path": "/misconceptions",
-        "value": [
-          {
-            "misconception": "Romans were forced out of Britain by barbarians",
-            "description": "The Romans left Britain mainly due to internal issues in the Roman Empire. This can be clarified by explaining the Roman Empire's struggles."
-          },
-          {
-            "misconception": "Britain became immediately barbaric after Romans left",
-            "description": "Although there were challenges, Britain continued to have structured communities and slowly adapted without Roman governance."
-          }
-        ]
-      }
-    },
-    {
-      "type": "patch",
-      "reasoning": "Including keywords to bolster vocabulary comprehension for the lesson.",
-      "value": {
-        "type": "keywords",
-        "op": "add",
-        "path": "/keywords",
-        "value": [
-          {
-            "keyword": "Roman Empire",
-            "definition": "The vast empire ruled by Rome that included Britain for nearly 400 years."
-          },
-          {
-            "keyword": "Withdrawal",
-            "definition": "The act of pulling out or leaving a place or position."
-          },
-          {
-            "keyword": "Invaders",
-            "definition": "People or groups that enter a region to take control."
-          }
-        ]
-      }
+      },
+      "status": "complete"
     }
   ],
   "prompt": {
     "type": "text",
-    "value": "The prior knowledge, key learning points, misconceptions, and keywords have been set. Are these sections suitable for your class? If you need any changes, let me know!"
+    "value": "The learning outcome and learning cycles have been created. Are they suitable for your pupils? If not, suggest an edit below. Tap **Continue** to proceed to the next sections."
   }
 }

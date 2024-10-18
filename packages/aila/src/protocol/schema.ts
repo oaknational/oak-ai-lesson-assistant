@@ -595,6 +595,8 @@ export const chatSchema = z
     relevantLessons: z.array(AilaRagRelevantLessonSchema).optional(),
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]),
+    updatedAt: z.union([z.date(), z.number()]).optional(),
+    iteration: z.number().optional(),
     startingMessage: z.string().optional(),
     messages: z.array(
       z
@@ -626,6 +628,8 @@ export const chatSchemaWithMissingMessageIds = z
     lessonPlan: LessonPlanSchemaWhilstStreaming,
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]),
+    updatedAt: z.union([z.date(), z.number()]).optional(),
+    iteration: z.number().optional(),
     startingMessage: z.string().optional(),
     messages: z.array(
       z

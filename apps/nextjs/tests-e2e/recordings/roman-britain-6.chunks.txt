@@ -1,0 +1,97 @@
+{"
+type":"
+ll
+m
+Message
+","patches":[
+{"
+type":"
+patch
+","reasoning":"
+No
+ additional
+ materials
+ are
+ required
+ for
+ this
+ lesson
+.","
+value":{"
+type":"
+string
+","op":"
+add
+","path":"/
+additional
+Materials
+","value":"
+None
+"},"status":"
+complete
+"}],"prompt":{"
+type":"
+text
+","value":"
+The
+ lesson
+ plan
+ is
+ now
+ complete
+ with
+ all
+ sections
+ filled
+ out
+,
+ including
+ the
+ additional
+ materials
+.
+ If
+ you
+ have
+ any
+ further
+ edits
+ or
+ additions
+,
+ please
+ let
+ me
+ know
+.
+ Otherwise
+,
+ you
+ can
+ proceed
+ to
+ download
+ your
+ resources
+.
+ Have
+ you
+ finished
+ editing
+ your
+ lesson
+?
+ If
+ anything
+ is
+ missing
+,
+ just
+ ask
+ me
+ to
+ add
+ it
+ in
+."
+}}

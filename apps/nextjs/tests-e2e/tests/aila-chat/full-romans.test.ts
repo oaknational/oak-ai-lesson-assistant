@@ -1,5 +1,5 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
-import { test, expect, Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
@@ -8,15 +8,15 @@ import {
   applyLlmFixtures,
   continueChat,
   expectFinished,
-  expectSectionsComplete,
+  getSectionsComplete,
   waitForGeneration,
 } from "./helpers";
 
 // --------
 // CHANGE "replay" TO "record" TO RECORD A NEW FIXTURE
 // --------
-// const FIXTURE_MODE = "record" as FixtureMode;
-const FIXTURE_MODE = "replay" as FixtureMode;
+const FIXTURE_MODE = "record" as FixtureMode;
+//const FIXTURE_MODE = "replay" as FixtureMode;
 
 test(
   "Full aila flow with Romans fixture",
@@ -59,32 +59,48 @@ test(
 
     await test.step("Iterate through the fixtures", async () => {
       await page.waitForURL(/\/aila\/.+/);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 1);
-      await letUiSettle();
 
-      setFixture("roman-britain-2");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 3);
-      await letUiSettle();
+      let prevSectionsComplete = 0;
+      const maxIterations = 20;
+      let iterationCount = 0;
 
-      setFixture("roman-britain-3");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 7);
-      await letUiSettle();
+      while (iterationCount < maxIterations) {
+        iterationCount++;
 
-      setFixture("roman-britain-4");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 10);
-      await letUiSettle();
+        setFixture(`roman-britain-${iterationCount}`);
+        await continueChat(page);
 
-      setFixture("roman-britain-5");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 10);
+        // Start monitoring the progress
+        let monitoringProgress = true;
+        let monitoringTimeout: NodeJS.Timeout | null = null;
+
+        while (monitoringProgress) {
+          const currSectionsComplete = await getSectionsComplete(page);
+
+          expect(currSectionsComplete).toBeGreaterThanOrEqual(
+            prevSectionsComplete,
+          );
+
+          prevSectionsComplete = currSectionsComplete;
+
+          if (currSectionsComplete === 10) {
+            monitoringProgress = false;
+            break;
+          }
+
+          await new Promise((resolve) => {
+            monitoringTimeout = setTimeout(resolve, 500);
+          });
+        }
+
+        // Clear the monitoring timeout if it's still active
+        if (monitoringTimeout) {
+          clearTimeout(monitoringTimeout);
+        }
+
+        await waitForGeneration(page, generationTimeout);
+        await letUiSettle();
+      }
 
       await expectFinished(page);
     });

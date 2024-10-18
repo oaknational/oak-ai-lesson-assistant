@@ -23,24 +23,13 @@ export class LessonPlanManager {
 
   public applyPatchesFromMessage(message: Message): void {
     if (message.role === "assistant") {
-      console.log("Applying patches from message", message.content);
       const { validPatches } = extractPatchesFromMessage(message);
       this.applyLocalPatches(validPatches);
     }
   }
 
   public updateFromServer(serverLessonPlan: LooseLessonPlan): void {
-    // Update existing keys and add new ones
-    Object.keys(serverLessonPlan).forEach((key) => {
-      this.lessonPlan[key] = deepClone(serverLessonPlan[key]);
-    });
-
-    // Remove keys that are no longer in serverLessonPlan
-    Object.keys(this.lessonPlan).forEach((key) => {
-      if (!(key in serverLessonPlan)) {
-        delete this.lessonPlan[key];
-      }
-    });
+    this.lessonPlan = deepClone(serverLessonPlan);
     this.reset();
   }
 
@@ -54,7 +43,7 @@ export class LessonPlanManager {
       if (!this.appliedPatchHashes.has(patchHash)) {
         const updatedLessonPlan = applyLessonPlanPatch(this.lessonPlan, patch);
         if (updatedLessonPlan) {
-          this.lessonPlan = updatedLessonPlan;
+          this.lessonPlan = deepClone(updatedLessonPlan);
           this.appliedPatchHashes.add(patchHash);
         }
       }

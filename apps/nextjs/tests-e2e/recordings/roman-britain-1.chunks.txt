@@ -10,34 +10,38 @@ text
 ","value":"
 There
  are
+ currently
  no
  existing
  Oak
  lessons
- for
+ specifically
+ on
  the
- specific
- topic
- of
- \"
-End
+ end
  of
  Roman
  Britain
-,\"
- so
- we'll
- start
+ for
+ Key
+ Stage
+ 
+1
+.
+ Let's
+ proceed
+ with
+ creating
  a
  new
  lesson
  from
  scratch
 .
- Let's
- begin
+ We'll
+ start
  by
- outlining
+ establishing
  the
  learning
  outcomes
@@ -45,19 +49,29 @@ End
  learning
  cycles
  for
- the
+ this
  lesson
 .
- Tap
- **
-Continue
-**
+ Please
+ let
+ me
+ know
+ if
+ you
+ have
+ any
+ specific
+ outcomes
+ in
+ mind
+,
+ or
+ if
+ you'd
+ like
+ me
  to
- move
- on
- to
- the
- next
- step
+ suggest
+ some
 ."
 }}

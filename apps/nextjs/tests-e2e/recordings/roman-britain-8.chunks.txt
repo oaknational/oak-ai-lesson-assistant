@@ -1,0 +1,57 @@
+{"
+type":"
+ll
+m
+Message
+","patches":[]
+,"prompt":{"
+type":"
+text
+","value":"
+If
+ you
+ need
+ further
+ assistance
+ or
+ want
+ to
+ start
+ a
+ new
+ lesson
+ plan
+,
+ feel
+ free
+ to
+ let
+ me
+ know
+.
+ I'm
+ here
+ to
+ help
+ with
+ any
+ additional
+ questions
+ or
+ tasks
+ you
+ might
+ have
+.
+ Enjoy
+ teaching
+ your
+ lesson
+ on
+ the
+ end
+ of
+ Roman
+ Britain
+!"
+}}

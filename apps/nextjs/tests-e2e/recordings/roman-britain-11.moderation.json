@@ -1,0 +1,30 @@
+{
+  "id": "chatcmpl-AJnT65rsjbGA298YE4nIWh06AlaRg",
+  "object": "chat.completion",
+  "created": 1729281752,
+  "model": "gpt-4o-2024-08-06",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":4,\"t\":5},\"justification\":\"The lesson plan for Key Stage 1 on the topic of 'End of Roman Britain' is designed for young students. It is fully compliant with guidelines on language and discrimination, violence and crime, upsetting content, nudity and sex, and toxic content, as it does not contain any inappropriate language, depictions of violence, sensitive topics, or harmful instructions. The lesson is age-appropriate and maintains a neutral and educational tone throughout. However, the lesson involves physical activity in the form of creating a timeline and drawing Anglo-Saxon settlements, which requires some supervision and thus scores a 4 in the physical category.\",\"categories\":[\"p/physical-activity\"]}",
+        "refusal": null
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 3494,
+    "completion_tokens": 162,
+    "total_tokens": 3656,
+    "prompt_tokens_details": {
+      "cached_tokens": 3328
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "system_fingerprint": "fp_6b68a8204b"
+}

@@ -8,62 +8,1145 @@ Message
 type":"
 patch
 ","reasoning":"
-Adding
- a
- placeholder
- for
- potential
- additional
- materials
- or
- narratives
- that
- may
- support
+The
+ starter
+ quiz
+ checks
+ pupils
+'
+ understanding
+ of
+ foundational
+ knowledge
+ needed
+ before
  the
  lesson
- plan
+ begins
 .","
 value":{"
 type":"
-string
+quiz
 ","op":"
 add
 ","path":"/
-additional
-Materials
-","value":"
-None
-"}}],"prompt":{"
+starter
+Quiz
+","value":[
+{"
+question":"
+What
+ was
+ the
+ Roman
+ Empire
+?
+","answers":["
+A
+ powerful
+ civilisation
+ that
+ controlled
+ large
+ parts
+ of
+ Europe
+"],"distractors":["
+A
+ small
+ village
+ in
+ Italy
+","
+A
+ type
+ of
+ ancient
+ weapon
+"]},{"
+question":"
+Who
+ were
+ stationed
+ in
+ Britain
+ to
+ maintain
+ control
+?
+","answers":["
+Roman
+ soldiers
+"],"distractors":["
+Ang
+lo
+-S
+axon
+ farmers
+","
+V
+iking
+ warriors
+"]},{"
+question":"
+What
+ did
+ the
+ Romans
+ build
+ in
+ Britain
+?
+","answers":["
+Road
+s
+,
+ forts
+,
+ and
+ towns
+"],"distractors":["
+Cast
+les
+ and
+ mo
+ats
+","
+Sk
+yscr
+apers
+ and
+ bridges
+"]},{"
+question":"
+Which
+ groups
+ began
+ to
+ settle
+ in
+ Britain
+ after
+ the
+ Romans
+?
+","answers":["
+Ang
+lo
+-S
+ax
+ons
+"],"distractors":["
+Egypt
+ians
+","
+Native
+ Americans
+"]},{"
+question":"
+How
+ long
+ was
+ Britain
+ part
+ of
+ the
+ Roman
+ Empire
+?
+","answers":["
+Several
+ hundred
+ years
+"],"distractors":["
+A
+ few
+ weeks
+","
+Ten
+ years
+"]},{"
+question":"
+What
+ is
+ one
+ thing
+ the
+ Romans
+ left
+ behind
+ in
+ Britain
+?
+","answers":["
+Road
+s
+"],"distractors":["
+Air
+ports
+","
+Rail
+ways
+"]}]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Cycle
+ 
+1
+ introduces
+ pupils
+ to
+ the
+ key
+ events
+ leading
+ to
+ the
+ end
+ of
+ Roman
+ Britain
+.","
+value":{"
+type":"
+cycle
+","op":"
+add
+","path":"/
+cycle
+1
+","value":{"
+title":"
+Identify
+ key
+ events
+ leading
+ to
+ the
+ end
+ of
+ Roman
+ Britain
+","durationInMinutes":15
+,"explanation":{"
+spokenExplanation":["
+Discuss
+ how
+ the
+ Roman
+ Empire
+ began
+ to
+ weaken
+ due
+ to
+ internal
+ problems
+ and
+ external
+ pressures
+.","
+Explain
+ that
+ Roman
+ soldiers
+ were
+ gradually
+ withdrawn
+ from
+ Britain
+ to
+ defend
+ other
+ parts
+ of
+ the
+ Empire
+.","
+Highlight
+ that
+ by
+ 
+410
+ AD
+,
+ the
+ Romans
+ officially
+ left
+ Britain
+.","
+Mention
+ that
+ without
+ Roman
+ protection
+,
+ Britain
+ became
+ vulnerable
+ to
+ invas
+ions
+."
+],"accompanyingSlideDetails":"
+A
+ timeline
+ showing
+ the
+ gradual
+ withdrawal
+ of
+ Roman
+ forces
+ from
+ Britain
+.","
+imagePrompt":"
+Roman
+ Britain
+ withdrawal
+ timeline
+","slideText":"
+The
+ Roman
+ Empire
+ weakened
+,
+ and
+ soldiers
+ left
+ Britain
+ by
+ 
+410
+ AD
+."
+},"checkForUnderstanding":[
+{"
+question":"
+Why
+ did
+ the
+ Romans
+ start
+ leaving
+ Britain
+?
+","answers":["
+To
+ defend
+ other
+ parts
+ of
+ the
+ Empire
+"],"distractors":["
+To
+ go
+ on
+ holiday
+","
+To
+ explore
+ new
+ lands
+"]},{"
+question":"
+By
+ what
+ year
+ had
+ the
+ Romans
+ officially
+ left
+ Britain
+?
+","answers":["
+410
+ AD
+"],"distractors":["
+500
+ AD
+","
+300
+ AD
+"]}],"practice":"
+Create
+ a
+ simple
+ timeline
+ showing
+ the
+ key
+ events
+ from
+ the
+ weakening
+ of
+ the
+ Roman
+ Empire
+ to
+ the
+ official
+ Roman
+ withdrawal
+ from
+ Britain
+ in
+ 
+410
+ AD
+.","
+feedback":"
+Success
+ Criteria
+:
+ Ensure
+ your
+ timeline
+ includes
+ the
+ weakening
+ of
+ the
+ Roman
+ Empire
+,
+ gradual
+ withdrawal
+ of
+ soldiers
+,
+ and
+ the
+ official
+ leaving
+ in
+ 
+410
+ AD
+."
+}},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Cycle
+ 
+2
+ focuses
+ on
+ the
+ impact
+ of
+ the
+ Romans
+ leaving
+ Britain
+.","
+value":{"
+type":"
+cycle
+","op":"
+add
+","path":"/
+cycle
+2
+","value":{"
+title":"
+Describe
+ the
+ impact
+ of
+ these
+ events
+ on
+ life
+ in
+ Britain
+","durationInMinutes":15
+,"explanation":{"
+spokenExplanation":["
+Describe
+ how
+ Roman
+ structures
+ and
+ systems
+ were
+ abandoned
+ after
+ their
+ departure
+.","
+Explain
+ that
+ towns
+ and
+ roads
+ were
+ left
+ to
+ deterior
+ate
+ without
+ Roman
+ maintenance
+.","
+Discuss
+ the
+ changes
+ in
+ lifestyle
+ and
+ security
+ without
+ Roman
+ soldiers
+.","
+Mention
+ the
+ vulnerability
+ of
+ Britain
+ to
+ Anglo
+-S
+axon
+ invas
+ions
+."
+],"accompanyingSlideDetails":"
+Images
+ of
+ dec
+aying
+ Roman
+ roads
+ and
+ buildings
+.","
+imagePrompt":"
+Roman
+ ruins
+ in
+ Britain
+","slideText":"
+Roman
+ systems
+ deterior
+ated
+,
+ and
+ Britain
+ faced
+ insecurity
+ without
+ Roman
+ protection
+."
+},"checkForUnderstanding":[
+{"
+question":"
+What
+ happened
+ to
+ Roman
+ roads
+ after
+ they
+ left
+?
+","answers":["
+They
+ were
+ left
+ to
+ deterior
+ate
+"],"distractors":["
+They
+ were
+ improved
+","
+They
+ were
+ sold
+"]},{"
+question":"
+What
+ were
+ the
+ consequences
+ of
+ the
+ Romans
+ leaving
+ Britain
+?
+","answers":["
+Brit
+ain
+ became
+ vulnerable
+ to
+ invas
+ions
+"],"distractors":["
+Brit
+ain
+ became
+ a
+ Roman
+ colony
+","
+Brit
+ain
+ built
+ new
+ Roman
+ towns
+"]}],"practice":"
+Write
+ a
+ short
+ paragraph
+ describing
+ how
+ life
+ in
+ Britain
+ changed
+ after
+ the
+ Romans
+ left
+,
+ focusing
+ on
+ the
+ state
+ of
+ the
+ roads
+ and
+ towns
+.","
+feedback":"
+Model
+ Answer
+:
+ Roads
+ and
+ towns
+ fell
+ into
+ dis
+repair
+,
+ and
+ Britain
+ became
+ vulnerable
+ to
+ invas
+ions
+ without
+ Roman
+ soldiers
+."
+}},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Cycle
+ 
+3
+ explores
+ the
+ transition
+ from
+ Roman
+ Britain
+ to
+ Anglo
+-S
+axon
+ rule
+.","
+value":{"
+type":"
+cycle
+","op":"
+add
+","path":"/
+cycle
+3
+","value":{"
+title":"
+Explain
+ the
+ transition
+ from
+ Roman
+ Britain
+ to
+ Anglo
+-S
+axon
+ rule
+","durationInMinutes":15
+,"explanation":{"
+spokenExplanation":["
+Explain
+ who
+ the
+ Anglo
+-S
+ax
+ons
+ were
+ and
+ why
+ they
+ began
+ to
+ settle
+ in
+ Britain
+.","
+Describe
+ how
+ Anglo
+-S
+axon
+ rule
+ replaced
+ Roman
+ governance
+.","
+Mention
+ the
+ cultural
+ and
+ societal
+ changes
+ that
+ occurred
+ under
+ Anglo
+-S
+axon
+ influence
+.","
+Highlight
+ the
+ establishment
+ of
+ new
+ settlements
+ and
+ systems
+ by
+ the
+ Anglo
+-S
+ax
+ons
+."
+],"accompanyingSlideDetails":"
+Images
+ of
+ Anglo
+-S
+axon
+ settlements
+ and
+ arte
+facts
+.","
+imagePrompt":"
+Ang
+lo
+-S
+axon
+ settlements
+ in
+ Britain
+","slideText":"
+Ang
+lo
+-S
+ax
+ons
+ replaced
+ Romans
+,
+ bringing
+ cultural
+ and
+ societal
+ changes
+."
+},"checkForUnderstanding":[
+{"
+question":"
+Who
+ began
+ to
+ settle
+ in
+ Britain
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+Ang
+lo
+-S
+ax
+ons
+"],"distractors":["
+Egypt
+ians
+","
+Roman
+ soldiers
+"]},{"
+question":"
+What
+ type
+ of
+ changes
+ did
+ the
+ Anglo
+-S
+ax
+ons
+ bring
+?
+","answers":["
+C
+ultural
+ and
+ societal
+ changes
+"],"distractors":["
+No
+ changes
+","
+Only
+ military
+ changes
+"]}],"practice":"
+Draw
+ a
+ picture
+ illustrating
+ an
+ Anglo
+-S
+axon
+ settlement
+ and
+ label
+ the
+ different
+ features
+ that
+ distinguish
+ it
+ from
+ Roman
+ settlements
+.","
+feedback":"
+Model
+ Answer
+:
+ Include
+ features
+ like
+ wooden
+ structures
+,
+ open
+ fields
+,
+ and
+ a
+ central
+ meeting
+ hall
+ to
+ show
+ differences
+ from
+ Roman
+ stone
+ buildings
+."
+}},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+The
+ exit
+ quiz
+ checks
+ pupils
+'
+ understanding
+ of
+ the
+ lesson
+ content
+,
+ ensuring
+ comprehension
+ of
+ key
+ learning
+ points
+.","
+value":{"
+type":"
+quiz
+","op":"
+add
+","path":"/
+exit
+Quiz
+","value":[
+{"
+question":"
+What
+ year
+ did
+ the
+ Romans
+ officially
+ leave
+ Britain
+?
+","answers":["
+410
+ AD
+"],"distractors":["
+500
+ AD
+","
+300
+ AD
+"]},{"
+question":"
+What
+ happened
+ to
+ Roman
+ towns
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+They
+ deterior
+ated
+"],"distractors":["
+They
+ became
+ new
+ Roman
+ cities
+","
+They
+ were
+ preserved
+"]},{"
+question":"
+Who
+ began
+ to
+ settle
+ in
+ Britain
+ after
+ the
+ Romans
+?
+","answers":["
+Ang
+lo
+-S
+ax
+ons
+"],"distractors":["
+V
+ik
+ings
+","
+Norm
+ans
+"]},{"
+question":"
+What
+ did
+ the
+ Anglo
+-S
+ax
+ons
+ bring
+ to
+ Britain
+?
+","answers":["
+C
+ultural
+ changes
+"],"distractors":["
+Roman
+ architecture
+","
+V
+iking
+ ships
+"]},{"
+question":"
+Why
+ did
+ the
+ Romans
+ leave
+ Britain
+?
+","answers":["
+To
+ defend
+ other
+ parts
+ of
+ the
+ Empire
+"],"distractors":["
+They
+ finished
+ building
+ roads
+","
+They
+ conquered
+ new
+ lands
+"]},{"
+question":"
+What
+ was
+ one
+ impact
+ of
+ the
+ Romans
+ leaving
+ Britain
+?
+","answers":["
+Brit
+ain
+ faced
+ new
+ invas
+ions
+"],"distractors":["
+Brit
+ain
+ became
+ part
+ of
+ Rome
+","
+Brit
+ain
+ built
+ more
+ Roman
+ roads
+"]}]},"status":"
+complete
+"}],"prompt":{"
 type":"
 text
 ","value":"
-Would
- you
- like
+The
+ quizzes
+ and
+ learning
+ cycles
+ have
+ been
+ created
+.
+ Do
+ these
+ activities
+ and
+ questions
+ seem
+ appropriate
+ for
+ your
+ pupils
+?
+ Keep
+ in
+ mind
+ that
+ the
+ quizzes
+ aim
+ for
+ pupils
  to
- add
+ answer
+ five
+ out
+ of
+ six
+ questions
+ correctly
+ on
+ average
+.
+ Tap
+ **
+Continue
+**
+ to
+ proceed
+ to
  any
  additional
  materials
-,
- such
- as
- a
- narrative
- to
- support
- your
- explanations
-,
- instructions
- for
- practical
-s
-,
  or
- extra
- homework
- questions
-?"
+ to
+ make
+ final
+ edits
+."
 }}

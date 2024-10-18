@@ -1,0 +1,30 @@
+{
+  "id": "chatcmpl-AJnSEmtq0q45fgrbZlDU0FcTwrMJX",
+  "object": "chat.completion",
+  "created": 1729281698,
+  "model": "gpt-4o-2024-08-06",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan content is fully compliant across all categories. It does not contain any discriminatory language or behavior, offensive language, or strong language. There is no depiction or discussion of conflict, violence, serious violence, or sexual violence. The content does not include any upsetting, sensitive, or distressing topics. There is no depiction or discussion of nudity or sexual content. The lesson plan does not involve any exploration of objects, use of equipment requiring supervision, imitable behaviors, external content, or physical activity. Lastly, there are no guides or encouragement of harmful behavior, illegal activity, or violence. The lesson is appropriate for Key Stage 1 students, focusing on historical events with factual information about the end of Roman Britain, and does not delve into sensitive or inappropriate material for this age group.\",\"categories\":[]}",
+        "refusal": null
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 3494,
+    "completion_tokens": 192,
+    "total_tokens": 3686,
+    "prompt_tokens_details": {
+      "cached_tokens": 3328
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "system_fingerprint": "fp_6b68a8204b"
+}

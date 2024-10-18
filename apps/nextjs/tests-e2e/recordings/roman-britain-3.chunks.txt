@@ -8,100 +8,85 @@ Message
 type":"
 patch
 ","reasoning":"
-Est
-ablish
-ing
- key
- prior
- knowledge
+I
+ have
+ chosen
+ these
+ learning
+ outcomes
+ and
+ cycles
  to
  ensure
+ that
  pupils
- have
+ understand
  the
- foundational
- understanding
- necessary
- for
- this
- lesson
+ key
+ historical
+ events
+ and
+ concepts
+ related
+ to
+ the
+ end
+ of
+ Roman
+ Britain
 .","
 value":{"
 type":"
 string
--array
 ","op":"
 add
 ","path":"/
-prior
-Knowledge
-","value":["
-Romans
- invaded
- Britain
- in
- 
-43
- AD
-.","
-Roman
- roads
- connected
- towns
- across
- Britain
-.","
-Romans
- built
- Had
-rian
-'s
- Wall
- in
+learning
+Outcome
+","value":"
+I
+ can
+ describe
  the
- north
+ main
+ reasons
+ for
+ the
+ end
  of
- Britain
-.","
-Romans
- introduced
- new
- food
- and
- customs
- to
- Britain
-.","
-Some
- Brit
-ons
- adopted
  Roman
- ways
- of
- life
-.
-"]}},{"
+ rule
+ in
+ Britain
+."
+},"status":"
+complete
+"},{"
 type":"
 patch
 ","reasoning":"
-Ident
-ifying
- key
+These
  learning
- points
+ cycles
+ are
+ designed
  to
- ensure
- the
- lesson
- covers
- the
- most
- important
- aspects
- of
- the
- topic
+ build
+ on
+ each
+ other
+,
+ starting
+ with
+ identifying
+ key
+ events
+ and
+ moving
+ to
+ understanding
+ their
+ impact
 .","
 value":{"
 type":"
@@ -110,263 +95,83 @@ string
 ","op":"
 add
 ","path":"/
-key
-Learning
-Points
+learning
+Cycles
 ","value":["
-The
- Romans
- left
- Britain
- around
- 
-410
- AD
-.","
-Roman
- withdrawal
- left
- Britain
- vulnerable
+Identify
+ key
+ events
+ leading
  to
- invas
-ions
-.","
-Many
+ the
+ end
+ of
  Roman
- structures
- fell
- into
- dis
-repair
+ Britain
 .","
-Local
- communities
- had
+Describe
+ the
+ impact
+ of
+ these
+ events
+ on
+ life
+ in
+ Britain
+.","
+Explain
+ the
+ transition
+ from
+ Roman
+ Britain
  to
- adapt
- without
- Roman
- support
-.","
-C
-ultural
- and
- technological
- changes
- occurred
- post
--R
-oman
+ Anglo
+-S
+axon
  rule
 .
-"]}},{"
-type":"
-patch
-","reasoning":"
-Address
-ing
- common
- misconceptions
- to
- ensure
- they
- are
- clarified
- in
- the
- lesson
-.","
-value":{"
-type":"
-mis
-con
-ceptions
-","op":"
-add
-","path":"/
-mis
-con
-ceptions
-","value":[
-{"
-misconception":"
-Romans
- were
- forced
- out
- of
- Britain
- by
- barb
-arians
-","description":"
-The
- Romans
- left
- Britain
- mainly
- due
- to
- internal
- issues
- in
- the
- Roman
- Empire
-.
- This
- can
- be
- clarified
- by
- explaining
- the
- Roman
- Empire
-'s
- struggles
-."
-},{"
-misconception":"
-Brit
-ain
- became
- immediately
- barbar
-ic
- after
- Romans
- left
-","description":"
-Although
- there
- were
- challenges
-,
- Britain
- continued
- to
- have
- structured
- communities
- and
- slowly
- adapted
- without
- Roman
- governance
-."
-}]}},{"
-type":"
-patch
-","reasoning":"
-Including
- keywords
- to
- bolster
- vocabulary
- comprehension
- for
- the
- lesson
-.","
-value":{"
-type":"
-keywords
-","op":"
-add
-","path":"/
-keywords
-","value":[
-{"
-keyword":"
-Roman
- Empire
-","definition":"
-The
- vast
- empire
- ruled
- by
- Rome
- that
- included
- Britain
- for
- nearly
- 
-400
- years
-."
-},{"
-keyword":"
-Withdrawal
-","definition":"
-The
- act
- of
- pulling
- out
- or
- leaving
- a
- place
- or
- position
-."
-},{"
-keyword":"
-Inv
-aders
-","definition":"
-People
- or
- groups
- that
- enter
- a
- region
- to
- take
- control
-."
-}]}}],"prompt":{"
+"]},"status":"
+complete
+"}],"prompt":{"
 type":"
 text
 ","value":"
 The
- prior
- knowledge
-,
- key
  learning
- points
-,
- misconceptions
-,
+ outcome
  and
- keywords
+ learning
+ cycles
  have
  been
- set
+ created
 .
  Are
- these
- sections
+ they
  suitable
  for
  your
- class
+ pupils
 ?
  If
- you
- need
- any
- changes
+ not
 ,
- let
- me
- know
-!"
+ suggest
+ an
+ edit
+ below
+.
+ Tap
+ **
+Continue
+**
+ to
+ proceed
+ to
+ the
+ next
+ sections
+."
 }}

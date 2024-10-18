@@ -40,6 +40,8 @@ export class AilaChat implements AilaChatService {
   private readonly _patchEnqueuer: PatchEnqueuer;
   private readonly _llmService: LLMService;
   private readonly _promptBuilder: AilaPromptBuilder;
+  private _iteration: number | undefined;
+  private _createdAt: Date | undefined;
 
   constructor({
     id,
@@ -85,6 +87,14 @@ export class AilaChat implements AilaChatService {
 
   public get isShared(): boolean | undefined {
     return this._isShared;
+  }
+
+  public get iteration() {
+    return this._iteration;
+  }
+
+  public get createdAt() {
+    return this._createdAt;
   }
 
   public get messages() {
@@ -287,6 +297,8 @@ export class AilaChat implements AilaChatService {
     if (persistedChat) {
       this._relevantLessons = persistedChat.relevantLessons ?? [];
       this._isShared = persistedChat.isShared;
+      this._iteration = persistedChat.iteration ?? 1;
+      this._createdAt = new Date(persistedChat.createdAt);
     }
   }
 
@@ -311,14 +323,6 @@ export class AilaChat implements AilaChatService {
     this.addMessage(assistantMessage);
 
     return assistantMessage;
-  }
-
-  private async enqueueFinalState() {
-    await this.enqueue({
-      type: "state",
-      reasoning: "final",
-      value: this._aila.lesson.plan,
-    });
   }
 
   private async enqueueMessageId(messageId: string) {
@@ -408,7 +412,6 @@ export class AilaChat implements AilaChatService {
 
   public async setupGeneration() {
     await this.startNewGeneration();
-    await this.persistChat();
     await this.persistGeneration("REQUESTED");
   }
 

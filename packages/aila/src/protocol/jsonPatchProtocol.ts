@@ -583,7 +583,6 @@ export function tryParsePatch(obj: object): PatchDocument | UnknownDocument {
     const patchDocument: PatchDocument = parsed.data;
     return patchDocument;
   } else {
-    console.log("Unable to parse patch", parsed, parsed.error);
     return { type: "unknown", value: JSON.stringify(obj), error: parsed.error };
   }
 }
@@ -665,7 +664,7 @@ export function parseMessageRow(row: string, index: number): MessagePart[] {
       }
       return result;
     } catch (e) {
-      console.error("LLM Message parsing error", e);
+      // The LLM message is streaming in
       return [
         {
           type: "message-part",

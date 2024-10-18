@@ -25,6 +25,17 @@ export async function expectFinished(page: Page) {
   );
 }
 
+export async function getSectionsComplete(page: Page): Promise<number> {
+  const progressText = await page.getByTestId("chat-progress").textContent();
+  const match = (progressText ?? "").match(/(\d+) of 10 sections complete/);
+
+  if (match && match[1]) {
+    return parseInt(match[1], 10);
+  } else {
+    return 0;
+  }
+}
+
 export async function expectSectionsComplete(
   page: Page,
   numberOfSections: number,

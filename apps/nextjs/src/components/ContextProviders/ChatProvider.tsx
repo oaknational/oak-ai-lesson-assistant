@@ -152,6 +152,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const [lessonPlan, setLessonPlan] = useState(
     lessonPlanManager.current.getLessonPlan(),
   );
+  const [currentIteration, setCurrentIteration] = useState<number | undefined>(
+    undefined,
+  );
 
   const [overrideLessonPlan, setOverrideLessonPlan] = useState<
     LooseLessonPlan | undefined
@@ -236,11 +239,17 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   });
 
   useEffect(() => {
-    if (chat?.lessonPlan) {
+    if (
+      chat?.lessonPlan &&
+      (currentIteration === undefined ||
+        !chat.iteration ||
+        chat.iteration > currentIteration)
+    ) {
       lessonPlanManager.current.updateFromServer(chat.lessonPlan);
       setLessonPlan(lessonPlanManager.current.getLessonPlan());
+      setCurrentIteration(chat.iteration);
     }
-  }, [chat?.lessonPlan]);
+  }, [chat?.lessonPlan, chat?.iteration, currentIteration]);
 
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
@@ -443,10 +452,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       toxicModeration,
     ],
   );
-
-  if (!chat && !isChatLoading) {
-    redirect("/aila");
-  }
 
   return (
     <ChatContext.Provider value={value}>

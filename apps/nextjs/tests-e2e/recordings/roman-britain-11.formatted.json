@@ -1,0 +1,8 @@
+{
+  "type": "llmMessage",
+  "patches": [],
+  "prompt": {
+    "type": "text",
+    "value": "If there is anything else you need help with or if you have further questions, please feel free to let me know. I'm here to assist you with any additional support you may require!"
+  }
+}

@@ -31,6 +31,8 @@ export interface AilaChatService {
   readonly userId: string | undefined;
   readonly id: string;
   readonly messages: Message[];
+  readonly iteration: number | undefined;
+  readonly createdAt: Date | undefined;
   get relevantLessons(): AilaRagRelevantLesson[];
   set relevantLessons(lessons: AilaRagRelevantLesson[]);
   readonly parsedMessages: MessagePart[][];

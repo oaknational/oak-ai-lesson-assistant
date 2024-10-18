@@ -3,160 +3,57 @@ type":"
 ll
 m
 Message
-","patches":[
-{"
-type":"
-patch
-","reasoning":"
-Est
-ablish
-ing
- a
- clear
- learning
- outcome
- to
- focus
- the
- lesson
- on
- the
- specific
- impact
- of
- the
- end
- of
- Roman
- rule
- in
- Britain
-.","
-value":{"
-type":"
-string
-","op":"
-add
-","path":"/
-learning
-Outcome
-","value":"
-I
- can
- describe
- the
- changes
- in
- Britain
- after
- the
- Romans
- left
-."
-}},{"
-type":"
-patch
-","reasoning":"
-Def
-ining
- learning
- cycles
- to
- structure
- the
- lesson
- effectively
-,
- increasing
- complexity
- as
- the
- lesson
- progresses
-.","
-value":{"
-type":"
-string
--array
-","op":"
-add
-","path":"/
-learning
-Cycles
-","value":["
-Identify
- key
- reasons
- why
- the
- Romans
- left
- Britain
-.","
-Describe
- the
- immediate
- effects
- on
- local
- communities
-.","
-Explain
- how
- Britain
- changed
- in
- the
- years
- following
- Roman
- departure
-.
-"]}}],"prompt":{"
+","patches":[]
+,"prompt":{"
 type":"
 text
 ","value":"
-I've
- set
+There
+ are
+ no
+ existing
+ Oak
+ lessons
+ specifically
+ about
  the
- learning
- outcome
- to
- focus
- on
- describing
- the
- changes
- in
+ \"
+End
+ of
+ Roman
  Britain
- after
- the
- Romans
- left
- and
- outlined
- the
- learning
- cycles
+,\"
+ so
+ we'll
+ create
+ a
+ new
+ lesson
+ plan
+ from
+ scratch
 .
- Are
+ Let's
+ move
+ on
+ to
+ developing
  the
  learning
  outcome
  and
+ the
  learning
  cycles
- appropriate
  for
- your
- pupils
-?
- If
- not
-,
- suggest
- an
- edit
- below
+ the
+ lesson
+.
+ Tap
+ **
+Continue
+**
+ to
+ proceed
 ."
 }}

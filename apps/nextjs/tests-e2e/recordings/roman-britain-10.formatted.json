@@ -1,0 +1,8 @@
+{
+  "type": "llmMessage",
+  "patches": [],
+  "prompt": {
+    "type": "text",
+    "value": "It looks like we've reached the end of our current task. If you have any other requests or need help with a different lesson, feel free to ask. Have a great day!"
+  }
+}
