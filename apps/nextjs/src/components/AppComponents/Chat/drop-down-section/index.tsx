@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
+import { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
-import { equals } from "ramda";
 import styled from "styled-components";
 
+import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
 import LoadingWheel from "@/components/LoadingWheel";
 import { scrollToRef } from "@/utils/scrollToRef";
@@ -22,20 +23,22 @@ const DropDownSection = ({
 }: {
   objectKey: string;
   sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
+  value: LessonPlanSectionWhileStreaming;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
   userHasCancelledAutoScroll: boolean;
   showLessonMobile: boolean;
 }) => {
+  const { ailaStreamingStatus, streamingSection, streamingSections } =
+    useLessonChat();
   const sectionRef = useRef(null);
   if (sectionRefs) sectionRefs[objectKey] = sectionRef;
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState<"empty" | "isStreaming" | "isLoaded">(
     "empty",
   );
-  const [prevValue, setPrevValue] = useState<Record<string, unknown>>({});
   const [sectionHasFired, setSectionHasFired] = useState(false);
+
+  const prevStatusRef = useRef(status);
 
   useEffect(() => {
     if (!showLessonMobile) {
@@ -44,9 +47,18 @@ const DropDownSection = ({
   }, [showLessonMobile]);
 
   useEffect(() => {
-    if (value === null || value === undefined || !value) {
-      setStatus("empty");
-    } else if (!equals(value, prevValue)) {
+    // Log only when the status changes
+    if (status !== prevStatusRef.current) {
+      console.log("Section", objectKey, streamingSection, status);
+      prevStatusRef.current = status;
+    }
+  }, [status, objectKey, streamingSection]);
+
+  useEffect(() => {
+    if (
+      ailaStreamingStatus === "StreamingLessonPlan" &&
+      streamingSection === objectKey
+    ) {
       setStatus("isStreaming");
 
       if (sectionRef && sectionHasFired === false && status === "isStreaming") {
@@ -65,16 +77,11 @@ const DropDownSection = ({
         }
       }
       setIsOpen(true);
-      const timer = setTimeout(() => {
-        setStatus("isLoaded");
-        setPrevValue(value);
-      }, 500); // 0.5 seconds delay
-
-      return () => clearTimeout(timer);
-    } else {
+    } else if (value) {
       setStatus("isLoaded");
     }
   }, [
+    ailaStreamingStatus,
     value,
     setStatus,
     sectionRef,
@@ -82,9 +89,10 @@ const DropDownSection = ({
     status,
     objectKey,
     setIsOpen,
-    prevValue,
     documentContainerRef,
     userHasCancelledAutoScroll,
+    streamingSection,
+    streamingSections,
   ]);
 
   return (
@@ -112,7 +120,7 @@ const DropDownSection = ({
       {isOpen && (
         <div className="mt-12 w-full">
           {status === "isLoaded" ? (
-            <ChatSection objectKey={objectKey} value={value} />
+            <ChatSection key={objectKey} objectKey={objectKey} value={value} />
           ) : (
             <Skeleton loaded={false} numberOfRows={1}>
               <p>Loading</p>

@@ -15,36 +15,64 @@ export const useAilaStreamingStatus = ({
 }: {
   isLoading: boolean;
   messages: Message[];
-}): AilaStreamingStatus => {
-  const ailaStreamingStatus = useMemo<AilaStreamingStatus>(() => {
+}): {
+  status: AilaStreamingStatus;
+  streamingSection: string | undefined;
+  streamingSections: string[] | undefined;
+} => {
+  const { status, streamingSection, streamingSections } = useMemo(() => {
     const moderationStart = `MODERATION_START`;
     const chatStart = `CHAT_START`;
-    if (messages.length === 0) return "Idle";
+    if (messages.length === 0)
+      return {
+        status: "Idle" as AilaStreamingStatus,
+        streamingSection: undefined,
+      };
     const lastMessage = messages[messages.length - 1];
 
+    let status: AilaStreamingStatus = "Idle";
+    let streamingSection: string | undefined = undefined;
+    let streamingSections: string[] = [];
+
     if (isLoading) {
-      if (!lastMessage) return "Loading";
-      const { content } = lastMessage;
-      if (lastMessage.role === "user") {
-        return "RequestMade";
-      } else if (content.includes(moderationStart)) {
-        return "Moderating";
-      } else if (
-        content.includes(`"type":"prompt"`) ||
-        content.includes(`\\"type\\":\\"prompt\\"`)
-      ) {
-        return "StreamingChatResponse";
-      } else if (content.includes(chatStart)) {
-        return "StreamingLessonPlan";
+      if (!lastMessage) {
+        status = "Loading";
+      } else {
+        const { content } = lastMessage;
+        if (lastMessage.role === "user") {
+          status = "RequestMade";
+        } else if (content.includes(moderationStart)) {
+          status = "Moderating";
+        } else if (content.includes(`"type":"text"`)) {
+          status = "StreamingChatResponse";
+        } else if (content.includes(chatStart)) {
+          status = "StreamingLessonPlan";
+          // Extract the slug of the currently streaming section, if there is one
+          const pathMatches = [
+            ...content.matchAll(/"path":"\/([^/"]*)(?:\/|")/g),
+          ];
+          console.log("Path matches", pathMatches);
+          streamingSections = pathMatches
+            .map((match) => match[1])
+            .filter((i): i is string => i !== undefined);
+          console.log("Streaming sections", streamingSections);
+          const lastMatch = pathMatches[pathMatches.length - 1];
+          streamingSection = lastMatch ? lastMatch[1] : undefined;
+        } else {
+          status = "Loading";
+        }
       }
-      return "Loading";
     }
-    return "Idle";
+
+    return { status, streamingSections, streamingSection };
   }, [isLoading, messages]);
 
   useEffect(() => {
-    console.log("ailaStreamingStatus set:", ailaStreamingStatus);
-  }, [ailaStreamingStatus]);
+    console.log("ailaStreamingStatus set:", status);
+    if (streamingSection) {
+      console.log("streamingSection:", streamingSection);
+    }
+  }, [status, streamingSection]);
 
-  return ailaStreamingStatus;
+  return { status, streamingSection, streamingSections };
 };

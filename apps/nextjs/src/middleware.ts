@@ -51,7 +51,7 @@ const nextMiddleware: NextMiddleware = async (request, event) => {
 
   try {
     response = await authMiddleware(request, event);
-    response = addCspHeaders(response, request, cspConfig);
+    response = await addCspHeaders(response, request, cspConfig);
   } catch (error) {
     response = await handleError(error, request, event);
   } finally {

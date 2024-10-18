@@ -6,7 +6,8 @@ import {
   deepClone,
   JsonPatchError,
 } from "fast-json-patch";
-import { ZodError, z } from "zod";
+import untruncateJson from "untruncate-json";
+import { z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 
 import {
@@ -279,6 +280,7 @@ export const PatchDocumentSchema = z.object({
   type: z.literal("patch"),
   reasoning: z.string().optional(),
   value: JsonPatchValueSchema,
+  status: z.string().optional(),
 });
 
 // This is the schema that we send when requesting Structured Outputs
@@ -301,6 +303,7 @@ export const LLMPatchDocumentSchema = z.object({
     PatchCycleForLLM,
     JsonPatchRemoveSchemaForLLM,
   ]),
+  status: z.literal("complete"),
 });
 
 export type PatchDocument = z.infer<typeof PatchDocumentSchema>;
@@ -309,6 +312,7 @@ const PatchDocumentOptionalSchema = z.object({
   type: z.literal("patch"),
   reasoning: z.string(),
   value: JsonPatchValueOptionalSchema,
+  status: z.literal("complete").optional(),
 });
 
 export type PatchDocumentOptional = z.infer<typeof PatchDocumentOptionalSchema>;
@@ -317,6 +321,7 @@ export const PromptDocumentSchema = z.object({
   type: z.literal("prompt"),
   message: z.string(),
   options: z.array(z.object({ id: z.string(), title: z.string() })).optional(),
+  status: z.literal("complete").optional(),
 });
 
 export const PromptDocumentSchemaWithoutOptions = z.object({
@@ -387,6 +392,7 @@ export const UnknownDocumentSchema = z.object({
   type: z.literal("unknown"),
   value: z.unknown().optional(),
   error: z.unknown().optional(),
+  status: z.string().optional(),
 });
 
 export type UnknownDocument = z.infer<typeof UnknownDocumentSchema>;
@@ -505,12 +511,14 @@ export const LLMMessageSchema = z.object({
   type: z.literal("llmMessage"),
   patches: z.array(PatchDocumentSchema),
   prompt: TextDocumentSchema,
+  status: z.literal("complete"),
 });
 
 const LLMMessageSchemaWhileStreaming = z.object({
   type: z.literal("llmMessage"),
   patches: z.array(z.object({}).passthrough()).optional(),
   prompt: TextDocumentSchema.optional(),
+  status: z.literal("complete").optional(),
 });
 
 function tryParseJson(str: string): {
@@ -527,9 +535,23 @@ function tryParseJson(str: string): {
     }
     return { parsed, isPartial: false };
   } catch (e) {
-    // If parsing fails, assume it's partial
-    return { parsed: null, isPartial: true };
+    try {
+      // Is this a JSON streaming in?
+      const parsedTruncated = JSON.parse(untruncateJson(str));
+      if (isObject(parsedTruncated) && "type" in parsedTruncated) {
+        return { parsed: parsedTruncated, isPartial: true };
+      } else {
+        throw new Error("The parsed JSON object does not have a type");
+      }
+    } catch (e) {
+      // If parsing fails, assume it's partial
+      return { parsed: null, isPartial: true };
+    }
   }
+}
+
+function isObject(value: unknown): value is { type: string } {
+  return typeof value === "object" && value !== null && "type" in value;
 }
 
 export function tryParsePart(
@@ -626,7 +648,7 @@ export function parseMessageRow(row: string, index: number): MessagePart[] {
         result.push({
           type: "message-part",
           document: parsedPatch,
-          isPartial,
+          isPartial: parsedPatch.status !== "complete",
           id: `${index}-patch-${i}`,
         });
         i++;
@@ -637,7 +659,7 @@ export function parseMessageRow(row: string, index: number): MessagePart[] {
         result.push({
           type: "message-part",
           document: parsedPrompt,
-          isPartial,
+          isPartial: llmMessage.status !== "complete",
           id: `${index}-prompt`,
         });
       }
@@ -678,63 +700,26 @@ export function parseMessageParts(content: string): MessagePart[] {
   return messageParts;
 }
 
-export function extractPatches(
-  edit: string,
-  mostRecent: number = 2,
-): {
+export function extractPatches(edit: string): {
   validPatches: PatchDocument[];
   partialPatches: PatchDocument[];
 } {
-  const validPatches: PatchDocument[] = [];
-  const partialPatches: PatchDocument[] = [];
+  const parts: MessagePart[] | undefined = parseMessageParts(edit);
 
-  const messageParts = parseMessageParts(edit);
-  const relevantParts = messageParts.slice(-mostRecent);
-
-  for (const part of relevantParts) {
-    if (part.document.type === "patch") {
-      try {
-        const validatedPatch = PatchDocumentSchema.parse(part.document);
-        if (part.isPartial) {
-          partialPatches.push(validatedPatch);
-        } else {
-          validPatches.push(validatedPatch);
-        }
-      } catch (e) {
-        if (e instanceof ZodError) {
-          console.log(
-            "Failed to parse patch due to Zod validation errors:",
-            part,
-          );
-          e.errors.forEach((error, index) => {
-            console.log(`Error ${index + 1}:`);
-            console.log(`  Path: ${error.path.join(".")}`);
-            console.log(`  Message: ${error.message}`);
-            if (error.code) console.log(`  Code: ${error.code}`);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const errorValue = error.path.reduce((obj: any, key) => {
-              if (obj && typeof obj === "object" && key in obj) {
-                return (obj as Record<string, unknown>)[key];
-              }
-              return undefined;
-            }, part);
-            console.error(`  Invalid value:`, errorValue);
-          });
-        } else {
-          console.error("Failed to parse patch:", e);
-        }
-
-        Sentry.withScope(function (scope) {
-          scope.setLevel("error");
-          if (e instanceof ZodError) {
-            scope.setExtra("zodErrors", e.errors);
-          }
-          scope.setExtra("parsedData", part);
-          Sentry.captureException(e);
-        });
-      }
-    }
+  if (!parts) {
+    // Handle parsing failure
+    throw new Error("Failed to parse the edit content");
   }
+
+  const patchMessageParts: MessagePart[] = parts.filter(
+    (p) => p.document.type === "patch",
+  );
+  const validPatches: PatchDocument[] = patchMessageParts
+    .filter((p) => !p.isPartial)
+    .map((p) => p.document as PatchDocument);
+  const partialPatches: PatchDocument[] = patchMessageParts
+    .filter((p) => p.isPartial)
+    .map((p) => p.document as PatchDocument);
 
   return { validPatches, partialPatches };
 }

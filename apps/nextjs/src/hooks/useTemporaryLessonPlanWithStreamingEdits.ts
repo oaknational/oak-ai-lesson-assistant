@@ -23,7 +23,7 @@ const hashFor = (obj: object, messageHashes) => {
 };
 
 function extractPatchesFromMessage(message: Message) {
-  const { validPatches, partialPatches } = extractPatches(message.content, 100);
+  const { validPatches, partialPatches } = extractPatches(message.content);
   return { validPatches, partialPatches };
 }
 
@@ -42,7 +42,6 @@ function patchHasBeenApplied(
 export const useTemporaryLessonPlanWithStreamingEdits = ({
   lessonPlan,
   messages,
-  //isStreaming, // Disable partial patches for now
   messageHashes,
 }: {
   lessonPlan?: LooseLessonPlan;
@@ -90,21 +89,6 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
     return newLessonPlan ?? workingLessonPlan;
   };
 
-  // Disable partial patches for now
-  // const applyPatchWhileStillStreaming = useCallback(
-  //   (patch: PatchDocument, workingLessonPlan: LooseLessonPlan) => {
-  //     if (!isStreaming) {
-  //       return workingLessonPlan;
-  //     }
-  //     const newLessonPlan: LooseLessonPlan | undefined = applyLessonPlanPatch(
-  //       { ...workingLessonPlan },
-  //       patch,
-  //     );
-  //     return newLessonPlan ?? workingLessonPlan;
-  //   },
-  //   [isStreaming],
-  // );
-
   return useMemo(() => {
     if (!throttledAssistantMessages || !throttledAssistantMessages.length) {
       return {
@@ -140,18 +124,6 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
         workingLessonPlan = applyPatch(patchToApply, workingLessonPlan);
       }
     }
-
-    // Do not apply partial patches for now
-    // Keeping this commented out for now because we
-    // will probably want to reintroduce this feature
-    // const streamingPatch = partialPatches[partialPatches.length - 1];
-
-    // if (streamingPatch) {
-    //   workingLessonPlan = applyPatchWhileStillStreaming(
-    //     streamingPatch,
-    //     workingLessonPlan,
-    //   );
-    // }
 
     return {
       tempLessonPlan: workingLessonPlan,
