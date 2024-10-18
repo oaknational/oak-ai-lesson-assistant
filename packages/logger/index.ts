@@ -2,6 +2,10 @@ import debug from "debug";
 
 import structuredLogger, { StructuredLogger } from "./structuredLogger";
 
+if (typeof window !== "undefined") {
+  debug.enable("ai:*");
+}
+
 const debugBase = debug("ai");
 
 type ChildKey =
@@ -63,10 +67,11 @@ type ChildKey =
  */
 export function aiLogger(childKey: ChildKey) {
   const debugLogger = debugBase.extend(childKey);
+
   return {
     info: debugLogger,
     warn: debugLogger,
-    error: structuredLogger.error,
+    error: structuredLogger.error.bind(structuredLogger),
   };
 }
 
