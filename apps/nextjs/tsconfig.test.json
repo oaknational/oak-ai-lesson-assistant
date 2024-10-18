@@ -34,7 +34,8 @@
     "tests/**/*.ts",
     "**/*.test.ts",
     "**/*.test.tsx",
-    "jest.static.d.ts"
+    "jest.static.d.ts",
+    "src/**/*.d.ts"
   ],
   "exclude": ["node_modules"]
 }
