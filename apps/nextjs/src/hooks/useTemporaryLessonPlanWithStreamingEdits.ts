@@ -24,7 +24,6 @@ const hashFor = (obj: object, messageHashes) => {
 
 function extractPatchesFromMessage(message: Message) {
   const { validPatches, partialPatches } = extractPatches(message.content);
-  console.log("Extracted valid patches", validPatches.length);
   return { validPatches, partialPatches };
 }
 
@@ -68,7 +67,6 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
       // Remove keys that are no longer in lessonPlan
       Object.keys(tempLessonPlanRef.current).forEach((key) => {
         if (!(key in lessonPlan)) {
-          console.log("ChatProvider: Deleting key", key);
           delete tempLessonPlanRef.current[key];
         }
       });
@@ -80,7 +78,6 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
     patch: PatchDocumentWithHash,
     workingLessonPlan: LooseLessonPlan,
   ) => {
-    console.log("ChatProvider: applying patch", patch.value.path);
     const newLessonPlan: LooseLessonPlan | undefined = applyLessonPlanPatch(
       workingLessonPlan,
       patch,

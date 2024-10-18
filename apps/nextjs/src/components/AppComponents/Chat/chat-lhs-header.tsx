@@ -23,13 +23,15 @@ const ChatLhsHeader = ({
   return (
     <>
       <div className="mt-6 hidden items-center justify-end gap-5 sm:flex">
-        <div
-          className="flex-grow text-left text-xs"
-          data-test="chat-aila-streaming-status"
-        >
-          {chat.ailaStreamingStatus}
-          {chat.streamingSection && `: ${chat.streamingSection}`}
-        </div>
+        {process.env.NEXT_PUBLIC_ENVIRONMENT !== "production" && (
+          <div
+            className="flex-grow text-left text-xs"
+            data-test="chat-aila-streaming-status"
+          >
+            {chat.ailaStreamingStatus}
+            {chat.streamingSection && `: ${chat.streamingSection}`}
+          </div>
+        )}
         <ChatButton
           variant="secondary"
           onClick={() => {

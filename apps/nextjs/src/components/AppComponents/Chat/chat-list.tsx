@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
 import { OakBox, OakFlex, OakIcon, OakSpan } from "@oaknational/oak-components";
 import { Message } from "ai";
 import Link from "next/link";
@@ -138,6 +139,10 @@ export const ChatMessagesDisplay = ({
     isStreaming,
   });
 
+  const workingOnItMessage = streamingSection
+    ? `${camelCaseToSentenceCase(streamingSection)}…`
+    : "Working on it…";
+
   return (
     <>
       {messages.map((message) => {
@@ -164,9 +169,7 @@ export const ChatMessagesDisplay = ({
                 message={{
                   id: "working-on-it-initial",
                   role: "assistant",
-                  content: streamingSection
-                    ? `Editing ${streamingSection}…`
-                    : "Working on it…",
+                  content: workingOnItMessage,
                 }}
                 lastModeration={lastModeration}
                 persistedModerations={[]}
@@ -193,9 +196,7 @@ export const ChatMessagesDisplay = ({
                   ? {
                       id: "working-on-it-initial",
                       role: "assistant",
-                      content: streamingSection
-                        ? `Editing ${streamingSection}…`
-                        : "Working on it…",
+                      content: workingOnItMessage,
                     }
                   : message
               }
@@ -218,7 +219,7 @@ export const ChatMessagesDisplay = ({
               message={{
                 id: "working-on-it-initial",
                 role: "assistant",
-                content: "Working on it…",
+                content: workingOnItMessage,
               }}
               lastModeration={lastModeration}
               persistedModerations={[]}
