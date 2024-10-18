@@ -1,4 +1,8 @@
+import { aiLogger } from "@oakai/logger";
+
 import { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
+
+const log = aiLogger("aila:protocol");
 
 export class PatchEnqueuer {
   private encoder: TextEncoder;
@@ -37,7 +41,7 @@ export class PatchEnqueuer {
       try {
         this.controller.enqueue(encodedPatch);
       } catch (error) {
-        console.error("Error enqueuing patch", error);
+        log.error("Error enqueuing patch", error);
         throw error;
       }
     });
