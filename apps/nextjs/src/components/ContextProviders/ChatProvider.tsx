@@ -193,7 +193,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       id,
       lessonPlan: chat?.lessonPlan,
       options: {
-        useRag: false,
+        useRag: true,
         temperature: 0.7,
       },
     },
@@ -360,7 +360,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     const timeout = setTimeout(() => {
       // Delay fetching the lesson plan to ensure the UI has updated
       trpcUtils.chat.appSessions.getChat.invalidate({ id });
-    }, 10000);
+    }, 2000);
     if (shouldTrackStreamFinished.current) {
       lessonPlanTracking.onStreamFinished({
         prevLesson: lessonPlanSnapshot.current,

@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
-import { aiLogger } from "@oakai/logger";
 import { OakIcon, OakSmallSecondaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
@@ -14,7 +13,6 @@ import ExportButtons from "./export-buttons";
 import { LessonPlanProgressBar } from "./export-buttons/LessonPlanProgressBar";
 import ChatButton from "./ui/chat-button";
 
-const log = aiLogger("lessons");
 type ChatRightHandSideLessonProps = {
   showLessonMobile: boolean;
   closeMobileLessonPullOut: () => void;
@@ -26,11 +24,6 @@ const ChatRightHandSideLesson = ({
   closeMobileLessonPullOut,
   demo,
 }: Readonly<ChatRightHandSideLessonProps>) => {
-  useEffect(() => {
-    return () => {
-      log.info("ChatRightHandSideLesson unmounting");
-    };
-  }, []);
   const { id, messages } = useLessonChat();
   const { setDialogWindow } = useDialog();
 
