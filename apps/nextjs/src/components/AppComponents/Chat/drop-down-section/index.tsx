@@ -1,120 +1,87 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef } from "react";
 
-import { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
+import {
+  LessonPlanKeys,
+  LessonPlanSectionWhileStreaming,
+} from "@oakai/aila/src/protocol/schema";
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
+import { aiLogger } from "@oakai/logger";
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
 import styled from "styled-components";
 
+import Button from "@/components/Button";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
 import LoadingWheel from "@/components/LoadingWheel";
-import { scrollToRef } from "@/utils/scrollToRef";
 
 import Skeleton from "../../common/Skeleton";
+import { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import ChatSection from "./chat-section";
 
+const log = aiLogger("lessons");
+
 const DropDownSection = ({
-  objectKey,
-  sectionRefs,
+  section,
   value,
-  documentContainerRef,
-  userHasCancelledAutoScroll,
-  showLessonMobile,
+  isOpen,
+  setIsOpen,
+  ailaStreamingStatus,
+  streamingSection,
+  visible,
+  setSectionRef,
 }: {
-  objectKey: string;
-  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
-  value: LessonPlanSectionWhileStreaming;
-  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
-  userHasCancelledAutoScroll: boolean;
-  showLessonMobile: boolean;
+  section: LessonPlanKeys;
+  value: LessonPlanSectionWhileStreaming | undefined;
+  isOpen: boolean;
+  setIsOpen: (section: string, isOpen: boolean) => void;
+  ailaStreamingStatus: AilaStreamingStatus;
+  streamingSection: LessonPlanKeys | undefined;
+  visible: boolean;
+  setSectionRef: (section: LessonPlanKeys, el: HTMLDivElement | null) => void;
 }) => {
-  const { ailaStreamingStatus, streamingSection, streamingSections } =
-    useLessonChat();
-  const sectionRef = useRef(null);
-  if (sectionRefs) sectionRefs[objectKey] = sectionRef;
-  const [isOpen, setIsOpen] = useState(false);
-  const [status, setStatus] = useState<"empty" | "isStreaming" | "isLoaded">(
-    "empty",
-  );
-  const [sectionHasFired, setSectionHasFired] = useState(false);
-
+  const sectionRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (!showLessonMobile) {
-      setIsOpen(false);
-    }
-  }, [showLessonMobile]);
+    setSectionRef(section, sectionRef.current);
+  }, [section, setSectionRef]);
 
-  useEffect(() => {
-    if (
-      ailaStreamingStatus === "StreamingLessonPlan" &&
-      streamingSection === objectKey
-    ) {
-      setStatus("isStreaming");
+  const sectionTitleMemo = useMemo(() => sectionTitle(section), [section]);
 
-      if (sectionRef && sectionHasFired === false && status === "isStreaming") {
-        if (objectKey && value) {
-          function scrollToSection() {
-            if (!userHasCancelledAutoScroll) {
-              scrollToRef({
-                ref: sectionRef,
-                containerRef: documentContainerRef,
-                duration: 1000,
-              });
-            }
-            setSectionHasFired(true);
-          }
-          scrollToSection();
-        }
-      }
-      setIsOpen(true);
-    } else if (value) {
-      setStatus("isLoaded");
-    }
-  }, [
-    ailaStreamingStatus,
-    value,
-    setStatus,
-    sectionRef,
-    sectionHasFired,
-    status,
-    objectKey,
-    setIsOpen,
-    documentContainerRef,
-    userHasCancelledAutoScroll,
-    streamingSection,
-    streamingSections,
-  ]);
+  const isStreaming =
+    ailaStreamingStatus === "StreamingLessonPlan" &&
+    streamingSection === section;
+
+  const isLoaded = !isStreaming && value !== undefined;
 
   return (
     <DropDownSectionWrapper
+      className={visible ? "block" : "hidden"}
       $borderColor="black"
       $bb="border-solid-m"
       $pv="inner-padding-xl"
       ref={sectionRef}
     >
-      <OakFlex $gap="all-spacing-2">
-        <OakBox>
-          {status === "empty" && <div className="w-14"></div>}
-          <LoadingWheel visible={status === "isStreaming"} />
-          <Icon
-            icon="tick"
-            size="sm"
-            className={status === "isStreaming" ? "hidden" : "block"}
-          />
-        </OakBox>
+      <FullWidthButton onClick={() => setIsOpen(section, !isOpen)}>
+        <OakFlex $gap="all-spacing-2">
+          <OakBox>
+            {!isStreaming && !isLoaded && <div className="w-14"></div>}
+            <LoadingWheel visible={isStreaming} />
+            <Icon
+              icon="tick"
+              size="sm"
+              className={isStreaming ? "hidden" : "block"}
+            />
+          </OakBox>
 
-        <FullWidthButton onClick={() => setIsOpen(!isOpen)}>
           <OakFlex $width="100%" $justifyContent="space-between">
-            <OakP $font="heading-6">{sectionTitle(objectKey)}</OakP>
+            <OakP $font="heading-6">{sectionTitleMemo}</OakP>
             <Icon icon={isOpen ? "chevron-up" : "chevron-down"} size="sm" />
           </OakFlex>
-        </FullWidthButton>
-      </OakFlex>
-
+        </OakFlex>
+      </FullWidthButton>
       {isOpen && (
         <div className="mt-12 w-full">
-          {status === "isLoaded" ? (
-            <ChatSection key={objectKey} objectKey={objectKey} value={value} />
+          {isLoaded ? (
+            <ChatSection key={section} objectKey={section} value={value} />
           ) : (
             <Skeleton loaded={false} numberOfRows={1}>
               <p>Loading</p>
@@ -126,7 +93,7 @@ const DropDownSection = ({
   );
 };
 
-export function sectionTitle(str: string) {
+export function sectionTitle(str: LessonPlanKeys) {
   if (str.startsWith("cycle")) {
     return "Learning cycle " + str.split("cycle")[1];
   }

@@ -1,5 +1,9 @@
 import { useMemo, useEffect } from "react";
 
+import {
+  LessonPlanKeys,
+  LessonPlanKeysSchema,
+} from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import { Message } from "ai";
 
@@ -20,8 +24,8 @@ export const useAilaStreamingStatus = ({
   messages: Message[];
 }): {
   status: AilaStreamingStatus;
-  streamingSection: string | undefined;
-  streamingSections: string[] | undefined;
+  streamingSection: LessonPlanKeys | undefined;
+  streamingSections: LessonPlanKeys[] | undefined;
 } => {
   const { status, streamingSection, streamingSections } = useMemo(() => {
     const moderationStart = `MODERATION_START`;
@@ -34,8 +38,8 @@ export const useAilaStreamingStatus = ({
     const lastMessage = messages[messages.length - 1];
 
     let status: AilaStreamingStatus = "Idle";
-    let streamingSection: string | undefined = undefined;
-    let streamingSections: string[] = [];
+    let streamingSection: LessonPlanKeys | undefined = undefined;
+    let streamingSections: LessonPlanKeys[] = [];
 
     if (isLoading) {
       if (!lastMessage) {
@@ -56,9 +60,16 @@ export const useAilaStreamingStatus = ({
           ];
           streamingSections = pathMatches
             .map((match) => match[1])
-            .filter((i): i is string => i !== undefined);
+            .filter(
+              (i): i is LessonPlanKeys =>
+                LessonPlanKeysSchema.safeParse(i).success,
+            );
           const lastMatch = pathMatches[pathMatches.length - 1];
-          streamingSection = lastMatch ? lastMatch[1] : undefined;
+          streamingSection = lastMatch
+            ? LessonPlanKeysSchema.safeParse(lastMatch[1]).success
+              ? (lastMatch[1] as LessonPlanKeys)
+              : undefined
+            : undefined;
         } else {
           status = "Loading";
         }

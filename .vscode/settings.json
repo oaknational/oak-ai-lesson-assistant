@@ -61,6 +61,7 @@
     "hget",
     "hgetall",
     "hmset",
+    "hotfixes",
     "hset",
     "Hubspot",
     "initialisation",

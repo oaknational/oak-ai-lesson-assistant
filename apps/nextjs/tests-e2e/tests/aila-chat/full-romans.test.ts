@@ -83,7 +83,10 @@ test(
 
           prevSectionsComplete = currSectionsComplete;
 
-          if (currSectionsComplete === 10) {
+          if (
+            currSectionsComplete === 10 ||
+            currSectionsComplete !== prevSectionsComplete
+          ) {
             monitoringProgress = false;
             break;
           }

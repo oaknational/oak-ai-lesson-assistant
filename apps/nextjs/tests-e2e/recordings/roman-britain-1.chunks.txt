@@ -10,68 +10,56 @@ text
 ","value":"
 There
  are
- currently
  no
  existing
  Oak
  lessons
- specifically
- on
- the
- end
- of
- Roman
- Britain
  for
- Key
- Stage
- 
-1
-.
- Let's
+ this
+ specific
+ topic
+,
+ so
+ let's
  proceed
- with
+ by
  creating
- a
- new
+ the
  lesson
+ plan
  from
  scratch
 .
  We'll
- start
+ begin
  by
- establishing
+ outlining
  the
+ prior
+ knowledge
+,
+ key
  learning
- outcomes
+ points
+,
+ misconceptions
+,
  and
- learning
- cycles
+ keywords
  for
- this
+ the
  lesson
 .
- Please
- let
- me
- know
- if
- you
- have
- any
- specific
- outcomes
- in
- mind
-,
- or
- if
- you'd
- like
- me
+ Tap
+ **
+Continue
+**
  to
- suggest
- some
+ move
+ on
+ to
+ the
+ next
+ step
 ."
 }}

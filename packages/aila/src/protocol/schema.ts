@@ -504,24 +504,27 @@ export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;
 // TODO old - refactor these to the new types
 
 export type LooseLessonPlan = z.infer<typeof LessonPlanSchemaWhilstStreaming>;
-export type LessonPlanKeys =
-  | "title"
-  | "subject"
-  | "keyStage"
-  | "topic"
-  | "learningOutcome"
-  | "learningCycles"
-  | "priorKnowledge"
-  | "keyLearningPoints"
-  | "misconceptions"
-  | "keywords"
-  | "basedOn"
-  | "starterQuiz"
-  | "exitQuiz"
-  | "cycle1"
-  | "cycle2"
-  | "cycle3"
-  | "additionalMaterials";
+export const LessonPlanKeysSchema = z.enum([
+  "title",
+  "subject",
+  "keyStage",
+  "topic",
+  "learningOutcome",
+  "learningCycles",
+  "priorKnowledge",
+  "keyLearningPoints",
+  "misconceptions",
+  "keywords",
+  "basedOn",
+  "starterQuiz",
+  "exitQuiz",
+  "cycle1",
+  "cycle2",
+  "cycle3",
+  "additionalMaterials",
+]);
+
+export type LessonPlanKeys = z.infer<typeof LessonPlanKeysSchema>;
 export const quizSchema = z.array(QuizSchema);
 
 export const cycleSchema = CycleSchema;

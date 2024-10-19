@@ -586,7 +586,6 @@ export function tryParsePatch(obj: object): PatchDocument | UnknownDocument {
     const patchDocument: PatchDocument = parsed.data;
     return patchDocument;
   } else {
-    log.info("Unable to parse patch", parsed, parsed.error);
     return { type: "unknown", value: JSON.stringify(obj), error: parsed.error };
   }
 }
@@ -724,6 +723,11 @@ export function extractPatches(edit: string): {
     .filter((p) => p.isPartial)
     .map((p) => p.document as PatchDocument);
 
+  log.info(
+    "Extracted patches",
+    validPatches.map((i) => i.value.path),
+    partialPatches.map((i) => i.value.path),
+  );
   return { validPatches, partialPatches };
 }
 

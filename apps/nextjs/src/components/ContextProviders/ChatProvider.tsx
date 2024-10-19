@@ -14,6 +14,7 @@ import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageI
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import {
   AilaPersistedChat,
+  LessonPlanKeys,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
@@ -24,10 +25,11 @@ import * as Sentry from "@sentry/nextjs";
 import { Message, nanoid } from "ai";
 import { ChatRequestOptions, CreateMessage } from "ai";
 import { useChat } from "ai/react";
+import { useLessonPlanScrollManagement } from "hooks/useLessonPlanScrollManagement";
 
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { LessonPlanManager } from "@/lib/lessonPlan/LessonPlanManager";
+import { useLessonPlanManager } from "@/lib/lessonPlan/useLessonPlanManager";
 import { trpc } from "@/utils/trpc";
 
 import {
@@ -65,8 +67,14 @@ export type ChatContextProps = {
   queuedUserAction: string | null;
   queueUserAction: (action: string) => void;
   executeQueuedAction: () => Promise<void>;
-  streamingSection: string | undefined;
-  streamingSections: string[] | undefined;
+  streamingSection: LessonPlanKeys | undefined;
+  streamingSections: LessonPlanKeys[] | undefined;
+  streamingSectionCompleted: LessonPlanKeys | undefined;
+  sectionRefs: Record<
+    LessonPlanKeys,
+    React.MutableRefObject<HTMLDivElement | null>
+  >;
+  setSectionRef: (section: LessonPlanKeys, el: HTMLDivElement | null) => void;
 };
 
 const ChatContext = createContext<ChatContextProps | null>(null);
@@ -151,10 +159,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const hasAppendedInitialMessage = useRef<boolean>(false);
 
   const lessonPlanSnapshot = useRef<LooseLessonPlan>({});
-  const lessonPlanManager = useRef(new LessonPlanManager({}));
-  const [lessonPlan, setLessonPlan] = useState(
-    lessonPlanManager.current.getLessonPlan(),
-  );
+  const { lessonPlanManager, lessonPlan } = useLessonPlanManager();
+
   const [currentIteration, setCurrentIteration] = useState<number | undefined>(
     undefined,
   );
@@ -187,7 +193,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       id,
       lessonPlan: chat?.lessonPlan,
       options: {
-        useRag: true,
+        useRag: false,
         temperature: 0.7,
       },
     },
@@ -213,9 +219,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       if (hasFinished) {
         setHasFinished(false);
       }
-      if (!path?.includes("chat/[id]")) {
-        window.history.pushState({}, "", `/aila/${id}`);
-      }
     },
     onFinish(response) {
       log.info("Chat: On Finish", new Date().toISOString(), {
@@ -232,9 +235,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       }
 
       invokeActionMessages(response.content);
-
-      trpcUtils.chat.appSessions.getChat.invalidate({ id });
-
+      setStreamingSectionCompleted(undefined);
       setHasFinished(true);
       shouldTrackStreamFinished.current = true;
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
@@ -248,19 +249,14 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
         !chat.iteration ||
         chat.iteration > currentIteration)
     ) {
-      lessonPlanManager.current.updateFromServer(chat.lessonPlan);
-      setLessonPlan(lessonPlanManager.current.getLessonPlan());
+      log.info("Updating lesson plan from server", {
+        currentIteration,
+        chatIteration: chat.iteration,
+      });
+      lessonPlanManager.setLessonPlan(chat.lessonPlan);
       setCurrentIteration(chat.iteration);
     }
-  }, [chat?.lessonPlan, chat?.iteration, currentIteration]);
-
-  useEffect(() => {
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage) {
-      lessonPlanManager.current.applyPatchesFromMessage(lastMessage);
-    }
-    setLessonPlan(lessonPlanManager.current.getLessonPlan());
-  }, [messages]);
+  }, [chat?.lessonPlan, chat?.iteration, currentIteration, lessonPlanManager]);
 
   useEffect(() => {
     /**
@@ -361,7 +357,10 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
    */
   useEffect(() => {
     if (!hasFinished || !messages) return;
-    trpcUtils.chat.appSessions.getChat.invalidate({ id });
+    const timeout = setTimeout(() => {
+      // Delay fetching the lesson plan to ensure the UI has updated
+      trpcUtils.chat.appSessions.getChat.invalidate({ id });
+    }, 10000);
     if (shouldTrackStreamFinished.current) {
       lessonPlanTracking.onStreamFinished({
         prevLesson: lessonPlanSnapshot.current,
@@ -370,6 +369,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       });
       shouldTrackStreamFinished.current = false;
     }
+    return () => {
+      clearTimeout(timeout);
+    };
   }, [
     id,
     trpcUtils.chat.appSessions.getChat,
@@ -395,6 +397,32 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     streamingSection,
     streamingSections,
   } = useAilaStreamingStatus({ isLoading, messages });
+
+  const [streamingSectionCompleted, setStreamingSectionCompleted] = useState<
+    LessonPlanKeys | undefined
+  >(undefined);
+
+  const { sectionRefs, setSectionRef } = useLessonPlanScrollManagement(
+    streamingSection,
+    streamingSectionCompleted,
+  );
+
+  const workingMessage = useRef<Message | undefined>(undefined);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      workingMessage.current = messages[messages.length - 1];
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (streamingSection !== streamingSectionCompleted) {
+      if (workingMessage.current) {
+        lessonPlanManager.onMessageUpdated(workingMessage.current);
+      }
+      setStreamingSectionCompleted(streamingSection);
+    }
+  }, [streamingSection, streamingSectionCompleted]);
 
   useEffect(() => {
     if (toxicModeration) {
@@ -427,7 +455,10 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       stop,
       streamingSection,
       streamingSections,
+      streamingSectionCompleted,
       toxicModeration,
+      sectionRefs,
+      setSectionRef,
     }),
     [
       ailaStreamingStatus,
@@ -452,7 +483,10 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       stop,
       streamingSection,
       streamingSections,
+      streamingSectionCompleted,
       toxicModeration,
+      sectionRefs,
+      setSectionRef,
     ],
   );
 
