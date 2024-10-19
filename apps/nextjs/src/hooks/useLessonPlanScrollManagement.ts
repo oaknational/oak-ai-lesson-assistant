@@ -5,19 +5,6 @@ import { aiLogger } from "@oakai/logger";
 
 const log = aiLogger("lessons");
 
-function findTopmostFixedParent(element: HTMLElement | null) {
-  let topmostFixed: HTMLElement | null = null;
-
-  while (element && element !== document.body) {
-    if (element.classList.contains("fixed")) {
-      topmostFixed = element;
-    }
-    element = element.parentElement;
-  }
-
-  return topmostFixed;
-}
-
 export const useLessonPlanScrollManagement = (
   streamingSection: LessonPlanKeys | undefined,
   streamingSectionCompleted: LessonPlanKeys | undefined,

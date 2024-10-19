@@ -3,10 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import {
   BasedOnOptional,
   LessonPlanKeys,
-  LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
-import { Lesson } from "@prisma/client";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 

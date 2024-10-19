@@ -422,7 +422,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       }
       setStreamingSectionCompleted(streamingSection);
     }
-  }, [streamingSection, streamingSectionCompleted]);
+  }, [streamingSection, streamingSectionCompleted, lessonPlanManager]);
 
   useEffect(() => {
     if (toxicModeration) {

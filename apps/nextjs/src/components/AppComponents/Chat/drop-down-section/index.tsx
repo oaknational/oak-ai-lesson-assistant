@@ -1,24 +1,19 @@
-import { memo, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import {
   LessonPlanKeys,
   LessonPlanSectionWhileStreaming,
 } from "@oakai/aila/src/protocol/schema";
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
-import { aiLogger } from "@oakai/logger";
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
 import styled from "styled-components";
 
-import Button from "@/components/Button";
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
 import LoadingWheel from "@/components/LoadingWheel";
 
 import Skeleton from "../../common/Skeleton";
 import { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import ChatSection from "./chat-section";
-
-const log = aiLogger("lessons");
 
 const DropDownSection = ({
   section,
