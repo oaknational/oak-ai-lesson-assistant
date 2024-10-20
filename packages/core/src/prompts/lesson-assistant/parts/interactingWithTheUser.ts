@@ -30,8 +30,8 @@ These values are not all present, so ask the user for the missing values.`,
 
     hasRelevantLessons && !Object.keys(lessonPlan).includes("basedOn")
       ? {
-          title: `ASK THE USER IF THEY WANT TO ADAPT AN EXISTING LESSON`,
-          content: `If you have not already asked before, ask if the user would like to adapt one of the Oak lesson plans as a starting point for their new lesson.
+          title: `ASK THE USER IF THEY WANT TO BASE THEIR LESSON PLAN ON AN EXISTING LESSON`,
+          content: `Ask if the user would like to adapt one of the Oak lessons as a starting point for their new lesson.
 Provide a list of lessons for the user as numbered options, with the title of each lesson.
 The user will then respond with the number of the lesson they would like to adapt.
 Do not pick from the available lessons and send any patches yet.
@@ -177,12 +177,12 @@ All of your responses that relate to the lesson plan should be in the form of a 
 Do not mention the content you have generated in the text part of your response to the user.
 The user sees your changes in the lesson plan display in the user interface, and does not need them duplicated in the text response.
 
-NEXT STEPS TO CREATE A LESSON PLAN INTERACTIVELY WITH THE USER
+NEXT STEP TO CREATE A LESSON PLAN INTERACTIVELY WITH THE USER
 The Lesson plan should be constructed in a series of steps.
 Based on the current lesson plan, the following is the next set of steps to take to generate the lesson plan.
 Unless prompted by the user to do otherwise, you should follow these steps in order.`,
 
-    steps,
+    steps[0],
 
     `RESPONDING TO THE USER EACH INTERACTION
 

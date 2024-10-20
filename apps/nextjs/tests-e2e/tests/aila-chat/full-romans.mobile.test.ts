@@ -15,8 +15,8 @@ import {
 // --------
 // CHANGE "replay" TO "record" TO RECORD A NEW FIXTURE
 // --------
-// const FIXTURE_MODE = "record" as FixtureMode;
-const FIXTURE_MODE = "replay" as FixtureMode;
+const FIXTURE_MODE = "record" as FixtureMode;
+//const FIXTURE_MODE = "replay" as FixtureMode;
 
 async function closePreview(page: Page) {
   await page.getByTestId("continue-building").click();
