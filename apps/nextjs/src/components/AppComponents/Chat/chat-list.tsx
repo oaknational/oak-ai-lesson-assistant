@@ -10,7 +10,10 @@ import {
 } from "react";
 
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
+import {
+  camelCaseToSentenceCase,
+  camelCaseToTitleCase,
+} from "@oakai/core/src/utils/camelCaseConversion";
 import { OakBox, OakFlex, OakIcon, OakSpan } from "@oaknational/oak-components";
 import { Message } from "ai";
 import Link from "next/link";
@@ -140,7 +143,7 @@ export const ChatMessagesDisplay = ({
   });
 
   const workingOnItMessage = streamingSection
-    ? `${camelCaseToSentenceCase(streamingSection)}…`
+    ? `Editing ${camelCaseToTitleCase(streamingSection)}…`
     : "Working on it…";
 
   return (

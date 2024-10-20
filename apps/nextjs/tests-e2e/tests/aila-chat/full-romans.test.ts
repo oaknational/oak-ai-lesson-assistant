@@ -1,5 +1,11 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
+import {
+  LessonPlanKeys,
+  LessonPlanKeysSchema,
+} from "@oakai/aila/src/protocol/schema";
 import { test, expect } from "@playwright/test";
+
+import { groupedSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
 
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
@@ -8,15 +14,17 @@ import {
   applyLlmFixtures,
   continueChat,
   expectFinished,
+  expectStreamingStatus,
   getSectionsComplete,
-  waitForGeneration,
+  scrollLessonPlanFromTopToBottom,
+  waitForStreamingStatusChange,
 } from "./helpers";
 
 // --------
 // CHANGE "replay" TO "record" TO RECORD A NEW FIXTURE
 // --------
-const FIXTURE_MODE = "record" as FixtureMode;
-//const FIXTURE_MODE = "replay" as FixtureMode;
+//const FIXTURE_MODE = "record" as FixtureMode;
+const FIXTURE_MODE = "replay" as FixtureMode;
 
 test(
   "Full aila flow with Romans fixture",
@@ -44,8 +52,7 @@ test(
     await test.step("Fill in the chat box", async () => {
       const textbox = page.getByTestId("chat-input");
       const sendMessage = page.getByTestId("send-message");
-      const message =
-        "Create a KS1 lesson on the end of Roman Britain. Ask a question for each quiz and cycle";
+      const message = "Create a KS1 lesson on the end of Roman Britain";
       await textbox.fill(message);
       await expect(textbox).toContainText(message);
 
@@ -60,51 +67,108 @@ test(
     await test.step("Iterate through the fixtures", async () => {
       await page.waitForURL(/\/aila\/.+/);
 
+      let prevIteration = 0;
       let prevSectionsComplete = 0;
       const maxIterations = 20;
-      let iterationCount = 0;
 
-      while (iterationCount < maxIterations) {
-        iterationCount++;
-
+      for (
+        let iterationCount = 1;
+        iterationCount <= maxIterations;
+        iterationCount++
+      ) {
         setFixture(`roman-britain-${iterationCount}`);
-        await continueChat(page);
+        await expectStreamingStatus(page, "RequestMade", { timeout: 5000 });
 
-        // Start monitoring the progress
-        let monitoringProgress = true;
-        let monitoringTimeout: NodeJS.Timeout | null = null;
+        await waitForStreamingStatusChange(
+          page,
+          "RequestMade",
+          "Idle",
+          generationTimeout,
+        );
 
-        while (monitoringProgress) {
-          const currSectionsComplete = await getSectionsComplete(page);
+        // Wait for the chat iteration to update
+        await page.waitForFunction(
+          ([prevIteration]) => {
+            const chatIteration = document.querySelector(
+              '[data-testid="chat-iteration"]',
+            );
+            return (
+              chatIteration &&
+              parseInt(chatIteration.textContent || "0", 10) >
+                (prevIteration ?? 0)
+            );
+          },
+          [prevIteration],
+          { timeout: generationTimeout },
+        );
+        // Update the previous iteration
+        const chatIteration = await page.textContent(
+          '[data-testid="chat-iteration"]',
+        );
+        prevIteration = parseInt(chatIteration || "0", 10);
 
-          expect(currSectionsComplete).toBeGreaterThanOrEqual(
-            prevSectionsComplete,
-          );
+        // Get the current sections complete
+        const currSectionsComplete = await getSectionsComplete(page);
 
-          prevSectionsComplete = currSectionsComplete;
+        // Assert that currSectionsComplete is greater than or equal to the previous value
+        expect(currSectionsComplete).toBeGreaterThanOrEqual(
+          prevSectionsComplete,
+        );
 
-          if (
-            currSectionsComplete === 10 ||
-            currSectionsComplete !== prevSectionsComplete
-          ) {
-            monitoringProgress = false;
-            break;
-          }
+        // Update the previous sections complete
+        prevSectionsComplete = currSectionsComplete;
 
-          await new Promise((resolve) => {
-            monitoringTimeout = setTimeout(resolve, 500);
+        await expectStreamingStatus(page, "Idle", { timeout: 5000 });
+
+        const createdSections = await page.$$eval(
+          '[data-test="lesson-plan-section"]',
+          (sections) =>
+            sections
+              .filter(
+                (section) =>
+                  section.getAttribute("data-test-section-complete") === "true",
+              )
+              .map((section) => section.getAttribute("data-test-section-key")),
+        );
+
+        console.log("Created sections", createdSections);
+
+        const createdSectionKeys: LessonPlanKeys[] = createdSections
+          .filter((section) => section !== null)
+          .map((section) => LessonPlanKeysSchema.parse(section as string));
+
+        const mostRecentSection =
+          createdSectionKeys[createdSectionKeys.length - 1];
+
+        const mostRecentSectionGroup = groupedSectionsInOrder.find(
+          (group) => mostRecentSection && group.includes(mostRecentSection),
+        );
+
+        // Assert that all sections in the mostRecentSectionGroup are in createdSectionKeys
+        expect(mostRecentSectionGroup).toBeDefined();
+        if (mostRecentSectionGroup) {
+          mostRecentSectionGroup.forEach((section) => {
+            expect(createdSectionKeys).toContain(section);
           });
         }
 
-        // Clear the monitoring timeout if it's still active
-        if (monitoringTimeout) {
-          clearTimeout(monitoringTimeout);
+        // If currSectionsComplete reaches 10 and we have the additionalMaterials section, we can break
+        if (
+          currSectionsComplete === 10 &&
+          createdSectionKeys.includes("additionalMaterials")
+        ) {
+          break;
         }
-
-        await waitForGeneration(page, generationTimeout);
-        await letUiSettle();
+        await continueChat(page);
+        await waitForStreamingStatusChange(
+          page,
+          "Idle",
+          "RequestMade",
+          generationTimeout,
+        );
       }
 
+      await scrollLessonPlanFromTopToBottom(page);
       await expectFinished(page);
     });
   },

@@ -19,6 +19,7 @@ import {
 } from "@oakai/aila/src/protocol/schema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { camelCaseToTitleCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { Moderation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
@@ -29,6 +30,7 @@ import { useLessonPlanScrollManagement } from "hooks/useLessonPlanScrollManageme
 
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { nextSectionsToGenerate } from "@/lib/lessonPlan/nextSectionToGenerate";
 import { useLessonPlanManager } from "@/lib/lessonPlan/useLessonPlanManager";
 import { trpc } from "@/utils/trpc";
 
@@ -294,6 +296,19 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     setQueuedUserAction(action);
   }, []);
 
+  const generateContinueAction = useCallback(() => {
+    const sectionsToGenerate = nextSectionsToGenerate(lessonPlan);
+    if (sectionsToGenerate.length === 0) {
+      return "Continue - check the lesson plan for consistency and correctness";
+    } else {
+      const sentenceCaseSections = sectionsToGenerate
+        .map((section) => camelCaseToTitleCase(section))
+        .join(", ")
+        .replace(/, ([^,]*)$/, " and $1");
+      return `Continue. Generate the ${sentenceCaseSections} section${sectionsToGenerate.length > 1 ? "s" : ""}.`;
+    }
+  }, [lessonPlan]);
+
   const executeQueuedAction = useCallback(async () => {
     if (!queuedUserAction || !hasFinished || isExecutingAction.current) return;
 
@@ -303,8 +318,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
     try {
       if (actionToExecute === "continue") {
+        const continueAction = generateContinueAction();
         await append({
-          content: "Continue",
+          content: continueAction,
           role: "user",
         });
       } else if (actionToExecute === "regenerate") {

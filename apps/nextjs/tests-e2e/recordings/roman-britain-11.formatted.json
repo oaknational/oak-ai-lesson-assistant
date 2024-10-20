@@ -1,8 +1,81 @@
 {
   "type": "llmMessage",
-  "patches": [],
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "The Exit Quiz assesses pupils' understanding of the entire lesson on the end of Roman Britain.",
+      "value": {
+        "type": "quiz",
+        "op": "add",
+        "path": "/exitQuiz",
+        "value": [
+          {
+            "question": "What marked the end of Roman rule in Britain?",
+            "answers": [
+              "The withdrawal of Roman soldiers"
+            ],
+            "distractors": [
+              "The building of Hadrian's Wall",
+              "The arrival of the Vikings"
+            ]
+          },
+          {
+            "question": "Why did Roman soldiers leave Britain?",
+            "answers": [
+              "To defend other parts of the Empire"
+            ],
+            "distractors": [
+              "They were no longer needed",
+              "They wanted to explore new lands"
+            ]
+          },
+          {
+            "question": "What was one impact of the Roman withdrawal on Britain?",
+            "answers": [
+              "Increased invasions"
+            ],
+            "distractors": [
+              "Improved trade routes",
+              "Stronger local governance"
+            ]
+          },
+          {
+            "question": "Which groups invaded Britain after the Romans left?",
+            "answers": [
+              "Saxons and Picts"
+            ],
+            "distractors": [
+              "Romans and Normans",
+              "Vikings and Celts"
+            ]
+          },
+          {
+            "question": "How did life in Britain change after the Romans left?",
+            "answers": [
+              "Trade routes diminished"
+            ],
+            "distractors": [
+              "New Roman towns were built",
+              "Roman laws were strengthened"
+            ]
+          },
+          {
+            "question": "What happened to Roman-built structures after the Romans left?",
+            "answers": [
+              "They declined"
+            ],
+            "distractors": [
+              "They were enhanced",
+              "They stayed intact"
+            ]
+          }
+        ]
+      },
+      "status": "complete"
+    }
+  ],
   "prompt": {
     "type": "text",
-    "value": "If there is anything else you need help with or if you have further questions, please feel free to let me know. I'm here to assist you with any additional support you may require!"
+    "value": "The Exit Quiz has been created to assess pupils' understanding of the lesson content. With this, the lesson plan is almost complete. Would you like to add any additional materials or make any further edits? Tap **Continue** to finalise the lesson plan."
   }
 }

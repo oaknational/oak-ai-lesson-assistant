@@ -3,47 +3,219 @@ type":"
 ll
 m
 Message
-","patches":[]
-,"prompt":{"
+","patches":[
+{"
+type":"
+patch
+","reasoning":"
+The
+ Starter
+ Quiz
+ is
+ designed
+ to
+ assess
+ pupils
+'
+ prior
+ knowledge
+ before
+ beginning
+ the
+ lesson
+.","
+value":{"
+type":"
+quiz
+","op":"
+add
+","path":"/
+starter
+Quiz
+","value":[
+{"
+question":"
+What
+ did
+ the
+ Romans
+ build
+ in
+ Britain
+?
+","answers":["
+Road
+s
+ and
+ towns
+"],"distractors":["
+Cast
+les
+ and
+ towers
+","
+F
+arms
+ and
+ wind
+mills
+"]},{"
+question":"
+Who
+ protected
+ Roman
+ Britain
+ from
+ invas
+ions
+?
+","answers":["
+Roman
+ soldiers
+"],"distractors":["
+Local
+ farmers
+","
+Mer
+chants
+"]},{"
+question":"
+What
+ new
+ ideas
+ did
+ the
+ Romans
+ bring
+ to
+ Britain
+?
+","answers":["
+Road
+s
+ and
+ technologies
+"],"distractors":["
+Cast
+les
+ and
+ magic
+","
+Ships
+ and
+ boats
+"]},{"
+question":"
+Which
+ groups
+ lived
+ in
+ Britain
+ before
+ the
+ Romans
+?
+","answers":["
+Different
+ groups
+"],"distractors":["
+Only
+ Romans
+","
+Only
+ Cel
+ts
+"]},{"
+question":"
+Why
+ might
+ the
+ Romans
+ have
+ left
+ Britain
+?
+","answers":["
+To
+ defend
+ other
+ parts
+ of
+ the
+ Empire
+"],"distractors":["
+The
+ weather
+ was
+ too
+ cold
+","
+They
+ had
+ finished
+ conqu
+ering
+ Britain
+"]},{"
+question":"
+What
+ happened
+ to
+ trade
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+It
+ changed
+ significantly
+"],"distractors":["
+It
+ flour
+ished
+","
+It
+ stayed
+ the
+ same
+"]}]},"status":"
+complete
+"}],"prompt":{"
 type":"
 text
 ","value":"
-I
- have
- checked
- for
- British
- spelling
- and
- grammar
-,
- coherence
-,
- and
- accuracy
-.
- You
- can
- now
- share
- your
- lesson
- or
- download
- your
- resources
-.
- Click
- on
- the
- **
-Menu
-**
- button
- to
- find
- previously
+The
+ Starter
+ Quiz
+ has
+ been
  created
- lessons
+ to
+ check
+ pupils
+'
+ prior
+ knowledge
+.
+ Let's
+ move
+ on
+ to
+ the
+ learning
+ cycles
+ and
+ the
+ Exit
+ Quiz
+.
+ Tap
+ **
+Continue
+**
+ to
+ proceed
 ."
 }}

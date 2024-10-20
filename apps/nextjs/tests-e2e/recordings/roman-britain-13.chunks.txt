@@ -1,0 +1,40 @@
+{"
+type":"
+ll
+m
+Message
+","patches":[]
+,"prompt":{"
+type":"
+text
+","value":"
+If
+ you
+ have
+ any
+ more
+ questions
+ or
+ need
+ assistance
+ with
+ another
+ lesson
+,
+ feel
+ free
+ to
+ ask
+.
+ I'm
+ here
+ to
+ help
+!
+ Have
+ a
+ wonderful
+ day
+ teaching
+."
+}}

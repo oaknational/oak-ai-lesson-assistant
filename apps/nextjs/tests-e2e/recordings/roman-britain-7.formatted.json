@@ -1,8 +1,81 @@
 {
   "type": "llmMessage",
-  "patches": [],
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "The Starter Quiz is designed to assess pupils' prior knowledge before beginning the lesson.",
+      "value": {
+        "type": "quiz",
+        "op": "add",
+        "path": "/starterQuiz",
+        "value": [
+          {
+            "question": "What did the Romans build in Britain?",
+            "answers": [
+              "Roads and towns"
+            ],
+            "distractors": [
+              "Castles and towers",
+              "Farms and windmills"
+            ]
+          },
+          {
+            "question": "Who protected Roman Britain from invasions?",
+            "answers": [
+              "Roman soldiers"
+            ],
+            "distractors": [
+              "Local farmers",
+              "Merchants"
+            ]
+          },
+          {
+            "question": "What new ideas did the Romans bring to Britain?",
+            "answers": [
+              "Roads and technologies"
+            ],
+            "distractors": [
+              "Castles and magic",
+              "Ships and boats"
+            ]
+          },
+          {
+            "question": "Which groups lived in Britain before the Romans?",
+            "answers": [
+              "Different groups"
+            ],
+            "distractors": [
+              "Only Romans",
+              "Only Celts"
+            ]
+          },
+          {
+            "question": "Why might the Romans have left Britain?",
+            "answers": [
+              "To defend other parts of the Empire"
+            ],
+            "distractors": [
+              "The weather was too cold",
+              "They had finished conquering Britain"
+            ]
+          },
+          {
+            "question": "What happened to trade after the Romans left?",
+            "answers": [
+              "It changed significantly"
+            ],
+            "distractors": [
+              "It flourished",
+              "It stayed the same"
+            ]
+          }
+        ]
+      },
+      "status": "complete"
+    }
+  ],
   "prompt": {
     "type": "text",
-    "value": "I have checked for British spelling and grammar, coherence, and accuracy. You can now share your lesson or download your resources. Click on the **Menu** button to find previously created lessons."
+    "value": "The Starter Quiz has been created to check pupils' prior knowledge. Let's move on to the learning cycles and the Exit Quiz. Tap **Continue** to proceed."
   }
 }

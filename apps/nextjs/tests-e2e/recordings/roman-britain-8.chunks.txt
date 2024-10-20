@@ -3,55 +3,333 @@ type":"
 ll
 m
 Message
-","patches":[]
-,"prompt":{"
+","patches":[
+{"
 type":"
-text
-","value":"
-If
- you
- need
- further
- assistance
- or
- want
- to
- start
- a
- new
- lesson
- plan
-,
- feel
- free
- to
- let
- me
- know
-.
- I'm
- here
- to
- help
- with
- any
- additional
- questions
- or
- tasks
- you
- might
- have
-.
- Enjoy
- teaching
- your
- lesson
+patch
+","reasoning":"
+Cycle
+ 
+1
+ focuses
  on
+ identifying
+ key
+ events
+ leading
+ to
  the
  end
  of
  Roman
+ rule
+.","
+value":{"
+type":"
+cycle
+","op":"
+add
+","path":"/
+cycle
+1
+","value":{"
+title":"
+Ident
+ifying
+ Key
+ Events
+ Leading
+ to
+ the
+ End
+ of
+ Roman
+ Rule
+","durationInMinutes":15
+,"explanation":{"
+spokenExplanation":["
+Explain
+ the
+ decline
+ of
+ Roman
+ power
+ in
  Britain
-!"
+ due
+ to
+ economic
+ troubles
+ and
+ external
+ pressures
+.","
+Describe
+ how
+ Roman
+ leg
+ions
+ were
+ recalled
+ to
+ defend
+ other
+ parts
+ of
+ the
+ Empire
+.","
+Mention
+ the
+ year
+ 
+410
+ AD
+ when
+ the
+ Roman
+ withdrawal
+ was
+ completed
+.","
+Discuss
+ the
+ impact
+ of
+ this
+ withdrawal
+ on
+ local
+ governance
+ and
+ security
+.","
+Connect
+ to
+ prior
+ knowledge
+ of
+ Roman
+ infrastructure
+ like
+ roads
+ and
+ towns
+ and
+ how
+ they
+ were
+ affected
+."
+],"accompanyingSlideDetails":"
+A
+ timeline
+ showing
+ key
+ events
+ leading
+ to
+ the
+ end
+ of
+ Roman
+ rule
+ in
+ Britain
+.","
+imagePrompt":"
+Roman
+ Britain
+ timeline
+","slideText":"
+Key
+ events
+ leading
+ to
+ the
+ end
+ of
+ Roman
+ rule
+ include
+ economic
+ troubles
+,
+ military
+ recalls
+,
+ and
+ the
+ completion
+ of
+ withdrawal
+ in
+ 
+410
+ AD
+."
+},"checkForUnderstanding":[
+{"
+question":"
+Why
+ did
+ Roman
+ soldiers
+ leave
+ Britain
+?
+","answers":["
+To
+ defend
+ other
+ parts
+ of
+ the
+ Empire
+"],"distractors":["
+Because
+ they
+ were
+ no
+ longer
+ needed
+","
+Due
+ to
+ the
+ cold
+ weather
+"]},{"
+question":"
+What
+ year
+ marked
+ the
+ completion
+ of
+ Roman
+ withdrawal
+ from
+ Britain
+?
+","answers":["
+410
+ AD
+"],"distractors":["
+106
+6
+ AD
+","
+500
+ AD
+"]}],"practice":"
+List
+ three
+ key
+ events
+ that
+ led
+ to
+ the
+ end
+ of
+ Roman
+ rule
+ in
+ Britain
+.
+ Provide
+ a
+ short
+ description
+ of
+ each
+ event
+.","
+feedback":"
+Model
+ answer
+:
+ 
+1
+.
+ Economic
+ troubles
+ weakened
+ Roman
+ power
+.
+ 
+2
+.
+ Roman
+ leg
+ions
+ were
+ recalled
+.
+ 
+3
+.
+ Roman
+ withdrawal
+ was
+ completed
+ by
+ 
+410
+ AD
+."
+}},"status":"
+complete
+"}],"prompt":{"
+type":"
+text
+","value":"
+Cycle
+ 
+1
+ has
+ been
+ structured
+ to
+ help
+ pupils
+ identify
+ key
+ events
+ that
+ led
+ to
+ the
+ end
+ of
+ Roman
+ rule
+.
+ Let's
+ proceed
+ to
+ Cycle
+ 
+2
+,
+ which
+ will
+ focus
+ on
+ the
+ impact
+ of
+ Roman
+ withdrawal
+.
+ Tap
+ **
+Continue
+**
+ to
+ move
+ forward
+."
 }}

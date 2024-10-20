@@ -3,37 +3,358 @@ type":"
 ll
 m
 Message
-","patches":[]
-,"prompt":{"
+","patches":[
+{"
+type":"
+patch
+","reasoning":"
+The
+ prior
+ knowledge
+ section
+ is
+ added
+ to
+ ensure
+ pupils
+ have
+ the
+ foundational
+ understanding
+ necessary
+ to
+ grasp
+ the
+ new
+ concepts
+ introduced
+ in
+ this
+ lesson
+.","
+value":{"
+type":"
+string
+-array
+","op":"
+add
+","path":"/
+prior
+Knowledge
+","value":["
+Romans
+ occupied
+ Britain
+ for
+ nearly
+ 
+400
+ years
+.","
+Roman
+ Britain
+ was
+ part
+ of
+ the
+ Roman
+ Empire
+.","
+Roman
+ soldiers
+ built
+ roads
+ and
+ towns
+ in
+ Britain
+.","
+Romans
+ introduced
+ new
+ technologies
+ and
+ ideas
+ to
+ Britain
+.
+"]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Key
+ learning
+ points
+ are
+ added
+ to
+ highlight
+ the
+ main
+ concepts
+ that
+ pupils
+ should
+ understand
+ by
+ the
+ end
+ of
+ the
+ lesson
+.","
+value":{"
+type":"
+string
+-array
+","op":"
+add
+","path":"/
+key
+Learning
+Points
+","value":["
+The
+ Roman
+ Empire
+ withdrew
+ from
+ Britain
+ around
+ AD
+ 
+410
+.","
+Brit
+ain
+ faced
+ invas
+ions
+ from
+ other
+ groups
+ like
+ the
+ Sax
+ons
+ after
+ the
+ Romans
+ left
+.","
+The
+ Roman
+ departure
+ led
+ to
+ changes
+ in
+ governance
+ and
+ society
+ in
+ Britain
+.
+"]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Adding
+ misconceptions
+ helps
+ to
+ identify
+ common
+ misunderstand
+ings
+ and
+ provide
+ guidance
+ on
+ how
+ to
+ address
+ them
+ in
+ the
+ lesson
+.","
+value":{"
+type":"
+mis
+con
+ceptions
+","op":"
+add
+","path":"/
+mis
+con
+ceptions
+","value":[
+{"
+misconception":"
+The
+ Romans
+ left
+ Britain
+ because
+ they
+ were
+ defeated
+ by
+ the
+ British
+.","
+description":"
+The
+ Romans
+ left
+ Britain
+ mainly
+ due
+ to
+ pressures
+ in
+ their
+ own
+ empire
+,
+ not
+ because
+ of
+ defeat
+ by
+ the
+ British
+."
+},{"
+misconception":"
+Roman
+ culture
+ disappeared
+ immediately
+ after
+ they
+ left
+ Britain
+.","
+description":"
+Roman
+ influences
+ remained
+ in
+ Britain
+ for
+ many
+ years
+ after
+ their
+ departure
+,
+ including
+ in
+ architecture
+ and
+ technology
+."
+}]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Keywords
+ are
+ added
+ to
+ ensure
+ pupils
+ understand
+ and
+ can
+ use
+ specific
+ vocabulary
+ related
+ to
+ the
+ lesson
+ topic
+.","
+value":{"
+type":"
+keywords
+","op":"
+add
+","path":"/
+keywords
+","value":[
+{"
+keyword":"
+Roman
+ Empire
+","definition":"
+An
+ ancient
+ empire
+ that
+ ruled
+ over
+ large
+ parts
+ of
+ Europe
+,
+ including
+ Britain
+."
+},{"
+keyword":"
+S
+ax
+ons
+","definition":"
+A
+ group
+ of
+ people
+ who
+ invaded
+ Britain
+ after
+ the
+ Romans
+ left
+."
+},{"
+keyword":"
+Withdrawal
+","definition":"
+The
+ act
+ of
+ leaving
+ or
+ pulling
+ back
+,
+ like
+ the
+ Romans
+ leaving
+ Britain
+."
+}]},"status":"
+complete
+"}],"prompt":{"
 type":"
 text
 ","value":"
-There
- are
- no
- existing
- Oak
- lessons
- for
- this
- specific
- topic
-,
- so
- let's
- proceed
- by
- creating
- the
- lesson
- plan
- from
- scratch
-.
- We'll
- begin
- by
- outlining
+Are
  the
  prior
  knowledge
@@ -46,10 +367,12 @@ There
 ,
  and
  keywords
+ sections
+ suitable
  for
- the
- lesson
-.
+ your
+ class
+?
  Tap
  **
 Continue

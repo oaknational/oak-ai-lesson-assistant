@@ -3,33 +3,18 @@
   "patches": [
     {
       "type": "patch",
-      "reasoning": "I have chosen these learning outcomes and cycles to ensure that pupils understand the key historical events and concepts related to the end of Roman Britain.",
+      "reasoning": "The Additional Materials section is unnecessary for this lesson as there are no practical elements or specific narratives required.",
       "value": {
         "type": "string",
         "op": "add",
-        "path": "/learningOutcome",
-        "value": "I can describe the main reasons for the end of Roman rule in Britain."
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "These learning cycles are designed to build on each other, starting with identifying key events and moving to understanding their impact.",
-      "value": {
-        "type": "string-array",
-        "op": "add",
-        "path": "/learningCycles",
-        "value": [
-          "Identify key events leading to the end of Roman Britain.",
-          "Describe the impact of these events on life in Britain.",
-          "Explain the transition from Roman Britain to Anglo-Saxon rule."
-        ]
+        "path": "/additionalMaterials",
+        "value": "None"
       },
       "status": "complete"
     }
   ],
   "prompt": {
     "type": "text",
-    "value": "The learning outcome and learning cycles have been created. Are they suitable for your pupils? If not, suggest an edit below. Tap **Continue** to proceed to the next sections."
+    "value": "The lesson plan is now complete. If you need any adjustments or additional information, please let me know. Otherwise, tap **Continue** to finalise the lesson plan."
   }
 }

@@ -1,8 +1,59 @@
 {
   "type": "llmMessage",
-  "patches": [],
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "Cycle 3 will discuss how life changed in Britain after the Romans left.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle3",
+        "value": {
+          "title": "Discussing How Life Changed in Britain After the Romans Left",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Describe the changes in daily life and governance without Roman rule.",
+              "Explain the decline of Roman-built structures and how new settlements emerged.",
+              "Discuss how trade routes were altered or diminished.",
+              "Relate these changes to pupils' understanding of Roman contributions to Britain.",
+              "Encourage pupils to compare life during Roman rule and after their departure."
+            ],
+            "accompanyingSlideDetails": "Images comparing Roman Britain and post-Roman Britain.",
+            "imagePrompt": "Roman Britain vs post-Roman Britain",
+            "slideText": "Life in Britain changed with the decline of Roman structures, altered trade routes, and new settlements."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "What happened to Roman-built structures after the Romans left?",
+              "answers": [
+                "They declined"
+              ],
+              "distractors": [
+                "They were improved",
+                "They remained the same"
+              ]
+            },
+            {
+              "question": "How did trade change after the Romans left Britain?",
+              "answers": [
+                "It diminished"
+              ],
+              "distractors": [
+                "It expanded",
+                "It became more centralised"
+              ]
+            }
+          ],
+          "practice": "Compare and contrast daily life in Roman Britain with life after the Romans left.",
+          "feedback": "Model answer: Roman Britain had structured governance and trade routes; post-Roman Britain saw infrastructure decline and less organised trade."
+        }
+      },
+      "status": "complete"
+    }
+  ],
   "prompt": {
     "type": "text",
-    "value": "It looks like we've reached the end of our current task. If you have any other requests or need help with a different lesson, feel free to ask. Have a great day!"
+    "value": "Cycle 3 has been structured to discuss life changes in Britain after the Romans left. Now, let's move on to create the Exit Quiz to assess pupils' understanding of the lesson. Tap **Continue** to proceed."
   }
 }

@@ -3,46 +3,265 @@ type":"
 ll
 m
 Message
-","patches":[]
-,"prompt":{"
+","patches":[
+{"
+type":"
+patch
+","reasoning":"
+The
+ Exit
+ Quiz
+ assesses
+ pupils
+'
+ understanding
+ of
+ the
+ entire
+ lesson
+ on
+ the
+ end
+ of
+ Roman
+ Britain
+.","
+value":{"
+type":"
+quiz
+","op":"
+add
+","path":"/
+exit
+Quiz
+","value":[
+{"
+question":"
+What
+ marked
+ the
+ end
+ of
+ Roman
+ rule
+ in
+ Britain
+?
+","answers":["
+The
+ withdrawal
+ of
+ Roman
+ soldiers
+"],"distractors":["
+The
+ building
+ of
+ Had
+rian
+'s
+ Wall
+","
+The
+ arrival
+ of
+ the
+ Vikings
+"]},{"
+question":"
+Why
+ did
+ Roman
+ soldiers
+ leave
+ Britain
+?
+","answers":["
+To
+ defend
+ other
+ parts
+ of
+ the
+ Empire
+"],"distractors":["
+They
+ were
+ no
+ longer
+ needed
+","
+They
+ wanted
+ to
+ explore
+ new
+ lands
+"]},{"
+question":"
+What
+ was
+ one
+ impact
+ of
+ the
+ Roman
+ withdrawal
+ on
+ Britain
+?
+","answers":["
+In
+creased
+ invas
+ions
+"],"distractors":["
+Impro
+ved
+ trade
+ routes
+","
+Str
+onger
+ local
+ governance
+"]},{"
+question":"
+Which
+ groups
+ invaded
+ Britain
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+S
+ax
+ons
+ and
+ P
+icts
+"],"distractors":["
+Romans
+ and
+ Norm
+ans
+","
+V
+ik
+ings
+ and
+ Cel
+ts
+"]},{"
+question":"
+How
+ did
+ life
+ in
+ Britain
+ change
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+Trade
+ routes
+ diminished
+"],"distractors":["
+New
+ Roman
+ towns
+ were
+ built
+","
+Roman
+ laws
+ were
+ strengthened
+"]},{"
+question":"
+What
+ happened
+ to
+ Roman
+-built
+ structures
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+They
+ declined
+"],"distractors":["
+They
+ were
+ enhanced
+","
+They
+ stayed
+ intact
+"]}]},"status":"
+complete
+"}],"prompt":{"
 type":"
 text
 ","value":"
-If
- there
- is
- anything
- else
- you
- need
- help
- with
- or
- if
- you
- have
- further
- questions
-,
- please
- feel
- free
+The
+ Exit
+ Quiz
+ has
+ been
+ created
  to
- let
- me
- know
+ assess
+ pupils
+'
+ understanding
+ of
+ the
+ lesson
+ content
 .
- I'm
- here
- to
- assist
+ With
+ this
+,
+ the
+ lesson
+ plan
+ is
+ almost
+ complete
+.
+ Would
  you
- with
+ like
+ to
+ add
  any
  additional
- support
- you
- may
- require
-!"
+ materials
+ or
+ make
+ any
+ further
+ edits
+?
+ Tap
+ **
+Continue
+**
+ to
+ final
+ise
+ the
+ lesson
+ plan
+."
 }}

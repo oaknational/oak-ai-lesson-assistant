@@ -4,7 +4,7 @@ import {
   LessonPlanKeys,
   LessonPlanSectionWhileStreaming,
 } from "@oakai/aila/src/protocol/schema";
-import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
+import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
 import styled from "styled-components";
 
@@ -54,6 +54,10 @@ const DropDownSection = ({
       $bb="border-solid-m"
       $pv="inner-padding-xl"
       ref={sectionRef}
+      data-testid={`chat-section-${section}`}
+      data-test="lesson-plan-section"
+      data-test-section-key={section}
+      data-test-section-complete={isLoaded ? "true" : "false"}
     >
       <FullWidthButton onClick={() => setIsOpen(section, !isOpen)}>
         <OakFlex $gap="all-spacing-2">

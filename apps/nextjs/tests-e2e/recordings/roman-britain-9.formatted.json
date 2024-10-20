@@ -1,8 +1,59 @@
 {
   "type": "llmMessage",
-  "patches": [],
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "Cycle 2 focuses on describing the impact of the Roman withdrawal on Britain.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle2",
+        "value": {
+          "title": "Describing the Impact of the Roman Withdrawal",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Discuss how the withdrawal of Roman soldiers led to vulnerabilities in Britain.",
+              "Explain the increased risk of invasions by groups such as the Saxons and Picts.",
+              "Describe how local governance struggled without Roman support.",
+              "Connect this to the decline in trade and infrastructure maintenance in Roman towns.",
+              "Relate these changes to the pupils' prior knowledge of Roman Britain."
+            ],
+            "accompanyingSlideDetails": "Images showing invasions and declining infrastructure post-Roman withdrawal.",
+            "imagePrompt": "Invasions after Roman withdrawal",
+            "slideText": "The Roman withdrawal left Britain vulnerable to invasions and resulted in declining infrastructure and governance."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "What was one result of the Roman soldiers leaving Britain?",
+              "answers": [
+                "Increased invasions"
+              ],
+              "distractors": [
+                "More trade opportunities",
+                "Better infrastructure"
+              ]
+            },
+            {
+              "question": "Who were some of the groups that invaded Britain after the Romans left?",
+              "answers": [
+                "Saxons and Picts"
+              ],
+              "distractors": [
+                "Romans and Celts",
+                "Vikings and Normans"
+              ]
+            }
+          ],
+          "practice": "Describe two impacts of the Roman withdrawal on Britain and how they affected the local population.",
+          "feedback": "Model answer: The Roman withdrawal made Britain vulnerable to Saxon invasions and led to a decline in maintained infrastructure and trade."
+        }
+      },
+      "status": "complete"
+    }
+  ],
   "prompt": {
     "type": "text",
-    "value": "It seems we've completed the lesson plan. If you have any more questions or need to create another lesson, let me know. I'm here to assist you with anything else you might need!"
+    "value": "Cycle 2 has been added, focusing on the impact of Roman withdrawal. Next, we'll develop Cycle 3, which will discuss life changes in Britain after the Romans left. Tap **Continue** to proceed."
   }
 }

@@ -8,90 +8,211 @@ Message
 type":"
 patch
 ","reasoning":"
-No
- additional
- materials
+The
+ Starter
+ Quiz
+ checks
+ pupils
+'
+ prior
+ knowledge
+ to
+ ensure
+ they
  are
- required
+ prepared
  for
- this
+ the
+ new
  lesson
+ content
 .","
 value":{"
 type":"
-string
+quiz
 ","op":"
 add
 ","path":"/
-additional
-Materials
-","value":"
-None
-"},"status":"
+starter
+Quiz
+","value":[
+{"
+question":"
+When
+ did
+ the
+ Romans
+ invade
+ Britain
+?
+","answers":["
+AD
+ 
+43
+"],"distractors":["
+AD
+ 
+410
+","
+AD
+ 
+106
+6
+"]},{"
+question":"
+What
+ was
+ Roman
+ Britain
+ a
+ part
+ of
+?
+","answers":["
+The
+ Roman
+ Empire
+"],"distractors":["
+The
+ British
+ Empire
+","
+The
+ Greek
+ Empire
+"]},{"
+question":"
+What
+ did
+ the
+ Romans
+ build
+ in
+ Britain
+?
+","answers":["
+Road
+s
+ and
+ towns
+"],"distractors":["
+Cast
+les
+ and
+ cat
+hed
+r
+als
+","
+Sk
+yscr
+apers
+ and
+ bridges
+"]},{"
+question":"
+What
+ did
+ the
+ Romans
+ introduce
+ to
+ Britain
+?
+","answers":["
+New
+ technologies
+ and
+ ideas
+"],"distractors":["
+New
+ languages
+ and
+ alph
+abets
+","
+New
+ art
+ styles
+ and
+ music
+"]},{"
+question":"
+Who
+ protected
+ Britain
+ from
+ invas
+ions
+?
+","answers":["
+Roman
+ soldiers
+"],"distractors":["
+S
+axon
+ warriors
+","
+V
+iking
+ explorers
+"]},{"
+question":"
+Which
+ groups
+ invaded
+ Britain
+ after
+ the
+ Romans
+?
+","answers":["
+The
+ Sax
+ons
+"],"distractors":["
+The
+ Norm
+ans
+","
+The
+ Vikings
+"]}]},"status":"
 complete
 "}],"prompt":{"
 type":"
 text
 ","value":"
 The
- lesson
- plan
+ Starter
+ Quiz
  is
- now
- complete
- with
- all
- sections
- filled
- out
+ ready
 ,
- including
+ focusing
+ on
  the
- additional
- materials
-.
- If
- you
- have
- any
- further
- edits
- or
- additions
-,
- please
- let
- me
- know
-.
- Otherwise
-,
- you
- can
- proceed
- to
- download
- your
- resources
-.
- Have
- you
- finished
- editing
- your
+ prior
+ knowledge
+ needed
+ for
+ the
  lesson
-?
- If
- anything
- is
- missing
+.
+ Now
 ,
- just
- ask
- me
+ let's
+ develop
+ the
+ learning
+ cycles
  to
- add
- it
- in
+ guide
+ the
+ main
+ content
+ of
+ the
+ lesson
 ."
 }}

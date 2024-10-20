@@ -8,170 +8,74 @@ Message
 type":"
 patch
 ","reasoning":"
-I
- have
- chosen
- these
- learning
- outcomes
- and
- cycles
- to
- ensure
- that
- pupils
- understand
- the
- key
- historical
- events
- and
- concepts
- related
- to
- the
- end
- of
- Roman
- Britain
-.","
-value":{"
-type":"
-string
-","op":"
-add
-","path":"/
-learning
-Outcome
-","value":"
-I
- can
- describe
- the
- main
- reasons
+The
+ Additional
+ Materials
+ section
+ is
+ unnecessary
  for
- the
- end
- of
- Roman
- rule
- in
- Britain
-."
-},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-These
- learning
- cycles
+ this
+ lesson
+ as
+ there
  are
- designed
- to
- build
- on
- each
- other
-,
- starting
- with
- identifying
- key
- events
- and
- moving
- to
- understanding
- their
- impact
+ no
+ practical
+ elements
+ or
+ specific
+ narratives
+ required
 .","
 value":{"
 type":"
 string
--array
 ","op":"
 add
 ","path":"/
-learning
-Cycles
-","value":["
-Identify
- key
- events
- leading
- to
- the
- end
- of
- Roman
- Britain
-.","
-Describe
- the
- impact
- of
- these
- events
- on
- life
- in
- Britain
-.","
-Explain
- the
- transition
- from
- Roman
- Britain
- to
- Anglo
--S
-axon
- rule
-.
-"]},"status":"
+additional
+Materials
+","value":"
+None
+"},"status":"
 complete
 "}],"prompt":{"
 type":"
 text
 ","value":"
 The
- learning
- outcome
- and
- learning
- cycles
- have
- been
- created
+ lesson
+ plan
+ is
+ now
+ complete
 .
- Are
- they
- suitable
- for
- your
- pupils
-?
  If
- not
+ you
+ need
+ any
+ adjustments
+ or
+ additional
+ information
 ,
- suggest
- an
- edit
- below
+ please
+ let
+ me
+ know
 .
- Tap
+ Otherwise
+,
+ tap
  **
 Continue
 **
  to
- proceed
- to
+ final
+ise
  the
- next
- sections
+ lesson
+ plan
 ."
 }}

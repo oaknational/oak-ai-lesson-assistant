@@ -18,7 +18,7 @@ import { inngest } from "../client";
 import { createOpenAIClient } from "../llm/openai";
 import { template } from "../prompts/lesson-assistant";
 import { RAG } from "../rag";
-import { camelCaseToSentenceCase } from "../utils/camelCaseToSentenceCase";
+import { camelCaseToSentenceCase } from "../utils/camelCaseConversion";
 import { embedWithCache } from "../utils/embeddings";
 import { Caption, CaptionsSchema } from "./types/caption";
 

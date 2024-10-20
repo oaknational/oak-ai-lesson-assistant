@@ -224,14 +224,18 @@ export class AilaChat implements AilaChatService {
   }
 
   public async enqueue(message: JsonPatchDocumentOptional) {
-    await this._patchEnqueuer.enqueueMessage(message);
+    if (this._patchEnqueuer) {
+      await this._patchEnqueuer.enqueueMessage(message);
+    }
   }
 
   public async enqueuePatch(
     path: string,
     value: string | string[] | number | object,
   ) {
-    await this._patchEnqueuer.enqueuePatch(path, value);
+    if (this._patchEnqueuer) {
+      await this._patchEnqueuer.enqueuePatch(path, value);
+    }
   }
 
   private async startNewGeneration() {

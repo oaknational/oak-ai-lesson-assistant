@@ -49,8 +49,7 @@ test(
     await test.step("Fill in the chat box", async () => {
       const textbox = page.getByTestId("chat-input");
       const sendMessage = page.getByTestId("send-message");
-      const message =
-        "Create a KS1 lesson on the end of Roman Britain. Ask a question for each quiz and cycle";
+      const message = "Create a KS1 lesson on the end of Roman Britain";
       await textbox.fill(message);
       await expect(textbox).toContainText(message);
 

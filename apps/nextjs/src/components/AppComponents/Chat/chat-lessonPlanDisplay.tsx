@@ -9,6 +9,7 @@ import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { organiseSections } from "@/lib/lessonPlan/organiseSections";
 import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
 
 import Skeleton from "../common/Skeleton";
@@ -47,30 +48,6 @@ function basedOnTitle(basedOn: string | BasedOnOptional) {
 const displayStyles = cva(
   "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24 ",
 );
-
-const organiseSections: {
-  trigger: LessonPlanKeys;
-  dependants: LessonPlanKeys[];
-}[] = [
-  {
-    trigger: "learningOutcome",
-    dependants: ["learningOutcome", "learningCycles"],
-  },
-  {
-    trigger: "priorKnowledge",
-    dependants: [
-      "priorKnowledge",
-      "keyLearningPoints",
-      "misconceptions",
-      "keywords",
-    ],
-  },
-  {
-    trigger: "starterQuiz",
-    dependants: ["starterQuiz", "cycle1", "cycle2", "cycle3", "exitQuiz"],
-  },
-  { trigger: "additionalMaterials", dependants: ["additionalMaterials"] },
-];
 
 function getSectionsToDisplay(
   lessonPlanKeys: LessonPlanKeys[],

@@ -3,290 +3,31 @@
   "patches": [
     {
       "type": "patch",
-      "reasoning": "The starter quiz checks pupils' understanding of foundational knowledge needed before the lesson begins.",
+      "reasoning": "Keywords help pupils grasp important vocabulary related to the topic.",
       "value": {
-        "type": "quiz",
+        "type": "keywords",
         "op": "add",
-        "path": "/starterQuiz",
+        "path": "/keywords",
         "value": [
           {
-            "question": "What was the Roman Empire?",
-            "answers": [
-              "A powerful civilisation that controlled large parts of Europe"
-            ],
-            "distractors": [
-              "A small village in Italy",
-              "A type of ancient weapon"
-            ]
+            "keyword": "Roman Empire",
+            "definition": "A powerful ancient empire that ruled over a large part of Europe, including Britain."
           },
           {
-            "question": "Who were stationed in Britain to maintain control?",
-            "answers": [
-              "Roman soldiers"
-            ],
-            "distractors": [
-              "Anglo-Saxon farmers",
-              "Viking warriors"
-            ]
+            "keyword": "Withdrawal",
+            "definition": "The act of the Roman army leaving Britain to defend other parts of the empire."
           },
           {
-            "question": "What did the Romans build in Britain?",
-            "answers": [
-              "Roads, forts, and towns"
-            ],
-            "distractors": [
-              "Castles and moats",
-              "Skyscrapers and bridges"
-            ]
+            "keyword": "Invasion",
+            "definition": "An act of entering a place by force, such as the Saxons entering Britain."
           },
           {
-            "question": "Which groups began to settle in Britain after the Romans?",
-            "answers": [
-              "Anglo-Saxons"
-            ],
-            "distractors": [
-              "Egyptians",
-              "Native Americans"
-            ]
+            "keyword": "Infrastructure",
+            "definition": "The basic physical structures, like roads and buildings, set up by the Romans in Britain."
           },
           {
-            "question": "How long was Britain part of the Roman Empire?",
-            "answers": [
-              "Several hundred years"
-            ],
-            "distractors": [
-              "A few weeks",
-              "Ten years"
-            ]
-          },
-          {
-            "question": "What is one thing the Romans left behind in Britain?",
-            "answers": [
-              "Roads"
-            ],
-            "distractors": [
-              "Airports",
-              "Railways"
-            ]
-          }
-        ]
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Cycle 1 introduces pupils to the key events leading to the end of Roman Britain.",
-      "value": {
-        "type": "cycle",
-        "op": "add",
-        "path": "/cycle1",
-        "value": {
-          "title": "Identify key events leading to the end of Roman Britain",
-          "durationInMinutes": 15,
-          "explanation": {
-            "spokenExplanation": [
-              "Discuss how the Roman Empire began to weaken due to internal problems and external pressures.",
-              "Explain that Roman soldiers were gradually withdrawn from Britain to defend other parts of the Empire.",
-              "Highlight that by 410 AD, the Romans officially left Britain.",
-              "Mention that without Roman protection, Britain became vulnerable to invasions."
-            ],
-            "accompanyingSlideDetails": "A timeline showing the gradual withdrawal of Roman forces from Britain.",
-            "imagePrompt": "Roman Britain withdrawal timeline",
-            "slideText": "The Roman Empire weakened, and soldiers left Britain by 410 AD."
-          },
-          "checkForUnderstanding": [
-            {
-              "question": "Why did the Romans start leaving Britain?",
-              "answers": [
-                "To defend other parts of the Empire"
-              ],
-              "distractors": [
-                "To go on holiday",
-                "To explore new lands"
-              ]
-            },
-            {
-              "question": "By what year had the Romans officially left Britain?",
-              "answers": [
-                "410 AD"
-              ],
-              "distractors": [
-                "500 AD",
-                "300 AD"
-              ]
-            }
-          ],
-          "practice": "Create a simple timeline showing the key events from the weakening of the Roman Empire to the official Roman withdrawal from Britain in 410 AD.",
-          "feedback": "Success Criteria: Ensure your timeline includes the weakening of the Roman Empire, gradual withdrawal of soldiers, and the official leaving in 410 AD."
-        }
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Cycle 2 focuses on the impact of the Romans leaving Britain.",
-      "value": {
-        "type": "cycle",
-        "op": "add",
-        "path": "/cycle2",
-        "value": {
-          "title": "Describe the impact of these events on life in Britain",
-          "durationInMinutes": 15,
-          "explanation": {
-            "spokenExplanation": [
-              "Describe how Roman structures and systems were abandoned after their departure.",
-              "Explain that towns and roads were left to deteriorate without Roman maintenance.",
-              "Discuss the changes in lifestyle and security without Roman soldiers.",
-              "Mention the vulnerability of Britain to Anglo-Saxon invasions."
-            ],
-            "accompanyingSlideDetails": "Images of decaying Roman roads and buildings.",
-            "imagePrompt": "Roman ruins in Britain",
-            "slideText": "Roman systems deteriorated, and Britain faced insecurity without Roman protection."
-          },
-          "checkForUnderstanding": [
-            {
-              "question": "What happened to Roman roads after they left?",
-              "answers": [
-                "They were left to deteriorate"
-              ],
-              "distractors": [
-                "They were improved",
-                "They were sold"
-              ]
-            },
-            {
-              "question": "What were the consequences of the Romans leaving Britain?",
-              "answers": [
-                "Britain became vulnerable to invasions"
-              ],
-              "distractors": [
-                "Britain became a Roman colony",
-                "Britain built new Roman towns"
-              ]
-            }
-          ],
-          "practice": "Write a short paragraph describing how life in Britain changed after the Romans left, focusing on the state of the roads and towns.",
-          "feedback": "Model Answer: Roads and towns fell into disrepair, and Britain became vulnerable to invasions without Roman soldiers."
-        }
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Cycle 3 explores the transition from Roman Britain to Anglo-Saxon rule.",
-      "value": {
-        "type": "cycle",
-        "op": "add",
-        "path": "/cycle3",
-        "value": {
-          "title": "Explain the transition from Roman Britain to Anglo-Saxon rule",
-          "durationInMinutes": 15,
-          "explanation": {
-            "spokenExplanation": [
-              "Explain who the Anglo-Saxons were and why they began to settle in Britain.",
-              "Describe how Anglo-Saxon rule replaced Roman governance.",
-              "Mention the cultural and societal changes that occurred under Anglo-Saxon influence.",
-              "Highlight the establishment of new settlements and systems by the Anglo-Saxons."
-            ],
-            "accompanyingSlideDetails": "Images of Anglo-Saxon settlements and artefacts.",
-            "imagePrompt": "Anglo-Saxon settlements in Britain",
-            "slideText": "Anglo-Saxons replaced Romans, bringing cultural and societal changes."
-          },
-          "checkForUnderstanding": [
-            {
-              "question": "Who began to settle in Britain after the Romans left?",
-              "answers": [
-                "Anglo-Saxons"
-              ],
-              "distractors": [
-                "Egyptians",
-                "Roman soldiers"
-              ]
-            },
-            {
-              "question": "What type of changes did the Anglo-Saxons bring?",
-              "answers": [
-                "Cultural and societal changes"
-              ],
-              "distractors": [
-                "No changes",
-                "Only military changes"
-              ]
-            }
-          ],
-          "practice": "Draw a picture illustrating an Anglo-Saxon settlement and label the different features that distinguish it from Roman settlements.",
-          "feedback": "Model Answer: Include features like wooden structures, open fields, and a central meeting hall to show differences from Roman stone buildings."
-        }
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "The exit quiz checks pupils' understanding of the lesson content, ensuring comprehension of key learning points.",
-      "value": {
-        "type": "quiz",
-        "op": "add",
-        "path": "/exitQuiz",
-        "value": [
-          {
-            "question": "What year did the Romans officially leave Britain?",
-            "answers": [
-              "410 AD"
-            ],
-            "distractors": [
-              "500 AD",
-              "300 AD"
-            ]
-          },
-          {
-            "question": "What happened to Roman towns after the Romans left?",
-            "answers": [
-              "They deteriorated"
-            ],
-            "distractors": [
-              "They became new Roman cities",
-              "They were preserved"
-            ]
-          },
-          {
-            "question": "Who began to settle in Britain after the Romans?",
-            "answers": [
-              "Anglo-Saxons"
-            ],
-            "distractors": [
-              "Vikings",
-              "Normans"
-            ]
-          },
-          {
-            "question": "What did the Anglo-Saxons bring to Britain?",
-            "answers": [
-              "Cultural changes"
-            ],
-            "distractors": [
-              "Roman architecture",
-              "Viking ships"
-            ]
-          },
-          {
-            "question": "Why did the Romans leave Britain?",
-            "answers": [
-              "To defend other parts of the Empire"
-            ],
-            "distractors": [
-              "They finished building roads",
-              "They conquered new lands"
-            ]
-          },
-          {
-            "question": "What was one impact of the Romans leaving Britain?",
-            "answers": [
-              "Britain faced new invasions"
-            ],
-            "distractors": [
-              "Britain became part of Rome",
-              "Britain built more Roman roads"
-            ]
+            "keyword": "Saxons",
+            "definition": "A group of people from northern Germany who began to settle in Britain after the Romans left."
           }
         ]
       },
@@ -295,6 +36,6 @@
   ],
   "prompt": {
     "type": "text",
-    "value": "The quizzes and learning cycles have been created. Do these activities and questions seem appropriate for your pupils? Keep in mind that the quizzes aim for pupils to answer five out of six questions correctly on average. Tap **Continue** to proceed to any additional materials or to make final edits."
+    "value": "The keywords section is now complete, covering essential vocabulary such as Roman Empire, withdrawal, invasion, infrastructure, and Saxons.\n\nIf you're satisfied with these sections, we can move on to creating the quizzes and learning cycles. Tap **Continue** to proceed."
   }
 }

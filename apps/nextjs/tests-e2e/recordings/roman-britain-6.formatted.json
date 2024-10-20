@@ -3,18 +3,79 @@
   "patches": [
     {
       "type": "patch",
-      "reasoning": "No additional materials are required for this lesson.",
+      "reasoning": "The Starter Quiz checks pupils' prior knowledge to ensure they are prepared for the new lesson content.",
       "value": {
-        "type": "string",
+        "type": "quiz",
         "op": "add",
-        "path": "/additionalMaterials",
-        "value": "None"
+        "path": "/starterQuiz",
+        "value": [
+          {
+            "question": "When did the Romans invade Britain?",
+            "answers": [
+              "AD 43"
+            ],
+            "distractors": [
+              "AD 410",
+              "AD 1066"
+            ]
+          },
+          {
+            "question": "What was Roman Britain a part of?",
+            "answers": [
+              "The Roman Empire"
+            ],
+            "distractors": [
+              "The British Empire",
+              "The Greek Empire"
+            ]
+          },
+          {
+            "question": "What did the Romans build in Britain?",
+            "answers": [
+              "Roads and towns"
+            ],
+            "distractors": [
+              "Castles and cathedrals",
+              "Skyscrapers and bridges"
+            ]
+          },
+          {
+            "question": "What did the Romans introduce to Britain?",
+            "answers": [
+              "New technologies and ideas"
+            ],
+            "distractors": [
+              "New languages and alphabets",
+              "New art styles and music"
+            ]
+          },
+          {
+            "question": "Who protected Britain from invasions?",
+            "answers": [
+              "Roman soldiers"
+            ],
+            "distractors": [
+              "Saxon warriors",
+              "Viking explorers"
+            ]
+          },
+          {
+            "question": "Which groups invaded Britain after the Romans?",
+            "answers": [
+              "The Saxons"
+            ],
+            "distractors": [
+              "The Normans",
+              "The Vikings"
+            ]
+          }
+        ]
       },
       "status": "complete"
     }
   ],
   "prompt": {
     "type": "text",
-    "value": "The lesson plan is now complete with all sections filled out, including the additional materials. If you have any further edits or additions, please let me know. Otherwise, you can proceed to download your resources. Have you finished editing your lesson? If anything is missing, just ask me to add it in."
+    "value": "The Starter Quiz is ready, focusing on the prior knowledge needed for the lesson. Now, let's develop the learning cycles to guide the main content of the lesson."
   }
 }

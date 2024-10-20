@@ -3,46 +3,304 @@ type":"
 ll
 m
 Message
-","patches":[]
-,"prompt":{"
+","patches":[
+{"
+type":"
+patch
+","reasoning":"
+Cycle
+ 
+2
+ focuses
+ on
+ describing
+ the
+ impact
+ of
+ the
+ Roman
+ withdrawal
+ on
+ Britain
+.","
+value":{"
+type":"
+cycle
+","op":"
+add
+","path":"/
+cycle
+2
+","value":{"
+title":"
+Des
+cribing
+ the
+ Impact
+ of
+ the
+ Roman
+ Withdrawal
+","durationInMinutes":15
+,"explanation":{"
+spokenExplanation":["
+Discuss
+ how
+ the
+ withdrawal
+ of
+ Roman
+ soldiers
+ led
+ to
+ vulnerabilities
+ in
+ Britain
+.","
+Explain
+ the
+ increased
+ risk
+ of
+ invas
+ions
+ by
+ groups
+ such
+ as
+ the
+ Sax
+ons
+ and
+ P
+icts
+.","
+Describe
+ how
+ local
+ governance
+ struggled
+ without
+ Roman
+ support
+.","
+Connect
+ this
+ to
+ the
+ decline
+ in
+ trade
+ and
+ infrastructure
+ maintenance
+ in
+ Roman
+ towns
+.","
+Rel
+ate
+ these
+ changes
+ to
+ the
+ pupils
+'
+ prior
+ knowledge
+ of
+ Roman
+ Britain
+."
+],"accompanyingSlideDetails":"
+Images
+ showing
+ invas
+ions
+ and
+ declining
+ infrastructure
+ post
+-R
+oman
+ withdrawal
+.","
+imagePrompt":"
+In
+vas
+ions
+ after
+ Roman
+ withdrawal
+","slideText":"
+The
+ Roman
+ withdrawal
+ left
+ Britain
+ vulnerable
+ to
+ invas
+ions
+ and
+ resulted
+ in
+ declining
+ infrastructure
+ and
+ governance
+."
+},"checkForUnderstanding":[
+{"
+question":"
+What
+ was
+ one
+ result
+ of
+ the
+ Roman
+ soldiers
+ leaving
+ Britain
+?
+","answers":["
+In
+creased
+ invas
+ions
+"],"distractors":["
+More
+ trade
+ opportunities
+","
+Better
+ infrastructure
+"]},{"
+question":"
+Who
+ were
+ some
+ of
+ the
+ groups
+ that
+ invaded
+ Britain
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+S
+ax
+ons
+ and
+ P
+icts
+"],"distractors":["
+Romans
+ and
+ Cel
+ts
+","
+V
+ik
+ings
+ and
+ Norm
+ans
+"]}],"practice":"
+Describe
+ two
+ impacts
+ of
+ the
+ Roman
+ withdrawal
+ on
+ Britain
+ and
+ how
+ they
+ affected
+ the
+ local
+ population
+.","
+feedback":"
+Model
+ answer
+:
+ The
+ Roman
+ withdrawal
+ made
+ Britain
+ vulnerable
+ to
+ Sax
+on
+ invas
+ions
+ and
+ led
+ to
+ a
+ decline
+ in
+ maintained
+ infrastructure
+ and
+ trade
+."
+}},"status":"
+complete
+"}],"prompt":{"
 type":"
 text
 ","value":"
-It
- seems
- we've
- completed
- the
- lesson
- plan
-.
- If
- you
- have
- any
- more
- questions
- or
- need
- to
- create
- another
- lesson
+Cycle
+ 
+2
+ has
+ been
+ added
 ,
- let
- me
- know
+ focusing
+ on
+ the
+ impact
+ of
+ Roman
+ withdrawal
 .
- I'm
- here
+ Next
+,
+ we'll
+ develop
+ Cycle
+ 
+3
+,
+ which
+ will
+ discuss
+ life
+ changes
+ in
+ Britain
+ after
+ the
+ Romans
+ left
+.
+ Tap
+ **
+Continue
+**
  to
- assist
- you
- with
- anything
- else
- you
- might
- need
-!"
+ proceed
+."
 }}

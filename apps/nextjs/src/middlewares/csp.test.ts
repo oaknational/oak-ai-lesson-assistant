@@ -24,6 +24,7 @@ function generatePoliciesForEnvironment(env: Environment): string {
       devConsent: env === "development",
       mux: true,
       vercel: env === "preview",
+      localhost: env === "development",
     },
   };
 
