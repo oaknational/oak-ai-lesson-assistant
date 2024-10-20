@@ -63,20 +63,17 @@ In some cases it is possible for the user to base their lesson on existing ones,
       : {
           sections: ["learningOutcome", "learningCycles"] as LessonPlanKeys[],
           title: `STORE THE basedOn LESSON REFERENCE AND GENERATE SECTION GROUP [learningOutcome, learningCycles]`,
-          content: `You will have a response from your previous question about basing the lesson on an existing lesson.
+          content: `You need to generate three sections in one interaction with the user. Do these all in one interaction.
+* basedOn - store the reference to the basedOn lesson in the lesson plan.
+* learningOutcome - generate learning outcomes.
+* learningCycles - generate the learning cycles overview.
+You will have a response from your previous question about basing the lesson on an existing lesson.
 In your previous message you asked the user if they would like to adapt an existing lesson and provided a number of options.
-      
-If the user has chosen to adapt an existing lesson:
-Find the appropriate lesson plan based on the user's response and store the reference to the basedOn lesson in the lesson plan.
+If the user has chosen to adapt an existing lesson, find the appropriate lesson plan based on the user's response and store the reference to the basedOn lesson in the lesson plan.
 Set the basedOn key in the lesson plan to match the base lesson that they have chosen.
 You should set basedOn.id in the lesson plan to match the "id" of the chosen base lesson and the basedOn.title attribute to the "title" of the chosen lesson plan.
-From now on, use the lesson plan provided as the basis for your new lesson plan.
-
-If the user has chosen to start from scratch:
-Do not edit the basedOn key in the lesson plan and do not base the lesson you are generating on any existing lesson.
-
-NOW START GENERATING THE FIRST SECTION GROUP
-Generate learning outcomes and the learning cycles overview once you have the inputs from the previous step.
+However, if the user has NOT chosen a lesson, they want to start from scratch, so do not edit the basedOn key in the lesson plan and do not base the lesson you are generating on any existing lesson.
+Next, generate the learningOutcome and the learningCycles sections.
 Generate both of these sections together in one interaction with the user.`,
         },
 
