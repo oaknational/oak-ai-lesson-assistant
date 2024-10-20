@@ -8,25 +8,13 @@ Message
 type":"
 patch
 ","reasoning":"
-The
- Additional
- Materials
- section
- is
- unnecessary
- for
- this
+Adding
+ additional
+ materials
+ to
+ support
+ the
  lesson
- as
- there
- are
- no
- practical
- elements
- or
- specific
- narratives
- required
 .","
 value":{"
 type":"
@@ -37,45 +25,202 @@ add
 additional
 Materials
 ","value":"
-None
-"},"status":"
+##
+ Additional
+ Materials
+\n
+\n
+-
+ **
+Narr
+ative
+ for
+ Teachers
+**
+:
+ Consider
+ reading
+ a
+ short
+ story
+ or
+ narrative
+ about
+ a
+ Roman
+ soldier
+'s
+ perspective
+ on
+ leaving
+ Britain
+.
+ Discuss
+ how
+ this
+ change
+ might
+ have
+ felt
+ for
+ the
+ Romans
+ and
+ the
+ Brit
+ons
+.\
+n
+\n
+-
+ **
+Suggested
+ Images
+**
+:
+ Search
+ for
+ images
+ of
+ Roman
+ and
+ Sax
+on
+ arte
+facts
+ to
+ show
+ pupils
+ how
+ daily
+ life
+ might
+ have
+ looked
+.
+ Use
+ search
+ terms
+ like
+ \"
+Roman
+ arte
+facts
+ Britain
+\"
+ and
+ \"
+S
+axon
+ settlements
+\"
+.\
+n
+\n
+-
+ **
+Extension
+ Activity
+**
+:
+ Create
+ a
+ simple
+ craft
+ project
+ where
+ pupils
+ build
+ a
+ Roman
+ road
+ or
+ Sax
+on
+ house
+ using
+ materials
+ like
+ cardboard
+ and
+ paper
+.\
+n
+\n
+-
+ **
+SEND
+ Adapt
+ation
+ Suggestions
+**
+:
+ Use
+ visual
+ aids
+ and
+ tactile
+ resources
+ to
+ support
+ understanding
+ of
+ the
+ changes
+ in
+ settlements
+ and
+ lifestyle
+.
+ Provide
+ sentence
+ starters
+ or
+ scaff
+olds
+ for
+ writing
+ tasks
+."
+},"status":"
 complete
 "}],"prompt":{"
 type":"
 text
 ","value":"
 The
+ additional
+ materials
+ section
+ has
+ been
+ added
+ to
+ support
+ the
  lesson
- plan
- is
- now
- complete
+ delivery
 .
  If
+ everything
+ looks
+ good
+,
  you
- need
- any
- adjustments
- or
- additional
- information
-,
- please
- let
- me
- know
-.
- Otherwise
-,
- tap
- **
-Continue
-**
- to
- final
-ise
+ can
+ finalize
  the
  lesson
  plan
+.
+ Let
+ me
+ know
+ if
+ there
+ are
+ any
+ changes
+ needed
 ."
 }}

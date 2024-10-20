@@ -3,50 +3,53 @@
   "patches": [
     {
       "type": "patch",
-      "reasoning": "The prior knowledge section is added to ensure pupils have the foundational understanding necessary to grasp the new concepts introduced in this lesson.",
+      "reasoning": "Adding the prior knowledge section to ensure pupils have foundational understanding for the lesson.",
       "value": {
         "type": "string-array",
         "op": "add",
         "path": "/priorKnowledge",
         "value": [
-          "Romans occupied Britain for nearly 400 years.",
-          "Roman Britain was part of the Roman Empire.",
-          "Roman soldiers built roads and towns in Britain.",
-          "Romans introduced new technologies and ideas to Britain."
+          "The Roman Empire once ruled over Britain.",
+          "Romans built roads, buildings, and towns in Britain.",
+          "Roman soldiers were stationed in Britain to protect it.",
+          "The Romans introduced new ideas and goods to Britain.",
+          "Britain was part of a larger Roman Empire."
         ]
       },
       "status": "complete"
     },
     {
       "type": "patch",
-      "reasoning": "Key learning points are added to highlight the main concepts that pupils should understand by the end of the lesson.",
+      "reasoning": "Identifying key learning points that pupils should take away from the lesson about Roman Britain's end.",
       "value": {
         "type": "string-array",
         "op": "add",
         "path": "/keyLearningPoints",
         "value": [
-          "The Roman Empire withdrew from Britain around AD 410.",
-          "Britain faced invasions from other groups like the Saxons after the Romans left.",
-          "The Roman departure led to changes in governance and society in Britain."
+          "Roman Britain ended in AD 410.",
+          "The Roman army left Britain to protect other parts of the Empire.",
+          "The absence of Roman soldiers affected the safety and stability of Britain.",
+          "New groups, such as the Saxons, began to settle in Britain.",
+          "The end of Roman rule led to changes in the way people lived."
         ]
       },
       "status": "complete"
     },
     {
       "type": "patch",
-      "reasoning": "Adding misconceptions helps to identify common misunderstandings and provide guidance on how to address them in the lesson.",
+      "reasoning": "Highlighting common misconceptions about the end of Roman Britain to address them in the lesson.",
       "value": {
         "type": "misconceptions",
         "op": "add",
         "path": "/misconceptions",
         "value": [
           {
-            "misconception": "The Romans left Britain because they were defeated by the British.",
-            "description": "The Romans left Britain mainly due to pressures in their own empire, not because of defeat by the British."
+            "misconception": "Roman Britain ended because the Romans were defeated by invaders",
+            "description": "While new groups like the Saxons did settle, Roman Britain ended mainly because the Roman army was needed elsewhere."
           },
           {
-            "misconception": "Roman culture disappeared immediately after they left Britain.",
-            "description": "Roman influences remained in Britain for many years after their departure, including in architecture and technology."
+            "misconception": "All Roman buildings were destroyed after the Romans left",
+            "description": "Many Roman structures remained and were used or adapted by new settlers."
           }
         ]
       },
@@ -54,7 +57,7 @@
     },
     {
       "type": "patch",
-      "reasoning": "Keywords are added to ensure pupils understand and can use specific vocabulary related to the lesson topic.",
+      "reasoning": "Including keywords that are central to understanding the lesson content.",
       "value": {
         "type": "keywords",
         "op": "add",
@@ -62,15 +65,23 @@
         "value": [
           {
             "keyword": "Roman Empire",
-            "definition": "An ancient empire that ruled over large parts of Europe, including Britain."
+            "definition": "A vast empire that included Britain, ruled by Rome."
           },
           {
             "keyword": "Saxons",
-            "definition": "A group of people who invaded Britain after the Romans left."
+            "definition": "A group of people who began to settle in Britain after the Romans left."
           },
           {
-            "keyword": "Withdrawal",
-            "definition": "The act of leaving or pulling back, like the Romans leaving Britain."
+            "keyword": "Settlement",
+            "definition": "A place where people establish a community."
+          },
+          {
+            "keyword": "Soldiers",
+            "definition": "People who serve in an army."
+          },
+          {
+            "keyword": "Empire",
+            "definition": "A group of countries or regions ruled by a single leader or government."
           }
         ]
       },
@@ -79,6 +90,6 @@
   ],
   "prompt": {
     "type": "text",
-    "value": "Are the prior knowledge, key learning points, misconceptions, and keywords sections suitable for your class? Tap **Continue** to move on to the next step."
+    "value": "Are the prior knowledge, key learning points, misconceptions, and keywords sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."
   }
 }

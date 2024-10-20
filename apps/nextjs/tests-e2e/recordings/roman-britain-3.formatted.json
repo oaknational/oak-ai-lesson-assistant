@@ -3,18 +3,18 @@
   "patches": [
     {
       "type": "patch",
-      "reasoning": "The Additional Materials section is unnecessary for this lesson as there are no practical elements or specific narratives required.",
+      "reasoning": "Adding additional materials to support the lesson.",
       "value": {
         "type": "string",
         "op": "add",
         "path": "/additionalMaterials",
-        "value": "None"
+        "value": "## Additional Materials\n\n- **Narrative for Teachers**: Consider reading a short story or narrative about a Roman soldier's perspective on leaving Britain. Discuss how this change might have felt for the Romans and the Britons.\n\n- **Suggested Images**: Search for images of Roman and Saxon artefacts to show pupils how daily life might have looked. Use search terms like \"Roman artefacts Britain\" and \"Saxon settlements\".\n\n- **Extension Activity**: Create a simple craft project where pupils build a Roman road or Saxon house using materials like cardboard and paper.\n\n- **SEND Adaptation Suggestions**: Use visual aids and tactile resources to support understanding of the changes in settlements and lifestyle. Provide sentence starters or scaffolds for writing tasks."
       },
       "status": "complete"
     }
   ],
   "prompt": {
     "type": "text",
-    "value": "The lesson plan is now complete. If you need any adjustments or additional information, please let me know. Otherwise, tap **Continue** to finalise the lesson plan."
+    "value": "The additional materials section has been added to support the lesson delivery. If everything looks good, you can finalize the lesson plan. Let me know if there are any changes needed."
   }
 }

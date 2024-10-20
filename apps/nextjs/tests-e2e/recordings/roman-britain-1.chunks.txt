@@ -8,28 +8,19 @@ Message
 type":"
 patch
 ","reasoning":"
-The
+Adding
+ the
  prior
  knowledge
  section
- is
- added
  to
  ensure
  pupils
  have
- the
  foundational
  understanding
- necessary
- to
- grasp
+ for
  the
- new
- concepts
- introduced
- in
- this
  lesson
 .","
 value":{"
@@ -42,41 +33,54 @@ add
 prior
 Knowledge
 ","value":["
-Romans
- occupied
- Britain
- for
- nearly
- 
-400
- years
-.","
-Roman
- Britain
- was
- part
- of
- the
+The
  Roman
  Empire
+ once
+ ruled
+ over
+ Britain
 .","
-Roman
- soldiers
+Romans
  built
  roads
+,
+ buildings
+,
  and
  towns
  in
  Britain
 .","
-Romans
+Roman
+ soldiers
+ were
+ stationed
+ in
+ Britain
+ to
+ protect
+ it
+.","
+The
+ Romans
  introduced
  new
- technologies
- and
  ideas
+ and
+ goods
  to
  Britain
+.","
+Brit
+ain
+ was
+ part
+ of
+ a
+ larger
+ Roman
+ Empire
 .
 "]},"status":"
 complete
@@ -84,26 +88,23 @@ complete
 type":"
 patch
 ","reasoning":"
-Key
+Ident
+ifying
+ key
  learning
  points
- are
- added
- to
- highlight
- the
- main
- concepts
  that
  pupils
  should
- understand
- by
- the
- end
- of
+ take
+ away
+ from
  the
  lesson
+ about
+ Roman
+ Britain's
+ end
 .","
 value":{"
 type":"
@@ -116,46 +117,68 @@ key
 Learning
 Points
 ","value":["
-The
- Roman
- Empire
- withdrew
- from
+Roman
  Britain
- around
+ ended
+ in
  AD
  
 410
 .","
-Brit
-ain
- faced
- invas
-ions
- from
+The
+ Roman
+ army
+ left
+ Britain
+ to
+ protect
  other
+ parts
+ of
+ the
+ Empire
+.","
+The
+ absence
+ of
+ Roman
+ soldiers
+ affected
+ the
+ safety
+ and
+ stability
+ of
+ Britain
+.","
+New
  groups
- like
+,
+ such
+ as
  the
  Sax
 ons
- after
- the
- Romans
- left
+,
+ began
+ to
+ settle
+ in
+ Britain
 .","
 The
+ end
+ of
  Roman
- departure
+ rule
  led
  to
  changes
  in
- governance
- and
- society
- in
- Britain
+ the
+ way
+ people
+ lived
 .
 "]},"status":"
 complete
@@ -163,19 +186,16 @@ complete
 type":"
 patch
 ","reasoning":"
-Adding
- misconceptions
- helps
- to
- identify
+Highlight
+ing
  common
- misunderstand
-ings
- and
- provide
- guidance
- on
- how
+ misconceptions
+ about
+ the
+ end
+ of
+ Roman
+ Britain
  to
  address
  them
@@ -197,69 +217,64 @@ ceptions
 ","value":[
 {"
 misconception":"
-The
- Romans
- left
+Roman
  Britain
+ ended
  because
- they
+ the
+ Romans
  were
  defeated
  by
+ inv
+aders
+","description":"
+While
+ new
+ groups
+ like
  the
- British
-.","
-description":"
-The
- Romans
- left
- Britain
- mainly
- due
- to
- pressures
- in
- their
- own
- empire
+ Sax
+ons
+ did
+ settle
 ,
- not
+ Roman
+ Britain
+ ended
+ mainly
  because
- of
- defeat
- by
  the
- British
+ Roman
+ army
+ was
+ needed
+ elsewhere
 ."
 },{"
 misconception":"
-Roman
- culture
- disappeared
- immediately
+All
+ Roman
+ buildings
+ were
+ destroyed
  after
- they
+ the
+ Romans
  left
- Britain
-.","
-description":"
-Roman
- influences
+","description":"
+Many
+ Roman
+ structures
  remained
- in
- Britain
- for
- many
- years
- after
- their
- departure
-,
- including
- in
- architecture
  and
- technology
+ were
+ used
+ or
+ adapted
+ by
+ new
+ settlers
 ."
 }]},"status":"
 complete
@@ -267,23 +282,16 @@ complete
 type":"
 patch
 ","reasoning":"
-Keywords
+Including
+ keywords
+ that
  are
- added
+ central
  to
- ensure
- pupils
- understand
- and
- can
- use
- specific
- vocabulary
- related
- to
+ understanding
  the
  lesson
- topic
+ content
 .","
 value":{"
 type":"
@@ -298,19 +306,16 @@ keyword":"
 Roman
  Empire
 ","definition":"
-An
- ancient
+A
+ vast
  empire
  that
- ruled
- over
- large
- parts
- of
- Europe
-,
- including
+ included
  Britain
+,
+ ruled
+ by
+ Rome
 ."
 },{"
 keyword":"
@@ -323,7 +328,10 @@ A
  of
  people
  who
- invaded
+ began
+ to
+ settle
+ in
  Britain
  after
  the
@@ -332,21 +340,45 @@ A
 ."
 },{"
 keyword":"
-Withdrawal
+Settlement
 ","definition":"
-The
- act
+A
+ place
+ where
+ people
+ establish
+ a
+ community
+."
+},{"
+keyword":"
+Sold
+iers
+","definition":"
+People
+ who
+ serve
+ in
+ an
+ army
+."
+},{"
+keyword":"
+Empire
+","definition":"
+A
+ group
  of
- leaving
+ countries
  or
- pulling
- back
-,
- like
- the
- Romans
- leaving
- Britain
+ regions
+ ruled
+ by
+ a
+ single
+ leader
+ or
+ government
 ."
 }]},"status":"
 complete
@@ -373,7 +405,19 @@ Are
  your
  class
 ?
- Tap
+ If
+ not
+,
+ reply
+ with
+ what
+ I
+ should
+ change
+.
+ Otherwise
+,
+ tap
  **
 Continue
 **
