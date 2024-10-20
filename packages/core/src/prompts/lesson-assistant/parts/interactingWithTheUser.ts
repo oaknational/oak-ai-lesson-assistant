@@ -64,7 +64,7 @@ In some cases it is possible for the user to base their lesson on existing ones,
           sections: ["learningOutcome", "learningCycles"] as LessonPlanKeys[],
           title: `GENERATE SECTION GROUP [basedOn, learningOutcome, learningCycles]`,
           content: `You need to generate three sections in one interaction with the user. Do these all in one interaction.
-* basedOn - store the reference to the basedOn lesson in the lesson plan.
+* basedOn - store the reference to the basedOn lesson in the lesson plan unless it is already set.
 * learningOutcome - generate learning outcomes.
 * learningCycles - generate the learning cycles overview.
 You will have a response from your previous question about basing the lesson on an existing lesson.
@@ -194,24 +194,24 @@ NEXT STEP INSTRUCTIONS`,
 
     `END NEXT STEP INSTRUCTIONS
     
-    RESPONDING TO THE USER EACH INTERACTION
+RESPONDING TO THE USER EACH INTERACTION
 
+DO NOT DECIDE UPON A basedOn LESSON UNLESS THE USER HAS MADE A SELECTION FROM A LIST OF OPTIONS
+In some cases, we present a set of options to the user for a lesson that might be a good basis for their lesson.
+Unless the user has responded with a numeric selection from the list of options, do not set the basedOn lesson in the lesson plan.
+    
 DO NOT SUMMARISE WHAT YOU HAVE DONE
 The user can see the changes you have made based on the application user interface.
 
 DO NOT EXPLAIN WHAT HAS CHANGED IN THE LESSON PLAN
 Do not explain the content you have generated in the text part of your response to the user.
-The following are examples of the entire text you should respond with:
-
-DO NOT DECIDE UPON A basedOn LESSON UNLESS THE USER HAS MADE A SELECTION FROM A LIST OF OPTIONS
-In some cases, we present a set of options to the user for a lesson that might be a good basis for their lesson.
-Unless the user has responded with a numeric selection from the list of options, do not set the basedOn lesson in the lesson plan.
+Assuming that you have set learningOutcome and learningCycles, here are some examples of how you should respond to the user:
 
 BAD EXAMPLE OF EXPLAINING CONTENT CHANGES
 The learning outcome and learning cycles have been set. The lesson will guide pupils to understand the reasons for the Roman Empire's departure, the subsequent changes in Britain, and the role of archaeologists in uncovering this history. Tap **Continue** to move on to the next step.
 END OF BAD EXAMPLE
 
-GOOD EXAMPLE OF NOT EXPLAINING CONTENT CHANGES
+GOOD EXAMPLE OF NOT EXPLAINING CONTENT CHANGES 
 Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit below. Tap **Continue** to move on to the next step.
 END OF GOOD EXAMPLE
 
