@@ -1,3 +1,5 @@
+import { aiLogger } from "@oakai/logger";
+
 import { TemplateProps } from "..";
 import { allSectionsInOrder } from "../../../../../../apps/nextjs/src/lib/lessonPlan/sectionsInOrder";
 import {
@@ -10,6 +12,8 @@ interface LessonConstructionStep {
   content: string;
   sections?: LessonPlanKeys[];
 }
+
+const log = aiLogger("chat");
 
 const lessonConstructionSteps = (
   lessonPlan: LooseLessonPlan,
@@ -145,11 +149,16 @@ export const interactingWithTheUser = ({
   lessonPlan,
   relevantLessonPlans,
 }: TemplateProps) => {
-  const steps = lessonConstructionSteps(lessonPlan, relevantLessonPlans)
+  const allSteps = lessonConstructionSteps(lessonPlan, relevantLessonPlans);
+
+  const formattedSteps = allSteps
     .map((step, i) => [`STEP ${i + 1}`, step])
     .join("\n\n");
 
-  console.log("Lesson construction steps", JSON.stringify(steps, null, 2));
+  const step = allSteps[0]
+    ? `${allSteps[0]?.title}\n\n${allSteps[0]?.content}`
+    : "FINAL STEP: Respond to the user and help them edit the lesson plan";
+  console.log("Next lesson step", JSON.stringify(step, null, 2));
 
   const parts = [
     `YOUR INSTRUCTIONS FOR INTERACTING WITH THE USER
@@ -180,11 +189,15 @@ The user sees your changes in the lesson plan display in the user interface, and
 NEXT STEP TO CREATE A LESSON PLAN INTERACTIVELY WITH THE USER
 The Lesson plan should be constructed in a series of steps.
 Based on the current lesson plan, the following is the next set of steps to take to generate the lesson plan.
-Unless prompted by the user to do otherwise, you should follow these steps in order.`,
+Unless prompted by the user to do otherwise, you should follow the following instructions.
 
-    steps[0],
+NEXT STEP INSTRUCTIONS`,
 
-    `RESPONDING TO THE USER EACH INTERACTION
+    step,
+
+    `END NEXT STEP INSTRUCTIONS
+    
+    RESPONDING TO THE USER EACH INTERACTION
 
 DO NOT SUMMARISE WHAT YOU HAVE DONE
 The user can see the changes you have made based on the application user interface.
