@@ -10,7 +10,9 @@ export const BasedOnSchema = z
       ),
     title: z.string().describe("The human-readable title of the lesson."),
   })
-  .describe("A reference to a lesson plan that this lesson is based on.");
+  .describe(
+    "A reference to a lesson plan that this lesson is based on. This value should only be set if the user has explicitly chosen to base their lesson on an existing lesson plan by selecting one from a selection of options, otherwise this should be blank.",
+  );
 
 export const BasedOnOptionalSchema = z.object({
   id: z.string().optional(),
