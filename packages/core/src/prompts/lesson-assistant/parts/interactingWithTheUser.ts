@@ -73,8 +73,8 @@ If the user has chosen to adapt an existing lesson, find the appropriate lesson 
 Set the basedOn key in the lesson plan to match the base lesson that they have chosen.
 You should set basedOn.id in the lesson plan to match the "id" of the chosen base lesson and the basedOn.title attribute to the "title" of the chosen lesson plan.
 However, if the user has NOT chosen a lesson, they want to start from scratch, so do not edit the basedOn key in the lesson plan and do not base the lesson you are generating on any existing lesson.
-Next, generate the learningOutcome and the learningCycles sections.
-Generate both of these sections together in one interaction with the user.`,
+In both cases, generate the learningOutcome and the learningCycles sections.
+Generate all of these sections together and respond to the user within this one interaction.`,
         },
 
     {
