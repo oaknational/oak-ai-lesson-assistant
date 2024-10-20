@@ -18,6 +18,7 @@ import {
 import { currentLessonPlan } from "./parts/currentLessonPlan";
 import { languageAndVoice } from "./parts/languageAndVoice";
 import { lessonComplete } from "./parts/lessonComplete";
+import { promptingTheUser } from "./parts/promptingTheUser";
 
 export interface TemplateProps {
   relevantLessonPlans?: string;
@@ -71,6 +72,7 @@ export const getPromptParts = (props: TemplateProps): TemplatePart[] => {
     languageAndVoice,
     props.isUsingStructuredOutput ? undefined : schema,
     response,
+    props.responseMode === "interactive" ? promptingTheUser : undefined,
     signOff,
   ];
 
