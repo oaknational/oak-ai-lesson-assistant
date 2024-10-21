@@ -159,7 +159,10 @@ export const buildCspHeaders = (nonce: string, config: CspConfig) => {
         config.enabledPolicies.devConsent ? devConsentPolicies : {},
         config.enabledPolicies.mux ? mux : {},
         config.enabledPolicies.localhost
-          ? { "script-src": ["http://localhost:*"] }
+          ? {
+              "script-src": ["http://localhost:*"],
+              "frame-ancestors": ["http://localhost:*"],
+            }
           : {},
       ];
 
