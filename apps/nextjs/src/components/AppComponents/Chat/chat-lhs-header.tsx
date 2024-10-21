@@ -2,6 +2,8 @@ import React from "react";
 
 import { useRouter } from "#next/navigation";
 
+import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+
 import AiIcon from "../../AiIcon";
 import ChatButton from "./ui/chat-button";
 
@@ -17,10 +19,19 @@ const ChatLhsHeader = ({
   isDemoUser,
 }: Readonly<ChatLhsHeaderProps>) => {
   const router = useRouter();
+  const chat = useLessonChat();
 
   return (
     <>
       <div className="mt-6 hidden items-center justify-end gap-5 sm:flex">
+        {process.env.NEXT_PUBLIC_ENVIRONMENT !== "production" && (
+          <div
+            className="flex-grow text-left text-xs"
+            data-testid="chat-aila-streaming-status"
+          >
+            {chat.ailaStreamingStatus}
+          </div>
+        )}
         <ChatButton
           variant="secondary"
           onClick={() => {

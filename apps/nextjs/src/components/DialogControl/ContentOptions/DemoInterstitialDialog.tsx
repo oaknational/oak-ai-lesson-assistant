@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { aiLogger } from "@oakai/logger";
 import {
   OakFlex,
   OakLink,
@@ -15,6 +16,8 @@ import {
   DialogContent,
   DialogHeading,
 } from "./DemoSharedComponents";
+
+const log = aiLogger("demo");
 
 function friendlyNumber(
   appSessionsRemaining: number | undefined,
@@ -67,7 +70,7 @@ const CreatingChatDialog = ({
     try {
       await submit();
     } catch (error) {
-      console.error("Error creating demo lesson:", error);
+      log.error("Error creating demo lesson:", error);
       setIsSubmitting(false);
     }
   }, [submit]);

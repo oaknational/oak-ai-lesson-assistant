@@ -573,6 +573,15 @@ export const LessonPlanJsonSchema = zodToJsonSchema(
   "lessonPlanSchema",
 );
 
+const AilaRagRelevantLessonSchema = z.object({
+  // @todo add this after next ingest
+  // oakLessonId: z.number(),
+  lessonPlanId: z.string(),
+  title: z.string(),
+});
+
+export type AilaRagRelevantLesson = z.infer<typeof AilaRagRelevantLessonSchema>;
+
 export const chatSchema = z
   .object({
     id: z.string(),
@@ -580,6 +589,7 @@ export const chatSchema = z
     title: z.string(),
     userId: z.string(),
     lessonPlan: LessonPlanSchemaWhilstStreaming,
+    relevantLessons: z.array(AilaRagRelevantLessonSchema).optional(),
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]),
     startingMessage: z.string().optional(),
