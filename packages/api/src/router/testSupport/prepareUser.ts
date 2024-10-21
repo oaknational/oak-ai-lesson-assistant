@@ -1,6 +1,6 @@
 import { clerkClient } from "@clerk/nextjs/server";
-import { waitUntil } from "@vercel/functions";
 import { aiLogger } from "@oakai/logger";
+import { waitUntil } from "@vercel/functions";
 import os from "os";
 import { z } from "zod";
 
@@ -88,7 +88,7 @@ const deleteLastUsedTestUser = async () => {
   });
 
   if (lastUsedTestUser) {
-    console.log(
+    log.info(
       "Deleting oldest test user",
       lastUsedTestUser.primaryEmailAddress?.emailAddress,
     );
