@@ -15,6 +15,7 @@ import {
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
 import {
   JsonPatchDocumentOptional,
+  LLMMessageSchema,
   LLMPatchDocumentSchema,
   TextDocumentSchema,
   parseMessageParts,
@@ -232,7 +233,8 @@ export class AilaChat implements AilaChatService {
   }
 
   public async enqueue(message: JsonPatchDocumentOptional) {
-    if (this._patchEnqueuer) {
+    // Optional "?"" Necessary to avoid a "terminated" error
+    if (this?._patchEnqueuer) {
       await this._patchEnqueuer.enqueueMessage(message);
     }
   }
@@ -354,21 +356,9 @@ export class AilaChat implements AilaChatService {
   }
 
   public async createChatCompletionObjectStream(messages: Message[]) {
-    const schema = z.object({
-      type: z.literal("llmMessage"),
-      patches: z
-        .array(LLMPatchDocumentSchema)
-        .describe(
-          "This is the set of patches you have generated to edit the lesson plan. Follow the instructions in the system prompt to ensure that you produce a valid patch. For instance, if you are providing a patch to add a cycle, the op should be 'add' and the value should be the JSON object representing the full, valid cycle. The same applies for all of the other parts of the lesson plan. This should not include more than one 'add' patch for the same section of the lesson plan. These edits will overwrite each other and result in unexpected results. If you want to do multiple updates on the same section, it is best to generate one 'add' patch with all of your edits included.",
-        ),
-      prompt: TextDocumentSchema.describe(
-        "If you imagine the user talking to you, this is where you would put your human-readable reply that would explain the changes you have made (if any), ask them questions, and prompt them to send their next message. This should not contain any of the lesson plan content. That should all be delivered in patches.",
-      ),
-    });
-
     return this._llmService.createChatCompletionObjectStream({
       model: this._aila.options.model ?? DEFAULT_MODEL,
-      schema,
+      schema: LLMMessageSchema,
       schemaName: "response",
       messages,
       temperature: this._aila.options.temperature ?? DEFAULT_TEMPERATURE,

@@ -155,7 +155,6 @@ export const LessonPlanDisplay = ({
   }, [sectionsToDisplay, showLessonMobile]);
 
   if (Object.keys(lessonPlan).length === 0) {
-    log.info("No lesson plan. Rendering skeleton");
     return (
       <div className="w-full gap-5 px-23 pt-26">
         <Skeleton loaded={false} numberOfRows={2}>

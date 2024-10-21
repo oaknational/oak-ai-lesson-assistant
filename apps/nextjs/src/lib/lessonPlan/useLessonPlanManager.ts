@@ -24,7 +24,7 @@ export function useLessonPlanManager(initialLessonPlan: LooseLessonPlan = {}) {
       lessonPlan: LooseLessonPlan;
       iteration: number | undefined;
     }) => {
-      log.info("Update lesson plan state", updatedLessonPlan);
+      log.info("Update lesson plan state", updatedLessonPlan, updatedIteration);
       setLessonPlan(updatedLessonPlan);
       setIteration(updatedIteration);
     };
