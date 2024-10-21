@@ -9,6 +9,7 @@ import {
   ZLesson,
 } from "@oakai/db";
 import { ZNewLesson } from "@oakai/db/schemas/lesson";
+import { aiLogger } from "@oakai/logger";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { PromptTemplate } from "langchain/prompts";
 import { RunnableSequence } from "langchain/schema/runnable";
@@ -18,6 +19,8 @@ import { inngest } from "../client";
 import { createOpenAILangchainClient } from "../llm/openai";
 import { SnippetWithLesson, Snippets } from "./snippets";
 import { Caption, CaptionsSchema } from "./types/caption";
+
+const log = aiLogger("lessons");
 
 const EMBED_AFTER_CREATION = false;
 
@@ -113,8 +116,8 @@ export class Lessons {
     if (!lesson) {
       throw new Error("Lesson not found");
     }
-    console.log("Summarising lesson", lesson.slug);
-    console.log("new lesson", lesson.isNewLesson);
+    log.info("Summarising lesson", lesson.slug);
+    log.info("new lesson", lesson.isNewLesson);
     let zLesson;
     let description;
     let transcript;
@@ -218,7 +221,7 @@ export class Lessons {
       format_instructions: parser.getFormatInstructions(),
     });
 
-    console.log(response);
+    log.info(response);
 
     const { summary, topics, learningObjectives, concepts, keywords } =
       response;
@@ -253,7 +256,7 @@ export class Lessons {
       },
     });
 
-    console.log("Created quiz question", quizQuestion);
+    log.info("Created quiz question", quizQuestion);
     await inngest.send({
       name: "app/quizQuestion.embed",
       data: { quizQuestionId: quizQuestion.id },
@@ -275,7 +278,7 @@ export class Lessons {
     const questionString: string = question.description
       ? `${questionTitleWithPunctuation} ${question.description}`
       : title;
-    console.log("Create question", question, lesson.id);
+    log.info("Create question", question, lesson.id);
 
     let quizQuestionId: string | undefined;
     const existingQuestion = await this.prisma.quizQuestion.findFirst({
@@ -305,7 +308,7 @@ export class Lessons {
     lessonId: string;
     quizQuestionId: string;
   }) {
-    console.log("Create answer", answer, lessonId);
+    log.info("Create answer", answer, lessonId);
     const existingAnswer = await this.prisma.quizAnswer.findFirst({
       where: { answer, lessonId, questionId: quizQuestionId },
     });
@@ -321,10 +324,10 @@ export class Lessons {
           },
         });
         quizAnswerId = quizAnswer.id;
-        console.log("Created quiz question answer", quizAnswer);
+        log.info("Created quiz question answer", quizAnswer);
       } catch (e) {
         // For now, swallow the error until we can change the unique index
-        console.log(e);
+        log.error(e);
       }
 
       if (quizAnswerId && EMBED_AFTER_CREATION) {
@@ -384,18 +387,18 @@ export class Lessons {
       },
     });
 
-    console.log("Created transcript", transcript);
-    console.log("With captions", lesson.captions);
+    log.info("Created transcript", transcript);
+    log.info("With captions", lesson.captions);
     let validCaptions: Caption[];
     try {
       validCaptions = CaptionsSchema.parse(lesson.captions);
     } catch (err) {
-      console.error("Failed to parse captions", err);
+      log.error("Failed to parse captions", err);
       return transcript;
     }
     let index = 1;
     for (const caption of validCaptions) {
-      console.log("Creating snippet", caption);
+      log.info("Creating snippet", caption);
       const snippetAttributes = {
         sourceContent: caption.part,
         content: caption.part,
@@ -414,9 +417,9 @@ export class Lessons {
           data: snippetAttributes,
         });
       } catch (err) {
-        console.error("Failed to create snippet", err);
+        log.error("Failed to create snippet", err);
       }
-      console.log("Created snippet", snippet);
+      log.info("Created snippet", snippet);
       if (snippet && EMBED_AFTER_CREATION) {
         await inngest.send({
           name: "app/snippet.embed",

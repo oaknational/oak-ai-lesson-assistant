@@ -1,8 +1,11 @@
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/node";
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
+
+const log = aiLogger("moderation");
 
 export const moderationsRouter = router({
   userComment: protectedProcedure
@@ -30,7 +33,7 @@ export const moderationsRouter = router({
         Sentry.captureException(e, {
           extra: { comment, moderationId, userId },
         });
-        console.error("Error", e);
+        log.error("Error", e);
       }
     }),
   moderationById: protectedProcedure
