@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
 import { bypassVercelProtection } from "../helpers/vercel";
-import { applyLlmFixtures } from "./aila-chat/helpers";
+import { applyLlmFixtures, expectStreamingStatus } from "./aila-chat/helpers";
 
 const TOXIC_TAG = "mod:tox";
 
@@ -36,9 +36,7 @@ test("Users are banned after 3 toxic lessons", async ({ page }) => {
 
   await test.step("Wait for streaming", async () => {
     await page.waitForURL(/\/aila\/.+/);
-
-    const loadingElement = page.getByTestId("chat-stop");
-    await expect(loadingElement).toBeVisible({ timeout: 10000 });
+    await expectStreamingStatus(page, "RequestMade", { timeout: 10000 });
   });
 
   await test.step("Check account locked", async () => {

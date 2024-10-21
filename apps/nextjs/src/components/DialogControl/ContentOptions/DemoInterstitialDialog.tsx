@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { aiLogger } from "@oakai/logger";
 import { Flex } from "@radix-ui/themes";
 import { captureMessage } from "@sentry/nextjs";
 
 import Button from "@/components/Button";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import LoadingWheel from "@/components/LoadingWheel";
+
+const log = aiLogger("demo");
 
 function friendlyNumber(
   appSessionsRemaining: number | undefined,
@@ -79,7 +82,7 @@ const CreatingChatDialog = ({
     try {
       await submit();
     } catch (error) {
-      console.error("Error creating demo lesson:", error);
+      log.error("Error creating demo lesson:", error);
       setIsSubmitting(false);
     }
   }, [submit]);

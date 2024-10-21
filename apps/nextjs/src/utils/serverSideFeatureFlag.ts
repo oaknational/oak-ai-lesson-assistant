@@ -1,6 +1,9 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import { aiLogger } from "@oakai/logger";
 import { kv } from "@vercel/kv";
+
+const log = aiLogger("feature-flags");
 
 export async function serverSideFeatureFlag(
   featureFlagId: string,
@@ -54,7 +57,7 @@ export async function serverSideFeatureFlag(
 
     return isFeatureFlagEnabled;
   } catch (e) {
-    console.error("Error checking feature flag:", e);
+    log.error("Error checking feature flag:", e);
     return false;
   }
 }

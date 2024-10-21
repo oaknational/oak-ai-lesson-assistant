@@ -4,11 +4,14 @@ import {
   ExportableQuizAppState,
   exportableQuizAppStateSchema,
 } from "@oakai/exports/src/schema/input.schema";
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
 import { ZodError } from "zod";
 
 import { trpc } from "@/utils/trpc";
+
+const log = aiLogger("exports");
 
 export function useExportQuizDesignerSlides({
   onStart,
@@ -44,7 +47,8 @@ export function useExportQuizDesignerSlides({
       if (!active) {
         return;
       }
-      console.log("STARTING");
+
+      log.info("STARTING");
 
       if (!debouncedParseResult?.success) {
         Sentry.captureException(

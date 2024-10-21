@@ -17,6 +17,10 @@
       "dependsOn": ["^db-generate"],
       "cache": false
     },
+    "dev-turbo": {
+      "dependsOn": ["^db-generate"],
+      "cache": false
+    },
     "build": {
       "cache": true,
       "dependsOn": ["^build", "^db-generate"],

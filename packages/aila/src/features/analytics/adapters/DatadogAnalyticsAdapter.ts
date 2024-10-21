@@ -1,6 +1,9 @@
+import { aiLogger } from "@oakai/logger";
 import { getEncoding } from "js-tiktoken";
 
 import { AnalyticsAdapter } from "./AnalyticsAdapter";
+
+const log = aiLogger("aila:analytics");
 
 export class DatadogAnalyticsAdapter extends AnalyticsAdapter {
   private _startedAt: number = Date.now();
@@ -95,7 +98,7 @@ export class DatadogAnalyticsAdapter extends AnalyticsAdapter {
         body: JSON.stringify(body),
       });
 
-      console.log("Datadog status", result.status);
+      log.info("Datadog status", result.status);
     }
   }
 

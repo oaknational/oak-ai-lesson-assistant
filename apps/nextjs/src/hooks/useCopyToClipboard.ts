@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 
+import { aiLogger } from "@oakai/logger";
+
+const log = aiLogger("ui");
+
 export function useCopyToClipboard(text: string) {
   const [copySuccess, setCopySuccess] = useState(false);
 
@@ -7,10 +11,10 @@ export function useCopyToClipboard(text: string) {
     navigator.clipboard.writeText(text).then(
       () => {
         setCopySuccess(true);
-        console.log("Link copied to clipboard!");
+        log.info("Link copied to clipboard!");
       },
       (err) => {
-        console.log("Unable to copy to clipboard", err);
+        log.info("Unable to copy to clipboard", err);
       },
     );
   };

@@ -44,7 +44,7 @@ export default defineConfig({
     },
   ],
   reporter: process.env.CI
-    ? [["github"], ["@estruyf/github-actions-reporter"], ["html"]]
+    ? [["github"], ["json", { outputFile: "results.json" }], ["html"]]
     : [["list"], ["html"]],
   use: {
     trace: "retain-on-failure",

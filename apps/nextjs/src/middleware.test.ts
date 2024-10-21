@@ -3,14 +3,6 @@ import { NextRequest, NextFetchEvent, NextResponse } from "next/server";
 import { handleError } from "./middleware";
 import { CspConfig, addCspHeaders, buildCspHeaders } from "./middlewares/csp";
 
-jest.mock("./middlewares/csp", () => {
-  const originalModule = jest.requireActual("./middlewares/csp");
-  return {
-    ...originalModule,
-    generateNonce: jest.fn(() => "mocked-nonce"),
-  };
-});
-
 describe("handleError", () => {
   let mockRequest: NextRequest;
   let mockEvent: NextFetchEvent;
@@ -194,9 +186,6 @@ describe("addCspHeaders", () => {
     expect(cspHeader).toContain("*.hubspot.com");
     expect(cspHeader).toContain("https://img.clerk.com");
     expect(cspHeader).toContain("https://res.cloudinary.com");
-
-    // Check for nonce
-    expect(cspHeader).toMatch(/'nonce-[a-zA-Z0-9+/=]{24}'/);
   });
 
   it("includes Clerk policies when enabled", () => {

@@ -1,3 +1,5 @@
+import { aiLogger } from "@oakai/logger";
+
 import { prepWorksheetForSlides } from "./dataHelpers/prepWorksheetForSlides";
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
@@ -5,6 +7,8 @@ import { populateDoc } from "./gSuite/docs/populateDoc";
 import { WorksheetSlidesInputData } from "./schema/input.schema";
 import { getDocsTemplateIdWorksheet } from "./templates";
 import { OutputData, Result, State } from "./types";
+
+const log = aiLogger("exports");
 
 export const exportDocsWorksheet = async ({
   snapshotId,
@@ -46,7 +50,7 @@ export const exportDocsWorksheet = async ({
     onStateChange({ status: "success", data });
     return { data };
   } catch (error) {
-    console.error("Error", error);
+    log.error("Error", error);
     onStateChange({ status: "error", error });
     return { error, message: "Failed to export worksheet" };
   }

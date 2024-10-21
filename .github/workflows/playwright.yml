@@ -52,35 +52,32 @@ jobs:
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ steps.doppler.outputs.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           CLERK_SECRET_KEY: ${{ steps.doppler.outputs.CLERK_SECRET_KEY }}
-      - name: Upload Playwright report
-        id: upload-report
-        uses: actions/upload-artifact@v4
+      - name: Deploy Playwright report
+        id: deploy-report
+        if: ${{ !cancelled() }}
+        run: |
+          npx vercel link \
+            --cwd=apps/nextjs/playwright-report \
+            --scope=${{ secrets.TEST_REPORT_VERCEL_SCOPE }} \
+            --project=${{ secrets.TEST_REPORT_VERCEL_PROJECT }} \
+            --yes \
+            --token=${{ secrets.TEST_REPORT_VERCEL_TOKEN }}
+
+          DEPLOYMENT_URL=$(npx vercel deploy --cwd=apps/nextjs/playwright-report --yes --token=${{ secrets.TEST_REPORT_VERCEL_TOKEN }})
+          echo "deployment-url=${DEPLOYMENT_URL}" >> "$GITHUB_OUTPUT"
+
+      - name: Generate PR comment
+        id: generate-pr-comment
+        uses: daun/playwright-report-summary@v3
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report
-          path: apps/nextjs/playwright-report
-          retention-days: 30
-      - name: Comment PR with playwright report
+          report-file: apps/nextjs/results.json
+          report-url: ${{ steps.deploy-report.outputs.deployment-url }}
+          job-summary: true
+      - name: Set PR comment
         uses: thollander/actions-comment-pull-request@v2
         if: ${{ !cancelled() && steps.ref_from_sha.outputs.pr_number }}
         with:
           pr_number: ${{ steps.ref_from_sha.outputs.pr_number }}
-          message: |
-            ### Playwright e2e tests
-
-            [Job summary](https://github.com/oaknational/oak-ai-lesson-assistant/actions/runs/${{github.run_id}})
-
-            [Download report](${{ steps.upload-report.outputs.artifact-url }})
-
-            To view traces locally, unzip the report and run:
-            ```bash
-            npx playwright show-report ~/Downloads/playwright-report
-            ```
+          message: ${{ steps.generate-pr-comment.outputs.summary }}
           comment_tag: playwright-report
-      - name: Upload playwright screenshots
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-failure-screenshots
-          path: apps/nextjs/tests-e2e/test-results ## Folder used in playwright.config.js `outputDir`
-          retention-days: 30

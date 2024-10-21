@@ -1,7 +1,9 @@
-import logger from "@oakai/logger";
+import { aiLogger } from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 
 import { publicProcedure, t } from "../trpc";
+
+const log = aiLogger("testing");
 
 /**
  * Middleware to limit test support routes to testable environments like Vercel previews
@@ -21,7 +23,7 @@ const isTestMiddleware = t.middleware(async ({ next, ctx }) => {
     });
   }
 
-  logger.error("testSupport: Not in a testable environment");
+  log.error("testSupport: Not in a testable environment");
   throw new TRPCError({
     code: "UNAUTHORIZED",
     message: "Not authenticated",

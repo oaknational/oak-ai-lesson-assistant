@@ -1,30 +1,32 @@
 import { zodResponseFormat } from "openai/helpers/zod";
-import { z } from "zod";
 
-export function getLessonPlanBatchFileLine({
-  lineId,
+export function batchLineCompletion({
+  customId,
+  model,
+  temperature,
   systemPrompt,
   userPrompt,
-  responseSchema,
-  responseSchemaName,
+  responseFormat,
 }: {
-  lineId: string;
+  customId: string;
+  model: string;
+  temperature: number;
   systemPrompt: string;
   userPrompt: string;
-  responseSchema: z.Schema;
-  responseSchemaName: string;
+  responseFormat: ReturnType<typeof zodResponseFormat>;
 }) {
   return {
-    custom_id: lineId,
+    custom_id: customId,
     method: "POST",
     url: "/v1/chat/completions",
     body: {
-      model: "gpt-4o-2024-08-06",
+      model,
+      temperature,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      response_format: zodResponseFormat(responseSchema, responseSchemaName),
+      response_format: responseFormat,
     },
   };
 }

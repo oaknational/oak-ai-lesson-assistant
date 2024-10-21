@@ -2,8 +2,11 @@
 // refactoring - we will probably delete it?
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
+import { aiLogger } from "@oakai/logger";
 import OpenAI from "openai";
 import type { PostHog } from "posthog-node";
+
+const log = aiLogger("aila:llm");
 
 export interface OpenAICompletionWithLoggingOptions {
   chatId?: string;
@@ -69,7 +72,8 @@ export async function OpenAICompletionWithLogging(
     await performCompletionAndFetchMetricsPayload(payload, options);
   const metrics = await reportMetrics(metricsPayload);
   await reportCompletionAnalyticsEvent(metricsPayload);
-  console.log("Open AI Metrics", metrics);
+
+  log.info("Open AI Metrics", metrics);
   return { completion, metrics };
 }
 
@@ -169,7 +173,7 @@ export async function reportMetrics(payload: MetricsPayload) {
       body: JSON.stringify(body),
     });
 
-    console.log("Datadog status", result.status);
+    log.info("Datadog status", result.status);
   }
 
   return {

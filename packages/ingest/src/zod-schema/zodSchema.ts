@@ -1,29 +1,37 @@
 import { z } from "zod";
 
+export const LessonTitleSubjectKeyStageSchema = z.object({
+  lessonTitle: z.string(),
+  subjectSlug: z.string(),
+  keyStageSlug: z.string(),
+});
+
 const QuizQuestionSchema = z.object({
   hint: z.string().nullish(),
   active: z.boolean().nullish(),
-  answers: z.object({
-    "multiple-choice": z
-      .array(
-        z
-          .object({
-            answer: z
-              .array(
-                z
-                  .object({
-                    text: z.string().nullish(),
-                    type: z.string().nullish(),
-                  })
-                  .nullish(),
-              )
-              .nullish(),
-            answer_is_correct: z.boolean().nullish(),
-          })
-          .nullish(),
-      )
-      .nullish(),
-  }),
+  answers: z
+    .object({
+      "multiple-choice": z
+        .array(
+          z
+            .object({
+              answer: z
+                .array(
+                  z
+                    .object({
+                      text: z.string().nullish(),
+                      type: z.string().nullish(),
+                    })
+                    .nullish(),
+                )
+                .nullish(),
+              answer_is_correct: z.boolean().nullish(),
+            })
+            .nullish(),
+        )
+        .nullish(),
+    })
+    .nullish(),
   feedback: z.string().nullish(),
   questionId: z.number().nullish(),
   questionUid: z.string().nullish(),
@@ -49,26 +57,32 @@ const LessonKeywordSchema = z.object({
   description: z.string(),
 });
 
+const ContentGuidanceSchema = z.array(
+  z.object({
+    contentGuidanceArea: z.string(),
+    supervisionlevel_id: z.number(),
+    contentGuidanceLabel: z.string(),
+    contentGuidanceDescription: z.string(),
+  }),
+);
+
 export const RawLessonSchema = z.object({
   oakLessonId: z.number(),
   lessonTitle: z.string(),
   lessonSlug: z.string(),
-  programmeSlug: z.string(),
-  unitSlug: z.string(),
   keyStageSlug: z.string(),
   subjectSlug: z.string(),
-  subjectTitle: z.string(),
   examBoardTitle: z.string().nullish(),
   tierTitle: z.string().nullish(),
   misconceptionsAndCommonMistakes: z.array(MisconceptionSchema).nullish(),
   keyLearningPoints: z.array(KeyLearningPointSchema).nullish(),
   pupilLessonOutcome: z.string().nullish(),
   lessonKeywords: z.array(LessonKeywordSchema).nullish(),
-  copyrightContent: z.array(z.string()).nullish(),
+  contentGuidance: ContentGuidanceSchema.nullish(),
   starterQuiz: z.array(QuizQuestionSchema).nullish(),
   exitQuiz: z.array(QuizQuestionSchema).nullish(),
   yearTitle: z.string().nullish(),
-  videoTitle: z.string(),
+  videoTitle: z.string().nullish(),
   transcriptSentences: z.string().nullish(),
 });
 
