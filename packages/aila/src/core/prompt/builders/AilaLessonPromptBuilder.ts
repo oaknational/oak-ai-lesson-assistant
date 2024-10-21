@@ -95,10 +95,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
       2,
     );
 
-    console.log(
-      "Got RAG content, length:",
-      stringifiedRelevantLessonPlans.length,
-    );
+    log.info("Got RAG content, length:", stringifiedRelevantLessonPlans.length);
 
     return {
       ragLessonPlans: relevantLessonPlans,
