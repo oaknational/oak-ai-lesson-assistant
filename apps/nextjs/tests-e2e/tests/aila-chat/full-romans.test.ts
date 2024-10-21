@@ -33,12 +33,6 @@ test(
     const generationTimeout = FIXTURE_MODE === "record" ? 75000 : 50000;
     test.setTimeout(generationTimeout * 5);
 
-    // The chat UI has a race condition when you submit a message too quickly after the previous response
-    // This is a temporary fix to fix test flake
-    async function letUiSettle() {
-      return await page.waitForTimeout(testInfo.retry === 0 ? 500 : 6000);
-    }
-
     await test.step("Setup", async () => {
       await bypassVercelProtection(page);
       await setupClerkTestingToken({ page });

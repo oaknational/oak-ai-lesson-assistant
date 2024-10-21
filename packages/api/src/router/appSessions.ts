@@ -4,6 +4,7 @@ import { demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting/rateLimit";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
 import { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { TRPCError } from "@trpc/server";
 import { isTruthy } from "remeda";
@@ -13,10 +14,14 @@ import { getSessionModerations } from "../../../aila/src/features/moderation/get
 import { generateChatId } from "../../../aila/src/helpers/chat/generateChatId";
 import {
   AilaPersistedChat,
+  LessonPlanKeys,
+  LooseLessonPlan,
   chatSchema,
 } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
+
+const log = aiLogger("trpc");
 
 function userIsOwner(entity: { userId: string }, auth: SignedInAuthObject) {
   return entity.userId === auth.userId;
@@ -42,6 +47,7 @@ function parseChatAndReportError({
 
   if (!parseResult.success) {
     const error = new Error(`Failed to parse chat`);
+    log.info("Failed to parse chat", id, parseResult.error.flatten());
     Sentry.captureException(error, {
       extra: {
         id,
@@ -51,6 +57,13 @@ function parseChatAndReportError({
       },
     });
   }
+
+  const iteration = parseResult.data?.iteration;
+  const lessonPlan: LooseLessonPlan = parseResult.data?.lessonPlan ?? {};
+  const keys = (Object.keys(lessonPlan) as LessonPlanKeys[]).filter(
+    (k) => lessonPlan[k],
+  );
+  log.info("Parsed chat", iteration, `${keys.length} keys`, keys.join("|"), id);
 
   return parseResult.data;
 }
@@ -110,8 +123,8 @@ export const appSessionsRouter = router({
     .query(async ({ ctx, input }) => {
       const { id } = input;
 
+      log.info("Getting chat", id);
       const chat = await getChat(id, ctx.prisma);
-
       if (!chat) {
         return null;
       }

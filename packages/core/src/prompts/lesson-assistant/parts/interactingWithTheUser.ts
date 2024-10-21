@@ -19,7 +19,9 @@ const lessonConstructionSteps = (
   lessonPlan: LooseLessonPlan,
   relevantLessonPlans: string | undefined,
 ): LessonConstructionStep[] => {
-  const presentLessonPlanKeys = Object.keys(lessonPlan) as LessonPlanKeys[];
+  const presentLessonPlanKeys = (
+    Object.keys(lessonPlan) as LessonPlanKeys[]
+  ).filter((k) => lessonPlan[k]);
   const hasRelevantLessons =
     relevantLessonPlans && relevantLessonPlans.length > 3; // TODO This is a string, not an array!
 
@@ -85,14 +87,14 @@ Generate all of these sections together and respond to the user within this one 
         "keywords",
       ],
       title: `GENERATE SECTION GROUP [priorKnowledge, keyLearningPoints, misconceptions, keywords]`,
-      content: `Then, generate these four sections together in one single interaction. 
+      content: `Generate these four sections together in one single interaction. 
 You should not ask the user for feedback after generating them one-by-one.
 Generate them all together in one response.`,
     },
     {
       sections: ["starterQuiz", "cycle1", "cycle2", "cycle3", "exitQuiz"],
       title: `GENERATE SECTION GROUP [starterQuiz, cycle1, cycle2, cycle3, exitQuiz]`,
-      content: `Then, generate the bulk of the lesson. Generate all of these sections in one interaction.
+      content: `Generate the bulk of the lesson. Generate all of these sections in one interaction.
 Your response should include the starter quiz, each of the three learning cycles, and the exit quiz all within a single response.
 Additional check - because you are aiming for the average pupil to correctly answer five out of six questions, ask the user if they are happy that the quizzes are of an appropriate difficulty for pupils to achieve that.
 If the user is happy, you can move on to generating additional materials for the lesson plan.
@@ -131,15 +133,27 @@ END OF EXAMPLE RESPONSE`,
     },
   ];
 
-  return steps.filter(
-    (step) =>
-      step !== undefined &&
-      // Filter out instruction steps for sections that have already been generated
-      (!step.sections ||
-        step.sections.some(
-          (section) => !presentLessonPlanKeys.includes(section),
-        )),
-  ) as LessonConstructionStep[];
+  return steps.filter((step) => {
+    if (step === undefined) {
+      // Exclude undefined steps
+      return false;
+    }
+
+    if (step.sections) {
+      // If the step has sections defined, check if all of them are already present in the lesson plan
+      const allSectionsPresent = step.sections.every((section) =>
+        presentLessonPlanKeys.includes(section),
+      );
+
+      // Exclude the step if all its sections are already present
+      if (allSectionsPresent) {
+        return false;
+      }
+    }
+
+    // Include the step if it passed the above checks
+    return true;
+  }) as LessonConstructionStep[];
 };
 
 export const interactingWithTheUser = ({
@@ -184,11 +198,11 @@ The Lesson plan should be constructed in a series of steps.
 Based on the current lesson plan, the following is the next set of steps to take to generate the lesson plan.
 Unless prompted by the user to do otherwise, you should follow the following instructions.
 
-NEXT STEP INSTRUCTIONS`,
+YOUR DEFAULT INSTRUCTIONS FOR THIS INTERACTION`,
 
     step,
 
-    `END NEXT STEP INSTRUCTIONS
+    `END YOUR DEFAULT INSTRUCTIONS FOR THIS INTERACTION
 
 DO NOT DECIDE UPON A basedOn LESSON UNLESS THE USER HAS MADE A SELECTION FROM A LIST OF OPTIONS
 In some cases, we present a set of options to the user for a lesson that might be a good basis for their lesson.

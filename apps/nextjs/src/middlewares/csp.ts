@@ -5,14 +5,16 @@ function generateNonce(): string {
   return uuidv4();
 }
 
+export type CspEnvironment = "development" | "preview" | "production" | "test";
+export type VercelEnvironment = "development" | "preview" | "production";
 export interface CspConfig {
   strictCsp: boolean;
-  environment: string;
+  environment: CspEnvironment;
   sentryEnv: string;
   sentryRelease: string;
   sentryReportUri: string;
   cspReportSampleRate: string;
-  vercelEnv: string;
+  vercelEnv: VercelEnvironment;
   enabledPolicies: {
     clerk: boolean;
     avo: boolean;

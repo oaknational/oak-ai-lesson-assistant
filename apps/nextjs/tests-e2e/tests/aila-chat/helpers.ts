@@ -1,4 +1,4 @@
-import { expect, Page, test } from "@playwright/test";
+import { expect, Page, test, TestInfo } from "@playwright/test";
 
 import { AilaStreamingStatus } from "@/components/AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
 
@@ -104,6 +104,12 @@ export const applyLlmFixtures = async (
     },
   };
 };
+
+// The chat UI has a race condition when you submit a message too quickly after the previous response
+// This is a temporary fix to fix test flake
+export async function letUiSettle(page, testInfo: TestInfo) {
+  return await page.waitForTimeout(testInfo.retry === 0 ? 500 : 6000);
+}
 
 // So that we can capture the lesson plan in the Playwright screenshot
 // recording, we need to scroll the lesson plan from top to bottom.

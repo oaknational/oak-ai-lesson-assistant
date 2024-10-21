@@ -19,7 +19,10 @@ import {
   TextDocumentSchema,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
-import { AilaRagRelevantLesson } from "../../protocol/schema";
+import {
+  AilaPersistedChat,
+  AilaRagRelevantLesson,
+} from "../../protocol/schema";
 import { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
@@ -42,6 +45,7 @@ export class AilaChat implements AilaChatService {
   private readonly _promptBuilder: AilaPromptBuilder;
   private _iteration: number | undefined;
   private _createdAt: Date | undefined;
+  private _persistedChat: AilaPersistedChat;
 
   constructor({
     id,
@@ -103,6 +107,10 @@ export class AilaChat implements AilaChatService {
 
   public get parsedMessages() {
     return this._messages.map((m) => parseMessageParts(m.content));
+  }
+
+  public get persistedChat() {
+    return this._persistedChat;
   }
 
   public get relevantLessons() {
@@ -303,6 +311,7 @@ export class AilaChat implements AilaChatService {
       this._isShared = persistedChat.isShared;
       this._iteration = persistedChat.iteration ?? 1;
       this._createdAt = new Date(persistedChat.createdAt);
+      this._persistedChat = persistedChat;
     }
   }
 
@@ -367,10 +376,6 @@ export class AilaChat implements AilaChatService {
   }
 
   public async complete() {
-    await this.enqueue({
-      type: "comment",
-      value: "CHAT_COMPLETE",
-    });
     await this.reportUsageMetrics();
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
@@ -381,6 +386,10 @@ export class AilaChat implements AilaChatService {
     await this.moderate();
     await this.persistChat();
     await this.persistGeneration("SUCCESS");
+    await this.enqueue({
+      type: "comment",
+      value: "CHAT_COMPLETE",
+    });
   }
 
   public async moderate() {

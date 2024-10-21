@@ -8,379 +8,103 @@ Message
 type":"
 patch
 ","reasoning":"
-Adding
- the
- prior
- knowledge
- section
- to
- ensure
- pupils
- have
- foundational
- understanding
- for
- the
- lesson
-.","
-value":{"
-type":"
-string
--array
-","op":"
-add
-","path":"/
-prior
-Knowledge
-","value":["
-The
- Roman
- Empire
- once
- ruled
- over
- Britain
-.","
-Romans
- built
- roads
-,
- buildings
-,
- and
- towns
- in
- Britain
-.","
-Roman
- soldiers
- were
- stationed
- in
- Britain
- to
- protect
- it
-.","
-The
- Romans
- introduced
- new
- ideas
- and
- goods
- to
- Britain
-.","
-Brit
-ain
- was
- part
- of
+Starting
  a
- larger
- Roman
- Empire
-.
-"]},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Ident
-ifying
- key
- learning
- points
- that
- pupils
- should
- take
- away
- from
- the
+ new
  lesson
- about
- Roman
- Britain's
- end
+ plan
+ from
+ scratch
+ as
+ there
+ are
+ no
+ existing
+ Oak
+ lessons
+ on
+ this
+ topic
 .","
 value":{"
 type":"
 string
--array
 ","op":"
 add
 ","path":"/
-key
-Learning
-Points
-","value":["
-Roman
- Britain
- ended
- in
- AD
- 
-410
-.","
-The
- Roman
- army
- left
- Britain
- to
- protect
- other
- parts
- of
+learning
+Outcome
+","value":"
+I
+ can
+ describe
  the
- Empire
-.","
-The
- absence
- of
- Roman
- soldiers
- affected
- the
- safety
- and
- stability
- of
- Britain
-.","
-New
- groups
-,
- such
- as
- the
- Sax
-ons
-,
- began
- to
- settle
- in
- Britain
-.","
-The
- end
- of
- Roman
- rule
- led
- to
  changes
  in
+ Britain
+ after
  the
- way
- people
- lived
+ Romans
+ left
+."
+},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Outlined
+ the
+ learning
+ cycles
+ to
+ break
+ down
+ the
+ lesson
+ into
+ manageable
+ parts
+ for
+ pupils
+.","
+value":{"
+type":"
+string
+-array
+","op":"
+add
+","path":"/
+learning
+Cycles
+","value":["
+Understand
+ why
+ the
+ Romans
+ left
+ Britain
+.","
+Identify
+ the
+ immediate
+ changes
+ that
+ occurred
+ in
+ Britain
+.","
+Explore
+ how
+ life
+ in
+ Britain
+ evolved
+ after
+ the
+ Romans
 .
 "]},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Highlight
-ing
- common
- misconceptions
- about
- the
- end
- of
- Roman
- Britain
- to
- address
- them
- in
- the
- lesson
-.","
-value":{"
-type":"
-mis
-con
-ceptions
-","op":"
-add
-","path":"/
-mis
-con
-ceptions
-","value":[
-{"
-misconception":"
-Roman
- Britain
- ended
- because
- the
- Romans
- were
- defeated
- by
- inv
-aders
-","description":"
-While
- new
- groups
- like
- the
- Sax
-ons
- did
- settle
-,
- Roman
- Britain
- ended
- mainly
- because
- the
- Roman
- army
- was
- needed
- elsewhere
-."
-},{"
-misconception":"
-All
- Roman
- buildings
- were
- destroyed
- after
- the
- Romans
- left
-","description":"
-Many
- Roman
- structures
- remained
- and
- were
- used
- or
- adapted
- by
- new
- settlers
-."
-}]},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Including
- keywords
- that
- are
- central
- to
- understanding
- the
- lesson
- content
-.","
-value":{"
-type":"
-keywords
-","op":"
-add
-","path":"/
-keywords
-","value":[
-{"
-keyword":"
-Roman
- Empire
-","definition":"
-A
- vast
- empire
- that
- included
- Britain
-,
- ruled
- by
- Rome
-."
-},{"
-keyword":"
-S
-ax
-ons
-","definition":"
-A
- group
- of
- people
- who
- began
- to
- settle
- in
- Britain
- after
- the
- Romans
- left
-."
-},{"
-keyword":"
-Settlement
-","definition":"
-A
- place
- where
- people
- establish
- a
- community
-."
-},{"
-keyword":"
-Sold
-iers
-","definition":"
-People
- who
- serve
- in
- an
- army
-."
-},{"
-keyword":"
-Empire
-","definition":"
-A
- group
- of
- countries
- or
- regions
- ruled
- by
- a
- single
- leader
- or
- government
-."
-}]},"status":"
 complete
 "}],"prompt":{"
 type":"
@@ -388,32 +112,22 @@ text
 ","value":"
 Are
  the
- prior
- knowledge
-,
- key
  learning
- points
-,
- misconceptions
-,
+ outcome
  and
- keywords
- sections
- suitable
+ learning
+ cycles
+ appropriate
  for
  your
- class
+ pupils
 ?
  If
  not
 ,
- reply
- with
- what
- I
- should
- change
+ suggest
+ an
+ edit
 .
  Otherwise
 ,

@@ -47,36 +47,37 @@ import {
 const log = aiLogger("chat");
 
 export type ChatContextProps = {
-  id: string;
-  chat: AilaPersistedChat | undefined | null;
-  initialModerations: Moderation[];
-  toxicModeration: PersistedModerationBase | null;
-  lastModeration: PersistedModerationBase | null;
-  messages: Message[];
-  isLoading: boolean;
-  isStreaming: boolean;
-  lessonPlan: LooseLessonPlan;
   ailaStreamingStatus: AilaStreamingStatus;
   append: (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions | undefined,
   ) => Promise<string | null | undefined>;
-  reload: () => void;
-  stop: () => void;
-  input: string;
-  setInput: React.Dispatch<React.SetStateAction<string>>;
+  chat: AilaPersistedChat | undefined | null;
   chatAreaRef: React.RefObject<HTMLDivElement>;
+  executeQueuedAction: () => Promise<void>;
+  id: string;
+  initialModerations: Moderation[];
+  input: string;
+  isLoading: boolean;
+  isStreaming: boolean;
+  iteration: number | undefined;
+  lastModeration: PersistedModerationBase | null;
+  lessonPlan: LooseLessonPlan;
+  messages: Message[];
   queuedUserAction: string | null;
   queueUserAction: (action: string) => void;
-  executeQueuedAction: () => Promise<void>;
-  streamingSection: LessonPlanKeys | undefined;
-  streamingSections: LessonPlanKeys[] | undefined;
-  streamingSectionCompleted: LessonPlanKeys | undefined;
+  reload: () => void;
   sectionRefs: Record<
     LessonPlanKeys,
     React.MutableRefObject<HTMLDivElement | null>
   >;
+  setInput: React.Dispatch<React.SetStateAction<string>>;
   setSectionRef: (section: LessonPlanKeys, el: HTMLDivElement | null) => void;
+  stop: () => void;
+  streamingSection: LessonPlanKeys | undefined;
+  streamingSectionCompleted: LessonPlanKeys | undefined;
+  streamingSections: LessonPlanKeys[] | undefined;
+  toxicModeration: PersistedModerationBase | null;
 };
 
 const ChatContext = createContext<ChatContextProps | null>(null);
@@ -161,11 +162,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const hasAppendedInitialMessage = useRef<boolean>(false);
 
   const lessonPlanSnapshot = useRef<LooseLessonPlan>({});
-  const { lessonPlanManager, lessonPlan } = useLessonPlanManager();
-
-  const [currentIteration, setCurrentIteration] = useState<number | undefined>(
-    undefined,
-  );
+  const { lessonPlanManager, lessonPlan, iteration } = useLessonPlanManager();
 
   const [overrideLessonPlan, setOverrideLessonPlan] = useState<
     LooseLessonPlan | undefined
@@ -245,20 +242,30 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   });
 
   useEffect(() => {
-    if (
-      chat?.lessonPlan &&
-      (currentIteration === undefined ||
-        !chat.iteration ||
-        chat.iteration > currentIteration)
-    ) {
-      log.info("Updating lesson plan from server", {
-        currentIteration,
-        chatIteration: chat.iteration,
-      });
-      lessonPlanManager.setLessonPlan(chat.lessonPlan);
-      setCurrentIteration(chat.iteration);
+    if (chat?.lessonPlan) {
+      log.info(
+        "Setting lesson plan from chat",
+        chat?.iteration,
+        chat.lessonPlan,
+      );
+      lessonPlanManager.setLessonPlanWithDelay(chat.lessonPlan, chat.iteration);
     }
-  }, [chat?.lessonPlan, chat?.iteration, currentIteration, lessonPlanManager]);
+  }, [chat?.lessonPlan, chat?.iteration, lessonPlanManager]);
+
+  useEffect(() => {
+    const loggingLessonPlan = chat?.lessonPlan;
+    if (loggingLessonPlan) {
+      const keys = (Object.keys(loggingLessonPlan) as LessonPlanKeys[]).filter(
+        (k) => loggingLessonPlan[k],
+      );
+      log.info(
+        "Updated chat from server",
+        chat?.iteration,
+        `${keys.length} keys`,
+        keys.join("|"),
+      );
+    }
+  }, [chat?.lessonPlan, chat?.iteration]);
 
   useEffect(() => {
     /**
@@ -461,6 +468,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       input,
       isLoading,
       isStreaming: !hasFinished,
+      iteration,
       lastModeration,
       lessonPlan: overrideLessonPlan ?? lessonPlan,
       messages,
@@ -487,6 +495,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       id,
       input,
       isLoading,
+      iteration,
       lastModeration,
       lessonPlan,
       messages,

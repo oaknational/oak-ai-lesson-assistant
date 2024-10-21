@@ -8,1066 +8,457 @@ Message
 type":"
 patch
 ","reasoning":"
-Creating
- a
- Starter
- Quiz
- to
- assess
- pupils
-'
+Established
  prior
  knowledge
+ that
+ pupils
+ should
+ have
  before
+ learning
+ about
  the
- lesson
- begins
+ end
+ of
+ Roman
+ Britain
 .","
 value":{"
 type":"
-quiz
+string
+-array
 ","op":"
 add
 ","path":"/
-starter
-Quiz
-","value":[
-{"
-question":"
-Who
- ruled
- over
+prior
+Knowledge
+","value":["
+The
+ Romans
+ invaded
  Britain
- before
- the
- Romans
-?
-","answers":["
-Cel
-ts
-"],"distractors":["
-S
-ax
-ons
-","
-V
-ik
-ings
-"]},{"
-question":"
-What
- did
- the
- Romans
- build
  in
+ AD
+ 
+43
+.","
+Roman
  Britain
-?
-","answers":["
-Road
-s
- and
- towns
-"],"distractors":["
-Cast
-les
-","
-Sk
-yscr
-apers
-"]},{"
-question":"
-What
- was
- the
- main
- purpose
- of
- Roman
- soldiers
- in
- Britain
-?
-","answers":["
-To
- protect
- it
-"],"distractors":["
-To
- farm
- the
- land
-","
-To
- trade
- goods
-"]},{"
-question":"
-What
- did
- the
- Romans
- introduce
- to
- Britain
-?
-","answers":["
-New
- ideas
- and
- goods
-"],"distractors":["
-Din
-osaurs
-","
-Cars
-"]},{"
-question":"
-Brit
-ain
  was
  part
  of
- which
- larger
- empire
-?
-","answers":["
-Roman
- Empire
-"],"distractors":["
-Greek
- Empire
-","
-Egypt
-ian
- Empire
-"]},{"
-question":"
-What
- is
- an
- empire
-?
-","answers":["
-A
- group
- of
- countries
- ruled
- by
- one
- leader
-"],"distractors":["
-A
- single
- city
-","
-A
- small
- village
-"]}]},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Creating
- Cycle
- 
-1
- to
- introduce
  the
- reasons
+ Roman
+ Empire
  for
- the
- end
- of
- Roman
- Britain
-.","
-value":{"
-type":"
-cycle
-","op":"
-add
-","path":"/
-cycle
-1
-","value":{"
-title":"
-Reasons
- for
- the
- End
- of
- Roman
- Britain
-","durationInMinutes":15
-,"explanation":{"
-spokenExplanation":["
-Explain
- that
- Roman
- Britain
- ended
- in
- AD
+ nearly
  
-410
+400
+ years
 .","
-Discuss
- how
- the
- Roman
- army
- left
- Britain
- to
- defend
- other
- parts
- of
- the
- Empire
-.","
-Describe
- the
- impact
- of
- the
- Roman
- army
-'s
- departure
- on
- Britain's
- safety
- and
- stability
-.","
-Highlight
- that
- new
- groups
-,
- such
- as
- the
- Sax
-ons
-,
- began
- to
- move
- into
- Britain
-."
-],"accompanyingSlideDetails":"
-A
- timeline
- showing
- key
- events
- leading
- to
- the
- end
- of
- Roman
- Britain
-.","
-imagePrompt":"
-timeline
- end
- of
- Roman
- Britain
-","slideText":"
-Roman
- Britain
- ended
- in
- AD
- 
-410
-.
- The
- Roman
- army
- left
- to
- protect
- other
- parts
- of
- the
- Empire
-.
- The
- Sax
-ons
- began
- to
- settle
-."
-},"checkForUnderstanding":[
-{"
-question":"
-Why
- did
- Roman
- Britain
- end
-?
-","answers":["
-Roman
- army
- left
- to
- protect
- the
- Empire
-"],"distractors":["
 Romans
- were
- defeated
-","
-Brit
-ain
- was
- too
- cold
-"]},{"
-question":"
-Who
- began
- to
- settle
- in
- Britain
- after
- the
- Romans
- left
-?
-","answers":["
-S
-ax
-ons
-"],"distractors":["
-Cel
-ts
-","
-Romans
-"]}],"practice":"
-Create
- a
- timeline
- of
- events
- leading
- to
- the
- end
- of
- Roman
- Britain
-.
- Include
- at
- least
- three
- key
- events
- and
- draw
- a
- picture
- for
- each
- event
-.","
-feedback":"
-Model
- answer
-:
- Timeline
- includes
- Roman
- army
- leaving
- Britain
- in
- AD
- 
-410
+ built
+ roads
 ,
- Sax
-ons
- beginning
- to
- settle
+ towns
 ,
  and
- changes
- in
- Britain's
- safety
-."
-}},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Creating
- Cycle
- 
-2
- to
- explore
- the
- changes
+ walls
  in
  Britain
- after
- the
- Romans
- left
 .","
-value":{"
-type":"
-cycle
-","op":"
-add
-","path":"/
-cycle
-2
-","value":{"
-title":"
-Changes
- in
- Britain
- After
- the
- Romans
- Left
-","durationInMinutes":15
-,"explanation":{"
-spokenExplanation":["
-Describe
- how
+Roman
+ culture
+ influenced
  life
  in
  Britain
- changed
- after
+,
+ including
+ buildings
+ and
+ language
+.","
+The
+ Roman
+ army
+ was
+ powerful
+ and
+ well
+-organ
+ised
+.
+"]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Ident
+ified
+ key
+ learning
+ points
+ for
  the
+ lesson
+ on
+ the
+ end
+ of
+ Roman
+ Britain
+.","
+value":{"
+type":"
+string
+-array
+","op":"
+add
+","path":"/
+key
+Learning
+Points
+","value":["
+The
  Romans
  left
-.","
-Mention
+ Britain
+ in
+ AD
+ 
+410
+ due
+ to
+ pressures
+ on
  the
+ Roman
+ Empire
+.","
+Without
+ Roman
+ protection
+,
+ Britain
+ faced
+ invas
+ions
+ from
+ other
+ groups
+.","
+Changes
+ included
  decline
  in
  Roman
 -style
- buildings
+ houses
  and
  infrastructure
 .","
-Explain
- how
- new
- groups
- like
- the
- Sax
-ons
- started
- living
- differently
-.","
-Discuss
- the
- changes
- in
- trade
+Econom
+y
+ shifted
+ from
+ Roman
+ coins
+ to
+ bar
+tering
  and
  local
- governance
-."
-],"accompanyingSlideDetails":"
-Images
- of
- Roman
- and
- Sax
-on
- settlements
- for
- comparison
+ trade
 .","
-imagePrompt":"
-Roman
- and
- Sax
-on
- settlements
-","slideText":"
-Life
- changed
- after
- Romans
- left
-.
- Sax
-ons
- brought
- new
- ways
- of
- living
-.
- Roman
- buildings
- were
- adapted
-."
-},"checkForUnderstanding":[
-{"
-question":"
-What
- happened
- to
- Roman
- buildings
- after
- the
- Romans
- left
-?
-","answers":["
-Used
- or
- adapted
- by
- new
- settlers
-"],"distractors":["
-All
- destroyed
-","
-Turn
-ed
- into
- castles
-"]},{"
-question":"
-How
- did
- the
- Sax
-ons
- change
- life
- in
- Britain
-?
-","answers":["
-B
-rought
- new
- ways
- of
- living
-"],"distractors":["
-Built
- Roman
--style
- cities
-","
-B
-ec
-ame
- Roman
- soldiers
-"]}],"practice":"
-Draw
- a
- picture
- comparing
- a
- Roman
- settlement
- with
- a
- Sax
-on
- settlement
-.
- Label
- the
- differences
- you
- notice
-.","
-feedback":"
-Model
- answer
-:
- Roman
- settlements
- had
- stone
- buildings
- and
- roads
-,
- while
- Sax
-on
- settlements
- were
- more
- wooden
- and
- rural
-."
-}},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Creating
- Cycle
- 
-3
- to
- recap
- and
- reinforce
- the
- understanding
- of
- the
- end
- of
- Roman
- Britain
-.","
-value":{"
-type":"
-cycle
-","op":"
-add
-","path":"/
-cycle
-3
-","value":{"
-title":"
-Rec
-ap
- and
- Rein
-forcement
- of
- Key
- Concepts
-","durationInMinutes":15
-,"explanation":{"
-spokenExplanation":["
-Review
- the
- reasons
- for
- the
- end
- of
- Roman
- Britain
-.","
-Rec
-ap
- on
- the
- new
+New
  groups
- that
- settled
- and
- their
- impact
-.","
-Summ
-ar
-ise
- the
- changes
- in
- lifestyle
- and
- governance
-.","
-Em
-phas
-ise
- the
- importance
- of
- these
- changes
- in
- history
-."
-],"accompanyingSlideDetails":"
-A
- summary
- slide
- with
- bullet
- points
- of
- key
- concepts
-.","
-imagePrompt":"
-summary
- of
- end
- of
- Roman
- Britain
-","slideText":"
-Roman
- Britain
- ended
-,
- leading
- to
- new
- settlements
- and
- lifestyle
- changes
-.
- Key
- historical
- developments
- occurred
-."
-},"checkForUnderstanding":[
-{"
-question":"
-What
- year
- did
- Roman
- Britain
- end
-?
-","answers":["
-AD
- 
-410
-"],"distractors":["
-AD
- 
-300
-","
-AD
- 
-500
-"]},{"
-question":"
-Which
- group
- began
- to
- settle
- in
- Britain
- post
--R
-om
-ans
-?
-","answers":["
-S
-ax
-ons
-"],"distractors":["
-V
-ik
-ings
-","
-Norm
-ans
-"]}],"practice":"
-Write
- a
- short
- paragraph
- summar
-ising
- why
- Roman
- Britain
- ended
- and
- what
- changes
- followed
-.
- Share
- with
- a
- partner
-.","
-feedback":"
-Success
- criteria
-:
- Includes
- key
- events
 ,
  such
  as
- Roman
- army
- departure
- and
+ the
  Sax
-on
- settlement
+ons
 ,
- and
- changes
- in
- lifestyle
-."
-}},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Adding
- an
- Exit
- Quiz
- to
- assess
- understanding
- of
- the
- lesson
- content
- on
- the
- end
- of
- Roman
- Britain
-.","
-value":{"
-type":"
-quiz
-","op":"
-add
-","path":"/
-exit
-Quiz
-","value":[
-{"
-question":"
-In
- what
- year
- did
- Roman
- Britain
- end
-?
-","answers":["
-AD
- 
-410
-"],"distractors":["
-AD
- 
-350
-","
-AD
- 
-450
-"]},{"
-question":"
-Who
- left
- Britain
-,
- causing
- its
- end
- as
- a
- Roman
- province
-?
-","answers":["
-Roman
- army
-"],"distractors":["
-S
-axon
- army
-","
-V
-iking
- ra
-iders
-"]},{"
-question":"
-What
- happened
- to
- Roman
- settlements
- after
- the
- Romans
- left
-?
-","answers":["
-Used
- or
- adapted
- by
- new
- settlers
-"],"distractors":["
-All
- destroyed
-","
-Turn
-ed
- into
- farms
-"]},{"
-question":"
-Which
- group
  began
  to
  settle
  in
  Britain
+.
+"]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Outlined
+ common
+ misconceptions
+ about
+ the
+ end
+ of
+ Roman
+ Britain
+ and
+ provided
+ clar
+ifications
+.","
+value":{"
+type":"
+mis
+con
+ceptions
+","op":"
+add
+","path":"/
+mis
+con
+ceptions
+","value":[
+{"
+misconception":"
+The
+ Romans
+ were
+ forced
+ out
+ by
+ the
+ British
+ people
+","description":"
+It
+ is
+ more
+ accurate
+ to
+ say
+ the
+ Romans
+ left
+ due
+ to
+ challenges
+ within
+ their
+ own
+ empire
+,
+ including
+ threats
+ elsewhere
+."
+},{"
+misconception":"
+Roman
+ culture
+ completely
+ disappeared
+ after
+ they
+ left
+","description":"
+Many
+ Roman
+ influences
+ remained
+,
+ such
+ as
+ roads
+ and
+ some
+ aspects
+ of
+ lifestyle
+,
+ but
+ new
+ cultures
+ also
+ emerged
+."
+},{"
+misconception":"
+Brit
+ain
+ was
+ completely
+ isolated
  after
  the
  Romans
-?
-","answers":["
-S
-ax
-ons
-"],"distractors":["
-Cel
-ts
-","
-Egypt
-ians
-"]},{"
-question":"
-What
- was
- a
- major
- change
- in
- Britain
- post
--R
-oman
- rule
-?
-","answers":["
-New
- settlements
- and
- lifestyle
+ left
+","description":"
+Although
+ the
+ Roman
+ departure
+ led
+ to
  changes
-"],"distractors":["
-Introduction
- of
- Roman
- roads
-","
-Building
- of
- pyram
-ids
-"]},{"
-question":"
-What
- is
- a
- settlement
-?
-","answers":["
+,
+ Britain
+ still
+ interacted
+ with
+ other
+ cultures
+ and
+ groups
+."
+}]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Selected
+ important
+ keywords
+ that
+ will
+ be
+ used
+ during
+ the
+ lesson
+.","
+value":{"
+type":"
+keywords
+","op":"
+add
+","path":"/
+keywords
+","value":[
+{"
+keyword":"
+Roman
+ Empire
+","definition":"
 A
- place
- where
- people
- establish
- a
- community
-"],"distractors":["
-A
- type
+ vast
+ empire
+ that
+ ruled
+ over
+ Britain
+ from
+ AD
+ 
+43
+ to
+ AD
+ 
+410
+."
+},{"
+keyword":"
+In
+vasion
+","definition":"
+An
+ instance
  of
- Roman
- building
-","
+ invading
+ a
+ country
+ or
+ region
+ with
+ an
+ armed
+ force
+."
+},{"
+keyword":"
+S
+axon
+","definition":"
 A
  group
  of
- soldiers
-"]}]},"status":"
+ German
+ic
+ people
+ who
+ settled
+ in
+ Britain
+ after
+ the
+ Romans
+ left
+."
+},{"
+keyword":"
+Infrastructure
+","definition":"
+Basic
+ physical
+ structures
+ like
+ roads
+ and
+ buildings
+ needed
+ for
+ society
+."
+},{"
+keyword":"
+Bar
+tering
+","definition":"
+Ex
+changing
+ goods
+ and
+ services
+ without
+ using
+ money
+."
+}]},"status":"
 complete
 "}],"prompt":{"
 type":"
 text
 ","value":"
-The
- starter
- quiz
+Are
+ the
+ prior
+ knowledge
 ,
+ key
  learning
- cycles
+ points
+,
+ misconceptions
 ,
  and
- exit
- quiz
- have
- been
- generated
-.
+ keywords
+ sections
+ suitable
+ for
+ your
+ class
+?
  If
- you
- have
- any
- changes
- to
- suggest
+ not
 ,
- let
- me
- know
+ reply
+ with
+ what
+ I
+ should
+ change
 .
  Otherwise
 ,
@@ -1076,10 +467,11 @@ The
 Continue
 **
  to
- review
+ move
+ on
+ to
  the
- entire
- lesson
- plan
+ next
+ step
 ."
 }}

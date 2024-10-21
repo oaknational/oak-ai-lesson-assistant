@@ -1,3 +1,4 @@
+import { aiLogger } from "@oakai/logger";
 import { ReadableStreamDefaultController } from "stream/web";
 import invariant from "tiny-invariant";
 
@@ -6,6 +7,7 @@ import { AilaChatError } from "../AilaError";
 import { AilaChat } from "./AilaChat";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 
+const log = aiLogger("aila:stream");
 export class AilaStreamHandler {
   private _chat: AilaChat;
   private _controller?: ReadableStreamDefaultController;
@@ -43,12 +45,15 @@ export class AilaStreamHandler {
       }
     } catch (e) {
       this.handleStreamError(e);
+      log.info("Stream error", e, this._chat.iteration, this._chat.id);
     } finally {
       this._isStreaming = false;
       try {
         await this._chat.complete();
+        log.info("Chat completed", this._chat.iteration, this._chat.id);
       } finally {
         this.closeController();
+        log.info("Stream closed", this._chat.iteration, this._chat.id);
       }
     }
   }

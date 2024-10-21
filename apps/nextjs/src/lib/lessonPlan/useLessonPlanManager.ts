@@ -14,11 +14,19 @@ export function useLessonPlanManager(initialLessonPlan: LooseLessonPlan = {}) {
   const [lessonPlan, setLessonPlan] = useState(
     lessonPlanManager.getLessonPlan(),
   );
+  const [iteration, setIteration] = useState<number | undefined>(undefined);
 
   useEffect(() => {
-    const onLessonPlanUpdated = (updatedLessonPlan: LooseLessonPlan) => {
+    const onLessonPlanUpdated = ({
+      lessonPlan: updatedLessonPlan,
+      iteration: updatedIteration,
+    }: {
+      lessonPlan: LooseLessonPlan;
+      iteration: number | undefined;
+    }) => {
       log.info("Update lesson plan state", updatedLessonPlan);
       setLessonPlan(updatedLessonPlan);
+      setIteration(updatedIteration);
     };
 
     lessonPlanManager.on("lessonPlanUpdated", onLessonPlanUpdated);
@@ -31,5 +39,6 @@ export function useLessonPlanManager(initialLessonPlan: LooseLessonPlan = {}) {
   return {
     lessonPlanManager,
     lessonPlan,
+    iteration,
   };
 }

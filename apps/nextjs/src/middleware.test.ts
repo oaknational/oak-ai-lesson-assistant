@@ -1,7 +1,12 @@
 import { NextRequest, NextFetchEvent, NextResponse } from "next/server";
 
 import { handleError } from "./middleware";
-import { CspConfig, addCspHeaders, buildCspHeaders } from "./middlewares/csp";
+import {
+  CspConfig,
+  CspEnvironment,
+  addCspHeaders,
+  buildCspHeaders,
+} from "./middlewares/csp";
 
 describe("handleError", () => {
   let mockRequest: NextRequest;
@@ -152,7 +157,10 @@ describe("addCspHeaders", () => {
   });
 
   it("includes development-specific directives when environment is development", () => {
-    const config = { ...defaultConfig, environment: "development" };
+    const config = {
+      ...defaultConfig,
+      environment: "development" as CspEnvironment,
+    };
     const result = addCspHeaders(mockResponse, mockRequest, config);
 
     const cspHeader = result.headers.get("Content-Security-Policy");

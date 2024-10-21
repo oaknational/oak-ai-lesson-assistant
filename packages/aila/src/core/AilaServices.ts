@@ -7,7 +7,11 @@ import {
   AilaThreatDetectionFeature,
 } from "../features/types";
 import { MessagePart } from "../protocol/jsonPatchProtocol";
-import { AilaRagRelevantLesson, LooseLessonPlan } from "../protocol/schema";
+import {
+  AilaPersistedChat,
+  AilaRagRelevantLesson,
+  LooseLessonPlan,
+} from "../protocol/schema";
 import { Message } from "./chat";
 import { AilaOptionsWithDefaultFallbackValues } from "./index";
 import { AilaPlugin } from "./plugins";
@@ -22,6 +26,7 @@ export interface AilaAnalyticsService {
 export interface AilaLessonService {
   readonly plan: LooseLessonPlan;
   readonly hasSetInitialState: boolean;
+  setPlan(plan: LooseLessonPlan): void;
   applyPatches(patches: string): void;
   initialise(plan: LooseLessonPlan): void;
   setUpInitialLessonPlan(messages: Message[]): Promise<void>;
@@ -33,6 +38,7 @@ export interface AilaChatService {
   readonly messages: Message[];
   readonly iteration: number | undefined;
   readonly createdAt: Date | undefined;
+  readonly persistedChat: AilaPersistedChat | undefined;
   get relevantLessons(): AilaRagRelevantLesson[];
   set relevantLessons(lessons: AilaRagRelevantLesson[]);
   readonly parsedMessages: MessagePart[][];

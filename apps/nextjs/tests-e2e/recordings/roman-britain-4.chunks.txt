@@ -8,169 +8,477 @@ Message
 type":"
 patch
 ","reasoning":"
-Address
-ing
- misconceptions
- helps
- clarify
- common
- misunderstand
-ings
- pupils
- might
- have
- about
+Provided
+ a
+ narrative
+ to
+ support
  the
- topic
+ teacher
+ in
+ delivering
+ the
+ lesson
+ on
+ the
+ end
+ of
+ Roman
+ Britain
+,
+ which
+ includes
+ key
+ points
+ and
+ suggestions
+ for
+ explaining
+ the
+ content
 .","
 value":{"
 type":"
-mis
-con
-ceptions
+string
 ","op":"
 add
 ","path":"/
-mis
-con
-ceptions
-","value":[
-{"
-misconception":"
-All
+additional
+Materials
+","value":"
+##
+ Narrative
+ for
+ Teachers
+\n
+\n
+###
+ Introduction
+ to
+ the
+ End
+ of
+ Roman
+ Britain
+\n
+\n
+\"
+Good
+ morning
+,
+ class
+!
+ Today
+,
+ we're
+ going
+ to
+ learn
+ about
+ what
+ happened
+ in
+ Britain
+ after
+ the
  Romans
  left
- Britain
- immediately
- after
+.
+ Imagine
+ you
+ are
+ a
+ detective
+ pie
+cing
+ together
+ the
+ past
+ from
+ clues
+ left
+ behind
+.\
+n
+\n
+First
+,
+ let's
+ think
+ about
+ why
+ the
+ Romans
+ left
+.
+ Around
  AD
  
 410
-","description":"
-Not
- all
- Romans
- left
- immediately
-;
- some
- stayed
- behind
-.
- The
- lesson
- will
- explain
- the
- gradual
- nature
- of
- the
- departure
-."
-},{"
-misconception":"
-Brit
-ain
- was
- left
- in
- chaos
- immediately
- after
- the
- Romans
- left
-","description":"
-Although
- there
- were
- challenges
 ,
- many
- Roman
- systems
- continued
- to
- influence
- Britain
-.
- The
- lesson
- will
- highlight
- this
- continuity
-."
-},{"
-misconception":"
-The
- Sax
-ons
- invaded
- immediately
- after
  the
- Romans
- left
-","description":"
-The
- Sax
-ons
-'
- arrival
+ Roman
+ Empire
  was
- gradual
+ facing
+ many
+ problems
+.
+ It
+ was
+ like
+ trying
+ to
+ keep
+ a
+ big
+ sand
+castle
+ from
+ being
+ washed
+ away
+ by
+ the
+ tide
+!
+ The
+ Romans
+ had
+ to
+ make
+ a
+ tough
+ decision
+ to
+ leave
+ Britain
+ and
+ protect
+ other
+ parts
+ of
+ their
+ empire
+.
+ They
+ were
+ facing
+ threats
+ from
+ other
+ groups
 ,
  and
  their
- influence
- took
- time
+ empire
+ was
+ just
+ too
+ big
  to
- establish
+ defend
+ everywhere
+ at
+ once
+.\
+n
+\n
+Now
+,
+ let's
+ explore
+ what
+ happened
+ when
+ the
+ Romans
+ left
 .
+ Without
+ Roman
+ soldiers
+ to
+ protect
+ them
+,
+ the
+ people
+ in
+ Britain
+ had
+ to
+ defend
+ themselves
+.
+ You
+ might
+ imagine
+ them
+ like
+ a
+ team
+ suddenly
+ playing
+ without
+ their
+ star
+ player
+!
+ They
+ faced
+ invas
+ions
+ from
+ groups
+ like
+ the
+ Sax
+ons
+,
+ who
+ began
+ to
+ settle
+ in
+ Britain
+.\
+n
+\n
+How
+ did
+ life
+ change
+?
  The
- lesson
- will
- discuss
- this
- timeline
-."
-}]},"status":"
+ Roman
+-style
+ houses
+ and
+ roads
+ were
+ not
+ kept
+ up
+ as
+ well
+ as
+ before
+,
+ and
+ people
+ began
+ to
+ use
+ bar
+tering
+ to
+ trade
+ goods
+ instead
+ of
+ Roman
+ coins
+.
+ It's
+ like
+ going
+ back
+ to
+ using
+ mar
+bles
+ to
+ trade
+ for
+ sweets
+ instead
+ of
+ using
+ money
+!\
+n
+\n
+Finally
+,
+ let's
+ think
+ about
+ how
+ life
+ evolved
+.
+ Even
+ though
+ the
+ Romans
+ left
+,
+ some
+ of
+ their
+ traditions
+ and
+ roads
+ remained
+.
+ New
+ groups
+ brought
+ their
+ cultures
+,
+ mixing
+ them
+ with
+ Roman
+ ways
+.
+ It's
+ like
+ creating
+ a
+ new
+ recipe
+ by
+ mixing
+ old
+ and
+ new
+ ingredients
+!
+\"\
+n
+\n
+###
+ Key
+ Points
+ for
+ Explanation
+\n
+-
+ Discuss
+ the
+ pressures
+ on
+ the
+ Roman
+ Empire
+.\
+n
+-
+ Describe
+ the
+ immediate
+ changes
+ after
+ the
+ Romans
+ left
+,
+ including
+ infrastructure
+ and
+ economy
+.\
+n
+-
+ Highlight
+ the
+ arrival
+ of
+ new
+ groups
+ like
+ the
+ Sax
+ons
+.\
+n
+-
+ Explain
+ the
+ blending
+ of
+ Roman
+ and
+ new
+ cultures
+ in
+ Britain
+.\
+n
+\n
+###
+ Image
+ Search
+ Suggestions
+\n
+-
+ \"
+Roman
+ Empire
+ decline
+ map
+\"\
+n
+-
+ \"
+Roman
+ to
+ Sax
+on
+ Britain
+ transition
+\"\
+n
+-
+ \"
+S
+axon
+ settlements
+ in
+ Britain
+\"
+"},"status":"
 complete
 "}],"prompt":{"
 type":"
 text
 ","value":"
-Mis
-con
-ceptions
- have
- been
- added
- to
- ensure
- pupils
- understand
+Is
  the
- gradual
- and
- complex
- nature
- of
- Roman
- Britain's
- end
-.
- Now
-,
- let's
- define
- the
- keywords
+ additional
+ materials
+ section
+ suitable
  for
+ your
+ lesson
+ delivery
+?
+ If
+ not
+,
+ let
+ me
+ know
+ what
+ changes
+ to
+ make
+.
+ Otherwise
+,
+ tap
+ **
+Continue
+**
+ to
+ final
+ise
  the
  lesson
+ plan
 ."
 }}

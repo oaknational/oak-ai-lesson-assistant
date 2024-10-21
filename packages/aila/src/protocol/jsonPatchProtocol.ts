@@ -748,6 +748,7 @@ export function applyLessonPlanPatch(
   lessonPlan: LooseLessonPlan,
   command: JsonPatchDocument,
 ) {
+  log.info("Apply patch", JSON.stringify(command));
   let updatedLessonPlan = { ...lessonPlan };
   if (command.type !== "patch") return lessonPlan;
   const patch = command.value as Operation;
@@ -767,8 +768,17 @@ export function applyLessonPlanPatch(
       extra["index"] = e.index;
       extra["operation"] = e.operation;
       extra["tree"] = e.tree;
+      log.error("JSON Patch Error:", e, extra);
+    } else if (e instanceof z.ZodError) {
+      log.error(
+        "Zod Error:",
+        e.errors
+          .map((err) => `${err.path.join(".")}: ${err.message}`)
+          .join(", "),
+      );
+    } else {
+      log.error("Failed to apply patch", patch, e);
     }
-    log.error("Failed to apply patch", patch, e);
     Sentry.withScope(function (scope) {
       scope.setLevel("info");
       Sentry.captureException(e, { extra });

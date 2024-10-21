@@ -3,196 +3,49 @@ type":"
 ll
 m
 Message
-","patches":[
-{"
-type":"
-patch
-","reasoning":"
-Keywords
- help
- pupils
- grasp
- important
- vocabulary
- related
- to
- the
- topic
-.","
-value":{"
-type":"
-keywords
-","op":"
-add
-","path":"/
-keywords
-","value":[
-{"
-keyword":"
-Roman
- Empire
-","definition":"
-A
- powerful
- ancient
- empire
- that
- ruled
- over
- a
- large
- part
- of
- Europe
-,
- including
- Britain
-."
-},{"
-keyword":"
-Withdrawal
-","definition":"
-The
- act
- of
- the
- Roman
- army
- leaving
- Britain
- to
- defend
- other
- parts
- of
- the
- empire
-."
-},{"
-keyword":"
-In
-vasion
-","definition":"
-An
- act
- of
- entering
- a
- place
- by
- force
-,
- such
- as
- the
- Sax
-ons
- entering
- Britain
-."
-},{"
-keyword":"
-Infrastructure
-","definition":"
-The
- basic
- physical
- structures
-,
- like
- roads
- and
- buildings
-,
- set
- up
- by
- the
- Romans
- in
- Britain
-."
-},{"
-keyword":"
-S
-ax
-ons
-","definition":"
-A
- group
- of
- people
- from
- northern
- Germany
- who
- began
- to
- settle
- in
- Britain
- after
- the
- Romans
- left
-."
-}]},"status":"
-complete
-"}],"prompt":{"
+","patches":[]
+,"prompt":{"
 type":"
 text
 ","value":"
-The
- keywords
- section
- is
- now
- complete
+I
+ have
+ checked
+ for
+ British
+ spelling
+ and
+ grammar
 ,
- covering
- essential
- vocabulary
- such
- as
- Roman
- Empire
-,
- withdrawal
-,
- invasion
-,
- infrastructure
+ coherence
 ,
  and
- Sax
-ons
+ accuracy
+.
+ You
+ can
+ now
+ share
+ your
+ lesson
+ or
+ download
+ your
+ resources
 .\
 n
 \n
-If
- you're
- satisfied
- with
- these
- sections
-,
- we
- can
- move
+Click
  on
- to
- creating
  the
- quizzes
- and
- learning
- cycles
-.
- Tap
  **
-Continue
+Menu
 **
+ button
  to
- proceed
+ find
+ previously
+ created
+ lessons
 ."
 }}

@@ -349,7 +349,7 @@ You should decide which is the most appropriate form of feedback for the specifi
 END OF RULES FOR LEARNING CYCLES
 
 ADDITIONAL MATERIALS
-For some lessons, it may be useful to produce additional materials.
+For some lessons, it may be useful to produce additional materials when the user requests it.
 This is a free-form markdown section with a maximum H2 heading (Eg. ##).
 This section could include:
 * a case study context sheet (including details on location/historical context/short-term and long-term causes/effects/impacts)
@@ -370,5 +370,6 @@ Underneath the narrative, include the main things the teacher should include in 
 If you include a narrative, you should ask the teacher if they have a preference for the specific content before creating the additional materials.
 For example, if the lesson is about different creation stories, you should ask whether there are any particular creation stories that they want to include, e.g. the Christian creation story.
 The additional materials may also include search terms to find relevant diagrams or images where appropriate.
-If there are no additional materials to present, respond with just the word None.`;
+If there are no additional materials to present, respond with just the word None.
+Only generate additional materials when the user specifically requests them in the instructions.`;
 };

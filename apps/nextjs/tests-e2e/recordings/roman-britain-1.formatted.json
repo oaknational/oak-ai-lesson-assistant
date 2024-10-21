@@ -3,86 +3,26 @@
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Adding the prior knowledge section to ensure pupils have foundational understanding for the lesson.",
+      "reasoning": "Starting a new lesson plan from scratch as there are no existing Oak lessons on this topic.",
+      "value": {
+        "type": "string",
+        "op": "add",
+        "path": "/learningOutcome",
+        "value": "I can describe the changes in Britain after the Romans left."
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Outlined the learning cycles to break down the lesson into manageable parts for pupils.",
       "value": {
         "type": "string-array",
         "op": "add",
-        "path": "/priorKnowledge",
+        "path": "/learningCycles",
         "value": [
-          "The Roman Empire once ruled over Britain.",
-          "Romans built roads, buildings, and towns in Britain.",
-          "Roman soldiers were stationed in Britain to protect it.",
-          "The Romans introduced new ideas and goods to Britain.",
-          "Britain was part of a larger Roman Empire."
-        ]
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Identifying key learning points that pupils should take away from the lesson about Roman Britain's end.",
-      "value": {
-        "type": "string-array",
-        "op": "add",
-        "path": "/keyLearningPoints",
-        "value": [
-          "Roman Britain ended in AD 410.",
-          "The Roman army left Britain to protect other parts of the Empire.",
-          "The absence of Roman soldiers affected the safety and stability of Britain.",
-          "New groups, such as the Saxons, began to settle in Britain.",
-          "The end of Roman rule led to changes in the way people lived."
-        ]
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Highlighting common misconceptions about the end of Roman Britain to address them in the lesson.",
-      "value": {
-        "type": "misconceptions",
-        "op": "add",
-        "path": "/misconceptions",
-        "value": [
-          {
-            "misconception": "Roman Britain ended because the Romans were defeated by invaders",
-            "description": "While new groups like the Saxons did settle, Roman Britain ended mainly because the Roman army was needed elsewhere."
-          },
-          {
-            "misconception": "All Roman buildings were destroyed after the Romans left",
-            "description": "Many Roman structures remained and were used or adapted by new settlers."
-          }
-        ]
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Including keywords that are central to understanding the lesson content.",
-      "value": {
-        "type": "keywords",
-        "op": "add",
-        "path": "/keywords",
-        "value": [
-          {
-            "keyword": "Roman Empire",
-            "definition": "A vast empire that included Britain, ruled by Rome."
-          },
-          {
-            "keyword": "Saxons",
-            "definition": "A group of people who began to settle in Britain after the Romans left."
-          },
-          {
-            "keyword": "Settlement",
-            "definition": "A place where people establish a community."
-          },
-          {
-            "keyword": "Soldiers",
-            "definition": "People who serve in an army."
-          },
-          {
-            "keyword": "Empire",
-            "definition": "A group of countries or regions ruled by a single leader or government."
-          }
+          "Understand why the Romans left Britain.",
+          "Identify the immediate changes that occurred in Britain.",
+          "Explore how life in Britain evolved after the Romans."
         ]
       },
       "status": "complete"
@@ -90,6 +30,6 @@
   ],
   "prompt": {
     "type": "text",
-    "value": "Are the prior knowledge, key learning points, misconceptions, and keywords sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."
+    "value": "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step."
   }
 }

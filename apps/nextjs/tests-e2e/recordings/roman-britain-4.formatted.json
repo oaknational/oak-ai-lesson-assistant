@@ -3,31 +3,18 @@
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Addressing misconceptions helps clarify common misunderstandings pupils might have about the topic.",
+      "reasoning": "Provided a narrative to support the teacher in delivering the lesson on the end of Roman Britain, which includes key points and suggestions for explaining the content.",
       "value": {
-        "type": "misconceptions",
+        "type": "string",
         "op": "add",
-        "path": "/misconceptions",
-        "value": [
-          {
-            "misconception": "All Romans left Britain immediately after AD 410",
-            "description": "Not all Romans left immediately; some stayed behind. The lesson will explain the gradual nature of the departure."
-          },
-          {
-            "misconception": "Britain was left in chaos immediately after the Romans left",
-            "description": "Although there were challenges, many Roman systems continued to influence Britain. The lesson will highlight this continuity."
-          },
-          {
-            "misconception": "The Saxons invaded immediately after the Romans left",
-            "description": "The Saxons' arrival was gradual, and their influence took time to establish. The lesson will discuss this timeline."
-          }
-        ]
+        "path": "/additionalMaterials",
+        "value": "## Narrative for Teachers\n\n### Introduction to the End of Roman Britain\n\n\"Good morning, class! Today, we're going to learn about what happened in Britain after the Romans left. Imagine you are a detective piecing together the past from clues left behind.\n\nFirst, let's think about why the Romans left. Around AD 410, the Roman Empire was facing many problems. It was like trying to keep a big sandcastle from being washed away by the tide! The Romans had to make a tough decision to leave Britain and protect other parts of their empire. They were facing threats from other groups, and their empire was just too big to defend everywhere at once.\n\nNow, let's explore what happened when the Romans left. Without Roman soldiers to protect them, the people in Britain had to defend themselves. You might imagine them like a team suddenly playing without their star player! They faced invasions from groups like the Saxons, who began to settle in Britain.\n\nHow did life change? The Roman-style houses and roads were not kept up as well as before, and people began to use bartering to trade goods instead of Roman coins. It's like going back to using marbles to trade for sweets instead of using money!\n\nFinally, let's think about how life evolved. Even though the Romans left, some of their traditions and roads remained. New groups brought their cultures, mixing them with Roman ways. It's like creating a new recipe by mixing old and new ingredients!\"\n\n### Key Points for Explanation\n- Discuss the pressures on the Roman Empire.\n- Describe the immediate changes after the Romans left, including infrastructure and economy.\n- Highlight the arrival of new groups like the Saxons.\n- Explain the blending of Roman and new cultures in Britain.\n\n### Image Search Suggestions\n- \"Roman Empire decline map\"\n- \"Roman to Saxon Britain transition\"\n- \"Saxon settlements in Britain\""
       },
       "status": "complete"
     }
   ],
   "prompt": {
     "type": "text",
-    "value": "Misconceptions have been added to ensure pupils understand the gradual and complex nature of Roman Britain's end. Now, let's define the keywords for the lesson."
+    "value": "Is the additional materials section suitable for your lesson delivery? If not, let me know what changes to make. Otherwise, tap **Continue** to finalise the lesson plan."
   }
 }

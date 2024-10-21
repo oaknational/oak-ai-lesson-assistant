@@ -17,6 +17,7 @@ export class LessonPlanManager {
   private lessonPlan: LooseLessonPlan;
   private appliedPatchHashes: Set<string> = new Set();
   private eventEmitter: EventEmitter = new EventEmitter();
+  private iteration: number | undefined;
 
   constructor(initialLessonPlan: LooseLessonPlan = {}) {
     this.lessonPlan = deepClone(initialLessonPlan);
@@ -26,9 +27,60 @@ export class LessonPlanManager {
     return this.lessonPlan;
   }
 
-  public setLessonPlan(newLessonPlan: LooseLessonPlan): void {
-    this.lessonPlan = deepClone(newLessonPlan);
-    this.eventEmitter.emit("lessonPlanUpdated", this.lessonPlan);
+  public setLessonPlan(
+    newLessonPlan: LooseLessonPlan,
+    newIteration: number | undefined,
+  ): void {
+    if (
+      newIteration === undefined ||
+      this.iteration === undefined ||
+      newIteration > this.iteration
+    ) {
+      const currentKeys = Object.keys(this.lessonPlan).filter(
+        (k) => this.lessonPlan[k],
+      );
+      const newKeys = Object.keys(newLessonPlan).filter(
+        (k) => newLessonPlan[k],
+      );
+      log.info("Updating lesson plan from server", {
+        iteration: this.iteration,
+        newIteration,
+        keys: newKeys.length,
+        currentKeys: currentKeys.join("|"),
+        newKeys: newKeys.join("|"),
+      });
+      if (newKeys.length < currentKeys.length) {
+        log.warn(
+          `New lesson plan has fewer keys than current lesson plan: ${newKeys.length} < ${currentKeys.length}`,
+        );
+      }
+      this.lessonPlan = deepClone(newLessonPlan);
+      this.iteration = newIteration;
+      this.emitLessonPlan();
+    } else {
+      log.info(
+        `LessonPlanManager: Skipping setting lesson plan with iteration ${newIteration} because current iteration is ${this.iteration}`,
+      );
+    }
+  }
+
+  private emitLessonPlan = (): void => {
+    this.eventEmitter.emit("lessonPlanUpdated", {
+      lessonPlan: this.lessonPlan,
+      iteration: this.iteration,
+    });
+  };
+
+  public setLessonPlanWithDelay(
+    newLessonPlan: LooseLessonPlan,
+    iteration: number | undefined,
+    delay: number = 2000,
+  ): void {
+    const keys = Object.keys(newLessonPlan).filter((k) => newLessonPlan[k]);
+    log.info("Delay setting lesson plan", `${keys.length}`, keys.join("|"));
+    setTimeout(() => {
+      this.setLessonPlan(newLessonPlan, iteration);
+    }, delay);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,11 +99,8 @@ export class LessonPlanManager {
     }
   }
 
-  private throttledApplyPatches = throttle(this.applyPatches.bind(this), 500);
-
   private applyPatches(message: Message): void {
     const { validPatches } = extractPatchesFromMessage(message);
-
     let patchesApplied = false;
     validPatches.forEach((patch) => {
       const patchHash = this.generatePatchHash(patch);
@@ -72,7 +121,7 @@ export class LessonPlanManager {
     });
 
     if (patchesApplied) {
-      this.eventEmitter.emit("lessonPlanUpdated", this.lessonPlan);
+      this.emitLessonPlan();
     }
   }
 
@@ -82,26 +131,4 @@ export class LessonPlanManager {
     hash.update(patchString);
     return hash.digest("hex");
   }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function throttle<T extends (...args: any[]) => void>(
-  func: T,
-  delay: number,
-): T {
-  let timeoutId: number | null = null;
-  let lastArgs: Parameters<T> | null = null;
-
-  return ((...args: Parameters<T>) => {
-    lastArgs = args;
-    if (!timeoutId) {
-      timeoutId = window.setTimeout(() => {
-        if (lastArgs) {
-          func(...lastArgs);
-          lastArgs = null;
-        }
-        timeoutId = null;
-      }, delay);
-    }
-  }) as T;
 }
