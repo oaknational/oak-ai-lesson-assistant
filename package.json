@@ -40,7 +40,7 @@
     "@manypkg/cli": "^0.21.1",
     "@next/env": "14.2.15",
     "@oakai/prettier-config": "*",
-    "@prisma/client": "^5.13.0",
+    "@prisma/client": "^5.21.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
