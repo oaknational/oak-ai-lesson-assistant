@@ -83,6 +83,7 @@ describe("addCspHeaders", () => {
         devConsent: false,
         mux: true,
         vercel: false,
+        localhost: false,
       },
     };
   });
@@ -230,6 +231,7 @@ describe("buildCspHeaders", () => {
       devConsent: false,
       mux: true,
       vercel: false,
+      localhost: false,
     },
   };
 

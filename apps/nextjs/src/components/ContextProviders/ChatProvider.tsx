@@ -337,7 +337,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     } finally {
       isExecutingAction.current = false;
     }
-  }, [queuedUserAction, hasFinished, append, reload]);
+  }, [append, generateContinueAction, hasFinished, queuedUserAction, reload]);
 
   useEffect(() => {
     if (hasFinished) {

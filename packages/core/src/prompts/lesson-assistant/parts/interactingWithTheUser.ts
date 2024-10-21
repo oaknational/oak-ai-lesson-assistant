@@ -148,14 +148,10 @@ export const interactingWithTheUser = ({
 }: TemplateProps) => {
   const allSteps = lessonConstructionSteps(lessonPlan, relevantLessonPlans);
 
-  const formattedSteps = allSteps
-    .map((step, i) => [`STEP ${i + 1}`, step])
-    .join("\n\n");
-
   const step = allSteps[0]
     ? `${allSteps[0]?.title}\n\n${allSteps[0]?.content}`
     : "FINAL STEP: Respond to the user and help them edit the lesson plan";
-  console.log("Next lesson step", JSON.stringify(step, null, 2));
+  log.info("Prompt: next lesson step", JSON.stringify(step, null, 2));
 
   const parts = [
     `YOUR INSTRUCTIONS FOR INTERACTING WITH THE USER

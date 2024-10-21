@@ -10,10 +10,7 @@ import {
 } from "react";
 
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import {
-  camelCaseToSentenceCase,
-  camelCaseToTitleCase,
-} from "@oakai/core/src/utils/camelCaseConversion";
+import { camelCaseToTitleCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { OakBox, OakFlex, OakIcon, OakSpan } from "@oaknational/oak-components";
 import { Message } from "ai";
 import Link from "next/link";

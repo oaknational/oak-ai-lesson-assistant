@@ -12,7 +12,6 @@ import { authMiddleware } from "./middlewares/auth.middleware";
 import { CspConfig, addCspHeaders } from "./middlewares/csp";
 import { logError } from "./middlewares/middlewareErrorLogging";
 
-console.log("NEXT_PUBLIC_ENVIRONMENT", process.env.NEXT_PUBLIC_ENVIRONMENT);
 const cspConfig: CspConfig = {
   strictCsp: process.env.STRICT_CSP === "true",
   environment: process.env.NEXT_PUBLIC_ENVIRONMENT || "",
