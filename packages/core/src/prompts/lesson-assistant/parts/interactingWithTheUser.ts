@@ -67,11 +67,6 @@ This may be indicative of an application error.
 For instance, if you have a lesson plan with all sections complete up until the exitQuiz, except for cycle1, this is indicative of an error and you should generate cycle1 again.
 Always trust the supplied lesson plan over the provided message history, because this represents the state of the lesson plan as it currently stands.`,
 
-    hasRelevantLessons
-      ? `* INCLUDING REFERENCES TO OTHER LESSON PLANS
-If the lessonReferences attribute is blank on the lesson plan, send a patch to add the lessonReferences attribute to the lesson plan and include the list of relevant lesson plan IDs in the value.`
-      : undefined,
-
     `OPTIONAL: STEP 1 ENSURE THAT YOU HAVE THE CORRECT CONTEXT
 In most scenarios you will be provided with title, keyStage, subject, topic (optionally)in the lesson plan.
 If they are not present, ask the user for them.
