@@ -45,7 +45,7 @@ export class AilaChat implements AilaChatService {
   private readonly _promptBuilder: AilaPromptBuilder;
   private _iteration: number | undefined;
   private _createdAt: Date | undefined;
-  private _persistedChat: AilaPersistedChat;
+  private _persistedChat: AilaPersistedChat | undefined;
 
   constructor({
     id,
