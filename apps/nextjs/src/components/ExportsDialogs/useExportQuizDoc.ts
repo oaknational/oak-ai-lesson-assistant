@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { exportDocQuizSchema } from "@oakai/exports/browser";
 import { QuizDocInputData } from "@oakai/exports/src/schema/input.schema";
-import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
 import { ZodError } from "zod";
@@ -10,8 +9,7 @@ import { ZodError } from "zod";
 import { trpc } from "@/utils/trpc";
 
 import { ExportsHookProps } from "./exports.types";
-
-const log = aiLogger("exports");
+import { useExportsExistenceCheck } from "./useExportsExistenceCheck";
 
 export function useExportQuizDoc({
   onStart,
@@ -43,32 +41,26 @@ export function useExportQuizDoc({
 
   const checkForSnapShotAndPreloadQuery =
     trpc.exports.checkIfQuizDownloadExists.useMutation();
-  const [checked, setChecked] = useState(false);
-  const check = useCallback(async () => {
-    if (
-      debouncedParseResult?.success &&
-      debouncedParseResult.data &&
-      !checked
-    ) {
-      try {
-        checkForSnapShotAndPreloadQuery.mutate({
-          chatId,
-          lessonSnapshot: lesson,
-          data: debouncedParseResult.data,
-        });
-        setChecked(true);
-      } catch (error) {
-        log.error("Error during check:", error);
-      }
-    }
-  }, [
-    lesson,
-    debouncedParseResult?.success,
-    debouncedParseResult?.data,
+  const checkFn = useCallback(
+    (
+      args: Omit<
+        Parameters<typeof checkForSnapShotAndPreloadQuery.mutate>[0],
+        "lessonSnapshot"
+      >,
+    ) =>
+      checkForSnapShotAndPreloadQuery.mutate({
+        ...args,
+        lessonSnapshot: lesson,
+      }),
+    [lesson, checkForSnapShotAndPreloadQuery],
+  );
+  const check = useExportsExistenceCheck({
+    success: debouncedParseResult?.success,
+    data: debouncedParseResult?.data,
     chatId,
-    checkForSnapShotAndPreloadQuery,
-    checked,
-  ]);
+    messageId,
+    checkFn,
+  });
 
   useEffect(() => {
     check();
