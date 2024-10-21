@@ -65,6 +65,7 @@ export class PatchEnqueuer {
       type: "patch",
       reasoning: "generated",
       value: { op: "add", path, value },
+      status: "complete",
     };
   }
 

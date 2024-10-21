@@ -1,0 +1,8 @@
+{
+  "type": "llmMessage",
+  "patches": [],
+  "prompt": {
+    "type": "text",
+    "value": "If there's anything else you'd like to do, such as starting a new lesson plan or making adjustments to this one, just let me know. I'm here to assist you!"
+  }
+}

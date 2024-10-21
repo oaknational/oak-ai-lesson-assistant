@@ -1,0 +1,218 @@
+{"
+type":"
+ll
+m
+Message
+","patches":[
+{"
+type":"
+patch
+","reasoning":"
+The
+ Starter
+ Quiz
+ checks
+ pupils
+'
+ prior
+ knowledge
+ to
+ ensure
+ they
+ are
+ prepared
+ for
+ the
+ new
+ lesson
+ content
+.","
+value":{"
+type":"
+quiz
+","op":"
+add
+","path":"/
+starter
+Quiz
+","value":[
+{"
+question":"
+When
+ did
+ the
+ Romans
+ invade
+ Britain
+?
+","answers":["
+AD
+ 
+43
+"],"distractors":["
+AD
+ 
+410
+","
+AD
+ 
+106
+6
+"]},{"
+question":"
+What
+ was
+ Roman
+ Britain
+ a
+ part
+ of
+?
+","answers":["
+The
+ Roman
+ Empire
+"],"distractors":["
+The
+ British
+ Empire
+","
+The
+ Greek
+ Empire
+"]},{"
+question":"
+What
+ did
+ the
+ Romans
+ build
+ in
+ Britain
+?
+","answers":["
+Road
+s
+ and
+ towns
+"],"distractors":["
+Cast
+les
+ and
+ cat
+hed
+r
+als
+","
+Sk
+yscr
+apers
+ and
+ bridges
+"]},{"
+question":"
+What
+ did
+ the
+ Romans
+ introduce
+ to
+ Britain
+?
+","answers":["
+New
+ technologies
+ and
+ ideas
+"],"distractors":["
+New
+ languages
+ and
+ alph
+abets
+","
+New
+ art
+ styles
+ and
+ music
+"]},{"
+question":"
+Who
+ protected
+ Britain
+ from
+ invas
+ions
+?
+","answers":["
+Roman
+ soldiers
+"],"distractors":["
+S
+axon
+ warriors
+","
+V
+iking
+ explorers
+"]},{"
+question":"
+Which
+ groups
+ invaded
+ Britain
+ after
+ the
+ Romans
+?
+","answers":["
+The
+ Sax
+ons
+"],"distractors":["
+The
+ Norm
+ans
+","
+The
+ Vikings
+"]}]},"status":"
+complete
+"}],"prompt":{"
+type":"
+text
+","value":"
+The
+ Starter
+ Quiz
+ is
+ ready
+,
+ focusing
+ on
+ the
+ prior
+ knowledge
+ needed
+ for
+ the
+ lesson
+.
+ Now
+,
+ let's
+ develop
+ the
+ learning
+ cycles
+ to
+ guide
+ the
+ main
+ content
+ of
+ the
+ lesson
+."
+}}

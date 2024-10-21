@@ -9,25 +9,29 @@ import React, {
 } from "react";
 import { toast } from "react-hot-toast";
 
-import { redirect, usePathname, useRouter } from "#next/navigation";
+import { usePathname, useRouter } from "#next/navigation";
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import {
   AilaPersistedChat,
+  LessonPlanKeys,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { camelCaseToTitleCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { Moderation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { Message, nanoid } from "ai";
 import { ChatRequestOptions, CreateMessage } from "ai";
 import { useChat } from "ai/react";
-import { useTemporaryLessonPlanWithStreamingEdits } from "hooks/useTemporaryLessonPlanWithStreamingEdits";
+import { useLessonPlanScrollManagement } from "hooks/useLessonPlanScrollManagement";
 
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { nextSectionsToGenerate } from "@/lib/lessonPlan/nextSectionToGenerate";
+import { useLessonPlanManager } from "@/lib/lessonPlan/useLessonPlanManager";
 import { trpc } from "@/utils/trpc";
 
 import {
@@ -43,28 +47,37 @@ import {
 const log = aiLogger("chat");
 
 export type ChatContextProps = {
-  id: string;
-  chat: AilaPersistedChat | undefined;
-  initialModerations: Moderation[];
-  toxicModeration: PersistedModerationBase | null;
-  lastModeration: PersistedModerationBase | null;
-  messages: Message[];
-  isLoading: boolean;
-  isStreaming: boolean;
-  lessonPlan: LooseLessonPlan;
   ailaStreamingStatus: AilaStreamingStatus;
   append: (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions | undefined,
   ) => Promise<string | null | undefined>;
-  reload: () => void;
-  stop: () => void;
-  input: string;
-  setInput: React.Dispatch<React.SetStateAction<string>>;
+  chat: AilaPersistedChat | undefined | null;
   chatAreaRef: React.RefObject<HTMLDivElement>;
+  executeQueuedAction: () => Promise<void>;
+  id: string;
+  initialModerations: Moderation[];
+  input: string;
+  isLoading: boolean;
+  isStreaming: boolean;
+  iteration: number | undefined;
+  lastModeration: PersistedModerationBase | null;
+  lessonPlan: LooseLessonPlan;
+  messages: Message[];
   queuedUserAction: string | null;
   queueUserAction: (action: string) => void;
-  executeQueuedAction: () => Promise<void>;
+  reload: () => void;
+  sectionRefs: Record<
+    LessonPlanKeys,
+    React.MutableRefObject<HTMLDivElement | null>
+  >;
+  setInput: React.Dispatch<React.SetStateAction<string>>;
+  setSectionRef: (section: LessonPlanKeys, el: HTMLDivElement | null) => void;
+  stop: () => void;
+  streamingSection: LessonPlanKeys | undefined;
+  streamingSectionCompleted: LessonPlanKeys | undefined;
+  streamingSections: LessonPlanKeys[] | undefined;
+  toxicModeration: PersistedModerationBase | null;
 };
 
 const ChatContext = createContext<ChatContextProps | null>(null);
@@ -73,16 +86,6 @@ export type ChatProviderProps = {
   id: string;
   children: React.ReactNode;
 };
-
-const messageHashes = {};
-
-function clearHashCache() {
-  for (const key in messageHashes) {
-    if (messageHashes.hasOwnProperty(key)) {
-      delete messageHashes[key];
-    }
-  }
-}
 
 function useActionMessages() {
   const analytics = useAnalytics();
@@ -159,6 +162,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const hasAppendedInitialMessage = useRef<boolean>(false);
 
   const lessonPlanSnapshot = useRef<LooseLessonPlan>({});
+  const { lessonPlanManager, lessonPlan, iteration } = useLessonPlanManager();
 
   const [overrideLessonPlan, setOverrideLessonPlan] = useState<
     LooseLessonPlan | undefined
@@ -214,9 +218,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       if (hasFinished) {
         setHasFinished(false);
       }
-      if (!path?.includes("chat/[id]")) {
-        window.history.pushState({}, "", `/aila/${id}`);
-      }
     },
     onFinish(response) {
       log.info("Chat: On Finish", new Date().toISOString(), {
@@ -233,14 +234,38 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       }
 
       invokeActionMessages(response.content);
-
-      trpcUtils.chat.appSessions.getChat.invalidate({ id });
-
+      setStreamingSectionCompleted(undefined);
       setHasFinished(true);
       shouldTrackStreamFinished.current = true;
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
     },
   });
+
+  useEffect(() => {
+    if (chat?.lessonPlan) {
+      log.info(
+        "Setting lesson plan from chat",
+        chat?.iteration,
+        chat.lessonPlan,
+      );
+      lessonPlanManager.setLessonPlanWithDelay(chat.lessonPlan, chat.iteration);
+    }
+  }, [chat?.lessonPlan, chat?.iteration, lessonPlanManager]);
+
+  useEffect(() => {
+    const loggingLessonPlan = chat?.lessonPlan;
+    if (loggingLessonPlan) {
+      const keys = (Object.keys(loggingLessonPlan) as LessonPlanKeys[]).filter(
+        (k) => loggingLessonPlan[k],
+      );
+      log.info(
+        "Updated chat from server",
+        chat?.iteration,
+        `${keys.length} keys`,
+        keys.join("|"),
+      );
+    }
+  }, [chat?.lessonPlan, chat?.iteration]);
 
   useEffect(() => {
     /**
@@ -269,14 +294,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     });
   }, [messages]);
 
-  const { tempLessonPlan, partialPatches, validPatches } =
-    useTemporaryLessonPlanWithStreamingEdits({
-      lessonPlan: chat?.lessonPlan ?? {},
-      messages,
-      isStreaming: !hasFinished,
-      messageHashes,
-    });
-
   // Handle queued user actions and messages
 
   const [queuedUserAction, setQueuedUserAction] = useState<string | null>(null);
@@ -285,6 +302,23 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const queueUserAction = useCallback((action: string) => {
     setQueuedUserAction(action);
   }, []);
+
+  const generateContinueAction = useCallback(() => {
+    const sectionsToGenerate = nextSectionsToGenerate(lessonPlan);
+    if (sectionsToGenerate.length === 0) {
+      return "Continue - check the lesson plan for consistency and correctness";
+    } else {
+      const sentenceCaseSections = sectionsToGenerate
+        .map((section) => camelCaseToTitleCase(section))
+        .join(", ")
+        .replace(/, ([^,]*)$/, " and $1");
+      return `Continue. Generate the ${sentenceCaseSections} section${sectionsToGenerate.length > 1 ? "s" : ""}.`;
+    }
+  }, [
+    // Ensure this re-renders with any changes to the lesson plan
+    JSON.stringify(Object.keys(lessonPlan).filter((k) => lessonPlan[k])),
+    lessonPlan,
+  ]);
 
   const executeQueuedAction = useCallback(async () => {
     if (!queuedUserAction || !hasFinished || isExecutingAction.current) return;
@@ -295,8 +329,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
     try {
       if (actionToExecute === "continue") {
+        const continueAction = generateContinueAction();
         await append({
-          content: "Continue",
+          content: continueAction,
           role: "user",
         });
       } else if (actionToExecute === "regenerate") {
@@ -313,7 +348,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     } finally {
       isExecutingAction.current = false;
     }
-  }, [queuedUserAction, hasFinished, append, reload]);
+  }, [append, generateContinueAction, hasFinished, queuedUserAction, reload]);
 
   useEffect(() => {
     if (hasFinished) {
@@ -343,33 +378,34 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     }
   }, [chat?.startingMessage, append, router, path, hasAppendedInitialMessage]);
 
-  // Clear the hash cache each completed message
-  useEffect(() => {
-    clearHashCache();
-  }, [hasFinished]);
-
   /**
    *  Update the lesson plan if the chat has finished updating
    *  Fetch the state from the last "state" command in the most recent assistant message
    */
   useEffect(() => {
     if (!hasFinished || !messages) return;
-    trpcUtils.chat.appSessions.getChat.invalidate({ id });
+    const timeout = setTimeout(() => {
+      // Delay fetching the lesson plan to ensure the UI has updated
+      trpcUtils.chat.appSessions.getChat.invalidate({ id });
+    }, 2000);
     if (shouldTrackStreamFinished.current) {
       lessonPlanTracking.onStreamFinished({
         prevLesson: lessonPlanSnapshot.current,
-        nextLesson: tempLessonPlan,
+        nextLesson: lessonPlan,
         messages,
       });
       shouldTrackStreamFinished.current = false;
     }
+    return () => {
+      clearTimeout(timeout);
+    };
   }, [
     id,
     trpcUtils.chat.appSessions.getChat,
     hasFinished,
     messages,
     lessonPlanTracking,
-    tempLessonPlan,
+    lessonPlan,
   ]);
 
   /**
@@ -383,7 +419,37 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       ? lastModeration
       : toxicInitialModeration;
 
-  const ailaStreamingStatus = useAilaStreamingStatus({ isLoading, messages });
+  const {
+    status: ailaStreamingStatus,
+    streamingSection,
+    streamingSections,
+  } = useAilaStreamingStatus({ isLoading, messages });
+
+  const [streamingSectionCompleted, setStreamingSectionCompleted] = useState<
+    LessonPlanKeys | undefined
+  >(undefined);
+
+  const { sectionRefs, setSectionRef } = useLessonPlanScrollManagement(
+    streamingSection,
+    streamingSectionCompleted,
+  );
+
+  const workingMessage = useRef<Message | undefined>(undefined);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      workingMessage.current = messages[messages.length - 1];
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (streamingSection !== streamingSectionCompleted) {
+      if (workingMessage.current) {
+        lessonPlanManager.onMessageUpdated(workingMessage.current);
+      }
+      setStreamingSectionCompleted(streamingSection);
+    }
+  }, [streamingSection, streamingSectionCompleted, lessonPlanManager]);
 
   useEffect(() => {
     if (toxicModeration) {
@@ -394,60 +460,64 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const value: ChatContextProps = useMemo(
     () => ({
-      id,
-      chat: chat ?? undefined,
-      initialModerations: moderations ?? [],
-      toxicModeration,
-      lessonPlan: overrideLessonPlan ?? tempLessonPlan,
-      hasFinished,
-      hasAppendedInitialMessage,
-      chatAreaRef,
-      append,
-      messages,
       ailaStreamingStatus,
+      append,
+      chat,
+      chatAreaRef,
+      executeQueuedAction,
+      hasAppendedInitialMessage,
+      hasFinished,
+      id,
+      initialModerations: moderations ?? [],
+      input,
       isLoading,
       isStreaming: !hasFinished,
+      iteration,
       lastModeration,
-      reload,
-      stop,
-      input,
-      setInput,
-      partialPatches,
-      validPatches,
+      lessonPlan: overrideLessonPlan ?? lessonPlan,
+      messages,
       queuedUserAction,
       queueUserAction,
-      executeQueuedAction,
+      reload,
+      setInput,
+      stop,
+      streamingSection,
+      streamingSections,
+      streamingSectionCompleted,
+      toxicModeration,
+      sectionRefs,
+      setSectionRef,
     }),
     [
-      id,
-      chat,
-      moderations,
-      toxicModeration,
-      tempLessonPlan,
-      hasFinished,
-      hasAppendedInitialMessage,
-      chatAreaRef,
-      messages,
       ailaStreamingStatus,
-      isLoading,
-      lastModeration,
-      reload,
-      stop,
-      input,
-      setInput,
       append,
-      partialPatches,
-      validPatches,
+      chat,
+      chatAreaRef,
+      executeQueuedAction,
+      hasAppendedInitialMessage,
+      hasFinished,
+      id,
+      input,
+      isLoading,
+      iteration,
+      lastModeration,
+      lessonPlan,
+      messages,
+      moderations,
       overrideLessonPlan,
       queuedUserAction,
       queueUserAction,
-      executeQueuedAction,
+      reload,
+      setInput,
+      stop,
+      streamingSection,
+      streamingSections,
+      streamingSectionCompleted,
+      toxicModeration,
+      sectionRefs,
+      setSectionRef,
     ],
   );
-
-  if (!chat && !isChatLoading) {
-    redirect("/aila");
-  }
 
   return (
     <ChatContext.Provider value={value}>

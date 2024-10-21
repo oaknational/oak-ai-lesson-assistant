@@ -1,0 +1,68 @@
+{"
+type":"
+ll
+m
+Message
+","patches":[]
+,"prompt":{"
+type":"
+text
+","value":"
+The
+ lesson
+ plan
+ is
+ fully
+ prepared
+ and
+ ready
+ for
+ use
+.
+ If
+ you
+ need
+ any
+ further
+ edits
+ or
+ additions
+,
+ feel
+ free
+ to
+ ask
+.
+ Otherwise
+,
+ you
+ can
+ download
+ or
+ share
+ your
+ lesson
+ now
+.
+ \
+n
+\n
+Thank
+ you
+ for
+ using
+ the
+ lesson
+ planning
+ tool
+,
+ and
+ I
+ hope
+ you
+ have
+ a
+ great
+ lesson
+!"
+}}
