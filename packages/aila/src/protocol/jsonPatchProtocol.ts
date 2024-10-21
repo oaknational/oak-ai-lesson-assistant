@@ -512,8 +512,13 @@ export type MessagePart = z.infer<typeof MessagePartSchema>;
 
 export const LLMMessageSchema = z.object({
   type: z.literal("llmMessage"),
+  sectionsToEdit: z
+    .array(z.string())
+    .describe("List the sections which will be affected by this edit"),
   patches: z.array(PatchDocumentSchema),
-  prompt: TextDocumentSchema,
+  prompt: TextDocumentSchema.describe(
+    "Respond to the user by asking if they are happy with the changes you have made if any, and prompt them with what they can do next",
+  ),
   status: z.literal("complete"),
 });
 

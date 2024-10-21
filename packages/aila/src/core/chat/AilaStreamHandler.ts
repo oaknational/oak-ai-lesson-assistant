@@ -96,6 +96,7 @@ export class AilaStreamHandler {
       await this.fetchChunkFromStream();
     } catch (error) {
       await this._chat.generationFailed(error);
+      throw error;
     }
   }
 

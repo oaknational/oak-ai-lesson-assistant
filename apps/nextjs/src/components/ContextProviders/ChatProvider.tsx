@@ -314,7 +314,11 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
         .replace(/, ([^,]*)$/, " and $1");
       return `Continue. Generate the ${sentenceCaseSections} section${sectionsToGenerate.length > 1 ? "s" : ""}.`;
     }
-  }, [lessonPlan]);
+  }, [
+    // Ensure this re-renders with any changes to the lesson plan
+    JSON.stringify(Object.keys(lessonPlan).filter((k) => lessonPlan[k])),
+    lessonPlan,
+  ]);
 
   const executeQueuedAction = useCallback(async () => {
     if (!queuedUserAction || !hasFinished || isExecutingAction.current) return;

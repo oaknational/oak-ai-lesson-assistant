@@ -111,13 +111,11 @@ export class Aila implements AilaServices {
   public async initialise() {
     this.checkUserIdPresentIfPersisting();
     await this.loadChatIfPersisting();
-    if (this._chat) {
-      const persistedLessonPlan = this._chat.persistedChat?.lessonPlan;
-      if (persistedLessonPlan) {
-        this._lesson.setPlan(persistedLessonPlan);
-      }
-      await this._lesson.setUpInitialLessonPlan(this._chat.messages);
+    const persistedLessonPlan = this._chat.persistedChat?.lessonPlan;
+    if (persistedLessonPlan) {
+      this._lesson.setPlan(persistedLessonPlan);
     }
+    await this._lesson.setUpInitialLessonPlan(this._chat.messages);
   }
 
   private initialiseOptions(options?: AilaOptions) {
