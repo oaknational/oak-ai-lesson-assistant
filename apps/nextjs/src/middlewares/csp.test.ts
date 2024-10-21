@@ -1,3 +1,5 @@
+// To re-generate the snapshots run:
+// pnpm --filter @oakai/nextjs test -- -u src/middlewares/csp.test.ts
 import { NextRequest } from "next/server";
 
 import { addCspHeaders, CspConfig } from "./csp";
