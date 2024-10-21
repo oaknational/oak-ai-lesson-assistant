@@ -11,6 +11,7 @@ import {
   exportQuizDesignerSlides,
 } from "@oakai/exports";
 import { exportableQuizAppStateSchema } from "@oakai/exports/src/schema/input.schema";
+import { aiLogger } from "@oakai/logger";
 import { LessonExportType } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
 import { kv } from "@vercel/kv";
@@ -23,6 +24,8 @@ import { exportQuizDoc } from "../export/exportQuizDoc";
 import { exportWorksheets } from "../export/exportWorksheets";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
+
+const log = aiLogger("exports");
 
 export async function ailaSaveExport({
   auth,
@@ -209,7 +212,7 @@ export const exportsRouter = router({
           return output;
         }
       } catch (error) {
-        console.error("Error checking if download exists:", error);
+        log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
         return {
           error,
@@ -237,7 +240,6 @@ export const exportsRouter = router({
           trigger: "EXPORT_BY_USER",
           messageId,
         });
-
         // find the latest export for this snapshot
         const exportData = await ailaGetExportBySnapshotId({
           prisma: ctx.prisma,
@@ -252,7 +254,7 @@ export const exportsRouter = router({
           return output;
         }
       } catch (error) {
-        console.error("Error checking if download exists:", error);
+        log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
         return {
           error,
@@ -329,7 +331,7 @@ export const exportsRouter = router({
           snapshotId: "lessonSnapshot.id",
           userEmail,
           onStateChange: (state) => {
-            console.log(state);
+            log.info(state);
 
             Sentry.addBreadcrumb({
               category: "exportWorksheetSlides",
@@ -433,7 +435,7 @@ export const exportsRouter = router({
           return output;
         }
       } catch (error) {
-        console.error("Error checking if download exists:", error);
+        log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
         return {
           error,
@@ -495,7 +497,7 @@ export const exportsRouter = router({
           return output;
         }
       } catch (error) {
-        console.error("Error checking if download exists:", error);
+        log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
         return {
           error,
@@ -562,7 +564,7 @@ export const exportsRouter = router({
           return output;
         }
       } catch (error) {
-        console.error("Error checking if download exists:", error);
+        log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
         return {
           error,
@@ -583,7 +585,7 @@ export const exportsRouter = router({
       try {
         return await exportLessonPlan({ input, ctx });
       } catch (error) {
-        console.error("Error checking if download exists:", error);
+        log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
         return {
           error,
@@ -677,7 +679,7 @@ export const exportsRouter = router({
 
         return allExports;
       } catch (error) {
-        console.error("Error generating all asset exports:", error);
+        log.error("Error generating all asset exports:", error);
         return {
           error,
           message: "Failed to generate all asset exports",
@@ -713,7 +715,7 @@ export const exportsRouter = router({
         } = input;
 
         if (!userEmail) {
-          console.error("User email not found");
+          log.error("User email not found");
           return false;
         }
 
@@ -743,7 +745,7 @@ Oak National Academy`,
 
         return emailSent ? true : false;
       } catch (error) {
-        console.error("Error sending email:", error);
+        log.error("Error sending email:", error);
         return false;
       }
     }),
@@ -763,7 +765,7 @@ Oak National Academy`,
         const { title, link, lessonTitle } = input;
 
         if (!userEmail) {
-          console.error("User email not found");
+          log.error("User email not found");
           return false;
         }
 
@@ -787,7 +789,7 @@ Oak National Academy`,
 
         return emailSent ? true : false;
       } catch (error) {
-        console.error("Error sending email:", error);
+        log.error("Error sending email:", error);
         return false;
       }
     }),
@@ -795,8 +797,8 @@ Oak National Academy`,
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       const data = await kv.get(input.id);
-      console.log("***id", input.id);
-      console.log("***data", data);
+      log.info("***id", input.id);
+      log.info("***data", data);
       return data;
     }),
   checkDownloadAllStatus: protectedProcedure

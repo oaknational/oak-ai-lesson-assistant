@@ -4,6 +4,7 @@ import {
   ModerationResult,
   moderationResponseSchema,
 } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { aiLogger } from "@oakai/logger";
 import OpenAI from "openai";
 import {
   ChatCompletion,
@@ -17,6 +18,8 @@ import {
   DEFAULT_MODERATION_TEMPERATURE,
 } from "../../../constants";
 import { AilaServices } from "../../../core";
+
+const log = aiLogger("aila:moderation");
 
 export type OpenAiModeratorArgs = {
   chatId: string;
@@ -121,7 +124,8 @@ export class OpenAiModerator extends AilaModerator {
       },
     );
 
-    console.log(
+    const log = aiLogger("aila:moderation:response");
+    log.info(
       "Moderation response: ",
       JSON.stringify(moderationResponse, null, 2),
     );
@@ -171,7 +175,7 @@ export class OpenAiModerator extends AilaModerator {
     try {
       return await this._moderate(input, 0);
     } catch (error) {
-      console.log("Moderation error: ", error);
+      log.error("Moderation error: ", error);
       if (error instanceof AilaModerationError) {
         throw error;
       }

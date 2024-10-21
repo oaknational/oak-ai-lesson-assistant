@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import type { AilaUserModificationAction } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
 import { TextArea } from "@radix-ui/themes";
 
@@ -11,6 +12,8 @@ import { trpc } from "@/utils/trpc";
 import ActionButton from "./action-button";
 import { DropDownFormWrapper, FeedbackOption } from "./drop-down-form-wrapper";
 import { SmallRadioButton } from "./small-radio-button";
+
+const log = aiLogger("chat");
 
 const modifyOptions = [
   {
@@ -157,7 +160,7 @@ function handleLabelText({
   text: string;
   section: string;
 }): string {
-  console.log("section", section);
+  log.info("section", section);
   if (
     section === "Misconceptions" ||
     section === "Key learning points" ||

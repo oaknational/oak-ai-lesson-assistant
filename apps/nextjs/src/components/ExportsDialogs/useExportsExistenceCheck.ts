@@ -1,6 +1,9 @@
 import { useCallback, useState } from "react";
 
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/react";
+
+const log = aiLogger("exports");
 
 export const useExportsExistenceCheck = <T>({
   success,
@@ -33,6 +36,7 @@ export const useExportsExistenceCheck = <T>({
         const error = new Error("Failed to check for existing export", {
           cause,
         });
+        log.error(error);
         Sentry.captureException(error, {
           extra: { chatId, data, messageId },
         });

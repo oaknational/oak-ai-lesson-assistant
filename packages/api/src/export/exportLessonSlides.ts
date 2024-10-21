@@ -4,6 +4,7 @@ import { LessonSnapshots } from "@oakai/core";
 import { PrismaClientWithAccelerate } from "@oakai/db";
 import { exportSlidesFullLesson } from "@oakai/exports";
 import { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 
 import {
@@ -12,6 +13,8 @@ import {
   OutputSchema,
   reportErrorResult,
 } from "../router/exports";
+
+const log = aiLogger("exports");
 
 export async function exportLessonSlides({
   input,
@@ -82,7 +85,7 @@ export async function exportLessonSlides({
     snapshotId: lessonSnapshot.id,
     userEmail,
     onStateChange: (state) => {
-      console.log(state);
+      log.info(state);
 
       Sentry.addBreadcrumb({
         category: "exportWorksheetDocs",
