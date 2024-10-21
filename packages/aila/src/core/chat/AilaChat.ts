@@ -4,7 +4,6 @@ import {
   subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
 import invariant from "tiny-invariant";
-import { z } from "zod";
 
 import { AilaChatService, AilaError, AilaServices } from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
@@ -16,8 +15,6 @@ import { generateMessageId } from "../../helpers/chat/generateMessageId";
 import {
   JsonPatchDocumentOptional,
   LLMMessageSchema,
-  LLMPatchDocumentSchema,
-  TextDocumentSchema,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
 import {
