@@ -24,6 +24,15 @@ test("Modify a lesson plan", async ({ page }) => {
     const aliChat = page.locator("text=Make the Learning outcome easier");
     await expect(aliChat).toBeVisible();
   });
+  await test.step("Select 'other' additional resource", async () => {
+    const modifyButtons = page.locator("text=Modify");
+    await modifyButtons.first().click();
+    const radioButtonOther = page.locator('input[type="radio"][value="OTHER"]');
+    await expect(radioButtonOther).toBeVisible();
+    await radioButtonOther.click();
+    const otherInput = page.getByTestId("modify-other-text-area");
+    await expect(otherInput).toBeVisible();
+  });
 
   await test.step("Select an additional resource", async () => {
     await page.locator("text=Add additional materials").click();
@@ -31,5 +40,14 @@ test("Modify a lesson plan", async ({ page }) => {
     await expect(additionalMaterial).toBeVisible();
     await additionalMaterial.click();
     await page.locator("text=Add materials").click();
+  });
+
+  await test.step("Select 'other' additional resource", async () => {
+    await page.locator("text=Add additional materials").click();
+    const radioButtonOther = page.locator('input[type="radio"][value="OTHER"]');
+    await expect(radioButtonOther).toBeVisible();
+    await radioButtonOther.click();
+    const otherInput = page.getByTestId("modify-other-text-area");
+    await expect(otherInput).toBeVisible();
   });
 });

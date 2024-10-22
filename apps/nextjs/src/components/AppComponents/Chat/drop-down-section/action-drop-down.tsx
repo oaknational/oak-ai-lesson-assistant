@@ -84,7 +84,10 @@ export const ActionDropDown = ({
         {selectedRadio?.label === "Other" && (
           <>
             <OakP $font="body-3">{userSuggestionTitle}</OakP>
-            <TextArea onChange={(e) => setUserFeedbackText(e.target.value)} />
+            <TextArea
+              data-testid={"modify-other-text-area"}
+              onChange={(e) => setUserFeedbackText(e.target.value)}
+            />
           </>
         )}
       </OakRadioGroup>
