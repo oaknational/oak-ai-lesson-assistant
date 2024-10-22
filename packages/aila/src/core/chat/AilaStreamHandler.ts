@@ -47,6 +47,9 @@ export class AilaStreamHandler {
       this._isStreaming = false;
       try {
         await this._chat.complete();
+      } catch (e) {
+        this._chat.aila.errorReporter?.reportError(e);
+        throw new AilaChatError("Chat completion failed", { cause: e });
       } finally {
         this.closeController();
       }
