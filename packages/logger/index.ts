@@ -1,27 +1,79 @@
-import pino from "pino";
+import debug from "debug";
 
-const logger = pino({
-  level: process.env.NEXT_PUBLIC_PINO_LOG_LEVEL || "info",
-  browser: {
-    write(obj) {
-      const msg = "msg" in obj && obj.msg;
-      console.warn(
-        `Invalid use of @oakai/logger, use logger/browser, logMessage=${msg}`,
-      );
-    },
-  },
-  formatters: {
-    // Pino logs the level as a syslog number, so make sure
-    // it sends error/warn/info etc instead
-    level: (label) => {
-      return { level: label.toUpperCase() };
-    },
-  },
-  // Pino's default key of `time` is ignored by datadog, so explicitly set
-  // `timestamp`
-  timestamp: () => `,"timestamp":"${new Date(Date.now()).toISOString()}"`,
-});
+import structuredLogger, { StructuredLogger } from "./structuredLogger";
 
-export type Logger = typeof logger;
+if (typeof window !== "undefined") {
+  debug.enable("ai:*");
+}
 
-export default logger;
+const debugBase = debug("ai");
+
+type ChildKey =
+  | "admin"
+  | "aila"
+  | "aila:analytics"
+  | "aila:errors"
+  | "aila:llm"
+  | "aila:moderation"
+  | "aila:moderation:response"
+  | "aila:persistence"
+  | "aila:prompt"
+  | "aila:protocol"
+  | "aila:rag"
+  | "aila:testing"
+  | "analytics"
+  | "app"
+  | "auth"
+  | "chat"
+  | "cloudinary"
+  | "consent"
+  | "db"
+  | "demo"
+  | "exports"
+  | "feature-flags"
+  | "feedback"
+  | "fixtures"
+  | "generation"
+  | "ingest"
+  | "inngest"
+  | "judgements"
+  | "lessons"
+  | "middleware:auth"
+  | "moderation"
+  | "prompts"
+  | "qd"
+  | "rag"
+  | "rate-limiting"
+  | "snippets"
+  | "testing"
+  | "tracing"
+  | "transcripts"
+  | "trpc"
+  | "ui";
+
+/**
+ * The AI logger uses namespaces so that we can selectively toggle noisy logs.
+ * Logs are selected with the DEBUG environment variable.
+ * Error logs are always shown.
+ *
+ * @example Include all logs except prisma
+ * DEBUG=ai:*,-ai:db
+ *
+ * @example Usage in a module
+ * import { aiLogger } from "@ai-jsx/logger";
+ *
+ * const log = aiLogger("db");
+ * log.info("Hello world");
+ */
+export function aiLogger(childKey: ChildKey) {
+  const debugLogger = debugBase.extend(childKey);
+
+  return {
+    info: debugLogger,
+    warn: debugLogger,
+    error: structuredLogger.error.bind(structuredLogger),
+  };
+}
+
+export { structuredLogger };
+export type { StructuredLogger };

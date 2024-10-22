@@ -1,3 +1,5 @@
+import { aiLogger } from "@oakai/logger";
+
 import { splitJsonlByRowsOrSize } from "../utils/splitJsonlByRowsOrSize";
 import { OPEN_AI_BATCH_MAX_ROWS, OPEN_AI_BATCH_MAX_SIZE_MB } from "./constants";
 import { getCustomIdsFromJsonlFile } from "./getCustomIdsFromJsonlFile";
@@ -7,6 +9,8 @@ import {
 } from "./submitOpenAiBatch";
 import { uploadOpenAiBatchFile } from "./uploadOpenAiBatchFile";
 import { GetBatchFileLine, writeBatchFile } from "./writeBatchFile";
+
+const log = aiLogger("ingest");
 
 export async function startBatch<T>({
   ingestId,
@@ -35,6 +39,7 @@ export async function startBatch<T>({
   });
 
   for (const filePath of filePaths) {
+    log.info(`Submitting batch for ${filePath}`);
     const { file } = await uploadOpenAiBatchFile({
       filePath,
     });
@@ -47,6 +52,7 @@ export async function startBatch<T>({
       filePath,
     });
 
+    log.info(`Submitted batch ${openaiBatch.id} for ${filePath}`);
     await onSubmitted({ openaiBatchId: openaiBatch.id, filePath, customIds });
   }
 }

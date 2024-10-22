@@ -4,6 +4,7 @@ const {
   RELEASE_STAGE_PRODUCTION,
   RELEASE_STAGE_TESTING,
 } = require("./scripts/build_config_helpers.js");
+const path = require("path");
 
 const { PHASE_PRODUCTION_BUILD, PHASE_TEST } = require("next/constants");
 
@@ -40,10 +41,9 @@ const getConfig = async (phase) => {
 
     isProductionBuild = releaseStage === RELEASE_STAGE_PRODUCTION;
     appVersion = getAppVersion({ isProductionBuild });
-    console.log(`
-      
-      Found release stage: "${releaseStage}"`);
-    console.log(`Found app version: "${appVersion}"`);
+    console.log(
+      `Release stage: "${releaseStage}". App version: "${appVersion}"`,
+    );
   }
 
   /** @type {import('next').NextConfig} */
@@ -54,6 +54,29 @@ const getConfig = async (phase) => {
        * @see https://docs.sentry.io/platforms/javascript/guides/nextjs/migration/v7-to-v8/#updated-sdk-initialization
        */
       instrumentationHook: true,
+      serverComponentsExternalPackages: [`require-in-the-middle`],
+      turbo: {
+        resolveAlias: {
+          "#next/navigation": {
+            storybook: path.join(
+              __dirname,
+              "src",
+              "mocks",
+              "next",
+              "navigation",
+            ),
+            default: "next/navigation",
+          },
+          "#oakai/db": {
+            storybook: path.join(__dirname, "src", "mocks", "oakai", "db"),
+            default: "@oakai/db",
+          },
+          "#clerk/nextjs": {
+            storybook: path.join(__dirname, "src", "mocks", "clerk", "nextjs"),
+            default: "@clerk/nextjs",
+          },
+        },
+      },
     },
     reactStrictMode: true,
     swcMinify: true,

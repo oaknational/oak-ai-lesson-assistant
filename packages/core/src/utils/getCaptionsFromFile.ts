@@ -1,5 +1,8 @@
 import { Storage } from "@google-cloud/storage";
+import { aiLogger } from "@oakai/logger";
 import { Cue, WebVTTParser } from "webvtt-parser";
+
+const log = aiLogger("transcripts");
 
 const key = process.env.GOOGLE_STORAGE_BUCKET_KEY;
 
@@ -65,7 +68,7 @@ export const getCaptionsFromFile = async (fileName: string) => {
     const tree = parser.parse(file, "metadata");
 
     if (tree.errors.length) {
-      console.error(
+      log.error(
         `Error parsing captions file: ${fileName}, errors: ${JSON.stringify(
           tree.errors,
         )}`,
@@ -120,7 +123,7 @@ export async function getFileFromBucket(bucketName: string, fileName: string) {
     const contents = await bucket.file(fileName).download();
     return contents.toString();
   } catch (err) {
-    console.error(
+    log.error(
       `Error fetching file: ${fileName} from bucket: ${bucketName}. Error: ${err}`,
     );
     return;

@@ -1,21 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 
 function generateNonce(): string {
   if (typeof crypto !== "undefined" && crypto.getRandomValues) {
     const array = new Uint8Array(16);
     crypto.getRandomValues(array);
     return btoa(String.fromCharCode.apply(null, array as unknown as number[]));
-  } else if (typeof require !== "undefined") {
-    // We are running this in a test Node.js environment
-    // for testing purposes
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const crypto = require("crypto");
-    return crypto.randomBytes(16).toString("base64");
   } else {
-    // Fallback for environments where neither is available
-    throw new Error(
-      "Unable to generate nonce: No secure random number generator available",
-    );
+    // Use uuid library to generate a random value
+    return uuidv4();
   }
 }
 
