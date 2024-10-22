@@ -23,7 +23,6 @@ type DropDownProps = {
   >;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  userFeedbackText: string;
   setUserFeedbackText: (text: string) => void;
   handleSubmit: (
     option: FeedbackOption<AilaUserModificationAction>,

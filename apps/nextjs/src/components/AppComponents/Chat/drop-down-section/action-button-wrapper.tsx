@@ -91,7 +91,6 @@ const ActionButtonWrapper = ({
           setSelectedRadio={setSelectedRadio}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          userFeedbackText={userFeedbackText}
           setUserFeedbackText={setUserFeedbackText}
           handleSubmit={handleSubmit}
           buttonText={buttonText}
