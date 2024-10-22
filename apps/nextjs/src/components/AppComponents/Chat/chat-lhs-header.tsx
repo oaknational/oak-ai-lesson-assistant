@@ -42,7 +42,7 @@ const ChatLhsHeader = ({
           New lesson
         </ChatButton>
       </div>
-      <div className={`${isDemoUser && `mt-19`} flex justify-end sm:hidden`}>
+      <div className={`${isDemoUser && `mt-16`} flex justify-end sm:hidden`}>
         <button
           onClick={() => setShowLessonMobile(!showLessonMobile)}
           className="flex items-center gap-5"

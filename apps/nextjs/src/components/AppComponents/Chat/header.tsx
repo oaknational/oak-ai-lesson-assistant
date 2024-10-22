@@ -44,8 +44,8 @@ export function Header() {
           $ph={"inner-padding-xl"}
           data-testid="demo-banner"
         >
-          <OakSpan $font={["body-2", "body-2", "body-1"]}>
-            <OakSpan $font={["body-2-bold", "body-2-bold", "body-1-bold"]}>
+          <OakSpan $font={["body-3", "body-2", "body-1"]}>
+            <OakSpan $font={["body-3-bold", "body-2-bold", "body-1-bold"]}>
               Create {demo.appSessionsPerMonth} lessons per month •
             </OakSpan>{" "}
             If you are a teacher in the UK,{" "}

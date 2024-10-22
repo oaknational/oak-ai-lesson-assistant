@@ -61,7 +61,7 @@ const ChatRightHandSideLesson = ({
   const endOfDocRef = useRef<HTMLDivElement>(null);
   return (
     <div
-      className={`fixed bottom-0 ${showLessonMobile ? `right-0` : `right-[-100%] sm:right-0`} right-0 ${demo.isDemoUser ? `top-19 sm:top-0` : `top-0`} z-30 w-[95%] bg-white shadow-md duration-300 sm:relative sm:z-0  sm:w-[50%] sm:shadow-none lg:w-full`}
+      className={`fixed bottom-0 ${showLessonMobile ? `right-0` : `right-[-100%] sm:right-0`} right-0 ${demo.isDemoUser ? `top-8 sm:top-0` : `top-0`} z-30 w-[95%] bg-white shadow-md duration-300 sm:relative sm:z-0  sm:w-[50%] sm:shadow-none lg:w-full`}
       data-testid="chat-right-hand-side-lesson"
       ref={documentContainerRef}
       onScroll={handleScroll}
@@ -77,7 +77,7 @@ const ChatRightHandSideLesson = ({
           onClick={() => {
             closeMobileLessonPullOut();
           }}
-          className={`${demo.isDemoUser ? `mt-22` : ``} flex items-center justify-center gap-3 `}
+          className={`${demo.isDemoUser ? `mt-25` : ``} flex items-center justify-center gap-3 `}
         >
           <span className="scale-75">
             <OakIcon iconName="cross" />
