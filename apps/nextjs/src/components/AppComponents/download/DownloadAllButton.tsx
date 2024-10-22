@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { aiLogger } from "@oakai/logger";
 import { Box } from "@radix-ui/themes";
 import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
@@ -17,6 +18,8 @@ import LoadingWheel from "../../LoadingWheel";
 import LessonIcon from "../../SVGParts/LessonIcon";
 import QuizIcon from "../../SVGParts/QuizIcon";
 import SlidesIcon from "../../SVGParts/SlidesIcon";
+
+const log = aiLogger("chat");
 
 const allexportLinksObject = z.object({
   lessonSlides: z.string(),
@@ -98,7 +101,7 @@ export const DownloadAllButton = ({
 
   const isFeatureEnabled = useClientSideFeatureFlag("download-all-button");
   if (!isFeatureEnabled) {
-    console.log("Download all button is disabled");
+    log.info("Download all button is disabled");
     return null;
   }
 
@@ -122,7 +125,7 @@ export const DownloadAllButton = ({
           lessonPlanLink: parsedData.lessonPlan,
         });
       } catch (error) {
-        console.error(error);
+        log.error(error);
         Sentry.captureException(error);
       }
     }

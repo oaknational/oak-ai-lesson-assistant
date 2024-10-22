@@ -1,4 +1,6 @@
 // @ts-check
+
+/* eslint no-console: "off" */
 import { clientEnv, clientSchema } from "./schema.mjs";
 
 const _clientEnv = clientSchema.safeParse(clientEnv);

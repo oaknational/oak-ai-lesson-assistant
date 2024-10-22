@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 
+import { aiLogger } from "@oakai/logger";
+
 import useAnalytics from "@/lib/analytics/useAnalytics";
+
+const log = aiLogger("feature-flags");
 
 export function useClientSideFeatureFlag(flag: string): boolean {
   const { posthogAiBetaClient: client } = useAnalytics();
@@ -11,7 +15,7 @@ export function useClientSideFeatureFlag(flag: string): boolean {
     const isDebug = process.env.NEXT_PUBLIC_POSTHOG_DEBUG === "true";
 
     if (isDebug) {
-      console.info(`Feature flag ${flag} is enabled in debug mode`);
+      log.info(`Feature flag ${flag} is enabled in debug mode`);
       setFeatureEnabled(true);
     } else {
       return client.onFeatureFlags(() => {

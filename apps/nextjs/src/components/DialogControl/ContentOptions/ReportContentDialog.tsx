@@ -1,11 +1,14 @@
 import { useState } from "react";
 
+import { aiLogger } from "@oakai/logger";
 import { Flex } from "@radix-ui/themes";
 import { Message } from "ai";
 import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey";
 
 import ChatButton from "@/components/AppComponents/Chat/ui/chat-button";
 import { Icon } from "@/components/Icon";
+
+const log = aiLogger("chat");
 
 type ShareChatProps = {
   chatId: string | undefined;
@@ -34,7 +37,7 @@ const ReportContentDialog = ({
   }
 
   async function onSubmit(e?: React.FormEvent<HTMLFormElement>) {
-    console.log("submitting");
+    log.info("submitting");
     e?.preventDefault();
     setUserHasSubmitted(true);
     submitSurveyWithOutClosing({
