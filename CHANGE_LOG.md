@@ -1,3 +1,57 @@
+# [1.11.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.10.2...v1.11.0) (2024-10-22)
+
+
+### Bug Fixes
+
+* add migration for ingest config ([#239](https://github.com/oaknational/oak-ai-lesson-assistant/issues/239)) ([b4b9e60](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b4b9e60d01d4f7dad213d2a89a41fe327ba606ec))
+* ingest config migration fix ([#243](https://github.com/oaknational/oak-ai-lesson-assistant/issues/243)) ([1bdf99a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1bdf99a5ce8be819107e36295accf67aed6e4d25))
+* **sec:** update next ([#240](https://github.com/oaknational/oak-ai-lesson-assistant/issues/240)) ([bcda9d7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/bcda9d7b2a7783d8f23882490f85c9c6b64b5add))
+
+
+### Features
+
+* add dev-turbo mode to use turbopack ([#248](https://github.com/oaknational/oak-ai-lesson-assistant/issues/248)) ([6bd8c40](https://github.com/oaknational/oak-ai-lesson-assistant/commit/6bd8c40b5b40a56dfb94ae3aace86efbeb77e50c))
+* relevant lessons [AI-607] ([#238](https://github.com/oaknational/oak-ai-lesson-assistant/issues/238)) ([73ffd29](https://github.com/oaknational/oak-ai-lesson-assistant/commit/73ffd2993a215abfa9cdd1c0706dbf7106f9e006))
+
+## [1.10.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.10.1...v1.10.2) (2024-10-16)
+
+
+### Bug Fixes
+
+* spacing on onboarding upgrade screen [AI-500] ([#232](https://github.com/oaknational/oak-ai-lesson-assistant/issues/232)) ([0d2a2fd](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0d2a2fd291962e6fb134293f91deded96c49743a))
+
+## [1.10.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.10.0...v1.10.1) (2024-10-15)
+
+
+### Bug Fixes
+
+* add fallback if requestSubmit is not available ([#227](https://github.com/oaknational/oak-ai-lesson-assistant/issues/227)) ([e9b02c6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e9b02c61deaec766bde6bf8494e7b724946f05e3))
+* findLast is not available for all browsers (WIP) ([#211](https://github.com/oaknational/oak-ai-lesson-assistant/issues/211)) ([a94e0f4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a94e0f4570b0bfbd6642d6cb36380b5eaf4b2e52))
+* reduce middleware syntax error logs, send to logs, tests for CSP in each env ([#213](https://github.com/oaknational/oak-ai-lesson-assistant/issues/213)) ([d18a7d2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d18a7d22d3adef8537663f34944edb5b32de4432))
+* remove lookbehind in regex for camelcase conversion ([#226](https://github.com/oaknational/oak-ai-lesson-assistant/issues/226)) ([dc747c3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dc747c3dd0a496f38b55846b40a787da8e92e05a))
+* revert "fix: revert error to previous protocol ([#139](https://github.com/oaknational/oak-ai-lesson-assistant/issues/139)) ([#218](https://github.com/oaknational/oak-ai-lesson-assistant/issues/218)) ([dccba58](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dccba587fe8b5b06b4e2a34a92c45c9aa7597851))
+* silence unknown part type errors ([#229](https://github.com/oaknational/oak-ai-lesson-assistant/issues/229)) ([2e3e56b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2e3e56bbc9c0c8dd2f6d3bf6be9b167eb445ee97))
+
+# [1.10.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.9.2...v1.10.0) (2024-10-14)
+
+
+### Bug Fixes
+
+* add missing test id ([d8108ff](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d8108fff76d29c03fbbb11cebc8dcad0f64e6c87))
+* revert Oak components for demo UI ([#204](https://github.com/oaknational/oak-ai-lesson-assistant/issues/204)) ([#221](https://github.com/oaknational/oak-ai-lesson-assistant/issues/221)) ([c6d7d7e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c6d7d7e73f74f52127a00f60e442031983c74499))
+
+
+### Features
+
+* move aila analytics calls to background ([#206](https://github.com/oaknational/oak-ai-lesson-assistant/issues/206)) ([eaf8559](https://github.com/oaknational/oak-ai-lesson-assistant/commit/eaf8559be326c1a81c27f24d835c8eb55358cd40))
+
+## [1.9.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.9.1...v1.9.2) (2024-10-09)
+
+
+### Bug Fixes
+
+* sanitize file names before downloading ([#201](https://github.com/oaknational/oak-ai-lesson-assistant/issues/201)) ([05da00e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/05da00e52653f02fbed5291b85ac25ba0e55ac57))
+
 ## [1.9.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.9.0...v1.9.1) (2024-10-04)
 
 

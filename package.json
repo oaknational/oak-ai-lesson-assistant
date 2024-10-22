@@ -16,6 +16,7 @@
     "db-push-force": "turbo db-push-force",
     "db-seed": "turbo db-seed",
     "dev": "FORCE_COLOR=1 turbo dev --parallel --filter=!db",
+    "dev-turbo": "FORCE_COLOR=1 turbo dev-turbo --parallel --filter=!db",
     "doppler:pull:dev": "doppler secrets download --config dev --no-file --format env > .env",
     "doppler:pull:stg": "doppler secrets download --config stg --no-file --format env > .env",
     "doppler:run:stg": "doppler run -c stg --silent",
@@ -37,7 +38,7 @@
     "@actions/core": "^1.10.1",
     "@actions/github": "^6.0.0",
     "@manypkg/cli": "^0.21.1",
-    "@next/env": "14.2.5",
+    "@next/env": "14.2.15",
     "@oakai/prettier-config": "*",
     "@prisma/client": "^5.13.0",
     "@semantic-release/changelog": "^6.0.3",
@@ -61,10 +62,5 @@
   "engines": {
     "node": ">=20.9.0",
     "pnpm": ">=8"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "@clerk/nextjs@5.1.0": "patches/@clerk__nextjs@5.1.0.patch"
-    }
   }
 }

@@ -3,9 +3,12 @@ import {
   clerkMiddleware,
   createRouteMatcher,
 } from "@clerk/nextjs/server";
+import { aiLogger } from "@oakai/logger";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 import { sentrySetUser } from "@/lib/sentry/sentrySetUser";
+
+const log = aiLogger("middleware:auth");
 
 declare global {
   interface CustomJwtSessionClaims {
@@ -93,11 +96,8 @@ const needsToCompleteOnboarding = (sessionClaims: CustomJwtSessionClaims) => {
   return !labs.isOnboarded || labs.isDemoUser === null;
 };
 
-const LOG = false;
 const logger = (request: NextRequest) => (message: string) => {
-  if (LOG) {
-    console.log(`[AUTH] ${request.url} ${message}`);
-  }
+  log.info(`${request.url} ${message}`);
 };
 
 function conditionallyProtectRoute(
@@ -122,7 +122,10 @@ function conditionallyProtectRoute(
     return;
   }
 
-  if (process.env.NODE_ENV === "development" && req.headers["x-dev-preload"]) {
+  if (
+    process.env.NODE_ENV === "development" &&
+    req.headers.get("x-dev-preload")
+  ) {
     if (isPreloadableRoute(req)) {
       log("Dev preload route: ALLOW");
       return;
@@ -149,7 +152,7 @@ export async function authMiddleware(
       return response;
     }
   } catch (error) {
-    console.error("Error in authMiddleware", error);
+    log.error({ event: "middleware.auth.error", error });
     throw new Error("Error in authMiddleware", { cause: error });
   }
 

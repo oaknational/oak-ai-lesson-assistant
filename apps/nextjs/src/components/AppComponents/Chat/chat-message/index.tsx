@@ -13,10 +13,12 @@ import {
   PromptDocument,
   StateDocument,
   TextDocument,
+  UnknownDocument,
   parseMessageParts,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { isSafe } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { aiLogger } from "@oakai/logger";
 import { Message } from "ai";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
@@ -27,6 +29,8 @@ import { cn } from "@/lib/utils";
 import { ModerationModalHelpers } from "../../FeedbackForms/ModerationFeedbackModal";
 import { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import { isModeration } from "./protocol";
+
+const log = aiLogger("chat");
 
 export interface ChatMessageProps {
   chatId: string; // Needed for when we refactor to use a moderation provider
@@ -234,10 +238,14 @@ function ChatMessagePart({
     action: ActionMessagePart,
     moderation: ModerationMessagePart,
     id: IdMessagePart,
-  }[part.document.type];
+    unknown: UnknownMessagePart,
+  }[part.document.type] as React.ComponentType<{
+    part: typeof part.document;
+    moderationModalHelpers: ModerationModalHelpers;
+  }>;
 
   if (!PartComponent) {
-    console.log("Unknown part type", part.document.type, part); // eslint-disable-line no-console
+    log.info("Unknown part type", part.document.type, JSON.stringify(part));
     return null;
   }
 
@@ -308,6 +316,11 @@ function ActionMessagePart({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   part,
 }: Readonly<{ part: ActionDocument }>) {
+  return null;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function UnknownMessagePart({ part }: Readonly<{ part: UnknownDocument }>) {
   return null;
 }
 

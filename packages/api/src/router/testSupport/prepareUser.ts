@@ -1,10 +1,14 @@
 import { clerkClient } from "@clerk/nextjs/server";
+import { aiLogger } from "@oakai/logger";
+import { waitUntil } from "@vercel/functions";
 import os from "os";
 import { z } from "zod";
 
 import { publicProcedure } from "../../trpc";
 import { setSafetyViolations } from "./safetyViolations";
 import { seedChat } from "./seedChat";
+
+const log = aiLogger("testing");
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? os.hostname();
 
@@ -78,6 +82,27 @@ const generateEmailAddress = (personaName: keyof typeof personas) => {
   return `${parts.join("+")}@thenational.academy`;
 };
 
+const deleteLastUsedTestUser = async () => {
+  const users = await clerkClient.users.getUserList({
+    orderBy: "+last_active_at",
+    limit: 500,
+  });
+
+  const NUMBERS_USER = /\d{5,10}.*@/; // jim+010203@thenational.academy
+  const lastUsedTestUser = users.data.find((u) => {
+    const email = u.primaryEmailAddress?.emailAddress ?? "";
+    return email.startsWith("test+") || email.match(NUMBERS_USER);
+  });
+
+  if (lastUsedTestUser) {
+    log.info(
+      "Deleting oldest test user",
+      lastUsedTestUser.primaryEmailAddress?.emailAddress,
+    );
+    await clerkClient.users.deleteUser(lastUsedTestUser.id);
+  }
+};
+
 const findOrCreateUser = async (
   email: string,
   personaName: keyof typeof personas,
@@ -97,7 +122,7 @@ const findOrCreateUser = async (
     return existingUser;
   }
 
-  console.log("Creating test user", { email });
+  log.info("Creating test user", { email });
   const newUser = await clerkClient.users.createUser({
     emailAddress: [email],
     firstName: branch,
@@ -115,6 +140,8 @@ const findOrCreateUser = async (
       region: persona.region,
     },
   });
+
+  waitUntil(deleteLastUsedTestUser());
 
   return newUser;
 };
