@@ -1,5 +1,6 @@
 import { Dispatch, RefObject, SetStateAction } from "react";
 
+import { aiLogger } from "@oakai/logger";
 import { OakP, OakRadioGroup } from "@oaknational/oak-components";
 import { $Enums, AilaUserModificationAction } from "@prisma/client";
 import { TextArea } from "@radix-ui/themes";
@@ -10,6 +11,8 @@ import {
 } from "./action-button.types";
 import { DropDownFormWrapper, FeedbackOption } from "./drop-down-form-wrapper";
 import { SmallRadioButton } from "./small-radio-button";
+
+const log = aiLogger("chat");
 
 type DropDownProps = {
   sectionTitle: string;
@@ -97,6 +100,7 @@ function handleLabelText({
   text: string;
   section: string;
 }): string {
+  log.info("section", section);
   if (
     section === "Misconceptions" ||
     section === "Key learning points" ||
