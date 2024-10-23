@@ -1,6 +1,7 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "pipeline": {
+  "ui": "stream",
+  "tasks": {
     "db-generate": {
       "inputs": ["prisma/schema.prisma"],
       "cache": false
@@ -15,10 +16,14 @@
     },
     "dev": {
       "dependsOn": ["^db-generate"],
+      "persistent": true,
+      "interactive": false,
       "cache": false
     },
     "dev-turbo": {
       "dependsOn": ["^db-generate"],
+      "persistent": true,
+      "interactive": false,
       "cache": false
     },
     "build": {
