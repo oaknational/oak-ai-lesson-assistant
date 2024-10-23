@@ -1,0 +1,30 @@
+{
+  "id": "chatcmpl-ALGQjkZI8nYu5fIuzzyY6mGomJNkp",
+  "object": "chat.completion",
+  "created": 1729631409,
+  "model": "gpt-4o-2024-08-06",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan on software testing techniques is fully compliant across all categories. There is no discriminatory language, offensive language, or strong language present (Language and discrimination: 5). The content does not include any depiction or discussion of violence, serious violence, or sexual violence (Violence and crime: 5). There is no upsetting, sensitive, or distressing content; the material is technical and educational, focusing on software testing methodologies (Upsetting, disturbing and sensitive: 5). There is no content related to nudity or sexual topics (Nudity and sex: 5). The lesson does not involve physical activities, exploration of objects, or use of equipment requiring supervision, nor does it utilize external content that could pose safety concerns (Physical activity and safety: 5). Finally, the lesson does not contain any toxic content such as guides or encouragement of harmful behavior or illegal activities (Toxic: 5).\",\"categories\":[]}",
+        "refusal": null
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 3860,
+    "completion_tokens": 219,
+    "total_tokens": 4079,
+    "prompt_tokens_details": {
+      "cached_tokens": 3584
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "system_fingerprint": "fp_a7d06e42a7"
+}
