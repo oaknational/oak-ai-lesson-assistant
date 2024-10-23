@@ -717,6 +717,9 @@ importers:
       chunk-text:
         specifier: ^2.0.1
         version: 2.0.1
+      csv-parser:
+        specifier: ^3.0.0
+        version: 3.0.0
       graphql-request:
         specifier: ^6.1.0
         version: 6.1.0(graphql@16.9.0)

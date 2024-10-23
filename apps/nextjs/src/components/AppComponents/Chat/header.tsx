@@ -2,13 +2,17 @@
 
 import * as React from "react";
 
-import { OakIcon } from "@oaknational/oak-components";
+import {
+  OakBox,
+  OakFlex,
+  OakIcon,
+  OakLink,
+  OakSpan,
+} from "@oaknational/oak-components";
 import { useClerkDemoMetadata } from "hooks/useClerkDemoMetadata";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
-import { Icon } from "@/components/Icon";
 import OakIconLogo from "@/components/OakIconLogo";
 
 import { BetaTagHeader } from "./beta-tag";
@@ -25,67 +29,105 @@ export function Header() {
   const ailaId = usePathname().split("aila/")[1];
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
+    <OakBox
+      as={"header"}
+      $position={"fixed"}
+      $zIndex={"banner"}
+      $width={"100%"}
+    >
       {clerkMetadata.isSet && demo.isDemoUser && (
-        <div
+        <OakFlex
+          $alignItems={"center"}
+          $bb={"border-solid-m"}
+          $background={"lemon"}
+          $pv={["inner-padding-ssx", "inner-padding-xs"]}
+          $ph={"inner-padding-xl"}
           data-testid="demo-banner"
-          className="flex h-28 items-center border-b-2 border-black bg-lemon px-15 py-6 sm:h-26 md:h-22"
         >
-          <div>
-            <strong className="font-semibold">
-              Create {demo.appSessionsPerMonth} lessons per month
-            </strong>
-            <span className="mx-8">•</span>
-            <span>If you are a teacher in the UK,</span>{" "}
-            <a href={demo.contactHref} className="underline">
-              contact us for full access.
-            </a>
-          </div>
-          <a href={demo.contactHref}>
-            <Icon icon="chevron-right" size="sm" />
-          </a>
-          <div className="grow" />
+          <OakSpan $font={["body-3", "body-2", "body-1"]}>
+            <OakSpan $font={["body-3-bold", "body-2-bold", "body-1-bold"]}>
+              Create {demo.appSessionsPerMonth} lessons per month •
+            </OakSpan>{" "}
+            If you are a teacher in the UK,{" "}
+            <OakLink
+              iconName="chevron-right"
+              isTrailingIcon
+              color="black"
+              href={demo.contactHref}
+            >
+              contact us for full access
+            </OakLink>
+          </OakSpan>
+
+          <OakFlex $flexGrow={1} />
           {demo.appSessionsRemaining !== undefined && (
-            <strong className="hidden font-semibold lg:block">
-              {demo.appSessionsRemaining} of {demo.appSessionsPerMonth} lessons
-              remaining
-            </strong>
+            <OakBox $display={["none", "none", "block"]}>
+              <OakSpan $font={"body-1-bold"}>
+                {demo.appSessionsRemaining} of {demo.appSessionsPerMonth}{" "}
+                lessons remaining
+              </OakSpan>
+            </OakBox>
           )}
-        </div>
+        </OakFlex>
       )}
 
-      <div className="flex h-26 shrink-0 items-center justify-between border-b-2 border-black bg-white px-10">
-        <div className="flex items-center gap-9">
-          <span className="flex items-center justify-center gap-9">
-            <Link href="/" aria-label="go to home page">
-              <OakIconLogo />
-            </Link>
-            <span className="text-xl font-bold text-black">Aila</span>
-          </span>
-          <div className="flex">
-            <BetaTagHeader />
-          </div>
-        </div>
-
-        <div className="flex items-center justify-end space-x-12">
-          <Link
-            className="hidden items-center sm:flex"
-            href={ailaId ? `/aila/help/?ailaId=${ailaId}` : "/aila/help"}
-            target="_blank"
+      <OakFlex
+        $background="white"
+        $bb="border-solid-m"
+        $pa={"inner-padding-l"}
+        $alignItems="center"
+        $justifyContent="space-between"
+        $gap={"all-spacing-3"}
+      >
+        <OakFlex $gap={"all-spacing-3"} $alignItems={"center"}>
+          <OakFlex
+            $alignItems={"center"}
+            $justifyContent={"center"}
+            $gap={"all-spacing-3"}
           >
-            <OakIcon iconName="question-mark" $width="all-spacing-6" />
-            <div className="ml-6 text-sm font-semibold text-black">Help</div>
-          </Link>
-          <div className="= flex items-center">
+            <OakLink href="/" aria-label="go to home page">
+              <OakIconLogo />
+            </OakLink>
+            <OakSpan $font="heading-6">Aila</OakSpan>
+          </OakFlex>
+          <OakFlex>
+            <BetaTagHeader />
+          </OakFlex>
+        </OakFlex>
+
+        <OakFlex
+          $alignItems="center"
+          $justifyContent="flex-end"
+          $gap="all-spacing-6"
+        >
+          <OakBox $display={["none", "flex"]}>
+            <OakLink
+              color="black"
+              href={ailaId ? `/aila/help/?ailaId=${ailaId}` : "/aila/help"}
+              target="_blank"
+              style={{ textDecoration: "none" }}
+            >
+              <OakFlex $alignItems={"center"} $alignContent={"center"}>
+                <OakIcon
+                  $mr={"space-between-sssx"}
+                  iconName={"question-mark"}
+                />
+                <OakSpan $font="body-2" $color={"black"}>
+                  Help
+                </OakSpan>
+              </OakFlex>
+            </OakLink>
+          </OakBox>
+          <OakFlex>
             <UserOrLogin />
-          </div>
-          <div className="flex">
+          </OakFlex>
+          <OakFlex>
             <SidebarMobile>
               <ChatHistory />
             </SidebarMobile>
-          </div>
-        </div>
-      </div>
-    </header>
+          </OakFlex>
+        </OakFlex>
+      </OakFlex>
+    </OakBox>
   );
 }
