@@ -47,7 +47,6 @@ export const ActionDropDown = ({
   dropdownRef,
   id,
 }: DropDownProps) => {
-  if (typeof options !== "object") return null;
   return (
     <DropDownFormWrapper
       onClickActions={handleSubmit}
