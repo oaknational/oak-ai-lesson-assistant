@@ -7,6 +7,8 @@ if (typeof window !== "undefined") {
 }
 
 const debugBase = debug("ai");
+// By default debug logs to stderr, we want to use stdout
+debugBase.log = console.log.bind(console);
 
 type ChildKey =
   | "admin"
