@@ -1,3 +1,18 @@
+# [1.11.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.10.2...v1.11.0) (2024-10-22)
+
+
+### Bug Fixes
+
+* add migration for ingest config ([#239](https://github.com/oaknational/oak-ai-lesson-assistant/issues/239)) ([b4b9e60](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b4b9e60d01d4f7dad213d2a89a41fe327ba606ec))
+* ingest config migration fix ([#243](https://github.com/oaknational/oak-ai-lesson-assistant/issues/243)) ([1bdf99a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1bdf99a5ce8be819107e36295accf67aed6e4d25))
+* **sec:** update next ([#240](https://github.com/oaknational/oak-ai-lesson-assistant/issues/240)) ([bcda9d7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/bcda9d7b2a7783d8f23882490f85c9c6b64b5add))
+
+
+### Features
+
+* add dev-turbo mode to use turbopack ([#248](https://github.com/oaknational/oak-ai-lesson-assistant/issues/248)) ([6bd8c40](https://github.com/oaknational/oak-ai-lesson-assistant/commit/6bd8c40b5b40a56dfb94ae3aace86efbeb77e50c))
+* relevant lessons [AI-607] ([#238](https://github.com/oaknational/oak-ai-lesson-assistant/issues/238)) ([73ffd29](https://github.com/oaknational/oak-ai-lesson-assistant/commit/73ffd2993a215abfa9cdd1c0706dbf7106f9e006))
+
 ## [1.10.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.10.1...v1.10.2) (2024-10-16)
 
 
