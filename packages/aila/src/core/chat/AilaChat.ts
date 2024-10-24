@@ -260,13 +260,11 @@ export class AilaChat implements AilaChatService {
 
   private accumulatedText() {
     const accumulated = this._chunks?.join("");
-    return accumulated;
+    return accumulated ?? "";
   }
 
   private async reportUsageMetrics() {
-    await this._aila.analytics?.reportUsageMetrics(
-      this.accumulatedText() ?? "",
-    );
+    await this._aila.analytics?.reportUsageMetrics(this.accumulatedText());
   }
 
   private async persistGeneration(status: AilaGenerationStatus) {
@@ -324,9 +322,6 @@ export class AilaChat implements AilaChatService {
 
   private appendAssistantMessage() {
     const content = this.accumulatedText();
-    if (!content) {
-      return;
-    }
     const assistantMessage: Message = {
       id: generateMessageId({ role: "assistant" }),
       role: "assistant",
@@ -366,16 +361,22 @@ export class AilaChat implements AilaChatService {
     await this.reportUsageMetrics();
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
-    if (assistantMessage) {
-      await this.enqueueMessageId(assistantMessage.id);
-    }
-
+    await this.enqueueMessageId(assistantMessage.id);
+    await this.saveSnapshot({ messageId: assistantMessage.id });
     await this.moderate();
     await this.persistChat();
     await this.persistGeneration("SUCCESS");
     await this.enqueue({
       type: "comment",
       value: "CHAT_COMPLETE",
+    });
+  }
+
+  public async saveSnapshot({ messageId }: { messageId: string }) {
+    await this._aila.snapshotStore.saveSnapshot({
+      messageId,
+      lessonPlan: this._aila.lesson.plan,
+      trigger: "ASSISTANT_MESSAGE",
     });
   }
 

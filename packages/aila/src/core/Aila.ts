@@ -7,6 +7,7 @@ import {
   DEFAULT_RAG_LESSON_PLANS,
 } from "../constants";
 import { AilaCategorisation } from "../features/categorisation";
+import { AilaSnapshotStore } from "../features/snapshotStore";
 import {
   AilaAnalyticsFeature,
   AilaErrorReportingFeature,
@@ -44,6 +45,7 @@ export class Aila implements AilaServices {
   private _chatLlmService: LLMService;
   private _moderation?: AilaModerationFeature;
   private _options: AilaOptionsWithDefaultFallbackValues;
+  private _snapshotStore: AilaSnapshotStore;
   private _persistence: AilaPersistenceFeature[] = [];
   private _threatDetection?: AilaThreatDetectionFeature;
   private _prisma: PrismaClientWithAccelerate;
@@ -87,6 +89,7 @@ export class Aila implements AilaServices {
       this._options,
       options.services?.moderationAiClient,
     );
+    this._snapshotStore = AilaFeatureFactory.createSnapshotStore(this);
     this._persistence = AilaFeatureFactory.createPersistence(
       this,
       this._options,
@@ -157,6 +160,10 @@ export class Aila implements AilaServices {
   // #TODO we should not need this
   public get lessonPlan() {
     return this._lesson.plan;
+  }
+
+  public get snapshotStore() {
+    return this._snapshotStore;
   }
 
   public get persistence() {
