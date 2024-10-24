@@ -1,5 +1,11 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
-import { test, expect, Page } from "@playwright/test";
+import {
+  LessonPlanKeys,
+  LessonPlanKeysSchema,
+} from "@oakai/aila/src/protocol/schema";
+import { test, expect } from "@playwright/test";
+
+import { groupedSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
 
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
@@ -8,14 +14,16 @@ import {
   applyLlmFixtures,
   continueChat,
   expectFinished,
-  expectSectionsComplete,
-  waitForGeneration,
+  expectStreamingStatus,
+  getSectionsComplete,
+  scrollLessonPlanFromTopToBottom,
+  waitForStreamingStatusChange,
 } from "./helpers";
 
 // --------
 // CHANGE "replay" TO "record" TO RECORD A NEW FIXTURE
 // --------
-// const FIXTURE_MODE = "record" as FixtureMode;
+//const FIXTURE_MODE = "record" as FixtureMode;
 const FIXTURE_MODE = "replay" as FixtureMode;
 
 test(
@@ -24,12 +32,6 @@ test(
   async ({ page }, testInfo) => {
     const generationTimeout = FIXTURE_MODE === "record" ? 75000 : 50000;
     test.setTimeout(generationTimeout * 5);
-
-    // The chat UI has a race condition when you submit a message too quickly after the previous response
-    // This is a temporary fix to fix test flake
-    async function letUiSettle() {
-      return await page.waitForTimeout(testInfo.retry === 0 ? 500 : 6000);
-    }
 
     await test.step("Setup", async () => {
       await bypassVercelProtection(page);
@@ -44,8 +46,7 @@ test(
     await test.step("Fill in the chat box", async () => {
       const textbox = page.getByTestId("chat-input");
       const sendMessage = page.getByTestId("send-message");
-      const message =
-        "Create a KS1 lesson on the end of Roman Britain. Ask a question for each quiz and cycle";
+      const message = "Create a KS1 lesson on the end of Roman Britain";
       await textbox.fill(message);
       await expect(textbox).toContainText(message);
 
@@ -59,33 +60,109 @@ test(
 
     await test.step("Iterate through the fixtures", async () => {
       await page.waitForURL(/\/aila\/.+/);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 1);
-      await letUiSettle();
 
-      setFixture("roman-britain-2");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 3);
-      await letUiSettle();
+      let prevIteration = 0;
+      let prevSectionsComplete = 0;
+      const maxIterations = 20;
 
-      setFixture("roman-britain-3");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 7);
-      await letUiSettle();
+      for (
+        let iterationCount = 1;
+        iterationCount <= maxIterations;
+        iterationCount++
+      ) {
+        setFixture(`roman-britain-${iterationCount}`);
+        await expectStreamingStatus(page, "RequestMade", { timeout: 5000 });
 
-      setFixture("roman-britain-4");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 10);
-      await letUiSettle();
+        await waitForStreamingStatusChange(
+          page,
+          "RequestMade",
+          "Idle",
+          generationTimeout,
+        );
 
-      setFixture("roman-britain-5");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 10);
+        // Wait for the chat iteration to update
+        await page.waitForFunction(
+          ([prevIteration]) => {
+            const chatIteration = document.querySelector(
+              '[data-testid="chat-iteration"]',
+            );
+            return (
+              chatIteration &&
+              parseInt(chatIteration.textContent || "0", 10) >
+                (prevIteration ?? 0)
+            );
+          },
+          [prevIteration],
+          { timeout: generationTimeout },
+        );
+        // Update the previous iteration
+        const chatIteration = await page.textContent(
+          '[data-testid="chat-iteration"]',
+        );
+        prevIteration = parseInt(chatIteration || "0", 10);
 
+        // Get the current sections complete
+        const currSectionsComplete = await getSectionsComplete(page);
+
+        // Assert that currSectionsComplete is greater than or equal to the previous value
+        expect(currSectionsComplete).toBeGreaterThanOrEqual(
+          prevSectionsComplete,
+        );
+
+        // Update the previous sections complete
+        prevSectionsComplete = currSectionsComplete;
+
+        await expectStreamingStatus(page, "Idle", { timeout: 5000 });
+
+        const createdSections = await page.$$eval(
+          '[data-test="lesson-plan-section"]',
+          (sections) =>
+            sections
+              .filter(
+                (section) =>
+                  section.getAttribute("data-test-section-complete") === "true",
+              )
+              .map((section) => section.getAttribute("data-test-section-key")),
+        );
+
+        console.log("Created sections", createdSections);
+
+        const createdSectionKeys: LessonPlanKeys[] = createdSections
+          .filter((section) => section !== null)
+          .map((section) => LessonPlanKeysSchema.parse(section as string));
+
+        const mostRecentSection =
+          createdSectionKeys[createdSectionKeys.length - 1];
+
+        const mostRecentSectionGroup = groupedSectionsInOrder.find(
+          (group) => mostRecentSection && group.includes(mostRecentSection),
+        );
+
+        // Assert that all sections in the mostRecentSectionGroup are in createdSectionKeys
+        expect(mostRecentSectionGroup).toBeDefined();
+        if (mostRecentSectionGroup) {
+          mostRecentSectionGroup.forEach((section) => {
+            expect(createdSectionKeys).toContain(section);
+          });
+        }
+
+        // If currSectionsComplete reaches 10 and we have the additionalMaterials section, we can break
+        if (
+          currSectionsComplete === 10 &&
+          createdSectionKeys.includes("additionalMaterials")
+        ) {
+          break;
+        }
+        await continueChat(page);
+        await waitForStreamingStatusChange(
+          page,
+          "Idle",
+          "RequestMade",
+          generationTimeout,
+        );
+      }
+
+      await scrollLessonPlanFromTopToBottom(page);
       await expectFinished(page);
     });
   },

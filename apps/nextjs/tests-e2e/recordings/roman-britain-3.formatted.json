@@ -3,81 +3,301 @@
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Establishing key prior knowledge to ensure pupils have the foundational understanding necessary for this lesson.",
+      "reasoning": "Created a starter quiz to assess pupils' prior knowledge before introducing new content about the end of Roman Britain.",
       "value": {
-        "type": "string-array",
+        "type": "quiz",
         "op": "add",
-        "path": "/priorKnowledge",
-        "value": [
-          "Romans invaded Britain in 43 AD.",
-          "Roman roads connected towns across Britain.",
-          "Romans built Hadrian's Wall in the north of Britain.",
-          "Romans introduced new food and customs to Britain.",
-          "Some Britons adopted Roman ways of life."
-        ]
-      }
-    },
-    {
-      "type": "patch",
-      "reasoning": "Identifying key learning points to ensure the lesson covers the most important aspects of the topic.",
-      "value": {
-        "type": "string-array",
-        "op": "add",
-        "path": "/keyLearningPoints",
-        "value": [
-          "The Romans left Britain around 410 AD.",
-          "Roman withdrawal left Britain vulnerable to invasions.",
-          "Many Roman structures fell into disrepair.",
-          "Local communities had to adapt without Roman support.",
-          "Cultural and technological changes occurred post-Roman rule."
-        ]
-      }
-    },
-    {
-      "type": "patch",
-      "reasoning": "Addressing common misconceptions to ensure they are clarified in the lesson.",
-      "value": {
-        "type": "misconceptions",
-        "op": "add",
-        "path": "/misconceptions",
+        "path": "/starterQuiz",
         "value": [
           {
-            "misconception": "Romans were forced out of Britain by barbarians",
-            "description": "The Romans left Britain mainly due to internal issues in the Roman Empire. This can be clarified by explaining the Roman Empire's struggles."
+            "question": "When did the Romans invade Britain?",
+            "answers": [
+              "AD 43"
+            ],
+            "distractors": [
+              "AD 410",
+              "AD 1066"
+            ]
           },
           {
-            "misconception": "Britain became immediately barbaric after Romans left",
-            "description": "Although there were challenges, Britain continued to have structured communities and slowly adapted without Roman governance."
+            "question": "How long was Britain part of the Roman Empire?",
+            "answers": [
+              "Nearly 400 years"
+            ],
+            "distractors": [
+              "200 years",
+              "600 years"
+            ]
+          },
+          {
+            "question": "What did the Romans build in Britain?",
+            "answers": [
+              "Roads, towns, and walls"
+            ],
+            "distractors": [
+              "Castles and palaces",
+              "Skyscrapers"
+            ]
+          },
+          {
+            "question": "What aspect of life did Roman culture influence in Britain?",
+            "answers": [
+              "Buildings and language"
+            ],
+            "distractors": [
+              "Clothing and food",
+              "Music and dance"
+            ]
+          },
+          {
+            "question": "What was the Roman army known for?",
+            "answers": [
+              "Being powerful and well-organised"
+            ],
+            "distractors": [
+              "Being small and disorganised",
+              "Being peaceful and passive"
+            ]
+          },
+          {
+            "question": "What year did the Romans leave Britain?",
+            "answers": [
+              "AD 410"
+            ],
+            "distractors": [
+              "AD 43",
+              "AD 1066"
+            ]
           }
         ]
-      }
+      },
+      "status": "complete"
     },
     {
       "type": "patch",
-      "reasoning": "Including keywords to bolster vocabulary comprehension for the lesson.",
+      "reasoning": "Structured the first learning cycle to introduce why the Romans left Britain and establish a foundation for understanding.",
       "value": {
-        "type": "keywords",
+        "type": "cycle",
         "op": "add",
-        "path": "/keywords",
+        "path": "/cycle1",
+        "value": {
+          "title": "Why the Romans Left Britain",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Discuss the pressures on the Roman Empire around AD 410.",
+              "Explain that the Roman Empire was facing threats from various groups outside Britain.",
+              "Mention that the Roman Empire was struggling to defend its vast territories.",
+              "Describe how the decision was made to withdraw troops from Britain to focus on defending Rome.",
+              "Connect this to the eventual departure of the Romans from Britain."
+            ],
+            "accompanyingSlideDetails": "A timeline showing key events leading to the Roman withdrawal from Britain.",
+            "imagePrompt": "Roman Empire decline map",
+            "slideText": "The Romans left Britain in AD 410 due to pressures on their empire, including threats elsewhere."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "Why did the Romans leave Britain?",
+              "answers": [
+                "Due to pressures on their empire"
+              ],
+              "distractors": [
+                "They were defeated by the British",
+                "They wanted to explore new lands"
+              ]
+            },
+            {
+              "question": "What was the Roman Empire facing around AD 410?",
+              "answers": [
+                "Threats from various groups"
+              ],
+              "distractors": [
+                "A time of peace",
+                "Rapid expansion"
+              ]
+            }
+          ],
+          "practice": "List three reasons why the Romans decided to leave Britain. Write a sentence for each reason.",
+          "feedback": "Model answer: 1. The Roman Empire was facing threats from various groups. 2. The empire was struggling to defend its territories. 3. Troops were needed to defend Rome."
+        }
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Structured the second learning cycle to help pupils identify changes in Britain immediately after the Romans left.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle2",
+        "value": {
+          "title": "Immediate Changes in Britain",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Discuss what happened in Britain after the Romans left.",
+              "Explain the immediate changes in infrastructure, like the decline in Roman-style houses.",
+              "Describe the shift from using Roman coins to bartering.",
+              "Introduce the concept of local trade replacing Roman economic systems.",
+              "Highlight initial invasions by other groups such as the Saxons."
+            ],
+            "accompanyingSlideDetails": "Images of Roman and Saxon artefacts and settlements.",
+            "imagePrompt": "Roman to Saxon Britain transition",
+            "slideText": "After the Romans left, Britain saw changes in infrastructure, economy, and faced invasions by new groups."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "What happened to Roman-style houses after they left?",
+              "answers": [
+                "They declined"
+              ],
+              "distractors": [
+                "They were improved",
+                "They stayed the same"
+              ]
+            },
+            {
+              "question": "What economic change occurred after the Romans left?",
+              "answers": [
+                "Shift to bartering"
+              ],
+              "distractors": [
+                "Increased use of Roman coins",
+                "Introduction of new currency"
+              ]
+            }
+          ],
+          "practice": "Sort the following changes into correct categories: infrastructure, economy, invasions. Use the provided list of changes.",
+          "feedback": "Model answer: Infrastructure - decline of Roman houses; Economy - shift to bartering; Invasions - by Saxons."
+        }
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Created the third learning cycle to explore how life in Britain evolved after the Romans, focusing on new cultural influences.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle3",
+        "value": {
+          "title": "Life in Britain After the Romans",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Discuss how life evolved in Britain post-Roman departure.",
+              "Describe the settlement of new groups like the Saxons.",
+              "Explain the blending of Roman and new cultures.",
+              "Mention the continuation of some Roman traditions and infrastructure.",
+              "Highlight the development of local governance and social structures."
+            ],
+            "accompanyingSlideDetails": "A map showing Saxon settlements overlaid on Roman roads.",
+            "imagePrompt": "Saxon settlements in Britain",
+            "slideText": "Life in Britain evolved with new groups settling, blending cultures, and developing local governance."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "Who settled in Britain after the Romans left?",
+              "answers": [
+                "The Saxons"
+              ],
+              "distractors": [
+                "The Romans",
+                "The Vikings"
+              ]
+            },
+            {
+              "question": "What continued in Britain despite Roman departure?",
+              "answers": [
+                "Some Roman traditions"
+              ],
+              "distractors": [
+                "Roman rule",
+                "Roman military presence"
+              ]
+            }
+          ],
+          "practice": "Write a short paragraph describing how Saxon culture influenced Britain. Include examples of cultural blending.",
+          "feedback": "Success criteria: Include Saxon settlements, blending of cultures, and examples of continued Roman traditions."
+        }
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Developed an exit quiz to assess pupils' understanding of the lesson content regarding the end of Roman Britain.",
+      "value": {
+        "type": "quiz",
+        "op": "add",
+        "path": "/exitQuiz",
         "value": [
           {
-            "keyword": "Roman Empire",
-            "definition": "The vast empire ruled by Rome that included Britain for nearly 400 years."
+            "question": "When did the Romans leave Britain?",
+            "answers": [
+              "AD 410"
+            ],
+            "distractors": [
+              "AD 43",
+              "AD 1066"
+            ]
           },
           {
-            "keyword": "Withdrawal",
-            "definition": "The act of pulling out or leaving a place or position."
+            "question": "What happened to Roman-style houses after the Romans left?",
+            "answers": [
+              "They declined"
+            ],
+            "distractors": [
+              "They improved",
+              "They were unchanged"
+            ]
           },
           {
-            "keyword": "Invaders",
-            "definition": "People or groups that enter a region to take control."
+            "question": "What replaced Roman coins in the British economy?",
+            "answers": [
+              "Bartering"
+            ],
+            "distractors": [
+              "New currency",
+              "Gold coins"
+            ]
+          },
+          {
+            "question": "Which group began to settle in Britain after the Romans?",
+            "answers": [
+              "The Saxons"
+            ],
+            "distractors": [
+              "The Vikings",
+              "The Celts"
+            ]
+          },
+          {
+            "question": "What was one reason the Romans left Britain?",
+            "answers": [
+              "Pressures on their empire"
+            ],
+            "distractors": [
+              "To explore new lands",
+              "Defeat by the British"
+            ]
+          },
+          {
+            "question": "What continued in Britain despite the Roman departure?",
+            "answers": [
+              "Some Roman traditions"
+            ],
+            "distractors": [
+              "Roman army presence",
+              "Roman government"
+            ]
           }
         ]
-      }
+      },
+      "status": "complete"
     }
   ],
   "prompt": {
     "type": "text",
-    "value": "The prior knowledge, key learning points, misconceptions, and keywords have been set. Are these sections suitable for your class? If you need any changes, let me know!"
+    "value": "Are the starter quiz, learning cycles, and exit quiz sections suitable for your pupils? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."
   }
 }

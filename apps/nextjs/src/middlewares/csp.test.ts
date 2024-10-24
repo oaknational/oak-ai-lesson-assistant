@@ -1,11 +1,12 @@
+// To re-generate the snapshots run:
+// pnpm --filter @oakai/nextjs test -- -u src/middlewares/csp.test.ts
 import { NextRequest } from "next/server";
 
-import { addCspHeaders, CspConfig } from "./csp";
+import { addCspHeaders, CspConfig, CspEnvironment } from "./csp";
 
-const environments = ["development", "production", "preview"] as const;
-type Environment = (typeof environments)[number];
+const environments = ["development", "production", "preview", "test"] as const;
 
-function generatePoliciesForEnvironment(env: Environment): string {
+function generatePoliciesForEnvironment(env: CspEnvironment): string {
   const mockRequest = new NextRequest("https://example.com");
   const mockResponse = new Response();
 
@@ -24,6 +25,7 @@ function generatePoliciesForEnvironment(env: Environment): string {
       devConsent: env === "development",
       mux: true,
       vercel: env === "preview",
+      localhost: env === "development",
     },
   };
 

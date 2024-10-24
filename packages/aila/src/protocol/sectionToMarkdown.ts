@@ -1,4 +1,4 @@
-import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
+import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { isArray, isNumber, isObject, isString } from "remeda";
 
 import {

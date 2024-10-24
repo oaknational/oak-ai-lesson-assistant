@@ -3,52 +3,135 @@ type":"
 ll
 m
 Message
-","patches":[]
-,"prompt":{"
+","patches":[
+{"
 type":"
-text
-","value":"
-There
+patch
+","reasoning":"
+Starting
+ a
+ new
+ lesson
+ plan
+ from
+ scratch
+ as
+ there
  are
  no
  existing
  Oak
  lessons
- for
- the
- specific
+ on
+ this
  topic
- of
- \"
-End
- of
- Roman
+.","
+value":{"
+type":"
+string
+","op":"
+add
+","path":"/
+learning
+Outcome
+","value":"
+I
+ can
+ describe
+ the
+ changes
+ in
  Britain
-,\"
- so
- we'll
- start
- a
- new
- lesson
- from
- scratch
-.
- Let's
- begin
- by
- outlining
+ after
+ the
+ Romans
+ left
+."
+},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Outlined
  the
  learning
- outcomes
+ cycles
+ to
+ break
+ down
+ the
+ lesson
+ into
+ manageable
+ parts
+ for
+ pupils
+.","
+value":{"
+type":"
+string
+-array
+","op":"
+add
+","path":"/
+learning
+Cycles
+","value":["
+Understand
+ why
+ the
+ Romans
+ left
+ Britain
+.","
+Identify
+ the
+ immediate
+ changes
+ that
+ occurred
+ in
+ Britain
+.","
+Explore
+ how
+ life
+ in
+ Britain
+ evolved
+ after
+ the
+ Romans
+.
+"]},"status":"
+complete
+"}],"prompt":{"
+type":"
+text
+","value":"
+Are
+ the
+ learning
+ outcome
  and
  learning
  cycles
+ appropriate
  for
- the
- lesson
+ your
+ pupils
+?
+ If
+ not
+,
+ suggest
+ an
+ edit
 .
- Tap
+ Otherwise
+,
+ tap
  **
 Continue
 **

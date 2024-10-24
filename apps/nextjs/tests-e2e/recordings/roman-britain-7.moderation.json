@@ -1,0 +1,30 @@
+{
+  "id": "chatcmpl-AKMzCAnvRAOCvTEsGdMqU7Ig02Q4J",
+  "object": "chat.completion",
+  "created": 1729418282,
+  "model": "gpt-4o-2024-08-06",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan for 'The End of Roman Britain' is fully compliant across all categories. It is designed for Key Stage 1, targeting young learners, and does not contain any discriminatory language, offensive or strong language, or depictions of conflict, violence, or sensitive topics. The content focuses on historical events and changes in trade and society after Roman soldiers left Britain, which are appropriate for the intended age group. There is no discussion of nudity or sexual content, and no physical activities or use of equipment requiring supervision are involved. Additionally, there are no guides or encouragements for harmful behavior or illegal activities. The material is educational and age-appropriate.\",\"categories\":[]}",
+        "refusal": null
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 2795,
+    "completion_tokens": 165,
+    "total_tokens": 2960,
+    "prompt_tokens_details": {
+      "cached_tokens": 2176
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "system_fingerprint": "fp_a7d06e42a7"
+}

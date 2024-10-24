@@ -1,0 +1,30 @@
+{
+  "id": "chatcmpl-AKE6CKoXNFC9jmC4kppZDi8BkKjBR",
+  "object": "chat.completion",
+  "created": 1729384120,
+  "model": "gpt-4o-2024-08-06",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan is fully compliant across all categories. There is no presence of discriminatory language or imagery, offensive language, or strong language. There is no depiction or discussion of violence, serious conflict, or sexual violence. The content does not explore upsetting, disturbing, or sensitive topics in a manner that would be inappropriate for Key Stage 1 students. There is no depiction or discussion of nudity or sexual content. The lesson does not involve physical activities, exploration of objects, or use of equipment that would require supervision, nor does it involve external content. Finally, the lesson does not contain any toxic content such as guides for harmful behavior or illegal activity. The content is appropriate for the intended young audience and focuses on historical facts presented in a suitable manner for Key Stage 1 students.\",\"categories\":[]}",
+        "refusal": null
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 4040,
+    "completion_tokens": 189,
+    "total_tokens": 4229,
+    "prompt_tokens_details": {
+      "cached_tokens": 3840
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "system_fingerprint": "fp_a7d06e42a7"
+}

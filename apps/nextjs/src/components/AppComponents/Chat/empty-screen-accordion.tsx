@@ -157,11 +157,12 @@ const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
 AccordionItem.displayName = "AccordionItem";
 
 const AccordionTrigger = React.forwardRef<
-  HTMLDivElement,
+  HTMLButtonElement,
   AccordionTriggerProps
->(({ children, ...props }) => (
+>(({ children, ...props }, forwardedRef) => (
   <Accordion.Trigger
     {...props}
+    ref={forwardedRef}
     className="flex w-full items-center justify-between "
   >
     <span className="flex w-full items-center gap-10 text-left text-base font-bold">

@@ -9,13 +9,16 @@ import {
   continueChat,
   expectFinished,
   expectSectionsComplete,
+  expectStreamingStatus,
+  letUiSettle,
+  scrollLessonPlanFromTopToBottom,
   waitForGeneration,
 } from "./helpers";
 
 // --------
 // CHANGE "replay" TO "record" TO RECORD A NEW FIXTURE
 // --------
-// const FIXTURE_MODE = "record" as FixtureMode;
+//const FIXTURE_MODE = "record" as FixtureMode;
 const FIXTURE_MODE = "replay" as FixtureMode;
 
 async function closePreview(page: Page) {
@@ -32,7 +35,7 @@ async function expectPreviewVisible(page: Page) {
 test(
   "Full aila flow with Romans fixture",
   { tag: "@mobile-common-auth" },
-  async ({ page }) => {
+  async ({ page }, testInfo) => {
     const generationTimeout = FIXTURE_MODE === "record" ? 75000 : 50000;
     test.setTimeout(generationTimeout * 5);
 
@@ -49,8 +52,7 @@ test(
     await test.step("Fill in the chat box", async () => {
       const textbox = page.getByTestId("chat-input");
       const sendMessage = page.getByTestId("send-message");
-      const message =
-        "Create a KS1 lesson on the end of Roman Britain. Ask a question for each quiz and cycle";
+      const message = "Create a KS1 lesson on the end of Roman Britain";
       await textbox.fill(message);
       await expect(textbox).toContainText(message);
 
@@ -67,22 +69,28 @@ test(
 
       await waitForGeneration(page, generationTimeout);
       await expectPreviewVisible(page);
-      await expectSectionsComplete(page, 1);
+      await expectSectionsComplete(page, 3);
       await closePreview(page);
+      await expectStreamingStatus(page, "Idle", { timeout: 5000 });
+      await letUiSettle(page, testInfo);
 
       setFixture("roman-britain-2");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectPreviewVisible(page);
-      await expectSectionsComplete(page, 3);
+      await expectSectionsComplete(page, 7);
       await closePreview(page);
+      await expectStreamingStatus(page, "Idle", { timeout: 5000 });
+      await letUiSettle(page, testInfo);
 
       setFixture("roman-britain-3");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectPreviewVisible(page);
-      await expectSectionsComplete(page, 7);
+      await expectSectionsComplete(page, 10);
       await closePreview(page);
+      await expectStreamingStatus(page, "Idle", { timeout: 5000 });
+      await letUiSettle(page, testInfo);
 
       setFixture("roman-britain-4");
       await continueChat(page);
@@ -90,12 +98,17 @@ test(
       await expectPreviewVisible(page);
       await expectSectionsComplete(page, 10);
       await closePreview(page);
+      await expectStreamingStatus(page, "Idle", { timeout: 5000 });
+      await letUiSettle(page, testInfo);
 
       setFixture("roman-britain-5");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectPreviewVisible(page);
       await expectSectionsComplete(page, 10);
+      await expectStreamingStatus(page, "Idle", { timeout: 5000 });
+      await letUiSettle(page, testInfo);
+      await scrollLessonPlanFromTopToBottom(page);
       await expectFinished(page);
     });
   },

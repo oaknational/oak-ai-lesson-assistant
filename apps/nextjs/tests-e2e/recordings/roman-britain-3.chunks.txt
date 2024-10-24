@@ -8,365 +8,1135 @@ Message
 type":"
 patch
 ","reasoning":"
-Est
-ablish
-ing
- key
+Created
+ a
+ starter
+ quiz
+ to
+ assess
+ pupils
+'
  prior
  knowledge
- to
- ensure
- pupils
- have
+ before
+ introducing
+ new
+ content
+ about
  the
- foundational
- understanding
- necessary
- for
- this
- lesson
+ end
+ of
+ Roman
+ Britain
 .","
 value":{"
 type":"
-string
--array
+quiz
 ","op":"
 add
 ","path":"/
-prior
-Knowledge
-","value":["
-Romans
- invaded
+starter
+Quiz
+","value":[
+{"
+question":"
+When
+ did
+ the
+ Romans
+ invade
  Britain
- in
+?
+","answers":["
+AD
  
 43
- AD
-.","
-Roman
- roads
- connected
- towns
- across
- Britain
-.","
-Romans
- built
- Had
-rian
-'s
- Wall
- in
- the
- north
- of
- Britain
-.","
-Romans
- introduced
- new
- food
- and
- customs
- to
- Britain
-.","
-Some
- Brit
-ons
- adopted
- Roman
- ways
- of
- life
-.
-"]}},{"
-type":"
-patch
-","reasoning":"
-Ident
-ifying
- key
- learning
- points
- to
- ensure
- the
- lesson
- covers
- the
- most
- important
- aspects
- of
- the
- topic
-.","
-value":{"
-type":"
-string
--array
-","op":"
-add
-","path":"/
-key
-Learning
-Points
-","value":["
-The
- Romans
- left
- Britain
- around
+"],"distractors":["
+AD
  
 410
- AD
-.","
-Roman
- withdrawal
- left
+","
+AD
+ 
+106
+6
+"]},{"
+question":"
+How
+ long
+ was
  Britain
- vulnerable
- to
- invas
-ions
-.","
-Many
- Roman
- structures
- fell
- into
- dis
-repair
-.","
-Local
- communities
- had
- to
- adapt
- without
- Roman
- support
-.","
-C
-ultural
- and
- technological
- changes
- occurred
- post
--R
-oman
- rule
-.
-"]}},{"
-type":"
-patch
-","reasoning":"
-Address
-ing
- common
- misconceptions
- to
- ensure
- they
- are
- clarified
- in
- the
- lesson
-.","
-value":{"
-type":"
-mis
-con
-ceptions
-","op":"
-add
-","path":"/
-mis
-con
-ceptions
-","value":[
-{"
-misconception":"
-Romans
- were
- forced
- out
+ part
  of
- Britain
- by
- barb
-arians
-","description":"
-The
- Romans
- left
- Britain
- mainly
- due
- to
- internal
- issues
- in
  the
  Roman
  Empire
-.
- This
- can
- be
- clarified
- by
- explaining
- the
- Roman
- Empire
-'s
- struggles
-."
-},{"
-misconception":"
-Brit
-ain
- became
- immediately
- barbar
-ic
- after
- Romans
- left
-","description":"
-Although
- there
- were
- challenges
-,
- Britain
- continued
- to
- have
- structured
- communities
- and
- slowly
- adapted
- without
- Roman
- governance
-."
-}]}},{"
-type":"
-patch
-","reasoning":"
-Including
- keywords
- to
- bolster
- vocabulary
- comprehension
- for
- the
- lesson
-.","
-value":{"
-type":"
-keywords
-","op":"
-add
-","path":"/
-keywords
-","value":[
-{"
-keyword":"
-Roman
- Empire
-","definition":"
-The
- vast
- empire
- ruled
- by
- Rome
- that
- included
- Britain
- for
- nearly
+?
+","answers":["
+Nearly
  
 400
  years
-."
-},{"
-keyword":"
-Withdrawal
-","definition":"
-The
- act
+"],"distractors":["
+200
+ years
+","
+600
+ years
+"]},{"
+question":"
+What
+ did
+ the
+ Romans
+ build
+ in
+ Britain
+?
+","answers":["
+Road
+s
+,
+ towns
+,
+ and
+ walls
+"],"distractors":["
+Cast
+les
+ and
+ pal
+aces
+","
+Sk
+yscr
+apers
+"]},{"
+question":"
+What
+ aspect
  of
- pulling
- out
- or
- leaving
- a
- place
- or
- position
-."
-},{"
-keyword":"
-Inv
-aders
-","definition":"
-People
- or
- groups
- that
- enter
- a
- region
+ life
+ did
+ Roman
+ culture
+ influence
+ in
+ Britain
+?
+","answers":["
+Buildings
+ and
+ language
+"],"distractors":["
+Cl
+othing
+ and
+ food
+","
+Music
+ and
+ dance
+"]},{"
+question":"
+What
+ was
+ the
+ Roman
+ army
+ known
+ for
+?
+","answers":["
+Being
+ powerful
+ and
+ well
+-organ
+ised
+"],"distractors":["
+Being
+ small
+ and
+ dis
+organ
+ised
+","
+Being
+ peaceful
+ and
+ passive
+"]},{"
+question":"
+What
+ year
+ did
+ the
+ Romans
+ leave
+ Britain
+?
+","answers":["
+AD
+ 
+410
+"],"distractors":["
+AD
+ 
+43
+","
+AD
+ 
+106
+6
+"]}]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Structured
+ the
+ first
+ learning
+ cycle
  to
- take
- control
+ introduce
+ why
+ the
+ Romans
+ left
+ Britain
+ and
+ establish
+ a
+ foundation
+ for
+ understanding
+.","
+value":{"
+type":"
+cycle
+","op":"
+add
+","path":"/
+cycle
+1
+","value":{"
+title":"
+Why
+ the
+ Romans
+ Left
+ Britain
+","durationInMinutes":15
+,"explanation":{"
+spokenExplanation":["
+Discuss
+ the
+ pressures
+ on
+ the
+ Roman
+ Empire
+ around
+ AD
+ 
+410
+.","
+Explain
+ that
+ the
+ Roman
+ Empire
+ was
+ facing
+ threats
+ from
+ various
+ groups
+ outside
+ Britain
+.","
+Mention
+ that
+ the
+ Roman
+ Empire
+ was
+ struggling
+ to
+ defend
+ its
+ vast
+ territories
+.","
+Describe
+ how
+ the
+ decision
+ was
+ made
+ to
+ withdraw
+ troops
+ from
+ Britain
+ to
+ focus
+ on
+ defending
+ Rome
+.","
+Connect
+ this
+ to
+ the
+ eventual
+ departure
+ of
+ the
+ Romans
+ from
+ Britain
 ."
-}]}}],"prompt":{"
+],"accompanyingSlideDetails":"
+A
+ timeline
+ showing
+ key
+ events
+ leading
+ to
+ the
+ Roman
+ withdrawal
+ from
+ Britain
+.","
+imagePrompt":"
+Roman
+ Empire
+ decline
+ map
+","slideText":"
+The
+ Romans
+ left
+ Britain
+ in
+ AD
+ 
+410
+ due
+ to
+ pressures
+ on
+ their
+ empire
+,
+ including
+ threats
+ elsewhere
+."
+},"checkForUnderstanding":[
+{"
+question":"
+Why
+ did
+ the
+ Romans
+ leave
+ Britain
+?
+","answers":["
+Due
+ to
+ pressures
+ on
+ their
+ empire
+"],"distractors":["
+They
+ were
+ defeated
+ by
+ the
+ British
+","
+They
+ wanted
+ to
+ explore
+ new
+ lands
+"]},{"
+question":"
+What
+ was
+ the
+ Roman
+ Empire
+ facing
+ around
+ AD
+ 
+410
+?
+","answers":["
+Threat
+s
+ from
+ various
+ groups
+"],"distractors":["
+A
+ time
+ of
+ peace
+","
+Rapid
+ expansion
+"]}],"practice":"
+List
+ three
+ reasons
+ why
+ the
+ Romans
+ decided
+ to
+ leave
+ Britain
+.
+ Write
+ a
+ sentence
+ for
+ each
+ reason
+.","
+feedback":"
+Model
+ answer
+:
+ 
+1
+.
+ The
+ Roman
+ Empire
+ was
+ facing
+ threats
+ from
+ various
+ groups
+.
+ 
+2
+.
+ The
+ empire
+ was
+ struggling
+ to
+ defend
+ its
+ territories
+.
+ 
+3
+.
+ Tro
+ops
+ were
+ needed
+ to
+ defend
+ Rome
+."
+}},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Structured
+ the
+ second
+ learning
+ cycle
+ to
+ help
+ pupils
+ identify
+ changes
+ in
+ Britain
+ immediately
+ after
+ the
+ Romans
+ left
+.","
+value":{"
+type":"
+cycle
+","op":"
+add
+","path":"/
+cycle
+2
+","value":{"
+title":"
+Immediate
+ Changes
+ in
+ Britain
+","durationInMinutes":15
+,"explanation":{"
+spokenExplanation":["
+Discuss
+ what
+ happened
+ in
+ Britain
+ after
+ the
+ Romans
+ left
+.","
+Explain
+ the
+ immediate
+ changes
+ in
+ infrastructure
+,
+ like
+ the
+ decline
+ in
+ Roman
+-style
+ houses
+.","
+Describe
+ the
+ shift
+ from
+ using
+ Roman
+ coins
+ to
+ bar
+tering
+.","
+Introduce
+ the
+ concept
+ of
+ local
+ trade
+ replacing
+ Roman
+ economic
+ systems
+.","
+Highlight
+ initial
+ invas
+ions
+ by
+ other
+ groups
+ such
+ as
+ the
+ Sax
+ons
+."
+],"accompanyingSlideDetails":"
+Images
+ of
+ Roman
+ and
+ Sax
+on
+ arte
+facts
+ and
+ settlements
+.","
+imagePrompt":"
+Roman
+ to
+ Sax
+on
+ Britain
+ transition
+","slideText":"
+After
+ the
+ Romans
+ left
+,
+ Britain
+ saw
+ changes
+ in
+ infrastructure
+,
+ economy
+,
+ and
+ faced
+ invas
+ions
+ by
+ new
+ groups
+."
+},"checkForUnderstanding":[
+{"
+question":"
+What
+ happened
+ to
+ Roman
+-style
+ houses
+ after
+ they
+ left
+?
+","answers":["
+They
+ declined
+"],"distractors":["
+They
+ were
+ improved
+","
+They
+ stayed
+ the
+ same
+"]},{"
+question":"
+What
+ economic
+ change
+ occurred
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+Shift
+ to
+ bar
+tering
+"],"distractors":["
+In
+creased
+ use
+ of
+ Roman
+ coins
+","
+Introduction
+ of
+ new
+ currency
+"]}],"practice":"
+Sort
+ the
+ following
+ changes
+ into
+ correct
+ categories
+:
+ infrastructure
+,
+ economy
+,
+ invas
+ions
+.
+ Use
+ the
+ provided
+ list
+ of
+ changes
+.","
+feedback":"
+Model
+ answer
+:
+ Infrastructure
+ -
+ decline
+ of
+ Roman
+ houses
+;
+ Economy
+ -
+ shift
+ to
+ bar
+tering
+;
+ In
+vas
+ions
+ -
+ by
+ Sax
+ons
+."
+}},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Created
+ the
+ third
+ learning
+ cycle
+ to
+ explore
+ how
+ life
+ in
+ Britain
+ evolved
+ after
+ the
+ Romans
+,
+ focusing
+ on
+ new
+ cultural
+ influences
+.","
+value":{"
+type":"
+cycle
+","op":"
+add
+","path":"/
+cycle
+3
+","value":{"
+title":"
+Life
+ in
+ Britain
+ After
+ the
+ Romans
+","durationInMinutes":15
+,"explanation":{"
+spokenExplanation":["
+Discuss
+ how
+ life
+ evolved
+ in
+ Britain
+ post
+-R
+oman
+ departure
+.","
+Describe
+ the
+ settlement
+ of
+ new
+ groups
+ like
+ the
+ Sax
+ons
+.","
+Explain
+ the
+ blending
+ of
+ Roman
+ and
+ new
+ cultures
+.","
+Mention
+ the
+ continuation
+ of
+ some
+ Roman
+ traditions
+ and
+ infrastructure
+.","
+Highlight
+ the
+ development
+ of
+ local
+ governance
+ and
+ social
+ structures
+."
+],"accompanyingSlideDetails":"
+A
+ map
+ showing
+ Sax
+on
+ settlements
+ over
+laid
+ on
+ Roman
+ roads
+.","
+imagePrompt":"
+S
+axon
+ settlements
+ in
+ Britain
+","slideText":"
+Life
+ in
+ Britain
+ evolved
+ with
+ new
+ groups
+ settling
+,
+ blending
+ cultures
+,
+ and
+ developing
+ local
+ governance
+."
+},"checkForUnderstanding":[
+{"
+question":"
+Who
+ settled
+ in
+ Britain
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+The
+ Sax
+ons
+"],"distractors":["
+The
+ Romans
+","
+The
+ Vikings
+"]},{"
+question":"
+What
+ continued
+ in
+ Britain
+ despite
+ Roman
+ departure
+?
+","answers":["
+Some
+ Roman
+ traditions
+"],"distractors":["
+Roman
+ rule
+","
+Roman
+ military
+ presence
+"]}],"practice":"
+Write
+ a
+ short
+ paragraph
+ describing
+ how
+ Sax
+on
+ culture
+ influenced
+ Britain
+.
+ Include
+ examples
+ of
+ cultural
+ blending
+.","
+feedback":"
+Success
+ criteria
+:
+ Include
+ Sax
+on
+ settlements
+,
+ blending
+ of
+ cultures
+,
+ and
+ examples
+ of
+ continued
+ Roman
+ traditions
+."
+}},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Develop
+ed
+ an
+ exit
+ quiz
+ to
+ assess
+ pupils
+'
+ understanding
+ of
+ the
+ lesson
+ content
+ regarding
+ the
+ end
+ of
+ Roman
+ Britain
+.","
+value":{"
+type":"
+quiz
+","op":"
+add
+","path":"/
+exit
+Quiz
+","value":[
+{"
+question":"
+When
+ did
+ the
+ Romans
+ leave
+ Britain
+?
+","answers":["
+AD
+ 
+410
+"],"distractors":["
+AD
+ 
+43
+","
+AD
+ 
+106
+6
+"]},{"
+question":"
+What
+ happened
+ to
+ Roman
+-style
+ houses
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+They
+ declined
+"],"distractors":["
+They
+ improved
+","
+They
+ were
+ unchanged
+"]},{"
+question":"
+What
+ replaced
+ Roman
+ coins
+ in
+ the
+ British
+ economy
+?
+","answers":["
+Bar
+tering
+"],"distractors":["
+New
+ currency
+","
+Gold
+ coins
+"]},{"
+question":"
+Which
+ group
+ began
+ to
+ settle
+ in
+ Britain
+ after
+ the
+ Romans
+?
+","answers":["
+The
+ Sax
+ons
+"],"distractors":["
+The
+ Vikings
+","
+The
+ Cel
+ts
+"]},{"
+question":"
+What
+ was
+ one
+ reason
+ the
+ Romans
+ left
+ Britain
+?
+","answers":["
+Press
+ures
+ on
+ their
+ empire
+"],"distractors":["
+To
+ explore
+ new
+ lands
+","
+Def
+eat
+ by
+ the
+ British
+"]},{"
+question":"
+What
+ continued
+ in
+ Britain
+ despite
+ the
+ Roman
+ departure
+?
+","answers":["
+Some
+ Roman
+ traditions
+"],"distractors":["
+Roman
+ army
+ presence
+","
+Roman
+ government
+"]}]},"status":"
+complete
+"}],"prompt":{"
 type":"
 text
 ","value":"
-The
- prior
- knowledge
+Are
+ the
+ starter
+ quiz
 ,
- key
  learning
- points
-,
- misconceptions
+ cycles
 ,
  and
- keywords
- have
- been
- set
-.
- Are
- these
+ exit
+ quiz
  sections
  suitable
  for
  your
- class
+ pupils
 ?
  If
- you
- need
- any
- changes
+ not
 ,
- let
- me
- know
-!"
+ reply
+ with
+ what
+ I
+ should
+ change
+.
+ Otherwise
+,
+ tap
+ **
+Continue
+**
+ to
+ move
+ on
+ to
+ the
+ next
+ step
+."
 }}

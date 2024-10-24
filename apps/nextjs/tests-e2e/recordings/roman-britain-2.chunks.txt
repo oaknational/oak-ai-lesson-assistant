@@ -8,71 +8,21 @@ Message
 type":"
 patch
 ","reasoning":"
-Est
-ablish
-ing
- a
- clear
+Established
+ prior
+ knowledge
+ that
+ pupils
+ should
+ have
+ before
  learning
- outcome
- to
- focus
- the
- lesson
- on
- the
- specific
- impact
- of
+ about
  the
  end
  of
  Roman
- rule
- in
  Britain
-.","
-value":{"
-type":"
-string
-","op":"
-add
-","path":"/
-learning
-Outcome
-","value":"
-I
- can
- describe
- the
- changes
- in
- Britain
- after
- the
- Romans
- left
-."
-}},{"
-type":"
-patch
-","reasoning":"
-Def
-ining
- learning
- cycles
- to
- structure
- the
- lesson
- effectively
-,
- increasing
- complexity
- as
- the
- lesson
- progresses
 .","
 value":{"
 type":"
@@ -81,82 +31,447 @@ string
 ","op":"
 add
 ","path":"/
-learning
-Cycles
+prior
+Knowledge
 ","value":["
-Identify
- key
- reasons
- why
+The
+ Romans
+ invaded
+ Britain
+ in
+ AD
+ 
+43
+.","
+Roman
+ Britain
+ was
+ part
+ of
  the
+ Roman
+ Empire
+ for
+ nearly
+ 
+400
+ years
+.","
+Romans
+ built
+ roads
+,
+ towns
+,
+ and
+ walls
+ in
+ Britain
+.","
+Roman
+ culture
+ influenced
+ life
+ in
+ Britain
+,
+ including
+ buildings
+ and
+ language
+.","
+The
+ Roman
+ army
+ was
+ powerful
+ and
+ well
+-organ
+ised
+.
+"]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Ident
+ified
+ key
+ learning
+ points
+ for
+ the
+ lesson
+ on
+ the
+ end
+ of
+ Roman
+ Britain
+.","
+value":{"
+type":"
+string
+-array
+","op":"
+add
+","path":"/
+key
+Learning
+Points
+","value":["
+The
  Romans
  left
  Britain
-.","
-Describe
- the
- immediate
- effects
- on
- local
- communities
-.","
-Explain
- how
- Britain
- changed
  in
+ AD
+ 
+410
+ due
+ to
+ pressures
+ on
  the
- years
- following
+ Roman
+ Empire
+.","
+Without
+ Roman
+ protection
+,
+ Britain
+ faced
+ invas
+ions
+ from
+ other
+ groups
+.","
+Changes
+ included
+ decline
+ in
+ Roman
+-style
+ houses
+ and
+ infrastructure
+.","
+Econom
+y
+ shifted
+ from
+ Roman
+ coins
+ to
+ bar
+tering
+ and
+ local
+ trade
+.","
+New
+ groups
+,
+ such
+ as
+ the
+ Sax
+ons
+,
+ began
+ to
+ settle
+ in
+ Britain
+.
+"]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Outlined
+ common
+ misconceptions
+ about
+ the
+ end
+ of
+ Roman
+ Britain
+ and
+ provided
+ clar
+ifications
+.","
+value":{"
+type":"
+mis
+con
+ceptions
+","op":"
+add
+","path":"/
+mis
+con
+ceptions
+","value":[
+{"
+misconception":"
+The
+ Romans
+ were
+ forced
+ out
+ by
+ the
+ British
+ people
+","description":"
+It
+ is
+ more
+ accurate
+ to
+ say
+ the
+ Romans
+ left
+ due
+ to
+ challenges
+ within
+ their
+ own
+ empire
+,
+ including
+ threats
+ elsewhere
+."
+},{"
+misconception":"
+Roman
+ culture
+ completely
+ disappeared
+ after
+ they
+ left
+","description":"
+Many
+ Roman
+ influences
+ remained
+,
+ such
+ as
+ roads
+ and
+ some
+ aspects
+ of
+ lifestyle
+,
+ but
+ new
+ cultures
+ also
+ emerged
+."
+},{"
+misconception":"
+Brit
+ain
+ was
+ completely
+ isolated
+ after
+ the
+ Romans
+ left
+","description":"
+Although
+ the
  Roman
  departure
-.
-"]}}],"prompt":{"
-type":"
-text
-","value":"
-I've
- set
- the
- learning
- outcome
+ led
  to
- focus
- on
- describing
- the
  changes
+,
+ Britain
+ still
+ interacted
+ with
+ other
+ cultures
+ and
+ groups
+."
+}]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Selected
+ important
+ keywords
+ that
+ will
+ be
+ used
+ during
+ the
+ lesson
+.","
+value":{"
+type":"
+keywords
+","op":"
+add
+","path":"/
+keywords
+","value":[
+{"
+keyword":"
+Roman
+ Empire
+","definition":"
+A
+ vast
+ empire
+ that
+ ruled
+ over
+ Britain
+ from
+ AD
+ 
+43
+ to
+ AD
+ 
+410
+."
+},{"
+keyword":"
+In
+vasion
+","definition":"
+An
+ instance
+ of
+ invading
+ a
+ country
+ or
+ region
+ with
+ an
+ armed
+ force
+."
+},{"
+keyword":"
+S
+axon
+","definition":"
+A
+ group
+ of
+ German
+ic
+ people
+ who
+ settled
  in
  Britain
  after
  the
  Romans
  left
+."
+},{"
+keyword":"
+Infrastructure
+","definition":"
+Basic
+ physical
+ structures
+ like
+ roads
  and
- outlined
- the
- learning
- cycles
-.
- Are
- the
- learning
- outcome
+ buildings
+ needed
+ for
+ society
+."
+},{"
+keyword":"
+Bar
+tering
+","definition":"
+Ex
+changing
+ goods
  and
+ services
+ without
+ using
+ money
+."
+}]},"status":"
+complete
+"}],"prompt":{"
+type":"
+text
+","value":"
+Are
+ the
+ prior
+ knowledge
+,
+ key
  learning
- cycles
- appropriate
+ points
+,
+ misconceptions
+,
+ and
+ keywords
+ sections
+ suitable
  for
  your
- pupils
+ class
 ?
  If
  not
 ,
- suggest
- an
- edit
- below
+ reply
+ with
+ what
+ I
+ should
+ change
+.
+ Otherwise
+,
+ tap
+ **
+Continue
+**
+ to
+ move
+ on
+ to
+ the
+ next
+ step
 ."
 }}
