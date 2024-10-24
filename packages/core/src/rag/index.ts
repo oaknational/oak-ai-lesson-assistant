@@ -5,16 +5,10 @@ import {
   LessonPlanPart,
   PrismaClientWithAccelerate,
   Subject,
+  prisma as globalPrisma,
 } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
-import {
-  LessonPlan,
-  LessonSummary,
-  Prisma,
-  PrismaClient,
-  Snippet,
-} from "@prisma/client";
-import { withAccelerate } from "@prisma/extension-accelerate";
+import { LessonPlan, LessonSummary, Prisma, Snippet } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
 import { kv } from "@vercel/kv";
 import { CohereClient } from "cohere-ai";
@@ -79,10 +73,10 @@ export class RAG {
   prisma: PrismaClientWithAccelerate;
   private _chatMeta: OpenAICompletionWithLoggingOptions;
   constructor(
-    prisma: PrismaClientWithAccelerate,
+    prisma: PrismaClientWithAccelerate | undefined,
     chatMeta: OpenAICompletionWithLoggingOptions,
   ) {
-    this.prisma = prisma;
+    this.prisma = prisma ?? globalPrisma;
     this._chatMeta = chatMeta;
   }
 
@@ -837,10 +831,6 @@ Thank you and happy classifying!`;
     subject: string | undefined,
     perPage: number,
   ) {
-    const prisma: PrismaClientWithAccelerate = new PrismaClient().$extends(
-      withAccelerate(),
-    );
-
     const filter: FilterOptions = {};
 
     const keyStageAndSubject = await this.fetchFuzzyKeyStageAndSubject({
@@ -858,20 +848,19 @@ Thank you and happy classifying!`;
       };
     }
 
-    const vectorStore = PrismaVectorStore.withModel<Snippet>(prisma).create(
-      new OpenAIEmbeddings(),
-      {
-        prisma: Prisma,
-        tableName: "snippets" as "Snippet",
-        vectorColumnName: "embedding",
-        columns: {
-          id: PrismaVectorStore.IdColumn,
-          content: PrismaVectorStore.ContentColumn,
-        },
-        // @ts-expect-error TODO Bug in PrismaVectorStore which doesn't allow mapped column names
-        filter,
+    const vectorStore = PrismaVectorStore.withModel<Snippet>(
+      this.prisma,
+    ).create(new OpenAIEmbeddings(), {
+      prisma: Prisma,
+      tableName: "snippets" as "Snippet",
+      vectorColumnName: "embedding",
+      columns: {
+        id: PrismaVectorStore.IdColumn,
+        content: PrismaVectorStore.ContentColumn,
       },
-    );
+      // @ts-expect-error TODO Bug in PrismaVectorStore which doesn't allow mapped column names
+      filter,
+    });
 
     const result = await vectorStore.similaritySearchWithScore(query, perPage);
 
