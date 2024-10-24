@@ -23,7 +23,7 @@ const hashFor = (obj: object, messageHashes) => {
 };
 
 function extractPatchesFromMessage(message: Message) {
-  const { validPatches, partialPatches } = extractPatches(message.content, 100);
+  const { validPatches, partialPatches } = extractPatches(message.content);
   return { validPatches, partialPatches };
 }
 
