@@ -19,6 +19,7 @@ import {
   TextDocumentSchema,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
+import { AilaRagRelevantLesson } from "../../protocol/schema";
 import { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
@@ -28,16 +29,17 @@ import { PatchEnqueuer } from "./PatchEnqueuer";
 import { Message } from "./types";
 
 export class AilaChat implements AilaChatService {
-  private _id: string;
-  private _messages: Message[];
+  private readonly _id: string;
+  private readonly _messages: Message[];
+  private _relevantLessons: AilaRagRelevantLesson[];
   private _isShared: boolean | undefined;
-  private _userId: string | undefined;
-  private _aila: AilaServices;
+  private readonly _userId: string | undefined;
+  private readonly _aila: AilaServices;
   private _generation?: AilaGeneration;
   private _chunks?: string[];
-  private _patchEnqueuer: PatchEnqueuer;
-  private _llmService: LLMService;
-  private _promptBuilder: AilaPromptBuilder;
+  private readonly _patchEnqueuer: PatchEnqueuer;
+  private readonly _llmService: LLMService;
+  private readonly _promptBuilder: AilaPromptBuilder;
 
   constructor({
     id,
@@ -66,6 +68,7 @@ export class AilaChat implements AilaChatService {
       });
     this._patchEnqueuer = new PatchEnqueuer();
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
+    this._relevantLessons = [];
   }
 
   public get aila() {
@@ -74,11 +77,6 @@ export class AilaChat implements AilaChatService {
 
   public get id(): string {
     return this._id;
-  }
-
-  public set id(value: string) {
-    this._id = value;
-    this._aila.analytics?.initialiseAnalyticsContext();
   }
 
   public get userId(): string | undefined {
@@ -95,6 +93,14 @@ export class AilaChat implements AilaChatService {
 
   public get parsedMessages() {
     return this._messages.map((m) => parseMessageParts(m.content));
+  }
+
+  public get relevantLessons() {
+    return this._relevantLessons;
+  }
+
+  public set relevantLessons(lessons: AilaRagRelevantLesson[]) {
+    this._relevantLessons = lessons;
   }
 
   public getPatchEnqueuer(): PatchEnqueuer {
@@ -208,14 +214,20 @@ export class AilaChat implements AilaChatService {
   }
 
   public async enqueue(message: JsonPatchDocumentOptional) {
-    await this._patchEnqueuer.enqueueMessage(message);
+    // Optional "?"" necessary to avoid a "terminated" error
+    if (this?._patchEnqueuer) {
+      await this._patchEnqueuer.enqueueMessage(message);
+    }
   }
 
   public async enqueuePatch(
     path: string,
     value: string | string[] | number | object,
   ) {
-    await this._patchEnqueuer.enqueuePatch(path, value);
+    // Optional "?"" necessary to avoid a "terminated" error
+    if (this?._patchEnqueuer) {
+      await this._patchEnqueuer.enqueuePatch(path, value);
+    }
   }
 
   private async startNewGeneration() {
@@ -233,13 +245,11 @@ export class AilaChat implements AilaChatService {
 
   private accumulatedText() {
     const accumulated = this._chunks?.join("");
-    return accumulated;
+    return accumulated ?? "";
   }
 
   private async reportUsageMetrics() {
-    await this._aila.analytics?.reportUsageMetrics(
-      this.accumulatedText() ?? "",
-    );
+    await this._aila.analytics?.reportUsageMetrics(this.accumulatedText());
   }
 
   private async persistGeneration(status: AilaGenerationStatus) {
@@ -279,6 +289,7 @@ export class AilaChat implements AilaChatService {
     const persistedChat = await persistenceFeature.loadChat();
 
     if (persistedChat) {
+      this._relevantLessons = persistedChat.relevantLessons ?? [];
       this._isShared = persistedChat.isShared;
     }
   }
@@ -293,9 +304,6 @@ export class AilaChat implements AilaChatService {
 
   private appendAssistantMessage() {
     const content = this.accumulatedText();
-    if (!content) {
-      return;
-    }
     const assistantMessage: Message = {
       id: generateMessageId({ role: "assistant" }),
       role: "assistant",
@@ -359,13 +367,19 @@ export class AilaChat implements AilaChatService {
     await this.reportUsageMetrics();
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
-    if (assistantMessage) {
-      await this.enqueueMessageId(assistantMessage.id);
-    }
-
+    await this.enqueueMessageId(assistantMessage.id);
+    await this.saveSnapshot({ messageId: assistantMessage.id });
     await this.moderate();
     await this.persistChat();
     await this.persistGeneration("SUCCESS");
+  }
+
+  public async saveSnapshot({ messageId }: { messageId: string }) {
+    await this._aila.snapshotStore.saveSnapshot({
+      messageId,
+      lessonPlan: this._aila.lesson.plan,
+      trigger: "ASSISTANT_MESSAGE",
+    });
   }
 
   public async moderate() {

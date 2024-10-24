@@ -7,6 +7,9 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { z } from "zod";
 
 import { createOpenAILangchainClient } from "../llm/openai";
+import { aiLogger } from "@oakai/logger";
+
+const log = aiLogger("transcripts")
 
 interface TranscriptWithRaw {
   raw: string;
@@ -73,7 +76,7 @@ export class Transcripts {
         },
       });
 
-      console.log("Schedule snippet embedding", {
+      log.info("Schedule snippet embedding", {
         snippetId: createdSnippet.id,
       });
 
@@ -120,14 +123,14 @@ export class Transcripts {
   Do not include any information about the speaker in your response.
   Do not extend the length of the snippet beyond the length of the original sentence.
   Do not include information not covered in the lesson in your snippets.
-  
+
   Response:
   Your response should be a JSON document containing an array of strings, each of which is a single sentence or a few sentences.
   Do not respond with a cut off or incomplete JSON document.
   Your response should match the following schema definition:
   {format_instructions}`;
 
-    console.log(template);
+    log.info(template);
 
     const parser = StructuredOutputParser.fromZodSchema(
       z.object({
@@ -149,7 +152,7 @@ export class Transcripts {
 
     const format_instructions = parser.getFormatInstructions();
 
-    console.log("Format instructions", format_instructions);
+    log.info("Format instructions", format_instructions);
 
     const transcript_text = (transcript.content as unknown as TranscriptWithRaw)
       .raw;
@@ -158,7 +161,7 @@ export class Transcripts {
       format_instructions,
     });
 
-    console.log("Got response", { response });
+    log.info("Got response", { response });
 
     const { snippets } = response;
 

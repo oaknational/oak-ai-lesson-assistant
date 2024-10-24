@@ -1,16 +1,19 @@
 import { IngestError } from "../IngestError";
 
+type GenerateLessonPlanCustomIdComponents = { lessonId: string };
+type EmbedLessonPlanPartsCustomIdComponents = {
+  lessonId: string;
+  partKey: string;
+  lessonPlanPartId: string;
+};
 type CreateCustomIdProps =
-  | {
+  | ({
       task: "generate-lesson-plans";
-      lessonId: string;
-    }
-  | {
+    } & GenerateLessonPlanCustomIdComponents)
+  | ({
       task: "embed-lesson-plan-parts";
-      lessonId: string;
-      partKey: string;
-      lessonPlanPartId: string;
-    };
+    } & EmbedLessonPlanPartsCustomIdComponents);
+
 export type BatchTask = CreateCustomIdProps["task"];
 export function createCustomId(props: CreateCustomIdProps): string {
   switch (props.task) {
@@ -22,9 +25,14 @@ export function createCustomId(props: CreateCustomIdProps): string {
 }
 
 export function parseCustomId(props: {
-  task: CreateCustomIdProps["task"];
+  task: "generate-lesson-plans";
   customId: string;
-}) {
+}): GenerateLessonPlanCustomIdComponents;
+export function parseCustomId(props: {
+  task: "embed-lesson-plan-parts";
+  customId: string;
+}): EmbedLessonPlanPartsCustomIdComponents;
+export function parseCustomId(props: { task: BatchTask; customId: string }) {
   switch (props.task) {
     case "generate-lesson-plans":
       return {
@@ -44,4 +52,15 @@ export function parseCustomId(props: {
       };
     }
   }
+}
+
+export function getLessonIdFromCustomId(customId: string) {
+  const lessonId = customId.split("-")[0];
+  if (!lessonId) {
+    throw new IngestError("Invalid customId", {
+      errorDetail: customId,
+    });
+  }
+
+  return lessonId;
 }

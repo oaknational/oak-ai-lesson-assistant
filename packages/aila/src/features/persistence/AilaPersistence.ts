@@ -1,9 +1,9 @@
 import { GenerationStatus } from "@prisma/client";
 import invariant from "tiny-invariant";
 
-import { AilaChatService, AilaError, AilaServices, Message } from "../../core";
+import { AilaChatService, AilaError, AilaServices } from "../../core";
 import { AilaOptionsWithDefaultFallbackValues } from "../../core/types";
-import { AilaPersistedChat, LooseLessonPlan } from "../../protocol/schema";
+import { AilaPersistedChat } from "../../protocol/schema";
 import { AilaGeneration } from "../generation";
 
 export abstract class AilaPersistence {
@@ -34,7 +34,7 @@ export abstract class AilaPersistence {
   }
 
   protected createChatPayload(): ChatPersistencePayload {
-    const { id, userId, messages, isShared } = this._chat;
+    const { id, userId, messages, isShared, relevantLessons } = this._chat;
 
     invariant(userId, "userId is required for chat persistence");
 
@@ -52,6 +52,7 @@ export abstract class AilaPersistence {
       isShared,
       path: `/aila/${id}`,
       lessonPlan: lesson.plan,
+      relevantLessons,
       messages: messages.filter((m) => ["assistant", "user"].includes(m.role)),
       options,
     };
@@ -114,20 +115,12 @@ export abstract class AilaPersistence {
   abstract upsertGeneration(generation?: AilaGeneration): Promise<void>;
 }
 
-export interface ChatPersistencePayload {
-  id?: string;
-  userId: string;
-  title: string;
+export type ChatPersistencePayload = AilaPersistedChat & {
   subject: string;
   keyStage: string;
   topic: string;
-  createdAt: number;
-  isShared: boolean | undefined;
-  path: string;
-  lessonPlan: LooseLessonPlan;
-  messages: Message[];
   options: AilaOptionsWithDefaultFallbackValues;
-}
+};
 
 export interface GenerationPersistencePayload {
   id?: string;

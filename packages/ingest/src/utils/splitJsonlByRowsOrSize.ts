@@ -1,8 +1,11 @@
+import { aiLogger } from "@oakai/logger";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import * as readline from "node:readline";
 
 import { IngestError } from "../IngestError";
+
+const log = aiLogger("ingest");
 
 /**
  * Splits a large .jsonl file into multiple files, based on whichever limit is hit first: max rows or max file size.
@@ -48,7 +51,7 @@ export async function splitJsonlByRowsOrSize({
         `${inputFileName}_${currentFileIndex}.jsonl`,
       );
       const newWriteStream = fs.createWriteStream(outputFilePath);
-      console.log(`Creating new file: ${outputFilePath}`);
+      log.info(`Creating new file: ${outputFilePath}`);
       outputFilePaths.push(outputFilePath);
       currentFileIndex++;
       currentRowCount = 0;
@@ -77,9 +80,9 @@ export async function splitJsonlByRowsOrSize({
     if (currentFileStream) {
       currentFileStream.end();
     }
-    console.log(`Splitting complete! Files created in ${outputDir}`);
+    log.info(`Splitting complete! Files created in ${outputDir}`);
   } catch (error) {
-    console.error(`Error splitting JSONL: ${(error as Error).message}`);
+    log.error(`Error splitting JSONL: ${(error as Error).message}`);
     throw new IngestError("Error splitting JSONL");
   }
 

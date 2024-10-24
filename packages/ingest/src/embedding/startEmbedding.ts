@@ -1,14 +1,5 @@
-import {
-  OPEN_AI_BATCH_MAX_ROWS,
-  OPEN_AI_BATCH_MAX_SIZE_MB,
-} from "../openai-batches/constants";
-import {
-  OpenAiBatchSubmitCallback,
-  submitOpenAiBatch,
-} from "../openai-batches/submitOpenAiBatch";
-import { uploadOpenAiBatchFile } from "../openai-batches/uploadOpenAiBatchFile";
-import { writeBatchFile } from "../openai-batches/writeBatchFile";
-import { splitJsonlByRowsOrSize } from "../utils/splitJsonlByRowsOrSize";
+import { startBatch } from "../openai-batches/startBatch";
+import { OpenAiBatchSubmitCallback } from "../openai-batches/submitOpenAiBatch";
 import {
   EmbeddingBatchLineProps,
   getPartEmbeddingBatchFileLine,
@@ -23,29 +14,11 @@ export async function startEmbedding({
   parts: EmbeddingBatchLineProps[];
   onSubmitted: OpenAiBatchSubmitCallback;
 }) {
-  const { filePath, batchDir } = await writeBatchFile({
+  return startBatch({
     ingestId,
     data: parts,
+    endpoint: "/v1/embeddings",
     getBatchFileLine: getPartEmbeddingBatchFileLine,
+    onSubmitted,
   });
-
-  const { filePaths } = await splitJsonlByRowsOrSize({
-    inputFilePath: filePath,
-    outputDir: batchDir,
-    maxRows: OPEN_AI_BATCH_MAX_ROWS,
-    maxFileSizeMB: OPEN_AI_BATCH_MAX_SIZE_MB,
-  });
-
-  // submit batches and add records in db
-  for (const filePath of filePaths) {
-    const { file } = await uploadOpenAiBatchFile({
-      filePath,
-    });
-    const { batch: openaiBatch } = await submitOpenAiBatch({
-      fileId: file.id,
-      endpoint: "/v1/embeddings",
-    });
-
-    await onSubmitted({ openaiBatchId: openaiBatch.id, filePath });
-  }
 }

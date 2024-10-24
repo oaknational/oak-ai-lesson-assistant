@@ -1,8 +1,15 @@
+import { aiLogger } from "@oakai/logger";
 import fs from "node:fs";
+
+import { IngestError } from "../IngestError";
+
+const log = aiLogger("ingest");
 
 function getBatchDataDir({ ingestId }: { ingestId: string }) {
   return `${__dirname}/data/ingest_${ingestId}`;
 }
+
+export type GetBatchFileLine<T> = (datum: T) => Record<string, unknown>;
 
 export function writeBatchFile<T>({
   ingestId,
@@ -11,7 +18,7 @@ export function writeBatchFile<T>({
 }: {
   ingestId: string;
   data: T[];
-  getBatchFileLine: (datum: T) => Record<string, unknown>;
+  getBatchFileLine: GetBatchFileLine<T>;
 }) {
   return new Promise<{ filePath: string; batchDir: string }>(
     (resolve, reject) => {
@@ -25,7 +32,8 @@ export function writeBatchFile<T>({
 
       writeStream.on("finish", () => {
         resolve({ filePath, batchDir });
-        console.log("Finished writing batch file", filePath);
+
+        log.info("Finished writing batch file", filePath);
       });
 
       writeStream.on("error", reject);
@@ -35,7 +43,12 @@ export function writeBatchFile<T>({
           const line = getBatchFileLine(datum);
 
           writeStream.write(`${JSON.stringify(line)}\n`);
-        } catch (error) {
+        } catch (cause) {
+          const error = new IngestError("Failed to write batch file", {
+            ingestId,
+            errorDetail: data,
+            cause,
+          });
           reject(error);
         }
       }

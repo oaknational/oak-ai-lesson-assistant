@@ -19,6 +19,7 @@ import {
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { Moderation } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { Message, nanoid } from "ai";
 import { ChatRequestOptions, CreateMessage } from "ai";
@@ -38,6 +39,8 @@ import {
   isAccountLocked,
   isModeration,
 } from "../AppComponents/Chat/chat-message/protocol";
+
+const log = aiLogger("chat");
 
 export type ChatContextProps = {
   id: string;
@@ -197,11 +200,11 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       Sentry.captureException(new Error("Use chat error"), {
         extra: { originalError: error },
       });
-      console.error("UseChat error", { error, messages });
+      log.error("UseChat error", { error, messages });
       setHasFinished(true);
     },
     onResponse(response) {
-      console.log("Chat: On Response");
+      log.info("Chat: On Response");
 
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
       if (response.status === 401) {
@@ -216,7 +219,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       }
     },
     onFinish(response) {
-      console.log("Chat: On Finish", new Date().toISOString(), {
+      log.info("Chat: On Finish", new Date().toISOString(), {
         response,
         path,
       });
@@ -306,7 +309,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
         });
       }
     } catch (error) {
-      console.error("Error handling queued action:", error);
+      log.error("Error handling queued action:", error);
     } finally {
       isExecutingAction.current = false;
     }

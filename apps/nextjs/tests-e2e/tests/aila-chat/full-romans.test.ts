@@ -1,5 +1,5 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
@@ -21,9 +21,15 @@ const FIXTURE_MODE = "replay" as FixtureMode;
 test(
   "Full aila flow with Romans fixture",
   { tag: "@common-auth" },
-  async ({ page }) => {
+  async ({ page }, testInfo) => {
     const generationTimeout = FIXTURE_MODE === "record" ? 75000 : 50000;
     test.setTimeout(generationTimeout * 5);
+
+    // The chat UI has a race condition when you submit a message too quickly after the previous response
+    // This is a temporary fix to fix test flake
+    async function letUiSettle() {
+      return await page.waitForTimeout(testInfo.retry === 0 ? 500 : 6000);
+    }
 
     await test.step("Setup", async () => {
       await bypassVercelProtection(page);
@@ -55,21 +61,25 @@ test(
       await page.waitForURL(/\/aila\/.+/);
       await waitForGeneration(page, generationTimeout);
       await expectSectionsComplete(page, 1);
+      await letUiSettle();
 
       setFixture("roman-britain-2");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectSectionsComplete(page, 3);
+      await letUiSettle();
 
       setFixture("roman-britain-3");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectSectionsComplete(page, 7);
+      await letUiSettle();
 
       setFixture("roman-britain-4");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectSectionsComplete(page, 10);
+      await letUiSettle();
 
       setFixture("roman-britain-5");
       await continueChat(page);

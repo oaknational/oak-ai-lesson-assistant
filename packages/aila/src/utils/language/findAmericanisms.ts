@@ -1,8 +1,9 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="./american-british-english-translator.d.ts" />
 import { textify } from "@oakai/core/src/models/lessonPlans";
 import translator from "american-british-english-translator";
 
 import { LessonPlanKeys, LooseLessonPlan } from "../../protocol/schema";
-import "./american-british-english-translator.d.ts";
 
 export type AmericanismIssueBySection = {
   section: string;

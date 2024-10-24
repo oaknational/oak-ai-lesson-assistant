@@ -1,10 +1,20 @@
 import { expect, Page, test } from "@playwright/test";
 
+import { AilaStreamingStatus } from "@/components/AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
+
+export async function expectStreamingStatus(
+  page: Page,
+  status: AilaStreamingStatus,
+  args?: { timeout: number },
+) {
+  const statusElement = page.getByTestId("chat-aila-streaming-status");
+  await expect(statusElement).toHaveText(status, args);
+}
+
 export async function waitForGeneration(page: Page, generationTimeout: number) {
   return await test.step("Wait for generation", async () => {
-    const loadingElement = page.getByTestId("chat-stop");
-    await expect(loadingElement).toBeVisible({ timeout: 10000 });
-    await expect(loadingElement).not.toBeVisible({
+    await expectStreamingStatus(page, "RequestMade");
+    await expectStreamingStatus(page, "Idle", {
       timeout: generationTimeout,
     });
   });
@@ -32,6 +42,7 @@ export async function expectSectionsComplete(
   const locator = page.getByTestId("chat-progress");
   await expect(locator).toHaveText(
     `${numberOfSections} of 10 sections complete`,
+    { timeout: 10000 },
   );
 }
 
@@ -51,7 +62,7 @@ export const applyLlmFixtures = async (
   });
 
   return {
-    setFixture: async (name: string) => {
+    setFixture: (name: string) => {
       fixtureName = name;
     },
   };

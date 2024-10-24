@@ -1,27 +1,22 @@
 import { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
+import { LessonSnapshots } from "@oakai/core";
 import { sendEmail } from "@oakai/core/src/utils/sendEmail";
 import { PrismaClientWithAccelerate } from "@oakai/db";
 import {
-  LessonDeepPartial,
   exportDocLessonPlanSchema,
   exportDocQuizSchema,
   exportSlidesFullLessonSchema,
   exportDocsWorksheetSchema,
   exportQuizDesignerSlides,
 } from "@oakai/exports";
-import {
-  ExportableQuizAppState,
-  exportableQuizAppStateSchema,
-} from "@oakai/exports/src/schema/input.schema";
-import { DeepPartial } from "@oakai/exports/src/types";
+import { exportableQuizAppStateSchema } from "@oakai/exports/src/schema/input.schema";
+import { aiLogger } from "@oakai/logger";
 import { LessonExportType } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
 import { kv } from "@vercel/kv";
-import crypto from "crypto";
 import { z } from "zod";
 
-import { LessonPlanJsonSchema } from "../../../aila/src/protocol/schema";
 import { exportAdditionalMaterialsDoc } from "../export/exportAdditionalMaterialsDoc";
 import { exportLessonPlan } from "../export/exportLessonPlan";
 import { exportLessonSlides } from "../export/exportLessonSlides";
@@ -30,167 +25,7 @@ import { exportWorksheets } from "../export/exportWorksheets";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 
-const JsonSchemaString = JSON.stringify(LessonPlanJsonSchema);
-
-const LESSON_JSON_SCHEMA_HASH = crypto
-  .createHash("sha256")
-  .update(JsonSchemaString)
-  .digest("hex");
-
-function getSnapshotHash(snapshot: LessonDeepPartial) {
-  const hash = crypto
-    .createHash("sha256")
-    .update(JSON.stringify(snapshot))
-    .digest("hex");
-
-  return hash;
-}
-export async function ailaCheckIfSnapshotExists({
-  prisma,
-  userId,
-  chatId,
-  snapshot,
-}: {
-  prisma: Pick<PrismaClientWithAccelerate, "lessonSchema" | "lessonSnapshot">;
-  userId: string;
-  chatId: string;
-  snapshot: LessonDeepPartial;
-}) {
-  /**
-   * Prisma types complained when passing the JSON schema directly to the Prisma
-   */
-  const jsonSchema = JSON.parse(JsonSchemaString);
-  // get latest lesson schema for given hash
-  let lessonSchema = await prisma.lessonSchema.findFirst({
-    where: {
-      hash: LESSON_JSON_SCHEMA_HASH,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
-  });
-
-  if (!lessonSchema) {
-    // create lesson schema if not found
-    lessonSchema = await prisma.lessonSchema.create({
-      data: {
-        hash: LESSON_JSON_SCHEMA_HASH,
-        jsonSchema,
-      },
-    });
-  }
-
-  const hash = getSnapshotHash(snapshot);
-
-  // attempt to find existing snapshot
-  const existingSnapshot = await prisma.lessonSnapshot.findFirst({
-    where: {
-      userId,
-      chatId,
-      hash,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-
-  return {
-    existingSnapshot,
-    lessonSchema,
-    hash,
-  };
-}
-export async function ailaGetOrSaveSnapshot({
-  prisma,
-  userId,
-  chatId,
-  messageId,
-  snapshot,
-}: {
-  prisma: Pick<PrismaClientWithAccelerate, "lessonSchema" | "lessonSnapshot">;
-  userId: string;
-  chatId: string;
-  messageId: string;
-  snapshot: LessonDeepPartial;
-}) {
-  const { existingSnapshot, lessonSchema, hash } =
-    await ailaCheckIfSnapshotExists({
-      prisma,
-      userId,
-      chatId,
-      snapshot,
-    });
-
-  if (existingSnapshot) {
-    return existingSnapshot;
-  }
-
-  const lessonJson = JSON.stringify(snapshot);
-
-  const lessonSnapshot = await prisma.lessonSnapshot.create({
-    data: {
-      userId,
-      chatId,
-      messageId,
-      lessonSchemaId: lessonSchema.id,
-      hash,
-      lessonJson,
-      trigger: "EXPORT_BY_USER",
-    },
-  });
-
-  return lessonSnapshot;
-}
-
-export async function qdGetOrSaveSnapshot({
-  prisma,
-  userId,
-  sessionId,
-  messageId,
-  snapshot,
-}: {
-  prisma: PrismaClientWithAccelerate;
-  userId: string;
-  sessionId: string;
-  messageId: string;
-  snapshot: DeepPartial<ExportableQuizAppState>;
-}) {
-  /**
-   * Prisma types complained when passing the JSON schema directly to the Prisma
-   */
-
-  const hash = getSnapshotHash(snapshot);
-
-  // attempt to find existing snapshot
-  const existingSnapshot = await prisma.qdSnapshot.findFirst({
-    where: {
-      userId,
-      sessionId,
-      hash,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-
-  if (existingSnapshot) {
-    return existingSnapshot;
-  }
-
-  const lessonSnapshot = await prisma.qdSnapshot.create({
-    data: {
-      userId,
-      sessionId,
-      messageId,
-      hash,
-      qdJson: JSON.stringify(snapshot),
-      trigger: "EXPORT_BY_USER",
-    },
-  });
-
-  return lessonSnapshot;
-}
+const log = aiLogger("exports");
 
 export async function ailaSaveExport({
   auth,
@@ -348,26 +183,25 @@ export const exportsRouter = router({
       z.object({
         data: exportDocLessonPlanSchema.passthrough(),
         chatId: z.string(),
+        messageId: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
       try {
         const userId = ctx.auth.userId;
-        const { chatId, data } = input;
-        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
-          prisma: ctx.prisma,
+        const { chatId, data, messageId } = input;
+        const lessonSnapshots = new LessonSnapshots(ctx.prisma);
+        const { id: snapshotId } = await lessonSnapshots.getOrSaveSnapshot({
           userId,
           chatId,
           snapshot: data,
+          trigger: "EXPORT_BY_USER",
+          messageId,
         });
-        if (!existingSnapshot) {
-          console.log("No existing snapshot found");
-          return;
-        }
 
         const exportData = await ailaGetExportBySnapshotId({
           prisma: ctx.prisma,
-          snapshotId: existingSnapshot.id,
+          snapshotId,
           exportType: "LESSON_PLAN_DOC",
         });
         if (exportData) {
@@ -378,7 +212,7 @@ export const exportsRouter = router({
           return output;
         }
       } catch (error) {
-        console.error("Error checking if download exists:", error);
+        log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
         return {
           error,
@@ -391,26 +225,25 @@ export const exportsRouter = router({
       z.object({
         data: exportSlidesFullLessonSchema.passthrough(),
         chatId: z.string(),
+        messageId: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
       try {
         const userId = ctx.auth.userId;
-        const { chatId, data } = input;
-        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
-          prisma: ctx.prisma,
+        const { chatId, data, messageId } = input;
+        const lessonSnapshots = new LessonSnapshots(ctx.prisma);
+        const { id: snapshotId } = await lessonSnapshots.getOrSaveSnapshot({
           userId,
           chatId,
           snapshot: data,
+          trigger: "EXPORT_BY_USER",
+          messageId,
         });
-        if (!existingSnapshot) {
-          console.log("No existing snapshot found");
-          return;
-        }
         // find the latest export for this snapshot
         const exportData = await ailaGetExportBySnapshotId({
           prisma: ctx.prisma,
-          snapshotId: existingSnapshot.id,
+          snapshotId,
           exportType: "LESSON_SLIDES_SLIDES",
         });
         if (exportData) {
@@ -421,7 +254,7 @@ export const exportsRouter = router({
           return output;
         }
       } catch (error) {
-        console.error("Error checking if download exists:", error);
+        log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
         return {
           error,
@@ -440,7 +273,8 @@ export const exportsRouter = router({
     .output(outputSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        const user = await clerkClient.users.getUser(ctx.auth.userId);
+        const { userId } = ctx.auth;
+        const user = await clerkClient.users.getUser(userId);
         const userEmail = user?.emailAddresses[0]?.emailAddress;
         const exportType = "LESSON_SLIDES_SLIDES";
 
@@ -451,23 +285,26 @@ export const exportsRouter = router({
           };
         }
 
-        const qdSnapshot = await qdGetOrSaveSnapshot({
-          prisma: ctx.prisma,
-          userId: ctx.auth.userId,
-          sessionId: input.chatId,
-          messageId: input.messageId,
-          snapshot: input.data,
+        const { chatId, messageId, data: snapshot } = input;
+
+        const lessonSnapshots = new LessonSnapshots(ctx.prisma);
+        const { id: snapshotId } = await lessonSnapshots.getOrSaveSnapshot({
+          userId,
+          chatId,
+          snapshot,
+          trigger: "EXPORT_BY_USER",
+          messageId,
         });
 
         Sentry.addBreadcrumb({
           category: "exportQuizDesignerSlides",
           message: "Got or saved snapshot",
-          data: { qdSnapshot },
+          data: { snapshot },
         });
 
         const exportData = await qdGetExportBySnapshotId({
           prisma: ctx.prisma,
-          snapshotId: qdSnapshot.id,
+          snapshotId,
           exportType,
         });
 
@@ -494,7 +331,7 @@ export const exportsRouter = router({
           snapshotId: "lessonSnapshot.id",
           userEmail,
           onStateChange: (state) => {
-            console.log(state);
+            log.info(state);
 
             Sentry.addBreadcrumb({
               category: "exportWorksheetSlides",
@@ -524,9 +361,9 @@ export const exportsRouter = router({
         await qdSaveExport({
           auth: ctx.auth,
           prisma: ctx.prisma,
-          snapshotId: qdSnapshot.id,
+          snapshotId,
           exportType,
-          data,
+          data: result.data,
         });
 
         const output: OutputSchema = {
@@ -570,26 +407,24 @@ export const exportsRouter = router({
       z.object({
         data: exportDocLessonPlanSchema.passthrough(),
         chatId: z.string(),
+        messageId: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
       try {
         const userId = ctx.auth.userId;
-        const { chatId, data } = input;
-        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
-          prisma: ctx.prisma,
+        const { chatId, data: snapshot, messageId } = input;
+        const lessonSnapshots = new LessonSnapshots(ctx.prisma);
+        const { id: snapshotId } = await lessonSnapshots.getOrSaveSnapshot({
           userId,
           chatId,
-          snapshot: data,
+          snapshot,
+          trigger: "EXPORT_BY_USER",
+          messageId,
         });
-        if (!existingSnapshot) {
-          console.log("No existing snapshot found");
-          return;
-        }
-
         const exportData = await ailaGetExportBySnapshotId({
           prisma: ctx.prisma,
-          snapshotId: existingSnapshot.id,
+          snapshotId,
           exportType: "ADDITIONAL_MATERIALS_DOCS",
         });
         if (exportData) {
@@ -600,7 +435,7 @@ export const exportsRouter = router({
           return output;
         }
       } catch (error) {
-        console.error("Error checking if download exists:", error);
+        log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
         return {
           error,
@@ -634,26 +469,24 @@ export const exportsRouter = router({
       z.object({
         data: exportDocsWorksheetSchema.passthrough(),
         chatId: z.string(),
+        messageId: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
       try {
         const userId = ctx.auth.userId;
-        const { chatId, data } = input;
-        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
-          prisma: ctx.prisma,
+        const { chatId, data, messageId } = input;
+        const lessonSnapshots = new LessonSnapshots(ctx.prisma);
+        const { id: snapshotId } = await lessonSnapshots.getOrSaveSnapshot({
           userId,
           chatId,
           snapshot: data,
+          trigger: "EXPORT_BY_USER",
+          messageId,
         });
-        if (!existingSnapshot) {
-          console.log("No existing snapshot found");
-          return;
-        }
-
         const exportData = await ailaGetExportBySnapshotId({
           prisma: ctx.prisma,
-          snapshotId: existingSnapshot.id,
+          snapshotId,
           exportType: "WORKSHEET_SLIDES",
         });
         if (exportData) {
@@ -664,7 +497,7 @@ export const exportsRouter = router({
           return output;
         }
       } catch (error) {
-        console.error("Error checking if download exists:", error);
+        log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
         return {
           error,
@@ -700,29 +533,27 @@ export const exportsRouter = router({
         data: exportDocQuizSchema.passthrough(),
         lessonSnapshot: z.object({}).passthrough(),
         chatId: z.string(),
+        messageId: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
       try {
         const userId = ctx.auth.userId;
-        const { chatId, data, lessonSnapshot } = input;
-        const { existingSnapshot } = await ailaCheckIfSnapshotExists({
-          prisma: ctx.prisma,
+        const { chatId, data, lessonSnapshot, messageId } = input;
+        const lessonSnapshots = new LessonSnapshots(ctx.prisma);
+        const { id: snapshotId } = await lessonSnapshots.getOrSaveSnapshot({
           userId,
           chatId,
           snapshot: lessonSnapshot,
+          trigger: "EXPORT_BY_USER",
+          messageId,
         });
-        if (!existingSnapshot) {
-          console.log("No existing snapshot found");
-          return;
-        }
-
         const exportType =
           data.quizType === "exit" ? "EXIT_QUIZ_DOC" : "STARTER_QUIZ_DOC";
 
         const exportData = await ailaGetExportBySnapshotId({
           prisma: ctx.prisma,
-          snapshotId: existingSnapshot.id,
+          snapshotId,
           exportType,
         });
         if (exportData) {
@@ -733,7 +564,7 @@ export const exportsRouter = router({
           return output;
         }
       } catch (error) {
-        console.error("Error checking if download exists:", error);
+        log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
         return {
           error,
@@ -754,7 +585,7 @@ export const exportsRouter = router({
       try {
         return await exportLessonPlan({ input, ctx });
       } catch (error) {
-        console.error("Error checking if download exists:", error);
+        log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
         return {
           error,
@@ -848,7 +679,7 @@ export const exportsRouter = router({
 
         return allExports;
       } catch (error) {
-        console.error("Error generating all asset exports:", error);
+        log.error("Error generating all asset exports:", error);
         return {
           error,
           message: "Failed to generate all asset exports",
@@ -884,7 +715,7 @@ export const exportsRouter = router({
         } = input;
 
         if (!userEmail) {
-          console.error("User email not found");
+          log.error("User email not found");
           return false;
         }
 
@@ -914,7 +745,7 @@ Oak National Academy`,
 
         return emailSent ? true : false;
       } catch (error) {
-        console.error("Error sending email:", error);
+        log.error("Error sending email:", error);
         return false;
       }
     }),
@@ -934,7 +765,7 @@ Oak National Academy`,
         const { title, link, lessonTitle } = input;
 
         if (!userEmail) {
-          console.error("User email not found");
+          log.error("User email not found");
           return false;
         }
 
@@ -958,7 +789,7 @@ Oak National Academy`,
 
         return emailSent ? true : false;
       } catch (error) {
-        console.error("Error sending email:", error);
+        log.error("Error sending email:", error);
         return false;
       }
     }),
@@ -966,8 +797,8 @@ Oak National Academy`,
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       const data = await kv.get(input.id);
-      console.log("***id", input.id);
-      console.log("***data", data);
+      log.info("***id", input.id);
+      log.info("***data", data);
       return data;
     }),
   checkDownloadAllStatus: protectedProcedure
