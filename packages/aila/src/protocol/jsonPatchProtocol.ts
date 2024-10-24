@@ -20,7 +20,6 @@ import {
   KeywordsOptionalSchema,
   KeywordsSchema,
   KeywordsSchemaWithoutLength,
-  LessonPlanKeysSchema,
   LessonPlanSchemaWhilstStreaming,
   LooseLessonPlan,
   MisconceptionsOptionalSchema,
