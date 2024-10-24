@@ -62,7 +62,7 @@ export const userBasedRateLimiter = (rateLimit: Ratelimit): RateLimiter => {
       waitUntil(pending);
 
       if (!success) {
-        log.info("Rate limit exceeded for user %s", userId);
+        log.info("Rate limit exceeded for user %s", userId, rest);
         throw new RateLimitExceededError(userId, rest.limit, rest.reset);
       }
 
