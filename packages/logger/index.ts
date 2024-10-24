@@ -68,6 +68,9 @@ type ChildKey =
 export function aiLogger(childKey: ChildKey) {
   const debugLogger = debugBase.extend(childKey);
 
+  // By default debug logs to stderr, we want to use stdout
+  debugLogger.log = console.log.bind(console);
+
   return {
     info: debugLogger,
     warn: debugLogger,
