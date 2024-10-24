@@ -9,6 +9,7 @@ import { getIngestById } from "../db-helpers/getIngestById";
 import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
 import { Step, getPrevStep } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
+import { IngestLogger } from "../types";
 import { Captions } from "../zod-schema/zodSchema";
 
 const currentStep: Step = "captions_fetch";
@@ -19,9 +20,11 @@ const prevStep = getPrevStep(currentStep);
  */
 export async function captions({
   prisma,
+  log,
   ingestId,
 }: {
   prisma: PrismaClientWithAccelerate;
+  log: IngestLogger;
   ingestId: string;
 }) {
   const ingest = await getIngestById({ prisma, ingestId });
@@ -34,7 +37,7 @@ export async function captions({
   });
 
   if (ingest.config.sourcePartsToInclude === "title-subject-key-stage") {
-    console.log("Skipping captions fetch for title-subject-key-stage ingest");
+    log.info("Skipping captions fetch for title-subject-key-stage ingest");
     await updateLessonsState({
       prisma,
       ingestId,
@@ -45,7 +48,7 @@ export async function captions({
     return;
   }
 
-  console.log(`Fetching captions for ${lessons.length} lessons`);
+  log.info(`Fetching captions for ${lessons.length} lessons`);
 
   const failedLessonIds: string[] = [];
   const completedLessonIds: string[] = [];
@@ -82,8 +85,8 @@ export async function captions({
     }
   }
 
-  console.log(`Failed: ${failedLessonIds.length} lessons`);
-  console.log(`Completed: ${completedLessonIds.length} lessons`);
+  log.info(`Failed: ${failedLessonIds.length} lessons`);
+  log.info(`Completed: ${completedLessonIds.length} lessons`);
 }
 
 async function persistOnSuccess({
