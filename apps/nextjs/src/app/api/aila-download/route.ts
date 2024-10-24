@@ -116,6 +116,7 @@ async function getHandler(req: Request): Promise<Response> {
     where: {
       gdriveFileId: fileId,
       userId,
+      expiredAt: null,
     },
     cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
   });
