@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
+import { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import type { AilaUserFlagType } from "@oakai/db";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
 import styled from "styled-components";
@@ -25,7 +26,7 @@ type FlagButtonOptions = typeof flagOptions;
 type FlagButtonProps = {
   sectionTitle: string;
   sectionPath: string;
-  sectionValue: Record<string, unknown> | string | Array<unknown>;
+  sectionValue: LessonPlanSectionWhileStreaming;
 };
 
 const FlagButton = ({
@@ -47,6 +48,25 @@ const FlagButton = ({
 
   const { mutateAsync } = trpc.chat.chatFeedback.flagSection.useMutation();
 
+  const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+  };
+
+  const prepareSectionValue = (
+    value: LessonPlanSectionWhileStreaming,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): string | any[] | Record<string, unknown> => {
+    if (
+      typeof value === "string" ||
+      Array.isArray(value) ||
+      isPlainObject(value)
+    ) {
+      return value;
+    }
+    // For numbers or any other types, convert to string
+    return String(value);
+  };
+
   const flagSectionContent = async () => {
     if (selectedRadio && lastAssistantMessage) {
       const payload = {
@@ -55,7 +75,7 @@ const FlagButton = ({
         flagType: selectedRadio.enumValue,
         userComment: userFeedbackText,
         sectionPath,
-        sectionValue,
+        sectionValue: prepareSectionValue(sectionValue),
       };
       await mutateAsync(payload);
     }
@@ -92,7 +112,7 @@ const FlagButton = ({
           >
             {flagOptions.map((option) => (
               <FlagButtonFormItem
-                key={`flagbuttonformitem-${option.enumValue}`}
+                key={`flagButtonFormItem-${option.enumValue}`}
                 option={option}
                 setSelectedRadio={setSelectedRadio}
                 setDisplayTextBox={setDisplayTextBox}
