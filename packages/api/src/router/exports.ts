@@ -102,6 +102,7 @@ export async function ailaGetExportBySnapshotId({
     where: {
       lessonSnapshotId: snapshotId,
       exportType,
+      expiredAt: null,
     },
     orderBy: {
       createdAt: "desc",
