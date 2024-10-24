@@ -32,9 +32,6 @@ jobs:
       - name: Install deps (with cache)
         run: pnpm install
 
-      - name: Enable Turbo Remote Caching
-        run: pnpm turbo login --token ${{ secrets.TURBO_TOKEN }}
-
       - name: Generate prisma client
         run: pnpm db-generate
 
