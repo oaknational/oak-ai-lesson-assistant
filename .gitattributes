@@ -1,1 +1,2 @@
 apps/nextjs/tests-e2e/recordings/*.chunks.txt linguist-generated=true
+apps/nextjs/tests-e2e/recordings/*.moderation.json linguist-generated=true
