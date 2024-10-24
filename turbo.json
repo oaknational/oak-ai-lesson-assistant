@@ -1,6 +1,7 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "ui": "stream",
+  "ui": "tui",
+
   "tasks": {
     "db-generate": {
       "inputs": ["prisma/schema.prisma"],
