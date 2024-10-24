@@ -39,7 +39,7 @@ export async function ingestStart({
       await importLessonsFromOakDB({
         ingestId,
         log,
-        onError: (error) => log.error(error.message),
+        onError: log.error,
       });
       break;
     case "csv":
@@ -51,7 +51,7 @@ export async function ingestStart({
       await importLessonsFromCSV({
         ingestId,
         filePath: config.source.filePath,
-        onError: (error) => log.error(error.message),
+        onError: log.error,
       });
       break;
     default:

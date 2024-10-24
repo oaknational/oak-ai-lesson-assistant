@@ -1,4 +1,6 @@
+import { StructuredLogger } from "@oakai/logger";
+
 export type IngestLogger = {
-  info: (message: string) => void;
-  error: (message: string) => void;
+  info: (...args: unknown[]) => void;
+  error: StructuredLogger["error"];
 };

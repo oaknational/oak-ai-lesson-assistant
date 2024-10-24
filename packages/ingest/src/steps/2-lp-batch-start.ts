@@ -57,7 +57,7 @@ export async function lpBatchStart({
     });
   } catch (error) {
     log.error(String(error));
-    log.info("Error starting lesson plan generation, see error above");
+    log.error("Error starting lesson plan generation, see error above");
     await updateLessonsState({
       prisma,
       ingestId,
