@@ -29,15 +29,15 @@ const DEMO_APP_SESSIONS_PER_30D = parseInt(
   10,
 );
 
+export const standardRateLimit = new RateLimit({
+  redis: kv,
+  prefix: "rateLimit:generations:standard",
+  limiter: RateLimit.slidingWindow(GENERATIONS_PER_24H, "24 h"),
+});
+
 export const rateLimits = {
   generations: {
-    standard: userBasedRateLimiter(
-      new RateLimit({
-        redis: kv,
-        prefix: "rateLimit:generations:standard",
-        limiter: RateLimit.slidingWindow(GENERATIONS_PER_24H, "24 h"),
-      }),
-    ),
+    standard: userBasedRateLimiter(standardRateLimit),
     demo: userBasedRateLimiter(
       new RateLimit({
         redis: kv,

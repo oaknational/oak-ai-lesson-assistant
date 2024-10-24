@@ -62,7 +62,7 @@ export const userBasedRateLimiter = (rateLimit: Ratelimit): RateLimiter => {
       waitUntil(pending);
 
       if (!success) {
-        log.info("Rate limit exceeded for user %s", userId);
+        log.info("Rate limit exceeded for user %s", userId, rest);
         throw new RateLimitExceededError(userId, rest.limit, rest.reset);
       }
 
@@ -91,6 +91,7 @@ function userHasOakEmail(user: User) {
     (email) =>
       email.emailAddress.endsWith("@thenational.academy") &&
       !email.emailAddress.includes("rate-limit-me") &&
+      !email.emailAddress.includes("rate-limited") &&
       !email.emailAddress.includes("demo"),
   );
 }
