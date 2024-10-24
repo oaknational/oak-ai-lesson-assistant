@@ -13,6 +13,11 @@ const log = aiLogger("testing");
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? os.hostname();
 
+const GENERATIONS_PER_24H = parseInt(
+  process.env.RATELIMIT_GENERATIONS_PER_24H || "120",
+  10,
+);
+
 const personaNames = [
   "typical",
   "demo",
@@ -61,7 +66,7 @@ const personas: Record<PersonaName, Persona> = {
     region: "GB",
     chatFixture: null,
     safetyViolations: 0,
-    rateLimitTokens: 119,
+    rateLimitTokens: GENERATIONS_PER_24H - 1,
   },
   // Allows `chat.isShared` to be set/reset without leaking between tests/retries
   "sharing-chat": {
