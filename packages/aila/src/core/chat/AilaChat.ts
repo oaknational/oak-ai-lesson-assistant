@@ -230,7 +230,7 @@ export class AilaChat implements AilaChatService {
   }
 
   public async enqueue(message: JsonPatchDocumentOptional) {
-    // Optional "?"" Necessary to avoid a "terminated" error
+    // Optional "?"" necessary to avoid a "terminated" error
     if (this?._patchEnqueuer) {
       await this._patchEnqueuer.enqueueMessage(message);
     }
@@ -240,7 +240,8 @@ export class AilaChat implements AilaChatService {
     path: string,
     value: string | string[] | number | object,
   ) {
-    if (this._patchEnqueuer) {
+    // Optional "?"" necessary to avoid a "terminated" error
+    if (this?._patchEnqueuer) {
       await this._patchEnqueuer.enqueuePatch(path, value);
     }
   }

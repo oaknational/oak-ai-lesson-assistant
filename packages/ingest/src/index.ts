@@ -3,6 +3,7 @@
  * "start", "captions", "lp-start", "lp-sync", "chunk", "embed-start", "embed-sync"
  */
 import { prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
 import { getLatestIngestId } from "./db-helpers/getLatestIngestId";
 import { ingestStart } from "./steps/0-start";
@@ -15,42 +16,44 @@ import { lpPartsEmbedSync } from "./steps/6-lp-parts-embed-sync";
 
 const command = process.argv[2];
 
+const log = aiLogger("ingest");
+
 if (!command) {
-  console.error("No command provided");
+  log.error("No command provided");
   process.exit(1);
 }
 
 async function main() {
-  const ingestId = process.argv[3] || (await getLatestIngestId({ prisma }));
+  const ingestId = process.argv[3] ?? (await getLatestIngestId({ prisma }));
   switch (command) {
     case "start":
-      ingestStart({ prisma });
+      ingestStart({ prisma, log });
       break;
     case "captions":
-      captions({ prisma, ingestId });
+      captions({ prisma, log, ingestId });
       break;
     case "lp-start":
-      lpBatchStart({ prisma, ingestId });
+      lpBatchStart({ prisma, log, ingestId });
       break;
     case "lp-sync":
-      lpBatchSync({ prisma, ingestId });
+      lpBatchSync({ prisma, log, ingestId });
       break;
     case "chunk":
-      lpChunking({ prisma, ingestId });
+      lpChunking({ prisma, log, ingestId });
       break;
     case "embed-start":
-      lpPartsEmbedStart({ prisma, ingestId });
+      lpPartsEmbedStart({ prisma, log, ingestId });
       break;
     case "embed-sync":
-      lpPartsEmbedSync({ prisma, ingestId });
+      lpPartsEmbedSync({ prisma, log, ingestId });
       break;
     default:
-      console.error("Unknown command");
+      log.error("Unknown command");
       process.exit(1);
   }
 }
 
 main().catch((error) => {
-  console.error("Error running command", error);
+  log.error("Error running command", error);
   process.exit(1);
 });
