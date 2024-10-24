@@ -8,14 +8,7 @@ import {
   prisma as globalPrisma,
 } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
-import {
-  LessonPlan,
-  LessonSummary,
-  Prisma,
-  PrismaClient,
-  Snippet,
-} from "@prisma/client";
-import { withAccelerate } from "@prisma/extension-accelerate";
+import { LessonPlan, LessonSummary, Prisma, Snippet } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
 import { kv } from "@vercel/kv";
 import { CohereClient } from "cohere-ai";
