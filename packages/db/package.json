@@ -47,7 +47,7 @@
     "docker-clear": "docker ps -a | grep -q oak-ai-beta && docker stop oak-ai-beta && docker rm oak-ai-beta || echo \"Container oak-ai-beta does not exist.\"",
     "docker-psql": " docker exec -it oak-ai-beta psql -U oai",
     "docker-reset": "pnpm run docker-clear && pnpm run docker-run",
-    "docker-run": "docker run --name oak-ai-beta -p 5432:5432 -d oai-pg",
+    "docker-run": "docker run --name oak-ai-beta -p 8432:5432 -d oai-pg",
     "schema-format": "pnpm with-env prisma format",
     "script-add-metadata-to-lesson-summaries": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/add_metadata_to_lesson_summaries.ts",
     "script-batch-process-clean-questions": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/batch_process_clean_questions.ts",
