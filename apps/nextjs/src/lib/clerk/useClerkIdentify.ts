@@ -1,7 +1,8 @@
 import { useRef, useEffect } from "react";
 
 import { useUser, useAuth } from "#clerk/nextjs";
-import { useClerkDemoMetadata } from "hooks/useClerkDemoMetadata";
+
+import { useClerkDemoMetadata } from "../../hooks/useClerkDemoMetadata";
 
 type UseClerkIdentifyProps = {
   /**

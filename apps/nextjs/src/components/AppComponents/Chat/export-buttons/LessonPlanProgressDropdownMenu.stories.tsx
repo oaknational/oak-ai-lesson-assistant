@@ -6,16 +6,16 @@ import {
 } from "@oakai/aila/src/protocol/schema";
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
+import { LessonPlanProgressDropdownMenu } from "./LessonPlanProgressDropdownMenu";
 
-const meta: Meta<typeof LessonPlanProgressDropdown> = {
-  title: "Components/LessonPlanProgressDropdown",
-  component: LessonPlanProgressDropdown,
+const meta: Meta<typeof LessonPlanProgressDropdownMenu> = {
+  title: "Components/LessonPlanProgressDropdownMenu",
+  component: LessonPlanProgressDropdownMenu,
   tags: ["autodocs"],
 };
 
 export default meta;
-type Story = StoryObj<typeof LessonPlanProgressDropdown>;
+type Story = StoryObj<typeof LessonPlanProgressDropdownMenu>;
 
 export const Default: Story = {
   args: {

@@ -101,6 +101,7 @@
     "pino",
     "pkey",
     "pollyjs",
+    "ponyfill",
     "popover",
     "portabletext",
     "posthog",

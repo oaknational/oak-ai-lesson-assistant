@@ -23,17 +23,18 @@ import { camelCaseToTitleCase } from "@oakai/core/src/utils/camelCaseConversion"
 import { Moderation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
-import { Message, nanoid } from "ai";
+import { Message } from "ai";
 import { ChatRequestOptions, CreateMessage } from "ai";
 import { useChat } from "ai/react";
-import { useLessonPlanScrollManagement } from "hooks/useLessonPlanScrollManagement";
 
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { nextSectionsToGenerate } from "@/lib/lessonPlan/nextSectionToGenerate";
 import { useLessonPlanManager } from "@/lib/lessonPlan/useLessonPlanManager";
+import { nanoid } from "@/lib/utils";
 import { trpc } from "@/utils/trpc";
 
+import { useLessonPlanScrollManagement } from "../../hooks/useLessonPlanScrollManagement";
 import {
   AilaStreamingStatus,
   useAilaStreamingStatus,

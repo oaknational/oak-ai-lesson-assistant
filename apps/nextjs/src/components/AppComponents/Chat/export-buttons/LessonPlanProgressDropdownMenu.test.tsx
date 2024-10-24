@@ -13,12 +13,12 @@ import {
   within,
 } from "@testing-library/react";
 
-import * as stories from "./LessonPlanProgressDropdown.stories";
+import * as stories from "./LessonPlanProgressDropdownMenu.stories";
 
 const { Default, PartiallyCompleted, FullyCompleted, PartialCycles } =
   composeStories(stories);
 
-describe("LessonPlanProgressDropdown", () => {
+describe("LessonPlanProgressDropdownMenu", () => {
   it("renders the Default story with correct closed state", () => {
     render(<Default />);
     expect(screen.getByText("4 of 10 sections complete")).toBeInTheDocument();

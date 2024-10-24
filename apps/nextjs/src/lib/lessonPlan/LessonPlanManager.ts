@@ -2,7 +2,10 @@ import {
   PatchDocument,
   applyLessonPlanPatch,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import {
+  LessonPlanKeys,
+  LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import { Message } from "ai";
 import { createHash } from "crypto";
@@ -36,10 +39,10 @@ export class LessonPlanManager {
       this.iteration === undefined ||
       newIteration > this.iteration
     ) {
-      const currentKeys = Object.keys(this.lessonPlan).filter(
-        (k) => this.lessonPlan[k],
-      );
-      const newKeys = Object.keys(newLessonPlan).filter(
+      const currentKeys = (
+        Object.keys(this.lessonPlan) as LessonPlanKeys[]
+      ).filter((k) => this.lessonPlan[k]);
+      const newKeys = (Object.keys(newLessonPlan) as LessonPlanKeys[]).filter(
         (k) => newLessonPlan[k],
       );
       log.info("Updating lesson plan from server", {
@@ -76,7 +79,9 @@ export class LessonPlanManager {
     iteration: number | undefined,
     delay: number = 2000,
   ): void {
-    const keys = Object.keys(newLessonPlan).filter((k) => newLessonPlan[k]);
+    const keys = (Object.keys(newLessonPlan) as LessonPlanKeys[]).filter(
+      (k) => newLessonPlan[k],
+    );
     log.info("Delay setting lesson plan", `${keys.length}`, keys.join("|"));
     setTimeout(() => {
       this.setLessonPlan(newLessonPlan, iteration);
