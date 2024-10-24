@@ -5,6 +5,7 @@ import { IngestConfig } from "../config/ingestConfig";
 import { createIngestRecord } from "../db-helpers/createIngestRecord";
 import { importLessonsFromCSV } from "../import-lessons/importLessonsFromCSV";
 import { importLessonsFromOakDB } from "../import-lessons/importLessonsFromOakDB";
+import { IngestLogger } from "../types";
 
 const config: IngestConfig = {
   completionModel: "gpt-4o-2024-08-06",
@@ -23,8 +24,10 @@ const config: IngestConfig = {
  */
 export async function ingestStart({
   prisma,
+  log,
 }: {
   prisma: PrismaClientWithAccelerate;
+  log: IngestLogger;
 }) {
   const { id: ingestId } = await createIngestRecord({
     prisma,
@@ -35,7 +38,8 @@ export async function ingestStart({
     case "oak-db":
       await importLessonsFromOakDB({
         ingestId,
-        onError: console.error,
+        log,
+        onError: log.error,
       });
       break;
     case "csv":
@@ -47,12 +51,12 @@ export async function ingestStart({
       await importLessonsFromCSV({
         ingestId,
         filePath: config.source.filePath,
-        onError: console.error,
+        onError: log.error,
       });
       break;
     default:
       throw new IngestError(`Unsupported source type: ${config.source}`);
   }
 
-  console.log(`Ingest started with id: ${ingestId}`);
+  log.info(`Ingest started with id: ${ingestId}`);
 }

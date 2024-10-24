@@ -8,6 +8,7 @@ import { getLessonPlanParts } from "../chunking/getLessonPlanParts";
 import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
 import { Step, getPrevStep } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
+import { IngestLogger } from "../types";
 
 const currentStep: Step = "chunking";
 const prevStep = getPrevStep(currentStep);
@@ -17,9 +18,11 @@ const prevStep = getPrevStep(currentStep);
  */
 export async function lpChunking({
   prisma,
+  log,
   ingestId,
 }: {
   prisma: PrismaClientWithAccelerate;
+  log: IngestLogger;
   ingestId: string;
 }) {
   const lessons = await loadLessonsAndUpdateState({
@@ -30,11 +33,11 @@ export async function lpChunking({
   });
 
   if (lessons.length === 0) {
-    console.log("No lessons to chunk, exiting early");
+    log.info("No lessons to chunk, exiting early");
     return;
   }
 
-  console.log(`Chunking lesson plans for ${lessons.length} lesson`);
+  log.info(`Chunking lesson plans for ${lessons.length} lesson`);
 
   const lessonIdsFailed: string[] = [];
   const lessonIdsCompleted: string[] = [];
@@ -87,6 +90,6 @@ export async function lpChunking({
     stepStatus: "completed",
   });
 
-  console.log(`Chunking ${lessons.length} lesson plans completed`);
-  console.log(`Failed: ${lessonIdsFailed.length}`);
+  log.info(`Chunking ${lessons.length} lesson plans completed`);
+  log.info(`Failed: ${lessonIdsFailed.length}`);
 }
