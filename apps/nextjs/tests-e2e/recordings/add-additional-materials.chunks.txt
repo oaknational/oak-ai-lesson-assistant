@@ -1,0 +1,127 @@
+{"
+type":"
+ll
+m
+Message
+","patches":[
+{"
+type":"
+patch
+","reasoning":"
+Added
+ a
+ homework
+ task
+ to
+ reinforce
+ the
+ lesson
+ content
+ and
+ provide
+ additional
+ practice
+ for
+ students
+.","
+value":{"
+type":"
+string
+","op":"
+replace
+","path":"/
+additional
+Materials
+","value":"
+##
+ Homework
+ Task
+\n
+\n
+Research
+ a
+ real
+-world
+ software
+ application
+ of
+ your
+ choice
+ and
+ describe
+ which
+ testing
+ techniques
+ (
+black
+-box
+,
+ white
+-box
+,
+ manual
+,
+ automated
+)
+ would
+ be
+ most
+ suitable
+ for
+ ensuring
+ its
+ quality
+.
+ Provide
+ reasons
+ for
+ your
+ choices
+.
+ Write
+ a
+ short
+ report
+ (
+300
+-
+400
+ words
+)
+ summar
+ising
+ your
+ findings
+."
+}}],"prompt":{"
+type":"
+text
+","value":"
+The
+ homework
+ task
+ has
+ been
+ added
+ to
+ the
+ additional
+ materials
+ section
+.
+ If
+ there's
+ anything
+ else
+ you'd
+ like
+ to
+ include
+ or
+ modify
+,
+ let
+ me
+ know
+!"
+}}

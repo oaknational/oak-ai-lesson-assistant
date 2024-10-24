@@ -1,0 +1,19 @@
+{
+  "type": "llmMessage",
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "Simplifying the language of the learning outcome to make it more accessible for pupils.",
+      "value": {
+        "type": "string",
+        "op": "replace",
+        "path": "/learningOutcome",
+        "value": "I can describe different software testing techniques and why they are used."
+      }
+    }
+  ],
+  "prompt": {
+    "type": "text",
+    "value": "The learning outcome has been simplified. Is this version more suitable for your pupils?"
+  }
+}
