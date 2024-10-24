@@ -1,9 +1,9 @@
 import React, { useRef, useState } from "react";
 
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { OakIcon, OakSmallSecondaryButton } from "@oaknational/oak-components";
-import { Message } from "ai";
 import Link from "next/link";
+
+import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
 import AiIcon from "../../AiIcon";
 import { DemoContextProps } from "../../ContextProviders/Demo";
@@ -14,21 +14,17 @@ import { LessonPlanProgressBar } from "./export-buttons/LessonPlanProgressBar";
 import ChatButton from "./ui/chat-button";
 
 type ChatRightHandSideLessonProps = {
-  id: string;
-  messages: Message[];
-  lessonPlan: LooseLessonPlan;
   showLessonMobile: boolean;
   closeMobileLessonPullOut: () => void;
   demo: DemoContextProps;
 };
 
 const ChatRightHandSideLesson = ({
-  id,
-  messages,
   showLessonMobile,
   closeMobileLessonPullOut,
   demo,
 }: Readonly<ChatRightHandSideLessonProps>) => {
+  const { id, messages } = useLessonChat();
   const { setDialogWindow } = useDialog();
 
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -36,7 +32,7 @@ const ChatRightHandSideLesson = ({
   const documentContainerRef = useRef<HTMLDivElement>(null);
 
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const sectionRefs = {};
+
   const scrollToBottom = () => {
     if (chatEndRef.current) {
       setShowScrollButton(false);
@@ -59,6 +55,7 @@ const ChatRightHandSideLesson = ({
   };
 
   const endOfDocRef = useRef<HTMLDivElement>(null);
+
   return (
     <div
       className={`fixed bottom-0 ${showLessonMobile ? `right-0` : `right-[-100%] sm:right-0`} right-0 ${demo.isDemoUser ? `top-8 sm:top-0` : `top-0`} z-30 w-[95%] bg-white shadow-md duration-300 sm:relative sm:z-0  sm:w-[50%] sm:shadow-none lg:w-full`}
@@ -67,10 +64,7 @@ const ChatRightHandSideLesson = ({
       onScroll={handleScroll}
       style={{ overflowY: "auto" }}
     >
-      <ExportButtons
-        sectionRefs={sectionRefs}
-        documentContainerRef={documentContainerRef}
-      />
+      <ExportButtons documentContainerRef={documentContainerRef} />
 
       <div className="ml-[-10px] mt-27 flex justify-between px-14 pt-6 sm:hidden">
         <button
@@ -127,8 +121,6 @@ const ChatRightHandSideLesson = ({
         <LessonPlanDisplay
           showLessonMobile={showLessonMobile}
           chatEndRef={chatEndRef}
-          sectionRefs={sectionRefs}
-          documentContainerRef={documentContainerRef}
         />
       </div>
       <div
@@ -159,6 +151,7 @@ const ChatRightHandSideLesson = ({
         </ChatButton>
       </span>
       <div ref={endOfDocRef} />
+      <div className="h-[50vh]"></div>
     </div>
   );
 };

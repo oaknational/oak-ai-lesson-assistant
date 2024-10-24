@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { camelCaseToTitleCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { OakBox, OakFlex, OakIcon, OakSpan } from "@oaknational/oak-components";
 import { Message } from "ai";
 import Link from "next/link";
@@ -131,12 +132,16 @@ export const ChatMessagesDisplay = ({
   ailaStreamingStatus: AilaStreamingStatus;
   demo: DemoContextProps;
 }) => {
-  const { lessonPlan, isStreaming } = useLessonChat();
+  const { lessonPlan, isStreaming, streamingSection } = useLessonChat();
   const { setDialogWindow } = useDialog();
   const { totalSections, totalSectionsComplete } = useProgressForDownloads({
     lessonPlan,
     isStreaming,
   });
+
+  const workingOnItMessage = streamingSection
+    ? `Editing ${camelCaseToTitleCase(streamingSection)}…`
+    : "Working on it…";
 
   return (
     <>
@@ -164,7 +169,7 @@ export const ChatMessagesDisplay = ({
                 message={{
                   id: "working-on-it-initial",
                   role: "assistant",
-                  content: "Working on it…",
+                  content: workingOnItMessage,
                 }}
                 lastModeration={lastModeration}
                 persistedModerations={[]}
@@ -191,7 +196,7 @@ export const ChatMessagesDisplay = ({
                   ? {
                       id: "working-on-it-initial",
                       role: "assistant",
-                      content: "Working on it…",
+                      content: workingOnItMessage,
                     }
                   : message
               }
@@ -214,7 +219,7 @@ export const ChatMessagesDisplay = ({
               message={{
                 id: "working-on-it-initial",
                 role: "assistant",
-                content: "Working on it…",
+                content: workingOnItMessage,
               }}
               lastModeration={lastModeration}
               persistedModerations={[]}

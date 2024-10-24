@@ -1,14 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
+import {
+  BasedOnOptional,
+  LessonPlanKeys,
+} from "@oakai/aila/src/protocol/schema";
+import { aiLogger } from "@oakai/logger";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { organiseSections } from "@/lib/lessonPlan/organiseSections";
+import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
 
 import Skeleton from "../common/Skeleton";
 import DropDownSection from "./drop-down-section";
 import { GuidanceRequired } from "./guidance-required";
+
+const log = aiLogger("lessons");
 
 // @todo move these somewhere more sensible
 export function subjectToTitle(slug: string) {
@@ -41,73 +49,110 @@ const displayStyles = cva(
   "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24 ",
 );
 
-const organiseSections = [
-  {
-    trigger: "learningOutcome",
-    dependants: ["learningOutcome", "learningCycles"],
-  },
-  {
-    trigger: "priorKnowledge",
-    dependants: [
-      "priorKnowledge",
-      "keyLearningPoints",
-      "misconceptions",
-      "keywords",
-    ],
-  },
-  {
-    trigger: "starterQuiz",
-    dependants: ["starterQuiz", "cycle1", "cycle2", "cycle3", "exitQuiz"],
-  },
-  { trigger: "additionalMaterials", dependants: ["additionalMaterials"] },
-];
+function getSectionsToDisplay(
+  lessonPlanKeys: LessonPlanKeys[],
+  streamingSections: LessonPlanKeys[] | undefined,
+) {
+  const sectionsFromOrganiseSections = organiseSections.flatMap((section) => {
+    const trigger = section.trigger;
+    if (
+      lessonPlanKeys.includes(trigger) ||
+      streamingSections?.includes(trigger)
+    ) {
+      return section.dependants.filter(
+        (dependant) =>
+          streamingSections?.includes(dependant) ||
+          lessonPlanKeys.includes(dependant as LessonPlanKeys),
+      );
+    }
+    return [];
+  });
+
+  const sectionsFromAllSectionsInOrder = allSectionsInOrder.filter((section) =>
+    lessonPlanKeys.includes(section as LessonPlanKeys),
+  );
+
+  const sectionsToDisplay = [
+    ...new Set([
+      ...sectionsFromOrganiseSections,
+      ...sectionsFromAllSectionsInOrder,
+    ]),
+  ];
+  return sectionsToDisplay;
+}
 
 export const LessonPlanDisplay = ({
   chatEndRef,
-  sectionRefs,
-  documentContainerRef,
   showLessonMobile,
 }: {
   chatEndRef: React.MutableRefObject<HTMLDivElement | null>;
-  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
-  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
   showLessonMobile: boolean;
 }) => {
-  const chat = useLessonChat();
-  const { lessonPlan, ailaStreamingStatus, lastModeration } = chat;
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+  const [sectionsToDisplay, setSectionsToDisplay] = useState<LessonPlanKeys[]>(
+    [],
+  );
 
-  const [userHasCancelledAutoScroll, setUserHasCancelledAutoScroll] =
-    useState(false);
+  const handleSetIsOpen = (section: string, isOpen: boolean) => {
+    setOpenSections((prevState) => ({
+      ...prevState,
+      [section]: isOpen,
+    }));
+  };
+
+  const chat = useLessonChat();
+  const {
+    lessonPlan,
+    ailaStreamingStatus,
+    lastModeration,
+    streamingSection,
+    streamingSections,
+    setSectionRef,
+  } = chat;
+
+  const lessonPlanSectionKeys = useMemo(
+    () =>
+      Object.keys(lessonPlan).filter((key) =>
+        allSectionsInOrder.includes(key as LessonPlanKeys),
+      ) as LessonPlanKeys[],
+    [lessonPlan],
+  );
+
+  // If a section is temporarily missing, we don't suddenly
+  // hide the section until it appears again
+  useEffect(() => {
+    const newSectionsToDisplay = getSectionsToDisplay(
+      lessonPlanSectionKeys,
+      streamingSections,
+    );
+    setSectionsToDisplay((prevSectionsToDisplay) => {
+      const updatedSections = [
+        ...new Set([...prevSectionsToDisplay, ...newSectionsToDisplay]),
+      ];
+      if (
+        JSON.stringify(updatedSections) !==
+        JSON.stringify(prevSectionsToDisplay)
+      ) {
+        return updatedSections;
+      }
+      return prevSectionsToDisplay;
+    });
+  }, [lessonPlanSectionKeys, streamingSections]);
 
   useEffect(() => {
-    const handleUserScroll = () => {
-      // Check for mousewheel or touch pad scroll event
-      event?.type === "wheel" && setUserHasCancelledAutoScroll(true);
-    };
+    log.info("Sections to display", sectionsToDisplay);
+  }, [sectionsToDisplay]);
 
-    if (ailaStreamingStatus === "Idle") {
-      // hack to account for lag
-      const timer = setTimeout(() => {
-        setUserHasCancelledAutoScroll(false);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-
-    const container = documentContainerRef.current;
-    if (container) {
-      container.addEventListener("wheel", handleUserScroll);
-    }
-
-    return () => {
-      if (container) {
-        container.removeEventListener("wheel", handleUserScroll);
-      }
-    };
-  }, [
-    ailaStreamingStatus,
-    setUserHasCancelledAutoScroll,
-    documentContainerRef,
-  ]);
+  useEffect(() => {
+    const initialOpenSections = sectionsToDisplay.reduce(
+      (acc, section) => ({
+        ...acc,
+        [section]: showLessonMobile,
+      }),
+      {},
+    );
+    setOpenSections(initialOpenSections);
+  }, [sectionsToDisplay, showLessonMobile]);
 
   if (Object.keys(lessonPlan).length === 0) {
     return (
@@ -121,7 +166,7 @@ export const LessonPlanDisplay = ({
 
   return (
     <div className={displayStyles()}>
-      {lessonPlan["title"] && (
+      {lessonPlan.title && (
         <Flex direction="column" gap="2">
           <Flex direction="row" gap="2" className="opacity-90">
             {notEmpty(lessonPlan.keyStage) && (
@@ -158,28 +203,19 @@ export const LessonPlanDisplay = ({
       )}
 
       <div className="flex w-full flex-col justify-center">
-        {organiseSections.map((section) => {
-          const trigger = lessonPlan[section.trigger];
-          return (
-            !!trigger &&
-            section.dependants.map((dependant) => {
-              const value = lessonPlan[dependant];
-              if (value !== null && value !== undefined) {
-                return (
-                  <DropDownSection
-                    key={dependant}
-                    objectKey={dependant}
-                    sectionRefs={sectionRefs}
-                    value={value}
-                    userHasCancelledAutoScroll={userHasCancelledAutoScroll}
-                    documentContainerRef={documentContainerRef}
-                    showLessonMobile={showLessonMobile}
-                  />
-                );
-              }
-            })
-          );
-        })}
+        {allSectionsInOrder.map((section) => (
+          <DropDownSection
+            key={section}
+            section={section}
+            value={lessonPlan[section]}
+            isOpen={openSections[section] || !showLessonMobile}
+            setIsOpen={handleSetIsOpen}
+            ailaStreamingStatus={ailaStreamingStatus}
+            streamingSection={streamingSection}
+            visible={sectionsToDisplay.includes(section)}
+            setSectionRef={setSectionRef}
+          />
+        ))}
       </div>
       <div ref={chatEndRef} />
     </div>

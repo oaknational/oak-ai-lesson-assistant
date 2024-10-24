@@ -1,3 +1,7 @@
+import {
+  LessonPlanKeys,
+  LessonPlanSectionWhileStreaming,
+} from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { OakFlex } from "@oaknational/oak-components";
 import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
@@ -11,8 +15,8 @@ const ChatSection = ({
   objectKey,
   value,
 }: {
-  objectKey: string;
-  value: Record<string, unknown> | string | Array<unknown>;
+  objectKey: LessonPlanKeys;
+  value: LessonPlanSectionWhileStreaming;
 }) => {
   return (
     <OakFlex $flexDirection="column">

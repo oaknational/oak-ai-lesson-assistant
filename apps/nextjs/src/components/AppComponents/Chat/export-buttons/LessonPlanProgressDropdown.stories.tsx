@@ -31,17 +31,6 @@ export const Default: Story = {
       // 4
       priorKnowledge: ["Sample prior knowledge"],
     },
-    sectionRefs: {
-      title: { current: null },
-      keyStage: { current: null },
-      subject: { current: null },
-      learningOutcome: { current: null },
-      learningCycles: { current: null },
-      priorKnowledge: { current: null },
-      "cycle-1": { current: null },
-      "cycle-2": { current: null },
-      "cycle-3": { current: null },
-    },
     documentContainerRef: { current: null },
   },
 };
