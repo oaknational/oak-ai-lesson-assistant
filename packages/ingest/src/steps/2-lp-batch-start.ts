@@ -5,6 +5,7 @@ import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateSta
 import { Step, getPrevStep } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { startGenerating } from "../generate-lesson-plans/startGenerating";
+import { IngestLogger } from "../types";
 
 const currentStep: Step = "lesson_plan_generation";
 const prevStep = getPrevStep(currentStep);
@@ -15,9 +16,11 @@ const prevStep = getPrevStep(currentStep);
  */
 export async function lpBatchStart({
   prisma,
+  log,
   ingestId,
 }: {
   prisma: PrismaClientWithAccelerate;
+  log: IngestLogger;
   ingestId: string;
 }) {
   const ingest = await getIngestById({ prisma, ingestId });
@@ -29,11 +32,11 @@ export async function lpBatchStart({
   });
 
   if (lessons.length === 0) {
-    console.log("No lessons to generate lesson plans for");
+    log.info("No lessons to generate lesson plans for");
     return;
   }
 
-  console.log(`Generating lesson plans for ${lessons.length} lessons`);
+  log.info(`Generating lesson plans for ${lessons.length} lessons`);
 
   try {
     await startGenerating({
@@ -53,7 +56,8 @@ export async function lpBatchStart({
       },
     });
   } catch (error) {
-    console.error("Error generating lesson plans", error);
+    log.error(String(error));
+    log.error("Error starting lesson plan generation, see error above");
     await updateLessonsState({
       prisma,
       ingestId,

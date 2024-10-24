@@ -5,6 +5,7 @@ import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateSta
 import { Step, getPrevStep } from "../db-helpers/step";
 import { startEmbedding } from "../embedding/startEmbedding";
 import { parseCustomId } from "../openai-batches/customId";
+import { IngestLogger } from "../types";
 import { chunkAndPromiseAll } from "../utils/chunkAndPromiseAll";
 
 const currentStep: Step = "embedding";
@@ -15,9 +16,11 @@ const prevStep = getPrevStep(currentStep);
  */
 export async function lpPartsEmbedStart({
   prisma,
+  log,
   ingestId,
 }: {
   prisma: PrismaClientWithAccelerate;
+  log: IngestLogger;
   ingestId: string;
 }) {
   const ingest = await getIngestById({ prisma, ingestId });
@@ -41,7 +44,7 @@ export async function lpPartsEmbedStart({
     .flat();
 
   if (allParts.length === 0) {
-    console.log("No lesson plan parts to embed, exiting early");
+    log.info("No lesson plan parts to embed, exiting early");
     return;
   }
 
