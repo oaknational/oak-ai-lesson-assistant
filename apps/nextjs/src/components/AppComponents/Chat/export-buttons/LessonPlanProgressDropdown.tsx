@@ -62,20 +62,11 @@ export const LessonPlanProgressDropdown: React.FC<
                   disabled={!complete}
                   className="mb-7 flex gap-6"
                   onClick={() => {
-                    if (key === "cycles" && complete) {
-                      if (sectionRefs["cycle-1"]) {
-                        scrollToRef({
-                          ref: sectionRefs["cycle-1"],
-                          containerRef: documentContainerRef,
-                        });
-                      }
-                    } else if (complete) {
-                      if (sectionRefs[key]) {
-                        scrollToRef({
-                          ref: sectionRefs[key] as React.RefObject<HTMLElement>,
-                          containerRef: documentContainerRef,
-                        });
-                      }
+                    if (sectionRefs[key]) {
+                      scrollToRef({
+                        ref: sectionRefs[key] as React.RefObject<HTMLElement>,
+                        containerRef: documentContainerRef,
+                      });
                     }
                   }}
                 >
