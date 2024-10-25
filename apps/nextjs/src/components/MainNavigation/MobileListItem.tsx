@@ -1,5 +1,5 @@
-import { usePathname } from "#next/navigation";
 import { MenuItem } from "data/menus";
+import { usePathname } from "next/navigation";
 
 import Button from "../Button";
 

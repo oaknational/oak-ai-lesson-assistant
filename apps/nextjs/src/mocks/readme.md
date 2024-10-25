@@ -12,11 +12,11 @@ For instance, next/navigation and prisma both cause trouble.
 
 To solve this, we provide mocks and rather than importing these files directly, we have some subpath aliases.
 
-In package.json, you will see lines like this:
+In config, you will see lines like this:
 
 ```
-"imports": {
-  "#next/navigation": {
+...{
+  "next/navigation": {
     "storybook": "./src/mocks/next/navigation.ts",
     "default": "next/navigation"
   },
@@ -24,13 +24,13 @@ In package.json, you will see lines like this:
 }
 ```
 
-When we do `import {...} from "#next/navigation;` this means that in the normal environment we are importing next/navigation as normal, but in Storybook we are importing the mock that is defined in this folder.
+When we do `import {...} from "next/navigation;` this means that in the normal environment we are importing next/navigation as normal, but in Storybook we are importing the mock that is defined in this folder.
 
-[Read more in Storyboard's documentation](https://storybook.js.org/docs/writing-stories/mocking-data-and-modules/mocking-modules#subpath-imports) on how this works. 
+[Read more in Storyboard's documentation](https://storybook.js.org/docs/writing-stories/mocking-data-and-modules/mocking-modules#subpath-imports) on how this works.
 
 ## Mocked providers
 
-In addition to these mocked imports, we also want to ensure that certain providers are mocked out. For instance, analytics, we do not want any analytics events to fire when in the Storybook environment, but we do want to know that these events are firing. So we mock out the analytics provider here. 
+In addition to these mocked imports, we also want to ensure that certain providers are mocked out. For instance, analytics, we do not want any analytics events to fire when in the Storybook environment, but we do want to know that these events are firing. So we mock out the analytics provider here.
 
 ## Clerk
 
