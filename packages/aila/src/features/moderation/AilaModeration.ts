@@ -1,4 +1,4 @@
-import { Moderations } from "@oakai/core";
+import { Moderations } from "@oakai/core/src/models/moderations";
 import {
   getCategoryGroup,
   getMockModerationResult,

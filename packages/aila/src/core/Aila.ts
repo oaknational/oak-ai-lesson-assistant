@@ -7,6 +7,8 @@ import {
   DEFAULT_RAG_LESSON_PLANS,
 } from "../constants";
 import { AilaRagFeature } from "../features";
+import { AilaAmericanismsFeature } from "../features/americanisms";
+import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
 import { AilaCategorisation } from "../features/categorisation";
 import { NullAilaRag } from "../features/rag/NullAilaRag";
 import { AilaSnapshotStore } from "../features/snapshotStore";
@@ -54,6 +56,7 @@ export class Aila implements AilaServices {
   private _plugins: AilaPlugin[];
   private _userId!: string | undefined;
   private _chatId!: string;
+  private _americanisms: AilaAmericanismsFeature;
 
   constructor(options: AilaInitializationOptions) {
     this._userId = options.chat.userId;
@@ -85,7 +88,11 @@ export class Aila implements AilaServices {
         }),
     });
 
-    this._analytics = AilaFeatureFactory.createAnalytics(this, this._options);
+    this._analytics = AilaFeatureFactory.createAnalytics(
+      this,
+      this._options,
+      options.services?.analyticsAdapters?.(this),
+    );
     this._moderation = AilaFeatureFactory.createModeration(
       this,
       this._options,
@@ -105,6 +112,9 @@ export class Aila implements AilaServices {
       this._options,
     );
     this._rag = options.services?.ragService?.(this) ?? new NullAilaRag();
+    this._americanisms =
+      options.services?.americanismsService?.(this) ??
+      new NullAilaAmericanisms();
 
     if (this._analytics) {
       this._analytics.initialiseAnalyticsContext();
@@ -211,6 +221,10 @@ export class Aila implements AilaServices {
 
   public get rag() {
     return this._rag;
+  }
+
+  public get americanisms() {
+    return this._americanisms;
   }
 
   // Check methods

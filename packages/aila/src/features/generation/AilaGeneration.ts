@@ -3,7 +3,8 @@ import {
   ailaGenerate,
   generateAilaPromptVersionVariantSlug,
 } from "@oakai/core/src/prompts/lesson-assistant/variants";
-import { prisma, Prompt } from "@oakai/db";
+import { type Prompt } from "@oakai/db";
+import { prisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 import { kv } from "@vercel/kv";
 import { getEncoding } from "js-tiktoken";

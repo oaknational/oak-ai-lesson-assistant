@@ -12,7 +12,6 @@ import {
   LessonPlanJsonSchema,
   LooseLessonPlan,
 } from "../../../protocol/schema";
-import { findAmericanisms } from "../../../utils/language/findAmericanisms";
 import { compressedLessonPlanForRag } from "../../../utils/lessonPlan/compressedLessonPlanForRag";
 import { fetchLessonPlan } from "../../../utils/lessonPlan/fetchLessonPlan";
 import {
@@ -114,7 +113,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
       summaries: "None",
       responseMode: this._aila?.options.mode ?? "interactive",
       useRag: this._aila?.options.useRag ?? true,
-      americanisms: findAmericanisms(lessonPlan),
+      americanisms: this._aila.americanisms.findAmericanisms(lessonPlan),
       baseLessonPlan: baseLessonPlan
         ? compressedLessonPlanForRag(baseLessonPlan)
         : undefined,

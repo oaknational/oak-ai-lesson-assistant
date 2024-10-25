@@ -1,4 +1,4 @@
-import { Moderation } from "@prisma/client";
+import { type Moderation } from "@prisma/client";
 
 import { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import { AilaServices } from "../AilaServices";

@@ -1,8 +1,5 @@
 // AilaFeatureFactory.ts
-import {
-  DatadogAnalyticsAdapter,
-  PosthogAnalyticsAdapter,
-} from "../features/analytics";
+import { AnalyticsAdapter } from "../features/analytics";
 import { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import { SentryErrorReporter } from "../features/errorReporting/reporters/SentryErrorReporter";
 import { AilaModeration } from "../features/moderation";
@@ -27,14 +24,12 @@ export class AilaFeatureFactory {
   static createAnalytics(
     aila: AilaServices,
     options: AilaOptions,
+    adapters: AnalyticsAdapter[] = [],
   ): AilaAnalyticsFeature | undefined {
     if (options.useAnalytics) {
       return new AilaAnalytics({
         aila,
-        adapters: [
-          new PosthogAnalyticsAdapter(aila),
-          new DatadogAnalyticsAdapter(aila),
-        ],
+        adapters,
       });
     }
     return undefined;

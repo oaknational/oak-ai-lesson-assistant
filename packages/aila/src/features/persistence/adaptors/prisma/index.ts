@@ -1,8 +1,5 @@
-import {
-  Prisma,
-  PrismaClientWithAccelerate,
-  prisma as globalPrisma,
-} from "@oakai/db";
+import { type Prisma, type PrismaClientWithAccelerate } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { AilaPersistence } from "../..";
