@@ -163,19 +163,5 @@
   "engines": {
     "node": ">=20.9.0",
     "pnpm": ">=8"
-  },
-  "imports": {
-    "#next/navigation": {
-      "storybook": "./src/mocks/next/navigation.ts",
-      "default": "next/navigation"
-    },
-    "#oakai/db": {
-      "storybook": "./src/mocks/oakai/db.ts",
-      "default": "@oakai/db"
-    },
-    "#clerk/nextjs": {
-      "storybook": "./src/mocks/clerk/nextjs.ts",
-      "default": "@clerk/nextjs"
-    }
   }
 }

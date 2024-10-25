@@ -9,7 +9,6 @@ import React, {
 } from "react";
 import { toast } from "react-hot-toast";
 
-import { usePathname, useRouter } from "#next/navigation";
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import {
@@ -26,12 +25,13 @@ import * as Sentry from "@sentry/nextjs";
 import { Message } from "ai";
 import { ChatRequestOptions, CreateMessage } from "ai";
 import { useChat } from "ai/react";
+import { nanoid } from "nanoid";
+import { usePathname, useRouter } from "next/navigation";
 
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { nextSectionsToGenerate } from "@/lib/lessonPlan/nextSectionToGenerate";
 import { useLessonPlanManager } from "@/lib/lessonPlan/useLessonPlanManager";
-import { nanoid } from "@/lib/utils";
 import { trpc } from "@/utils/trpc";
 
 import { useLessonPlanScrollManagement } from "../../hooks/useLessonPlanScrollManagement";

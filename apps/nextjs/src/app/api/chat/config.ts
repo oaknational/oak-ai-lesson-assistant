@@ -3,8 +3,7 @@ import {
   prisma as globalPrisma,
   type PrismaClientWithAccelerate,
 } from "@oakai/db";
-
-import { nanoid } from "@/lib/utils";
+import { nanoid } from "nanoid";
 
 import { createWebActionsPlugin } from "./webActionsPlugin";
 

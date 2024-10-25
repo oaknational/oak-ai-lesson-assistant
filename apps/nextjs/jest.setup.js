@@ -1,5 +1,4 @@
 require("@testing-library/jest-dom");
-console.log("Polyfill web streams");
 require("web-streams-polyfill/polyfill");
 
 // Mock Next.js Image component
