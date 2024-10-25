@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { useUser } from "#clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { addBreadcrumb } from "@sentry/nextjs";
 
 type User = ReturnType<typeof useUser>["user"];

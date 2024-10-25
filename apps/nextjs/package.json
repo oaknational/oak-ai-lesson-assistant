@@ -157,24 +157,11 @@
     "postcss": "^8.4.32",
     "tailwindcss": "^3.3.7",
     "ts-jest": "^29.1.4",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "web-streams-polyfill": "^4.0.0"
   },
   "engines": {
     "node": ">=20.9.0",
     "pnpm": ">=8"
-  },
-  "imports": {
-    "#next/navigation": {
-      "storybook": "./src/mocks/next/navigation.ts",
-      "default": "next/navigation"
-    },
-    "#oakai/db": {
-      "storybook": "./src/mocks/oakai/db.ts",
-      "default": "@oakai/db"
-    },
-    "#clerk/nextjs": {
-      "storybook": "./src/mocks/clerk/nextjs.ts",
-      "default": "@clerk/nextjs"
-    }
   }
 }

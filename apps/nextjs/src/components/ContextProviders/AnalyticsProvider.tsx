@@ -9,8 +9,8 @@ import {
   useState,
 } from "react";
 
-import { usePathname, useSearchParams } from "#next/navigation";
 import { useOakConsent } from "@oaknational/oak-consent-client";
+import { usePathname, useSearchParams } from "next/navigation";
 import { PostHog } from "posthog-js";
 
 import { hubspotClient } from "@/lib/analytics/hubspot/HubspotClient";
