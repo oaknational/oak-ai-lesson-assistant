@@ -2,11 +2,12 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "lib": ["esnext", "dom"],
+    "lib": ["dom", "es2022"],
     "outDir": "./dist-tests",
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
+    "incremental": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
