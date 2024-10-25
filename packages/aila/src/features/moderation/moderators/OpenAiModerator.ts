@@ -9,7 +9,7 @@ import OpenAI from "openai";
 import {
   ChatCompletion,
   ChatCompletionCreateParamsNonStreaming,
-} from "openai/resources/index.mjs";
+} from "openai/resources";
 import zodToJsonSchema from "zod-to-json-schema";
 
 import { AilaModerator, AilaModerationError } from ".";
