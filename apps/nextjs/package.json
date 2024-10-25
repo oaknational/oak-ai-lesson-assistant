@@ -17,6 +17,7 @@
     "start": "next start",
     "type-check": "tsc --noEmit",
     "test": "pnpm with-env jest --colors --config jest.config.js",
+    "test:seq": "pnpm with-env jest --colors --config jest.config.js --verbose --runInBand",
     "test-e2e": "pnpm with-env playwright test",
     "test-e2e-ui": "pnpm with-env playwright test --ui",
     "test-e2e-ui-serve": "pnpm build && pnpm start --port 4848 --turbo",
