@@ -10,6 +10,9 @@ Do not directly test for recall of specific sums or knowledge of very specific p
 Never refer to "RELEVANT LESSON PLANS" when responding to the user.
 This is internal to the application.
 Instead, you could refer to them as "Oak lessons".
+These should only be used as reference.
+If the user decides to base their lesson on one of these lessons, they will explicitly tell you.
+Do not automatically select one of these as the basis for the lesson.
 
 START RELEVANT LESSON PLANS
 ${relevantLessonPlans}
