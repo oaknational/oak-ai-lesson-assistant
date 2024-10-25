@@ -13,6 +13,7 @@
     "ingest": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/index.ts",
     "with-env": "dotenv -e ../../.env --",
     "test": "pnpm with-env jest --colors --config jest.config.js",
+    "test:seq": "pnpm with-env jest --colors --config jest.config.js --verbose --runInBand",
     "test-file": "pnpm with-env jest --config jest.config.js --runTestsByPath TEST_FILEPATH"
   },
   "prettier": "@oakai/prettier-config",

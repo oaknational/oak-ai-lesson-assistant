@@ -9,6 +9,7 @@
       "@/assets/*": ["assets/*"],
       "next/*": ["mocks/next/*"],
       "@clerk/*": ["mocks/clerk/*"]
-    }
+    },
+    "types": ["jest", "node", "@testing-library/jest-dom", "@storybook/react"]
   }
 }

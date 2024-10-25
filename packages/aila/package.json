@@ -10,6 +10,7 @@
     "lint": "eslint . --ext .ts,.tsx",
     "type-check": "tsc --noEmit",
     "test": "pnpm with-env jest --colors --config jest.config.js",
+    "test:seq": "pnpm with-env jest --colors --config jest.config.js --verbose --runInBand",
     "test-file": "pnpm with-env jest --config jest.config.js --runTestsByPath TEST_FILEPATH",
     "with-env": "dotenv -e ../../.env --"
   },

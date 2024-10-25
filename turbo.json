@@ -59,8 +59,10 @@
       "cache": false
     },
     "test": {
-      "cache": false,
-      "outputs": ["packages/aila/**/*.spec.js", "packages/aila/**/*.test.js"]
+      "cache": false
+    },
+    "test:seq": {
+      "cache": false
     },
     "test-e2e": {
       "cache": false,

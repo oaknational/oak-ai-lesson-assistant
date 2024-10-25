@@ -28,7 +28,8 @@
     "type-check": "turbo type-check",
     "node-version": "node -v",
     "with-env": "dotenv -e ../../.env --",
-    "test": "turbo test --",
+    "test": "turbo test -- --maxWorkers=33%",
+    "test:seq": "turbo test:seq --concurrency=1 --",
     "test-e2e": "turbo test-e2e --",
     "test-e2e-ui": "turbo test-e2e-ui --",
     "storybook": "turbo storybook"
