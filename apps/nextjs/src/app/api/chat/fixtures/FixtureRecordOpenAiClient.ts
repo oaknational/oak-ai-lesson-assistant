@@ -3,7 +3,7 @@ import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { aiLogger } from "@oakai/logger";
 import fs from "fs/promises";
 import OpenAI from "openai";
-import { ChatCompletionCreateParamsNonStreaming } from "openai/resources/index.mjs";
+import { ChatCompletionCreateParamsNonStreaming } from "openai/resources";
 
 const log = aiLogger("fixtures");
 
