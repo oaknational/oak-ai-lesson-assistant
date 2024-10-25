@@ -8,13 +8,12 @@ import { aiLogger } from "@oakai/logger";
 import { ChatCompletionMessageParam } from "openai/resources";
 import { Md5 } from "ts-md5";
 
+import { DEFAULT_CATEGORISE_MODEL } from "../../../constants";
+import { AilaServices, Message } from "../../../core";
 import {
   OpenAICompletionWithLogging,
   OpenAICompletionWithLoggingOptions,
-} from "@/lib/openai/OpenAICompletionWithLogging";
-
-import { DEFAULT_CATEGORISE_MODEL } from "../../../constants";
-import { AilaServices, Message } from "../../../core";
+} from "../../../lib/openai/OpenAICompletionWithLogging";
 import { LooseLessonPlan } from "../../../protocol/schema";
 import { AilaCategorisationFeature } from "../../types";
 
@@ -22,24 +21,8 @@ const log = aiLogger("aila:categorisation");
 
 export class AilaCategorisation implements AilaCategorisationFeature {
   private _aila: AilaServices;
-  private _prisma: PrismaClientWithAccelerate;
-  private _chatId: string;
-  private _userId: string | undefined;
-  constructor({
-    aila,
-    prisma,
-    chatId,
-    userId,
-  }: {
-    aila: AilaServices;
-    prisma?: PrismaClientWithAccelerate;
-    chatId: string;
-    userId?: string;
-  }) {
+  constructor({ aila }: { aila: AilaServices }) {
     this._aila = aila;
-    this._prisma = prisma ?? globalPrisma;
-    this._chatId = chatId;
-    this._userId = userId;
   }
   public async categorise(
     messages: Message[],
@@ -164,8 +147,8 @@ Thank you and happy classifying!`;
     const parsedCategorisation = await this.categoriseKeyStageAndSubject(
       input,
       {
-        chatId: this._chatId,
-        userId: this._userId,
+        chatId: this._aila.chatId,
+        userId: this._aila.userId,
       },
     );
     const { keyStage, subject, title, topic } = parsedCategorisation;
