@@ -82,9 +82,6 @@ export class Aila implements AilaServices {
         options.services?.chatCategoriser ??
         new AilaCategorisation({
           aila: this,
-          prisma: this._prisma,
-          chatId: this._chatId,
-          userId: this._userId,
         }),
     });
 

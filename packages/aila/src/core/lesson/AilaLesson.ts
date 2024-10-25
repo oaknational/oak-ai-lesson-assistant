@@ -33,9 +33,7 @@ export class AilaLesson implements AilaLessonService {
     this._categoriser =
       categoriser ??
       new AilaCategorisation({
-        aila,
-        userId: aila.userId,
-        chatId: aila.chatId,
+        aila: this._aila,
       });
   }
 
