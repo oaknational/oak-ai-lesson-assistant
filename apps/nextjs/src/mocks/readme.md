@@ -12,10 +12,10 @@ For instance, next/navigation and prisma both cause trouble.
 
 To solve this, we provide mocks and rather than importing these files directly, we have some subpath aliases.
 
-In config, you will see lines like this:
+In package.json, you will see lines like this:
 
 ```
-...{
+"imports": {
   "next/navigation": {
     "storybook": "./src/mocks/next/navigation.ts",
     "default": "next/navigation"
