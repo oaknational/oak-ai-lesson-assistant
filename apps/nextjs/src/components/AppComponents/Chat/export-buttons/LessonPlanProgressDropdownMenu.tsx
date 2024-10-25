@@ -7,7 +7,6 @@ import {
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Flex } from "@radix-ui/themes";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
 import { scrollToRef } from "@/utils/scrollToRef";
 
