@@ -29,6 +29,7 @@
     "node-version": "node -v",
     "with-env": "dotenv -e ../../.env --",
     "test": "turbo test --",
+    "test:seq": "turbo test --concurrency=1 --",
     "test-e2e": "turbo test-e2e --",
     "test-e2e-ui": "turbo test-e2e-ui --",
     "storybook": "turbo storybook"

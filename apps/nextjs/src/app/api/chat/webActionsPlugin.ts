@@ -1,12 +1,10 @@
-import { AilaThreatDetectionError } from "@oakai/aila";
 import { AilaPlugin } from "@oakai/aila/src/core/plugins";
+import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
 import { handleHeliconeError } from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
-import {
-  SafetyViolations as defaultSafetyViolations,
-  inngest,
-} from "@oakai/core";
-import { UserBannedError } from "@oakai/core/src/models/safetyViolations";
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import { inngest } from "@oakai/core/src/inngest";
+import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import { type PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { waitUntil } from "@vercel/functions";
 
