@@ -47,7 +47,7 @@
     "docker-clear": "docker ps -a | grep -q oak-ai-beta && docker stop oak-ai-beta && docker rm oak-ai-beta || echo \"Container oak-ai-beta does not exist.\"",
     "docker-psql": " docker exec -it oak-ai-beta psql -U oai",
     "docker-reset": "pnpm run docker-clear && pnpm run docker-run",
-    "docker-run": "docker run --name oak-ai-beta -p 5432:5432 -d oai-pg",
+    "docker-run": "docker run --name oak-ai-beta -p 8432:5432 -d oai-pg",
     "schema-format": "pnpm with-env prisma format",
     "script-add-metadata-to-lesson-summaries": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/add_metadata_to_lesson_summaries.ts",
     "script-batch-process-clean-questions": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/batch_process_clean_questions.ts",
@@ -58,7 +58,7 @@
   "prettier": "@oakai/prettier-config",
   "dependencies": {
     "@oakai/logger": "*",
-    "@prisma/client": "^5.13.0",
+    "@prisma/client": "^5.21.1",
     "@types/chunk-text": "^1.0.0",
     "cheerio": "1.0.0-rc.12",
     "chunk-text": "^2.0.1",
@@ -73,7 +73,7 @@
   "devDependencies": {
     "@oakai/prettier-config": "*",
     "dotenv-cli": "^6.0.0",
-    "prisma": "^5.13.0",
+    "prisma": "^5.21.0",
     "typescript": "5.3.3",
     "zod-prisma": "^0.5.4"
   },
