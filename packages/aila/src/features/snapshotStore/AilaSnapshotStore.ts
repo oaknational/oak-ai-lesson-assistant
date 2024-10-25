@@ -1,5 +1,6 @@
-import { LessonSnapshots } from "@oakai/core";
-import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
+import { LessonSnapshots } from "@oakai/core/src/models/lessonSnapshots";
+import { type PrismaClientWithAccelerate } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
 import { LessonSnapshotTrigger } from "@prisma/client";
 import invariant from "tiny-invariant";
 

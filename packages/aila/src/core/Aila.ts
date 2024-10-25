@@ -1,11 +1,14 @@
-import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
+import { type PrismaClientWithAccelerate } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
 
 import {
   DEFAULT_MODEL,
   DEFAULT_TEMPERATURE,
   DEFAULT_RAG_LESSON_PLANS,
 } from "../constants";
+import { AilaRagFeature } from "../features";
 import { AilaCategorisation } from "../features/categorisation";
+import { NullAilaRag } from "../features/rag/NullAilaRag";
 import { AilaSnapshotStore } from "../features/snapshotStore";
 import {
   AilaAnalyticsFeature,
@@ -47,6 +50,7 @@ export class Aila implements AilaServices {
   private _persistence: AilaPersistenceFeature[] = [];
   private _threatDetection?: AilaThreatDetectionFeature;
   private _prisma: PrismaClientWithAccelerate;
+  private _rag: AilaRagFeature;
   private _plugins: AilaPlugin[];
   private _userId!: string | undefined;
   private _chatId!: string;
@@ -100,6 +104,7 @@ export class Aila implements AilaServices {
       this,
       this._options,
     );
+    this._rag = options.services?.ragService?.(this) ?? new NullAilaRag();
 
     if (this._analytics) {
       this._analytics.initialiseAnalyticsContext();
@@ -202,6 +207,10 @@ export class Aila implements AilaServices {
 
   public get chatLlmService() {
     return this._chatLlmService;
+  }
+
+  public get rag() {
+    return this._rag;
   }
 
   // Check methods

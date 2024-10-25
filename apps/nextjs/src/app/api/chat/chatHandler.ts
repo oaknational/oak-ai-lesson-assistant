@@ -1,16 +1,19 @@
-import { Aila } from "@oakai/aila";
 import type {
   AilaInitializationOptions,
   AilaOptions,
   AilaPublicChatOptions,
+  AilaServices,
   Message,
 } from "@oakai/aila";
+import { Aila } from "@oakai/aila/src/core/Aila";
+import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import {
   TracingSpan,
   withTelemetry,
 } from "@oakai/core/src/tracing/serverTracing";
-import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
+import { type PrismaClientWithAccelerate } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 // #TODO StreamingTextResponse is deprecated. If we choose to adopt the "ai" package
 // more fully, we should refactor to support its approach to streaming
@@ -176,6 +179,7 @@ export async function handleChatPostRequest(
             services: {
               chatLlmService: llmService,
               moderationAiClient,
+              ragService: (aila: AilaServices) => new AilaRag({ aila }),
             },
             lessonPlan: lessonPlan ?? {},
           };

@@ -1,3 +1,4 @@
+import { AilaRagFeature } from "../features";
 import { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import { AilaErrorReporter } from "../features/errorReporting";
 import { AilaSnapshotStore } from "../features/snapshotStore";
@@ -56,4 +57,5 @@ export interface AilaServices {
   readonly persistence?: AilaPersistenceFeature[];
   readonly moderation?: AilaModerationFeature;
   readonly plugins: AilaPlugin[];
+  readonly rag: AilaRagFeature;
 }

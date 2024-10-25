@@ -5,7 +5,7 @@ import { PromptTemplate } from "langchain/prompts";
 import { BaseMessage, SystemMessage } from "langchain/schema";
 import untruncateJson from "untruncate-json";
 
-import { createOpenAILangchainChatClient } from "../llm/openai";
+import { createOpenAILangchainChatClient } from "../llm/langchain";
 
 type CompletionMeta = {
   timeTaken: number;

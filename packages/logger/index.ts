@@ -14,6 +14,7 @@ type ChildKey =
   | "admin"
   | "aila"
   | "aila:analytics"
+  | "aila:categorisation"
   | "aila:errors"
   | "aila:llm"
   | "aila:moderation"

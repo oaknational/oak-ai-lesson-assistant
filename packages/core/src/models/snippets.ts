@@ -24,7 +24,7 @@ import { PrismaVectorStore } from "langchain/vectorstores/prisma";
 import { difference } from "remeda";
 
 import { inngest } from "../client";
-import { createOpenAILangchainClient } from "../llm/openai";
+import { createOpenAILangchainClient } from "../llm/langchain";
 import { embedWithCache } from "../utils/embeddings";
 
 const log = aiLogger("snippets");

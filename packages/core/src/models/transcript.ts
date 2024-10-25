@@ -1,4 +1,5 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import { Document } from "langchain/document";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { PromptTemplate } from "langchain/prompts";
@@ -6,10 +7,9 @@ import { RunnableSequence } from "langchain/schema/runnable";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { z } from "zod";
 
-import { createOpenAILangchainClient } from "../llm/openai";
-import { aiLogger } from "@oakai/logger";
+import { createOpenAILangchainClient } from "../llm/langchain";
 
-const log = aiLogger("transcripts")
+const log = aiLogger("transcripts");
 
 interface TranscriptWithRaw {
   raw: string;
