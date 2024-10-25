@@ -1,4 +1,4 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import { type PrismaClientWithAccelerate } from "@oakai/db";
 
 import { AilaModerator } from "../features/moderation/moderators";
 import { OpenAILike } from "../features/moderation/moderators/OpenAiModerator";
