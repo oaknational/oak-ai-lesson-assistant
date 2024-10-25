@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "lib": ["dom", "es2022"],
+    "lib": ["dom", "esnext"],
     "outDir": "./dist-tests",
     "rootDir": "./src",
     "strict": true,
@@ -14,7 +14,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["jest", "node", "@testing-library/jest-dom"],
+    "types": ["jest", "node"],
     "paths": {
       "@/*": ["./src/*"]
     }
