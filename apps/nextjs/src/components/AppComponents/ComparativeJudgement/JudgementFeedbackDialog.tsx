@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useUser } from "#clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { aiLogger } from "@oakai/logger";
 import * as Dialog from "@radix-ui/react-dialog";
 

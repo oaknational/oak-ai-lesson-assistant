@@ -1,8 +1,8 @@
 "use client";
 
-import { useUser } from "#clerk/nextjs";
-import { redirect } from "#next/navigation";
+import { useUser } from "@clerk/nextjs";
 import { aiLogger } from "@oakai/logger";
+import { redirect } from "next/navigation";
 
 import LoadingWheel from "@/components/LoadingWheel";
 import { trpc } from "@/utils/trpc";

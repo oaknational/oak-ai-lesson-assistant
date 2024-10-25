@@ -2,10 +2,10 @@
 
 import React, { useCallback, useState } from "react";
 
-import { useRouter } from "#next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { aiLogger } from "@oakai/logger";
 import { Flex } from "@radix-ui/themes";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/AppComponents/Chat/ui/button";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
