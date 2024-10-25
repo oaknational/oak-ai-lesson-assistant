@@ -1,13 +1,13 @@
-import { AilaThreatDetectionError } from "@oakai/aila";
 import { AilaPluginContext } from "@oakai/aila/src/core/plugins";
-import { inngest } from "@oakai/core";
-import { UserBannedError } from "@oakai/core/src/models/safetyViolations";
-import { PrismaClientWithAccelerate } from "@oakai/db";
-import { Moderation } from "@prisma/client";
+import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
+import { inngest } from "@oakai/core/src/inngest";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import { type PrismaClientWithAccelerate } from "@oakai/db";
+import { type Moderation } from "@prisma/client";
 
 import { createWebActionsPlugin } from "./webActionsPlugin";
 
-jest.mock("@oakai/core", () => ({
+jest.mock("@oakai/core/src/inngest", () => ({
   inngest: {
     send: jest.fn(),
   },

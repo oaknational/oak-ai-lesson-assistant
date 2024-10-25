@@ -1,4 +1,4 @@
-import { Aila } from "@oakai/aila";
+import { type Aila } from "@oakai/aila";
 import type {
   AilaInitializationOptions,
   AilaOptions,
@@ -7,10 +7,11 @@ import type {
 } from "@oakai/aila";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import {
-  TracingSpan,
+  type TracingSpan,
   withTelemetry,
 } from "@oakai/core/src/tracing/serverTracing";
-import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
+import { type PrismaClientWithAccelerate } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 // #TODO StreamingTextResponse is deprecated. If we choose to adopt the "ai" package
 // more fully, we should refactor to support its approach to streaming

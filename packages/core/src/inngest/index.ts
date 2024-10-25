@@ -2,8 +2,8 @@ import { structuredLogger } from "@oakai/logger";
 import { EventSchemas, Inngest } from "inngest";
 import getConfig from "next/config";
 
-import types from "./functions/event-types";
-import { eventLogger } from "./middleware/eventLogger";
+import types from "../functions/event-types";
+import { eventLogger } from "../middleware/eventLogger";
 
 let serverRuntimeConfig;
 try {
