@@ -1,9 +1,5 @@
 import { CategoriseKeyStageAndSubjectResponse } from "@oakai/core/src/rag/categorisation";
 import { keyStages, subjects } from "@oakai/core/src/utils/subjects";
-import {
-  type PrismaClientWithAccelerate,
-  prisma as globalPrisma,
-} from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 import { ChatCompletionMessageParam } from "openai/resources";
 import { Md5 } from "ts-md5";

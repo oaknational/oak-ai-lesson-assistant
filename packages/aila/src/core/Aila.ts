@@ -224,6 +224,10 @@ export class Aila implements AilaServices {
     return this._americanisms;
   }
 
+  public get prisma() {
+    return this._prisma;
+  }
+
   // Check methods
   public checkUserIdPresentIfPersisting() {
     if (!this._chat.userId && this._options.usePersistence) {
