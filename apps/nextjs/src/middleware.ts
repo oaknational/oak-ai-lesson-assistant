@@ -1,10 +1,6 @@
 import type { NextMiddlewareResult } from "next/dist/server/web/types";
-import type {
-  NextFetchEvent,
-  NextMiddleware,
-  NextRequest,
-  NextResponse,
-} from "next/server";
+import type { NextFetchEvent, NextMiddleware, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 import { getRootErrorCause } from "./lib/errors/getRootErrorCause";
 import { sentryCleanup } from "./lib/sentry/sentryCleanup";
