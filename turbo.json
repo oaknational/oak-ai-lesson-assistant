@@ -3,6 +3,10 @@
   "ui": "tui",
 
   "tasks": {
+    "db-generate:no-engine": {
+      "inputs": ["prisma/schema.prisma"],
+      "cache": false
+    },
     "db-generate": {
       "inputs": ["prisma/schema.prisma"],
       "cache": false
@@ -27,9 +31,21 @@
       "interactive": false,
       "cache": false
     },
+    "build:dev": {
+      "cache": true,
+      "dependsOn": ["^build", "^db-generate", "prompts:dev"],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "apps/nextjs/.next/**",
+        "apps/openai/.next/**",
+        "!apps/nextjs/.next/cache/**",
+        "!apps/openai/.next/cache/**"
+      ]
+    },
     "build": {
       "cache": true,
-      "dependsOn": ["^build", "^db-generate"],
+      "dependsOn": ["^build", "^db-generate:no-engine", "prompts"],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
