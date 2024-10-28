@@ -1,9 +1,10 @@
+import { inngest } from "@oakai/core";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
 
 import { reportRateLimitError } from "./user";
 
-jest.mock("@oakai/core/src/inngest", () => ({
+jest.mock("@oakai/core/src/client", () => ({
   inngest: {
     createFunction: jest.fn(),
     send: jest.fn(),
@@ -43,8 +44,6 @@ describe("chat route user functions", () => {
     });
 
     it("should trigger a slack notification", async () => {
-      const { inngest } = await import("@oakai/core/src/inngest");
-
       const mockPosthogClient = {
         identify: jest.fn(),
         capture: jest.fn(),
