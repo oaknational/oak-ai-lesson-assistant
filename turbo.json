@@ -37,18 +37,6 @@
         "!apps/openai/.next/cache/**"
       ]
     },
-    "build:vercel": {
-      "cache": true,
-      "dependsOn": ["^db-generate:no-engine", "^prompts"],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        "apps/nextjs/.next/**",
-        "apps/openai/.next/**",
-        "!apps/nextjs/.next/cache/**",
-        "!apps/openai/.next/cache/**"
-      ]
-    },
     "build": {
       "cache": true,
       "dependsOn": ["^db-generate:no-engine", "^prompts"],
