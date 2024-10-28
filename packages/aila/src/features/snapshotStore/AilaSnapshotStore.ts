@@ -4,7 +4,7 @@ import { prisma as globalPrisma } from "@oakai/db/client";
 import { LessonSnapshotTrigger } from "@prisma/client";
 import invariant from "tiny-invariant";
 
-import { AilaServices } from "../../core";
+import { type AilaServices } from "../../core/AilaServices";
 import { LooseLessonPlan } from "../../protocol/schema";
 
 export class AilaSnapshotStore {

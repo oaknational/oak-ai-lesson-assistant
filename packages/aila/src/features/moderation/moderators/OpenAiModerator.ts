@@ -17,7 +17,7 @@ import {
   DEFAULT_MODERATION_MODEL,
   DEFAULT_MODERATION_TEMPERATURE,
 } from "../../../constants";
-import { AilaServices } from "../../../core";
+import { type AilaServices } from "../../../core/AilaServices";
 
 const log = aiLogger("aila:moderation");
 

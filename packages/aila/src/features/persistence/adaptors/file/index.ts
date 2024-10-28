@@ -1,6 +1,6 @@
 import { AilaPersistence } from "../..";
-import { AilaChatService, AilaServices } from "../../../../core";
-import { AilaGeneration } from "../../../generation";
+import { AilaChatService, AilaServices } from "../../../../core/AilaServices";
+import { AilaGeneration } from "../../../generation/AilaGeneration";
 
 export class AilaFilePersistence extends AilaPersistence {
   constructor({ aila, chat }: { aila: AilaServices; chat: AilaChatService }) {

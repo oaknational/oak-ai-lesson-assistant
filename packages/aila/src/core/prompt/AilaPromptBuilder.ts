@@ -1,8 +1,8 @@
 import { jsonrepair } from "jsonrepair";
 
-import { Message } from "..";
-import { AilaServices } from "../..";
+import { type AilaServices } from "../../core/AilaServices";
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
+import { Message } from "../chat";
 
 export abstract class AilaPromptBuilder {
   protected _aila: AilaServices;

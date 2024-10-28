@@ -3,13 +3,10 @@ import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { AilaPersistence } from "../..";
-import {
-  AilaAuthenticationError,
-  AilaChatService,
-  AilaServices,
-} from "../../../../core";
+import { AilaAuthenticationError } from "../../../../core/AilaError";
+import { AilaChatService, AilaServices } from "../../../../core/AilaServices";
 import { AilaPersistedChat, chatSchema } from "../../../../protocol/schema";
-import { AilaGeneration } from "../../../generation";
+import { AilaGeneration } from "../../../generation/AilaGeneration";
 
 const log = aiLogger("aila:persistence");
 

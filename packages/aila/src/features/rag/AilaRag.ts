@@ -4,7 +4,7 @@ import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { AilaRagFeature } from ".";
-import { AilaServices } from "../../core";
+import { type AilaServices } from "../../core/AilaServices";
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
 import { LooseLessonPlan } from "../../protocol/schema";
 import { minifyLessonPlanForRelevantLessons } from "../../utils/lessonPlan/minifyLessonPlanForRelevantLessons";

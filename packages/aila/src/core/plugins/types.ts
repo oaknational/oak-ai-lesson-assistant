@@ -1,7 +1,7 @@
 import { type Moderation } from "@prisma/client";
 
 import { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
-import { AilaServices } from "../AilaServices";
+import { type AilaServices } from "../AilaServices";
 
 export type AilaPluginContext = {
   aila: AilaServices;

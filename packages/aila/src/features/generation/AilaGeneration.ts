@@ -9,7 +9,7 @@ import { aiLogger } from "@oakai/logger";
 import { kv } from "@vercel/kv";
 import { getEncoding } from "js-tiktoken";
 
-import { AilaServices } from "../../core";
+import { type AilaServices } from "../../core/AilaServices";
 import { AilaChat } from "../../core/chat";
 import { AilaGenerationStatus } from "./types";
 

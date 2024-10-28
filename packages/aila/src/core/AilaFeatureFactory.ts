@@ -17,7 +17,7 @@ import {
   AilaPersistenceFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
-import { AilaServices } from "./AilaServices";
+import { type AilaServices } from "./AilaServices";
 import { AilaOptions } from "./types";
 
 export class AilaFeatureFactory {

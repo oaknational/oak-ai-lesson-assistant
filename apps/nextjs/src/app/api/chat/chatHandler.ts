@@ -1,11 +1,11 @@
+import { Aila } from "@oakai/aila/src/core/Aila";
+import type { AilaServices } from "@oakai/aila/src/core/AilaServices";
+import type { Message } from "@oakai/aila/src/core/chat";
+import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
 import type {
-  AilaInitializationOptions,
   AilaOptions,
   AilaPublicChatOptions,
-  AilaServices,
-  Message,
-} from "@oakai/aila";
-import { Aila } from "@oakai/aila/src/core/Aila";
+} from "@oakai/aila/src/core/types";
 import { AilaAmericanisms } from "@oakai/aila/src/features/americanisms/AilaAmericanisms";
 import {
   DatadogAnalyticsAdapter,

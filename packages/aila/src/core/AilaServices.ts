@@ -1,19 +1,22 @@
-import { AilaRagFeature } from "../features";
-import { AilaAmericanismsFeature } from "../features/americanisms";
-import { AilaAnalytics } from "../features/analytics/AilaAnalytics";
-import { AilaErrorReporter } from "../features/errorReporting";
-import { AilaSnapshotStore } from "../features/snapshotStore";
-import {
+import { type AilaAmericanismsFeature } from "../features/americanisms";
+import { type AilaAnalytics } from "../features/analytics/AilaAnalytics";
+import { type AilaErrorReporter } from "../features/errorReporting";
+import { type AilaRagFeature } from "../features/rag";
+import { type AilaSnapshotStore } from "../features/snapshotStore";
+import type {
   AilaAnalyticsFeature,
   AilaModerationFeature,
   AilaPersistenceFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
-import { MessagePart } from "../protocol/jsonPatchProtocol";
-import { AilaRagRelevantLesson, LooseLessonPlan } from "../protocol/schema";
-import { Message } from "./chat";
-import { AilaOptionsWithDefaultFallbackValues } from "./index";
-import { AilaPlugin } from "./plugins";
+import { type MessagePart } from "../protocol/jsonPatchProtocol";
+import type {
+  AilaRagRelevantLesson,
+  LooseLessonPlan,
+} from "../protocol/schema";
+import { type Message } from "./chat";
+import { type AilaPlugin } from "./plugins";
+import { type AilaOptionsWithDefaultFallbackValues } from "./types";
 
 // This provides a set of interfaces between the Aila core and the features that use it.
 // We can then mock these out in tests without needing to instantiate the entire Aila object.

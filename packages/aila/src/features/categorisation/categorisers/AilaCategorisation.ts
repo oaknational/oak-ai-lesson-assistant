@@ -1,17 +1,18 @@
 import { CategoriseKeyStageAndSubjectResponse } from "@oakai/core/src/rag/categorisation";
 import { keyStages, subjects } from "@oakai/core/src/utils/subjects";
 import { aiLogger } from "@oakai/logger";
-import { ChatCompletionMessageParam } from "openai/resources";
+import { type ChatCompletionMessageParam } from "openai/resources";
 import { Md5 } from "ts-md5";
 
 import { DEFAULT_CATEGORISE_MODEL } from "../../../constants";
-import { AilaServices, Message } from "../../../core";
+import { type AilaServices } from "../../../core/AilaServices";
+import { type Message } from "../../../core/chat";
 import {
   OpenAICompletionWithLogging,
   OpenAICompletionWithLoggingOptions,
 } from "../../../lib/openai/OpenAICompletionWithLogging";
-import { LooseLessonPlan } from "../../../protocol/schema";
-import { AilaCategorisationFeature } from "../../types";
+import { type LooseLessonPlan } from "../../../protocol/schema";
+import { type AilaCategorisationFeature } from "../../types";
 
 const log = aiLogger("aila:categorisation");
 

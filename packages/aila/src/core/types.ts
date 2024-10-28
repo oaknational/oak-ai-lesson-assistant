@@ -1,11 +1,11 @@
 import { PrismaClientWithAccelerate } from "@oakai/db/client";
 
-import { AilaRagFeature } from "../features";
 import { AilaAmericanismsFeature } from "../features/americanisms";
 import { AnalyticsAdapter } from "../features/analytics";
 import { AilaModerator } from "../features/moderation/moderators";
 import { OpenAILike } from "../features/moderation/moderators/OpenAiModerator";
 import { AilaPersistence } from "../features/persistence";
+import { AilaRagFeature } from "../features/rag";
 import { AilaThreatDetector } from "../features/threatDetection";
 import {
   AilaAnalyticsFeature,
@@ -15,7 +15,7 @@ import {
   AilaThreatDetectionFeature,
 } from "../features/types";
 import { LooseLessonPlan } from "../protocol/schema";
-import { AilaServices } from "./AilaServices";
+import { type AilaServices } from "./AilaServices";
 import { Message } from "./chat";
 import { LLMService } from "./llm/LLMService";
 import { AilaPlugin } from "./plugins/types";

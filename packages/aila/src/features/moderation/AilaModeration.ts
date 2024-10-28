@@ -14,7 +14,7 @@ import {
 import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
-import { AilaServices } from "../../core";
+import { type AilaServices } from "../../core/AilaServices";
 import { Message } from "../../core/chat";
 import { AilaPluginContext } from "../../core/plugins/types";
 import { getLastAssistantMessage } from "../../helpers/chat/getLastAssistantMessage";

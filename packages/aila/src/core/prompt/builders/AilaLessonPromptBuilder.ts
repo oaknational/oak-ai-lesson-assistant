@@ -18,7 +18,7 @@ import {
   fetchRagContent,
   RagLessonPlan,
 } from "../../../utils/rag/fetchRagContent";
-import { AilaServices } from "../../AilaServices";
+import { type AilaServices } from "../../AilaServices";
 import { AilaPromptBuilder } from "../AilaPromptBuilder";
 
 const log = aiLogger("aila:prompt");

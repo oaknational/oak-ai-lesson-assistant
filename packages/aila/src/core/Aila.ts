@@ -6,10 +6,10 @@ import {
   DEFAULT_TEMPERATURE,
   DEFAULT_RAG_LESSON_PLANS,
 } from "../constants";
-import { AilaRagFeature } from "../features";
 import { AilaAmericanismsFeature } from "../features/americanisms";
 import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
 import { AilaCategorisation } from "../features/categorisation";
+import { AilaRagFeature } from "../features/rag";
 import { NullAilaRag } from "../features/rag/NullAilaRag";
 import { AilaSnapshotStore } from "../features/snapshotStore";
 import {

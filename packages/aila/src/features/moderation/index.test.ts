@@ -4,9 +4,10 @@ import { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderatio
 import { type PrismaClientWithAccelerate } from "@oakai/db";
 
 import { AilaModeration } from ".";
-import { Aila } from "../..";
-import { AilaChatInitializationOptions, Message } from "../../core";
+import { Aila } from "../../core/Aila";
+import { Message } from "../../core/chat";
 import { AilaPlugin } from "../../core/plugins";
+import { AilaChatInitializationOptions } from "../../core/types";
 import { LooseLessonPlan } from "../../protocol/schema";
 import { AilaModerator } from "./moderators";
 import { MockModerator } from "./moderators/MockModerator";

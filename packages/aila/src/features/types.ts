@@ -3,7 +3,7 @@ import { AilaPluginContext } from "../core/plugins";
 import { ModerationDocument } from "../protocol/jsonPatchProtocol";
 import { AilaPersistedChat, LooseLessonPlan } from "../protocol/schema";
 import { AilaErrorBreadcrumb, AilaErrorSeverity } from "./errorReporting/types";
-import { AilaGeneration } from "./generation";
+import { AilaGeneration } from "./generation/AilaGeneration";
 import { AilaThreatDetector } from "./threatDetection";
 
 export interface AilaModerationFeature {

@@ -1,6 +1,6 @@
-import { Aila } from ".";
 import { setupPolly } from "../../tests/mocks/setupPolly";
 import { MockCategoriser } from "../features/categorisation/categorisers/MockCategoriser";
+import { Aila } from "./Aila";
 import { AilaAuthenticationError } from "./AilaError";
 import { MockLLMService } from "./llm/MockLLMService";
 
