@@ -1,11 +1,14 @@
-import type { Prisma, type PrismaClientWithAccelerate } from "@oakai/db";
+import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { AilaPersistence } from "../..";
 import { AilaAuthenticationError } from "../../../../core/AilaError";
-import type { AilaChatService, AilaServices } from "../../../../core/AilaServices";
-import type { AilaPersistedChat} from "../../../../protocol/schema";
+import type {
+  AilaChatService,
+  AilaServices,
+} from "../../../../core/AilaServices";
+import type { AilaPersistedChat } from "../../../../protocol/schema";
 import { chatSchema } from "../../../../protocol/schema";
 import type { AilaGeneration } from "../../../generation/AilaGeneration";
 
