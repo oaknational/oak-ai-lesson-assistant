@@ -1,9 +1,9 @@
 import React from "react";
 
 import { Flex } from "@radix-ui/themes";
-import { Message } from "ai";
+import type { Message } from "ai";
 
-import { DemoContextProps } from "@/components/ContextProviders/Demo";
+import type { DemoContextProps } from "@/components/ContextProviders/Demo";
 
 import ChatLhsHeader from "./chat-lhs-header";
 import { ChatList } from "./chat-list";

@@ -1,4 +1,4 @@
-import { Aila } from "@oakai/aila/src/core/Aila";
+import type { Aila } from "@oakai/aila/src/core/Aila";
 import type { AilaServices } from "@oakai/aila/src/core/AilaServices";
 import type { Message } from "@oakai/aila/src/core/chat";
 import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
@@ -12,11 +12,9 @@ import {
   PosthogAnalyticsAdapter,
 } from "@oakai/aila/src/features/analytics";
 import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import {
-  TracingSpan,
-  withTelemetry,
-} from "@oakai/core/src/tracing/serverTracing";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
+import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";
 import { type PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
@@ -24,10 +22,10 @@ import { aiLogger } from "@oakai/logger";
 // more fully, we should refactor to support its approach to streaming
 // but this could be a significant change given we have our record-separator approach
 import { StreamingTextResponse } from "ai";
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
 
-import { Config } from "./config";
+import type { Config } from "./config";
 import { handleChatException } from "./errorHandling";
 import {
   getFixtureLLMService,

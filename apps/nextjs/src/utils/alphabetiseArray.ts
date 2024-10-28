@@ -1,7 +1,7 @@
 /**
  * Alphabetizes an array of comparable elements in-place
  */
-import {
+import type {
   GenerationPart,
   GenerationPartPlaceholder,
 } from "@oakai/core/src/types";

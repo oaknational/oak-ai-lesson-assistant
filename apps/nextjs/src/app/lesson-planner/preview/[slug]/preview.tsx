@@ -42,7 +42,7 @@ export const LessonPlanPreview = ({ planSections }) => {
             <ol className="list-decimal pl-10">
               {planSections?.planSections.keyLearningPoints.map(
                 (learningPoint) => (
-                  <li key={learningPoint.value} className={`mb-6 list-decimal`}>
+                  <li key={learningPoint.value} className={"mb-6 list-decimal"}>
                     <p>{learningPoint.value}</p>
                   </li>
                 ),
@@ -58,7 +58,7 @@ export const LessonPlanPreview = ({ planSections }) => {
                 return (
                   <li
                     key={miscon.value.misconception}
-                    className={`mb-12 flex flex-col gap-8`}
+                    className={"mb-12 flex flex-col gap-8"}
                   >
                     <p className="font-bold">{miscon.value.misconception}</p>
                     <p>{miscon.value.description}</p>
@@ -152,7 +152,7 @@ const Quiz = ({ question }: Readonly<QuizProps>) => {
       <ul className="mt-10">
         {question.distractors.map((distractor) => {
           return (
-            <li key={distractor.value} className={`mb-12 flex flex-col gap-8`}>
+            <li key={distractor.value} className={"mb-12 flex flex-col gap-8"}>
               <p>{distractor.value}</p>
             </li>
           );

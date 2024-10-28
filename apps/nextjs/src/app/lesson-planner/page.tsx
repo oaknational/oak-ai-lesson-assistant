@@ -1,5 +1,5 @@
 import LessonPlannerPage from ".";
 
-export default async function LessonPlanner() {
+export default function LessonPlanner() {
   return <LessonPlannerPage />;
 }

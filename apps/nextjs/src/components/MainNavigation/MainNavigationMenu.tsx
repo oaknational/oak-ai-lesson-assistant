@@ -1,4 +1,5 @@
-import { Ref, forwardRef } from "react";
+import type { Ref } from "react";
+import { forwardRef } from "react";
 
 import { useAuth } from "@clerk/nextjs";
 import { Box, Flex } from "@radix-ui/themes";
@@ -10,7 +11,7 @@ import { usePathname } from "next/navigation";
 import loopingLine from "@/assets/svg/looping-line-1.svg";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
-import { MainNavigationProps } from ".";
+import type { MainNavigationProps } from ".";
 import Button from "../Button";
 import { Icon } from "../Icon";
 import { MobileListItem } from "./MobileListItem";

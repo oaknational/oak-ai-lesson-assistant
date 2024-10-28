@@ -1,4 +1,4 @@
-import { ExportableQuizAppState } from "@oakai/exports/src/schema/input.schema";
+import type { ExportableQuizAppState } from "@oakai/exports/src/schema/input.schema";
 
 export function convertQuizToCSV(data: ExportableQuizAppState) {
   // Define the headers for your CSV

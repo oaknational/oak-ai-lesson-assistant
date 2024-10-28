@@ -6,7 +6,8 @@ const log = aiLogger("generation");
 
 const openai = createOpenAIClient({ app: "image-alt-text" });
 
-const prompt = "You are a content creator and an accessibility specialist for visually impaired users. You must write a clear and accurate ALT text for this image. You should accurately describe the image foreground and background, the colours and any objects in the image. Write out any text if it is present, and describe any people, their clothes, and their expressions if they are present. The literacy level of the text should be understandable to a 6-year-old pupil and written with exceptional spelling, punctuation and grammar in British English, think about the language that is understandable to this age group. Do not exceed 300 characters. If you believe you can accurately complete the task in less than 300 characters than do so. ";
+const prompt =
+  "You are a content creator and an accessibility specialist for visually impaired users. You must write a clear and accurate ALT text for this image. You should accurately describe the image foreground and background, the colours and any objects in the image. Write out any text if it is present, and describe any people, their clothes, and their expressions if they are present. The literacy level of the text should be understandable to a 6-year-old pupil and written with exceptional spelling, punctuation and grammar in British English, think about the language that is understandable to this age group. Do not exceed 300 characters. If you believe you can accurately complete the task in less than 300 characters than do so. ";
 
 const promptInQuizMode = `You are a content creator and an accessibility specialist for visually impaired users. 
 

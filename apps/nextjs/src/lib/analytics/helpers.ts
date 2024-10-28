@@ -1,13 +1,13 @@
-import { ModerationDocument } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { ModerationDocument } from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { lessonPlanSectionsSchema } from "@oakai/exports/src/schema/input.schema";
 import { isTruthy } from "remeda";
 
-import {
-  ModeratedContentType,
+import type {
   ModeratedContentTypeValueType,
   ProductValueType,
 } from "../avo/Avo";
+import { ModeratedContentType } from "../avo/Avo";
 
 /**
  * These are the actions which a user could take which result in a message

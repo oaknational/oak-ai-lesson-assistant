@@ -1,13 +1,13 @@
-import { RateLimitInfo } from "@oakai/api/src/types";
-import { KeyStageName, SubjectName } from "@oakai/core";
-import {
+import type { RateLimitInfo } from "@oakai/api/src/types";
+import type { KeyStageName, SubjectName } from "@oakai/core";
+import type {
   QuizAppQuestion,
   QuizAppStateQuestion,
 } from "ai-apps/quiz-designer/state/types";
 
-import { DeepPartial } from "@/utils/types/DeepPartial";
+import type { DeepPartial } from "@/utils/types/DeepPartial";
 
-import {
+import type {
   LPKeyLearningPoint,
   LPKeyword,
   LPMisconception,
