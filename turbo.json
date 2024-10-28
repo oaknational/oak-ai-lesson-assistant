@@ -27,7 +27,19 @@
     },
     "build:dev": {
       "cache": true,
-      "dependsOn": ["^build", "^db-generate", "^prompts:dev"],
+      "dependsOn": ["^db-generate", "^prompts:dev"],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "apps/nextjs/.next/**",
+        "apps/openai/.next/**",
+        "!apps/nextjs/.next/cache/**",
+        "!apps/openai/.next/cache/**"
+      ]
+    },
+    "build:vercel": {
+      "cache": true,
+      "dependsOn": ["^db-generate:no-engine", "^prompts"],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
@@ -39,7 +51,7 @@
     },
     "build": {
       "cache": true,
-      "dependsOn": ["^db-generate:no-engine", "^prompts", "^build"],
+      "dependsOn": ["^db-generate:no-engine", "^prompts"],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
