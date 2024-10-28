@@ -10,6 +10,7 @@
     "clean:workspaces": "turbo clean",
     "db-export:dev": "doppler run --config dev -- bash scripts/db_export.sh",
     "db-generate": "turbo db-generate",
+    "db-generate:no-engine": "turbo db-generate:no-engine",
     "db-migrate": "turbo db-migrate",
     "db-publish:stg": "doppler run --config stg -- bash scripts/db_publish.sh",
     "db-push": "turbo db-push",
