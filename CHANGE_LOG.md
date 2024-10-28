@@ -1,3 +1,10 @@
+## [1.12.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.12.0...v1.12.1) (2024-10-28)
+
+
+### Bug Fixes
+
+* hide streaming status in production ([#281](https://github.com/oaknational/oak-ai-lesson-assistant/issues/281)) ([1efc89e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1efc89eabd23d226060ad84b60010a5ff5cd9674))
+
 # [1.12.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.11.0...v1.12.0) (2024-10-28)
 
 

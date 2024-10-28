@@ -25,12 +25,6 @@
       "interactive": false,
       "cache": false
     },
-    "dev-turbo": {
-      "dependsOn": ["^db-generate"],
-      "persistent": true,
-      "interactive": false,
-      "cache": false
-    },
     "build:dev": {
       "cache": true,
       "dependsOn": ["^build", "^db-generate", "prompts:dev"],
