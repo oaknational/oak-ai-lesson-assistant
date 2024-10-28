@@ -1,4 +1,4 @@
-import { App, PrismaClientWithAccelerate } from "@oakai/db";
+import { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import dedent from "ts-dedent";
 import { Md5 } from "ts-md5";
@@ -46,16 +46,9 @@ export class PromptVariants {
 
     const { name, appId: appSlug, inputSchema, outputSchema } = this.definition;
 
-    let app: App | undefined = undefined;
-
-    try {
-      app = await this.prisma.app.findFirstOrThrow({
-        where: { slug: appSlug },
-      });
-    } catch (e) {
-      log.error("Unable to find app with slug", appSlug);
-      throw e;
-    }
+    const app = await this.prisma.app.findFirstOrThrow({
+      where: { slug: appSlug },
+    });
     const maxVersionRows = (await this.prisma
       .$queryRaw`select max(version) as max_version from prompts where slug = ${slug}`) as {
       max_version: number;
