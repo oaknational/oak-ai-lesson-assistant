@@ -4,7 +4,8 @@ import {
   createRouteMatcher,
 } from "@clerk/nextjs/server";
 import { aiLogger } from "@oakai/logger";
-import type { NextFetchEvent, NextRequest, NextResponse } from "next/server";
+import type { NextFetchEvent, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 import { sentrySetUser } from "@/lib/sentry/sentrySetUser";
 
