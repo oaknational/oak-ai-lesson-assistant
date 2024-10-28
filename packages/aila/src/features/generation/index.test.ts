@@ -1,5 +1,6 @@
 import { Aila } from "../../core/Aila";
-import { AilaChat, Message } from "../../core/chat";
+import type { Message } from "../../core/chat";
+import { AilaChat } from "../../core/chat";
 import { type AilaInitializationOptions } from "../../core/types";
 import { AilaGeneration } from "./AilaGeneration";
 
@@ -20,7 +21,9 @@ describe("calculateTokenUsage", () => {
     ];
 
     const mockEncoding = {
-      encode: jest.fn().mockImplementation((text) => text.split(" ").length),
+      encode: jest
+        .fn()
+        .mockImplementation((text: string) => text.split(" ").length),
     };
     jest.mock("js-tiktoken", () => ({
       getEncoding: () => mockEncoding,
@@ -56,7 +59,9 @@ describe("calculateTokenUsage", () => {
     ];
 
     const mockEncoding = {
-      encode: jest.fn().mockImplementation((text) => text.split(" ").length),
+      encode: jest
+        .fn()
+        .mockImplementation((text: string) => text.split(" ").length),
     };
     jest.mock("js-tiktoken", () => ({
       getEncoding: () => mockEncoding,

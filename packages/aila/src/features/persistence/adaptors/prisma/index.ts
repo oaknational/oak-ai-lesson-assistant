@@ -4,9 +4,10 @@ import { aiLogger } from "@oakai/logger";
 
 import { AilaPersistence } from "../..";
 import { AilaAuthenticationError } from "../../../../core/AilaError";
-import { AilaChatService, AilaServices } from "../../../../core/AilaServices";
-import { AilaPersistedChat, chatSchema } from "../../../../protocol/schema";
-import { AilaGeneration } from "../../../generation/AilaGeneration";
+import type { AilaChatService, AilaServices } from "../../../../core/AilaServices";
+import type { AilaPersistedChat} from "../../../../protocol/schema";
+import { chatSchema } from "../../../../protocol/schema";
+import type { AilaGeneration } from "../../../generation/AilaGeneration";
 
 const log = aiLogger("aila:persistence");
 

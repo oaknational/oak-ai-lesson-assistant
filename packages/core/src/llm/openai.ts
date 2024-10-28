@@ -1,7 +1,10 @@
-import { createOpenAI, OpenAIProvider } from "@ai-sdk/openai";
-import OpenAI, { ClientOptions } from "openai";
+import type { OpenAIProvider } from "@ai-sdk/openai";
+import { createOpenAI } from "@ai-sdk/openai";
+import type { ClientOptions } from "openai";
+import OpenAI from "openai";
 
-import { HeliconeChatMeta, heliconeHeaders } from "./helicone";
+import type { HeliconeChatMeta} from "./helicone";
+import { heliconeHeaders } from "./helicone";
 
 export type CreateOpenAIClientProps =
   | {

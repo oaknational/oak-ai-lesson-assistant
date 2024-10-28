@@ -1,9 +1,10 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
+import type {
+  LooseLessonPlan} from "../../protocol/schema";
 import {
-  LessonPlanSchemaWhilstStreaming,
-  LooseLessonPlan,
+  LessonPlanSchemaWhilstStreaming
 } from "../../protocol/schema";
 
 export async function fetchLessonPlanContentById(

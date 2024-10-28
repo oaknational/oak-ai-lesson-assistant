@@ -3,10 +3,10 @@ import { type PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
-import { AilaRagFeature } from ".";
+import type { AilaRagFeature } from ".";
 import { type AilaServices } from "../../core/AilaServices";
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
-import { LooseLessonPlan } from "../../protocol/schema";
+import type { LooseLessonPlan } from "../../protocol/schema";
 import { minifyLessonPlanForRelevantLessons } from "../../utils/lessonPlan/minifyLessonPlanForRelevantLessons";
 
 const log = aiLogger("aila:rag");

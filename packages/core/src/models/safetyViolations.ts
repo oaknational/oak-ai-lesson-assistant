@@ -5,8 +5,9 @@ import type {
   SafetyViolationSource,
   PrismaClientWithAccelerate,
 } from "@oakai/db";
-import { structuredLogger, StructuredLogger } from "@oakai/logger";
-import { Logger as InngestLogger } from "inngest/middleware/logger";
+import type { StructuredLogger } from "@oakai/logger";
+import { structuredLogger } from "@oakai/logger";
+import type { Logger as InngestLogger } from "inngest/middleware/logger";
 
 import { posthogAiBetaServerClient } from "../analytics/posthogAiBetaServerClient";
 import { inngest } from "../inngest";

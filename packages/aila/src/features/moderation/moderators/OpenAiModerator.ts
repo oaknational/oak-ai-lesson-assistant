@@ -1,12 +1,13 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { moderationPrompt } from "@oakai/core/src/utils/ailaModeration/moderationPrompt";
+import type {
+  ModerationResult} from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import {
-  ModerationResult,
   moderationResponseSchema,
 } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { aiLogger } from "@oakai/logger";
-import OpenAI from "openai";
-import {
+import type OpenAI from "openai";
+import type {
   ChatCompletion,
   ChatCompletionCreateParamsNonStreaming,
 } from "openai/resources";
@@ -140,14 +141,14 @@ export class OpenAiModerator extends AilaModerator {
         message: "No message.content in moderation response from OpenAI",
         data: { moderationResponse },
       });
-      throw new AilaModerationError(`Failed to get moderation response`);
+      throw new AilaModerationError("Failed to get moderation response");
     }
     if (!response.data) {
       this._aila?.errorReporter?.addBreadcrumb({
         message: "Invalid moderation response",
         data: { moderationResponse },
       });
-      throw new AilaModerationError(`No moderation response`);
+      throw new AilaModerationError("No moderation response");
     }
 
     const { categories, justification, scores } = response.data;

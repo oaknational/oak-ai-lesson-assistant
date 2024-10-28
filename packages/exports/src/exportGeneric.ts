@@ -2,7 +2,7 @@ import { addReader } from "./gSuite/drive/addReader";
 import { googleDrive } from "./gSuite/drive/client";
 import { copyTemplate } from "./gSuite/drive/copyTemplate";
 import { getLink } from "./gSuite/drive/getLink";
-import { OutputData, Result, State } from "./types";
+import type { OutputData, Result, State } from "./types";
 
 export const exportGeneric = async <InputData, TemplateData>({
   newFileName,

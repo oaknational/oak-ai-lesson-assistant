@@ -1,4 +1,4 @@
-import { LooseLessonPlan } from "../../protocol/schema";
+import type { LooseLessonPlan } from "../../protocol/schema";
 
 export type AmericanismIssueBySection = {
   section: string;

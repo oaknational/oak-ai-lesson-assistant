@@ -1,7 +1,7 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { kv } from "@vercel/kv";
 
-import { LooseLessonPlan } from "../../protocol/schema";
+import type { LooseLessonPlan } from "../../protocol/schema";
 import { fetchLessonPlanContentById } from "./fetchLessonPlanContentById";
 
 export async function fetchLessonPlan({

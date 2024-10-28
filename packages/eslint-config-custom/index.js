@@ -20,9 +20,22 @@ module.exports = {
       parser: "@typescript-eslint/parser",
       files: ["*.{ts,tsx}"],
       rules: {
+        "no-console": "warn",
+        "@typescript-eslint/consistent-type-imports": "warn",
         "@typescript-eslint/quotes": ["error", "double"],
         "@typescript-eslint/comma-dangle": "off",
         "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/require-await": "warn",
+        "@typescript-eslint/no-unsafe-return": "warn",
+        "@typescript-eslint/no-misused-promises": "warn",
+        "@typescript-eslint/no-unsafe-argument": "warn",
+        "@typescript-eslint/no-unsafe-assignment": "warn",
+        "@typescript-eslint/no-floating-promises": "warn",
+        "no-constant-condition": "warn",
+        "@typescript-eslint/no-unsafe-member-access": "warn",
+        "@typescript-eslint/restrict-template-expressions": "warn",
+        "@typescript-eslint/no-redundant-type-constituents": "warn",
+        "no-inner-declarations": "warn",
         "@typescript-eslint/explicit-function-return-type": [
           "off",
           {

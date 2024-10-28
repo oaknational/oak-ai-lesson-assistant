@@ -3,12 +3,12 @@
 import { textify } from "@oakai/core/src/utils/textify";
 import translator from "american-british-english-translator";
 
-import { AilaAmericanismsFeature } from ".";
-import {
+import type { AilaAmericanismsFeature } from ".";
+import type {
   AmericanismIssue,
   AmericanismIssueBySection,
 } from "../../features/americanisms";
-import { LessonPlanKeys, LooseLessonPlan } from "../../protocol/schema";
+import type { LessonPlanKeys, LooseLessonPlan } from "../../protocol/schema";
 
 export type TranslationResult = Record<
   string,

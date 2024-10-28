@@ -10,8 +10,8 @@ import { kv } from "@vercel/kv";
 import { getEncoding } from "js-tiktoken";
 
 import { type AilaServices } from "../../core/AilaServices";
-import { AilaChat } from "../../core/chat";
-import { AilaGenerationStatus } from "./types";
+import type { AilaChat } from "../../core/chat";
+import type { AilaGenerationStatus } from "./types";
 
 const log = aiLogger("generation");
 

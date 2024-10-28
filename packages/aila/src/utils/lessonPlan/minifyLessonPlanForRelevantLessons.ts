@@ -1,6 +1,6 @@
-import { LessonPlan as DatabaseLessonPlan } from "@oakai/db";
+import type { LessonPlan as DatabaseLessonPlan } from "@oakai/db";
 
-import { CompletedLessonPlan } from "../../protocol/schema";
+import type { CompletedLessonPlan } from "../../protocol/schema";
 
 export function minifyLessonPlanForRelevantLessons(
   lessonPlan: DatabaseLessonPlan,

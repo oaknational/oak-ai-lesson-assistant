@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { structuredLogger } from "@oakai/logger";
 import { EventSchemas, Inngest } from "inngest";
 import getConfig from "next/config";
+import invariant from "tiny-invariant";
 
 import types from "../functions/event-types";
 import { eventLogger } from "../middleware/eventLogger";
@@ -12,8 +16,11 @@ try {
 } catch (e) {
   //console.log("No Next environment");
 }
-const CONTEXT = serverRuntimeConfig?.DEPLOY_CONTEXT;
-const BRANCH = serverRuntimeConfig?.BRANCH;
+invariant(serverRuntimeConfig, "No Next environment");
+invariant(serverRuntimeConfig?.DEPLOY_CONTEXT, "No DEPLOY_CONTEXT");
+invariant(serverRuntimeConfig?.BRANCH, "No BRANCH");
+const CONTEXT = serverRuntimeConfig?.DEPLOY_CONTEXT as string;
+const BRANCH = serverRuntimeConfig?.BRANCH as string;
 
 function getInngestEnv() {
   if (CONTEXT === "production") {

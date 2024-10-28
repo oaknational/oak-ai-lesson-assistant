@@ -1,9 +1,10 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { Step } from "../db-helpers/step";
+import type { Step } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { jsonlToArray } from "../utils/jsonlToArray";
-import { BatchTask, getLessonIdFromCustomId } from "./customId";
+import type { BatchTask } from "./customId";
+import { getLessonIdFromCustomId } from "./customId";
 import { downloadOpenAiFile } from "./downloadOpenAiFile";
 
 function getStepFromTask(task: BatchTask): Step {

@@ -1,6 +1,6 @@
 import { Moderations } from "@oakai/core/src/models/moderations";
 import { prisma } from "@oakai/db/client";
-import { Moderation } from "@prisma/client";
+import type { Moderation } from "@prisma/client";
 
 export async function getSessionModerations(
   appSessionId: string,

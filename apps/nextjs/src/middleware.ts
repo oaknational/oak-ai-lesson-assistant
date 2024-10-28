@@ -1,5 +1,5 @@
-import { NextMiddlewareResult } from "next/dist/server/web/types";
-import {
+import type { NextMiddlewareResult } from "next/dist/server/web/types";
+import type {
   NextFetchEvent,
   NextMiddleware,
   NextRequest,
@@ -9,7 +9,7 @@ import {
 import { getRootErrorCause } from "./lib/errors/getRootErrorCause";
 import { sentryCleanup } from "./lib/sentry/sentryCleanup";
 import { authMiddleware } from "./middlewares/auth.middleware";
-import { CspConfig, addCspHeaders } from "./middlewares/csp";
+import { type CspConfig, addCspHeaders } from "./middlewares/csp";
 import { logError } from "./middlewares/middlewareErrorLogging";
 
 const parseEnvironment = (

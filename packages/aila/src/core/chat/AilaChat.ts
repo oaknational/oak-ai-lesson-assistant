@@ -7,12 +7,14 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
-import { type AilaServices, AilaChatService } from "../../core/AilaServices";
+import type { AilaChatService } from "../../core/AilaServices";
+import { type AilaServices } from "../../core/AilaServices";
 import { AilaGeneration } from "../../features/generation/AilaGeneration";
 import { type AilaGenerationStatus } from "../../features/generation/types";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
+import type {
+  JsonPatchDocumentOptional} from "../../protocol/jsonPatchProtocol";
 import {
-  JsonPatchDocumentOptional,
   LLMPatchDocumentSchema,
   TextDocumentSchema,
   parseMessageParts,
@@ -21,7 +23,7 @@ import { type AilaRagRelevantLesson } from "../../protocol/schema";
 import { AilaError } from "../AilaError";
 import { type LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
-import { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
+import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";

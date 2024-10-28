@@ -1,13 +1,14 @@
-import {
+import type {
   KeyStage,
   Lesson,
   LessonPlan,
   LessonPlanPart,
-  LessonPlanPartStatus,
-  LessonPlanStatus,
   LessonSummary,
   PrismaClientWithAccelerate,
-  Subject,
+  Subject} from "@oakai/db";
+import {
+  LessonPlanPartStatus,
+  LessonPlanStatus
 } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
@@ -20,7 +21,8 @@ import { RAG } from "../rag";
 import { camelCaseToSentenceCase } from "../utils/camelCaseToSentenceCase";
 import { embedWithCache } from "../utils/embeddings";
 import { textify } from "../utils/textify";
-import { Caption, CaptionsSchema } from "./types/caption";
+import type { Caption} from "./types/caption";
+import { CaptionsSchema } from "./types/caption";
 
 const log = aiLogger("lessons");
 

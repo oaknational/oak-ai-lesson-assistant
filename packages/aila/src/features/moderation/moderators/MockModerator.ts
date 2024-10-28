@@ -1,4 +1,4 @@
-import { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { aiLogger } from "@oakai/logger";
 
 import { AilaModerator, AilaModerationError } from ".";

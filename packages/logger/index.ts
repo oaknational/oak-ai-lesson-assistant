@@ -1,6 +1,7 @@
 import debug from "debug";
 
-import structuredLogger, { StructuredLogger } from "./structuredLogger";
+import type { StructuredLogger } from "./structuredLogger";
+import structuredLogger from "./structuredLogger";
 
 if (typeof window !== "undefined") {
   debug.enable("ai:*");

@@ -1,6 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
-import { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
+import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 
 const log = aiLogger("aila:protocol");
 

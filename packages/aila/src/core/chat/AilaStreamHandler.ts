@@ -1,10 +1,10 @@
-import { ReadableStreamDefaultController } from "stream/web";
+import type { ReadableStreamDefaultController } from "stream/web";
 import invariant from "tiny-invariant";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { AilaChatError } from "../AilaError";
-import { AilaChat } from "./AilaChat";
-import { PatchEnqueuer } from "./PatchEnqueuer";
+import type { AilaChat } from "./AilaChat";
+import type { PatchEnqueuer } from "./PatchEnqueuer";
 
 export class AilaStreamHandler {
   private _chat: AilaChat;
@@ -42,14 +42,16 @@ export class AilaStreamHandler {
         await this.readFromStream();
       }
     } catch (e) {
-      this.handleStreamError(e);
+      await this.handleStreamError(e);
     } finally {
       this._isStreaming = false;
       try {
         await this._chat.complete();
       } catch (e) {
         this._chat.aila.errorReporter?.reportError(e);
-        throw new AilaChatError("Chat completion failed", { cause: e });
+        controller.error(
+          new AilaChatError("Chat completion failed", { cause: e }),
+        );
       } finally {
         this.closeController();
       }
@@ -101,7 +103,7 @@ export class AilaStreamHandler {
     for (const plugin of this._chat.aila.plugins ?? []) {
       await plugin.onStreamError?.(error, {
         aila: this._chat.aila,
-        enqueue: this._chat.enqueue,
+        enqueue: (patch) => this._chat.enqueue(patch),
       });
     }
 

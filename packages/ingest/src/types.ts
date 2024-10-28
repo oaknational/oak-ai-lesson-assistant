@@ -1,4 +1,4 @@
-import { StructuredLogger } from "@oakai/logger";
+import type { StructuredLogger } from "@oakai/logger";
 
 export type IngestLogger = {
   info: (...args: unknown[]) => void;

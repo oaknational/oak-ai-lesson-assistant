@@ -6,13 +6,13 @@ import {
   DEFAULT_TEMPERATURE,
   DEFAULT_RAG_LESSON_PLANS,
 } from "../constants";
-import { AilaAmericanismsFeature } from "../features/americanisms";
+import type { AilaAmericanismsFeature } from "../features/americanisms";
 import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
 import { AilaCategorisation } from "../features/categorisation";
-import { AilaRagFeature } from "../features/rag";
+import type { AilaRagFeature } from "../features/rag";
 import { NullAilaRag } from "../features/rag/NullAilaRag";
-import { AilaSnapshotStore } from "../features/snapshotStore";
-import {
+import type { AilaSnapshotStore } from "../features/snapshotStore";
+import type {
   AilaAnalyticsFeature,
   AilaErrorReportingFeature,
   AilaModerationFeature,
@@ -22,17 +22,18 @@ import {
 import { generateMessageId } from "../helpers/chat/generateMessageId";
 import { AilaAuthenticationError, AilaGenerationError } from "./AilaError";
 import { AilaFeatureFactory } from "./AilaFeatureFactory";
-import {
+import type {
   AilaChatService,
   AilaLessonService,
   AilaServices,
 } from "./AilaServices";
-import { AilaChat, Message } from "./chat";
+import type { Message } from "./chat";
+import { AilaChat } from "./chat";
 import { AilaLesson } from "./lesson";
-import { LLMService } from "./llm/LLMService";
+import type { LLMService } from "./llm/LLMService";
 import { OpenAIService } from "./llm/OpenAIService";
-import { AilaPlugin } from "./plugins/types";
-import {
+import type { AilaPlugin } from "./plugins/types";
+import type {
   AilaGenerateLessonPlanOptions,
   AilaOptions,
   AilaOptionsWithDefaultFallbackValues,

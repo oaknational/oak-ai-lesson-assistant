@@ -1,8 +1,8 @@
-import { SignedInAuthObject } from "@clerk/backend/internal";
+import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
 import { LessonSnapshots } from "@oakai/core";
 import { sendEmail } from "@oakai/core/src/utils/sendEmail";
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import {
   exportDocLessonPlanSchema,
   exportDocQuizSchema,
@@ -12,7 +12,7 @@ import {
 } from "@oakai/exports";
 import { exportableQuizAppStateSchema } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
-import { LessonExportType } from "@prisma/client";
+import type { LessonExportType } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
 import { kv } from "@vercel/kv";
 import { z } from "zod";
@@ -26,6 +26,31 @@ import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 
 const log = aiLogger("exports");
+
+function getValidLink(
+  data:
+    | {
+        link: string;
+        canViewSourceDoc: boolean;
+      }
+    | {
+        error: unknown;
+        message: string;
+      },
+): string | undefined {
+  if (data && "link" in data && typeof data.link === "string") {
+    return data.link;
+  }
+  if ("error" in data && "message" in data) {
+    Sentry.captureException(data.error, {
+      extra: {
+        error: data.error,
+        message: data.message,
+      },
+    });
+    throw new Error(data.message);
+  }
+}
 
 export async function ailaSaveExport({
   auth,
@@ -642,31 +667,6 @@ export const exportsRouter = router({
             ctx,
           }),
         ]);
-
-        function getValidLink(
-          data:
-            | {
-                link: string;
-                canViewSourceDoc: boolean;
-              }
-            | {
-                error: unknown;
-                message: string;
-              },
-        ): string | undefined {
-          if (data && "link" in data && typeof data.link === "string") {
-            return data.link;
-          }
-          if ("error" in data && "message" in data) {
-            Sentry.captureException(data.error, {
-              extra: {
-                error: data.error,
-                message: data.message,
-              },
-            });
-            throw new Error(data.message);
-          }
-        }
 
         const allExports = {
           lessonSlides: getValidLink(lessonSlides),

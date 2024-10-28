@@ -1,4 +1,4 @@
-import { TracingSpan } from "./serverTracing";
+import type { TracingSpan } from "./serverTracing";
 
 class MockSpan implements TracingSpan {
   tags: Record<string, string | number | boolean | undefined> = {};

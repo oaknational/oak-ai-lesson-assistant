@@ -14,12 +14,14 @@ describe("PatchEnqueuer", () => {
 
     await patchEnqueuer.enqueuePatch(path, value);
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(controller.enqueue).toHaveBeenCalled();
     const expectedPatch = `\n␞\n${JSON.stringify({
       type: "patch",
       reasoning: "generated",
       value: { op: "add", path, value },
     })}\n␞\n`;
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(controller.enqueue).toHaveBeenCalledWith(expectedPatch);
   });
 

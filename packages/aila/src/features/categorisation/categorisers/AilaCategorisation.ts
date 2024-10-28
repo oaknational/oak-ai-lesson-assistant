@@ -7,9 +7,10 @@ import { Md5 } from "ts-md5";
 import { DEFAULT_CATEGORISE_MODEL } from "../../../constants";
 import { type AilaServices } from "../../../core/AilaServices";
 import { type Message } from "../../../core/chat";
+import type {
+  OpenAICompletionWithLoggingOptions} from "../../../lib/openai/OpenAICompletionWithLogging";
 import {
-  OpenAICompletionWithLogging,
-  OpenAICompletionWithLoggingOptions,
+  OpenAICompletionWithLogging
 } from "../../../lib/openai/OpenAICompletionWithLogging";
 import { type LooseLessonPlan } from "../../../protocol/schema";
 import { type AilaCategorisationFeature } from "../../types";

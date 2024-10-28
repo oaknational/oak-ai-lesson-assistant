@@ -1,8 +1,9 @@
 import { moderationCategoriesSchema } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
+import type {
+  Operation} from "fast-json-patch";
 import {
-  Operation,
   applyPatch,
   deepClone,
   JsonPatchError,
@@ -10,6 +11,8 @@ import {
 import { ZodError, z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 
+import type {
+  LooseLessonPlan} from "./schema";
 import {
   BasedOnOptionalSchema,
   BasedOnSchema,
@@ -20,7 +23,6 @@ import {
   KeywordsSchema,
   KeywordsSchemaWithoutLength,
   LessonPlanSchemaWhilstStreaming,
-  LooseLessonPlan,
   MisconceptionsOptionalSchema,
   MisconceptionsSchema,
   MisconceptionsSchemaWithoutLength,
@@ -718,7 +720,7 @@ export function extractPatches(
               }
               return undefined;
             }, part);
-            log.error(`  Invalid value:`, errorValue);
+            log.error("  Invalid value:", errorValue);
           });
         } else {
           log.error("Failed to parse patch:", e);

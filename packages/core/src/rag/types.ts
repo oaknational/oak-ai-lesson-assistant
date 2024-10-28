@@ -1,4 +1,4 @@
-import { KeyStage, LessonPlan, Subject } from "@prisma/client";
+import type { KeyStage, LessonPlan, Subject } from "@prisma/client";
 
 export interface FilterOptions {
   key_stage_id?: object;

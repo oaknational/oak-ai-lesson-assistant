@@ -3,12 +3,11 @@ import { aiLogger } from "@oakai/logger";
 import { splitJsonlByRowsOrSize } from "../utils/splitJsonlByRowsOrSize";
 import { OPEN_AI_BATCH_MAX_ROWS, OPEN_AI_BATCH_MAX_SIZE_MB } from "./constants";
 import { getCustomIdsFromJsonlFile } from "./getCustomIdsFromJsonlFile";
-import {
-  OpenAiBatchSubmitCallback,
-  submitOpenAiBatch,
-} from "./submitOpenAiBatch";
+import type { OpenAiBatchSubmitCallback } from "./submitOpenAiBatch";
+import { submitOpenAiBatch } from "./submitOpenAiBatch";
 import { uploadOpenAiBatchFile } from "./uploadOpenAiBatchFile";
-import { GetBatchFileLine, writeBatchFile } from "./writeBatchFile";
+import type { GetBatchFileLine } from "./writeBatchFile";
+import { writeBatchFile } from "./writeBatchFile";
 
 const log = aiLogger("ingest");
 
