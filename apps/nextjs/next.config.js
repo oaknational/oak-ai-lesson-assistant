@@ -5,7 +5,6 @@ const {
   RELEASE_STAGE_TESTING,
 } = require("./scripts/build_config_helpers.js");
 const path = require("path");
-const Sentry = require("@sentry/nextjs");
 
 const { PHASE_PRODUCTION_BUILD, PHASE_TEST } = require("next/constants");
 
@@ -189,5 +188,3 @@ module.exports = withSentryConfig(module.exports, {
   // https://vercel.com/docs/cron-jobs
   automaticVercelMonitors: true,
 });
-
-module.exports.onRequestError = Sentry.captureRequestError;
