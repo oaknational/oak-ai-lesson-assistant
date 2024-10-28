@@ -8,26 +8,25 @@ import { z } from "zod";
 
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import type { AilaChatService } from "../../core/AilaServices";
-import { type AilaServices } from "../../core/AilaServices";
+import type { AilaServices } from "../../core/AilaServices";
 import { AilaGeneration } from "../../features/generation/AilaGeneration";
-import { type AilaGenerationStatus } from "../../features/generation/types";
+import type { AilaGenerationStatus } from "../../features/generation/types";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
-import type {
-  JsonPatchDocumentOptional} from "../../protocol/jsonPatchProtocol";
+import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import {
   LLMPatchDocumentSchema,
   TextDocumentSchema,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
-import { type AilaRagRelevantLesson } from "../../protocol/schema";
+import type { AilaRagRelevantLesson } from "../../protocol/schema";
 import { AilaError } from "../AilaError";
-import { type LLMService } from "../llm/LLMService";
+import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
-import { type Message } from "./types";
+import type { Message } from "./types";
 
 export class AilaChat implements AilaChatService {
   private readonly _id: string;

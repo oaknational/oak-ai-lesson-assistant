@@ -1,10 +1,7 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { moderationPrompt } from "@oakai/core/src/utils/ailaModeration/moderationPrompt";
-import type {
-  ModerationResult} from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import {
-  moderationResponseSchema,
-} from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { moderationResponseSchema } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { aiLogger } from "@oakai/logger";
 import type OpenAI from "openai";
 import type {
@@ -18,7 +15,7 @@ import {
   DEFAULT_MODERATION_MODEL,
   DEFAULT_MODERATION_TEMPERATURE,
 } from "../../../constants";
-import { type AilaServices } from "../../../core/AilaServices";
+import type { AilaServices } from "../../../core/AilaServices";
 
 const log = aiLogger("aila:moderation");
 

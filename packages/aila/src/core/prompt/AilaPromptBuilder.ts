@@ -1,6 +1,6 @@
 import { jsonrepair } from "jsonrepair";
 
-import { type AilaServices } from "../../core/AilaServices";
+import type { AilaServices } from "../../core/AilaServices";
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
 import type { Message } from "../chat";
 

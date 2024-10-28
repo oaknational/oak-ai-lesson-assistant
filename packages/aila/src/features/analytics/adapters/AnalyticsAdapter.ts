@@ -1,4 +1,4 @@
-import { type AilaServices } from "../../../core/AilaServices";
+import type { AilaServices } from "../../../core/AilaServices";
 
 export abstract class AnalyticsAdapter {
   protected _aila: AilaServices;

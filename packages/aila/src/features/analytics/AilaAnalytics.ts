@@ -1,4 +1,4 @@
-import { type AilaServices } from "../../core/AilaServices";
+import type { AilaServices } from "../../core/AilaServices";
 import type { AnalyticsAdapter } from "./adapters/AnalyticsAdapter";
 
 export class AilaAnalytics {

@@ -1,4 +1,4 @@
-import { type PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db/client";
 
 import {

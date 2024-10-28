@@ -1,7 +1,7 @@
 import { Aila } from "../../core/Aila";
 import type { Message } from "../../core/chat";
 import { AilaChat } from "../../core/chat";
-import { type AilaInitializationOptions } from "../../core/types";
+import type { AilaInitializationOptions } from "../../core/types";
 import { AilaGeneration } from "./AilaGeneration";
 
 const ailaArgs: AilaInitializationOptions = {

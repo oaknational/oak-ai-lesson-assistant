@@ -1,5 +1,5 @@
 import type { Message } from "@oakai/aila/src/core/chat";
-import { type LLMService } from "@oakai/aila/src/core/llm/LLMService";
+import type { LLMService } from "@oakai/aila/src/core/llm/LLMService";
 import { OpenAIService } from "@oakai/aila/src/core/llm/OpenAIService";
 import { aiLogger } from "@oakai/logger";
 import fs from "fs/promises";

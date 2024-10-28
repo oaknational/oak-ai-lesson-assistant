@@ -4,7 +4,7 @@ import { getSessionModerations } from "@oakai/aila/src/features/moderation/getSe
 import { demoUsers } from "@oakai/core/src/models/demoUsers";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { getSharedChatById } from "@/app/actions";

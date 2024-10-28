@@ -15,7 +15,7 @@ import type {
   AilaThreatDetectionFeature,
 } from "../features/types";
 import type { LooseLessonPlan } from "../protocol/schema";
-import { type AilaServices } from "./AilaServices";
+import type { AilaServices } from "./AilaServices";
 import type { Message } from "./chat";
 import type { LLMService } from "./llm/LLMService";
 import type { AilaPlugin } from "./plugins/types";
