@@ -27,7 +27,7 @@
     },
     "build:dev": {
       "cache": true,
-      "dependsOn": ["^db-generate", "^prompts:dev"],
+      "dependsOn": ["^db-generate", "$db-generate", "^prompts:dev"],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
@@ -39,7 +39,11 @@
     },
     "build:vercel": {
       "cache": true,
-      "dependsOn": ["^db-generate:no-engine", "^prompts"],
+      "dependsOn": [
+        "^db-generate:no-engine",
+        "$db-generate:no-engine",
+        "^prompts"
+      ],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
@@ -51,7 +55,11 @@
     },
     "build": {
       "cache": true,
-      "dependsOn": ["^db-generate:no-engine", "^prompts"],
+      "dependsOn": [
+        "^db-generate:no-engine",
+        "$db-generate:no-engine",
+        "^prompts"
+      ],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
