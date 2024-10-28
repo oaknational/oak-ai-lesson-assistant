@@ -2,18 +2,19 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "lib": ["esnext", "dom"],
+    "lib": ["dom", "esnext"],
     "outDir": "./dist-tests",
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
+    "incremental": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["jest", "node", "@testing-library/jest-dom"],
+    "types": ["jest", "node"],
     "paths": {
       "@/*": ["./src/*"]
     }

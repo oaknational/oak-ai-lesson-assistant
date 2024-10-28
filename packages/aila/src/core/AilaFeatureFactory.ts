@@ -11,6 +11,7 @@ import {
   OpenAiModerator,
 } from "../features/moderation/moderators/OpenAiModerator";
 import { AilaPrismaPersistence } from "../features/persistence/adaptors/prisma";
+import { AilaSnapshotStore } from "../features/snapshotStore";
 import { AilaThreatDetection } from "../features/threatDetection";
 import {
   AilaAnalyticsFeature,
@@ -53,6 +54,10 @@ export class AilaFeatureFactory {
       return new AilaModeration({ aila, moderator });
     }
     return undefined;
+  }
+
+  static createSnapshotStore(aila: AilaServices) {
+    return new AilaSnapshotStore({ aila });
   }
 
   static createPersistence(

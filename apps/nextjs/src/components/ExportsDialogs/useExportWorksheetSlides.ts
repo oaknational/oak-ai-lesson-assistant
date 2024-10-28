@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { exportSlidesWorksheetSchema } from "@oakai/exports/browser";
 import { WorksheetSlidesInputData } from "@oakai/exports/src/schema/input.schema";
-import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
 import { ZodError } from "zod";
@@ -10,8 +9,7 @@ import { ZodError } from "zod";
 import { trpc } from "@/utils/trpc";
 
 import { ExportsHookProps } from "./exports.types";
-
-const log = aiLogger("exports");
+import { useExportsExistenceCheck } from "./useExportsExistenceCheck";
 
 export function useExportWorksheetSlides({
   onStart,
@@ -38,30 +36,13 @@ export function useExportWorksheetSlides({
 
   const checkForSnapShotAndPreloadQuery =
     trpc.exports.checkIfWorksheetDownloadExists.useMutation();
-  const [checked, setChecked] = useState(false);
-  const check = useCallback(async () => {
-    if (
-      debouncedParseResult?.success &&
-      debouncedParseResult.data &&
-      !checked
-    ) {
-      try {
-        checkForSnapShotAndPreloadQuery.mutate({
-          chatId,
-          data: debouncedParseResult.data,
-        });
-        setChecked(true);
-      } catch (error) {
-        log.error("Error during check:", error);
-      }
-    }
-  }, [
-    debouncedParseResult?.success,
-    debouncedParseResult?.data,
+  const check = useExportsExistenceCheck({
+    success: debouncedParseResult?.success,
+    data: debouncedParseResult?.data,
     chatId,
-    checkForSnapShotAndPreloadQuery,
-    checked,
-  ]);
+    messageId,
+    checkFn: checkForSnapShotAndPreloadQuery.mutate,
+  });
 
   useEffect(() => {
     check();

@@ -32,9 +32,6 @@ jobs:
       - name: Install deps (with cache)
         run: pnpm install
 
-      - name: Enable Turbo Remote Caching
-        run: pnpm turbo login --token ${{ secrets.TURBO_TOKEN }}
-
       - name: Build, lint and type-check
         run: pnpm turbo lint type-check --cache-dir=".turbo"
 

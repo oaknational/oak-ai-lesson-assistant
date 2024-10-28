@@ -1,5 +1,5 @@
 import type { StorybookConfig } from "@storybook/nextjs";
-import { join, dirname } from "path";
+import { join, dirname, resolve } from "path";
 import webpack from "webpack";
 
 /**
@@ -58,6 +58,14 @@ const config: StorybookConfig = {
         ],
       });
     }
+    if (!config.resolve) {
+      config.resolve = {};
+    }
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "next/navigation": resolve(__dirname, "../src/mocks/next/navigation"),
+      "@clerk/nextjs": resolve(__dirname, "../src/mocks/clerk/nextjs"),
+    };
     return config;
   },
 };

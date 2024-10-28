@@ -2,9 +2,9 @@
 
 import * as React from "react";
 
-import { usePathname } from "#next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import AiIcon from "@/components/AiIcon";
 import { buttonVariants } from "@/components/AppComponents/Chat/ui/button";

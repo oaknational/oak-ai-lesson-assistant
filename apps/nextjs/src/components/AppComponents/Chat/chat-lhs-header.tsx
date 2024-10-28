@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useRouter } from "#next/navigation";
+import { useRouter } from "next/navigation";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
@@ -42,15 +42,13 @@ const ChatLhsHeader = ({
           New lesson
         </ChatButton>
       </div>
-      <div className=" flex justify-end sm:hidden">
+      <div className={`${isDemoUser && `mt-16`} flex justify-end sm:hidden`}>
         <button
           onClick={() => setShowLessonMobile(!showLessonMobile)}
           className="flex items-center gap-5"
         >
           <AiIcon />{" "}
-          <span className={`text-base font-bold ${isDemoUser && `mt-24`}`}>
-            View lesson &gt;
-          </span>
+          <span className={`text-base font-bold `}>View lesson &gt;</span>
         </button>
       </div>
     </>

@@ -1,7 +1,7 @@
 import { FC, useEffect } from "react";
 
 import * as Sentry from "@sentry/nextjs";
-import { usePathname, useSearchParams } from "#next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
 
 import { ConsentState } from "@/components/ContextProviders/CookieConsentProvider";

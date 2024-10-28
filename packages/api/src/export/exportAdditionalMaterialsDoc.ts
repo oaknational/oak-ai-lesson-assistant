@@ -1,5 +1,6 @@
 import { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
+import { LessonSnapshots } from "@oakai/core";
 import { PrismaClientWithAccelerate } from "@oakai/db";
 import { exportAdditionalMaterials } from "@oakai/exports";
 import { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
@@ -8,7 +9,6 @@ import * as Sentry from "@sentry/nextjs";
 
 import {
   ailaGetExportBySnapshotId,
-  ailaGetOrSaveSnapshot,
   ailaSaveExport,
   OutputSchema,
   reportErrorResult,
@@ -41,12 +41,13 @@ export async function exportAdditionalMaterialsDoc({
     };
   }
 
-  const lessonSnapshot = await ailaGetOrSaveSnapshot({
-    prisma: ctx.prisma,
+  const lessonSnapshots = new LessonSnapshots(ctx.prisma);
+  const lessonSnapshot = await lessonSnapshots.getOrSaveSnapshot({
     userId: ctx.auth.userId,
     chatId: input.chatId,
     messageId: input.messageId,
     snapshot: input.data,
+    trigger: "EXPORT_BY_USER",
   });
 
   Sentry.addBreadcrumb({

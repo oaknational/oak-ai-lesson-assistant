@@ -214,14 +214,20 @@ export class AilaChat implements AilaChatService {
   }
 
   public async enqueue(message: JsonPatchDocumentOptional) {
-    await this._patchEnqueuer.enqueueMessage(message);
+    // Optional "?"" necessary to avoid a "terminated" error
+    if (this?._patchEnqueuer) {
+      await this._patchEnqueuer.enqueueMessage(message);
+    }
   }
 
   public async enqueuePatch(
     path: string,
     value: string | string[] | number | object,
   ) {
-    await this._patchEnqueuer.enqueuePatch(path, value);
+    // Optional "?"" necessary to avoid a "terminated" error
+    if (this?._patchEnqueuer) {
+      await this._patchEnqueuer.enqueuePatch(path, value);
+    }
   }
 
   private async startNewGeneration() {
@@ -239,13 +245,11 @@ export class AilaChat implements AilaChatService {
 
   private accumulatedText() {
     const accumulated = this._chunks?.join("");
-    return accumulated;
+    return accumulated ?? "";
   }
 
   private async reportUsageMetrics() {
-    await this._aila.analytics?.reportUsageMetrics(
-      this.accumulatedText() ?? "",
-    );
+    await this._aila.analytics?.reportUsageMetrics(this.accumulatedText());
   }
 
   private async persistGeneration(status: AilaGenerationStatus) {
@@ -300,9 +304,6 @@ export class AilaChat implements AilaChatService {
 
   private appendAssistantMessage() {
     const content = this.accumulatedText();
-    if (!content) {
-      return;
-    }
     const assistantMessage: Message = {
       id: generateMessageId({ role: "assistant" }),
       role: "assistant",
@@ -366,13 +367,19 @@ export class AilaChat implements AilaChatService {
     await this.reportUsageMetrics();
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
-    if (assistantMessage) {
-      await this.enqueueMessageId(assistantMessage.id);
-    }
-
+    await this.enqueueMessageId(assistantMessage.id);
+    await this.saveSnapshot({ messageId: assistantMessage.id });
     await this.moderate();
     await this.persistChat();
     await this.persistGeneration("SUCCESS");
+  }
+
+  public async saveSnapshot({ messageId }: { messageId: string }) {
+    await this._aila.snapshotStore.saveSnapshot({
+      messageId,
+      lessonPlan: this._aila.lesson.plan,
+      trigger: "ASSISTANT_MESSAGE",
+    });
   }
 
   public async moderate() {
