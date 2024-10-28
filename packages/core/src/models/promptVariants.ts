@@ -49,9 +49,10 @@ export class PromptVariants {
     const app = await this.prisma.app.findFirstOrThrow({
       where: { slug: appSlug },
     });
-    const maxVersionRows = (await this.prisma
-      .$queryRaw`select max(version) as max_version from prompts where slug = ${slug}`);
-    const maxVersion = maxVersionRows?.[0]?.max_version ?? 0;
+    const maxVersionRow = await this.prisma.$queryRaw<
+      { max_version: number | null }[]
+    >`SELECT MAX(version) AS max_version FROM prompts WHERE slug = ${slug}`;
+    const maxVersion = maxVersionRow[0]?.max_version ?? 0;
     const version = maxVersion + 1;
     const created = await this.prisma.prompt.create({
       data: {
