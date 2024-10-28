@@ -45,7 +45,7 @@
     },
     "build": {
       "cache": true,
-      "dependsOn": ["^build", "^db-generate:no-engine", "prompts"],
+      "dependsOn": ["db-generate:no-engine", "prompts", "^build"],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
