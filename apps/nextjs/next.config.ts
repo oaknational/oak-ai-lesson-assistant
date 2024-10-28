@@ -1,15 +1,15 @@
-const {
+import { withSentryConfig } from "@sentry/nextjs";
+import { sentryWebpackPlugin } from "@sentry/webpack-plugin";
+import type { NextConfig } from "next";
+import { PHASE_PRODUCTION_BUILD, PHASE_TEST } from "next/constants";
+import path from "path";
+
+import {
   getAppVersion,
   getReleaseStage,
   RELEASE_STAGE_PRODUCTION,
   RELEASE_STAGE_TESTING,
-} = require("./scripts/build_config_helpers.js");
-const path = require("path");
-
-const { PHASE_PRODUCTION_BUILD, PHASE_TEST } = require("next/constants");
-
-const { sentryWebpackPlugin } = require("@sentry/webpack-plugin");
-const { withSentryConfig } = require("@sentry/nextjs");
+} from "./scripts/build_config_helpers.js";
 
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
@@ -17,12 +17,9 @@ const { withSentryConfig } = require("@sentry/nextjs");
  */
 // !process.env.SKIP_ENV_VALIDATION && (await import("./src/env/server.mjs"));
 
-/** @type {(phase: string) => Promise<import("next").NextConfig>} */
-const getConfig = async (phase) => {
-  /** @type string */
-  let releaseStage;
-  /** @type string */
-  let appVersion;
+const getConfig = async (phase: string): Promise<NextConfig> => {
+  let releaseStage: string;
+  let appVersion: string;
   let isProductionBuild = false;
   const isNextjsProductionBuildPhase = phase === PHASE_PRODUCTION_BUILD;
   const isTestBuild = phase === PHASE_TEST || process.env.NODE_ENV === "test";
@@ -43,15 +40,8 @@ const getConfig = async (phase) => {
     appVersion = getAppVersion({ isProductionBuild });
   }
 
-  /** @type {import('next').NextConfig} */
-  const config = {
+  const config: NextConfig = {
     experimental: {
-      /**
-       * For instrumentation.ts
-       * @see https://docs.sentry.io/platforms/javascript/guides/nextjs/migration/v7-to-v8/#updated-sdk-initialization
-       */
-      instrumentationHook: true,
-      serverComponentsExternalPackages: [`require-in-the-middle`],
       turbo: {
         resolveAlias: {
           "next/navigation": {
@@ -88,6 +78,7 @@ const getConfig = async (phase) => {
     env: {
       NEXT_PUBLIC_APP_VERSION: appVersion,
       NEXT_PUBLIC_RELEASE_STAGE: releaseStage,
+      NEXT_PUBLIC_DEBUG: process.env.DEBUG,
     },
 
     productionBrowserSourceMaps: true,
@@ -122,7 +113,7 @@ const getConfig = async (phase) => {
         config.devtool = "source-map";
         config.plugins.push(
           sentryWebpackPlugin({
-            release: appVersion,
+            release: { name: appVersion },
             org: "oak-national-academy",
             project: "ai-experiments",
             authToken: process.env.SENTRY_AUTH_TOKEN,
