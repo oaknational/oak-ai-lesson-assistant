@@ -24,7 +24,7 @@ const ChatLhsHeader = ({
   return (
     <>
       <div className="mt-6 hidden items-center justify-end gap-5 sm:flex">
-        {process.env.NEXT_PUBLIC_ENVIRONMENT !== "production" && (
+        {process.env.NEXT_PUBLIC_ENVIRONMENT !== "prd" && (
           <div
             className="flex-grow text-left text-xs"
             data-testid="chat-aila-streaming-status"
