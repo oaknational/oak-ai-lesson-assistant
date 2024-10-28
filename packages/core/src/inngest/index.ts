@@ -37,8 +37,6 @@ if (!inngestEventKey) {
   throw new Error("Missing env var INNGEST_EVENT_KEY");
 }
 
-console.log("Inngest env:", inngestEnv);
-
 export const inngest = new Inngest({
   name: "Oak AI",
   id: "oak-ai",
