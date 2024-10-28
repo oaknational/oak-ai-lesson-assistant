@@ -16,11 +16,9 @@ try {
 } catch (e) {
   //console.log("No Next environment");
 }
-invariant(serverRuntimeConfig, "No Next environment");
-invariant(serverRuntimeConfig?.DEPLOY_CONTEXT, "No DEPLOY_CONTEXT");
-invariant(serverRuntimeConfig?.BRANCH, "No BRANCH");
-const CONTEXT = serverRuntimeConfig?.DEPLOY_CONTEXT as string;
-const BRANCH = serverRuntimeConfig?.BRANCH as string;
+
+const CONTEXT = serverRuntimeConfig?.DEPLOY_CONTEXT as string | undefined;
+const BRANCH = serverRuntimeConfig?.BRANCH as string | undefined;
 
 function getInngestEnv() {
   if (CONTEXT === "production") {
