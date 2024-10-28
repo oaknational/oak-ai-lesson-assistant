@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "lib": ["esnext", "dom"],
+    "lib": ["dom", "esnext"],
     "outDir": "./dist-tests",
     "rootDir": "./src",
     "strict": true,
@@ -12,6 +12,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "incremental": true,
     "noEmit": true,
     "types": ["jest", "node", "@testing-library/jest-dom", "@storybook/react"],
     "baseUrl": "./src",
