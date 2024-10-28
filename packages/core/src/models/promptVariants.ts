@@ -1,13 +1,13 @@
 import { PrismaClientWithAccelerate } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import dedent from "ts-dedent";
 import { Md5 } from "ts-md5";
 
 import errorHandling from "../prompts/shared/error-handling";
 import promptInjection from "../prompts/shared/prompt-injection";
 import { OakPromptDefinition, OakPromptVariant } from "../prompts/types";
-import { aiLogger } from "@oakai/logger";
 
-const log = aiLogger("prompts")
+const log = aiLogger("prompts");
 
 export class PromptVariants {
   definition: OakPromptDefinition;
