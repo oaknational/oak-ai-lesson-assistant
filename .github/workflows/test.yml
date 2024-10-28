@@ -33,7 +33,7 @@ jobs:
         run: pnpm install
 
       - name: Generate prisma client
-        run: pnpm db-generate
+        run: pnpm db-generate:no-engine
 
       - name: Inject Doppler env vars
         uses: dopplerhq/secrets-fetch-action@v1.2.0
