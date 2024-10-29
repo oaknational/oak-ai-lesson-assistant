@@ -8,7 +8,7 @@ import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import ChatButton from "../../Chat/ui/chat-button";
-import ShareButtonGroup from "../../common/ShareButttonGroup";
+import ShareButtonGroup from "../../common/ShareButtonGroup";
 
 type ControllerProps = {
   hasQuestions: boolean;
