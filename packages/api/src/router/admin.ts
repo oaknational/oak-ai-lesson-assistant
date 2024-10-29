@@ -1,11 +1,12 @@
 import { Moderations, SafetyViolations } from "@oakai/core";
-import { Moderation } from "@oakai/db";
+import type { Moderation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { z } from "zod";
 
 import { getSessionModerations } from "../../../aila/src/features/moderation/getSessionModerations";
+import type {
+  AilaPersistedChat} from "../../../aila/src/protocol/schema";
 import {
-  AilaPersistedChat,
   chatSchema,
 } from "../../../aila/src/protocol/schema";
 import { adminProcedure } from "../middleware/adminAuth";

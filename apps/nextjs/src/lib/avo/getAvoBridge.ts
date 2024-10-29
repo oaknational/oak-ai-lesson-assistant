@@ -4,10 +4,10 @@
 import browserLogger from "@oakai/logger/browser";
 import * as Sentry from "@sentry/nextjs";
 
-import { AnalyticsService } from "@/components/ContextProviders/AnalyticsProvider";
+import type { AnalyticsService } from "@/components/ContextProviders/AnalyticsProvider";
 
-import { PosthogConfig } from "../posthog/posthog";
-import { CustomDestination } from "./Avo";
+import type { PosthogConfig } from "../posthog/posthog";
+import type { CustomDestination } from "./Avo";
 
 type AnalyticsServices = {
   posthog: Pick<AnalyticsService<PosthogConfig, "posthog">, "track">;

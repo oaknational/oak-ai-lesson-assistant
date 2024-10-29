@@ -1,5 +1,11 @@
 {
   "type": "llmMessage",
+  "sectionsToEdit": [
+    "priorKnowledge",
+    "keyLearningPoints",
+    "misconceptions",
+    "keywords"
+  ],
   "patches": [
     {
       "type": "patch",
@@ -91,6 +97,12 @@
       },
       "status": "complete"
     }
+  ],
+  "sectionsEdited": [
+    "priorKnowledge",
+    "keyLearningPoints",
+    "misconceptions",
+    "keywords"
   ],
   "prompt": {
     "type": "text",

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import {
+import type {
   BasedOnOptional,
   LessonPlanKeys,
 } from "@oakai/aila/src/protocol/schema";
@@ -62,14 +62,14 @@ function getSectionsToDisplay(
       return section.dependants.filter(
         (dependant) =>
           streamingSections?.includes(dependant) ||
-          lessonPlanKeys.includes(dependant as LessonPlanKeys),
+          lessonPlanKeys.includes(dependant),
       );
     }
     return [];
   });
 
   const sectionsFromAllSectionsInOrder = allSectionsInOrder.filter((section) =>
-    lessonPlanKeys.includes(section as LessonPlanKeys),
+    lessonPlanKeys.includes(section),
   );
 
   const sectionsToDisplay = [

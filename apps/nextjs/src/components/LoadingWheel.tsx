@@ -1,6 +1,7 @@
 import React from "react";
 
-import { Icon, IconName, IconSize } from "./Icon";
+import type { IconName, IconSize } from "./Icon";
+import { Icon } from "./Icon";
 
 const LoadingWheel = React.forwardRef<
   HTMLDivElement,

@@ -1,4 +1,4 @@
-import { ResourceTypeValueType } from "@/lib/avo/Avo";
+import type { ResourceTypeValueType } from "@/lib/avo/Avo";
 
 export type ExportsType =
   | "lessonSlides"

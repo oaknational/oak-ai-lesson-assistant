@@ -1,5 +1,6 @@
 {
   "type": "llmMessage",
+  "sectionsToEdit": ["starterQuiz", "cycle1", "cycle2", "cycle3", "exitQuiz"],
   "patches": [
     {
       "type": "patch",
@@ -11,49 +12,27 @@
         "value": [
           {
             "question": "When did the Romans invade Britain?",
-            "answers": [
-              "AD 43"
-            ],
-            "distractors": [
-              "AD 410",
-              "AD 1066"
-            ]
+            "answers": ["AD 43"],
+            "distractors": ["AD 410", "AD 1066"]
           },
           {
             "question": "How long was Britain part of the Roman Empire?",
-            "answers": [
-              "Nearly 400 years"
-            ],
-            "distractors": [
-              "200 years",
-              "600 years"
-            ]
+            "answers": ["Nearly 400 years"],
+            "distractors": ["200 years", "600 years"]
           },
           {
             "question": "What did the Romans build in Britain?",
-            "answers": [
-              "Roads, towns, and walls"
-            ],
-            "distractors": [
-              "Castles and palaces",
-              "Skyscrapers"
-            ]
+            "answers": ["Roads, towns, and walls"],
+            "distractors": ["Castles and palaces", "Skyscrapers"]
           },
           {
             "question": "What aspect of life did Roman culture influence in Britain?",
-            "answers": [
-              "Buildings and language"
-            ],
-            "distractors": [
-              "Clothing and food",
-              "Music and dance"
-            ]
+            "answers": ["Buildings and language"],
+            "distractors": ["Clothing and food", "Music and dance"]
           },
           {
             "question": "What was the Roman army known for?",
-            "answers": [
-              "Being powerful and well-organised"
-            ],
+            "answers": ["Being powerful and well-organised"],
             "distractors": [
               "Being small and disorganised",
               "Being peaceful and passive"
@@ -61,13 +40,8 @@
           },
           {
             "question": "What year did the Romans leave Britain?",
-            "answers": [
-              "AD 410"
-            ],
-            "distractors": [
-              "AD 43",
-              "AD 1066"
-            ]
+            "answers": ["AD 410"],
+            "distractors": ["AD 43", "AD 1066"]
           }
         ]
       },
@@ -98,9 +72,7 @@
           "checkForUnderstanding": [
             {
               "question": "Why did the Romans leave Britain?",
-              "answers": [
-                "Due to pressures on their empire"
-              ],
+              "answers": ["Due to pressures on their empire"],
               "distractors": [
                 "They were defeated by the British",
                 "They wanted to explore new lands"
@@ -108,13 +80,8 @@
             },
             {
               "question": "What was the Roman Empire facing around AD 410?",
-              "answers": [
-                "Threats from various groups"
-              ],
-              "distractors": [
-                "A time of peace",
-                "Rapid expansion"
-              ]
+              "answers": ["Threats from various groups"],
+              "distractors": ["A time of peace", "Rapid expansion"]
             }
           ],
           "practice": "List three reasons why the Romans decided to leave Britain. Write a sentence for each reason.",
@@ -148,19 +115,12 @@
           "checkForUnderstanding": [
             {
               "question": "What happened to Roman-style houses after they left?",
-              "answers": [
-                "They declined"
-              ],
-              "distractors": [
-                "They were improved",
-                "They stayed the same"
-              ]
+              "answers": ["They declined"],
+              "distractors": ["They were improved", "They stayed the same"]
             },
             {
               "question": "What economic change occurred after the Romans left?",
-              "answers": [
-                "Shift to bartering"
-              ],
+              "answers": ["Shift to bartering"],
               "distractors": [
                 "Increased use of Roman coins",
                 "Introduction of new currency"
@@ -198,23 +158,13 @@
           "checkForUnderstanding": [
             {
               "question": "Who settled in Britain after the Romans left?",
-              "answers": [
-                "The Saxons"
-              ],
-              "distractors": [
-                "The Romans",
-                "The Vikings"
-              ]
+              "answers": ["The Saxons"],
+              "distractors": ["The Romans", "The Vikings"]
             },
             {
               "question": "What continued in Britain despite Roman departure?",
-              "answers": [
-                "Some Roman traditions"
-              ],
-              "distractors": [
-                "Roman rule",
-                "Roman military presence"
-              ]
+              "answers": ["Some Roman traditions"],
+              "distractors": ["Roman rule", "Roman military presence"]
             }
           ],
           "practice": "Write a short paragraph describing how Saxon culture influenced Britain. Include examples of cultural blending.",
@@ -233,69 +183,40 @@
         "value": [
           {
             "question": "When did the Romans leave Britain?",
-            "answers": [
-              "AD 410"
-            ],
-            "distractors": [
-              "AD 43",
-              "AD 1066"
-            ]
+            "answers": ["AD 410"],
+            "distractors": ["AD 43", "AD 1066"]
           },
           {
             "question": "What happened to Roman-style houses after the Romans left?",
-            "answers": [
-              "They declined"
-            ],
-            "distractors": [
-              "They improved",
-              "They were unchanged"
-            ]
+            "answers": ["They declined"],
+            "distractors": ["They improved", "They were unchanged"]
           },
           {
             "question": "What replaced Roman coins in the British economy?",
-            "answers": [
-              "Bartering"
-            ],
-            "distractors": [
-              "New currency",
-              "Gold coins"
-            ]
+            "answers": ["Bartering"],
+            "distractors": ["New currency", "Gold coins"]
           },
           {
             "question": "Which group began to settle in Britain after the Romans?",
-            "answers": [
-              "The Saxons"
-            ],
-            "distractors": [
-              "The Vikings",
-              "The Celts"
-            ]
+            "answers": ["The Saxons"],
+            "distractors": ["The Vikings", "The Celts"]
           },
           {
             "question": "What was one reason the Romans left Britain?",
-            "answers": [
-              "Pressures on their empire"
-            ],
-            "distractors": [
-              "To explore new lands",
-              "Defeat by the British"
-            ]
+            "answers": ["Pressures on their empire"],
+            "distractors": ["To explore new lands", "Defeat by the British"]
           },
           {
             "question": "What continued in Britain despite the Roman departure?",
-            "answers": [
-              "Some Roman traditions"
-            ],
-            "distractors": [
-              "Roman army presence",
-              "Roman government"
-            ]
+            "answers": ["Some Roman traditions"],
+            "distractors": ["Roman army presence", "Roman government"]
           }
         ]
       },
       "status": "complete"
     }
   ],
+  "sectionsEdited": ["starterQuiz", "cycle1", "cycle2", "cycle3", "exitQuiz"],
   "prompt": {
     "type": "text",
     "value": "Are the starter quiz, learning cycles, and exit quiz sections suitable for your pupils? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."

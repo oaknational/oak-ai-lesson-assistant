@@ -1,4 +1,4 @@
-import { zodResponseFormat } from "openai/helpers/zod";
+import type { zodResponseFormat } from "openai/helpers/zod";
 
 export function batchLineCompletion({
   customId,

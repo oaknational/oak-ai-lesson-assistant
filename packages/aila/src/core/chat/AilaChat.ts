@@ -5,29 +5,29 @@ import {
 } from "@oakai/core/src/utils/subjects";
 import invariant from "tiny-invariant";
 
-import { AilaChatService, AilaError, AilaServices } from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
-import {
-  AilaGeneration,
-  AilaGenerationStatus,
-} from "../../features/generation";
+import type { AilaChatService } from "../../core/AilaServices";
+import type { AilaServices } from "../../core/AilaServices";
+import { AilaGeneration } from "../../features/generation/AilaGeneration";
+import type { AilaGenerationStatus } from "../../features/generation/types";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
+import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import {
-  JsonPatchDocumentOptional,
   LLMMessageSchema,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
-import {
+import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
 } from "../../protocol/schema";
-import { LLMService } from "../llm/LLMService";
+import { AilaError } from "../AilaError";
+import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
-import { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
+import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
-import { Message } from "./types";
+import type { Message } from "./types";
 
 export class AilaChat implements AilaChatService {
   private readonly _id: string;
@@ -156,7 +156,7 @@ export class AilaChat implements AilaChatService {
     });
   }
 
-  public async systemMessage() {
+  public systemMessage() {
     invariant(this._generation?.systemPrompt, "System prompt not initialised");
     return {
       id: generateMessageId({ role: "system" }),
@@ -165,12 +165,12 @@ export class AilaChat implements AilaChatService {
     };
   }
 
-  public async completionMessages() {
+  public completionMessages() {
     const reducedMessages = this._promptBuilder.reduceMessagesForPrompt(
       this._messages,
     );
 
-    const systemMessage = await this.systemMessage();
+    const systemMessage = this.systemMessage();
     const applicableMessages: Message[] = [systemMessage, ...reducedMessages]; // only send
 
     if (this._aila?.lesson.hasSetInitialState) {
@@ -230,7 +230,7 @@ export class AilaChat implements AilaChatService {
   }
 
   public async enqueue(message: JsonPatchDocumentOptional) {
-    // Optional "?"" necessary to avoid a "terminated" error
+    // Optional "?" Necessary to avoid a "terminated" error
     if (this?._patchEnqueuer) {
       await this._patchEnqueuer.enqueueMessage(message);
     }
@@ -240,7 +240,7 @@ export class AilaChat implements AilaChatService {
     path: string,
     value: string | string[] | number | object,
   ) {
-    // Optional "?"" necessary to avoid a "terminated" error
+    // Optional "?" necessary to avoid a "terminated" error
     if (this?._patchEnqueuer) {
       await this._patchEnqueuer.enqueuePatch(path, value);
     }
@@ -276,7 +276,7 @@ export class AilaChat implements AilaChatService {
       invariant(responseText, "Response text not set");
       await this._generation.complete({ status, responseText });
     }
-    this._generation.persist(status);
+    await this._generation.persist(status);
   }
 
   private async persistChat() {

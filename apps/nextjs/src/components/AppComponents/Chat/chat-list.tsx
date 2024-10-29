@@ -1,28 +1,22 @@
 "use client";
 
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { camelCaseToTitleCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { OakBox, OakFlex, OakIcon, OakSpan } from "@oaknational/oak-components";
-import { Message } from "ai";
+import type { Message } from "ai";
 import Link from "next/link";
 
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
-import { DemoContextProps } from "@/components/ContextProviders/Demo";
+import type { DemoContextProps } from "@/components/ContextProviders/Demo";
 
 import { useDialog } from "../DialogContext";
-import { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
+import type { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
 import { useProgressForDownloads } from "./Chat/hooks/useProgressForDownloads";
-import { DialogTypes } from "./Chat/types";
+import type { DialogTypes } from "./Chat/types";
 
 export interface ChatListProps {
   isDemoLocked: boolean;
@@ -39,7 +33,8 @@ function DemoLimitMessage({ id }: Readonly<{ id: string }>) {
         message={{
           id: "demo-limit",
           role: "assistant",
-          content: `{"type": "error", "message": "**Your lesson is complete**\\nYou can no longer edit this lesson. [Create new lesson.](/aila)"}`,
+          content:
+            '{"type": "error", "message": "**Your lesson is complete**\\nYou can no longer edit this lesson. [Create new lesson.](/aila)"}',
         }}
         persistedModerations={[]}
         separator={<span className="my-10 flex" />}

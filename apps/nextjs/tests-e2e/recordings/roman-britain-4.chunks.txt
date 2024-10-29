@@ -3,7 +3,10 @@ type":"
 ll
 m
 Message
-","patches":[
+","sectionsToEdit":["
+additional
+Materials
+"],"patches":[
 {"
 type":"
 patch

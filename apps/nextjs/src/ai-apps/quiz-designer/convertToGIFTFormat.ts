@@ -1,4 +1,4 @@
-import {
+import type {
   ExportableQuizAppState,
   ExportableQuizQuestion,
 } from "@oakai/exports/src/schema/input.schema";

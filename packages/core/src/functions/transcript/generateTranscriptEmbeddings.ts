@@ -1,6 +1,6 @@
 import { TranscriptStatus, prisma } from "@oakai/db";
 
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 import { Transcripts } from "../../models/transcript";
 
 export const generateTranscriptEmbeddings = inngest.createFunction(

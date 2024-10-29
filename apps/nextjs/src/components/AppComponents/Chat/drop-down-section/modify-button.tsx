@@ -11,7 +11,8 @@ import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
-import { DropDownFormWrapper, FeedbackOption } from "./drop-down-form-wrapper";
+import type { FeedbackOption } from "./drop-down-form-wrapper";
+import { DropDownFormWrapper } from "./drop-down-form-wrapper";
 import { SmallRadioButton } from "./small-radio-button";
 
 const log = aiLogger("chat");

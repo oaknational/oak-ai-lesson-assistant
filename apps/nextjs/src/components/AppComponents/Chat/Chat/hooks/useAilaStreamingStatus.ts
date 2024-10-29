@@ -1,13 +1,51 @@
 import { useMemo, useEffect } from "react";
 
-import {
-  LessonPlanKeys,
-  LessonPlanKeysSchema,
-} from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+import { LessonPlanKeysSchema } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
-import { Message } from "ai";
+import type { Message } from "ai";
 
 const log = aiLogger("chat");
+
+function findStreamingSections(message: Message | undefined): {
+  streamingSections: LessonPlanKeys[];
+  streamingSection: LessonPlanKeys | undefined;
+  content: string | undefined;
+} {
+  if (!message?.content) {
+    return {
+      streamingSections: [],
+      streamingSection: undefined,
+      content: undefined,
+    };
+  }
+  const { content } = message;
+  const pathMatches: RegExpExecArray[] = [];
+  let match: RegExpExecArray | null;
+  const regex = /"path":"\/([^/"]*)(?:\/|")"/g;
+  let startIndex = 0;
+  while ((match = regex.exec(content.slice(startIndex))) !== null) {
+    pathMatches.push(match);
+    startIndex += match.index + match[0].length;
+    if (pathMatches.length > 100) {
+      log.warn("Too many path matches found, stopping search");
+      break;
+    }
+  }
+
+  const streamingSections: LessonPlanKeys[] = pathMatches
+    .map((match) => match[1])
+    .filter((i): i is string => typeof i === "string")
+    .map((section) => {
+      const result = LessonPlanKeysSchema.safeParse(section);
+      return result.success ? result.data : undefined;
+    })
+    .filter((section): section is LessonPlanKeys => section !== undefined);
+  const streamingSection: LessonPlanKeys | undefined =
+    streamingSections[streamingSections.length - 1];
+
+  return { streamingSections, streamingSection, content };
+}
 
 export type AilaStreamingStatus =
   | "Loading"
@@ -38,14 +76,13 @@ export const useAilaStreamingStatus = ({
     const lastMessage = messages[messages.length - 1];
 
     let status: AilaStreamingStatus = "Idle";
-    let streamingSection: LessonPlanKeys | undefined = undefined;
-    let streamingSections: LessonPlanKeys[] = [];
+    const { streamingSections, streamingSection, content } =
+      findStreamingSections(lastMessage);
 
     if (isLoading) {
-      if (!lastMessage) {
+      if (!lastMessage || !content) {
         status = "Loading";
       } else {
-        const { content } = lastMessage;
         if (lastMessage.role === "user") {
           status = "RequestMade";
         } else if (content.includes(moderationStart)) {
@@ -54,22 +91,6 @@ export const useAilaStreamingStatus = ({
           status = "StreamingChatResponse";
         } else if (content.includes(chatStart)) {
           status = "StreamingLessonPlan";
-          // Extract the slug of the currently streaming section, if there is one
-          const pathMatches = [
-            ...content.matchAll(/"path":"\/([^/"]*)(?:\/|")/g),
-          ];
-          streamingSections = pathMatches
-            .map((match) => match[1])
-            .filter(
-              (i): i is LessonPlanKeys =>
-                LessonPlanKeysSchema.safeParse(i).success,
-            );
-          const lastMatch = pathMatches[pathMatches.length - 1];
-          streamingSection = lastMatch
-            ? LessonPlanKeysSchema.safeParse(lastMatch[1]).success
-              ? (lastMatch[1] as LessonPlanKeys)
-              : undefined
-            : undefined;
         } else {
           status = "Loading";
         }

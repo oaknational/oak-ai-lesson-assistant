@@ -1,9 +1,10 @@
-import { Dispatch, SetStateAction, useMemo } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useMemo } from "react";
 
 import { Box, Grid, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
-import { Option } from "../../../ai-apps/comparative-judgement/state/types";
+import type { Option } from "../../../ai-apps/comparative-judgement/state/types";
 import JudgementHeading from "./JudgementHeading";
 import QuestionButton from "./QuestionButton";
 import ReasonForChoosing from "./ReasonForChoosing";

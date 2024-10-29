@@ -1,15 +1,12 @@
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { isArray, isNumber, isObject, isString } from "remeda";
 
-import {
-  CycleOptionalSchema,
-  QuizOptional,
-  QuizOptionalSchema,
-} from "./schema";
+import type { QuizOptional } from "./schema";
+import { CycleOptionalSchema, QuizOptionalSchema } from "./schema";
 
 export function sortIgnoringSpecialChars(strings: string[]): string[] {
   // Function to normalize strings by removing *, -, and spaces
-  const normalize = (str: string) => str.replace(/[\*\-\s]/g, "");
+  const normalize = (str: string) => str.replace(/[*\-\s]/g, "");
 
   // Sort the array using the normalized values for comparison
   return strings.sort((a, b) => {
@@ -45,12 +42,12 @@ export function sectionToMarkdown(
       return `${content}\n\n### Explanation\n\n${sectionToMarkdown("explanation", cycle.explanation ?? "…")}\n\n### Check for Understanding\n\n${cycle.checkForUnderstanding ? organiseAnswersAndDistractors(cycle.checkForUnderstanding) : "…"}\n\n### Practice\n\n${cycle.practice ?? "…"}\n\n### Feedback\n\n${cycle.feedback ?? "…"}`;
     } catch (e) {
       // Invalid schema
-      return `## There's been a problem\n\nIt looks like this learning cycle hasn't generated properly. Tap **Retry** or ask for this section to be regenerated.`;
+      return "## There's been a problem\n\nIt looks like this learning cycle hasn't generated properly. Tap **Retry** or ask for this section to be regenerated.";
     }
   }
 
   if (isArray(value)) {
-    if (value.map((v) => typeof v).every((v) => v === "string")) {
+    if (value.every((v): v is string => typeof v === "string")) {
       // Render arrays of strings as bullets
       return value.map((v) => `- ${v}`).join("\n\n");
     } else {
@@ -84,8 +81,10 @@ export function sectionToMarkdown(
               .filter((v) => v[keys[0]] && v[keys[1]])
               .map((v) => {
                 // @ts-expect-error - we know that the keys exist
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const header = v[keys[0]];
                 // @ts-expect-error - we know that the keys exist
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const body = v[keys[1]];
                 return `### ${header}\n\n${body}`;
               })

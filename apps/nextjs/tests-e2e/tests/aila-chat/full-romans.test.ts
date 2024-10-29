@@ -1,16 +1,14 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
-import {
-  LessonPlanKeys,
-  LessonPlanKeysSchema,
-} from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+import { LessonPlanKeysSchema } from "@oakai/aila/src/protocol/schema";
 import { test, expect } from "@playwright/test";
 
 import { groupedSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
 
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
+import type { FixtureMode } from "./helpers";
 import {
-  FixtureMode,
   applyLlmFixtures,
   continueChat,
   expectFinished,
@@ -29,7 +27,7 @@ const FIXTURE_MODE = "replay" as FixtureMode;
 test(
   "Full aila flow with Romans fixture",
   { tag: "@common-auth" },
-  async ({ page }, testInfo) => {
+  async ({ page }) => {
     const generationTimeout = FIXTURE_MODE === "record" ? 75000 : 50000;
     test.setTimeout(generationTimeout * 5);
 

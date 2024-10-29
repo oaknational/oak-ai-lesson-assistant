@@ -1,4 +1,4 @@
-import {
+import type {
   Lesson,
   LessonSummary,
   PrismaClientWithAccelerate,
@@ -6,8 +6,8 @@ import {
   Snippet,
   SnippetVariant,
   Transcript,
-  ZLesson,
 } from "@oakai/db";
+import { ZLesson } from "@oakai/db";
 import { ZNewLesson } from "@oakai/db/schemas/lesson";
 import { aiLogger } from "@oakai/logger";
 import { StructuredOutputParser } from "langchain/output_parsers";
@@ -15,10 +15,12 @@ import { PromptTemplate } from "langchain/prompts";
 import { RunnableSequence } from "langchain/schema/runnable";
 import { z } from "zod";
 
-import { inngest } from "../client";
-import { createOpenAILangchainClient } from "../llm/openai";
-import { SnippetWithLesson, Snippets } from "./snippets";
-import { Caption, CaptionsSchema } from "./types/caption";
+import { inngest } from "../inngest";
+import { createOpenAILangchainClient } from "../llm/langchain";
+import type { SnippetWithLesson } from "./snippets";
+import { Snippets } from "./snippets";
+import type { Caption } from "./types/caption";
+import { CaptionsSchema } from "./types/caption";
 
 const log = aiLogger("lessons");
 

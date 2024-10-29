@@ -1,6 +1,7 @@
-import { Aila, AilaInitializationOptions } from ".";
 import { MockCategoriser } from "../features/categorisation/categorisers/MockCategoriser";
+import { Aila } from "./Aila";
 import { checkLastMessage, expectPatch, expectText } from "./Aila.testHelpers";
+import type { AilaInitializationOptions } from "./types";
 
 const runInCI = process.env.CI === "true";
 const runManually = process.env.RUN_LLM_TESTS === "true";

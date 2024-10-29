@@ -3,7 +3,20 @@ type":"
 ll
 m
 Message
-","patches":[
+","sectionsToEdit":["
+prior
+Knowledge
+","
+key
+Learning
+Points
+","
+mis
+con
+ceptions
+","
+keywords
+"],"patches":[
 {"
 type":"
 patch
@@ -390,6 +403,148 @@ ic
  who
  settled
  in
+ Britain's
+ infrastructure
+,
+ such
+ as
+ roads
+ and
+ towns
+,
+ even
+ after
+ their
+ departure
+."
+}]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Provided
+ keywords
+ that
+ will
+ be
+ used
+ throughout
+ the
+ lesson
+ to
+ ensure
+ pupils
+ understand
+ the
+ key
+ concepts
+.","
+value":{"
+type":"
+keywords
+","op":"
+add
+","path":"/
+keywords
+","value":[
+{"
+keyword":"
+Romans
+","definition":"
+People
+ from
+ the
+ ancient
+ city
+ of
+ Rome
+ who
+ ruled
+ over
+ Britain
+ for
+ several
+ centuries
+."
+},{"
+keyword":"
+Empire
+","definition":"
+A
+ large
+ group
+ of
+ territories
+ and
+ people
+ ruled
+ over
+ by
+ a
+ single
+ authority
+,
+ like
+ the
+ Roman
+ Empire
+."
+},{"
+keyword":"
+Ar
+chae
+ologist
+","definition":"
+A
+ person
+ who
+ studies
+ human
+ history
+ by
+ digging
+ up
+ and
+ examining
+ ancient
+ sites
+ and
+ objects
+."
+},{"
+keyword":"
+In
+vasion
+","definition":"
+An
+ instance
+ of
+ invading
+ a
+ country
+ or
+ region
+ with
+ an
+ armed
+ force
+."
+},{"
+keyword":"
+S
+ax
+ons
+","definition":"
+A
+ group
+ of
+ tribes
+ from
+ northern
+ Europe
+ who
+ invaded
  Britain
  after
  the
@@ -474,4 +629,6 @@ Continue
  next
  step
 ."
-}}
+},"status":"
+complete
+"}

@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 
 import { SidebarItem } from "@/components/AppComponents/Chat/sidebar-item";
-import { SideBarChatItem } from "@/lib/types";
+import type { SideBarChatItem } from "@/lib/types";
 
 interface SidebarItemsProps {
   chats: SideBarChatItem[];

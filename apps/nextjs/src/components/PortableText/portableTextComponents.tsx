@@ -1,7 +1,7 @@
 "use client";
 
 import { OakHeading, OakLink } from "@oaknational/oak-components";
-import { PortableTextComponents } from "@portabletext/react";
+import type { PortableTextComponents } from "@portabletext/react";
 import Link from "next/link";
 
 export const portableTextComponents: PortableTextComponents = {

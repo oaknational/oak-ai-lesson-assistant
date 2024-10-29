@@ -1,5 +1,6 @@
 {
   "type": "llmMessage",
+  "sectionsToEdit": ["additionalMaterials"],
   "patches": [
     {
       "type": "patch",
@@ -13,6 +14,7 @@
       "status": "complete"
     }
   ],
+  "sectionsEdited": ["additionalMaterials"],
   "prompt": {
     "type": "text",
     "value": "Is the additional materials section suitable for your lesson delivery? If not, let me know what changes to make. Otherwise, tap **Continue** to finalise the lesson plan."

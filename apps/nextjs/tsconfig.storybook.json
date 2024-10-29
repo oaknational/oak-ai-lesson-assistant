@@ -7,9 +7,9 @@
       "@/lib/*": ["lib/*"],
       "@/utils/*": ["utils/*"],
       "@/assets/*": ["assets/*"],
-      "#next/*": ["mocks/next/*"],
-      "#oakai/*": ["mocks/oakai/*"],
-      "#clerk/*": ["mocks/clerk/*"]
-    }
+      "next/*": ["mocks/next/*"],
+      "@clerk/*": ["mocks/clerk/*"]
+    },
+    "types": ["jest", "node", "@testing-library/jest-dom", "@storybook/react"]
   }
 }

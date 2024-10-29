@@ -5,7 +5,8 @@ import Link from "next/link";
 
 import splodge from "@/assets/svg/splodge.svg";
 
-import { Icon, IconName } from "./Icon";
+import type { IconName } from "./Icon";
+import { Icon } from "./Icon";
 
 type ContainerClassNameFn = (options: {
   disabled?: boolean;
