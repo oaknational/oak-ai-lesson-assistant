@@ -1,6 +1,6 @@
 import { extractPatches } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { aiLogger } from "@oakai/logger";
-import { type Message } from "ai/react";
+import type { Message } from "ai/react";
 
 const log = aiLogger("lessons");
 export function extractPatchesFromMessage(message: Message) {

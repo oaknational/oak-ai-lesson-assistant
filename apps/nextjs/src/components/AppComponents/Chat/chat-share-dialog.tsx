@@ -4,7 +4,7 @@ import * as React from "react";
 import { toast } from "react-hot-toast";
 
 import { aiLogger } from "@oakai/logger";
-import { type DialogProps } from "@radix-ui/react-dialog";
+import type { DialogProps } from "@radix-ui/react-dialog";
 
 import { Button } from "@/components/AppComponents/Chat/ui/button";
 import {

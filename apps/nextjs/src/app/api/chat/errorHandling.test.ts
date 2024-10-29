@@ -4,7 +4,7 @@ import * as moderationErrorHandling from "@oakai/aila/src/utils/moderation/moder
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
-import { type PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import invariant from "tiny-invariant";
 
 import {

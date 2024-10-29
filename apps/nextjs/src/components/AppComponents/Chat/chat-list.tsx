@@ -3,10 +3,10 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { type PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { camelCaseToTitleCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { OakBox, OakFlex, OakIcon, OakSpan } from "@oaknational/oak-components";
-import { type Message } from "ai";
+import type { Message } from "ai";
 import Link from "next/link";
 
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";

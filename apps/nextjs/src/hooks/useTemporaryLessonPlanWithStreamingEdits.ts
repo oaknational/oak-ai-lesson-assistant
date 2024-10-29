@@ -7,7 +7,7 @@ import {
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { useThrottle } from "@uidotdev/usehooks";
-import { type Message } from "ai/react";
+import type { Message } from "ai/react";
 import { deepClone } from "fast-json-patch";
 import hash from "object-hash";
 import { equals } from "remeda";
