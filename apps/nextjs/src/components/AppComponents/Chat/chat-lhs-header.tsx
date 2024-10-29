@@ -40,13 +40,13 @@ const ChatLhsHeader = ({
           New lesson
         </ChatButton>
       </div>
-      <div className={`${isDemoUser && `mt-16`} flex justify-end sm:hidden`}>
+      <div className={`${isDemoUser && "mt-16"} flex justify-end sm:hidden`}>
         <button
           onClick={() => setShowLessonMobile(!showLessonMobile)}
           className="flex items-center gap-5"
         >
           <AiIcon />{" "}
-          <span className={`text-base font-bold `}>View lesson &gt;</span>
+          <span className={"text-base font-bold "}>View lesson &gt;</span>
         </button>
       </div>
     </>

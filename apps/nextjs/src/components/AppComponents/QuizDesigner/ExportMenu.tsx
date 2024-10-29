@@ -13,7 +13,7 @@ import LoadingWheel from "@/components/LoadingWheel";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import ChatButton from "../Chat/ui/chat-button";
-import ShareButtonGroup from "../common/ShareButttonGroup";
+import ShareButtonGroup from "../common/ShareButtonGroup";
 import DownloadGiftButton from "./DownloadGiftButton";
 
 interface ExportMenuProps {

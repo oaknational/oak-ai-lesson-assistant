@@ -1,6 +1,6 @@
 import React from "react";
 
-import { type PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { Flex } from "@radix-ui/themes";
 
 import ToxicModerationView from "../toxic-moderation-view";

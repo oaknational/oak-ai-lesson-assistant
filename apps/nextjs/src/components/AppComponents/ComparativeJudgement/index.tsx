@@ -64,7 +64,7 @@ const ComparativeJudgement = ({
         </Flex>
       )}
       {isLoading && (
-        <div className="min-w-18 flex min-h-[500px] w-full items-center justify-center">
+        <div className="flex min-h-[500px] w-full min-w-18 items-center justify-center">
           <Icon
             icon="reload"
             size="md"
