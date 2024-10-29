@@ -11,7 +11,6 @@ import {
   LessonPlanStatus
 } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
-import yaml from "yaml";
 
 import { LLMResponseJsonSchema } from "../../../aila/src/protocol/jsonPatchProtocol";
 import { LessonPlanJsonSchema } from "../../../aila/src/protocol/schema";
@@ -21,21 +20,11 @@ import { template } from "../prompts/lesson-assistant";
 import { RAG } from "../rag";
 import { camelCaseToSentenceCase } from "../utils/camelCaseToSentenceCase";
 import { embedWithCache } from "../utils/embeddings";
+import { textify } from "../utils/textify";
 import type { Caption} from "./types/caption";
 import { CaptionsSchema } from "./types/caption";
 
 const log = aiLogger("lessons");
-
-// Simplifies the input to a string for embedding
-export function textify(input: string | string[] | object): string {
-  if (Array.isArray(input)) {
-    return input.map((row) => textify(row)).join("\n");
-  } else if (typeof input === "object") {
-    return yaml.stringify(input);
-  } else {
-    return input;
-  }
-}
 
 export type LessonPlanWithLesson = LessonPlan & {
   lesson: Omit<

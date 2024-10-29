@@ -33,7 +33,7 @@ const ENGLISH_THRESHOLD =
 
 if (MODERATE_LANGUAGE && Number.isNaN(ENGLISH_THRESHOLD)) {
   throw new Error(
-    `Missing or invalid env var MODERATION_THRESHOLD_ENGLISH_LANGUAGE`,
+    "Missing or invalid env var MODERATION_THRESHOLD_ENGLISH_LANGUAGE",
   );
 }
 

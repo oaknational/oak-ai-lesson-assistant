@@ -17,7 +17,7 @@ import { RunnableSequence } from "langchain/schema/runnable";
 import { z } from "zod";
 
 import { inngest } from "../client";
-import { createOpenAILangchainClient } from "../llm/openai";
+import { createOpenAILangchainClient } from "../llm/langchain";
 import type { SnippetWithLesson} from "./snippets";
 import { Snippets } from "./snippets";
 import type { Caption} from "./types/caption";

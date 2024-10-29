@@ -1,6 +1,6 @@
 import type { TemplateProps } from "@oakai/core/src/prompts/lesson-assistant";
 import { template } from "@oakai/core/src/prompts/lesson-assistant";
-import { prisma as globalPrisma } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { DEFAULT_RAG_LESSON_PLANS } from "../../../constants";

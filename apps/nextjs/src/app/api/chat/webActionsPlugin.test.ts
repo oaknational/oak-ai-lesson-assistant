@@ -1,7 +1,7 @@
-import { AilaThreatDetectionError } from "@oakai/aila";
 import { AilaPluginContext } from "@oakai/aila/src/core/plugins";
+import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
 import { inngest } from "@oakai/core";
-import { UserBannedError } from "@oakai/core/src/models/safetyViolations";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import { PrismaClientWithAccelerate } from "@oakai/db";
 import { Moderation } from "@prisma/client";
 

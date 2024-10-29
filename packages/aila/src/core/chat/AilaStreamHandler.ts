@@ -44,7 +44,7 @@ export class AilaStreamHandler {
         await this.readFromStream();
       }
     } catch (e) {
-      this.handleStreamError(e);
+      await this.handleStreamError(e);
       log.info("Stream error", e, this._chat.iteration, this._chat.id);
     } finally {
       this._isStreaming = false;
@@ -53,7 +53,9 @@ export class AilaStreamHandler {
         log.info("Chat completed", this._chat.iteration, this._chat.id);
       } catch (e) {
         this._chat.aila.errorReporter?.reportError(e);
-        throw new AilaChatError("Chat completion failed", { cause: e });
+        controller.error(
+          new AilaChatError("Chat completion failed", { cause: e }),
+        );
       } finally {
         this.closeController();
         log.info("Stream closed", this._chat.iteration, this._chat.id);
@@ -107,7 +109,7 @@ export class AilaStreamHandler {
     for (const plugin of this._chat.aila.plugins ?? []) {
       await plugin.onStreamError?.(error, {
         aila: this._chat.aila,
-        enqueue: this._chat.enqueue,
+        enqueue: (patch) => this._chat.enqueue(patch),
       });
     }
 
