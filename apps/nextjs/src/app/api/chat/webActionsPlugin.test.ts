@@ -6,7 +6,7 @@ import type { Moderation } from "@prisma/client";
 
 import { createWebActionsPlugin } from "./webActionsPlugin";
 
-jest.mock("@oakai/core/src/inngest", () => ({
+jest.mock("@oakai/core/src/client", () => ({
   __esModule: true,
 
   inngest: {
