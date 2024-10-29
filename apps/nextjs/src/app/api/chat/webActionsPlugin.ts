@@ -1,8 +1,8 @@
 import type { AilaPlugin } from "@oakai/aila/src/core/plugins";
-import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
+import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
 import { handleHeliconeError } from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
+import { SafetyViolations as defaultSafetyViolations } from "@oakai/core";
 import { inngest } from "@oakai/core/src/inngest";
-import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
@@ -33,11 +33,11 @@ export const createWebActionsPlugin: PluginCreator = (
         prisma,
         SafetyViolations,
       );
-      enqueue(heliconeErrorMessage);
+      await enqueue(heliconeErrorMessage);
     }
 
     if (error instanceof Error) {
-      enqueue({
+      await enqueue({
         type: "error",
         message: error.message,
         value: `Sorry, an error occurred: ${error.message}`,
@@ -80,7 +80,7 @@ export const createWebActionsPlugin: PluginCreator = (
     } catch (error) {
       if (error instanceof UserBannedError) {
         log.info("User is banned, queueing account lock message");
-        enqueue({
+        await enqueue({
           type: "action",
           action: "SHOW_ACCOUNT_LOCKED",
         });

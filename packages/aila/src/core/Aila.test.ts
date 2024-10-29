@@ -1,12 +1,13 @@
-import { Aila } from ".";
+import type { Polly } from "@pollyjs/core";
+
 import { setupPolly } from "../../tests/mocks/setupPolly";
 import { MockCategoriser } from "../features/categorisation/categorisers/MockCategoriser";
+import { Aila } from "./Aila";
 import { AilaAuthenticationError } from "./AilaError";
 import { MockLLMService } from "./llm/MockLLMService";
 
 describe("Aila", () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let polly: any;
+  let polly: Polly;
 
   beforeAll(() => {
     polly = setupPolly();
@@ -348,7 +349,9 @@ describe("Aila", () => {
       const mockCategoriser = new MockCategoriser({ mockedLessonPlan });
 
       const mockLLMResponse = [
+        // eslint-disable-next-line @typescript-eslint/quotes, quotes
         '{"type":"patch","reasoning":"Update title","value":{"op":"replace","path":"/title","value":"Updated Mocked Lesson Plan"}}␞\n',
+        // eslint-disable-next-line @typescript-eslint/quotes, quotes
         '{"type":"patch","reasoning":"Update subject","value":{"op":"replace","path":"/subject","value":"Updated Mocked Subject"}}␞\n',
       ];
       const mockLLMService = new MockLLMService(mockLLMResponse);
@@ -379,7 +382,6 @@ describe("Aila", () => {
       // Use MockLLMService to generate a response
       await ailaInstance.generateSync({ input: "Test input" });
 
-      console.log("Generated");
       // Check if MockLLMService updates were applied
       expect(ailaInstance.lesson.plan.title).toBe("Updated Mocked Lesson Plan");
       expect(ailaInstance.lesson.plan.subject).toBe("Updated Mocked Subject");

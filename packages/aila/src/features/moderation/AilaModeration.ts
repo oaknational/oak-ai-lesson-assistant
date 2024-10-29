@@ -1,4 +1,4 @@
-import { Moderations } from "@oakai/core";
+import { Moderations } from "@oakai/core/src/models/moderations";
 import {
   getCategoryGroup,
   getMockModerationResult,
@@ -6,16 +6,12 @@ import {
   isToxic,
 } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import type {
-  Moderation,
-  PrismaClientWithAccelerate} from "@oakai/db";
-import {
-  prisma as globalPrisma,
-} from "@oakai/db";
+import type { Moderation, PrismaClientWithAccelerate } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
-import type { AilaServices } from "../../core";
+import type { AilaServices } from "../../core/AilaServices";
 import type { Message } from "../../core/chat";
 import type { AilaPluginContext } from "../../core/plugins/types";
 import { getLastAssistantMessage } from "../../helpers/chat/getLastAssistantMessage";
