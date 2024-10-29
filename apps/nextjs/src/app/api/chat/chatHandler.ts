@@ -171,7 +171,7 @@ export async function handleChatPostRequest(
       aila = await withTelemetry(
         "chat-create-aila",
         { chat_id: chatId, user_id: userId },
-        async (): Promise<Aila> => {
+        (): Promise<Aila> => {
           const ailaOptions: Partial<AilaInitializationOptions> = {
             options,
             chat: {
@@ -191,8 +191,7 @@ export async function handleChatPostRequest(
             },
             lessonPlan: lessonPlan ?? {},
           };
-          const result = await config.createAila(ailaOptions);
-          return result;
+          return Promise.resolve(config.createAila(ailaOptions));
         },
       );
       invariant(aila, "Aila instance is required");
