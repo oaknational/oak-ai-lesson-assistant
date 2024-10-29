@@ -8,14 +8,10 @@ import invariant from "tiny-invariant";
 import type { AilaChatService, AilaServices } from "../..";
 import { AilaError } from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
-import type {
-  AilaGenerationStatus} from "../../features/generation";
-import {
-  AilaGeneration
-} from "../../features/generation";
+import type { AilaGenerationStatus } from "../../features/generation";
+import { AilaGeneration } from "../../features/generation";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
-import type {
-  JsonPatchDocumentOptional} from "../../protocol/jsonPatchProtocol";
+import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import {
   LLMMessageSchema,
   parseMessageParts,
@@ -159,7 +155,7 @@ export class AilaChat implements AilaChatService {
     });
   }
 
-  public async systemMessage() {
+  public systemMessage() {
     invariant(this._generation?.systemPrompt, "System prompt not initialised");
     return {
       id: generateMessageId({ role: "system" }),
@@ -168,12 +164,12 @@ export class AilaChat implements AilaChatService {
     };
   }
 
-  public async completionMessages() {
+  public completionMessages() {
     const reducedMessages = this._promptBuilder.reduceMessagesForPrompt(
       this._messages,
     );
 
-    const systemMessage = await this.systemMessage();
+    const systemMessage = this.systemMessage();
     const applicableMessages: Message[] = [systemMessage, ...reducedMessages]; // only send
 
     if (this._aila?.lesson.hasSetInitialState) {

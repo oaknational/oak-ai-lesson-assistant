@@ -88,7 +88,7 @@ export class AilaStreamHandler {
       type: "comment",
       value: "CHAT_START",
     });
-    const messages = await this._chat.completionMessages();
+    const messages = this._chat.completionMessages();
     this._streamReader =
       await this._chat.createChatCompletionObjectStream(messages);
     this._isStreaming = true;
