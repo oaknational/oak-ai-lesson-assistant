@@ -1,8 +1,44 @@
 {
   "type": "llmMessage",
-  "patches": [],
+  "sectionsToEdit": [
+    "learningOutcome",
+    "learningCycles"
+  ],
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "I have created new learning outcomes and learning cycles from scratch as there are no existing Oak lessons available for this topic.",
+      "value": {
+        "type": "string",
+        "op": "add",
+        "path": "/learningOutcome",
+        "value": "I can describe why the Romans left Britain and what happened afterwards."
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "This patch adds learning cycles which break down the lesson into achievable tasks, focusing on Roman departure and its impact on Britain.",
+      "value": {
+        "type": "string-array",
+        "op": "add",
+        "path": "/learningCycles",
+        "value": [
+          "Explain the reasons for the Romans leaving Britain.",
+          "Describe the changes that occurred in Britain after the Romans left.",
+          "Identify the role of archaeologists in uncovering Roman history."
+        ]
+      },
+      "status": "complete"
+    }
+  ],
+  "sectionsEdited": [
+    "learningOutcome",
+    "learningCycles"
+  ],
   "prompt": {
     "type": "text",
-    "value": "There are no existing Oak lessons for the specific topic of \"End of Roman Britain,\" so we'll start a new lesson from scratch. Let's begin by outlining the learning outcomes and learning cycles for the lesson. Tap **Continue** to move on to the next step."
-  }
+    "value": "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step."
+  },
+  "status": "complete"
 }
