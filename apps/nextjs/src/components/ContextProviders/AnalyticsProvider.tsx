@@ -227,7 +227,7 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
 
   /**
    * Legacy event tracking
-   * Calls PostHog tracking directly rather than using Avos tracking plan.
+   * Calls PostHog tracking directly rather than using Avo's tracking plan.
    * @todo remove this once all events are migrated to Avo
    * @deprecated Use the `track` function from the analytics context instead
    */
@@ -265,7 +265,7 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
       page,
       posthogAiBetaClient: posthogAiBeta.client,
     };
-  }, [track, trackEvent, identify, reset, page]);
+  }, [track, trackEvent, identify, reset, page, posthogAiBeta.client]);
 
   const onClerkIdentify = useCallback(
     (user: { userId: string; email: string; isDemoUser?: boolean }) => {
