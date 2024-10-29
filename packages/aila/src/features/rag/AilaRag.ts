@@ -1,6 +1,6 @@
 import { RAG } from "@oakai/core/src/rag";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import type { AilaRagFeature } from ".";
