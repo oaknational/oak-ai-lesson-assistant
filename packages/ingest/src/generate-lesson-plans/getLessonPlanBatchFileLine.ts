@@ -1,13 +1,14 @@
+import type {
+  LooseLessonPlan} from "@oakai/aila/src/protocol/schema";
 import {
-  CompletedLessonPlanSchema,
-  LooseLessonPlan,
+  CompletedLessonPlanSchema
 } from "@oakai/aila/src/protocol/schema";
 import { zodResponseFormat } from "openai/helpers/zod";
 
-import { PersistedIngest } from "../db-helpers/getIngestById";
+import type { PersistedIngest } from "../db-helpers/getIngestById";
 import { batchLineCompletion } from "../openai-batches/batchLineCompletion";
 import { createCustomId } from "../openai-batches/customId";
-import { Captions, RawLesson } from "../zod-schema/zodSchema";
+import type { Captions, RawLesson } from "../zod-schema/zodSchema";
 import { getSystemPrompt } from "./getSystemPrompt";
 import { getUserPrompt } from "./getUserPrompt";
 

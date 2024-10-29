@@ -1,34 +1,27 @@
 import { PrismaVectorStore } from "@langchain/community/vectorstores/prisma";
 import { OpenAIEmbeddings } from "@langchain/openai";
-import {
+import type {
   KeyStage,
   LessonPlanPart,
   PrismaClientWithAccelerate,
   Subject,
 } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
-import {
-  LessonPlan,
-  LessonSummary,
-  Prisma,
-  PrismaClient,
-  Snippet,
-} from "@prisma/client";
+import type { LessonPlan, LessonSummary, Snippet } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import * as Sentry from "@sentry/nextjs";
 import { kv } from "@vercel/kv";
 import { CohereClient } from "cohere-ai";
-import { RerankResponse } from "cohere-ai/api";
-import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import type { RerankResponse } from "cohere-ai/api";
+import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { Md5 } from "ts-md5";
 import z from "zod";
 
 import { DEFAULT_CATEGORISE_MODEL } from "../../../aila/src/constants";
-import {
-  OpenAICompletionWithLogging,
-  OpenAICompletionWithLoggingOptions,
-} from "../../../aila/src/lib/openai/OpenAICompletionWithLogging";
-import { JsonValue } from "../models/prompts";
+import type { OpenAICompletionWithLoggingOptions } from "../../../aila/src/lib/openai/OpenAICompletionWithLogging";
+import { OpenAICompletionWithLogging } from "../../../aila/src/lib/openai/OpenAICompletionWithLogging";
+import type { JsonValue } from "../models/prompts";
 import { slugify } from "../utils/slugify";
 import { keyStages, subjects } from "../utils/subjects";
 
@@ -48,6 +41,7 @@ export interface LessonPlanWithPartialLesson extends LessonPlan {
 }
 
 export type SimilarityResultWithScore = [
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   import("@langchain/core/documents").DocumentInterface<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Record<string, any>

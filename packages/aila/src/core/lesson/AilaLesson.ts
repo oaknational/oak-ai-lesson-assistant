@@ -2,15 +2,16 @@ import { aiLogger } from "@oakai/logger";
 import { deepClone } from "fast-json-patch";
 
 import { AilaCategorisation } from "../../features/categorisation/categorisers/AilaCategorisation";
-import { AilaCategorisationFeature } from "../../features/types";
+import type { AilaCategorisationFeature } from "../../features/types";
+import type {
+  PatchDocument} from "../../protocol/jsonPatchProtocol";
 import {
-  PatchDocument,
   applyLessonPlanPatch,
   extractPatches,
 } from "../../protocol/jsonPatchProtocol";
-import { LooseLessonPlan } from "../../protocol/schema";
-import { AilaLessonService, AilaServices } from "../AilaServices";
-import { Message } from "../chat";
+import type { LooseLessonPlan } from "../../protocol/schema";
+import type { AilaLessonService, AilaServices } from "../AilaServices";
+import type { Message } from "../chat";
 
 const log = aiLogger("aila:lesson");
 

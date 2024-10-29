@@ -1,4 +1,5 @@
-import { ActionsBlock, SectionBlock, WebClient } from "@slack/web-api";
+import type { ActionsBlock, SectionBlock} from "@slack/web-api";
+import { WebClient } from "@slack/web-api";
 import {
   uniqueNamesGenerator,
   adjectives,

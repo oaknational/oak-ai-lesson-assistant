@@ -2,7 +2,7 @@ import { getEncoding } from "js-tiktoken";
 import { PostHog } from "posthog-node";
 import invariant from "tiny-invariant";
 
-import { AilaServices } from "../../../core";
+import type { AilaServices } from "../../../core";
 import { reportCompletionAnalyticsEvent } from "../../../lib/openai/OpenAICompletionWithLogging";
 import { AnalyticsAdapter } from "./AnalyticsAdapter";
 

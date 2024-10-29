@@ -1,11 +1,11 @@
 import { aiLogger } from "@oakai/logger";
-import { ReadableStreamDefaultController } from "stream/web";
+import type { ReadableStreamDefaultController } from "stream/web";
 import invariant from "tiny-invariant";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { AilaChatError } from "../AilaError";
-import { AilaChat } from "./AilaChat";
-import { PatchEnqueuer } from "./PatchEnqueuer";
+import type { AilaChat } from "./AilaChat";
+import type { PatchEnqueuer } from "./PatchEnqueuer";
 
 const log = aiLogger("aila:stream");
 export class AilaStreamHandler {

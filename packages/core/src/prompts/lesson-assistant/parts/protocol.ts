@@ -1,4 +1,4 @@
-import { TemplateProps } from "..";
+import type { TemplateProps } from "..";
 
 const responseFormatWithStructuredOutputs = `{"response":"llmMessage", patches:[{},{}...], prompt:{}}`;
 const responseFormatWithoutStructuredOutputs = `A series of JSON documents separated using the JSON Text Sequences specification, where each row is separated by the ␞ character and ends with a new line character.

@@ -1,5 +1,5 @@
-import { AilaErrorReportingFeature } from "../../types";
-import { AilaErrorBreadcrumb, AilaErrorSeverity } from "../types";
+import type { AilaErrorReportingFeature } from "../../types";
+import type { AilaErrorBreadcrumb, AilaErrorSeverity } from "../types";
 
 export abstract class AilaErrorReporter implements AilaErrorReportingFeature {
   abstract captureException(

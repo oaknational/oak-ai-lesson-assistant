@@ -1,8 +1,9 @@
 import { inngest } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting/rateLimit";
+import type {
+  RateLimiter} from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
 import {
-  RateLimitExceededError,
-  RateLimiter,
+  RateLimitExceededError
 } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
 import { TRPCError } from "@trpc/server";
 

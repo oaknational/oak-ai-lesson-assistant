@@ -1,4 +1,5 @@
-import { Aila, AilaInitializationOptions } from ".";
+import type { AilaInitializationOptions } from ".";
+import { Aila } from ".";
 import { MockCategoriser } from "../features/categorisation/categorisers/MockCategoriser";
 import { checkLastMessage, expectPatch, expectText } from "./Aila.testHelpers";
 

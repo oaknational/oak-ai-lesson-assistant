@@ -1,4 +1,4 @@
-import { TemplateProps } from "..";
+import type { TemplateProps } from "..";
 
 const interactiveOnly = `You will receive instructions about which part of the schema to generate at each step of the process.
 This is because the lesson plan is a complex document that is best generated in stages, and you will be asked to create each stage in sequence with separate requests.`;

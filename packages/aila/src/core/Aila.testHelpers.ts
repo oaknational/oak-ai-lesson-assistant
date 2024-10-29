@@ -1,8 +1,8 @@
 import { expect } from "@jest/globals";
 import invariant from "tiny-invariant";
 
-import { Aila } from ".";
-import { MessagePart, TextDocument } from "../protocol/jsonPatchProtocol";
+import type { Aila } from ".";
+import type { MessagePart, TextDocument } from "../protocol/jsonPatchProtocol";
 
 export function checkAssistantResponse(content: string) {
   // Check that the response is a string (not JSON)

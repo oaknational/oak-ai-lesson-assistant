@@ -1,6 +1,6 @@
-import { ZodSchema } from "zod";
+import type { ZodSchema } from "zod";
 
-import { Message } from "../chat";
+import type { Message } from "../chat";
 
 export interface LLMService {
   name: string;

@@ -1,8 +1,8 @@
-import { Quiz } from "@oakai/aila/src/protocol/schema";
+import type { Quiz } from "@oakai/aila/src/protocol/schema";
 import { isTruthy, partition } from "remeda";
 
 import { IngestError } from "../IngestError";
-import { OakLessonQuiz } from "../zod-schema/zodSchema";
+import type { OakLessonQuiz } from "../zod-schema/zodSchema";
 
 export function transformQuiz(oakQuiz: OakLessonQuiz): Quiz {
   const quiz: Quiz = [];
