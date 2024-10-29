@@ -1,7 +1,8 @@
-import { docs_v1 } from "@googleapis/docs";
+import type { docs_v1 } from "@googleapis/docs";
 
-import { Result } from "../../types";
-import { ValueToString, defaultValueToString } from "../../utils";
+import type { Result } from "../../types";
+import type { ValueToString} from "../../utils";
+import { defaultValueToString } from "../../utils";
 
 /**
  * @description Populates the template document with the given data.

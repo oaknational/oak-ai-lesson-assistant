@@ -1,21 +1,21 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { AilaModerator } from "../features/moderation/moderators";
-import { OpenAILike } from "../features/moderation/moderators/OpenAiModerator";
-import { AilaPersistence } from "../features/persistence";
-import { AilaThreatDetector } from "../features/threatDetection";
-import {
+import type { AilaModerator } from "../features/moderation/moderators";
+import type { OpenAILike } from "../features/moderation/moderators/OpenAiModerator";
+import type { AilaPersistence } from "../features/persistence";
+import type { AilaThreatDetector } from "../features/threatDetection";
+import type {
   AilaAnalyticsFeature,
   AilaCategorisationFeature,
   AilaErrorReportingFeature,
   AilaModerationFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
-import { LooseLessonPlan } from "../protocol/schema";
-import { Message } from "./chat";
-import { LLMService } from "./llm/LLMService";
-import { AilaPlugin } from "./plugins/types";
-import { AilaPromptBuilder } from "./prompt/AilaPromptBuilder";
+import type { LooseLessonPlan } from "../protocol/schema";
+import type { Message } from "./chat";
+import type { LLMService } from "./llm/LLMService";
+import type { AilaPlugin } from "./plugins/types";
+import type { AilaPromptBuilder } from "./prompt/AilaPromptBuilder";
 
 export type AilaGenerateLessonPlanMode = "interactive" | "generate";
 

@@ -1,7 +1,7 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { getDataHash } from "../utils/getDataHash";
-import { Captions } from "../zod-schema/zodSchema";
+import type { Captions } from "../zod-schema/zodSchema";
 
 export async function createCaptionsRecord({
   prisma,

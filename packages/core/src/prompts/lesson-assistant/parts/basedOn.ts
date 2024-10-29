@@ -1,4 +1,4 @@
-import { TemplateProps } from "..";
+import type { TemplateProps } from "..";
 
 export const basedOn = ({
   baseLessonPlan,

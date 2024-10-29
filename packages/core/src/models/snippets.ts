@@ -1,7 +1,8 @@
+import type {
+  PrismaClientWithAccelerate,
+  Snippet} from "@oakai/db";
 import {
   Prisma,
-  PrismaClientWithAccelerate,
-  Snippet,
   SnippetStatus,
   SnippetVariant,
 } from "@oakai/db";

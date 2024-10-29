@@ -1,9 +1,9 @@
-import { SignedInAuthObject } from "@clerk/backend/internal";
+import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
 import { demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting/rateLimit";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
-import { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
 import * as Sentry from "@sentry/nextjs";
 import { TRPCError } from "@trpc/server";
 import { isTruthy } from "remeda";
@@ -11,8 +11,9 @@ import { z } from "zod";
 
 import { getSessionModerations } from "../../../aila/src/features/moderation/getSessionModerations";
 import { generateChatId } from "../../../aila/src/helpers/chat/generateChatId";
+import type {
+  AilaPersistedChat} from "../../../aila/src/protocol/schema";
 import {
-  AilaPersistedChat,
   chatSchema,
 } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";

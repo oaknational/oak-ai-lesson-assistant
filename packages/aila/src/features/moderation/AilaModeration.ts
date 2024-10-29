@@ -5,23 +5,24 @@ import {
   getSafetyResult,
   isToxic,
 } from "@oakai/core/src/utils/ailaModeration/helpers";
-import { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import {
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type {
   Moderation,
-  PrismaClientWithAccelerate,
+  PrismaClientWithAccelerate} from "@oakai/db";
+import {
   prisma as globalPrisma,
 } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
-import { AilaServices } from "../../core";
-import { Message } from "../../core/chat";
-import { AilaPluginContext } from "../../core/plugins/types";
+import type { AilaServices } from "../../core";
+import type { Message } from "../../core/chat";
+import type { AilaPluginContext } from "../../core/plugins/types";
 import { getLastAssistantMessage } from "../../helpers/chat/getLastAssistantMessage";
-import { ModerationDocument } from "../../protocol/jsonPatchProtocol";
-import { LooseLessonPlan } from "../../protocol/schema";
-import { AilaModerationFeature } from "../types";
-import { AilaModerator } from "./moderators";
+import type { ModerationDocument } from "../../protocol/jsonPatchProtocol";
+import type { LooseLessonPlan } from "../../protocol/schema";
+import type { AilaModerationFeature } from "../types";
+import type { AilaModerator } from "./moderators";
 import { OpenAiModerator } from "./moderators/OpenAiModerator";
 
 const log = aiLogger("aila:moderation");

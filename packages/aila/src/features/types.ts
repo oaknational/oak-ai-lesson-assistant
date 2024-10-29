@@ -1,10 +1,10 @@
-import { Message } from "../core/chat";
-import { AilaPluginContext } from "../core/plugins";
-import { ModerationDocument } from "../protocol/jsonPatchProtocol";
-import { AilaPersistedChat, LooseLessonPlan } from "../protocol/schema";
-import { AilaErrorBreadcrumb, AilaErrorSeverity } from "./errorReporting/types";
-import { AilaGeneration } from "./generation";
-import { AilaThreatDetector } from "./threatDetection";
+import type { Message } from "../core/chat";
+import type { AilaPluginContext } from "../core/plugins";
+import type { ModerationDocument } from "../protocol/jsonPatchProtocol";
+import type { AilaPersistedChat, LooseLessonPlan } from "../protocol/schema";
+import type { AilaErrorBreadcrumb, AilaErrorSeverity } from "./errorReporting/types";
+import type { AilaGeneration } from "./generation";
+import type { AilaThreatDetector } from "./threatDetection";
 
 export interface AilaModerationFeature {
   moderate(options: {

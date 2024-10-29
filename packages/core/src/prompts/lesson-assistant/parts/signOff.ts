@@ -1,4 +1,4 @@
-import { TemplateProps } from "..";
+import type { TemplateProps } from "..";
 
 const interactiveOnlyErrorHandling = `If you are unable to respond for some reason, respond with {"type": "error", "message": "A user-facing error message"} consistent with the JSON schema provided previously.
 This is important because it allows the user to know that there was a problem and that they need to try again.
