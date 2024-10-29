@@ -64,7 +64,7 @@ const LessonPlanTrackingProvider: FC<{
       setAction(null);
       setUserMessageContent("");
     },
-    [track, action, userMessageContent],
+    [chatId, userMessageContent, track, action],
   );
   const onSubmitText = useCallback((text: string) => {
     setAction("submit_text");
