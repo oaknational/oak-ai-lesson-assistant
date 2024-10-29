@@ -13,6 +13,7 @@ import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageI
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type {
   AilaPersistedChat,
+  LessonPlanKeys,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
@@ -64,6 +65,8 @@ export type ChatContextProps = {
   queuedUserAction: string | null;
   queueUserAction: (action: string) => void;
   executeQueuedAction: () => Promise<void>;
+  streamingSection: LessonPlanKeys | undefined;
+  streamingSections: LessonPlanKeys[] | undefined;
 };
 
 const ChatContext = createContext<ChatContextProps | null>(null);
@@ -382,7 +385,11 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       ? lastModeration
       : toxicInitialModeration;
 
-  const ailaStreamingStatus = useAilaStreamingStatus({ isLoading, messages });
+  const {
+    status: ailaStreamingStatus,
+    streamingSection,
+    streamingSections,
+  } = useAilaStreamingStatus({ isLoading, messages });
 
   useEffect(() => {
     if (toxicModeration) {
@@ -416,6 +423,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       queuedUserAction,
       queueUserAction,
       executeQueuedAction,
+      streamingSection,
+      streamingSections,
     }),
     [
       id,
@@ -441,6 +450,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       queuedUserAction,
       queueUserAction,
       executeQueuedAction,
+      streamingSection,
+      streamingSections,
     ],
   );
 
