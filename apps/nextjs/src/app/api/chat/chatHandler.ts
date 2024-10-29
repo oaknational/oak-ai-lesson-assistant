@@ -3,8 +3,15 @@ import type {
   AilaInitializationOptions,
   AilaOptions,
   AilaPublicChatOptions,
+  AilaServices,
   Message,
 } from "@oakai/aila";
+import { AilaAmericanisms } from "@oakai/aila/src/features/americanisms/AilaAmericanisms";
+import {
+  DatadogAnalyticsAdapter,
+  PosthogAnalyticsAdapter,
+} from "@oakai/aila/src/features/analytics";
+import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
 import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import {
   TracingSpan,
@@ -176,6 +183,12 @@ export async function handleChatPostRequest(
             services: {
               chatLlmService: llmService,
               moderationAiClient,
+              ragService: (aila: AilaServices) => new AilaRag({ aila }),
+              americanismsService: () => new AilaAmericanisms(),
+              analyticsAdapters: (aila: AilaServices) => [
+                new PosthogAnalyticsAdapter(aila),
+                new DatadogAnalyticsAdapter(aila),
+              ],
             },
             lessonPlan: lessonPlan ?? {},
           };
