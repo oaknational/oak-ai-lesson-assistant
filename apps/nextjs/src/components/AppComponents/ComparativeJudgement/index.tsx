@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-import { KeyStageName, SubjectName } from "@oakai/core";
+import type { KeyStageName, SubjectName } from "@oakai/core";
 import { Flex } from "@radix-ui/themes";
 import useQuestionsForJudgement from "hooks/useQuestionsForJudgement";
 

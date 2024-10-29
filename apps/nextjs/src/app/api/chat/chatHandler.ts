@@ -1,4 +1,4 @@
-import { Aila } from "@oakai/aila";
+import type { Aila } from "@oakai/aila";
 import type {
   AilaInitializationOptions,
   AilaOptions,
@@ -12,21 +12,23 @@ import {
   PosthogAnalyticsAdapter,
 } from "@oakai/aila/src/features/analytics";
 import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type {
+  TracingSpan} from "@oakai/core/src/tracing/serverTracing";
 import {
-  TracingSpan,
   withTelemetry,
 } from "@oakai/core/src/tracing/serverTracing";
-import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
+import type { PrismaClientWithAccelerate} from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 // #TODO StreamingTextResponse is deprecated. If we choose to adopt the "ai" package
 // more fully, we should refactor to support its approach to streaming
 // but this could be a significant change given we have our record-separator approach
 import { StreamingTextResponse } from "ai";
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
 
-import { Config } from "./config";
+import type { Config } from "./config";
 import { handleChatException } from "./errorHandling";
 import {
   getFixtureLLMService,

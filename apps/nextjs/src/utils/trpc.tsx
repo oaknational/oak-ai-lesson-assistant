@@ -6,9 +6,10 @@ import { type AppRouter } from "@oakai/api/src/router";
 import { type ChatAppRouter } from "@oakai/api/src/router/chat";
 import { transformer } from "@oakai/api/transformer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { TRPCLink, httpBatchLink, loggerLink } from "@trpc/client";
+import type { TRPCLink} from "@trpc/client";
+import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
-import { inferRouterInputs } from "@trpc/server";
+import type { inferRouterInputs } from "@trpc/server";
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url

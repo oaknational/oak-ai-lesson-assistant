@@ -1,8 +1,9 @@
 import { useEffect, useMemo } from "react";
 
-import {
+import type {
   KeyStageName,
-  SubjectName,
+  SubjectName} from "@oakai/core/src/data/subjectsAndKeyStages";
+import {
   subjectsAndKeyStages,
 } from "@oakai/core/src/data/subjectsAndKeyStages";
 import { Flex } from "@radix-ui/themes";
@@ -80,7 +81,7 @@ const KeyStageAndSubjectPicker = ({
           type="dropdown"
           label="Subject"
           name="subject"
-          options={allowedSubjects as string[]}
+          options={allowedSubjects}
           onChange={(e) => setSelectedSubject(e.target.value as SubjectName)}
           value={selectedSubject}
         />

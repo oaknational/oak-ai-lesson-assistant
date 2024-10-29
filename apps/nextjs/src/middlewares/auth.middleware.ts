@@ -1,10 +1,12 @@
+import type {
+  ClerkMiddlewareAuth} from "@clerk/nextjs/server";
 import {
-  ClerkMiddlewareAuth,
   clerkMiddleware,
   createRouteMatcher,
 } from "@clerk/nextjs/server";
 import { aiLogger } from "@oakai/logger";
-import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
+import type { NextFetchEvent, NextRequest} from "next/server";
+import { NextResponse } from "next/server";
 
 import { sentrySetUser } from "@/lib/sentry/sentrySetUser";
 

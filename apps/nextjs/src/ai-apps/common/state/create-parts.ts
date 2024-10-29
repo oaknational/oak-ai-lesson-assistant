@@ -1,8 +1,9 @@
-import {
+import type {
   GenerationPart,
   GenerationPartAIGenerated,
-  GenerationPartType,
-  GenerationPartUserTweaked,
+  GenerationPartUserTweaked} from "@oakai/core/src/types";
+import {
+  GenerationPartType
 } from "@oakai/core/src/types";
 
 export function createAIGeneratedPart<Value>(

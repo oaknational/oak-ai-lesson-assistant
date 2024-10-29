@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import {
+import type {
   GenerationPart,
   GenerationPartPlaceholder,
 } from "@oakai/core/src/types";

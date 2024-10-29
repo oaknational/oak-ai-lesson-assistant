@@ -1,11 +1,13 @@
-import { Dispatch, useCallback } from "react";
+import type { Dispatch} from "react";
+import { useCallback } from "react";
 
 import * as Sentry from "@sentry/nextjs";
+import type {
+  QuizAppAction} from "ai-apps/quiz-designer/state/actions";
 import {
-  QuizAppAction,
   QuizAppActions,
 } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppState } from "ai-apps/quiz-designer/state/types";
+import type { QuizAppState } from "ai-apps/quiz-designer/state/types";
 
 import { trpc } from "@/utils/trpc";
 

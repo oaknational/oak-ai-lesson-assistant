@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/node";
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest, NextResponse } from "next/server";
 
 import { sentryCleanup } from "./sentryCleanup";
 import { sentrySetUser } from "./sentrySetUser";

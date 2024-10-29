@@ -1,17 +1,20 @@
-import { Dispatch, useCallback } from "react";
+import type { Dispatch} from "react";
+import { useCallback } from "react";
 
 import { Box, Flex } from "@radix-ui/themes";
 import { quizRequestGeneration } from "ai-apps/quiz-designer/quizRequestGeneration";
+import type {
+  QuizAppAction} from "ai-apps/quiz-designer/state/actions";
 import {
-  QuizAppAction,
   QuizAppActions,
 } from "ai-apps/quiz-designer/state/actions";
-import {
+import type {
   QuizAppState,
   QuizAppStateQuestion,
 } from "ai-apps/quiz-designer/state/types";
+import type {
+  GenerationWithResponse} from "hooks/useGeneration";
 import {
-  GenerationWithResponse,
   UseGenerationStatus,
   isGenerationHookLoading,
 } from "hooks/useGeneration";

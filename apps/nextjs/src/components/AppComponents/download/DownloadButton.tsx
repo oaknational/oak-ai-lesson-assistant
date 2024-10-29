@@ -1,4 +1,4 @@
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { Box } from "@radix-ui/themes";
 import Link from "next/link";
 
@@ -6,8 +6,9 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trackDownload } from "@/utils/trackDownload";
 import { trpc } from "@/utils/trpc";
 
+import type {
+  ExportsType} from "../../ExportsDialogs/exports.helpers";
 import {
-  ExportsType,
   getExportsConfig,
 } from "../../ExportsDialogs/exports.helpers";
 import { Icon } from "../../Icon";

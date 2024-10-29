@@ -1,10 +1,11 @@
-import { FC, useEffect } from "react";
+import type { FC} from "react";
+import { useEffect } from "react";
 
 import * as Sentry from "@sentry/nextjs";
 import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
 
-import { ConsentState } from "@/components/ContextProviders/CookieConsentProvider";
+import type { ConsentState } from "@/components/ContextProviders/CookieConsentProvider";
 
 import { usePersistUtmParams } from "../useUtmParams";
 

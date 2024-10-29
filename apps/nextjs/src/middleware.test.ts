@@ -1,9 +1,11 @@
-import { NextRequest, NextFetchEvent, NextResponse } from "next/server";
+import type { NextFetchEvent} from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { handleError } from "./middleware";
-import {
+import type {
   CspConfig,
-  CspEnvironment,
+  CspEnvironment} from "./middlewares/csp";
+import {
   addCspHeaders,
   buildCspHeaders,
 } from "./middlewares/csp";

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Flex } from "@radix-ui/themes";
-import { Survey } from "posthog-js";
+import type { Survey } from "posthog-js";
 
 import ChatButton from "../AppComponents/Chat/ui/chat-button";
 import { Icon } from "../Icon";

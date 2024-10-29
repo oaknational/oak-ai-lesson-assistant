@@ -1,12 +1,12 @@
 import React, { useRef, useState } from "react";
 
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { OakIcon, OakSmallSecondaryButton } from "@oaknational/oak-components";
-import { Message } from "ai";
+import type { Message } from "ai";
 import Link from "next/link";
 
 import AiIcon from "../../AiIcon";
-import { DemoContextProps } from "../../ContextProviders/Demo";
+import type { DemoContextProps } from "../../ContextProviders/Demo";
 import { useDialog } from "../DialogContext";
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
 import ExportButtons from "./export-buttons";

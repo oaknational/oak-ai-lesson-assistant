@@ -5,12 +5,14 @@ import {
   createTweakPart,
 } from "ai-apps/common/state/create-parts";
 import { removeAtIndex, updateAtIndex } from "ai-apps/common/state/helpers";
-import { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
+import type { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
 
-import { QuizAppAction, QuizAppActions } from "./actions";
-import {
+import type { QuizAppAction} from "./actions";
+import { QuizAppActions } from "./actions";
+import type {
   QuizAppState,
-  QuizAppStateQuestion,
+  QuizAppStateQuestion} from "./types";
+import {
   QuizAppStatus,
   QuizQuestionType,
 } from "./types";

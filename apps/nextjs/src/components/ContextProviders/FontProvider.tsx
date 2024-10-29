@@ -1,7 +1,8 @@
 "use client";
 
+import type {
+  Dispatch} from "react";
 import React, {
-  Dispatch,
   createContext,
   useContext,
   useMemo,

@@ -1,4 +1,4 @@
-import { BorderProps } from "../";
+import type { BorderProps } from "../";
 
 function BoxBorderTop({ className = "" }: Readonly<BorderProps>) {
   return (

@@ -1,6 +1,7 @@
 import { Flex } from "@radix-ui/themes";
+import type {
+  UseGenerationStatus} from "hooks/useGeneration";
 import {
-  UseGenerationStatus,
   isGenerationHookLoading,
 } from "hooks/useGeneration";
 

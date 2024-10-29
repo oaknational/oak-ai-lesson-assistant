@@ -3,9 +3,10 @@ import { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Sentry from "@sentry/react";
 
+import type {
+  ModerationFeedbackFormProps} from "@/components/AppComponents/FeedbackForms/ModerationFeedbackForm";
 import {
-  ModerationFeedbackForm,
-  ModerationFeedbackFormProps,
+  ModerationFeedbackForm
 } from "@/components/AppComponents/FeedbackForms/ModerationFeedbackForm";
 
 import { dialogOverlay } from "../../DialogControl/dialogStyles";

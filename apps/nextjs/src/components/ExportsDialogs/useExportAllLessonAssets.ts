@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import type {
+  LessonDeepPartial} from "@oakai/exports/browser";
 import {
-  LessonDeepPartial,
   exportSlidesFullLessonSchema,
 } from "@oakai/exports/browser";
-import { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
+import type { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
-import { ZodError } from "zod";
+import type { ZodError } from "zod";
 
 import { trpc } from "@/utils/trpc";
 

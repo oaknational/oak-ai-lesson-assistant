@@ -1,6 +1,6 @@
-import { PostHog } from "posthog-js";
+import type { PostHog } from "posthog-js";
 
-import { AnalyticsService } from "@/components/ContextProviders/AnalyticsProvider";
+import type { AnalyticsService } from "@/components/ContextProviders/AnalyticsProvider";
 
 import { ServicePolicyMap } from "../cookie-consent/ServicePolicyMap";
 import { consentClient } from "../cookie-consent/consentClient";

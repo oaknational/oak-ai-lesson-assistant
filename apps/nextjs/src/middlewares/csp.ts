@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest} from "next/server";
+import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
 function generateNonce(): string {
@@ -169,7 +170,7 @@ export const buildCspHeaders = (nonce: string, config: CspConfig) => {
       ];
 
       for (const policyObject of additionalPolicies) {
-        const policyValue = policyObject[policy as keyof typeof policyObject];
+        const policyValue = policyObject[policy];
         if (Array.isArray(policyValue)) {
           value.push(...policyValue);
         }
