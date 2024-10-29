@@ -2,18 +2,23 @@ import React from "react";
 import { Toaster } from "react-hot-toast";
 
 import { ClerkProvider } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import "@fontsource/lexend";
 import "@fontsource/lexend/500.css";
 import "@fontsource/lexend/600.css";
 import "@fontsource/lexend/700.css";
 import "@fontsource/lexend/800.css";
 import "@fontsource/lexend/900.css";
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import { aiLogger } from "@oakai/logger";
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
+import cookie from "cookie";
 import { GeistMono } from "geist/font/mono";
 import { Lexend } from "next/font/google";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import invariant from "tiny-invariant";
 
 import "@/app/globals.css";
 import "@/app/theme-config.css";
@@ -66,7 +71,42 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
+declare global {
+  interface CustomJwtSessionClaims {
+    email: string;
+  }
+}
+
+function getDistinctIdFromCookie(): string | null {
+  const cookieHeader = headers().get("cookie");
+  invariant(cookieHeader, "No cookie header");
+  const cookies = cookie.parse(cookieHeader) as Record<string, string>;
+  const phCookieKey = `ph_${process.env.NEXT_PUBLIC_POSTHOG_API_KEY}_posthog`;
+  const phCookie = cookies[phCookieKey];
+  if (!phCookie) {
+    return null;
+  }
+  return JSON.parse(phCookie)["distinct_id"];
+}
+
+async function getBootstrapFeatures() {
+  const log = aiLogger("analytics:feature-flags");
+  const { userId, sessionClaims } = auth();
+  const email = sessionClaims?.email;
+
+  const distinctId = userId ?? getDistinctIdFromCookie() ?? "0";
+  log.info("Evaluating feature flags for", distinctId);
+  const features = await posthogAiBetaServerClient.getAllFlags(distinctId, {
+    personProperties: email ? { email } : {},
+    onlyEvaluateLocally: true,
+  });
+  log.info("Bootstrapping feature flags", features);
+  return features;
+}
+
+export default async function RootLayout({
+  children,
+}: Readonly<RootLayoutProps>) {
   const nonce = headers().get("x-nonce");
   if (!nonce) {
     // Our middleware path matching excludes static paths like /_next/static/...
@@ -74,6 +114,8 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
     // In this case, redirect to an explicit 404 page
     return redirect("/not-found");
   }
+
+  const bootstrappedFeatures = await getBootstrapFeatures();
 
   return (
     <html lang="en" suppressHydrationWarning className={lexend.variable}>
@@ -108,6 +150,7 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
                           }),
                         },
                       }}
+                      bootstrappedFeatures={bootstrappedFeatures}
                     >
                       <GleapProvider>{children}</GleapProvider>
                     </AnalyticsProvider>
