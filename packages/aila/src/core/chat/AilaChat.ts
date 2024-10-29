@@ -276,7 +276,7 @@ export class AilaChat implements AilaChatService {
       invariant(responseText, "Response text not set");
       await this._generation.complete({ status, responseText });
     }
-    this._generation.persist(status);
+    await this._generation.persist(status);
   }
 
   private async persistChat() {
