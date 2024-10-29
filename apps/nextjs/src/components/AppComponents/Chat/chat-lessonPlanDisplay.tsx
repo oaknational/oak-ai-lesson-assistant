@@ -5,6 +5,7 @@ import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { organiseSections } from "@/lib/lessonPlan/organiseSections";
 
 import Skeleton from "../common/Skeleton";
 import DropDownSection from "./drop-down-section";
