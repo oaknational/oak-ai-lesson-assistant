@@ -1,4 +1,4 @@
-import { CategoriseKeyStageAndSubjectResponse } from "@oakai/core/src/rag";
+import { CategoriseKeyStageAndSubjectResponse } from "@oakai/core/src/rag/categorisation";
 import { keyStages, subjects } from "@oakai/core/src/utils/subjects";
 import { aiLogger } from "@oakai/logger";
 import type { ChatCompletionMessageParam } from "openai/resources";
