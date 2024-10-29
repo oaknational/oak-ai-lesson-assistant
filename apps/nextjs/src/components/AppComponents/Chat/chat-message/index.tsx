@@ -191,7 +191,7 @@ function MessageWrapper({
   type,
 }: MessageWrapperProps) {
   const testId = errorType
-    ? `chat-message-wrapper-error-${errorType}`
+    ? `chat-message-wrapper-${type}-${errorType}`
     : `chat-message-wrapper-${type}`;
   return (
     <div
