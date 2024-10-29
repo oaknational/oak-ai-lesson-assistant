@@ -1,16 +1,17 @@
-import { SignedInAuthObject } from "@clerk/backend/internal";
+import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
 import { LessonSnapshots } from "@oakai/core";
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { exportSlidesFullLesson } from "@oakai/exports";
-import { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
+import type { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 
+import type {
+  OutputSchema} from "../router/exports";
 import {
   ailaGetExportBySnapshotId,
   ailaSaveExport,
-  OutputSchema,
   reportErrorResult,
 } from "../router/exports";
 

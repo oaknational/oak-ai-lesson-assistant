@@ -1,4 +1,4 @@
-import { type PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db/client";
 
 import {
@@ -7,8 +7,8 @@ import {
   DEFAULT_RAG_LESSON_PLANS,
 } from "../constants";
 import { AilaCategorisation } from "../features/categorisation";
-import { AilaSnapshotStore } from "../features/snapshotStore";
-import {
+import type { AilaSnapshotStore } from "../features/snapshotStore";
+import type {
   AilaAnalyticsFeature,
   AilaErrorReportingFeature,
   AilaModerationFeature,
@@ -18,23 +18,25 @@ import {
 import { generateMessageId } from "../helpers/chat/generateMessageId";
 import { AilaAuthenticationError, AilaGenerationError } from "./AilaError";
 import { AilaFeatureFactory } from "./AilaFeatureFactory";
-import {
+import type {
   AilaChatService,
   AilaLessonService,
   AilaServices,
 } from "./AilaServices";
-import { AilaChat, Message } from "./chat";
+import type { Message } from "./chat";
+import { AilaChat } from "./chat";
 import { AilaLesson } from "./lesson";
-import { LLMService } from "./llm/LLMService";
+import type { LLMService } from "./llm/LLMService";
 import { OpenAIService } from "./llm/OpenAIService";
-import { AilaPlugin } from "./plugins/types";
-import {
+import type { AilaPlugin } from "./plugins/types";
+import type {
   AilaGenerateLessonPlanOptions,
   AilaOptions,
   AilaOptionsWithDefaultFallbackValues,
   AilaInitializationOptions,
 } from "./types";
 
+const log = aiLogger("aila");
 export class Aila implements AilaServices {
   private _analytics?: AilaAnalyticsFeature;
   private _chat: AilaChatService;
@@ -113,6 +115,10 @@ export class Aila implements AilaServices {
   public async initialise() {
     this.checkUserIdPresentIfPersisting();
     await this.loadChatIfPersisting();
+    const persistedLessonPlan = this._chat.persistedChat?.lessonPlan;
+    if (persistedLessonPlan) {
+      this._lesson.setPlan(persistedLessonPlan);
+    }
     await this._lesson.setUpInitialLessonPlan(this._chat.messages);
   }
 
@@ -249,6 +255,7 @@ export class Aila implements AilaServices {
       );
     }
     if (input) {
+      log.info("Initiate chat with input", input);
       const message: Message = {
         id: generateMessageId({ role: "user" }),
         role: "user",

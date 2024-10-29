@@ -1,4 +1,4 @@
-import { TemplateProps } from "..";
+import type { TemplateProps } from "..";
 
 const interactiveOnly = `This is a JSON object that should be generated through the patch instructions that you generate.`;
 

@@ -1,6 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
-import { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
+import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 
 const log = aiLogger("aila:protocol");
 
@@ -65,6 +65,7 @@ export class PatchEnqueuer {
       type: "patch",
       reasoning: "generated",
       value: { op: "add", path, value },
+      status: "complete",
     };
   }
 

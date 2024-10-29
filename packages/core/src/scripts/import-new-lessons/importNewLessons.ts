@@ -1,4 +1,5 @@
-import { Quiz, prisma } from "@oakai/db";
+import type { Quiz} from "@oakai/db";
+import { prisma } from "@oakai/db";
 import { GraphQLClient, gql } from "graphql-request";
 
 const batchSize = parseInt(process.env.LESSON_QUERY_BATCH_SIZE || "");

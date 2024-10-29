@@ -1,4 +1,4 @@
-import { SignedInAuthObject } from "@clerk/backend/internal";
+import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { aiLogger } from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 

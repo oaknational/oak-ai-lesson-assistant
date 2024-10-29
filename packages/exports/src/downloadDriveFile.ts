@@ -1,6 +1,6 @@
 import { googleDrive } from "./gSuite/drive/client";
 import { getExportFileStream } from "./gSuite/drive/getExportFileStream";
-import { Result } from "./types";
+import type { Result } from "./types";
 
 type OutputData = {
   stream: NodeJS.ReadableStream;

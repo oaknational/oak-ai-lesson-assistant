@@ -4,9 +4,9 @@ import { prepWorksheetForSlides } from "./dataHelpers/prepWorksheetForSlides";
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
 import { populateDoc } from "./gSuite/docs/populateDoc";
-import { WorksheetSlidesInputData } from "./schema/input.schema";
+import type { WorksheetSlidesInputData } from "./schema/input.schema";
 import { getDocsTemplateIdWorksheet } from "./templates";
-import { OutputData, Result, State } from "./types";
+import type { OutputData, Result, State } from "./types";
 
 const log = aiLogger("exports");
 

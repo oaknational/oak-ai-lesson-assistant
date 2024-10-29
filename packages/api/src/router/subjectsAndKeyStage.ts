@@ -3,7 +3,7 @@ import {
   type KeyStageName,
   type SubjectName,
 } from "@oakai/core";
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";

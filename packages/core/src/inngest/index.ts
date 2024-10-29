@@ -47,5 +47,5 @@ export const inngest = new Inngest({
   env: inngestEnv,
   logger: structuredLogger,
   middleware: [eventLogger(inngestEnv, inngestEventKey)],
-  isDev: process.env.NODE_ENV === "development" && !isJestEnvironment(),
+  isDev: process.env.NODE_ENV === "development" || isJestEnvironment(),
 });

@@ -1,6 +1,8 @@
 import { AilaGeneration } from ".";
-import { Aila, AilaInitializationOptions } from "../..";
-import { AilaChat, Message } from "../../core/chat";
+import type { AilaInitializationOptions } from "../..";
+import { Aila } from "../..";
+import type { Message } from "../../core/chat";
+import { AilaChat } from "../../core/chat";
 
 const ailaArgs: AilaInitializationOptions = {
   plugins: [],

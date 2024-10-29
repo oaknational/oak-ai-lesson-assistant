@@ -6,7 +6,8 @@ import fs from "node:fs";
 import { IngestError } from "../IngestError";
 import { chunkAndPromiseAll } from "../utils/chunkAndPromiseAll";
 import { getDataHash } from "../utils/getDataHash";
-import { RawLesson, RawLessonSchema } from "../zod-schema/zodSchema";
+import type { RawLesson} from "../zod-schema/zodSchema";
+import { RawLessonSchema } from "../zod-schema/zodSchema";
 
 const log = aiLogger("ingest");
 

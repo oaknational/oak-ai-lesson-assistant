@@ -19,6 +19,7 @@ describe("PatchEnqueuer", () => {
       type: "patch",
       reasoning: "generated",
       value: { op: "add", path, value },
+      status: "complete",
     })}\n␞\n`;
     expect(controller.enqueue).toHaveBeenCalledWith(expectedPatch);
   });

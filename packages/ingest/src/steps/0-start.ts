@@ -1,11 +1,11 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { IngestError } from "../IngestError";
-import { IngestConfig } from "../config/ingestConfig";
+import type { IngestConfig } from "../config/ingestConfig";
 import { createIngestRecord } from "../db-helpers/createIngestRecord";
 import { importLessonsFromCSV } from "../import-lessons/importLessonsFromCSV";
 import { importLessonsFromOakDB } from "../import-lessons/importLessonsFromOakDB";
-import { IngestLogger } from "../types";
+import type { IngestLogger } from "../types";
 
 const config: IngestConfig = {
   completionModel: "gpt-4o-2024-08-06",

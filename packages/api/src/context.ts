@@ -1,14 +1,14 @@
-import {
+import type {
   SignedInAuthObject,
   SignedOutAuthObject,
 } from "@clerk/backend/internal";
 import { getAuth } from "@clerk/nextjs/server";
 import { prisma } from "@oakai/db";
 import { type inferAsyncReturnType } from "@trpc/server";
-import { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http";
-import { NextRequest, NextResponse } from "next/server";
+import type { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http";
+import type { NextRequest, NextResponse } from "next/server";
 
-import { RateLimitInfo } from "./types";
+import type { RateLimitInfo } from "./types";
 
 type ClerkAuthSig = typeof getAuth;
 type ClerkAuthReturn = inferAsyncReturnType<ClerkAuthSig>;

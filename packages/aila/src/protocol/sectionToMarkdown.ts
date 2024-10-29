@@ -1,9 +1,10 @@
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
 import { isArray, isNumber, isObject, isString } from "remeda";
 
+import type {
+  QuizOptional} from "./schema";
 import {
   CycleOptionalSchema,
-  QuizOptional,
   QuizOptionalSchema,
 } from "./schema";
 

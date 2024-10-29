@@ -1,7 +1,7 @@
 import { kv } from "@vercel/kv";
 
 import { AilaPersistence } from "../..";
-import { AilaChatService, AilaServices } from "../../../../core";
+import type { AilaChatService, AilaServices } from "../../../../core";
 
 export class AilaKVPersistence extends AilaPersistence {
   constructor({ chat, aila }: { chat: AilaChatService; aila: AilaServices }) {

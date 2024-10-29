@@ -4,9 +4,9 @@ import {
   prisma as globalPrisma,
 } from "@oakai/db";
 
-import { AilaServices, Message } from "../../../core";
-import { LooseLessonPlan } from "../../../protocol/schema";
-import { AilaCategorisationFeature } from "../../types";
+import type { AilaServices, Message } from "../../../core";
+import type { LooseLessonPlan } from "../../../protocol/schema";
+import type { AilaCategorisationFeature } from "../../types";
 
 export class AilaCategorisation implements AilaCategorisationFeature {
   private _aila: AilaServices;

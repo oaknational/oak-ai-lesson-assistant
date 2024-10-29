@@ -1,7 +1,8 @@
 import z from "zod";
 
-import { TemplateProps, getPromptParts } from ".";
-import { OakPromptDefinition, OakPromptVariant } from "../types";
+import type { TemplateProps} from ".";
+import { getPromptParts } from ".";
+import type { OakPromptDefinition, OakPromptVariant } from "../types";
 
 export const inputSchema = z.object({});
 

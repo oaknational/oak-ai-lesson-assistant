@@ -3,7 +3,7 @@
 import { textify } from "@oakai/core/src/models/lessonPlans";
 import translator from "american-british-english-translator";
 
-import { LessonPlanKeys, LooseLessonPlan } from "../../protocol/schema";
+import type { LessonPlanKeys, LooseLessonPlan } from "../../protocol/schema";
 
 export type AmericanismIssueBySection = {
   section: string;

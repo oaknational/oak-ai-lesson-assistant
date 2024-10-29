@@ -3,1015 +3,392 @@ type":"
 ll
 m
 Message
-","patches":[
+","sectionsToEdit":["
+additional
+Materials
+"],"patches":[
 {"
 type":"
 patch
 ","reasoning":"
-Creating
- a
- Starter
- Quiz
- to
- check
- prior
- knowledge
- before
+Providing
+ additional
+ materials
+ in
  the
- lesson
- begins
+ form
+ of
+ a
+ narrative
+ script
+ to
+ support
+ the
+ teacher
+ in
+ delivering
+ complex
+ topics
+ about
+ Roman
+ Britain
 .","
 value":{"
 type":"
-quiz
+string
 ","op":"
 add
 ","path":"/
-starter
-Quiz
-","value":[
-{"
-question":"
-When
- did
- the
- Romans
- invade
- Britain
-?
-","answers":["
-43
- AD
-"],"distractors":["
-410
- AD
-","
-106
-6
- AD
-"]},{"
-question":"
-What
- was
- Had
-rian
-'s
- Wall
-?
-","answers":["
-A
- wall
- built
- by
- Romans
- in
- the
- north
- of
- Britain
-"],"distractors":["
-A
- wall
- built
- by
- Brit
-ons
+additional
+Materials
+","value":"
+##
+ Narrative
+ Script
+ for
+ Teachers
+\n
+\n
+\"
+Today
+,
+ we're
+ going
  to
- keep
- Romans
- out
-","
-A
- wall
+ travel
+ back
  in
- Rome
-"]},{"
-question":"
-What
+ time
+ to
+ when
+ the
+ Romans
+ were
+ in
+ Britain
+.
+ Imagine
+ you
+ are
+ a
+ Roman
+ soldier
+,
+ wearing
+ your
+ armour
+ and
+ sandals
+,
+ walking
+ the
+ long
+ roads
+ they
+ built
+.
+ These
+ roads
+ were
+ very
+ important
+ because
+ they
  connected
  towns
- across
- Roman
- Britain
-?
-","answers":["
-Roman
- roads
-"],"distractors":["
-Can
-als
-","
-R
-ivers
-"]},{"
-question":"
-What
- did
- Romans
- introduce
- to
- Britain
-?
-","answers":["
-New
- food
  and
- customs
-"],"distractors":["
-The
- English
- language
-","
-Modern
- technology
-"]},{"
-question":"
-Who
- adopted
- Roman
- ways
- of
- life
-?
-","answers":["
-Some
- Brit
-ons
-"],"distractors":["
-All
- Brit
-ons
-","
-None
- of
- the
- Brit
-ons
-"]},{"
-question":"
-What
- year
- did
- the
- Romans
- leave
- Britain
-?
-","answers":["
-410
- AD
-"],"distractors":["
-43
- AD
-","
-106
-6
- AD
-"]}]}},{"
-type":"
-patch
-","reasoning":"
-Design
-ing
- the
- first
- learning
- cycle
- to
- introduce
- why
- the
- Romans
- left
- Britain
-.","
-value":{"
-type":"
-cycle
-","op":"
-add
-","path":"/
-cycle
-1
-","value":{"
-title":"
-Reasons
- for
- Roman
- Departure
-","durationInMinutes":15
-,"explanation":{"
-spokenExplanation":["
-Discuss
- the
- internal
- struggles
- of
- the
- Roman
- Empire
+ made
+ travel
+ easier
+.
+ But
  around
+ AD
  
 410
- AD
-.","
-Explain
- how
- these
- struggles
- led
- to
- the
- withdrawal
- from
- Britain
-.","
-Introduce
- the
- concept
- of
- '
-withdraw
-al
-'
- as
- a
- strategic
- move
- by
- the
- Romans
-.","
-Link
- how
- the
- Roman
- Empire
-'s
- focus
- shifted
- elsewhere
- due
- to
- these
- struggles
-."
-],"accompanyingSlideDetails":"
-A
- map
- showing
- the
- Roman
- Empire
- and
- its
- extent
 ,
- highlighting
- Britain
-.","
-imagePrompt":"
-Roman
+ the
+ Roman
  Empire
- map
- 
-410
- AD
-","slideText":"
-The
- Romans
- left
- Britain
- around
- 
-410
- AD
- due
- to
- internal
- struggles
+ was
+ facing
+ big
+ problems
 .
  They
- withdrew
- strategically
-."
-},"checkForUnderstanding":[
-{"
-question":"
-Why
- did
- the
- Romans
- leave
- Britain
-?
-","answers":["
-Internal
- struggles
- in
- the
- Roman
- Empire
-"],"distractors":["
-British
- rebellion
-","
-Bar
-bar
-ian
- invasion
-"]},{"
-question":"
-What
- does
- '
-withdraw
-al
-'
- mean
- in
- this
- context
-?
-","answers":["
-Leaving
- a
- place
- or
- position
-"],"distractors":["
-Att
-acking
- a
- place
-","
-Building
- a
- wall
-"]}],"practice":"
-List
- two
- reasons
- why
- the
- Romans
- decided
- to
- withdraw
- from
- Britain
-,
- using
- the
- slide
- for
- guidance
-.","
-feedback":"
-Model
- answer
-:
- 
-1
-.
- Internal
- struggles
- in
- the
- Roman
- Empire
-.
- 
-2
-.
- Shift
-ed
- focus
- to
- other
- regions
-."
-}}},{"
-type":"
-patch
-","reasoning":"
-Organ
-izing
- the
- second
- learning
- cycle
- to
- cover
- the
- immediate
- effects
- on
- local
- communities
- after
- Roman
- withdrawal
-.","
-value":{"
-type":"
-cycle
-","op":"
-add
-","path":"/
-cycle
-2
-","value":{"
-title":"
-Immediate
- Effects
- on
- Local
- Communities
-","durationInMinutes":15
-,"explanation":{"
-spokenExplanation":["
-Describe
- how
- Roman
- withdrawal
- left
- Britain
- vulnerable
- to
- invas
-ions
-.","
-Explain
- the
- immediate
- impact
- on
- local
- communities
-,
- such
- as
- lack
- of
- Roman
- support
-.","
-Discuss
- the
- decline
- of
- Roman
- structures
- and
- roads
- over
- time
-."
-],"accompanyingSlideDetails":"
-Images
- of
- Roman
- ruins
- and
- a
- map
- of
- Britain
- showing
- vulnerable
- areas
- after
- Roman
- withdrawal
-.","
-imagePrompt":"
-Roman
- ruins
- Britain
-","slideText":"
-Roman
- withdrawal
- left
- Britain
- vulnerable
- to
- invas
-ions
- and
- local
- communities
- without
- support
-."
-},"checkForUnderstanding":[
-{"
-question":"
-What
- happened
- to
- Roman
- structures
- after
- the
- Romans
- left
-?
-","answers":["
-They
- fell
- into
- dis
-repair
-"],"distractors":["
-They
- were
- improved
-","
-They
- turned
- into
- castles
-"]},{"
-question":"
-How
- did
- Roman
- withdrawal
- affect
- local
- communities
-?
-","answers":["
-Commun
-ities
- lacked
- Roman
- support
-"],"distractors":["
-Commun
-ities
- became
- wealth
-ier
-","
-Commun
-ities
- built
- new
- structures
-"]}],"practice":"
-Describe
- one
- immediate
- effect
- on
- local
- communities
- after
- the
- Romans
- left
-.
- Use
- examples
- from
- the
- slide
+ needed
+ their
+ soldiers
+ back
+ home
  to
  help
- your
- understanding
-.","
-feedback":"
-Model
- answer
-:
- Local
- communities
- lacked
- Roman
- support
- and
- faced
- invas
-ions
-."
-}}},{"
-type":"
-patch
-","reasoning":"
-Creating
- the
- third
- learning
- cycle
- to
- focus
- on
- how
- Britain
- changed
- in
- the
- years
- following
- Roman
- departure
-.","
-value":{"
-type":"
-cycle
-","op":"
-add
-","path":"/
-cycle
-3
-","value":{"
-title":"
-Long
--term
- Changes
- in
- Britain
-","durationInMinutes":15
-,"explanation":{"
-spokenExplanation":["
-Explain
- how
- Britain
- adapted
- and
- changed
- culturally
- and
- technologically
- post
--R
-oman
- rule
-.","
-Discuss
- the
- blend
- of
- Roman
- and
- local
- traditions
- that
- emerged
-.","
-Highlight
- the
- technological
- changes
- that
- occurred
- as
- a
- result
- of
- Roman
- influence
-."
-],"accompanyingSlideDetails":"
-A
- timeline
- showing
- cultural
- and
- technological
- changes
- in
- Britain
- after
- Romans
-.","
-imagePrompt":"
-Post
--R
-oman
- Britain
- timeline
-","slideText":"
-Post
--R
-oman
- Britain
- saw
- cultural
- and
- technological
- changes
+ fight
+ battles
+ elsewhere
+.
+ So
 ,
- blending
- Roman
- and
- local
- traditions
-."
-},"checkForUnderstanding":[
-{"
-question":"
-How
- did
- Britain's
- culture
- change
- after
+ they
+ decided
+ to
+ leave
+ Britain
+.\
+n
+\n
+Now
+,
+ picture
  the
- Romans
- left
-?
-","answers":["
-Bl
-ended
- Roman
- and
- local
- traditions
-"],"distractors":["
-B
-ec
-ame
- entirely
- Roman
-","
-Forgot
- Roman
- ways
-"]},{"
-question":"
-What
- type
- of
  changes
- occurred
  in
  Britain
- after
- Roman
- rule
-?
-","answers":["
-C
-ultural
- and
- technological
-"],"distractors":["
-Only
- political
-","
-Only
- economical
-"]}],"practice":"
-Explain
- one
- cultural
- or
- technological
- change
- in
- Britain
- after
+ when
  the
  Romans
  left
 .
- Provide
- an
- example
- from
+ New
+ groups
+ like
  the
- slide
-.","
-feedback":"
-Model
- answer
-:
- The
- blend
- of
- Roman
+ Sax
+ons
+ came
  and
- local
- traditions
- led
+ started
  to
- new
- cultural
- practices
-."
-}}},{"
-type":"
-patch
-","reasoning":"
-Creating
- an
- Exit
- Quiz
+ live
+ here
+.
+ The
+ Roman
+ buildings
+ slowly
+ changed
+ or
+ disappeared
+,
+ but
+ some
+ things
+,
+ like
+ roads
+ and
+ towns
+,
+ stayed
+ and
+ influenced
+ how
+ people
+ lived
+.\
+n
+\n
+Ar
+chae
+ologists
+ are
+ like
+ detectives
+.
+ They
+ dig
+ up
+ old
+ Roman
+ coins
+,
+ pottery
+,
+ and
+ tools
  to
- assess
- understanding
- of
+ learn
+ about
+ how
+ people
+ lived
+ back
+ then
+.
+ These
+ discoveries
+ tell
+ us
+ exciting
+ stories
+ about
  the
- lesson
- topics
-.","
-value":{"
-type":"
-quiz
-","op":"
-add
-","path":"/
-exit
-Quiz
-","value":[
-{"
-question":"
-When
- did
+ past
+,
+ like
+ what
  the
  Romans
- leave
- Britain
-?
-","answers":["
-Around
- 
-410
- AD
-"],"distractors":["
-43
- AD
-","
-106
-6
- AD
-"]},{"
-question":"
-What
- was
+ ate
+,
+ the
+ clothes
+ they
+ wore
+,
+ and
+ the
+ games
+ they
+ played
+.\
+n
+\n
+Remember
+,
+ history
+ is
  a
- reason
+ puzzle
+,
+ and
+ each
+ piece
+ helps
+ us
+ understand
+ more
+ about
+ our
+ world
+ today
+.
+\"\
+n
+\n
+###
+ Key
+ Points
+ for
+ Explanation
+\n
+-
+ Importance
+ of
+ Roman
+ roads
+ and
+ infrastructure
+.\
+n
+-
+ Reasons
  for
  Roman
- withdrawal
-?
-","answers":["
-Internal
- struggles
-"],"distractors":["
-British
- alliance
-","
-Roman
- expansion
-"]},{"
-question":"
-How
- were
- Roman
- structures
- affected
- after
- withdrawal
-?
-","answers":["
-F
-ell
- into
- dis
-repair
-"],"distractors":["
-B
-ec
-ame
- museums
-","
-Were
- exported
-"]},{"
-question":"
-What
- did
- local
- communities
- lack
- after
- Roman
- withdrawal
-?
-","answers":["
-Roman
- support
-"],"distractors":["
-Water
- supply
-","
-New
- roads
-"]},{"
-question":"
-What
- cultural
- changes
- occurred
- after
- Roman
- rule
-?
-","answers":["
-Bl
-ended
- Roman
- and
- local
- traditions
-"],"distractors":["
-Ad
-opt
-ed
- only
- Roman
- traditions
-","
-El
-imin
-ated
- Roman
- influence
-"]},{"
-question":"
-What
- kind
- of
- changes
- did
- Britain
- experience
- post
+ departure
+ due
+ to
+ empire
+ pressures
+.\
+n
+-
+ Post
 -R
 oman
- rule
-?
-","answers":["
-C
-ultural
+ changes
  and
- technological
-"],"distractors":["
-Only
- military
-","
-Only
- agricultural
-"]}]}}],"prompt":{"
+ Sax
+on
+ invas
+ions
+.\
+n
+-
+ Role
+ of
+ archae
+ologists
+ in
+ uncover
+ing
+ history
+.\
+n
+\n
+Search
+ terms
+ for
+ images
+:
+ \"
+Roman
+ soldier
+ armour
+\",
+ \"
+Roman
+ roads
+\",
+ \"
+S
+axon
+ settlements
+\",
+ \"
+Roman
+ artifacts
+\"
+."
+},"status":"
+complete
+"}],"sectionsEdited":["
+additional
+Materials
+"],"prompt":{"
 type":"
 text
 ","value":"
-The
- quizzes
- and
- learning
- cycles
+I
  have
- been
- created
-.
- These
- include
- questions
+ added
+ a
+ narrative
+ script
  to
- test
- understanding
- at
- each
- stage
+ support
+ the
+ lesson
+ delivery
 .
  Are
  the
- quizzes
- and
- learning
- cycles
- at
- an
+ additional
+ materials
  appropriate
- difficulty
- level
  for
  your
  pupils
 ?
- Let
- me
- know
- if
- you
- need
- any
- adjustments
-!"
-}}
+ If
+ not
+,
+ suggest
+ an
+ edit
+.
+ Otherwise
+,
+ tap
+ **
+Continue
+**
+ to
+ complete
+ the
+ lesson
+ plan
+."
+},"status":"
+complete
+"}

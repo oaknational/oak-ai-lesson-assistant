@@ -1,5 +1,5 @@
 import moderationCategories from "./moderationCategories.json";
-import { ModerationBase, ModerationResult } from "./moderationSchema";
+import type { ModerationBase, ModerationResult } from "./moderationSchema";
 
 export function isToxic(result: ModerationBase): boolean {
   return result.categories.some((category) =>

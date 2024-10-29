@@ -1,4 +1,4 @@
-import { JsonValue } from "@prisma/client/runtime/library";
+import type { JsonValue } from "@prisma/client/runtime/library";
 import { z } from "zod";
 
 export type ModerationBase = {

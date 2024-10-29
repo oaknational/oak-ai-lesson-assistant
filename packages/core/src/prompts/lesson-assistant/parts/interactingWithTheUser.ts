@@ -1,8 +1,8 @@
 import { aiLogger } from "@oakai/logger";
 
-import { TemplateProps } from "..";
+import type { TemplateProps } from "..";
 import { allSectionsInOrder } from "../../../../../../apps/nextjs/src/lib/lessonPlan/sectionsInOrder";
-import {
+import type {
   LessonPlanKeys,
   LooseLessonPlan,
 } from "../../../../../aila/src/protocol/schema";

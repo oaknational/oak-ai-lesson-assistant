@@ -1,5 +1,5 @@
-import { AilaServices } from "../../core";
-import { AnalyticsAdapter } from "./adapters/AnalyticsAdapter";
+import type { AilaServices } from "../../core";
+import type { AnalyticsAdapter } from "./adapters/AnalyticsAdapter";
 
 export class AilaAnalytics {
   private _aila: AilaServices;
