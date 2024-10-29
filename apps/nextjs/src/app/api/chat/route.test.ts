@@ -1,6 +1,6 @@
-import type { AilaInitializationOptions } from "@oakai/aila";
-import { Aila } from "@oakai/aila";
+import { Aila } from "@oakai/aila/src/core/Aila";
 import { MockLLMService } from "@oakai/aila/src/core/llm/MockLLMService";
+import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
 import { MockCategoriser } from "@oakai/aila/src/features/categorisation/categorisers/MockCategoriser";
 import { mockTracer } from "@oakai/core/src/tracing/mockTracer";
 import { NextRequest } from "next/server";

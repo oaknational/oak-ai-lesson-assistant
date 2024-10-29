@@ -3,7 +3,7 @@ import type { PrismaClientWithAccelerate } from "@oakai/db";
 import type { Step } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { jsonlToArray } from "../utils/jsonlToArray";
-import type { BatchTask} from "./customId";
+import type { BatchTask } from "./customId";
 import { getLessonIdFromCustomId } from "./customId";
 import { downloadOpenAiFile } from "./downloadOpenAiFile";
 
@@ -34,9 +34,16 @@ export async function handleOpenAiBatchErrorFile({
   });
   const text = await file.text();
   const jsonArray = jsonlToArray(text);
-  const lessonIds = jsonArray.map((json) =>
-    getLessonIdFromCustomId(json.custom_id),
-  );
+  const lessonIds = jsonArray
+    .map((json) =>
+      typeof json === "object" &&
+      json !== null &&
+      "custom_id" in json &&
+      typeof json.custom_id === "string"
+        ? getLessonIdFromCustomId(json.custom_id)
+        : undefined,
+    )
+    .filter((lessonId): lessonId is string => lessonId !== undefined);
 
   await updateLessonsState({
     ingestId,

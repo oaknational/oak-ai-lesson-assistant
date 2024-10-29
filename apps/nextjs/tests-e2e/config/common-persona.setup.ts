@@ -1,4 +1,5 @@
-import { Page, test as setup } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { test as setup } from "@playwright/test";
 import path from "path";
 
 import { prepareUser } from "../helpers/auth";
