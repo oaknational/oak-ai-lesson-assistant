@@ -1,4 +1,4 @@
-import { ZodEventSchemas } from "inngest";
+import type { ZodEventSchemas } from "inngest";
 import { z } from "zod";
 
 import { populateDemoStatusesSchema } from "./demo/populateDemoStatuses.schema";

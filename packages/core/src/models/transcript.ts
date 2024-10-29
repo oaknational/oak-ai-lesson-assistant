@@ -1,4 +1,4 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { Document } from "langchain/document";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { PromptTemplate } from "langchain/prompts";

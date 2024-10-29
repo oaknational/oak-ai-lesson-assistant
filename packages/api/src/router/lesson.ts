@@ -1,5 +1,6 @@
 import { Lessons, inngest } from "@oakai/core";
-import { LessonSummary, LessonWithSnippets, Transcript } from "@oakai/db";
+import type { LessonSummary, Transcript } from "@oakai/db";
+import { LessonWithSnippets } from "@oakai/db";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 

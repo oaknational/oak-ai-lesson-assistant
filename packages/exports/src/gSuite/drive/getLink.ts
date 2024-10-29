@@ -1,6 +1,6 @@
-import { drive_v3 } from "@googleapis/drive";
+import type { drive_v3 } from "@googleapis/drive";
 
-import { Result } from "../../types";
+import type { Result } from "../../types";
 
 /**
  * @description Returns a link to the file.

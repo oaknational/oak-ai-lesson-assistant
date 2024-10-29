@@ -5,29 +5,32 @@ import {
 } from "@oakai/core/src/utils/subjects";
 import invariant from "tiny-invariant";
 
-import { AilaChatService, AilaError, AilaServices } from "../..";
+import type { AilaChatService, AilaServices } from "../..";
+import { AilaError } from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
+import type {
+  AilaGenerationStatus} from "../../features/generation";
 import {
-  AilaGeneration,
-  AilaGenerationStatus,
+  AilaGeneration
 } from "../../features/generation";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
+import type {
+  JsonPatchDocumentOptional} from "../../protocol/jsonPatchProtocol";
 import {
-  JsonPatchDocumentOptional,
   LLMMessageSchema,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
-import {
+import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
 } from "../../protocol/schema";
-import { LLMService } from "../llm/LLMService";
+import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
-import { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
+import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
-import { Message } from "./types";
+import type { Message } from "./types";
 
 export class AilaChat implements AilaChatService {
   private readonly _id: string;

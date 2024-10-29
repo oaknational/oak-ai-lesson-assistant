@@ -1,11 +1,12 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { getIngestById } from "../db-helpers/getIngestById";
 import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
-import { Step, getPrevStep } from "../db-helpers/step";
+import type { Step} from "../db-helpers/step";
+import { getPrevStep } from "../db-helpers/step";
 import { startEmbedding } from "../embedding/startEmbedding";
 import { parseCustomId } from "../openai-batches/customId";
-import { IngestLogger } from "../types";
+import type { IngestLogger } from "../types";
 import { chunkAndPromiseAll } from "../utils/chunkAndPromiseAll";
 
 const currentStep: Step = "embedding";

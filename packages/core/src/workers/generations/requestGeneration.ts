@@ -1,19 +1,22 @@
-import { GenerationStatus, ModerationType, Prisma, prisma } from "@oakai/db";
+import type { Prisma} from "@oakai/db";
+import { GenerationStatus, ModerationType, prisma } from "@oakai/db";
+import type {
+  StructuredLogger} from "@oakai/logger";
 import {
   structuredLogger as baseLogger,
-  aiLogger,
-  StructuredLogger,
+  aiLogger
 } from "@oakai/logger";
 import { Redis } from "@upstash/redis";
 import { NonRetriableError } from "inngest";
-import { z } from "zod";
+import type { z } from "zod";
 
 import { createOpenAIModerationsClient } from "../../llm/openai";
 import { SafetyViolations } from "../../models";
 import { Generations } from "../../models/generations";
-import {
+import type {
   CompletionResult,
-  Json,
+  Json} from "../../models/prompts";
+import {
   LLMCompletionError,
   LLMRefusalError,
   Prompts,

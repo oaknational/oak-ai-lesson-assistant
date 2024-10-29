@@ -1,6 +1,6 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { Step, StepStatus } from "./step";
+import type { Step, StepStatus } from "./step";
 
 export async function updateLessonsState({
   prisma,

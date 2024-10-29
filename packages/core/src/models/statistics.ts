@@ -1,4 +1,5 @@
-import { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
+import { Prisma } from "@oakai/db";
 
 export class Statistics {
   constructor(private readonly prisma: PrismaClientWithAccelerate) {}

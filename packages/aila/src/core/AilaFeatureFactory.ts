@@ -6,22 +6,23 @@ import {
 import { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import { SentryErrorReporter } from "../features/errorReporting/reporters/SentryErrorReporter";
 import { AilaModeration } from "../features/moderation";
+import type {
+  OpenAILike} from "../features/moderation/moderators/OpenAiModerator";
 import {
-  OpenAILike,
   OpenAiModerator,
 } from "../features/moderation/moderators/OpenAiModerator";
 import { AilaPrismaPersistence } from "../features/persistence/adaptors/prisma";
 import { AilaSnapshotStore } from "../features/snapshotStore";
 import { AilaThreatDetection } from "../features/threatDetection";
-import {
+import type {
   AilaAnalyticsFeature,
   AilaErrorReportingFeature,
   AilaModerationFeature,
   AilaPersistenceFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
-import { AilaServices } from "./AilaServices";
-import { AilaOptions } from "./types";
+import type { AilaServices } from "./AilaServices";
+import type { AilaOptions } from "./types";
 
 export class AilaFeatureFactory {
   static createAnalytics(

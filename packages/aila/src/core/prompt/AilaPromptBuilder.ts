@@ -1,7 +1,7 @@
 import { jsonrepair } from "jsonrepair";
 
-import { Message } from "..";
-import { AilaServices } from "../..";
+import type { Message } from "..";
+import type { AilaServices } from "../..";
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
 
 export abstract class AilaPromptBuilder {

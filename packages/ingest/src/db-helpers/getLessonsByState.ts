@@ -1,7 +1,7 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { RawLessonSchema } from "../zod-schema/zodSchema";
-import { Step, StepStatus } from "./step";
+import type { Step, StepStatus } from "./step";
 
 export async function getLessonsByState({
   prisma,

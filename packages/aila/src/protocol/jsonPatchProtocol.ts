@@ -1,8 +1,9 @@
 import { moderationCategoriesSchema } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
+import type {
+  Operation} from "fast-json-patch";
 import {
-  Operation,
   applyPatch,
   deepClone,
   JsonPatchError,
@@ -11,6 +12,8 @@ import untruncateJson from "untruncate-json";
 import { z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 
+import type {
+  LooseLessonPlan} from "./schema";
 import {
   BasedOnOptionalSchema,
   BasedOnSchema,
@@ -21,7 +24,6 @@ import {
   KeywordsSchema,
   KeywordsSchemaWithoutLength,
   LessonPlanSchemaWhilstStreaming,
-  LooseLessonPlan,
   MisconceptionsOptionalSchema,
   MisconceptionsSchema,
   MisconceptionsSchemaWithoutLength,

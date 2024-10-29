@@ -1,4 +1,4 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { inngest } from "../client";
 import { embedWithCache } from "../utils/embeddings";

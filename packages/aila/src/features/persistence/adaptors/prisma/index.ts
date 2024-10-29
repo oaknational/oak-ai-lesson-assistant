@@ -1,22 +1,25 @@
-import {
+import type {
   Prisma,
-  PrismaClientWithAccelerate,
+  PrismaClientWithAccelerate} from "@oakai/db";
+import {
   prisma as globalPrisma,
 } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { AilaPersistence } from "../..";
-import {
-  AilaAuthenticationError,
+import type {
   AilaChatService,
-  AilaServices,
-} from "../../../../core";
+  AilaServices} from "../../../../core";
 import {
+  AilaAuthenticationError
+} from "../../../../core";
+import type {
   AilaPersistedChat,
-  LessonPlanKeys,
+  LessonPlanKeys} from "../../../../protocol/schema";
+import {
   chatSchema,
 } from "../../../../protocol/schema";
-import { AilaGeneration } from "../../../generation";
+import type { AilaGeneration } from "../../../generation";
 
 const log = aiLogger("aila:persistence");
 

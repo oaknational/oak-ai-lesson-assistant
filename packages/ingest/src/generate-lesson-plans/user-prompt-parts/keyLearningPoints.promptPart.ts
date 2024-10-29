@@ -1,4 +1,4 @@
-import { RawLesson } from "../../zod-schema/zodSchema";
+import type { RawLesson } from "../../zod-schema/zodSchema";
 import { toMarkdownList } from "./toMarkdownList";
 
 export const keyLearningPointsPromptPart = ({
