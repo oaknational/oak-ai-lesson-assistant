@@ -1,4 +1,5 @@
-import { AilaAuthenticationError, AilaThreatDetectionError } from "@oakai/aila";
+import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
+import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
 import type {
   ActionDocument,
   ErrorDocument,

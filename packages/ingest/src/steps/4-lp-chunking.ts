@@ -1,13 +1,10 @@
-import type {
-  CompletedLessonPlan} from "@oakai/aila/src/protocol/schema";
-import {
-  CompletedLessonPlanSchema,
-} from "@oakai/aila/src/protocol/schema";
+import type { CompletedLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { CompletedLessonPlanSchema } from "@oakai/aila/src/protocol/schema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { getLessonPlanParts } from "../chunking/getLessonPlanParts";
 import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
-import type { Step} from "../db-helpers/step";
+import type { Step } from "../db-helpers/step";
 import { getPrevStep } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import type { IngestLogger } from "../types";
