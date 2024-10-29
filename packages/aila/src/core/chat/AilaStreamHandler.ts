@@ -44,7 +44,12 @@ export class AilaStreamHandler {
         await this.readFromStream();
       }
     } catch (e) {
-      this.handleStreamError(e);
+      try {
+        await this.handleStreamError(e);
+      } catch (error) {
+        this._chat.aila.errorReporter?.reportError(error);
+        log.error("Error handling stream error", error);
+      }
       log.info("Stream error", e, this._chat.iteration, this._chat.id);
     } finally {
       this._isStreaming = false;
