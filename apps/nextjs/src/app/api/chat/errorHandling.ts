@@ -4,7 +4,7 @@ import type {
   ErrorDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { handleHeliconeError } from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
-import { UserBannedError } from "@oakai/core/src/models/safetyViolations";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
 import type { PrismaClientWithAccelerate } from "@oakai/db";

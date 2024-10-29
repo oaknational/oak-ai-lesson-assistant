@@ -1,7 +1,7 @@
 // Called with pnpm run process:lessons -- --keyStage=3 --subject=religious-education
 import invariant from "tiny-invariant";
 
-import { inngest } from "../client";
+import { inngest } from "../inngest";
 
 const main = async () => {
   try {

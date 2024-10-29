@@ -16,7 +16,7 @@ import { PromptTemplate } from "langchain/prompts";
 import { RunnableSequence } from "langchain/schema/runnable";
 import { z } from "zod";
 
-import { inngest } from "../client";
+import { inngest } from "../inngest";
 import { createOpenAILangchainClient } from "../llm/openai";
 import type { SnippetWithLesson} from "./snippets";
 import { Snippets } from "./snippets";

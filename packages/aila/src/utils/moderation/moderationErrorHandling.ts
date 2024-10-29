@@ -1,5 +1,5 @@
 import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
-import { UserBannedError } from "@oakai/core/src/models/safetyViolations";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import type { AilaThreatDetectionError } from "../../features/threatDetection/types";

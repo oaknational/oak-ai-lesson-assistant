@@ -31,7 +31,7 @@ import { generatePlansForSubjectLessons } from "./src/functions/subject/generate
 import { summariseSubjectLessons } from "./src/functions/subject/summariseSubjectLessons";
 import { generateTranscriptEmbeddings } from "./src/functions/transcript/generateTranscriptEmbeddings";
 
-export { inngest } from "./src/client";
+export { inngest } from "./src/inngest";
 export * from "./src/data/subjectsAndKeyStages";
 export * from "./src/models";
 //export * from "./src/models/promptVariants";
