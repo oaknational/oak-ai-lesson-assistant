@@ -1,11 +1,10 @@
 "use client";
 
-import type { ClerkMiddlewareAuthObject } from "@clerk/nextjs/dist/types/server";
 import * as Sentry from "@sentry/nextjs";
 
 import { useClerkIdentify } from "../clerk/useClerkIdentify";
 
-const sentrySetUser = ({ userId }: ClerkMiddlewareAuthObject) => {
+const sentrySetUser = ({ userId }: { userId: string }) => {
   if (userId) {
     Sentry.setUser({
       id: userId,
