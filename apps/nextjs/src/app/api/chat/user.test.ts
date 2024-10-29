@@ -1,10 +1,9 @@
-import { inngest } from "@oakai/core";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
 
 import { reportRateLimitError } from "./user";
 
-jest.mock("@oakai/core/src/client", () => ({
+jest.mock("@oakai/core/src/inngest", () => ({
   inngest: {
     createFunction: jest.fn(),
     send: jest.fn(),
@@ -62,6 +61,8 @@ describe("chat route user functions", () => {
       const chatId = "testChatId";
 
       await reportRateLimitError(error, userId, chatId);
+
+      const { inngest } = await import("@oakai/core/src/inngest");
 
       expect(inngest.send).toHaveBeenCalledTimes(1);
       expect(inngest.send).toHaveBeenCalledWith({

@@ -1,7 +1,7 @@
 import { LessonPlanStatus, prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 import { LessonPlans } from "../../models";
 
 const log = aiLogger("lessons");
