@@ -3,8 +3,7 @@ import { deepClone } from "fast-json-patch";
 
 import { AilaCategorisation } from "../../features/categorisation/categorisers/AilaCategorisation";
 import type { AilaCategorisationFeature } from "../../features/types";
-import type {
-  PatchDocument} from "../../protocol/jsonPatchProtocol";
+import type { PatchDocument } from "../../protocol/jsonPatchProtocol";
 import {
   applyLessonPlanPatch,
   extractPatches,
@@ -38,7 +37,7 @@ export class AilaLesson implements AilaLessonService {
     this._categoriser =
       categoriser ??
       new AilaCategorisation({
-        aila: this._aila,
+        aila,
       });
   }
 
