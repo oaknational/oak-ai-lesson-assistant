@@ -156,7 +156,7 @@ export class AilaChat implements AilaChatService {
     });
   }
 
-  public async systemMessage() {
+  public systemMessage() {
     invariant(this._generation?.systemPrompt, "System prompt not initialised");
     return {
       id: generateMessageId({ role: "system" }),
@@ -165,12 +165,12 @@ export class AilaChat implements AilaChatService {
     };
   }
 
-  public async completionMessages() {
+  public completionMessages() {
     const reducedMessages = this._promptBuilder.reduceMessagesForPrompt(
       this._messages,
     );
 
-    const systemMessage = await this.systemMessage();
+    const systemMessage = this.systemMessage();
     const applicableMessages: Message[] = [systemMessage, ...reducedMessages]; // only send
 
     if (this._aila?.lesson.hasSetInitialState) {
