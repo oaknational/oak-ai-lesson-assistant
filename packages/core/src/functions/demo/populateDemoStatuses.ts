@@ -1,7 +1,7 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { aiLogger } from "@oakai/logger";
 
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 import { populateDemoStatusesSchema } from "./populateDemoStatuses.schema";
 
 const log = aiLogger("demo");

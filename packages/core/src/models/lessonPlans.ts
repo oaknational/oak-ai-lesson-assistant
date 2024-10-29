@@ -14,7 +14,7 @@ import { aiLogger } from "@oakai/logger";
 
 import { LLMResponseJsonSchema } from "../../../aila/src/protocol/jsonPatchProtocol";
 import { LessonPlanJsonSchema } from "../../../aila/src/protocol/schema";
-import { inngest } from "../client";
+import { inngest } from "../inngest";
 import { createOpenAIClient } from "../llm/openai";
 import { template } from "../prompts/lesson-assistant";
 import { RAG } from "../rag";

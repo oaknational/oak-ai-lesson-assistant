@@ -4,7 +4,7 @@ import {
   prisma as globalPrisma,
   type PrismaClientWithAccelerate,
 } from "@oakai/db";
-import { nanoid } from "ai";
+import { nanoid } from "nanoid";
 
 import { createWebActionsPlugin } from "./webActionsPlugin";
 

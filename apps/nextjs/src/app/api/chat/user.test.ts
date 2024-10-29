@@ -62,7 +62,6 @@ describe("chat route user functions", () => {
       const chatId = "testChatId";
 
       await reportRateLimitError(error, userId, chatId);
-
       expect(inngest.send).toHaveBeenCalledTimes(1);
       expect(inngest.send).toHaveBeenCalledWith({
         name: "app/slack.notifyRateLimit",

@@ -5,10 +5,9 @@ import type {
   QuizQuestion,
   Snippet,
   SnippetVariant,
-  Transcript} from "@oakai/db";
-import {
-  ZLesson,
+  Transcript,
 } from "@oakai/db";
+import { ZLesson } from "@oakai/db";
 import { ZNewLesson } from "@oakai/db/schemas/lesson";
 import { aiLogger } from "@oakai/logger";
 import { StructuredOutputParser } from "langchain/output_parsers";
@@ -16,11 +15,11 @@ import { PromptTemplate } from "langchain/prompts";
 import { RunnableSequence } from "langchain/schema/runnable";
 import { z } from "zod";
 
-import { inngest } from "../client";
+import { inngest } from "../inngest";
 import { createOpenAILangchainClient } from "../llm/langchain";
-import type { SnippetWithLesson} from "./snippets";
+import type { SnippetWithLesson } from "./snippets";
 import { Snippets } from "./snippets";
-import type { Caption} from "./types/caption";
+import type { Caption } from "./types/caption";
 import { CaptionsSchema } from "./types/caption";
 
 const log = aiLogger("lessons");

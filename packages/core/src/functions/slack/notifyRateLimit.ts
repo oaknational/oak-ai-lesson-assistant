@@ -1,4 +1,4 @@
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 import {
   slackNotificationChannelId,
   slackWebClient,

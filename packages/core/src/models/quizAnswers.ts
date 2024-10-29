@@ -1,6 +1,6 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { inngest } from "../client";
+import { inngest } from "../inngest";
 import { embedWithCache } from "../utils/embeddings";
 
 export class QuizAnswers {

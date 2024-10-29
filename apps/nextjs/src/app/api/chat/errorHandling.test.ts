@@ -1,5 +1,5 @@
 import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
-import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
+import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
 import * as moderationErrorHandling from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
@@ -38,7 +38,7 @@ describe("handleChatException", () => {
 
       expect(response.status).toBe(200);
 
-      invariant(response.body instanceof ReadableStream);
+      invariant(response.body);
       const message = extractStreamMessage(await consumeStream(response.body));
 
       expect(message).toEqual({
