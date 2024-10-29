@@ -15,7 +15,7 @@ export class Statistics {
     const sql = this.getStatsUpsertSql(
       Prisma.raw("median-generation-total-duration-ms"),
       Prisma.raw(
-        `percentile_cont(0.5) WITHIN GROUP (ORDER BY (EXTRACT(EPOCH FROM (completed_at - created_at)) * 1000))::INT`,
+        "percentile_cont(0.5) WITHIN GROUP (ORDER BY (EXTRACT(EPOCH FROM (completed_at - created_at)) * 1000))::INT",
       ),
     );
     await this.prisma.$executeRaw(sql);
@@ -25,7 +25,7 @@ export class Statistics {
     const sql = this.getStatsUpsertSql(
       Prisma.raw("mean-generation-total-duration-ms"),
       Prisma.raw(
-        `AVG((EXTRACT(EPOCH FROM (completed_at - created_at)) * 1000))::INT`,
+        "AVG((EXTRACT(EPOCH FROM (completed_at - created_at)) * 1000))::INT",
       ),
     );
     await this.prisma.$executeRaw(sql);
@@ -35,7 +35,7 @@ export class Statistics {
     const sql = this.getStatsUpsertSql(
       Prisma.raw("median-generation-llm-duration-ms"),
       Prisma.raw(
-        `ROUND(percentile_cont(0.5) WITHIN GROUP (ORDER BY llm_time_taken))`,
+        "ROUND(percentile_cont(0.5) WITHIN GROUP (ORDER BY llm_time_taken))",
       ),
     );
     await this.prisma.$executeRaw(sql);
@@ -44,7 +44,7 @@ export class Statistics {
   async updateMeanGenerationLlmDurations() {
     const sql = this.getStatsUpsertSql(
       Prisma.raw("mean-generation-llm-duration-ms"),
-      Prisma.raw(`AVG(generations.llm_time_taken)::INT`),
+      Prisma.raw("AVG(generations.llm_time_taken)::INT"),
     );
     await this.prisma.$executeRaw(sql);
   }

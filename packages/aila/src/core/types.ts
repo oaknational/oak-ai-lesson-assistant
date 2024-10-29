@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db/client";
 
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AnalyticsAdapter } from "../features/analytics";

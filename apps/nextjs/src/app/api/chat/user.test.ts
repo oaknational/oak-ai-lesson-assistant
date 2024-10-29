@@ -1,4 +1,5 @@
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import { inngest } from "@oakai/core/src/inngest";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
 
 import { reportRateLimitError } from "./user";
@@ -61,9 +62,6 @@ describe("chat route user functions", () => {
       const chatId = "testChatId";
 
       await reportRateLimitError(error, userId, chatId);
-
-      const { inngest } = await import("@oakai/core/src/inngest");
-
       expect(inngest.send).toHaveBeenCalledTimes(1);
       expect(inngest.send).toHaveBeenCalledWith({
         name: "app/slack.notifyRateLimit",
