@@ -1,5 +1,7 @@
+import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import type { AilaErrorReporter } from "../features/errorReporting";
+import type { AilaRagFeature } from "../features/rag";
 import type { AilaSnapshotStore } from "../features/snapshotStore";
 import type {
   AilaAnalyticsFeature,
@@ -14,8 +16,8 @@ import type {
   LooseLessonPlan,
 } from "../protocol/schema";
 import type { Message } from "./chat";
-import type { AilaOptionsWithDefaultFallbackValues } from "./index";
 import type { AilaPlugin } from "./plugins";
+import type { AilaOptionsWithDefaultFallbackValues } from "./types";
 
 // This provides a set of interfaces between the Aila core and the features that use it.
 // We can then mock these out in tests without needing to instantiate the entire Aila object.
@@ -64,4 +66,6 @@ export interface AilaServices {
   readonly persistence?: AilaPersistenceFeature[];
   readonly moderation?: AilaModerationFeature;
   readonly plugins: AilaPlugin[];
+  readonly rag: AilaRagFeature;
+  readonly americanisms: AilaAmericanismsFeature;
 }
