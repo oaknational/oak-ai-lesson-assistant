@@ -1,7 +1,8 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
-import { TestSupportRouter } from "@oakai/api/src/router/testSupport";
+import type { TestSupportRouter } from "@oakai/api/src/router/testSupport";
 import { transformer } from "@oakai/api/transformer";
-import { test, Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { test } from "@playwright/test";
 import { createTRPCProxyClient, httpBatchLink, loggerLink } from "@trpc/client";
 
 import {

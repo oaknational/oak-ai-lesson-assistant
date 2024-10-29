@@ -1,4 +1,4 @@
-import { type PostHog } from "posthog-js";
+import type { PostHog } from "posthog-js";
 
 export function checkFeatureFlag(
   posthogClient: PostHog,
