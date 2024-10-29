@@ -21,7 +21,7 @@ import SlidesIcon from "../../SVGParts/SlidesIcon";
 
 const log = aiLogger("chat");
 
-const allexportLinksObject = z.object({
+const allExportLinksObject = z.object({
   lessonSlides: z.string(),
   lessonPlan: z.string(),
   worksheet: z.string(),
@@ -114,7 +114,7 @@ export const DownloadAllButton = ({
       try {
         const lessonTitle = lesson.title;
         if (!lessonTitle) return;
-        const parsedData = allexportLinksObject.parse(data);
+        const parsedData = allExportLinksObject.parse(data);
         mutateAsync({
           lessonTitle,
           slidesLink: parsedData.lessonSlides,
@@ -188,8 +188,8 @@ export const DownloadAllButton = ({
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
               Email me
-              {isSuccess && `- email sent`}{" "}
-              {isError && `- There was an error sending the email!`}
+              {isSuccess && "- email sent"}{" "}
+              {isError && "- There was an error sending the email!"}
             </span>
             <span className="text-left opacity-80">
               Google account needed for this option
@@ -202,7 +202,7 @@ export const DownloadAllButton = ({
   return (
     <>
       <button
-        className={`flex items-center justify-between gap-9 rounded-md border-2 border-black px-14 py-10 ${downloadAvailable ? `border-opacity-100` : ` border-opacity-40`}`}
+        className={`flex items-center justify-between gap-9 rounded-md border-2 border-black px-14 py-10 ${downloadAvailable ? "border-opacity-100" : " border-opacity-40"}`}
         onClick={() => onClick()}
         disabled={!downloadAvailable}
         data-testid={dataTestId}

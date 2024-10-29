@@ -2,7 +2,7 @@ import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { getIngestById } from "../db-helpers/getIngestById";
 import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
-import type { Step} from "../db-helpers/step";
+import type { Step } from "../db-helpers/step";
 import { getPrevStep } from "../db-helpers/step";
 import { startEmbedding } from "../embedding/startEmbedding";
 import { parseCustomId } from "../openai-batches/customId";

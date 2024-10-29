@@ -59,7 +59,7 @@ function GenerationInputAndText({
         className={
           userIsEditing
             ? "hidden"
-            : `flex text-lg ${isLoading && `line-through opacity-60	`}`
+            : `flex text-lg ${isLoading && "line-through opacity-60	"}`
         }
       >
         {children}
