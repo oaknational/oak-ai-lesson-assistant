@@ -71,7 +71,7 @@ import reload from "@/assets/svg/reload.svg";
 import uploadWhite from "@/assets/svg/upload-white.svg";
 import upload from "@/assets/svg/upload.svg";
 
-import { IconName } from "./types";
+import type { IconName } from "./types";
 
 export const svgs: Record<IconName, string> = {
   "arrow-left": arrowLeft,

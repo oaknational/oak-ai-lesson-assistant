@@ -1,8 +1,5 @@
 import { Box, Flex, Text } from "@radix-ui/themes";
-import type {
-  AnswerAndDistractor,
-  OptionWithPrompt,
-} from "ai-apps/comparative-judgement/state/types";
+import type { OptionWithPrompt } from "ai-apps/comparative-judgement/state/types";
 
 import { sortAlphabetically } from "@/utils/alphabetiseArray";
 
