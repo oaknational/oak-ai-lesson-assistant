@@ -382,7 +382,6 @@ describe("Aila", () => {
       // Use MockLLMService to generate a response
       await ailaInstance.generateSync({ input: "Test input" });
 
-      console.log("Generated");
       // Check if MockLLMService updates were applied
       expect(ailaInstance.lesson.plan.title).toBe("Updated Mocked Lesson Plan");
       expect(ailaInstance.lesson.plan.subject).toBe("Updated Mocked Subject");
