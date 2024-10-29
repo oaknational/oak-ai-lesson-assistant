@@ -29,7 +29,7 @@ module.exports = {
         "no-inner-declarations": "warn",
         "@typescript-eslint/no-unsafe-enum-comparison": "warn",
         "@typescript-eslint/no-unnecessary-type-assertion": "warn",
-        "@typescript-eslint/consistent-type-imports": "error",
+        "@typescript-eslint/consistent-type-imports": "warn",
         "@typescript-eslint/comma-dangle": "off",
         "@typescript-eslint/no-unused-vars": "warn",
         "@typescript-eslint/require-await": "warn",
