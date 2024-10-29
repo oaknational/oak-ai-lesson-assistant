@@ -1,11 +1,13 @@
 import debug from "debug";
+import invariant from "tiny-invariant";
 
 import browserLogger from "./browser";
 import type { StructuredLogger } from "./structuredLogger";
 import structuredLogger from "./structuredLogger";
 
 if (typeof window !== "undefined") {
-  debug.enable("ai:*");
+  invariant(process.env.NEXT_PUBLIC_DEBUG, "NEXT_PUBLIC_DEBUG is not set");
+  debug.enable(process.env.NEXT_PUBLIC_DEBUG);
 }
 
 const debugBase = debug("ai");
