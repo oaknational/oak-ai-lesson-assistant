@@ -1,16 +1,11 @@
 import type { NextMiddlewareResult } from "next/dist/server/web/types";
-import type {
-  NextFetchEvent,
-  NextMiddleware,
-  NextRequest} from "next/server";
-import {
-  NextResponse,
-} from "next/server";
+import type { NextFetchEvent, NextMiddleware, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 import { getRootErrorCause } from "./lib/errors/getRootErrorCause";
 import { sentryCleanup } from "./lib/sentry/sentryCleanup";
 import { authMiddleware } from "./middlewares/auth.middleware";
-import type { CspConfig} from "./middlewares/csp";
+import type { CspConfig } from "./middlewares/csp";
 import { addCspHeaders } from "./middlewares/csp";
 import { logError } from "./middlewares/middlewareErrorLogging";
 

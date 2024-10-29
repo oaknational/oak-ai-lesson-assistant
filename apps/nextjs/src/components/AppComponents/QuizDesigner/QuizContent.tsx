@@ -1,9 +1,9 @@
-import type { Dispatch} from "react";
+import type { Dispatch } from "react";
 import { useRef } from "react";
 
 import { Box, Container } from "@radix-ui/themes";
 import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import type { QuizAppState} from "ai-apps/quiz-designer/state/types";
+import type { QuizAppState } from "ai-apps/quiz-designer/state/types";
 import { QuizAppStatus } from "ai-apps/quiz-designer/state/types";
 import useShareContent from "hooks/useShareContent";
 import useSuggestedQuestions from "hooks/useSuggestedQuestions";

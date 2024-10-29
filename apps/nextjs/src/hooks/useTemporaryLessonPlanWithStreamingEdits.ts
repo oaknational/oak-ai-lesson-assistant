@@ -1,7 +1,6 @@
 import { useEffect, useRef, useMemo } from "react";
 
-import type {
-  PatchDocument} from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import type { PatchDocument } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import {
   applyLessonPlanPatch,
   extractPatches,

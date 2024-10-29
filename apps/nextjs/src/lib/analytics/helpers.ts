@@ -5,10 +5,9 @@ import { isTruthy } from "remeda";
 
 import type {
   ModeratedContentTypeValueType,
-  ProductValueType} from "../avo/Avo";
-import {
-  ModeratedContentType
+  ProductValueType,
 } from "../avo/Avo";
+import { ModeratedContentType } from "../avo/Avo";
 
 /**
  * These are the actions which a user could take which result in a message

@@ -2,8 +2,7 @@
 
 import { useUser } from "@clerk/nextjs";
 import MuxPlayer from "@mux/mux-player-react";
-import type {
-  OakColorToken} from "@oaknational/oak-components";
+import type { OakColorToken } from "@oaknational/oak-components";
 import {
   OakBox,
   OakFlex,

@@ -1,12 +1,9 @@
-import type { Dispatch} from "react";
+import type { Dispatch } from "react";
 import { useState } from "react";
 
 import { Flex, Text } from "@radix-ui/themes";
-import type {
-  QuizAppAction} from "ai-apps/quiz-designer/state/actions";
-import {
-  QuizAppActions,
-} from "ai-apps/quiz-designer/state/actions";
+import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
 import type { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
 
 import { Icon } from "@/components/Icon";

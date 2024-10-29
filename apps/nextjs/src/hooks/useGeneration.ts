@@ -13,7 +13,7 @@ import type { z } from "zod";
 
 import type { DeepPartial } from "@/utils/types/DeepPartial";
 
-import type { RouterInputs} from "../utils/trpc";
+import type { RouterInputs } from "../utils/trpc";
 import { trpc } from "../utils/trpc";
 import { useDidTransition } from "./useDidTransition";
 

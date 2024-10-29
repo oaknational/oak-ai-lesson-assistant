@@ -6,11 +6,8 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trackDownload } from "@/utils/trackDownload";
 import { trpc } from "@/utils/trpc";
 
-import type {
-  ExportsType} from "../../ExportsDialogs/exports.helpers";
-import {
-  getExportsConfig,
-} from "../../ExportsDialogs/exports.helpers";
+import type { ExportsType } from "../../ExportsDialogs/exports.helpers";
+import { getExportsConfig } from "../../ExportsDialogs/exports.helpers";
 import { Icon } from "../../Icon";
 import LoadingWheel from "../../LoadingWheel";
 import LessonIcon from "../../SVGParts/LessonIcon";

@@ -7,15 +7,10 @@ import {
 import { removeAtIndex, updateAtIndex } from "ai-apps/common/state/helpers";
 import type { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
 
-import type { QuizAppAction} from "./actions";
+import type { QuizAppAction } from "./actions";
 import { QuizAppActions } from "./actions";
-import type {
-  QuizAppState,
-  QuizAppStateQuestion} from "./types";
-import {
-  QuizAppStatus,
-  QuizQuestionType,
-} from "./types";
+import type { QuizAppState, QuizAppStateQuestion } from "./types";
+import { QuizAppStatus, QuizQuestionType } from "./types";
 
 export function quizAppReducer(
   state: QuizAppState,

@@ -20,7 +20,7 @@ import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModerati
 import type { Moderation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
-import type { Message} from "ai";
+import type { Message } from "ai";
 import { nanoid } from "ai";
 import type { ChatRequestOptions, CreateMessage } from "ai";
 import { useChat } from "ai/react";
@@ -31,11 +31,8 @@ import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
 
-import type {
-  AilaStreamingStatus} from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
-import {
-  useAilaStreamingStatus,
-} from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
+import type { AilaStreamingStatus } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
+import { useAilaStreamingStatus } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
 import {
   isAccountLocked,

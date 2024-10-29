@@ -2,10 +2,9 @@ import { useEffect, useMemo } from "react";
 
 import type {
   KeyStageName,
-  SubjectName} from "@oakai/core/src/data/subjectsAndKeyStages";
-import {
-  subjectsAndKeyStages,
+  SubjectName,
 } from "@oakai/core/src/data/subjectsAndKeyStages";
+import { subjectsAndKeyStages } from "@oakai/core/src/data/subjectsAndKeyStages";
 import { Flex } from "@radix-ui/themes";
 
 import Input from "../Input";

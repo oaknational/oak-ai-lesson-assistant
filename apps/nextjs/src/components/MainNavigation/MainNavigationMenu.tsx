@@ -1,4 +1,4 @@
-import type { Ref} from "react";
+import type { Ref } from "react";
 import { forwardRef } from "react";
 
 import { useAuth } from "@clerk/nextjs";

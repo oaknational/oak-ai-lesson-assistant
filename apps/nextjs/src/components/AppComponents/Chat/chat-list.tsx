@@ -1,14 +1,7 @@
 "use client";
 
-import type {
-  Dispatch,
-  SetStateAction} from "react";
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { OakBox, OakFlex, OakIcon, OakSpan } from "@oaknational/oak-components";

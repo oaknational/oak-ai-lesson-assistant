@@ -6,7 +6,8 @@ import type {
   FailedGenerationState,
   GeneratingGenerationState,
   PendingGenerationState,
-  SuccessfulGenerationState} from "hooks/useGeneration";
+  SuccessfulGenerationState,
+} from "hooks/useGeneration";
 import {
   UseGenerationError,
   UseGenerationStatus,

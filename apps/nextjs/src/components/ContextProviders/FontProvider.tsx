@@ -1,13 +1,7 @@
 "use client";
 
-import type {
-  Dispatch} from "react";
-import React, {
-  createContext,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
+import type { Dispatch } from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
 
 interface FontContextProps {
   fontClass: string;

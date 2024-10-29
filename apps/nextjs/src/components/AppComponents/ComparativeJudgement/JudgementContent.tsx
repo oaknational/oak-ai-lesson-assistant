@@ -1,4 +1,4 @@
-import type { Dispatch, SetStateAction} from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { useMemo } from "react";
 
 import { Box, Grid, Text } from "@radix-ui/themes";

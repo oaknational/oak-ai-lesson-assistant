@@ -1,14 +1,9 @@
-import type { NextFetchEvent} from "next/server";
+import type { NextFetchEvent } from "next/server";
 import { NextRequest, NextResponse } from "next/server";
 
 import { handleError } from "./middleware";
-import type {
-  CspConfig,
-  CspEnvironment} from "./middlewares/csp";
-import {
-  addCspHeaders,
-  buildCspHeaders,
-} from "./middlewares/csp";
+import type { CspConfig, CspEnvironment } from "./middlewares/csp";
+import { addCspHeaders, buildCspHeaders } from "./middlewares/csp";
 
 describe("handleError", () => {
   let mockRequest: NextRequest;

@@ -1,10 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import type {
-  LessonDeepPartial} from "@oakai/exports/browser";
-import {
-  exportSlidesFullLessonSchema,
-} from "@oakai/exports/browser";
+import type { LessonDeepPartial } from "@oakai/exports/browser";
+import { exportSlidesFullLessonSchema } from "@oakai/exports/browser";
 import type { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";

@@ -12,8 +12,7 @@ import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 
 import type { ComponentTypeValueType } from "../avo/Avo";
 import { ComponentType } from "../avo/Avo";
-import type {
-  UserAction} from "./helpers";
+import type { UserAction } from "./helpers";
 import {
   getLessonTrackingProps,
   getModerationTypes,

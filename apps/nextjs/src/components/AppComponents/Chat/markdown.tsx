@@ -1,4 +1,4 @@
-import type { FC} from "react";
+import type { FC } from "react";
 import React, { memo } from "react";
 import type { Options } from "react-markdown";
 import ReactMarkdown from "react-markdown";
