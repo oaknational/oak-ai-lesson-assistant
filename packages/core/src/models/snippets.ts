@@ -1,11 +1,5 @@
-import type {
-  PrismaClientWithAccelerate,
-  Snippet} from "@oakai/db";
-import {
-  Prisma,
-  SnippetStatus,
-  SnippetVariant,
-} from "@oakai/db";
+import type { PrismaClientWithAccelerate, Snippet } from "@oakai/db";
+import { Prisma, SnippetStatus, SnippetVariant } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { LLMChain, RetrievalQAChain } from "langchain/chains";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";

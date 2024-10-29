@@ -2,7 +2,7 @@ import { Prisma, prisma } from "@oakai/db";
 import crypto from "crypto";
 import { z } from "zod";
 
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 import { addIdsToMessagesSchema } from "./addIdsToMessages.schema";
 
 const chatSchema = z
