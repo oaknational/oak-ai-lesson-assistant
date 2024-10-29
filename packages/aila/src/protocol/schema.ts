@@ -10,7 +10,9 @@ export const BasedOnSchema = z
       ),
     title: z.string().describe("The human-readable title of the lesson."),
   })
-  .describe("A reference to a lesson plan that this lesson is based on.");
+  .describe(
+    "A reference to a lesson plan that this lesson is based on. This value should only be set if the user has explicitly chosen to base their lesson on an existing lesson plan by selecting one from a selection of options, otherwise this should be blank.",
+  );
 
 export const BasedOnOptionalSchema = z.object({
   id: z.string().optional(),
@@ -78,6 +80,9 @@ export const MisconceptionsOptionalSchema = z.array(
 
 export type Misconception = z.infer<typeof MisconceptionSchema>;
 export type MisconceptionOptional = z.infer<typeof MisconceptionOptionalSchema>;
+export type MisconceptionsOptional = z.infer<
+  typeof MisconceptionsOptionalSchema
+>;
 
 export const QuizQuestionOptionalSchema = z.object({
   question: z.string().optional(),
@@ -501,24 +506,27 @@ export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;
 // TODO old - refactor these to the new types
 
 export type LooseLessonPlan = z.infer<typeof LessonPlanSchemaWhilstStreaming>;
-export type LessonPlanKeys =
-  | "title"
-  | "subject"
-  | "keyStage"
-  | "topic"
-  | "learningOutcome"
-  | "learningCycles"
-  | "priorKnowledge"
-  | "keyLearningPoints"
-  | "misconceptions"
-  | "keywords"
-  | "basedOn"
-  | "starterQuiz"
-  | "exitQuiz"
-  | "cycle1"
-  | "cycle2"
-  | "cycle3"
-  | "additionalMaterials";
+export const LessonPlanKeysSchema = z.enum([
+  "title",
+  "subject",
+  "keyStage",
+  "topic",
+  "learningOutcome",
+  "learningCycles",
+  "priorKnowledge",
+  "keyLearningPoints",
+  "misconceptions",
+  "keywords",
+  "basedOn",
+  "starterQuiz",
+  "exitQuiz",
+  "cycle1",
+  "cycle2",
+  "cycle3",
+  "additionalMaterials",
+]);
+
+export type LessonPlanKeys = z.infer<typeof LessonPlanKeysSchema>;
 export const quizSchema = z.array(QuizSchema);
 
 export const cycleSchema = CycleSchema;
@@ -592,6 +600,8 @@ export const chatSchema = z
     relevantLessons: z.array(AilaRagRelevantLessonSchema).optional(),
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]),
+    updatedAt: z.union([z.date(), z.number()]).optional(),
+    iteration: z.number().optional(),
     startingMessage: z.string().optional(),
     messages: z.array(
       z
@@ -623,6 +633,8 @@ export const chatSchemaWithMissingMessageIds = z
     lessonPlan: LessonPlanSchemaWhilstStreaming,
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]),
+    updatedAt: z.union([z.date(), z.number()]).optional(),
+    iteration: z.number().optional(),
     startingMessage: z.string().optional(),
     messages: z.array(
       z
@@ -646,3 +658,13 @@ export const chatSchemaWithMissingMessageIds = z
 export type AilaPersistedChatWithMissingMessageIds = z.infer<
   typeof chatSchemaWithMissingMessageIds
 >;
+
+export type LessonPlanSectionWhileStreaming =
+  | BasedOnOptional
+  | MisconceptionsOptional
+  | KeywordOptional[]
+  | QuizOptional
+  | CycleOptional
+  | string
+  | string[]
+  | number;

@@ -4,7 +4,6 @@ import {
   subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
 import invariant from "tiny-invariant";
-import { z } from "zod";
 
 import { AilaChatService, AilaError, AilaServices } from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
@@ -15,11 +14,13 @@ import {
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
 import {
   JsonPatchDocumentOptional,
-  LLMPatchDocumentSchema,
-  TextDocumentSchema,
+  LLMMessageSchema,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
-import { AilaRagRelevantLesson } from "../../protocol/schema";
+import {
+  AilaPersistedChat,
+  AilaRagRelevantLesson,
+} from "../../protocol/schema";
 import { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
@@ -40,6 +41,9 @@ export class AilaChat implements AilaChatService {
   private readonly _patchEnqueuer: PatchEnqueuer;
   private readonly _llmService: LLMService;
   private readonly _promptBuilder: AilaPromptBuilder;
+  private _iteration: number | undefined;
+  private _createdAt: Date | undefined;
+  private _persistedChat: AilaPersistedChat | undefined;
 
   constructor({
     id,
@@ -87,12 +91,24 @@ export class AilaChat implements AilaChatService {
     return this._isShared;
   }
 
+  public get iteration() {
+    return this._iteration;
+  }
+
+  public get createdAt() {
+    return this._createdAt;
+  }
+
   public get messages() {
     return this._messages;
   }
 
   public get parsedMessages() {
     return this._messages.map((m) => parseMessageParts(m.content));
+  }
+
+  public get persistedChat() {
+    return this._persistedChat;
   }
 
   public get relevantLessons() {
@@ -214,7 +230,7 @@ export class AilaChat implements AilaChatService {
   }
 
   public async enqueue(message: JsonPatchDocumentOptional) {
-    // Optional "?"" necessary to avoid a "terminated" error
+    // Optional "?" Necessary to avoid a "terminated" error
     if (this?._patchEnqueuer) {
       await this._patchEnqueuer.enqueueMessage(message);
     }
@@ -224,7 +240,7 @@ export class AilaChat implements AilaChatService {
     path: string,
     value: string | string[] | number | object,
   ) {
-    // Optional "?"" necessary to avoid a "terminated" error
+    // Optional "?" necessary to avoid a "terminated" error
     if (this?._patchEnqueuer) {
       await this._patchEnqueuer.enqueuePatch(path, value);
     }
@@ -291,6 +307,9 @@ export class AilaChat implements AilaChatService {
     if (persistedChat) {
       this._relevantLessons = persistedChat.relevantLessons ?? [];
       this._isShared = persistedChat.isShared;
+      this._iteration = persistedChat.iteration ?? 1;
+      this._createdAt = new Date(persistedChat.createdAt);
+      this._persistedChat = persistedChat;
     }
   }
 
@@ -314,14 +333,6 @@ export class AilaChat implements AilaChatService {
     return assistantMessage;
   }
 
-  private async enqueueFinalState() {
-    await this.enqueue({
-      type: "state",
-      reasoning: "final",
-      value: this._aila.lesson.plan,
-    });
-  }
-
   private async enqueueMessageId(messageId: string) {
     await this.enqueue({
       type: "id",
@@ -338,21 +349,9 @@ export class AilaChat implements AilaChatService {
   }
 
   public async createChatCompletionObjectStream(messages: Message[]) {
-    const schema = z.object({
-      type: z.literal("llmMessage"),
-      patches: z
-        .array(LLMPatchDocumentSchema)
-        .describe(
-          "This is the set of patches you have generated to edit the lesson plan. Follow the instructions in the system prompt to ensure that you produce a valid patch. For instance, if you are providing a patch to add a cycle, the op should be 'add' and the value should be the JSON object representing the full, valid cycle. The same applies for all of the other parts of the lesson plan. This should not include more than one 'add' patch for the same section of the lesson plan. These edits will overwrite each other and result in unexpected results. If you want to do multiple updates on the same section, it is best to generate one 'add' patch with all of your edits included.",
-        ),
-      prompt: TextDocumentSchema.describe(
-        "If you imagine the user talking to you, this is where you would put your human-readable reply that would explain the changes you have made (if any), ask them questions, and prompt them to send their next message. This should not contain any of the lesson plan content. That should all be delivered in patches.",
-      ),
-    });
-
     return this._llmService.createChatCompletionObjectStream({
       model: this._aila.options.model ?? DEFAULT_MODEL,
-      schema,
+      schema: LLMMessageSchema,
       schemaName: "response",
       messages,
       temperature: this._aila.options.temperature ?? DEFAULT_TEMPERATURE,
@@ -360,10 +359,6 @@ export class AilaChat implements AilaChatService {
   }
 
   public async complete() {
-    await this.enqueue({
-      type: "comment",
-      value: "CHAT_COMPLETE",
-    });
     await this.reportUsageMetrics();
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
@@ -372,6 +367,10 @@ export class AilaChat implements AilaChatService {
     await this.moderate();
     await this.persistChat();
     await this.persistGeneration("SUCCESS");
+    await this.enqueue({
+      type: "comment",
+      value: "CHAT_COMPLETE",
+    });
   }
 
   public async saveSnapshot({ messageId }: { messageId: string }) {
@@ -415,7 +414,6 @@ export class AilaChat implements AilaChatService {
 
   public async setupGeneration() {
     await this.startNewGeneration();
-    await this.persistChat();
     await this.persistGeneration("REQUESTED");
   }
 

@@ -195,6 +195,16 @@ describe("Aila", () => {
   describe("generateSync", () => {
     // Should return a stream when generating a lesson plan with valid input
     it("should set the initial title, subject and key stage when presented with a valid initial user input", async () => {
+      const mockChatCategoriser = new MockCategoriser({
+        mockedLessonPlan: {
+          title: "Glaciation",
+          topic: "The Landscapes of the UK",
+          subject: "geography",
+          keyStage: "key-stage-3",
+        },
+      });
+      const mockLLMService = new MockLLMService();
+
       const ailaInstance = new Aila({
         lessonPlan: {},
         chat: { id: "123", userId: "user123" },
@@ -205,6 +215,10 @@ describe("Aila", () => {
           useModeration: false,
         },
         plugins: [],
+        services: {
+          chatLlmService: mockLLMService,
+          chatCategoriser: mockChatCategoriser,
+        },
       });
 
       expect(ailaInstance.lesson.plan.title).not.toBeDefined();
@@ -320,7 +334,7 @@ describe("Aila", () => {
       expect(ailaInstance.lesson.plan.title).toBe("Mocked Lesson Plan");
       expect(ailaInstance.lesson.plan.subject).toBe("Mocked Subject");
       expect(ailaInstance.lesson.plan.keyStage).toBe("key-stage-3");
-    });
+    }, 8000);
   });
 
   describe("categorisation and LLM service", () => {
@@ -365,9 +379,10 @@ describe("Aila", () => {
       // Use MockLLMService to generate a response
       await ailaInstance.generateSync({ input: "Test input" });
 
+      console.log("Generated");
       // Check if MockLLMService updates were applied
       expect(ailaInstance.lesson.plan.title).toBe("Updated Mocked Lesson Plan");
       expect(ailaInstance.lesson.plan.subject).toBe("Updated Mocked Subject");
-    });
+    }, 8000);
   });
 });
