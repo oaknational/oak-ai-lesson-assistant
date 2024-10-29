@@ -10,10 +10,10 @@
     "nextjs.js"
   ],
   "dependencies": {
-    "@rushstack/eslint-patch": "^1.6.1",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
-    "@typescript-eslint/typescript-estree": "^7.18.0",
+    "@rushstack/eslint-patch": "^1.10.4",
+    "@typescript-eslint/eslint-plugin": "^8.12.2",
+    "@typescript-eslint/parser": "^8.12.2",
+    "@typescript-eslint/typescript-estree": "^8.12.2",
     "eslint-config-next": "15.0.1",
     "eslint-plugin-jest": "^28.8.3",
     "eslint-plugin-react": "^7.37.2",
@@ -21,11 +21,13 @@
     "eslint-plugin-turbo": "^2.2.3"
   },
   "devDependencies": {
-    "eslint": "^8.56.0",
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.13.0",
+    "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "prettier": "^3.1.1",
-    "typescript": "5.3.3"
+    "typescript": "5.6.3"
   },
   "peerDependencies": {
     "eslint": "^8.36.0",
