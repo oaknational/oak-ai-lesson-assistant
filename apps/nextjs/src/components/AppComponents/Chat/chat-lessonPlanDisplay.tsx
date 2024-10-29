@@ -41,27 +41,6 @@ const displayStyles = cva(
   "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24 ",
 );
 
-const organiseSections = [
-  {
-    trigger: "learningOutcome",
-    dependants: ["learningOutcome", "learningCycles"],
-  },
-  {
-    trigger: "priorKnowledge",
-    dependants: [
-      "priorKnowledge",
-      "keyLearningPoints",
-      "misconceptions",
-      "keywords",
-    ],
-  },
-  {
-    trigger: "starterQuiz",
-    dependants: ["starterQuiz", "cycle1", "cycle2", "cycle3", "exitQuiz"],
-  },
-  { trigger: "additionalMaterials", dependants: ["additionalMaterials"] },
-];
-
 export const LessonPlanDisplay = ({
   chatEndRef,
   sectionRefs,
