@@ -11,7 +11,11 @@ import {
   AilaChatService,
   AilaServices,
 } from "../../../../core";
-import { AilaPersistedChat, chatSchema } from "../../../../protocol/schema";
+import {
+  AilaPersistedChat,
+  LessonPlanKeys,
+  chatSchema,
+} from "../../../../protocol/schema";
 import { AilaGeneration } from "../../../generation";
 
 const log = aiLogger("aila:persistence");
@@ -55,7 +59,12 @@ export class AilaPrismaPersistence extends AilaPersistence {
   }
 
   async upsertChat(): Promise<void> {
+    const currentIteration = this._chat.iteration;
     const payload = this.createChatPayload();
+    const keys = (Object.keys(payload.lessonPlan) as LessonPlanKeys[]).filter(
+      (k) => payload.lessonPlan[k],
+    );
+
     if (!payload.id || !payload.userId) {
       log.info("No ID or userId found for chat. Not persisting.");
       return;
@@ -71,11 +80,19 @@ export class AilaPrismaPersistence extends AilaPersistence {
         userId: payload.userId,
         appId: "lesson-planner",
         output: payload,
+        createdAt: new Date(),
       },
       update: {
         output: payload,
+        updatedAt: new Date(),
       },
     });
+    log.info(
+      `Chat updated from ${currentIteration} to ${payload.iteration}`,
+      `${keys.length}`,
+      keys.join("|"),
+      payload.id,
+    );
   }
 
   async upsertGeneration(generation?: AilaGeneration): Promise<void> {
