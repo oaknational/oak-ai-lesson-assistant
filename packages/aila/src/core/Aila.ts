@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate} from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
@@ -7,7 +7,11 @@ import {
   DEFAULT_TEMPERATURE,
   DEFAULT_RAG_LESSON_PLANS,
 } from "../constants";
+import type { AilaAmericanismsFeature } from "../features/americanisms";
+import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
 import { AilaCategorisation } from "../features/categorisation";
+import type { AilaRagFeature } from "../features/rag";
+import { NullAilaRag } from "../features/rag/NullAilaRag";
 import type { AilaSnapshotStore } from "../features/snapshotStore";
 import type {
   AilaAnalyticsFeature,
@@ -51,9 +55,11 @@ export class Aila implements AilaServices {
   private _persistence: AilaPersistenceFeature[] = [];
   private _threatDetection?: AilaThreatDetectionFeature;
   private _prisma: PrismaClientWithAccelerate;
+  private _rag: AilaRagFeature;
   private _plugins: AilaPlugin[];
   private _userId!: string | undefined;
   private _chatId!: string;
+  private _americanisms: AilaAmericanismsFeature;
 
   constructor(options: AilaInitializationOptions) {
     this._userId = options.chat.userId;
@@ -79,13 +85,14 @@ export class Aila implements AilaServices {
         options.services?.chatCategoriser ??
         new AilaCategorisation({
           aila: this,
-          prisma: this._prisma,
-          chatId: this._chatId,
-          userId: this._userId,
         }),
     });
 
-    this._analytics = AilaFeatureFactory.createAnalytics(this, this._options);
+    this._analytics = AilaFeatureFactory.createAnalytics(
+      this,
+      this._options,
+      options.services?.analyticsAdapters?.(this),
+    );
     this._moderation = AilaFeatureFactory.createModeration(
       this,
       this._options,
@@ -104,6 +111,10 @@ export class Aila implements AilaServices {
       this,
       this._options,
     );
+    this._rag = options.services?.ragService?.(this) ?? new NullAilaRag();
+    this._americanisms =
+      options.services?.americanismsService?.(this) ??
+      new NullAilaAmericanisms();
 
     if (this._analytics) {
       this._analytics.initialiseAnalyticsContext();
@@ -210,6 +221,18 @@ export class Aila implements AilaServices {
 
   public get chatLlmService() {
     return this._chatLlmService;
+  }
+
+  public get rag() {
+    return this._rag;
+  }
+
+  public get americanisms() {
+    return this._americanisms;
+  }
+
+  public get prisma() {
+    return this._prisma;
   }
 
   // Check methods
