@@ -2,7 +2,8 @@ import { cva } from "class-variance-authority";
 
 import type { IconName } from "@/components/Icon";
 
-import ButtonCore, { ButtonVariant } from "./ButtonCore";
+import type { ButtonVariant } from "./ButtonCore";
+import ButtonCore from "./ButtonCore";
 
 interface ButtonProps {
   children?: React.ReactNode;

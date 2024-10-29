@@ -1,6 +1,6 @@
 import React from "react";
 
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 

@@ -27,7 +27,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/AppComponents/Chat/ui/tooltip";
-import { SideBarChatItem } from "@/lib/types";
+import type { SideBarChatItem } from "@/lib/types";
 import { trpc } from "@/utils/trpc";
 
 type SidebarActionsProps = Readonly<{

@@ -1,4 +1,4 @@
-import {
+import type {
   Cycle,
   Keyword,
   Misconception,

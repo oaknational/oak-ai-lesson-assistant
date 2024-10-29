@@ -1,6 +1,7 @@
 "use server";
 
-import { AilaPersistedChat, chatSchema } from "@oakai/aila/src/protocol/schema";
+import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+import { chatSchema } from "@oakai/aila/src/protocol/schema";
 import { type Prisma } from "@oakai/db";
 import { prisma } from "@oakai/db/client";
 import * as Sentry from "@sentry/nextjs";

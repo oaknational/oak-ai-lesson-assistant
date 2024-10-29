@@ -1,4 +1,4 @@
-import { ExportableQuizAppState } from "@oakai/exports/src/schema/input.schema";
+import type { ExportableQuizAppState } from "@oakai/exports/src/schema/input.schema";
 import { convertToGIFTFormat } from "ai-apps/quiz-designer/convertToGIFTFormat";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";

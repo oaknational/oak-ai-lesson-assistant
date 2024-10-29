@@ -1,7 +1,7 @@
-import { OpenAILike } from "@oakai/aila/src/features/moderation/moderators/OpenAiModerator";
+import type { OpenAILike } from "@oakai/aila/src/features/moderation/moderators/OpenAiModerator";
 import { aiLogger } from "@oakai/logger";
 import fs from "fs/promises";
-import OpenAI from "openai";
+import type OpenAI from "openai";
 
 const log = aiLogger("fixtures");
 

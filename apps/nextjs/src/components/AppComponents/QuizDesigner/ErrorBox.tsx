@@ -1,4 +1,5 @@
-import { Box, Responsive } from "@radix-ui/themes";
+import type { Responsive } from "@radix-ui/themes";
+import { Box } from "@radix-ui/themes";
 
 type ErrorBoxProps = {
   message: string | JSX.Element;

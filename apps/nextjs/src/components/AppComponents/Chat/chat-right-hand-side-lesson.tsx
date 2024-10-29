@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
 import AiIcon from "../../AiIcon";
-import { DemoContextProps } from "../../ContextProviders/Demo";
+import type { DemoContextProps } from "../../ContextProviders/Demo";
 import { useDialog } from "../DialogContext";
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
 import ExportButtons from "./export-buttons";

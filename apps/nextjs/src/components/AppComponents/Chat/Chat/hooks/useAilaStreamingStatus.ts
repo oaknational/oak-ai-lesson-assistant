@@ -5,7 +5,7 @@ import {
   LessonPlanKeysSchema,
 } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
-import { Message } from "ai";
+import type { Message } from "ai";
 
 const log = aiLogger("chat");
 

@@ -1,4 +1,4 @@
-import { AilaPlugin } from "@oakai/aila/src/core/plugins";
+import type { AilaPlugin } from "@oakai/aila/src/core/plugins";
 import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
 import { handleHeliconeError } from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
 import { inngest } from "@oakai/core/src/inngest";

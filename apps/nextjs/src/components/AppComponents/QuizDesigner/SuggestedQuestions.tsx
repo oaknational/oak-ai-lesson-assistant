@@ -1,9 +1,9 @@
-import { Dispatch } from "react";
+import type { Dispatch } from "react";
 
 import { Box, Flex, Grid, Text } from "@radix-ui/themes";
-import { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { UseGenerationError } from "hooks/useGeneration";
-import { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
+import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
+import type { UseGenerationError } from "hooks/useGeneration";
+import type { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
 
 import LoadingWheel from "@/components/LoadingWheel";
 

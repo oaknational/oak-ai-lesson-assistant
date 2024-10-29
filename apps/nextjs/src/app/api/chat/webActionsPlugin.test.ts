@@ -1,4 +1,4 @@
-import { AilaPluginContext } from "@oakai/aila/src/core/plugins";
+import type { AilaPluginContext } from "@oakai/aila/src/core/plugins";
 import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import { type PrismaClientWithAccelerate } from "@oakai/db";

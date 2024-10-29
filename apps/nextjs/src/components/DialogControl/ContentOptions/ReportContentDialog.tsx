@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { aiLogger } from "@oakai/logger";
 import { Flex } from "@radix-ui/themes";
-import { Message } from "ai";
+import type { Message } from "ai";
 import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey";
 
 import ChatButton from "@/components/AppComponents/Chat/ui/chat-button";

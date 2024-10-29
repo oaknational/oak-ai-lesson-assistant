@@ -1,4 +1,5 @@
-import { Aila, AilaInitializationOptions } from "@oakai/aila";
+import type { AilaInitializationOptions } from "@oakai/aila";
+import { Aila } from "@oakai/aila";
 import {
   prisma as globalPrisma,
   type PrismaClientWithAccelerate,

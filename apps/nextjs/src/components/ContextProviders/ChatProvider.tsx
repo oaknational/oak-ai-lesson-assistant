@@ -11,19 +11,19 @@ import { toast } from "react-hot-toast";
 
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import {
+import type {
   AilaPersistedChat,
   LessonPlanKeys,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
-import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { camelCaseToTitleCase } from "@oakai/core/src/utils/camelCaseConversion";
-import { Moderation } from "@oakai/db";
+import type { Moderation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
-import { Message } from "ai";
-import { ChatRequestOptions, CreateMessage } from "ai";
+import type { Message } from "ai";
+import type { ChatRequestOptions, CreateMessage } from "ai";
 import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { usePathname, useRouter } from "next/navigation";
@@ -35,10 +35,8 @@ import { useLessonPlanManager } from "@/lib/lessonPlan/useLessonPlanManager";
 import { trpc } from "@/utils/trpc";
 
 import { useLessonPlanScrollManagement } from "../../hooks/useLessonPlanScrollManagement";
-import {
-  AilaStreamingStatus,
-  useAilaStreamingStatus,
-} from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
+import type { AilaStreamingStatus } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
+import { useAilaStreamingStatus } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
 import {
   isAccountLocked,

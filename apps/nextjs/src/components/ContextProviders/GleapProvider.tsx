@@ -1,6 +1,7 @@
 "use client";
 
-import { PropsWithChildren, useEffect } from "react";
+import type { PropsWithChildren } from "react";
+import { useEffect } from "react";
 
 import { useAuth, useUser } from "@clerk/nextjs";
 import { useOakConsent } from "@oaknational/oak-consent-client";

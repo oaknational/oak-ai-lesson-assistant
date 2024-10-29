@@ -1,8 +1,8 @@
-import { RateLimitInfo } from "@oakai/api/src/types";
-import { KeyStageName, SubjectName } from "@oakai/core";
-import { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
+import type { RateLimitInfo } from "@oakai/api/src/types";
+import type { KeyStageName, SubjectName } from "@oakai/core";
+import type { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
 
-import { QuizAppState, QuizQuestionType } from "./types";
+import type { QuizAppState, QuizQuestionType } from "./types";
 
 /**
  * Our action types are declared as a const enum with string values
