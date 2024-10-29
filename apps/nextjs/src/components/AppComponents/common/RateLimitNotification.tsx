@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
-import { RateLimitInfo } from "@oakai/api/src/types";
+import type { RateLimitInfo } from "@oakai/api/src/types";
 import { Box, Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 

@@ -1,7 +1,7 @@
 import { useMemo, useEffect } from "react";
 
 import { aiLogger } from "@oakai/logger";
-import { Message } from "ai";
+import type { Message } from "ai";
 
 const log = aiLogger("chat");
 

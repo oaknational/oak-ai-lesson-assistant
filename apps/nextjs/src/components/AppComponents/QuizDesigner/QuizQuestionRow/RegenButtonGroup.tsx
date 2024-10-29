@@ -1,8 +1,6 @@
 import { Flex } from "@radix-ui/themes";
-import {
-  UseGenerationStatus,
-  isGenerationHookLoading,
-} from "hooks/useGeneration";
+import type { UseGenerationStatus } from "hooks/useGeneration";
+import { isGenerationHookLoading } from "hooks/useGeneration";
 
 import { trpc } from "@/utils/trpc";
 

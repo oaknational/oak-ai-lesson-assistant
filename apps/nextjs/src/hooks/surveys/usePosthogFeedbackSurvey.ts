@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/react";
-import { Survey } from "posthog-js";
+import type { Survey } from "posthog-js";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
 

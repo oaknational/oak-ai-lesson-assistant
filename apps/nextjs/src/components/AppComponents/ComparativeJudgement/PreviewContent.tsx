@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from "@radix-ui/themes";
-import {
+import type {
   AnswerAndDistractor,
   OptionWithPrompt,
 } from "ai-apps/comparative-judgement/state/types";
@@ -17,7 +17,7 @@ type PreviewContentProps = {
 const PreviewContent = ({ option, question }: PreviewContentProps) => {
   if (!option?.answerAndDistractor) return null;
   const answersAndDistractors =
-    option?.answerAndDistractor as AnswerAndDistractor;
+    option?.answerAndDistractor;
   const { answers, distractors } = answersAndDistractors;
 
   const answerAndDistractorArray = [...answers, ...distractors];

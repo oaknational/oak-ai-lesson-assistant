@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { Box, Flex, Heading, Text } from "@radix-ui/themes";
 import { convertQuizToCSV } from "ai-apps/quiz-designer/convertToCSV";
 import { makeExportable } from "ai-apps/quiz-designer/export-helpers";
-import { QuizAppState } from "ai-apps/quiz-designer/state/types";
+import type { QuizAppState } from "ai-apps/quiz-designer/state/types";
 import useShareContent from "hooks/useShareContent";
 
 import Button from "@/components/Button";

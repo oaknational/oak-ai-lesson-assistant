@@ -1,7 +1,7 @@
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Box, Flex } from "@radix-ui/themes";
-import { Message } from "ai";
+import type { Message } from "ai";
 
 import { useDialog } from "../AppComponents/DialogContext";
 import { Icon } from "../Icon";

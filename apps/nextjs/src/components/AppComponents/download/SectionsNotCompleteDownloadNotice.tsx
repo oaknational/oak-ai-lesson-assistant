@@ -12,7 +12,7 @@ import {
 
 import AiIcon from "@/components/SVGParts/AiIcon";
 
-import { ProgressSections } from "../Chat/Chat/hooks/useProgressForDownloads";
+import type { ProgressSections } from "../Chat/Chat/hooks/useProgressForDownloads";
 
 const SectionsNotCompleteDownloadNotice = ({
   sections,

@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { extraQuizPromptInfo } from "ai-apps/quiz-designer/extraQuizPromptInfo";
-import {
-  QuizAppAction,
-  QuizAppActions,
-} from "ai-apps/quiz-designer/state/actions";
-import { QuizAppState, QuizAppStatus } from "ai-apps/quiz-designer/state/types";
+import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
+import type { QuizAppState } from "ai-apps/quiz-designer/state/types";
+import { QuizAppStatus } from "ai-apps/quiz-designer/state/types";
 import { z } from "zod";
 
 import { answersAndDistractorOutputSchema } from "@/components/AppComponents/QuizDesigner/QuizQuestionRow";
