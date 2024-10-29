@@ -8,14 +8,10 @@ import invariant from "tiny-invariant";
 import type { AilaChatService, AilaServices } from "../..";
 import { AilaError } from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
-import type {
-  AilaGenerationStatus} from "../../features/generation";
-import {
-  AilaGeneration
-} from "../../features/generation";
+import type { AilaGenerationStatus } from "../../features/generation";
+import { AilaGeneration } from "../../features/generation";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
-import type {
-  JsonPatchDocumentOptional} from "../../protocol/jsonPatchProtocol";
+import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import {
   LLMMessageSchema,
   parseMessageParts,
@@ -279,7 +275,7 @@ export class AilaChat implements AilaChatService {
       invariant(responseText, "Response text not set");
       await this._generation.complete({ status, responseText });
     }
-    this._generation.persist(status);
+    await this._generation.persist(status);
   }
 
   private async persistChat() {
