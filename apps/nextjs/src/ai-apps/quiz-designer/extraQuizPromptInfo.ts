@@ -1,4 +1,4 @@
-import { QuizAppState, QuizAppStateQuestion } from "./state/types";
+import type { QuizAppState, QuizAppStateQuestion } from "./state/types";
 
 type OtherQuestionForPromptPropos = {
   state: QuizAppState;

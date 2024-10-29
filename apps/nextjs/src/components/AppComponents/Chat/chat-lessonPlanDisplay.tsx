@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
+import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 

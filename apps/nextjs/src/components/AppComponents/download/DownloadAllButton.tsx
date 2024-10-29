@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import { Box } from "@radix-ui/themes";
 import * as Sentry from "@sentry/nextjs";

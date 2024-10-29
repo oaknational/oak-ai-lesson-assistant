@@ -1,10 +1,9 @@
-import { Dispatch, useState } from "react";
+import type { Dispatch } from "react";
+import { useState } from "react";
 
 import { Flex, Heading } from "@radix-ui/themes";
-import {
-  QuizAppAction,
-  QuizAppActions,
-} from "ai-apps/quiz-designer/state/actions";
+import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
 

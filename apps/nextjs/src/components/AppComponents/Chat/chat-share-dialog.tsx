@@ -17,7 +17,7 @@ import {
 } from "@/components/AppComponents/Chat/ui/dialog";
 import { IconSpinner } from "@/components/AppComponents/Chat/ui/icons";
 import { useCopyToClipboard } from "@/lib/hooks/use-copy-to-clipboard";
-import { SideBarChatItem } from "@/lib/types";
+import type { SideBarChatItem } from "@/lib/types";
 import { trpc } from "@/utils/trpc";
 
 import { constructSharePath } from "./Chat/utils";

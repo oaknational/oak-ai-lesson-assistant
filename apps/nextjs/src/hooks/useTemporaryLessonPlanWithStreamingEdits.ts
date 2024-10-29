@@ -1,11 +1,11 @@
 import { useEffect, useRef, useMemo } from "react";
 
+import type { PatchDocument } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import {
-  PatchDocument,
   applyLessonPlanPatch,
   extractPatches,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { useThrottle } from "@uidotdev/usehooks";
 import { type Message } from "ai/react";
 import { deepClone } from "fast-json-patch";

@@ -1,8 +1,9 @@
-import { User, clerkClient } from "@clerk/nextjs/server";
+import type { User } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import { getSessionModerations } from "@oakai/aila/src/features/moderation/getSessionModerations";
 import { demoUsers } from "@oakai/core";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
-import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
