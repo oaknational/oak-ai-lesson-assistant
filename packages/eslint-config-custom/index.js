@@ -1,6 +1,6 @@
 module.exports = {
   extends: ["eslint:recommended", "prettier"],
-  plugins: ["turbo", "@typescript-eslint"],
+  plugins: ["turbo", "@typescript-eslint",],
   ignorePatterns: ["node_modules", "dist", "../../node_modules", "../../dist"],
   root: true,
   env: {
@@ -21,8 +21,15 @@ module.exports = {
       files: ["*.{ts,tsx}"],
       rules: {
         "no-console": "warn",
-        "@typescript-eslint/consistent-type-imports": "warn",
-        "@typescript-eslint/quotes": ["error", "double"],
+        "no-extra-boolean-cast": "warn",
+        "no-useless-escape": "warn",
+        "no-unsafe-finally": "warn",
+        "no-constant-condition": "warn",
+        "no-prototype-builtins": "warn",
+        "no-inner-declarations": "warn",
+        "@typescript-eslint/no-unsafe-enum-comparison": "warn",
+        "@typescript-eslint/no-unnecessary-type-assertion": "warn",
+        "@typescript-eslint/consistent-type-imports": "error",
         "@typescript-eslint/comma-dangle": "off",
         "@typescript-eslint/no-unused-vars": "warn",
         "@typescript-eslint/require-await": "warn",
@@ -32,11 +39,10 @@ module.exports = {
         "@typescript-eslint/no-unsafe-assignment": "warn",
         "@typescript-eslint/no-floating-promises": "warn",
         "@typescript-eslint/unbound-method": "off",
-        "no-constant-condition": "warn",
         "@typescript-eslint/no-unsafe-member-access": "warn",
         "@typescript-eslint/restrict-template-expressions": "warn",
-        "@typescript-eslint/no-redundant-type-constituents": "warn",
-        "no-inner-declarations": "warn",
+        "@typescript-eslint/no-redundant-type-constituents": "warn",        
+        "@typescript-eslint/await-thenable": "warn",
         "@typescript-eslint/no-unsafe-call": "warn",
         "@typescript-eslint/explicit-function-return-type": [
           "off",
@@ -59,7 +65,4 @@ module.exports = {
       },
     },
   ],
-  rules: {
-    quotes: ["error", "double"],
-  },
 };
