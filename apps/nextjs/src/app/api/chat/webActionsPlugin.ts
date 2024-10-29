@@ -33,11 +33,11 @@ export const createWebActionsPlugin: PluginCreator = (
         prisma,
         SafetyViolations,
       );
-      await enqueue(heliconeErrorMessage);
+      enqueue(heliconeErrorMessage);
     }
 
     if (error instanceof Error) {
-      await enqueue({
+      enqueue({
         type: "error",
         message: error.message,
         value: `Sorry, an error occurred: ${error.message}`,
@@ -80,7 +80,7 @@ export const createWebActionsPlugin: PluginCreator = (
     } catch (error) {
       if (error instanceof UserBannedError) {
         log.info("User is banned, queueing account lock message");
-        await enqueue({
+        enqueue({
           type: "action",
           action: "SHOW_ACCOUNT_LOCKED",
         });

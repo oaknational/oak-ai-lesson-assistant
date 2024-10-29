@@ -44,7 +44,7 @@ export class AilaStreamHandler {
         await this.readFromStream();
       }
     } catch (e) {
-      await this.handleStreamError(e);
+      this.handleStreamError(e);
       log.info("Stream error", e, this._chat.iteration, this._chat.id);
     } finally {
       this._isStreaming = false;
@@ -109,7 +109,7 @@ export class AilaStreamHandler {
     for (const plugin of this._chat.aila.plugins ?? []) {
       await plugin.onStreamError?.(error, {
         aila: this._chat.aila,
-        enqueue: (patch) => this._chat.enqueue(patch),
+        enqueue: this._chat.enqueue,
       });
     }
 
