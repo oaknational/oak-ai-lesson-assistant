@@ -1,5 +1,5 @@
 import type { AilaPlugin } from "@oakai/aila/src/core/plugins";
-import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
+import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
 import { handleHeliconeError } from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
 import { inngest } from "@oakai/core/src/inngest";
 import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
