@@ -1,5 +1,5 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { AilaAuthenticationError } from "@oakai/aila";
+import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
 import { demoUsers, inngest } from "@oakai/core";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";

@@ -10,6 +10,7 @@ jest.mock("@oakai/core/src/inngest", () => ({
   __esModule: true,
 
   inngest: {
+    createFunction: jest.fn(),
     send: jest.fn(),
   },
 }));

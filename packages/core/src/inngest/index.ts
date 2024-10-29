@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { structuredLogger } from "@oakai/logger";
 import { EventSchemas, Inngest } from "inngest";
 import getConfig from "next/config";
@@ -12,8 +15,9 @@ try {
 } catch (e) {
   //console.log("No Next environment");
 }
-const CONTEXT = serverRuntimeConfig?.DEPLOY_CONTEXT;
-const BRANCH = serverRuntimeConfig?.BRANCH;
+
+const CONTEXT = serverRuntimeConfig?.DEPLOY_CONTEXT as string | undefined;
+const BRANCH = serverRuntimeConfig?.BRANCH as string | undefined;
 
 function getInngestEnv() {
   if (CONTEXT === "production") {
@@ -36,8 +40,6 @@ const inngestEventKey = process.env.INNGEST_EVENT_KEY;
 if (!inngestEventKey) {
   throw new Error("Missing env var INNGEST_EVENT_KEY");
 }
-
-console.log("Inngest env:", inngestEnv);
 
 export const inngest = new Inngest({
   name: "Oak AI",
