@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import { type AppRouter } from "@oakai/api/src/router";
-import { type ChatAppRouter } from "@oakai/api/src/router/chat";
+import type { AppRouter } from "@oakai/api/src/router";
+import type { ChatAppRouter } from "@oakai/api/src/router/chat";
 import { transformer } from "@oakai/api/transformer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { TRPCLink } from "@trpc/client";

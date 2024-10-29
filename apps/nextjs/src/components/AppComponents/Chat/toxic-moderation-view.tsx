@@ -1,6 +1,6 @@
 import Textarea from "react-textarea-autosize";
 
-import { type PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { useModerationFeedbackSurvey } from "hooks/surveys/useModerationFeedbackSurvey";
 import { useRouter } from "next/navigation";
 

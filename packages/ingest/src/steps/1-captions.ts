@@ -7,7 +7,7 @@ import { createCaptionsRecord } from "../db-helpers/createCaptionsRecord";
 import { createErrorRecord } from "../db-helpers/createErrorRecord";
 import { getIngestById } from "../db-helpers/getIngestById";
 import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
-import type { Step} from "../db-helpers/step";
+import type { Step } from "../db-helpers/step";
 import { getPrevStep } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import type { IngestLogger } from "../types";
