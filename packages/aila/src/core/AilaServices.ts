@@ -11,6 +11,7 @@ import type {
 } from "../features/types";
 import type { MessagePart } from "../protocol/jsonPatchProtocol";
 import type {
+  AilaPersistedChat,
   AilaRagRelevantLesson,
   LooseLessonPlan,
 } from "../protocol/schema";
@@ -28,6 +29,7 @@ export interface AilaAnalyticsService {
 export interface AilaLessonService {
   readonly plan: LooseLessonPlan;
   readonly hasSetInitialState: boolean;
+  setPlan(plan: LooseLessonPlan): void;
   applyPatches(patches: string): void;
   initialise(plan: LooseLessonPlan): void;
   setUpInitialLessonPlan(messages: Message[]): Promise<void>;
@@ -37,6 +39,9 @@ export interface AilaChatService {
   readonly userId: string | undefined;
   readonly id: string;
   readonly messages: Message[];
+  readonly iteration: number | undefined;
+  readonly createdAt: Date | undefined;
+  readonly persistedChat: AilaPersistedChat | undefined;
   get relevantLessons(): AilaRagRelevantLesson[];
   set relevantLessons(lessons: AilaRagRelevantLesson[]);
   readonly parsedMessages: MessagePart[][];

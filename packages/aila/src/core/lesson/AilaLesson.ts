@@ -1,3 +1,4 @@
+import { aiLogger } from "@oakai/logger";
 import { deepClone } from "fast-json-patch";
 
 import { AilaCategorisation } from "../../features/categorisation/categorisers/AilaCategorisation";
@@ -11,6 +12,8 @@ import {
 import type { LooseLessonPlan } from "../../protocol/schema";
 import type { AilaLessonService, AilaServices } from "../AilaServices";
 import type { Message } from "../chat";
+
+const log = aiLogger("aila:lesson");
 
 export class AilaLesson implements AilaLessonService {
   private _aila: AilaServices;
@@ -29,6 +32,7 @@ export class AilaLesson implements AilaLessonService {
     lessonPlan?: LooseLessonPlan;
     categoriser?: AilaCategorisationFeature;
   }) {
+    log.info("Creating AilaLesson", lessonPlan?.title);
     this._aila = aila;
     this._plan = lessonPlan ?? {};
     this._categoriser =
@@ -43,6 +47,10 @@ export class AilaLesson implements AilaLessonService {
   }
 
   public set plan(plan: LooseLessonPlan) {
+    this._plan = plan;
+  }
+
+  public setPlan(plan: LooseLessonPlan) {
     this._plan = plan;
   }
 
@@ -71,11 +79,24 @@ export class AilaLesson implements AilaLessonService {
 
   public applyPatches(patches: string) {
     let workingLessonPlan = deepClone(this._plan);
+    const beforeKeys = Object.keys(workingLessonPlan).filter(
+      (k) => workingLessonPlan[k],
+    );
+    log.info(
+      "Apply patches: Lesson state before:",
+      `${beforeKeys.length} keys`,
+      beforeKeys.join("|"),
+    );
 
     // TODO do we need to apply all patches even if they are partial?
-    const { validPatches, partialPatches } = extractPatches(patches, 100);
+    const { validPatches, partialPatches } = extractPatches(patches);
     for (const patch of partialPatches) {
       this._invalidPatches.push(patch);
+    }
+
+    if (this._invalidPatches.length > 0) {
+      // This should never occur server-side. If it does, we should log it.
+      log.warn("Invalid patches found. Not applying", this._invalidPatches);
     }
 
     for (const patch of validPatches) {
@@ -90,12 +111,23 @@ export class AilaLesson implements AilaLessonService {
 
     for (const patch of validPatches) {
       this._appliedPatches.push(patch);
+      log.info("Applied patch", patch.value.path);
     }
+
+    const afterKeys = Object.keys(workingLessonPlan).filter(
+      (k) => workingLessonPlan[k],
+    );
+    log.info(
+      "Apply patches: Lesson state after:",
+      `${afterKeys.length} keys`,
+      afterKeys.join("|"),
+    );
 
     this._plan = workingLessonPlan;
   }
 
   public async setUpInitialLessonPlan(messages: Message[]) {
+    log.info("Setting up initial lesson plan", this._plan.title);
     const shouldCategoriseBasedOnInitialMessages = Boolean(
       !this._plan.subject && !this._plan.keyStage && !this._plan.title,
     );

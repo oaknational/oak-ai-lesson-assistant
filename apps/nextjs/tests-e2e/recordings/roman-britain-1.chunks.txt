@@ -3,52 +3,169 @@ type":"
 ll
 m
 Message
-","patches":[]
-,"prompt":{"
+","sectionsToEdit":["
+learning
+Outcome
+","
+learning
+Cycles
+"],"patches":[
+{"
 type":"
-text
-","value":"
-There
- are
- no
- existing
- Oak
- lessons
- for
- the
- specific
- topic
- of
- \"
-End
- of
- Roman
- Britain
-,\"
- so
- we'll
- start
- a
+patch
+","reasoning":"
+I
+ have
+ created
  new
- lesson
- from
- scratch
-.
- Let's
- begin
- by
- outlining
- the
  learning
  outcomes
  and
  learning
  cycles
+ from
+ scratch
+ as
+ there
+ are
+ no
+ existing
+ Oak
+ lessons
+ available
  for
+ this
+ topic
+.","
+value":{"
+type":"
+string
+","op":"
+add
+","path":"/
+learning
+Outcome
+","value":"
+I
+ can
+ describe
+ why
+ the
+ Romans
+ left
+ Britain
+ and
+ what
+ happened
+ afterwards
+."
+},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+This
+ patch
+ adds
+ learning
+ cycles
+ which
+ break
+ down
  the
  lesson
+ into
+ achievable
+ tasks
+,
+ focusing
+ on
+ Roman
+ departure
+ and
+ its
+ impact
+ on
+ Britain
+.","
+value":{"
+type":"
+string
+-array
+","op":"
+add
+","path":"/
+learning
+Cycles
+","value":["
+Explain
+ the
+ reasons
+ for
+ the
+ Romans
+ leaving
+ Britain
+.","
+Describe
+ the
+ changes
+ that
+ occurred
+ in
+ Britain
+ after
+ the
+ Romans
+ left
+.","
+Identify
+ the
+ role
+ of
+ archae
+ologists
+ in
+ uncover
+ing
+ Roman
+ history
 .
- Tap
+"]},"status":"
+complete
+"}],"sectionsEdited":["
+learning
+Outcome
+","
+learning
+Cycles
+"],"prompt":{"
+type":"
+text
+","value":"
+Are
+ the
+ learning
+ outcome
+ and
+ learning
+ cycles
+ appropriate
+ for
+ your
+ pupils
+?
+ If
+ not
+,
+ suggest
+ an
+ edit
+.
+ Otherwise
+,
+ tap
  **
 Continue
 **
@@ -60,4 +177,6 @@ Continue
  next
  step
 ."
-}}
+},"status":"
+complete
+"}

@@ -20,6 +20,7 @@ describe("PatchEnqueuer", () => {
       type: "patch",
       reasoning: "generated",
       value: { op: "add", path, value },
+      status: "complete",
     })}\n␞\n`;
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(controller.enqueue).toHaveBeenCalledWith(expectedPatch);

@@ -1,5 +1,6 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db/client";
+import { aiLogger } from "@oakai/logger";
 
 import {
   DEFAULT_MODEL,
@@ -40,6 +41,7 @@ import type {
   AilaInitializationOptions,
 } from "./types";
 
+const log = aiLogger("aila");
 export class Aila implements AilaServices {
   private _analytics?: AilaAnalyticsFeature;
   private _chat: AilaChatService;
@@ -125,6 +127,10 @@ export class Aila implements AilaServices {
   public async initialise() {
     this.checkUserIdPresentIfPersisting();
     await this.loadChatIfPersisting();
+    const persistedLessonPlan = this._chat.persistedChat?.lessonPlan;
+    if (persistedLessonPlan) {
+      this._lesson.setPlan(persistedLessonPlan);
+    }
     await this._lesson.setUpInitialLessonPlan(this._chat.messages);
   }
 
@@ -273,6 +279,7 @@ export class Aila implements AilaServices {
       );
     }
     if (input) {
+      log.info("Initiate chat with input", input);
       const message: Message = {
         id: generateMessageId({ role: "user" }),
         role: "user",

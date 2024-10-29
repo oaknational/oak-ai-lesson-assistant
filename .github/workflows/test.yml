@@ -43,4 +43,4 @@ jobs:
           inject-env-vars: true
 
       - name: Run tests
-        run: pnpm turbo test --cache-dir=".turbo"
+        run: pnpm turbo test --cache-dir=".turbo" -- --maxWorkers=33%

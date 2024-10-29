@@ -1,19 +1,11 @@
 {
   "type": "llmMessage",
-  "patches": [
-    {
-      "type": "patch",
-      "reasoning": "Adding a placeholder for potential additional materials or narratives that may support the lesson plan.",
-      "value": {
-        "type": "string",
-        "op": "add",
-        "path": "/additionalMaterials",
-        "value": "None"
-      }
-    }
-  ],
+  "sectionsToEdit": [],
+  "patches": [],
+  "sectionsEdited": [],
   "prompt": {
     "type": "text",
-    "value": "Would you like to add any additional materials, such as a narrative to support your explanations, instructions for practicals, or extra homework questions?"
-  }
+    "value": "I have checked for British spelling and grammar, coherence, and accuracy. You can now share your lesson or download your resources.\n\nClick on the **Menu** button to find previously created lessons."
+  },
+  "status": "complete"
 }

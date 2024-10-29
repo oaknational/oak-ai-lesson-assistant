@@ -1,5 +1,6 @@
 import debug from "debug";
 
+import browserLogger from "./browser";
 import type { StructuredLogger } from "./structuredLogger";
 import structuredLogger from "./structuredLogger";
 
@@ -17,12 +18,14 @@ type ChildKey =
   | "aila:analytics"
   | "aila:categorisation"
   | "aila:errors"
+  | "aila:lesson"
   | "aila:llm"
   | "aila:moderation"
   | "aila:moderation:response"
   | "aila:persistence"
   | "aila:prompt"
   | "aila:protocol"
+  | "aila:stream"
   | "aila:rag"
   | "aila:testing"
   | "analytics"
@@ -55,6 +58,11 @@ type ChildKey =
   | "trpc"
   | "ui";
 
+const errorLogger =
+  typeof window === "undefined"
+    ? structuredLogger.error.bind(structuredLogger)
+    : browserLogger.error.bind(browserLogger);
+
 /**
  * The AI logger uses namespaces so that we can selectively toggle noisy logs.
  * Logs are selected with the DEBUG environment variable.
@@ -75,7 +83,7 @@ export function aiLogger(childKey: ChildKey) {
   return {
     info: debugLogger,
     warn: debugLogger,
-    error: structuredLogger.error.bind(structuredLogger),
+    error: errorLogger.bind(structuredLogger),
   };
 }
 
