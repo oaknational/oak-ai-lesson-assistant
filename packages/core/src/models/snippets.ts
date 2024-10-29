@@ -18,7 +18,7 @@ import { formatDocumentsAsString } from "langchain/util/document";
 import { PrismaVectorStore } from "langchain/vectorstores/prisma";
 import { difference } from "remeda";
 
-import { inngest } from "../client";
+import { inngest } from "../inngest";
 import { createOpenAILangchainClient } from "../llm/langchain";
 import { embedWithCache } from "../utils/embeddings";
 
