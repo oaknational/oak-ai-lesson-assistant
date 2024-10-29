@@ -1,9 +1,9 @@
-import { Message } from "@oakai/aila";
-import { LLMService } from "@oakai/aila/src/core/llm/LLMService";
+import type { Message } from "@oakai/aila";
+import type { LLMService } from "@oakai/aila/src/core/llm/LLMService";
 import { OpenAIService } from "@oakai/aila/src/core/llm/OpenAIService";
 import { aiLogger } from "@oakai/logger";
 import fs from "fs/promises";
-import { ZodSchema } from "zod";
+import type { ZodSchema } from "zod";
 
 const log = aiLogger("fixtures");
 

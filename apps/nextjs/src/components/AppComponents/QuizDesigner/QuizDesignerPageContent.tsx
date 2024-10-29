@@ -1,4 +1,5 @@
-import { Dispatch, useRef } from "react";
+import type { Dispatch } from "react";
+import { useRef } from "react";
 
 import { Box, Container } from "@radix-ui/themes";
 import useSuggestedQuestions from "hooks/useSuggestedQuestions";
@@ -10,11 +11,9 @@ import ControllerRow from "@/components/AppComponents/QuizDesigner/QuizQuestionR
 import RateLimitNotification from "@/components/AppComponents/common/RateLimitNotification";
 import Layout from "@/components/Layout";
 
-import { QuizAppAction } from "../../../ai-apps/quiz-designer/state/actions";
-import {
-  QuizAppState,
-  QuizAppStatus,
-} from "../../../ai-apps/quiz-designer/state/types";
+import type { QuizAppAction } from "../../../ai-apps/quiz-designer/state/actions";
+import type { QuizAppState } from "../../../ai-apps/quiz-designer/state/types";
+import { QuizAppStatus } from "../../../ai-apps/quiz-designer/state/types";
 import SuggestedQuestions from "./SuggestedQuestions";
 
 type Props = {

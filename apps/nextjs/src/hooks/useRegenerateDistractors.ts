@@ -1,11 +1,10 @@
-import { Dispatch, useCallback } from "react";
+import type { Dispatch } from "react";
+import { useCallback } from "react";
 
 import { quizRequestGeneration } from "ai-apps/quiz-designer/quizRequestGeneration";
-import {
-  QuizAppAction,
-  QuizAppActions,
-} from "ai-apps/quiz-designer/state/actions";
-import {
+import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
+import type {
   QuizAppState,
   QuizAppStateQuestion,
 } from "ai-apps/quiz-designer/state/types";

@@ -5,7 +5,7 @@ See the readme for why this is needed.
 import React from "react";
 
 import { aiLogger } from "@oakai/logger";
-import { PostHog } from "posthog-js";
+import type { PostHog } from "posthog-js";
 
 import Avo from "@/lib/avo/Avo";
 

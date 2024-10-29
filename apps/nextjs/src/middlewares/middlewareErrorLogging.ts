@@ -1,6 +1,6 @@
 import { structuredLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
-import { NextFetchEvent, NextRequest } from "next/server";
+import type { NextFetchEvent, NextRequest } from "next/server";
 
 export async function logError(
   rootError: unknown,
