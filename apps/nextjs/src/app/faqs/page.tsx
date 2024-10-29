@@ -1,6 +1,6 @@
 import FAQPage from ".";
 
-const FAQ = async () => {
+const FAQ = () => {
   return <FAQPage />;
 };
 

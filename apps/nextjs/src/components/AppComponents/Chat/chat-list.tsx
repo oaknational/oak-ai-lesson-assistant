@@ -33,7 +33,8 @@ function DemoLimitMessage({ id }: Readonly<{ id: string }>) {
         message={{
           id: "demo-limit",
           role: "assistant",
-          content: `{"type": "error", "message": "**Your lesson is complete**\\nYou can no longer edit this lesson. [Create new lesson.](/aila)"}`,
+          content:
+            '{"type": "error", "message": "**Your lesson is complete**\\nYou can no longer edit this lesson. [Create new lesson.](/aila)"}',
         }}
         persistedModerations={[]}
         separator={<span className="my-10 flex" />}
