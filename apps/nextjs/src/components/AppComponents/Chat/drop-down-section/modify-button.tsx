@@ -1,12 +1,14 @@
 import { useRef, useState } from "react";
 
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
+import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import type { AilaUserModificationAction } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
 import { TextArea } from "@radix-ui/themes";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { isPlainObject } from "@/utils/isPlainObject";
 import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
@@ -43,7 +45,7 @@ const modifyOptions = [
 type ModifyButtonProps = {
   sectionTitle: string;
   sectionPath: string;
-  sectionValue: Record<string, unknown> | string | Array<unknown>;
+  sectionValue: LessonPlanSectionWhileStreaming;
 };
 
 const ModifyButton = ({
@@ -66,13 +68,27 @@ const ModifyButton = ({
 
   const lastAssistantMessage = getLastAssistantMessage(messages);
 
+  const prepareSectionValue = (
+    value: LessonPlanSectionWhileStreaming,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): string | any[] | Record<string, unknown> => {
+    if (
+      typeof value === "string" ||
+      Array.isArray(value) ||
+      isPlainObject(value)
+    ) {
+      return value;
+    }
+    // For numbers or any other types, convert to string
+    return String(value);
+  };
   const recordUserModifySectionContent = async () => {
     if (selectedRadio && lastAssistantMessage) {
       const payload = {
         chatId: id,
         messageId: lastAssistantMessage.id,
         sectionPath,
-        sectionValue,
+        sectionValue: prepareSectionValue(sectionValue),
         action: selectedRadio.enumValue,
         actionOtherText: userFeedbackText || null,
       };
