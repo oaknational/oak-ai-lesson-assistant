@@ -42,6 +42,7 @@ const mockAnalyticsContext: AnalyticsContext = {
     isFeatureEnabled: () => true,
     identify: () => {},
     get_distinct_id: () => "mock-distinct-id",
+    getSurveys: () => [],
   } as unknown as PostHog,
 };
 

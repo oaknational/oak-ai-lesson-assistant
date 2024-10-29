@@ -2,24 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
 function generateNonce(): string {
-  if (typeof crypto !== "undefined" && crypto.getRandomValues) {
-    const array = new Uint8Array(16);
-    crypto.getRandomValues(array);
-    return btoa(String.fromCharCode.apply(null, array as unknown as number[]));
-  } else {
-    // Use uuid library to generate a random value
-    return uuidv4();
-  }
+  return uuidv4();
 }
 
+export type CspEnvironment = "development" | "preview" | "production" | "test";
+export type VercelEnvironment = "development" | "preview" | "production";
 export interface CspConfig {
   strictCsp: boolean;
-  environment: string;
+  environment: CspEnvironment;
   sentryEnv: string;
   sentryRelease: string;
   sentryReportUri: string;
   cspReportSampleRate: string;
-  vercelEnv: string;
+  vercelEnv: VercelEnvironment;
   enabledPolicies: {
     clerk: boolean;
     avo: boolean;
@@ -27,6 +22,7 @@ export interface CspConfig {
     devConsent: boolean;
     mux: boolean;
     vercel: boolean;
+    localhost: boolean;
   };
 }
 
@@ -117,7 +113,7 @@ export const buildCspHeaders = (nonce: string, config: CspConfig) => {
     "script-src": [
       "'self'",
       `'nonce-${nonce}'`,
-      "'strict-dynamic'",
+      ["test", "dev"].includes(config.environment) ? "" : "'strict-dynamic'",
       "https:",
       "http:",
       "'unsafe-inline'",
@@ -164,6 +160,12 @@ export const buildCspHeaders = (nonce: string, config: CspConfig) => {
         config.enabledPolicies.posthog ? posthogPolicies : {},
         config.enabledPolicies.devConsent ? devConsentPolicies : {},
         config.enabledPolicies.mux ? mux : {},
+        config.enabledPolicies.localhost
+          ? {
+              "script-src": ["http://localhost:*"],
+              "frame-ancestors": ["http://localhost:*"],
+            }
+          : {},
       ];
 
       for (const policyObject of additionalPolicies) {

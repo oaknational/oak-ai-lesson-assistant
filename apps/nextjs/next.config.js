@@ -41,9 +41,6 @@ const getConfig = async (phase) => {
 
     isProductionBuild = releaseStage === RELEASE_STAGE_PRODUCTION;
     appVersion = getAppVersion({ isProductionBuild });
-    console.log(
-      `Release stage: "${releaseStage}". App version: "${appVersion}"`,
-    );
   }
 
   /** @type {import('next').NextConfig} */
@@ -57,7 +54,7 @@ const getConfig = async (phase) => {
       serverComponentsExternalPackages: [`require-in-the-middle`],
       turbo: {
         resolveAlias: {
-          "#next/navigation": {
+          "next/navigation": {
             storybook: path.join(
               __dirname,
               "src",
@@ -67,11 +64,7 @@ const getConfig = async (phase) => {
             ),
             default: "next/navigation",
           },
-          "#oakai/db": {
-            storybook: path.join(__dirname, "src", "mocks", "oakai", "db"),
-            default: "@oakai/db",
-          },
-          "#clerk/nextjs": {
+          "@clerk/nextjs": {
             storybook: path.join(__dirname, "src", "mocks", "clerk", "nextjs"),
             default: "@clerk/nextjs",
           },

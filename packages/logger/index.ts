@@ -1,5 +1,6 @@
 import debug from "debug";
 
+import browserLogger from "./browser";
 import structuredLogger, { StructuredLogger } from "./structuredLogger";
 
 if (typeof window !== "undefined") {
@@ -7,6 +8,8 @@ if (typeof window !== "undefined") {
 }
 
 const debugBase = debug("ai");
+// By default debug logs to stderr, we want to use stdout
+debugBase.log = console.log.bind(console);
 
 type ChildKey =
   | "admin"
@@ -53,6 +56,11 @@ type ChildKey =
   | "trpc"
   | "ui";
 
+const errorLogger =
+  typeof window === "undefined"
+    ? structuredLogger.error.bind(structuredLogger)
+    : browserLogger.error.bind(browserLogger);
+
 /**
  * The AI logger uses namespaces so that we can selectively toggle noisy logs.
  * Logs are selected with the DEBUG environment variable.
@@ -73,7 +81,7 @@ export function aiLogger(childKey: ChildKey) {
   return {
     info: debugLogger,
     warn: debugLogger,
-    error: structuredLogger.error.bind(structuredLogger),
+    error: errorLogger.bind(structuredLogger),
   };
 }
 

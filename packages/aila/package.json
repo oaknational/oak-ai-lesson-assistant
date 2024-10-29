@@ -10,6 +10,7 @@
     "lint": "eslint . --ext .ts,.tsx",
     "type-check": "tsc --noEmit",
     "test": "pnpm with-env jest --colors --config jest.config.js",
+    "test:seq": "pnpm with-env jest --colors --config jest.config.js --verbose --runInBand",
     "test-file": "pnpm with-env jest --config jest.config.js --runTestsByPath TEST_FILEPATH",
     "with-env": "dotenv -e ../../.env --"
   },
@@ -21,7 +22,7 @@
     "@oakai/db": "*",
     "@oakai/exports": "*",
     "@oakai/logger": "*",
-    "@sentry/nextjs": "^8.19.0",
+    "@sentry/nextjs": "^8.35.0",
     "@vercel/kv": "^0.2.2",
     "ai": "^3.3.26",
     "american-british-english-translator": "^0.2.1",

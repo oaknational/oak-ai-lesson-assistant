@@ -3,15 +3,18 @@ import { PrismaClientWithAccelerate } from "@oakai/db";
 import { handleEmbeddingBatchSuccess } from "../embedding/handleEmbeddingBatchSuccess";
 import { handleOpenAiBatchErrorFile } from "../openai-batches/handleOpenAiBatchErrorFile";
 import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
+import { IngestLogger } from "../types";
 
 /**
  * Check status of lesson plan generation batches and action
  */
 export async function lpPartsEmbedSync({
   prisma,
+  log,
   ingestId,
 }: {
   prisma: PrismaClientWithAccelerate;
+  log: IngestLogger;
   ingestId: string;
 }) {
   const embeddingsBatches = await prisma.ingestOpenAiBatch.findMany({
@@ -23,11 +26,11 @@ export async function lpPartsEmbedSync({
   });
 
   if (embeddingsBatches.length === 0) {
-    console.log("No embedding batches to check, exiting early");
+    log.info("No embedding batches to check, exiting early");
     return;
   }
 
-  console.log(`Checking ${embeddingsBatches.length} embedding batches`);
+  log.info(`Checking ${embeddingsBatches.length} embedding batches`);
 
   for (const batch of embeddingsBatches) {
     const { batch: openaiBatch } = await retrieveOpenAiBatch({
@@ -37,12 +40,12 @@ export async function lpPartsEmbedSync({
       case "validating":
       case "in_progress":
       case "finalizing":
-        console.log(`Batch ${batch.id} is ${openaiBatch.status}`);
+        log.info(`Batch ${batch.id} is ${openaiBatch.status}`);
         break;
 
       case "completed":
         if (openaiBatch.error_file_id) {
-          console.log(`Batch ${batch.id} has error file, handling...`);
+          log.info(`Batch ${batch.id} has error file, handling...`);
           await handleOpenAiBatchErrorFile({
             prisma,
             ingestId,
@@ -53,7 +56,7 @@ export async function lpPartsEmbedSync({
         }
 
         if (openaiBatch.output_file_id) {
-          console.log(`Batch ${batch.id} succeeded, handling...`);
+          log.info(`Batch ${batch.id} succeeded, handling...`);
           await handleEmbeddingBatchSuccess({
             prisma,
             ingestId,

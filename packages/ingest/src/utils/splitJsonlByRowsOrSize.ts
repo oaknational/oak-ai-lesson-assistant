@@ -51,7 +51,7 @@ export async function splitJsonlByRowsOrSize({
         `${inputFileName}_${currentFileIndex}.jsonl`,
       );
       const newWriteStream = fs.createWriteStream(outputFilePath);
-      console.log(`Creating new file: ${outputFilePath}`);
+      log.info(`Creating new file: ${outputFilePath}`);
       outputFilePaths.push(outputFilePath);
       currentFileIndex++;
       currentRowCount = 0;
