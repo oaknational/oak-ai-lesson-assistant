@@ -22,8 +22,15 @@ function findStreamingSections(message: Message | undefined): {
   const { content } = message;
   const pathMatches: RegExpExecArray[] = [];
   let match: RegExpExecArray | null;
-  while ((match = /"path":"\/([^/"]*)(?:\/|")/g.exec(content)) !== null) {
+  const regex = /"path":"\/([^/"]*)(?:\/|")"/g;
+  let startIndex = 0;
+  while ((match = regex.exec(content.slice(startIndex))) !== null) {
     pathMatches.push(match);
+    startIndex += match.index + match[0].length;
+    if (pathMatches.length > 100) {
+      log.warn("Too many path matches found, stopping search");
+      break;
+    }
   }
 
   const streamingSections: LessonPlanKeys[] = pathMatches
