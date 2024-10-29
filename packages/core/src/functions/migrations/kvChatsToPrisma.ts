@@ -4,7 +4,7 @@ import { kv } from "@vercel/kv";
 import { z } from "zod";
 
 import { LessonPlanSchemaWhilstStreaming } from "../../../../aila/src/protocol/schema";
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 import { kvChatsToPrismaSchema } from "./kvChatsToPrisma.schema";
 
 const chatSchema = z
