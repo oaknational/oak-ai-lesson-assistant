@@ -1,9 +1,10 @@
 import { useMemo, useEffect } from "react";
 
 import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
-import { LessonPlanKeysSchema } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import type { Message } from "ai";
+
+import { allSectionsInOrder } from "../../../../../lib/lessonPlan/sectionsInOrder";
 
 const log = aiLogger("chat");
 
@@ -19,31 +20,20 @@ function findStreamingSections(message: Message | undefined): {
       content: undefined,
     };
   }
+  log.info("Parsing message content", message.content);
   const { content } = message;
-  const pathMatches: RegExpExecArray[] = [];
-  let match: RegExpExecArray | null;
-  const regex = /"path":"\/([^/"]*)(?:\/|")"/g;
-  let startIndex = 0;
-  while ((match = regex.exec(content.slice(startIndex))) !== null) {
-    pathMatches.push(match);
-    startIndex += match.index + match[0].length;
-    if (pathMatches.length > 100) {
-      log.warn("Too many path matches found, stopping search");
-      break;
-    }
-  }
+  const regex = /"path":"\/([^/"]*)/g;
+  const pathMatches =
+    content
+      .match(regex)
+      ?.map((match) => match.replace(/"path":"\//, "").replace(/"$/, "")) ?? [];
 
-  const streamingSections: LessonPlanKeys[] = pathMatches
-    .map((match) => match[1])
-    .filter((i): i is string => typeof i === "string")
-    .map((section) => {
-      const result = LessonPlanKeysSchema.safeParse(section);
-      return result.success ? result.data : undefined;
-    })
-    .filter((section): section is LessonPlanKeys => section !== undefined);
+  const streamingSections: LessonPlanKeys[] = pathMatches.filter(
+    (i): i is string =>
+      typeof i === "string" && allSectionsInOrder.includes(i as LessonPlanKeys),
+  ) as LessonPlanKeys[];
   const streamingSection: LessonPlanKeys | undefined =
     streamingSections[streamingSections.length - 1];
-
   return { streamingSections, streamingSection, content };
 }
 
