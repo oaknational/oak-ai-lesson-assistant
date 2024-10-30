@@ -1,11 +1,10 @@
 import { useMemo, useEffect } from "react";
 
 import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
-import { LessonPlanKeysSchema } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import type { Message } from "ai";
 
-import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
+import { allSectionsInOrder } from "../../../../../lib/lessonPlan/sectionsInOrder";
 
 const log = aiLogger("chat");
 
@@ -15,7 +14,6 @@ function findStreamingSections(message: Message | undefined): {
   content: string | undefined;
 } {
   if (!message?.content) {
-    log.info("findStreamingSections: No message content found");
     return {
       streamingSections: [],
       streamingSection: undefined,
@@ -24,23 +22,18 @@ function findStreamingSections(message: Message | undefined): {
   }
   log.info("Parsing message content", message.content);
   const { content } = message;
-  const regex = /"path":"\/([^/"]*)(?:\/|")"/g;
-  const matching = content.matchAll(regex);
-  log.info("Matching content", matching);
-  const pathMatches = Array.from(content.matchAll(regex), (match) => match[1]);
+  const regex = /"path":"\/([^/"]*)/g;
+  const pathMatches =
+    content
+      .match(regex)
+      ?.map((match) => match.replace(/"path":"\//, "").replace(/"$/, "")) ?? [];
 
-  log.info("Path matches", pathMatches);
-  const streamingSections: LessonPlanKeys[] = pathMatches
-    .map((match) => match?.[1])
-    .filter(
-      (i): i is string =>
-        typeof i === "string" &&
-        allSectionsInOrder.includes(i as LessonPlanKeys),
-    ) as LessonPlanKeys[];
+  const streamingSections: LessonPlanKeys[] = pathMatches.filter(
+    (i): i is string =>
+      typeof i === "string" && allSectionsInOrder.includes(i as LessonPlanKeys),
+  ) as LessonPlanKeys[];
   const streamingSection: LessonPlanKeys | undefined =
     streamingSections[streamingSections.length - 1];
-  log.info("Streaming sections", streamingSections);
-  log.info("Streaming section", streamingSection);
   return { streamingSections, streamingSection, content };
 }
 
