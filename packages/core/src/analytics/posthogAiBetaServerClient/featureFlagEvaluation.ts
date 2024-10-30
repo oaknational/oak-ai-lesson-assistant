@@ -3,14 +3,12 @@ import { kv } from "@vercel/kv";
 import type { PostHog } from "posthog-node";
 
 const KV_KEY = "posthog-feature-flag-local-evaluation";
-const ONE_DAY = 24 * 60 * 60 * 1000;
-const ONE_MINUTE = 60 * 1000;
 
 const log = aiLogger("analytics:feature-flags");
 
 const setKv = async (response: Response) => {
   const value = await response.text();
-  await kv.set(KV_KEY, value, { ex: ONE_MINUTE });
+  await kv.set(KV_KEY, value, { ex: 60 });
 };
 
 const getKv = async () => {
@@ -38,6 +36,8 @@ export const cachedFetch: PostHog["fetch"] = async (url, options) => {
       const cachedResult = result.clone();
       await setKv(cachedResult);
       log.info("evaluations cached to KV");
+    } else {
+      log.error("failed to load evaluations", { status: result.status });
     }
 
     return result;
@@ -50,6 +50,8 @@ export const cachedFetch: PostHog["fetch"] = async (url, options) => {
   return await fetch(url, options);
 };
 
+const ONE_DAY = 24 * 60 * 60 * 1000;
+const ONE_MINUTE = 60 * 1000;
 export const featureFlagsPollingInterval =
   // prevent polling timeout from stacking when HMR replaces posthogAiBetaServerClient
   process.env.NODE_ENV === "development" ? ONE_DAY : ONE_MINUTE;
