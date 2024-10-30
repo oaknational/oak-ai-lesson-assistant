@@ -10,9 +10,11 @@ Message
 type":"
 text
 ","value":"
-It
- seems
- that
+All
+ the
+ requested
+ sections
+ including
  the
  Starter
  Quiz
@@ -32,32 +34,37 @@ It
  and
  Exit
  Quiz
- sections
  have
  already
  been
- created
+ generated
+ in
+ the
+ lesson
+ plan
 .
  If
+ there's
+ anything
+ specific
+ you'd
+ like
+ to
+ change
+ or
+ if
  you
  need
  any
- further
- adjustments
+ additional
+ sections
  or
- additions
+ modifications
 ,
  please
  let
  me
  know
- specifically
- what
- changes
- you'd
- like
- to
- make
 .
  Otherwise
 ,
@@ -68,7 +75,8 @@ It
 Continue
 **
  to
- proceed
+ move
+ forward
 ."
 },"status":"
 complete

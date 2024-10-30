@@ -305,13 +305,13 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const generateContinueAction = useCallback(() => {
     const sectionsToGenerate = nextSectionsToGenerate(lessonPlan);
     if (sectionsToGenerate.length === 0) {
-      return "Continue - check the lesson plan for consistency and correctness";
+      return "Continue (with special instructions: check the lesson plan for consistency and correctness)";
     } else {
       const sentenceCaseSections = sectionsToGenerate
         .map((section) => camelCaseToTitleCase(section))
         .join(", ")
         .replace(/, ([^,]*)$/, " and $1");
-      return `Continue. Generate the ${sentenceCaseSections} section${sectionsToGenerate.length > 1 ? "s" : ""}.`;
+      return `Continue (with special instructions: Generate the ${sentenceCaseSections} section${sectionsToGenerate.length > 1 ? "s" : ""})`;
     }
   }, [lessonPlan]);
 

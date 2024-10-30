@@ -24,6 +24,7 @@ export async function waitForStreamingStatusChange(
         // eslint-disable-next-line @typescript-eslint/quotes, quotes
         '[data-testid="chat-aila-streaming-status"]',
       );
+      console.log("statusElement", statusElement?.textContent);
       return (
         statusElement &&
         currentStatus &&

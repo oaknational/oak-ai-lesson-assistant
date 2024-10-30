@@ -48,6 +48,7 @@ const ChatLhsHeader = ({
         <button
           onClick={() => setShowLessonMobile(!showLessonMobile)}
           className="flex items-center gap-5"
+          data-testid="view-lesson-button"
         >
           <AiIcon />{" "}
           <span className={"text-base font-bold "}>View lesson &gt;</span>

@@ -4,89 +4,36 @@ ll
 m
 Message
 ","sectionsToEdit":["
-learning
-Outcome
+prior
+Knowledge
 ","
-learning
-Cycles
+key
+Learning
+Points
+","
+mis
+con
+ceptions
+","
+keywords
 "],"patches":[
 {"
 type":"
 patch
 ","reasoning":"
-I
+Ident
+ifying
+ core
+ knowledge
+ pupils
+ should
  have
- created
- new
- learning
- outcomes
- and
- learning
- cycles
- from
- scratch
- as
- there
- are
- no
- existing
- Oak
- lessons
- available
- for
+ before
+ starting
  this
- topic
-.","
-value":{"
-type":"
-string
-","op":"
-add
-","path":"/
-learning
-Outcome
-","value":"
-I
- can
- describe
- why
- the
- Romans
- left
- Britain
- and
- what
- happened
- afterwards
-."
-},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-This
- patch
- adds
- learning
- cycles
- which
- break
- down
- the
  lesson
- into
- achievable
- tasks
-,
- focusing
  on
  Roman
- departure
- and
- its
- impact
- on
  Britain
 .","
 value":{"
@@ -96,72 +43,387 @@ string
 ","op":"
 add
 ","path":"/
-learning
-Cycles
+prior
+Knowledge
 ","value":["
-Explain
- the
- reasons
- for
- the
+The
  Romans
- leaving
+ once
+ ruled
  Britain
 .","
-Describe
+Roman
+ roads
+ were
+ used
+ for
+ transportation
+.","
+Romans
+ built
+ structures
+ like
+ Had
+rian
+'s
+ Wall
+.","
+Brit
+ain
+ was
+ part
+ of
  the
- changes
+ Roman
+ Empire
+.","
+Romans
+ influenced
+ Britain's
+ culture
+ and
+ language
+.
+"]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Out
+lining
+ the
+ key
+ learning
+ points
  that
- occurred
+ will
+ be
+ covered
+ in
+ the
+ lesson
+ about
+ the
+ end
+ of
+ Roman
+ Britain
+.","
+value":{"
+type":"
+string
+-array
+","op":"
+add
+","path":"/
+key
+Learning
+Points
+","value":["
+The
+ Roman
+ Empire
+ left
+ Britain
+ around
+ AD
+ 
+410
+.","
+Roman
+ departure
+ led
+ to
+ changes
+ in
+ governance
+ and
+ defence
+.","
+Daily
+ life
+ in
+ Britain
+ was
+ impacted
+ by
+ the
+ absence
+ of
+ Roman
+ organisation
+.","
+New
+ groups
+,
+ like
+ the
+ Sax
+ons
+,
+ began
+ to
+ settle
+ in
+ Britain
+.","
+Roman
+ structures
+ and
+ roads
+ were
+ left
+ behind
+.
+"]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Address
+ing
+ common
+ misconceptions
+ about
+ the
+ end
+ of
+ Roman
+ Britain
+ to
+ ensure
+ accurate
+ understanding
+.","
+value":{"
+type":"
+mis
+con
+ceptions
+","op":"
+add
+","path":"/
+mis
+con
+ceptions
+","value":[
+{"
+misconception":"
+Romans
+ were
+ forced
+ out
+ of
+ Britain
+ immediately
+","description":"
+Romans
+ gradually
+ left
+ Britain
+ over
+ time
+ due
+ to
+ pressures
+ elsewhere
+ in
+ the
+ Empire
+."
+},{"
+misconception":"
+All
+ Roman
+ influence
+ disappeared
+ instantly
+","description":"
+Roman
+ culture
+ and
+ infrastructure
+ influenced
+ Britain
+ long
+ after
+ the
+ Romans
+ left
+."
+}]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Def
+ining
+ key
+ vocabulary
+ terms
+ to
+ be
+ introduced
+ and
+ used
+ throughout
+ the
+ lesson
+.","
+value":{"
+type":"
+keywords
+","op":"
+add
+","path":"/
+keywords
+","value":[
+{"
+keyword":"
+Empire
+","definition":"
+A
+ group
+ of
+ countries
+ or
+ regions
+ controlled
+ by
+ one
+ ruler
+ or
+ one
+ government
+."
+},{"
+keyword":"
+S
+axon
+","definition":"
+A
+ member
+ of
+ a
+ German
+ic
+ people
+ who
+ settled
  in
  Britain
  after
  the
  Romans
  left
-.","
-Identify
+."
+},{"
+keyword":"
+Infrastructure
+","definition":"
+The
+ basic
+ physical
+ and
+ organizational
+ structures
+ needed
+ for
  the
- role
+ operation
  of
- archae
-ologists
- in
- uncover
-ing
- Roman
- history
-.
-"]},"status":"
+ a
+ society
+."
+},{"
+keyword":"
+Govern
+ance
+","definition":"
+The
+ way
+ that
+ a
+ city
+,
+ country
+,
+ or
+ company
+ is
+ controlled
+ by
+ the
+ people
+ who
+ run
+ it
+."
+},{"
+keyword":"
+Departure
+","definition":"
+The
+ act
+ of
+ leaving
+,
+ especially
+ to
+ start
+ a
+ journey
+."
+}]},"status":"
 complete
 "}],"sectionsEdited":["
-learning
-Outcome
+prior
+Knowledge
 ","
-learning
-Cycles
+key
+Learning
+Points
+","
+mis
+con
+ceptions
+","
+keywords
 "],"prompt":{"
 type":"
 text
 ","value":"
 Are
  the
+ prior
+ knowledge
+,
+ key
  learning
- outcome
+ points
+,
+ misconceptions
+,
  and
- learning
- cycles
- appropriate
+ keywords
+ sections
+ suitable
  for
  your
- pupils
+ class
 ?
  If
  not
 ,
- suggest
- an
- edit
+ reply
+ with
+ what
+ I
+ should
+ change
 .
  Otherwise
 ,

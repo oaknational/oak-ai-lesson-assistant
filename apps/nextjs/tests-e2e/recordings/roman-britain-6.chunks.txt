@@ -10,9 +10,12 @@ Message
 type":"
 text
 ","value":"
-It
- seems
- that
+The
+ sections
+ you
+ requested
+,
+ including
  the
  Starter
  Quiz
@@ -32,37 +35,35 @@ It
  and
  Exit
  Quiz
- sections
+,
  have
  already
  been
- created
+ generated
 .
  If
+ there
+ is
+ anything
+ specific
+ you'd
+ like
+ to
+ modify
+ or
+ if
  you
  need
- any
  further
- adjustments
- or
- additions
+ assistance
 ,
  please
  let
  me
  know
- specifically
- what
- changes
- you'd
- like
- to
- make
 .
  Otherwise
 ,
- you
- can
  tap
  **
 Continue
