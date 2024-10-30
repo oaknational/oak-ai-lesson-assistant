@@ -37,7 +37,7 @@ function parseChatAndReportError({
   userId: string;
 }) {
   if (typeof sessionOutput !== "object") {
-    throw new Error(`sessionOutput is not an object`);
+    throw new Error("sessionOutput is not an object");
   }
   const parseResult = chatSchema.safeParse({
     ...sessionOutput,
