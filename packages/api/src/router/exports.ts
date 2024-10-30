@@ -27,6 +27,31 @@ import { router } from "../trpc";
 
 const log = aiLogger("exports");
 
+function getValidLink(
+  data:
+    | {
+        link: string;
+        canViewSourceDoc: boolean;
+      }
+    | {
+        error: unknown;
+        message: string;
+      },
+): string | undefined {
+  if (data && "link" in data && typeof data.link === "string") {
+    return data.link;
+  }
+  if ("error" in data && "message" in data) {
+    Sentry.captureException(data.error, {
+      extra: {
+        error: data.error,
+        message: data.message,
+      },
+    });
+    throw new Error(data.message);
+  }
+}
+
 export async function ailaSaveExport({
   auth,
   prisma,
@@ -642,31 +667,6 @@ export const exportsRouter = router({
             ctx,
           }),
         ]);
-
-        function getValidLink(
-          data:
-            | {
-                link: string;
-                canViewSourceDoc: boolean;
-              }
-            | {
-                error: unknown;
-                message: string;
-              },
-        ): string | undefined {
-          if (data && "link" in data && typeof data.link === "string") {
-            return data.link;
-          }
-          if ("error" in data && "message" in data) {
-            Sentry.captureException(data.error, {
-              extra: {
-                error: data.error,
-                message: data.message,
-              },
-            });
-            throw new Error(data.message);
-          }
-        }
 
         const allExports = {
           lessonSlides: getValidLink(lessonSlides),
