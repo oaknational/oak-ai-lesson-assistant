@@ -51,7 +51,5 @@ export const cachedFetch: PostHog["fetch"] = async (url, options) => {
 };
 
 export const featureFlagsPollingInterval =
-  process.env.NODE_ENV === "production"
-    ? ONE_MINUTE
-    : // prevent polling timeout from stacking when HMR replaces posthogAiBetaServerClient
-      ONE_DAY;
+  // prevent polling timeout from stacking when HMR replaces posthogAiBetaServerClient
+  process.env.NODE_ENV === "development" ? ONE_DAY : ONE_MINUTE;
