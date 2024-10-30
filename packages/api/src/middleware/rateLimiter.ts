@@ -46,7 +46,7 @@ function createRateLimiterMiddleware(rateLimiter: RateLimiter) {
         });
         throw new TRPCError({
           code: "TOO_MANY_REQUESTS",
-          message: `Too many requests, please try again later.`,
+          message: "Too many requests, please try again later.",
           cause: e,
         });
       }
