@@ -15,13 +15,18 @@
     "noImplicitAny": false,
     "jsx": "preserve",
     /* Path Aliases */
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/app/*": ["app/*"],
-      "@/lib/*": ["lib/*"],
-      "@/utils/*": ["utils/*"],
-      "@/assets/*": ["assets/*"]
+      "@/components/*": ["src/components/*"],
+      "@/app/*": ["src/app/*"],
+      "@/lib/*": ["src/lib/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/assets/*": ["src/assets/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "ai-apps/*": ["src/ai-apps/*"],
+      "hooks/*": ["src/hooks/*"],
+      "data/*": ["src/data/*"],
+      "cms/*": ["src/cms/*"]
     },
     "plugins": [
       {

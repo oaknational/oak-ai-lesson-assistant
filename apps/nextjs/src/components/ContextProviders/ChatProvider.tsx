@@ -28,13 +28,12 @@ import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { usePathname, useRouter } from "next/navigation";
 
-import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
-import useAnalytics from "@/lib/analytics/useAnalytics";
-import { nextSectionsToGenerate } from "@/lib/lessonPlan/nextSectionToGenerate";
-import { useLessonPlanManager } from "@/lib/lessonPlan/useLessonPlanManager";
-import { trpc } from "@/utils/trpc";
-
 import { useLessonPlanScrollManagement } from "../../hooks/useLessonPlanScrollManagement";
+import { useLessonPlanTracking } from "../../lib/analytics/lessonPlanTrackingContext";
+import useAnalytics from "../../lib/analytics/useAnalytics";
+import { nextSectionsToGenerate } from "../../lib/lessonPlan/nextSectionToGenerate";
+import { useLessonPlanManager } from "../../lib/lessonPlan/useLessonPlanManager";
+import { trpc } from "../../utils/trpc";
 import type { AilaStreamingStatus } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
 import { useAilaStreamingStatus } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
