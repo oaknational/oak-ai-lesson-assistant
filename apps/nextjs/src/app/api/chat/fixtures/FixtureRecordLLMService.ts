@@ -8,7 +8,7 @@ import type { ZodSchema } from "zod";
 const log = aiLogger("fixtures");
 
 export class FixtureRecordLLMService implements LLMService {
-  name = "FixureRecordLLM";
+  name = "FixtureRecordLLM";
   private _openAIService: OpenAIService;
 
   constructor(
@@ -23,6 +23,11 @@ export class FixtureRecordLLMService implements LLMService {
     messages: Message[];
     temperature: number;
   }): Promise<ReadableStreamDefaultReader<string>> {
+    log.info(
+      "Creating chat completion from OpenAI",
+      this.name,
+      this.fixtureName,
+    );
     return this._openAIService.createChatCompletionStream(params);
   }
 
@@ -33,6 +38,11 @@ export class FixtureRecordLLMService implements LLMService {
     messages: Message[];
     temperature: number;
   }): Promise<ReadableStreamDefaultReader<string>> {
+    log.info(
+      "Creating chat completion object stream",
+      this.name,
+      this.fixtureName,
+    );
     const upstreamReader =
       await this._openAIService.createChatCompletionObjectStream(params);
 
@@ -75,5 +85,26 @@ export class FixtureRecordLLMService implements LLMService {
     });
 
     return s.getReader();
+  }
+
+  async generateObject<T>(params: {
+    model: string;
+    schema: ZodSchema<T>;
+    schemaName: string;
+    messages: Message[];
+    temperature: number;
+  }): Promise<T | undefined> {
+    const result = await this._openAIService.generateObject(params);
+
+    try {
+      const formattedUrl = `${process.cwd()}/tests-e2e/recordings/${this.fixtureName}.generateObject.formatted.json`;
+      const formatted = JSON.stringify(result, null, 2);
+      log.info("Writing generateObject formatted to", formattedUrl);
+      await fs.writeFile(formattedUrl, formatted);
+    } catch (e) {
+      log.error("Error writing generateObject formatted file", e);
+    }
+
+    return result;
   }
 }

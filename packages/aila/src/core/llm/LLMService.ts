@@ -1,3 +1,4 @@
+import type { GenerateObjectResult } from "ai";
 import type { ZodSchema } from "zod";
 
 import type { Message } from "../chat";
@@ -16,4 +17,11 @@ export interface LLMService {
     messages: Message[];
     temperature: number;
   }): Promise<ReadableStreamDefaultReader<string>>;
+  generateObject<T>(params: {
+    model: string;
+    schema: ZodSchema<T>;
+    schemaName: string;
+    messages: Message[];
+    temperature: number;
+  }): Promise<T | undefined>;
 }

@@ -1,0 +1,9 @@
+{
+  "type": "categorisedKeyStageAndSubject",
+  "reasoning": "The user has specified 'KS1', which corresponds to 'key-stage-1'. The topic 'end of Roman Britain' is a historical topic, so the subject is 'history'. The title is derived directly from the user's input, focusing on the end of Roman Britain.",
+  "keyStage": "key-stage-1",
+  "subject": "history",
+  "title": "End of Roman Britain",
+  "topic": "End of Roman Britain",
+  "error": null
+}

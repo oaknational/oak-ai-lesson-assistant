@@ -1,14 +1,14 @@
-import { CategoriseKeyStageAndSubjectResponse } from "@oakai/core/src/rag/categorisation";
+import {
+  CategoriseKeyStageAndSubjectResponse,
+  type CategorisedKeyStageAndSubject,
+} from "@oakai/core/src/rag/categorisation";
 import { keyStages, subjects } from "@oakai/core/src/utils/subjects";
 import { aiLogger } from "@oakai/logger";
-import type { ChatCompletionMessageParam } from "openai/resources";
-import { Md5 } from "ts-md5";
 
 import { DEFAULT_CATEGORISE_MODEL } from "../../../constants";
 import type { AilaServices } from "../../../core/AilaServices";
 import type { Message } from "../../../core/chat";
-import type { OpenAICompletionWithLoggingOptions } from "../../../lib/openai/OpenAICompletionWithLogging";
-import { OpenAICompletionWithLogging } from "../../../lib/openai/OpenAICompletionWithLogging";
+import { generateMessageId } from "../../../helpers/chat/generateMessageId";
 import type { LooseLessonPlan } from "../../../protocol/schema";
 import type { AilaCategorisationFeature } from "../../types";
 
@@ -30,13 +30,11 @@ export class AilaCategorisation implements AilaCategorisationFeature {
       .join(" ");
 
     const result = await this.fetchCategorisedInput(categorisationInput);
+    log.info("Categorised input", JSON.stringify(result));
     return result;
   }
 
-  private async categoriseKeyStageAndSubject(
-    input: string,
-    chatMeta: OpenAICompletionWithLoggingOptions,
-  ) {
+  private async categoriseKeyStageAndSubject(input: string) {
     log.info("Categorise input", JSON.stringify(input));
     //# TODO Duplicated for now until we refactor the RAG class
     const systemMessage = `You are a classifier which can help me categorise the intent of the user's input for an application which helps a teacher build a lesson plan their students in a UK school.
@@ -100,59 +98,51 @@ Never respond with slugs that are not in the list of slugs provided above. If yo
 Do not respond with any other output than the object described above. If you do, the system will not be able to understand your response and will not be able to categorise the input correctly.
 Thank you and happy classifying!`;
 
-    const promptVersion = Md5.hashStr(systemMessage);
-    const messages: ChatCompletionMessageParam[] = [
-      { role: "system", content: systemMessage },
-      { role: "user", content: input },
+    const messages: Message[] = [
+      {
+        id: generateMessageId({ role: "system" }),
+        role: "system",
+        content: systemMessage,
+      },
+      { id: generateMessageId({ role: "user" }), role: "user", content: input },
     ];
 
-    // #TODO This is the only place where we use this old OpenAICompletionWithLogging
-    // We should be using methods on the Aila instance instead
-    const { completion } = await OpenAICompletionWithLogging(
-      {
-        ...chatMeta,
-        promptVersion,
-        prompt: "categorise_key_stage_and_subject",
-      },
-      {
+    const llmService = this._aila.chatLlmService;
+    const categorised =
+      await llmService.generateObject<CategorisedKeyStageAndSubject>({
         model: DEFAULT_CATEGORISE_MODEL,
-        stream: false,
+        schema: CategoriseKeyStageAndSubjectResponse,
+        schemaName: "CategoriseKeyStageAndSubjectResponse",
         messages,
-        response_format: { type: "json_object" },
-      },
-    );
+        temperature: 0,
+      });
 
-    try {
-      const content = completion.choices?.[0]?.message.content;
-      if (!content) return { error: "No content in response" };
-
-      const parsedResponse = CategoriseKeyStageAndSubjectResponse.parse(
-        JSON.parse(content),
-      );
-      log.info("Categorisation results", parsedResponse);
-      return parsedResponse;
-    } catch (e) {
-      return { error: "Error parsing response" };
+    if (!categorised) {
+      log.error("No content in response");
+      return { error: "No content in response" };
+    } else {
+      log.info("Categorisation result", JSON.stringify(categorised));
     }
+    return categorised;
   }
 
   private async fetchCategorisedInput(
     input: string,
   ): Promise<LooseLessonPlan | undefined> {
-    const parsedCategorisation = await this.categoriseKeyStageAndSubject(
-      input,
-      {
-        chatId: this._aila.chatId,
-        userId: this._aila.userId,
-      },
-    );
-    const { keyStage, subject, title, topic } = parsedCategorisation;
-    const plan: LooseLessonPlan = {
-      keyStage: keyStage ?? undefined,
-      subject: subject ?? undefined,
-      title: title ?? undefined,
-      topic: topic ?? undefined,
-    };
-    return plan;
+    log.info("Fetch categorised input", input);
+    const result = await this.categoriseKeyStageAndSubject(input);
+    if ("error" in result && result.error) {
+      return undefined;
+    }
+    if ("keyStage" in result && "subject" in result && "title" in result) {
+      const categorisedLessonPlan: LooseLessonPlan = {
+        keyStage: result.keyStage ?? undefined,
+        subject: result.subject ?? undefined,
+        title: result.title ?? undefined,
+        topic: result.topic ?? undefined,
+      };
+      return categorisedLessonPlan;
+    }
+    return undefined;
   }
 }

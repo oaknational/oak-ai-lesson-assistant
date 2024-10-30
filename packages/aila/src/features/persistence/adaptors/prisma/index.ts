@@ -67,6 +67,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
       return;
     }
 
+    log.info("Persisting chat", payload.id, payload.userId, payload.iteration);
     await this._prisma.appSession.upsert({
       where: {
         id: payload.id,

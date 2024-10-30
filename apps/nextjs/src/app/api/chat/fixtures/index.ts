@@ -18,6 +18,7 @@ export function getFixtureLLMService(headers: Headers, chatId: string) {
   const fixtureName = headers.get("x-e2e-fixture-name");
 
   if (!fixtureName) {
+    log.info("Not using fixtures");
     return undefined;
   }
 

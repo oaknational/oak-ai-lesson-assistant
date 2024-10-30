@@ -23,24 +23,18 @@ Quiz
 type":"
 patch
 ","reasoning":"
-Designed
+Creating
  a
  starter
  quiz
  to
  assess
- pupils
-'
  prior
  knowledge
- on
- Roman
- Britain
  before
  the
- main
  lesson
- content
+ begins
 .","
 value":{"
 type":"
@@ -53,182 +47,145 @@ Quiz
 ","value":[
 {"
 question":"
+When
+ did
+ the
+ Romans
+ invade
+ Britain
+?
+","answers":["
+43
+ AD
+"],"distractors":["
+410
+ AD
+","
+106
+6
+ AD
+"]},{"
+question":"
 What
  did
  the
  Romans
  build
- in
+ across
  Britain
- during
- their
- rule
 ?
 ","answers":["
 Road
 s
- and
- towns
 "],"distractors":["
-Cast
-les
- and
- forts
+Br
+idges
 ","
-Schools
- and
- hospitals
+Can
+als
 "]},{"
 question":"
-How
- long
+What
+ new
+ structures
  did
  the
  Romans
- rule
- over
+ introduce
+ to
  Britain
 ?
 ","answers":["
-Several
- centuries
+T
+owns
+ and
+ cities
 "],"distractors":["
-A
- few
- years
+Cast
+les
 ","
-A
- decade
+Rail
+ways
+"]},{"
+question":"
+How
+ was
+ the
+ Roman
+ army
+ described
+?
+","answers":["
+Power
+ful
+ and
+ well
+-organ
+ised
+"],"distractors":["
+Weak
+ and
+ dis
+organ
+ised
+","
+Small
+ and
+ ineffective
 "]},{"
 question":"
 What
- is
- an
- empire
+ aspect
+ of
+ British
+ life
+ did
+ Roman
+ culture
+ influence
 ?
 ","answers":["
-A
- large
- group
- of
- territories
- ruled
- by
- one
- authority
+Culture
 "],"distractors":["
-A
- small
- country
+Weather
 ","
-A
- type
- of
- government
-"]},{"
-question":"
-What
- role
- do
- archae
-ologists
- play
- in
- history
-?
-","answers":["
-They
- study
- human
- history
- by
- digging
- up
- ancient
- sites
-"],"distractors":["
-They
- write
- history
- books
-","
-They
- teach
- history
- in
- schools
+Ge
+ography
 "]},{"
 question":"
 Which
- empire
- did
- Britain
- belong
- to
- during
- Roman
- rule
-?
-","answers":["
-The
- Roman
- Empire
-"],"distractors":["
-The
- Greek
- Empire
-","
-The
- Egyptian
- Empire
-"]},{"
-question":"
-What
+ of
+ these
  is
- one
- thing
- pupils
- should
- understand
- before
- this
- lesson
+ a
+ Roman
+ contribution
+ to
+ Britain
 ?
 ","answers":["
-The
- concept
- of
- an
- empire
+Road
+s
 "],"distractors":["
-The
- history
- of
- the
- Sax
-ons
+Rail
+ways
 ","
-The
- fall
- of
- the
- Roman
- Empire
+Sk
+yscr
+apers
 "]}]},"status":"
 complete
 "},{"
 type":"
 patch
 ","reasoning":"
-Develop
-ed
- the
- first
+Providing
+ a
+ structured
  learning
  cycle
- focusing
- on
- explaining
+ to
+ explore
  why
  the
  Romans
@@ -245,65 +202,49 @@ cycle
 1
 ","value":{"
 title":"
-Why
- the
- Romans
- Left
- Britain
+Reasons
+ for
+ Roman
+ Departure
 ","durationInMinutes":15
 ,"explanation":{"
 spokenExplanation":["
 Discuss
  the
- pressures
- faced
- by
+ weakening
+ of
  the
  Roman
  Empire
- around
- AD
- 
-410
-.","
-Explain
- how
- internal
- conflicts
- weakened
- the
- Roman
- control
- over
- distant
- regions
- like
- Britain
-.","
-Describe
- the
- external
- threats
- from
- other
- tribes
  and
- groups
- that
- required
- Roman
- attention
+ the
+ need
+ to
+ defend
+ it
  elsewhere
 .","
-Mention
- how
- resources
- and
- troops
+Explain
+ that
+ Roman
+ soldiers
  were
- needed
- more
- urgently
+ recalled
+ to
+ protect
+ the
+ empire
+'s
+ heart
+lands
+.","
+Mention
+ the
+ increasing
+ pressure
+ from
+ inv
+aders
  in
  other
  parts
@@ -312,61 +253,64 @@ Mention
  empire
 .","
 Highlight
- that
  the
- decision
- to
- leave
- was
- strategic
-,
- not
- due
- to
- defeat
+ financial
+ difficulties
+ faced
  by
- Brit
-ons
-."
-],"accompanyingSlideDetails":"
-A
- timeline
- showing
- key
- events
- leading
+ the
+ Roman
+ Empire
+.","
+Connect
+ these
+ reasons
  to
  the
  Roman
- departure
+ withdrawal
  from
  Britain
+."
+],"accompanyingSlideDetails":"
+A
+ map
+ showing
+ the
+ Roman
+ Empire
+ with
+ arrows
+ indicating
+ pressures
+ from
+ inv
+aders
 .","
 imagePrompt":"
 Roman
  Empire
- timeline
- AD
- 
-410
+ map
+ pressures
 ","slideText":"
 The
- Romans
- left
- Britain
- around
- AD
- 
-410
- due
- to
- internal
- and
- external
+ Roman
+ Empire
+ faced
  pressures
- on
- their
- empire
+ from
+ inv
+aders
+ and
+ financial
+ difficulties
+,
+ leading
+ to
+ the
+ recall
+ of
+ soldiers
 ."
 },"checkForUnderstanding":[
 {"
@@ -375,28 +319,26 @@ Why
  did
  the
  Romans
- decide
- to
  leave
  Britain
 ?
 ","answers":["
-Due
- to
- internal
- and
- external
- pressures
+To
+ defend
+ other
+ parts
+ of
+ the
+ empire
 "],"distractors":["
 They
  were
  defeated
- by
- Brit
-ons
+ in
+ Britain
 ","
 They
- found
+ discovered
  new
  lands
 "]},{"
@@ -404,43 +346,43 @@ question":"
 What
  was
  a
- major
- factor
- in
- the
+ consequence
+ of
  Roman
- departure
- from
- Britain
+ soldiers
+ being
+ recalled
 ?
 ","answers":["
-Resource
- needs
- elsewhere
+Def
+ending
+ the
+ empire
+’s
+ heart
+lands
 "],"distractors":["
-British
- rebellion
+Building
+ new
+ roads
 ","
-New
- Roman
- emperor
+Expl
+oring
+ new
+ territories
 "]}],"practice":"
 List
- two
+ three
  reasons
  why
  the
  Romans
  left
  Britain
- and
- explain
- how
- these
- reasons
- impacted
- their
- empire
+,
+ using
+ simple
+ sentences
 .","
 feedback":"
 Model
@@ -449,22 +391,25 @@ Model
  The
  Romans
  left
+ to
+ defend
+ other
+ parts
+ of
+ their
+ empire
+,
  due
  to
- internal
- conflicts
- and
- external
- threats
-.
- These
- weakened
- their
- control
+ financial
+ difficulties
 ,
- requiring
- resources
- elsewhere
+ and
+ increasing
+ pressure
+ from
+ inv
+aders
 ."
 }},"status":"
 complete
@@ -472,20 +417,20 @@ complete
 type":"
 patch
 ","reasoning":"
-Created
- the
- second
+Creating
+ a
  learning
  cycle
  to
  describe
- changes
- in
+ the
+ impact
+ of
+ the
+ Roman
+ departure
+ on
  Britain
- post
--R
-om
-ans
 .","
 value":{"
 type":"
@@ -497,112 +442,118 @@ cycle
 2
 ","value":{"
 title":"
-Changes
- in
- Post
--R
-oman
- Britain
+Impact
+ of
+ Roman
+ Departure
 ","durationInMinutes":15
 ,"explanation":{"
 spokenExplanation":["
+Describe
+ how
+ Roman
+ infrastructure
+,
+ like
+ roads
+ and
+ buildings
+,
+ fell
+ into
+ dis
+repair
+.","
 Explain
  how
- the
- departure
- of
- Romans
- led
+ local
+ leaders
+ struggled
  to
- power
- vac
-u
-ums
- in
- Britain
+ maintain
+ order
+ without
+ Roman
+ support
 .","
 Discuss
  the
- arrival
- of
- the
- Sax
-ons
- and
- other
- groups
- invading
- Britain
-.","
-Describe
- the
- changes
- in
- town
- structures
- and
- the
- decline
+ loss
  of
  Roman
--built
- infrastructure
+ technologies
+ and
+ conveniences
+.","
+Mention
+ the
+ arrival
+ of
+ new
+ groups
+,
+ such
+ as
+ the
+ Anglo
+-S
+ax
+ons
 .","
 Highlight
  the
- blend
+ period
  of
- Roman
- and
- new
- cultural
- influences
- in
- Britain
-.","
-Show
- examples
- of
- Roman
- architecture
+ instability
  that
- remained
- influential
+ followed
+ the
+ Roman
+ departure
 ."
 ],"accompanyingSlideDetails":"
 Images
- showing
+ of
  Roman
- roads
+ ruins
  and
- Sax
-on
+ dep
+ictions
+ of
+ Anglo
+-S
+axon
  settlements
 .","
 imagePrompt":"
 Roman
- roads
- and
- Sax
-on
- settlements
+ ruins
+ Anglo
+-S
+axon
+ settlement
 ","slideText":"
 After
  the
  Romans
  left
 ,
- Britain
- faced
- invas
-ions
+ roads
+ fell
+ into
+ dis
+repair
+,
  and
- cultural
- changes
- with
- enduring
- Roman
- influences
+ new
+ groups
+ like
+ the
+ Anglo
+-S
+ax
+ons
+ arrived
 ."
 },"checkForUnderstanding":[
 {"
@@ -610,93 +561,90 @@ question":"
 What
  happened
  to
- Britain
+ Roman
+ roads
+ after
+ they
+ left
+?
+","answers":["
+F
+ell
+ into
+ dis
+repair
+"],"distractors":["
+Were
+ expanded
+","
+Turn
+ed
+ into
+ rivers
+"]},{"
+question":"
+Who
+ struggled
+ to
+ maintain
+ order
  after
  the
  Romans
  left
 ?
 ","answers":["
-It
- faced
- invas
-ions
- from
- other
- groups
+Local
+ leaders
 "],"distractors":["
-It
- became
- a
- Roman
- province
+Roman
+ generals
 ","
-It
- remained
- peaceful
-"]},{"
-question":"
-Which
- group
- invaded
+Inv
+ading
+ Vikings
+"]}],"practice":"
+Draw
+ and
+ label
+ a
+ simple
+ map
+ showing
  Britain
+ before
+ and
  after
  the
  Romans
-?
-","answers":["
-The
- Sax
-ons
-"],"distractors":["
-The
- Greeks
-","
-The
- Norm
-ans
-"]}],"practice":"
-Draw
- a
- picture
- showing
- a
- Roman
- road
-.
- Label
- it
- and
- describe
- its
- importance
- in
- post
--R
-oman
- Britain
+ left
+,
+ indicating
+ changes
 .","
 feedback":"
 Model
  answer
 :
+ A
+ map
+ showing
  Roman
  roads
- remained
- important
- for
- trade
  and
- travel
- in
- post
--R
-oman
- Britain
+ settlements
 ,
- influencing
- settlement
- patterns
+ with
+ labels
+ indicating
+ dis
+repair
+ and
+ new
+ Anglo
+-S
+axon
+ settlements
 ."
 }},"status":"
 complete
@@ -704,19 +652,22 @@ complete
 type":"
 patch
 ","reasoning":"
-Form
-ulated
- the
- third
+Adding
+ a
  learning
  cycle
- focusing
- on
- archaeological
- discoveries
- of
- Roman
+ to
+ explore
+ how
+ new
+ groups
+ settled
+ in
  Britain
+ after
+ the
+ Romans
+ left
 .","
 value":{"
 type":"
@@ -728,189 +679,197 @@ cycle
 3
 ","value":{"
 title":"
-Ar
-chae
-ologists
- and
- Roman
+New
+ Sett
+lements
+ in
  Britain
 ","durationInMinutes":15
 ,"explanation":{"
 spokenExplanation":["
-Define
+Discuss
  the
- role
+ arrival
  of
- archae
-ologists
- in
- studying
- history
+ groups
+ like
+ the
+ Anglo
+-S
+ax
+ons
+ and
+ their
+ impact
+ on
+ Britain
 .","
 Explain
  how
- archae
-ologists
- uncover
- Roman
- artifacts
- through
- excav
-ations
-.","
-Discuss
- the
- types
- of
- artifacts
- commonly
- found
- from
- Roman
- Britain
+ these
+ groups
+ established
+ their
+ own
+ settlements
+ and
+ cultures
 .","
 Describe
  how
- these
- discoveries
- help
- us
- understand
- Roman
- life
+ the
+ landscape
  and
- influence
+ society
+ changed
+ with
+ new
+ influences
 .","
-Mention
- key
- archaeological
- sites
- in
- Britain
- linked
+Connect
+ these
+ changes
  to
  the
- Romans
-."
-],"accompanyingSlideDetails":"
-Images
+ decline
  of
  Roman
- artifacts
+ influence
+."
+],"accompanyingSlideDetails":"
+Illustr
+ations
+ of
+ Anglo
+-S
+axon
+ villages
  and
- archaeological
- sites
- in
- Britain
+ arte
+facts
 .","
 imagePrompt":"
-Roman
- artifacts
- from
- Britain
+Ang
+lo
+-S
+axon
+ village
+ arte
+facts
 ","slideText":"
-Ar
-chae
-ologists
- uncover
- Roman
- history
- through
- excav
-ations
-,
- revealing
- insights
- into
- life
+New
+ groups
+ like
+ the
+ Anglo
+-S
+ax
+ons
+ settled
  in
- Roman
  Britain
+,
+ creating
+ their
+ own
+ cultures
+ and
+ settlements
 ."
 },"checkForUnderstanding":[
 {"
 question":"
-What
- do
- archae
-ologists
- do
+Which
+ new
+ group
+ settled
+ in
+ Britain
+ after
+ the
+ Romans
+ left
 ?
 ","answers":["
-Study
- history
- through
- excav
-ations
+Ang
+lo
+-S
+ax
+ons
 "],"distractors":["
-Write
- history
- books
+Romans
 ","
-Teach
- in
- schools
+V
+ik
+ings
 "]},{"
 question":"
-Why
- are
- Roman
- artifacts
- important
+What
+ did
+ the
+ Anglo
+-S
+ax
+ons
+ establish
+ in
+ Britain
 ?
 ","answers":["
-They
- help
- us
- understand
- Roman
- life
+Their
+ own
+ settlements
 "],"distractors":["
-They
- are
- decorative
+Roman
+ forts
 ","
-They
- are
- made
- of
- gold
+V
+iking
+ ships
 "]}],"practice":"
-Match
- pictures
- of
- Roman
- artifacts
- with
- their
- descriptions
- and
- explain
- their
- significance
+Write
+ a
+ short
+ paragraph
+ describing
+ how
+ life
  in
- Roman
- history
+ Britain
+ changed
+ with
+ the
+ arrival
+ of
+ the
+ Anglo
+-S
+ax
+ons
 .","
 feedback":"
 Model
  answer
 :
- Roman
- coins
-,
- pottery
-,
+ The
+ Anglo
+-S
+ax
+ons
+ established
+ new
+ villages
  and
- tools
- reveal
- daily
- life
+ brought
+ their
+ customs
+,
+ changing
+ the
+ landscape
  and
- trade
- practices
- in
- Roman
+ society
+ of
  Britain
 ."
 }},"status":"
@@ -919,21 +878,18 @@ complete
 type":"
 patch
 ","reasoning":"
-Designed
+Develop
+ing
  an
  exit
  quiz
  to
  assess
- pupils
-'
  understanding
  of
  the
  lesson
-'s
- key
- concepts
+ content
 .","
 value":{"
 type":"
@@ -955,144 +911,142 @@ When
 ?
 ","answers":["
 Around
- AD
  
 410
+ AD
 "],"distractors":["
-Around
+43
  AD
- 
-300
 ","
-Around
+106
+6
  AD
- 
-500
+"]},{"
+question":"
+What
+ happened
+ to
+ Roman
+ roads
+ after
+ they
+ left
+?
+","answers":["
+F
+ell
+ into
+ dis
+repair
+"],"distractors":["
+Were
+ improved
+","
+B
+ec
+ame
+ toll
+ roads
+"]},{"
+question":"
+Who
+ were
+ the
+ new
+ settlers
+ in
+ Britain
+ after
+ the
+ Romans
+?
+","answers":["
+Ang
+lo
+-S
+ax
+ons
+"],"distractors":["
+Norm
+ans
+","
+V
+ik
+ings
 "]},{"
 question":"
 What
  was
  one
- reason
- for
+ impact
+ of
  the
  Roman
- departure
+ withdrawal
 ?
 ","answers":["
-Internal
- empire
- pressures
-"],"distractors":["
-Def
-eat
+New
+ settlements
  by
- Brit
-ons
+ other
+ groups
+"],"distractors":["
+Immediate
+ prosperity
 ","
-L
-ack
- of
- interest
- in
- Britain
+Roman
+ roads
+ expansion
 "]},{"
 question":"
-Who
- invaded
- Britain
- after
- the
- Romans
- left
+What
+ is
+ an
+ Empire
 ?
 ","answers":["
-The
- Sax
-ons
+A
+ group
+ of
+ countries
+ controlled
+ by
+ one
+ ruler
 "],"distractors":["
-The
- Norm
-ans
+A
+ single
+ country
 ","
-The
- Vikings
+A
+ small
+ town
 "]},{"
 question":"
 What
  did
- archae
-ologists
- find
- in
- Roman
+ the
+ Anglo
+-S
+ax
+ons
+ bring
+ to
  Britain
 ?
 ","answers":["
-Artifacts
- like
- coins
+Their
+ own
+ culture
  and
- pottery
+ settlements
 "],"distractors":["
-Modern
- buildings
+Roman
+ laws
 ","
-Anc
-ient
- books
-"]},{"
-question":"
-Why
- are
- Roman
- roads
- significant
-?
-","answers":["
-They
- influenced
- travel
- and
- trade
-"],"distractors":["
-They
- were
- all
- destroyed
-","
-They
- were
- only
- decorative
-"]},{"
-question":"
-What
- role
- do
- archae
-ologists
- play
- in
- history
-?
-","answers":["
-They
- uncover
- past
- through
- excav
-ations
-"],"distractors":["
-They
- build
- new
- sites
-","
-They
- rule
- ancient
- lands
+V
+iking
+ ships
 "]}]},"status":"
 complete
 "}],"sectionsEdited":["
@@ -1125,7 +1079,6 @@ Are
  and
  exit
  quiz
- sections
  suitable
  for
  your

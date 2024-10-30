@@ -217,8 +217,8 @@ describe("Aila", () => {
         },
         plugins: [],
         services: {
-          chatLlmService: mockLLMService,
-          chatCategoriser: mockChatCategoriser,
+          chatLlmService: () => mockLLMService,
+          chatCategoriser: () => mockChatCategoriser,
         },
       });
 
@@ -268,9 +268,8 @@ describe("Aila", () => {
           value: newTitle,
         },
       };
-      const chatLlmService = new MockLLMService([
-        JSON.stringify(mockedResponse),
-      ]);
+      const chatLlmService = () =>
+        new MockLLMService([JSON.stringify(mockedResponse)]);
       const ailaInstance = new Aila({
         lessonPlan: {
           title: "Roman Britain",
@@ -324,8 +323,8 @@ describe("Aila", () => {
           useModeration: false,
         },
         services: {
-          chatLlmService: new MockLLMService(),
-          chatCategoriser: mockCategoriser,
+          chatLlmService: () => new MockLLMService(),
+          chatCategoriser: () => mockCategoriser,
         },
         plugins: [],
       });
@@ -366,8 +365,8 @@ describe("Aila", () => {
           useModeration: false,
         },
         services: {
-          chatCategoriser: mockCategoriser,
-          chatLlmService: mockLLMService,
+          chatCategoriser: () => mockCategoriser,
+          chatLlmService: () => mockLLMService,
         },
         plugins: [],
       });

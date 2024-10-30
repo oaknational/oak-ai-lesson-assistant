@@ -161,11 +161,13 @@ export const interactingWithTheUser = ({
   relevantLessonPlans,
 }: TemplateProps) => {
   const allSteps = lessonConstructionSteps(lessonPlan, relevantLessonPlans);
-
-  const step = allSteps[0]
-    ? `${allSteps[0]?.title}\n\n${allSteps[0]?.content}`
-    : "FINAL STEP: Respond to the user and help them edit the lesson plan";
-  log.info("Prompt: next lesson step", JSON.stringify(step, null, 2));
+  const finalStep = {
+    title: "FINAL STEP",
+    content: "Respond to the user and help them edit the lesson plan",
+  };
+  const nextStep = allSteps[0] ?? finalStep;
+  const step = `${nextStep.title}\n\n${nextStep.content}`;
+  log.info("Prompt: next lesson step", nextStep.title);
 
   const parts = [
     `YOUR INSTRUCTIONS FOR INTERACTING WITH THE USER
