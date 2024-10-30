@@ -12,7 +12,7 @@ async function postHandler(req: NextRequest): Promise<Response> {
 }
 
 async function getHandler(): Promise<Response> {
-  return new Response("Server is ready", { status: 200 });
+  return Promise.resolve(new Response("Server is ready", { status: 200 }));
 }
 
 export const POST = withSentry(postHandler);

@@ -1,4 +1,4 @@
-import type { Quiz} from "@oakai/db";
+import type { Quiz } from "@oakai/db";
 import { prisma } from "@oakai/db";
 import { GraphQLClient, gql } from "graphql-request";
 
@@ -62,7 +62,7 @@ type Lesson = {
 };
 
 const graphqlClient = new GraphQLClient(
-  `https://hasura.thenational.academy/v1/graphql`,
+  "https://hasura.thenational.academy/v1/graphql",
   {
     headers: {
       "x-oak-auth-key": process.env.OAK_GRAPHQL_SECRET as string,

@@ -16,7 +16,7 @@ function parseChatAndReportError({
   userId: string;
 }): AilaPersistedChat | undefined {
   if (typeof sessionOutput !== "object") {
-    throw new Error(`sessionOutput is not an object`);
+    throw new Error("sessionOutput is not an object");
   }
   const parseResult = chatSchema.safeParse({
     ...sessionOutput,
@@ -25,7 +25,7 @@ function parseChatAndReportError({
   });
 
   if (!parseResult.success) {
-    const error = new Error(`Failed to parse chat`);
+    const error = new Error("Failed to parse chat");
     Sentry.captureException(error, {
       extra: {
         id,
