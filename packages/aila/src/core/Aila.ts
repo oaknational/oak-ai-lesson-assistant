@@ -2,8 +2,6 @@ import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
-import { completedSections } from "@/utils/lessonPlan/completedSections";
-
 import {
   DEFAULT_MODEL,
   DEFAULT_TEMPERATURE,
@@ -23,6 +21,7 @@ import type {
   AilaThreatDetectionFeature,
 } from "../features/types";
 import { generateMessageId } from "../helpers/chat/generateMessageId";
+import { completedSections } from "../utils/lessonPlan/completedSections";
 import { AilaAuthenticationError, AilaGenerationError } from "./AilaError";
 import { AilaFeatureFactory } from "./AilaFeatureFactory";
 import type {

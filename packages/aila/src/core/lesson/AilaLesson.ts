@@ -1,8 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 import { deepClone } from "fast-json-patch";
 
-import { completedSections } from "@/utils/lessonPlan/completedSections";
-
 import { AilaCategorisation } from "../../features/categorisation/categorisers/AilaCategorisation";
 import type { AilaCategorisationFeature } from "../../features/types";
 import type { PatchDocument } from "../../protocol/jsonPatchProtocol";
@@ -11,6 +9,7 @@ import {
   extractPatches,
 } from "../../protocol/jsonPatchProtocol";
 import type { LooseLessonPlan } from "../../protocol/schema";
+import { completedSections } from "../../utils/lessonPlan/completedSections";
 import type { AilaLessonService, AilaServices } from "../AilaServices";
 import type { Message } from "../chat";
 
