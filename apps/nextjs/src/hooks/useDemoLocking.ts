@@ -31,7 +31,7 @@ const DEMO_MESSAGES_AFTER_COMPLETE = parseInt(
 );
 
 const stateLineHasAllSections = (line: string) => {
-  if (!line.includes(`"type":"state"`)) {
+  if (!line.includes('"type":"state"')) {
     return false;
   }
 

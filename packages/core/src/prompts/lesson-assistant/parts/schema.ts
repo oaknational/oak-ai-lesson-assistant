@@ -1,6 +1,6 @@
 import type { TemplateProps } from "..";
 
-const interactiveOnly = `This is a JSON object that should be generated through the patch instructions that you generate.`;
+const interactiveOnly = "This is a JSON object that should be generated through the patch instructions that you generate.";
 
 export const schema = ({
   responseMode,
