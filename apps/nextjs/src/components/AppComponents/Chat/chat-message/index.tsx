@@ -294,7 +294,12 @@ function ErrorMessagePart({
 }
 
 function TextMessagePart({ part }: Readonly<{ part: TextDocument }>) {
-  return <MemoizedReactMarkdownWithStyles markdown={part.value} />;
+  // This hides the "with special instructions" part of the Continue text
+  const valueToDisplay = part.value.replace(
+    /\(with special instructions.*$/,
+    "",
+  );
+  return <MemoizedReactMarkdownWithStyles markdown={valueToDisplay} />;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
