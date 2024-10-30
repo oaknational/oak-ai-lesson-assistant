@@ -33,9 +33,8 @@ export function keyStageToTitle(slug: string) {
     .join(" ");
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function notEmpty(value: any) {
-  return ![null, undefined, ""].includes(value);
+export function notEmpty<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined && value !== "";
 }
 
 function basedOnTitle(basedOn: string | BasedOnOptional) {

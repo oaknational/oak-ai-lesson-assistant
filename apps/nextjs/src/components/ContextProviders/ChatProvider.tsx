@@ -330,7 +330,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
           role: "user",
         });
       } else if (actionToExecute === "regenerate") {
-        reload();
+        void reload();
       } else {
         // Assume it's a user message
         await append({
@@ -347,7 +347,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   useEffect(() => {
     if (hasFinished) {
-      executeQueuedAction();
+      void executeQueuedAction();
     }
   }, [hasFinished, executeQueuedAction]);
 
@@ -365,7 +365,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   useEffect(() => {
     if (chat?.startingMessage && !hasAppendedInitialMessage.current) {
-      append({
+      void append({
         content: chat.startingMessage,
         role: "user",
       });
