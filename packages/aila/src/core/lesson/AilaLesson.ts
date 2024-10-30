@@ -14,8 +14,6 @@ import type { Message } from "../chat";
 
 const log = aiLogger("aila:lesson");
 
-const log = aiLogger("aila:lesson");
-
 export class AilaLesson implements AilaLessonService {
   private _aila: AilaServices;
   private _plan: LooseLessonPlan;
