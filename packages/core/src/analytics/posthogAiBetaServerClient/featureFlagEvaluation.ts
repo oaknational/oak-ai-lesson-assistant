@@ -1,18 +1,16 @@
 import { aiLogger } from "@oakai/logger";
 import { kv } from "@vercel/kv";
-import { PostHog } from "posthog-node";
+import type { PostHog } from "posthog-node";
 
-const host = process.env.NEXT_PUBLIC_POSTHOG_HOST as string;
-const apiKey = process.env.NEXT_PUBLIC_POSTHOG_API_KEY || "*";
-const personalApiKey = process.env.POSTHOG_PERSONAL_KEY;
+const KV_KEY = "posthog-feature-flag-local-evaluation";
+const ONE_DAY = 24 * 60 * 60 * 1000;
+const ONE_MINUTE = 60 * 1000;
 
 const log = aiLogger("analytics:feature-flags");
 
-const KV_KEY = "posthog-feature-flag-local-evaluation";
-
 const setKv = async (response: Response) => {
   const value = await response.text();
-  await kv.set(KV_KEY, value, { ex: 30 });
+  await kv.set(KV_KEY, value, { ex: ONE_MINUTE });
 };
 
 const getKv = async () => {
@@ -27,11 +25,11 @@ const getKv = async () => {
   };
 };
 
-const cachedFetch: PostHog["fetch"] = async (url, options) => {
+export const cachedFetch: PostHog["fetch"] = async (url, options) => {
   if (url.includes("api/feature_flag/local_evaluation")) {
     const kvCachedResponse = await getKv();
     if (kvCachedResponse) {
-      log.info("fetched from KV");
+      log.info("evaluations fetched from KV");
       return kvCachedResponse;
     }
     const result = await fetch(url, options);
@@ -39,7 +37,7 @@ const cachedFetch: PostHog["fetch"] = async (url, options) => {
     if (result.ok) {
       const cachedResult = result.clone();
       await setKv(cachedResult);
-      log.info("saved to KV");
+      log.info("evaluations cached to KV");
     }
 
     return result;
@@ -52,15 +50,8 @@ const cachedFetch: PostHog["fetch"] = async (url, options) => {
   return await fetch(url, options);
 };
 
-/**
- * This is the posthog nodejs client configured to send events to the
- * posthog AI BETA instance.
- *
- * This is the main Oak posthog instance used for tracking user events
- * on the client-side.
- */
-export const posthogAiBetaServerClient = new PostHog(apiKey, {
-  host,
-  personalApiKey,
-  fetch: cachedFetch,
-});
+export const featureFlagsPollingInterval =
+  process.env.NODE_ENV === "production"
+    ? ONE_MINUTE
+    : // prevent polling timeout from stacking when HMR replaces posthogAiBetaServerClient
+      ONE_DAY;

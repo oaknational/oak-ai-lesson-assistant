@@ -2,23 +2,18 @@ import React from "react";
 import { Toaster } from "react-hot-toast";
 
 import { ClerkProvider } from "@clerk/nextjs";
-import { auth } from "@clerk/nextjs/server";
 import "@fontsource/lexend";
 import "@fontsource/lexend/500.css";
 import "@fontsource/lexend/600.css";
 import "@fontsource/lexend/700.css";
 import "@fontsource/lexend/800.css";
 import "@fontsource/lexend/900.css";
-import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
-import { aiLogger } from "@oakai/logger";
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
-import cookie from "cookie";
 import { GeistMono } from "geist/font/mono";
 import { Lexend } from "next/font/google";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import invariant from "tiny-invariant";
 
 import "@/app/globals.css";
 import "@/app/theme-config.css";
@@ -28,6 +23,7 @@ import { CookieConsentProvider } from "@/components/ContextProviders/CookieConse
 import FontProvider from "@/components/ContextProviders/FontProvider";
 import { GleapProvider } from "@/components/ContextProviders/GleapProvider";
 import { WebDebuggerPosition } from "@/lib/avo/Avo";
+import { getBootstrappedFeatures } from "@/lib/feature-flags/bootstrap";
 import { SentryIdentify } from "@/lib/sentry/SentryIdentify";
 import { cn } from "@/lib/utils";
 import { TRPCReactProvider } from "@/utils/trpc";
@@ -71,39 +67,6 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-declare global {
-  interface CustomJwtSessionClaims {
-    email: string;
-  }
-}
-
-function getDistinctIdFromCookie(): string | null {
-  const cookieHeader = headers().get("cookie");
-  invariant(cookieHeader, "No cookie header");
-  const cookies = cookie.parse(cookieHeader) as Record<string, string>;
-  const phCookieKey = `ph_${process.env.NEXT_PUBLIC_POSTHOG_API_KEY}_posthog`;
-  const phCookie = cookies[phCookieKey];
-  if (!phCookie) {
-    return null;
-  }
-  return JSON.parse(phCookie)["distinct_id"];
-}
-
-async function getBootstrapFeatures() {
-  const log = aiLogger("analytics:feature-flags");
-  const { userId, sessionClaims } = auth();
-  const email = sessionClaims?.email;
-
-  const distinctId = userId ?? getDistinctIdFromCookie() ?? "0";
-  log.info("Evaluating feature flags for", distinctId);
-  const features = await posthogAiBetaServerClient.getAllFlags(distinctId, {
-    personProperties: email ? { email } : {},
-    onlyEvaluateLocally: true,
-  });
-  log.info("Bootstrapping feature flags", features);
-  return features;
-}
-
 export default async function RootLayout({
   children,
 }: Readonly<RootLayoutProps>) {
@@ -115,7 +78,7 @@ export default async function RootLayout({
     return redirect("/not-found");
   }
 
-  const bootstrappedFeatures = await getBootstrapFeatures();
+  const bootstrappedFeatures = await getBootstrappedFeatures(headers());
 
   return (
     <html lang="en" suppressHydrationWarning className={lexend.variable}>

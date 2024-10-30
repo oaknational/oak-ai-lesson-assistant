@@ -1,6 +1,7 @@
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
 import { demoUsers } from "@oakai/core";
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting/rateLimit";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
 import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
