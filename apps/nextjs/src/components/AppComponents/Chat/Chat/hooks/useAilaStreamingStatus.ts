@@ -5,6 +5,8 @@ import { LessonPlanKeysSchema } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import type { Message } from "ai";
 
+import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
+
 const log = aiLogger("chat");
 
 function findStreamingSections(message: Message | undefined): {
@@ -13,37 +15,32 @@ function findStreamingSections(message: Message | undefined): {
   content: string | undefined;
 } {
   if (!message?.content) {
+    log.info("findStreamingSections: No message content found");
     return {
       streamingSections: [],
       streamingSection: undefined,
       content: undefined,
     };
   }
+  log.info("Parsing message content", message.content);
   const { content } = message;
-  const pathMatches: RegExpExecArray[] = [];
-  let match: RegExpExecArray | null;
   const regex = /"path":"\/([^/"]*)(?:\/|")"/g;
-  let startIndex = 0;
-  while ((match = regex.exec(content.slice(startIndex))) !== null) {
-    pathMatches.push(match);
-    startIndex += match.index + match[0].length;
-    if (pathMatches.length > 100) {
-      log.warn("Too many path matches found, stopping search");
-      break;
-    }
-  }
+  const matching = content.matchAll(regex);
+  log.info("Matching content", matching);
+  const pathMatches = Array.from(content.matchAll(regex), (match) => match[1]);
 
+  log.info("Path matches", pathMatches);
   const streamingSections: LessonPlanKeys[] = pathMatches
-    .map((match) => match[1])
-    .filter((i): i is string => typeof i === "string")
-    .map((section) => {
-      const result = LessonPlanKeysSchema.safeParse(section);
-      return result.success ? result.data : undefined;
-    })
-    .filter((section): section is LessonPlanKeys => section !== undefined);
+    .map((match) => match?.[1])
+    .filter(
+      (i): i is string =>
+        typeof i === "string" &&
+        allSectionsInOrder.includes(i as LessonPlanKeys),
+    ) as LessonPlanKeys[];
   const streamingSection: LessonPlanKeys | undefined =
     streamingSections[streamingSections.length - 1];
-
+  log.info("Streaming sections", streamingSections);
+  log.info("Streaming section", streamingSection);
   return { streamingSections, streamingSection, content };
 }
 
@@ -76,6 +73,7 @@ export const useAilaStreamingStatus = ({
     const lastMessage = messages[messages.length - 1];
 
     let status: AilaStreamingStatus = "Idle";
+    log.info("Find streaming sections", lastMessage);
     const { streamingSections, streamingSection, content } =
       findStreamingSections(lastMessage);
 

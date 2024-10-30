@@ -27,8 +27,7 @@ import { nanoid } from "ai";
 import type { ChatRequestOptions, CreateMessage } from "ai";
 import { useChat } from "ai/react";
 import { useLessonPlanScrollManagement } from "hooks/useLessonPlanScrollManagement";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/router";
+import { usePathname, useRouter } from "next/navigation";
 
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
@@ -425,6 +424,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     streamingSections,
   } = useAilaStreamingStatus({ isLoading, messages });
 
+  log.info("*** ailaStreamingStatus", ailaStreamingStatus);
   const [streamingSectionCompleted, setStreamingSectionCompleted] = useState<
     LessonPlanKeys | undefined
   >(undefined);
@@ -434,6 +434,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     streamingSectionCompleted,
   );
 
+  // We have to snapshot the message using a ref so that we don't get a render loop
+  // because messages updates each time we receive a token from the server
   const workingMessage = useRef<Message | undefined>(undefined);
 
   useEffect(() => {
