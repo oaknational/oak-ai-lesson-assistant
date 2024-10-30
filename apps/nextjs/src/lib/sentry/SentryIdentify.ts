@@ -4,10 +4,12 @@ import * as Sentry from "@sentry/nextjs";
 
 import { useClerkIdentify } from "../clerk/useClerkIdentify";
 
-const sentrySetUser = ({ userId }) => {
-  Sentry.setUser({
-    id: userId,
-  });
+const sentrySetUser = ({ userId }: { userId: string }) => {
+  if (userId) {
+    Sentry.setUser({
+      id: userId,
+    });
+  }
 };
 const sentryUnsetUser = () => {
   Sentry.setUser(null);
