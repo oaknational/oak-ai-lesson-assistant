@@ -21,13 +21,24 @@ export const useMobileLessonPullOutControl = ({
   useEffect(() => {
     if (
       !userHasOverRiddenAutoPullOut &&
-      ailaStreamingStatus === "StreamingLessonPlan" &&
+      ["StreamingLessonPlan", "Moderating"].includes(ailaStreamingStatus) &&
       lessonPlan.title
     ) {
-      setShowLessonMobile(true);
+      console.log("Show lesson mobile");
+      if (!showLessonMobile) {
+        setShowLessonMobile(true);
+      }
+    } else {
+      console.log("Not showing lesson mobile", {
+        userHasOverRiddenAutoPullOut,
+        lessonPlanTitle: lessonPlan.title,
+        ailaStreamingStatus,
+      });
     }
     if (ailaStreamingStatus === "Idle") {
-      setUserHasOverRiddenAutoPullOut(false);
+      if (userHasOverRiddenAutoPullOut) {
+        setUserHasOverRiddenAutoPullOut(false);
+      }
     }
   }, [
     ailaStreamingStatus,
@@ -35,7 +46,9 @@ export const useMobileLessonPullOutControl = ({
     userHasOverRiddenAutoPullOut,
     setUserHasOverRiddenAutoPullOut,
     setShowLessonMobile,
+    showLessonMobile,
     lessonPlan.title,
+    lessonPlan,
   ]);
 
   function closeMobileLessonPullOut() {
