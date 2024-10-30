@@ -24,26 +24,26 @@ export const sendQuizFeedbackEmail = async (input: {
   const { user, feedback, flaggedItem, generationResponse } = input;
   const inputDataAsString = JSON.stringify(input);
 
-  const emailContent = `
-    User ${user.email} has clicked on the flag button.
-
-    Flagged content type: ${flaggedItem.type}
-    Flagged content: ${flaggedItem.value}
-    Generation ID: ${flaggedItem.lastGenerationId}
-    Feedback: ${feedback.typedFeedback}
-    Inappropriate content: ${feedback.contentIsInappropriate}
-    Factually incorrect content: ${feedback.contentIsFactuallyIncorrect}
-    Not helpful content: ${feedback.contentIsNotHelpful}
-    Generation response: ${generationResponse}
-    Full data of the time of the flag:
-
-    ${inputDataAsString}
+  const emailContent = `<p>
+    User ${user.email} has clicked on the flag button.<br>
+    <br>
+    Flagged content type: ${flaggedItem.type}<br>
+    Flagged content: ${flaggedItem.value}<br>
+    Generation ID: ${flaggedItem.lastGenerationId}<br>
+    Feedback: ${feedback.typedFeedback}<br>
+    Inappropriate content: ${feedback.contentIsInappropriate}<br>
+    Factually incorrect content: ${feedback.contentIsFactuallyIncorrect}<br>
+    Not helpful content: ${feedback.contentIsNotHelpful}<br>
+    Generation response: ${generationResponse}<br>
+    Full data of the time of the flag:<br>
+    <br>
+    ${inputDataAsString}</p>
   `;
 
   return sendEmail({
     from: "ai.feedback@thenational.academy",
     to: NEXT_PUBLIC_GLEAP_FEEDBACK_EMAIL_ADDR,
     subject: "Feedback: generation flagged",
-    body: emailContent,
+    htmlBody: emailContent,
   });
 };

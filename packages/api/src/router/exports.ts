@@ -724,23 +724,23 @@ export const exportsRouter = router({
           to: userEmail,
           name: "Oak National Academy",
           subject: "Download your lesson made with Aila: " + lessonTitle,
-          body: `
-Hi ${userFirstName},
+          htmlBody: `<p>Hi ${userFirstName},</p>
 
-These are the lesson resources that you created with Aila.
-You can use the following links to copy the lesson resources to your Google Drive.
+        <p>These are the lesson resources that you created with Aila.<br>
+        You can use the following links to copy the lesson resources to your Google Drive.</p>  
 
-Lesson plan: ${`${lessonPlanLink.split("/edit")[0]}/copy`}
-Slides: ${`${slidesLink.split("/edit")[0]}/copy`}
-Worksheet: ${`${worksheetLink.split("/edit")[0]}/copy`}
-Starter quiz: ${`${starterQuizLink.split("/edit")[0]}/copy`}
-Exit quiz: ${`${exitQuizLink.split("/edit")[0]}/copy`}
-Additional materials: ${`${additionalMaterialsLink.split("/edit")[0]}/copy`}
+        <a href="${`${lessonPlanLink.split("/edit")[0]}/copy`}" target="_blank">Lesson plan</a><br>
+        <a href="${`${slidesLink.split("/edit")[0]}/copy`}" target="_blank">Slides</a><br>
+        <a href="${`${worksheetLink.split("/edit")[0]}/copy`}" target="_blank">Worksheet</a><br>
+        <a href="${`${starterQuizLink.split("/edit")[0]}/copy`}" target="_blank">Starter quiz</a><br>
+        <a href="${`${exitQuizLink.split("/edit")[0]}/copy`}" target="_blank">Exit quiz</a><br>
+        <a href="${`${additionalMaterialsLink.split("/edit")[0]}/copy`}" target="_blank">Additional materials</a></p><br>
 
-We hope the lesson goes well for you and your class. If you have any feedback for us, please let us know. You can simply reply to this email.
-
-Aila,
-Oak National Academy`,
+        
+        <p>We hope the lesson goes well for you and your class. If you have any feedback for us, please let us know. You can simply reply to this email.</p>
+        
+        <p>Aila<br>
+        Oak National Academy</p>`,
         });
 
         return emailSent ? true : false;
@@ -769,22 +769,26 @@ Oak National Academy`,
           return false;
         }
 
+        const htmlBody = `<p>Hi ${userFirstName},</p>
+        
+        <p>We made the lesson: <strong>${lessonTitle}</strong></p>
+        
+        <p>You can use the following link to copy the lesson resources <strong>${title.toLowerCase()}</strong> to your Google Drive: 
+          <a href="${`${link.split("/edit")[0]}/copy`}" target="_blank">${`${link.split("/edit")[0]}/copy`}</a>
+        </p>
+        
+        <p>We hope the lesson goes well for you and your class. If you have any feedback for us, please let us know. You can simply reply to this email.</p>
+        
+        <p>Best regards,<br>
+        Aila,<br>
+        Oak National Academy</p>`;
+
         const emailSent = await sendEmail({
           from: "aila@thenational.academy",
           to: userEmail,
           name: "Oak National Academy",
           subject: "Download your lesson made with Aila: " + lessonTitle,
-          body: `
-Hi ${userFirstName},
-
-We made the lesson: ${lessonTitle}
-
-You can use the following link to copy the lesson resources ${title.toLowerCase()} to your Google Drive: ${`${link.split("/edit")[0]}/copy`}
-
-We hope the lesson goes well for you and your class. If you have any feedback for us, please let us know. You can simply reply to this email.
-
-Aila,
-Oak National Academy`,
+          htmlBody: htmlBody,
         });
 
         return emailSent ? true : false;
