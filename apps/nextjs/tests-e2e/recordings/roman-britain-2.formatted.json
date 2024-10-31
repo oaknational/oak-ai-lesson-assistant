@@ -1,33 +1,107 @@
 {
   "type": "llmMessage",
+  "sectionsToEdit": [
+    "priorKnowledge",
+    "keyLearningPoints",
+    "misconceptions",
+    "keywords"
+  ],
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Establishing a clear learning outcome to focus the lesson on the specific impact of the end of Roman rule in Britain.",
-      "value": {
-        "type": "string",
-        "op": "add",
-        "path": "/learningOutcome",
-        "value": "I can describe the changes in Britain after the Romans left."
-      }
-    },
-    {
-      "type": "patch",
-      "reasoning": "Defining learning cycles to structure the lesson effectively, increasing complexity as the lesson progresses.",
+      "reasoning": "Identified prior knowledge that KS1 pupils should have before starting this lesson on the end of Roman Britain.",
       "value": {
         "type": "string-array",
         "op": "add",
-        "path": "/learningCycles",
+        "path": "/priorKnowledge",
         "value": [
-          "Identify key reasons why the Romans left Britain.",
-          "Describe the immediate effects on local communities.",
-          "Explain how Britain changed in the years following Roman departure."
+          "The Romans invaded Britain and ruled for several centuries.",
+          "Roman roads and towns were built during their occupation.",
+          "Britain was part of the Roman Empire.",
+          "The concept of an empire and its importance.",
+          "Basic understanding of what archaeologists do."
         ]
-      }
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Outlined key learning points that pupils should take away from the lesson on the end of Roman Britain.",
+      "value": {
+        "type": "string-array",
+        "op": "add",
+        "path": "/keyLearningPoints",
+        "value": [
+          "The Romans left Britain around AD 410 due to pressures on their empire.",
+          "After the Romans left, Britain faced invasions from other groups like the Saxons.",
+          "Many Roman buildings and roads influenced the landscape of Britain.",
+          "Archaeologists help uncover the history of Roman Britain through excavations."
+        ]
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Addressed common misconceptions about the end of Roman Britain to help teachers correct them during the lesson.",
+      "value": {
+        "type": "misconceptions",
+        "op": "add",
+        "path": "/misconceptions",
+        "value": [
+          {
+            "misconception": "The Romans left Britain because they were defeated by the Britons",
+            "description": "The Romans left due to internal problems within the empire and threats elsewhere, not because they were defeated by the Britons."
+          },
+          {
+            "misconception": "Roman Britain ended suddenly without any lasting impact",
+            "description": "Roman influence persisted in Britain's infrastructure, such as roads and towns, even after their departure."
+          }
+        ]
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Provided keywords that will be used throughout the lesson to ensure pupils understand the key concepts.",
+      "value": {
+        "type": "keywords",
+        "op": "add",
+        "path": "/keywords",
+        "value": [
+          {
+            "keyword": "Romans",
+            "definition": "People from the ancient city of Rome who ruled over Britain for several centuries."
+          },
+          {
+            "keyword": "Empire",
+            "definition": "A large group of territories and people ruled over by a single authority, like the Roman Empire."
+          },
+          {
+            "keyword": "Archaeologist",
+            "definition": "A person who studies human history by digging up and examining ancient sites and objects."
+          },
+          {
+            "keyword": "Invasion",
+            "definition": "An instance of invading a country or region with an armed force."
+          },
+          {
+            "keyword": "Saxons",
+            "definition": "A group of tribes from northern Europe who invaded Britain after the Romans left."
+          }
+        ]
+      },
+      "status": "complete"
     }
+  ],
+  "sectionsEdited": [
+    "priorKnowledge",
+    "keyLearningPoints",
+    "misconceptions",
+    "keywords"
   ],
   "prompt": {
     "type": "text",
-    "value": "I've set the learning outcome to focus on describing the changes in Britain after the Romans left and outlined the learning cycles. Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit below."
-  }
+    "value": "Are the prior knowledge, key learning points, misconceptions, and keywords sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."
+  },
+  "status": "complete"
 }

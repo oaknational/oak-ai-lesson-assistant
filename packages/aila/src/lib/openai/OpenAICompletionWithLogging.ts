@@ -3,7 +3,7 @@
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { aiLogger } from "@oakai/logger";
-import OpenAI from "openai";
+import type OpenAI from "openai";
 import type { PostHog } from "posthog-node";
 
 const log = aiLogger("aila:llm");

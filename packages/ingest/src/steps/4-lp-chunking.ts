@@ -1,14 +1,13 @@
-import {
-  CompletedLessonPlan,
-  CompletedLessonPlanSchema,
-} from "@oakai/aila/src/protocol/schema";
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { CompletedLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { CompletedLessonPlanSchema } from "@oakai/aila/src/protocol/schema";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { getLessonPlanParts } from "../chunking/getLessonPlanParts";
 import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
-import { Step, getPrevStep } from "../db-helpers/step";
+import type { Step } from "../db-helpers/step";
+import { getPrevStep } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
-import { IngestLogger } from "../types";
+import type { IngestLogger } from "../types";
 
 const currentStep: Step = "chunking";
 const prevStep = getPrevStep(currentStep);

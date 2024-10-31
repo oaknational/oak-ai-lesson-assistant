@@ -1,7 +1,8 @@
-import { slides_v1 } from "@googleapis/slides";
+import type { slides_v1 } from "@googleapis/slides";
 
-import { Result } from "../../types";
-import { ValueToString, defaultValueToString } from "../../utils";
+import type { Result } from "../../types";
+import type { ValueToString} from "../../utils";
+import { defaultValueToString } from "../../utils";
 
 /**
  * @description Populates the template presentation with the given data.

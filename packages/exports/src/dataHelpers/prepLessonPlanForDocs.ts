@@ -1,5 +1,5 @@
-import { LessonPlanDocInputData } from "../schema/input.schema";
-import { LessonPlanDocsTemplateData } from "../schema/lessonPlanDocsTemplate.schema";
+import type { LessonPlanDocInputData } from "../schema/input.schema";
+import type { LessonPlanDocsTemplateData } from "../schema/lessonPlanDocsTemplate.schema";
 import {
   camelCaseToTitleCase,
   processQuizAnswers,

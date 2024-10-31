@@ -1,4 +1,4 @@
-import { Dispatch } from "react";
+import type { Dispatch } from "react";
 
 import { Flex } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
@@ -6,7 +6,7 @@ import { cva } from "class-variance-authority";
 import Button from "@/components/Button";
 import { sortAlphabetically } from "@/utils/alphabetiseArray";
 
-import {
+import type {
   AnswerAndDistractor,
   Option,
 } from "../../../ai-apps/comparative-judgement/state/types";

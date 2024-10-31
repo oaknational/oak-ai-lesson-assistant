@@ -1,8 +1,8 @@
-import { SignedInAuthObject } from "@clerk/backend/internal";
+import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
 import { LessonSnapshots } from "@oakai/core";
 import { sendEmail } from "@oakai/core/src/utils/sendEmail";
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import {
   exportDocLessonPlanSchema,
   exportDocQuizSchema,
@@ -12,7 +12,7 @@ import {
 } from "@oakai/exports";
 import { exportableQuizAppStateSchema } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
-import { LessonExportType } from "@prisma/client";
+import type { LessonExportType } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
 import { kv } from "@vercel/kv";
 import { z } from "zod";

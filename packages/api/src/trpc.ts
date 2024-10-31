@@ -3,7 +3,7 @@ import { initTRPC } from "@trpc/server";
 import { ZodError } from "zod";
 
 import { transformer } from "../transformer";
-import { type Context } from "./context";
+import type { Context } from "./context";
 
 const log = aiLogger("trpc");
 

@@ -1,7 +1,8 @@
-import { Moderation, PrismaClientWithAccelerate } from "@oakai/db";
+import type { Moderation, PrismaClientWithAccelerate } from "@oakai/db";
 
-import { ModerationResult } from "../utils/ailaModeration/moderationSchema";
-import { LessonSnapshots, Snapshot } from "./lessonSnapshots";
+import type { ModerationResult } from "../utils/ailaModeration/moderationSchema";
+import type { Snapshot } from "./lessonSnapshots";
+import { LessonSnapshots } from "./lessonSnapshots";
 
 /**
  * By default, only moderations which haven't been invalidated returned by this API

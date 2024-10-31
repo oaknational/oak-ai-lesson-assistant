@@ -1,4 +1,4 @@
-import { BrowserContext, Page } from "@playwright/test";
+import type { BrowserContext, Page } from "@playwright/test";
 
 import {
   TEST_BASE_URL,

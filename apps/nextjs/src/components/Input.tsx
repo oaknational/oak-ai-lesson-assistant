@@ -77,7 +77,7 @@ const Input: React.FC<InputProps> = ({
     >,
   ) => {
     // Update the type
-    if (!!onChange) onChange(e);
+    if (onChange) onChange(e);
   };
 
   return (

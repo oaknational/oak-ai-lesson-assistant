@@ -1,4 +1,5 @@
-import { Page, expect } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { expect } from "@playwright/test";
 
 /**
  * This file replicates helpers provided by @clerk/testing

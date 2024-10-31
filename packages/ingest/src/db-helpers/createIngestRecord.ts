@@ -1,6 +1,6 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { IngestConfig } from "../config/ingestConfig";
+import type { IngestConfig } from "../config/ingestConfig";
 
 export async function createIngestRecord({
   prisma,

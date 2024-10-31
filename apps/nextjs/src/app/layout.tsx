@@ -44,7 +44,7 @@ export const metadata = {
   metadataBase: new URL(vercel_url),
   title: {
     default: "Oak AI Experiments",
-    template: `%s - AI Lesson Planner`,
+    template: "%s - AI Lesson Planner",
   },
   description:
     "Oak AI experiments offers some experimental generative AI tools designed for and freely available to teachers. We are actively looking for your feedback to refine and optimise these tools, making them more effective and time-saving.",

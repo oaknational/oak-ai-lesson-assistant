@@ -1,6 +1,6 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { Step } from "./step";
+import type { Step } from "./step";
 
 export async function createErrorRecord({
   prisma,

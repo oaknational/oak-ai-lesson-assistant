@@ -1,7 +1,8 @@
 import React from "react";
 
 import Button from "./Button";
-import { Icon, IconName, IconSize } from "./Icon";
+import type { IconName, IconSize } from "./Icon";
+import { Icon } from "./Icon";
 
 interface FullPageWarningProps {
   children: React.ReactNode;

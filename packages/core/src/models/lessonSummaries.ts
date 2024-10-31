@@ -1,9 +1,9 @@
-import { Lesson, LessonSummary, PrismaClientWithAccelerate } from "@oakai/db";
+import type { Lesson, LessonSummary, PrismaClientWithAccelerate } from "@oakai/db";
 import { Prisma } from "@prisma/client";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { PrismaVectorStore } from "langchain/vectorstores/prisma";
 
-import { inngest } from "../client";
+import { inngest } from "../inngest";
 import { RAG } from "../rag";
 import { embedWithCache } from "../utils/embeddings";
 

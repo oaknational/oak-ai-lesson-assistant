@@ -3,9 +3,9 @@ import { exportGeneric } from "./exportGeneric";
 import { googleSlides } from "./gSuite/slides/client";
 import { deleteSlides } from "./gSuite/slides/deleteSlides";
 import { populateSlides } from "./gSuite/slides/populateSlides";
-import { ExportableQuizAppState } from "./schema/input.schema";
+import type { ExportableQuizAppState } from "./schema/input.schema";
 import { getQuizDesignerSlidesTemplateIdWorksheet } from "./templates";
-import { OutputData, Result, State } from "./types";
+import type { OutputData, Result, State } from "./types";
 
 type SpeakerNotesTag = string;
 

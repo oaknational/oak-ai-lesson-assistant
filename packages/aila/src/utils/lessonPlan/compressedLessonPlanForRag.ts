@@ -1,4 +1,4 @@
-import { LooseLessonPlan } from "../../protocol/schema";
+import type { LooseLessonPlan } from "../../protocol/schema";
 
 /**
  * Compresses a lesson plan to a stringified JSON object, excluding the exit and starter quizzes

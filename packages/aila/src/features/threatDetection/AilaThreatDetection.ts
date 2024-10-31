@@ -1,5 +1,5 @@
-import { AilaThreatDetectionFeature } from "../types";
-import { AilaThreatDetector } from "./detectors/AilaThreatDetector";
+import type { AilaThreatDetectionFeature } from "../types";
+import type { AilaThreatDetector } from "./detectors/AilaThreatDetector";
 import { HeliconeThreatDetector } from "./detectors/HeliconeThreatDetector";
 
 export class AilaThreatDetection implements AilaThreatDetectionFeature {

@@ -1,4 +1,4 @@
-import { LessonDeepPartial } from "@oakai/exports";
+import type { LessonDeepPartial } from "@oakai/exports";
 
 export type ExportsHookProps<T = unknown> = T & {
   onStart: () => void;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import {
+import type {
   KeyStageName,
   SubjectName,
 } from "@oakai/core/src/data/subjectsAndKeyStages";

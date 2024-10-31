@@ -1,7 +1,7 @@
 import invariant from "tiny-invariant";
 
 import { PatchCycle, parseMessageRow } from "./jsonPatchProtocol";
-import { Cycle } from "./schema";
+import type { Cycle } from "./schema";
 
 /* 
 

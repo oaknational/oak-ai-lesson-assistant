@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 
 import { aiLogger } from "@oakai/logger";
 import { Box, Flex } from "@radix-ui/themes";
-import { Resource } from "ai-apps/image-alt-generation/types";
+import type { Resource } from "ai-apps/image-alt-generation/types";
 import encode from "base64url";
 import Image from "next/image";
 import { useRouter } from "next/navigation";

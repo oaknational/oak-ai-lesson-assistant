@@ -2,18 +2,18 @@
 
 import { useUser } from "@clerk/nextjs";
 import MuxPlayer from "@mux/mux-player-react";
+import type { OakColorToken } from "@oaknational/oak-components";
 import {
   OakBox,
   OakFlex,
   OakHeading,
   OakLink,
   OakP,
-  OakColorToken,
   oakColorTokens,
   OakPrimaryButton,
 } from "@oaknational/oak-components";
-import { HomePageQueryResult } from "cms/types/aiHomePageType";
-import { Metadata } from "next";
+import type { HomePageQueryResult } from "cms/types/aiHomePageType";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import styled from "styled-components";

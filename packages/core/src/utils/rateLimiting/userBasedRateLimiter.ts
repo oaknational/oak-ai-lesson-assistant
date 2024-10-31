@@ -1,6 +1,7 @@
-import { clerkClient, User } from "@clerk/nextjs/server";
+import type { User } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import { aiLogger } from "@oakai/logger";
-import { Ratelimit } from "@upstash/ratelimit";
+import type { Ratelimit } from "@upstash/ratelimit";
 import { waitUntil } from "@vercel/functions";
 
 const log = aiLogger("rate-limiting");
