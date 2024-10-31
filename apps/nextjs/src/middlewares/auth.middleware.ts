@@ -47,6 +47,7 @@ const publicRoutes = [
   "/monitoring",
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/api/webhooks/clerk",
 ];
 if (
   process.env.NODE_ENV === "development" ||
