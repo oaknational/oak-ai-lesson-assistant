@@ -18,7 +18,7 @@ export function WithProfiler({
   const handleRender = useCallback(
     (id: string, phase: string, actualDuration: number) => {
       if (actualDuration > 16) {
-        log.warn(`${id}: ${actualDuration}ms: ${phase} phase`);
+        log.warn(`${id}: ${actualDuration.toFixed(1)}ms: ${phase} phase`);
       }
     },
     [],

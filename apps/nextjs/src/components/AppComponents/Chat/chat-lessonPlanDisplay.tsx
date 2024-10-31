@@ -9,6 +9,7 @@ import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { WithProfiler } from "@/components/Profiler/WithProfiler";
 import { organiseSections } from "@/lib/lessonPlan/organiseSections";
 import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
 
@@ -206,17 +207,18 @@ export const LessonPlanDisplay = ({
 
       <div className="flex w-full flex-col justify-center">
         {allSectionsInOrder.map((section) => (
-          <DropDownSection
-            key={section}
-            section={section}
-            value={lessonPlan[section]}
-            isOpen={openSections[section] || !showLessonMobile}
-            setIsOpen={handleSetIsOpen}
-            ailaStreamingStatus={ailaStreamingStatus}
-            streamingSection={streamingSection}
-            visible={sectionsToDisplay.includes(section)}
-            setSectionRef={setSectionRef}
-          />
+          <WithProfiler id={`drop-down-section-${section}`} key={section}>
+            <DropDownSection
+              section={section}
+              value={lessonPlan[section]}
+              isOpen={openSections[section] || !showLessonMobile}
+              setIsOpen={handleSetIsOpen}
+              ailaStreamingStatus={ailaStreamingStatus}
+              streamingSection={streamingSection}
+              visible={sectionsToDisplay.includes(section)}
+              setSectionRef={setSectionRef}
+            />
+          </WithProfiler>
         ))}
       </div>
       <div ref={chatEndRef} />

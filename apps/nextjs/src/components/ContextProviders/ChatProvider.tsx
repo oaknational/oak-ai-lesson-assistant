@@ -44,20 +44,27 @@ import {
 
 const log = aiLogger("chat");
 
-function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+function useThrottle<T>(value: T, delay: number): T {
+  const [throttledValue, setThrottledValue] = useState<T>(value);
+  const lastExecuted = useRef<number>(Date.now());
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
+    const handler = setTimeout(
+      () => {
+        if (Date.now() - lastExecuted.current >= delay) {
+          setThrottledValue(value);
+          lastExecuted.current = Date.now();
+        }
+      },
+      delay - (Date.now() - lastExecuted.current),
+    );
 
     return () => {
       clearTimeout(handler);
     };
   }, [value, delay]);
 
-  return debouncedValue;
+  return throttledValue;
 }
 
 export type ChatContextProps = {
@@ -258,7 +265,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   // We don't stream the text to the UI so we only need to process
   // them once every second
 
-  const messages = useDebounce(chatMessages, 1000);
+  const messages = useThrottle(chatMessages, 1000);
 
   useEffect(() => {
     if (chat?.lessonPlan) {
@@ -438,7 +445,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     status: ailaStreamingStatus,
     streamingSection,
     streamingSections,
-  } = useAilaStreamingStatus({ isLoading, messages });
+  } = useAilaStreamingStatus({ isLoading, messages: chatMessages });
 
   const [streamingSectionCompleted, setStreamingSectionCompleted] = useState<
     LessonPlanKeys | undefined

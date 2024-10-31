@@ -8,35 +8,26 @@ import { allSectionsInOrder } from "../../../../../lib/lessonPlan/sectionsInOrde
 
 const log = aiLogger("chat");
 
-function findStreamingSections(
-  message: Message | undefined,
-  status: AilaStreamingStatus,
-): {
+function findStreamingSections(messageContent: string): {
   streamingSections: LessonPlanKeys[];
   streamingSection: LessonPlanKeys | undefined;
-  content: string | undefined;
 } {
-  if (!message?.content || status === "Idle") {
-    return {
-      streamingSections: [],
-      streamingSection: undefined,
-      content: undefined,
-    };
-  }
-  const { content } = message;
   const regex = /"path":"\/([^/"]*)/g;
   const pathMatches =
-    content
+    messageContent
       .match(regex)
       ?.map((match) => match.replace(/"path":"\//, "").replace(/"$/, "")) ?? [];
 
+  log.info("pathMatches", JSON.stringify(pathMatches));
   const streamingSections: LessonPlanKeys[] = pathMatches.filter(
     (i): i is string =>
       typeof i === "string" && allSectionsInOrder.includes(i as LessonPlanKeys),
   ) as LessonPlanKeys[];
   const streamingSection: LessonPlanKeys | undefined =
     streamingSections[streamingSections.length - 1];
-  return { streamingSections, streamingSection, content };
+  log.info("streamingSections", streamingSections);
+  log.info("streamingSection", streamingSection);
+  return { streamingSections, streamingSection };
 }
 
 export type AilaStreamingStatus =
@@ -63,33 +54,42 @@ export const useAilaStreamingStatus = ({
     if (messages.length === 0)
       return {
         status: "Idle" as AilaStreamingStatus,
-        streamingSection: undefined,
       };
     const lastMessage = messages[messages.length - 1];
 
-    let status: AilaStreamingStatus = "Idle";
-    const { streamingSections, streamingSection, content } =
-      findStreamingSections(lastMessage, status);
-
-    if (isLoading) {
-      if (!lastMessage || !content) {
-        status = "Loading";
-      } else {
-        if (lastMessage.role === "user") {
-          status = "RequestMade";
-        } else if (content.includes(moderationStart)) {
-          status = "Moderating";
-        } else if (content.includes(`"type":"text"`)) {
-          status = "StreamingChatResponse";
-        } else if (content.includes(chatStart)) {
-          status = "StreamingLessonPlan";
-        } else {
-          status = "Loading";
-        }
-      }
+    if (!isLoading) {
+      return { status: "Idle" as AilaStreamingStatus };
     }
 
-    return { status, streamingSections, streamingSection };
+    if (!lastMessage || !lastMessage.content) {
+      return { status: "Loading" as AilaStreamingStatus };
+    }
+
+    if (lastMessage.role === "user") {
+      return { status: "RequestMade" as AilaStreamingStatus };
+    }
+
+    const { content } = lastMessage;
+
+    if (content.includes(moderationStart)) {
+      return { status: "Moderating" as AilaStreamingStatus };
+    }
+
+    if (content.includes(`"type":"text"`)) {
+      return { status: "StreamingChatResponse" as AilaStreamingStatus };
+    }
+
+    if (content.includes(chatStart)) {
+      const { streamingSections, streamingSection } =
+        findStreamingSections(content);
+      return {
+        status: "StreamingLessonPlan" as AilaStreamingStatus,
+        streamingSections,
+        streamingSection,
+      };
+    }
+
+    return { status: "Loading" as AilaStreamingStatus };
   }, [isLoading, messages]);
 
   useEffect(() => {
