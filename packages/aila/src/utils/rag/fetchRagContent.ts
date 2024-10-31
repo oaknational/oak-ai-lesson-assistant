@@ -1,8 +1,8 @@
 import { RAG } from "@oakai/core/src/rag";
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
-import { CompletedLessonPlan } from "../../protocol/schema";
+import type { CompletedLessonPlan } from "../../protocol/schema";
 import { minifyLessonPlanForRelevantLessons } from "../lessonPlan/minifyLessonPlanForRelevantLessons";
 
 export type RagLessonPlan = Omit<

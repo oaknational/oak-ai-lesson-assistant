@@ -23,6 +23,7 @@ import { CookieConsentProvider } from "@/components/ContextProviders/CookieConse
 import FontProvider from "@/components/ContextProviders/FontProvider";
 import { GleapProvider } from "@/components/ContextProviders/GleapProvider";
 import { WebDebuggerPosition } from "@/lib/avo/Avo";
+import { getBootstrappedFeatures } from "@/lib/feature-flags/bootstrap";
 import { SentryIdentify } from "@/lib/sentry/SentryIdentify";
 import { cn } from "@/lib/utils";
 import { TRPCReactProvider } from "@/utils/trpc";
@@ -44,7 +45,7 @@ export const metadata = {
   metadataBase: new URL(vercel_url),
   title: {
     default: "Oak AI Experiments",
-    template: `%s - AI Lesson Planner`,
+    template: "%s - AI Lesson Planner",
   },
   description:
     "Oak AI experiments offers some experimental generative AI tools designed for and freely available to teachers. We are actively looking for your feedback to refine and optimise these tools, making them more effective and time-saving.",
@@ -66,7 +67,9 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
+export default async function RootLayout({
+  children,
+}: Readonly<RootLayoutProps>) {
   const nonce = headers().get("x-nonce");
   if (!nonce) {
     // Our middleware path matching excludes static paths like /_next/static/...
@@ -74,6 +77,8 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
     // In this case, redirect to an explicit 404 page
     return redirect("/not-found");
   }
+
+  const bootstrappedFeatures = await getBootstrappedFeatures(headers());
 
   return (
     <html lang="en" suppressHydrationWarning className={lexend.variable}>
@@ -108,6 +113,7 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
                           }),
                         },
                       }}
+                      bootstrappedFeatures={bootstrappedFeatures}
                     >
                       <GleapProvider>{children}</GleapProvider>
                     </AnalyticsProvider>

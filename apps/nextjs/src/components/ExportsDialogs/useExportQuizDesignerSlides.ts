@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 
-import {
-  ExportableQuizAppState,
-  exportableQuizAppStateSchema,
-} from "@oakai/exports/src/schema/input.schema";
+import type { ExportableQuizAppState } from "@oakai/exports/src/schema/input.schema";
+import { exportableQuizAppStateSchema } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
-import { ZodError } from "zod";
+import type { ZodError } from "zod";
 
 import { trpc } from "@/utils/trpc";
 

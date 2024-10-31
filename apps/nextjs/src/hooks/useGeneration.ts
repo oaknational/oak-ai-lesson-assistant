@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer } from "react";
 
-import { RateLimitInfo } from "@oakai/api/src/types";
+import type { RateLimitInfo } from "@oakai/api/src/types";
 import type { SerializedGeneration } from "@oakai/core/src/models/serializers";
 import { GenerationStatus } from "@oakai/db/prisma/client";
 import { aiLogger } from "@oakai/logger";
@@ -9,11 +9,12 @@ import {
   default as logger,
 } from "@oakai/logger/browser";
 import { TRPCClientError } from "@trpc/client";
-import { z } from "zod";
+import type { z } from "zod";
 
-import { DeepPartial } from "@/utils/types/DeepPartial";
+import type { DeepPartial } from "@/utils/types/DeepPartial";
 
-import { RouterInputs, trpc } from "../utils/trpc";
+import type { RouterInputs } from "../utils/trpc";
+import { trpc } from "../utils/trpc";
 import { useDidTransition } from "./useDidTransition";
 
 const log = aiLogger("generation");

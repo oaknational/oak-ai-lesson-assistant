@@ -1,4 +1,4 @@
-import { User } from "@clerk/nextjs/server";
+import type { User } from "@clerk/nextjs/server";
 
 const DEVELOPMENT_USER_REGION = process.env.DEVELOPMENT_USER_REGION || null;
 if (process.env.NODE_ENV === "development" && !DEVELOPMENT_USER_REGION) {

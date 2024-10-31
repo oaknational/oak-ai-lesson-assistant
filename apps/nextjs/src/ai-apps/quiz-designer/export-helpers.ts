@@ -1,4 +1,4 @@
-import {
+import type {
   ExportableQuizAppState,
   ExportableQuizQuestion,
 } from "@oakai/exports/src/schema/input.schema";
@@ -6,7 +6,7 @@ import { getGenerationPartValue } from "ai-apps/common/state/helpers";
 
 import { sortAlphabetically } from "@/utils/alphabetiseArray";
 
-import {
+import type {
   QuizAppQuestion,
   QuizAppState,
   QuizAppStateQuestion,

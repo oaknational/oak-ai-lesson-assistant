@@ -1,35 +1,31 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
-import { test, expect, Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
+import type { FixtureMode } from "./helpers";
 import {
-  FixtureMode,
   applyLlmFixtures,
   continueChat,
   expectFinished,
-  expectSectionsComplete,
-  waitForGeneration,
+  expectStreamingStatus,
+  isFinished,
+  scrollLessonPlanFromTopToBottom,
+  waitForStreamingStatusChange,
 } from "./helpers";
 
 // --------
 // CHANGE "replay" TO "record" TO RECORD A NEW FIXTURE
 // --------
-// const FIXTURE_MODE = "record" as FixtureMode;
+//const FIXTURE_MODE = "record" as FixtureMode;
 const FIXTURE_MODE = "replay" as FixtureMode;
 
 test(
   "Full aila flow with Romans fixture",
   { tag: "@common-auth" },
-  async ({ page }, testInfo) => {
+  async ({ page }) => {
     const generationTimeout = FIXTURE_MODE === "record" ? 75000 : 50000;
     test.setTimeout(generationTimeout * 5);
-
-    // The chat UI has a race condition when you submit a message too quickly after the previous response
-    // This is a temporary fix to fix test flake
-    async function letUiSettle() {
-      return await page.waitForTimeout(testInfo.retry === 0 ? 500 : 6000);
-    }
 
     await test.step("Setup", async () => {
       await bypassVercelProtection(page);
@@ -44,8 +40,7 @@ test(
     await test.step("Fill in the chat box", async () => {
       const textbox = page.getByTestId("chat-input");
       const sendMessage = page.getByTestId("send-message");
-      const message =
-        "Create a KS1 lesson on the end of Roman Britain. Ask a question for each quiz and cycle";
+      const message = "Create a KS1 lesson on the end of Roman Britain";
       await textbox.fill(message);
       await expect(textbox).toContainText(message);
 
@@ -59,33 +54,39 @@ test(
 
     await test.step("Iterate through the fixtures", async () => {
       await page.waitForURL(/\/aila\/.+/);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 1);
-      await letUiSettle();
 
-      setFixture("roman-britain-2");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 3);
-      await letUiSettle();
+      const maxIterations = 20;
 
-      setFixture("roman-britain-3");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 7);
-      await letUiSettle();
+      for (
+        let iterationCount = 1;
+        iterationCount <= maxIterations;
+        iterationCount++
+      ) {
+        setFixture(`roman-britain-${iterationCount}`);
+        await expectStreamingStatus(page, "RequestMade", { timeout: 5000 });
 
-      setFixture("roman-britain-4");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 10);
-      await letUiSettle();
+        await waitForStreamingStatusChange(
+          page,
+          "RequestMade",
+          "Idle",
+          generationTimeout,
+        );
 
-      setFixture("roman-britain-5");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectSectionsComplete(page, 10);
+        await expectStreamingStatus(page, "Idle", { timeout: 5000 });
 
+        if (await isFinished(page)) {
+          break;
+        }
+        await continueChat(page);
+        await waitForStreamingStatusChange(
+          page,
+          "Idle",
+          "RequestMade",
+          generationTimeout,
+        );
+      }
+
+      await scrollLessonPlanFromTopToBottom(page);
       await expectFinished(page);
     });
   },

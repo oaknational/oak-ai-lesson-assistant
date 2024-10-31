@@ -1,10 +1,13 @@
 import debug from "debug";
+import invariant from "tiny-invariant";
 
 import browserLogger from "./browser";
-import structuredLogger, { StructuredLogger } from "./structuredLogger";
+import type { StructuredLogger } from "./structuredLogger";
+import structuredLogger from "./structuredLogger";
 
 if (typeof window !== "undefined") {
-  debug.enable("ai:*");
+  invariant(process.env.NEXT_PUBLIC_DEBUG, "NEXT_PUBLIC_DEBUG is not set");
+  debug.enable(process.env.NEXT_PUBLIC_DEBUG);
 }
 
 const debugBase = debug("ai");
@@ -15,16 +18,20 @@ type ChildKey =
   | "admin"
   | "aila"
   | "aila:analytics"
+  | "aila:categorisation"
   | "aila:errors"
+  | "aila:lesson"
   | "aila:llm"
   | "aila:moderation"
   | "aila:moderation:response"
   | "aila:persistence"
   | "aila:prompt"
   | "aila:protocol"
+  | "aila:stream"
   | "aila:rag"
   | "aila:testing"
   | "analytics"
+  | "analytics:feature-flags"
   | "app"
   | "auth"
   | "chat"

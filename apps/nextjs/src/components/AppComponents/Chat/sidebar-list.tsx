@@ -4,7 +4,7 @@ import { ClearHistory } from "@/components/AppComponents/Chat/clear-history";
 import { SidebarItems } from "@/components/AppComponents/Chat/sidebar-items";
 import { trpc } from "@/utils/trpc";
 
-export async function SidebarList() {
+export function SidebarList() {
   const chatsRequest = trpc.chat.appSessions.getSidebarChats.useQuery();
 
   const chats = chatsRequest.data;

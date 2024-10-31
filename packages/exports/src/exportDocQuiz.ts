@@ -1,10 +1,10 @@
-import { ExportDocQuizData } from "..";
+import type { ExportDocQuizData } from "..";
 import { prepQuizForDocs } from "./dataHelpers/prepQuizForDocs";
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
 import { populateDoc } from "./gSuite/docs/populateDoc";
 import { getDocsTemplateIdQuiz } from "./templates";
-import { OutputData, Result, State } from "./types";
+import type { OutputData, Result, State } from "./types";
 
 const QUIZ_TYPE_LABELS = {
   starter: "Starter quiz",

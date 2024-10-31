@@ -1,4 +1,4 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { IngestError } from "../IngestError";
 

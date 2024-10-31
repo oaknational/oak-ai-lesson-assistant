@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { DeepPartial } from "../types";
+import type { DeepPartial } from "../types";
 
 export const quizQADSchema = z.object({
   question: z.string(),

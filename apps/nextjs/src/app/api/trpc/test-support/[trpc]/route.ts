@@ -4,7 +4,7 @@ import { router } from "@oakai/api/src/trpc";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest, NextResponse } from "next/server";
 
 import { withSentry } from "@/lib/sentry/withSentry";
 

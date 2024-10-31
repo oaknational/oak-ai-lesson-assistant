@@ -3,67 +3,53 @@ type":"
 ll
 m
 Message
-","patches":[
-{"
-type":"
-patch
-","reasoning":"
-Adding
- a
- placeholder
- for
- potential
- additional
- materials
- or
- narratives
- that
- may
- support
- the
- lesson
- plan
-.","
-value":{"
-type":"
-string
-","op":"
-add
-","path":"/
-additional
-Materials
-","value":"
-None
-"}}],"prompt":{"
+","sectionsToEdit":[]
+,"patches":[]
+,"sectionsEdited":[]
+,"prompt":{"
 type":"
 text
 ","value":"
-Would
- you
- like
- to
- add
- any
- additional
- materials
-,
- such
- as
- a
- narrative
- to
- support
- your
- explanations
-,
- instructions
+I
+ have
+ checked
  for
- practical
-s
+ British
+ spelling
+ and
+ grammar
 ,
+ coherence
+,
+ and
+ accuracy
+.
+ You
+ can
+ now
+ share
+ your
+ lesson
  or
- extra
- homework
- questions
-?"
-}}
+ download
+ your
+ resources
+.\
+n
+\n
+Click
+ on
+ the
+ **
+Menu
+**
+ button
+ to
+ find
+ previously
+ created
+ lessons
+."
+},"status":"
+complete
+"}

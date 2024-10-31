@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
-import { APIKeyAuthObject } from "../context";
+import type { APIKeyAuthObject } from "../context";
 import { t } from "../trpc";
 
 const OAI_INTERNAL_API_KEY = process.env.OAI_INTERNAL_API_KEY;

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const DEFAULT_COMPLETION_TEMPERATURE = 0.7 as const;
+const DEFAULT_COMPLETION_TEMPERATURE = 0.7;
 
 export const IngestConfigSchema = z.object({
   completionModel: z.literal("gpt-4o-2024-08-06"),

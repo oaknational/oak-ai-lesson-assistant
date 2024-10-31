@@ -88,6 +88,7 @@ const getConfig = async (phase) => {
     env: {
       NEXT_PUBLIC_APP_VERSION: appVersion,
       NEXT_PUBLIC_RELEASE_STAGE: releaseStage,
+      NEXT_PUBLIC_DEBUG: process.env.DEBUG,
     },
 
     productionBrowserSourceMaps: true,

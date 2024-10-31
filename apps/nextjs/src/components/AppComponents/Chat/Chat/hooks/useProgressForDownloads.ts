@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { lessonPlanSectionsSchema } from "@oakai/exports/src/schema/input.schema";
-import { ZodIssue } from "zod";
+import type { ZodIssue } from "zod";
 
 /**
  * For a given list of Zod issues and lessonPlan fields, checks that none of

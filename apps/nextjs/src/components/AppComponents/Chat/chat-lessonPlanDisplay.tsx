@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
+import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { organiseSections } from "@/lib/lessonPlan/organiseSections";
 
 import Skeleton from "../common/Skeleton";
 import DropDownSection from "./drop-down-section";
@@ -40,27 +41,6 @@ function basedOnTitle(basedOn: string | BasedOnOptional) {
 const displayStyles = cva(
   "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24 ",
 );
-
-const organiseSections = [
-  {
-    trigger: "learningOutcome",
-    dependants: ["learningOutcome", "learningCycles"],
-  },
-  {
-    trigger: "priorKnowledge",
-    dependants: [
-      "priorKnowledge",
-      "keyLearningPoints",
-      "misconceptions",
-      "keywords",
-    ],
-  },
-  {
-    trigger: "starterQuiz",
-    dependants: ["starterQuiz", "cycle1", "cycle2", "cycle3", "exitQuiz"],
-  },
-  { trigger: "additionalMaterials", dependants: ["additionalMaterials"] },
-];
 
 export const LessonPlanDisplay = ({
   chatEndRef,

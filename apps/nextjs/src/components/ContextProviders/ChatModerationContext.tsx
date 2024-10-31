@@ -1,4 +1,5 @@
-import { useMemo, createContext, useContext, ReactNode } from "react";
+import type { ReactNode } from "react";
+import { useMemo, createContext, useContext } from "react";
 
 import { useModerationModal } from "../AppComponents/FeedbackForms/ModerationFeedbackModal";
 

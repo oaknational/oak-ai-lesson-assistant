@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-import { GenerationPart } from "@oakai/core/src/types";
+import type { GenerationPart } from "@oakai/core/src/types";
 import { Box } from "@radix-ui/themes";
 
 import GenerationFeedbackDialog, {

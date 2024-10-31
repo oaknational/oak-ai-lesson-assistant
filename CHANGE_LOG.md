@@ -1,3 +1,29 @@
+# [1.13.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.12.1...v1.13.0) (2024-10-31)
+
+
+### Bug Fixes
+
+* await persisting the generation ([#292](https://github.com/oaknational/oak-ai-lesson-assistant/issues/292)) ([730dbb9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/730dbb94a786f9f8a6e03e9ed4d9ff90853522fd))
+* await the enqueue method in web actions ([#293](https://github.com/oaknational/oak-ai-lesson-assistant/issues/293)) ([c9cb82b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c9cb82b2df566b0ec2a952b21d22e87d61fcd094))
+* await the save download event call ([#317](https://github.com/oaknational/oak-ai-lesson-assistant/issues/317)) ([1e05c1a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1e05c1ad177d2e385fc4fa6cc9bb76548d039194))
+* completion and system messages do not need to be async ([#294](https://github.com/oaknational/oak-ai-lesson-assistant/issues/294)) ([be79158](https://github.com/oaknational/oak-ai-lesson-assistant/commit/be791584805d219db1da4949a8a32c0a0f40b589))
+* linting for app components ([#295](https://github.com/oaknational/oak-ai-lesson-assistant/issues/295)) ([1212eb5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1212eb50f5e2e3ee913b57ec7bffc2fcabe981c8))
+* pages that do not load data do not need to be async ([#296](https://github.com/oaknational/oak-ai-lesson-assistant/issues/296)) ([a7eaefa](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a7eaefa5acef4d89a60dd79301cdf4be61db6830))
+* promisify chat API route get handler ([#316](https://github.com/oaknational/oak-ai-lesson-assistant/issues/316)) ([1824aea](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1824aead23e65654a4651abb91e589d218cb9bb1))
+* reintroduce custom eslint ([#284](https://github.com/oaknational/oak-ai-lesson-assistant/issues/284)) ([adc1efa](https://github.com/oaknational/oak-ai-lesson-assistant/commit/adc1efa686a7cc332a1755a3e77f5e50a831df7d))
+* rename accordian to accordion ([#297](https://github.com/oaknational/oak-ai-lesson-assistant/issues/297)) ([cd35dc1](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cd35dc15b97960a18196119540cc5848f58eaa47))
+* set VS Code to prefer type imports ([#291](https://github.com/oaknational/oak-ai-lesson-assistant/issues/291)) ([bc26948](https://github.com/oaknational/oak-ai-lesson-assistant/commit/bc269484ed8857b10aac36e06a0dab18c8308277))
+* update imports (type prefixes, paths) ([#298](https://github.com/oaknational/oak-ai-lesson-assistant/issues/298)) ([c332717](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c33271721e15e3c06374c4648fe69611e306ac14))
+* use browserLogger for errors in the browser ([#280](https://github.com/oaknational/oak-ai-lesson-assistant/issues/280)) ([647c904](https://github.com/oaknational/oak-ai-lesson-assistant/commit/647c90415c6ea5f71e75973caad627abe49bfd0c))
+* use noengine in ci ([#283](https://github.com/oaknational/oak-ai-lesson-assistant/issues/283)) ([3a1bfd4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3a1bfd4df3d2489dda9387752f19c79b16e5da92))
+* use prisma generate --no-engine and reinstate prompts script ([#282](https://github.com/oaknational/oak-ai-lesson-assistant/issues/282)) ([a157b9a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a157b9a6fececed09f43b7cca3989edd5e636a59))
+
+
+### Features
+
+* add an incrementing iteration number to the chat ([#263](https://github.com/oaknational/oak-ai-lesson-assistant/issues/263)) ([5aaa1d9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5aaa1d91146b92c1c449ecbf4725c61ec226ec87))
+* selectively include Americanisms, RAG, analytics when instantiating Aila ([#287](https://github.com/oaknational/oak-ai-lesson-assistant/issues/287)) ([4e5e1f2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4e5e1f22a4ea6262114033e45ffe4817b483f379))
+
 ## [1.12.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.12.0...v1.12.1) (2024-10-28)
 
 

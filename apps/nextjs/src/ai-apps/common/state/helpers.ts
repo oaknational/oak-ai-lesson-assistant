@@ -1,4 +1,4 @@
-import { GenerationPart } from "@oakai/core/src/types";
+import type { GenerationPart } from "@oakai/core/src/types";
 
 /**
  * Apply the `updater` function to the item

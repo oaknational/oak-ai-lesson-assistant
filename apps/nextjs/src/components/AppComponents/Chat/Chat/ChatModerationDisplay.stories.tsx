@@ -1,4 +1,4 @@
-import { type PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { ChatModerationDisplay } from "./ChatModerationDisplay";

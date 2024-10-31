@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import {
+import type {
   GenerationPart,
   GenerationPartPlaceholder,
 } from "@oakai/core/src/types";
@@ -59,7 +59,7 @@ function GenerationInputAndText({
         className={
           userIsEditing
             ? "hidden"
-            : `flex text-lg ${isLoading && `line-through opacity-60	`}`
+            : `flex text-lg ${isLoading && "line-through opacity-60	"}`
         }
       >
         {children}
