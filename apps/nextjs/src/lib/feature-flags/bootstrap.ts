@@ -35,11 +35,11 @@ export async function getBootstrappedFeatures(headers: ReadonlyHeaders) {
   const { userId, sessionClaims } = auth();
 
   const distinctId = userId ?? getDistinctIdFromCookie(headers) ?? "0";
-  log.info("Evaluating feature flags for", distinctId);
 
   const personProperties = sessionClaims?.labs?.featureFlagGroup
     ? { featureFlagGroup: sessionClaims.labs.featureFlagGroup }
     : undefined;
+  log.info("Evaluating", distinctId, personProperties ?? "(no properties)");
 
   const features = await posthogAiBetaServerClient.getAllFlags(distinctId, {
     // Only bootstrap flags which don't depend on PII
