@@ -1,12 +1,13 @@
-import { Aila, AilaInitializationOptions } from "@oakai/aila";
+import { Aila } from "@oakai/aila/src/core/Aila";
 import { MockLLMService } from "@oakai/aila/src/core/llm/MockLLMService";
+import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
 import { MockCategoriser } from "@oakai/aila/src/features/categorisation/categorisers/MockCategoriser";
 import { mockTracer } from "@oakai/core/src/tracing/mockTracer";
 import { NextRequest } from "next/server";
 
 import { expectTracingSpan } from "../../../utils/testHelpers/tracing";
 import { handleChatPostRequest } from "./chatHandler";
-import { Config } from "./config";
+import type { Config } from "./config";
 
 const chatId = "test-chat-id";
 const userId = "test-user-id";

@@ -1,13 +1,13 @@
 import { useEffect, useRef, useMemo } from "react";
 
+import type { PatchDocument } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import {
-  PatchDocument,
   applyLessonPlanPatch,
   extractPatches,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { useThrottle } from "@uidotdev/usehooks";
-import { type Message } from "ai/react";
+import type { Message } from "ai/react";
 import { deepClone } from "fast-json-patch";
 import hash from "object-hash";
 import { equals } from "remeda";
@@ -23,7 +23,7 @@ const hashFor = (obj: object, messageHashes) => {
 };
 
 function extractPatchesFromMessage(message: Message) {
-  const { validPatches, partialPatches } = extractPatches(message.content, 100);
+  const { validPatches, partialPatches } = extractPatches(message.content);
   return { validPatches, partialPatches };
 }
 

@@ -1,9 +1,9 @@
-import { GenerationPart } from "@oakai/core/src/types";
+import type { GenerationPart } from "@oakai/core/src/types";
 
 import { getAgesFromKeyStage } from "@/utils/getAgesFromKeyStage";
 
 import { extraQuizPromptInfo } from "./extraQuizPromptInfo";
-import { QuizAppState, QuizAppStateQuestion } from "./state/types";
+import type { QuizAppState, QuizAppStateQuestion } from "./state/types";
 
 type RequestionGenerationInputs = {
   lastGenerationId: string | null;

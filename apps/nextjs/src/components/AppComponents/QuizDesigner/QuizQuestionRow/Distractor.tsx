@@ -1,13 +1,13 @@
-import { Dispatch, useCallback, useState } from "react";
+import type { Dispatch } from "react";
+import { useCallback, useState } from "react";
 
-import { GenerationPart, GenerationPartType } from "@oakai/core/src/types";
+import type { GenerationPart } from "@oakai/core/src/types";
+import { GenerationPartType } from "@oakai/core/src/types";
 import browserLogger from "@oakai/logger/browser";
 import { Flex } from "@radix-ui/themes";
-import {
-  QuizAppAction,
-  QuizAppActions,
-} from "ai-apps/quiz-designer/state/actions";
-import {
+import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
+import type {
   QuizAppDistractor,
   QuizAppState,
   QuizAppStateQuestion,

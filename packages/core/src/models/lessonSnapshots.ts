@@ -1,17 +1,18 @@
-import {
+import type {
   LessonSnapshot,
   LessonSnapshotTrigger,
   PrismaClientWithAccelerate,
 } from "@oakai/db";
 import crypto from "crypto";
 
+import type {
+  LooseLessonPlan} from "../../../aila/src/protocol/schema";
 import {
-  LessonPlanJsonSchema,
-  LooseLessonPlan,
+  LessonPlanJsonSchema
 } from "../../../aila/src/protocol/schema";
 // #TODO this import is reaching out of the package because it would otherwise be a circular dependency
-import { DeepNullable } from "../utils/DeepNullable";
-import { DeepPartial } from "../utils/DeepPartial";
+import type { DeepNullable } from "../utils/DeepNullable";
+import type { DeepPartial } from "../utils/DeepPartial";
 
 export type Snapshot = DeepPartial<DeepNullable<LooseLessonPlan>>;
 const JsonSchemaString = JSON.stringify(LessonPlanJsonSchema);

@@ -1,8 +1,8 @@
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
-import { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 
 import { useProgressForDownloads } from "@/components/AppComponents/Chat/Chat/hooks/useProgressForDownloads";
-import { ExportsHookProps } from "@/components/ExportsDialogs/exports.types";
+import type { ExportsHookProps } from "@/components/ExportsDialogs/exports.types";
 import { useExportAdditionalMaterials } from "@/components/ExportsDialogs/useExportAdditionalMaterials";
 import { useExportAllLessonAssets } from "@/components/ExportsDialogs/useExportAllLessonAssets";
 import { useExportLessonPlanDoc } from "@/components/ExportsDialogs/useExportLessonPlanDoc";

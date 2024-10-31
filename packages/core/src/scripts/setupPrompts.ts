@@ -4,8 +4,32 @@ import { PromptVariants } from "../models/promptVariants";
 import { lessonPlannerPrompts, quizGeneratorPrompts } from "../prompts";
 import { ailaGenerate } from "../prompts/lesson-assistant/variants";
 
+export const apps = [
+  {
+    name: "Quiz Generator",
+    slug: "quiz-generator",
+    id: "quiz-generator",
+  },
+  {
+    name: "Lesson planner",
+    slug: "lesson-planner",
+    id: "lesson-planner",
+  },
+];
+
 const main = async () => {
   try {
+    // Ensure the apps exist in the database
+    await prisma.$transaction(
+      apps.map((app) =>
+        prisma.app.upsert({
+          where: { id: app.id },
+          create: app,
+          update: app,
+        }),
+      ),
+    );
+
     console.log("Setting up prompts");
     console.log("Aila");
     for (const variant of ailaGenerate.variants) {

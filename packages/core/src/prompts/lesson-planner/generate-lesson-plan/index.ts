@@ -1,4 +1,4 @@
-import { OakPromptDefinition } from "../../types";
+import type { OakPromptDefinition } from "../../types";
 import { inputSchema } from "./input.schema";
 import { outputSchema } from "./output.schema";
 import main from "./variants/main";

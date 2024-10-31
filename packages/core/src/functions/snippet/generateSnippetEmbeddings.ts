@@ -1,6 +1,6 @@
 import { SnippetStatus, prisma } from "@oakai/db";
 
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 import { Snippets } from "../../models";
 
 export const generateSnippetEmbeddings = inngest.createFunction(

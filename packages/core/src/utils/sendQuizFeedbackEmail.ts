@@ -1,4 +1,4 @@
-import { GenerationPart } from "../types";
+import type { GenerationPart } from "../types";
 import { sendEmail } from "./sendEmail";
 
 const NEXT_PUBLIC_GLEAP_FEEDBACK_EMAIL_ADDR =

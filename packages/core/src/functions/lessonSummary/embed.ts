@@ -1,6 +1,6 @@
 import { LessonSummaryStatus, prisma } from "@oakai/db";
 
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 import { LessonSummaries } from "../../models";
 
 export const embedLessonSummary = inngest.createFunction(

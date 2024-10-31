@@ -2,7 +2,7 @@ import {
   isSafe,
   moderationSlugToDescription,
 } from "@oakai/core/src/utils/ailaModeration/helpers";
-import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import { Icon } from "@/components/Icon";
 import { cn } from "@/lib/utils";

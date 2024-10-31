@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
  * This is a minimal page that gives it access to a clerk instance
  */
 
-export default async function TestSupportSignIn() {
+export default function TestSupportSignIn() {
   if (
     process.env.NODE_ENV !== "development" &&
     process.env.VERCEL_ENV !== "preview"

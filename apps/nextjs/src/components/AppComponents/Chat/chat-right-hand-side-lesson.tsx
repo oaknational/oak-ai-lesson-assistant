@@ -1,12 +1,12 @@
 import React, { useRef, useState } from "react";
 
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { OakIcon, OakSmallSecondaryButton } from "@oaknational/oak-components";
-import { Message } from "ai";
+import type { Message } from "ai";
 import Link from "next/link";
 
 import AiIcon from "../../AiIcon";
-import { DemoContextProps } from "../../ContextProviders/Demo";
+import type { DemoContextProps } from "../../ContextProviders/Demo";
 import { useDialog } from "../DialogContext";
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
 import ExportButtons from "./export-buttons";
@@ -61,7 +61,7 @@ const ChatRightHandSideLesson = ({
   const endOfDocRef = useRef<HTMLDivElement>(null);
   return (
     <div
-      className={`fixed bottom-0 ${showLessonMobile ? `right-0` : `right-[-100%] sm:right-0`} right-0 ${demo.isDemoUser ? `top-8 sm:top-0` : `top-0`} z-30 w-[95%] bg-white shadow-md duration-300 sm:relative sm:z-0  sm:w-[50%] sm:shadow-none lg:w-full`}
+      className={`fixed bottom-0 ${showLessonMobile ? "right-0" : "right-[-100%] sm:right-0"} right-0 ${demo.isDemoUser ? "top-8 sm:top-0" : "top-0"} z-30 w-[95%] bg-white shadow-md duration-300 sm:relative sm:z-0  sm:w-[50%] sm:shadow-none lg:w-full`}
       data-testid="chat-right-hand-side-lesson"
       ref={documentContainerRef}
       onScroll={handleScroll}
@@ -77,7 +77,7 @@ const ChatRightHandSideLesson = ({
           onClick={() => {
             closeMobileLessonPullOut();
           }}
-          className={`${demo.isDemoUser ? `mt-25` : ``} flex items-center justify-center gap-3 `}
+          className={`${demo.isDemoUser ? "mt-25" : ""} flex items-center justify-center gap-3 `}
         >
           <span className="scale-75">
             <OakIcon iconName="cross" />

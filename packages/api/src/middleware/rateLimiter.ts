@@ -1,9 +1,7 @@
-import { inngest } from "@oakai/core";
+import { inngest } from "@oakai/core/src/inngest";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting/rateLimit";
-import {
-  RateLimitExceededError,
-  RateLimiter,
-} from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
+import type { RateLimiter } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
+import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
 import { TRPCError } from "@trpc/server";
 
 import { t } from "../trpc";
@@ -48,7 +46,7 @@ function createRateLimiterMiddleware(rateLimiter: RateLimiter) {
         });
         throw new TRPCError({
           code: "TOO_MANY_REQUESTS",
-          message: `Too many requests, please try again later.`,
+          message: "Too many requests, please try again later.",
           cause: e,
         });
       }
