@@ -35,7 +35,7 @@ async function syncUserToPosthog(user: UserJSON) {
     distinctId: getPrimaryEmail(user),
     properties: { featureFlagGroup },
   });
-  await posthogAiBetaServerClient.shutdown();
+  await posthogAiBetaServerClient.flush();
   log.info("featureFlagGroup synced:", user.id, featureFlagGroup);
 }
 
@@ -45,6 +45,10 @@ export async function POST(req: Request) {
     const svixId = headerPayload.get("svix-id");
     const svixTimestamp = headerPayload.get("svix-timestamp");
     const svixSignature = headerPayload.get("svix-signature");
+    Sentry.addBreadcrumb({
+      message: "Received webhook message",
+      data: { svixId },
+    });
 
     if (!svixId || !svixTimestamp || !svixSignature) {
       return new Response("Error occured -- no svix headers", {
@@ -52,12 +56,10 @@ export async function POST(req: Request) {
       });
     }
 
-    // Create a new Svix instance with your secret.
     invariant(WEBHOOK_SECRET, "Missing CLERK_WEBHOOK_SECRET");
     const wh = new Webhook(WEBHOOK_SECRET);
 
     let evt: WebhookEvent;
-
     try {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const payload = await req.json();
