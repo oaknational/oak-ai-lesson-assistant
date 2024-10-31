@@ -1,3 +1,5 @@
+import { auth } from "@clerk/nextjs/dist/types/server";
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import type { NextMiddlewareResult } from "next/dist/server/web/types";
 import type { NextFetchEvent, NextMiddleware, NextRequest } from "next/server";
 import { NextResponse } from "next/server";
