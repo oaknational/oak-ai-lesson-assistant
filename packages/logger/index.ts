@@ -31,7 +31,6 @@ type ChildKey =
   | "aila:rag"
   | "aila:testing"
   | "analytics"
-  | "analytics:feature-flags"
   | "app"
   | "auth"
   | "chat"
