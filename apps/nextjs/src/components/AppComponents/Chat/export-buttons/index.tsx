@@ -3,7 +3,10 @@
 import { OakSmallSecondaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import {
+  useChatLessonPlan,
+  useChatStreaming,
+} from "@/components/ContextProviders/ChatProvider";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import { WithProfiler } from "@/components/Profiler/WithProfiler";
 import useAnalytics from "@/lib/analytics/useAnalytics";
@@ -16,8 +19,8 @@ export type ExportButtonsProps = {
 };
 
 const ExportButtons = ({ documentContainerRef }: ExportButtonsProps) => {
-  const chat = useLessonChat();
-  const { id, isStreaming, lessonPlan } = chat;
+  const { id, isStreaming } = useChatStreaming();
+  const { lessonPlan } = useChatLessonPlan();
   const { trackEvent } = useAnalytics();
   const { setDialogWindow } = useDialog();
   const demo = useDemoUser();

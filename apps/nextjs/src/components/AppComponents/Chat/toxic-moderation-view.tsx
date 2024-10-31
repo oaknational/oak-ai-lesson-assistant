@@ -6,17 +6,18 @@ import { useModerationFeedbackSurvey } from "hooks/surveys/useModerationFeedback
 import { useRouter } from "next/navigation";
 
 import Button from "@/components/Button";
+import { useChatLessonPlan } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
 
 import ChatButton from "./ui/chat-button";
 
 const ToxicModerationView = ({
-  chatId,
   moderation,
 }: {
-  chatId: string;
   moderation: PersistedModerationBase;
 }) => {
+  const { id: chatId } = useChatLessonPlan();
+
   const { onSubmit, comment, setComment, hasSubmitted, isValid } =
     useModerationFeedbackSurvey({
       chatId,

@@ -17,5 +17,6 @@
     "moduleResolution": "node",
     "esModuleInterop": true
   },
-  "include": [".eslintrc.cjs"]
+  "include": [".eslintrc.cjs"],
+  "exclude": ["node_modules"]
 }

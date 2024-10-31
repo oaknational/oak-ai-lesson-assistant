@@ -3,7 +3,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { OakIcon, OakSmallSecondaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useChatStreaming } from "@/components/ContextProviders/ChatProvider";
 import { WithProfiler } from "@/components/Profiler/WithProfiler";
 
 import AiIcon from "../../AiIcon";
@@ -25,7 +25,7 @@ const ChatRightHandSideLesson = ({
   closeMobileLessonPullOut,
   demo,
 }: Readonly<ChatRightHandSideLessonProps>) => {
-  const { id, messages } = useLessonChat();
+  const { id, messageCount } = useChatStreaming();
   const { setDialogWindow } = useDialog();
 
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -132,7 +132,7 @@ const ChatRightHandSideLesson = ({
         </WithProfiler>
       </div>
       <div
-        className={`${messages.length > 1 && showLessonMobile ? "flex" : "hidden"}  fixed bottom-20 left-0 right-0 items-center justify-center duration-150  sm:hidden`}
+        className={`${messageCount > 1 && showLessonMobile ? "flex" : "hidden"}  fixed bottom-20 left-0 right-0 items-center justify-center duration-150  sm:hidden`}
       >
         <ChatButton
           variant="primary"

@@ -8,7 +8,12 @@ import { aiLogger } from "@oakai/logger";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import {
+  useChatLessonPlan,
+  useChatModerations,
+  useChatRefs,
+  useChatStreaming,
+} from "@/components/ContextProviders/ChatProvider";
 import { WithProfiler } from "@/components/Profiler/WithProfiler";
 import { organiseSections } from "@/lib/lessonPlan/organiseSections";
 import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
@@ -88,6 +93,7 @@ export const LessonPlanDisplay = ({
   chatEndRef: React.MutableRefObject<HTMLDivElement | null>;
   showLessonMobile: boolean;
 }) => {
+  log.info("LessonPlanDisplay render");
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const [sectionsToDisplay, setSectionsToDisplay] = useState<LessonPlanKeys[]>(
     [],
@@ -103,21 +109,20 @@ export const LessonPlanDisplay = ({
     [setOpenSections],
   );
 
-  const chat = useLessonChat();
-  const {
-    lessonPlan,
-    ailaStreamingStatus,
-    lastModeration,
-    streamingSection,
-    streamingSections,
-    setSectionRef,
-  } = chat;
+  const { lessonPlan } = useChatLessonPlan();
+  const { setSectionRef } = useChatRefs();
+  const { ailaStreamingStatus, streamingSection, streamingSections } =
+    useChatStreaming();
 
-  const lessonPlanSectionKeys = useMemo(
+  const lessonPlanSectionKeys: LessonPlanKeys[] = useMemo(
     () =>
-      Object.keys(lessonPlan).filter((key) =>
-        allSectionsInOrder.includes(key as LessonPlanKeys),
-      ) as LessonPlanKeys[],
+      Object.keys(lessonPlan)
+        .filter(
+          (key) =>
+            allSectionsInOrder.includes(key as LessonPlanKeys) &&
+            lessonPlan[key],
+        )
+        .map((key) => key as LessonPlanKeys),
     [lessonPlan],
   );
 
@@ -194,8 +199,8 @@ export const LessonPlanDisplay = ({
           )}
         </Flex>
       )}
-      {lastModeration && <GuidanceRequired moderation={lastModeration} />}
 
+      <LessonGuidanceRequired />
       {notEmpty(lessonPlan.basedOn) && (
         <Flex direction="row" gap="2" className="pb-12">
           <Text className="whitespace-nowrap font-bold">Based on:</Text>
@@ -206,7 +211,7 @@ export const LessonPlanDisplay = ({
       )}
 
       <div className="flex w-full flex-col justify-center">
-        {allSectionsInOrder.map((section) => (
+        {allSectionsInOrder.map((section: LessonPlanKeys) => (
           <WithProfiler id={`drop-down-section-${section}`} key={section}>
             <DropDownSection
               section={section}
@@ -226,4 +231,10 @@ export const LessonPlanDisplay = ({
   );
 };
 
+const LessonGuidanceRequired = () => {
+  const { lastModeration } = useChatModerations();
+  return (
+    <>{lastModeration && <GuidanceRequired moderation={lastModeration} />}</>
+  );
+};
 export default LessonPlanDisplay;

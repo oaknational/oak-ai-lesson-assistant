@@ -1,11 +1,15 @@
 import React from "react";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import {
+  useChatLessonPlan,
+  useChatStreaming,
+} from "@/components/ContextProviders/ChatProvider";
 
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 
 export const LessonPlanProgressBar = () => {
-  const { lessonPlan, isStreaming } = useLessonChat();
+  const { isStreaming } = useChatStreaming();
+  const { lessonPlan } = useChatLessonPlan();
 
   const { totalSections, totalSectionsComplete } = useProgressForDownloads({
     lessonPlan,

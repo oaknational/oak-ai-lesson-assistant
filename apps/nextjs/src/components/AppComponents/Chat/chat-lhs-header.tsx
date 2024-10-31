@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import { useRouter } from "next/navigation";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import {
+  useChatLessonPlan,
+  useChatStreaming,
+} from "@/components/ContextProviders/ChatProvider";
 
 import AiIcon from "../../AiIcon";
 import ChatButton from "./ui/chat-button";
@@ -19,34 +22,37 @@ const ChatLhsHeader = ({
   isDemoUser,
 }: Readonly<ChatLhsHeaderProps>) => {
   const router = useRouter();
-  const chat = useLessonChat();
+  const { iteration } = useChatLessonPlan();
+  const { ailaStreamingStatus, streamingSection } = useChatStreaming();
+
+  const handleNewLesson = useCallback(() => {
+    router.push("/aila");
+  }, [router]);
+
+  const handleShowLessonMobile = useCallback(() => {
+    setShowLessonMobile(!showLessonMobile);
+  }, [setShowLessonMobile, showLessonMobile]);
   return (
     <>
       <div className="mt-6 hidden items-center justify-end gap-5 sm:flex">
         {process.env.NEXT_PUBLIC_ENVIRONMENT !== "production" && (
           <div className="flex flex-grow flex-row space-x-4 text-left text-xs">
-            <div data-testid="chat-iteration">{chat.iteration ?? 0}</div>
+            <div data-testid="chat-iteration">{iteration ?? 0}</div>
             <div data-testid="chat-aila-streaming-status">
-              {chat.ailaStreamingStatus}
+              {ailaStreamingStatus}
             </div>
             <div data-testid="chat-aila-streaming-section">
-              {chat.streamingSection}
+              {streamingSection}
             </div>
           </div>
         )}
-        <ChatButton
-          variant="secondary"
-          onClick={() => {
-            router.push("/aila");
-          }}
-          size="sm"
-        >
+        <ChatButton variant="secondary" onClick={handleNewLesson} size="sm">
           New lesson
         </ChatButton>
       </div>
       <div className={`${isDemoUser && "mt-16"} flex justify-end sm:hidden`}>
         <button
-          onClick={() => setShowLessonMobile(!showLessonMobile)}
+          onClick={handleShowLessonMobile}
           className="flex items-center gap-5"
           data-testid="view-lesson-button"
         >

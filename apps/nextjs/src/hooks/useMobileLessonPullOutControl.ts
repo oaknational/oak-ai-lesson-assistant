@@ -1,19 +1,13 @@
 import { useEffect, useState } from "react";
 
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import type { Message } from "ai";
+import {
+  useChatLessonPlan,
+  useChatStreaming,
+} from "@/components/ContextProviders/ChatProvider";
 
-import type { AilaStreamingStatus } from "@/components/AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
-
-export const useMobileLessonPullOutControl = ({
-  ailaStreamingStatus,
-  messages,
-  lessonPlan,
-}: {
-  ailaStreamingStatus: AilaStreamingStatus;
-  messages: Message[];
-  lessonPlan: LooseLessonPlan;
-}) => {
+export const useMobileLessonPullOutControl = () => {
+  const { lessonPlan } = useChatLessonPlan();
+  const { ailaStreamingStatus } = useChatStreaming();
   const [showLessonMobile, setShowLessonMobile] = useState(false);
   const [userHasOverRiddenAutoPullOut, setUserHasOverRiddenAutoPullOut] =
     useState(false);
@@ -31,7 +25,6 @@ export const useMobileLessonPullOutControl = ({
     }
   }, [
     ailaStreamingStatus,
-    messages,
     userHasOverRiddenAutoPullOut,
     setUserHasOverRiddenAutoPullOut,
     setShowLessonMobile,

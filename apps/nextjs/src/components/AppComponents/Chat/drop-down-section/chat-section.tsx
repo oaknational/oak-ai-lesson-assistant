@@ -3,11 +3,14 @@ import type {
   LessonPlanSectionWhileStreaming,
 } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
-import { OakFlex } from "@oaknational/oak-components";
+import { OakBox, OakFlex } from "@oaknational/oak-components";
 import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
+
+import { useChatStreaming } from "@/components/ContextProviders/ChatProvider";
 
 import { sectionTitle } from ".";
 import { MemoizedReactMarkdownWithStyles } from "../markdown";
+import ActionButton from "./action-button";
 import FlagButton from "./flag-button";
 import ModifyButton from "./modify-button";
 
@@ -18,6 +21,7 @@ const ChatSection = ({
   objectKey: LessonPlanKeys;
   value: LessonPlanSectionWhileStreaming;
 }) => {
+  const { ailaStreamingStatus } = useChatStreaming();
   return (
     <OakFlex $flexDirection="column">
       <MemoizedReactMarkdownWithStyles
@@ -32,19 +36,35 @@ const ChatSection = ({
         $position="relative"
         $display={["none", "flex"]}
       >
-        <ModifyButton
-          sectionTitle={sectionTitle(objectKey)}
-          sectionPath={objectKey}
-          sectionValue={value}
-        />
-        <FlagButton
-          sectionTitle={sectionTitle(objectKey)}
-          sectionPath={objectKey}
-          sectionValue={value}
-        />
+        {ailaStreamingStatus === "Idle" ? (
+          <>
+            <ModifyButton
+              sectionTitle={sectionTitle(objectKey)}
+              sectionPath={objectKey}
+              sectionValue={value}
+            />
+            <FlagButton
+              sectionTitle={sectionTitle(objectKey)}
+              sectionPath={objectKey}
+              sectionValue={value}
+            />
+          </>
+        ) : (
+          <>
+            <DisabledButton label="Modify" />
+            <DisabledButton label="Flag" />
+          </>
+        )}
       </OakFlex>
     </OakFlex>
   );
 };
 
+const DisabledButton = ({ label }: { label: string }) => {
+  return (
+    <OakBox $position="relative">
+      <ActionButton disabled={true}>{label}</ActionButton>
+    </OakBox>
+  );
+};
 export default ChatSection;

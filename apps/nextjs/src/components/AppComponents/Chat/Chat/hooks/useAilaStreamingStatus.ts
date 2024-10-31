@@ -1,10 +1,11 @@
 import { useMemo, useEffect } from "react";
 
-import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+import {
+  ValidLessonPlanKeys,
+  type LessonPlanKeys,
+} from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import type { Message } from "ai";
-
-import { allSectionsInOrder } from "../../../../../lib/lessonPlan/sectionsInOrder";
 
 const log = aiLogger("chat");
 
@@ -18,10 +19,8 @@ function findStreamingSections(messageContent: string): {
       .match(regex)
       ?.map((match) => match.replace(/"path":"\//, "").replace(/"$/, "")) ?? [];
 
-  log.info("pathMatches", JSON.stringify(pathMatches));
-  const streamingSections: LessonPlanKeys[] = pathMatches.filter(
-    (i): i is string =>
-      typeof i === "string" && allSectionsInOrder.includes(i as LessonPlanKeys),
+  const streamingSections: LessonPlanKeys[] = pathMatches.filter((i) =>
+    ValidLessonPlanKeys.includes(i),
   ) as LessonPlanKeys[];
   const streamingSection: LessonPlanKeys | undefined =
     streamingSections[streamingSections.length - 1];

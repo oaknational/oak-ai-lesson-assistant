@@ -4,7 +4,10 @@ import { cva } from "class-variance-authority";
 
 import { ButtonScrollToBottom } from "@/components/AppComponents/Chat/button-scroll-to-bottom";
 import { PromptForm } from "@/components/AppComponents/Chat/prompt-form";
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import {
+  useChatInteraction,
+  useChatStreaming,
+} from "@/components/ContextProviders/ChatProvider";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
@@ -24,17 +27,9 @@ export function ChatPanel({
   isEmptyScreen,
   isDemoLocked,
 }: Readonly<ChatPanelProps>) {
-  const chat = useLessonChat();
-  const {
-    id,
-    isLoading,
-    input,
-    setInput,
-    append,
-    ailaStreamingStatus,
-    queueUserAction,
-    queuedUserAction,
-  } = chat;
+  const { input, setInput, append, queueUserAction, queuedUserAction } =
+    useChatInteraction();
+  const { id, isLoading, ailaStreamingStatus } = useChatStreaming();
 
   const { trackEvent } = useAnalytics();
   const handlePromptSubmitAsync = useCallback(

@@ -2,7 +2,7 @@ import React from "react";
 
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useChatRefs } from "@/components/ContextProviders/ChatProvider";
 
 import { LessonPlanProgressDropdownMenu } from "./LessonPlanProgressDropdownMenu";
 
@@ -15,7 +15,7 @@ type LessonPlanProgressDropdownProps = Readonly<{
 export const LessonPlanProgressDropdown: React.FC<
   LessonPlanProgressDropdownProps
 > = (props) => {
-  const { sectionRefs } = useLessonChat();
+  const { sectionRefs } = useChatRefs();
 
   return (
     <LessonPlanProgressDropdownMenu {...props} sectionRefs={sectionRefs} />

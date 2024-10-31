@@ -27,13 +27,11 @@ const toxicModeration: PersistedModerationBase = {
 export const WithModeration: Story = {
   args: {
     toxicModeration,
-    chatId: "mock-chat-id",
   },
 };
 
 export const WithoutModeration: Story = {
   args: {
     toxicModeration: null,
-    chatId: "mock-chat-id",
   },
 };

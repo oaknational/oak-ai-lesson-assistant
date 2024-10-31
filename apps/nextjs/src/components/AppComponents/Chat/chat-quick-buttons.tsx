@@ -2,7 +2,11 @@ import { useCallback } from "react";
 
 import { findLast } from "remeda";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import {
+  useChatInteraction,
+  useChatMessages,
+  useChatStreaming,
+} from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
@@ -44,18 +48,12 @@ const shouldAllowStop = (
 };
 
 const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
-  const chat = useLessonChat();
   const { trackEvent } = useAnalytics();
   const lessonPlanTracking = useLessonPlanTracking();
   const { setDialogWindow } = useDialog();
-  const {
-    messages,
-    id,
-    stop,
-    ailaStreamingStatus,
-    queueUserAction,
-    queuedUserAction,
-  } = chat;
+  const { messages } = useChatMessages();
+  const { id, ailaStreamingStatus } = useChatStreaming();
+  const { queuedUserAction, queueUserAction, stop } = useChatInteraction();
 
   const shouldAllowUserAction =
     ["Idle", "Moderating"].includes(ailaStreamingStatus) && !queuedUserAction;

@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 
 const log = aiLogger("lessons");
+
+const SCROLLING_ENABLED = true;
 
 export const useLessonPlanScrollManagement = (
   streamingSection: LessonPlanKeys | undefined,
@@ -49,7 +51,11 @@ export const useLessonPlanScrollManagement = (
   const activeScrollRef = useRef<LessonPlanKeys | null>(null);
 
   const processScrollQueue = useCallback(() => {
-    if (activeScrollRef.current || scrollQueueRef.current.length === 0) {
+    if (
+      activeScrollRef.current ||
+      scrollQueueRef.current.length === 0 ||
+      userHasCancelledAutoScroll
+    ) {
       return;
     }
 
@@ -70,6 +76,7 @@ export const useLessonPlanScrollManagement = (
           const targetScrollPosition =
             sectionRect.top - parentRect.top + scrollableParent.scrollTop - 160;
 
+          log.info("Scrolling to", section, targetScrollPosition);
           scrollableParent.scrollTo({
             top: targetScrollPosition,
             behavior: "smooth",
@@ -77,10 +84,14 @@ export const useLessonPlanScrollManagement = (
         }
       }
     }
-  }, []);
+  }, [userHasCancelledAutoScroll]);
 
   const scrollToSection = useCallback(
     (section: LessonPlanKeys) => {
+      if (!SCROLLING_ENABLED) {
+        log.info("Skipping scrolling: scrolling is disabled");
+        return;
+      }
       if (section === recentlyScrolledSection) {
         log.info("Skipping scrolling: it's the recent section we scrolled to");
         return;
@@ -93,28 +104,34 @@ export const useLessonPlanScrollManagement = (
       scrollQueueRef.current.push(section);
       setRecentlyScrolledSection(section);
     },
-    [userHasCancelledAutoScroll, recentlyScrolledSection],
+    [
+      scrollQueueRef,
+      userHasCancelledAutoScroll,
+      recentlyScrolledSection,
+      setRecentlyScrolledSection,
+    ],
   );
 
-  useEffect(() => {
-    const handleUserScroll = () => {
-      setUserHasCancelledAutoScroll(true);
+  const handleUserScroll = useCallback(() => {
+    setUserHasCancelledAutoScroll(true);
 
-      const timeoutId = setTimeout(() => {
-        setUserHasCancelledAutoScroll(false);
-      }, 5000);
+    const timeoutId = setTimeout(() => {
+      log.info("Re-enabling auto scroll");
+      setUserHasCancelledAutoScroll(false);
+    }, 5000);
 
-      return () => {
-        clearTimeout(timeoutId);
-      };
+    return () => {
+      clearTimeout(timeoutId);
     };
+  }, [setUserHasCancelledAutoScroll]);
 
+  useEffect(() => {
     window.addEventListener("wheel", handleUserScroll);
 
     return () => {
       window.removeEventListener("wheel", handleUserScroll);
     };
-  }, []);
+  }, [handleUserScroll]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {

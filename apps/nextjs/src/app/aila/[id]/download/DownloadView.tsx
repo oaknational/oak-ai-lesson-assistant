@@ -39,11 +39,7 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
   return (
     <Layout>
       <DialogRoot>
-        <DialogContents
-          chatId={chat.id}
-          lesson={lessonPlan}
-          isShared={chat.isShared}
-        />
+        <DialogContents />
         <SurveyDialogLauncher />
         <div className="mx-auto mb-26 mt-30 w-full max-w-[1280px] px-9">
           <Box width="100%">

@@ -1,6 +1,5 @@
 import React from "react";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 
@@ -13,18 +12,10 @@ export interface ChatProps extends React.ComponentProps<"div"> {
 }
 
 export function Chat({ className }: Readonly<ChatProps>) {
-  const chatContext = useLessonChat();
-  const { id, lessonPlan, messages, chat } = chatContext;
-  const isShared = chat?.isShared || false;
   return (
     <ChatModeration>
       <DialogRoot>
-        <DialogContents
-          lesson={lessonPlan}
-          chatId={id}
-          messages={messages}
-          isShared={isShared}
-        />
+        <DialogContents />
         <ChatLayout className={className} />
       </DialogRoot>
     </ChatModeration>

@@ -722,6 +722,7 @@ export function extractPatches(edit: string): {
 } {
   const parts: MessagePart[] | undefined = parseMessageParts(edit);
 
+  log.info("# Message parts", parts.length);
   if (!parts) {
     // Handle parsing failure
     throw new Error("Failed to parse the edit content");

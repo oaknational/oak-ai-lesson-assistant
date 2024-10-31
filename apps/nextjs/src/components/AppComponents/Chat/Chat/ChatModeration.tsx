@@ -4,7 +4,10 @@ import {
   ChatModerationProvider,
   useChatModeration,
 } from "@/components/ContextProviders/ChatModerationContext";
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import {
+  useChatLessonPlan,
+  useChatModerations,
+} from "@/components/ContextProviders/ChatProvider";
 
 import ModerationFeedbackModal from "../../FeedbackForms/ModerationFeedbackModal";
 import { ChatModerationDisplay } from "./ChatModerationDisplay";
@@ -14,19 +17,16 @@ interface ChatModerationProps {
 }
 
 const ChatModeration = ({ children }: ChatModerationProps) => {
-  const chat = useLessonChat();
-
-  const { id, toxicModeration } = chat;
+  const { id } = useChatLessonPlan();
+  const { toxicModeration } = useChatModerations();
 
   if (toxicModeration) {
     if (!id) throw new Error("Toxic moderation, but no chat id");
-    return (
-      <ChatModerationDisplay toxicModeration={toxicModeration} chatId={id} />
-    );
+    return <ChatModerationDisplay toxicModeration={toxicModeration} />;
   }
 
   return (
-    <ChatModerationProvider chatId={id}>
+    <ChatModerationProvider>
       <ChatModerationContentWithModal>
         {children}
       </ChatModerationContentWithModal>

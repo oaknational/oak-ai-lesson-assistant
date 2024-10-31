@@ -101,7 +101,64 @@ export type ChatContextProps = {
   toxicModeration: PersistedModerationBase | null;
 };
 
-const ChatContext = createContext<ChatContextProps | null>(null);
+type ChatMessagesContextValue = {
+  messages: ChatContextProps["messages"];
+};
+
+type ChatRefsContextValue = {
+  setSectionRef: ChatContextProps["setSectionRef"];
+  sectionRefs: ChatContextProps["sectionRefs"];
+  chatAreaRef: ChatContextProps["chatAreaRef"];
+};
+
+type LessonPlanContextValue = {
+  chat: ChatContextProps["chat"];
+  lessonPlan: ChatContextProps["lessonPlan"];
+  iteration: ChatContextProps["iteration"];
+  id: ChatContextProps["id"];
+};
+
+type ModerationsContextValue = {
+  initialModerations: ChatContextProps["initialModerations"];
+  toxicModeration: ChatContextProps["toxicModeration"];
+  lastModeration: ChatContextProps["lastModeration"];
+};
+
+type StreamingContextValue = {
+  id: ChatContextProps["id"];
+  isLoading: ChatContextProps["isLoading"];
+  ailaStreamingStatus: ChatContextProps["ailaStreamingStatus"];
+  isStreaming: ChatContextProps["isStreaming"];
+  streamingSection: ChatContextProps["streamingSection"];
+  streamingSections: ChatContextProps["streamingSections"];
+  messageCount: number;
+};
+
+type ChatInteractionContextValue = {
+  executeQueuedAction: ChatContextProps["executeQueuedAction"];
+  queuedUserAction: ChatContextProps["queuedUserAction"];
+  queueUserAction: ChatContextProps["queueUserAction"];
+  stop: ChatContextProps["stop"];
+  reload: ChatContextProps["reload"];
+  setInput: ChatContextProps["setInput"];
+  input: ChatContextProps["input"];
+  append: ChatContextProps["append"];
+};
+
+const StreamingChatContext = createContext<StreamingContextValue | null>(null);
+
+const ModerationsContext = createContext<ModerationsContextValue | null>(null);
+
+const LessonPlanContext = createContext<LessonPlanContextValue | null>(null);
+
+const ChatRefsContext = createContext<ChatRefsContextValue | null>(null);
+
+const ChatMessagesContext = createContext<ChatMessagesContextValue | null>(
+  null,
+);
+
+const ChatInteractionContext =
+  createContext<ChatInteractionContextValue | null>(null);
 
 export type ChatProviderProps = {
   id: string;
@@ -196,7 +253,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   /******************* Streaming of all chat starts from messages here *******************/
 
   const {
-    messages: chatMessages,
+    messages,
     append,
     reload,
     stop: stopStreaming,
@@ -225,7 +282,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       Sentry.captureException(new Error("Use chat error"), {
         extra: { originalError: error },
       });
-      log.error("UseChat error", { error, chatMessages });
+      log.error("UseChat error", { error });
       setHasFinished(true);
     },
     onResponse(response) {
@@ -263,9 +320,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   });
 
   // We don't stream the text to the UI so we only need to process
-  // them once every second
+  // them immediately
 
-  const messages = useThrottle(chatMessages, 1000);
+  // const messages = useThrottle(chatMessages, 200);
 
   useEffect(() => {
     if (chat?.lessonPlan) {
@@ -281,7 +338,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   useEffect(() => {
     const loggingLessonPlan = chat?.lessonPlan;
     if (loggingLessonPlan) {
-      const keys = (Object.keys(loggingLessonPlan) as LessonPlanKeys[]).filter(
+      const keys = Object.keys(loggingLessonPlan).filter(
         (k) => loggingLessonPlan[k],
       );
       log.info(
@@ -445,7 +502,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     status: ailaStreamingStatus,
     streamingSection,
     streamingSections,
-  } = useAilaStreamingStatus({ isLoading, messages: chatMessages });
+  } = useAilaStreamingStatus({ isLoading, messages });
 
   const [streamingSectionCompleted, setStreamingSectionCompleted] = useState<
     LessonPlanKeys | undefined
@@ -480,79 +537,157 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     }
   }, [toxicModeration, setMessages]);
 
-  const value: ChatContextProps = useMemo(
+  const streamingValue: StreamingContextValue = useMemo(
     () => ({
       ailaStreamingStatus,
-      append,
-      chat,
-      chatAreaRef,
-      executeQueuedAction,
-      hasAppendedInitialMessage,
-      hasFinished,
-      id,
-      initialModerations: moderations ?? [],
-      input,
-      isLoading,
       isStreaming: !hasFinished,
-      iteration,
-      lastModeration,
-      lessonPlan: overrideLessonPlan ?? lessonPlan,
-      messages,
-      queuedUserAction,
-      queueUserAction,
-      reload,
-      setInput,
-      stop,
       streamingSection,
       streamingSections,
-      streamingSectionCompleted,
-      toxicModeration,
-      sectionRefs,
-      setSectionRef,
+      messageCount: messages.length,
+      id,
+      isLoading,
     }),
     [
       ailaStreamingStatus,
-      append,
-      chat,
-      chatAreaRef,
-      executeQueuedAction,
-      hasAppendedInitialMessage,
       hasFinished,
       id,
-      input,
-      isLoading,
-      iteration,
-      lastModeration,
-      lessonPlan,
-      messages,
-      moderations,
-      overrideLessonPlan,
-      queuedUserAction,
-      queueUserAction,
-      reload,
-      setInput,
-      stop,
+      messages.length,
       streamingSection,
       streamingSections,
-      streamingSectionCompleted,
-      toxicModeration,
-      sectionRefs,
-      setSectionRef,
+      isLoading,
     ],
   );
 
+  const moderationsValue: ModerationsContextValue = useMemo(
+    () => ({
+      initialModerations: moderations ?? [],
+      toxicModeration,
+      lastModeration,
+    }),
+    [moderations, toxicModeration, lastModeration],
+  );
+
+  const lessonPlanValue: LessonPlanContextValue = useMemo(
+    () => ({
+      chat,
+      lessonPlan,
+      iteration,
+      id,
+    }),
+    [lessonPlan, iteration, id, chat],
+  );
+
+  const chatRefsValue: ChatRefsContextValue = useMemo(
+    () => ({
+      setSectionRef,
+      sectionRefs,
+      chatAreaRef,
+    }),
+    [setSectionRef, sectionRefs, chatAreaRef],
+  );
+
+  const chatInteractionValue: ChatInteractionContextValue = useMemo(
+    () => ({
+      executeQueuedAction,
+      queuedUserAction,
+      queueUserAction,
+      stop,
+      reload,
+      setInput,
+      input,
+      append,
+    }),
+    [
+      executeQueuedAction,
+      queuedUserAction,
+      queueUserAction,
+      stop,
+      reload,
+      setInput,
+      input,
+      append,
+    ],
+  );
+
+  const chatMessagesValue: ChatMessagesContextValue = useMemo(
+    () => ({
+      messages,
+    }),
+    [messages],
+  );
+
   return (
-    <ChatContext.Provider value={value}>
-      {isChatLoading || isModerationsLoading ? null : children}
-    </ChatContext.Provider>
+    <StreamingChatContext.Provider value={streamingValue}>
+      <ModerationsContext.Provider value={moderationsValue}>
+        <LessonPlanContext.Provider value={lessonPlanValue}>
+          <ChatRefsContext.Provider value={chatRefsValue}>
+            <ChatMessagesContext.Provider value={chatMessagesValue}>
+              <ChatInteractionContext.Provider value={chatInteractionValue}>
+                {isChatLoading || isModerationsLoading ? null : children}
+              </ChatInteractionContext.Provider>
+            </ChatMessagesContext.Provider>
+          </ChatRefsContext.Provider>
+        </LessonPlanContext.Provider>
+      </ModerationsContext.Provider>
+    </StreamingChatContext.Provider>
   );
 }
 
-export function useLessonChat(): ChatContextProps {
-  const context = useContext(ChatContext);
+export function useChatRefs(): ChatRefsContextValue {
+  const context = useContext(ChatRefsContext);
 
   if (!context) {
-    throw new Error("useChat must be used within a ChatProvider");
+    throw new Error("useChatRefs must be used within a ChatProvider");
+  }
+
+  return context;
+}
+
+export function useChatStreaming(): StreamingContextValue {
+  const context = useContext(StreamingChatContext);
+
+  if (!context) {
+    throw new Error("useStreamingChat must be used within a ChatProvider");
+  }
+
+  return context;
+}
+
+export function useChatLessonPlan(): LessonPlanContextValue {
+  const context = useContext(LessonPlanContext);
+
+  if (!context) {
+    throw new Error("useLessonPlan must be used within a ChatProvider");
+  }
+
+  return context;
+}
+
+export function useChatModerations(): ModerationsContextValue {
+  const context = useContext(ModerationsContext);
+
+  if (!context) {
+    throw new Error("useModerations must be used within a ChatProvider");
+  }
+
+  return context;
+}
+
+export function useChatInteraction(): ChatInteractionContextValue {
+  const context = useContext(ChatInteractionContext);
+
+  if (!context) {
+    throw new Error("useChatInteraction must be used within a ChatProvider");
+  }
+
+  return context;
+}
+
+export function useChatMessages(): ChatMessagesContextValue {
+  const context = useContext(ChatMessagesContext);
+
+  if (!context) {
+    throw new Error("useChatMessages must be used within a ChatProvider");
   }
 
   return context;

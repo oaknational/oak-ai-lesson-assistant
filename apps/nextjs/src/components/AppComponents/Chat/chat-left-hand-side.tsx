@@ -2,7 +2,10 @@ import React from "react";
 
 import { Flex } from "@radix-ui/themes";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import {
+  useChatRefs,
+  useChatStreaming,
+} from "@/components/ContextProviders/ChatProvider";
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
 import { WithProfiler } from "@/components/Profiler/WithProfiler";
 
@@ -27,7 +30,8 @@ const ChatLeftHandSide = ({
   demo,
   isDemoUser,
 }: Readonly<ChatLeftHandSideProps>) => {
-  const { messages, chatAreaRef } = useLessonChat();
+  const { chatAreaRef } = useChatRefs();
+  const { messageCount } = useChatStreaming();
   return (
     <Flex
       direction="column"
@@ -51,14 +55,11 @@ const ChatLeftHandSide = ({
             />
           </ChatPanelArea>
           {!isDemoLocked && (
-            <QuickActionButtons isEmptyScreen={!!messages.length} />
+            <QuickActionButtons isEmptyScreen={!!messageCount} />
           )}
         </WithProfiler>
       </div>
-      <ChatPanel
-        isEmptyScreen={!!messages.length}
-        isDemoLocked={isDemoLocked}
-      />
+      <ChatPanel isEmptyScreen={!!messageCount} isDemoLocked={isDemoLocked} />
       <span className="absolute right-0 top-[-70px] z-10 hidden h-[calc(100vh+100px)] w-3 bg-black sm:block" />
     </Flex>
   );

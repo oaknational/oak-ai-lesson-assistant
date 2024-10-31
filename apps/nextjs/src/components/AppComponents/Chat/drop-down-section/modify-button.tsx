@@ -7,7 +7,11 @@ import { aiLogger } from "@oakai/logger";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
 import { TextArea } from "@radix-ui/themes";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import {
+  useChatInteraction,
+  useChatLessonPlan,
+  useChatMessages,
+} from "@/components/ContextProviders/ChatProvider";
 import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
@@ -63,10 +67,9 @@ const ModifyButton = ({
   const [selectedRadio, setSelectedRadio] =
     useState<FeedbackOption<AilaUserModificationAction> | null>(null);
 
-  const chat = useLessonChat();
-  const { append } = chat;
-
-  const { id, messages } = chat;
+  const { append } = useChatInteraction();
+  const { id } = useChatLessonPlan();
+  const { messages } = useChatMessages();
 
   const { mutateAsync } = trpc.chat.chatFeedback.modifySection.useMutation();
 

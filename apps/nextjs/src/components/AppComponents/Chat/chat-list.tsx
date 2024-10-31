@@ -3,18 +3,20 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { camelCaseToTitleCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { OakBox, OakFlex, OakIcon, OakSpan } from "@oaknational/oak-components";
-import type { Message } from "ai";
 import Link from "next/link";
 
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import {
+  useChatLessonPlan,
+  useChatMessages,
+  useChatModerations,
+  useChatStreaming,
+} from "@/components/ContextProviders/ChatProvider";
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
 
 import { useDialog } from "../DialogContext";
-import type { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
 import { useProgressForDownloads } from "./Chat/hooks/useProgressForDownloads";
 import type { DialogTypes } from "./Chat/types";
 
@@ -24,11 +26,13 @@ export interface ChatListProps {
   demo: DemoContextProps;
 }
 
-function DemoLimitMessage({ id }: Readonly<{ id: string }>) {
+function DemoLimitMessage() {
+  const { id } = useChatLessonPlan();
   return (
     <div className="w-full flex-col gap-11">
       <ChatMessage
         chatId={id}
+        persistedModerations={[]}
         ailaStreamingStatus="Idle"
         message={{
           id: "demo-limit",
@@ -36,7 +40,6 @@ function DemoLimitMessage({ id }: Readonly<{ id: string }>) {
           content:
             '{"type": "error", "message": "**Your lesson is complete**\\nYou can no longer edit this lesson. [Create new lesson.](/aila)"}',
         }}
-        persistedModerations={[]}
         separator={<span className="my-10 flex" />}
       />
     </div>
@@ -48,23 +51,20 @@ export function ChatList({
   showLessonMobile,
   demo,
 }: Readonly<ChatListProps>) {
-  const chat = useLessonChat();
-
-  const { id, messages, ailaStreamingStatus, lastModeration } = chat;
-  const persistedModerations = chat.initialModerations;
+  const { messageCount, ailaStreamingStatus } = useChatStreaming();
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
 
   const scrollToBottom = useCallback(() => {
-    if (chatEndRef.current && messages.length > 1) {
+    if (chatEndRef.current && messageCount > 1) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [chatEndRef, messages]);
+  }, [chatEndRef, messageCount]);
 
   useEffect(() => {
     autoScroll && scrollToBottom();
-  }, [messages, autoScroll, ailaStreamingStatus, scrollToBottom]);
+  }, [autoScroll, ailaStreamingStatus, scrollToBottom]);
 
   useEffect(() => {
     scrollToBottom();
@@ -76,7 +76,7 @@ export function ChatList({
       scrollToBottom();
     }, 1500);
     return () => clearTimeout(timeout);
-  }, [ailaStreamingStatus, messages, scrollToBottom]);
+  }, [ailaStreamingStatus, scrollToBottom]);
 
   const handleScroll = useCallback(() => {
     if (chatEndRef.current) {
@@ -91,43 +91,27 @@ export function ChatList({
     }
   }, [chatEndRef, setAutoScroll]);
 
-  if (!messages.length) {
+  if (!messageCount) {
     return null;
   }
 
   return (
     <div className="relative flex w-full flex-col " onScroll={handleScroll}>
-      <ChatMessagesDisplay
-        messages={messages}
-        id={id}
-        lastModeration={lastModeration}
-        persistedModerations={persistedModerations}
-        ailaStreamingStatus={ailaStreamingStatus}
-        demo={demo}
-      />
+      <ChatMessagesDisplay demo={demo} />
 
-      {isDemoLocked && <DemoLimitMessage id={id} />}
+      {isDemoLocked && <DemoLimitMessage />}
       <div ref={chatEndRef} />
     </div>
   );
 }
 
-export const ChatMessagesDisplay = ({
-  messages,
-  id,
-  lastModeration,
-  persistedModerations = [],
-  ailaStreamingStatus,
-  demo,
-}: {
-  id: string;
-  messages: Message[];
-  lastModeration: PersistedModerationBase | null;
-  persistedModerations: PersistedModerationBase[];
-  ailaStreamingStatus: AilaStreamingStatus;
-  demo: DemoContextProps;
-}) => {
-  const { lessonPlan, isStreaming, streamingSection } = useLessonChat();
+export const ChatMessagesDisplay = ({ demo }: { demo: DemoContextProps }) => {
+  const { isStreaming, streamingSection, ailaStreamingStatus } =
+    useChatStreaming();
+  const { lastModeration, initialModerations: persistedModerations } =
+    useChatModerations();
+  const { id, lessonPlan } = useChatLessonPlan();
+  const { messages } = useChatMessages();
   const { setDialogWindow } = useDialog();
   const { totalSections, totalSectionsComplete } = useProgressForDownloads({
     lessonPlan,
@@ -154,9 +138,9 @@ export const ChatMessagesDisplay = ({
                 chatId={id}
                 message={message}
                 lastModeration={lastModeration}
-                persistedModerations={persistedModerations}
-                ailaStreamingStatus={ailaStreamingStatus}
+                persistedModerations={[]}
                 separator={<span className="my-10 flex" />}
+                ailaStreamingStatus={ailaStreamingStatus}
               />
               <ChatMessage
                 key={`${message.id}-working`}

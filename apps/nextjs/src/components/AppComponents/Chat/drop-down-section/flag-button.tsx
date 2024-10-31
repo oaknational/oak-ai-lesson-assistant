@@ -6,7 +6,10 @@ import type { AilaUserFlagType } from "@oakai/db";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
 import styled from "styled-components";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import {
+  useChatLessonPlan,
+  useChatMessages,
+} from "@/components/ContextProviders/ChatProvider";
 import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
@@ -42,9 +45,9 @@ const FlagButton = ({
   const [displayTextBox, setDisplayTextBox] = useState<string | null>(null);
 
   const [userFeedbackText, setUserFeedbackText] = useState("");
-  const chat = useLessonChat();
 
-  const { id, messages } = chat;
+  const { messages } = useChatMessages();
+  const { id } = useChatLessonPlan();
   const lastAssistantMessage = getLastAssistantMessage(messages);
 
   const { mutateAsync } = trpc.chat.chatFeedback.flagSection.useMutation();

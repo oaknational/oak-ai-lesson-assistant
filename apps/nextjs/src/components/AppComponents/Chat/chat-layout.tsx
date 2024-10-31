@@ -1,4 +1,7 @@
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import {
+  useChatMessages,
+  useChatStreaming,
+} from "@/components/ContextProviders/ChatProvider";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import { WithProfiler } from "@/components/Profiler/WithProfiler";
 import { useDemoLocking } from "@/hooks/useDemoLocking";
@@ -13,17 +16,13 @@ export interface ChatLayoutProps {
 }
 
 export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
-  const { isLoading, lessonPlan, messages, ailaStreamingStatus } =
-    useLessonChat();
+  const { isLoading } = useChatStreaming();
+  const { messages } = useChatMessages();
 
   const demo = useDemoUser();
   const isDemoLocked = useDemoLocking(messages, isLoading);
   const { showLessonMobile, setShowLessonMobile, closeMobileLessonPullOut } =
-    useMobileLessonPullOutControl({
-      ailaStreamingStatus,
-      messages,
-      lessonPlan,
-    });
+    useMobileLessonPullOutControl();
 
   return (
     <div className={cn("fixed bottom-0 left-0 right-0 top-0 z-30 ", className)}>

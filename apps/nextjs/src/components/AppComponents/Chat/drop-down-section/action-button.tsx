@@ -11,10 +11,12 @@ const ActionButton = ({
   children,
   onClick,
   tooltip,
+  disabled = false,
 }: {
   children: React.ReactNode;
-  onClick: () => void;
-  tooltip: string;
+  onClick?: () => void;
+  tooltip?: string;
+  disabled?: boolean;
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -31,7 +33,15 @@ const ActionButton = ({
     void showTooltipAsync();
   }, [setShowTooltip]);
 
-  return (
+  const buttonContent = (
+    <OakBox onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <OakSmallSecondaryWithOpaqueBorder onClick={onClick} disabled={disabled}>
+        {children}
+      </OakSmallSecondaryWithOpaqueBorder>
+    </OakBox>
+  );
+
+  return tooltip ? (
     <OakTooltip
       tooltip={tooltip}
       tooltipPosition="top-left"
@@ -39,12 +49,10 @@ const ActionButton = ({
       $background="black"
       $color="white"
     >
-      <OakBox onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-        <OakSmallSecondaryWithOpaqueBorder onClick={onClick}>
-          {children}
-        </OakSmallSecondaryWithOpaqueBorder>
-      </OakBox>
+      {buttonContent}
     </OakTooltip>
+  ) : (
+    buttonContent
   );
 };
 

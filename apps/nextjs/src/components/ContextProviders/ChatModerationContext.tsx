@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { useMemo, createContext, useContext } from "react";
 
 import { useModerationModal } from "../AppComponents/FeedbackForms/ModerationFeedbackModal";
+import { useChatLessonPlan } from "./ChatProvider";
 
 export interface ChatModerationContextProps {
   moderationModalHelpers: ReturnType<typeof useModerationModal>;
@@ -12,12 +13,11 @@ const ChatModerationContext = createContext<
 >(undefined);
 
 export const ChatModerationProvider = ({
-  chatId,
   children,
 }: {
-  chatId: string;
   children: ReactNode;
 }) => {
+  const { id: chatId } = useChatLessonPlan();
   const moderationModalHelpers = useModerationModal({ chatId });
   const value = useMemo(
     () => ({ moderationModalHelpers }),
