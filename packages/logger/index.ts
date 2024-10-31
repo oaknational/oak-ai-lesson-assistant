@@ -59,7 +59,8 @@ type ChildKey =
   | "tracing"
   | "transcripts"
   | "trpc"
-  | "ui";
+  | "ui"
+  | "webhooks";
 
 const errorLogger =
   typeof window === "undefined"
