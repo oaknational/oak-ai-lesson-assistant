@@ -1,11 +1,11 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import dedent from "ts-dedent";
 import { Md5 } from "ts-md5";
 
 import errorHandling from "../prompts/shared/error-handling";
 import promptInjection from "../prompts/shared/prompt-injection";
-import { OakPromptDefinition, OakPromptVariant } from "../prompts/types";
+import type { OakPromptDefinition, OakPromptVariant } from "../prompts/types";
 
 const log = aiLogger("prompts");
 
@@ -49,11 +49,10 @@ export class PromptVariants {
     const app = await this.prisma.app.findFirstOrThrow({
       where: { slug: appSlug },
     });
-    const maxVersionRows = (await this.prisma
-      .$queryRaw`select max(version) as max_version from prompts where slug = ${slug}`) as {
-      max_version: number;
-    }[];
-    const maxVersion = maxVersionRows?.[0]?.max_version ?? 0;
+    const maxVersionRow = await this.prisma.$queryRaw<
+      { max_version: number | null }[]
+    >`SELECT MAX(version) AS max_version FROM prompts WHERE slug = ${slug}`;
+    const maxVersion = maxVersionRow[0]?.max_version ?? 0;
     const version = maxVersion + 1;
     const created = await this.prisma.prompt.create({
       data: {

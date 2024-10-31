@@ -1,5 +1,5 @@
-import { Apps } from "@oakai/core";
-import { prisma } from "@oakai/db";
+import { Apps } from "@oakai/core/src/models/apps";
+import { prisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { LessonPlanPreview } from "./preview";

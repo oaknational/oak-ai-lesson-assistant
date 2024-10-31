@@ -1,6 +1,6 @@
 import { Flex, Grid, Heading } from "@radix-ui/themes";
-import { LessonPlannerAppState } from "ai-apps/lesson-planner/state/types";
-import { QuizAppState } from "ai-apps/quiz-designer/state/types";
+import type { LessonPlannerAppState } from "ai-apps/lesson-planner/state/types";
+import type { QuizAppState } from "ai-apps/quiz-designer/state/types";
 import Link from "next/link";
 
 import { Icon } from "@/components/Icon";

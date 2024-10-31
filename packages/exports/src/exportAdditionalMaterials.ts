@@ -4,9 +4,9 @@ import { prepLessonForAdditionalMaterialsDoc } from "./dataHelpers/prepLessonFor
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
 import { populateDoc } from "./gSuite/docs/populateDoc";
-import { LessonSlidesInputData } from "./schema/input.schema";
+import type { LessonSlidesInputData } from "./schema/input.schema";
 import { getSlidesTemplateIdAdditionalMaterials as getDocsTemplateIdAdditionalMaterials } from "./templates";
-import { OutputData, Result, State } from "./types";
+import type { OutputData, Result, State } from "./types";
 
 const log = aiLogger("exports");
 

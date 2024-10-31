@@ -1,8 +1,8 @@
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import { getLessonTrackingProps } from "@/lib/analytics/helpers";
-import useAnalytics from "@/lib/analytics/useAnalytics";
-import {
+import type useAnalytics from "@/lib/analytics/useAnalytics";
+import type {
   ResourceFileTypeValueType,
   ResourceTypeValueType,
 } from "@/lib/avo/Avo";

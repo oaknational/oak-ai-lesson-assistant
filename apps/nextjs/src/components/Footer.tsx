@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
+import type { OakIconName } from "@oaknational/oak-components";
 import {
   OakBox,
   OakFlex,

@@ -1,4 +1,4 @@
-import { Quiz } from "../schema/input.schema";
+import type { Quiz } from "../schema/input.schema";
 import { processQuizAnswers } from "../utils";
 
 function processQuizAnswersForQuiz(

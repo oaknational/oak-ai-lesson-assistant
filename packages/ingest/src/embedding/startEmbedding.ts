@@ -1,7 +1,8 @@
 import { startBatch } from "../openai-batches/startBatch";
-import { OpenAiBatchSubmitCallback } from "../openai-batches/submitOpenAiBatch";
+import type { OpenAiBatchSubmitCallback } from "../openai-batches/submitOpenAiBatch";
+import type {
+  EmbeddingBatchLineProps} from "./getPartEmbeddingBatchFileLine";
 import {
-  EmbeddingBatchLineProps,
   getPartEmbeddingBatchFileLine,
 } from "./getPartEmbeddingBatchFileLine";
 

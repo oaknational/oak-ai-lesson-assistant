@@ -1,4 +1,4 @@
-import { MenuItem } from "data/menus";
+import type { MenuItem } from "data/menus";
 import { usePathname } from "next/navigation";
 
 import Button from "../Button";

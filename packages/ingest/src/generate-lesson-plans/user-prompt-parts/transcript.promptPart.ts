@@ -1,4 +1,4 @@
-import { Captions } from "../../zod-schema/zodSchema";
+import type { Captions } from "../../zod-schema/zodSchema";
 
 export const transcriptPromptPart = (
   captions: Captions,

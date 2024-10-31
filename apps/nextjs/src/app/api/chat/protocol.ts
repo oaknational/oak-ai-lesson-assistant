@@ -1,4 +1,4 @@
-import {
+import type {
   ActionDocument,
   ErrorDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";

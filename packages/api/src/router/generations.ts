@@ -6,8 +6,9 @@ import {
   serializeGeneration,
   serializedGenerationSchema,
 } from "@oakai/core/src/models/serializers";
+import type {
+  GenerationPart} from "@oakai/core/src/types";
 import {
-  GenerationPart,
   generationPartSchema,
   generationPartUserTweakedSchema,
 } from "@oakai/core/src/types";

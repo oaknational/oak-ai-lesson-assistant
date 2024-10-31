@@ -1,9 +1,9 @@
-import { AdditionalMaterialsTemplateData } from "../schema/additionalMaterialsDoc.schema";
-import {
+import type { AdditionalMaterialsTemplateData } from "../schema/additionalMaterialsDoc.schema";
+import type {
   ExportableQuizAppState,
   LessonSlidesInputData,
 } from "../schema/input.schema";
-import { LessonSlidesTemplateData } from "../schema/lessonSlidesTemplate.schema";
+import type { LessonSlidesTemplateData } from "../schema/lessonSlidesTemplate.schema";
 import { camelCaseToTitleCase, processQuizAnswers } from "../utils";
 
 const processQuizAnswersForSlides = (

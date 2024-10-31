@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
-import { Message } from "ai";
+import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+import type { Message } from "ai";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 
@@ -31,7 +31,7 @@ const DEMO_MESSAGES_AFTER_COMPLETE = parseInt(
 );
 
 const stateLineHasAllSections = (line: string) => {
-  if (!line.includes(`"type":"state"`)) {
+  if (!line.includes('"type":"state"')) {
     return false;
   }
 

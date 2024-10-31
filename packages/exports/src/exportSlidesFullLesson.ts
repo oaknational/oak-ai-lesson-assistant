@@ -1,11 +1,12 @@
 import { prepLessonForSlides } from "./dataHelpers/prepLessonForSlides";
 import { exportGeneric } from "./exportGeneric";
 import { googleSlides } from "./gSuite/slides/client";
-import { SpeakerNotesTag, deleteSlides } from "./gSuite/slides/deleteSlides";
+import type { SpeakerNotesTag} from "./gSuite/slides/deleteSlides";
+import { deleteSlides } from "./gSuite/slides/deleteSlides";
 import { populateSlides } from "./gSuite/slides/populateSlides";
-import { LessonSlidesInputData } from "./schema/input.schema";
+import type { LessonSlidesInputData } from "./schema/input.schema";
 import { getSlidesTemplateIdFullLesson } from "./templates";
-import { OutputData, Result, State } from "./types";
+import type { OutputData, Result, State } from "./types";
 
 export const exportSlidesFullLesson = async ({
   snapshotId,

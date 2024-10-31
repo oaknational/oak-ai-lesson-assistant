@@ -1,7 +1,7 @@
 import { isTruthy } from "remeda";
 
 import { IngestError } from "../IngestError";
-import { RawLesson, Captions } from "../zod-schema/zodSchema";
+import type { RawLesson, Captions } from "../zod-schema/zodSchema";
 import { exitQuizPromptPart } from "./user-prompt-parts/exitQuiz.promptPart";
 import { keyLearningPointsPromptPart } from "./user-prompt-parts/keyLearningPoints.promptPart";
 import { lessonKeywordsPromptPart } from "./user-prompt-parts/keywords.promptPart";

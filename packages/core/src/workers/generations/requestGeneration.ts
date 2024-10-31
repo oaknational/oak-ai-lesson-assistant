@@ -1,19 +1,16 @@
-import { GenerationStatus, ModerationType, Prisma, prisma } from "@oakai/db";
-import {
-  structuredLogger as baseLogger,
-  aiLogger,
-  StructuredLogger,
-} from "@oakai/logger";
+import type { Prisma } from "@oakai/db";
+import { GenerationStatus, ModerationType, prisma } from "@oakai/db";
+import type { StructuredLogger } from "@oakai/logger";
+import { structuredLogger as baseLogger, aiLogger } from "@oakai/logger";
 import { Redis } from "@upstash/redis";
 import { NonRetriableError } from "inngest";
-import { z } from "zod";
+import type { z } from "zod";
 
 import { createOpenAIModerationsClient } from "../../llm/openai";
 import { SafetyViolations } from "../../models";
 import { Generations } from "../../models/generations";
+import type { CompletionResult, Json } from "../../models/prompts";
 import {
-  CompletionResult,
-  Json,
   LLMCompletionError,
   LLMRefusalError,
   Prompts,
@@ -86,7 +83,7 @@ export function requestGenerationWorker({
 
 async function invoke({ data, user }: RequestGenerationArgs) {
   baseLogger.info(
-    `Requesting generation for promptId %s`,
+    "Requesting generation for promptId %s",
     data?.promptId ?? "Unknown prompt",
   );
   baseLogger.debug({ eventData: data }, "Event data for generation");
@@ -285,7 +282,7 @@ async function invoke({ data, user }: RequestGenerationArgs) {
 
   let completion: CompletionResult | undefined = undefined;
   try {
-    logger.info(`Requesting completion for generationId=%s`, generationId);
+    logger.info("Requesting completion for generationId=%s", generationId);
 
     /**
      * Stream partial response JSON to redis as the new tokens come in,
@@ -337,7 +334,7 @@ async function invoke({ data, user }: RequestGenerationArgs) {
     }
   } catch (err) {
     const errorMessage =
-      err instanceof Error ? err.message : `Unknown generation error`;
+      err instanceof Error ? err.message : "Unknown generation error";
 
     logger.error(err, errorMessage);
 
@@ -383,7 +380,7 @@ async function invoke({ data, user }: RequestGenerationArgs) {
     );
 
     logger.info(
-      `Successfully completed generation, generationId=%s`,
+      "Successfully completed generation, generationId=%s",
       generationId,
     );
   }

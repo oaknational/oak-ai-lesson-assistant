@@ -1,8 +1,5 @@
 import { Box, Flex, Text } from "@radix-ui/themes";
-import {
-  AnswerAndDistractor,
-  OptionWithPrompt,
-} from "ai-apps/comparative-judgement/state/types";
+import type { OptionWithPrompt } from "ai-apps/comparative-judgement/state/types";
 
 import { sortAlphabetically } from "@/utils/alphabetiseArray";
 
@@ -16,8 +13,7 @@ type PreviewContentProps = {
 
 const PreviewContent = ({ option, question }: PreviewContentProps) => {
   if (!option?.answerAndDistractor) return null;
-  const answersAndDistractors =
-    option?.answerAndDistractor as AnswerAndDistractor;
+  const answersAndDistractors = option?.answerAndDistractor;
   const { answers, distractors } = answersAndDistractors;
 
   const answerAndDistractorArray = [...answers, ...distractors];
@@ -39,7 +35,7 @@ const PreviewContent = ({ option, question }: PreviewContentProps) => {
 
       <Box>
         <Text className="opacity-80">
-          {option.isOakQuestion ? "Created by a Human" : `Created by Oak AI`}
+          {option.isOakQuestion ? "Created by a Human" : "Created by Oak AI"}
         </Text>
         {!option.isOakQuestion && (
           <PromptTemplate

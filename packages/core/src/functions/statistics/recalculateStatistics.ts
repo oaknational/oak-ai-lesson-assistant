@@ -1,6 +1,6 @@
 import { prisma } from "@oakai/db";
 
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 import { Statistics } from "../../models/statistics";
 
 export const recalculateStatistics = inngest.createFunction(

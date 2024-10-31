@@ -12,13 +12,13 @@ export const sendEmailRequestingMoreGenerations = async (input: {
   userEmail: string;
 }) => {
   const emailContent = `
-    User ${input.userEmail} has requested more generations for app ${input.appSlug}.
+    <p>User ${input.userEmail} has requested more generations for app ${input.appSlug}.</p>
   `;
 
   return sendEmail({
     from: "ai.feedback@thenational.academy",
     to: NEXT_PUBLIC_GLEAP_FEEDBACK_EMAIL_ADDR,
     subject: "Feedback: generation flagged",
-    body: emailContent,
+    htmlBody: emailContent,
   });
 };

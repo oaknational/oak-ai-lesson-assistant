@@ -1,6 +1,6 @@
 import { prisma } from "@oakai/db";
 
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 
 interface SimplifiedLesson {
   id: string;

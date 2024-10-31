@@ -1,5 +1,5 @@
-import { LooseLessonPlan } from "../../../protocol/schema";
-import { AilaCategorisationFeature } from "../../types";
+import type { LooseLessonPlan } from "../../../protocol/schema";
+import type { AilaCategorisationFeature } from "../../types";
 
 export class MockCategoriser implements AilaCategorisationFeature {
   private _mockedLessonPlan: LooseLessonPlan | undefined;

@@ -1,4 +1,4 @@
-import { TemplateProps } from "..";
+import type { TemplateProps } from "..";
 
 const interactiveOnly = `Generate (or rewrite) sections within the lesson plan for a lesson to be delivered by a teacher in a UK school.
 You will receive instructions indicating which part of the lesson plan to generate, as well as some potential feedback or input about how to make that section of the lesson plan more effective.

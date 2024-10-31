@@ -1,5 +1,5 @@
 import Help from ".";
 
-export default async function HelpPage() {
+export default function HelpPage() {
   return <Help />;
 }

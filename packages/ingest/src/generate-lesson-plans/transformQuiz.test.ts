@@ -1,4 +1,4 @@
-import { OakLessonQuiz } from "../zod-schema/zodSchema";
+import type { OakLessonQuiz } from "../zod-schema/zodSchema";
 import { transformQuiz } from "./transformQuiz";
 
 describe("transformQuiz", () => {

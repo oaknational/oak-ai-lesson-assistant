@@ -1,4 +1,4 @@
-import {
+import type {
   ExportableQuizAppState,
   ExportableQuizQuestion,
 } from "@oakai/exports/src/schema/input.schema";
@@ -29,7 +29,7 @@ export function convertToGIFTFormat(
       }
     }
 
-    giftString += `\n}\n`;
+    giftString += "\n}\n";
   }
 
   return giftString;

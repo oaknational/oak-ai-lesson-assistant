@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { OakSmallPrimaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 

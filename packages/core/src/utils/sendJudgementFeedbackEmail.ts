@@ -22,27 +22,27 @@ export const sendJudgementFeedbackEmail = async (input: {
   const { user, feedback, flaggedItem } = input;
   const inputDataAsString = JSON.stringify(input);
 
-  const emailContent = `
-    User ${user.email} has clicked on the flag button on a comparative judgement. 
-    Please check the database for more information:
+  const emailContent = `<p>
+    User ${user.email} has clicked on the flag button on a comparative judgement. <br>
+    Please check the database for more information: <br>
 
+    <br>
+    <br>
 
-    
+    ${flaggedItem} <br>
+    Feedback: ${feedback.typedFeedback}<br>
+    Inappropriate content: ${feedback.contentIsInappropriate}<br>
+    Factually incorrect content: ${feedback.contentIsFactuallyIncorrect}<br>
+    Not helpful content: ${feedback.contentIsNotHelpful}<br>
+    Full data of the time of the flag:<br>
 
-    ${flaggedItem}
-    Feedback: ${feedback.typedFeedback}
-    Inappropriate content: ${feedback.contentIsInappropriate}
-    Factually incorrect content: ${feedback.contentIsFactuallyIncorrect}
-    Not helpful content: ${feedback.contentIsNotHelpful}
-    Full data of the time of the flag:
-
-    ${inputDataAsString}
+    ${inputDataAsString}</p>
   `;
 
   return sendEmail({
     from: "ai.feedback@thenational.academy",
     to: NEXT_PUBLIC_GLEAP_FEEDBACK_EMAIL_ADDR,
     subject: "Feedback: comparative judgement result flagged",
-    body: emailContent,
+    htmlBody: emailContent,
   });
 };

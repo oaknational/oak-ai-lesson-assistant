@@ -1,9 +1,10 @@
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 
 import { withSentry } from "@/lib/sentry/withSentry";
 
 import { handleChatPostRequest } from "./chatHandler";
-import { Config, defaultConfig } from "./config";
+import type { Config } from "./config";
+import { defaultConfig } from "./config";
 
 async function postHandler(req: NextRequest): Promise<Response> {
   const config: Config = defaultConfig;
@@ -11,7 +12,7 @@ async function postHandler(req: NextRequest): Promise<Response> {
 }
 
 async function getHandler(): Promise<Response> {
-  return new Response("Server is ready", { status: 200 });
+  return Promise.resolve(new Response("Server is ready", { status: 200 }));
 }
 
 export const POST = withSentry(postHandler);

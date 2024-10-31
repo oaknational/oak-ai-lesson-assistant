@@ -1,6 +1,6 @@
-import { PostHog } from "posthog-js";
+import type { PostHog } from "posthog-js";
 
-import { AnalyticsService } from "@/components/ContextProviders/AnalyticsProvider";
+import type { AnalyticsService } from "@/components/ContextProviders/AnalyticsProvider";
 
 import { ServicePolicyMap } from "../cookie-consent/ServicePolicyMap";
 import { consentClient } from "../cookie-consent/consentClient";
@@ -12,18 +12,22 @@ export type PosthogConfig = {
   apiKey: string;
   apiHost: string;
   uiHost: string;
+  bootstrappedFeatures?: Record<string, string | boolean>;
 };
 
 export const posthogToAnalyticsService = (
   client: PostHog,
 ): AnalyticsService<PosthogConfig, "posthog"> => ({
   name: "posthog",
-  init: ({ apiKey, apiHost, uiHost }) =>
+  init: ({ apiKey, apiHost, uiHost, bootstrappedFeatures }) =>
     new Promise((resolve) => {
       client.init(apiKey, {
         api_host: apiHost,
         ui_host: uiHost,
         persistence: "localStorage+cookie",
+        bootstrap: {
+          featureFlags: bootstrappedFeatures,
+        },
         loaded: (posthog) => {
           // Enable debug mode in development
           if (process.env.NEXT_PUBLIC_POSTHOG_DEBUG === "true") {

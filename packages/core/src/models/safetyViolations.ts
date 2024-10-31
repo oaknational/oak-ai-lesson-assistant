@@ -1,15 +1,17 @@
 import { clerkClient } from "@clerk/nextjs/server";
-import {
+import type {
   SafetyViolationAction,
   SafetyViolationRecordType,
   SafetyViolationSource,
   PrismaClientWithAccelerate,
 } from "@oakai/db";
-import { structuredLogger, StructuredLogger } from "@oakai/logger";
-import { Logger as InngestLogger } from "inngest/middleware/logger";
+import type { StructuredLogger } from "@oakai/logger";
+import { structuredLogger } from "@oakai/logger";
+import type { Logger as InngestLogger } from "inngest/middleware/logger";
 
 import { posthogAiBetaServerClient } from "../analytics/posthogAiBetaServerClient";
-import { inngest } from "../client";
+import { inngest } from "../inngest";
+import { UserBannedError } from "./userBannedError";
 
 const ALLOWED_VIOLATIONS = parseInt(
   process.env.SAFETY_VIOLATIONS_MAX_ALLOWED || "5",
@@ -20,12 +22,6 @@ const CHECK_WINDOW_DAYS = parseInt(
   10,
 );
 const checkWindowMs = 1000 * 60 * 60 * 24 * CHECK_WINDOW_DAYS;
-
-export class UserBannedError extends Error {
-  constructor(userId: string) {
-    super(`User banned: ${userId}`);
-  }
-}
 
 /**
  * SafetyViolations records safety violations and bans users who exceed the

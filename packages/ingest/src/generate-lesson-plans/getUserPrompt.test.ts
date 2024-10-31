@@ -1,7 +1,7 @@
 import fs from "node:fs";
 
 import rawLesson from "../fixtures/rawLesson.json";
-import { Captions } from "../zod-schema/zodSchema";
+import type { Captions } from "../zod-schema/zodSchema";
 import { getUserPrompt } from "./getUserPrompt";
 
 describe("getUserPrompt", () => {

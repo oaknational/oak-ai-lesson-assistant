@@ -1,25 +1,31 @@
-import { Aila } from "@oakai/aila";
+import type { Aila } from "@oakai/aila/src/core/Aila";
+import type { AilaServices } from "@oakai/aila/src/core/AilaServices";
+import type { Message } from "@oakai/aila/src/core/chat";
+import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
 import type {
-  AilaInitializationOptions,
   AilaOptions,
   AilaPublicChatOptions,
-  Message,
-} from "@oakai/aila";
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+} from "@oakai/aila/src/core/types";
+import { AilaAmericanisms } from "@oakai/aila/src/features/americanisms/AilaAmericanisms";
 import {
-  TracingSpan,
-  withTelemetry,
-} from "@oakai/core/src/tracing/serverTracing";
-import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
+  DatadogAnalyticsAdapter,
+  PosthogAnalyticsAdapter,
+} from "@oakai/aila/src/features/analytics";
+import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
+import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 // #TODO StreamingTextResponse is deprecated. If we choose to adopt the "ai" package
 // more fully, we should refactor to support its approach to streaming
 // but this could be a significant change given we have our record-separator approach
 import { StreamingTextResponse } from "ai";
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
 
-import { Config } from "./config";
+import type { Config } from "./config";
 import { handleChatException } from "./errorHandling";
 import {
   getFixtureLLMService,
@@ -176,6 +182,12 @@ export async function handleChatPostRequest(
             services: {
               chatLlmService: llmService,
               moderationAiClient,
+              ragService: (aila: AilaServices) => new AilaRag({ aila }),
+              americanismsService: () => new AilaAmericanisms(),
+              analyticsAdapters: (aila: AilaServices) => [
+                new PosthogAnalyticsAdapter(aila),
+                new DatadogAnalyticsAdapter(aila),
+              ],
             },
             lessonPlan: lessonPlan ?? {},
           };

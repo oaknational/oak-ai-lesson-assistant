@@ -1,15 +1,14 @@
-import { NextMiddlewareResult } from "next/dist/server/web/types";
-import {
-  NextFetchEvent,
-  NextMiddleware,
-  NextRequest,
-  NextResponse,
-} from "next/server";
+import { auth } from "@clerk/nextjs/dist/types/server";
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import type { NextMiddlewareResult } from "next/dist/server/web/types";
+import type { NextFetchEvent, NextMiddleware, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 import { getRootErrorCause } from "./lib/errors/getRootErrorCause";
 import { sentryCleanup } from "./lib/sentry/sentryCleanup";
 import { authMiddleware } from "./middlewares/auth.middleware";
-import { CspConfig, addCspHeaders } from "./middlewares/csp";
+import type { CspConfig } from "./middlewares/csp";
+import { addCspHeaders } from "./middlewares/csp";
 import { logError } from "./middlewares/middlewareErrorLogging";
 
 const parseEnvironment = (
