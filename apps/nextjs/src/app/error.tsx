@@ -18,18 +18,14 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html>
-      <body>
-        <FullPageWarning>
-          <FullPageWarning.Icon icon="acorn" size="xl" />
+    <FullPageWarning>
+      <FullPageWarning.Icon icon="acorn" size="xl" />
 
-          <FullPageWarning.Header>Something went wrong!</FullPageWarning.Header>
+      <FullPageWarning.Header>Something went wrong!</FullPageWarning.Header>
 
-          <FullPageWarning.Button href="/">
-            AI Experiments homepage
-          </FullPageWarning.Button>
-        </FullPageWarning>
-      </body>
-    </html>
+      <FullPageWarning.Button href="/">
+        AI Experiments homepage
+      </FullPageWarning.Button>
+    </FullPageWarning>
   );
 }
