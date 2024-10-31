@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type {
   BasedOnOptional,
@@ -92,12 +92,15 @@ export const LessonPlanDisplay = ({
     [],
   );
 
-  const handleSetIsOpen = (section: string, isOpen: boolean) => {
-    setOpenSections((prevState) => ({
-      ...prevState,
-      [section]: isOpen,
-    }));
-  };
+  const handleSetIsOpen = useCallback(
+    (section: string, isOpen: boolean) => {
+      setOpenSections((prevState) => ({
+        ...prevState,
+        [section]: isOpen,
+      }));
+    },
+    [setOpenSections],
+  );
 
   const chat = useLessonChat();
   const {

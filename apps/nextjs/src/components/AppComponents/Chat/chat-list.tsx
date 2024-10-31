@@ -78,7 +78,7 @@ export function ChatList({
     return () => clearTimeout(timeout);
   }, [ailaStreamingStatus, messages, scrollToBottom]);
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (chatEndRef.current) {
       const isAtBottom =
         chatEndRef.current.getBoundingClientRect().bottom <= window.innerHeight;
@@ -89,7 +89,7 @@ export function ChatList({
         setAutoScroll(false);
       }
     }
-  };
+  }, [chatEndRef, setAutoScroll]);
 
   if (!messages.length) {
     return null;
@@ -245,29 +245,30 @@ const InChatDownloadButtons = ({
   id: string;
   setDialogWindow: Dispatch<SetStateAction<DialogTypes>>;
 }) => {
+  const handleShareButtonClick = useCallback(() => {
+    if (demo.isSharingEnabled) {
+      setDialogWindow("share-chat");
+    } else {
+      setDialogWindow("demo-share-locked");
+    }
+  }, [setDialogWindow, demo]);
+
+  const handleDownloadClick = useCallback(() => {
+    if (!demo.isSharingEnabled) {
+      setDialogWindow("demo-share-locked");
+    }
+  }, [setDialogWindow, demo]);
   return (
     <OakFlex $flexDirection="column" $gap="all-spacing-7" $mv="space-between-l">
       {demo.isSharingEnabled && (
         <Link
           href={demo.isSharingEnabled ? `/aila/download/${id}` : "#"}
-          onClick={() => {
-            if (!demo.isSharingEnabled) {
-              setDialogWindow("demo-share-locked");
-            }
-          }}
+          onClick={handleDownloadClick}
         >
           <InnerInChatButton iconName="download">Download</InnerInChatButton>
         </Link>
       )}
-      <button
-        onClick={() => {
-          if (demo.isSharingEnabled) {
-            setDialogWindow("share-chat");
-          } else {
-            setDialogWindow("demo-share-locked");
-          }
-        }}
-      >
+      <button onClick={handleShareButtonClick}>
         <InnerInChatButton iconName="share">Share</InnerInChatButton>
       </button>
     </OakFlex>

@@ -1,4 +1,17 @@
-export const lessonSectionTitlesAndMiniDescriptions = {
+import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+
+/* This should be
+export const lessonSectionTitlesAndMiniDescriptions: Record<
+  LessonPlanKeys,
+  { description: string }
+> = {
+
+But it looks like we have a "slides" key.
+ */
+export const lessonSectionTitlesAndMiniDescriptions: Record<
+  string,
+  { description: string }
+> = {
   learningOutcome: {
     description:
       "A short summary of the knowledge, skills and understanding students are expected to acquire by the end of the lesson.",

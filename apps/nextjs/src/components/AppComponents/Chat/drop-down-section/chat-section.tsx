@@ -1,4 +1,4 @@
-import {
+import type {
   LessonPlanKeys,
   LessonPlanSectionWhileStreaming,
 } from "@oakai/aila/src/protocol/schema";

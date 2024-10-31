@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import {
   OakBox,
@@ -18,6 +18,19 @@ const ActionButton = ({
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
+  const handleMouseLeave = useCallback(() => {
+    setShowTooltip(false);
+  }, [setShowTooltip]);
+
+  const handleMouseEnter = useCallback(() => {
+    const showTooltipAsync = async () => {
+      await waitThenExecute(0).then(() => {
+        setShowTooltip(true);
+      });
+    };
+    void showTooltipAsync();
+  }, [setShowTooltip]);
+
   return (
     <OakTooltip
       tooltip={tooltip}
@@ -26,16 +39,7 @@ const ActionButton = ({
       $background="black"
       $color="white"
     >
-      <OakBox
-        onMouseEnter={async () => {
-          await waitThenExecute(0).then(() => {
-            setShowTooltip(true);
-          });
-        }}
-        onMouseLeave={() => {
-          setShowTooltip(false);
-        }}
-      >
+      <OakBox onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         <OakSmallSecondaryWithOpaqueBorder onClick={onClick}>
           {children}
         </OakSmallSecondaryWithOpaqueBorder>

@@ -4,6 +4,7 @@ import { Flex } from "@radix-ui/themes";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
+import { WithProfiler } from "@/components/Profiler/WithProfiler";
 
 import ChatLhsHeader from "./chat-lhs-header";
 import { ChatList } from "./chat-list";
@@ -41,16 +42,18 @@ const ChatLeftHandSide = ({
         isDemoUser={isDemoUser}
       />
       <div>
-        <ChatPanelArea chatAreaRef={chatAreaRef} isDemoLocked={isDemoLocked}>
-          <ChatList
-            isDemoLocked={isDemoLocked}
-            showLessonMobile={showLessonMobile}
-            demo={demo}
-          />
-        </ChatPanelArea>
-        {!isDemoLocked && (
-          <QuickActionButtons isEmptyScreen={!!messages.length} />
-        )}
+        <WithProfiler id={"chat-list"}>
+          <ChatPanelArea chatAreaRef={chatAreaRef} isDemoLocked={isDemoLocked}>
+            <ChatList
+              isDemoLocked={isDemoLocked}
+              showLessonMobile={showLessonMobile}
+              demo={demo}
+            />
+          </ChatPanelArea>
+          {!isDemoLocked && (
+            <QuickActionButtons isEmptyScreen={!!messages.length} />
+          )}
+        </WithProfiler>
       </div>
       <ChatPanel
         isEmptyScreen={!!messages.length}

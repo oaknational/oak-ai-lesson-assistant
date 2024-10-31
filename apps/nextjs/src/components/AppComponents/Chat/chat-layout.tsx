@@ -1,5 +1,6 @@
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
+import { WithProfiler } from "@/components/Profiler/WithProfiler";
 import { useDemoLocking } from "@/hooks/useDemoLocking";
 import { useMobileLessonPullOutControl } from "@/hooks/useMobileLessonPullOutControl";
 import { cn } from "@/lib/utils";
@@ -29,20 +30,24 @@ export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
       <div
         className={`flex h-full flex-row justify-start ${demo.isDemoUser ? "pt-22" : ""}`}
       >
-        <ChatLeftHandSide
-          key="chat-left-hand-side"
-          isDemoLocked={isDemoLocked}
-          showLessonMobile={showLessonMobile}
-          setShowLessonMobile={setShowLessonMobile}
-          demo={demo}
-          isDemoUser={demo.isDemoUser}
-        />
-        <ChatRightHandSideLesson
-          key="chat-right-hand-side-lesson"
-          showLessonMobile={showLessonMobile}
-          closeMobileLessonPullOut={closeMobileLessonPullOut}
-          demo={demo}
-        />
+        <WithProfiler id={"chat-left-hand-side"}>
+          <ChatLeftHandSide
+            key="chat-left-hand-side"
+            isDemoLocked={isDemoLocked}
+            showLessonMobile={showLessonMobile}
+            setShowLessonMobile={setShowLessonMobile}
+            demo={demo}
+            isDemoUser={demo.isDemoUser}
+          />
+        </WithProfiler>
+        <WithProfiler id={"chat-right-hand-side"}>
+          <ChatRightHandSideLesson
+            key="chat-right-hand-side-lesson"
+            showLessonMobile={showLessonMobile}
+            closeMobileLessonPullOut={closeMobileLessonPullOut}
+            demo={demo}
+          />
+        </WithProfiler>
       </div>
     </div>
   );

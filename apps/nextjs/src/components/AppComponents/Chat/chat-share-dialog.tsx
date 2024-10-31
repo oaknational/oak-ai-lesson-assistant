@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useTransition, useCallback } from "react";
 import { toast } from "react-hot-toast";
 
 import { aiLogger } from "@oakai/logger";
@@ -35,7 +35,7 @@ export function ChatShareDialog({
   ...props
 }: ChatShareDialogProps) {
   const { copyToClipboard } = useCopyToClipboard({ timeout: 1000 });
-  const [isSharePending, startShareTransition] = React.useTransition();
+  const [isSharePending, startShareTransition] = useTransition();
 
   const shareChatTrpc = trpc.chat.appSessions.shareChat.useMutation({
     onSuccess() {
@@ -64,6 +64,12 @@ export function ChatShareDialog({
     },
   });
 
+  const handleShare = useCallback(() => {
+    startShareTransition(() => {
+      shareChatTrpc.mutate({ id: chat.id });
+    });
+  }, [chat.id, startShareTransition, shareChatTrpc]);
+
   return (
     <Dialog {...props}>
       <DialogContent>
@@ -77,14 +83,7 @@ export function ChatShareDialog({
           <div className="font-medium">{chat.title}</div>
         </div>
         <DialogFooter className="items-center">
-          <Button
-            disabled={isSharePending}
-            onClick={() => {
-              startShareTransition(() => {
-                shareChatTrpc.mutate({ id: chat.id });
-              });
-            }}
-          >
+          <Button disabled={isSharePending} onClick={handleShare}>
             {isSharePending ? (
               <>
                 <IconSpinner className="mr-7 animate-spin" />

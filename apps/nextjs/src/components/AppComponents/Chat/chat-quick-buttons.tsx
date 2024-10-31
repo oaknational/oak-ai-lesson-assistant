@@ -68,11 +68,20 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
     queueUserAction("regenerate");
   }, [queueUserAction, lessonPlanTracking, messages, trackEvent, id]);
 
-  const handleContinue = useCallback(async () => {
+  const handleContinue = useCallback(() => {
     trackEvent("chat:continue");
     lessonPlanTracking.onClickContinue();
     queueUserAction("continue");
   }, [queueUserAction, lessonPlanTracking, trackEvent]);
+
+  const handleReport = useCallback(() => {
+    setDialogWindow("report-content");
+  }, [setDialogWindow]);
+
+  const handleStop = useCallback(() => {
+    trackEvent("chat:stop_generating");
+    stop();
+  }, [stop, trackEvent]);
 
   return (
     <div className="-ml-7 flex justify-between space-x-7 rounded-bl rounded-br pt-8">
@@ -83,19 +92,14 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
               data-testid="chat-continue"
               size="sm"
               variant="text-link"
-              onClick={() => {
-                handleRegenerate();
-              }}
+              onClick={handleRegenerate}
             >
               <span className="opacity-70">
                 <IconRefresh className="mr-3" />
               </span>
               <span className="font-light text-[#575757]">Retry</span>
             </ChatButton>
-            <ChatButton
-              variant="text-link"
-              onClick={() => setDialogWindow("report-content")}
-            >
+            <ChatButton variant="text-link" onClick={handleReport}>
               <span className="opacity-70">
                 <Icon icon="warning" className="mr-3" size="xs" />
               </span>
@@ -112,10 +116,7 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
           <ChatButton
             size="sm"
             variant="text-link"
-            onClick={() => {
-              trackEvent("chat:stop_generating");
-              stop();
-            }}
+            onClick={handleStop}
             testId="chat-stop"
           >
             <span className="opacity-50">
@@ -129,9 +130,7 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
         size="sm"
         variant="primary"
         disabled={!shouldAllowUserAction}
-        onClick={async () => {
-          await handleContinue();
-        }}
+        onClick={handleContinue}
         testId="chat-continue"
       >
         Continue

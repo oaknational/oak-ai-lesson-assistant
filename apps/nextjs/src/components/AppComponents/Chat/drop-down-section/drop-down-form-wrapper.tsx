@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import type { AilaUserFlagType, AilaUserModificationAction } from "@oakai/db";
 import {
@@ -68,16 +68,18 @@ export const DropDownFormWrapper = <
     };
   }, [dropdownRef, isOpen, setIsOpen]);
 
+  const handleFormSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (selectedRadio) {
+        onClickActions(selectedRadio);
+      }
+      setIsOpen(false);
+    },
+    [onClickActions, selectedRadio, setIsOpen],
+  );
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (selectedRadio) {
-          onClickActions(selectedRadio);
-        }
-        setIsOpen(false);
-      }}
-    >
+    <form onSubmit={handleFormSubmit}>
       <OakFlex
         $ba="border-solid-m"
         $borderRadius="border-radius-m"

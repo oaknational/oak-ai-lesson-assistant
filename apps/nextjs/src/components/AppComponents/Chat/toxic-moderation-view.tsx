@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import Textarea from "react-textarea-autosize";
 
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
@@ -22,6 +23,20 @@ const ToxicModerationView = ({
       moderation,
     });
   const router = useRouter();
+  const handleNewLesson = useCallback(() => {
+    router.push("/aila");
+  }, [router]);
+
+  const handleOnSubmit = useCallback(() => {
+    void onSubmit();
+  }, [onSubmit]);
+
+  const handleOnChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setComment(e.target.value);
+    },
+    [setComment],
+  );
   return (
     <div className="fixed inset-0 z-50 flex w-full items-center justify-center bg-lavender30 ">
       <div className="m-18  max-w-[600px] flex-col gap-13 border-2 border-gray-900 bg-white p-18">
@@ -31,9 +46,7 @@ const ToxicModerationView = ({
             icon="cross"
             variant="icon-only"
             title="New lesson"
-            onClick={() => {
-              router.push("/aila");
-            }}
+            onClick={handleNewLesson}
           />
         </div>
         <div className="flex w-full flex-col gap-11 text-base">
@@ -53,10 +66,10 @@ const ToxicModerationView = ({
               our process if necessary.
             </p>
           ) : (
-            <form onSubmit={onSubmit}>
+            <form onSubmit={handleOnSubmit}>
               <Textarea
                 className="min-h-30 w-full resize-none rounded border border-gray-600 bg-transparent px-10 py-[0.6rem] text-base placeholder-gray-700 focus-within:outline-none"
-                onChange={(e) => setComment(e.target.value)}
+                onChange={handleOnChange}
                 value={comment}
                 placeholder="Your feedback"
               />
@@ -65,16 +78,14 @@ const ToxicModerationView = ({
           <div className="flex w-full justify-between gap-7">
             <ChatButton
               variant={hasSubmitted ? "primary" : "text-link"}
-              onClick={() => {
-                router.push("/aila");
-              }}
+              onClick={handleNewLesson}
             >
               New lesson
             </ChatButton>
             {!hasSubmitted && (
               <ChatButton
                 variant="primary"
-                onClick={onSubmit}
+                onClick={handleOnSubmit}
                 disabled={!isValid}
               >
                 Submit feedback

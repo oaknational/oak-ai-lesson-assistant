@@ -49,6 +49,7 @@ type ChildKey =
   | "lessons"
   | "middleware:auth"
   | "moderation"
+  | "profiler"
   | "prompts"
   | "qd"
   | "rag"

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import Textarea from "react-textarea-autosize";
 
 import {
@@ -30,15 +30,25 @@ export function ChatStartForm({
     }
   }, []);
 
-  const handleSubmit = (e?: React.FormEvent) => {
-    if (e) {
-      e.preventDefault();
-    }
-    if (!input?.trim()) {
-      return;
-    }
-    submit(input);
-  };
+  const handleSubmit = useCallback(
+    (e?: React.FormEvent) => {
+      if (e) {
+        e.preventDefault();
+      }
+      if (!input?.trim()) {
+        return;
+      }
+      submit(input);
+    },
+    [input, submit],
+  );
+
+  const handleOnChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setInput(e.target.value);
+    },
+    [setInput],
+  );
 
   return (
     <form onSubmit={handleSubmit} ref={formRef}>
@@ -51,7 +61,7 @@ export function ChatStartForm({
           onKeyDown={onKeyDown}
           rows={1}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleOnChange}
           placeholder={"Subject, key stage and title"}
           spellCheck={false}
           className="min-h-[60px] w-full resize-none bg-transparent px-10 py-[1.3rem] text-lg focus-within:outline-none"

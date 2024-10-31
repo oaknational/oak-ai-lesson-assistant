@@ -1,7 +1,7 @@
 // Inspired by Chatbot-UI and modified to fit the needs of this project
 // @see https://github.com/mckaywrigley/chatbot-ui/blob/main/components/Chat/ChatMessage.tsx
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 
 import type {
   ActionDocument,
@@ -50,39 +50,66 @@ export function ChatMessage({
 }: Readonly<ChatMessageProps>) {
   const { moderationModalHelpers } = useChatModeration();
 
-  const messageParts: MessagePart[] =
-    message.role === "user" || message.id === "working-on-it-initial"
-      ? [
-          {
-            type: "message-part",
-            id: "working-on-it-initial",
-            document: { type: "text", value: message.content },
-            isPartial: false,
-          },
-        ]
-      : parseMessageParts(message.content);
+  const messageParts: MessagePart[] = useMemo(
+    () =>
+      message.role === "user" || message.id === "working-on-it-initial"
+        ? [
+            {
+              type: "message-part",
+              id: "working-on-it-initial",
+              document: { type: "text", value: message.content },
+              isPartial: false,
+            },
+          ]
+        : parseMessageParts(message.content),
+    [message.role, message.id, message.content],
+  );
 
   const hasError = messageParts.some((part) => part.document.type === "error");
   const [inspect, setInspect] = useState(false);
 
-  const isEditing =
-    ailaStreamingStatus !== "Idle" &&
-    (messageParts.some((part) => part.isPartial) ||
-      messageParts.filter((part) =>
-        ["bad", "text", "prompt"].includes(part.document.type),
-      ).length === 0);
-
-  const moderationMessagePart: PersistedModerationBase | undefined =
-    messageParts.find((m) => isModeration(m.document) && m.document?.id)
-      ?.document as PersistedModerationBase | undefined;
+  const moderationMessagePart: PersistedModerationBase | undefined = useMemo(
+    () =>
+      messageParts.find((m) => isModeration(m.document) && m.document?.id)
+        ?.document as PersistedModerationBase | undefined,
+    [messageParts],
+  );
 
   const messageId = message.id;
 
   const matchingPersistedModeration: PersistedModerationBase | undefined =
-    persistedModerations.find((m) => m.messageId === messageId);
+    useMemo(
+      () => persistedModerations.find((m) => m.messageId === messageId),
+      [persistedModerations, messageId],
+    );
 
-  const matchingModeration =
-    matchingPersistedModeration ?? moderationMessagePart;
+  const matchingModeration = useMemo(
+    () => matchingPersistedModeration ?? moderationMessagePart,
+    [matchingPersistedModeration, moderationMessagePart],
+  );
+
+  const handleViewContentGuidance = useCallback(() => {
+    if (matchingModeration) {
+      moderationModalHelpers.openModal({
+        moderation: matchingModeration,
+        closeModal: moderationModalHelpers.closeModal,
+      });
+    }
+  }, [moderationModalHelpers, matchingModeration]);
+
+  const handleToggleInspect = useCallback(() => {
+    setInspect(!inspect);
+  }, [setInspect, inspect]);
+
+  const isEditing = useMemo(() => {
+    return (
+      ailaStreamingStatus !== "Idle" &&
+      (messageParts.some((part) => part.isPartial) ||
+        messageParts.filter((part) =>
+          ["bad", "text", "prompt"].includes(part.document.type),
+        ).length === 0)
+    );
+  }, [ailaStreamingStatus, messageParts]);
 
   if (messageParts.every((part) => part.document.type === "action")) {
     return null;
@@ -116,12 +143,7 @@ export function ChatMessage({
               <aside className="pt-3 text-sm">
                 <a
                   href="#"
-                  onClick={() => {
-                    moderationModalHelpers.openModal({
-                      moderation: matchingModeration,
-                      closeModal: moderationModalHelpers.closeModal,
-                    });
-                  }}
+                  onClick={handleViewContentGuidance}
                   className="underline"
                 >
                   View content guidance
@@ -137,9 +159,7 @@ export function ChatMessage({
       >
         <div
           className="absolute left-0 top-0 h-20 w-20 "
-          onClick={() => {
-            setInspect(!inspect);
-          }}
+          onClick={handleToggleInspect}
         />
         <MessageTextWrapper>
           {message.id !== "working-on-it-initial" &&

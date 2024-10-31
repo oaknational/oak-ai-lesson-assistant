@@ -44,6 +44,22 @@ import {
 
 const log = aiLogger("chat");
 
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 export type ChatContextProps = {
   ailaStreamingStatus: AilaStreamingStatus;
   append: (
@@ -173,7 +189,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   /******************* Streaming of all chat starts from messages here *******************/
 
   const {
-    messages,
+    messages: chatMessages,
     append,
     reload,
     stop: stopStreaming,
@@ -202,7 +218,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       Sentry.captureException(new Error("Use chat error"), {
         extra: { originalError: error },
       });
-      log.error("UseChat error", { error, messages });
+      log.error("UseChat error", { error, chatMessages });
       setHasFinished(true);
     },
     onResponse(response) {
@@ -238,6 +254,11 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
     },
   });
+
+  // We don't stream the text to the UI so we only need to process
+  // them once every second
+
+  const messages = useDebounce(chatMessages, 1000);
 
   useEffect(() => {
     if (chat?.lessonPlan) {

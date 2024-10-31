@@ -21,7 +21,12 @@ import EmptyScreenAccordion from "./empty-screen-accordion";
 
 const log = aiLogger("chat");
 
-const exampleMessages = [
+type ExampleMessage = {
+  heading: string;
+  message: string;
+};
+
+const exampleMessages: ExampleMessage[] = [
   {
     heading: "History • Key stage 3 • The end of Roman Britain ",
     message:
@@ -78,22 +83,50 @@ export function ChatStart() {
         setDialogWindow("demo-interstitial");
       } else {
         setIsSubmitting(true);
-        create(message);
+        await create(message);
       }
     },
     [create, setDialogWindow, demo.isDemoUser, setIsSubmitting],
   );
 
+  const handleSubmit = useCallback(() => {
+    return submit;
+  }, [submit]);
+
   const interstitialSubmit = useCallback(async () => {
-    create(input);
+    await create(input);
   }, [create, input]);
+
+  const handleInterstitialSubmit = useCallback(() => {
+    return interstitialSubmit;
+  }, [interstitialSubmit]);
+
+  const handleExampleMessage = useCallback(
+    async (message: ExampleMessage) => {
+      trackEvent(`chat: ${message.message}`);
+      setInput(message.message);
+      setIsSubmitting(true);
+      await submit(message.message);
+      setIsSubmitting(false);
+    },
+    [trackEvent, setInput, submit, setIsSubmitting],
+  );
+
+  const handleExampleMessageClick = useCallback(
+    (message: ExampleMessage) =>
+      (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+        void handleExampleMessage(message);
+      },
+    [handleExampleMessage],
+  );
 
   return (
     <DialogRoot>
       <DialogContents
         chatId={undefined}
         lesson={{}}
-        submit={interstitialSubmit}
+        submit={handleInterstitialSubmit}
       />
       <Flex
         direction="column"
@@ -126,7 +159,7 @@ export function ChatStart() {
                     input={input}
                     setInput={setInput}
                     isSubmitting={isSubmitting}
-                    submit={submit}
+                    submit={handleSubmit}
                   />
                 </div>
                 <div>
@@ -139,11 +172,7 @@ export function ChatStart() {
                         key={message.message}
                         variant="link"
                         className=" pl-0"
-                        onClick={async () => {
-                          trackEvent(`chat: ${message.message}`);
-                          setInput(message.message);
-                          await submit(message.message);
-                        }}
+                        onClick={handleExampleMessageClick(message)}
                       >
                         <span className="mt-14 pb-7 text-left text-base font-light underline sm:mt-0">
                           {message.heading}

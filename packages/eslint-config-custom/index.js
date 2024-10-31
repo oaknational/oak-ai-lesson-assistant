@@ -27,6 +27,7 @@ module.exports = {
         "no-constant-condition": "warn",
         "no-prototype-builtins": "warn",
         "no-inner-declarations": "warn",
+        "react/jsx-no-bind": "warn",
         "@typescript-eslint/no-unsafe-enum-comparison": "warn",
         "@typescript-eslint/no-unnecessary-type-assertion": "warn",
         "@typescript-eslint/consistent-type-imports": "warn",

@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 import { cva } from "class-variance-authority";
 
 import { ButtonScrollToBottom } from "@/components/AppComponents/Chat/button-scroll-to-bottom";
@@ -35,25 +37,35 @@ export function ChatPanel({
   } = chat;
 
   const { trackEvent } = useAnalytics();
+  const handlePromptSubmitAsync = useCallback(
+    async (value: string) => {
+      if (isLoading) return;
+      trackEvent("chat:send_message", {
+        id,
+        message: value,
+      });
+
+      await append({
+        content: value,
+        role: "user",
+      });
+    },
+    [isLoading, trackEvent, id, append],
+  );
+
+  const handlePromptSubmit = useCallback(() => {
+    return handlePromptSubmitAsync;
+  }, [handlePromptSubmitAsync]);
+
   const containerClass = `grid w-full grid-cols-1 ${isEmptyScreen ? "sm:grid-cols-1" : ""} peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]`;
+
   return (
     <div className={containerClass}>
       <ButtonScrollToBottom />
       <div className={chatBoxWrap({ isEmptyScreen })}>
         {!isDemoLocked && (
           <PromptForm
-            onSubmit={async (value) => {
-              if (isLoading) return;
-              trackEvent("chat:send_message", {
-                id,
-                message: value,
-              });
-
-              await append({
-                content: value,
-                role: "user",
-              });
-            }}
+            onSubmit={handlePromptSubmit}
             input={input}
             setInput={setInput}
             ailaStreamingStatus={ailaStreamingStatus}

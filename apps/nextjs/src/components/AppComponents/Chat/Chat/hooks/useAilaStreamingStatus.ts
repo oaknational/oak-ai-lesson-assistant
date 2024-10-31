@@ -8,19 +8,21 @@ import { allSectionsInOrder } from "../../../../../lib/lessonPlan/sectionsInOrde
 
 const log = aiLogger("chat");
 
-function findStreamingSections(message: Message | undefined): {
+function findStreamingSections(
+  message: Message | undefined,
+  status: AilaStreamingStatus,
+): {
   streamingSections: LessonPlanKeys[];
   streamingSection: LessonPlanKeys | undefined;
   content: string | undefined;
 } {
-  if (!message?.content) {
+  if (!message?.content || status === "Idle") {
     return {
       streamingSections: [],
       streamingSection: undefined,
       content: undefined,
     };
   }
-  log.info("Parsing message content", message.content);
   const { content } = message;
   const regex = /"path":"\/([^/"]*)/g;
   const pathMatches =
@@ -67,7 +69,7 @@ export const useAilaStreamingStatus = ({
 
     let status: AilaStreamingStatus = "Idle";
     const { streamingSections, streamingSection, content } =
-      findStreamingSections(lastMessage);
+      findStreamingSections(lastMessage, status);
 
     if (isLoading) {
       if (!lastMessage || !content) {

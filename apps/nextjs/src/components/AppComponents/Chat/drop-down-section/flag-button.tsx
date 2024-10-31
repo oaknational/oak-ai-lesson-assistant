@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
-import { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import type { AilaUserFlagType } from "@oakai/db";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
 import styled from "styled-components";
@@ -53,22 +53,25 @@ const FlagButton = ({
     return typeof value === "object" && value !== null && !Array.isArray(value);
   };
 
-  const prepareSectionValue = (
-    value: LessonPlanSectionWhileStreaming,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): string | any[] | Record<string, unknown> => {
-    if (
-      typeof value === "string" ||
-      Array.isArray(value) ||
-      isPlainObject(value)
-    ) {
-      return value;
-    }
-    // For numbers or any other types, convert to string
-    return String(value);
-  };
+  const prepareSectionValue = useCallback(
+    (
+      value: LessonPlanSectionWhileStreaming,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ): string | any[] | Record<string, unknown> => {
+      if (
+        typeof value === "string" ||
+        Array.isArray(value) ||
+        isPlainObject(value)
+      ) {
+        return value;
+      }
+      // For numbers or any other types, convert to string
+      return String(value);
+    },
+    [],
+  );
 
-  const flagSectionContent = async () => {
+  const flagSectionContent = useCallback(async () => {
     if (selectedRadio && lastAssistantMessage) {
       const payload = {
         chatId: id,
@@ -80,7 +83,24 @@ const FlagButton = ({
       };
       await mutateAsync(payload);
     }
-  };
+  }, [
+    selectedRadio,
+    lastAssistantMessage,
+    id,
+    userFeedbackText,
+    sectionPath,
+    prepareSectionValue,
+    sectionValue,
+    mutateAsync,
+  ]);
+
+  const handleFlagSectionContent = useCallback(() => {
+    void flagSectionContent();
+  }, [flagSectionContent]);
+
+  const handleToggleOpen = useCallback(() => {
+    setIsOpen(!isOpen);
+  }, [isOpen, setIsOpen]);
 
   useEffect(() => {
     !isOpen && setDisplayTextBox(null);
@@ -90,14 +110,14 @@ const FlagButton = ({
     <OakBox $position="relative" ref={dropdownRef}>
       <ActionButton
         tooltip="Flag issues with content to help Aila improve"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggleOpen}
       >
         Flag
       </ActionButton>
 
       {isOpen && (
         <DropDownFormWrapper
-          onClickActions={flagSectionContent}
+          onClickActions={handleFlagSectionContent}
           setIsOpen={setIsOpen}
           selectedRadio={selectedRadio}
           title={`Flag issue with ${sectionTitle.toLowerCase()}:`}

@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
-import { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import type { AilaUserModificationAction } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
@@ -16,6 +16,11 @@ import { DropDownFormWrapper } from "./drop-down-form-wrapper";
 import { SmallRadioButton } from "./small-radio-button";
 
 const log = aiLogger("chat");
+
+// Type guard to check if the value is a plain object
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+};
 
 const modifyOptions = [
   {
@@ -67,26 +72,24 @@ const ModifyButton = ({
 
   const lastAssistantMessage = getLastAssistantMessage(messages);
 
-  // Type guard to check if the value is a plain object
-  const isPlainObject = (value: unknown): value is Record<string, unknown> => {
-    return typeof value === "object" && value !== null && !Array.isArray(value);
-  };
-
-  const prepareSectionValue = (
-    value: LessonPlanSectionWhileStreaming,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): string | any[] | Record<string, unknown> => {
-    if (
-      typeof value === "string" ||
-      Array.isArray(value) ||
-      isPlainObject(value)
-    ) {
-      return value;
-    }
-    // For numbers or any other types, convert to string
-    return String(value);
-  };
-  const recordUserModifySectionContent = async () => {
+  const prepareSectionValue = useCallback(
+    (
+      value: LessonPlanSectionWhileStreaming,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ): string | any[] | Record<string, unknown> => {
+      if (
+        typeof value === "string" ||
+        Array.isArray(value) ||
+        isPlainObject(value)
+      ) {
+        return value;
+      }
+      // For numbers or any other types, convert to string
+      return String(value);
+    },
+    [],
+  );
+  const recordUserModifySectionContent = useCallback(async () => {
     if (selectedRadio && lastAssistantMessage) {
       const payload = {
         chatId: id,
@@ -98,29 +101,50 @@ const ModifyButton = ({
       };
       await mutateAsync(payload);
     }
-  };
+  }, [
+    selectedRadio,
+    lastAssistantMessage,
+    id,
+    sectionPath,
+    prepareSectionValue,
+    sectionValue,
+    userFeedbackText,
+    mutateAsync,
+  ]);
 
-  async function modifySection(
-    option: FeedbackOption<AilaUserModificationAction>,
-  ) {
-    const message =
-      option.label === "Other"
-        ? `For the ${sectionTitle}, ${userFeedbackText}`
-        : `Make the ${sectionTitle} ${option.chatMessage?.toLowerCase()}`;
+  const modifySection = useCallback(
+    async (option: FeedbackOption<AilaUserModificationAction>) => {
+      const message =
+        option.label === "Other"
+          ? `For the ${sectionTitle}, ${userFeedbackText}`
+          : `Make the ${sectionTitle} ${option.chatMessage?.toLowerCase()}`;
 
-    await Promise.all([
-      append({
-        content: message,
-        role: "user",
-      }),
-      recordUserModifySectionContent(),
-    ]);
-  }
+      await Promise.all([
+        append({
+          content: message,
+          role: "user",
+        }),
+        recordUserModifySectionContent(),
+      ]);
+    },
+    [sectionTitle, userFeedbackText, append, recordUserModifySectionContent],
+  );
+
+  const handleModifySection = useCallback(
+    (option: FeedbackOption<AilaUserModificationAction>) => {
+      void modifySection(option);
+    },
+    [modifySection],
+  );
+
+  const handleModifyClick = useCallback(() => {
+    setIsOpen(!isOpen);
+  }, [isOpen, setIsOpen]);
 
   return (
     <OakBox $position="relative" ref={dropdownRef}>
       <ActionButton
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleModifyClick}
         tooltip="Aila can help improve this section"
       >
         Modify
@@ -128,7 +152,7 @@ const ModifyButton = ({
 
       {isOpen && (
         <DropDownFormWrapper
-          onClickActions={modifySection}
+          onClickActions={handleModifySection}
           setIsOpen={setIsOpen}
           selectedRadio={selectedRadio}
           title={`Ask Aila to modify ${sectionTitle.toLowerCase()}:`}
@@ -186,7 +210,7 @@ function handleLabelText({
     section === "Misconceptions" ||
     section === "Key learning points" ||
     section === "Learning cycles" ||
-    "additional materials"
+    section === "Additional materials"
   ) {
     if (text.includes("it")) {
       return text.replace("it", "them");

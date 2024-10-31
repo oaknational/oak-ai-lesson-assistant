@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useState, useTransition } from "react";
 import { toast } from "react-hot-toast";
 
 import { useRouter } from "next/navigation";
@@ -36,9 +36,15 @@ export function ClearHistory({ isEnabled = false }: ClearHistoryProps) {
     },
   }).mutate;
 
-  const [open, setOpen] = React.useState(false);
-  const [isPending, startTransition] = React.useTransition();
+  const [open, setOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  const handleDelete = useCallback(() => {
+    startTransition(() => {
+      clearChats();
+    });
+  }, [startTransition, clearChats]);
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -62,15 +68,7 @@ export function ClearHistory({ isEnabled = false }: ClearHistoryProps) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            disabled={isPending}
-            onClick={(event) => {
-              event.preventDefault();
-              startTransition(() => {
-                clearChats();
-              });
-            }}
-          >
+          <AlertDialogAction disabled={isPending} onClick={handleDelete}>
             {isPending && <IconSpinner className="mr-7 animate-spin" />}
             Delete
           </AlertDialogAction>

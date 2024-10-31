@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
-import {
+import type {
   LessonPlanKeys,
   LessonPlanSectionWhileStreaming,
 } from "@oakai/aila/src/protocol/schema";
@@ -12,7 +12,7 @@ import { Icon } from "@/components/Icon";
 import LoadingWheel from "@/components/LoadingWheel";
 
 import Skeleton from "../../common/Skeleton";
-import { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
+import type { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import ChatSection from "./chat-section";
 
 const DropDownSection = ({
@@ -41,6 +41,10 @@ const DropDownSection = ({
 
   const sectionTitleMemo = useMemo(() => sectionTitle(section), [section]);
 
+  const handleToggleOpen = useCallback(() => {
+    setIsOpen(section, !isOpen);
+  }, [setIsOpen, section, isOpen]);
+
   const isStreaming =
     ailaStreamingStatus === "StreamingLessonPlan" &&
     streamingSection === section;
@@ -59,7 +63,7 @@ const DropDownSection = ({
       data-test-section-key={section}
       data-test-section-complete={isLoaded ? "true" : "false"}
     >
-      <FullWidthButton onClick={() => setIsOpen(section, !isOpen)}>
+      <FullWidthButton onClick={handleToggleOpen}>
         <OakFlex $gap="all-spacing-2">
           <OakBox>
             {!isStreaming && !isLoaded && <div className="w-14"></div>}

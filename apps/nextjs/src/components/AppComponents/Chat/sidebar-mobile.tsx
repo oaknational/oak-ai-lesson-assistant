@@ -1,5 +1,7 @@
 "use client";
 
+import { useCallback } from "react";
+
 import { OakFlex, OakSpan } from "@oaknational/oak-components";
 
 import { Sidebar } from "@/components/AppComponents/Chat/sidebar";
@@ -18,6 +20,11 @@ interface SidebarMobileProps {
 
 export function SidebarMobile({ children }: Readonly<SidebarMobileProps>) {
   const { trackEvent } = useAnalytics();
+
+  const handleToggle = useCallback(() => {
+    trackEvent("chat:toggle_sidebar");
+  }, [trackEvent]);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -25,9 +32,7 @@ export function SidebarMobile({ children }: Readonly<SidebarMobileProps>) {
           variant="ghost"
           data-testid="sidebar-button"
           className="flex items-center px-5"
-          onClick={() => {
-            trackEvent("chat:toggle_sidebar");
-          }}
+          onClick={handleToggle}
         >
           <Icon icon="sidebar" size="md" />
           <OakFlex $pl={"inner-padding-ssx"} $display={["none", "flex"]}>
