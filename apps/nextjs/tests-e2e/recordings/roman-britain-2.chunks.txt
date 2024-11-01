@@ -4,1116 +4,444 @@ ll
 m
 Message
 ","sectionsToEdit":["
-starter
-Quiz
+prior
+Knowledge
 ","
-cycle
-1
+key
+Learning
+Points
 ","
-cycle
-2
+mis
+con
+ceptions
 ","
-cycle
-3
-","
-exit
-Quiz
+keywords
 "],"patches":[
 {"
 type":"
 patch
 ","reasoning":"
-Creating
- a
- starter
- quiz
- to
- assess
- pupils
-'
- prior
+Ident
+ifying
+ the
+ foundational
  knowledge
+ pupils
+ should
+ have
  before
- introducing
- new
- content
- on
- Roman
- Britain
+ this
+ lesson
 .","
 value":{"
 type":"
-quiz
+string
+-array
 ","op":"
 add
 ","path":"/
-starter
-Quiz
-","value":[
-{"
-question":"
-Who
- once
- ruled
- Britain
- before
- the
- Sax
-ons
-?
-","answers":["
+prior
+Knowledge
+","value":["
 The
  Romans
-"],"distractors":["
-The
- Greeks
-","
-The
- Egyptians
-"]},{"
-question":"
-What
- were
- Roman
- roads
- used
- for
-?
-","answers":["
-Transportation
-"],"distractors":["
-Decoration
-","
-Protection
-"]},{"
-question":"
-What
- is
- Had
-rian
-'s
- Wall
-?
-","answers":["
-A
- Roman
- structure
-"],"distractors":["
-A
- type
- of
- Roman
- clothing
-","
-A
- Roman
- emperor
-"]},{"
-question":"
-What
- was
+ invaded
  Britain
- a
+ in
+ AD
+ 
+43
+.","
+Roman
+ Britain
+ was
  part
  of
- during
- Roman
- times
-?
-","answers":["
-The
+ the
  Roman
  Empire
-"],"distractors":["
+ for
+ nearly
+ 
+400
+ years
+.","
 The
- Greek
+ Roman
  Empire
-","
-The
- Egyptian
- Empire
-"]},{"
-question":"
-How
- did
- Romans
- influence
- Britain
-?
-","answers":["
-Culture
+ was
+ large
  and
- language
-"],"distractors":["
-Climate
-","
-Wild
-life
-"]},{"
-question":"
-What
- kind
- of
- buildings
- did
- Romans
- construct
+ included
+ many
+ countries
+.","
+Romans
+ built
+ roads
+ and
+ towns
  in
  Britain
-?
-","answers":["
-Road
-s
+.","
+The
+ Roman
+ army
+ was
+ strong
  and
- walls
-"],"distractors":["
-P
-yram
-ids
-","
-Cast
-les
-"]}]},"status":"
+ well
+-organ
+ised
+.
+"]},"status":"
 complete
 "},{"
 type":"
 patch
 ","reasoning":"
-Develop
+Highlight
 ing
  the
- first
+ main
  learning
- cycle
- focusing
- on
- the
- reasons
- for
- the
- Roman
- departure
+ points
+ pupils
+ should
+ take
  from
- Britain
+ this
+ lesson
 .","
 value":{"
 type":"
-cycle
+string
+-array
 ","op":"
 add
 ","path":"/
-cycle
-1
-","value":{"
-title":"
-Reasons
- for
+key
+Learning
+Points
+","value":["
+The
  Roman
- Departure
-","durationInMinutes":15
-,"explanation":{"
-spokenExplanation":["
-Explain
- that
- Romans
+ Empire
+ began
+ to
+ weaken
+ due
+ to
+ internal
+ and
+ external
+ pressures
+.","
+Romans
  left
  Britain
  around
  AD
  
 410
- due
  to
- pressures
- from
+ defend
  other
  parts
  of
  the
  Empire
 .","
-Discuss
- how
- Roman
- soldiers
- were
- needed
- elsewhere
-,
- weakening
- Britain's
- defence
-.","
-Highlight
- economic
- troubles
+Brit
+ain
+ experienced
+ changes
+ in
+ governance
  and
- internal
- conflicts
- within
+ defence
+ after
  the
- Roman
- Empire
+ Romans
+ left
 .","
-Rel
-ate
- these
- reasons
- to
- how
- they
- impacted
+Roman
+ influence
+ remained
+ in
+ Britain's
+ culture
+,
+ architecture
+,
+ and
+ roads
+.","
+The
+ end
+ of
  Roman
  rule
- in
- Britain
-.","
-Use
- a
- timeline
- to
- show
+ marked
  the
- gradual
- withdrawal
- of
- Roman
- forces
-."
-],"accompanyingSlideDetails":"
-A
- timeline
- showing
- the
- gradual
- withdrawal
- of
- Roman
- forces
- from
- Britain
-.","
-imagePrompt":"
-Roman
- Britain
- timeline
- withdrawal
-","slideText":"
-The
- Romans
- left
- Britain
- around
- AD
- 
-410
- due
- to
- pressures
- elsewhere
- in
- the
- Empire
-,
- economic
- troubles
-,
- and
- internal
- conflicts
-."
-},"checkForUnderstanding":[
-{"
-question":"
-Why
- did
- the
- Romans
- leave
- Britain
-?
-","answers":["
-Press
-ures
- elsewhere
- in
- the
- Empire
-"],"distractors":["
-A
- new
- emperor
- in
- Britain
-","
-Good
- weather
- in
- Italy
-"]},{"
-question":"
-What
- weakened
- Britain's
- defence
-?
-","answers":["
-Roman
- soldiers
- needed
- elsewhere
-"],"distractors":["
-New
- Roman
- roads
-","
-Roman
- celebrations
-"]}],"practice":"
-List
- three
- reasons
- why
- the
- Romans
- left
- Britain
-.
- Write
- a
- sentence
- explaining
- each
- reason
-.","
-feedback":"
-Model
- answer
-:
- The
- Romans
- left
- due
- to
- pressures
- elsewhere
-,
- economic
- troubles
-,
- and
- internal
- conflicts
-.
- Each
- reason
- weakened
- their
- control
- over
- Britain
-."
-}},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Develop
-ing
- the
- second
- learning
- cycle
- focusing
- on
- the
- changes
- in
- Britain
- post
--R
-oman
- departure
-.","
-value":{"
-type":"
-cycle
-","op":"
-add
-","path":"/
-cycle
-2
-","value":{"
-title":"
-Changes
- in
- Post
--R
-oman
- Britain
-","durationInMinutes":15
-,"explanation":{"
-spokenExplanation":["
-Describe
- the
- changes
- in
- governance
- after
- Romans
- left
-,
- with
- local
- leaders
- gaining
- power
-.","
-Highlight
- the
- decline
- in
- Roman
--style
- infrastructure
-,
- such
- as
- roads
- and
- public
- buildings
-.","
-Discuss
- the
- arrival
+ beginning
  of
  new
- groups
- like
- the
- Sax
-ons
-.","
-Explain
- the
- impact
- on
- daily
- life
-,
- including
- changes
- in
- trade
- and
- security
-.","
-Use
- maps
- to
- show
- where
- new
- groups
- settled
- in
- Britain
-."
-],"accompanyingSlideDetails":"
-Maps
- showing
- Sax
-on
- settlements
- in
- post
--R
-oman
- Britain
-.","
-imagePrompt":"
-S
-axon
- settlements
- in
- Britain
- map
-","slideText":"
-After
- the
- Romans
- left
-,
- local
- leaders
- took
- power
-,
- and
- new
- groups
- like
- the
- Sax
-ons
- settled
- in
- Britain
-."
-},"checkForUnderstanding":[
-{"
-question":"
-Who
- gained
- power
- after
- the
- Romans
- left
-?
-","answers":["
-Local
- leaders
-"],"distractors":["
-Roman
- generals
-","
-Greek
- traders
-"]},{"
-question":"
-What
- happened
- to
- Roman
- roads
- and
- buildings
-?
-","answers":["
-They
- declined
-"],"distractors":["
-They
- were
- improved
-","
-They
- became
- museums
-"]}],"practice":"
-Describe
- two
- changes
- in
- Britain
- after
- the
- Romans
- left
-.
- Include
- who
- gained
- power
- and
- what
- happened
- to
- Roman
- infrastructure
-.","
-feedback":"
-Model
- answer
-:
- Local
- leaders
- gained
- power
-,
- and
- Roman
- infrastructure
- like
- roads
- and
- public
- buildings
- declined
-."
-}},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Develop
-ing
- the
- third
- learning
- cycle
- focusing
- on
- the
- impact
- of
- Roman
- departure
- on
- daily
- life
-.","
-value":{"
-type":"
-cycle
-","op":"
-add
-","path":"/
-cycle
-3
-","value":{"
-title":"
-Impact
- on
- Daily
- Life
-","durationInMinutes":15
-,"explanation":{"
-spokenExplanation":["
-Explain
- how
- the
- departure
- of
- Romans
- affected
- trade
- routes
- and
- security
- in
- Britain
-.","
-Discuss
- the
- changes
- in
- daily
- activities
- and
- lifestyle
- without
- Roman
- governance
-.","
-Describe
- how
- Roman
- culture
- and
- language
- remained
- influential
- despite
- their
- departure
-.","
-Highlight
- the
  challenges
- faced
- by
- local
- populations
- in
- adapting
- to
- new
- rulers
-.","
-Use
- images
- of
- Roman
- arte
-facts
- still
- present
- in
+ for
  Britain
- to
- show
- continued
- influence
-."
-],"accompanyingSlideDetails":"
-Images
- of
- Roman
- arte
-facts
- still
- present
- in
- Britain
-.","
-imagePrompt":"
-Roman
- arte
-facts
- in
- Britain
-","slideText":"
-Roman
- departure
- affected
- trade
-,
- security
-,
- and
- daily
- life
 .
- Their
- culture
- and
- language
- remained
- influential
-."
-},"checkForUnderstanding":[
-{"
-question":"
-What
- happened
- to
- trade
- routes
- after
- the
- Romans
- left
-?
-","answers":["
-They
- were
- disrupted
-"],"distractors":["
-They
- were
- expanded
-","
-They
- were
- unchanged
-"]},{"
-question":"
-How
- did
- Roman
- culture
- influence
- Britain
- after
- they
- left
-?
-","answers":["
-It
- remained
- influential
-"],"distractors":["
-It
- vanished
- completely
-","
-It
- was
- replaced
- by
- Sax
-on
- culture
-"]}],"practice":"
-Explain
- how
- daily
- life
- changed
- with
- the
- Romans
- gone
-.
- Mention
- trade
-,
- security
-,
- and
- cultural
- influences
-.","
-feedback":"
-Model
- answer
-:
- Trade
- routes
- were
- disrupted
-,
- security
- weakened
-,
- but
- Roman
- culture
- and
- language
- remained
- influential
-."
-}},"status":"
+"]},"status":"
 complete
 "},{"
 type":"
 patch
 ","reasoning":"
-Creating
- an
- exit
- quiz
+Address
+ing
+ common
+ misconceptions
  to
- assess
- pupils
-'
+ ensure
+ accurate
  understanding
  of
  the
- key
- concepts
- taught
- in
- the
- lesson
- on
- Roman
- Britain
+ topic
 .","
 value":{"
 type":"
-quiz
+mis
+con
+ceptions
 ","op":"
 add
 ","path":"/
-exit
-Quiz
+mis
+con
+ceptions
 ","value":[
 {"
-question":"
-When
- did
- the
- Romans
- leave
+misconception":"
+Romans
+ left
  Britain
-?
-","answers":["
-Around
- AD
- 
-410
-"],"distractors":["
-Around
- AD
- 
-300
-","
-Around
- AD
- 
-600
-"]},{"
-question":"
-Who
- settled
- in
- Britain
- after
- the
+ because
+ they
+ were
+ defeated
+ by
+ locals
+","description":"
+The
  Romans
  left
-?
-","answers":["
-The
- Sax
-ons
-"],"distractors":["
-The
- Greeks
-","
-The
- Egyptians
-"]},{"
-question":"
-What
- happened
+ due
  to
+ pressures
+ on
+ other
+ parts
+ of
+ the
+ Empire
+ and
+ internal
+ issues
+,
+ not
+ because
+ they
+ were
+ defeated
+ by
+ locals
+."
+},{"
+misconception":"
+All
  Roman
- roads
+ influence
+ disappeared
  after
  they
  left
-?
-","answers":["
-They
- were
- left
- behind
-"],"distractors":["
-They
- were
- expanded
-","
-They
- were
- destroyed
-"]},{"
-question":"
-How
- did
- Roman
- departure
- affect
- daily
- life
-?
-","answers":["
-It
- disrupted
- trade
- and
- security
-"],"distractors":["
-It
- improved
- trade
- routes
-","
-It
- increased
- Roman
- influence
-"]},{"
-question":"
-What
- did
- local
- leaders
- do
- after
- the
- Romans
- left
-?
-","answers":["
-G
-ained
- power
-"],"distractors":["
-B
-ec
-ame
- Roman
- generals
-","
-Built
- new
- Roman
- cities
-"]},{"
-question":"
-What
- is
- the
- definition
+","description":"
+Many
+ aspects
  of
- '
+ Roman
+ culture
+,
+ architecture
+,
+ and
+ infrastructure
+ remained
+ in
+ Britain
+ even
+ after
+ their
+ departure
+."
+}]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Providing
+ key
+ vocabulary
+ to
+ support
+ understanding
+ of
+ the
+ topic
+.","
+value":{"
+type":"
+keywords
+","op":"
+add
+","path":"/
+keywords
+","value":[
+{"
+keyword":"
 Empire
-'?
-","answers":["
+","definition":"
 A
+ large
  group
  of
  countries
+ or
+ regions
  controlled
  by
  one
  ruler
-"],"distractors":["
-A
- single
+ or
+ government
+."
+},{"
+keyword":"
+Depart
+","definition":"
+To
+ leave
+ a
+ place
+."
+},{"
+keyword":"
+Influ
+ence
+","definition":"
+Having
+ an
+ effect
+ on
+ the
+ character
+,
+ development
+,
+ or
+ behaviour
+ of
+ someone
+ or
+ something
+."
+},{"
+keyword":"
+In
+vasion
+","definition":"
+An
+ instance
+ of
+ invading
+ a
+ country
+ with
+ an
+ armed
+ force
+."
+},{"
+keyword":"
+Govern
+ance
+","definition":"
+The
+ way
+ that
+ a
  city
- ruled
+,
+ company
+,
+ etc
+.,
+ is
+ controlled
  by
- one
- person
-","
-A
- large
- army
- led
- by
- generals
-"]}]},"status":"
+ those
+ in
+ power
+."
+}]},"status":"
 complete
 "}],"sectionsEdited":["
-starter
-Quiz
+prior
+Knowledge
 ","
-cycle
-1
+key
+Learning
+Points
 ","
-cycle
-2
+mis
+con
+ceptions
 ","
-cycle
-3
-","
-exit
-Quiz
+keywords
 "],"prompt":{"
 type":"
 text
 ","value":"
 Are
  the
- starter
- quiz
+ prior
+ knowledge
 ,
+ key
  learning
- cycles
+ points
+,
+ misconceptions
 ,
  and
- exit
- quiz
- appropriate
+ keywords
+ sections
+ suitable
  for
  your
- pupils
+ class
 ?
  If
  not
 ,
- suggest
- an
- edit
+ reply
+ with
+ what
+ I
+ should
+ change
 .
  Otherwise
 ,

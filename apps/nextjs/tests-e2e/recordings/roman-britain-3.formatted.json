@@ -1,27 +1,316 @@
 {
   "type": "llmMessage",
   "sectionsToEdit": [
-    "additionalMaterials"
+    "starterQuiz",
+    "cycle1",
+    "cycle2",
+    "cycle3",
+    "exitQuiz"
   ],
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Providing additional materials to support the delivery of the lesson on Roman Britain.",
+      "reasoning": "Creating a quiz to assess pupils' prior knowledge before starting the lesson.",
       "value": {
-        "type": "string",
+        "type": "quiz",
         "op": "add",
-        "path": "/additionalMaterials",
-        "value": "## Narrative Script for Teacher\n\nGood morning, class! Today, we're going to talk about an important time in history when the Romans decided to leave Britain. Around AD 410, the Roman soldiers had to leave because they were needed in other parts of the Roman Empire. Imagine the Romans like a big team that played in many different places, and they needed their best players in other games.\n\nWith the Romans gone, local leaders in Britain had to figure out how to take care of everything themselves. This was a big change! The roads and buildings the Romans built started to become less used and not as well maintained. New groups, like the Saxons, started to come and live in Britain, bringing their own ways of doing things.\n\nEven though the Romans left, their influence didn't disappear overnight. Many of the things they brought with them, like certain words and roads, stayed around for a long time. So, today, we're going to explore how these changes affected the daily lives of people in Britain.\n\n### Key Points to Include in Explanation\n- Romans left Britain around AD 410 due to pressures elsewhere.\n- Local leaders took over governance.\n- Roman infrastructure began to decline.\n- New groups, such as the Saxons, settled in Britain.\n- Roman cultural influences persisted."
+        "path": "/starterQuiz",
+        "value": [
+          {
+            "question": "When did the Romans invade Britain?",
+            "answers": [
+              "AD 43"
+            ],
+            "distractors": [
+              "AD 410",
+              "AD 1066"
+            ]
+          },
+          {
+            "question": "How long was Britain part of the Roman Empire?",
+            "answers": [
+              "Nearly 400 years"
+            ],
+            "distractors": [
+              "200 years",
+              "600 years"
+            ]
+          },
+          {
+            "question": "What did the Romans build in Britain?",
+            "answers": [
+              "Roads and towns"
+            ],
+            "distractors": [
+              "Castles and bridges",
+              "Skyscrapers and tunnels"
+            ]
+          },
+          {
+            "question": "What was the Roman Empire?",
+            "answers": [
+              "A large group of countries"
+            ],
+            "distractors": [
+              "A single country",
+              "A small island"
+            ]
+          },
+          {
+            "question": "What was special about the Roman army?",
+            "answers": [
+              "Strong and well-organised"
+            ],
+            "distractors": [
+              "Weak and disorganised",
+              "Small and slow"
+            ]
+          },
+          {
+            "question": "Why did the Romans leave Britain?",
+            "answers": [
+              "To defend other parts of the Empire"
+            ],
+            "distractors": [
+              "They were defeated by locals",
+              "They didn't like the weather"
+            ]
+          }
+        ]
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Designing the first learning cycle to focus on identifying reasons why the Romans left Britain.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle1",
+        "value": {
+          "title": "Why the Romans Left Britain",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Discuss the weakening of the Roman Empire due to internal issues and external threats.",
+              "Explain how these pressures led the Romans to recall troops to defend other parts of the Empire.",
+              "Highlight the significance of AD 410 as the approximate year of Roman departure.",
+              "Use a timeline to show key events leading to the departure.",
+              "Include examples of external threats such as invasions from other tribes."
+            ],
+            "accompanyingSlideDetails": "A timeline showing key events leading to the Roman departure in AD 410.",
+            "imagePrompt": "Roman Empire AD 410 timeline",
+            "slideText": "The Romans left Britain around AD 410 to defend other parts of the Empire due to external threats and internal issues."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "What year did Romans leave Britain?",
+              "answers": [
+                "AD 410"
+              ],
+              "distractors": [
+                "AD 43",
+                "AD 1066"
+              ]
+            },
+            {
+              "question": "Why did the Romans leave Britain?",
+              "answers": [
+                "To defend other parts of the Empire"
+              ],
+              "distractors": [
+                "They were defeated by locals",
+                "They wanted a holiday"
+              ]
+            }
+          ],
+          "practice": "Create a timeline of events leading up to the Roman departure. Use images or drawings to illustrate key points.",
+          "feedback": "Model answer: Timeline should include events such as Roman invasions, building of roads, and AD 410 departure. Illustrations should reflect Roman soldiers, roads, and maps of the Empire."
+        }
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Designing the second learning cycle to describe the changes in Britain after the Roman departure.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle2",
+        "value": {
+          "title": "Changes in Britain after Roman Departure",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Describe how Britain faced governance and defence challenges after the Romans left.",
+              "Highlight changes such as the decline of Roman-built structures and the rise of new local rulers.",
+              "Discuss the continued influence of Roman roads and architecture.",
+              "Introduce the concept of cultural influence remaining despite political changes."
+            ],
+            "accompanyingSlideDetails": "Images of Roman roads and buildings alongside early medieval British structures.",
+            "imagePrompt": "Roman roads vs early medieval Britain",
+            "slideText": "After the Romans left, Britain faced new challenges but continued to use Roman roads and structures."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "What remained in Britain after the Romans left?",
+              "answers": [
+                "Roman roads and structures"
+              ],
+              "distractors": [
+                "Roman soldiers",
+                "Roman emperors"
+              ]
+            },
+            {
+              "question": "Who governed Britain after the Romans?",
+              "answers": [
+                "Local rulers"
+              ],
+              "distractors": [
+                "Roman generals",
+                "Greek philosophers"
+              ]
+            }
+          ],
+          "practice": "Draw a picture showing a Roman road still used in Britain today. Label it with its purpose and any changes you think happened over time.",
+          "feedback": "Success criteria: Drawing should show a straight Roman road with labels such as 'used for travel' and 'paved'. Include changes like added pathways or surrounding buildings."
+        }
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Designing the third learning cycle to explore the lasting impact of Roman culture in Britain.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle3",
+        "value": {
+          "title": "Roman Influence in Britain Today",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Explain how Roman culture influenced British language, architecture, and laws.",
+              "Discuss examples of Roman words still used in English.",
+              "Show how Roman architectural styles can be seen in modern buildings.",
+              "Describe how Roman laws have influenced British legal systems."
+            ],
+            "accompanyingSlideDetails": "Images comparing Roman architecture with modern British buildings.",
+            "imagePrompt": "Roman architecture influence modern Britain",
+            "slideText": "Roman culture continues to influence British language, architecture, and laws."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "What is an example of Roman influence today?",
+              "answers": [
+                "Architecture"
+              ],
+              "distractors": [
+                "Roman emperors",
+                "Greek myths"
+              ]
+            },
+            {
+              "question": "Which language has Roman words?",
+              "answers": [
+                "English"
+              ],
+              "distractors": [
+                "Chinese",
+                "Arabic"
+              ]
+            }
+          ],
+          "practice": "Match Roman words with their modern English counterparts. Explain how these words are used today.",
+          "feedback": "Model answer: Match words like 'aqua' with 'water'. Explain use in terms like 'aquarium' meaning a place for water and fish."
+        }
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Designing an exit quiz to assess pupils' understanding of the lesson content.",
+      "value": {
+        "type": "quiz",
+        "op": "add",
+        "path": "/exitQuiz",
+        "value": [
+          {
+            "question": "Why did the Romans leave Britain?",
+            "answers": [
+              "To defend other parts of the Empire"
+            ],
+            "distractors": [
+              "They were defeated by locals",
+              "They wanted a holiday"
+            ]
+          },
+          {
+            "question": "What year did Romans leave Britain?",
+            "answers": [
+              "AD 410"
+            ],
+            "distractors": [
+              "AD 43",
+              "AD 1066"
+            ]
+          },
+          {
+            "question": "What remained in Britain after Romans left?",
+            "answers": [
+              "Roman roads and structures"
+            ],
+            "distractors": [
+              "Roman soldiers",
+              "Roman emperors"
+            ]
+          },
+          {
+            "question": "Who governed Britain after Romans?",
+            "answers": [
+              "Local rulers"
+            ],
+            "distractors": [
+              "Roman generals",
+              "Greek philosophers"
+            ]
+          },
+          {
+            "question": "What is an example of Roman influence today?",
+            "answers": [
+              "Architecture"
+            ],
+            "distractors": [
+              "Roman emperors",
+              "Greek myths"
+            ]
+          },
+          {
+            "question": "Which language has Roman words?",
+            "answers": [
+              "English"
+            ],
+            "distractors": [
+              "Chinese",
+              "Arabic"
+            ]
+          }
+        ]
       },
       "status": "complete"
     }
   ],
   "sectionsEdited": [
-    "additionalMaterials"
+    "starterQuiz",
+    "cycle1",
+    "cycle2",
+    "cycle3",
+    "exitQuiz"
   ],
   "prompt": {
     "type": "text",
-    "value": "Are the additional materials suitable for your lesson? If you need any changes or additional support, let me know. Otherwise, tap **Continue** to finish the lesson plan."
+    "value": "Are the starter quiz, cycles, and exit quiz suitable for your class? Would you like to adjust the difficulty of the quizzes? If everything looks good, tap **Continue** to move on to the next step."
   },
   "status": "complete"
 }

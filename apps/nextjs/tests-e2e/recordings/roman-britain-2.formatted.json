@@ -1,80 +1,61 @@
 {
   "type": "llmMessage",
   "sectionsToEdit": [
-    "starterQuiz",
-    "cycle1",
-    "cycle2",
-    "cycle3",
-    "exitQuiz"
+    "priorKnowledge",
+    "keyLearningPoints",
+    "misconceptions",
+    "keywords"
   ],
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Creating a starter quiz to assess pupils' prior knowledge before introducing new content on Roman Britain.",
+      "reasoning": "Identifying the foundational knowledge pupils should have before this lesson.",
       "value": {
-        "type": "quiz",
+        "type": "string-array",
         "op": "add",
-        "path": "/starterQuiz",
+        "path": "/priorKnowledge",
+        "value": [
+          "The Romans invaded Britain in AD 43.",
+          "Roman Britain was part of the Roman Empire for nearly 400 years.",
+          "The Roman Empire was large and included many countries.",
+          "Romans built roads and towns in Britain.",
+          "The Roman army was strong and well-organised."
+        ]
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Highlighting the main learning points pupils should take from this lesson.",
+      "value": {
+        "type": "string-array",
+        "op": "add",
+        "path": "/keyLearningPoints",
+        "value": [
+          "The Roman Empire began to weaken due to internal and external pressures.",
+          "Romans left Britain around AD 410 to defend other parts of the Empire.",
+          "Britain experienced changes in governance and defence after the Romans left.",
+          "Roman influence remained in Britain's culture, architecture, and roads.",
+          "The end of Roman rule marked the beginning of new challenges for Britain."
+        ]
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Addressing common misconceptions to ensure accurate understanding of the topic.",
+      "value": {
+        "type": "misconceptions",
+        "op": "add",
+        "path": "/misconceptions",
         "value": [
           {
-            "question": "Who once ruled Britain before the Saxons?",
-            "answers": [
-              "The Romans"
-            ],
-            "distractors": [
-              "The Greeks",
-              "The Egyptians"
-            ]
+            "misconception": "Romans left Britain because they were defeated by locals",
+            "description": "The Romans left due to pressures on other parts of the Empire and internal issues, not because they were defeated by locals."
           },
           {
-            "question": "What were Roman roads used for?",
-            "answers": [
-              "Transportation"
-            ],
-            "distractors": [
-              "Decoration",
-              "Protection"
-            ]
-          },
-          {
-            "question": "What is Hadrian's Wall?",
-            "answers": [
-              "A Roman structure"
-            ],
-            "distractors": [
-              "A type of Roman clothing",
-              "A Roman emperor"
-            ]
-          },
-          {
-            "question": "What was Britain a part of during Roman times?",
-            "answers": [
-              "The Roman Empire"
-            ],
-            "distractors": [
-              "The Greek Empire",
-              "The Egyptian Empire"
-            ]
-          },
-          {
-            "question": "How did Romans influence Britain?",
-            "answers": [
-              "Culture and language"
-            ],
-            "distractors": [
-              "Climate",
-              "Wildlife"
-            ]
-          },
-          {
-            "question": "What kind of buildings did Romans construct in Britain?",
-            "answers": [
-              "Roads and walls"
-            ],
-            "distractors": [
-              "Pyramids",
-              "Castles"
-            ]
+            "misconception": "All Roman influence disappeared after they left",
+            "description": "Many aspects of Roman culture, architecture, and infrastructure remained in Britain even after their departure."
           }
         ]
       },
@@ -82,221 +63,31 @@
     },
     {
       "type": "patch",
-      "reasoning": "Developing the first learning cycle focusing on the reasons for the Roman departure from Britain.",
+      "reasoning": "Providing key vocabulary to support understanding of the topic.",
       "value": {
-        "type": "cycle",
+        "type": "keywords",
         "op": "add",
-        "path": "/cycle1",
-        "value": {
-          "title": "Reasons for Roman Departure",
-          "durationInMinutes": 15,
-          "explanation": {
-            "spokenExplanation": [
-              "Explain that Romans left Britain around AD 410 due to pressures from other parts of the Empire.",
-              "Discuss how Roman soldiers were needed elsewhere, weakening Britain's defence.",
-              "Highlight economic troubles and internal conflicts within the Roman Empire.",
-              "Relate these reasons to how they impacted Roman rule in Britain.",
-              "Use a timeline to show the gradual withdrawal of Roman forces."
-            ],
-            "accompanyingSlideDetails": "A timeline showing the gradual withdrawal of Roman forces from Britain.",
-            "imagePrompt": "Roman Britain timeline withdrawal",
-            "slideText": "The Romans left Britain around AD 410 due to pressures elsewhere in the Empire, economic troubles, and internal conflicts."
-          },
-          "checkForUnderstanding": [
-            {
-              "question": "Why did the Romans leave Britain?",
-              "answers": [
-                "Pressures elsewhere in the Empire"
-              ],
-              "distractors": [
-                "A new emperor in Britain",
-                "Good weather in Italy"
-              ]
-            },
-            {
-              "question": "What weakened Britain's defence?",
-              "answers": [
-                "Roman soldiers needed elsewhere"
-              ],
-              "distractors": [
-                "New Roman roads",
-                "Roman celebrations"
-              ]
-            }
-          ],
-          "practice": "List three reasons why the Romans left Britain. Write a sentence explaining each reason.",
-          "feedback": "Model answer: The Romans left due to pressures elsewhere, economic troubles, and internal conflicts. Each reason weakened their control over Britain."
-        }
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Developing the second learning cycle focusing on the changes in Britain post-Roman departure.",
-      "value": {
-        "type": "cycle",
-        "op": "add",
-        "path": "/cycle2",
-        "value": {
-          "title": "Changes in Post-Roman Britain",
-          "durationInMinutes": 15,
-          "explanation": {
-            "spokenExplanation": [
-              "Describe the changes in governance after Romans left, with local leaders gaining power.",
-              "Highlight the decline in Roman-style infrastructure, such as roads and public buildings.",
-              "Discuss the arrival of new groups like the Saxons.",
-              "Explain the impact on daily life, including changes in trade and security.",
-              "Use maps to show where new groups settled in Britain."
-            ],
-            "accompanyingSlideDetails": "Maps showing Saxon settlements in post-Roman Britain.",
-            "imagePrompt": "Saxon settlements in Britain map",
-            "slideText": "After the Romans left, local leaders took power, and new groups like the Saxons settled in Britain."
-          },
-          "checkForUnderstanding": [
-            {
-              "question": "Who gained power after the Romans left?",
-              "answers": [
-                "Local leaders"
-              ],
-              "distractors": [
-                "Roman generals",
-                "Greek traders"
-              ]
-            },
-            {
-              "question": "What happened to Roman roads and buildings?",
-              "answers": [
-                "They declined"
-              ],
-              "distractors": [
-                "They were improved",
-                "They became museums"
-              ]
-            }
-          ],
-          "practice": "Describe two changes in Britain after the Romans left. Include who gained power and what happened to Roman infrastructure.",
-          "feedback": "Model answer: Local leaders gained power, and Roman infrastructure like roads and public buildings declined."
-        }
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Developing the third learning cycle focusing on the impact of Roman departure on daily life.",
-      "value": {
-        "type": "cycle",
-        "op": "add",
-        "path": "/cycle3",
-        "value": {
-          "title": "Impact on Daily Life",
-          "durationInMinutes": 15,
-          "explanation": {
-            "spokenExplanation": [
-              "Explain how the departure of Romans affected trade routes and security in Britain.",
-              "Discuss the changes in daily activities and lifestyle without Roman governance.",
-              "Describe how Roman culture and language remained influential despite their departure.",
-              "Highlight the challenges faced by local populations in adapting to new rulers.",
-              "Use images of Roman artefacts still present in Britain to show continued influence."
-            ],
-            "accompanyingSlideDetails": "Images of Roman artefacts still present in Britain.",
-            "imagePrompt": "Roman artefacts in Britain",
-            "slideText": "Roman departure affected trade, security, and daily life. Their culture and language remained influential."
-          },
-          "checkForUnderstanding": [
-            {
-              "question": "What happened to trade routes after the Romans left?",
-              "answers": [
-                "They were disrupted"
-              ],
-              "distractors": [
-                "They were expanded",
-                "They were unchanged"
-              ]
-            },
-            {
-              "question": "How did Roman culture influence Britain after they left?",
-              "answers": [
-                "It remained influential"
-              ],
-              "distractors": [
-                "It vanished completely",
-                "It was replaced by Saxon culture"
-              ]
-            }
-          ],
-          "practice": "Explain how daily life changed with the Romans gone. Mention trade, security, and cultural influences.",
-          "feedback": "Model answer: Trade routes were disrupted, security weakened, but Roman culture and language remained influential."
-        }
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Creating an exit quiz to assess pupils' understanding of the key concepts taught in the lesson on Roman Britain.",
-      "value": {
-        "type": "quiz",
-        "op": "add",
-        "path": "/exitQuiz",
+        "path": "/keywords",
         "value": [
           {
-            "question": "When did the Romans leave Britain?",
-            "answers": [
-              "Around AD 410"
-            ],
-            "distractors": [
-              "Around AD 300",
-              "Around AD 600"
-            ]
+            "keyword": "Empire",
+            "definition": "A large group of countries or regions controlled by one ruler or government."
           },
           {
-            "question": "Who settled in Britain after the Romans left?",
-            "answers": [
-              "The Saxons"
-            ],
-            "distractors": [
-              "The Greeks",
-              "The Egyptians"
-            ]
+            "keyword": "Depart",
+            "definition": "To leave a place."
           },
           {
-            "question": "What happened to Roman roads after they left?",
-            "answers": [
-              "They were left behind"
-            ],
-            "distractors": [
-              "They were expanded",
-              "They were destroyed"
-            ]
+            "keyword": "Influence",
+            "definition": "Having an effect on the character, development, or behaviour of someone or something."
           },
           {
-            "question": "How did Roman departure affect daily life?",
-            "answers": [
-              "It disrupted trade and security"
-            ],
-            "distractors": [
-              "It improved trade routes",
-              "It increased Roman influence"
-            ]
+            "keyword": "Invasion",
+            "definition": "An instance of invading a country with an armed force."
           },
           {
-            "question": "What did local leaders do after the Romans left?",
-            "answers": [
-              "Gained power"
-            ],
-            "distractors": [
-              "Became Roman generals",
-              "Built new Roman cities"
-            ]
-          },
-          {
-            "question": "What is the definition of 'Empire'?",
-            "answers": [
-              "A group of countries controlled by one ruler"
-            ],
-            "distractors": [
-              "A single city ruled by one person",
-              "A large army led by generals"
-            ]
+            "keyword": "Governance",
+            "definition": "The way that a city, company, etc., is controlled by those in power."
           }
         ]
       },
@@ -304,15 +95,14 @@
     }
   ],
   "sectionsEdited": [
-    "starterQuiz",
-    "cycle1",
-    "cycle2",
-    "cycle3",
-    "exitQuiz"
+    "priorKnowledge",
+    "keyLearningPoints",
+    "misconceptions",
+    "keywords"
   ],
   "prompt": {
     "type": "text",
-    "value": "Are the starter quiz, learning cycles, and exit quiz appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step."
+    "value": "Are the prior knowledge, key learning points, misconceptions, and keywords sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."
   },
   "status": "complete"
 }

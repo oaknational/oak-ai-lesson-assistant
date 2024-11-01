@@ -1,14 +1,14 @@
 {
-  "id": "chatcmpl-AO6OPmlTY3MyJzYPjyBMLcIo7F0Ss",
+  "id": "chatcmpl-AQB7GOkRBvrZSFpP47zJOXDfBVn0b",
   "object": "chat.completion",
-  "created": 1730307809,
+  "created": 1730802622,
   "model": "gpt-4o-2024-08-06",
   "choices": [
     {
       "index": 0,
       "message": {
         "role": "assistant",
-        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan is fully compliant across all category groups. It does not contain discriminatory language, offensive language, or strong language, making it compliant with language and discrimination guidelines. There is no depiction or discussion of violence or crime, including serious or sexual violence. The content is appropriate for Key Stage 1 and does not include any upsetting, sensitive, or distressing content. There is no depiction or discussion of nudity or sexual content. The lesson does not involve exploration of objects, equipment requiring supervision, imitable behaviors, external content, or physical activity. Lastly, the lesson does not contain any toxic content, such as guides or encouragement of harmful or illegal behavior. Overall, the lesson plan is suitable for the intended young audience and adheres to all moderation guidelines.\",\"categories\":[]}",
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":4,\"t\":5},\"justification\":\"The lesson plan for 'The End of Roman Britain' is fully compliant in terms of language and discrimination, violence and crime, upsetting, disturbing and sensitive content, nudity and sex, and toxic content. It provides a historical overview without any offensive language, violent depictions, or sensitive topics that would be inappropriate for Key Stage 1 students. However, it involves physical activities, such as creating timelines and drawing pictures, which require some degree of exploration and potentially supervision, so it scores a 4 in the physical activity and safety category.\",\"categories\":[\"p/exploration-of-objects\"]}",
         "refusal": null
       },
       "logprobs": null,
@@ -16,14 +16,16 @@
     }
   ],
   "usage": {
-    "prompt_tokens": 3996,
-    "completion_tokens": 186,
-    "total_tokens": 4182,
+    "prompt_tokens": 4049,
+    "completion_tokens": 149,
+    "total_tokens": 4198,
     "prompt_tokens_details": {
-      "cached_tokens": 3840
+      "cached_tokens": 2048
     },
     "completion_tokens_details": {
-      "reasoning_tokens": 0
+      "reasoning_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
     }
   },
   "system_fingerprint": "fp_159d8341cc"

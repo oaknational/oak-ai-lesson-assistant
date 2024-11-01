@@ -267,6 +267,7 @@ const InChatDownloadButtons = ({
             setDialogWindow("demo-share-locked");
           }
         }}
+        data-testid="in-chat-share-button"
       >
         <InnerInChatButton iconName="share">Share</InnerInChatButton>
       </button>

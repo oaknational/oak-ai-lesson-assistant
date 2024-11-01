@@ -9,7 +9,9 @@ import {
   continueChat,
   expectFinished,
   expectStreamingStatus,
+  hasInChatShareButton,
   isFinished,
+  letUiSettle,
   scrollLessonPlanFromTopToBottom,
   waitForStreamingStatusChange,
 } from "./helpers";
@@ -23,7 +25,7 @@ const FIXTURE_MODE = "replay" as FixtureMode;
 test(
   "Full aila flow with Romans fixture",
   { tag: "@common-auth" },
-  async ({ page }) => {
+  async ({ page }, testInfo) => {
     const generationTimeout = FIXTURE_MODE === "record" ? 75000 : 50000;
     test.setTimeout(generationTimeout * 5);
 
@@ -55,14 +57,13 @@ test(
     await test.step("Iterate through the fixtures", async () => {
       await page.waitForURL(/\/aila\/.+/);
 
-      const maxIterations = 20;
+      const maxIterations = 10;
 
       for (
-        let iterationCount = 1;
+        let iterationCount = 2;
         iterationCount <= maxIterations;
         iterationCount++
       ) {
-        setFixture(`roman-britain-${iterationCount}`);
         await expectStreamingStatus(page, "RequestMade", { timeout: 5000 });
 
         await waitForStreamingStatusChange(
@@ -77,6 +78,8 @@ test(
         if (await isFinished(page)) {
           break;
         }
+        await letUiSettle(page, testInfo);
+        setFixture(`roman-britain-${iterationCount}`);
         await continueChat(page);
         await waitForStreamingStatusChange(
           page,
@@ -86,6 +89,7 @@ test(
         );
       }
 
+      await hasInChatShareButton(page);
       await scrollLessonPlanFromTopToBottom(page);
       await expectFinished(page);
     });

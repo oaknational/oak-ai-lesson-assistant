@@ -1,11 +1,27 @@
 {
   "type": "llmMessage",
-  "sectionsToEdit": [],
-  "patches": [],
-  "sectionsEdited": [],
+  "sectionsToEdit": [
+    "additionalMaterials"
+  ],
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "Providing additional narrative support for the teacher to help deliver the lesson effectively.",
+      "value": {
+        "type": "string",
+        "op": "add",
+        "path": "/additionalMaterials",
+        "value": "## Narrative for Teacher\n\n### Introduction\n\"Today, we're going to explore an important moment in history when the Romans decided to leave Britain. Imagine the bustling Roman towns with their straight roads and grand buildings. But why would such a powerful empire decide to leave? Let's find out together!\"\n\n### Explanation of Departure\n\"The Roman Empire was like a big puzzle, with many pieces that needed to fit together. Over time, some pieces started to fall apart due to problems inside the Empire and attacks from outside. The Romans needed their soldiers elsewhere, so they decided to leave Britain around AD 410.\"\n\n### Changes After Departure\n\"After the Romans left, life in Britain changed. New local leaders took charge, and while some Roman buildings started to crumble, many roads and structures remained. These changes opened a new chapter for Britain, full of challenges and opportunities.\"\n\n### Roman Influence Today\n\"Even today, we can see the Roman influence around us. Words in our language, buildings inspired by Roman designs, and even some laws trace back to the Romans. Their impact is still felt, even though they left Britain many centuries ago.\"\n\n### Key Points for Explanation\n- Use a timeline to show the events leading to the Romans' departure.\n- Discuss the reasons for leaving: internal issues and external threats.\n- Highlight the continued use of Roman roads and some buildings.\n- Explain how Roman culture influences modern Britain in language, architecture, and laws."
+      },
+      "status": "complete"
+    }
+  ],
+  "sectionsEdited": [
+    "additionalMaterials"
+  ],
   "prompt": {
     "type": "text",
-    "value": "All sections, including the Starter Quiz, Cycle 1, Cycle 2, Cycle 3, and Exit Quiz, have already been generated. Please let me know if you need any changes or if there's something specific you'd like to add or adjust. Otherwise, you can tap **Continue** to finalise the lesson plan."
+    "value": "The additional materials section has been created. Does the narrative support your teaching needs? If you have any specific requests for additional content, let me know. Otherwise, tap **Continue** to finish the lesson plan."
   },
   "status": "complete"
 }

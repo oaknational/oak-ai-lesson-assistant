@@ -1,108 +1,43 @@
 {
   "type": "llmMessage",
   "sectionsToEdit": [
-    "priorKnowledge",
-    "keyLearningPoints",
-    "misconceptions",
-    "keywords"
+    "learningOutcome",
+    "learningCycles"
   ],
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Identifying core knowledge pupils should have before starting this lesson on Roman Britain.",
+      "reasoning": "Creating a new lesson from scratch as there are no existing Oak lessons for this topic.",
+      "value": {
+        "type": "string",
+        "op": "add",
+        "path": "/learningOutcome",
+        "value": "I can describe why the Romans left Britain and what changed after their departure."
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Breaking down the learning outcome into manageable learning cycles for KS1 pupils.",
       "value": {
         "type": "string-array",
         "op": "add",
-        "path": "/priorKnowledge",
+        "path": "/learningCycles",
         "value": [
-          "The Romans once ruled Britain.",
-          "Roman roads were used for transportation.",
-          "Romans built structures like Hadrian's Wall.",
-          "Britain was part of the Roman Empire.",
-          "Romans influenced Britain's culture and language."
-        ]
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Outlining the key learning points that will be covered in the lesson about the end of Roman Britain.",
-      "value": {
-        "type": "string-array",
-        "op": "add",
-        "path": "/keyLearningPoints",
-        "value": [
-          "The Roman Empire left Britain around AD 410.",
-          "Roman departure led to changes in governance and defence.",
-          "Daily life in Britain was impacted by the absence of Roman organisation.",
-          "New groups, like the Saxons, began to settle in Britain.",
-          "Roman structures and roads were left behind."
-        ]
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Addressing common misconceptions about the end of Roman Britain to ensure accurate understanding.",
-      "value": {
-        "type": "misconceptions",
-        "op": "add",
-        "path": "/misconceptions",
-        "value": [
-          {
-            "misconception": "Romans were forced out of Britain immediately",
-            "description": "Romans gradually left Britain over time due to pressures elsewhere in the Empire."
-          },
-          {
-            "misconception": "All Roman influence disappeared instantly",
-            "description": "Roman culture and infrastructure influenced Britain long after the Romans left."
-          }
-        ]
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Defining key vocabulary terms to be introduced and used throughout the lesson.",
-      "value": {
-        "type": "keywords",
-        "op": "add",
-        "path": "/keywords",
-        "value": [
-          {
-            "keyword": "Empire",
-            "definition": "A group of countries or regions controlled by one ruler or one government."
-          },
-          {
-            "keyword": "Saxon",
-            "definition": "A member of a Germanic people who settled in Britain after the Romans left."
-          },
-          {
-            "keyword": "Infrastructure",
-            "definition": "The basic physical and organizational structures needed for the operation of a society."
-          },
-          {
-            "keyword": "Governance",
-            "definition": "The way that a city, country, or company is controlled by the people who run it."
-          },
-          {
-            "keyword": "Departure",
-            "definition": "The act of leaving, especially to start a journey."
-          }
+          "Identify the reasons why the Romans left Britain.",
+          "Describe the changes in Britain after the Roman departure."
         ]
       },
       "status": "complete"
     }
   ],
   "sectionsEdited": [
-    "priorKnowledge",
-    "keyLearningPoints",
-    "misconceptions",
-    "keywords"
+    "learningOutcome",
+    "learningCycles"
   ],
   "prompt": {
     "type": "text",
-    "value": "Are the prior knowledge, key learning points, misconceptions, and keywords sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."
+    "value": "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step."
   },
   "status": "complete"
 }

@@ -153,47 +153,22 @@ test(
     await test.step("Iterate through the fixtures", async () => {
       await page.waitForURL(/\/aila\/.+/);
 
-      await waitForGeneration(page, generationTimeout);
-      await expectPreviewVisible(page);
-      //await expectSectionsComplete(page, 3);
-      await closePreview(page);
-      await expectStreamingStatus(page, "Idle", { timeout: 5000 });
-      await letUiSettle(page, testInfo);
+      const maxIterations = 10;
 
-      setFixture("roman-britain-2");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectPreviewVisible(page);
-      //await expectSectionsComplete(page, 7);
-      await closePreview(page);
-      await expectStreamingStatus(page, "Idle", { timeout: 5000 });
-      await letUiSettle(page, testInfo);
+      for (let i = 2; i <= maxIterations; i++) {
+        await waitForGeneration(page, generationTimeout);
+        await expectPreviewVisible(page);
 
-      setFixture("roman-britain-3");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectPreviewVisible(page);
-      //await expectSectionsComplete(page, 10);
-      await closePreview(page);
-      await expectStreamingStatus(page, "Idle", { timeout: 5000 });
-      await letUiSettle(page, testInfo);
+        await expectStreamingStatus(page, "Idle", { timeout: 5000 });
+        await letUiSettle(page, testInfo);
 
-      setFixture("roman-britain-4");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectPreviewVisible(page);
-      //await expectSectionsComplete(page, 10);
-      await closePreview(page);
-      await expectStreamingStatus(page, "Idle", { timeout: 5000 });
-      await letUiSettle(page, testInfo);
-
-      setFixture("roman-britain-5");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectPreviewVisible(page);
-      //await expectSectionsComplete(page, 10);
-      await expectStreamingStatus(page, "Idle", { timeout: 5000 });
-      await letUiSettle(page, testInfo);
+        if (await isFinished(page)) {
+          break;
+        }
+        await closePreview(page);
+        setFixture(`roman-britain-${i}`);
+        await continueChat(page);
+      }
       await scrollLessonPlanFromTopToBottom(page);
       await expectFinished(page);
     });
