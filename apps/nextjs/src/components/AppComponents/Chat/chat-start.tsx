@@ -87,17 +87,12 @@ export function ChatStart() {
     [create, setDialogWindow, demo.isDemoUser, setIsSubmitting],
   );
 
-  const handleSubmit = useCallback(() => {
-    return submit;
-  }, [submit]);
-
-  const interstitialSubmit = useCallback(async () => {
-    await create(input);
-  }, [create, input]);
-
-  const handleInterstitialSubmit = useCallback(() => {
-    return interstitialSubmit;
-  }, [interstitialSubmit]);
+  const handleSubmit = useCallback(
+    (message: string) => {
+      void submit(message);
+    },
+    [submit],
+  );
 
   const handleExampleMessage = useCallback(
     async (message: ExampleMessage) => {
@@ -105,7 +100,6 @@ export function ChatStart() {
       setInput(message.message);
       setIsSubmitting(true);
       await submit(message.message);
-      setIsSubmitting(false);
     },
     [trackEvent, setInput, submit, setIsSubmitting],
   );
