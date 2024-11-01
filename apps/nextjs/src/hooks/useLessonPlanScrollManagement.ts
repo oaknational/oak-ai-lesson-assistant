@@ -3,6 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 
+import type { AilaStreamingStatus } from "@/components/AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
+
 const log = aiLogger("lessons");
 
 const SCROLLING_ENABLED = true;
@@ -10,13 +12,10 @@ const SCROLLING_ENABLED = true;
 export const useLessonPlanScrollManagement = (
   streamingSection: LessonPlanKeys | undefined,
   streamingSectionCompleted: LessonPlanKeys | undefined,
+  streamingStatus: AilaStreamingStatus,
 ) => {
-  const [recentlyScrolledSection, setRecentlyScrolledSection] = useState<
-    LessonPlanKeys | undefined
-  >(undefined);
-
-  const [userHasCancelledAutoScroll, setUserHasCancelledAutoScroll] =
-    useState(false);
+  const recentlyScrolledSectionRef = useRef<LessonPlanKeys | null>(null);
+  const userHasCancelledAutoScrollRef = useRef(false);
 
   const sectionRefs = useRef<
     Record<LessonPlanKeys, React.MutableRefObject<HTMLDivElement | null>>
@@ -50,41 +49,83 @@ export const useLessonPlanScrollManagement = (
   const scrollQueueRef = useRef<LessonPlanKeys[]>([]);
   const activeScrollRef = useRef<LessonPlanKeys | null>(null);
 
+  // Scroll to a section based on the section key
+  const performScrollToSection = useCallback((section: LessonPlanKeys) => {
+    log.info("Perform scroll to section", section);
+    const sectionRef = sectionRefs?.current[section];
+
+    if (sectionRef?.current) {
+      const scrollableParent = document.querySelector(
+        '[data-testid="chat-right-hand-side-lesson"]',
+      ) as HTMLElement;
+
+      if (scrollableParent && sectionRef?.current) {
+        activeScrollRef.current = section;
+        const parentRect = scrollableParent.getBoundingClientRect();
+        const sectionRect = sectionRef.current.getBoundingClientRect();
+        const targetScrollPosition =
+          sectionRect.top - parentRect.top + scrollableParent.scrollTop - 160;
+
+        log.info("Scrolling to", section, targetScrollPosition);
+        scrollableParent.scrollTo({
+          top: targetScrollPosition,
+          behavior: "smooth",
+        });
+        recentlyScrolledSectionRef.current = section;
+
+        const handleScrollEnd = () => {
+          if (activeScrollRef.current === section) {
+            activeScrollRef.current = null;
+          }
+        };
+
+        scrollableParent.addEventListener("scroll", handleScrollEnd);
+
+        return () => {
+          scrollableParent.removeEventListener("scroll", handleScrollEnd);
+        };
+      }
+    }
+  }, []);
+
   const processScrollQueue = useCallback(() => {
-    if (
-      activeScrollRef.current ||
-      scrollQueueRef.current.length === 0 ||
-      userHasCancelledAutoScroll
-    ) {
+    if (scrollQueueRef.current.length === 0) {
+      // There is nothing to scroll to
+      //log.info("Skipping scroll - nothing to scroll to");
+      return;
+    }
+    if (userHasCancelledAutoScrollRef.current) {
+      // The user has scrolled manually
+      return;
+    }
+    if (activeScrollRef.current) {
+      log.info(
+        "Skipping scroll - already scrolling to",
+        activeScrollRef.current,
+      );
+      // We are in the middle of scrolling to a section
       return;
     }
 
     const section = scrollQueueRef.current.shift();
-    activeScrollRef.current = section || null;
 
     if (section) {
-      const sectionRef = sectionRefs.current[section];
-
-      if (sectionRef && sectionRef.current) {
-        const scrollableParent = document.querySelector(
-          '[data-testid="chat-right-hand-side-lesson"]',
-        ) as HTMLElement;
-
-        if (scrollableParent && sectionRef.current) {
-          const parentRect = scrollableParent.getBoundingClientRect();
-          const sectionRect = sectionRef.current.getBoundingClientRect();
-          const targetScrollPosition =
-            sectionRect.top - parentRect.top + scrollableParent.scrollTop - 160;
-
-          log.info("Scrolling to", section, targetScrollPosition);
-          scrollableParent.scrollTo({
-            top: targetScrollPosition,
-            behavior: "smooth",
-          });
-        }
-      }
+      performScrollToSection(section);
     }
-  }, [userHasCancelledAutoScroll]);
+  }, [performScrollToSection]);
+
+  // Trigger processing the scroll queue
+  useEffect(() => {
+    if (streamingStatus === "StreamingLessonPlan") {
+      const intervalId = setInterval(() => {
+        processScrollQueue();
+      }, 200);
+
+      return () => {
+        clearInterval(intervalId);
+      };
+    }
+  }, [processScrollQueue, streamingStatus]);
 
   const scrollToSection = useCallback(
     (section: LessonPlanKeys) => {
@@ -92,60 +133,46 @@ export const useLessonPlanScrollManagement = (
         log.info("Skipping scrolling: scrolling is disabled");
         return;
       }
-      if (section === recentlyScrolledSection) {
+      if (section === recentlyScrolledSectionRef.current) {
         log.info("Skipping scrolling: it's the recent section we scrolled to");
-        return;
-      }
-      if (userHasCancelledAutoScroll) {
-        log.info("Skipping scrolling: user has cancelled auto scroll");
         return;
       }
 
       scrollQueueRef.current.push(section);
-      setRecentlyScrolledSection(section);
+      recentlyScrolledSectionRef.current = section;
     },
-    [
-      scrollQueueRef,
-      userHasCancelledAutoScroll,
-      recentlyScrolledSection,
-      setRecentlyScrolledSection,
-    ],
+    [scrollQueueRef],
   );
 
+  // Store the fact the user has scrolled
   const handleUserScroll = useCallback(() => {
-    setUserHasCancelledAutoScroll(true);
+    userHasCancelledAutoScrollRef.current = true;
+  }, []);
 
-    const timeoutId = setTimeout(() => {
+  // Cancel the fact the user has scrolled after a delay
+  useEffect(() => {
+    const debounce = (func: () => void, delay: number) => {
+      let timeoutId: NodeJS.Timeout;
+      return () => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(func, delay);
+      };
+    };
+
+    const debouncedReenableScroll = debounce(() => {
       log.info("Re-enabling auto scroll");
-      setUserHasCancelledAutoScroll(false);
+      userHasCancelledAutoScrollRef.current = false;
     }, 5000);
 
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [setUserHasCancelledAutoScroll]);
-
-  useEffect(() => {
-    window.addEventListener("wheel", handleUserScroll);
+    window.addEventListener("wheel", () => {
+      handleUserScroll();
+      debouncedReenableScroll();
+    });
 
     return () => {
       window.removeEventListener("wheel", handleUserScroll);
     };
   }, [handleUserScroll]);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (activeScrollRef.current) {
-        activeScrollRef.current = null;
-      } else {
-        processScrollQueue();
-      }
-    }, 500);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [processScrollQueue]);
 
   useEffect(() => {
     if (
