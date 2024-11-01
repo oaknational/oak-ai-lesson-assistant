@@ -3,77 +3,456 @@ type":"
 ll
 m
 Message
-","sectionsToEdit":[]
-,"patches":[]
-,"sectionsEdited":[]
-,"prompt":{"
+","sectionsToEdit":["
+additional
+Materials
+"],"patches":[
+{"
+type":"
+patch
+","reasoning":"
+Providing
+ additional
+ materials
+ in
+ the
+ form
+ of
+ a
+ narrative
+ script
+ helps
+ teachers
+ deliver
+ the
+ lesson
+ with
+ historical
+ context
+ and
+ clarity
+.","
+value":{"
+type":"
+string
+","op":"
+add
+","path":"/
+additional
+Materials
+","value":"
+##
+ Narrative
+ Script
+ for
+ Teacher
+\n
+\n
+**
+Introduction
+ to
+ the
+ End
+ of
+ Roman
+ Britain
+**
+ 
+ \
+n
+\"
+Today
+,
+ we
+ are
+ going
+ to
+ learn
+ about
+ a
+ very
+ important
+ time
+ in
+ history
+ when
+ the
+ Romans
+ decided
+ to
+ leave
+ Britain
+.
+ Imagine
+ you
+ are
+ living
+ in
+ a
+ land
+ with
+ incredible
+ Roman
+ buildings
+,
+ roads
+,
+ and
+ soldiers
+ everywhere
+.
+ But
+ suddenly
+,
+ the
+ soldiers
+ are
+ called
+ away
+ to
+ other
+ parts
+ of
+ the
+ Roman
+ Empire
+.
+ Why
+ did
+ this
+ happen
+?
+ Let's
+ find
+ out
+ together
+!
+\"\
+n
+\n
+**
+Reasons
+ for
+ Roman
+ Departure
+**
+ 
+ \
+n
+\"
+The
+ Roman
+ Empire
+ was
+ very
+ large
+,
+ stretching
+ across
+ much
+ of
+ Europe
+.
+ But
+,
+ other
+ groups
+ started
+ to
+ attack
+ parts
+ of
+ the
+ Empire
+,
+ and
+ the
+ Roman
+ soldiers
+ were
+ needed
+ elsewhere
+.
+ It
+ wasn't
+ just
+ one
+ big
+ battle
+ that
+ made
+ them
+ leave
+;
+ it
+ was
+ a
+ lot
+ of
+ little
+ problems
+ that
+ added
+ up
+.
+\"\
+n
+\n
+**
+Life
+ After
+ the
+ Romans
+**
+ 
+ \
+n
+\"
+After
+ the
+ Romans
+ left
+,
+ Britain
+ was
+ quite
+ different
+.
+ New
+ people
+,
+ like
+ the
+ Sax
+ons
+,
+ came
+ to
+ settle
+.
+ They
+ used
+ the
+ Roman
+ roads
+ and
+ buildings
+,
+ but
+ changed
+ them
+ to
+ suit
+ their
+ needs
+.
+ Imagine
+ taking
+ over
+ a
+ big
+ fort
+ and
+ making
+ it
+ your
+ new
+ home
+!
+\"\
+n
+\n
+**
+Understanding
+ Through
+ Archae
+ology
+**
+ 
+ \
+n
+\"
+Ar
+chae
+ologists
+ are
+ like
+ history
+ detectives
+.
+ They
+ dig
+ up
+ arte
+facts
+,
+ which
+ are
+ things
+ made
+ by
+ people
+ long
+ ago
+,
+ to
+ learn
+ about
+ how
+ people
+ lived
+.
+ Some
+ arte
+facts
+ tell
+ us
+ about
+ Roman
+ life
+,
+ while
+ others
+ show
+ us
+ how
+ the
+ Sax
+ons
+ lived
+ after
+ them
+.
+\"\
+n
+\n
+**
+Key
+ Points
+ for
+ Explanation
+**
+\n
+-
+ Roman
+ Empire
+'s
+ large
+ size
+ and
+ pressures
+ from
+ attacks
+.\
+n
+-
+ Grad
+ual
+ departure
+,
+ not
+ a
+ single
+ event
+.\
+n
+-
+ Arrival
+ of
+ Sax
+ons
+ and
+ use
+ of
+ Roman
+ infrastructure
+.\
+n
+-
+ Archae
+ologists
+'
+ role
+ in
+ uncover
+ing
+ history
+.\
+n
+\n
+**
+Image
+ Search
+ Suggestions
+:**
+\n
+-
+ Roman
+ Empire
+ map
+ pressures
+\n
+-
+ Sax
+on
+ settlements
+ post
+-R
+oman
+ Britain
+\n
+-
+ Archae
+ologists
+ excav
+ating
+ Roman
+ arte
+facts
+"},"status":"
+complete
+"}],"sectionsEdited":["
+additional
+Materials
+"],"prompt":{"
 type":"
 text
 ","value":"
-All
- sections
-,
- including
+Is
  the
- Starter
- Quiz
+ additional
+ materials
+ section
+ suitable
+ for
+ supporting
+ your
+ lesson
+ delivery
+?
+ If
+ not
 ,
- Cycle
- 
-1
-,
- Cycle
- 
-2
-,
- Cycle
- 
-3
-,
- and
- Exit
- Quiz
-,
- have
- already
- been
- generated
-.
- Please
  let
  me
  know
- if
- you
- need
- any
- changes
- or
- if
- there's
- something
- specific
- you'd
- like
+ what
  to
- add
- or
- adjust
+ change
 .
  Otherwise
 ,
- you
- can
  tap
  **
 Continue
 **
  to
- final
-ise
+ move
+ on
+ to
  the
- lesson
- plan
+ next
+ step
 ."
 },"status":"
 complete

@@ -1,27 +1,318 @@
 {
   "type": "llmMessage",
   "sectionsToEdit": [
-    "additionalMaterials"
+    "starterQuiz",
+    "cycle1",
+    "cycle2",
+    "cycle3",
+    "exitQuiz"
   ],
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Providing additional materials to support the delivery of the lesson on Roman Britain.",
+      "reasoning": "The Starter Quiz is designed to assess pupils' understanding of the prior knowledge needed for the lesson.",
       "value": {
-        "type": "string",
+        "type": "quiz",
         "op": "add",
-        "path": "/additionalMaterials",
-        "value": "## Narrative Script for Teacher\n\nGood morning, class! Today, we're going to talk about an important time in history when the Romans decided to leave Britain. Around AD 410, the Roman soldiers had to leave because they were needed in other parts of the Roman Empire. Imagine the Romans like a big team that played in many different places, and they needed their best players in other games.\n\nWith the Romans gone, local leaders in Britain had to figure out how to take care of everything themselves. This was a big change! The roads and buildings the Romans built started to become less used and not as well maintained. New groups, like the Saxons, started to come and live in Britain, bringing their own ways of doing things.\n\nEven though the Romans left, their influence didn't disappear overnight. Many of the things they brought with them, like certain words and roads, stayed around for a long time. So, today, we're going to explore how these changes affected the daily lives of people in Britain.\n\n### Key Points to Include in Explanation\n- Romans left Britain around AD 410 due to pressures elsewhere.\n- Local leaders took over governance.\n- Roman infrastructure began to decline.\n- New groups, such as the Saxons, settled in Britain.\n- Roman cultural influences persisted."
+        "path": "/starterQuiz",
+        "value": [
+          {
+            "question": "How long did the Romans rule Britain?",
+            "answers": [
+              "Around 400 years"
+            ],
+            "distractors": [
+              "Around 200 years",
+              "Around 600 years"
+            ]
+          },
+          {
+            "question": "What did Roman roads connect?",
+            "answers": [
+              "Towns and cities across Britain"
+            ],
+            "distractors": [
+              "Only London and Rome",
+              "Only military forts"
+            ]
+          },
+          {
+            "question": "Which empire was Britain part of during Roman rule?",
+            "answers": [
+              "The Roman Empire"
+            ],
+            "distractors": [
+              "The Greek Empire",
+              "The Egyptian Empire"
+            ]
+          },
+          {
+            "question": "What did Roman soldiers build for protection?",
+            "answers": [
+              "Forts and walls"
+            ],
+            "distractors": [
+              "Castles and moats",
+              "Bridges and tunnels"
+            ]
+          },
+          {
+            "question": "What did the Roman Empire include?",
+            "answers": [
+              "Many modern countries"
+            ],
+            "distractors": [
+              "Only Italy",
+              "Only islands"
+            ]
+          },
+          {
+            "question": "Who ruled Britain before the Saxons?",
+            "answers": [
+              "The Romans"
+            ],
+            "distractors": [
+              "The Normans",
+              "The Vikings"
+            ]
+          }
+        ]
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Cycle 1 introduces the reasons behind the Roman departure from Britain, with an explanation, checks for understanding, practice task, and feedback.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle1",
+        "value": {
+          "title": "Reasons for Roman Departure",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Explain why the Roman Empire was under pressure from attacks by various tribes.",
+              "Describe how the Roman army was needed elsewhere in the Empire, leading to their withdrawal from Britain.",
+              "Discuss the impact of these pressures on the Roman Empire's ability to maintain control over distant territories.",
+              "Highlight the gradual nature of the Roman departure rather than a single event.",
+              "Mention the logistical challenges faced by the Romans in maintaining their hold on Britain."
+            ],
+            "accompanyingSlideDetails": "A map showing the Roman Empire and the pressures from invading tribes.",
+            "imagePrompt": "Roman Empire map pressures",
+            "slideText": "The Roman army left Britain due to pressures in other parts of the Empire, not defeat in Britain."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "Why did the Romans leave Britain?",
+              "answers": [
+                "Pressure from other parts of the Empire"
+              ],
+              "distractors": [
+                "Defeat in Britain",
+                "Allies in Britain"
+              ]
+            },
+            {
+              "question": "What was a logistical challenge for the Romans?",
+              "answers": [
+                "Maintaining control over distant territories"
+              ],
+              "distractors": [
+                "Building new forts",
+                "Increasing trade in Britain"
+              ]
+            }
+          ],
+          "practice": "List three reasons why the Romans left Britain and explain one in detail.",
+          "feedback": "Model answer: The Romans left due to pressures from tribes, the need for soldiers elsewhere, and logistical challenges. Detailed explanation: The Roman army was needed to defend other parts of the Empire."
+        }
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Cycle 2 focuses on describing changes in Britain after the Romans left, with structured explanation and practice.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle2",
+        "value": {
+          "title": "Changes in Post-Roman Britain",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Describe how Britain was left without Roman protection and governance.",
+              "Explain the arrival of new groups, including the Saxons, into Britain.",
+              "Discuss the decline of Roman infrastructure and how it was repurposed.",
+              "Mention the cultural and societal changes that began to occur.",
+              "Highlight the role of local leaders in filling the power vacuum left by the Romans."
+            ],
+            "accompanyingSlideDetails": "Illustrations of Saxon settlements and repurposed Roman structures.",
+            "imagePrompt": "Saxon settlements post-Roman Britain",
+            "slideText": "Britain changed significantly after the Romans left, with new groups settling and Roman structures repurposed."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "What happened to Roman structures after they left?",
+              "answers": [
+                "They were repurposed by new settlers"
+              ],
+              "distractors": [
+                "They were destroyed",
+                "They were taken back to Rome"
+              ]
+            },
+            {
+              "question": "Who began settling in Britain after the Romans?",
+              "answers": [
+                "The Saxons"
+              ],
+              "distractors": [
+                "The Normans",
+                "The Egyptians"
+              ]
+            }
+          ],
+          "practice": "Draw a picture showing a Saxon settlement using a Roman road or building. Label the features.",
+          "feedback": "Success criteria: Includes a Saxon settlement, Roman road/building, and labels indicating repurposed structures."
+        }
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Cycle 3 explores how archaeologists learn about this period, incorporating explanation, checks, and a practical task.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle3",
+        "value": {
+          "title": "Archaeologists and Their Discoveries",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Define what an archaeologist does and how they study the past.",
+              "Explain the types of artefacts found from the Roman and Saxon periods.",
+              "Describe the process of excavation and analysis used by archaeologists.",
+              "Highlight some key discoveries that have informed our understanding of this period.",
+              "Discuss how these findings help us piece together historical narratives."
+            ],
+            "accompanyingSlideDetails": "Images of archaeologists excavating Roman artefacts.",
+            "imagePrompt": "Archaeologists excavating Roman artefacts",
+            "slideText": "Archaeologists learn about the past by studying artefacts and excavating historical sites."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "What do archaeologists study to learn about the past?",
+              "answers": [
+                "Artefacts"
+              ],
+              "distractors": [
+                "Modern buildings",
+                "Fictional stories"
+              ]
+            },
+            {
+              "question": "What is one method archaeologists use?",
+              "answers": [
+                "Excavation"
+              ],
+              "distractors": [
+                "Painting",
+                "Cooking"
+              ]
+            }
+          ],
+          "practice": "Match pictures of artefacts to descriptions of what they tell us about Roman or Saxon life.",
+          "feedback": "Model answer: Artefact A shows Roman pottery used for cooking, Artefact B is a Saxon tool for farming."
+        }
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "The Exit Quiz assesses pupils' understanding of key concepts learned during the lesson.",
+      "value": {
+        "type": "quiz",
+        "op": "add",
+        "path": "/exitQuiz",
+        "value": [
+          {
+            "question": "When did the Roman army leave Britain?",
+            "answers": [
+              "Around AD 410"
+            ],
+            "distractors": [
+              "Around AD 500",
+              "Around AD 300"
+            ]
+          },
+          {
+            "question": "Who began settling in Britain after the Romans left?",
+            "answers": [
+              "The Saxons"
+            ],
+            "distractors": [
+              "The Normans",
+              "The Vikings"
+            ]
+          },
+          {
+            "question": "What role do archaeologists play in learning about this period?",
+            "answers": [
+              "They study artefacts"
+            ],
+            "distractors": [
+              "They write stories",
+              "They build monuments"
+            ]
+          },
+          {
+            "question": "What did new groups do with Roman structures?",
+            "answers": [
+              "Repurposed them"
+            ],
+            "distractors": [
+              "Destroyed them",
+              "Ignored them"
+            ]
+          },
+          {
+            "question": "What pressures led to the Roman departure from Britain?",
+            "answers": [
+              "Need for soldiers elsewhere"
+            ],
+            "distractors": [
+              "Peace in the Empire",
+              "Trade opportunities"
+            ]
+          },
+          {
+            "question": "What is an artefact?",
+            "answers": [
+              "An object made or used by people in the past"
+            ],
+            "distractors": [
+              "A natural rock formation",
+              "A modern invention"
+            ]
+          }
+        ]
       },
       "status": "complete"
     }
   ],
   "sectionsEdited": [
-    "additionalMaterials"
+    "starterQuiz",
+    "cycle1",
+    "cycle2",
+    "cycle3",
+    "exitQuiz"
   ],
   "prompt": {
     "type": "text",
-    "value": "Are the additional materials suitable for your lesson? If you need any changes or additional support, let me know. Otherwise, tap **Continue** to finish the lesson plan."
+    "value": "Are the starter quiz, learning cycles, and exit quiz suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."
   },
   "status": "complete"
 }

@@ -252,7 +252,10 @@ const InChatDownloadButtons = ({
           <InnerInChatButton iconName="download">Download</InnerInChatButton>
         </Link>
       )}
-      <button onClick={handleShareButtonClick}>
+      <button
+        onClick={handleShareButtonClick}
+        data-testid="in-chat-share-button"
+      >
         <InnerInChatButton iconName="share">Share</InnerInChatButton>
       </button>
     </OakFlex>

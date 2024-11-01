@@ -1,14 +1,14 @@
 {
-  "id": "chatcmpl-AO6OEeGtJM9S8FOqoOkinESJEcvs3",
+  "id": "chatcmpl-AOoC8U2Xge2aOrNsWqu82N3xTL82t",
   "object": "chat.completion",
-  "created": 1730307798,
+  "created": 1730476184,
   "model": "gpt-4o-2024-08-06",
   "choices": [
     {
       "index": 0,
       "message": {
         "role": "assistant",
-        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan is fully compliant across all categories. It does not contain any discriminatory, offensive, or strong language, and there is no depiction or discussion of violence, sensitive, or distressing content. There is no nudity or sexual content included. The physical activity and safety aspects are not involved, as the lesson focuses on history without requiring equipment or physical exploration. Finally, there is no content related to toxic behavior or harmful instructions. The content is appropriate for Key Stage 1, focusing on historical facts and their impact on daily life without delving into sensitive or disturbing topics.\",\"categories\":[]}",
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":4,\"t\":5},\"justification\":\"The lesson plan for 'The End of Roman Britain' is appropriate for Key Stage 1 students. It does not contain any discriminatory language, offensive language, strong language, or depictions of violence or sensitive topics (scores of 5 in 'Language and discrimination,' 'Violence and crime,' 'Upsetting, disturbing and sensitive,' and 'Nudity and sex' categories). The focus is on historical events and archaeological methods, with no inclusion of harmful or illegal activities ('Toxic' score of 5). However, the 'Physical' category scores a 4 due to the suggestion of a drawing activity and the mention of external content, which may involve external images or resources. This requires minimal adult supervision to ensure safety and appropriate use of materials.\",\"categories\":[\"p/external-content\",\"p/physical-activity\"]}",
         "refusal": null
       },
       "logprobs": null,
@@ -16,11 +16,11 @@
     }
   ],
   "usage": {
-    "prompt_tokens": 3996,
-    "completion_tokens": 149,
-    "total_tokens": 4145,
+    "prompt_tokens": 3806,
+    "completion_tokens": 196,
+    "total_tokens": 4002,
     "prompt_tokens_details": {
-      "cached_tokens": 3584
+      "cached_tokens": 2432
     },
     "completion_tokens_details": {
       "reasoning_tokens": 0

@@ -4,111 +4,77 @@ ll
 m
 Message
 ","sectionsToEdit":["
-prior
-Knowledge
+learning
+Outcome
 ","
-key
-Learning
-Points
-","
-mis
-con
-ceptions
-","
-keywords
+learning
+Cycles
 "],"patches":[
 {"
 type":"
 patch
 ","reasoning":"
-Ident
-ifying
- core
- knowledge
- pupils
- should
+I
  have
- before
- starting
- this
+ created
+ a
+ new
  lesson
- on
- Roman
- Britain
+ from
+ scratch
+ as
+ there
+ are
+ no
+ existing
+ Oak
+ lessons
+ available
+ for
+ this
+ topic
 .","
 value":{"
 type":"
 string
--array
 ","op":"
 add
 ","path":"/
-prior
-Knowledge
-","value":["
-The
- Romans
- once
- ruled
- Britain
-.","
-Roman
- roads
- were
- used
- for
- transportation
-.","
-Romans
- built
- structures
- like
- Had
-rian
-'s
- Wall
-.","
-Brit
-ain
- was
- part
- of
+learning
+Outcome
+","value":"
+I
+ can
+ describe
+ what
+ happened
+ when
  the
- Roman
- Empire
-.","
-Romans
- influenced
- Britain's
- culture
- and
- language
-.
-"]},"status":"
+ Romans
+ left
+ Britain
+."
+},"status":"
 complete
 "},{"
 type":"
 patch
 ","reasoning":"
-Out
-lining
+I
+ have
+ outlined
  the
- key
  learning
- points
- that
- will
- be
- covered
- in
+ cycles
+ to
+ structure
  the
  lesson
- about
- the
- end
- of
- Roman
- Britain
+ effectively
+ for
+ KS
+1
+ pupils
 .","
 value":{"
 type":"
@@ -117,313 +83,66 @@ string
 ","op":"
 add
 ","path":"/
-key
-Learning
-Points
+learning
+Cycles
 ","value":["
-The
- Roman
- Empire
+Identify
+ reasons
+ why
+ the
+ Romans
  left
  Britain
- around
- AD
- 
-410
 .","
-Roman
- departure
- led
- to
+Describe
+ the
  changes
  in
- governance
- and
- defence
-.","
-Daily
- life
- in
  Britain
- was
- impacted
- by
+ after
  the
- absence
- of
- Roman
- organisation
-.","
-New
- groups
-,
- like
- the
- Sax
-ons
-,
- began
- to
- settle
- in
- Britain
-.","
-Roman
- structures
- and
- roads
- were
+ Romans
  left
- behind
+.","
+Discuss
+ how
+ archae
+ologists
+ learn
+ about
+ this
+ period
 .
 "]},"status":"
 complete
-"},{"
-type":"
-patch
-","reasoning":"
-Address
-ing
- common
- misconceptions
- about
- the
- end
- of
- Roman
- Britain
- to
- ensure
- accurate
- understanding
-.","
-value":{"
-type":"
-mis
-con
-ceptions
-","op":"
-add
-","path":"/
-mis
-con
-ceptions
-","value":[
-{"
-misconception":"
-Romans
- were
- forced
- out
- of
- Britain
- immediately
-","description":"
-Romans
- gradually
- left
- Britain
- over
- time
- due
- to
- pressures
- elsewhere
- in
- the
- Empire
-."
-},{"
-misconception":"
-All
- Roman
- influence
- disappeared
- instantly
-","description":"
-Roman
- culture
- and
- infrastructure
- influenced
- Britain
- long
- after
- the
- Romans
- left
-."
-}]},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Def
-ining
- key
- vocabulary
- terms
- to
- be
- introduced
- and
- used
- throughout
- the
- lesson
-.","
-value":{"
-type":"
-keywords
-","op":"
-add
-","path":"/
-keywords
-","value":[
-{"
-keyword":"
-Empire
-","definition":"
-A
- group
- of
- countries
- or
- regions
- controlled
- by
- one
- ruler
- or
- one
- government
-."
-},{"
-keyword":"
-S
-axon
-","definition":"
-A
- member
- of
- a
- German
-ic
- people
- who
- settled
- in
- Britain
- after
- the
- Romans
- left
-."
-},{"
-keyword":"
-Infrastructure
-","definition":"
-The
- basic
- physical
- and
- organizational
- structures
- needed
- for
- the
- operation
- of
- a
- society
-."
-},{"
-keyword":"
-Govern
-ance
-","definition":"
-The
- way
- that
- a
- city
-,
- country
-,
- or
- company
- is
- controlled
- by
- the
- people
- who
- run
- it
-."
-},{"
-keyword":"
-Departure
-","definition":"
-The
- act
- of
- leaving
-,
- especially
- to
- start
- a
- journey
-."
-}]},"status":"
-complete
 "}],"sectionsEdited":["
-prior
-Knowledge
+learning
+Outcome
 ","
-key
-Learning
-Points
-","
-mis
-con
-ceptions
-","
-keywords
+learning
+Cycles
 "],"prompt":{"
 type":"
 text
 ","value":"
 Are
  the
- prior
- knowledge
-,
- key
  learning
- points
-,
- misconceptions
-,
+ outcome
  and
- keywords
- sections
- suitable
+ learning
+ cycles
+ appropriate
  for
  your
- class
+ pupils
 ?
  If
  not
 ,
- reply
- with
- what
- I
- should
- change
+ suggest
+ an
+ edit
 .
  Otherwise
 ,

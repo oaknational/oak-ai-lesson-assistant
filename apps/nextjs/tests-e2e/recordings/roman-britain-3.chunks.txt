@@ -4,333 +4,1187 @@ ll
 m
 Message
 ","sectionsToEdit":["
-additional
-Materials
+starter
+Quiz
+","
+cycle
+1
+","
+cycle
+2
+","
+cycle
+3
+","
+exit
+Quiz
 "],"patches":[
 {"
 type":"
 patch
 ","reasoning":"
-Providing
- additional
- materials
+The
+ Starter
+ Quiz
+ is
+ designed
  to
- support
- the
- delivery
+ assess
+ pupils
+'
+ understanding
  of
  the
+ prior
+ knowledge
+ needed
+ for
+ the
  lesson
- on
- Roman
- Britain
 .","
 value":{"
 type":"
-string
+quiz
 ","op":"
 add
 ","path":"/
-additional
-Materials
-","value":"
-##
- Narrative
- Script
- for
- Teacher
-\n
-\n
-Good
- morning
-,
- class
-!
- Today
-,
- we're
- going
- to
- talk
- about
- an
- important
- time
- in
- history
- when
+starter
+Quiz
+","value":[
+{"
+question":"
+How
+ long
+ did
  the
  Romans
- decided
- to
- leave
+ rule
  Britain
-.
- Around
- AD
+?
+","answers":["
+Around
  
-410
-,
- the
+400
+ years
+"],"distractors":["
+Around
+ 
+200
+ years
+","
+Around
+ 
+600
+ years
+"]},{"
+question":"
+What
+ did
+ Roman
+ roads
+ connect
+?
+","answers":["
+T
+owns
+ and
+ cities
+ across
+ Britain
+"],"distractors":["
+Only
+ London
+ and
+ Rome
+","
+Only
+ military
+ forts
+"]},{"
+question":"
+Which
+ empire
+ was
+ Britain
+ part
+ of
+ during
+ Roman
+ rule
+?
+","answers":["
+The
+ Roman
+ Empire
+"],"distractors":["
+The
+ Greek
+ Empire
+","
+The
+ Egyptian
+ Empire
+"]},{"
+question":"
+What
+ did
  Roman
  soldiers
- had
- to
- leave
- because
- they
- were
+ build
+ for
+ protection
+?
+","answers":["
+F
+orts
+ and
+ walls
+"],"distractors":["
+Cast
+les
+ and
+ mo
+ats
+","
+Br
+idges
+ and
+ tunnels
+"]},{"
+question":"
+What
+ did
+ the
+ Roman
+ Empire
+ include
+?
+","answers":["
+Many
+ modern
+ countries
+"],"distractors":["
+Only
+ Italy
+","
+Only
+ islands
+"]},{"
+question":"
+Who
+ ruled
+ Britain
+ before
+ the
+ Sax
+ons
+?
+","answers":["
+The
+ Romans
+"],"distractors":["
+The
+ Norm
+ans
+","
+The
+ Vikings
+"]}]},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Cycle
+ 
+1
+ introduces
+ the
+ reasons
+ behind
+ the
+ Roman
+ departure
+ from
+ Britain
+,
+ with
+ an
+ explanation
+,
+ checks
+ for
+ understanding
+,
+ practice
+ task
+,
+ and
+ feedback
+.","
+value":{"
+type":"
+cycle
+","op":"
+add
+","path":"/
+cycle
+1
+","value":{"
+title":"
+Reasons
+ for
+ Roman
+ Departure
+","durationInMinutes":15
+,"explanation":{"
+spokenExplanation":["
+Explain
+ why
+ the
+ Roman
+ Empire
+ was
+ under
+ pressure
+ from
+ attacks
+ by
+ various
+ tribes
+.","
+Describe
+ how
+ the
+ Roman
+ army
+ was
  needed
+ elsewhere
+ in
+ the
+ Empire
+,
+ leading
+ to
+ their
+ withdrawal
+ from
+ Britain
+.","
+Discuss
+ the
+ impact
+ of
+ these
+ pressures
+ on
+ the
+ Roman
+ Empire
+'s
+ ability
+ to
+ maintain
+ control
+ over
+ distant
+ territories
+.","
+Highlight
+ the
+ gradual
+ nature
+ of
+ the
+ Roman
+ departure
+ rather
+ than
+ a
+ single
+ event
+.","
+Mention
+ the
+ logistical
+ challenges
+ faced
+ by
+ the
+ Romans
+ in
+ maintaining
+ their
+ hold
+ on
+ Britain
+."
+],"accompanyingSlideDetails":"
+A
+ map
+ showing
+ the
+ Roman
+ Empire
+ and
+ the
+ pressures
+ from
+ invading
+ tribes
+.","
+imagePrompt":"
+Roman
+ Empire
+ map
+ pressures
+","slideText":"
+The
+ Roman
+ army
+ left
+ Britain
+ due
+ to
+ pressures
  in
  other
  parts
  of
  the
- Roman
  Empire
-.
- Imagine
- the
- Romans
- like
- a
- big
- team
- that
- played
- in
- many
- different
- places
 ,
- and
- they
- needed
- their
- best
- players
- in
- other
- games
-.\
-n
-\n
-With
- the
- Romans
- gone
-,
- local
- leaders
+ not
+ defeat
  in
  Britain
- had
- to
- figure
- out
- how
- to
- take
- care
+."
+},"checkForUnderstanding":[
+{"
+question":"
+Why
+ did
+ the
+ Romans
+ leave
+ Britain
+?
+","answers":["
+Pressure
+ from
+ other
+ parts
  of
- everything
- themselves
-.
- This
+ the
+ Empire
+"],"distractors":["
+Def
+eat
+ in
+ Britain
+","
+All
+ies
+ in
+ Britain
+"]},{"
+question":"
+What
  was
  a
- big
- change
-!
- The
- roads
- and
- buildings
- the
- Romans
- built
- started
- to
- become
- less
- used
- and
- not
- as
- well
- maintained
-.
- New
- groups
-,
- like
- the
- Sax
-ons
-,
- started
- to
- come
- and
- live
- in
- Britain
-,
- bringing
- their
- own
- ways
- of
- doing
- things
-.\
-n
-\n
-Even
- though
- the
- Romans
- left
-,
- their
- influence
- didn't
- disappear
- overnight
-.
- Many
- of
- the
- things
- they
- brought
- with
- them
-,
- like
- certain
- words
- and
- roads
-,
- stayed
- around
+ logistical
+ challenge
  for
- a
- long
- time
-.
- So
-,
- today
-,
- we're
- going
- to
- explore
- how
- these
- changes
- affected
  the
- daily
- lives
- of
- people
+ Romans
+?
+","answers":["
+Maint
+aining
+ control
+ over
+ distant
+ territories
+"],"distractors":["
+Building
+ new
+ forts
+","
+Increasing
+ trade
  in
  Britain
-.\
-n
-\n
-###
- Key
- Points
- to
- Include
- in
- Explanation
-\n
--
+"]}],"practice":"
+List
+ three
+ reasons
+ why
+ the
  Romans
  left
  Britain
- around
- AD
- 
-410
+ and
+ explain
+ one
+ in
+ detail
+.","
+feedback":"
+Model
+ answer
+:
+ The
+ Romans
+ left
  due
  to
  pressures
+ from
+ tribes
+,
+ the
+ need
+ for
+ soldiers
  elsewhere
-.\
-n
--
- Local
- leaders
- took
- over
- governance
-.\
-n
--
+,
+ and
+ logistical
+ challenges
+.
+ Detailed
+ explanation
+:
+ The
  Roman
- infrastructure
- began
+ army
+ was
+ needed
  to
- decline
-.\
-n
--
- New
+ defend
+ other
+ parts
+ of
+ the
+ Empire
+."
+}},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Cycle
+ 
+2
+ focuses
+ on
+ describing
+ changes
+ in
+ Britain
+ after
+ the
+ Romans
+ left
+,
+ with
+ structured
+ explanation
+ and
+ practice
+.","
+value":{"
+type":"
+cycle
+","op":"
+add
+","path":"/
+cycle
+2
+","value":{"
+title":"
+Changes
+ in
+ Post
+-R
+oman
+ Britain
+","durationInMinutes":15
+,"explanation":{"
+spokenExplanation":["
+Describe
+ how
+ Britain
+ was
+ left
+ without
+ Roman
+ protection
+ and
+ governance
+.","
+Explain
+ the
+ arrival
+ of
+ new
  groups
 ,
- such
- as
+ including
  the
  Sax
 ons
 ,
- settled
+ into
+ Britain
+.","
+Discuss
+ the
+ decline
+ of
+ Roman
+ infrastructure
+ and
+ how
+ it
+ was
+ rep
+ur
+posed
+.","
+Mention
+ the
+ cultural
+ and
+ societal
+ changes
+ that
+ began
+ to
+ occur
+.","
+Highlight
+ the
+ role
+ of
+ local
+ leaders
+ in
+ filling
+ the
+ power
+ vacuum
+ left
+ by
+ the
+ Romans
+."
+],"accompanyingSlideDetails":"
+Illustr
+ations
+ of
+ Sax
+on
+ settlements
+ and
+ rep
+ur
+posed
+ Roman
+ structures
+.","
+imagePrompt":"
+S
+axon
+ settlements
+ post
+-R
+oman
+ Britain
+","slideText":"
+Brit
+ain
+ changed
+ significantly
+ after
+ the
+ Romans
+ left
+,
+ with
+ new
+ groups
+ settling
+ and
+ Roman
+ structures
+ rep
+ur
+posed
+."
+},"checkForUnderstanding":[
+{"
+question":"
+What
+ happened
+ to
+ Roman
+ structures
+ after
+ they
+ left
+?
+","answers":["
+They
+ were
+ rep
+ur
+posed
+ by
+ new
+ settlers
+"],"distractors":["
+They
+ were
+ destroyed
+","
+They
+ were
+ taken
+ back
+ to
+ Rome
+"]},{"
+question":"
+Who
+ began
+ settling
  in
  Britain
-.\
-n
--
+ after
+ the
+ Romans
+?
+","answers":["
+The
+ Sax
+ons
+"],"distractors":["
+The
+ Norm
+ans
+","
+The
+ Egyptians
+"]}],"practice":"
+Draw
+ a
+ picture
+ showing
+ a
+ Sax
+on
+ settlement
+ using
+ a
  Roman
- cultural
- influences
- persisted
+ road
+ or
+ building
+.
+ Label
+ the
+ features
+.","
+feedback":"
+Success
+ criteria
+:
+ Includes
+ a
+ Sax
+on
+ settlement
+,
+ Roman
+ road
+/build
+ing
+,
+ and
+ labels
+ indicating
+ rep
+ur
+posed
+ structures
 ."
-},"status":"
+}},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+Cycle
+ 
+3
+ explores
+ how
+ archae
+ologists
+ learn
+ about
+ this
+ period
+,
+ incorporating
+ explanation
+,
+ checks
+,
+ and
+ a
+ practical
+ task
+.","
+value":{"
+type":"
+cycle
+","op":"
+add
+","path":"/
+cycle
+3
+","value":{"
+title":"
+Ar
+chae
+ologists
+ and
+ Their
+ Discover
+ies
+","durationInMinutes":15
+,"explanation":{"
+spokenExplanation":["
+Define
+ what
+ an
+ archae
+ologist
+ does
+ and
+ how
+ they
+ study
+ the
+ past
+.","
+Explain
+ the
+ types
+ of
+ arte
+facts
+ found
+ from
+ the
+ Roman
+ and
+ Sax
+on
+ periods
+.","
+Describe
+ the
+ process
+ of
+ excavation
+ and
+ analysis
+ used
+ by
+ archae
+ologists
+.","
+Highlight
+ some
+ key
+ discoveries
+ that
+ have
+ informed
+ our
+ understanding
+ of
+ this
+ period
+.","
+Discuss
+ how
+ these
+ findings
+ help
+ us
+ piece
+ together
+ historical
+ narratives
+."
+],"accompanyingSlideDetails":"
+Images
+ of
+ archae
+ologists
+ excav
+ating
+ Roman
+ arte
+facts
+.","
+imagePrompt":"
+Ar
+chae
+ologists
+ excav
+ating
+ Roman
+ arte
+facts
+","slideText":"
+Ar
+chae
+ologists
+ learn
+ about
+ the
+ past
+ by
+ studying
+ arte
+facts
+ and
+ excav
+ating
+ historical
+ sites
+."
+},"checkForUnderstanding":[
+{"
+question":"
+What
+ do
+ archae
+ologists
+ study
+ to
+ learn
+ about
+ the
+ past
+?
+","answers":["
+Arte
+facts
+"],"distractors":["
+Modern
+ buildings
+","
+F
+iction
+al
+ stories
+"]},{"
+question":"
+What
+ is
+ one
+ method
+ archae
+ologists
+ use
+?
+","answers":["
+Exc
+av
+ation
+"],"distractors":["
+Painting
+","
+Cooking
+"]}],"practice":"
+Match
+ pictures
+ of
+ arte
+facts
+ to
+ descriptions
+ of
+ what
+ they
+ tell
+ us
+ about
+ Roman
+ or
+ Sax
+on
+ life
+.","
+feedback":"
+Model
+ answer
+:
+ Arte
+fact
+ A
+ shows
+ Roman
+ pottery
+ used
+ for
+ cooking
+,
+ Arte
+fact
+ B
+ is
+ a
+ Sax
+on
+ tool
+ for
+ farming
+."
+}},"status":"
+complete
+"},{"
+type":"
+patch
+","reasoning":"
+The
+ Exit
+ Quiz
+ assesses
+ pupils
+'
+ understanding
+ of
+ key
+ concepts
+ learned
+ during
+ the
+ lesson
+.","
+value":{"
+type":"
+quiz
+","op":"
+add
+","path":"/
+exit
+Quiz
+","value":[
+{"
+question":"
+When
+ did
+ the
+ Roman
+ army
+ leave
+ Britain
+?
+","answers":["
+Around
+ AD
+ 
+410
+"],"distractors":["
+Around
+ AD
+ 
+500
+","
+Around
+ AD
+ 
+300
+"]},{"
+question":"
+Who
+ began
+ settling
+ in
+ Britain
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+The
+ Sax
+ons
+"],"distractors":["
+The
+ Norm
+ans
+","
+The
+ Vikings
+"]},{"
+question":"
+What
+ role
+ do
+ archae
+ologists
+ play
+ in
+ learning
+ about
+ this
+ period
+?
+","answers":["
+They
+ study
+ arte
+facts
+"],"distractors":["
+They
+ write
+ stories
+","
+They
+ build
+ monuments
+"]},{"
+question":"
+What
+ did
+ new
+ groups
+ do
+ with
+ Roman
+ structures
+?
+","answers":["
+Rep
+ur
+posed
+ them
+"],"distractors":["
+Destroyed
+ them
+","
+Ignored
+ them
+"]},{"
+question":"
+What
+ pressures
+ led
+ to
+ the
+ Roman
+ departure
+ from
+ Britain
+?
+","answers":["
+Need
+ for
+ soldiers
+ elsewhere
+"],"distractors":["
+Peace
+ in
+ the
+ Empire
+","
+Trade
+ opportunities
+"]},{"
+question":"
+What
+ is
+ an
+ arte
+fact
+?
+","answers":["
+An
+ object
+ made
+ or
+ used
+ by
+ people
+ in
+ the
+ past
+"],"distractors":["
+A
+ natural
+ rock
+ formation
+","
+A
+ modern
+ invention
+"]}]},"status":"
 complete
 "}],"sectionsEdited":["
-additional
-Materials
+starter
+Quiz
+","
+cycle
+1
+","
+cycle
+2
+","
+cycle
+3
+","
+exit
+Quiz
 "],"prompt":{"
 type":"
 text
 ","value":"
 Are
  the
- additional
- materials
+ starter
+ quiz
+,
+ learning
+ cycles
+,
+ and
+ exit
+ quiz
  suitable
  for
  your
- lesson
+ class
 ?
  If
- you
- need
- any
- changes
- or
- additional
- support
+ not
 ,
- let
- me
- know
+ reply
+ with
+ what
+ I
+ should
+ change
 .
  Otherwise
 ,
@@ -339,10 +1193,12 @@ Are
 Continue
 **
  to
- finish
+ move
+ on
+ to
  the
- lesson
- plan
+ next
+ step
 ."
 },"status":"
 complete

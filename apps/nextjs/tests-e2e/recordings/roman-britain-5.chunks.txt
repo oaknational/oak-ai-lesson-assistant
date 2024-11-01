@@ -10,65 +10,40 @@ Message
 type":"
 text
 ","value":"
-It
- seems
- that
- the
- Starter
- Quiz
+I
+ have
+ checked
+ for
+ British
+ spelling
+ and
+ grammar
 ,
- Cycle
- 
-1
-,
- Cycle
- 
-2
-,
- Cycle
- 
-3
+ coherence
 ,
  and
- Exit
- Quiz
- sections
- have
- already
- been
- created
+ accuracy
 .
- If
- you
- need
- any
- further
- adjustments
- or
- additions
-,
- please
- let
- me
- know
- specifically
- what
- changes
- you'd
- like
- to
- make
-.
- Otherwise
-,
- you
+ You
  can
- tap
+ now
+ share
+ your
+ lesson
+ or
+ download
+ your
+ resources
+.
+ Tap
  **
-Continue
+Menu
 **
  to
- proceed
+ find
+ previously
+ created
+ lessons
 ."
 },"status":"
 complete
