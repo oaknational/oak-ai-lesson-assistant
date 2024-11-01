@@ -29,6 +29,7 @@ type ChildKey =
   | "aila:protocol"
   | "aila:stream"
   | "aila:rag"
+  | "aila:scrolling"
   | "aila:testing"
   | "analytics"
   | "app"
