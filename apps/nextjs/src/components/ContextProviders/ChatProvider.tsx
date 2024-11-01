@@ -426,6 +426,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const { sectionRefs, setSectionRef } = useLessonPlanScrollManagement(
     streamingSection,
     streamingSectionCompleted,
+    ailaStreamingStatus,
   );
 
   const workingMessage = useRef<Message | undefined>(undefined);
