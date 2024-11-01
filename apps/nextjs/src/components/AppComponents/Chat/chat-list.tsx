@@ -118,9 +118,11 @@ export const ChatMessagesDisplay = ({ demo }: { demo: DemoContextProps }) => {
     isStreaming,
   });
 
-  const workingOnItMessage = streamingSection
-    ? `Editing ${camelCaseToTitleCase(streamingSection)}…`
-    : "Working on it…";
+  const workingOnItMessage =
+    streamingSection &&
+    !["title", "subject", "keyStage", "topic"].includes(streamingSection)
+      ? `Editing ${camelCaseToTitleCase(streamingSection)}…`
+      : "Working on it…";
 
   return (
     <>
