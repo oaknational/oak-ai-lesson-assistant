@@ -1,10 +1,11 @@
+// Wrap your components with the WithProfiler component to measure the performance of your components.
 import { Profiler, useCallback } from "react";
 
 import { aiLogger } from "@oakai/logger";
 
-const isPerfEnabled = true;
-// process.env.NEXT_PUBLIC_ENABLE_PERF === "true" ||
-// process.env.NODE_ENV === "development";
+const isPerfEnabled =
+  process.env.NEXT_PUBLIC_ENABLE_PERF === "true" ??
+  process.env.NODE_ENV === "development";
 
 const log = aiLogger("profiler");
 
