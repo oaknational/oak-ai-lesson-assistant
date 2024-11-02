@@ -29,7 +29,7 @@ const createPrismaClient = () => {
 const extendedPrisma = createPrismaClient();
 export type PrismaClientWithAccelerate = typeof extendedPrisma;
 
-let prismaInstance: PrismaClientWithAccelerate;
+let prismaInstance: PrismaClientWithAccelerate | undefined = undefined;
 
 const getPrismaClient = () => {
   if (prismaInstance) {
