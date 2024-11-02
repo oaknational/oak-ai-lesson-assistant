@@ -29,21 +29,16 @@ const createPrismaClient = () => {
 const extendedPrisma = createPrismaClient();
 export type PrismaClientWithAccelerate = typeof extendedPrisma;
 
-declare global {
-  // allow global `var` declarations
-  // eslint-disable-next-line no-var
-  var prisma: PrismaClientWithAccelerate | undefined;
-}
+let prismaInstance: PrismaClientWithAccelerate;
 
-let prisma: PrismaClientWithAccelerate;
-
-if (process.env.NODE_ENV === "production") {
-  prisma = createPrismaClient();
-} else {
-  if (!global.prisma) {
-    global.prisma = createPrismaClient();
+const getPrismaClient = () => {
+  if (prismaInstance) {
+    return prismaInstance;
   }
-  prisma = global.prisma;
-}
 
-export { prisma };
+  prismaInstance = createPrismaClient();
+
+  return prismaInstance;
+};
+
+export const prisma = getPrismaClient();
