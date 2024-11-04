@@ -40,10 +40,11 @@ export const chatsRouter = router({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { userId } = ctx.auth;
+      const { prisma, auth } = ctx;
+      const { userId } = auth;
       const { id } = input;
 
-      const session = await prisma?.appSession.findUnique({
+      const session = await prisma.appSession.findUnique({
         where: { id },
       });
 
@@ -65,9 +66,10 @@ export const chatsRouter = router({
       return parsedChat;
     }),
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    const { userId } = ctx.auth;
+    const { prisma, auth } = ctx;
+    const { userId } = auth;
 
-    const sessions = await prisma?.appSession.findMany({
+    const sessions = await prisma.appSession.findMany({
       where: {
         userId,
         appId: "lesson-planner",
@@ -93,10 +95,11 @@ export const chatsRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { userId } = ctx.auth;
+      const { prisma, auth } = ctx;
+      const { userId } = auth;
       const { id } = input;
 
-      await ctx.prisma.appSession.deleteMany({
+      await prisma.appSession.deleteMany({
         where: {
           id,
           appId: "lesson-planner",
@@ -105,9 +108,10 @@ export const chatsRouter = router({
       });
     }),
   deleteAll: protectedProcedure.mutation(async ({ ctx }) => {
-    const { userId } = ctx.auth;
+    const { prisma, auth } = ctx;
+    const { userId } = auth;
 
-    await ctx.prisma.appSession.deleteMany({
+    await prisma.appSession.deleteMany({
       where: {
         userId,
         appId: "lesson-planner",
@@ -121,10 +125,11 @@ export const chatsRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { userId } = ctx.auth;
+      const { prisma, auth } = ctx;
+      const { userId } = auth;
       const { id } = input;
 
-      const session = await prisma?.appSession.findUnique({
+      const session = await prisma.appSession.findUnique({
         where: {
           id,
           userId,
@@ -150,7 +155,7 @@ export const chatsRouter = router({
         isShared: true,
       };
 
-      await prisma?.appSession.update({
+      await prisma.appSession.update({
         where: { id },
         data: { output: sharedChat },
       });
@@ -163,10 +168,11 @@ export const chatsRouter = router({
         id: z.string(),
       }),
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
       const { id } = input;
 
-      const session = await prisma?.appSession.findUnique({
+      const session = await prisma.appSession.findUnique({
         where: { id, appId: "lesson-planner" },
       });
 
