@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { SidebarActions } from "./sidebar-actions";
 
 const meta: Meta<typeof SidebarActions> = {
-  title: "Components/Chat/SidebarActions",
+  title: "Components/Sidebar/Actions",
   component: SidebarActions,
   parameters: {
     layout: "centered",
