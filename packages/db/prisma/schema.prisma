@@ -11,7 +11,7 @@ datasource db {
   url        = env("PRISMA_ACCELERATE_DATABASE_URL")
   directUrl  = env("DIRECT_DATABASE_URL")
   extensions = [vector, pg_trgm]
-  schemas    = ["public", "ingest"]
+  schemas    = ["public", "ingest", "rag"]
 }
 
 generator zod {
@@ -985,7 +985,7 @@ enum QuizAnswerStatus {
 
 model Ingest {
   id          String    @id @default(cuid())
-  config      Json      @default("{}") @map("config") @db.JsonB
+  config      Json      @map("config") @db.JsonB
   status      String
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
@@ -1063,8 +1063,8 @@ model IngestLessonPlanPart {
   ingestId     String                      @map("ingest_id")
   batchId      String?                     @map("batch_id")
   key          String
-  valueJson    Json                        @map("data") @db.JsonB
-  valueText    String
+  valueJson    Json                        @map("value_json") @db.JsonB
+  valueText    String                      @map("value_text")
   embedding    Unsupported("vector(256)")?
   createdAt    DateTime                    @default(now()) @map("created_at")
   updatedAt    DateTime                    @updatedAt @map("updated_at")
@@ -1109,4 +1109,35 @@ model IngestError {
 
   @@map("ingest_error")
   @@schema("ingest")
+}
+
+model RagLessonPlan {
+  id                String              @id @default(cuid())
+  oakLessonId       Int                 @map("oak_lesson_id")
+  ingestLessonId    String              @map("ingest_lesson_id")
+  lessonPlan        Json                @db.JsonB
+  subjectSlug       String              @map("subject_slug")
+  keyStageSlug      String              @map("key_stage_slug")
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
+  ragLessonPlanPart RagLessonPlanPart[]
+
+  @@map("rag_lesson_plans")
+  @@schema("rag")
+}
+
+model RagLessonPlanPart {
+  id              String   @id @default(cuid())
+  ragLessonPlanId String   @map("lesson_plan_id")
+  key             String
+  valueText       String   @map("value_text")
+  valueJson       Json     @map("value_json") @db.JsonB
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  ragLessonPlan RagLessonPlan              @relation(fields: [ragLessonPlanId], references: [id], onDelete: Cascade)
+  embedding     Unsupported("vector(256)")
+
+  @@map("rag_lesson_plan_parts")
+  @@schema("rag")
 }
