@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import { type AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/helpers";
-import { type Moderation } from "@oakai/db";
+import type { Moderation } from "@oakai/db";
 import { OakAccordion, OakPrimaryButton } from "@oaknational/oak-components";
 
 import { trpc } from "@/utils/trpc";

@@ -2,7 +2,8 @@
 // pnpm --filter @oakai/nextjs test -- -u src/middlewares/csp.test.ts
 import { NextRequest } from "next/server";
 
-import { addCspHeaders, CspConfig, CspEnvironment } from "./csp";
+import type { CspConfig, CspEnvironment } from "./csp";
+import { addCspHeaders } from "./csp";
 
 const environments = ["development", "production", "preview", "test"] as const;
 

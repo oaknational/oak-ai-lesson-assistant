@@ -1,4 +1,4 @@
-import { Apps } from "@oakai/core";
+import { Apps } from "@oakai/core/src/models/apps";
 import { prisma } from "@oakai/db";
 import { outputSchema } from "ai-apps/generations/types";
 

@@ -1,6 +1,6 @@
+import type { FC } from "react";
 import {
   createContext,
-  FC,
   useCallback,
   useContext,
   useEffect,
@@ -9,10 +9,10 @@ import {
 } from "react";
 
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import { Message } from "ai";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { Message } from "ai";
 
-import { UserAction } from "./helpers";
+import type { UserAction } from "./helpers";
 import { trackLessonPlanRefined } from "./trackLessonPlanRefined";
 import useAnalytics from "./useAnalytics";
 
@@ -64,7 +64,7 @@ const LessonPlanTrackingProvider: FC<{
       setAction(null);
       setUserMessageContent("");
     },
-    [track, action, userMessageContent],
+    [chatId, userMessageContent, track, action],
   );
   const onSubmitText = useCallback((text: string) => {
     setAction("submit_text");

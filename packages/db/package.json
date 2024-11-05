@@ -16,8 +16,8 @@
     "db-export": "DB_ENV=dev doppler run --config dev -- bash scripts/import-export/db_export.sh",
     "db-export:prd": "DB_ENV=prd doppler run --config prd -- bash scripts/import-export/db_export.sh",
     "db-export:stg": "DB_ENV=stg doppler run --config stg -- bash scripts/import-export/db_export.sh",
-    "db-generate": "pnpm with-env prisma generate",
-    "db-generate:no-engine": "pnpm with-env prisma generate --no-engine",
+    "db-generate": "echo 'Running db-generate...' && pnpm with-env prisma generate --schema=./prisma/schema.prisma",
+    "db-generate:no-engine": "echo 'Running db-generate:no-engine...' && pnpm with-env prisma generate --no-engine --schema=./prisma/schema.prisma",
     "db-generate:dev": "pnpm with-env prisma generate",
     "db-migrate-deploy": "pnpm with-env prisma migrate deploy",
     "db-migrate": "pnpm with-env prisma migrate dev",
@@ -58,7 +58,7 @@
   "prettier": "@oakai/prettier-config",
   "dependencies": {
     "@oakai/logger": "*",
-    "@prisma/client": "^5.21.1",
+    "@prisma/client": "5.16.1",
     "@types/chunk-text": "^1.0.0",
     "cheerio": "1.0.0-rc.12",
     "chunk-text": "^2.0.1",
@@ -73,7 +73,7 @@
   "devDependencies": {
     "@oakai/prettier-config": "*",
     "dotenv-cli": "^6.0.0",
-    "prisma": "^5.21.0",
+    "prisma": "5.16.1",
     "typescript": "5.3.3",
     "zod-prisma": "^0.5.4"
   },

@@ -3,6 +3,10 @@
   "ui": "tui",
 
   "tasks": {
+    "db-generate:no-engine": {
+      "inputs": ["prisma/schema.prisma"],
+      "cache": false
+    },
     "db-generate": {
       "inputs": ["prisma/schema.prisma"],
       "cache": false
@@ -21,15 +25,21 @@
       "interactive": false,
       "cache": false
     },
-    "dev-turbo": {
-      "dependsOn": ["^db-generate"],
-      "persistent": true,
-      "interactive": false,
-      "cache": false
+    "build:dev": {
+      "cache": true,
+      "dependsOn": ["^db-generate", "^prompts:dev"],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "apps/nextjs/.next/**",
+        "apps/openai/.next/**",
+        "!apps/nextjs/.next/cache/**",
+        "!apps/openai/.next/cache/**"
+      ]
     },
     "build": {
       "cache": true,
-      "dependsOn": ["^build", "^db-generate"],
+      "dependsOn": ["^db-generate:no-engine"],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
@@ -49,9 +59,11 @@
       "cache": false
     },
     "prompts": {
+      "dependsOn": ["^db-generate:no-engine"],
       "cache": false
     },
     "prompts:dev": {
+      "dependsOn": ["^db-generate"],
       "cache": false
     },
     "type-check": {
@@ -59,8 +71,10 @@
       "cache": false
     },
     "test": {
-      "cache": false,
-      "outputs": ["packages/aila/**/*.spec.js", "packages/aila/**/*.test.js"]
+      "cache": false
+    },
+    "test:seq": {
+      "cache": false
     },
     "test-e2e": {
       "cache": false,
@@ -77,6 +91,7 @@
   "globalEnv": [
     "AILA_FIXTURES_ENABLED",
     "CLERK_*",
+    "CLERK_WEBHOOK_SECRET",
     "CLOUDINARY_*",
     "COHERE_*",
     "DATABASE_*",
@@ -103,6 +118,7 @@
     "OAI_INTERNAL_API_KEY",
     "OAK_GRAPHQL_SECRET",
     "OPENAI_*",
+    "POSTHOG_PERSONAL_KEY_FLAGS",
     "POSTMARK_SERVER_TOKEN",
     "PRISMA_ACCELERATE_DATABASE_URL",
     "PROMPT_PLAYBACK_ENABLED",

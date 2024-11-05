@@ -1,3 +1,3 @@
-export default async function GenerationsPage() {
+export default function GenerationsPage() {
   return null;
 }

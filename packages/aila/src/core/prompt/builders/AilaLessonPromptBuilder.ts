@@ -1,25 +1,18 @@
-import {
-  TemplateProps,
-  template,
-} from "@oakai/core/src/prompts/lesson-assistant";
-import { prisma as globalPrisma } from "@oakai/db";
+import type { TemplateProps } from "@oakai/core/src/prompts/lesson-assistant";
+import { template } from "@oakai/core/src/prompts/lesson-assistant";
+import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { DEFAULT_RAG_LESSON_PLANS } from "../../../constants";
 import { tryWithErrorReporting } from "../../../helpers/errorReporting";
 import { LLMResponseJsonSchema } from "../../../protocol/jsonPatchProtocol";
-import {
-  LessonPlanJsonSchema,
-  LooseLessonPlan,
-} from "../../../protocol/schema";
-import { findAmericanisms } from "../../../utils/language/findAmericanisms";
+import type { LooseLessonPlan } from "../../../protocol/schema";
+import { LessonPlanJsonSchema } from "../../../protocol/schema";
 import { compressedLessonPlanForRag } from "../../../utils/lessonPlan/compressedLessonPlanForRag";
 import { fetchLessonPlan } from "../../../utils/lessonPlan/fetchLessonPlan";
-import {
-  fetchRagContent,
-  RagLessonPlan,
-} from "../../../utils/rag/fetchRagContent";
-import { AilaServices } from "../../AilaServices";
+import type { RagLessonPlan } from "../../../utils/rag/fetchRagContent";
+import { fetchRagContent } from "../../../utils/rag/fetchRagContent";
+import type { AilaServices } from "../../AilaServices";
 import { AilaPromptBuilder } from "../AilaPromptBuilder";
 
 const log = aiLogger("aila:prompt");
@@ -114,7 +107,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
       summaries: "None",
       responseMode: this._aila?.options.mode ?? "interactive",
       useRag: this._aila?.options.useRag ?? true,
-      americanisms: findAmericanisms(lessonPlan),
+      americanisms: this._aila.americanisms.findAmericanisms(lessonPlan),
       baseLessonPlan: baseLessonPlan
         ? compressedLessonPlanForRag(baseLessonPlan)
         : undefined,

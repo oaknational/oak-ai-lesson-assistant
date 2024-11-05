@@ -2,9 +2,9 @@
 
 import * as React from "react";
 
-import { usePathname } from "#next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import AiIcon from "@/components/AiIcon";
 import { buttonVariants } from "@/components/AppComponents/Chat/ui/button";
@@ -14,7 +14,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/AppComponents/Chat/ui/tooltip";
-import { SideBarChatItem } from "@/lib/types";
+import type { SideBarChatItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 import { constructChatPath } from "./Chat/utils";

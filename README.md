@@ -59,6 +59,7 @@ pnpm install turbo --global
 ## Postgres Setup
 
 ### Prerequisites
+
 - This project set up following the Installation steps.
 - Docker installed.
 - Optional: A Postgres GUI tool (such as pgAdmin or Postico) to view the data.
@@ -71,7 +72,7 @@ pnpm install turbo --global
 cd packages/db
 ```
 
-2. Build and run the Docker container to create a database named `oai`, with the username and password both as `oai`, bound to port 5432. It will also install `pgvector` and `postgresql-contrib`.
+2. Build and run the Docker container to create a database named `oai`, with the username and password both as `oai`, bound to port 8432. It will also install `pgvector` and `postgresql-contrib`.
 
 ```shell
 pnpm run docker-bootstrap
@@ -79,27 +80,27 @@ pnpm run docker-bootstrap
 
 3. Seed your database, to do this you have two options:
 
-    3a. Replicate Production/Staging (Slow)
+   3a. Replicate Production/Staging (Slow)
 
-    This will import the schema and tables from production. Note: due to the size of the production database this could take a significant amount of time.
+   This will import the schema and tables from production. Note: due to the size of the production database this could take a significant amount of time.
 
-    ```shell
-    pnpm run db-restore-from:prd or pnpm run db-restore-from:stg
-    ```
+   ```shell
+   pnpm run db-restore-from:prd or pnpm run db-restore-from:stg
+   ```
 
-    3b. Local Prisma with Essential Tables Seeded from a Live Environment (Fast)
+   3b. Local Prisma with Essential Tables Seeded from a Live Environment (Fast)
 
-    1. Apply the Prisma schema to your local database:
+   1. Apply the Prisma schema to your local database:
 
-    ```shell
-    pnpm run db-push
-    ```
+   ```shell
+   pnpm run db-push
+   ```
 
-    2. Seed from stg/prd (where `:prd` can be either `:prd` or `:stg`, matching the Doppler environments). This will only seed the apps table and lesson-related tables used for RAG.
+   2. Seed from stg/prd (where `:prd` can be either `:prd` or `:stg`, matching the Doppler environments). This will only seed the apps table and lesson-related tables used for RAG.
 
-    ```shell
-    pnpm run db-seed-local-from:prd
-    ```
+   ```shell
+   pnpm run db-seed-local-from:prd
+   ```
 
 ### Utility Commands
 

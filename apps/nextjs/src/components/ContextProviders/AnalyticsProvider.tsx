@@ -9,8 +9,8 @@ import {
   useState,
 } from "react";
 
-import { usePathname, useSearchParams } from "#next/navigation";
 import { useOakConsent } from "@oaknational/oak-consent-client";
+import { usePathname, useSearchParams } from "next/navigation";
 import { PostHog } from "posthog-js";
 
 import { hubspotClient } from "@/lib/analytics/hubspot/HubspotClient";
@@ -74,6 +74,7 @@ export const analyticsContext = createContext<AnalyticsContext | null>(null);
 export type AnalyticsProviderProps = {
   children?: React.ReactNode;
   avoOptions?: Partial<AvoOptions>;
+  bootstrappedFeatures: Record<string, string | boolean>;
 };
 
 if (
@@ -130,6 +131,7 @@ const posthogClientAiBeta = new PostHog();
 export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   children,
   avoOptions,
+  bootstrappedFeatures,
 }) => {
   const [hubspotScriptLoaded, setHubspotScriptLoadedFn] = useState(false);
   const setHubspotScriptLoaded = useCallback(() => {
@@ -162,7 +164,7 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   );
   const posthogAiBeta = useAnalyticsService({
     service: posthogServiceAiBeta,
-    config: posthogAiBetaConfig,
+    config: { ...posthogAiBetaConfig, bootstrappedFeatures },
     consentState: posthogConsentAiBeta,
   });
 

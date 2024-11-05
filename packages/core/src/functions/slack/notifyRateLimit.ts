@@ -1,4 +1,4 @@
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 import {
   slackNotificationChannelId,
   slackWebClient,
@@ -26,7 +26,7 @@ export const notifyRateLimit = inngest.createFunction(
 
       const response = await slackWebClient.chat.postMessage({
         channel: slackNotificationChannelId,
-        text: `User rate limit exceeded`,
+        text: "User rate limit exceeded",
         blocks: [
           {
             type: "header",

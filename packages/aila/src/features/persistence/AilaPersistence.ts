@@ -1,10 +1,12 @@
-import { GenerationStatus } from "@prisma/client";
+import type { GenerationStatus } from "@prisma/client";
 import invariant from "tiny-invariant";
 
-import { AilaChatService, AilaError, AilaServices } from "../../core";
-import { AilaOptionsWithDefaultFallbackValues } from "../../core/types";
-import { AilaPersistedChat } from "../../protocol/schema";
-import { AilaGeneration } from "../generation";
+import { AilaError } from "../../core/AilaError";
+import type { AilaChatService } from "../../core/AilaServices";
+import type { AilaServices } from "../../core/AilaServices";
+import type { AilaOptionsWithDefaultFallbackValues } from "../../core/types";
+import type { AilaPersistedChat } from "../../protocol/schema";
+import type { AilaGeneration } from "../generation/AilaGeneration";
 
 export abstract class AilaPersistence {
   protected _chat: AilaChatService;
@@ -34,7 +36,15 @@ export abstract class AilaPersistence {
   }
 
   protected createChatPayload(): ChatPersistencePayload {
-    const { id, userId, messages, isShared, relevantLessons } = this._chat;
+    const {
+      id,
+      userId,
+      messages,
+      isShared,
+      relevantLessons,
+      iteration,
+      createdAt,
+    } = this._chat;
 
     invariant(userId, "userId is required for chat persistence");
 
@@ -48,7 +58,9 @@ export abstract class AilaPersistence {
       subject,
       keyStage,
       topic,
-      createdAt: Date.now(),
+      createdAt: createdAt ? createdAt.getTime() : Date.now(),
+      updatedAt: Date.now(),
+      iteration: iteration ? iteration + 1 : 1,
       isShared,
       path: `/aila/${id}`,
       lessonPlan: lesson.plan,

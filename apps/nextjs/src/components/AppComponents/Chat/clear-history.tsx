@@ -3,7 +3,7 @@
 import * as React from "react";
 import { toast } from "react-hot-toast";
 
-import { useRouter } from "#next/navigation";
+import { useRouter } from "next/navigation";
 
 import {
   AlertDialog,

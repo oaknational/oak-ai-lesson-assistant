@@ -1,8 +1,9 @@
 // Inspired by Chatbot-UI and modified to fit the needs of this project
 // @see https://github.com/mckaywrigley/chatbot-ui/blob/main/components/Chat/ChatMessage.tsx
-import { ReactNode, useState } from "react";
+import type { ReactNode } from "react";
+import { useState } from "react";
 
-import {
+import type {
   ActionDocument,
   BadDocument,
   CommentDocument,
@@ -14,20 +15,20 @@ import {
   StateDocument,
   TextDocument,
   UnknownDocument,
-  parseMessageParts,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { isSafe } from "@oakai/core/src/utils/ailaModeration/helpers";
-import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { aiLogger } from "@oakai/logger";
-import { Message } from "ai";
+import type { Message } from "ai";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 import { useChatModeration } from "@/components/ContextProviders/ChatModerationContext";
 import { Icon } from "@/components/Icon";
 import { cn } from "@/lib/utils";
 
-import { ModerationModalHelpers } from "../../FeedbackForms/ModerationFeedbackModal";
-import { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
+import type { ModerationModalHelpers } from "../../FeedbackForms/ModerationFeedbackModal";
+import type { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import { isModeration } from "./protocol";
 
 const log = aiLogger("chat");
@@ -189,6 +190,9 @@ function MessageWrapper({
   children,
   type,
 }: MessageWrapperProps) {
+  const testId = errorType
+    ? `chat-message-wrapper-${type}-${errorType}`
+    : `chat-message-wrapper-${type}`;
   return (
     <div
       className={cn(
@@ -198,6 +202,7 @@ function MessageWrapper({
         errorType && "p-9",
         className,
       )}
+      data-testid={testId}
     >
       {type === "aila" ||
         (type === "editing" && (

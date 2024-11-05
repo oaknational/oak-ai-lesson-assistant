@@ -1,4 +1,4 @@
-import { KeyStageName, SubjectName, subjectsAndKeyStages } from "@oakai/core";
+import type { KeyStageName, SubjectName, subjectsAndKeyStages } from "@oakai/core";
 import { sendJudgementFeedbackEmail } from "@oakai/core/src/utils/sendJudgementFeedbackEmail";
 import { structuredLogger as logger, aiLogger } from "@oakai/logger";
 import { z } from "zod";

@@ -1,79 +1,37 @@
 import { PrismaVectorStore } from "@langchain/community/vectorstores/prisma";
 import { OpenAIEmbeddings } from "@langchain/openai";
-import {
+import type {
   KeyStage,
   LessonPlanPart,
   PrismaClientWithAccelerate,
   Subject,
 } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
-import {
-  LessonPlan,
-  LessonSummary,
-  Prisma,
-  PrismaClient,
-  Snippet,
-} from "@prisma/client";
+import type { LessonPlan, LessonSummary, Snippet } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import * as Sentry from "@sentry/nextjs";
 import { kv } from "@vercel/kv";
 import { CohereClient } from "cohere-ai";
-import { RerankResponse } from "cohere-ai/api";
-import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import type { RerankResponse } from "cohere-ai/api";
+import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { Md5 } from "ts-md5";
-import z from "zod";
 
 import { DEFAULT_CATEGORISE_MODEL } from "../../../aila/src/constants";
-import {
-  OpenAICompletionWithLogging,
-  OpenAICompletionWithLoggingOptions,
-} from "../../../aila/src/lib/openai/OpenAICompletionWithLogging";
-import { JsonValue } from "../models/prompts";
+import type { OpenAICompletionWithLoggingOptions } from "../../../aila/src/lib/openai/OpenAICompletionWithLogging";
+import { OpenAICompletionWithLogging } from "../../../aila/src/lib/openai/OpenAICompletionWithLogging";
+import type { JsonValue } from "../models/prompts";
 import { slugify } from "../utils/slugify";
 import { keyStages, subjects } from "../utils/subjects";
+import { CategoriseKeyStageAndSubjectResponse } from "./categorisation";
+import type {
+  FilterOptions,
+  KeyStageAndSubject,
+  LessonPlanWithPartialLesson,
+  SimilarityResultWithScore,
+} from "./types";
 
 const log = aiLogger("rag");
-
-interface FilterOptions {
-  key_stage_id?: object;
-  subject_id?: object;
-}
-
-export interface LessonPlanWithPartialLesson extends LessonPlan {
-  lesson: {
-    id: string;
-    slug: string;
-    title: string;
-  };
-}
-
-export type SimilarityResultWithScore = [
-  import("@langchain/core/documents").DocumentInterface<
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Record<string, any>
-  >,
-  number,
-];
-
-export interface KeyStageAndSubject {
-  keyStage?: KeyStage;
-  subject?: Subject;
-}
-
-// Make a new Zod schema for a response from OpenAI for the categoriseKeyStageAndSubject function
-
-export const CategoriseKeyStageAndSubjectResponse = z.object({
-  keyStage: z.string().optional().nullable(),
-  subject: z.string().optional().nullable(),
-  title: z.string().optional().nullable(),
-  topic: z.string().optional().nullable(),
-  error: z.string().optional(),
-  reasoning: z.string().optional().nullable(),
-});
-
-export type CategorisedKeyStageAndSubject = z.infer<
-  typeof CategoriseKeyStageAndSubjectResponse
->;
 
 export class RAG {
   prisma: PrismaClientWithAccelerate;

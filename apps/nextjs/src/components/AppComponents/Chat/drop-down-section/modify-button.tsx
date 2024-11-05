@@ -1,10 +1,20 @@
-import { AilaUserModificationAction } from "@prisma/client";
+import type { AilaUserModificationAction } from "@prisma/client";
 
 import ActionButtonWrapper from "./action-button-wrapper";
 import { modifyOptions } from "./action-button.types";
-import { FeedbackOption } from "./drop-down-form-wrapper";
+import type { FeedbackOption } from "./drop-down-form-wrapper";
 
-const ModifyButton = ({ sectionTitle, sectionPath, sectionValue }) => {
+type ModifyButtonProps = {
+  sectionTitle: string;
+  sectionPath: string;
+  sectionValue: Record<string, unknown> | string | Array<unknown>;
+};
+
+const ModifyButton = ({
+  sectionTitle,
+  sectionPath,
+  sectionValue,
+}: ModifyButtonProps) => {
   const generateMessage = (
     option: FeedbackOption<AilaUserModificationAction>,
     userFeedbackText: string,

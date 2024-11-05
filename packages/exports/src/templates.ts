@@ -1,4 +1,4 @@
-import { LessonPlanDocInputData } from "./schema/input.schema";
+import type { LessonPlanDocInputData } from "./schema/input.schema";
 
 const GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_ID =
   process.env.GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_ID;

@@ -1,15 +1,13 @@
 import { aiLogger } from "@oakai/logger";
 
-import { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
+import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 
 const log = aiLogger("aila:protocol");
 
 export class PatchEnqueuer {
-  private encoder: TextEncoder;
   private controller?: ReadableStreamDefaultController;
 
   constructor(controller?: ReadableStreamDefaultController) {
-    this.encoder = new TextEncoder();
     this.controller = controller;
   }
 
@@ -65,6 +63,7 @@ export class PatchEnqueuer {
       type: "patch",
       reasoning: "generated",
       value: { op: "add", path, value },
+      status: "complete",
     };
   }
 

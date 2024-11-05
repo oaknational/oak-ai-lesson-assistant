@@ -1,3 +1,67 @@
+## [1.13.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.13.0...v1.13.1) (2024-11-05)
+
+
+### Bug Fixes
+
+* revert prisma to 5.16.1 ([#336](https://github.com/oaknational/oak-ai-lesson-assistant/issues/336)) ([a593618](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a593618b013607fbde75cfa98663d7298db7ff89))
+
+# [1.13.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.12.1...v1.13.0) (2024-10-31)
+
+
+### Bug Fixes
+
+* await persisting the generation ([#292](https://github.com/oaknational/oak-ai-lesson-assistant/issues/292)) ([730dbb9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/730dbb94a786f9f8a6e03e9ed4d9ff90853522fd))
+* await the enqueue method in web actions ([#293](https://github.com/oaknational/oak-ai-lesson-assistant/issues/293)) ([c9cb82b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c9cb82b2df566b0ec2a952b21d22e87d61fcd094))
+* await the save download event call ([#317](https://github.com/oaknational/oak-ai-lesson-assistant/issues/317)) ([1e05c1a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1e05c1ad177d2e385fc4fa6cc9bb76548d039194))
+* completion and system messages do not need to be async ([#294](https://github.com/oaknational/oak-ai-lesson-assistant/issues/294)) ([be79158](https://github.com/oaknational/oak-ai-lesson-assistant/commit/be791584805d219db1da4949a8a32c0a0f40b589))
+* linting for app components ([#295](https://github.com/oaknational/oak-ai-lesson-assistant/issues/295)) ([1212eb5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1212eb50f5e2e3ee913b57ec7bffc2fcabe981c8))
+* pages that do not load data do not need to be async ([#296](https://github.com/oaknational/oak-ai-lesson-assistant/issues/296)) ([a7eaefa](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a7eaefa5acef4d89a60dd79301cdf4be61db6830))
+* promisify chat API route get handler ([#316](https://github.com/oaknational/oak-ai-lesson-assistant/issues/316)) ([1824aea](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1824aead23e65654a4651abb91e589d218cb9bb1))
+* reintroduce custom eslint ([#284](https://github.com/oaknational/oak-ai-lesson-assistant/issues/284)) ([adc1efa](https://github.com/oaknational/oak-ai-lesson-assistant/commit/adc1efa686a7cc332a1755a3e77f5e50a831df7d))
+* rename accordian to accordion ([#297](https://github.com/oaknational/oak-ai-lesson-assistant/issues/297)) ([cd35dc1](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cd35dc15b97960a18196119540cc5848f58eaa47))
+* set VS Code to prefer type imports ([#291](https://github.com/oaknational/oak-ai-lesson-assistant/issues/291)) ([bc26948](https://github.com/oaknational/oak-ai-lesson-assistant/commit/bc269484ed8857b10aac36e06a0dab18c8308277))
+* update imports (type prefixes, paths) ([#298](https://github.com/oaknational/oak-ai-lesson-assistant/issues/298)) ([c332717](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c33271721e15e3c06374c4648fe69611e306ac14))
+* use browserLogger for errors in the browser ([#280](https://github.com/oaknational/oak-ai-lesson-assistant/issues/280)) ([647c904](https://github.com/oaknational/oak-ai-lesson-assistant/commit/647c90415c6ea5f71e75973caad627abe49bfd0c))
+* use noengine in ci ([#283](https://github.com/oaknational/oak-ai-lesson-assistant/issues/283)) ([3a1bfd4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3a1bfd4df3d2489dda9387752f19c79b16e5da92))
+* use prisma generate --no-engine and reinstate prompts script ([#282](https://github.com/oaknational/oak-ai-lesson-assistant/issues/282)) ([a157b9a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a157b9a6fececed09f43b7cca3989edd5e636a59))
+
+
+### Features
+
+* add an incrementing iteration number to the chat ([#263](https://github.com/oaknational/oak-ai-lesson-assistant/issues/263)) ([5aaa1d9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5aaa1d91146b92c1c449ecbf4725c61ec226ec87))
+* selectively include Americanisms, RAG, analytics when instantiating Aila ([#287](https://github.com/oaknational/oak-ai-lesson-assistant/issues/287)) ([4e5e1f2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4e5e1f22a4ea6262114033e45ffe4817b483f379))
+
+## [1.12.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.12.0...v1.12.1) (2024-10-28)
+
+
+### Bug Fixes
+
+* hide streaming status in production ([#281](https://github.com/oaknational/oak-ai-lesson-assistant/issues/281)) ([1efc89e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1efc89eabd23d226060ad84b60010a5ff5cd9674))
+
+# [1.12.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.11.0...v1.12.0) (2024-10-28)
+
+
+### Bug Fixes
+
+* ensure that the patch enqueuer exists when enqueuing ([#264](https://github.com/oaknational/oak-ai-lesson-assistant/issues/264)) ([4d4b959](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4d4b9599996482817411237a13174ed55ef6c476))
+* logger to stdout for info and warn ([#266](https://github.com/oaknational/oak-ai-lesson-assistant/issues/266)) ([d2dfabc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d2dfabcb41ed85a731435ed8283540cd974b0de5))
+* module resolution with "node" instead of "bundler" ([#271](https://github.com/oaknational/oak-ai-lesson-assistant/issues/271)) ([44ca5f6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/44ca5f6cebd7d9a7f047cfad558030cb206b4f3c))
+* reduce turbo errors on local dev, enable running e2e in built mode ([#259](https://github.com/oaknational/oak-ai-lesson-assistant/issues/259)) ([afb4535](https://github.com/oaknational/oak-ai-lesson-assistant/commit/afb453581c3dbe2b01a4e0712df97a7779d59e6c))
+* refactor lesson snapshots for improved efficiency ([#234](https://github.com/oaknational/oak-ai-lesson-assistant/issues/234)) ([24f492d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/24f492dc79e6a9dc94e213c4f447802e750c99db))
+* reinstate prebuilding the chat route in local dev ([#260](https://github.com/oaknational/oak-ai-lesson-assistant/issues/260)) ([1a4c51f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1a4c51fa4b2b53e758f860091c85f840c191dc9f))
+* remove flash when loading wheel appears ([#268](https://github.com/oaknational/oak-ai-lesson-assistant/issues/268)) ([d7a70f3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d7a70f353be0c6e1a833f5ec922d2e62f71bba7f))
+* remove lessonReferences from prompt ([#253](https://github.com/oaknational/oak-ai-lesson-assistant/issues/253)) ([a0cedec](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a0cedec86924a1bf0cf2466bd7a5ef106d7f8272))
+* report chat completion errors ([#256](https://github.com/oaknational/oak-ai-lesson-assistant/issues/256)) ([13729ca](https://github.com/oaknational/oak-ai-lesson-assistant/commit/13729ca4d0d64f436309575bf8be50640604c710))
+* update prisma to latest version ([#254](https://github.com/oaknational/oak-ai-lesson-assistant/issues/254)) ([b8b1958](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b8b1958c914b405e859cf39163fa531bef9e99d5))
+
+
+### Features
+
+* add a test:seq command ([#273](https://github.com/oaknational/oak-ai-lesson-assistant/issues/273)) ([d04d456](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d04d456bd2b3968491088ed39631e11c23d2cf9c))
+* hint Aila as to which part of the lesson to update next ([#265](https://github.com/oaknational/oak-ai-lesson-assistant/issues/265)) ([b8b39b8](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b8b39b833c788ca7fc38c9319c401aae2c1d330a))
+* ingest scripts ([#200](https://github.com/oaknational/oak-ai-lesson-assistant/issues/200)) ([be824a8](https://github.com/oaknational/oak-ai-lesson-assistant/commit/be824a8d73f8d0e2bc690789314ed7b0d135b090))
+* local db setup scripts ([#132](https://github.com/oaknational/oak-ai-lesson-assistant/issues/132)) ([d531a50](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d531a50229c604fa71157609fcde181eefb5e9b3))
+
 # [1.11.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.10.2...v1.11.0) (2024-10-22)
 
 

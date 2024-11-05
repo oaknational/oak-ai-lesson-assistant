@@ -1,6 +1,6 @@
-import { notFound, redirect } from "#next/navigation";
 import { auth } from "@clerk/nextjs/server";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
+import { notFound, redirect } from "next/navigation";
 
 import { getChatById } from "@/app/actions";
 

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
-import { UseChatHelpers } from "ai/react";
+
+import type { UseChatHelpers } from "ai/react";
 
 import {
   Tooltip,
@@ -11,7 +12,7 @@ import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext
 import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
 import { useSidebar } from "@/lib/hooks/use-sidebar";
 
-import { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
+import type { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
 
 export interface PromptFormProps
   extends Pick<UseChatHelpers, "input" | "setInput"> {

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import { moderationSlugToDescription } from "@oakai/core/src/utils/ailaModeration/helpers";
-import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { Dialog } from "@radix-ui/themes";
 import { useModerationFeedbackSurvey } from "hooks/surveys/useModerationFeedbackSurvey";
 
