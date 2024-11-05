@@ -3,9 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",
-    "type-check": "tsc --noEmit",
-    "with-env": "dotenv -e ../../.env --",
-    "delete-old-google-drive-files": "pnpm with-env ts-node --compiler-options {\"module\":\"CommonJS\"} ./src/gSuite/drive/deleteOldFile.ts"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@oakai/logger": "*",
