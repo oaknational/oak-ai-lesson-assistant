@@ -53,6 +53,7 @@ type ChildKey =
   | "qd"
   | "rag"
   | "rate-limiting"
+  | "scrolling"
   | "snippets"
   | "testing"
   | "tracing"
