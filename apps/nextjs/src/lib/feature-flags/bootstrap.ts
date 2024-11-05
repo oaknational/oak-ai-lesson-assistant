@@ -7,7 +7,7 @@ import cookie from "cookie";
 import type { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
 import invariant from "tiny-invariant";
 
-const log = aiLogger("analytics:feature-flags");
+const log = aiLogger("feature-flags");
 
 /**
  * We use posthog feature flags to toggle functionality without deploying code changes.
