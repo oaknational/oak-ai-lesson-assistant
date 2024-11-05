@@ -5,6 +5,7 @@ import os from "os";
 import { z } from "zod";
 
 import { publicProcedure } from "../../trpc";
+import { setRateLimitTokens } from "./rateLimiting";
 import { setSafetyViolations } from "./safetyViolations";
 import { seedChat } from "./seedChat";
 
@@ -12,10 +13,16 @@ const log = aiLogger("testing");
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? os.hostname();
 
+const GENERATIONS_PER_24H = parseInt(
+  process.env.RATELIMIT_GENERATIONS_PER_24H || "120",
+  10,
+);
+
 const personaNames = [
   "typical",
   "demo",
   "nearly-banned",
+  "nearly-rate-limited",
   "sharing-chat",
 ] as const;
 
@@ -25,6 +32,7 @@ type Persona = {
   region: "GB" | "US";
   chatFixture: "typical" | null;
   safetyViolations: number;
+  rateLimitTokens: number;
 };
 
 const personas: Record<PersonaName, Persona> = {
@@ -34,6 +42,7 @@ const personas: Record<PersonaName, Persona> = {
     region: "GB",
     chatFixture: "typical",
     safetyViolations: 0,
+    rateLimitTokens: 0,
   },
   // A user from a demo region
   demo: {
@@ -41,6 +50,7 @@ const personas: Record<PersonaName, Persona> = {
     region: "US",
     chatFixture: null,
     safetyViolations: 0,
+    rateLimitTokens: 0,
   },
   // A user with 3 safety violations - will be banned with one more
   "nearly-banned": {
@@ -48,6 +58,15 @@ const personas: Record<PersonaName, Persona> = {
     region: "GB",
     chatFixture: null,
     safetyViolations: 3,
+    rateLimitTokens: 0,
+  },
+  // A user with 119 of their 120 generations remaining
+  "nearly-rate-limited": {
+    isDemoUser: false,
+    region: "GB",
+    chatFixture: null,
+    safetyViolations: 0,
+    rateLimitTokens: GENERATIONS_PER_24H - 1,
   },
   // Allows `chat.isShared` to be set/reset without leaking between tests/retries
   "sharing-chat": {
@@ -55,6 +74,7 @@ const personas: Record<PersonaName, Persona> = {
     region: "GB",
     chatFixture: "typical",
     safetyViolations: 0,
+    rateLimitTokens: 0,
   },
 } as const;
 
@@ -156,6 +176,7 @@ export const prepareUser = publicProcedure
       chatId = await seedChat(user.id, persona.chatFixture);
     }
     await setSafetyViolations(user.id, persona.safetyViolations);
+    await setRateLimitTokens(user.id, persona.rateLimitTokens);
 
     return { email, chatId };
   });
