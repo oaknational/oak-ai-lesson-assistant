@@ -83,6 +83,7 @@ const personas: Record<PersonaName, Persona> = {
     region: "GB",
     chatFixture: "typical",
     safetyViolations: 0,
+    rateLimitTokens: 0,
   },
 } as const;
 
