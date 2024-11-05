@@ -37,7 +37,7 @@ async function updateExpiredAt(fileIds: string[]) {
 async function deleteExpiredExports(fileIds: string[]) {
   try {
     for (const id of fileIds) {
-      googleDrive.files.delete({ fileId: id });
+      await googleDrive.files.delete({ fileId: id });
       console.log("Deleted:", id);
     }
   } catch (error) {
@@ -46,23 +46,31 @@ async function deleteExpiredExports(fileIds: string[]) {
   }
 }
 
-async function fetchExpiredExports(folderId: string) {
+interface FetchExpiredExportsOptions {
+  folderId: string;
+  daysAgo: number;
+}
+
+async function fetchExpiredExports({
+  folderId,
+  daysAgo,
+}: FetchExpiredExportsOptions) {
   try {
     const currentDate = new Date();
     const oneMonthAgo = new Date(
-      currentDate.setDate(currentDate.getDate() - 30),
+      currentDate.setDate(currentDate.getDate() - daysAgo),
     ).toISOString();
 
     const query = `modifiedTime < '${oneMonthAgo}' and '${folderId}' in parents`;
 
     const res = await googleDrive.files.list({
       q: query,
-      fields: "files(id, name, modifiedTime)",
+      fields: "files(id, name, modifiedTime, ownedByMe )",
+      pageSize: 1000,
     });
 
-    const files = res.data.files || [];
-
-    console.log("Files:", files);
+    const files =
+      res.data.files?.filter((file) => file.ownedByMe === true) || [];
 
     if (files.length === 0) {
       console.log(
@@ -82,16 +90,24 @@ async function fetchExpiredExports(folderId: string) {
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
 
-  //   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-  //     console.log("Authorization failed. Invalid token.");
-  //     return new Response("Unauthorized", { status: 401 });
-  //   }
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    console.log("Authorization failed. Invalid token.");
+    return new Response("Unauthorized", { status: 401 });
+  }
 
-  const files = await fetchExpiredExports("1r6BM2h6TQU6GgS3vmTA6_1I_6yg0faEG");
+  const folderId = process.env.EXPORTS_FOLDER_ID;
+
+  if (!folderId) {
+    console.error("No folder ID provided.");
+    return new Response("No folder ID provided", { status: 400 });
+  }
+
+  const files = await fetchExpiredExports({ folderId, daysAgo: 14 });
 
   if (!files || files.length === 0) {
     return new Response("No expired files found", { status: 404 });
   }
+
   const validFileIds = files
     .map((file) => file.id)
     .filter((id): id is string => Boolean(id));
