@@ -47,7 +47,7 @@ test("User is restricted after message rate limit is reached", async ({
       page.getByTestId("chat-message-wrapper-error-generic"),
     ).not.toBeAttached();
     await expect(page.getByTestId("chat-message-wrapper-aila")).toContainText(
-      "There are no existing Oak lessons",
+      "Are the learning outcome and learning cycles appropriate for your pupils?",
       { timeout: 10000 },
     );
   });
