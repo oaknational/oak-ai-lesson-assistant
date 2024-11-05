@@ -153,7 +153,7 @@ async function getHandler(req: Request): Promise<Response> {
 
         const { data } = res;
 
-        const filename = `${lessonTitle} - ${lessonExport.id} - ${getReadableExportType(
+        const filename = `${lessonTitle} - ${lessonExport.id.slice(0, 5)} - ${getReadableExportType(
           lessonExport.exportType,
         )}.${ext}`;
 
