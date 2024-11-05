@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const folderId = process.env.EXPORTS_FOLDER_ID;
+  const folderId = process.env.GOOGLE_DRIVE_OUTPUT_FOLDER_ID;
 
   if (!folderId) {
     console.error("No folder ID provided.");

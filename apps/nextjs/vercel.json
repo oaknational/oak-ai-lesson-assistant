@@ -12,7 +12,7 @@
   "crons": [
     {
       "path": "/api/cron-jobs/expired-exports",
-      "schedule": "0 5 * * *"
+      "schedule": "0 3 * * *"
     }
   ]
 }
