@@ -17,6 +17,35 @@ import EndOfLessonFeedback from "./ContentOptions/EndOfLessonFeedback";
 import ReportContentDialog from "./ContentOptions/ReportContentDialog";
 import ShareChatDialog from "./ContentOptions/ShareChatDialog";
 
+const dialogTitlesAndIcons: {
+  [key: string]: { title: string; iconName: OakIconName };
+} = {
+  "share-chat": {
+    title: "Share chat",
+    iconName: "share",
+  },
+  feedback: {
+    title: "Before you",
+    iconName: "books",
+  },
+  "report-content": {
+    title: "Report content",
+    iconName: "warning",
+  },
+  "sensitive-moderation-user-comment": {
+    title: "Sensitive moderation user comment",
+    iconName: "warning",
+  },
+  "demo-interstitial": {
+    title: "Lesson limit reached",
+    iconName: "warning",
+  },
+  "demo-share-locked": {
+    title: "Sharing and downloading",
+    iconName: "warning",
+  },
+};
+
 const DialogContents = ({
   chatId,
   lesson,
@@ -32,15 +61,10 @@ const DialogContents = ({
   submit?: () => void;
   isShared?: boolean | undefined;
 }) => {
-  const { dialogWindow, setDialogWindow, dialogTitlesAndIcons } = useDialog();
+  const { dialogWindow, setDialogWindow } = useDialog();
   const closeDialog = () => setDialogWindow("");
 
-  useEffect(() => {
-    setDialogWindow("feedback");
-  }, [dialogWindow, setDialogWindow]);
-
   if (
-    !dialogTitlesAndIcons ||
     !dialogTitlesAndIcons[dialogWindow]?.title ||
     !dialogTitlesAndIcons[dialogWindow]?.iconName
   ) {
@@ -51,6 +75,7 @@ const DialogContents = ({
       <OakModalCenterBody
         title={dialogTitlesAndIcons[dialogWindow].title}
         iconName={dialogTitlesAndIcons[dialogWindow].iconName}
+        hideIcon={dialogWindow === "feedback"}
       >
         {children}
         {dialogWindow === "share-chat" && chatId && (
