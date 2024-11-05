@@ -1114,8 +1114,8 @@ model IngestError {
 model RagLessonPlan {
   id                String              @id @default(cuid())
   oakLessonId       Int                 @map("oak_lesson_id")
-  ingestLessonId    String              @map("ingest_lesson_id")
-  lessonPlan        Json                @db.JsonB
+  ingestLessonId    String?             @map("ingest_lesson_id")
+  lessonPlan        Json                @map("lesson_plan") @db.JsonB
   subjectSlug       String              @map("subject_slug")
   keyStageSlug      String              @map("key_stage_slug")
   createdAt         DateTime            @default(now()) @map("created_at")
@@ -1128,7 +1128,7 @@ model RagLessonPlan {
 
 model RagLessonPlanPart {
   id              String   @id @default(cuid())
-  ragLessonPlanId String   @map("lesson_plan_id")
+  ragLessonPlanId String   @map("rag_lesson_plan_id")
   key             String
   valueText       String   @map("value_text")
   valueJson       Json     @map("value_json") @db.JsonB
