@@ -1,6 +1,7 @@
 import { cva } from "class-variance-authority";
 
-import ButtonCore, { ButtonVariant } from "@/components/ButtonCore";
+import type { ButtonVariant } from "@/components/ButtonCore";
+import ButtonCore from "@/components/ButtonCore";
 import type { IconName } from "@/components/Icon";
 
 interface ButtonProps {

@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+import type OpenAI from "openai";
 
 export const DEFAULT_MODEL: OpenAI.Chat.ChatModel = "gpt-4o-2024-08-06";
 export const DEFAULT_MODERATION_MODEL: OpenAI.Chat.ChatModel =

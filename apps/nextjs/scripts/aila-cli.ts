@@ -1,4 +1,4 @@
-import { Aila } from "@oakai/aila";
+import { Aila } from "@oakai/aila/src/core/Aila";
 import { AilaPlugin } from "@oakai/aila/src/core/plugins";
 
 const cliPlugin: AilaPlugin = {

@@ -1,4 +1,4 @@
-import { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 export abstract class AilaModerator {
   private _userId: string | undefined;

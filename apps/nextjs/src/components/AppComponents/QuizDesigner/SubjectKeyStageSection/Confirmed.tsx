@@ -1,4 +1,4 @@
-import { KeyStageName, SubjectName } from "@oakai/core";
+import type { KeyStageName, SubjectName } from "@oakai/core";
 import { Flex, Heading, Text } from "@radix-ui/themes";
 
 type ConfirmedProps = {

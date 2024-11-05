@@ -1,8 +1,8 @@
 import { jsonrepair } from "jsonrepair";
 
-import { Message } from "..";
-import { AilaServices } from "../..";
+import type { AilaServices } from "../../core/AilaServices";
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
+import type { Message } from "../chat";
 
 export abstract class AilaPromptBuilder {
   protected _aila: AilaServices;
@@ -41,7 +41,7 @@ export abstract class AilaPromptBuilder {
                   }
                   return row;
                 },
-                `Failed to parse row`,
+                "Failed to parse row",
                 "info",
                 {
                   category: "json",

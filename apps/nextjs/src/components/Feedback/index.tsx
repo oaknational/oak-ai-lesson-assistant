@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Flex } from "@radix-ui/themes";
-import { Survey } from "posthog-js";
+import type { Survey } from "posthog-js";
 
 import ChatButton from "../AppComponents/Chat/ui/chat-button";
 import { Icon } from "../Icon";
@@ -50,7 +50,7 @@ const FeedBack = ({
           // first survey key should be $survey_response
           // see https://posthog.com/docs/surveys/implementing-custom-surveys under Capturing multiple responses
           const surveyResponseKey =
-            i === 0 ? `$survey_response` : `$survey_response_${i}`;
+            i === 0 ? "$survey_response" : `$survey_response_${i}`;
           if (question.type === "rating") {
             return (
               <div
@@ -71,7 +71,9 @@ const FeedBack = ({
                     return (
                       <button
                         key={feedback.number}
-                        className={`flex flex-col items-center justify-center gap-6`}
+                        className={
+                          "flex flex-col items-center justify-center gap-6"
+                        }
                         onClick={() => {
                           setUsersResponse((prevState) => ({
                             ...prevState,
@@ -83,8 +85,8 @@ const FeedBack = ({
                           className={`rounded-sm border-2  p-8 px-9 text-lg sm:px-15 ${
                             usersResponse[surveyResponseKey] ===
                             feedback.number.toString()
-                              ? `border-black bg-black text-white`
-                              : ` border-oakGrey3 bg-white text-black`
+                              ? "border-black bg-black text-white"
+                              : " border-oakGrey3 bg-white text-black"
                           }`}
                         >
                           {feedback.number}

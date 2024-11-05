@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { exportSlidesWorksheetSchema } from "@oakai/exports/browser";
-import { WorksheetSlidesInputData } from "@oakai/exports/src/schema/input.schema";
+import type { WorksheetSlidesInputData } from "@oakai/exports/src/schema/input.schema";
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
-import { ZodError } from "zod";
+import type { ZodError } from "zod";
 
 import { trpc } from "@/utils/trpc";
 
-import { ExportsHookProps } from "./exports.types";
+import type { ExportsHookProps } from "./exports.types";
 import { useExportsExistenceCheck } from "./useExportsExistenceCheck";
 
 export function useExportWorksheetSlides({

@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
-import { LessonExportType, prisma } from "@oakai/db";
+import type { LessonExportType } from "@oakai/db";
+import { prisma } from "@oakai/db/client";
 import { downloadDriveFile } from "@oakai/exports";
 import * as Sentry from "@sentry/node";
 
@@ -128,7 +129,7 @@ async function getHandler(req: Request) {
     });
   }
 
-  saveDownloadEvent({
+  await saveDownloadEvent({
     exportId: qdExport.id,
     downloadedBy: userId,
     ext,

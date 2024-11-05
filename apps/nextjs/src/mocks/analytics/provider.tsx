@@ -5,7 +5,7 @@ See the readme for why this is needed.
 import React from "react";
 
 import { aiLogger } from "@oakai/logger";
-import { PostHog } from "posthog-js";
+import type { PostHog } from "posthog-js";
 
 import Avo from "@/lib/avo/Avo";
 
@@ -42,6 +42,7 @@ const mockAnalyticsContext: AnalyticsContext = {
     isFeatureEnabled: () => true,
     identify: () => {},
     get_distinct_id: () => "mock-distinct-id",
+    getSurveys: () => [],
   } as unknown as PostHog,
 };
 

@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-import { LooseLessonPlan } from "../../../../aila/src/protocol/schema";
+import type { LooseLessonPlan } from "../../../../aila/src/protocol/schema";
 import {
   americanToBritish,
   basedOn,

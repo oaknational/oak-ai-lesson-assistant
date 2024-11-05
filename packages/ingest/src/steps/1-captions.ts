@@ -1,4 +1,4 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { IngestError } from "../IngestError";
 import { getCaptionsByFileName } from "../captions/getCaptionsByFileName";
@@ -7,10 +7,11 @@ import { createCaptionsRecord } from "../db-helpers/createCaptionsRecord";
 import { createErrorRecord } from "../db-helpers/createErrorRecord";
 import { getIngestById } from "../db-helpers/getIngestById";
 import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
-import { Step, getPrevStep } from "../db-helpers/step";
+import type { Step } from "../db-helpers/step";
+import { getPrevStep } from "../db-helpers/step";
 import { updateLessonsState } from "../db-helpers/updateLessonsState";
-import { IngestLogger } from "../types";
-import { Captions } from "../zod-schema/zodSchema";
+import type { IngestLogger } from "../types";
+import type { Captions } from "../zod-schema/zodSchema";
 
 const currentStep: Step = "captions_fetch";
 const prevStep = getPrevStep(currentStep);

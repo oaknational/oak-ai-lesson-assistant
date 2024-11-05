@@ -2,7 +2,7 @@
 
 import React, { createContext, useState, useContext, useMemo } from "react";
 
-import { DialogTypes } from "../Chat/Chat/types";
+import type { DialogTypes } from "../Chat/Chat/types";
 
 interface DialogContextType {
   dialogWindow: DialogTypes;

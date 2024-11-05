@@ -1,7 +1,8 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
-import { TestSupportRouter } from "@oakai/api/src/router/testSupport";
+import type { TestSupportRouter } from "@oakai/api/src/router/testSupport";
 import { transformer } from "@oakai/api/transformer";
-import { test, Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { test } from "@playwright/test";
 import { createTRPCProxyClient, httpBatchLink, loggerLink } from "@trpc/client";
 
 import {
@@ -25,7 +26,12 @@ const trpc = createTRPCProxyClient<TestSupportRouter>({
 
 export async function prepareUser(
   page: Page,
-  persona: "typical" | "demo" | "nearly-banned" | "sharing-chat",
+  persona:
+    | "typical"
+    | "demo"
+    | "nearly-banned"
+    | "nearly-rate-limited"
+    | "sharing-chat",
 ) {
   return await test.step("Prepare user", async () => {
     const [login] = await Promise.all([

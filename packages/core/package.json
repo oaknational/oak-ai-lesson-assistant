@@ -23,9 +23,9 @@
     "process:lessons": "pnpm doppler:run:dev -- ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/processLessons.ts",
     "process:lessons:dev": "pnpm doppler:run:dev -- pnpm process:lessons",
     "prompts": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/setupPrompts.ts",
-    "prompts:dev": "pnpm doppler:run:dev -- ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/setupPrompts.ts",
+    "prompts:dev": "dotenv -e ../../.env -- ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/setupPrompts.ts",
     "seed": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/seedLessons.ts",
-    "seed:dev": "pnpm doppler:run:dev -- pnpm seed",
+    "seed:dev": "dotenv -e ../../.env -- pnpm seed",
     "seed:prd": "pnpm doppler:run:prd -- pnpm seed",
     "seed:stg": "pnpm doppler:run:stg -- pnpm seed",
     "type-check": "tsc --noEmit"

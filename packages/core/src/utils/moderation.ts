@@ -5,7 +5,7 @@ import {
   englishDataset, // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   englishRecommendedTransformers, // @ts-ignore: Could not find declaration file
 } from "obscenity";
-import OpenAI from "openai";
+import type OpenAI from "openai";
 
 export const moderationConfig: Record<string, number | boolean | string> = {
   MODERATE_PROFANITY: false,
@@ -33,7 +33,7 @@ const ENGLISH_THRESHOLD =
 
 if (MODERATE_LANGUAGE && Number.isNaN(ENGLISH_THRESHOLD)) {
   throw new Error(
-    `Missing or invalid env var MODERATION_THRESHOLD_ENGLISH_LANGUAGE`,
+    "Missing or invalid env var MODERATION_THRESHOLD_ENGLISH_LANGUAGE",
   );
 }
 

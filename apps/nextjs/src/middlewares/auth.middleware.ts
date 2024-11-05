@@ -1,10 +1,8 @@
-import {
-  ClerkMiddlewareAuth,
-  clerkMiddleware,
-  createRouteMatcher,
-} from "@clerk/nextjs/server";
+import type { ClerkMiddlewareAuth } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { aiLogger } from "@oakai/logger";
-import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
+import type { NextFetchEvent, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 import { sentrySetUser } from "@/lib/sentry/sentrySetUser";
 
@@ -15,6 +13,7 @@ declare global {
     labs: {
       isDemoUser: boolean | null;
       isOnboarded: boolean | null;
+      featureFlagGroup: string | null;
     };
   }
 }
@@ -48,6 +47,7 @@ const publicRoutes = [
   "/monitoring",
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/api/webhooks/clerk",
 ];
 if (
   process.env.NODE_ENV === "development" ||

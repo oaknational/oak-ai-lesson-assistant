@@ -1,4 +1,4 @@
-import { IconName } from "@/components/Icon";
+import type { IconName } from "@/components/Icon";
 
 interface SocialItem {
   icon: IconName;

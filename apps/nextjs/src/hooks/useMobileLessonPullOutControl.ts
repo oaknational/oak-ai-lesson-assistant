@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import { Message } from "ai";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { Message } from "ai";
 
-import { AilaStreamingStatus } from "@/components/AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
+import type { AilaStreamingStatus } from "@/components/AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
 
 export const useMobileLessonPullOutControl = ({
   ailaStreamingStatus,

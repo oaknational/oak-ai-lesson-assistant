@@ -1,12 +1,12 @@
-import { type LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
-import { type Message } from "ai/react";
+import type { Message } from "ai/react";
 
 const log = aiLogger("chat");
 
 export function findMessageIdFromContent({ content }: { content: string }) {
   return content
-    .split(`␞`)
+    .split("␞")
     .map((s) => {
       try {
         return JSON.parse(s.trim());
@@ -21,12 +21,12 @@ export function findMessageIdFromContent({ content }: { content: string }) {
 export function findLatestServerSideState(workingMessages: Message[]) {
   log.info("Finding latest server-side state", { workingMessages });
   const lastMessage = workingMessages[workingMessages.length - 1];
-  if (!lastMessage?.content.includes(`"type":"state"`)) {
+  if (!lastMessage?.content.includes('"type":"state"')) {
     log.info("No server state found");
     return;
   }
   const state: LooseLessonPlan = lastMessage.content
-    .split(`␞`)
+    .split("␞")
     .map((s) => {
       try {
         return JSON.parse(s.trim());

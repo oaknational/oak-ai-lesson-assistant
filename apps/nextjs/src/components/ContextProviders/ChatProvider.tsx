@@ -9,31 +9,30 @@ import React, {
 } from "react";
 import { toast } from "react-hot-toast";
 
-import { redirect, usePathname, useRouter } from "#next/navigation";
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import {
+import type {
   AilaPersistedChat,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
-import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import { Moderation } from "@oakai/db";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { Moderation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
-import { Message, nanoid } from "ai";
-import { ChatRequestOptions, CreateMessage } from "ai";
+import type { Message } from "ai";
+import { nanoid } from "ai";
+import type { ChatRequestOptions, CreateMessage } from "ai";
 import { useChat } from "ai/react";
 import { useTemporaryLessonPlanWithStreamingEdits } from "hooks/useTemporaryLessonPlanWithStreamingEdits";
+import { redirect, usePathname, useRouter } from "next/navigation";
 
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
 
-import {
-  AilaStreamingStatus,
-  useAilaStreamingStatus,
-} from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
+import type { AilaStreamingStatus } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
+import { useAilaStreamingStatus } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
 import {
   isAccountLocked,

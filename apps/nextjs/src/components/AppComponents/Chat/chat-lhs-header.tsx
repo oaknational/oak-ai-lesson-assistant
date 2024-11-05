@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useRouter } from "#next/navigation";
+import { useRouter } from "next/navigation";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
@@ -20,16 +20,14 @@ const ChatLhsHeader = ({
 }: Readonly<ChatLhsHeaderProps>) => {
   const router = useRouter();
   const chat = useLessonChat();
-
   return (
     <>
       <div className="mt-6 hidden items-center justify-end gap-5 sm:flex">
-        {process.env.NEXT_PUBLIC_ENVIRONMENT !== "production" && (
-          <div
-            className="flex-grow text-left text-xs"
-            data-testid="chat-aila-streaming-status"
-          >
-            {chat.ailaStreamingStatus}
+        {process.env.NEXT_PUBLIC_ENVIRONMENT !== "prd" && (
+          <div className="flex flex-grow flex-row space-x-4 text-left text-xs">
+            <div data-testid="chat-aila-streaming-status">
+              {chat.ailaStreamingStatus}
+            </div>
           </div>
         )}
         <ChatButton
@@ -42,13 +40,13 @@ const ChatLhsHeader = ({
           New lesson
         </ChatButton>
       </div>
-      <div className={`${isDemoUser && `mt-16`} flex justify-end sm:hidden`}>
+      <div className={`${isDemoUser && "mt-16"} flex justify-end sm:hidden`}>
         <button
           onClick={() => setShowLessonMobile(!showLessonMobile)}
           className="flex items-center gap-5"
         >
           <AiIcon />{" "}
-          <span className={`text-base font-bold `}>View lesson &gt;</span>
+          <span className={"text-base font-bold "}>View lesson &gt;</span>
         </button>
       </div>
     </>

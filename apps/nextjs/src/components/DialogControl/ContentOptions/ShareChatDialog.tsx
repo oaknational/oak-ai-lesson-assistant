@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { Flex } from "@radix-ui/themes";
 import * as Sentry from "@sentry/react";
 
-import { DialogTypes } from "@/components/AppComponents/Chat/Chat/types";
+import type { DialogTypes } from "@/components/AppComponents/Chat/Chat/types";
 import ChatButton from "@/components/AppComponents/Chat/ui/chat-button";
 import LoadingWheel from "@/components/LoadingWheel";
 import { getLessonTrackingProps } from "@/lib/analytics/helpers";

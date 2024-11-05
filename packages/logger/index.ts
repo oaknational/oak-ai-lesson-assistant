@@ -1,9 +1,13 @@
 import debug from "debug";
+import invariant from "tiny-invariant";
 
-import structuredLogger, { StructuredLogger } from "./structuredLogger";
+import browserLogger from "./browser";
+import type { StructuredLogger } from "./structuredLogger";
+import structuredLogger from "./structuredLogger";
 
 if (typeof window !== "undefined") {
-  debug.enable("ai:*");
+  invariant(process.env.NEXT_PUBLIC_DEBUG, "NEXT_PUBLIC_DEBUG is not set");
+  debug.enable(process.env.NEXT_PUBLIC_DEBUG);
 }
 
 const debugBase = debug("ai");
@@ -14,13 +18,16 @@ type ChildKey =
   | "admin"
   | "aila"
   | "aila:analytics"
+  | "aila:categorisation"
   | "aila:errors"
+  | "aila:lesson"
   | "aila:llm"
   | "aila:moderation"
   | "aila:moderation:response"
   | "aila:persistence"
   | "aila:prompt"
   | "aila:protocol"
+  | "aila:stream"
   | "aila:rag"
   | "aila:testing"
   | "analytics"
@@ -51,7 +58,13 @@ type ChildKey =
   | "tracing"
   | "transcripts"
   | "trpc"
-  | "ui";
+  | "ui"
+  | "webhooks";
+
+const errorLogger =
+  typeof window === "undefined"
+    ? structuredLogger.error.bind(structuredLogger)
+    : browserLogger.error.bind(browserLogger);
 
 /**
  * The AI logger uses namespaces so that we can selectively toggle noisy logs.
@@ -73,7 +86,7 @@ export function aiLogger(childKey: ChildKey) {
   return {
     info: debugLogger,
     warn: debugLogger,
-    error: structuredLogger.error.bind(structuredLogger),
+    error: errorLogger.bind(structuredLogger),
   };
 }
 

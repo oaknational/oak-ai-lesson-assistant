@@ -1,4 +1,4 @@
-import { Snippet, SnippetVariant } from "@oakai/db";
+import type { Snippet, SnippetVariant } from "@oakai/db";
 import { prisma } from "@oakai/db";
 import { z } from "zod";
 

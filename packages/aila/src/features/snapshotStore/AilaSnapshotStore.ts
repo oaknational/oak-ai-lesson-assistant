@@ -1,10 +1,11 @@
-import { LessonSnapshots } from "@oakai/core";
-import { PrismaClientWithAccelerate, prisma as globalPrisma } from "@oakai/db";
-import { LessonSnapshotTrigger } from "@prisma/client";
+import { LessonSnapshots } from "@oakai/core/src/models/lessonSnapshots";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
+import type { LessonSnapshotTrigger } from "@prisma/client";
 import invariant from "tiny-invariant";
 
-import { AilaServices } from "../../core";
-import { LooseLessonPlan } from "../../protocol/schema";
+import type { AilaServices } from "../../core/AilaServices";
+import type { LooseLessonPlan } from "../../protocol/schema";
 
 export class AilaSnapshotStore {
   protected _name: string;

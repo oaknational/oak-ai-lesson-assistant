@@ -1,9 +1,9 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { handleEmbeddingBatchSuccess } from "../embedding/handleEmbeddingBatchSuccess";
 import { handleOpenAiBatchErrorFile } from "../openai-batches/handleOpenAiBatchErrorFile";
 import { retrieveOpenAiBatch } from "../openai-batches/retrieveOpenAiBatch";
-import { IngestLogger } from "../types";
+import type { IngestLogger } from "../types";
 
 /**
  * Check status of lesson plan generation batches and action

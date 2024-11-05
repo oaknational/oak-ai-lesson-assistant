@@ -1,6 +1,7 @@
-import { clerkClient, User } from "@clerk/nextjs/server";
+import type { User } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import { aiLogger } from "@oakai/logger";
-import { Ratelimit } from "@upstash/ratelimit";
+import type { Ratelimit } from "@upstash/ratelimit";
 import { waitUntil } from "@vercel/functions";
 
 const log = aiLogger("rate-limiting");
@@ -18,8 +19,9 @@ export type RateLimitInfo =
     };
 
 export type RateLimiter = {
-  check: (userId: string) => Promise<RateLimitInfo>;
+  check: (userId: string, options?: { rate: number }) => Promise<RateLimitInfo>;
   getRemaining: (userId: string) => Promise<number>;
+  resetUsedTokens: (userId: string) => Promise<void>;
 };
 
 export class RateLimitExceededError extends Error {
@@ -45,7 +47,7 @@ export class RateLimitExceededError extends Error {
  */
 export const userBasedRateLimiter = (rateLimit: Ratelimit): RateLimiter => {
   return {
-    check: async (userId: string) => {
+    check: async (userId, options) => {
       if (!userId) {
         throw new Error(
           "authenticated user is required for userBasedRateLimiter",
@@ -57,12 +59,15 @@ export const userBasedRateLimiter = (rateLimit: Ratelimit): RateLimiter => {
         return { isSubjectToRateLimiting: false };
       }
 
-      const { success, pending, ...rest } = await rateLimit.limit(userId);
+      const { success, pending, ...rest } = await rateLimit.limit(
+        userId,
+        options,
+      );
 
       waitUntil(pending);
 
       if (!success) {
-        log.info("Rate limit exceeded for user %s", userId);
+        log.info("Rate limit exceeded for user %s", userId, rest);
         throw new RateLimitExceededError(userId, rest.limit, rest.reset);
       }
 
@@ -72,8 +77,12 @@ export const userBasedRateLimiter = (rateLimit: Ratelimit): RateLimiter => {
       };
     },
 
-    getRemaining: async (userId: string) => {
+    getRemaining: async (userId) => {
       return (await rateLimit.getRemaining(userId)).remaining;
+    },
+
+    resetUsedTokens: async (userId) => {
+      return await rateLimit.resetUsedTokens(userId);
     },
   };
 };
@@ -91,6 +100,7 @@ function userHasOakEmail(user: User) {
     (email) =>
       email.emailAddress.endsWith("@thenational.academy") &&
       !email.emailAddress.includes("rate-limit-me") &&
+      !email.emailAddress.includes("rate-limited") &&
       !email.emailAddress.includes("demo"),
   );
 }

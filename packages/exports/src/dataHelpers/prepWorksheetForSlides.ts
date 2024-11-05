@@ -1,4 +1,4 @@
-import { WorksheetSlidesInputData } from "../schema/input.schema";
+import type { WorksheetSlidesInputData } from "../schema/input.schema";
 
 export async function prepWorksheetForSlides(
   lessonPlan: Pick<

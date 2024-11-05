@@ -1,9 +1,10 @@
-import { AilaAuthenticationError, AilaThreatDetectionError } from "@oakai/aila";
+import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
+import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
 import * as moderationErrorHandling from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
-import { UserBannedError } from "@oakai/core/src/models/safetyViolations";
-import { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import invariant from "tiny-invariant";
 
 import {
@@ -37,7 +38,7 @@ describe("handleChatException", () => {
 
       expect(response.status).toBe(200);
 
-      invariant(response.body instanceof ReadableStream);
+      invariant(response.body);
       const message = extractStreamMessage(await consumeStream(response.body));
 
       expect(message).toEqual({

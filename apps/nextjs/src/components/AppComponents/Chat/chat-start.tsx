@@ -2,10 +2,10 @@
 
 import React, { useCallback, useState } from "react";
 
-import { useRouter } from "#next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { aiLogger } from "@oakai/logger";
 import { Flex } from "@radix-ui/themes";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/AppComponents/Chat/ui/button";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
@@ -17,14 +17,15 @@ import { trpc } from "@/utils/trpc";
 import { useDialog } from "../DialogContext";
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 import { ChatStartForm } from "./chat-start-form";
-import EmptyScreenAccordion from "./empty-screen-accordian";
+import EmptyScreenAccordion from "./empty-screen-accordion";
 
 const log = aiLogger("chat");
 
 const exampleMessages = [
   {
     heading: "History • Key stage 3 • The end of Roman Britain ",
-    message: `Create a lesson plan about The End of Roman Britain for Key Stage 3 History`,
+    message:
+      "Create a lesson plan about The End of Roman Britain for Key Stage 3 History",
   },
 ];
 

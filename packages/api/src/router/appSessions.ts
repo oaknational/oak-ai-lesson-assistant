@@ -1,9 +1,10 @@
-import { SignedInAuthObject } from "@clerk/backend/internal";
+import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
 import { demoUsers } from "@oakai/core";
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting/rateLimit";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
-import { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
 import * as Sentry from "@sentry/nextjs";
 import { TRPCError } from "@trpc/server";
 import { isTruthy } from "remeda";
@@ -11,10 +12,8 @@ import { z } from "zod";
 
 import { getSessionModerations } from "../../../aila/src/features/moderation/getSessionModerations";
 import { generateChatId } from "../../../aila/src/helpers/chat/generateChatId";
-import {
-  AilaPersistedChat,
-  chatSchema,
-} from "../../../aila/src/protocol/schema";
+import type { AilaPersistedChat } from "../../../aila/src/protocol/schema";
+import { chatSchema } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 
@@ -32,7 +31,7 @@ function parseChatAndReportError({
   userId: string;
 }) {
   if (typeof sessionOutput !== "object") {
-    throw new Error(`sessionOutput is not an object`);
+    throw new Error("sessionOutput is not an object");
   }
   const parseResult = chatSchema.safeParse({
     ...sessionOutput,
@@ -41,7 +40,7 @@ function parseChatAndReportError({
   });
 
   if (!parseResult.success) {
-    const error = new Error(`Failed to parse chat`);
+    const error = new Error("Failed to parse chat");
     Sentry.captureException(error, {
       extra: {
         id,

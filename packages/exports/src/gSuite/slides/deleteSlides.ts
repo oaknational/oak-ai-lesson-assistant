@@ -1,6 +1,6 @@
-import { slides_v1 } from "@googleapis/slides";
+import type { slides_v1 } from "@googleapis/slides";
 
-import { Result } from "../../types";
+import type { Result } from "../../types";
 
 export type SpeakerNotesTag = "cycle1" | "cycle2" | "cycle3" | string;
 
