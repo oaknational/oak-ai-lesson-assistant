@@ -93,7 +93,6 @@ export default async function RootLayout({
             accentColor="blue"
             grayColor="olive"
             scaling="110%"
-            color="#22222"
             style={{ overflowX: "hidden", color: "var(--base-color)" }}
           >
             <TRPCReactProvider>

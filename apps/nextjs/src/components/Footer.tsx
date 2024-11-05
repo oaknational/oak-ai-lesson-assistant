@@ -228,9 +228,11 @@ const FooterButton = ({
         $textDecoration="none"
       >
         <span>{children}</span>
-        <ScaleSpan $scale={0.8}>
-          <OakIcon iconName="external" />
-        </ScaleSpan>
+        {href && href.includes("http") && (
+          <ScaleSpan $scale={0.8}>
+            <OakIcon iconName="external" />
+          </ScaleSpan>
+        )}
       </OakFlex>
     </StyledOakLink>
   );
