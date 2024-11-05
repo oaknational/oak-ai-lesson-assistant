@@ -29,8 +29,8 @@ export async function prepareUser(
   persona:
     | "typical"
     | "demo"
-    | "nearly-banned",
-    | "modify-lesson-plan",
+    | "nearly-banned"
+    | "modify-lesson-plan"
     | "nearly-rate-limited"
     | "sharing-chat",
 ) {
