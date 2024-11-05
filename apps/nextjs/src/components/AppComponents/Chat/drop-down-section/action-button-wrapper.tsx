@@ -2,18 +2,18 @@ import { useRef, useState } from "react";
 
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import { OakBox } from "@oaknational/oak-components";
-import { AilaUserModificationAction } from "@prisma/client";
+import type { AilaUserModificationAction } from "@prisma/client";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
-import {
+import type {
   AdditionalMaterialOptions,
   ModifyOptions,
 } from "./action-button.types";
 import { ActionDropDown } from "./action-drop-down";
-import { FeedbackOption } from "./drop-down-form-wrapper";
+import type { FeedbackOption } from "./drop-down-form-wrapper";
 
 type ActionButtonWrapperProps = {
   sectionTitle: string;

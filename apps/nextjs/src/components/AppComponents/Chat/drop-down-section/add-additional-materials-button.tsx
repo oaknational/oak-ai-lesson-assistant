@@ -1,14 +1,20 @@
-import { AilaUserModificationAction } from "@prisma/client";
+import type { AilaUserModificationAction } from "@prisma/client";
 
 import ActionButtonWrapper from "./action-button-wrapper";
 import { additionalMaterialsModifyOptions } from "./action-button.types";
-import { FeedbackOption } from "./drop-down-form-wrapper";
+import type { FeedbackOption } from "./drop-down-form-wrapper";
+
+export type AdditionalMaterialsProps = {
+  sectionTitle: string;
+  sectionPath: string;
+  sectionValue: Record<string, unknown> | string | Array<unknown>;
+};
 
 const AddAdditionalMaterialsButton = ({
   sectionTitle,
   sectionPath,
   sectionValue,
-}) => {
+}: AdditionalMaterialsProps) => {
   const generateMessage = (
     option: FeedbackOption<AilaUserModificationAction>,
     userFeedbackText: string,

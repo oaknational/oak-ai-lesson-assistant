@@ -15,11 +15,6 @@ export const additionalMaterialsModifyOptions = [
     chatMessage: "Add additional practice questions",
   },
   {
-    label: "Keywords in another language",
-    enumValue: "TRANSLATE_KEYWORDS",
-    chatMessage: "Translate the keywords",
-  },
-  {
     label: "Practical instructions (if relevant)",
     enumValue: "ADD_PRACTICAL_INSTRUCTIONS",
     chatMessage: "Add practical instructions",
