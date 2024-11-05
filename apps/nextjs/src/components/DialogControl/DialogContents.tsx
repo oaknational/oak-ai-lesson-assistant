@@ -1,15 +1,12 @@
-import { useEffect } from "react";
-
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import {
   OakModalCenter,
   OakModalCenterBody,
   type OakIconName,
 } from "@oaknational/oak-components";
-import * as Dialog from "@radix-ui/react-dialog";
-import { Box, Flex } from "@radix-ui/themes";
 import type { Message } from "ai";
 
+import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
 import { useDialog } from "../AppComponents/DialogContext";
 import DemoInterstitialDialog from "./ContentOptions/DemoInterstitialDialog";
 import DemoShareLockedDialog from "./ContentOptions/DemoShareLockedDialog";
@@ -17,9 +14,10 @@ import EndOfLessonFeedback from "./ContentOptions/EndOfLessonFeedback";
 import ReportContentDialog from "./ContentOptions/ReportContentDialog";
 import ShareChatDialog from "./ContentOptions/ShareChatDialog";
 
-const dialogTitlesAndIcons: {
-  [key: string]: { title: string; iconName: OakIconName };
-} = {
+const dialogTitlesAndIcons: Record<
+  Exclude<DialogTypes, "">,
+  { title: string; iconName: OakIconName }
+> = {
   "share-chat": {
     title: "Share chat",
     iconName: "share",
@@ -63,13 +61,7 @@ const DialogContents = ({
 }) => {
   const { dialogWindow, setDialogWindow } = useDialog();
   const closeDialog = () => setDialogWindow("");
-
-  if (
-    !dialogTitlesAndIcons[dialogWindow]?.title ||
-    !dialogTitlesAndIcons[dialogWindow]?.iconName
-  ) {
-    return null;
-  }
+  if (dialogWindow === "") return null;
   return (
     <OakModalCenter isOpen={!!dialogWindow} onClose={closeDialog}>
       <OakModalCenterBody
