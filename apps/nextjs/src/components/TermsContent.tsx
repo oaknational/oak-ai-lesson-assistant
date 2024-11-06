@@ -279,7 +279,6 @@ const TermsContent = () => {
         >
           Security Disclosure Policy
         </OakLink>
-        .
       </OakP>
 
       <OakHeading tag="h2" $mb="space-between-s" $font="heading-6">
