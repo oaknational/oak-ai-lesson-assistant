@@ -125,6 +125,7 @@ export async function GET(request: NextRequest) {
     await deleteExpiredExports(validFileIds);
   } catch (error) {
     Sentry.captureException(error);
+    return new Response("Internal Server Error", { status: 500 });
   }
 
   return new Response(JSON.stringify({ success: true }), { status: 200 });
