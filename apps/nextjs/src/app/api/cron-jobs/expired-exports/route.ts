@@ -7,6 +7,14 @@ import { isTruthy } from "remeda";
 
 const log = aiLogger("cron");
 
+const requiredEnvVars = ["CRON_SECRET", "GOOGLE_DRIVE_OUTPUT_FOLDER_ID"];
+
+requiredEnvVars.forEach((envVar) => {
+  if (!process.env[envVar]) {
+    throw new Error(`Environment variable ${envVar} is not set.`);
+  }
+});
+
 async function updateExpiredAt(fileIds: string[]) {
   if (fileIds.length === 0) {
     log.info("No file IDs to update.");
@@ -101,11 +109,11 @@ export async function GET(request: NextRequest) {
 
     if (!cronSecret) {
       log.error("Missing cron secret");
-      return new Response("Missing cron secret", { status: 400 });
+      return new Response("Missing cron secret", { status: 500 });
     }
     if (!folderId) {
       log.error("No folder ID provided.");
-      return new Response("No folder ID provided", { status: 400 });
+      return new Response("No folder ID provided", { status: 500 });
     }
 
     if (authHeader !== `Bearer ${cronSecret}`) {
