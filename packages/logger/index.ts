@@ -19,6 +19,7 @@ type ChildKey =
   | "aila"
   | "aila:analytics"
   | "aila:categorisation"
+  | "aila:chat"
   | "aila:errors"
   | "aila:lesson"
   | "aila:llm"
@@ -82,7 +83,6 @@ const errorLogger =
  */
 export function aiLogger(childKey: ChildKey) {
   const debugLogger = debugBase.extend(childKey);
-
   return {
     info: debugLogger,
     warn: debugLogger,

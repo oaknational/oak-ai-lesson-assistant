@@ -3,6 +3,7 @@ import {
   unsupportedSubjects,
   subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
+import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
@@ -28,6 +29,8 @@ import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuil
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 import type { Message } from "./types";
+
+const log = aiLogger("aila:chat");
 
 export class AilaChat implements AilaChatService {
   private readonly _id: string;
@@ -280,6 +283,7 @@ export class AilaChat implements AilaChatService {
   }
 
   private async persistChat() {
+    log.info("Persisting chat");
     await Promise.all(
       (this._aila.persistence ?? []).map((p) => p.upsertChat()),
     );

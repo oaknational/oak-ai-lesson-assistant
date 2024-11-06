@@ -1,8 +1,44 @@
 {
   "type": "llmMessage",
-  "patches": [],
+  "sectionsToEdit": [
+    "learningOutcome",
+    "learningCycles"
+  ],
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "Starting a new lesson from scratch as there are no existing Oak lessons on this topic.",
+      "value": {
+        "type": "string",
+        "op": "add",
+        "path": "/learningOutcome",
+        "value": "I can describe who the Romans were and list some of their contributions to modern society."
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Breaking down the lesson into manageable learning cycles for KS1 pupils.",
+      "value": {
+        "type": "string-array",
+        "op": "add",
+        "path": "/learningCycles",
+        "value": [
+          "Identify who the Romans were and where they came from.",
+          "List key contributions of the Romans to modern society.",
+          "Explain how Roman innovations are used in our daily lives."
+        ]
+      },
+      "status": "complete"
+    }
+  ],
+  "sectionsEdited": [
+    "learningOutcome",
+    "learningCycles"
+  ],
   "prompt": {
     "type": "text",
-    "value": "There are no existing Oak lessons specifically for the topic of \"Introduction to Romans\" at Key Stage 1. Let's start from scratch and create a new lesson plan. We'll begin by establishing the learning outcome and learning cycles for this lesson. Tap **Continue** to move on to the next step."
-  }
+    "value": "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step."
+  },
+  "status": "complete"
 }
