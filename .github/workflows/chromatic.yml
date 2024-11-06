@@ -2,9 +2,33 @@ name: "Chromatic"
 
 on: push
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-chromatic
+  cancel-in-progress: true
+
 jobs:
+  changed-files:
+    runs-on: ubuntu-latest
+    name: changed-files
+    outputs:
+      all_changed_files: ${{ steps.changed-files.outputs.all_changed_files }}
+      any_changed: ${{ steps.changed-files.outputs.any_changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            apps/nextjs/**
+
   chromatic:
     name: Run Chromatic
+    needs: [changed-files]
+    if: ${{ needs.changed-files.outputs.any_changed == 'true' }}
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -30,5 +54,7 @@ jobs:
       - name: Run Chromatic
         uses: chromaui/action@latest
         with:
-          # projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           workingDir: apps/nextjs
+          exitZeroOnChanges: true
+          exitOnceUploaded: true
+          onlyChanged: true
