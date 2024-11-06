@@ -32,6 +32,7 @@ import LessonIcon from "@/components/SVGParts/LessonIcon";
 import QuizIcon from "@/components/SVGParts/QuizIcon";
 import SlidesIcon from "@/components/SVGParts/SlidesIcon";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useClientSideFeatureFlag } from "@/utils/useClientSideFeatureFlag";
 
 export const metadata: Metadata = {
   title: "Oak ai experiments",
@@ -64,6 +65,8 @@ export default function HomePage({
 
   const { track } = useAnalytics();
 
+  const hasCoolFeature = useClientSideFeatureFlag("cool-feature");
+
   return (
     <Layout>
       <HeroContainer>
@@ -82,12 +85,25 @@ export default function HomePage({
             <OakBox $width="fit-content">
               <BetaTagPage />
             </OakBox>
-            <OakHeading tag="h1" $font={"heading-2"}>
-              Introducing Aila
-            </OakHeading>
-            <OakHeading tag="h2" $font={"heading-5"}>
-              Build a tailor-made lesson plan and resources in minutes
-            </OakHeading>
+            {hasCoolFeature ? (
+              <>
+                <OakHeading tag="h1" $font={"heading-2"}>
+                  Check out our new cool feature!
+                </OakHeading>
+                <OakHeading tag="h2" $font={"heading-5"}>
+                  You’re an early tester for the new cool thing
+                </OakHeading>
+              </>
+            ) : (
+              <>
+                <OakHeading tag="h1" $font={"heading-2"}>
+                  Introducing Aila
+                </OakHeading>
+                <OakHeading tag="h2" $font={"heading-5"}>
+                  Build a tailor-made lesson plan and resources in minutes
+                </OakHeading>
+              </>
+            )}
 
             <OakBoxCustomMaxWidth
               $display={["flex", "none"]}
