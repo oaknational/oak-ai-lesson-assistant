@@ -41,7 +41,7 @@ export const decorators: Decorator[] = [
   RadixThemeDecorator,
   (Story) => (
     <>
-      {/* TODO: use a mocked provider */}
+      {/* TODO: Mock tRPC calls with MSW */}
       <TRPCReactProvider>
         <AnalyticsProvider>
           <TooltipProvider>
