@@ -23,7 +23,8 @@
     "with-env": "dotenv -e ../../.env --",
     "aila": "tsx scripts/aila-cli.ts",
     "storybook": "dotenv -e ../../.env -- storybook dev -p 6006 --no-open",
-    "build-storybook": "dotenv -e ../../.env -- storybook build"
+    "build-storybook": "dotenv -e ../../.env -- storybook build",
+    "chromatic": "pnpm with-env npx chromatic"
   },
   "prettier": "@oakai/prettier-config",
   "dependencies": {
