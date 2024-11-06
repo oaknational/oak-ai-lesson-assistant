@@ -3,16 +3,16 @@ type":"
 ll
 m
 Message
-","patches":[
+","sectionsToEdit":["
+learning
+Outcome
+"],"patches":[
 {"
 type":"
 patch
 ","reasoning":"
 Simpl
 ifying
- the
- language
- of
  the
  learning
  outcome
@@ -22,7 +22,7 @@ ifying
  more
  accessible
  for
- pupils
+ students
 .","
 value":{"
 type":"
@@ -40,30 +40,45 @@ I
  software
  testing
  techniques
- and
- why
- they
- are
- used
 ."
-}}],"prompt":{"
+},"status":"
+complete
+"}],"sectionsEdited":["
+learning
+Outcome
+"],"prompt":{"
 type":"
 text
 ","value":"
-The
+I've
+ simplified
+ the
  learning
  outcome
- has
- been
- simplified
 .
- Is
+ If
  this
- version
- more
+ is
  suitable
- for
- your
- pupils
-?"
-}}
+,
+ please
+ let
+ me
+ know
+ or
+ suggest
+ further
+ changes
+.
+ Otherwise
+,
+ tap
+ **
+Continue
+**
+ to
+ proceed
+."
+},"status":"
+complete
+"}

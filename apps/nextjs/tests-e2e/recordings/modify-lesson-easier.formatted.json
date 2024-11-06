@@ -1,19 +1,27 @@
 {
   "type": "llmMessage",
+  "sectionsToEdit": [
+    "learningOutcome"
+  ],
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Simplifying the language of the learning outcome to make it more accessible for pupils.",
+      "reasoning": "Simplifying the learning outcome to make it more accessible for students.",
       "value": {
         "type": "string",
         "op": "replace",
         "path": "/learningOutcome",
-        "value": "I can describe different software testing techniques and why they are used."
-      }
+        "value": "I can describe different software testing techniques."
+      },
+      "status": "complete"
     }
+  ],
+  "sectionsEdited": [
+    "learningOutcome"
   ],
   "prompt": {
     "type": "text",
-    "value": "The learning outcome has been simplified. Is this version more suitable for your pupils?"
-  }
+    "value": "I've simplified the learning outcome. If this is suitable, please let me know or suggest further changes. Otherwise, tap **Continue** to proceed."
+  },
+  "status": "complete"
 }

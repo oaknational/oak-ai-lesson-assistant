@@ -3,26 +3,35 @@ type":"
 ll
 m
 Message
-","patches":[
+","sectionsToEdit":["
+additional
+Materials
+"],"patches":[
 {"
 type":"
 patch
 ","reasoning":"
-Added
+Adding
  a
  homework
  task
- to
+ will
  reinforce
  the
  lesson
- content
- and
- provide
- additional
- practice
- for
+'s
+ concepts
+,
+ allowing
  students
+ to
+ consolidate
+ their
+ understanding
+ of
+ software
+ testing
+ techniques
 .","
 value":{"
 type":"
@@ -38,66 +47,142 @@ Materials
  Task
 \n
 \n
+1
+.
+ **
 Research
+ Activity
+**
+:
+ Investig
+ate
  a
  real
 -world
  software
  application
- of
- your
- choice
  and
- describe
+ identify
  which
  testing
  techniques
- (
-black
--box
-,
- white
--box
-,
- manual
-,
- automated
-)
- would
- be
- most
- suitable
- for
- ensuring
+ you
+ think
+ were
+ used
+ during
  its
- quality
-.
- Provide
- reasons
- for
- your
- choices
+ development
 .
  Write
  a
  short
- report
- (
-300
--
-400
- words
-)
- summar
-ising
+ paragraph
+ explaining
+ your
+ reasoning
+.\
+n
+\n
+2
+.
+ **
+Reflection
+ Questions
+**
+:\
+n
+  
+ -
+ Why
+ might
+ a
+ company
+ choose
+ automated
+ testing
+ over
+ manual
+ testing
+?\
+n
+  
+ -
+ Describe
+ a
+ scenario
+ where
+ black
+-box
+ testing
+ would
+ be
+ more
+ effective
+ than
+ white
+-box
+ testing
+.\
+n
+\n
+3
+.
+ **
+Pr
+actical
+ Application
+**
+:
+ Choose
+ a
+ simple
+ program
+ you
+ have
+ written
+ previously
+.
+ Conduct
+ a
+ black
+-box
+ test
+ and
+ note
+ any
+ inputs
+ that
+ produce
+ unexpected
+ outputs
+.\
+n
+\n
+Remember
+ to
+ bring
  your
  findings
+ to
+ the
+ next
+ class
+ for
+ a
+ group
+ discussion
 ."
-}}],"prompt":{"
+}  ,"status":"
+complete
+"}],"sectionsEdited":["
+additional
+Materials
+"],"prompt":{"
 type":"
 text
 ","value":"
-The
+A
  homework
  task
  has
@@ -110,18 +195,25 @@ The
  section
 .
  If
- there's
- anything
- else
- you'd
- like
- to
- include
+ you
+ have
+ any
+ more
+ changes
  or
- modify
+ are
+ ready
+ to
+ final
+ise
+ the
+ lesson
 ,
+ please
  let
  me
  know
 !"
-}}
+}  ,"status":"
+complete
+"}

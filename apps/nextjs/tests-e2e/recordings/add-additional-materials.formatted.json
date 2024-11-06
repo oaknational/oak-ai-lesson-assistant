@@ -1,19 +1,27 @@
 {
   "type": "llmMessage",
+  "sectionsToEdit": [
+    "additionalMaterials"
+  ],
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Added a homework task to reinforce the lesson content and provide additional practice for students.",
+      "reasoning": "Adding a homework task will reinforce the lesson's concepts, allowing students to consolidate their understanding of software testing techniques.",
       "value": {
         "type": "string",
         "op": "replace",
         "path": "/additionalMaterials",
-        "value": "## Homework Task\n\nResearch a real-world software application of your choice and describe which testing techniques (black-box, white-box, manual, automated) would be most suitable for ensuring its quality. Provide reasons for your choices. Write a short report (300-400 words) summarising your findings."
-      }
+        "value": "## Homework Task\n\n1. **Research Activity**: Investigate a real-world software application and identify which testing techniques you think were used during its development. Write a short paragraph explaining your reasoning.\n\n2. **Reflection Questions**:\n   - Why might a company choose automated testing over manual testing?\n   - Describe a scenario where black-box testing would be more effective than white-box testing.\n\n3. **Practical Application**: Choose a simple program you have written previously. Conduct a black-box test and note any inputs that produce unexpected outputs.\n\nRemember to bring your findings to the next class for a group discussion."
+      },
+      "status": "complete"
     }
+  ],
+  "sectionsEdited": [
+    "additionalMaterials"
   ],
   "prompt": {
     "type": "text",
-    "value": "The homework task has been added to the additional materials section. If there's anything else you'd like to include or modify, let me know!"
-  }
+    "value": "A homework task has been added to the additional materials section. If you have any more changes or are ready to finalise the lesson, please let me know!"
+  },
+  "status": "complete"
 }

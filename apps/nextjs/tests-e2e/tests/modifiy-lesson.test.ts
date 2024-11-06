@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
@@ -37,28 +37,32 @@ test.describe("Modify a lesson plan", () => {
     });
   });
 
-  async function modifyLessonResource(page, setFixture) {
+  async function modifyLessonResource(
+    page: Page,
+    setFixture: (name: string) => void,
+  ) {
     const modifyButtons = page.locator("text=Modify");
     await modifyButtons.first().click();
     const modifyRadioButton = page.locator("text=Make them easier");
     await modifyRadioButton.click();
+
     setFixture("modify-lesson-easier");
     await page.locator("text=Modify section").click();
     await waitForGeneration(page, generationTimeout);
 
     await expect(
       page.locator(
-        "text=I can describe different software testing techniques and why they are used.",
+        "text=I can describe different software testing techniques.",
       ),
     ).toBeVisible();
     await expect(
       page.locator(
-        "text=The learning outcome has been simplified. Is this version more suitable for your pupils?",
+        "text=I've simplified the learning outcome. If this is suitable, please let me know or suggest further changes. Otherwise, tap Continue to proceed.",
       ),
     ).toBeVisible();
   }
 
-  async function selectOtherModification(page) {
+  async function selectOtherModification(page: Page) {
     const modifyButtons = page.locator("text=Modify");
     await modifyButtons.first().click();
     const radioButtonOther = page.locator('input[type="radio"][value="OTHER"]');
@@ -67,7 +71,10 @@ test.describe("Modify a lesson plan", () => {
     await expect(otherInput).toBeVisible();
   }
 
-  async function selectAdditionalResource(page, setFixture) {
+  async function selectAdditionalResource(
+    page: Page,
+    setFixture: (name: string) => void,
+  ) {
     const addAdditionalMaterialsButton = page.locator(
       "text=Add additional materials",
     );
@@ -80,10 +87,14 @@ test.describe("Modify a lesson plan", () => {
     await addMaterialsButton.click();
     await waitForGeneration(page, generationTimeout);
 
-    await expect(page.getByText("The homework task has been")).toBeVisible();
     await expect(
       page.getByText(
-        "Research a real-world software application of your choice and describe which testing techniques (black-box, white-box, manual, automated) would be most suitable for ensuring its quality. Provide reasons for your choices. Write a short report (300-400 words) summarising your findings.",
+        "A homework task has been added to the additional materials section. If you have any more changes or are ready to finalise the lesson, please let me know!",
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        "Research Activity: Investigate a real-world software application and identify which testing techniques you think were used during its development. Write a short paragraph explaining your reasoning.",
       ),
     ).toBeVisible();
   }
