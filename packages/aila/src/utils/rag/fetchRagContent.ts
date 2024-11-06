@@ -1,5 +1,12 @@
+import { createOpenAIClient } from "@oakai/core/src/llm/openai";
+import { RagLessonPlans } from "@oakai/core/src/models/ragLessonPlans";
 import { RAG } from "@oakai/core/src/rag";
+<<<<<<< Updated upstream
 import type { PrismaClientWithAccelerate } from "@oakai/db";
+=======
+import { PrismaClientWithAccelerate } from "@oakai/db";
+import OpenAI from "openai";
+>>>>>>> Stashed changes
 
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
 import type { CompletedLessonPlan } from "../../protocol/schema";
@@ -33,6 +40,21 @@ export async function fetchRagContent({
   chatId: string;
   userId?: string;
 }): Promise<RagLessonPlan[]> {
+  try {
+    // const openAiClient = createOpenAIClient({
+    //   app: "lesson-assistant",
+    //   chatMeta: {
+    //     userId,
+    //     chatId,
+    //   },
+    // });
+    const openAiClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const ragLessonPlans_ = new RagLessonPlans(prisma, openAiClient);
+    await ragLessonPlans_.getRelevantLessonPlans({ title });
+  } catch (cause) {
+    console.log(cause);
+  }
+
   const rag = new RAG(prisma, { chatId, userId });
   const ragLessonPlans = await tryWithErrorReporting(
     () => {

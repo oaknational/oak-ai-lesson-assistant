@@ -23,6 +23,7 @@
     "@oakai/core": "*",
     "@oakai/db": "*",
     "@oakai/logger": "*",
+    "@paralleldrive/cuid2": "^2.2.2",
     "csv-parser": "^3.0.0",
     "graphql-request": "^6.1.0",
     "webvtt-parser": "^2.2.0",

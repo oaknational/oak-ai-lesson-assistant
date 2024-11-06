@@ -47,6 +47,10 @@ async function main() {
     case "embed-sync":
       await lpPartsEmbedSync({ prisma, log, ingestId });
       break;
+
+    case "publish":
+      // publish({ prisma, log });
+      break;
     default:
       log.error("Unknown command");
       process.exit(1);

@@ -6,6 +6,7 @@ export const STEP = [
   "lesson_plan_generation",
   "chunking",
   "embedding",
+  "publishing",
 ] as const;
 
 const STEP_STATUS = ["started", "completed", "failed"] as const;
