@@ -7,4 +7,5 @@ export type DialogTypes =
   | "sensitive-moderation-user-comment"
   | "demo-interstitial"
   | "demo-share-locked"
-  | "clear-history";
+  | "clear-history"
+  | "clear-single-chat";

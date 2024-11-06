@@ -13,7 +13,7 @@ export const dialogContentInner = cva([
 ]);
 
 export const dialogOverlay = cva(
-  ["fixed inset-0 z-40 flex items-center justify-center duration-300 "],
+  ["fixed inset-0 z-50 flex items-center justify-center duration-300 "],
   {
     variants: {
       opacity: {

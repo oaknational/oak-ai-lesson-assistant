@@ -6,6 +6,7 @@ import type { Message } from "ai";
 import { useDialog } from "../AppComponents/DialogContext";
 import { Icon } from "../Icon";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
+import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
 import DemoInterstitialDialog from "./ContentOptions/DemoInterstitialDialog";
 import DemoShareLockedDialog from "./ContentOptions/DemoShareLockedDialog";
 import EndOfLessonFeedback from "./ContentOptions/EndOfLessonFeedback";
@@ -79,6 +80,9 @@ const DialogContents = ({
             )}
             {dialogWindow === "clear-history" && (
               <ClearChatHistory closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "clear-single-chat" && (
+              <ClearSingleChatFromChatHistory closeDialog={closeDialog} />
             )}
           </Box>
         </Dialog.Content>
