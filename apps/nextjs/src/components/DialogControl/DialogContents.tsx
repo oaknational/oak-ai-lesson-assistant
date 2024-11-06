@@ -5,6 +5,7 @@ import type { Message } from "ai";
 
 import { useDialog } from "../AppComponents/DialogContext";
 import { Icon } from "../Icon";
+import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import DemoInterstitialDialog from "./ContentOptions/DemoInterstitialDialog";
 import DemoShareLockedDialog from "./ContentOptions/DemoShareLockedDialog";
 import EndOfLessonFeedback from "./ContentOptions/EndOfLessonFeedback";
@@ -75,6 +76,9 @@ const DialogContents = ({
                 submit={submit}
                 closeDialog={closeDialog}
               />
+            )}
+            {dialogWindow === "clear-history" && (
+              <ClearChatHistory closeDialog={closeDialog} />
             )}
           </Box>
         </Dialog.Content>

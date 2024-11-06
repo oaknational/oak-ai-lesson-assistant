@@ -1,7 +1,9 @@
 "use client";
 
 import * as React from "react";
+import { useState } from "react";
 
+import { OakBox, OakFlex, OakSpan } from "@oaknational/oak-components";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -25,61 +27,42 @@ interface SidebarItemProps {
 }
 
 export function SidebarItem({ chat, children }: SidebarItemProps) {
-  const pathname = usePathname();
-
-  const isActive = pathname.includes(chat.id);
-
+  const [isHovered, setIsHovered] = useState(false);
   return (
-    <motion.div
-      className="relative h-18"
-      variants={{
-        initial: {
-          height: 0,
-          opacity: 0,
-        },
-        animate: {
-          height: "auto",
-          opacity: 1,
-        },
-      }}
-      transition={{
-        duration: 0.25,
-        ease: "easeIn",
-      }}
+    <OakFlex
+      $justifyContent="flex"
+      $gap="all-spacing-2"
+      $background={isHovered ? `grey30` : `white`}
+      $transition="standard-ease"
+      $pa="inner-padding-ssx"
+      $borderRadius="border-radius-s"
     >
-      <div className="absolute left-7 top-5 mr-7 flex h-14 w-14 items-center justify-center">
-        {chat.isShared ? (
-          <Tooltip delayDuration={1000}>
-            <TooltipTrigger
-              tabIndex={-1}
-              className="focus:bg-muted focus:ring-1 focus:ring-ring"
-            >
-              <IconUsers className="mr-7" />
-            </TooltipTrigger>
-            <TooltipContent>This is a shared chat.</TooltipContent>
-          </Tooltip>
-        ) : (
-          <AiIcon />
-        )}
-      </div>
+      {chat.isShared ? (
+        <Tooltip delayDuration={1000}>
+          <TooltipTrigger
+            tabIndex={-1}
+            className="focus:bg-muted focus:ring-1 focus:ring-ring"
+          >
+            <IconUsers className="mr-7" />
+          </TooltipTrigger>
+          <TooltipContent>This is a shared chat.</TooltipContent>
+        </Tooltip>
+      ) : (
+        <AiIcon />
+      )}
+
       <Link
         href={constructChatPath(chat)}
-        className={cn(
-          buttonVariants({ variant: "ghost" }),
-          "group w-full px-18 transition-colors hover:bg-zinc-200/40 dark:hover:bg-zinc-300/10",
-          isActive && "bg-zinc-200 pr-25 font-semibold dark:bg-zinc-800",
-        )}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        <div
-          className="relative ml-7 flex-1 select-none overflow-hidden text-ellipsis break-all"
-          title={chat.title}
-        >
-          <span className="whitespace-nowrap">
-            <span>{chat.title}</span>
-          </span>
-        </div>
+        <OakFlex $justifyContent="flex-start">
+          <div title={chat.title}>
+            <OakSpan $font="body-3">{chat.title}</OakSpan>
+          </div>
+        </OakFlex>
       </Link>
       <div className="absolute right-7 top-5">{children}</div>
-    </motion.div>
+    </OakFlex>
   );
 }

@@ -39,7 +39,7 @@ export function SidebarMobile({ children }: Readonly<SidebarMobileProps>) {
       </SheetTrigger>
       <SheetContent
         side="right"
-        className="inset-y-0 flex h-auto w-full flex-col p-0 sm:w-[300px]"
+        className="inset-y-0 flex h-auto w-full flex-col p-0 sm:w-[800px]"
       >
         <Sidebar className="flex">{children}</Sidebar>
       </SheetContent>

@@ -6,4 +6,5 @@ export type DialogTypes =
   | "report-content"
   | "sensitive-moderation-user-comment"
   | "demo-interstitial"
-  | "demo-share-locked";
+  | "demo-share-locked"
+  | "clear-history";
