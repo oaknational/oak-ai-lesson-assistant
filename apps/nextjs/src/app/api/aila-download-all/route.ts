@@ -130,7 +130,7 @@ async function getHandler(req: Request): Promise<Response> {
     }
 
     const lessonExport = await prisma.lessonExport.findFirst({
-      where: { gdriveFileId: fileId, userId },
+      where: { gdriveFileId: fileId, userId, expiredAt: null },
     });
 
     if (!lessonExport) {
