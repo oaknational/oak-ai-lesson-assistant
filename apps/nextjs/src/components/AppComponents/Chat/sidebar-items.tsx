@@ -41,7 +41,7 @@ export function SidebarItems({ chats }: Readonly<SidebarItemsProps>) {
       if (!acc[monthYear]) {
         acc[monthYear] = [];
       }
-      acc[monthYear].push(chat);
+      acc[monthYear]?.push(chat);
     }
     return acc;
   }, {});
