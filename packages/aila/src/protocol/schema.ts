@@ -499,6 +499,12 @@ export const LessonPlanSchema = z.object({
   cycle3: CycleOptionalSchema.optional(),
   exitQuiz: QuizOptionalSchema.optional(),
   additionalMaterials: z.string().optional(),
+  _experimental: z
+    .object({
+      starterQuizMathsV0: QuizOptionalSchema.optional(),
+      exitQuizMathsV0: QuizOptionalSchema.optional(),
+    })
+    .optional(),
 });
 
 export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;

@@ -201,6 +201,15 @@ export const PatchKeywordsForLLM = z.object({
   value: KeywordsSchemaWithoutLength,
 });
 
+const PatchExperimental = z.object({
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([
+    z.literal("/_experimental/starterQuizMathV0"),
+    z.literal("/_experimental/exitQuizMathV0"),
+  ]),
+  value: z.object({}).passthrough(),
+});
+
 export const JsonPatchRemoveSchema = z.object({
   op: z.literal("remove"),
   path: z.string(),
@@ -273,6 +282,7 @@ export const JsonPatchValueOptionalSchema = z.union([
   PatchQuizOptional,
   PatchMisconceptionsOptional,
   PatchKeywordsOptional,
+  PatchExperimental,
 ]);
 
 export const PatchDocumentSchema = z.object({
