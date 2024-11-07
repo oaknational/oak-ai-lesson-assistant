@@ -20,6 +20,7 @@ import "@/app/theme-config.css";
 import { Providers } from "@/components/AppComponents/Chat//providers";
 import { AnalyticsProvider } from "@/components/ContextProviders/AnalyticsProvider";
 import { CookieConsentProvider } from "@/components/ContextProviders/CookieConsentProvider";
+import { FeatureFlagProvider } from "@/components/ContextProviders/FeatureFlagProvider";
 import FontProvider from "@/components/ContextProviders/FontProvider";
 import { GleapProvider } from "@/components/ContextProviders/GleapProvider";
 import { WebDebuggerPosition } from "@/lib/avo/Avo";
@@ -81,7 +82,6 @@ export default async function RootLayout({
   }
 
   const bootstrappedFeatures = await getBootstrappedFeatures(headers());
-  window["bootstrappedFeatures"] = bootstrappedFeatures;
 
   return (
     <html lang="en" suppressHydrationWarning className={lexend.variable}>
@@ -119,7 +119,13 @@ export default async function RootLayout({
                         }}
                         bootstrappedFeatures={bootstrappedFeatures}
                       >
-                        <GleapProvider>{children}</GleapProvider>
+                        <GleapProvider>
+                          <FeatureFlagProvider
+                            bootstrappedFeatures={bootstrappedFeatures}
+                          >
+                            {children}
+                          </FeatureFlagProvider>
+                        </GleapProvider>
                       </AnalyticsProvider>
                     </CookieConsentProvider>
                   </Providers>
