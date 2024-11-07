@@ -1,7 +1,9 @@
+import { stripHtml } from "./stripHtml";
+
 type EmailParams = {
   from: string;
   to: string;
-  body: string;
+  htmlBody: string;
   subject: string;
   name?: string;
 };
@@ -16,8 +18,9 @@ export const sendEmail = async ({
   from,
   to,
   subject,
-  body,
+
   name,
+  htmlBody,
 }: EmailParams) => {
   const url = "https://api.postmarkapp.com/email";
   const headers = {
@@ -26,14 +29,17 @@ export const sendEmail = async ({
     "X-Postmark-Server-Token": POSTMARK_SERVER_TOKEN,
   };
 
+  const formattedFrom = name
+    ? `${name} <${from}>`
+    : `Oak National Academy <${from}>`;
+
   const bodyJSON = JSON.stringify({
-    From: from,
+    From: formattedFrom,
     To: to,
     Subject: subject,
-    Name: name ?? "Oak National Academy",
     ReplyTo: "help@thenational.academy",
-    TextBody: body,
-    HtmlBody: `<html><body><pre>${body}</pre></body></html>`,
+    TextBody: stripHtml(htmlBody),
+    HtmlBody: `<html><body>${htmlBody}</body></html>`,
     MessageStream: "outbound",
   });
 
