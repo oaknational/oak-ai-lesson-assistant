@@ -27,25 +27,25 @@ async function main() {
   const ingestId = process.argv[3] ?? (await getLatestIngestId({ prisma }));
   switch (command) {
     case "start":
-      ingestStart({ prisma, log });
+      await ingestStart({ prisma, log });
       break;
     case "captions":
-      captions({ prisma, log, ingestId });
+      await captions({ prisma, log, ingestId });
       break;
     case "lp-start":
-      lpBatchStart({ prisma, log, ingestId });
+      await lpBatchStart({ prisma, log, ingestId });
       break;
     case "lp-sync":
-      lpBatchSync({ prisma, log, ingestId });
+      await lpBatchSync({ prisma, log, ingestId });
       break;
     case "chunk":
-      lpChunking({ prisma, log, ingestId });
+      await lpChunking({ prisma, log, ingestId });
       break;
     case "embed-start":
-      lpPartsEmbedStart({ prisma, log, ingestId });
+      await lpPartsEmbedStart({ prisma, log, ingestId });
       break;
     case "embed-sync":
-      lpPartsEmbedSync({ prisma, log, ingestId });
+      await lpPartsEmbedSync({ prisma, log, ingestId });
       break;
     default:
       log.error("Unknown command");
