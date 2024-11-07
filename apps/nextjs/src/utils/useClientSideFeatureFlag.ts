@@ -9,19 +9,13 @@ const log = aiLogger("feature-flags");
 export function useClientSideFeatureFlag(flag: string): boolean {
   const { posthogAiBetaClient: client } = useAnalytics();
 
-  const [bootstrappedFlag] = useState(client.isFeatureEnabled(flag));
-  const [featureEnabled, setFeatureEnabled] = useState<boolean | undefined>(
-    bootstrappedFlag,
-  );
-  log.info(`Flag ${flag} bootstrapped as ${bootstrappedFlag}`);
+  const bootstrappedFlag = window["bootstrappedFeatures"][flag] as
+    | boolean
+    | undefined;
+
+  const [featureEnabled, setFeatureEnabled] = useState<boolean | undefined>();
 
   useEffect(() => {
-    if (typeof bootstrappedFlag === "boolean") {
-      // Avoid flash on load if the bootstrapped flag is stale
-      log.info(`Flag update ignored, flag ${flag} is already bootstrapped`);
-      return;
-    }
-
     const isDebug = process.env.NEXT_PUBLIC_POSTHOG_DEBUG === "true";
     if (isDebug) {
       log.info(`Feature flag ${flag} is enabled in debug mode`);
@@ -31,9 +25,12 @@ export function useClientSideFeatureFlag(flag: string): boolean {
 
     log.info(`Fetching feature flag ${flag}`);
     return client.onFeatureFlags(() => {
+      log.info(`Setting feature flag ${flag}`);
       setFeatureEnabled(client.isFeatureEnabled(flag));
     });
   }, [client, flag, bootstrappedFlag]);
 
-  return featureEnabled ?? false;
+  log.info(`Flag ${flag} bootstrapped as ${bootstrappedFlag}`);
+  log.info(`Flag ${flag} updated as ${featureEnabled}`);
+  return featureEnabled ?? bootstrappedFlag ?? false;
 }
