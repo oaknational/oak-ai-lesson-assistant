@@ -70,7 +70,7 @@ export async function handleRateLimitError(
     streamingJSON({
       type: "error",
       value: error.message,
-      message: `**Unfortunately you've exceeded your fair usage limit for today.** Please come back in ${timeRemainingHours} ${hours}. If you require a higher limit, please [make a request](${process.env.RATELIMIT_FORM_URL}).`,
+      message: `**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in ${timeRemainingHours} ${hours}. If you require a higher limit, please [make a request](${process.env.RATELIMIT_FORM_URL}).`,
     } as ErrorDocument),
   );
 }
