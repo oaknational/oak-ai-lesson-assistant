@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.14.0...v1.14.1) (2024-11-07)
+
+
+### Bug Fixes
+
+* allow requests without a cookie header ([#352](https://github.com/oaknational/oak-ai-lesson-assistant/issues/352)) ([80f5050](https://github.com/oaknational/oak-ai-lesson-assistant/commit/80f50507ab370032a3ef6767bcfe5da0d8b6fe82))
+
 # [1.14.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.13.1...v1.14.0) (2024-11-07)
 
 
