@@ -22,25 +22,20 @@ type":"
 patch
 ","reasoning":"
 Ident
-ified
+ifying
  prior
  knowledge
- that
- KS
-1
+ ensures
  pupils
- should
  have
- before
- starting
- this
- lesson
- on
  the
- end
- of
- Roman
- Britain
+ necessary
+ background
+ to
+ understand
+ the
+ lesson
+ content
 .","
 value":{"
 type":"
@@ -56,47 +51,41 @@ The
  Romans
  invaded
  Britain
- and
- ruled
- for
- several
- centuries
+ in
+ 
+43
+ AD
 .","
 Roman
  roads
- and
- towns
  were
  built
- during
- their
- occupation
-.","
-Brit
-ain
- was
- part
- of
- the
- Roman
- Empire
+ across
+ Britain
 .","
 The
- concept
- of
- an
- empire
+ Romans
+ introduced
+ new
+ towns
  and
- its
- importance
+ cities
 .","
-Basic
- understanding
- of
- what
- archae
-ologists
- do
+The
+ Roman
+ army
+ was
+ powerful
+ and
+ well
+-organ
+ised
+.","
+Roman
+ culture
+ influenced
+ British
+ life
 .
 "]},"status":"
 complete
@@ -104,11 +93,16 @@ complete
 type":"
 patch
 ","reasoning":"
-Outlined
- key
+Key
  learning
  points
- that
+ focus
+ on
+ the
+ main
+ facts
+ and
+ ideas
  pupils
  should
  take
@@ -116,12 +110,6 @@ Outlined
  from
  the
  lesson
- on
- the
- end
- of
- Roman
- Britain
 .","
 value":{"
 type":"
@@ -139,57 +127,30 @@ The
  left
  Britain
  around
- AD
  
 410
- due
- to
- pressures
- on
- their
- empire
+ AD
 .","
-After
+Roman
+ withdrawal
+ led
+ to
+ changes
+ in
+ British
+ society
+.","
+New
+ groups
+ began
+ to
+ settle
+ in
+ Britain
+ after
  the
  Romans
  left
-,
- Britain
- faced
- invas
-ions
- from
- other
- groups
- like
- the
- Sax
-ons
-.","
-Many
- Roman
- buildings
- and
- roads
- influenced
- the
- landscape
- of
- Britain
-.","
-Ar
-chae
-ologists
- help
- uncover
- the
- history
- of
- Roman
- Britain
- through
- excav
-ations
 .
 "]},"status":"
 complete
@@ -198,23 +159,18 @@ type":"
 patch
 ","reasoning":"
 Address
-ed
- common
+ing
  misconceptions
+ helps
+ to
+ clarify
+ any
+ common
+ misunderstand
+ings
  about
  the
- end
- of
- Roman
- Britain
- to
- help
- teachers
- correct
- them
- during
- the
- lesson
+ topic
 .","
 value":{"
 type":"
@@ -233,68 +189,59 @@ misconception":"
 The
  Romans
  left
- Britain
  because
  they
  were
  defeated
- by
- the
- Brit
-ons
+ in
+ Britain
 ","description":"
 The
  Romans
  left
- due
- to
- internal
- problems
- within
- the
- empire
- and
- threats
- elsewhere
-,
- not
+ Britain
  because
  they
- were
- defeated
- by
+ needed
+ to
+ defend
+ their
+ empire
+ elsewhere
+.
+ Discuss
  the
- Brit
-ons
+ empire
+'s
+ wider
+ issues
 ."
 },{"
 misconception":"
-Roman
- Britain
- ended
- suddenly
- without
- any
- lasting
- impact
-","description":"
-Roman
- influence
- persisted
+Life
  in
- Britain's
- infrastructure
-,
- such
- as
- roads
- and
- towns
-,
- even
+ Britain
+ improved
+ immediately
  after
- their
- departure
+ the
+ Romans
+ left
+","description":"
+Explain
+ that
+ many
+ Roman
+ advancements
+ were
+ lost
+,
+ leading
+ to
+ a
+ period
+ of
+ instability
 ."
 }]},"status":"
 complete
@@ -302,22 +249,18 @@ complete
 type":"
 patch
 ","reasoning":"
-Provided
- keywords
- that
- will
- be
- used
- throughout
- the
- lesson
- to
- ensure
+Keywords
+ help
  pupils
  understand
  the
- key
- concepts
+ specific
+ vocabulary
+ related
+ to
+ the
+ lesson
+ topic
 .","
 value":{"
 type":"
@@ -329,106 +272,49 @@ keywords
 ","value":[
 {"
 keyword":"
-Romans
-","definition":"
-People
- from
- the
- ancient
- city
- of
- Rome
- who
- ruled
- over
- Britain
- for
- several
- centuries
-."
-},{"
-keyword":"
 Empire
 ","definition":"
 A
- large
  group
  of
- territories
- and
- people
- ruled
- over
- by
- a
- single
- authority
-,
- like
- the
- Roman
- Empire
-."
-},{"
-keyword":"
-Ar
-chae
-ologist
-","definition":"
-A
- person
- who
- studies
- human
- history
- by
- digging
- up
- and
- examining
- ancient
- sites
- and
- objects
-."
-},{"
-keyword":"
-In
-vasion
-","definition":"
-An
- instance
- of
- invading
- a
- country
+ countries
  or
- region
- with
- an
- armed
- force
+ regions
+ that
+ are
+ controlled
+ by
+ one
+ ruler
+ or
+ government
 ."
 },{"
 keyword":"
-S
-ax
-ons
+Withdrawal
+","definition":"
+The
+ act
+ of
+ moving
+ or
+ taking
+ something
+ away
+ or
+ back
+."
+},{"
+keyword":"
+Settlement
 ","definition":"
 A
- group
- of
- tribes
- from
- northern
- Europe
- who
- invaded
- Britain
- after
- the
- Romans
- left
+ place
+ where
+ people
+ establish
+ a
+ community
 ."
 }]},"status":"
 complete

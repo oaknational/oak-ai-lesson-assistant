@@ -2,7 +2,11 @@ import type { OpenAIProvider } from "@ai-sdk/openai";
 import type { HeliconeChatMeta } from "@oakai/core/src/llm/helicone";
 import { createVercelOpenAIClient } from "@oakai/core/src/llm/openai";
 import { aiLogger } from "@oakai/logger";
-import { streamObject, streamText } from "ai";
+import {
+  generateObject as aiGenerateObject,
+  streamObject,
+  streamText,
+} from "ai";
 import type { ZodSchema } from "zod";
 
 import type { Message } from "../chat";
@@ -22,6 +26,7 @@ export class OpenAIService implements LLMService {
       chatMeta: { userId, chatId },
       app: "lesson-assistant",
     });
+    log.info("Initialize service ", { service: this.name });
   }
 
   async createChatCompletionStream(params: {
@@ -29,6 +34,7 @@ export class OpenAIService implements LLMService {
     messages: Message[];
     temperature: number;
   }): Promise<ReadableStreamDefaultReader<string>> {
+    log.info("Create chat completion stream", { service: this.name });
     const { textStream: stream } = await streamText({
       model: this._openAIProvider(params.model),
       messages: params.messages.map((m) => ({
@@ -48,6 +54,7 @@ export class OpenAIService implements LLMService {
     messages: Message[];
     temperature: number;
   }): Promise<ReadableStreamDefaultReader<string>> {
+    log.info("Create chat completion object stream", { service: this.name });
     const { model, messages, temperature, schema, schemaName } = params;
     if (!STRUCTURED_OUTPUTS_ENABLED) {
       return this.createChatCompletionStream({ model, messages, temperature });
@@ -86,5 +93,32 @@ export class OpenAIService implements LLMService {
     });
 
     return newStream.getReader();
+  }
+
+  async generateObject<T>({
+    model,
+    schema,
+    schemaName,
+    messages,
+    temperature,
+  }: {
+    model: string;
+    schema: ZodSchema<T>;
+    schemaName: string;
+    messages: Message[];
+    temperature: number;
+  }): Promise<T> {
+    const result = await aiGenerateObject<T>({
+      model: this._openAIProvider(model, { structuredOutputs: true }),
+      output: "object",
+      schema,
+      schemaName,
+      messages: messages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      })),
+      temperature,
+    });
+    return result.object;
   }
 }

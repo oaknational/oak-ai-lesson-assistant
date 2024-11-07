@@ -1,0 +1,9 @@
+{
+  "type": "categorisedKeyStageAndSubject",
+  "reasoning": "The user has specified 'KS1', which corresponds to 'key-stage-1'. The topic 'end of Roman Britain' is a historical topic, so the subject is 'history'. The title of the lesson plan is 'End of Roman Britain', which directly reflects the user's request.",
+  "keyStage": "key-stage-1",
+  "subject": "history",
+  "title": "End of Roman Britain",
+  "topic": null,
+  "error": null
+}

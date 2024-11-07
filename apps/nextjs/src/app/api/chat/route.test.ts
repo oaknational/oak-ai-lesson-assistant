@@ -36,30 +36,36 @@ describe("Chat API Route", () => {
     jest.spyOn(mockLLMService, "createChatCompletionObjectStream");
 
     testConfig = {
-      createAila: jest.fn().mockImplementation(async (options) => {
-        const ailaConfig: AilaInitializationOptions = {
-          options: {
-            usePersistence: false,
-            useRag: false,
-            useAnalytics: false,
-            useModeration: false,
-            useErrorReporting: false,
-            useThreatDetection: false,
+      createAila: jest
+        .fn()
+        .mockImplementation(
+          async (options: Partial<AilaInitializationOptions>) => {
+            return new Promise<Aila>((resolve) => {
+              const ailaConfig: AilaInitializationOptions = {
+                options: {
+                  usePersistence: false,
+                  useRag: false,
+                  useAnalytics: false,
+                  useModeration: false,
+                  useErrorReporting: false,
+                  useThreatDetection: false,
+                },
+                chat: {
+                  id: chatId,
+                  userId,
+                  messages: options.chat?.messages ?? [],
+                },
+                plugins: [],
+                services: {
+                  chatLlmService: () => mockLLMService,
+                  chatCategoriser: () => mockChatCategoriser,
+                },
+              };
+              resolve(new Aila(ailaConfig));
+            });
           },
-          chat: {
-            id: chatId,
-            userId,
-            messages: options.chat.messages ?? [],
-          },
-          plugins: [],
-          services: {
-            chatLlmService: mockLLMService,
-            chatCategoriser: mockChatCategoriser,
-          },
-        };
-        return new Aila(ailaConfig);
-      }),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
       prisma: {} as any,
     };
   }, 60000);
@@ -70,7 +76,11 @@ describe("Chat API Route", () => {
       body: JSON.stringify({
         id: "test-chat-id",
         messages: [
-          { role: "user", content: "Create a lesson about Glaciation" },
+          {
+            id: "1",
+            role: "user",
+            content: "Create a lesson about Glaciation",
+          },
         ],
         lessonPlan: {},
         options: {},

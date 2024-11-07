@@ -16,6 +16,7 @@ import type {
   LooseLessonPlan,
 } from "../protocol/schema";
 import type { Message } from "./chat";
+import type { LLMService } from "./llm/LLMService";
 import type { AilaPlugin } from "./plugins";
 import type { AilaOptionsWithDefaultFallbackValues } from "./types";
 
@@ -68,4 +69,5 @@ export interface AilaServices {
   readonly plugins: AilaPlugin[];
   readonly rag: AilaRagFeature;
   readonly americanisms: AilaAmericanismsFeature;
+  readonly chatLlmService: LLMService;
 }

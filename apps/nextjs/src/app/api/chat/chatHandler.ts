@@ -1,18 +1,24 @@
 import type { Aila } from "@oakai/aila/src/core/Aila";
 import type { AilaServices } from "@oakai/aila/src/core/AilaServices";
 import type { Message } from "@oakai/aila/src/core/chat";
-import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
-import type {
-  AilaOptions,
-  AilaPublicChatOptions,
+import { MessageSchema } from "@oakai/aila/src/core/chat/types";
+import { OpenAIService } from "@oakai/aila/src/core/llm/OpenAIService";
+import {
+  AilaOptionsSchema,
+  type AilaInitializationOptions,
 } from "@oakai/aila/src/core/types";
+import type { AilaOptions } from "@oakai/aila/src/core/types";
 import { AilaAmericanisms } from "@oakai/aila/src/features/americanisms/AilaAmericanisms";
 import {
   DatadogAnalyticsAdapter,
   PosthogAnalyticsAdapter,
 } from "@oakai/aila/src/features/analytics";
+import { AilaCategorisation } from "@oakai/aila/src/features/categorisation/categorisers/AilaCategorisation";
 import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import {
+  LessonPlanSchemaWhilstStreaming,
+  type LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -24,6 +30,7 @@ import { aiLogger } from "@oakai/logger";
 import { StreamingTextResponse } from "ai";
 import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 
 import type { Config } from "./config";
 import { handleChatException } from "./errorHandling";
@@ -40,7 +47,9 @@ export const maxDuration = 300;
 const prisma: PrismaClientWithAccelerate = globalPrisma;
 
 export async function GET() {
-  return new Response("Chat API is working", { status: 200 });
+  return new Promise((resolve) => {
+    resolve(new Response("Chat API is working", { status: 200 }));
+  });
 }
 
 async function setupChatHandler(req: NextRequest) {
@@ -48,18 +57,20 @@ async function setupChatHandler(req: NextRequest) {
     "chat-setup-chat-handler",
     {},
     async (span: TracingSpan) => {
-      const json = await req.json();
+      const json = (await req.json()) as unknown;
+      const chatRequestSchema = z.object({
+        id: z.string(),
+        messages: MessageSchema.array(),
+        lessonPlan: LessonPlanSchemaWhilstStreaming,
+        options: AilaOptionsSchema,
+      });
+
       const {
         id: chatId,
         messages,
-        lessonPlan = {},
-        options: chatOptions = {},
-      }: {
-        id: string;
-        messages: Message[];
-        lessonPlan?: LooseLessonPlan;
-        options?: AilaPublicChatOptions;
-      } = json;
+        lessonPlan,
+        options: chatOptions,
+      } = chatRequestSchema.parse(json);
 
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
@@ -68,6 +79,8 @@ async function setupChatHandler(req: NextRequest) {
         usePersistence: true,
         useModeration: true,
       };
+
+      invariant(chatId, "Chat ID is required");
 
       const llmService = getFixtureLLMService(req.headers, chatId);
       const moderationAiClient = getFixtureModerationOpenAiClient(
@@ -180,9 +193,12 @@ export async function handleChatPostRequest(
               messages,
             },
             services: {
-              chatLlmService: llmService,
+              chatLlmService: () =>
+                llmService ?? new OpenAIService({ userId, chatId }),
               moderationAiClient,
               ragService: (aila: AilaServices) => new AilaRag({ aila }),
+              chatCategoriser: (aila: AilaServices) =>
+                new AilaCategorisation({ aila }),
               americanismsService: () => new AilaAmericanisms(),
               analyticsAdapters: (aila: AilaServices) => [
                 new PosthogAnalyticsAdapter(aila),
@@ -191,8 +207,8 @@ export async function handleChatPostRequest(
             },
             lessonPlan: lessonPlan ?? {},
           };
-          const result = await config.createAila(ailaOptions);
-          return result;
+          const aila = await config.createAila(ailaOptions);
+          return aila;
         },
       );
       invariant(aila, "Aila instance is required");

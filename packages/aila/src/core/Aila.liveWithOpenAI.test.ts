@@ -23,14 +23,15 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
         },
         plugins: [],
         services: {
-          chatCategoriser: new MockCategoriser({
-            mockedLessonPlan: {
-              keyStage: "specialist",
-              subject: "design-technology",
-              title: "Motorcycle Maintenance",
-              topic: "Basics and Advanced Techniques",
-            },
-          }),
+          chatCategoriser: () =>
+            new MockCategoriser({
+              mockedLessonPlan: {
+                keyStage: "specialist",
+                subject: "design-technology",
+                title: "Motorcycle Maintenance",
+                topic: "Basics and Advanced Techniques",
+              },
+            }),
         },
       });
     });
@@ -82,14 +83,15 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
         },
         plugins: [],
         services: {
-          chatCategoriser: new MockCategoriser({
-            mockedLessonPlan: {
-              keyStage: "key-stage-3",
-              subject: "geography",
-              title: "Glaciation",
-              topic: "The Formation of Glacial Landscapes",
-            },
-          }),
+          chatCategoriser: () =>
+            new MockCategoriser({
+              mockedLessonPlan: {
+                keyStage: "key-stage-3",
+                subject: "geography",
+                title: "Glaciation",
+                topic: "The Formation of Glacial Landscapes",
+              },
+            }),
         },
       };
       ailaInstance = new Aila(options);

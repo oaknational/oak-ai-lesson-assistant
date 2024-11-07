@@ -363,10 +363,11 @@ export class AilaChat implements AilaChatService {
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
     await this.enqueueMessageId(assistantMessage.id);
-    await this.saveSnapshot({ messageId: assistantMessage.id });
-    await this.moderate();
-    await this.persistChat();
-    await this.persistGeneration("SUCCESS");
+    await Promise.all([
+      this.saveSnapshot({ messageId: assistantMessage.id }),
+      this.moderate(),
+    ]);
+    await Promise.all([this.persistChat(), this.persistGeneration("SUCCESS")]);
     await this.enqueue({
       type: "comment",
       value: "CHAT_COMPLETE",

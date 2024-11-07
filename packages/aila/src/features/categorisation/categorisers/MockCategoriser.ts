@@ -11,6 +11,6 @@ export class MockCategoriser implements AilaCategorisationFeature {
     this._mockedLessonPlan = mockedLessonPlan;
   }
   public async categorise(): Promise<LooseLessonPlan | undefined> {
-    return this._mockedLessonPlan;
+    return Promise.resolve(this._mockedLessonPlan);
   }
 }

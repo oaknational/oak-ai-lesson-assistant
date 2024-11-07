@@ -9,6 +9,7 @@ import {
   extractPatches,
 } from "../../protocol/jsonPatchProtocol";
 import type { LooseLessonPlan } from "../../protocol/schema";
+import { completedSections } from "../../utils/lessonPlan/completedSections";
 import type { AilaLessonService, AilaServices } from "../AilaServices";
 import type { Message } from "../chat";
 
@@ -31,7 +32,7 @@ export class AilaLesson implements AilaLessonService {
     lessonPlan?: LooseLessonPlan;
     categoriser?: AilaCategorisationFeature;
   }) {
-    log.info("Creating AilaLesson", lessonPlan?.title);
+    log.info("Initializing AilaLesson", { title: lessonPlan?.title });
     this._aila = aila;
     this._plan = lessonPlan ?? {};
     this._categoriser =
@@ -77,10 +78,10 @@ export class AilaLesson implements AilaLessonService {
   }
 
   public applyPatches(patches: string) {
-    let workingLessonPlan = deepClone(this._plan);
-    const beforeKeys = Object.keys(workingLessonPlan).filter(
-      (k) => workingLessonPlan[k],
-    );
+    let workingLessonPlan: LooseLessonPlan = deepClone(
+      this._plan,
+    ) as LooseLessonPlan;
+    const beforeKeys = completedSections(workingLessonPlan);
     log.info(
       "Apply patches: Lesson state before:",
       `${beforeKeys.length} keys`,
@@ -113,9 +114,7 @@ export class AilaLesson implements AilaLessonService {
       log.info("Applied patch", patch.value.path);
     }
 
-    const afterKeys = Object.keys(workingLessonPlan).filter(
-      (k) => workingLessonPlan[k],
-    );
+    const afterKeys = completedSections(workingLessonPlan);
     log.info(
       "Apply patches: Lesson state after:",
       `${afterKeys.length} keys`,
@@ -126,7 +125,7 @@ export class AilaLesson implements AilaLessonService {
   }
 
   public async setUpInitialLessonPlan(messages: Message[]) {
-    log.info("Setting up initial lesson plan", this._plan.title);
+    log.info("Setting up initial lesson plan", { title: this._plan.title });
     const shouldCategoriseBasedOnInitialMessages = Boolean(
       !this._plan.subject && !this._plan.keyStage && !this._plan.title,
     );

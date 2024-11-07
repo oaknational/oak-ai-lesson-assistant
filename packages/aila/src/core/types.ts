@@ -1,4 +1,5 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db/client";
+import { z } from "zod";
 
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AnalyticsAdapter } from "../features/analytics";
@@ -39,15 +40,20 @@ export type AilaPublicChatOptions = {
   numberOfLessonPlansInRag?: number;
 };
 
-export type AilaOptions = AilaPublicChatOptions & {
-  useErrorReporting?: boolean;
-  usePersistence?: boolean;
-  useModeration?: boolean;
-  useAnalytics?: boolean;
-  useThreatDetection?: boolean;
-  model?: string;
-  mode?: AilaGenerateLessonPlanMode;
-};
+export const AilaOptionsSchema = z.object({
+  useRag: z.boolean().optional(),
+  temperature: z.number().optional(),
+  numberOfLessonPlansInRag: z.number().optional(),
+  useErrorReporting: z.boolean().optional(),
+  usePersistence: z.boolean().optional(),
+  useModeration: z.boolean().optional(),
+  useAnalytics: z.boolean().optional(),
+  useThreatDetection: z.boolean().optional(),
+  model: z.string().optional(),
+  mode: z.enum(["interactive", "generate"]).optional(),
+});
+
+export type AilaOptions = z.infer<typeof AilaOptionsSchema>;
 
 export type AilaOptionsWithDefaultFallbackValues = Required<AilaOptions>;
 
@@ -74,8 +80,8 @@ export type AilaInitializationOptions = {
   promptBuilder?: AilaPromptBuilder;
   plugins: AilaPlugin[];
   services?: {
-    chatCategoriser?: AilaCategorisationFeature;
-    chatLlmService?: LLMService;
+    chatCategoriser?: (aila: AilaServices) => AilaCategorisationFeature;
+    chatLlmService?: (aila: AilaServices) => LLMService;
     moderationAiClient?: OpenAILike;
     ragService?: (aila: AilaServices) => AilaRagFeature;
     americanismsService?: (aila: AilaServices) => AilaAmericanismsFeature;
