@@ -61,7 +61,7 @@ test("sharing a lesson", async ({ page, context, browser }) => {
 
     const modal = page.getByTestId("chat-share-dialog");
     await expect(modal).toBeVisible();
-    await expect(modal).toContainText("Share Chat");
+    await expect(modal).toContainText("Share chat");
 
     await modal.getByText("Create shareable link").click();
 
