@@ -4,7 +4,7 @@ import type { PostHog } from "posthog-node";
 
 const KV_KEY = "posthog-feature-flag-local-evaluation";
 
-const log = aiLogger("analytics:feature-flags");
+const log = aiLogger("feature-flags");
 
 const setKv = async (response: Response) => {
   const value = await response.text();
@@ -27,7 +27,7 @@ export const cachedFetch: PostHog["fetch"] = async (url, options) => {
   if (url.includes("api/feature_flag/local_evaluation")) {
     const kvCachedResponse = await getKv();
     if (kvCachedResponse) {
-      log.info("evaluations fetched from KV");
+      log.info("Evaluations fetched from KV");
       return kvCachedResponse;
     }
     const result = await fetch(url, options);
@@ -35,7 +35,7 @@ export const cachedFetch: PostHog["fetch"] = async (url, options) => {
     if (result.ok) {
       const cachedResult = result.clone();
       await setKv(cachedResult);
-      log.info("evaluations cached to KV");
+      log.info("Evaluations cached to KV");
     } else {
       log.error("failed to load evaluations", { status: result.status });
     }

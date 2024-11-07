@@ -28,6 +28,8 @@ import { SentryIdentify } from "@/lib/sentry/SentryIdentify";
 import { cn } from "@/lib/utils";
 import { TRPCReactProvider } from "@/utils/trpc";
 
+import StyledComponentsRegistry from "./styles-registry";
+
 const provided_vercel_url =
   process.env.VERCEL_URL && process.env.VERCEL_URL?.length > 0
     ? process.env.VERCEL_URL
@@ -82,60 +84,63 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning className={lexend.variable}>
-      <ClerkProvider>
-        <body
-          className={cn(
-            "overflow-x-hidden font-sans antialiased",
-            GeistMono.variable,
-          )}
-        >
-          <Theme
-            accentColor="blue"
-            grayColor="olive"
-            scaling="110%"
-            style={{ overflowX: "hidden", color: "var(--base-color)" }}
+      <StyledComponentsRegistry>
+        <ClerkProvider>
+          <body
+            className={cn(
+              "overflow-x-hidden font-sans antialiased",
+              GeistMono.variable,
+            )}
           >
-            <TRPCReactProvider>
-              <FontProvider>
-                <Toaster />
-                <Providers>
-                  <SentryIdentify />
-                  <CookieConsentProvider>
-                    <AnalyticsProvider
-                      avoOptions={{
-                        webDebugger: false,
-                        inspector: undefined,
-                        webDebuggerOptions: {
-                          position: WebDebuggerPosition.BottomLeft({
-                            bottom: 0,
-                            left: 0,
-                          }),
-                        },
-                      }}
-                      bootstrappedFeatures={bootstrappedFeatures}
-                    >
-                      <GleapProvider>{children}</GleapProvider>
-                    </AnalyticsProvider>
-                  </CookieConsentProvider>
-                </Providers>
-              </FontProvider>
-            </TRPCReactProvider>
-          </Theme>
+            <Theme
+              accentColor="blue"
+              grayColor="olive"
+              scaling="110%"
+              color="#22222"
+              style={{ overflowX: "hidden" }}
+            >
+              <TRPCReactProvider>
+                <FontProvider>
+                  <Toaster />
+                  <Providers>
+                    <SentryIdentify />
+                    <CookieConsentProvider>
+                      <AnalyticsProvider
+                        avoOptions={{
+                          webDebugger: false,
+                          inspector: undefined,
+                          webDebuggerOptions: {
+                            position: WebDebuggerPosition.BottomLeft({
+                              bottom: 0,
+                              left: 0,
+                            }),
+                          },
+                        }}
+                        bootstrappedFeatures={bootstrappedFeatures}
+                      >
+                        <GleapProvider>{children}</GleapProvider>
+                      </AnalyticsProvider>
+                    </CookieConsentProvider>
+                  </Providers>
+                </FontProvider>
+              </TRPCReactProvider>
+            </Theme>
 
-          {/* react-hot-toast uses "goober" to set styles.
+            {/* react-hot-toast uses "goober" to set styles.
               Goober creates a _goober tag which would be blocked by CSP
               We can pre-create it with a nonce ourselves
               See https://github.com/cristianbote/goober/issues/471 */}
-          <style
-            id="_goober"
-            nonce={nonce ?? undefined}
-            suppressHydrationWarning
-            // eslint-disable-next-line react/jsx-no-comment-textnodes
-          >
-            /* css comment for goober */
-          </style>
-        </body>
-      </ClerkProvider>
+            <style
+              id="_goober"
+              nonce={nonce ?? undefined}
+              suppressHydrationWarning
+              // eslint-disable-next-line react/jsx-no-comment-textnodes
+            >
+              /* css comment for goober */
+            </style>
+          </body>
+        </ClerkProvider>
+      </StyledComponentsRegistry>
     </html>
   );
 }

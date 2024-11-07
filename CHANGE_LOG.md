@@ -1,3 +1,10 @@
+## [1.13.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.13.0...v1.13.1) (2024-11-05)
+
+
+### Bug Fixes
+
+* revert prisma to 5.16.1 ([#336](https://github.com/oaknational/oak-ai-lesson-assistant/issues/336)) ([a593618](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a593618b013607fbde75cfa98663d7298db7ff89))
+
 # [1.13.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.12.1...v1.13.0) (2024-10-31)
 
 

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ChatHistory } from "./chat-history";
 
 const meta: Meta<typeof ChatHistory> = {
-  title: "Components/Chat/ChatHistory",
+  title: "Components/Sidebar/ChatHistory",
   component: ChatHistory,
   parameters: {
     layout: "centered",

@@ -7,7 +7,7 @@ import cookie from "cookie";
 import type { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
 import invariant from "tiny-invariant";
 
-const log = aiLogger("analytics:feature-flags");
+const log = aiLogger("feature-flags");
 
 /**
  * We use posthog feature flags to toggle functionality without deploying code changes.
@@ -32,15 +32,21 @@ function getDistinctIdFromCookie(headers: ReadonlyHeaders) {
 }
 
 export async function getBootstrappedFeatures(headers: ReadonlyHeaders) {
-  const { userId } = auth();
+  const { userId, sessionClaims } = auth();
 
   const distinctId = userId ?? getDistinctIdFromCookie(headers) ?? "0";
-  log.info("Evaluating feature flags for", distinctId);
+
+  const personProperties = sessionClaims?.labs?.featureFlagGroup
+    ? { featureFlagGroup: sessionClaims.labs.featureFlagGroup }
+    : undefined;
+  log.info("Evaluating", distinctId, personProperties ?? "(no properties)");
+
   const features = await posthogAiBetaServerClient.getAllFlags(distinctId, {
-    // Only bootstrap flags which don't depend on user properties
-    // These are typically flags representing new features
+    // Only bootstrap flags which don't depend on PII
     onlyEvaluateLocally: true,
+    personProperties,
   });
+
   log.info("Bootstrapping feature flags", features);
   return features;
 }
