@@ -112,7 +112,7 @@ export const applyLlmFixtures = async (
     const headers = route.request().headers();
     headers["x-e2e-fixture-name"] = fixtureName;
     headers["x-e2e-fixture-mode"] = fixtureMode;
-    await route.continue({ headers });
+    await route.fallback({ headers });
   });
 
   return {
