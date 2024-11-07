@@ -373,7 +373,7 @@ function minMaxText({
 
 export const CompletedLessonPlanSchema = z.object({
   title: z.string().describe(
-    `The title of the lesson. Lesson titles should be a unique and succinct statement, not a question. Can include special characters if appropriate but should not use & sign instead of 'and'. Written in the TEACHER_TO_PUPIL_SLIDES voice Should be in sentence case starting with a capital letter and not end with a full stop. ${minMaxText(
+    `The title of the lesson. Lesson titles should be a unique and succinct statement, not a question. Can include special characters if appropriate but should not use & sign instead of 'and'. Written in the TEACHER_TO_PUPIL_SLIDES voice. The title should be in sentence case starting with a capital letter and not end with a full stop. ${minMaxText(
       {
         max: 80,
         entity: "characters",
