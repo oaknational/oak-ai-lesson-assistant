@@ -226,6 +226,8 @@ describe("Aila", () => {
       expect(ailaInstance.lesson.plan.subject).not.toBeDefined();
       expect(ailaInstance.lesson.plan.keyStage).not.toBeDefined();
 
+      await ailaInstance.initialise();
+
       await ailaInstance.generateSync({
         input: "Glaciation",
       });
@@ -294,6 +296,8 @@ describe("Aila", () => {
           chatLlmService,
         },
       });
+
+      await ailaInstance.initialise();
 
       await ailaInstance.generateSync({
         input:
