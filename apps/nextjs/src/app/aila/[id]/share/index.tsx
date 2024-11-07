@@ -7,10 +7,6 @@ import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModerati
 import { OakSmallPrimaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
-import {
-  keyStageToTitle,
-  subjectToTitle,
-} from "@/components/AppComponents/Chat/chat-lessonPlanDisplay";
 import LessonPlanMapToMarkDown from "@/components/AppComponents/Chat/chat-lessonPlanMapToMarkDown";
 import { GuidanceRequired } from "@/components/AppComponents/Chat/guidance-required";
 import { Icon } from "@/components/Icon";
