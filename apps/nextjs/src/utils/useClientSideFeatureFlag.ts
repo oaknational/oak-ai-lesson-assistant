@@ -10,7 +10,7 @@ export function useClientSideFeatureFlag(flag: string): boolean {
   const { posthogAiBetaClient: client } = useAnalytics();
 
   const [featureEnabled, setFeatureEnabled] = useState<boolean | undefined>(
-    // Use bootstrapped flag for initial render
+    // Use bootstrapped flag
     () => client.isFeatureEnabled(flag),
   );
 
