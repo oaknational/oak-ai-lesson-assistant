@@ -27,6 +27,8 @@ export const Default: Story = {
   },
 };
 
+// NOTE: The modal appears on a parent element which isn't captured by visual testing
+// TODO: Test the modal directly
 export const SharePending: Story = {
   args: {
     ...Default.args,
@@ -38,6 +40,8 @@ export const SharePending: Story = {
   },
 };
 
+// NOTE: The modal appears on a parent element which isn't captured by visual testing
+// TODO: Test the modal directly
 export const RemovePending: Story = {
   args: {
     ...Default.args,
