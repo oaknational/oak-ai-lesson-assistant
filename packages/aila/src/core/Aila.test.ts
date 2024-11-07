@@ -1,6 +1,7 @@
 import type { Polly } from "@pollyjs/core";
 
 import { setupPolly } from "../../tests/mocks/setupPolly";
+import type { AilaCategorisation } from "../features/categorisation";
 import { MockCategoriser } from "../features/categorisation/categorisers/MockCategoriser";
 import { Aila } from "./Aila";
 import { AilaAuthenticationError } from "./AilaError";
@@ -71,6 +72,96 @@ describe("Aila", () => {
 
       await ailaInstance.initialise();
 
+      expect(ailaInstance.lesson.plan.title).toBe("Roman Britain");
+      expect(ailaInstance.lesson.plan.subject).toBe("history");
+      expect(ailaInstance.lesson.plan.keyStage).toBe("key-stage-2");
+    });
+
+    it("should use the categoriser to determine the lesson plan from user input if the lesson plan is not already set up", async () => {
+      const mockCategoriser = {
+        categorise: jest.fn().mockResolvedValue({
+          keyStage: "key-stage-2",
+          subject: "history",
+          title: "Roman Britain",
+          topic: "The Roman Empire",
+        }),
+      };
+
+      const ailaInstance = new Aila({
+        lessonPlan: {},
+        chat: {
+          id: "123",
+          userId: "user123",
+          messages: [
+            {
+              id: "1",
+              role: "user",
+              content:
+                "Create a lesson about Roman Britain for Key Stage 2 History",
+            },
+          ],
+        },
+        options: {
+          usePersistence: false,
+          useRag: false,
+          useAnalytics: false,
+          useModeration: false,
+        },
+        plugins: [],
+        services: {
+          chatCategoriser: mockCategoriser as unknown as AilaCategorisation,
+        },
+      });
+
+      await ailaInstance.initialise();
+
+      expect(mockCategoriser.categorise).toHaveBeenCalledTimes(1);
+      expect(ailaInstance.lesson.plan.title).toBe("Roman Britain");
+      expect(ailaInstance.lesson.plan.subject).toBe("history");
+      expect(ailaInstance.lesson.plan.keyStage).toBe("key-stage-2");
+    });
+
+    it("should not use the categoriser to determine the lesson plan from user input if the lesson plan is already set up", async () => {
+      const mockCategoriser = {
+        categorise: jest.fn().mockResolvedValue({
+          keyStage: "key-stage-2",
+          subject: "history",
+          title: "Roman Britain",
+          topic: "The Roman Empire",
+        }),
+      };
+      const ailaInstance = new Aila({
+        lessonPlan: {
+          title: "Roman Britain",
+          subject: "history",
+          keyStage: "key-stage-2",
+        },
+        chat: {
+          id: "123",
+          userId: "user123",
+          messages: [
+            {
+              id: "1",
+              role: "user",
+              content:
+                "Create a lesson about Roman Britain for Key Stage 2 History",
+            },
+          ],
+        },
+        options: {
+          usePersistence: false,
+          useRag: false,
+          useAnalytics: false,
+          useModeration: false,
+        },
+        plugins: [],
+        services: {
+          chatCategoriser: mockCategoriser as unknown as AilaCategorisation,
+        },
+      });
+
+      await ailaInstance.initialise();
+      expect(mockCategoriser.categorise).toHaveBeenCalledTimes(0);
       expect(ailaInstance.lesson.plan.title).toBe("Roman Britain");
       expect(ailaInstance.lesson.plan.subject).toBe("history");
       expect(ailaInstance.lesson.plan.keyStage).toBe("key-stage-2");
