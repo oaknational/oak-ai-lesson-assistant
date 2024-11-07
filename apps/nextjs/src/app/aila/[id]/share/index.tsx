@@ -15,6 +15,7 @@ import LessonPlanMapToMarkDown from "@/components/AppComponents/Chat/chat-lesson
 import { GuidanceRequired } from "@/components/AppComponents/Chat/guidance-required";
 import { Icon } from "@/components/Icon";
 import { Logo } from "@/components/Logo";
+import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 interface ShareChatProps {
   lessonPlan: LooseLessonPlan;
@@ -38,8 +39,8 @@ export default function ShareChat({
   }, [userHasCopiedLink, setUserHasCopiedLink]);
 
   const keyStageSubjectTuple = [
-    keyStageToTitle(lessonPlan.keyStage ?? ""),
-    subjectToTitle(lessonPlan.subject ?? ""),
+    slugToSentenceCase(lessonPlan.keyStage ?? ""),
+    slugToSentenceCase(lessonPlan.subject ?? ""),
   ].filter(Boolean);
 
   return (

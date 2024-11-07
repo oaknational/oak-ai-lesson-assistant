@@ -70,7 +70,7 @@ export const legalMenuItems: MenuItem[] = [
     target: "_blank",
   },
   {
-    title: "Accessibility Statement",
+    title: "Accessibility statement",
     href: "/legal/accessibility-statement",
     id: "accessibility-statement",
   },

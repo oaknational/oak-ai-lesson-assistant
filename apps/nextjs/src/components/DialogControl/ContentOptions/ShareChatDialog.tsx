@@ -80,7 +80,7 @@ const ShareChat = ({
       justify="between"
     >
       <div>
-        <p className="mb-12 text-2xl">Share Chat</p>
+        <p className="mb-12 text-2xl">Share chat</p>
         <p className="mb-18">
           Please be aware that while our AI lesson planning tool aims to assist
           educators by generating educational content, it should be used as a
