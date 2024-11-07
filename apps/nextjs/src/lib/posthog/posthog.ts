@@ -21,6 +21,7 @@ export const posthogToAnalyticsService = (
   name: "posthog",
   init: ({ apiKey, apiHost, uiHost, bootstrappedFeatures }) =>
     new Promise((resolve) => {
+      console.log("Initializing posthog with features", bootstrappedFeatures);
       client.init(apiKey, {
         api_host: apiHost,
         ui_host: uiHost,

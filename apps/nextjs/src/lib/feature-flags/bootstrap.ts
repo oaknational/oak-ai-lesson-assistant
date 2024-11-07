@@ -38,7 +38,7 @@ export async function getBootstrappedFeatures(headers: ReadonlyHeaders) {
 
   const personProperties = sessionClaims?.labs?.featureFlagGroup
     ? { featureFlagGroup: sessionClaims.labs.featureFlagGroup }
-    : undefined;
+    : { featureFlagGroup: "" };
   log.info("Evaluating", distinctId, personProperties ?? "(no properties)");
 
   const features = await posthogAiBetaServerClient.getAllFlags(distinctId, {
