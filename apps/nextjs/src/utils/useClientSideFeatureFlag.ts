@@ -9,7 +9,10 @@ const log = aiLogger("feature-flags");
 export function useClientSideFeatureFlag(flag: string): boolean {
   const { posthogAiBetaClient: client } = useAnalytics();
 
-  const [featureEnabled, setFeatureEnabled] = useState<boolean | undefined>();
+  const [featureEnabled, setFeatureEnabled] = useState<boolean | undefined>(
+    // Use bootstrapped flag for initial render
+    () => client.isFeatureEnabled(flag),
+  );
 
   useEffect(() => {
     const isDebug = process.env.NEXT_PUBLIC_POSTHOG_DEBUG === "true";
