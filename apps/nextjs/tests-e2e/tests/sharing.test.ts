@@ -12,8 +12,7 @@ const checkPage = async (page: Page) => {
   await expect(banner).toContainText("Please check content carefully");
 
   const keyStageSubjectTitle = page.getByTestId("key-stage-subject");
-  await expect(keyStageSubjectTitle).toContainText("Key Stage 4");
-  await expect(keyStageSubjectTitle).toContainText("Computing");
+  await expect(keyStageSubjectTitle).toContainText("Key stage 4 • Computing");
 
   await expect(page.locator("h1")).toContainText("Software Testing Techniques");
 
