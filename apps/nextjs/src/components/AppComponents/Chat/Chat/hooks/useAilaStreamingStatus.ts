@@ -20,7 +20,6 @@ function findStreamingSections(message: Message | undefined): {
       content: undefined,
     };
   }
-  log.info("Parsing message content", message.content);
   const { content } = message;
   const regex = /"path":"\/([^/"]*)/g;
   const pathMatches =
@@ -94,5 +93,10 @@ export const useAilaStreamingStatus = ({
     log.info("ailaStreamingStatus set:", status);
   }, [status]);
 
-  return { status, streamingSection, streamingSections };
+  return {
+    status,
+    streamingSection:
+      status === "StreamingLessonPlan" ? streamingSection : undefined,
+    streamingSections,
+  };
 };

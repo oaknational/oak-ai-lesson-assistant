@@ -1,13 +1,11 @@
-import {
-  PatchDocument,
-  applyLessonPlanPatch,
-} from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import {
+import type { PatchDocument } from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import { applyLessonPlanPatch } from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import type {
   LessonPlanKeys,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
-import { Message } from "ai";
+import type { Message } from "ai";
 import { createHash } from "crypto";
 import { EventEmitter } from "events";
 import { deepClone } from "fast-json-patch";
@@ -99,6 +97,7 @@ export class LessonPlanManager {
   }
 
   public onMessageUpdated(message: Message): void {
+    log.info("LessonPlanManager: onMessageUpdated");
     if (message.role === "assistant") {
       this.applyPatches(message);
     }

@@ -116,7 +116,7 @@ export const useLessonPlanScrollManagement = (
 
   // Trigger processing the scroll queue
   useEffect(() => {
-    if (streamingStatus === "StreamingLessonPlan") {
+    if (streamingStatus !== "Idle") {
       const intervalId = setInterval(() => {
         processScrollQueue();
       }, 200);

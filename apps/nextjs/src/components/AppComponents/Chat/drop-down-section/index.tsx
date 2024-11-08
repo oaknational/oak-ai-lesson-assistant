@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 
-import {
+import type {
   LessonPlanKeys,
   LessonPlanSectionWhileStreaming,
 } from "@oakai/aila/src/protocol/schema";
@@ -12,7 +12,7 @@ import { Icon } from "@/components/Icon";
 import LoadingWheel from "@/components/LoadingWheel";
 
 import Skeleton from "../../common/Skeleton";
-import { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
+import type { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import ChatSection from "./chat-section";
 
 const DropDownSection = ({
@@ -42,8 +42,7 @@ const DropDownSection = ({
   const sectionTitleMemo = useMemo(() => sectionTitle(section), [section]);
 
   const isStreaming =
-    ailaStreamingStatus === "StreamingLessonPlan" &&
-    streamingSection === section;
+    ailaStreamingStatus !== "Idle" && streamingSection === section;
 
   const isLoaded = !isStreaming && value !== undefined;
 
