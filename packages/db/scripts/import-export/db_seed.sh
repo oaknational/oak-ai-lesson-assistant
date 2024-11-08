@@ -1,7 +1,7 @@
 #!/bin/sh
 
 get_local_database_admin_url() {
-  read -p "Please enter the local DATABASE_ADMIN_URL (e.g. postgresql://oai:oai@localhost:5432/oai): " local_url
+  read -p "Please enter the local DATABASE_ADMIN_URL (e.g. postgresql://oai:oai@localhost:8432/oai): " local_url
   echo "$local_url"
 }
 

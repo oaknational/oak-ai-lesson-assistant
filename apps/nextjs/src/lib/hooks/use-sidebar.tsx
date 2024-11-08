@@ -27,7 +27,7 @@ interface SidebarProviderProps {
 }
 
 export function SidebarProvider({ children }: SidebarProviderProps) {
-  const [isSidebarOpen, setSidebarOpen] = React.useState(true);
+  const [isSidebarOpen, setSidebarOpen] = React.useState(false);
   const [isLoading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
@@ -45,10 +45,6 @@ export function SidebarProvider({ children }: SidebarProviderProps) {
       return newState;
     });
   };
-
-  if (isLoading) {
-    return null;
-  }
 
   return (
     <SidebarContext.Provider

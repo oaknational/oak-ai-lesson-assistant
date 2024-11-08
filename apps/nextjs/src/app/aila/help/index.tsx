@@ -99,7 +99,7 @@ const Help = () => {
           <div className="mb-40 max-w-[800px]">
             <div className="mb-20 mt-10 sm:hidden">
               <OakLink
-                href={ailaId ? `/aila/${ailaId}` : `/aila`}
+                href={ailaId ? `/aila/${ailaId}` : "/aila"}
                 iconName="chevron-left"
               >
                 Back to Aila

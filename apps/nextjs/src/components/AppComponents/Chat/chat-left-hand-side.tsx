@@ -1,8 +1,8 @@
 import React from "react";
 
 import { Flex } from "@radix-ui/themes";
-import type { Message } from "ai";
 
+import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
 
 import ChatLhsHeader from "./chat-lhs-header";
@@ -12,8 +12,6 @@ import { ChatPanelArea } from "./chat-panel-area";
 import QuickActionButtons from "./chat-quick-buttons";
 
 type ChatLeftHandSideProps = {
-  chatAreaRef: React.RefObject<HTMLDivElement>;
-  messages: Message[];
   isDemoLocked: boolean;
   showLessonMobile: boolean;
   setShowLessonMobile: (value: boolean) => void;
@@ -22,14 +20,13 @@ type ChatLeftHandSideProps = {
 };
 
 const ChatLeftHandSide = ({
-  chatAreaRef,
-  messages,
   isDemoLocked,
   showLessonMobile,
   setShowLessonMobile,
   demo,
   isDemoUser,
 }: Readonly<ChatLeftHandSideProps>) => {
+  const { messages, chatAreaRef } = useLessonChat();
   return (
     <Flex
       direction="column"

@@ -77,6 +77,9 @@ const getConfig = async (phase) => {
       domains: ["oaknationalacademy-res.cloudinary.com"],
     },
     transpilePackages: ["@oakai/api", "@oakai/db", "@oakai/exports"],
+    compiler: {
+      styledComponents: true,
+    },
     // We already do linting on GH actions
     eslint: {
       ignoreDuringBuilds: !!process.env.CI,
