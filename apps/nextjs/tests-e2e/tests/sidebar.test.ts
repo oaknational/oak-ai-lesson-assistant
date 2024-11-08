@@ -18,13 +18,13 @@ test(
       await page.getByTestId("sidebar-button").click();
       const sidebar = page.getByTestId("sidebar");
       expect(sidebar).toBeVisible();
-      await sidebar.getByText("Software Testing Techniques").click();
+      await sidebar.getByText("Software testing techniques").click();
     });
 
     await test.step("Lesson has loaded", async () => {
       await page.waitForURL(/\/aila\/.+/);
       await expect(page.locator("h1")).toContainText(
-        "Software Testing Techniques",
+        "Software testing techniques",
       );
     });
   },
