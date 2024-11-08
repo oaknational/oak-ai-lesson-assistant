@@ -22,6 +22,7 @@ const publicRoutes = [
   "/api/health",
   "/aila/health",
   "/api/trpc/main/health.check",
+  "/api/trpc/main/health.prismaCheck",
   "/api/trpc/chat/chat.health.check",
   /**
    * The inngest route is protected using a signing key
