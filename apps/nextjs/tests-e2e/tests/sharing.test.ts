@@ -12,7 +12,7 @@ const checkPage = async (page: Page) => {
   await expect(banner).toContainText("Please check content carefully");
 
   const keyStageSubjectTitle = page.getByTestId("key-stage-subject");
-  await expect(keyStageSubjectTitle).toContainText("Key stage 4");
+  await expect(keyStageSubjectTitle).toContainText("Key Stage 4");
   await expect(keyStageSubjectTitle).toContainText("Computing");
 
   await expect(page.locator("h1")).toContainText("Software Testing Techniques");
@@ -61,7 +61,7 @@ test("sharing a lesson", async ({ page, context, browser }) => {
 
     const modal = page.getByTestId("chat-share-dialog");
     await expect(modal).toBeVisible();
-    await expect(modal).toContainText("Share chat");
+    await expect(modal).toContainText("Share Chat");
 
     await modal.getByText("Create shareable link").click();
 
