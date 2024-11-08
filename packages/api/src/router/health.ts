@@ -1,8 +1,9 @@
 import { aiLogger } from "@oakai/logger";
+import { TRPCError } from "@trpc/server";
 
 import { router, publicProcedure } from "../trpc";
 
-const log = aiLogger("prisma-health-check");
+const log = aiLogger("db");
 
 export const healthRouter = router({
   check: publicProcedure.query(() => {
