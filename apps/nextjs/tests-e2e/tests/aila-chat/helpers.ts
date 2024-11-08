@@ -64,10 +64,6 @@ export async function isFinished(page: Page) {
   return sections.length > 0;
 }
 
-export async function hasInChatShareButton(page: Page) {
-  return await page.getByTestId("in-chat-share-button").isVisible();
-}
-
 export async function expectHasInChatShareButton(page: Page) {
   await expect(page.getByTestId("in-chat-share-button")).toBeVisible();
 }

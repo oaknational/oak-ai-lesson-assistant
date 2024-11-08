@@ -8,10 +8,9 @@ import {
   applyLlmFixtures,
   continueChat,
   expectFinished,
+  expectHasInChatShareButton,
   expectStreamingStatus,
-  hasInChatShareButton,
   isFinished,
-  letUiSettle,
   scrollLessonPlanFromTopToBottom,
   waitForStreamingStatusChange,
 } from "./helpers";
@@ -78,7 +77,6 @@ test(
         if (await isFinished(page)) {
           break;
         }
-        await letUiSettle(page, testInfo);
         setFixture(`roman-britain-${iterationCount}`);
         await continueChat(page);
         await waitForStreamingStatusChange(
@@ -89,7 +87,7 @@ test(
         );
       }
 
-      await hasInChatShareButton(page);
+      await expectHasInChatShareButton(page);
       await scrollLessonPlanFromTopToBottom(page);
       await expectFinished(page);
     });
