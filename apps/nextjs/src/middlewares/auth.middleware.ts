@@ -13,6 +13,7 @@ declare global {
     labs: {
       isDemoUser: boolean | null;
       isOnboarded: boolean | null;
+      featureFlagGroup: string | null;
     };
   }
 }
@@ -46,6 +47,7 @@ const publicRoutes = [
   "/monitoring",
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/api/webhooks/clerk",
 ];
 if (
   process.env.NODE_ENV === "development" ||
