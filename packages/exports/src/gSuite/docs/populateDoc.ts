@@ -1,11 +1,13 @@
 import type { docs_v1 } from "@googleapis/docs";
 
 import type { Result } from "../../types";
-import type { ValueToString} from "../../utils";
+import type { ValueToString } from "../../utils";
 import { defaultValueToString } from "../../utils";
+import { processImageReplacements } from "./processImageReplacements";
+import { processTextReplacements } from "./processTextReplacements";
 
 /**
- * @description Populates the template document with the given data.
+ * Populates the template document with the given data, handling image replacements for all placeholders.
  */
 export async function populateDoc<
   Data extends Record<string, string | string[] | null | undefined>,
@@ -26,34 +28,24 @@ export async function populateDoc<
     const requests: docs_v1.Schema$Request[] = [];
     const missingData: string[] = [];
 
-    Object.entries(data).forEach(([key, value]) => {
-      const valueStr = valueToString(key, value);
-      if (!valueStr.trim() && warnIfMissing.includes(key)) {
-        missingData.push(key);
-      }
-      requests.push({
-        replaceAllText: {
-          replaceText: valueStr,
-          containsText: {
-            text: `{{${key}}}`,
-            matchCase: false,
-          },
-        },
-      });
+    await processImageReplacements({ googleDocs, documentId, data });
+
+    await processTextReplacements({
+      googleDocs,
+      documentId,
+      data,
+      missingData,
+      warnIfMissing,
+      valueToString,
     });
 
-    await googleDocs.documents.batchUpdate({
-      documentId,
-      requestBody: {
-        requests,
-      },
-    });
     return {
       data: {
         missingData,
       },
     };
   } catch (error) {
+    console.error("Failed to populate document:", error);
     return {
       error,
       message: "Failed to populate doc template",
