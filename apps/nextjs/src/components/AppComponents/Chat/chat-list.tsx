@@ -135,7 +135,7 @@ export const ChatMessagesDisplay = ({
   });
 
   const workingOnItMessage = streamingSection
-    ? `Editing ${sectionTitle(streamingSection)}…`
+    ? `Editing ${sectionTitle(streamingSection).toLowerCase()}…`
     : "Working on it…";
 
   return (
