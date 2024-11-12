@@ -21,7 +21,9 @@ const log = aiLogger("feature-flags");
 
 function getDistinctIdFromCookie(headers: ReadonlyHeaders) {
   const cookieHeader = headers.get("cookie");
-  invariant(cookieHeader, "No cookie header");
+  if (!cookieHeader) {
+    return null;
+  }
   const cookies = cookie.parse(cookieHeader) as Record<string, string>;
   const phCookieKey = `ph_${process.env.NEXT_PUBLIC_POSTHOG_API_KEY}_posthog`;
   const phCookie = cookies[phCookieKey];
