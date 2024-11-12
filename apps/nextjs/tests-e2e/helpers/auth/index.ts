@@ -30,6 +30,7 @@ export async function prepareUser(
     | "typical"
     | "demo"
     | "nearly-banned"
+    | "modify-lesson-plan"
     | "nearly-rate-limited"
     | "sharing-chat",
 ) {

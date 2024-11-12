@@ -1,0 +1,219 @@
+{"
+type":"
+ll
+m
+Message
+","sectionsToEdit":["
+additional
+Materials
+"],"patches":[
+{"
+type":"
+patch
+","reasoning":"
+Adding
+ a
+ homework
+ task
+ will
+ reinforce
+ the
+ lesson
+'s
+ concepts
+,
+ allowing
+ students
+ to
+ consolidate
+ their
+ understanding
+ of
+ software
+ testing
+ techniques
+.","
+value":{"
+type":"
+string
+","op":"
+replace
+","path":"/
+additional
+Materials
+","value":"
+##
+ Homework
+ Task
+\n
+\n
+1
+.
+ **
+Research
+ Activity
+**
+:
+ Investig
+ate
+ a
+ real
+-world
+ software
+ application
+ and
+ identify
+ which
+ testing
+ techniques
+ you
+ think
+ were
+ used
+ during
+ its
+ development
+.
+ Write
+ a
+ short
+ paragraph
+ explaining
+ your
+ reasoning
+.\
+n
+\n
+2
+.
+ **
+Reflection
+ Questions
+**
+:\
+n
+  
+ -
+ Why
+ might
+ a
+ company
+ choose
+ automated
+ testing
+ over
+ manual
+ testing
+?\
+n
+  
+ -
+ Describe
+ a
+ scenario
+ where
+ black
+-box
+ testing
+ would
+ be
+ more
+ effective
+ than
+ white
+-box
+ testing
+.\
+n
+\n
+3
+.
+ **
+Pr
+actical
+ Application
+**
+:
+ Choose
+ a
+ simple
+ program
+ you
+ have
+ written
+ previously
+.
+ Conduct
+ a
+ black
+-box
+ test
+ and
+ note
+ any
+ inputs
+ that
+ produce
+ unexpected
+ outputs
+.\
+n
+\n
+Remember
+ to
+ bring
+ your
+ findings
+ to
+ the
+ next
+ class
+ for
+ a
+ group
+ discussion
+."
+}  ,"status":"
+complete
+"}],"sectionsEdited":["
+additional
+Materials
+"],"prompt":{"
+type":"
+text
+","value":"
+A
+ homework
+ task
+ has
+ been
+ added
+ to
+ the
+ additional
+ materials
+ section
+.
+ If
+ you
+ have
+ any
+ more
+ changes
+ or
+ are
+ ready
+ to
+ final
+ise
+ the
+ lesson
+,
+ please
+ let
+ me
+ know
+!"
+}  ,"status":"
+complete
+"}
