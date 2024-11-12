@@ -22,6 +22,7 @@ const publicRoutes = [
   "/api/health",
   "/aila/health",
   "/api/trpc/main/health.check",
+  "/api/trpc/main/health.prismaCheck",
   "/api/trpc/chat/chat.health.check",
   "/api/cron-jobs/expired-exports",
   /**
