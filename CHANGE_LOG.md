@@ -1,3 +1,11 @@
+## [1.14.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.14.1...v1.14.2) (2024-11-12)
+
+
+### Bug Fixes
+
+* design-changes-to-footer ([#324](https://github.com/oaknational/oak-ai-lesson-assistant/issues/324)) ([273cfdc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/273cfdc668ca45def0b8a68dc08b7301974e1def))
+* only categorise initial user input once ([#348](https://github.com/oaknational/oak-ai-lesson-assistant/issues/348)) ([dd5bf71](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dd5bf71a21421ac6e0beb60b4bab560cb159d877))
+
 ## [1.14.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.14.0...v1.14.1) (2024-11-07)
 
 
