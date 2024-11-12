@@ -1,41 +1,41 @@
 import type { AilaUserModificationAction } from "@prisma/client";
 
 import ActionButtonWrapper from "./action-button-wrapper";
-import { modifyOptions } from "./action-button.types";
+import { additionalMaterialsModifyOptions } from "./action-button.types";
 import type { FeedbackOption } from "./drop-down-form-wrapper";
 
-type ModifyButtonProps = {
+export type AdditionalMaterialsProps = {
   sectionTitle: string;
   sectionPath: string;
   sectionValue: Record<string, unknown> | string | Array<unknown>;
 };
 
-const ModifyButton = ({
+const AddAdditionalMaterialsButton = ({
   sectionTitle,
   sectionPath,
   sectionValue,
-}: ModifyButtonProps) => {
+}: AdditionalMaterialsProps) => {
   const generateMessage = (
     option: FeedbackOption<AilaUserModificationAction>,
     userFeedbackText: string,
   ) =>
     option.label === "Other"
       ? `For the ${sectionTitle}, ${userFeedbackText}`
-      : `Make the ${sectionTitle} ${option.chatMessage?.toLowerCase()}`;
+      : `${option.chatMessage} to the additional materials section`;
 
   return (
     <ActionButtonWrapper
-      sectionTitle={`Ask Aila to modify ${sectionTitle.toLowerCase()}:`}
+      sectionTitle={`Ask Aila to add:`}
       sectionPath={sectionPath}
       sectionValue={sectionValue}
-      options={modifyOptions}
-      actionButtonLabel="Modify"
-      tooltip="Aila can help improve this section"
-      userSuggestionTitle="Provide modification options:"
-      buttonText="Modify section"
+      options={additionalMaterialsModifyOptions}
+      actionButtonLabel="Add additional materials"
+      tooltip="Aila can help add additional materials"
+      userSuggestionTitle="What additional materials would you like to add?"
       generateMessage={generateMessage}
+      buttonText={"Add materials"}
     />
   );
 };
 
-export default ModifyButton;
+export default AddAdditionalMaterialsButton;
