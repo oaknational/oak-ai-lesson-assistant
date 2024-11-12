@@ -43,6 +43,7 @@ import type {
 
 const log = aiLogger("aila");
 export class Aila implements AilaServices {
+  private _initialised: boolean = false; // We have a separate flag for this because we have an async initialise method which cannot be called in the constructor
   private _analytics?: AilaAnalyticsFeature;
   private _chat: AilaChatService;
   private _errorReporter?: AilaErrorReportingFeature;
@@ -123,8 +124,22 @@ export class Aila implements AilaServices {
     this._plugins = options.plugins;
   }
 
+  private checkInitialised() {
+    if (!this._initialised) {
+      log.warn(
+        "Aila instance has not been initialised. Please call the initialise method before using the instance.",
+      );
+      throw new Error("Aila instance has not been initialised.");
+    }
+  }
+
   // Initialization methods
   public async initialise() {
+    if (this._initialised) {
+      log.info("Aila - already initialised");
+      return;
+    }
+    log.info("Aila - initialise");
     this.checkUserIdPresentIfPersisting();
     await this.loadChatIfPersisting();
     const persistedLessonPlan = this._chat.persistedChat?.lessonPlan;
@@ -132,6 +147,7 @@ export class Aila implements AilaServices {
       this._lesson.setPlan(persistedLessonPlan);
     }
     await this._lesson.setUpInitialLessonPlan(this._chat.messages);
+    this._initialised = true;
   }
 
   private initialiseOptions(options?: AilaOptions) {
@@ -246,6 +262,7 @@ export class Aila implements AilaServices {
 
   // Generation methods
   public async generateSync(opts: AilaGenerateLessonPlanOptions) {
+    this.checkInitialised();
     const stream = await this.generate(opts);
 
     const reader = stream.getReader();
@@ -273,6 +290,7 @@ export class Aila implements AilaServices {
     keyStage,
     topic,
   }: AilaGenerateLessonPlanOptions) {
+    this.checkInitialised();
     if (this._isShutdown) {
       throw new AilaGenerationError(
         "This Aila instance has been shut down and cannot be reused.",
