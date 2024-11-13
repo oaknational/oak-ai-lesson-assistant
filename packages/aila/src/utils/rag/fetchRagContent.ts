@@ -1,12 +1,8 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { RagLessonPlans } from "@oakai/core/src/models/ragLessonPlans";
 import { RAG } from "@oakai/core/src/rag";
-<<<<<<< Updated upstream
 import type { PrismaClientWithAccelerate } from "@oakai/db";
-=======
-import { PrismaClientWithAccelerate } from "@oakai/db";
 import OpenAI from "openai";
->>>>>>> Stashed changes
 
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
 import type { CompletedLessonPlan } from "../../protocol/schema";
