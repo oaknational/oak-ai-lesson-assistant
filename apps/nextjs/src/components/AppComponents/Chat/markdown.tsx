@@ -189,7 +189,7 @@ export const MemoizedReactMarkdownWithStyles = ({
 const InLineButton = ({ text, onClick }) => {
   return (
     <button
-      onClick={() => onClick}
+      onClick={onClick}
       className="my-6 w-fit border-spacing-4 rounded-lg border border-black border-opacity-30 bg-white p-7 text-blue"
     >
       {text}
