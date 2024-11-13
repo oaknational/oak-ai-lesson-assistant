@@ -384,8 +384,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const ailaStreamingStatus = useAilaStreamingStatus({ isLoading, messages });
 
-  log.info(ailaStreamingStatus);
-
   useEffect(() => {
     if (toxicModeration) {
       setMessages([]);
