@@ -300,7 +300,22 @@ function ErrorMessagePart({
 }
 
 function TextMessagePart({ part }: Readonly<{ part: TextDocument }>) {
-  return <MemoizedReactMarkdownWithStyles markdown={part.value} />;
+  function containsRelevantList(text: string): boolean {
+    const relevancePhraseRegex =
+      /might\s*be\s*relevant|could\s*be\s*relevant|are\s*relevant/i; // Variations of "might be relevant"
+    const numberedListRegex = /\d+\.\s+[A-Za-z0-9]/; // Matches a numbered list like "1. Something"
+
+    return relevancePhraseRegex.test(text) && numberedListRegex.test(text);
+  }
+
+  const shouldTransformToButtons = containsRelevantList(part.value);
+
+  return (
+    <MemoizedReactMarkdownWithStyles
+      markdown={part.value}
+      shouldTransformToButtons={shouldTransformToButtons}
+    />
+  );
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

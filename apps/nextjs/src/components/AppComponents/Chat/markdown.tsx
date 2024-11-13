@@ -7,6 +7,7 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import { Box, Flex } from "@radix-ui/themes";
 import remarkGfm from "remark-gfm";
 
+import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { cn } from "@/lib/utils";
 
 import { CodeBlock } from "./ui/codeblock";
@@ -20,24 +21,77 @@ const MemoizedReactMarkdown: FC<Options> = memo(
 
 export const MemoizedReactMarkdownWithStyles = ({
   markdown,
+  shouldTransformToButtons = false,
   lessonPlanSectionDescription,
   className,
 }: {
   markdown: string;
+  shouldTransformToButtons?: boolean;
   lessonPlanSectionDescription?: string;
   className?: string;
 }) => {
+  const chat = useLessonChat();
+  const { append } = chat;
   return (
     <MemoizedReactMarkdown
       className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
       remarkPlugins={[remarkGfm]}
       components={{
+        ol({ children }) {
+          if (shouldTransformToButtons) {
+            return (
+              <ol className="m-0 list-none p-0">
+                {React.Children.map(children, (child) => {
+                  if (!child || child == "\n") return null;
+                  return child;
+                })}
+              </ol>
+            );
+          }
+          return (
+            <ol className={cn("marker:text-black", className)}>{children}</ol>
+          );
+        },
         li({ children }) {
+          if (shouldTransformToButtons) {
+            // Extract the list item content and remove numbering
+
+            return (
+              <li className="m-0 p-0">
+                <InLineButton
+                  text={children as string}
+                  onClick={() => {
+                    if (typeof children === "string") {
+                      append({ content: children, role: "user" });
+                    }
+                  }}
+                />
+              </li>
+            );
+          }
           return (
             <li className={cn("marker:text-black", className)}>{children}</li>
           );
         },
         p({ children }) {
+          if (
+            Array.isArray(children) &&
+            children[2].includes("start from scratch")
+          ) {
+            return (
+              <div className="flex flex-col gap-5">
+                <p className={cn("mb-7 last:mb-0", className)}>
+                  If not ask me something or else, or:
+                </p>
+                <InLineButton
+                  onClick={() =>
+                    append({ content: "Continue from scratch", role: "user" })
+                  }
+                  text="Continue from scratch"
+                />
+              </div>
+            );
+          }
           return <p className={cn("mb-7 last:mb-0", className)}>{children}</p>;
         },
         h1({ children }) {
@@ -129,5 +183,16 @@ export const MemoizedReactMarkdownWithStyles = ({
     >
       {markdown}
     </MemoizedReactMarkdown>
+  );
+};
+
+const InLineButton = ({ text, onClick }) => {
+  return (
+    <button
+      onClick={() => onClick}
+      className="my-6 w-fit border-spacing-4 rounded-lg border border-black border-opacity-30 bg-white p-7 text-blue"
+    >
+      {text}
+    </button>
   );
 };
