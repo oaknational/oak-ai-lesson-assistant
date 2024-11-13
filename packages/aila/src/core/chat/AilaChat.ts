@@ -3,6 +3,7 @@ import {
   unsupportedSubjects,
   subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
+import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
@@ -11,7 +12,10 @@ import type { AilaServices } from "../../core/AilaServices";
 import { AilaGeneration } from "../../features/generation/AilaGeneration";
 import type { AilaGenerationStatus } from "../../features/generation/types";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
-import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
+import type {
+  ExperimentalPatchDocument,
+  JsonPatchDocumentOptional,
+} from "../../protocol/jsonPatchProtocol";
 import {
   LLMMessageSchema,
   parseMessageParts,
@@ -29,6 +33,8 @@ import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 import type { Message } from "./types";
 
+const log = aiLogger("aila:chat");
+
 export class AilaChat implements AilaChatService {
   private readonly _id: string;
   private readonly _messages: Message[];
@@ -44,6 +50,7 @@ export class AilaChat implements AilaChatService {
   private _iteration: number | undefined;
   private _createdAt: Date | undefined;
   private _persistedChat: AilaPersistedChat | undefined;
+  private _experimentalPatches: ExperimentalPatchDocument[];
 
   constructor({
     id,
@@ -73,6 +80,7 @@ export class AilaChat implements AilaChatService {
     this._patchEnqueuer = new PatchEnqueuer();
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
     this._relevantLessons = [];
+    this._experimentalPatches = [];
   }
 
   public get aila() {
@@ -133,6 +141,10 @@ export class AilaChat implements AilaChatService {
       return;
     }
     this._chunks.push(value);
+  }
+
+  public appendEperimentalPatch(patch: ExperimentalPatchDocument) {
+    this._experimentalPatches.push(patch);
   }
 
   public async generationFailed(error: unknown) {
@@ -264,6 +276,14 @@ export class AilaChat implements AilaChatService {
     return accumulated ?? "";
   }
 
+  private applyExperimentalPatches() {
+    const experimentalPatches = this._experimentalPatches;
+
+    log.info("Applying experimental patches", experimentalPatches);
+
+    this._aila.lesson.applyValidPatches(experimentalPatches);
+  }
+
   private async reportUsageMetrics() {
     await this._aila.analytics?.reportUsageMetrics(this.accumulatedText());
   }
@@ -314,11 +334,12 @@ export class AilaChat implements AilaChatService {
   }
 
   private applyEdits() {
-    const patches = this.accumulatedText();
-    if (!patches) {
+    const llmPatches = this.accumulatedText();
+    if (!llmPatches) {
       return;
     }
-    this._aila.lesson.applyPatches(patches);
+    this._aila.lesson.extractAndApplyLlmPatches(llmPatches);
+    this.applyExperimentalPatches();
   }
 
   private appendAssistantMessage() {
@@ -331,6 +352,68 @@ export class AilaChat implements AilaChatService {
     this.addMessage(assistantMessage);
 
     return assistantMessage;
+  }
+
+  private async fetchExperimentalPatches() {
+    // Experimental additional (agentic) additions
+    const quiz = [
+      {
+        question: "How many degrees in 2 right angles?",
+        answers: ["180°"],
+        distractors: ["60°", "90°"],
+      },
+      {
+        question:
+          "Two shapes are {{}} if the only difference between them is their size.",
+        answers: ["similar"],
+        distractors: [
+          "No distractors for short answer",
+          "No distractors for short answer",
+        ],
+      },
+      {
+        question:
+          "A fruit stall is having a sale. It sells cherries in boxes of four pairs. How many cherries are there in six packs? There will be {{ }} in six packs.",
+        answers: ["24"],
+        distractors: [
+          "No distractors for short answer",
+          "No distractors for short answer",
+        ],
+      },
+      {
+        question:
+          "In which image is the circumference labelled with a question mark?",
+        answers: [
+          "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/fg4uyx41rfnksbvav2nh.png)",
+        ],
+        distractors: [
+          "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703163380/pz6cn5k4wmowycnjq5am.png)",
+          "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/mr09mrwkqdtk1dvjdoi0.png)",
+        ],
+      },
+      {
+        question:
+          "Complete the statement. Triangle ABC and triangle XYZ are ____________. ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png)",
+        answers: ["similar as the three interior angles are the same."],
+        distractors: [
+          "congruent as the three interior angles are all the same.",
+          "neither similar nor congruent.",
+        ],
+      },
+    ];
+
+    const experimentalPatch: ExperimentalPatchDocument = {
+      type: "experimentalPatch",
+      value: {
+        path: "/_experimental_starterQuizMathsV0",
+        op: "add",
+        value: quiz,
+      },
+    };
+
+    await this.enqueue(experimentalPatch);
+
+    this.appendEperimentalPatch(experimentalPatch);
   }
 
   private async enqueueMessageId(messageId: string) {
@@ -360,6 +443,7 @@ export class AilaChat implements AilaChatService {
 
   public async complete() {
     await this.reportUsageMetrics();
+    await this.fetchExperimentalPatches();
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
     await this.enqueueMessageId(assistantMessage.id);

@@ -16,7 +16,10 @@ import type {
   TextDocument,
   UnknownDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import {
+  ExperimentalPatchMessagePart,
+  parseMessageParts,
+} from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { isSafe } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { aiLogger } from "@oakai/logger";
@@ -238,6 +241,7 @@ function ChatMessagePart({
     error: ErrorMessagePart,
     bad: BadMessagePart,
     patch: PatchMessagePart,
+    experimentalPatch: ExperimentalPatchMessagePart,
     state: StateMessagePart,
     text: TextMessagePart,
     action: ActionMessagePart,

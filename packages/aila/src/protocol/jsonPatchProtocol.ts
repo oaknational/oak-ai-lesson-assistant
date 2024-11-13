@@ -201,15 +201,6 @@ export const PatchKeywordsForLLM = z.object({
   value: KeywordsSchemaWithoutLength,
 });
 
-const PatchExperimental = z.object({
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.union([
-    z.literal("/_experimental/starterQuizMathV0"),
-    z.literal("/_experimental/exitQuizMathV0"),
-  ]),
-  value: z.object({}).passthrough(),
-});
-
 export const JsonPatchRemoveSchema = z.object({
   op: z.literal("remove"),
   path: z.string(),
@@ -282,7 +273,6 @@ export const JsonPatchValueOptionalSchema = z.union([
   PatchQuizOptional,
   PatchMisconceptionsOptional,
   PatchKeywordsOptional,
-  PatchExperimental,
 ]);
 
 export const PatchDocumentSchema = z.object({
@@ -316,6 +306,29 @@ export const LLMPatchDocumentSchema = z.object({
 });
 
 export type PatchDocument = z.infer<typeof PatchDocumentSchema>;
+
+export const ExperimentalPatchMessagePart = z.object({
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([
+    z.literal("/_experimental_starterQuizMathsV0"),
+    z.literal("/_experimental_exitQuizMathsV0"),
+  ]),
+  value: z.array(z.object({}).passthrough()),
+});
+// This is the schema for experimental patches, which are part of our prototype agent system
+const ExperimentalPatchDocumentSchema = z.object({
+  type: z.literal("experimentalPatch"),
+  value: ExperimentalPatchMessagePart,
+});
+export type ExperimentalPatchDocument = z.infer<
+  typeof ExperimentalPatchDocumentSchema
+>;
+
+export const ValidPatchDocumentSchema = z.union([
+  PatchDocumentSchema,
+  ExperimentalPatchDocumentSchema,
+]);
+export type ValidPatchDocument = z.infer<typeof ValidPatchDocumentSchema>;
 
 const PatchDocumentOptionalSchema = z.object({
   type: z.literal("patch"),
@@ -435,6 +448,7 @@ export const JsonPatchDocumentOptionalSchema = z.discriminatedUnion("type", [
   ActionDocumentSchema,
   ModerationDocumentSchema,
   MessageIdDocumentSchema,
+  ExperimentalPatchDocumentSchema,
 ]);
 
 export type JsonPatchDocumentOptional = z.infer<
@@ -465,6 +479,7 @@ export const MessagePartDocumentSchema = z.discriminatedUnion("type", [
   ModerationDocumentSchema,
   ErrorDocumentSchema,
   PatchDocumentSchema,
+  ExperimentalPatchDocumentSchema,
   StateDocumentSchema,
   CommentDocumentSchema,
   PromptDocumentSchema,
@@ -481,6 +496,7 @@ export type MessagePartType =
   | "moderation"
   | "error"
   | "patch"
+  | "experimentalPatch"
   | "state"
   | "comment"
   | "prompt"
@@ -497,6 +513,7 @@ export const MessagePartDocumentSchemaByType: {
   moderation: ModerationDocumentSchema,
   error: ErrorDocumentSchema,
   patch: PatchDocumentSchema,
+  experimentalPatch: ExperimentalPatchDocumentSchema,
   state: StateDocumentSchema,
   comment: CommentDocumentSchema,
   prompt: PromptDocumentSchema,
@@ -582,9 +599,10 @@ function isObject(value: unknown): value is { type: string } {
 }
 
 export function tryParsePart(
-  obj: object,
+  obj: Record<string, unknown>,
 ): MessagePartDocument | UnknownDocument {
-  const { type } = obj as { type: string };
+  const { type } = obj;
+
   // Assert the message part type is allowed
   if (!MessagePartDocumentSchemaByType[type as MessagePartType]) {
     log.error("Invalid message part type", type);
@@ -626,6 +644,7 @@ function tryParseText(obj: object): TextDocument | UnknownDocument {
 // Each Message that is sent back from the server contains the following
 // (separated by the record-separator character and a newline):
 // * An llmMessage matching the LLMMessageSchema, and containing multiple messageParts
+// * An experimentalPatch messagePart
 // * A moderation messagePart
 // * An ID messagePart
 // * A state messagePart
@@ -730,6 +749,7 @@ export function extractPatches(edit: string): {
   validPatches: PatchDocument[];
   partialPatches: PatchDocument[];
 } {
+  log.info("Extract patches from edit", edit);
   const parts: MessagePart[] | undefined = parseMessageParts(edit);
 
   if (!parts) {
@@ -738,7 +758,8 @@ export function extractPatches(edit: string): {
   }
 
   const patchMessageParts: MessagePart[] = parts.filter(
-    (p) => p.document.type === "patch",
+    (p) =>
+      p.document.type === "patch" || p.document.type === "experimentalPatch",
   );
   const validPatches: PatchDocument[] = patchMessageParts
     .filter((p) => !p.isPartial)
@@ -770,20 +791,31 @@ function isValidPatch(patch: Operation): boolean {
 }
 export function applyLessonPlanPatch(
   lessonPlan: LooseLessonPlan,
-  command: JsonPatchDocument,
+  command: JsonPatchDocument | ExperimentalPatchDocument,
 ) {
   log.info("Apply patch", JSON.stringify(command));
   let updatedLessonPlan = { ...lessonPlan };
-  if (command.type !== "patch") return lessonPlan;
-  const patch = command.value as Operation;
-  if (!isValidPatch(patch)) {
+  if (command.type !== "patch" && command.type !== "experimentalPatch") {
+    log.error("Invalid patch document type", command.type);
+    return lessonPlan;
+  }
+  const patchValue = command.value;
+  if (!isValidPatch(patchValue)) {
     log.error("Invalid patch");
     return;
   }
 
   try {
+    log.info("About to apply patch", patchValue);
+    const result = applyPatch(deepClone(updatedLessonPlan), [patchValue]);
+    log.info("Patch result", result);
     const newUpdatedLessonPlan = LessonPlanSchemaWhilstStreaming.parse(
-      applyPatch(deepClone(updatedLessonPlan), [patch]).newDocument,
+      result.newDocument,
+    );
+
+    log.info(
+      "Experimental value",
+      newUpdatedLessonPlan._experimental_starterQuizMathsV0,
     );
     updatedLessonPlan = { ...newUpdatedLessonPlan };
   } catch (e) {
@@ -801,7 +833,7 @@ export function applyLessonPlanPatch(
           .join(", "),
       );
     } else {
-      log.error("Failed to apply patch", patch, e);
+      log.error("Failed to apply patch", patchValue, e);
     }
     Sentry.withScope(function (scope) {
       scope.setLevel("info");

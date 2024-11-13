@@ -51,6 +51,7 @@ export class PatchEnqueuer {
         throw new Error("Controller not set");
       }
       const encodedMessage = this.formatPatch(message);
+      log.info("Enqueuing message", encodedMessage);
       this.controller.enqueue(encodedMessage);
     });
   }
