@@ -242,7 +242,7 @@ export const CycleSchemaWithoutLength = z.object({
   title: z
     .string()
     .describe(
-      "The title of the learning cycle written in sentence case starting with a capital letter and not end with a full stop.",
+      "The title of the learning cycle written in sentence case starting with a capital letter and not ending with a full stop.",
     ),
   durationInMinutes: z
     .number()
