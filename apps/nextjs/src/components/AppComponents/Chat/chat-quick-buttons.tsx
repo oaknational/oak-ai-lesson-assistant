@@ -125,7 +125,7 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
           </ChatButton>
         )}
       </div>
-      <ChatButton
+      {/* <ChatButton
         size="sm"
         variant="primary"
         disabled={!shouldAllowUserAction}
@@ -135,7 +135,7 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
         testId="chat-continue"
       >
         Continue
-      </ChatButton>
+      </ChatButton> */}
     </div>
   );
 };

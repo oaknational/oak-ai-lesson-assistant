@@ -76,6 +76,58 @@ export const MemoizedReactMarkdownWithStyles = ({
         p({ children }) {
           if (
             Array.isArray(children) &&
+            (children[children.length - 1]?.includes(
+              "proceed to the next step",
+            ) ||
+              children[children.length - 1]?.includes(
+                " move on to the next step",
+              ))
+          ) {
+            const text = children.slice(0, -2)[0].split("Otherwise, tap")[0];
+
+            return (
+              <div className="flex flex-col gap-5">
+                <p className={cn("mb-7 last:mb-0", className)}>{text}</p>
+                <InLineButton
+                  onClick={() =>
+                    append({
+                      content: "Proceed to the next step",
+                      role: "user",
+                    })
+                  }
+                  text="Proceed to the next step"
+                />
+              </div>
+            );
+          }
+          if (
+            Array.isArray(children) &&
+            (children[children.length - 1]?.includes(
+              "proceed to the final step",
+            ) ||
+              children[children.length - 1]?.includes(
+                " move on to the final step",
+              ))
+          ) {
+            const text = children.slice(0, -2)[0].split("Otherwise, tap")[0];
+
+            return (
+              <div className="flex flex-col gap-5">
+                <p className={cn("mb-7 last:mb-0", className)}>{text}</p>
+                <InLineButton
+                  onClick={() =>
+                    append({
+                      content: "Proceed to the final step",
+                      role: "user",
+                    })
+                  }
+                  text="Proceed to the final step"
+                />
+              </div>
+            );
+          }
+          if (
+            Array.isArray(children) &&
             children[2].includes("start from scratch")
           ) {
             return (
