@@ -19,7 +19,7 @@ const dialogTitlesAndIcons: Record<
   { title: string; iconName: OakIconName }
 > = {
   "share-chat": {
-    title: "Share chat",
+    title: "Share lesson",
     iconName: "share",
   },
   feedback: {
@@ -67,7 +67,7 @@ const DialogContents = ({
       <OakModalCenterBody
         title={dialogTitlesAndIcons[dialogWindow].title}
         iconName={dialogTitlesAndIcons[dialogWindow].iconName}
-        hideIcon={dialogWindow === "feedback"}
+        hideIcon={dialogWindow === "feedback" || dialogWindow === "share-chat"}
       >
         {children}
         {dialogWindow === "share-chat" && chatId && (

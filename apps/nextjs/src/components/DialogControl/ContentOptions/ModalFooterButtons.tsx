@@ -1,4 +1,6 @@
-import { OakFlex, OakLink, OakSpan } from "@oaknational/oak-components";
+import { OakFlex, OakSpan } from "@oaknational/oak-components";
+
+import { OakLinkNoUnderline } from "@/components/OakLinkNoUnderline";
 
 const ModalFooterButtons = ({
   closeDialog,
@@ -17,11 +19,11 @@ const ModalFooterButtons = ({
       $pb="inner-padding-m"
     >
       {actionButtonStates()}
-      <OakLink onClick={() => closeDialog()}>
+      <OakLinkNoUnderline onClick={() => closeDialog()} element="button">
         <OakSpan $font="body-2-bold" $color="black" $textDecoration="none">
           Cancel
         </OakSpan>
-      </OakLink>
+      </OakLinkNoUnderline>
     </OakFlex>
   );
 };

@@ -68,8 +68,9 @@ const ShareChat = ({
           element={Link}
           href={`/aila/${chatId}/share`}
           target="_blank"
+          iconName="external"
         >
-          Go to share page
+          View share page
         </OakPrimaryButton>
       );
     }
