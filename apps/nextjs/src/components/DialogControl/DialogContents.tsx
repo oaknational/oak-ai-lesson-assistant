@@ -23,7 +23,7 @@ const dialogTitlesAndIcons: Record<
     iconName: "share",
   },
   feedback: {
-    title: "Before you",
+    title: "",
     iconName: "books",
   },
   "report-content": {
