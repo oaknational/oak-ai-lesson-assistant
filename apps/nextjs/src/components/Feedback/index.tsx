@@ -159,8 +159,8 @@ const FeedBack = ({
                   </OakLabel>
                 </OakBox>
                 <OakGrid $gridTemplateColumns="repeat(1, 1fr)" $width="100%">
-                  <OakTextInput
-                    $minHeight="all-spacing-17"
+                  <textarea
+                    className="min-h-34 w-full resize-none rounded-md border-2 border-grey10 p-12"
                     onChange={(e) => {
                       setUsersResponse({
                         ...usersResponse,
