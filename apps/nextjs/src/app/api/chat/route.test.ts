@@ -57,7 +57,9 @@ describe("Chat API Route", () => {
             chatCategoriser: mockChatCategoriser,
           },
         };
-        return new Aila(ailaConfig);
+        const ailaInstance = new Aila(ailaConfig);
+        await ailaInstance.initialise();
+        return ailaInstance;
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       prisma: {} as any,
