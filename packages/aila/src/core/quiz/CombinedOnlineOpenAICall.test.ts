@@ -6,7 +6,7 @@ import {
   OpenAICallRerankerWithSchema,
 } from "./OpenAIRanker";
 import { parsedResponse } from "./OpenAIRanker";
-import { starterQuizQuestionSuitabilityDescriptionSchema } from "./RerankerStructuedOutputsSchema";
+import { starterQuizQuestionSuitabilityDescriptionSchema } from "./RerankerStructuredOutputSchema";
 
 describe("Test OpenAI Image Reranker with online image and quiz questions", () => {
   jest.setTimeout(15000);

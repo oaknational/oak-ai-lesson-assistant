@@ -36,8 +36,8 @@ import {
   evaluateStarterQuiz,
   parsedResponse,
 } from "./OpenAIRanker";
-import type { QuizzesForConsideration } from "./RerankerStructuedOutputsSchema";
-import { starterQuizQuestionSuitabilityDescriptionSchema } from "./RerankerStructuedOutputsSchema";
+import type { QuizzesForConsideration } from "./RerankerStructuredOutputSchema";
+import { starterQuizQuestionSuitabilityDescriptionSchema } from "./RerankerStructuredOutputSchema";
 import { processArray, withRandomDelay } from "./apiCallingUtils";
 import { testInput } from "./cachedQuizOutput";
 

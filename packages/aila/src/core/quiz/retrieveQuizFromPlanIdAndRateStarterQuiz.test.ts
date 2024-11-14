@@ -5,7 +5,7 @@ import {
 import { QuizSchema } from "../../protocol/schema";
 import { AilaQuiz } from "./AilaQuiz";
 import { CircleTheoremLesson } from "./CircleTheoremsExampleOutput";
-import { starterQuizQuestionSuitabilityDescriptionSchema } from "./RerankerStructuedOutputsSchema";
+import { starterQuizQuestionSuitabilityDescriptionSchema } from "./RerankerStructuredOutputSchema";
 
 describe("Tests retireve quiz from plan ID and rate starter quiz", () => {
   jest.setTimeout(30000);

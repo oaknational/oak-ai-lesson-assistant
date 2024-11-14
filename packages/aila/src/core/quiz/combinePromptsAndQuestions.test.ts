@@ -8,7 +8,7 @@ import {
 } from "./OpenAIRanker";
 import { parsedResponse } from "./OpenAIRanker";
 import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
-import { starterQuizQuestionSuitabilityDescriptionSchema } from "./RerankerStructuedOutputsSchema";
+import { starterQuizQuestionSuitabilityDescriptionSchema } from "./RerankerStructuredOutputSchema";
 
 describe("combinePromptsAndQuestions", () => {
   it("Should convert a lesson plan and quiz into valid OpenAI message format", () => {
