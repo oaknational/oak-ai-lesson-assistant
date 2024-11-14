@@ -33,7 +33,6 @@ const preview: Preview = {
 // - DemoProvider
 // - LessonPlanTrackingProvider
 // - DialogProvider
-// - OakThemeProvider
 // - SidebarProvider
 // - ChatModerationProvider
 
@@ -44,9 +43,11 @@ export const decorators: Decorator[] = [
       {/* TODO: Mock tRPC calls with MSW */}
       <TRPCReactProvider>
         <AnalyticsProvider>
-          <TooltipProvider>
-            <Story />
-          </TooltipProvider>
+          <OakThemeProvider theme={oakDefaultTheme}>
+            <TooltipProvider>
+              <Story />
+            </TooltipProvider>
+          </OakThemeProvider>
         </AnalyticsProvider>
       </TRPCReactProvider>
     </>
