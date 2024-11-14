@@ -722,7 +722,7 @@ const FAQPage = () => {
                 the volume of requests that can be made, lessons, and resources
                 that can be generated. If you&apos;re reaching these limits,
                 we&apos;d love to hear from you, and you can{" "}
-                <OakLink href="https://forms.gle/tHsYMZJR367zydsG8">
+                <OakLink href="https://share.hsforms.com/118hyngR-QSS0J7vZEVlRSgbvumd">
                   request a higher limit.
                 </OakLink>
               </OakP>
