@@ -53,11 +53,12 @@ export function SidebarActions({ chat }: SidebarActionsProps) {
               className="h-14 w-14 p-0 hover:bg-background"
               onClick={() => setShareDialogOpen(true)}
             >
+              Share
               <IconShare />
               <span className="sr-only">Share</span>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Share chat</TooltipContent>
+          <TooltipContent>Share this chat</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -67,11 +68,12 @@ export function SidebarActions({ chat }: SidebarActionsProps) {
               disabled={isRemovePending}
               onClick={() => setDeleteDialogOpen(true)}
             >
+              Delete
               <IconTrash />
               <span className="sr-only">Delete</span>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Delete chat</TooltipContent>
+          <TooltipContent>Delete this chat</TooltipContent>
         </Tooltip>
       </div>
       <ChatShareDialog
