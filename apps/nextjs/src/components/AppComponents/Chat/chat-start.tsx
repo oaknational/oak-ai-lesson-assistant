@@ -199,8 +199,11 @@ export function ChatStart() {
                         className="pl-0"
                         onClick={async () => {
                           trackEvent(`chat: ${message.message}`);
-                          setInput(message.message);
-                          await submit(message.message);
+                          setInput("roman britain");
+                          setSelectedKeyStage("Key Stage 3");
+                          setSelectedSubject("History");
+                          setSelectedLength("60 mins");
+                          await submit(initialPrompt);
                         }}
                       >
                         <span className="mt-14 pb-7 text-left text-base font-light underline sm:mt-0">
