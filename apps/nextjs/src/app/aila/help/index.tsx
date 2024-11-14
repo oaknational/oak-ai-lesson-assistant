@@ -153,10 +153,12 @@ const Help = () => {
               you will be able to download the following documents:
             </p>
             <ul className="mb-6 list-disc pl-12">
-              <li>Lesson, including all sections (PDF/Docx file)</li>
+              <li>Lesson plan, including all sections</li>
               <li>Starter quiz (PDF/Docx file)</li>
               <li>Slides (PDF/PPTX file)</li>
               <li>Exit quiz (PDF/Docx file)</li>
+              <li>Worksheet (PDF, Doc)</li>
+              <li>Additional materials (PDF, Doc)</li>
             </ul>
             <p className="mb-4">
               If you have a Google account, you will also be able to edit these
@@ -166,8 +168,9 @@ const Help = () => {
               Examples of additional materials
             </h2>
             <p className="mb-4">
-              Health and safety information, lesson narration, model answers or
-              additional practice tasks.
+              Case study context sheet, an essay title with success criteria for
+              pupils to complete for homework, suggestions for alternative art
+              or equipment you can use for your lesson.
             </p>
             <h2 className="mb-8 mt-20 text-2xl font-bold" ref={creatingRef}>
               Co-creating your lesson
@@ -187,7 +190,7 @@ const Help = () => {
               each section, for example:
             </p>
             <ul className="mb-6 list-disc pl-12">
-              <li>adapt the content for a specific reading age.</li>
+              <li>increase or decrease the literacy level of your keywords</li>
               <li>
                 add specific case studies or examples to your explanations.
               </li>
@@ -204,8 +207,9 @@ const Help = () => {
               When you have completed all the sections in the lesson, you will
               be able to download the lesson resources, including the full
               lesson plan (which includes all sections), editable slides and
-              starter and exit quizzes. You can also share your lesson as a
-              link, which can be viewed online.
+              starter and exit quizzes, a worksheet with your practice tasks and
+              any additional materials you have created. You can also share your
+              lesson as a link, which can be viewed online.
             </p>
             <h2 className="mb-8 mt-20 text-2xl font-bold" ref={aiRef}>
               AI and accuracy
