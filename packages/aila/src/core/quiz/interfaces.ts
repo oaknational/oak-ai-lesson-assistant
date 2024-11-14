@@ -1,5 +1,7 @@
+import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import type { LooseLessonPlan, Quiz } from "../../protocol/schema";
 import type { AilaQuizService } from "../AilaServices";
+import type { SimplifiedResult } from "./AilaQuiz";
 
 interface QuizGenerator {
   retriever: DocumentRetriever;
@@ -7,12 +9,18 @@ interface QuizGenerator {
   generateQuiz(context: string, options?: QuizGenerationOptions): Promise<Quiz>;
 }
 
-interface DocumentRetriever {
+export interface DocumentRetriever {
   retrieve(query: string): Promise<Document[]>;
 }
 
-interface DocumentReranker {
-  rerank(documents: Document[], query: string): Promise<Document[]>;
+// TODO: GCLOMAX - we need to update the typing on here - do we use both cohere and replicate types?
+// Replicate is just returning json anyway.
+export interface DocumentReranker {
+  rerankDocuments(
+    query: string,
+    docs: SimplifiedResult[],
+    topN: number,
+  ): Promise<any[]>;
 }
 
 interface QuizGenerationOptions {
@@ -26,4 +34,11 @@ export type quizRecommenderType = "maths" | "default";
 export interface AilaQuizFactory {
   quizStrategySelector(lessonPlan: LooseLessonPlan): quizRecommenderType;
   createQuizRecommender(lessonPlan: LooseLessonPlan): AilaQuizService;
+}
+
+export interface AilaQuizVariantService {
+  rerankService: DocumentReranker;
+  generateMathsStarterQuizPatch(
+    lessonPlan: LooseLessonPlan,
+  ): Promise<JsonPatchDocument>;
 }

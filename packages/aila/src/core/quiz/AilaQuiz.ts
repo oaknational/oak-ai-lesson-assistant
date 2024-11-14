@@ -56,7 +56,7 @@ interface CustomHit {
   _source: CustomSource;
 }
 
-interface SimplifiedResult {
+export interface SimplifiedResult {
   text: string;
   custom_id: string;
 }
