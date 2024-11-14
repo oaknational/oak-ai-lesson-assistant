@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { FAQPageContent } from ".";
 
 const meta: Meta<typeof FAQPageContent> = {
-  title: "App/FAQPage",
+  title: "Pages/FAQs",
   component: FAQPageContent,
   tags: ["autodocs"],
 };
