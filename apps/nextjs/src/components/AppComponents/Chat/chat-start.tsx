@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
 import { aiLogger } from "@oakai/logger";
+import { OakIcon, OakSmallSecondaryButton } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
 
@@ -17,6 +18,7 @@ import { trpc } from "@/utils/trpc";
 import { useDialog } from "../DialogContext";
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 import { ChatStartForm } from "./chat-start-form";
+import DropDownFormWrapper from "./drop-down-section/drop-down-form-wrapper";
 import EmptyScreenAccordion from "./empty-screen-accordion";
 
 const log = aiLogger("chat");
@@ -25,7 +27,7 @@ const exampleMessages = [
   {
     heading: "History • Key stage 3 • The end of Roman Britain ",
     message:
-      "Create a lesson plan about The End of Roman Britain for Key Stage 3 History",
+      "Create a lesson plan about The End of Roman Britain for Key Stage 3 History that lasts 60 mins",
   },
 ];
 
@@ -40,6 +42,29 @@ export function ChatStart() {
   const demo = useDemoUser();
   const createAppSession = trpc.chat.appSessions.create.useMutation();
   const trpcUtils = trpc.useUtils();
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const [selectedKeyStage, setSelectedKeyStage] = useState("");
+  const [selectedLength, setSelectedLength] = useState("");
+
+  const [initialPrompt, setInitialPrompt] = useState<string | null>(null);
+
+  useEffect(() => {
+    setInitialPrompt(
+      `Make a lesson plan for ${selectedSubject} for ${selectedKeyStage} that lasts ${selectedLength} with the title ${input}`,
+    );
+  }, [
+    selectedSubject,
+    selectedKeyStage,
+    selectedLength,
+    input,
+    selectedSubject,
+    selectedKeyStage,
+    selectedLength,
+    setInput,
+  ]);
+
+  console.log("initialPrompt", initialPrompt);
 
   const create = useCallback(
     async (message: string) => {
@@ -52,13 +77,8 @@ export function ChatStart() {
             },
           },
         );
-
         log.info("App session created:", result);
-        trackEvent("chat:send_message", {
-          id: result.id,
-          message,
-        });
-
+        trackEvent("chat:send_message", { id: result.id, message });
         router.push(`/aila/${result.id}`);
       } catch (error) {
         log.error("Error creating app session:", error);
@@ -71,9 +91,23 @@ export function ChatStart() {
       router,
     ],
   );
-
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const userCanSubmit =
+    selectedSubject && selectedKeyStage && selectedLength && input
+      ? true
+      : false;
   const submit = useCallback(
     async (message: string) => {
+      if (!userCanSubmit) {
+        setValidationError(
+          `The following field(s) are missing: ${
+            !selectedSubject ? "Subject" : ""
+          }${!selectedKeyStage ? ", Key Stage" : ""}${
+            !selectedLength ? ", Length" : ""
+          }${!input ? ", Lesson Title" : ""}`,
+        );
+        return;
+      }
       if (demo.isDemoUser) {
         setDialogWindow("demo-interstitial");
       } else {
@@ -81,7 +115,7 @@ export function ChatStart() {
         create(message);
       }
     },
-    [create, setDialogWindow, demo.isDemoUser, setIsSubmitting],
+    [create, setDialogWindow, demo.isDemoUser, setIsSubmitting, userCanSubmit],
   );
 
   const interstitialSubmit = useCallback(async () => {
@@ -101,7 +135,7 @@ export function ChatStart() {
         className="h-[100vh] min-h-screen bg-lavender30 pt-26"
       >
         <div className="flex h-full justify-between">
-          <div className="h-full w-full overflow-y-scroll  p-18  px-10 sm:w-[66%]">
+          <div className="h-full w-full overflow-y-scroll p-18 px-10 sm:w-[66%]">
             <div className="mx-auto flex h-full max-w-[580px] flex-col justify-between">
               <div className="flex h-full flex-col justify-center gap-18">
                 <div>
@@ -111,7 +145,7 @@ export function ChatStart() {
                   >
                     Hello{userFirstName ? ", " + userFirstName : ""}
                   </h1>
-                  <p className="mb-7  text-base leading-normal">
+                  <p className="mb-7 text-base leading-normal">
                     I&apos;m Aila, Oak&apos;s AI lesson assistant.
                     <br />
                     Tell me what you want to teach and I&apos;ll help you create
@@ -119,26 +153,50 @@ export function ChatStart() {
                   </p>
                 </div>
                 <div>
-                  <p className="mb-13 text-xl font-bold">
-                    What do you want to teach?
-                  </p>
+                  <div className="mb-15 flex gap-10">
+                    <KeyStageDropDown
+                      selectedKeyStage={selectedKeyStage}
+                      setSelectedKeyStage={setSelectedKeyStage}
+                      activeDropdown={activeDropdown}
+                      setActiveDropdown={setActiveDropdown}
+                    />
+                    <SubjectsDropDown
+                      selectedSubject={selectedSubject}
+                      setSelectedSubject={setSelectedSubject}
+                      activeDropdown={activeDropdown}
+                      setActiveDropdown={setActiveDropdown}
+                    />
+                    <LengthDropDown
+                      selectedLength={selectedLength}
+                      setSelectedLength={setSelectedLength}
+                      activeDropdown={activeDropdown}
+                      setActiveDropdown={setActiveDropdown}
+                    />
+                  </div>
                   <ChatStartForm
                     input={input}
                     setInput={setInput}
                     isSubmitting={isSubmitting}
                     submit={submit}
+                    initialPrompt={initialPrompt}
+                    userCanSubmit={userCanSubmit}
+                    setValidationError={setValidationError}
+                    selectedSubject={selectedSubject}
+                    selectedKeyStage={selectedKeyStage}
+                    selectedLength={selectedLength}
                   />
+                  <p className="mt-15">{validationError && validationError}</p>
                 </div>
                 <div>
-                  <h3 className=" mb-9 mt-22 text-base font-bold">
+                  <h3 className="mb-9 mt-22 text-base font-bold">
                     Or try an example:
                   </h3>
-                  <div className=" flex flex-col items-start space-y-14">
+                  <div className="flex flex-col items-start space-y-14">
                     {exampleMessages.map((message) => (
                       <Button
                         key={message.message}
                         variant="link"
-                        className=" pl-0"
+                        className="pl-0"
                         onClick={async () => {
                           trackEvent(`chat: ${message.message}`);
                           setInput(message.message);
@@ -156,7 +214,7 @@ export function ChatStart() {
               <ChatPanelDisclaimer size="sm" />
             </div>
           </div>
-          <div className="hidden h-full w-[34%] items-center overflow-y-scroll bg-white px-25  pb-9 sm:flex">
+          <div className="hidden h-full w-[34%] items-center overflow-y-scroll bg-white px-25 pb-9 sm:flex">
             <div className="relative -mt-45 w-full">
               <p className="mb-10 text-xl font-bold">Lesson downloads</p>
               <div className="absolute inset-x-0 top-full">
@@ -172,4 +230,285 @@ export function ChatStart() {
       </Flex>
     </DialogRoot>
   );
+}
+
+const DropDownButton = ({ children, onClick }) => (
+  <button
+    onClick={onClick}
+    className="flex items-center justify-center gap-6 rounded-full border-2 border-black bg-white px-9 py-7"
+  >
+    <p>{children}</p>
+    <div className="scale-75">
+      <OakIcon iconName="chevron-down" />
+    </div>
+  </button>
+);
+
+const DropDownWrapper = ({ children }) => (
+  <div>
+    <div className="absolute left-0 top-full z-50 mt-10 max-h-[500px] w-[300px] overflow-y-scroll rounded-lg border-2 border-black bg-white">
+      {children}
+    </div>
+  </div>
+);
+
+const SubjectsDropDown = ({
+  selectedSubject,
+  setSelectedSubject,
+  activeDropdown,
+  setActiveDropdown,
+}) => {
+  const subjects = [
+    "Science",
+    "Spanish",
+    "Maths",
+    "German",
+    "Creative Arts",
+    "Physical Development",
+    "Communication and Language",
+    "Computing",
+    "Independent Living",
+    "Music",
+    "Citizenship",
+    "French",
+    "Physical Education",
+    "History",
+    "Latin",
+    "Religious Education",
+    "Computing (Non-GCSE)",
+    "Drama",
+    "Biology",
+    "Chemistry",
+    "Numeracy",
+    "English",
+    "Literacy",
+    "Geography",
+    "Design & Technology",
+    "Expressive Arts and Design",
+    "Art & Design",
+    "RSHE (PSHE)",
+    "PSED",
+    "Understanding the World",
+    "English Spelling",
+    "English Reading for Pleasure",
+    "English Grammar",
+    "Combined Science",
+    "Physics",
+    "Other",
+  ];
+
+  const [customValue, setCustomValue] = useState("");
+  const dropdownRef = useOutsideClick(() => {
+    if (activeDropdown === "subjects") {
+      setActiveDropdown(null);
+    }
+  });
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <DropDownButton
+        onClick={() =>
+          setActiveDropdown(activeDropdown === "subjects" ? null : "subjects")
+        }
+      >
+        {selectedSubject || "Subject"}
+      </DropDownButton>
+      {activeDropdown === "subjects" && (
+        <DropDownWrapper>
+          {subjects.map((subject) =>
+            selectedSubject === "Other" ? (
+              <div className="p-10" key={subject}>
+                <input
+                  type="text"
+                  value={customValue}
+                  onChange={(e) => setCustomValue(e.target.value)}
+                  className="border-black-2 w-full rounded-md border-2 border-black p-7"
+                  placeholder="Enter your custom subject"
+                />
+                <OakSmallSecondaryButton
+                  onClick={() => {
+                    setSelectedSubject(customValue);
+                    setActiveDropdown(null);
+                  }}
+                  $mt="space-between-s"
+                >
+                  Confirm
+                </OakSmallSecondaryButton>
+              </div>
+            ) : (
+              <button
+                key={subject}
+                className="block w-full px-10 py-7 text-left hover:bg-slate-300"
+                onClick={() => {
+                  setSelectedSubject(subject);
+                  setActiveDropdown(null);
+                }}
+              >
+                {subject}
+              </button>
+            ),
+          )}
+        </DropDownWrapper>
+      )}
+    </div>
+  );
+};
+
+const KeyStageDropDown = ({
+  selectedKeyStage,
+  setSelectedKeyStage,
+  activeDropdown,
+  setActiveDropdown,
+}) => {
+  const keyStages = [
+    "Key Stage 1",
+    "Key Stage 2",
+    "Key Stage 3",
+    "Key Stage 4",
+    "Other",
+  ];
+  const [customValue, setCustomValue] = useState("");
+  const dropdownRef = useOutsideClick(() => {
+    if (activeDropdown === "keyStages") {
+      setActiveDropdown(null);
+    }
+  });
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <DropDownButton
+        onClick={() =>
+          setActiveDropdown(activeDropdown === "keyStages" ? null : "keyStages")
+        }
+      >
+        {selectedKeyStage || "Key Stage"}
+      </DropDownButton>
+      {activeDropdown === "keyStages" && (
+        <DropDownWrapper>
+          {keyStages.map((keyStage) =>
+            selectedKeyStage === "Other" ? (
+              <div className="p-10" key={keyStage}>
+                <input
+                  type="text"
+                  value={customValue}
+                  onChange={(e) => setCustomValue(e.target.value)}
+                  className="border-black-2 w-full rounded-md border-2 border-black p-7"
+                  placeholder="Enter your custom key stage"
+                />
+                <OakSmallSecondaryButton
+                  onClick={() => {
+                    setSelectedKeyStage(customValue);
+                    setActiveDropdown(null);
+                  }}
+                  $mt="space-between-s"
+                >
+                  Confirm
+                </OakSmallSecondaryButton>
+              </div>
+            ) : (
+              <button
+                key={keyStage}
+                className="block w-full px-10 py-7 text-left hover:bg-slate-300"
+                onClick={() => {
+                  setSelectedKeyStage(keyStage);
+                  setActiveDropdown(null);
+                }}
+              >
+                {keyStage}
+              </button>
+            ),
+          )}
+        </DropDownWrapper>
+      )}
+    </div>
+  );
+};
+
+const LengthDropDown = ({
+  selectedLength,
+  setSelectedLength,
+  activeDropdown,
+  setActiveDropdown,
+}) => {
+  const lengths = [
+    "25 mins",
+    "30 mins",
+    "45 mins",
+    "60 mins",
+    "90 mins",
+    "Other",
+  ];
+  const [customValue, setCustomValue] = useState<number | null>(null);
+  const dropdownRef = useOutsideClick(() => {
+    if (activeDropdown === "length") {
+      setActiveDropdown(null);
+    }
+  });
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <DropDownButton
+        onClick={() =>
+          setActiveDropdown(activeDropdown === "length" ? null : "length")
+        }
+      >
+        {selectedLength || "Length"}
+      </DropDownButton>
+      {activeDropdown === "length" && (
+        <DropDownWrapper>
+          {lengths.map((length) =>
+            selectedLength === "Other" ? (
+              <div className="p-10" key={length}>
+                <input
+                  type="number"
+                  value={customValue || ""}
+                  onChange={(e) => setCustomValue(parseInt(e.target.value))}
+                  className="border-black-2 w-full rounded-md border-2 border-black p-7"
+                  placeholder="Enter length in mins"
+                />
+                <OakSmallSecondaryButton
+                  onClick={() => {
+                    if (customValue) {
+                      setSelectedLength(`${customValue} mins`);
+                      setActiveDropdown(null);
+                    }
+                  }}
+                  $mt="space-between-s"
+                >
+                  Confirm
+                </OakSmallSecondaryButton>
+              </div>
+            ) : (
+              <button
+                key={length}
+                className="block w-full px-10 py-7 text-left hover:bg-slate-300"
+                onClick={() => {
+                  setSelectedLength(length);
+                  setActiveDropdown(null);
+                }}
+              >
+                {length}
+              </button>
+            ),
+          )}
+        </DropDownWrapper>
+      )}
+    </div>
+  );
+};
+
+export function useOutsideClick(callback: () => void) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        callback();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [callback]);
+
+  return ref;
 }
