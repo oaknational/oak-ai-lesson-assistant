@@ -14,7 +14,6 @@ import { CohereClient } from "cohere-ai";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import { z } from "zod";
 
-import type { AilaQuizService } from "..";
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import {
   JsonPatchAddSchema,
@@ -30,6 +29,7 @@ import type {
   Quiz,
 } from "../../protocol/schema";
 import { QuizQuestionSchema, QuizSchema } from "../../protocol/schema";
+import type { AilaQuizService } from "../AilaServices";
 import { selectHighestRated } from "./ChoiceModels";
 import {
   evaluateQuiz,
@@ -100,7 +100,6 @@ type quizPatchType = "/starterQuiz" | "/exitQuiz";
 
 export class AilaQuiz implements AilaQuizService {
   // TODO: put this in doppler.
-  //   API Keys Here INSECURE.
 
   private client: Client = new Client({
     cloud: {
