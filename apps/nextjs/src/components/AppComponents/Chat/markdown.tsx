@@ -175,7 +175,7 @@ export const MemoizedReactMarkdownWithStyles = ({
           );
         },
         code(props) {
-          const { className, children, inline, ...restProps } = props;
+          const { className, children, ...restProps } = props;
           if (children && Array.isArray(children) && children.length) {
             if (children[0] === "▍") {
               return (
@@ -186,14 +186,6 @@ export const MemoizedReactMarkdownWithStyles = ({
           }
 
           const match = /language-(\w+)/.exec(className || "");
-
-          if (inline) {
-            return (
-              <code className={className} {...restProps}>
-                {children}
-              </code>
-            );
-          }
 
           return (
             <CodeBlock
