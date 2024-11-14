@@ -9,7 +9,14 @@ import type {
   AilaPersistenceFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
-import type { MessagePart } from "../protocol/jsonPatchProtocol";
+import type {
+  MessagePart,
+  JsonPatchDocument,
+} from "../protocol/jsonPatchProtocol";
+import {
+  JsonPatchDocumentOptional,
+  PatchQuiz,
+} from "../protocol/jsonPatchProtocol";
 import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
@@ -50,7 +57,11 @@ export interface AilaChatService {
   addMessage(message: Message): void;
   startStreaming(abortController?: AbortController): ReadableStream;
 }
-
+export interface AilaQuizService {
+  generateMathsExitQuizPatch(
+    lessonPlan: LooseLessonPlan,
+  ): Promise<JsonPatchDocument>;
+}
 export interface AilaServices {
   readonly userId: string | undefined;
   readonly chatId: string;

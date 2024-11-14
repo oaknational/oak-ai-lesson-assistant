@@ -90,10 +90,34 @@ export const QuizQuestionOptionalSchema = z.object({
   distractors: z.array(z.string()).optional(),
 });
 
+// export const QuizQuestionSchema = z.object({
+//   question: z.string().describe("The question to be asked in the quiz."),
+//   answers: z.array(z.string()).describe("The correct answer."),
+//   distractors: z.array(z.string()).describe("A set of distractors."),
+// });
+
+// TODO: GCLOMAX: Relax this constraint to allow for more than one answer.
+// Needs to be changed - to adapt for LLM handling.
+// Added hint and feedback to the schema.
+
 export const QuizQuestionSchema = z.object({
   question: z.string().describe("The question to be asked in the quiz."),
-  answers: z.array(z.string()).length(1).describe("The correct answer."),
-  distractors: z.array(z.string()).length(2).describe("A set of distractors."),
+  answers: z.array(z.string()).describe("The correct answer."),
+  distractors: z.array(z.string()).describe("A set of distractors."),
+  // hint: z
+  //   .string()
+  //   .optional()
+  //   .describe("A hint to help the student answer the question."),
+  // feedback: z
+  //   .string()
+  //   .optional()
+  //   .describe("Feedback to be given to the student."),
+  // html: z
+  //   .array(z.string())
+  //   .optional()
+  //   .describe(
+  //     "HTML content for the question for use when rendering a different question. DO NOT GENERATE THIS FIELD WHEN PASSED TO AN LLM",
+  //   ),
 });
 
 // When using Structured Outputs we cannot specify the length of arrays or strings
@@ -668,3 +692,19 @@ export type LessonPlanSectionWhileStreaming =
   | string
   | string[]
   | number;
+
+// These are here due to zod refusing to infer the type of "add"
+// TODO: GCLOMAX: Refactor this to use a union type
+export const quizPathSchema = z.union([
+  z.literal("/starterQuiz"),
+  z.literal("/exitQuiz"),
+]);
+
+export type QuizPath = z.infer<typeof quizPathSchema>;
+
+export const quizOperationTypeSchema = z.union([
+  z.literal("add"),
+  z.literal("replace"),
+]);
+
+export type QuizOperationType = z.infer<typeof quizOperationTypeSchema>;

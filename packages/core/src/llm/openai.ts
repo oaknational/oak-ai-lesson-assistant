@@ -3,7 +3,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 import type { ClientOptions } from "openai";
 import OpenAI from "openai";
 
-import type { HeliconeChatMeta} from "./helicone";
+import type { HeliconeChatMeta } from "./helicone";
 import { heliconeHeaders } from "./helicone";
 
 export type CreateOpenAIClientProps =
@@ -12,7 +12,7 @@ export type CreateOpenAIClientProps =
       app: "lesson-assistant" | "moderation";
     }
   | {
-      app: "legacy-lesson-planner" | "image-alt-text";
+      app: "legacy-lesson-planner" | "image-alt-text" | "maths-reranker";
     };
 
 function createOpenAIClient(props: CreateOpenAIClientProps): OpenAI {
@@ -47,6 +47,15 @@ function createOpenAIModerationsClient() {
   };
   const openAi = new OpenAI(openAiFields);
   return openAi.moderations;
+}
+
+function createOpenAIImageChatClient() {
+  const openAiFields = {
+    apiKey: process.env.OPENAI_API_KEY,
+    baseURL: process.env.OPENAI_MODERATIONS_API_BASE,
+  };
+  const openAi = new OpenAI(openAiFields);
+  return openAi.chat;
 }
 
 export {
