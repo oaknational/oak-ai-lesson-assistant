@@ -13,15 +13,16 @@ interface LegalContentProps {
 
 export const LegalContent = ({ pageData }: LegalContentProps) => {
   return (
-    <Layout>
-      <OakBox $ph="inner-padding-xl">
-        <PortableText
-          value={pageData.body}
-          components={portableTextComponents}
-        />
-      </OakBox>
-    </Layout>
+    <OakBox $ph="inner-padding-xl">
+      <PortableText value={pageData.body} components={portableTextComponents} />
+    </OakBox>
   );
 };
 
-export default LegalContent;
+export default function LegalPage(props: LegalContentProps) {
+  return (
+    <Layout>
+      <LegalContent {...props} />
+    </Layout>
+  );
+}
