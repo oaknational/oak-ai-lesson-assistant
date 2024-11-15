@@ -3,6 +3,7 @@
 import * as React from "react";
 import { toast } from "react-hot-toast";
 
+import { BellIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
 import { ChatShareDialog } from "@/components/AppComponents/Chat/chat-share-dialog";
@@ -59,6 +60,7 @@ export function SidebarActions({ chat }: SidebarActionsProps) {
           </TooltipTrigger>
           <TooltipContent>Share chat</TooltipContent>
         </Tooltip>
+        TEST
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -67,7 +69,7 @@ export function SidebarActions({ chat }: SidebarActionsProps) {
               disabled={isRemovePending}
               onClick={() => setDeleteDialogOpen(true)}
             >
-              <IconTrash />
+              <BellIcon />
               <span className="sr-only">Delete</span>
             </Button>
           </TooltipTrigger>
