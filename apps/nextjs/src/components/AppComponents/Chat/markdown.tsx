@@ -8,8 +8,11 @@ import { Box, Flex } from "@radix-ui/themes";
 import remarkGfm from "remark-gfm";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
+import useAnalytics from "@/lib/analytics/useAnalytics";
 import { cn } from "@/lib/utils";
 
+import { InLineButton } from "./chat-message";
 import { CodeBlock } from "./ui/codeblock";
 
 // Memoized Component
@@ -31,20 +34,22 @@ export const MemoizedReactMarkdownWithStyles = ({
   lessonPlanSectionDescription?: string;
   className?: string;
 }) => {
-  // Memoize the chat to avoid re-renders on context updates
-  const chat = useLessonChat();
-  const { append } = chat;
-
   // Memoize the markdown content to avoid recalculating if it hasn't changed
   const memoizedMarkdown = useMemo(() => markdown, [markdown]);
 
   // UseCallback to avoid inline function recreation
-  const handleAppend = useCallback(
-    (content: string) => {
-      console.log("Appending message:", content);
-      append({ content, role: "user" });
+
+  const chat = useLessonChat();
+  const { trackEvent } = useAnalytics();
+
+  const { queueUserAction, ailaStreamingStatus } = chat;
+  const handleContinue = useCallback(
+    async (string) => {
+      trackEvent(`chat:${string}`);
+
+      queueUserAction(string);
     },
-    [append],
+    [queueUserAction, trackEvent],
   );
 
   return (
@@ -73,7 +78,7 @@ export const MemoizedReactMarkdownWithStyles = ({
               <li className="m-0 p-0">
                 <InLineButton
                   text={String(children)}
-                  onClick={() => handleAppend(String(children))}
+                  onClick={() => handleContinue(String(children))}
                 />
               </li>
             );
@@ -83,47 +88,6 @@ export const MemoizedReactMarkdownWithStyles = ({
           );
         },
         p({ children }) {
-          const isStringChild = (child: any): child is string =>
-            typeof child === "string";
-
-          const textChildren = React.Children.toArray(children)
-            .filter(isStringChild)
-            .join("");
-
-          if (
-            textChildren.includes("proceed to the final step") ||
-            textChildren.includes("move on to the final step") ||
-            textChildren.includes("complete the lesson plan")
-          ) {
-            const text = textChildren.split("Otherwise, tap")[0];
-            return (
-              <div className="flex flex-col gap-5">
-                <p className={cn("mb-7 last:mb-0", className)}>{text}</p>
-                <InLineButton
-                  onClick={() => handleAppend("Proceed to the final step")}
-                  text="Proceed to the final step"
-                />
-              </div>
-            );
-          }
-
-          if (
-            textChildren.includes("proceed to the next step") ||
-            textChildren.includes("move on to the next step") ||
-            textChildren.includes("Otherwise, tap")
-          ) {
-            const text = textChildren.split("Otherwise, tap")[0];
-            return (
-              <div className="flex flex-col gap-5">
-                <p className={cn("mb-7 last:mb-0", className)}>{text}</p>
-                <InLineButton
-                  onClick={() => handleAppend("Proceed to the next step")}
-                  text="Proceed to the next step"
-                />
-              </div>
-            );
-          }
-
           return <p className={cn("mb-7 last:mb-0", className)}>{children}</p>;
         },
 
@@ -197,19 +161,3 @@ export const MemoizedReactMarkdownWithStyles = ({
     </MemoizedReactMarkdown>
   );
 };
-const InLineButton = memo(
-  ({ text, onClick }: { text: string; onClick: () => void }) => {
-    const handleClick = useCallback(() => {
-      onClick();
-    }, [onClick]);
-
-    return (
-      <button
-        onClick={handleClick}
-        className="my-6 w-fit border-spacing-4 rounded-lg border border-black border-opacity-30 bg-white p-7 text-blue"
-      >
-        {text}
-      </button>
-    );
-  },
-);

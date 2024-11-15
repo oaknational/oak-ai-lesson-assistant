@@ -135,9 +135,9 @@ export const ChatMessagesDisplay = ({
 
   return (
     <>
-      {messages.map((message) => {
+      {messages.map((message, i) => {
         // Check if the most recent message in the messages array is from the role user if so add a working on it message
-
+        const isLastMessage = i === messages.length - 1;
         if (messages.length === 1) {
           return (
             <div
@@ -151,6 +151,7 @@ export const ChatMessagesDisplay = ({
                 lastModeration={lastModeration}
                 persistedModerations={persistedModerations}
                 ailaStreamingStatus={ailaStreamingStatus}
+                isLastMessage={isLastMessage}
                 separator={<span className="my-10 flex" />}
               />
               <ChatMessage
@@ -165,6 +166,7 @@ export const ChatMessagesDisplay = ({
                 persistedModerations={[]}
                 separator={<span className="my-10 flex" />}
                 ailaStreamingStatus={ailaStreamingStatus}
+                isLastMessage={isLastMessage}
               />
             </div>
           );
@@ -195,6 +197,7 @@ export const ChatMessagesDisplay = ({
                 ailaStreamingStatus !== "Idle" ? [] : persistedModerations
               }
               separator={<span className="my-10 flex" />}
+              isLastMessage={isLastMessage}
             />
           </div>
         );
@@ -212,6 +215,7 @@ export const ChatMessagesDisplay = ({
                 content: "Working on it…",
               }}
               lastModeration={lastModeration}
+              isLastMessage={false}
               persistedModerations={[]}
               separator={<span className="my-10 flex" />}
             />

@@ -1,7 +1,7 @@
 // Inspired by Chatbot-UI and modified to fit the needs of this project
 // @see https://github.com/mckaywrigley/chatbot-ui/blob/main/components/Chat/ChatMessage.tsx
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import type {
   ActionDocument,
@@ -24,7 +24,10 @@ import type { Message } from "ai";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 import { useChatModeration } from "@/components/ContextProviders/ChatModerationContext";
+import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
+import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
+import useAnalytics from "@/lib/analytics/useAnalytics";
 import { cn } from "@/lib/utils";
 
 import type { ModerationModalHelpers } from "../../FeedbackForms/ModerationFeedbackModal";
@@ -40,6 +43,7 @@ export interface ChatMessageProps {
   lastModeration?: PersistedModerationBase | null;
   separator?: JSX.Element;
   ailaStreamingStatus: AilaStreamingStatus;
+  isLastMessage: boolean;
 }
 
 export function ChatMessage({
@@ -47,6 +51,7 @@ export function ChatMessage({
   persistedModerations,
   separator,
   ailaStreamingStatus,
+  isLastMessage,
 }: Readonly<ChatMessageProps>) {
   const { moderationModalHelpers } = useChatModeration();
 
@@ -143,16 +148,11 @@ export function ChatMessage({
         />
         <MessageTextWrapper>
           {message.id !== "working-on-it-initial" &&
-            messageParts.map((part, index) => {
-              return (
-                <div className="w-full" key={index}>
-                  <ChatMessagePart
-                    part={part}
-                    moderationModalHelpers={moderationModalHelpers}
-                    inspect={inspect}
-                  />
-                </div>
-              );
+            handleTextAndInLineButton({
+              messageParts,
+              moderationModalHelpers,
+              inspect,
+              isLastMessage,
             })}
 
           {message.id === "working-on-it-initial" && (
@@ -225,12 +225,14 @@ export interface ChatMessagePartProps {
   part: MessagePart;
   inspect: boolean;
   moderationModalHelpers: ModerationModalHelpers;
+  isLastMessage: boolean;
 }
 
 function ChatMessagePart({
   part,
   inspect,
   moderationModalHelpers,
+  isLastMessage,
 }: Readonly<ChatMessagePartProps>) {
   const PartComponent = {
     comment: CommentMessagePart,
@@ -247,6 +249,7 @@ function ChatMessagePart({
   }[part.document.type] as React.ComponentType<{
     part: typeof part.document;
     moderationModalHelpers: ModerationModalHelpers;
+    isLastMessage: boolean;
   }>;
 
   if (!PartComponent) {
@@ -259,6 +262,7 @@ function ChatMessagePart({
       <PartComponent
         part={part.document}
         moderationModalHelpers={moderationModalHelpers}
+        isLastMessage={isLastMessage}
       />
 
       {
@@ -299,7 +303,31 @@ function ErrorMessagePart({
   return <MemoizedReactMarkdownWithStyles markdown={markdown} />;
 }
 
-function TextMessagePart({ part }: Readonly<{ part: TextDocument }>) {
+export const InLineButton = ({
+  text,
+  onClick,
+}: {
+  text: string;
+  onClick: () => void;
+}) => {
+  const handleClick = useCallback(() => {
+    onClick();
+  }, [onClick]);
+
+  return (
+    <button
+      onClick={handleClick}
+      className="my-6 w-fit rounded-lg border border-black border-opacity-30 bg-white p-7 text-blue"
+    >
+      {text}
+    </button>
+  );
+};
+
+function TextMessagePart({
+  part,
+  isLastMessage,
+}: Readonly<{ part: TextDocument; isLastMessage: boolean }>) {
   function containsRelevantList(text: string): boolean {
     const relevancePhraseRegex =
       /might\s*be\s*relevant|could\s*be\s*relevant|are\s*relevant/i; // Variations of "might be relevant"
@@ -307,9 +335,40 @@ function TextMessagePart({ part }: Readonly<{ part: TextDocument }>) {
 
     return relevancePhraseRegex.test(text) && numberedListRegex.test(text);
   }
+  const chat = useLessonChat();
+  const { trackEvent } = useAnalytics();
+  const lessonPlanTracking = useLessonPlanTracking();
+
+  const { queueUserAction, ailaStreamingStatus } = chat;
+  const handleContinue = useCallback(async () => {
+    trackEvent("chat:continue");
+    lessonPlanTracking.onClickContinue();
+    queueUserAction("continue");
+  }, [queueUserAction, lessonPlanTracking, trackEvent]);
 
   const shouldTransformToButtons = containsRelevantList(part.value);
-
+  // console.log("******isLastMessage", part.value, isLastMessage);
+  if (part.value.includes("Otherwise, tap")) {
+    return (
+      <div className="flex flex-col gap-6">
+        <MemoizedReactMarkdownWithStyles
+          markdown={part.value.split("Otherwise, tap")[0] ?? part.value}
+          shouldTransformToButtons={true}
+        />
+        {ailaStreamingStatus === "Idle" && isLastMessage && (
+          <InLineButton
+            text={
+              part.value.includes("complete the lesson plan") ||
+              part.value.includes("final step")
+                ? "Proceed to the final step"
+                : "Proceed to the next step"
+            }
+            onClick={() => handleContinue()}
+          />
+        )}
+      </div>
+    );
+  }
   return (
     <MemoizedReactMarkdownWithStyles
       markdown={part.value}
@@ -352,4 +411,29 @@ function PartInspector({ part }: Readonly<{ part: MessagePart }>) {
       </pre>
     </div>
   );
+}
+
+function handleTextAndInLineButton({
+  messageParts,
+  moderationModalHelpers,
+  inspect,
+  isLastMessage,
+}: {
+  messageParts: MessagePart[];
+  moderationModalHelpers: ModerationModalHelpers;
+  inspect: boolean;
+  isLastMessage: boolean;
+}) {
+  return messageParts.map((part, index) => {
+    return (
+      <div className="w-full" key={part.id || index}>
+        <ChatMessagePart
+          part={part}
+          moderationModalHelpers={moderationModalHelpers}
+          inspect={inspect}
+          isLastMessage={isLastMessage}
+        />
+      </div>
+    );
+  });
 }
