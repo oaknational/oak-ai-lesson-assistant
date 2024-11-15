@@ -363,22 +363,10 @@ function TextMessagePart({
           isLastMessage &&
           !userHasSelected) ||
           (ailaStreamingStatus === "Moderating" && isLastMessage)) && (
-          <InLineButton
-            text={
-              part.value.includes("complete the lesson plan") ||
-              part.value.includes("final step")
-                ? "Proceed to the final step"
-                : "Proceed to the next step"
-            }
-            onClick={() => {
-              handleContinue(
-                part.value.includes("complete the lesson plan") ||
-                  part.value.includes("final step")
-                  ? "Proceed to the final step"
-                  : "Proceed to the next step",
-              );
-              setUserHasSelected(true);
-            }}
+          <InlineButtonGroup
+            handleContinue={handleContinue}
+            part={part}
+            setUserHasSelected={setUserHasSelected}
           />
         )}
       </div>
@@ -395,22 +383,10 @@ function TextMessagePart({
         {ailaStreamingStatus === "Idle" &&
           isLastMessage &&
           !userHasSelected && (
-            <InLineButton
-              text={
-                part.value.includes("complete the lesson plan") ||
-                part.value.includes("final step")
-                  ? "Proceed to the final step"
-                  : "Proceed to the next step"
-              }
-              onClick={() => {
-                handleContinue(
-                  part.value.includes("complete the lesson plan") ||
-                    part.value.includes("final step")
-                    ? "Proceed to the final step"
-                    : "Proceed to the next step",
-                );
-                setUserHasSelected(true);
-              }}
+            <InlineButtonGroup
+              handleContinue={handleContinue}
+              part={part}
+              setUserHasSelected={setUserHasSelected}
             />
           )}
       </div>
@@ -423,6 +399,78 @@ function TextMessagePart({
     />
   );
 }
+
+const InlineButtonGroup = ({
+  handleContinue,
+  part,
+  setUserHasSelected,
+}: {
+  handleContinue: (text: string) => void;
+  part: TextDocument;
+  setUserHasSelected: (value: boolean) => void;
+}) => {
+  const [showExmapleEdits, setShowExampleEdits] = useState(false);
+  const isFinalStep =
+    part.value.includes("complete the lesson plan") ||
+    part.value.includes("final step");
+  return (
+    <div className="flex flex-col">
+      {showExmapleEdits && (
+        <div className="flex flex-col">
+          <InLineButton
+            text="Make them easier"
+            onClick={() => {
+              handleContinue("Make them easier");
+            }}
+          />
+          <InLineButton
+            text="Make them harder"
+            onClick={() => {
+              handleContinue("Make them harder");
+            }}
+          />
+          <InLineButton
+            text="Shorten content"
+            onClick={() => {
+              handleContinue("Shorten content");
+            }}
+          />
+          <InLineButton
+            text="Add more detail"
+            onClick={() => {
+              handleContinue("Add more detail");
+            }}
+          />
+        </div>
+      )}
+
+      {part.value.startsWith("Are the") &&
+        !showExmapleEdits &&
+        !isFinalStep && (
+          <InLineButton
+            text="Show example edits"
+            onClick={() => {
+              setShowExampleEdits(true);
+            }}
+          />
+        )}
+
+      <InLineButton
+        text={
+          isFinalStep ? "Proceed to the final step" : "Proceed to the next step"
+        }
+        onClick={() => {
+          handleContinue(
+            isFinalStep
+              ? "Proceed to the final step"
+              : "Proceed to the next step",
+          );
+          setUserHasSelected(true);
+        }}
+      />
+    </div>
+  );
+};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function PatchMessagePart({ part }: Readonly<{ part: PatchDocument }>) {
