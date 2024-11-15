@@ -11,6 +11,7 @@ import type { Preview, Decorator } from "@storybook/react";
 
 import { TooltipProvider } from "../src/components/AppComponents/Chat/ui/tooltip";
 import { AnalyticsProvider } from "../src/mocks/analytics/provider";
+import { ClerkDecorator } from "../src/mocks/clerk/ClerkDecorator";
 import { TRPCReactProvider } from "../src/utils/trpc";
 import { RadixThemeDecorator } from "./decorators/RadixThemeDecorator";
 import "./preview.css";
@@ -28,7 +29,6 @@ const preview: Preview = {
 };
 
 // Providers not currently used
-// - MockClerkProvider
 // - CookieConsentProvider
 // - DemoProvider
 // - LessonPlanTrackingProvider
@@ -38,6 +38,7 @@ const preview: Preview = {
 
 export const decorators: Decorator[] = [
   RadixThemeDecorator,
+  ClerkDecorator,
   (Story) => (
     <>
       {/* TODO: Mock tRPC calls with MSW */}
