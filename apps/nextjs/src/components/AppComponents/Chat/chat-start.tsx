@@ -92,13 +92,26 @@ export function ChatStart() {
     ],
   );
   const [validationError, setValidationError] = useState<string | null>(null);
-  const userCanSubmit =
-    selectedSubject && selectedKeyStage && selectedLength && input
-      ? true
-      : false;
+
+  const [userCanSubmit, setUserCanSubmit] = useState(false);
+
+  useEffect(() => {
+    if (selectedSubject && selectedKeyStage && selectedLength && input) {
+      setUserCanSubmit(true);
+    } else {
+      setUserCanSubmit(false);
+    }
+  }, [
+    selectedSubject,
+    selectedKeyStage,
+    selectedLength,
+    input,
+    setUserCanSubmit,
+  ]);
+
   const submit = useCallback(
     async (message: string) => {
-      if (!userCanSubmit) {
+      if (!selectedSubject || !selectedKeyStage || !selectedLength || !input) {
         setValidationError(
           `The following field(s) are missing: ${
             !selectedSubject ? "Subject" : ""
@@ -115,7 +128,7 @@ export function ChatStart() {
         create(message);
       }
     },
-    [create, setDialogWindow, demo.isDemoUser, setIsSubmitting, userCanSubmit],
+    [create, setDialogWindow, demo.isDemoUser, setIsSubmitting],
   );
 
   const interstitialSubmit = useCallback(async () => {
@@ -198,13 +211,26 @@ export function ChatStart() {
                         variant="link"
                         className="pl-0"
                         onClick={async () => {
-                          trackEvent(`chat: ${message.message}`);
-                          setInput("roman britain");
-                          setSelectedKeyStage("Key Stage 3");
-                          setSelectedSubject("History");
-                          setSelectedLength("60 mins");
-                          if (typeof initialPrompt === "string") {
-                            await submit(initialPrompt);
+                          try {
+                            trackEvent(`chat: ${message.message}`);
+                            await populateAllStartChatFields({
+                              setInput,
+                              setSelectedKeyStage,
+                              setSelectedSubject,
+                              setSelectedLength,
+                            });
+
+                            if (typeof initialPrompt === "string") {
+                              // wait for 0.5s to ensure the state is updated
+                              setTimeout(async () => {
+                                await submit(initialPrompt);
+                              }, 500);
+                            }
+                          } catch (error) {
+                            console.error(
+                              "Error handling button click:",
+                              error,
+                            );
                           }
                         }}
                       >
@@ -516,4 +542,21 @@ export function useOutsideClick(callback: () => void) {
   }, [callback]);
 
   return ref;
+}
+
+async function populateAllStartChatFields({
+  setInput,
+  setSelectedKeyStage,
+  setSelectedSubject,
+  setSelectedLength,
+}: {
+  setInput: (value: string) => void;
+  setSelectedKeyStage: (value: string) => void;
+  setSelectedSubject: (value: string) => void;
+  setSelectedLength: (value: string) => void;
+}) {
+  setInput("roman britain");
+  setSelectedKeyStage("Key Stage 3");
+  setSelectedSubject("History");
+  setSelectedLength("60 mins");
 }

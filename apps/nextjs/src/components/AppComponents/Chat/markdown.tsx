@@ -40,7 +40,10 @@ export const MemoizedReactMarkdownWithStyles = ({
 
   // UseCallback to avoid inline function recreation
   const handleAppend = useCallback(
-    (content: string) => append({ content, role: "user" }),
+    (content: string) => {
+      console.log("Appending message:", content);
+      append({ content, role: "user" });
+    },
     [append],
   );
 
@@ -80,19 +83,19 @@ export const MemoizedReactMarkdownWithStyles = ({
           );
         },
         p({ children }) {
+          const isStringChild = (child: any): child is string =>
+            typeof child === "string";
+
+          const textChildren = React.Children.toArray(children)
+            .filter(isStringChild)
+            .join("");
+
           if (
-            Array.isArray(children) &&
-            (children[children.length - 1]?.includes(
-              "proceed to the final step",
-            ) ||
-              children[children.length - 1]?.includes(
-                "move on to the final step",
-              ) ||
-              children[children.length - 1]?.includes(
-                "complete the lesson plan",
-              ))
+            textChildren.includes("proceed to the final step") ||
+            textChildren.includes("move on to the final step") ||
+            textChildren.includes("complete the lesson plan")
           ) {
-            const text = children.slice(0, -2)[0].split("Otherwise, tap")[0];
+            const text = textChildren.split("Otherwise, tap")[0];
             return (
               <div className="flex flex-col gap-5">
                 <p className={cn("mb-7 last:mb-0", className)}>{text}</p>
@@ -103,17 +106,13 @@ export const MemoizedReactMarkdownWithStyles = ({
               </div>
             );
           }
+
           if (
-            Array.isArray(children) &&
-            (children[children.length - 1]?.includes(
-              "proceed to the next step",
-            ) ||
-              children[children.length - 1]?.includes(
-                "move on to the next step",
-              ) ||
-              children[children.length - 3]?.includes("Otherwise, tap"))
+            textChildren.includes("proceed to the next step") ||
+            textChildren.includes("move on to the next step") ||
+            textChildren.includes("Otherwise, tap")
           ) {
-            const text = children.slice(0, -2)[0].split("Otherwise, tap")[0];
+            const text = textChildren.split("Otherwise, tap")[0];
             return (
               <div className="flex flex-col gap-5">
                 <p className={cn("mb-7 last:mb-0", className)}>{text}</p>
@@ -125,24 +124,9 @@ export const MemoizedReactMarkdownWithStyles = ({
             );
           }
 
-          if (
-            Array.isArray(children) &&
-            children[2]?.includes("start from scratch")
-          ) {
-            return (
-              <div className="flex flex-col gap-5">
-                <p className={cn("mb-7 last:mb-0", className)}>
-                  If not, ask me something or else, or:
-                </p>
-                <InLineButton
-                  onClick={() => handleAppend("Continue from scratch")}
-                  text="Continue from scratch"
-                />
-              </div>
-            );
-          }
           return <p className={cn("mb-7 last:mb-0", className)}>{children}</p>;
         },
+
         h1({ children }) {
           return (
             <Flex align="center" gap="3" className="mt-20">
@@ -213,12 +197,15 @@ export const MemoizedReactMarkdownWithStyles = ({
     </MemoizedReactMarkdown>
   );
 };
-
 const InLineButton = memo(
   ({ text, onClick }: { text: string; onClick: () => void }) => {
+    const handleClick = useCallback(() => {
+      onClick();
+    }, [onClick]);
+
     return (
       <button
-        onClick={onClick}
+        onClick={handleClick}
         className="my-6 w-fit border-spacing-4 rounded-lg border border-black border-opacity-30 bg-white p-7 text-blue"
       >
         {text}
