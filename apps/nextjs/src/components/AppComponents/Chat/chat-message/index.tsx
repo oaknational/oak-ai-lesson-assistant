@@ -340,22 +340,28 @@ function TextMessagePart({
   const lessonPlanTracking = useLessonPlanTracking();
 
   const { queueUserAction, ailaStreamingStatus } = chat;
-  const handleContinue = useCallback(async () => {
-    trackEvent("chat:continue");
-    lessonPlanTracking.onClickContinue();
-    queueUserAction("continue");
-  }, [queueUserAction, lessonPlanTracking, trackEvent]);
+  const handleContinue = useCallback(
+    async (text: string) => {
+      trackEvent("chat:continue");
+      lessonPlanTracking.onClickContinue();
+      queueUserAction(text);
+    },
+    [queueUserAction, lessonPlanTracking, trackEvent],
+  );
 
   const shouldTransformToButtons = containsRelevantList(part.value);
   // console.log("******isLastMessage", part.value, isLastMessage);
   if (part.value.includes("Otherwise, tap")) {
+    const [userHasSelected, setUserHasSelected] = useState(false);
     return (
       <div className="flex flex-col gap-6">
         <MemoizedReactMarkdownWithStyles
           markdown={part.value.split("Otherwise, tap")[0] ?? part.value}
           shouldTransformToButtons={true}
         />
-        {((ailaStreamingStatus === "Idle" && isLastMessage) ||
+        {((ailaStreamingStatus === "Idle" &&
+          isLastMessage &&
+          !userHasSelected) ||
           (ailaStreamingStatus === "Moderating" && isLastMessage)) && (
           <InLineButton
             text={
@@ -364,30 +370,49 @@ function TextMessagePart({
                 ? "Proceed to the final step"
                 : "Proceed to the next step"
             }
-            onClick={() => handleContinue()}
+            onClick={() => {
+              handleContinue(
+                part.value.includes("complete the lesson plan") ||
+                  part.value.includes("final step")
+                  ? "Proceed to the final step"
+                  : "Proceed to the next step",
+              );
+              setUserHasSelected(true);
+            }}
           />
         )}
       </div>
     );
   }
   if (part.value.includes("Tap **Continue")) {
+    const [userHasSelected, setUserHasSelected] = useState(false);
     return (
       <div className="flex flex-col gap-6">
         <MemoizedReactMarkdownWithStyles
           markdown={part.value.split("Tap **Continue")[0] ?? part.value}
           shouldTransformToButtons={true}
         />
-        {ailaStreamingStatus === "Idle" && isLastMessage && (
-          <InLineButton
-            text={
-              part.value.includes("complete the lesson plan") ||
-              part.value.includes("final step")
-                ? "Proceed to the final step"
-                : "Proceed to the next step"
-            }
-            onClick={() => handleContinue()}
-          />
-        )}
+        {ailaStreamingStatus === "Idle" &&
+          isLastMessage &&
+          !userHasSelected && (
+            <InLineButton
+              text={
+                part.value.includes("complete the lesson plan") ||
+                part.value.includes("final step")
+                  ? "Proceed to the final step"
+                  : "Proceed to the next step"
+              }
+              onClick={() => {
+                handleContinue(
+                  part.value.includes("complete the lesson plan") ||
+                    part.value.includes("final step")
+                    ? "Proceed to the final step"
+                    : "Proceed to the next step",
+                );
+                setUserHasSelected(true);
+              }}
+            />
+          )}
       </div>
     );
   }

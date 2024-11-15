@@ -116,7 +116,7 @@ export function ChatStart() {
           `The following field(s) are missing: ${
             !selectedSubject ? "Subject" : ""
           }${!selectedKeyStage ? ", Key Stage" : ""}${
-            !selectedLength ? ", Length" : ""
+            !selectedLength ? ", Lesson Length" : ""
           }${!input ? ", Lesson Title" : ""}`,
         );
         return;
@@ -480,7 +480,7 @@ const LengthDropDown = ({
           setActiveDropdown(activeDropdown === "length" ? null : "length")
         }
       >
-        {selectedLength || "Length"}
+        {selectedLength || "Lesson Length"}
       </DropDownButton>
       {activeDropdown === "length" && (
         <DropDownWrapper>
