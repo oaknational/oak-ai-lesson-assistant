@@ -29,6 +29,7 @@ function DemoLimitMessage({ id }: Readonly<{ id: string }>) {
       <ChatMessage
         chatId={id}
         ailaStreamingStatus="Idle"
+        isLastMessage={false}
         message={{
           id: "demo-limit",
           role: "assistant",
