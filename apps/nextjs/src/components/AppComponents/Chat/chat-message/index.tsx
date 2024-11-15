@@ -355,6 +355,28 @@ function TextMessagePart({
           markdown={part.value.split("Otherwise, tap")[0] ?? part.value}
           shouldTransformToButtons={true}
         />
+        {((ailaStreamingStatus === "Idle" && isLastMessage) ||
+          (ailaStreamingStatus === "Moderating" && isLastMessage)) && (
+          <InLineButton
+            text={
+              part.value.includes("complete the lesson plan") ||
+              part.value.includes("final step")
+                ? "Proceed to the final step"
+                : "Proceed to the next step"
+            }
+            onClick={() => handleContinue()}
+          />
+        )}
+      </div>
+    );
+  }
+  if (part.value.includes("Tap **Continue")) {
+    return (
+      <div className="flex flex-col gap-6">
+        <MemoizedReactMarkdownWithStyles
+          markdown={part.value.split("Tap **Continue")[0] ?? part.value}
+          shouldTransformToButtons={true}
+        />
         {ailaStreamingStatus === "Idle" && isLastMessage && (
           <InLineButton
             text={
