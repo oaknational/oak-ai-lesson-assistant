@@ -68,8 +68,8 @@ export function SidebarItems({ chats }: Readonly<SidebarItemsProps>) {
   return (
     <AnimatePresence>
       {todayChats.length > 0 && renderChats("Today", todayChats)}
-      {lastWeekChats.length > 0 && renderChats("Last Week", lastWeekChats)}
-      {lastMonthChats.length > 0 && renderChats("Last Month", lastMonthChats)}
+      {lastWeekChats.length > 0 && renderChats("Last week", lastWeekChats)}
+      {lastMonthChats.length > 0 && renderChats("Last 30 days", lastMonthChats)}
       {Object.entries(olderChatsByMonth).map(([monthYear, chats]) =>
         renderChats(monthYear, chats),
       )}

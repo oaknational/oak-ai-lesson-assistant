@@ -2,7 +2,8 @@
 
 import * as React from "react";
 
-import { OakBox, OakFlex, OakSpan } from "@oaknational/oak-components";
+import { OakFlex, OakSpan } from "@oaknational/oak-components";
+import styled from "styled-components";
 
 import BinIcon from "@/components/BinIcon";
 import OakBoxWithCustomWidth from "@/components/OakBoxWithCustomWidth";
@@ -13,13 +14,19 @@ type ClearHistoryProps = {
   isEnabled: boolean;
 };
 
+const OakBoxWithCustomWidthFullWidthMobile = styled(OakBoxWithCustomWidth)`
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+`;
+
 export function ClearHistory({ isEnabled }: Readonly<ClearHistoryProps>) {
   const { setDialogWindow } = useDialog();
   if (!isEnabled) {
     return null;
   }
   return (
-    <OakBoxWithCustomWidth
+    <OakBoxWithCustomWidthFullWidthMobile
       width={447}
       $position="fixed"
       $right="all-spacing-0"
@@ -46,6 +53,6 @@ export function ClearHistory({ isEnabled }: Readonly<ClearHistoryProps>) {
           </OakSpan>
         </button>
       </OakFlex>
-    </OakBoxWithCustomWidth>
+    </OakBoxWithCustomWidthFullWidthMobile>
   );
 }

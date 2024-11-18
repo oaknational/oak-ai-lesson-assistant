@@ -42,7 +42,11 @@ const ClearSingleChatFromChatHistory = ({
   const [isPending, startTransition] = useTransition();
 
   return (
-    <OakFlex $flexDirection="column" $gap="space-between-m">
+    <OakFlex
+      $flexDirection="column"
+      $gap="space-between-m"
+      $justifyContent="center"
+    >
       <OakP $font="body-1-bold">Are you absolutely sure?</OakP>
       <OakP>
         This will permanently delete your chat history and remove your data from
