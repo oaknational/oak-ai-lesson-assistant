@@ -25,6 +25,7 @@ const personaNames = [
   "nearly-banned",
   "nearly-rate-limited",
   "sharing-chat",
+  "modify-lesson-plan",
 ] as const;
 
 type PersonaName = (typeof personaNames)[number];
@@ -71,6 +72,13 @@ const personas: Record<PersonaName, Persona> = {
   },
   // Allows `chat.isShared` to be set/reset without leaking between tests/retries
   "sharing-chat": {
+    isDemoUser: false,
+    region: "GB",
+    chatFixture: "typical",
+    safetyViolations: 0,
+    rateLimitTokens: 0,
+  },
+  "modify-lesson-plan": {
     isDemoUser: false,
     region: "GB",
     chatFixture: "typical",

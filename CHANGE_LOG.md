@@ -1,3 +1,19 @@
+# [1.15.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.14.2...v1.15.0) (2024-11-13)
+
+
+### Features
+
+* add additional materials button - AI-539 [migration] ([#255](https://github.com/oaknational/oak-ai-lesson-assistant/issues/255)) ([d0fe2d0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d0fe2d015865b89ea2287993652a6f8111f0ae4a))
+* prisma health check - AI-625 ([#356](https://github.com/oaknational/oak-ai-lesson-assistant/issues/356)) ([854950d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/854950d51524eb8d84a0ec9695c88b67f829fd8d))
+
+## [1.14.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.14.1...v1.14.2) (2024-11-12)
+
+
+### Bug Fixes
+
+* design-changes-to-footer ([#324](https://github.com/oaknational/oak-ai-lesson-assistant/issues/324)) ([273cfdc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/273cfdc668ca45def0b8a68dc08b7301974e1def))
+* only categorise initial user input once ([#348](https://github.com/oaknational/oak-ai-lesson-assistant/issues/348)) ([dd5bf71](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dd5bf71a21421ac6e0beb60b4bab560cb159d877))
+
 ## [1.14.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.14.0...v1.14.1) (2024-11-07)
 
 

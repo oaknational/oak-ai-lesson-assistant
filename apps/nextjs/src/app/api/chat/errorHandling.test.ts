@@ -108,7 +108,7 @@ describe("handleChatException", () => {
         type: "error",
         value: "Rate limit exceeded",
         message:
-          "**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in 1 hour. If you require a higher limit, please [make a request](https://forms.gle/tHsYMZJR367zydsG8).",
+          "**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in 1 hour. If you require a higher limit, please [make a request](https://share.hsforms.com/118hyngR-QSS0J7vZEVlRSgbvumd).",
       });
     });
   });
