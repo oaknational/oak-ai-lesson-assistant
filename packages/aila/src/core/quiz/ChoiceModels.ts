@@ -3,10 +3,10 @@ import { z } from "zod";
 import { QuizQuestion } from "../../protocol/schema";
 import { starterQuizSuitabilitySchema } from "./RerankerStructuredOutputSchema";
 
-// TODO Abstract this to Schema, choice, evaluator functions to make extensible
+// TODO: GCLOMAX - Abstract this to Schema, choice, evaluator functions to make extensible
 // And to be able to use secondary model / LLM to inspect based on justifications.
 
-// TODO make blended comparison functions - i.e taking the same question from each quiz and finding the best one.
+// TODO: GCLOMAX - make blended comparison functions - i.e taking the same question from each quiz and finding the best one.
 
 const BaseSchema = z.object({
   // Add any common fields here
@@ -15,8 +15,20 @@ const BaseSchema = z.object({
 type BaseType = z.infer<typeof BaseSchema>;
 
 // Rating Function Type
-type RatingFunction<T extends BaseType> = (item: T) => number;
+export type RatingFunction<T extends BaseType> = (item: T) => number;
 
+export type MaxRatingFunctionApplier<T extends BaseType> = (
+  items: T[],
+  ratingFunction: RatingFunction<T>,
+) => number;
+
+export type RatingFunctionApplier<T extends BaseType> = (
+  items: T[],
+  ratingFunction: RatingFunction<T>,
+) => number[];
+
+// This just applies a rating functon to each item. This is abstracted out to allow for different types of rating functions, for example LLM assesments.
+// LLMs on LLMs, it's a brave new world.
 export function selectHighestRated<T extends BaseType>(
   items: T[],
   ratingFunction: RatingFunction<T>,
@@ -38,4 +50,12 @@ export function selectHighestRated<T extends BaseType>(
     }
   }
   return highestRatedIndex;
+}
+
+// Not really needed but useful for typing.
+export function ApplyRatingFunction<T extends BaseType>(
+  items: T[],
+  ratingFunction: RatingFunction<T>,
+): number[] {
+  return items.map((item) => ratingFunction(item));
 }
