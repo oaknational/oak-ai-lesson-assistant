@@ -1,19 +1,11 @@
 import { useState } from "react";
 
-import {
-  OakBox,
-  OakFlex,
-  OakGrid,
-  OakIcon,
-  OakLabel,
-  OakP,
-  OakPrimaryButton,
-  OakSecondaryButton,
-  OakSpan,
-  OakTextInput,
-} from "@oaknational/oak-components";
+import { OakPrimaryButton } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 import type { Survey } from "posthog-js";
+
+import ChatButton from "../AppComponents/Chat/ui/chat-button";
+import { Icon } from "../Icon";
 
 const FeedBack = ({
   submitSurvey,
@@ -44,8 +36,8 @@ const FeedBack = ({
     <Flex
       className="h-full w-full"
       direction="column"
-      justify="start"
-      align="start"
+      justify="center"
+      align="center"
     >
       <form
         onSubmit={async (e) => {
@@ -60,32 +52,29 @@ const FeedBack = ({
             i === 0 ? "$survey_response" : `$survey_response_${i}`;
           if (question.type === "rating") {
             return (
-              <OakFlex
+              <div
                 key={question.question}
-                className="flex flex-col items-start justify-start"
-                $width="100%"
-                $flexDirection="column"
-                $alignItems="flex-start"
-                $justifyContent="flex-start"
+                className="flex flex-col items-center justify-center"
               >
-                <OakSpan className="mb-7">
-                  <OakBox $mb="space-between-s">
-                    <OakLabel htmlFor={question.question} $font="heading-5">
-                      {question.question}
-                    </OakLabel>
-                  </OakBox>
-                  <OakP className="mt-6 opacity-90">1=Poor, 5=Excellent</OakP>
-                </OakSpan>
-                <OakFlex
-                  $justifyContent="flex-start"
-                  $gap="space-between-ssx"
-                  $width="100%"
-                  $mt="space-between-s"
-                >
+                <span className="mb-7 flex flex-col items-center justify-center gap-0 text-center">
+                  <label
+                    htmlFor={question.question}
+                    className=" text-center text-2xl font-bold"
+                  >
+                    {question.question}
+                  </label>
+                  <p className="mt-6 text-center opacity-90">
+                    1=Poor, 5=Excellent
+                  </p>
+                </span>
+                <div className="mt-7 flex w-full justify-center gap-5">
                   {rating.map((feedback) => {
                     return (
                       <button
                         key={feedback.number}
+                        className={
+                          "flex flex-col items-center justify-center gap-6"
+                        }
                         onClick={() => {
                           setUsersResponse((prevState) => ({
                             ...prevState,
@@ -93,100 +82,69 @@ const FeedBack = ({
                           }));
                         }}
                       >
-                        <OakFlex
-                          $flexDirection="column"
-                          $gap="space-between-s"
-                          $justifyContent="center"
-                          $alignItems="center"
+                        <span
+                          className={`rounded-sm border-2  p-8 px-9 text-lg sm:px-15 ${
+                            usersResponse[surveyResponseKey] ===
+                            feedback.number.toString()
+                              ? "border-black bg-black text-white"
+                              : " border-oakGrey3 bg-white text-black"
+                          }`}
                         >
-                          <OakSpan
-                            $borderRadius="border-radius-s"
-                            $ba="border-solid-m"
-                            $borderStyle="solid"
-                            $pa="inner-padding-s"
-                            $ph="inner-padding-l"
-                            $borderColor={
-                              usersResponse[surveyResponseKey] ===
-                              feedback.number.toString()
-                                ? "black"
-                                : "grey80"
-                            }
-                            $background={
-                              usersResponse[surveyResponseKey] ===
-                              feedback.number.toString()
-                                ? "black"
-                                : "white"
-                            }
-                            $color={
-                              usersResponse[surveyResponseKey] ===
-                              feedback.number.toString()
-                                ? "white"
-                                : "black"
-                            }
-                          >
-                            {feedback.number}
-                          </OakSpan>
-                          <OakSpan
-                            $opacity={
-                              usersResponse[surveyResponseKey] ===
-                              feedback.number.toString()
-                                ? "opaque"
-                                : "transparent"
-                            }
-                          >
-                            <OakIcon iconName="tick" />
-                          </OakSpan>
-                        </OakFlex>
+                          {feedback.number}
+                        </span>
+                        <span
+                          className={
+                            usersResponse[surveyResponseKey] ===
+                            feedback.number.toString()
+                              ? "opacity-100"
+                              : "opacity-0"
+                          }
+                        >
+                          <Icon icon="tick" size="sm" />
+                        </span>
                       </button>
                     );
                   })}
-                </OakFlex>
-              </OakFlex>
+                </div>
+              </div>
             );
           }
           if (question.type === "open") {
             return (
-              <OakFlex
-                $flexDirection="column"
-                $alignItems="flex-start"
-                $justifyContent="flex-start"
+              <div
                 key={question.question}
-                $width="100%"
+                className="flex flex-col items-start justify-start"
               >
-                <OakBox $mb="space-between-s">
-                  <OakLabel htmlFor={question.question} $font="heading-5">
-                    {question.question}
-                  </OakLabel>
-                </OakBox>
-                <OakGrid $gridTemplateColumns="repeat(1, 1fr)" $width="100%">
-                  <textarea
-                    className="min-h-34 w-full resize-none rounded-md border-2 border-grey10 p-12"
-                    onChange={(e) => {
-                      setUsersResponse({
-                        ...usersResponse,
-                        [surveyResponseKey]: e.target.value,
-                      });
-                    }}
-                    id={question.question}
-                  />
-                </OakGrid>
-              </OakFlex>
+                <label
+                  htmlFor={question.question}
+                  className="mb-16 text-center text-2xl font-bold"
+                >
+                  {question.question}
+                </label>
+                <textarea
+                  className="h-32 w-full min-w-[300px] rounded border-2 border-black p-10"
+                  onChange={(e) => {
+                    setUsersResponse({
+                      ...usersResponse,
+                      [surveyResponseKey]: e.target.value,
+                    });
+                  }}
+                  id={question.question}
+                />
+              </div>
             );
           }
         })}
-        <OakFlex $justifyContent="space-between">
-          <OakSecondaryButton onClick={() => closeDialogWithPostHogDismiss()}>
-            Skip
-          </OakSecondaryButton>
+        <div className="flex justify-center">
           <OakPrimaryButton
             onClick={() => {
               submitSurvey(usersResponse);
               onSubmit();
             }}
           >
-            Submit feedback
+            Send feedback
           </OakPrimaryButton>
-        </OakFlex>
+        </div>
       </form>
     </Flex>
   );
