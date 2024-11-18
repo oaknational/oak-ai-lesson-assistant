@@ -20,6 +20,7 @@ import "@/app/theme-config.css";
 import { Providers } from "@/components/AppComponents/Chat//providers";
 import { AnalyticsProvider } from "@/components/ContextProviders/AnalyticsProvider";
 import { CookieConsentProvider } from "@/components/ContextProviders/CookieConsentProvider";
+import { FeatureFlagProvider } from "@/components/ContextProviders/FeatureFlagProvider";
 import FontProvider from "@/components/ContextProviders/FontProvider";
 import { GleapProvider } from "@/components/ContextProviders/GleapProvider";
 import { WebDebuggerPosition } from "@/lib/avo/Avo";
@@ -27,6 +28,8 @@ import { getBootstrappedFeatures } from "@/lib/feature-flags/bootstrap";
 import { SentryIdentify } from "@/lib/sentry/SentryIdentify";
 import { cn } from "@/lib/utils";
 import { TRPCReactProvider } from "@/utils/trpc";
+
+import StyledComponentsRegistry from "./styles-registry";
 
 const provided_vercel_url =
   process.env.VERCEL_URL && process.env.VERCEL_URL?.length > 0
@@ -82,61 +85,69 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning className={lexend.variable}>
-      <ClerkProvider>
-        <body
-          className={cn(
-            "overflow-x-hidden font-sans antialiased",
-            GeistMono.variable,
-          )}
-        >
-          <Theme
-            accentColor="blue"
-            grayColor="olive"
-            scaling="110%"
-            color="#22222"
-            style={{ overflowX: "hidden" }}
+      <StyledComponentsRegistry>
+        <ClerkProvider>
+          <body
+            className={cn(
+              "overflow-x-hidden font-sans antialiased",
+              GeistMono.variable,
+            )}
           >
-            <TRPCReactProvider>
-              <FontProvider>
-                <Toaster />
-                <Providers>
-                  <SentryIdentify />
-                  <CookieConsentProvider>
-                    <AnalyticsProvider
-                      avoOptions={{
-                        webDebugger: false,
-                        inspector: undefined,
-                        webDebuggerOptions: {
-                          position: WebDebuggerPosition.BottomLeft({
-                            bottom: 0,
-                            left: 0,
-                          }),
-                        },
-                      }}
-                      bootstrappedFeatures={bootstrappedFeatures}
-                    >
-                      <GleapProvider>{children}</GleapProvider>
-                    </AnalyticsProvider>
-                  </CookieConsentProvider>
-                </Providers>
-              </FontProvider>
-            </TRPCReactProvider>
-          </Theme>
+            <Theme
+              accentColor="blue"
+              grayColor="olive"
+              scaling="110%"
+              color="#22222"
+              style={{ overflowX: "hidden" }}
+            >
+              <TRPCReactProvider>
+                <FontProvider>
+                  <Toaster />
+                  <Providers>
+                    <SentryIdentify />
+                    <CookieConsentProvider>
+                      <AnalyticsProvider
+                        avoOptions={{
+                          webDebugger: false,
+                          inspector: undefined,
+                          webDebuggerOptions: {
+                            position: WebDebuggerPosition.BottomLeft({
+                              bottom: 0,
+                              left: 0,
+                            }),
+                          },
+                        }}
+                        bootstrappedFeatures={bootstrappedFeatures}
+                      >
+                        <GleapProvider>
+                          <FeatureFlagProvider
+                            bootstrappedFeatures={bootstrappedFeatures}
+                          >
+                            {children}
+                          </FeatureFlagProvider>
+                        </GleapProvider>
+                      </AnalyticsProvider>
+                    </CookieConsentProvider>
+                  </Providers>
+                </FontProvider>
+              </TRPCReactProvider>
+            </Theme>
 
-          {/* react-hot-toast uses "goober" to set styles.
+            {/* react-hot-toast uses "goober" to set styles.
               Goober creates a _goober tag which would be blocked by CSP
               We can pre-create it with a nonce ourselves
               See https://github.com/cristianbote/goober/issues/471 */}
-          <style
-            id="_goober"
-            nonce={nonce ?? undefined}
-            suppressHydrationWarning
-            // eslint-disable-next-line react/jsx-no-comment-textnodes
-          >
-            /* css comment for goober */
-          </style>
-        </body>
-      </ClerkProvider>
+            <style
+              id="_goober"
+              nonce={nonce ?? undefined}
+              suppressHydrationWarning
+              // eslint-disable-next-line react/jsx-no-comment-textnodes
+            >
+              /* css comment for goober */
+            </style>
+          </body>
+        </ClerkProvider>
+      </StyledComponentsRegistry>
     </html>
   );
 }

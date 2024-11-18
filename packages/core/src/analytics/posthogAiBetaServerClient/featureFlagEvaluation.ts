@@ -4,7 +4,7 @@ import type { PostHog } from "posthog-node";
 
 const KV_KEY = "posthog-feature-flag-local-evaluation";
 
-const log = aiLogger("analytics:feature-flags");
+const log = aiLogger("feature-flags");
 
 const setKv = async (response: Response) => {
   const value = await response.text();

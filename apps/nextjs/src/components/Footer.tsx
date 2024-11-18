@@ -7,11 +7,11 @@ import {
   OakFlex,
   OakLink,
   OakMaxWidth,
-  OakSpan,
   useCookieConsent,
   OakP,
   OakUL,
   OakLI,
+  OakIcon,
 } from "@oaknational/oak-components";
 import { aiTools } from "data/aiTools";
 import { legalMenuItems, menuItems, socialMenuItems } from "data/menus";
@@ -22,7 +22,7 @@ import styled from "styled-components";
 import loop from "@/assets/svg/loop.svg";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
-import { Icon } from "./Icon";
+import { ScaleSpan } from "./AppComponents/ScaleSpan";
 import { Logo } from "./Logo";
 
 function ManageCookiesButton() {
@@ -56,7 +56,7 @@ const Footer = () => {
               $alignItems={"start"}
               $width={["100%", "unset"]}
             >
-              <OakP $font="body-1" $mb={"space-between-s"}>
+              <OakP $font="heading-7" $mb={"space-between-s"}>
                 Menu
               </OakP>
               <OakUL>
@@ -97,7 +97,7 @@ const Footer = () => {
               $alignItems={"start"}
               $width={["100%", "unset"]}
             >
-              <OakP $font="body-1" $mb={"space-between-s"}>
+              <OakP $font="heading-7" $mb={"space-between-s"}>
                 AI Experiments Legal
               </OakP>
               <OakUL>
@@ -112,11 +112,7 @@ const Footer = () => {
                   if (item.target) {
                     return (
                       <OakLI key={item.id} $pv="inner-padding-ssx">
-                        <FooterButton
-                          href={item.href}
-                          target={item.target}
-                          icon="external"
-                        >
+                        <FooterButton href={item.href} target={item.target}>
                           {item.title}
                         </FooterButton>
                       </OakLI>
@@ -134,43 +130,38 @@ const Footer = () => {
             </OakFlex>
           </OakFlex>
 
-          <OakFlex $flexDirection="row" $justifyContent="center">
+          <OakBox $display={["none", "flex"]}>
             <Logo width={150} height={100} />
-          </OakFlex>
+          </OakBox>
         </OakFlex>
         <OakBox $pt={["inner-padding-none", "inner-padding-xl4"]} $width="100%">
           <OakFlex
-            $flexDirection={["column-reverse", "row"]}
-            $gap="all-spacing-12"
+            $gap={["all-spacing-6", "all-spacing-12"]}
+            $flexDirection={["column", "row"]}
             $alignContent="center"
-            $justifyContent="space-between"
+            $mt={["auto", "space-between-xxl"]}
+            $justifyContent={["center", "space-between"]}
             className="w-full"
           >
-            <OakFlex
-              $gap="all-spacing-12"
-              $flexDirection={["column", "row"]}
-              $alignContent="center"
-              $mt={["auto", "space-between-xxl"]}
-              $justifyContent={["center", "space-between"]}
-              className="w-full"
-            >
-              <OakFlex $flexDirection="row" $gap="all-spacing-4">
-                {socialMenuItems.map((item) => {
-                  return (
-                    <a href={item.href} key={item.id}>
-                      <Icon icon={item.icon} size="md" />
-                    </a>
-                  );
-                })}
-              </OakFlex>
-              <OakFlex $flexDirection="column" $gap="all-spacing-2">
-                <p className="text-sm font-bold">
-                  © Oak National Academy Limited, No 14174888
-                </p>
-                <p className="text-sm">
-                  1 Scott Place, 2 Hardman Street, Manchester, M3 3AA
-                </p>
-              </OakFlex>
+            <OakFlex $flexDirection="row" $gap="all-spacing-4">
+              {socialMenuItems.map((item) => {
+                return (
+                  <a href={item.href} key={item.id}>
+                    <OakIcon iconName={item.icon} />
+                  </a>
+                );
+              })}
+            </OakFlex>
+            <OakBox $display={["flex", "none"]}>
+              <Logo width={150} height={100} />
+            </OakBox>
+            <OakFlex $flexDirection="column" $gap="all-spacing-1">
+              <p className="text-sm font-bold">
+                © Oak National Academy Limited, No 14174888
+              </p>
+              <p className="text-sm">
+                1 Scott Place, 2 Hardman Street, Manchester, M3 3AA
+              </p>
             </OakFlex>
           </OakFlex>
         </OakBox>
@@ -206,19 +197,18 @@ const StyledOakLink = styled(OakLink)`
     text-decoration: underline;
   }
 `;
+
 const FooterButton = ({
   href,
   onClick,
   disabled,
   target,
-  icon,
   children,
 }: {
   href?: string;
   onClick?: () => void;
   disabled?: boolean;
   target?: string;
-  icon?: OakIconName;
   children: React.ReactNode;
 }) => {
   const element = href ? Link : "button";
@@ -229,12 +219,21 @@ const FooterButton = ({
       element={element}
       target={target}
       disabled={disabled}
-      iconName={icon}
-      isTrailingIcon={true}
     >
-      <OakSpan $font="body-2-bold" $color="black" $textDecoration="none">
-        {children}
-      </OakSpan>
+      <OakFlex
+        $gap="all-spacing-1"
+        $alignItems="center"
+        $font="body-2"
+        $color="black"
+        $textDecoration="none"
+      >
+        <span>{children}</span>
+        {href && href.includes("http") && (
+          <ScaleSpan $scale={0.8}>
+            <OakIcon iconName="external" />
+          </ScaleSpan>
+        )}
+      </OakFlex>
     </StyledOakLink>
   );
 };
