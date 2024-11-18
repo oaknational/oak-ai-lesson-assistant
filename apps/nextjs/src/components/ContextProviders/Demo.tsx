@@ -54,7 +54,8 @@ export function DemoProvider({ children }: Readonly<DemoProviderProps>) {
             isDemoUser,
             appSessionsRemaining,
             appSessionsPerMonth: DEMO_APP_SESSIONS_PER_30D,
-            contactHref: "mailto:help@thenational.academy",
+            contactHref:
+              "https://share.hsforms.com/1R9ulYSNPQgqElEHde3KdhAbvumd",
             isSharingEnabled,
           }
         : {
