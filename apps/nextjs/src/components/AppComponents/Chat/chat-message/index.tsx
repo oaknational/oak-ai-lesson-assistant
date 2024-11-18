@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { useCallback, useMemo, useState } from "react";
 
+import { aiLogger } from "@oakachat-message/index.tsx:i/logger";
 import type {
   ActionDocument,
   BadDocument,
@@ -19,7 +20,6 @@ import type {
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { isSafe } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import { aiLogger } from "@oakai/logger";
 import type { Message } from "ai";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
@@ -545,6 +545,7 @@ function handleTextAndInLineButton({
           moderationModalHelpers={moderationModalHelpers}
           inspect={inspect}
           isLastMessage={isLastMessage}
+          scrollToBottom={() => {}}
         />
       </div>
     );
