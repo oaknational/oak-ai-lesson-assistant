@@ -68,7 +68,7 @@ test("sharing a lesson", async ({ page, context, browser }) => {
     await modal.getByText("Create shareable link").click();
 
     const pagePromise = context.waitForEvent("page");
-    await modal.getByText("Go to share page").click();
+    await modal.getByText("View share page").click();
     const sharePage = await pagePromise;
     return sharePage;
   });
