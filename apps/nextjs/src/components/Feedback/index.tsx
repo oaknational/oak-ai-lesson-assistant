@@ -64,7 +64,7 @@ const FeedBack = ({
                     {question.question}
                   </label>
                   <p className="mt-6 text-center opacity-90">
-                    1=Poor, 5=Excellent
+                    1=Very difficult, 5=Very easy
                   </p>
                 </span>
                 <div className="mt-7 flex w-full justify-center gap-5">
