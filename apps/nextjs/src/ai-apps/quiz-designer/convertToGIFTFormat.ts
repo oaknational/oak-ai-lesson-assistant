@@ -29,7 +29,7 @@ export function convertToGIFTFormat(
       }
     }
 
-    giftString += `\n}\n`;
+    giftString += "\n}\n";
   }
 
   return giftString;

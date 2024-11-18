@@ -4,6 +4,7 @@ import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitles
 
 import { sectionTitle } from ".";
 import { MemoizedReactMarkdownWithStyles } from "../markdown";
+import AddAdditionalMaterialsButton from "./add-additional-materials-button";
 import FlagButton from "./flag-button";
 import ModifyButton from "./modify-button";
 
@@ -28,11 +29,20 @@ const ChatSection = ({
         $position="relative"
         $display={["none", "flex"]}
       >
-        <ModifyButton
-          sectionTitle={sectionTitle(objectKey)}
-          sectionPath={objectKey}
-          sectionValue={value}
-        />
+        {objectKey === "additionalMaterials" && value === "None" ? (
+          <AddAdditionalMaterialsButton
+            sectionTitle={sectionTitle(objectKey)}
+            sectionPath={objectKey}
+            sectionValue={value}
+          />
+        ) : (
+          <ModifyButton
+            sectionTitle={sectionTitle(objectKey)}
+            sectionPath={objectKey}
+            sectionValue={value}
+          />
+        )}
+
         <FlagButton
           sectionTitle={sectionTitle(objectKey)}
           sectionPath={objectKey}

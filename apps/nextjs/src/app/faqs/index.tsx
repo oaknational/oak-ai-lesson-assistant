@@ -17,7 +17,7 @@ import GetInTouchBox from "@/components/AppComponents/GetInTouchBox";
 import Layout from "@/components/Layout";
 import { OakBoxCustomMaxWidth } from "@/components/OakBoxCustomMaxWidth";
 
-const FAQPage = () => {
+export const FAQPageContent = () => {
   const startingRef = useRef(null);
   const featuresRef = useRef(null);
   const supportRef = useRef(null);
@@ -36,7 +36,7 @@ const FAQPage = () => {
     }
   };
   return (
-    <Layout>
+    <>
       <OakMaxWidth>
         <OakFlex $justifyContent="space-between">
           <OakBox $display={["none", "block"]}>
@@ -722,7 +722,7 @@ const FAQPage = () => {
                 the volume of requests that can be made, lessons, and resources
                 that can be generated. If you&apos;re reaching these limits,
                 we&apos;d love to hear from you, and you can{" "}
-                <OakLink href="https://forms.gle/tHsYMZJR367zydsG8">
+                <OakLink href="https://share.hsforms.com/118hyngR-QSS0J7vZEVlRSgbvumd">
                   request a higher limit.
                 </OakLink>
               </OakP>
@@ -849,8 +849,14 @@ const FAQPage = () => {
           </OakBoxCustomMaxWidth>
         </OakFlex>
       </OakMaxWidth>
-    </Layout>
+    </>
   );
 };
 
-export default FAQPage;
+export default function FAQPage() {
+  return (
+    <Layout>
+      <FAQPageContent />
+    </Layout>
+  );
+}

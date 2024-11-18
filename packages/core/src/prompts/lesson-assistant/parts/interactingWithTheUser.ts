@@ -29,14 +29,15 @@ const lessonConstructionSteps = (
     lessonPlan.title && lessonPlan.keyStage && lessonPlan.subject
       ? undefined
       : {
-          title: `ENSURE YOU HAVE A TITLE, KEY STAGE, SUBJECT, AND TOPIC`,
+          title: "ENSURE YOU HAVE A TITLE, KEY STAGE, SUBJECT, AND TOPIC",
           content: `In order to start the lesson plan you need to be provided with title, keyStage, subject, topic (optionally) in the lesson plan.
 These values are not all present, so ask the user for the missing values.`,
         },
 
     hasRelevantLessons && !Object.keys(lessonPlan).includes("basedOn")
       ? {
-          title: `ASK THE USER IF THEY WANT TO BASE THEIR LESSON PLAN ON AN EXISTING LESSON`,
+          title:
+            "ASK THE USER IF THEY WANT TO BASE THEIR LESSON PLAN ON AN EXISTING LESSON",
           content: `Ask if the user would like to adapt one of the Oak lessons as a starting point for their new lesson.
 Provide a list of lessons for the user as numbered options, with the title of each lesson.
 The user will then respond with the number of the lesson they would like to adapt.
@@ -56,7 +57,7 @@ END OF EXAMPLE RESPONSE`,
     !hasRelevantLessons
       ? {
           sections: ["learningOutcome", "learningCycles"] as LessonPlanKeys[],
-          title: `GENERATE SECTION GROUP [learningOutcome, learningCycles]`,
+          title: "GENERATE SECTION GROUP [learningOutcome, learningCycles]",
           content: `Generate learning outcomes and the learning cycles overview.
 Generate both of these sections together in one interaction with the user.
 Do not add any additional explanation about the content you have generated.
@@ -64,7 +65,8 @@ In some cases it is possible for the user to base their lesson on existing ones,
         }
       : {
           sections: ["learningOutcome", "learningCycles"] as LessonPlanKeys[],
-          title: `GENERATE SECTION GROUP [basedOn, learningOutcome, learningCycles]`,
+          title:
+            "GENERATE SECTION GROUP [basedOn, learningOutcome, learningCycles]",
           content: `You need to generate three sections in one interaction with the user. Do these all in one interaction.
 * basedOn - store the reference to the basedOn lesson in the lesson plan unless it is already set.
 * learningOutcome - generate learning outcomes.
@@ -86,14 +88,16 @@ Generate all of these sections together and respond to the user within this one 
         "misconceptions",
         "keywords",
       ],
-      title: `GENERATE SECTION GROUP [priorKnowledge, keyLearningPoints, misconceptions, keywords]`,
+      title:
+        "GENERATE SECTION GROUP [priorKnowledge, keyLearningPoints, misconceptions, keywords]",
       content: `Generate these four sections together in one single interaction. 
 You should not ask the user for feedback after generating them one-by-one.
 Generate them all together in one response.`,
     },
     {
       sections: ["starterQuiz", "cycle1", "cycle2", "cycle3", "exitQuiz"],
-      title: `GENERATE SECTION GROUP [starterQuiz, cycle1, cycle2, cycle3, exitQuiz]`,
+      title:
+        "GENERATE SECTION GROUP [starterQuiz, cycle1, cycle2, cycle3, exitQuiz]",
       content: `Generate the bulk of the lesson. Generate all of these sections in one interaction.
 Your response should include the starter quiz, each of the three learning cycles, and the exit quiz all within a single response.
 Additional check - because you are aiming for the average pupil to correctly answer five out of six questions, ask the user if they are happy that the quizzes are of an appropriate difficulty for pupils to achieve that.
@@ -105,7 +109,7 @@ END OF EXAMPLE RESPONSE`,
     },
     {
       sections: ["additionalMaterials"],
-      title: `GENERATE SECTION GROUP [additionalMaterials]`,
+      title: "GENERATE SECTION GROUP [additionalMaterials]",
       content: `Create any additional materials that may be helpful in the delivery of the lesson plan.
 If the user has not specified what they want to create, generate a narrative to support the lesson.
 This should be a narrative that the teacher can use to support how they deliver the lesson.
@@ -119,7 +123,7 @@ END OF EXAMPLE RESPONSE`,
     },
 
     {
-      title: `CONSISTENCY CHECK / LESSON COMPLETE`,
+      title: "CONSISTENCY CHECK / LESSON COMPLETE",
       content: `Go through the lesson plan and check for any inconsistencies in language or content.
 Ensure that unless the language is specified by the user, you are using British English throughout.
 If you find any, make edits to correct the problems or ask the user to clarify.
@@ -161,11 +165,13 @@ export const interactingWithTheUser = ({
   relevantLessonPlans,
 }: TemplateProps) => {
   const allSteps = lessonConstructionSteps(lessonPlan, relevantLessonPlans);
-
-  const step = allSteps[0]
-    ? `${allSteps[0]?.title}\n\n${allSteps[0]?.content}`
-    : "FINAL STEP: Respond to the user and help them edit the lesson plan";
-  log.info("Prompt: next lesson step", JSON.stringify(step, null, 2));
+  const finalStep = {
+    title: "FINAL STEP",
+    content: "Respond to the user and help them edit the lesson plan",
+  };
+  const nextStep = allSteps[0] ?? finalStep;
+  const step = `${nextStep.title}\n\n${nextStep.content}`;
+  log.info("Prompt: next lesson step", nextStep.title);
 
   const parts = [
     `YOUR INSTRUCTIONS FOR INTERACTING WITH THE USER
