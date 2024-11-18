@@ -21,7 +21,11 @@ import {
   PatchQuiz,
 } from "../../protocol/jsonPatchProtocol";
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
-import type { QuizOperationType, Quiz } from "../../protocol/schema";
+import type {
+  QuizOperationType,
+  Quiz,
+  AilaRagRelevantLesson,
+} from "../../protocol/schema";
 import { QuizQuestionSchema, QuizSchema } from "../../protocol/schema";
 import type {
   LooseLessonPlan,
@@ -69,9 +73,11 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   // The below is overly bloated and a midstep in refactoring.
   abstract generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
+    ailaRagRelevantLessons?: AilaRagRelevantLesson[],
   ): Promise<Quiz[]>;
   abstract generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
+    ailaRagRelevantLessons?: AilaRagRelevantLesson[],
   ): Promise<Quiz[]>;
 
   // ... other implementations
@@ -159,6 +165,15 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       formattedQuestionSearchResponse,
     );
     const quizQuestions = this.extractQuizQuestions(processsedQuestionsAndIds);
+    return quizQuestions;
+  }
+  public async questionArrayFromPlanId(
+    planId: string,
+  ): Promise<QuizQuestion[]> {
+    const lessonSlug = await this.getLessonSlugFromPlanId(planId);
+    const lessonSlugList = lessonSlug ? [lessonSlug] : [];
+    const customIds = await this.lessonSlugToQuestionIdSearch(lessonSlugList);
+    const quizQuestions = await this.questionArrayFromCustomIds(customIds);
     return quizQuestions;
   }
   private async searchQuestions(
@@ -458,49 +473,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     }
   }
 }
-
-// ML-based Quiz Generator
-export class MLQuizGenerator extends BaseQuizGenerator {
-  private async unpackAndSearch(
-    lessonPlan: LooseLessonPlan,
-  ): Promise<CustomHit[]> {
-    const qq = this.unpackLessonPlanForRecommender(lessonPlan);
-    // TODO: GCLOMAX - change this to use the new search service.
-    const results = await this.searchWithBM25("oak-vector", "text", qq, 100);
-    return results.hits;
-  }
-
-  private async generateMathsQuizML(
-    lessonPlan: LooseLessonPlan,
-  ): Promise<QuizQuestion[]> {
-    const hits = await this.unpackAndSearch(lessonPlan);
-    const qq = this.unpackLessonPlanForRecommender(lessonPlan);
-    const customIds = await this.rerankAndExtractCustomIds(hits, qq);
-    const quizQuestions = await this.retrieveAndProcessQuestions(customIds);
-    return quizQuestions;
-  }
-
-  public async generateMathsStarterQuizPatch(
-    lessonPlan: LooseLessonPlan,
-  ): Promise<JsonPatchDocument> {
-    return this.quizToJsonPatch(
-      await this.generateMathsQuizML(lessonPlan),
-      "/starterQuiz",
-      "add",
-    );
-  }
-  public async generateMathsExitQuizPatch(
-    lessonPlan: LooseLessonPlan,
-  ): Promise<JsonPatchDocument> {
-    return this.quizToJsonPatch(
-      await this.generateMathsQuizML(lessonPlan),
-      "/exitQuiz",
-      "add",
-    );
-  }
-}
-
-export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {}
 
 // // Combined Approach Quiz Generator
 // export class CombinedQuizGenerator extends BaseQuizGenerator {
