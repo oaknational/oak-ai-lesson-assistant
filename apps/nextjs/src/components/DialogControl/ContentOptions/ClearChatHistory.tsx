@@ -20,7 +20,7 @@ const ClearChatHistory = ({ closeDialog }: { closeDialog: () => void }) => {
     onSuccess() {
       toast.success("Chat history cleared");
       closeDialog();
-      router.push("/");
+      router.push("/aila");
     },
     onError() {
       toast.error("Failed to clear chat history");
