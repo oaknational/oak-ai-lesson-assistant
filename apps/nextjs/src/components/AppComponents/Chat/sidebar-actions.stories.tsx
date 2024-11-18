@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { within } from "@storybook/test";
 
 import { SidebarActions } from "./sidebar-actions";
 
@@ -27,14 +28,28 @@ export const Default: Story = {
   },
 };
 
+// NOTE: The modal appears on a parent element which isn't captured by visual testing
+// TODO: Test the modal directly
+export const SharePending: Story = {
+  args: {
+    ...Default.args,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const deleteButton = canvas.getByRole("button", { name: "Share" });
+    deleteButton.click();
+  },
+};
+
+// NOTE: The modal appears on a parent element which isn't captured by visual testing
+// TODO: Test the modal directly
 export const RemovePending: Story = {
   args: {
     ...Default.args,
   },
   play: async ({ canvasElement }) => {
-    const deleteButton = canvasElement.querySelector("button:nth-child(2)");
-    if (deleteButton instanceof HTMLElement) {
-      deleteButton.click();
-    }
+    const canvas = within(canvasElement);
+    const deleteButton = canvas.getByRole("button", { name: "Delete" });
+    deleteButton.click();
   },
 };

@@ -7,7 +7,7 @@ import cookie from "cookie";
 import type { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
 import invariant from "tiny-invariant";
 
-const log = aiLogger("analytics:feature-flags");
+const log = aiLogger("feature-flags");
 
 /**
  * We use posthog feature flags to toggle functionality without deploying code changes.
@@ -21,7 +21,9 @@ const log = aiLogger("analytics:feature-flags");
 
 function getDistinctIdFromCookie(headers: ReadonlyHeaders) {
   const cookieHeader = headers.get("cookie");
-  invariant(cookieHeader, "No cookie header");
+  if (!cookieHeader) {
+    return null;
+  }
   const cookies = cookie.parse(cookieHeader) as Record<string, string>;
   const phCookieKey = `ph_${process.env.NEXT_PUBLIC_POSTHOG_API_KEY}_posthog`;
   const phCookie = cookies[phCookieKey];

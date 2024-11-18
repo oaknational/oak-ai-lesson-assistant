@@ -1,7 +1,5 @@
-import type { IconName } from "@/components/Icon";
-
 interface SocialItem {
-  icon: IconName;
+  icon: "twitter" | "facebook" | "linkedin" | "instagram";
   href: string;
   id: string;
 }

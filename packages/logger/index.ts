@@ -31,7 +31,6 @@ type ChildKey =
   | "aila:rag"
   | "aila:testing"
   | "analytics"
-  | "analytics:feature-flags"
   | "app"
   | "auth"
   | "chat"
@@ -60,7 +59,8 @@ type ChildKey =
   | "transcripts"
   | "trpc"
   | "ui"
-  | "webhooks";
+  | "webhooks"
+  | "cron";
 
 const errorLogger =
   typeof window === "undefined"
