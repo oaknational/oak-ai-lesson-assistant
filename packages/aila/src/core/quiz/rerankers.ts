@@ -11,7 +11,6 @@ export class CohereReranker implements DocumentReranker {
       token: process.env.COHERE_API_KEY as string,
     });
   }
-
   public async rerankDocuments(
     query: string,
     docs: SimplifiedResult[],
