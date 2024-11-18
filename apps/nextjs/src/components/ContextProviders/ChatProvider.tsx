@@ -352,7 +352,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
    *  Fetch the state from the last "state" command in the most recent assistant message
    */
   useEffect(() => {
-    if (!hasFinished || !messages) return;
+    console.log("&&&before&&&&&&&&&&&&&&&&&&&&%%%%%%%%%%%%%%%%%%%%");
+    if (!hasFinished || !messages || ailaStreamingStatus !== "Idle") return;
+    console.log("after%%%%%%%%%%%%%%%%%%%%");
     trpcUtils.chat.appSessions.getChat.invalidate({ id });
     if (shouldTrackStreamFinished.current) {
       lessonPlanTracking.onStreamFinished({

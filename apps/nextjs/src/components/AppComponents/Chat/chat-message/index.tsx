@@ -1,7 +1,7 @@
 // Inspired by Chatbot-UI and modified to fit the needs of this project
 // @see https://github.com/mckaywrigley/chatbot-ui/blob/main/components/Chat/ChatMessage.tsx
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import type {
   ActionDocument,
@@ -19,19 +19,19 @@ import type {
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { isSafe } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import { aiLogger } from "@oakai/logger";
 import type { Message } from "ai";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 import { useChatModeration } from "@/components/ContextProviders/ChatModerationContext";
+import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
+import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
+import useAnalytics from "@/lib/analytics/useAnalytics";
 import { cn } from "@/lib/utils";
 
 import type { ModerationModalHelpers } from "../../FeedbackForms/ModerationFeedbackModal";
 import type { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import { isModeration } from "./protocol";
-
-const log = aiLogger("chat");
 
 export interface ChatMessageProps {
   chatId: string; // Needed for when we refactor to use a moderation provider
@@ -40,6 +40,8 @@ export interface ChatMessageProps {
   lastModeration?: PersistedModerationBase | null;
   separator?: JSX.Element;
   ailaStreamingStatus: AilaStreamingStatus;
+  isLastMessage: boolean;
+  scrollToBottom: () => void;
 }
 
 export function ChatMessage({
@@ -47,6 +49,8 @@ export function ChatMessage({
   persistedModerations,
   separator,
   ailaStreamingStatus,
+  isLastMessage,
+  scrollToBottom,
 }: Readonly<ChatMessageProps>) {
   const { moderationModalHelpers } = useChatModeration();
 
@@ -108,7 +112,7 @@ export function ChatMessage({
     <>
       {separator}
 
-      {matchingModeration && !isSafe(matchingModeration) && (
+      {/* {matchingModeration && !isSafe(matchingModeration) && (
         <MessageWrapper errorType="moderation" type={getAvatarType()}>
           <MessageTextWrapper>
             <div className="flex items-center">
@@ -130,7 +134,7 @@ export function ChatMessage({
             </div>
           </MessageTextWrapper>
         </MessageWrapper>
-      )}
+      )} */}
       <MessageWrapper
         errorType={hasError ? "generic" : null}
         type={getAvatarType()}
@@ -143,16 +147,11 @@ export function ChatMessage({
         />
         <MessageTextWrapper>
           {message.id !== "working-on-it-initial" &&
-            messageParts.map((part, index) => {
-              return (
-                <div className="w-full" key={index}>
-                  <ChatMessagePart
-                    part={part}
-                    moderationModalHelpers={moderationModalHelpers}
-                    inspect={inspect}
-                  />
-                </div>
-              );
+            handleTextAndInLineButton({
+              messageParts,
+              moderationModalHelpers,
+              inspect,
+              isLastMessage,
             })}
 
           {message.id === "working-on-it-initial" && (
@@ -225,12 +224,16 @@ export interface ChatMessagePartProps {
   part: MessagePart;
   inspect: boolean;
   moderationModalHelpers: ModerationModalHelpers;
+  isLastMessage: boolean;
+  scrollToBottom: () => void;
 }
 
 function ChatMessagePart({
   part,
   inspect,
   moderationModalHelpers,
+  isLastMessage,
+  scrollToBottom,
 }: Readonly<ChatMessagePartProps>) {
   const PartComponent = {
     comment: CommentMessagePart,
@@ -247,10 +250,11 @@ function ChatMessagePart({
   }[part.document.type] as React.ComponentType<{
     part: typeof part.document;
     moderationModalHelpers: ModerationModalHelpers;
+    isLastMessage: boolean;
+    scrollToBottom: () => void;
   }>;
 
   if (!PartComponent) {
-    log.info("Unknown part type", part.document.type, JSON.stringify(part));
     return null;
   }
 
@@ -259,6 +263,8 @@ function ChatMessagePart({
       <PartComponent
         part={part.document}
         moderationModalHelpers={moderationModalHelpers}
+        isLastMessage={isLastMessage}
+        scrollToBottom={scrollToBottom}
       />
 
       {
@@ -299,9 +305,186 @@ function ErrorMessagePart({
   return <MemoizedReactMarkdownWithStyles markdown={markdown} />;
 }
 
-function TextMessagePart({ part }: Readonly<{ part: TextDocument }>) {
-  return <MemoizedReactMarkdownWithStyles markdown={part.value} />;
+export const InLineButton = ({
+  text,
+  onClick,
+}: {
+  text: string;
+  onClick: () => void;
+}) => {
+  const handleClick = useCallback(() => {
+    onClick();
+  }, [onClick]);
+
+  return (
+    <button
+      onClick={handleClick}
+      className="my-6 w-fit rounded-lg border border-black border-opacity-30 bg-white p-7 text-left text-base text-blue "
+    >
+      {text}
+    </button>
+  );
+};
+
+function TextMessagePart({
+  part,
+  isLastMessage,
+  scrollToBottom,
+}: Readonly<{
+  part: TextDocument;
+  isLastMessage: boolean;
+  scrollToBottom: () => void;
+}>) {
+  function containsRelevantList(text: string): boolean {
+    const relevancePhraseRegex =
+      /might\s*be\s*relevant|could\s*be\s*relevant|are\s*relevant/i; // Variations of "might be relevant"
+    const numberedListRegex = /\d+\.\s+[A-Za-z0-9]/; // Matches a numbered list like "1. Something"
+
+    return relevancePhraseRegex.test(text) && numberedListRegex.test(text);
+  }
+  const chat = useLessonChat();
+  const { trackEvent } = useAnalytics();
+  const lessonPlanTracking = useLessonPlanTracking();
+
+  const { queueUserAction, ailaStreamingStatus } = chat;
+  const handleContinue = useCallback(
+    async (text: string) => {
+      trackEvent("chat:continue");
+      lessonPlanTracking.onClickContinue();
+      queueUserAction(text);
+    },
+    [queueUserAction, lessonPlanTracking, trackEvent],
+  );
+
+  const shouldTransformToButtons = containsRelevantList(part.value);
+  // console.log("******isLastMessage", part.value, isLastMessage);
+  if (part.value.includes("Otherwise, tap")) {
+    const [userHasSelected, setUserHasSelected] = useState(false);
+    return (
+      <div className="flex flex-col gap-6">
+        <MemoizedReactMarkdownWithStyles
+          markdown={part.value.split("Otherwise, tap")[0] ?? part.value}
+          shouldTransformToButtons={true}
+        />
+        {((ailaStreamingStatus === "Idle" &&
+          isLastMessage &&
+          !userHasSelected) ||
+          (ailaStreamingStatus === "Moderating" && isLastMessage)) && (
+          <InlineButtonGroup
+            handleContinue={handleContinue}
+            part={part}
+            setUserHasSelected={setUserHasSelected}
+            scrollToBottom={scrollToBottom}
+          />
+        )}
+      </div>
+    );
+  }
+  if (part.value.includes("Tap **Continue")) {
+    const [userHasSelected, setUserHasSelected] = useState(false);
+    return (
+      <div className="flex flex-col gap-6">
+        <MemoizedReactMarkdownWithStyles
+          markdown={part.value.split("Tap **Continue")[0] ?? part.value}
+          shouldTransformToButtons={true}
+        />
+        {ailaStreamingStatus === "Idle" &&
+          isLastMessage &&
+          !userHasSelected && (
+            <InlineButtonGroup
+              handleContinue={handleContinue}
+              part={part}
+              setUserHasSelected={setUserHasSelected}
+              scrollToBottom={scrollToBottom}
+            />
+          )}
+      </div>
+    );
+  }
+  return (
+    <MemoizedReactMarkdownWithStyles
+      markdown={part.value}
+      shouldTransformToButtons={shouldTransformToButtons}
+    />
+  );
 }
+
+const InlineButtonGroup = ({
+  handleContinue,
+  part,
+  setUserHasSelected,
+  scrollToBottom,
+}: {
+  handleContinue: (text: string) => void;
+  part: TextDocument;
+  setUserHasSelected: (value: boolean) => void;
+  scrollToBottom: () => void;
+}) => {
+  const [showExmapleEdits, setShowExampleEdits] = useState(false);
+  const isFinalStep =
+    part.value.includes("complete the lesson plan") ||
+    part.value.includes("final step");
+  return (
+    <div className="flex flex-col">
+      {showExmapleEdits && (
+        <div className="flex flex-col">
+          <InLineButton
+            text="Make them easier"
+            onClick={() => {
+              handleContinue("Make them easier");
+              scrollToBottom();
+            }}
+          />
+          <InLineButton
+            text="Make them harder"
+            onClick={() => {
+              handleContinue("Make them harder");
+            }}
+          />
+          <InLineButton
+            text="Shorten content"
+            onClick={() => {
+              handleContinue("Shorten content");
+            }}
+          />
+          <InLineButton
+            text="Add more detail"
+            onClick={() => {
+              handleContinue("Add more detail");
+            }}
+          />
+        </div>
+      )}
+
+      {part.value.startsWith("Are the") &&
+        !showExmapleEdits &&
+        !isFinalStep && (
+          <InLineButton
+            text="Show example edits"
+            onClick={() => {
+              setShowExampleEdits(true);
+            }}
+          />
+        )}
+
+      <InLineButton
+        text={
+          isFinalStep
+            ? "Continue to the final step"
+            : "Continue to the next step"
+        }
+        onClick={() => {
+          handleContinue(
+            isFinalStep
+              ? "Continue to the final step"
+              : "Continue to the next step",
+          );
+          setUserHasSelected(true);
+        }}
+      />
+    </div>
+  );
+};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function PatchMessagePart({ part }: Readonly<{ part: PatchDocument }>) {
@@ -337,4 +520,30 @@ function PartInspector({ part }: Readonly<{ part: MessagePart }>) {
       </pre>
     </div>
   );
+}
+
+function handleTextAndInLineButton({
+  messageParts,
+  moderationModalHelpers,
+  inspect,
+  isLastMessage,
+}: {
+  messageParts: MessagePart[];
+  moderationModalHelpers: ModerationModalHelpers;
+  inspect: boolean;
+  isLastMessage: boolean;
+}) {
+  return messageParts.map((part, index) => {
+    return (
+      <div className="w-full" key={part.id || index}>
+        <ChatMessagePart
+          part={part}
+          moderationModalHelpers={moderationModalHelpers}
+          inspect={inspect}
+          isLastMessage={isLastMessage}
+          scrollToBottom={() => {}}
+        />
+      </div>
+    );
+  });
 }

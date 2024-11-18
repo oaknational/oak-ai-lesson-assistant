@@ -29,6 +29,7 @@ function DemoLimitMessage({ id }: Readonly<{ id: string }>) {
       <ChatMessage
         chatId={id}
         ailaStreamingStatus="Idle"
+        isLastMessage={false}
         message={{
           id: "demo-limit",
           role: "assistant",
@@ -36,6 +37,7 @@ function DemoLimitMessage({ id }: Readonly<{ id: string }>) {
             '{"type": "error", "message": "**Your lesson is complete**\\nYou can no longer edit this lesson. [Create new lesson.](/aila)"}',
         }}
         persistedModerations={[]}
+        scrollToBottom={() => {}}
         separator={<span className="my-10 flex" />}
       />
     </div>
@@ -103,6 +105,7 @@ export function ChatList({
         persistedModerations={persistedModerations}
         ailaStreamingStatus={ailaStreamingStatus}
         demo={demo}
+        scrollToBottom={scrollToBottom}
       />
 
       {isDemoLocked && <DemoLimitMessage id={id} />}
@@ -118,6 +121,7 @@ export const ChatMessagesDisplay = ({
   persistedModerations = [],
   ailaStreamingStatus,
   demo,
+  scrollToBottom,
 }: {
   id: string;
   messages: Message[];
@@ -125,6 +129,7 @@ export const ChatMessagesDisplay = ({
   persistedModerations: PersistedModerationBase[];
   ailaStreamingStatus: AilaStreamingStatus;
   demo: DemoContextProps;
+  scrollToBottom: () => void;
 }) => {
   const { lessonPlan, isStreaming } = useLessonChat();
   const { setDialogWindow } = useDialog();
@@ -135,9 +140,9 @@ export const ChatMessagesDisplay = ({
 
   return (
     <>
-      {messages.map((message) => {
+      {messages.map((message, i) => {
         // Check if the most recent message in the messages array is from the role user if so add a working on it message
-
+        const isLastMessage = i === messages.length - 1;
         if (messages.length === 1) {
           return (
             <div
@@ -151,6 +156,8 @@ export const ChatMessagesDisplay = ({
                 lastModeration={lastModeration}
                 persistedModerations={persistedModerations}
                 ailaStreamingStatus={ailaStreamingStatus}
+                isLastMessage={isLastMessage}
+                scrollToBottom={scrollToBottom}
                 separator={<span className="my-10 flex" />}
               />
               <ChatMessage
@@ -163,8 +170,10 @@ export const ChatMessagesDisplay = ({
                 }}
                 lastModeration={lastModeration}
                 persistedModerations={[]}
+                scrollToBottom={scrollToBottom}
                 separator={<span className="my-10 flex" />}
                 ailaStreamingStatus={ailaStreamingStatus}
+                isLastMessage={isLastMessage}
               />
             </div>
           );
@@ -178,6 +187,7 @@ export const ChatMessagesDisplay = ({
               key={message.id}
               chatId={id}
               ailaStreamingStatus={ailaStreamingStatus}
+              scrollToBottom={scrollToBottom}
               message={
                 !["Moderating", "Idle"].includes(ailaStreamingStatus) &&
                 message.role === "assistant" &&
@@ -195,6 +205,7 @@ export const ChatMessagesDisplay = ({
                 ailaStreamingStatus !== "Idle" ? [] : persistedModerations
               }
               separator={<span className="my-10 flex" />}
+              isLastMessage={isLastMessage}
             />
           </div>
         );
@@ -205,6 +216,7 @@ export const ChatMessagesDisplay = ({
           <div className="w-full flex-col gap-11">
             <ChatMessage
               chatId={id}
+              scrollToBottom={scrollToBottom}
               ailaStreamingStatus={ailaStreamingStatus}
               message={{
                 id: "working-on-it-initial",
@@ -212,6 +224,7 @@ export const ChatMessagesDisplay = ({
                 content: "Working on it…",
               }}
               lastModeration={lastModeration}
+              isLastMessage={false}
               persistedModerations={[]}
               separator={<span className="my-10 flex" />}
             />

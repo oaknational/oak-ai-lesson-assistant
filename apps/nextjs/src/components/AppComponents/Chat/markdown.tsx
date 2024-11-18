@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import React, { memo } from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import type { Options } from "react-markdown";
 import ReactMarkdown from "react-markdown";
 
@@ -7,10 +7,15 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import { Box, Flex } from "@radix-ui/themes";
 import remarkGfm from "remark-gfm";
 
+import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
+import useAnalytics from "@/lib/analytics/useAnalytics";
 import { cn } from "@/lib/utils";
 
+import { InLineButton } from "./chat-message";
 import { CodeBlock } from "./ui/codeblock";
 
+// Memoized Component
 const MemoizedReactMarkdown: FC<Options> = memo(
   ReactMarkdown,
   (prevProps, nextProps) =>
@@ -20,19 +25,64 @@ const MemoizedReactMarkdown: FC<Options> = memo(
 
 export const MemoizedReactMarkdownWithStyles = ({
   markdown,
+  shouldTransformToButtons = false,
   lessonPlanSectionDescription,
   className,
 }: {
   markdown: string;
+  shouldTransformToButtons?: boolean;
   lessonPlanSectionDescription?: string;
   className?: string;
 }) => {
+  // Memoize the markdown content to avoid recalculating if it hasn't changed
+  const memoizedMarkdown = useMemo(() => markdown, [markdown]);
+
+  // UseCallback to avoid inline function recreation
+
+  const chat = useLessonChat();
+  const { trackEvent } = useAnalytics();
+
+  const { queueUserAction, ailaStreamingStatus } = chat;
+  const handleContinue = useCallback(
+    async (string) => {
+      trackEvent(`chat:${string}`);
+
+      queueUserAction(string);
+    },
+    [queueUserAction, trackEvent],
+  );
+
   return (
     <MemoizedReactMarkdown
       className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
       remarkPlugins={[remarkGfm]}
       components={{
+        ol({ children }) {
+          if (shouldTransformToButtons) {
+            return (
+              <ol className="m-0 list-none p-0">
+                {React.Children.map(children, (child) => {
+                  if (!child || child === "\n") return null;
+                  return child;
+                })}
+              </ol>
+            );
+          }
+          return (
+            <ol className={cn("marker:text-black", className)}>{children}</ol>
+          );
+        },
         li({ children }) {
+          if (shouldTransformToButtons) {
+            return (
+              <li className="m-0 p-0">
+                <InLineButton
+                  text={String(children)}
+                  onClick={() => handleContinue(String(children))}
+                />
+              </li>
+            );
+          }
           return (
             <li className={cn("marker:text-black", className)}>{children}</li>
           );
@@ -40,19 +90,20 @@ export const MemoizedReactMarkdownWithStyles = ({
         p({ children }) {
           return <p className={cn("mb-7 last:mb-0", className)}>{children}</p>;
         },
+
         h1({ children }) {
           return (
             <Flex align="center" gap="3" className="mt-20">
               <Box>
                 <h2 className="mb-0 mt-0 text-xl font-bold">{children}</h2>
               </Box>
-              {!!lessonPlanSectionDescription && (
+              {lessonPlanSectionDescription && (
                 <Tooltip.Provider delayDuration={0}>
                   <Tooltip.Root>
                     <Tooltip.Trigger asChild>
                       <Box className="mb-0 mt-0 ">
                         <button className="my-0 flex h-[24px] w-[24px] items-center justify-center overflow-hidden rounded-full bg-black p-4 ">
-                          <span className=" p-3 text-xs text-white">i</span>
+                          <span className="p-3 text-xs text-white">i</span>
                         </button>
                       </Box>
                     </Tooltip.Trigger>
@@ -72,38 +123,17 @@ export const MemoizedReactMarkdownWithStyles = ({
           );
         },
         code(props) {
-          const {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            node,
-            className,
-            children,
-            inline,
-            ...restProps
-          } = props as {
-            node?: React.ReactNode;
-            inline?: boolean;
-            className?: string;
-            children?: React.ReactNode;
-          };
+          const { className, children, ...restProps } = props;
           if (children && Array.isArray(children) && children.length) {
-            if (children[0] == "▍") {
+            if (children[0] === "▍") {
               return (
                 <span className="mt-5 animate-pulse cursor-default">▍</span>
               );
             }
-
             children[0] = (children[0] as string).replace("`▍`", "▍");
           }
 
           const match = /language-(\w+)/.exec(className || "");
-
-          if (inline) {
-            return (
-              <code className={className} {...restProps}>
-                {children}
-              </code>
-            );
-          }
 
           return (
             <CodeBlock
@@ -127,7 +157,7 @@ export const MemoizedReactMarkdownWithStyles = ({
         },
       }}
     >
-      {markdown}
+      {memoizedMarkdown}
     </MemoizedReactMarkdown>
   );
 };

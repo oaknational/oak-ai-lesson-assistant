@@ -126,7 +126,7 @@ export const LessonPlanDisplay = ({
           )}
         </Flex>
       )}
-      {lastModeration && <GuidanceRequired moderation={lastModeration} />}
+      {/* {lastModeration && <GuidanceRequired moderation={lastModeration} />} */}
 
       {notEmpty(lessonPlan.basedOn) && (
         <Flex direction="row" gap="2" className="pb-12">

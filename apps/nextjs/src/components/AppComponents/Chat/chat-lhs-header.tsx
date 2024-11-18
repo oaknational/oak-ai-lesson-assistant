@@ -23,14 +23,14 @@ const ChatLhsHeader = ({
   return (
     <>
       <div className="mt-6 hidden items-center justify-end gap-5 sm:flex">
-        {process.env.NEXT_PUBLIC_ENVIRONMENT !== "prd" && (
+        {process.env.NEXT_PUBLIC_ENVIRONMENT === "dev" && (
           <div className="flex flex-grow flex-row space-x-4 text-left text-xs">
             <div data-testid="chat-aila-streaming-status">
               {chat.ailaStreamingStatus}
             </div>
           </div>
         )}
-        <ChatButton
+        {/* <ChatButton
           variant="secondary"
           onClick={() => {
             router.push("/aila");
@@ -38,7 +38,7 @@ const ChatLhsHeader = ({
           size="sm"
         >
           New lesson
-        </ChatButton>
+        </ChatButton> */}
       </div>
       <div className={`${isDemoUser && "mt-16"} flex justify-end sm:hidden`}>
         <button

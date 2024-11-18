@@ -15,11 +15,23 @@ export function ChatStartForm({
   setInput,
   isSubmitting,
   submit,
+  initialPrompt,
+  userCanSubmit,
+  setValidationError,
+  selectedSubject,
+  selectedKeyStage,
+  selectedLength,
 }: Readonly<{
   input: string;
   setInput: (value: string) => void;
   isSubmitting: boolean;
   submit: (message: string) => void;
+  initialPrompt: string | null;
+  userCanSubmit: boolean;
+  setValidationError: (message: string | null) => void;
+  selectedSubject: string | null;
+  selectedKeyStage: string | null;
+  selectedLength: string | null;
 }>) {
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -34,15 +46,25 @@ export function ChatStartForm({
     if (e) {
       e.preventDefault();
     }
-    if (!input?.trim()) {
+    if (!userCanSubmit) {
+      setValidationError(
+        `The following field(s) are missing: ${
+          !selectedSubject ? "Subject" : ""
+        }${!selectedKeyStage ? ", Key Stage" : ""}${
+          !selectedLength ? ", Length" : ""
+        }${!input ? ", Lesson Title" : ""}`,
+      );
       return;
     }
-    submit(input);
+    if (!initialPrompt?.trim()) {
+      return;
+    }
+    submit(initialPrompt);
   };
 
   return (
     <form onSubmit={handleSubmit} ref={formRef}>
-      <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden rounded-md border-2 border-black bg-white pr-20">
+      <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden rounded-full border-2 border-black bg-white pr-20">
         <Textarea
           required
           data-testid="chat-input"
@@ -52,7 +74,7 @@ export function ChatStartForm({
           rows={1}
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder={"Subject, key stage and title"}
+          placeholder={"Type a lesson title"}
           spellCheck={false}
           className="min-h-[60px] w-full resize-none bg-transparent px-10 py-[1.3rem] text-lg focus-within:outline-none"
           disabled={isSubmitting}
