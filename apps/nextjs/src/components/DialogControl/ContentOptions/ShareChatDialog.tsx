@@ -69,6 +69,7 @@ const ShareChat = ({
           href={`/aila/${chatId}/share`}
           target="_blank"
           iconName="external"
+          isTrailingIcon={true}
         >
           View share page
         </OakPrimaryButton>
