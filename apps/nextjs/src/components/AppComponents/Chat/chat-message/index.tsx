@@ -44,6 +44,7 @@ export interface ChatMessageProps {
   separator?: JSX.Element;
   ailaStreamingStatus: AilaStreamingStatus;
   isLastMessage: boolean;
+  scrollToBottom: () => void;
 }
 
 export function ChatMessage({
@@ -52,6 +53,7 @@ export function ChatMessage({
   separator,
   ailaStreamingStatus,
   isLastMessage,
+  scrollToBottom,
 }: Readonly<ChatMessageProps>) {
   const { moderationModalHelpers } = useChatModeration();
 
@@ -226,6 +228,7 @@ export interface ChatMessagePartProps {
   inspect: boolean;
   moderationModalHelpers: ModerationModalHelpers;
   isLastMessage: boolean;
+  scrollToBottom: () => void;
 }
 
 function ChatMessagePart({
@@ -233,6 +236,7 @@ function ChatMessagePart({
   inspect,
   moderationModalHelpers,
   isLastMessage,
+  scrollToBottom,
 }: Readonly<ChatMessagePartProps>) {
   const PartComponent = {
     comment: CommentMessagePart,
@@ -250,6 +254,7 @@ function ChatMessagePart({
     part: typeof part.document;
     moderationModalHelpers: ModerationModalHelpers;
     isLastMessage: boolean;
+    scrollToBottom: () => void;
   }>;
 
   if (!PartComponent) {
@@ -263,6 +268,7 @@ function ChatMessagePart({
         part={part.document}
         moderationModalHelpers={moderationModalHelpers}
         isLastMessage={isLastMessage}
+        scrollToBottom={scrollToBottom}
       />
 
       {
@@ -317,7 +323,7 @@ export const InLineButton = ({
   return (
     <button
       onClick={handleClick}
-      className="my-6 w-fit rounded-lg border border-black border-opacity-30 bg-white p-7 text-blue"
+      className="my-6 w-fit rounded-lg border border-black border-opacity-30 bg-white p-7 text-base text-blue"
     >
       {text}
     </button>
@@ -327,7 +333,12 @@ export const InLineButton = ({
 function TextMessagePart({
   part,
   isLastMessage,
-}: Readonly<{ part: TextDocument; isLastMessage: boolean }>) {
+  scrollToBottom,
+}: Readonly<{
+  part: TextDocument;
+  isLastMessage: boolean;
+  scrollToBottom: () => void;
+}>) {
   function containsRelevantList(text: string): boolean {
     const relevancePhraseRegex =
       /might\s*be\s*relevant|could\s*be\s*relevant|are\s*relevant/i; // Variations of "might be relevant"
@@ -367,6 +378,7 @@ function TextMessagePart({
             handleContinue={handleContinue}
             part={part}
             setUserHasSelected={setUserHasSelected}
+            scrollToBottom={scrollToBottom}
           />
         )}
       </div>
@@ -387,6 +399,7 @@ function TextMessagePart({
               handleContinue={handleContinue}
               part={part}
               setUserHasSelected={setUserHasSelected}
+              scrollToBottom={scrollToBottom}
             />
           )}
       </div>
@@ -404,10 +417,12 @@ const InlineButtonGroup = ({
   handleContinue,
   part,
   setUserHasSelected,
+  scrollToBottom,
 }: {
   handleContinue: (text: string) => void;
   part: TextDocument;
   setUserHasSelected: (value: boolean) => void;
+  scrollToBottom: () => void;
 }) => {
   const [showExmapleEdits, setShowExampleEdits] = useState(false);
   const isFinalStep =
@@ -421,6 +436,7 @@ const InlineButtonGroup = ({
             text="Make them easier"
             onClick={() => {
               handleContinue("Make them easier");
+              scrollToBottom();
             }}
           />
           <InLineButton
