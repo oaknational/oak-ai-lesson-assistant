@@ -31,7 +31,7 @@ const ChatLeftHandSide = ({
     <Flex
       direction="column"
       gap="4"
-      className="w-full bg-[#ECEFF8] px-13 pt-28 sm:w-[50%] sm:px-24 lg:w-[600px] lg:min-w-[600px]"
+      className="mb-5 w-full bg-[#ECEFF8] px-13 pt-28 sm:w-[50%] sm:px-24 lg:w-[600px] lg:min-w-[600px]"
       height="100%"
       position="relative"
     >

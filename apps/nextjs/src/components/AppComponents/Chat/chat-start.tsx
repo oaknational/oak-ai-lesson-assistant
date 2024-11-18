@@ -116,7 +116,7 @@ export function ChatStart() {
           `The following field(s) are missing: ${
             !selectedSubject ? "Subject" : ""
           }${!selectedKeyStage ? ", Key Stage" : ""}${
-            !selectedLength ? ", Lesson Length" : ""
+            !selectedLength ? ", Lesson length" : ""
           }${!input ? ", Lesson Title" : ""}`,
         );
         return;
@@ -391,10 +391,10 @@ const KeyStageDropDown = ({
   setActiveDropdown,
 }) => {
   const keyStages = [
-    "Key Stage 1",
-    "Key Stage 2",
-    "Key Stage 3",
-    "Key Stage 4",
+    "Key stage 1",
+    "Key stage 2",
+    "Key stage 3",
+    "Key stage 4",
     "Other",
   ];
   const [customValue, setCustomValue] = useState("");
@@ -410,7 +410,7 @@ const KeyStageDropDown = ({
           setActiveDropdown(activeDropdown === "keyStages" ? null : "keyStages")
         }
       >
-        {selectedKeyStage || "Key Stage"}
+        {selectedKeyStage || "Key stage"}
       </DropDownButton>
       {activeDropdown === "keyStages" && (
         <DropDownWrapper>
@@ -480,7 +480,7 @@ const LengthDropDown = ({
           setActiveDropdown(activeDropdown === "length" ? null : "length")
         }
       >
-        {selectedLength || "Lesson Length"}
+        {selectedLength || "Lesson length"}
       </DropDownButton>
       {activeDropdown === "length" && (
         <DropDownWrapper>
@@ -556,7 +556,7 @@ async function populateAllStartChatFields({
   setSelectedLength: (value: string) => void;
 }) {
   setInput("roman britain");
-  setSelectedKeyStage("Key Stage 3");
+  setSelectedKeyStage("Key stage 3");
   setSelectedSubject("History");
   setSelectedLength("60 mins");
 }

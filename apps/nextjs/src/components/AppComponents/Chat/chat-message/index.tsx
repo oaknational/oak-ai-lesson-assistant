@@ -115,7 +115,7 @@ export function ChatMessage({
     <>
       {separator}
 
-      {matchingModeration && !isSafe(matchingModeration) && (
+      {/* {matchingModeration && !isSafe(matchingModeration) && (
         <MessageWrapper errorType="moderation" type={getAvatarType()}>
           <MessageTextWrapper>
             <div className="flex items-center">
@@ -137,7 +137,7 @@ export function ChatMessage({
             </div>
           </MessageTextWrapper>
         </MessageWrapper>
-      )}
+      )} */}
       <MessageWrapper
         errorType={hasError ? "generic" : null}
         type={getAvatarType()}
@@ -323,7 +323,7 @@ export const InLineButton = ({
   return (
     <button
       onClick={handleClick}
-      className="my-6 w-fit rounded-lg border border-black border-opacity-30 bg-white p-7 text-base text-blue"
+      className="my-6 w-fit rounded-lg border border-black border-opacity-30 bg-white p-7 text-left text-base text-blue "
     >
       {text}
     </button>
@@ -473,13 +473,15 @@ const InlineButtonGroup = ({
 
       <InLineButton
         text={
-          isFinalStep ? "Proceed to the final step" : "Proceed to the next step"
+          isFinalStep
+            ? "Continue to the final step"
+            : "Continue to the next step"
         }
         onClick={() => {
           handleContinue(
             isFinalStep
-              ? "Proceed to the final step"
-              : "Proceed to the next step",
+              ? "Continue to the final step"
+              : "Continue to the next step",
           );
           setUserHasSelected(true);
         }}
