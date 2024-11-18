@@ -19,7 +19,11 @@ const ModalFooterButtons = ({
       $pb="inner-padding-m"
     >
       {actionButtonStates()}
-      <OakLinkNoUnderline onClick={() => closeDialog()} element="button">
+      <OakLinkNoUnderline
+        onClick={() => closeDialog()}
+        element="button"
+        tabIndex={1}
+      >
         <OakSpan $font="body-2-bold" $color="black" $textDecoration="none">
           Cancel
         </OakSpan>
