@@ -35,7 +35,7 @@ const dialogTitlesAndIcons: Record<
     iconName: "warning",
   },
   "demo-interstitial": {
-    title: "Lesson limit reached",
+    title: "Demo lesson limits",
     iconName: "warning",
   },
   "demo-share-locked": {
@@ -67,7 +67,13 @@ const DialogContents = ({
       <OakModalCenterBody
         title={dialogTitlesAndIcons[dialogWindow].title}
         iconName={dialogTitlesAndIcons[dialogWindow].iconName}
-        hideIcon={dialogWindow === "feedback" || dialogWindow === "share-chat"}
+        iconOverride={
+          dialogWindow === "feedback" || dialogWindow === "share-chat"
+            ? {
+                $display: "none",
+              }
+            : {}
+        }
       >
         {children}
         {dialogWindow === "share-chat" && chatId && (
