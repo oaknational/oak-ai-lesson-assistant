@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { http, HttpResponse } from "msw";
 
 import type { AnalyticsContext } from "@/components/ContextProviders/AnalyticsProvider";
 import { analyticsContext } from "@/components/ContextProviders/AnalyticsProvider";
@@ -65,6 +66,39 @@ export const DemoInterstitial: Story = {
   parameters: {
     dialogWindow: "demo-interstitial",
     auth: "signedInDemo",
+    msw: {
+      handlers: [
+        http.get("/api/trpc/chat/chat.appSessions.remainingLimit", () => {
+          return HttpResponse.json({
+            result: { data: { json: { remaining: 3 } } },
+          });
+        }),
+      ],
+    },
+  },
+  decorators: [
+    (Story) => (
+      <DemoProvider>
+        <Story />
+      </DemoProvider>
+    ),
+  ],
+};
+
+export const DemoInterstitialLimited: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "demo-interstitial",
+    auth: "signedInDemo",
+    msw: {
+      handlers: [
+        http.get("/api/trpc/chat/chat.appSessions.remainingLimit", () => {
+          return HttpResponse.json({
+            result: { data: { json: { remaining: 0 } } },
+          });
+        }),
+      ],
+    },
   },
   decorators: [
     (Story) => (
