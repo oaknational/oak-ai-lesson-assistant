@@ -307,14 +307,23 @@ export const LLMPatchDocumentSchema = z.object({
 
 export type PatchDocument = z.infer<typeof PatchDocumentSchema>;
 
-const ExperimentalPatchMessagePartSchema = z.object({
-  op: z.union([z.literal("add"), z.literal("remove"), z.literal("replace")]),
-  path: z.union([
-    z.literal("/_experimental_starterQuizMathsV0"),
-    z.literal("/_experimental_exitQuizMathsV0"),
-  ]),
-  value: z.array(z.object({}).passthrough()),
-});
+const ExperimentalPatchMessagePartSchema = z.union([
+  z.object({
+    op: z.union([z.literal("add"), z.literal("replace")]),
+    path: z.union([
+      z.literal("/_experimental_starterQuizMathsV0"),
+      z.literal("/_experimental_exitQuizMathsV0"),
+    ]),
+    value: z.array(z.object({}).passthrough()),
+  }),
+  z.object({
+    op: z.literal("remove"),
+    path: z.union([
+      z.literal("/_experimental_starterQuizMathsV0"),
+      z.literal("/_experimental_exitQuizMathsV0"),
+    ]),
+  }),
+]);
 // This is the schema for experimental patches, which are part of our prototype agent system
 const ExperimentalPatchDocumentSchema = z.object({
   type: z.literal("experimentalPatch"),

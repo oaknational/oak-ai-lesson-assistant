@@ -360,6 +360,18 @@ export class AilaChat implements AilaChatService {
    * Fetch and enqueue experimental (agentic) additions
    */
   private async fetchExperimentalPatches() {
+    const patchExperimentalProperty = async (
+      value: ExperimentalPatchDocument["value"],
+    ) => {
+      const experimentalPatch: ExperimentalPatchDocument = {
+        type: "experimentalPatch",
+        value,
+      };
+
+      await this.enqueue(experimentalPatch);
+      this.appendEperimentalPatch(experimentalPatch);
+    };
+
     if (this._aila.lessonPlan.subject === "maths") {
       // Only maths has experimental patches for now
       return;
@@ -375,44 +387,42 @@ export class AilaChat implements AilaChatService {
     );
 
     if (starterQuizPatch) {
-      // get starter quiz from rec sys
-      const mathsStarterQuiz: Quiz | null = null;
-
-      if (mathsStarterQuiz) {
-        const experimentalPatch: ExperimentalPatchDocument = {
-          type: "experimentalPatch",
-          value: {
+      const op = starterQuizPatch.value.op;
+      if (op === "remove") {
+        await patchExperimentalProperty({
+          op,
+          path: "/_experimental_starterQuizMathsV0",
+        });
+      } else {
+        const mathsStarterQuiz: Quiz | null = null;
+        if (mathsStarterQuiz) {
+          await patchExperimentalProperty({
             path: "/_experimental_starterQuizMathsV0",
-            op: starterQuizPatch.value.op,
+            op,
             value: mathsStarterQuiz,
-          },
-        };
-
-        await this.enqueue(experimentalPatch);
-
-        this.appendEperimentalPatch(experimentalPatch);
+          });
+        }
       }
     }
 
     const exitQuizPatch = patches.find((p) => p.value.path === "/exitQuiz");
 
     if (exitQuizPatch) {
-      // get exit quiz from rec sys
-      const mathsExitQuiz: Quiz | null = null;
-
-      if (mathsExitQuiz) {
-        const experimentalPatch: ExperimentalPatchDocument = {
-          type: "experimentalPatch",
-          value: {
+      const op = exitQuizPatch.value.op;
+      if (op === "remove") {
+        await patchExperimentalProperty({
+          op,
+          path: "/_experimental_exitQuizMathsV0",
+        });
+      } else {
+        const mathsExitQuiz: Quiz | null = null;
+        if (mathsExitQuiz) {
+          await patchExperimentalProperty({
             path: "/_experimental_exitQuizMathsV0",
-            op: exitQuizPatch.value.op,
+            op,
             value: mathsExitQuiz,
-          },
-        };
-
-        await this.enqueue(experimentalPatch);
-
-        this.appendEperimentalPatch(experimentalPatch);
+          });
+        }
       }
     }
   }
