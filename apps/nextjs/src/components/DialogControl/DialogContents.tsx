@@ -33,8 +33,11 @@ const DialogContents = ({
   submit?: () => void;
   isShared?: boolean | undefined;
 }) => {
-  const { dialogWindow, setDialogWindow } = useDialog();
-  const closeDialog = () => setDialogWindow("");
+  const { dialogWindow, setDialogWindow, setDialogProps } = useDialog();
+  const closeDialog = () => {
+    setDialogWindow("");
+    setDialogProps({});
+  };
 
   return (
     <Dialog.Portal>

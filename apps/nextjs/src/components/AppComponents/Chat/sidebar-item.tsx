@@ -27,10 +27,10 @@ interface SidebarItemProps {
 }
 
 export function SidebarItem({ chat }: SidebarItemProps) {
-  const { setDialogWindow } = useDialog();
+  const { setDialogWindow, setDialogProps } = useDialog();
   const [isHovered, setIsHovered] = useState(false);
   function deleteChatById() {
-    localStorage.setItem("chatIdToDelete", chat.id);
+    setDialogProps({ chatIdToDelete: chat.id });
     setDialogWindow("clear-single-chat");
   }
   return (

@@ -1,7 +1,6 @@
 "use client";
 
 import { useTransition } from "react";
-import { toast } from "react-hot-toast";
 
 import {
   OakFlex,
@@ -9,8 +8,9 @@ import {
   OakSmallPrimaryButton,
   OakSmallSecondaryButton,
 } from "@oaknational/oak-components";
-import { showReportDialog } from "@sentry/nextjs/build/types/server";
+import * as Sentry from "@sentry/nextjs";
 
+import { useDialog } from "@/components/AppComponents/DialogContext";
 import LoadingWheel from "@/components/LoadingWheel";
 import { trpc } from "@/utils/trpc";
 
@@ -19,20 +19,20 @@ const ClearSingleChatFromChatHistory = ({
 }: {
   closeDialog: () => void;
 }) => {
+  const { dialogProps, setDialogProps } = useDialog();
   const { mutate, isLoading } =
     trpc.chat.appSessions.deleteChatById.useMutation({
       onSuccess() {
-        console.log("Chat history cleared");
         closeDialog();
-        localStorage.removeItem("chatIdToDelete");
+        setDialogProps({});
       },
       onError() {
-        console.error("Failed to clear chat history");
+        Sentry.captureMessage("Error deleting chat");
       },
     });
 
   function deleteChatById() {
-    const id = localStorage.getItem("chatIdToDelete");
+    const id = dialogProps?.chatIdToDelete;
     if (typeof id !== "string") {
       return;
     }
