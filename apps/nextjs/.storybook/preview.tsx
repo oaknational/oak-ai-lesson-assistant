@@ -10,6 +10,7 @@ import { OakThemeProvider, oakDefaultTheme } from "@oaknational/oak-components";
 import type { Preview, Decorator } from "@storybook/react";
 
 import { TooltipProvider } from "../src/components/AppComponents/Chat/ui/tooltip";
+import { DialogProvider } from "../src/components/AppComponents/DialogContext";
 import { AnalyticsProvider } from "../src/mocks/analytics/provider";
 import { ClerkDecorator } from "../src/mocks/clerk/ClerkDecorator";
 import { TRPCReactProvider } from "../src/utils/trpc";
@@ -25,7 +26,6 @@ const preview: Preview = {
       },
     },
   },
-  tags: ["autodocs"],
 };
 
 // Providers not currently used
@@ -44,11 +44,13 @@ export const decorators: Decorator[] = [
       {/* TODO: Mock tRPC calls with MSW */}
       <TRPCReactProvider>
         <AnalyticsProvider>
-          <OakThemeProvider theme={oakDefaultTheme}>
-            <TooltipProvider>
-              <Story />
-            </TooltipProvider>
-          </OakThemeProvider>
+          <DialogProvider>
+            <OakThemeProvider theme={oakDefaultTheme}>
+              <TooltipProvider>
+                <Story />
+              </TooltipProvider>
+            </OakThemeProvider>
+          </DialogProvider>
         </AnalyticsProvider>
       </TRPCReactProvider>
     </>

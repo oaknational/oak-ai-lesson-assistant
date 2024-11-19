@@ -5,7 +5,6 @@ import { LegalContent } from "./legal";
 const meta: Meta<typeof LegalContent> = {
   title: "Pages/Legal/Sanity dynamic",
   component: LegalContent,
-  tags: ["autodocs"],
 };
 
 export default meta;
