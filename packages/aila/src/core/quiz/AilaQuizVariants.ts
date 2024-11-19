@@ -176,6 +176,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     const quizQuestions = await this.questionArrayFromCustomIds(customIds);
     return quizQuestions;
   }
+
   private async searchQuestions(
     client: Client,
     index: string,
@@ -485,21 +486,3 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 //   }
 //   // ... other implementations
 // }
-
-// Factory class
-export class AilaQuizFactory {
-  static createQuizGenerator(
-    type: "rag" | "ml" | "combined",
-  ): BaseQuizGenerator {
-    switch (type) {
-      case "rag":
-        return new RagQuizGenerator();
-      case "ml":
-        return new MLQuizGenerator();
-      case "combined":
-        return new CombinedQuizGenerator();
-      default:
-        throw new Error(`Unknown quiz generator type: ${type}`);
-    }
-  }
-}

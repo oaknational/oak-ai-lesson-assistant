@@ -57,7 +57,7 @@ export interface AilaQuizFactory {
 export interface AilaQuizRerankerFactory {
   createAilaQuizReranker(
     quizType: quizRerankerType,
-  ): AilaQuizReranker<z.ZodType>;
+  ): AilaQuizReranker<BaseType>;
 }
 
 export interface AilaQuizVariantService {
@@ -67,9 +67,9 @@ export interface AilaQuizVariantService {
   ): Promise<JsonPatchDocument>;
 }
 
-export interface AilaQuizReranker<T extends z.ZodType> {
+export interface AilaQuizReranker<T extends BaseType> {
   rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]>;
-  evaluateQuizArray<T extends z.ZodType>(
+  evaluateQuizArray<T extends BaseType>(
     quizzes: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
@@ -90,10 +90,11 @@ export interface QuizSelector<T extends BaseType> {
   ): QuizQuestion[];
 }
 
+export type QuizSelectorType = "simple";
+
 export interface QuizSelectorFactory {
   createQuizSelector<T extends BaseType>(
-    ratingFunction: RatingFunction<T>,
-    maxRatingFunctionApplier: MaxRatingFunctionApplier<T>,
+    selectorType: QuizSelectorType,
   ): QuizSelector<T>;
 }
 
@@ -136,3 +137,14 @@ export interface DocumentWrapper {
 }
 
 type quizPatchType = "/starterQuiz" | "/exitQuiz";
+
+export interface QuizServiceSettings {
+  quizType: quizPatchType;
+  ratingSchema: BaseType;
+}
+export interface BodgeFactory {
+  quizSelectorFactory: QuizSelectorFactory;
+  quizRerankerFactory: AilaQuizRerankerFactory;
+  quizVariantService: AilaQuizVariantService;
+  create(settings: QuizServiceSettings): AilaQuizService;
+}

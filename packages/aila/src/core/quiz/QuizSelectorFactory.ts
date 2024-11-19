@@ -4,13 +4,19 @@ import { BaseQuizSelector } from "./BaseQuizSelector";
 import type { BaseType, RatingFunction } from "./ChoiceModels";
 import type { MaxRatingFunctionApplier } from "./ChoiceModels";
 import { SimpleQuizSelector } from "./SimpleQuizSelector";
-import type { QuizSelector, QuizSelectorFactory } from "./interfaces";
+import type {
+  QuizSelector,
+  QuizSelectorFactory,
+  QuizSelectorType,
+} from "./interfaces";
 
 export class QuizSelectorFactoryImpl implements QuizSelectorFactory {
   public createQuizSelector<T extends BaseType>(
-    ratingFunction: RatingFunction<T>,
-    maxRatingFunctionApplier: MaxRatingFunctionApplier<T>,
+    selectorType: QuizSelectorType,
   ): QuizSelector<T> {
-    return new SimpleQuizSelector<T>();
+    switch (selectorType) {
+      case "simple":
+        return new SimpleQuizSelector<T>();
+    }
   }
 }
