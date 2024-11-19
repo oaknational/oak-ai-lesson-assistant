@@ -1,19 +1,71 @@
 import React from "react";
 
+type Context = {
+  isLoaded: boolean;
+  isSignedIn: boolean | undefined;
+  user:
+    | Record<
+        "id" | "firstName" | "lastName" | "emailAddresses" | "publicMetadata",
+        unknown
+      >
+    | undefined;
+};
+
 const mockUser = {
   id: "user_123",
   firstName: "John",
   lastName: "Doe",
   emailAddresses: [{ emailAddress: "john@example.com" }],
-  publicMetadata: { labs: { isDemoUser: true } },
+  publicMetadata: { labs: { isDemoUser: false } },
   // Add other user properties as needed
 };
 
-export const useUser = () => ({
-  isLoaded: true,
-  isSignedIn: true,
-  user: mockUser,
-});
+const states: Record<ClerkProviderProps["state"], Context> = {
+  loading: {
+    isLoaded: false,
+    isSignedIn: undefined,
+    user: undefined,
+  },
+  signedOut: {
+    isLoaded: true,
+    isSignedIn: false,
+    user: undefined,
+  },
+  signedIn: {
+    isLoaded: true,
+    isSignedIn: true,
+    user: mockUser,
+  },
+  signedInDemo: {
+    isLoaded: true,
+    isSignedIn: true,
+    user: {
+      ...mockUser,
+      publicMetadata: { ...mockUser.publicMetadata, isDemoUser: true },
+    },
+  },
+};
+
+const ClerkContext = React.createContext<Context>(states.signedIn);
+
+type ClerkProviderProps = {
+  state: "loading" | "signedIn" | "signedInDemo" | "signedOut";
+  children: React.ReactNode;
+};
+export const ClerkProvider = ({ state, children }: ClerkProviderProps) => (
+  <ClerkContext.Provider value={states[state]}>
+    {children}
+  </ClerkContext.Provider>
+);
+
+export const useUser = () => {
+  const context = React.useContext(ClerkContext);
+  return {
+    isLoaded: context.isLoaded,
+    isSignedIn: context.isSignedIn,
+    user: context.user,
+  };
+};
 
 export const useClerk = () => ({
   signOut: () => Promise.resolve(),
@@ -21,23 +73,43 @@ export const useClerk = () => ({
   // Add other Clerk methods as needed
 });
 
-export const useAuth = () => ({
-  isLoaded: true,
-  isSignedIn: true,
-  userId: mockUser.id,
-  sessionId: "session_123",
-  getToken: () => Promise.resolve("mock_token"),
-});
+export const useAuth = () => {
+  const context = React.useContext(ClerkContext);
+  return {
+    isLoaded: context.isLoaded,
+    isSignedIn: context.isSignedIn,
+    userId: mockUser?.id,
+    sessionId: "session_123",
+    getToken: () => Promise.resolve("mock_token"),
+  };
+};
 
-export const SignedIn = ({ children }: { children: React.ReactNode }) => (
-  <>{children}</>
-);
-export const SignedOut = ({ children }: { children: React.ReactNode }) => (
-  <>{children}</>
-);
+export const SignedIn = ({ children }: { children: React.ReactNode }) => {
+  const context = React.useContext(ClerkContext);
+  return context.isSignedIn ? children : null;
+};
 
-export const ClerkProvider = ({ children }: { children: React.ReactNode }) => (
-  <>{children}</>
-);
+export const SignedOut = ({ children }: { children: React.ReactNode }) => {
+  const context = React.useContext(ClerkContext);
+  return context.isSignedIn ? null : children;
+};
+
+export const UserButton = () => {
+  const context = React.useContext(ClerkContext);
+
+  return context.isSignedIn ? (
+    <div
+      style={{
+        display: "block",
+        height: "28px",
+        width: "28px",
+        background: "yellowgreen",
+        borderRadius: "50%",
+      }}
+    />
+  ) : (
+    "Sign in"
+  );
+};
 
 // Mock other Clerk components and hooks as needed
