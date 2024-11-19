@@ -1,10 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { SurveyType } from "posthog-js";
 
-import {
-  AnalyticsContext,
-  analyticsContext,
-} from "@/components/ContextProviders/AnalyticsProvider";
+import type { AnalyticsContext } from "@/components/ContextProviders/AnalyticsProvider";
+import { analyticsContext } from "@/components/ContextProviders/AnalyticsProvider";
 
 import { DialogContext } from "../AppComponents/DialogContext";
 import { DemoProvider } from "../ContextProviders/Demo";
@@ -13,7 +10,6 @@ import DialogContents from "./DialogContents";
 const meta: Meta<typeof DialogContents> = {
   title: "Components/Dialogs/DialogContents",
   component: DialogContents,
-  tags: ["autodocs"],
   decorators: (Story, { parameters }) => {
     return (
       <DialogContext.Provider
@@ -43,8 +39,10 @@ export const ShareChat: Story = {
 };
 
 export const ReportContent: Story = {
-  // TODO report props
   args: {},
+  parameters: {
+    dialogWindow: "report-content",
+  },
 };
 
 export const DemoShareLocked: Story = {
@@ -77,7 +75,6 @@ export const DemoInterstitial: Story = {
   ],
 };
 
-// TODO: survey
 export const Feedback: Story = {
   args: {},
   parameters: {
