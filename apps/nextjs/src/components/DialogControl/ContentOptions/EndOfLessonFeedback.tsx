@@ -9,6 +9,7 @@ const EndOfLessonFeedback = ({ closeDialog }: { closeDialog: () => void }) => {
       closeDialog,
       surveyName: "End of Aila generation survey launch aug24",
     });
+  console.log("survey", survey);
 
   return (
     <Box width="100%">

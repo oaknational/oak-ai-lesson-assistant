@@ -32,6 +32,7 @@ const FeedBack = ({
   );
 
   if (!survey?.id) return null;
+  console.log(survey);
 
   return (
     <Flex
