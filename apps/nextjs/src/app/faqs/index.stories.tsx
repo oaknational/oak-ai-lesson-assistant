@@ -5,7 +5,6 @@ import { FAQPageContent } from ".";
 const meta: Meta<typeof FAQPageContent> = {
   title: "Pages/FAQs",
   component: FAQPageContent,
-  tags: ["autodocs"],
 };
 
 export default meta;
