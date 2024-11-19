@@ -77,13 +77,20 @@ export interface AilaQuizReranker<T extends z.ZodType> {
 }
 
 // Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
-export interface QuizSelector<T extends z.ZodType> {
+export interface QuizSelector<T extends BaseType> {
   ratingFunction: RatingFunction<T>;
   maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
   selectBestQuiz(
     quizzes: QuizQuestion[][],
     ratingsSchemas: T[],
   ): QuizQuestion[];
+}
+
+export interface QuizSelectorFactory {
+  createQuizSelector<T extends z.ZodType>(
+    ratingFunction: RatingFunction<T>,
+    maxRatingFunctionApplier: MaxRatingFunctionApplier<T>,
+  ): QuizSelector<T>;
 }
 
 export interface CustomSource {

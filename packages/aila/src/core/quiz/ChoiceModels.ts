@@ -10,9 +10,10 @@ import { starterQuizSuitabilitySchema } from "./RerankerStructuredOutputSchema";
 
 const BaseSchema = z.object({
   // Add any common fields here
+  rating: z.number(),
 });
 
-type BaseType = z.infer<typeof BaseSchema>;
+export type BaseType = z.infer<typeof BaseSchema>;
 
 // Rating Function Type
 export type RatingFunction<T extends BaseType> = (item: T) => number;

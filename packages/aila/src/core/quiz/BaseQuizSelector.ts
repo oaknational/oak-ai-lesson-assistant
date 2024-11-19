@@ -3,21 +3,22 @@ import type { z } from "zod";
 import type { QuizQuestion } from "../../protocol/schema";
 import type { RatingFunction } from "./ChoiceModels";
 import type { MaxRatingFunctionApplier } from "./ChoiceModels";
+import type { BaseType } from "./ChoiceModels";
 import type { QuizSelector } from "./interfaces";
 
-export abstract class BaseQuizSelector<T extends z.ZodType>
+export abstract class BaseQuizSelector<T extends BaseType>
   implements QuizSelector<T>
 {
-  public ratingFunction: RatingFunction<T>;
-  public maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
+  public abstract ratingFunction: RatingFunction<T>;
+  public abstract maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
 
-  constructor(
-    ratingFunction: RatingFunction<T>,
-    maxRatingFunctionApplier: MaxRatingFunctionApplier<T>,
-  ) {
-    this.ratingFunction = ratingFunction;
-    this.maxRatingFunctionApplier = maxRatingFunctionApplier;
-  }
+  //   constructor(
+  //     ratingFunction: RatingFunction<T>,
+  //     maxRatingFunctionApplier: MaxRatingFunctionApplier<T>,
+  //   ) {
+  //     this.ratingFunction = ratingFunction;
+  //     this.maxRatingFunctionApplier = maxRatingFunctionApplier;
+  //   }
 
   public selectBestQuiz(
     quizzes: QuizQuestion[][],
