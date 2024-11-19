@@ -2,11 +2,11 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
 
-import Help from "./index";
+import { HelpContent } from ".";
 
-const meta: Meta<typeof Help> = {
+const meta: Meta<typeof HelpContent> = {
   title: "Pages/Chat/Help",
-  component: Help,
+  component: HelpContent,
   parameters: {
     // Including custom decorators changes the layout from fullscreen
     layout: "fullscreen",
@@ -21,7 +21,7 @@ const meta: Meta<typeof Help> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Help>;
+type Story = StoryObj<typeof HelpContent>;
 
 export const Default: Story = {
   args: {},

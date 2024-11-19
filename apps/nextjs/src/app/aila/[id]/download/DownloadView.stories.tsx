@@ -2,11 +2,14 @@ import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { DemoProvider } from "../../../../../src/components/ContextProviders/Demo";
-import { DownloadView } from "./DownloadView";
+import { DownloadContent } from "./DownloadView";
 
-const meta: Meta<typeof DownloadView> = {
+const meta: Meta<typeof DownloadContent> = {
   title: "Pages/Chat/Download",
-  component: DownloadView,
+  component: DownloadContent,
+  parameters: {
+    layout: "fullscreen",
+  },
   decorators: [
     (Story) => (
       <DemoProvider>
@@ -17,7 +20,7 @@ const meta: Meta<typeof DownloadView> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof DownloadView>;
+type Story = StoryObj<typeof DownloadContent>;
 
 const chat: AilaPersistedChat = {
   id: "nSLmbQ1LO75zLTcA",
