@@ -758,7 +758,6 @@ export function extractPatches(edit: string): {
   validPatches: PatchDocument[];
   partialPatches: PatchDocument[];
 } {
-  log.info("Extract patches from edit", edit);
   const parts: MessagePart[] | undefined = parseMessageParts(edit);
 
   if (!parts) {
@@ -815,17 +814,11 @@ export function applyLessonPlanPatch(
   }
 
   try {
-    log.info("About to apply patch", patchValue);
     const result = applyPatch(deepClone(updatedLessonPlan), [patchValue]);
-    log.info("Patch result", result);
     const newUpdatedLessonPlan = LessonPlanSchemaWhilstStreaming.parse(
       result.newDocument,
     );
 
-    log.info(
-      "Experimental value",
-      newUpdatedLessonPlan._experimental_starterQuizMathsV0,
-    );
     updatedLessonPlan = { ...newUpdatedLessonPlan };
   } catch (e) {
     const extra: Record<string, unknown> = {};

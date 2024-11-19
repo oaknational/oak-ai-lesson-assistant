@@ -122,12 +122,6 @@ export class AilaLesson implements AilaLessonService {
     );
 
     this._plan = workingLessonPlan;
-
-    log.info(
-      "Lesson plan updated",
-      this._plan._experimental_exitQuizMathsV0,
-      this._plan._experimental_starterQuizMathsV0,
-    );
   }
 
   public extractAndApplyLlmPatches(patches: string) {
