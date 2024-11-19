@@ -25,7 +25,6 @@ const preview: Preview = {
       },
     },
   },
-  tags: ["autodocs"],
 };
 
 // Providers not currently used

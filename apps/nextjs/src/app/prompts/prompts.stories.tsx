@@ -5,7 +5,6 @@ import { PromptsContent } from "./prompts";
 const meta: Meta<typeof PromptsContent> = {
   title: "Pages/Prompts",
   component: PromptsContent,
-  tags: ["autodocs"],
 };
 
 export default meta;
