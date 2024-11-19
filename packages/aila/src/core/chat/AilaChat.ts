@@ -15,6 +15,7 @@ import { generateMessageId } from "../../helpers/chat/generateMessageId";
 import type {
   ExperimentalPatchDocument,
   JsonPatchDocumentOptional,
+  PatchDocument,
 } from "../../protocol/jsonPatchProtocol";
 import {
   LLMMessageSchema,
@@ -359,38 +360,60 @@ export class AilaChat implements AilaChatService {
    * Fetch and enqueue experimental (agentic) additions
    */
   private async fetchExperimentalPatches() {
-    const mathsStarterQuiz: Quiz | null = null;
-
-    if (mathsStarterQuiz) {
-      const experimentalPatch: ExperimentalPatchDocument = {
-        type: "experimentalPatch",
-        value: {
-          path: "/_experimental_starterQuizMathsV0",
-          op: "add",
-          value: mathsStarterQuiz,
-        },
-      };
-
-      await this.enqueue(experimentalPatch);
-
-      this.appendEperimentalPatch(experimentalPatch);
+    if (this._aila.lessonPlan.subject === "maths") {
+      // Only maths has experimental patches for now
+      return;
     }
 
-    const mathsExitQuiz: Quiz | null = null;
+    const patches = this.parsedMessages
+      .map((m) => m.map((p) => p.document))
+      .flat()
+      .filter((p): p is PatchDocument => p.type === "patch");
 
-    if (mathsExitQuiz) {
-      const experimentalPatch: ExperimentalPatchDocument = {
-        type: "experimentalPatch",
-        value: {
-          path: "/_experimental_exitQuizMathsV0",
-          op: "add",
-          value: mathsExitQuiz,
-        },
-      };
+    const starterQuizPatch = patches.find(
+      (p) => p.value.path === "/starterQuiz",
+    );
 
-      await this.enqueue(experimentalPatch);
+    if (starterQuizPatch) {
+      // get starter quiz from rec sys
+      const mathsStarterQuiz: Quiz | null = null;
 
-      this.appendEperimentalPatch(experimentalPatch);
+      if (mathsStarterQuiz) {
+        const experimentalPatch: ExperimentalPatchDocument = {
+          type: "experimentalPatch",
+          value: {
+            path: "/_experimental_starterQuizMathsV0",
+            op: starterQuizPatch.value.op,
+            value: mathsStarterQuiz,
+          },
+        };
+
+        await this.enqueue(experimentalPatch);
+
+        this.appendEperimentalPatch(experimentalPatch);
+      }
+    }
+
+    const exitQuizPatch = patches.find((p) => p.value.path === "/exitQuiz");
+
+    if (exitQuizPatch) {
+      // get exit quiz from rec sys
+      const mathsExitQuiz: Quiz | null = null;
+
+      if (mathsExitQuiz) {
+        const experimentalPatch: ExperimentalPatchDocument = {
+          type: "experimentalPatch",
+          value: {
+            path: "/_experimental_exitQuizMathsV0",
+            op: exitQuizPatch.value.op,
+            value: mathsExitQuiz,
+          },
+        };
+
+        await this.enqueue(experimentalPatch);
+
+        this.appendEperimentalPatch(experimentalPatch);
+      }
     }
   }
 

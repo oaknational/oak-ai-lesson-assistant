@@ -308,7 +308,7 @@ export const LLMPatchDocumentSchema = z.object({
 export type PatchDocument = z.infer<typeof PatchDocumentSchema>;
 
 const ExperimentalPatchMessagePartSchema = z.object({
-  op: z.union([z.literal("add"), z.literal("replace")]),
+  op: z.union([z.literal("add"), z.literal("remove"), z.literal("replace")]),
   path: z.union([
     z.literal("/_experimental_starterQuizMathsV0"),
     z.literal("/_experimental_exitQuizMathsV0"),
