@@ -8,7 +8,7 @@ import type {
   QuizQuestion,
 } from "../../protocol/schema";
 import type { AilaQuizService } from "../AilaServices";
-import type { RatingFunction } from "./ChoiceModels";
+import type { MaxRatingFunctionApplier, RatingFunction } from "./ChoiceModels";
 
 export interface CustomMetadata {
   custom_id: string;
@@ -78,10 +78,11 @@ export interface AilaQuizReranker<T extends z.ZodType> {
 
 // Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
 export interface QuizSelector<T extends z.ZodType> {
+  ratingFunction: RatingFunction<T>;
+  maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
   selectBestQuiz(
     quizzes: QuizQuestion[][],
     ratingsSchemas: T[],
-    scores: number[],
   ): QuizQuestion[];
 }
 
