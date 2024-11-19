@@ -1,15 +1,16 @@
 import type { z } from "zod";
 
 import { BaseQuizSelector } from "./BaseQuizSelector";
-import type { RatingFunction } from "./ChoiceModels";
+import type { BaseType, RatingFunction } from "./ChoiceModels";
 import type { MaxRatingFunctionApplier } from "./ChoiceModels";
+import { SimpleQuizSelector } from "./SimpleQuizSelector";
 import type { QuizSelector, QuizSelectorFactory } from "./interfaces";
 
 export class QuizSelectorFactoryImpl implements QuizSelectorFactory {
-  public createQuizSelector<T extends z.ZodType>(
+  public createQuizSelector<T extends BaseType>(
     ratingFunction: RatingFunction<T>,
     maxRatingFunctionApplier: MaxRatingFunctionApplier<T>,
   ): QuizSelector<T> {
-    return new BaseQuizSelector(ratingFunction, maxRatingFunctionApplier);
+    return new SimpleQuizSelector<T>();
   }
 }

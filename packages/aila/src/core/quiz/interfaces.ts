@@ -8,7 +8,11 @@ import type {
   QuizQuestion,
 } from "../../protocol/schema";
 import type { AilaQuizService } from "../AilaServices";
-import type { MaxRatingFunctionApplier, RatingFunction } from "./ChoiceModels";
+import type {
+  BaseType,
+  MaxRatingFunctionApplier,
+  RatingFunction,
+} from "./ChoiceModels";
 
 export interface CustomMetadata {
   custom_id: string;
@@ -87,7 +91,7 @@ export interface QuizSelector<T extends BaseType> {
 }
 
 export interface QuizSelectorFactory {
-  createQuizSelector<T extends z.ZodType>(
+  createQuizSelector<T extends BaseType>(
     ratingFunction: RatingFunction<T>,
     maxRatingFunctionApplier: MaxRatingFunctionApplier<T>,
   ): QuizSelector<T>;
