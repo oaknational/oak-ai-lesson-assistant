@@ -66,7 +66,7 @@ export const DropDownFormWrapper = <
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen]);
+  }, [dropdownRef, isOpen, setIsOpen]);
 
   return (
     <form
