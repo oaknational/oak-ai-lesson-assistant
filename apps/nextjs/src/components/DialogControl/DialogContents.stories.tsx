@@ -98,9 +98,26 @@ export const Feedback: Story = {
               getSurveys: (fn) => {
                 fn([
                   {
-                    id: "survey-id",
-                    type: SurveyType.API,
+                    id: "01917ac7-e417-0000-0c86-99ef890e6807",
                     name: "End of Aila generation survey launch aug24",
+                    type: "api",
+                    questions: [
+                      {
+                        type: "rating",
+                        question:
+                          "How would you rate the structure and content of this lesson plan?",
+                      },
+                      {
+                        type: "rating",
+                        question:
+                          "How would you rate the ease of creating this lesson with Aila?",
+                      },
+                      {
+                        type: "open",
+                        question:
+                          "What suggestions do you have to improve the lesson planning experience with Aila?",
+                      },
+                    ],
                   },
                 ]);
               },
