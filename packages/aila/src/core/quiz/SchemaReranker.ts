@@ -17,7 +17,7 @@ export class TestSchemaReranker extends BasedOnRagAilaQuizReranker<TestRating> {
   public evaluateStarterQuiz(
     quizzes: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
-    ratingSchema: TestRating = this.inputSchema,
+    ratingSchema: TestRating,
     quizType: QuizPath,
   ): Promise<TestRating[]> {
     return this.evaluateQuizArray(quizzes, lessonPlan, ratingSchema, quizType);

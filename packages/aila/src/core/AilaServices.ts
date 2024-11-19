@@ -64,9 +64,10 @@ export interface AilaQuizService {
     lessonPlan: LooseLessonPlan,
   ): Promise<JsonPatchDocument>;
 }
-
 export interface AilaQuizGeneratorService {
   generateMathsExitQuizPatch(lessonPlan: LooseLessonPlan): Promise<Quiz[]>;
+  generateMathsStarterQuizPatch(lessonPlan: LooseLessonPlan): Promise<Quiz[]>;
+  // invoke(lessonPlan: LooseLessonPlan): Promise<Quiz[]>;
 }
 
 export interface AilaServices {

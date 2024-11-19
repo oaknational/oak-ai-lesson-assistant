@@ -7,7 +7,10 @@ import type {
   QuizPath,
   QuizQuestion,
 } from "../../protocol/schema";
-import type { AilaQuizService } from "../AilaServices";
+import type {
+  AilaQuizGeneratorService,
+  AilaQuizService,
+} from "../AilaServices";
 import type {
   BaseType,
   MaxRatingFunctionApplier,
@@ -136,15 +139,20 @@ export interface DocumentWrapper {
   relevanceScore: number;
 }
 
-type quizPatchType = "/starterQuiz" | "/exitQuiz";
+// TODO: GCLOMAX - check whether we are redeclaring a pretty basic type here
+export type quizPatchType = "/starterQuiz" | "/exitQuiz";
 
 export interface QuizServiceSettings {
   quizType: quizPatchType;
   ratingSchema: BaseType;
 }
-export interface BodgeFactory {
-  quizSelectorFactory: QuizSelectorFactory;
-  quizRerankerFactory: AilaQuizRerankerFactory;
-  quizVariantService: AilaQuizVariantService;
-  create(settings: QuizServiceSettings): AilaQuizService;
+export interface FullServiceFactory {
+  create(settings: QuizServiceSettings): FullQuizService;
+}
+// TODO: GCLOMAX - the naming of these interfaces is confusing - sort them.
+
+export interface FullQuizService {
+  quizSelector: QuizSelector<BaseType>;
+  quizRerankers: AilaQuizReranker<BaseType>[];
+  quizGenerators: AilaQuizGeneratorService[];
 }
