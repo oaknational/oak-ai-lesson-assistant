@@ -32,6 +32,7 @@ export function Header() {
     <OakBox
       as={"header"}
       $position={"fixed"}
+      $top={"space-between-none"}
       $zIndex={"banner"}
       $width={"100%"}
     >
