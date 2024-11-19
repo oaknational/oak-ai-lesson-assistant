@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { SurveyType } from "posthog-js";
 
-import { analyticsContext } from "@/components/ContextProviders/AnalyticsProvider";
+import {
+  AnalyticsContext,
+  analyticsContext,
+} from "@/components/ContextProviders/AnalyticsProvider";
 
 import { DialogContext } from "../AppComponents/DialogContext";
 import { DemoProvider } from "../ContextProviders/Demo";
@@ -83,25 +86,27 @@ export const Feedback: Story = {
   decorators: (Story) => {
     return (
       <analyticsContext.Provider
-        value={{
-          track: () => {},
-          trackEvent: () => {},
-          identify: () => {},
-          reset: () => {},
-          page: () => {},
-          posthogAiBetaClient: {
-            capture: () => {},
-            getSurveys: (fn) => {
-              fn([
-                {
-                  id: "survey-id",
-                  type: SurveyType.API,
-                  name: "End of Aila generation survey launch aug24",
-                },
-              ]);
+        value={
+          {
+            track: () => {},
+            trackEvent: () => {},
+            identify: () => {},
+            reset: () => {},
+            page: () => {},
+            posthogAiBetaClient: {
+              capture: () => {},
+              getSurveys: (fn) => {
+                fn([
+                  {
+                    id: "survey-id",
+                    type: SurveyType.API,
+                    name: "End of Aila generation survey launch aug24",
+                  },
+                ]);
+              },
             },
-          },
-        }}
+          } as unknown as AnalyticsContext
+        }
       >
         <Story />
       </analyticsContext.Provider>
