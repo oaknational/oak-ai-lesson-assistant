@@ -13,11 +13,15 @@ export async function processImageReplacements<
   documentId: string;
   data: Data;
 }) {
-  // The method here is too locate the placeholder in the documents, delete it, and insert the image.
   for (const [key, value] of Object.entries(data)) {
     if (typeof value === "string" && value.includes("![image](")) {
-      const imageUrl = value.match(/!\[.*?\]\((.*?)\)/)?.[1];
+      // Extract image URL
+      const imageMatch = value.match(/!\[.*?\]\((.*?)\)/);
+      const imageUrl = imageMatch?.[1];
       if (!imageUrl) continue;
+
+      // Extract surrounding text before and after the image placeholder
+      const [beforeImage, afterImage] = value.split(imageMatch[0]);
 
       const placeholder = `{{${key}}}`;
       const index = await findPlaceholderIndex(
@@ -27,6 +31,7 @@ export async function processImageReplacements<
       );
 
       if (index !== null) {
+        // Delete the entire placeholder
         await googleDocs.documents.batchUpdate({
           documentId,
           requestBody: {
@@ -43,6 +48,27 @@ export async function processImageReplacements<
           },
         });
 
+        // Insert the before text
+        if (beforeImage?.trim()) {
+          await googleDocs.documents.batchUpdate({
+            documentId,
+            requestBody: {
+              requests: [
+                {
+                  insertText: {
+                    text: beforeImage,
+                    location: {
+                      segmentId: null,
+                      index,
+                    },
+                  },
+                },
+              ],
+            },
+          });
+        }
+
+        // Insert the image
         await googleDocs.documents.batchUpdate({
           documentId,
           requestBody: {
@@ -52,13 +78,35 @@ export async function processImageReplacements<
                   uri: imageUrl,
                   location: {
                     segmentId: null,
-                    index,
+                    index: beforeImage ? index + beforeImage.length : index,
                   },
                 },
               },
             ],
           },
         });
+
+        // Insert the after text
+        if (afterImage?.trim()) {
+          await googleDocs.documents.batchUpdate({
+            documentId,
+            requestBody: {
+              requests: [
+                {
+                  insertText: {
+                    text: afterImage,
+                    location: {
+                      segmentId: null,
+                      index: beforeImage
+                        ? index + beforeImage.length + 1
+                        : index + 1, // Adjust index to account for image insertion
+                    },
+                  },
+                },
+              ],
+            },
+          });
+        }
       }
     }
   }
