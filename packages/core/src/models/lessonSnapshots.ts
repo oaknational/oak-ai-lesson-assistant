@@ -28,6 +28,12 @@ function getSnapshotHash(snapshot: Snapshot) {
   return hash;
 }
 
+/**
+ * Lesson snapshots are stored after each assistant message.
+ * They act as a snapshot of the lesson plan at that point in the chat.
+ * These snapshots are passed to the Moderation service and the Exports service
+ * for moderation and export downloads respectively.
+ */
 export class LessonSnapshots {
   constructor(private readonly prisma: PrismaClientWithAccelerate) {}
 

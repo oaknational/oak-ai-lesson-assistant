@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
+import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
 import { equals } from "ramda";
 import styled from "styled-components";

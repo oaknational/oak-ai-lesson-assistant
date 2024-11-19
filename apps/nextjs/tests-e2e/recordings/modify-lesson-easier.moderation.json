@@ -1,0 +1,32 @@
+{
+  "id": "chatcmpl-AQKjiTMyfZm7COyYeYIyCJcJTDV1Z",
+  "object": "chat.completion",
+  "created": 1730839602,
+  "model": "gpt-4o-2024-08-06",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan for 'Software Testing Techniques' is compliant across all categories. It does not contain any discriminatory language or behavior, offensive language, or strong language, making it fully compliant in the 'Language and discrimination' category group. There is no depiction or discussion of conflict, violence, serious violence, or sexual violence, ensuring full compliance in the 'Violence and crime' category group. The lesson plan does not delve into any upsetting, sensitive, or distressing content, such as criminal behavior, natural disasters, or mental health issues, ensuring it is appropriate for the key stage 4 audience. There is no depiction or discussion of nudity or sexual content, making it fully compliant in the 'Nudity and sex' group. The lesson plan does not involve exploration of objects, equipment requiring supervision, imitable behaviors, external content, or physical activity, ensuring full compliance in the 'Physical activity and safety' category group. Finally, the lesson plan does not contain any guides, instructions, or encouragement of harmful behavior, illegal activity, or violence, making it fully compliant in the 'Toxic' category group.\",\"categories\":[]}",
+        "refusal": null
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 3798,
+    "completion_tokens": 258,
+    "total_tokens": 4056,
+    "prompt_tokens_details": {
+      "cached_tokens": 2048
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "system_fingerprint": "fp_159d8341cc"
+}
