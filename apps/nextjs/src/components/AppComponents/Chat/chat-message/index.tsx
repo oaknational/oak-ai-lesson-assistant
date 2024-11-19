@@ -8,6 +8,7 @@ import type {
   BadDocument,
   CommentDocument,
   ErrorDocument,
+  ExperimentalPatchDocument,
   MessagePart,
   ModerationDocument,
   PatchDocument,
@@ -16,10 +17,7 @@ import type {
   TextDocument,
   UnknownDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import {
-  ExperimentalPatchMessagePart,
-  parseMessageParts,
-} from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { isSafe } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { aiLogger } from "@oakai/logger";
@@ -241,7 +239,7 @@ function ChatMessagePart({
     error: ErrorMessagePart,
     bad: BadMessagePart,
     patch: PatchMessagePart,
-    experimentalPatch: ExperimentalPatchMessagePart,
+    experimentalPatch: ExperimentalPatchMessageComponent,
     state: StateMessagePart,
     text: TextMessagePart,
     action: ActionMessagePart,
@@ -341,4 +339,12 @@ function PartInspector({ part }: Readonly<{ part: MessagePart }>) {
       </pre>
     </div>
   );
+}
+
+/**
+ * Patches do not get rendered, they get applied to the lesson plan
+ * state, which is then rendered in the right hand side.
+ */
+function ExperimentalPatchMessageComponent() {
+  return null;
 }
