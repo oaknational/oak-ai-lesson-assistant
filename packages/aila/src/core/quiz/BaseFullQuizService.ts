@@ -5,6 +5,8 @@ import type {
 } from "../../protocol/schema";
 import type { AilaQuizGeneratorService } from "../AilaServices";
 import type { BaseType } from "./ChoiceModels";
+import { MLQuizGenerator } from "./MLQuizGenerator";
+import { TestSchemaReranker } from "./SchemaReranker";
 import { SimpleQuizSelector } from "./SimpleQuizSelector";
 import type {
   AilaQuizReranker,
@@ -54,6 +56,6 @@ export abstract class BaseFullQuizService implements FullQuizService {
 
 export class SimpleFullQuizService extends BaseFullQuizService {
   public quizSelector: QuizSelector<BaseType> = new SimpleQuizSelector();
-  public quizReranker: AilaQuizReranker<BaseType> = new ;
-  public quizGenerators: AilaQuizGeneratorService[] = [];
+  public quizReranker: AilaQuizReranker<BaseType> = new TestSchemaReranker();
+  public quizGenerators: AilaQuizGeneratorService[] = [new MLQuizGenerator()];
 }

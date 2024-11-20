@@ -20,6 +20,7 @@ import type {
   QuizRecommenderType,
   QuizRerankerType,
   QuizSelectorType,
+  QuizServiceSettings,
 } from "./schema";
 
 export interface CustomMetadata {
@@ -128,11 +129,6 @@ export interface DocumentWrapper {
   document: Document;
   index: number;
   relevanceScore: number;
-}
-
-export interface QuizServiceSettings {
-  quizType: quizPatchType;
-  ratingSchema: BaseType;
 }
 
 // FACTORIES BELOW

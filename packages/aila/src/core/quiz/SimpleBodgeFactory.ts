@@ -3,21 +3,25 @@ import type {
   AilaQuizService,
 } from "../AilaServices";
 import { AilaQuiz } from "./AilaQuiz";
+import { SimpleFullQuizService } from "./BaseFullQuizService";
 import { QuizSelectorFactoryImpl } from "./QuizSelectorFactory";
-import type { BodgeFactory, FullQuizService } from "./interfaces";
+import type { FullQuizService } from "./interfaces";
 import type {
   AilaQuizVariantService,
   AilaQuizRerankerFactory,
   QuizSelectorFactory,
-  QuizServiceSettings,
 } from "./interfaces";
 import type { FullServiceFactory } from "./interfaces";
+import type { QuizServiceSettings } from "./schema";
 
-export class SimpleBodgeFactory implements FullServiceFactory {
+export class FullQuizServiceFactory implements FullServiceFactory {
   //   public quizSelectorFactory: QuizSelectorFactory = new QuizSelectorFactoryImpl();
   //   public quizRerankerFactory: AilaQuizRerankerFactory = new ;
   //   public quizGeneratorService: AilaQuizGeneratorService = ;
   public create(settings: QuizServiceSettings): FullQuizService {
-    return new AilaQuiz();
+    if (settings === "simple") {
+      return new SimpleFullQuizService();
+    }
+    throw new Error("Invalid quiz service settings");
   }
 }
