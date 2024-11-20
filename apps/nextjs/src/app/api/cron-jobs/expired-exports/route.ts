@@ -15,47 +15,53 @@ requiredEnvVars.forEach((envVar) => {
   }
 });
 
-async function updateExpiredAt(fileIds: string[]) {
+async function updateExpiredAtAndDelete(fileIds: string[]) {
   if (fileIds.length === 0) {
     log.info("No file IDs to update.");
     return;
   }
 
-  try {
-    const result = await prisma.lessonExport.updateMany({
-      where: {
-        gdriveFileId: {
-          in: fileIds,
-        },
-      },
-      data: {
-        expiredAt: new Date(),
-      },
-    });
-    log.info(`Updated expiredAt for ${fileIds.length} files.`);
+  const failedIds: string[] = [];
 
-    if (result.count === fileIds.length) {
-      log.info("All files updated successfully.");
-    } else {
-      throw new Error(
-        `Expected to update ${fileIds.length} files, but only updated ${result.count}.`,
-      );
-    }
-  } catch (error) {
-    log.error("Error updating expiredAt field in the database:", error);
-    throw error;
-  }
-}
+  for (const id of fileIds) {
+    try {
+      const record = await prisma.lessonExport.findFirst({
+        where: { gdriveFileId: id },
+      });
 
-async function deleteExpiredExports(fileIds: string[]) {
-  try {
-    for (const id of fileIds) {
+      if (!record) {
+        log.warn(`No database record found for gdriveFileId: ${id}`);
+        failedIds.push(id);
+        continue;
+      }
+
+      const result = await prisma.lessonExport.update({
+        where: { id: record.id, gdriveFileId: id },
+        data: { expiredAt: new Date() },
+      });
+
+      if (!result) {
+        log.warn(`Failed to update expiredAt for gdriveFileId: ${id}`);
+        failedIds.push(id);
+        continue;
+      }
+
+      log.info(`Successfully updated expiredAt for file: ${id}`);
+
       await googleDrive.files.delete({ fileId: id });
-      log.info("Deleted:", id);
+      log.info(`Successfully deleted file: ${id}`);
+    } catch (error) {
+      log.error(`Error processing file with gdriveFileId: ${id}`, error);
+      failedIds.push(id);
     }
-  } catch (error) {
-    log.error("Error deleting old files from folder:", error);
-    throw error;
+
+    if (failedIds.length > 0) {
+      const errorMessage = `Failed to process the following file IDs: ${failedIds.join(
+        ", ",
+      )}`;
+      log.error(errorMessage);
+      throw new Error(errorMessage);
+    }
   }
 }
 
@@ -129,8 +135,7 @@ export async function GET(request: NextRequest) {
 
     const validFileIds = files.map((file) => file.id).filter(isTruthy);
 
-    await updateExpiredAt(validFileIds);
-    await deleteExpiredExports(validFileIds);
+    await updateExpiredAtAndDelete(validFileIds);
   } catch (error) {
     Sentry.captureException(error);
     return new Response("Internal Server Error", { status: 500 });

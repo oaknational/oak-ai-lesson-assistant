@@ -5,7 +5,6 @@ import { HomePageContent } from "./home-page";
 const meta: Meta<typeof HomePageContent> = {
   title: "Pages/Homepage",
   component: HomePageContent,
-  tags: ["autodocs"],
 };
 
 export default meta;

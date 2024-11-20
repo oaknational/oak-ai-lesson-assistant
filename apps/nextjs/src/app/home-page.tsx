@@ -333,7 +333,7 @@ export function HomePageContent({ pageData }: HomePageProps) {
         </OakHeading>
 
         <OakP>
-          Oak AI Experiments explores ways that large language models (LLMs) can
+          Oak AI experiments explores ways that large language models (LLMs) can
           generate effective teaching resources and reduce workloads. We do this
           by using a combination of carefully chosen prompts – instructions
           aimed at getting useful responses – and our existing high-quality
