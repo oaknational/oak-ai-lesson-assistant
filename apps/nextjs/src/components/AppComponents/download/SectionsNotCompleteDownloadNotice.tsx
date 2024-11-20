@@ -46,6 +46,7 @@ const SectionsNotCompleteDownloadNotice = ({
         $mt="space-between-s"
       >
         <OakLink
+          element="button"
           iconName={showMissingSections ? "chevron-up" : "chevron-down"}
           isTrailingIcon={true}
           onClick={() => setShowMissingSections(!showMissingSections)}

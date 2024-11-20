@@ -8,5 +8,11 @@
     "deploymentEnabled": {
       "release": false
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron-jobs/expired-exports",
+      "schedule": "0 3 * * *"
+    }
+  ]
 }

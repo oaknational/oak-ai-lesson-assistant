@@ -1,3 +1,4 @@
+import { OakFlex, OakP, OakPrimaryButton } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 
 import Button from "@/components/Button";
@@ -37,21 +38,18 @@ const DemoShareLockedDialog = ({
 
   return (
     <DialogContainer>
-      <Heading>Sharing and downloading</Heading>
-      <Content>
+      <OakP $textAlign="center">
         Share and download options are not available to users outside of the UK.
         If you are a teacher in the UK,{" "}
         <a href={demo.contactHref} className="underline">
           contact us for full access.
         </a>
-      </Content>
-
-      <div className="flex w-full items-center justify-between">
-        <div />
-        <Button variant="primary" onClick={closeDialog}>
+      </OakP>
+      <OakFlex $justifyContent="center" $width="100%" $mt="space-between-m">
+        <OakPrimaryButton onClick={closeDialog}>
           Back to lesson
-        </Button>
-      </div>
+        </OakPrimaryButton>
+      </OakFlex>
     </DialogContainer>
   );
 };

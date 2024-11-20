@@ -45,7 +45,7 @@ export async function ingestStart({
     case "csv":
       if (config.sourcePartsToInclude !== "title-subject-key-stage") {
         throw new IngestError(
-          `sourcePartsToInclude must be "title-subject-key-stage" when importing from a CSV file`,
+          "sourcePartsToInclude must be title-subject-key-stage when importing from a CSV file",
         );
       }
       await importLessonsFromCSV({
@@ -55,7 +55,7 @@ export async function ingestStart({
       });
       break;
     default:
-      throw new IngestError(`Unsupported source type: ${config.source}`);
+      throw new IngestError("Unsupported source type");
   }
 
   log.info(`Ingest started with id: ${ingestId}`);

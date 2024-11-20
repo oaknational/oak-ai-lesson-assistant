@@ -15,3 +15,7 @@ export function toSentenceCase(input: string): string {
 
   return result;
 }
+
+export function slugToSentenceCase(slug: string) {
+  return toSentenceCase(slug.split("-").join(" "));
+}

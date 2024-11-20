@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 import { Header } from "@/components/AppComponents/Chat/header";
 import GetInTouchBox from "@/components/AppComponents/GetInTouchBox";
 
-const Help = () => {
+export const HelpContent = () => {
   const startingRef = useRef(null);
   const structureRef = useRef(null);
   const downloadsRef = useRef(null);
@@ -31,7 +31,6 @@ const Help = () => {
 
   return (
     <>
-      <Header />
       <div className="mx-auto mt-30 h-[100vh] w-full max-w-[1280px] px-9">
         <div className="mb-27 flex justify-between gap-3">
           <div className="hidden  sm:block sm:min-w-[300px]">
@@ -99,7 +98,7 @@ const Help = () => {
           <div className="mb-40 max-w-[800px]">
             <div className="mb-20 mt-10 sm:hidden">
               <OakLink
-                href={ailaId ? `/aila/${ailaId}` : `/aila`}
+                href={ailaId ? `/aila/${ailaId}` : "/aila"}
                 iconName="chevron-left"
               >
                 Back to Aila
@@ -224,4 +223,11 @@ const Help = () => {
   );
 };
 
-export default Help;
+export default function HelpPage() {
+  return (
+    <>
+      <Header />
+      <HelpContent />
+    </>
+  );
+}

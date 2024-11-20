@@ -5,11 +5,9 @@ import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol
 const log = aiLogger("aila:protocol");
 
 export class PatchEnqueuer {
-  private encoder: TextEncoder;
   private controller?: ReadableStreamDefaultController;
 
   constructor(controller?: ReadableStreamDefaultController) {
-    this.encoder = new TextEncoder();
     this.controller = controller;
   }
 
