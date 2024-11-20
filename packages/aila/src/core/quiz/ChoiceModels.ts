@@ -8,7 +8,7 @@ import { starterQuizSuitabilitySchema } from "./RerankerStructuredOutputSchema";
 
 // TODO: GCLOMAX - make blended comparison functions - i.e taking the same question from each quiz and finding the best one.
 
-const BaseSchema = z.object({
+export const BaseSchema = z.object({
   // Add any common fields here
   rating: z.number(),
 });

@@ -2,13 +2,17 @@ import type { z } from "zod";
 
 import type { QuizPath, QuizQuestion } from "../../protocol/schema";
 import type { LooseLessonPlan } from "../../protocol/schema";
-import { selectHighestRated, type BaseType } from "./ChoiceModels";
+import {
+  selectHighestRated,
+  type BaseType,
+  type BaseSchema,
+} from "./ChoiceModels";
 import { evaluateQuiz } from "./OpenAIRanker";
 import { processArray } from "./apiCallingUtils";
 import { withRandomDelay } from "./apiCallingUtils";
 import type { AilaQuizReranker } from "./interfaces";
 
-export abstract class BasedOnRagAilaQuizReranker<T extends BaseType>
+export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
   implements AilaQuizReranker<T>
 {
   abstract rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]>;
@@ -24,10 +28,10 @@ export abstract class BasedOnRagAilaQuizReranker<T extends BaseType>
   //  This takes a quiz array and evaluates it using the rating schema and quiz type and returns an array of evaluation schema objects.
   //   TODO: GCLOMAX - move evaluate quiz out to use dependancy injection - can then pass the different types of reranker types.
   //   TODO: GCLOMAX - Cache this. This is where a lot of the expensive openai calling takes place.
-  public async evaluateQuizArray<T extends BaseType>(
+  public async evaluateQuizArray(
     quizArray: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
-    ratingSchema: T,
+    ratingSchema: typeof BaseSchema,
     quizType: QuizPath,
   ): Promise<T[]> {
     // Decorates to delay the evaluation of each quiz. There is probably a better library for this.

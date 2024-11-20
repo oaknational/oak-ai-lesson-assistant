@@ -4,7 +4,7 @@ import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { replayCanvasIntegration } from "@sentry/nextjs";
 import type { OpenAI } from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+// import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { z } from "zod";
 
 import { DEFAULT_MODEL } from "../../constants";

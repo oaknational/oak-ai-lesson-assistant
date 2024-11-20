@@ -4,12 +4,11 @@ import type {
   QuizQuestion,
 } from "../../protocol/schema";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
-import {
-  testRatingSchema,
-  type TestRating,
-} from "./RerankerStructuredOutputSchema";
+import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 
-export class TestSchemaReranker extends BasedOnRagAilaQuizReranker<TestRating> {
+export class TestSchemaReranker extends BasedOnRagAilaQuizReranker<
+  typeof testRatingSchema
+> {
   public rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]> {
     return Promise.resolve([]);
   }
@@ -17,17 +16,17 @@ export class TestSchemaReranker extends BasedOnRagAilaQuizReranker<TestRating> {
   public evaluateStarterQuiz(
     quizzes: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
-    ratingSchema: TestRating,
+    ratingSchema: typeof testRatingSchema,
     quizType: QuizPath,
-  ): Promise<TestRating[]> {
+  ): Promise<(typeof testRatingSchema)[]> {
     return this.evaluateQuizArray(quizzes, lessonPlan, ratingSchema, quizType);
   }
   public evaluateExitQuiz(
     quizzes: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
-    ratingSchema: TestRating,
+    ratingSchema: typeof testRatingSchema,
     quizType: QuizPath,
-  ): Promise<TestRating[]> {
+  ): Promise<(typeof testRatingSchema)[]> {
     return this.evaluateQuizArray(quizzes, lessonPlan, ratingSchema, quizType);
   }
 }

@@ -4,7 +4,7 @@ import type {
   QuizQuestion,
 } from "../../protocol/schema";
 import type { AilaQuizGeneratorService } from "../AilaServices";
-import type { BaseType } from "./ChoiceModels";
+import type { BaseSchema, BaseType } from "./ChoiceModels";
 import { MLQuizGenerator } from "./MLQuizGenerator";
 import { TestSchemaReranker } from "./SchemaReranker";
 import { SimpleQuizSelector } from "./SimpleQuizSelector";
@@ -17,7 +17,7 @@ import type { quizPatchType } from "./interfaces";
 
 export abstract class BaseFullQuizService implements FullQuizService {
   public abstract quizSelector: QuizSelector<BaseType>;
-  public abstract quizReranker: AilaQuizReranker<BaseType>;
+  public abstract quizReranker: AilaQuizReranker<typeof BaseSchema>;
   public abstract quizGenerators: AilaQuizGeneratorService[];
 
   public async createBestQuiz(
@@ -49,13 +49,17 @@ export abstract class BaseFullQuizService implements FullQuizService {
       quizType,
     );
 
-    const bestQuiz = this.quizSelector.selectBestQuiz(quizzes, quizRankings);
+    const parsedRankings = quizRankings.map((ranking) => ranking.parse({}));
+    const bestQuiz = this.quizSelector.selectBestQuiz(quizzes, parsedRankings);
     return bestQuiz;
   }
 }
 
 export class SimpleFullQuizService extends BaseFullQuizService {
-  public quizSelector: QuizSelector<BaseType> = new SimpleQuizSelector();
-  public quizReranker: AilaQuizReranker<BaseType> = new TestSchemaReranker();
+  public quizSelector: QuizSelector<BaseType> =
+    new SimpleQuizSelector<BaseType>();
+
+  public quizReranker: AilaQuizReranker<typeof BaseSchema> =
+    new TestSchemaReranker();
   public quizGenerators: AilaQuizGeneratorService[] = [new MLQuizGenerator()];
 }

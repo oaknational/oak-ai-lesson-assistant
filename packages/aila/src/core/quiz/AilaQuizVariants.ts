@@ -57,9 +57,22 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   protected rerankService: CohereReranker;
 
   constructor() {
+    if (
+      !process.env.I_DOT_AI_ELASTIC_CLOUD_ID ||
+      !process.env.I_DOT_AI_ELASTIC_KEY
+    ) {
+      throw new Error(
+        "Environment variables for Elastic Cloud ID and API Key must be set",
+      );
+    }
     this.client = new Client({
-      cloud: { id: process.env.I_DOT_AI_ELASTIC_CLOUD_ID as string },
-      auth: { apiKey: process.env.I_DOT_AI_ELASTIC_KEY as string },
+      cloud: {
+        id: process.env.I_DOT_AI_ELASTIC_CLOUD_ID,
+      },
+
+      auth: {
+        apiKey: process.env.I_DOT_AI_ELASTIC_KEY,
+      },
     });
 
     this.cohere = new CohereClient({

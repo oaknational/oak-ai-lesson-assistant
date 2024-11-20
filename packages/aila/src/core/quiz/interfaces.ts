@@ -11,6 +11,7 @@ import type {
   AilaQuizGeneratorService,
   AilaQuizService,
 } from "../AilaServices";
+import type { BaseSchema } from "./ChoiceModels";
 import type {
   BaseType,
   MaxRatingFunctionApplier,
@@ -61,22 +62,23 @@ export interface AilaQuizVariantService {
   ): Promise<JsonPatchDocument>;
 }
 
-export interface AilaQuizReranker<T extends BaseType> {
+export interface AilaQuizReranker<T extends typeof BaseSchema> {
   rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]>;
-  evaluateQuizArray<T extends BaseType>(
+  evaluateQuizArray(
     quizzes: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
-    ratingSchema: T,
+    ratingSchema: typeof BaseSchema,
     quizType: QuizPath,
   ): Promise<T[]>;
   ratingSchema?: T;
   quizType?: QuizPath;
-  ratingFunction?: RatingFunction<T>;
+  ratingFunction?: RatingFunction<BaseType>;
 }
 
+// TODO: GCLOMAX - make generic by extending BaseType and BaseSchema as <T,U>
 export interface FullQuizService {
   quizSelector: QuizSelector<BaseType>;
-  quizReranker: AilaQuizReranker<BaseType>;
+  quizReranker: AilaQuizReranker<typeof BaseSchema>;
   quizGenerators: AilaQuizGeneratorService[];
 }
 
@@ -145,7 +147,7 @@ export interface AilaQuizFactory {
 export interface AilaQuizRerankerFactory {
   createAilaQuizReranker(
     quizType: QuizRerankerType,
-  ): AilaQuizReranker<BaseType>;
+  ): AilaQuizReranker<typeof BaseSchema>;
 }
 
 export interface QuizSelectorFactory {

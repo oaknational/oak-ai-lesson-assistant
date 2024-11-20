@@ -5,19 +5,19 @@ import type { AilaQuizService } from "../AilaServices";
 import { AilaQuiz } from "./AilaQuiz";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
 import type { BaseType } from "./ChoiceModels";
+import type { BaseSchema } from "./ChoiceModels";
 import { TestSchemaReranker } from "./SchemaReranker";
 import type {
   AilaQuizFactory,
   AilaQuizReranker,
   AilaQuizRerankerFactory,
-  quizRecommenderType,
-  quizRerankerType,
 } from "./interfaces";
+import type { QuizRerankerType } from "./schema";
 
 export class AilaQuizRerankerFactoryImpl implements AilaQuizRerankerFactory {
   public createAilaQuizReranker(
-    quizType: quizRerankerType,
-  ): AilaQuizReranker<BaseType> {
+    quizType: QuizRerankerType,
+  ): AilaQuizReranker<typeof BaseSchema> {
     return new TestSchemaReranker();
   }
 }
