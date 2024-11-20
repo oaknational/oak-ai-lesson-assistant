@@ -31,7 +31,7 @@ const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
 );
 
 const meta: Meta<typeof LessonPlanDisplay> = {
-  title: "Components/Chat/LessonPlanDisplay",
+  title: "Components/LessonPlan/LessonPlanDisplay",
   component: LessonPlanDisplay,
   tags: ["autodocs"],
   decorators: [ChatDecorator],
