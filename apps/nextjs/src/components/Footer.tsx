@@ -98,7 +98,7 @@ const Footer = () => {
               $width={["100%", "unset"]}
             >
               <OakP $font="heading-7" $mb={"space-between-s"}>
-                AI Experiments Legal
+                AI experiments legal
               </OakP>
               <OakUL>
                 {legalMenuItems.map((item) => {

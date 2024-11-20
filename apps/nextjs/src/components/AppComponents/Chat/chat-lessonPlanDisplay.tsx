@@ -6,25 +6,11 @@ import { cva } from "class-variance-authority";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { organiseSections } from "@/lib/lessonPlan/organiseSections";
+import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
 import DropDownSection from "./drop-down-section";
 import { GuidanceRequired } from "./guidance-required";
-
-// @todo move these somewhere more sensible
-export function subjectToTitle(slug: string) {
-  return slug
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
-
-export function keyStageToTitle(slug: string) {
-  return slug
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function notEmpty(value: any) {
@@ -106,13 +92,13 @@ export const LessonPlanDisplay = ({
           <Flex direction="row" gap="2" className="opacity-90">
             {notEmpty(lessonPlan.keyStage) && (
               <Text className="font-bold">
-                {keyStageToTitle(lessonPlan.keyStage ?? "")}
+                {slugToSentenceCase(lessonPlan.keyStage ?? "")}
               </Text>
             )}
             <span>•</span>
             {notEmpty(lessonPlan.subject) && (
               <Text className="font-bold">
-                {subjectToTitle(lessonPlan.subject ?? "")}
+                {slugToSentenceCase(lessonPlan.subject ?? "")}
               </Text>
             )}
           </Flex>

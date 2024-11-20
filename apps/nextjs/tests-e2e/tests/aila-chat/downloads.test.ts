@@ -45,7 +45,7 @@ test(
 
       // Generating
       await expect(downloadLessonPlan).toContainText(
-        "Generating Lesson plan for export",
+        "Generating lesson plan for export",
         { ignoreCase: true },
       );
 
@@ -55,7 +55,7 @@ test(
         { ignoreCase: true, timeout: 30000 },
       );
       await expect(downloadLessonPlan).toContainText(
-        "Download Lesson plan (.pdf)",
+        "Download lesson plan (.pdf)",
         { ignoreCase: true },
       );
     });

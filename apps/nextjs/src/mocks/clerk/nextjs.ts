@@ -1,6 +1,6 @@
-/* 
+/*
 Mocks the Clerk authentication library for use in Story book.
-See the readme for more context on why this is needed. 
+See the readme for more context on why this is needed.
 */
 
 export {
@@ -10,4 +10,5 @@ export {
   SignedIn,
   SignedOut,
   ClerkProvider,
+  UserButton,
 } from "./nextjsComponents";
