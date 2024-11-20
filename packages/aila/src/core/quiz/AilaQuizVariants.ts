@@ -12,7 +12,7 @@ import { prisma } from "@oakai/db";
 import { CohereClient } from "cohere-ai";
 // TODO: double check the prisma import
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
-import type { z } from "zod";
+import { z } from "zod";
 
 import {
   JsonPatchAddSchema,
@@ -53,7 +53,7 @@ import { CohereReranker } from "./rerankers";
 // Base abstract class
 export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   protected client: Client;
-  // protected cohere: CohereClient;
+  protected cohere: CohereClient;
   protected rerankService: CohereReranker;
 
   constructor() {
@@ -62,9 +62,9 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       auth: { apiKey: process.env.I_DOT_AI_ELASTIC_KEY as string },
     });
 
-    // this.cohere = new CohereClient({
-    //   token: process.env.COHERE_API_KEY as string,
-    // });
+    this.cohere = new CohereClient({
+      token: process.env.COHERE_API_KEY as string,
+    });
 
     // This should be changed to use our hosted models - use this for dev simplicity.
     this.rerankService = new CohereReranker();
@@ -388,6 +388,20 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     } catch (error) {
       console.error("Error during reranking:", error);
       return [];
+    }
+  }
+  protected extractCustomId(doc: RerankResponseResultsItem): string {
+    try {
+      // TODO quick fix to get around that doc.document may be unknown
+      const parsedText = JSON.parse(doc.document?.text || "");
+      if (parsedText.custom_id) {
+        return parsedText.custom_id;
+      } else {
+        throw new Error("custom_id not found in parsed JSON");
+      }
+    } catch (error) {
+      console.error("Error in extractCustomId:", error);
+      throw new Error("Failed to extract custom_id");
     }
   }
   protected async rerankAndExtractCustomIds(
