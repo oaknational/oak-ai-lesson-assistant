@@ -12,7 +12,7 @@ export function streamingJSON(message: ErrorDocument | ActionDocument) {
 
   return new StreamingTextResponse(
     new ReadableStream({
-      async start(controller) {
+      start(controller) {
         controller.enqueue(errorEncoder.encode(errorMessage));
         controller.close();
       },
