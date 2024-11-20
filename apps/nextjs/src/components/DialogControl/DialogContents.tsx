@@ -67,13 +67,7 @@ const DialogContents = ({
       <OakModalCenterBody
         title={dialogTitlesAndIcons[dialogWindow].title}
         iconName={dialogTitlesAndIcons[dialogWindow].iconName}
-        iconOverride={
-          dialogWindow === "feedback" || dialogWindow === "share-chat"
-            ? {
-                $display: "none",
-              }
-            : {}
-        }
+        hideIcon={dialogWindow === "feedback" || dialogWindow === "share-chat"}
       >
         {children}
         {dialogWindow === "share-chat" && chatId && (
