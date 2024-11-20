@@ -26,7 +26,7 @@ export default function GlobalError({
           <FullPageWarning.Header>Something went wrong!</FullPageWarning.Header>
 
           <FullPageWarning.Button href="/">
-            AI Experiments homepage
+            AI experiments homepage
           </FullPageWarning.Button>
         </FullPageWarning>
       </body>

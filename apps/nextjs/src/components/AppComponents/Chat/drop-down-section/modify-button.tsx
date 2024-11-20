@@ -20,8 +20,8 @@ const ModifyButton = ({
     userFeedbackText: string,
   ) =>
     option.label === "Other"
-      ? `For the ${sectionTitle}, ${userFeedbackText}`
-      : `Make the ${sectionTitle} ${option.chatMessage?.toLowerCase()}`;
+      ? `For the ${sectionTitle.toLowerCase()}, ${userFeedbackText}`
+      : `Make the ${sectionTitle.toLowerCase()} ${option.chatMessage?.toLowerCase()}`;
 
   return (
     <ActionButtonWrapper
