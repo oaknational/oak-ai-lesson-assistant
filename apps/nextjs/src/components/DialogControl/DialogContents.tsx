@@ -1,12 +1,17 @@
+import { useState } from "react";
+
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import {
+  OakModal,
   OakModalCenter,
   OakModalCenterBody,
   type OakIconName,
 } from "@oaknational/oak-components";
 import type { Message } from "ai";
+import styled from "styled-components";
 
 import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
+import { ChatHistory } from "../AppComponents/Chat/chat-history";
 import { useDialog } from "../AppComponents/DialogContext";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
@@ -54,6 +59,10 @@ const dialogTitlesAndIcons: Record<
   },
 };
 
+const OakModalAtTheFront = styled(OakModalCenter)`
+  z-index: 100000;
+`;
+
 const DialogContents = ({
   chatId,
   lesson,
@@ -69,53 +78,68 @@ const DialogContents = ({
   submit?: () => void;
   isShared?: boolean | undefined;
 }) => {
-  const { dialogWindow, setDialogWindow, setDialogProps } = useDialog();
+  const {
+    dialogWindow,
+    setDialogWindow,
+    setDialogProps,
+    openSidebar,
+    setOpenSidebar,
+  } = useDialog();
   const closeDialog = () => {
     setDialogWindow("");
     setDialogProps({});
   };
 
-  if (dialogWindow === "") return null;
+  if (dialogWindow === "" && !openSidebar) return null;
+
   return (
-    <OakModalCenter isOpen={!!dialogWindow} onClose={closeDialog}>
-      <OakModalCenterBody
-        title={dialogTitlesAndIcons[dialogWindow].title}
-        iconName={dialogTitlesAndIcons[dialogWindow].iconName || "warning"}
-        hideIcon={dialogTitlesAndIcons[dialogWindow].iconName === null}
-      >
-        {children}
-        {dialogWindow === "share-chat" && chatId && (
-          <ShareChatDialog
-            lesson={lesson}
-            chatId={chatId}
-            setOpenExportDialog={setDialogWindow}
-            isShared={isShared}
-          />
-        )}
-        {dialogWindow === "report-content" && (
-          <ReportContentDialog
-            chatId={chatId}
-            closeDialog={closeDialog}
-            messages={messages}
-          />
-        )}
-        {dialogWindow === "demo-share-locked" && (
-          <DemoShareLockedDialog closeDialog={closeDialog} />
-        )}
-        {dialogWindow === "demo-interstitial" && (
-          <DemoInterstitialDialog submit={submit} closeDialog={closeDialog} />
-        )}
-        {dialogWindow === "feedback" && (
-          <EndOfLessonFeedback closeDialog={closeDialog} />
-        )}
-        {dialogWindow === "clear-history" && (
-          <ClearChatHistory closeDialog={closeDialog} />
-        )}
-        {dialogWindow === "clear-single-chat" && (
-          <ClearSingleChatFromChatHistory closeDialog={closeDialog} />
-        )}
-      </OakModalCenterBody>
-    </OakModalCenter>
+    <>
+      <ChatHistory setOpenSidebar={setOpenSidebar} openSidebar={openSidebar} />
+      {dialogWindow !== "" && (
+        <OakModalAtTheFront isOpen={!!dialogWindow} onClose={closeDialog}>
+          <OakModalCenterBody
+            title={dialogTitlesAndIcons[dialogWindow].title}
+            iconName={dialogTitlesAndIcons[dialogWindow].iconName || "warning"}
+            hideIcon={dialogTitlesAndIcons[dialogWindow].iconName === null}
+          >
+            {children}
+            {dialogWindow === "share-chat" && chatId && (
+              <ShareChatDialog
+                lesson={lesson}
+                chatId={chatId}
+                setOpenExportDialog={setDialogWindow}
+                isShared={isShared}
+              />
+            )}
+            {dialogWindow === "report-content" && (
+              <ReportContentDialog
+                chatId={chatId}
+                closeDialog={closeDialog}
+                messages={messages}
+              />
+            )}
+            {dialogWindow === "demo-share-locked" && (
+              <DemoShareLockedDialog closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "demo-interstitial" && (
+              <DemoInterstitialDialog
+                submit={submit}
+                closeDialog={closeDialog}
+              />
+            )}
+            {dialogWindow === "feedback" && (
+              <EndOfLessonFeedback closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "clear-history" && (
+              <ClearChatHistory closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "clear-single-chat" && (
+              <ClearSingleChatFromChatHistory closeDialog={closeDialog} />
+            )}
+          </OakModalCenterBody>
+        </OakModalAtTheFront>
+      )}
+    </>
   );
 };
 export default DialogContents;

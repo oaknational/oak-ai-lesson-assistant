@@ -8,7 +8,6 @@ import Link from "next/link";
 
 import AiIcon from "@/components/AiIcon";
 import { IconUsers } from "@/components/AppComponents/Chat/ui/icons";
-import { SheetTrigger } from "@/components/AppComponents/Chat/ui/sheet";
 import {
   Tooltip,
   TooltipContent,
@@ -27,10 +26,11 @@ interface SidebarItemProps {
 }
 
 export function SidebarItem({ chat }: SidebarItemProps) {
-  const { setDialogWindow, setDialogProps } = useDialog();
+  const { setDialogWindow, setDialogProps, setOpenSidebar } = useDialog();
   const [isHovered, setIsHovered] = useState(false);
   function deleteChatById() {
     setDialogProps({ chatIdToDelete: chat.id });
+    setOpenSidebar(false);
     setDialogWindow("clear-single-chat");
   }
   return (
