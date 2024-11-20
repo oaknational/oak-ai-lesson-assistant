@@ -4,7 +4,10 @@ import {
 } from "@oakai/aila/src/protocol/schema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import type { Prisma } from "@oakai/db";
+import { createId } from "@paralleldrive/cuid2";
 import { isTruthy } from "remeda";
+import invariant from "tiny-invariant";
+import { z } from "zod";
 
 import { IngestError } from "../IngestError";
 import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
@@ -56,7 +59,8 @@ export async function publishToRag({
       });
     }
 
-    const lessonPlan = LessonPlanSchema.parse(lesson.lessonPlan);
+    const lessonPlan = LessonPlanSchema.parse(lesson.lessonPlan.data);
+
     ragLessonPlans.push({
       oakLessonId: lesson.oakLessonId,
       oakLessonSlug: lesson.data.lessonSlug,
@@ -72,7 +76,7 @@ export async function publishToRag({
    */
   await chunkAndPromiseAll({
     data: ragLessonPlans,
-    chunkSize: 100,
+    chunkSize: 500,
     fn: async (data) => {
       await prisma.ragLessonPlan.createMany({
         data,
@@ -109,6 +113,27 @@ export async function publishToRag({
     const ragLessonPlanId = ragLessonPlan.id;
     const ingestLessonId = ragLessonPlan.ingestLessonId;
     const lesson = lessons.find((l) => l.id === ingestLessonId);
+
+    const lessonPlanParts = await prisma.$queryRaw`
+      SELECT key, value_text, value_json, embedding::text
+      FROM ingest.ingest_lesson_plan_part
+      WHERE lesson_id = ${ingestLessonId}
+    `;
+    const parsedLessonPlanParts = z
+      .array(
+        z.object({
+          key: z.string(),
+          value_text: z.string(),
+          value_json: z.union([
+            z.string(),
+            z.array(z.union([z.string(), z.object({}).passthrough()])),
+            z.object({}).passthrough(),
+          ]),
+          embedding: z.string(),
+        }),
+      )
+      .parse(lessonPlanParts);
+
     if (!lesson) {
       throw new IngestError("Lesson not found", {
         ingestId,
@@ -116,13 +141,13 @@ export async function publishToRag({
       });
     }
 
-    for (const part of lesson.lessonPlanParts) {
+    for (const part of parsedLessonPlanParts) {
       ragLessonPlanParts.push({
         ragLessonPlanId,
         key: part.key,
-        valueText: part.valueText,
-        valueJson: part.valueJson,
-        embedding: [],
+        valueText: part.value_text,
+        valueJson: part.value_json,
+        embedding: part.embedding.slice(1, -1).split(",").map(Number),
       });
     }
   }
@@ -134,20 +159,26 @@ export async function publishToRag({
    */
   await chunkAndPromiseAll({
     data: ragLessonPlanParts,
-    chunkSize: 100,
+    chunkSize: 500,
     fn: async (data) => {
+      const now = new Date().toISOString();
       // Need to use $queryRaw because Prisma doesn't support the vector type
       await prisma.$queryRaw`
-           INSERT INTO rag.rag_lesson_plan_parts (rag_lesson_plan_id, key, value_text, value_json, embedding)
-          SELECT *
-          FROM UNNEST (
-              ${data.map((p) => p.ragLessonPlanId)}::text[],
-              ${data.map((p) => p.key)}::text[],
-              ${data.map((p) => p.valueText)}::text[],
-              ${data.map((p) => p.valueJson)}::jsonb[],
-              ${data.map((p) => `{${Array.from(p.embedding).join(",")}}`)}::vector(256)[]
+           INSERT INTO rag.rag_lesson_plan_parts (id, rag_lesson_plan_id, key, value_text, value_json, created_at, updated_at, embedding)
+           SELECT *
+           FROM UNNEST (
+              ARRAY[${data.map(() => createId())}]::text[],
+              ARRAY[${data.map((p) => p.ragLessonPlanId)}]::text[],
+              ARRAY[${data.map((p) => p.key)}]::text[],
+              ARRAY[${data.map((p) => p.valueText)}]::text[],
+              ARRAY[${data.map((p) => JSON.stringify(p.valueJson))}]::jsonb[],
+              ARRAY[${data.map(() => now)}]::timestamp[],
+              ARRAY[${data.map(() => now)}]::timestamp[],
+              ARRAY[${data.map((p) => `[${p.embedding.join(",")}]`)}]::vector(256)[]
           );
     `;
+
+      log.info(prisma.$queryRawUnsafe.toString());
     },
   });
 

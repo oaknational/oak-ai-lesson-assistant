@@ -1,6 +1,8 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
-import OpenAI from "openai";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
+import type OpenAI from "openai";
 
+const log = aiLogger("rag");
 /**
  *
  */
@@ -18,22 +20,36 @@ export class RagLessonPlans {
       encoding_format: "float",
     });
 
-    // console.log(JSON.stringify(embedding));
-
     const queryEmbedding = `[${embedding.data[0]?.embedding.join(",")}]`;
-    const limit = 5;
-    // console.log(queryEmbedding);
+    const limit = 50;
 
-    const results = await this.prisma.$queryRaw`
-        SELECT rag_lesson_plan_id
+    const startAt = new Date();
+    log.info(`Fetching relevant lesson plans for ${title}`);
+    let results: { rag_lesson_plan_id: string }[] = [];
+    results = await this.prisma.$queryRaw`
+        SELECT rag_lesson_plan_id, key, value_text, embedding <-> ${queryEmbedding}::vector
         FROM rag.rag_lesson_plan_parts
         ORDER BY embedding <-> ${queryEmbedding}::vector
         LIMIT ${limit};
     `;
 
-    console.log(results);
-    const all = await this.prisma.ragLessonPlan.findMany();
-    console.log(all);
+    const endAt = new Date();
+    log.info(
+      `Fetched ${results.length} lesson plans in ${endAt.getTime() - startAt.getTime()}ms`,
+    );
+
+    log.info(JSON.stringify(results, null, 2));
+    const all = await this.prisma.ragLessonPlan.findMany({
+      where: {
+        id: {
+          in: results.map((r) => r.rag_lesson_plan_id),
+        },
+      },
+      select: {
+        oakLessonSlug: true,
+      },
+    });
+    log.info(all);
 
     return [];
   }
