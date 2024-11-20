@@ -55,17 +55,25 @@ const OakFlexCustomMaxWidthWithHalfWidth = styled(OakFlexCustomMaxWidth)`
   }
 `;
 
-export default function HomePage({
-  pageData,
-}: {
+type HomePageProps = {
   pageData: HomePageQueryResult | null;
-}) {
+};
+
+export default function HomePage(props: HomePageProps) {
+  return (
+    <Layout>
+      <HomePageContent {...props} />
+    </Layout>
+  );
+}
+
+export function HomePageContent({ pageData }: HomePageProps) {
   const user = useUser();
 
   const { track } = useAnalytics();
 
   return (
-    <Layout>
+    <>
       <HeroContainer>
         <OakFlex
           $flexDirection={["column", "row"]}
@@ -334,7 +342,7 @@ export default function HomePage({
           as possible.
         </OakP>
       </OakFlexWithBackground>
-    </Layout>
+    </>
   );
 }
 
