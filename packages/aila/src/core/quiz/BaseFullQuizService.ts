@@ -5,6 +5,7 @@ import type {
 } from "../../protocol/schema";
 import type { AilaQuizGeneratorService } from "../AilaServices";
 import type { BaseType } from "./ChoiceModels";
+import { SimpleQuizSelector } from "./SimpleQuizSelector";
 import type {
   AilaQuizReranker,
   FullQuizService,
@@ -13,9 +14,10 @@ import type {
 import type { quizPatchType } from "./interfaces";
 
 export abstract class BaseFullQuizService implements FullQuizService {
-  public quizSelector: QuizSelector<BaseType>;
-  public quizRerankers: AilaQuizReranker<BaseType>[];
-  public quizGenerators: AilaQuizGeneratorService[];
+  public abstract quizSelector: QuizSelector<BaseType>;
+  public abstract quizReranker: AilaQuizReranker<BaseType>;
+  public abstract quizGenerators: AilaQuizGeneratorService[];
+
   public async createBestQuiz(
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
@@ -34,27 +36,24 @@ export abstract class BaseFullQuizService implements FullQuizService {
     }
     // TODO: GCLOMAX - make the typing stricter here.
     // TODO: GCLOMAX - make sure that the rating schema is the same for all rerankers.
-    const quizRankings = [];
-    for (const reranker of this.quizRerankers) {
-      if (reranker.ratingSchema) {
-        quizRankings.push(
-          await reranker.evaluateQuizArray(
-            quizzes,
-            lessonPlan,
-            reranker.ratingSchema,
-            quizType,
-          ),
-        );
-      }
+    if (!this.quizReranker.ratingSchema) {
+      throw new Error("Reranker rating schema is undefined");
     }
 
-    const bestQuiz = this.quizSelector.selectBestQuiz(quizRankings);
+    const quizRankings = await this.quizReranker.evaluateQuizArray(
+      quizzes,
+      lessonPlan,
+      this.quizReranker.ratingSchema,
+      quizType,
+    );
+
+    const bestQuiz = this.quizSelector.selectBestQuiz(quizzes, quizRankings);
     return bestQuiz;
   }
 }
 
 export class SimpleFullQuizService extends BaseFullQuizService {
-  public createBestQuiz(): QuizQuestion[] {
-    return [];
-  }
+  public quizSelector: QuizSelector<BaseType> = new SimpleQuizSelector();
+  public quizReranker: AilaQuizReranker<BaseType> = new ;
+  public quizGenerators: AilaQuizGeneratorService[] = [];
 }

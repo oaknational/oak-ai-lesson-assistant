@@ -1,7 +1,11 @@
+import type { z } from "zod";
+
 import type { LooseLessonPlan } from "../../protocol/schema";
 import type { AilaQuizService } from "../AilaServices";
 import { AilaQuiz } from "./AilaQuiz";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
+import type { BaseType } from "./ChoiceModels";
+import { TestSchemaReranker } from "./SchemaReranker";
 import type {
   AilaQuizFactory,
   AilaQuizReranker,
@@ -13,8 +17,8 @@ import type {
 export class AilaQuizRerankerFactoryImpl implements AilaQuizRerankerFactory {
   public createAilaQuizReranker(
     quizType: quizRerankerType,
-  ): AilaQuizReranker<z.ZodType> {
-    return new BasedOnRagAilaQuizReranker();
+  ): AilaQuizReranker<BaseType> {
+    return new TestSchemaReranker();
   }
 }
 

@@ -16,6 +16,11 @@ import type {
   MaxRatingFunctionApplier,
   RatingFunction,
 } from "./ChoiceModels";
+import type {
+  QuizRecommenderType,
+  QuizRerankerType,
+  QuizSelectorType,
+} from "./schema";
 
 export interface CustomMetadata {
   custom_id: string;
@@ -48,21 +53,6 @@ export interface DocumentReranker {
 //   questionTypes?: QuestionType[];
 // }
 
-export type quizRecommenderType = "maths" | "default";
-
-export type quizRerankerType = "schema-reranker";
-
-export interface AilaQuizFactory {
-  quizStrategySelector(lessonPlan: LooseLessonPlan): quizRecommenderType;
-  createQuizRecommender(lessonPlan: LooseLessonPlan): AilaQuizService;
-}
-
-export interface AilaQuizRerankerFactory {
-  createAilaQuizReranker(
-    quizType: quizRerankerType,
-  ): AilaQuizReranker<BaseType>;
-}
-
 export interface AilaQuizVariantService {
   rerankService: DocumentReranker;
   generateMathsStarterQuizPatch(
@@ -83,6 +73,12 @@ export interface AilaQuizReranker<T extends BaseType> {
   ratingFunction?: RatingFunction<T>;
 }
 
+export interface FullQuizService {
+  quizSelector: QuizSelector<BaseType>;
+  quizReranker: AilaQuizReranker<BaseType>;
+  quizGenerators: AilaQuizGeneratorService[];
+}
+
 // Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
 export interface QuizSelector<T extends BaseType> {
   ratingFunction: RatingFunction<T>;
@@ -93,13 +89,8 @@ export interface QuizSelector<T extends BaseType> {
   ): QuizQuestion[];
 }
 
-export type QuizSelectorType = "simple";
-
-export interface QuizSelectorFactory {
-  createQuizSelector<T extends BaseType>(
-    selectorType: QuizSelectorType,
-  ): QuizSelector<T>;
-}
+// TODO: GCLOMAX - check whether we are redeclaring a pretty basic type here
+export type quizPatchType = "/starterQuiz" | "/exitQuiz";
 
 export interface CustomSource {
   text: string;
@@ -139,20 +130,30 @@ export interface DocumentWrapper {
   relevanceScore: number;
 }
 
-// TODO: GCLOMAX - check whether we are redeclaring a pretty basic type here
-export type quizPatchType = "/starterQuiz" | "/exitQuiz";
-
 export interface QuizServiceSettings {
   quizType: quizPatchType;
   ratingSchema: BaseType;
 }
+
+// FACTORIES BELOW
 export interface FullServiceFactory {
   create(settings: QuizServiceSettings): FullQuizService;
 }
 // TODO: GCLOMAX - the naming of these interfaces is confusing - sort them.
 
-export interface FullQuizService {
-  quizSelector: QuizSelector<BaseType>;
-  quizRerankers: AilaQuizReranker<BaseType>[];
-  quizGenerators: AilaQuizGeneratorService[];
+export interface AilaQuizFactory {
+  quizStrategySelector(lessonPlan: LooseLessonPlan): QuizRecommenderType;
+  createQuizRecommender(lessonPlan: LooseLessonPlan): AilaQuizService;
+}
+
+export interface AilaQuizRerankerFactory {
+  createAilaQuizReranker(
+    quizType: QuizRerankerType,
+  ): AilaQuizReranker<BaseType>;
+}
+
+export interface QuizSelectorFactory {
+  createQuizSelector<T extends BaseType>(
+    selectorType: QuizSelectorType,
+  ): QuizSelector<T>;
 }
