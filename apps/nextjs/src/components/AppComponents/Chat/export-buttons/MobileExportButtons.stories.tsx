@@ -41,9 +41,6 @@ const meta: Meta<typeof MobileExportButtons> = {
       defaultViewport: "mobile1",
     },
   },
-  args: {
-    closeMobileLessonPullOut: () => {},
-  },
 };
 
 export default meta;
