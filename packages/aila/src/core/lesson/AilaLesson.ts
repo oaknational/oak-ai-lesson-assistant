@@ -3,11 +3,7 @@ import { deepClone } from "fast-json-patch";
 
 import { AilaCategorisation } from "../../features/categorisation/categorisers/AilaCategorisation";
 import type { AilaCategorisationFeature } from "../../features/types";
-import type {
-  ExperimentalPatchDocument,
-  PatchDocument,
-  ValidPatchDocument,
-} from "../../protocol/jsonPatchProtocol";
+import type { ValidPatchDocument } from "../../protocol/jsonPatchProtocol";
 import {
   applyLessonPlanPatch,
   extractPatches,

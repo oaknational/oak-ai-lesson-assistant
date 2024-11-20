@@ -6,6 +6,8 @@ import {
 import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
+import { fetchExperimentalPatches } from "@/utils/experimentalPatches/fetchExperimentalPatches";
+
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import type { AilaChatService } from "../../core/AilaServices";
 import type { AilaServices } from "../../core/AilaServices";
@@ -15,7 +17,6 @@ import { generateMessageId } from "../../helpers/chat/generateMessageId";
 import type {
   ExperimentalPatchDocument,
   JsonPatchDocumentOptional,
-  PatchDocument,
 } from "../../protocol/jsonPatchProtocol";
 import {
   LLMMessageSchema,
@@ -24,7 +25,6 @@ import {
 import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
-  Quiz,
 } from "../../protocol/schema";
 import { AilaError } from "../AilaError";
 import type { LLMService } from "../llm/LLMService";
@@ -356,77 +356,6 @@ export class AilaChat implements AilaChatService {
     return assistantMessage;
   }
 
-  /**
-   * Fetch and enqueue experimental (agentic) additions
-   */
-  private async fetchExperimentalPatches() {
-    const patchExperimentalProperty = async (
-      value: ExperimentalPatchDocument["value"],
-    ) => {
-      const experimentalPatch: ExperimentalPatchDocument = {
-        type: "experimentalPatch",
-        value,
-      };
-
-      await this.enqueue(experimentalPatch);
-      this.appendEperimentalPatch(experimentalPatch);
-    };
-
-    if (this._aila.lessonPlan.subject === "maths") {
-      // Only maths has experimental patches for now
-      return;
-    }
-
-    const patches = this.parsedMessages
-      .map((m) => m.map((p) => p.document))
-      .flat()
-      .filter((p): p is PatchDocument => p.type === "patch");
-
-    const starterQuizPatch = patches.find(
-      (p) => p.value.path === "/starterQuiz",
-    );
-
-    if (starterQuizPatch) {
-      const op = starterQuizPatch.value.op;
-      if (op === "remove") {
-        await patchExperimentalProperty({
-          op,
-          path: "/_experimental_starterQuizMathsV0",
-        });
-      } else {
-        const mathsStarterQuiz: Quiz | null = null;
-        if (mathsStarterQuiz) {
-          await patchExperimentalProperty({
-            path: "/_experimental_starterQuizMathsV0",
-            op,
-            value: mathsStarterQuiz,
-          });
-        }
-      }
-    }
-
-    const exitQuizPatch = patches.find((p) => p.value.path === "/exitQuiz");
-
-    if (exitQuizPatch) {
-      const op = exitQuizPatch.value.op;
-      if (op === "remove") {
-        await patchExperimentalProperty({
-          op,
-          path: "/_experimental_exitQuizMathsV0",
-        });
-      } else {
-        const mathsExitQuiz: Quiz | null = null;
-        if (mathsExitQuiz) {
-          await patchExperimentalProperty({
-            path: "/_experimental_exitQuizMathsV0",
-            op,
-            value: mathsExitQuiz,
-          });
-        }
-      }
-    }
-  }
-
   private async enqueueMessageId(messageId: string) {
     await this.enqueue({
       type: "id",
@@ -454,7 +383,14 @@ export class AilaChat implements AilaChatService {
 
   public async complete() {
     await this.reportUsageMetrics();
-    await this.fetchExperimentalPatches();
+    await fetchExperimentalPatches({
+      lessonPlan: this._aila.lesson.plan,
+      parsedMessages: this.parsedMessages,
+      handlePatch: async (patch) => {
+        await this.enqueue(patch);
+        this.appendEperimentalPatch(patch);
+      },
+    });
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
     await this.enqueueMessageId(assistantMessage.id);
