@@ -13,6 +13,7 @@ import { lpBatchSync } from "./steps/3-lp-batch-sync";
 import { lpChunking } from "./steps/4-lp-chunking";
 import { lpPartsEmbedStart } from "./steps/5-lp-parts-embed-start";
 import { lpPartsEmbedSync } from "./steps/6-lp-parts-embed-sync";
+import { publishToRag } from "./steps/7-publish";
 
 const command = process.argv[2];
 
@@ -49,7 +50,7 @@ async function main() {
       break;
 
     case "publish":
-      // publish({ prisma, log });
+      await publishToRag({ prisma, log, ingestId });
       break;
     default:
       log.error("Unknown command");

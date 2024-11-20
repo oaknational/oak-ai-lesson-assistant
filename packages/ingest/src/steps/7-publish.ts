@@ -1,12 +1,17 @@
-import { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
-import { createId } from "@paralleldrive/cuid2";
+import {
+  LessonPlanSchema,
+  type LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { Prisma } from "@oakai/db";
 import { isTruthy } from "remeda";
 
 import { IngestError } from "../IngestError";
-import { getIngestById } from "../db-helpers/getIngestById";
 import { loadLessonsAndUpdateState } from "../db-helpers/loadLessonsAndUpdateState";
-import { Step, getPrevStep } from "../db-helpers/step";
-import { IngestLogger } from "../types";
+import type { Step } from "../db-helpers/step";
+import { getPrevStep } from "../db-helpers/step";
+import type { IngestLogger } from "../types";
+import { chunkAndPromiseAll } from "../utils/chunkAndPromiseAll";
 
 const currentStep: Step = "publishing";
 const prevStep = getPrevStep(currentStep);
@@ -14,7 +19,7 @@ const prevStep = getPrevStep(currentStep);
 /**
  * Publish ingest lesson_plans and lesson_plan_parts to the rag schema
  */
-export async function publish({
+export async function publishToRag({
   prisma,
   log,
   ingestId,
@@ -23,7 +28,8 @@ export async function publish({
   log: IngestLogger;
   ingestId: string;
 }) {
-  const ingest = await getIngestById({ prisma, ingestId });
+  log.info("Publishing lesson plans and parts to RAG schema");
+  // const ingest = await getIngestById({ prisma, ingestId });
   const lessons = await loadLessonsAndUpdateState({
     prisma,
     ingestId,
@@ -31,54 +37,119 @@ export async function publish({
     currentStep,
   });
 
-  const ragLessonPlans = lessons
-    .map((l) =>
-      l.lessonPlan
-        ? {
-            ...l.lessonPlan,
-            ingestLessonId: l.id,
-            oakLessonId: l.oakLessonId,
-            subjectSlug: l.data.subjectSlug,
-            keyStageSlug: l.data.keyStageSlug,
-          }
-        : null,
-    )
-    .filter(isTruthy)
-    .map((lp) => ({
-      ingestLessonId: lp.ingestLessonId,
-      oakLessonId: lp.oakLessonId,
-      lessonPlan: lp.data as object,
-      subjectSlug: lp.subjectSlug,
-      keyStageSlug: lp.keyStageSlug,
-    }));
+  log.info(`Loaded ${lessons.length} lessons`);
 
-  await prisma.ragLessonPlan.createMany({
+  const ragLessonPlans: {
+    oakLessonId?: number;
+    oakLessonSlug: string;
+    ingestLessonId?: string;
+    subjectSlug: string;
+    keyStageSlug: string;
+    lessonPlan: LooseLessonPlan;
+  }[] = [];
+
+  for (const lesson of lessons) {
+    if (!lesson.lessonPlan) {
+      throw new IngestError("Lessin is missing lesson plan", {
+        ingestId,
+        lessonId: lesson.id,
+      });
+    }
+
+    const lessonPlan = LessonPlanSchema.parse(lesson.lessonPlan);
+    ragLessonPlans.push({
+      oakLessonId: lesson.oakLessonId,
+      oakLessonSlug: lesson.data.lessonSlug,
+      ingestLessonId: lesson.id,
+      subjectSlug: lesson.data.subjectSlug,
+      keyStageSlug: lesson.data.keyStageSlug,
+      lessonPlan,
+    });
+  }
+
+  /**
+   * Add lesson plans to RAG schema
+   */
+  await chunkAndPromiseAll({
     data: ragLessonPlans,
+    chunkSize: 100,
+    fn: async (data) => {
+      await prisma.ragLessonPlan.createMany({
+        data,
+      });
+    },
   });
 
+  log.info(`Written ${ragLessonPlans.length} lesson plans`);
+
+  /**
+   * Fetch persisted lesson plans (with ids)
+   */
   const persistedRagLessonPlans = await prisma.ragLessonPlan.findMany({
     where: {
       ingestLessonId: {
-        in: ragLessonPlans.map((lp) => lp.ingestLessonId),
+        in: ragLessonPlans.map((lp) => lp.ingestLessonId).filter(isTruthy),
       },
     },
+    select: {
+      id: true,
+      ingestLessonId: true,
+    },
   });
-  //   const ingestLessonPlanParts = await prisma.ingestLessonPlanPart.findMany({});
 
-  //   const ragLessonPlanIds = persistedRagLessonPlans.map((lp) => lp.id);
+  const ragLessonPlanParts: {
+    ragLessonPlanId: string;
+    key: string;
+    valueText: string;
+    valueJson: Prisma.JsonValue;
+    embedding: number[];
+  }[] = [];
 
-  //   const keys = ragLessonPlans.flatMap((lp) => Object.keys(lp.lessonPlan));
+  for (const ragLessonPlan of persistedRagLessonPlans) {
+    const ragLessonPlanId = ragLessonPlan.id;
+    const ingestLessonId = ragLessonPlan.ingestLessonId;
+    const lesson = lessons.find((l) => l.id === ingestLessonId);
+    if (!lesson) {
+      throw new IngestError("Lesson not found", {
+        ingestId,
+        lessonId: ingestLessonId ?? "NO_ID_PROVIDED",
+      });
+    }
 
-  //   await prisma.$queryRaw`
-  //          INSERT INTO rag.rag_lesson_plan_parts (id, rag_lesson_plan_id, key, value_text, value_json, embedding)
-  //         SELECT *
-  //         FROM UNNEST (
-  //             ${ragLessonPlanParts.map((p) => p.id)}::text[],
-  //             ${ragLessonPlanParts.map((p) => p.ragLessonPlanId)}::text[],
-  //             ${ragLessonPlanParts.map((p) => p.key)}::text[],
-  //             ${ragLessonPlanParts.map((p) => p.valueText)}::text[],
-  //             ${ragLessonPlanParts.map((p) => p.valueJson)}::jsonb[],
-  //             ${ragLessonPlanParts.map((p) => `{${Array.from(p.embedding).join(",")}}`)}::vector(256)[]
-  //         );
-  //   `;
+    for (const part of lesson.lessonPlanParts) {
+      ragLessonPlanParts.push({
+        ragLessonPlanId,
+        key: part.key,
+        valueText: part.valueText,
+        valueJson: part.valueJson,
+        embedding: [],
+      });
+    }
+  }
+
+  log.info(`Writing ${ragLessonPlanParts.length} lesson plan parts`);
+
+  /**
+   * Add lesson plan parts to RAG schema
+   */
+  await chunkAndPromiseAll({
+    data: ragLessonPlanParts,
+    chunkSize: 100,
+    fn: async (data) => {
+      // Need to use $queryRaw because Prisma doesn't support the vector type
+      await prisma.$queryRaw`
+           INSERT INTO rag.rag_lesson_plan_parts (rag_lesson_plan_id, key, value_text, value_json, embedding)
+          SELECT *
+          FROM UNNEST (
+              ${data.map((p) => p.ragLessonPlanId)}::text[],
+              ${data.map((p) => p.key)}::text[],
+              ${data.map((p) => p.valueText)}::text[],
+              ${data.map((p) => p.valueJson)}::jsonb[],
+              ${data.map((p) => `{${Array.from(p.embedding).join(",")}}`)}::vector(256)[]
+          );
+    `;
+    },
+  });
+
+  log.info("Published lesson plans and parts to RAG schema");
 }
