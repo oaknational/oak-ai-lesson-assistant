@@ -200,9 +200,9 @@ export const HelpContent = () => {
                   <OakLI>Lesson plan, including all sections</OakLI>
                   <OakLI>Starter quiz (PDF/Docx file)</OakLI>
                   <OakLI>Slides (PDF/PPTX file)</OakLI>
-                  <OakLI>Worksheet (PDF, Doc)</OakLI>
+                  <OakLI>Worksheet (PDF/Docx file)</OakLI>
                   <OakLI>Exit quiz (PDF/Docx file)</OakLI>
-                  <OakLI>Additional materials (PDF, Doc)</OakLI>
+                  <OakLI>Additional materials (PDF/Docx file)</OakLI>
                 </OakUL>
                 <OakP $mt={"space-between-xs"}>
                   If you have a Google account, you will also be able to edit
@@ -256,12 +256,12 @@ export const HelpContent = () => {
                     increase or decrease the literacy level of your keywords
                   </OakLI>
                   <OakLI>
-                    add specific case studies or examples to your explanations.
+                    add specific case studies or examples to your explanations
                   </OakLI>
-                  <OakLI>change the practice tasks for you.</OakLI>
+                  <OakLI>change the practice tasks for you</OakLI>
                   <OakLI>
                     add a narrative for each learning cycle to the Additional
-                    Materials.
+                    Materials
                   </OakLI>
                 </OakUL>
               </OakBox>
@@ -270,13 +270,13 @@ export const HelpContent = () => {
                   Downloading and sharing
                 </OakHeading>
                 <OakP $mb={"space-between-xs"}>
-                  When you have completed all the sections in the lesson, you
-                  will be able to download the lesson resources, including the
-                  full lesson plan (which includes all sections), editable
-                  slides and starter and exit quizzes, a worksheet with your
-                  practice tasks and any additional materials you have created.
-                  You can also share your lesson as a link, which can be viewed
-                  online.
+                  Once you’ve completed all the sections in the lesson, you’ll
+                  be able to download the full set of lesson resources. This
+                  includes the complete lesson plan (covering all sections),
+                  editable slides, starter and exit quizzes, a worksheet with
+                  your practice tasks, and any additional materials you’ve
+                  created. You can also share your lesson via a link, allowing
+                  it to be viewed online.
                 </OakP>
               </OakBox>
               <OakBox ref={aiRef}>
@@ -284,7 +284,7 @@ export const HelpContent = () => {
                   AI and accuracy
                 </OakHeading>
                 <OakP $mb={"space-between-xs"}>
-                  Retrieval Augmented Generation is used to integrate Oak
+                  Retrieval augmented generation is used to integrate Oak
                   content into your lessons, improving the accuracy of the
                   content produced. AI is not 100% accurate and mistakes can
                   still be made. Remember, you&apos;re still the expert, so
