@@ -4,10 +4,8 @@ import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import {
   OakBox,
   OakFlex,
-  OakLink,
   OakP,
   OakPrimaryButton,
-  OakSpan,
 } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/react";
 import Link from "next/link";
