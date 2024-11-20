@@ -200,8 +200,8 @@ export const HelpContent = () => {
                   <OakLI>Lesson plan, including all sections</OakLI>
                   <OakLI>Starter quiz (PDF/Docx file)</OakLI>
                   <OakLI>Slides (PDF/PPTX file)</OakLI>
-                  <OakLI>Exit quiz (PDF/Docx file)</OakLI>
                   <OakLI>Worksheet (PDF, Doc)</OakLI>
+                  <OakLI>Exit quiz (PDF/Docx file)</OakLI>
                   <OakLI>Additional materials (PDF, Doc)</OakLI>
                 </OakUL>
                 <OakP $mt={"space-between-xs"}>
