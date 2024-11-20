@@ -6,8 +6,6 @@ import {
 import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
-import { fetchExperimentalPatches } from "@/utils/experimentalPatches/fetchExperimentalPatches";
-
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import type { AilaChatService } from "../../core/AilaServices";
 import type { AilaServices } from "../../core/AilaServices";
@@ -26,6 +24,7 @@ import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
 } from "../../protocol/schema";
+import { fetchExperimentalPatches } from "../../utils/experimentalPatches/fetchExperimentalPatches";
 import { AilaError } from "../AilaError";
 import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
