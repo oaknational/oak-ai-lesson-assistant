@@ -15,10 +15,10 @@ import {
 } from "@/components/AppComponents/Chat/ui/tooltip";
 import BinIcon from "@/components/BinIcon";
 import type { SideBarChatItem } from "@/lib/types";
+import { convertTitleCaseToSentenceCase } from "@/utils/convertTitleCaseToSentenceCase";
 
 import { useDialog } from "../DialogContext";
 import { constructChatPath } from "./Chat/utils";
-import { convertTitleCaseToSentenceCase } from "./chat-start-accordion";
 
 interface SidebarItemProps {
   chat: SideBarChatItem;

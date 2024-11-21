@@ -10,6 +10,7 @@ import AiIcon from "@/components/SVGParts/AiIcon";
 import LessonIcon from "@/components/SVGParts/LessonIcon";
 import QuizIcon from "@/components/SVGParts/QuizIcon";
 import SlidesIcon from "@/components/SVGParts/SlidesIcon";
+import { convertTitleCaseToSentenceCase } from "@/utils/convertTitleCaseToSentenceCase";
 
 import { handleRewordingSections } from "./export-buttons";
 
@@ -194,8 +195,3 @@ const AccordionContent = React.forwardRef<
 AccordionContent.displayName = "AccordionContent";
 
 export default ChatStartAccordion;
-
-export function convertTitleCaseToSentenceCase(titleCase: string) {
-  const lowerCaseTitle = titleCase.toLowerCase();
-  return lowerCaseTitle.charAt(0).toUpperCase() + lowerCaseTitle.slice(1);
-}
