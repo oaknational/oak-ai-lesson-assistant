@@ -15,8 +15,8 @@ import { usePathname } from "next/navigation";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import OakIconLogo from "@/components/OakIconLogo";
 
+import { useDialog } from "../DialogContext";
 import { BetaTagHeader } from "./beta-tag";
-import { ChatHistory } from "./chat-history";
 import { SidebarMobile } from "./sidebar-mobile";
 import { UserOrLogin } from "./user-or-login";
 
@@ -27,7 +27,7 @@ export function Header() {
   const clerkMetadata = useClerkDemoMetadata();
 
   const ailaId = usePathname().split("aila/")[1];
-
+  const { setOpenSidebar } = useDialog();
   return (
     <OakBox
       as={"header"}
@@ -122,9 +122,7 @@ export function Header() {
             <UserOrLogin />
           </OakFlex>
           <OakFlex>
-            <SidebarMobile>
-              <ChatHistory />
-            </SidebarMobile>
+            <SidebarMobile setOpenSidebar={setOpenSidebar} />
           </OakFlex>
         </OakFlex>
       </OakFlex>
