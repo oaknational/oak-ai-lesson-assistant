@@ -144,7 +144,7 @@ export class AilaChat implements AilaChatService {
     this._chunks.push(value);
   }
 
-  public appendEperimentalPatch(patch: ExperimentalPatchDocument) {
+  public appendExperimentalPatch(patch: ExperimentalPatchDocument) {
     this._experimentalPatches.push(patch);
   }
 
@@ -387,7 +387,7 @@ export class AilaChat implements AilaChatService {
       parsedMessages: this.parsedMessages,
       handlePatch: async (patch) => {
         await this.enqueue(patch);
-        this.appendEperimentalPatch(patch);
+        this.appendExperimentalPatch(patch);
       },
     });
     this.applyEdits();
