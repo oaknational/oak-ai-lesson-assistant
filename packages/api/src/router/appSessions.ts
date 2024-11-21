@@ -222,6 +222,7 @@ export const appSessionsRouter = router({
               id: z.string(),
               title: z.string(),
               isShared: z.boolean().nullish(),
+              updatedAt: z.date(),
             })
             .parse(session);
         } catch (error) {
