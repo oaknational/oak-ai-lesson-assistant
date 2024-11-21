@@ -41,12 +41,8 @@ const meta: Meta<typeof DropDownSection> = {
   tags: ["autodocs"],
   args: {
     objectKey: "learningOutcome",
-    // objectKey,
-    // sectionRefs,
     value:
       "I can explain the reasons why frogs are so important to British society and culture",
-    // userHasCancelledAutoScroll,
-    // showLessonMobile,
     documentContainerRef: { current: null },
     streamingTimeout: 0,
   },
