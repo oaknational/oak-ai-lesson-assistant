@@ -21,6 +21,7 @@ export function ChatHistory({
 
   return (
     <OakModal
+      data-testid="sidebar"
       zIndex={0}
       isOpen={openSidebar}
       onClose={() => setOpenSidebar(false)}
