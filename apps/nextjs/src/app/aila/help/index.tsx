@@ -214,21 +214,9 @@ export const HelpContent = () => {
                   Examples of additional materials
                 </OakHeading>
                 <OakP $mb={"space-between-xs"}>
-                  Once the lesson has been created (and all sections are
-                  complete) you will be able to download the following
-                  documents:
-                </OakP>
-                <OakUL className="mb-6 list-disc pl-12">
-                  <OakLI>Lesson plan, including all sections</OakLI>
-                  <OakLI>Starter quiz (PDF/Docx file)</OakLI>
-                  <OakLI>Slides (PDF/PPTX file)</OakLI>
-                  <OakLI>Exit quiz (PDF/Docx file)</OakLI>
-                  <OakLI>Worksheet (PDF, Doc)</OakLI>
-                  <OakLI>Additional materials (PDF, Doc)</OakLI>
-                </OakUL>
-                <OakP $mt={"space-between-xs"}>
-                  If you have a Google account, you will also be able to edit
-                  these documents directly.
+                  Case study context sheet, an essay title with success criteria
+                  for pupils to complete for homework, suggestions for
+                  alternative art or equipment you can use for your lesson.
                 </OakP>
               </OakBox>
               <OakBox ref={creatingRef}>
