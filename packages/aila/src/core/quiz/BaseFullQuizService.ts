@@ -6,6 +6,7 @@ import type {
 import type { AilaQuizGeneratorService } from "../AilaServices";
 import type { BaseSchema, BaseType } from "./ChoiceModels";
 import { MLQuizGenerator } from "./MLQuizGenerator";
+import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 import { TestSchemaReranker } from "./SchemaReranker";
 import { SimpleQuizSelector } from "./SimpleQuizSelector";
 import type {
@@ -60,6 +61,6 @@ export class SimpleFullQuizService extends BaseFullQuizService {
     new SimpleQuizSelector<BaseType>();
 
   public quizReranker: AilaQuizReranker<typeof BaseSchema> =
-    new TestSchemaReranker();
+    new TestSchemaReranker(testRatingSchema, "/starterQuiz");
   public quizGenerators: AilaQuizGeneratorService[] = [new MLQuizGenerator()];
 }

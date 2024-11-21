@@ -80,6 +80,10 @@ export interface FullQuizService {
   quizSelector: QuizSelector<BaseType>;
   quizReranker: AilaQuizReranker<typeof BaseSchema>;
   quizGenerators: AilaQuizGeneratorService[];
+  createBestQuiz(
+    quizType: quizPatchType,
+    lessonPlan: LooseLessonPlan,
+  ): Promise<QuizQuestion[]>;
 }
 
 // Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
