@@ -10,6 +10,7 @@ export type AilaStreamingStatus =
   | "RequestMade"
   | "StreamingLessonPlan"
   | "StreamingChatResponse"
+  | "StreamingExperimentalPatches"
   | "Moderating"
   | "Idle";
 export const useAilaStreamingStatus = ({
@@ -32,6 +33,8 @@ export const useAilaStreamingStatus = ({
         return "RequestMade";
       } else if (content.includes(moderationStart)) {
         return "Moderating";
+      } else if (content.includes("experimentalPatch")) {
+        return "StreamingExperimentalPatches";
       } else if (
         content.includes('"type":"prompt"') ||
         content.includes('\\"type\\":\\"prompt\\"')

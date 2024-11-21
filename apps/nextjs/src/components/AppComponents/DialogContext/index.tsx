@@ -13,7 +13,9 @@ interface DialogContextType {
   setOpenSidebar: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DialogContext = createContext<DialogContextType | undefined>(undefined);
+export const DialogContext = createContext<DialogContextType | undefined>(
+  undefined,
+);
 
 export const DialogProvider: React.FC<React.PropsWithChildren> = ({
   children,
