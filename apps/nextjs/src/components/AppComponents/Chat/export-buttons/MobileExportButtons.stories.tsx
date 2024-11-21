@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
 import { ChatContext } from "@/components/ContextProviders/ChatProvider";
-import { DemoProvider } from "@/components/ContextProviders/Demo";
+import { DemoContext } from "@/components/ContextProviders/Demo";
 
 import { MobileExportButtons } from "./MobileExportButtons";
 
@@ -19,10 +19,16 @@ const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
   </ChatContext.Provider>
 );
 
-const DemoDecorator: Story["decorators"] = (Story) => (
-  <DemoProvider>
+const DemoDecorator: Story["decorators"] = (Story, { parameters }) => (
+  <DemoContext.Provider
+    value={{
+      isDemoUser: false,
+      isSharingEnabled: true,
+      ...parameters.demoContext,
+    }}
+  >
     <Story />
-  </DemoProvider>
+  </DemoContext.Provider>
 );
 
 const meta: Meta<typeof MobileExportButtons> = {
@@ -40,5 +46,11 @@ type Story = StoryObj<typeof MobileExportButtons>;
 
 export const Default: Story = {};
 
-// TODO
-export const SharingDisabled: Story = {};
+export const SharingDisabled: Story = {
+  parameters: {
+    demoContext: {
+      isDemoUser: true,
+      isSharingEnabled: false,
+    },
+  },
+};
