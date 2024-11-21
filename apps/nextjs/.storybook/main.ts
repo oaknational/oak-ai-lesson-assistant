@@ -1,6 +1,8 @@
 import type { StorybookConfig } from "@storybook/nextjs";
-import { join, dirname } from "path";
+import { join, dirname, resolve } from "path";
 import webpack from "webpack";
+
+process.env.NEXT_PUBLIC_DEBUG = process.env.DEBUG;
 
 /**
  * This function is used to resolve the absolute path of a package.
@@ -22,7 +24,7 @@ const config: StorybookConfig = {
     name: getAbsolutePath("@storybook/nextjs"),
     options: {},
   },
-  staticDirs: ["../public"],
+  staticDirs: ["../public", "./public"],
   typescript: {
     check: false,
     checkOptions: {},
@@ -58,6 +60,14 @@ const config: StorybookConfig = {
         ],
       });
     }
+    if (!config.resolve) {
+      config.resolve = {};
+    }
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "next/navigation": resolve(__dirname, "../src/mocks/next/navigation"),
+      "@clerk/nextjs": resolve(__dirname, "../src/mocks/clerk/nextjs"),
+    };
     return config;
   },
 };

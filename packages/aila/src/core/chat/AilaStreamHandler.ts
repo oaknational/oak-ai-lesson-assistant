@@ -1,18 +1,18 @@
-import { ReadableStreamDefaultController } from "stream/web";
+import { aiLogger } from "@oakai/logger";
+import type { ReadableStreamDefaultController } from "stream/web";
 import invariant from "tiny-invariant";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { AilaChatError } from "../AilaError";
-import { AilaChat } from "./AilaChat";
-import { PatchEnqueuer } from "./PatchEnqueuer";
+import type { AilaChat } from "./AilaChat";
+import type { PatchEnqueuer } from "./PatchEnqueuer";
 
+const log = aiLogger("aila:stream");
 export class AilaStreamHandler {
   private _chat: AilaChat;
   private _controller?: ReadableStreamDefaultController;
   private _patchEnqueuer: PatchEnqueuer;
-  private _isStreaming: boolean = false;
   private _streamReader?: ReadableStreamDefaultReader<string>;
-  private _abortController?: AbortController;
 
   constructor(chat: AilaChat) {
     this._chat = chat;
@@ -21,10 +21,17 @@ export class AilaStreamHandler {
 
   public startStreaming(abortController?: AbortController): ReadableStream {
     return new ReadableStream({
-      start: async (controller) => {
-        await this.stream(controller, abortController);
+      start: (controller) => {
+        this.stream(controller, abortController).catch((error) => {
+          log.error("Error in stream:", error);
+          controller.error(error);
+        });
       },
     });
+  }
+
+  private logStreamingStep(step: string) {
+    log.info(`Streaming step: ${step}`);
   }
 
   private async stream(
@@ -32,23 +39,42 @@ export class AilaStreamHandler {
     abortController?: AbortController,
   ) {
     this.setupController(controller);
-    this.listenForAbort(abortController);
     try {
       await this._chat.setupGeneration();
+      this.logStreamingStep("Setup generation complete");
+
       await this._chat.handleSettingInitialState();
+      this.logStreamingStep("Handle initial state complete");
+
       await this._chat.handleSubjectWarning();
+      this.logStreamingStep("Handle subject warning complete");
+
       await this.startLLMStream();
-      while (this._isStreaming) {
-        await this.readFromStream();
-      }
+      this.logStreamingStep("Start LLM stream complete");
+
+      await this.readFromStream(abortController);
+      this.logStreamingStep("Read from stream complete");
+
+      log.info(
+        "Finished reading from stream",
+        this._chat.iteration,
+        this._chat.id,
+      );
     } catch (e) {
       this.handleStreamError(e);
+      log.info("Stream error", e, this._chat.iteration, this._chat.id);
     } finally {
-      this._isStreaming = false;
       try {
         await this._chat.complete();
+        log.info("Chat completed", this._chat.iteration, this._chat.id);
+      } catch (e) {
+        this._chat.aila.errorReporter?.reportError(e);
+        controller.error(
+          new AilaChatError("Chat completion failed", { cause: e }),
+        );
       } finally {
         this.closeController();
+        log.info("Stream closed", this._chat.iteration, this._chat.id);
       }
     }
   }
@@ -58,39 +84,37 @@ export class AilaStreamHandler {
     this._patchEnqueuer.setController(controller);
   }
 
-  private listenForAbort(abortController?: AbortController) {
-    if (!abortController) {
-      return;
-    }
-    if (this._abortController) {
-      this._abortController.signal.removeEventListener(
-        "abort",
-        this.stopStreamingOnAbort,
-      );
-    }
-    this._abortController = abortController;
-    this._abortController.signal.addEventListener(
-      "abort",
-      this.stopStreamingOnAbort,
-    );
-  }
-
   private async startLLMStream() {
     await this._chat.enqueue({
       type: "comment",
       value: "CHAT_START",
     });
-    const messages = await this._chat.completionMessages();
+    const messages = this._chat.completionMessages();
     this._streamReader =
       await this._chat.createChatCompletionObjectStream(messages);
-    this._isStreaming = true;
   }
 
-  private async readFromStream() {
+  private async readFromStream(abortController?: AbortController) {
+    if (!this._streamReader) {
+      throw new Error("Stream reader is not defined");
+    }
     try {
-      await this.fetchChunkFromStream();
-    } catch (error) {
-      await this._chat.generationFailed(error);
+      while (true) {
+        const { done, value } = await this._streamReader.read();
+        if (done) {
+          break;
+        }
+        if (value) {
+          this._chat.appendChunk(value);
+          this._controller?.enqueue(value);
+        }
+      }
+    } catch (e) {
+      if (abortController?.signal.aborted) {
+        log.info("Stream aborted", this._chat.iteration, this._chat.id);
+      } else {
+        throw e;
+      }
     }
   }
 
@@ -124,21 +148,4 @@ export class AilaStreamHandler {
       this._controller.close();
     }
   }
-
-  private async fetchChunkFromStream() {
-    if (this._streamReader) {
-      const { done, value } = await this._streamReader.read();
-      if (value) {
-        this._chat.appendChunk(value);
-        this._controller?.enqueue(value);
-      }
-      if (done) {
-        this._isStreaming = false;
-      }
-    }
-  }
-
-  private stopStreamingOnAbort = () => {
-    this._isStreaming = false;
-  };
 }

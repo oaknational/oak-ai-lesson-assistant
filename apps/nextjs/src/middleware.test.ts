@@ -1,15 +1,9 @@
-import { NextRequest, NextFetchEvent, NextResponse } from "next/server";
+import type { NextFetchEvent } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { handleError } from "./middleware";
-import { CspConfig, addCspHeaders, buildCspHeaders } from "./middlewares/csp";
-
-jest.mock("./middlewares/csp", () => {
-  const originalModule = jest.requireActual("./middlewares/csp");
-  return {
-    ...originalModule,
-    generateNonce: jest.fn(() => "mocked-nonce"),
-  };
-});
+import type { CspConfig, CspEnvironment } from "./middlewares/csp";
+import { addCspHeaders, buildCspHeaders } from "./middlewares/csp";
 
 describe("handleError", () => {
   let mockRequest: NextRequest;
@@ -91,6 +85,7 @@ describe("addCspHeaders", () => {
         devConsent: false,
         mux: true,
         vercel: false,
+        localhost: false,
       },
     };
   });
@@ -159,7 +154,10 @@ describe("addCspHeaders", () => {
   });
 
   it("includes development-specific directives when environment is development", () => {
-    const config = { ...defaultConfig, environment: "development" };
+    const config = {
+      ...defaultConfig,
+      environment: "development" as CspEnvironment,
+    };
     const result = addCspHeaders(mockResponse, mockRequest, config);
 
     const cspHeader = result.headers.get("Content-Security-Policy");
@@ -194,9 +192,6 @@ describe("addCspHeaders", () => {
     expect(cspHeader).toContain("*.hubspot.com");
     expect(cspHeader).toContain("https://img.clerk.com");
     expect(cspHeader).toContain("https://res.cloudinary.com");
-
-    // Check for nonce
-    expect(cspHeader).toMatch(/'nonce-[a-zA-Z0-9+/=]{24}'/);
   });
 
   it("includes Clerk policies when enabled", () => {
@@ -241,6 +236,7 @@ describe("buildCspHeaders", () => {
       devConsent: false,
       mux: true,
       vercel: false,
+      localhost: false,
     },
   };
 

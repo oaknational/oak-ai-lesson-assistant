@@ -1,18 +1,31 @@
 import { clerkClient } from "@clerk/nextjs/server";
+import { isClerkAPIResponseError } from "@clerk/shared";
+import { aiLogger } from "@oakai/logger";
+import { waitUntil } from "@vercel/functions";
 import os from "os";
 import { z } from "zod";
 
 import { publicProcedure } from "../../trpc";
+import { setRateLimitTokens } from "./rateLimiting";
 import { setSafetyViolations } from "./safetyViolations";
 import { seedChat } from "./seedChat";
 
+const log = aiLogger("testing");
+
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? os.hostname();
+
+const GENERATIONS_PER_24H = parseInt(
+  process.env.RATELIMIT_GENERATIONS_PER_24H || "120",
+  10,
+);
 
 const personaNames = [
   "typical",
   "demo",
   "nearly-banned",
+  "nearly-rate-limited",
   "sharing-chat",
+  "modify-lesson-plan",
 ] as const;
 
 type PersonaName = (typeof personaNames)[number];
@@ -21,6 +34,7 @@ type Persona = {
   region: "GB" | "US";
   chatFixture: "typical" | null;
   safetyViolations: number;
+  rateLimitTokens: number;
 };
 
 const personas: Record<PersonaName, Persona> = {
@@ -30,6 +44,7 @@ const personas: Record<PersonaName, Persona> = {
     region: "GB",
     chatFixture: "typical",
     safetyViolations: 0,
+    rateLimitTokens: 0,
   },
   // A user from a demo region
   demo: {
@@ -37,6 +52,7 @@ const personas: Record<PersonaName, Persona> = {
     region: "US",
     chatFixture: null,
     safetyViolations: 0,
+    rateLimitTokens: 0,
   },
   // A user with 3 safety violations - will be banned with one more
   "nearly-banned": {
@@ -44,6 +60,15 @@ const personas: Record<PersonaName, Persona> = {
     region: "GB",
     chatFixture: null,
     safetyViolations: 3,
+    rateLimitTokens: 0,
+  },
+  // A user with 119 of their 120 generations remaining
+  "nearly-rate-limited": {
+    isDemoUser: false,
+    region: "GB",
+    chatFixture: null,
+    safetyViolations: 0,
+    rateLimitTokens: GENERATIONS_PER_24H - 1,
   },
   // Allows `chat.isShared` to be set/reset without leaking between tests/retries
   "sharing-chat": {
@@ -51,6 +76,14 @@ const personas: Record<PersonaName, Persona> = {
     region: "GB",
     chatFixture: "typical",
     safetyViolations: 0,
+    rateLimitTokens: 0,
+  },
+  "modify-lesson-plan": {
+    isDemoUser: false,
+    region: "GB",
+    chatFixture: "typical",
+    safetyViolations: 0,
+    rateLimitTokens: 0,
   },
 } as const;
 
@@ -69,6 +102,53 @@ const generateEmailAddress = (personaName: keyof typeof personas) => {
     "clerk_test",
   ];
   return `${parts.join("+")}@thenational.academy`;
+};
+
+const deleteOldTestUser = async () => {
+  const result = await clerkClient.users.getUserList({
+    limit: 500,
+  });
+
+  const NUMBERS_USER = /\d{5,10}.*@/; // jim+010203@thenational.academy
+  const testUsers = result.data.filter((u) => {
+    const email = u.primaryEmailAddress?.emailAddress ?? "";
+    return email.startsWith("test+") || email.match(NUMBERS_USER);
+  });
+
+  if (testUsers.length < 100) {
+    log.info(`less than 100 test users. Skipping cleanup.`);
+    return;
+  }
+
+  const users = testUsers.sort(
+    (a, b) =>
+      new Date(a.lastActiveAt ?? a.createdAt).getTime() -
+      new Date(b.lastActiveAt ?? b.createdAt).getTime(),
+  );
+
+  // If multiple personas are created at the same time and both try to delete the
+  // oldest user they will conflict. Add some randomness to reduce conflicts
+  const randomOffset = Math.floor(Math.random() * 8);
+  const userToDelete = users[randomOffset];
+
+  if (userToDelete) {
+    try {
+      await clerkClient.users.deleteUser(userToDelete.id);
+      log.info(
+        "Deleted old test user",
+        userToDelete.primaryEmailAddress?.emailAddress,
+      );
+    } catch (e) {
+      if (isClerkAPIResponseError(e) && e.status === 404) {
+        log.info(
+          `${userToDelete.primaryEmailAddress?.emailAddress} already deleted, retrying`,
+        );
+        deleteOldTestUser();
+      } else {
+        throw e;
+      }
+    }
+  }
 };
 
 const findOrCreateUser = async (
@@ -90,7 +170,7 @@ const findOrCreateUser = async (
     return existingUser;
   }
 
-  console.log("Creating test user", { email });
+  log.info("Creating test user", { email });
   const newUser = await clerkClient.users.createUser({
     emailAddress: [email],
     firstName: branch,
@@ -108,6 +188,8 @@ const findOrCreateUser = async (
       region: persona.region,
     },
   });
+
+  waitUntil(deleteOldTestUser());
 
   return newUser;
 };
@@ -129,6 +211,7 @@ export const prepareUser = publicProcedure
       chatId = await seedChat(user.id, persona.chatFixture);
     }
     await setSafetyViolations(user.id, persona.safetyViolations);
+    await setRateLimitTokens(user.id, persona.rateLimitTokens);
 
     return { email, chatId };
   });

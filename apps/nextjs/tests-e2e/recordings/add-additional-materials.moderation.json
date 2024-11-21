@@ -1,0 +1,32 @@
+{
+  "id": "chatcmpl-AQKuGEQfBdf77GC8OiM2lM61m1fVa",
+  "object": "chat.completion",
+  "created": 1730840256,
+  "model": "gpt-4o-2024-08-06",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":4,\"t\":5},\"justification\":\"The lesson plan on 'Software Testing Techniques' for Key Stage 4 is thoroughly compliant with most guidelines. It does not contain any discriminatory language, offensive language, or strong language, making it fully compliant in the 'Language and discrimination' category. The content does not depict or discuss any form of conflict, violence, or sexual violence, ensuring full compliance with the 'Violence and crime' category. Similarly, there are no upsetting, sensitive, or distressing materials, resulting in a full compliance score for the 'Upsetting, disturbing and sensitive' category. There is no depiction or discussion of nudity or sexual content, ensuring full compliance in the 'Nudity and sex' category. The lesson involves some exploration of objects and the use of external content, such as diagrams and tables, which requires some supervision or guidance, hence a score of 4 in the 'Physical' category. Lastly, the lesson does not contain any toxic content or guidance on harmful behaviors, making it fully compliant in the 'Toxic' category.\",\"categories\":[\"p/exploration-of-objects\",\"p/external-content\"]}",
+        "refusal": null
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 3931,
+    "completion_tokens": 253,
+    "total_tokens": 4184,
+    "prompt_tokens_details": {
+      "cached_tokens": 3584
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "system_fingerprint": "fp_159d8341cc"
+}

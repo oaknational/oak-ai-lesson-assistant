@@ -1,4 +1,4 @@
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import yaml from "yaml";
 
 // Simplifies the input to a string for embedding

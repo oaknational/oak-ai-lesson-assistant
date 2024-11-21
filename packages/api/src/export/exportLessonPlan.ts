@@ -1,17 +1,21 @@
-import { SignedInAuthObject } from "@clerk/backend/internal";
+import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import { LessonSnapshots } from "@oakai/core";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { exportDocLessonPlan } from "@oakai/exports";
-import { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
+import type { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 
+import type {
+  OutputSchema} from "../router/exports";
 import {
   ailaGetExportBySnapshotId,
-  ailaGetOrSaveSnapshot,
   ailaSaveExport,
-  OutputSchema,
   reportErrorResult,
 } from "../router/exports";
+
+const log = aiLogger("exports");
 
 export async function exportLessonPlan({
   input,
@@ -38,12 +42,13 @@ export async function exportLessonPlan({
     };
   }
 
-  const lessonSnapshot = await ailaGetOrSaveSnapshot({
-    prisma: ctx.prisma,
+  const lessonSnapshots = new LessonSnapshots(ctx.prisma);
+  const lessonSnapshot = await lessonSnapshots.getOrSaveSnapshot({
     userId: ctx.auth.userId,
     chatId: input.chatId,
     messageId: input.messageId,
     snapshot: input.data,
+    trigger: "EXPORT_BY_USER",
   });
 
   Sentry.addBreadcrumb({
@@ -82,7 +87,7 @@ export async function exportLessonPlan({
     lessonPlan: input.data,
     userEmail,
     onStateChange: (state) => {
-      console.log(state);
+      log.info(state);
 
       Sentry.addBreadcrumb({
         category: "exportWorksheetDocs",

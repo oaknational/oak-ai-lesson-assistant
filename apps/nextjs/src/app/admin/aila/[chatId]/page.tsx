@@ -1,7 +1,8 @@
 "use client";
 
-import { useUser } from "#clerk/nextjs";
-import { redirect } from "#next/navigation";
+import { useUser } from "@clerk/nextjs";
+import { aiLogger } from "@oakai/logger";
+import { redirect } from "next/navigation";
 
 import LoadingWheel from "@/components/LoadingWheel";
 import { trpc } from "@/utils/trpc";
@@ -13,6 +14,8 @@ interface AdminChatProps {
     chatId: string;
   };
 }
+
+const log = aiLogger("admin");
 
 export default function AdminChat({ params }: Readonly<AdminChatProps>) {
   const user = useUser();
@@ -31,7 +34,7 @@ export default function AdminChat({ params }: Readonly<AdminChatProps>) {
     return <LoadingWheel />;
   }
 
-  console.log("chat", chat);
+  log.info("chat", chat);
 
   if (!chat) {
     return <div>No chat found</div>;

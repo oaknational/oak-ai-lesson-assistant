@@ -3,7 +3,8 @@
 import * as React from "react";
 import { toast } from "react-hot-toast";
 
-import { type DialogProps } from "@radix-ui/react-dialog";
+import { aiLogger } from "@oakai/logger";
+import type { DialogProps } from "@radix-ui/react-dialog";
 
 import { Button } from "@/components/AppComponents/Chat/ui/button";
 import {
@@ -16,10 +17,12 @@ import {
 } from "@/components/AppComponents/Chat/ui/dialog";
 import { IconSpinner } from "@/components/AppComponents/Chat/ui/icons";
 import { useCopyToClipboard } from "@/lib/hooks/use-copy-to-clipboard";
-import { SideBarChatItem } from "@/lib/types";
+import type { SideBarChatItem } from "@/lib/types";
 import { trpc } from "@/utils/trpc";
 
 import { constructSharePath } from "./Chat/utils";
+
+const log = aiLogger("chat");
 
 interface ChatShareDialogProps extends DialogProps {
   chat: SideBarChatItem;
@@ -56,7 +59,7 @@ export function ChatShareDialog({
       toast.success("Link copied to clipboard");
     },
     onError(error) {
-      console.error(error); // TODO sentry?
+      log.error(error); // TODO sentry?
       toast.error("Failed to share chat");
     },
   });

@@ -1,6 +1,6 @@
 import { prisma, QuizAnswerStatus } from "@oakai/db";
 
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 import { QuizAnswers } from "../../models";
 
 export const generateQuizAnswerEmbeddings = inngest.createFunction(

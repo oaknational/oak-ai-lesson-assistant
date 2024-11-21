@@ -1,7 +1,11 @@
 import { clerkClient } from "@clerk/nextjs/server";
+import { aiLogger } from "@oakai/logger";
 
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 import { populateDemoStatusesSchema } from "./populateDemoStatuses.schema";
+
+const log = aiLogger("demo");
+log.info.enabled = true;
 
 export const populateDemoStatuses = inngest.createFunction(
   {
@@ -14,11 +18,11 @@ export const populateDemoStatuses = inngest.createFunction(
     const DRY_RUN = args.dryRun;
 
     if (DRY_RUN) {
-      console.log("Running in dry run mode");
+      log.info("Running in dry run mode");
     }
 
     async function updateUser(id: string) {
-      console.log("Updating user", id);
+      log.info("Updating user", id);
 
       if (!DRY_RUN) {
         await clerkClient.users.updateUserMetadata(id, {
@@ -38,13 +42,13 @@ export const populateDemoStatuses = inngest.createFunction(
           offset,
           orderBy: "created_at",
         });
-        console.log(`${data.length} records fetched at ${offset} offset`);
+        log.info(`${data.length} records fetched at ${offset} offset`);
 
         if (data.length === 0) {
           return { continue: false as const };
         }
 
-        console.log(data.map((user) => user.publicMetadata.isDemoUser));
+        log.info(data.map((user) => user.publicMetadata.isDemoUser));
 
         await Promise.all(
           data
@@ -67,6 +71,6 @@ export const populateDemoStatuses = inngest.createFunction(
       }
     }
 
-    console.log("Done");
+    log.info("Done");
   },
 );

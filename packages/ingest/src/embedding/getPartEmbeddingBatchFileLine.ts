@@ -1,4 +1,4 @@
-import { PersistedIngest } from "../db-helpers/getIngestById";
+import type { PersistedIngest } from "../db-helpers/getIngestById";
 import { batchLineEmbedding } from "../openai-batches/batchLineEmbedding";
 import { createCustomId } from "../openai-batches/customId";
 

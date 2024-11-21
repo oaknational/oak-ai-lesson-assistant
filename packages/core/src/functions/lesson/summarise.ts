@@ -1,7 +1,10 @@
 import { LessonSummaryStatus, prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 import { Lessons } from "../../models";
+
+const log = aiLogger("lessons");
 
 export const summariseLesson = inngest.createFunction(
   {
@@ -16,7 +19,7 @@ export const summariseLesson = inngest.createFunction(
       "Get an OpenAI summarisation for a lesson",
       async () => {
         const result = await new Lessons(prisma).summarise(lessonId);
-        console.log("result", result);
+        log.info("result", result);
         return result?.id;
       },
     );

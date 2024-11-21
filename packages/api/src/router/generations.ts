@@ -6,14 +6,16 @@ import {
   serializeGeneration,
   serializedGenerationSchema,
 } from "@oakai/core/src/models/serializers";
+import type {
+  GenerationPart} from "@oakai/core/src/types";
 import {
-  GenerationPart,
   generationPartSchema,
   generationPartUserTweakedSchema,
 } from "@oakai/core/src/types";
 import { sendQuizFeedbackEmail } from "@oakai/core/src/utils/sendQuizFeedbackEmail";
 import { requestGenerationWorker } from "@oakai/core/src/workers/generations/requestGeneration";
-import logger from "@oakai/logger";
+import { structuredLogger as logger } from "@oakai/logger";
+import { aiLogger } from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 import { Redis } from "@upstash/redis";
 import { waitUntil } from "@vercel/functions";
@@ -25,6 +27,8 @@ import { protectedProcedure } from "../middleware/auth";
 import { userBasedRateLimitProcedure } from "../middleware/rateLimiter";
 import { router } from "../trpc";
 import { rateLimitInfoSchema } from "../types";
+
+const log = aiLogger("generation");
 
 const redis = new Redis({
   url: process.env.KV_REST_API_URL as string,
@@ -217,10 +221,7 @@ export const generationRouter = router({
          * differently
          */
         if (promptSlug.includes("regenerate-")) {
-          logger.info(
-            "Logging re-generation for generation %s",
-            lastGenerationId,
-          );
+          log.info("Logging re-generation for generation %s", lastGenerationId);
           if (lastGenerationId) {
             await feedbackModel.recordReGeneration(
               lastGenerationId,
@@ -228,7 +229,7 @@ export const generationRouter = router({
               generation.id,
             );
           } else {
-            logger.error(
+            log.info(
               "User tried to trigger re-generation generation but did not provide a lastGenerationId",
             );
           }
@@ -240,7 +241,7 @@ export const generationRouter = router({
         );
       }
 
-      console.log("Generation complete");
+      log.info("Generation complete");
 
       return {
         generation: serializeGeneration(generation),
@@ -323,7 +324,7 @@ export const generationRouter = router({
         generationResponse: JSON.stringify(flaggedGenerationResponse?.response),
       });
 
-      logger.debug(
+      log.info(
         "Giving feedback for generation %s",
         flaggedItem.lastGenerationId,
       );
@@ -361,7 +362,7 @@ export const generationRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { tweakedItem, sessionId } = input;
-      logger.info(
+      log.info(
         "Logging user tweak for generation %s",
         tweakedItem.lastGenerationId,
       );

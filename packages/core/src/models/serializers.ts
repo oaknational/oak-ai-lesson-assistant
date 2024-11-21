@@ -13,10 +13,11 @@
  * As these grow we will likely want to either extract them to their own files, or
  * make them part of the models
  */
-import { App, Generation, GenerationStatus, Prompt } from "@oakai/db";
+import type { App, Generation, Prompt } from "@oakai/db";
+import { GenerationStatus } from "@oakai/db";
 import { z } from "zod";
 
-import { AppWithPrompt } from "./apps";
+import type { AppWithPrompt } from "./apps";
 
 type SerializedApp = Pick<App, "id" | "slug" | "name">;
 

@@ -1,14 +1,13 @@
 import { moderationCategoriesSchema } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
-import {
-  Operation,
-  applyPatch,
-  deepClone,
-  JsonPatchError,
-} from "fast-json-patch";
-import { ZodError, z } from "zod";
+import type { Operation } from "fast-json-patch";
+import { applyPatch, deepClone, JsonPatchError } from "fast-json-patch";
+import untruncateJson from "untruncate-json";
+import { z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 
+import type { LooseLessonPlan } from "./schema";
 import {
   BasedOnOptionalSchema,
   BasedOnSchema,
@@ -19,7 +18,6 @@ import {
   KeywordsSchema,
   KeywordsSchemaWithoutLength,
   LessonPlanSchemaWhilstStreaming,
-  LooseLessonPlan,
   MisconceptionsOptionalSchema,
   MisconceptionsSchema,
   MisconceptionsSchemaWithoutLength,
@@ -27,6 +25,8 @@ import {
   QuizSchema,
   QuizSchemaWithoutLength,
 } from "./schema";
+
+const log = aiLogger("aila:protocol");
 
 export const PatchString = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
@@ -279,6 +279,7 @@ export const PatchDocumentSchema = z.object({
   type: z.literal("patch"),
   reasoning: z.string().optional(),
   value: JsonPatchValueSchema,
+  status: z.string().optional(),
 });
 
 // This is the schema that we send when requesting Structured Outputs
@@ -301,14 +302,48 @@ export const LLMPatchDocumentSchema = z.object({
     PatchCycleForLLM,
     JsonPatchRemoveSchemaForLLM,
   ]),
+  status: z.literal("complete"),
 });
 
 export type PatchDocument = z.infer<typeof PatchDocumentSchema>;
+
+const ExperimentalPatchMessagePartSchema = z.union([
+  z.object({
+    op: z.union([z.literal("add"), z.literal("replace")]),
+    path: z.union([
+      z.literal("/_experimental_starterQuizMathsV0"),
+      z.literal("/_experimental_exitQuizMathsV0"),
+    ]),
+    value: z.array(z.object({}).passthrough()),
+  }),
+  z.object({
+    op: z.literal("remove"),
+    path: z.union([
+      z.literal("/_experimental_starterQuizMathsV0"),
+      z.literal("/_experimental_exitQuizMathsV0"),
+    ]),
+  }),
+]);
+// This is the schema for experimental patches, which are part of our prototype agent system
+const ExperimentalPatchDocumentSchema = z.object({
+  type: z.literal("experimentalPatch"),
+  value: ExperimentalPatchMessagePartSchema,
+});
+export type ExperimentalPatchDocument = z.infer<
+  typeof ExperimentalPatchDocumentSchema
+>;
+
+export const ValidPatchDocumentSchema = z.union([
+  PatchDocumentSchema,
+  ExperimentalPatchDocumentSchema,
+]);
+export type ValidPatchDocument = z.infer<typeof ValidPatchDocumentSchema>;
 
 const PatchDocumentOptionalSchema = z.object({
   type: z.literal("patch"),
   reasoning: z.string(),
   value: JsonPatchValueOptionalSchema,
+  status: z.literal("complete").optional(),
 });
 
 export type PatchDocumentOptional = z.infer<typeof PatchDocumentOptionalSchema>;
@@ -317,6 +352,7 @@ export const PromptDocumentSchema = z.object({
   type: z.literal("prompt"),
   message: z.string(),
   options: z.array(z.object({ id: z.string(), title: z.string() })).optional(),
+  status: z.literal("complete").optional(),
 });
 
 export const PromptDocumentSchemaWithoutOptions = z.object({
@@ -387,6 +423,7 @@ export const UnknownDocumentSchema = z.object({
   type: z.literal("unknown"),
   value: z.unknown().optional(),
   error: z.unknown().optional(),
+  status: z.string().optional(),
 });
 
 export type UnknownDocument = z.infer<typeof UnknownDocumentSchema>;
@@ -420,6 +457,7 @@ export const JsonPatchDocumentOptionalSchema = z.discriminatedUnion("type", [
   ActionDocumentSchema,
   ModerationDocumentSchema,
   MessageIdDocumentSchema,
+  ExperimentalPatchDocumentSchema,
 ]);
 
 export type JsonPatchDocumentOptional = z.infer<
@@ -450,6 +488,7 @@ export const MessagePartDocumentSchema = z.discriminatedUnion("type", [
   ModerationDocumentSchema,
   ErrorDocumentSchema,
   PatchDocumentSchema,
+  ExperimentalPatchDocumentSchema,
   StateDocumentSchema,
   CommentDocumentSchema,
   PromptDocumentSchema,
@@ -466,6 +505,7 @@ export type MessagePartType =
   | "moderation"
   | "error"
   | "patch"
+  | "experimentalPatch"
   | "state"
   | "comment"
   | "prompt"
@@ -482,6 +522,7 @@ export const MessagePartDocumentSchemaByType: {
   moderation: ModerationDocumentSchema,
   error: ErrorDocumentSchema,
   patch: PatchDocumentSchema,
+  experimentalPatch: ExperimentalPatchDocumentSchema,
   state: StateDocumentSchema,
   comment: CommentDocumentSchema,
   prompt: PromptDocumentSchema,
@@ -503,14 +544,34 @@ export type MessagePart = z.infer<typeof MessagePartSchema>;
 
 export const LLMMessageSchema = z.object({
   type: z.literal("llmMessage"),
-  patches: z.array(PatchDocumentSchema),
-  prompt: TextDocumentSchema,
+  sectionsToEdit: z
+    .array(z.string())
+    .describe(
+      "The sections of the lesson plan that you are considering editing. This should be an array of strings, where each string is the key of the section you are proposing to edit. For example, if you are proposing to edit the 'priorKnowledge' section, you should include 'priorKnowledge' in this array. If you are proposing to edit multiple sections, you should include all of the keys in this array.",
+    ),
+  patches: z
+    .array(LLMPatchDocumentSchema)
+    .describe(
+      "This is the set of patches you have generated to edit the lesson plan. Follow the instructions in the system prompt to ensure that you produce a valid patch. For instance, if you are providing a patch to add a cycle, the op should be 'add' and the value should be the JSON object representing the full, valid cycle. The same applies for all of the other parts of the lesson plan. This should not include more than one 'add' patch for the same section of the lesson plan. These edits will overwrite each other and result in unexpected results. If you want to do multiple updates on the same section, it is best to generate one 'add' patch with all of your edits included.",
+    ),
+  sectionsEdited: z
+    .array(z.string())
+    .describe(
+      "The sections of the lesson plan that you are actually edited. This should be an array of strings, where each string is the key of the section you are proposing to edit. For example, if you edited the 'priorKnowledge' section, you should include 'priorKnowledge' in this array. If you edited multiple sections, you should include all of the keys in this array.",
+    ),
+  prompt: TextDocumentSchema.describe(
+    "If you imagine the user talking to you, this is where you would put your human-readable reply that would explain the changes you have made (if any), ask them questions, and prompt them to send their next message. This should not contain any of the lesson plan content. That should all be delivered in patches. If you have made edits, you should respond to the user by asking if they are happy with the changes you have made if any, and prompt them with what they can do next",
+  ),
+  status: z.literal("complete"),
 });
 
 const LLMMessageSchemaWhileStreaming = z.object({
   type: z.literal("llmMessage"),
+  sectionsToEdit: z.array(z.string()).optional(),
   patches: z.array(z.object({}).passthrough()).optional(),
+  sectionsEdited: z.array(z.string()).optional(),
   prompt: TextDocumentSchema.optional(),
+  status: z.literal("complete").optional(),
 });
 
 function tryParseJson(str: string): {
@@ -527,18 +588,33 @@ function tryParseJson(str: string): {
     }
     return { parsed, isPartial: false };
   } catch (e) {
-    // If parsing fails, assume it's partial
-    return { parsed: null, isPartial: true };
+    try {
+      // Is this a JSON streaming in?
+      const parsedTruncated = JSON.parse(untruncateJson(str));
+      if (isObject(parsedTruncated) && "type" in parsedTruncated) {
+        return { parsed: parsedTruncated, isPartial: true };
+      } else {
+        throw new Error("The parsed JSON object does not have a type");
+      }
+    } catch (e) {
+      // If parsing fails, assume it's partial
+      return { parsed: null, isPartial: true };
+    }
   }
 }
 
+function isObject(value: unknown): value is { type: string } {
+  return typeof value === "object" && value !== null && "type" in value;
+}
+
 export function tryParsePart(
-  obj: object,
+  obj: Record<string, unknown>,
 ): MessagePartDocument | UnknownDocument {
-  const { type } = obj as { type: string };
+  const { type } = obj;
+
   // Assert the message part type is allowed
   if (!MessagePartDocumentSchemaByType[type as MessagePartType]) {
-    console.error("Invalid message part type", type);
+    log.error("Invalid message part type", type);
     return {
       type: "unknown",
       value: JSON.stringify,
@@ -561,7 +637,6 @@ export function tryParsePatch(obj: object): PatchDocument | UnknownDocument {
     const patchDocument: PatchDocument = parsed.data;
     return patchDocument;
   } else {
-    console.log("Unable to parse patch", parsed, parsed.error);
     return { type: "unknown", value: JSON.stringify(obj), error: parsed.error };
   }
 }
@@ -578,6 +653,7 @@ function tryParseText(obj: object): TextDocument | UnknownDocument {
 // Each Message that is sent back from the server contains the following
 // (separated by the record-separator character and a newline):
 // * An llmMessage matching the LLMMessageSchema, and containing multiple messageParts
+// * An experimentalPatch messagePart
 // * A moderation messagePart
 // * An ID messagePart
 // * A state messagePart
@@ -626,7 +702,7 @@ export function parseMessageRow(row: string, index: number): MessagePart[] {
         result.push({
           type: "message-part",
           document: parsedPatch,
-          isPartial,
+          isPartial: parsedPatch.status !== "complete",
           id: `${index}-patch-${i}`,
         });
         i++;
@@ -637,13 +713,13 @@ export function parseMessageRow(row: string, index: number): MessagePart[] {
         result.push({
           type: "message-part",
           document: parsedPrompt,
-          isPartial,
+          isPartial: llmMessage.status !== "complete",
           id: `${index}-prompt`,
         });
       }
       return result;
     } catch (e) {
-      console.error("LLM Message parsing error", e);
+      log.error("LLM Message parsing error", e);
       return [
         {
           type: "message-part",
@@ -678,64 +754,33 @@ export function parseMessageParts(content: string): MessagePart[] {
   return messageParts;
 }
 
-export function extractPatches(
-  edit: string,
-  mostRecent: number = 2,
-): {
+export function extractPatches(edit: string): {
   validPatches: PatchDocument[];
   partialPatches: PatchDocument[];
 } {
-  const validPatches: PatchDocument[] = [];
-  const partialPatches: PatchDocument[] = [];
+  const parts: MessagePart[] | undefined = parseMessageParts(edit);
 
-  const messageParts = parseMessageParts(edit);
-  const relevantParts = messageParts.slice(-mostRecent);
-
-  for (const part of relevantParts) {
-    if (part.document.type === "patch") {
-      try {
-        const validatedPatch = PatchDocumentSchema.parse(part.document);
-        if (part.isPartial) {
-          partialPatches.push(validatedPatch);
-        } else {
-          validPatches.push(validatedPatch);
-        }
-      } catch (e) {
-        if (e instanceof ZodError) {
-          console.log(
-            "Failed to parse patch due to Zod validation errors:",
-            part,
-          );
-          e.errors.forEach((error, index) => {
-            console.log(`Error ${index + 1}:`);
-            console.log(`  Path: ${error.path.join(".")}`);
-            console.log(`  Message: ${error.message}`);
-            if (error.code) console.log(`  Code: ${error.code}`);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const errorValue = error.path.reduce((obj: any, key) => {
-              if (obj && typeof obj === "object" && key in obj) {
-                return (obj as Record<string, unknown>)[key];
-              }
-              return undefined;
-            }, part);
-            console.error(`  Invalid value:`, errorValue);
-          });
-        } else {
-          console.error("Failed to parse patch:", e);
-        }
-
-        Sentry.withScope(function (scope) {
-          scope.setLevel("error");
-          if (e instanceof ZodError) {
-            scope.setExtra("zodErrors", e.errors);
-          }
-          scope.setExtra("parsedData", part);
-          Sentry.captureException(e);
-        });
-      }
-    }
+  if (!parts) {
+    // Handle parsing failure
+    throw new Error("Failed to parse the edit content");
   }
 
+  const patchMessageParts: MessagePart[] = parts.filter(
+    (p) =>
+      p.document.type === "patch" || p.document.type === "experimentalPatch",
+  );
+  const validPatches: PatchDocument[] = patchMessageParts
+    .filter((p) => !p.isPartial)
+    .map((p) => p.document as PatchDocument);
+  const partialPatches: PatchDocument[] = patchMessageParts
+    .filter((p) => p.isPartial)
+    .map((p) => p.document as PatchDocument);
+
+  log.info(
+    "Extracted patches",
+    validPatches.map((i) => i.value.path),
+    partialPatches.map((i) => i.value.path),
+  );
   return { validPatches, partialPatches };
 }
 
@@ -754,20 +799,26 @@ function isValidPatch(patch: Operation): boolean {
 }
 export function applyLessonPlanPatch(
   lessonPlan: LooseLessonPlan,
-  command: JsonPatchDocument,
+  command: JsonPatchDocument | ExperimentalPatchDocument,
 ) {
+  log.info("Apply patch", JSON.stringify(command));
   let updatedLessonPlan = { ...lessonPlan };
-  if (command.type !== "patch") return lessonPlan;
-  const patch = command.value as Operation;
-  if (!isValidPatch(patch)) {
-    console.error("Invalid patch");
+  if (command.type !== "patch" && command.type !== "experimentalPatch") {
+    log.error("Invalid patch document type", command.type);
+    return lessonPlan;
+  }
+  const patchValue = command.value;
+  if (!isValidPatch(patchValue)) {
+    log.error("Invalid patch");
     return;
   }
 
   try {
+    const result = applyPatch(deepClone(updatedLessonPlan), [patchValue]);
     const newUpdatedLessonPlan = LessonPlanSchemaWhilstStreaming.parse(
-      applyPatch(deepClone(updatedLessonPlan), [patch]).newDocument,
+      result.newDocument,
     );
+
     updatedLessonPlan = { ...newUpdatedLessonPlan };
   } catch (e) {
     const extra: Record<string, unknown> = {};
@@ -775,8 +826,17 @@ export function applyLessonPlanPatch(
       extra["index"] = e.index;
       extra["operation"] = e.operation;
       extra["tree"] = e.tree;
+      log.error("JSON Patch Error:", e, extra);
+    } else if (e instanceof z.ZodError) {
+      log.error(
+        "Zod Error:",
+        e.errors
+          .map((err) => `${err.path.join(".")}: ${err.message}`)
+          .join(", "),
+      );
+    } else {
+      log.error("Failed to apply patch", patchValue, e);
     }
-    console.error("Failed to apply patch", patch, e);
     Sentry.withScope(function (scope) {
       scope.setLevel("info");
       Sentry.captureException(e, { extra });
@@ -800,35 +860,4 @@ export function applyLessonPlanPatch(
     updatedLessonPlan.keywords = working;
   }
   return updatedLessonPlan;
-}
-
-export function parseJsonSafely(jsonStr: string, logging: boolean = false) {
-  function log(...args: unknown[]) {
-    if (logging) {
-      console.log("JSON", ...args);
-    }
-  }
-  if (!jsonStr.trim().startsWith("{") || !jsonStr.includes('":')) {
-    log("Not JSON", jsonStr);
-    return null; // Early return if it doesn't look like JSON
-  }
-  while (jsonStr.length > 0) {
-    try {
-      log("Parse", { jsonStr });
-      // Attempt to parse the JSON
-      return JSON.parse(jsonStr);
-    } catch (error) {
-      if (error instanceof SyntaxError) {
-        log("Syntax error, try with reduced length", error);
-        // If there's a syntax error, remove the last character and try again
-        jsonStr = jsonStr.substring(0, jsonStr.length - 1);
-      } else {
-        // If the error is not a syntax error, rethrow it
-        throw error;
-      }
-    }
-  }
-
-  // Return null if no valid JSON could be extracted
-  return null;
 }

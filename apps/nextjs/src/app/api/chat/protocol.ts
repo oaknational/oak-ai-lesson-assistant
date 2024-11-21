@@ -1,4 +1,4 @@
-import {
+import type {
   ActionDocument,
   ErrorDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
@@ -12,7 +12,7 @@ export function streamingJSON(message: ErrorDocument | ActionDocument) {
 
   return new StreamingTextResponse(
     new ReadableStream({
-      async start(controller) {
+      start(controller) {
         controller.enqueue(errorEncoder.encode(errorMessage));
         controller.close();
       },

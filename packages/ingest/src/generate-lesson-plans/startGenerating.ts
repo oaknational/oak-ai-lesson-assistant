@@ -1,7 +1,7 @@
-import { PersistedIngest } from "../db-helpers/getIngestById";
-import { PersistedIngestLesson } from "../db-helpers/getLessonsByState";
+import type { PersistedIngest } from "../db-helpers/getIngestById";
+import type { PersistedIngestLesson } from "../db-helpers/getLessonsByState";
 import { startBatch } from "../openai-batches/startBatch";
-import { OpenAiBatchSubmitCallback } from "../openai-batches/submitOpenAiBatch";
+import type { OpenAiBatchSubmitCallback } from "../openai-batches/submitOpenAiBatch";
 import { CaptionsSchema } from "../zod-schema/zodSchema";
 import { getLessonPlanBatchFileLine } from "./getLessonPlanBatchFileLine";
 

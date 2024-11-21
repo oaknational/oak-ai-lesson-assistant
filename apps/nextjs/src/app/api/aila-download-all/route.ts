@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
-import { LessonExportType, prisma } from "@oakai/db";
+import type { LessonExportType } from "@oakai/db";
+import { prisma } from "@oakai/db";
 import { downloadDriveFile } from "@oakai/exports";
 import * as Sentry from "@sentry/node";
 import { kv } from "@vercel/kv";
@@ -129,7 +130,7 @@ async function getHandler(req: Request): Promise<Response> {
     }
 
     const lessonExport = await prisma.lessonExport.findFirst({
-      where: { gdriveFileId: fileId, userId },
+      where: { gdriveFileId: fileId, userId, expiredAt: null },
     });
 
     if (!lessonExport) {
@@ -152,7 +153,7 @@ async function getHandler(req: Request): Promise<Response> {
 
         const { data } = res;
 
-        const filename = `${lessonTitle} - ${lessonExport.id} - ${getReadableExportType(
+        const filename = `${lessonTitle} - ${lessonExport.id.slice(0, 5)} - ${getReadableExportType(
           lessonExport.exportType,
         )}.${ext}`;
 

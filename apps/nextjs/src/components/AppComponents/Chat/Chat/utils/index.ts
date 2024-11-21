@@ -1,9 +1,12 @@
-import { type LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import { type Message } from "ai/react";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { aiLogger } from "@oakai/logger";
+import type { Message } from "ai/react";
+
+const log = aiLogger("chat");
 
 export function findMessageIdFromContent({ content }: { content: string }) {
   return content
-    .split(`␞`)
+    .split("␞")
     .map((s) => {
       try {
         return JSON.parse(s.trim());
@@ -16,14 +19,14 @@ export function findMessageIdFromContent({ content }: { content: string }) {
 }
 
 export function findLatestServerSideState(workingMessages: Message[]) {
-  console.log("Finding latest server-side state", { workingMessages });
+  log.info("Finding latest server-side state", { workingMessages });
   const lastMessage = workingMessages[workingMessages.length - 1];
-  if (!lastMessage?.content.includes(`"type":"state"`)) {
-    console.log("No server state found");
+  if (!lastMessage?.content.includes('"type":"state"')) {
+    log.info("No server state found");
     return;
   }
   const state: LooseLessonPlan = lastMessage.content
-    .split(`␞`)
+    .split("␞")
     .map((s) => {
       try {
         return JSON.parse(s.trim());
@@ -35,7 +38,7 @@ export function findLatestServerSideState(workingMessages: Message[]) {
     .filter((i) => i !== null)
     .filter((i) => i.type === "state")
     .map((i) => i.value)[0];
-  console.log("Got latest server state", { state });
+  log.info("Got latest server state", { state });
   return state;
 }
 

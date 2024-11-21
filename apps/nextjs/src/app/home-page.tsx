@@ -2,18 +2,18 @@
 
 import { useUser } from "@clerk/nextjs";
 import MuxPlayer from "@mux/mux-player-react";
+import type { OakColorToken } from "@oaknational/oak-components";
 import {
   OakBox,
   OakFlex,
   OakHeading,
   OakLink,
   OakP,
-  OakColorToken,
   oakColorTokens,
   OakPrimaryButton,
 } from "@oaknational/oak-components";
-import { HomePageQueryResult } from "cms/types/aiHomePageType";
-import { Metadata } from "next";
+import type { HomePageQueryResult } from "cms/types/aiHomePageType";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import styled from "styled-components";
@@ -55,17 +55,25 @@ const OakFlexCustomMaxWidthWithHalfWidth = styled(OakFlexCustomMaxWidth)`
   }
 `;
 
-export default function HomePage({
-  pageData,
-}: {
+type HomePageProps = {
   pageData: HomePageQueryResult | null;
-}) {
+};
+
+export default function HomePage(props: HomePageProps) {
+  return (
+    <Layout>
+      <HomePageContent {...props} />
+    </Layout>
+  );
+}
+
+export function HomePageContent({ pageData }: HomePageProps) {
   const user = useUser();
 
   const { track } = useAnalytics();
 
   return (
-    <Layout>
+    <>
       <HeroContainer>
         <OakFlex
           $flexDirection={["column", "row"]}
@@ -325,7 +333,7 @@ export default function HomePage({
         </OakHeading>
 
         <OakP>
-          Oak AI Experiments explores ways that large language models (LLMs) can
+          Oak AI experiments explores ways that large language models (LLMs) can
           generate effective teaching resources and reduce workloads. We do this
           by using a combination of carefully chosen prompts – instructions
           aimed at getting useful responses – and our existing high-quality
@@ -334,7 +342,7 @@ export default function HomePage({
           as possible.
         </OakP>
       </OakFlexWithBackground>
-    </Layout>
+    </>
   );
 }
 

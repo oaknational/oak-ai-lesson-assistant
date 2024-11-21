@@ -3,41 +3,55 @@ import {
   unsupportedSubjects,
   subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
+import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
-import { z } from "zod";
 
-import { AilaChatService, AilaError, AilaServices } from "../..";
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
-import {
-  AilaGeneration,
-  AilaGenerationStatus,
-} from "../../features/generation";
+import type { AilaChatService } from "../../core/AilaServices";
+import type { AilaServices } from "../../core/AilaServices";
+import { AilaGeneration } from "../../features/generation/AilaGeneration";
+import type { AilaGenerationStatus } from "../../features/generation/types";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
-import {
+import type {
+  ExperimentalPatchDocument,
   JsonPatchDocumentOptional,
-  LLMPatchDocumentSchema,
-  TextDocumentSchema,
+} from "../../protocol/jsonPatchProtocol";
+import {
+  LLMMessageSchema,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
-import { LLMService } from "../llm/LLMService";
+import type {
+  AilaPersistedChat,
+  AilaRagRelevantLesson,
+} from "../../protocol/schema";
+import { fetchExperimentalPatches } from "../../utils/experimentalPatches/fetchExperimentalPatches";
+import { AilaError } from "../AilaError";
+import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
-import { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
+import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
-import { Message } from "./types";
+import type { Message } from "./types";
+
+const log = aiLogger("aila:chat");
 
 export class AilaChat implements AilaChatService {
-  private _id: string;
-  private _messages: Message[];
+  private readonly _id: string;
+  private readonly _messages: Message[];
+  private _relevantLessons: AilaRagRelevantLesson[];
   private _isShared: boolean | undefined;
-  private _userId: string | undefined;
-  private _aila: AilaServices;
+  private readonly _userId: string | undefined;
+  private readonly _aila: AilaServices;
   private _generation?: AilaGeneration;
   private _chunks?: string[];
-  private _patchEnqueuer: PatchEnqueuer;
-  private _llmService: LLMService;
-  private _promptBuilder: AilaPromptBuilder;
+  private readonly _patchEnqueuer: PatchEnqueuer;
+  private readonly _llmService: LLMService;
+  private readonly _promptBuilder: AilaPromptBuilder;
+  private _iteration: number | undefined;
+  private _createdAt: Date | undefined;
+  private _persistedChat: AilaPersistedChat | undefined;
+  private _experimentalPatches: ExperimentalPatchDocument[];
 
   constructor({
     id,
@@ -66,6 +80,8 @@ export class AilaChat implements AilaChatService {
       });
     this._patchEnqueuer = new PatchEnqueuer();
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
+    this._relevantLessons = [];
+    this._experimentalPatches = [];
   }
 
   public get aila() {
@@ -76,11 +92,6 @@ export class AilaChat implements AilaChatService {
     return this._id;
   }
 
-  public set id(value: string) {
-    this._id = value;
-    this._aila.analytics?.initialiseAnalyticsContext();
-  }
-
   public get userId(): string | undefined {
     return this._userId;
   }
@@ -89,12 +100,32 @@ export class AilaChat implements AilaChatService {
     return this._isShared;
   }
 
+  public get iteration() {
+    return this._iteration;
+  }
+
+  public get createdAt() {
+    return this._createdAt;
+  }
+
   public get messages() {
     return this._messages;
   }
 
   public get parsedMessages() {
     return this._messages.map((m) => parseMessageParts(m.content));
+  }
+
+  public get persistedChat() {
+    return this._persistedChat;
+  }
+
+  public get relevantLessons() {
+    return this._relevantLessons;
+  }
+
+  public set relevantLessons(lessons: AilaRagRelevantLesson[]) {
+    this._relevantLessons = lessons;
   }
 
   public getPatchEnqueuer(): PatchEnqueuer {
@@ -111,6 +142,10 @@ export class AilaChat implements AilaChatService {
       return;
     }
     this._chunks.push(value);
+  }
+
+  public appendExperimentalPatch(patch: ExperimentalPatchDocument) {
+    this._experimentalPatches.push(patch);
   }
 
   public async generationFailed(error: unknown) {
@@ -134,7 +169,7 @@ export class AilaChat implements AilaChatService {
     });
   }
 
-  public async systemMessage() {
+  public systemMessage() {
     invariant(this._generation?.systemPrompt, "System prompt not initialised");
     return {
       id: generateMessageId({ role: "system" }),
@@ -143,12 +178,12 @@ export class AilaChat implements AilaChatService {
     };
   }
 
-  public async completionMessages() {
+  public completionMessages() {
     const reducedMessages = this._promptBuilder.reduceMessagesForPrompt(
       this._messages,
     );
 
-    const systemMessage = await this.systemMessage();
+    const systemMessage = this.systemMessage();
     const applicableMessages: Message[] = [systemMessage, ...reducedMessages]; // only send
 
     if (this._aila?.lesson.hasSetInitialState) {
@@ -208,14 +243,20 @@ export class AilaChat implements AilaChatService {
   }
 
   public async enqueue(message: JsonPatchDocumentOptional) {
-    await this._patchEnqueuer.enqueueMessage(message);
+    // Optional "?" Necessary to avoid a "terminated" error
+    if (this?._patchEnqueuer) {
+      await this._patchEnqueuer.enqueueMessage(message);
+    }
   }
 
   public async enqueuePatch(
     path: string,
     value: string | string[] | number | object,
   ) {
-    await this._patchEnqueuer.enqueuePatch(path, value);
+    // Optional "?" necessary to avoid a "terminated" error
+    if (this?._patchEnqueuer) {
+      await this._patchEnqueuer.enqueuePatch(path, value);
+    }
   }
 
   private async startNewGeneration() {
@@ -233,13 +274,19 @@ export class AilaChat implements AilaChatService {
 
   private accumulatedText() {
     const accumulated = this._chunks?.join("");
-    return accumulated;
+    return accumulated ?? "";
+  }
+
+  private applyExperimentalPatches() {
+    const experimentalPatches = this._experimentalPatches;
+
+    log.info("Applying experimental patches", experimentalPatches);
+
+    this._aila.lesson.applyValidPatches(experimentalPatches);
   }
 
   private async reportUsageMetrics() {
-    await this._aila.analytics?.reportUsageMetrics(
-      this.accumulatedText() ?? "",
-    );
+    await this._aila.analytics?.reportUsageMetrics(this.accumulatedText());
   }
 
   private async persistGeneration(status: AilaGenerationStatus) {
@@ -250,7 +297,7 @@ export class AilaChat implements AilaChatService {
       invariant(responseText, "Response text not set");
       await this._generation.complete({ status, responseText });
     }
-    this._generation.persist(status);
+    await this._generation.persist(status);
   }
 
   private async persistChat() {
@@ -279,23 +326,25 @@ export class AilaChat implements AilaChatService {
     const persistedChat = await persistenceFeature.loadChat();
 
     if (persistedChat) {
+      this._relevantLessons = persistedChat.relevantLessons ?? [];
       this._isShared = persistedChat.isShared;
+      this._iteration = persistedChat.iteration ?? 1;
+      this._createdAt = new Date(persistedChat.createdAt);
+      this._persistedChat = persistedChat;
     }
   }
 
   private applyEdits() {
-    const patches = this.accumulatedText();
-    if (!patches) {
+    const llmPatches = this.accumulatedText();
+    if (!llmPatches) {
       return;
     }
-    this._aila.lesson.applyPatches(patches);
+    this._aila.lesson.extractAndApplyLlmPatches(llmPatches);
+    this.applyExperimentalPatches();
   }
 
   private appendAssistantMessage() {
     const content = this.accumulatedText();
-    if (!content) {
-      return;
-    }
     const assistantMessage: Message = {
       id: generateMessageId({ role: "assistant" }),
       role: "assistant",
@@ -304,14 +353,6 @@ export class AilaChat implements AilaChatService {
     this.addMessage(assistantMessage);
 
     return assistantMessage;
-  }
-
-  private async enqueueFinalState() {
-    await this.enqueue({
-      type: "state",
-      reasoning: "final",
-      value: this._aila.lesson.plan,
-    });
   }
 
   private async enqueueMessageId(messageId: string) {
@@ -330,21 +371,9 @@ export class AilaChat implements AilaChatService {
   }
 
   public async createChatCompletionObjectStream(messages: Message[]) {
-    const schema = z.object({
-      type: z.literal("llmMessage"),
-      patches: z
-        .array(LLMPatchDocumentSchema)
-        .describe(
-          "This is the set of patches you have generated to edit the lesson plan. Follow the instructions in the system prompt to ensure that you produce a valid patch. For instance, if you are providing a patch to add a cycle, the op should be 'add' and the value should be the JSON object representing the full, valid cycle. The same applies for all of the other parts of the lesson plan. This should not include more than one 'add' patch for the same section of the lesson plan. These edits will overwrite each other and result in unexpected results. If you want to do multiple updates on the same section, it is best to generate one 'add' patch with all of your edits included.",
-        ),
-      prompt: TextDocumentSchema.describe(
-        "If you imagine the user talking to you, this is where you would put your human-readable reply that would explain the changes you have made (if any), ask them questions, and prompt them to send their next message. This should not contain any of the lesson plan content. That should all be delivered in patches.",
-      ),
-    });
-
     return this._llmService.createChatCompletionObjectStream({
       model: this._aila.options.model ?? DEFAULT_MODEL,
-      schema,
+      schema: LLMMessageSchema,
       schemaName: "response",
       messages,
       temperature: this._aila.options.temperature ?? DEFAULT_TEMPERATURE,
@@ -352,20 +381,34 @@ export class AilaChat implements AilaChatService {
   }
 
   public async complete() {
+    await this.reportUsageMetrics();
+    await fetchExperimentalPatches({
+      lessonPlan: this._aila.lesson.plan,
+      parsedMessages: this.parsedMessages,
+      handlePatch: async (patch) => {
+        await this.enqueue(patch);
+        this.appendExperimentalPatch(patch);
+      },
+    });
+    this.applyEdits();
+    const assistantMessage = this.appendAssistantMessage();
+    await this.enqueueMessageId(assistantMessage.id);
+    await this.saveSnapshot({ messageId: assistantMessage.id });
+    await this.moderate();
+    await this.persistChat();
+    await this.persistGeneration("SUCCESS");
     await this.enqueue({
       type: "comment",
       value: "CHAT_COMPLETE",
     });
-    await this.reportUsageMetrics();
-    this.applyEdits();
-    const assistantMessage = this.appendAssistantMessage();
-    if (assistantMessage) {
-      await this.enqueueMessageId(assistantMessage.id);
-    }
+  }
 
-    await this.moderate();
-    await this.persistChat();
-    await this.persistGeneration("SUCCESS");
+  public async saveSnapshot({ messageId }: { messageId: string }) {
+    await this._aila.snapshotStore.saveSnapshot({
+      messageId,
+      lessonPlan: this._aila.lesson.plan,
+      trigger: "ASSISTANT_MESSAGE",
+    });
   }
 
   public async moderate() {
@@ -401,7 +444,6 @@ export class AilaChat implements AilaChatService {
 
   public async setupGeneration() {
     await this.startNewGeneration();
-    await this.persistChat();
     await this.persistGeneration("REQUESTED");
   }
 

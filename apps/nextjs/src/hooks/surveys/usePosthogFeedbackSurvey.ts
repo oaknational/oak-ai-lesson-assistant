@@ -1,9 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
 
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/react";
-import { Survey } from "posthog-js";
+import type { Survey } from "posthog-js";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
+
+const log = aiLogger("feedback");
 
 type UsePosthogFeedbackSurveyProps = {
   closeDialog?: () => void;
@@ -32,7 +35,7 @@ export const usePosthogFeedbackSurvey = ({
 
       if (!matchingSurvey) {
         const error = new Error(`Survey with name ${surveyName} not found`);
-        console.error(error);
+        log.error(error);
         Sentry.captureException(error);
 
         return;
@@ -64,7 +67,7 @@ export const usePosthogFeedbackSurvey = ({
         });
       } else {
         const error = new Error(`Survey not found: ${surveyName}`);
-        console.error(error);
+        log.error(error);
         Sentry.captureException(error);
       }
       closeDialog?.();
@@ -81,7 +84,7 @@ export const usePosthogFeedbackSurvey = ({
         });
       } else {
         const error = new Error(`Survey not found: ${surveyName}`);
-        console.error(error);
+        log.error(error);
         Sentry.captureException(error);
       }
     },

@@ -1,4 +1,5 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
 import { IngestError } from "../IngestError";
 import { createErrorRecord } from "../db-helpers/createErrorRecord";
@@ -6,6 +7,8 @@ import { updateLessonsState } from "../db-helpers/updateLessonsState";
 import { downloadOpenAiFile } from "../openai-batches/downloadOpenAiFile";
 import { jsonlToArray } from "../utils/jsonlToArray";
 import { parseBatchLessonPlan } from "./parseBatchLessonPlan";
+
+const log = aiLogger("ingest");
 
 /**
  * When a lesson plan batch is successfully processed, this function
@@ -86,8 +89,8 @@ export async function handleLessonPlanBatchSuccess({
     },
   });
 
-  console.log(`Updated ${lessonIdsCompleted.length} lessons with lesson plans`);
-  console.log(
+  log.info(`Updated ${lessonIdsCompleted.length} lessons with lesson plans`);
+  log.info(
     `Failed to update ${lessonIdsFailed.length} lessons with lesson plans`,
   );
 }

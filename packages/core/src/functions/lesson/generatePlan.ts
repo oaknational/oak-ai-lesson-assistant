@@ -1,7 +1,10 @@
 import { prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
-import { inngest } from "../../client";
+import { inngest } from "../../inngest";
 import { LessonPlans } from "../../models";
+
+const log = aiLogger("lessons");
 
 export const generatePlanForLesson = inngest.createFunction(
   {
@@ -14,7 +17,7 @@ export const generatePlanForLesson = inngest.createFunction(
 
     await step.run("Create a plan for a lesson", async () => {
       const result = await new LessonPlans(prisma).createFromLesson(lessonId);
-      console.log("result", result);
+      log.info("result", result);
       return result?.id;
     });
   },

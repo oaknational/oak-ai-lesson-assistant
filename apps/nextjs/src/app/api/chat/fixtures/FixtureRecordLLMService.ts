@@ -1,11 +1,14 @@
-import { Message } from "@oakai/aila";
-import { LLMService } from "@oakai/aila/src/core/llm/LLMService";
+import type { Message } from "@oakai/aila/src/core/chat";
+import type { LLMService } from "@oakai/aila/src/core/llm/LLMService";
 import { OpenAIService } from "@oakai/aila/src/core/llm/OpenAIService";
+import { aiLogger } from "@oakai/logger";
 import fs from "fs/promises";
-import { ZodSchema } from "zod";
+import type { ZodSchema } from "zod";
+
+const log = aiLogger("fixtures");
 
 export class FixtureRecordLLMService implements LLMService {
-  name = "FixureRecordLLM";
+  name = "FixtureRecordLLM";
   private _openAIService: OpenAIService;
 
   constructor(
@@ -54,17 +57,17 @@ export class FixtureRecordLLMService implements LLMService {
             null,
             2,
           );
-          console.log("Fixtures: Writing formatted to", formattedUrl);
+          log.info("Writing formatted to", formattedUrl);
           await fs.writeFile(formattedUrl, formatted);
         } catch (e) {
-          console.error("Error writing formatted file", e);
+          log.error("Error writing formatted file", e);
         }
 
         const chunksUrl = `${process.cwd()}/tests-e2e/recordings/${fixtureName}.chunks.txt`;
         const encodedChunks = chunks
           .map((c) => c.replaceAll("\n", "__NEWLINE__"))
           .join("\n");
-        console.log("Fixtures: Writing chunks to", chunksUrl);
+        log.info("Writing chunks to", chunksUrl);
         await fs.writeFile(chunksUrl, encodedChunks);
 
         controller.close();

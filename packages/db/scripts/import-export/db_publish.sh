@@ -1,11 +1,11 @@
 #!/bin/sh
 
-#TABLES=("key_stages" "subjects" "key_stage_subjects" "summarisation_strategies" "lessons" "questions" "answers" "lesson_summaries" "transcripts" "snippets" )
-TABLES=("lesson_plans" "lesson_plan_parts")
+# Define the tables in the correct order based on dependencies
+TABLES="$SCRIPTPATH/tables.txt"
+
 SCRIPT=$(readlink -f "$0")
 # Absolute path of the directory this script is in
 SCRIPTPATH=$(dirname "$SCRIPT")
-
 
 sql="BEGIN; TRUNCATE "
 
@@ -20,16 +20,16 @@ for (( idx=${#TABLES[@]}-1 ; idx>=0 ; idx-- )) do
   else
     sql+=", "
   fi
-  
 done
 
-sql+="; COMMIT;"
+sql+=" RESTART IDENTITY CASCADE; COMMIT;"
 
 echo "$sql"
 
-URL_WITHOUT_SCHEMA=`echo "$DATABASE_ADMIN_URL" | cut -f1 -d"?"`
+URL_WITHOUT_SCHEMA=$(echo "$DATABASE_ADMIN_URL" | cut -f1 -d"?")
 echo "Connecting to: $URL_WITHOUT_SCHEMA"
 
+# Execute the truncation
 psql "$URL_WITHOUT_SCHEMA?sslmode=verify-ca&sslrootcert=$SCRIPTPATH/../../certs/db_$DB_ENV.pem" -c "$sql"
 
 for table in ${TABLES[@]}; do

@@ -1,13 +1,17 @@
 import { RAG } from "@oakai/core/src/rag";
-import { PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
+import { aiLogger } from "@oakai/logger";
 
-import { AilaServices } from "../../core";
+import type { AilaRagFeature } from ".";
+import type { AilaServices } from "../../core/AilaServices";
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
-import { LooseLessonPlan } from "../../protocol/schema";
+import type { LooseLessonPlan } from "../../protocol/schema";
 import { minifyLessonPlanForRelevantLessons } from "../../utils/lessonPlan/minifyLessonPlanForRelevantLessons";
 
-export class AilaRag {
+const log = aiLogger("aila:rag");
+
+export class AilaRag implements AilaRagFeature {
   private _aila: AilaServices;
   private _rag: RAG;
   private _prisma: PrismaClientWithAccelerate;
@@ -70,7 +74,7 @@ export class AilaRag {
       content = JSON.stringify(minifiedLessons, null, 2);
     }
 
-    console.log("Got RAG content, length:", content.length);
+    log.info("Got RAG content, length:", content.length);
 
     return content;
   }

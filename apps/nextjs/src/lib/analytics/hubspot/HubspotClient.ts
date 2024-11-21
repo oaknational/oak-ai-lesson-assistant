@@ -1,4 +1,4 @@
-import { AnalyticsService } from "@/components/ContextProviders/AnalyticsProvider";
+import type { AnalyticsService } from "@/components/ContextProviders/AnalyticsProvider";
 import { ServicePolicyMap } from "@/lib/cookie-consent/ServicePolicyMap";
 import { consentClient } from "@/lib/cookie-consent/consentClient";
 

@@ -1,13 +1,15 @@
-import { LessonSnapshot, PrismaClientWithAccelerate } from "@oakai/db";
+import type {
+  LessonSnapshot,
+  LessonSnapshotTrigger,
+  PrismaClientWithAccelerate,
+} from "@oakai/db";
 import crypto from "crypto";
 
-import {
-  LessonPlanJsonSchema,
-  LooseLessonPlan,
-} from "../../../aila/src/protocol/schema";
+import type { LooseLessonPlan } from "../../../aila/src/protocol/schema";
+import { LessonPlanJsonSchema } from "../../../aila/src/protocol/schema";
 // #TODO this import is reaching out of the package because it would otherwise be a circular dependency
-import { DeepNullable } from "../utils/DeepNullable";
-import { DeepPartial } from "../utils/DeepPartial";
+import type { DeepNullable } from "../utils/DeepNullable";
+import type { DeepPartial } from "../utils/DeepPartial";
 
 export type Snapshot = DeepPartial<DeepNullable<LooseLessonPlan>>;
 const JsonSchemaString = JSON.stringify(LessonPlanJsonSchema);
@@ -26,6 +28,12 @@ function getSnapshotHash(snapshot: Snapshot) {
   return hash;
 }
 
+/**
+ * Lesson snapshots are stored after each assistant message.
+ * They act as a snapshot of the lesson plan at that point in the chat.
+ * These snapshots are passed to the Moderation service and the Exports service
+ * for moderation and export downloads respectively.
+ */
 export class LessonSnapshots {
   constructor(private readonly prisma: PrismaClientWithAccelerate) {}
 
@@ -37,16 +45,22 @@ export class LessonSnapshots {
     });
   }
 
-  async create(
-    userId: string,
-    chatId: string,
+  async create({
+    userId,
+    chatId,
+    messageId,
+    snapshot,
+    trigger,
+  }: {
+    userId: string;
+    chatId: string;
     /**
      * This is the message ID of the most recent assistant message
      */
-    messageId: string,
-    snapshot: Snapshot,
-  ): Promise<LessonSnapshot> {
-    const lessonJson = JSON.stringify(snapshot);
+    messageId: string;
+    snapshot: Snapshot;
+    trigger: LessonSnapshotTrigger;
+  }): Promise<LessonSnapshot> {
     const hash = getSnapshotHash(snapshot);
 
     let lessonSchema = await this.prisma.lessonSchema.findFirst({
@@ -72,9 +86,9 @@ export class LessonSnapshots {
         chatId,
         messageId,
         hash,
-        lessonJson,
+        lessonJson: snapshot,
         lessonSchemaId: lessonSchema.id,
-        trigger: "MODERATION",
+        trigger,
       },
     });
   }
@@ -84,11 +98,13 @@ export class LessonSnapshots {
     chatId,
     messageId,
     snapshot,
+    trigger,
   }: {
     userId: string;
     chatId: string;
     messageId: string;
     snapshot: Snapshot;
+    trigger: LessonSnapshotTrigger;
   }) {
     /**
      * Prisma types complained when passing the JSON schema directly to the Prisma
@@ -132,8 +148,6 @@ export class LessonSnapshots {
       return existingSnapshot;
     }
 
-    const lessonJson = JSON.stringify(snapshot);
-
     const lessonSnapshot = await this.prisma.lessonSnapshot.create({
       data: {
         userId,
@@ -141,62 +155,8 @@ export class LessonSnapshots {
         messageId,
         lessonSchemaId: lessonSchema.id,
         hash,
-        lessonJson,
-        trigger: "EXPORT_BY_USER",
-      },
-    });
-
-    return lessonSnapshot;
-  }
-
-  async createModerationSnapshot({
-    userId,
-    chatId,
-    messageId,
-    snapshot,
-  }: {
-    userId: string;
-    chatId: string;
-    messageId: string;
-    snapshot: Snapshot;
-  }) {
-    /**
-     * Prisma types complained when passing the JSON schema directly to the Prisma
-     */
-    const jsonSchema = JSON.parse(JsonSchemaString);
-    // get latest lesson schema for given hash
-    // note: we should be storing this at build time so we don't have to do this
-    let lessonSchema = await this.prisma.lessonSchema.findFirst({
-      where: {
-        hash: LESSON_JSON_SCHEMA_HASH,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    if (!lessonSchema) {
-      // create lesson schema if not found
-      lessonSchema = await this.prisma.lessonSchema.create({
-        data: {
-          hash: LESSON_JSON_SCHEMA_HASH,
-          jsonSchema,
-        },
-      });
-    }
-
-    const hash = getSnapshotHash(snapshot);
-    const lessonJson = JSON.stringify(snapshot);
-
-    const lessonSnapshot = await this.prisma.lessonSnapshot.create({
-      data: {
-        userId,
-        chatId,
-        messageId,
-        lessonSchemaId: lessonSchema.id,
-        hash,
-        lessonJson,
-        trigger: "MODERATION",
+        lessonJson: snapshot,
+        trigger,
       },
     });
 

@@ -1,6 +1,8 @@
-import browserLogger from "@oakai/logger/browser";
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
-import { z } from "zod";
+import type { z } from "zod";
+
+const log = aiLogger("ui");
 
 export function parseLocalStorageData<S extends z.ZodTypeAny>(
   storageKey: string,
@@ -8,7 +10,7 @@ export function parseLocalStorageData<S extends z.ZodTypeAny>(
 ): z.infer<S> | null {
   const storedData = localStorage.getItem(storageKey);
 
-  browserLogger.debug(
+  log.info(
     "Attempting to parse localStorage key=%s data=%o",
     storageKey,
     storedData,
@@ -20,9 +22,9 @@ export function parseLocalStorageData<S extends z.ZodTypeAny>(
       return schema.parse(jsonParsedData);
     }
   } catch (err) {
-    browserLogger.error(err);
+    log.error(err);
     if (storedData !== "") {
-      console.error("Failed to parse session from localStorage", storedData);
+      log.error("Failed to parse session from localStorage", storedData);
       Sentry.captureException(
         new Error("Failed to parse session from localStorage"),
         { extra: { originalError: err, storedData } },

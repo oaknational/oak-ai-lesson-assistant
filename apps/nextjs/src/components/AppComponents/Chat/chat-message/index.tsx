@@ -1,12 +1,14 @@
 // Inspired by Chatbot-UI and modified to fit the needs of this project
 // @see https://github.com/mckaywrigley/chatbot-ui/blob/main/components/Chat/ChatMessage.tsx
-import { ReactNode, useState } from "react";
+import type { ReactNode } from "react";
+import { useState } from "react";
 
-import {
+import type {
   ActionDocument,
   BadDocument,
   CommentDocument,
   ErrorDocument,
+  ExperimentalPatchDocument,
   MessagePart,
   ModerationDocument,
   PatchDocument,
@@ -14,20 +16,23 @@ import {
   StateDocument,
   TextDocument,
   UnknownDocument,
-  parseMessageParts,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { isSafe } from "@oakai/core/src/utils/ailaModeration/helpers";
-import { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import { Message } from "ai";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { aiLogger } from "@oakai/logger";
+import type { Message } from "ai";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 import { useChatModeration } from "@/components/ContextProviders/ChatModerationContext";
 import { Icon } from "@/components/Icon";
 import { cn } from "@/lib/utils";
 
-import { ModerationModalHelpers } from "../../FeedbackForms/ModerationFeedbackModal";
-import { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
+import type { ModerationModalHelpers } from "../../FeedbackForms/ModerationFeedbackModal";
+import type { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import { isModeration } from "./protocol";
+
+const log = aiLogger("chat");
 
 export interface ChatMessageProps {
   chatId: string; // Needed for when we refactor to use a moderation provider
@@ -186,6 +191,9 @@ function MessageWrapper({
   children,
   type,
 }: MessageWrapperProps) {
+  const testId = errorType
+    ? `chat-message-wrapper-${type}-${errorType}`
+    : `chat-message-wrapper-${type}`;
   return (
     <div
       className={cn(
@@ -195,6 +203,7 @@ function MessageWrapper({
         errorType && "p-9",
         className,
       )}
+      data-testid={testId}
     >
       {type === "aila" ||
         (type === "editing" && (
@@ -230,6 +239,7 @@ function ChatMessagePart({
     error: ErrorMessagePart,
     bad: BadMessagePart,
     patch: PatchMessagePart,
+    experimentalPatch: ExperimentalPatchMessageComponent,
     state: StateMessagePart,
     text: TextMessagePart,
     action: ActionMessagePart,
@@ -242,7 +252,7 @@ function ChatMessagePart({
   }>;
 
   if (!PartComponent) {
-    console.log("Unknown part type", part.document.type, JSON.stringify(part)); // eslint-disable-line no-console
+    log.info("Unknown part type", part.document.type, JSON.stringify(part));
     return null;
   }
 
@@ -329,4 +339,12 @@ function PartInspector({ part }: Readonly<{ part: MessagePart }>) {
       </pre>
     </div>
   );
+}
+
+/**
+ * Patches do not get rendered, they get applied to the lesson plan
+ * state, which is then rendered in the right hand side.
+ */
+function ExperimentalPatchMessageComponent() {
+  return null;
 }

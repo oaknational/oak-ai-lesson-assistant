@@ -1,17 +1,19 @@
-import {
-  ClerkMiddlewareAuth,
-  clerkMiddleware,
-  createRouteMatcher,
-} from "@clerk/nextjs/server";
-import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
+import type { ClerkMiddlewareAuth } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { aiLogger } from "@oakai/logger";
+import type { NextFetchEvent, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 import { sentrySetUser } from "@/lib/sentry/sentrySetUser";
+
+const log = aiLogger("middleware:auth");
 
 declare global {
   interface CustomJwtSessionClaims {
     labs: {
       isDemoUser: boolean | null;
       isOnboarded: boolean | null;
+      featureFlagGroup: string | null;
     };
   }
 }
@@ -20,7 +22,9 @@ const publicRoutes = [
   "/api/health",
   "/aila/health",
   "/api/trpc/main/health.check",
+  "/api/trpc/main/health.prismaCheck",
   "/api/trpc/chat/chat.health.check",
+  "/api/cron-jobs/expired-exports",
   /**
    * The inngest route is protected using a signing key
    * @see https://www.inngest.com/docs/faq#my-app-s-serve-endpoint-requires-authentication-what-should-i-do
@@ -45,6 +49,7 @@ const publicRoutes = [
   "/monitoring",
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/api/webhooks/clerk",
 ];
 if (
   process.env.NODE_ENV === "development" ||
@@ -93,11 +98,8 @@ const needsToCompleteOnboarding = (sessionClaims: CustomJwtSessionClaims) => {
   return !labs.isOnboarded || labs.isDemoUser === null;
 };
 
-const LOG = false;
 const logger = (request: NextRequest) => (message: string) => {
-  if (LOG) {
-    console.log(`[AUTH] ${request.url} ${message}`);
-  }
+  log.info(`${request.url} ${message}`);
 };
 
 function conditionallyProtectRoute(
@@ -152,7 +154,7 @@ export async function authMiddleware(
       return response;
     }
   } catch (error) {
-    console.error({ event: "middleware.auth.error", error });
+    log.error({ event: "middleware.auth.error", error });
     throw new Error("Error in authMiddleware", { cause: error });
   }
 

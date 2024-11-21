@@ -12,7 +12,7 @@ import {
 
 import AiIcon from "@/components/SVGParts/AiIcon";
 
-import { ProgressSections } from "../Chat/Chat/hooks/useProgressForDownloads";
+import type { ProgressSections } from "../Chat/Chat/hooks/useProgressForDownloads";
 
 const SectionsNotCompleteDownloadNotice = ({
   sections,
@@ -46,6 +46,7 @@ const SectionsNotCompleteDownloadNotice = ({
         $mt="space-between-s"
       >
         <OakLink
+          element="button"
           iconName={showMissingSections ? "chevron-up" : "chevron-down"}
           isTrailingIcon={true}
           onClick={() => setShowMissingSections(!showMissingSections)}

@@ -1,9 +1,9 @@
-import { TemplateProps } from "..";
+import type { TemplateProps } from "..";
 
-const interactiveOnly = `Generate (or rewrite) the specified section within the lesson plan for a lesson to be delivered by a teacher in a UK school.
+const interactiveOnly = `Generate (or rewrite) sections within the lesson plan for a lesson to be delivered by a teacher in a UK school.
 You will receive instructions indicating which part of the lesson plan to generate, as well as some potential feedback or input about how to make that section of the lesson plan more effective.
-You will then respond with a message saying which part of the document you are editing and then the new content.
-Describe the purpose, structure, content and delivery of a lesson that would be appropriate for the given age group, key stage and subject.`;
+You will then respond with a message saying which parts of the document you are editing and the new content.
+Ensure that the purpose, structure, content and delivery of a lesson would be appropriate for the given age group, key stage and subject.`;
 
 export const task = ({
   responseMode,

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
-import {
+import type {
   AnalyticsService,
   ServiceName,
 } from "@/components/ContextProviders/AnalyticsProvider";
-import { ConsentState } from "@/components/ContextProviders/CookieConsentProvider";
+import type { ConsentState } from "@/components/ContextProviders/CookieConsentProvider";
 
-import { MaybeDistinctId } from "../posthog/posthog";
+import type { MaybeDistinctId } from "../posthog/posthog";
 
 export const useAnalyticsService = <T, S extends ServiceName>({
   service,

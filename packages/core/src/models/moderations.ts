@@ -1,7 +1,8 @@
-import { Moderation, PrismaClientWithAccelerate } from "@oakai/db";
+import type { Moderation, PrismaClientWithAccelerate } from "@oakai/db";
 
-import { ModerationResult } from "../utils/ailaModeration/moderationSchema";
-import { LessonSnapshots, Snapshot } from "./lessonSnapshots";
+import type { ModerationResult } from "../utils/ailaModeration/moderationSchema";
+import type { Snapshot } from "./lessonSnapshots";
+import { LessonSnapshots } from "./lessonSnapshots";
 
 /**
  * By default, only moderations which haven't been invalidated returned by this API
@@ -43,12 +44,14 @@ export class Moderations {
     justification?: string;
     lesson: Snapshot;
   }): Promise<Moderation> {
-    const lessonSnapshot = await this.lessonSnapshots.createModerationSnapshot({
-      userId,
-      chatId: appSessionId,
-      messageId,
-      snapshot: lesson,
-    });
+    const { id: lessonSnapshotId } =
+      await this.lessonSnapshots.getOrSaveSnapshot({
+        userId,
+        chatId: appSessionId,
+        messageId,
+        snapshot: lesson,
+        trigger: "MODERATION",
+      });
 
     return this.prisma.moderation.create({
       data: {
@@ -57,7 +60,7 @@ export class Moderations {
         justification,
         appSessionId,
         messageId,
-        lessonSnapshotId: lessonSnapshot.id,
+        lessonSnapshotId,
       },
     });
   }

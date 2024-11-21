@@ -1,10 +1,13 @@
 import { createContext } from "@oakai/api/src/context";
 import { chatAppRouter } from "@oakai/api/src/router/chat";
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest, NextResponse } from "next/server";
 
 import { withSentry } from "@/lib/sentry/withSentry";
+
+const log = aiLogger("trpc");
 
 const handler = (req: NextRequest, res: NextResponse) =>
   fetchRequestHandler({
@@ -16,7 +19,7 @@ const handler = (req: NextRequest, res: NextResponse) =>
     },
     onError: (e) => {
       if (process.env.NODE_ENV === "development") {
-        console.error(e);
+        log.error(e);
       }
       Sentry.captureException(e.error);
     },

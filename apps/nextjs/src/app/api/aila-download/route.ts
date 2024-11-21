@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
-import { LessonExportType, prisma } from "@oakai/db";
+import type { LessonExportType } from "@oakai/db";
+import { prisma } from "@oakai/db";
 import { downloadDriveFile } from "@oakai/exports";
 import * as Sentry from "@sentry/node";
 
@@ -116,6 +117,7 @@ async function getHandler(req: Request): Promise<Response> {
     where: {
       gdriveFileId: fileId,
       userId,
+      expiredAt: null,
     },
     cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
   });

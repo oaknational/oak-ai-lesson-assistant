@@ -1,76 +1,37 @@
 import { PrismaVectorStore } from "@langchain/community/vectorstores/prisma";
 import { OpenAIEmbeddings } from "@langchain/openai";
-import {
+import type {
   KeyStage,
   LessonPlanPart,
   PrismaClientWithAccelerate,
   Subject,
 } from "@oakai/db";
-import {
-  LessonPlan,
-  LessonSummary,
-  Prisma,
-  PrismaClient,
-  Snippet,
-} from "@prisma/client";
+import { aiLogger } from "@oakai/logger";
+import type { LessonPlan, LessonSummary, Snippet } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import * as Sentry from "@sentry/nextjs";
 import { kv } from "@vercel/kv";
 import { CohereClient } from "cohere-ai";
-import { RerankResponse } from "cohere-ai/api";
-import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import type { RerankResponse } from "cohere-ai/api";
+import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { Md5 } from "ts-md5";
-import z from "zod";
 
 import { DEFAULT_CATEGORISE_MODEL } from "../../../aila/src/constants";
-import {
-  OpenAICompletionWithLogging,
-  OpenAICompletionWithLoggingOptions,
-} from "../../../aila/src/lib/openai/OpenAICompletionWithLogging";
-import { JsonValue } from "../models/prompts";
+import type { OpenAICompletionWithLoggingOptions } from "../../../aila/src/lib/openai/OpenAICompletionWithLogging";
+import { OpenAICompletionWithLogging } from "../../../aila/src/lib/openai/OpenAICompletionWithLogging";
+import type { JsonValue } from "../models/prompts";
 import { slugify } from "../utils/slugify";
 import { keyStages, subjects } from "../utils/subjects";
+import { CategoriseKeyStageAndSubjectResponse } from "./categorisation";
+import type {
+  FilterOptions,
+  KeyStageAndSubject,
+  LessonPlanWithPartialLesson,
+  SimilarityResultWithScore,
+} from "./types";
 
-interface FilterOptions {
-  key_stage_id?: object;
-  subject_id?: object;
-}
-
-export interface LessonPlanWithPartialLesson extends LessonPlan {
-  lesson: {
-    id: string;
-    slug: string;
-    title: string;
-  };
-}
-
-export type SimilarityResultWithScore = [
-  import("@langchain/core/documents").DocumentInterface<
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Record<string, any>
-  >,
-  number,
-];
-
-export interface KeyStageAndSubject {
-  keyStage?: KeyStage;
-  subject?: Subject;
-}
-
-// Make a new Zod schema for a response from OpenAI for the categoriseKeyStageAndSubject function
-
-export const CategoriseKeyStageAndSubjectResponse = z.object({
-  keyStage: z.string().optional().nullable(),
-  subject: z.string().optional().nullable(),
-  title: z.string().optional().nullable(),
-  topic: z.string().optional().nullable(),
-  error: z.string().optional(),
-  reasoning: z.string().optional().nullable(),
-});
-
-export type CategorisedKeyStageAndSubject = z.infer<
-  typeof CategoriseKeyStageAndSubjectResponse
->;
+const log = aiLogger("rag");
 
 export class RAG {
   prisma: PrismaClientWithAccelerate;
@@ -87,7 +48,7 @@ export class RAG {
     input: string,
     chatMeta: OpenAICompletionWithLoggingOptions,
   ) {
-    console.log("Categorise input", JSON.stringify(input));
+    log.info("Categorise input", JSON.stringify(input));
 
     const systemMessage = `You are a classifier which can help me categorise the intent of the user's input for an application which helps a teacher build a lesson plan their students in a UK school.
 You accept a string as input and return an object with the keys keyStage, subject, title and topic.
@@ -179,7 +140,7 @@ Thank you and happy classifying!`;
       const parsedResponse = CategoriseKeyStageAndSubjectResponse.parse(
         JSON.parse(content),
       );
-      console.log("Categorisation results", parsedResponse);
+      log.info("Categorisation results", parsedResponse);
       return parsedResponse;
     } catch (e) {
       return { error: "Error parsing response" };
@@ -268,10 +229,10 @@ Thank you and happy classifying!`;
       const hash = Md5.hashStr(hashInput);
       const key = `${keyPrefix}:${hash}`;
       const result: string | object | null = await kv.get(key);
-      console.log("getCachedValueByHash: Got result!", result);
+      log.info("getCachedValueByHash: Got result!", result);
       return result;
     } catch (e) {
-      console.error("Error getting cached value by hash", e);
+      log.error("Error getting cached value by hash", e);
       throw e;
     }
   }
@@ -280,20 +241,20 @@ Thank you and happy classifying!`;
     keyPrefix: string,
     hashInput: string,
   ): Promise<T | null> {
-    console.log("getCachedValueByHash", keyPrefix, hashInput);
+    log.info("getCachedValueByHash", keyPrefix, hashInput);
     const cachedValue = await this.getCachedValueByHash(keyPrefix, hashInput);
-    console.log("Got cached value", { cachedValue });
+    log.info("Got cached value", { cachedValue });
     if (
       typeof cachedValue === "string" &&
       cachedValue?.includes("[object Object")
     ) {
-      console.log("Removing cached value because it has badly serialised");
+      log.info("Removing cached value because it has badly serialised");
       await this.removeCachedValueByHash(keyPrefix, hashInput);
       return null;
     }
     if (cachedValue) {
-      console.log("Got cached serialised by hash", { cachedValue });
-      console.log("Typeof cachedValue", typeof cachedValue);
+      log.info("Got cached serialised by hash", { cachedValue });
+      log.info("Typeof cachedValue", typeof cachedValue);
       if (typeof cachedValue === "string") {
         return JSON.parse(cachedValue) as T;
       }
@@ -312,7 +273,7 @@ Thank you and happy classifying!`;
     value: T,
     options = {},
   ): Promise<string | null> {
-    console.log("Set cached serialised by hash", {
+    log.info("Set cached serialised by hash", {
       keyPrefix,
       hashInput,
       //value,
@@ -386,19 +347,19 @@ Thank you and happy classifying!`;
   }): Promise<LessonPlan[]> {
     const cacheHash = `${keyStage}-${subject}-${title}-${topic}-${k}`;
     const cacheKey = `rag:plans:${chatId}`;
-    console.log("getCachedSerialisedByHash");
+    log.info("getCachedSerialisedByHash");
     const cached = await this.getCachedSerialisedByHash<LessonPlan[]>(
       cacheKey,
       cacheHash,
     );
 
     if (cached && withCaching) {
-      console.log("normaliseLessonPlan");
+      log.info("normaliseLessonPlan");
       return cached; //.map((p) => this.normaliseLessonPlan(p));
     }
 
     if (cached && !withCaching) {
-      console.log("Fetch Lessons: Cache hit but not using cache", {
+      log.info("Fetch Lessons: Cache hit but not using cache", {
         cacheKey,
         cacheHash,
       });
@@ -416,11 +377,11 @@ Thank you and happy classifying!`;
         k,
       });
     } catch (e) {
-      console.error(e);
+      log.error(e);
       Sentry.captureException(e);
     }
 
-    console.log("Got plans", { planIds: plans.map((p) => p.id) });
+    log.info("Got plans", { planIds: plans.map((p) => p.id) });
 
     if (plans.length === 0 || !plans?.filter) {
       return []; // Do not cache empty results
@@ -539,15 +500,15 @@ Thank you and happy classifying!`;
     try {
       const cached = await kv.get<T>(cacheKey);
       if (cached) {
-        console.log(`Cache hit for key: ${cacheKey}`);
+        log.info(`Cache hit for key: ${cacheKey}`);
         return cached;
       }
     } catch (e) {
-      console.error(`Error getting cached value for key: ${cacheKey}`, e);
+      log.error(`Error getting cached value for key: ${cacheKey}`, e);
       await kv.del(cacheKey); // Remove potentially corrupted cache entry
     }
 
-    console.log(`Cache miss for key: ${cacheKey}, fetching from Prisma`);
+    log.info(`Cache miss for key: ${cacheKey}, fetching from Prisma`);
     const record = await fetcher();
     if (record) {
       await kv.set<T>(cacheKey, record, { ex: cacheExpiry });
@@ -598,7 +559,7 @@ Thank you and happy classifying!`;
         return cachedKeyStage;
       }
     } catch (e) {
-      console.error(
+      log.error(
         "Error parsing cached keyStage. Continuing without cached value",
         e,
       );
@@ -652,7 +613,7 @@ Thank you and happy classifying!`;
         return cachedSubject;
       }
     } catch (e) {
-      console.error(
+      log.error(
         "Error parsing cached subject. Continuing without cached value",
         e,
       );
@@ -677,7 +638,7 @@ Thank you and happy classifying!`;
 
     // If none of that works, fall back to categorising the subject based on free text
     if (!foundSubject) {
-      // console.log(
+      //  log.info(
       //   "No subject found. Categorise the input to try to work out what it is using categoriseKeyStageAndSubject",
       // );
       const categorisation = await this.categoriseKeyStageAndSubject(
@@ -764,7 +725,7 @@ Thank you and happy classifying!`;
       );
     } catch (e) {
       if (e instanceof TypeError && e.message.includes("join([])")) {
-        console.warn("Caught TypeError with join([]), returning empty array");
+        log.warn("Caught TypeError with join([]), returning empty array");
         return [];
       }
       throw e;

@@ -1,6 +1,6 @@
 import { Box, Flex } from "@radix-ui/themes";
 
-import { IconName } from "../../Icon";
+import type { IconName } from "../../Icon";
 import ChatButton from "../Chat/ui/chat-button";
 import Generating from "../common/Generating";
 import PromptExplainerButton from "../common/PromptExplainerButton";

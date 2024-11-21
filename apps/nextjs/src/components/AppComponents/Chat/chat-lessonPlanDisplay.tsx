@@ -1,29 +1,16 @@
 import { useEffect, useState } from "react";
 
-import { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
+import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { organiseSections } from "@/lib/lessonPlan/organiseSections";
+import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
 import DropDownSection from "./drop-down-section";
 import { GuidanceRequired } from "./guidance-required";
-
-// @todo move these somewhere more sensible
-export function subjectToTitle(slug: string) {
-  return slug
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
-
-export function keyStageToTitle(slug: string) {
-  return slug
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function notEmpty(value: any) {
@@ -41,27 +28,6 @@ const displayStyles = cva(
   "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24 ",
 );
 
-const organiseSections = [
-  {
-    trigger: "learningOutcome",
-    dependants: ["learningOutcome", "learningCycles"],
-  },
-  {
-    trigger: "priorKnowledge",
-    dependants: [
-      "priorKnowledge",
-      "keyLearningPoints",
-      "misconceptions",
-      "keywords",
-    ],
-  },
-  {
-    trigger: "starterQuiz",
-    dependants: ["starterQuiz", "cycle1", "cycle2", "cycle3", "exitQuiz"],
-  },
-  { trigger: "additionalMaterials", dependants: ["additionalMaterials"] },
-];
-
 export const LessonPlanDisplay = ({
   chatEndRef,
   sectionRefs,
@@ -74,7 +40,15 @@ export const LessonPlanDisplay = ({
   showLessonMobile: boolean;
 }) => {
   const chat = useLessonChat();
-  const { lessonPlan, ailaStreamingStatus, lastModeration } = chat;
+  const { ailaStreamingStatus, lastModeration } = chat;
+  const lessonPlan = {
+    ...chat.lessonPlan,
+    starterQuiz:
+      chat.lessonPlan._experimental_starterQuizMathsV0 ||
+      chat.lessonPlan.starterQuiz,
+    exitQuiz:
+      chat.lessonPlan._experimental_exitQuizMathsV0 || chat.lessonPlan.exitQuiz,
+  };
 
   const [userHasCancelledAutoScroll, setUserHasCancelledAutoScroll] =
     useState(false);
@@ -126,13 +100,13 @@ export const LessonPlanDisplay = ({
           <Flex direction="row" gap="2" className="opacity-90">
             {notEmpty(lessonPlan.keyStage) && (
               <Text className="font-bold">
-                {keyStageToTitle(lessonPlan.keyStage ?? "")}
+                {slugToSentenceCase(lessonPlan.keyStage ?? "")}
               </Text>
             )}
             <span>•</span>
             {notEmpty(lessonPlan.subject) && (
               <Text className="font-bold">
-                {subjectToTitle(lessonPlan.subject ?? "")}
+                {slugToSentenceCase(lessonPlan.subject ?? "")}
               </Text>
             )}
           </Flex>

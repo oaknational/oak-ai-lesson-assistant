@@ -1,36 +1,28 @@
-import {
+import type {
   KeyStage,
   Lesson,
   LessonPlan,
   LessonPlanPart,
-  LessonPlanPartStatus,
-  LessonPlanStatus,
   LessonSummary,
   PrismaClientWithAccelerate,
   Subject,
 } from "@oakai/db";
-import yaml from "yaml";
+import { LessonPlanPartStatus, LessonPlanStatus } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
 import { LLMResponseJsonSchema } from "../../../aila/src/protocol/jsonPatchProtocol";
 import { LessonPlanJsonSchema } from "../../../aila/src/protocol/schema";
-import { inngest } from "../client";
+import { inngest } from "../inngest";
 import { createOpenAIClient } from "../llm/openai";
 import { template } from "../prompts/lesson-assistant";
 import { RAG } from "../rag";
-import { camelCaseToSentenceCase } from "../utils/camelCaseToSentenceCase";
+import { camelCaseToSentenceCase } from "../utils/camelCaseConversion";
 import { embedWithCache } from "../utils/embeddings";
-import { Caption, CaptionsSchema } from "./types/caption";
+import { textify } from "../utils/textify";
+import type { Caption } from "./types/caption";
+import { CaptionsSchema } from "./types/caption";
 
-// Simplifies the input to a string for embedding
-export function textify(input: string | string[] | object): string {
-  if (Array.isArray(input)) {
-    return input.map((row) => textify(row)).join("\n");
-  } else if (typeof input === "object") {
-    return yaml.stringify(input);
-  } else {
-    return input;
-  }
-}
+const log = aiLogger("lessons");
 
 export type LessonPlanWithLesson = LessonPlan & {
   lesson: Omit<
@@ -156,7 +148,7 @@ export class LessonPlans {
     try {
       validCaptions = CaptionsSchema.parse(lesson.captions);
     } catch (err) {
-      console.error("Failed to parse captions", err);
+      log.error("Failed to parse captions", err);
     }
 
     const captionText = validCaptions.map((c) => c.part).join(" ");
@@ -227,7 +219,7 @@ export class LessonPlans {
 
     const content = await this.generateContent(lessonPlan.id);
 
-    console.log("Generated content", content);
+    log.info("Generated content", content);
     if (!content) {
       throw new Error("Unable to generate lesson summary");
     }

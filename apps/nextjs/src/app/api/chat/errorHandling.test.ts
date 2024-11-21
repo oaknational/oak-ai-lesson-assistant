@@ -1,9 +1,10 @@
-import { AilaAuthenticationError, AilaThreatDetectionError } from "@oakai/aila";
+import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
+import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
 import * as moderationErrorHandling from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
-import { UserBannedError } from "@oakai/core/src/models/safetyViolations";
-import { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
-import { PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import invariant from "tiny-invariant";
 
 import {
@@ -26,6 +27,7 @@ describe("handleChatException", () => {
 
       const span = { setTag: jest.fn() } as unknown as TracingSpan;
       const error = new AilaThreatDetectionError("user_abc", "test error");
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
       const response = await handleChatException(
@@ -37,7 +39,7 @@ describe("handleChatException", () => {
 
       expect(response.status).toBe(200);
 
-      invariant(response.body instanceof ReadableStream);
+      invariant(response.body);
       const message = extractStreamMessage(await consumeStream(response.body));
 
       expect(message).toEqual({
@@ -52,6 +54,7 @@ describe("handleChatException", () => {
     it("should return an error chat message", async () => {
       const span = { setTag: jest.fn() } as unknown as TracingSpan;
       const error = new AilaAuthenticationError("test error");
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
       const response = await handleChatException(
@@ -63,7 +66,12 @@ describe("handleChatException", () => {
 
       expect(response.status).toBe(401);
 
-      const message = await consumeStream(response.body as ReadableStream);
+      invariant(
+        response.body instanceof ReadableStream,
+        "Expected response.body to be a ReadableStream",
+      );
+
+      const message = await consumeStream(response.body);
       expect(message).toEqual("Unauthorized");
     });
   });
@@ -76,6 +84,7 @@ describe("handleChatException", () => {
         100,
         Date.now() + 3600 * 1000,
       );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
       const response = await handleChatException(
@@ -87,14 +96,19 @@ describe("handleChatException", () => {
 
       expect(response.status).toBe(200);
 
-      const consumed = await consumeStream(response.body as ReadableStream);
+      invariant(
+        response.body instanceof ReadableStream,
+        "Expected response.body to be a ReadableStream",
+      );
+
+      const consumed = await consumeStream(response.body);
       const message = extractStreamMessage(consumed);
 
       expect(message).toEqual({
         type: "error",
         value: "Rate limit exceeded",
         message:
-          "**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in 1 hour. If you require a higher limit, please [make a request](https://forms.gle/tHsYMZJR367zydsG8).",
+          "**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in 1 hour. If you require a higher limit, please [make a request](https://share.hsforms.com/118hyngR-QSS0J7vZEVlRSgbvumd).",
       });
     });
   });
@@ -103,6 +117,7 @@ describe("handleChatException", () => {
     it("should return an error chat message", async () => {
       const span = { setTag: jest.fn() } as unknown as TracingSpan;
       const error = new UserBannedError("test error");
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
       const response = await handleChatException(
@@ -114,9 +129,12 @@ describe("handleChatException", () => {
 
       expect(response.status).toBe(200);
 
-      const message = extractStreamMessage(
-        await consumeStream(response.body as ReadableStream),
+      invariant(
+        response.body instanceof ReadableStream,
+        "Expected response.body to be a ReadableStream",
       );
+
+      const message = extractStreamMessage(await consumeStream(response.body));
       expect(message).toEqual({
         type: "action",
         action: "SHOW_ACCOUNT_LOCKED",

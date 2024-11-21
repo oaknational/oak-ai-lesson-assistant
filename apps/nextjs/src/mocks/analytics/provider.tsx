@@ -4,7 +4,8 @@ See the readme for why this is needed.
 */
 import React from "react";
 
-import { PostHog } from "posthog-js";
+import { aiLogger } from "@oakai/logger";
+import type { PostHog } from "posthog-js";
 
 import Avo from "@/lib/avo/Avo";
 
@@ -13,10 +14,12 @@ import {
   analyticsContext,
 } from "./../../components/ContextProviders/AnalyticsProvider";
 
+const log = aiLogger("analytics");
+
 const mockTrack: typeof Avo = new Proxy(Avo, {
   get: (target, prop) => {
     return (...args: unknown[]) => {
-      console.log(`Mock Avo.${String(prop)} called with:`, target, ...args);
+      log.info(`Mock Avo.${String(prop)} called with:`, target, ...args);
     };
   },
 });
@@ -24,21 +27,22 @@ const mockTrack: typeof Avo = new Proxy(Avo, {
 const mockAnalyticsContext: AnalyticsContext = {
   track: mockTrack,
   trackEvent: (eventName: string, properties?: Record<string, unknown>) => {
-    console.log("Mock trackEvent called:", eventName, properties);
+    log.info("Mock trackEvent called:", eventName, properties);
   },
   identify: (userId: string, properties: { email?: string }) => {
-    console.log("Mock identify called:", userId, properties);
+    log.info("Mock identify called:", userId, properties);
   },
   page: (path: string) => {
-    console.log("Mock page view:", path);
+    log.info("Mock page view:", path);
   },
   reset: () => {
-    console.log("Mock reset called");
+    log.info("Mock reset called");
   },
   posthogAiBetaClient: {
     isFeatureEnabled: () => true,
     identify: () => {},
     get_distinct_id: () => "mock-distinct-id",
+    getSurveys: () => [],
   } as unknown as PostHog,
 };
 

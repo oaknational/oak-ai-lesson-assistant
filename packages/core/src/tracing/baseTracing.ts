@@ -1,4 +1,7 @@
+import { aiLogger } from "@oakai/logger";
 import tracer from "dd-trace";
+
+const log = aiLogger("tracing");
 
 export const environment = process.env.NODE_ENV || "development";
 export const isTest = environment === "test";
@@ -38,7 +41,7 @@ export function initializeTracer(options: DatadogOptions) {
       plugins: false,
     });
   } else {
-    const initialisationOptions = {
+    const initialisationOptions: tracer.TracerOptions = {
       env: options.env ?? environment,
       service: options.service ?? "oak-ai",
       hostname,
@@ -49,17 +52,16 @@ export function initializeTracer(options: DatadogOptions) {
       sampleRate: options.sampleRate ?? 1,
       profiling: options.profiling !== undefined ? options.profiling : true,
       plugins: options.plugins !== undefined ? options.plugins : false,
-      debug: true,
       logLevel,
       logger: {
         debug: (message: string | Error) =>
-          console.debug(`[dd-trace debug] ${message}`),
+          log.info(`[dd-trace debug] ${message}`),
         info: (message: string | Error) =>
-          console.info(`[dd-trace info] ${message}`),
+          log.info(`[dd-trace info] ${message}`),
         warn: (message: string | Error) =>
-          console.warn(`[dd-trace warn] ${message}`),
+          log.info(`[dd-trace warn] ${message}`),
         error: (message: string | Error) =>
-          console.error(`[dd-trace error] ${message}`),
+          log.error(`[dd-trace error] ${message}`),
       },
     };
     console.log(

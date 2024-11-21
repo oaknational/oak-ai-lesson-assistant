@@ -2,16 +2,17 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "lib": ["esnext", "dom"],
+    "lib": ["dom", "esnext"],
     "outDir": "./dist-tests",
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "incremental": true,
     "noEmit": true,
     "types": ["jest", "node", "@testing-library/jest-dom", "@storybook/react"],
     "baseUrl": "./src",
@@ -34,7 +35,8 @@
     "tests/**/*.ts",
     "**/*.test.ts",
     "**/*.test.tsx",
-    "jest.static.d.ts"
+    "jest.static.d.ts",
+    "src/**/*.d.ts"
   ],
   "exclude": ["node_modules"]
 }

@@ -1,32 +1,66 @@
-import { NextMiddlewareResult } from "next/dist/server/web/types";
-import {
-  NextFetchEvent,
-  NextMiddleware,
-  NextRequest,
-  NextResponse,
-} from "next/server";
+import { auth } from "@clerk/nextjs/dist/types/server";
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import type { NextMiddlewareResult } from "next/dist/server/web/types";
+import type { NextFetchEvent, NextMiddleware, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 import { getRootErrorCause } from "./lib/errors/getRootErrorCause";
 import { sentryCleanup } from "./lib/sentry/sentryCleanup";
 import { authMiddleware } from "./middlewares/auth.middleware";
-import { CspConfig, addCspHeaders } from "./middlewares/csp";
+import type { CspConfig } from "./middlewares/csp";
+import { addCspHeaders } from "./middlewares/csp";
 import { logError } from "./middlewares/middlewareErrorLogging";
+
+const parseEnvironment = (
+  env: string | undefined,
+): "development" | "preview" | "production" | "test" => {
+  if (
+    env === "development" ||
+    env === "preview" ||
+    env === "production" ||
+    env === "test"
+  ) {
+    return env;
+  }
+  switch (env) {
+    case "dev":
+      return "development";
+    case "stg":
+      return "preview";
+    case "prd":
+      return "production";
+    default:
+      return "development";
+  }
+};
+
+const parseVercelEnv = (
+  env: string | undefined,
+): "development" | "preview" | "production" => {
+  if (env === "development" || env === "preview" || env === "production") {
+    return env;
+  }
+  return "development";
+};
+
+const environment = parseEnvironment(process.env.NEXT_PUBLIC_ENVIRONMENT);
 
 const cspConfig: CspConfig = {
   strictCsp: process.env.STRICT_CSP === "true",
-  environment: process.env.NEXT_PUBLIC_ENVIRONMENT || "",
+  environment,
   sentryEnv: process.env.NEXT_PUBLIC_SENTRY_ENV || "",
   sentryRelease: process.env.NEXT_PUBLIC_APP_VERSION || "",
   sentryReportUri: process.env.SENTRY_REPORT_URI || "",
   cspReportSampleRate: process.env.NEXT_PUBLIC_CSP_REPORT_SAMPLE_RATE || "1",
-  vercelEnv: process.env.VERCEL_ENV || "",
+  vercelEnv: parseVercelEnv(process.env.VERCEL_ENV),
   enabledPolicies: {
-    clerk: ["dev", "stg"].includes(process.env.NEXT_PUBLIC_ENVIRONMENT || ""),
-    avo: ["dev", "stg"].includes(process.env.NEXT_PUBLIC_ENVIRONMENT || ""),
+    clerk: ["development", "preview"].includes(environment),
+    avo: ["development", "preview"].includes(environment),
     posthog: process.env.NEXT_PUBLIC_ENVIRONMENT === "dev",
     devConsent: process.env.NEXT_PUBLIC_ENVIRONMENT === "dev",
     mux: true,
     vercel: process.env.VERCEL_ENV === "preview",
+    localhost: ["development", "test"].includes(environment),
   },
 };
 

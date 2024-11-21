@@ -1,5 +1,7 @@
-import React, { FC, memo } from "react";
-import ReactMarkdown, { Options } from "react-markdown";
+import type { FC } from "react";
+import React, { memo } from "react";
+import type { Options } from "react-markdown";
+import ReactMarkdown from "react-markdown";
 
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { Box, Flex } from "@radix-ui/themes";

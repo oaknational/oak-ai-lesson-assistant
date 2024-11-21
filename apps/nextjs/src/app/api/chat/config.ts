@@ -1,9 +1,10 @@
-import { Aila, AilaInitializationOptions } from "@oakai/aila";
+import { Aila } from "@oakai/aila/src/core/Aila";
+import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
 import {
   prisma as globalPrisma,
   type PrismaClientWithAccelerate,
 } from "@oakai/db";
-import { nanoid } from "ai";
+import { nanoid } from "nanoid";
 
 import { createWebActionsPlugin } from "./webActionsPlugin";
 
@@ -16,7 +17,7 @@ export const defaultConfig: Config = {
   prisma: globalPrisma,
   createAila: async (options) => {
     const webActionsPlugin = createWebActionsPlugin(globalPrisma);
-    return new Aila({
+    const createdAila = new Aila({
       ...options,
       plugins: [...(options.plugins || []), webActionsPlugin],
       prisma: options.prisma ?? globalPrisma,
@@ -25,5 +26,7 @@ export const defaultConfig: Config = {
         userId: undefined,
       },
     });
+    await createdAila.initialise();
+    return createdAila;
   },
 };

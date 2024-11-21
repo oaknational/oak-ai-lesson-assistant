@@ -1,11 +1,22 @@
 import { useState } from "react";
 
+import { aiLogger } from "@oakai/logger";
+import {
+  OakFlex,
+  OakP,
+  OakPrimaryButton,
+  OakTextInput,
+} from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
-import { Message } from "ai";
+import type { Message } from "ai";
 import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey";
 
 import ChatButton from "@/components/AppComponents/Chat/ui/chat-button";
 import { Icon } from "@/components/Icon";
+
+import ModalFooterButtons from "./ModalFooterButtons";
+
+const log = aiLogger("chat");
 
 type ShareChatProps = {
   chatId: string | undefined;
@@ -34,7 +45,7 @@ const ReportContentDialog = ({
   }
 
   async function onSubmit(e?: React.FormEvent<HTMLFormElement>) {
-    console.log("submitting");
+    log.info("submitting");
     e?.preventDefault();
     setUserHasSubmitted(true);
     submitSurveyWithOutClosing({
@@ -60,37 +71,39 @@ const ReportContentDialog = ({
           e.preventDefault();
         }}
       >
-        <Icon icon="warning" size="lg" />
         {userHasSubmitted ? (
           <>
-            <p className="text-2xl">Thank you</p>
-            <p>Your feedback has been submitted.</p>
-            <div className=" flex w-full justify-end gap-7">
-              <ChatButton variant="primary" onClick={() => closeDialog()}>
+            <OakP className="text-2xl">Thank you</OakP>
+            <OakP>Your feedback has been submitted.</OakP>
+            <OakFlex
+              $width="100%"
+              $justifyContent="flex-end"
+              $gap="all-spacing-3"
+            >
+              <OakPrimaryButton onClick={() => closeDialog()}>
                 Close
-              </ChatButton>
-            </div>
+              </OakPrimaryButton>
+            </OakFlex>
           </>
         ) : (
           <>
-            <div className="flex w-full flex-col gap-9">
-              <p className="text-2xl font-semibold">Report content</p>
-              <p className="">Please provide details below.</p>
-            </div>
-            <textarea
-              className="h-40 w-full resize-none rounded-sm border-2 border-black border-opacity-60 p-16 focus:rounded-none"
+            <OakFlex $width="100%" $flexDirection="column" $gap="all-spacing-4">
+              <OakP>Please provide details below.</OakP>
+            </OakFlex>
+            <OakTextInput
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
+              $minHeight="all-spacing-18"
             />
 
-            <div className="flex w-full justify-between gap-7">
-              <ChatButton variant="secondary" onClick={() => close()}>
-                Back
-              </ChatButton>
-              <ChatButton variant="primary" onClick={() => onSubmit()}>
-                Submit feedback
-              </ChatButton>
-            </div>
+            <ModalFooterButtons
+              actionButtonStates={() => (
+                <OakPrimaryButton onClick={() => onSubmit()}>
+                  Submit feedback
+                </OakPrimaryButton>
+              )}
+              closeDialog={close}
+            />
           </>
         )}
       </form>

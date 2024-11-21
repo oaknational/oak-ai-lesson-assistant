@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-import { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { aiLogger } from "@oakai/logger";
 import { Box } from "@radix-ui/themes";
 import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
@@ -9,7 +10,6 @@ import { z } from "zod";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trackDownload } from "@/utils/trackDownload";
 import { trpc } from "@/utils/trpc";
-import { useClientSideFeatureFlag } from "@/utils/useClientSideFeatureFlag";
 
 import { getExportsConfig } from "../../ExportsDialogs/exports.helpers";
 import { Icon } from "../../Icon";
@@ -18,7 +18,9 @@ import LessonIcon from "../../SVGParts/LessonIcon";
 import QuizIcon from "../../SVGParts/QuizIcon";
 import SlidesIcon from "../../SVGParts/SlidesIcon";
 
-const allexportLinksObject = z.object({
+const log = aiLogger("chat");
+
+const allExportLinksObject = z.object({
   lessonSlides: z.string(),
   lessonPlan: z.string(),
   worksheet: z.string(),
@@ -96,12 +98,6 @@ export const DownloadAllButton = ({
   const { mutateAsync: zipStatusMutateAsync } =
     trpc.exports.checkDownloadAllStatus.useMutation();
 
-  const isFeatureEnabled = useClientSideFeatureFlag("download-all-button");
-  if (!isFeatureEnabled) {
-    console.log("Download all button is disabled");
-    return null;
-  }
-
   if (data && !("error" in data)) {
     const fileIdsAndFormats = getFileIdsAndFormats(data);
 
@@ -111,7 +107,7 @@ export const DownloadAllButton = ({
       try {
         const lessonTitle = lesson.title;
         if (!lessonTitle) return;
-        const parsedData = allexportLinksObject.parse(data);
+        const parsedData = allExportLinksObject.parse(data);
         mutateAsync({
           lessonTitle,
           slidesLink: parsedData.lessonSlides,
@@ -122,7 +118,7 @@ export const DownloadAllButton = ({
           lessonPlanLink: parsedData.lessonPlan,
         });
       } catch (error) {
-        console.error(error);
+        log.error(error);
         Sentry.captureException(error);
       }
     }
@@ -185,8 +181,8 @@ export const DownloadAllButton = ({
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
               Email me
-              {isSuccess && `- email sent`}{" "}
-              {isError && `- There was an error sending the email!`}
+              {isSuccess && "- email sent"}{" "}
+              {isError && "- There was an error sending the email!"}
             </span>
             <span className="text-left opacity-80">
               Google account needed for this option
@@ -199,7 +195,7 @@ export const DownloadAllButton = ({
   return (
     <>
       <button
-        className={`flex items-center justify-between gap-9 rounded-md border-2 border-black px-14 py-10 ${downloadAvailable ? `border-opacity-100` : ` border-opacity-40`}`}
+        className={`flex items-center justify-between gap-9 rounded-md border-2 border-black px-14 py-10 ${downloadAvailable ? "border-opacity-100" : " border-opacity-40"}`}
         onClick={() => onClick()}
         disabled={!downloadAvailable}
         data-testid={dataTestId}

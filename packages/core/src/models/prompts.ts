@@ -1,11 +1,13 @@
-import { PrismaClientWithAccelerate } from "@oakai/db";
-import defaultLogger, { Logger } from "@oakai/logger";
-import { Logger as InngestLogger } from "inngest/middleware/logger";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { StructuredLogger } from "@oakai/logger";
+import { structuredLogger } from "@oakai/logger";
+import type { Logger as InngestLogger } from "inngest/middleware/logger";
 import { PromptTemplate } from "langchain/prompts";
-import { BaseMessage, SystemMessage } from "langchain/schema";
+import type { BaseMessage} from "langchain/schema";
+import { SystemMessage } from "langchain/schema";
 import untruncateJson from "untruncate-json";
 
-import { createOpenAILangchainChatClient } from "../llm/openai";
+import { createOpenAILangchainChatClient } from "../llm/langchain";
 
 type CompletionMeta = {
   timeTaken: number;
@@ -33,7 +35,9 @@ export class Prompts {
     private readonly prisma: PrismaClientWithAccelerate,
     // inngest's logger doesn't allow child logger creation, so make
     // sure we accept instances of that too
-    private readonly logger: Logger | InngestLogger = defaultLogger,
+    private readonly logger:
+      | StructuredLogger
+      | InngestLogger = structuredLogger,
   ) {}
 
   async get(promptId: string, appId: string) {
@@ -129,7 +133,7 @@ export class Prompts {
             }
           },
           handleChainError: (err) => {
-            this.logger.error(err, `LLM chain error`);
+            this.logger.error(err, "LLM chain error");
           },
         },
       ],
@@ -158,7 +162,7 @@ export class Prompts {
     }
 
     if ("errorMessage" in result && typeof result.errorMessage === "string") {
-      this.logger.info(`llm refused to fulfil prompt: %s`, result.errorMessage);
+      this.logger.info("llm refused to fulfil prompt: %s", result.errorMessage);
       throw new LLMRefusalError(result.errorMessage, meta);
     }
 

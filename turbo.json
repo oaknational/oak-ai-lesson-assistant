@@ -1,6 +1,12 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "pipeline": {
+  "ui": "tui",
+
+  "tasks": {
+    "db-generate:no-engine": {
+      "inputs": ["prisma/schema.prisma"],
+      "cache": false
+    },
     "db-generate": {
       "inputs": ["prisma/schema.prisma"],
       "cache": false
@@ -15,11 +21,25 @@
     },
     "dev": {
       "dependsOn": ["^db-generate"],
+      "persistent": true,
+      "interactive": false,
       "cache": false
+    },
+    "build:dev": {
+      "cache": true,
+      "dependsOn": ["^db-generate", "^prompts:dev"],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "apps/nextjs/.next/**",
+        "apps/openai/.next/**",
+        "!apps/nextjs/.next/cache/**",
+        "!apps/openai/.next/cache/**"
+      ]
     },
     "build": {
       "cache": true,
-      "dependsOn": ["^build", "^db-generate"],
+      "dependsOn": ["^db-generate:no-engine"],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
@@ -39,9 +59,11 @@
       "cache": false
     },
     "prompts": {
+      "dependsOn": ["^db-generate:no-engine"],
       "cache": false
     },
     "prompts:dev": {
+      "dependsOn": ["^db-generate"],
       "cache": false
     },
     "type-check": {
@@ -49,24 +71,69 @@
       "cache": false
     },
     "test": {
-      "cache": false,
-      "outputs": ["packages/aila/**/*.spec.js", "packages/aila/**/*.test.js"]
+      "cache": false
+    },
+    "test:seq": {
+      "cache": false
     },
     "test-e2e": {
-      "cache": false
+      "cache": false,
+      "env": ["TEST_USER_EMAIL", "TEST_USER_PASSWORD"]
     },
     "test-e2e-ui": {
-      "cache": false
+      "cache": false,
+      "env": ["TEST_USER_EMAIL", "TEST_USER_PASSWORD"]
     },
     "storybook": {
       "cache": false
     }
   },
   "globalEnv": [
+    "AILA_FIXTURES_ENABLED",
+    "CLERK_*",
+    "CLERK_WEBHOOK_SECRET",
+    "CLOUDINARY_*",
+    "COHERE_*",
+    "DATABASE_*",
     "DATABASE_URL",
+    "DATADOG_*",
+    "DD_*",
+    "DEBUG",
+    "DEBUG_COLORS",
+    "DEMO_ACCOUNTS_ENABLED",
+    "DEVELOPMENT_USER_REGION",
     "DIRECT_DATABASE_URL",
-    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
-    "CLERK_SECRET_KEY",
-    "PRISMA_ACCELERATE_DATABASE_URL"
+    "GLEAP_FEEDBACK_EMAIL_ADDR",
+    "GOOGLE_DOCS_*",
+    "GOOGLE_DRIVE_OUTPUT_FOLDER_ID",
+    "GOOGLE_SERVICE_ACCOUNT_*",
+    "GOOGLE_SLIDES_*",
+    "HELICONE_*",
+    "HUBSPOT_ACCESS_TOKEN",
+    "INGEST_OPENAI_API_KEY",
+    "INNGEST_*",
+    "KV_*",
+    "LESSON_QUERY_BATCH_SIZE",
+    "OAI_API_USER_ID",
+    "OAI_INTERNAL_API_KEY",
+    "OAK_GRAPHQL_SECRET",
+    "OPENAI_*",
+    "POSTHOG_PERSONAL_KEY_FLAGS",
+    "POSTMARK_SERVER_TOKEN",
+    "PRISMA_ACCELERATE_DATABASE_URL",
+    "PROMPT_PLAYBACK_ENABLED",
+    "RATELIMIT_*",
+    "REDIS_*",
+    "SAFETY_VIOLATIONS_MAX_ALLOWED",
+    "SAFETY_VIOLATION_WINDOW_DAYS",
+    "SANITY_AUTH_SECRET",
+    "SENTRY_*",
+    "SLACK_*",
+    "SONAR_TOKEN",
+    "STRICT_CSP",
+    "TELEMETRY_ENABLED",
+    "UPSTASH_*",
+    "WOLFRAM_CLIENT_SECRET",
+    "CRON_SECRET"
   ]
 }

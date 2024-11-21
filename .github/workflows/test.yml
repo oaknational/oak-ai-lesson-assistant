@@ -32,11 +32,8 @@ jobs:
       - name: Install deps (with cache)
         run: pnpm install
 
-      - name: Enable Turbo Remote Caching
-        run: pnpm turbo login --token ${{ secrets.TURBO_TOKEN }}
-
       - name: Generate prisma client
-        run: pnpm db-generate
+        run: pnpm db-generate:no-engine
 
       - name: Inject Doppler env vars
         uses: dopplerhq/secrets-fetch-action@v1.2.0
@@ -46,4 +43,4 @@ jobs:
           inject-env-vars: true
 
       - name: Run tests
-        run: pnpm turbo test --cache-dir=".turbo"
+        run: pnpm turbo test --cache-dir=".turbo" -- --maxWorkers=33%

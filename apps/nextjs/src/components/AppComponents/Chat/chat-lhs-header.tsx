@@ -1,6 +1,8 @@
 import React from "react";
 
-import { useRouter } from "#next/navigation";
+import { useRouter } from "next/navigation";
+
+import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
 import AiIcon from "../../AiIcon";
 import ChatButton from "./ui/chat-button";
@@ -17,10 +19,17 @@ const ChatLhsHeader = ({
   isDemoUser,
 }: Readonly<ChatLhsHeaderProps>) => {
   const router = useRouter();
-
+  const chat = useLessonChat();
   return (
     <>
       <div className="mt-6 hidden items-center justify-end gap-5 sm:flex">
+        {process.env.NEXT_PUBLIC_ENVIRONMENT !== "prd" && (
+          <div className="flex flex-grow flex-row space-x-4 text-left text-xs">
+            <div data-testid="chat-aila-streaming-status">
+              {chat.ailaStreamingStatus}
+            </div>
+          </div>
+        )}
         <ChatButton
           variant="secondary"
           onClick={() => {
@@ -31,15 +40,13 @@ const ChatLhsHeader = ({
           New lesson
         </ChatButton>
       </div>
-      <div className=" flex justify-end sm:hidden">
+      <div className={`${isDemoUser && "mt-16"} flex justify-end sm:hidden`}>
         <button
           onClick={() => setShowLessonMobile(!showLessonMobile)}
           className="flex items-center gap-5"
         >
           <AiIcon />{" "}
-          <span className={`text-base font-bold ${isDemoUser && `mt-24`}`}>
-            View lesson &gt;
-          </span>
+          <span className={"text-base font-bold "}>View lesson &gt;</span>
         </button>
       </div>
     </>

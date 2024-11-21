@@ -1,13 +1,16 @@
 import { prisma } from "@oakai/db";
 
 import { IngestError } from "../IngestError";
+import type { IngestLogger } from "../types";
 import { getDataHash } from "../utils/getDataHash";
-import { RawLesson, RawLessonSchema } from "../zod-schema/zodSchema";
+import type { RawLesson } from "../zod-schema/zodSchema";
+import { RawLessonSchema } from "../zod-schema/zodSchema";
 import { graphqlClient } from "./graphql/client";
 import { query } from "./graphql/query";
 
 type ImportLessonsFromOakDBProps = {
   ingestId: string;
+  log: IngestLogger;
   onError: (error: IngestError) => void;
 };
 /**
@@ -15,6 +18,7 @@ type ImportLessonsFromOakDBProps = {
  */
 export async function importLessonsFromOakDB({
   ingestId,
+  log,
   onError,
 }: ImportLessonsFromOakDBProps) {
   let pageNumber = 0; // Start at page 0
@@ -60,7 +64,7 @@ export async function importLessonsFromOakDB({
     });
 
     imported += data.length;
-    console.log(`Imported ${imported} lessons`);
+    log.info(`Imported ${imported} lessons`);
 
     if (lessonData.lessons.length < perPage) {
       break;

@@ -2,14 +2,16 @@
 
 import React, { createContext, useState, useContext, useMemo } from "react";
 
-import { DialogTypes } from "../Chat/Chat/types";
+import type { DialogTypes } from "../Chat/Chat/types";
 
 interface DialogContextType {
   dialogWindow: DialogTypes;
   setDialogWindow: React.Dispatch<React.SetStateAction<DialogTypes>>;
 }
 
-const DialogContext = createContext<DialogContextType | undefined>(undefined);
+export const DialogContext = createContext<DialogContextType | undefined>(
+  undefined,
+);
 
 export const DialogProvider: React.FC<React.PropsWithChildren> = ({
   children,

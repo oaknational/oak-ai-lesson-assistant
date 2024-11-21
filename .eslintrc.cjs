@@ -1,7 +1,7 @@
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   root: true,
-  parser: "@typescript-eslint/parser",
+  extends: ["eslint-config-custom"],
   parserOptions: {
     tsconfigRootDir: __dirname,
     project: [
@@ -10,6 +10,4 @@ module.exports = {
       "./packages/*/tsconfig.json",
     ],
   },
-  plugins: ["@typescript-eslint"],
-  extends: ["plugin:@typescript-eslint/recommended"],
 };
