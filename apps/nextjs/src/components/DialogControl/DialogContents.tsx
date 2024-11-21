@@ -78,13 +78,8 @@ const DialogContents = ({
   submit?: () => void;
   isShared?: boolean | undefined;
 }) => {
-  const {
-    dialogWindow,
-    setDialogWindow,
-    setDialogProps,
-    openSidebar,
-    setOpenSidebar,
-  } = useDialog();
+  const { dialogWindow, setDialogWindow, setDialogProps, openSidebar } =
+    useDialog();
   const closeDialog = () => {
     setDialogWindow("");
     setDialogProps({});
@@ -94,7 +89,6 @@ const DialogContents = ({
 
   return (
     <>
-      <ChatHistory setOpenSidebar={setOpenSidebar} openSidebar={openSidebar} />
       {dialogWindow !== "" && (
         <OakModalAtTheFront isOpen={!!dialogWindow} onClose={closeDialog}>
           <OakModalCenterBody

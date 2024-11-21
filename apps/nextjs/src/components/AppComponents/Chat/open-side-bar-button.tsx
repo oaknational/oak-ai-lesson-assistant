@@ -6,7 +6,7 @@ import { Button } from "@/components/AppComponents/Chat/ui/button";
 import { Icon } from "@/components/Icon";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
-export function SidebarMobile({
+export function OpenSideBarButton({
   setOpenSidebar,
 }: {
   setOpenSidebar: (value: boolean) => void;

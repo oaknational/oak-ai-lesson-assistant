@@ -17,7 +17,8 @@ import OakIconLogo from "@/components/OakIconLogo";
 
 import { useDialog } from "../DialogContext";
 import { BetaTagHeader } from "./beta-tag";
-import { SidebarMobile } from "./sidebar-mobile";
+import { ChatHistory } from "./chat-history";
+import { OpenSideBarButton } from "./open-side-bar-button";
 import { UserOrLogin } from "./user-or-login";
 
 export function Header() {
@@ -122,7 +123,8 @@ export function Header() {
             <UserOrLogin />
           </OakFlex>
           <OakFlex>
-            <SidebarMobile setOpenSidebar={setOpenSidebar} />
+            <OpenSideBarButton setOpenSidebar={setOpenSidebar} />
+            <ChatHistory />
           </OakFlex>
         </OakFlex>
       </OakFlex>

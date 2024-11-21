@@ -7,21 +7,17 @@ import { usePathname } from "next/navigation";
 
 import { SidebarList } from "@/components/AppComponents/Chat/sidebar-list";
 
+import { useDialog } from "../DialogContext";
 import { ClearHistory } from "./clear-history";
 import ChatButton from "./ui/chat-button";
 
-export function ChatHistory({
-  openSidebar,
-  setOpenSidebar,
-}: {
-  openSidebar: boolean;
-  setOpenSidebar: (value: boolean) => void;
-}) {
+export function ChatHistory() {
   const ailaId = usePathname().split("aila/")[1];
-
+  const { openSidebar, setOpenSidebar } = useDialog();
   return (
     <OakModal
       data-testid="sidebar"
+      isLeftHandSide={false}
       zIndex={0}
       isOpen={openSidebar}
       onClose={() => setOpenSidebar(false)}

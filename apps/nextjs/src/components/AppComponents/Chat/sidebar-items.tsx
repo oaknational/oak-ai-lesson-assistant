@@ -13,8 +13,8 @@ interface SidebarItemsProps {
 
 export function SidebarItems({ chats }: Readonly<SidebarItemsProps>) {
   if (!chats.length) return null;
-
-  const parsedChats = chats
+  const filteredEmptyTitles = chats.filter((chat) => chat.title !== "");
+  const parsedChats = filteredEmptyTitles
     .map((chat) => ({
       ...chat,
       updatedAt: new Date(chat.updatedAt),
