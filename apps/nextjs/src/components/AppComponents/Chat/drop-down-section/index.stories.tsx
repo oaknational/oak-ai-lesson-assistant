@@ -8,6 +8,8 @@ import DropDownSection from "./";
 
 const MAX_INT32 = 2 ** 31 - 1;
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
   <ChatContext.Provider
     value={
@@ -83,7 +85,9 @@ export const Closed: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const toggleButton = await canvas.findByRole("button", { name: "toggle" });
+    await sleep(10);
     await userEvent.click(toggleButton);
+    await canvas.findByAltText("chevron-down");
   },
 };
 

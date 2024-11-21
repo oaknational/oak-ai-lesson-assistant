@@ -36,6 +36,11 @@ const meta: Meta<typeof MobileExportButtons> = {
   component: MobileExportButtons,
   tags: ["autodocs"],
   decorators: [ChatDecorator, DemoDecorator],
+  parameters: {
+    viewport: {
+      defaultViewport: "mobile1",
+    },
+  },
   args: {
     closeMobileLessonPullOut: () => {},
   },
