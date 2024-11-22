@@ -11,6 +11,7 @@ import { cva } from "class-variance-authority";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { organiseSections } from "@/lib/lessonPlan/organiseSections";
 import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
+import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
 import DropDownSection from "./drop-down-section";
@@ -91,6 +92,7 @@ export const LessonPlanDisplay = ({
   const [sectionsToDisplay, setSectionsToDisplay] = useState<LessonPlanKeys[]>(
     [],
   );
+  const chat = useLessonChat();
 
   const handleSetIsOpen = (section: string, isOpen: boolean) => {
     setOpenSections((prevState) => ({
@@ -99,15 +101,33 @@ export const LessonPlanDisplay = ({
     }));
   };
 
-  const chat = useLessonChat();
   const {
-    lessonPlan,
+    lessonPlan: chatLessonPlan,
     ailaStreamingStatus,
     lastModeration,
     streamingSection,
     streamingSections,
     setSectionRef,
   } = chat;
+
+  const lessonPlan = useMemo(
+    () => ({
+      ...chatLessonPlan,
+      starterQuiz:
+        chat.lessonPlan._experimental_starterQuizMathsV0 ||
+        chat.lessonPlan.starterQuiz,
+      exitQuiz:
+        chat.lessonPlan._experimental_exitQuizMathsV0 ||
+        chat.lessonPlan.exitQuiz,
+    }),
+    [
+      chatLessonPlan,
+      chat.lessonPlan._experimental_starterQuizMathsV0,
+      chat.lessonPlan.starterQuiz,
+      chat.lessonPlan._experimental_exitQuizMathsV0,
+      chat.lessonPlan.exitQuiz,
+    ],
+  );
 
   const lessonPlanSectionKeys = useMemo(
     () =>
@@ -170,13 +190,13 @@ export const LessonPlanDisplay = ({
           <Flex direction="row" gap="2" className="opacity-90">
             {notEmpty(lessonPlan.keyStage) && (
               <Text className="font-bold">
-                {keyStageToTitle(lessonPlan.keyStage ?? "")}
+                {slugToSentenceCase(lessonPlan.keyStage ?? "")}
               </Text>
             )}
             <span>•</span>
             {notEmpty(lessonPlan.subject) && (
               <Text className="font-bold">
-                {subjectToTitle(lessonPlan.subject ?? "")}
+                {slugToSentenceCase(lessonPlan.subject ?? "")}
               </Text>
             )}
           </Flex>

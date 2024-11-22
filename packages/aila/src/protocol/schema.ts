@@ -239,7 +239,11 @@ export const CycleSchema = z.object({
 
 // When using Structured Outputs we cannot specify the length of arrays or strings
 export const CycleSchemaWithoutLength = z.object({
-  title: z.string().describe("The title of the learning cycle"),
+  title: z
+    .string()
+    .describe(
+      "The title of the learning cycle written in sentence case starting with a capital letter and not ending with a full stop.",
+    ),
   durationInMinutes: z
     .number()
     .describe(
@@ -369,7 +373,7 @@ function minMaxText({
 
 export const CompletedLessonPlanSchema = z.object({
   title: z.string().describe(
-    `The title of the lesson. Lesson titles should be a unique and succinct statement, not a question. Can include special characters if appropriate but should not use & sign instead of 'and'. Written in the TEACHER_TO_PUPIL_SLIDES voice. ${minMaxText(
+    `The title of the lesson. Lesson titles should be a unique and succinct statement, not a question. Can include special characters if appropriate but should not use & sign instead of 'and'. Written in the TEACHER_TO_PUPIL_SLIDES voice. The title should be in sentence case starting with a capital letter and not end with a full stop. ${minMaxText(
       {
         max: 80,
         entity: "characters",
@@ -499,6 +503,8 @@ export const LessonPlanSchema = z.object({
   cycle3: CycleOptionalSchema.optional(),
   exitQuiz: QuizOptionalSchema.optional(),
   additionalMaterials: z.string().optional(),
+  _experimental_starterQuizMathsV0: QuizOptionalSchema.optional(),
+  _experimental_exitQuizMathsV0: QuizOptionalSchema.optional(),
 });
 
 export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;

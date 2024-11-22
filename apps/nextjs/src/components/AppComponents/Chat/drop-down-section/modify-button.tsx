@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import type { AilaUserModificationAction } from "@prisma/client";
 
+<<<<<<< HEAD
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import type { AilaUserModificationAction } from "@oakai/db";
@@ -11,35 +12,11 @@ import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
+=======
+import ActionButtonWrapper from "./action-button-wrapper";
+import { modifyOptions } from "./action-button.types";
+>>>>>>> origin/main
 import type { FeedbackOption } from "./drop-down-form-wrapper";
-import { DropDownFormWrapper } from "./drop-down-form-wrapper";
-import { SmallRadioButton } from "./small-radio-button";
-
-const log = aiLogger("chat");
-
-const modifyOptions = [
-  {
-    label: "Make it easier",
-    enumValue: "MAKE_IT_EASIER",
-    chatMessage: "easier",
-  },
-  {
-    label: "Make it harder",
-    enumValue: "MAKE_IT_HARDER",
-    chatMessage: "harder",
-  },
-  {
-    label: "Shorten content",
-    enumValue: "SHORTEN_CONTENT",
-    chatMessage: "shorter",
-  },
-  {
-    label: "Add more detail",
-    enumValue: "ADD_MORE_DETAIL",
-    chatMessage: "more detailed",
-  },
-  { label: "Other", enumValue: "OTHER" },
-] as const;
 
 type ModifyButtonProps = {
   sectionTitle: string;
@@ -52,6 +29,7 @@ const ModifyButton = ({
   sectionPath,
   sectionValue,
 }: ModifyButtonProps) => {
+<<<<<<< HEAD
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [userFeedbackText, setUserFeedbackText] = useState("");
@@ -101,98 +79,29 @@ const ModifyButton = ({
   };
 
   async function modifySection(
+=======
+  const generateMessage = (
+>>>>>>> origin/main
     option: FeedbackOption<AilaUserModificationAction>,
-  ) {
-    const message =
-      option.label === "Other"
-        ? `For the ${sectionTitle}, ${userFeedbackText}`
-        : `Make the ${sectionTitle} ${option.chatMessage?.toLowerCase()}`;
-
-    await Promise.all([
-      append({
-        content: message,
-        role: "user",
-      }),
-      recordUserModifySectionContent(),
-    ]);
-  }
+    userFeedbackText: string,
+  ) =>
+    option.label === "Other"
+      ? `For the ${sectionTitle.toLowerCase()}, ${userFeedbackText}`
+      : `Make the ${sectionTitle.toLowerCase()} ${option.chatMessage?.toLowerCase()}`;
 
   return (
-    <OakBox $position="relative" ref={dropdownRef}>
-      <ActionButton
-        onClick={() => setIsOpen(!isOpen)}
-        tooltip="Aila can help improve this section"
-      >
-        Modify
-      </ActionButton>
-
-      {isOpen && (
-        <DropDownFormWrapper
-          onClickActions={modifySection}
-          setIsOpen={setIsOpen}
-          selectedRadio={selectedRadio}
-          title={`Ask Aila to modify ${sectionTitle.toLowerCase()}:`}
-          buttonText={"Modify section"}
-          isOpen={isOpen}
-          dropdownRef={dropdownRef}
-        >
-          <OakRadioGroup
-            name={`drop-down-${modifyOptions[0].enumValue}`}
-            $flexDirection="column"
-            $gap="space-between-s"
-            $background="white"
-          >
-            {modifyOptions.map((option) => {
-              return (
-                <SmallRadioButton
-                  id={`${id}-modify-options-${option.enumValue}`}
-                  key={`${id}-modify-options-${option.enumValue}`}
-                  value={option.enumValue}
-                  label={handleLabelText({
-                    text: option.label,
-                    section: sectionTitle,
-                  })}
-                  onClick={() => {
-                    setSelectedRadio(option);
-                  }}
-                />
-              );
-            })}
-
-            {selectedRadio?.label === "Other" && (
-              <>
-                <OakP $font="body-3">Provide details below:</OakP>
-                <TextArea
-                  onChange={(e) => setUserFeedbackText(e.target.value)}
-                />
-              </>
-            )}
-          </OakRadioGroup>
-        </DropDownFormWrapper>
-      )}
-    </OakBox>
+    <ActionButtonWrapper
+      sectionTitle={`Ask Aila to modify ${sectionTitle.toLowerCase()}:`}
+      sectionPath={sectionPath}
+      sectionValue={sectionValue}
+      options={modifyOptions}
+      actionButtonLabel="Modify"
+      tooltip="Aila can help improve this section"
+      userSuggestionTitle="Provide modification options:"
+      buttonText="Modify section"
+      generateMessage={generateMessage}
+    />
   );
 };
-
-function handleLabelText({
-  text,
-  section,
-}: {
-  text: string;
-  section: string;
-}): string {
-  log.info("section", section);
-  if (
-    section === "Misconceptions" ||
-    section === "Key learning points" ||
-    section === "Learning cycles" ||
-    "additional materials"
-  ) {
-    if (text.includes("it")) {
-      return text.replace("it", "them");
-    }
-  }
-  return text;
-}
 
 export default ModifyButton;

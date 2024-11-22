@@ -41,6 +41,7 @@ export type AilaStreamingStatus =
   | "RequestMade"
   | "StreamingLessonPlan"
   | "StreamingChatResponse"
+  | "StreamingExperimentalPatches"
   | "Moderating"
   | "Idle";
 export const useAilaStreamingStatus = ({

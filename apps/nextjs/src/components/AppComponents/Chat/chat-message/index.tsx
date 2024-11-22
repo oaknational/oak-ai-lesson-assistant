@@ -8,6 +8,7 @@ import type {
   BadDocument,
   CommentDocument,
   ErrorDocument,
+  ExperimentalPatchDocument,
   MessagePart,
   ModerationDocument,
   PatchDocument,
@@ -236,6 +237,7 @@ function ChatMessagePart({
     error: ErrorMessagePart,
     bad: BadMessagePart,
     patch: PatchMessagePart,
+    experimentalPatch: ExperimentalPatchMessageComponent,
     state: StateMessagePart,
     text: TextMessagePart,
     action: ActionMessagePart,
@@ -340,4 +342,12 @@ function PartInspector({ part }: Readonly<{ part: MessagePart }>) {
       </pre>
     </div>
   );
+}
+
+/**
+ * Patches do not get rendered, they get applied to the lesson plan
+ * state, which is then rendered in the right hand side.
+ */
+function ExperimentalPatchMessageComponent() {
+  return null;
 }
