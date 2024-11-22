@@ -66,7 +66,7 @@ export type ChatContextProps = {
   executeQueuedAction: () => Promise<void>;
 };
 
-const ChatContext = createContext<ChatContextProps | null>(null);
+export const ChatContext = createContext<ChatContextProps | null>(null);
 
 export type ChatProviderProps = {
   id: string;

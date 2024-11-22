@@ -9,7 +9,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
 const meta: Meta<typeof LessonPlanProgressDropdown> = {
-  title: "Components/LessonPlanProgressDropdown",
+  title: "Components/LessonPlan/LessonPlanProgressDropdown",
   component: LessonPlanProgressDropdown,
   tags: ["autodocs"],
 };
