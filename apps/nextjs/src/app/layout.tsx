@@ -143,7 +143,7 @@ export default async function RootLayout({
               suppressHydrationWarning
               // eslint-disable-next-line react/jsx-no-comment-textnodes
             >
-              /* css comment for goober */
+              {/* css comment for goober */}
             </style>
           </body>
         </ClerkProvider>
