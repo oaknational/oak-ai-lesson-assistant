@@ -43,8 +43,18 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
     );
     // Process array allows async eval in parallel, the above decorator tries to prevent rate limiting.
     // TODO: GCLOMAX - make these generic types safer.
-    const outputRatings = await processArray(quizArray, delayedRetrieveQuiz);
+    // In this case the output is coming from the openAI endpoint. We need to unpack the output and unparse it.
+
+    const outputRatings: any[] = await processArray(
+      quizArray,
+      delayedRetrieveQuiz,
+    );
+    const extractedOutputRatings = outputRatings.map(
+      (item) => item.choices[0].message.parsed,
+    );
+    // const event = completion.choices[0].message.parsed;
+
     // const bestRating = selectHighestRated(outputRatings, (item) => item.rating);
-    return outputRatings;
+    return extractedOutputRatings;
   }
 }

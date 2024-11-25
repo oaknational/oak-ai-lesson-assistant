@@ -1,5 +1,5 @@
-import type { PatchDocument } from "../../protocol/jsonPatchProtocol";
-import type { Quiz } from "../../protocol/schema";
+import type { PatchDocument } from "../../../protocol/jsonPatchProtocol";
+import type { Quiz } from "../../../protocol/schema";
 
 export const cachedQuiz: Quiz = [
   {
