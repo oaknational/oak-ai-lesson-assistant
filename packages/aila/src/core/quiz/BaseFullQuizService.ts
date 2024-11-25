@@ -49,8 +49,14 @@ export abstract class BaseFullQuizService implements FullQuizService {
       this.quizReranker.ratingSchema,
       quizType,
     );
+    // TODO: GCLOMAX - this is hacky, but the typescript compiler gets annoyed with the zod and inference stuff.
+    if (!quizRankings[0]) {
+      throw new Error("Quiz rankings are undefined");
+    }
+    const parsedRankings = quizRankings.map((ranking) =>
+      this.quizReranker.ratingSchema!.parse(ranking),
+    );
 
-    const parsedRankings = quizRankings.map((ranking) => ranking.parse({}));
     const bestQuiz = this.quizSelector.selectBestQuiz(quizzes, parsedRankings);
     return bestQuiz;
   }
