@@ -24,7 +24,7 @@ const config: StorybookConfig = {
     name: getAbsolutePath("@storybook/nextjs"),
     options: {},
   },
-  staticDirs: ["../public"],
+  staticDirs: ["../public", "./public"],
   typescript: {
     check: false,
     checkOptions: {},

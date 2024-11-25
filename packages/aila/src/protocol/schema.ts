@@ -503,6 +503,8 @@ export const LessonPlanSchema = z.object({
   cycle3: CycleOptionalSchema.optional(),
   exitQuiz: QuizOptionalSchema.optional(),
   additionalMaterials: z.string().optional(),
+  _experimental_starterQuizMathsV0: QuizOptionalSchema.optional(),
+  _experimental_exitQuizMathsV0: QuizOptionalSchema.optional(),
 });
 
 export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;

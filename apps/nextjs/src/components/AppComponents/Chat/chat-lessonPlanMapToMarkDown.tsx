@@ -15,8 +15,14 @@ const LessonPlanMapToMarkDown = ({
   lessonPlan: LooseLessonPlan;
   sectionRefs?: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
 }) => {
+  const lessonPlanWithExperiments = {
+    ...lessonPlan,
+    starterQuiz:
+      lessonPlan._experimental_starterQuizMathsV0 || lessonPlan.starterQuiz,
+    exitQuiz: lessonPlan._experimental_exitQuizMathsV0 || lessonPlan.exitQuiz,
+  };
   return (
-    Object.entries(lessonPlan)
+    Object.entries(lessonPlanWithExperiments)
       .filter(([k]) => k !== "title")
       .filter(([k]) => k !== "keyStage")
       .filter(([k]) => k !== "subject")

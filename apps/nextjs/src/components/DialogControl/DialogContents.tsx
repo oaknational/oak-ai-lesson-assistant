@@ -35,7 +35,7 @@ const dialogTitlesAndIcons: Record<
     iconName: "warning",
   },
   "demo-interstitial": {
-    title: "Lesson limit reached",
+    title: "Demo lesson limits",
     iconName: "warning",
   },
   "demo-share-locked": {

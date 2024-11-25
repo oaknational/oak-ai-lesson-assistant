@@ -41,7 +41,10 @@ const states: Record<ClerkProviderProps["state"], Context> = {
     isSignedIn: true,
     user: {
       ...mockUser,
-      publicMetadata: { ...mockUser.publicMetadata, isDemoUser: true },
+      publicMetadata: {
+        ...mockUser.publicMetadata,
+        labs: { ...mockUser.publicMetadata.labs, isDemoUser: true },
+      },
     },
   },
 };
