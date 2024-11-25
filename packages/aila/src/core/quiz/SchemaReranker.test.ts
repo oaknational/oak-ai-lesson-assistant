@@ -39,7 +39,7 @@ describe("TestSchemaReranker", () => {
     expect(result).toBeDefined();
     expect(Array.isArray(result)).toBe(true);
     result.forEach((item) => {
-      expect(typeof item).toBe(typeof testRatingSchema);
+      expect(testRatingSchema.safeParse(item).success).toBe(true);
     });
     console.log("result", JSON.stringify(result));
   });
@@ -54,7 +54,7 @@ describe("TestSchemaReranker", () => {
     expect(result).toBeDefined();
     expect(Array.isArray(result)).toBe(true);
     result.forEach((item) => {
-      expect(typeof item).toBe(typeof testRatingSchema);
+      expect(testRatingSchema.safeParse(item).success).toBe(true);
     });
     console.log("result", JSON.stringify(result));
   });

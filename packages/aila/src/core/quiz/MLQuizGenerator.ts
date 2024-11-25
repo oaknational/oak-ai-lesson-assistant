@@ -25,6 +25,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     return quizQuestions;
   }
 
+  // TODO: GCLOMAX - Change for starter and exit quizzes.
   public async generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
   ): Promise<Quiz[]> {
