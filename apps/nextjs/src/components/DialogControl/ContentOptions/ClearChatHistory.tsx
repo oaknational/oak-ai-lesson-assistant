@@ -1,21 +1,26 @@
 "use client";
 
-import { useTransition } from "react";
+import { useCallback, useTransition } from "react";
 import { toast } from "react-hot-toast";
 
-import {
-  OakFlex,
-  OakP,
-  OakSmallPrimaryButton,
-  OakSmallSecondaryButton,
-} from "@oaknational/oak-components";
+import { OakFlex, OakP, OakPrimaryButton } from "@oaknational/oak-components";
 import { useRouter } from "next/navigation";
 
+import { useDialog } from "@/components/AppComponents/DialogContext";
 import LoadingWheel from "@/components/LoadingWheel";
 import { trpc } from "@/utils/trpc";
 
+import ModalFooterButtons from "./ModalFooterButtons";
+
 const ClearChatHistory = ({ closeDialog }: { closeDialog: () => void }) => {
   const router = useRouter();
+
+  const { setOpenSidebar } = useDialog();
+  const handleCloseDialog = useCallback(() => {
+    closeDialog();
+    setOpenSidebar(true);
+  }, [closeDialog, setOpenSidebar]);
+
   const clearChats = trpc.chat.appSessions.deleteAllChats.useMutation({
     onSuccess() {
       toast.success("Chat history cleared");
@@ -28,7 +33,26 @@ const ClearChatHistory = ({ closeDialog }: { closeDialog: () => void }) => {
   }).mutate;
 
   const [isPending, startTransition] = useTransition();
-
+  const handleDeleteChat = () => {
+    return (
+      <OakPrimaryButton
+        disabled={isPending}
+        onClick={(event) => {
+          event.preventDefault();
+          startTransition(() => {
+            clearChats();
+          });
+        }}
+      >
+        {isPending && (
+          <OakFlex $justifyContent="center" $alignItems="center">
+            <LoadingWheel />
+          </OakFlex>
+        )}
+        Delete
+      </OakPrimaryButton>
+    );
+  };
   return (
     <OakFlex
       $flexDirection="column"
@@ -36,34 +60,11 @@ const ClearChatHistory = ({ closeDialog }: { closeDialog: () => void }) => {
       $gap="space-between-m"
     >
       <OakP $font="body-1-bold">Are you absolutely sure?</OakP>
-      <OakP>
-        This will permanently delete your chat history and remove your data from
-        our servers.
-      </OakP>
-      <OakFlex $gap="all-spacing-2" $justifyContent="flex-end">
-        <OakSmallSecondaryButton
-          disabled={isPending}
-          onClick={() => closeDialog()}
-        >
-          Cancel
-        </OakSmallSecondaryButton>
-        <OakSmallPrimaryButton
-          disabled={isPending}
-          onClick={(event) => {
-            event.preventDefault();
-            startTransition(() => {
-              clearChats();
-            });
-          }}
-        >
-          {isPending && (
-            <OakFlex $justifyContent="center" $alignItems="center">
-              <LoadingWheel />
-            </OakFlex>
-          )}
-          Delete
-        </OakSmallPrimaryButton>
-      </OakFlex>
+      <OakP>This will permanently delete all of your lesson history.</OakP>
+      <ModalFooterButtons
+        closeDialog={handleCloseDialog}
+        actionButtonStates={handleDeleteChat}
+      />
     </OakFlex>
   );
 };
