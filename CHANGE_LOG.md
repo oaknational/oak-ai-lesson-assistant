@@ -1,3 +1,13 @@
+## [1.16.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.16.1...v1.16.2) (2024-11-25)
+
+
+### Bug Fixes
+
+* add missing dependencies to Analytics Provider ([#306](https://github.com/oaknational/oak-ai-lesson-assistant/issues/306)) ([871c23f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/871c23f4af0374d98428305fd388400ebb08b035))
+* handle aborts and add logging to the stream handler ([#350](https://github.com/oaknational/oak-ai-lesson-assistant/issues/350)) ([20f956e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/20f956e35299ed8f465a8265d7aa52c7f18ac830))
+* hook error on sign-in page ([#208](https://github.com/oaknational/oak-ai-lesson-assistant/issues/208)) ([c298b10](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c298b1051cab04643f04f6526b1dd0d835321c7e))
+* **sec:** bump next to 14.2.18 ([#242](https://github.com/oaknational/oak-ai-lesson-assistant/issues/242)) ([81fc31c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/81fc31cddb3771b2ace860ee23b17448b22af7fb))
+
 ## [1.16.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.16.0...v1.16.1) (2024-11-21)
 
 
