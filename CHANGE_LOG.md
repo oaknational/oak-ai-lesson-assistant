@@ -1,3 +1,19 @@
+## [1.16.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.16.0...v1.16.1) (2024-11-21)
+
+
+### Bug Fixes
+
+* add types for SVG imports, remove unused ([#318](https://github.com/oaknational/oak-ai-lesson-assistant/issues/318)) ([c1eff88](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c1eff88efad2496ac0d82a8b8c03d38adf61e8ed))
+* streaming JSON types and error reporting tests ([#315](https://github.com/oaknational/oak-ai-lesson-assistant/issues/315)) ([3e18b44](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3e18b446a58f44222919fa4712379785500b903d))
+
+# [1.16.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.15.0...v1.16.0) (2024-11-18)
+
+
+### Features
+
+* add FeatureFlagProvider ([#353](https://github.com/oaknational/oak-ai-lesson-assistant/issues/353)) ([1d4995e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1d4995ea0c82772259bc5312ba8d872dbd30b2b9))
+* link to hubspot form from requests for full access and higher rate - AI-626 AI-627 ([#359](https://github.com/oaknational/oak-ai-lesson-assistant/issues/359)) ([05ccce6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/05ccce69348b03df2edee01dd1a27814a071be3d))
+
 # [1.15.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.14.2...v1.15.0) (2024-11-13)
 
 

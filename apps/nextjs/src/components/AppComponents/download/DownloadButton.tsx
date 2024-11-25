@@ -85,7 +85,9 @@ export const DownloadButton = ({
         >
           <Icon icon="download" size="sm" />
           <div className="flex flex-col gap-6">
-            <span className="text-left font-bold">Download {title} (.pdf)</span>
+            <span className="text-left font-bold">
+              Download {title.toLowerCase()} (.pdf)
+            </span>
             <span className="text-left opacity-80">{subTitle}</span>
           </div>
         </Link>

@@ -12,6 +12,7 @@ import type {
 import type {
   MessagePart,
   JsonPatchDocument,
+  ValidPatchDocument,
 } from "../protocol/jsonPatchProtocol";
 import {
   JsonPatchDocumentOptional,
@@ -38,7 +39,8 @@ export interface AilaLessonService {
   readonly plan: LooseLessonPlan;
   readonly hasSetInitialState: boolean;
   setPlan(plan: LooseLessonPlan): void;
-  applyPatches(patches: string): void;
+  extractAndApplyLlmPatches(patches: string): void;
+  applyValidPatches(validPatches: ValidPatchDocument[]): void;
   initialise(plan: LooseLessonPlan): void;
   setUpInitialLessonPlan(messages: Message[]): Promise<void>;
 }
