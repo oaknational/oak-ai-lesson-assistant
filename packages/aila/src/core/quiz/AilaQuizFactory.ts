@@ -1,7 +1,8 @@
 import type { LooseLessonPlan } from "../../protocol/schema";
 import type { AilaQuizService } from "../AilaServices";
 import { AilaQuiz } from "./AilaQuiz";
-import type { AilaQuizFactory, quizRecommenderType } from "./interfaces";
+import type { AilaQuizFactory } from "./interfaces";
+import type { QuizRecommenderType } from "./schema";
 
 export class AilaQuizFactoryImpl implements AilaQuizFactory {
   private containsMath(subject: string | undefined | null): boolean {
@@ -10,7 +11,7 @@ export class AilaQuizFactoryImpl implements AilaQuizFactory {
 
   public quizStrategySelector(
     lessonPlan: LooseLessonPlan,
-  ): quizRecommenderType {
+  ): QuizRecommenderType {
     // Determine the quiz strategy based on the lesson plan
     const isMathsLesson = this.containsMath(lessonPlan.subject);
     return isMathsLesson ? "maths" : "default";

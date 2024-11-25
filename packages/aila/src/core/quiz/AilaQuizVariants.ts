@@ -46,7 +46,7 @@ import {
 import type { QuizzesForConsideration } from "./RerankerStructuredOutputSchema";
 import { starterQuizQuestionSuitabilityDescriptionSchema } from "./RerankerStructuredOutputSchema";
 import { processArray, withRandomDelay } from "./apiCallingUtils";
-import { testInput } from "./cachedQuizOutput";
+import { testInput } from "./fixtures/cachedQuizOutput";
 import type { CustomHit } from "./interfaces";
 import { CohereReranker } from "./rerankers";
 
