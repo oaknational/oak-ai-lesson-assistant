@@ -15,7 +15,6 @@ import {
 } from "@/components/AppComponents/Chat/ui/tooltip";
 import BinIcon from "@/components/BinIcon";
 import type { SideBarChatItem } from "@/lib/types";
-import { convertTitleCaseToSentenceCase } from "@/utils/convertTitleCaseToSentenceCase";
 
 import { useDialog } from "../DialogContext";
 import { constructChatPath } from "./Chat/utils";
@@ -68,9 +67,7 @@ export function SidebarItem({ chat }: SidebarItemProps) {
         >
           <OakFlex $justifyContent="flex-start">
             <div title={chat.title}>
-              <OakSpan $font="body-3">
-                {convertTitleCaseToSentenceCase(chat.title)}
-              </OakSpan>
+              <OakSpan $font="body-3">{chat.title}</OakSpan>
             </div>
           </OakFlex>
         </Link>
