@@ -18,7 +18,6 @@ import type { SideBarChatItem } from "@/lib/types";
 
 import { useDialog } from "../DialogContext";
 import { constructChatPath } from "./Chat/utils";
-import { convertTitleCaseToSentenceCase } from "./chat-start-accordion";
 
 interface SidebarItemProps {
   chat: SideBarChatItem;
@@ -68,9 +67,7 @@ export function SidebarItem({ chat }: SidebarItemProps) {
         >
           <OakFlex $justifyContent="flex-start">
             <div title={chat.title}>
-              <OakSpan $font="body-3">
-                {convertTitleCaseToSentenceCase(chat.title)}
-              </OakSpan>
+              <OakSpan $font="body-3">{chat.title}</OakSpan>
             </div>
           </OakFlex>
         </Link>
