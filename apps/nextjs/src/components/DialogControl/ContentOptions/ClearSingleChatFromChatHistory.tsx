@@ -1,25 +1,22 @@
 "use client";
 
-import { useTransition } from "react";
+import { useCallback, useTransition } from "react";
 
-import {
-  OakFlex,
-  OakP,
-  OakSmallPrimaryButton,
-  OakSmallSecondaryButton,
-} from "@oaknational/oak-components";
+import { OakFlex, OakP, OakPrimaryButton } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/nextjs";
 
 import { useDialog } from "@/components/AppComponents/DialogContext";
 import LoadingWheel from "@/components/LoadingWheel";
 import { trpc } from "@/utils/trpc";
 
+import ModalFooterButtons from "./ModalFooterButtons";
+
 const ClearSingleChatFromChatHistory = ({
   closeDialog,
 }: {
   closeDialog: () => void;
 }) => {
-  const { dialogProps, setDialogProps } = useDialog();
+  const { dialogProps, setDialogProps, setOpenSidebar } = useDialog();
   const { mutate, isLoading } =
     trpc.chat.appSessions.deleteChatById.useMutation({
       onSuccess() {
@@ -31,6 +28,11 @@ const ClearSingleChatFromChatHistory = ({
       },
     });
 
+  const handleCloseDialog = useCallback(() => {
+    closeDialog();
+    setOpenSidebar(true);
+  }, [closeDialog, setOpenSidebar]);
+
   function deleteChatById() {
     const id = dialogProps?.chatIdToDelete;
     if (typeof id !== "string") {
@@ -40,7 +42,26 @@ const ClearSingleChatFromChatHistory = ({
   }
 
   const [isPending, startTransition] = useTransition();
-
+  const handleDeleteChat = () => {
+    return (
+      <OakPrimaryButton
+        disabled={isPending}
+        onClick={(event) => {
+          event.preventDefault();
+          startTransition(() => {
+            deleteChatById();
+          });
+        }}
+      >
+        {isPending && (
+          <OakFlex $justifyContent="center" $alignItems="center">
+            <LoadingWheel />
+          </OakFlex>
+        )}
+        Delete
+      </OakPrimaryButton>
+    );
+  };
   return (
     <OakFlex
       $flexDirection="column"
@@ -48,39 +69,16 @@ const ClearSingleChatFromChatHistory = ({
       $justifyContent="center"
     >
       <OakP $font="body-1-bold">Are you absolutely sure?</OakP>
-      <OakP>
-        This will permanently delete your chat history and remove your data from
-        our servers.
-      </OakP>
+      <OakP>This will permanently delete this lesson.</OakP>
       {isLoading ? (
         <OakFlex $justifyContent="center" $alignItems="center">
           <LoadingWheel />
         </OakFlex>
       ) : (
-        <OakFlex $gap="all-spacing-2" $justifyContent="flex-end">
-          <OakSmallSecondaryButton
-            disabled={isPending}
-            onClick={() => closeDialog()}
-          >
-            Cancel
-          </OakSmallSecondaryButton>
-          <OakSmallPrimaryButton
-            disabled={isPending}
-            onClick={(event) => {
-              event.preventDefault();
-              startTransition(() => {
-                deleteChatById();
-              });
-            }}
-          >
-            {isPending && (
-              <OakFlex $justifyContent="center" $alignItems="center">
-                <LoadingWheel />
-              </OakFlex>
-            )}
-            Delete
-          </OakSmallPrimaryButton>
-        </OakFlex>
+        <ModalFooterButtons
+          closeDialog={handleCloseDialog}
+          actionButtonStates={handleDeleteChat}
+        />
       )}
     </OakFlex>
   );
