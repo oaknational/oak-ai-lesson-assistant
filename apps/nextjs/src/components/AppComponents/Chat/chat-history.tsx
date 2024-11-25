@@ -3,7 +3,14 @@
 import * as React from "react";
 import { useEffect } from "react";
 
-import { OakIcon, OakModal, OakModalFooter } from "@oaknational/oak-components";
+import {
+  OakBox,
+  OakIcon,
+  OakLink,
+  OakModal,
+  OakModalFooter,
+  OakSpan,
+} from "@oaknational/oak-components";
 import { usePathname } from "next/navigation";
 
 import { SidebarList } from "@/components/AppComponents/Chat/sidebar-list";
@@ -44,6 +51,19 @@ export function ChatHistory() {
         </OakModalFooter>
       }
     >
+      <OakBox
+        $position="absolute"
+        $top="all-spacing-6"
+        $right="all-spacing-3"
+        $borderRadius="border-radius-circle"
+        $height="space-between-xxl"
+      >
+        <OakLink element="button" onClick={() => setOpenSidebar(false)}>
+          <OakSpan $opacity="transparent" $font="body-3">
+            Close
+          </OakSpan>
+        </OakLink>
+      </OakBox>
       <div className="flex h-full flex-col">
         <div className="my-10 flex flex-col px-7">
           <ChatButton href="/aila" variant="text-link" onClick={() => {}}>
