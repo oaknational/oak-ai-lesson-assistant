@@ -20,5 +20,7 @@ export const IngestConfigSchema = z.object({
       filePath: z.string(),
     }),
   ]),
+  title: z.string().optional(),
+  description: z.string().optional(),
 });
 export type IngestConfig = z.infer<typeof IngestConfigSchema>;
