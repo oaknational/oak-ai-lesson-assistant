@@ -1,5 +1,5 @@
 import { SimpleFullQuizService } from "./BaseFullQuizService";
-import { FullQuizServiceFactory } from "./SimpleBodgeFactory";
+import { FullQuizServiceFactory } from "./FullQuizServiceFactory";
 
 describe("FullQuizServiceFactory", () => {
   let factory: FullQuizServiceFactory;
