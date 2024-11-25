@@ -15,6 +15,23 @@ cloudinary.config({
 });
 
 export const cloudinaryRouter = router({
+  getCloudinaryImagesBySearchExpression: protectedProcedure
+    .input(
+      z.object({
+        searchExpression: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const { searchExpression } = input;
+      return await cloudinary.search
+        .expression(searchExpression)
+        .max_results(10)
+        .with_field("context")
+        .execute()
+        .then((result: unknown) => {
+          return result;
+        });
+    }),
   getCloundinaryImages: protectedProcedure
     .input(
       z.object({
