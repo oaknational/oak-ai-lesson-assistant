@@ -1,14 +1,9 @@
 "use client";
 
 import * as React from "react";
+import { useEffect } from "react";
 
-import {
-  OakIcon,
-  OakModal,
-  OakModalFooter,
-  OakPrimaryButton,
-  OakSecondaryButton,
-} from "@oaknational/oak-components";
+import { OakIcon, OakModal, OakModalFooter } from "@oaknational/oak-components";
 import { usePathname } from "next/navigation";
 
 import { SidebarList } from "@/components/AppComponents/Chat/sidebar-list";
@@ -24,7 +19,21 @@ export function ChatHistory({
   setOpenSidebar: (value: boolean) => void;
 }) {
   const ailaId = usePathname().split("aila/")[1];
+  useEffect(() => {
+    if (openSidebar) {
+      const style = document.createElement("style");
+      style.innerHTML = `
+        .bb-feedback-button.gleap-font.gl-block {
+          display: none !important;
+        }
+      `;
+      document.head.appendChild(style);
 
+      return () => {
+        document.head.removeChild(style);
+      };
+    }
+  }, [openSidebar]);
   return (
     <OakModal
       zIndex={0}
