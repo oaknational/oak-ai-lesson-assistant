@@ -132,8 +132,8 @@ importers:
         specifier: '*'
         version: link:../../packages/prettier-config
       '@oaknational/oak-components':
-        specifier: ^1.44.0
-        version: 1.47.0(next-cloudinary@5.20.0)(next@14.2.18)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11)
+        specifier: ^1.51.0
+        version: 1.51.0(next-cloudinary@5.20.0)(next@14.2.18)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11)
       '@oaknational/oak-consent-client':
         specifier: ^2.1.0
         version: 2.1.1(react-dom@18.2.0)(react@18.2.0)(zod@3.23.8)
@@ -5776,8 +5776,8 @@ packages:
     resolution: {integrity: sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==}
     engines: {node: '>=12.4.0'}
 
-  /@oaknational/oak-components@1.47.0(next-cloudinary@5.20.0)(next@14.2.18)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11):
-    resolution: {integrity: sha512-jT7dCrFBq7bGUKShhon1Q7L1w9nFaDm2L2qFPEquz6UodAyEk1d9gqu+GXbS6ICrnnhsnhe1l0h22S8x2BjzPQ==}
+  /@oaknational/oak-components@1.51.0(next-cloudinary@5.20.0)(next@14.2.18)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11):
+    resolution: {integrity: sha512-447ikR3goofAR/sS5oTVQ1UPoyyODOGidNnSCZyVG7O1HvyJeAKII1zaP9GmUgQ0JKonGisfYAgcxRbTvx/PmQ==}
     peerDependencies:
       next: ^14.2.12
       next-cloudinary: ^5.20.0
