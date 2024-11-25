@@ -27,7 +27,7 @@ export type DemoContextProps =
       isSharingEnabled: boolean;
     };
 
-const DemoContext = createContext<DemoContextProps | null>(null);
+export const DemoContext = createContext<DemoContextProps | null>(null);
 
 export type DemoProviderProps = Readonly<{ children: React.ReactNode }>;
 

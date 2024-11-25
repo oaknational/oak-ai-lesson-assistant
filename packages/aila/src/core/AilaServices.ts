@@ -9,7 +9,10 @@ import type {
   AilaPersistenceFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
-import type { MessagePart } from "../protocol/jsonPatchProtocol";
+import type {
+  MessagePart,
+  ValidPatchDocument,
+} from "../protocol/jsonPatchProtocol";
 import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
@@ -30,7 +33,8 @@ export interface AilaLessonService {
   readonly plan: LooseLessonPlan;
   readonly hasSetInitialState: boolean;
   setPlan(plan: LooseLessonPlan): void;
-  applyPatches(patches: string): void;
+  extractAndApplyLlmPatches(patches: string): void;
+  applyValidPatches(validPatches: ValidPatchDocument[]): void;
   initialise(plan: LooseLessonPlan): void;
   setUpInitialLessonPlan(messages: Message[]): Promise<void>;
 }
