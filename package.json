@@ -34,6 +34,7 @@
     "test:seq": "turbo test:seq --concurrency=1 --",
     "test-e2e": "turbo test-e2e --",
     "test-e2e-ui": "turbo test-e2e-ui --",
+    "test-coverage": "COLLECT_TEST_COVERAGE=true turbo test-coverage -- --maxWorkers=33%",
     "storybook": "turbo storybook"
   },
   "prettier": "@oakai/prettier-config",
