@@ -15,12 +15,12 @@ import type { Message } from "../chat";
 const log = aiLogger("aila:lesson");
 
 export class AilaLesson implements AilaLessonService {
-  private _aila: AilaServices;
+  private readonly _aila: AilaServices;
   private _plan: LooseLessonPlan;
   private _hasSetInitialState = false;
-  private _appliedPatches: ValidPatchDocument[] = [];
-  private _invalidPatches: ValidPatchDocument[] = [];
-  private _categoriser: AilaCategorisationFeature;
+  private readonly _appliedPatches: ValidPatchDocument[] = [];
+  private readonly _invalidPatches: ValidPatchDocument[] = [];
+  private readonly _categoriser: AilaCategorisationFeature;
 
   constructor({
     aila,
