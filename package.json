@@ -25,6 +25,7 @@
     "lint:fix": "pnpm lint -- --fix",
     "prompts": "turbo prompts",
     "prompts:dev": "turbo prompts:dev",
+    "sonar": "dotenv -e ./.env -- sonar-scanner",
     "sort-package-json": "sort-package-json \"package.json\" \"packages/*/package.json\" \"apps/*/package.json\"",
     "type-check": "turbo type-check",
     "node-version": "node -v",
@@ -65,5 +66,8 @@
   "engines": {
     "node": ">=20.9.0",
     "pnpm": ">=8"
+  },
+  "devDependencies": {
+    "sonarqube-scanner": "^4.2.6"
   }
 }
