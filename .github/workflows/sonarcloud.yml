@@ -41,7 +41,7 @@ jobs:
       - name: Get App Version
         id: app-version
         run: |
-          APP_VERSION=$(grep -m 1 -oP '(?<=## \[)\d+\.\d+\.\d+' CHANGELOG.md)
+          APP_VERSION=$(grep -m 1 -oP '(?<=## \[)\d+\.\d+\.\d+' CHANGE_LOG.md)
           echo "version=$APP_VERSION" >> $GITHUB_OUTPUT
 
       - name: SonarCloud scan
