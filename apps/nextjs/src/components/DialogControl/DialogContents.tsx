@@ -44,6 +44,15 @@ const dialogTitlesAndIcons: Record<
   },
 };
 
+export type DialogContentsProps = Readonly<{
+  chatId: string | undefined;
+  lesson: LooseLessonPlan;
+  children?: React.ReactNode;
+  messages?: Message[];
+  submit?: () => void;
+  isShared?: boolean | undefined;
+}>;
+
 const DialogContents = ({
   chatId,
   lesson,
@@ -51,14 +60,7 @@ const DialogContents = ({
   messages,
   submit,
   isShared,
-}: {
-  chatId: string | undefined;
-  lesson: LooseLessonPlan;
-  children?: React.ReactNode;
-  messages?: Message[];
-  submit?: () => void;
-  isShared?: boolean | undefined;
-}) => {
+}: DialogContentsProps) => {
   const { dialogWindow, setDialogWindow } = useDialog();
   const closeDialog = () => setDialogWindow("");
   if (dialogWindow === "") return null;

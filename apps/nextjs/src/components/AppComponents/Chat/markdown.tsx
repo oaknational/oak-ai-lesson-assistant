@@ -18,15 +18,17 @@ const MemoizedReactMarkdown: FC<Options> = memo(
     prevProps.className === nextProps.className,
 );
 
+export type ReactMarkdownWithStylesProps = Readonly<{
+  markdown: string;
+  lessonPlanSectionDescription?: string;
+  className?: string;
+}>;
+
 export const MemoizedReactMarkdownWithStyles = ({
   markdown,
   lessonPlanSectionDescription,
   className,
-}: {
-  markdown: string;
-  lessonPlanSectionDescription?: string;
-  className?: string;
-}) => {
+}: ReactMarkdownWithStylesProps) => {
   return (
     <MemoizedReactMarkdown
       className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"

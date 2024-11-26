@@ -140,17 +140,17 @@ const ChatStartAccordion = () => {
 // Define prop types for each component
 interface AccordionItemProps
   extends React.ComponentPropsWithoutRef<typeof Accordion.Item> {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }
 
 interface AccordionTriggerProps
   extends React.ComponentPropsWithoutRef<typeof Accordion.Trigger> {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }
 
 interface AccordionContentProps
   extends React.ComponentPropsWithoutRef<typeof Accordion.Content> {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }
 
 const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
