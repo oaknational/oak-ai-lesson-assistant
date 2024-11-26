@@ -31,7 +31,7 @@ const ChatStartAccordion = () => {
       section !== "Title" &&
       section !== "Key stage" &&
       section !== "Subject" &&
-      section !== "Prior lnowledge" &&
+      section !== "Prior knowledge" &&
       section !== "Key learning points" &&
       section !== "Misconceptions" &&
       section !== "Learning cycle 1" &&
