@@ -21,7 +21,7 @@ export const HelpContent = () => {
     if (ref?.current) {
       const yOffset = -72; // Adjust this value as needed
       const y =
-        ref.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        ref.current.getBoundingClientRect().top + window.scrollY + yOffset;
       window.scrollTo({ top: y, behavior: "smooth" });
     }
   };
