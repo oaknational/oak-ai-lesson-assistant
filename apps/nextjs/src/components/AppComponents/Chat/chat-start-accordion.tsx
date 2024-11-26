@@ -10,6 +10,7 @@ import AiIcon from "@/components/SVGParts/AiIcon";
 import LessonIcon from "@/components/SVGParts/LessonIcon";
 import QuizIcon from "@/components/SVGParts/QuizIcon";
 import SlidesIcon from "@/components/SVGParts/SlidesIcon";
+import { convertTitleCaseToSentenceCase } from "@/utils/convertTitleCaseToSentenceCase";
 
 import { handleRewordingSections } from "./export-buttons";
 
@@ -31,7 +32,7 @@ const ChatStartAccordion = () => {
       section !== "Title" &&
       section !== "Key stage" &&
       section !== "Subject" &&
-      section !== "Prior lnowledge" &&
+      section !== "Prior knowledge" &&
       section !== "Key learning points" &&
       section !== "Misconceptions" &&
       section !== "Learning cycle 1" &&
@@ -194,8 +195,3 @@ const AccordionContent = React.forwardRef<
 AccordionContent.displayName = "AccordionContent";
 
 export default ChatStartAccordion;
-
-function convertTitleCaseToSentenceCase(titleCase: string) {
-  const lowerCaseTitle = titleCase.toLowerCase();
-  return lowerCaseTitle.charAt(0).toUpperCase() + lowerCaseTitle.slice(1);
-}

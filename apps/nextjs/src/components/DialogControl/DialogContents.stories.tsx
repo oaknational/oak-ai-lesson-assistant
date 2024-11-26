@@ -17,6 +17,10 @@ const meta: Meta<typeof DialogContents> = {
         value={{
           dialogWindow: parameters.dialogWindow,
           setDialogWindow: () => {},
+          dialogProps: {},
+          setDialogProps: () => {},
+          openSidebar: false,
+          setOpenSidebar: () => {},
         }}
       >
         <Story />
