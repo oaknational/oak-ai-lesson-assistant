@@ -6,6 +6,8 @@ import { AilaQuiz } from "./AilaQuiz";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
 import type { BaseType } from "./ChoiceModels";
 import type { BaseSchema } from "./ChoiceModels";
+import { testRatingSchema } from "./RerankerStructuredOutputSchema";
+import { ReturnFirstReranker } from "./ReturnFirstReranker";
 import { TestSchemaReranker } from "./SchemaReranker";
 import type {
   AilaQuizFactory,
@@ -18,7 +20,13 @@ export class AilaQuizRerankerFactoryImpl implements AilaQuizRerankerFactory {
   public createAilaQuizReranker(
     quizType: QuizRerankerType,
   ): AilaQuizReranker<typeof BaseSchema> {
-    return new TestSchemaReranker();
+    switch (quizType) {
+      case "schema-reranker":
+        return new TestSchemaReranker();
+      case "return-first":
+        // TODO: GCLOMAX - This needs refactoring and is an issue.
+        return new ReturnFirstReranker(testRatingSchema, "/starterQuiz");
+    }
   }
 }
 

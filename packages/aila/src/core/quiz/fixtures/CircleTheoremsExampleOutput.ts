@@ -1,4 +1,8 @@
 export const CircleTheoremLesson = {
+  basedOn: {
+    id: "clna7lofy0og0p4qxju5j6z56", // This is the corresponsing label in the lesson table for slug reading-timetables-6wwkgt
+    title: "TEST-LESSON-READING-TIMETABLES",
+  },
   title: "Circle Theorems",
   subject: "maths",
   keyStage: "key-stage-4",

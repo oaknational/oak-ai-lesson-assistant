@@ -1,4 +1,5 @@
-import type { QuizPath } from "../../protocol/schema";
+import type { Quiz, QuizPath } from "../../protocol/schema";
+import { QuizSchema } from "../../protocol/schema";
 import { AilaQuiz } from "./AilaQuiz";
 import { SimpleFullQuizService } from "./BaseFullQuizService";
 import { selectHighestRated } from "./ChoiceModels";
@@ -15,12 +16,11 @@ describe("Tests SimpleFullQuizService", () => {
     const quizFactory = new FullQuizServiceFactory();
     const quizService = quizFactory.create("simple");
 
-    const quiz = await quizService.createBestQuiz(
+    const quiz: Quiz = await quizService.createBestQuiz(
       "/starterQuiz",
       CircleTheoremLesson,
     );
     console.log(JSON.stringify(quiz));
-    const ans = true;
-    expect(ans).toBe(true);
+    expect(QuizSchema.safeParse(quiz).success).toBe(true);
   });
 });
