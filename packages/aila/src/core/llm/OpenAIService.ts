@@ -11,9 +11,9 @@ import type { LLMService } from "./LLMService";
 const log = aiLogger("aila:llm");
 
 const STRUCTURED_OUTPUTS_ENABLED =
-  process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true" ? true : false;
+  process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true";
 export class OpenAIService implements LLMService {
-  private _openAIProvider: OpenAIProvider;
+  private readonly _openAIProvider: OpenAIProvider;
 
   public name = "OpenAIService";
 

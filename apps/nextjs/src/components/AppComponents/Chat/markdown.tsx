@@ -18,15 +18,17 @@ const MemoizedReactMarkdown: FC<Options> = memo(
     prevProps.className === nextProps.className,
 );
 
+export type ReactMarkdownWithStylesProps = Readonly<{
+  markdown: string;
+  lessonPlanSectionDescription?: string;
+  className?: string;
+}>;
+
 export const MemoizedReactMarkdownWithStyles = ({
   markdown,
   lessonPlanSectionDescription,
   className,
-}: {
-  markdown: string;
-  lessonPlanSectionDescription?: string;
-  className?: string;
-}) => {
+}: ReactMarkdownWithStylesProps) => {
   return (
     <MemoizedReactMarkdown
       className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
@@ -95,7 +97,7 @@ export const MemoizedReactMarkdownWithStyles = ({
             children[0] = (children[0] as string).replace("`▍`", "▍");
           }
 
-          const match = /language-(\w+)/.exec(className || "");
+          const match = /language-(\w+)/.exec(className ?? "");
 
           if (inline) {
             return (
@@ -108,7 +110,7 @@ export const MemoizedReactMarkdownWithStyles = ({
           return (
             <CodeBlock
               key={Math.random()}
-              language={(match && match[1]) || ""}
+              language={match?.[1] ?? ""}
               value={String(children).replace(/\n$/, "")}
               {...restProps}
             />

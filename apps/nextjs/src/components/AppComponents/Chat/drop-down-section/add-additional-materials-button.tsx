@@ -4,11 +4,11 @@ import ActionButtonWrapper from "./action-button-wrapper";
 import { additionalMaterialsModifyOptions } from "./action-button.types";
 import type { FeedbackOption } from "./drop-down-form-wrapper";
 
-export type AdditionalMaterialsProps = {
+export type AdditionalMaterialsProps = Readonly<{
   sectionTitle: string;
   sectionPath: string;
   sectionValue: Record<string, unknown> | string | Array<unknown>;
-};
+}>;
 
 const AddAdditionalMaterialsButton = ({
   sectionTitle,

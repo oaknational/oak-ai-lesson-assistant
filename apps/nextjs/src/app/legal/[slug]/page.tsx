@@ -3,11 +3,13 @@ import { notFound } from "next/navigation";
 
 import LegalContent from "./legal";
 
+export type PolicyContentPageProps = Readonly<{
+  params: { readonly slug: string };
+}>;
+
 export default async function PolicyContentPage({
   params,
-}: {
-  params: { slug: string };
-}) {
+}: PolicyContentPageProps) {
   const pageData = await fetchPolicyDocument({ slug: params.slug });
 
   if (!pageData) {
