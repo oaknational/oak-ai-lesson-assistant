@@ -13,9 +13,9 @@ import ModalFooterButtons from "./ModalFooterButtons";
 
 const ClearSingleChatFromChatHistory = ({
   closeDialog,
-}: {
+}: Readonly<{
   closeDialog: () => void;
-}) => {
+}>) => {
   const { dialogProps, setDialogProps, setOpenSidebar } = useDialog();
   const { mutate, isLoading } =
     trpc.chat.appSessions.deleteChatById.useMutation({

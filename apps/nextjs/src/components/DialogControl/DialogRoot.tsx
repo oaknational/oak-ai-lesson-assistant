@@ -5,7 +5,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 
 import { useDialog } from "../AppComponents/DialogContext";
 
-const DialogRoot = ({ children }: { children: React.ReactNode }) => {
+const DialogRoot = ({ children }: { readonly children: React.ReactNode }) => {
   const { isSignedIn } = useAuth();
   const { dialogWindow, setDialogWindow } = useDialog();
 

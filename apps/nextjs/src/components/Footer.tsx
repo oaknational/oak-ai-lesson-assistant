@@ -198,19 +198,21 @@ const StyledOakLink = styled(OakLink)`
   }
 `;
 
+export type FooterButtonProps = Readonly<{
+  href?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  target?: string;
+  children: React.ReactNode;
+}>;
+
 const FooterButton = ({
   href,
   onClick,
   disabled,
   target,
   children,
-}: {
-  href?: string;
-  onClick?: () => void;
-  disabled?: boolean;
-  target?: string;
-  children: React.ReactNode;
-}) => {
+}: FooterButtonProps) => {
   const element = href ? Link : "button";
   return (
     <StyledOakLink
