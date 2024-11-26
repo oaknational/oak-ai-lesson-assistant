@@ -1,22 +1,22 @@
 "use client";
 
 import * as React from "react";
+import { useState } from "react";
 
-import { motion } from "framer-motion";
+import { OakFlex, OakSpan } from "@oaknational/oak-components";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 import AiIcon from "@/components/AiIcon";
-import { buttonVariants } from "@/components/AppComponents/Chat/ui/button";
 import { IconUsers } from "@/components/AppComponents/Chat/ui/icons";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/AppComponents/Chat/ui/tooltip";
+import BinIcon from "@/components/BinIcon";
 import type { SideBarChatItem } from "@/lib/types";
-import { cn } from "@/lib/utils";
 
+import { useDialog } from "../DialogContext";
 import { constructChatPath } from "./Chat/utils";
 
 interface SidebarItemProps {
@@ -24,30 +24,28 @@ interface SidebarItemProps {
   children?: React.ReactNode;
 }
 
-export function SidebarItem({ chat, children }: SidebarItemProps) {
-  const pathname = usePathname();
-
-  const isActive = pathname.includes(chat.id);
-
+export function SidebarItem({ chat }: SidebarItemProps) {
+  const { setDialogWindow, setDialogProps, setOpenSidebar } = useDialog();
+  const [isHovered, setIsHovered] = useState(false);
+  function deleteChatById() {
+    setDialogProps({ chatIdToDelete: chat.id });
+    setOpenSidebar(false);
+    setDialogWindow("clear-single-chat");
+  }
   return (
-    <motion.div
-      className="relative h-18"
-      variants={{
-        initial: {
-          height: 0,
-          opacity: 0,
-        },
-        animate: {
-          height: "auto",
-          opacity: 1,
-        },
-      }}
-      transition={{
-        duration: 0.25,
-        ease: "easeIn",
-      }}
+    <OakFlex
+      $justifyContent="space-between"
+      $alignItems="center"
+      $background={isHovered ? `grey30` : `white`}
+      $transition="standard-ease"
+      $pa="inner-padding-ssx"
+      $borderRadius="border-radius-s"
     >
-      <div className="absolute left-7 top-5 mr-7 flex h-14 w-14 items-center justify-center">
+      <OakFlex
+        $justifyContent="flex-start"
+        $gap="all-spacing-2"
+        $alignItems="center"
+      >
         {chat.isShared ? (
           <Tooltip delayDuration={1000}>
             <TooltipTrigger
@@ -61,25 +59,22 @@ export function SidebarItem({ chat, children }: SidebarItemProps) {
         ) : (
           <AiIcon />
         )}
-      </div>
-      <Link
-        href={constructChatPath(chat)}
-        className={cn(
-          buttonVariants({ variant: "ghost" }),
-          "group w-full px-18 transition-colors hover:bg-zinc-200/40 dark:hover:bg-zinc-300/10",
-          isActive && "bg-zinc-200 pr-25 font-semibold dark:bg-zinc-800",
-        )}
-      >
-        <div
-          className="relative ml-7 flex-1 select-none overflow-hidden text-ellipsis break-all"
-          title={chat.title}
+
+        <Link
+          href={constructChatPath(chat)}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
-          <span className="whitespace-nowrap">
-            <span>{chat.title}</span>
-          </span>
-        </div>
-      </Link>
-      <div className="absolute right-7 top-5">{children}</div>
-    </motion.div>
+          <OakFlex $justifyContent="flex-start">
+            <div title={chat.title}>
+              <OakSpan $font="body-3">{chat.title}</OakSpan>
+            </div>
+          </OakFlex>
+        </Link>
+      </OakFlex>
+      <button onClick={() => deleteChatById()} tabIndex={0}>
+        <BinIcon />
+      </button>
+    </OakFlex>
   );
 }
