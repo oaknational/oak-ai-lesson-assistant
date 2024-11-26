@@ -18,11 +18,11 @@ interface Props {
   value: string;
 }
 
-interface languageMap {
+interface LanguageMap {
   [key: string]: string | undefined;
 }
 
-const programmingLanguages: languageMap = {
+const programmingLanguages: LanguageMap = {
   javascript: ".js",
   python: ".py",
   java: ".java",
@@ -65,7 +65,7 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
     if (typeof window === "undefined") {
       return;
     }
-    const fileExtension = programmingLanguages[language] || ".file";
+    const fileExtension = programmingLanguages[language] ?? ".file";
     const suggestedFileName = `file-${generateRandomString(
       3,
       true,
