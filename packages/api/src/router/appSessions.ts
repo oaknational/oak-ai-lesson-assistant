@@ -286,6 +286,7 @@ export const appSessionsRouter = router({
           id,
           userId,
           appId: "lesson-planner",
+          deletedAt: null,
         },
       });
 
