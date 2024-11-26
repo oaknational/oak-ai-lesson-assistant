@@ -18,9 +18,9 @@ import HeroContainer from "@/components/HeroContainer";
 import Layout from "@/components/Layout";
 import { slugify } from "@/utils/slugify";
 
-type PromptsPageData = {
+export type PromptsPageData = Readonly<{
   apps: SerializedAppWithPrompt[];
-};
+}>;
 
 export const PromptsContent = ({ apps }: PromptsPageData) => {
   const pathname = usePathname();

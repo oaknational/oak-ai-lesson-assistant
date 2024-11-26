@@ -8,6 +8,15 @@ import type { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
 
 import { Icon } from "@/components/Icon";
 
+export type SuggestedLessonCardProps = Readonly<{
+  answer: PotentialQuestionsType[0];
+  dispatch: Dispatch<QuizAppAction>;
+  questionsWrapperRef: React.RefObject<HTMLDivElement>;
+  potentialNewQuestions: PotentialQuestionsType;
+  setPotentialNewQuestions: React.Dispatch<PotentialQuestionsType>;
+  questionRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
+}>;
+
 const SuggestedLessonCard = ({
   answer: question,
   dispatch,
@@ -15,14 +24,7 @@ const SuggestedLessonCard = ({
   potentialNewQuestions,
   setPotentialNewQuestions,
   questionRefs,
-}: {
-  answer: PotentialQuestionsType[0];
-  dispatch: Dispatch<QuizAppAction>;
-  questionsWrapperRef: React.RefObject<HTMLDivElement>;
-  potentialNewQuestions: PotentialQuestionsType;
-  setPotentialNewQuestions: React.Dispatch<PotentialQuestionsType>;
-  questionRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
-}) => {
+}: SuggestedLessonCardProps) => {
   const [showAnswers, setShowAnswers] = useState(false);
   return (
     <Flex

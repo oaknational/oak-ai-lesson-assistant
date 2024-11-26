@@ -11,11 +11,11 @@ import { Icon } from "@/components/Icon";
 import ChatButton from "../Chat/ui/chat-button";
 import { Textarea } from "../Chat/ui/textarea";
 
-export type ModerationFeedbackFormProps = {
+export type ModerationFeedbackFormProps = Readonly<{
   chatId: string;
   moderation: PersistedModerationBase;
   closeModal: () => void;
-};
+}>;
 
 export const ModerationFeedbackForm = ({
   chatId,

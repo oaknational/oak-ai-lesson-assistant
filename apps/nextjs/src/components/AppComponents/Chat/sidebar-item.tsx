@@ -19,10 +19,10 @@ import { cn } from "@/lib/utils";
 
 import { constructChatPath } from "./Chat/utils";
 
-interface SidebarItemProps {
+export type SidebarItemProps = Readonly<{
   chat: SideBarChatItem;
   children?: React.ReactNode;
-}
+}>;
 
 export function SidebarItem({ chat, children }: SidebarItemProps) {
   const pathname = usePathname();

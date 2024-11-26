@@ -15,7 +15,7 @@ import type {
 import { ActionDropDown } from "./action-drop-down";
 import type { FeedbackOption } from "./drop-down-form-wrapper";
 
-type ActionButtonWrapperProps = {
+export type ActionButtonWrapperProps = Readonly<{
   sectionTitle: string;
   sectionPath: string;
   sectionValue: Record<string, unknown> | string | Array<unknown>;
@@ -28,7 +28,7 @@ type ActionButtonWrapperProps = {
     option: FeedbackOption<AilaUserModificationAction>,
     userFeedbackText: string,
   ) => string;
-};
+}>;
 
 const ActionButtonWrapper = ({
   sectionTitle,
