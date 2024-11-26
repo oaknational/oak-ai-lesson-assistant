@@ -8,9 +8,9 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 
 export function OpenSideBarButton({
   setOpenSidebar,
-}: {
+}: Readonly<{
   setOpenSidebar: (value: boolean) => void;
-}) {
+}>) {
   const { trackEvent } = useAnalytics();
 
   return (

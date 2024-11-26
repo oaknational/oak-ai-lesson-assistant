@@ -12,7 +12,9 @@ import { trpc } from "@/utils/trpc";
 
 import ModalFooterButtons from "./ModalFooterButtons";
 
-const ClearChatHistory = ({ closeDialog }: { closeDialog: () => void }) => {
+const ClearChatHistory = ({
+  closeDialog,
+}: Readonly<{ closeDialog: () => void }>) => {
   const router = useRouter();
 
   const { setOpenSidebar } = useDialog();
