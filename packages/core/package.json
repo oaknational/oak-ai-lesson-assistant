@@ -6,6 +6,9 @@
   "license": "ISC",
   "author": "",
   "main": "./index.ts",
+  "eslintConfig": {
+    "extends": "eslint-config-custom"
+  },
   "scripts": {
     "admin": "open http://localhost:8288",
     "check": "tsc --noEmit",
@@ -64,5 +67,6 @@
   "devDependencies": {
     "@oakai/prettier-config": "*",
     "inngest-cli": "^0.29.0"
-  }
+  },
+  "type": "module"
 }

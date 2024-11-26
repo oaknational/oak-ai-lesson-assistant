@@ -19,5 +19,6 @@
   "devDependencies": {
     "pino-pretty": "^10.2.0",
     "prettier-config": "*"
-  }
+  },
+  "type": "module"
 }

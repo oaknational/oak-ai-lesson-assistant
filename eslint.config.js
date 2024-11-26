@@ -1,10 +1,11 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
+
 const compat = new FlatCompat({
     baseDirectory: __dirname,
     recommendedConfig: js.configs.recommended,
@@ -13,11 +14,11 @@ const compat = new FlatCompat({
 
 export default [...compat.extends("eslint-config-custom"), {
     languageOptions: {
-        ecmaVersion: 5,
-        sourceType: "script",
+        ecmaVersion: 2018,
+        sourceType: "module",
 
         parserOptions: {
-            tsconfigRootDir: "/Users/stef/apps/oak-ai-lesson-assistant",
+            tsconfigRootDir: __dirname,
             project: ["./tsconfig.json", "./apps/*/tsconfig.json", "./packages/*/tsconfig.json"],
         },
     },

@@ -33,6 +33,11 @@ module.exports = {
         "@typescript-eslint/comma-dangle": "off",
         "@typescript-eslint/no-duplicate-enum-values": "off",
         "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/no-unused-expressions": ['warn', {
+          allowShortCircuit: true,
+          allowTernary: true,
+          allowTaggedTemplates: true,
+        }],
         "@typescript-eslint/require-await": "warn",
         "@typescript-eslint/no-unsafe-return": "warn",
         "@typescript-eslint/no-misused-promises": "warn",

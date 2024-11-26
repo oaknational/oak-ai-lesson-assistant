@@ -1,36 +1,55 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
+import js from "@eslint/js";
+import path from "node:path";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
+
 const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all,
 });
 
-export default [
-    ...compat.extends("../../.eslintrc.cjs", "next", "plugin:storybook/recommended"),
-    {
-        languageOptions: {
-            ecmaVersion: 5,
-            sourceType: "script",
+const config = [
+  compat.extends("../../.eslintrc.cjs", "next", "plugin:storybook/recommended"),
+  {
+    languageOptions: {
+      ecmaVersion: 5,
+      sourceType: "module",
 
-            parserOptions: {
-                project: "/Users/stef/apps/oak-ai-lesson-assistant/apps/nextjs/tsconfig.json",
-            },
-        },
-
-        rules: {
-            "no-restricted-imports": ["error", {
-                paths: [{
-                    name: "posthog-js/react",
-                    importNames: ["usePostHog"],
-                    message: "usePostHog doesn't support multiple PostHog instances, use useAnalytics instead",
-                }],
-            }],
-        },
+      parserOptions: {
+        project: path.join(__dirname, "tsconfig.json"),
+      },
     },
+
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "posthog-js/react",
+              importNames: ["usePostHog"],
+              message:
+                "usePostHog doesn't support multiple PostHog instances, use useAnalytics instead",
+            },
+          ],
+        },
+      ],
+    },
+    overrides: [
+      {
+        files: ["next.config.js"],
+        rules: {
+          "import/no-extraneous-dependencies": "off",
+          "global-require": "off",
+        },
+      },
+    ],
+  },
 ];
+
+export default config;

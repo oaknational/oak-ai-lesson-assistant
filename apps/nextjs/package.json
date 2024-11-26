@@ -2,6 +2,10 @@
   "name": "@oakai/nextjs",
   "version": "0.1.0",
   "private": true,
+  "eslintConfig": {
+    "extends": "eslint-config-custom"
+  },
+  "type": "module",
   "scripts": {
     "build": "next build",
     "build:dev": "pnpm with-env next build",
@@ -10,7 +14,7 @@
     "dev": "FORCE_COLOR=1 SENTRY_SUPPRESS_TURBOPACK_WARNING=1 pnpm with-env node scripts/increase-listeners.js next dev --port 2525 --turbo | pino-pretty -C",
     "dev:sentry": "FORCE_COLOR=1 pnpm with-env node scripts/increase-listeners.js next dev --port 2525 | pino-pretty -C",
     "dev-trace-deprecation": "NODE_OPTIONS=\"--trace-deprecation\" next dev --port 2525 | pino-pretty -C",
-    "lint": "next lint",
+    "lint": "eslint --config eslint.config.mjs .",
     "lint-fix": "next lint --fix",
     "start": "next start",
     "type-check": "tsc --noEmit",
@@ -148,7 +152,7 @@
     "avo": "^3.2.11",
     "concurrently": "^8.2.2",
     "dotenv-cli": "^6.0.0",
-    "eslint": "^8.56.0",
+    "eslint": "^9.15.0",
     "eslint-config-next": "15.0.1",
     "eslint-plugin-storybook": "^0.8.0",
     "graphql": "^16.9.0",
@@ -156,7 +160,7 @@
     "postcss": "^8.4.32",
     "tailwindcss": "^3.3.7",
     "ts-jest": "^29.1.4",
-    "typescript": "5.6.3",
+    "typescript": "5.7.2",
     "web-streams-polyfill": "^4.0.0"
   },
   "engines": {

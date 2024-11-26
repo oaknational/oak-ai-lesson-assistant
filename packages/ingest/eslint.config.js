@@ -1,5 +1,6 @@
 import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
+import path from "node:path";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -13,10 +14,15 @@ const compat = new FlatCompat({
 });
 
 export default [
-  ...compat.extends("../../.eslintrc.cjs"),
+  ...compat.extends("eslint-config-custom"),
   {
-    rules: {
-      "no-console": "off",
+    languageOptions: {
+      ecmaVersion: 2018,
+      sourceType: "module",
+
+      parserOptions: {
+        project: path.join(__dirname, "tsconfig.json"),
+      },
     },
   },
 ];

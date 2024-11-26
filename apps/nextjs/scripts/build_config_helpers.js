@@ -8,7 +8,7 @@ const { existsSync, readFileSync } = require("fs");
  */
 function getLocalGitRef() {
   if (existsSync("../../.git")) {
-    const rev = readFileSync("../../.git/HEAD")
+    const rev = readFileSync("../../../.git/HEAD")
       .toString()
       .trim()
       .split(/.*[: ]/)
