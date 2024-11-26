@@ -38,12 +38,8 @@ import { OpenAIService } from "../llm/OpenAIService";
 import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
 import { AilaQuiz } from "../quiz/AilaQuiz";
-import { cachedStarterQuiz, cachedExitQuiz } from "../quiz/CachedQuiz";
-import {
-  massiveStarterQuiz,
-  cachedQuizIds,
-  massiveExitQuiz,
-} from "../quiz/DemoQuiz";
+import { FullQuizServiceFactory } from "../quiz/FullQuizServiceFactory";
+import type { FullQuizService } from "../quiz/interfaces";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 import type { Message } from "./types";
@@ -66,6 +62,7 @@ export class AilaChat implements AilaChatService {
   private _createdAt: Date | undefined;
   private _persistedChat: AilaPersistedChat | undefined;
   private _experimentalPatches: ExperimentalPatchDocument[];
+  public readonly fullQuizService: FullQuizService;
 
   constructor({
     id,
@@ -96,6 +93,8 @@ export class AilaChat implements AilaChatService {
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
     this._relevantLessons = [];
     this._experimentalPatches = [];
+    // TODO: GCLOMAX - this is a hack to get the demo quiz service working. Add quiz options somewhere.
+    this.fullQuizService = new FullQuizServiceFactory().create("demo");
   }
   // TODO: GCLOMAX This should be put in a new class called AilaQuizService, in the ailaservices class.
   private quizService = new AilaQuiz();
@@ -397,86 +396,9 @@ export class AilaChat implements AilaChatService {
   }
 
   public async complete() {
-    if (
-      this.quizService.containsMath(this._aila.lesson.plan.subject) &&
-      this._aila.lesson.plan.priorKnowledge
-    ) {
-      // console.log(this._aila.lesson.plan);
-      console.log("MATHS LESSON");
-      // const starterPatch = await this.quizService.generateMathsStarterQuizPatch(
-      // const starterPatch =
-      //   await this.quizService.generateGatherMathsStarterQuizPatch(
-      //     this._aila.lesson.plan,
-      //   );
-
-      // TODO - fix this to work for multiple lessons.
-      const starterPatch =
-        await this.quizService.generateMathsQuizFromRagPlanId(
-          // "solving-equations-with-surds",
-          this._aila.lessonPlan.basedOn?.id,
-          // "aLaUYjYaq6HGN_ttldQUl",
-        );
-
-      // const customids = cachedQuizIds;
-      // const starterPatch = await this.quizService.patchFromCustomIDs(customids);
-
-      const exitPatch = await this.quizService.generateMathsExitQuizPatch(
-        this._aila.lesson.plan,
-      );
-
-      // const starterPatch = massiveStarterQuiz;
-      // const exitPatch = massiveExitQuiz;
-
-      // const starterPatch = cachedStarterQuiz;
-      // const exitPatch = cachedExitQuiz;
-
-      // We can instanciate rag here.
-
-      //
-      console.log("LESSON IS BASED ON:");
-      console.log(this._aila.lessonPlan.basedOn?.id);
-
-      // const lessonID = await this.quizService.getLessonIdFromPlanId(
-      //   "aLaUYjYaq6HGN_ttldQUl",
-      // );
-      // console.log("RETURNED LESSON ID HASH", lessonID);
-
-      // const lessonSlug = await this.quizService.getLessonSlugFromPlanId(
-      //   "aLaUYjYaq6HGN_ttldQUl",
-      // );
-      // console.log("RETURNED LESSON SLUG", lessonSlug);
-
-      // this._aila.lessonPlan.basedOn?.id;
-
-      // const rag = new RAG(prisma, {
-      //   chatId: this._aila.chatId,
-      //   userId: this._aila.userId,
-      // });
-      // // TODO: sort out the typing.
-      // const ragLessonPlans = await rag.fetchLessonPlans({
-      //   chatId: this._aila.chatId,
-      //   keyStage: this._aila.lesson.plan.keyStage,
-      //   subject: this._aila.lesson.plan.subject,
-      //   title: this._aila.lesson.plan.title,
-      //   topic: this._aila.lesson.plan.topic,
-      //   k: 5,
-      // });
-      // console.log("YEEET", ragLessonPlans);
-
-      await this.enqueue(starterPatch);
-      await this.enqueue(exitPatch);
-
-      // double check if this needs to be _aila.lesson.plan - public one that is exposed from aila chat
-      // REMOVED FOR DEBUG
-      this._aila.lesson.applyPatches(JSON.stringify(starterPatch));
-      this._aila.lesson.applyPatches(JSON.stringify(exitPatch));
-      console.log("BINGBONGBANGSTARTER", JSON.stringify(starterPatch));
-      console.log("BINGBONGBANGEXIT", JSON.stringify(exitPatch));
-    } else {
-      console.log("NOT MATHS LESSON");
-    }
     await this.reportUsageMetrics();
     await fetchExperimentalPatches({
+      fullQuizService: this.fullQuizService,
       lessonPlan: this._aila.lesson.plan,
       parsedMessages: this.parsedMessages,
       handlePatch: async (patch) => {

@@ -1,3 +1,4 @@
+import type { FullQuizService } from "../../core/quiz/interfaces";
 import type {
   ExperimentalPatchDocument,
   MessagePart,
@@ -24,15 +25,17 @@ export async function fetchExperimentalPatches({
   lessonPlan,
   parsedMessages,
   handlePatch,
+  fullQuizService,
 }: {
   lessonPlan: LooseLessonPlan;
   parsedMessages: MessagePart[][];
   handlePatch: (patch: ExperimentalPatchDocument) => Promise<void>;
+  fullQuizService: FullQuizService;
 }) {
-  if (lessonPlan.subject === "maths") {
-    // Only maths has experimental patches for now
-    return;
-  }
+  // if (lessonPlan.subject !== "maths") {
+  //   // Only maths has experimental patches for now
+  //   return;
+  // }
 
   const patches = parsedMessages
     .map((m) => m.map((p) => p.document))
@@ -51,7 +54,13 @@ export async function fetchExperimentalPatches({
         }),
       );
     } else {
-      const mathsStarterQuiz: Quiz | null = null;
+      // TODO: GCLOMAX - PUT PATCH HERE.
+      // TODO: MG - Review this please.
+      // Can we put this in here.
+      const mathsStarterQuiz: Quiz = await fullQuizService.createBestQuiz(
+        "/starterQuiz",
+        lessonPlan,
+      );
       if (mathsStarterQuiz) {
         await handlePatch(
           preparePatch({
@@ -76,7 +85,10 @@ export async function fetchExperimentalPatches({
         }),
       );
     } else {
-      const mathsExitQuiz: Quiz | null = null;
+      const mathsExitQuiz: Quiz = await fullQuizService.createBestQuiz(
+        "/exitQuiz",
+        lessonPlan,
+      );
       if (mathsExitQuiz) {
         await handlePatch(
           preparePatch({
