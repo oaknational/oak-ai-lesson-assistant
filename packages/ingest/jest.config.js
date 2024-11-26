@@ -24,7 +24,7 @@ const config = {
   rootDir: ".",
   resetMocks: true,
   collectCoverage:
-    process.env.CI === "true" ?? process.env.COLLECT_TEST_COVERAGE === "true",
+    process.env.CI === "true" || process.env.COLLECT_TEST_COVERAGE === "true",
   coverageReporters: ["lcov", "text"],
   coverageDirectory: "coverage",
 };
