@@ -40,7 +40,15 @@ export const LessonPlanDisplay = ({
   showLessonMobile: boolean;
 }) => {
   const chat = useLessonChat();
-  const { lessonPlan, ailaStreamingStatus, lastModeration } = chat;
+  const { ailaStreamingStatus, lastModeration } = chat;
+  const lessonPlan = {
+    ...chat.lessonPlan,
+    starterQuiz:
+      chat.lessonPlan._experimental_starterQuizMathsV0 ||
+      chat.lessonPlan.starterQuiz,
+    exitQuiz:
+      chat.lessonPlan._experimental_exitQuizMathsV0 || chat.lessonPlan.exitQuiz,
+  };
 
   const [userHasCancelledAutoScroll, setUserHasCancelledAutoScroll] =
     useState(false);
