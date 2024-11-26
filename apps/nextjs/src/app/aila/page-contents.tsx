@@ -7,7 +7,7 @@ import Layout from "@/components/AppComponents/Layout";
 import { ChatProvider } from "@/components/ContextProviders/ChatProvider";
 import LessonPlanTrackingProvider from "@/lib/analytics/lessonPlanTrackingContext";
 
-const ChatPageContents = ({ id }: { id: string }) => {
+const ChatPageContents = ({ id }: { readonly id: string }) => {
   return (
     <Layout>
       <LessonPlanTrackingProvider chatId={id}>

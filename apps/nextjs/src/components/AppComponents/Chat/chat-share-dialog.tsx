@@ -25,8 +25,8 @@ import { constructSharePath } from "./Chat/utils";
 const log = aiLogger("chat");
 
 interface ChatShareDialogProps extends DialogProps {
-  chat: SideBarChatItem;
-  onCopy: () => void;
+  readonly chat: SideBarChatItem;
+  readonly onCopy: () => void;
 }
 
 export function ChatShareDialog({

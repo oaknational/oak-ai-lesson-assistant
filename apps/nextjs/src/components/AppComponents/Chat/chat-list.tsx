@@ -111,6 +111,15 @@ export function ChatList({
   );
 }
 
+export type ChatMessagesDisplayProps = Readonly<{
+  id: string;
+  messages: Message[];
+  lastModeration: PersistedModerationBase | null;
+  persistedModerations: PersistedModerationBase[];
+  ailaStreamingStatus: AilaStreamingStatus;
+  demo: DemoContextProps;
+}>;
+
 export const ChatMessagesDisplay = ({
   messages,
   id,
@@ -118,14 +127,7 @@ export const ChatMessagesDisplay = ({
   persistedModerations = [],
   ailaStreamingStatus,
   demo,
-}: {
-  id: string;
-  messages: Message[];
-  lastModeration: PersistedModerationBase | null;
-  persistedModerations: PersistedModerationBase[];
-  ailaStreamingStatus: AilaStreamingStatus;
-  demo: DemoContextProps;
-}) => {
+}: ChatMessagesDisplayProps) => {
   const { lessonPlan, isStreaming } = useLessonChat();
   const { setDialogWindow } = useDialog();
   const { totalSections, totalSectionsComplete } = useProgressForDownloads({
@@ -236,9 +238,9 @@ const InChatDownloadButtons = ({
   id,
   setDialogWindow,
 }: {
-  demo: DemoContextProps;
-  id: string;
-  setDialogWindow: Dispatch<SetStateAction<DialogTypes>>;
+  readonly demo: DemoContextProps;
+  readonly id: string;
+  readonly setDialogWindow: Dispatch<SetStateAction<DialogTypes>>;
 }) => {
   return (
     <OakFlex $flexDirection="column" $gap="all-spacing-7" $mv="space-between-l">
@@ -274,9 +276,9 @@ const InnerInChatButton = ({
 
   children,
 }: {
-  iconName: "download" | "share";
+  readonly iconName: "download" | "share";
 
-  children: string;
+  readonly children: string;
 }) => {
   return (
     <OakFlex
