@@ -105,12 +105,26 @@ export interface Options {
   numberOfLessonPlansInRag: number;
 }
 
+interface ImageResponse {
+  id: string;
+  url: string;
+  title?: string;
+  alt?: string;
+  license: string;
+  photographer?: string;
+}
+
 const ImagesPage = ({ pageData }: { pageData: PageData }) => {
   const [currentBatchData, setCurrentBatchData] =
     useState<ImagesFromCloudinary | null>(null);
+
+  const [imageSearchBatch, setImageSearchBatch] = useState<
+    ImageResponse[] | null
+  >(null);
+
+  const [selectedImageSource, setSelectedImageSource] = useState("");
+
   const [selectedImagePrompt, setSelectedImagePrompt] = useState("");
-  const { data, error, isLoading, mutateAsync } =
-    trpc.cloudinaryRouter.getCloudinaryImagesBySearchExpression.useMutation();
 
   const slideTexts = {
     cycle1: pageData.lessonPlan.cycle1.explanation.imagePrompt,
@@ -118,10 +132,13 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
     cycle3: pageData.lessonPlan.cycle3.explanation.imagePrompt,
   };
 
-  const getTheData = useCallback(
+  const { isLoading, mutateAsync: cloudinaryMutateAsync } =
+    trpc.cloudinaryRouter.getCloudinaryImagesBySearchExpression.useMutation();
+
+  const getTheDataFromCloudinary = useCallback(
     async (prompt: string) => {
       try {
-        const response = await mutateAsync({
+        const response = await cloudinaryMutateAsync({
           searchExpression: prompt,
         });
         setCurrentBatchData(response as ImagesFromCloudinary);
@@ -129,7 +146,79 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
         console.error("Error fetching data:", err);
       }
     },
-    [mutateAsync],
+    [cloudinaryMutateAsync],
+  );
+
+  const { isLoading: isFlickrLoading, mutateAsync: flickrMutateAsync } =
+    trpc.imageSearch.getImagesFromFlickr.useMutation();
+
+  const getTheDataFromFlickr = useCallback(
+    async (prompt: string) => {
+      try {
+        const response = await flickrMutateAsync({
+          searchExpression: prompt,
+        });
+
+        setImageSearchBatch(response as ImageResponse[]);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+    },
+    [flickrMutateAsync],
+  );
+
+  const { isLoading: isUnsplashLoading, mutateAsync: unsplashMutateAsync } =
+    trpc.imageSearch.getImagesFromUnsplash.useMutation();
+
+  const getTheDataFromUnsplash = useCallback(
+    async (prompt: string) => {
+      try {
+        const response = await unsplashMutateAsync({
+          searchExpression: prompt,
+        });
+
+        setImageSearchBatch(response as ImageResponse[]);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+    },
+    [unsplashMutateAsync],
+  );
+
+  // const { isLoading: isLoadingWikiMedia, mutateAsync: wikiMediaMutateAsync } =
+  //   trpc.imageSearch.getImagesFromWikimedia.useMutation();
+
+  // const getTheDataFromWikimedia = useCallback(
+  //   async (prompt: string) => {
+  //     try {
+  //       const response = await wikiMediaMutateAsync({
+  //         searchExpression: prompt,
+  //       });
+
+  //       setImageSearchBatch(response as ImageResponse[]);
+  //     } catch (err) {
+  //       console.error("Error fetching data:", err);
+  //     }
+  //   },
+  //   [wikiMediaMutateAsync],
+  // );
+
+  const { isLoading: isLoadingGoolge, mutateAsync: googleMutateAsync } =
+    trpc.imageSearch.getImagesFromGoogle.useMutation();
+
+  const getTheDataFromGoogle = useCallback(
+    async (prompt: string) => {
+      try {
+        const response = await googleMutateAsync({
+          searchExpression: prompt,
+        });
+
+        setImageSearchBatch(response as ImageResponse[]);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+    },
+    [googleMutateAsync],
   );
 
   return (
@@ -146,7 +235,8 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
                 className={`w-1/3 rounded-lg border-2 border-black p-11 ${selectedImagePrompt === prompt ? "bg-black text-white" : ""}`}
                 onClick={() => {
                   setSelectedImagePrompt(prompt);
-                  getTheData(prompt);
+                  setCurrentBatchData(null);
+                  setImageSearchBatch(null);
                 }}
               >
                 <h2 className="text-sm opacity-70">{`${cycle.replace("cycle", "Cycle ")} image prompt`}</h2>
@@ -156,23 +246,93 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
         )}
       </div>
 
-      <p className="mt-16 border-t border-black border-opacity-25 pt-16 text-center">
-        {selectedImagePrompt || "Select an image prompt to view it here"}
+      <p className="mt-16 border-b border-t border-black border-opacity-25 py-16 text-center">
+        {selectedImagePrompt
+          ? "Prompt: " + selectedImagePrompt
+          : "Select an image prompt to view it here"}
       </p>
       {isLoading && <LoadingWheel />}
-      <div className="my-20 grid grid-cols-3 gap-15">
-        {currentBatchData?.resources.map((image) => {
-          const parsedImage = z
-            .object({ url: z.string() })
-            .passthrough()
-            .parse(image);
-          return (
-            <div className="w-full" key={parsedImage.url}>
-              <img src={parsedImage.url} />
-            </div>
-          );
-        })}
+
+      <div className="mt-22 flex w-full justify-center gap-10">
+        <div>
+          {isFlickrLoading && <LoadingWheel />}
+          <button
+            className={`${selectedImageSource === "Flickr" ? "bg-black text-white" : ""}`}
+            onClick={() => {
+              getTheDataFromFlickr(selectedImagePrompt);
+              setSelectedImageSource("Flickr");
+            }}
+          >
+            Flickr
+          </button>
+        </div>
+        <div>
+          {isUnsplashLoading && <LoadingWheel />}
+          <button
+            className={`${selectedImageSource === "Unsplash" ? "bg-black text-white" : ""}`}
+            onClick={() => {
+              getTheDataFromUnsplash(selectedImagePrompt);
+              setSelectedImageSource("Unsplash");
+            }}
+          >
+            Unsplash
+          </button>
+        </div>
+        <div>
+          <button
+            className={`${selectedImageSource === "Cloudinary" ? "bg-black text-white" : ""}`}
+            onClick={() => {
+              getTheDataFromCloudinary(selectedImagePrompt);
+              setSelectedImageSource("Cloudinary");
+            }}
+          >
+            Cloudinary
+          </button>
+        </div>
+        <div>
+          <button
+            className={`${selectedImageSource === "Google" ? "bg-black text-white" : ""}`}
+            onClick={() => {
+              getTheDataFromGoogle(selectedImagePrompt);
+              setSelectedImageSource("Google");
+            }}
+          >
+            Google
+          </button>
+        </div>
       </div>
+
+      {selectedImageSource !== "Cloudinary" ? (
+        <div className="my-20 grid grid-cols-3 gap-15">
+          {imageSearchBatch ? (
+            imageSearchBatch?.map((image) => (
+              <div key={image.id}>
+                <img src={image.url} />
+              </div>
+            ))
+          ) : (
+            <p className="text-center">Choose a source</p>
+          )}
+        </div>
+      ) : (
+        <div className="my-20 grid grid-cols-3 gap-15">
+          {currentBatchData ? (
+            currentBatchData?.resources.map((image) => {
+              const parsedImage = z
+                .object({ url: z.string() })
+                .passthrough()
+                .parse(image);
+              return (
+                <div className="w-full" key={parsedImage.url}>
+                  <img src={parsedImage.url} />
+                </div>
+              );
+            })
+          ) : (
+            <p className="text-center">Choose a source</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };
