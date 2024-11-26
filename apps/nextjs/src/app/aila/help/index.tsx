@@ -150,7 +150,9 @@ export const HelpContent = () => {
                 include the following sections:
               </OakP>
               <OakUL className="mb-6 list-disc pl-12">
+                <OakLI>Lesson details</OakLI>
                 <OakLI>Learning outcome</OakLI>
+                <OakLI>Learning cycle outcomes</OakLI>
                 <OakLI>Prior knowledge</OakLI>
                 <OakLI>Key learning points</OakLI>
                 <OakLI>Misconceptions</OakLI>
