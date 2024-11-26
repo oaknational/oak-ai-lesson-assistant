@@ -230,7 +230,7 @@ const FooterButton = ({
         $textDecoration="none"
       >
         <span>{children}</span>
-        {href && href.includes("http") && (
+        {href?.includes("http") && (
           <ScaleSpan $scale={0.8}>
             <OakIcon iconName="external" />
           </ScaleSpan>
