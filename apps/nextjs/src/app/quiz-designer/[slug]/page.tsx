@@ -19,11 +19,13 @@ async function getData(slug: string) {
   return parsedData;
 }
 
+export type GenerationsPageProps = Readonly<{
+  params: { readonly slug: string };
+}>;
+
 export default async function GenerationsPage({
   params,
-}: {
-  params: { slug: string };
-}) {
+}: GenerationsPageProps) {
   const data = await getData(params.slug);
   return <QuizDesignerPage data={data} />;
 }

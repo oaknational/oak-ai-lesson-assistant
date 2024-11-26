@@ -1,4 +1,4 @@
-import { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
 
 export const organiseSections: {
   trigger: LessonPlanKeys;

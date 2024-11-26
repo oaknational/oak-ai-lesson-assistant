@@ -22,7 +22,7 @@ type ButtonClassNameType = (options: {
   disabled?: boolean;
 }) => string;
 
-type ButtonCoreProps = {
+export type ButtonCoreProps = Readonly<{
   children?: React.ReactNode;
   onClick?: () => void;
   href?: string;
@@ -42,7 +42,7 @@ type ButtonCoreProps = {
   download?: boolean;
   title?: string;
   testId?: string;
-};
+}>;
 
 export type ButtonVariant = "primary" | "secondary" | "text-link" | "icon-only";
 

@@ -2,6 +2,7 @@
 module.exports = {
   extends: ["../../.eslintrc.cjs", "next", "plugin:storybook/recommended"],
   rules: {
+    "react/prefer-read-only-props": "error",
     "no-restricted-imports": [
       "error",
       {

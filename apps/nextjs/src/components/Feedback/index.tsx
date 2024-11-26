@@ -7,17 +7,18 @@ import type { Survey } from "posthog-js";
 import ChatButton from "../AppComponents/Chat/ui/chat-button";
 import { Icon } from "../Icon";
 
+export type FeedBackProps = Readonly<{
+  submitSurvey: (usersResponse: { [key: string]: string }) => void;
+  survey: Survey;
+  onSubmit: () => void;
+  closeDialogWithPostHogDismiss: () => void;
+}>;
 const FeedBack = ({
   submitSurvey,
   survey,
   onSubmit,
   closeDialogWithPostHogDismiss,
-}: {
-  survey: Survey;
-  submitSurvey: (usersResponse: { [key: string]: string }) => void;
-  closeDialogWithPostHogDismiss: () => void;
-  onSubmit: () => void;
-}) => {
+}: FeedBackProps) => {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const rating = [
     { number: 1 },
