@@ -50,11 +50,11 @@ const dialogTitlesAndIcons: Record<
     iconName: "warning",
   },
   "clear-history": {
-    title: "Clear chat history",
+    title: "Are you absolutely sure?",
     iconName: null,
   },
   "clear-single-chat": {
-    title: "Clear chat",
+    title: "Are you absolutely sure?",
     iconName: null,
   },
 };
