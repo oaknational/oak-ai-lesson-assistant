@@ -7,8 +7,7 @@ import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
-import type { AilaChatService } from "../../core/AilaServices";
-import type { AilaServices } from "../../core/AilaServices";
+import type { AilaChatService, AilaServices } from "../../core/AilaServices";
 import { AilaGeneration } from "../../features/generation/AilaGeneration";
 import type { AilaGenerationStatus } from "../../features/generation/types";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
@@ -51,7 +50,7 @@ export class AilaChat implements AilaChatService {
   private _iteration: number | undefined;
   private _createdAt: Date | undefined;
   private _persistedChat: AilaPersistedChat | undefined;
-  private _experimentalPatches: ExperimentalPatchDocument[];
+  private readonly _experimentalPatches: ExperimentalPatchDocument[];
 
   constructor({
     id,

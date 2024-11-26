@@ -97,7 +97,7 @@ export const MemoizedReactMarkdownWithStyles = ({
             children[0] = (children[0] as string).replace("`▍`", "▍");
           }
 
-          const match = /language-(\w+)/.exec(className || "");
+          const match = /language-(\w+)/.exec(className ?? "");
 
           if (inline) {
             return (
@@ -110,7 +110,7 @@ export const MemoizedReactMarkdownWithStyles = ({
           return (
             <CodeBlock
               key={Math.random()}
-              language={(match && match[1]) || ""}
+              language={match?.[1] ?? ""}
               value={String(children).replace(/\n$/, "")}
               {...restProps}
             />

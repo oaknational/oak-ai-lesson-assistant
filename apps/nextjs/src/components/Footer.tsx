@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
-import type { OakIconName } from "@oaknational/oak-components";
 import {
   OakBox,
   OakFlex,
@@ -230,7 +229,7 @@ const FooterButton = ({
         $textDecoration="none"
       >
         <span>{children}</span>
-        {href && href.includes("http") && (
+        {href?.includes("http") && (
           <ScaleSpan $scale={0.8}>
             <OakIcon iconName="external" />
           </ScaleSpan>
