@@ -6,7 +6,7 @@ import { AnalyticsAdapter } from "./AnalyticsAdapter";
 const log = aiLogger("aila:analytics");
 
 export class DatadogAnalyticsAdapter extends AnalyticsAdapter {
-  private _startedAt: number = Date.now();
+  private readonly _startedAt: number = Date.now();
 
   public initialiseAnalyticsContext() {
     // Implement any necessary initialisation logic for Datadog
