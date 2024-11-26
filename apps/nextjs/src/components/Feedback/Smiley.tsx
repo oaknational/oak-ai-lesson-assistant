@@ -1,10 +1,8 @@
-const Smiley = ({
-  selected,
-  number,
-}: {
-  selected: boolean;
-  number: number;
-}) => {
+export type SmileyProps = Readonly<{
+  readonly selected: boolean;
+  readonly number: number;
+}>;
+const Smiley = ({ selected, number }: SmileyProps) => {
   const color = selected ? "#287C34" : "#222222";
 
   if (number === 5) {

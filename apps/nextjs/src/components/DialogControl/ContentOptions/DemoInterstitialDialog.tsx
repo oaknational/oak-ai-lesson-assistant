@@ -37,13 +37,15 @@ function friendlyNumber(
   }
 }
 
+export type CreatingChatDialogProps = Readonly<{
+  submit?: () => void;
+  closeDialog: () => void;
+}>;
+
 const CreatingChatDialog = ({
   submit,
   closeDialog,
-}: {
-  submit?: () => void;
-  closeDialog: () => void;
-}) => {
+}: CreatingChatDialogProps) => {
   const demo = useDemoUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [appSessionsRemaining, setAppSessionsRemaining] = useState<

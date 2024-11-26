@@ -7,7 +7,7 @@ import { OakAccordion, OakPrimaryButton } from "@oaknational/oak-components";
 
 import { trpc } from "@/utils/trpc";
 
-function ModerationListItem({ moderation }: { moderation: Moderation }) {
+function ModerationListItem({ moderation }: { readonly moderation: Moderation }) {
   const { id, invalidatedAt } = moderation;
   const [invalidated, setInvalidated] = useState(Boolean(invalidatedAt));
   const invalidateModeration = trpc.admin.invalidateModeration.useMutation({
@@ -60,8 +60,8 @@ export function AdminChatView({
   chat,
   moderations,
 }: {
-  chat: AilaPersistedChat;
-  moderations: Moderation[];
+  readonly chat: AilaPersistedChat;
+  readonly moderations: Moderation[];
 }) {
   return (
     <>

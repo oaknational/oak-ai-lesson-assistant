@@ -71,12 +71,12 @@ const DialogContents = ({
   submit,
   isShared,
 }: {
-  chatId: string | undefined;
-  lesson: LooseLessonPlan;
-  children?: React.ReactNode;
-  messages?: Message[];
-  submit?: () => void;
-  isShared?: boolean | undefined;
+  readonly chatId: string | undefined;
+  readonly lesson: LooseLessonPlan;
+  readonly children?: React.ReactNode;
+  readonly messages?: Message[];
+  readonly submit?: () => void;
+  readonly isShared?: boolean | undefined;
 }) => {
   const { dialogWindow, setDialogWindow, setDialogProps, openSidebar } =
     useDialog();

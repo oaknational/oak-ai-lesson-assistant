@@ -19,10 +19,10 @@ import type { SideBarChatItem } from "@/lib/types";
 import { useDialog } from "../DialogContext";
 import { constructChatPath } from "./Chat/utils";
 
-interface SidebarItemProps {
+export type SidebarItemProps = Readonly<{
   chat: SideBarChatItem;
   children?: React.ReactNode;
-}
+}>;
 
 export function SidebarItem({ chat }: SidebarItemProps) {
   const { setDialogWindow, setDialogProps, setOpenSidebar } = useDialog();
