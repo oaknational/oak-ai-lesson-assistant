@@ -98,7 +98,7 @@ const Footer = () => {
               $width={["100%", "unset"]}
             >
               <OakP $font="heading-7" $mb={"space-between-s"}>
-                AI Experiments Legal
+                AI experiments legal
               </OakP>
               <OakUL>
                 {legalMenuItems.map((item) => {
@@ -198,19 +198,21 @@ const StyledOakLink = styled(OakLink)`
   }
 `;
 
+export type FooterButtonProps = Readonly<{
+  href?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  target?: string;
+  children: React.ReactNode;
+}>;
+
 const FooterButton = ({
   href,
   onClick,
   disabled,
   target,
   children,
-}: {
-  href?: string;
-  onClick?: () => void;
-  disabled?: boolean;
-  target?: string;
-  children: React.ReactNode;
-}) => {
+}: FooterButtonProps) => {
   const element = href ? Link : "button";
   return (
     <StyledOakLink

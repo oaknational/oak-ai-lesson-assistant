@@ -14,13 +14,11 @@ import LoadingWheel from "../LoadingWheel";
 
 const log = aiLogger("ui");
 
-const ImageRow = ({
-  resource,
-  isPreview,
-}: {
-  resource: Resource;
-  isPreview?: boolean;
-}) => {
+export type ImageRowProps = Readonly<{
+  readonly resource: Resource;
+  readonly isPreview?: boolean;
+}>;
+const ImageRow = ({ resource, isPreview }: ImageRowProps) => {
   const router = useRouter();
   const [newAlt, setNewAlt] = useState<string | null | undefined>();
   const [newAltForQuiz, setNewAltForQuiz] = useState<

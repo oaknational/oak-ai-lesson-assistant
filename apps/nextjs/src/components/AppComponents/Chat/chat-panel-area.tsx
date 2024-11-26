@@ -1,14 +1,16 @@
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 
+export type ChatPanelAreaProps = Readonly<{
+  children: React.ReactNode;
+  chatAreaRef?: React.RefObject<HTMLDivElement>;
+  isDemoLocked: boolean;
+}>;
+
 export const ChatPanelArea = ({
   children,
   chatAreaRef,
   isDemoLocked,
-}: {
-  children: React.ReactNode;
-  chatAreaRef?: React.RefObject<HTMLDivElement>;
-  isDemoLocked: boolean;
-}) => {
+}: ChatPanelAreaProps) => {
   const demo = useDemoUser();
 
   return (

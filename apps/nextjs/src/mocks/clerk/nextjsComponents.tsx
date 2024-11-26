@@ -41,7 +41,10 @@ const states: Record<ClerkProviderProps["state"], Context> = {
     isSignedIn: true,
     user: {
       ...mockUser,
-      publicMetadata: { ...mockUser.publicMetadata, isDemoUser: true },
+      publicMetadata: {
+        ...mockUser.publicMetadata,
+        labs: { ...mockUser.publicMetadata.labs, isDemoUser: true },
+      },
     },
   },
 };
@@ -49,8 +52,8 @@ const states: Record<ClerkProviderProps["state"], Context> = {
 const ClerkContext = React.createContext<Context>(states.signedIn);
 
 type ClerkProviderProps = {
-  state: "loading" | "signedIn" | "signedInDemo" | "signedOut";
-  children: React.ReactNode;
+  readonly state: "loading" | "signedIn" | "signedInDemo" | "signedOut";
+  readonly children: React.ReactNode;
 };
 export const ClerkProvider = ({ state, children }: ClerkProviderProps) => (
   <ClerkContext.Provider value={states[state]}>
@@ -84,12 +87,12 @@ export const useAuth = () => {
   };
 };
 
-export const SignedIn = ({ children }: { children: React.ReactNode }) => {
+export const SignedIn = ({ children }: { readonly children: React.ReactNode }) => {
   const context = React.useContext(ClerkContext);
   return context.isSignedIn ? children : null;
 };
 
-export const SignedOut = ({ children }: { children: React.ReactNode }) => {
+export const SignedOut = ({ children }: { readonly children: React.ReactNode }) => {
   const context = React.useContext(ClerkContext);
   return context.isSignedIn ? null : children;
 };

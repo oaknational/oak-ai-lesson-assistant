@@ -6,12 +6,12 @@ import { trpc } from "@/utils/trpc";
 
 import GenerateButton from "../GenerateAllButton";
 
-type RegenButtonGroupProps = {
+export type RegenButtonGroupProps = Readonly<{
   requestRegenerateAnswersGeneration: () => void;
   requestRegenerateAllDistractorsGeneration: () => void;
   answersStatus: UseGenerationStatus;
   distractorStatus: UseGenerationStatus;
-};
+}>;
 
 const RegenButtonGroup = (props: RegenButtonGroupProps) => {
   const {

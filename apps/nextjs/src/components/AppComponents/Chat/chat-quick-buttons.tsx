@@ -12,9 +12,9 @@ import type { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
 import ChatButton from "./ui/chat-button";
 import { IconRefresh, IconStop } from "./ui/icons";
 
-interface QuickActionButtonsProps {
+export type QuickActionButtonsProps = Readonly<{
   isEmptyScreen: boolean;
-}
+}>;
 
 const shouldAllowStop = (
   ailaStreamingStatus: AilaStreamingStatus,
