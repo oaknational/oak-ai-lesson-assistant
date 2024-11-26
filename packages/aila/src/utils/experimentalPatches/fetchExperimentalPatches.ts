@@ -5,6 +5,8 @@ import type {
 } from "../../protocol/jsonPatchProtocol";
 import type { LooseLessonPlan, Quiz } from "../../protocol/schema";
 
+const EXPERIMENTAL_PATCHES_ENABLED = true;
+
 /**
  * Wrap a value in an experimental patch 'document'
  */
@@ -29,7 +31,11 @@ export async function fetchExperimentalPatches({
   parsedMessages: MessagePart[][];
   handlePatch: (patch: ExperimentalPatchDocument) => Promise<void>;
 }) {
-  if (lessonPlan.subject === "maths") {
+  if (!EXPERIMENTAL_PATCHES_ENABLED) {
+    return;
+  }
+
+  if (lessonPlan.subject !== "maths") {
     // Only maths has experimental patches for now
     return;
   }
