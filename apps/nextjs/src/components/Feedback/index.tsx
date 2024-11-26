@@ -130,7 +130,7 @@ const FeedBack = ({
                   {question.question}
                 </label>
                 <textarea
-                  tabIndex={1}
+                  tabIndex={0}
                   className="h-32 w-full min-w-[300px] rounded border-2 border-black p-10"
                   onChange={(e) => {
                     setUsersResponse({
@@ -146,7 +146,7 @@ const FeedBack = ({
         })}
         <div className="flex justify-center">
           <OakPrimaryButton
-            tabIndex={1}
+            tabIndex={0}
             onClick={() => {
               submitSurvey(usersResponse);
               onSubmit();
