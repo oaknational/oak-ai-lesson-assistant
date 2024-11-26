@@ -1,8 +1,5 @@
-import { useState } from "react";
-
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import {
-  OakModal,
   OakModalCenter,
   OakModalCenterBody,
   type OakIconName,
@@ -11,7 +8,6 @@ import type { Message } from "ai";
 import styled from "styled-components";
 
 import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
-import { ChatHistory } from "../AppComponents/Chat/chat-history";
 import { useDialog } from "../AppComponents/DialogContext";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
