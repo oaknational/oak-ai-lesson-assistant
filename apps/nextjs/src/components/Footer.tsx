@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
-import type { OakIconName } from "@oaknational/oak-components";
 import {
   OakBox,
   OakFlex,
@@ -98,7 +97,7 @@ const Footer = () => {
               $width={["100%", "unset"]}
             >
               <OakP $font="heading-7" $mb={"space-between-s"}>
-                AI Experiments Legal
+                AI experiments legal
               </OakP>
               <OakUL>
                 {legalMenuItems.map((item) => {
@@ -198,19 +197,21 @@ const StyledOakLink = styled(OakLink)`
   }
 `;
 
+export type FooterButtonProps = Readonly<{
+  href?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  target?: string;
+  children: React.ReactNode;
+}>;
+
 const FooterButton = ({
   href,
   onClick,
   disabled,
   target,
   children,
-}: {
-  href?: string;
-  onClick?: () => void;
-  disabled?: boolean;
-  target?: string;
-  children: React.ReactNode;
-}) => {
+}: FooterButtonProps) => {
   const element = href ? Link : "button";
   return (
     <StyledOakLink
@@ -228,7 +229,7 @@ const FooterButton = ({
         $textDecoration="none"
       >
         <span>{children}</span>
-        {href && href.includes("http") && (
+        {href?.includes("http") && (
           <ScaleSpan $scale={0.8}>
             <OakIcon iconName="external" />
           </ScaleSpan>

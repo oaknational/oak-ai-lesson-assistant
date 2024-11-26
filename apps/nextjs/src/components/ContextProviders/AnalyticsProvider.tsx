@@ -133,9 +133,9 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   avoOptions,
   bootstrappedFeatures,
 }) => {
-  const [hubspotScriptLoaded, setHubspotScriptLoadedFn] = useState(false);
-  const setHubspotScriptLoaded = useCallback(() => {
-    setHubspotScriptLoadedFn(true);
+  const [hubspotScriptLoaded, setHubspotScriptLoaded] = useState(false);
+  const setHubspotScriptLoadedOnce = useCallback(() => {
+    setHubspotScriptLoaded(true);
   }, []);
 
   /**
@@ -229,7 +229,7 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
 
   /**
    * Legacy event tracking
-   * Calls PostHog tracking directly rather than using Avos tracking plan.
+   * Calls PostHog tracking directly rather than using Avo's tracking plan.
    * @todo remove this once all events are migrated to Avo
    * @deprecated Use the `track` function from the analytics context instead
    */
@@ -267,7 +267,7 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
       page,
       posthogAiBetaClient: posthogAiBeta.client,
     };
-  }, [track, trackEvent, identify, reset, page]);
+  }, [track, trackEvent, identify, reset, page, posthogAiBeta.client]);
 
   const onClerkIdentify = useCallback(
     (user: { userId: string; email: string; isDemoUser?: boolean }) => {
@@ -285,7 +285,10 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   return (
     <analyticsContext.Provider value={analytics}>
       {children}
-      <HubspotLoader consent={hubspotConsent} onLoad={setHubspotScriptLoaded} />
+      <HubspotLoader
+        consent={hubspotConsent}
+        onLoad={setHubspotScriptLoadedOnce}
+      />
     </analyticsContext.Provider>
   );
 };

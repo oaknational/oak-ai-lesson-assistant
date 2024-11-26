@@ -42,7 +42,6 @@ export function constructOwaLessonUrl(
   if (lessonSlug && safeParsedKeyStage && primaryOrSecondary && subjectSlug) {
     return `/teachers/programmes/${syntheticProgrammeSlug}/units/${unitSlug}/lessons/${lessonSlug}`;
   }
-  return;
 }
 
 type KeyStage = z.infer<typeof keyStageSchema>;

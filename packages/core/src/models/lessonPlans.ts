@@ -5,11 +5,9 @@ import type {
   LessonPlanPart,
   LessonSummary,
   PrismaClientWithAccelerate,
-  Subject} from "@oakai/db";
-import {
-  LessonPlanPartStatus,
-  LessonPlanStatus
+  Subject,
 } from "@oakai/db";
+import { LessonPlanPartStatus, LessonPlanStatus } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { LLMResponseJsonSchema } from "../../../aila/src/protocol/jsonPatchProtocol";
@@ -18,10 +16,10 @@ import { inngest } from "../inngest";
 import { createOpenAIClient } from "../llm/openai";
 import { template } from "../prompts/lesson-assistant";
 import { RAG } from "../rag";
-import { camelCaseToSentenceCase } from "../utils/camelCaseToSentenceCase";
+import { camelCaseToSentenceCase } from "../utils/camelCaseConversion";
 import { embedWithCache } from "../utils/embeddings";
 import { textify } from "../utils/textify";
-import type { Caption} from "./types/caption";
+import type { Caption } from "./types/caption";
 import { CaptionsSchema } from "./types/caption";
 
 const log = aiLogger("lessons");

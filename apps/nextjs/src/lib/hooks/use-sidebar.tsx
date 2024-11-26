@@ -23,7 +23,7 @@ export function useSidebar() {
 }
 
 interface SidebarProviderProps {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }
 
 export function SidebarProvider({ children }: SidebarProviderProps) {

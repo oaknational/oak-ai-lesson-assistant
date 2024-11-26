@@ -6,10 +6,10 @@ import { sortAlphabetically } from "@/utils/alphabetiseArray";
 import PromptTemplate from "./PromptTemplate";
 import QuestionInner from "./QuestionInner";
 
-type PreviewContentProps = {
+export type PreviewContentProps = Readonly<{
   option: OptionWithPrompt;
   question?: string;
-};
+}>;
 
 const PreviewContent = ({ option, question }: PreviewContentProps) => {
   if (!option?.answerAndDistractor) return null;

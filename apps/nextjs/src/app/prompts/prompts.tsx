@@ -18,11 +18,11 @@ import HeroContainer from "@/components/HeroContainer";
 import Layout from "@/components/Layout";
 import { slugify } from "@/utils/slugify";
 
-type PromptsPageData = {
+export type PromptsPageData = Readonly<{
   apps: SerializedAppWithPrompt[];
-};
+}>;
 
-const Prompts = ({ apps }: PromptsPageData) => {
+export const PromptsContent = ({ apps }: PromptsPageData) => {
   const pathname = usePathname();
   const itemRefs: { [key: string]: React.RefObject<HTMLLIElement> } = useMemo(
     () => ({}),
@@ -48,7 +48,7 @@ const Prompts = ({ apps }: PromptsPageData) => {
   }, [pathname, itemRefs]);
 
   return (
-    <Layout>
+    <>
       <OakMaxWidth>
         <HeroContainer>
           <OakBox>
@@ -56,7 +56,7 @@ const Prompts = ({ apps }: PromptsPageData) => {
               How does our AI work?
             </OakHeading>
             <OakP>
-              At Oak&apo;s AI Experiments, we aim to test whether high quality
+              At Oak’s AI Experiments, we aim to test whether high quality
               education content can be generated using existing Large Language
               Models (LLMs). We are keen to make sure that our work is
               transparent. All our code across Oak is open source, and the repo
@@ -130,8 +130,14 @@ const Prompts = ({ apps }: PromptsPageData) => {
           </OakUL>
         </OakBox>
       </OakMaxWidth>
-    </Layout>
+    </>
   );
 };
 
-export default Prompts;
+export default function Prompts(props: PromptsPageData) {
+  return (
+    <Layout>
+      <PromptsContent {...props} />
+    </Layout>
+  );
+}
