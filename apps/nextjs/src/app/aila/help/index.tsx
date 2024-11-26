@@ -18,7 +18,7 @@ export const HelpContent = () => {
   const aiRef = useRef(null);
 
   const scrollToRefWithOffset = (ref) => {
-    if (ref && ref.current) {
+    if (ref?.current) {
       const yOffset = -72; // Adjust this value as needed
       const y =
         ref.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
