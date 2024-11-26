@@ -87,7 +87,7 @@ const generateEmailAddress = (personaName: keyof typeof personas) => {
     // All users use the "test@thenational.academy" mailbox with a `+` alias
     "test",
     // Replace non-alphanumeric characters with -
-    branch.replace(/\W+/g, "-"),
+    branch.replace(/\W+/g, "-").slice(-15),
     // A new login for each persona
     personaName,
     // Allows signing in with the email_code strategy
