@@ -19,7 +19,7 @@ import { useDownloadView } from "./useDownloadView";
 type DownloadViewProps = Readonly<{
   chat: AilaPersistedChat;
 }>;
-export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
+export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
   const { lessonPlan, id } = chat;
   const {
     lessonSlidesExport,
@@ -37,7 +37,7 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
   const isLessonComplete = totalSectionsComplete >= totalSections;
 
   return (
-    <Layout>
+    <>
       <DialogRoot>
         <DialogContents
           chatId={chat.id}
@@ -194,6 +194,14 @@ export function DownloadView({ chat }: Readonly<DownloadViewProps>) {
           </Box>
         </div>
       </DialogRoot>
+    </>
+  );
+}
+
+export function DownloadView(props: Readonly<DownloadViewProps>) {
+  return (
+    <Layout>
+      <DownloadContent {...props} />
     </Layout>
   );
 }

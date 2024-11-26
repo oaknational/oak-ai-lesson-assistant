@@ -4,11 +4,11 @@ import ActionButtonWrapper from "./action-button-wrapper";
 import { modifyOptions } from "./action-button.types";
 import type { FeedbackOption } from "./drop-down-form-wrapper";
 
-type ModifyButtonProps = {
+export type ModifyButtonProps = Readonly<{
   sectionTitle: string;
   sectionPath: string;
   sectionValue: Record<string, unknown> | string | Array<unknown>;
-};
+}>;
 
 const ModifyButton = ({
   sectionTitle,
@@ -20,8 +20,8 @@ const ModifyButton = ({
     userFeedbackText: string,
   ) =>
     option.label === "Other"
-      ? `For the ${sectionTitle}, ${userFeedbackText}`
-      : `Make the ${sectionTitle} ${option.chatMessage?.toLowerCase()}`;
+      ? `For the ${sectionTitle.toLowerCase()}, ${userFeedbackText}`
+      : `Make the ${sectionTitle.toLowerCase()} ${option.chatMessage?.toLowerCase()}`;
 
   return (
     <ActionButtonWrapper

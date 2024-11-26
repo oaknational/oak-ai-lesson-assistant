@@ -10,10 +10,10 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 import { useDialog } from "../../DialogContext";
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
-export type ExportButtonsProps = {
+export type ExportButtonsProps = Readonly<{
   sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
-};
+}>;
 
 const ExportButtons = ({
   sectionRefs,

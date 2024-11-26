@@ -9,7 +9,7 @@ import FullPageWarning from "@/components/FullPageWarning";
 export default function GlobalError({
   error,
 }: {
-  error: Error & { digest?: string };
+  readonly error: Error & { digest?: string };
 }) {
   useEffect(() => {
     Sentry.captureException(error, {
@@ -26,7 +26,7 @@ export default function GlobalError({
           <FullPageWarning.Header>Something went wrong!</FullPageWarning.Header>
 
           <FullPageWarning.Button href="/">
-            AI Experiments homepage
+            AI experiments homepage
           </FullPageWarning.Button>
         </FullPageWarning>
       </body>

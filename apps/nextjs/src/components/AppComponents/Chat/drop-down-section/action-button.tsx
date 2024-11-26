@@ -7,15 +7,12 @@ import {
 } from "@oaknational/oak-components";
 import styled from "styled-components";
 
-const ActionButton = ({
-  children,
-  onClick,
-  tooltip,
-}: {
+export type ActionButtonProps = Readonly<{
   children: React.ReactNode;
   onClick: () => void;
   tooltip: string;
-}) => {
+}>;
+const ActionButton = ({ children, onClick, tooltip }: ActionButtonProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (

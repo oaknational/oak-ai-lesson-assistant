@@ -199,6 +199,7 @@ export const appSessionsRouter = router({
     const sessions = await ctx.prisma.$queryRaw`
       SELECT
         id,
+        "updated_at" as "updatedAt",
         output->>'title' as title,
         output->>'isShared' as "isShared"
       FROM
@@ -221,9 +222,15 @@ export const appSessionsRouter = router({
               id: z.string(),
               title: z.string(),
               isShared: z.boolean().nullish(),
+              updatedAt: z.date(),
             })
             .parse(session);
         } catch (error) {
+          Sentry.captureException(error, {
+            extra: {
+              session,
+            },
+          });
           return null;
         }
       })
