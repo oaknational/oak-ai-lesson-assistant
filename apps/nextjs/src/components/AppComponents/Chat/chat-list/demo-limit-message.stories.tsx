@@ -14,8 +14,6 @@ const meta: Meta<typeof DemoLimitMessage> = {
         <Story />
       </ChatModerationProvider>
     ),
-    // ChatDecorator,
-    // DemoDecorator,
   ],
 };
 
