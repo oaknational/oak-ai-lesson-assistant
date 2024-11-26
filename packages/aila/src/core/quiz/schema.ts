@@ -27,5 +27,5 @@ export type QuizPatchType = z.infer<typeof QuizPatchTypeSchema>;
 export const QuizRecommenderTypeSchema = z.enum(["maths", "default"]);
 export type QuizRecommenderType = z.infer<typeof QuizRecommenderTypeSchema>;
 
-export const QuizServiceSettingsSchema = z.enum(["simple"]);
+export const QuizServiceSettingsSchema = z.enum(["simple", "demo"]);
 export type QuizServiceSettings = z.infer<typeof QuizServiceSettingsSchema>;
