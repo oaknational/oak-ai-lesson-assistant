@@ -24,7 +24,7 @@ function getDistinctIdFromCookie(headers: ReadonlyHeaders) {
   if (!cookieHeader) {
     return null;
   }
-  const cookies = cookie.parse(cookieHeader) as Record<string, string>;
+  const cookies = cookie.parse(cookieHeader);
   const phCookieKey = `ph_${process.env.NEXT_PUBLIC_POSTHOG_API_KEY}_posthog`;
   const phCookie = cookies[phCookieKey];
   if (!phCookie) {

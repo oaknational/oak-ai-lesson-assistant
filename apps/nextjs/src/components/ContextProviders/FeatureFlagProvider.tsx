@@ -24,10 +24,10 @@ const FeatureFlagContext = createContext<FeatureFlagContextProps>({
   bootstrappedFeatures: {},
 });
 
-export interface FeatureFlagProviderProps {
+export type FeatureFlagProviderProps = Readonly<{
   children: ReactNode;
   bootstrappedFeatures: Record<string, string | boolean>;
-}
+}>;
 
 export const FeatureFlagProvider = ({
   children,

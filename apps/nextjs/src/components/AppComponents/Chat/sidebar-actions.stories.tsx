@@ -19,6 +19,7 @@ const mockChat = {
   id: "1",
   title: "Mock chat title",
   isShared: false,
+  updatedAt: new Date(),
 };
 
 export const Default: Story = {

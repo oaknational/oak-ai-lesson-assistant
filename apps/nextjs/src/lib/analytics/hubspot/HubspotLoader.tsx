@@ -25,10 +25,10 @@ const reportToSentry = (e: unknown) => {
   });
 };
 
-type HubspotScriptProps = {
+export type HubspotScriptProps = Readonly<{
   consent: ConsentState;
   onLoad: () => void;
-};
+}>;
 const HubspotLoader: FC<HubspotScriptProps> = ({ consent, onLoad }) => {
   const pathname = usePathname();
   const currentParams = useSearchParams();

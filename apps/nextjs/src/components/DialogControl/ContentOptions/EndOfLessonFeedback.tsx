@@ -3,7 +3,7 @@ import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey
 
 import FeedBack from "@/components/Feedback";
 
-const EndOfLessonFeedback = ({ closeDialog }: { closeDialog: () => void }) => {
+const EndOfLessonFeedback = ({ closeDialog }: { readonly closeDialog: () => void }) => {
   const { survey, submitSurvey, closeDialogWithPostHogDismiss } =
     usePosthogFeedbackSurvey({
       closeDialog,

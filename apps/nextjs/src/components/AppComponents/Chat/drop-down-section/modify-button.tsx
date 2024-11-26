@@ -4,11 +4,11 @@ import ActionButtonWrapper from "./action-button-wrapper";
 import { modifyOptions } from "./action-button.types";
 import type { FeedbackOption } from "./drop-down-form-wrapper";
 
-type ModifyButtonProps = {
+export type ModifyButtonProps = Readonly<{
   sectionTitle: string;
   sectionPath: string;
   sectionValue: Record<string, unknown> | string | Array<unknown>;
-};
+}>;
 
 const ModifyButton = ({
   sectionTitle,

@@ -14,7 +14,7 @@ import ChatSection from "./chat-section";
 
 const HALF_SECOND = 500;
 
-type DropDownSectionProps = {
+export type DropDownSectionProps = Readonly<{
   objectKey: string;
   sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,7 +23,7 @@ type DropDownSectionProps = {
   userHasCancelledAutoScroll: boolean;
   showLessonMobile: boolean;
   streamingTimeout?: number;
-};
+}>;
 
 const DropDownSection = ({
   objectKey,
