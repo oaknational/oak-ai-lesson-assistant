@@ -25,7 +25,6 @@ export async function populateDoc<
   valueToString?: ValueToString<Data>;
 }): Promise<Result<{ missingData: string[] }>> {
   try {
-    // const requests: docs_v1.Schema$Request[] = [];
     const missingData: string[] = [];
 
     await processImageReplacements({
@@ -34,7 +33,7 @@ export async function populateDoc<
       data,
     });
 
-    const { requests: textRequests } = await textReplacements({
+    const { requests: textRequests } = textReplacements({
       data,
       warnIfMissing,
       valueToString,

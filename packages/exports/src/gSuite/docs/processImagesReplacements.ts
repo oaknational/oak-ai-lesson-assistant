@@ -13,6 +13,10 @@ export async function processImageReplacements<
   documentId: string;
   data: Data;
 }) {
+  /**
+   * @TODO this function will ideally return a list of requests which is then sent in one batch update
+   * @TODO currently this function doesn't support multiple images in the same string, or images with text before and after it.
+   */
   for (const [key, value] of Object.entries(data)) {
     if (typeof value === "string" && value.includes("![image](")) {
       // Extract image URL

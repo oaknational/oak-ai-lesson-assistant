@@ -2,7 +2,7 @@ import type { docs_v1 } from "@googleapis/docs";
 
 import type { ValueToString } from "../../utils";
 
-export async function textReplacements<
+export function textReplacements<
   Data extends Record<string, string | string[] | null | undefined>,
 >({
   data,
@@ -12,7 +12,7 @@ export async function textReplacements<
   data: Data;
   warnIfMissing: (keyof Data)[];
   valueToString: ValueToString<Data>;
-}): Promise<{ requests: docs_v1.Schema$Request[]; missingData: string[] }> {
+}): { requests: docs_v1.Schema$Request[]; missingData: string[] } {
   const requests: docs_v1.Schema$Request[] = [];
   const missingData: string[] = [];
 
