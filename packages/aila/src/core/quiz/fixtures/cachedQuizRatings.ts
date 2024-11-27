@@ -1,4 +1,4 @@
-import type { TestRating } from "../RerankerStructuredOutputSchema";
+import type { TestRating } from "../rerankers/RerankerStructuredOutputSchema";
 
 // Fixture 1
 const fixture1: TestRating = {
