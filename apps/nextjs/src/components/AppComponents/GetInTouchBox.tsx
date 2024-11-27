@@ -1,4 +1,19 @@
+import { useEffect, useState } from "react";
+
 const GetInTouchBox = () => {
+  const [isFirstRender, setIsFirstRender] = useState(true);
+  useEffect(() => {
+    if (isFirstRender) {
+      setIsFirstRender(false);
+    }
+  }, [isFirstRender]);
+
+  // Cloudflare has a script to obfuscate emails in the rendered page
+  // Our CSP policy is blocking it from activating, so we can simulate it ourselves
+  const email = isFirstRender
+    ? "/cdn-cgi/l/email-protection"
+    : "mailto:help@thenational.academy";
+
   return (
     <div className="flex flex-col items-center gap-14 rounded bg-lavender30 p-19 sm:flex-row">
       <div>
@@ -28,12 +43,9 @@ const GetInTouchBox = () => {
       </div>
       <p>
         Can’t find what you need?{" "}
-        <a
-          href="mailto:help@thenational.academy"
-          className="text-blue underline"
-        >
+        <a href={email} className="text-blue underline">
           Get in touch
-        </a>{" "}
+        </a>
         , we’d be happy to help.
       </p>
     </div>
