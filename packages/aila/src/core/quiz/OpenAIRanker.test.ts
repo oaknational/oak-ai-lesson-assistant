@@ -1,5 +1,5 @@
-import { CircleTheoremLesson } from "./CircleTheoremsExampleOutput";
 import { quizToLLMMessages, combinePrompts } from "./OpenAIRanker";
+import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
 
 describe("quizToLLMMessagesTest", () => {
   it("Should convert into valid OpenAI message format", () => {

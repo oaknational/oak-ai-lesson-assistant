@@ -25,7 +25,7 @@ import {
   keyLearningPointsPrompt,
   QuizInspectionSystemPrompt,
 } from "./QuestionAssesmentPrompt";
-import { starterQuizQuestionSuitabilityDescriptionSchema } from "./RerankerStructuredOutputSchema";
+import { starterQuizQuestionSuitabilityDescriptionSchema } from "./rerankers/RerankerStructuredOutputSchema";
 
 const ThoughtStep = z.object({
   step: z.number(),

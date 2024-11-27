@@ -1,4 +1,3 @@
-import { CircleTheoremLesson } from "./CircleTheoremsExampleOutput";
 import { combinePromptsAndQuestions } from "./OpenAIRanker";
 import {
   DummyOpenAICall,
@@ -8,7 +7,8 @@ import {
 } from "./OpenAIRanker";
 import { parsedResponse } from "./OpenAIRanker";
 import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
-import { starterQuizQuestionSuitabilityDescriptionSchema } from "./RerankerStructuredOutputSchema";
+import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
+import { starterQuizQuestionSuitabilityDescriptionSchema } from "./rerankers/RerankerStructuredOutputSchema";
 
 describe("combinePromptsAndQuestions", () => {
   it("Should convert a lesson plan and quiz into valid OpenAI message format", () => {

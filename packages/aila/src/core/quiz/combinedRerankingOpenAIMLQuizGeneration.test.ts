@@ -1,8 +1,11 @@
 import type { QuizPath } from "../../protocol/schema";
 import { AilaQuiz } from "./AilaQuiz";
 import { selectHighestRated } from "./ChoiceModels";
-import { CircleTheoremLesson } from "./CircleTheoremsExampleOutput";
-import { TestRating, testRatingSchema } from "./RerankerStructuredOutputSchema";
+import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
+import {
+  TestRating,
+  testRatingSchema,
+} from "./rerankers/RerankerStructuredOutputSchema";
 
 describe("Tests planIdsToQuizRatings function", () => {
   jest.setTimeout(30000);

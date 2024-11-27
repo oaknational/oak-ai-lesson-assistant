@@ -1,4 +1,3 @@
-import { CircleTheoremLesson } from "./CircleTheoremsExampleOutput";
 import {
   DummyOpenAICall,
   OpenAICallReranker,
@@ -7,7 +6,8 @@ import {
   evaluateStarterQuiz,
 } from "./OpenAIRanker";
 import { parsedResponse } from "./OpenAIRanker";
-import { starterQuizQuestionSuitabilityDescriptionSchema } from "./RerankerStructuredOutputSchema";
+import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
+import { starterQuizQuestionSuitabilityDescriptionSchema } from "./rerankers/RerankerStructuredOutputSchema";
 
 describe("Test OpenAI Image Reranker with online image and quiz questions", () => {
   jest.setTimeout(20000);
