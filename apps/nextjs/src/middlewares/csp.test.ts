@@ -31,7 +31,7 @@ function generatePoliciesForEnvironment(env: CspEnvironment): string {
   };
 
   const result = addCspHeaders(mockResponse, mockRequest, config);
-  const cspHeader = result.headers.get("Content-Security-Policy") || "";
+  const cspHeader = result.headers.get("Content-Security-Policy") ?? "";
 
   const sanitizedCspHeader = cspHeader.replace(
     /'nonce-[^']+'/g,

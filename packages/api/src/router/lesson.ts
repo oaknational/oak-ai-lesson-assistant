@@ -99,7 +99,7 @@ export const lessonRouter = router({
 
       return res.map(({ slug, title, content }) => {
         content = content as Content;
-        const description = (content?.lessonDescription || "") as string;
+        const description = (content?.lessonDescription ?? "") as string;
         return {
           slug,
           title,
