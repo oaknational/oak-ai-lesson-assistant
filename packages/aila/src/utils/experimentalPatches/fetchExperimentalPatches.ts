@@ -57,6 +57,8 @@ export async function fetchExperimentalPatches({
     return;
   }
 
+  log.info("Maths quiz feature-flag enabled for user. Fetching patches.");
+
   const patches = parsedMessages
     .map((m) => m.map((p) => p.document))
     .flat()
