@@ -17,5 +17,7 @@ export default async function PolicyContentPage() {
     },
   });
 
+  console.log(lessons.length, "***************************");
+
   return <ImageSpike lessons={lessons} />;
 }
