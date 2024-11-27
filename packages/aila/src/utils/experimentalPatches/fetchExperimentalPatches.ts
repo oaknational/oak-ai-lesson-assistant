@@ -3,7 +3,6 @@ import { aiLogger } from "@oakai/logger";
 
 import type {
   ExperimentalPatchDocument,
-  MessagePart,
   PatchDocument,
 } from "../../protocol/jsonPatchProtocol";
 import type { LooseLessonPlan, Quiz } from "../../protocol/schema";
@@ -28,12 +27,12 @@ function preparePatch(
  */
 export async function fetchExperimentalPatches({
   lessonPlan,
-  parsedMessages,
+  llmPatches,
   handlePatch,
   userId,
 }: {
   lessonPlan: LooseLessonPlan;
-  parsedMessages: MessagePart[][];
+  llmPatches: PatchDocument[];
   handlePatch: (patch: ExperimentalPatchDocument) => Promise<void>;
   userId?: string;
 }) {
@@ -57,14 +56,13 @@ export async function fetchExperimentalPatches({
     return;
   }
 
-  log.info("Maths quiz feature-flag enabled for user. Fetching patches.");
+  log.info(
+    "Maths quiz feature-flag enabled for user. Fetching experimental quiz patches.",
+  );
 
-  const patches = parsedMessages
-    .map((m) => m.map((p) => p.document))
-    .flat()
-    .filter((p): p is PatchDocument => p.type === "patch");
-
-  const starterQuizPatch = patches.find((p) => p.value.path === "/starterQuiz");
+  const starterQuizPatch = llmPatches.find(
+    (p) => p.value.path === "/starterQuiz",
+  );
 
   if (starterQuizPatch) {
     const op = starterQuizPatch.value.op;
@@ -89,7 +87,7 @@ export async function fetchExperimentalPatches({
     }
   }
 
-  const exitQuizPatch = patches.find((p) => p.value.path === "/exitQuiz");
+  const exitQuizPatch = llmPatches.find((p) => p.value.path === "/exitQuiz");
 
   if (exitQuizPatch) {
     const op = exitQuizPatch.value.op;
