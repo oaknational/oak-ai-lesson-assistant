@@ -57,10 +57,19 @@ export async function fetchExperimentalPatches({
       // TODO: GCLOMAX - PUT PATCH HERE.
       // TODO: MG - Review this please.
       // Can we put this in here.
-      const mathsStarterQuiz: Quiz = await fullQuizService.createBestQuiz(
+      let mathsStarterQuiz: Quiz = await fullQuizService.createBestQuiz(
         "/starterQuiz",
         lessonPlan,
       );
+      if (mathsStarterQuiz.length === 0) {
+        mathsStarterQuiz = [
+          {
+            question: "No questions found",
+            answers: ["No questions found"],
+            distractors: ["No questions found"],
+          },
+        ];
+      }
       if (mathsStarterQuiz) {
         await handlePatch(
           preparePatch({
@@ -86,10 +95,19 @@ export async function fetchExperimentalPatches({
       );
     } else {
       // TODO: GCLOMAX - Once this is deprecated we will need logic to not overwrite the origonal.
-      const mathsExitQuiz: Quiz = await fullQuizService.createBestQuiz(
+      let mathsExitQuiz: Quiz = await fullQuizService.createBestQuiz(
         "/exitQuiz",
         lessonPlan,
       );
+      if (mathsExitQuiz.length === 0) {
+        mathsExitQuiz = [
+          {
+            question: "No questions found",
+            answers: ["No questions found"],
+            distractors: ["No questions found"],
+          },
+        ];
+      }
       if (mathsExitQuiz) {
         await handlePatch(
           preparePatch({

@@ -30,7 +30,8 @@ describe("BasedOnQuizService", () => {
         "/starterQuiz" as QuizPath,
         CircleTheoremLesson,
       );
-
+      console.log("QUIZ BELOW");
+      console.log(JSON.stringify(quiz));
       expect(quiz).toBeDefined();
       expect(Array.isArray(quiz)).toBe(true);
       expect(quiz[0]).toHaveProperty("question");

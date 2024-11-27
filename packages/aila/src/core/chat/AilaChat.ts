@@ -94,7 +94,7 @@ export class AilaChat implements AilaChatService {
     this._relevantLessons = [];
     this._experimentalPatches = [];
     // TODO: GCLOMAX - this is a hack to get the demo quiz service working. Add quiz options somewhere.
-    this.fullQuizService = new FullQuizServiceFactory().create("basedOn");
+    this.fullQuizService = new FullQuizServiceFactory().create("simple");
   }
   // TODO: GCLOMAX This should be put in a new class called AilaQuizService, in the ailaservices class.
   private quizService = new AilaQuiz();
