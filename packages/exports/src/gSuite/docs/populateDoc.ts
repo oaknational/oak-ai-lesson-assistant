@@ -3,7 +3,7 @@ import type { docs_v1 } from "@googleapis/docs";
 import type { Result } from "../../types";
 import type { ValueToString } from "../../utils";
 import { defaultValueToString } from "../../utils";
-import { imageReplacements } from "./imageReplacements";
+import { processImageReplacements } from "./processImagesReplacements";
 import { textReplacements } from "./textReplacements";
 
 /**
@@ -28,7 +28,11 @@ export async function populateDoc<
     // const requests: docs_v1.Schema$Request[] = [];
     const missingData: string[] = [];
 
-    console.log(data);
+    await processImageReplacements({
+      googleDocs,
+      documentId,
+      data,
+    });
 
     const { requests: textRequests } = await textReplacements({
       data,
@@ -41,23 +45,6 @@ export async function populateDoc<
         documentId,
         requestBody: {
           requests: textRequests,
-        },
-      });
-    }
-
-    const { requests: imageRequests } = await imageReplacements({
-      googleDocs,
-      documentId,
-      // data,
-    });
-
-    console.log(imageRequests);
-
-    if (imageRequests.length > 0) {
-      await googleDocs.documents.batchUpdate({
-        documentId,
-        requestBody: {
-          requests: imageRequests,
         },
       });
     }
