@@ -36,10 +36,10 @@ import {
   evaluateStarterQuiz,
   parsedResponse,
 } from "./OpenAIRanker";
-import type { QuizzesForConsideration } from "./RerankerStructuredOutputSchema";
-import { starterQuizQuestionSuitabilityDescriptionSchema } from "./RerankerStructuredOutputSchema";
 import { processArray, withRandomDelay } from "./apiCallingUtils";
-import { testInput } from "./cachedQuizOutput";
+import { testInput } from "./fixtures/cachedQuizOutput";
+import type { QuizzesForConsideration } from "./rerankers/RerankerStructuredOutputSchema";
+import { starterQuizQuestionSuitabilityDescriptionSchema } from "./rerankers/RerankerStructuredOutputSchema";
 
 interface CustomMetadata {
   custom_id: string;

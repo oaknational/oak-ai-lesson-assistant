@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { QuizQuestion } from "../../protocol/schema";
-import { starterQuizSuitabilitySchema } from "./RerankerStructuredOutputSchema";
+import { starterQuizSuitabilitySchema } from "./rerankers/RerankerStructuredOutputSchema";
 
 // TODO: GCLOMAX - Abstract this to Schema, choice, evaluator functions to make extensible
 // And to be able to use secondary model / LLM to inspect based on justifications.
