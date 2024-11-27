@@ -3,6 +3,7 @@
  * This script validates the data in the CSV files against the constraints defined in the Prisma schema.
  *
  **/
+import { aiLogger } from "@oakai/logger";
 import { Prisma } from "@prisma/client";
 import csvParser from "csv-parser";
 import dotenv from "dotenv";
@@ -11,18 +12,21 @@ import * as path from "path";
 
 import { prisma } from "../..";
 
+const logger = aiLogger("db");
+
 const dataDir = path.join(__dirname, "data");
 
 dotenv.config();
 
 // Helper function to log messages
 const log = (message: string) => {
-  console.log(`[LOG] ${new Date().toISOString()}: ${message}`);
+  logger.info(`[LOG] ${new Date().toISOString()}: ${message}`);
 };
 
 // Helper function to get the Prisma model metadata
-async function getModelConstraints() {
+function getModelConstraints() {
   log("Inferring model constraints from Prisma schema...");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const modelConstraints: Record<string, any> = {};
 
   const models = Prisma.dmmf.datamodel.models;
@@ -84,14 +88,17 @@ const validateCSV = (
 ) => {
   return new Promise<void>((resolve, reject) => {
     const errors: string[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const foreignKeyCheck: Record<string, Set<any>> = {};
 
     log(`Validating CSV file: ${filePath}`);
     fs.createReadStream(filePath)
       .pipe(csvParser())
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on("data", (row: any) => {
         // Check non-nullable fields
         nonNullable.forEach((col) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           if (!row[col]) {
             errors.push(
               `NULL value found in non-nullable column '${col}' in row ${JSON.stringify(
@@ -101,11 +108,14 @@ const validateCSV = (
           }
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const [fk, refTable] of Object.entries(foreignKeys)) {
           if (!foreignKeyCheck[fk]) {
             foreignKeyCheck[fk] = new Set();
           }
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           if (row[fk]) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             foreignKeyCheck[fk]!.add(row[fk]);
           }
         }
@@ -113,9 +123,9 @@ const validateCSV = (
       .on("end", async () => {
         log(`Completed reading CSV file: ${filePath}`);
 
-        // Validate foriegn keys in CSV
+        // Validate foreign keys in CSV
         for (const [fk, refTable] of Object.entries(foreignKeys)) {
-          const ids: string[] = Array.from(foreignKeyCheck[fk] || []);
+          const ids: string[] = Array.from(foreignKeyCheck[fk] ?? []);
 
           function handleTable(table: string) {
             if (table === "key_stage") {
@@ -136,6 +146,7 @@ const validateCSV = (
               const refIds = new Set<string>();
               fs.createReadStream(refFilePath)
                 .pipe(csvParser())
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 .on("data", (row: any) => {
                   refIds.add(row.id);
                 })
@@ -168,12 +179,12 @@ const validateCSV = (
 
 const main = async () => {
   try {
-    const modelConstraints = await getModelConstraints();
+    const modelConstraints = getModelConstraints();
 
     for (const [table, constraints] of Object.entries(modelConstraints)) {
       const filePath = path.join(dataDir, `${table}.csv`);
       if (!fs.existsSync(filePath)) {
-        console.error(`CSV file for table '${table}' does not exist.`);
+        logger.error(`CSV file for table '${table}' does not exist.`);
         process.exit(1);
       }
 
@@ -185,17 +196,17 @@ const main = async () => {
         );
         log(`Validation passed for table '${table}'`);
       } catch (errors) {
-        console.error(`Validation failed for table '${table}':\n`, errors);
+        logger.error(`Validation failed for table '${table}':\n`, errors);
         process.exit(1);
       }
     }
 
     log("All tables validated successfully.");
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     process.exit(1);
   } finally {
-    console.log("Done");
+    logger.info("Done");
     await prisma.$disconnect();
   }
 };
@@ -205,7 +216,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    logger.error(e);
     await prisma.$disconnect();
     process.exit(1);
   });
