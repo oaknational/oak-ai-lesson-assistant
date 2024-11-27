@@ -32,8 +32,11 @@ jobs:
       - name: Install deps (with cache)
         run: pnpm install
 
+      - name: Prisma generate (no engine)
+        run: pnpm turbo db-generate:no-engine --cache-dir=".turbo"
+
       - name: Build, lint and type-check
-        run: pnpm turbo db-generate:no-engine lint type-check --cache-dir=".turbo"
+        run: pnpm turbo lint type-check --cache-dir=".turbo"
 
       - name: Check workspaces
         run: pnpm manypkg check
