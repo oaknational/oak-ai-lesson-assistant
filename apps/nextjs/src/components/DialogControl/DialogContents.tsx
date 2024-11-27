@@ -72,7 +72,7 @@ const DialogContents = ({
   readonly children?: React.ReactNode;
   readonly messages?: Message[];
   readonly submit?: () => void;
-  readonly isShared: boolean | undefined;
+  readonly isShared?: boolean;
 }) => {
   const { dialogWindow, setDialogWindow, setDialogProps, openSidebar } =
     useDialog();
