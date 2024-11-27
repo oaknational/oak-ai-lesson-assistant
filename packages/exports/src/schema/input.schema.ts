@@ -54,6 +54,8 @@ export const lessonSlidesInputSchema = z.object({
   cycle2: cycleSchema.nullish(),
   cycle3: cycleSchema.nullish(),
   additionalMaterials: z.string().nullish(),
+  _experimental_starterQuizMathsV0: quizSchema.nullish(),
+  _experimental_exitQuizMathsV0: quizSchema.nullish(),
 });
 
 export type LessonSlidesInputData = z.infer<typeof lessonSlidesInputSchema>;

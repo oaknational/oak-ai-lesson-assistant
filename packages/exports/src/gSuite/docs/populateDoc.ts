@@ -3,8 +3,8 @@ import type { docs_v1 } from "@googleapis/docs";
 import type { Result } from "../../types";
 import type { ValueToString } from "../../utils";
 import { defaultValueToString } from "../../utils";
-import { processImageReplacements } from "./processImageReplacements";
-import { processTextReplacements } from "./processTextReplacements";
+import { imageReplacements } from "./imageReplacements";
+import { textReplacements } from "./textReplacements";
 
 /**
  * Populates the template document with the given data, handling image replacements for all placeholders.
@@ -25,19 +25,42 @@ export async function populateDoc<
   valueToString?: ValueToString<Data>;
 }): Promise<Result<{ missingData: string[] }>> {
   try {
-    const requests: docs_v1.Schema$Request[] = [];
+    // const requests: docs_v1.Schema$Request[] = [];
     const missingData: string[] = [];
 
-    await processImageReplacements({ googleDocs, documentId, data });
+    console.log(data);
 
-    await processTextReplacements({
-      googleDocs,
-      documentId,
+    const { requests: textRequests } = await textReplacements({
       data,
-      missingData,
       warnIfMissing,
       valueToString,
     });
+
+    if (textRequests.length > 0) {
+      await googleDocs.documents.batchUpdate({
+        documentId,
+        requestBody: {
+          requests: textRequests,
+        },
+      });
+    }
+
+    const { requests: imageRequests } = await imageReplacements({
+      googleDocs,
+      documentId,
+      // data,
+    });
+
+    console.log(imageRequests);
+
+    if (imageRequests.length > 0) {
+      await googleDocs.documents.batchUpdate({
+        documentId,
+        requestBody: {
+          requests: imageRequests,
+        },
+      });
+    }
 
     return {
       data: {

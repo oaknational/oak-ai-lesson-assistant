@@ -4,6 +4,7 @@ import type {
   PatchDocument,
 } from "../../protocol/jsonPatchProtocol";
 import type { LooseLessonPlan, Quiz } from "../../protocol/schema";
+import { mathsQuizFixture } from "./mathsQuiz.fixture";
 
 const EXPERIMENTAL_PATCHES_ENABLED = true;
 
@@ -57,7 +58,7 @@ export async function fetchExperimentalPatches({
         }),
       );
     } else {
-      const mathsStarterQuiz: Quiz | null = null;
+      const mathsStarterQuiz: Quiz | null = mathsQuizFixture;
       if (mathsStarterQuiz) {
         await handlePatch(
           preparePatch({
@@ -82,7 +83,7 @@ export async function fetchExperimentalPatches({
         }),
       );
     } else {
-      const mathsExitQuiz: Quiz | null = null;
+      const mathsExitQuiz: Quiz | null = mathsQuizFixture;
       if (mathsExitQuiz) {
         await handlePatch(
           preparePatch({
