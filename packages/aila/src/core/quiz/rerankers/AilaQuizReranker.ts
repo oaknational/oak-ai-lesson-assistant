@@ -1,16 +1,16 @@
 import type { z } from "zod";
 
-import type { QuizPath, QuizQuestion } from "../../protocol/schema";
-import type { LooseLessonPlan } from "../../protocol/schema";
+import type { QuizPath, QuizQuestion } from "../../../protocol/schema";
+import type { LooseLessonPlan } from "../../../protocol/schema";
 import {
   selectHighestRated,
   type BaseType,
   type BaseSchema,
-} from "./ChoiceModels";
-import { evaluateQuiz } from "./OpenAIRanker";
-import { processArray } from "./apiCallingUtils";
-import { withRandomDelay } from "./apiCallingUtils";
-import type { AilaQuizReranker } from "./interfaces";
+} from "../ChoiceModels";
+import { evaluateQuiz } from "../OpenAIRanker";
+import { processArray } from "../apiCallingUtils";
+import { withRandomDelay } from "../apiCallingUtils";
+import type { AilaQuizReranker } from "../interfaces";
 
 export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
   implements AilaQuizReranker<T>

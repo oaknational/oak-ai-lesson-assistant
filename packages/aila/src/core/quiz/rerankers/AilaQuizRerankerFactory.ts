@@ -1,20 +1,19 @@
 import type { z } from "zod";
 
-import type { LooseLessonPlan } from "../../protocol/schema";
-import type { AilaQuizService } from "../AilaServices";
-import { AilaQuiz } from "./AilaQuiz";
-import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
-import type { BaseType } from "./ChoiceModels";
-import type { BaseSchema } from "./ChoiceModels";
-import { testRatingSchema } from "./RerankerStructuredOutputSchema";
-import { ReturnFirstReranker } from "./ReturnFirstReranker";
-import { TestSchemaReranker } from "./SchemaReranker";
+import type { LooseLessonPlan } from "../../../protocol/schema";
+import { AilaQuiz } from "../AilaQuiz";
+import type { BaseType } from "../ChoiceModels";
+import type { BaseSchema } from "../ChoiceModels";
 import type {
   AilaQuizFactory,
   AilaQuizReranker,
   AilaQuizRerankerFactory,
-} from "./interfaces";
-import type { QuizRerankerType } from "./schema";
+} from "../interfaces";
+import type { QuizRerankerType } from "../schema";
+import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
+import { testRatingSchema } from "./RerankerStructuredOutputSchema";
+import { ReturnFirstReranker } from "./ReturnFirstReranker";
+import { TestSchemaReranker } from "./SchemaReranker";
 
 export class AilaQuizRerankerFactoryImpl implements AilaQuizRerankerFactory {
   public createAilaQuizReranker(

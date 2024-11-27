@@ -2,11 +2,11 @@ import type {
   LooseLessonPlan,
   QuizPath,
   QuizQuestion,
-} from "../../protocol/schema";
+} from "../../../protocol/schema";
+import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
+import { cachedQuiz } from "../fixtures/fixtures_for_matt";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 import { TestSchemaReranker } from "./SchemaReranker";
-import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
-import { cachedQuiz } from "./fixtures/fixtures_for_matt";
 
 describe("TestSchemaReranker", () => {
   jest.setTimeout(60000);

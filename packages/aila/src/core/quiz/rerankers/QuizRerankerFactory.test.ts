@@ -1,6 +1,6 @@
+import type { QuizRerankerType } from "../schema";
 import { AilaQuizRerankerFactoryImpl } from "./AilaQuizRerankerFactory";
 import { TestSchemaReranker } from "./SchemaReranker";
-import type { QuizRerankerType } from "./schema";
 
 describe("AilaQuizRerankerFactoryImpl", () => {
   let factory: AilaQuizRerankerFactoryImpl;

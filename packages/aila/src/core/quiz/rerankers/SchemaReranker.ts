@@ -2,7 +2,7 @@ import type {
   LooseLessonPlan,
   QuizPath,
   QuizQuestion,
-} from "../../protocol/schema";
+} from "../../../protocol/schema";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 

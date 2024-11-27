@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { QuizQuestionSchema } from "../../protocol/schema";
-import type { BaseType } from "./ChoiceModels";
+import { QuizQuestionSchema } from "../../../protocol/schema";
+import type { BaseType } from "../ChoiceModels";
 
 export const ratingAndJustificationSchema = z.object({
   chainOfThought: z

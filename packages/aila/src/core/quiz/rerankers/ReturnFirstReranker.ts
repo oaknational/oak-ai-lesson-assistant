@@ -4,11 +4,11 @@ import type {
   LooseLessonPlan,
   QuizQuestion,
   QuizPath,
-} from "../../protocol/schema";
+} from "../../../protocol/schema";
+import type { BaseSchema } from "../ChoiceModels";
+import { populateZodSchema } from "../utils/schemaPopulator";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
-import type { BaseSchema } from "./ChoiceModels";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
-import { populateZodSchema } from "./utils/schemaPopulator";
 
 // This reranker returns the first quiz in the list. It is used for testing and hacky workarounds.
 // TODO: GCLOMAX - Fix the typing here to be generic.
