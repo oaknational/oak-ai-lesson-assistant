@@ -22,6 +22,7 @@
     ".vscode-insiders"
   ],
   "cSpell.words": [
+    "agentic",
     "Aila",
     "APIV",
     "authed",
@@ -54,6 +55,7 @@
     "dockerized",
     "dopplerhq",
     "dotenv",
+    "Dsonar",
     "EASS",
     "Edtech",
     "EHRC",
@@ -145,6 +147,9 @@
     "rushstack",
     "Sedar",
     "slidedeck",
+    "sonarcloud",
+    "sonarqube",
+    "sonarsource",
     "sslcert",
     "sslmode",
     "SUBJ",

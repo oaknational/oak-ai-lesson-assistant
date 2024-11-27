@@ -11,9 +11,6 @@ import { Flex } from "@radix-ui/themes";
 import type { Message } from "ai";
 import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey";
 
-import ChatButton from "@/components/AppComponents/Chat/ui/chat-button";
-import { Icon } from "@/components/Icon";
-
 import ModalFooterButtons from "./ModalFooterButtons";
 
 const log = aiLogger("chat");

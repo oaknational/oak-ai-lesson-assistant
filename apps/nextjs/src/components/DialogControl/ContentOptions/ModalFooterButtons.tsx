@@ -23,7 +23,7 @@ const ModalFooterButtons = ({
       <OakLinkNoUnderline
         onClick={() => closeDialog()}
         element="button"
-        tabIndex={1}
+        tabIndex={0}
       >
         <OakSpan $font="body-2-bold" $color="black" $textDecoration="none">
           Cancel
