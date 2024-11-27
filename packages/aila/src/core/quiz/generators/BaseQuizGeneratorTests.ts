@@ -1,8 +1,8 @@
-import type { Quiz, QuizQuestion } from "../../protocol/schema";
-import type { LooseLessonPlan } from "../../protocol/schema";
-import { QuizSchema } from "../../protocol/schema";
-import type { BaseQuizGenerator } from "./AilaQuizVariants";
-import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
+import type { Quiz, QuizQuestion } from "../../../protocol/schema";
+import type { LooseLessonPlan } from "../../../protocol/schema";
+import { QuizSchema } from "../../../protocol/schema";
+import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
+import type { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 export const runCommonQuizGeneratorTests = (
   name: string,

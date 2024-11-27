@@ -19,36 +19,36 @@ import {
   JsonPatchDocumentOptional,
   JsonPatchDocumentSchema,
   PatchQuiz,
-} from "../../protocol/jsonPatchProtocol";
-import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
+} from "../../../protocol/jsonPatchProtocol";
+import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
 import type {
   QuizOperationType,
   Quiz,
   AilaRagRelevantLesson,
-} from "../../protocol/schema";
-import { QuizQuestionSchema, QuizSchema } from "../../protocol/schema";
+} from "../../../protocol/schema";
+import { QuizQuestionSchema, QuizSchema } from "../../../protocol/schema";
 import type {
   LooseLessonPlan,
   QuizQuestion,
   QuizPath,
-} from "../../protocol/schema";
+} from "../../../protocol/schema";
 import type {
   AilaQuizGeneratorService,
   AilaQuizService,
-} from "../AilaServices";
-import type { SimplifiedResult } from "./AilaQuiz";
-import { selectHighestRated } from "./ChoiceModels";
+} from "../../AilaServices";
+import type { SimplifiedResult } from "../AilaQuiz";
+import { selectHighestRated } from "../ChoiceModels";
 import {
   evaluateQuiz,
   evaluateStarterQuiz,
   parsedResponse,
-} from "./OpenAIRanker";
-import type { QuizzesForConsideration } from "./RerankerStructuredOutputSchema";
-import { starterQuizQuestionSuitabilityDescriptionSchema } from "./RerankerStructuredOutputSchema";
-import { processArray, withRandomDelay } from "./apiCallingUtils";
-import { testInput } from "./fixtures/cachedQuizOutput";
-import type { CustomHit } from "./interfaces";
-import { CohereReranker } from "./rerankers";
+} from "../OpenAIRanker";
+import { processArray, withRandomDelay } from "../apiCallingUtils";
+import { testInput } from "../fixtures/cachedQuizOutput";
+import type { CustomHit } from "../interfaces";
+import { CohereReranker } from "../rerankers";
+import type { QuizzesForConsideration } from "../rerankers/RerankerStructuredOutputSchema";
+import { starterQuizQuestionSuitabilityDescriptionSchema } from "../rerankers/RerankerStructuredOutputSchema";
 
 // Base abstract class
 export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {

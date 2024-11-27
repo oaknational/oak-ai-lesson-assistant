@@ -1,9 +1,9 @@
 // ML-based Quiz Generator
-import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
-import type { Quiz, QuizQuestion } from "../../protocol/schema";
-import type { LooseLessonPlan } from "../../protocol/schema";
-import { BaseQuizGenerator } from "./AilaQuizVariants";
-import type { CustomHit } from "./interfaces";
+import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
+import type { Quiz, QuizQuestion } from "../../../protocol/schema";
+import type { LooseLessonPlan } from "../../../protocol/schema";
+import type { CustomHit } from "../interfaces";
+import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 export class MLQuizGenerator extends BaseQuizGenerator {
   private async unpackAndSearch(

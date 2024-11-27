@@ -4,9 +4,9 @@ import type {
   AilaRagRelevantLesson,
   Quiz,
   QuizQuestion,
-} from "../../protocol/schema";
-import type { LooseLessonPlan } from "../../protocol/schema";
-import { BaseQuizGenerator } from "./AilaQuizVariants";
+} from "../../../protocol/schema";
+import type { LooseLessonPlan } from "../../../protocol/schema";
+import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");
 
