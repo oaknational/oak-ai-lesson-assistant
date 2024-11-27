@@ -46,10 +46,10 @@ export const LessonPlanDisplay = ({
   const lessonPlan = {
     ...chat.lessonPlan,
     starterQuiz:
-      chat.lessonPlan._experimental_starterQuizMathsV0 ||
+      chat.lessonPlan._experimental_starterQuizMathsV0 ??
       chat.lessonPlan.starterQuiz,
     exitQuiz:
-      chat.lessonPlan._experimental_exitQuizMathsV0 || chat.lessonPlan.exitQuiz,
+      chat.lessonPlan._experimental_exitQuizMathsV0 ?? chat.lessonPlan.exitQuiz,
   };
 
   const [userHasCancelledAutoScroll, setUserHasCancelledAutoScroll] =

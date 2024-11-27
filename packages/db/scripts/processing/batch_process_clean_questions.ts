@@ -42,7 +42,7 @@ async function getQuestionsAndWriteBatch(skip: number) {
             question.answers[0]?.lesson.subject?.id &&
             question.answers[0]?.lesson.subject?.id !== undefined &&
             question.answers[0]?.lesson.subject?.id !== null &&
-            question.question.endsWith("?")) ||
+            question.question.endsWith("?")) ??
           (question.question &&
             question.question.split(" ").length > 2 &&
             question.answers[0]?.lesson.subject?.id &&

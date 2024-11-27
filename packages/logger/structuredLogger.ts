@@ -1,12 +1,12 @@
 import pino from "pino";
 
 const logger = pino({
-  level: process.env.NEXT_PUBLIC_PINO_LOG_LEVEL || "info",
+  level: process.env.NEXT_PUBLIC_PINO_LOG_LEVEL ?? "info",
   browser: {
     write(obj) {
       const msg = "msg" in obj && obj.msg;
       console.warn(
-        `Invalid use of @oakai/logger, use logger/browser, logMessage=${msg}`,
+        `Invalid use of @oakai/logger, use logger/browser, logMessage=${JSON.stringify(msg)}`,
       );
     },
   },

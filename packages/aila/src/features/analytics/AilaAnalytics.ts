@@ -14,7 +14,7 @@ export class AilaAnalytics {
     aila: AilaServices;
     adapters?: AnalyticsAdapter[];
   }) {
-    this._adapters = adapters || [];
+    this._adapters = adapters ?? [];
     this._aila = aila;
   }
 
