@@ -75,7 +75,7 @@ export function processQuizAnswers(
   }
 
   if (sortAlpha) {
-    answers = [...answers, ...distractors].sort();
+    answers = [...answers, ...distractors].sort((a, b) => a.localeCompare(b));
   }
 
   if (prefixWithABC) {
