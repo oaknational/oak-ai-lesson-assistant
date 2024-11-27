@@ -3,6 +3,7 @@
  * This script validates the data in the CSV files against the constraints defined in the Prisma schema.
  *
  **/
+import { aiLogger } from "@oakai/logger";
 import { Prisma } from "@prisma/client";
 import csvParser from "csv-parser";
 import dotenv from "dotenv";
@@ -15,9 +16,11 @@ const dataDir = path.join(__dirname, "data");
 
 dotenv.config();
 
+const logger = aiLogger("db");
+
 // Helper function to log messages
 const log = (message: string) => {
-  console.log(`[LOG] ${new Date().toISOString()}: ${message}`);
+  logger.info(`[LOG] ${new Date().toISOString()}: ${message}`);
 };
 
 // Helper function to get the Prisma model metadata
