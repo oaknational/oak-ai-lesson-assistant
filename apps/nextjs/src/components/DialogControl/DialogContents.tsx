@@ -23,11 +23,11 @@ const dialogTitlesAndIcons: Record<
 > = {
   "share-chat": {
     title: "Share lesson",
-    iconName: "share",
+    iconName: null,
   },
   feedback: {
     title: "",
-    iconName: "books",
+    iconName: null,
   },
   "report-content": {
     title: "Report content",
