@@ -47,7 +47,7 @@ const QuizDesignerPageContent = ({
     potentialNewQuestions,
     isLoading: suggestedQuestionsLoading,
     hasError: suggestedQuestionsHasError,
-    setPotentialNewQuestion,
+    setPotentialNewQuestions,
   } = useSuggestedQuestions({
     state,
     dispatch,
@@ -101,7 +101,7 @@ const QuizDesignerPageContent = ({
               suggestedQuestionsHasError={suggestedQuestionsHasError}
               potentialNewQuestions={potentialNewQuestions}
               dispatch={dispatch}
-              setPotentialNewQuestions={setPotentialNewQuestion}
+              setPotentialNewQuestions={setPotentialNewQuestions}
               suggestedQuestionsGeneration={suggestedQuestionsGeneration}
               questionRefs={questionRefs}
               questionsWrapperRef={questionsWrapperRef}

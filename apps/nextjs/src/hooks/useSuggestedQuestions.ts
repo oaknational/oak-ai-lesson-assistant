@@ -31,7 +31,7 @@ const useSuggestedQuestions = ({
   state,
   dispatch,
 }: UseSuggestedQuestionsProps) => {
-  const [potentialNewQuestions, setPotentialNewQuestion] =
+  const [potentialNewQuestions, setPotentialNewQuestions] =
     useState<PotentialQuestionsType>([]);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const useSuggestedQuestions = ({
       state.status === QuizAppStatus.EditingSubjectAndKS ||
       state.status === QuizAppStatus.Initial
     ) {
-      setPotentialNewQuestion([]);
+      setPotentialNewQuestions([]);
     }
   }, [state]);
 
@@ -60,7 +60,7 @@ const useSuggestedQuestions = ({
         });
       },
       onSuccess: ({ data }) => {
-        setPotentialNewQuestion(data.response);
+        setPotentialNewQuestions(data.response);
       },
     },
   );
@@ -107,7 +107,7 @@ const useSuggestedQuestions = ({
     hasError,
     potentialNewQuestions,
     medianTimeTakenForPrompt,
-    setPotentialNewQuestion,
+    setPotentialNewQuestions,
   };
 };
 
