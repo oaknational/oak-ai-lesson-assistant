@@ -2,6 +2,7 @@ import type { slides_v1 } from "@googleapis/slides";
 
 import type { Result } from "../../types";
 
+// #TODO Remove this string fallback and properly type the speaker notes tags
 export type SpeakerNotesTag = "cycle1" | "cycle2" | "cycle3" | string;
 
 function getSpeakerNotes(slide: slides_v1.Schema$Page): string {

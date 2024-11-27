@@ -23,6 +23,10 @@ const config = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   rootDir: ".",
   resetMocks: true,
+  collectCoverage:
+    process.env.CI === "true" || process.env.COLLECT_TEST_COVERAGE === "true",
+  coverageReporters: ["lcov", "text"],
+  coverageDirectory: "coverage",
 };
 
 module.exports = config;

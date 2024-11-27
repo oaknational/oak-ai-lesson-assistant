@@ -129,7 +129,7 @@ export function useExportQuizDoc({
       dialogOpen,
       closeDialog,
       status: query.status,
-      data: checkForSnapShotAndPreloadQuery.data || query.data,
+      data: checkForSnapShotAndPreloadQuery.data ?? query.data,
     }),
     [
       checkForSnapShotAndPreloadQuery.data,

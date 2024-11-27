@@ -15,7 +15,7 @@ const log = aiLogger("testing");
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? os.hostname();
 
 const GENERATIONS_PER_24H = parseInt(
-  process.env.RATELIMIT_GENERATIONS_PER_24H || "120",
+  process.env.RATELIMIT_GENERATIONS_PER_24H ?? "120",
   10,
 );
 
