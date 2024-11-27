@@ -14,8 +14,11 @@ export async function processImageReplacements<
   data: Data;
 }) {
   /**
-   * @TODO this function will ideally return a list of requests which is then sent in one batch update
-   * @TODO currently this function doesn't support multiple images in the same string, or images with text before and after it.
+   * @TODO this function will ideally return a list of requests which is then
+   * sent in one batch update. It currently makes a lot of requests to Google
+   * API, and I've seen it error with 429.
+   * @TODO currently this function doesn't support multiple images in the same
+   * string, or images with text before and after it.
    */
   for (const [key, value] of Object.entries(data)) {
     if (typeof value === "string" && value.includes("![image](")) {

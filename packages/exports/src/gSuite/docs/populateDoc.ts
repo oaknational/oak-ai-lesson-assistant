@@ -27,11 +27,12 @@ export async function populateDoc<
   try {
     const missingData: string[] = [];
 
-    await processImageReplacements({
-      googleDocs,
-      documentId,
-      data,
-    });
+    // Commenting out this part until the issues are resolved (see @TODOs on function defintiion)
+    // await processImageReplacements({
+    //   googleDocs,
+    //   documentId,
+    //   data,
+    // });
 
     const { requests: textRequests } = textReplacements({
       data,
