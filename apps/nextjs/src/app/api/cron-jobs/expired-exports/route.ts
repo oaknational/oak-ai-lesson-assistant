@@ -89,7 +89,7 @@ async function fetchExpiredExports({
     });
 
     const files =
-      res.data.files?.filter((file) => file.ownedByMe === true) || [];
+      res.data.files?.filter((file) => file.ownedByMe === true) ?? [];
 
     if (files.length === 0) {
       log.info(

@@ -63,7 +63,7 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
   const handleRegenerate = useCallback(() => {
     trackEvent("chat:regenerate", { id: id });
     const lastUserMessage =
-      findLast(messages, (m) => m.role === "user")?.content || "";
+      findLast(messages, (m) => m.role === "user")?.content ?? "";
     lessonPlanTracking.onClickRetry(lastUserMessage);
     queueUserAction("regenerate");
   }, [queueUserAction, lessonPlanTracking, messages, trackEvent, id]);
