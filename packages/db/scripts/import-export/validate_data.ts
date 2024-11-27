@@ -30,13 +30,15 @@ async function getModelConstraints() {
   models.forEach((model) => {
     if (model.dbName) {
       const tablesFilePath = path.join(__dirname, "tables.txt");
-      const tables = fs.readFileSync(tablesFilePath, "utf-8").split("\n").map(t => t.trim());
+      const tables = fs
+        .readFileSync(tablesFilePath, "utf-8")
+        .split("\n")
+        .map((t) => t.trim());
 
       if (!tables.includes(model.dbName)) {
         return;
       }
 
-      console.log(`Processing model: ${model.dbName}`);
       log(`Processing model: ${model.dbName}`);
 
       const nonNullable = model.fields
@@ -44,7 +46,7 @@ async function getModelConstraints() {
           (field) =>
             field.isRequired && !field.relationName && !field.hasDefaultValue,
         )
-        .map((field) => field.dbName || field.name); // Use `field.name` as fallback if `field.dbName` is undefined
+        .map((field) => field.dbName ?? field.name); // Use `field.name` as fallback if `field.dbName` is undefined
 
       const foreignKeys = model.fields
         .filter((field) => field.relationName)

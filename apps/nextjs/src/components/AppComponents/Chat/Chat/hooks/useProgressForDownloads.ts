@@ -59,7 +59,7 @@ export function useProgressForDownloads({
            */
           return true;
         }
-      }) || [];
+      }) ?? [];
     const sections = [
       {
         label: "Lesson details",

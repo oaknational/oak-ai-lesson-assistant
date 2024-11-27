@@ -35,7 +35,7 @@ export function expectPatch(
       value: expect.objectContaining({
         op: operation,
         path: path,
-        value: value === undefined ? expect.any(String) : value,
+        value: value ?? expect.any(String),
       }),
     }),
   );

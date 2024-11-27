@@ -19,9 +19,9 @@ export const defaultConfig: Config = {
     const webActionsPlugin = createWebActionsPlugin(globalPrisma);
     const createdAila = new Aila({
       ...options,
-      plugins: [...(options.plugins || []), webActionsPlugin],
+      plugins: [...(options.plugins ?? []), webActionsPlugin],
       prisma: options.prisma ?? globalPrisma,
-      chat: options.chat || {
+      chat: options.chat ?? {
         id: nanoid(),
         userId: undefined,
       },
