@@ -1,3 +1,6 @@
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import { aiLogger } from "@oakai/logger";
+
 import type {
   ExperimentalPatchDocument,
   MessagePart,
@@ -6,7 +9,7 @@ import type {
 import type { LooseLessonPlan, Quiz } from "../../protocol/schema";
 import { mathsQuizFixture } from "./mathsQuiz.fixture";
 
-const EXPERIMENTAL_PATCHES_ENABLED = true;
+const log = aiLogger("aila:experimental-patches");
 
 /**
  * Wrap a value in an experimental patch 'document'
@@ -27,17 +30,30 @@ export async function fetchExperimentalPatches({
   lessonPlan,
   parsedMessages,
   handlePatch,
+  userId,
 }: {
   lessonPlan: LooseLessonPlan;
   parsedMessages: MessagePart[][];
   handlePatch: (patch: ExperimentalPatchDocument) => Promise<void>;
+  userId?: string;
 }) {
-  if (!EXPERIMENTAL_PATCHES_ENABLED) {
+  if (lessonPlan.subject !== "maths") {
+    // Only maths has experimental patches for now
     return;
   }
 
-  if (lessonPlan.subject !== "maths") {
-    // Only maths has experimental patches for now
+  if (!userId) {
+    log.info("Experimental patches disabled or no user ID. Skipping.");
+    return;
+  }
+
+  const mathsQuizzesEnabled = await posthogAiBetaServerClient.isFeatureEnabled(
+    "maths-quiz-v0",
+    userId,
+  );
+
+  if (!mathsQuizzesEnabled) {
+    log.info("Maths quiz feature-flag disabled. Skipping.");
     return;
   }
 

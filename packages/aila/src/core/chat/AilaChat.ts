@@ -388,6 +388,7 @@ export class AilaChat implements AilaChatService {
         await this.enqueue(patch);
         this.appendExperimentalPatch(patch);
       },
+      userId: this._userId,
     });
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
