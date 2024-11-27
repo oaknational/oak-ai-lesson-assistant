@@ -1,6 +1,6 @@
-import type { LooseLessonPlan } from "../../protocol/schema";
+import type { LooseLessonPlan } from "../../../protocol/schema";
+import { cachedQuiz } from "../fixtures/fixtures_for_matt";
 import { DemoFullQuizService } from "./DemoFullQuizService";
-import { cachedQuiz } from "./fixtures/fixtures_for_matt";
 
 describe("DemoFullQuizService", () => {
   let service: DemoFullQuizService;

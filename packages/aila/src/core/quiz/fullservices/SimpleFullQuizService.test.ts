@@ -1,14 +1,14 @@
-import type { Quiz, QuizPath } from "../../protocol/schema";
-import { QuizSchema } from "../../protocol/schema";
-import { AilaQuiz } from "./AilaQuiz";
-import { SimpleFullQuizService } from "./BaseFullQuizService";
-import { selectHighestRated } from "./ChoiceModels";
-import { FullQuizServiceFactory } from "./FullQuizServiceFactory";
+import type { Quiz, QuizPath } from "../../../protocol/schema";
+import { QuizSchema } from "../../../protocol/schema";
+import { AilaQuiz } from "../AilaQuiz";
+import { selectHighestRated } from "../ChoiceModels";
+import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import {
   testRatingSchema,
   type TestRating,
-} from "./RerankerStructuredOutputSchema";
-import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
+} from "../rerankers/RerankerStructuredOutputSchema";
+import { SimpleFullQuizService } from "./BaseFullQuizService";
+import { FullQuizServiceFactory } from "./FullQuizServiceFactory";
 
 describe("Tests SimpleFullQuizService", () => {
   jest.setTimeout(30000);

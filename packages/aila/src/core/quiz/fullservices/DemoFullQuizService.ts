@@ -1,16 +1,16 @@
-import type { LooseLessonPlan, QuizQuestion } from "../../protocol/schema";
-import type { AilaQuizGeneratorService } from "../AilaServices";
+import type { LooseLessonPlan, QuizQuestion } from "../../../protocol/schema";
+import type { AilaQuizGeneratorService } from "../../AilaServices";
+import type { BaseType } from "../ChoiceModels";
+import type { BaseSchema } from "../ChoiceModels";
+import { cachedQuiz } from "../fixtures/fixtures_for_matt";
+import { MLQuizGenerator } from "../generators/MLQuizGenerator";
+import type { QuizSelector } from "../interfaces";
+import type { AilaQuizReranker } from "../interfaces";
+import type { quizPatchType } from "../interfaces";
+import { testRatingSchema } from "../rerankers/RerankerStructuredOutputSchema";
+import { TestSchemaReranker } from "../rerankers/SchemaReranker";
+import { SimpleQuizSelector } from "../selectors/SimpleQuizSelector";
 import { BaseFullQuizService } from "./BaseFullQuizService";
-import type { BaseType } from "./ChoiceModels";
-import type { BaseSchema } from "./ChoiceModels";
-import { MLQuizGenerator } from "./MLQuizGenerator";
-import { testRatingSchema } from "./RerankerStructuredOutputSchema";
-import { TestSchemaReranker } from "./SchemaReranker";
-import { SimpleQuizSelector } from "./SimpleQuizSelector";
-import { cachedQuiz } from "./fixtures/fixtures_for_matt";
-import type { QuizSelector } from "./interfaces";
-import type { AilaQuizReranker } from "./interfaces";
-import type { quizPatchType } from "./interfaces";
 
 export class DemoFullQuizService extends BaseFullQuizService {
   public quizSelector: QuizSelector<BaseType> =

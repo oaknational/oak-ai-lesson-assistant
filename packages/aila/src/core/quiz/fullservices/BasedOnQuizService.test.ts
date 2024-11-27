@@ -1,7 +1,7 @@
-import type { Quiz, QuizPath, QuizQuestion } from "../../protocol/schema";
-import { AilaQuizFactory } from "./AilaQuizGeneratorFactory";
+import type { Quiz, QuizPath, QuizQuestion } from "../../../protocol/schema";
+import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
+import { AilaQuizFactory } from "../generators/AilaQuizGeneratorFactory";
 import { BasedOnQuizService } from "./BasedOnQuizService";
-import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
 
 describe("BasedOnQuizService", () => {
   let quizService: BasedOnQuizService;

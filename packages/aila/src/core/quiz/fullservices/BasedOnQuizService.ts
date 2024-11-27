@@ -1,10 +1,10 @@
-import type { AilaQuizGeneratorService } from "../AilaServices";
-import { AilaQuizFactory } from "./AilaQuizGeneratorFactory";
-import { AilaQuizRerankerFactoryImpl } from "./AilaQuizRerankerFactory";
+import type { AilaQuizGeneratorService } from "../../AilaServices";
+import type { BaseSchema, BaseType } from "../ChoiceModels";
+import { AilaQuizFactory } from "../generators/AilaQuizGeneratorFactory";
+import type { AilaQuizReranker, QuizSelector } from "../interfaces";
+import { AilaQuizRerankerFactoryImpl } from "../rerankers/AilaQuizRerankerFactory";
+import { QuizSelectorFactoryImpl } from "../selectors/QuizSelectorFactory";
 import { BaseFullQuizService } from "./BaseFullQuizService";
-import type { BaseSchema, BaseType } from "./ChoiceModels";
-import { QuizSelectorFactoryImpl } from "./QuizSelectorFactory";
-import type { AilaQuizReranker, QuizSelector } from "./interfaces";
 
 export class BasedOnQuizService extends BaseFullQuizService {
   public quizGenerators: AilaQuizGeneratorService[] = [

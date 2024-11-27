@@ -2,19 +2,19 @@ import type {
   LooseLessonPlan,
   Quiz,
   QuizQuestion,
-} from "../../protocol/schema";
-import type { AilaQuizGeneratorService } from "../AilaServices";
-import type { BaseSchema, BaseType } from "./ChoiceModels";
-import { MLQuizGenerator } from "./MLQuizGenerator";
-import { testRatingSchema } from "./RerankerStructuredOutputSchema";
-import { TestSchemaReranker } from "./SchemaReranker";
-import { SimpleQuizSelector } from "./SimpleQuizSelector";
+} from "../../../protocol/schema";
+import type { AilaQuizGeneratorService } from "../../AilaServices";
+import type { BaseSchema, BaseType } from "../ChoiceModels";
+import { MLQuizGenerator } from "../generators/MLQuizGenerator";
 import type {
   AilaQuizReranker,
   FullQuizService,
   QuizSelector,
-} from "./interfaces";
-import type { quizPatchType } from "./interfaces";
+} from "../interfaces";
+import type { quizPatchType } from "../interfaces";
+import { testRatingSchema } from "../rerankers/RerankerStructuredOutputSchema";
+import { TestSchemaReranker } from "../rerankers/SchemaReranker";
+import { SimpleQuizSelector } from "../selectors/SimpleQuizSelector";
 
 export abstract class BaseFullQuizService implements FullQuizService {
   public abstract quizSelector: QuizSelector<BaseType>;
