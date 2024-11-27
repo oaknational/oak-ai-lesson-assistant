@@ -154,14 +154,18 @@ const validateCSV = (
 
         if (errors.length > 0) {
           log(`Validation failed for CSV file: ${filePath}`);
-          reject(errors);
+          reject(new Error(errors.join("\n")));
         } else {
           log(`Validation passed for CSV file: ${filePath}`);
           resolve();
         }
       })
       .on("error", (error) => {
-        reject(`Error reading CSV file: ${filePath}. Error: ${error.message}`);
+        reject(
+          new Error(
+            `Error reading CSV file: ${filePath}. Error: ${error.message}`,
+          ),
+        );
       });
   });
 };
