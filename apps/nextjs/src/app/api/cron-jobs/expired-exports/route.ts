@@ -54,14 +54,13 @@ async function updateExpiredAtAndDelete(fileIds: string[]) {
       log.error(`Error processing file with gdriveFileId: ${id}`, error);
       failedIds.push(id);
     }
-
-    if (failedIds.length > 0) {
-      const errorMessage = `Failed to process the following file IDs: ${failedIds.join(
-        ", ",
-      )}`;
-      log.error(errorMessage);
-      throw new Error(errorMessage);
-    }
+  }
+  if (failedIds.length > 0) {
+    const errorMessage = `Failed to process the following file IDs: ${failedIds.join(
+      ", ",
+    )}`;
+    log.error(errorMessage);
+    throw new Error(errorMessage);
   }
 }
 
