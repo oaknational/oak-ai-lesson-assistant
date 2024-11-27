@@ -305,7 +305,7 @@ export class Lessons {
     lessonId,
     quizQuestionId,
   }: {
-    question: { answer?: string | string[] | null | undefined };
+    question: { answer?: string | string[] | null };
     answer: string;
     lessonId: string;
     quizQuestionId: string;

@@ -137,9 +137,7 @@ export class LessonPlans {
       lessonPlanJsonSchema: JSON.stringify(LessonPlanJsonSchema),
       llmResponseJsonSchema: JSON.stringify(LLMResponseJsonSchema),
       isUsingStructuredOutput:
-        process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true"
-          ? true
-          : false,
+        process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true",
     });
 
     const systemPrompt = compiledTemplate;
