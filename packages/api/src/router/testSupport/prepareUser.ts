@@ -120,7 +120,7 @@ const deleteOldTestUser = async () => {
     return;
   }
 
-  const users = testUsers.sort(
+  const users = testUsers.toSorted(
     (a, b) =>
       new Date(a.lastActiveAt ?? a.createdAt).getTime() -
       new Date(b.lastActiveAt ?? b.createdAt).getTime(),
@@ -143,7 +143,7 @@ const deleteOldTestUser = async () => {
         log.info(
           `${userToDelete.primaryEmailAddress?.emailAddress} already deleted, retrying`,
         );
-        deleteOldTestUser();
+        await deleteOldTestUser();
       } else {
         throw e;
       }
