@@ -18,7 +18,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html>
+    <html lang="en">
       <body>
         <FullPageWarning>
           <FullPageWarning.Icon icon="acorn" size="xl" />

@@ -224,8 +224,8 @@ export const addCspHeaders = (
   if (
     request.nextUrl.pathname.match(
       /(_next\/static|_next\/image|favicon.ico)/,
-    ) ||
-    request.headers.has("next-router-prefetch") ||
+    ) ??
+    request.headers.has("next-router-prefetch") ??
     request.headers.has("purpose")
   ) {
     return response;

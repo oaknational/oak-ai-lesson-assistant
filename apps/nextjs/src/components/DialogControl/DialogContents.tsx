@@ -89,7 +89,7 @@ const DialogContents = ({
         <OakModalAtTheFront isOpen={!!dialogWindow} onClose={closeDialog}>
           <OakModalCenterBody
             title={dialogTitlesAndIcons[dialogWindow].title}
-            iconName={dialogTitlesAndIcons[dialogWindow].iconName || "warning"}
+            iconName={dialogTitlesAndIcons[dialogWindow].iconName ?? "warning"}
             hideIcon={dialogTitlesAndIcons[dialogWindow].iconName === null}
           >
             {children}

@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { OakPrimaryButton } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 import type { Survey } from "posthog-js";
 
-import ChatButton from "../AppComponents/Chat/ui/chat-button";
 import { Icon } from "../Icon";
 
 export type FeedBackProps = Readonly<{
@@ -131,7 +130,7 @@ const FeedBack = ({
                   {question.question}
                 </label>
                 <textarea
-                  tabIndex={1}
+                  tabIndex={0}
                   className="h-32 w-full min-w-[300px] rounded border-2 border-black p-10"
                   onChange={(e) => {
                     setUsersResponse({
@@ -147,7 +146,7 @@ const FeedBack = ({
         })}
         <div className="flex justify-center">
           <OakPrimaryButton
-            tabIndex={1}
+            tabIndex={0}
             onClick={() => {
               submitSurvey(usersResponse);
               onSubmit();
