@@ -1,10 +1,10 @@
 import type { z } from "zod";
 
+import { selectHighestRated, type RatingFunction } from "../ChoiceModels";
+import type { MaxRatingFunctionApplier } from "../ChoiceModels";
+import type { BaseType } from "../ChoiceModels";
+import { BaseSchema } from "../ChoiceModels";
 import { BaseQuizSelector } from "./BaseQuizSelector";
-import { selectHighestRated, type RatingFunction } from "./ChoiceModels";
-import type { MaxRatingFunctionApplier } from "./ChoiceModels";
-import type { BaseType } from "./ChoiceModels";
-import { BaseSchema } from "./ChoiceModels";
 
 // TODO: GCLOMAX - Why on earth is this not working?????????????
 export class SimpleQuizSelector<

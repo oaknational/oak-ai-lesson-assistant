@@ -1,6 +1,6 @@
+import type { QuizSelectorType } from "../schema";
 import { QuizSelectorFactoryImpl } from "./QuizSelectorFactory";
 import { SimpleQuizSelector } from "./SimpleQuizSelector";
-import type { QuizSelectorType } from "./schema";
 
 describe("QuizSelectorFactoryImpl", () => {
   let factory: QuizSelectorFactoryImpl;

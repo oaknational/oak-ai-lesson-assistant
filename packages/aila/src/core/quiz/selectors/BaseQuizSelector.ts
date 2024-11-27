@@ -1,10 +1,10 @@
 import type { z } from "zod";
 
-import type { QuizQuestion } from "../../protocol/schema";
-import type { RatingFunction } from "./ChoiceModels";
-import type { MaxRatingFunctionApplier } from "./ChoiceModels";
-import type { BaseSchema, BaseType } from "./ChoiceModels";
-import type { QuizSelector } from "./interfaces";
+import type { QuizQuestion } from "../../../protocol/schema";
+import type { RatingFunction } from "../ChoiceModels";
+import type { MaxRatingFunctionApplier } from "../ChoiceModels";
+import type { BaseSchema, BaseType } from "../ChoiceModels";
+import type { QuizSelector } from "../interfaces";
 
 export abstract class BaseQuizSelector<T extends BaseType>
   implements QuizSelector<T>

@@ -1,10 +1,10 @@
-import type { BaseType } from "./ChoiceModels";
+import type { BaseType } from "../ChoiceModels";
+import { cachedQuizRatings } from "../fixtures/cachedQuizRatings";
 import {
   testRatingSchema,
   type TestRating,
-} from "./RerankerStructuredOutputSchema";
+} from "../rerankers/RerankerStructuredOutputSchema";
 import { SimpleQuizSelector } from "./SimpleQuizSelector";
-import { cachedQuizRatings } from "./fixtures/cachedQuizRatings";
 
 describe("SimpleQuizSelector", () => {
   interface TestItem extends BaseType {
