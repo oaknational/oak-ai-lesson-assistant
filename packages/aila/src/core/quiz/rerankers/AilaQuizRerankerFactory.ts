@@ -21,7 +21,7 @@ export class AilaQuizRerankerFactoryImpl implements AilaQuizRerankerFactory {
   ): AilaQuizReranker<typeof BaseSchema> {
     switch (quizType) {
       case "schema-reranker":
-        return new TestSchemaReranker();
+        return new TestSchemaReranker(testRatingSchema, "/starterQuiz");
       case "return-first":
         // TODO: GCLOMAX - This needs refactoring and is an issue.
         return new ReturnFirstReranker(testRatingSchema, "/starterQuiz");

@@ -38,7 +38,7 @@ import { OpenAIService } from "../llm/OpenAIService";
 import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
 import { AilaQuiz } from "../quiz/AilaQuiz";
-import { FullQuizServiceFactory } from "../quiz/FullQuizServiceFactory";
+import { FullQuizServiceFactory } from "../quiz/fullservices/FullQuizServiceFactory";
 import type { FullQuizService } from "../quiz/interfaces";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";

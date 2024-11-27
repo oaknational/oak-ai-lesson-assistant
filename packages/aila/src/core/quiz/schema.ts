@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import type { BaseSchema } from "./ChoiceModels";
+
 export type retrievalStrategy = "bm25" | "blended";
 export type rerankerStrategy = "openai" | "elastic" | "blended";
 
@@ -32,3 +34,10 @@ export type QuizRecommenderType = z.infer<typeof QuizRecommenderTypeSchema>;
 
 export const QuizServiceSettingsSchema = z.enum(["simple", "demo", "basedOn"]);
 export type QuizServiceSettings = z.infer<typeof QuizServiceSettingsSchema>;
+
+export type QuizBuilderSettings = {
+  quizRatingSchema: z.ZodSchema<any, any, any>;
+  quizSelector: QuizSelectorType;
+  quizReranker: QuizRerankerType;
+  quizGenerators: QuizGeneratorType[];
+};
