@@ -33,7 +33,7 @@ jobs:
         run: pnpm install
 
       - name: Build, lint and type-check
-        run: pnpm turbo lint type-check --cache-dir=".turbo"
+        run: pnpm turbo db-generate:no-engine lint type-check --cache-dir=".turbo"
 
       - name: Check workspaces
         run: pnpm manypkg check
