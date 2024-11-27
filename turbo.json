@@ -84,6 +84,9 @@
       "cache": false,
       "env": ["TEST_USER_EMAIL", "TEST_USER_PASSWORD"]
     },
+    "test-coverage": {
+      "cache": false
+    },
     "storybook": {
       "cache": false
     }
