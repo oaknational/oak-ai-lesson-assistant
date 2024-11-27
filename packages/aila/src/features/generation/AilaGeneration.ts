@@ -139,16 +139,20 @@ export class AilaGeneration {
   }
 
   private async calculateTokenUsage(): Promise<void> {
-    if (!this._responseText) {
-      return;
-    }
-    this._promptTokens = this._chat.messages.reduce((acc, message) => {
-      return acc + this._modelEncoding.encode(message.content).length;
-    }, 0);
-    this._completionTokens = this._modelEncoding.encode(
-      this._responseText,
-    ).length;
-    this._totalTokens = this._promptTokens + this._completionTokens;
+    return new Promise<void>((resolve) => {
+      if (!this._responseText) {
+        resolve();
+        return;
+      }
+      this._promptTokens = this._chat.messages.reduce((acc, message) => {
+        return acc + this._modelEncoding.encode(message.content).length;
+      }, 0);
+      this._completionTokens = this._modelEncoding.encode(
+        this._responseText,
+      ).length;
+      this._totalTokens = this._promptTokens + this._completionTokens;
+      resolve();
+    });
   }
 
   private async fetchPromptId(): Promise<string> {
