@@ -1,13 +1,12 @@
-import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
+import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
   Quiz,
   QuizQuestion,
-} from "../../protocol/schema";
-import type { LooseLessonPlan } from "../../protocol/schema";
-import { BaseQuizGenerator } from "./AilaQuizVariants";
+} from "../../../protocol/schema";
+import type { LooseLessonPlan } from "../../../protocol/schema";
+import type { CustomHit } from "../interfaces";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
-import type { CustomHit } from "./interfaces";
 
 // This generates a quiz based on the *Underlying AILA RAG service* relevant lessons.
 // TODO: GCLOMAX - Seperate out starter and exit quizzes.

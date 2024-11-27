@@ -1,5 +1,5 @@
-import type { BaseQuizGenerator } from "./AilaQuizVariants";
 import { AilaRagQuizGenerator } from "./AilaRagQuizGenerator";
+import type { BaseQuizGenerator } from "./BaseQuizGenerator";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 import { MLQuizGenerator } from "./MLQuizGenerator";
 
