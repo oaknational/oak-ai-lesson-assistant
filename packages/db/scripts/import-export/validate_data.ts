@@ -3,6 +3,7 @@
  * This script validates the data in the CSV files against the constraints defined in the Prisma schema.
  *
  **/
+import { aiLogger } from "@oakai/logger";
 import { Prisma } from "@prisma/client";
 import csvParser from "csv-parser";
 import dotenv from "dotenv";
@@ -11,13 +12,15 @@ import * as path from "path";
 
 import { prisma } from "../..";
 
+const logger = aiLogger("db");
+
 const dataDir = path.join(__dirname, "data");
 
 dotenv.config();
 
 // Helper function to log messages
 const log = (message: string) => {
-  console.log(`[LOG] ${new Date().toISOString()}: ${message}`);
+  logger.info(`[LOG] ${new Date().toISOString()}: ${message}`);
 };
 
 // Helper function to get the Prisma model metadata
@@ -30,13 +33,15 @@ async function getModelConstraints() {
   models.forEach((model) => {
     if (model.dbName) {
       const tablesFilePath = path.join(__dirname, "tables.txt");
-      const tables = fs.readFileSync(tablesFilePath, "utf-8").split("\n").map(t => t.trim());
+      const tables = fs
+        .readFileSync(tablesFilePath, "utf-8")
+        .split("\n")
+        .map((t) => t.trim());
 
       if (!tables.includes(model.dbName)) {
         return;
       }
 
-      console.log(`Processing model: ${model.dbName}`);
       log(`Processing model: ${model.dbName}`);
 
       const nonNullable = model.fields
@@ -111,7 +116,7 @@ const validateCSV = (
       .on("end", async () => {
         log(`Completed reading CSV file: ${filePath}`);
 
-        // Validate foriegn keys in CSV
+        // Validate foreign keys in CSV
         for (const [fk, refTable] of Object.entries(foreignKeys)) {
           const ids: string[] = Array.from(foreignKeyCheck[fk] || []);
 
