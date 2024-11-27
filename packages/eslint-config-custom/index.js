@@ -17,9 +17,22 @@ module.exports = {
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
       ],
+      plugins:["import"],
       parser: "@typescript-eslint/parser",
       files: ["*.{ts,tsx}"],
       rules: {
+        "import/no-cycle": "warn",
+        "import/order": [
+          "warn",
+          {
+            "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+            "newlines-between": "always",
+            "alphabetize": {
+              "order": "asc",
+              "caseInsensitive": true
+            }
+          }
+        ],
         "no-console": "warn",
         "no-extra-boolean-cast": "warn",
         "no-useless-escape": "warn",
