@@ -17,6 +17,7 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
   ): Promise<Quiz[]> {
     const quizArray: Quiz[] = [];
     for (const relevantLesson of ailaRagRelevantLessons) {
+      // TODO: GCLOMAX - This repeats a load of DB queries - combine them.
       quizArray.push(
         await this.questionArrayFromPlanId(relevantLesson.lessonPlanId),
       );
