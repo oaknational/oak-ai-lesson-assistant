@@ -22,7 +22,8 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     const qq = this.unpackLessonPlanForRecommender(lessonPlan);
     const customIds = await this.rerankAndExtractCustomIds(hits, qq);
     const quizQuestions = await this.retrieveAndProcessQuestions(customIds);
-    return quizQuestions;
+    // This should return an array of questions - sometimes there are more than six questions.
+    return quizQuestions.slice(0, 6);
   }
 
   // TODO: GCLOMAX - Change for starter and exit quizzes.
