@@ -46,7 +46,7 @@ export function getCategoryGroup(category: string) {
   return (
     moderationCategories.find((group) =>
       group.categories.some((c) => c.code === category),
-    ) || null
+    ) ?? null
   );
 }
 

@@ -7,6 +7,10 @@ import type { DialogTypes } from "../Chat/Chat/types";
 interface DialogContextType {
   dialogWindow: DialogTypes;
   setDialogWindow: React.Dispatch<React.SetStateAction<DialogTypes>>;
+  dialogProps?: Record<string, unknown>;
+  setDialogProps: React.Dispatch<React.SetStateAction<Record<string, unknown>>>;
+  openSidebar: boolean;
+  setOpenSidebar: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const DialogContext = createContext<DialogContextType | undefined>(
@@ -17,10 +21,19 @@ export const DialogProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [dialogWindow, setDialogWindow] = useState<DialogTypes>("");
+  const [dialogProps, setDialogProps] = useState<Record<string, unknown>>({});
+  const [openSidebar, setOpenSidebar] = useState(false);
 
   const value = useMemo(
-    () => ({ dialogWindow, setDialogWindow }),
-    [dialogWindow],
+    () => ({
+      dialogWindow,
+      setDialogWindow,
+      dialogProps,
+      setDialogProps,
+      openSidebar,
+      setOpenSidebar,
+    }),
+    [dialogWindow, dialogProps, openSidebar],
   );
 
   return (

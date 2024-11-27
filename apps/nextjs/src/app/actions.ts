@@ -55,7 +55,7 @@ export async function getChatById(
       id,
       sessionOutput: session.output,
       userId: session.userId,
-    }) || null
+    }) ?? null
   );
 }
 

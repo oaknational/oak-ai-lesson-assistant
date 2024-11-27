@@ -15,7 +15,7 @@ const log = aiLogger("testing");
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? os.hostname();
 
 const GENERATIONS_PER_24H = parseInt(
-  process.env.RATELIMIT_GENERATIONS_PER_24H || "120",
+  process.env.RATELIMIT_GENERATIONS_PER_24H ?? "120",
   10,
 );
 
@@ -95,7 +95,7 @@ const generateEmailAddress = (personaName: keyof typeof personas) => {
     // All users use the "test@thenational.academy" mailbox with a `+` alias
     "test",
     // Replace non-alphanumeric characters with -
-    branch.replace(/\W+/g, "-"),
+    branch.replace(/\W+/g, "-").slice(-15),
     // A new login for each persona
     personaName,
     // Allows signing in with the email_code strategy

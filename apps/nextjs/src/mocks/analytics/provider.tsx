@@ -46,7 +46,7 @@ const mockAnalyticsContext: AnalyticsContext = {
   } as unknown as PostHog,
 };
 
-export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({
+export const AnalyticsProvider: React.FC<{ readonly children: React.ReactNode }> = ({
   children,
 }) => (
   <analyticsContext.Provider value={mockAnalyticsContext}>

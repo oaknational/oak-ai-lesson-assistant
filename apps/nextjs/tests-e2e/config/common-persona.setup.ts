@@ -13,7 +13,7 @@ const setTestChatIdCookie = async (page: Page, chatId: string | undefined) => {
     {
       url: TEST_BASE_URL,
       name: "typicalChatId",
-      value: chatId || "",
+      value: chatId ?? "",
     },
   ]);
 };

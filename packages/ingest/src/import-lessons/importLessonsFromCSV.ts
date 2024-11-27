@@ -77,13 +77,15 @@ export function importLessonsFromCSV({
           onError(
             new IngestError("Failed to import from CSV", { ingestId, cause }),
           );
-          reject();
+          reject(cause);
         });
     } catch (cause) {
-      onError(
-        new IngestError("Failed to import from CSV", { ingestId, cause }),
-      );
-      reject();
+      const rejection = new IngestError("Failed to import from CSV", {
+        ingestId,
+        cause,
+      });
+      onError(rejection);
+      reject(rejection);
     }
   });
 }

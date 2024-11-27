@@ -28,26 +28,28 @@ const displayStyles = cva(
   "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24 ",
 );
 
+export type LessonPlanDisplayProps = Readonly<{
+  chatEndRef: React.MutableRefObject<HTMLDivElement | null>;
+  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
+  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
+  showLessonMobile: boolean;
+}>;
+
 export const LessonPlanDisplay = ({
   chatEndRef,
   sectionRefs,
   documentContainerRef,
   showLessonMobile,
-}: {
-  chatEndRef: React.MutableRefObject<HTMLDivElement | null>;
-  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
-  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
-  showLessonMobile: boolean;
-}) => {
+}: LessonPlanDisplayProps) => {
   const chat = useLessonChat();
   const { ailaStreamingStatus, lastModeration } = chat;
   const lessonPlan = {
     ...chat.lessonPlan,
     starterQuiz:
-      chat.lessonPlan._experimental_starterQuizMathsV0 ||
+      chat.lessonPlan._experimental_starterQuizMathsV0 ??
       chat.lessonPlan.starterQuiz,
     exitQuiz:
-      chat.lessonPlan._experimental_exitQuizMathsV0 || chat.lessonPlan.exitQuiz,
+      chat.lessonPlan._experimental_exitQuizMathsV0 ?? chat.lessonPlan.exitQuiz,
   };
 
   const [userHasCancelledAutoScroll, setUserHasCancelledAutoScroll] =

@@ -4,7 +4,10 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-function IconOpenAI({ className, ...props }: React.ComponentProps<"svg">) {
+function IconOpenAI({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       fill="currentColor"
@@ -20,7 +23,10 @@ function IconOpenAI({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconArrowDown({ className, ...props }: React.ComponentProps<"svg">) {
+function IconArrowDown({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +40,10 @@ function IconArrowDown({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconArrowRight({ className, ...props }: React.ComponentProps<"svg">) {
+function IconArrowRight({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -48,7 +57,10 @@ function IconArrowRight({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconUser({ className, ...props }: React.ComponentProps<"svg">) {
+function IconUser({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +74,10 @@ function IconUser({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconPlus({ className, ...props }: React.ComponentProps<"svg">) {
+function IconPlus({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +91,10 @@ function IconPlus({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconArrowElbow({ className, ...props }: React.ComponentProps<"svg">) {
+function IconArrowElbow({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -90,7 +108,10 @@ function IconArrowElbow({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconSpinner({ className, ...props }: React.ComponentProps<"svg">) {
+function IconSpinner({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +125,10 @@ function IconSpinner({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconMessage({ className, ...props }: React.ComponentProps<"svg">) {
+function IconMessage({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +142,10 @@ function IconMessage({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconTrash({ className, ...props }: React.ComponentProps<"svg">) {
+function IconTrash({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -132,7 +159,10 @@ function IconTrash({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconRefresh({ className, ...props }: React.ComponentProps<"svg">) {
+function IconRefresh({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -146,7 +176,10 @@ function IconRefresh({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconStop({ className, ...props }: React.ComponentProps<"svg">) {
+function IconStop({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +193,10 @@ function IconStop({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconSidebar({ className, ...props }: React.ComponentProps<"svg">) {
+function IconSidebar({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -174,7 +210,10 @@ function IconSidebar({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconCopy({ className, ...props }: React.ComponentProps<"svg">) {
+function IconCopy({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -188,7 +227,10 @@ function IconCopy({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconCheck({ className, ...props }: React.ComponentProps<"svg">) {
+function IconCheck({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -202,7 +244,10 @@ function IconCheck({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconDownload({ className, ...props }: React.ComponentProps<"svg">) {
+function IconDownload({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -216,7 +261,10 @@ function IconDownload({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconClose({ className, ...props }: React.ComponentProps<"svg">) {
+function IconClose({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -230,7 +278,10 @@ function IconClose({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconEdit({ className, ...props }: React.ComponentProps<"svg">) {
+function IconEdit({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -250,7 +301,10 @@ function IconEdit({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconShare({ className, ...props }: React.ComponentProps<"svg">) {
+function IconShare({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -264,7 +318,10 @@ function IconShare({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-function IconUsers({ className, ...props }: React.ComponentProps<"svg">) {
+function IconUsers({
+  className,
+  ...props
+}: Readonly<React.ComponentProps<"svg">>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

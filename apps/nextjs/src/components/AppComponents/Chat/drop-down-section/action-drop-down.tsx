@@ -1,20 +1,21 @@
-import { Dispatch, RefObject, SetStateAction } from "react";
+import type { Dispatch, RefObject, SetStateAction } from "react";
 
 import { aiLogger } from "@oakai/logger";
 import { OakP, OakRadioGroup } from "@oaknational/oak-components";
-import { $Enums, AilaUserModificationAction } from "@prisma/client";
+import type { $Enums, AilaUserModificationAction } from "@prisma/client";
 import { TextArea } from "@radix-ui/themes";
 
-import {
+import type {
   AdditionalMaterialOptions,
   ModifyOptions,
 } from "./action-button.types";
-import { DropDownFormWrapper, FeedbackOption } from "./drop-down-form-wrapper";
+import type { FeedbackOption } from "./drop-down-form-wrapper";
+import { DropDownFormWrapper } from "./drop-down-form-wrapper";
 import { SmallRadioButton } from "./small-radio-button";
 
 const log = aiLogger("chat");
 
-type DropDownProps = {
+export type DropDownProps = Readonly<{
   sectionTitle: string;
   options: ModifyOptions | AdditionalMaterialOptions;
   selectedRadio: FeedbackOption<AilaUserModificationAction> | null;
@@ -31,7 +32,7 @@ type DropDownProps = {
   userSuggestionTitle: string;
   dropdownRef: RefObject<HTMLDivElement>;
   id: string;
-};
+}>;
 
 export const ActionDropDown = ({
   sectionTitle,
