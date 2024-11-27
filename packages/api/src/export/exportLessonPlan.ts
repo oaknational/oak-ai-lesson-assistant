@@ -1,19 +1,17 @@
 import type { SignedInAuthObject } from "@clerk/backend/internal";
-import { clerkClient } from "@clerk/nextjs/server";
-import { LessonSnapshots } from "@oakai/core";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { exportDocLessonPlan } from "@oakai/exports";
 import type { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 
-import type {
-  OutputSchema} from "../router/exports";
+import type { OutputSchema } from "../router/exports";
+import { ailaSaveExport, reportErrorResult } from "../router/exports";
 import {
-  ailaGetExportBySnapshotId,
-  ailaSaveExport,
-  reportErrorResult,
-} from "../router/exports";
+  getExportData,
+  getLessonSnapshot,
+  getUserEmail,
+} from "./exportHelpers";
 
 const log = aiLogger("exports");
 
@@ -22,7 +20,7 @@ export async function exportLessonPlan({
   ctx,
 }: {
   input: {
-    data: LessonSlidesInputData;
+    data: LessonSlidesInputData; // should this be lesson plan
     chatId: string;
     messageId: string;
   };
@@ -31,10 +29,7 @@ export async function exportLessonPlan({
     prisma: PrismaClientWithAccelerate;
   };
 }) {
-  const user = await clerkClient.users.getUser(ctx.auth.userId);
-  const userEmail = user?.emailAddresses[0]?.emailAddress;
-  const exportType = "LESSON_PLAN_DOC";
-
+  const userEmail = await getUserEmail(ctx);
   if (!userEmail) {
     return {
       error: new Error("User email not found"),
@@ -42,39 +37,22 @@ export async function exportLessonPlan({
     };
   }
 
-  const lessonSnapshots = new LessonSnapshots(ctx.prisma);
-  const lessonSnapshot = await lessonSnapshots.getOrSaveSnapshot({
-    userId: ctx.auth.userId,
-    chatId: input.chatId,
-    messageId: input.messageId,
-    snapshot: input.data,
-    trigger: "EXPORT_BY_USER",
+  const exportType = "LESSON_PLAN_DOC";
+
+  const lessonSnapshot = await getLessonSnapshot<LessonSlidesInputData>({
+    ctx,
+    input,
+    exportType,
   });
 
-  Sentry.addBreadcrumb({
-    category: "exportLessonPlanDoc",
-    message: "Got or saved snapshot",
-    data: { lessonSnapshot },
-  });
-
-  const exportData = await ailaGetExportBySnapshotId({
+  const exportData = await getExportData({
     prisma: ctx.prisma,
     snapshotId: lessonSnapshot.id,
     exportType,
   });
 
-  Sentry.addBreadcrumb({
-    category: "exportLessonPlanDoc",
-    message: "Got export data",
-    data: { exportData },
-  });
-
   if (exportData) {
-    const output: OutputSchema = {
-      link: exportData.gdriveFileUrl,
-      canViewSourceDoc: exportData.userCanViewGdriveFile,
-    };
-    return output;
+    return;
   }
 
   /**
