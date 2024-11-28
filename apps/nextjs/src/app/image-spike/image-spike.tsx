@@ -5,7 +5,7 @@ import Link from "next/link";
 const ImageSpike = ({ lessons }: { lessons: any }) => {
   const lessonTitles = lessons.map((lesson: any) => ({
     sessionId: lesson.id,
-    lessonTitle: lesson.output.lessonPlan.title,
+    lessonTitle: lesson?.output?.lessonPlan?.title || "",
   }));
 
   return (
