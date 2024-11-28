@@ -99,3 +99,34 @@ export const getExportData = async ({
     return output;
   }
 };
+
+export const getExistingExportData = async <T>({
+  input,
+  ctx,
+  exportType,
+}: {
+  input: {
+    data: T;
+    chatId: string;
+    messageId: string;
+  };
+  ctx: {
+    auth: SignedInAuthObject;
+    prisma: PrismaClientWithAccelerate;
+  };
+  exportType: LessonExportType;
+}) => {
+  const lessonSnapshot = await getLessonSnapshot<T>({
+    ctx,
+    input,
+    exportType,
+  });
+
+  const exportData = await getExportData({
+    prisma: ctx.prisma,
+    snapshotId: lessonSnapshot.id,
+    exportType,
+  });
+
+  return { exportData, lessonSnapshot };
+};

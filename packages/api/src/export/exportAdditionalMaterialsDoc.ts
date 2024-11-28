@@ -8,6 +8,7 @@ import * as Sentry from "@sentry/nextjs";
 import type { OutputSchema } from "../router/exports";
 import { ailaSaveExport, reportErrorResult } from "../router/exports";
 import {
+  getExistingExportData,
   getExportData,
   getLessonSnapshot,
   getUserEmail,
@@ -38,20 +39,14 @@ export async function exportAdditionalMaterialsDoc({
   }
   const exportType = "ADDITIONAL_MATERIALS_DOCS";
 
-  const lessonSnapshot = await getLessonSnapshot<LessonSlidesInputData>({
+  const { exportData, lessonSnapshot } = await getExistingExportData({
     ctx,
     input,
     exportType,
   });
 
-  const exportData = await getExportData({
-    prisma: ctx.prisma,
-    snapshotId: lessonSnapshot.id,
-    exportType,
-  });
-
   if (exportData) {
-    return;
+    return exportData;
   }
 
   const result = await exportAdditionalMaterials({

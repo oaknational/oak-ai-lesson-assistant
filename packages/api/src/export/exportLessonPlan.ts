@@ -7,11 +7,7 @@ import * as Sentry from "@sentry/nextjs";
 
 import type { OutputSchema } from "../router/exports";
 import { ailaSaveExport, reportErrorResult } from "../router/exports";
-import {
-  getExportData,
-  getLessonSnapshot,
-  getUserEmail,
-} from "./exportHelpers";
+import { getExistingExportData, getUserEmail } from "./exportHelpers";
 
 const log = aiLogger("exports");
 
@@ -39,20 +35,14 @@ export async function exportLessonPlan({
 
   const exportType = "LESSON_PLAN_DOC";
 
-  const lessonSnapshot = await getLessonSnapshot<LessonSlidesInputData>({
+  const { exportData, lessonSnapshot } = await getExistingExportData({
     ctx,
     input,
     exportType,
   });
 
-  const exportData = await getExportData({
-    prisma: ctx.prisma,
-    snapshotId: lessonSnapshot.id,
-    exportType,
-  });
-
   if (exportData) {
-    return;
+    return exportData;
   }
 
   /**
