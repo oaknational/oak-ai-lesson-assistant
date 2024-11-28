@@ -52,8 +52,8 @@ jobs:
         run: |
           mkdir -p coverage/merged
           lcov -a apps/nextjs/coverage/lcov.info \
-               -a packages/aila/coverage/lcov-info.lcov \
-               -a packages/ingest/coverage/lcov-info.lcov \
+               -a packages/aila/coverage/lcov.lcov \
+               -a packages/ingest/coverage/lcov.lcov \
                -o coverage/merged/lcov.info
 
       - name: Upload coverage artifact
