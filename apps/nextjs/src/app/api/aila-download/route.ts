@@ -29,7 +29,7 @@ function iteratorToStream(iterator: AsyncGenerator<Uint8Array>) {
   });
 }
 
-export function getReadableExportType(exportType: LessonExportType) {
+function getReadableExportType(exportType: LessonExportType) {
   switch (exportType) {
     case "EXIT_QUIZ_DOC":
       return "Exit quiz";

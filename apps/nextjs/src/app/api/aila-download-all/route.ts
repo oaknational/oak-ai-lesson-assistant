@@ -35,7 +35,7 @@ function nodePassThroughToReadableStream(passThrough: PassThrough) {
   });
 }
 
-export function getReadableExportType(exportType: LessonExportType) {
+function getReadableExportType(exportType: LessonExportType) {
   switch (exportType) {
     case "EXIT_QUIZ_DOC":
       return "Exit quiz";
