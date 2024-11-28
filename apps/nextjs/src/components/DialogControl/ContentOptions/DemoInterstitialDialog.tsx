@@ -59,7 +59,7 @@ const CreatingChatDialog = ({
     }
   }, [isSubmitting, demo]);
 
-  const createAppSession = useCallback(async () => {
+  const createAppSession = useCallback(() => {
     if (!submit) {
       throw new Error("DemoInterstitialDialog requires a submit function");
     }
@@ -67,7 +67,7 @@ const CreatingChatDialog = ({
     setIsSubmitting(true);
 
     try {
-      await submit();
+      submit();
     } catch (error) {
       log.error("Error creating demo lesson:", error);
       setIsSubmitting(false);
