@@ -37,7 +37,7 @@ export const keywordSchema = z.object({
   definition: z.string(),
 });
 
-export const lessonSlidesInputSchema = z.object({
+export const baseLessonPlanSchema = z.object({
   title: z.string(),
   subject: z.string(),
   keyStage: z.string().nullish(),
@@ -56,31 +56,17 @@ export const lessonSlidesInputSchema = z.object({
   additionalMaterials: z.string().nullish(),
 });
 
-export type LessonSlidesInputData = z.infer<typeof lessonSlidesInputSchema>;
+export const lessonSlidesInputSchema = baseLessonPlanSchema;
 
-export const lessonPlanDocInputSchema = lessonSlidesInputSchema;
-
-export const lessonPlanSectionsSchema = z.object({
-  title: z.string(),
-  subject: z.string(),
-  keyStage: z.string(),
-  topic: z.string().nullish(),
-  learningOutcome: z.string(),
-  learningCycles: z.array(z.string()).min(1),
+export const lessonPlanSectionsSchema = baseLessonPlanSchema.extend({
   priorKnowledge: z.array(z.string()),
-  keyLearningPoints: z.array(z.string()).min(1),
   misconceptions: z.array(misconceptionSchema),
   keywords: z.array(keywordSchema),
-  starterQuiz: quizSchema.min(1),
-  exitQuiz: quizSchema.min(1),
-  cycle1: cycleSchema,
-  cycle2: cycleSchema.nullish(),
-  cycle3: cycleSchema.nullish(),
-  additionalMaterials: z.string().nullish(),
 });
-export type LessonPlanSections = z.infer<typeof lessonPlanSectionsSchema>;
 
-export type LessonPlanDocInputData = z.infer<typeof lessonPlanDocInputSchema>;
+export type LessonSlidesInputData = z.infer<typeof lessonSlidesInputSchema>;
+export type LessonPlanSections = z.infer<typeof lessonPlanSectionsSchema>;
+export type LessonPlanDocInputData = z.infer<typeof lessonSlidesInputSchema>;
 
 const cycleForWorksheetSchema = z.object({
   title: z.string(),
