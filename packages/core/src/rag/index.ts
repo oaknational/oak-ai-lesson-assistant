@@ -776,7 +776,7 @@ Thank you and happy classifying!`;
       topN: k,
     });
     const mostRelevantHydrated = rerank.results
-      .sort((a, b) => b.relevanceScore - a.relevanceScore)
+      .toSorted((a, b) => b.relevanceScore - a.relevanceScore)
       .map((r) => {
         const lessonPlan = lessonPlans[r.index];
         if (!lessonPlan) {
