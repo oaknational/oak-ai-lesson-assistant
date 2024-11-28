@@ -59,7 +59,12 @@ export const ModerationFeedbackForm = ({
           </span>
         </Dialog.Description>
       </div>
-      <form onSubmit={onSubmit}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          void onSubmit();
+        }}
+      >
         <Textarea
           className="min-h-30 w-full resize-none rounded border border-gray-600 bg-transparent px-10 py-[0.6rem] text-base placeholder-gray-700 focus-within:outline-none"
           onChange={(e) => setComment(e.target.value)}
@@ -71,7 +76,13 @@ export const ModerationFeedbackForm = ({
         <ChatButton variant="text-link" onClick={closeModal}>
           Back to lesson
         </ChatButton>
-        <ChatButton variant="primary" onClick={onSubmit} disabled={!isValid}>
+        <ChatButton
+          variant="primary"
+          onClick={() => {
+            void onSubmit();
+          }}
+          disabled={!isValid}
+        >
           Submit feedback
         </ChatButton>
       </div>
