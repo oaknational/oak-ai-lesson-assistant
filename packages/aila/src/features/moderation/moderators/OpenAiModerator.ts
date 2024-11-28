@@ -41,9 +41,9 @@ export interface OpenAILike {
 
 export class OpenAiModerator extends AilaModerator {
   protected _openAIClient: OpenAILike;
-  private _temperature: number = DEFAULT_MODERATION_TEMPERATURE;
-  private _model: string = DEFAULT_MODERATION_MODEL;
-  private _aila?: AilaServices;
+  private readonly _temperature: number = DEFAULT_MODERATION_TEMPERATURE;
+  private readonly _model: string = DEFAULT_MODERATION_MODEL;
+  private readonly _aila?: AilaServices;
 
   constructor({
     chatId,
@@ -105,7 +105,7 @@ export class OpenAiModerator extends AilaModerator {
           json_schema: {
             name: "moderationResponse",
             /**
-             * Currently `strict` mode does not support minimum/maxiumum integer types, which
+             * Currently `strict` mode does not support minimum/maximum integer types, which
              * we use for the likert scale in the moderation schema.
              * @see https://community.openai.com/t/new-function-calling-with-strict-has-a-problem-with-minimum-integer-type/903258
              */

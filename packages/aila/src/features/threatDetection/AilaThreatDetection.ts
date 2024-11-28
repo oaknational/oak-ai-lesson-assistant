@@ -3,7 +3,7 @@ import type { AilaThreatDetector } from "./detectors/AilaThreatDetector";
 import { HeliconeThreatDetector } from "./detectors/HeliconeThreatDetector";
 
 export class AilaThreatDetection implements AilaThreatDetectionFeature {
-  private _detector: AilaThreatDetector;
+  private readonly _detector: AilaThreatDetector;
 
   get detector() {
     return this._detector;
