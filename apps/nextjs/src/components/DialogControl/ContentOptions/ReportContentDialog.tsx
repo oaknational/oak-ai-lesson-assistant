@@ -41,7 +41,9 @@ const ReportContentDialog = ({
     closeDialogWithPostHogDismiss();
   }
 
-  async function onSubmit(e?: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(
+    e?: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
+  ) {
     log.info("submitting");
     e?.preventDefault();
     setUserHasSubmitted(true);
@@ -64,7 +66,7 @@ const ReportContentDialog = ({
     <Flex className="h-full w-full" direction="column" justify="between">
       <form
         className="flex flex-col gap-14"
-        onSubmit={async (e) => {
+        onSubmit={(e) => {
           e.preventDefault();
         }}
       >
@@ -95,7 +97,7 @@ const ReportContentDialog = ({
 
             <ModalFooterButtons
               actionButtonStates={() => (
-                <OakPrimaryButton onClick={() => onSubmit()}>
+                <OakPrimaryButton onClick={onSubmit}>
                   Submit feedback
                 </OakPrimaryButton>
               )}
