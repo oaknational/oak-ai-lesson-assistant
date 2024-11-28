@@ -24,6 +24,7 @@ export type ReactMarkdownWithStylesProps = Readonly<{
   className?: string;
 }>;
 
+// This could do with further refactoring to make it more readable
 const createComponents = (
   className?: string,
   lessonPlanSectionDescription?: string,
