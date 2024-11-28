@@ -1,9 +1,17 @@
 import type { docs_v1 } from "@googleapis/docs";
+import { aiLogger } from "@oakai/logger";
 
 import type { Result } from "../../types";
 import type { ValueToString } from "../../utils";
 import { defaultValueToString } from "../../utils";
+<<<<<<< Updated upstream
+=======
+import { findMarkdownImages } from "./findMarkdownImages";
+import { imageReplacements } from "./imageReplacements";
+>>>>>>> Stashed changes
 import { textReplacements } from "./textReplacements";
+
+const log = aiLogger("exports");
 
 /**
  * Populates the template document with the given data, handling image replacements for all placeholders.
@@ -26,13 +34,6 @@ export async function populateDoc<
   try {
     const missingData: string[] = [];
 
-    // Commenting out this part until the issues are resolved (see @TODOs on function defintiion)
-    // await processImageReplacements({
-    //   googleDocs,
-    //   documentId,
-    //   data,
-    // });
-
     const { requests: textRequests } = textReplacements({
       data,
       warnIfMissing,
@@ -48,13 +49,26 @@ export async function populateDoc<
       });
     }
 
+    const markdownImages = await findMarkdownImages(googleDocs, documentId);
+
+    const { requests: imageRequests } = imageReplacements(markdownImages);
+
+    if (imageRequests.length > 0) {
+      await googleDocs.documents.batchUpdate({
+        documentId,
+        requestBody: {
+          requests: imageRequests,
+        },
+      });
+    }
+
     return {
       data: {
         missingData,
       },
     };
   } catch (error) {
-    console.error("Failed to populate document:", error);
+    log.error("Failed to populate document:", error);
     return {
       error,
       message: "Failed to populate doc template",
