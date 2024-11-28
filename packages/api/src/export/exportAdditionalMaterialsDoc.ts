@@ -7,12 +7,7 @@ import * as Sentry from "@sentry/nextjs";
 
 import type { OutputSchema } from "../router/exports";
 import { ailaSaveExport, reportErrorResult } from "../router/exports";
-import {
-  getExistingExportData,
-  getExportData,
-  getLessonSnapshot,
-  getUserEmail,
-} from "./exportHelpers";
+import { getExistingExportData, getUserEmail } from "./exportHelpers";
 
 const log = aiLogger("exports");
 
