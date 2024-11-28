@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 
 import type { Resource } from "ai-apps/image-alt-generation/types";
+import Image from "next/image";
 import Link from "next/link";
 
 import LoadingWheel from "@/components/LoadingWheel";
@@ -287,15 +288,18 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
               {column.imageSearchBatch && (
                 <div className="my-20 grid grid-cols-1 gap-10">
                   {column.imageSearchBatch?.map((image, i) => {
+                    console.log("image", image.url);
                     return (
                       <div
                         key={image.id}
                         className="flex flex-col items-center gap-4"
                       >
-                        <img
+                        <Image
                           src={image.url}
                           alt={image.alt || "Image"}
                           className="w-full"
+                          width={400}
+                          height={400}
                         />
                         <p>License: {image.license}</p>
                         {image.photographer && <p>By: {image.photographer}</p>}
