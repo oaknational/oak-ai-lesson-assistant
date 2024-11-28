@@ -35,7 +35,7 @@ const log = aiLogger("rag");
 
 export class RAG {
   prisma: PrismaClientWithAccelerate;
-  private _chatMeta: OpenAICompletionWithLoggingOptions;
+  private readonly _chatMeta: OpenAICompletionWithLoggingOptions;
   constructor(
     prisma: PrismaClientWithAccelerate,
     chatMeta: OpenAICompletionWithLoggingOptions,
