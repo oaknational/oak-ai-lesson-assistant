@@ -7,11 +7,11 @@ import { router } from "../trpc";
 
 // Environment Variables
 // const PEXELS_API_KEY = process.env.PEXELS_API_KEY || "";
-const FLICKR_API_KEY = "20284c97aa255ed16462b48d795674b5";
-const FLICKR_API_SECRET = "e2ef5c0046daf760";
-const UNSPLASH_ACCESS_KEY = "tw6-I8yQXuAN3SxdgZK4a99mw8oE-caT7ArdNooNgI4";
-const GOOGLE_API_KEY = "AIzaSyC01Bx-B0Qd3SHBzRM8jaQnKdMttnZTxR0";
-const GOOGLE_SEARCH_ENGINE_ID = "e218059f9df9d4d75";
+const FLICKR_API_KEY = process.env.FLICKR_API_KEY || "";
+const FLICKR_API_SECRET = process.env.FLICKR_API_SECRET || "";
+const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY || "";
+const GOOGLE_SEARCH_API_KEY = process.env.GOOGLE_API_KEY || "";
+const GOOGLE_SEARCH_ENGINE_ID = process.env.GOOGLE_SEARCH_ENGINE_ID || "";
 
 // Load environment variables
 dotenv.config();
@@ -454,12 +454,12 @@ export const imageSearch = router({
     .mutation(async ({ input }): Promise<ImageResponse[]> => {
       const { searchExpression } = input;
 
-      if (!GOOGLE_API_KEY || !GOOGLE_SEARCH_ENGINE_ID) {
+      if (!GOOGLE_SEARCH_API_KEY || !GOOGLE_SEARCH_ENGINE_ID) {
         throw new Error("Google API configuration is incomplete.");
       }
 
       const searchService = new GoogleImageSearchService(
-        GOOGLE_API_KEY,
+        GOOGLE_SEARCH_API_KEY,
         GOOGLE_SEARCH_ENGINE_ID,
       );
 
