@@ -8,7 +8,6 @@ import type {
   BadDocument,
   CommentDocument,
   ErrorDocument,
-  ExperimentalPatchDocument,
   MessagePart,
   ModerationDocument,
   PatchDocument,
@@ -136,17 +135,17 @@ export function ChatMessage({
         errorType={hasError ? "generic" : null}
         type={getAvatarType()}
       >
-        <div
-          className="absolute left-0 top-0 h-20 w-20 "
+        <button
+          className="absolute left-0 top-0 h-20 w-20"
           onClick={() => {
             setInspect(!inspect);
           }}
         />
         <MessageTextWrapper>
           {message.id !== "working-on-it-initial" &&
-            messageParts.map((part, index) => {
+            messageParts.map((part) => {
               return (
-                <div className="w-full" key={index}>
+                <div className="w-full" key={part.id}>
                   <ChatMessagePart
                     part={part}
                     moderationModalHelpers={moderationModalHelpers}
@@ -297,7 +296,7 @@ function ErrorMessagePart({
 }: Readonly<{
   part: ErrorDocument;
 }>) {
-  const markdown = part.message || "Sorry, an error has occurred";
+  const markdown = part.message ?? "Sorry, an error has occurred";
   return <MemoizedReactMarkdownWithStyles markdown={markdown} />;
 }
 

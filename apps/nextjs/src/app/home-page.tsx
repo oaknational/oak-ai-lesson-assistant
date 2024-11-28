@@ -55,9 +55,9 @@ const OakFlexCustomMaxWidthWithHalfWidth = styled(OakFlexCustomMaxWidth)`
   }
 `;
 
-type HomePageProps = {
+export type HomePageProps = Readonly<{
   pageData: HomePageQueryResult | null;
-};
+}>;
 
 export default function HomePage(props: HomePageProps) {
   return (
