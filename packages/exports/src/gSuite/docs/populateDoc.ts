@@ -4,11 +4,8 @@ import { aiLogger } from "@oakai/logger";
 import type { Result } from "../../types";
 import type { ValueToString } from "../../utils";
 import { defaultValueToString } from "../../utils";
-<<<<<<< Updated upstream
-=======
 import { findMarkdownImages } from "./findMarkdownImages";
 import { imageReplacements } from "./imageReplacements";
->>>>>>> Stashed changes
 import { textReplacements } from "./textReplacements";
 
 const log = aiLogger("exports");
