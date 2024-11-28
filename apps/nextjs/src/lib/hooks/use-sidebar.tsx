@@ -33,14 +33,14 @@ export interface SidebarProviderProps {
 
 export function SidebarProvider({ children }: SidebarProviderProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const value = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (value) {
       setIsSidebarOpen(false);
     }
-    setLoading(false);
+    setIsLoading(false);
   }, []);
 
   const toggleSidebar = useCallback(() => {
