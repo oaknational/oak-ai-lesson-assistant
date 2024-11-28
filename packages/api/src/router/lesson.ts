@@ -160,7 +160,7 @@ export const lessonRouter = router({
         },
       });
 
-      if (!res || !res.summaries[0]) {
+      if (!res?.summaries?.[0]) {
         throw new TRPCError({
           message: "Lesson not found",
           code: "NOT_FOUND",
@@ -218,7 +218,7 @@ export const lessonRouter = router({
         where: { lessonId: lesson.id, variant: "ORIGINAL" },
         cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
       });
-      if (!transcript || !transcript.content) {
+      if (!transcript?.content) {
         throw new TRPCError({
           message: "Transcript not found",
           code: "NOT_FOUND",
