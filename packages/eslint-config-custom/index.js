@@ -17,9 +17,13 @@ module.exports = {
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
       ],
+      plugins:["import"],
       parser: "@typescript-eslint/parser",
       files: ["*.{ts,tsx}"],
       rules: {
+        "import/no-cycle": "warn",
+        "import/newline-after-import": "off", // conflict with Prettier
+        "import/no-duplicates": "off", // conflict with Prettier
         "no-console": "warn",
         "no-extra-boolean-cast": "warn",
         "no-useless-escape": "warn",
