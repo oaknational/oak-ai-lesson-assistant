@@ -15,6 +15,18 @@ import QuizIcon from "../../SVGParts/QuizIcon";
 import SlidesIcon from "../../SVGParts/SlidesIcon";
 import { SendEmailIcon } from "./DownloadAllButton";
 
+export type DownloadButtonProps = Readonly<{
+  chatId: string;
+  onClick: () => void;
+  lesson: LooseLessonPlan;
+  title: string;
+  subTitle: string;
+  downloadAvailable: boolean;
+  downloadLoading: boolean;
+  data?: { link: string } | { message: string; error?: unknown };
+  exportsType: ExportsType;
+  "data-testid"?: string;
+}>;
 export const DownloadButton = ({
   chatId,
   onClick,
@@ -26,18 +38,7 @@ export const DownloadButton = ({
   data,
   exportsType,
   "data-testid": dataTestId,
-}: {
-  chatId: string;
-  onClick: () => void;
-  lesson: LooseLessonPlan;
-  title: string;
-  subTitle: string;
-  downloadAvailable: boolean;
-  downloadLoading: boolean;
-  data?: { link: string } | { message: string; error?: unknown };
-  exportsType: ExportsType;
-  "data-testid"?: string;
-}) => {
+}: DownloadButtonProps) => {
   const lessonTitle = lesson.title;
   const link = data && "link" in data ? data.link : "";
   const hasError = data && "message" in data;

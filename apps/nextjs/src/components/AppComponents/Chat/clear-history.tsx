@@ -1,81 +1,39 @@
 "use client";
 
 import * as React from "react";
-import { toast } from "react-hot-toast";
 
-import { useRouter } from "next/navigation";
+import { OakFlex, OakSpan } from "@oaknational/oak-components";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/AppComponents/Chat/ui/alert-dialog";
-import { Button } from "@/components/AppComponents/Chat/ui/button";
-import { IconSpinner } from "@/components/AppComponents/Chat/ui/icons";
-import { trpc } from "@/utils/trpc";
+import BinIcon from "@/components/BinIcon";
 
-type ClearHistoryProps = Readonly<{
+import { useDialog } from "../DialogContext";
+
+type ClearHistoryProps = {
   isEnabled: boolean;
-}>;
+};
 
-export function ClearHistory({ isEnabled = false }: ClearHistoryProps) {
-  const clearChats = trpc.chat.appSessions.deleteAllChats.useMutation({
-    onSuccess() {
-      toast.success("Chat history cleared");
-      setOpen(false);
-      router.push("/");
-    },
-    onError() {
-      toast.error("Failed to clear chat history");
-    },
-  }).mutate;
-
-  const [open, setOpen] = React.useState(false);
-  const [isPending, startTransition] = React.useTransition();
-  const router = useRouter();
-
+export function ClearHistory({ isEnabled }: Readonly<ClearHistoryProps>) {
+  const { setDialogWindow, setOpenSidebar } = useDialog();
+  if (!isEnabled) {
+    return null;
+  }
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <Button
-          variant="ghost"
-          disabled={!isEnabled || isPending}
-          className="fixed bottom-0 right-0 z-40 flex w-full justify-center bg-white p-16 pl-0 sm:w-[298px]"
-        >
-          {isPending && <IconSpinner className="mr-7" />}
-          <span className="text-teachersRed">Clear history</span>
-        </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This will permanently delete your chat history and remove your data
-            from our servers.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            disabled={isPending}
-            onClick={(event) => {
-              event.preventDefault();
-              startTransition(() => {
-                clearChats();
-              });
-            }}
-          >
-            {isPending && <IconSpinner className="mr-7 animate-spin" />}
-            Delete
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <OakFlex
+      $justifyContent="flex-start"
+      $gap="all-spacing-2"
+      $alignItems="center"
+    >
+      <BinIcon />
+      <button
+        onClick={() => {
+          setOpenSidebar(false);
+          setDialogWindow("clear-history");
+        }}
+      >
+        <OakSpan $font="body-3-bold" $color="black" $textDecoration="none">
+          Delete all lessons
+        </OakSpan>
+      </button>
+    </OakFlex>
   );
 }

@@ -9,13 +9,14 @@ import { Icon } from "@/components/Icon";
 
 import ChatButton from "./ui/chat-button";
 
+export type ToxicModerationViewProps = Readonly<{
+  chatId: string;
+  moderation: PersistedModerationBase;
+}>;
 const ToxicModerationView = ({
   chatId,
   moderation,
-}: {
-  chatId: string;
-  moderation: PersistedModerationBase;
-}) => {
+}: ToxicModerationViewProps) => {
   const { onSubmit, comment, setComment, hasSubmitted, isValid } =
     useModerationFeedbackSurvey({
       chatId,
