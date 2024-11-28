@@ -3,7 +3,6 @@ import type { docs_v1 } from "@googleapis/docs";
 import type { Result } from "../../types";
 import type { ValueToString } from "../../utils";
 import { defaultValueToString } from "../../utils";
-import { processImageReplacements } from "./processImagesReplacements";
 import { textReplacements } from "./textReplacements";
 
 /**
