@@ -98,7 +98,6 @@ const createComponents = (
 
     return (
       <CodeBlock
-        key={Math.random()}
         language={match?.[1] ?? ""}
         value={String(children).replace(/\n$/, "")}
         {...restProps}

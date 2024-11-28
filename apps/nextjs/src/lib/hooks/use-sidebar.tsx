@@ -32,24 +32,24 @@ export interface SidebarProviderProps {
 }
 
 export function SidebarProvider({ children }: SidebarProviderProps) {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [isLoading, setLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const value = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (value) {
-      setSidebarOpen(false);
+      setIsSidebarOpen(false);
     }
-    setLoading(false);
+    setIsLoading(false);
   }, []);
 
   const toggleSidebar = useCallback(() => {
-    setSidebarOpen((value) => {
+    setIsSidebarOpen((value) => {
       const newState = !value;
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newState));
       return newState;
     });
-  }, [setSidebarOpen]);
+  }, [setIsSidebarOpen]);
 
   const contextValue = useMemo(() => {
     return { isSidebarOpen, toggleSidebar, isLoading };
