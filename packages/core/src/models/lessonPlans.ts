@@ -47,8 +47,8 @@ type LessonPlanWithParts = LessonPlan & {
 };
 
 export class LessonPlans {
-  private _rag: RAG;
-  private _prisma: PrismaClientWithAccelerate;
+  private readonly _rag: RAG;
+  private readonly _prisma: PrismaClientWithAccelerate;
   constructor(private readonly prisma: PrismaClientWithAccelerate) {
     this._prisma = prisma;
     this._rag = new RAG(this._prisma, { chatId: "none" });

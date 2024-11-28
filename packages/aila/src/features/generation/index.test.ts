@@ -44,7 +44,7 @@ describe("calculateTokenUsage", () => {
       systemPrompt: "Test system prompt",
       promptId: "test",
     });
-    await ailaGeneration.complete({
+    ailaGeneration.complete({
       status: "SUCCESS",
       responseText: "I am fine, thank you!",
     });
@@ -82,7 +82,7 @@ describe("calculateTokenUsage", () => {
       systemPrompt: "Test system prompt",
       promptId: "test",
     });
-    await ailaGeneration.complete({
+    ailaGeneration.complete({
       status: "SUCCESS",
       responseText: "I am fine, thank you!",
     });
