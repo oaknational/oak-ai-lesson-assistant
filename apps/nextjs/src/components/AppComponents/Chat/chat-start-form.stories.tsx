@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ChatStartForm } from "./chat-start-form";
 
 const meta: Meta<typeof ChatStartForm> = {
-  title: "Components/Chat/ChatStartForm",
+  title: "Components/Chat Start/ChatStartForm",
   component: ChatStartForm,
   tags: ["autodocs"],
 };
