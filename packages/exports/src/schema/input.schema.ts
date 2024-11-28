@@ -37,7 +37,7 @@ export const keywordSchema = z.object({
   definition: z.string(),
 });
 
-export const baseLessonPlanSchema = z.object({
+export const lessonSlidesInputSchema = z.object({
   title: z.string(),
   subject: z.string(),
   keyStage: z.string().nullish(),
@@ -54,19 +54,35 @@ export const baseLessonPlanSchema = z.object({
   cycle2: cycleSchema.nullish(),
   cycle3: cycleSchema.nullish(),
   additionalMaterials: z.string().nullish(),
-});
-
-export const lessonSlidesInputSchema = baseLessonPlanSchema;
-
-export const lessonPlanSectionsSchema = baseLessonPlanSchema.extend({
-  priorKnowledge: z.array(z.string()),
-  misconceptions: z.array(misconceptionSchema),
-  keywords: z.array(keywordSchema),
+  _experimental_starterQuizMathsV0: quizSchema.nullish(),
+  _experimental_exitQuizMathsV0: quizSchema.nullish(),
 });
 
 export type LessonSlidesInputData = z.infer<typeof lessonSlidesInputSchema>;
+
+export const lessonPlanDocInputSchema = lessonSlidesInputSchema;
+
+export const lessonPlanSectionsSchema = z.object({
+  title: z.string(),
+  subject: z.string(),
+  keyStage: z.string(),
+  topic: z.string().nullish(),
+  learningOutcome: z.string(),
+  learningCycles: z.array(z.string()).min(1),
+  priorKnowledge: z.array(z.string()),
+  keyLearningPoints: z.array(z.string()).min(1),
+  misconceptions: z.array(misconceptionSchema),
+  keywords: z.array(keywordSchema),
+  starterQuiz: quizSchema.min(1),
+  exitQuiz: quizSchema.min(1),
+  cycle1: cycleSchema,
+  cycle2: cycleSchema.nullish(),
+  cycle3: cycleSchema.nullish(),
+  additionalMaterials: z.string().nullish(),
+});
 export type LessonPlanSections = z.infer<typeof lessonPlanSectionsSchema>;
-export type LessonPlanDocInputData = z.infer<typeof lessonSlidesInputSchema>;
+
+export type LessonPlanDocInputData = z.infer<typeof lessonPlanDocInputSchema>;
 
 const cycleForWorksheetSchema = z.object({
   title: z.string(),
