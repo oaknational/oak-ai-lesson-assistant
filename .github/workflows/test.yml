@@ -51,7 +51,7 @@ jobs:
       - name: Merge coverage reports
         run: |
           mkdir -p coverage/merged
-          lcov --ignore-errors inconsistent --ignore-errors corrupt
+          lcov --ignore-errors inconsistent --ignore-errors corrupt \
                -a apps/nextjs/coverage/lcov.info \
                -a packages/aila/coverage/lcov.info \
                -a packages/ingest/coverage/lcov.info \
