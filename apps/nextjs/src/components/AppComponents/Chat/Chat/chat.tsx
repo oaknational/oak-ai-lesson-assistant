@@ -15,7 +15,7 @@ export interface ChatProps extends React.ComponentProps<"div"> {
 export function Chat({ className }: Readonly<ChatProps>) {
   const chatContext = useLessonChat();
   const { id, lessonPlan, messages, chat } = chatContext;
-  const isShared = chat?.isShared || false;
+  const isShared = chat?.isShared ?? false;
   return (
     <ChatModeration>
       <DialogRoot>

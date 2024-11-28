@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --base-color: #22222;
+  --base-color: #222222;
 }
 
 .radix-themes {

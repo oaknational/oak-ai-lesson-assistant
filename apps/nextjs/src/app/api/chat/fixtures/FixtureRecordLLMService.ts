@@ -9,7 +9,7 @@ const log = aiLogger("fixtures");
 
 export class FixtureRecordLLMService implements LLMService {
   name = "FixtureRecordLLM";
-  private _openAIService: OpenAIService;
+  private readonly _openAIService: OpenAIService;
 
   constructor(
     public fixtureName: string,

@@ -12,7 +12,7 @@ import { captureMessage } from "@sentry/nextjs";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 
-import { DialogContainer, DialogHeading } from "./DemoSharedComponents";
+import { DialogContainer } from "./DemoSharedComponents";
 
 const log = aiLogger("demo");
 
