@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { OakPrimaryButton } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 import type { Survey } from "posthog-js";
 
-import ChatButton from "../AppComponents/Chat/ui/chat-button";
 import { Icon } from "../Icon";
 
 export type FeedBackProps = Readonly<{

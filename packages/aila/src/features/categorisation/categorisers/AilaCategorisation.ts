@@ -15,7 +15,7 @@ import type { AilaCategorisationFeature } from "../../types";
 const log = aiLogger("aila:categorisation");
 
 export class AilaCategorisation implements AilaCategorisationFeature {
-  private _aila: AilaServices;
+  private readonly _aila: AilaServices;
   constructor({ aila }: { aila: AilaServices }) {
     this._aila = aila;
   }

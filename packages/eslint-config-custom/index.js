@@ -17,9 +17,13 @@ module.exports = {
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
       ],
+      plugins:["import"],
       parser: "@typescript-eslint/parser",
       files: ["*.{ts,tsx}"],
       rules: {
+        "import/no-cycle": "warn",
+        "import/newline-after-import": "off", // conflict with Prettier
+        "import/no-duplicates": "off", // conflict with Prettier
         "no-console": "warn",
         "no-extra-boolean-cast": "warn",
         "no-useless-escape": "warn",
@@ -27,6 +31,7 @@ module.exports = {
         "no-constant-condition": "warn",
         "no-prototype-builtins": "warn",
         "no-inner-declarations": "warn",
+        "@typescript-eslint/prefer-nullish-coalescing": "warn",
         "@typescript-eslint/no-unsafe-enum-comparison": "warn",
         "@typescript-eslint/no-unnecessary-type-assertion": "warn",
         "@typescript-eslint/consistent-type-imports": "warn",

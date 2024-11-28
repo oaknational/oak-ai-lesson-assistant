@@ -125,11 +125,11 @@ export class Lessons {
     let transcript;
     if (!lesson.isNewLesson) {
       zLesson = ZLesson.parse(lesson.content);
-      description = zLesson.lessonDescription || lesson.title;
+      description = zLesson.lessonDescription ?? lesson.title;
       transcript = zLesson.video?.captions?.transcript;
     } else {
       zLesson = ZNewLesson.parse(lesson.newLessonContent);
-      description = zLesson.pupilLessonOutcome || lesson.title;
+      description = zLesson.pupilLessonOutcome ?? lesson.title;
       transcript = zLesson.transcriptSentences;
     }
 
@@ -305,7 +305,7 @@ export class Lessons {
     lessonId,
     quizQuestionId,
   }: {
-    question: { answer?: string | string[] | null | undefined };
+    question: { answer?: string | string[] | null };
     answer: string;
     lessonId: string;
     quizQuestionId: string;

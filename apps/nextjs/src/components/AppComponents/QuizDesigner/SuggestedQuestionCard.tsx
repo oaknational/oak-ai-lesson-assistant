@@ -79,7 +79,7 @@ const SuggestedLessonCard = ({
                 if (questionRef) {
                   const { top } = questionRef.getBoundingClientRect();
                   window.scrollTo({
-                    top: top + window.pageYOffset - 200,
+                    top: top + window.scrollY - 200,
                     behavior: "smooth",
                   });
                 }
