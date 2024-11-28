@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { aiLogger } from "@oakai/logger";
 import {
@@ -36,31 +36,43 @@ const ReportContentDialog = ({
       surveyName: "Report Content",
     });
 
-  function close() {
+  const close = useCallback(() =>{
     closeDialog();
     closeDialogWithPostHogDismiss();
-  }
+  }, [closeDialog, closeDialogWithPostHogDismiss]);
 
-  function onSubmit(
-    e?: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
-  ) {
-    log.info("submitting");
-    e?.preventDefault();
-    setUserHasSubmitted(true);
-    submitSurveyWithOutClosing({
-      //Messages Array
-      $survey_response: messages ?? "No chat history",
-      // Last Message Id
-      $survey_response_1: messages
-        ? messages[messages.length - 1]?.id
-        : "No chat history",
-      // Chat Id
-      $survey_response_2: chatId,
-      // Comment
-      $survey_response_3: userInput,
-    });
-    setUserInput("");
-  }
+  const onSubmit = useCallback(
+    (
+      e?:
+        | React.FormEvent<HTMLFormElement>
+        | React.MouseEvent<HTMLButtonElement>,
+    ) => {
+      log.info("submitting");
+      e?.preventDefault();
+      setUserHasSubmitted(true);
+      submitSurveyWithOutClosing({
+        //Messages Array
+        $survey_response: messages ?? "No chat history",
+        // Last Message Id
+        $survey_response_1: messages
+          ? messages[messages.length - 1]?.id
+          : "No chat history",
+        // Chat Id
+        $survey_response_2: chatId,
+        // Comment
+        $survey_response_3: userInput,
+      });
+      setUserInput("");
+    },
+    [chatId, messages, submitSurveyWithOutClosing, userInput],
+  );
+
+  const actionButtonStates = useCallback(
+    () => (
+      <OakPrimaryButton onClick={onSubmit}>Submit feedback</OakPrimaryButton>
+    ),
+    [onSubmit],
+  );
 
   return (
     <Flex className="h-full w-full" direction="column" justify="between">
@@ -96,11 +108,7 @@ const ReportContentDialog = ({
             />
 
             <ModalFooterButtons
-              actionButtonStates={() => (
-                <OakPrimaryButton onClick={onSubmit}>
-                  Submit feedback
-                </OakPrimaryButton>
-              )}
+              actionButtonStates={actionButtonStates}
               closeDialog={close}
             />
           </>
