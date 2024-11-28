@@ -42,15 +42,18 @@ jobs:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
           inject-env-vars: true
 
+      - name: Install lcov tool
+        run: sudo apt-get update && sudo apt-get install lcov
+
       - name: Run tests
         run: pnpm turbo test --cache-dir=".turbo" -- --maxWorkers=33%
 
       - name: Merge coverage reports
         run: |
           mkdir -p coverage/merged
-          lcov -a apps/nextjs/coverage/lcov-report/lcov-info.lcov \
-               -a packages/aila/coverage/lcov-report/lcov-info.lcov \
-               -a packages/ingest/coverage/lcov-report/lcov-info.lcov \
+          lcov -a apps/nextjs/coverage/lcov.info \
+               -a packages/aila/coverage/lcov-info.lcov \
+               -a packages/ingest/coverage/lcov-info.lcov \
                -o coverage/merged/lcov.info
 
       - name: Upload coverage artifact
