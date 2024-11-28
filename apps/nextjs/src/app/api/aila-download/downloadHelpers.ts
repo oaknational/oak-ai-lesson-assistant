@@ -25,20 +25,3 @@ export async function saveDownloadEvent({
     });
   }
 }
-
-export function getReadableExportType(exportType: LessonExportType) {
-  switch (exportType) {
-    case "EXIT_QUIZ_DOC":
-      return "Exit quiz";
-    case "LESSON_PLAN_DOC":
-      return "Lesson plan";
-    case "STARTER_QUIZ_DOC":
-      return "Starter quiz";
-    case "WORKSHEET_SLIDES":
-      return "Worksheet";
-    case "LESSON_SLIDES_SLIDES":
-      return "Lesson slides";
-    case "ADDITIONAL_MATERIALS_DOCS":
-      return "Additional materials";
-  }
-}

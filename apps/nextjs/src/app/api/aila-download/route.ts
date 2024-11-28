@@ -1,12 +1,12 @@
 import { auth } from "@clerk/nextjs/server";
-import { prisma } from "@oakai/db";
+import { prisma, type LessonExportType } from "@oakai/db";
 import { downloadDriveFile } from "@oakai/exports";
 import * as Sentry from "@sentry/node";
 
 import { withSentry } from "@/lib/sentry/withSentry";
 
 import { sanitizeFilename } from "../sanitizeFilename";
-import { getReadableExportType, saveDownloadEvent } from "./downloadHelpers";
+import { saveDownloadEvent } from "./downloadHelpers";
 
 // From: https://www.ericburel.tech/blog/nextjs-stream-files
 async function* nodeStreamToIterator(stream: NodeJS.ReadableStream) {
@@ -27,6 +27,23 @@ function iteratorToStream(iterator: AsyncGenerator<Uint8Array>) {
       }
     },
   });
+}
+
+export function getReadableExportType(exportType: LessonExportType) {
+  switch (exportType) {
+    case "EXIT_QUIZ_DOC":
+      return "Exit quiz";
+    case "LESSON_PLAN_DOC":
+      return "Lesson plan";
+    case "STARTER_QUIZ_DOC":
+      return "Starter quiz";
+    case "WORKSHEET_SLIDES":
+      return "Worksheet";
+    case "LESSON_SLIDES_SLIDES":
+      return "Lesson slides";
+    case "ADDITIONAL_MATERIALS_DOCS":
+      return "Additional materials";
+  }
 }
 
 async function getHandler(req: Request): Promise<Response> {

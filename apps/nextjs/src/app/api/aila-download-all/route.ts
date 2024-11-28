@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import { prisma } from "@oakai/db";
+import { prisma, type LessonExportType } from "@oakai/db";
 import { downloadDriveFile } from "@oakai/exports";
 import * as Sentry from "@sentry/node";
 import { kv } from "@vercel/kv";
@@ -8,10 +8,7 @@ import { PassThrough } from "stream";
 
 import { withSentry } from "@/lib/sentry/withSentry";
 
-import {
-  getReadableExportType,
-  saveDownloadEvent,
-} from "../aila-download/downloadHelpers";
+import { saveDownloadEvent } from "../aila-download/downloadHelpers";
 import { sanitizeFilename } from "../sanitizeFilename";
 
 type FileIdsAndFormats = {
@@ -36,6 +33,23 @@ function nodePassThroughToReadableStream(passThrough: PassThrough) {
       passThrough.destroy();
     },
   });
+}
+
+export function getReadableExportType(exportType: LessonExportType) {
+  switch (exportType) {
+    case "EXIT_QUIZ_DOC":
+      return "Exit quiz";
+    case "LESSON_PLAN_DOC":
+      return "Lesson plan";
+    case "STARTER_QUIZ_DOC":
+      return "Starter quiz";
+    case "WORKSHEET_SLIDES":
+      return "Worksheet";
+    case "LESSON_SLIDES_SLIDES":
+      return "Lesson slides";
+    case "ADDITIONAL_MATERIALS_DOCS":
+      return "Additional materials";
+  }
 }
 
 async function getHandler(req: Request): Promise<Response> {
