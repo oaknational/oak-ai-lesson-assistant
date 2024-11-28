@@ -9,13 +9,13 @@ import LoadingWheel from "@/components/LoadingWheel";
 import { trpc } from "@/utils/trpc";
 
 export interface PageData {
-  id: string;
-  path: string;
-  title: string;
-  lessonPlan: {
-    cycle1: { explanation: { imagePrompt: string } };
-    cycle2: { explanation: { imagePrompt: string } };
-    cycle3: { explanation: { imagePrompt: string } };
+  id?: string;
+  path?: string;
+  title?: string;
+  lessonPlan?: {
+    cycle1?: { explanation?: { imagePrompt?: string } };
+    cycle2?: { explanation?: { imagePrompt?: string } };
+    cycle3?: { explanation?: { imagePrompt?: string } };
   };
 }
 
@@ -60,10 +60,18 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
     },
   ]);
 
+  if (
+    !pageData?.lessonPlan?.cycle1?.explanation?.imagePrompt ||
+    !pageData?.lessonPlan?.cycle2?.explanation?.imagePrompt ||
+    !pageData?.lessonPlan?.cycle3?.explanation?.imagePrompt
+  ) {
+    return "Please choose a lesson with all three learning cycles";
+  }
+
   const slideTexts = {
-    cycle1: pageData.lessonPlan.cycle1.explanation.imagePrompt,
-    cycle2: pageData.lessonPlan.cycle2.explanation.imagePrompt,
-    cycle3: pageData.lessonPlan.cycle3.explanation.imagePrompt,
+    cycle1: pageData?.lessonPlan?.cycle1?.explanation?.imagePrompt,
+    cycle2: pageData?.lessonPlan?.cycle2?.explanation?.imagePrompt,
+    cycle3: pageData?.lessonPlan?.cycle3?.explanation?.imagePrompt,
   };
 
   const trpcMutations = {
