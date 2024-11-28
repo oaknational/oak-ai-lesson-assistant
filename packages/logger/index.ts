@@ -52,6 +52,7 @@ type ChildKey =
   | "moderation"
   | "prompts"
   | "qd"
+  | "quiz"
   | "rag"
   | "rate-limiting"
   | "snippets"
