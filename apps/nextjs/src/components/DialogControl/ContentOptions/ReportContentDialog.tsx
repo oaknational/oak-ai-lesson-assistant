@@ -41,7 +41,9 @@ const ReportContentDialog = ({
     closeDialogWithPostHogDismiss();
   }
 
-  function onSubmit(e?: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(
+    e?: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
+  ) {
     log.info("submitting");
     e?.preventDefault();
     setUserHasSubmitted(true);
