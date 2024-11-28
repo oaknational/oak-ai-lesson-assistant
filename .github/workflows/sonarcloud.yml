@@ -58,4 +58,4 @@ jobs:
         with:
           args: >
             -Dsonar.projectVersion=${{ steps.app-version.outputs.version }}
-            -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+            -Dsonar.javascript.lcov.reportPaths=coverage/merged/lcov.info
