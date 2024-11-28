@@ -444,7 +444,7 @@ type HookState<TSchema extends z.Schema> =
   | FailedGenerationState;
 
 type UseGenerationReturnValue<TSchema extends z.Schema> = {
-  requestGeneration: (mutationInputs: MutationInputs) => void;
+  requestGeneration: (mutationInputs: MutationInputs) => Promise<void>;
 } & HookState<TSchema>;
 
 enum UGActionType {
