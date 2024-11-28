@@ -1,3 +1,18 @@
+# [1.17.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.16.2...v1.17.0) (2024-11-28)
+
+
+### Bug Fixes
+
+* assert readonly props ([#381](https://github.com/oaknational/oak-ai-lesson-assistant/issues/381)) ([cd88576](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cd88576c5a337ad30f48783d74ea45d746a60956))
+* help page cloudflare email ([#399](https://github.com/oaknational/oak-ai-lesson-assistant/issues/399)) ([391b67c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/391b67c27a4048d4e422be22226d8d5aa1ac71bd))
+* minor linting ([#384](https://github.com/oaknational/oak-ai-lesson-assistant/issues/384)) ([ec4ce6e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ec4ce6e5dcc7dbd4e242be65fd3b5f9708b94a40))
+* svg clip-rule should be clipRule in JSX ([#382](https://github.com/oaknational/oak-ai-lesson-assistant/issues/382)) ([610d8c8](https://github.com/oaknational/oak-ai-lesson-assistant/commit/610d8c838273de24212a8531a8bc4b6136c05db1))
+
+
+### Features
+
+* move delete all button and restyle side menu ([#375](https://github.com/oaknational/oak-ai-lesson-assistant/issues/375)) ([69b2371](https://github.com/oaknational/oak-ai-lesson-assistant/commit/69b2371bf9ee7e7f783aa191ba6932dba0171837))
+
 ## [1.16.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.16.1...v1.16.2) (2024-11-25)
 
 
