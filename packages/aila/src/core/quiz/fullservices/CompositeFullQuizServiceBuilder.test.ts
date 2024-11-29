@@ -42,4 +42,19 @@ describe("CompositeFullQuizServiceBuilder", () => {
     expect(quiz[0]?.distractors).toBeDefined();
     console.log(JSON.stringify(quiz, null, 2));
   });
+
+  it("Should work with a rag quiz generator", async () => {
+    const builder = new CompositeFullQuizServiceBuilder();
+    const settings: QuizBuilderSettings = {
+      quizRatingSchema: testRatingSchema,
+      quizSelector: "simple",
+      quizReranker: "schema-reranker",
+      quizGenerators: ["rag"],
+    };
+    const service = builder.build(settings);
+    const quiz = await service.createBestQuiz(
+      "/starterQuiz",
+      CircleTheoremLesson,
+    );
+  });
 });

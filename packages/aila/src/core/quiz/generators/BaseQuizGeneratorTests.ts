@@ -1,4 +1,8 @@
-import type { Quiz, QuizQuestion } from "../../../protocol/schema";
+import type {
+  AilaRagRelevantLesson,
+  Quiz,
+  QuizQuestion,
+} from "../../../protocol/schema";
 import type { LooseLessonPlan } from "../../../protocol/schema";
 import { QuizSchema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
@@ -10,15 +14,33 @@ export const runCommonQuizGeneratorTests = (
 ) => {
   describe(`${name} Common Tests`, () => {
     let generator: BaseQuizGenerator;
+    let mockRelevantLessons: AilaRagRelevantLesson[];
 
     beforeEach(() => {
       generator = createGenerator();
+      mockRelevantLessons = [
+        { lessonPlanId: "clna7k8j400egp4qxrqmjx0qo", title: "test-title-2" },
+        { lessonPlanId: "clna7k8kq00fip4qxsjvrmykv", title: "test-title-3" },
+        { lessonPlanId: "clna7k8pq00j1p4qxa9euac1c", title: "test-title-4" },
+        { lessonPlanId: "clna7k8zr00qfp4qx44fdvikl", title: "test-title-5" },
+        { lessonPlanId: "clna7k93700sap4qx741wdrz4", title: "test-title-6" },
+        { lessonPlanId: "clna7k98j00vup4qx9nyfjtpm", title: "test-title-7" },
+        { lessonPlanId: "clna7k8zr00qfp4qx44fdvikl", title: "test-title-8" },
+        { lessonPlanId: "clna7k93700sap4qx741wdrz4", title: "test-title-9" },
+        { lessonPlanId: "clna7k98j00vup4qx9nyfjtpm", title: "test-title-10" },
+        {
+          lessonPlanId: "clna7lofy0og0p4qxju5j6z56",
+          title: "TEST-LESSON-READING-TIMETABLES",
+        },
+      ];
     });
 
     describe("Starter Quiz Generation", () => {
       it("should generate a valid starter quiz array", async () => {
-        const result =
-          await generator.generateMathsStarterQuizPatch(CircleTheoremLesson);
+        const result = await generator.generateMathsStarterQuizPatch(
+          CircleTheoremLesson,
+          mockRelevantLessons,
+        );
 
         expect(result).toBeDefined();
         expect(Array.isArray(result)).toBe(true);
@@ -35,8 +57,10 @@ export const runCommonQuizGeneratorTests = (
 
     describe("Exit Quiz Generation", () => {
       it("should generate a valid exit quiz array", async () => {
-        const result =
-          await generator.generateMathsExitQuizPatch(CircleTheoremLesson);
+        const result = await generator.generateMathsExitQuizPatch(
+          CircleTheoremLesson,
+          mockRelevantLessons,
+        );
 
         expect(result).toBeDefined();
         expect(Array.isArray(result)).toBe(true);

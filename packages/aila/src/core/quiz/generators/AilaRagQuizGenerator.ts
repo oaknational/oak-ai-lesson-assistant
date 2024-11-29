@@ -15,14 +15,13 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
   ): Promise<Quiz[]> {
-    const quizArray: Quiz[] = [];
-    for (const relevantLesson of ailaRagRelevantLessons) {
-      // TODO: GCLOMAX - This repeats a load of DB queries - combine them.
-      quizArray.push(
-        await this.questionArrayFromPlanId(relevantLesson.lessonPlanId),
-      );
-    }
-    return quizArray;
+    // TODO: MG - This is a load of DB queries and may make it spiky.
+    const quizPromises = ailaRagRelevantLessons.map((relevantLesson) =>
+      this.questionArrayFromPlanId(relevantLesson.lessonPlanId),
+    );
+
+    const quizzes = await Promise.all(quizPromises);
+    return quizzes.filter((quiz) => quiz.length > 0);
   }
 
   async generateMathsStarterQuizPatch(

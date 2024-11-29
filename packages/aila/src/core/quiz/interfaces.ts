@@ -2,6 +2,7 @@ import type { z } from "zod";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import type {
+  AilaRagRelevantLesson,
   LooseLessonPlan,
   Quiz,
   QuizPath,
@@ -83,6 +84,7 @@ export interface FullQuizService {
   createBestQuiz(
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
+    ailaRagRelevantLessons?: AilaRagRelevantLesson[],
   ): Promise<QuizQuestion[]>;
 }
 
