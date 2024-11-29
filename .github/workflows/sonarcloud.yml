@@ -44,11 +44,11 @@ jobs:
           APP_VERSION=$(grep -m 1 -oP '(?<=## \[)\d+\.\d+\.\d+' CHANGE_LOG.md)
           echo "version=$APP_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Download coverage artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: coverage
-          path: ./coverage/merged
+      # Debug step to check if lcov.info files are generated
+      - name: Debug lcov paths
+        run: |
+          echo "Checking for lcov files..."
+          find . -name "lcov.info" | xargs ls -lah || echo "No lcov files found."
 
       - name: SonarCloud scan
         uses: sonarsource/sonarcloud-github-action@master
@@ -58,4 +58,4 @@ jobs:
         with:
           args: >
             -Dsonar.projectVersion=${{ steps.app-version.outputs.version }}
-            -Dsonar.javascript.lcov.reportPaths=coverage/merged/lcov.info
+            -Dsonar.javascript.lcov.reportPaths="apps/nextjs/coverage/lcov.info,packages/aila/coverage/lcov.info,packages/ingest/coverage/lcov.info"

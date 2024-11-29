@@ -47,18 +47,3 @@ jobs:
 
       - name: Run tests
         run: pnpm turbo test --cache-dir=".turbo" -- --maxWorkers=33%
-
-      - name: Merge coverage reports
-        run: |
-          mkdir -p coverage/merged
-          lcov --ignore-errors inconsistent --ignore-errors corrupt \
-               -a apps/nextjs/coverage/lcov.info \
-               -a packages/aila/coverage/lcov.info \
-               -a packages/ingest/coverage/lcov.info \
-               -o coverage/merged/lcov.info
-
-      - name: Upload coverage artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage
-          path: coverage/merged/lcov.info
