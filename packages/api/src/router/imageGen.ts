@@ -253,6 +253,51 @@ async function tryUnsplashImages(
   }
 }
 
+async function generateStabilityImage(
+  endpoint: string,
+  searchExpression: string,
+  outputFormat: "webp" | "jpeg" = "webp",
+): Promise<string> {
+  console.log(`[Stability ${endpoint}] Starting image generation`);
+  console.log(`[Stability ${endpoint}] Prompt: ${searchExpression}`);
+
+  const formData = new FormData();
+  formData.append("prompt", searchExpression);
+  formData.append("output_format", outputFormat);
+
+  try {
+    console.log(`[Stability ${endpoint}] Sending request to Stability AI`);
+    const response = await fetch(
+      `https://api.stability.ai/v2beta/stable-image/generate/${endpoint}`,
+      {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${STABLE_DIF_API_KEY}`,
+          Accept: "image/*",
+        },
+      },
+    );
+
+    if (!response.ok) {
+      console.error(`[Stability ${endpoint}] API error:`, {
+        status: response.status,
+        statusText: response.statusText,
+      });
+      throw new Error(`Image generation failed with status ${response.status}`);
+    }
+
+    console.log(`[Stability ${endpoint}] Successfully received image response`);
+    const imageBuffer = await response.arrayBuffer();
+    const base64Image = `data:image/${outputFormat};base64,${Buffer.from(imageBuffer).toString("base64")}`;
+    console.log(`[Stability ${endpoint}] Successfully encoded image to base64`);
+    return base64Image;
+  } catch (error) {
+    console.error(`[Stability ${endpoint}] Error:`, error);
+    throw error;
+  }
+}
+
 async function tryStabilityCore(
   searchExpression: string,
 ): Promise<ImageResponse | null> {
