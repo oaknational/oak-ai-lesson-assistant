@@ -78,6 +78,7 @@ const getConfig = async (phase) => {
         "oaknationalacademy-res.cloudinary.com",
         "live.staticflickr.com",
         "images.unsplash.com",
+        "oaidalleapiprodscus.blob.core.windows.net",
       ],
     },
     transpilePackages: ["@oakai/api", "@oakai/db", "@oakai/exports"],
