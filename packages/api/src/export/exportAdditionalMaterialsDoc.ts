@@ -1,7 +1,7 @@
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { exportAdditionalMaterials } from "@oakai/exports";
-import type { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
+import type { LessonInputData } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 
@@ -16,7 +16,7 @@ export async function exportAdditionalMaterialsDoc({
   ctx,
 }: {
   input: {
-    data: LessonSlidesInputData;
+    data: LessonInputData;
     chatId: string;
     messageId: string;
   };
