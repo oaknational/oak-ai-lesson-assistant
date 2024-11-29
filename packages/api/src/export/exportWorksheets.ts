@@ -1,19 +1,13 @@
 import type { SignedInAuthObject } from "@clerk/backend/internal";
-import { clerkClient } from "@clerk/nextjs/server";
-import { LessonSnapshots } from "@oakai/core";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { exportDocsWorksheet } from "@oakai/exports";
 import type { WorksheetSlidesInputData } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 
-import type {
-  OutputSchema} from "../router/exports";
-import {
-  ailaGetExportBySnapshotId,
-  ailaSaveExport,
-  reportErrorResult,
-} from "../router/exports";
+import type { OutputSchema } from "../router/exports";
+import { ailaSaveExport, reportErrorResult } from "../router/exports";
+import { getExistingExportData, getUserEmail } from "./exportHelpers";
 
 const log = aiLogger("exports");
 
@@ -31,9 +25,7 @@ export async function exportWorksheets({
     prisma: PrismaClientWithAccelerate;
   };
 }) {
-  const user = await clerkClient.users.getUser(ctx.auth.userId);
-  const userEmail = user?.emailAddresses[0]?.emailAddress;
-  const exportType = "WORKSHEET_SLIDES";
+  const userEmail = await getUserEmail(ctx);
 
   if (!userEmail) {
     return {
@@ -41,40 +33,16 @@ export async function exportWorksheets({
       message: "User email not found",
     };
   }
+  const exportType = "WORKSHEET_SLIDES";
 
-  const lessonSnapshots = new LessonSnapshots(ctx.prisma);
-  const lessonSnapshot = await lessonSnapshots.getOrSaveSnapshot({
-    userId: ctx.auth.userId,
-    chatId: input.chatId,
-    messageId: input.messageId,
-    snapshot: input.data,
-    trigger: "EXPORT_BY_USER",
-  });
-
-  Sentry.addBreadcrumb({
-    category: "exportWorksheetDocs",
-    message: "Got or saved snapshot",
-    data: { lessonSnapshot },
-  });
-
-  const exportData = await ailaGetExportBySnapshotId({
-    prisma: ctx.prisma,
-    snapshotId: lessonSnapshot.id,
+  const { exportData, lessonSnapshot } = await getExistingExportData({
+    ctx,
+    input,
     exportType,
   });
 
-  Sentry.addBreadcrumb({
-    category: "exportWorksheetDocs",
-    message: "Got export data",
-    data: { exportData },
-  });
-
   if (exportData) {
-    const output: OutputSchema = {
-      link: exportData.gdriveFileUrl,
-      canViewSourceDoc: exportData.userCanViewGdriveFile,
-    };
-    return output;
+    return exportData;
   }
 
   /**

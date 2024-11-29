@@ -1,22 +1,22 @@
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { exportSlidesFullLesson } from "@oakai/exports";
-import type { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
+import { exportQuizDesignerSlides } from "@oakai/exports";
+import type { ExportableQuizAppState } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 
 import type { OutputSchema } from "../router/exports";
-import { ailaSaveExport, reportErrorResult } from "../router/exports";
+import { qdSaveExport, reportErrorResult } from "../router/exports";
 import { getExistingExportData, getUserEmail } from "./exportHelpers";
 
 const log = aiLogger("exports");
 
-export async function exportLessonSlides({
+export async function exportQuizDesignerSlidesWrapper({
   input,
   ctx,
 }: {
   input: {
-    data: LessonSlidesInputData;
+    data: ExportableQuizAppState;
     chatId: string;
     messageId: string;
   };
@@ -49,19 +49,19 @@ export async function exportLessonSlides({
    * and store the result in the database
    */
 
-  const result = await exportSlidesFullLesson({
-    snapshotId: lessonSnapshot.id,
+  const result = await exportQuizDesignerSlides({
+    snapshotId: "lessonSnapshot.id",
     userEmail,
     onStateChange: (state) => {
       log.info(state);
 
       Sentry.addBreadcrumb({
-        category: "exportWorksheetDocs",
+        category: "exportWorksheetSlides",
         message: "Export state change",
         data: state,
       });
     },
-    lesson: input.data,
+    quiz: input.data,
   });
 
   Sentry.addBreadcrumb({
@@ -80,12 +80,12 @@ export async function exportLessonSlides({
 
   const { data } = result;
 
-  await ailaSaveExport({
+  await qdSaveExport({
     auth: ctx.auth,
     prisma: ctx.prisma,
-    lessonSnapshotId: lessonSnapshot.id,
+    snapshotId: lessonSnapshot.id,
     exportType,
-    data,
+    data: result.data,
   });
 
   const output: OutputSchema = {

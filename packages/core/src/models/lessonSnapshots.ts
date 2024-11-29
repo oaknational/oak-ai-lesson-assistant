@@ -105,7 +105,7 @@ export class LessonSnapshots {
     messageId: string;
     snapshot: Snapshot;
     trigger: LessonSnapshotTrigger;
-  }) {
+  }): Promise<LessonSnapshot> {
     /**
      * Prisma types complained when passing the JSON schema directly to the Prisma
      */

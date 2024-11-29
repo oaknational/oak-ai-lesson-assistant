@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { LessonDeepPartial } from "@oakai/exports/browser";
 import { exportSlidesFullLessonSchema } from "@oakai/exports/browser";
-import type { LessonSlidesInputData } from "@oakai/exports/src/schema/input.schema";
+import type { LessonInputData } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
@@ -29,8 +29,7 @@ export function useExportAllLessonAssets({
   const query = trpc.exports.generateAllAssetExports.useMutation();
 
   const [parseResult, setParseResult] = useState<
-    | { data?: LessonSlidesInputData; success: boolean; error?: ZodError }
-    | undefined
+    { data?: LessonInputData; success: boolean; error?: ZodError } | undefined
   >({ success: false });
   const debouncedParseResult = useDebounce(parseResult, 500);
 
