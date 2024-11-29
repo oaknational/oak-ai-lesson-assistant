@@ -42,8 +42,13 @@ jobs:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
           inject-env-vars: true
 
-      - name: Install lcov tool
-        run: sudo apt-get update && sudo apt-get install lcov
-
       - name: Run tests
-        run: pnpm turbo test --cache-dir=".turbo" -- --maxWorkers=33%
+        run: pnpm turbo test --cache-dir=".turbo" -- --maxWorkers=33% --coverage
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-reports
+          path: |
+            packages/**/coverage/lcov.info
+            apps/nextjs/coverage/lcov.info

@@ -50,6 +50,11 @@ jobs:
           echo "Checking for lcov files..."
           find . -name "lcov.info" | xargs ls -lah || echo "No lcov files found."
 
+      - name: Download coverage reports
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-reports
+
       - name: SonarCloud scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
@@ -58,4 +63,4 @@ jobs:
         with:
           args: >
             -Dsonar.projectVersion=${{ steps.app-version.outputs.version }}
-            -Dsonar.javascript.lcov.reportPaths="apps/nextjs/coverage/lcov.info,packages/aila/coverage/lcov.info,packages/ingest/coverage/lcov.info"
+            -Dsonar.javascript.lcov.reportPaths=**/lcov.info
