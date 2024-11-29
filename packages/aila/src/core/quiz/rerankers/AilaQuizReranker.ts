@@ -1,3 +1,4 @@
+import { aiLogger } from "@oakai/logger";
 import type { z } from "zod";
 
 import type { QuizPath, QuizQuestion } from "../../../protocol/schema";
@@ -12,6 +13,7 @@ import { processArray } from "../apiCallingUtils";
 import { withRandomDelay } from "../apiCallingUtils";
 import type { AilaQuizReranker } from "../interfaces";
 
+const log = aiLogger("aila:quiz");
 export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
   implements AilaQuizReranker<T>
 {

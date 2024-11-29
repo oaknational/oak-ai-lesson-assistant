@@ -1,3 +1,5 @@
+import { aiLogger } from "@oakai/logger";
+
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
@@ -17,6 +19,7 @@ import { testRatingSchema } from "../rerankers/RerankerStructuredOutputSchema";
 import { TestSchemaReranker } from "../rerankers/SchemaReranker";
 import { SimpleQuizSelector } from "../selectors/SimpleQuizSelector";
 
+const log = aiLogger("aila:quiz");
 export abstract class BaseFullQuizService implements FullQuizService {
   public abstract quizSelector: QuizSelector<BaseType>;
   public abstract quizReranker: AilaQuizReranker<typeof BaseSchema>;
