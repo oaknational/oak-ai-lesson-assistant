@@ -52,13 +52,3 @@ jobs:
           path: |
             packages/**/coverage/lcov.info
             apps/nextjs/coverage/lcov.info
-      - name: Check if artifact exists and print path
-        run: |
-          if [ ! -d "artifact-check" ] || [ -z "$(ls -A artifact-check)" ]; then
-            echo "Artifact does not exist or is empty."
-            exit 1
-          else
-            echo "Artifact exists and is not empty."
-            echo "Path to artifact:"
-            find artifact-check -type f
-          fi
