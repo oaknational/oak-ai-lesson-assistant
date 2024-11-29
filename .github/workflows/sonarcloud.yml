@@ -10,7 +10,7 @@ on:
 
   workflow_run:
     workflows:
-      - Jest Tests and Coverage
+      - Jest
     types:
       - completed
 
