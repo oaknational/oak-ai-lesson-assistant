@@ -8,12 +8,6 @@ on:
     types: [opened, synchronize, reopened]
   merge_group:
 
-  workflow_run:
-    workflows:
-      - Jest
-    types:
-      - completed
-
 jobs:
   sonarcloud:
     runs-on: ubuntu-latest

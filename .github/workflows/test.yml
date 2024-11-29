@@ -45,18 +45,13 @@ jobs:
       - name: Run tests
         run: pnpm turbo test --cache-dir=".turbo" -- --maxWorkers=33% --coverage
 
-      - name: Debug possible coverage paths
-        run: |
-          echo "Searching for coverage files..."
-          find packages/**/coverage -name "lcov.info" || echo "No coverage files found in packages."
-          find apps/nextjs/coverage -name "lcov.info" || echo "No coverage files found in apps/nextjs."
-
+      # Run only on production branch
       - name: Report coverage to SonarCloud
+        if: ${{ github.event.pull_request.merged == true && github.base_ref == 'production' }}
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.verbose=true
             -Dsonar.javascript.lcov.reportPaths=packages/**/coverage/lcov.info,apps/nextjs/coverage/lcov.info
