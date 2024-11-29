@@ -45,10 +45,18 @@ jobs:
       - name: Run tests
         run: pnpm turbo test --cache-dir=".turbo" -- --maxWorkers=33% --coverage
 
-      - name: Upload coverage reports
+      - name: Debug possible coverage paths
+        run: |
+          echo "Searching for coverage files..."
+          find packages/**/coverage -name "lcov.info" || echo "No coverage files found in packages."
+          find apps/nextjs/coverage -name "lcov.info" || echo "No coverage files found in apps/nextjs."
+
+      - name: Upload coverage artifact
+        env:
+          ACTIONS_STEP_DEBUG: true
         uses: actions/upload-artifact@v3
         with:
-          name: coverage
+          name: coverage-reports
           path: |
             packages/**/coverage/lcov.info
             apps/nextjs/coverage/lcov.info
