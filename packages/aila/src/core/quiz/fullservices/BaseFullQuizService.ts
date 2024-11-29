@@ -1,4 +1,5 @@
 import type {
+  AilaRagRelevantLesson,
   LooseLessonPlan,
   Quiz,
   QuizQuestion,
@@ -20,20 +21,27 @@ export abstract class BaseFullQuizService implements FullQuizService {
   public abstract quizSelector: QuizSelector<BaseType>;
   public abstract quizReranker: AilaQuizReranker<typeof BaseSchema>;
   public abstract quizGenerators: AilaQuizGeneratorService[];
-
+  // TODO: MG - does having ailaRagRelevantLessons as a default parameter work? It feels a bit hacky.
   public async createBestQuiz(
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
+    ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
   ): Promise<QuizQuestion[]> {
     const quizzes: Quiz[] = [];
     for (const quizGenerator of this.quizGenerators) {
       if (quizType === "/starterQuiz") {
         quizzes.push(
-          ...(await quizGenerator.generateMathsStarterQuizPatch(lessonPlan)),
+          ...(await quizGenerator.generateMathsStarterQuizPatch(
+            lessonPlan,
+            ailaRagRelevantLessons,
+          )),
         );
       } else if (quizType === "/exitQuiz") {
         quizzes.push(
-          ...(await quizGenerator.generateMathsExitQuizPatch(lessonPlan)),
+          ...(await quizGenerator.generateMathsExitQuizPatch(
+            lessonPlan,
+            ailaRagRelevantLessons,
+          )),
         );
       }
     }

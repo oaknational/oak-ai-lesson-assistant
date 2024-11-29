@@ -38,8 +38,10 @@ import { OpenAIService } from "../llm/OpenAIService";
 import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
 import { AilaQuiz } from "../quiz/AilaQuiz";
+import { CompositeFullQuizServiceBuilder } from "../quiz/fullservices/CompositeFullQuizServiceBuilder";
 import { FullQuizServiceFactory } from "../quiz/fullservices/FullQuizServiceFactory";
 import type { FullQuizService } from "../quiz/interfaces";
+import { testRatingSchema } from "../quiz/rerankers/RerankerStructuredOutputSchema";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 import type { Message } from "./types";
@@ -94,7 +96,19 @@ export class AilaChat implements AilaChatService {
     this._relevantLessons = [];
     this._experimentalPatches = [];
     // TODO: GCLOMAX - this is a hack to get the demo quiz service working. Add quiz options somewhere.
-    this.fullQuizService = new FullQuizServiceFactory().create("simple");
+    // this.fullQuizService = new FullQuizServiceFactory().create("simple");
+    // {
+    //   quizRatingSchema: testRatingSchema,
+    //   quizSelector: "simple",
+    //   quizReranker: "schema-reranker",
+    //   quizGenerators: ["ml", "rag", "basedOnRag"],
+    // };
+    this.fullQuizService = new CompositeFullQuizServiceBuilder().build({
+      quizRatingSchema: testRatingSchema,
+      quizSelector: "simple",
+      quizReranker: "return-first",
+      quizGenerators: ["ml", "rag", "basedOnRag"],
+    });
   }
   // TODO: GCLOMAX This should be put in a new class called AilaQuizService, in the ailaservices class.
   private quizService = new AilaQuiz();
