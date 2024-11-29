@@ -17,7 +17,7 @@ const GOOGLE_SEARCH_ENGINE_ID = process.env.GOOGLE_SEARCH_ENGINE_ID || "";
 dotenv.config();
 
 // Type Definitions
-interface ImageResponse {
+export interface ImageResponse {
   id: string;
   url: string;
   title?: string;
@@ -368,6 +368,82 @@ class SimpleGoogleImageSearchService {
   }
 }
 
+export async function unsplashImages({
+  searchExpression,
+}: {
+  searchExpression: string;
+}): Promise<ImageResponse[]> {
+  try {
+    const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(
+      searchExpression,
+    )}&per_page=10&content_filter=high`;
+
+    const response = await fetch(url, {
+      headers: { Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}` },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Unsplash API error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.results.map((photo: any) => ({
+      id: photo.id,
+      url: photo.urls.full,
+      photographer: photo.user.name,
+      license: "Unsplash License (free for use, attribution recommended)",
+      alt: photo.alt_description || "No description available",
+      title: photo.description || "Untitled",
+    }));
+  } catch (error) {
+    console.error("Error fetching images from Unsplash:", error);
+    throw new Error("Failed to fetch images from Unsplash.");
+  }
+}
+
+export async function flickrImages({
+  searchExpression,
+}: {
+  searchExpression: string;
+}): Promise<ImageResponse[]> {
+  if (!FLICKR_API_KEY || !FLICKR_API_SECRET) {
+    throw new Error("FLICKR_API_KEY or FLICKR_API_SECRET is not set.");
+  }
+
+  try {
+    const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${FLICKR_API_KEY}&text=${encodeURIComponent(
+      searchExpression,
+    )}&license=1,2,3,4,5,6,7&format=json&nojsoncallback=1&per_page=10`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Flickr API error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const photos = data.photos.photo;
+
+    const photosWithLicense = await Promise.all(
+      photos.map(async (photo: any) => {
+        const license = await getPhotoLicense(photo.id);
+        return {
+          id: photo.id,
+          title: photo.title,
+          url: `https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_b.jpg`,
+          license,
+          alt: photo.title,
+        };
+      }),
+    );
+
+    return photosWithLicense;
+  } catch (error) {
+    console.error("Error fetching images from Flickr:", error);
+    throw new Error("Failed to fetch images from Flickr.");
+  }
+}
+
 // Router Definition with Enhanced Procedures
 export const imageSearch = router({
   getImagesFromUnsplash: protectedProcedure
@@ -377,33 +453,7 @@ export const imageSearch = router({
       if (!UNSPLASH_ACCESS_KEY) {
         throw new Error("UNSPLASH_ACCESS_KEY is not set.");
       }
-
-      try {
-        const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(
-          searchExpression,
-        )}&per_page=10&content_filter=high`;
-
-        const response = await fetch(url, {
-          headers: { Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}` },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Unsplash API error: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        return data.results.map((photo: any) => ({
-          id: photo.id,
-          url: photo.urls.full,
-          photographer: photo.user.name,
-          license: "Unsplash License (free for use, attribution recommended)",
-          alt: photo.alt_description || "No description available",
-          title: photo.description || "Untitled",
-        }));
-      } catch (error) {
-        console.error("Error fetching images from Unsplash:", error);
-        throw new Error("Failed to fetch images from Unsplash.");
-      }
+      return unsplashImages({ searchExpression });
     }),
 
   getImagesFromFlickr: protectedProcedure
@@ -415,38 +465,7 @@ export const imageSearch = router({
         throw new Error("FLICKR_API_KEY or FLICKR_API_SECRET is not set.");
       }
 
-      try {
-        const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${FLICKR_API_KEY}&text=${encodeURIComponent(
-          searchExpression,
-        )}&license=1,2,3,4,5,6,7&format=json&nojsoncallback=1&per_page=10`;
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          throw new Error(`Flickr API error: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        const photos = data.photos.photo;
-
-        const photosWithLicense = await Promise.all(
-          photos.map(async (photo: any) => {
-            const license = await getPhotoLicense(photo.id);
-            return {
-              id: photo.id,
-              title: photo.title,
-              url: `https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_b.jpg`,
-              license,
-              alt: photo.title,
-            };
-          }),
-        );
-
-        return photosWithLicense;
-      } catch (error) {
-        console.error("Error fetching images from Flickr:", error);
-        throw new Error("Failed to fetch images from Flickr.");
-      }
+      return flickrImages({ searchExpression });
     }),
 
   getImagesFromGoogle: protectedProcedure

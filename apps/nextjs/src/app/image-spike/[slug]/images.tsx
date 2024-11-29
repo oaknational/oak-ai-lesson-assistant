@@ -76,6 +76,7 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
   };
 
   const trpcMutations = {
+    "Custom Pipeline": trpc.imageGen.customPipeline.useMutation(),
     "Stable Diffusion Ultra": trpc.imageGen.stableDifUltra.useMutation(),
     "Stable Diffusion 3.0 & 3.5": trpc.imageGen.stableDif3.useMutation(),
     "Stable Diffusion Core": trpc.imageGen.stableDifCore.useMutation(),
@@ -110,7 +111,8 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
         if (
           source === "Stable Diffusion Ultra" ||
           source === "Stable Diffusion 3.0 & 3.5" ||
-          source === "Stable Diffusion Core"
+          source === "Stable Diffusion Core" ||
+          source === "Custom Pipeline"
         ) {
           updateColumn(columnId, {
             imageSearchBatch: [
