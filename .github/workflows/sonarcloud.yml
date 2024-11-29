@@ -8,6 +8,12 @@ on:
     types: [opened, synchronize, reopened]
   merge_group:
 
+  workflow_run:
+    workflows:
+      - Jest Tests and Coverage
+    types:
+      - completed
+
 jobs:
   sonarcloud:
     runs-on: ubuntu-latest
@@ -57,11 +63,6 @@ jobs:
           echo "Displaying contents of coverage directories..."
           find . -type d -name "coverage" -exec ls -lah {} \;
 
-      - name: List uploaded artifacts
-        run: |
-          echo "Listing uploaded artifacts..."
-          ls -lah artifact-check || echo "No artifacts found."
-
       - name: Verify downloaded artifacts
         run: |
           echo "Verifying downloaded artifacts..."
@@ -75,6 +76,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: coverage
+          path: coverage
 
       - name: SonarCloud scan
         uses: sonarsource/sonarcloud-github-action@master
@@ -85,4 +87,4 @@ jobs:
           args: >
             -Dsonar.verbose=true
             -Dsonar.projectVersion=${{ steps.app-version.outputs.version }}
-            -Dsonar.javascript.lcov.reportPaths=**/lcov.info
+            -Dsonar.javascript.lcov.reportPaths=coverage/**/lcov.info
