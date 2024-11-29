@@ -50,10 +50,31 @@ jobs:
           echo "Checking for lcov files..."
           find . -name "lcov.info" | xargs ls -lah || echo "No lcov files found."
 
+      - name: Check for generated coverage files
+        run: |
+          echo "Searching for coverage files..."
+          find . -type f -name "lcov.info" -exec ls -lah {} \;
+          echo "Displaying contents of coverage directories..."
+          find . -type d -name "coverage" -exec ls -lah {} \;
+
+      - name: List uploaded artifacts
+        run: |
+          echo "Listing uploaded artifacts..."
+          ls -lah artifact-check || echo "No artifacts found."
+
+      - name: Verify downloaded artifacts
+        run: |
+          echo "Verifying downloaded artifacts..."
+          ls -lah artifact-check || echo "No downloaded artifacts."
+
+      - name: Display lcov.info contents
+        run: |
+          find . -name "lcov.info" -exec echo "Contents of {}:" \; -exec head -n 20 {} \;
+
       - name: Download coverage reports
         uses: actions/download-artifact@v3
         with:
-          name: coverage-reports
+          name: coverage
 
       - name: SonarCloud scan
         uses: sonarsource/sonarcloud-github-action@master
@@ -62,5 +83,6 @@ jobs:
           SONAR_TOKEN: ${{ steps.doppler.outputs.SONAR_TOKEN }}
         with:
           args: >
+            -Dsonar.verbose=true
             -Dsonar.projectVersion=${{ steps.app-version.outputs.version }}
             -Dsonar.javascript.lcov.reportPaths=**/lcov.info
