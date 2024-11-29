@@ -56,7 +56,7 @@ jobs:
           ACTIONS_STEP_DEBUG: true
         uses: actions/upload-artifact@v3
         with:
-          name: coverage-reports
+          name: coverage
           path: |
             packages/**/coverage/lcov.info
             apps/nextjs/coverage/lcov.info
