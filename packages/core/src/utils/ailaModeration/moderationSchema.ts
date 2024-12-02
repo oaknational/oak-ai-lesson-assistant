@@ -44,19 +44,21 @@ export const moderationCategoriesSchema = z.array(
 
 const likertScale = z.number().int().min(1).max(5);
 
+const moderationScoresSchema = z.object({
+  l: likertScale.describe("Language and discrimination score"),
+  v: likertScale.describe("Violence and crime score"),
+  u: likertScale.describe("Upsetting, disturbing and sensitive score"),
+  s: likertScale.describe("Nudity and sex score"),
+  p: likertScale.describe("Physical activity and safety score"),
+  t: likertScale.describe("Toxic score"),
+});
+
 /**
  * Schema for the moderation response from the LLM.
  * Note: it's important that 'categories' is the last field in the schema
  */
 export const moderationResponseSchema = z.object({
-  scores: z.object({
-    l: likertScale.describe("Language and discrimination score"),
-    v: likertScale.describe("Violence and crime score"),
-    u: likertScale.describe("Upsetting, disturbing and sensitive score"),
-    s: likertScale.describe("Nudity and sex score"),
-    p: likertScale.describe("Physical activity and safety score"),
-    t: likertScale.describe("Toxic score"),
-  }),
+  scores: moderationScoresSchema,
   justification: z.string().describe("Add justification for your scores."),
   categories: moderationCategoriesSchema,
 });
@@ -65,8 +67,9 @@ export const moderationResponseSchema = z.object({
  * Schema for the moderation result, once parsed from the moderation response
  */
 export const moderationResultSchema = z.object({
-  categories: moderationCategoriesSchema,
   justification: z.string().optional(),
+  scores: moderationScoresSchema.optional(),
+  categories: moderationCategoriesSchema,
 });
 
 export type ModerationResult = z.infer<typeof moderationResultSchema>;
