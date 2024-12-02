@@ -2,6 +2,10 @@ import OpenAI from "openai";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
+import {
+  validateImageWithOpenAI,
+  type ValidationResult,
+} from "../imageGen/validateImageWithOpenAI";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 import {
@@ -10,341 +14,203 @@ import {
   type ImageResponse,
 } from "./imageSearch";
 
-interface ValidationResult {
-  imageData: ImageResponse;
-  isValid: boolean;
-}
-
+// Constants
 const STABLE_DIF_API_KEY = process.env.STABLE_DIF_API_KEY;
 const MAX_PARALLEL_CHECKS = 5;
 
-async function validateImageWithOpenAI(
-  imageUrl: string,
-  prompt: string,
-): Promise<boolean> {
-  console.log(`[OpenAI Validation] Starting validation for image: ${imageUrl}`);
-  console.log(`[OpenAI Validation] Prompt: ${prompt}`);
-
-  try {
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-      baseURL: process.env.HELICONE_EU_HOST,
-    });
-
-    console.log("[OpenAI Validation] Sending request to OpenAI");
-    const response = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are an image validator assessing if images are suitable for a classroom setting. " +
-            "Consider an image valid if it generally relates to the prompt and is classroom-appropriate, " +
-            "even if it's not a perfect match. Respond in this format:\n" +
-            "VALID: true/false\n" +
-            "REASONING: brief explanation of your decision",
-        },
-        {
-          role: "user",
-          content: `Prompt: "${prompt}"\nImage URL: ${imageUrl}\nIs this image suitable and related to the prompt?`,
-        },
-      ],
-      temperature: 0.2,
-    });
-
-    const fullResponse = response?.choices?.[0]?.message?.content?.trim() || "";
-    console.log(
-      `[OpenAI Validation] Full validation response:\n${fullResponse}`,
-    );
-
-    // Parse the response with safe defaults
-    let isValid = false;
-    let reasoning = "No reasoning provided";
-
-    // Check for valid response pattern
-    if (fullResponse) {
-      const validMatch = fullResponse.match(/VALID:\s*(true|false)/i);
-      const reasoningMatch = fullResponse.match(/REASONING:\s*(.*)/i);
-
-      if (validMatch && validMatch[1]) {
-        isValid = validMatch[1].toLowerCase() === "true";
-      } else {
-        console.warn(
-          "[OpenAI Validation] Could not parse VALID status from response",
-        );
-      }
-
-      if (reasoningMatch && reasoningMatch[1]) {
-        reasoning = reasoningMatch[1];
-      } else {
-        console.warn(
-          "[OpenAI Validation] Could not parse REASONING from response",
-        );
-      }
-    } else {
-      console.warn("[OpenAI Validation] Received empty response from OpenAI");
-    }
-
-    console.log(`[OpenAI Validation] Parsed result:`, {
-      isValid,
-      reasoning,
-      prompt,
-      imageUrl,
-    });
-
-    return isValid;
-  } catch (error) {
-    console.error("[OpenAI Validation] Error during validation:", error);
-    if (error instanceof Error) {
-      console.error("[OpenAI Validation] Error details:", {
-        message: error.message,
-        stack: error.stack,
-      });
-    }
-    return false;
-  }
+// Types
+interface ValidatedImage {
+  id: string;
+  url: string;
+  appropriatenessScore: number;
+  appropriatenessReasoning: string;
+  imageSource: string;
+  license: string;
+  photographer: string;
+  alt?: string;
+  title?: string;
 }
 
-async function validateImagesInParallel(
+// Utility Functions
+export async function validateImagesInParallel(
   images: ImageResponse[],
   searchExpression: string,
-): Promise<ValidationResult[]> {
+): Promise<{ imageData: ImageResponse; validationResult: ValidationResult }[]> {
   console.log(
-    `[Parallel Validation] Starting parallel validation for ${images.length} images`,
-  );
-  console.log(
-    `[Parallel Validation] Will check up to ${MAX_PARALLEL_CHECKS} images`,
+    `[Validation] Starting parallel validation for ${images.length} images`,
   );
 
   const imagesToCheck = images.slice(0, MAX_PARALLEL_CHECKS);
-  console.log(
-    `[Parallel Validation] Actually checking ${imagesToCheck.length} images`,
-  );
 
   const validationPromises = imagesToCheck.map(async (image) => {
-    console.log(`[Parallel Validation] Validating image: ${image.url}`);
     try {
       const isValid = await validateImageWithOpenAI(
         image.url,
         searchExpression,
       );
-      console.log(
-        `[Parallel Validation] Validation result for ${image.url}: ${isValid}`,
-      );
-      return { imageData: image, isValid };
+      return { imageData: image, validationResult: isValid };
     } catch (error) {
-      console.error(
-        `[Parallel Validation] Error validating ${image.url}:`,
-        error,
-      );
-      return { imageData: image, isValid: false };
+      console.error(`[Validation] Error validating ${image.url}:`, error);
+      return {
+        imageData: image,
+        validationResult: {
+          isValid: false,
+          metadata: {
+            imageContent: "Error validating image",
+            promptUsed: searchExpression,
+            appropriatenessScore: 0,
+            validationReasoning: "Error validating",
+          },
+        },
+      };
     }
   });
 
-  const results = await Promise.all(validationPromises);
-  console.log(
-    `[Parallel Validation] Completed validation for ${results.length} images`,
-  );
-  console.log(
-    "[Parallel Validation] Results:",
-    results.map((r) => ({ url: r.imageData.url, isValid: r.isValid })),
-  );
-  return results;
+  return Promise.all(validationPromises);
 }
+
+async function generateStabilityImage(
+  endpoint: "core" | "ultra" | "sd3",
+  searchExpression: string,
+  outputFormat: "webp" | "jpeg" = "webp",
+): Promise<string> {
+  const formData = new FormData();
+  formData.append("prompt", searchExpression);
+  formData.append("output_format", outputFormat);
+
+  const response = await fetch(
+    `https://api.stability.ai/v2beta/stable-image/generate/${endpoint}`,
+    {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${STABLE_DIF_API_KEY}`,
+        Accept: "image/*",
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Image generation failed with status ${response.status}`);
+  }
+
+  const imageBuffer = await response.arrayBuffer();
+  return `data:image/${outputFormat};base64,${Buffer.from(imageBuffer).toString("base64")}`;
+}
+
+// Image Source Functions
 async function tryFlickrImages(
   searchExpression: string,
-): Promise<ImageResponse | null> {
-  console.log(
-    `[Flickr] Attempting to fetch Flickr images for: ${searchExpression}`,
-  );
+): Promise<ValidatedImage | null> {
   try {
     const flickrResponse = await flickrImages({ searchExpression });
-    console.log(
-      `[Flickr] Received ${flickrResponse.length} images from Flickr`,
-    );
+    if (flickrResponse.length === 0) return null;
 
-    if (flickrResponse.length === 0) {
-      console.log("[Flickr] No images returned from Flickr");
-      return null;
-    }
-
-    console.log("[Flickr] Starting validation of Flickr images");
     const validationResults = await validateImagesInParallel(
       flickrResponse,
       searchExpression,
     );
+    const firstValidImage = validationResults.find(
+      (result) => result.validationResult.isValid,
+    );
 
-    const firstValidImage = validationResults.find((result) => result.isValid);
-    if (firstValidImage) {
-      console.log(
-        `[Flickr] Found valid image: ${firstValidImage.imageData.url}`,
-      );
-      return {
-        ...firstValidImage.imageData,
-        license: `Flickr - ${firstValidImage.imageData.license}`,
-        photographer: firstValidImage.imageData.photographer || "Flickr User",
-      };
-    }
+    if (!firstValidImage) return null;
 
-    console.log("[Flickr] No valid images found from Flickr");
-    return null;
+    return {
+      ...firstValidImage.imageData,
+      id: uuidv4(),
+      appropriatenessScore:
+        firstValidImage.validationResult.metadata.appropriatenessScore,
+      appropriatenessReasoning:
+        firstValidImage.validationResult.metadata.validationReasoning,
+      license: `Flickr - ${firstValidImage.imageData.license}`,
+      photographer: firstValidImage.imageData.photographer || "Flickr User",
+      imageSource: "Flickr",
+    };
   } catch (error) {
-    console.error("[Flickr] Error fetching/validating Flickr images:", error);
-    if (error instanceof Error) {
-      console.error("[Flickr] Error details:", {
-        message: error.message,
-        stack: error.stack,
-      });
-    }
+    console.error("[Flickr] Error:", error);
     return null;
   }
 }
 
 async function tryUnsplashImages(
   searchExpression: string,
-): Promise<ImageResponse | null> {
-  console.log(
-    `[Unsplash] Attempting to fetch Unsplash images for: ${searchExpression}`,
-  );
+): Promise<ValidatedImage | null> {
   try {
     const unsplashResponse = await unsplashImages({ searchExpression });
-    console.log(
-      `[Unsplash] Received ${unsplashResponse.length} images from Unsplash`,
-    );
+    if (unsplashResponse.length === 0) return null;
 
-    if (unsplashResponse.length === 0) {
-      console.log("[Unsplash] No images returned from Unsplash");
-      return null;
-    }
-
-    console.log("[Unsplash] Starting validation of Unsplash images");
     const validationResults = await validateImagesInParallel(
       unsplashResponse,
       searchExpression,
     );
-
-    const firstValidImage = validationResults.find((result) => result.isValid);
-    if (firstValidImage) {
-      console.log(
-        `[Unsplash] Found valid image: ${firstValidImage.imageData.url}`,
-      );
-      return {
-        ...firstValidImage.imageData,
-        license: "Unsplash License",
-        photographer:
-          firstValidImage.imageData.photographer || "Unsplash Photographer",
-      };
-    }
-
-    console.log("[Unsplash] No valid images found from Unsplash");
-    return null;
-  } catch (error) {
-    console.error(
-      "[Unsplash] Error fetching/validating Unsplash images:",
-      error,
-    );
-    if (error instanceof Error) {
-      console.error("[Unsplash] Error details:", {
-        message: error.message,
-        stack: error.stack,
-      });
-    }
-    return null;
-  }
-}
-
-async function generateStabilityImage(
-  endpoint: string,
-  searchExpression: string,
-  outputFormat: "webp" | "jpeg" = "webp",
-): Promise<string> {
-  console.log(`[Stability ${endpoint}] Starting image generation`);
-  console.log(`[Stability ${endpoint}] Prompt: ${searchExpression}`);
-
-  const formData = new FormData();
-  formData.append("prompt", searchExpression);
-  formData.append("output_format", outputFormat);
-
-  try {
-    console.log(`[Stability ${endpoint}] Sending request to Stability AI`);
-    const response = await fetch(
-      `https://api.stability.ai/v2beta/stable-image/generate/${endpoint}`,
-      {
-        method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${STABLE_DIF_API_KEY}`,
-          Accept: "image/*",
-        },
-      },
+    const firstValidImage = validationResults.find(
+      (result) => result.validationResult.isValid,
     );
 
-    if (!response.ok) {
-      console.error(`[Stability ${endpoint}] API error:`, {
-        status: response.status,
-        statusText: response.statusText,
-      });
-      throw new Error(`Image generation failed with status ${response.status}`);
-    }
+    if (!firstValidImage) return null;
 
-    console.log(`[Stability ${endpoint}] Successfully received image response`);
-    const imageBuffer = await response.arrayBuffer();
-    const base64Image = `data:image/${outputFormat};base64,${Buffer.from(imageBuffer).toString("base64")}`;
-    console.log(`[Stability ${endpoint}] Successfully encoded image to base64`);
-    return base64Image;
+    return {
+      ...firstValidImage.imageData,
+      id: uuidv4(),
+      appropriatenessScore:
+        firstValidImage.validationResult.metadata.appropriatenessScore,
+      appropriatenessReasoning:
+        firstValidImage.validationResult.metadata.validationReasoning,
+      license: "Unsplash License",
+      imageSource: "Unsplash",
+      photographer:
+        firstValidImage.imageData.photographer || "Unsplash Photographer",
+    };
   } catch (error) {
-    console.error(`[Stability ${endpoint}] Error:`, error);
-    throw error;
+    console.error("[Unsplash] Error:", error);
+    return null;
   }
 }
 
 async function tryStabilityCore(
   searchExpression: string,
-): Promise<ImageResponse | null> {
-  console.log("[StabilityCore] Starting image generation attempt");
+): Promise<ValidatedImage | null> {
   try {
     const imageUrl = await generateStabilityImage("core", searchExpression);
-    console.log("[StabilityCore] Image generated, starting validation");
 
-    const isValid = await validateImageWithOpenAI(imageUrl, searchExpression);
-    console.log(`[StabilityCore] Validation result: ${isValid}`);
+    console.log("**************************************************");
+    console.log("imageUrl", imageUrl);
+    console.log("**************************************************");
 
-    if (isValid) {
-      console.log("[StabilityCore] Image validated successfully");
-      return {
-        id: uuidv4(),
-        url: imageUrl,
-        title: `AI Generated: ${searchExpression}`,
-        alt: searchExpression,
-        license: "Stability AI - Core",
-        photographer: "Generated by Stability AI",
-      };
-    }
-    console.log("[StabilityCore] Image validation failed");
-    return null;
+    const validationResponse = await validateImageWithOpenAI(
+      imageUrl,
+      searchExpression,
+    );
+
+    if (!validationResponse.isValid) return null;
+
+    return {
+      id: uuidv4(),
+      url: imageUrl,
+      title: `AI Generated: ${searchExpression}`,
+      alt: searchExpression,
+      license: "Stability AI - Core",
+      photographer: "Generated by Stability AI",
+      appropriatenessScore: validationResponse.metadata.appropriatenessScore,
+      appropriatenessReasoning: validationResponse.metadata.validationReasoning,
+      imageSource: "Stability AI",
+    };
   } catch (error) {
-    console.error("[StabilityCore] Error during generation/validation:", error);
-    if (error instanceof Error) {
-      console.error("[StabilityCore] Error details:", {
-        message: error.message,
-        stack: error.stack,
-      });
-    }
+    console.error("[StabilityCore] Error:", error);
     return null;
   }
 }
 
 async function tryDallE(
   searchExpression: string,
-): Promise<ImageResponse | null> {
-  console.log("[DALL-E] Starting image generation attempt");
+): Promise<ValidatedImage | null> {
   try {
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
       baseURL: process.env.HELICONE_EU_HOST,
     });
 
-    console.log("[DALL-E] Sending request to OpenAI");
     const response = await openai.images.generate({
       model: "dall-e-3",
       prompt: searchExpression,
@@ -352,254 +218,242 @@ async function tryDallE(
       size: "1024x1024",
     });
 
-    console.log("[DALL-E] Response received:", response);
+    if (!response?.data?.[0]?.url) return null;
 
-    if (response?.data?.[0]?.url) {
-      const imageUrl = response.data[0].url;
-      console.log("[DALL-E] Image generated, starting validation");
+    const imageUrl = response.data[0].url;
+    const validationResponse = await validateImageWithOpenAI(
+      imageUrl,
+      searchExpression,
+    );
 
-      const isValid = await validateImageWithOpenAI(imageUrl, searchExpression);
-      console.log(`[DALL-E] Validation result: ${isValid}`);
+    if (!validationResponse.isValid) return null;
 
-      if (isValid) {
-        console.log("[DALL-E] Image validated successfully");
-        return {
-          id: uuidv4(),
-          url: imageUrl,
-          title: `AI Generated: ${searchExpression}`,
-          alt: searchExpression,
-          license: "OpenAI DALL-E 3",
-          photographer: "Generated by DALL-E 3",
-        };
-      }
-    }
-    console.log("[DALL-E] No valid image generated");
-    return null;
+    return {
+      id: uuidv4(),
+      url: imageUrl,
+      title: `AI Generated: ${searchExpression}`,
+      alt: searchExpression,
+      license: "OpenAI DALL-E 3",
+      imageSource: "OpenAI DALL-E 3",
+      photographer: "Generated by DALL-E 3",
+      appropriatenessScore: validationResponse.metadata.appropriatenessScore,
+      appropriatenessReasoning: validationResponse.metadata.validationReasoning,
+    };
   } catch (error) {
-    console.error("[DALL-E] Error during generation/validation:", error);
-    if (error instanceof Error) {
-      console.error("[DALL-E] Error details:", {
-        message: error.message,
-        stack: error.stack,
-      });
-    }
+    console.error("[DALL-E] Error:", error);
     return null;
   }
 }
+
+// Router Definition
 export const imageGen = router({
-  customPipeline: protectedProcedure
-    .input(
-      z.object({
-        searchExpression: z.string(),
-      }),
-    )
-    .mutation(async ({ input }): Promise<string> => {
-      const { searchExpression } = input;
-      console.log(
-        `[Pipeline] Starting custom pipeline for prompt: ${searchExpression}`,
-      );
+  customPipelineWithReasoning: protectedProcedure
+    .input(z.object({ searchExpression: z.string() }))
+    .mutation(async ({ input }): Promise<ValidatedImage[]> => {
+      const results: ValidatedImage[] = [];
 
-      try {
-        console.log("[Pipeline] Trying Flickr...");
-        const flickrResult = await tryFlickrImages(searchExpression);
-        if (flickrResult) {
-          console.log("[Pipeline] Flickr success, returning result");
-          return flickrResult.url;
-        }
-        console.log("[Pipeline] Flickr attempt failed, trying Unsplash...");
-
-        const unsplashResult = await tryUnsplashImages(searchExpression);
-        if (unsplashResult) {
-          console.log("[Pipeline] Unsplash success, returning result");
-          return unsplashResult.url;
-        }
-        console.log(
-          "[Pipeline] Unsplash attempt failed, trying Stability Core...",
+      // Get and validate Flickr images
+      const flickrResponse = await flickrImages({
+        searchExpression: input.searchExpression,
+      });
+      if (flickrResponse.length > 0) {
+        const validationResults = await validateImagesInParallel(
+          flickrResponse,
+          input.searchExpression,
         );
-
-        const stabilityResult = await tryStabilityCore(searchExpression);
-        if (stabilityResult) {
-          console.log("[Pipeline] Stability Core success, returning result");
-          return stabilityResult.url;
-        }
-        console.log(
-          "[Pipeline] Stability Core attempt failed, trying DALL-E...",
+        results.push(
+          ...validationResults.map((result) => ({
+            id: uuidv4(),
+            url: result.imageData.url,
+            appropriatenessScore:
+              result.validationResult.metadata.appropriatenessScore,
+            appropriatenessReasoning:
+              result.validationResult.metadata.validationReasoning,
+            imageSource: "Flickr",
+            license: `Flickr - ${result.imageData.license}`,
+            photographer: result.imageData.photographer || "Flickr User",
+            title: result.imageData.title,
+            alt: result.imageData.alt,
+          })),
         );
-
-        const dalleResult = await tryDallE(searchExpression);
-        if (dalleResult) {
-          console.log("[Pipeline] DALL-E success, returning result");
-          return dalleResult.url;
-        }
-
-        console.log("[Pipeline] All attempts failed");
-        throw new Error("No suitable images found from any provider.");
-      } catch (error) {
-        console.error("[Pipeline] Pipeline error:", error);
-        if (error instanceof Error) {
-          console.error("[Pipeline] Error details:", {
-            message: error.message,
-            stack: error.stack,
-          });
-          throw new Error(`Image pipeline failed: ${error.message}`);
-        }
-        throw new Error("Image generation failed. Please try again later.");
       }
-    }),
-  stableDifUltra: protectedProcedure
-    .input(
-      z.object({
-        searchExpression: z.string(),
-      }),
-    )
-    .mutation(async ({ input }) => {
-      const { searchExpression } = input;
 
-      try {
-        // Construct the form data
-        const formData = new FormData();
-        formData.append("prompt", searchExpression);
-        formData.append("output_format", "webp");
-
-        // Make the request using fetch
-        const response = await fetch(
-          `https://api.stability.ai/v2beta/stable-image/generate/ultra`,
-          {
-            method: "POST",
-            body: formData,
-            headers: {
-              Authorization: `Bearer ${STABLE_DIF_API_KEY}`,
-              Accept: "image/*",
-            },
-          },
+      // Get and validate Unsplash images
+      const unsplashResponse = await unsplashImages({
+        searchExpression: input.searchExpression,
+      });
+      if (unsplashResponse.length > 0) {
+        const validationResults = await validateImagesInParallel(
+          unsplashResponse,
+          input.searchExpression,
         );
-
-        if (!response.ok) {
-          throw new Error(
-            `Image generation failed with status ${response.status}`,
-          );
-        }
-        // return "https://unsplash.com/photos/1";
-        // Response is expected to be an image buffer
-        const imageBuffer = await response.arrayBuffer();
-        const imageUrl = `data:image/webp;base64,${Buffer.from(imageBuffer).toString("base64")}`;
-
-        return imageUrl;
-      } catch (error) {
-        throw new Error("Image generation failed. Please try again later.");
-      }
-    }),
-  stableDif3: protectedProcedure
-    .input(
-      z.object({
-        searchExpression: z.string(),
-      }),
-    )
-    .mutation(async ({ input }) => {
-      const { searchExpression } = input;
-
-      try {
-        // Construct the form data
-        const formData = new FormData();
-        formData.append("prompt", searchExpression);
-        formData.append("output_format", "jpeg");
-
-        // Make the request using fetch
-        const response = await fetch(
-          `https://api.stability.ai/v2beta/stable-image/generate/sd3`,
-          {
-            method: "POST",
-            body: formData,
-            headers: {
-              Authorization: `Bearer ${STABLE_DIF_API_KEY}`,
-              Accept: "image/*",
-            },
-          },
+        results.push(
+          ...validationResults.map((result) => ({
+            id: uuidv4(),
+            url: result.imageData.url,
+            appropriatenessScore:
+              result.validationResult.metadata.appropriatenessScore,
+            appropriatenessReasoning:
+              result.validationResult.metadata.validationReasoning,
+            imageSource: "Unsplash",
+            license: "Unsplash License",
+            photographer:
+              result.imageData.photographer || "Unsplash Photographer",
+            title: result.imageData.title,
+            alt: result.imageData.alt,
+          })),
         );
-
-        const imageBuffer = await response.arrayBuffer();
-
-        const imageUrl = `data:image/jpeg;base64,${Buffer.from(imageBuffer).toString("base64")}`;
-        return imageUrl;
-      } catch (error) {
-        throw new Error("Image generation failed. Please try again later.");
       }
-    }),
-  stableDifCore: protectedProcedure
-    .input(
-      z.object({
-        searchExpression: z.string(),
-      }),
-    )
-    .mutation(async ({ input }) => {
-      const { searchExpression } = input;
 
+      // Try Stability AI
       try {
-        // Construct the form data
-        const formData = new FormData();
-        formData.append("prompt", searchExpression);
-        formData.append("output_format", "webp");
-
-        // Make the request using fetch
-        const response = await fetch(
-          "https://api.stability.ai/v2beta/stable-image/generate/core",
-          {
-            method: "POST",
-            body: formData,
-            headers: {
-              Authorization: `Bearer ${STABLE_DIF_API_KEY}`,
-              Accept: "image/*",
-            },
-          },
+        const imageUrl = await generateStabilityImage(
+          "core",
+          input.searchExpression,
         );
-
-        if (!response.ok) {
-          throw new Error(
-            `Image generation failed with status ${response.status}`,
-          );
-        }
-        // return "https://unsplash.com/photos/1";
-        // Response is expected to be an image buffer
-        const imageBuffer = await response.arrayBuffer();
-        const imageUrl = `data:image/webp;base64,${Buffer.from(imageBuffer).toString("base64")}`;
-
-        return imageUrl;
+        const validationResponse = await validateImageWithOpenAI(
+          imageUrl,
+          input.searchExpression,
+        );
+        results.push({
+          id: uuidv4(),
+          url: imageUrl,
+          title: `AI Generated: ${input.searchExpression}`,
+          alt: input.searchExpression,
+          license: "Stability AI - Core",
+          photographer: "Generated by Stability AI",
+          appropriatenessScore:
+            validationResponse.metadata.appropriatenessScore,
+          appropriatenessReasoning:
+            validationResponse.metadata.validationReasoning,
+          imageSource: "Stability AI",
+        });
       } catch (error) {
-        throw new Error("Image generation failed. Please try again later.");
+        console.error("[StabilityCore] Error:", error);
       }
-    }),
-  openAi: protectedProcedure
-    .input(
-      z.object({
-        searchExpression: z.string(),
-      }),
-    )
-    .mutation(async ({ input }) => {
-      const { searchExpression } = input;
 
+      // Try DALL-E
       try {
         const openai = new OpenAI({
           apiKey: process.env.OPENAI_API_KEY,
           baseURL: process.env.HELICONE_EU_HOST,
         });
+
         const response = await openai.images.generate({
           model: "dall-e-3",
-          prompt: searchExpression,
+          prompt: input.searchExpression,
           n: 1,
           size: "1024x1024",
         });
 
-        if (!response || response === undefined) {
-          throw new Error("No response from OpenAI");
+        if (response?.data?.[0]?.url) {
+          const imageUrl = response.data[0].url;
+          const validationResponse = await validateImageWithOpenAI(
+            imageUrl,
+            input.searchExpression,
+          );
+          results.push({
+            id: uuidv4(),
+            url: imageUrl,
+            title: `AI Generated: ${input.searchExpression}`,
+            alt: input.searchExpression,
+            license: "OpenAI DALL-E 3",
+            imageSource: "OpenAI DALL-E 3",
+            photographer: "Generated by DALL-E 3",
+            appropriatenessScore:
+              validationResponse.metadata.appropriatenessScore,
+            appropriatenessReasoning:
+              validationResponse.metadata.validationReasoning,
+          });
         }
-        console.log("response", response);
-
-        const image_url = response?.data[0]?.url;
-
-        return image_url;
       } catch (error) {
-        // console.error("Error generating image:", error);
-        throw new Error("Image generation failed. Please try again later.");
+        console.error("[DALL-E] Error:", error);
       }
+
+      // Return all results, even if some have low appropriateness scores
+      if (results.length === 0) {
+        throw new Error("No images found from any provider.");
+      }
+
+      return results;
+    }),
+
+  customPipeline: protectedProcedure
+    .input(z.object({ searchExpression: z.string() }))
+    .mutation(async ({ input }) => {
+      const providers = [
+        tryFlickrImages,
+        tryUnsplashImages,
+        tryStabilityCore,
+        tryDallE,
+      ];
+
+      for (const provider of providers) {
+        try {
+          const result = await provider(input.searchExpression);
+          if (result) {
+            return {
+              url: result.url,
+              appropriatenessScore: result.appropriatenessScore,
+              appropriatenessReasoning: result.appropriatenessReasoning,
+              imageSource: result.imageSource,
+            };
+          }
+        } catch (error) {
+          console.error(`Provider error:`, error);
+        }
+      }
+
+      throw new Error("No suitable images found from any provider.");
+    }),
+
+  stableDifUltra: protectedProcedure
+    .input(z.object({ searchExpression: z.string() }))
+    .mutation(async ({ input }) => {
+      return generateStabilityImage("ultra", input.searchExpression);
+    }),
+
+  stableDif3: protectedProcedure
+    .input(z.object({ searchExpression: z.string() }))
+    .mutation(async ({ input }) => {
+      return generateStabilityImage("sd3", input.searchExpression, "jpeg");
+    }),
+
+  stableDifCore: protectedProcedure
+    .input(z.object({ searchExpression: z.string() }))
+    .mutation(async ({ input }) => {
+      return generateStabilityImage("core", input.searchExpression);
+    }),
+
+  openAi: protectedProcedure
+    .input(z.object({ searchExpression: z.string() }))
+    .mutation(async ({ input }) => {
+      const result = await tryDallE(input.searchExpression);
+      if (!result)
+        throw new Error("Image generation failed. Please try again later.");
+      return result.url;
+    }),
+  validateImage: protectedProcedure
+    .input(z.object({ imageUrl: z.string(), prompt: z.string() }))
+    .mutation(async ({ input }) => {
+      return validateImageWithOpenAI(input.imageUrl, input.prompt);
+    }),
+  validateImagesInParallel: protectedProcedure
+    .input(
+      z.object({
+        images: z.array(
+          z.object({
+            id: z.string(),
+            url: z.string(),
+            license: z.string(),
+            photographer: z.string().optional(),
+            alt: z.string().optional(),
+          }),
+        ),
+        searchExpression: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      return validateImagesInParallel(input.images, input.searchExpression);
     }),
 });
