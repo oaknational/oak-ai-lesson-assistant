@@ -1,4 +1,5 @@
-import { AilaAuthenticationError, AilaThreatDetectionError } from "@oakai/aila";
+import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
+import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
 import type {
   ActionDocument,
   ErrorDocument,
@@ -49,15 +50,15 @@ async function handleThreatDetectionError(
 async function handleAilaAuthenticationError(
   span: TracingSpan,
   e: AilaAuthenticationError,
-) {
+): Promise<Response> {
   reportErrorTelemetry(span, e, "AilaAuthenticationError", "Unauthorized");
-  return new Response("Unauthorized", { status: 401 });
+  return Promise.resolve(new Response("Unauthorized", { status: 401 }));
 }
 
 export async function handleRateLimitError(
   span: TracingSpan,
   error: RateLimitExceededError,
-) {
+): Promise<Response> {
   reportErrorTelemetry(span, error, "RateLimitExceededError", "Rate limited");
 
   const timeRemainingHours = Math.ceil(
@@ -65,27 +66,36 @@ export async function handleRateLimitError(
   );
   const hours = timeRemainingHours === 1 ? "hour" : "hours";
 
-  return streamingJSON({
-    type: "error",
-    value: error.message,
-    message: `**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in ${timeRemainingHours} ${hours}. If you require a higher limit, please [make a request](${process.env.RATELIMIT_FORM_URL}).`,
-  } as ErrorDocument);
+  return Promise.resolve(
+    streamingJSON({
+      type: "error",
+      value: error.message,
+      message: `**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in ${timeRemainingHours} ${hours}. If you require a higher limit, please [make a request](${process.env.RATELIMIT_FORM_URL}).`,
+    } as ErrorDocument),
+  );
 }
 
-async function handleUserBannedError() {
-  return streamingJSON({
-    type: "action",
-    action: "SHOW_ACCOUNT_LOCKED",
-  } as ActionDocument);
+async function handleUserBannedError(): Promise<Response> {
+  return Promise.resolve(
+    streamingJSON({
+      type: "action",
+      action: "SHOW_ACCOUNT_LOCKED",
+    } as ActionDocument),
+  );
 }
 
-async function handleGenericError(span: TracingSpan, e: Error) {
+async function handleGenericError(
+  span: TracingSpan,
+  e: Error,
+): Promise<Response> {
   reportErrorTelemetry(span, e, e.name, e.message);
-  return streamingJSON({
-    type: "error",
-    message: e.message,
-    value: `Sorry, an error occurred: ${e.message}`,
-  } as ErrorDocument);
+  return Promise.resolve(
+    streamingJSON({
+      type: "error",
+      message: e.message,
+      value: `Sorry, an error occurred: ${e.message}`,
+    } as ErrorDocument),
+  );
 }
 
 export async function handleChatException(

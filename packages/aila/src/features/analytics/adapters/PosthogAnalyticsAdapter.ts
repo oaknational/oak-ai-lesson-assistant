@@ -7,8 +7,8 @@ import { reportCompletionAnalyticsEvent } from "../../../lib/openai/OpenAIComple
 import { AnalyticsAdapter } from "./AnalyticsAdapter";
 
 export class PosthogAnalyticsAdapter extends AnalyticsAdapter {
-  private _posthogClient: PostHog;
-  private _startedAt: number = Date.now();
+  private readonly _posthogClient: PostHog;
+  private readonly _startedAt: number = Date.now();
   private _isShutdown: boolean = false;
 
   constructor(aila: AilaServices) {

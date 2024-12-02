@@ -1,11 +1,11 @@
-import type { Aila } from "@oakai/aila";
+import type { Aila } from "@oakai/aila/src/core/Aila";
+import type { AilaServices } from "@oakai/aila/src/core/AilaServices";
+import type { Message } from "@oakai/aila/src/core/chat";
 import type {
-  AilaInitializationOptions,
   AilaOptions,
   AilaPublicChatOptions,
-  AilaServices,
-  Message,
-} from "@oakai/aila";
+  AilaInitializationOptions,
+} from "@oakai/aila/src/core/types";
 import { AilaAmericanisms } from "@oakai/aila/src/features/americanisms/AilaAmericanisms";
 import {
   DatadogAnalyticsAdapter,
@@ -16,7 +16,7 @@ import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 // #TODO StreamingTextResponse is deprecated. If we choose to adopt the "ai" package
 // more fully, we should refactor to support its approach to streaming
@@ -40,7 +40,7 @@ export const maxDuration = 300;
 const prisma: PrismaClientWithAccelerate = globalPrisma;
 
 export async function GET() {
-  return new Response("Chat API is working", { status: 200 });
+  return Promise.resolve(new Response("Chat API is working", { status: 200 }));
 }
 
 async function setupChatHandler(req: NextRequest) {

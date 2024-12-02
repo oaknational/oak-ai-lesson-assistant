@@ -1,5 +1,6 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
-import { test, expect, Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
@@ -44,7 +45,7 @@ test(
 
       // Generating
       await expect(downloadLessonPlan).toContainText(
-        "Generating Lesson plan for export",
+        "Generating lesson plan for export",
         { ignoreCase: true },
       );
 
@@ -54,7 +55,7 @@ test(
         { ignoreCase: true, timeout: 30000 },
       );
       await expect(downloadLessonPlan).toContainText(
-        "Download Lesson plan (.pdf)",
+        "Download lesson plan (.pdf)",
         { ignoreCase: true },
       );
     });

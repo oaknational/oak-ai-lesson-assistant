@@ -1,9 +1,9 @@
+import { OakFlex, OakP, OakPrimaryButton } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 
-import Button from "@/components/Button";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 
-function DialogContainer({ children }: { children: React.ReactNode }) {
+function DialogContainer({ children }: { readonly children: React.ReactNode }) {
   return (
     <Flex
       className="h-full w-full gap-10"
@@ -16,18 +16,18 @@ function DialogContainer({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Heading({ children }: { children: React.ReactNode }) {
+function Heading({ children }: { readonly children: React.ReactNode }) {
   return <p className="text-2xl font-bold">{children}</p>;
 }
 
-function Content({ children }: { children: React.ReactNode }) {
+function Content({ children }: { readonly children: React.ReactNode }) {
   return <p className="text-sm text-muted-foreground">{children}</p>;
 }
 
 const DemoShareLockedDialog = ({
   closeDialog,
 }: {
-  closeDialog: () => void;
+  readonly closeDialog: () => void;
 }) => {
   const demo = useDemoUser();
 
@@ -37,21 +37,18 @@ const DemoShareLockedDialog = ({
 
   return (
     <DialogContainer>
-      <Heading>Sharing and downloading</Heading>
-      <Content>
+      <OakP $textAlign="center">
         Share and download options are not available to users outside of the UK.
         If you are a teacher in the UK,{" "}
         <a href={demo.contactHref} className="underline">
           contact us for full access.
         </a>
-      </Content>
-
-      <div className="flex w-full items-center justify-between">
-        <div />
-        <Button variant="primary" onClick={closeDialog}>
+      </OakP>
+      <OakFlex $justifyContent="center" $width="100%" $mt="space-between-m">
+        <OakPrimaryButton onClick={closeDialog}>
           Back to lesson
-        </Button>
-      </div>
+        </OakPrimaryButton>
+      </OakFlex>
     </DialogContainer>
   );
 };

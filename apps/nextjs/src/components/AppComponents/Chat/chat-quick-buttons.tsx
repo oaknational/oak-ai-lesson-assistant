@@ -12,9 +12,9 @@ import type { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
 import ChatButton from "./ui/chat-button";
 import { IconRefresh, IconStop } from "./ui/icons";
 
-interface QuickActionButtonsProps {
+export type QuickActionButtonsProps = Readonly<{
   isEmptyScreen: boolean;
-}
+}>;
 
 const shouldAllowStop = (
   ailaStreamingStatus: AilaStreamingStatus,
@@ -63,7 +63,7 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
   const handleRegenerate = useCallback(() => {
     trackEvent("chat:regenerate", { id: id });
     const lastUserMessage =
-      findLast(messages, (m) => m.role === "user")?.content || "";
+      findLast(messages, (m) => m.role === "user")?.content ?? "";
     lessonPlanTracking.onClickRetry(lastUserMessage);
     queueUserAction("regenerate");
   }, [queueUserAction, lessonPlanTracking, messages, trackEvent, id]);

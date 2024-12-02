@@ -1,5 +1,5 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import {
@@ -43,23 +43,24 @@ import type {
 
 const log = aiLogger("aila");
 export class Aila implements AilaServices {
-  private _analytics?: AilaAnalyticsFeature;
-  private _chat: AilaChatService;
-  private _errorReporter?: AilaErrorReportingFeature;
+  private _initialised: boolean = false; // We have a separate flag for this because we have an async initialise method which cannot be called in the constructor
+  private readonly _analytics?: AilaAnalyticsFeature;
+  private readonly _chat: AilaChatService;
+  private readonly _errorReporter?: AilaErrorReportingFeature;
   private _isShutdown: boolean = false;
-  private _lesson: AilaLessonService;
-  private _chatLlmService: LLMService;
-  private _moderation?: AilaModerationFeature;
-  private _options: AilaOptionsWithDefaultFallbackValues;
-  private _snapshotStore: AilaSnapshotStore;
-  private _persistence: AilaPersistenceFeature[] = [];
-  private _threatDetection?: AilaThreatDetectionFeature;
-  private _prisma: PrismaClientWithAccelerate;
-  private _rag: AilaRagFeature;
-  private _plugins: AilaPlugin[];
-  private _userId!: string | undefined;
-  private _chatId!: string;
-  private _americanisms: AilaAmericanismsFeature;
+  private readonly _lesson: AilaLessonService;
+  private readonly _chatLlmService: LLMService;
+  private readonly _moderation?: AilaModerationFeature;
+  private readonly _options: AilaOptionsWithDefaultFallbackValues;
+  private readonly _snapshotStore: AilaSnapshotStore;
+  private readonly _persistence: AilaPersistenceFeature[] = [];
+  private readonly _threatDetection?: AilaThreatDetectionFeature;
+  private readonly _prisma: PrismaClientWithAccelerate;
+  private readonly _rag: AilaRagFeature;
+  private readonly _plugins: AilaPlugin[];
+  private readonly _userId!: string | undefined;
+  private readonly _chatId!: string;
+  private readonly _americanisms: AilaAmericanismsFeature;
 
   constructor(options: AilaInitializationOptions) {
     this._userId = options.chat.userId;
@@ -123,8 +124,22 @@ export class Aila implements AilaServices {
     this._plugins = options.plugins;
   }
 
+  private checkInitialised() {
+    if (!this._initialised) {
+      log.warn(
+        "Aila instance has not been initialised. Please call the initialise method before using the instance.",
+      );
+      throw new Error("Aila instance has not been initialised.");
+    }
+  }
+
   // Initialization methods
   public async initialise() {
+    if (this._initialised) {
+      log.info("Aila - already initialised");
+      return;
+    }
+    log.info("Aila - initialise");
     this.checkUserIdPresentIfPersisting();
     await this.loadChatIfPersisting();
     const persistedLessonPlan = this._chat.persistedChat?.lessonPlan;
@@ -132,6 +147,7 @@ export class Aila implements AilaServices {
       this._lesson.setPlan(persistedLessonPlan);
     }
     await this._lesson.setUpInitialLessonPlan(this._chat.messages);
+    this._initialised = true;
   }
 
   private initialiseOptions(options?: AilaOptions) {
@@ -246,6 +262,7 @@ export class Aila implements AilaServices {
 
   // Generation methods
   public async generateSync(opts: AilaGenerateLessonPlanOptions) {
+    this.checkInitialised();
     const stream = await this.generate(opts);
 
     const reader = stream.getReader();
@@ -273,6 +290,7 @@ export class Aila implements AilaServices {
     keyStage,
     topic,
   }: AilaGenerateLessonPlanOptions) {
+    this.checkInitialised();
     if (this._isShutdown) {
       throw new AilaGenerationError(
         "This Aila instance has been shut down and cannot be reused.",

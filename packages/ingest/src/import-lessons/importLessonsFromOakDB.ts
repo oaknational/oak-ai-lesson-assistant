@@ -3,7 +3,7 @@ import { prisma } from "@oakai/db";
 import { IngestError } from "../IngestError";
 import type { IngestLogger } from "../types";
 import { getDataHash } from "../utils/getDataHash";
-import type { RawLesson} from "../zod-schema/zodSchema";
+import type { RawLesson } from "../zod-schema/zodSchema";
 import { RawLessonSchema } from "../zod-schema/zodSchema";
 import { graphqlClient } from "./graphql/client";
 import { query } from "./graphql/query";

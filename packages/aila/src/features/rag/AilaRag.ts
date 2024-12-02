@@ -1,6 +1,6 @@
 import { RAG } from "@oakai/core/src/rag";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import type { AilaRagFeature } from ".";
@@ -12,9 +12,9 @@ import { minifyLessonPlanForRelevantLessons } from "../../utils/lessonPlan/minif
 const log = aiLogger("aila:rag");
 
 export class AilaRag implements AilaRagFeature {
-  private _aila: AilaServices;
-  private _rag: RAG;
-  private _prisma: PrismaClientWithAccelerate;
+  private readonly _aila: AilaServices;
+  private readonly _rag: RAG;
+  private readonly _prisma: PrismaClientWithAccelerate;
 
   constructor({
     aila,

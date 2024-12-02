@@ -44,6 +44,7 @@ const config = [
       {
         files: ["next.config.js"],
         rules: {
+          "@typescript-eslint/no-var-requires": "off",
           "import/no-extraneous-dependencies": "off",
           "global-require": "off",
         },

@@ -1,5 +1,5 @@
 import PreviewRedirect from "./preview-redirect";
 
-export default async function PreviewRedirectPage() {
+export default function PreviewRedirectPage() {
   return <PreviewRedirect />;
 }

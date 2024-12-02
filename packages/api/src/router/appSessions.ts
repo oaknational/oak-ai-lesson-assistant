@@ -11,11 +11,8 @@ import { z } from "zod";
 
 import { getSessionModerations } from "../../../aila/src/features/moderation/getSessionModerations";
 import { generateChatId } from "../../../aila/src/helpers/chat/generateChatId";
-import type {
-  AilaPersistedChat} from "../../../aila/src/protocol/schema";
-import {
-  chatSchema,
-} from "../../../aila/src/protocol/schema";
+import type { AilaPersistedChat } from "../../../aila/src/protocol/schema";
+import { chatSchema } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 
@@ -33,7 +30,7 @@ function parseChatAndReportError({
   userId: string;
 }) {
   if (typeof sessionOutput !== "object") {
-    throw new Error(`sessionOutput is not an object`);
+    throw new Error("sessionOutput is not an object");
   }
   const parseResult = chatSchema.safeParse({
     ...sessionOutput,
@@ -42,7 +39,7 @@ function parseChatAndReportError({
   });
 
   if (!parseResult.success) {
-    const error = new Error(`Failed to parse chat`);
+    const error = new Error("Failed to parse chat");
     Sentry.captureException(error, {
       extra: {
         id,
@@ -201,6 +198,7 @@ export const appSessionsRouter = router({
     const sessions = await ctx.prisma.$queryRaw`
       SELECT
         id,
+        "updated_at" as "updatedAt",
         output->>'title' as title,
         output->>'isShared' as "isShared"
       FROM
@@ -223,9 +221,15 @@ export const appSessionsRouter = router({
               id: z.string(),
               title: z.string(),
               isShared: z.boolean().nullish(),
+              updatedAt: z.date(),
             })
             .parse(session);
         } catch (error) {
+          Sentry.captureException(error, {
+            extra: {
+              session,
+            },
+          });
           return null;
         }
       })

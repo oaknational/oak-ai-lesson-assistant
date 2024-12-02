@@ -16,7 +16,7 @@ import type { QuizAppState } from "../../../ai-apps/quiz-designer/state/types";
 import { QuizAppStatus } from "../../../ai-apps/quiz-designer/state/types";
 import SuggestedQuestions from "./SuggestedQuestions";
 
-type Props = {
+export type QuizDesignerPageContentProps = Readonly<{
   state: QuizAppState;
   dispatch: Dispatch<QuizAppAction>;
   isExportMenuOpen: boolean;
@@ -27,7 +27,7 @@ type Props = {
   shareContent: () => void;
   shareId: string | null;
   shareLoading: boolean;
-};
+}>;
 
 const QuizDesignerPageContent = ({
   state,
@@ -40,14 +40,14 @@ const QuizDesignerPageContent = ({
   shareContent,
   shareId,
   shareLoading,
-}: Props) => {
+}: QuizDesignerPageContentProps) => {
   const {
     error: suggestedQuestionsError,
     suggestedQuestionsGeneration,
     potentialNewQuestions,
     isLoading: suggestedQuestionsLoading,
     hasError: suggestedQuestionsHasError,
-    setPotentialNewQuestion,
+    setPotentialNewQuestions,
   } = useSuggestedQuestions({
     state,
     dispatch,
@@ -101,7 +101,7 @@ const QuizDesignerPageContent = ({
               suggestedQuestionsHasError={suggestedQuestionsHasError}
               potentialNewQuestions={potentialNewQuestions}
               dispatch={dispatch}
-              setPotentialNewQuestions={setPotentialNewQuestion}
+              setPotentialNewQuestions={setPotentialNewQuestions}
               suggestedQuestionsGeneration={suggestedQuestionsGeneration}
               questionRefs={questionRefs}
               questionsWrapperRef={questionsWrapperRef}

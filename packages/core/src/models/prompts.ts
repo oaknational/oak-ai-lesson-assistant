@@ -3,11 +3,11 @@ import type { StructuredLogger } from "@oakai/logger";
 import { structuredLogger } from "@oakai/logger";
 import type { Logger as InngestLogger } from "inngest/middleware/logger";
 import { PromptTemplate } from "langchain/prompts";
-import type { BaseMessage} from "langchain/schema";
+import type { BaseMessage } from "langchain/schema";
 import { SystemMessage } from "langchain/schema";
 import untruncateJson from "untruncate-json";
 
-import { createOpenAILangchainChatClient } from "../llm/openai";
+import { createOpenAILangchainChatClient } from "../llm/langchain";
 
 type CompletionMeta = {
   timeTaken: number;
@@ -133,7 +133,7 @@ export class Prompts {
             }
           },
           handleChainError: (err) => {
-            this.logger.error(err, `LLM chain error`);
+            this.logger.error(err, "LLM chain error");
           },
         },
       ],
@@ -162,7 +162,7 @@ export class Prompts {
     }
 
     if ("errorMessage" in result && typeof result.errorMessage === "string") {
-      this.logger.info(`llm refused to fulfil prompt: %s`, result.errorMessage);
+      this.logger.info("llm refused to fulfil prompt: %s", result.errorMessage);
       throw new LLMRefusalError(result.errorMessage, meta);
     }
 
@@ -196,7 +196,7 @@ export class LLMRefusalError extends Error {
 
   constructor(message: string, meta: Partial<CompletionMeta>) {
     super(message);
-    this.name = "LLMCompletionError";
+    this.name = "LLMRefusalError";
     this.completionMeta = meta;
   }
 }

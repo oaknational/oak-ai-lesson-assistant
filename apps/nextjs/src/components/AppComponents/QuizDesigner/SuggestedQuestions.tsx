@@ -11,7 +11,7 @@ import ChatButton from "../Chat/ui/chat-button";
 import { GenerationErrorBox } from "./ErrorBox";
 import SuggestedLessonCard from "./SuggestedQuestionCard";
 
-type SuggestedQuestionsProps = {
+export type SuggestedQuestionsProps = Readonly<{
   suggestedQuestionsError: UseGenerationError | null;
   suggestedQuestionsLoading: boolean;
   suggestedQuestionsHasError: false | UseGenerationError | null;
@@ -21,7 +21,7 @@ type SuggestedQuestionsProps = {
   setPotentialNewQuestions: React.Dispatch<PotentialQuestionsType>;
   questionsWrapperRef: React.RefObject<HTMLDivElement>;
   questionRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
-};
+}>;
 
 const SuggestedQuestions = ({
   suggestedQuestionsGeneration,

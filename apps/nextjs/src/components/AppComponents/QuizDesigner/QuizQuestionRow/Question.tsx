@@ -76,13 +76,13 @@ const Question = ({
   const medianTimeTakenForPrompt =
     promptTimings.data?.["median-generation-total-duration-ms"];
 
-  const requestAnswersAndDistractorGeneration = useCallback(() => {
+  const requestAnswersAndDistractorGeneration = useCallback(async () => {
     const lastGeneration = [
       ...questionRow.answers,
       ...questionRow.distractors,
     ].find((answer) => Boolean(answer.lastGenerationId));
 
-    quizRequestGeneration({
+    await quizRequestGeneration({
       state,
       questionRow,
       requestGeneration,
@@ -101,7 +101,7 @@ const Question = ({
       onSubmit={(e) => {
         e.preventDefault();
         if (canGenerate) {
-          requestAnswersAndDistractorGeneration();
+          void requestAnswersAndDistractorGeneration();
         }
       }}
       className="w-full"
@@ -146,7 +146,7 @@ const Question = ({
                    * regenerate all prompt currently
                    */
                   if (canGenerate) {
-                    requestAnswersAndDistractorGeneration();
+                    void requestAnswersAndDistractorGeneration();
                   }
                 }}
                 disabled={!canGenerate}
@@ -161,7 +161,7 @@ const Question = ({
                 buttonText="Generate answers & distractors"
                 onClick={() => {
                   if (canGenerate) {
-                    requestAnswersAndDistractorGeneration();
+                    void requestAnswersAndDistractorGeneration();
                     suggestedQuestionsGeneration();
                   }
                 }}

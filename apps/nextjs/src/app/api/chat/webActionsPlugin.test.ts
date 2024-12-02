@@ -1,5 +1,6 @@
 import type { AilaPluginContext } from "@oakai/aila/src/core/plugins";
 import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
+import { inngest } from "@oakai/core/src/inngest";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import type { Moderation } from "@prisma/client";
@@ -10,6 +11,7 @@ jest.mock("@oakai/core/src/inngest", () => ({
   __esModule: true,
 
   inngest: {
+    createFunction: jest.fn(),
     send: jest.fn(),
   },
 }));
@@ -66,8 +68,6 @@ describe("webActionsPlugin", () => {
         } as unknown as AilaPluginContext["aila"],
         enqueue: mockEnqueue,
       };
-
-      const { inngest } = await import("@oakai/core/src/inngest");
 
       const plugin = createWebActionsPlugin(prisma, safetyViolations);
       await plugin.onToxicModeration(moderation, pluginContext);

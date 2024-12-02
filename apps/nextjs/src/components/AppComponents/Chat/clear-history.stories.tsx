@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ClearHistory } from "./clear-history";
 
 const meta: Meta<typeof ClearHistory> = {
-  title: "Components/Chat/ClearHistory",
+  title: "Components/Sidebar/ClearHistory",
   component: ClearHistory,
   tags: ["autodocs"],
   argTypes: {

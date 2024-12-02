@@ -9,6 +9,7 @@ tests-e2e/.auth
 .env.sentry-build-plugin
 
 *storybook.log
+.chromatic.log
 
 # Playwright artifacts
 playwright-report

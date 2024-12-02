@@ -1,8 +1,8 @@
-import { AilaGeneration } from ".";
-import type { AilaInitializationOptions } from "../..";
-import { Aila } from "../..";
+import { Aila } from "../../core/Aila";
 import type { Message } from "../../core/chat";
 import { AilaChat } from "../../core/chat";
+import type { AilaInitializationOptions } from "../../core/types";
+import { AilaGeneration } from "./AilaGeneration";
 
 const ailaArgs: AilaInitializationOptions = {
   plugins: [],
@@ -21,7 +21,9 @@ describe("calculateTokenUsage", () => {
     ];
 
     const mockEncoding = {
-      encode: jest.fn().mockImplementation((text) => text.split(" ").length),
+      encode: jest
+        .fn()
+        .mockImplementation((text: string) => text.split(" ").length),
     };
     jest.mock("js-tiktoken", () => ({
       getEncoding: () => mockEncoding,
@@ -42,7 +44,7 @@ describe("calculateTokenUsage", () => {
       systemPrompt: "Test system prompt",
       promptId: "test",
     });
-    await ailaGeneration.complete({
+    ailaGeneration.complete({
       status: "SUCCESS",
       responseText: "I am fine, thank you!",
     });
@@ -57,7 +59,9 @@ describe("calculateTokenUsage", () => {
     ];
 
     const mockEncoding = {
-      encode: jest.fn().mockImplementation((text) => text.split(" ").length),
+      encode: jest
+        .fn()
+        .mockImplementation((text: string) => text.split(" ").length),
     };
     jest.mock("js-tiktoken", () => ({
       getEncoding: () => mockEncoding,
@@ -78,7 +82,7 @@ describe("calculateTokenUsage", () => {
       systemPrompt: "Test system prompt",
       promptId: "test",
     });
-    await ailaGeneration.complete({
+    ailaGeneration.complete({
       status: "SUCCESS",
       responseText: "I am fine, thank you!",
     });

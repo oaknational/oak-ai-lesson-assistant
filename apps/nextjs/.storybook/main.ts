@@ -2,6 +2,8 @@ import type { StorybookConfig } from "@storybook/nextjs";
 import { join, dirname, resolve } from "path";
 import webpack from "webpack";
 
+process.env.NEXT_PUBLIC_DEBUG = process.env.DEBUG;
+
 /**
  * This function is used to resolve the absolute path of a package.
  * It is needed in projects that use Yarn PnP or are set up within a monorepo.
@@ -22,7 +24,7 @@ const config: StorybookConfig = {
     name: getAbsolutePath("@storybook/nextjs"),
     options: {},
   },
-  staticDirs: ["../public"],
+  staticDirs: ["../public", "./public"],
   typescript: {
     check: false,
     checkOptions: {},

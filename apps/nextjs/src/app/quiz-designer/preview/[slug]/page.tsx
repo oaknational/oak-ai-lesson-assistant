@@ -22,11 +22,13 @@ async function getData(slug: string) {
   return questions;
 }
 
+export type QuizPreviewPageProps = Readonly<{
+  params: { readonly slug: string };
+}>;
+
 export default async function QuizPreviewPage({
   params,
-}: {
-  params: { slug: string };
-}) {
+}: QuizPreviewPageProps) {
   log.info("params", params);
 
   const questions = await getData(params.slug);

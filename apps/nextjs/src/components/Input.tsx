@@ -34,7 +34,7 @@ const labelStyles = cva(
   "absolute -top-8 left-10 z-10 w-fit -rotate-2 bg-teachersYellow px-8 text-sm text-black sm:-top-10 sm:text-base",
 );
 
-interface InputProps {
+export type InputProps = Readonly<{
   label: string;
   name: string;
   type: "text" | "dropdown" | "email" | "textarea"; // Added "textarea" type
@@ -54,7 +54,7 @@ interface InputProps {
   disabled?: boolean;
   resize?: boolean;
   size?: "sm" | "md" | "lg"; // Implement for all input types
-}
+}>;
 
 const Input: React.FC<InputProps> = ({
   label,

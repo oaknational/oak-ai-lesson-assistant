@@ -1,1 +1,1 @@
-export * from "./src";
+export { Aila } from "./src/core/Aila";

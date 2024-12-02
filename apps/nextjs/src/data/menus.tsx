@@ -1,7 +1,5 @@
-import type { IconName } from "@/components/Icon";
-
 interface SocialItem {
-  icon: IconName;
+  icon: "twitter" | "facebook" | "linkedin" | "instagram";
   href: string;
   id: string;
 }
@@ -70,7 +68,7 @@ export const legalMenuItems: MenuItem[] = [
     target: "_blank",
   },
   {
-    title: "Accessibility Statement",
+    title: "Accessibility statement",
     href: "/legal/accessibility-statement",
     id: "accessibility-statement",
   },

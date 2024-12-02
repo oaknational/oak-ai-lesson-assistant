@@ -1,7 +1,7 @@
-import { CategoriseKeyStageAndSubjectResponse } from "@oakai/core/src/rag";
+import { CategoriseKeyStageAndSubjectResponse } from "@oakai/core/src/rag/categorisation";
 import { keyStages, subjects } from "@oakai/core/src/utils/subjects";
 import { aiLogger } from "@oakai/logger";
-import type { ChatCompletionMessageParam } from "openai/resources";
+import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { Md5 } from "ts-md5";
 
 import { DEFAULT_CATEGORISE_MODEL } from "../../../constants";
@@ -15,7 +15,7 @@ import type { AilaCategorisationFeature } from "../../types";
 const log = aiLogger("aila:categorisation");
 
 export class AilaCategorisation implements AilaCategorisationFeature {
-  private _aila: AilaServices;
+  private readonly _aila: AilaServices;
   constructor({ aila }: { aila: AilaServices }) {
     this._aila = aila;
   }
@@ -56,7 +56,7 @@ ${subjects.join("\n")}
 
 LESSON TITLES
 The title of the lesson plan is the title of the lesson plan that the user wants to create. This could be anything, but it will likely be a short phrase or sentence that describes the topic of the lesson plan.
-Do not include "Lesson about" or "…Lesson" in the title. The title should be the standalone main topic of the lesson plan and not mention the word Lesson. It will be used as the title of the lesson plan in our database and displayed to the user in an overview document.
+Do not include "Lesson about" or "…Lesson" in the title. The title should be the standalone main topic of the lesson plan and not mention the word Lesson. It will be used as the title of the lesson plan in our database and displayed to the user in an overview document. The title should be in sentence case.
 
 RETURNED OBJECT
 The object you return should have the following shape:

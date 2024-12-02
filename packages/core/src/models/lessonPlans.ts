@@ -5,13 +5,10 @@ import type {
   LessonPlanPart,
   LessonSummary,
   PrismaClientWithAccelerate,
-  Subject} from "@oakai/db";
-import {
-  LessonPlanPartStatus,
-  LessonPlanStatus
+  Subject,
 } from "@oakai/db";
+import { LessonPlanPartStatus, LessonPlanStatus } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
-import yaml from "yaml";
 
 import { LLMResponseJsonSchema } from "../../../aila/src/protocol/jsonPatchProtocol";
 import { LessonPlanJsonSchema } from "../../../aila/src/protocol/schema";
@@ -19,23 +16,13 @@ import { inngest } from "../inngest";
 import { createOpenAIClient } from "../llm/openai";
 import { template } from "../prompts/lesson-assistant";
 import { RAG } from "../rag";
-import { camelCaseToSentenceCase } from "../utils/camelCaseToSentenceCase";
+import { camelCaseToSentenceCase } from "../utils/camelCaseConversion";
 import { embedWithCache } from "../utils/embeddings";
-import type { Caption} from "./types/caption";
+import { textify } from "../utils/textify";
+import type { Caption } from "./types/caption";
 import { CaptionsSchema } from "./types/caption";
 
 const log = aiLogger("lessons");
-
-// Simplifies the input to a string for embedding
-export function textify(input: string | string[] | object): string {
-  if (Array.isArray(input)) {
-    return input.map((row) => textify(row)).join("\n");
-  } else if (typeof input === "object") {
-    return yaml.stringify(input);
-  } else {
-    return input;
-  }
-}
 
 export type LessonPlanWithLesson = LessonPlan & {
   lesson: Omit<
@@ -60,8 +47,8 @@ type LessonPlanWithParts = LessonPlan & {
 };
 
 export class LessonPlans {
-  private _rag: RAG;
-  private _prisma: PrismaClientWithAccelerate;
+  private readonly _rag: RAG;
+  private readonly _prisma: PrismaClientWithAccelerate;
   constructor(private readonly prisma: PrismaClientWithAccelerate) {
     this._prisma = prisma;
     this._rag = new RAG(this._prisma, { chatId: "none" });
@@ -150,9 +137,7 @@ export class LessonPlans {
       lessonPlanJsonSchema: JSON.stringify(LessonPlanJsonSchema),
       llmResponseJsonSchema: JSON.stringify(LLMResponseJsonSchema),
       isUsingStructuredOutput:
-        process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true"
-          ? true
-          : false,
+        process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true",
     });
 
     const systemPrompt = compiledTemplate;

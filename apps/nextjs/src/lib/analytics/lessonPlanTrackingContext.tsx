@@ -33,10 +33,14 @@ type LessonPlanTrackingContext = {
 const lessonPlanTrackingContext =
   createContext<LessonPlanTrackingContext | null>(null);
 
-const LessonPlanTrackingProvider: FC<{
-  children?: React.ReactNode;
-  chatId: string;
-}> = ({ children, chatId }) => {
+export type LessonPlanTrackingProviderProps = Readonly<{
+  readonly children?: React.ReactNode;
+  readonly chatId: string;
+}>;
+const LessonPlanTrackingProvider: FC<LessonPlanTrackingProviderProps> = ({
+  children,
+  chatId,
+}) => {
   const { track } = useAnalytics();
   const [action, setAction] = useState<UserAction | null>(null);
   const [userMessageContent, setUserMessageContent] = useState<string>("");
@@ -64,7 +68,7 @@ const LessonPlanTrackingProvider: FC<{
       setAction(null);
       setUserMessageContent("");
     },
-    [track, action, userMessageContent],
+    [chatId, userMessageContent, track, action],
   );
   const onSubmitText = useCallback((text: string) => {
     setAction("submit_text");

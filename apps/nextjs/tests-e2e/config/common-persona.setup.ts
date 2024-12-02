@@ -1,4 +1,5 @@
-import { Page, test as setup } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { test as setup } from "@playwright/test";
 import path from "path";
 
 import { prepareUser } from "../helpers/auth";
@@ -12,7 +13,7 @@ const setTestChatIdCookie = async (page: Page, chatId: string | undefined) => {
     {
       url: TEST_BASE_URL,
       name: "typicalChatId",
-      value: chatId || "",
+      value: chatId ?? "",
     },
   ]);
 };

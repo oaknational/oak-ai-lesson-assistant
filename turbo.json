@@ -39,7 +39,7 @@
     },
     "build": {
       "cache": true,
-      "dependsOn": ["^db-generate:no-engine", "^prompts"],
+      "dependsOn": ["^db-generate:no-engine"],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
@@ -67,7 +67,6 @@
       "cache": false
     },
     "type-check": {
-      "dependsOn": ["^db-generate"],
       "cache": false
     },
     "test": {
@@ -84,6 +83,9 @@
       "cache": false,
       "env": ["TEST_USER_EMAIL", "TEST_USER_PASSWORD"]
     },
+    "test-coverage": {
+      "cache": false
+    },
     "storybook": {
       "cache": false
     }
@@ -91,6 +93,7 @@
   "globalEnv": [
     "AILA_FIXTURES_ENABLED",
     "CLERK_*",
+    "CLERK_WEBHOOK_SECRET",
     "CLOUDINARY_*",
     "COHERE_*",
     "DATABASE_*",
@@ -117,6 +120,7 @@
     "OAI_INTERNAL_API_KEY",
     "OAK_GRAPHQL_SECRET",
     "OPENAI_*",
+    "POSTHOG_PERSONAL_KEY_FLAGS",
     "POSTMARK_SERVER_TOKEN",
     "PRISMA_ACCELERATE_DATABASE_URL",
     "PROMPT_PLAYBACK_ENABLED",
@@ -131,6 +135,7 @@
     "STRICT_CSP",
     "TELEMETRY_ENABLED",
     "UPSTASH_*",
-    "WOLFRAM_CLIENT_SECRET"
+    "WOLFRAM_CLIENT_SECRET",
+    "CRON_SECRET"
   ]
 }

@@ -23,7 +23,7 @@ const ChatLhsHeader = ({
   return (
     <>
       <div className="mt-6 hidden items-center justify-end gap-5 sm:flex">
-        {process.env.NEXT_PUBLIC_ENVIRONMENT !== "production" && (
+        {process.env.NEXT_PUBLIC_ENVIRONMENT !== "prd" && (
           <div className="flex flex-grow flex-row space-x-4 text-left text-xs">
             <div data-testid="chat-aila-streaming-status">
               {chat.ailaStreamingStatus}
@@ -40,13 +40,13 @@ const ChatLhsHeader = ({
           New lesson
         </ChatButton>
       </div>
-      <div className={`${isDemoUser && `mt-16`} flex justify-end sm:hidden`}>
+      <div className={`${isDemoUser && "mt-16"} flex justify-end sm:hidden`}>
         <button
           onClick={() => setShowLessonMobile(!showLessonMobile)}
           className="flex items-center gap-5"
         >
           <AiIcon />{" "}
-          <span className={`text-base font-bold `}>View lesson &gt;</span>
+          <span className={"text-base font-bold "}>View lesson &gt;</span>
         </button>
       </div>
     </>

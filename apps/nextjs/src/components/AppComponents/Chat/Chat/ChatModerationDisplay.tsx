@@ -1,14 +1,14 @@
 import React from "react";
 
-import { type PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { Flex } from "@radix-ui/themes";
 
 import ToxicModerationView from "../toxic-moderation-view";
 
-export interface ModerationDisplayProps {
+export type ModerationDisplayProps = Readonly<{
   toxicModeration: PersistedModerationBase | null;
   chatId: string;
-}
+}>;
 
 export const ChatModerationDisplay: React.FC<ModerationDisplayProps> = ({
   toxicModeration,

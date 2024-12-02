@@ -1,6 +1,6 @@
 import Textarea from "react-textarea-autosize";
 
-import { type PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { useModerationFeedbackSurvey } from "hooks/surveys/useModerationFeedbackSurvey";
 import { useRouter } from "next/navigation";
 
@@ -9,13 +9,14 @@ import { Icon } from "@/components/Icon";
 
 import ChatButton from "./ui/chat-button";
 
+export type ToxicModerationViewProps = Readonly<{
+  chatId: string;
+  moderation: PersistedModerationBase;
+}>;
 const ToxicModerationView = ({
   chatId,
   moderation,
-}: {
-  chatId: string;
-  moderation: PersistedModerationBase;
-}) => {
+}: ToxicModerationViewProps) => {
   const { onSubmit, comment, setComment, hasSubmitted, isValid } =
     useModerationFeedbackSurvey({
       chatId,

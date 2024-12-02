@@ -9,7 +9,10 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 import { useAtBottom } from "@/lib/hooks/use-at-bottom";
 import { cn } from "@/lib/utils";
 
-export function ButtonScrollToBottom({ className, ...props }: ButtonProps) {
+export function ButtonScrollToBottom({
+  className,
+  ...props
+}: Readonly<ButtonProps>) {
   const isAtBottom = useAtBottom();
   const { trackEvent } = useAnalytics();
   return (

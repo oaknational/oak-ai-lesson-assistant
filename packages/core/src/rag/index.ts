@@ -16,7 +16,6 @@ import { CohereClient } from "cohere-ai";
 import type { RerankResponse } from "cohere-ai/api";
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { Md5 } from "ts-md5";
-import z from "zod";
 
 import { DEFAULT_CATEGORISE_MODEL } from "../../../aila/src/constants";
 import type { OpenAICompletionWithLoggingOptions } from "../../../aila/src/lib/openai/OpenAICompletionWithLogging";
@@ -24,54 +23,19 @@ import { OpenAICompletionWithLogging } from "../../../aila/src/lib/openai/OpenAI
 import type { JsonValue } from "../models/prompts";
 import { slugify } from "../utils/slugify";
 import { keyStages, subjects } from "../utils/subjects";
+import { CategoriseKeyStageAndSubjectResponse } from "./categorisation";
+import type {
+  FilterOptions,
+  KeyStageAndSubject,
+  LessonPlanWithPartialLesson,
+  SimilarityResultWithScore,
+} from "./types";
 
 const log = aiLogger("rag");
 
-interface FilterOptions {
-  key_stage_id?: object;
-  subject_id?: object;
-}
-
-export interface LessonPlanWithPartialLesson extends LessonPlan {
-  lesson: {
-    id: string;
-    slug: string;
-    title: string;
-  };
-}
-
-export type SimilarityResultWithScore = [
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  import("@langchain/core/documents").DocumentInterface<
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Record<string, any>
-  >,
-  number,
-];
-
-export interface KeyStageAndSubject {
-  keyStage?: KeyStage;
-  subject?: Subject;
-}
-
-// Make a new Zod schema for a response from OpenAI for the categoriseKeyStageAndSubject function
-
-export const CategoriseKeyStageAndSubjectResponse = z.object({
-  keyStage: z.string().optional().nullable(),
-  subject: z.string().optional().nullable(),
-  title: z.string().optional().nullable(),
-  topic: z.string().optional().nullable(),
-  error: z.string().optional(),
-  reasoning: z.string().optional().nullable(),
-});
-
-export type CategorisedKeyStageAndSubject = z.infer<
-  typeof CategoriseKeyStageAndSubjectResponse
->;
-
 export class RAG {
   prisma: PrismaClientWithAccelerate;
-  private _chatMeta: OpenAICompletionWithLoggingOptions;
+  private readonly _chatMeta: OpenAICompletionWithLoggingOptions;
   constructor(
     prisma: PrismaClientWithAccelerate,
     chatMeta: OpenAICompletionWithLoggingOptions,
@@ -812,7 +776,7 @@ Thank you and happy classifying!`;
       topN: k,
     });
     const mostRelevantHydrated = rerank.results
-      .sort((a, b) => b.relevanceScore - a.relevanceScore)
+      .toSorted((a, b) => b.relevanceScore - a.relevanceScore)
       .map((r) => {
         const lessonPlan = lessonPlans[r.index];
         if (!lessonPlan) {

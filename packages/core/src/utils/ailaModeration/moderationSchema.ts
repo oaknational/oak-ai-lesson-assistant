@@ -38,7 +38,7 @@ export const moderationCategoriesSchema = z.array(
       z.literal("t/encouragement-violence"),
     ])
     .describe(
-      `If the content scores less than 5 for any group, specify the categories on which it failed.`,
+      "If the content scores less than 5 for any group, specify the categories on which it failed.",
     ),
 );
 
@@ -57,7 +57,7 @@ export const moderationResponseSchema = z.object({
     p: likertScale.describe("Physical activity and safety score"),
     t: likertScale.describe("Toxic score"),
   }),
-  justification: z.string().describe(`Add justification for your scores.`),
+  justification: z.string().describe("Add justification for your scores."),
   categories: moderationCategoriesSchema,
 });
 

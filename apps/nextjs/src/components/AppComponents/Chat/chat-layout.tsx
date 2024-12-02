@@ -13,14 +13,8 @@ export interface ChatLayoutProps {
 }
 
 export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
-  const {
-    id,
-    messages,
-    isLoading,
-    chatAreaRef,
-    lessonPlan,
-    ailaStreamingStatus,
-  } = useLessonChat();
+  const { isLoading, lessonPlan, messages, ailaStreamingStatus } =
+    useLessonChat();
 
   const demo = useDemoUser();
   const isDemoLocked = useDemoLocking(messages, isLoading);
@@ -37,8 +31,7 @@ export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
         className={`flex h-full flex-row justify-start ${demo.isDemoUser ? "pt-22" : ""}`}
       >
         <ChatLeftHandSide
-          chatAreaRef={chatAreaRef}
-          messages={messages}
+          key="chat-left-hand-side"
           isDemoLocked={isDemoLocked}
           showLessonMobile={showLessonMobile}
           setShowLessonMobile={setShowLessonMobile}
@@ -46,9 +39,7 @@ export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
           isDemoUser={demo.isDemoUser}
         />
         <ChatRightHandSideLesson
-          id={id}
-          messages={messages}
-          lessonPlan={lessonPlan}
+          key="chat-right-hand-side-lesson"
           showLessonMobile={showLessonMobile}
           closeMobileLessonPullOut={closeMobileLessonPullOut}
           demo={demo}

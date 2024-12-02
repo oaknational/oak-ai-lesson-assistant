@@ -5,5 +5,5 @@ export default function Page() {
     <div>
       <UserProfile />
     </div>
-  )
+  );
 }

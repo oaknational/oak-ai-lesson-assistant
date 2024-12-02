@@ -1,11 +1,11 @@
 import type { GenerationStatus } from "@prisma/client";
 import invariant from "tiny-invariant";
 
-import type { AilaChatService, AilaServices } from "../../core";
-import { AilaError } from "../../core";
+import { AilaError } from "../../core/AilaError";
+import type { AilaChatService, AilaServices } from "../../core/AilaServices";
 import type { AilaOptionsWithDefaultFallbackValues } from "../../core/types";
 import type { AilaPersistedChat } from "../../protocol/schema";
-import type { AilaGeneration } from "../generation";
+import type { AilaGeneration } from "../generation/AilaGeneration";
 
 export abstract class AilaPersistence {
   protected _chat: AilaChatService;

@@ -1,4 +1,4 @@
-import { type PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { GuidanceRequired } from "./guidance-required";
@@ -23,18 +23,19 @@ export const Default: Story = {
   },
 };
 
-export const CustomClass: Story = {
-  args: {
-    moderation: mockModeration,
-    className: "custom-class",
-  },
-};
-
-export const Safe: Story = {
+export const NoModeration: Story = {
   args: {
     moderation: {
       id: "safe",
       categories: [],
     },
   },
+  decorators: [
+    (Story) => (
+      <>
+        <Story />
+        <p>(Nothing should render here)</p>
+      </>
+    ),
+  ],
 };

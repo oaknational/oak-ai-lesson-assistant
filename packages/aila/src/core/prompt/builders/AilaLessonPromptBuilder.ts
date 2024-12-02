@@ -1,6 +1,6 @@
 import type { TemplateProps } from "@oakai/core/src/prompts/lesson-assistant";
 import { template } from "@oakai/core/src/prompts/lesson-assistant";
-import { prisma as globalPrisma } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { DEFAULT_RAG_LESSON_PLANS } from "../../../constants";
@@ -114,9 +114,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
       lessonPlanJsonSchema: JSON.stringify(LessonPlanJsonSchema),
       llmResponseJsonSchema: JSON.stringify(LLMResponseJsonSchema),
       isUsingStructuredOutput:
-        process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true"
-          ? true
-          : false,
+        process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true",
     };
 
     return template(args);

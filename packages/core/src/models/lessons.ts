@@ -5,10 +5,9 @@ import type {
   QuizQuestion,
   Snippet,
   SnippetVariant,
-  Transcript} from "@oakai/db";
-import {
-  ZLesson,
+  Transcript,
 } from "@oakai/db";
+import { ZLesson } from "@oakai/db";
 import { ZNewLesson } from "@oakai/db/schemas/lesson";
 import { aiLogger } from "@oakai/logger";
 import { StructuredOutputParser } from "langchain/output_parsers";
@@ -17,10 +16,10 @@ import { RunnableSequence } from "langchain/schema/runnable";
 import { z } from "zod";
 
 import { inngest } from "../inngest";
-import { createOpenAILangchainClient } from "../llm/openai";
-import type { SnippetWithLesson} from "./snippets";
+import { createOpenAILangchainClient } from "../llm/langchain";
+import type { SnippetWithLesson } from "./snippets";
 import { Snippets } from "./snippets";
-import type { Caption} from "./types/caption";
+import type { Caption } from "./types/caption";
 import { CaptionsSchema } from "./types/caption";
 
 const log = aiLogger("lessons");
@@ -126,11 +125,11 @@ export class Lessons {
     let transcript;
     if (!lesson.isNewLesson) {
       zLesson = ZLesson.parse(lesson.content);
-      description = zLesson.lessonDescription || lesson.title;
+      description = zLesson.lessonDescription ?? lesson.title;
       transcript = zLesson.video?.captions?.transcript;
     } else {
       zLesson = ZNewLesson.parse(lesson.newLessonContent);
-      description = zLesson.pupilLessonOutcome || lesson.title;
+      description = zLesson.pupilLessonOutcome ?? lesson.title;
       transcript = zLesson.transcriptSentences;
     }
 
@@ -306,7 +305,7 @@ export class Lessons {
     lessonId,
     quizQuestionId,
   }: {
-    question: { answer?: string | string[] | null | undefined };
+    question: { answer?: string | string[] | null };
     answer: string;
     lessonId: string;
     quizQuestionId: string;

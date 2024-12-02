@@ -1,5 +1,5 @@
-import { Apps } from "@oakai/core";
-import { prisma } from "@oakai/db";
+import { Apps } from "@oakai/core/src/models/apps";
+import { prisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { LessonPlanPreview } from "./preview";
@@ -23,11 +23,13 @@ async function getData(slug: string) {
   return planSections;
 }
 
+export type QuizPreviewPageProps = Readonly<{
+  params: { readonly slug: string };
+}>;
+
 export default async function QuizPreviewPage({
   params,
-}: {
-  params: { slug: string };
-}) {
+}: QuizPreviewPageProps) {
   log.info("params", params);
 
   const planSections = await getData(params.slug);

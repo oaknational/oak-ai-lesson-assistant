@@ -41,42 +41,37 @@ const Answers = ({
   const [userIsEditing, setUserIsEditing] = useState(false);
 
   return (
-    <>
-      <Box>
-        {!isLoading && (
-          <>
-            {questionRow.answers.map((answer, answerIdx) => {
-              return (
-                <Skeleton loaded={true} key={answer.value}>
-                  <Flex direction="row" className="w-full">
-                    <Box className="h-fit w-fit" mr="3" mt="2">
-                      <Box className="flex scale-75 items-center justify-center rounded-full bg-pupilsHighlight p-6">
-                        <Icon icon="tick" size="sm" />
-                      </Box>
-                    </Box>
-                    <Box className="w-full max-w-[90%]">
-                      <Answer
-                        setUserIsEditing={setUserIsEditing}
-                        questionIdx={questionIdx}
-                        questionRow={questionRow}
-                        state={state}
-                        isLoading={isLoading}
-                        userIsEditing={userIsEditing}
-                        answerIdx={answerIdx}
-                        dispatch={dispatch}
-                        answer={answer}
-                      />
-                    </Box>
-                  </Flex>
-                </Skeleton>
-              );
-            })}
-          </>
-        )}
+    <Box>
+      {!isLoading &&
+        questionRow.answers.map((answer, answerIdx) => {
+          return (
+            <Skeleton loaded={true} key={answer.value}>
+              <Flex direction="row" className="w-full">
+                <Box className="h-fit w-fit" mr="3" mt="2">
+                  <Box className="flex scale-75 items-center justify-center rounded-full bg-pupilsHighlight p-6">
+                    <Icon icon="tick" size="sm" />
+                  </Box>
+                </Box>
+                <Box className="w-full max-w-[90%]">
+                  <Answer
+                    setUserIsEditing={setUserIsEditing}
+                    questionIdx={questionIdx}
+                    questionRow={questionRow}
+                    state={state}
+                    isLoading={isLoading}
+                    userIsEditing={userIsEditing}
+                    answerIdx={answerIdx}
+                    dispatch={dispatch}
+                    answer={answer}
+                  />
+                </Box>
+              </Flex>
+            </Skeleton>
+          );
+        })}
 
-        {hasError && error && <GenerationErrorBox error={error} />}
-      </Box>
-    </>
+      {hasError && error && <GenerationErrorBox error={error} />}
+    </Box>
   );
 };
 

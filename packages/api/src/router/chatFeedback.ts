@@ -4,6 +4,25 @@ import { z } from "zod";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 
+const modifyActions = z.enum([
+  "MAKE_IT_HARDER",
+  "MAKE_IT_EASIER",
+  "SHORTEN_CONTENT",
+  "ADD_MORE_DETAIL",
+  "OTHER",
+]);
+
+const addAdditionalMaterialsActions = z.enum([
+  "ADD_HOMEWORK_TASK",
+  "ADD_NARRATIVE",
+  "ADD_PRACTICE_QUESTIONS",
+  "TRANSLATE_KEYWORDS",
+  "ADD_PRACTICAL_INSTRUCTIONS",
+  "OTHER",
+]);
+
+const combinedActions = z.union([modifyActions, addAdditionalMaterialsActions]);
+
 export const chatFeedbackRouter = router({
   modifySection: protectedProcedure
     .input(
@@ -21,13 +40,7 @@ export const chatFeedbackRouter = router({
           z.object({}).passthrough(),
         ]),
         actionOtherText: z.string().nullable(),
-        action: z.enum([
-          "MAKE_IT_HARDER",
-          "MAKE_IT_EASIER",
-          "SHORTEN_CONTENT",
-          "ADD_MORE_DETAIL",
-          "OTHER",
-        ]),
+        action: combinedActions,
       }),
     )
     .mutation(async ({ input, ctx }) => {

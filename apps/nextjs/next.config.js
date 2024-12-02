@@ -1,9 +1,10 @@
+// This file should be in Common JS format to be compatible with Next.js
 const {
   getAppVersion,
   getReleaseStage,
   RELEASE_STAGE_PRODUCTION,
   RELEASE_STAGE_TESTING,
-} = require("./scripts/build_config_helpers.js");
+} = require("./scripts/build_config_helpers.cjs");
 const path = require("path");
 
 const { PHASE_PRODUCTION_BUILD, PHASE_TEST } = require("next/constants");
@@ -77,6 +78,9 @@ const getConfig = async (phase) => {
       domains: ["oaknationalacademy-res.cloudinary.com"],
     },
     transpilePackages: ["@oakai/api", "@oakai/db", "@oakai/exports"],
+    compiler: {
+      styledComponents: true,
+    },
     // We already do linting on GH actions
     eslint: {
       ignoreDuringBuilds: !!process.env.CI,
@@ -88,6 +92,7 @@ const getConfig = async (phase) => {
     env: {
       NEXT_PUBLIC_APP_VERSION: appVersion,
       NEXT_PUBLIC_RELEASE_STAGE: releaseStage,
+      NEXT_PUBLIC_DEBUG: process.env.DEBUG,
     },
 
     productionBrowserSourceMaps: true,

@@ -1,13 +1,17 @@
 import { useState } from "react";
 
-import { type AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/helpers";
-import { type Moderation } from "@oakai/db";
+import type { Moderation } from "@oakai/db";
 import { OakAccordion, OakPrimaryButton } from "@oaknational/oak-components";
 
 import { trpc } from "@/utils/trpc";
 
-function ModerationListItem({ moderation }: { moderation: Moderation }) {
+function ModerationListItem({
+  moderation,
+}: {
+  readonly moderation: Moderation;
+}) {
   const { id, invalidatedAt } = moderation;
   const [invalidated, setInvalidated] = useState(Boolean(invalidatedAt));
   const invalidateModeration = trpc.admin.invalidateModeration.useMutation({
@@ -28,7 +32,7 @@ function ModerationListItem({ moderation }: { moderation: Moderation }) {
               iconName="cross"
               className="ml-auto"
               onClick={() =>
-                invalidateModeration.mutateAsync({ moderationId: id })
+                void invalidateModeration.mutateAsync({ moderationId: id })
               }
               isLoading={invalidateModeration.isLoading}
               disabled={!!invalidated}
@@ -41,14 +45,16 @@ function ModerationListItem({ moderation }: { moderation: Moderation }) {
             {moderation.justification}
           </blockquote>
           <div className="mt-2 space-x-2">
-            {moderation.categories.map((category, index) => (
-              <span
-                key={index}
-                className="inline-block rounded-md bg-zinc-300 px-8 py-4 text-xs font-semibold text-zinc-800"
-              >
-                {String(category)}
-              </span>
-            ))}
+            {Array.from(new Set(moderation.categories))
+              .map((c) => String(c))
+              .map((category) => (
+                <span
+                  key={category}
+                  className="inline-block rounded-md bg-zinc-300 px-8 py-4 text-xs font-semibold text-zinc-800"
+                >
+                  {category}
+                </span>
+              ))}
           </div>
         </div>
       </div>
@@ -60,8 +66,8 @@ export function AdminChatView({
   chat,
   moderations,
 }: {
-  chat: AilaPersistedChat;
-  moderations: Moderation[];
+  readonly chat: AilaPersistedChat;
+  readonly moderations: Moderation[];
 }) {
   return (
     <>

@@ -1,5 +1,5 @@
 import type { AilaPlugin } from "@oakai/aila/src/core/plugins";
-import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
+import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
 import { handleHeliconeError } from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
 import { inngest } from "@oakai/core/src/inngest";
 import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
@@ -33,11 +33,11 @@ export const createWebActionsPlugin: PluginCreator = (
         prisma,
         SafetyViolations,
       );
-      enqueue(heliconeErrorMessage);
+      await enqueue(heliconeErrorMessage);
     }
 
     if (error instanceof Error) {
-      enqueue({
+      await enqueue({
         type: "error",
         message: error.message,
         value: `Sorry, an error occurred: ${error.message}`,
@@ -64,7 +64,7 @@ export const createWebActionsPlugin: PluginCreator = (
       data: {
         chatId: aila.chatId || "Unknown",
         categories: moderation.categories as string[],
-        justification: moderation.justification || "Unknown",
+        justification: moderation.justification ?? "Unknown",
       },
     });
 
@@ -80,7 +80,7 @@ export const createWebActionsPlugin: PluginCreator = (
     } catch (error) {
       if (error instanceof UserBannedError) {
         log.info("User is banned, queueing account lock message");
-        enqueue({
+        await enqueue({
           type: "action",
           action: "SHOW_ACCOUNT_LOCKED",
         });

@@ -1,4 +1,4 @@
-import { Moderations } from "@oakai/core";
+import { Moderations } from "@oakai/core/src/models/moderations";
 import {
   getCategoryGroup,
   getMockModerationResult,
@@ -6,16 +6,12 @@ import {
   isToxic,
 } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import type {
-  Moderation,
-  PrismaClientWithAccelerate} from "@oakai/db";
-import {
-  prisma as globalPrisma,
-} from "@oakai/db";
+import type { Moderation, PrismaClientWithAccelerate } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
-import type { AilaServices } from "../../core";
+import type { AilaServices } from "../../core/AilaServices";
 import type { Message } from "../../core/chat";
 import type { AilaPluginContext } from "../../core/plugins/types";
 import { getLastAssistantMessage } from "../../helpers/chat/getLastAssistantMessage";
@@ -28,11 +24,11 @@ import { OpenAiModerator } from "./moderators/OpenAiModerator";
 const log = aiLogger("aila:moderation");
 
 export class AilaModeration implements AilaModerationFeature {
-  private _prisma: PrismaClientWithAccelerate;
-  private _moderations: Moderations;
-  private _moderator: AilaModerator;
-  private _aila: AilaServices;
-  private _shouldPersist: boolean = true;
+  private readonly _prisma: PrismaClientWithAccelerate;
+  private readonly _moderations: Moderations;
+  private readonly _moderator: AilaModerator;
+  private readonly _aila: AilaServices;
+  private readonly _shouldPersist: boolean = true;
 
   constructor({
     aila,

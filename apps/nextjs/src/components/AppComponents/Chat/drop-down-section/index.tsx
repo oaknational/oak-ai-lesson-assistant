@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
+import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
 import { equals } from "ramda";
 import styled from "styled-components";
@@ -12,14 +12,9 @@ import { scrollToRef } from "@/utils/scrollToRef";
 import Skeleton from "../../common/Skeleton";
 import ChatSection from "./chat-section";
 
-const DropDownSection = ({
-  objectKey,
-  sectionRefs,
-  value,
-  documentContainerRef,
-  userHasCancelledAutoScroll,
-  showLessonMobile,
-}: {
+const HALF_SECOND = 500;
+
+export type DropDownSectionProps = Readonly<{
   objectKey: string;
   sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,7 +22,18 @@ const DropDownSection = ({
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
   userHasCancelledAutoScroll: boolean;
   showLessonMobile: boolean;
-}) => {
+  streamingTimeout?: number;
+}>;
+
+const DropDownSection = ({
+  objectKey,
+  sectionRefs,
+  value,
+  documentContainerRef,
+  userHasCancelledAutoScroll,
+  showLessonMobile,
+  streamingTimeout = HALF_SECOND,
+}: DropDownSectionProps) => {
   const sectionRef = useRef(null);
   if (sectionRefs) sectionRefs[objectKey] = sectionRef;
   const [isOpen, setIsOpen] = useState(false);
@@ -68,7 +74,7 @@ const DropDownSection = ({
       const timer = setTimeout(() => {
         setStatus("isLoaded");
         setPrevValue(value);
-      }, 500); // 0.5 seconds delay
+      }, streamingTimeout);
 
       return () => clearTimeout(timer);
     } else {
@@ -101,7 +107,7 @@ const DropDownSection = ({
           {status === "isLoaded" && <Icon icon="tick" size="sm" />}
         </OakBox>
 
-        <FullWidthButton onClick={() => setIsOpen(!isOpen)}>
+        <FullWidthButton onClick={() => setIsOpen(!isOpen)} aria-label="toggle">
           <OakFlex $width="100%" $justifyContent="space-between">
             <OakP $font="heading-6">{sectionTitle(objectKey)}</OakP>
             <Icon icon={isOpen ? "chevron-up" : "chevron-down"} size="sm" />

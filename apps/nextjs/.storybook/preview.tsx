@@ -8,21 +8,17 @@ import "@fontsource/lexend/800.css";
 import "@fontsource/lexend/900.css";
 import { OakThemeProvider, oakDefaultTheme } from "@oaknational/oak-components";
 import type { Preview, Decorator } from "@storybook/react";
-import { GeistMono } from "geist/font/mono";
+import { initialize as initializeMsw, mswLoader } from "msw-storybook-addon";
 
-// ModerationProvider is coming in the main Chat.tsx refactor
-//import { ModerationProvider } from "../src/components/AppComponents/Chat/Chat/ModerationProvider";
 import { TooltipProvider } from "../src/components/AppComponents/Chat/ui/tooltip";
 import { DialogProvider } from "../src/components/AppComponents/DialogContext";
-import { CookieConsentProvider } from "../src/components/ContextProviders/CookieConsentProvider";
-import { DemoProvider } from "../src/components/ContextProviders/Demo";
-import LessonPlanTrackingProvider from "../src/lib/analytics/lessonPlanTrackingContext";
-import { SidebarProvider } from "../src/lib/hooks/use-sidebar";
 import { AnalyticsProvider } from "../src/mocks/analytics/provider";
+import { ClerkDecorator } from "../src/mocks/clerk/ClerkDecorator";
 import { TRPCReactProvider } from "../src/utils/trpc";
-import { MockClerkProvider } from "./MockClerkProvider";
-import { ThemeDecorator } from "./ThemeDecorator";
+import { RadixThemeDecorator } from "./decorators/RadixThemeDecorator";
 import "./preview.css";
+
+initializeMsw();
 
 const preview: Preview = {
   parameters: {
@@ -33,36 +29,34 @@ const preview: Preview = {
       },
     },
   },
-  tags: ["autodocs"],
+  loaders: [mswLoader],
 };
 
+// Providers not currently used
+// - CookieConsentProvider
+// - DemoProvider
+// - LessonPlanTrackingProvider
+// - DialogProvider
+// - SidebarProvider
+// - ChatModerationProvider
+
 export const decorators: Decorator[] = [
-  ThemeDecorator,
+  RadixThemeDecorator,
+  ClerkDecorator,
   (Story) => (
-    <MockClerkProvider>
-      <CookieConsentProvider>
-        {" "}
-        <TRPCReactProvider>
-          <DemoProvider>
-            <AnalyticsProvider>
-              <LessonPlanTrackingProvider chatId={"faked"}>
-                <DialogProvider>
-                  <OakThemeProvider theme={oakDefaultTheme}>
-                    <SidebarProvider>
-                      <TooltipProvider>
-                        {/* <ModerationProvider initialModerations={[]}> */}
-                        <Story />
-                        {/* </ModerationProvider> */}
-                      </TooltipProvider>
-                    </SidebarProvider>
-                  </OakThemeProvider>
-                </DialogProvider>
-              </LessonPlanTrackingProvider>
-            </AnalyticsProvider>
-          </DemoProvider>{" "}
-        </TRPCReactProvider>
-      </CookieConsentProvider>
-    </MockClerkProvider>
+    <>
+      <TRPCReactProvider>
+        <AnalyticsProvider>
+          <DialogProvider>
+            <OakThemeProvider theme={oakDefaultTheme}>
+              <TooltipProvider>
+                <Story />
+              </TooltipProvider>
+            </OakThemeProvider>
+          </DialogProvider>
+        </AnalyticsProvider>
+      </TRPCReactProvider>
+    </>
   ),
 ];
 
