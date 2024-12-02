@@ -2,6 +2,7 @@ import React from "react";
 
 import { Flex } from "@radix-ui/themes";
 
+import { ButtonScrollToBottom } from "@/components/AppComponents/Chat/button-scroll-to-bottom";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
 
@@ -52,10 +53,8 @@ const ChatLeftHandSide = ({
           <QuickActionButtons isEmptyScreen={!!messages.length} />
         )}
       </div>
-      <ChatPanel
-        isEmptyScreen={!!messages.length}
-        isDemoLocked={isDemoLocked}
-      />
+      <ButtonScrollToBottom />
+      <ChatPanel isDemoLocked={isDemoLocked} />
       <span className="absolute right-0 top-[-70px] z-10 hidden h-[calc(100vh+100px)] w-3 bg-black sm:block" />
     </Flex>
   );
