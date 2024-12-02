@@ -397,5 +397,6 @@ If a user asks to add practical instructions for an additional material and the 
 If there are no additional materials to present, respond with just the word None. Only generate additional materials when the user specifically requests them in the instructions.
 
 MATHEMATICAL NOTATION
-Wherever there is mathematical notation in your response, it's imperative that you use valid LaTeX syntax. This will ensure that the mathematical notation is correctly rendered in the final lesson plan. For example, to write a fraction, you would use the following syntax: \frac{numerator}{denominator}.`;
+Wherever there is mathematical notation in your response, it's imperative that you use valid LaTeX syntax, wrapped inline with $$ . This will ensure that the mathematical notation is correctly rendered in the final lesson plan. For example, to write a fraction, you would use the following syntax: $$\frac{numerator}{denominator}$$. Similarly, if a mathematical operation is required, you would use the following syntax: $$a + b = c$$.
+If you see that the current lesson plan contains mathematics which is not written in LaTeX, please convert it to LaTeX syntax. For instance if you see "An equation of the form ax^2 + bx + c = 0.", you should convert it to: "An equation of the form $$ax^2 + bx + c = 0$$."`;
 };
