@@ -100,7 +100,7 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
   };
 
   const findTheBestImage = useCallback(async () => {
-    let validImages: ValidatedImage[] = [];
+    const validImages: ValidatedImage[] = [];
 
     function updateStatus(status: string) {
       console.log("[Status Update]:", status);
@@ -110,7 +110,7 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
       }));
     }
 
-    updateStatus("Searching Cloudinary...");
+    updateStatus("Searching Flickr, Cloudinary and unsplash...");
     try {
       // Try Cloudinary first
       console.log(
@@ -120,8 +120,6 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
       const cloudinaryImages = await cloudinaryMutation.mutateAsync({
         searchExpression: selectedImagePrompt,
       });
-      console.log("[Cloudinary] Raw response:", cloudinaryImages);
-
       const cloudinaryData = (
         cloudinaryImages as ImagesFromCloudinary
       ).resources.map((image) => ({
@@ -129,92 +127,35 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
         url: image.url,
         license: "Cloudinary",
       }));
-      console.log("[Cloudinary] Processed data:", cloudinaryData);
 
-      console.log("[Validation] Starting Cloudinary validation");
+      const flickrImages = await flickrMutation.mutateAsync({
+        searchExpression: selectedImagePrompt,
+      });
 
-      const validateCloudinaryResponse =
-        await validateImagesInParallel.mutateAsync({
-          images: cloudinaryData,
-          searchExpression: selectedImagePrompt,
-        });
+      const unsplashImages = await unsplashMutation.mutateAsync({
+        searchExpression: selectedImagePrompt,
+      });
 
-      console.log(
-        "[Validation] Cloudinary validation results:",
-        validateCloudinaryResponse,
-      );
-
-      validImages = [
-        ...validateCloudinaryResponse.filter(
-          (image) => image.validationResult.isValid,
-        ),
+      const allSearchImages = [
+        ...cloudinaryData,
+        ...flickrImages,
+        ...unsplashImages,
       ];
-      console.log("[Cloudinary] Valid images:", validImages);
 
-      // If we don't have enough valid images, try Flickr
-      if (validImages.length < 1) {
-        updateStatus("Nothing appropriate on cloudinary, searching Flickr...");
-        console.log("[Flickr] Starting search");
-        const flickrImages = await flickrMutation.mutateAsync({
+      const validateAllSearchImages =
+        await validateImagesInParallel.mutateAsync({
+          images: allSearchImages,
           searchExpression: selectedImagePrompt,
         });
-        console.log("[Flickr] Raw response:", flickrImages);
 
-        console.log("[Validation] Starting Flickr validation");
-
-        const validateFlickrResponse =
-          await validateImagesInParallel.mutateAsync({
-            images: flickrImages,
-            searchExpression: selectedImagePrompt,
-          });
-
-        console.log(
-          "[Validation] Flickr validation results:",
-          validateFlickrResponse,
-        );
-
-        validImages = [
-          ...validImages,
-          ...validateFlickrResponse.filter(
-            (image) => image.validationResult.isValid,
-          ),
-        ];
-        console.log("[Flickr] Updated valid images:", validImages);
-      }
-
-      // If still not enough, try Unsplash
-      if (validImages.length < 1) {
-        updateStatus("Nothing appropriate on Flickr, searching Unsplash...");
-        console.log("[Unsplash] Starting search");
-        const unsplashImages = await unsplashMutation.mutateAsync({
-          searchExpression: selectedImagePrompt,
-        });
-        console.log("[Unsplash] Raw response:", unsplashImages);
-
-        console.log("[Validation] Starting Unsplash validation");
-        const validateUnsplashResponse =
-          await validateImagesInParallel.mutateAsync({
-            images: unsplashImages,
-            searchExpression: selectedImagePrompt,
-          });
-        console.log(
-          "[Validation] Unsplash validation results:",
-          validateUnsplashResponse,
-        );
-
-        validImages = [
-          ...validImages,
-          ...validateUnsplashResponse.filter(
-            (image) => image.validationResult.isValid,
-          ),
-        ];
-        console.log("[Unsplash] Updated valid images:", validImages);
-      }
+      let validImages = validateAllSearchImages.filter(
+        (image) => image.validationResult.isValid,
+      );
 
       // If still not enough, try Stable Diffusion Core
       if (validImages.length < 1) {
         updateStatus(
-          "Nothing appropriate on Unsplash, generating an image using Stable Diffusion Core...",
+          "Nothing appropriate from the free licence image sources, generating an image using Stable Diffusion Core...",
         );
         console.log("[StableDiffusion] Starting generation");
         const stableDiffusionCoreImages =
