@@ -1,3 +1,27 @@
+## [1.17.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.17.0...v1.17.1) (2024-12-03)
+
+
+### Bug Fixes
+
+* add linting command to db package ([#392](https://github.com/oaknational/oak-ai-lesson-assistant/issues/392)) ([d2177d5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d2177d5c061e973affd1ea52b0ef025c8c37cb29))
+* address sonar major issues ([#393](https://github.com/oaknational/oak-ai-lesson-assistant/issues/393)) ([202a21f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/202a21fbac0d457514c9944735b174c79dced08c))
+* do not define components inline ([#413](https://github.com/oaknational/oak-ai-lesson-assistant/issues/413)) ([abda175](https://github.com/oaknational/oak-ai-lesson-assistant/commit/abda1753afecd9385b19b695767568abdd4383c1))
+* do not use array index for key / use void for onSubmit ([#409](https://github.com/oaknational/oak-ai-lesson-assistant/issues/409)) ([44b5961](https://github.com/oaknational/oak-ai-lesson-assistant/commit/44b59617f3af8cad83110efdc2cb4df23d06e073))
+* help page cloudflare email ([#399](https://github.com/oaknational/oak-ai-lesson-assistant/issues/399)) ([f6262f2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f6262f26d470a30ea721343bbab2cbfded77b91d))
+* high and medium severity bugs on sonar cloud - AI-637 ([#379](https://github.com/oaknational/oak-ai-lesson-assistant/issues/379)) ([fb0258e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/fb0258ec2f3c0d5fb79d884d3918827460cba404))
+* icons in dialogs ([#398](https://github.com/oaknational/oak-ai-lesson-assistant/issues/398)) ([9700214](https://github.com/oaknational/oak-ai-lesson-assistant/commit/970021462a94b800dba270130f5ba1b1548e8745))
+* intentionality of async / promise code for question generation ([#402](https://github.com/oaknational/oak-ai-lesson-assistant/issues/402)) ([65d1c5f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/65d1c5f89c1b238e24315c02bde2e9eb253b4da3))
+* memoize the sidebar context provider's value ([#408](https://github.com/oaknational/oak-ai-lesson-assistant/issues/408)) ([60ee010](https://github.com/oaknational/oak-ai-lesson-assistant/commit/60ee0102ea1ee733d6527c5460fd404cd7773292))
+* minor sonar issues ([#390](https://github.com/oaknational/oak-ai-lesson-assistant/issues/390)) ([015cd25](https://github.com/oaknational/oak-ai-lesson-assistant/commit/015cd25984c3e5d1a545afef39fd111aa5245d58))
+* prefer nullish coalescing ([#391](https://github.com/oaknational/oak-ai-lesson-assistant/issues/391)) ([b40def9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b40def9cfd3d69a0089db861a2f6ed47321a3753))
+* readonly props for icons.tsx ([#389](https://github.com/oaknational/oak-ai-lesson-assistant/issues/389)) ([7b4d5bc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7b4d5bcc508b3179ea5313ec783aba90d1a7f3ae))
+* revert tabindex change ([#404](https://github.com/oaknational/oak-ai-lesson-assistant/issues/404)) ([ac72713](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ac72713dc54595f6bfacfd99e63899616f18b8ec))
+* sonar maintain issues [#4](https://github.com/oaknational/oak-ai-lesson-assistant/issues/4) ([#405](https://github.com/oaknational/oak-ai-lesson-assistant/issues/405)) ([eca0019](https://github.com/oaknational/oak-ai-lesson-assistant/commit/eca001996a684f8d01465196c1c600d00e43a964))
+* sonar maintain linting [#1](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1) ([#394](https://github.com/oaknational/oak-ai-lesson-assistant/issues/394)) ([f4d95fc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f4d95fcbf39c3c43c3811f8c2022a37af363826a))
+* sonar maintain linting [#2](https://github.com/oaknational/oak-ai-lesson-assistant/issues/2) ([#395](https://github.com/oaknational/oak-ai-lesson-assistant/issues/395)) ([1ed9d60](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1ed9d6028713b096a68a0558d67608dc9efb812f))
+* sonar maintain linting [#3](https://github.com/oaknational/oak-ai-lesson-assistant/issues/3) ([#403](https://github.com/oaknational/oak-ai-lesson-assistant/issues/403)) ([daa7efe](https://github.com/oaknational/oak-ai-lesson-assistant/commit/daa7efe6a2d5d2501f5108cd3c1ccaec86126655))
+* sonar minors [#5](https://github.com/oaknational/oak-ai-lesson-assistant/issues/5) ([#414](https://github.com/oaknational/oak-ai-lesson-assistant/issues/414)) ([5f749f4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5f749f42f9f5d3d78c736438e313f4f5eff5406b))
+
 # [1.17.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.16.2...v1.17.0) (2024-11-28)
 
 
