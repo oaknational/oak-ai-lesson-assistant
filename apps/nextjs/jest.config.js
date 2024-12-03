@@ -9,6 +9,7 @@ const config = {
       {
         tsconfig: "tsconfig.test.json",
         useESM: true,
+        isolatedModules: true,
       },
     ],
     "^.+\\.svg$": "<rootDir>/jest.svgTransform.js",
@@ -30,6 +31,7 @@ const config = {
   rootDir: ".",
   resetMocks: true,
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  collectCoverageFrom: ["src/**/*.{ts,tsx,js,jsx}"],
   collectCoverage:
     process.env.CI === "true" || process.env.COLLECT_TEST_COVERAGE === "true",
   coverageReporters: ["lcov", "text"],
