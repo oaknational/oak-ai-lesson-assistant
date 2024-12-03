@@ -3,7 +3,7 @@ import type { StructuredLogger } from "@oakai/logger";
 import { structuredLogger } from "@oakai/logger";
 import type { Logger as InngestLogger } from "inngest/middleware/logger";
 import { PromptTemplate } from "langchain/prompts";
-import type { BaseMessage} from "langchain/schema";
+import type { BaseMessage } from "langchain/schema";
 import { SystemMessage } from "langchain/schema";
 import untruncateJson from "untruncate-json";
 
@@ -196,7 +196,7 @@ export class LLMRefusalError extends Error {
 
   constructor(message: string, meta: Partial<CompletionMeta>) {
     super(message);
-    this.name = "LLMCompletionError";
+    this.name = "LLMRefusalError";
     this.completionMeta = meta;
   }
 }

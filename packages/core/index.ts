@@ -11,8 +11,6 @@ import { generateAllLessonPlans } from "./src/functions/lessonPlan/generateAll";
 import { processLessonPlan } from "./src/functions/lessonPlan/process";
 import { embedLessonSummary } from "./src/functions/lessonSummary/embed";
 import { embedAllLessonSummaries } from "./src/functions/lessonSummary/embedAll";
-import { addIdsToMessages } from "./src/functions/migrations/addIdsToMessages";
-import { kvChatsToPrisma } from "./src/functions/migrations/kvChatsToPrisma";
 import { embedAllQuizAnswers } from "./src/functions/quizAnswer/embedAll";
 import { generateQuizAnswerEmbeddings } from "./src/functions/quizAnswer/generateQuizAnswerEmbeddings";
 import { embedAllQuizQuestions } from "./src/functions/quizQuestion/embedAll";
@@ -63,8 +61,6 @@ export const functions = [
   processLessonPlan,
   generatePlanForLesson,
   generateAllLessonPlans,
-  kvChatsToPrisma,
-  addIdsToMessages,
   notifyModeration,
   notifyRateLimit,
   notifyUserBan,

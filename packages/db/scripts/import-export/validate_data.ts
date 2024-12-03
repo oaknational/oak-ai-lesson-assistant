@@ -108,8 +108,7 @@ const validateCSV = (
           }
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        for (const [fk, refTable] of Object.entries(foreignKeys)) {
+        for (const fk of Object.keys(foreignKeys)) {
           if (!foreignKeyCheck[fk]) {
             foreignKeyCheck[fk] = new Set();
           }

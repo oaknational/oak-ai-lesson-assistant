@@ -16,6 +16,7 @@ import type {
   JsonPatchDocumentOptional,
 } from "../../protocol/jsonPatchProtocol";
 import {
+  extractPatches,
   LLMMessageSchema,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
@@ -279,7 +280,10 @@ export class AilaChat implements AilaChatService {
   private applyExperimentalPatches() {
     const experimentalPatches = this._experimentalPatches;
 
-    log.info("Applying experimental patches", experimentalPatches);
+    log.info(
+      "Applying experimental extractAndApplyLlmPatches",
+      experimentalPatches,
+    );
 
     this._aila.lesson.applyValidPatches(experimentalPatches);
   }
@@ -383,11 +387,12 @@ export class AilaChat implements AilaChatService {
     await this.reportUsageMetrics();
     await fetchExperimentalPatches({
       lessonPlan: this._aila.lesson.plan,
-      parsedMessages: this.parsedMessages,
+      llmPatches: extractPatches(this.accumulatedText()).validPatches,
       handlePatch: async (patch) => {
         await this.enqueue(patch);
         this.appendExperimentalPatch(patch);
       },
+      userId: this._userId,
     });
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
