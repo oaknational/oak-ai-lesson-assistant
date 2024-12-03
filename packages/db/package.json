@@ -5,7 +5,11 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "eslintConfig": {
-    "extends": "eslint-config-custom"
+    "extends": "@oakai/eslint-config/node",
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "rules": {}
   },
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
@@ -53,7 +57,7 @@
     "docker-psql": " docker exec -it oak-ai-beta psql -U oai",
     "docker-reset": "pnpm run docker-clear && pnpm run docker-run",
     "docker-run": "docker run --name oak-ai-beta -p 8432:5432 -d oai-pg",
-    "lint": "eslint . --ext .ts,.tsx",
+    "lint": "eslint .",
     "schema-format": "pnpm with-env prisma format",
     "script-add-metadata-to-lesson-summaries": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/add_metadata_to_lesson_summaries.ts",
     "script-batch-process-clean-questions": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/batch_process_clean_questions.ts",
@@ -79,6 +83,7 @@
   },
   "devDependencies": {
     "@oakai/prettier-config": "*",
+    "@oakai/eslint-config": "*",
     "dotenv-cli": "^6.0.0",
     "prisma": "^5.21.0",
     "typescript": "5.7.2",

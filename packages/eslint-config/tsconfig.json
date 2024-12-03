@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "declaration": true,
+    "esModuleInterop": true,
+    "strict": true
+  },
+  "include": ["*.ts", "src/*.ts", "eslint.config.old"],
+  "exclude": ["node_modules", "dist"]
+}

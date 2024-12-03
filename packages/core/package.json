@@ -7,7 +7,11 @@
   "author": "",
   "main": "./index.ts",
   "eslintConfig": {
-    "extends": "eslint-config-custom"
+    "extends": "@oakai/eslint-config",
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "rules": {}
   },
   "scripts": {
     "admin": "open http://localhost:8288",

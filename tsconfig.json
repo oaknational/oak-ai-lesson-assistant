@@ -18,6 +18,5 @@
     "esModuleInterop": true,
     "allowImportingTsExtensions": true,
     "moduleDetection": "force"
-  },
-  "include": [".eslintrc.cjs"]
+  }
 }

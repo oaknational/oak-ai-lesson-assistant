@@ -4,14 +4,19 @@
   "license": "MIT",
   "main": "./index.ts",
   "types": "./index.ts",
-  "eslintConfig": {
-    "extends": "eslint-config-custom"
-  },
+
   "scripts": {
     "check": "tsc --noEmit",
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
     "type-check": "tsc --noEmit"
+  },
+  "eslintConfig": {
+    "extends": "@oakai/eslint-config",
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "rules": {}
   },
   "prettier": "@oakai/prettier-config",
   "dependencies": {
@@ -29,8 +34,8 @@
     "zod": "3.23.8"
   },
   "devDependencies": {
+    "@oakai/eslint-config": "*",
     "@oakai/prettier-config": "*",
-    "eslint": "^9.15.0",
     "typescript": "5.7.2"
   },
   "engines": {

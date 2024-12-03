@@ -2,7 +2,11 @@
   "name": "@oakai/exports",
   "version": "0.0.1",
   "eslintConfig": {
-    "extends": "eslint-config-custom"
+    "extends": "@oakai/eslint-config",
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "rules": {}
   },
   "scripts": {
     "lint": "eslint .",

@@ -23,6 +23,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",
     "lint:fix": "pnpm lint -- --fix",
+    "lint:debug": "pnpm lint -- --debug",
     "prompts": "turbo prompts",
     "prompts:dev": "turbo prompts:dev",
     "sonar": "dotenv -e ./.env -- sonar-scanner",
@@ -38,6 +39,9 @@
     "storybook": "turbo storybook"
   },
   "prettier": "@oakai/prettier-config",
+  "eslintConfig": {
+    "extends": "@oakai/eslint-config"
+  },
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@actions/github": "^6.0.0",
@@ -50,8 +54,7 @@
     "@semantic-release/git": "^10.0.1",
     "@types/jest": "^29.5.14",
     "autoprefixer": "^10.4.16",
-    "eslint-config-custom": "0.0.0",
-    "eslint-plugin-turbo": "^2.2.3",
+    "@oakai/eslint-config": "*",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
     "next": "14.2.18",
@@ -68,9 +71,6 @@
   "engines": {
     "node": ">=20.9.0",
     "pnpm": ">=8"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.15.0"
   },
   "type": "module"
 }
