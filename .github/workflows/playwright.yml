@@ -28,6 +28,7 @@ jobs:
         id: ref_from_sha
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          entrypoint: ./index.cjs
       - name: Install Playwright
         run: npx playwright install --with-deps chromium webkit
       - name: Inject Doppler env vars

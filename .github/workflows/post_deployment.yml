@@ -35,6 +35,7 @@ jobs:
         id: ref_from_sha
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          entrypoint: ./index.cjs
 
       - uses: mcky/find-and-replace-pull-request-body@v1.1.6-mcky
         if: ${{ steps.ref_from_sha.outputs.pr_number }}

@@ -33,7 +33,7 @@ async function run() {
     // Get the *first* PR that has the given SHA as the head of the feature branch.
     const pullRequest = await prFromSha(octokit, { owner, repo }, sha);
     let headRef;
-    let prNumber;
+    let prNumber = undefined;
     if (pullRequest !== null) {
       // There is a PR with this SHA as the head of the feature branch
       headRef = pullRequest.head.ref;
