@@ -18,7 +18,6 @@ export interface PromptFormProps
   extends Pick<UseChatHelpers, "input" | "setInput"> {
   onSubmit: (value: string) => void;
   hasMessages: boolean;
-  placeholder?: string;
   ailaStreamingStatus: AilaStreamingStatus;
   queuedUserAction?: string | null;
   queueUserAction?: (action: string) => void;
@@ -30,7 +29,6 @@ export function PromptForm({
   input,
   setInput,
   hasMessages,
-  placeholder,
   queuedUserAction,
   queueUserAction,
 }: Readonly<PromptFormProps>) {
@@ -94,7 +92,7 @@ export function PromptForm({
           onChange={(e) => setInput(e.target.value)}
           placeholder={handlePlaceholder(
             hasMessages,
-            queuedUserAction ?? placeholder,
+            queuedUserAction ?? undefined,
           )}
           spellCheck={false}
           className="min-h-[60px] w-full resize-none bg-transparent px-10 py-[1.3rem] text-base focus-within:outline-none"
@@ -119,11 +117,14 @@ export function PromptForm({
   );
 }
 
-function handlePlaceholder(hasMessages: boolean, placeholder?: string) {
-  if (placeholder && !["continue", "regenerate"].includes(placeholder)) {
-    return placeholder;
+function handlePlaceholder(hasMessages: boolean, queuedUserAction?: string) {
+  if (
+    queuedUserAction &&
+    !["continue", "regenerate"].includes(queuedUserAction)
+  ) {
+    return queuedUserAction;
   }
-  return !hasMessages
-    ? "Type a subject, key stage and title"
-    : "Type your response here";
+  return hasMessages
+    ? "Type your response here"
+    : "Type a subject, key stage and title";
 }
