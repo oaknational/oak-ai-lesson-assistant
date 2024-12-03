@@ -39,6 +39,7 @@ const ChatLeftHandSide = ({
         setShowLessonMobile={setShowLessonMobile}
         showLessonMobile={showLessonMobile}
         isDemoUser={isDemoUser}
+        showStreamingStatus={process.env.NEXT_PUBLIC_ENVIRONMENT !== "prd"}
       />
       <div>
         <ChatPanelArea chatAreaRef={chatAreaRef} isDemoLocked={isDemoLocked}>
