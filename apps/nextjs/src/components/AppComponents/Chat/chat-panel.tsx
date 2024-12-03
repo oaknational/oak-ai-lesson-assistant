@@ -20,6 +20,7 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const chat = useLessonChat();
   const {
     id,
+    messages,
     isLoading,
     messages,
     input,

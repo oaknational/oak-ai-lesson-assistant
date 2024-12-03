@@ -123,10 +123,7 @@ export class OpenAiModerator extends AilaModerator {
     );
 
     const log = aiLogger("aila:moderation:response");
-    log.info(
-      "Moderation response: ",
-      JSON.stringify(moderationResponse, null, 2),
-    );
+    log.info(JSON.stringify(moderationResponse));
 
     const response = moderationResponseSchema.safeParse(
       JSON.parse(moderationResponse.choices[0]?.message.content ?? "null"),
@@ -152,6 +149,7 @@ export class OpenAiModerator extends AilaModerator {
 
     return {
       justification,
+      scores,
       categories: categories.filter((category) => {
         /**
          * We only want to include the category if the parent category scores below a certain threshold.
