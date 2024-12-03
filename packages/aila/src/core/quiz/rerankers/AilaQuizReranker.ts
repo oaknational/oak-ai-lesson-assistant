@@ -1,4 +1,6 @@
 import { aiLogger } from "@oakai/logger";
+import { kv } from "@vercel/kv";
+import { Md5 } from "ts-md5";
 import type { z } from "zod";
 
 import type { QuizPath, QuizQuestion } from "../../../protocol/schema";
@@ -58,5 +60,65 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
 
     // const bestRating = selectHighestRated(outputRatings, (item) => item.rating);
     return extractedOutputRatings;
+  }
+
+  public async cachedEvaluateQuizArray(
+    quizArray: QuizQuestion[][],
+    lessonPlan: LooseLessonPlan,
+    ratingSchema: typeof BaseSchema,
+    quizType: QuizPath,
+  ): Promise<T[]> {
+    const keyPrefix = "aila:quiz:openai:reranker";
+    const lessonPlanRerankerFields: string[] = [
+      "title",
+      "topic",
+      "learningOutcome",
+      "keyLearningPoints",
+    ];
+
+    // Extract only the relevant fields from lesson plan
+    const relevantLessonPlanData = lessonPlanRerankerFields.reduce(
+      (acc, field) => {
+        acc[field] = lessonPlan[field as keyof LooseLessonPlan];
+        return acc;
+      },
+      {} as Record<string, unknown>,
+    );
+
+    // Create hash from relevant data
+    const hash = Md5.hashStr(
+      JSON.stringify({
+        quizArray,
+        relevantLessonPlanData,
+        ratingSchema,
+        quizType,
+      }),
+    );
+    const cacheKey = `${keyPrefix}:${hash}`;
+
+    try {
+      const cached = await kv.get<T[]>(cacheKey);
+      if (cached) {
+        log.info(`Cache hit for key: ${cacheKey}`);
+        return cached;
+      }
+    } catch (e) {
+      log.error(`Error getting cached value for key: ${cacheKey}`, e);
+      await kv.del(cacheKey); // Remove potentially corrupted cache entry
+    }
+
+    log.info(`Cache miss for key: ${cacheKey}, evaluating for openAI`);
+    const evaluatedQuizzes = await this.evaluateQuizArray(
+      quizArray,
+      lessonPlan,
+      ratingSchema,
+      quizType,
+    );
+
+    // Cache the results
+    await kv.set(cacheKey, evaluatedQuizzes, {
+      ex: 60 * 5,
+    });
+    return evaluatedQuizzes;
   }
 }

@@ -71,6 +71,12 @@ export interface AilaQuizReranker<T extends typeof BaseSchema> {
     ratingSchema: typeof BaseSchema,
     quizType: QuizPath,
   ): Promise<T[]>;
+  cachedEvaluateQuizArray(
+    quizzes: QuizQuestion[][],
+    lessonPlan: LooseLessonPlan,
+    ratingSchema: typeof BaseSchema,
+    quizType: QuizPath,
+  ): Promise<T[]>;
   ratingSchema?: T;
   quizType?: QuizPath;
   ratingFunction?: RatingFunction<BaseType>;

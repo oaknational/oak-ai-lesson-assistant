@@ -20,6 +20,7 @@ import { TestSchemaReranker } from "../rerankers/SchemaReranker";
 import { SimpleQuizSelector } from "../selectors/SimpleQuizSelector";
 
 const log = aiLogger("aila:quiz");
+
 export abstract class BaseFullQuizService implements FullQuizService {
   public abstract quizSelector: QuizSelector<BaseType>;
   public abstract quizReranker: AilaQuizReranker<typeof BaseSchema>;
@@ -54,7 +55,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
       throw new Error("Reranker rating schema is undefined");
     }
 
-    const quizRankings = await this.quizReranker.evaluateQuizArray(
+    const quizRankings = await this.quizReranker.cachedEvaluateQuizArray(
       quizzes,
       lessonPlan,
       this.quizReranker.ratingSchema,
