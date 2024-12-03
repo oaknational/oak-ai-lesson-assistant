@@ -50,11 +50,13 @@
     "docker-psql": " docker exec -it oak-ai-beta psql -U oai",
     "docker-reset": "pnpm run docker-clear && pnpm run docker-run",
     "docker-run": "docker run --name oak-ai-beta -p 8432:5432 -d oai-pg",
+    "lint": "eslint . --ext .ts,.tsx",
     "schema-format": "pnpm with-env prisma format",
     "script-add-metadata-to-lesson-summaries": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/add_metadata_to_lesson_summaries.ts",
     "script-batch-process-clean-questions": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/batch_process_clean_questions.ts",
     "script-batch-update-clerk-users": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/update_clerk_users.ts",
     "validate-data": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/import-export/validate_data.ts",
+    "type-check": "tsc --noEmit",
     "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@oakai/prettier-config",

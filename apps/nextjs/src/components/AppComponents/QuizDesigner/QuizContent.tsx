@@ -41,7 +41,7 @@ const QuizContent = ({
     potentialNewQuestions,
     isLoading: suggestedQuestionsLoading,
     hasError: suggestedQuestionsHasError,
-    setPotentialNewQuestion,
+    setPotentialNewQuestions,
   } = useSuggestedQuestions({
     state,
     dispatch,
@@ -85,7 +85,7 @@ const QuizContent = ({
           potentialNewQuestions={potentialNewQuestions}
           dispatch={dispatch}
           suggestedQuestionsGeneration={suggestedQuestionsGeneration}
-          setPotentialNewQuestions={setPotentialNewQuestion}
+          setPotentialNewQuestions={setPotentialNewQuestions}
           questionsWrapperRef={questionsWrapperRef}
           questionRefs={questionRefs}
         />

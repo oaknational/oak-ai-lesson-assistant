@@ -20,7 +20,7 @@ export class MockModerator extends AilaModerator {
     if (!result) {
       throw new AilaModerationError("No more mocked results");
     }
-    return result;
+    return Promise.resolve(result);
   }
 
   public reset(newResults?: ModerationResult[]) {

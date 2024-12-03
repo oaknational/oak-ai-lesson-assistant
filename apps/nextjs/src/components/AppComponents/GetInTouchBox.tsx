@@ -42,11 +42,11 @@ const GetInTouchBox = () => {
         </svg>
       </div>
       <p>
-        Can’t find what you need?{" "}
+        {"Can’t find what you need? "}
         <a href={email} className="text-blue underline">
           Get in touch
         </a>
-        , we’d be happy to help.
+        {", we’d be happy to help."}
       </p>
     </div>
   );

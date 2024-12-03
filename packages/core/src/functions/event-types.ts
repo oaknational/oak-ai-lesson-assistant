@@ -14,8 +14,6 @@ import { generateAllLessonPlansSchema } from "./lessonPlan/generateAll.schema";
 import { processLessonPlanSchema } from "./lessonPlan/process.schema";
 import { embedLessonSummarySchema } from "./lessonSummary/embed.schema";
 import { embedAllLessonSummariesSchema } from "./lessonSummary/embedAll.schema";
-import { addIdsToMessagesSchema } from "./migrations/addIdsToMessages.schema";
-import { kvChatsToPrismaSchema } from "./migrations/kvChatsToPrisma.schema";
 import { embedAllQuizAnswersSchema } from "./quizAnswer/embedAll.schema";
 import { embedQuizAnswerSchema } from "./quizAnswer/generateQuizAnswerEmbeddings.schema";
 import { embedAllQuizQuestionsSchema } from "./quizQuestion/embedAll.schema";
@@ -63,8 +61,6 @@ const schemas = {
   "app/lessonPlan.embedPart": embedLessonPlanPartSchema,
   "app/snippet.embedAll": embedAllSnippetsSchema,
   "app/snippet.generateForAllQuestions": generateSnippetsForAllQuestionsSchema,
-  "app/migrations.kvChatsToPrisma": kvChatsToPrismaSchema,
-  "app/migrations.addIdsToMessages": addIdsToMessagesSchema,
   "app/slack.notifyRateLimit": notifyRateLimitSchema,
   "app/slack.notifyModeration": notifyModerationSchema,
   "app/slack.notifyUserBan": notifyUserBanSchema,

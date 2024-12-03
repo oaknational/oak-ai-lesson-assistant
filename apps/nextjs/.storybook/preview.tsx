@@ -45,7 +45,6 @@ export const decorators: Decorator[] = [
   ClerkDecorator,
   (Story) => (
     <>
-      {/* TODO: Mock tRPC calls with MSW */}
       <TRPCReactProvider>
         <AnalyticsProvider>
           <DialogProvider>

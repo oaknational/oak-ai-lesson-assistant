@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { exportDocQuizSchema } from "@oakai/exports/browser";
-import type { QuizDocInputData } from "@oakai/exports/src/schema/input.schema";
+import type {
+  LessonDeepPartial,
+  QuizDocInputData,
+} from "@oakai/exports/src/schema/input.schema";
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
 import type { ZodError } from "zod";
@@ -10,6 +13,18 @@ import { trpc } from "@/utils/trpc";
 
 import type { ExportsHookProps } from "./exports.types";
 import { useExportsExistenceCheck } from "./useExportsExistenceCheck";
+
+function extractQuizFromLesson(
+  lesson: LessonDeepPartial,
+  quizType: "exit" | "starter",
+) {
+  switch (quizType) {
+    case "starter":
+      return lesson._experimental_starterQuizMathsV0 ?? lesson.starterQuiz;
+    case "exit":
+      return lesson._experimental_exitQuizMathsV0 ?? lesson.exitQuiz;
+  }
+}
 
 export function useExportQuizDoc({
   onStart,
@@ -21,7 +36,7 @@ export function useExportQuizDoc({
 }: ExportsHookProps<{ quizType: "exit" | "starter" }>) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const query = trpc.exports.exportQuizDoc.useMutation();
-  const quiz = quizType === "exit" ? lesson.exitQuiz : lesson.starterQuiz;
+  const quiz = extractQuizFromLesson(lesson, quizType);
   const [parseResult, setParseResult] = useState<
     { data?: QuizDocInputData; success: boolean; error?: ZodError } | undefined
   >({ success: false });
@@ -114,7 +129,7 @@ export function useExportQuizDoc({
       dialogOpen,
       closeDialog,
       status: query.status,
-      data: checkForSnapShotAndPreloadQuery.data || query.data,
+      data: checkForSnapShotAndPreloadQuery.data ?? query.data,
     }),
     [
       checkForSnapShotAndPreloadQuery.data,

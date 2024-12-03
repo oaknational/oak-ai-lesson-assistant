@@ -54,7 +54,7 @@ const useRegenerateDistractors = ({
     Boolean(distractor.lastGenerationId),
   );
   const requestRegenerateAllDistractorsGeneration = useCallback(() => {
-    quizRequestGeneration({
+    void quizRequestGeneration({
       state,
       questionRow,
       requestGeneration,
