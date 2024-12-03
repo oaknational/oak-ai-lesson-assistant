@@ -3,10 +3,9 @@
   "version": "0.0.0",
   "description": "Custom ESLint configuration for React, Next.js, and TypeScript",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.mjs",
   "files": [
-    "dist/*"
+    "src/*"
   ],
   "devDependencies": {
     "@eslint/js": "^9.16.0",

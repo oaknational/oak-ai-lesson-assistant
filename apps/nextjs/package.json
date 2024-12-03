@@ -172,7 +172,7 @@
     ]
   },
   "eslintConfig": {
-    "extends": "@oakai/eslint-config/nextjs",
+    "extends": "@oakai/eslint-config",
     "parserOptions": {
       "project": "./tsconfig.json"
     },

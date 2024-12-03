@@ -47,14 +47,12 @@
     "@actions/github": "^6.0.0",
     "@manypkg/cli": "^0.21.1",
     "@next/env": "14.2.18",
-    "@oakai/prettier-config": "*",
     "@prisma/client": "5.16.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@types/jest": "^29.5.14",
     "autoprefixer": "^10.4.16",
-    "@oakai/eslint-config": "*",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
     "next": "14.2.18",
@@ -66,6 +64,10 @@
     "tailwindcss": "^3.3.7",
     "turbo": "^2.2.3",
     "typescript": "5.7.2"
+  },
+  "devDependencies": {
+    "@oakai/eslint-config": "workspace:*",
+    "@oakai/prettier-config": "*"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

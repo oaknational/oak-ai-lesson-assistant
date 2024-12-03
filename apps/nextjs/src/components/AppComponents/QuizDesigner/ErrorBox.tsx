@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import type { Responsive } from "@radix-ui/themes";
 import { Box } from "@radix-ui/themes";
 

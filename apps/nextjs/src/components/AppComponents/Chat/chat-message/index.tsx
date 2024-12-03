@@ -1,6 +1,6 @@
 // Inspired by Chatbot-UI and modified to fit the needs of this project
 // @see https://github.com/mckaywrigley/chatbot-ui/blob/main/components/Chat/ChatMessage.tsx
-import type { ReactNode } from "react";
+import type { ReactNode, JSX } from "react";
 import { useState } from "react";
 
 import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
@@ -200,7 +200,7 @@ function MessageWrapper({
 
 function MessageTextWrapper({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <div className=" flex w-full flex-col items-start justify-between">
+    <div className="flex w-full flex-col items-start justify-between">
       {children}
     </div>
   );

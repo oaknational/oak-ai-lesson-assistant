@@ -9,6 +9,6 @@
     "esModuleInterop": true,
     "strict": true
   },
-  "include": ["*.ts", "src/*.ts", "eslint.config.old"],
+  "include": ["*.ts", "src/*.ts", "eslint.config.old", "src/rules.mjs", "src/index.mjs", "src/ignores.mjs"],
   "exclude": ["node_modules", "dist"]
 }

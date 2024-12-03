@@ -14,7 +14,7 @@ if (tsConfig && typeof tsConfig === 'object' && 'rules' in tsConfig) {
 } else {
   // If the last item isn't a config object with rules, append a new config object
   config.push({
-    files: ["**/*.{js,ts,mjs,cjs}"],
+    files: ["**/*.{ts,tsx}"],
     rules: {
       "no-console": "off"
     }

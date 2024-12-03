@@ -1,10 +1,10 @@
-import type { SharedConfig } from '@typescript-eslint/utils/ts-eslint';
-
 import tsEslint from '@typescript-eslint/eslint-plugin';
 
 const typescript = tsEslint.configs.recommended;
 
-export const rules:Partial<Record<string, SharedConfig.RuleEntry>> = {
+// @ts-check
+/** @type {Partial<Record<string, import('@typescript-eslint/utils/ts-eslint').SharedConfig.RuleEntry>>} */
+export const rules = {
   ...typescript.rules,
   "@typescript-eslint/prefer-nullish-coalescing": "warn",
   "@typescript-eslint/no-unsafe-enum-comparison": "warn",
