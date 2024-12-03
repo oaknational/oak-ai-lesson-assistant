@@ -1,11 +1,12 @@
 import type { docs_v1 } from "@googleapis/docs";
 
 import type { Result } from "../../types";
-import type { ValueToString} from "../../utils";
+import type { ValueToString } from "../../utils";
 import { defaultValueToString } from "../../utils";
+import { textReplacements } from "./textReplacements";
 
 /**
- * @description Populates the template document with the given data.
+ * Populates the template document with the given data, handling image replacements for all placeholders.
  */
 export async function populateDoc<
   Data extends Record<string, string | string[] | null | undefined>,
@@ -23,37 +24,37 @@ export async function populateDoc<
   valueToString?: ValueToString<Data>;
 }): Promise<Result<{ missingData: string[] }>> {
   try {
-    const requests: docs_v1.Schema$Request[] = [];
     const missingData: string[] = [];
 
-    Object.entries(data).forEach(([key, value]) => {
-      const valueStr = valueToString(key, value);
-      if (!valueStr.trim() && warnIfMissing.includes(key)) {
-        missingData.push(key);
-      }
-      requests.push({
-        replaceAllText: {
-          replaceText: valueStr,
-          containsText: {
-            text: `{{${key}}}`,
-            matchCase: false,
-          },
-        },
-      });
+    // Commenting out this part until the issues are resolved (see @TODOs on function defintiion)
+    // await processImageReplacements({
+    //   googleDocs,
+    //   documentId,
+    //   data,
+    // });
+
+    const { requests: textRequests } = textReplacements({
+      data,
+      warnIfMissing,
+      valueToString,
     });
 
-    await googleDocs.documents.batchUpdate({
-      documentId,
-      requestBody: {
-        requests,
-      },
-    });
+    if (textRequests.length > 0) {
+      await googleDocs.documents.batchUpdate({
+        documentId,
+        requestBody: {
+          requests: textRequests,
+        },
+      });
+    }
+
     return {
       data: {
         missingData,
       },
     };
   } catch (error) {
+    console.error("Failed to populate document:", error);
     return {
       error,
       message: "Failed to populate doc template",

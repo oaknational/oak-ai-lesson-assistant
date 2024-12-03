@@ -1,4 +1,8 @@
-import type { Lesson, LessonSummary, PrismaClientWithAccelerate } from "@oakai/db";
+import type {
+  Lesson,
+  LessonSummary,
+  PrismaClientWithAccelerate,
+} from "@oakai/db";
 import { Prisma } from "@prisma/client";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { PrismaVectorStore } from "langchain/vectorstores/prisma";
@@ -24,9 +28,9 @@ interface FilterOptions {
   subject_id?: object;
 }
 export class LessonSummaries {
-  private _rag: RAG;
-  private _prisma: PrismaClientWithAccelerate;
-  constructor(private readonly prisma: PrismaClientWithAccelerate) {
+  private readonly _rag: RAG;
+  private readonly _prisma: PrismaClientWithAccelerate;
+  constructor(prisma: PrismaClientWithAccelerate) {
     this._prisma = prisma;
     this._rag = new RAG(this._prisma, { chatId: "none" });
   }

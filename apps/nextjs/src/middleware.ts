@@ -1,5 +1,3 @@
-import { auth } from "@clerk/nextjs/dist/types/server";
-import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import type { NextMiddlewareResult } from "next/dist/server/web/types";
 import type { NextFetchEvent, NextMiddleware, NextRequest } from "next/server";
 import { NextResponse } from "next/server";
@@ -48,10 +46,10 @@ const environment = parseEnvironment(process.env.NEXT_PUBLIC_ENVIRONMENT);
 const cspConfig: CspConfig = {
   strictCsp: process.env.STRICT_CSP === "true",
   environment,
-  sentryEnv: process.env.NEXT_PUBLIC_SENTRY_ENV || "",
-  sentryRelease: process.env.NEXT_PUBLIC_APP_VERSION || "",
-  sentryReportUri: process.env.SENTRY_REPORT_URI || "",
-  cspReportSampleRate: process.env.NEXT_PUBLIC_CSP_REPORT_SAMPLE_RATE || "1",
+  sentryEnv: process.env.NEXT_PUBLIC_SENTRY_ENV ?? "",
+  sentryRelease: process.env.NEXT_PUBLIC_APP_VERSION ?? "",
+  sentryReportUri: process.env.SENTRY_REPORT_URI ?? "",
+  cspReportSampleRate: process.env.NEXT_PUBLIC_CSP_REPORT_SAMPLE_RATE ?? "1",
   vercelEnv: parseVercelEnv(process.env.VERCEL_ENV),
   enabledPolicies: {
     clerk: ["development", "preview"].includes(environment),

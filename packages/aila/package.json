@@ -12,6 +12,7 @@
     "test": "pnpm with-env jest --colors --config jest.config.js",
     "test:seq": "pnpm with-env jest --colors --config jest.config.js --verbose --runInBand",
     "test-file": "pnpm with-env jest --config jest.config.js --runTestsByPath TEST_FILEPATH",
+    "test-coverage": "COLLECT_TEST_COVERAGE=true pnpm with-env jest --colors --config jest.config.js --coverage",
     "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@oakai/prettier-config",

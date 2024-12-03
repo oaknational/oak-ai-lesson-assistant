@@ -133,7 +133,7 @@ const Hero = ({
                   if (questionsWrapper) {
                     const { top } = questionsWrapper.getBoundingClientRect();
                     window.scrollTo({
-                      top: top + window.pageYOffset - 200,
+                      top: top + window.scrollY - 200,
                       behavior: "smooth",
                     });
                   }

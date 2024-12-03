@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ChatModerationDisplay } from "./ChatModerationDisplay";
 
 const meta: Meta<typeof ChatModerationDisplay> = {
-  title: "Components/Chat/ChatModerationDisplay",
+  title: "Components/Dialogs/ChatModerationDisplay",
   component: ChatModerationDisplay,
   tags: ["autodocs"],
   decorators: [

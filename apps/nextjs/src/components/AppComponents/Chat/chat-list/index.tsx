@@ -1,47 +1,24 @@
 "use client";
 
-import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import { OakBox, OakFlex, OakIcon, OakSpan } from "@oaknational/oak-components";
 import type { Message } from "ai";
-import Link from "next/link";
 
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
 
-import { useDialog } from "../DialogContext";
-import type { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
-import { useProgressForDownloads } from "./Chat/hooks/useProgressForDownloads";
-import type { DialogTypes } from "./Chat/types";
+import type { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
+import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
+import { DemoLimitMessage } from "./demo-limit-message";
+import { InChatDownloadButtons } from "./in-chat-download-buttons";
 
 export interface ChatListProps {
   isDemoLocked: boolean;
   showLessonMobile: boolean;
   demo: DemoContextProps;
 }
-
-function DemoLimitMessage({ id }: Readonly<{ id: string }>) {
-  return (
-    <div className="w-full flex-col gap-11">
-      <ChatMessage
-        chatId={id}
-        ailaStreamingStatus="Idle"
-        message={{
-          id: "demo-limit",
-          role: "assistant",
-          content:
-            '{"type": "error", "message": "**Your lesson is complete**\\nYou can no longer edit this lesson. [Create new lesson.](/aila)"}',
-        }}
-        persistedModerations={[]}
-        separator={<span className="my-10 flex" />}
-      />
-    </div>
-  );
-}
-
 export function ChatList({
   isDemoLocked,
   showLessonMobile,
@@ -129,7 +106,6 @@ export const ChatMessagesDisplay = ({
   demo,
 }: ChatMessagesDisplayProps) => {
   const { lessonPlan, isStreaming } = useLessonChat();
-  const { setDialogWindow } = useDialog();
   const { totalSections, totalSectionsComplete } = useProgressForDownloads({
     lessonPlan,
     isStreaming,
@@ -228,71 +204,7 @@ export const ChatMessagesDisplay = ({
             (message.role !== "user" &&
               message.content.includes("download") &&
               message.content.includes("share")),
-        ) && <InChatDownloadButtons {...{ demo, id, setDialogWindow }} />}
+        ) && <InChatDownloadButtons {...{ demo, id }} />}
     </>
-  );
-};
-
-const InChatDownloadButtons = ({
-  demo,
-  id,
-  setDialogWindow,
-}: {
-  readonly demo: DemoContextProps;
-  readonly id: string;
-  readonly setDialogWindow: Dispatch<SetStateAction<DialogTypes>>;
-}) => {
-  return (
-    <OakFlex $flexDirection="column" $gap="all-spacing-7" $mv="space-between-l">
-      {demo.isSharingEnabled && (
-        <Link
-          href={demo.isSharingEnabled ? `/aila/download/${id}` : "#"}
-          onClick={() => {
-            if (!demo.isSharingEnabled) {
-              setDialogWindow("demo-share-locked");
-            }
-          }}
-        >
-          <InnerInChatButton iconName="download">Download</InnerInChatButton>
-        </Link>
-      )}
-      <button
-        onClick={() => {
-          if (demo.isSharingEnabled) {
-            setDialogWindow("share-chat");
-          } else {
-            setDialogWindow("demo-share-locked");
-          }
-        }}
-      >
-        <InnerInChatButton iconName="share">Share</InnerInChatButton>
-      </button>
-    </OakFlex>
-  );
-};
-
-const InnerInChatButton = ({
-  iconName,
-
-  children,
-}: {
-  readonly iconName: "download" | "share";
-
-  readonly children: string;
-}) => {
-  return (
-    <OakFlex
-      $pa="inner-padding-m"
-      $gap="all-spacing-3"
-      $background="white"
-      $borderRadius="border-radius-m"
-      $alignItems="center"
-      $dropShadow="drop-shadow-standard"
-    >
-      <OakBox $transform="scale">
-        <OakIcon iconName={iconName} $width="all-spacing-7" />
-      </OakBox>
-      <OakSpan $font="body-2">{children}</OakSpan>
-    </OakFlex>
   );
 };

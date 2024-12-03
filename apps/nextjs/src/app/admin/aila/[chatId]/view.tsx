@@ -7,7 +7,11 @@ import { OakAccordion, OakPrimaryButton } from "@oaknational/oak-components";
 
 import { trpc } from "@/utils/trpc";
 
-function ModerationListItem({ moderation }: { readonly moderation: Moderation }) {
+function ModerationListItem({
+  moderation,
+}: {
+  readonly moderation: Moderation;
+}) {
   const { id, invalidatedAt } = moderation;
   const [invalidated, setInvalidated] = useState(Boolean(invalidatedAt));
   const invalidateModeration = trpc.admin.invalidateModeration.useMutation({
@@ -28,7 +32,7 @@ function ModerationListItem({ moderation }: { readonly moderation: Moderation })
               iconName="cross"
               className="ml-auto"
               onClick={() =>
-                invalidateModeration.mutateAsync({ moderationId: id })
+                void invalidateModeration.mutateAsync({ moderationId: id })
               }
               isLoading={invalidateModeration.isLoading}
               disabled={!!invalidated}
@@ -41,14 +45,16 @@ function ModerationListItem({ moderation }: { readonly moderation: Moderation })
             {moderation.justification}
           </blockquote>
           <div className="mt-2 space-x-2">
-            {moderation.categories.map((category, index) => (
-              <span
-                key={index}
-                className="inline-block rounded-md bg-zinc-300 px-8 py-4 text-xs font-semibold text-zinc-800"
-              >
-                {String(category)}
-              </span>
-            ))}
+            {Array.from(new Set(moderation.categories))
+              .map((c) => String(c))
+              .map((category) => (
+                <span
+                  key={category}
+                  className="inline-block rounded-md bg-zinc-300 px-8 py-4 text-xs font-semibold text-zinc-800"
+                >
+                  {category}
+                </span>
+              ))}
           </div>
         </div>
       </div>

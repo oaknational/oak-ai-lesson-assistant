@@ -14,11 +14,11 @@ import { inngest } from "../inngest";
 import { UserBannedError } from "./userBannedError";
 
 const ALLOWED_VIOLATIONS = parseInt(
-  process.env.SAFETY_VIOLATIONS_MAX_ALLOWED || "5",
+  process.env.SAFETY_VIOLATIONS_MAX_ALLOWED ?? "5",
   10,
 );
 const CHECK_WINDOW_DAYS = parseInt(
-  process.env.SAFETY_VIOLATION_WINDOW_DAYS || "30",
+  process.env.SAFETY_VIOLATION_WINDOW_DAYS ?? "30",
   10,
 );
 const checkWindowMs = 1000 * 60 * 60 * 24 * CHECK_WINDOW_DAYS;
