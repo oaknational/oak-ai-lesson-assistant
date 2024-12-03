@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const LessonWithSnippetsSchema = z.object({
+export const LessonWithSnippets = z.object({
   lesson: z.object({
     id: z.string(),
     title: z.string(),
@@ -18,5 +18,3 @@ export const LessonWithSnippetsSchema = z.object({
     }),
   ),
 });
-
-export type LessonWithSnippets = z.infer<typeof LessonWithSnippetsSchema>;
