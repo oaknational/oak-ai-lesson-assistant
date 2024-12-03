@@ -78,7 +78,9 @@ export async function lpPartsEmbedStart({
           await prisma.ingestLessonPlanPart.updateMany({
             where: {
               id: {
-                in: lessonPlanPartIds.filter((i) => !!i),
+                in: lessonPlanPartIds.filter(
+                  (i): i is string => typeof i === "string",
+                ),
               },
             },
             data: {
