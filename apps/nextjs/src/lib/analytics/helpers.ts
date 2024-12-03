@@ -87,8 +87,10 @@ const keyStageMap: Record<string, string> = {
 };
 
 export function parseKeyStage(maybeKeyStage: string): string {
-  maybeKeyStage = maybeKeyStage.toLowerCase().replace(/[^a-z0-9]/g, "");
-  const keyStageSlug = keyStageMap[maybeKeyStage];
+  const strippedMaybeKeyStage = maybeKeyStage
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+  const keyStageSlug = keyStageMap[strippedMaybeKeyStage];
 
-  return keyStageSlug ?? maybeKeyStage;
+  return keyStageSlug ?? "unknown";
 }
