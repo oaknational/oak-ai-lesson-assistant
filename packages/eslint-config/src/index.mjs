@@ -114,6 +114,7 @@ const config = [
       },
       globals: {
         ...globals.node,
+        ...globals.browser,
         ...globals.jest,
         "NodeJS": "readonly",
       },
