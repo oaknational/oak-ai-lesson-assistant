@@ -1,6 +1,6 @@
 {
   "name": "@oakai/prettier-config",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "main": "index.mjs",
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",

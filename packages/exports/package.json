@@ -1,6 +1,6 @@
 {
   "name": "@oakai/exports",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "eslintConfig": {
     "extends": "@oakai/eslint-config",
     "parserOptions": {

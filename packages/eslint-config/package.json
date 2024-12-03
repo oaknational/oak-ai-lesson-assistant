@@ -1,6 +1,6 @@
 {
   "name": "@oakai/eslint-config",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Custom ESLint configuration for React, Next.js, and TypeScript",
   "license": "MIT",
   "main": "src/index.mjs",
@@ -12,7 +12,7 @@
     "@next/eslint-plugin-next": "^15.0.3",
     "@rushstack/eslint-patch": "^1.10.4",
     "@types/eslint-config-prettier": "^6.11.3",
-    "@types/node": "^22.10.1",
+    "@types/node": "^20.9.0",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
     "@typescript-eslint/parser": "^8.17.0",
     "@typescript-eslint/typescript-estree": "^8.12.2",

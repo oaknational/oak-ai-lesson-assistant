@@ -17,8 +17,8 @@
     "pino": "^8.15.1"
   },
   "devDependencies": {
-    "pino-pretty": "^10.2.0",
-    "prettier-config": "*"
+    "@oakai/prettier-config": "*",
+    "pino-pretty": "^10.2.0"
   },
   "type": "module"
 }

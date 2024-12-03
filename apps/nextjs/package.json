@@ -1,6 +1,6 @@
 {
   "name": "@oakai/nextjs",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "build": "next build",
@@ -44,10 +44,10 @@
     "@oakai/api": "*",
     "@oakai/core": "*",
     "@oakai/db": "*",
+    "@oakai/eslint-config": "*",
     "@oakai/exports": "*",
     "@oakai/logger": "*",
     "@oakai/prettier-config": "*",
-    "@oakai/eslint-config": "*",
     "@oaknational/oak-components": "^1.50.0",
     "@oaknational/oak-consent-client": "^2.1.0",
     "@portabletext/react": "^3.1.0",
@@ -144,7 +144,7 @@
     "@tailwindcss/typography": "^0.5.10",
     "@types/file-saver": "^2.0.6",
     "@types/jest": "^29.5.14",
-    "@types/node": "^18.17.0",
+    "@types/node": "^20.9.0",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@types/styled-components": "^5.1.34",

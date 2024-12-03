@@ -1,5 +1,6 @@
 {
   "name": "oak-ai-web-app",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "FIXME:lint": "turbo lint && manypkg check",
@@ -47,7 +48,8 @@
     "@actions/github": "^6.0.0",
     "@manypkg/cli": "^0.21.1",
     "@next/env": "14.2.18",
-    "@prisma/client": "5.16.1",
+    "@oakai/eslint-config": "*",
+    "@oakai/prettier-config": "*",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
@@ -57,17 +59,12 @@
     "lint-staged": "^15.2.0",
     "next": "14.2.18",
     "postcss": "^8.4.32",
-    "prettier": "^3.1.1",
+    "prettier": "^3.4.1",
     "semantic-release": "^21.1.1",
     "sonarqube-scanner": "^4.2.6",
     "sort-package-json": "^2.6.0",
-    "tailwindcss": "^3.3.7",
     "turbo": "^2.2.3",
     "typescript": "5.7.2"
-  },
-  "devDependencies": {
-    "@oakai/eslint-config": "workspace:*",
-    "@oakai/prettier-config": "*"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

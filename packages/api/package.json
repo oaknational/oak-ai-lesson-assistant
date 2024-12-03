@@ -1,10 +1,9 @@
 {
   "name": "@oakai/api",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "license": "MIT",
   "main": "./index.ts",
   "types": "./index.ts",
-
   "scripts": {
     "check": "tsc --noEmit",
     "clean": "rm -rf .turbo node_modules",
