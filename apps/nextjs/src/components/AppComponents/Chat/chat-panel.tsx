@@ -22,7 +22,6 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
     id,
     messages,
     isLoading,
-    messages,
     input,
     setInput,
     append,
