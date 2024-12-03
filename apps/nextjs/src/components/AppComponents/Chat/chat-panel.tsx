@@ -1,6 +1,5 @@
 import { cva } from "class-variance-authority";
 
-import { ButtonScrollToBottom } from "@/components/AppComponents/Chat/button-scroll-to-bottom";
 import { PromptForm } from "@/components/AppComponents/Chat/prompt-form";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import useAnalytics from "@/lib/analytics/useAnalytics";
@@ -31,14 +30,12 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
     queuedUserAction,
   } = chat;
 
-  const { trackEvent } = useAnalytics();
-
   const hasMessages = !!messages.length;
 
+  const { trackEvent } = useAnalytics();
   const containerClass = `grid w-full grid-cols-1 ${hasMessages ? "sm:grid-cols-1" : ""} peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]`;
   return (
     <div className={containerClass}>
-      <ButtonScrollToBottom />
       <div className={chatBoxWrap({ hasMessages })}>
         {!isDemoLocked && (
           <PromptForm

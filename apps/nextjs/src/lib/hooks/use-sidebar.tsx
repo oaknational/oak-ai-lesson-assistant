@@ -17,7 +17,9 @@ export interface SidebarContext {
   isLoading: boolean;
 }
 
-const SidebarContext = createContext<SidebarContext | undefined>(undefined);
+export const SidebarContext = createContext<SidebarContext | undefined>(
+  undefined,
+);
 
 export function useSidebar() {
   const context = useContext(SidebarContext);
