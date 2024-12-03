@@ -2,6 +2,7 @@ import { useRef } from "react";
 
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
+import { MathJax } from "better-react-mathjax";
 import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
 
 import { notEmpty } from "./chat-lessonPlanDisplay";
@@ -72,15 +73,19 @@ const ChatSection = ({ sectionRefs, objectKey, value }) => {
   const sectionRef = useRef(null);
   if (sectionRefs) sectionRefs[objectKey] = sectionRef;
 
+  console.log("objectKey", objectKey);
+
   return (
     <div ref={sectionRef}>
-      <MemoizedReactMarkdownWithStyles
-        lessonPlanSectionDescription={
-          lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
-        }
-        markdown={`# ${sectionTitle(objectKey)}
+      <MathJax>
+        <MemoizedReactMarkdownWithStyles
+          lessonPlanSectionDescription={
+            lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
+          }
+          markdown={`# ${sectionTitle(objectKey)}
 ${sectionToMarkdown(objectKey, value)}`}
-      />
+        />
+      </MathJax>
     </div>
   );
 };
