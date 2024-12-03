@@ -19,6 +19,7 @@ const config = {
       {
         tsconfig: "tsconfig.test.json",
         useESM: true,
+        isolatedModules: true,
       },
     ],
   },
@@ -33,6 +34,7 @@ const config = {
   collectCoverage:
     process.env.CI === "true" || process.env.COLLECT_TEST_COVERAGE === "true",
   coverageReporters: ["lcov", "text"],
+  collectCoverageFrom: ["src/**/*.{ts,tsx,js,jsx}"],
   coverageDirectory: "coverage",
 };
 

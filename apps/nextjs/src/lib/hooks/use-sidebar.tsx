@@ -17,7 +17,7 @@ export interface SidebarContextValue {
   isLoading: boolean;
 }
 
-const SidebarContext = createContext<SidebarContextValue | undefined>(
+export const SidebarContext = createContext<SidebarContextValue | undefined>(
   undefined,
 );
 
