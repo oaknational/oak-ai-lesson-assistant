@@ -49,14 +49,9 @@ const ChatLeftHandSide = ({
             demo={demo}
           />
         </ChatPanelArea>
-        {!isDemoLocked && (
-          <QuickActionButtons isEmptyScreen={!!messages.length} />
-        )}
+        {!isDemoLocked && <QuickActionButtons />}
       </div>
-      <ChatPanel
-        isEmptyScreen={!!messages.length}
-        isDemoLocked={isDemoLocked}
-      />
+      <ChatPanel isDemoLocked={isDemoLocked} />
       <span className="absolute right-0 top-[-70px] z-10 hidden h-[calc(100vh+100px)] w-3 bg-black sm:block" />
     </Flex>
   );

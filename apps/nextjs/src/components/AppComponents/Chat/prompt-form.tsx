@@ -17,7 +17,7 @@ import type { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
 export interface PromptFormProps
   extends Pick<UseChatHelpers, "input" | "setInput"> {
   onSubmit: (value: string) => void;
-  isEmptyScreen: boolean;
+  hasMessages: boolean;
   placeholder?: string;
   ailaStreamingStatus: AilaStreamingStatus;
   queuedUserAction?: string | null;
@@ -29,7 +29,7 @@ export function PromptForm({
   onSubmit,
   input,
   setInput,
-  isEmptyScreen,
+  hasMessages,
   placeholder,
   queuedUserAction,
   queueUserAction,
@@ -93,7 +93,7 @@ export function PromptForm({
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={handlePlaceholder(
-            isEmptyScreen,
+            hasMessages,
             queuedUserAction ?? placeholder,
           )}
           spellCheck={false}
@@ -119,11 +119,11 @@ export function PromptForm({
   );
 }
 
-function handlePlaceholder(isEmptyScreen: boolean, placeholder?: string) {
+function handlePlaceholder(hasMessages: boolean, placeholder?: string) {
   if (placeholder && !["continue", "regenerate"].includes(placeholder)) {
     return placeholder;
   }
-  return !isEmptyScreen
+  return !hasMessages
     ? "Type a subject, key stage and title"
     : "Type your response here";
 }
