@@ -30,7 +30,7 @@ type LessonPlanTrackingContext = {
   onClickStartFromFreeText: (text: string) => void;
 };
 
-const lessonPlanTrackingContext =
+export const lessonPlanTrackingContext =
   createContext<LessonPlanTrackingContext | null>(null);
 
 export type LessonPlanTrackingProviderProps = Readonly<{
