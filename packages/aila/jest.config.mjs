@@ -1,6 +1,16 @@
-const { pathsToModuleNameMapper } = require("ts-jest");
-const { compilerOptions } = require("./tsconfig.test.json");
+import { readFile } from "fs/promises";
+import { pathsToModuleNameMapper } from "ts-jest";
 
+const tsconfig = JSON.parse(
+  await readFile(new URL("./tsconfig.test.json", import.meta.url)),
+);
+// prettier-ignore
+const moduleNameMapper = Object.assign(
+  pathsToModuleNameMapper(tsconfig.compilerOptions.paths, { prefix: "<rootDir>/" }),
+  {
+    "^(\\.{1,2}/.*)\\.js$": "$1",
+  }
+);
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 const config = {
   transform: {
@@ -14,10 +24,7 @@ const config = {
     ],
   },
   preset: "ts-jest/presets/default-esm",
-  moduleNameMapper: {
-    ...pathsToModuleNameMapper(compilerOptions.paths, { prefix: "<rootDir>/" }),
-    "^(\\.{1,2}/.*)\\.js$": "$1",
-  },
+  moduleNameMapper,
   extensionsToTreatAsEsm: [".ts"],
   testEnvironment: "setup-polly-jest/jest-environment-node",
   testMatch: ["**/*.test.ts"],
@@ -31,4 +38,4 @@ const config = {
   coverageDirectory: "coverage",
 };
 
-module.exports = config;
+export default config;

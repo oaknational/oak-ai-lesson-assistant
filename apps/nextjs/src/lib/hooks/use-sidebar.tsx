@@ -11,13 +11,13 @@ import {
 
 const LOCAL_STORAGE_KEY = "sidebar";
 
-export interface SidebarContext {
+export interface SidebarContextValue {
   isSidebarOpen: boolean;
   toggleSidebar: () => void;
   isLoading: boolean;
 }
 
-export const SidebarContext = createContext<SidebarContext | undefined>(
+export const SidebarContext = createContext<SidebarContextValue | undefined>(
   undefined,
 );
 
@@ -53,7 +53,7 @@ export function SidebarProvider({ children }: SidebarProviderProps) {
     });
   }, [setIsSidebarOpen]);
 
-  const contextValue = useMemo(() => {
+  const contextValue: SidebarContextValue = useMemo(() => {
     return { isSidebarOpen, toggleSidebar, isLoading };
   }, [isSidebarOpen, isLoading, toggleSidebar]);
 

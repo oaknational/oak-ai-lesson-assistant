@@ -7,7 +7,7 @@ import type OpenAI from "openai";
 import type {
   ChatCompletion,
   ChatCompletionCreateParamsNonStreaming,
-} from "openai/resources";
+} from "openai/resources/index.mjs";
 import zodToJsonSchema from "zod-to-json-schema";
 
 import { AilaModerator, AilaModerationError } from ".";
