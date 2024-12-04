@@ -69,14 +69,20 @@ export const imageLessonPlan = z.object({
     .array(z.object({ misconception: z.string(), description: z.string() }))
     .optional()
     .nullable(),
-  keywords: z.array(z.object({ keyword: z.string(), definition: z.string() })),
-  starterQuiz: z.array(
-    z.object({
-      question: z.string(),
-      answers: z.array(z.string()),
-      distractors: z.array(z.string()),
-    }),
-  ),
+  keywords: z
+    .array(z.object({ keyword: z.string(), definition: z.string() }))
+    .optional()
+    .nullable(),
+  starterQuiz: z
+    .array(
+      z.object({
+        question: z.string(),
+        answers: z.array(z.string()),
+        distractors: z.array(z.string()),
+      }),
+    )
+    .optional()
+    .nullable(),
   cycle1: z.object({
     title: z.string(),
     durationInMinutes: z.number(),
@@ -134,12 +140,15 @@ export const imageLessonPlan = z.object({
     practice: z.string(),
     feedback: z.string(),
   }),
-  exitQuiz: z.array(
-    z.object({
-      question: z.string(),
-      answers: z.array(z.string()),
-      distractors: z.array(z.string()),
-    }),
-  ),
-  additionalMaterials: z.string(),
+  exitQuiz: z
+    .array(
+      z.object({
+        question: z.string(),
+        answers: z.array(z.string()),
+        distractors: z.array(z.string()),
+      }),
+    )
+    .optional()
+    .nullable(),
+  additionalMaterials: z.string().optional().nullable(),
 });
