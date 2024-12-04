@@ -93,6 +93,7 @@ const shouldInterceptRouteForOnboarding = (req: NextRequest) => {
   return true;
 };
 
+/* eslint-disable-next-line no-undef */
 const needsToCompleteOnboarding = (sessionClaims: CustomJwtSessionClaims) => {
   const labs = sessionClaims.labs;
   return !labs.isOnboarded || labs.isDemoUser === null;

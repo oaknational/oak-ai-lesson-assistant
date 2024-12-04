@@ -1,5 +1,9 @@
-const { pathsToModuleNameMapper } = require("ts-jest");
-const { compilerOptions } = require("./tsconfig.test.json");
+import { readFile } from "fs/promises";
+import { pathsToModuleNameMapper } from "ts-jest";
+
+const tsconfig = JSON.parse(
+  await readFile(new URL("./tsconfig.test.json", import.meta.url)),
+);
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 const config = {
@@ -12,12 +16,12 @@ const config = {
         isolatedModules: true,
       },
     ],
-    "^.+\\.svg$": "<rootDir>/jest.svgTransform.js",
+    "^.+\\.svg$": "<rootDir>/jest.svgTransform.mjs",
     "^.+\\.(css|scss|png|jpg|jpeg|gif|webp|avif)$": "jest-transform-stub",
   },
   preset: "ts-jest/presets/default-esm",
   moduleNameMapper: {
-    ...pathsToModuleNameMapper(compilerOptions.paths, {
+    ...pathsToModuleNameMapper(tsconfig.compilerOptions.paths, {
       prefix: "<rootDir>/src/",
     }),
     "^(\\.{1,2}/.*)\\.js$": "$1",
@@ -30,7 +34,7 @@ const config = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   rootDir: ".",
   resetMocks: true,
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.cjs"],
   collectCoverageFrom: ["src/**/*.{ts,tsx,js,jsx}"],
   collectCoverage:
     process.env.CI === "true" || process.env.COLLECT_TEST_COVERAGE === "true",
@@ -38,4 +42,4 @@ const config = {
   coverageDirectory: "coverage",
 };
 
-module.exports = config;
+export default config;
