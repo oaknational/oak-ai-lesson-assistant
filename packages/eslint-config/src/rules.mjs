@@ -2,12 +2,24 @@ import tsEslint from '@typescript-eslint/eslint-plugin';
 
 const typescript = tsEslint.configs.recommended;
 
+// These are that are currently set to "warn"
+// But should be set to "error" once we fix all the existing issues
+const rulesToMoveToError = {
+  "@typescript-eslint/no-unsafe-return": "warn",
+  "@typescript-eslint/no-misused-promises": "warn",
+  "@typescript-eslint/no-unsafe-argument": "warn",
+  "@typescript-eslint/no-floating-promises": "warn",
+  "@typescript-eslint/no-unsafe-member-access": "warn",
+  "@typescript-eslint/no-redundant-type-constituents": "warn",        
+}
+
 // @ts-check
 /** @type {Partial<Record<string, import('@typescript-eslint/utils/ts-eslint').SharedConfig.RuleEntry>>} */
 export const rules = {
   ...typescript.rules,
+  ...rulesToMoveToError,
   "@typescript-eslint/prefer-nullish-coalescing": "warn",
-  "@typescript-eslint/no-unsafe-enum-comparison": "warn",
+  "@typescript-eslint/no-unsafe-enum-comparison": "error",
   "@typescript-eslint/no-unnecessary-type-assertion": "warn",
   "@typescript-eslint/consistent-type-imports": "warn",
   "@typescript-eslint/comma-dangle": "off",
@@ -18,17 +30,11 @@ export const rules = {
     allowTernary: true,
     allowTaggedTemplates: true,
   }],
-  "@typescript-eslint/require-await": "warn",
-  "@typescript-eslint/no-unsafe-return": "warn",
-  "@typescript-eslint/no-misused-promises": "warn",
-  "@typescript-eslint/no-unsafe-argument": "warn",
+  "@typescript-eslint/require-await": "warn",  
   "@typescript-eslint/no-unsafe-assignment": "warn",
-  "@typescript-eslint/no-floating-promises": "warn",
   "@typescript-eslint/unbound-method": "off",
-  "@typescript-eslint/no-unsafe-member-access": "warn",
-  "@typescript-eslint/restrict-template-expressions": "warn",
-  "@typescript-eslint/no-redundant-type-constituents": "warn",        
-  "@typescript-eslint/await-thenable": "warn",
+  "@typescript-eslint/restrict-template-expressions": "error",
+  "@typescript-eslint/await-thenable": "error",
   "@typescript-eslint/no-unsafe-call": "warn",
   "@typescript-eslint/explicit-function-return-type": ["off", {
     allowExpressions: true,
@@ -42,11 +48,11 @@ export const rules = {
 
   // General ESLint rules
   "no-console": "warn",
-  "no-extra-boolean-cast": "warn",
-  "no-useless-escape": "warn",
-  "no-unsafe-finally": "warn",
+  "no-extra-boolean-cast": "error",
+  "no-useless-escape": "error",
+  "no-unsafe-finally": "error",
   "no-constant-condition": "warn",
-  "no-prototype-builtins": "warn",
+  "no-prototype-builtins": "error",
   "no-inner-declarations": "warn",
   "no-restricted-imports": [
     "error",
