@@ -1,4 +1,3 @@
-import type { Quiz } from "@oakai/db";
 import { prisma } from "@oakai/db";
 import { GraphQLClient, gql } from "graphql-request";
 

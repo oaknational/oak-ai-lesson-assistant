@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   process() {
     console.log("Called jest svg transform");
     return { code: "module.exports = {};" };
