@@ -2,7 +2,7 @@ import tsEslint from '@typescript-eslint/eslint-plugin';
 
 const typescript = tsEslint.configs.recommended;
 
-// These are that are currently set to "warn"
+// These are rules that are currently set to "warn"
 // But should be set to "error" once we fix all the existing issues
 const rulesToMoveToError = {
   "@typescript-eslint/no-unsafe-return": "warn",
