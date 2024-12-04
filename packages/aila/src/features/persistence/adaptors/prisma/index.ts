@@ -39,6 +39,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
     const appSession = await this._prisma.appSession.findFirst({
       where: {
         id,
+        deletedAt: null,
       },
     });
 

@@ -46,6 +46,7 @@ export class Apps {
       where: {
         id: sessionId,
         userId: userId,
+        deletedAt: null,
         output: {
           not: Prisma.AnyNull,
         },
@@ -59,6 +60,7 @@ export class Apps {
     return this.prisma.appSession.findMany({
       where: {
         userId: userId,
+        deletedAt: null,
         output: {
           not: Prisma.AnyNull,
         },
