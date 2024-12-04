@@ -15,6 +15,7 @@ import { DialogProvider } from "../src/components/AppComponents/DialogContext";
 import { AnalyticsProvider } from "../src/mocks/analytics/provider";
 import { ClerkDecorator } from "../src/mocks/clerk/ClerkDecorator";
 import { TRPCReactProvider } from "../src/utils/trpc";
+import { CHROMATIC_DESKTOP_ONLY } from "./chromatic";
 import { RadixThemeDecorator } from "./decorators/RadixThemeDecorator";
 import "./preview.css";
 
@@ -28,6 +29,7 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    ...CHROMATIC_DESKTOP_ONLY,
   },
   loaders: [mswLoader],
 };
