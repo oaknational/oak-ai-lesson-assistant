@@ -1,69 +1,65 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 
-import { type ValidationResult } from "@oakai/api/src/imageGen/validateImageWithOpenAI";
-import type { Resource } from "ai-apps/image-alt-generation/types";
+import { OakIcon } from "@oaknational/oak-components";
+import * as Select from "@radix-ui/react-select";
+import * as Tabs from "@radix-ui/react-tabs";
+import { useBestImage } from "hooks/useBestImage";
+import { useImageSearch } from "hooks/useImageSearch";
 import Image from "next/image";
 import Link from "next/link";
+import type { ImageResponse } from "types/imageTypes";
 
 import LoadingWheel from "@/components/LoadingWheel";
-import { trpc } from "@/utils/trpc";
 
-type ValidatedImage = {
-  imageData: ImageResponse;
-  validationResult: ValidationResult;
-};
-
-export interface PageData {
-  id?: string;
-  path?: string;
-  title?: string;
-  lessonPlan?: {
-    cycle1?: { explanation?: { imagePrompt?: string } };
-    cycle2?: { explanation?: { imagePrompt?: string } };
-    cycle3?: { explanation?: { imagePrompt?: string } };
+export type Cycle = {
+  title: string;
+  durationInMinutes: number;
+  explanation: {
+    imagePrompt: string;
+    spokenExplanation: string[];
+    accompanyingSlideDetails: string;
+    slideText: string;
   };
+  practice: string;
+  feedback: string;
+} | null;
+
+function promptConstructor(
+  searchExpression: string,
+  lessonTitle: string,
+  subject: string,
+  keyStage: string,
+  cycleInfo: Cycle | null,
+) {
+  if (!cycleInfo) {
+    throw new Error("Cycle information is required to construct the prompt.");
+  }
+
+  const { title, explanation, practice, feedback } = cycleInfo;
+
+  return `You are generating an image for a lesson taught in a uk school following the uk national curriculum. The lesson is at the ${keyStage} level and the subject is  ${subject}. 
+  
+  The lesson title is ${lessonTitle}. The lesson is broken down in to three learning sections, the title of this section is ${title}. 
+  
+  The image you are generating is for a slide in this section that will be shown in class, the slide will have the following text on it: ${explanation?.slideText} and the teacher will say the following: ${explanation?.spokenExplanation?.join(" ")}. Here are some additional details about the slide: ${explanation?.accompanyingSlideDetails ?? ""}.
+
+  The students will then practice what they have learned by ${practice} and the teacher will provide feedback by ${feedback}.
+
+  The prompt for the image is ${searchExpression}.`;
 }
 
-interface ImageResponse {
-  id: string;
-  url: string;
-  title?: string;
-  alt?: string;
-  license: string;
-  photographer?: string;
-  appropriatenessScore?: number;
-  appropriatenessReasoning?: string;
-  imageSource?: string;
-}
-
-type ImagesFromCloudinary = {
-  total_count: number;
-  time: number;
-  next_cursor: string;
-  resources: Resource[];
-  rate_limit_allowed: number;
-  rate_limit_reset_at: string;
-  rate_limit_remaining: number;
-};
-
-interface ComparisonColumn {
-  id: string;
-  selectedImageSource: string | null;
-  imageSearchBatch: ImageResponse[] | null;
-  isLoading: boolean;
-  error: string | null;
-}
-
-const ImagesPage = ({ pageData }: { pageData: PageData }) => {
-  const [selectedImagePrompt, setSelectedImagePrompt] = useState<string>("");
-  const [theBestImage, setTheBestImage] = useState<{
-    data: ValidatedImage | null | undefined;
-    status: string;
-  } | null>(null);
+const ImagesPage = ({ pageData }) => {
+  const [selectedImagePrompt, setSelectedImagePrompt] = useState("");
   const [comparisonColumns, setComparisonColumns] = useState<
-    ComparisonColumn[]
+    {
+      id: string;
+      selectedImageSource: string | null;
+      imageSearchBatch: ImageResponse[] | null;
+      isLoading: boolean;
+      error: string | null;
+    }[]
   >([
     {
       id: "column-1",
@@ -74,286 +70,8 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
     },
   ]);
 
-  // Move all mutation declarations to component level
-  const cloudinaryMutation =
-    trpc.cloudinaryRouter.getCloudinaryImagesBySearchExpression.useMutation();
-  const flickrMutation = trpc.imageSearch.getImagesFromFlickr.useMutation();
-  const unsplashMutation = trpc.imageSearch.getImagesFromUnsplash.useMutation();
-  const stableDiffusionCoreMutation = trpc.imageGen.stableDifCore.useMutation();
-  const daleMutation = trpc.imageGen.openAi.useMutation();
-  const validateImage = trpc.imageGen.validateImage.useMutation();
-  const validateImagesInParallel =
-    trpc.imageGen.validateImagesInParallel.useMutation();
-  // Other mutations for the comparison feature
-  const trpcMutations = {
-    "Custom Pipeline Show all with Reasoning":
-      trpc.imageGen.customPipelineWithReasoning.useMutation(),
-    "Stable Diffusion Ultra": trpc.imageGen.stableDifUltra.useMutation(),
-    "Stable Diffusion 3.0 & 3.5": trpc.imageGen.stableDif3.useMutation(),
-    "Stable Diffusion Core": stableDiffusionCoreMutation,
-    "DAL-E": daleMutation,
-    Flickr: flickrMutation,
-    Unsplash: unsplashMutation,
-    Cloudinary: cloudinaryMutation,
-    // Google: trpc.imageSearch.getImagesFromGoogle.useMutation(),
-    // "Simple Google": trpc.imageSearch.simpleGoogleSearch.useMutation(),
-  };
-
-  const findTheBestImage = useCallback(async () => {
-    const validImages: ValidatedImage[] = [];
-
-    function updateStatus(status: string) {
-      console.log("[Status Update]:", status);
-      setTheBestImage((prev) => ({
-        data: prev?.data,
-        status,
-      }));
-    }
-
-    updateStatus("Searching Flickr, Cloudinary and unsplash...");
-    try {
-      // Try Cloudinary first
-      console.log(
-        "[Cloudinary] Starting search with prompt:",
-        selectedImagePrompt,
-      );
-      const cloudinaryImages = await cloudinaryMutation.mutateAsync({
-        searchExpression: selectedImagePrompt,
-      });
-      const cloudinaryData = (
-        cloudinaryImages as ImagesFromCloudinary
-      ).resources.map((image) => ({
-        id: image.public_id,
-        url: image.url,
-        license: "Cloudinary",
-      }));
-
-      const flickrImages = await flickrMutation.mutateAsync({
-        searchExpression: selectedImagePrompt,
-      });
-
-      const unsplashImages = await unsplashMutation.mutateAsync({
-        searchExpression: selectedImagePrompt,
-      });
-
-      const allSearchImages = [
-        ...cloudinaryData,
-        ...flickrImages,
-        ...unsplashImages,
-      ];
-
-      const validateAllSearchImages =
-        await validateImagesInParallel.mutateAsync({
-          images: allSearchImages,
-          searchExpression: selectedImagePrompt,
-        });
-
-      let validImages = validateAllSearchImages.filter(
-        (image) => image.validationResult.isValid,
-      );
-
-      // If still not enough, try Stable Diffusion Core
-      if (validImages.length < 1) {
-        updateStatus(
-          "Nothing appropriate from the free licence image sources, generating an image using Stable Diffusion Core...",
-        );
-        console.log("[StableDiffusion] Starting generation");
-        const stableDiffusionCoreImages =
-          await stableDiffusionCoreMutation.mutateAsync({
-            searchExpression: selectedImagePrompt,
-          });
-        console.log(
-          "[StableDiffusion] Raw response:",
-          stableDiffusionCoreImages,
-        );
-
-        const stableDiffusionCoreData = [
-          {
-            id: "1",
-            url: stableDiffusionCoreImages,
-            license: "Stable Diffusion Core",
-          },
-        ];
-        console.log(
-          "[StableDiffusion] Processed data:",
-          stableDiffusionCoreData,
-        );
-
-        console.log("[Validation] Starting Stable Diffusion validation");
-        const validateStableDiffusionResponse =
-          await validateImagesInParallel.mutateAsync({
-            images: stableDiffusionCoreData,
-            searchExpression: selectedImagePrompt,
-          });
-        console.log(
-          "[Validation] Stable Diffusion validation results:",
-          validateStableDiffusionResponse,
-        );
-
-        validImages = [
-          ...validImages,
-          ...validateStableDiffusionResponse.filter(
-            (image) => image.validationResult.isValid,
-          ),
-        ];
-        console.log("[StableDiffusion] Updated valid images:", validImages);
-      }
-
-      // If still not enough, try DALL-E as last resort
-      if (validImages.length < 1) {
-        updateStatus(
-          "Stable Diffusion Core did not generate a usable image, generating an image using DAL-E...",
-        );
-        console.log("[DALL-E] Starting generation");
-        const daleImages = await daleMutation.mutateAsync({
-          searchExpression: selectedImagePrompt,
-        });
-        console.log("[DALL-E] Raw response:", daleImages);
-
-        const daleData = [
-          {
-            id: "1",
-            url: daleImages,
-            license: "OpenAI",
-          },
-        ];
-        console.log("[DALL-E] Processed data:", daleData);
-
-        console.log("[Validation] Starting DALL-E validation");
-        const validateDaleResponse = await validateImagesInParallel.mutateAsync(
-          {
-            images: daleData,
-            searchExpression: selectedImagePrompt,
-          },
-        );
-        console.log(
-          "[Validation] DALL-E validation results:",
-          validateDaleResponse,
-        );
-
-        validImages = [
-          ...validImages,
-          ...validateDaleResponse.filter(
-            (image) => image.validationResult.isValid,
-          ),
-        ];
-        console.log("[DALL-E] Updated valid images:", validImages);
-      }
-
-      // Sort all valid images by appropriateness score if we have more than one
-      if (validImages.length > 1) {
-        validImages.sort(
-          (a, b) =>
-            b.validationResult.metadata.appropriatenessScore -
-            a.validationResult.metadata.appropriatenessScore,
-        );
-        console.log("[Final] Sorted valid images:", validImages);
-      }
-
-      // Return the best image or null if no valid images were found
-      const finalAnswer = validImages.length > 0 ? validImages[0] : null;
-      console.log("[Final] Selected best image:", finalAnswer);
-
-      setTheBestImage({
-        data: finalAnswer,
-        status: finalAnswer
-          ? "The best image has been found!"
-          : "No appropriate images found.",
-      });
-      return finalAnswer;
-    } catch (error) {
-      console.error("[Error] Error in findTheBestImage:", error);
-      setTheBestImage({
-        data: null,
-        status: "An error occurred while searching for images.",
-      });
-      return null;
-    }
-  }, [
-    selectedImagePrompt,
-    cloudinaryMutation,
-    flickrMutation,
-    unsplashMutation,
-    stableDiffusionCoreMutation,
-    daleMutation,
-  ]);
-
-  const fetchImages = useCallback(
-    async (columnId: string, source: string, prompt: string) => {
-      if (!trpcMutations[source]) {
-        updateColumn(columnId, { error: "Invalid image source selected." });
-        return;
-      }
-
-      const mutation = trpcMutations[source];
-      updateColumn(columnId, {
-        isLoading: true,
-        error: null,
-        imageSearchBatch: null,
-      });
-
-      try {
-        const response = await mutation.mutateAsync({
-          searchExpression: prompt,
-        });
-
-        if (source === "Custom Pipeline With Reasoning") {
-          updateColumn(columnId, {
-            imageSearchBatch: response as ImageResponse[],
-          });
-        } else if (
-          source === "Stable Diffusion Ultra" ||
-          source === "Stable Diffusion 3.0 & 3.5" ||
-          source === "Stable Diffusion Core" ||
-          source === "Custom Pipeline"
-        ) {
-          updateColumn(columnId, {
-            imageSearchBatch: [
-              {
-                id: "1",
-                url: response as string,
-                license: "Stable Diffusion",
-              },
-            ],
-          });
-        } else if (source === "DAL-E") {
-          updateColumn(columnId, {
-            imageSearchBatch: [
-              {
-                id: "1",
-                url: response as string,
-                license: "OpenAI",
-              },
-            ],
-          });
-        } else if (source === "Cloudinary") {
-          const cloudinaryData = (
-            response as ImagesFromCloudinary
-          ).resources.map((image) => ({
-            id: image.public_id,
-            url: image.url,
-            license: "Cloudinary",
-          }));
-          updateColumn(columnId, { imageSearchBatch: cloudinaryData });
-        } else if (Array.isArray(response) && response.length === 0) {
-          updateColumn(columnId, {
-            error: "No images found for the selected prompt.",
-          });
-        } else {
-          updateColumn(columnId, {
-            imageSearchBatch: response as ImageResponse[],
-          });
-        }
-      } catch (err: any) {
-        updateColumn(columnId, {
-          error: err?.message || "An error occurred while fetching images.",
-        });
-      } finally {
-        updateColumn(columnId, { isLoading: false });
-      }
-    },
-    [trpcMutations],
-  );
+  const { bestImage, findBestImage } = useBestImage({ pageData });
+  const { fetchImages, availableSources } = useImageSearch({ pageData });
 
   if (
     !pageData?.lessonPlan?.cycle1?.explanation?.imagePrompt ||
@@ -369,13 +87,29 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
     cycle3: pageData?.lessonPlan?.cycle3?.explanation?.imagePrompt,
   };
 
-  const updateColumn = (
-    columnId: string,
-    updates: Partial<ComparisonColumn>,
-  ) => {
+  const updateColumn = useCallback((columnId, updates) => {
     setComparisonColumns((prev) =>
       prev.map((col) => (col.id === columnId ? { ...col, ...updates } : col)),
     );
+  }, []);
+
+  const handleImageFetch = async (columnId, source, prompt) => {
+    updateColumn(columnId, {
+      isLoading: true,
+      error: null,
+      imageSearchBatch: null,
+    });
+
+    try {
+      const images = await fetchImages(source, prompt);
+      updateColumn(columnId, { imageSearchBatch: images });
+    } catch (err) {
+      updateColumn(columnId, {
+        error: "An error occurred while fetching images.",
+      });
+    } finally {
+      updateColumn(columnId, { isLoading: false });
+    }
   };
 
   const addComparisonColumn = () => {
@@ -393,187 +127,286 @@ const ImagesPage = ({ pageData }: { pageData: PageData }) => {
     }
   };
 
-  const removeComparisonColumn = (columnId: string) => {
+  const removeComparisonColumn = (columnId) => {
     setComparisonColumns((prev) => prev.filter((col) => col.id !== columnId));
   };
 
   return (
-    <div className="mx-auto mt-20 max-w-[1200px]">
-      <Link href="/image-spike" className="opacity-75">{`<-back`}</Link>
-      <h1 className="my-20 text-center text-2xl font-bold">{pageData.title}</h1>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="mx-auto max-w-7xl">
+        {/* Header */}
+        <div className="mb-8 flex items-center justify-between">
+          <Link
+            href="/image-spike"
+            className="flex items-center gap-2 text-gray-600 transition-colors hover:text-gray-900"
+          >
+            <OakIcon iconName="arrow-left" />
+            <span>Back</span>
+          </Link>
+          <h1 className="text-2xl font-semibold">
+            {pageData.title} • {pageData.keyStage} • {pageData.subject}
+          </h1>
+        </div>
 
-      <div className="my-20 flex gap-10">
-        {Object.entries(slideTexts).map(
-          ([cycle, prompt]) =>
-            prompt && (
-              <button
+        {/* Learning Cycles Tabs */}
+        <Tabs.Root
+          defaultValue="cycle1"
+          className="mb-8"
+          onValueChange={(value) => {
+            setSelectedImagePrompt(slideTexts[value]);
+            setComparisonColumns((prev) =>
+              prev.map((col) => ({
+                ...col,
+                imageSearchBatch: null,
+                selectedImageSource: null,
+              })),
+            );
+          }}
+        >
+          <Tabs.List className="flex space-x-2 border-b border-gray-200">
+            {Object.entries(slideTexts).map(([cycle]) => (
+              <Tabs.Trigger
                 key={cycle}
-                className={`w-1/3 rounded-lg border-2 border-black p-11 ${
-                  selectedImagePrompt === prompt ? "bg-black text-white" : ""
-                }`}
-                onClick={() => {
-                  setTheBestImage(null);
-                  setSelectedImagePrompt(prompt);
-                  setComparisonColumns((prev) =>
-                    prev.map((col) => ({
-                      ...col,
-                      imageSearchBatch: null,
-                      selectedImageSource: null,
-                    })),
-                  );
-                }}
+                value={cycle}
+                className="data-[state=active]:border-blue-500 data-[state=active]:text-blue-600 px-6 py-3 text-sm font-medium text-gray-600 data-[state=active]:border-b-2"
               >
-                <h2 className="text-sm opacity-70">{`${cycle.replace(
-                  "cycle",
-                  "Cycle ",
-                )} image prompt`}</h2>
-                <p>{prompt}</p>
-              </button>
-            ),
-        )}
-      </div>
-      <div className="mt-16 flex flex-col gap-6 border-b border-t border-black border-opacity-25 py-16 text-center">
-        <p className="">
-          {selectedImagePrompt
-            ? "Prompt: " + selectedImagePrompt
-            : "Select an image prompt to view it here"}
-        </p>
-      </div>
-      <div className="mt-16 flex justify-center gap-8">
+                {cycle.replace("cycle", "Learning Cycle ")}
+              </Tabs.Trigger>
+            ))}
+          </Tabs.List>
+
+          {Object.entries(slideTexts).map(([cycle, prompt]) => (
+            <Tabs.Content key={cycle} value={cycle}>
+              <div className="mt-4 rounded-lg border bg-white p-6">
+                <h3 className="mb-2 font-medium">Image Prompt from aila</h3>
+                <p className="mb-2 text-gray-600">{prompt}</p>
+                <b />
+                <br />
+
+                <p className="mb-2 font-medium">
+                  Search expression used on search endpoints:
+                </p>
+                <p className="text-gray-600">{prompt}</p>
+                <b />
+                <br />
+
+                <p className="mb-2 font-medium">Prompt used for generation:</p>
+
+                <p className="text-gray-600">
+                  {promptConstructor(
+                    prompt,
+                    pageData.title,
+                    pageData.keyStage,
+                    pageData.subject,
+                    pageData.lessonPlan,
+                  )}
+                </p>
+              </div>
+            </Tabs.Content>
+          ))}
+        </Tabs.Root>
+
+        {/* Action Buttons */}
         {selectedImagePrompt && (
-          <>
+          <div className="mb-8 flex gap-4">
             {comparisonColumns.length < 3 && (
               <button
                 onClick={addComparisonColumn}
-                className="mt-4 flex w-fit items-center gap-2 rounded-lg border border-gray-400 px-4 py-2 hover:bg-gray-100"
+                className="flex items-center gap-2 rounded-lg border bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
               >
-                Add comparison column
+                <div
+                  className="rotate-45
+                "
+                >
+                  <OakIcon iconName="cross" />
+                </div>
+                Add Comparison Column
               </button>
             )}
             <button
-              onClick={() => findTheBestImage()}
-              className="mt-4 flex w-fit items-center gap-2 rounded-lg border border-gray-400 px-4 py-2 hover:bg-gray-100"
+              onClick={() => findBestImage(selectedImagePrompt)}
+              className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-black shadow-sm transition-colors"
             >
-              Use custom logic to find the best image
+              <OakIcon iconName="search" />
+              Find "Best" Image
             </button>
-          </>
+          </div>
         )}
-      </div>
-      {theBestImage && (
-        <div className="mt-20">
-          <h2 className="text-center text-2xl font-bold">
-            {theBestImage.status}
-          </h2>
-          {theBestImage.data && (
-            <div className="mt-10 flex flex-col items-center gap-4">
-              <Image
-                src={theBestImage.data.imageData.url}
-                alt={theBestImage.data.imageData.alt || "Image"}
-                className="w-full"
-                width={400}
-                height={400}
-              />
-              <p>License: {theBestImage.data.imageData.license}</p>
-              <p>
-                Relavance Score:{" "}
-                {
-                  theBestImage.data.validationResult.metadata
-                    .appropriatenessScore
-                }
-              </p>
-              <p>
-                Reasoning:{" "}
-                {
-                  theBestImage.data.validationResult.metadata
-                    .validationReasoning
-                }
-              </p>
-              {theBestImage.data.imageData.photographer && (
-                <p>By: {theBestImage.data.imageData.photographer}</p>
-              )}
-              {theBestImage.data.imageData.title && (
-                <p>Title: {theBestImage.data.imageData.title}</p>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-      {!theBestImage && selectedImagePrompt && (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {comparisonColumns.map((column, index) => (
-            <div key={column.id} className="relative">
-              {index > 0 && (
-                <button
-                  onClick={() => removeComparisonColumn(column.id)}
-                  className="absolute -right-2 -top-2 rounded-full  p-1 hover:bg-gray-300"
-                >
-                  <p>X</p>
-                </button>
-              )}
-              <div className="my-10">
-                <label
-                  htmlFor={`imageSource-${column.id}`}
-                  className="block text-center"
-                >
-                  Select an image source:
-                </label>
-                <select
-                  id={`imageSource-${column.id}`}
-                  className="mx-auto mt-4 block w-full rounded border border-gray-400 p-2"
-                  value={column.selectedImageSource || ""}
-                  onChange={(e) => {
-                    const source = e.target.value;
-                    updateColumn(column.id, { selectedImageSource: source });
-                    if (source) {
-                      fetchImages(column.id, source, selectedImagePrompt);
+
+        {/* Best Image Result */}
+        {bestImage && (
+          <div className="mb-8 rounded-lg border bg-white p-6">
+            <h2 className="mb-6 text-xl font-semibold">{bestImage.status}</h2>
+            {bestImage.data && (
+              <div className="flex flex-col items-center gap-6">
+                <div className="relative h-96 w-full overflow-hidden rounded-lg">
+                  <Image
+                    src={bestImage.data.imageData.url}
+                    alt={bestImage.data.imageData.alt || "Image"}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="grid gap-4 text-sm text-gray-600">
+                  <p>
+                    <span className="font-medium">License:</span>{" "}
+                    {bestImage.data.imageData.license}
+                  </p>
+                  <p>
+                    <span className="font-medium">Relevance Score:</span>{" "}
+                    {
+                      bestImage.data.validationResult.metadata
+                        .appropriatenessScore
                     }
+                  </p>
+                  <p>
+                    <span className="font-medium">Prompt used:</span>{" "}
+                    {bestImage.data.imagePrompt}
+                  </p>
+                  <p>
+                    <span className="font-medium">Reasoning:</span>{" "}
+                    {
+                      bestImage.data.validationResult.metadata
+                        .validationReasoning
+                    }
+                  </p>
+                  {bestImage.data.imageData.photographer && (
+                    <p>
+                      <span className="font-medium">By:</span>{" "}
+                      {bestImage.data.imageData.photographer}
+                    </p>
+                  )}
+                  {bestImage.data.imageData.title && (
+                    <p>
+                      <span className="font-medium">Title:</span>{" "}
+                      {bestImage.data.imageData.title}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Comparison Columns */}
+        {!bestImage && selectedImagePrompt && (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {comparisonColumns.map((column, index) => (
+              <div
+                key={column.id}
+                className="relative rounded-lg border bg-white p-6"
+              >
+                {index > 0 && (
+                  <button
+                    onClick={() => removeComparisonColumn(column.id)}
+                    className="absolute -right-2 -top-2 rounded-full bg-white p-2 text-gray-500 shadow-sm transition-colors hover:bg-gray-50"
+                  >
+                    <OakIcon iconName="cross" />
+                  </button>
+                )}
+                <h3 className="mb-4 text-lg font-medium">Source {index + 1}</h3>
+
+                <Select.Root
+                  value={column.selectedImageSource || ""}
+                  onValueChange={(value) => {
+                    updateColumn(column.id, { selectedImageSource: value });
+                    handleImageFetch(column.id, value, selectedImagePrompt);
                   }}
                 >
-                  <option value="" disabled>
-                    Choose a source
-                  </option>
-                  {Object.keys(trpcMutations).map((source) => (
-                    <option key={source} value={source}>
-                      {source}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              {column.isLoading && <LoadingWheel />}
-              {column.error && (
-                <p className="text-center text-red-600">{column.error}</p>
-              )}
-              {column.imageSearchBatch && (
-                <div className="my-20 grid grid-cols-1 gap-10">
-                  {column.imageSearchBatch?.map((image, i) => {
-                    return (
+                  <Select.Trigger className="flex w-full items-center justify-between rounded-lg border bg-white px-4 py-2 text-sm text-gray-700 shadow-sm hover:bg-gray-50">
+                    <Select.Value placeholder="Choose a source" />
+                  </Select.Trigger>
+
+                  <Select.Portal>
+                    <Select.Content className="overflow-hidden rounded-lg border bg-white shadow-lg">
+                      <Select.Viewport className="p-1">
+                        {Object.keys(availableSources).map((source) => (
+                          <Select.Item
+                            key={source}
+                            value={source}
+                            className="relative flex select-none items-center rounded-md px-8 py-2 text-sm text-gray-700 data-[highlighted]:bg-gray-100 data-[highlighted]:outline-none"
+                          >
+                            <Select.ItemText>{source}</Select.ItemText>
+                          </Select.Item>
+                        ))}
+                      </Select.Viewport>
+                    </Select.Content>
+                  </Select.Portal>
+                </Select.Root>
+
+                {column.isLoading && (
+                  <div className="flex justify-center py-8">
+                    <LoadingWheel />
+                  </div>
+                )}
+
+                {column.error && (
+                  <p className="mt-4 text-center text-sm text-red-600">
+                    {column.error}
+                  </p>
+                )}
+
+                {column.imageSearchBatch && (
+                  <div className="mt-6 space-y-6">
+                    {column.imageSearchBatch?.map((image) => (
                       <div
                         key={image.id}
-                        className="flex flex-col items-center gap-4"
+                        className="rounded-lg border bg-gray-50 p-4"
                       >
-                        <Image
-                          src={image.url}
-                          alt={image.alt || "Image"}
-                          className="w-full"
-                          width={400}
-                          height={400}
-                        />
-                        <p>License: {image.license}</p>
-                        <p>
-                          Relavance Score: {image.appropriatenessScore ?? ""}
-                        </p>
-                        <p>Reasoning: {image.appropriatenessReasoning ?? ""}</p>
-                        {image.photographer && <p>By: {image.photographer}</p>}
-                        {image.title && <p>Title: {image.title}</p>}
+                        <div className="relative mb-4 h-48 w-full overflow-hidden rounded-lg">
+                          <Image
+                            src={image.url}
+                            alt={image.alt || "Image"}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="space-y-2 text-sm text-gray-600">
+                          <p>
+                            <span className="font-medium">License:</span>{" "}
+                            {image.license}
+                          </p>
+                          <p>
+                            <span className="font-medium">Score:</span>{" "}
+                            {image.appropriatenessScore}
+                          </p>
+                          <p>
+                            <span className="font-medium">Prompt used:</span>{" "}
+                            {image.imagePrompt}
+                          </p>
+                          <p>
+                            <span className="font-medium">Reasoning:</span>{" "}
+                            {image.appropriatenessReasoning}
+                          </p>
+                          {image.photographer && (
+                            <p>
+                              <span className="font-medium">By:</span>{" "}
+                              {image.photographer}
+                            </p>
+                          )}
+                          {image.title && (
+                            <p>
+                              <span className="font-medium">Title:</span>{" "}
+                              {image.title}
+                            </p>
+                          )}
+                          <div className="mt-4 border-t pt-4 text-xs">
+                            <p>Fetch: {image.timing.fetch.toFixed(2)}ms</p>
+                            <p>
+                              Validation: {image.timing.validation.toFixed(2)}ms
+                            </p>
+                            <p>Total: {image.timing.total.toFixed(2)}ms</p>
+                          </div>
+                        </div>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

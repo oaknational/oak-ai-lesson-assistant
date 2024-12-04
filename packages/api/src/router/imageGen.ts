@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
+import { imageLessonPlan } from "../../../../apps/nextjs/src/types/imageTypes";
 import {
   validateImageWithOpenAI,
   type ValidationResult,
@@ -29,13 +30,50 @@ interface ValidatedImage {
   photographer: string;
   alt?: string;
   title?: string;
+  imagePrompt: string;
+}
+
+export function promptConstructor(
+  searchExpression: string,
+  lessonTitle: string,
+  subject: string,
+  keyStage: string,
+  cycleInfo: Cycle | null,
+) {
+  if (!cycleInfo) {
+    throw new Error("Cycle information is required to construct the prompt.");
+  }
+
+  const { title, explanation, practice, feedback } = cycleInfo;
+  const { spokenExplanation, accompanyingSlideDetails, slideText } =
+    explanation;
+
+  return `You are generating an image for a lesson taught in a uk school following the uk national curriculum. The lesson is at the ${keyStage} level and the subject is  ${subject}. 
+  
+  The lesson title is ${lessonTitle}. The lesson is broken down in to three learning sections, the title of this section is ${title}. 
+  
+  The image you are generating is for a slide in this section that will be shown in class, the slide will have the following text on it: ${slideText} and the teacher will say the following: ${spokenExplanation.join(" ")}. Here are some additional details about the slide: ${accompanyingSlideDetails}.
+
+  The students will then practice what they have learned by ${practice} and the teacher will provide feedback by ${feedback}.
+
+  The prompt for the image is ${searchExpression}.`;
 }
 
 // Utility Functions
 export async function validateImagesInParallel(
   images: ImageResponse[],
   searchExpression: string,
-): Promise<{ imageData: ImageResponse; validationResult: ValidationResult }[]> {
+  lessonTitle: string,
+  subject: string,
+  keyStage: string,
+  cycleInfo: Cycle | null,
+): Promise<
+  {
+    imageData: ImageResponse;
+    imagePrompt: string;
+    validationResult: ValidationResult;
+  }[]
+> {
   console.log(
     `[Validation] Starting parallel validation for ${images.length} images`,
   );
@@ -43,16 +81,44 @@ export async function validateImagesInParallel(
   const imagesToCheck = images.slice(0, MAX_PARALLEL_CHECKS);
 
   const validationPromises = imagesToCheck.map(async (image) => {
+    const isGeneratedImage =
+      image.license.includes("Stable Diffusion") ||
+      image.license.includes("OpenAI");
     try {
       const isValid = await validateImageWithOpenAI(
         image.url,
         searchExpression,
+        lessonTitle,
+        keyStage,
+        subject,
+        cycleInfo,
       );
-      return { imageData: image, validationResult: isValid };
+      return {
+        imageData: image,
+        imagePrompt: isGeneratedImage
+          ? promptConstructor(
+              searchExpression,
+              lessonTitle,
+              subject,
+              keyStage,
+              cycleInfo,
+            )
+          : searchExpression,
+        validationResult: isValid,
+      };
     } catch (error) {
       console.error(`[Validation] Error validating ${image.url}:`, error);
       return {
         imageData: image,
+        imagePrompt: isGeneratedImage
+          ? promptConstructor(
+              searchExpression,
+              lessonTitle,
+              subject,
+              keyStage,
+              cycleInfo,
+            )
+          : searchExpression,
         validationResult: {
           isValid: false,
           metadata: {
@@ -69,13 +135,32 @@ export async function validateImagesInParallel(
   return Promise.all(validationPromises);
 }
 
-async function generateStabilityImage(
-  endpoint: "core" | "ultra" | "sd3",
-  searchExpression: string,
-  outputFormat: "webp" | "jpeg" = "webp",
-): Promise<string> {
+async function generateStabilityImage({
+  endpoint,
+  searchExpression,
+  outputFormat = "webp",
+  subject,
+  keyStage,
+  lessonTitle,
+  cycleInfo,
+}: {
+  endpoint: "core" | "ultra" | "sd3";
+  searchExpression: string;
+  outputFormat: "webp" | "jpeg";
+  subject: string;
+  keyStage: string;
+  lessonTitle: string;
+  cycleInfo: Cycle;
+}): Promise<string> {
   const formData = new FormData();
-  formData.append("prompt", searchExpression);
+  const prompt = promptConstructor(
+    searchExpression,
+    lessonTitle,
+    subject,
+    keyStage,
+    cycleInfo,
+  );
+  formData.append("prompt", prompt);
   formData.append("output_format", outputFormat);
 
   const response = await fetch(
@@ -101,6 +186,10 @@ async function generateStabilityImage(
 // Image Source Functions
 async function tryFlickrImages(
   searchExpression: string,
+  lessonTitle: string,
+  subject: string,
+  keyStage: string,
+  cycleInfo: Cycle | null,
 ): Promise<ValidatedImage | null> {
   try {
     const flickrResponse = await flickrImages({ searchExpression });
@@ -109,6 +198,10 @@ async function tryFlickrImages(
     const validationResults = await validateImagesInParallel(
       flickrResponse,
       searchExpression,
+      lessonTitle,
+      subject,
+      keyStage,
+      cycleInfo,
     );
     const firstValidImage = validationResults.find(
       (result) => result.validationResult.isValid,
@@ -126,6 +219,7 @@ async function tryFlickrImages(
       license: `Flickr - ${firstValidImage.imageData.license}`,
       photographer: firstValidImage.imageData.photographer || "Flickr User",
       imageSource: "Flickr",
+      imagePrompt: searchExpression,
     };
   } catch (error) {
     console.error("[Flickr] Error:", error);
@@ -135,6 +229,10 @@ async function tryFlickrImages(
 
 async function tryUnsplashImages(
   searchExpression: string,
+  lessonTitle: string,
+  subject: string,
+  keyStage: string,
+  cycleInfo: Cycle | null,
 ): Promise<ValidatedImage | null> {
   try {
     const unsplashResponse = await unsplashImages({ searchExpression });
@@ -143,6 +241,10 @@ async function tryUnsplashImages(
     const validationResults = await validateImagesInParallel(
       unsplashResponse,
       searchExpression,
+      lessonTitle,
+      subject,
+      keyStage,
+      cycleInfo,
     );
     const firstValidImage = validationResults.find(
       (result) => result.validationResult.isValid,
@@ -159,6 +261,7 @@ async function tryUnsplashImages(
         firstValidImage.validationResult.metadata.validationReasoning,
       license: "Unsplash License",
       imageSource: "Unsplash",
+      imagePrompt: searchExpression,
       photographer:
         firstValidImage.imageData.photographer || "Unsplash Photographer",
     };
@@ -170,9 +273,21 @@ async function tryUnsplashImages(
 
 async function tryStabilityCore(
   searchExpression: string,
+  subject: string,
+  keyStage: string,
+  lessonTitle: string,
+  cycleInfo: Cycle | null,
 ): Promise<ValidatedImage | null> {
   try {
-    const imageUrl = await generateStabilityImage("core", searchExpression);
+    const imageUrl = await generateStabilityImage({
+      endpoint: "core",
+      searchExpression,
+      outputFormat: "webp",
+      subject,
+      keyStage,
+      lessonTitle,
+      cycleInfo,
+    });
 
     console.log("**************************************************");
     console.log("imageUrl", imageUrl);
@@ -181,6 +296,10 @@ async function tryStabilityCore(
     const validationResponse = await validateImageWithOpenAI(
       imageUrl,
       searchExpression,
+      lessonTitle,
+      keyStage,
+      subject,
+      cycleInfo,
     );
 
     if (!validationResponse.isValid) return null;
@@ -195,6 +314,13 @@ async function tryStabilityCore(
       appropriatenessScore: validationResponse.metadata.appropriatenessScore,
       appropriatenessReasoning: validationResponse.metadata.validationReasoning,
       imageSource: "Stability AI",
+      imagePrompt: promptConstructor(
+        searchExpression,
+        lessonTitle,
+        subject,
+        keyStage,
+        cycleInfo,
+      ),
     };
   } catch (error) {
     console.error("[StabilityCore] Error:", error);
@@ -204,6 +330,10 @@ async function tryStabilityCore(
 
 async function tryDallE(
   searchExpression: string,
+  lessonTitle: string,
+  subject: string,
+  keyStage: string,
+  cycleInfo: Cycle | null,
 ): Promise<ValidatedImage | null> {
   try {
     const openai = new OpenAI({
@@ -211,9 +341,19 @@ async function tryDallE(
       baseURL: process.env.HELICONE_EU_HOST,
     });
 
+    const prompt = promptConstructor(
+      searchExpression,
+      lessonTitle,
+      subject,
+      keyStage,
+      cycleInfo,
+    );
+
+    console.log("*************************", prompt);
+
     const response = await openai.images.generate({
       model: "dall-e-3",
-      prompt: searchExpression,
+      prompt: prompt,
       n: 1,
       size: "1024x1024",
     });
@@ -224,6 +364,10 @@ async function tryDallE(
     const validationResponse = await validateImageWithOpenAI(
       imageUrl,
       searchExpression,
+      lessonTitle,
+      keyStage,
+      subject,
+      cycleInfo,
     );
 
     if (!validationResponse.isValid) return null;
@@ -238,6 +382,7 @@ async function tryDallE(
       photographer: "Generated by DALL-E 3",
       appropriatenessScore: validationResponse.metadata.appropriatenessScore,
       appropriatenessReasoning: validationResponse.metadata.validationReasoning,
+      imagePrompt: prompt,
     };
   } catch (error) {
     console.error("[DALL-E] Error:", error);
@@ -245,13 +390,62 @@ async function tryDallE(
   }
 }
 
+type LessonPlan = z.infer<typeof imageLessonPlan>;
+
+export type Cycle = {
+  title: string;
+  durationInMinutes: number;
+  explanation: {
+    imagePrompt: string;
+    spokenExplanation: string[];
+    accompanyingSlideDetails: string;
+    slideText: string;
+  };
+  practice: string;
+  feedback: string;
+} | null;
+
+function findTheRelevantCycle({
+  lessonPlan,
+  searchExpression,
+}: {
+  lessonPlan: LessonPlan;
+  searchExpression: string;
+}): Cycle {
+  if (lessonPlan.cycle1.explanation.imagePrompt === searchExpression) {
+    console.log("searchExpression", searchExpression);
+    console.log("imagePrompt", lessonPlan.cycle1.explanation.imagePrompt);
+    return lessonPlan.cycle1;
+  } else if (lessonPlan.cycle2.explanation.imagePrompt === searchExpression) {
+    console.log("searchExpression", searchExpression);
+    console.log("imagePrompt", lessonPlan.cycle2.explanation.imagePrompt);
+    return lessonPlan.cycle1;
+  } else if (lessonPlan.cycle3.explanation.imagePrompt === searchExpression) {
+    console.log("searchExpression", searchExpression);
+    console.log("imagePrompt", lessonPlan.cycle3.explanation.imagePrompt);
+    return lessonPlan.cycle1;
+  } else {
+    throw new Error("Cycle not found");
+  }
+}
 // Router Definition
 export const imageGen = router({
   customPipelineWithReasoning: protectedProcedure
-    .input(z.object({ searchExpression: z.string() }))
+    .input(
+      z.object({
+        searchExpression: z.string(),
+        lessonPlan: imageLessonPlan,
+        lessonTitle: z.string(),
+        subject: z.string(),
+        keyStage: z.string(),
+      }),
+    )
     .mutation(async ({ input }): Promise<ValidatedImage[]> => {
       const results: ValidatedImage[] = [];
-
+      const cycleInfo = findTheRelevantCycle({
+        lessonPlan: input.lessonPlan,
+        searchExpression: input.searchExpression,
+      });
       // Get and validate Flickr images
       const flickrResponse = await flickrImages({
         searchExpression: input.searchExpression,
@@ -260,6 +454,10 @@ export const imageGen = router({
         const validationResults = await validateImagesInParallel(
           flickrResponse,
           input.searchExpression,
+          input.lessonTitle,
+          input.keyStage,
+          input.subject,
+          cycleInfo,
         );
         results.push(
           ...validationResults.map((result) => ({
@@ -274,6 +472,7 @@ export const imageGen = router({
             photographer: result.imageData.photographer || "Flickr User",
             title: result.imageData.title,
             alt: result.imageData.alt,
+            imagePrompt: result.imagePrompt,
           })),
         );
       }
@@ -286,6 +485,10 @@ export const imageGen = router({
         const validationResults = await validateImagesInParallel(
           unsplashResponse,
           input.searchExpression,
+          input.lessonTitle,
+          input.keyStage,
+          input.subject,
+          cycleInfo,
         );
         results.push(
           ...validationResults.map((result) => ({
@@ -301,19 +504,29 @@ export const imageGen = router({
               result.imageData.photographer || "Unsplash Photographer",
             title: result.imageData.title,
             alt: result.imageData.alt,
+            imagePrompt: result.imagePrompt,
           })),
         );
       }
 
       // Try Stability AI
       try {
-        const imageUrl = await generateStabilityImage(
-          "core",
-          input.searchExpression,
-        );
+        const imageUrl = await generateStabilityImage({
+          endpoint: "core",
+          searchExpression: input.searchExpression,
+          outputFormat: "webp",
+          subject: input.subject,
+          keyStage: input.keyStage,
+          lessonTitle: input.lessonTitle,
+          cycleInfo,
+        });
         const validationResponse = await validateImageWithOpenAI(
           imageUrl,
           input.searchExpression,
+          input.lessonTitle,
+          input.keyStage,
+          input.subject,
+          cycleInfo,
         );
         results.push({
           id: uuidv4(),
@@ -327,6 +540,13 @@ export const imageGen = router({
           appropriatenessReasoning:
             validationResponse.metadata.validationReasoning,
           imageSource: "Stability AI",
+          imagePrompt: promptConstructor(
+            input.searchExpression,
+            input.lessonTitle,
+            input.subject,
+            input.keyStage,
+            cycleInfo,
+          ),
         });
       } catch (error) {
         console.error("[StabilityCore] Error:", error);
@@ -351,6 +571,10 @@ export const imageGen = router({
           const validationResponse = await validateImageWithOpenAI(
             imageUrl,
             input.searchExpression,
+            input.lessonTitle,
+            input.keyStage,
+            input.subject,
+            cycleInfo,
           );
           results.push({
             id: uuidv4(),
@@ -364,6 +588,13 @@ export const imageGen = router({
               validationResponse.metadata.appropriatenessScore,
             appropriatenessReasoning:
               validationResponse.metadata.validationReasoning,
+            imagePrompt: promptConstructor(
+              input.searchExpression,
+              input.lessonTitle,
+              input.subject,
+              input.keyStage,
+              cycleInfo,
+            ),
           });
         }
       } catch (error) {
@@ -379,8 +610,20 @@ export const imageGen = router({
     }),
 
   customPipeline: protectedProcedure
-    .input(z.object({ searchExpression: z.string() }))
+    .input(
+      z.object({
+        searchExpression: z.string(),
+        lessonTitle: z.string(),
+        subject: z.string(),
+        keyStage: z.string(),
+        lessonPlan: imageLessonPlan,
+      }),
+    )
     .mutation(async ({ input }) => {
+      const cycleInfo = findTheRelevantCycle({
+        lessonPlan: input.lessonPlan,
+        searchExpression: input.searchExpression,
+      });
       const providers = [
         tryFlickrImages,
         tryUnsplashImages,
@@ -390,7 +633,13 @@ export const imageGen = router({
 
       for (const provider of providers) {
         try {
-          const result = await provider(input.searchExpression);
+          const result = await provider(
+            input.searchExpression,
+            input.lessonTitle,
+            input.subject,
+            input.keyStage,
+            cycleInfo,
+          );
           if (result) {
             return {
               url: result.url,
@@ -408,39 +657,153 @@ export const imageGen = router({
     }),
 
   stableDifUltra: protectedProcedure
-    .input(z.object({ searchExpression: z.string() }))
+    .input(
+      z.object({
+        searchExpression: z.string(),
+        lessonTitle: z.string(),
+        lessonPlan: imageLessonPlan,
+        subject: z.string(),
+        keyStage: z.string(),
+      }),
+    )
     .mutation(async ({ input }) => {
-      return generateStabilityImage("ultra", input.searchExpression);
+      const cycleInfo = findTheRelevantCycle({
+        lessonPlan: input.lessonPlan,
+        searchExpression: input.searchExpression,
+      });
+      return generateStabilityImage({
+        endpoint: "ultra",
+        searchExpression: input.searchExpression,
+        outputFormat: "webp",
+        subject: input.subject,
+        keyStage: input.keyStage,
+        lessonTitle: input.lessonTitle,
+        cycleInfo,
+      });
     }),
 
   stableDif3: protectedProcedure
-    .input(z.object({ searchExpression: z.string() }))
+    .input(
+      z.object({
+        searchExpression: z.string(),
+        lessonTitle: z.string(),
+        lessonPlan: imageLessonPlan,
+        subject: z.string(),
+        keyStage: z.string(),
+      }),
+    )
     .mutation(async ({ input }) => {
-      return generateStabilityImage("sd3", input.searchExpression, "jpeg");
+      const cycleInfo = findTheRelevantCycle({
+        lessonPlan: input.lessonPlan,
+        searchExpression: input.searchExpression,
+      });
+      return generateStabilityImage({
+        endpoint: "sd3",
+        searchExpression: input.searchExpression,
+        outputFormat: "jpeg",
+        subject: input.subject,
+        keyStage: input.keyStage,
+        lessonTitle: input.lessonTitle,
+        cycleInfo,
+      });
     }),
 
   stableDifCore: protectedProcedure
-    .input(z.object({ searchExpression: z.string() }))
+    .input(
+      z.object({
+        searchExpression: z.string(),
+        lessonTitle: z.string(),
+        lessonPlan: imageLessonPlan,
+        subject: z.string(),
+        keyStage: z.string(),
+      }),
+    )
     .mutation(async ({ input }) => {
-      return generateStabilityImage("core", input.searchExpression);
+      const cycleInfo = findTheRelevantCycle({
+        lessonPlan: input.lessonPlan,
+        searchExpression: input.searchExpression,
+      });
+      return generateStabilityImage({
+        endpoint: "core",
+        searchExpression: input.searchExpression,
+        outputFormat: "webp",
+        subject: input.subject,
+        keyStage: input.keyStage,
+        lessonTitle: input.lessonTitle,
+        cycleInfo,
+      });
     }),
 
   openAi: protectedProcedure
-    .input(z.object({ searchExpression: z.string() }))
+    .input(
+      z.object({
+        searchExpression: z.string(),
+        lessonTitle: z.string(),
+        lessonPlan: imageLessonPlan,
+        subject: z.string(),
+        keyStage: z.string(),
+      }),
+    )
     .mutation(async ({ input }) => {
-      const result = await tryDallE(input.searchExpression);
+      const cycleInfo = findTheRelevantCycle({
+        lessonPlan: input.lessonPlan,
+        searchExpression: input.searchExpression,
+      });
+      const result = await tryDallE(
+        input.searchExpression,
+        input.lessonTitle,
+        input.subject,
+        input.keyStage,
+        cycleInfo,
+      );
       if (!result)
         throw new Error("Image generation failed. Please try again later.");
       return result.url;
     }),
   validateImage: protectedProcedure
-    .input(z.object({ imageUrl: z.string(), prompt: z.string() }))
+    .input(
+      z.object({
+        imageUrl: z.string(),
+        prompt: z.string(),
+        lessonPlan: imageLessonPlan,
+        lessonTitle: z.string(),
+        keyStage: z.string(),
+        subject: z.string(),
+        imageWasGenerated: z.boolean().optional(),
+      }),
+    )
     .mutation(async ({ input }) => {
-      return validateImageWithOpenAI(input.imageUrl, input.prompt);
+      const cycleInfo = findTheRelevantCycle({
+        lessonPlan: input.lessonPlan,
+        searchExpression: input.prompt,
+      });
+
+      const prompt = input.imageWasGenerated
+        ? promptConstructor(
+            input.prompt,
+            input.lessonTitle,
+            input.subject,
+            input.keyStage,
+            cycleInfo,
+          )
+        : input.prompt;
+
+      return validateImageWithOpenAI(
+        input.imageUrl,
+        prompt,
+        input.lessonTitle,
+        input.keyStage,
+        input.subject,
+        cycleInfo,
+      );
     }),
   validateImagesInParallel: protectedProcedure
     .input(
       z.object({
+        lessonTitle: z.string(),
+        subject: z.string(),
+        keyStage: z.string(),
+        lessonPlan: imageLessonPlan,
         images: z.array(
           z.object({
             id: z.string(),
@@ -454,6 +817,17 @@ export const imageGen = router({
       }),
     )
     .mutation(async ({ input }) => {
-      return validateImagesInParallel(input.images, input.searchExpression);
+      const cycleInfo = findTheRelevantCycle({
+        lessonPlan: input.lessonPlan,
+        searchExpression: input.searchExpression,
+      });
+      return validateImagesInParallel(
+        input.images,
+        input.searchExpression,
+        input.lessonTitle,
+        input.subject,
+        input.keyStage,
+        cycleInfo,
+      );
     }),
 });

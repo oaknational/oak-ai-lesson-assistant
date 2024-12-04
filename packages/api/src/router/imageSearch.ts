@@ -24,6 +24,13 @@ export interface ImageResponse {
   alt?: string;
   license: string;
   photographer?: string;
+  imagePrompt?: string;
+  imageSearchPrompt?: string;
+  timing?: {
+    total: number;
+    fetch: number;
+    validation: number;
+  };
 }
 
 // Comprehensive License Mapping

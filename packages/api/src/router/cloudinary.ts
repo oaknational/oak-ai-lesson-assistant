@@ -22,15 +22,19 @@ export const cloudinaryRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
-      const { searchExpression } = input;
-      return await cloudinary.search
-        .expression(searchExpression)
-        .max_results(10)
-        .with_field("context")
-        .execute()
-        .then((result: unknown) => {
-          return result;
-        });
+      try {
+        const { searchExpression } = input;
+        return await cloudinary.search
+          .expression(searchExpression)
+          .max_results(10)
+          .with_field("context")
+          .execute()
+          .then((result: unknown) => {
+            return result;
+          });
+      } catch (error) {
+        throw new Error(`Error fetching images from cloudinary: ${error}`);
+      }
     }),
   getCloundinaryImages: protectedProcedure
     .input(

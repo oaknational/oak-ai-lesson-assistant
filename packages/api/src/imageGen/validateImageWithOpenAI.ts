@@ -1,6 +1,8 @@
 import OpenAI from "openai";
 import { z } from "zod";
 
+import type { Cycle } from "../router/imageGen";
+
 export interface ValidationResult {
   isValid: boolean;
   metadata: {
@@ -22,6 +24,10 @@ function isTheImageBase64(url: string) {
 export async function validateImageWithOpenAI(
   imageUrl: string,
   prompt: string,
+  lessonTitle: string,
+  keyStage: string,
+  subject: string,
+  cycleInfo: Cycle,
 ): Promise<ValidationResult> {
   console.log(`[OpenAI Validation] Starting validation for image: ${imageUrl}`);
   console.log(`[OpenAI Validation] Prompt: ${prompt}`);
@@ -57,7 +63,7 @@ export async function validateImageWithOpenAI(
           content: [
             {
               type: "text",
-              text: `Prompt: "${prompt}"\nAnalyze this image and determine if it's suitable.`,
+              text: `Prompt: "${prompt}"\n Lesson Title: "${lessonTitle}\n keyStage: "${keyStage}" \n subject: "${subject}" Analyze this image and determine if it's suitable.`,
             },
             {
               type: "image_url",

@@ -6,6 +6,8 @@ const ImageSpike = ({ lessons }: { lessons: any }) => {
   const lessonTitles = lessons.map((lesson: any) => ({
     sessionId: lesson.id,
     lessonTitle: lesson?.output?.lessonPlan?.title || "",
+    keyStage: lesson?.output?.lessonPlan?.keyStage || "",
+    subject: lesson?.output?.lessonPlan?.subject || "",
     hasThreeCycles:
       !!lesson?.output?.lessonPlan?.cycle1 &&
       !!lesson?.output?.lessonPlan?.cycle2 &&
@@ -21,17 +23,21 @@ const ImageSpike = ({ lessons }: { lessons: any }) => {
             sessionId,
             lessonTitle,
             hasThreeCycles,
+            keyStage,
+            subject,
           }: {
             sessionId: string;
             lessonTitle: string;
             hasThreeCycles: boolean;
+            keyStage: string;
+            subject: string;
           }) => {
             if (!lessonTitle || !hasThreeCycles) {
               return null;
             }
             return (
               <Link key={sessionId} href={`/image-spike/${sessionId}`}>
-                {lessonTitle}: {sessionId}
+                {lessonTitle}: {sessionId} ------- {subject}, {keyStage}
               </Link>
             );
           },
