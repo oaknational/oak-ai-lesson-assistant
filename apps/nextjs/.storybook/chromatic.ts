@@ -1,10 +1,25 @@
 import "@storybook/csf";
 
-export const CHROMATIC_ALL_VIEWPORTS = {
-  chromatic: { viewports: [375, 1200] },
+const defaultMode = { "1200px": { viewport: 1200 } } as const;
+// TODO: look into using named viewport
+const mobileMode = { mobile: { viewport: 375 } };
+const desktopMode = { desktop: { viewport: 1200 } };
+
+export const CHROMATIC_MOBILE_ONLY = {
+  chromatic: { modes: mobileMode },
 };
-export const CHROMATIC_MOBILE_ONLY = { chromatic: { viewports: [375] } };
-export const CHROMATIC_DESKTOP_ONLY = { chromatic: { viewports: [1200] } };
+export const CHROMATIC_DESKTOP_ONLY = {
+  chromatic: { modes: desktopMode },
+};
+
+export const CHROMATIC_ALL_VIEWPORTS = {
+  chromatic: { modes: { ...mobileMode, ...desktopMode } },
+};
+// NOTE: Before we used modes, all snapshots were by default in the 1200px mode.
+//       This option allows us to add a mobile mode without discaring the current snapshot
+export const CHROMATIC_ALL_VIEWPORTS_COMPAT = {
+  chromatic: { modes: { ...mobileMode, ...defaultMode } },
+};
 
 declare module "@storybook/csf" {
   interface Parameters {
