@@ -37,7 +37,7 @@ export const RegenerationForm: React.FC<RegenerationFormProps> = ({
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>
-        <button className="bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 mt-4 flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2">
+        <button className="focus:ring-blue-500 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2">
           <Icon icon="reload" size="sm" color="white" />
           Regenerate with {imageSource}
         </button>
@@ -79,7 +79,7 @@ export const RegenerationForm: React.FC<RegenerationFormProps> = ({
               <button
                 type="submit"
                 disabled={isLoading || !feedback.trim()}
-                className="bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 rounded-md px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="focus:ring-blue-500 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2"
               >
                 {isLoading ? <LoadingWheel /> : "Submit"}
               </button>
