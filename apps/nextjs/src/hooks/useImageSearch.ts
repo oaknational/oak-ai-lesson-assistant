@@ -17,6 +17,9 @@ export const useImageSearch = ({ pageData }: ImageSearchHookProps) => {
   const flickrMutation = trpc.imageSearch.getImagesFromFlickr.useMutation();
   const unsplashMutation = trpc.imageSearch.getImagesFromUnsplash.useMutation();
   const stableDiffusionCoreMutation = trpc.imageGen.stableDifCore.useMutation();
+  const analyzeAndRegenerateMutation =
+    trpc.imageGen.analyzeAndRegenerate.useMutation();
+
   const daleMutation = trpc.imageGen.openAi.useMutation();
   const validateImageMutation = trpc.imageGen.validateImage.useMutation();
   const validateImagesInParallel =
@@ -32,6 +35,69 @@ export const useImageSearch = ({ pageData }: ImageSearchHookProps) => {
     Flickr: flickrMutation,
     Unsplash: unsplashMutation,
     Cloudinary: cloudinaryMutation,
+  };
+
+  const regenerateImageWithAnalysis = async (
+    originalImageUrl: string,
+    originalPrompt: string,
+    feedback: string,
+    provider: "openai" | "stability",
+  ): Promise<ImageResponse> => {
+    try {
+      if (
+        !pageData?.title ||
+        !pageData?.keyStage ||
+        !pageData?.subject ||
+        !pageData?.lessonPlan
+      ) {
+        throw new Error("Missing required page data");
+      }
+
+      const startTime = performance.now();
+      const fetchStart = performance.now();
+
+      const response = await analyzeAndRegenerateMutation.mutateAsync({
+        originalImageUrl,
+        originalPrompt,
+        feedback,
+        lessonTitle: pageData.title,
+        subject: pageData.subject,
+        keyStage: pageData.keyStage,
+        lessonPlan: pageData.lessonPlan,
+        provider,
+      });
+
+      const fetchEnd = performance.now();
+
+      // Validate the regenerated image
+      const validationStart = performance.now();
+      const validationResult = await validateSingleImage(
+        response,
+        originalPrompt,
+        true,
+      );
+      const endTime = performance.now();
+      // generate random string for id
+      const id = Math.random().toString(36).substr(2, 9);
+
+      return {
+        id: id,
+        url: response,
+        license: provider === "openai" ? "OpenAI DALL-E 3" : "Stability AI",
+        imagePrompt: validationResult.metadata.promptUsed ?? originalPrompt,
+        appropriatenessScore: validationResult.metadata.appropriatenessScore,
+        appropriatenessReasoning: validationResult.metadata.validationReasoning,
+        imageSource: provider === "openai" ? "OpenAI DALL-E 3" : "Stability AI",
+        timing: {
+          total: endTime - startTime,
+          fetch: fetchEnd - fetchStart,
+          validation: endTime - validationStart,
+        },
+      };
+    } catch (error) {
+      console.error("Error regenerating image:", error);
+      throw error;
+    }
   };
 
   const validateSingleImage = async (
@@ -303,5 +369,6 @@ export const useImageSearch = ({ pageData }: ImageSearchHookProps) => {
   return {
     fetchImages,
     availableSources: trpcMutations,
+    regenerateImageWithAnalysis,
   };
 };

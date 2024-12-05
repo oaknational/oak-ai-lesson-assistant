@@ -12,6 +12,7 @@ import Link from "next/link";
 import type { ImageResponse } from "types/imageTypes";
 
 import LoadingWheel from "@/components/LoadingWheel";
+import { RegenerationForm } from "@/components/RegenerationForm";
 
 export type Cycle = {
   title: string;
@@ -70,8 +71,51 @@ const ImagesPage = ({ pageData }) => {
     },
   ]);
 
+  // In your ImagesPage component, add this state
+  const [isRegenerating, setIsRegenerating] = useState(false);
+
   const { bestImage, findBestImage } = useBestImage({ pageData });
-  const { fetchImages, availableSources } = useImageSearch({ pageData });
+  const { fetchImages, availableSources, regenerateImageWithAnalysis } =
+    useImageSearch({ pageData });
+
+  // Add this function to handle regeneration
+  const handleRegeneration = async (columnId: string, feedback: string) => {
+    const column = comparisonColumns.find((col) => col.id === columnId);
+    if (!column?.imageSearchBatch?.[0]) return;
+
+    const image = column.imageSearchBatch[0];
+
+    updateColumn(columnId, { isLoading: true });
+
+    if (!image.imageSource) {
+      throw new Error("Image source is required to regenerate image.");
+    }
+
+    try {
+      setIsRegenerating(true);
+      const regeneratedImage = await regenerateImageWithAnalysis(
+        image.url,
+        selectedImagePrompt,
+        feedback,
+        image.imageSource.toLowerCase().includes("Stability AI")
+          ? "stability"
+          : "openai",
+      );
+
+      setIsRegenerating(false);
+      updateColumn(columnId, {
+        imageSearchBatch: [regeneratedImage],
+      });
+    } catch (error) {
+      setIsRegenerating(false);
+      console.error("Error regenerating image:", error);
+      updateColumn(columnId, {
+        error: "Failed to regenerate image",
+      });
+    } finally {
+      updateColumn(columnId, { isLoading: false });
+    }
+  };
 
   if (
     !pageData?.lessonPlan?.cycle1?.explanation?.imagePrompt ||
@@ -196,8 +240,8 @@ const ImagesPage = ({ pageData }) => {
                   {promptConstructor(
                     prompt,
                     pageData.title,
-                    pageData.keyStage,
                     pageData.subject,
+                    pageData.keyStage,
                     pageData.lessonPlan,
                   )}
                 </p>
@@ -348,58 +392,77 @@ const ImagesPage = ({ pageData }) => {
 
                 {column.imageSearchBatch && (
                   <div className="mt-6 space-y-6">
-                    {column.imageSearchBatch?.map((image) => (
-                      <div
-                        key={image.id}
-                        className="rounded-lg border bg-gray-50 p-4"
-                      >
-                        <div className="relative mb-4 h-48 w-full overflow-hidden rounded-lg">
-                          <Image
-                            src={image.url}
-                            alt={image.alt || "Image"}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="space-y-2 text-sm text-gray-600">
-                          <p>
-                            <span className="font-medium">License:</span>{" "}
-                            {image.license}
-                          </p>
-                          <p>
-                            <span className="font-medium">Score:</span>{" "}
-                            {image.appropriatenessScore}
-                          </p>
-                          <p>
-                            <span className="font-medium">Prompt used:</span>{" "}
-                            {image.imagePrompt}
-                          </p>
-                          <p>
-                            <span className="font-medium">Reasoning:</span>{" "}
-                            {image.appropriatenessReasoning}
-                          </p>
-                          {image.photographer && (
-                            <p>
-                              <span className="font-medium">By:</span>{" "}
-                              {image.photographer}
-                            </p>
+                    {column.imageSearchBatch?.map((image) => {
+                      console.log("iumage", image);
+                      return (
+                        <div
+                          key={image.id}
+                          className="rounded-lg border bg-gray-50 p-4"
+                        >
+                          <div className="relative mb-4 h-48 w-full rounded-lg object-contain">
+                            {isRegenerating ? (
+                              <LoadingWheel />
+                            ) : (
+                              <Image
+                                src={image.url}
+                                alt={image.alt || "Image"}
+                                fill
+                                className="object-cover"
+                              />
+                            )}
+                          </div>
+                          {(image.imageSource === "DAL-E" ||
+                            image.imageSource?.includes(
+                              "Stable Diffusion",
+                            )) && (
+                            <RegenerationForm
+                              onSubmit={(feedback) =>
+                                handleRegeneration(column.id, feedback)
+                              }
+                              imageSource={image.imageSource}
+                            />
                           )}
-                          {image.title && (
+                          <div className="space-y-2 text-sm text-gray-600">
                             <p>
-                              <span className="font-medium">Title:</span>{" "}
-                              {image.title}
+                              <span className="font-medium">License:</span>{" "}
+                              {image.license}
                             </p>
-                          )}
-                          <div className="mt-4 border-t pt-4 text-xs">
-                            <p>Fetch: {image.timing.fetch.toFixed(2)}ms</p>
                             <p>
-                              Validation: {image.timing.validation.toFixed(2)}ms
+                              <span className="font-medium">Score:</span>{" "}
+                              {image.appropriatenessScore}
                             </p>
-                            <p>Total: {image.timing.total.toFixed(2)}ms</p>
+                            <p>
+                              <span className="font-medium">Prompt used:</span>{" "}
+                              {image.imagePrompt}
+                            </p>
+                            <p>
+                              <span className="font-medium">Reasoning:</span>{" "}
+                              {image.appropriatenessReasoning}
+                            </p>
+                            {image.photographer && (
+                              <p>
+                                <span className="font-medium">By:</span>{" "}
+                                {image.photographer}
+                              </p>
+                            )}
+                            {image.title && (
+                              <p>
+                                <span className="font-medium">Title:</span>{" "}
+                                {image.title}
+                              </p>
+                            )}
+                            <div className="mt-4 border-t pt-4 text-xs">
+                              <p>Fetch: {image.timing.fetch.toFixed(2)}ms</p>
+                              <p>
+                                Validation: {image.timing.validation.toFixed(2)}
+                                ms
+                              </p>
+                              <p>Total: {image.timing.total.toFixed(2)}ms</p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>

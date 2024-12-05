@@ -20,6 +20,18 @@ const STABLE_DIF_API_KEY = process.env.STABLE_DIF_API_KEY;
 const MAX_PARALLEL_CHECKS = 5;
 
 // Types
+
+interface RefinementInput {
+  originalImageUrl: string;
+  originalPrompt: string;
+  feedback: string;
+  lessonTitle: string;
+  subject: string;
+  keyStage: string;
+  lessonPlan: LessonPlan;
+  provider: "openai" | "stability";
+}
+
 interface ValidatedImage {
   id: string;
   url: string;
@@ -428,7 +440,7 @@ function findTheRelevantCycle({
     throw new Error("Cycle not found");
   }
 }
-// Router Definition
+
 export const imageGen = router({
   customPipelineWithReasoning: protectedProcedure
     .input(
@@ -886,6 +898,127 @@ export const imageGen = router({
         );
       } catch (error) {
         console.error("[ValidateImagesInParallel] Error:", error);
+        throw error;
+      }
+    }),
+  analyzeAndRegenerate: protectedProcedure
+    .input(
+      z.object({
+        originalImageUrl: z.string(),
+        originalPrompt: z.string(),
+        feedback: z.string(),
+        lessonTitle: z.string(),
+        subject: z.string(),
+        keyStage: z.string(),
+        lessonPlan: imageLessonPlan,
+        provider: z.enum(["openai", "stability"]),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      try {
+        const cycleInfo = findTheRelevantCycle({
+          lessonPlan: input.lessonPlan,
+          searchExpression: input.originalPrompt,
+        });
+
+        // First, analyze the original image with GPT-4 Vision
+        const openai = new OpenAI({
+          apiKey: process.env.OPENAI_API_KEY,
+          baseURL: process.env.HELICONE_EU_HOST,
+        });
+
+        // Get image analysis and refined prompt
+        const analysisResponse = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text: `Analyze this image that was generated for an educational context. 
+                  Original prompt: ${input.originalPrompt}
+                  User feedback: ${input.feedback}
+                  
+                  Based on the image and feedback, provide a detailed prompt that would generate an improved version. 
+                  Focus on specific visual elements that need to change.`,
+                },
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: input.originalImageUrl,
+                  },
+                },
+              ],
+            },
+          ],
+          max_tokens: 500,
+        });
+
+        const refinedPrompt = analysisResponse.choices[0]?.message?.content;
+        if (!refinedPrompt) {
+          throw new Error("Failed to generate refined prompt");
+        }
+
+        console.log("refinedPrompt", refinedPrompt);
+
+        // pause operations for 10s
+
+        // Construct the final prompt
+        const finalPrompt = `${promptConstructor(
+          input.originalPrompt,
+          input.lessonTitle,
+          input.subject,
+          input.keyStage,
+          cycleInfo,
+        )}\n\nRefined requirements based on previous version: ${refinedPrompt}`;
+
+        if (input.provider === "openai") {
+          // Generate new image with DALL-E
+          const response = await openai.images.generate({
+            model: "dall-e-3",
+            prompt: finalPrompt,
+            n: 1,
+            size: "1024x1024",
+          });
+
+          if (!response?.data?.[0]?.url) {
+            throw new Error("Failed to generate image with feedback");
+          }
+
+          return response.data[0].url;
+        } else if (input.provider === "stability") {
+          // For Stability AI, we can use their img2img endpoint
+          const formData = new FormData();
+          formData.append(
+            "init_image",
+            await fetch(input.originalImageUrl).then((r) => r.blob()),
+          );
+          formData.append("prompt", finalPrompt);
+          formData.append("image_strength", "0.35"); // How much to preserve from original
+
+          const response = await fetch(
+            "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/image-to-image",
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${STABLE_DIF_API_KEY}`,
+              },
+              body: formData,
+            },
+          );
+
+          if (!response.ok) {
+            throw new Error(`Stability API error: ${response.statusText}`);
+          }
+
+          const imageBuffer = await response.arrayBuffer();
+          return `data:image/png;base64,${Buffer.from(imageBuffer).toString("base64")}`;
+        }
+
+        throw new Error("Invalid provider specified");
+      } catch (error) {
+        console.error("[AnalyzeAndRegenerate] Error:", error);
         throw error;
       }
     }),
