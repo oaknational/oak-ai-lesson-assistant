@@ -4,7 +4,7 @@ import type { ChatContextProps } from "@/components/ContextProviders/ChatProvide
 import { ChatContext } from "@/components/ContextProviders/ChatProvider";
 import { DemoContext } from "@/components/ContextProviders/Demo";
 
-import { CHROMATIC_DESKTOP_ONLY } from "../../../../../.storybook/chromatic";
+import { CHROMATIC_DESKTOP_COMPAT } from "../../../../../.storybook/chromatic";
 import ExportButtons from "./";
 
 const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
@@ -44,7 +44,7 @@ const meta: Meta<typeof ExportButtons> = {
     documentContainerRef: { current: null },
   },
   parameters: {
-    ...CHROMATIC_DESKTOP_ONLY,
+    ...CHROMATIC_DESKTOP_COMPAT,
   },
 };
 
