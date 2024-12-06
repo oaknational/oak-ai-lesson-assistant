@@ -28,7 +28,7 @@ export const sendQuizFeedbackEmail = async (input: {
     User ${user.email} has clicked on the flag button.<br>
     <br>
     Flagged content type: ${flaggedItem.type}<br>
-    Flagged content: ${flaggedItem.value}<br>
+    Flagged content: ${typeof flaggedItem.value == "string" ? flaggedItem.value : ""}<br>
     Generation ID: ${flaggedItem.lastGenerationId}<br>
     Feedback: ${feedback.typedFeedback}<br>
     Inappropriate content: ${feedback.contentIsInappropriate}<br>

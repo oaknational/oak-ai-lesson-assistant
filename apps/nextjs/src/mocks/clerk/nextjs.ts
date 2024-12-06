@@ -7,6 +7,7 @@ export {
   useAuth,
   useUser,
   useClerk,
+  useSession,
   SignedIn,
   SignedOut,
   ClerkProvider,

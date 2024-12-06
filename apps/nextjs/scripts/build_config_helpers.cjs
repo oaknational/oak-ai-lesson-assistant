@@ -7,7 +7,7 @@ const { existsSync, readFileSync } = require("fs");
  * @returns {(string|null)} The SHA if found, or "no_git_state" if mid-merge, or `null` if it cannot be determined.
  */
 function getLocalGitRef() {
-  if (existsSync("../../.git")) {
+  if (existsSync("../../.git/HEAD")) {
     const rev = readFileSync("../../.git/HEAD")
       .toString()
       .trim()

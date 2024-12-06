@@ -1,1 +1,0 @@
-This directory contains documentation describing general functionality not covered by a single part of the codebase.

@@ -19,8 +19,9 @@ import Link from "next/link";
 import Button from "@/components/Button";
 import CheckBox from "@/components/CheckBox";
 import SignUpSignInLayout from "@/components/SignUpSignInLayout";
-import TermsContent from "@/components/TermsContent";
 import { trpc } from "@/utils/trpc";
+
+import TermsContent from "./TermsContent";
 
 export const AcceptTermsForm = () => {
   const [dropDownOpen, setDropDownOpen] = useState(true);

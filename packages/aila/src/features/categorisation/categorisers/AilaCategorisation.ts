@@ -1,7 +1,7 @@
 import { CategoriseKeyStageAndSubjectResponse } from "@oakai/core/src/rag/categorisation";
 import { keyStages, subjects } from "@oakai/core/src/utils/subjects";
 import { aiLogger } from "@oakai/logger";
-import type { ChatCompletionMessageParam } from "openai/resources";
+import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { Md5 } from "ts-md5";
 
 import { DEFAULT_CATEGORISE_MODEL } from "../../../constants";

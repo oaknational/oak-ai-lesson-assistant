@@ -1,3 +1,4 @@
+import type { drive_v3 } from "@googleapis/drive";
 import { prisma } from "@oakai/db";
 import { googleDrive } from "@oakai/exports/src/gSuite/drive/client";
 import { aiLogger } from "@oakai/logger";
@@ -126,19 +127,35 @@ export async function GET(request: NextRequest) {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    const files = await fetchExpiredExports({ folderId, daysAgo: 14 });
+    let files: drive_v3.Schema$File[] | null;
+    let hasMoreFiles = true;
 
-    if (!files || files.length === 0) {
-      return new Response("No expired files found", { status: 404 });
+    while (hasMoreFiles) {
+      files = await fetchExpiredExports({ folderId, daysAgo: 14 });
+
+      if (!files || files.length === 0) {
+        log.info("No expired files found.");
+        hasMoreFiles = false;
+        break;
+      }
+
+      const validFileIds = files.map((file) => file.id).filter(isTruthy);
+
+      if (validFileIds.length === 0) {
+        log.info("No valid file IDs to process.");
+        hasMoreFiles = false;
+        break;
+      }
+
+      await updateExpiredAtAndDelete(validFileIds);
     }
 
-    const validFileIds = files.map((file) => file.id).filter(isTruthy);
-
-    await updateExpiredAtAndDelete(validFileIds);
+    return new Response("All expired files processed successfully.", {
+      status: 200,
+    });
   } catch (error) {
     Sentry.captureException(error);
+    log.error("An error occurred during the cron job execution:", error);
     return new Response("Internal Server Error", { status: 500 });
   }
-
-  return new Response(JSON.stringify({ success: true }), { status: 200 });
 }

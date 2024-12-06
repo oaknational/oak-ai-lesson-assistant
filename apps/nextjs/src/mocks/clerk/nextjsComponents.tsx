@@ -87,12 +87,35 @@ export const useAuth = () => {
   };
 };
 
-export const SignedIn = ({ children }: { readonly children: React.ReactNode }) => {
+export const useSession = () => {
+  const context = React.useContext(ClerkContext);
+  const mockSession = {};
+  const session = context.isLoaded
+    ? context.isSignedIn
+      ? mockSession
+      : null
+    : undefined;
+  return {
+    isLoaded: context.isLoaded,
+    isSignedIn: context.isSignedIn,
+    session,
+  };
+};
+
+export const SignedIn = ({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) => {
   const context = React.useContext(ClerkContext);
   return context.isSignedIn ? children : null;
 };
 
-export const SignedOut = ({ children }: { readonly children: React.ReactNode }) => {
+export const SignedOut = ({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) => {
   const context = React.useContext(ClerkContext);
   return context.isSignedIn ? null : children;
 };

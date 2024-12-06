@@ -13,4 +13,4 @@ outputs:
     description: "The number of the PR if one is found"
 runs:
   using: "node20"
-  main: "index.js"
+  main: "index.cjs"

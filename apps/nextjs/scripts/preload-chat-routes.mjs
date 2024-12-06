@@ -75,6 +75,7 @@ const preBuildRoutes = async (
     console.log("All routes pre-built successfully");
     console.timeEnd(timerId);
   } catch (error) {
+    console.error(error);
     if (retryCount < maxRetries) {
       console.log(
         `Retrying pre-build (attempt ${retryCount + 1} of ${maxRetries})...`,

@@ -495,7 +495,7 @@ export function isGenerationHookLoading(status: UseGenerationStatus): boolean {
     case UseGenerationStatus.ERROR:
       return false;
     default:
-      throw Error(`Unhandled UseGenerationStatus ${status}`);
+      throw Error(`Unhandled UseGenerationStatus ${String(status)}`);
   }
 }
 
@@ -511,7 +511,7 @@ function isGenerationRecordLoading(status: GenerationStatus): boolean {
     case GenerationStatus.FLAGGED:
       return false;
     default:
-      throw Error(`Unhandled GenerationStatus ${status}`);
+      throw Error(`Unhandled GenerationStatus ${String(status)}`);
   }
 }
 

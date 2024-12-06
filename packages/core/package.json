@@ -6,6 +6,13 @@
   "license": "ISC",
   "author": "",
   "main": "./index.ts",
+  "eslintConfig": {
+    "extends": "@oakai/eslint-config",
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "rules": {}
+  },
   "scripts": {
     "admin": "open http://localhost:8288",
     "check": "tsc --noEmit",
@@ -15,7 +22,7 @@
     "doppler:run:dev": "doppler run -c dev --silent",
     "doppler:run:prd": "doppler run -c prd --silent",
     "doppler:run:stg": "doppler run -c stg --silent",
-    "lint": "eslint . --ext .ts,.tsx",
+    "lint": "eslint .",
     "process:answersAndDistractors": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/batchAnswersAndDistractorsForJudgement.ts",
     "process:createSnippetsForNewLessons": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/import-new-lessons/createSnippetsForNewLessons.ts",
     "process:importNewLessons": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/import-new-lessons/importNewLessons.ts",
@@ -64,5 +71,6 @@
   "devDependencies": {
     "@oakai/prettier-config": "*",
     "inngest-cli": "^0.29.0"
-  }
+  },
+  "type": "module"
 }

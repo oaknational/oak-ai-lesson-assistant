@@ -1,13 +1,21 @@
 {
   "name": "@oakai/exports",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "eslintConfig": {
+    "extends": "@oakai/eslint-config",
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "rules": {}
+  },
   "scripts": {
-    "lint": "eslint . --ext .ts,.tsx",
+    "lint": "eslint .",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@oakai/logger": "*",
-    "typescript": "5.3.3"
+    "typescript": "5.7.2"
   },
-  "prettier": "@oakai/prettier-config"
+  "prettier": "@oakai/prettier-config",
+  "type": "module"
 }

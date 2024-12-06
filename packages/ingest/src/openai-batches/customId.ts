@@ -24,14 +24,6 @@ export function createCustomId(props: CreateCustomIdProps): string {
   }
 }
 
-export function parseCustomId(props: {
-  task: "generate-lesson-plans";
-  customId: string;
-}): GenerateLessonPlanCustomIdComponents;
-export function parseCustomId(props: {
-  task: "embed-lesson-plan-parts";
-  customId: string;
-}): EmbedLessonPlanPartsCustomIdComponents;
 export function parseCustomId(props: { task: BatchTask; customId: string }) {
   switch (props.task) {
     case "generate-lesson-plans":

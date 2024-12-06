@@ -516,7 +516,7 @@ export type MessagePartType =
   | "id";
 
 export const MessagePartDocumentSchemaByType: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   [K in MessagePartType]: z.ZodSchema<any>;
 } = {
   moderation: ModerationDocumentSchema,

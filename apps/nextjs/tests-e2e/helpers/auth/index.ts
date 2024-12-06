@@ -52,7 +52,9 @@ export async function prepareUser(
     await test.step("Accept cookie consent", async () => {
       try {
         await page.getByTestId("cookie-banner-accept").click();
-      } catch {}
+      } catch (e) {
+        console.error("No cookie banner");
+      }
     });
 
     return login;

@@ -18,5 +18,3 @@ export const LessonWithSnippets = z.object({
     }),
   ),
 });
-
-export type LessonWithSnippets = z.infer<typeof LessonWithSnippets>;

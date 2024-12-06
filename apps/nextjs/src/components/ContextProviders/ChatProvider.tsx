@@ -76,7 +76,7 @@ const messageHashes = {};
 
 function clearHashCache() {
   for (const key in messageHashes) {
-    if (messageHashes.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(messageHashes, key)) {
       delete messageHashes[key];
     }
   }

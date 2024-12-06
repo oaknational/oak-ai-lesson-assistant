@@ -53,13 +53,21 @@ export function initializeTracer(options: DatadogOptions) {
       logLevel,
       logger: {
         debug: (message: string | Error) =>
-          log.info(`[dd-trace debug] ${message}`),
+          log.info(
+            `[dd-trace debug] ${typeof message === "string" ? message : message.message}`,
+          ),
         info: (message: string | Error) =>
-          log.info(`[dd-trace info] ${message}`),
+          log.info(
+            `[dd-trace info] ${typeof message === "string" ? message : message.message}`,
+          ),
         warn: (message: string | Error) =>
-          log.info(`[dd-trace warn] ${message}`),
+          log.info(
+            `[dd-trace warn] ${typeof message === "string" ? message : message.message}`,
+          ),
         error: (message: string | Error) =>
-          log.error(`[dd-trace error] ${message}`),
+          log.error(
+            `[dd-trace error] ${typeof message === "string" ? message : message.message}`,
+          ),
       },
     };
     console.log(
