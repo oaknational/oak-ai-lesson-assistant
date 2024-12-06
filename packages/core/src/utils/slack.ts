@@ -1,4 +1,4 @@
-import type { ActionsBlock, SectionBlock} from "@slack/web-api";
+import type { ActionsBlock, SectionBlock } from "@slack/web-api";
 import { WebClient } from "@slack/web-api";
 import {
   uniqueNamesGenerator,
@@ -9,11 +9,17 @@ import {
 
 import { getExternalFacingUrl } from "../functions/slack/getExternalFacingUrl";
 
-if (!process.env.SLACK_NOTIFICATION_CHANNEL_ID) {
+if (
+  !process.env.SLACK_NOTIFICATION_CHANNEL_ID ||
+  !process.env.SLACK_AI_OPS_NOTIFICATION_CHANNEL_ID
+) {
   throw new Error("Missing env var SLACK_NOTIFICATION_CHANNEL_ID");
 }
 export const slackNotificationChannelId =
   process.env.SLACK_NOTIFICATION_CHANNEL_ID;
+
+export const slackAiOpsNotificationChannelId =
+  process.env.SLACK_AI_OPS_NOTIFICATION_CHANNEL_ID;
 
 export const slackWebClient = new WebClient(
   process.env.SLACK_BOT_USER_OAUTH_TOKEN,
