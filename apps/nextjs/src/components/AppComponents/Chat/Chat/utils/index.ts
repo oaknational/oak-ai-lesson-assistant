@@ -4,7 +4,11 @@ import type { Message } from "ai/react";
 
 const log = aiLogger("chat");
 
-export function findMessageIdFromContent({ content }: { content: string }) {
+export function findMessageIdFromContent({
+  content,
+}: {
+  content: string;
+}): string | undefined {
   return content
     .split("␞")
     .map((s) => {

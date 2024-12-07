@@ -1,0 +1,11 @@
+{
+  "type": "llmMessage",
+  "sectionsToEdit": [],
+  "patches": [],
+  "sectionsEdited": [],
+  "prompt": {
+    "type": "text",
+    "value": "All the requested sections including the Starter Quiz, Cycle 1, Cycle 2, Cycle 3, and Exit Quiz have already been generated in the lesson plan. If there's anything specific you'd like to change or if you need any additional sections or modifications, please let me know. Otherwise, you can tap **Continue** to move forward."
+  },
+  "status": "complete"
+}

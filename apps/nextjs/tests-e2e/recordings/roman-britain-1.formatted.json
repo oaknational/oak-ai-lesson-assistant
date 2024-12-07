@@ -7,26 +7,25 @@
   "patches": [
     {
       "type": "patch",
-      "reasoning": "I have created new learning outcomes and learning cycles from scratch as there are no existing Oak lessons available for this topic.",
+      "reasoning": "Creating a new lesson from scratch as there are no existing Oak lessons for this topic.",
       "value": {
         "type": "string",
         "op": "add",
         "path": "/learningOutcome",
-        "value": "I can describe why the Romans left Britain and what happened afterwards."
+        "value": "I can describe why the Romans left Britain and what changed after their departure."
       },
       "status": "complete"
     },
     {
       "type": "patch",
-      "reasoning": "This patch adds learning cycles which break down the lesson into achievable tasks, focusing on Roman departure and its impact on Britain.",
+      "reasoning": "Breaking down the learning outcome into manageable learning cycles for KS1 pupils.",
       "value": {
         "type": "string-array",
         "op": "add",
         "path": "/learningCycles",
         "value": [
-          "Explain the reasons for the Romans leaving Britain.",
-          "Describe the changes that occurred in Britain after the Romans left.",
-          "Identify the role of archaeologists in uncovering Roman history."
+          "Identify the reasons why the Romans left Britain.",
+          "Describe the changes in Britain after the Roman departure."
         ]
       },
       "status": "complete"

@@ -1,3 +1,4 @@
+import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import type { AilaUserModificationAction } from "@prisma/client";
 
 import ActionButtonWrapper from "./action-button-wrapper";
@@ -7,7 +8,7 @@ import type { FeedbackOption } from "./drop-down-form-wrapper";
 export type ModifyButtonProps = Readonly<{
   sectionTitle: string;
   sectionPath: string;
-  sectionValue: Record<string, unknown> | string | Array<unknown>;
+  sectionValue: LessonPlanSectionWhileStreaming;
 }>;
 
 const ModifyButton = ({

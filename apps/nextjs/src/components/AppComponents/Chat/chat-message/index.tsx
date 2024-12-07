@@ -146,9 +146,7 @@ export function ChatMessage({
               ailaStreamingStatus === "Moderating" ? (
                 <MemoizedReactMarkdownWithStyles markdown={"Finishing up..."} />
               ) : (
-                <MemoizedReactMarkdownWithStyles
-                  markdown={"Working on it ..."}
-                />
+                <MemoizedReactMarkdownWithStyles markdown={message.content} />
               )}
             </div>
           )}

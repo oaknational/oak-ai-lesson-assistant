@@ -34,16 +34,11 @@ I
  download
  your
  resources
-.\
-n
-\n
-Click
- on
- the
+.
+ Tap
  **
 Menu
 **
- button
  to
  find
  previously
