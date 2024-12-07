@@ -1,10 +1,10 @@
 import type { Aila } from "@oakai/aila/src/core/Aila";
 import type { AilaServices } from "@oakai/aila/src/core/AilaServices";
 import type { Message } from "@oakai/aila/src/core/chat";
-import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
 import type {
   AilaOptions,
   AilaPublicChatOptions,
+  AilaInitializationOptions,
 } from "@oakai/aila/src/core/types";
 import { AilaAmericanisms } from "@oakai/aila/src/features/americanisms/AilaAmericanisms";
 import {
@@ -40,7 +40,7 @@ export const maxDuration = 300;
 const prisma: PrismaClientWithAccelerate = globalPrisma;
 
 export async function GET() {
-  return new Response("Chat API is working", { status: 200 });
+  return Promise.resolve(new Response("Chat API is working", { status: 200 }));
 }
 
 async function setupChatHandler(req: NextRequest) {

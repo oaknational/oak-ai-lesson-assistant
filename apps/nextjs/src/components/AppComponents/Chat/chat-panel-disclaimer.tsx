@@ -1,4 +1,8 @@
-const ChatPanelDisclaimer = ({ size }: { size: "sm" | "md" | "lg" }) => {
+const ChatPanelDisclaimer = ({
+  size,
+}: {
+  readonly size: "sm" | "md" | "lg";
+}) => {
   return (
     <p className={`my-12 text-${size}`}>
       Aila can make mistakes. Check your lesson before use. See our{" "}
@@ -9,7 +13,7 @@ const ChatPanelDisclaimer = ({ size }: { size: "sm" | "md" | "lg" }) => {
       >
         terms and conditions
       </a>
-      .
+      {"."}
     </p>
   );
 };

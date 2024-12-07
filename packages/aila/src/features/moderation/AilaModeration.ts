@@ -24,11 +24,11 @@ import { OpenAiModerator } from "./moderators/OpenAiModerator";
 const log = aiLogger("aila:moderation");
 
 export class AilaModeration implements AilaModerationFeature {
-  private _prisma: PrismaClientWithAccelerate;
-  private _moderations: Moderations;
-  private _moderator: AilaModerator;
-  private _aila: AilaServices;
-  private _shouldPersist: boolean = true;
+  private readonly _prisma: PrismaClientWithAccelerate;
+  private readonly _moderations: Moderations;
+  private readonly _moderator: AilaModerator;
+  private readonly _aila: AilaServices;
+  private readonly _shouldPersist: boolean = true;
 
   constructor({
     aila,
@@ -72,6 +72,7 @@ export class AilaModeration implements AilaModerationFeature {
       appSessionId: chatId,
       messageId: lastAssistantMessage.id,
       categories: moderationResult.categories,
+      scores: moderationResult.scores,
       justification: moderationResult.justification,
       lesson: lessonPlan,
     });
@@ -204,10 +205,11 @@ export class AilaModeration implements AilaModerationFeature {
     messages: Message[];
     lessonPlan: LooseLessonPlan;
     retries: number;
-  }) {
+  }): Promise<ModerationResult> {
     if (retries < 1) {
       return {
         categories: [],
+        scores: undefined,
         justification: "Failed to parse moderation response",
       };
     }

@@ -9,13 +9,15 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "noUncheckedIndexedAccess": true,
     "incremental": true,
-    "types": ["jest"]
+    "types": ["jest"],
+    "allowImportingTsExtensions": true,
+    "moduleDetection": "force"
   },
   "include": [".eslintrc.cjs"]
 }

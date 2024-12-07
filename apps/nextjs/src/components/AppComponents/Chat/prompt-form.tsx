@@ -17,8 +17,7 @@ import type { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
 export interface PromptFormProps
   extends Pick<UseChatHelpers, "input" | "setInput"> {
   onSubmit: (value: string) => void;
-  isEmptyScreen: boolean;
-  placeholder?: string;
+  hasMessages: boolean;
   ailaStreamingStatus: AilaStreamingStatus;
   queuedUserAction?: string | null;
   queueUserAction?: (action: string) => void;
@@ -29,8 +28,7 @@ export function PromptForm({
   onSubmit,
   input,
   setInput,
-  isEmptyScreen,
-  placeholder,
+  hasMessages,
   queuedUserAction,
   queueUserAction,
 }: Readonly<PromptFormProps>) {
@@ -93,8 +91,8 @@ export function PromptForm({
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={handlePlaceholder(
-            isEmptyScreen,
-            queuedUserAction ?? placeholder,
+            hasMessages,
+            queuedUserAction ?? undefined,
           )}
           spellCheck={false}
           className="min-h-[60px] w-full resize-none bg-transparent px-10 py-[1.3rem] text-base focus-within:outline-none"
@@ -119,11 +117,14 @@ export function PromptForm({
   );
 }
 
-function handlePlaceholder(isEmptyScreen: boolean, placeholder?: string) {
-  if (placeholder && !["continue", "regenerate"].includes(placeholder)) {
-    return placeholder;
+function handlePlaceholder(hasMessages: boolean, queuedUserAction?: string) {
+  if (
+    queuedUserAction &&
+    !["continue", "regenerate"].includes(queuedUserAction)
+  ) {
+    return queuedUserAction;
   }
-  return !isEmptyScreen
-    ? "Type a subject, key stage and title"
-    : "Type your response here";
+  return hasMessages
+    ? "Type your response here"
+    : "Type a subject, key stage and title";
 }

@@ -23,6 +23,8 @@ type CustomError = {
   code?: number;
 };
 
+type LessonWithSnippetsType = z.infer<typeof LessonWithSnippets>;
+
 export const lessonRouter = router({
   retrieve: protectedProcedure
     .input(
@@ -49,14 +51,14 @@ export const lessonRouter = router({
     )
     .output(z.array(LessonWithSnippets))
     .query(async ({ ctx, input }) => {
-      // FIXME make this a slug based search
+      // TODO make this a slug based search
       const foundLessons = await new Lessons(ctx.prisma).searchByTranscript(
         input.q,
         input.keyStage,
         input.subject,
         5,
       );
-      return foundLessons as LessonWithSnippets[];
+      return foundLessons as LessonWithSnippetsType[];
     }),
   searchByTextSimilarity: protectedProcedure
     .input(
@@ -99,7 +101,7 @@ export const lessonRouter = router({
 
       return res.map(({ slug, title, content }) => {
         content = content as Content;
-        const description = (content?.lessonDescription || "") as string;
+        const description = (content?.lessonDescription ?? "") as string;
         return {
           slug,
           title,
@@ -160,7 +162,7 @@ export const lessonRouter = router({
         },
       });
 
-      if (!res || !res.summaries[0]) {
+      if (!res?.summaries?.[0]) {
         throw new TRPCError({
           message: "Lesson not found",
           code: "NOT_FOUND",
@@ -218,7 +220,7 @@ export const lessonRouter = router({
         where: { lessonId: lesson.id, variant: "ORIGINAL" },
         cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
       });
-      if (!transcript || !transcript.content) {
+      if (!transcript?.content) {
         throw new TRPCError({
           message: "Transcript not found",
           code: "NOT_FOUND",

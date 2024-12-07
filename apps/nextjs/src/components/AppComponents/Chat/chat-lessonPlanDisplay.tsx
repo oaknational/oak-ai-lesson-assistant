@@ -46,7 +46,7 @@ function basedOnTitle(basedOn: string | BasedOnOptional) {
 }
 
 const displayStyles = cva(
-  "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24 ",
+  "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24",
 );
 
 function getSectionsToDisplay(
@@ -80,6 +80,13 @@ function getSectionsToDisplay(
   ];
   return sectionsToDisplay;
 }
+
+export type LessonPlanDisplayProps = Readonly<{
+  chatEndRef: React.MutableRefObject<HTMLDivElement | null>;
+  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
+  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
+  showLessonMobile: boolean;
+}>;
 
 export const LessonPlanDisplay = ({
   chatEndRef,

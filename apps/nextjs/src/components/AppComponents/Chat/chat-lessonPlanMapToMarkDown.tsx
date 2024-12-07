@@ -20,8 +20,8 @@ const LessonPlanMapToMarkDown = ({
   const lessonPlanWithExperiments = {
     ...lessonPlan,
     starterQuiz:
-      lessonPlan._experimental_starterQuizMathsV0 || lessonPlan.starterQuiz,
-    exitQuiz: lessonPlan._experimental_exitQuizMathsV0 || lessonPlan.exitQuiz,
+      lessonPlan._experimental_starterQuizMathsV0 ?? lessonPlan.starterQuiz,
+    exitQuiz: lessonPlan._experimental_exitQuizMathsV0 ?? lessonPlan.exitQuiz,
   };
   return (
     Object.entries(lessonPlanWithExperiments)

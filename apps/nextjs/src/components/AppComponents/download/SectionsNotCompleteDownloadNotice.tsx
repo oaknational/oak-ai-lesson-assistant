@@ -14,11 +14,13 @@ import AiIcon from "@/components/SVGParts/AiIcon";
 
 import type { ProgressSections } from "../Chat/Chat/hooks/useProgressForDownloads";
 
+export type SectionsNotCompleteDownloadNoticeProps = Readonly<{
+  sections: ProgressSections;
+}>;
+
 const SectionsNotCompleteDownloadNotice = ({
   sections,
-}: {
-  sections: ProgressSections;
-}) => {
+}: SectionsNotCompleteDownloadNoticeProps) => {
   const [showMissingSections, setShowMissingSections] = useState(false);
   const inCompleteSections = sections.filter((section) => !section.complete);
   return (

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
-import { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import type { AilaUserFlagType } from "@oakai/db";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
 import styled from "styled-components";
@@ -24,11 +24,11 @@ const flagOptions = [
 
 type FlagButtonOptions = typeof flagOptions;
 
-type FlagButtonProps = {
+export type FlagButtonProps = Readonly<{
   sectionTitle: string;
   sectionPath: string;
   sectionValue: LessonPlanSectionWhileStreaming;
-};
+}>;
 
 const FlagButton = ({
   sectionTitle,
@@ -135,11 +135,11 @@ const FlagButtonFormItem = ({
   displayTextBox,
   setUserFeedbackText,
 }: {
-  option: FlagButtonOptions[number];
-  setSelectedRadio: (value: FeedbackOption<AilaUserFlagType>) => void;
-  setDisplayTextBox: (value: string | null) => void;
-  displayTextBox: string | null;
-  setUserFeedbackText: (value: string) => void;
+  readonly option: FlagButtonOptions[number];
+  readonly setSelectedRadio: (value: FeedbackOption<AilaUserFlagType>) => void;
+  readonly setDisplayTextBox: (value: string | null) => void;
+  readonly displayTextBox: string | null;
+  readonly setUserFeedbackText: (value: string) => void;
 }) => {
   return (
     <>

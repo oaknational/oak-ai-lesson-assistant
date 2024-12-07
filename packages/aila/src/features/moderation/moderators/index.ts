@@ -1,8 +1,8 @@
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 export abstract class AilaModerator {
-  private _userId: string | undefined;
-  private _chatId: string | undefined;
+  protected _userId: string | undefined;
+  protected _chatId: string | undefined;
 
   constructor({ userId, chatId }: { userId?: string; chatId?: string }) {
     this._userId = userId;

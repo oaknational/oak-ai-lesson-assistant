@@ -64,7 +64,7 @@ export const createWebActionsPlugin: PluginCreator = (
       data: {
         chatId: aila.chatId || "Unknown",
         categories: moderation.categories as string[],
-        justification: moderation.justification || "Unknown",
+        justification: moderation.justification ?? "Unknown",
       },
     });
 

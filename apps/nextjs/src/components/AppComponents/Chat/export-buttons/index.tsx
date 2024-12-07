@@ -10,9 +10,9 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 import { useDialog } from "../../DialogContext";
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
-export type ExportButtonsProps = {
+export type ExportButtonsProps = Readonly<{
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
-};
+}>;
 
 const ExportButtons = ({ documentContainerRef }: ExportButtonsProps) => {
   const chat = useLessonChat();
@@ -22,7 +22,7 @@ const ExportButtons = ({ documentContainerRef }: ExportButtonsProps) => {
   const demo = useDemoUser();
 
   return (
-    <div className=" sticky left-0 right-10 top-26 z-10 mt-26 hidden bg-white p-14 px-24 shadow-md sm:block">
+    <div className="sticky left-0 right-10 top-26 z-10 mt-26 hidden bg-white p-14 px-24 shadow-md sm:block">
       <div className="flex flex-col">
         <div className="flex items-center space-x-14">
           <LessonPlanProgressDropdown

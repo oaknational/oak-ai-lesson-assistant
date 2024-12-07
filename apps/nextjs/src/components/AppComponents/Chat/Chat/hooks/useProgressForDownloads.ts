@@ -65,7 +65,7 @@ export function useProgressForDownloads({
            */
           return true;
         }
-      }) || [];
+      }) ?? [];
 
     const sections: ProgressSection[] = [
       {

@@ -11,19 +11,21 @@ type ChatLhsHeaderProps = {
   setShowLessonMobile: (value: boolean) => void;
   showLessonMobile: boolean;
   isDemoUser: boolean;
+  showStreamingStatus: boolean;
 };
 
 const ChatLhsHeader = ({
   setShowLessonMobile,
   showLessonMobile,
   isDemoUser,
+  showStreamingStatus,
 }: Readonly<ChatLhsHeaderProps>) => {
   const router = useRouter();
   const chat = useLessonChat();
   return (
     <>
       <div className="mt-6 hidden items-center justify-end gap-5 sm:flex">
-        {process.env.NEXT_PUBLIC_ENVIRONMENT !== "prd" && (
+        {showStreamingStatus && (
           <div className="flex flex-grow flex-row space-x-4 text-left text-xs">
             <div data-testid="chat-iteration">{chat.iteration ?? 0}</div>
             <div data-testid="chat-aila-streaming-status">

@@ -30,13 +30,17 @@ type LessonPlanTrackingContext = {
   onClickStartFromFreeText: (text: string) => void;
 };
 
-const lessonPlanTrackingContext =
+export const lessonPlanTrackingContext =
   createContext<LessonPlanTrackingContext | null>(null);
 
-const LessonPlanTrackingProvider: FC<{
-  children?: React.ReactNode;
-  chatId: string;
-}> = ({ children, chatId }) => {
+export type LessonPlanTrackingProviderProps = Readonly<{
+  readonly children?: React.ReactNode;
+  readonly chatId: string;
+}>;
+const LessonPlanTrackingProvider: FC<LessonPlanTrackingProviderProps> = ({
+  children,
+  chatId,
+}) => {
   const { track } = useAnalytics();
   const [action, setAction] = useState<UserAction | null>(null);
   const [userMessageContent, setUserMessageContent] = useState<string>("");

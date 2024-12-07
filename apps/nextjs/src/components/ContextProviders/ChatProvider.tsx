@@ -22,8 +22,7 @@ import { camelCaseToTitleCase } from "@oakai/core/src/utils/camelCaseConversion"
 import type { Moderation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
-import type { Message } from "ai";
-import type { ChatRequestOptions, CreateMessage } from "ai";
+import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { usePathname, useRouter } from "next/navigation";
@@ -78,7 +77,7 @@ export type ChatContextProps = {
   toxicModeration: PersistedModerationBase | null;
 };
 
-const ChatContext = createContext<ChatContextProps | null>(null);
+export const ChatContext = createContext<ChatContextProps | null>(null);
 
 export type ChatProviderProps = {
   id: string;
@@ -521,10 +520,13 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   );
 }
 
-export function useLessonChat(): ChatContextProps {
+export function useLessonChat(): NonNullable<ChatContextProps> {
   const context = useContext(ChatContext);
 
-  if (!context) {
+  // This assertion is needed to ensure that we always return a context.
+  // Otherwise you will see "unsafe assignment of an error typed value"
+  // when using this hook in a component.
+  if (!context || Object.keys(context).length === 0) {
     throw new Error("useChat must be used within a ChatProvider");
   }
 

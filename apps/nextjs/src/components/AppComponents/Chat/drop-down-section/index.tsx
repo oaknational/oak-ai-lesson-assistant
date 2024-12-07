@@ -58,7 +58,10 @@ const DropDownSection = ({
       data-test-section-key={section}
       data-test-section-complete={isLoaded ? "true" : "false"}
     >
-      <FullWidthButton onClick={() => setIsOpen(section, !isOpen)}>
+      <FullWidthButton
+        onClick={() => setIsOpen(section, !isOpen)}
+        aria-label="toggle"
+      >
         <OakFlex $gap="all-spacing-2">
           <OakBox>
             {!isStreaming && !isLoaded && <div className="w-14"></div>}

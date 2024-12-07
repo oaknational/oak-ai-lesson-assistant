@@ -23,10 +23,10 @@ function GenerationInputAndText({
    * instead of on every key-press. It also allows for undoing on closing "edit
    * mode" by setting inputValue back to answer.value
    */
-  const [inputValue, setInputValue] = useState(item.value || "");
+  const [inputValue, setInputValue] = useState(item.value ?? "");
 
   useEffect(() => {
-    setInputValue(item.value || "");
+    setInputValue(item.value ?? "");
   }, [item.value]);
 
   return (

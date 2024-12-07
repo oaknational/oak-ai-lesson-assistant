@@ -29,7 +29,7 @@ const thresholdConfig: Record<string, number> = {
 // MODERATE_ENGLISH_LANGUAGE doesn't appear in doppler
 const MODERATE_LANGUAGE = Boolean(process.env.MODERATE_ENGLISH_LANGUAGE);
 const ENGLISH_THRESHOLD =
-  parseFloat(process.env.MODERATION_THRESHOLD_ENGLISH_LANGUAGE || "") || 0.4;
+  parseFloat(process.env.MODERATION_THRESHOLD_ENGLISH_LANGUAGE ?? "") ?? 0.4;
 
 if (MODERATE_LANGUAGE && Number.isNaN(ENGLISH_THRESHOLD)) {
   throw new Error(

@@ -5,13 +5,12 @@ import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBe
 import { aiLogger } from "@oakai/logger";
 import cookie from "cookie";
 import type { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
-import invariant from "tiny-invariant";
 
 const log = aiLogger("feature-flags");
 
 /**
  * We use posthog feature flags to toggle functionality without deploying code changes.
- * Fething feature flags on the frontend hasn't been reliable for us:
+ * Fetching feature flags on the front-end hasn't been reliable for us:
  * - you have to wait for a round trip to the posthog API
  * - we currently have a bug where denying cookie consent prevents feature flags from loading
  *
@@ -24,7 +23,7 @@ function getDistinctIdFromCookie(headers: ReadonlyHeaders) {
   if (!cookieHeader) {
     return null;
   }
-  const cookies = cookie.parse(cookieHeader) as Record<string, string>;
+  const cookies = cookie.parse(cookieHeader);
   const phCookieKey = `ph_${process.env.NEXT_PUBLIC_POSTHOG_API_KEY}_posthog`;
   const phCookie = cookies[phCookieKey];
   if (!phCookie) {

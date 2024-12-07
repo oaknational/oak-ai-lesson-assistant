@@ -1,4 +1,4 @@
-import {
+import type {
   LessonPlanKeys,
   LessonPlanSectionWhileStreaming,
 } from "@oakai/aila/src/protocol/schema";
@@ -12,13 +12,12 @@ import AddAdditionalMaterialsButton from "./add-additional-materials-button";
 import FlagButton from "./flag-button";
 import ModifyButton from "./modify-button";
 
-const ChatSection = ({
-  objectKey,
-  value,
-}: {
+export type ChatSectionProps = Readonly<{
   objectKey: LessonPlanKeys;
   value: LessonPlanSectionWhileStreaming;
-}) => {
+}>;
+
+const ChatSection = ({ objectKey, value }: ChatSectionProps) => {
   return (
     <OakFlex $flexDirection="column">
       <MemoizedReactMarkdownWithStyles

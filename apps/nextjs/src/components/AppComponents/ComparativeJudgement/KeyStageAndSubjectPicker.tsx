@@ -54,7 +54,7 @@ const KeyStageAndSubjectPicker = ({
   useEffect(() => {
     const havePickedUnavailableSubject =
       selectedSubject && !allowedSubjects.includes(selectedSubject);
-    if (havePickedUnavailableSubject || !selectedSubject) {
+    if (havePickedUnavailableSubject ?? !selectedSubject) {
       const firstAvailableSubject = allowedSubjects[0];
 
       if (selectedSubject !== firstAvailableSubject) {
