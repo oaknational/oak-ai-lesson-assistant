@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
+import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import { OakBox } from "@oaknational/oak-components";
 import type { AilaUserModificationAction } from "@prisma/client";
 
@@ -18,7 +19,7 @@ import type { FeedbackOption } from "./drop-down-form-wrapper";
 export type ActionButtonWrapperProps = Readonly<{
   sectionTitle: string;
   sectionPath: string;
-  sectionValue: Record<string, unknown> | string | Array<unknown>;
+  sectionValue: LessonPlanSectionWhileStreaming;
   options: ModifyOptions | AdditionalMaterialOptions;
   buttonText: string;
   actionButtonLabel: string;

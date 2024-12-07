@@ -1,8 +1,11 @@
 import { useContext } from "react";
 
-import { analyticsContext } from "@/components/ContextProviders/AnalyticsProvider";
+import {
+  analyticsContext,
+  type AnalyticsContext,
+} from "@/components/ContextProviders/AnalyticsProvider";
 
-const useAnalytics = () => {
+const useAnalytics = (): AnalyticsContext => {
   const analytics = useContext(analyticsContext);
 
   if (!analytics) {

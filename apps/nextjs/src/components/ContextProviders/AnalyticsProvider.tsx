@@ -171,7 +171,9 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   /**
    * Hubspot
    */
-  const hubspotConsent = useOakConsent().getConsent(ServicePolicyMap.HUBSPOT);
+  const hubspotConsent = useOakConsent().getConsent(
+    ServicePolicyMap.HUBSPOT as string,
+  );
   const hubspot = useAnalyticsService({
     service: hubspotClient,
     config: null,
