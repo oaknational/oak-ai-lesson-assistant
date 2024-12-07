@@ -40,11 +40,9 @@ const meta: Meta<typeof DropDownSection> = {
   component: DropDownSection,
   tags: ["autodocs"],
   args: {
-    objectKey: "learningOutcome",
+    section: "learningOutcome",
     value:
       "I can explain the reasons why frogs are so important to British society and culture",
-    documentContainerRef: { current: null },
-    streamingTimeout: 0,
   },
   decorators: [ChatDecorator],
 };

@@ -60,7 +60,7 @@ const ActionButtonWrapper = ({
         chatId: id,
         messageId: lastAssistantMessage.id,
         sectionPath,
-        sectionValue,
+        sectionValue: String(sectionValue),
         action: selectedRadio.enumValue,
         actionOtherText: userFeedbackText || null,
       };
