@@ -3,13 +3,13 @@ import { useEffect, useMemo, useState } from "react";
 import type {
   BasedOnOptional,
   LessonPlanKeys,
+  LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
-import { organiseSections } from "@/lib/lessonPlan/organiseSections";
 import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
@@ -49,38 +49,6 @@ const displayStyles = cva(
   "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24",
 );
 
-function getSectionsToDisplay(
-  lessonPlanKeys: LessonPlanKeys[],
-  streamingSections: LessonPlanKeys[] | undefined,
-) {
-  const sectionsFromOrganiseSections = organiseSections.flatMap((section) => {
-    const trigger = section.trigger;
-    if (
-      lessonPlanKeys.includes(trigger) ||
-      streamingSections?.includes(trigger)
-    ) {
-      return section.dependants.filter(
-        (dependant) =>
-          streamingSections?.includes(dependant) ||
-          lessonPlanKeys.includes(dependant),
-      );
-    }
-    return [];
-  });
-
-  const sectionsFromAllSectionsInOrder = allSectionsInOrder.filter((section) =>
-    lessonPlanKeys.includes(section),
-  );
-
-  const sectionsToDisplay = [
-    ...new Set([
-      ...sectionsFromOrganiseSections,
-      ...sectionsFromAllSectionsInOrder,
-    ]),
-  ];
-  return sectionsToDisplay;
-}
-
 export type LessonPlanDisplayProps = Readonly<{
   chatEndRef: React.MutableRefObject<HTMLDivElement | null>;
   sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
@@ -117,8 +85,8 @@ export const LessonPlanDisplay = ({
     setSectionRef,
   } = chat;
 
-  const lessonPlan = useMemo(
-    () => ({
+  const lessonPlan = useMemo(() => {
+    const lessonPlanWithExperimentalQuiz: LooseLessonPlan = {
       ...chatLessonPlan,
       starterQuiz:
         chat.lessonPlan._experimental_starterQuizMathsV0 ||
@@ -126,20 +94,21 @@ export const LessonPlanDisplay = ({
       exitQuiz:
         chat.lessonPlan._experimental_exitQuizMathsV0 ||
         chat.lessonPlan.exitQuiz,
-    }),
-    [
-      chatLessonPlan,
-      chat.lessonPlan._experimental_starterQuizMathsV0,
-      chat.lessonPlan.starterQuiz,
-      chat.lessonPlan._experimental_exitQuizMathsV0,
-      chat.lessonPlan.exitQuiz,
-    ],
-  );
+    };
+    return lessonPlanWithExperimentalQuiz;
+  }, [
+    chatLessonPlan,
+    chat.lessonPlan._experimental_starterQuizMathsV0,
+    chat.lessonPlan.starterQuiz,
+    chat.lessonPlan._experimental_exitQuizMathsV0,
+    chat.lessonPlan.exitQuiz,
+  ]);
 
   const lessonPlanSectionKeys = useMemo(
     () =>
-      Object.keys(lessonPlan).filter((key) =>
-        allSectionsInOrder.includes(key as LessonPlanKeys),
+      Object.keys(lessonPlan).filter(
+        (key) =>
+          allSectionsInOrder.includes(key as LessonPlanKeys) && lessonPlan[key],
       ) as LessonPlanKeys[],
     [lessonPlan],
   );
@@ -147,14 +116,15 @@ export const LessonPlanDisplay = ({
   // If a section is temporarily missing, we don't suddenly
   // hide the section until it appears again
   useEffect(() => {
-    const newSectionsToDisplay = getSectionsToDisplay(
-      lessonPlanSectionKeys,
-      streamingSections,
-    );
+    const newSectionsToDisplay = [
+      ...new Set([...lessonPlanSectionKeys, ...(streamingSections ?? [])]),
+    ];
+
     setSectionsToDisplay((prevSectionsToDisplay) => {
       const updatedSections = [
         ...new Set([...prevSectionsToDisplay, ...newSectionsToDisplay]),
       ];
+      // Only cause a component update if something has changed
       if (
         JSON.stringify(updatedSections) !==
         JSON.stringify(prevSectionsToDisplay)

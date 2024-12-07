@@ -520,13 +520,19 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   );
 }
 
+function isValidChatContext(
+  context: ChatContextProps | null,
+): context is ChatContextProps {
+  return context !== null && Object.keys(context).length > 0;
+}
+
 export function useLessonChat(): NonNullable<ChatContextProps> {
   const context = useContext(ChatContext);
 
   // This assertion is needed to ensure that we always return a context.
   // Otherwise you will see "unsafe assignment of an error typed value"
   // when using this hook in a component.
-  if (!context || Object.keys(context).length === 0) {
+  if (!isValidChatContext(context)) {
     throw new Error("useChat must be used within a ChatProvider");
   }
 

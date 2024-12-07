@@ -24,6 +24,7 @@ function findStreamingSections(message: Message | undefined): {
   const regex = /"path":"\/([^/"]*)/g;
   const pathMatches =
     content
+      .replace("\\", "") // handle escaped quotes in the input
       .match(regex)
       ?.map((match) => match.replace(/"path":"\//, "").replace(/"$/, "")) ?? [];
 

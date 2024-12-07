@@ -6,8 +6,6 @@ import { ChatContext } from "@/components/ContextProviders/ChatProvider";
 
 import DropDownSection from "./";
 
-const MAX_INT32 = 2 ** 31 - 1;
-
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
