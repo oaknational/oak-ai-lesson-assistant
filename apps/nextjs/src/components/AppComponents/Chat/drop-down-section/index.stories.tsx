@@ -66,7 +66,7 @@ export const Markdown: Story = {
 };
 
 export const Streaming: Story = {
-  args: { streamingTimeout: MAX_INT32 },
+  args: {},
 };
 
 export const Closed: Story = {
@@ -87,7 +87,7 @@ export const Closed: Story = {
 
 export const AdditionalMaterials: Story = {
   args: {
-    objectKey: "additionalMaterials",
+    section: "additionalMaterials",
     value: "None",
   },
 };
@@ -114,7 +114,7 @@ export const ModifyAdditionalMaterials: Story = {
     },
   },
   args: {
-    objectKey: "additionalMaterials",
+    section: "additionalMaterials",
     value: "None",
   },
   play: async ({ canvasElement }) => {
