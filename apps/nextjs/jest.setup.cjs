@@ -1,4 +1,5 @@
 require("@testing-library/jest-dom");
+require("web-streams-polyfill/polyfill");
 
 process.env.NEXT_PUBLIC_DEBUG = process.env.DEBUG;
 
