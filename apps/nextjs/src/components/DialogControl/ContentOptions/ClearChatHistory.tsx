@@ -61,7 +61,9 @@ const ClearChatHistory = ({
       $justifyContent="center"
       $gap="space-between-m"
     >
-      <OakP>This will permanently delete all of your lesson history.</OakP>
+      <OakP $textAlign="center">
+        This will permanently delete all of your lesson history.
+      </OakP>
       <ModalFooterButtons
         closeDialog={handleCloseDialog}
         actionButtonStates={handleDeleteChat}

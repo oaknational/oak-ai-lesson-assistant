@@ -68,7 +68,7 @@ const ClearSingleChatFromChatHistory = ({
       $gap="space-between-m"
       $justifyContent="center"
     >
-      <OakP>This will permanently delete this lesson.</OakP>
+      <OakP $textAlign="center">This will permanently delete this lesson.</OakP>
       {isLoading ? (
         <OakFlex $justifyContent="center" $alignItems="center">
           <LoadingWheel />
