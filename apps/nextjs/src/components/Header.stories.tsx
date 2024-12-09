@@ -6,6 +6,14 @@ const meta: Meta<typeof Header> = {
   title: "Components/Layout/Header",
   component: Header,
   tags: ["autodocs"],
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      story: {
+        height: "80px",
+      },
+    },
+  },
 };
 
 export default meta;
