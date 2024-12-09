@@ -25,6 +25,7 @@ const publicRoutes = [
   "/api/trpc/main/health.prismaCheck",
   "/api/trpc/chat/chat.health.check",
   "/api/cron-jobs/expired-exports",
+  "/api/cron-jobs/google-drive-size-quota",
   /**
    * The inngest route is protected using a signing key
    * @see https://www.inngest.com/docs/faq#my-app-s-serve-endpoint-requires-authentication-what-should-i-do
