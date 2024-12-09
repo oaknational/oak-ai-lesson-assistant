@@ -7,13 +7,13 @@ export function chromaticParams(modes: ChromaticModes[]) {
     chromatic: {
       modes: {
         ...(modes.includes("mobile") && {
-          mobile: { viewport: 375 },
+          mobile: { viewport: "mobile" },
         }),
         ...(modes.includes("desktop") && {
-          desktop: { viewport: 1200 },
+          desktop: { viewport: "desktop" },
         }),
         ...(modes.includes("desktop-wide") && {
-          "desktop-wide": { viewport: 1400 },
+          "desktop-wide": { viewport: "desktopWide" },
         }),
         // NOTE: Before we used modes, all snapshots were by default in the 1200px mode.
         //       This option allows us to reuse the existing desktop snapshot until we're ready to migrate

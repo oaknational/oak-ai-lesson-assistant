@@ -44,7 +44,7 @@ const meta: Meta<typeof ExportButtons> = {
     documentContainerRef: { current: null },
   },
   parameters: {
-    ...chromaticParams(["compat"]),
+    ...chromaticParams(["legacy"]),
   },
 };
 
