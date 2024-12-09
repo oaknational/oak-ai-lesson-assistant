@@ -24,7 +24,7 @@ function basedOnTitle(basedOn: string | BasedOnOptional) {
 }
 
 const displayStyles = cva(
-  "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24 ",
+  "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24",
 );
 
 export type LessonPlanDisplayProps = Readonly<{
@@ -143,7 +143,7 @@ export const LessonPlanDisplay = ({
                 return (
                   <DropDownSection
                     key={dependant}
-                    objectKey={dependant}
+                    section={dependant}
                     sectionRefs={sectionRefs}
                     value={value}
                     userHasCancelledAutoScroll={userHasCancelledAutoScroll}
