@@ -4,7 +4,7 @@ import type { ChatContextProps } from "@/components/ContextProviders/ChatProvide
 import { ChatContext } from "@/components/ContextProviders/ChatProvider";
 import { DemoContext } from "@/components/ContextProviders/Demo";
 
-import { CHROMATIC_MOBILE_ONLY } from "../../../../../.storybook/chromatic";
+import { chromaticParams } from "../../../../../.storybook/chromatic";
 import { MobileExportButtons } from "./MobileExportButtons";
 
 const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
@@ -41,7 +41,7 @@ const meta: Meta<typeof MobileExportButtons> = {
     viewport: {
       defaultViewport: "mobile1",
     },
-    ...CHROMATIC_MOBILE_ONLY,
+    ...chromaticParams(["mobile"]),
   },
   args: {
     closeMobileLessonPullOut: () => {},
