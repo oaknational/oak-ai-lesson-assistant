@@ -13,18 +13,18 @@ import FlagButton from "./flag-button";
 import ModifyButton from "./modify-button";
 
 export type ChatSectionProps = Readonly<{
-  objectKey: LessonPlanKeys;
+  section: LessonPlanKeys;
   value: LessonPlanSectionWhileStreaming;
 }>;
 
-const ChatSection = ({ objectKey, value }: ChatSectionProps) => {
+const ChatSection = ({ section, value }: ChatSectionProps) => {
   return (
     <OakFlex $flexDirection="column">
       <MemoizedReactMarkdownWithStyles
         lessonPlanSectionDescription={
-          lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
+          lessonSectionTitlesAndMiniDescriptions[section]?.description
         }
-        markdown={`${sectionToMarkdown(objectKey, value)}`}
+        markdown={`${sectionToMarkdown(section, value)}`}
       />
       <OakFlex
         $gap="all-spacing-3"
@@ -32,23 +32,23 @@ const ChatSection = ({ objectKey, value }: ChatSectionProps) => {
         $position="relative"
         $display={["none", "flex"]}
       >
-        {objectKey === "additionalMaterials" && value === "None" ? (
+        {section === "additionalMaterials" && value === "None" ? (
           <AddAdditionalMaterialsButton
-            sectionTitle={sectionTitle(objectKey)}
-            sectionPath={objectKey}
+            sectionTitle={sectionTitle(section)}
+            sectionPath={section}
             sectionValue={value}
           />
         ) : (
           <ModifyButton
-            sectionTitle={sectionTitle(objectKey)}
-            sectionPath={objectKey}
+            sectionTitle={sectionTitle(section)}
+            sectionPath={section}
             sectionValue={value}
           />
         )}
 
         <FlagButton
-          sectionTitle={sectionTitle(objectKey)}
-          sectionPath={objectKey}
+          sectionTitle={sectionTitle(section)}
+          sectionPath={section}
           sectionValue={value}
         />
       </OakFlex>

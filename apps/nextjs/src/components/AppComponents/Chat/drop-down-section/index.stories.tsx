@@ -40,7 +40,7 @@ const meta: Meta<typeof DropDownSection> = {
   component: DropDownSection,
   tags: ["autodocs"],
   args: {
-    objectKey: "learningOutcome",
+    section: "learningOutcome",
     value:
       "I can explain the reasons why frogs are so important to British society and culture",
     documentContainerRef: { current: null },
@@ -89,7 +89,7 @@ export const Closed: Story = {
 
 export const AdditionalMaterials: Story = {
   args: {
-    objectKey: "additionalMaterials",
+    section: "additionalMaterials",
     value: "None",
   },
 };
@@ -116,7 +116,7 @@ export const ModifyAdditionalMaterials: Story = {
     },
   },
   args: {
-    objectKey: "additionalMaterials",
+    section: "additionalMaterials",
     value: "None",
   },
   play: async ({ canvasElement }) => {
