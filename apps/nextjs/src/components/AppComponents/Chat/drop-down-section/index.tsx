@@ -82,7 +82,7 @@ const DropDownSection = ({
       {isOpen && (
         <div className="mt-12 w-full">
           {isLoaded ? (
-            <ChatSection key={section} objectKey={section} value={value} />
+            <ChatSection key={section} section={section} value={value} />
           ) : (
             <Skeleton loaded={false} numberOfRows={1}>
               <p>Loading</p>
