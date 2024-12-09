@@ -1,10 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "../../../.storybook/chromatic";
 import { PromptsContent } from "./prompts";
 
 const meta: Meta<typeof PromptsContent> = {
   title: "Pages/Prompts",
   component: PromptsContent,
+  parameters: {
+    ...chromaticParams(["mobile", "legacy"]),
+  },
 };
 
 export default meta;
