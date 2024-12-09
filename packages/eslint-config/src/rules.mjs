@@ -10,7 +10,12 @@ const rulesToMoveToError = {
   "@typescript-eslint/no-unsafe-argument": "warn",
   "@typescript-eslint/no-floating-promises": "warn",
   "@typescript-eslint/no-unsafe-member-access": "warn",
-  "@typescript-eslint/no-redundant-type-constituents": "warn",        
+  "@typescript-eslint/no-redundant-type-constituents": "warn",       
+}
+
+const rulesToDecideOn = {
+  "@typescript-eslint/no-unsafe-assignment": "off", // this rule is buggy and is causing a lot of false positives
+  "@typescript-eslint/no-unsafe-call": "off", // this rule is buggy and is causing a lot of false positives
 }
 
 // @ts-check
@@ -18,6 +23,7 @@ const rulesToMoveToError = {
 export const rules = {
   ...typescript.rules,
   ...rulesToMoveToError,
+  ...rulesToDecideOn,
   "@typescript-eslint/prefer-nullish-coalescing": "warn",
   "@typescript-eslint/no-unsafe-enum-comparison": "error",
   "@typescript-eslint/no-unnecessary-type-assertion": "warn",
@@ -31,11 +37,9 @@ export const rules = {
     allowTaggedTemplates: true,
   }],
   "@typescript-eslint/require-await": "warn",  
-  "@typescript-eslint/no-unsafe-assignment": "warn",
   "@typescript-eslint/unbound-method": "off",
   "@typescript-eslint/restrict-template-expressions": "error",
   "@typescript-eslint/await-thenable": "error",
-  "@typescript-eslint/no-unsafe-call": "warn",
   "@typescript-eslint/explicit-function-return-type": ["off", {
     allowExpressions: true,
     allowTypedFunctionExpressions: true,
