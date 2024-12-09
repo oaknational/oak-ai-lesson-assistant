@@ -43,6 +43,7 @@ export class AilaModeration implements AilaModerationFeature {
     moderations?: Moderations;
     shouldPersist?: boolean;
   }) {
+    log.info("Initializing AilaModeration");
     this._aila = aila;
     this._prisma = prisma ?? globalPrisma;
 
@@ -88,7 +89,9 @@ export class AilaModeration implements AilaModerationFeature {
     messages: Message[];
     pluginContext: AilaPluginContext;
   }) {
+    log.info("Moderating messages", messages.length);
     if (messages.length === 0) {
+      log.info("No messages to moderate, returning default message");
       const defaultMessage: ModerationDocument = {
         type: "moderation",
         categories: [],
@@ -97,7 +100,9 @@ export class AilaModeration implements AilaModerationFeature {
     }
     const lastAssistantMessage = getLastAssistantMessage(messages);
     if (!lastAssistantMessage) {
-      throw new Error("Failed to moderate, no assistant message found");
+      const errorText = "Failed to moderate, no assistant message found";
+      log.error(errorText);
+      throw new Error(errorText);
     }
 
     const moderationResult: ModerationResult = await this.performModeration({
@@ -177,9 +182,13 @@ export class AilaModeration implements AilaModerationFeature {
     lessonPlan: LooseLessonPlan;
     retries?: number;
   }): Promise<ModerationResult> {
+    log.info("Performing moderation");
     const mockedResponse = this.mockedResponse(messages);
     if (mockedResponse) {
+      log.info("Returning mocked response", mockedResponse);
       return mockedResponse;
+    } else {
+      log.info("No mocked response found. Continuing to moderate");
     }
     const response = await this._moderator.moderate(JSON.stringify(lessonPlan));
     return (

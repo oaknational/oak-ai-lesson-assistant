@@ -53,8 +53,23 @@ export async function continueChat(page: Page) {
 }
 
 export async function isFinished(page: Page) {
-  const progressText = await page.getByTestId("chat-progress").textContent();
-  return progressText === "10 of 10 sections complete";
+  const sections = await page.$$('[data-test="lesson-plan-section"]');
+
+  for (const section of sections) {
+    const isComplete = await section.getAttribute("data-test-section-complete");
+    if (isComplete !== "true") {
+      return false;
+    }
+  }
+  return sections.length > 0;
+}
+
+export async function hasInChatShareButton(page: Page) {
+  return await page.getByTestId("in-chat-share-button").isVisible();
+}
+
+export async function expectHasInChatShareButton(page: Page) {
+  await expect(page.getByTestId("in-chat-share-button")).toBeVisible();
 }
 
 export async function expectFinished(page: Page) {
@@ -109,8 +124,12 @@ export const applyLlmFixtures = async (
 
 // The chat UI has a race condition when you submit a message too quickly after the previous response
 // This is a temporary fix to fix test flake
-export async function letUiSettle(page, testInfo: TestInfo) {
-  return await page.waitForTimeout(testInfo.retry === 0 ? 500 : 6000);
+export async function letUiSettle(
+  page: Page,
+  testInfo: TestInfo,
+): Promise<void> {
+  const duration = testInfo.retry === 0 ? 500 : 6000;
+  await page.waitForTimeout(duration);
 }
 
 // So that we can capture the lesson plan in the Playwright screenshot

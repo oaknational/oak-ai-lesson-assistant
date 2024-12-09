@@ -1,4 +1,24 @@
-export const lessonSectionTitlesAndMiniDescriptions = {
+import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+
+export const lessonSectionTitlesAndMiniDescriptions: Record<
+  LessonPlanKeys,
+  { description: string }
+> = {
+  title: {
+    description: "The name of the lesson.",
+  },
+  keyStage: {
+    description: "The educational stage for which the lesson is intended.",
+  },
+  subject: {
+    description: "The subject area of the lesson.",
+  },
+  topic: {
+    description: "An optional topic that this lesson is part of.",
+  },
+  basedOn: {
+    description: "An Oak lesson that this lesson is based on.",
+  },
   learningOutcome: {
     description:
       "A short summary of the knowledge, skills and understanding students are expected to acquire by the end of the lesson.",
@@ -47,8 +67,8 @@ export const lessonSectionTitlesAndMiniDescriptions = {
     description:
       "Extra resources for further study or practice, including worksheets, readings, and interactive activities.",
   },
-  slides: {
-    description:
-      "Visual aids and presentations used throughout the lesson to support teaching and learning.",
-  },
+  // slides: {
+  //   description:
+  //     "Visual aids and presentations used throughout the lesson to support teaching and learning.",
+  // },
 };

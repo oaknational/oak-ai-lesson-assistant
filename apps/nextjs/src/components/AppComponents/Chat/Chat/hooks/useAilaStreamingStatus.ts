@@ -1,9 +1,41 @@
 import { useMemo, useEffect } from "react";
 
+import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import type { Message } from "ai";
 
+import { allSectionsInOrder } from "../../../../../lib/lessonPlan/sectionsInOrder";
+
 const log = aiLogger("chat");
+
+function findStreamingSections(message: Message | undefined): {
+  streamingSections: LessonPlanKeys[];
+  streamingSection: LessonPlanKeys | undefined;
+  content: string | undefined;
+} {
+  if (!message?.content) {
+    return {
+      streamingSections: [],
+      streamingSection: undefined,
+      content: undefined,
+    };
+  }
+  const { content } = message;
+  const regex = /"path":"\/([^/"]*)/g;
+  const pathMatches =
+    content
+      .replace(/\\/g, "") // handle escaped backslashes in the input
+      .match(regex)
+      ?.map((match) => match.replace(/"path":"\//, "").replace(/"$/, "")) ?? [];
+
+  const streamingSections: LessonPlanKeys[] = pathMatches.filter(
+    (i): i is string =>
+      typeof i === "string" && allSectionsInOrder.includes(i as LessonPlanKeys),
+  ) as LessonPlanKeys[];
+  const streamingSection: LessonPlanKeys | undefined =
+    streamingSections[streamingSections.length - 1];
+  return { streamingSections, streamingSection, content };
+}
 
 export type AilaStreamingStatus =
   | "Loading"
@@ -19,38 +51,54 @@ export const useAilaStreamingStatus = ({
 }: {
   isLoading: boolean;
   messages: Message[];
-}): AilaStreamingStatus => {
-  const ailaStreamingStatus = useMemo<AilaStreamingStatus>(() => {
-    const moderationStart = "MODERATION_START";
-    const chatStart = "CHAT_START";
-    if (messages.length === 0) return "Idle";
+}): {
+  status: AilaStreamingStatus;
+  streamingSection: LessonPlanKeys | undefined;
+  streamingSections: LessonPlanKeys[] | undefined;
+} => {
+  const { status, streamingSection, streamingSections } = useMemo(() => {
+    const moderationStart = `MODERATION_START`;
+    const chatStart = `CHAT_START`;
+    if (messages.length === 0)
+      return {
+        status: "Idle" as AilaStreamingStatus,
+        streamingSection: undefined,
+      };
     const lastMessage = messages[messages.length - 1];
 
+    let status: AilaStreamingStatus = "Idle";
+    const { streamingSections, streamingSection, content } =
+      findStreamingSections(lastMessage);
+
     if (isLoading) {
-      if (!lastMessage) return "Loading";
-      const { content } = lastMessage;
-      if (lastMessage.role === "user") {
-        return "RequestMade";
-      } else if (content.includes(moderationStart)) {
-        return "Moderating";
-      } else if (content.includes("experimentalPatch")) {
-        return "StreamingExperimentalPatches";
-      } else if (
-        content.includes('"type":"prompt"') ||
-        content.includes('\\"type\\":\\"prompt\\"')
-      ) {
-        return "StreamingChatResponse";
-      } else if (content.includes(chatStart)) {
-        return "StreamingLessonPlan";
+      if (!lastMessage || !content) {
+        status = "Loading";
+      } else {
+        if (lastMessage.role === "user") {
+          status = "RequestMade";
+        } else if (content.includes(moderationStart)) {
+          status = "Moderating";
+        } else if (content.includes(`"type":"text"`)) {
+          status = "StreamingChatResponse";
+        } else if (content.includes(chatStart)) {
+          status = "StreamingLessonPlan";
+        } else {
+          status = "Loading";
+        }
       }
-      return "Loading";
     }
-    return "Idle";
+
+    return { status, streamingSections, streamingSection };
   }, [isLoading, messages]);
 
   useEffect(() => {
-    log.info("ailaStreamingStatus set:", ailaStreamingStatus);
-  }, [ailaStreamingStatus]);
+    log.info("ailaStreamingStatus set:", status);
+  }, [status]);
 
-  return ailaStreamingStatus;
+  return {
+    status,
+    streamingSection:
+      status === "StreamingLessonPlan" ? streamingSection : undefined,
+    streamingSections,
+  };
 };

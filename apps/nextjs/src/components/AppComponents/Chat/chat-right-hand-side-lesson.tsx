@@ -29,9 +29,6 @@ const ChatRightHandSideLesson = ({
 
   const [showScrollButton, setShowScrollButton] = useState(false);
 
-  // This retains this existing bug, but is fixed on subsequent PRs
-  const sectionRefs = {};
-
   const scrollToBottom = () => {
     if (chatEndRef.current) {
       setShowScrollButton(false);
@@ -57,16 +54,13 @@ const ChatRightHandSideLesson = ({
 
   return (
     <div
-      className={`fixed bottom-0 ${showLessonMobile ? "right-0" : "right-[-100%] sm:right-0"} right-0 ${demo.isDemoUser ? "top-8 sm:top-0" : "top-0"} z-30 w-[95%] bg-white shadow-md duration-300 sm:relative sm:z-0  sm:w-[50%] sm:shadow-none lg:w-full`}
+      className={`fixed bottom-0 ${showLessonMobile ? "right-0" : "right-[-100%] sm:right-0"} right-0 ${demo.isDemoUser ? "top-8 sm:top-0" : "top-0"} z-30 w-[95%] bg-white shadow-md duration-300 sm:relative sm:z-0 sm:w-[50%] sm:shadow-none lg:w-full`}
       data-testid="chat-right-hand-side-lesson"
       ref={documentContainerRef}
       onScroll={handleScroll}
       style={{ overflowY: "auto" }}
     >
-      <ExportButtons
-        sectionRefs={sectionRefs}
-        documentContainerRef={documentContainerRef}
-      />
+      <ExportButtons documentContainerRef={documentContainerRef} />
       <MobileExportButtons
         closeMobileLessonPullOut={closeMobileLessonPullOut}
       />
@@ -87,12 +81,10 @@ const ChatRightHandSideLesson = ({
         <LessonPlanDisplay
           showLessonMobile={showLessonMobile}
           chatEndRef={chatEndRef}
-          sectionRefs={sectionRefs}
-          documentContainerRef={documentContainerRef}
         />
       </div>
       <div
-        className={`${messages.length > 1 && showLessonMobile ? "flex" : "hidden"}  fixed bottom-20 left-0 right-0 items-center justify-center duration-150  sm:hidden`}
+        className={`${messages.length > 1 && showLessonMobile ? "flex" : "hidden"} fixed bottom-20 left-0 right-0 items-center justify-center duration-150 sm:hidden`}
       >
         <ChatButton
           variant="primary"
@@ -119,6 +111,7 @@ const ChatRightHandSideLesson = ({
         </ChatButton>
       </span>
       <div ref={endOfDocRef} />
+      <div className="h-[50vh]"></div>
     </div>
   );
 };
