@@ -1,6 +1,11 @@
 import "@storybook/csf";
 
-type ChromaticModes = "legacy" | "mobile" | "desktop" | "desktop-wide";
+type ChromaticModes =
+  | "legacy"
+  | "mobile"
+  | "mobile-wide"
+  | "desktop"
+  | "desktop-wide";
 
 export function chromaticParams(modes: ChromaticModes[]) {
   return {
@@ -8,6 +13,9 @@ export function chromaticParams(modes: ChromaticModes[]) {
       modes: {
         ...(modes.includes("mobile") && {
           mobile: { viewport: "mobile" },
+        }),
+        ...(modes.includes("mobile-wide") && {
+          mobile: { viewport: "mobile-wide" },
         }),
         ...(modes.includes("desktop") && {
           desktop: { viewport: "desktop" },
