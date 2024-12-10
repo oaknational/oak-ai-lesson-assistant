@@ -1,33 +1,27 @@
+import type { Message } from "@oakai/aila/src/core/chat";
 import type { Meta, StoryObj } from "@storybook/react";
 
-import {
-  ChatContext,
-  type ChatContextProps,
-} from "@/components/ContextProviders/ChatProvider";
+import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import { LessonPlanTrackingDecorator } from "@/storybook/decorators/LessonPlanTrackingDecorator";
 
 import ChatQuickButtons from "./chat-quick-buttons";
 
-const DummyMessage = {};
-
-const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
-  <ChatContext.Provider
-    value={
-      {
-        messages: [DummyMessage],
-        ...parameters.chatContext,
-      } as unknown as ChatContextProps
-    }
-  >
-    <Story />
-  </ChatContext.Provider>
-);
+const DummyMessage: Message = {
+  content: "Dummy message",
+  id: "123",
+  role: "user",
+};
 
 const meta: Meta<typeof ChatQuickButtons> = {
   title: "Components/Chat/ChatQuickButtons",
   component: ChatQuickButtons,
   tags: ["autodocs"],
   decorators: [ChatDecorator, LessonPlanTrackingDecorator],
+  parameters: {
+    chatContext: {
+      messages: [DummyMessage],
+    },
+  },
 };
 
 export default meta;

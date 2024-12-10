@@ -1,25 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
-import { ChatContext } from "@/components/ContextProviders/ChatProvider";
+import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import { DemoDecorator } from "@/storybook/decorators/DemoDecorator";
 
 import ExportButtons from "./";
-
-const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
-  <ChatContext.Provider
-    value={
-      {
-        id: "123",
-        isStreaming: false,
-        lessonPlan: {},
-        ...parameters.chatContext,
-      } as unknown as ChatContextProps
-    }
-  >
-    <Story />
-  </ChatContext.Provider>
-);
 
 const meta: Meta<typeof ExportButtons> = {
   title: "Components/LessonPlan/ExportButtons",
@@ -29,6 +13,13 @@ const meta: Meta<typeof ExportButtons> = {
   args: {
     sectionRefs: {},
     documentContainerRef: { current: null },
+  },
+  parameters: {
+    chatContext: {
+      id: "123",
+      isStreaming: false,
+      lessonPlan: {},
+    },
   },
 };
 

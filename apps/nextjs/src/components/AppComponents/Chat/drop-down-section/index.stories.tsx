@@ -1,39 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { userEvent, within } from "@storybook/test";
 
-import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
-import { ChatContext } from "@/components/ContextProviders/ChatProvider";
+import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 
 import DropDownSection from "./";
 
 const MAX_INT32 = 2 ** 31 - 1;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
-  <ChatContext.Provider
-    value={
-      {
-        id: "123",
-        lastModeration: null,
-        messages: [],
-        lessonPlan: {
-          title: "About Frogs",
-          keyStage: "Key Stage 2",
-          subject: "Science",
-          topic: "Amphibians",
-          basedOn: "Frogs in Modern Britain",
-          learningOutcome:
-            "To understand the importance of frogs in British society and culture",
-        },
-        ailaStreamingStatus: "Idle",
-        ...parameters.chatContext,
-      } as unknown as ChatContextProps
-    }
-  >
-    <Story />
-  </ChatContext.Provider>
-);
 
 const meta: Meta<typeof DropDownSection> = {
   title: "Components/LessonPlan/DropDownSection",
@@ -47,6 +21,23 @@ const meta: Meta<typeof DropDownSection> = {
     streamingTimeout: 0,
   },
   decorators: [ChatDecorator],
+  parameters: {
+    chatContext: {
+      id: "123",
+      lastModeration: null,
+      messages: [],
+      lessonPlan: {
+        title: "About Frogs",
+        keyStage: "Key Stage 2",
+        subject: "Science",
+        topic: "Amphibians",
+        basedOn: { id: "testId", title: "Frogs in Modern Britain" },
+        learningOutcome:
+          "To understand the importance of frogs in British society and culture",
+      },
+      ailaStreamingStatus: "Idle",
+    },
+  },
 };
 
 export default meta;
