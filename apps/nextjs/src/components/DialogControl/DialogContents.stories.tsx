@@ -4,28 +4,14 @@ import { http, HttpResponse } from "msw";
 import type { AnalyticsContext } from "@/components/ContextProviders/AnalyticsProvider";
 import { analyticsContext } from "@/components/ContextProviders/AnalyticsProvider";
 
-import { DialogContext } from "../AppComponents/DialogContext";
 import { DemoProvider } from "../ContextProviders/Demo";
 import DialogContents from "./DialogContents";
+import { DialogContentDecorator } from "@/storybook/decorators/DialogContentDecorator";
 
 const meta: Meta<typeof DialogContents> = {
   title: "Components/Dialogs/DialogContents",
   component: DialogContents,
-  decorators: (Story, { parameters }) => {
-    return (
-      <DialogContext.Provider
-        value={{
-          dialogWindow: parameters.dialogWindow,
-          setDialogWindow: () => {},
-          dialogProps: {},
-          setDialogProps: () => {},
-          openSidebar: false,
-          setOpenSidebar: () => {},
-        }}
-      >
-        <Story />
-      </DialogContext.Provider>
-    );
+  decorators: [DialogContentDecorator]
   },
 };
 

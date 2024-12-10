@@ -54,13 +54,7 @@ const preview: Preview = {
   loaders: [mswLoader],
 };
 
-// Providers not currently used
-// - CookieConsentProvider
-// - DemoProvider
-// - LessonPlanTrackingProvider
-// - DialogProvider
-// - SidebarProvider
-// - ChatModerationProvider
+// NOTE: See ./decorators for more decorators available to use in stories
 
 export const decorators: Decorator[] = [
   RadixThemeDecorator,
