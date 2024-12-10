@@ -7,7 +7,7 @@ const meta: Meta<typeof AcceptTermsForm> = {
   title: "Pages/Onboarding/AcceptTermsForm",
   component: AcceptTermsForm,
   parameters: {
-    ...chromaticParams(["mobile", "legacy"]),
+    ...chromaticParams(["mobile", "desktop"]),
   },
 };
 

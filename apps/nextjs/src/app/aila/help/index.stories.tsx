@@ -11,7 +11,7 @@ const meta: Meta<typeof HelpContent> = {
   parameters: {
     // Including custom decorators changes the layout from fullscreen
     layout: "fullscreen",
-    ...chromaticParams(["mobile", "legacy"]),
+    ...chromaticParams(["mobile", "desktop"]),
   },
   decorators: [
     (Story) => (

@@ -7,7 +7,7 @@ const meta: Meta<typeof LegacyUpgradeNotice> = {
   title: "Pages/Onboarding/LegacyUpgradeNotice",
   component: LegacyUpgradeNotice,
   parameters: {
-    ...chromaticParams(["mobile", "legacy"]),
+    ...chromaticParams(["mobile", "desktop"]),
   },
 };
 

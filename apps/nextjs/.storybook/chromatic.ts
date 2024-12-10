@@ -1,11 +1,6 @@
 import "@storybook/csf";
 
-type ChromaticModes =
-  | "legacy"
-  | "mobile"
-  | "mobile-wide"
-  | "desktop"
-  | "desktop-wide";
+type ChromaticModes = "mobile" | "mobile-wide" | "desktop" | "desktop-wide";
 
 export function chromaticParams(modes: ChromaticModes[]) {
   return {
@@ -22,11 +17,6 @@ export function chromaticParams(modes: ChromaticModes[]) {
         }),
         ...(modes.includes("desktop-wide") && {
           "desktop-wide": { viewport: "desktopWide" },
-        }),
-        // NOTE: Before we used modes, all snapshots were by default in the 1200px mode.
-        //       This option allows us to reuse the existing desktop snapshot until we're ready to migrate
-        ...(modes.includes("legacy") && {
-          "1200px": { viewport: 1200 as const },
         }),
       },
     },
@@ -84,9 +74,7 @@ declare module "@storybook/csf" {
           theme?: "light" | "dark";
           backgrounds?: { value: string };
         }
-      > & {
-        "1200px"?: { viewport: 1200 };
-      };
+      >;
       /**
        * Define one or more viewport sizes to capture. Note, units are considered in pixels
        */
