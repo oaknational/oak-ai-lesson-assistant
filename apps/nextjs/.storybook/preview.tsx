@@ -28,6 +28,26 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    viewport: {
+      viewports: {
+        mobile: {
+          name: "Mobile",
+          styles: { width: "375px", height: "800px" },
+        },
+        mobileWide: {
+          name: "Mobile Wide",
+          styles: { width: "430px", height: "930px" },
+        },
+        desktop: {
+          name: "Desktop",
+          styles: { width: "1200px", height: "1000px" },
+        },
+        desktopWide: {
+          name: "Desktop Wide",
+          styles: { width: "1400px", height: "1000px" },
+        },
+      },
+    },
   },
   loaders: [mswLoader],
 };
