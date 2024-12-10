@@ -152,6 +152,7 @@ module.exports = {
         pathNot: [ 
           '^packages/eslint-config',
           '^packages/prettier-config',
+          'apps/nextjs/tailwind.config.cjs',
           'jest[.]config[.](js|mjs|cjs|ts)$',
           '[.](?:spec|test)[.](?:js|mjs|cjs|jsx|ts|mts|cts|tsx)$',
           '(^|/)__tests__/',
