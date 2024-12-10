@@ -45,7 +45,7 @@ export const chatsRouter = router({
       const { id } = input;
 
       const session = await prisma?.appSession.findUnique({
-        where: { id },
+        where: { id, deletedAt: null },
       });
 
       if (!session) {
@@ -72,6 +72,7 @@ export const chatsRouter = router({
       where: {
         userId,
         appId: "lesson-planner",
+        deletedAt: null,
       },
     });
 
