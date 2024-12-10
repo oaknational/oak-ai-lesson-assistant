@@ -57,6 +57,7 @@
     "@semantic-release/git": "^10.0.1",
     "@types/jest": "^29.5.14",
     "autoprefixer": "^10.4.16",
+    "dependency-cruiser": "^16.7.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
     "next": "14.2.18",
@@ -73,8 +74,5 @@
     "node": ">=20.9.0",
     "pnpm": ">=8"
   },
-  "type": "module",
-  "devDependencies": {
-    "dependency-cruiser": "^16.7.0"
-  }
+  "type": "module"
 }
