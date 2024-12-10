@@ -7,7 +7,7 @@ const meta: Meta<typeof FAQPageContent> = {
   title: "Pages/FAQs",
   component: FAQPageContent,
   parameters: {
-    ...chromaticParams(["mobile", "legacy"]),
+    ...chromaticParams(["mobile", "desktop"]),
   },
 };
 

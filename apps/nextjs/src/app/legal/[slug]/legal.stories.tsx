@@ -7,7 +7,7 @@ const meta: Meta<typeof LegalContent> = {
   title: "Pages/Legal/Sanity dynamic",
   component: LegalContent,
   parameters: {
-    ...chromaticParams(["mobile", "legacy"]),
+    ...chromaticParams(["mobile", "desktop"]),
   },
 };
 

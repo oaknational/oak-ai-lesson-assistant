@@ -12,7 +12,7 @@ const meta: Meta<typeof ChatStart> = {
   parameters: {
     // Including custom decorators changes the layout from fullscreen
     layout: "fullscreen",
-    ...chromaticParams(["mobile", "legacy"]),
+    ...chromaticParams(["mobile", "desktop"]),
   },
   decorators: [
     (Story) => (

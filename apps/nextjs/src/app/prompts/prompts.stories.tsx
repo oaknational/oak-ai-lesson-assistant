@@ -7,7 +7,7 @@ const meta: Meta<typeof PromptsContent> = {
   title: "Pages/Prompts",
   component: PromptsContent,
   parameters: {
-    ...chromaticParams(["mobile", "legacy"]),
+    ...chromaticParams(["mobile", "desktop"]),
   },
 };
 
