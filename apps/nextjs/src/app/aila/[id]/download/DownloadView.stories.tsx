@@ -10,7 +10,7 @@ const meta: Meta<typeof DownloadContent> = {
   component: DownloadContent,
   parameters: {
     layout: "fullscreen",
-    ...chromaticParams(["mobile", "legacy"]),
+    ...chromaticParams(["mobile", "desktop"]),
   },
   decorators: [
     (Story) => (

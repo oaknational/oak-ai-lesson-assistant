@@ -9,7 +9,7 @@ const meta: Meta<typeof ShareChat> = {
   component: ShareChat,
   parameters: {
     layout: "fullscreen",
-    ...chromaticParams(["mobile", "legacy"]),
+    ...chromaticParams(["mobile", "desktop"]),
   },
 };
 

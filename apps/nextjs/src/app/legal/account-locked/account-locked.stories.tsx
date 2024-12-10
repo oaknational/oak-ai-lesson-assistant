@@ -7,7 +7,7 @@ const meta: Meta<typeof AccountLocked> = {
   title: "Pages/Legal/Account Locked",
   component: AccountLocked,
   parameters: {
-    ...chromaticParams(["mobile", "legacy"]),
+    ...chromaticParams(["mobile", "desktop"]),
   },
 };
 

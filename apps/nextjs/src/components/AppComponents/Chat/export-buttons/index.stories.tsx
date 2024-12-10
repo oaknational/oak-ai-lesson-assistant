@@ -43,9 +43,6 @@ const meta: Meta<typeof ExportButtons> = {
     sectionRefs: {},
     documentContainerRef: { current: null },
   },
-  parameters: {
-    ...chromaticParams(["legacy"]),
-  },
 };
 
 export default meta;

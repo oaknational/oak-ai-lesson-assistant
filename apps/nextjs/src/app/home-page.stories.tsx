@@ -7,7 +7,7 @@ const meta: Meta<typeof HomePageContent> = {
   title: "Pages/Homepage",
   component: HomePageContent,
   parameters: {
-    ...chromaticParams(["mobile", "legacy"]),
+    ...chromaticParams(["mobile", "desktop"]),
   },
 };
 

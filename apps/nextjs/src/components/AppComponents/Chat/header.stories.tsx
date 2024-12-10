@@ -24,7 +24,6 @@ const meta: Meta<typeof Header> = {
   decorators: [DemoDecorator],
   parameters: {
     layout: "fullscreen",
-    ...chromaticParams(["legacy"]),
     docs: {
       story: {
         height: "150px",
@@ -48,7 +47,7 @@ export const DemoUser: Story = {
       appSessionsPerMonth: 3,
       appSessionsRemaining: 2,
     },
-    ...chromaticParams(["legacy", "desktop-wide"]),
+    ...chromaticParams(["desktop", "desktop-wide"]),
   },
 };
 
