@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { chromaticParams } from "../../.storybook/chromatic";
+import { chromaticParams } from "@/storybook/chromatic";
+
 import { HomePageContent } from "./home-page";
 
 const meta: Meta<typeof HomePageContent> = {

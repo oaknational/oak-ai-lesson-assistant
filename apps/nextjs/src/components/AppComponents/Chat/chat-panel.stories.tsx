@@ -4,8 +4,8 @@ import {
   ChatContext,
   type ChatContextProps,
 } from "@/components/ContextProviders/ChatProvider";
-import { lessonPlanTrackingContext } from "@/lib/analytics/lessonPlanTrackingContext";
-import { SidebarContext } from "@/lib/hooks/use-sidebar";
+import { LessonPlanTrackingDecorator } from "@/storybook/decorators/LessonPlanTrackingDecorator";
+import { SidebarContextDecorator } from "@/storybook/decorators/SidebarDecorator";
 
 import { ChatPanel } from "./chat-panel";
 
@@ -24,40 +24,13 @@ const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
   </ChatContext.Provider>
 );
 
-const LessonPlanTrackingContextDecorator: Story["decorators"] = (Story) => (
-  <lessonPlanTrackingContext.Provider
-    value={{
-      onClickContinue: () => {},
-      onClickRetry: () => {},
-      onClickStartFromExample: () => {},
-      onClickStartFromFreeText: () => {},
-      onStreamFinished: () => {},
-      onSubmitText: () => {},
-    }}
-  >
-    <Story />
-  </lessonPlanTrackingContext.Provider>
-);
-
-const SidebarContextDecorator: Story["decorators"] = (Story) => (
-  <SidebarContext.Provider
-    value={{
-      toggleSidebar: () => {},
-      isLoading: false,
-      isSidebarOpen: false,
-    }}
-  >
-    <Story />
-  </SidebarContext.Provider>
-);
-
 const meta: Meta<typeof ChatPanel> = {
   title: "Components/Chat/ChatPanel",
   component: ChatPanel,
   tags: ["autodocs"],
   decorators: [
     ChatDecorator,
-    LessonPlanTrackingContextDecorator,
+    LessonPlanTrackingDecorator,
     SidebarContextDecorator,
   ],
   args: {

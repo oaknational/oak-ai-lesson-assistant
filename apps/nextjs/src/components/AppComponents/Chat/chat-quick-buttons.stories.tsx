@@ -4,7 +4,7 @@ import {
   ChatContext,
   type ChatContextProps,
 } from "@/components/ContextProviders/ChatProvider";
-import { lessonPlanTrackingContext } from "@/lib/analytics/lessonPlanTrackingContext";
+import { LessonPlanTrackingDecorator } from "@/storybook/decorators/LessonPlanTrackingDecorator";
 
 import ChatQuickButtons from "./chat-quick-buttons";
 
@@ -23,26 +23,11 @@ const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
   </ChatContext.Provider>
 );
 
-const LessonPlanTrackingContextDecorator: Story["decorators"] = (Story) => (
-  <lessonPlanTrackingContext.Provider
-    value={{
-      onClickContinue: () => {},
-      onClickRetry: () => {},
-      onClickStartFromExample: () => {},
-      onClickStartFromFreeText: () => {},
-      onStreamFinished: () => {},
-      onSubmitText: () => {},
-    }}
-  >
-    <Story />
-  </lessonPlanTrackingContext.Provider>
-);
-
 const meta: Meta<typeof ChatQuickButtons> = {
   title: "Components/Chat/ChatQuickButtons",
   component: ChatQuickButtons,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, LessonPlanTrackingContextDecorator],
+  decorators: [ChatDecorator, LessonPlanTrackingDecorator],
 };
 
 export default meta;

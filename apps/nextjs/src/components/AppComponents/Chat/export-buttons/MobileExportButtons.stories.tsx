@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
 import { ChatContext } from "@/components/ContextProviders/ChatProvider";
+import { chromaticParams } from "@/storybook/chromatic";
 
-import { chromaticParams } from "../../../../../.storybook/chromatic";
 import { MobileExportButtons } from "./MobileExportButtons";
 
 const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
