@@ -56,3 +56,5 @@ yarn-error.log*
 
 .sonar
 .sonar/**/*
+
+dependency-graph.svg
