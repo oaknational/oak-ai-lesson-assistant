@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
 import { ChatContext } from "@/components/ContextProviders/ChatProvider";
 import { chromaticParams } from "@/storybook/chromatic";
+import { DemoDecorator } from "@/storybook/decorators/DemoDecorator";
 
 import { MobileExportButtons } from "./MobileExportButtons";
 

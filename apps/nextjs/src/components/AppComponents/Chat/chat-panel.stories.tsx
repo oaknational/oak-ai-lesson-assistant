@@ -5,7 +5,7 @@ import {
   type ChatContextProps,
 } from "@/components/ContextProviders/ChatProvider";
 import { LessonPlanTrackingDecorator } from "@/storybook/decorators/LessonPlanTrackingDecorator";
-import { SidebarContextDecorator } from "@/storybook/decorators/SidebarDecorator";
+import { SidebarDecorator } from "@/storybook/decorators/SidebarDecorator";
 
 import { ChatPanel } from "./chat-panel";
 
@@ -28,11 +28,7 @@ const meta: Meta<typeof ChatPanel> = {
   title: "Components/Chat/ChatPanel",
   component: ChatPanel,
   tags: ["autodocs"],
-  decorators: [
-    ChatDecorator,
-    LessonPlanTrackingDecorator,
-    SidebarContextDecorator,
-  ],
+  decorators: [ChatDecorator, LessonPlanTrackingDecorator, SidebarDecorator],
   args: {
     isDemoLocked: false,
   },
