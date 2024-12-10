@@ -2,9 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
 import { ChatContext } from "@/components/ContextProviders/ChatProvider";
-import { DemoContext } from "@/components/ContextProviders/Demo";
+import { DemoDecorator } from "@/storybook/decorators/DemoDecorator";
 
-import { chromaticParams } from "../../../../../.storybook/chromatic";
 import ExportButtons from "./";
 
 const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
@@ -20,18 +19,6 @@ const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
   >
     <Story />
   </ChatContext.Provider>
-);
-
-const DemoDecorator: Story["decorators"] = (Story, { parameters }) => (
-  <DemoContext.Provider
-    value={{
-      isDemoUser: false,
-      isSharingEnabled: true,
-      ...parameters.demoContext,
-    }}
-  >
-    <Story />
-  </DemoContext.Provider>
 );
 
 const meta: Meta<typeof ExportButtons> = {
