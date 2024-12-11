@@ -1,6 +1,7 @@
 import React from "react";
 import { Toaster } from "react-hot-toast";
 
+import { Monitoring } from "react-scan/dist/core/monitor/params/next";
 import { ClerkProvider } from "@clerk/nextjs";
 import "@fontsource/lexend";
 import "@fontsource/lexend/500.css";
@@ -93,6 +94,13 @@ export default async function RootLayout({
               GeistMono.variable,
             )}
           >
+            {process.env.NEXT_PUBLIC_REACT_SCAN_KEY !== undefined &&
+              process.env.NEXT_PUBLIC_RENDER_MONITOR == "true" && (
+                <Monitoring
+                  apiKey={process.env.NEXT_PUBLIC_REACT_SCAN_KEY}
+                  url={process.env.NEXT_PUBLIC_REACT_SCAN_URL}
+                />
+              )}
             <Theme
               accentColor="blue"
               grayColor="olive"
