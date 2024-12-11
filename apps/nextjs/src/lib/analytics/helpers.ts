@@ -80,6 +80,10 @@ type KeyStage =
   | "ks5"
   | "early-years-foundation-stage";
 
+/**
+ * If a string starts with any of the keys in this map, it will be mapped to the
+ * corresponding value.
+ */
 const startKeyStageMap: Record<string, KeyStage> = {
   ks1: "ks1",
   ks2: "ks2",
@@ -113,6 +117,9 @@ const startKeyStageMap: Record<string, KeyStage> = {
   year_13: "ks5",
 };
 
+/**
+ * If a string is an exact key in this map, it will be mapped to the corresponding value.
+ */
 const exactKeyStageMap: Record<string, KeyStage> = {
   year_1: "ks1",
   year_1_2: "ks1",
