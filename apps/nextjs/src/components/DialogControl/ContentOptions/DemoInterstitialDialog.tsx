@@ -57,7 +57,7 @@ const CreatingChatDialog = ({
     if (isDemoUser && !isSubmitting) {
       setAppSessionsRemaining(demo.appSessionsRemaining);
     }
-  }, [isSubmitting, demo]);
+  }, [isSubmitting, isDemoUser, demo]);
 
   const createAppSession = useCallback(() => {
     if (!submit) {
