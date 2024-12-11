@@ -1,5 +1,9 @@
-const { pathsToModuleNameMapper } = require("ts-jest");
-const { compilerOptions } = require("./tsconfig.test.json");
+import { readFile } from "fs/promises";
+import { pathsToModuleNameMapper } from "ts-jest";
+
+const tsconfig = JSON.parse(
+  await readFile(new URL("./tsconfig.test.json", import.meta.url)),
+);
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 const config = {
@@ -9,12 +13,15 @@ const config = {
       {
         tsconfig: "tsconfig.test.json",
         useESM: true,
+        isolatedModules: true,
       },
     ],
   },
   preset: "ts-jest/presets/default-esm",
   moduleNameMapper: {
-    ...pathsToModuleNameMapper(compilerOptions.paths, { prefix: "<rootDir>/" }),
+    ...pathsToModuleNameMapper(tsconfig.compilerOptions.paths, {
+      prefix: "<rootDir>/",
+    }),
     "^(\\.{1,2}/.*)\\.js$": "$1",
   },
   extensionsToTreatAsEsm: [".ts"],
@@ -26,7 +33,8 @@ const config = {
   collectCoverage:
     process.env.CI === "true" || process.env.COLLECT_TEST_COVERAGE === "true",
   coverageReporters: ["lcov", "text"],
+  collectCoverageFrom: ["src/**/*.{ts,tsx,js,jsx}"],
   coverageDirectory: "coverage",
 };
 
-module.exports = config;
+export default config;

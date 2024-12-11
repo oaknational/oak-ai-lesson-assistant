@@ -23,6 +23,8 @@ type CustomError = {
   code?: number;
 };
 
+type LessonWithSnippetsType = z.infer<typeof LessonWithSnippets>;
+
 export const lessonRouter = router({
   retrieve: protectedProcedure
     .input(
@@ -49,14 +51,14 @@ export const lessonRouter = router({
     )
     .output(z.array(LessonWithSnippets))
     .query(async ({ ctx, input }) => {
-      // FIXME make this a slug based search
+      // TODO make this a slug based search
       const foundLessons = await new Lessons(ctx.prisma).searchByTranscript(
         input.q,
         input.keyStage,
         input.subject,
         5,
       );
-      return foundLessons as LessonWithSnippets[];
+      return foundLessons as LessonWithSnippetsType[];
     }),
   searchByTextSimilarity: protectedProcedure
     .input(

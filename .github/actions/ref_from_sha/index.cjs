@@ -8,8 +8,8 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 
-const prFromSha = require("./pr_from_sha");
-const branchFromSha = require("./branch_from_sha");
+const prFromSha = require("./pr_from_sha.cjs");
+const branchFromSha = require("./branch_from_sha.cjs");
 
 async function run() {
   try {
