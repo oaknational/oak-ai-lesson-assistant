@@ -2,10 +2,10 @@ import React from "react";
 
 import type { Decorator } from "@storybook/react";
 
-import { lessonPlanTrackingContext } from "../../src/lib/analytics/lessonPlanTrackingContext";
+import { LessonPlanTrackingContext } from "../../src/lib/analytics/lessonPlanTrackingContext";
 
 export const LessonPlanTrackingDecorator: Decorator = (Story) => (
-  <lessonPlanTrackingContext.Provider
+  <LessonPlanTrackingContext.Provider
     value={{
       onClickContinue: () => {},
       onClickRetry: () => {},
@@ -16,5 +16,5 @@ export const LessonPlanTrackingDecorator: Decorator = (Story) => (
     }}
   >
     <Story />
-  </lessonPlanTrackingContext.Provider>
+  </LessonPlanTrackingContext.Provider>
 );
