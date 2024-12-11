@@ -11,7 +11,7 @@ const ChatPageContents = ({ id }: { readonly id: string }) => {
   return (
     <Layout>
       <LessonPlanTrackingProvider chatId={id}>
-        <ChatProvider key={`chat-${id}`} id={id}>
+        <ChatProvider id={id}>
           <Chat />
         </ChatProvider>
       </LessonPlanTrackingProvider>

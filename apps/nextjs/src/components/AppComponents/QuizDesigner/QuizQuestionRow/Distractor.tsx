@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+// TODO - if we are maintaining the quiz designer, check the hook dependencies
 import type { Dispatch } from "react";
 import { useCallback, useState } from "react";
 
