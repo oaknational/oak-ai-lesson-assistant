@@ -7,8 +7,16 @@
     "outDir": "./dist",
     "declaration": true,
     "esModuleInterop": true,
-    "strict": true
+    "strict": true,
+    "baseUrl": "./src"
   },
-  "include": ["*.ts", "src/*.ts", "eslint.config.old", "src/rules.mjs", "src/index.mjs", "src/ignores.mjs"],
+  "include": [
+    "*.ts",
+    "src/*.ts",
+    "eslint.config.old",
+    "src/rules.mjs",
+    "src/index.mjs",
+    "src/ignores.mjs"
+  ],
   "exclude": ["node_modules", "dist"]
 }

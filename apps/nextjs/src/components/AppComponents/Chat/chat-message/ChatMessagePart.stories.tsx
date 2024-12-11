@@ -1,4 +1,4 @@
-import { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { ChatMessagePart } from "./ChatMessagePart";

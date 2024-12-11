@@ -7,6 +7,20 @@ import type {
 import { lessonPlanSectionsSchema } from "@oakai/exports/src/schema/input.schema";
 import type { ZodIssue } from "zod";
 
+export type ProgressForDownloads = {
+  sections: ProgressSection[];
+  totalSections: number;
+  totalSectionsComplete: number;
+};
+
+export type ProgressSection = {
+  label: string;
+  key: LessonPlanKeys;
+  complete: boolean;
+};
+
+export type ProgressSections = ProgressSection[];
+
 /**
  * For a given list of Zod issues and lessonPlan fields, checks that none of
  * the errors pertain to the fields.
@@ -19,19 +33,6 @@ function getCompleteness(errors: ZodIssue[], fields: string[]) {
 
   return !hasErrorInSomeField;
 }
-export type ProgressSections = ProgressSection[];
-
-type ProgressForDownloads = {
-  sections: ProgressSection[];
-  totalSections: number;
-  totalSectionsComplete: number;
-};
-
-type ProgressSection = {
-  label: string;
-  key: LessonPlanKeys;
-  complete: boolean;
-};
 
 export function useProgressForDownloads({
   lessonPlan,

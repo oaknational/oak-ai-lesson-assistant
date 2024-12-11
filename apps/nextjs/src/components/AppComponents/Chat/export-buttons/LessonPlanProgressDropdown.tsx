@@ -6,7 +6,7 @@ import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
 import { LessonPlanProgressDropdownMenu } from "./LessonPlanProgressDropdownMenu";
 
-type LessonPlanProgressDropdownProps = Readonly<{
+export type LessonPlanProgressDropdownProps = Readonly<{
   lessonPlan: LooseLessonPlan;
   isStreaming: boolean;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;

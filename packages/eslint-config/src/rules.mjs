@@ -46,7 +46,7 @@ export const rules = {
   }],
 
   // Import plugin rules
-  "import/no-cycle": "warn",
+  "import/no-cycle": ["warn", { maxDepth: Infinity }],
   "import/newline-after-import": "off",
   "import/no-duplicates": "off",
 
