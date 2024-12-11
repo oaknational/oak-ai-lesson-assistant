@@ -1,3 +1,19 @@
+# [1.18.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.17.1...v1.18.0) (2024-12-11)
+
+
+### Bug Fixes
+
+*  update eslint config and lint errors ([#422](https://github.com/oaknational/oak-ai-lesson-assistant/issues/422)) ([34774b5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/34774b5b404c154d8c8aa10ae5b687507dc09c85))
+* moderation persist scores [AI-696] ([#418](https://github.com/oaknational/oak-ai-lesson-assistant/issues/418)) ([7539661](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7539661e22fa0e334138e0f796a700662e4e37e3))
+* more flexible and efficient solution for images in docs ([#411](https://github.com/oaknational/oak-ai-lesson-assistant/issues/411)) ([abbff85](https://github.com/oaknational/oak-ai-lesson-assistant/commit/abbff8545476f6c045331a63290fc8f57cf3f54e))
+* upgrade typescript + prettier + eslint with a single shared linting config ([#424](https://github.com/oaknational/oak-ai-lesson-assistant/issues/424)) ([1f4aa9d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1f4aa9dde84402df089ce4d6947472d389f576a0))
+
+
+### Features
+
+* report google drive storage quota ([#425](https://github.com/oaknational/oak-ai-lesson-assistant/issues/425)) ([a0cb485](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a0cb4859ddb975d831a5b64d8d789ee8597aeda8))
+* test coverage ([#406](https://github.com/oaknational/oak-ai-lesson-assistant/issues/406)) ([00767a0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/00767a0148456f57f8fa21e0cb0149cf849f3574))
+
 ## [1.17.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.17.0...v1.17.1) (2024-12-03)
 
 
