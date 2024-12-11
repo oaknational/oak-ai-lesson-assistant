@@ -11,10 +11,14 @@ import { useDialog } from "../../DialogContext";
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
 export type ExportButtonsProps = Readonly<{
+  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
 }>;
 
-const ExportButtons = ({ documentContainerRef }: ExportButtonsProps) => {
+const ExportButtons = ({
+  sectionRefs,
+  documentContainerRef,
+}: ExportButtonsProps) => {
   const chat = useLessonChat();
   const { id, isStreaming, lessonPlan } = chat;
   const { trackEvent } = useAnalytics();
@@ -28,6 +32,7 @@ const ExportButtons = ({ documentContainerRef }: ExportButtonsProps) => {
           <LessonPlanProgressDropdown
             lessonPlan={lessonPlan}
             isStreaming={isStreaming}
+            sectionRefs={sectionRefs}
             documentContainerRef={documentContainerRef}
           />
           <div className="flex space-x-10">

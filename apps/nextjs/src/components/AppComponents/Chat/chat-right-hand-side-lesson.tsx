@@ -29,6 +29,9 @@ const ChatRightHandSideLesson = ({
 
   const [showScrollButton, setShowScrollButton] = useState(false);
 
+  // This retains this existing bug, but is fixed on subsequent PRs
+  const sectionRefs = {};
+
   const scrollToBottom = () => {
     if (chatEndRef.current) {
       setShowScrollButton(false);
@@ -60,7 +63,10 @@ const ChatRightHandSideLesson = ({
       onScroll={handleScroll}
       style={{ overflowY: "auto" }}
     >
-      <ExportButtons documentContainerRef={documentContainerRef} />
+      <ExportButtons
+        sectionRefs={sectionRefs}
+        documentContainerRef={documentContainerRef}
+      />
       <MobileExportButtons
         closeMobileLessonPullOut={closeMobileLessonPullOut}
       />
