@@ -43,4 +43,15 @@ jobs:
           inject-env-vars: true
 
       - name: Run tests
-        run: pnpm turbo test --cache-dir=".turbo" -- --maxWorkers=33%
+        run: pnpm turbo test --cache-dir=".turbo" -- --maxWorkers=33% --coverage
+
+      # Run only on production branch
+      - name: Report coverage to SonarCloud
+        if: ${{ github.event.pull_request.merged == true && github.base_ref == 'production' }}
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.javascript.lcov.reportPaths=packages/**/coverage/lcov.info,apps/nextjs/coverage/lcov.info

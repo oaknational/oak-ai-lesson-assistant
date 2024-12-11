@@ -789,6 +789,7 @@ model Moderation {
   appSessionId     String    @map("app_session_id")
   messageId        String    @map("message_id")
   categories       Json[]
+  scores           Json?     @map("scores") @db.JsonB
   justification    String?
   lessonSnapshotId String?   @map("lesson_snapshot_id")
   // A user's comment in relation to the moderation. Likely they are contesting it.

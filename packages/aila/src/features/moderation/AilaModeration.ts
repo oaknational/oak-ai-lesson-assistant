@@ -71,6 +71,7 @@ export class AilaModeration implements AilaModerationFeature {
       appSessionId: chatId,
       messageId: lastAssistantMessage.id,
       categories: moderationResult.categories,
+      scores: moderationResult.scores,
       justification: moderationResult.justification,
       lesson: lessonPlan,
     });
@@ -195,10 +196,11 @@ export class AilaModeration implements AilaModerationFeature {
     messages: Message[];
     lessonPlan: LooseLessonPlan;
     retries: number;
-  }) {
+  }): Promise<ModerationResult> {
     if (retries < 1) {
       return {
         categories: [],
+        scores: undefined,
         justification: "Failed to parse moderation response",
       };
     }
