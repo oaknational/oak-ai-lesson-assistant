@@ -16,8 +16,6 @@ async function getData(slug: string) {
       notFound: true,
     };
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  //   const { updatedAt, createdAt, ...rest } = sharedData;
 
   const planSections = sharedData.content;
   return planSections;
