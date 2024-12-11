@@ -16,6 +16,24 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     const results = await this.searchWithBM25("oak-vector", "text", qq, 100);
     return results.hits;
   }
+  /**
+   * Validates the lesson plan
+   * @throws {Error} If the lesson plan is invalid
+   */
+  private isValidLessonPlan(lessonPlan: LooseLessonPlan | null): void {
+    if (!lessonPlan) throw new Error("Lesson plan is null");
+    // Check for minimum required properties
+    if (
+      !(
+        typeof lessonPlan === "object" &&
+        "title" in lessonPlan &&
+        "keyStage" in lessonPlan &&
+        "topic" in lessonPlan
+      )
+    ) {
+      throw new Error("Invalid lesson plan: missing required properties");
+    }
+  }
 
   // Our Rag system may retrieve N Questions. We split them into chunks of 6 to conform with the schema. If we have less than 6 questions we pad with questions from the appropriate section of the lesson plan.
   // If there are no questions for padding, we pad with empty questions.
@@ -72,6 +90,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   private async generateMathsQuizML(
     lessonPlan: LooseLessonPlan,
   ): Promise<QuizQuestion[]> {
+    this.isValidLessonPlan(lessonPlan);
     const hits = await this.unpackAndSearch(lessonPlan);
     const qq = this.unpackLessonPlanForRecommender(lessonPlan);
     const customIds = await this.rerankAndExtractCustomIds(hits, qq);

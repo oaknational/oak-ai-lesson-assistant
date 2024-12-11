@@ -1,3 +1,6 @@
+import { Client } from "@elastic/elasticsearch";
+import type { SearchResponseBody } from "@elastic/elasticsearch/lib/api/types";
+
 import { QuizSchema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { AilaRagQuizGenerator } from "./AilaRagQuizGenerator";
@@ -38,6 +41,40 @@ describe("AilaRagQuizGenerator", () => {
     for (const quiz of result) {
       expect(QuizSchema.safeParse(quiz)).toBeTruthy();
     }
+  });
+  it("Should retrieve questions from a given questionUid", async () => {
+    const result = await quizGenerator.questionArrayFromCustomIds([
+      "QUES-EYPJ1-67826",
+    ]);
+
+    console.log(JSON.stringify(result, null, 2));
+    expect(result).toBeDefined();
+    expect(Array.isArray(result)).toBe(true);
+    // expect(result.length).toBe(1);
+    expect(result[0]!.question).toBeDefined();
+    expect(result[0]!.answers).toBeDefined();
+    expect(result[0]!.distractors).toBeDefined();
+  });
+
+  it("Should search for questions and provide a hit", async () => {
+    const client = new Client({
+      cloud: {
+        id: process.env.I_DOT_AI_ELASTIC_CLOUD_ID as string,
+      },
+
+      auth: {
+        apiKey: process.env.I_DOT_AI_ELASTIC_KEY as string,
+      },
+    });
+    const result: SearchResponseBody = await quizGenerator.searchQuestions(
+      client,
+      "quiz-questions-text-only",
+      ["QUES-XXXXX-XXXXX"],
+    );
+    console.log(JSON.stringify(result, null, 2));
+    expect(result).toBeDefined();
+    // in this case we are using the dummy elasticsearch client, so we expect to get a hit.
+    expect(result.hits.hits.length).toBeGreaterThan(0);
   });
 });
 

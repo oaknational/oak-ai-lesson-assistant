@@ -45,10 +45,11 @@ import {
 } from "../OpenAIRanker";
 import { processArray, withRandomDelay } from "../apiCallingUtils";
 import { testInput } from "../fixtures/cachedQuizOutput";
-import type { CustomHit } from "../interfaces";
+import type { CustomHit, LessonSlugQuizMapping } from "../interfaces";
 import { CohereReranker } from "../rerankers";
 import type { QuizzesForConsideration } from "../rerankers/RerankerStructuredOutputSchema";
 import { starterQuizQuestionSuitabilityDescriptionSchema } from "../rerankers/RerankerStructuredOutputSchema";
+import { lessonSlugQuizMap } from "./lessonSlugLookup";
 
 // Base abstract class
 export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
@@ -152,6 +153,21 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     );
     return questionIds;
   }
+
+  public lessonSlugToQuestionIdsLookupTable(
+    lessonSlug: string,
+    quizType: QuizPath,
+  ): string[] {
+    if (quizType === "/starterQuiz") {
+      return (
+        lessonSlugQuizMap?.[lessonSlug]?.starterQuiz ?? ["QUES-HDSJ2-34404"]
+      );
+    } else if (quizType === "/exitQuiz") {
+      return lessonSlugQuizMap?.[lessonSlug]?.exitQuiz ?? ["QUES-HDSJ2-34404"];
+    }
+    throw new Error("Invalid quiz type");
+  }
+
   public async patchFromCustomIDs(
     customIds: string[],
     quizType: QuizPath = "/starterQuiz",
@@ -165,9 +181,11 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   public async questionArrayFromCustomIds(
     customIds: string[],
   ): Promise<QuizQuestion[]> {
+    // TODO: GCLOMAX - dependancy injection of index here.
+
     const formattedQuestionSearchResponse = await this.searchQuestions(
       this.client,
-      "oak-vector",
+      "quiz-questions-text-only",
       customIds,
     );
     const processsedQuestionsAndIds = this.processResponse(
@@ -176,22 +194,43 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     const quizQuestions = this.extractQuizQuestions(processsedQuestionsAndIds);
     return quizQuestions;
   }
-  public async questionArrayFromPlanId(
+
+  public async questionArrayFromPlanIdLookUpTable(
     planId: string,
+    quizType: QuizPath,
   ): Promise<QuizQuestion[]> {
     const lessonSlug = await this.getLessonSlugFromPlanId(planId);
-    const lessonSlugList = lessonSlug ? [lessonSlug] : [];
-    const customIds = await this.lessonSlugToQuestionIdSearch(lessonSlugList);
-    const quizQuestions = await this.questionArrayFromCustomIds(customIds);
+    if (!lessonSlug) {
+      throw new Error("Lesson slug not found for planId: " + planId);
+    }
+    const questionIds = this.lessonSlugToQuestionIdsLookupTable(
+      lessonSlug,
+      quizType,
+    );
+
+    const quizQuestions = await this.questionArrayFromCustomIds(questionIds);
     return quizQuestions;
   }
 
-  private async searchQuestions(
+  public async questionArrayFromPlanId(
+    planId: string,
+  ): Promise<QuizQuestion[]> {
+    // const lessonSlug = await this.getLessonSlugFromPlanId(planId);
+    // const lessonSlugList = lessonSlug ? [lessonSlug] : [];
+    // const customIds = await this.lessonSlugToQuestionIdSearch(lessonSlugList);
+    // const quizQuestions = await this.questionArrayFromCustomIds(customIds);
+    // return quizQuestions;
+    return await this.questionArrayFromPlanIdLookUpTable(
+      planId,
+      "/starterQuiz",
+    );
+  }
+
+  public async searchQuestions(
     client: Client,
     index: string,
     questionUids: string[],
   ): Promise<SearchResponseBody> {
-    // currently metadata.is_quiz_question_schema is th flag we use for
     // Retrieves questions by questionUids
     const response = await client.search({
       index: index,
@@ -199,7 +238,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
         query: {
           bool: {
             must: [
-              { exists: { field: "metadata.is_quiz_question_schema" } },
               {
                 terms: {
                   "metadata.questionUid.keyword": questionUids,
@@ -430,7 +468,8 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   ): Promise<QuizQuestion[]> {
     const formattedQuestionSearchResponse = await this.searchQuestions(
       this.client,
-      "oak-vector",
+      // "oak-vector",
+      "quiz-questions-text-only",
       customIds,
     );
     const processedQuestionsAndIds = this.processResponse(
@@ -489,6 +528,10 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       if (error instanceof z.ZodError) {
         console.error("Validation error:", error.errors);
       } else if (error instanceof SyntaxError) {
+        console.error(
+          "OFFENDING JSON STRING: ",
+          JSON.stringify(jsonString, null, 2),
+        );
         console.error("JSON parsing error:", error.message);
       } else {
         console.error("An unexpected error occurred:", error);

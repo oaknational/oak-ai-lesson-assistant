@@ -1,0 +1,190 @@
+{
+  "title": "Angles in quadrilaterals",
+  "topic": "Geometry",
+  "cycle1": {
+    "title": "Understanding quadrilaterals",
+    "feedback": "Worked example: When drawing a quadrilateral, ensure it has four sides. Use a protractor to verify that the angles sum to 360°.",
+    "practice": "Identify three quadrilaterals from a group of shapes and check if their angled interior measurements sum to 360 degrees. Draw and label them.",
+    "explanation": {
+      "slideText": "Quadrilaterals are four-sided shapes with four angles. Their interior angles sum to 360°.",
+      "imagePrompt": "different types of quadrilaterals",
+      "spokenExplanation": [
+        "Introduce quadrilaterals as four-sided shapes called polygons.",
+        "Explain that quadrilaterals have four sides and four vertices.",
+        "Discuss how different quadrilaterals can have varied angles.",
+        "State that interior angles of quadrilaterals include two triangles.",
+        "Mention that this makes the total interior angles of quadrilaterals 360 degrees."
+      ],
+      "accompanyingSlideDetails": "Illustration showing different quadrilaterals like square, rectangle, parallelogram, and kite with their sides and vertices highlighted."
+    },
+    "durationInMinutes": 15,
+    "checkForUnderstanding": [
+      {
+        "answers": ["A four-sided polygon"],
+        "question": "What is a quadrilateral?",
+        "distractors": ["A three-sided polygon", "A five-sided shape"]
+      },
+      {
+        "answers": ["360 degrees"],
+        "question": "How many degrees do the angles in a quadrilateral add up to?",
+        "distractors": ["180 degrees", "450 degrees"]
+      }
+    ]
+  },
+  "cycle2": {
+    "title": "Finding missing angles",
+    "feedback": "Model answer: When solving for the missing angle, add known angles and subtract from 360°. E.g., In a quadrilateral with 90°, 130°, and 110°, missing angle = 360° - 330° = 30°.",
+    "practice": "Calculate the missing angle in a set of quadrilaterals. Each problem has three known angles. Use subtraction from 360°.",
+    "explanation": {
+      "slideText": "Use known angles and 360° as the total to find a missing angle in quadrilaterals.",
+      "imagePrompt": "bar model for quadrilateral angles",
+      "spokenExplanation": [
+        "Introduce the concept of finding a missing angle in quadrilaterals.",
+        "Use knowledge that angles in a quadrilateral sum to 360 degrees.",
+        "Present a problem with three known angles and one missing angle.",
+        "Model finding the missing angle using subtraction from 360 degrees.",
+        "Use a classroom example to show how to apply reasoning."
+      ],
+      "accompanyingSlideDetails": "A bar model diagram showing angles of a quadrilateral with one missing angle."
+    },
+    "durationInMinutes": 15,
+    "checkForUnderstanding": [
+      {
+        "answers": ["Subtract their sum from 360°"],
+        "question": "If three angles of a quadrilateral are known, how do you find the fourth?",
+        "distractors": ["Add them together", "Divide the total by three"]
+      },
+      {
+        "answers": ["50 degrees"],
+        "question": "What is the missing angle if the other angles are 90°, 120°, and 100°?",
+        "distractors": ["70 degrees", "40 degrees"]
+      }
+    ]
+  },
+  "cycle3": {
+    "title": "Practical applications",
+    "feedback": "Success criteria: Each quadrilateral design must have four sides. Use consistent angle measurements, ensuring angles sum to 360° for structural accuracy.",
+    "practice": "Design a simple architectural feature using quadrilateral shapes. Label each angle and ensure their sum equals 360 degrees.",
+    "explanation": {
+      "slideText": "Applying quadrilateral angle calculations in real-life designs like architecture.",
+      "imagePrompt": "practical applications of quadrilateral angles",
+      "spokenExplanation": [
+        "Consolidate the lesson by applying learned skills to realistic scenarios.",
+        "Present a range of potential real-life problems requiring angle calculations.",
+        "Discuss how such calculations assist in architectural design or geometry.",
+        "Reintroduce Izzy and Sam's method, showcasing practical reasoning.",
+        "Illustrate with drawing tasks to visualise angles as part of quadrilateral arrangements."
+      ],
+      "accompanyingSlideDetails": "Images of practical applications such as design blueprints or architectural quadrilaterals showcasing angles."
+    },
+    "durationInMinutes": 10,
+    "checkForUnderstanding": [
+      {
+        "answers": ["For accurate measurements and structural integrity"],
+        "question": "Why is it important to find missing angles in quadrilateral designs?",
+        "distractors": ["To estimate lengths", "To increase material costs"]
+      },
+      {
+        "answers": ["Very crucial for precise planning"],
+        "question": "In architectural design, how crucial is quadrilateral angle accuracy?",
+        "distractors": ["Not crucial", "Only slightly important"]
+      }
+    ]
+  },
+  "subject": "maths",
+  "exitQuiz": [
+    {
+      "answers": ["360 degrees"],
+      "question": "What is the sum of angles in a quadrilateral?",
+      "distractors": ["180 degrees", "540 degrees"]
+    },
+    {
+      "answers": ["60 degrees"],
+      "question": "If the angles in a quadrilateral are 120°, 100°, and 80°, what is the fourth angle?",
+      "distractors": ["40 degrees", "100 degrees"]
+    },
+    {
+      "answers": ["They can be divided into two triangles."],
+      "question": "Why do the angles in quadrilaterals add up to 360°?",
+      "distractors": [
+        "It’s a fixed rule for all shapes.",
+        "Because of their symmetry."
+      ]
+    },
+    {
+      "answers": ["Subtract the sum of known angles from 360°."],
+      "question": "How can you find a missing angle in a quadrilateral?",
+      "distractors": ["Add all angles together.", "Divide the sum by 2."]
+    }
+  ],
+  "keyStage": "key-stage-2",
+  "keywords": [
+    {
+      "keyword": "Quadrilateral",
+      "definition": "A quadrilateral is a polygon with four straight sides and four vertices."
+    },
+    {
+      "keyword": "Point",
+      "definition": "A point is an exact location. It has no size, only position."
+    },
+    {
+      "keyword": "Sum",
+      "definition": "The sum is the result of adding two or more numbers."
+    }
+  ],
+  "starterQuiz": [
+    {
+      "answers": [" A"],
+      "question": "Which of the angles shown is an obtuse angle?",
+      "distractors": [" B", " C"]
+    },
+    {
+      "answers": ["180 degrees"],
+      "question": "What is the sum of angles in a triangle?",
+      "distractors": ["360 degrees", "90 degrees"]
+    },
+    {
+      "answers": ["Quadrilateral"],
+      "question": "Which shape has four sides and four angles?",
+      "distractors": ["Triangle", "Pentagon"]
+    },
+    {
+      "answers": ["Four"],
+      "question": "How many sides does a rectangle have?",
+      "distractors": ["Three", "Five"]
+    },
+    {
+      "answers": ["90 degrees"],
+      "question": "What is the measure of a right angle?",
+      "distractors": ["180 degrees", "45 degrees"]
+    },
+    {
+      "answers": ["An exact location"],
+      "question": "What does a point indicate in geometry?",
+      "distractors": ["A line", "A shape"]
+    }
+  ],
+  "learningCycles": [
+    "Identify the properties of quadrilaterals.",
+    "Explain that angles in a quadrilateral sum to 360°.",
+    "Use known angles to find missing angles in quadrilaterals."
+  ],
+  "misconceptions": [
+    {
+      "description": "Pre-teaching or providing a scaffold containing shape names and properties will allow pupils to see the properties and support them in making connections.",
+      "misconception": "Pupils may not have fluency in properties of 2D shapes and may therefore not notice properties of angles within quadrilaterals such as trapeziums"
+    }
+  ],
+  "priorKnowledge": [
+    "The sum of angles in a triangle is 180 degrees.",
+    "The basic properties of triangles and rectangles.",
+    "Addition and subtraction with numbers up to 360."
+  ],
+  "learningOutcome": "I can explain why the angles in a quadrilateral sum to 360° and use this to find missing angles.",
+  "keyLearningPoints": [
+    "A quadrilateral is a shape with four sides and four vertices",
+    "Interior angles in a quadrilateral are composed of two triangles",
+    "Interior angles in a quadrilateral are equal to 360 degrees"
+  ],
+  "additionalMaterials": "None"
+}

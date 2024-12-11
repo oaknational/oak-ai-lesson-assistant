@@ -4,7 +4,7 @@ import { runCommonQuizGeneratorTests } from "./BaseQuizGeneratorTests";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 import { MLQuizGenerator } from "./MLQuizGenerator";
 
-describe("AilaQuizFactory", () => {
+describe("Quiz Generator Factory Tests", () => {
   describe("Factory Creation", () => {
     it("should create a RAG quiz generator", () => {
       const generator = AilaQuizFactory.createQuizGenerator("rag");

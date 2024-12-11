@@ -145,6 +145,15 @@ export interface DocumentWrapper {
   relevanceScore: number;
 }
 
+interface QuizSet {
+  exitQuiz: string[];
+  starterQuiz: string[];
+}
+
+export interface LessonSlugQuizMapping {
+  [lessonSlug: string]: QuizSet;
+}
+
 // FACTORIES BELOW
 export interface FullServiceFactory {
   create(settings: QuizServiceSettings): FullQuizService;
