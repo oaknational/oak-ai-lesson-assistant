@@ -27,7 +27,6 @@ describe("handleChatException", () => {
 
       const span = { setTag: jest.fn() } as unknown as TracingSpan;
       const error = new AilaThreatDetectionError("user_abc", "test error");
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
       const response = await handleChatException(
@@ -54,7 +53,6 @@ describe("handleChatException", () => {
     it("should return an error chat message", async () => {
       const span = { setTag: jest.fn() } as unknown as TracingSpan;
       const error = new AilaAuthenticationError("test error");
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
       const response = await handleChatException(
@@ -84,7 +82,6 @@ describe("handleChatException", () => {
         100,
         Date.now() + 3600 * 1000,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
       const response = await handleChatException(
@@ -117,7 +114,6 @@ describe("handleChatException", () => {
     it("should return an error chat message", async () => {
       const span = { setTag: jest.fn() } as unknown as TracingSpan;
       const error = new UserBannedError("test error");
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
       const response = await handleChatException(

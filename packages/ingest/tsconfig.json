@@ -8,6 +8,7 @@
     "esModuleInterop": true,
     "types": ["jest"],
     "allowImportingTsExtensions": true,
-    "moduleDetection": "force"
+    "moduleDetection": "force",
+    "baseUrl": "./src"
   }
 }

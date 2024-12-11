@@ -92,6 +92,7 @@ const DropDownSection = ({
     prevValue,
     documentContainerRef,
     userHasCancelledAutoScroll,
+    streamingTimeout,
   ]);
 
   return (
