@@ -44,8 +44,8 @@ export class MockLLMService implements LLMService {
       async start(controller) {
         for (const chunk of responseChunks) {
           controller.enqueue(chunk);
-          await sleep(0);
         }
+        await sleep(2000); // Allow the UI to animate
         controller.close();
       },
     });

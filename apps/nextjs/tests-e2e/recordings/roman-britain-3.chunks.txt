@@ -23,9 +23,8 @@ Quiz
 type":"
 patch
 ","reasoning":"
-Designed
+Creating
  a
- starter
  quiz
  to
  assess
@@ -33,14 +32,10 @@ Designed
 '
  prior
  knowledge
- on
- Roman
- Britain
  before
+ starting
  the
- main
  lesson
- content
 .","
 value":{"
 type":"
@@ -53,6 +48,51 @@ Quiz
 ","value":[
 {"
 question":"
+When
+ did
+ the
+ Romans
+ invade
+ Britain
+?
+","answers":["
+AD
+ 
+43
+"],"distractors":["
+AD
+ 
+410
+","
+AD
+ 
+106
+6
+"]},{"
+question":"
+How
+ long
+ was
+ Britain
+ part
+ of
+ the
+ Roman
+ Empire
+?
+","answers":["
+Nearly
+ 
+400
+ years
+"],"distractors":["
+200
+ years
+","
+600
+ years
+"]},{"
+question":"
 What
  did
  the
@@ -60,9 +100,6 @@ What
  build
  in
  Britain
- during
- their
- rule
 ?
 ","answers":["
 Road
@@ -73,162 +110,107 @@ s
 Cast
 les
  and
- forts
+ bridges
 ","
-Schools
+Sk
+yscr
+apers
  and
- hospitals
-"]},{"
-question":"
-How
- long
- did
- the
- Romans
- rule
- over
- Britain
-?
-","answers":["
-Several
- centuries
-"],"distractors":["
-A
- few
- years
-","
-A
- decade
+ tunnels
 "]},{"
 question":"
 What
- is
- an
- empire
+ was
+ the
+ Roman
+ Empire
 ?
 ","answers":["
 A
  large
  group
  of
- territories
- ruled
- by
- one
- authority
+ countries
 "],"distractors":["
 A
- small
+ single
  country
 ","
 A
- type
- of
- government
+ small
+ island
 "]},{"
 question":"
 What
- role
- do
- archae
-ologists
- play
- in
- history
+ was
+ special
+ about
+ the
+ Roman
+ army
 ?
 ","answers":["
-They
- study
- human
- history
- by
- digging
- up
- ancient
- sites
+Strong
+ and
+ well
+-organ
+ised
 "],"distractors":["
-They
- write
- history
- books
+Weak
+ and
+ dis
+organ
+ised
 ","
-They
- teach
- history
- in
- schools
+Small
+ and
+ slow
 "]},{"
 question":"
-Which
- empire
+Why
  did
+ the
+ Romans
+ leave
  Britain
- belong
- to
- during
- Roman
- rule
 ?
 ","answers":["
-The
- Roman
- Empire
-"],"distractors":["
-The
- Greek
- Empire
-","
-The
- Egyptian
- Empire
-"]},{"
-question":"
-What
- is
- one
- thing
- pupils
- should
- understand
- before
- this
- lesson
-?
-","answers":["
-The
- concept
- of
- an
- empire
-"],"distractors":["
-The
- history
+To
+ defend
+ other
+ parts
  of
  the
- Sax
-ons
-","
-The
- fall
- of
- the
- Roman
  Empire
+"],"distractors":["
+They
+ were
+ defeated
+ by
+ locals
+","
+They
+ didn't
+ like
+ the
+ weather
 "]}]},"status":"
 complete
 "},{"
 type":"
 patch
 ","reasoning":"
-Develop
-ed
+Design
+ing
  the
  first
  learning
  cycle
- focusing
+ to
+ focus
  on
- explaining
+ identifying
+ reasons
  why
  the
  Romans
@@ -255,78 +237,76 @@ Why
 spokenExplanation":["
 Discuss
  the
- pressures
- faced
- by
+ weakening
+ of
  the
  Roman
  Empire
- around
- AD
- 
-410
+ due
+ to
+ internal
+ issues
+ and
+ external
+ threats
 .","
 Explain
  how
- internal
- conflicts
- weakened
+ these
+ pressures
+ led
  the
- Roman
- control
- over
- distant
- regions
- like
- Britain
-.","
-Describe
- the
- external
- threats
- from
- other
- tribes
- and
- groups
- that
- required
- Roman
- attention
- elsewhere
-.","
-Mention
- how
- resources
- and
+ Romans
+ to
+ recall
  troops
- were
- needed
- more
- urgently
- in
+ to
+ defend
  other
  parts
  of
  the
- empire
+ Empire
 .","
 Highlight
- that
  the
- decision
+ significance
+ of
+ AD
+ 
+410
+ as
+ the
+ approximate
+ year
+ of
+ Roman
+ departure
+.","
+Use
+ a
+ timeline
  to
- leave
- was
- strategic
-,
- not
- due
+ show
+ key
+ events
+ leading
  to
- defeat
- by
- Brit
-ons
+ the
+ departure
+.","
+Include
+ examples
+ of
+ external
+ threats
+ such
+ as
+ invas
+ions
+ from
+ other
+ tribes
 ."
 ],"accompanyingSlideDetails":"
 A
@@ -339,16 +319,18 @@ A
  the
  Roman
  departure
- from
- Britain
+ in
+ AD
+ 
+410
 .","
 imagePrompt":"
 Roman
  Empire
- timeline
  AD
  
 410
+ timeline
 ","slideText":"
 The
  Romans
@@ -358,113 +340,132 @@ The
  AD
  
 410
+ to
+ defend
+ other
+ parts
+ of
+ the
+ Empire
  due
  to
- internal
- and
  external
- pressures
- on
- their
- empire
+ threats
+ and
+ internal
+ issues
 ."
 },"checkForUnderstanding":[
 {"
+question":"
+What
+ year
+ did
+ Romans
+ leave
+ Britain
+?
+","answers":["
+AD
+ 
+410
+"],"distractors":["
+AD
+ 
+43
+","
+AD
+ 
+106
+6
+"]},{"
 question":"
 Why
  did
  the
  Romans
- decide
- to
  leave
  Britain
 ?
 ","answers":["
-Due
- to
- internal
- and
- external
- pressures
+To
+ defend
+ other
+ parts
+ of
+ the
+ Empire
 "],"distractors":["
 They
  were
  defeated
  by
- Brit
-ons
+ locals
 ","
 They
- found
- new
- lands
-"]},{"
-question":"
-What
- was
+ wanted
  a
- major
- factor
- in
+ holiday
+"]}],"practice":"
+Create
+ a
+ timeline
+ of
+ events
+ leading
+ up
+ to
  the
  Roman
  departure
- from
- Britain
-?
-","answers":["
-Resource
- needs
- elsewhere
-"],"distractors":["
-British
- rebellion
-","
-New
- Roman
- emperor
-"]}],"practice":"
-List
- two
- reasons
- why
- the
- Romans
- left
- Britain
- and
- explain
- how
- these
- reasons
- impacted
- their
- empire
+.
+ Use
+ images
+ or
+ drawings
+ to
+ illustrate
+ key
+ points
 .","
 feedback":"
 Model
  answer
 :
- The
- Romans
- left
- due
- to
- internal
- conflicts
- and
- external
- threats
-.
- These
- weakened
- their
- control
+ Timeline
+ should
+ include
+ events
+ such
+ as
+ Roman
+ invas
+ions
 ,
- requiring
- resources
- elsewhere
+ building
+ of
+ roads
+,
+ and
+ AD
+ 
+410
+ departure
+.
+ Illustr
+ations
+ should
+ reflect
+ Roman
+ soldiers
+,
+ roads
+,
+ and
+ maps
+ of
+ the
+ Empire
 ."
 }},"status":"
 complete
@@ -472,20 +473,22 @@ complete
 type":"
 patch
 ","reasoning":"
-Created
+Design
+ing
  the
  second
  learning
  cycle
  to
  describe
+ the
  changes
  in
  Britain
- post
--R
-om
-ans
+ after
+ the
+ Roman
+ departure
 .","
 value":{"
 type":"
@@ -499,93 +502,85 @@ cycle
 title":"
 Changes
  in
- Post
--R
-oman
  Britain
+ after
+ Roman
+ Departure
 ","durationInMinutes":15
 ,"explanation":{"
 spokenExplanation":["
-Explain
- how
- the
- departure
- of
- Romans
- led
- to
- power
- vac
-u
-ums
- in
- Britain
-.","
-Discuss
- the
- arrival
- of
- the
- Sax
-ons
- and
- other
- groups
- invading
- Britain
-.","
 Describe
- the
- changes
- in
- town
- structures
+ how
+ Britain
+ faced
+ governance
  and
+ defence
+ challenges
+ after
+ the
+ Romans
+ left
+.","
+Highlight
+ changes
+ such
+ as
  the
  decline
  of
  Roman
 -built
- infrastructure
-.","
-Highlight
- the
- blend
- of
- Roman
+ structures
  and
- new
- cultural
- influences
- in
- Britain
-.","
-Show
- examples
+ the
+ rise
  of
- Roman
- architecture
- that
- remained
- influential
-."
-],"accompanyingSlideDetails":"
-Images
- showing
+ new
+ local
+ rulers
+.","
+Discuss
+ the
+ continued
+ influence
+ of
  Roman
  roads
  and
- Sax
-on
- settlements
+ architecture
+.","
+Introduce
+ the
+ concept
+ of
+ cultural
+ influence
+ remaining
+ despite
+ political
+ changes
+."
+],"accompanyingSlideDetails":"
+Images
+ of
+ Roman
+ roads
+ and
+ buildings
+ alongside
+ early
+ medieval
+ British
+ structures
 .","
 imagePrompt":"
 Roman
  roads
- and
- Sax
-on
- settlements
+ vs
+ early
+ medieval
+ Britain
 ","slideText":"
 After
  the
@@ -594,22 +589,23 @@ After
 ,
  Britain
  faced
- invas
-ions
- and
- cultural
- changes
- with
- enduring
+ new
+ challenges
+ but
+ continued
+ to
+ use
  Roman
- influences
+ roads
+ and
+ structures
 ."
 },"checkForUnderstanding":[
 {"
 question":"
 What
- happened
- to
+ remained
+ in
  Britain
  after
  the
@@ -617,44 +613,35 @@ What
  left
 ?
 ","answers":["
-It
- faced
- invas
-ions
- from
- other
- groups
+Roman
+ roads
+ and
+ structures
 "],"distractors":["
-It
- became
- a
- Roman
- province
+Roman
+ soldiers
 ","
-It
- remained
- peaceful
+Roman
+ emper
+ors
 "]},{"
 question":"
-Which
- group
- invaded
+Who
+ governed
  Britain
  after
  the
  Romans
 ?
 ","answers":["
-The
- Sax
-ons
+Local
+ rulers
 "],"distractors":["
-The
- Greeks
+Roman
+ generals
 ","
-The
- Norm
-ans
+Greek
+ philosophers
 "]}],"practice":"
 Draw
  a
@@ -663,40 +650,59 @@ Draw
  a
  Roman
  road
+ still
+ used
+ in
+ Britain
+ today
 .
  Label
  it
- and
- describe
+ with
  its
- importance
- in
- post
--R
-oman
- Britain
+ purpose
+ and
+ any
+ changes
+ you
+ think
+ happened
+ over
+ time
 .","
 feedback":"
-Model
- answer
+Success
+ criteria
 :
+ Drawing
+ should
+ show
+ a
+ straight
  Roman
- roads
- remained
- important
+ road
+ with
+ labels
+ such
+ as
+ '
+used
  for
- trade
- and
  travel
- in
- post
--R
-oman
- Britain
-,
- influencing
- settlement
- patterns
+'
+ and
+ '
+p
+aved
+'.
+ Include
+ changes
+ like
+ added
+ pathways
+ or
+ surrounding
+ buildings
 ."
 }},"status":"
 complete
@@ -704,18 +710,21 @@ complete
 type":"
 patch
 ","reasoning":"
-Form
-ulated
+Design
+ing
  the
  third
  learning
  cycle
- focusing
- on
- archaeological
- discoveries
+ to
+ explore
+ the
+ lasting
+ impact
  of
  Roman
+ culture
+ in
  Britain
 .","
 value":{"
@@ -728,190 +737,173 @@ cycle
 3
 ","value":{"
 title":"
-Ar
-chae
-ologists
- and
- Roman
+Roman
+ Influence
+ in
  Britain
+ Today
 ","durationInMinutes":15
 ,"explanation":{"
 spokenExplanation":["
-Define
- the
- role
- of
- archae
-ologists
- in
- studying
- history
-.","
 Explain
  how
- archae
-ologists
- uncover
  Roman
- artifacts
- through
- excav
-ations
+ culture
+ influenced
+ British
+ language
+,
+ architecture
+,
+ and
+ laws
 .","
 Discuss
- the
- types
+ examples
  of
- artifacts
- commonly
- found
- from
  Roman
- Britain
+ words
+ still
+ used
+ in
+ English
+.","
+Show
+ how
+ Roman
+ architectural
+ styles
+ can
+ be
+ seen
+ in
+ modern
+ buildings
 .","
 Describe
  how
- these
- discoveries
- help
- us
- understand
  Roman
- life
- and
- influence
-.","
-Mention
- key
- archaeological
- sites
- in
- Britain
- linked
- to
- the
- Romans
+ laws
+ have
+ influenced
+ British
+ legal
+ systems
 ."
 ],"accompanyingSlideDetails":"
 Images
- of
+ comparing
  Roman
- artifacts
- and
- archaeological
- sites
- in
- Britain
+ architecture
+ with
+ modern
+ British
+ buildings
 .","
 imagePrompt":"
 Roman
- artifacts
- from
+ architecture
+ influence
+ modern
  Britain
 ","slideText":"
-Ar
-chae
-ologists
- uncover
- Roman
- history
- through
- excav
-ations
+Roman
+ culture
+ continues
+ to
+ influence
+ British
+ language
 ,
- revealing
- insights
- into
- life
- in
- Roman
- Britain
+ architecture
+,
+ and
+ laws
 ."
 },"checkForUnderstanding":[
 {"
 question":"
 What
- do
- archae
-ologists
- do
+ is
+ an
+ example
+ of
+ Roman
+ influence
+ today
 ?
 ","answers":["
-Study
- history
- through
- excav
-ations
+Architecture
 "],"distractors":["
-Write
- history
- books
+Roman
+ emper
+ors
 ","
-Teach
- in
- schools
+Greek
+ myths
 "]},{"
 question":"
-Why
- are
+Which
+ language
+ has
  Roman
- artifacts
- important
+ words
 ?
 ","answers":["
-They
- help
- us
- understand
- Roman
- life
+English
 "],"distractors":["
-They
- are
- decorative
+Chinese
 ","
-They
- are
- made
- of
- gold
+Arabic
 "]}],"practice":"
 Match
- pictures
- of
  Roman
- artifacts
+ words
  with
  their
- descriptions
- and
- explain
- their
- significance
- in
- Roman
- history
+ modern
+ English
+ counterparts
+.
+ Explain
+ how
+ these
+ words
+ are
+ used
+ today
 .","
 feedback":"
 Model
  answer
 :
- Roman
- coins
-,
- pottery
-,
- and
- tools
- reveal
- daily
- life
- and
- trade
- practices
+ Match
+ words
+ like
+ '
+a
+qua
+'
+ with
+ '
+water
+'.
+ Explain
+ use
  in
- Roman
- Britain
+ terms
+ like
+ '
+aqu
+arium
+'
+ meaning
+ a
+ place
+ for
+ water
+ and
+ fish
 ."
 }},"status":"
 complete
@@ -919,7 +911,8 @@ complete
 type":"
 patch
 ","reasoning":"
-Designed
+Design
+ing
  an
  exit
  quiz
@@ -931,9 +924,7 @@ Designed
  of
  the
  lesson
-'s
- key
- concepts
+ content
 .","
 value":{"
 type":"
@@ -946,7 +937,7 @@ Quiz
 ","value":[
 {"
 question":"
-When
+Why
  did
  the
  Romans
@@ -954,145 +945,119 @@ When
  Britain
 ?
 ","answers":["
-Around
- AD
- 
-410
+To
+ defend
+ other
+ parts
+ of
+ the
+ Empire
 "],"distractors":["
-Around
- AD
- 
-300
+They
+ were
+ defeated
+ by
+ locals
 ","
-Around
- AD
- 
-500
+They
+ wanted
+ a
+ holiday
 "]},{"
 question":"
 What
- was
- one
- reason
- for
- the
- Roman
- departure
+ year
+ did
+ Romans
+ leave
+ Britain
 ?
 ","answers":["
-Internal
- empire
- pressures
+AD
+ 
+410
 "],"distractors":["
-Def
-eat
- by
- Brit
-ons
+AD
+ 
+43
 ","
-L
-ack
- of
- interest
- in
- Britain
+AD
+ 
+106
+6
 "]},{"
 question":"
-Who
- invaded
+What
+ remained
+ in
  Britain
  after
- the
  Romans
  left
 ?
 ","answers":["
-The
- Sax
-ons
-"],"distractors":["
-The
- Norm
-ans
-","
-The
- Vikings
-"]},{"
-question":"
-What
- did
- archae
-ologists
- find
- in
- Roman
- Britain
-?
-","answers":["
-Artifacts
- like
- coins
- and
- pottery
-"],"distractors":["
-Modern
- buildings
-","
-Anc
-ient
- books
-"]},{"
-question":"
-Why
- are
- Roman
+Roman
  roads
- significant
+ and
+ structures
+"],"distractors":["
+Roman
+ soldiers
+","
+Roman
+ emper
+ors
+"]},{"
+question":"
+Who
+ governed
+ Britain
+ after
+ Romans
 ?
 ","answers":["
-They
- influenced
- travel
- and
- trade
+Local
+ rulers
 "],"distractors":["
-They
- were
- all
- destroyed
+Roman
+ generals
 ","
-They
- were
- only
- decorative
+Greek
+ philosophers
 "]},{"
 question":"
 What
- role
- do
- archae
-ologists
- play
- in
- history
+ is
+ an
+ example
+ of
+ Roman
+ influence
+ today
 ?
 ","answers":["
-They
- uncover
- past
- through
- excav
-ations
+Architecture
 "],"distractors":["
-They
- build
- new
- sites
+Roman
+ emper
+ors
 ","
-They
- rule
- ancient
- lands
+Greek
+ myths
+"]},{"
+question":"
+Which
+ language
+ has
+ Roman
+ words
+?
+","answers":["
+English
+"],"distractors":["
+Chinese
+","
+Arabic
 "]}]},"status":"
 complete
 "}],"sectionsEdited":["
@@ -1119,29 +1084,31 @@ Are
  starter
  quiz
 ,
- learning
  cycles
 ,
  and
  exit
  quiz
- sections
  suitable
  for
  your
  class
 ?
+ Would
+ you
+ like
+ to
+ adjust
+ the
+ difficulty
+ of
+ the
+ quizzes
+?
  If
- not
-,
- reply
- with
- what
- I
- should
- change
-.
- Otherwise
+ everything
+ looks
+ good
 ,
  tap
  **

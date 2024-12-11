@@ -1,8 +1,13 @@
 import { useRef } from "react";
 
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type {
+  LessonPlanKeys,
+  LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
+
+import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
 
 import { notEmpty } from "./chat-lessonPlanDisplay";
 import { sectionTitle } from "./drop-down-section";
@@ -13,7 +18,9 @@ const LessonPlanMapToMarkDown = ({
   sectionRefs,
 }: {
   lessonPlan: LooseLessonPlan;
-  sectionRefs?: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
+  sectionRefs?: Partial<
+    Record<LessonPlanKeys, React.MutableRefObject<HTMLDivElement | null>>
+  >;
 }) => {
   const lessonPlanWithExperiments = {
     ...lessonPlan,
@@ -37,28 +44,18 @@ const LessonPlanMapToMarkDown = ({
       .sort(({ key: a }, { key: b }) => {
         // sort the keys in a predefined order
         //  title, subject, topic, keyStage, basedOn, lessonReferences, learningOutcome, learningCycles, priorKnowledge, keyLearningPoints, misconceptions, keywords, starterQuiz, cycle1, cycle2, cycle3, exitQuiz, additionalMaterials
-        const order = [
-          "learningOutcome",
-          "learningCycles",
-          "priorKnowledge",
-          "keyLearningPoints",
-          "misconceptions",
-          "keywords",
-          "starterQuiz",
-          "cycle1",
-          "cycle2",
-          "cycle3",
-          "exitQuiz",
-          "additionalMaterials",
-        ];
-        return order.indexOf(a) - order.indexOf(b);
+        const order = allSectionsInOrder;
+        return (
+          order.indexOf(a as (typeof order)[number]) -
+          order.indexOf(b as (typeof order)[number])
+        );
       })
       .map(({ key, value }) => {
         return (
           <ChatSection
             key={key}
             sectionRefs={sectionRefs}
-            objectKey={key}
+            section={key}
             value={value}
           />
         );
@@ -68,18 +65,28 @@ const LessonPlanMapToMarkDown = ({
 
 export default LessonPlanMapToMarkDown;
 
-const ChatSection = ({ sectionRefs, objectKey, value }) => {
+const ChatSection = ({
+  sectionRefs,
+  section,
+  value,
+}: {
+  sectionRefs: Partial<
+    Record<LessonPlanKeys, React.MutableRefObject<HTMLDivElement | null>>
+  >;
+  section: LessonPlanKeys;
+  value: unknown;
+}) => {
   const sectionRef = useRef(null);
-  if (sectionRefs) sectionRefs[objectKey] = sectionRef;
+  if (sectionRefs) sectionRefs[section] = sectionRef;
 
   return (
     <div ref={sectionRef}>
       <MemoizedReactMarkdownWithStyles
         lessonPlanSectionDescription={
-          lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
+          lessonSectionTitlesAndMiniDescriptions[section]?.description
         }
-        markdown={`# ${sectionTitle(objectKey)}
-${sectionToMarkdown(objectKey, value)}`}
+        markdown={`# ${sectionTitle(section)}
+${sectionToMarkdown(section, value)}`}
       />
     </div>
   );

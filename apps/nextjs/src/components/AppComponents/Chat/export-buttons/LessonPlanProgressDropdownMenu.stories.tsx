@@ -6,16 +6,16 @@ import type {
 } from "@oakai/aila/src/protocol/schema";
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
+import { LessonPlanProgressDropdownMenu } from "./LessonPlanProgressDropdownMenu";
 
-const meta: Meta<typeof LessonPlanProgressDropdown> = {
-  title: "Components/LessonPlan/LessonPlanProgressDropdown",
-  component: LessonPlanProgressDropdown,
+const meta: Meta<typeof LessonPlanProgressDropdownMenu> = {
+  title: "Components/LessonPlan/LessonPlanProgressDropdownMenu",
+  component: LessonPlanProgressDropdownMenu,
   tags: ["autodocs"],
 };
 
 export default meta;
-type Story = StoryObj<typeof LessonPlanProgressDropdown>;
+type Story = StoryObj<typeof LessonPlanProgressDropdownMenu>;
 
 export const Default: Story = {
   args: {
@@ -30,17 +30,6 @@ export const Default: Story = {
       learningCycles: ["Sample learning cycles"],
       // 4
       priorKnowledge: ["Sample prior knowledge"],
-    },
-    sectionRefs: {
-      title: { current: null },
-      keyStage: { current: null },
-      subject: { current: null },
-      learningOutcome: { current: null },
-      learningCycles: { current: null },
-      priorKnowledge: { current: null },
-      cycle1: { current: null },
-      cycle2: { current: null },
-      cycle3: { current: null },
     },
     documentContainerRef: { current: null },
   },

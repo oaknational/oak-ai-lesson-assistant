@@ -22,25 +22,16 @@ type":"
 patch
 ","reasoning":"
 Ident
-ified
- prior
+ifying
+ the
+ foundational
  knowledge
- that
- KS
-1
  pupils
  should
  have
  before
- starting
  this
  lesson
- on
- the
- end
- of
- Roman
- Britain
 .","
 value":{"
 type":"
@@ -56,47 +47,52 @@ The
  Romans
  invaded
  Britain
- and
- ruled
- for
- several
- centuries
+ in
+ AD
+ 
+43
 .","
 Roman
- roads
- and
- towns
- were
- built
- during
- their
- occupation
-.","
-Brit
-ain
+ Britain
  was
  part
  of
  the
  Roman
  Empire
+ for
+ nearly
+ 
+400
+ years
 .","
 The
- concept
- of
- an
- empire
+ Roman
+ Empire
+ was
+ large
  and
- its
- importance
+ included
+ many
+ countries
 .","
-Basic
- understanding
- of
- what
- archae
-ologists
- do
+Romans
+ built
+ roads
+ and
+ towns
+ in
+ Britain
+.","
+The
+ Roman
+ army
+ was
+ strong
+ and
+ well
+-organ
+ised
 .
 "]},"status":"
 complete
@@ -104,24 +100,18 @@ complete
 type":"
 patch
 ","reasoning":"
-Outlined
- key
+Highlight
+ing
+ the
+ main
  learning
  points
- that
  pupils
  should
  take
- away
  from
- the
+ this
  lesson
- on
- the
- end
- of
- Roman
- Britain
 .","
 value":{"
 type":"
@@ -135,61 +125,71 @@ Learning
 Points
 ","value":["
 The
- Romans
+ Roman
+ Empire
+ began
+ to
+ weaken
+ due
+ to
+ internal
+ and
+ external
+ pressures
+.","
+Romans
  left
  Britain
  around
  AD
  
 410
- due
  to
- pressures
- on
- their
- empire
+ defend
+ other
+ parts
+ of
+ the
+ Empire
 .","
-After
+Brit
+ain
+ experienced
+ changes
+ in
+ governance
+ and
+ defence
+ after
  the
  Romans
  left
-,
- Britain
- faced
- invas
-ions
- from
- other
- groups
- like
- the
- Sax
-ons
 .","
-Many
- Roman
- buildings
+Roman
+ influence
+ remained
+ in
+ Britain's
+ culture
+,
+ architecture
+,
  and
  roads
- influenced
- the
- landscape
- of
- Britain
 .","
-Ar
-chae
-ologists
- help
- uncover
- the
- history
+The
+ end
  of
  Roman
+ rule
+ marked
+ the
+ beginning
+ of
+ new
+ challenges
+ for
  Britain
- through
- excav
-ations
 .
 "]},"status":"
 complete
@@ -198,23 +198,16 @@ type":"
 patch
 ","reasoning":"
 Address
-ed
+ing
  common
  misconceptions
- about
- the
- end
- of
- Roman
- Britain
  to
- help
- teachers
- correct
- them
- during
+ ensure
+ accurate
+ understanding
+ of
  the
- lesson
+ topic
 .","
 value":{"
 type":"
@@ -230,8 +223,7 @@ ceptions
 ","value":[
 {"
 misconception":"
-The
- Romans
+Romans
  left
  Britain
  because
@@ -239,23 +231,23 @@ The
  were
  defeated
  by
- the
- Brit
-ons
+ locals
 ","description":"
 The
  Romans
  left
  due
  to
- internal
- problems
- within
+ pressures
+ on
+ other
+ parts
+ of
  the
- empire
+ Empire
  and
- threats
- elsewhere
+ internal
+ issues
 ,
  not
  because
@@ -263,34 +255,31 @@ The
  were
  defeated
  by
- the
- Brit
-ons
+ locals
 ."
 },{"
 misconception":"
-Roman
- Britain
- ended
- suddenly
- without
- any
- lasting
- impact
-","description":"
-Roman
+All
+ Roman
  influence
- persisted
- in
- Britain's
- infrastructure
+ disappeared
+ after
+ they
+ left
+","description":"
+Many
+ aspects
+ of
+ Roman
+ culture
 ,
- such
- as
- roads
+ architecture
+,
  and
- towns
-,
+ infrastructure
+ remained
+ in
+ Britain
  even
  after
  their
@@ -302,22 +291,15 @@ complete
 type":"
 patch
 ","reasoning":"
-Provided
- keywords
- that
- will
- be
- used
- throughout
- the
- lesson
- to
- ensure
- pupils
- understand
- the
+Providing
  key
- concepts
+ vocabulary
+ to
+ support
+ understanding
+ of
+ the
+ topic
 .","
 value":{"
 type":"
@@ -329,67 +311,51 @@ keywords
 ","value":[
 {"
 keyword":"
-Romans
-","definition":"
-People
- from
- the
- ancient
- city
- of
- Rome
- who
- ruled
- over
- Britain
- for
- several
- centuries
-."
-},{"
-keyword":"
 Empire
 ","definition":"
 A
  large
  group
  of
- territories
- and
- people
- ruled
- over
+ countries
+ or
+ regions
+ controlled
  by
- a
- single
- authority
-,
- like
- the
- Roman
- Empire
+ one
+ ruler
+ or
+ government
 ."
 },{"
 keyword":"
-Ar
-chae
-ologist
+Depart
 ","definition":"
-A
- person
- who
- studies
- human
- history
- by
- digging
- up
- and
- examining
- ancient
- sites
- and
- objects
+To
+ leave
+ a
+ place
+."
+},{"
+keyword":"
+Influ
+ence
+","definition":"
+Having
+ an
+ effect
+ on
+ the
+ character
+,
+ development
+,
+ or
+ behaviour
+ of
+ someone
+ or
+ something
 ."
 },{"
 keyword":"
@@ -402,8 +368,6 @@ An
  invading
  a
  country
- or
- region
  with
  an
  armed
@@ -411,24 +375,25 @@ An
 ."
 },{"
 keyword":"
-S
-ax
-ons
+Govern
+ance
 ","definition":"
-A
- group
- of
- tribes
- from
- northern
- Europe
- who
- invaded
- Britain
- after
- the
- Romans
- left
+The
+ way
+ that
+ a
+ city
+,
+ company
+,
+ etc
+.,
+ is
+ controlled
+ by
+ those
+ in
+ power
 ."
 }]},"status":"
 complete

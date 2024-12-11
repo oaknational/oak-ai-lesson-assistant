@@ -6,8 +6,6 @@ import { ChatContext } from "@/components/ContextProviders/ChatProvider";
 
 import DropDownSection from "./";
 
-const MAX_INT32 = 2 ** 31 - 1;
-
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
@@ -43,8 +41,6 @@ const meta: Meta<typeof DropDownSection> = {
     section: "learningOutcome",
     value:
       "I can explain the reasons why frogs are so important to British society and culture",
-    documentContainerRef: { current: null },
-    streamingTimeout: 0,
   },
   decorators: [ChatDecorator],
 };
@@ -68,7 +64,7 @@ export const Markdown: Story = {
 };
 
 export const Streaming: Story = {
-  args: { streamingTimeout: MAX_INT32 },
+  args: {},
 };
 
 export const Closed: Story = {
