@@ -6,5 +6,8 @@
     "client/index.ts",
     "scripts/**/*.ts",
     "schemas/**/*.ts"
-  ]
+  ],
+  "compilerOptions": {
+    "baseUrl": "."
+  }
 }

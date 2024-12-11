@@ -1,4 +1,7 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src", "index.ts", "transformer.ts"]
+  "include": ["src", "index.ts", "transformer.ts"],
+  "compilerOptions": {
+    "baseUrl": "./src"
+  }
 }

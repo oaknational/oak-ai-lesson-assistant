@@ -26,6 +26,16 @@ Oak AI Lesson Assistant is a project focused on experimenting with AI models and
     - [End-to-end tests](#end-to-end-tests)
       - [Playwright tags](#playwright-tags)
     - [Testing in VSCode](#testing-in-vscode)
+  - [Standards](#standards)
+    - [Typescript](#typescript)
+    - [ES Modules](#esmodules)
+    - [CommonJS](#commonjs)
+  - [Code quality](#quality)
+    - [Sonar](#sonar)
+    - [ESLint](#eslint)
+    - [Prettier](#prettier)
+    - [Tsconfig]("#tsconfig)
+    - [Dependency cruiser](#dependency-cruiser)
   - [Release process](#release-process)
   - [PNPM / dependency problems](#pnpm--dependency-problems)
   - [External contributions](#external-contributions)
@@ -175,6 +185,68 @@ Our Playwright tests are organised with tags:
 ### Testing in VSCode
 
 Install the Jest and Playwright extensions recommended in the workspace config. Testing icons should appear in the gutter to the left of each test when viewing a test file. Clicking the icon will run the test. The testing tab in the VSCode nav bar provides an overview.
+
+## Standards
+
+### Typescript
+
+By default, we develop in Typescript and aim to be up to date with the latest version. New code should default to being written in Typescript unless it is not possible.
+
+### ES Modules
+
+All packages are configured to be ES Modules.
+
+### CommonJS
+
+Currently NextJS, Tailwind and some other tools has some code which needs to be CommonJS. For these files, you should use the .cjs extension so that the correct linting rules are applied.
+
+## Code quality
+
+We use several tools to ensure code quality in the codebase and for checks during development. These checks run on each PR in Github to ensure we maintain good code quality. You can also run many of these checks locally before making a PR.
+
+### Sonar
+
+If you are using VS Code or Cursor, consider installing the SonarQube for IDE extension. This will give you feedback while you were as to any code quality or security issues that it has detected.
+
+If you would like to run a Sonar scan locally, use the following command:
+
+```shell
+pnpm sonar
+```
+
+You will need to log in to Sonar when prompted the first time. This will generate a full report for you of your local development environment. Usually it is easier to make a PR and have this run for you automatically.
+
+### ESLint
+
+We have a single ESLint config for the whole monorepo. You will find it in packages/eslint-config.
+
+This is using the latest version of ESLint and you should note that the config file format has changed to the "Flat file" config in version 9.
+
+Each package does not have its own ESLint config by default. Instead we have a single config file, with regex path matchers to turn on/off rules that are specific for each package. This can be overridden and you can see an example of that in the logger package.
+
+Each package specifies in its package.json file that it should use this shared config and there is a root ESLint config file for the whole mono repo which specifies that it should do the same.
+
+To check for linting errors, run the following command:
+
+```shell
+pnpm lint
+```
+
+If you want to check for linting errors in an individual package, cd into that package and run the same command.
+
+### Prettier
+
+We also have a single Prettier config, which is located in packages/prettier-config. In general there should be no need to change this on a per-package basis.
+
+### Tsconfig
+
+We have an overall tsconfig.json file which specifies the overall Typescript configuration for the project. Then each package extends from it.
+
+You can check the codebase for any Typescript issues by running the following command:
+
+```shell
+pnpm type-check
+```
 
 ## Release process
 

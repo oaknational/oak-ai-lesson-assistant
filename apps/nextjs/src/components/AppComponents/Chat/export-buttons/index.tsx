@@ -1,5 +1,6 @@
 "use client";
 
+import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
 import { OakSmallSecondaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
@@ -11,7 +12,9 @@ import { useDialog } from "../../DialogContext";
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
 export type ExportButtonsProps = Readonly<{
-  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
+  sectionRefs: Partial<
+    Record<LessonPlanKeys, React.MutableRefObject<HTMLDivElement | null>>
+  >;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
 }>;
 

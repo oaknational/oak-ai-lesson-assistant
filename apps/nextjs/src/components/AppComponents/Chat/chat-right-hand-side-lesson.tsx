@@ -1,5 +1,7 @@
 import React, { useRef, useState } from "react";
 
+import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
 import AiIcon from "../../AiIcon";
@@ -30,7 +32,9 @@ const ChatRightHandSideLesson = ({
   const [showScrollButton, setShowScrollButton] = useState(false);
 
   // This retains this existing bug, but is fixed on subsequent PRs
-  const sectionRefs = {};
+  const sectionRefs: Partial<
+    Record<LessonPlanKeys, React.MutableRefObject<HTMLDivElement | null>>
+  > = {};
 
   const scrollToBottom = () => {
     if (chatEndRef.current) {
