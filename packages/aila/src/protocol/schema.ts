@@ -512,27 +512,8 @@ export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;
 // TODO old - refactor these to the new types
 
 export type LooseLessonPlan = z.infer<typeof LessonPlanSchemaWhilstStreaming>;
-export const LessonPlanKeysSchema = z.enum([
-  "title",
-  "subject",
-  "keyStage",
-  "topic",
-  "learningOutcome",
-  "learningCycles",
-  "priorKnowledge",
-  "keyLearningPoints",
-  "misconceptions",
-  "keywords",
-  "basedOn",
-  "starterQuiz",
-  "exitQuiz",
-  "cycle1",
-  "cycle2",
-  "cycle3",
-  "additionalMaterials",
-]);
+export type LessonPlanKeys = keyof LooseLessonPlan;
 
-export type LessonPlanKeys = z.infer<typeof LessonPlanKeysSchema>;
 export const quizSchema = z.array(QuizSchema);
 
 export const cycleSchema = CycleSchema;
@@ -546,29 +527,6 @@ export const misconceptionSchema = z.object({
   misconception: z.string(),
   description: z.string(),
 });
-
-// #TODO Is this unused?
-export const lessonPlanForDocsSchema = z
-  .object({
-    title: z.string(),
-    keyStage: z.string().optional(),
-    subject: z.string().optional(),
-    learningOutcome: z.string().optional(),
-    learningCycles: z.array(z.string()).optional(),
-    priorKnowledge: z.array(z.string()).optional(),
-    keyLearningPoints: z.array(z.string()).optional(),
-    misconceptions: z.array(MisconceptionSchema).optional(),
-    keywords: z.array(KeywordSchema).optional(),
-    starterQuiz: QuizSchema.optional(),
-    cycle1: CycleSchema.optional(),
-    cycle2: CycleSchema.optional(),
-    cycle3: CycleSchema.optional(),
-    exitQuiz: QuizSchema.optional(),
-    additionalMaterials: z.string().optional(),
-  })
-  .passthrough();
-
-export type LessonPlanForDocsSchema = z.infer<typeof lessonPlanForDocsSchema>;
 
 export const LessonPlanJsonSchema = zodToJsonSchema(
   CompletedLessonPlanSchema,

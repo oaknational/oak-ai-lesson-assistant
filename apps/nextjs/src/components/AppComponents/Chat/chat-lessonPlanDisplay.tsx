@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
+import { isTruthy } from "remeda";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { multiCandidates } from "@/lib/lessonPlan/multiCandidate";
 import { organiseSections } from "@/lib/lessonPlan/organiseSections";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
@@ -42,14 +44,7 @@ export const LessonPlanDisplay = ({
 }: LessonPlanDisplayProps) => {
   const chat = useLessonChat();
   const { ailaStreamingStatus, lastModeration } = chat;
-  const lessonPlan = {
-    ...chat.lessonPlan,
-    starterQuiz:
-      chat.lessonPlan._experimental_starterQuizMathsV0 ??
-      chat.lessonPlan.starterQuiz,
-    exitQuiz:
-      chat.lessonPlan._experimental_exitQuizMathsV0 ?? chat.lessonPlan.exitQuiz,
-  };
+  const lessonPlan = chat.lessonPlan;
 
   const [userHasCancelledAutoScroll, setUserHasCancelledAutoScroll] =
     useState(false);
@@ -140,11 +135,16 @@ export const LessonPlanDisplay = ({
             section.dependants.map((dependant) => {
               const value = lessonPlan[dependant];
               if (value !== null && value !== undefined) {
+                const candidateKeys = multiCandidates[dependant];
+                const candidates = candidateKeys
+                  ?.map((key) => lessonPlan[key])
+                  .filter(isTruthy);
                 return (
                   <DropDownSection
                     key={dependant}
                     section={dependant}
                     sectionRefs={sectionRefs}
+                    candidates={candidates}
                     value={value}
                     userHasCancelledAutoScroll={userHasCancelledAutoScroll}
                     documentContainerRef={documentContainerRef}

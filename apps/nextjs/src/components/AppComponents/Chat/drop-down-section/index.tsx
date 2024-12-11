@@ -1,8 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 
-import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+import type {
+  LessonPlanKeys,
+  LessonPlanSectionWhileStreaming,
+} from "@oakai/aila/src/protocol/schema";
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
-import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
+import {
+  OakBox,
+  OakFlex,
+  OakP,
+  OakSmallPrimaryButton,
+} from "@oaknational/oak-components";
 import { equals } from "ramda";
 import styled from "styled-components";
 
@@ -15,33 +23,35 @@ import ChatSection from "./chat-section";
 
 const HALF_SECOND = 500;
 
-export type DropDownSectionProps = Readonly<{
-  section: LessonPlanKeys;
-  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
-  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
-  userHasCancelledAutoScroll: boolean;
-  showLessonMobile: boolean;
-  streamingTimeout?: number;
-}>;
+export type DropDownSectionProps<T extends LessonPlanSectionWhileStreaming> =
+  Readonly<{
+    section: LessonPlanKeys;
+    sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
+    value: T;
+    candidates?: T[];
+    documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
+    userHasCancelledAutoScroll: boolean;
+    showLessonMobile: boolean;
+    streamingTimeout?: number;
+  }>;
 
-const DropDownSection = ({
+function DropDownSection<T extends LessonPlanSectionWhileStreaming>({
   section,
   sectionRefs,
   value,
+  candidates,
   documentContainerRef,
   userHasCancelledAutoScroll,
   showLessonMobile,
   streamingTimeout = HALF_SECOND,
-}: DropDownSectionProps) => {
+}: DropDownSectionProps<T>) {
   const sectionRef = useRef(null);
   if (sectionRefs) sectionRefs[section] = sectionRef;
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState<"empty" | "isStreaming" | "isLoaded">(
     "empty",
   );
-  const [prevValue, setPrevValue] = useState<Record<string, unknown>>({});
+  const [prevValue, setPrevValue] = useState<T | {}>({});
   const [sectionHasFired, setSectionHasFired] = useState(false);
 
   useEffect(() => {
@@ -119,7 +129,26 @@ const DropDownSection = ({
       {isOpen && (
         <div className="mt-12 w-full">
           {status === "isLoaded" ? (
-            <ChatSection section={section} value={value} />
+            <>
+              {candidates?.length ? (
+                <MultiCandidateSection
+                  candidates={[
+                    {
+                      label: "Candidate 1",
+                      sectionKey: section,
+                      sectionValue: value,
+                    },
+                    ...(candidates?.map((candidate, i) => ({
+                      label: `Candidate ${i + 2}`,
+                      sectionKey: section,
+                      sectionValue: candidate,
+                    })) ?? []),
+                  ]}
+                />
+              ) : (
+                <ChatSection section={section} value={value} />
+              )}
+            </>
           ) : (
             <Skeleton loaded={false} numberOfRows={1}>
               <p>Loading</p>
@@ -129,7 +158,7 @@ const DropDownSection = ({
       )}
     </DropDownSectionWrapper>
   );
-};
+}
 
 export function sectionTitle(str: string) {
   if (str.startsWith("cycle")) {
@@ -150,3 +179,39 @@ const DropDownSectionWrapper = styled(OakBox)`
 `;
 
 export default DropDownSection;
+
+function MultiCandidateSection({
+  candidates,
+}: Readonly<{
+  candidates: {
+    sectionKey: LessonPlanKeys;
+    label: string;
+    sectionValue: LessonPlanSectionWhileStreaming;
+  }[];
+}>) {
+  const [chosenCandidate, setChosenCandidate] = useState(candidates[0]);
+
+  return (
+    <>
+      <OakFlex>
+        {candidates.map((candidate) => (
+          <OakSmallPrimaryButton
+            key={candidate.label}
+            onClick={() => setChosenCandidate(candidate)}
+            $mr={"space-between-s"}
+          >
+            {candidate.label}
+          </OakSmallPrimaryButton>
+        ))}
+      </OakFlex>
+      <div>
+        {chosenCandidate && (
+          <ChatSection
+            section={chosenCandidate.sectionKey}
+            value={chosenCandidate.sectionValue}
+          />
+        )}
+      </div>
+    </>
+  );
+}
