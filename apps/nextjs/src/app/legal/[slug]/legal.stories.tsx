@@ -1,10 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "../../../../.storybook/chromatic";
 import { LegalContent } from "./legal";
 
 const meta: Meta<typeof LegalContent> = {
   title: "Pages/Legal/Sanity dynamic",
   component: LegalContent,
+  parameters: {
+    ...chromaticParams(["mobile", "desktop"]),
+  },
 };
 
 export default meta;

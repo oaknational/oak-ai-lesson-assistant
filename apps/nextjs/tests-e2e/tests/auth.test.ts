@@ -42,7 +42,9 @@ test.skip("authenticate through Clerk UI", async ({ page }) => {
 
   try {
     await page.getByTestId("cookie-banner-accept").click();
-  } catch {}
+  } catch (e) {
+    console.error("No cookie banner");
+  }
 
   await signInThroughUI(page);
 

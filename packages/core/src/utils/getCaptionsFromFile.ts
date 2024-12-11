@@ -125,7 +125,13 @@ export async function getFileFromBucket(bucketName: string, fileName: string) {
     return contents.toString();
   } catch (err) {
     log.error(
-      `Error fetching file: ${fileName} from bucket: ${bucketName}. Error: ${err}`,
+      `Error fetching file: ${fileName} from bucket: ${bucketName}. Error: ${
+        typeof err === "string"
+          ? err
+          : err instanceof Error
+            ? err.message
+            : JSON.stringify(err)
+      }`,
     );
     return;
   }
