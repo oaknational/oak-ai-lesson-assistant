@@ -91,6 +91,8 @@ const ChatRightHandSideLesson = ({
         <LessonPlanDisplay
           showLessonMobile={showLessonMobile}
           chatEndRef={chatEndRef}
+          sectionRefs={sectionRefs}
+          documentContainerRef={documentContainerRef}          
         />
       </div>
       <div
