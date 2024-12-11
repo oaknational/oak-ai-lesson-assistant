@@ -1,6 +1,7 @@
 import React from "react";
 
 import type { Decorator } from "@storybook/react";
+import { fn } from "@storybook/test";
 
 import {
   analyticsContext,
@@ -18,11 +19,11 @@ export const AnalyticsDecorator: Decorator = (Story, { parameters }) => {
     <analyticsContext.Provider
       value={
         {
-          track: () => {},
-          trackEvent: () => {},
-          identify: () => {},
-          reset: () => {},
-          page: () => {},
+          track: fn(),
+          trackEvent: fn(),
+          identify: fn(),
+          reset: fn(),
+          page: fn(),
           posthogAiBetaClient: {},
           ...parameters.analyticsContext,
         } as unknown as AnalyticsContext

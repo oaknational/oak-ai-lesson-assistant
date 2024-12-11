@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { fn } from "@storybook/test";
 import { http, HttpResponse } from "msw";
 import { SurveyQuestionType, SurveyType } from "posthog-js";
 import type { PostHog } from "posthog-js";
@@ -106,7 +107,7 @@ export const Feedback: Story = {
     dialogWindow: "feedback",
     analyticsContext: {
       posthogAiBetaClient: {
-        capture: () => {},
+        capture: fn(),
         getSurveys: (fn) => {
           fn([
             {
