@@ -54,10 +54,7 @@ export function ChatMessagePart({
     <div className="w-full">
       <PartComponent part={part.document} />
 
-      {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        inspect && <PartInspector part={part} />
-      }
+      {inspect && <PartInspector part={part} />}
     </div>
   );
 }

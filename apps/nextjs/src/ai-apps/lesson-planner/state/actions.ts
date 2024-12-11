@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 import type { RateLimitInfo } from "@oakai/api/src/types";
 import type { KeyStageName, SubjectName } from "@oakai/core";
 import type {
