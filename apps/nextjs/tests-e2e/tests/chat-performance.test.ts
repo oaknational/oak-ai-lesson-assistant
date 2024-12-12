@@ -26,6 +26,7 @@ test.describe("Component renders during lesson chat", () => {
           },
         };
       });
+
       await page.goto(`${TEST_BASE_URL}/aila/${login.chatId}`);
       await isFinished(page);
     });
@@ -41,6 +42,10 @@ test.describe("Component renders during lesson chat", () => {
 
   async function verifyChatInputRenders(page: Page) {
     console.log("env.", process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN);
+    await page.addInitScript(() => {
+      console.log("Window process:", window.process);
+      console.log("Environment type:", process?.env?.NODE_ENV);
+    });
     await page.waitForFunction(
       () =>
         window.reactScanLessonPlanDisplay &&
