@@ -8,6 +8,7 @@ import type {
   ProductValueType,
 } from "../avo/Avo";
 import { ModeratedContentType } from "../avo/Avo";
+import { parseKeyStage } from "./keyStages";
 
 /**
  * These are the actions which a user could take which result in a message
@@ -34,7 +35,7 @@ export function getLessonTrackingProps({
     product: "ai lesson assistant",
     lessonPlanTitle: lesson.title ?? "",
     subjectSlug: lesson.subject ?? "",
-    keyStageSlug: lesson.keyStage ?? "",
+    keyStageSlug: parseKeyStage(lesson.keyStage ?? ""),
   };
 }
 
