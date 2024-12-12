@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { DemoDecorator } from "@/storybook/decorators/DemoDecorator";
+import {
+  DemoDecorator,
+  demoParams,
+} from "@/storybook/decorators/DemoDecorator";
 
 import { InChatDownloadButtons } from "./in-chat-download-buttons";
 
@@ -12,6 +15,9 @@ const meta: Meta<typeof InChatDownloadButtons> = {
     id: "test-chat-id",
   },
   decorators: [DemoDecorator],
+  parameters: {
+    ...demoParams({ isDemoUser: true }),
+  },
 };
 
 export default meta;
@@ -21,8 +27,6 @@ export const Default: Story = {};
 
 export const SharingDisabled: Story = {
   parameters: {
-    demoContext: {
-      isSharingEnabled: false,
-    },
+    ...demoParams({ isDemoUser: true, isSharingEnabled: false }),
   },
 };

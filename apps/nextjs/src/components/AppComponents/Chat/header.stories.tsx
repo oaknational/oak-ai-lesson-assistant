@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
-import { DemoDecorator } from "@/storybook/decorators/DemoDecorator";
+import {
+  DemoDecorator,
+  demoParams,
+} from "@/storybook/decorators/DemoDecorator";
 
 import { Header } from "./header";
 
@@ -17,6 +20,7 @@ const meta: Meta<typeof Header> = {
         height: "150px",
       },
     },
+    ...demoParams({ isDemoUser: false }),
   },
 };
 
@@ -30,13 +34,13 @@ export const Default: Story = {
 export const DemoUser: Story = {
   args: {},
   parameters: {
-    demoContext: {
+    ...demoParams({
       isDemoUser: true,
       demo: {
         appSessionsPerMonth: 3,
         appSessionsRemaining: 2,
       },
-    },
+    }),
     ...chromaticParams(["desktop", "desktop-wide"]),
   },
 };
@@ -44,12 +48,12 @@ export const DemoUser: Story = {
 export const DemoLoading: Story = {
   args: {},
   parameters: {
-    demoContext: {
+    ...demoParams({
       isDemoUser: true,
       demo: {
         appSessionsPerMonth: 3,
         appSessionsRemaining: undefined,
       },
-    },
+    }),
   },
 };

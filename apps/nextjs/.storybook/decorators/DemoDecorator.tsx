@@ -1,6 +1,7 @@
 import React from "react";
 
 import type { Decorator } from "@storybook/react";
+import invariant from "tiny-invariant";
 
 import {
   DemoContext,
@@ -9,15 +10,23 @@ import {
 
 declare module "@storybook/csf" {
   interface Parameters {
-    // DemoContext is a discriminated union, which doesn't work with extensible config
-    // Instead, allow all props together
-    demoContext?: {
-      isDemoUser?: boolean;
-      demo?: Partial<DemoContextProps["demo"]>;
-      isSharingEnabled?: boolean;
-    };
+    demoContext?: DemoContextProps;
   }
 }
+
+export const DemoDecorator: Decorator = (Story, { parameters }) => {
+  const value = parameters.demoContext;
+  invariant(
+    value,
+    "DemoDecorator requires a DemoContext. Please call ...demoParams() in the parameters",
+  );
+
+  return (
+    <DemoContext.Provider value={value}>
+      <Story />
+    </DemoContext.Provider>
+  );
+};
 
 const demoBase: DemoContextProps["demo"] = {
   appSessionsRemaining: 2,
@@ -25,22 +34,29 @@ const demoBase: DemoContextProps["demo"] = {
   contactHref: "https://share.hsforms.com/1R9ulYSNPQgqElEHde3KdhAbvumd",
 };
 
-export const DemoDecorator: Decorator = (Story, { parameters }) => {
-  const demo = { ...demoBase, ...parameters.demoContext?.demo };
-  const isSharingEnabled = parameters.demoContext?.isSharingEnabled ?? true;
+type DemoParams = {
+  isDemoUser: boolean;
+  demo?: Partial<DemoContextProps["demo"]>;
+  isSharingEnabled?: boolean;
+};
+export const demoParams = (
+  args: DemoParams,
+): { demoContext: DemoContextProps } => {
+  const isSharingEnabled = args.isSharingEnabled ?? true;
 
-  const isDemo =
-    parameters.demoContext &&
-    "isDemoUser" in parameters.demoContext &&
-    parameters.demoContext.isDemoUser;
+  const context: DemoContextProps = args.isDemoUser
+    ? {
+        isDemoUser: true,
+        demo: { ...demoBase, ...args.demo },
+        isSharingEnabled,
+      }
+    : {
+        isDemoUser: false,
+        demo: undefined,
+        isSharingEnabled,
+      };
 
-  const value = isDemo
-    ? { isDemoUser: true as const, demo, isSharingEnabled }
-    : { isDemoUser: false as const, isSharingEnabled };
-
-  return (
-    <DemoContext.Provider value={value}>
-      <Story />
-    </DemoContext.Provider>
-  );
+  return {
+    demoContext: context,
+  };
 };

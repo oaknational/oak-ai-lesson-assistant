@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
-import { DemoDecorator } from "@/storybook/decorators/DemoDecorator";
+import {
+  DemoDecorator,
+  demoParams,
+} from "@/storybook/decorators/DemoDecorator";
 
 import ExportButtons from "./";
 
@@ -20,6 +23,7 @@ const meta: Meta<typeof ExportButtons> = {
       isStreaming: false,
       lessonPlan: {},
     },
+    ...demoParams({ isDemoUser: false }),
   },
 };
 
@@ -38,9 +42,6 @@ export const IsStreaming: Story = {
 
 export const SharingDisabled: Story = {
   parameters: {
-    demoContext: {
-      isDemoUser: true,
-      isSharingEnabled: false,
-    },
+    ...demoParams({ isDemoUser: true, isSharingEnabled: false }),
   },
 };
