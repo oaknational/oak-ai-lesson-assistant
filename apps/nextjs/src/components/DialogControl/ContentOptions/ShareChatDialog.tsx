@@ -69,13 +69,13 @@ const ShareChat = ({
           iconName="external"
           isTrailingIcon={true}
         >
-          View share page
+          View the share page
         </OakPrimaryButton>
       );
     }
     return (
       <OakPrimaryButton onClick={attemptToShareChat} disabled={isLoading}>
-        Create shareable link
+        Make shareable link
       </OakPrimaryButton>
     );
   }
