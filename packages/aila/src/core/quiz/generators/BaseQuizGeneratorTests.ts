@@ -88,5 +88,28 @@ export const runCommonQuizGeneratorTests = (
         ).rejects.toBeDefined();
       });
     });
+
+    // [
+    //   'DSemIaiDytA0PtrHTo9Zq',
+    //   '0ChBXkONXh8IOVS00iTlm',
+    //   'LnViNV0cVTEaiunKzumPs',
+    //   'R3IrL-ct9sSAhpsz7lgrE',
+    //   'AGtKSucW7OTUKiswiHfJ9'
+    // ]
+    describe("Question Array From Plan Id", () => {
+      it("should handle invalid lesson plans gracefully", async () => {
+        await expect(
+          generator.questionArrayFromPlanId("invalid-plan-id"),
+        ).rejects.toBeDefined();
+      });
+      it("should handle valid lesson plans gracefully", async () => {
+        const result = await generator.questionArrayFromPlanId(
+          "clna7lofy0og0p4qxju5j6z56",
+        );
+        expect(result).toBeDefined();
+        expect(Array.isArray(result)).toBe(true);
+        expect(result.length).toBeGreaterThan(0);
+      });
+    });
   });
 };

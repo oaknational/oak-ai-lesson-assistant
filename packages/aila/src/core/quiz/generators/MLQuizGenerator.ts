@@ -25,10 +25,8 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     // Check for minimum required properties
     if (
       !(
-        typeof lessonPlan === "object" &&
-        "title" in lessonPlan &&
-        "keyStage" in lessonPlan &&
-        "topic" in lessonPlan
+        ("title" in lessonPlan && "keyStage" in lessonPlan)
+        // "topic" in lessonPlan
       )
     ) {
       throw new Error("Invalid lesson plan: missing required properties");
