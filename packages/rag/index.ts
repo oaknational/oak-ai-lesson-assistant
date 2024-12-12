@@ -40,6 +40,10 @@ export async function getRelevantLessonPlans({
   });
   log.info(`Got ${vectorSearchResults.length} search results`);
 
+  if (vectorSearchResults.length === 0) {
+    return [];
+  }
+
   log.info(`Reranking lesson plans`);
   const rerankedResults = await rerankResults({
     cohereClient,
