@@ -1,4 +1,5 @@
-import { test, expect, type Page } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+import { test as base } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
@@ -26,6 +27,22 @@ test.describe("Component renders during lesson chat", () => {
           },
         };
       });
+      await page.addInitScript(() => {
+        console.log("Window object:", typeof window);
+        console.log("Process object:", typeof window.process);
+        console.log("Existing env:", window.process?.env);
+
+        if (typeof window !== "undefined") {
+          window.process = window.process || {};
+          window.process.env = window.process.env || {};
+          window.process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN = "true";
+        }
+
+        console.log(
+          "Set env:",
+          window.process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN,
+        );
+      });
 
       await page.goto(`${TEST_BASE_URL}/aila/${login.chatId}`);
       await isFinished(page);
@@ -42,10 +59,15 @@ test.describe("Component renders during lesson chat", () => {
 
   async function verifyChatInputRenders(page: Page) {
     console.log("env.", process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN);
-    await page.addInitScript(() => {
-      console.log("Window process:", window.process);
-      console.log("Environment type:", process?.env?.NODE_ENV);
-    });
+    if (typeof window !== "undefined") {
+      window.process = window.process || {};
+      window.process.env = window.process.env || {};
+      window.process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN = "true";
+    }
+
+    // console.log("Window process:", window.process);
+    // console.log("Environment type:", process?.env?.NODE_ENV);
+
     await page.waitForFunction(
       () =>
         window.reactScanLessonPlanDisplay &&
