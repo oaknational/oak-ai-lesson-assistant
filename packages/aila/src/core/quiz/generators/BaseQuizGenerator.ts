@@ -192,16 +192,14 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
   public async questionArrayFromPlanId(
     planId: string,
+    quizType: QuizPath = "/starterQuiz",
   ): Promise<QuizQuestion[]> {
     // const lessonSlug = await this.getLessonSlugFromPlanId(planId);
     // const lessonSlugList = lessonSlug ? [lessonSlug] : [];
     // const customIds = await this.lessonSlugToQuestionIdSearch(lessonSlugList);
     // const quizQuestions = await this.questionArrayFromCustomIds(customIds);
     // return quizQuestions;
-    return await this.questionArrayFromPlanIdLookUpTable(
-      planId,
-      "/starterQuiz",
-    );
+    return await this.questionArrayFromPlanIdLookUpTable(planId, quizType);
   }
 
   public async searchQuestions(

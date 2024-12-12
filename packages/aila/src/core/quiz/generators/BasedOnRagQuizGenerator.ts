@@ -25,7 +25,12 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
     if (!lessonPlan.basedOn?.id) {
       throw new Error("Lesson plan basedOn is undefined");
     }
-    return [await this.questionArrayFromPlanId(lessonPlan.basedOn?.id)];
+    return [
+      await this.questionArrayFromPlanId(
+        lessonPlan.basedOn?.id,
+        "/starterQuiz",
+      ),
+    ];
   }
 
   async generateMathsExitQuizPatch(
@@ -40,6 +45,8 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
     if (!lessonPlan.basedOn?.id) {
       throw new Error("Lesson plan basedOn is undefined");
     }
-    return [await this.questionArrayFromPlanId(lessonPlan.basedOn?.id)];
+    return [
+      await this.questionArrayFromPlanId(lessonPlan.basedOn?.id, "/exitQuiz"),
+    ];
   }
 }
