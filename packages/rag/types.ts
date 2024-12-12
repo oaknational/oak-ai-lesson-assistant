@@ -9,6 +9,6 @@ export type RagLessonPlanResult = {
 };
 
 export type RagLogger = {
-  info: (...args: unknown[]) => void;
-  error: (...args: unknown[]) => void;
+  info: (...args: string[]) => void;
+  error: (...args: string[]) => void;
 };

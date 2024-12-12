@@ -1,5 +1,8 @@
 import type { OpenAI } from "openai";
 
+const DEFAULT_EMBEDDING_MODEL: OpenAI.Embeddings.EmbeddingCreateParams["model"] =
+  "text-embedding-3-large";
+
 export async function getEmbedding({
   text,
   openai,
@@ -8,7 +11,7 @@ export async function getEmbedding({
   openai: OpenAI;
 }): Promise<number[]> {
   const response = await openai.embeddings.create({
-    model: "text-embedding-3-large",
+    model: DEFAULT_EMBEDDING_MODEL,
     dimensions: 256,
     input: text,
     encoding_format: "float",

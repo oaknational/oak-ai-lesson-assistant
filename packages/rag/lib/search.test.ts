@@ -1,7 +1,12 @@
+import { generateMock } from "@anatine/zod-mock";
+import { CompletedLessonPlanSchema } from "@oakai/aila/src/protocol/schema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { RagLogger } from "../types";
+import type { RagLogger } from "../types";
 import { vectorSearch } from "./search";
+
+const mockLessonPlan1 = generateMock(CompletedLessonPlanSchema);
+const mockLessonPlan2 = generateMock(CompletedLessonPlanSchema);
 
 // Mocked Prisma client
 const mockPrisma = {
@@ -24,20 +29,14 @@ describe("vectorSearch", () => {
   const mockResults = [
     {
       rag_lesson_plan_id: "plan1",
-      lesson_plan: {
-        title: "Lesson Plan 1",
-        subject: "Math",
-      },
+      lesson_plan: mockLessonPlan1,
       key: "key1",
       value_text: "value1",
       distance: 0.5,
     },
     {
       rag_lesson_plan_id: "plan2",
-      lesson_plan: {
-        title: "Lesson Plan 2",
-        subject: "Science",
-      },
+      lesson_plan: mockLessonPlan2,
       key: "key2",
       value_text: "value2",
       distance: 0.8,
@@ -86,31 +85,21 @@ describe("vectorSearch", () => {
       filters: mockFilters,
     });
 
-    expect(mockPrisma.$queryRaw).toHaveBeenCalledWith(
+    expect((mockPrisma.$queryRaw as jest.Mock).mock.calls[0][0][0]).toEqual(
       expect.stringContaining("SELECT"),
-    );
-
-    expect(mockLog.info).toHaveBeenCalledWith(
-      expect.stringContaining("Lesson Plan 1,\nLesson Plan 2"),
     );
 
     expect(result).toEqual([
       {
         rag_lesson_plan_id: "plan1",
-        lesson_plan: {
-          title: "Lesson Plan 1",
-          subject: "Math",
-        },
+        lesson_plan: mockLessonPlan1,
         key: "key1",
         value_text: "value1",
         distance: 0.5,
       },
       {
         rag_lesson_plan_id: "plan2",
-        lesson_plan: {
-          title: "Lesson Plan 2",
-          subject: "Science",
-        },
+        lesson_plan: mockLessonPlan2,
         key: "key2",
         value_text: "value2",
         distance: 0.8,

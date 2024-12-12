@@ -1,4 +1,4 @@
-import { CohereClient } from "cohere-ai";
+import type { CohereClient } from "cohere-ai";
 import type { RerankRequest, RerankResponse } from "cohere-ai/api";
 
 import type { RagLessonPlanResult } from "../types";

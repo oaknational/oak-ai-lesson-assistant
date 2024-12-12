@@ -4,7 +4,7 @@ import type { RagLessonPlanResult } from "../types";
 import { rerankResults } from "./rerank";
 
 describe("rerankResults", () => {
-  it("should rerank results", async () => {
+  it("should rerank results based on cohere's relevanceScore", async () => {
     const cohereClient = {
       rerank: jest.fn().mockResolvedValue({
         results: [
@@ -18,6 +18,7 @@ describe("rerankResults", () => {
           },
           {
             index: 2,
+            relevanceScore: 0.5,
           },
         ],
       }),

@@ -16,6 +16,6 @@
     "noEmit": true,
     "types": ["jest", "node"]
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts", "**/*.test.ts", "src/**/*.d.ts"],
+  "include": ["**/*.test.ts"],
   "exclude": ["node_modules"]
 }
