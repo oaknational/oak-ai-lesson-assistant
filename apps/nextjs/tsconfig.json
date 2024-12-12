@@ -23,7 +23,8 @@
       "@/app/*": ["app/*"],
       "@/lib/*": ["lib/*"],
       "@/utils/*": ["utils/*"],
-      "@/assets/*": ["assets/*"]
+      "@/assets/*": ["assets/*"],
+      "@/storybook/*": ["../.storybook/*"]
     },
     "plugins": [
       {

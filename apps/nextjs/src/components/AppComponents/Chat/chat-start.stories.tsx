@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
+import { chromaticParams } from "@/storybook/chromatic";
 
-import { chromaticParams } from "../../../../.storybook/chromatic";
 import { DialogProvider } from "../DialogContext";
 import { ChatStart } from "./chat-start";
 

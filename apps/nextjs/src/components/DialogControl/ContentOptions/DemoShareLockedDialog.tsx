@@ -29,9 +29,9 @@ const DemoShareLockedDialog = ({
 }: {
   readonly closeDialog: () => void;
 }) => {
-  const demo = useDemoUser();
+  const { isDemoUser, demo } = useDemoUser();
 
-  if (!demo.isDemoUser) {
+  if (!isDemoUser) {
     return null;
   }
 

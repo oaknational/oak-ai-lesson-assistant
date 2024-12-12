@@ -1,24 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import {
-  ChatContext,
-  type ChatContextProps,
-} from "@/components/ContextProviders/ChatProvider";
+import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 
 import ChatLhsHeader from "./chat-lhs-header";
-
-const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
-  <ChatContext.Provider
-    value={
-      {
-        ailaStreamingStatus: "Idle",
-        ...parameters.chatContext,
-      } as unknown as ChatContextProps
-    }
-  >
-    <Story />
-  </ChatContext.Provider>
-);
 
 const meta: Meta<typeof ChatLhsHeader> = {
   title: "Components/Chat/ChatLhsHeader",
@@ -27,6 +11,11 @@ const meta: Meta<typeof ChatLhsHeader> = {
   decorators: [ChatDecorator],
   args: {
     showStreamingStatus: false,
+  },
+  parameters: {
+    chatContext: {
+      ailaStreamingStatus: "Idle",
+    },
   },
 };
 

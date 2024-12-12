@@ -1,21 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { DemoContext } from "@/components/ContextProviders/Demo";
+import { chromaticParams } from "@/storybook/chromatic";
+import {
+  DemoDecorator,
+  demoParams,
+} from "@/storybook/decorators/DemoDecorator";
 
-import { chromaticParams } from "../../../../.storybook/chromatic";
 import { Header } from "./header";
-
-const DemoDecorator: Story["decorators"] = (Story, { parameters }) => (
-  <DemoContext.Provider
-    value={{
-      isDemoUser: false,
-      isSharingEnabled: true,
-      ...parameters.demoContext,
-    }}
-  >
-    <Story />
-  </DemoContext.Provider>
-);
 
 const meta: Meta<typeof Header> = {
   title: "Components/Layout/ChatHeader",
@@ -29,6 +20,7 @@ const meta: Meta<typeof Header> = {
         height: "150px",
       },
     },
+    ...demoParams({ isDemoUser: false }),
   },
 };
 
@@ -42,11 +34,13 @@ export const Default: Story = {
 export const DemoUser: Story = {
   args: {},
   parameters: {
-    demoContext: {
+    ...demoParams({
       isDemoUser: true,
-      appSessionsPerMonth: 3,
-      appSessionsRemaining: 2,
-    },
+      demo: {
+        appSessionsPerMonth: 3,
+        appSessionsRemaining: 2,
+      },
+    }),
     ...chromaticParams(["desktop", "desktop-wide"]),
   },
 };
@@ -54,10 +48,12 @@ export const DemoUser: Story = {
 export const DemoLoading: Story = {
   args: {},
   parameters: {
-    demoContext: {
+    ...demoParams({
       isDemoUser: true,
-      appSessionsPerMonth: 3,
-      appSessionsRemaining: undefined,
-    },
+      demo: {
+        appSessionsPerMonth: 3,
+        appSessionsRemaining: undefined,
+      },
+    }),
   },
 };
