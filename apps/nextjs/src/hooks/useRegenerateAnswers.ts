@@ -59,7 +59,7 @@ const useRegenerateAnswers = ({
     Boolean(answer.lastGenerationId),
   );
   const requestRegenerateAnswersGeneration = useCallback(() => {
-    quizRequestGeneration({
+    void quizRequestGeneration({
       state,
       questionRow,
       requestGeneration,

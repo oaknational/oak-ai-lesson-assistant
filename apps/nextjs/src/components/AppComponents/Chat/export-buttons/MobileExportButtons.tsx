@@ -6,9 +6,9 @@ import { useDemoUser } from "@/components/ContextProviders/Demo";
 
 import { useDialog } from "../../DialogContext";
 
-type MobileExportButtonsProps = {
+export type MobileExportButtonsProps = Readonly<{
   closeMobileLessonPullOut: () => void;
-};
+}>;
 
 export const MobileExportButtons = ({
   closeMobileLessonPullOut,

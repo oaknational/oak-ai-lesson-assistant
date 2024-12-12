@@ -12,9 +12,8 @@ import Skeleton from "../common/Skeleton";
 import DropDownSection from "./drop-down-section";
 import { GuidanceRequired } from "./guidance-required";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function notEmpty(value: any) {
-  return ![null, undefined, ""].includes(value);
+export function notEmpty(value: unknown) {
+  return value !== null && value !== undefined && value !== "";
 }
 
 function basedOnTitle(basedOn: string | BasedOnOptional) {
@@ -25,36 +24,38 @@ function basedOnTitle(basedOn: string | BasedOnOptional) {
 }
 
 const displayStyles = cva(
-  "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24 ",
+  "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24",
 );
+
+export type LessonPlanDisplayProps = Readonly<{
+  chatEndRef: React.MutableRefObject<HTMLDivElement | null>;
+  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
+  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
+  showLessonMobile: boolean;
+}>;
 
 export const LessonPlanDisplay = ({
   chatEndRef,
   sectionRefs,
   documentContainerRef,
   showLessonMobile,
-}: {
-  chatEndRef: React.MutableRefObject<HTMLDivElement | null>;
-  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
-  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
-  showLessonMobile: boolean;
-}) => {
+}: LessonPlanDisplayProps) => {
   const chat = useLessonChat();
   const { ailaStreamingStatus, lastModeration } = chat;
   const lessonPlan = {
     ...chat.lessonPlan,
     starterQuiz:
-      chat.lessonPlan._experimental_starterQuizMathsV0 ||
+      chat.lessonPlan._experimental_starterQuizMathsV0 ??
       chat.lessonPlan.starterQuiz,
     exitQuiz:
-      chat.lessonPlan._experimental_exitQuizMathsV0 || chat.lessonPlan.exitQuiz,
+      chat.lessonPlan._experimental_exitQuizMathsV0 ?? chat.lessonPlan.exitQuiz,
   };
 
   const [userHasCancelledAutoScroll, setUserHasCancelledAutoScroll] =
     useState(false);
 
   useEffect(() => {
-    const handleUserScroll = () => {
+    const handleUserScroll = (event: WheelEvent) => {
       // Check for mousewheel or touch pad scroll event
       event?.type === "wheel" && setUserHasCancelledAutoScroll(true);
     };
@@ -142,7 +143,7 @@ export const LessonPlanDisplay = ({
                 return (
                   <DropDownSection
                     key={dependant}
-                    objectKey={dependant}
+                    section={dependant}
                     sectionRefs={sectionRefs}
                     value={value}
                     userHasCancelledAutoScroll={userHasCancelledAutoScroll}

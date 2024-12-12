@@ -571,6 +571,7 @@ export const misconceptionSchema = z.object({
   description: z.string(),
 });
 
+// #TODO Is this unused?
 export const lessonPlanForDocsSchema = z
   .object({
     title: z.string(),
@@ -591,20 +592,7 @@ export const lessonPlanForDocsSchema = z
   })
   .passthrough();
 
-export const lessonPlanSchema = z
-  .object({
-    title: z.string(),
-    keyStage: z.string(),
-    subject: z.string(),
-    starterQuiz: QuizSchema,
-    cycle1: CycleSchema,
-    cycle2: CycleSchema.optional(),
-    cycle3: CycleSchema.optional(),
-    exitQuiz: QuizSchema,
-  })
-  .passthrough();
-
-export type LessonPlanSchema = z.infer<typeof lessonPlanForDocsSchema>;
+export type LessonPlanForDocsSchema = z.infer<typeof lessonPlanForDocsSchema>;
 
 export const LessonPlanJsonSchema = zodToJsonSchema(
   CompletedLessonPlanSchema,

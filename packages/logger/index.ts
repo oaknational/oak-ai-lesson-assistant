@@ -19,6 +19,7 @@ type ChildKey =
   | "aila"
   | "aila:analytics"
   | "aila:categorisation"
+  | "aila:chat"
   | "aila:errors"
   | "aila:lesson"
   | "aila:llm"
@@ -32,6 +33,7 @@ type ChildKey =
   | "aila:testing"
   | "aila:chat"
   | "aila:quiz"
+  | "aila:experimental-patches"
   | "analytics"
   | "app"
   | "auth"
@@ -53,8 +55,10 @@ type ChildKey =
   | "moderation"
   | "prompts"
   | "qd"
+  | "quiz"
   | "rag"
   | "rate-limiting"
+  | "scrolling"
   | "snippets"
   | "testing"
   | "tracing"
@@ -85,7 +89,6 @@ const errorLogger =
  */
 export function aiLogger(childKey: ChildKey) {
   const debugLogger = debugBase.extend(childKey);
-
   return {
     info: debugLogger,
     warn: debugLogger,

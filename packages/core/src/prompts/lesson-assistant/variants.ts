@@ -1,6 +1,6 @@
 import z from "zod";
 
-import type { TemplateProps} from ".";
+import type { TemplateProps } from ".";
 import { getPromptParts } from ".";
 import type { OakPromptDefinition, OakPromptVariant } from "../types";
 
@@ -59,9 +59,7 @@ export const generateVariants = (): OakPromptVariant[] => {
         llmResponseJsonSchema: "<llmResponseJsonSchema>",
         lessonPlan: {},
         isUsingStructuredOutput:
-          process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true"
-            ? true
-            : false,
+          process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true",
       },
       slug,
     );

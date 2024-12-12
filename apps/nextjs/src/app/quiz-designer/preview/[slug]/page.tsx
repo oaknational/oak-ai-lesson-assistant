@@ -14,19 +14,19 @@ async function getData(slug: string) {
       notFound: true,
     };
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  //   const { updatedAt, createdAt, ...rest } = sharedData;
 
   const questions = sharedData.content;
 
   return questions;
 }
 
+export type QuizPreviewPageProps = Readonly<{
+  params: { readonly slug: string };
+}>;
+
 export default async function QuizPreviewPage({
   params,
-}: {
-  params: { slug: string };
-}) {
+}: QuizPreviewPageProps) {
   log.info("params", params);
 
   const questions = await getData(params.slug);

@@ -2,13 +2,13 @@
 
 import * as React from "react";
 
-interface useCopyToClipboardProps {
+interface UseCopyToClipboardProps {
   timeout?: number;
 }
 
 export function useCopyToClipboard({
   timeout = 2000,
-}: useCopyToClipboardProps) {
+}: UseCopyToClipboardProps) {
   const [isCopied, setIsCopied] = React.useState<boolean>(false);
 
   const copyToClipboard = (value: string) => {
@@ -20,7 +20,7 @@ export function useCopyToClipboard({
       return;
     }
 
-    navigator.clipboard.writeText(value).then(() => {
+    void navigator.clipboard.writeText(value).then(() => {
       setIsCopied(true);
 
       setTimeout(() => {

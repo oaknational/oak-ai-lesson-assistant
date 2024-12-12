@@ -1,23 +1,24 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { OakPrimaryButton } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 import type { Survey } from "posthog-js";
+import { SurveyQuestionType } from "posthog-js";
 
-import ChatButton from "../AppComponents/Chat/ui/chat-button";
 import { Icon } from "../Icon";
 
+export type FeedBackProps = Readonly<{
+  submitSurvey: (usersResponse: { [key: string]: string }) => void;
+  survey: Survey;
+  onSubmit: () => void;
+  closeDialogWithPostHogDismiss: () => void;
+}>;
 const FeedBack = ({
   submitSurvey,
   survey,
   onSubmit,
   closeDialogWithPostHogDismiss,
-}: {
-  survey: Survey;
-  submitSurvey: (usersResponse: { [key: string]: string }) => void;
-  closeDialogWithPostHogDismiss: () => void;
-  onSubmit: () => void;
-}) => {
+}: FeedBackProps) => {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const rating = [
     { number: 1 },
@@ -58,7 +59,7 @@ const FeedBack = ({
         {survey?.questions.map((question, i) => {
           const surveyResponseKey =
             i === 0 ? "$survey_response" : `$survey_response_${i}`;
-          if (question.type === "rating") {
+          if (question.type === SurveyQuestionType.Rating) {
             return (
               <div
                 key={question.question}
@@ -117,7 +118,7 @@ const FeedBack = ({
               </div>
             );
           }
-          if (question.type === "open") {
+          if (question.type === SurveyQuestionType.Open) {
             return (
               <div
                 key={question.question}

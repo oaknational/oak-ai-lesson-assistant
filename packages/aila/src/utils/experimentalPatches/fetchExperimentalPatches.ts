@@ -1,10 +1,15 @@
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import { aiLogger } from "@oakai/logger";
+
 import type { FullQuizService } from "../../core/quiz/interfaces";
 import type {
   ExperimentalPatchDocument,
-  MessagePart,
   PatchDocument,
 } from "../../protocol/jsonPatchProtocol";
 import type { LooseLessonPlan, Quiz } from "../../protocol/schema";
+import { mathsQuizFixture } from "./mathsQuiz.fixture";
+
+const log = aiLogger("aila:experimental-patches");
 
 /**
  * Wrap a value in an experimental patch 'document'
@@ -23,26 +28,44 @@ function preparePatch(
  */
 export async function fetchExperimentalPatches({
   lessonPlan,
-  parsedMessages,
+  llmPatches,
   handlePatch,
   fullQuizService,
+  userId,
 }: {
   lessonPlan: LooseLessonPlan;
-  parsedMessages: MessagePart[][];
+  llmPatches: PatchDocument[];
   handlePatch: (patch: ExperimentalPatchDocument) => Promise<void>;
   fullQuizService: FullQuizService;
+  userId?: string;
 }) {
-  // if (lessonPlan.subject !== "maths") {
-  //   // Only maths has experimental patches for now
-  //   return;
-  // }
+  if (lessonPlan.subject !== "maths") {
+    // Only maths has experimental patches for now
+    return;
+  }
 
-  const patches = parsedMessages
-    .map((m) => m.map((p) => p.document))
-    .flat()
-    .filter((p): p is PatchDocument => p.type === "patch");
+  if (!userId) {
+    log.info("Experimental patches disabled or no user ID. Skipping.");
+    return;
+  }
 
-  const starterQuizPatch = patches.find((p) => p.value.path === "/starterQuiz");
+  const mathsQuizzesEnabled = await posthogAiBetaServerClient.isFeatureEnabled(
+    "maths-quiz-v0",
+    userId,
+  );
+
+  if (!mathsQuizzesEnabled) {
+    log.info("Maths quiz feature-flag disabled. Skipping.");
+    return;
+  }
+
+  log.info(
+    "Maths quiz feature-flag enabled for user. Fetching experimental quiz patches.",
+  );
+
+  const starterQuizPatch = llmPatches.find(
+    (p) => p.value.path === "/starterQuiz",
+  );
 
   if (starterQuizPatch) {
     const op = starterQuizPatch.value.op;
@@ -70,6 +93,7 @@ export async function fetchExperimentalPatches({
           },
         ];
       }
+
       if (mathsStarterQuiz) {
         await handlePatch(
           preparePatch({
@@ -82,7 +106,7 @@ export async function fetchExperimentalPatches({
     }
   }
 
-  const exitQuizPatch = patches.find((p) => p.value.path === "/exitQuiz");
+  const exitQuizPatch = llmPatches.find((p) => p.value.path === "/exitQuiz");
 
   if (exitQuizPatch) {
     const op = exitQuizPatch.value.op;
@@ -108,6 +132,7 @@ export async function fetchExperimentalPatches({
           },
         ];
       }
+
       if (mathsExitQuiz) {
         await handlePatch(
           preparePatch({

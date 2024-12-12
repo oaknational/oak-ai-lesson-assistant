@@ -2,9 +2,9 @@ import type { AilaServices } from "../../core/AilaServices";
 import type { AnalyticsAdapter } from "./adapters/AnalyticsAdapter";
 
 export class AilaAnalytics {
-  private _aila: AilaServices;
-  private _adapters: AnalyticsAdapter[];
-  private _operations: Promise<unknown>[] = [];
+  private readonly _aila: AilaServices;
+  private readonly _adapters: AnalyticsAdapter[];
+  private readonly _operations: Promise<unknown>[] = [];
   private _isShutdown: boolean = false;
 
   constructor({
@@ -14,7 +14,7 @@ export class AilaAnalytics {
     aila: AilaServices;
     adapters?: AnalyticsAdapter[];
   }) {
-    this._adapters = adapters || [];
+    this._adapters = adapters ?? [];
     this._aila = aila;
   }
 

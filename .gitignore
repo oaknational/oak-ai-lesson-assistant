@@ -51,7 +51,15 @@ yarn-error.log*
 .tool-versions
 
 # Allow each developer to have personal settings, but ignore these files
-.vscode/launch.json
-.vscode/*.settings.json
+
 logs/
 __pycache__/
+
+.vscode/launch.json 
+.vscode/*.settings.json
+
+.sonar
+.sonar/**/*
+
+dependency-graph.svg
+

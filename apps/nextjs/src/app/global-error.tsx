@@ -9,7 +9,7 @@ import FullPageWarning from "@/components/FullPageWarning";
 export default function GlobalError({
   error,
 }: {
-  error: Error & { digest?: string };
+  readonly error: Error & { digest?: string };
 }) {
   useEffect(() => {
     Sentry.captureException(error, {
@@ -18,7 +18,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html>
+    <html lang="en">
       <body>
         <FullPageWarning>
           <FullPageWarning.Icon icon="acorn" size="xl" />

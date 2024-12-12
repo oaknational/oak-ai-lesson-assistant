@@ -1,14 +1,17 @@
+import { JSX } from "react";
+
 import { OakFlex, OakSpan } from "@oaknational/oak-components";
 
 import { OakLinkNoUnderline } from "@/components/OakLinkNoUnderline";
 
+export type ModalFooterButtonsProps = Readonly<{
+  closeDialog: () => void;
+  actionButtonStates: () => JSX.Element;
+}>;
 const ModalFooterButtons = ({
   closeDialog,
   actionButtonStates,
-}: {
-  closeDialog: () => void;
-  actionButtonStates: () => JSX.Element;
-}) => {
+}: ModalFooterButtonsProps) => {
   return (
     <OakFlex
       $flexDirection="column"
