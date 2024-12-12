@@ -12,12 +12,20 @@ declare global {
 }
 
 test.describe("Component renders during lesson chat", () => {
-  process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN = "true";
-
   test.beforeEach(async ({ page }) => {
     await test.step("Setup", async () => {
       await bypassVercelProtection(page);
       const login = await prepareUser(page, "typical");
+
+      await page.addInitScript(() => {
+        window.process = {
+          ...window.process,
+          env: {
+            ...window.process?.env,
+            NEXT_PUBLIC_ENABLE_RENDER_SCAN: "true",
+          },
+        };
+      });
       await page.goto(`${TEST_BASE_URL}/aila/${login.chatId}`);
       await isFinished(page);
     });
@@ -32,6 +40,7 @@ test.describe("Component renders during lesson chat", () => {
   });
 
   async function verifyChatInputRenders(page: Page) {
+    test.use;
     await page.waitForTimeout(5000);
     await page
       .locator('text="Software Testing Techniques"')
