@@ -6,7 +6,6 @@ import { useReactScan } from "hooks/useReactScan";
 
 import { Chat } from "@/components/AppComponents/Chat/Chat/chat";
 import LessonPlanDisplay from "@/components/AppComponents/Chat/chat-lessonPlanDisplay";
-import ChatRightHandSideLesson from "@/components/AppComponents/Chat/chat-right-hand-side-lesson";
 import Layout from "@/components/AppComponents/Layout";
 import { ChatProvider } from "@/components/ContextProviders/ChatProvider";
 import LessonPlanTrackingProvider from "@/lib/analytics/lessonPlanTrackingContext";
