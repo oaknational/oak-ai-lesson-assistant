@@ -1,4 +1,4 @@
-import { parseKeyStage } from "./helpers";
+import { parseKeyStage } from "./keyStages";
 
 const testKeyStageMap: Record<
   string,
