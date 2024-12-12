@@ -1,13 +1,9 @@
 import { RAG } from "@oakai/core/src/rag";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { getRelevantLessonPlans } from "@oakai/rag";
-import OpenAI from "openai";
 
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
 import type { CompletedLessonPlan } from "../../protocol/schema";
 import { minifyLessonPlanForRelevantLessons } from "../lessonPlan/minifyLessonPlanForRelevantLessons";
-import { parseKeyStage } from "./parseKeyStage";
-import { parseSubjects } from "./parseSubjects";
 
 export type RagLessonPlan = Omit<
   CompletedLessonPlan,
@@ -37,20 +33,23 @@ export async function fetchRagContent({
   chatId: string;
   userId?: string;
 }): Promise<RagLessonPlan[]> {
-  try {
-    const keyStageSlugs = keyStage ? [parseKeyStage(keyStage)] : null;
-    const subjectSlugs = subject ? parseSubjects(subject) : null;
-    const results = await getRelevantLessonPlans({
-      title,
-      subjectSlugs,
-      keyStageSlugs,
-    });
+  const rag = new RAG(prisma, { chatId, userId });
+  const ragLessonPlans = await tryWithErrorReporting(
+    () => {
+      return title && keyStage && subject
+        ? rag.fetchLessonPlans({
+            chatId: id,
+            title,
+            keyStage,
+            subject,
+            topic,
+            k,
+          })
+        : [];
+    },
+    "Failed to fetch RAG content",
+    "info",
+  );
 
-    return results.map((result) => ({
-      id: result.rag_lesson_plan_id,
-      ...result.lesson_plan,
-    }));
-  } catch (cause) {
-    throw new Error("Failed to fetch RAG content", { cause });
-  }
+  return ragLessonPlans?.map(minifyLessonPlanForRelevantLessons) ?? [];
 }

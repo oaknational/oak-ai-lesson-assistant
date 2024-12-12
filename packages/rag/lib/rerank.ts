@@ -15,7 +15,7 @@ export async function rerankResults({
   const topN = 5;
 
   const rerankRequest: RerankRequest = {
-    documents: results.map((result) => JSON.stringify(result.lesson_plan)),
+    documents: results.map((result) => JSON.stringify(result.lessonPlan)),
     returnDocuments: false,
     query,
     topN,

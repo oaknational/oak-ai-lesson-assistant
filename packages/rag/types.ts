@@ -1,10 +1,12 @@
 import type { CompletedLessonPlan } from "../aila/src/protocol/schema";
 
 export type RagLessonPlanResult = {
-  rag_lesson_plan_id: string;
-  lesson_plan: CompletedLessonPlan;
-  key: string;
-  value_text: string;
+  ragLessonPlanId: string;
+  oakLessonId: number | null;
+  oakLessonSlug: string;
+  lessonPlan: CompletedLessonPlan;
+  matchedKey: string;
+  matchedValue: string;
   distance: number;
 };
 

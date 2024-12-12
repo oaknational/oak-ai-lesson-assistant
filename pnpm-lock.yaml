@@ -920,9 +920,6 @@ importers:
       '@faker-js/faker':
         specifier: ^9.3.0
         version: 9.3.0
-      '@oakai/aila':
-        specifier: '*'
-        version: link:../aila
       '@oakai/core':
         specifier: '*'
         version: link:../core
