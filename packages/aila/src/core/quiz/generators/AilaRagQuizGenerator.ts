@@ -2,6 +2,7 @@ import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
   Quiz,
+  QuizPath,
   QuizQuestion,
 } from "../../../protocol/schema";
 import type { LooseLessonPlan } from "../../../protocol/schema";
@@ -14,10 +15,11 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
   async mappedQuizFromAilaRagRelevantLessons(
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    quizType: QuizPath = "/starterQuiz",
   ): Promise<Quiz[]> {
     // TODO: MG - This is a load of DB queries and may make it spiky.
     const quizPromises = ailaRagRelevantLessons.map((relevantLesson) =>
-      this.questionArrayFromPlanId(relevantLesson.lessonPlanId),
+      this.questionArrayFromPlanId(relevantLesson.lessonPlanId, quizType),
     );
 
     const quizzes = await Promise.all(quizPromises);
@@ -31,6 +33,7 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
     return await this.mappedQuizFromAilaRagRelevantLessons(
       lessonPlan,
       ailaRagRelevantLessons,
+      "/starterQuiz",
     );
   }
 
@@ -42,6 +45,7 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
     return await this.mappedQuizFromAilaRagRelevantLessons(
       lessonPlan,
       ailaRagRelevantLessons,
+      "/exitQuiz",
     );
   }
 }
