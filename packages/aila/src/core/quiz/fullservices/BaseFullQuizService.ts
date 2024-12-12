@@ -55,7 +55,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
       throw new Error("Reranker rating schema is undefined");
     }
     // TODO: GCLOMAX - This is changed to be hashed.
-    const quizRankings = await this.quizReranker.cachedEvaluateQuizArray(
+    const quizRankings = await this.quizReranker.evaluateQuizArray(
       quizzes,
       lessonPlan,
       this.quizReranker.ratingSchema,
