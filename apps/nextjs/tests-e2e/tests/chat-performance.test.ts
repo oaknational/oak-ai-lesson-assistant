@@ -40,11 +40,14 @@ test.describe("Component renders during lesson chat", () => {
   });
 
   async function verifyChatInputRenders(page: Page) {
-    test.use;
-    await page.waitForTimeout(5000);
     await page
       .locator('text="Software Testing Techniques"')
       .waitFor({ timeout: 10000 });
+    await page.waitForFunction(
+      () =>
+        window.reactScanLessonPlanDisplay &&
+        typeof window.reactScanLessonPlanDisplay.renderCount === "number",
+    );
     const textbox = page.getByTestId("chat-input");
     const message = "Create a KS1 lesson on the end of Roman Britain";
     const initialRenderAmount: number = await page.evaluate(
