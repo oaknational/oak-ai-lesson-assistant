@@ -1,16 +1,6 @@
-import type { z } from "zod";
-
-import type { LooseLessonPlan } from "../../../protocol/schema";
-import { AilaQuiz } from "../AilaQuiz";
-import type { BaseType } from "../ChoiceModels";
 import type { BaseSchema } from "../ChoiceModels";
-import type {
-  AilaQuizFactory,
-  AilaQuizReranker,
-  AilaQuizRerankerFactory,
-} from "../interfaces";
+import type { AilaQuizReranker, AilaQuizRerankerFactory } from "../interfaces";
 import type { QuizRerankerType } from "../schema";
-import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 import { ReturnFirstReranker } from "./ReturnFirstReranker";
 import { TestSchemaReranker } from "./SchemaReranker";

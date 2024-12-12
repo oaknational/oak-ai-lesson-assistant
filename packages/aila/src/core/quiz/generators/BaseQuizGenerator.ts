@@ -1,12 +1,5 @@
 import { Client } from "@elastic/elasticsearch";
 import type { SearchResponseBody } from "@elastic/elasticsearch/lib/api/types";
-import { SearchHit } from "@elastic/elasticsearch/lib/api/types";
-import { Json } from "@oakai/core/src/models/prompts";
-import { moderationResultSchema } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import {
-  embedTextLarge,
-  embedWithCacheTextLarge,
-} from "@oakai/core/src/utils/embeddings";
 // TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { prisma } from "@oakai/db";
 import { CohereClient } from "cohere-ai";
@@ -15,8 +8,6 @@ import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import { z } from "zod";
 
 import {
-  JsonPatchAddSchema,
-  JsonPatchDocumentOptional,
   JsonPatchDocumentSchema,
   PatchQuiz,
 } from "../../../protocol/jsonPatchProtocol";
@@ -26,29 +17,16 @@ import type {
   Quiz,
   AilaRagRelevantLesson,
 } from "../../../protocol/schema";
-import { QuizQuestionSchema, QuizSchema } from "../../../protocol/schema";
+import { QuizQuestionSchema } from "../../../protocol/schema";
 import type {
   LooseLessonPlan,
   QuizQuestion,
   QuizPath,
 } from "../../../protocol/schema";
-import type {
-  AilaQuizGeneratorService,
-  AilaQuizService,
-} from "../../AilaServices";
+import type { AilaQuizGeneratorService } from "../../AilaServices";
 import type { SimplifiedResult } from "../AilaQuiz";
-import { selectHighestRated } from "../ChoiceModels";
-import {
-  evaluateQuiz,
-  evaluateStarterQuiz,
-  parsedResponse,
-} from "../OpenAIRanker";
-import { processArray, withRandomDelay } from "../apiCallingUtils";
-import { testInput } from "../fixtures/cachedQuizOutput";
-import type { CustomHit, LessonSlugQuizMapping } from "../interfaces";
+import type { CustomHit } from "../interfaces";
 import { CohereReranker } from "../rerankers";
-import type { QuizzesForConsideration } from "../rerankers/RerankerStructuredOutputSchema";
-import { starterQuizQuestionSuitabilityDescriptionSchema } from "../rerankers/RerankerStructuredOutputSchema";
 import { lessonSlugQuizMap } from "./lessonSlugLookup";
 
 // Base abstract class

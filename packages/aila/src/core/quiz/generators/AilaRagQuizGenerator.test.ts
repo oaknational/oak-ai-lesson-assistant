@@ -34,7 +34,7 @@ describe("AilaRagQuizGenerator", () => {
       CircleTheoremLesson,
       mockRelevantLessons,
     );
-    console.log(JSON.stringify(result, null, 2));
+    // console.log(JSON.stringify(result, null, 2));
     expect(result).toBeDefined();
     expect(Array.isArray(result)).toBe(true);
     // expect(result.length).toBe(mockRelevantLessons.length); this is not currently true due to mismatches with lesson plans and quiz question IDS.
@@ -47,7 +47,7 @@ describe("AilaRagQuizGenerator", () => {
       "QUES-EYPJ1-67826",
     ]);
 
-    console.log(JSON.stringify(result, null, 2));
+    // console.log(JSON.stringify(result, null, 2));
     expect(result).toBeDefined();
     expect(Array.isArray(result)).toBe(true);
     // expect(result.length).toBe(1);
@@ -71,7 +71,7 @@ describe("AilaRagQuizGenerator", () => {
       "quiz-questions-text-only",
       ["QUES-XXXXX-XXXXX"],
     );
-    console.log(JSON.stringify(result, null, 2));
+    // console.log(JSON.stringify(result, null, 2));
     expect(result).toBeDefined();
     // in this case we are using the dummy elasticsearch client, so we expect to get a hit.
     expect(result.hits.hits.length).toBeGreaterThan(0);

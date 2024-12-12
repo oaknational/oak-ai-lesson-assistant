@@ -1,4 +1,3 @@
-import { RAG } from "@oakai/core/src/rag";
 // TODO: GCLOMAX This is a bodge that is needed to get running on new branch, but MG's new functionality deprecates this.
 import {
   subjects,
@@ -6,10 +5,6 @@ import {
   subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
 // TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
-import {
-  type PrismaClientWithAccelerate,
-  prisma as globalPrisma,
-} from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
@@ -39,7 +34,6 @@ import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
 import { AilaQuiz } from "../quiz/AilaQuiz";
 import { CompositeFullQuizServiceBuilder } from "../quiz/fullservices/CompositeFullQuizServiceBuilder";
-import { FullQuizServiceFactory } from "../quiz/fullservices/FullQuizServiceFactory";
 import type { FullQuizService } from "../quiz/interfaces";
 import { testRatingSchema } from "../quiz/rerankers/RerankerStructuredOutputSchema";
 import { AilaStreamHandler } from "./AilaStreamHandler";
