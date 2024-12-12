@@ -1,11 +1,17 @@
 import type { docs_v1 } from "@googleapis/docs";
+import { aiLogger } from "@oakai/logger";
 
 import type { Result } from "../../types";
-import type { ValueToString} from "../../utils";
+import type { ValueToString } from "../../utils";
 import { defaultValueToString } from "../../utils";
+import { findMarkdownImages } from "./findMarkdownImages";
+import { imageReplacements } from "./imageReplacements";
+import { textReplacements } from "./textReplacements";
+
+const log = aiLogger("exports");
 
 /**
- * @description Populates the template document with the given data.
+ * Populates the template document with the given data, handling image replacements for all placeholders.
  */
 export async function populateDoc<
   Data extends Record<string, string | string[] | null | undefined>,
@@ -23,37 +29,43 @@ export async function populateDoc<
   valueToString?: ValueToString<Data>;
 }): Promise<Result<{ missingData: string[] }>> {
   try {
-    const requests: docs_v1.Schema$Request[] = [];
     const missingData: string[] = [];
 
-    Object.entries(data).forEach(([key, value]) => {
-      const valueStr = valueToString(key, value);
-      if (!valueStr.trim() && warnIfMissing.includes(key)) {
-        missingData.push(key);
-      }
-      requests.push({
-        replaceAllText: {
-          replaceText: valueStr,
-          containsText: {
-            text: `{{${key}}}`,
-            matchCase: false,
-          },
-        },
-      });
+    const { requests: textRequests } = textReplacements({
+      data,
+      warnIfMissing,
+      valueToString,
     });
 
-    await googleDocs.documents.batchUpdate({
-      documentId,
-      requestBody: {
-        requests,
-      },
-    });
+    if (textRequests.length > 0) {
+      await googleDocs.documents.batchUpdate({
+        documentId,
+        requestBody: {
+          requests: textRequests,
+        },
+      });
+    }
+
+    const markdownImages = await findMarkdownImages(googleDocs, documentId);
+
+    const { requests: imageRequests } = imageReplacements(markdownImages);
+
+    if (imageRequests.length > 0) {
+      await googleDocs.documents.batchUpdate({
+        documentId,
+        requestBody: {
+          requests: imageRequests,
+        },
+      });
+    }
+
     return {
       data: {
         missingData,
       },
     };
   } catch (error) {
+    log.error("Failed to populate document:", error);
     return {
       error,
       message: "Failed to populate doc template",

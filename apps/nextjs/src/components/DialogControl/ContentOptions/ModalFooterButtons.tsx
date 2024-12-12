@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 import { OakFlex, OakSpan } from "@oaknational/oak-components";
 
 import { OakLinkNoUnderline } from "@/components/OakLinkNoUnderline";
@@ -23,7 +25,7 @@ const ModalFooterButtons = ({
       <OakLinkNoUnderline
         onClick={() => closeDialog()}
         element="button"
-        tabIndex={0}
+        tabIndex={1}
       >
         <OakSpan $font="body-2-bold" $color="black" $textDecoration="none">
           Cancel

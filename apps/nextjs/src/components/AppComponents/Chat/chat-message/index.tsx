@@ -1,25 +1,12 @@
 // Inspired by Chatbot-UI and modified to fit the needs of this project
 // @see https://github.com/mckaywrigley/chatbot-ui/blob/main/components/Chat/ChatMessage.tsx
-import type { ReactNode } from "react";
+import type { ReactNode, JSX } from "react";
 import { useState } from "react";
 
-import type {
-  ActionDocument,
-  BadDocument,
-  CommentDocument,
-  ErrorDocument,
-  MessagePart,
-  ModerationDocument,
-  PatchDocument,
-  PromptDocument,
-  StateDocument,
-  TextDocument,
-  UnknownDocument,
-} from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { isSafe } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import { aiLogger } from "@oakai/logger";
 import type { Message } from "ai";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
@@ -27,11 +14,9 @@ import { useChatModeration } from "@/components/ContextProviders/ChatModerationC
 import { Icon } from "@/components/Icon";
 import { cn } from "@/lib/utils";
 
-import type { ModerationModalHelpers } from "../../FeedbackForms/ModerationFeedbackModal";
 import type { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
+import { ChatMessagePart } from "./ChatMessagePart";
 import { isModeration } from "./protocol";
-
-const log = aiLogger("chat");
 
 export interface ChatMessageProps {
   chatId: string; // Needed for when we refactor to use a moderation provider
@@ -215,135 +200,8 @@ function MessageWrapper({
 
 function MessageTextWrapper({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <div className=" flex w-full flex-col items-start justify-between">
+    <div className="flex w-full flex-col items-start justify-between">
       {children}
     </div>
   );
-}
-
-export interface ChatMessagePartProps {
-  part: MessagePart;
-  inspect: boolean;
-  moderationModalHelpers: ModerationModalHelpers;
-}
-
-function ChatMessagePart({
-  part,
-  inspect,
-  moderationModalHelpers,
-}: Readonly<ChatMessagePartProps>) {
-  const PartComponent = {
-    comment: CommentMessagePart,
-    prompt: PromptMessagePart,
-    error: ErrorMessagePart,
-    bad: BadMessagePart,
-    patch: PatchMessagePart,
-    experimentalPatch: ExperimentalPatchMessageComponent,
-    state: StateMessagePart,
-    text: TextMessagePart,
-    action: ActionMessagePart,
-    moderation: ModerationMessagePart,
-    id: IdMessagePart,
-    unknown: UnknownMessagePart,
-  }[part.document.type] as React.ComponentType<{
-    part: typeof part.document;
-    moderationModalHelpers: ModerationModalHelpers;
-  }>;
-
-  if (!PartComponent) {
-    log.info("Unknown part type", part.document.type, JSON.stringify(part));
-    return null;
-  }
-
-  return (
-    <div className="w-full">
-      <PartComponent
-        part={part.document}
-        moderationModalHelpers={moderationModalHelpers}
-      />
-
-      {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        inspect && <PartInspector part={part} />
-      }
-    </div>
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function BadMessagePart({ part }: Readonly<{ part: BadDocument }>) {
-  return null;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function CommentMessagePart({ part }: Readonly<{ part: CommentDocument }>) {
-  return null;
-}
-
-function PromptMessagePart({ part }: Readonly<{ part: PromptDocument }>) {
-  return <MemoizedReactMarkdownWithStyles markdown={part.message} />;
-}
-
-function ModerationMessagePart({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  part,
-}: Readonly<{ part: ModerationDocument }>) {
-  return null;
-}
-
-function ErrorMessagePart({
-  part,
-}: Readonly<{
-  part: ErrorDocument;
-}>) {
-  const markdown = part.message ?? "Sorry, an error has occurred";
-  return <MemoizedReactMarkdownWithStyles markdown={markdown} />;
-}
-
-function TextMessagePart({ part }: Readonly<{ part: TextDocument }>) {
-  return <MemoizedReactMarkdownWithStyles markdown={part.value} />;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function PatchMessagePart({ part }: Readonly<{ part: PatchDocument }>) {
-  return null;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function StateMessagePart({ part }: Readonly<{ part: StateDocument }>) {
-  return null;
-}
-
-function IdMessagePart() {
-  return null;
-}
-
-function ActionMessagePart({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  part,
-}: Readonly<{ part: ActionDocument }>) {
-  return null;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function UnknownMessagePart({ part }: Readonly<{ part: UnknownDocument }>) {
-  return null;
-}
-
-function PartInspector({ part }: Readonly<{ part: MessagePart }>) {
-  return (
-    <div className="w-full bg-gray-200 px-8 py-16">
-      <pre className="w-full text-wrap text-xs">
-        {JSON.stringify(part, null, 2)}
-      </pre>
-    </div>
-  );
-}
-
-/**
- * Patches do not get rendered, they get applied to the lesson plan
- * state, which is then rendered in the right hand side.
- */
-function ExperimentalPatchMessageComponent() {
-  return null;
 }

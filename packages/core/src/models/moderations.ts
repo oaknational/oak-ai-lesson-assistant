@@ -34,6 +34,7 @@ export class Moderations {
     appSessionId,
     messageId,
     categories,
+    scores,
     justification,
     lesson,
   }: {
@@ -41,6 +42,7 @@ export class Moderations {
     appSessionId: string;
     messageId: string;
     categories: ModerationResult["categories"];
+    scores: ModerationResult["scores"];
     justification?: string;
     lesson: Snapshot;
   }): Promise<Moderation> {
@@ -58,6 +60,7 @@ export class Moderations {
         userId,
         categories,
         justification,
+        scores,
         appSessionId,
         messageId,
         lessonSnapshotId,

@@ -1,6 +1,7 @@
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "../../../../../.storybook/chromatic";
 import { DemoProvider } from "../../../../../src/components/ContextProviders/Demo";
 import { DownloadContent } from "./DownloadView";
 
@@ -9,6 +10,7 @@ const meta: Meta<typeof DownloadContent> = {
   component: DownloadContent,
   parameters: {
     layout: "fullscreen",
+    ...chromaticParams(["mobile", "desktop"]),
   },
   decorators: [
     (Story) => (

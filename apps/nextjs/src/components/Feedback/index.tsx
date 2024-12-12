@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { OakPrimaryButton } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 import type { Survey } from "posthog-js";
+import { SurveyQuestionType } from "posthog-js";
 
 import { Icon } from "../Icon";
 
@@ -58,7 +59,7 @@ const FeedBack = ({
         {survey?.questions.map((question, i) => {
           const surveyResponseKey =
             i === 0 ? "$survey_response" : `$survey_response_${i}`;
-          if (question.type === "rating") {
+          if (question.type === SurveyQuestionType.Rating) {
             return (
               <div
                 key={question.question}
@@ -117,7 +118,7 @@ const FeedBack = ({
               </div>
             );
           }
-          if (question.type === "open") {
+          if (question.type === SurveyQuestionType.Open) {
             return (
               <div
                 key={question.question}
@@ -130,7 +131,7 @@ const FeedBack = ({
                   {question.question}
                 </label>
                 <textarea
-                  tabIndex={0}
+                  tabIndex={1}
                   className="h-32 w-full min-w-[300px] rounded border-2 border-black p-10"
                   onChange={(e) => {
                     setUsersResponse({
@@ -146,7 +147,7 @@ const FeedBack = ({
         })}
         <div className="flex justify-center">
           <OakPrimaryButton
-            tabIndex={0}
+            tabIndex={1}
             onClick={() => {
               submitSurvey(usersResponse);
               onSubmit();

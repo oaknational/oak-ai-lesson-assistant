@@ -20,11 +20,10 @@ import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModerati
 import type { Moderation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
-import type { Message } from "ai";
-import { nanoid } from "ai";
-import type { ChatRequestOptions, CreateMessage } from "ai";
+import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { useChat } from "ai/react";
 import { useTemporaryLessonPlanWithStreamingEdits } from "hooks/useTemporaryLessonPlanWithStreamingEdits";
+import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
 
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
@@ -77,7 +76,7 @@ const messageHashes = {};
 
 function clearHashCache() {
   for (const key in messageHashes) {
-    if (messageHashes.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(messageHashes, key)) {
       delete messageHashes[key];
     }
   }

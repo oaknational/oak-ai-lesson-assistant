@@ -15,6 +15,7 @@ import { DialogProvider } from "../src/components/AppComponents/DialogContext";
 import { AnalyticsProvider } from "../src/mocks/analytics/provider";
 import { ClerkDecorator } from "../src/mocks/clerk/ClerkDecorator";
 import { TRPCReactProvider } from "../src/utils/trpc";
+import { chromaticParams } from "./chromatic";
 import { RadixThemeDecorator } from "./decorators/RadixThemeDecorator";
 import "./preview.css";
 
@@ -28,6 +29,27 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    viewport: {
+      viewports: {
+        mobile: {
+          name: "Mobile",
+          styles: { width: "375px", height: "800px" },
+        },
+        mobileWide: {
+          name: "Mobile Wide",
+          styles: { width: "430px", height: "930px" },
+        },
+        desktop: {
+          name: "Desktop",
+          styles: { width: "1200px", height: "1000px" },
+        },
+        desktopWide: {
+          name: "Desktop Wide",
+          styles: { width: "1400px", height: "1000px" },
+        },
+      },
+    },
+    ...chromaticParams(["desktop"]),
   },
   loaders: [mswLoader],
 };
@@ -45,7 +67,6 @@ export const decorators: Decorator[] = [
   ClerkDecorator,
   (Story) => (
     <>
-      {/* TODO: Mock tRPC calls with MSW */}
       <TRPCReactProvider>
         <AnalyticsProvider>
           <DialogProvider>

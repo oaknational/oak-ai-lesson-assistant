@@ -23,11 +23,11 @@ const dialogTitlesAndIcons: Record<
 > = {
   "share-chat": {
     title: "Share lesson",
-    iconName: "share",
+    iconName: null,
   },
   feedback: {
     title: "",
-    iconName: "books",
+    iconName: null,
   },
   "report-content": {
     title: "Report content",
@@ -72,7 +72,7 @@ const DialogContents = ({
   readonly children?: React.ReactNode;
   readonly messages?: Message[];
   readonly submit?: () => void;
-  readonly isShared?: boolean | undefined;
+  readonly isShared?: boolean;
 }) => {
   const { dialogWindow, setDialogWindow, setDialogProps, openSidebar } =
     useDialog();

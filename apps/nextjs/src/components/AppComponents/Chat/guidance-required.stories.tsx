@@ -23,18 +23,19 @@ export const Default: Story = {
   },
 };
 
-export const CustomClass: Story = {
-  args: {
-    moderation: mockModeration,
-    className: "custom-class",
-  },
-};
-
-export const Safe: Story = {
+export const NoModeration: Story = {
   args: {
     moderation: {
       id: "safe",
       categories: [],
     },
   },
+  decorators: [
+    (Story) => (
+      <>
+        <Story />
+        <p>(Nothing should render here)</p>
+      </>
+    ),
+  ],
 };

@@ -121,10 +121,10 @@ export const DownloadButton = ({
         </Link>
         <button
           className="flex w-full items-center  justify-start gap-15 hover:underline sm:hidden"
-          onClick={async () => {
+          onClick={() => {
             const lessonTitle = lesson.title;
             if (!lessonTitle) return;
-            mutateAsync({
+            void mutateAsync({
               lessonTitle,
               title,
               link,
@@ -150,10 +150,14 @@ export const DownloadButton = ({
       </div>
     );
   }
+
+  const downloadButtonClasses = downloadAvailable
+    ? `border-opacity-100`
+    : ` border-opacity-40`;
   return (
     <>
       <button
-        className={`flex items-center justify-between gap-9 rounded-md border-2 border-black px-14 py-10 ${downloadAvailable ? `border-opacity-100` : ` border-opacity-40`}`}
+        className={`flex items-center justify-between gap-9 rounded-md border-2 border-black px-14 py-10 ${downloadButtonClasses}`}
         onClick={() => onClick()}
         disabled={!downloadAvailable}
         data-testid={dataTestId}
