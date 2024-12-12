@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
+import { chromaticParams } from "@/storybook/chromatic";
 
 import { HelpContent } from ".";
-import { chromaticParams } from "../../../../.storybook/chromatic";
 
 const meta: Meta<typeof HelpContent> = {
   title: "Pages/Chat/Help",
