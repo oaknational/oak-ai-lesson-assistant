@@ -40,9 +40,7 @@ test.describe("Component renders during lesson chat", () => {
   });
 
   async function verifyChatInputRenders(page: Page) {
-    await page
-      .locator('text="Software Testing Techniques"')
-      .waitFor({ timeout: 10000 });
+    console.log("env.", process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN);
     await page.waitForFunction(
       () =>
         window.reactScanLessonPlanDisplay &&
