@@ -49,6 +49,8 @@ These Oak lessons might be relevant:
 1. Introduction to the Periodic Table 
 2. Chemical Reactions and Equations
 3. The Structure of the Atom
+4. The Mole Concept
+5. Acids, Bases and Salts
 \n
 To base your lesson on one of these existing Oak lessons, type the lesson number. Tap **Continue** to start from scratch.
 END OF EXAMPLE RESPONSE`,

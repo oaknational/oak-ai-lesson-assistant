@@ -93,7 +93,9 @@ const config = [
 
     rules: {
       ...rules,
-      "react/jsx-no-comment-textnodes": "warn"
+      "react/jsx-no-comment-textnodes": "warn",
+      "react-hooks/exhaustive-deps": "error",
+      "react-hooks/rules-of-hooks": "error",
     },
     settings: {
       "import/resolver": {

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
+import { chromaticParams } from "@/storybook/chromatic";
 
 import { HelpContent } from ".";
 
@@ -10,6 +11,7 @@ const meta: Meta<typeof HelpContent> = {
   parameters: {
     // Including custom decorators changes the layout from fullscreen
     layout: "fullscreen",
+    ...chromaticParams(["mobile", "desktop"]),
   },
   decorators: [
     (Story) => (
