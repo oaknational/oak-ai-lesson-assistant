@@ -304,6 +304,7 @@ export class AilaChat implements AilaChatService {
   }
 
   private async persistChat() {
+    log.info("Persisting chat");
     await Promise.all(
       (this._aila.persistence ?? []).map((p) => p.upsertChat()),
     );

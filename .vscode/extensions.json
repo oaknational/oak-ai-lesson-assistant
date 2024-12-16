@@ -5,6 +5,7 @@
     "bradlc.vscode-tailwindcss",
     "Prisma.prisma",
     "orta.vscode-jest",
-    "ms-playwright.playwright"
+    "ms-playwright.playwright",
+    "sonarsource.sonarlint-vscode"
   ]
 }
