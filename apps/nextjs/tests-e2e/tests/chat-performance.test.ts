@@ -1,8 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
-import { test as base } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
+import { cspSafeWaitForFunction } from "../helpers/auth/clerkHelpers";
 import { bypassVercelProtection } from "../helpers/vercel";
 import { isFinished } from "./aila-chat/helpers";
 
@@ -70,17 +70,21 @@ test.describe("Component renders during lesson chat", () => {
     //   window.process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN = "true";
     // }
 
+    await page.waitForTimeout(5000);
+
     console.log("Checking injected flag...");
     const renderScanEnabled = await page.evaluate(
       () => window.NEXT_PUBLIC_ENABLE_RENDER_SCAN,
     );
     console.log("Render Scan Enabled:", renderScanEnabled); // Debug check
 
-    await page.waitForFunction(
+    await cspSafeWaitForFunction(
+      page,
       () =>
         window.reactScanLessonPlanDisplay &&
         typeof window.reactScanLessonPlanDisplay.renderCount === "number",
     );
+
     const textbox = page.getByTestId("chat-input");
     const message = "Create a KS1 lesson on the end of Roman Britain";
     const initialRenderAmount: number = await page.evaluate(
