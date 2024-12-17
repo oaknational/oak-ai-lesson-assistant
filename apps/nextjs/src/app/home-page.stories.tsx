@@ -4,16 +4,16 @@ import { chromaticParams } from "@/storybook/chromatic";
 
 import { HomePageContent } from "./home-page";
 
-const meta: Meta<typeof HomePageContent> = {
+const meta = {
   title: "Pages/Homepage",
   component: HomePageContent,
   parameters: {
     ...chromaticParams(["mobile", "desktop"]),
   },
-};
+} satisfies Meta<typeof HomePageContent>;
 
 export default meta;
-type Story = StoryObj<typeof HomePageContent>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {

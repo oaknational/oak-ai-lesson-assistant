@@ -13,7 +13,7 @@ const DummyMessage: Message = {
   role: "user",
 };
 
-const meta: Meta<typeof ChatPanel> = {
+const meta = {
   title: "Components/Chat/ChatPanel",
   component: ChatPanel,
   tags: ["autodocs"],
@@ -26,10 +26,10 @@ const meta: Meta<typeof ChatPanel> = {
       messages: [DummyMessage],
     },
   },
-};
+} satisfies Meta<typeof ChatPanel>;
 
 export default meta;
-type Story = StoryObj<typeof ChatPanel>;
+type Story = StoryObj<typeof meta>;
 
 export const NoMessages: Story = {
   args: {},

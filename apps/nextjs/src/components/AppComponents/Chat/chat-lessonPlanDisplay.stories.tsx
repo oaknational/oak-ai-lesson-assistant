@@ -21,19 +21,22 @@ const chatContext: Partial<ChatContextProps> = {
   ailaStreamingStatus: "Idle",
 };
 
-const meta: Meta<typeof LessonPlanDisplay> = {
+const meta = {
   title: "Components/LessonPlan/LessonPlanDisplay",
   component: LessonPlanDisplay,
   tags: ["autodocs"],
   decorators: [ChatDecorator],
   args: {
     documentContainerRef: { current: null },
+    chatEndRef: undefined,
+    sectionRefs: {},
+    showLessonMobile: false,
   },
-};
+} satisfies Meta<typeof LessonPlanDisplay>;
 
 export default meta;
 
-type Story = StoryObj<typeof LessonPlanDisplay>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},
