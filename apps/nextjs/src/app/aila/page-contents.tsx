@@ -11,7 +11,7 @@ import { ChatProvider } from "@/components/ContextProviders/ChatProvider";
 import LessonPlanTrackingProvider from "@/lib/analytics/lessonPlanTrackingContext";
 
 const ChatPageContents = ({ id }: { readonly id: string }) => {
-  useReactScan(LessonPlanDisplay, 1000);
+  useReactScan(LessonPlanDisplay, 5000);
 
   return (
     <Layout>

@@ -59,25 +59,27 @@ export const useReactScan = <T extends object>(
   interval?: number,
 ) => {
   useEffect(() => {
-    const isRenderScanEnabled =
-      (typeof process !== "undefined" &&
-        process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
-      (typeof window !== "undefined" &&
-        window.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
-      (typeof window !== "undefined" &&
-        window.process?.env?.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true");
+    // const isRenderScanEnabled =
+    //   (typeof process !== "undefined" &&
+    //     process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
+    //   (typeof window !== "undefined" &&
+    //     window.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
+    //   (typeof window !== "undefined" &&
+    //     window.process?.env?.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true");
 
-    // const isRenderScanEnabled = true;
+    const isRenderScanEnabled = true;
     if (isRenderScanEnabled) {
       try {
         log.info("Initializing React Scan...");
-        scan({
-          enabled: true,
-          log: true,
-          report: true,
-          renderCountThreshold: 0,
-          showToolbar: true,
-        });
+        if (typeof window !== "undefined") {
+          scan({
+            enabled: true,
+            log: true,
+            report: true,
+            renderCountThreshold: 0,
+            showToolbar: true,
+          });
+        }
         log.info("React Scan initialized successfully");
       } catch (error) {
         log.error("React Scan initialization error:", error);
