@@ -35,6 +35,12 @@ export async function prepareUser(
     | "sharing-chat",
 ) {
   return await test.step("Prepare user", async () => {
+    await test.step("performance-react-scan", async () => {
+      await page.addInitScript(() => {
+        window.NEXT_PUBLIC_ENABLE_RENDER_SCAN = "true";
+      });
+      await page.evaluate(() => window.NEXT_PUBLIC_ENABLE_RENDER_SCAN);
+    });
     const [login] = await Promise.all([
       test.step("tRPC.prepareUser", async () => {
         return await trpc.prepareUser.mutate({ persona });
