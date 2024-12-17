@@ -65,8 +65,11 @@ test.describe("Component renders during lesson chat", () => {
       window.process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN = "true";
     }
 
-    // console.log("Window process:", window.process);
-    // console.log("Environment type:", process?.env?.NODE_ENV);
+    console.log("Window process: in verifyChatInputRenders", window.process);
+    console.log(
+      "Environment type: in verifyChatInputRenders",
+      process?.env?.NODE_ENV,
+    );
 
     await page.waitForFunction(
       () =>
