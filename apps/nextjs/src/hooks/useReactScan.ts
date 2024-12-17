@@ -57,7 +57,10 @@ export const useReactScan = <T extends object>(
   >(null);
 
   useEffect(() => {
-    if (process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") {
+    if (
+      process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true" ||
+      window.process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true"
+    ) {
       try {
         log.info("Initializing React Scan...");
         scan({
