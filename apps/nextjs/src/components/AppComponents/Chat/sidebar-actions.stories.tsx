@@ -3,17 +3,17 @@ import { within } from "@storybook/test";
 
 import { SidebarActions } from "./sidebar-actions";
 
-const meta: Meta<typeof SidebarActions> = {
+const meta = {
   title: "Components/Sidebar/Actions",
   component: SidebarActions,
   parameters: {
     layout: "centered",
   },
   tags: ["autodocs"],
-};
+} satisfies Meta<typeof SidebarActions>;
 
 export default meta;
-type Story = StoryObj<typeof SidebarActions>;
+type Story = StoryObj<typeof meta>;
 
 const mockChat = {
   id: "1",

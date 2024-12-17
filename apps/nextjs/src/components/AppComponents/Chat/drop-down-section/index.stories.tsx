@@ -9,7 +9,7 @@ const MAX_INT32 = 2 ** 31 - 1;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const meta: Meta<typeof DropDownSection> = {
+const meta = {
   title: "Components/LessonPlan/DropDownSection",
   component: DropDownSection,
   tags: ["autodocs"],
@@ -19,6 +19,9 @@ const meta: Meta<typeof DropDownSection> = {
       "I can explain the reasons why frogs are so important to British society and culture",
     documentContainerRef: { current: null },
     streamingTimeout: 0,
+    userHasCancelledAutoScroll: false,
+    sectionRefs: {},
+    showLessonMobile: false,
   },
   decorators: [ChatDecorator],
   parameters: {
@@ -38,10 +41,10 @@ const meta: Meta<typeof DropDownSection> = {
       ailaStreamingStatus: "Idle",
     },
   },
-};
+} satisfies Meta<typeof DropDownSection>;
 
 export default meta;
-type Story = StoryObj<typeof DropDownSection>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},

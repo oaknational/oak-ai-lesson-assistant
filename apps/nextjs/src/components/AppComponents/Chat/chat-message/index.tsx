@@ -131,11 +131,7 @@ export function ChatMessage({
             messageParts.map((part) => {
               return (
                 <div className="w-full" key={part.id}>
-                  <ChatMessagePart
-                    part={part}
-                    moderationModalHelpers={moderationModalHelpers}
-                    inspect={inspect}
-                  />
+                  <ChatMessagePart part={part} inspect={inspect} />
                 </div>
               );
             })}

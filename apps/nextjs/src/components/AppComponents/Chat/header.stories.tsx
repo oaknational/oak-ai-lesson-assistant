@@ -8,7 +8,7 @@ import {
 
 import { Header } from "./header";
 
-const meta: Meta<typeof Header> = {
+const meta = {
   title: "Components/Layout/ChatHeader",
   component: Header,
   tags: ["autodocs"],
@@ -22,10 +22,10 @@ const meta: Meta<typeof Header> = {
     },
     ...demoParams({ isDemoUser: false }),
   },
-};
+} satisfies Meta<typeof Header>;
 
 export default meta;
-type Story = StoryObj<typeof Header>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},
