@@ -5,6 +5,12 @@ import { aiLogger } from "@oakai/logger";
 
 const log = aiLogger("testing");
 
+declare global {
+  interface Window {
+    NEXT_PUBLIC_ENABLE_RENDER_SCAN?: string;
+  }
+}
+
 function getWindowPropertyName<T>(component: React.ComponentType<T>): string {
   return `reactScan${component.displayName ?? component.name ?? "UnknownComponent"}`;
 }

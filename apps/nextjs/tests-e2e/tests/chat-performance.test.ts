@@ -9,6 +9,7 @@ import { isFinished } from "./aila-chat/helpers";
 declare global {
   interface Window {
     reactScanLessonPlanDisplay: { renderCount: number };
+    NEXT_PUBLIC_ENABLE_RENDER_SCAN?: string;
   }
 }
 
