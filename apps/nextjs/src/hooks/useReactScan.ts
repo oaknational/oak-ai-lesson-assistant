@@ -61,6 +61,8 @@ export const useReactScan = <T extends object>(
       (typeof process !== "undefined" &&
         process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
       (typeof window !== "undefined" &&
+        window.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
+      (typeof window !== "undefined" &&
         window.process?.env?.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true");
     if (isRenderScanEnabled) {
       try {

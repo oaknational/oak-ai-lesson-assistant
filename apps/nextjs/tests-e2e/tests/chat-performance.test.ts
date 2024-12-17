@@ -19,30 +19,34 @@ test.describe("Component renders during lesson chat", () => {
       const login = await prepareUser(page, "typical");
 
       await page.addInitScript(() => {
-        window.process = {
-          ...window.process,
-          env: {
-            ...window.process?.env,
-            NEXT_PUBLIC_ENABLE_RENDER_SCAN: "true",
-          },
-        };
+        window.NEXT_PUBLIC_ENABLE_RENDER_SCAN = "true";
       });
-      await page.addInitScript(() => {
-        console.log("Window object:", typeof window);
-        console.log("Process object:", typeof window.process);
-        console.log("Existing env:", window.process?.env);
 
-        if (typeof window !== "undefined") {
-          window.process = window.process || {};
-          window.process.env = window.process.env || {};
-          window.process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN = "true";
-        }
+      //   await page.addInitScript(() => {
+      //     window.process = {
+      //       ...window.process,
+      //       env: {
+      //         ...window.process?.env,
+      //         NEXT_PUBLIC_ENABLE_RENDER_SCAN: "true",
+      //       },
+      //     };
+      //   });
+      //   await page.addInitScript(() => {
+      //     console.log("Window object:", typeof window);
+      //     console.log("Process object:", typeof window.process);
+      //     console.log("Existing env:", window.process?.env);
 
-        console.log(
-          "Set env:",
-          window.process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN,
-        );
-      });
+      //     if (typeof window !== "undefined") {
+      //       window.process = window.process || {};
+      //       window.process.env = window.process.env || {};
+      //       window.process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN = "true";
+      //     }
+
+      //     console.log(
+      //       "Set env:",
+      //       window.process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN,
+      //     );
+      //   });
 
       await page.goto(`${TEST_BASE_URL}/aila/${login.chatId}`);
       await isFinished(page);
@@ -58,12 +62,18 @@ test.describe("Component renders during lesson chat", () => {
   });
 
   async function verifyChatInputRenders(page: Page) {
-    console.log("env.", process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN);
-    if (typeof window !== "undefined") {
-      window.process = window.process || {};
-      window.process.env = window.process.env || {};
-      window.process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN = "true";
-    }
+    // console.log("env.", process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN);
+    // if (typeof window !== "undefined") {
+    //   window.process = window.process || {};
+    //   window.process.env = window.process.env || {};
+    //   window.process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN = "true";
+    // }
+
+    console.log("Checking injected flag...");
+    const renderScanEnabled = await page.evaluate(
+      () => window.NEXT_PUBLIC_ENABLE_RENDER_SCAN,
+    );
+    console.log("Render Scan Enabled:", renderScanEnabled); // Debug check
 
     await page.waitForFunction(
       () =>
