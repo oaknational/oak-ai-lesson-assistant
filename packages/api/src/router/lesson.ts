@@ -2,6 +2,7 @@ import { Lessons, inngest } from "@oakai/core";
 import type { LessonSummary, Transcript } from "@oakai/db";
 import { LessonWithSnippets } from "@oakai/db";
 import { TRPCError } from "@trpc/server";
+import { GraphQLClient, gql } from "graphql-request";
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
@@ -33,6 +34,79 @@ export const lessonRouter = router({
     .output(z.any()) // FIXME: Define the output type using zod
     .query(async ({ ctx, input }) => {
       return new Lessons(ctx.prisma).retrieve(input.q);
+    }),
+  getLessonSlugFromId: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .output(z.string())
+    .query(async ({ ctx, input }) => {
+      const lessonPlan = await ctx.prisma.lessonPlan.findUnique({
+        where: { id: input.id },
+      });
+
+      const lesson = await ctx.prisma.lesson.findFirst({
+        where: { id: lessonPlan?.lessonId },
+      });
+
+      if (!lesson) {
+        throw new TRPCError({
+          message: "Lesson not found",
+          code: "NOT_FOUND",
+        });
+      }
+      return lesson.slug;
+    }),
+  getTpcMediaForLessonSlug: protectedProcedure
+    .input(
+      z.object({
+        slug: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      try {
+        console.log(
+          "***********************************************************",
+        );
+
+        const query = gql`
+          query lessonOverview($slug: String!) {
+            lessons: published_mv_get_tpc_media_by_lesson_slug_1_0_0(
+              where: { slug: { _eq: $slug } }
+            ) {
+              media_list
+            }
+          }
+        `;
+
+        const graphqlClient = new GraphQLClient(
+          "https://hasura.thenational.academy/v1/graphql",
+          {
+            headers: {
+              "x-oak-auth-key": process.env.OAK_GRAPHQL_SECRET as string,
+              "x-oak-auth-type": "oak-admin",
+            },
+          },
+        );
+
+        const variables = {
+          slug: input.slug,
+        };
+
+        const data = await graphqlClient.request(query, variables);
+
+        console.log("***************", data);
+        const parsedData = z
+          .object({
+            lessons: z.array(z.object({}).passthrough().nullable()),
+          })
+          .parse(data);
+        return parsedData.lessons;
+      } catch (error) {
+        console.log("***************", error);
+      }
     }),
   searchByTranscript: protectedProcedure
     .input(

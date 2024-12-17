@@ -8,11 +8,14 @@ const ImageSpike = ({ lessons }: { lessons: any }) => {
     lessonTitle: lesson?.output?.lessonPlan?.title || "",
     keyStage: lesson?.output?.lessonPlan?.keyStage || "",
     subject: lesson?.output?.lessonPlan?.subject || "",
+    basedOn: lesson?.output?.lessonPlan?.basedOn?.title || "",
     hasThreeCycles:
       !!lesson?.output?.lessonPlan?.cycle1 &&
       !!lesson?.output?.lessonPlan?.cycle2 &&
       !!lesson?.output?.lessonPlan?.cycle3,
   }));
+
+  console.log("**********", lessons[lessons.length - 1]);
 
   return (
     <div className="mx-auto mt-20 max-w-[1200px]">
@@ -25,19 +28,22 @@ const ImageSpike = ({ lessons }: { lessons: any }) => {
             hasThreeCycles,
             keyStage,
             subject,
+            basedOn,
           }: {
             sessionId: string;
             lessonTitle: string;
             hasThreeCycles: boolean;
             keyStage: string;
             subject: string;
+            basedOn: string;
           }) => {
             if (!lessonTitle || !hasThreeCycles) {
               return null;
             }
             return (
               <Link key={sessionId} href={`/image-spike/${sessionId}`}>
-                {lessonTitle}: {sessionId} ------- {subject}, {keyStage}
+                {lessonTitle}: {sessionId} ------- {subject}, {keyStage}, BASED
+                ON: {basedOn}
               </Link>
             );
           },

@@ -13,6 +13,7 @@ import type { ImageResponse } from "types/imageTypes";
 
 import LoadingWheel from "@/components/LoadingWheel";
 import { RegenerationForm } from "@/components/RegenerationForm";
+import { trpc } from "@/utils/trpc";
 
 export type Cycle = {
   title: string;
@@ -53,6 +54,7 @@ function promptConstructor(
 
 const ImagesPage = ({ pageData }) => {
   const [selectedImagePrompt, setSelectedImagePrompt] = useState("");
+
   const [comparisonColumns, setComparisonColumns] = useState<
     {
       id: string;
@@ -175,6 +177,20 @@ const ImagesPage = ({ pageData }) => {
     setComparisonColumns((prev) => prev.filter((col) => col.id !== columnId));
   };
 
+  console.log("basedon id", pageData.lessonPlan.basedOn.id);
+
+  const basedOnLessonSlugFromId = trpc.lesson.getLessonSlugFromId.useQuery({
+    id: pageData.lessonPlan.basedOn.id,
+  });
+
+  const basedOnSlug = basedOnLessonSlugFromId.data;
+
+  const basedOnLessonMedia = trpc.lesson.getTpcMediaForLessonSlug.useQuery({
+    slug: basedOnSlug ?? "",
+  });
+  const data = basedOnLessonMedia?.data ?? [];
+  const mediaList: any[] = (data[0]?.media_list ?? []) as any[];
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="mx-auto max-w-7xl">
@@ -187,9 +203,28 @@ const ImagesPage = ({ pageData }) => {
             <OakIcon iconName="arrow-left" />
             <span>Back</span>
           </Link>
-          <h1 className="text-2xl font-semibold">
-            {pageData.title} • {pageData.keyStage} • {pageData.subject}
-          </h1>
+          <div className="flex flex-col items-end gap-7">
+            <h1 className="text-2xl font-semibold">
+              {pageData.title} • {pageData.keyStage} • {pageData.subject}
+            </h1>
+            {basedOnSlug && <h2>Based on: {basedOnSlug}</h2>}
+          </div>
+        </div>
+
+        <div className="my-18">
+          <h3>Images used in the lesson this was based on</h3>
+          <div className="flex flex-wrap">
+            {mediaList.map((media) => (
+              <div key={media.id} className="relative h-96 w-1/3">
+                <Image
+                  src={media.external_url}
+                  alt={media.content_name || "Image"}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Learning Cycles Tabs */}
