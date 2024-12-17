@@ -58,21 +58,16 @@ export const useReactScan = <T extends object>(
   component?: React.ComponentType<T>,
   interval?: number,
 ) => {
-  // const [scanReports, setScanReports] = useState<
-  //   sortedReport | sortedReport[] | null
-  // >(null);
-
   useEffect(() => {
-    // const isRenderScanEnabled =
-    //   (typeof process !== "undefined" &&
-    //     process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
-    //   (typeof window !== "undefined" &&
-    //     window.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
-    //   (typeof window !== "undefined" &&
-    //     window.process?.env?.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true");
+    const isRenderScanEnabled =
+      (typeof process !== "undefined" &&
+        process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
+      (typeof window !== "undefined" &&
+        window.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
+      (typeof window !== "undefined" &&
+        window.process?.env?.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true");
 
-    // if (!isRenderScanEnabled) return;
-    const isRenderScanEnabled = true;
+    // const isRenderScanEnabled = true;
     if (isRenderScanEnabled) {
       try {
         log.info("Initializing React Scan...");
@@ -121,7 +116,6 @@ export const useReactScan = <T extends object>(
             );
 
             console.table(sortedReports);
-            // setScanReports(sortedReports);
           } else if (
             allReports !== null &&
             allReports instanceof Map === false
@@ -131,7 +125,7 @@ export const useReactScan = <T extends object>(
               allReports,
             ]);
             log.info("Single Report:,", transformedReport);
-            // setScanReports(transformedReport);
+
             setWindowObjectForPlaywright(component, transformedReport);
           }
         } catch (error) {
