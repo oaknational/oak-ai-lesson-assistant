@@ -4,16 +4,16 @@ import { chromaticParams } from "@/storybook/chromatic";
 
 import { LegalContent } from "./legal";
 
-const meta: Meta<typeof LegalContent> = {
+const meta = {
   title: "Pages/Legal/Sanity dynamic",
   component: LegalContent,
   parameters: {
     ...chromaticParams(["mobile", "desktop"]),
   },
-};
+} satisfies Meta<typeof LegalContent>;
 
 export default meta;
-type Story = StoryObj<typeof LegalContent>;
+type Story = StoryObj<typeof meta>;
 
 const fixture = {
   pageData: {

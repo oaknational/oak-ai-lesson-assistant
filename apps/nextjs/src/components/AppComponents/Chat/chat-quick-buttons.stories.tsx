@@ -12,7 +12,7 @@ const DummyMessage: Message = {
   role: "user",
 };
 
-const meta: Meta<typeof ChatQuickButtons> = {
+const meta = {
   title: "Components/Chat/ChatQuickButtons",
   component: ChatQuickButtons,
   tags: ["autodocs"],
@@ -22,10 +22,10 @@ const meta: Meta<typeof ChatQuickButtons> = {
       messages: [DummyMessage],
     },
   },
-};
+} satisfies Meta<typeof ChatQuickButtons>;
 
 export default meta;
-type Story = StoryObj<typeof ChatQuickButtons>;
+type Story = StoryObj<typeof meta>;
 
 export const Idle: Story = {
   args: {},

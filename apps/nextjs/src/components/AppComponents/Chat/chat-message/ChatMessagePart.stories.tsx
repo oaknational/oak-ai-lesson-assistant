@@ -3,17 +3,17 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { ChatMessagePart } from "./ChatMessagePart";
 
-const meta: Meta<typeof ChatMessagePart> = {
+const meta = {
   title: "Components/Chat/ChatMessagePart",
   component: ChatMessagePart,
   tags: ["autodocs"],
   args: {
     inspect: false,
   },
-};
+} satisfies Meta<typeof ChatMessagePart>;
 
 export default meta;
-type Story = StoryObj<typeof ChatMessagePart>;
+type Story = StoryObj<typeof meta>;
 
 const basePart: Omit<MessagePart, "document"> = {
   type: "message-part",

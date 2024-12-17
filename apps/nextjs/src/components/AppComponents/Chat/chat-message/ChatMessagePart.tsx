@@ -8,8 +8,6 @@ import { aiLogger } from "@oakai/logger";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
-import type { ModerationModalHelpers } from "../../FeedbackForms/ModerationFeedbackModal";
-
 const log = aiLogger("chat");
 
 const components = {
@@ -34,7 +32,6 @@ const components = {
 export interface ChatMessagePartProps {
   part: MessagePart;
   inspect: boolean;
-  moderationModalHelpers: ModerationModalHelpers;
 }
 
 export function ChatMessagePart({

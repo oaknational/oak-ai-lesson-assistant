@@ -7,7 +7,7 @@ import {
 
 import { InChatDownloadButtons } from "./in-chat-download-buttons";
 
-const meta: Meta<typeof InChatDownloadButtons> = {
+const meta = {
   title: "Components/Chat/InChatDownloadButtons",
   component: InChatDownloadButtons,
   tags: ["autodocs"],
@@ -18,10 +18,10 @@ const meta: Meta<typeof InChatDownloadButtons> = {
   parameters: {
     ...demoParams({ isDemoUser: true }),
   },
-};
+} satisfies Meta<typeof InChatDownloadButtons>;
 
 export default meta;
-type Story = StoryObj<typeof InChatDownloadButtons>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
