@@ -70,7 +70,7 @@ test.describe("Component renders during lesson chat", () => {
     //   window.process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN = "true";
     // }
 
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(10000);
 
     console.log("Checking injected flag...");
     const renderScanEnabled = await page.evaluate(
@@ -92,7 +92,7 @@ test.describe("Component renders during lesson chat", () => {
     );
     await page.keyboard.type(message);
     await expect(textbox).toContainText(message);
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(10000);
     const finalRenderAmount: number = await page.evaluate(
       () => window.reactScanLessonPlanDisplay.renderCount,
     );
