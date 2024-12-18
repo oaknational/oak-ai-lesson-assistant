@@ -38,6 +38,7 @@ type ChildKey =
   | "chat"
   | "cloudinary"
   | "consent"
+  | "cron"
   | "db"
   | "demo"
   | "exports"
@@ -63,9 +64,8 @@ type ChildKey =
   | "transcripts"
   | "trpc"
   | "ui"
-  | "webhooks"
-  | "cron"
-  | "ui:performance";
+  | "ui:performance"
+  | "webhooks";
 
 const errorLogger =
   typeof window === "undefined"
