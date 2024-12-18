@@ -1,3 +1,4 @@
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import type { TemplateProps } from "@oakai/core/src/prompts/lesson-assistant";
 import { template } from "@oakai/core/src/prompts/lesson-assistant";
 import { prisma as globalPrisma } from "@oakai/db/client";
@@ -58,6 +59,10 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
   }> {
     const noRelevantLessonPlans = "None";
     const { chatId, userId } = this._aila;
+    if (!userId) {
+      throw new Error("User ID is required to fetch relevant lesson plans");
+    }
+
     if (!this._aila?.options.useRag || !chatId) {
       return {
         ragLessonPlans: [],
@@ -69,7 +74,12 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
 
     const NEW_RAG_ENABLED = true;
 
-    if (NEW_RAG_ENABLED) {
+    const newRagEnabled = await posthogAiBetaServerClient.isFeatureEnabled(
+      "rag-schema-2024-12",
+      userId,
+    );
+
+    if (newRagEnabled) {
       if (!title || !subject || !keyStage) {
         log.error(
           "Missing title, subject or keyStage, returning empty content",
