@@ -17,7 +17,7 @@ export function getFileName({
 
 /**
  * @description
- * - If the value is falsey, an empty string is returned.
+ * - If the value is falsy, an empty string is returned.
  * - If the value is a string, it is returned as is.
  * - If the value is an array:
  *   - it defaults to joining with a newline character
@@ -75,7 +75,7 @@ export function processQuizAnswers(
   }
 
   if (sortAlpha) {
-    answers = [...answers, ...distractors].sort();
+    answers = [...answers, ...distractors].sort((a, b) => a.localeCompare(b));
   }
 
   if (prefixWithABC) {

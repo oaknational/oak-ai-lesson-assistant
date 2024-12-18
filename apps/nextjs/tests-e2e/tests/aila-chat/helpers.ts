@@ -1,6 +1,7 @@
-import { expect, Page, test, TestInfo } from "@playwright/test";
+import type { Page, TestInfo } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-import { AilaStreamingStatus } from "@/components/AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
+import type { AilaStreamingStatus } from "@/components/AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
 
 export async function expectStreamingStatus(
   page: Page,
@@ -20,6 +21,7 @@ export async function waitForStreamingStatusChange(
   await page.waitForFunction(
     ([currentStatus, expectedStatus]) => {
       const statusElement = document.querySelector(
+        // eslint-disable-next-line quotes
         '[data-testid="chat-aila-streaming-status"]',
       );
       return (
@@ -65,7 +67,7 @@ export async function getSectionsComplete(page: Page): Promise<number> {
   const progressText = await page.getByTestId("chat-progress").textContent();
   const match = (progressText ?? "").match(/(\d+) of 10 sections complete/);
 
-  if (match && match[1]) {
+  if (match?.[1]) {
     return parseInt(match[1], 10);
   } else {
     return 0;

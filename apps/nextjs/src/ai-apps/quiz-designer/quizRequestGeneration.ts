@@ -1,11 +1,14 @@
 import type { GenerationPart } from "@oakai/core/src/types";
+import { aiLogger } from "@oakai/logger";
 
 import { getAgesFromKeyStage } from "@/utils/getAgesFromKeyStage";
 
 import { extraQuizPromptInfo } from "./extraQuizPromptInfo";
 import type { QuizAppState, QuizAppStateQuestion } from "./state/types";
 
-type RequestionGenerationInputs = {
+const logger = aiLogger("quiz");
+
+export type RequestionGenerationInputs = {
   lastGenerationId: string | null;
   sessionId: string;
   factQuestion: string;
@@ -26,14 +29,16 @@ type RequestionGenerationInputs = {
   };
 };
 
-type QuizRequestGenerationProps = {
+export type QuizRequestGenerationProps = {
   state: QuizAppState;
   questionRow: QuizAppStateQuestion;
   lastGeneration: GenerationPart<string> | undefined;
-  requestGeneration: (requestionGenInputs: RequestionGenerationInputs) => void;
+  requestGeneration: (
+    requestionGenInputs: RequestionGenerationInputs,
+  ) => Promise<void>;
 };
 
-export function quizRequestGeneration({
+export async function quizRequestGeneration({
   state,
   questionRow,
   requestGeneration,
@@ -47,7 +52,7 @@ export function quizRequestGeneration({
     state,
     questionRow,
   });
-  requestGeneration({
+  await requestGeneration({
     lastGenerationId: lastGeneration?.lastGenerationId ?? null,
     sessionId,
     factQuestion: `${topic}: ${questionRow.question.value}`,
@@ -68,5 +73,7 @@ export function quizRequestGeneration({
         (distractor) => distractor.value,
       ),
     },
+  }).catch((e) => {
+    logger.error(e);
   });
 }

@@ -1,8 +1,8 @@
 import React from "react";
 
 import { Flex } from "@radix-ui/themes";
-import type { Message } from "ai";
 
+import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
 
 import ChatLhsHeader from "./chat-lhs-header";
@@ -12,8 +12,6 @@ import { ChatPanelArea } from "./chat-panel-area";
 import QuickActionButtons from "./chat-quick-buttons";
 
 type ChatLeftHandSideProps = {
-  chatAreaRef: React.RefObject<HTMLDivElement>;
-  messages: Message[];
   isDemoLocked: boolean;
   showLessonMobile: boolean;
   setShowLessonMobile: (value: boolean) => void;
@@ -22,14 +20,13 @@ type ChatLeftHandSideProps = {
 };
 
 const ChatLeftHandSide = ({
-  chatAreaRef,
-  messages,
   isDemoLocked,
   showLessonMobile,
   setShowLessonMobile,
   demo,
   isDemoUser,
 }: Readonly<ChatLeftHandSideProps>) => {
+  const { chatAreaRef } = useLessonChat();
   return (
     <Flex
       direction="column"
@@ -42,6 +39,7 @@ const ChatLeftHandSide = ({
         setShowLessonMobile={setShowLessonMobile}
         showLessonMobile={showLessonMobile}
         isDemoUser={isDemoUser}
+        showStreamingStatus={process.env.NEXT_PUBLIC_ENVIRONMENT !== "prd"}
       />
       <div>
         <ChatPanelArea chatAreaRef={chatAreaRef} isDemoLocked={isDemoLocked}>
@@ -51,14 +49,9 @@ const ChatLeftHandSide = ({
             demo={demo}
           />
         </ChatPanelArea>
-        {!isDemoLocked && (
-          <QuickActionButtons isEmptyScreen={!!messages.length} />
-        )}
+        {!isDemoLocked && <QuickActionButtons />}
       </div>
-      <ChatPanel
-        isEmptyScreen={!!messages.length}
-        isDemoLocked={isDemoLocked}
-      />
+      <ChatPanel isDemoLocked={isDemoLocked} />
       <span className="absolute right-0 top-[-70px] z-10 hidden h-[calc(100vh+100px)] w-3 bg-black sm:block" />
     </Flex>
   );

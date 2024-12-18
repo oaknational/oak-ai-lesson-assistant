@@ -1,4 +1,22 @@
+import { aiLogger } from "@oakai/logger";
+import { z } from "zod";
+
 import { prisma } from "../../";
+
+const logger = aiLogger("db");
+
+const ClerkUserSchema = z.object({
+  id: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
+  email_addresses: z.array(
+    z.object({
+      id: z.string(),
+      email_address: z.string().email(),
+    }),
+  ),
+  primary_email_address_id: z.string(),
+});
 
 /**
  * This script deletes all records from the `users` table, then re-imports them all
@@ -20,9 +38,12 @@ async function getUsersBatch({
       },
     },
   );
-  const data = await res.json();
 
-  return data.map((user: any) => {
+  const ClerkResponseSchema = z.array(ClerkUserSchema);
+
+  const validatedData = ClerkResponseSchema.parse(await res.json());
+
+  return validatedData.map((user) => {
     const email: string = user.email_addresses.find(
       (email: { id: string }) => email.id === user.primary_email_address_id,
     )!.email_address;
@@ -46,11 +67,8 @@ async function updateAllUsers() {
   let offset = 0;
   let resultsCount = 0;
 
-  let i = 0;
-
+  // eslint-disable-next-line no-constant-condition
   while (true) {
-    i++;
-
     const data = await getUsersBatch({
       limit,
       offset,
@@ -60,7 +78,7 @@ async function updateAllUsers() {
       break;
     }
 
-    console.log(`Processing batch of ${data.length} users`);
+    logger.info(`Processing batch of ${data.length} users`);
 
     await prisma.user.createMany({
       data,
@@ -70,7 +88,7 @@ async function updateAllUsers() {
     offset += limit;
   }
 
-  console.log(`Created/updated ${resultsCount} user records`);
+  logger.info(`Created/updated ${resultsCount} user records`);
 }
 
 const main = async () => {
@@ -78,10 +96,10 @@ const main = async () => {
     await prisma.user.deleteMany();
     await updateAllUsers();
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     process.exit(1);
   } finally {
-    console.log("Done");
+    logger.info("Done");
     await prisma.$disconnect();
   }
 };
@@ -91,7 +109,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    logger.error(e);
     await prisma.$disconnect();
     process.exit(1);
   });

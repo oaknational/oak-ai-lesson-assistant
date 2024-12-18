@@ -106,7 +106,7 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
   // );
 
   return useMemo(() => {
-    if (!throttledAssistantMessages || !throttledAssistantMessages.length) {
+    if (!throttledAssistantMessages?.length) {
       return {
         tempLessonPlan: tempLessonPlanRef.current,
         partialPatches: [],

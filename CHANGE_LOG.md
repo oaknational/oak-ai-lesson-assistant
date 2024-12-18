@@ -1,3 +1,175 @@
+## [1.18.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.18.1...v1.18.2) (2024-12-17)
+
+## [1.18.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.18.0...v1.18.1) (2024-12-16)
+
+
+### Bug Fixes
+
+* improve chances of showing 5 relevant plans ([#444](https://github.com/oaknational/oak-ai-lesson-assistant/issues/444)) ([4955a1e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4955a1e35fad9345de01ce9b831747059a95c579))
+* posthog consistent event properties ([#440](https://github.com/oaknational/oak-ai-lesson-assistant/issues/440)) ([7c24485](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7c24485f6604cc9a13a0a24058dd5f5a1b0f972e))
+* remove key from chat provider ([#431](https://github.com/oaknational/oak-ai-lesson-assistant/issues/431)) ([35141b3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/35141b3305ac7830feeb7269e8ee1f2611368c9a))
+* temporarily disable no unsafe rules ([#429](https://github.com/oaknational/oak-ai-lesson-assistant/issues/429)) ([a8ada5d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a8ada5d008188ea3064476a431b041165fad6e81))
+
+# [1.18.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.17.1...v1.18.0) (2024-12-11)
+
+
+### Bug Fixes
+
+*  update eslint config and lint errors ([#422](https://github.com/oaknational/oak-ai-lesson-assistant/issues/422)) ([34774b5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/34774b5b404c154d8c8aa10ae5b687507dc09c85))
+* moderation persist scores [AI-696] ([#418](https://github.com/oaknational/oak-ai-lesson-assistant/issues/418)) ([7539661](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7539661e22fa0e334138e0f796a700662e4e37e3))
+* more flexible and efficient solution for images in docs ([#411](https://github.com/oaknational/oak-ai-lesson-assistant/issues/411)) ([abbff85](https://github.com/oaknational/oak-ai-lesson-assistant/commit/abbff8545476f6c045331a63290fc8f57cf3f54e))
+* upgrade typescript + prettier + eslint with a single shared linting config ([#424](https://github.com/oaknational/oak-ai-lesson-assistant/issues/424)) ([1f4aa9d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1f4aa9dde84402df089ce4d6947472d389f576a0))
+
+
+### Features
+
+* report google drive storage quota ([#425](https://github.com/oaknational/oak-ai-lesson-assistant/issues/425)) ([a0cb485](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a0cb4859ddb975d831a5b64d8d789ee8597aeda8))
+* test coverage ([#406](https://github.com/oaknational/oak-ai-lesson-assistant/issues/406)) ([00767a0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/00767a0148456f57f8fa21e0cb0149cf849f3574))
+
+## [1.17.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.17.0...v1.17.1) (2024-12-03)
+
+
+### Bug Fixes
+
+* add linting command to db package ([#392](https://github.com/oaknational/oak-ai-lesson-assistant/issues/392)) ([d2177d5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d2177d5c061e973affd1ea52b0ef025c8c37cb29))
+* address sonar major issues ([#393](https://github.com/oaknational/oak-ai-lesson-assistant/issues/393)) ([202a21f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/202a21fbac0d457514c9944735b174c79dced08c))
+* do not define components inline ([#413](https://github.com/oaknational/oak-ai-lesson-assistant/issues/413)) ([abda175](https://github.com/oaknational/oak-ai-lesson-assistant/commit/abda1753afecd9385b19b695767568abdd4383c1))
+* do not use array index for key / use void for onSubmit ([#409](https://github.com/oaknational/oak-ai-lesson-assistant/issues/409)) ([44b5961](https://github.com/oaknational/oak-ai-lesson-assistant/commit/44b59617f3af8cad83110efdc2cb4df23d06e073))
+* help page cloudflare email ([#399](https://github.com/oaknational/oak-ai-lesson-assistant/issues/399)) ([f6262f2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f6262f26d470a30ea721343bbab2cbfded77b91d))
+* high and medium severity bugs on sonar cloud - AI-637 ([#379](https://github.com/oaknational/oak-ai-lesson-assistant/issues/379)) ([fb0258e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/fb0258ec2f3c0d5fb79d884d3918827460cba404))
+* icons in dialogs ([#398](https://github.com/oaknational/oak-ai-lesson-assistant/issues/398)) ([9700214](https://github.com/oaknational/oak-ai-lesson-assistant/commit/970021462a94b800dba270130f5ba1b1548e8745))
+* intentionality of async / promise code for question generation ([#402](https://github.com/oaknational/oak-ai-lesson-assistant/issues/402)) ([65d1c5f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/65d1c5f89c1b238e24315c02bde2e9eb253b4da3))
+* memoize the sidebar context provider's value ([#408](https://github.com/oaknational/oak-ai-lesson-assistant/issues/408)) ([60ee010](https://github.com/oaknational/oak-ai-lesson-assistant/commit/60ee0102ea1ee733d6527c5460fd404cd7773292))
+* minor sonar issues ([#390](https://github.com/oaknational/oak-ai-lesson-assistant/issues/390)) ([015cd25](https://github.com/oaknational/oak-ai-lesson-assistant/commit/015cd25984c3e5d1a545afef39fd111aa5245d58))
+* prefer nullish coalescing ([#391](https://github.com/oaknational/oak-ai-lesson-assistant/issues/391)) ([b40def9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b40def9cfd3d69a0089db861a2f6ed47321a3753))
+* readonly props for icons.tsx ([#389](https://github.com/oaknational/oak-ai-lesson-assistant/issues/389)) ([7b4d5bc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7b4d5bcc508b3179ea5313ec783aba90d1a7f3ae))
+* revert tabindex change ([#404](https://github.com/oaknational/oak-ai-lesson-assistant/issues/404)) ([ac72713](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ac72713dc54595f6bfacfd99e63899616f18b8ec))
+* sonar maintain issues [#4](https://github.com/oaknational/oak-ai-lesson-assistant/issues/4) ([#405](https://github.com/oaknational/oak-ai-lesson-assistant/issues/405)) ([eca0019](https://github.com/oaknational/oak-ai-lesson-assistant/commit/eca001996a684f8d01465196c1c600d00e43a964))
+* sonar maintain linting [#1](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1) ([#394](https://github.com/oaknational/oak-ai-lesson-assistant/issues/394)) ([f4d95fc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f4d95fcbf39c3c43c3811f8c2022a37af363826a))
+* sonar maintain linting [#2](https://github.com/oaknational/oak-ai-lesson-assistant/issues/2) ([#395](https://github.com/oaknational/oak-ai-lesson-assistant/issues/395)) ([1ed9d60](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1ed9d6028713b096a68a0558d67608dc9efb812f))
+* sonar maintain linting [#3](https://github.com/oaknational/oak-ai-lesson-assistant/issues/3) ([#403](https://github.com/oaknational/oak-ai-lesson-assistant/issues/403)) ([daa7efe](https://github.com/oaknational/oak-ai-lesson-assistant/commit/daa7efe6a2d5d2501f5108cd3c1ccaec86126655))
+* sonar minors [#5](https://github.com/oaknational/oak-ai-lesson-assistant/issues/5) ([#414](https://github.com/oaknational/oak-ai-lesson-assistant/issues/414)) ([5f749f4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5f749f42f9f5d3d78c736438e313f4f5eff5406b))
+
+# [1.17.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.16.2...v1.17.0) (2024-11-28)
+
+
+### Bug Fixes
+
+* assert readonly props ([#381](https://github.com/oaknational/oak-ai-lesson-assistant/issues/381)) ([cd88576](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cd88576c5a337ad30f48783d74ea45d746a60956))
+* help page cloudflare email ([#399](https://github.com/oaknational/oak-ai-lesson-assistant/issues/399)) ([391b67c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/391b67c27a4048d4e422be22226d8d5aa1ac71bd))
+* minor linting ([#384](https://github.com/oaknational/oak-ai-lesson-assistant/issues/384)) ([ec4ce6e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ec4ce6e5dcc7dbd4e242be65fd3b5f9708b94a40))
+* svg clip-rule should be clipRule in JSX ([#382](https://github.com/oaknational/oak-ai-lesson-assistant/issues/382)) ([610d8c8](https://github.com/oaknational/oak-ai-lesson-assistant/commit/610d8c838273de24212a8531a8bc4b6136c05db1))
+
+
+### Features
+
+* move delete all button and restyle side menu ([#375](https://github.com/oaknational/oak-ai-lesson-assistant/issues/375)) ([69b2371](https://github.com/oaknational/oak-ai-lesson-assistant/commit/69b2371bf9ee7e7f783aa191ba6932dba0171837))
+
+## [1.16.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.16.1...v1.16.2) (2024-11-25)
+
+
+### Bug Fixes
+
+* add missing dependencies to Analytics Provider ([#306](https://github.com/oaknational/oak-ai-lesson-assistant/issues/306)) ([871c23f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/871c23f4af0374d98428305fd388400ebb08b035))
+* handle aborts and add logging to the stream handler ([#350](https://github.com/oaknational/oak-ai-lesson-assistant/issues/350)) ([20f956e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/20f956e35299ed8f465a8265d7aa52c7f18ac830))
+* hook error on sign-in page ([#208](https://github.com/oaknational/oak-ai-lesson-assistant/issues/208)) ([c298b10](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c298b1051cab04643f04f6526b1dd0d835321c7e))
+* **sec:** bump next to 14.2.18 ([#242](https://github.com/oaknational/oak-ai-lesson-assistant/issues/242)) ([81fc31c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/81fc31cddb3771b2ace860ee23b17448b22af7fb))
+
+## [1.16.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.16.0...v1.16.1) (2024-11-21)
+
+
+### Bug Fixes
+
+* add types for SVG imports, remove unused ([#318](https://github.com/oaknational/oak-ai-lesson-assistant/issues/318)) ([c1eff88](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c1eff88efad2496ac0d82a8b8c03d38adf61e8ed))
+* streaming JSON types and error reporting tests ([#315](https://github.com/oaknational/oak-ai-lesson-assistant/issues/315)) ([3e18b44](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3e18b446a58f44222919fa4712379785500b903d))
+
+# [1.16.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.15.0...v1.16.0) (2024-11-18)
+
+
+### Features
+
+* add FeatureFlagProvider ([#353](https://github.com/oaknational/oak-ai-lesson-assistant/issues/353)) ([1d4995e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1d4995ea0c82772259bc5312ba8d872dbd30b2b9))
+* link to hubspot form from requests for full access and higher rate - AI-626 AI-627 ([#359](https://github.com/oaknational/oak-ai-lesson-assistant/issues/359)) ([05ccce6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/05ccce69348b03df2edee01dd1a27814a071be3d))
+
+# [1.15.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.14.2...v1.15.0) (2024-11-13)
+
+
+### Features
+
+* add additional materials button - AI-539 [migration] ([#255](https://github.com/oaknational/oak-ai-lesson-assistant/issues/255)) ([d0fe2d0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d0fe2d015865b89ea2287993652a6f8111f0ae4a))
+* prisma health check - AI-625 ([#356](https://github.com/oaknational/oak-ai-lesson-assistant/issues/356)) ([854950d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/854950d51524eb8d84a0ec9695c88b67f829fd8d))
+
+## [1.14.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.14.1...v1.14.2) (2024-11-12)
+
+
+### Bug Fixes
+
+* design-changes-to-footer ([#324](https://github.com/oaknational/oak-ai-lesson-assistant/issues/324)) ([273cfdc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/273cfdc668ca45def0b8a68dc08b7301974e1def))
+* only categorise initial user input once ([#348](https://github.com/oaknational/oak-ai-lesson-assistant/issues/348)) ([dd5bf71](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dd5bf71a21421ac6e0beb60b4bab560cb159d877))
+
+## [1.14.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.14.0...v1.14.1) (2024-11-07)
+
+
+### Bug Fixes
+
+* allow requests without a cookie header ([#352](https://github.com/oaknational/oak-ai-lesson-assistant/issues/352)) ([80f5050](https://github.com/oaknational/oak-ai-lesson-assistant/commit/80f50507ab370032a3ef6767bcfe5da0d8b6fe82))
+
+# [1.14.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.13.1...v1.14.0) (2024-11-07)
+
+
+### Bug Fixes
+
+* add missing dependencies to lesson plan tracking context ([#307](https://github.com/oaknational/oak-ai-lesson-assistant/issues/307)) ([3758dfc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3758dfcda8a937ca363c0eb40014b01d18c93c23))
+* add missing prisma import ([#342](https://github.com/oaknational/oak-ai-lesson-assistant/issues/342)) ([a0ac1de](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a0ac1de89dc6dda38ab64a02054e992072332fd5))
+* disable feature flagg polling in tests ([c44e1f1](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c44e1f10e98dcda37367f2cd03b324078c7b910f))
+* null render in sidebar provider ([#337](https://github.com/oaknational/oak-ai-lesson-assistant/issues/337)) ([9a12851](https://github.com/oaknational/oak-ai-lesson-assistant/commit/9a12851471aeb5f36e7aebd9c1652d0c2a565966))
+* remaining linting fixes ([#272](https://github.com/oaknational/oak-ai-lesson-assistant/issues/272)) ([18a0f70](https://github.com/oaknational/oak-ai-lesson-assistant/commit/18a0f7061bc9d8bd72c4f6d44eec003acd878df1))
+* set up server side styled-components ([f221c24](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f221c2442617031fa694708da953b4a5f1ea5e6c))
+* skip instrumentation when running turbopack - fix HMR ([4d6fd3b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4d6fd3b963710703b547cda5b2085bfc7f00f941))
+
+
+### Features
+
+* add rag schema (migration) ([#343](https://github.com/oaknational/oak-ai-lesson-assistant/issues/343)) ([638f43f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/638f43fa0167f28974250f3da2d67ef95aaae57e))
+* allow us to configure the server port for local testing ([#308](https://github.com/oaknational/oak-ai-lesson-assistant/issues/308)) ([33bee19](https://github.com/oaknational/oak-ai-lesson-assistant/commit/33bee19e5e631428b648159452ef5af5dbec36bd))
+* bootstrap posthog feature flags with local evaluation ([15e8a67](https://github.com/oaknational/oak-ai-lesson-assistant/commit/15e8a67e9a1ce8e08baa5642c7fffbd2193d3b64))
+* sync featureFlagGroup from clerk to posthog ([46b4f13](https://github.com/oaknational/oak-ai-lesson-assistant/commit/46b4f13a1e887177035a9d195886f34647a87ac9))
+* update emails to use html ([#319](https://github.com/oaknational/oak-ai-lesson-assistant/issues/319)) ([a71e7bc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a71e7bc4b6416ef01b48de4c950805f8244e658b))
+* use featureFlagGroup claim for feature flags ([759534a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/759534a8b8189c25d665b34db1cdf7f0b7a8f31e))
+
+## [1.13.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.13.0...v1.13.1) (2024-11-05)
+
+
+### Bug Fixes
+
+* revert prisma to 5.16.1 ([#336](https://github.com/oaknational/oak-ai-lesson-assistant/issues/336)) ([a593618](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a593618b013607fbde75cfa98663d7298db7ff89))
+
+# [1.13.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.12.1...v1.13.0) (2024-10-31)
+
+
+### Bug Fixes
+
+* await persisting the generation ([#292](https://github.com/oaknational/oak-ai-lesson-assistant/issues/292)) ([730dbb9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/730dbb94a786f9f8a6e03e9ed4d9ff90853522fd))
+* await the enqueue method in web actions ([#293](https://github.com/oaknational/oak-ai-lesson-assistant/issues/293)) ([c9cb82b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c9cb82b2df566b0ec2a952b21d22e87d61fcd094))
+* await the save download event call ([#317](https://github.com/oaknational/oak-ai-lesson-assistant/issues/317)) ([1e05c1a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1e05c1ad177d2e385fc4fa6cc9bb76548d039194))
+* completion and system messages do not need to be async ([#294](https://github.com/oaknational/oak-ai-lesson-assistant/issues/294)) ([be79158](https://github.com/oaknational/oak-ai-lesson-assistant/commit/be791584805d219db1da4949a8a32c0a0f40b589))
+* linting for app components ([#295](https://github.com/oaknational/oak-ai-lesson-assistant/issues/295)) ([1212eb5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1212eb50f5e2e3ee913b57ec7bffc2fcabe981c8))
+* pages that do not load data do not need to be async ([#296](https://github.com/oaknational/oak-ai-lesson-assistant/issues/296)) ([a7eaefa](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a7eaefa5acef4d89a60dd79301cdf4be61db6830))
+* promisify chat API route get handler ([#316](https://github.com/oaknational/oak-ai-lesson-assistant/issues/316)) ([1824aea](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1824aead23e65654a4651abb91e589d218cb9bb1))
+* reintroduce custom eslint ([#284](https://github.com/oaknational/oak-ai-lesson-assistant/issues/284)) ([adc1efa](https://github.com/oaknational/oak-ai-lesson-assistant/commit/adc1efa686a7cc332a1755a3e77f5e50a831df7d))
+* rename accordian to accordion ([#297](https://github.com/oaknational/oak-ai-lesson-assistant/issues/297)) ([cd35dc1](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cd35dc15b97960a18196119540cc5848f58eaa47))
+* set VS Code to prefer type imports ([#291](https://github.com/oaknational/oak-ai-lesson-assistant/issues/291)) ([bc26948](https://github.com/oaknational/oak-ai-lesson-assistant/commit/bc269484ed8857b10aac36e06a0dab18c8308277))
+* update imports (type prefixes, paths) ([#298](https://github.com/oaknational/oak-ai-lesson-assistant/issues/298)) ([c332717](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c33271721e15e3c06374c4648fe69611e306ac14))
+* use browserLogger for errors in the browser ([#280](https://github.com/oaknational/oak-ai-lesson-assistant/issues/280)) ([647c904](https://github.com/oaknational/oak-ai-lesson-assistant/commit/647c90415c6ea5f71e75973caad627abe49bfd0c))
+* use noengine in ci ([#283](https://github.com/oaknational/oak-ai-lesson-assistant/issues/283)) ([3a1bfd4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3a1bfd4df3d2489dda9387752f19c79b16e5da92))
+* use prisma generate --no-engine and reinstate prompts script ([#282](https://github.com/oaknational/oak-ai-lesson-assistant/issues/282)) ([a157b9a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a157b9a6fececed09f43b7cca3989edd5e636a59))
+
+
+### Features
+
+* add an incrementing iteration number to the chat ([#263](https://github.com/oaknational/oak-ai-lesson-assistant/issues/263)) ([5aaa1d9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5aaa1d91146b92c1c449ecbf4725c61ec226ec87))
+* selectively include Americanisms, RAG, analytics when instantiating Aila ([#287](https://github.com/oaknational/oak-ai-lesson-assistant/issues/287)) ([4e5e1f2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4e5e1f22a4ea6262114033e45ffe4817b483f379))
+
 ## [1.12.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.12.0...v1.12.1) (2024-10-28)
 
 

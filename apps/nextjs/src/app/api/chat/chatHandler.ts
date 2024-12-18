@@ -47,9 +47,7 @@ export const maxDuration = 300;
 const prisma: PrismaClientWithAccelerate = globalPrisma;
 
 export async function GET() {
-  return new Promise((resolve) => {
-    resolve(new Response("Chat API is working", { status: 200 }));
-  });
+  return Promise.resolve(new Response("Chat API is working", { status: 200 }));
 }
 
 async function setupChatHandler(req: NextRequest) {

@@ -8,20 +8,28 @@ import "@fontsource/lexend/800.css";
 import "@fontsource/lexend/900.css";
 import { OakThemeProvider, oakDefaultTheme } from "@oaknational/oak-components";
 import type { Preview, Decorator } from "@storybook/react";
+import {
+  initialize as initializeMsw,
+  mswLoader,
+  MswParameters,
+} from "msw-storybook-addon";
 
-// ModerationProvider is coming in the main Chat.tsx refactor
-//import { ModerationProvider } from "../src/components/AppComponents/Chat/Chat/ModerationProvider";
 import { TooltipProvider } from "../src/components/AppComponents/Chat/ui/tooltip";
 import { DialogProvider } from "../src/components/AppComponents/DialogContext";
-import { CookieConsentProvider } from "../src/components/ContextProviders/CookieConsentProvider";
-import { DemoProvider } from "../src/components/ContextProviders/Demo";
-import LessonPlanTrackingProvider from "../src/lib/analytics/lessonPlanTrackingContext";
-import { SidebarProvider } from "../src/lib/hooks/use-sidebar";
 import { AnalyticsProvider } from "../src/mocks/analytics/provider";
+import { ClerkDecorator } from "../src/mocks/clerk/ClerkDecorator";
 import { TRPCReactProvider } from "../src/utils/trpc";
-import { MockClerkProvider } from "./MockClerkProvider";
-import { ThemeDecorator } from "./ThemeDecorator";
+import { chromaticParams } from "./chromatic";
+import { RadixThemeDecorator } from "./decorators/RadixThemeDecorator";
 import "./preview.css";
+
+declare module "@storybook/csf" {
+  interface Parameters {
+    msw?: MswParameters["msw"];
+  }
+}
+
+initializeMsw();
 
 const preview: Preview = {
   parameters: {
@@ -31,37 +39,50 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    viewport: {
+      viewports: {
+        mobile: {
+          name: "Mobile",
+          styles: { width: "375px", height: "800px" },
+        },
+        mobileWide: {
+          name: "Mobile Wide",
+          styles: { width: "430px", height: "930px" },
+        },
+        desktop: {
+          name: "Desktop",
+          styles: { width: "1200px", height: "1000px" },
+        },
+        desktopWide: {
+          name: "Desktop Wide",
+          styles: { width: "1400px", height: "1000px" },
+        },
+      },
+    },
+    ...chromaticParams(["desktop"]),
   },
-  tags: ["autodocs"],
+  loaders: [mswLoader],
 };
 
+// NOTE: See ./decorators for more decorators available to use in stories
+
 export const decorators: Decorator[] = [
-  ThemeDecorator,
+  RadixThemeDecorator,
+  ClerkDecorator,
   (Story) => (
-    <MockClerkProvider>
-      <CookieConsentProvider>
-        {" "}
-        <TRPCReactProvider>
-          <DemoProvider>
-            <AnalyticsProvider>
-              <LessonPlanTrackingProvider chatId={"faked"}>
-                <DialogProvider>
-                  <OakThemeProvider theme={oakDefaultTheme}>
-                    <SidebarProvider>
-                      <TooltipProvider>
-                        {/* <ModerationProvider initialModerations={[]}> */}
-                        <Story />
-                        {/* </ModerationProvider> */}
-                      </TooltipProvider>
-                    </SidebarProvider>
-                  </OakThemeProvider>
-                </DialogProvider>
-              </LessonPlanTrackingProvider>
-            </AnalyticsProvider>
-          </DemoProvider>{" "}
-        </TRPCReactProvider>
-      </CookieConsentProvider>
-    </MockClerkProvider>
+    <>
+      <TRPCReactProvider>
+        <AnalyticsProvider>
+          <DialogProvider>
+            <OakThemeProvider theme={oakDefaultTheme}>
+              <TooltipProvider>
+                <Story />
+              </TooltipProvider>
+            </OakThemeProvider>
+          </DialogProvider>
+        </AnalyticsProvider>
+      </TRPCReactProvider>
+    </>
   ),
 ];
 

@@ -7,14 +7,11 @@ import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModerati
 import { OakSmallPrimaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
-import {
-  keyStageToTitle,
-  subjectToTitle,
-} from "@/components/AppComponents/Chat/chat-lessonPlanDisplay";
 import LessonPlanMapToMarkDown from "@/components/AppComponents/Chat/chat-lessonPlanMapToMarkDown";
 import { GuidanceRequired } from "@/components/AppComponents/Chat/guidance-required";
 import { Icon } from "@/components/Icon";
 import { Logo } from "@/components/Logo";
+import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 interface ShareChatProps {
   lessonPlan: LooseLessonPlan;
@@ -38,8 +35,8 @@ export default function ShareChat({
   }, [userHasCopiedLink, setUserHasCopiedLink]);
 
   const keyStageSubjectTuple = [
-    keyStageToTitle(lessonPlan.keyStage ?? ""),
-    subjectToTitle(lessonPlan.subject ?? ""),
+    slugToSentenceCase(lessonPlan.keyStage ?? ""),
+    slugToSentenceCase(lessonPlan.subject ?? ""),
   ].filter(Boolean);
 
   return (

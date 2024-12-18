@@ -25,7 +25,7 @@ const exampleMessages = [
   {
     heading: "History • Key stage 3 • The end of Roman Britain ",
     message:
-      "Create a lesson plan about The End of Roman Britain for Key Stage 3 History",
+      "Create a lesson plan about the end of Roman Britain for key stage 3 history",
   },
 ];
 

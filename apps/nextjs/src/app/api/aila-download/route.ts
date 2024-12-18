@@ -1,12 +1,12 @@
 import { auth } from "@clerk/nextjs/server";
-import type { LessonExportType } from "@oakai/db";
-import { prisma } from "@oakai/db";
+import { prisma, type LessonExportType } from "@oakai/db";
 import { downloadDriveFile } from "@oakai/exports";
 import * as Sentry from "@sentry/node";
 
 import { withSentry } from "@/lib/sentry/withSentry";
 
 import { sanitizeFilename } from "../sanitizeFilename";
+import { saveDownloadEvent } from "./downloadHelpers";
 
 // From: https://www.ericburel.tech/blog/nextjs-stream-files
 async function* nodeStreamToIterator(stream: NodeJS.ReadableStream) {
@@ -43,31 +43,6 @@ function getReadableExportType(exportType: LessonExportType) {
       return "Lesson slides";
     case "ADDITIONAL_MATERIALS_DOCS":
       return "Additional materials";
-  }
-}
-
-async function saveDownloadEvent({
-  lessonExportId,
-  downloadedBy,
-  ext,
-}: {
-  lessonExportId: string;
-  downloadedBy: string;
-  ext: string;
-}) {
-  try {
-    await prisma.lessonExportDownload.create({
-      data: {
-        lessonExportId,
-        downloadedBy,
-        ext,
-      },
-    });
-  } catch (error) {
-    Sentry.captureException(error, {
-      level: "warning",
-      extra: { lessonExportId, downloadedBy, ext },
-    });
   }
 }
 
@@ -117,6 +92,7 @@ async function getHandler(req: Request): Promise<Response> {
     where: {
       gdriveFileId: fileId,
       userId,
+      expiredAt: null,
     },
     cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
   });
@@ -134,7 +110,7 @@ async function getHandler(req: Request): Promise<Response> {
     });
   }
 
-  saveDownloadEvent({
+  await saveDownloadEvent({
     lessonExportId: lessonExport.id,
     downloadedBy: userId,
     ext,

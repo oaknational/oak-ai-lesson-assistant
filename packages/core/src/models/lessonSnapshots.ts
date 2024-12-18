@@ -5,11 +5,8 @@ import type {
 } from "@oakai/db";
 import crypto from "crypto";
 
-import type {
-  LooseLessonPlan} from "../../../aila/src/protocol/schema";
-import {
-  LessonPlanJsonSchema
-} from "../../../aila/src/protocol/schema";
+import type { LooseLessonPlan } from "../../../aila/src/protocol/schema";
+import { LessonPlanJsonSchema } from "../../../aila/src/protocol/schema";
 // #TODO this import is reaching out of the package because it would otherwise be a circular dependency
 import type { DeepNullable } from "../utils/DeepNullable";
 import type { DeepPartial } from "../utils/DeepPartial";
@@ -31,6 +28,12 @@ function getSnapshotHash(snapshot: Snapshot) {
   return hash;
 }
 
+/**
+ * Lesson snapshots are stored after each assistant message.
+ * They act as a snapshot of the lesson plan at that point in the chat.
+ * These snapshots are passed to the Moderation service and the Exports service
+ * for moderation and export downloads respectively.
+ */
 export class LessonSnapshots {
   constructor(private readonly prisma: PrismaClientWithAccelerate) {}
 
@@ -102,7 +105,7 @@ export class LessonSnapshots {
     messageId: string;
     snapshot: Snapshot;
     trigger: LessonSnapshotTrigger;
-  }) {
+  }): Promise<LessonSnapshot> {
     /**
      * Prisma types complained when passing the JSON schema directly to the Prisma
      */

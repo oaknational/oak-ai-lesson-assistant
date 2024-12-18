@@ -11,13 +11,14 @@ const ChatModerationContext = createContext<
   ChatModerationContextProps | undefined
 >(undefined);
 
+export type ChatModerationProviderProps = Readonly<{
+  chatId: string;
+  children: ReactNode;
+}>;
 export const ChatModerationProvider = ({
   chatId,
   children,
-}: {
-  chatId: string;
-  children: ReactNode;
-}) => {
+}: ChatModerationProviderProps) => {
   const moderationModalHelpers = useModerationModal({ chatId });
   const value = useMemo(
     () => ({ moderationModalHelpers }),

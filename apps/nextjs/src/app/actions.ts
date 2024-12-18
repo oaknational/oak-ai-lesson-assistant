@@ -16,7 +16,7 @@ function parseChatAndReportError({
   userId: string;
 }): AilaPersistedChat | undefined {
   if (typeof sessionOutput !== "object") {
-    throw new Error(`sessionOutput is not an object`);
+    throw new Error("sessionOutput is not an object");
   }
   const parseResult = chatSchema.safeParse({
     ...sessionOutput,
@@ -25,7 +25,7 @@ function parseChatAndReportError({
   });
 
   if (!parseResult.success) {
-    const error = new Error(`Failed to parse chat`);
+    const error = new Error("Failed to parse chat");
     Sentry.captureException(error, {
       extra: {
         id,
@@ -43,7 +43,7 @@ export async function getChatById(
   id: string,
 ): Promise<AilaPersistedChat | null> {
   const session = await prisma?.appSession.findUnique({
-    where: { id },
+    where: { id, deletedAt: null },
   });
 
   if (!session) {
@@ -55,7 +55,7 @@ export async function getChatById(
       id,
       sessionOutput: session.output,
       userId: session.userId,
-    }) || null
+    }) ?? null
   );
 }
 

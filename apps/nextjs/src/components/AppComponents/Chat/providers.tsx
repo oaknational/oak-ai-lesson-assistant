@@ -6,7 +6,7 @@ import { TooltipProvider } from "@/components/AppComponents/Chat/ui/tooltip";
 import { DemoProvider } from "@/components/ContextProviders/Demo";
 import { SidebarProvider } from "@/lib/hooks/use-sidebar";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children }: { readonly children: React.ReactNode }) {
   return (
     <OakThemeProvider theme={oakDefaultTheme}>
       <SidebarProvider>

@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type {
+  LessonPlanKeys,
+  LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Flex } from "@radix-ui/themes";
 
@@ -9,10 +12,12 @@ import { scrollToRef } from "@/utils/scrollToRef";
 
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 
-type LessonPlanProgressDropdownProps = Readonly<{
+export type LessonPlanProgressDropdownProps = Readonly<{
   lessonPlan: LooseLessonPlan;
   isStreaming: boolean;
-  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
+  sectionRefs: Partial<
+    Record<LessonPlanKeys, React.MutableRefObject<HTMLDivElement | null>>
+  >;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
 }>;
 
@@ -61,10 +66,10 @@ export const LessonPlanProgressDropdown: React.FC<
                   disabled={!complete}
                   className="mb-7 flex gap-6"
                   onClick={() => {
-                    if (key === "cycles" && complete) {
-                      if (sectionRefs["cycle-1"]) {
+                    if (key === "cycle1" && complete) {
+                      if (sectionRefs["cycle1"]) {
                         scrollToRef({
-                          ref: sectionRefs["cycle-1"],
+                          ref: sectionRefs["cycle1"],
                           containerRef: documentContainerRef,
                         });
                       }

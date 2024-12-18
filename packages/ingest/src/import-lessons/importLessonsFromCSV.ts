@@ -6,7 +6,7 @@ import fs from "node:fs";
 import { IngestError } from "../IngestError";
 import { chunkAndPromiseAll } from "../utils/chunkAndPromiseAll";
 import { getDataHash } from "../utils/getDataHash";
-import type { RawLesson} from "../zod-schema/zodSchema";
+import type { RawLesson } from "../zod-schema/zodSchema";
 import { RawLessonSchema } from "../zod-schema/zodSchema";
 
 const log = aiLogger("ingest");
@@ -77,13 +77,15 @@ export function importLessonsFromCSV({
           onError(
             new IngestError("Failed to import from CSV", { ingestId, cause }),
           );
-          reject();
+          reject(cause);
         });
     } catch (cause) {
-      onError(
-        new IngestError("Failed to import from CSV", { ingestId, cause }),
-      );
-      reject();
+      const rejection = new IngestError("Failed to import from CSV", {
+        ingestId,
+        cause,
+      });
+      onError(rejection);
+      reject(rejection);
     }
   });
 }

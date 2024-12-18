@@ -11,11 +11,8 @@ import { z } from "zod";
 
 import { getSessionModerations } from "../../../aila/src/features/moderation/getSessionModerations";
 import { generateChatId } from "../../../aila/src/helpers/chat/generateChatId";
-import type {
-  AilaPersistedChat} from "../../../aila/src/protocol/schema";
-import {
-  chatSchema,
-} from "../../../aila/src/protocol/schema";
+import type { AilaPersistedChat } from "../../../aila/src/protocol/schema";
+import { chatSchema } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 
@@ -33,7 +30,7 @@ function parseChatAndReportError({
   userId: string;
 }) {
   if (typeof sessionOutput !== "object") {
-    throw new Error(`sessionOutput is not an object`);
+    throw new Error("sessionOutput is not an object");
   }
   const parseResult = chatSchema.safeParse({
     ...sessionOutput,
@@ -42,7 +39,7 @@ function parseChatAndReportError({
   });
 
   if (!parseResult.success) {
-    const error = new Error(`Failed to parse chat`);
+    const error = new Error("Failed to parse chat");
     Sentry.captureException(error, {
       extra: {
         id,
@@ -82,6 +79,7 @@ export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
   const chatRecord = await prisma.appSession.findUnique({
     where: {
       id: id,
+      deletedAt: null,
     },
   });
   if (!chatRecord) {
@@ -201,12 +199,14 @@ export const appSessionsRouter = router({
     const sessions = await ctx.prisma.$queryRaw`
       SELECT
         id,
+        "updated_at" as "updatedAt",
         output->>'title' as title,
         output->>'isShared' as "isShared"
       FROM
         "app_sessions"
       WHERE
         "user_id" = ${userId} AND "app_id" = 'lesson-planner'
+        AND "deleted_at" IS NULL
       ORDER BY
         "updated_at" DESC
     `;
@@ -223,9 +223,15 @@ export const appSessionsRouter = router({
               id: z.string(),
               title: z.string(),
               isShared: z.boolean().nullish(),
+              updatedAt: z.date(),
             })
             .parse(session);
         } catch (error) {
+          Sentry.captureException(error, {
+            extra: {
+              session,
+            },
+          });
           return null;
         }
       })
@@ -241,21 +247,26 @@ export const appSessionsRouter = router({
       const { userId } = ctx.auth;
       const { id } = input;
 
-      await ctx.prisma.appSession.deleteMany({
+      await ctx.prisma.appSession.update({
         where: {
           id,
           appId: "lesson-planner",
           userId,
         },
+        data: {
+          deletedAt: new Date(),
+        },
       });
     }),
   deleteAllChats: protectedProcedure.mutation(async ({ ctx }) => {
     const { userId } = ctx.auth;
-
-    await ctx.prisma.appSession.deleteMany({
+    await ctx.prisma.appSession.updateMany({
       where: {
         userId,
         appId: "lesson-planner",
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   }),
@@ -274,6 +285,7 @@ export const appSessionsRouter = router({
           id,
           userId,
           appId: "lesson-planner",
+          deletedAt: null,
         },
       });
 

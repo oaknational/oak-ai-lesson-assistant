@@ -16,18 +16,18 @@ import type { AilaGenerationStatus } from "./types";
 const log = aiLogger("generation");
 
 export class AilaGeneration {
-  private _aila: AilaServices;
+  private readonly _aila: AilaServices;
   private _id: string;
-  private _chat: AilaChat;
+  private readonly _chat: AilaChat;
   private _status: AilaGenerationStatus = "PENDING";
-  private _startedAt?: Date;
+  private readonly _startedAt?: Date;
   private _completedAt?: Date;
   private _responseText?: string;
-  private _modelEncoding = getEncoding("cl100k_base");
+  private readonly _modelEncoding = getEncoding("cl100k_base");
   private _promptTokens: number = 0;
   private _completionTokens: number = 0;
   private _totalTokens: number = 0;
-  private _systemPrompt: string = "";
+  private readonly _systemPrompt: string = "";
   private _promptId: string | null = null;
 
   constructor({
@@ -56,7 +56,7 @@ export class AilaGeneration {
     }
   }
 
-  async complete({
+  complete({
     status,
     responseText,
   }: {
@@ -66,7 +66,7 @@ export class AilaGeneration {
     this._status = status;
     this._completedAt = new Date();
     this._responseText = responseText;
-    await this.calculateTokenUsage();
+    this.calculateTokenUsage();
   }
 
   get id() {
@@ -138,7 +138,7 @@ export class AilaGeneration {
     );
   }
 
-  private async calculateTokenUsage(): Promise<void> {
+  private calculateTokenUsage() {
     if (!this._responseText) {
       return;
     }

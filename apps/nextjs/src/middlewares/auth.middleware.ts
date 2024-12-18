@@ -13,6 +13,7 @@ declare global {
     labs: {
       isDemoUser: boolean | null;
       isOnboarded: boolean | null;
+      featureFlagGroup: string | null;
     };
   }
 }
@@ -21,7 +22,10 @@ const publicRoutes = [
   "/api/health",
   "/aila/health",
   "/api/trpc/main/health.check",
+  "/api/trpc/main/health.prismaCheck",
   "/api/trpc/chat/chat.health.check",
+  "/api/cron-jobs/expired-exports",
+  "/api/cron-jobs/google-drive-size-quota",
   /**
    * The inngest route is protected using a signing key
    * @see https://www.inngest.com/docs/faq#my-app-s-serve-endpoint-requires-authentication-what-should-i-do
@@ -46,6 +50,7 @@ const publicRoutes = [
   "/monitoring",
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/api/webhooks/clerk",
 ];
 if (
   process.env.NODE_ENV === "development" ||
@@ -89,6 +94,7 @@ const shouldInterceptRouteForOnboarding = (req: NextRequest) => {
   return true;
 };
 
+/* eslint-disable-next-line no-undef */
 const needsToCompleteOnboarding = (sessionClaims: CustomJwtSessionClaims) => {
   const labs = sessionClaims.labs;
   return !labs.isOnboarded || labs.isDemoUser === null;

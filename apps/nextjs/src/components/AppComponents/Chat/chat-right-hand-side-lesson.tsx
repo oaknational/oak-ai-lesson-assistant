@@ -1,42 +1,41 @@
 import React, { useRef, useState } from "react";
 
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import { OakIcon, OakSmallSecondaryButton } from "@oaknational/oak-components";
-import type { Message } from "ai";
-import Link from "next/link";
+import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+
+import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
 import AiIcon from "../../AiIcon";
 import type { DemoContextProps } from "../../ContextProviders/Demo";
-import { useDialog } from "../DialogContext";
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
 import ExportButtons from "./export-buttons";
 import { LessonPlanProgressBar } from "./export-buttons/LessonPlanProgressBar";
+import { MobileExportButtons } from "./export-buttons/MobileExportButtons";
 import ChatButton from "./ui/chat-button";
 
 type ChatRightHandSideLessonProps = {
-  id: string;
-  messages: Message[];
-  lessonPlan: LooseLessonPlan;
   showLessonMobile: boolean;
   closeMobileLessonPullOut: () => void;
   demo: DemoContextProps;
 };
 
 const ChatRightHandSideLesson = ({
-  id,
-  messages,
   showLessonMobile,
   closeMobileLessonPullOut,
   demo,
 }: Readonly<ChatRightHandSideLessonProps>) => {
-  const { setDialogWindow } = useDialog();
+  const { messages } = useLessonChat();
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const documentContainerRef = useRef<HTMLDivElement>(null);
 
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const sectionRefs = {};
+
+  // This retains this existing bug, but is fixed on subsequent PRs
+  const sectionRefs: Partial<
+    Record<LessonPlanKeys, React.MutableRefObject<HTMLDivElement | null>>
+  > = {};
+
   const scrollToBottom = () => {
     if (chatEndRef.current) {
       setShowScrollButton(false);
@@ -59,9 +58,10 @@ const ChatRightHandSideLesson = ({
   };
 
   const endOfDocRef = useRef<HTMLDivElement>(null);
+
   return (
     <div
-      className={`fixed bottom-0 ${showLessonMobile ? "right-0" : "right-[-100%] sm:right-0"} right-0 ${demo.isDemoUser ? "top-8 sm:top-0" : "top-0"} z-30 w-[95%] bg-white shadow-md duration-300 sm:relative sm:z-0  sm:w-[50%] sm:shadow-none lg:w-full`}
+      className={`fixed bottom-0 ${showLessonMobile ? "right-0" : "right-[-100%] sm:right-0"} right-0 ${demo.isDemoUser ? "top-8 sm:top-0" : "top-0"} z-30 w-[95%] bg-white shadow-md duration-300 sm:relative sm:z-0 sm:w-[50%] sm:shadow-none lg:w-full`}
       data-testid="chat-right-hand-side-lesson"
       ref={documentContainerRef}
       onScroll={handleScroll}
@@ -71,46 +71,10 @@ const ChatRightHandSideLesson = ({
         sectionRefs={sectionRefs}
         documentContainerRef={documentContainerRef}
       />
+      <MobileExportButtons
+        closeMobileLessonPullOut={closeMobileLessonPullOut}
+      />
 
-      <div className="ml-[-10px] mt-27 flex justify-between px-14 pt-6 sm:hidden">
-        <button
-          onClick={() => {
-            closeMobileLessonPullOut();
-          }}
-          className={`${demo.isDemoUser ? "mt-25" : ""} flex items-center justify-center gap-3 `}
-        >
-          <span className="scale-75">
-            <OakIcon iconName="cross" />
-          </span>
-          <span className="text-base font-bold">Hide lesson</span>
-        </button>
-      </div>
-      <div className="sticky top-25 z-10 flex gap-10 bg-white p-12 sm:hidden">
-        <OakSmallSecondaryButton
-          element={Link}
-          iconName="download"
-          href={demo.isSharingEnabled ? `/aila/download/${id}` : "#"}
-          onClick={() => {
-            if (!demo.isSharingEnabled) {
-              setDialogWindow("demo-share-locked");
-            }
-          }}
-        >
-          Download
-        </OakSmallSecondaryButton>
-        <OakSmallSecondaryButton
-          iconName="share"
-          onClick={() => {
-            if (demo.isSharingEnabled) {
-              setDialogWindow("share-chat");
-            } else {
-              setDialogWindow("demo-share-locked");
-            }
-          }}
-        >
-          Share
-        </OakSmallSecondaryButton>
-      </div>
       <button
         className="sticky top-32 z-10 block w-full bg-white px-14 pb-9 pt-12 sm:hidden"
         onClick={() => {
@@ -132,7 +96,7 @@ const ChatRightHandSideLesson = ({
         />
       </div>
       <div
-        className={`${messages.length > 1 && showLessonMobile ? "flex" : "hidden"}  fixed bottom-20 left-0 right-0 items-center justify-center duration-150  sm:hidden`}
+        className={`${messages.length > 1 && showLessonMobile ? "flex" : "hidden"} fixed bottom-20 left-0 right-0 items-center justify-center duration-150 sm:hidden`}
       >
         <ChatButton
           variant="primary"

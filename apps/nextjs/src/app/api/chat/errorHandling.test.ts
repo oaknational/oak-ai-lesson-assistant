@@ -64,7 +64,12 @@ describe("handleChatException", () => {
 
       expect(response.status).toBe(401);
 
-      const message = await consumeStream(response.body as ReadableStream);
+      invariant(
+        response.body instanceof ReadableStream,
+        "Expected response.body to be a ReadableStream",
+      );
+
+      const message = await consumeStream(response.body);
       expect(message).toEqual("Unauthorized");
     });
   });
@@ -88,14 +93,19 @@ describe("handleChatException", () => {
 
       expect(response.status).toBe(200);
 
-      const consumed = await consumeStream(response.body as ReadableStream);
+      invariant(
+        response.body instanceof ReadableStream,
+        "Expected response.body to be a ReadableStream",
+      );
+
+      const consumed = await consumeStream(response.body);
       const message = extractStreamMessage(consumed);
 
       expect(message).toEqual({
         type: "error",
         value: "Rate limit exceeded",
         message:
-          "**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in 1 hour. If you require a higher limit, please [make a request](https://forms.gle/tHsYMZJR367zydsG8).",
+          "**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in 1 hour. If you require a higher limit, please [make a request](https://share.hsforms.com/118hyngR-QSS0J7vZEVlRSgbvumd).",
       });
     });
   });
@@ -115,9 +125,12 @@ describe("handleChatException", () => {
 
       expect(response.status).toBe(200);
 
-      const message = extractStreamMessage(
-        await consumeStream(response.body as ReadableStream),
+      invariant(
+        response.body instanceof ReadableStream,
+        "Expected response.body to be a ReadableStream",
       );
+
+      const message = extractStreamMessage(await consumeStream(response.body));
       expect(message).toEqual({
         type: "action",
         action: "SHOW_ACCOUNT_LOCKED",

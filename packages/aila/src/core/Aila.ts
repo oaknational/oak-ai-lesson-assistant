@@ -44,24 +44,24 @@ import type {
 
 const log = aiLogger("aila");
 export class Aila implements AilaServices {
-  private _initialised: boolean = false; // We have a separate flag for this because we have an async initialise method
-  private _analytics?: AilaAnalyticsFeature;
-  private _chat: AilaChatService;
-  private _errorReporter?: AilaErrorReportingFeature;
+  private _initialised: boolean = false; // We have a separate flag for this because we have an async initialise method which cannot be called in the constructor
+  private readonly _analytics?: AilaAnalyticsFeature;
+  private readonly _chat: AilaChatService;
+  private readonly _errorReporter?: AilaErrorReportingFeature;
   private _isShutdown: boolean = false;
-  private _lesson: AilaLessonService;
-  private _chatLlmService: LLMService;
-  private _moderation?: AilaModerationFeature;
-  private _options: AilaOptionsWithDefaultFallbackValues;
-  private _snapshotStore: AilaSnapshotStore;
-  private _persistence: AilaPersistenceFeature[] = [];
-  private _threatDetection?: AilaThreatDetectionFeature;
-  private _prisma: PrismaClientWithAccelerate;
-  private _rag: AilaRagFeature;
-  private _plugins: AilaPlugin[];
-  private _userId!: string | undefined;
-  private _chatId!: string;
-  private _americanisms: AilaAmericanismsFeature;
+  private readonly _lesson: AilaLessonService;
+  private readonly _chatLlmService: LLMService;
+  private readonly _moderation?: AilaModerationFeature;
+  private readonly _options: AilaOptionsWithDefaultFallbackValues;
+  private readonly _snapshotStore: AilaSnapshotStore;
+  private readonly _persistence: AilaPersistenceFeature[] = [];
+  private readonly _threatDetection?: AilaThreatDetectionFeature;
+  private readonly _prisma: PrismaClientWithAccelerate;
+  private readonly _rag: AilaRagFeature;
+  private readonly _plugins: AilaPlugin[];
+  private readonly _userId!: string | undefined;
+  private readonly _chatId!: string;
+  private readonly _americanisms: AilaAmericanismsFeature;
 
   constructor(options: AilaInitializationOptions) {
     this._userId = options.chat.userId;

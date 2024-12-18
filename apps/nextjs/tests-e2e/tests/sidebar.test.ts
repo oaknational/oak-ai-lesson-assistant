@@ -17,7 +17,7 @@ test(
     await test.step("Select a lesson", async () => {
       await page.getByTestId("sidebar-button").click();
       const sidebar = page.getByTestId("sidebar");
-      expect(sidebar).toBeVisible();
+      await expect(sidebar).toBeVisible();
       await sidebar.getByText("Software Testing Techniques").click();
     });
 

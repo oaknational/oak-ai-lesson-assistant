@@ -1,4 +1,4 @@
-import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseToSentenceCase";
+import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { isArray, isNumber, isObject, isString } from "remeda";
 
 import type { QuizOptional } from "./schema";
@@ -39,7 +39,7 @@ export function sectionToMarkdown(
     try {
       const cycle = CycleOptionalSchema.parse(value);
       const content = `## ${cycle.title ?? "…"}\n\n`;
-      return `${content}\n\n### Explanation\n\n${sectionToMarkdown("explanation", cycle.explanation ?? "…")}\n\n### Check for Understanding\n\n${cycle.checkForUnderstanding ? organiseAnswersAndDistractors(cycle.checkForUnderstanding) : "…"}\n\n### Practice\n\n${cycle.practice ?? "…"}\n\n### Feedback\n\n${cycle.feedback ?? "…"}`;
+      return `${content}\n\n### Explanation\n\n${sectionToMarkdown("explanation", cycle.explanation ?? "…")}\n\n### Check for understanding\n\n${cycle.checkForUnderstanding ? organiseAnswersAndDistractors(cycle.checkForUnderstanding) : "…"}\n\n### Practice\n\n${cycle.practice ?? "…"}\n\n### Feedback\n\n${cycle.feedback ?? "…"}`;
     } catch (e) {
       // Invalid schema
       return "## There's been a problem\n\nIt looks like this learning cycle hasn't generated properly. Tap **Retry** or ask for this section to be regenerated.";

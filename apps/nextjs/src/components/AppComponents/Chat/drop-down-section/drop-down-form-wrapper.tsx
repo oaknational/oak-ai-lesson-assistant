@@ -27,7 +27,7 @@ export const DropDownFormWrapper = <
   buttonText,
   isOpen,
   dropdownRef,
-}: {
+}: Readonly<{
   children: React.ReactNode;
   onClickActions: (option: FeedbackOption<T>) => void;
   setIsOpen: (value: boolean) => void;
@@ -36,7 +36,7 @@ export const DropDownFormWrapper = <
   buttonText: string;
   isOpen: boolean;
   dropdownRef: React.RefObject<HTMLDivElement>;
-}) => {
+}>) => {
   const { isStreaming } = useLessonChat();
   const firstButtonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -66,7 +66,7 @@ export const DropDownFormWrapper = <
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen]);
+  }, [dropdownRef, isOpen, setIsOpen]);
 
   return (
     <form

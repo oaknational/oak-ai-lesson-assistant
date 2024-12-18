@@ -2,7 +2,7 @@ import type { LooseLessonPlan } from "../../../protocol/schema";
 import type { AilaCategorisationFeature } from "../../types";
 
 export class MockCategoriser implements AilaCategorisationFeature {
-  private _mockedLessonPlan: LooseLessonPlan | undefined;
+  private readonly _mockedLessonPlan: LooseLessonPlan | undefined;
   constructor({
     mockedLessonPlan,
   }: {

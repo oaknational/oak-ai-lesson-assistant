@@ -3,16 +3,20 @@ import {
   unsupportedSubjects,
   subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
+import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
-import type { AilaChatService } from "../../core/AilaServices";
-import type { AilaServices } from "../../core/AilaServices";
+import type { AilaChatService, AilaServices } from "../../core/AilaServices";
 import { AilaGeneration } from "../../features/generation/AilaGeneration";
 import type { AilaGenerationStatus } from "../../features/generation/types";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
-import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
+import type {
+  ExperimentalPatchDocument,
+  JsonPatchDocumentOptional,
+} from "../../protocol/jsonPatchProtocol";
 import {
+  extractPatches,
   LLMMessageSchema,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
@@ -20,6 +24,7 @@ import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
 } from "../../protocol/schema";
+import { fetchExperimentalPatches } from "../../utils/experimentalPatches/fetchExperimentalPatches";
 import { AilaError } from "../AilaError";
 import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
@@ -28,6 +33,8 @@ import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuil
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 import type { Message } from "./types";
+
+const log = aiLogger("aila:chat");
 
 export class AilaChat implements AilaChatService {
   private readonly _id: string;
@@ -44,6 +51,7 @@ export class AilaChat implements AilaChatService {
   private _iteration: number | undefined;
   private _createdAt: Date | undefined;
   private _persistedChat: AilaPersistedChat | undefined;
+  private readonly _experimentalPatches: ExperimentalPatchDocument[];
 
   constructor({
     id,
@@ -73,6 +81,7 @@ export class AilaChat implements AilaChatService {
     this._patchEnqueuer = new PatchEnqueuer();
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
     this._relevantLessons = [];
+    this._experimentalPatches = [];
   }
 
   public get aila() {
@@ -133,6 +142,10 @@ export class AilaChat implements AilaChatService {
       return;
     }
     this._chunks.push(value);
+  }
+
+  public appendExperimentalPatch(patch: ExperimentalPatchDocument) {
+    this._experimentalPatches.push(patch);
   }
 
   public async generationFailed(error: unknown) {
@@ -264,6 +277,17 @@ export class AilaChat implements AilaChatService {
     return accumulated ?? "";
   }
 
+  private applyExperimentalPatches() {
+    const experimentalPatches = this._experimentalPatches;
+
+    log.info(
+      "Applying experimental extractAndApplyLlmPatches",
+      experimentalPatches,
+    );
+
+    this._aila.lesson.applyValidPatches(experimentalPatches);
+  }
+
   private async reportUsageMetrics() {
     await this._aila.analytics?.reportUsageMetrics(this.accumulatedText());
   }
@@ -274,12 +298,13 @@ export class AilaChat implements AilaChatService {
     if (status === "SUCCESS") {
       const responseText = this.accumulatedText();
       invariant(responseText, "Response text not set");
-      await this._generation.complete({ status, responseText });
+      this._generation.complete({ status, responseText });
     }
     await this._generation.persist(status);
   }
 
   private async persistChat() {
+    log.info("Persisting chat");
     await Promise.all(
       (this._aila.persistence ?? []).map((p) => p.upsertChat()),
     );
@@ -314,11 +339,12 @@ export class AilaChat implements AilaChatService {
   }
 
   private applyEdits() {
-    const patches = this.accumulatedText();
-    if (!patches) {
+    const llmPatches = this.accumulatedText();
+    if (!llmPatches) {
       return;
     }
-    this._aila.lesson.applyPatches(patches);
+    this._aila.lesson.extractAndApplyLlmPatches(llmPatches);
+    this.applyExperimentalPatches();
   }
 
   private appendAssistantMessage() {
@@ -360,6 +386,15 @@ export class AilaChat implements AilaChatService {
 
   public async complete() {
     await this.reportUsageMetrics();
+    await fetchExperimentalPatches({
+      lessonPlan: this._aila.lesson.plan,
+      llmPatches: extractPatches(this.accumulatedText()).validPatches,
+      handlePatch: async (patch) => {
+        await this.enqueue(patch);
+        this.appendExperimentalPatch(patch);
+      },
+      userId: this._userId,
+    });
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
     await this.enqueueMessageId(assistantMessage.id);

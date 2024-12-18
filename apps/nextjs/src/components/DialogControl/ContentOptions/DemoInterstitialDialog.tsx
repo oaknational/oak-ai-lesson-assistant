@@ -4,6 +4,7 @@ import { aiLogger } from "@oakai/logger";
 import {
   OakFlex,
   OakLink,
+  OakP,
   OakPrimaryButton,
   OakSecondaryLink,
 } from "@oaknational/oak-components";
@@ -11,11 +12,7 @@ import { captureMessage } from "@sentry/nextjs";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 
-import {
-  DialogContainer,
-  DialogContent,
-  DialogHeading,
-} from "./DemoSharedComponents";
+import { DialogContainer } from "./DemoSharedComponents";
 
 const log = aiLogger("demo");
 
@@ -40,27 +37,29 @@ function friendlyNumber(
   }
 }
 
+export type CreatingChatDialogProps = Readonly<{
+  submit?: () => void;
+  closeDialog: () => void;
+}>;
+
 const CreatingChatDialog = ({
   submit,
   closeDialog,
-}: {
-  submit?: () => void;
-  closeDialog: () => void;
-}) => {
-  const demo = useDemoUser();
+}: CreatingChatDialogProps) => {
+  const { isDemoUser, demo } = useDemoUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [appSessionsRemaining, setAppSessionsRemaining] = useState<
     number | undefined
-  >(demo.isDemoUser ? demo.appSessionsRemaining : undefined);
+  >(isDemoUser ? demo.appSessionsRemaining : undefined);
 
   // Don't update the remaining count while submitting as the mutation will change it
   useEffect(() => {
-    if (demo.isDemoUser && !isSubmitting) {
+    if (isDemoUser && !isSubmitting) {
       setAppSessionsRemaining(demo.appSessionsRemaining);
     }
-  }, [isSubmitting, demo]);
+  }, [isSubmitting, isDemoUser, demo]);
 
-  const createAppSession = useCallback(async () => {
+  const createAppSession = useCallback(() => {
     if (!submit) {
       throw new Error("DemoInterstitialDialog requires a submit function");
     }
@@ -68,27 +67,26 @@ const CreatingChatDialog = ({
     setIsSubmitting(true);
 
     try {
-      await submit();
+      submit();
     } catch (error) {
       log.error("Error creating demo lesson:", error);
       setIsSubmitting(false);
     }
   }, [submit]);
 
-  if (!demo.isDemoUser) {
+  if (!isDemoUser) {
     return null;
   }
 
   if (appSessionsRemaining === 0) {
     return (
       <DialogContainer>
-        <DialogHeading>Lesson limit reached</DialogHeading>
-        <DialogContent>
+        <OakP>
           You have created {demo.appSessionsPerMonth} of your{" "}
           {demo.appSessionsPerMonth} lessons available this month. If you are a
           teacher in the UK, please{" "}
           <OakLink href={demo.contactHref}>contact us for full access.</OakLink>
-        </DialogContent>
+        </OakP>
 
         <OakFlex
           $width={"100%"}
@@ -105,15 +103,15 @@ const CreatingChatDialog = ({
 
   return (
     <DialogContainer>
-      <DialogHeading>
+      <OakP>
         Your {friendlyNumber(appSessionsRemaining, demo.appSessionsPerMonth)}
         demo lesson…
-      </DialogHeading>
-      <DialogContent>
+      </OakP>
+      <OakP>
         You can create {demo.appSessionsPerMonth} lessons per month. If you are
         a teacher in the UK and want to create more lessons,{" "}
         <OakLink href={demo.contactHref}>contact us for full access.</OakLink>
-      </DialogContent>
+      </OakP>
 
       <OakFlex
         $width={"100%"}

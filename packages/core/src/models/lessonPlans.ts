@@ -5,11 +5,9 @@ import type {
   LessonPlanPart,
   LessonSummary,
   PrismaClientWithAccelerate,
-  Subject} from "@oakai/db";
-import {
-  LessonPlanPartStatus,
-  LessonPlanStatus
+  Subject,
 } from "@oakai/db";
+import { LessonPlanPartStatus, LessonPlanStatus } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { LLMResponseJsonSchema } from "../../../aila/src/protocol/jsonPatchProtocol";
@@ -18,10 +16,10 @@ import { inngest } from "../inngest";
 import { createOpenAIClient } from "../llm/openai";
 import { template } from "../prompts/lesson-assistant";
 import { RAG } from "../rag";
-import { camelCaseToSentenceCase } from "../utils/camelCaseToSentenceCase";
+import { camelCaseToSentenceCase } from "../utils/camelCaseConversion";
 import { embedWithCache } from "../utils/embeddings";
 import { textify } from "../utils/textify";
-import type { Caption} from "./types/caption";
+import type { Caption } from "./types/caption";
 import { CaptionsSchema } from "./types/caption";
 
 const log = aiLogger("lessons");
@@ -49,8 +47,8 @@ type LessonPlanWithParts = LessonPlan & {
 };
 
 export class LessonPlans {
-  private _rag: RAG;
-  private _prisma: PrismaClientWithAccelerate;
+  private readonly _rag: RAG;
+  private readonly _prisma: PrismaClientWithAccelerate;
   constructor(private readonly prisma: PrismaClientWithAccelerate) {
     this._prisma = prisma;
     this._rag = new RAG(this._prisma, { chatId: "none" });
@@ -139,9 +137,7 @@ export class LessonPlans {
       lessonPlanJsonSchema: JSON.stringify(LessonPlanJsonSchema),
       llmResponseJsonSchema: JSON.stringify(LLMResponseJsonSchema),
       isUsingStructuredOutput:
-        process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true"
-          ? true
-          : false,
+        process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true",
     });
 
     const systemPrompt = compiledTemplate;

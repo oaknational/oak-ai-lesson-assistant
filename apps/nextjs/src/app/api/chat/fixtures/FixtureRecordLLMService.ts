@@ -1,4 +1,4 @@
-import type { Message } from "@oakai/aila";
+import type { Message } from "@oakai/aila/src/core/chat";
 import type { LLMService } from "@oakai/aila/src/core/llm/LLMService";
 import { OpenAIService } from "@oakai/aila/src/core/llm/OpenAIService";
 import { aiLogger } from "@oakai/logger";
@@ -9,7 +9,7 @@ const log = aiLogger("fixtures");
 
 export class FixtureRecordLLMService implements LLMService {
   name = "FixtureRecordLLM";
-  private _openAIService: OpenAIService;
+  private readonly _openAIService: OpenAIService;
 
   constructor(
     public fixtureName: string,

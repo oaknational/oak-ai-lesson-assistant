@@ -11,7 +11,7 @@ datasource db {
   url        = env("PRISMA_ACCELERATE_DATABASE_URL")
   directUrl  = env("DIRECT_DATABASE_URL")
   extensions = [vector, pg_trgm]
-  schemas    = ["public", "ingest"]
+  schemas    = ["public", "ingest", "rag"]
 }
 
 generator zod {
@@ -173,6 +173,11 @@ enum AilaUserModificationAction {
   MAKE_IT_EASIER
   SHORTEN_CONTENT
   ADD_MORE_DETAIL
+  ADD_HOMEWORK_TASK
+  ADD_NARRATIVE
+  ADD_PRACTICE_QUESTIONS
+  TRANSLATE_KEYWORDS
+  ADD_PRACTICAL_INSTRUCTIONS
   OTHER
 
   @@schema("public")
@@ -339,14 +344,15 @@ model AppSession {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-
+  deletedAt DateTime? @map("deleted_at")
+  
   app   App    @relation(fields: [appId], references: [id], onDelete: Cascade)
   appId String @map("app_id")
 
   userId String @map("user_id") // The user that requested this generation
 
   output Json? // The final output of the session
-
+  
   userTweaks          UserTweak[]
   reGenerations       ReGeneration[]
   generationUserFlags GenerationUserFlag[]
@@ -784,6 +790,7 @@ model Moderation {
   appSessionId     String    @map("app_session_id")
   messageId        String    @map("message_id")
   categories       Json[]
+  scores           Json?     @map("scores") @db.JsonB
   justification    String?
   lessonSnapshotId String?   @map("lesson_snapshot_id")
   // A user's comment in relation to the moderation. Likely they are contesting it.
@@ -985,7 +992,7 @@ enum QuizAnswerStatus {
 
 model Ingest {
   id          String    @id @default(cuid())
-  config      Json      @default("{}") @map("config") @db.JsonB
+  config      Json      @map("config") @db.JsonB
   status      String
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
@@ -1063,8 +1070,8 @@ model IngestLessonPlanPart {
   ingestId     String                      @map("ingest_id")
   batchId      String?                     @map("batch_id")
   key          String
-  valueJson    Json                        @map("data") @db.JsonB
-  valueText    String
+  valueJson    Json                        @map("value_json") @db.JsonB
+  valueText    String                      @map("value_text")
   embedding    Unsupported("vector(256)")?
   createdAt    DateTime                    @default(now()) @map("created_at")
   updatedAt    DateTime                    @updatedAt @map("updated_at")
@@ -1109,4 +1116,40 @@ model IngestError {
 
   @@map("ingest_error")
   @@schema("ingest")
+}
+
+model RagLessonPlan {
+  id                 String              @id @default(cuid())
+  oakLessonId        Int?                @map("oak_lesson_id")
+  oakLessonSlug      String              @map("oak_lesson_slug")
+  ingestLessonId     String?             @map("ingest_lesson_id")
+  lessonPlan         Json                @map("lesson_plan") @db.JsonB
+  subjectSlug        String              @map("subject_slug")
+  keyStageSlug       String              @map("key_stage_slug")
+  isPublished        Boolean             @default(false) @map("is_published")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  ragLessonPlanParts RagLessonPlanPart[]
+  // The following index is not supported by prisma so is applied manually in ./additions/rag_lesson_plans_unique_slug_index.sql
+  //  @@index([oakLessonSlug], name: "unique_published_oak_lesson_slug", dbIndex: false) @db.PartialIndex("is_published = TRUE")
+
+  @@index([isPublished, keyStageSlug, subjectSlug], name: "idx_rag_lesson_plans_published_key_stage_subject")
+  @@map("rag_lesson_plans")
+  @@schema("rag")
+}
+
+model RagLessonPlanPart {
+  id              String   @id @default(cuid())
+  ragLessonPlanId String   @map("rag_lesson_plan_id")
+  key             String
+  valueText       String   @map("value_text")
+  valueJson       Json     @map("value_json") @db.JsonB
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  ragLessonPlan RagLessonPlan              @relation(fields: [ragLessonPlanId], references: [id], onDelete: Cascade)
+  embedding     Unsupported("vector(256)")
+
+  @@map("rag_lesson_plan_parts")
+  @@schema("rag")
 }

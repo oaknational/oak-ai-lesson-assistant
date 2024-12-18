@@ -7,21 +7,22 @@ import type { PolicyDocument } from "cms/types/policyDocument";
 import Layout from "@/components/Layout";
 import { portableTextComponents } from "@/components/PortableText/portableTextComponents";
 
-interface LegalContentProps {
+export type LegalContentProps = Readonly<{
   pageData: PolicyDocument;
-}
+}>;
 
 export const LegalContent = ({ pageData }: LegalContentProps) => {
   return (
-    <Layout>
-      <OakBox $ph="inner-padding-xl">
-        <PortableText
-          value={pageData.body}
-          components={portableTextComponents}
-        />
-      </OakBox>
-    </Layout>
+    <OakBox $ph="inner-padding-xl">
+      <PortableText value={pageData.body} components={portableTextComponents} />
+    </OakBox>
   );
 };
 
-export default LegalContent;
+export default function LegalPage(props: LegalContentProps) {
+  return (
+    <Layout>
+      <LegalContent {...props} />
+    </Layout>
+  );
+}

@@ -11,7 +11,7 @@ async function sleep(ms: number) {
 export class MockLLMService implements LLMService {
   name = "MockLLM";
   private responseChunks: string[];
-  private responseObject: object;
+  private readonly responseObject: object;
 
   constructor(
     responseChunks: string[] = ["This is ", "a mock ", "response."],
