@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getReport, scan } from "react-scan";
 
 import { aiLogger } from "@oakai/logger";
 
-const log = aiLogger("testing");
+const log = aiLogger("aila:chat-performance");
 
 declare global {
   interface Window {
@@ -53,21 +53,23 @@ type sortedReport = {
 // Enable React Scan for performance monitoring - use with dev:react-scan
 // Pass in component to get report for specific component
 // Pass in interval to get reports at regular intervals
-// When a component is passed it will be added to window object for Playwright
-export const useReactScan = <T extends object>(
-  component?: React.ComponentType<T>,
-  interval?: number,
-) => {
-  useEffect(() => {
-    // const isRenderScanEnabled =
-    //   (typeof process !== "undefined" &&
-    //     process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
-    //   (typeof window !== "undefined" &&
-    //     window.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
-    //   (typeof window !== "undefined" &&
-    //     window.process?.env?.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true");
+// - useReactScan({ component: LessonPlanDisplay, interval: 10000 });
+// When a component is passed it will be added to window object for Playwright testing
 
-    const isRenderScanEnabled = true;
+export const useReactScan = <T extends object>({
+  component,
+  interval,
+}: {
+  component?: React.ComponentType<T>;
+  interval?: number;
+}) => {
+  useEffect(() => {
+    const isRenderScanEnabled =
+      (typeof process !== "undefined" &&
+        process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
+      (typeof window !== "undefined" &&
+        window.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true");
+
     if (isRenderScanEnabled) {
       try {
         log.info("Initializing React Scan...");
@@ -117,7 +119,7 @@ export const useReactScan = <T extends object>(
               (a, b) => b.renderCount - a.renderCount,
             );
 
-            console.table(sortedReports);
+            log.table(sortedReports);
           } else if (
             allReports !== null &&
             allReports instanceof Map === false

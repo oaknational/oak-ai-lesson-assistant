@@ -31,7 +31,7 @@ type ChildKey =
   | "aila:stream"
   | "aila:rag"
   | "aila:testing"
-  | "aila:chat"
+  | "aila:chat-performance"
   | "aila:experimental-patches"
   | "analytics"
   | "app"
@@ -88,10 +88,17 @@ const errorLogger =
  */
 export function aiLogger(childKey: ChildKey) {
   const debugLogger = debugBase.extend(childKey);
+
+  const tableLogger = (tabularData: unknown[], columns?: string[]) => {
+    if (typeof console !== "undefined" && console.table) {
+      console.table(tabularData, columns);
+    }
+  };
   return {
     info: debugLogger,
     warn: debugLogger,
     error: errorLogger.bind(structuredLogger),
+    table: tableLogger,
   };
 }
 
