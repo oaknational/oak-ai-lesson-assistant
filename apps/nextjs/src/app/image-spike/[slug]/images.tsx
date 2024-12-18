@@ -189,7 +189,7 @@ const ImagesPage = ({ pageData }) => {
     slug: basedOnSlug ?? "",
   });
   const data = basedOnLessonMedia?.data ?? [];
-  const mediaList: any[] = (data[0]?.media_list ?? []) as any[];
+  const basedOnLessonMediaList: any[] = (data[0]?.media_list ?? []) as any[];
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -211,21 +211,29 @@ const ImagesPage = ({ pageData }) => {
           </div>
         </div>
 
-        <div className="my-18">
-          <h3>Images used in the lesson this was based on</h3>
-          <div className="flex flex-wrap">
-            {mediaList.map((media) => (
-              <div key={media.id} className="relative h-96 w-1/3">
-                <Image
-                  src={media.external_url}
-                  alt={media.content_name || "Image"}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            ))}
+        {basedOnSlug && (
+          <div className="my-18">
+            {basedOnLessonMediaList && basedOnLessonMediaList.length > 0 ? (
+              <>
+                <h3>Images used in the lesson this was based on</h3>
+                <div className="flex flex-wrap">
+                  {basedOnLessonMediaList.map((media) => (
+                    <div key={media.id} className="relative h-96 w-1/3">
+                      <Image
+                        src={media.external_url}
+                        alt={media.content_name || "Image"}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p>No images found for the lesson this was based on</p>
+            )}
           </div>
-        </div>
+        )}
 
         {/* Learning Cycles Tabs */}
         <Tabs.Root

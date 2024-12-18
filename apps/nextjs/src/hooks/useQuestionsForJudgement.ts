@@ -44,7 +44,6 @@ const useQuestionsForJudgement = ({
   const selectedQuestion = trpc.judgement.selectBetterQuestionSet.useMutation();
 
   const data = questionsFromTrpc.data;
-  //*********************************************** *//
 
   let content;
 

@@ -67,10 +67,6 @@ export const lessonRouter = router({
     )
     .query(async ({ ctx, input }) => {
       try {
-        console.log(
-          "***********************************************************",
-        );
-
         const query = gql`
           query lessonOverview($slug: String!) {
             lessons: published_mv_get_tpc_media_by_lesson_slug_1_0_0(

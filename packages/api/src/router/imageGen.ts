@@ -301,10 +301,6 @@ async function tryStabilityCore(
       cycleInfo,
     });
 
-    console.log("**************************************************");
-    console.log("imageUrl", imageUrl);
-    console.log("**************************************************");
-
     const validationResponse = await validateImageWithOpenAI(
       imageUrl,
       searchExpression,
@@ -360,8 +356,6 @@ async function tryDallE(
       keyStage,
       cycleInfo,
     );
-
-    console.log("*************************", prompt);
 
     const response = await openai.images.generate({
       model: "dall-e-3",
