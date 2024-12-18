@@ -1,3 +1,15 @@
+# [1.19.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.18.2...v1.19.0) (2024-12-18)
+
+
+### Bug Fixes
+
+* sonar duplication ([#397](https://github.com/oaknational/oak-ai-lesson-assistant/issues/397)) ([dea3106](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dea3106d249119169e515d7ccebc827f324bdbf3))
+
+
+### Features
+
+* soft delete ([#383](https://github.com/oaknational/oak-ai-lesson-assistant/issues/383)) ([9dee4ad](https://github.com/oaknational/oak-ai-lesson-assistant/commit/9dee4adb840a0a5d96e43f02349ad04597862539))
+
 ## [1.18.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.18.1...v1.18.2) (2024-12-17)
 
 ## [1.18.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.18.0...v1.18.1) (2024-12-16)
