@@ -3,13 +3,50 @@ import { getReport, scan } from "react-scan";
 
 import { aiLogger } from "@oakai/logger";
 
-const log = aiLogger("aila:chat-performance");
+const log = aiLogger("ui:performance");
 
 declare global {
   interface Window {
     NEXT_PUBLIC_ENABLE_RENDER_SCAN?: string;
   }
 }
+
+const isRenderScanEnabled =
+  (typeof process !== "undefined" &&
+    process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
+  (typeof window !== "undefined" &&
+    window.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true");
+
+const getSingleReport = <T>(
+  report: RenderData,
+  component: React.ComponentType<T>,
+) => {
+  return transformReport([component?.name, report]);
+};
+
+const getSortedAndFilteredReports = (reports: Map<string, RenderData>) => {
+  const reportsArray = Array.from(reports.entries())
+    .filter(([componentName]) => {
+      // Exclude styled components and other library-generated components
+      const isCustomComponent =
+        // Check if name exists and doesn't start with known library prefixes
+        componentName &&
+        !componentName.startsWith("Styled") &&
+        !componentName.includes("styled") &&
+        !componentName.startsWith("_") &&
+        !componentName.includes("$") &&
+        componentName !== "div" &&
+        componentName !== "span";
+
+      return isCustomComponent;
+    })
+    .map(transformReport);
+
+  const sortedReports = reportsArray.toSorted(
+    (a, b) => b.renderCount - a.renderCount,
+  );
+  return sortedReports;
+};
 
 function getWindowPropertyName<T>(component: React.ComponentType<T>): string {
   return `reactScan${component.displayName ?? component.name ?? "UnknownComponent"}`;
@@ -64,12 +101,6 @@ export const useReactScan = <T extends object>({
   interval?: number;
 }) => {
   useEffect(() => {
-    const isRenderScanEnabled =
-      (typeof process !== "undefined" &&
-        process.env.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true") ||
-      (typeof window !== "undefined" &&
-        window.NEXT_PUBLIC_ENABLE_RENDER_SCAN === "true");
-
     if (isRenderScanEnabled) {
       try {
         log.info("Initializing React Scan...");
@@ -87,62 +118,31 @@ export const useReactScan = <T extends object>({
         log.error("React Scan initialization error:", error);
       }
 
-      const analyzeRenders = () => {
+      const getRenderReport = () => {
         try {
           log.info("Attempting to get render reports...");
 
-          const allReports = component ? getReport(component) : getReport();
+          const report = component ? getReport(component) : getReport();
 
-          if (
-            allReports instanceof Map &&
-            Symbol.iterator in Object(allReports) &&
-            component === undefined
-          ) {
-            const reportsArray = Array.from(allReports.entries())
-              .filter(([componentName]) => {
-                // Exclude styled components and other library-generated components
-                const isCustomComponent =
-                  // Check if name exists and doesn't start with known library prefixes
-                  componentName &&
-                  !componentName.startsWith("Styled") &&
-                  !componentName.includes("styled") &&
-                  !componentName.startsWith("_") &&
-                  !componentName.includes("$") &&
-                  componentName !== "div" &&
-                  componentName !== "span";
-
-                return isCustomComponent;
-              })
-              .map(transformReport);
-
-            const sortedReports = reportsArray.toSorted(
-              (a, b) => b.renderCount - a.renderCount,
-            );
-
-            log.table(sortedReports);
-          } else if (
-            allReports !== null &&
-            allReports instanceof Map === false
-          ) {
-            const transformedReport = transformReport([
-              component?.name,
-              allReports,
-            ]);
-            log.info("Single Report:,", transformedReport);
-
-            setWindowObjectForPlaywright(component, transformedReport);
+          if (report instanceof Map) {
+            const allComponentReport = getSortedAndFilteredReports(report);
+            log.table(allComponentReport);
+          } else if (report !== null && component) {
+            const singleComponentReport = getSingleReport(report, component);
+            setWindowObjectForPlaywright(component, singleComponentReport);
+            log.info("Single Report:,", singleComponentReport);
           }
         } catch (error) {
           log.error("Performance Monitoring Error:", error);
         }
       };
-
+      // If interval is provided, get reports at regular intervals
       if (interval) {
-        const performanceInterval = setInterval(analyzeRenders, interval);
+        const performanceInterval = setInterval(getRenderReport, interval);
 
         return () => clearInterval(performanceInterval);
       } else {
-        analyzeRenders();
+        getRenderReport();
       }
     }
   }, [component, interval]);
