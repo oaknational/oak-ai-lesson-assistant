@@ -10,19 +10,21 @@ import { DialogContentDecorator } from "@/storybook/decorators/DialogContentDeco
 import { DemoProvider } from "../ContextProviders/Demo";
 import DialogContents from "./DialogContents";
 
-const meta: Meta<typeof DialogContents> = {
+const meta = {
   title: "Components/Dialogs/DialogContents",
   component: DialogContents,
   decorators: [DialogContentDecorator],
-};
-
-export default meta;
-type Story = StoryObj<typeof DialogContents>;
-
-export const ShareChat: Story = {
   args: {
     lesson: {},
     chatId: "example-chat-id",
+  },
+} satisfies Meta<typeof DialogContents>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const ShareChat: Story = {
+  args: {
     isShared: false,
   },
   parameters: {

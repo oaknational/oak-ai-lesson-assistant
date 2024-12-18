@@ -5,17 +5,17 @@ import { chromaticParams } from "@/storybook/chromatic";
 
 import ShareChat from "./";
 
-const meta: Meta<typeof ShareChat> = {
+const meta = {
   title: "Pages/Chat/Share",
   component: ShareChat,
   parameters: {
     layout: "fullscreen",
     ...chromaticParams(["mobile", "desktop"]),
   },
-};
+} satisfies Meta<typeof ShareChat>;
 
 export default meta;
-type Story = StoryObj<typeof ShareChat>;
+type Story = StoryObj<typeof meta>;
 
 const lessonPlan: LooseLessonPlan = {
   title: "The End of Roman Britain",
