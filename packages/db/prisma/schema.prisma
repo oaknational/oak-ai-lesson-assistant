@@ -344,14 +344,15 @@ model AppSession {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-
+  deletedAt DateTime? @map("deleted_at")
+  
   app   App    @relation(fields: [appId], references: [id], onDelete: Cascade)
   appId String @map("app_id")
 
   userId String @map("user_id") // The user that requested this generation
 
   output Json? // The final output of the session
-
+  
   userTweaks          UserTweak[]
   reGenerations       ReGeneration[]
   generationUserFlags GenerationUserFlag[]

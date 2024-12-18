@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { ChatHistory } from "./chat-history";
 
-const meta: Meta<typeof ChatHistory> = {
+const meta = {
   title: "Components/Sidebar/ChatHistory",
   component: ChatHistory,
   parameters: {
@@ -17,10 +17,10 @@ const meta: Meta<typeof ChatHistory> = {
       </Dialog.Root>
     ),
   ],
-};
+} satisfies Meta<typeof ChatHistory>;
 
 export default meta;
-type Story = StoryObj<typeof ChatHistory>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},

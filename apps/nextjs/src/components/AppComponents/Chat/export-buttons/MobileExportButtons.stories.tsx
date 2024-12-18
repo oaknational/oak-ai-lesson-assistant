@@ -9,14 +9,14 @@ import {
 
 import { MobileExportButtons } from "./MobileExportButtons";
 
-const meta: Meta<typeof MobileExportButtons> = {
+const meta = {
   title: "Components/LessonPlan/MobileExportButtons",
   component: MobileExportButtons,
   tags: ["autodocs"],
   decorators: [ChatDecorator, DemoDecorator],
   parameters: {
     viewport: {
-      defaultViewport: "mobile1",
+      defaultViewport: "mobile",
     },
     ...chromaticParams(["mobile"]),
     ...demoParams({ isDemoUser: false }),
@@ -27,10 +27,10 @@ const meta: Meta<typeof MobileExportButtons> = {
   args: {
     closeMobileLessonPullOut: () => {},
   },
-};
+} satisfies Meta<typeof MobileExportButtons>;
 
 export default meta;
-type Story = StoryObj<typeof MobileExportButtons>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
