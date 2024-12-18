@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
+import { chromaticParams } from "@/storybook/chromatic";
 
 import { HelpContent } from ".";
-import { chromaticParams } from "../../../../.storybook/chromatic";
 
-const meta: Meta<typeof HelpContent> = {
+const meta = {
   title: "Pages/Chat/Help",
   component: HelpContent,
   parameters: {
@@ -20,10 +20,10 @@ const meta: Meta<typeof HelpContent> = {
       </DemoProvider>
     ),
   ],
-};
+} satisfies Meta<typeof HelpContent>;
 
 export default meta;
-type Story = StoryObj<typeof HelpContent>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},

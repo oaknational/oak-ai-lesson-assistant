@@ -3,14 +3,14 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { GuidanceRequired } from "./guidance-required";
 
-const meta: Meta<typeof GuidanceRequired> = {
+const meta = {
   title: "Components/Chat/GuidanceRequired",
   component: GuidanceRequired,
   tags: ["autodocs"],
-};
+} satisfies Meta<typeof GuidanceRequired>;
 
 export default meta;
-type Story = StoryObj<typeof GuidanceRequired>;
+type Story = StoryObj<typeof meta>;
 
 const mockModeration: PersistedModerationBase = {
   id: "moderated",

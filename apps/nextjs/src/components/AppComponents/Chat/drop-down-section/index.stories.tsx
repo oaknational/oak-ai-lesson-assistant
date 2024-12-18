@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { userEvent, within } from "@storybook/test";
 
-import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
-import { ChatContext } from "@/components/ContextProviders/ChatProvider";
+import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 
 import DropDownSection from "./";
 
@@ -10,32 +9,7 @@ const MAX_INT32 = 2 ** 31 - 1;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
-  <ChatContext.Provider
-    value={
-      {
-        id: "123",
-        lastModeration: null,
-        messages: [],
-        lessonPlan: {
-          title: "About Frogs",
-          keyStage: "Key Stage 2",
-          subject: "Science",
-          topic: "Amphibians",
-          basedOn: "Frogs in Modern Britain",
-          learningOutcome:
-            "To understand the importance of frogs in British society and culture",
-        },
-        ailaStreamingStatus: "Idle",
-        ...parameters.chatContext,
-      } as unknown as ChatContextProps
-    }
-  >
-    <Story />
-  </ChatContext.Provider>
-);
-
-const meta: Meta<typeof DropDownSection> = {
+const meta = {
   title: "Components/LessonPlan/DropDownSection",
   component: DropDownSection,
   tags: ["autodocs"],
@@ -45,12 +19,32 @@ const meta: Meta<typeof DropDownSection> = {
       "I can explain the reasons why frogs are so important to British society and culture",
     documentContainerRef: { current: null },
     streamingTimeout: 0,
+    userHasCancelledAutoScroll: false,
+    sectionRefs: {},
+    showLessonMobile: false,
   },
   decorators: [ChatDecorator],
-};
+  parameters: {
+    chatContext: {
+      id: "123",
+      lastModeration: null,
+      messages: [],
+      lessonPlan: {
+        title: "About Frogs",
+        keyStage: "Key Stage 2",
+        subject: "Science",
+        topic: "Amphibians",
+        basedOn: { id: "testId", title: "Frogs in Modern Britain" },
+        learningOutcome:
+          "To understand the importance of frogs in British society and culture",
+      },
+      ailaStreamingStatus: "Idle",
+    },
+  },
+} satisfies Meta<typeof DropDownSection>;
 
 export default meta;
-type Story = StoryObj<typeof DropDownSection>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},
