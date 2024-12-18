@@ -5,6 +5,7 @@
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
+import { IngestError } from "./IngestError";
 import { getLatestIngestId } from "./db-helpers/getLatestIngestId";
 import { ingestStart } from "./steps/0-start";
 import { captions } from "./steps/1-captions";
@@ -59,6 +60,11 @@ async function main() {
 }
 
 main().catch((error) => {
-  log.error("Error running command", error);
+  log.info(error.toString());
+  if (error instanceof IngestError) {
+    log.info("Ingest ID " + error.ingestId);
+    log.info("Lesson ID " + error.lessonId);
+  }
+  log.error("Error running command, see above");
   process.exit(1);
 });
