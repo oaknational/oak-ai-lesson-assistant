@@ -27,6 +27,7 @@ test.describe("Component renders during lesson chat", () => {
     });
   });
 
+  // this is disabled because react scan is not currently working in preview deplyments.
   test.skip("There are no unnecessary rerenders across left and right side of chat", async ({
     page,
   }) => {
