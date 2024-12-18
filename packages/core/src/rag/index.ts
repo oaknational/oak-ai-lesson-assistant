@@ -21,6 +21,7 @@ import { DEFAULT_CATEGORISE_MODEL } from "../../../aila/src/constants";
 import type { OpenAICompletionWithLoggingOptions } from "../../../aila/src/lib/openai/OpenAICompletionWithLogging";
 import { OpenAICompletionWithLogging } from "../../../aila/src/lib/openai/OpenAICompletionWithLogging";
 import type { JsonValue } from "../models/prompts";
+import { shortenKeyStage } from "../utils/shortenKeyStage";
 import { slugify } from "../utils/slugify";
 import { keyStages, subjects } from "../utils/subjects";
 import { CategoriseKeyStageAndSubjectResponse } from "./categorisation";
@@ -552,19 +553,19 @@ Thank you and happy classifying!`;
     if (!keyStage) {
       return null;
     }
-    let cachedKeyStage: KeyStage | null;
-    try {
-      cachedKeyStage = await kv.get<KeyStage>(`keyStage:${keyStage}`);
-      if (cachedKeyStage) {
-        return cachedKeyStage;
-      }
-    } catch (e) {
-      log.error(
-        "Error parsing cached keyStage. Continuing without cached value",
-        e,
-      );
-      await kv.del(`keyStage:${keyStage}`);
-    }
+    // let cachedKeyStage: KeyStage | null;
+    // try {
+    //   cachedKeyStage = await kv.get<KeyStage>(`keyStage:${keyStage}`);
+    //   if (cachedKeyStage) {
+    //     return cachedKeyStage;
+    //   }
+    // } catch (e) {
+    //   log.error(
+    //     "Error parsing cached keyStage. Continuing without cached value",
+    //     e,
+    //   );
+    //   await kv.del(`keyStage:${keyStage}`);
+    // }
 
     let foundKeyStage: KeyStage | null = null;
     foundKeyStage = await this.prisma.keyStage.findFirst({
@@ -575,6 +576,12 @@ Thank you and happy classifying!`;
           { slug: slugify(keyStage) },
           { title: { equals: keyStage.toLowerCase(), mode: "insensitive" } },
           { slug: { equals: keyStage.toLowerCase(), mode: "insensitive" } },
+          {
+            slug: {
+              equals: shortenKeyStage(slugify(keyStage)),
+              mode: "insensitive",
+            },
+          },
         ],
       },
       cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
@@ -692,6 +699,8 @@ Thank you and happy classifying!`;
       };
     }
 
+    log.info("Filter:", filter);
+
     const vectorStore = PrismaVectorStore.withModel<LessonPlanPart>(
       this.prisma,
     ).create(
@@ -723,6 +732,8 @@ Thank you and happy classifying!`;
         similaritySearchTerm,
         k * 5, // search for more records than we need
       );
+
+      log.info("Initial search result", result);
     } catch (e) {
       if (e instanceof TypeError && e.message.includes("join([])")) {
         log.warn("Caught TypeError with join([]), returning empty array");

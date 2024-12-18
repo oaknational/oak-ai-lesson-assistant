@@ -2,6 +2,7 @@ import { CompletedLessonPlanSchema } from "@oakai/aila/src/protocol/schema";
 
 import { IngestError } from "../IngestError";
 import { CompletionBatchResponseSchema } from "../zod-schema/zodSchema";
+import { parseKeyStage } from "./parseKeyStage";
 
 export function parseBatchLessonPlan(line: unknown) {
   let result;
@@ -37,6 +38,8 @@ export function parseBatchLessonPlan(line: unknown) {
     lessonPlan = CompletedLessonPlanSchema.parse(
       JSON.parse(maybeLessonPlanString),
     );
+
+    lessonPlan.keyStage = parseKeyStage(lessonPlan.keyStage);
   } catch (cause) {
     throw new IngestError("Failed to parse lesson plan", {
       cause,
