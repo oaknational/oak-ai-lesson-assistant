@@ -37,7 +37,7 @@ export const keywordSchema = z.object({
   definition: z.string(),
 });
 
-export const lessonSlidesInputSchema = z.object({
+export const lessonInputSchema = z.object({
   title: z.string(),
   subject: z.string(),
   keyStage: z.string().nullish(),
@@ -54,7 +54,13 @@ export const lessonSlidesInputSchema = z.object({
   cycle2: cycleSchema.nullish(),
   cycle3: cycleSchema.nullish(),
   additionalMaterials: z.string().nullish(),
+  _experimental_starterQuizMathsV0: quizSchema.nullish(),
+  _experimental_exitQuizMathsV0: quizSchema.nullish(),
 });
+
+export type LessonInputData = z.infer<typeof lessonInputSchema>;
+
+export const lessonSlidesInputSchema = lessonInputSchema;
 
 export type LessonSlidesInputData = z.infer<typeof lessonSlidesInputSchema>;
 

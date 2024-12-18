@@ -1,4 +1,13 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["index.ts", "prisma/**/*.ts", "client/index.ts"]
+  "include": [
+    "index.ts",
+    "prisma/**/*.ts",
+    "client/index.ts",
+    "scripts/**/*.ts",
+    "schemas/**/*.ts"
+  ],
+  "compilerOptions": {
+    "baseUrl": "."
+  }
 }

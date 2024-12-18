@@ -38,8 +38,17 @@ jobs:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
           inject-env-vars: true
 
+      - name: Get App Version
+        id: app-version
+        run: |
+          APP_VERSION=$(grep -m 1 -oP '(?<=## \[)\d+\.\d+\.\d+' CHANGE_LOG.md)
+          echo "version=$APP_VERSION" >> $GITHUB_OUTPUT
+
       - name: SonarCloud scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ steps.doppler.outputs.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectVersion=${{ steps.app-version.outputs.version }}

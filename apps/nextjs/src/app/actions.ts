@@ -43,7 +43,7 @@ export async function getChatById(
   id: string,
 ): Promise<AilaPersistedChat | null> {
   const session = await prisma?.appSession.findUnique({
-    where: { id },
+    where: { id, deletedAt: null },
   });
 
   if (!session) {
@@ -55,7 +55,7 @@ export async function getChatById(
       id,
       sessionOutput: session.output,
       userId: session.userId,
-    }) || null
+    }) ?? null
   );
 }
 

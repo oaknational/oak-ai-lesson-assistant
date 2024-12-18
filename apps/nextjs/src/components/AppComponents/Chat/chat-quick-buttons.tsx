@@ -12,16 +12,12 @@ import type { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
 import ChatButton from "./ui/chat-button";
 import { IconRefresh, IconStop } from "./ui/icons";
 
-export type QuickActionButtonsProps = Readonly<{
-  isEmptyScreen: boolean;
-}>;
-
 const shouldAllowStop = (
   ailaStreamingStatus: AilaStreamingStatus,
-  isEmptyScreen: boolean,
+  hasMessages: boolean,
   queuedUserAction: string | null,
 ) => {
-  if (!isEmptyScreen) {
+  if (!hasMessages) {
     return false;
   }
 
@@ -43,7 +39,7 @@ const shouldAllowStop = (
   return false;
 };
 
-const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
+const QuickActionButtons = () => {
   const chat = useLessonChat();
   const { trackEvent } = useAnalytics();
   const lessonPlanTracking = useLessonPlanTracking();
@@ -57,13 +53,15 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
     queuedUserAction,
   } = chat;
 
+  const hasMessages = !!messages.length;
+
   const shouldAllowUserAction =
     ["Idle", "Moderating"].includes(ailaStreamingStatus) && !queuedUserAction;
 
   const handleRegenerate = useCallback(() => {
     trackEvent("chat:regenerate", { id: id });
     const lastUserMessage =
-      findLast(messages, (m) => m.role === "user")?.content || "";
+      findLast(messages, (m) => m.role === "user")?.content ?? "";
     lessonPlanTracking.onClickRetry(lastUserMessage);
     queueUserAction("regenerate");
   }, [queueUserAction, lessonPlanTracking, messages, trackEvent, id]);
@@ -106,7 +104,7 @@ const QuickActionButtons = ({ isEmptyScreen }: QuickActionButtonsProps) => {
 
         {shouldAllowStop(
           ailaStreamingStatus,
-          isEmptyScreen,
+          hasMessages,
           queuedUserAction,
         ) && (
           <ChatButton

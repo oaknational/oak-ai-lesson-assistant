@@ -14,8 +14,9 @@
     "noUncheckedIndexedAccess": true,
     "incremental": true,
     "types": ["jest", "node"],
-    "moduleResolution": "node",
-    "esModuleInterop": true
-  },
-  "include": [".eslintrc.cjs"]
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "moduleDetection": "force"
+  }
 }

@@ -14,18 +14,16 @@ const DEMO_APP_SESSIONS_PER_30D = parseInt(
   10,
 );
 
-export type DemoContextProps =
-  | {
-      isDemoUser: true;
-      appSessionsRemaining: number | undefined;
-      appSessionsPerMonth: number;
-      contactHref: string;
-      isSharingEnabled: boolean;
-    }
-  | {
-      isDemoUser: false;
-      isSharingEnabled: boolean;
-    };
+type Demo = {
+  appSessionsRemaining: number | undefined;
+  appSessionsPerMonth: number;
+  contactHref: string;
+};
+
+export type DemoContextProps = { isSharingEnabled: boolean } & (
+  | { isDemoUser: true; demo: Demo }
+  | { isDemoUser: false; demo: undefined }
+);
 
 export const DemoContext = createContext<DemoContextProps | null>(null);
 
@@ -52,14 +50,17 @@ export function DemoProvider({ children }: Readonly<DemoProviderProps>) {
       isDemoUser
         ? {
             isDemoUser,
-            appSessionsRemaining,
-            appSessionsPerMonth: DEMO_APP_SESSIONS_PER_30D,
-            contactHref:
-              "https://share.hsforms.com/1R9ulYSNPQgqElEHde3KdhAbvumd",
+            demo: {
+              appSessionsRemaining,
+              appSessionsPerMonth: DEMO_APP_SESSIONS_PER_30D,
+              contactHref:
+                "https://share.hsforms.com/1R9ulYSNPQgqElEHde3KdhAbvumd",
+            },
             isSharingEnabled,
           }
         : {
             isDemoUser,
+            demo: undefined,
             isSharingEnabled,
           },
     [isDemoUser, appSessionsRemaining, isSharingEnabled],

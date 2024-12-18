@@ -67,7 +67,6 @@
       "cache": false
     },
     "type-check": {
-      "dependsOn": ["^db-generate"],
       "cache": false
     },
     "test": {
@@ -83,6 +82,9 @@
     "test-e2e-ui": {
       "cache": false,
       "env": ["TEST_USER_EMAIL", "TEST_USER_PASSWORD"]
+    },
+    "test-coverage": {
+      "cache": false
     },
     "storybook": {
       "cache": false

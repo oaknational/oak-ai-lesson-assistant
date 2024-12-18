@@ -18,7 +18,7 @@ import type { AilaGeneration } from "../../../generation/AilaGeneration";
 const log = aiLogger("aila:persistence");
 
 export class AilaPrismaPersistence extends AilaPersistence {
-  private _prisma: PrismaClientWithAccelerate;
+  private readonly _prisma: PrismaClientWithAccelerate;
 
   constructor({
     chat,
@@ -39,6 +39,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
     const appSession = await this._prisma.appSession.findFirst({
       where: {
         id,
+        deletedAt: null,
       },
     });
 

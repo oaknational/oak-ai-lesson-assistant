@@ -1,14 +1,21 @@
 {
   "name": "@oakai/api",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "license": "MIT",
   "main": "./index.ts",
   "types": "./index.ts",
   "scripts": {
     "check": "tsc --noEmit",
     "clean": "rm -rf .turbo node_modules",
-    "lint": "eslint . --ext .ts,.tsx",
+    "lint": "eslint .",
     "type-check": "tsc --noEmit"
+  },
+  "eslintConfig": {
+    "extends": "@oakai/eslint-config",
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "rules": {}
   },
   "prettier": "@oakai/prettier-config",
   "dependencies": {
@@ -26,12 +33,13 @@
     "zod": "3.23.8"
   },
   "devDependencies": {
+    "@oakai/eslint-config": "*",
     "@oakai/prettier-config": "*",
-    "eslint": "^8.56.0",
-    "typescript": "5.3.3"
+    "typescript": "5.7.2"
   },
   "engines": {
     "node": ">=20.9.0",
     "pnpm": ">=8"
-  }
+  },
+  "type": "module"
 }

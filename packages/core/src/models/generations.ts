@@ -2,10 +2,9 @@ import type {
   Generation,
   ModerationType,
   Prisma,
-  PrismaClientWithAccelerate} from "@oakai/db";
-import {
-  GenerationStatus
+  PrismaClientWithAccelerate,
 } from "@oakai/db";
+import { GenerationStatus } from "@oakai/db";
 import type { StructuredLogger } from "@oakai/logger";
 import { structuredLogger } from "@oakai/logger";
 import type { Logger as InngestLogger } from "inngest/middleware/logger";
@@ -13,7 +12,7 @@ import { omit } from "remeda";
 import { Md5 } from "ts-md5";
 
 export type PromptInputs = {
-  [key: string]: unknown | undefined;
+  [key: string]: unknown;
   fact?: string;
   knowledge?: string;
   transcript?: string;

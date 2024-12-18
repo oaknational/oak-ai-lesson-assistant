@@ -6,15 +6,23 @@
   "license": "ISC",
   "author": "",
   "main": "./index.ts",
+  "eslintConfig": {
+    "extends": "@oakai/eslint-config",
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "rules": {}
+  },
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
-    "lint": "eslint . --ext .ts,.tsx",
+    "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "ingest": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/index.ts",
     "with-env": "dotenv -e ../../.env --",
-    "test": "pnpm with-env jest --colors --config jest.config.js",
-    "test:seq": "pnpm with-env jest --colors --config jest.config.js --verbose --runInBand",
-    "test-file": "pnpm with-env jest --config jest.config.js --runTestsByPath TEST_FILEPATH"
+    "test": "pnpm with-env jest --colors --config jest.config.mjs",
+    "test:seq": "pnpm with-env jest --colors --config jest.config.mjs --verbose --runInBand",
+    "test-coverage": "COLLECT_TEST_COVERAGE=true pnpm with-env jest --colors --config jest.config.mjs --coverage",
+    "test-file": "pnpm with-env jest --config jest.config.mjs --runTestsByPath TEST_FILEPATH"
   },
   "prettier": "@oakai/prettier-config",
   "dependencies": {
@@ -30,12 +38,13 @@
     "zod": "3.23.8"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.12",
+    "@oakai/eslint-config": "*",
+    "@oakai/prettier-config": "*",
+    "@types/jest": "^29.5.14",
     "@types/webvtt-parser": "^2.2.0",
-    "eslint": "^8.56.0",
     "jest": "^29.7.0",
-    "prettier-config": "*",
     "setup-polly-jest": "^0.11.0",
-    "ts-jest": "^29.1.4"
-  }
+    "ts-jest": "^29.2.5"
+  },
+  "type": "module"
 }

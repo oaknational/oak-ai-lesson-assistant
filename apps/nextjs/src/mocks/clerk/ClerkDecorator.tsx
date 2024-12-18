@@ -1,6 +1,12 @@
-import type { Decorator } from "@storybook/react/*";
+import type { Decorator } from "@storybook/react";
 
 import { ClerkProvider } from "./nextjsComponents";
+
+declare module "@storybook/csf" {
+  interface Parameters {
+    auth?: "loading" | "signedIn" | "signedInDemo" | "signedOut";
+  }
+}
 
 export const ClerkDecorator: Decorator = (Story, { parameters }) => {
   return (

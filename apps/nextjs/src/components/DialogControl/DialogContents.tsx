@@ -1,5 +1,8 @@
+import { useState } from "react";
+
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import {
+  OakModal,
   OakModalCenter,
   OakModalCenterBody,
   type OakIconName,
@@ -8,6 +11,7 @@ import type { Message } from "ai";
 import styled from "styled-components";
 
 import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
+import { ChatHistory } from "../AppComponents/Chat/chat-history";
 import { useDialog } from "../AppComponents/DialogContext";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
@@ -23,11 +27,11 @@ const dialogTitlesAndIcons: Record<
 > = {
   "share-chat": {
     title: "Share lesson",
-    iconName: "share",
+    iconName: null,
   },
   feedback: {
     title: "",
-    iconName: "books",
+    iconName: null,
   },
   "report-content": {
     title: "Report content",
@@ -72,7 +76,7 @@ const DialogContents = ({
   readonly children?: React.ReactNode;
   readonly messages?: Message[];
   readonly submit?: () => void;
-  readonly isShared?: boolean | undefined;
+  readonly isShared?: boolean;
 }) => {
   const { dialogWindow, setDialogWindow, setDialogProps, openSidebar } =
     useDialog();
@@ -89,7 +93,7 @@ const DialogContents = ({
         <OakModalAtTheFront isOpen={!!dialogWindow} onClose={closeDialog}>
           <OakModalCenterBody
             title={dialogTitlesAndIcons[dialogWindow].title}
-            iconName={dialogTitlesAndIcons[dialogWindow].iconName || "warning"}
+            iconName={dialogTitlesAndIcons[dialogWindow].iconName ?? "warning"}
             hideIcon={dialogTitlesAndIcons[dialogWindow].iconName === null}
           >
             {children}

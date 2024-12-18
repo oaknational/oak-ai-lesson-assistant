@@ -36,8 +36,13 @@ const preBuildRoutes = async (
           .get(`http://localhost:2525${route}`, { headers })
           .then(() => console.log(`Pre-built route: ${route}`))
           .catch((error) => {
-            console.log(`Error pre-building route: ${route}`, error.message);
-            return Promise.reject(error);
+            const errorToLog =
+              error instanceof Error ? error : new Error(String(error));
+            console.log(
+              `Error pre-building route: ${route}`,
+              errorToLog.message,
+            );
+            return Promise.reject(errorToLog);
           });
       } else {
         return axios({
@@ -51,12 +56,14 @@ const preBuildRoutes = async (
             ),
           )
           .catch((error) => {
-            console.log(error);
+            const errorToLog =
+              error instanceof Error ? error : new Error(String(error));
+            console.log(errorToLog);
             console.log(
               `Error pre-building route: ${route.url}`,
-              error.message,
+              errorToLog.message,
             );
-            return Promise.reject(error);
+            return Promise.reject(errorToLog);
           });
       }
     });
@@ -68,6 +75,7 @@ const preBuildRoutes = async (
     console.log("All routes pre-built successfully");
     console.timeEnd(timerId);
   } catch (error) {
+    console.error(error);
     if (retryCount < maxRetries) {
       console.log(
         `Retrying pre-build (attempt ${retryCount + 1} of ${maxRetries})...`,

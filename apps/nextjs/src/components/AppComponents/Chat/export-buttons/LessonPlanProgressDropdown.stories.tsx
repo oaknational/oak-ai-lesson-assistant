@@ -8,17 +8,18 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
-const meta: Meta<typeof LessonPlanProgressDropdown> = {
+const meta = {
   title: "Components/LessonPlan/LessonPlanProgressDropdown",
   component: LessonPlanProgressDropdown,
   tags: ["autodocs"],
-};
+} satisfies Meta<typeof LessonPlanProgressDropdown>;
 
 export default meta;
-type Story = StoryObj<typeof LessonPlanProgressDropdown>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
+    isStreaming: false,
     lessonPlan: {
       // 1 (lesson details)
       title: "Introduction to Glaciation",
@@ -38,9 +39,9 @@ export const Default: Story = {
       learningOutcome: { current: null },
       learningCycles: { current: null },
       priorKnowledge: { current: null },
-      "cycle-1": { current: null },
-      "cycle-2": { current: null },
-      "cycle-3": { current: null },
+      cycle1: { current: null },
+      cycle2: { current: null },
+      cycle3: { current: null },
     },
     documentContainerRef: { current: null },
   },
@@ -49,6 +50,7 @@ export const Default: Story = {
 export const PartiallyCompleted: Story = {
   args: {
     ...Default.args,
+    isStreaming: true,
     lessonPlan: {
       // 1 (lesson details)
       title: "Introduction to Glaciation",

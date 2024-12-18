@@ -33,7 +33,7 @@ type UserWithDemoStatus = User & {
 };
 
 export function isDemoStatusSet(user: LabsUser): user is UserWithDemoStatus {
-  const labsMetadata = user.publicMetadata.labs || {};
+  const labsMetadata = user.publicMetadata.labs ?? {};
   return "isDemoUser" in labsMetadata;
 }
 

@@ -10,7 +10,7 @@ import type { LooseLessonPlan } from "../../protocol/schema";
 export class AilaSnapshotStore {
   protected _name: string;
   protected _aila: AilaServices;
-  private _prisma: PrismaClientWithAccelerate;
+  private readonly _prisma: PrismaClientWithAccelerate;
 
   constructor({
     name = "AilaSnapshotStore",

@@ -1,8 +1,7 @@
-import type { Quiz } from "@oakai/db";
 import { prisma } from "@oakai/db";
 import { GraphQLClient, gql } from "graphql-request";
 
-const batchSize = parseInt(process.env.LESSON_QUERY_BATCH_SIZE || "");
+const batchSize = parseInt(process.env.LESSON_QUERY_BATCH_SIZE ?? "");
 const LESSON_QUERY_BATCH_SIZE = Number.isInteger(batchSize) ? batchSize : 10;
 const QUERY_SLEEP_MS = 1000; // Delay between API calls to avoid rate limiting/hammering the db
 const MAX_LESSONS = Infinity; // Set a smaller limit for testing when we don't want all ~10k

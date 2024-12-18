@@ -1,6 +1,9 @@
+import { aiLogger } from "@oakai/logger";
+
 import moderationCategories from "./moderationCategories.json";
 import type { ModerationBase, ModerationResult } from "./moderationSchema";
 
+const log = aiLogger("aila:moderation");
 export function isToxic(result: ModerationBase): boolean {
   return result.categories.some((category) =>
     typeof category === "string" ? category.startsWith("t/") : false,
@@ -46,7 +49,7 @@ export function getCategoryGroup(category: string) {
   return (
     moderationCategories.find((group) =>
       group.categories.some((c) => c.code === category),
-    ) || null
+    ) ?? null
   );
 }
 
@@ -62,9 +65,11 @@ const MOCK_SENSITIVE_RESULT: ModerationResult = {
 
 export function getMockModerationResult(message?: string) {
   if (message?.includes("mod:tox")) {
+    log.info("mod:tox detected, returning mock toxic result");
     return MOCK_TOXIC_RESULT;
   }
   if (message?.includes("mod:sen")) {
+    log.info("mod:sen detected, returning mock sensitive result");
     return MOCK_SENSITIVE_RESULT;
   }
   return null;

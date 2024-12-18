@@ -80,7 +80,7 @@ export function ChatHistory() {
           <ChatButton href="/" variant="text-link">
             <span className="scale-90">
               <OakIcon iconName="home" />
-            </span>
+            </span>{" "}
             AI experiments page
           </ChatButton>
           <ChatButton
@@ -89,7 +89,7 @@ export function ChatHistory() {
           >
             <span className="scale-90">
               <OakIcon iconName="question-mark" />
-            </span>
+            </span>{" "}
             Help
           </ChatButton>
         </div>

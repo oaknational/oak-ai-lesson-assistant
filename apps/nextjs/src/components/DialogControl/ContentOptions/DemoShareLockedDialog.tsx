@@ -1,7 +1,6 @@
 import { OakFlex, OakP, OakPrimaryButton } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 
-import Button from "@/components/Button";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 
 function DialogContainer({ children }: { readonly children: React.ReactNode }) {
@@ -30,9 +29,9 @@ const DemoShareLockedDialog = ({
 }: {
   readonly closeDialog: () => void;
 }) => {
-  const demo = useDemoUser();
+  const { isDemoUser, demo } = useDemoUser();
 
-  if (!demo.isDemoUser) {
+  if (!isDemoUser) {
     return null;
   }
 
