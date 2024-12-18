@@ -31,7 +31,6 @@ type ChildKey =
   | "aila:stream"
   | "aila:rag"
   | "aila:testing"
-  | "aila:chat-performance"
   | "aila:experimental-patches"
   | "analytics"
   | "app"
@@ -65,7 +64,8 @@ type ChildKey =
   | "trpc"
   | "ui"
   | "webhooks"
-  | "cron";
+  | "cron"
+  | "ui:performance";
 
 const errorLogger =
   typeof window === "undefined"
