@@ -1,5 +1,6 @@
 import React from "react";
 import { Toaster } from "react-hot-toast";
+import { Monitoring } from "react-scan/dist/core/monitor/params/next";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import "@fontsource/lexend";
@@ -38,6 +39,11 @@ const provided_vercel_url =
 
 const vercel_url = `https://${provided_vercel_url}`;
 
+const reactScanApiKey = process.env.NEXT_PUBLIC_REACT_SCAN_KEY;
+const addReactScanMonitor =
+  process.env.NEXT_PUBLIC_RENDER_MONITOR === "true" &&
+  reactScanApiKey !== undefined;
+
 const lexend = Lexend({
   subsets: ["latin"],
   display: "swap",
@@ -74,6 +80,7 @@ export default async function RootLayout({
   children,
 }: Readonly<RootLayoutProps>) {
   const nonce = headers().get("x-nonce");
+
   if (!nonce) {
     // Our middleware path matching excludes static paths like /_next/static/...
     // If a static path becomes a 404, CSP headers aren't set
@@ -93,6 +100,12 @@ export default async function RootLayout({
               GeistMono.variable,
             )}
           >
+            {addReactScanMonitor && (
+              <Monitoring
+                apiKey={reactScanApiKey}
+                url={process.env.NEXT_PUBLIC_REACT_SCAN_URL}
+              />
+            )}
             <Theme
               accentColor="blue"
               grayColor="olive"
