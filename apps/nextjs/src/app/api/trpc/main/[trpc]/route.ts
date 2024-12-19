@@ -19,7 +19,7 @@ const handler = (req: NextRequest, res: NextResponse) =>
     },
     onError: (e) => {
       if (process.env.NODE_ENV === "development") {
-        log.error(e);
+        // log.error(e);
       }
       Sentry.captureException(e.error);
     },
