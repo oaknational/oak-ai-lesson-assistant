@@ -1,3 +1,4 @@
+import type { Message } from "@oakai/aila/src/core/chat";
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 
@@ -19,7 +20,7 @@ export function useDownloadView({
     onStart: () => null,
     lesson: lessonPlan,
     chatId: id,
-    messageId: getLastAssistantMessage(messages)?.id,
+    messageId: messages.filter((m) => m.role === "assistant").pop()?.id,
     active: true,
   };
 

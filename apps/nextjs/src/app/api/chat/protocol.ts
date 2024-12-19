@@ -2,7 +2,6 @@ import type {
   ActionDocument,
   ErrorDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import { StreamingTextResponse } from "ai";
 
 export function streamingJSON(message: ErrorDocument | ActionDocument) {
   const jsonContent = JSON.stringify(message);
@@ -10,7 +9,7 @@ export function streamingJSON(message: ErrorDocument | ActionDocument) {
 
   const errorEncoder = new TextEncoder();
 
-  return new StreamingTextResponse(
+  return new Response(
     new ReadableStream({
       start(controller) {
         controller.enqueue(errorEncoder.encode(errorMessage));
