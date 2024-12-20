@@ -4,13 +4,6 @@ ll
 m
 Message
 ","sectionsToEdit":["
-prior
-Knowledge
-","
-key
-Learning
-Points
-","
 mis
 con
 ceptions
@@ -22,155 +15,20 @@ type":"
 patch
 ","reasoning":"
 Ident
-ifying
- prior
- knowledge
- ensures
- pupils
- have
- the
- necessary
- background
- to
- understand
- the
- lesson
- content
-.","
-value":{"
-type":"
-string
--array
-","op":"
-add
-","path":"/
-prior
-Knowledge
-","value":["
-The
- Romans
- invaded
- Britain
- in
- 
-43
- AD
-.","
-Roman
- roads
- were
- built
- across
- Britain
-.","
-The
- Romans
- introduced
- new
- towns
- and
- cities
-.","
-The
- Roman
- army
- was
- powerful
- and
- well
--organ
-ised
-.","
-Roman
- culture
- influenced
- British
- life
-.
-"]},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Key
- learning
- points
- focus
- on
- the
- main
- facts
- and
- ideas
- pupils
- should
- take
- away
- from
- the
- lesson
-.","
-value":{"
-type":"
-string
--array
-","op":"
-add
-","path":"/
-key
-Learning
-Points
-","value":["
-The
- Romans
- left
- Britain
- around
- 
-410
- AD
-.","
-Roman
- withdrawal
- led
- to
- changes
- in
- British
- society
-.","
-New
- groups
- began
- to
- settle
- in
- Britain
- after
- the
- Romans
- left
-.
-"]},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Address
-ing
- misconceptions
- helps
- to
- clarify
- any
+ified
  common
- misunderstand
-ings
+ misconceptions
  about
  the
- topic
+ end
+ of
+ Roman
+ Britain
+ to
+ address
+ in
+ the
+ lesson
 .","
 value":{"
 type":"
@@ -189,59 +47,84 @@ misconception":"
 The
  Romans
  left
+ Britain
  because
  they
  were
  defeated
- in
- Britain
+ by
+ local
+ tribes
 ","description":"
 The
  Romans
  left
- Britain
- because
- they
- needed
+ due
  to
- defend
- their
- empire
- elsewhere
-.
- Discuss
- the
- empire
-'s
- wider
+ internal
  issues
+ within
+ the
+ Roman
+ Empire
+ itself
+,
+ not
+ because
+ of
+ a
+ defeat
+ by
+ local
+ tribes
+.
+ Highlight
+ the
+ economic
+ and
+ political
+ struggles
+ Rome
+ faced
 ."
 },{"
 misconception":"
-Life
- in
- Britain
- improved
- immediately
- after
- the
+There
+ were
+ no
  Romans
  left
+ in
+ Britain
+ after
+ their
+ departure
 ","description":"
-Explain
- that
- many
+While
+ the
  Roman
- advancements
- were
- lost
+ army
+ and
+ officials
+ left
 ,
- leading
- to
- a
- period
- of
- instability
+ many
+ Romans
+ who
+ settled
+ remained
+.
+ Clar
+ify
+ that
+ Roman
+ influence
+ continued
+ in
+ local
+ culture
+ and
+ infrastructure
 ."
 }]},"status":"
 complete
@@ -249,18 +132,19 @@ complete
 type":"
 patch
 ","reasoning":"
-Keywords
+Selected
+ keywords
+ to
  help
  pupils
  understand
  the
- specific
- vocabulary
- related
- to
- the
  lesson
- topic
+'s
+ key
+ concepts
+ and
+ vocabulary
 .","
 value":{"
 type":"
@@ -272,16 +156,77 @@ keywords
 ","value":[
 {"
 keyword":"
+Romans
+","definition":"
+People
+ from
+ the
+ ancient
+ civilization
+ of
+ Rome
+ who
+ ruled
+ many
+ lands
+."
+},{"
+keyword":"
+Brit
+ain
+","definition":"
+An
+ island
+ in
+ Europe
+ that
+ was
+ part
+ of
+ the
+ Roman
+ Empire
+."
+},{"
+keyword":"
+Departure
+","definition":"
+The
+ act
+ of
+ leaving
+ a
+ place
+."
+},{"
+keyword":"
+Tr
+ibes
+","definition":"
+Groups
+ of
+ people
+ who
+ lived
+ in
+ Britain
+ before
+ and
+ after
+ the
+ Romans
+."
+},{"
+keyword":"
 Empire
 ","definition":"
 A
+ large
  group
  of
  countries
  or
  regions
- that
- are
  controlled
  by
  one
@@ -289,43 +234,9 @@ A
  or
  government
 ."
-},{"
-keyword":"
-Withdrawal
-","definition":"
-The
- act
- of
- moving
- or
- taking
- something
- away
- or
- back
-."
-},{"
-keyword":"
-Settlement
-","definition":"
-A
- place
- where
- people
- establish
- a
- community
-."
 }]},"status":"
 complete
 "}],"sectionsEdited":["
-prior
-Knowledge
-","
-key
-Learning
-Points
-","
 mis
 con
 ceptions
@@ -337,18 +248,9 @@ text
 ","value":"
 Are
  the
- prior
- knowledge
-,
- key
- learning
- points
-,
  misconceptions
-,
  and
  keywords
- sections
  suitable
  for
  your

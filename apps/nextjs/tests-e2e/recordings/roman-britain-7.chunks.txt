@@ -4,7 +4,7 @@ ll
 m
 Message
 ","sectionsToEdit":["
-starter
+exit
 Quiz
 "],"patches":[
 {"
@@ -12,16 +12,21 @@ type":"
 patch
 ","reasoning":"
 Created
- a
- starter
+ an
+ exit
  quiz
  to
  assess
  pupils
 '
- prior
- knowledge
- about
+ understanding
+ of
+ the
+ lesson
+ on
+ the
+ end
+ of
  Roman
  Britain
 .","
@@ -31,146 +36,163 @@ quiz
 ","op":"
 add
 ","path":"/
-starter
+exit
 Quiz
 ","value":[
 {"
 question":"
-How
- long
+Why
  did
  the
  Romans
- rule
+ leave
  Britain
 ?
 ","answers":["
-Several
- hundred
- years
+Economic
+ struggles
+ and
+ political
+ turmoil
 "],"distractors":["
-About
- 
-50
- years
+They
+ defeated
+ local
+ tribes
 ","
-A
- thousand
- years
-"]},{"
-question":"
-What
- did
- the
- Romans
- build
+They
+ lost
+ interest
  in
  Britain
-?
-","answers":["
-Road
-s
- and
- buildings
-"],"distractors":["
-Cast
-les
-","
-Sk
-yscr
-apers
 "]},{"
 question":"
 What
- was
- the
- Roman
- army
- known
- for
-?
-","answers":["
-Being
- powerful
- and
- protective
-"],"distractors":["
-Being
- small
- and
- weak
-","
-Being
- peaceful
-"]},{"
-question":"
-Why
- were
- Roman
- roads
- important
-?
-","answers":["
-For
- easy
- travel
- and
- trade
-"],"distractors":["
-For
- decoration
-","
-For
- hiding
- treasures
-"]},{"
-question":"
-Who
- were
+ change
+ occurred
+ in
+ Britain
+ after
  the
  Romans
+ left
 ?
 ","answers":["
-People
- from
- Rome
- who
- ruled
- lands
+Local
+ tribes
+ regained
+ control
 "],"distractors":["
 V
-ik
-ings
+iking
+ invasion
 ","
-Anc
-ient
- Egyptians
+Roman
+ return
+"]},{"
+question":"
+What
+ remained
+ in
+ Britain
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+Roman
+ culture
+"],"distractors":["
+Egypt
+ian
+ culture
+","
+V
+iking
+ culture
+"]},{"
+question":"
+How
+ did
+ British
+ tribes
+ adapt
+ after
+ the
+ Roman
+ departure
+?
+","answers":["
+Form
+ed
+ new
+ alliances
+"],"distractors":["
+Built
+ new
+ cities
+","
+Con
+quer
+ed
+ new
+ lands
+"]},{"
+question":"
+What
+ happened
+ to
+ Roman
+ roads
+ after
+ their
+ departure
+?
+","answers":["
+Many
+ were
+ not
+ maintained
+"],"distractors":["
+All
+ were
+ destroyed
+","
+They
+ were
+ expanded
 "]},{"
 question":"
 What
  was
  a
  key
- feature
- of
- Roman
- rule
+ impact
+ on
+ British
+ tribes
 ?
 ","answers":["
-Strong
- military
- presence
+Need
+ to
+ reorgan
+ise
+ and
+ adapt
 "],"distractors":["
-Dem
-ocratic
- elections
+Con
+quer
+ new
+ territories
 ","
-No
- military
+Develop
+ new
+ languages
 "]}]},"status":"
 complete
 "}],"sectionsEdited":["
-starter
+exit
 Quiz
 "],"prompt":{"
 type":"
@@ -178,16 +200,17 @@ text
 ","value":"
 Is
  the
- starter
+ exit
  quiz
- appropriate
+ suitable
  for
  assessing
- your
  pupils
 '
- prior
- knowledge
+ understanding
+ of
+ the
+ lesson
 ?
  If
  not

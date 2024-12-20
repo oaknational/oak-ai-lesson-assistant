@@ -1,0 +1,11 @@
+{
+  "type": "llmMessage",
+  "sectionsToEdit": [],
+  "patches": [],
+  "sectionsEdited": [],
+  "prompt": {
+    "type": "text",
+    "value": "It seems we've reached the end of the lesson planning process. If there's anything specific you'd like to revisit or modify, feel free to let me know. Alternatively, if you're ready, you can download the materials or start planning another lesson. Just let me know how you'd like to proceed!"
+  },
+  "status": "complete"
+}

@@ -1,59 +1,25 @@
 {
   "type": "llmMessage",
   "sectionsToEdit": [
-    "priorKnowledge",
-    "keyLearningPoints",
     "misconceptions",
     "keywords"
   ],
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Identifying prior knowledge ensures pupils have the necessary background to understand the lesson content.",
-      "value": {
-        "type": "string-array",
-        "op": "add",
-        "path": "/priorKnowledge",
-        "value": [
-          "The Romans invaded Britain in 43 AD.",
-          "Roman roads were built across Britain.",
-          "The Romans introduced new towns and cities.",
-          "The Roman army was powerful and well-organised.",
-          "Roman culture influenced British life."
-        ]
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Key learning points focus on the main facts and ideas pupils should take away from the lesson.",
-      "value": {
-        "type": "string-array",
-        "op": "add",
-        "path": "/keyLearningPoints",
-        "value": [
-          "The Romans left Britain around 410 AD.",
-          "Roman withdrawal led to changes in British society.",
-          "New groups began to settle in Britain after the Romans left."
-        ]
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Addressing misconceptions helps to clarify any common misunderstandings about the topic.",
+      "reasoning": "Identified common misconceptions about the end of Roman Britain to address in the lesson.",
       "value": {
         "type": "misconceptions",
         "op": "add",
         "path": "/misconceptions",
         "value": [
           {
-            "misconception": "The Romans left because they were defeated in Britain",
-            "description": "The Romans left Britain because they needed to defend their empire elsewhere. Discuss the empire's wider issues."
+            "misconception": "The Romans left Britain because they were defeated by local tribes",
+            "description": "The Romans left due to internal issues within the Roman Empire itself, not because of a defeat by local tribes. Highlight the economic and political struggles Rome faced."
           },
           {
-            "misconception": "Life in Britain improved immediately after the Romans left",
-            "description": "Explain that many Roman advancements were lost, leading to a period of instability."
+            "misconception": "There were no Romans left in Britain after their departure",
+            "description": "While the Roman army and officials left, many Romans who settled remained. Clarify that Roman influence continued in local culture and infrastructure."
           }
         ]
       },
@@ -61,23 +27,31 @@
     },
     {
       "type": "patch",
-      "reasoning": "Keywords help pupils understand the specific vocabulary related to the lesson topic.",
+      "reasoning": "Selected keywords to help pupils understand the lesson's key concepts and vocabulary.",
       "value": {
         "type": "keywords",
         "op": "add",
         "path": "/keywords",
         "value": [
           {
+            "keyword": "Romans",
+            "definition": "People from the ancient civilization of Rome who ruled many lands."
+          },
+          {
+            "keyword": "Britain",
+            "definition": "An island in Europe that was part of the Roman Empire."
+          },
+          {
+            "keyword": "Departure",
+            "definition": "The act of leaving a place."
+          },
+          {
+            "keyword": "Tribes",
+            "definition": "Groups of people who lived in Britain before and after the Romans."
+          },
+          {
             "keyword": "Empire",
-            "definition": "A group of countries or regions that are controlled by one ruler or government."
-          },
-          {
-            "keyword": "Withdrawal",
-            "definition": "The act of moving or taking something away or back."
-          },
-          {
-            "keyword": "Settlement",
-            "definition": "A place where people establish a community."
+            "definition": "A large group of countries or regions controlled by one ruler or government."
           }
         ]
       },
@@ -85,14 +59,12 @@
     }
   ],
   "sectionsEdited": [
-    "priorKnowledge",
-    "keyLearningPoints",
     "misconceptions",
     "keywords"
   ],
   "prompt": {
     "type": "text",
-    "value": "Are the prior knowledge, key learning points, misconceptions, and keywords sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."
+    "value": "Are the misconceptions and keywords suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."
   },
   "status": "complete"
 }

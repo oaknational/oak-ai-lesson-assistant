@@ -1,0 +1,66 @@
+{
+  "type": "llmMessage",
+  "sectionsToEdit": [
+    "cycle3"
+  ],
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "Developed Cycle 3 to help pupils understand the impact of Roman departure on British tribes.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle3",
+        "value": {
+          "title": "Impact on British tribes after Roman departure",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Discuss how British tribes had to reorganise and adapt following the Roman departure.",
+              "Explain the challenges faced by tribes without Roman protection and support.",
+              "Highlight the emergence of new leaders and alliances among tribes.",
+              "Describe the influence of Roman culture that remained in local customs and infrastructure.",
+              "Connect to prior knowledge of Roman influence and its significance on daily life in Britain."
+            ],
+            "accompanyingSlideDetails": "Images showing tribal life and changes in Britain post-Roman rule.",
+            "imagePrompt": "British tribes post-Roman departure",
+            "slideText": "The departure of the Romans led to significant changes and challenges for British tribes."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "What did British tribes have to do after the Romans left?",
+              "answers": [
+                "Reorganise and adapt"
+              ],
+              "distractors": [
+                "Conquer new lands",
+                "Build new cities"
+              ]
+            },
+            {
+              "question": "What influence remained in Britain after the Romans?",
+              "answers": [
+                "Roman culture"
+              ],
+              "distractors": [
+                "Egyptian culture",
+                "Viking culture"
+              ]
+            }
+          ],
+          "practice": "Identify two ways in which British tribes adapted after the Romans left. Use examples from the lesson to explain your answers.",
+          "feedback": "Model answer: British tribes adapted by forming new alliances and incorporating Roman culture into their daily lives."
+        }
+      },
+      "status": "complete"
+    }
+  ],
+  "sectionsEdited": [
+    "cycle3"
+  ],
+  "prompt": {
+    "type": "text",
+    "value": "Is Cycle 3 structured effectively to understand the impact of the Roman departure on British tribes? If not, suggest any changes. Otherwise, tap **Continue** to move on to the next step."
+  },
+  "status": "complete"
+}

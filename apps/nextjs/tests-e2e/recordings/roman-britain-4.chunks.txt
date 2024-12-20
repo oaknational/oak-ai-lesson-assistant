@@ -4,378 +4,306 @@ ll
 m
 Message
 ","sectionsToEdit":["
-additional
-Materials
+cycle
+1
 "],"patches":[
 {"
 type":"
 patch
 ","reasoning":"
-Providing
- additional
- materials
- in
- the
- form
- of
- a
- narrative
- script
+Structured
+ Cycle
+ 
+1
  to
- support
+ explain
+ why
  the
- teacher
- in
- delivering
- complex
- topics
- about
- Roman
+ Romans
+ left
  Britain
+,
+ using
+ a
+ clear
+ explanation
+,
+ checks
+ for
+ understanding
+,
+ and
+ a
+ practice
+ task
 .","
 value":{"
 type":"
-string
+cycle
 ","op":"
 add
 ","path":"/
-additional
-Materials
-","value":"
-##
- Narrative
- Script
+cycle
+1
+","value":{"
+title":"
+Reasons
  for
- Teachers
-\n
-\n
-\"
-Today
-,
- we're
- going
- to
- travel
- back
- in
- time
- to
- when
- the
- Romans
- were
- in
- Britain
-.
- Imagine
- you
- are
- a
  Roman
- soldier
-,
- wearing
- your
- armour
- and
- sandals
-,
- walking
+ departure
+","durationInMinutes":15
+,"explanation":{"
+spokenExplanation":["
+Introduce
  the
- long
- roads
- they
- built
-.
- These
- roads
- were
- very
- important
- because
- they
- connected
- towns
- and
- made
- travel
- easier
-.
- But
- around
- AD
- 
-410
-,
+ economic
+ struggles
+ within
  the
  Roman
  Empire
- was
- facing
- big
- problems
-.
- They
- needed
- their
- soldiers
- back
- home
+ that
+ led
  to
- help
- fight
- battles
- elsewhere
-.
- So
+ resource
+ shortages
+.","
+Explain
+ the
+ political
+ turmoil
+ in
+ Rome
 ,
- they
+ including
+ leadership
+ changes
+ and
+ internal
+ conflicts
+.","
+Discuss
+ the
+ increasing
+ pressure
+ from
+ other
+ invading
+ groups
+ on
+ Roman
+ territories
+.","
+Highlight
+ the
+ decision
+ to
+ withdraw
+ Roman
+ leg
+ions
+ to
+ defend
+ the
+ core
+ of
+ the
+ Empire
+.","
+Connect
+ to
+ prior
+ knowledge
+ about
+ the
+ strength
+ of
+ the
+ Roman
+ army
+ and
+ why
+ their
+ departure
+ was
+ significant
+."
+],"accompanyingSlideDetails":"
+A
+ map
+ showing
+ the
+ Roman
+ Empire
+ and
+ key
+ locations
+ of
+ internal
+ conflicts
+.","
+imagePrompt":"
+Roman
+ Empire
+ map
+ internal
+ conflicts
+","slideText":"
+The
+ Romans
+ left
+ Britain
+ due
+ to
+ economic
+ struggles
+,
+ political
+ turmoil
+,
+ and
+ pressure
+ from
+ other
+ groups
+."
+},"checkForUnderstanding":[
+{"
+question":"
+Why
+ did
+ the
+ Romans
+ leave
+ Britain
+?
+","answers":["
+Economic
+ struggles
+ and
+ political
+ turmoil
+"],"distractors":["
+They
+ were
+ defeated
+ by
+ local
+ tribes
+","
+They
+ lost
+ interest
+ in
+ Britain
+"]},{"
+question":"
+What
+ did
+ the
+ Roman
+ army
+ need
+ to
+ do
+?
+","answers":["
+Def
+end
+ the
+ core
+ of
+ the
+ Empire
+"],"distractors":["
+Con
+quer
+ new
+ lands
+","
+Build
+ more
+ roads
+"]}],"practice":"
+List
+ three
+ reasons
+ why
+ the
+ Romans
  decided
  to
  leave
  Britain
-.\
-n
-\n
-Now
-,
- picture
- the
- changes
- in
- Britain
- when
- the
+.
+ Use
+ examples
+ from
+ today's
+ lesson
+ to
+ support
+ your
+ answers
+.","
+feedback":"
+Model
+ answer
+:
+ The
  Romans
  left
-.
- New
- groups
- like
- the
- Sax
-ons
- came
- and
- started
- to
- live
- here
-.
- The
- Roman
- buildings
- slowly
- changed
- or
- disappeared
-,
- but
- some
- things
-,
- like
- roads
- and
- towns
-,
- stayed
- and
- influenced
- how
- people
- lived
-.\
-n
-\n
-Ar
-chae
-ologists
- are
- like
- detectives
-.
- They
- dig
- up
- old
- Roman
- coins
-,
- pottery
-,
- and
- tools
- to
- learn
- about
- how
- people
- lived
- back
- then
-.
- These
- discoveries
- tell
- us
- exciting
- stories
- about
- the
- past
-,
- like
- what
- the
- Romans
- ate
-,
- the
- clothes
- they
- wore
-,
- and
- the
- games
- they
- played
-.\
-n
-\n
-Remember
-,
- history
- is
- a
- puzzle
-,
- and
- each
- piece
- helps
- us
- understand
- more
- about
- our
- world
- today
-.
-\"\
-n
-\n
-###
- Key
- Points
- for
- Explanation
-\n
--
- Importance
+ Britain
+ because
  of
- Roman
- roads
+ economic
+ struggles
+,
+ political
+ turmoil
+,
  and
- infrastructure
-.\
-n
--
- Reasons
- for
- Roman
- departure
- due
+ the
+ need
  to
- empire
- pressures
-.\
-n
--
- Post
--R
-oman
- changes
- and
- Sax
-on
- invas
-ions
-.\
-n
--
- Role
- of
- archae
-ologists
- in
- uncover
-ing
- history
-.\
-n
-\n
-Search
- terms
- for
- images
-:
- \"
-Roman
- soldier
- armour
-\",
- \"
-Roman
- roads
-\",
- \"
-S
-axon
- settlements
-\",
- \"
-Roman
- artifacts
-\"
+ defend
+ the
+ Empire
+'s
+ core
+ areas
 ."
-},"status":"
+}},"status":"
 complete
 "}],"sectionsEdited":["
-additional
-Materials
+cycle
+1
 "],"prompt":{"
 type":"
 text
 ","value":"
-I
- have
- added
- a
- narrative
- script
+Is
+ Cycle
+ 
+1
+ structured
+ effectively
  to
- support
+ explain
  the
- lesson
- delivery
-.
- Are
- the
- additional
- materials
- appropriate
+ reasons
  for
- your
- pupils
+ the
+ Romans
+ leaving
+ Britain
 ?
  If
  not
 ,
  suggest
- an
- edit
+ any
+ changes
 .
  Otherwise
 ,
@@ -384,10 +312,12 @@ I
 Continue
 **
  to
- complete
+ move
+ on
+ to
  the
- lesson
- plan
+ next
+ step
 ."
 },"status":"
 complete

@@ -1,11 +1,66 @@
 {
   "type": "llmMessage",
-  "sectionsToEdit": [],
-  "patches": [],
-  "sectionsEdited": [],
+  "sectionsToEdit": [
+    "cycle2"
+  ],
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "Designed Cycle 2 to describe the changes in Britain after the Romans left, including explanation, checks, and practice task.",
+      "value": {
+        "type": "cycle",
+        "op": "add",
+        "path": "/cycle2",
+        "value": {
+          "title": "Changes in Britain after Romans left",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Explain the immediate impact on Britain after the Roman departure, including the loss of centralised Roman governance.",
+              "Describe how local tribes began to regain control and what it meant for stability.",
+              "Discuss the changes in infrastructure and maintenance of Roman roads and buildings.",
+              "Highlight the cultural shifts as Roman influence waned and local traditions resurfaced.",
+              "Connect to prior knowledge about Roman infrastructure and its significance."
+            ],
+            "accompanyingSlideDetails": "Illustrations showing the transition from Roman to local tribal control in Britain.",
+            "imagePrompt": "Post-Roman Britain tribal changes",
+            "slideText": "After the Romans left, Britain saw changes in leadership, infrastructure, and cultural influence."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "What happened to Roman roads after they left?",
+              "answers": [
+                "Many were not maintained"
+              ],
+              "distractors": [
+                "All were destroyed",
+                "They were expanded"
+              ]
+            },
+            {
+              "question": "Who regained control in Britain after the Romans?",
+              "answers": [
+                "Local tribes"
+              ],
+              "distractors": [
+                "Roman soldiers",
+                "Viking invaders"
+              ]
+            }
+          ],
+          "practice": "Describe two changes that occurred in Britain after the Romans left. Use examples from the lesson to support your points.",
+          "feedback": "Model answer: After the Romans left, local tribes regained control, and many Roman roads and buildings were not maintained."
+        }
+      },
+      "status": "complete"
+    }
+  ],
+  "sectionsEdited": [
+    "cycle2"
+  ],
   "prompt": {
     "type": "text",
-    "value": "I have checked for British spelling and grammar, coherence, and accuracy. You can now share your lesson or download your resources.\n\nClick on the **Menu** button to find previously created lessons."
+    "value": "Is Cycle 2 effectively designed to cover the changes in Britain after the Romans left? If not, suggest any changes. Otherwise, tap **Continue** to move on to the next step."
   },
   "status": "complete"
 }

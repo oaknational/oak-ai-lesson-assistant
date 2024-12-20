@@ -2,30 +2,63 @@
   "type": "llmMessage",
   "sectionsToEdit": [
     "learningOutcome",
-    "learningCycles"
+    "learningCycles",
+    "priorKnowledge",
+    "keyLearningPoints"
   ],
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Setting the learning outcome to give a clear goal for what pupils should achieve by the end of the lesson.",
+      "reasoning": "Drafted a learning outcome to guide the lesson focus on the end of Roman Britain.",
       "value": {
         "type": "string",
         "op": "add",
         "path": "/learningOutcome",
-        "value": "I can describe what happened when the Romans left Britain."
+        "value": "I can explain why the Romans left Britain and what happened afterwards."
       },
       "status": "complete"
     },
     {
       "type": "patch",
-      "reasoning": "Providing learning cycles to break down the lesson into manageable parts, ensuring clarity and focus on key learning points.",
+      "reasoning": "Outlined learning cycles to structure the lesson activities.",
       "value": {
         "type": "string-array",
         "op": "add",
         "path": "/learningCycles",
         "value": [
           "Identify reasons why the Romans left Britain.",
-          "Describe the impact of the Roman departure on Britain."
+          "Describe the changes in Britain after the Romans left.",
+          "Understand the impact of Roman departure on British tribes."
+        ]
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Listed prior knowledge necessary for understanding the end of Roman Britain.",
+      "value": {
+        "type": "string-array",
+        "op": "add",
+        "path": "/priorKnowledge",
+        "value": [
+          "The Romans ruled Britain for several hundred years.",
+          "Roman roads and buildings were constructed in Britain.",
+          "The Roman army was powerful and protected the lands they controlled."
+        ]
+      },
+      "status": "complete"
+    },
+    {
+      "type": "patch",
+      "reasoning": "Identified key learning points for the lesson on the end of Roman Britain.",
+      "value": {
+        "type": "string-array",
+        "op": "add",
+        "path": "/keyLearningPoints",
+        "value": [
+          "The Romans left Britain around 410 AD.",
+          "Roman departure led to changes in leadership and stability.",
+          "British tribes had to adapt to new circumstances without Roman protection."
         ]
       },
       "status": "complete"
@@ -33,11 +66,13 @@
   ],
   "sectionsEdited": [
     "learningOutcome",
-    "learningCycles"
+    "learningCycles",
+    "priorKnowledge",
+    "keyLearningPoints"
   ],
   "prompt": {
     "type": "text",
-    "value": "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step."
+    "value": "Are the learning outcome, learning cycles, prior knowledge, and key learning points appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step."
   },
   "status": "complete"
 }

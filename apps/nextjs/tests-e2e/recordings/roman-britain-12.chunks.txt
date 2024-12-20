@@ -1,0 +1,62 @@
+{"
+type":"
+ll
+m
+Message
+","sectionsToEdit":[]
+,"patches":[]
+,"sectionsEdited":[]
+,"prompt":{"
+type":"
+text
+","value":"
+The
+ lesson
+ plan
+ is
+ fully
+ prepared
+ and
+ ready
+ for
+ you
+ to
+ use
+.
+ If
+ you
+ have
+ any
+ additional
+ requests
+ or
+ need
+ help
+ with
+ another
+ lesson
+,
+ feel
+ free
+ to
+ ask
+.
+ Otherwise
+,
+ you're
+ all
+ set
+ to
+ download
+ and
+ use
+ the
+ lesson
+ materials
+ in
+ your
+ classroom
+!"
+},"status":"
+complete
+"}

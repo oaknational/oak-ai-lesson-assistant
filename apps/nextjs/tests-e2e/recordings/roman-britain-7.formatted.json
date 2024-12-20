@@ -1,0 +1,88 @@
+{
+  "type": "llmMessage",
+  "sectionsToEdit": [
+    "exitQuiz"
+  ],
+  "patches": [
+    {
+      "type": "patch",
+      "reasoning": "Created an exit quiz to assess pupils' understanding of the lesson on the end of Roman Britain.",
+      "value": {
+        "type": "quiz",
+        "op": "add",
+        "path": "/exitQuiz",
+        "value": [
+          {
+            "question": "Why did the Romans leave Britain?",
+            "answers": [
+              "Economic struggles and political turmoil"
+            ],
+            "distractors": [
+              "They defeated local tribes",
+              "They lost interest in Britain"
+            ]
+          },
+          {
+            "question": "What change occurred in Britain after the Romans left?",
+            "answers": [
+              "Local tribes regained control"
+            ],
+            "distractors": [
+              "Viking invasion",
+              "Roman return"
+            ]
+          },
+          {
+            "question": "What remained in Britain after the Romans left?",
+            "answers": [
+              "Roman culture"
+            ],
+            "distractors": [
+              "Egyptian culture",
+              "Viking culture"
+            ]
+          },
+          {
+            "question": "How did British tribes adapt after the Roman departure?",
+            "answers": [
+              "Formed new alliances"
+            ],
+            "distractors": [
+              "Built new cities",
+              "Conquered new lands"
+            ]
+          },
+          {
+            "question": "What happened to Roman roads after their departure?",
+            "answers": [
+              "Many were not maintained"
+            ],
+            "distractors": [
+              "All were destroyed",
+              "They were expanded"
+            ]
+          },
+          {
+            "question": "What was a key impact on British tribes?",
+            "answers": [
+              "Need to reorganise and adapt"
+            ],
+            "distractors": [
+              "Conquer new territories",
+              "Develop new languages"
+            ]
+          }
+        ]
+      },
+      "status": "complete"
+    }
+  ],
+  "sectionsEdited": [
+    "exitQuiz"
+  ],
+  "prompt": {
+    "type": "text",
+    "value": "Is the exit quiz suitable for assessing pupils' understanding of the lesson? If not, suggest any changes. Otherwise, tap **Continue** to move on to the next step."
+  },
+  "status": "complete"
+}

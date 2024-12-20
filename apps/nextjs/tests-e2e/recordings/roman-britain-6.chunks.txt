@@ -5,35 +5,29 @@ m
 Message
 ","sectionsToEdit":["
 cycle
-2
+3
 "],"patches":[
 {"
 type":"
 patch
 ","reasoning":"
-Designed
+Develop
+ed
  Cycle
  
-2
+3
  to
- describe
+ help
+ pupils
+ understand
  the
- changes
- in
- Britain
- after
- the
- Romans
- left
-,
- including
- explanation
-,
- checks
-,
- and
- practice
- task
+ impact
+ of
+ Roman
+ departure
+ on
+ British
+ tribes
 .","
 value":{"
 type":"
@@ -42,162 +36,159 @@ cycle
 add
 ","path":"/
 cycle
-2
+3
 ","value":{"
 title":"
-Changes
- in
- Britain
+Impact
+ on
+ British
+ tribes
  after
- Romans
- left
+ Roman
+ departure
 ","durationInMinutes":15
 ,"explanation":{"
 spokenExplanation":["
-Explain
- the
- immediate
- impact
- on
- Britain
- after
+Discuss
+ how
+ British
+ tribes
+ had
+ to
+ reorgan
+ise
+ and
+ adapt
+ following
  the
  Roman
  departure
-,
- including
- the
- loss
- of
- central
-ised
- Roman
- governance
 .","
-Describe
- how
- local
+Explain
+ the
+ challenges
+ faced
+ by
  tribes
- began
- to
- regain
- control
- and
- what
- it
- meant
- for
- stability
-.","
-Discuss
- the
- changes
- in
- infrastructure
- and
- maintenance
- of
+ without
  Roman
- roads
+ protection
  and
- buildings
+ support
 .","
 Highlight
  the
- cultural
- shifts
- as
- Roman
- influence
- wan
-ed
+ emergence
+ of
+ new
+ leaders
  and
+ alliances
+ among
+ tribes
+.","
+Describe
+ the
+ influence
+ of
+ Roman
+ culture
+ that
+ remained
+ in
  local
- traditions
- resurf
-aced
+ customs
+ and
+ infrastructure
 .","
 Connect
  to
  prior
  knowledge
- about
+ of
  Roman
- infrastructure
+ influence
  and
  its
  significance
+ on
+ daily
+ life
+ in
+ Britain
 ."
 ],"accompanyingSlideDetails":"
-Illustr
-ations
+Images
  showing
- the
- transition
- from
- Roman
- to
- local
  tribal
- control
+ life
+ and
+ changes
  in
  Britain
-.","
-imagePrompt":"
-Post
+ post
 -R
 oman
- Britain
- tribal
- changes
+ rule
+.","
+imagePrompt":"
+British
+ tribes
+ post
+-R
+oman
+ departure
 ","slideText":"
-After
+The
+ departure
+ of
  the
  Romans
- left
-,
- Britain
- saw
+ led
+ to
+ significant
  changes
- in
- leadership
-,
- infrastructure
-,
  and
- cultural
- influence
+ challenges
+ for
+ British
+ tribes
 ."
 },"checkForUnderstanding":[
 {"
 question":"
 What
- happened
+ did
+ British
+ tribes
+ have
  to
- Roman
- roads
+ do
  after
- they
+ the
+ Romans
  left
 ?
 ","answers":["
-Many
- were
- not
- maintained
+Re
+organ
+ise
+ and
+ adapt
 "],"distractors":["
-All
- were
- destroyed
+Con
+quer
+ new
+ lands
 ","
-They
- were
- expanded
+Build
+ new
+ cities
 "]},{"
 question":"
-Who
- regained
- control
+What
+ influence
+ remained
  in
  Britain
  after
@@ -205,24 +196,25 @@ Who
  Romans
 ?
 ","answers":["
-Local
- tribes
-"],"distractors":["
 Roman
- soldiers
+ culture
+"],"distractors":["
+Egypt
+ian
+ culture
 ","
 V
 iking
- inv
-aders
+ culture
 "]}],"practice":"
-Describe
+Identify
  two
- changes
- that
- occurred
+ ways
  in
- Britain
+ which
+ British
+ tribes
+ adapted
  after
  the
  Romans
@@ -234,39 +226,35 @@ Describe
  the
  lesson
  to
- support
+ explain
  your
- points
+ answers
 .","
 feedback":"
 Model
  answer
 :
- After
- the
- Romans
- left
-,
- local
+ British
  tribes
- regained
- control
-,
+ adapted
+ by
+ forming
+ new
+ alliances
  and
- many
+ incorporating
  Roman
- roads
- and
- buildings
- were
- not
- maintained
+ culture
+ into
+ their
+ daily
+ lives
 ."
 }},"status":"
 complete
 "}],"sectionsEdited":["
 cycle
-2
+3
 "],"prompt":{"
 type":"
 text
@@ -274,19 +262,20 @@ text
 Is
  Cycle
  
-2
+3
+ structured
  effectively
- designed
  to
- cover
+ understand
  the
- changes
- in
- Britain
- after
+ impact
+ of
  the
- Romans
- left
+ Roman
+ departure
+ on
+ British
+ tribes
 ?
  If
  not

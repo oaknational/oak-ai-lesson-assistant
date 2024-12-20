@@ -1,300 +1,75 @@
 {
   "type": "llmMessage",
   "sectionsToEdit": [
-    "starterQuiz",
-    "cycle1",
-    "cycle2",
-    "cycle3",
-    "exitQuiz"
+    "starterQuiz"
   ],
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Creating a starter quiz to assess prior knowledge before the lesson begins.",
+      "reasoning": "Created a starter quiz to assess pupils' prior knowledge about Roman Britain.",
       "value": {
         "type": "quiz",
         "op": "add",
         "path": "/starterQuiz",
         "value": [
           {
-            "question": "When did the Romans invade Britain?",
+            "question": "How long did the Romans rule Britain?",
             "answers": [
-              "43 AD"
+              "Several hundred years"
             ],
             "distractors": [
-              "410 AD",
-              "1066 AD"
+              "About 50 years",
+              "A thousand years"
             ]
           },
           {
-            "question": "What did the Romans build across Britain?",
+            "question": "What did the Romans build in Britain?",
             "answers": [
-              "Roads"
-            ],
-            "distractors": [
-              "Bridges",
-              "Canals"
-            ]
-          },
-          {
-            "question": "What new structures did the Romans introduce to Britain?",
-            "answers": [
-              "Towns and cities"
+              "Roads and buildings"
             ],
             "distractors": [
               "Castles",
-              "Railways"
-            ]
-          },
-          {
-            "question": "How was the Roman army described?",
-            "answers": [
-              "Powerful and well-organised"
-            ],
-            "distractors": [
-              "Weak and disorganised",
-              "Small and ineffective"
-            ]
-          },
-          {
-            "question": "What aspect of British life did Roman culture influence?",
-            "answers": [
-              "Culture"
-            ],
-            "distractors": [
-              "Weather",
-              "Geography"
-            ]
-          },
-          {
-            "question": "Which of these is a Roman contribution to Britain?",
-            "answers": [
-              "Roads"
-            ],
-            "distractors": [
-              "Railways",
               "Skyscrapers"
             ]
-          }
-        ]
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Providing a structured learning cycle to explore why the Romans left Britain.",
-      "value": {
-        "type": "cycle",
-        "op": "add",
-        "path": "/cycle1",
-        "value": {
-          "title": "Reasons for Roman Departure",
-          "durationInMinutes": 15,
-          "explanation": {
-            "spokenExplanation": [
-              "Discuss the weakening of the Roman Empire and the need to defend it elsewhere.",
-              "Explain that Roman soldiers were recalled to protect the empire's heartlands.",
-              "Mention the increasing pressure from invaders in other parts of the empire.",
-              "Highlight the financial difficulties faced by the Roman Empire.",
-              "Connect these reasons to the Roman withdrawal from Britain."
-            ],
-            "accompanyingSlideDetails": "A map showing the Roman Empire with arrows indicating pressures from invaders.",
-            "imagePrompt": "Roman Empire map pressures",
-            "slideText": "The Roman Empire faced pressures from invaders and financial difficulties, leading to the recall of soldiers."
           },
-          "checkForUnderstanding": [
-            {
-              "question": "Why did the Romans leave Britain?",
-              "answers": [
-                "To defend other parts of the empire"
-              ],
-              "distractors": [
-                "They were defeated in Britain",
-                "They discovered new lands"
-              ]
-            },
-            {
-              "question": "What was a consequence of Roman soldiers being recalled?",
-              "answers": [
-                "Defending the empire’s heartlands"
-              ],
-              "distractors": [
-                "Building new roads",
-                "Exploring new territories"
-              ]
-            }
-          ],
-          "practice": "List three reasons why the Romans left Britain, using simple sentences.",
-          "feedback": "Model answer: The Romans left to defend other parts of their empire, due to financial difficulties, and increasing pressure from invaders."
-        }
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Creating a learning cycle to describe the impact of the Roman departure on Britain.",
-      "value": {
-        "type": "cycle",
-        "op": "add",
-        "path": "/cycle2",
-        "value": {
-          "title": "Impact of Roman Departure",
-          "durationInMinutes": 15,
-          "explanation": {
-            "spokenExplanation": [
-              "Describe how Roman infrastructure, like roads and buildings, fell into disrepair.",
-              "Explain how local leaders struggled to maintain order without Roman support.",
-              "Discuss the loss of Roman technologies and conveniences.",
-              "Mention the arrival of new groups, such as the Anglo-Saxons.",
-              "Highlight the period of instability that followed the Roman departure."
-            ],
-            "accompanyingSlideDetails": "Images of Roman ruins and depictions of Anglo-Saxon settlements.",
-            "imagePrompt": "Roman ruins Anglo-Saxon settlement",
-            "slideText": "After the Romans left, roads fell into disrepair, and new groups like the Anglo-Saxons arrived."
-          },
-          "checkForUnderstanding": [
-            {
-              "question": "What happened to Roman roads after they left?",
-              "answers": [
-                "Fell into disrepair"
-              ],
-              "distractors": [
-                "Were expanded",
-                "Turned into rivers"
-              ]
-            },
-            {
-              "question": "Who struggled to maintain order after the Romans left?",
-              "answers": [
-                "Local leaders"
-              ],
-              "distractors": [
-                "Roman generals",
-                "Invading Vikings"
-              ]
-            }
-          ],
-          "practice": "Draw and label a simple map showing Britain before and after the Romans left, indicating changes.",
-          "feedback": "Model answer: A map showing Roman roads and settlements, with labels indicating disrepair and new Anglo-Saxon settlements."
-        }
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Adding a learning cycle to explore how new groups settled in Britain after the Romans left.",
-      "value": {
-        "type": "cycle",
-        "op": "add",
-        "path": "/cycle3",
-        "value": {
-          "title": "New Settlements in Britain",
-          "durationInMinutes": 15,
-          "explanation": {
-            "spokenExplanation": [
-              "Discuss the arrival of groups like the Anglo-Saxons and their impact on Britain.",
-              "Explain how these groups established their own settlements and cultures.",
-              "Describe how the landscape and society changed with new influences.",
-              "Connect these changes to the decline of Roman influence."
-            ],
-            "accompanyingSlideDetails": "Illustrations of Anglo-Saxon villages and artefacts.",
-            "imagePrompt": "Anglo-Saxon village artefacts",
-            "slideText": "New groups like the Anglo-Saxons settled in Britain, creating their own cultures and settlements."
-          },
-          "checkForUnderstanding": [
-            {
-              "question": "Which new group settled in Britain after the Romans left?",
-              "answers": [
-                "Anglo-Saxons"
-              ],
-              "distractors": [
-                "Romans",
-                "Vikings"
-              ]
-            },
-            {
-              "question": "What did the Anglo-Saxons establish in Britain?",
-              "answers": [
-                "Their own settlements"
-              ],
-              "distractors": [
-                "Roman forts",
-                "Viking ships"
-              ]
-            }
-          ],
-          "practice": "Write a short paragraph describing how life in Britain changed with the arrival of the Anglo-Saxons.",
-          "feedback": "Model answer: The Anglo-Saxons established new villages and brought their customs, changing the landscape and society of Britain."
-        }
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Developing an exit quiz to assess understanding of the lesson content.",
-      "value": {
-        "type": "quiz",
-        "op": "add",
-        "path": "/exitQuiz",
-        "value": [
           {
-            "question": "When did the Romans leave Britain?",
+            "question": "What was the Roman army known for?",
             "answers": [
-              "Around 410 AD"
+              "Being powerful and protective"
             ],
             "distractors": [
-              "43 AD",
-              "1066 AD"
+              "Being small and weak",
+              "Being peaceful"
             ]
           },
           {
-            "question": "What happened to Roman roads after they left?",
+            "question": "Why were Roman roads important?",
             "answers": [
-              "Fell into disrepair"
+              "For easy travel and trade"
             ],
             "distractors": [
-              "Were improved",
-              "Became toll roads"
+              "For decoration",
+              "For hiding treasures"
             ]
           },
           {
-            "question": "Who were the new settlers in Britain after the Romans?",
+            "question": "Who were the Romans?",
             "answers": [
-              "Anglo-Saxons"
+              "People from Rome who ruled lands"
             ],
             "distractors": [
-              "Normans",
-              "Vikings"
+              "Vikings",
+              "Ancient Egyptians"
             ]
           },
           {
-            "question": "What was one impact of the Roman withdrawal?",
+            "question": "What was a key feature of Roman rule?",
             "answers": [
-              "New settlements by other groups"
+              "Strong military presence"
             ],
             "distractors": [
-              "Immediate prosperity",
-              "Roman roads expansion"
-            ]
-          },
-          {
-            "question": "What is an Empire?",
-            "answers": [
-              "A group of countries controlled by one ruler"
-            ],
-            "distractors": [
-              "A single country",
-              "A small town"
-            ]
-          },
-          {
-            "question": "What did the Anglo-Saxons bring to Britain?",
-            "answers": [
-              "Their own culture and settlements"
-            ],
-            "distractors": [
-              "Roman laws",
-              "Viking ships"
+              "Democratic elections",
+              "No military"
             ]
           }
         ]
@@ -303,15 +78,11 @@
     }
   ],
   "sectionsEdited": [
-    "starterQuiz",
-    "cycle1",
-    "cycle2",
-    "cycle3",
-    "exitQuiz"
+    "starterQuiz"
   ],
   "prompt": {
     "type": "text",
-    "value": "Are the starter quiz, learning cycles, and exit quiz suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."
+    "value": "Is the starter quiz appropriate for assessing your pupils' prior knowledge? If not, suggest any changes. Otherwise, tap **Continue** to move on to the next step."
   },
   "status": "complete"
 }

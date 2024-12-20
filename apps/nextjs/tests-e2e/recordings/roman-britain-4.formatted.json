@@ -1,27 +1,66 @@
 {
   "type": "llmMessage",
   "sectionsToEdit": [
-    "additionalMaterials"
+    "cycle1"
   ],
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Providing additional materials in the form of a narrative script to support the teacher in delivering complex topics about Roman Britain.",
+      "reasoning": "Structured Cycle 1 to explain why the Romans left Britain, using a clear explanation, checks for understanding, and a practice task.",
       "value": {
-        "type": "string",
+        "type": "cycle",
         "op": "add",
-        "path": "/additionalMaterials",
-        "value": "## Narrative Script for Teachers\n\n\"Today, we're going to travel back in time to when the Romans were in Britain. Imagine you are a Roman soldier, wearing your armour and sandals, walking the long roads they built. These roads were very important because they connected towns and made travel easier. But around AD 410, the Roman Empire was facing big problems. They needed their soldiers back home to help fight battles elsewhere. So, they decided to leave Britain.\n\nNow, picture the changes in Britain when the Romans left. New groups like the Saxons came and started to live here. The Roman buildings slowly changed or disappeared, but some things, like roads and towns, stayed and influenced how people lived.\n\nArchaeologists are like detectives. They dig up old Roman coins, pottery, and tools to learn about how people lived back then. These discoveries tell us exciting stories about the past, like what the Romans ate, the clothes they wore, and the games they played.\n\nRemember, history is a puzzle, and each piece helps us understand more about our world today.\"\n\n### Key Points for Explanation\n- Importance of Roman roads and infrastructure.\n- Reasons for Roman departure due to empire pressures.\n- Post-Roman changes and Saxon invasions.\n- Role of archaeologists in uncovering history.\n\nSearch terms for images: \"Roman soldier armour\", \"Roman roads\", \"Saxon settlements\", \"Roman artifacts\"."
+        "path": "/cycle1",
+        "value": {
+          "title": "Reasons for Roman departure",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Introduce the economic struggles within the Roman Empire that led to resource shortages.",
+              "Explain the political turmoil in Rome, including leadership changes and internal conflicts.",
+              "Discuss the increasing pressure from other invading groups on Roman territories.",
+              "Highlight the decision to withdraw Roman legions to defend the core of the Empire.",
+              "Connect to prior knowledge about the strength of the Roman army and why their departure was significant."
+            ],
+            "accompanyingSlideDetails": "A map showing the Roman Empire and key locations of internal conflicts.",
+            "imagePrompt": "Roman Empire map internal conflicts",
+            "slideText": "The Romans left Britain due to economic struggles, political turmoil, and pressure from other groups."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "Why did the Romans leave Britain?",
+              "answers": [
+                "Economic struggles and political turmoil"
+              ],
+              "distractors": [
+                "They were defeated by local tribes",
+                "They lost interest in Britain"
+              ]
+            },
+            {
+              "question": "What did the Roman army need to do?",
+              "answers": [
+                "Defend the core of the Empire"
+              ],
+              "distractors": [
+                "Conquer new lands",
+                "Build more roads"
+              ]
+            }
+          ],
+          "practice": "List three reasons why the Romans decided to leave Britain. Use examples from today's lesson to support your answers.",
+          "feedback": "Model answer: The Romans left Britain because of economic struggles, political turmoil, and the need to defend the Empire's core areas."
+        }
       },
       "status": "complete"
     }
   ],
   "sectionsEdited": [
-    "additionalMaterials"
+    "cycle1"
   ],
   "prompt": {
     "type": "text",
-    "value": "I have added a narrative script to support the lesson delivery. Are the additional materials appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to complete the lesson plan."
+    "value": "Is Cycle 1 structured effectively to explain the reasons for the Romans leaving Britain? If not, suggest any changes. Otherwise, tap **Continue** to move on to the next step."
   },
   "status": "complete"
 }

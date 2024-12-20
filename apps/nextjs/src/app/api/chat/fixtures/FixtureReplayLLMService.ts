@@ -17,6 +17,16 @@ export class FixtureReplayLLMService extends MockLLMService {
       .split("\n")
       .map((c) => c.replaceAll("__NEWLINE__", "\n"));
 
-    super(chunks);
+    let objectFixture: object;
+
+    try {
+      const fileUrlForObjectStream = `${process.cwd()}/tests-e2e/recordings/${fixtureName}.generateObject.formatted.json`;
+      const fileContent = fs.readFileSync(fileUrlForObjectStream, "utf8");
+      objectFixture = JSON.parse(fileContent);
+    } catch (error) {
+      log.error("Failed to parse object fixture from file", { error });
+      objectFixture = {}; // Fallback to an empty object or any default value
+    }
+    super(chunks, objectFixture);
   }
 }
