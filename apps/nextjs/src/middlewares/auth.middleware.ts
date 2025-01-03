@@ -72,11 +72,9 @@ const isPreloadableRoute = createRouteMatcher([
 
 const isOnboardingRoute = createRouteMatcher([
   "/onboarding",
-  "/sign-in",
   // NOTE: Be careful that this request doesn't batch as it will change the path
   "/api/trpc/main/auth.setDemoStatus",
   "/api/trpc/main/auth.acceptTerms",
-  "/api/trpc/main",
 ]);
 
 const isHomepage = createRouteMatcher(["/"]);
