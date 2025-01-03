@@ -120,6 +120,14 @@ function conditionallyProtectRoute(
       return NextResponse.redirect(new URL("/onboarding", req.url));
     }
   }
+  if (
+    userId &&
+    isOnboardingRoute(req) &&
+    !needsToCompleteOnboarding(sessionClaims)
+  ) {
+    log("Already onboarded: REDIRECT");
+    return NextResponse.redirect(new URL("/", req.url));
+  }
 
   if (isPublicRoute(req)) {
     log("Public route: ALLOW");
