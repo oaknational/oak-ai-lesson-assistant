@@ -516,7 +516,7 @@ export type MessagePartType =
   | "id";
 
 export const MessagePartDocumentSchemaByType: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [K in MessagePartType]: z.ZodSchema<any>;
 } = {
   moderation: ModerationDocumentSchema,
@@ -533,7 +533,7 @@ export const MessagePartDocumentSchemaByType: {
   id: MessageIdDocumentSchema,
 };
 
-const MessagePartSchema = z.object({
+export const MessagePartSchema = z.object({
   type: z.literal("message-part"),
   id: z.string(),
   isPartial: z.boolean(),
@@ -843,21 +843,5 @@ export function applyLessonPlanPatch(
     });
   }
 
-  // #TODO This is slightly ridiculous! Remove this once we are live
-  if (updatedLessonPlan.misconceptions) {
-    const working = updatedLessonPlan.misconceptions;
-    for (const misconception of working) {
-      misconception.description =
-        misconception.description ?? misconception.definition;
-    }
-    updatedLessonPlan.misconceptions = working;
-  }
-  if (updatedLessonPlan.keywords) {
-    const working = updatedLessonPlan.keywords;
-    for (const keyword of working) {
-      keyword.definition = keyword.definition ?? keyword.description;
-    }
-    updatedLessonPlan.keywords = working;
-  }
   return updatedLessonPlan;
 }
