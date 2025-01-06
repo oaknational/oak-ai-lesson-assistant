@@ -109,41 +109,38 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
         })),
         stringifiedRelevantLessonPlans,
       };
-    } else {
-      let relevantLessonPlans: RagLessonPlan[] = [];
-      await tryWithErrorReporting(async () => {
-        relevantLessonPlans = await fetchRagContent({
-          title: title ?? "unknown",
-          subject,
-          topic,
-          keyStage,
-          id: chatId,
-          k:
-            this._aila?.options.numberOfLessonPlansInRag ??
-            DEFAULT_RAG_LESSON_PLANS,
-          prisma: globalPrisma,
-          chatId,
-          userId,
-        });
-      }, "Did not fetch RAG content. Continuing");
-
-      log.info("Fetched relevant lesson plans", relevantLessonPlans.length);
-      const stringifiedRelevantLessonPlans = JSON.stringify(
-        relevantLessonPlans,
-        null,
-        2,
-      );
-
-      log.info(
-        "Got RAG content, length:",
-        stringifiedRelevantLessonPlans.length,
-      );
-
-      return {
-        ragLessonPlans: relevantLessonPlans,
-        stringifiedRelevantLessonPlans,
-      };
     }
+
+    let relevantLessonPlans: RagLessonPlan[] = [];
+    await tryWithErrorReporting(async () => {
+      relevantLessonPlans = await fetchRagContent({
+        title: title ?? "unknown",
+        subject,
+        topic,
+        keyStage,
+        id: chatId,
+        k:
+          this._aila?.options.numberOfLessonPlansInRag ??
+          DEFAULT_RAG_LESSON_PLANS,
+        prisma: globalPrisma,
+        chatId,
+        userId,
+      });
+    }, "Did not fetch RAG content. Continuing");
+
+    log.info("Fetched relevant lesson plans", relevantLessonPlans.length);
+    const stringifiedRelevantLessonPlans = JSON.stringify(
+      relevantLessonPlans,
+      null,
+      2,
+    );
+
+    log.info("Got RAG content, length:", stringifiedRelevantLessonPlans.length);
+
+    return {
+      ragLessonPlans: relevantLessonPlans,
+      stringifiedRelevantLessonPlans,
+    };
   }
 
   private systemPrompt(
