@@ -72,7 +72,13 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
 
     const { title, subject, keyStage, topic } = this._aila?.lessonPlan ?? {};
 
-    const NEW_RAG_ENABLED = true;
+    if (!title || !subject || !keyStage) {
+      log.error("Missing title, subject or keyStage, returning empty content");
+      return {
+        ragLessonPlans: [],
+        stringifiedRelevantLessonPlans: noRelevantLessonPlans,
+      };
+    }
 
     const newRagEnabled = await posthogAiBetaServerClient.isFeatureEnabled(
       "rag-schema-2024-12",
@@ -80,15 +86,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
     );
 
     if (newRagEnabled) {
-      if (!title || !subject || !keyStage) {
-        log.error(
-          "Missing title, subject or keyStage, returning empty content",
-        );
-        return {
-          ragLessonPlans: [],
-          stringifiedRelevantLessonPlans: noRelevantLessonPlans,
-        };
-      }
+      log.info("Using new RAG schema");
 
       const keyStageSlugs = keyStage ? [parseKeyStage(keyStage)] : null;
       const subjectSlugs = subject ? parseSubjects(subject) : null;
