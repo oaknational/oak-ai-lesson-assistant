@@ -290,13 +290,13 @@ export const KeywordSchema = z
       .string()
       .max(30)
       .describe(
-        "The keyword itself. Should be in sentence case starting with a capital letter and not end with a full stop.",
+        "The keyword itself. Should be written in lowercase apart from proper nouns and not end with a full stop.",
       ),
     definition: z
       .string()
       .max(200)
       .describe(
-        "A short definition of the keyword including the keyword itself. Should be in sentence case starting with a capital letter and not end with a full stop. Written in TEACHER_TO_PUPIL_SLIDES voice.",
+        "A short definition of the keyword including the keyword itself. This definition should be written in lowercase apart from proper nouns and not end with a full stop.  Written in TEACHER_TO_PUPIL_SLIDES voice.",
       ),
     description: z
       .string()
@@ -304,7 +304,7 @@ export const KeywordSchema = z
       .describe("Not to be used, and included here only for legacy purposes."), // There is some confusion here about what the LLM generates
   })
   .describe(
-    "A keyword that is used in the lesson. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
+    "A keyword that is used in the lesson. This should be written in lowercase apart from proper nouns and not end with a full stop.  Written in the TEACHER_TO_PUPIL_SLIDES voice.",
   );
 
 // When using Structured Outputs we cannot specify the length of arrays or strings
@@ -313,16 +313,16 @@ export const KeywordSchemaWithoutLength = z
     keyword: z
       .string()
       .describe(
-        "The keyword itself. Should be in sentence case starting with a capital letter and not end with a full stop. Maximum 30 characters long.",
+        "The keyword itself. Should be written in lowercase apart from proper nouns and not end with a full stop. Maximum 30 characters long.",
       ),
     definition: z
       .string()
       .describe(
-        "A short definition of the keyword including the keyword itself. Should be in sentence case starting with a capital letter and not end with a full stop. Written in TEACHER_TO_PUPIL_SLIDES voice. Maximum 200 characters long.",
+        "A short definition of the keyword including the keyword itself. This definition should be written in lowercase apart from proper nouns and not end with a full stop. Written in TEACHER_TO_PUPIL_SLIDES voice. Maximum 200 characters long.",
       ),
   })
   .describe(
-    "A keyword that is used in the lesson. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
+    "A keyword that is used in the lesson. This should be written in lowercase apart from proper nouns and not end with a full stop. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
   );
 
 export const KeywordOptionalSchema = z.object({
