@@ -1,8 +1,10 @@
 import { prepLessonForSlides } from "./dataHelpers/prepLessonForSlides";
 import { exportGeneric } from "./exportGeneric";
 import { googleSlides } from "./gSuite/slides/client";
-import type { SpeakerNotesTag} from "./gSuite/slides/deleteSlides";
-import { deleteSlides } from "./gSuite/slides/deleteSlides";
+import {
+  deleteSlides,
+  type SpeakerNotesTag,
+} from "./gSuite/slides/deleteSlides";
 import { populateSlides } from "./gSuite/slides/populateSlides";
 import type { LessonSlidesInputData } from "./schema/input.schema";
 import { getSlidesTemplateIdFullLesson } from "./templates";
@@ -20,16 +22,9 @@ export const exportSlidesFullLesson = async ({
   onStateChange: (state: State<OutputData>) => void;
 }): Promise<Result<OutputData>> => {
   try {
-    const speakerNotesTagsToDelete: SpeakerNotesTag[] = [];
-    if (!lesson.cycle1) {
-      speakerNotesTagsToDelete.push("cycle1");
-    }
-    if (!lesson.cycle2) {
-      speakerNotesTagsToDelete.push("cycle2");
-    }
-    if (!lesson.cycle3) {
-      speakerNotesTagsToDelete.push("cycle3");
-    }
+    const speakerNotesTagsToDelete: SpeakerNotesTag[] = [1, 2, 3]
+      .filter((num) => !lesson[`cycle${num}` as keyof typeof lesson])
+      .map((num) => `cycle${num}` as SpeakerNotesTag);
 
     const result = await exportGeneric({
       newFileName: `${lesson.title} - ${snapshotId} - Lesson slides`,

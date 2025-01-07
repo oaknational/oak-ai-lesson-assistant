@@ -2,8 +2,9 @@ import type { slides_v1 } from "@googleapis/slides";
 
 import type { Result } from "../../types";
 
-// #TODO Remove this string fallback and properly type the speaker notes tags
-export type SpeakerNotesTag = "cycle1" | "cycle2" | "cycle3" | string;
+export type SpeakerNotesTag =
+  | `cycle${1 | 2 | 3}`
+  | `question${1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20}`;
 
 function getSpeakerNotes(slide: slides_v1.Schema$Page): string {
   const notesPage = slide.slideProperties?.notesPage;
