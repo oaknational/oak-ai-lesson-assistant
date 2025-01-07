@@ -186,8 +186,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     setMessages,
   } = useChat({
     sendExtraMessageFields: true,
-    initialMessages: (chat?.messages ?? []).filter(
-      (m) => !["function", "tool"].includes(m.role),
+    initialMessages: (chat?.messages ?? []).filter((m) =>
+      isValidMessageRole(m.role),
     ) as Message[],
     generateId: () => generateMessageId({ role: "user" }),
     id,
