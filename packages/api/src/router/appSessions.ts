@@ -201,7 +201,7 @@ export const appSessionsRouter = router({
         id,
         "updated_at" as "updatedAt",
         output->>'title' as title,
-        output->>'isShared' as "isShared"
+        output->'isShared' as "isShared"
       FROM
         "app_sessions"
       WHERE
