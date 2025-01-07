@@ -6,6 +6,7 @@ import { trpc } from "@/utils/trpc";
 
 interface BestImageHookProps {
   pageData: PageData;
+  originalPrompt: string;
 }
 
 interface BestImageState {
@@ -13,7 +14,10 @@ interface BestImageState {
   status: string;
 }
 
-export const useBestImage = ({ pageData }: BestImageHookProps) => {
+export const useBestImage = ({
+  pageData,
+  originalPrompt,
+}: BestImageHookProps) => {
   const [bestImage, setBestImage] = useState<BestImageState | null>(null);
 
   const cloudinaryMutation =
@@ -54,6 +58,7 @@ export const useBestImage = ({ pageData }: BestImageHookProps) => {
             subject: pageData.subject ?? "",
             keyStage: pageData.keyStage ?? "",
             lessonPlan: pageData.lessonPlan,
+            originalPrompt: originalPrompt,
           });
 
         let validImages = validateAllSearchImages.filter(
@@ -70,6 +75,7 @@ export const useBestImage = ({ pageData }: BestImageHookProps) => {
               subject: pageData.subject ?? "",
               keyStage: pageData.keyStage ?? "",
               lessonPlan: pageData.lessonPlan,
+              originalPrompt: originalPrompt,
             });
 
           const sdValidation = await validateImagesInParallel.mutateAsync({
@@ -85,6 +91,7 @@ export const useBestImage = ({ pageData }: BestImageHookProps) => {
             subject: pageData.subject ?? "",
             keyStage: pageData.keyStage ?? "",
             lessonPlan: pageData.lessonPlan,
+            originalPrompt: originalPrompt,
           });
 
           validImages = [
@@ -102,6 +109,7 @@ export const useBestImage = ({ pageData }: BestImageHookProps) => {
             subject: pageData.subject ?? "",
             keyStage: pageData.keyStage ?? "",
             lessonPlan: pageData.lessonPlan,
+            originalPrompt: originalPrompt,
           });
 
           const daleValidation = await validateImagesInParallel.mutateAsync({
@@ -117,6 +125,7 @@ export const useBestImage = ({ pageData }: BestImageHookProps) => {
             subject: pageData.subject ?? "",
             keyStage: pageData.keyStage ?? "",
             lessonPlan: pageData.lessonPlan,
+            originalPrompt: originalPrompt,
           });
 
           validImages = [

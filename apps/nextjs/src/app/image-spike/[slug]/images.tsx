@@ -74,10 +74,19 @@ const ImagesPage = ({ pageData }) => {
     },
   ]);
 
+  const slideTexts = {
+    cycle1: pageData?.lessonPlan?.cycle1?.explanation?.imagePrompt,
+    cycle2: pageData?.lessonPlan?.cycle2?.explanation?.imagePrompt,
+    cycle3: pageData?.lessonPlan?.cycle3?.explanation?.imagePrompt,
+  };
+
   // In your ImagesPage component, add this state
   const [isRegenerating, setIsRegenerating] = useState(false);
 
-  const { bestImage, findBestImage } = useBestImage({ pageData });
+  const { bestImage, findBestImage } = useBestImage({
+    pageData,
+    originalPrompt: slideTexts[activeCycle],
+  });
   const { fetchImages, availableSources, regenerateImageWithAnalysis } =
     useImageSearch({ pageData });
 
@@ -127,12 +136,6 @@ const ImagesPage = ({ pageData }) => {
   ) {
     return "Please choose a lesson with all three learning cycles";
   }
-
-  const slideTexts = {
-    cycle1: pageData?.lessonPlan?.cycle1?.explanation?.imagePrompt,
-    cycle2: pageData?.lessonPlan?.cycle2?.explanation?.imagePrompt,
-    cycle3: pageData?.lessonPlan?.cycle3?.explanation?.imagePrompt,
-  };
 
   const updateColumn = useCallback((columnId, updates) => {
     setComparisonColumns((prev) =>
