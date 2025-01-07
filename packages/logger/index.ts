@@ -31,7 +31,6 @@ type ChildKey =
   | "aila:stream"
   | "aila:rag"
   | "aila:testing"
-  | "aila:chat"
   | "aila:quiz"
   | "aila:experimental-patches"
   | "analytics"
@@ -40,6 +39,7 @@ type ChildKey =
   | "chat"
   | "cloudinary"
   | "consent"
+  | "cron"
   | "db"
   | "demo"
   | "exports"
@@ -65,8 +65,8 @@ type ChildKey =
   | "transcripts"
   | "trpc"
   | "ui"
-  | "webhooks"
-  | "cron";
+  | "ui:performance"
+  | "webhooks";
 
 const errorLogger =
   typeof window === "undefined"
@@ -89,10 +89,17 @@ const errorLogger =
  */
 export function aiLogger(childKey: ChildKey) {
   const debugLogger = debugBase.extend(childKey);
+
+  const tableLogger = (tabularData: unknown[], columns?: string[]) => {
+    if (typeof console !== "undefined" && console.table) {
+      console.table(tabularData, columns);
+    }
+  };
   return {
     info: debugLogger,
     warn: debugLogger,
     error: errorLogger.bind(structuredLogger),
+    table: tableLogger,
   };
 }
 
