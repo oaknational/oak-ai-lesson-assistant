@@ -58,7 +58,7 @@ type IconWrapperProps = {
   hasBackground?: boolean;
 };
 
-const iconClassName = cva("relative  ", {
+const iconClassName = cva("relative", {
   variants: {
     variant: {
       "icon-only": "ml-0",
@@ -68,7 +68,7 @@ const iconClassName = cva("relative  ", {
     },
     size: {
       sm: "scale-100",
-      md: "scale-75 sm:scale-100 ",
+      md: "scale-75 sm:scale-100",
       lg: "scale-125",
       xl: "scale-150",
       xxl: "scale-150",
@@ -106,111 +106,122 @@ const IconWrapper = ({
       {hasBackground && (
         <Image src={splodge} alt="splodge" className="absolute inset-0 z-0" />
       )}
-      <span className="relative ">
+      <span className="relative">
         <Icon icon={icon} size="xs" color={color} />
       </span>
     </span>
   );
 };
 
-const ButtonCore = ({
+type ButtonLinkProps = Omit<ButtonCoreProps, "href"> & {
+  href: NonNullable<ButtonCoreProps["href"]>;
+};
+
+const ButtonLink = ({
+  href,
   children,
   onClick,
-  href,
+  variant,
+  active,
+  icon,
+  width,
+  size,
+  target,
+  iconPosition = "trailing",
+  onMouseEnter,
+  onMouseLeave,
+  containerClassName,
+  button,
+  download,
+  title,
+  testId,
+}: ButtonLinkProps) => (
+  <Box className={containerClassName({ disabled: false, width, variant })}>
+    <Link
+      href={href}
+      className={button({ variant, active, width, size })}
+      onClick={onClick}
+      aria-label={variant === "icon-only" ? `${icon} icon button` : undefined}
+      target={target}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      download={download}
+      prefetch={false}
+      title={title}
+      data-testid={testId}
+    >
+      {icon && iconPosition === "leading" && (
+        <IconWrapper
+          icon={icon}
+          variant={variant}
+          iconPosition={iconPosition}
+          size={size}
+        />
+      )}
+      {variant !== "icon-only" && children}
+      {icon && iconPosition === "trailing" && (
+        <IconWrapper icon={icon} variant={variant} size={size} />
+      )}
+    </Link>
+  </Box>
+);
+
+const ButtonElement = ({
+  children,
+  onClick,
   variant,
   active,
   icon,
   width,
   size,
   disabled,
-  target,
-  iconPosition,
+  iconPosition = "trailing",
   onMouseEnter,
   onMouseLeave,
   type,
   containerClassName,
   button,
-  download,
   title,
   testId,
-}: ButtonCoreProps) => {
-  if (!iconPosition) {
-    iconPosition = "trailing";
-  }
-
-  if (href && !disabled) {
-    return (
-      <Box
-        className={containerClassName({
-          disabled,
-          width,
-          variant,
-        })}
-      >
-        <Link
-          href={href}
-          className={button({ variant, active, width, size })}
-          onClick={onClick}
-          aria-label={children ? (children as string) : icon + "icon button"}
-          target={target}
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
-          download={download}
-          prefetch={false}
-          title={title}
-          data-testid={testId}
-        >
-          {icon && iconPosition === "leading" && (
-            <IconWrapper
-              icon={icon}
-              variant={variant}
-              iconPosition={iconPosition}
-              size={size}
-            />
-          )}
-          {variant !== "icon-only" && children}
-          {icon && iconPosition === "trailing" && (
-            <IconWrapper icon={icon} variant={variant} size={size} />
-          )}
-        </Link>
-      </Box>
-    );
-  }
-  return (
-    <Box
-      position="relative"
-      className={containerClassName({ disabled, width })}
+}: ButtonCoreProps) => (
+  <Box position="relative" className={containerClassName({ disabled, width })}>
+    <button
+      onClick={onClick}
+      className={button({ variant, active, width, size, disabled })}
+      aria-label={variant === "icon-only" ? `${icon} icon button` : undefined}
+      disabled={disabled}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      type={type}
+      title={title}
+      data-testid={testId}
     >
-      <button
-        onClick={onClick}
-        className={button({ variant, active, width, size, disabled })}
-        aria-label={children ? (children as string) : icon + "icon button"}
-        disabled={disabled}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        type={type}
-        title={title}
-        data-testid={testId}
-      >
-        {icon && iconPosition === "leading" && (
-          <IconWrapper
-            icon={icon}
-            variant={variant}
-            iconPosition={iconPosition}
-            size={size}
-          />
-        )}
-        {variant !== "icon-only" && children}
-        {icon && iconPosition === "trailing" && (
-          <IconWrapper
-            icon={icon}
-            variant={variant}
-            iconPosition={iconPosition}
-            size={size}
-          />
-        )}
-      </button>
-    </Box>
+      {icon && iconPosition === "leading" && (
+        <IconWrapper
+          icon={icon}
+          variant={variant}
+          iconPosition={iconPosition}
+          size={size}
+        />
+      )}
+      {variant !== "icon-only" && children}
+      {icon && iconPosition === "trailing" && (
+        <IconWrapper
+          icon={icon}
+          variant={variant}
+          iconPosition={iconPosition}
+          size={size}
+        />
+      )}
+    </button>
+  </Box>
+);
+
+const ButtonCore = (props: ButtonCoreProps) => {
+  return props.href && !props.disabled ? (
+    <ButtonLink {...(props as ButtonLinkProps)} />
+  ) : (
+    <ButtonElement {...props} />
   );
 };
 
