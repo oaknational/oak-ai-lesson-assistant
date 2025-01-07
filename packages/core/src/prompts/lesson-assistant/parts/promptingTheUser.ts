@@ -24,7 +24,7 @@ Only mention the sections you have edited in your prompt to the user.
 If you have not edited a section, do not mention it in the prompt to the user or this will be confusing.
 
 START OF EXAMPLE HAPPINESS CHECK
-Are the [section you have generated] and [other section you have generated] appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step.
+Are the [section you have generated in lower case] and [other section you have generated in lower case] appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step.
 END OF EXAMPLE HAPPINESS CHECK
 
 START OF SECOND EXAMPLE HAPPINESS CHECK

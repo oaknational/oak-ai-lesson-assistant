@@ -23,9 +23,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {},
+  render: () => <ChatHistory />,
+  args: {
+    userId: "user123",
+  },
 };
 
 export const WithoutUserId: Story = {
+  render: () => <ChatHistory />,
   args: {},
 };

@@ -14,7 +14,6 @@ const meta: Meta<typeof ExportButtons> = {
   tags: ["autodocs"],
   decorators: [ChatDecorator, DemoDecorator],
   args: {
-    sectionRefs: {},
     documentContainerRef: { current: null },
   },
   parameters: {

@@ -11,6 +11,7 @@ import type { DemoContextProps } from "@/components/ContextProviders/Demo";
 
 import type { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
+import { sectionTitle } from "../drop-down-section";
 import { DemoLimitMessage } from "./demo-limit-message";
 import { InChatDownloadButtons } from "./in-chat-download-buttons";
 
@@ -72,7 +73,7 @@ export function ChatList({
   }
 
   return (
-    <div className="relative flex w-full flex-col " onScroll={handleScroll}>
+    <div className="relative flex w-full flex-col" onScroll={handleScroll}>
       <ChatMessagesDisplay
         messages={messages}
         id={id}
@@ -105,11 +106,15 @@ export const ChatMessagesDisplay = ({
   ailaStreamingStatus,
   demo,
 }: ChatMessagesDisplayProps) => {
-  const { lessonPlan, isStreaming } = useLessonChat();
+  const { lessonPlan, isStreaming, streamingSection } = useLessonChat();
   const { totalSections, totalSectionsComplete } = useProgressForDownloads({
     lessonPlan,
     isStreaming,
   });
+
+  const workingOnItMessage = streamingSection
+    ? `Editing ${sectionTitle(streamingSection).toLowerCase()}…`
+    : "Working on it…";
 
   return (
     <>
@@ -137,7 +142,7 @@ export const ChatMessagesDisplay = ({
                 message={{
                   id: "working-on-it-initial",
                   role: "assistant",
-                  content: "Working on it…",
+                  content: workingOnItMessage,
                 }}
                 lastModeration={lastModeration}
                 persistedModerations={[]}
@@ -164,7 +169,7 @@ export const ChatMessagesDisplay = ({
                   ? {
                       id: "working-on-it-initial",
                       role: "assistant",
-                      content: "Working on it…",
+                      content: workingOnItMessage,
                     }
                   : message
               }
@@ -187,7 +192,7 @@ export const ChatMessagesDisplay = ({
               message={{
                 id: "working-on-it-initial",
                 role: "assistant",
-                content: "Working on it…",
+                content: workingOnItMessage,
               }}
               lastModeration={lastModeration}
               persistedModerations={[]}

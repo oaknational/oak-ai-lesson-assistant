@@ -1,126 +1,88 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
-import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+import type {
+  LessonPlanKeys,
+  LessonPlanSectionWhileStreaming,
+} from "@oakai/aila/src/protocol/schema";
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
-import { equals } from "ramda";
 import styled from "styled-components";
 
 import { Icon } from "@/components/Icon";
 import LoadingWheel from "@/components/LoadingWheel";
-import { scrollToRef } from "@/utils/scrollToRef";
 
 import Skeleton from "../../common/Skeleton";
+import type { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import ChatSection from "./chat-section";
-
-const HALF_SECOND = 500;
-
-export type DropDownSectionProps = Readonly<{
-  section: LessonPlanKeys;
-  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
-  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
-  userHasCancelledAutoScroll: boolean;
-  showLessonMobile: boolean;
-  streamingTimeout?: number;
-}>;
 
 const DropDownSection = ({
   section,
-  sectionRefs,
   value,
-  documentContainerRef,
-  userHasCancelledAutoScroll,
-  showLessonMobile,
-  streamingTimeout = HALF_SECOND,
-}: DropDownSectionProps) => {
-  const sectionRef = useRef(null);
-  if (sectionRefs) sectionRefs[section] = sectionRef;
-  const [isOpen, setIsOpen] = useState(false);
-  const [status, setStatus] = useState<"empty" | "isStreaming" | "isLoaded">(
-    "empty",
-  );
-  const [prevValue, setPrevValue] = useState<Record<string, unknown>>({});
-  const [sectionHasFired, setSectionHasFired] = useState(false);
-
+  isOpen,
+  setIsOpen,
+  ailaStreamingStatus,
+  streamingSection,
+  visible,
+  setSectionRef,
+}: {
+  section: LessonPlanKeys;
+  value: LessonPlanSectionWhileStreaming | undefined;
+  isOpen: boolean;
+  setIsOpen: (section: string, isOpen: boolean) => void;
+  ailaStreamingStatus: AilaStreamingStatus;
+  streamingSection: LessonPlanKeys | undefined;
+  visible: boolean;
+  setSectionRef: (section: LessonPlanKeys, el: HTMLDivElement | null) => void;
+}) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (!showLessonMobile) {
-      setIsOpen(false);
-    }
-  }, [showLessonMobile]);
+    setSectionRef(section, sectionRef.current);
+  }, [section, setSectionRef]);
 
-  useEffect(() => {
-    if (value === null || value === undefined || !value) {
-      setStatus("empty");
-    } else if (!equals(value, prevValue)) {
-      setStatus("isStreaming");
+  const sectionTitleMemo = useMemo(() => sectionTitle(section), [section]);
 
-      if (sectionRef && sectionHasFired === false && status === "isStreaming") {
-        if (section && value) {
-          function scrollToSection() {
-            if (!userHasCancelledAutoScroll) {
-              scrollToRef({
-                ref: sectionRef,
-                containerRef: documentContainerRef,
-                duration: 1000,
-              });
-            }
-            setSectionHasFired(true);
-          }
-          scrollToSection();
-        }
-      }
-      setIsOpen(true);
-      const timer = setTimeout(() => {
-        setStatus("isLoaded");
-        setPrevValue(value);
-      }, streamingTimeout);
+  const isStreaming =
+    ailaStreamingStatus !== "Idle" && streamingSection === section;
 
-      return () => clearTimeout(timer);
-    } else {
-      setStatus("isLoaded");
-    }
-  }, [
-    value,
-    setStatus,
-    sectionRef,
-    sectionHasFired,
-    status,
-    section,
-    setIsOpen,
-    prevValue,
-    documentContainerRef,
-    userHasCancelledAutoScroll,
-    streamingTimeout,
-  ]);
+  const isLoaded = !isStreaming && value !== undefined;
 
   return (
     <DropDownSectionWrapper
+      className={visible ? "block" : "hidden"}
       $borderColor="black"
       $bb="border-solid-m"
       $pv="inner-padding-xl"
       ref={sectionRef}
+      data-testid={`chat-section-${section}`}
+      data-test="lesson-plan-section"
+      data-test-section-key={section}
+      data-test-section-complete={isLoaded ? "true" : "false"}
     >
-      <OakFlex $gap="all-spacing-2">
-        <OakBox>
-          {status === "empty" && <div className="w-14"></div>}
-          {status === "isStreaming" && <LoadingWheel />}
-          {status === "isLoaded" && <Icon icon="tick" size="sm" />}
-        </OakBox>
+      <FullWidthButton
+        onClick={() => setIsOpen(section, !isOpen)}
+        aria-label="toggle"
+      >
+        <OakFlex $gap="all-spacing-2">
+          <OakBox>
+            {!isStreaming && !isLoaded && <div className="w-14"></div>}
+            <LoadingWheel visible={isStreaming} />
+            <Icon
+              icon="tick"
+              size="sm"
+              className={isStreaming ? "hidden" : "block"}
+            />
+          </OakBox>
 
-        <FullWidthButton onClick={() => setIsOpen(!isOpen)} aria-label="toggle">
           <OakFlex $width="100%" $justifyContent="space-between">
-            <OakP $font="heading-6">{sectionTitle(section)}</OakP>
+            <OakP $font="heading-6">{sectionTitleMemo}</OakP>
             <Icon icon={isOpen ? "chevron-up" : "chevron-down"} size="sm" />
           </OakFlex>
-        </FullWidthButton>
-      </OakFlex>
-
+        </OakFlex>
+      </FullWidthButton>
       {isOpen && (
         <div className="mt-12 w-full">
-          {status === "isLoaded" ? (
-            <ChatSection section={section} value={value} />
+          {isLoaded ? (
+            <ChatSection key={section} section={section} value={value} />
           ) : (
             <Skeleton loaded={false} numberOfRows={1}>
               <p>Loading</p>
@@ -132,7 +94,7 @@ const DropDownSection = ({
   );
 };
 
-export function sectionTitle(str: string) {
+export function sectionTitle(str: LessonPlanKeys) {
   if (str.startsWith("cycle")) {
     return "Learning cycle " + str.split("cycle")[1];
   }

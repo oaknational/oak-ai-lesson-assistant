@@ -1,6 +1,5 @@
 "use client";
 
-import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
 import { OakSmallSecondaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
@@ -12,16 +11,10 @@ import { useDialog } from "../../DialogContext";
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
 export type ExportButtonsProps = Readonly<{
-  sectionRefs: Partial<
-    Record<LessonPlanKeys, React.MutableRefObject<HTMLDivElement | null>>
-  >;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
 }>;
 
-const ExportButtons = ({
-  sectionRefs,
-  documentContainerRef,
-}: ExportButtonsProps) => {
+const ExportButtons = ({ documentContainerRef }: ExportButtonsProps) => {
   const chat = useLessonChat();
   const { id, isStreaming, lessonPlan } = chat;
   const { trackEvent } = useAnalytics();
@@ -35,7 +28,6 @@ const ExportButtons = ({
           <LessonPlanProgressDropdown
             lessonPlan={lessonPlan}
             isStreaming={isStreaming}
-            sectionRefs={sectionRefs}
             documentContainerRef={documentContainerRef}
           />
           <div className="flex space-x-10">

@@ -1,4 +1,4 @@
-import type { PostHog } from "posthog-js";
+import type { PostHog, Properties } from "posthog-js";
 
 import type { AnalyticsService } from "@/components/ContextProviders/AnalyticsProvider";
 
@@ -19,7 +19,17 @@ export const posthogToAnalyticsService = (
   client: PostHog,
 ): AnalyticsService<PosthogConfig, "posthog"> => ({
   name: "posthog",
-  init: ({ apiKey, apiHost, uiHost, bootstrappedFeatures }) =>
+  init: ({
+    apiKey,
+    apiHost,
+    uiHost,
+    bootstrappedFeatures,
+  }: {
+    apiKey: string;
+    apiHost: string;
+    uiHost: string;
+    bootstrappedFeatures?: Record<string, string | boolean>;
+  }) =>
     new Promise((resolve) => {
       client.init(apiKey, {
         api_host: apiHost,
@@ -42,7 +52,7 @@ export const posthogToAnalyticsService = (
         autocapture: true,
       });
     }),
-  identify: (userId, properties) => {
+  identify: (userId: string, properties: Properties) => {
     client.identify(userId, properties);
   },
   reset: () => {
@@ -53,7 +63,7 @@ export const posthogToAnalyticsService = (
       $current_url: `${window.origin}${path}`,
     });
   },
-  track: (name, properties) => {
+  track: (name: string, properties: Properties | undefined) => {
     client.capture(name, properties);
   },
   optIn: () => {

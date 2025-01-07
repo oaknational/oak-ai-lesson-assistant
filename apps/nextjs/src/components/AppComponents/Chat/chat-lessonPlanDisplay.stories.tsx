@@ -26,13 +26,8 @@ const meta = {
   component: LessonPlanDisplay,
   tags: ["autodocs"],
   decorators: [ChatDecorator],
-  args: {
-    documentContainerRef: { current: null },
-    chatEndRef: undefined,
-    sectionRefs: {},
-    showLessonMobile: false,
-  },
-} satisfies Meta<typeof LessonPlanDisplay>;
+  args: {},
+};
 
 export default meta;
 

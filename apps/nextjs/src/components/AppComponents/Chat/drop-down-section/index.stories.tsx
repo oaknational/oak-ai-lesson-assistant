@@ -5,8 +5,6 @@ import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 
 import DropDownSection from "./";
 
-const MAX_INT32 = 2 ** 31 - 1;
-
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const meta = {
@@ -17,11 +15,6 @@ const meta = {
     section: "learningOutcome",
     value:
       "I can explain the reasons why frogs are so important to British society and culture",
-    documentContainerRef: { current: null },
-    streamingTimeout: 0,
-    userHasCancelledAutoScroll: false,
-    sectionRefs: {},
-    showLessonMobile: false,
   },
   decorators: [ChatDecorator],
   parameters: {
@@ -62,7 +55,7 @@ export const Markdown: Story = {
 };
 
 export const Streaming: Story = {
-  args: { streamingTimeout: MAX_INT32 },
+  args: {},
 };
 
 export const Closed: Story = {
