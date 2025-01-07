@@ -300,20 +300,7 @@ export function HomePageContent({ pageData }: HomePageProps) {
             Quiz designer
           </OakHeading>
 
-          <OakP>
-            Create quizzes for your pupils in a flash. Use our quiz designer to
-            generate answers, both right and wrong. Share the quizzes with
-            others or export them in a range of formats ready for the classroom.
-          </OakP>
-
-          <OakPrimaryButton
-            element={Link}
-            href="/quiz-designer"
-            iconName="arrow-right"
-            isTrailingIcon={true}
-          >
-            Get started
-          </OakPrimaryButton>
+          <OakP>**insert text for quiz designer here deletion here**.</OakP>
         </OakFlex>
 
         <Image src={oakSupporting} alt="jigsaw image" />

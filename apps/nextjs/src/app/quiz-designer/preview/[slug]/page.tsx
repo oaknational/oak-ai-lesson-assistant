@@ -1,6 +1,9 @@
 import { Apps } from "@oakai/core";
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
+import { redirect } from "next/navigation";
+
+import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
 import QuizPreview from "./preview";
 
@@ -28,6 +31,12 @@ export default async function QuizPreviewPage({
   params,
 }: QuizPreviewPageProps) {
   log.info("params", params);
+
+  const canSeeQuizDesigner = await serverSideFeatureFlag("show-qd");
+
+  if (!canSeeQuizDesigner) {
+    redirect("/");
+  }
 
   const questions = await getData(params.slug);
 
