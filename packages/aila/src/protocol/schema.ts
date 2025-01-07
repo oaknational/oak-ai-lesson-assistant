@@ -6,18 +6,13 @@ import { minMaxText } from "./schemaHelpers";
 
 // ********** BASED_ON **********
 export const BASED_ON_DESCRIPTIONS = {
-  id: dedent`The database ID of an existing lesson plan that this
-    lesson plan is based upon.
-    It should be the ID of the lesson plan that was used to inform
-    the content of this lesson plan.
-    It should not be the number that the user has selected when
-    choosing which lesson on which to base their new lesson.`,
+  id: dedent`The database ID of an existing lesson plan that this lesson plan is based upon.
+    It should be the ID of the lesson plan that was used to inform the content of this lesson plan.
+    It should not be the number that the user has selected when choosing which lesson on which to base their new lesson.`,
   title: "The human-readable title of the lesson.",
-  schema: dedent`A reference to a lesson plan that this lesson is
-    based on. This value should only be set if the user has explicitly
-    chosen to base their lesson on an existing lesson plan by selecting
-    one from a selection of options, otherwise this should be blank.`,
-} as const as { id: string; title: string; schema: string };
+  schema: dedent`A reference to a lesson plan that this lesson is based on.
+    This value should only be set if the user has explicitly chosen to base their lesson on an existing lesson plan by selecting one from a selection of options, otherwise this should be blank.`,
+} as const;
 
 export const BasedOnSchema = z
   .object({
@@ -32,20 +27,14 @@ export type BasedOnOptional = z.infer<typeof BasedOnOptionalSchema>;
 
 // ********** MISCONCEPTIONS **********
 export const MISCONCEPTION_DESCRIPTIONS = {
-  misconception: dedent`a single sentence describing a common misconception
-  about the topic. Do not end with a full stop.`,
-  description: dedent`No more than 2 sentences addressing the reason for the 
-  misconception and how it can be addressed in the lesson.`,
-} as const as {
-  misconception: string;
-  description: string;
-  definition: string;
-};
+  misconception: dedent`a single sentence describing a common misconception about the topic. Do not end with a full stop.`,
+  description: dedent`No more than 2 sentences addressing the reason for the misconception and how it can be addressed in the lesson.`,
+} as const;
 
 export const MISCONCEPTIONS_DESCRIPTION = {
   schema: dedent`
-  A set of potential misconceptions which students might have about the content 
-  that is delivered in the lesson. Written in the EXPERT_TEACHER voice.
+  A set of potential misconceptions which students might have about the content that is delivered in the lesson.
+  Written in the EXPERT_TEACHER voice.
   ${minMaxText({ min: 1, max: 3, entity: "elements" })}`,
 } as const as { schema: string };
 
@@ -118,42 +107,32 @@ export type QuizOptional = z.infer<typeof QuizOptionalSchema>;
 // ********** EXPLANATION **********
 export const EXPLANATION_DESCRIPTIONS = {
   spokenExplanation: dedent`The spoken teacher explanation in the EXPERT_TEACHER voice.
-  About five or six sentences or 5-12 markdown list items. In the spoken explanation, 
-  give guidance to the teacher on which key points should be covered in their explanation 
-  to students. This should be teacher facing and not include a script or narrative for 
-  the teacher.
+  About five or six sentences or 5-12 markdown list items.
+  In the spoken explanation, give guidance to the teacher on which key points should be covered in their explanation to students.
+  This should be teacher facing and not include a script or narrative for the teacher.
   Should bear in mind the following requirements:
   - teacher facing 
   - outline the key points that the teacher should address during their explanation 
   - include as much detail as possible
   - written in bullet points  
   - break concepts into small, manageable chunks
-  - if appropriate, the method for explanation should be included for e.g. demonstrate to 
-  pupils how to set up the apparatus for the experiment or model how to complete the pass 
-  for students or use a bar model to show the addition of these three numbers.
+  - if appropriate, the method for explanation should be included for e.g. demonstrate to pupils how to set up the apparatus for the experiment or model how to complete the pass for students or use a bar model to show the addition of these three numbers.
   - abstract concepts are made concrete
   - the explanation should be clear
   - images will be used to support dual coding for pupils`,
-  accompanyingSlideDetails: dedent`A description of the image or video to be used. Should 
-  describe what should be displayed on the slides for pupils to look at during the 
-  explanation. This is to enable dual coding of a visual image and the teachers 
-  explanation being given verbally. Written in the EXPERT_TEACHER voice.`,
-  imagePrompt: dedent`A prompt to generate an image, or a search term to use to find an
-  image or video. Should tell the teacher what images to search for to display on the 
-  slides. Written in the EXPERT_TEACHER voice.`,
-  slideText: dedent`The slide text would appear on the slide when the teacher delivers 
-  this part of the lesson. It should be a short, succinct summary of the content in the 
-  explanation. It should be no longer than 2 sentences. Written in the 
-  TEACHER_TO_PUPIL_SLIDES voice.`,
-  schema: dedent`The TEACHER EXPLANATION, obeying the learning cycle rules for this 
-  part of the lesson.`,
-} as const as {
-  spokenExplanation: string;
-  accompanyingSlideDetails: string;
-  imagePrompt: string;
-  slideText: string;
-  schema: string;
-};
+  accompanyingSlideDetails: dedent`A description of the image or video to be used.
+  Should describe what should be displayed on the slides for pupils to look at during the explanation.
+  This is to enable dual coding of a visual image and the teachers explanation being given verbally.
+  Written in the EXPERT_TEACHER voice.`,
+  imagePrompt: dedent`A prompt to generate an image, or a search term to use to find an image or video.
+  Should tell the teacher what images to search for to display on the slides.
+  Written in the EXPERT_TEACHER voice.`,
+  slideText: dedent`The slide text would appear on the slide when the teacher delivers this part of the lesson.
+  It should be a short, succinct summary of the content in the explanation.
+  It should be no longer than 2 sentences.
+  Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
+  schema: dedent`The TEACHER EXPLANATION, obeying the learning cycle rules for this part of the lesson.`,
+} as const;
 
 export const ExplanationSchema = z
   .object({
@@ -176,19 +155,14 @@ export type ExplanationOptional = z.infer<typeof ExplanationOptionalSchema>;
 // ********** CHECK FOR UNDERSTANDING **********
 // When using Structured Outputs we cannot specify the length of arrays or strings
 export const CHECK_FOR_UNDERSTANDING_DESCRIPTIONS = {
-  question: dedent`A multiple choice question to ask as a check to see if the 
-  students have understood the content of this cycle. Written in the 
-  TEACHER_TO_PUPIL_SLIDES voice.`,
-  answers: dedent`The correct answer to the question. If this is of length ANSWER_LENGTH, 
-  then all distractor strings should be very close in length to ANSWER_LENGTH.`,
-  distractors: dedent`Two incorrect distractors which could be the answer to the question 
-  but are not correct. These strings should be of similar length to ANSWER_LENGTH so that 
-  the correct answer does not stand out because it is obviously longer than the distractors.`,
-} as const as {
-  question: string;
-  answers: string;
-  distractors: string;
-};
+  question: dedent`A multiple choice question to ask as a check to see if the students have understood the content of this cycle.
+  Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
+  answers: dedent`The correct answer to the question.
+  If this is of length ANSWER_LENGTH, then all distractor strings should be very close in length to ANSWER_LENGTH.`,
+  distractors: dedent`Two incorrect distractors which could be the answer to the question but are not correct.
+  These strings should be of similar length to ANSWER_LENGTH so that the correct answer does not stand out because it is obviously longer than the distractors.`,
+} as const;
+
 export const CheckForUnderstandingSchemaWithoutLength = z.object({
   question: z.string().describe(CHECK_FOR_UNDERSTANDING_DESCRIPTIONS.question),
   answers: z
@@ -211,23 +185,20 @@ export const CheckForUnderstandingOptionalSchema =
 
 // ********** CYCLE **********
 export const CYCLE_DESCRIPTIONS = {
-  title: `The title of the learning cycle written in sentence case starting with a capital letter 
-    and not ending with a full stop.`,
-  durationInMinutes: `An estimated duration for how long it would take the teacher to deliver 
-    this part of the lesson.`,
-  explanation: `An object describing how the teacher would explain the content of this cycle 
-    to the students. Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
-  checkForUnderstanding: `Two or more questions to check that students have understood the 
-    content of this cycle. Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
-  practice: `The activity that the pupils are asked to do to practice what they have learnt. 
+  title: `The title of the learning cycle written in sentence case starting with a capital letter and not ending with a full stop.`,
+  durationInMinutes: `An estimated duration for how long it would take the teacher to deliver this part of the lesson.`,
+  explanation: dedent`An object describing how the teacher would explain the content of this cycle to the students.
+  Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
+  checkForUnderstanding: dedent`Two or more questions to check that students have understood the content of this cycle.
+    Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
+  practice: dedent`The activity that the pupils are asked to do to practice what they have learnt. 
     Should be pupil facing and include all details that the pupils need to complete the task. 
-    Should be linked to the learning cycle command word and should enable pupils to practice 
-    the key learning points that have been taught during this learning cycle. Should include 
-    calculations if this is appropriate. Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
-  feedback: `Student-facing feedback which will be presented on a slide, giving the correct 
-    answer to the practice task. This should adhere to the rules as specified in the 
-    LEARNING CYCLES: FEEDBACK section of the lesson plan guidance. Written in the 
-    TEACHER_TO_PUPIL_SLIDES voice.`,
+    Should be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle. 
+    Should include calculations if this is appropriate.
+    Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
+  feedback: dedent`Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task.
+    This should adhere to the rules as specified in the LEARNING CYCLES: FEEDBACK section of the lesson plan guidance.
+    Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
 } as const;
 
 export const CycleSchemaWithoutLength = z.object({
@@ -257,23 +228,18 @@ export type Cycle = z.infer<typeof CycleSchema>;
 
 // ********** KEYWORDS **********
 export const KEYWORD_DESCRIPTIONS = {
-  keyword: dedent`The keyword itself. Should be in sentence case starting with 
-    a capital letter and not end with a full stop.`,
-  definition: dedent`A short definition of the keyword including the keyword 
-    itself. Should be in sentence case starting with a capital letter and not 
-    end with a full stop. Written in TEACHER_TO_PUPIL_SLIDES voice.`,
+  keyword: dedent`The keyword itself.
+  Should be in sentence case starting with a capital letter and not end with a full stop.`,
+  definition: dedent`A short definition of the keyword including the keyword itself.
+    Should be in sentence case starting with a capital letter and not end with a full stop.
+    Written in TEACHER_TO_PUPIL_SLIDES voice.`,
   description: "Not to be used, and included here only for legacy purposes.",
-  schema:
-    "A keyword that is used in the lesson. Written in the TEACHER_TO_PUPIL_SLIDES voice.",
-  keywords: dedent`The keywords that are used in the lesson. Written in the TEACHER_TO_PUPIL_SLIDES voice.
+  schema: dedent`A keyword that is used in the lesson.
+    Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
+  keywords: dedent`The keywords that are used in the lesson.
+    Written in the TEACHER_TO_PUPIL_SLIDES voice.
     ${minMaxText({ min: 1, max: 5, entity: "elements" })}`,
-} as const as {
-  keyword: string;
-  definition: string;
-  description: string;
-  schema: string;
-  keywords: string;
-};
+} as const;
 
 export const KeywordSchemaWithoutLength = z
   .object({
@@ -303,10 +269,11 @@ export type Keyword = z.infer<typeof KeywordSchema>;
 
 // ********** LESSON PLAN **********
 export const LESSON_PLAN_DESCRIPTIONS = {
-  title: dedent`The title of the lesson. Lesson titles should be a unique and succinct statement, 
-    not a question. Can include special characters if appropriate but should not use & sign instead 
-    of 'and'. Written in the TEACHER_TO_PUPIL_SLIDES voice. The title should be in sentence case 
-    starting with a capital letter and not end with a full stop. ${minMaxText({
+  title: dedent`The title of the lesson. Lesson titles should be a unique and succinct statement, not a question. 
+    Can include special characters if appropriate but should not use & sign instead of 'and'. 
+    Written in the TEACHER_TO_PUPIL_SLIDES voice.
+    The title should be in sentence case starting with a capital letter and not end with a full stop. 
+    ${minMaxText({
       max: 80,
       entity: "characters",
     })}`,
@@ -316,35 +283,40 @@ export const LESSON_PLAN_DESCRIPTIONS = {
     "The subject that this lesson is included within, for instance English or Geography.",
   topic:
     "A topic that this lesson would sit within, which might cover several lessons with a shared theme.",
-  learningOutcome: dedent`What the pupils will have learnt by the end of the lesson. Should start 
-    with 'I can' and outline what pupils should be able to know/and or be able to do by the end of 
-    the lesson. Written in age appropriate language. May include a command word. Written in the PUPIL 
-    voice. ${minMaxText({ max: 190, entity: "characters" })}`,
-  learningCycles: dedent`An array of learning cycle outcomes. Should include a command word. Should 
-    be succinct. Should outline what pupils should be able to do/understand/know by the end of the 
-    learning cycle. Written in the TEACHER_TO_PUPIL_SLIDES voice. ${minMaxText({
+  learningOutcome: dedent`What the pupils will have learnt by the end of the lesson.
+    Should start with 'I can' and outline what pupils should be able to know/and or be able to do by the end of the lesson. 
+    Written in age appropriate language. 
+    May include a command word. 
+    Written in the PUPIL voice. 
+    ${minMaxText({ max: 190, entity: "characters" })}`,
+  learningCycles: dedent`An array of learning cycle outcomes. 
+    Should include a command word. 
+    Should be succinct. 
+    Should outline what pupils should be able to do/understand/know by the end of the learning cycle. 
+    Written in the TEACHER_TO_PUPIL_SLIDES voice. 
+    ${minMaxText({
       min: 1,
       max: 3,
       entity: "elements",
     })}`,
   priorKnowledge: dedent`An array of prior knowledge statements, each being a succinct sentence. 
-    Written in the EXPERT_TEACHER voice. ${minMaxText({
+    Written in the EXPERT_TEACHER voice. 
+    ${minMaxText({
       min: 1,
       max: 5,
       entity: "elements",
     })}`,
-  keyLearningPoints: dedent`An array of learning points, each being a succinct sentence. ${minMaxText(
-    {
+  keyLearningPoints: dedent`An array of learning points, each being a succinct sentence. 
+    ${minMaxText({
       min: 3,
       max: 5,
       entity: "elements",
-    },
-  )}`,
-  starterQuiz: dedent`The starter quiz for the lesson, which tests prior knowledge only, ignoring the content that is 
-    delivered in the lesson. Obey the rules as specified in the STARTER QUIZ section of the lesson plan 
-    guidance. Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
-  exitQuiz: dedent`The exit quiz for the lesson, which tests the content that is delivered in the lesson. Written 
-    in the TEACHER_TO_PUPIL_SLIDES voice.`,
+    })}`,
+  starterQuiz: dedent`The starter quiz for the lesson, which tests prior knowledge only, ignoring the content that is delivered in the lesson. 
+    Obey the rules as specified in the STARTER QUIZ section of the lesson plan guidance. 
+    Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
+  exitQuiz: dedent`The exit quiz for the lesson, which tests the content that is delivered in the lesson. 
+    Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
   additionalMaterials:
     "Any additional materials or notes that are required or useful for the lesson",
 } as const;
