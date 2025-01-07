@@ -5,7 +5,7 @@ import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 import QuizDesignerPage from "./quiz-designer-page";
 
 export default async function QuizDesigner() {
-  const canSeeQuizDesigner = await serverSideFeatureFlag("show-qd");
+  const canSeeQuizDesigner = await serverSideFeatureFlag("quiz-designer");
 
   if (!canSeeQuizDesigner) {
     redirect("/");

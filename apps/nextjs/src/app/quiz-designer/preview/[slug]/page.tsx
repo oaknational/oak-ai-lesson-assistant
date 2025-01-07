@@ -32,7 +32,7 @@ export default async function QuizPreviewPage({
 }: QuizPreviewPageProps) {
   log.info("params", params);
 
-  const canSeeQuizDesigner = await serverSideFeatureFlag("show-qd");
+  const canSeeQuizDesigner = await serverSideFeatureFlag("quiz-designer");
 
   if (!canSeeQuizDesigner) {
     redirect("/");
