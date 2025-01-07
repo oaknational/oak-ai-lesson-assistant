@@ -390,7 +390,7 @@ Thank you and happy classifying!`;
       new Set(plans.filter((i) => i.id).map((s) => s.id)),
     )
       .map((id) => plans.find((s) => s.id === id))
-      .filter((i) => typeof i !== "undefined") as LessonPlan[];
+      .filter((i) => typeof i !== "undefined");
     await this.setCachedSerialisedByHash<LessonPlan[]>(
       cacheKey,
       cacheHash,
@@ -584,6 +584,7 @@ Thank you and happy classifying!`;
         keyStage,
         this._chatMeta,
       );
+
       if (categorisation.keyStage) {
         foundKeyStage = await this.prisma.keyStage.findFirst({
           where: {
@@ -638,9 +639,9 @@ Thank you and happy classifying!`;
 
     // If none of that works, fall back to categorising the subject based on free text
     if (!foundSubject) {
-      //  log.info(
-      //   "No subject found. Categorise the input to try to work out what it is using categoriseKeyStageAndSubject",
-      // );
+      log.info(
+        "No subject found. Categorise the input to try to work out what it is using categoriseKeyStageAndSubject",
+      );
       const categorisation = await this.categoriseKeyStageAndSubject(
         subject,
         this._chatMeta,
