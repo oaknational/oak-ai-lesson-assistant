@@ -390,7 +390,7 @@ Thank you and happy classifying!`;
       new Set(plans.filter((i) => i.id).map((s) => s.id)),
     )
       .map((id) => plans.find((s) => s.id === id))
-      .filter((i) => typeof i !== "undefined") as LessonPlan[];
+      .filter((i) => typeof i !== "undefined");
     await this.setCachedSerialisedByHash<LessonPlan[]>(
       cacheKey,
       cacheHash,
@@ -579,20 +579,20 @@ Thank you and happy classifying!`;
       },
       cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
     });
-    if (!foundKeyStage) {
-      const categorisation = await this.categoriseKeyStageAndSubject(
-        keyStage,
-        this._chatMeta,
-      );
-      if (categorisation.keyStage) {
-        foundKeyStage = await this.prisma.keyStage.findFirst({
-          where: {
-            slug: categorisation.keyStage,
-          },
-          cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
-        });
-      }
-    }
+    // if (!foundKeyStage) {
+    //   const categorisation = await this.categoriseKeyStageAndSubject(
+    //     keyStage,
+    //     this._chatMeta,
+    //   );
+    //   if (categorisation.keyStage) {
+    //     foundKeyStage = await this.prisma.keyStage.findFirst({
+    //       where: {
+    //         slug: categorisation.keyStage,
+    //       },
+    //       cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
+    //     });
+    //   }
+    // }
     if (foundKeyStage) {
       await kv.set<KeyStage>(`keyStage:${keyStage}`, foundKeyStage, {
         ex: 60 * 60,
@@ -637,23 +637,23 @@ Thank you and happy classifying!`;
     });
 
     // If none of that works, fall back to categorising the subject based on free text
-    if (!foundSubject) {
-      //  log.info(
-      //   "No subject found. Categorise the input to try to work out what it is using categoriseKeyStageAndSubject",
-      // );
-      const categorisation = await this.categoriseKeyStageAndSubject(
-        subject,
-        this._chatMeta,
-      );
-      if (categorisation.subject) {
-        foundSubject = await this.prisma.subject.findFirst({
-          where: {
-            slug: categorisation.subject,
-          },
-          cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
-        });
-      }
-    }
+    // if (!foundSubject) {
+    //   //  log.info(
+    //   //   "No subject found. Categorise the input to try to work out what it is using categoriseKeyStageAndSubject",
+    //   // );
+    //   const categorisation = await this.categoriseKeyStageAndSubject(
+    //     subject,
+    //     this._chatMeta,
+    //   );
+    //   if (categorisation.subject) {
+    //     foundSubject = await this.prisma.subject.findFirst({
+    //       where: {
+    //         slug: categorisation.subject,
+    //       },
+    //       cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
+    //     });
+    //   }
+    // }
     if (foundSubject) {
       await kv.set<Subject>(`subject:${subject}`, foundSubject, {
         ex: 60 * 60,

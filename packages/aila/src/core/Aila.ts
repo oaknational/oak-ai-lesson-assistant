@@ -9,7 +9,7 @@ import {
 } from "../constants";
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
-import { AilaCategorisation } from "../features/categorisation";
+import { NullCategoriser } from "../features/categorisation/categorisers/NullCategoriser";
 import type { AilaRagFeature } from "../features/rag";
 import { NullAilaRag } from "../features/rag/NullAilaRag";
 import type { AilaSnapshotStore } from "../features/snapshotStore";
@@ -21,6 +21,7 @@ import type {
   AilaThreatDetectionFeature,
 } from "../features/types";
 import { generateMessageId } from "../helpers/chat/generateMessageId";
+import { completedSections } from "../utils/lessonPlan/completedSections";
 import { AilaAuthenticationError, AilaGenerationError } from "./AilaError";
 import { AilaFeatureFactory } from "./AilaFeatureFactory";
 import type {
@@ -32,7 +33,7 @@ import type { Message } from "./chat";
 import { AilaChat } from "./chat";
 import { AilaLesson } from "./lesson";
 import type { LLMService } from "./llm/LLMService";
-import { OpenAIService } from "./llm/OpenAIService";
+import { NullLLMService } from "./llm/NullLLMService";
 import type { AilaPlugin } from "./plugins/types";
 import type {
   AilaGenerateLessonPlanOptions,
@@ -68,8 +69,7 @@ export class Aila implements AilaServices {
     this._options = this.initialiseOptions(options.options);
 
     this._chatLlmService =
-      options.services?.chatLlmService ??
-      new OpenAIService({ userId: this._userId, chatId: this._chatId });
+      options.services?.chatLlmService?.(this) ?? new NullLLMService();
     this._chat = new AilaChat({
       ...options.chat,
       aila: this,
@@ -83,10 +83,7 @@ export class Aila implements AilaServices {
       aila: this,
       lessonPlan: options.lessonPlan ?? {},
       categoriser:
-        options.services?.chatCategoriser ??
-        new AilaCategorisation({
-          aila: this,
-        }),
+        options.services?.chatCategoriser?.(this) ?? new NullCategoriser(),
     });
 
     this._analytics = AilaFeatureFactory.createAnalytics(
@@ -146,7 +143,15 @@ export class Aila implements AilaServices {
     if (persistedLessonPlan) {
       this._lesson.setPlan(persistedLessonPlan);
     }
-    await this._lesson.setUpInitialLessonPlan(this._chat.messages);
+    const sections = completedSections(this._lesson.plan);
+    if (
+      !sections.includes("title") ||
+      !sections.includes("subject") ||
+      !sections.includes("keyStage")
+    ) {
+      await this._lesson.setUpInitialLessonPlan(this._chat.messages);
+    }
+    log.info("Aila - initialised", completedSections(this._lesson.plan));
     this._initialised = true;
   }
 
@@ -158,7 +163,8 @@ export class Aila implements AilaServices {
       // to lesson RAG
       numberOfLessonPlansInRag:
         options?.numberOfLessonPlansInRag ?? DEFAULT_RAG_LESSON_PLANS,
-      usePersistence: options?.usePersistence ?? true,
+      usePersistence:
+        options?.usePersistence === undefined ? true : options?.usePersistence,
       useAnalytics: options?.useAnalytics ?? true,
       useModeration: options?.useModeration ?? true,
       useThreatDetection: options?.useThreatDetection ?? true,
@@ -169,6 +175,7 @@ export class Aila implements AilaServices {
   }
 
   private async loadChatIfPersisting() {
+    log.info("Loading chat if persisting", this._options.usePersistence);
     if (this._options.usePersistence) {
       await this._chat.loadChat({ store: "AilaPrismaPersistence" });
     }

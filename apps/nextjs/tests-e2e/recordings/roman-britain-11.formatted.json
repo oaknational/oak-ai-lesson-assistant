@@ -1,0 +1,11 @@
+{
+  "type": "llmMessage",
+  "sectionsToEdit": [],
+  "patches": [],
+  "sectionsEdited": [],
+  "prompt": {
+    "type": "text",
+    "value": "We've completed the lesson plan for the End of Roman Britain. If you need to make any changes or if you'd like assistance with another topic, just let me know. Otherwise, you can proceed to download the lesson plan and materials. Thank you for using the lesson planning tool!"
+  },
+  "status": "complete"
+}

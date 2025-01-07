@@ -1,22 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { DemoContext } from "@/components/ContextProviders/Demo";
+import {
+  DemoDecorator,
+  demoParams,
+} from "@/storybook/decorators/DemoDecorator";
 
 import { InChatDownloadButtons } from "./in-chat-download-buttons";
 
-const DemoDecorator: Story["decorators"] = (Story, { parameters }) => (
-  <DemoContext.Provider
-    value={{
-      isDemoUser: false,
-      isSharingEnabled: true,
-      ...parameters.demoContext,
-    }}
-  >
-    <Story />
-  </DemoContext.Provider>
-);
-
-const meta: Meta<typeof InChatDownloadButtons> = {
+const meta = {
   title: "Components/Chat/InChatDownloadButtons",
   component: InChatDownloadButtons,
   tags: ["autodocs"],
@@ -24,17 +15,18 @@ const meta: Meta<typeof InChatDownloadButtons> = {
     id: "test-chat-id",
   },
   decorators: [DemoDecorator],
-};
+  parameters: {
+    ...demoParams({ isDemoUser: true }),
+  },
+} satisfies Meta<typeof InChatDownloadButtons>;
 
 export default meta;
-type Story = StoryObj<typeof InChatDownloadButtons>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
 export const SharingDisabled: Story = {
   parameters: {
-    demoContext: {
-      isSharingEnabled: false,
-    },
+    ...demoParams({ isDemoUser: true, isSharingEnabled: false }),
   },
 };

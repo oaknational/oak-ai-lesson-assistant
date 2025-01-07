@@ -1,27 +1,66 @@
 {
   "type": "llmMessage",
   "sectionsToEdit": [
-    "additionalMaterials"
+    "cycle1"
   ],
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Providing additional narrative support for the teacher to help deliver the lesson effectively.",
+      "reasoning": "Structured Cycle 1 to explain why the Romans left Britain, using a clear explanation, checks for understanding, and a practice task.",
       "value": {
-        "type": "string",
+        "type": "cycle",
         "op": "add",
-        "path": "/additionalMaterials",
-        "value": "## Narrative for Teacher\n\n### Introduction\n\"Today, we're going to explore an important moment in history when the Romans decided to leave Britain. Imagine the bustling Roman towns with their straight roads and grand buildings. But why would such a powerful empire decide to leave? Let's find out together!\"\n\n### Explanation of Departure\n\"The Roman Empire was like a big puzzle, with many pieces that needed to fit together. Over time, some pieces started to fall apart due to problems inside the Empire and attacks from outside. The Romans needed their soldiers elsewhere, so they decided to leave Britain around AD 410.\"\n\n### Changes After Departure\n\"After the Romans left, life in Britain changed. New local leaders took charge, and while some Roman buildings started to crumble, many roads and structures remained. These changes opened a new chapter for Britain, full of challenges and opportunities.\"\n\n### Roman Influence Today\n\"Even today, we can see the Roman influence around us. Words in our language, buildings inspired by Roman designs, and even some laws trace back to the Romans. Their impact is still felt, even though they left Britain many centuries ago.\"\n\n### Key Points for Explanation\n- Use a timeline to show the events leading to the Romans' departure.\n- Discuss the reasons for leaving: internal issues and external threats.\n- Highlight the continued use of Roman roads and some buildings.\n- Explain how Roman culture influences modern Britain in language, architecture, and laws."
+        "path": "/cycle1",
+        "value": {
+          "title": "Reasons for Roman departure",
+          "durationInMinutes": 15,
+          "explanation": {
+            "spokenExplanation": [
+              "Introduce the economic struggles within the Roman Empire that led to resource shortages.",
+              "Explain the political turmoil in Rome, including leadership changes and internal conflicts.",
+              "Discuss the increasing pressure from other invading groups on Roman territories.",
+              "Highlight the decision to withdraw Roman legions to defend the core of the Empire.",
+              "Connect to prior knowledge about the strength of the Roman army and why their departure was significant."
+            ],
+            "accompanyingSlideDetails": "A map showing the Roman Empire and key locations of internal conflicts.",
+            "imagePrompt": "Roman Empire map internal conflicts",
+            "slideText": "The Romans left Britain due to economic struggles, political turmoil, and pressure from other groups."
+          },
+          "checkForUnderstanding": [
+            {
+              "question": "Why did the Romans leave Britain?",
+              "answers": [
+                "Economic struggles and political turmoil"
+              ],
+              "distractors": [
+                "They were defeated by local tribes",
+                "They lost interest in Britain"
+              ]
+            },
+            {
+              "question": "What did the Roman army need to do?",
+              "answers": [
+                "Defend the core of the Empire"
+              ],
+              "distractors": [
+                "Conquer new lands",
+                "Build more roads"
+              ]
+            }
+          ],
+          "practice": "List three reasons why the Romans decided to leave Britain. Use examples from today's lesson to support your answers.",
+          "feedback": "Model answer: The Romans left Britain because of economic struggles, political turmoil, and the need to defend the Empire's core areas."
+        }
       },
       "status": "complete"
     }
   ],
   "sectionsEdited": [
-    "additionalMaterials"
+    "cycle1"
   ],
   "prompt": {
     "type": "text",
-    "value": "The additional materials section has been created. Does the narrative support your teaching needs? If you have any specific requests for additional content, let me know. Otherwise, tap **Continue** to finish the lesson plan."
+    "value": "Is Cycle 1 structured effectively to explain the reasons for the Romans leaving Britain? If not, suggest any changes. Otherwise, tap **Continue** to move on to the next step."
   },
   "status": "complete"
 }

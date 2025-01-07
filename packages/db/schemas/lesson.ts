@@ -38,26 +38,7 @@ export const ZLesson = z.object({
     programmeOfStudyUnits: z.array(
       z.object({
         id: z.number(),
-        programme: z.object({
-          id: z.number(),
-          slug: z.string(),
-          title: z.string(),
-          subject: z.object({
-            id: z.number(),
-            slug: z.string(),
-            title: z.string(),
-          }),
-          year: z.object({
-            id: z.number(),
-            title: z.string(),
-            slug: z.string(),
-            keyStage: z.object({
-              id: z.number(),
-              title: z.string(),
-              slug: z.string(),
-            }),
-          }),
-        }),
+        programme: Programme,
       }),
     ),
     therapyUnits: z.array(z.unknown()).nullish(),

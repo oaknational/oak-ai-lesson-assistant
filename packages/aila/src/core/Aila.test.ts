@@ -109,7 +109,8 @@ describe("Aila", () => {
         },
         plugins: [],
         services: {
-          chatCategoriser: mockCategoriser as unknown as AilaCategorisation,
+          chatCategoriser: () =>
+            mockCategoriser as unknown as AilaCategorisation,
         },
       });
 
@@ -156,7 +157,8 @@ describe("Aila", () => {
         },
         plugins: [],
         services: {
-          chatCategoriser: mockCategoriser as unknown as AilaCategorisation,
+          chatCategoriser: () =>
+            mockCategoriser as unknown as AilaCategorisation,
         },
       });
 
@@ -308,8 +310,8 @@ describe("Aila", () => {
         },
         plugins: [],
         services: {
-          chatLlmService: mockLLMService,
-          chatCategoriser: mockChatCategoriser,
+          chatLlmService: () => mockLLMService,
+          chatCategoriser: () => mockChatCategoriser,
         },
       });
 
@@ -361,9 +363,8 @@ describe("Aila", () => {
           value: newTitle,
         },
       };
-      const chatLlmService = new MockLLMService([
-        JSON.stringify(mockedResponse),
-      ]);
+      const chatLlmService = () =>
+        new MockLLMService([JSON.stringify(mockedResponse)]);
       const ailaInstance = new Aila({
         lessonPlan: {
           title: "Roman Britain",
@@ -419,8 +420,8 @@ describe("Aila", () => {
           useModeration: false,
         },
         services: {
-          chatLlmService: new MockLLMService(),
-          chatCategoriser: mockCategoriser,
+          chatLlmService: () => new MockLLMService(),
+          chatCategoriser: () => mockCategoriser,
         },
         plugins: [],
       });
@@ -444,9 +445,7 @@ describe("Aila", () => {
       const mockCategoriser = new MockCategoriser({ mockedLessonPlan });
 
       const mockLLMResponse = [
-        // eslint-disable-next-line quotes
         '{"type":"patch","reasoning":"Update title","value":{"op":"replace","path":"/title","value":"Updated Mocked Lesson Plan"}}␞\n',
-        // eslint-disable-next-line quotes
         '{"type":"patch","reasoning":"Update subject","value":{"op":"replace","path":"/subject","value":"Updated Mocked Subject"}}␞\n',
       ];
       const mockLLMService = new MockLLMService(mockLLMResponse);
@@ -461,8 +460,8 @@ describe("Aila", () => {
           useModeration: false,
         },
         services: {
-          chatCategoriser: mockCategoriser,
-          chatLlmService: mockLLMService,
+          chatCategoriser: () => mockCategoriser,
+          chatLlmService: () => mockLLMService,
         },
         plugins: [],
       });

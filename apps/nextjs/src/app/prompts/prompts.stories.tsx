@@ -1,18 +1,19 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { chromaticParams } from "../../../.storybook/chromatic";
+import { chromaticParams } from "@/storybook/chromatic";
+
 import { PromptsContent } from "./prompts";
 
-const meta: Meta<typeof PromptsContent> = {
+const meta = {
   title: "Pages/Prompts",
   component: PromptsContent,
   parameters: {
     ...chromaticParams(["mobile", "desktop"]),
   },
-};
+} satisfies Meta<typeof PromptsContent>;
 
 export default meta;
-type Story = StoryObj<typeof PromptsContent>;
+type Story = StoryObj<typeof meta>;
 
 const fixture = {
   apps: [

@@ -72,11 +72,9 @@ const isPreloadableRoute = createRouteMatcher([
 
 const isOnboardingRoute = createRouteMatcher([
   "/onboarding",
-  "/sign-in",
   // NOTE: Be careful that this request doesn't batch as it will change the path
   "/api/trpc/main/auth.setDemoStatus",
   "/api/trpc/main/auth.acceptTerms",
-  "/api/trpc/main",
 ]);
 
 const isHomepage = createRouteMatcher(["/"]);
@@ -119,6 +117,14 @@ function conditionallyProtectRoute(
       log("Incomplete onboarding: REDIRECT");
       return NextResponse.redirect(new URL("/onboarding", req.url));
     }
+  }
+  if (
+    userId &&
+    isOnboardingRoute(req) &&
+    !needsToCompleteOnboarding(sessionClaims)
+  ) {
+    log("Already onboarded: REDIRECT");
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   if (isPublicRoute(req)) {

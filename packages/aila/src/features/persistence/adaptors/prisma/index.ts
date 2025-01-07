@@ -39,6 +39,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
     const appSession = await this._prisma.appSession.findFirst({
       where: {
         id,
+        deletedAt: null,
       },
     });
 
@@ -67,6 +68,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
       return;
     }
 
+    log.info("Persisting chat", payload.id, payload.userId, payload.iteration);
     await this._prisma.appSession.upsert({
       where: {
         id: payload.id,

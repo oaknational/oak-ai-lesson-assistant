@@ -1,3 +1,27 @@
+# [1.19.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.18.2...v1.19.0) (2024-12-18)
+
+
+### Bug Fixes
+
+* sonar duplication ([#397](https://github.com/oaknational/oak-ai-lesson-assistant/issues/397)) ([dea3106](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dea3106d249119169e515d7ccebc827f324bdbf3))
+
+
+### Features
+
+* soft delete ([#383](https://github.com/oaknational/oak-ai-lesson-assistant/issues/383)) ([9dee4ad](https://github.com/oaknational/oak-ai-lesson-assistant/commit/9dee4adb840a0a5d96e43f02349ad04597862539))
+
+## [1.18.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.18.1...v1.18.2) (2024-12-17)
+
+## [1.18.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.18.0...v1.18.1) (2024-12-16)
+
+
+### Bug Fixes
+
+* improve chances of showing 5 relevant plans ([#444](https://github.com/oaknational/oak-ai-lesson-assistant/issues/444)) ([4955a1e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4955a1e35fad9345de01ce9b831747059a95c579))
+* posthog consistent event properties ([#440](https://github.com/oaknational/oak-ai-lesson-assistant/issues/440)) ([7c24485](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7c24485f6604cc9a13a0a24058dd5f5a1b0f972e))
+* remove key from chat provider ([#431](https://github.com/oaknational/oak-ai-lesson-assistant/issues/431)) ([35141b3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/35141b3305ac7830feeb7269e8ee1f2611368c9a))
+* temporarily disable no unsafe rules ([#429](https://github.com/oaknational/oak-ai-lesson-assistant/issues/429)) ([a8ada5d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a8ada5d008188ea3064476a431b041165fad6e81))
+
 # [1.18.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.17.1...v1.18.0) (2024-12-11)
 
 

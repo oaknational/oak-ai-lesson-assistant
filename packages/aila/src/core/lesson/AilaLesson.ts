@@ -31,7 +31,7 @@ export class AilaLesson implements AilaLessonService {
     lessonPlan?: LooseLessonPlan;
     categoriser?: AilaCategorisationFeature;
   }) {
-    log.info("Creating AilaLesson", lessonPlan?.title);
+    log.info("Initializing AilaLesson", { title: lessonPlan?.title });
     this._aila = aila;
     this._plan = lessonPlan ?? {};
     this._categoriser =
@@ -136,7 +136,7 @@ export class AilaLesson implements AilaLessonService {
   }
 
   public async setUpInitialLessonPlan(messages: Message[]) {
-    log.info("Setting up initial lesson plan", this._plan.title);
+    log.info("Setting up initial lesson plan", { title: this._plan.title });
     const shouldCategoriseBasedOnInitialMessages = Boolean(
       !this._plan.subject && !this._plan.keyStage && !this._plan.title,
     );

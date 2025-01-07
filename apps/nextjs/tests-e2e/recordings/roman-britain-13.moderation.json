@@ -1,0 +1,34 @@
+{
+  "id": "chatcmpl-AgIYYuSSApWtxrQFrjBUNfRhkMLrD",
+  "object": "chat.completion",
+  "created": 1734644470,
+  "model": "gpt-4o-2024-08-06",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan for 'End of Roman Britain' is fully compliant across all categories. It contains no discriminatory language, offensive language, or strong language, making it fully compliant in the 'Language and discrimination' category. There is no depiction or discussion of conflict, violence, serious violence, or sexual violence, ensuring full compliance in the 'Violence and crime' category. The content does not include any upsetting, sensitive, or distressing material; it simply discusses historical events in a factual manner, making it fully compliant in the 'Upsetting, disturbing and sensitive' category. There is no depiction or discussion of nudity or sexual content, making it fully compliant in the 'Nudity and sex' category. The lesson does not involve any physical activities, equipment requiring supervision, or external content, ensuring full compliance in the 'Physical activity and safety' category. Lastly, the lesson does not contain any toxic or harmful content, making it fully compliant in the 'Toxic' category. Overall, the lesson is age-appropriate for Key Stage 1 students, focusing on the historical transition from Roman to Anglo-Saxon Britain in a sensitive and educational manner.\",\"categories\":[]}",
+        "refusal": null
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 2494,
+    "completion_tokens": 266,
+    "total_tokens": 2760,
+    "prompt_tokens_details": {
+      "cached_tokens": 2304,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "system_fingerprint": "fp_d28bcae782"
+}

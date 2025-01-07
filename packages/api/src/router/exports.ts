@@ -1,6 +1,5 @@
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
-import { LessonSnapshots } from "@oakai/core";
 import { sendEmail } from "@oakai/core/src/utils/sendEmail";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import {
@@ -8,7 +7,6 @@ import {
   exportDocQuizSchema,
   exportSlidesFullLessonSchema,
   exportDocsWorksheetSchema,
-  exportQuizDesignerSlides,
 } from "@oakai/exports";
 import { exportableQuizAppStateSchema } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
@@ -18,8 +16,10 @@ import { kv } from "@vercel/kv";
 import { z } from "zod";
 
 import { exportAdditionalMaterialsDoc } from "../export/exportAdditionalMaterialsDoc";
+import { getExistingExportData } from "../export/exportHelpers";
 import { exportLessonPlan } from "../export/exportLessonPlan";
 import { exportLessonSlides } from "../export/exportLessonSlides";
+import { exportQuizDesignerSlidesWrapper } from "../export/exportQuizDesignerSlides";
 import { exportQuizDoc } from "../export/exportQuizDoc";
 import { exportWorksheets } from "../export/exportWorksheets";
 import { protectedProcedure } from "../middleware/auth";
@@ -178,10 +178,6 @@ const outputSchema = z.union([
 ]);
 export type OutputSchema = z.infer<typeof outputSchema>;
 
-/**
- * @todo refactor this router to for less duplication
- */
-
 export const exportsRouter = router({
   exportLessonSlides: protectedProcedure
     .input(
@@ -214,28 +210,15 @@ export const exportsRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       try {
-        const userId = ctx.auth.userId;
-        const { chatId, data, messageId } = input;
-        const lessonSnapshots = new LessonSnapshots(ctx.prisma);
-        const { id: snapshotId } = await lessonSnapshots.getOrSaveSnapshot({
-          userId,
-          chatId,
-          snapshot: data,
-          trigger: "EXPORT_BY_USER",
-          messageId,
+        const exportType = "LESSON_PLAN_DOC";
+        const { exportData } = await getExistingExportData({
+          ctx,
+          input,
+          exportType,
         });
 
-        const exportData = await ailaGetExportBySnapshotId({
-          prisma: ctx.prisma,
-          snapshotId,
-          exportType: "LESSON_PLAN_DOC",
-        });
         if (exportData) {
-          const output: OutputSchema = {
-            link: exportData.gdriveFileUrl,
-            canViewSourceDoc: exportData.userCanViewGdriveFile,
-          };
-          return output;
+          return exportData;
         }
       } catch (error) {
         log.error("Error checking if download exists:", error);
@@ -256,28 +239,16 @@ export const exportsRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       try {
-        const userId = ctx.auth.userId;
-        const { chatId, data, messageId } = input;
-        const lessonSnapshots = new LessonSnapshots(ctx.prisma);
-        const { id: snapshotId } = await lessonSnapshots.getOrSaveSnapshot({
-          userId,
-          chatId,
-          snapshot: data,
-          trigger: "EXPORT_BY_USER",
-          messageId,
-        });
         // find the latest export for this snapshot
-        const exportData = await ailaGetExportBySnapshotId({
-          prisma: ctx.prisma,
-          snapshotId,
-          exportType: "LESSON_SLIDES_SLIDES",
+        const exportType = "LESSON_SLIDES_SLIDES";
+        const { exportData } = await getExistingExportData({
+          ctx,
+          input,
+          exportType,
         });
+
         if (exportData) {
-          const output: OutputSchema = {
-            link: exportData.gdriveFileUrl,
-            canViewSourceDoc: exportData.userCanViewGdriveFile,
-          };
-          return output;
+          return exportData;
         }
       } catch (error) {
         log.error("Error checking if download exists:", error);
@@ -299,106 +270,9 @@ export const exportsRouter = router({
     .output(outputSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        const { userId } = ctx.auth;
-        const user = await clerkClient.users.getUser(userId);
-        const userEmail = user?.emailAddresses[0]?.emailAddress;
-        const exportType = "LESSON_SLIDES_SLIDES";
-
-        if (!userEmail) {
-          return {
-            error: new Error("User email not found"),
-            message: "User email not found",
-          };
-        }
-
-        const { chatId, messageId, data: snapshot } = input;
-
-        const lessonSnapshots = new LessonSnapshots(ctx.prisma);
-        const { id: snapshotId } = await lessonSnapshots.getOrSaveSnapshot({
-          userId,
-          chatId,
-          snapshot,
-          trigger: "EXPORT_BY_USER",
-          messageId,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportQuizDesignerSlides",
-          message: "Got or saved snapshot",
-          data: { snapshot },
-        });
-
-        const exportData = await qdGetExportBySnapshotId({
-          prisma: ctx.prisma,
-          snapshotId,
-          exportType,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportQuizDesignerSlides",
-          message: "Got export data",
-          data: { exportData },
-        });
-
-        if (exportData) {
-          const output: OutputSchema = {
-            link: exportData.gdriveFileUrl,
-            canViewSourceDoc: exportData.userCanViewGdriveFile,
-          };
-          return output;
-        }
-
-        /**
-         * User hasn't yet exported the lesson in this state, so we'll do it now
-         * and store the result in the database
-         */
-
-        const result = await exportQuizDesignerSlides({
-          snapshotId: "lessonSnapshot.id",
-          userEmail,
-          onStateChange: (state) => {
-            log.info(state);
-
-            Sentry.addBreadcrumb({
-              category: "exportWorksheetSlides",
-              message: "Export state change",
-              data: state,
-            });
-          },
-          quiz: input.data,
-        });
-
-        Sentry.addBreadcrumb({
-          category: "exportLessonSlides",
-          message: "Got export result",
-          data: { result },
-        });
-
-        if ("error" in result) {
-          reportErrorResult(result, input);
-          return {
-            error: result.error,
-            message: "Failed to export lesson",
-          };
-        }
-
-        const { data } = result;
-
-        await qdSaveExport({
-          auth: ctx.auth,
-          prisma: ctx.prisma,
-          snapshotId,
-          exportType,
-          data: result.data,
-        });
-
-        const output: OutputSchema = {
-          link: data.fileUrl,
-          canViewSourceDoc: data.userCanViewGdriveFile,
-        };
-        return output;
+        return await exportQuizDesignerSlidesWrapper({ input, ctx });
       } catch (error) {
-        const message = "Failed to export lesson";
+        const message = "Failed to export quiz designer slides";
         reportErrorResult({ error, message }, input);
         return {
           error,
@@ -420,7 +294,7 @@ export const exportsRouter = router({
       try {
         return await exportAdditionalMaterialsDoc({ input, ctx });
       } catch (error) {
-        const message = "Failed to export lesson";
+        const message = "Failed to export additional materials";
         reportErrorResult({ error, message }, input);
         return {
           error,
@@ -438,31 +312,20 @@ export const exportsRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       try {
-        const userId = ctx.auth.userId;
-        const { chatId, data: snapshot, messageId } = input;
-        const lessonSnapshots = new LessonSnapshots(ctx.prisma);
-        const { id: snapshotId } = await lessonSnapshots.getOrSaveSnapshot({
-          userId,
-          chatId,
-          snapshot,
-          trigger: "EXPORT_BY_USER",
-          messageId,
+        const exportType = "ADDITIONAL_MATERIALS_DOCS";
+        const { exportData } = await getExistingExportData({
+          ctx,
+          input,
+          exportType,
         });
-        const exportData = await ailaGetExportBySnapshotId({
-          prisma: ctx.prisma,
-          snapshotId,
-          exportType: "ADDITIONAL_MATERIALS_DOCS",
-        });
+
         if (exportData) {
-          const output: OutputSchema = {
-            link: exportData.gdriveFileUrl,
-            canViewSourceDoc: exportData.userCanViewGdriveFile,
-          };
-          return output;
+          return exportData;
         }
       } catch (error) {
         log.error("Error checking if download exists:", error);
-        const message = "Failed to check if download exists";
+        const message =
+          "Failed to check if additional materials download exists";
         return {
           error,
           message,
@@ -500,27 +363,15 @@ export const exportsRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       try {
-        const userId = ctx.auth.userId;
-        const { chatId, data, messageId } = input;
-        const lessonSnapshots = new LessonSnapshots(ctx.prisma);
-        const { id: snapshotId } = await lessonSnapshots.getOrSaveSnapshot({
-          userId,
-          chatId,
-          snapshot: data,
-          trigger: "EXPORT_BY_USER",
-          messageId,
+        const exportType = "WORKSHEET_SLIDES";
+        const { exportData } = await getExistingExportData({
+          ctx,
+          input,
+          exportType,
         });
-        const exportData = await ailaGetExportBySnapshotId({
-          prisma: ctx.prisma,
-          snapshotId,
-          exportType: "WORKSHEET_SLIDES",
-        });
+
         if (exportData) {
-          const output: OutputSchema = {
-            link: exportData.gdriveFileUrl,
-            canViewSourceDoc: exportData.userCanViewGdriveFile,
-          };
-          return output;
+          return exportData;
         }
       } catch (error) {
         log.error("Error checking if download exists:", error);
@@ -564,30 +415,17 @@ export const exportsRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       try {
-        const userId = ctx.auth.userId;
-        const { chatId, data, lessonSnapshot, messageId } = input;
-        const lessonSnapshots = new LessonSnapshots(ctx.prisma);
-        const { id: snapshotId } = await lessonSnapshots.getOrSaveSnapshot({
-          userId,
-          chatId,
-          snapshot: lessonSnapshot,
-          trigger: "EXPORT_BY_USER",
-          messageId,
-        });
         const exportType =
-          data.quizType === "exit" ? "EXIT_QUIZ_DOC" : "STARTER_QUIZ_DOC";
+          input.data.quizType === "exit" ? "EXIT_QUIZ_DOC" : "STARTER_QUIZ_DOC";
 
-        const exportData = await ailaGetExportBySnapshotId({
-          prisma: ctx.prisma,
-          snapshotId,
+        const { exportData } = await getExistingExportData({
+          ctx,
+          input,
           exportType,
         });
+
         if (exportData) {
-          const output: OutputSchema = {
-            link: exportData.gdriveFileUrl,
-            canViewSourceDoc: exportData.userCanViewGdriveFile,
-          };
-          return output;
+          return exportData;
         }
       } catch (error) {
         log.error("Error checking if download exists:", error);

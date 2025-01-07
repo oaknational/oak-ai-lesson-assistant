@@ -3,80 +3,235 @@ type":"
 ll
 m
 Message
-","sectionsToEdit":[]
-,"patches":[]
-,"sectionsEdited":[]
-,"prompt":{"
+","sectionsToEdit":["
+exit
+Quiz
+"],"patches":[
+{"
+type":"
+patch
+","reasoning":"
+Created
+ an
+ exit
+ quiz
+ to
+ assess
+ pupils
+'
+ understanding
+ of
+ the
+ lesson
+ on
+ the
+ end
+ of
+ Roman
+ Britain
+.","
+value":{"
+type":"
+quiz
+","op":"
+add
+","path":"/
+exit
+Quiz
+","value":[
+{"
+question":"
+Why
+ did
+ the
+ Romans
+ leave
+ Britain
+?
+","answers":["
+Economic
+ struggles
+ and
+ political
+ turmoil
+"],"distractors":["
+They
+ defeated
+ local
+ tribes
+","
+They
+ lost
+ interest
+ in
+ Britain
+"]},{"
+question":"
+What
+ change
+ occurred
+ in
+ Britain
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+Local
+ tribes
+ regained
+ control
+"],"distractors":["
+V
+iking
+ invasion
+","
+Roman
+ return
+"]},{"
+question":"
+What
+ remained
+ in
+ Britain
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+Roman
+ culture
+"],"distractors":["
+Egypt
+ian
+ culture
+","
+V
+iking
+ culture
+"]},{"
+question":"
+How
+ did
+ British
+ tribes
+ adapt
+ after
+ the
+ Roman
+ departure
+?
+","answers":["
+Form
+ed
+ new
+ alliances
+"],"distractors":["
+Built
+ new
+ cities
+","
+Con
+quer
+ed
+ new
+ lands
+"]},{"
+question":"
+What
+ happened
+ to
+ Roman
+ roads
+ after
+ their
+ departure
+?
+","answers":["
+Many
+ were
+ not
+ maintained
+"],"distractors":["
+All
+ were
+ destroyed
+","
+They
+ were
+ expanded
+"]},{"
+question":"
+What
+ was
+ a
+ key
+ impact
+ on
+ British
+ tribes
+?
+","answers":["
+Need
+ to
+ reorgan
+ise
+ and
+ adapt
+"],"distractors":["
+Con
+quer
+ new
+ territories
+","
+Develop
+ new
+ languages
+"]}]},"status":"
+complete
+"}],"sectionsEdited":["
+exit
+Quiz
+"],"prompt":{"
 type":"
 text
 ","value":"
-All
+Is
  the
- requested
- sections
- including
- the
- Starter
- Quiz
-,
- Cycle
- 
-1
-,
- Cycle
- 
-2
-,
- Cycle
- 
-3
-,
- and
- Exit
- Quiz
- have
- already
- been
- generated
- in
+ exit
+ quiz
+ suitable
+ for
+ assessing
+ pupils
+'
+ understanding
+ of
  the
  lesson
- plan
-.
+?
  If
- there's
- anything
- specific
- you'd
- like
- to
- change
- or
- if
- you
- need
- any
- additional
- sections
- or
- modifications
+ not
 ,
- please
- let
- me
- know
+ suggest
+ any
+ changes
 .
  Otherwise
 ,
- you
- can
  tap
  **
 Continue
 **
  to
  move
- forward
+ on
+ to
+ the
+ next
+ step
 ."
 },"status":"
 complete

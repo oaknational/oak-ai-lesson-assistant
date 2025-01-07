@@ -1,61 +1,25 @@
 {
   "type": "llmMessage",
   "sectionsToEdit": [
-    "priorKnowledge",
-    "keyLearningPoints",
     "misconceptions",
     "keywords"
   ],
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Identifying the foundational knowledge pupils should have before this lesson.",
-      "value": {
-        "type": "string-array",
-        "op": "add",
-        "path": "/priorKnowledge",
-        "value": [
-          "The Romans invaded Britain in AD 43.",
-          "Roman Britain was part of the Roman Empire for nearly 400 years.",
-          "The Roman Empire was large and included many countries.",
-          "Romans built roads and towns in Britain.",
-          "The Roman army was strong and well-organised."
-        ]
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Highlighting the main learning points pupils should take from this lesson.",
-      "value": {
-        "type": "string-array",
-        "op": "add",
-        "path": "/keyLearningPoints",
-        "value": [
-          "The Roman Empire began to weaken due to internal and external pressures.",
-          "Romans left Britain around AD 410 to defend other parts of the Empire.",
-          "Britain experienced changes in governance and defence after the Romans left.",
-          "Roman influence remained in Britain's culture, architecture, and roads.",
-          "The end of Roman rule marked the beginning of new challenges for Britain."
-        ]
-      },
-      "status": "complete"
-    },
-    {
-      "type": "patch",
-      "reasoning": "Addressing common misconceptions to ensure accurate understanding of the topic.",
+      "reasoning": "Identified common misconceptions about the end of Roman Britain to address in the lesson.",
       "value": {
         "type": "misconceptions",
         "op": "add",
         "path": "/misconceptions",
         "value": [
           {
-            "misconception": "Romans left Britain because they were defeated by locals",
-            "description": "The Romans left due to pressures on other parts of the Empire and internal issues, not because they were defeated by locals."
+            "misconception": "The Romans left Britain because they were defeated by local tribes",
+            "description": "The Romans left due to internal issues within the Roman Empire itself, not because of a defeat by local tribes. Highlight the economic and political struggles Rome faced."
           },
           {
-            "misconception": "All Roman influence disappeared after they left",
-            "description": "Many aspects of Roman culture, architecture, and infrastructure remained in Britain even after their departure."
+            "misconception": "There were no Romans left in Britain after their departure",
+            "description": "While the Roman army and officials left, many Romans who settled remained. Clarify that Roman influence continued in local culture and infrastructure."
           }
         ]
       },
@@ -63,31 +27,31 @@
     },
     {
       "type": "patch",
-      "reasoning": "Providing key vocabulary to support understanding of the topic.",
+      "reasoning": "Selected keywords to help pupils understand the lesson's key concepts and vocabulary.",
       "value": {
         "type": "keywords",
         "op": "add",
         "path": "/keywords",
         "value": [
           {
+            "keyword": "Romans",
+            "definition": "People from the ancient civilization of Rome who ruled many lands."
+          },
+          {
+            "keyword": "Britain",
+            "definition": "An island in Europe that was part of the Roman Empire."
+          },
+          {
+            "keyword": "Departure",
+            "definition": "The act of leaving a place."
+          },
+          {
+            "keyword": "Tribes",
+            "definition": "Groups of people who lived in Britain before and after the Romans."
+          },
+          {
             "keyword": "Empire",
             "definition": "A large group of countries or regions controlled by one ruler or government."
-          },
-          {
-            "keyword": "Depart",
-            "definition": "To leave a place."
-          },
-          {
-            "keyword": "Influence",
-            "definition": "Having an effect on the character, development, or behaviour of someone or something."
-          },
-          {
-            "keyword": "Invasion",
-            "definition": "An instance of invading a country with an armed force."
-          },
-          {
-            "keyword": "Governance",
-            "definition": "The way that a city, company, etc., is controlled by those in power."
           }
         ]
       },
@@ -95,14 +59,12 @@
     }
   ],
   "sectionsEdited": [
-    "priorKnowledge",
-    "keyLearningPoints",
     "misconceptions",
     "keywords"
   ],
   "prompt": {
     "type": "text",
-    "value": "Are the prior knowledge, key learning points, misconceptions, and keywords sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."
+    "value": "Are the misconceptions and keywords suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."
   },
   "status": "complete"
 }

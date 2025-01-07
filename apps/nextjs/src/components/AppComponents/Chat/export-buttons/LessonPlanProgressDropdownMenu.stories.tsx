@@ -6,19 +6,20 @@ import type {
 } from "@oakai/aila/src/protocol/schema";
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { LessonPlanProgressDropdownMenu } from "./LessonPlanProgressDropdownMenu";
+import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
-const meta: Meta<typeof LessonPlanProgressDropdownMenu> = {
-  title: "Components/LessonPlan/LessonPlanProgressDropdownMenu",
-  component: LessonPlanProgressDropdownMenu,
+const meta = {
+  title: "Components/LessonPlan/LessonPlanProgressDropdown",
+  component: LessonPlanProgressDropdown,
   tags: ["autodocs"],
-};
+} satisfies Meta<typeof LessonPlanProgressDropdown>;
 
 export default meta;
-type Story = StoryObj<typeof LessonPlanProgressDropdownMenu>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
+    isStreaming: false,
     lessonPlan: {
       // 1 (lesson details)
       title: "Introduction to Glaciation",
@@ -31,6 +32,17 @@ export const Default: Story = {
       // 4
       priorKnowledge: ["Sample prior knowledge"],
     },
+    sectionRefs: {
+      title: { current: null },
+      keyStage: { current: null },
+      subject: { current: null },
+      learningOutcome: { current: null },
+      learningCycles: { current: null },
+      priorKnowledge: { current: null },
+      cycle1: { current: null },
+      cycle2: { current: null },
+      cycle3: { current: null },
+    },
     documentContainerRef: { current: null },
   },
 };
@@ -38,6 +50,7 @@ export const Default: Story = {
 export const PartiallyCompleted: Story = {
   args: {
     ...Default.args,
+    isStreaming: true,
     lessonPlan: {
       // 1 (lesson details)
       title: "Introduction to Glaciation",

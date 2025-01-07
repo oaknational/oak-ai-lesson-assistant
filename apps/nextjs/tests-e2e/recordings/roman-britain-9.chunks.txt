@@ -1,0 +1,66 @@
+{"
+type":"
+ll
+m
+Message
+","sectionsToEdit":[]
+,"patches":[]
+,"sectionsEdited":[]
+,"prompt":{"
+type":"
+text
+","value":"
+It
+ appears
+ we've
+ completed
+ all
+ the
+ sections
+ of
+ your
+ lesson
+ plan
+.
+ If
+ there's
+ anything
+ else
+ you
+ need
+ or
+ if
+ you'd
+ like
+ to
+ adjust
+ any
+ part
+ of
+ it
+,
+ please
+ let
+ me
+ know
+.
+ Otherwise
+,
+ you're
+ all
+ set
+ to
+ download
+ the
+ lesson
+ materials
+ or
+ begin
+ planning
+ a
+ new
+ lesson
+!"
+},"status":"
+complete
+"}

@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
+import { chromaticParams } from "@/storybook/chromatic";
 
-import { chromaticParams } from "../../../../.storybook/chromatic";
 import { DialogProvider } from "../DialogContext";
 import { ChatStart } from "./chat-start";
 
-const meta: Meta<typeof ChatStart> = {
+const meta = {
   title: "Pages/Chat/Chat Start",
   component: ChatStart,
   parameters: {
@@ -23,10 +23,10 @@ const meta: Meta<typeof ChatStart> = {
       </DialogProvider>
     ),
   ],
-};
+} satisfies Meta<typeof ChatStart>;
 
 export default meta;
-type Story = StoryObj<typeof ChatStart>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},

@@ -4,377 +4,306 @@ ll
 m
 Message
 ","sectionsToEdit":["
-additional
-Materials
+cycle
+1
 "],"patches":[
 {"
 type":"
 patch
 ","reasoning":"
-Providing
- additional
- narrative
- support
- for
- the
- teacher
+Structured
+ Cycle
+ 
+1
  to
- help
- deliver
+ explain
+ why
  the
- lesson
- effectively
+ Romans
+ left
+ Britain
+,
+ using
+ a
+ clear
+ explanation
+,
+ checks
+ for
+ understanding
+,
+ and
+ a
+ practice
+ task
 .","
 value":{"
 type":"
-string
+cycle
 ","op":"
 add
 ","path":"/
-additional
-Materials
-","value":"
-##
- Narrative
+cycle
+1
+","value":{"
+title":"
+Reasons
  for
- Teacher
-\n
-\n
-###
- Introduction
-\n
-\"
-Today
-,
- we're
- going
- to
- explore
- an
- important
- moment
- in
- history
- when
- the
- Romans
- decided
- to
- leave
- Britain
-.
- Imagine
- the
- bustling
  Roman
- towns
- with
- their
- straight
- roads
- and
- grand
- buildings
-.
- But
- why
- would
- such
- a
- powerful
- empire
- decide
- to
- leave
-?
- Let's
- find
- out
- together
-!
-\"\
-n
-\n
-###
- Explanation
- of
- Departure
-\n
-\"
-The
+ departure
+","durationInMinutes":15
+,"explanation":{"
+spokenExplanation":["
+Introduce
+ the
+ economic
+ struggles
+ within
+ the
  Roman
  Empire
- was
- like
- a
- big
- puzzle
-,
- with
- many
- pieces
  that
- needed
+ led
  to
- fit
- together
-.
- Over
- time
+ resource
+ shortages
+.","
+Explain
+ the
+ political
+ turmoil
+ in
+ Rome
 ,
- some
- pieces
- started
+ including
+ leadership
+ changes
+ and
+ internal
+ conflicts
+.","
+Discuss
+ the
+ increasing
+ pressure
+ from
+ other
+ invading
+ groups
+ on
+ Roman
+ territories
+.","
+Highlight
+ the
+ decision
  to
- fall
- apart
+ withdraw
+ Roman
+ leg
+ions
+ to
+ defend
+ the
+ core
+ of
+ the
+ Empire
+.","
+Connect
+ to
+ prior
+ knowledge
+ about
+ the
+ strength
+ of
+ the
+ Roman
+ army
+ and
+ why
+ their
+ departure
+ was
+ significant
+."
+],"accompanyingSlideDetails":"
+A
+ map
+ showing
+ the
+ Roman
+ Empire
+ and
+ key
+ locations
+ of
+ internal
+ conflicts
+.","
+imagePrompt":"
+Roman
+ Empire
+ map
+ internal
+ conflicts
+","slideText":"
+The
+ Romans
+ left
+ Britain
  due
  to
- problems
- inside
+ economic
+ struggles
+,
+ political
+ turmoil
+,
+ and
+ pressure
+ from
+ other
+ groups
+."
+},"checkForUnderstanding":[
+{"
+question":"
+Why
+ did
+ the
+ Romans
+ leave
+ Britain
+?
+","answers":["
+Economic
+ struggles
+ and
+ political
+ turmoil
+"],"distractors":["
+They
+ were
+ defeated
+ by
+ local
+ tribes
+","
+They
+ lost
+ interest
+ in
+ Britain
+"]},{"
+question":"
+What
+ did
+ the
+ Roman
+ army
+ need
+ to
+ do
+?
+","answers":["
+Def
+end
+ the
+ core
+ of
  the
  Empire
- and
- attacks
- from
- outside
-.
- The
+"],"distractors":["
+Con
+quer
+ new
+ lands
+","
+Build
+ more
+ roads
+"]}],"practice":"
+List
+ three
+ reasons
+ why
+ the
  Romans
- needed
- their
- soldiers
- elsewhere
-,
- so
- they
  decided
  to
  leave
  Britain
- around
- AD
- 
-410
 .
-\"\
-n
-\n
-###
- Changes
- After
- Departure
-\n
-\"
-After
- the
- Romans
- left
-,
- life
- in
- Britain
- changed
-.
- New
- local
- leaders
- took
- charge
-,
- and
- while
- some
- Roman
- buildings
- started
- to
- crumble
-,
- many
- roads
- and
- structures
- remained
-.
- These
- changes
- opened
- a
- new
- chapter
- for
- Britain
-,
- full
- of
- challenges
- and
- opportunities
-.
-\"\
-n
-\n
-###
- Roman
- Influence
- Today
-\n
-\"
-Even
- today
-,
- we
- can
- see
- the
- Roman
- influence
- around
- us
-.
- Words
- in
- our
- language
-,
- buildings
- inspired
- by
- Roman
- designs
-,
- and
- even
- some
- laws
- trace
- back
- to
- the
- Romans
-.
- Their
- impact
- is
- still
- felt
-,
- even
- though
- they
- left
- Britain
- many
- centuries
- ago
-.
-\"\
-n
-\n
-###
- Key
- Points
- for
- Explanation
-\n
--
  Use
- a
- timeline
+ examples
+ from
+ today's
+ lesson
  to
- show
- the
- events
- leading
- to
- the
- Romans
-'
- departure
-.\
-n
--
- Discuss
- the
- reasons
- for
- leaving
+ support
+ your
+ answers
+.","
+feedback":"
+Model
+ answer
 :
- internal
- issues
- and
- external
- threats
-.\
-n
--
- Highlight
- the
- continued
- use
- of
- Roman
- roads
- and
- some
- buildings
-.\
-n
--
- Explain
- how
- Roman
- culture
- influences
- modern
+ The
+ Romans
+ left
  Britain
- in
- language
+ because
+ of
+ economic
+ struggles
 ,
- architecture
+ political
+ turmoil
 ,
  and
- laws
+ the
+ need
+ to
+ defend
+ the
+ Empire
+'s
+ core
+ areas
 ."
-},"status":"
+}},"status":"
 complete
 "}],"sectionsEdited":["
-additional
-Materials
+cycle
+1
 "],"prompt":{"
 type":"
 text
 ","value":"
-The
- additional
- materials
- section
- has
- been
- created
-.
- Does
+Is
+ Cycle
+ 
+1
+ structured
+ effectively
+ to
+ explain
  the
- narrative
- support
- your
- teaching
- needs
+ reasons
+ for
+ the
+ Romans
+ leaving
+ Britain
 ?
  If
- you
- have
- any
- specific
- requests
- for
- additional
- content
+ not
 ,
- let
- me
- know
+ suggest
+ any
+ changes
 .
  Otherwise
 ,
@@ -383,10 +312,12 @@ The
 Continue
 **
  to
- finish
+ move
+ on
+ to
  the
- lesson
- plan
+ next
+ step
 ."
 },"status":"
 complete

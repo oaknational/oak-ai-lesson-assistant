@@ -22,7 +22,7 @@ import { OpenSideBarButton } from "./open-side-bar-button";
 import { UserOrLogin } from "./user-or-login";
 
 export function Header() {
-  const demo = useDemoUser();
+  const { isDemoUser, demo } = useDemoUser();
 
   // Check whether clerk metadata has loaded to prevent the banner from flashing
   const clerkMetadata = useClerkDemoMetadata();
@@ -36,7 +36,7 @@ export function Header() {
       $zIndex={"banner"}
       $width={"100%"}
     >
-      {clerkMetadata.isSet && demo.isDemoUser && (
+      {clerkMetadata.isSet && isDemoUser && (
         <OakFlex
           $alignItems={"center"}
           $bb={"border-solid-m"}

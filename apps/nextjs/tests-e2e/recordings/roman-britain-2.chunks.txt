@@ -4,13 +4,6 @@ ll
 m
 Message
 ","sectionsToEdit":["
-prior
-Knowledge
-","
-key
-Learning
-Points
-","
 mis
 con
 ceptions
@@ -22,192 +15,20 @@ type":"
 patch
 ","reasoning":"
 Ident
-ifying
+ified
+ common
+ misconceptions
+ about
  the
- foundational
- knowledge
- pupils
- should
- have
- before
- this
- lesson
-.","
-value":{"
-type":"
-string
--array
-","op":"
-add
-","path":"/
-prior
-Knowledge
-","value":["
-The
- Romans
- invaded
- Britain
- in
- AD
- 
-43
-.","
-Roman
- Britain
- was
- part
- of
- the
- Roman
- Empire
- for
- nearly
- 
-400
- years
-.","
-The
- Roman
- Empire
- was
- large
- and
- included
- many
- countries
-.","
-Romans
- built
- roads
- and
- towns
- in
- Britain
-.","
-The
- Roman
- army
- was
- strong
- and
- well
--organ
-ised
-.
-"]},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Highlight
-ing
- the
- main
- learning
- points
- pupils
- should
- take
- from
- this
- lesson
-.","
-value":{"
-type":"
-string
--array
-","op":"
-add
-","path":"/
-key
-Learning
-Points
-","value":["
-The
- Roman
- Empire
- began
- to
- weaken
- due
- to
- internal
- and
- external
- pressures
-.","
-Romans
- left
- Britain
- around
- AD
- 
-410
- to
- defend
- other
- parts
- of
- the
- Empire
-.","
-Brit
-ain
- experienced
- changes
- in
- governance
- and
- defence
- after
- the
- Romans
- left
-.","
-Roman
- influence
- remained
- in
- Britain's
- culture
-,
- architecture
-,
- and
- roads
-.","
-The
  end
  of
  Roman
- rule
- marked
- the
- beginning
- of
- new
- challenges
- for
  Britain
-.
-"]},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Address
-ing
- common
- misconceptions
  to
- ensure
- accurate
- understanding
- of
+ address
+ in
  the
- topic
+ lesson
 .","
 value":{"
 type":"
@@ -223,7 +44,8 @@ ceptions
 ","value":[
 {"
 misconception":"
-Romans
+The
+ Romans
  left
  Britain
  because
@@ -231,59 +53,78 @@ Romans
  were
  defeated
  by
- locals
+ local
+ tribes
 ","description":"
 The
  Romans
  left
  due
  to
- pressures
- on
- other
- parts
- of
- the
- Empire
- and
  internal
  issues
+ within
+ the
+ Roman
+ Empire
+ itself
 ,
  not
  because
- they
- were
- defeated
+ of
+ a
+ defeat
  by
- locals
+ local
+ tribes
+.
+ Highlight
+ the
+ economic
+ and
+ political
+ struggles
+ Rome
+ faced
 ."
 },{"
 misconception":"
-All
- Roman
- influence
- disappeared
- after
- they
+There
+ were
+ no
+ Romans
  left
-","description":"
-Many
- aspects
- of
- Roman
- culture
-,
- architecture
-,
- and
- infrastructure
- remained
  in
  Britain
- even
  after
  their
  departure
+","description":"
+While
+ the
+ Roman
+ army
+ and
+ officials
+ left
+,
+ many
+ Romans
+ who
+ settled
+ remained
+.
+ Clar
+ify
+ that
+ Roman
+ influence
+ continued
+ in
+ local
+ culture
+ and
+ infrastructure
 ."
 }]},"status":"
 complete
@@ -291,15 +132,19 @@ complete
 type":"
 patch
 ","reasoning":"
-Providing
- key
- vocabulary
+Selected
+ keywords
  to
- support
- understanding
- of
+ help
+ pupils
+ understand
  the
- topic
+ lesson
+'s
+ key
+ concepts
+ and
+ vocabulary
 .","
 value":{"
 type":"
@@ -310,6 +155,68 @@ add
 keywords
 ","value":[
 {"
+keyword":"
+Romans
+","definition":"
+People
+ from
+ the
+ ancient
+ civilization
+ of
+ Rome
+ who
+ ruled
+ many
+ lands
+."
+},{"
+keyword":"
+Brit
+ain
+","definition":"
+An
+ island
+ in
+ Europe
+ that
+ was
+ part
+ of
+ the
+ Roman
+ Empire
+."
+},{"
+keyword":"
+Departure
+","definition":"
+The
+ act
+ of
+ leaving
+ a
+ place
+."
+},{"
+keyword":"
+Tr
+ibes
+","definition":"
+Groups
+ of
+ people
+ who
+ lived
+ in
+ Britain
+ before
+ and
+ after
+ the
+ Romans
+."
+},{"
 keyword":"
 Empire
 ","definition":"
@@ -327,84 +234,9 @@ A
  or
  government
 ."
-},{"
-keyword":"
-Depart
-","definition":"
-To
- leave
- a
- place
-."
-},{"
-keyword":"
-Influ
-ence
-","definition":"
-Having
- an
- effect
- on
- the
- character
-,
- development
-,
- or
- behaviour
- of
- someone
- or
- something
-."
-},{"
-keyword":"
-In
-vasion
-","definition":"
-An
- instance
- of
- invading
- a
- country
- with
- an
- armed
- force
-."
-},{"
-keyword":"
-Govern
-ance
-","definition":"
-The
- way
- that
- a
- city
-,
- company
-,
- etc
-.,
- is
- controlled
- by
- those
- in
- power
-."
 }]},"status":"
 complete
 "}],"sectionsEdited":["
-prior
-Knowledge
-","
-key
-Learning
-Points
-","
 mis
 con
 ceptions
@@ -416,18 +248,9 @@ text
 ","value":"
 Are
  the
- prior
- knowledge
-,
- key
- learning
- points
-,
  misconceptions
-,
  and
  keywords
- sections
  suitable
  for
  your

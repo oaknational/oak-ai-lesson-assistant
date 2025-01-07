@@ -1,72 +1,35 @@
+import type { Message } from "@oakai/aila/src/core/chat";
 import type { Meta, StoryObj } from "@storybook/react";
 
-import {
-  ChatContext,
-  type ChatContextProps,
-} from "@/components/ContextProviders/ChatProvider";
-import { lessonPlanTrackingContext } from "@/lib/analytics/lessonPlanTrackingContext";
-import { SidebarContext } from "@/lib/hooks/use-sidebar";
+import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
+import { LessonPlanTrackingDecorator } from "@/storybook/decorators/LessonPlanTrackingDecorator";
+import { SidebarDecorator } from "@/storybook/decorators/SidebarDecorator";
 
 import { ChatPanel } from "./chat-panel";
 
-const DummyMessage = {};
+const DummyMessage: Message = {
+  content: "Dummy message",
+  id: "123",
+  role: "user",
+};
 
-const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
-  <ChatContext.Provider
-    value={
-      {
-        messages: [DummyMessage],
-        ...parameters.chatContext,
-      } as unknown as ChatContextProps
-    }
-  >
-    <Story />
-  </ChatContext.Provider>
-);
-
-const LessonPlanTrackingContextDecorator: Story["decorators"] = (Story) => (
-  <lessonPlanTrackingContext.Provider
-    value={{
-      onClickContinue: () => {},
-      onClickRetry: () => {},
-      onClickStartFromExample: () => {},
-      onClickStartFromFreeText: () => {},
-      onStreamFinished: () => {},
-      onSubmitText: () => {},
-    }}
-  >
-    <Story />
-  </lessonPlanTrackingContext.Provider>
-);
-
-const SidebarContextDecorator: Story["decorators"] = (Story) => (
-  <SidebarContext.Provider
-    value={{
-      toggleSidebar: () => {},
-      isLoading: false,
-      isSidebarOpen: false,
-    }}
-  >
-    <Story />
-  </SidebarContext.Provider>
-);
-
-const meta: Meta<typeof ChatPanel> = {
+const meta = {
   title: "Components/Chat/ChatPanel",
   component: ChatPanel,
   tags: ["autodocs"],
-  decorators: [
-    ChatDecorator,
-    LessonPlanTrackingContextDecorator,
-    SidebarContextDecorator,
-  ],
+  decorators: [ChatDecorator, LessonPlanTrackingDecorator, SidebarDecorator],
   args: {
     isDemoLocked: false,
   },
-};
+  parameters: {
+    chatContext: {
+      messages: [DummyMessage],
+    },
+  },
+} satisfies Meta<typeof ChatPanel>;
 
 export default meta;
-type Story = StoryObj<typeof ChatPanel>;
+type Story = StoryObj<typeof meta>;
 
 export const NoMessages: Story = {
   args: {},

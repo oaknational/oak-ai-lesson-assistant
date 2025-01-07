@@ -6,25 +6,14 @@ Message
 ","sectionsToEdit":["
 starter
 Quiz
-","
-cycle
-1
-","
-cycle
-2
-","
-cycle
-3
-","
-exit
-Quiz
 "],"patches":[
 {"
 type":"
 patch
 ","reasoning":"
-Creating
+Created
  a
+ starter
  quiz
  to
  assess
@@ -32,10 +21,9 @@ Creating
 '
  prior
  knowledge
- before
- starting
- the
- lesson
+ about
+ Roman
+ Britain
 .","
 value":{"
 type":"
@@ -48,48 +36,26 @@ Quiz
 ","value":[
 {"
 question":"
-When
+How
+ long
  did
  the
  Romans
- invade
+ rule
  Britain
 ?
 ","answers":["
-AD
- 
-43
-"],"distractors":["
-AD
- 
-410
-","
-AD
- 
-106
-6
-"]},{"
-question":"
-How
- long
- was
- Britain
- part
- of
- the
- Roman
- Empire
-?
-","answers":["
-Nearly
- 
-400
+Several
+ hundred
  years
 "],"distractors":["
-200
+About
+ 
+50
  years
 ","
-600
+A
+ thousand
  years
 "]},{"
 question":"
@@ -105,1010 +71,132 @@ What
 Road
 s
  and
- towns
+ buildings
 "],"distractors":["
 Cast
 les
- and
- bridges
 ","
 Sk
 yscr
 apers
- and
- tunnels
 "]},{"
 question":"
 What
  was
- the
- Roman
- Empire
-?
-","answers":["
-A
- large
- group
- of
- countries
-"],"distractors":["
-A
- single
- country
-","
-A
- small
- island
-"]},{"
-question":"
-What
- was
- special
- about
  the
  Roman
  army
+ known
+ for
+?
+","answers":["
+Being
+ powerful
+ and
+ protective
+"],"distractors":["
+Being
+ small
+ and
+ weak
+","
+Being
+ peaceful
+"]},{"
+question":"
+Why
+ were
+ Roman
+ roads
+ important
+?
+","answers":["
+For
+ easy
+ travel
+ and
+ trade
+"],"distractors":["
+For
+ decoration
+","
+For
+ hiding
+ treasures
+"]},{"
+question":"
+Who
+ were
+ the
+ Romans
+?
+","answers":["
+People
+ from
+ Rome
+ who
+ ruled
+ lands
+"],"distractors":["
+V
+ik
+ings
+","
+Anc
+ient
+ Egyptians
+"]},{"
+question":"
+What
+ was
+ a
+ key
+ feature
+ of
+ Roman
+ rule
 ?
 ","answers":["
 Strong
- and
- well
--organ
-ised
+ military
+ presence
 "],"distractors":["
-Weak
- and
- dis
-organ
-ised
+Dem
+ocratic
+ elections
 ","
-Small
- and
- slow
-"]},{"
-question":"
-Why
- did
- the
- Romans
- leave
- Britain
-?
-","answers":["
-To
- defend
- other
- parts
- of
- the
- Empire
-"],"distractors":["
-They
- were
- defeated
- by
- locals
-","
-They
- didn't
- like
- the
- weather
-"]}]},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Design
-ing
- the
- first
- learning
- cycle
- to
- focus
- on
- identifying
- reasons
- why
- the
- Romans
- left
- Britain
-.","
-value":{"
-type":"
-cycle
-","op":"
-add
-","path":"/
-cycle
-1
-","value":{"
-title":"
-Why
- the
- Romans
- Left
- Britain
-","durationInMinutes":15
-,"explanation":{"
-spokenExplanation":["
-Discuss
- the
- weakening
- of
- the
- Roman
- Empire
- due
- to
- internal
- issues
- and
- external
- threats
-.","
-Explain
- how
- these
- pressures
- led
- the
- Romans
- to
- recall
- troops
- to
- defend
- other
- parts
- of
- the
- Empire
-.","
-Highlight
- the
- significance
- of
- AD
- 
-410
- as
- the
- approximate
- year
- of
- Roman
- departure
-.","
-Use
- a
- timeline
- to
- show
- key
- events
- leading
- to
- the
- departure
-.","
-Include
- examples
- of
- external
- threats
- such
- as
- invas
-ions
- from
- other
- tribes
-."
-],"accompanyingSlideDetails":"
-A
- timeline
- showing
- key
- events
- leading
- to
- the
- Roman
- departure
- in
- AD
- 
-410
-.","
-imagePrompt":"
-Roman
- Empire
- AD
- 
-410
- timeline
-","slideText":"
-The
- Romans
- left
- Britain
- around
- AD
- 
-410
- to
- defend
- other
- parts
- of
- the
- Empire
- due
- to
- external
- threats
- and
- internal
- issues
-."
-},"checkForUnderstanding":[
-{"
-question":"
-What
- year
- did
- Romans
- leave
- Britain
-?
-","answers":["
-AD
- 
-410
-"],"distractors":["
-AD
- 
-43
-","
-AD
- 
-106
-6
-"]},{"
-question":"
-Why
- did
- the
- Romans
- leave
- Britain
-?
-","answers":["
-To
- defend
- other
- parts
- of
- the
- Empire
-"],"distractors":["
-They
- were
- defeated
- by
- locals
-","
-They
- wanted
- a
- holiday
-"]}],"practice":"
-Create
- a
- timeline
- of
- events
- leading
- up
- to
- the
- Roman
- departure
-.
- Use
- images
- or
- drawings
- to
- illustrate
- key
- points
-.","
-feedback":"
-Model
- answer
-:
- Timeline
- should
- include
- events
- such
- as
- Roman
- invas
-ions
-,
- building
- of
- roads
-,
- and
- AD
- 
-410
- departure
-.
- Illustr
-ations
- should
- reflect
- Roman
- soldiers
-,
- roads
-,
- and
- maps
- of
- the
- Empire
-."
-}},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Design
-ing
- the
- second
- learning
- cycle
- to
- describe
- the
- changes
- in
- Britain
- after
- the
- Roman
- departure
-.","
-value":{"
-type":"
-cycle
-","op":"
-add
-","path":"/
-cycle
-2
-","value":{"
-title":"
-Changes
- in
- Britain
- after
- Roman
- Departure
-","durationInMinutes":15
-,"explanation":{"
-spokenExplanation":["
-Describe
- how
- Britain
- faced
- governance
- and
- defence
- challenges
- after
- the
- Romans
- left
-.","
-Highlight
- changes
- such
- as
- the
- decline
- of
- Roman
--built
- structures
- and
- the
- rise
- of
- new
- local
- rulers
-.","
-Discuss
- the
- continued
- influence
- of
- Roman
- roads
- and
- architecture
-.","
-Introduce
- the
- concept
- of
- cultural
- influence
- remaining
- despite
- political
- changes
-."
-],"accompanyingSlideDetails":"
-Images
- of
- Roman
- roads
- and
- buildings
- alongside
- early
- medieval
- British
- structures
-.","
-imagePrompt":"
-Roman
- roads
- vs
- early
- medieval
- Britain
-","slideText":"
-After
- the
- Romans
- left
-,
- Britain
- faced
- new
- challenges
- but
- continued
- to
- use
- Roman
- roads
- and
- structures
-."
-},"checkForUnderstanding":[
-{"
-question":"
-What
- remained
- in
- Britain
- after
- the
- Romans
- left
-?
-","answers":["
-Roman
- roads
- and
- structures
-"],"distractors":["
-Roman
- soldiers
-","
-Roman
- emper
-ors
-"]},{"
-question":"
-Who
- governed
- Britain
- after
- the
- Romans
-?
-","answers":["
-Local
- rulers
-"],"distractors":["
-Roman
- generals
-","
-Greek
- philosophers
-"]}],"practice":"
-Draw
- a
- picture
- showing
- a
- Roman
- road
- still
- used
- in
- Britain
- today
-.
- Label
- it
- with
- its
- purpose
- and
- any
- changes
- you
- think
- happened
- over
- time
-.","
-feedback":"
-Success
- criteria
-:
- Drawing
- should
- show
- a
- straight
- Roman
- road
- with
- labels
- such
- as
- '
-used
- for
- travel
-'
- and
- '
-p
-aved
-'.
- Include
- changes
- like
- added
- pathways
- or
- surrounding
- buildings
-."
-}},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Design
-ing
- the
- third
- learning
- cycle
- to
- explore
- the
- lasting
- impact
- of
- Roman
- culture
- in
- Britain
-.","
-value":{"
-type":"
-cycle
-","op":"
-add
-","path":"/
-cycle
-3
-","value":{"
-title":"
-Roman
- Influence
- in
- Britain
- Today
-","durationInMinutes":15
-,"explanation":{"
-spokenExplanation":["
-Explain
- how
- Roman
- culture
- influenced
- British
- language
-,
- architecture
-,
- and
- laws
-.","
-Discuss
- examples
- of
- Roman
- words
- still
- used
- in
- English
-.","
-Show
- how
- Roman
- architectural
- styles
- can
- be
- seen
- in
- modern
- buildings
-.","
-Describe
- how
- Roman
- laws
- have
- influenced
- British
- legal
- systems
-."
-],"accompanyingSlideDetails":"
-Images
- comparing
- Roman
- architecture
- with
- modern
- British
- buildings
-.","
-imagePrompt":"
-Roman
- architecture
- influence
- modern
- Britain
-","slideText":"
-Roman
- culture
- continues
- to
- influence
- British
- language
-,
- architecture
-,
- and
- laws
-."
-},"checkForUnderstanding":[
-{"
-question":"
-What
- is
- an
- example
- of
- Roman
- influence
- today
-?
-","answers":["
-Architecture
-"],"distractors":["
-Roman
- emper
-ors
-","
-Greek
- myths
-"]},{"
-question":"
-Which
- language
- has
- Roman
- words
-?
-","answers":["
-English
-"],"distractors":["
-Chinese
-","
-Arabic
-"]}],"practice":"
-Match
- Roman
- words
- with
- their
- modern
- English
- counterparts
-.
- Explain
- how
- these
- words
- are
- used
- today
-.","
-feedback":"
-Model
- answer
-:
- Match
- words
- like
- '
-a
-qua
-'
- with
- '
-water
-'.
- Explain
- use
- in
- terms
- like
- '
-aqu
-arium
-'
- meaning
- a
- place
- for
- water
- and
- fish
-."
-}},"status":"
-complete
-"},{"
-type":"
-patch
-","reasoning":"
-Design
-ing
- an
- exit
- quiz
- to
- assess
- pupils
-'
- understanding
- of
- the
- lesson
- content
-.","
-value":{"
-type":"
-quiz
-","op":"
-add
-","path":"/
-exit
-Quiz
-","value":[
-{"
-question":"
-Why
- did
- the
- Romans
- leave
- Britain
-?
-","answers":["
-To
- defend
- other
- parts
- of
- the
- Empire
-"],"distractors":["
-They
- were
- defeated
- by
- locals
-","
-They
- wanted
- a
- holiday
-"]},{"
-question":"
-What
- year
- did
- Romans
- leave
- Britain
-?
-","answers":["
-AD
- 
-410
-"],"distractors":["
-AD
- 
-43
-","
-AD
- 
-106
-6
-"]},{"
-question":"
-What
- remained
- in
- Britain
- after
- Romans
- left
-?
-","answers":["
-Roman
- roads
- and
- structures
-"],"distractors":["
-Roman
- soldiers
-","
-Roman
- emper
-ors
-"]},{"
-question":"
-Who
- governed
- Britain
- after
- Romans
-?
-","answers":["
-Local
- rulers
-"],"distractors":["
-Roman
- generals
-","
-Greek
- philosophers
-"]},{"
-question":"
-What
- is
- an
- example
- of
- Roman
- influence
- today
-?
-","answers":["
-Architecture
-"],"distractors":["
-Roman
- emper
-ors
-","
-Greek
- myths
-"]},{"
-question":"
-Which
- language
- has
- Roman
- words
-?
-","answers":["
-English
-"],"distractors":["
-Chinese
-","
-Arabic
+No
+ military
 "]}]},"status":"
 complete
 "}],"sectionsEdited":["
 starter
 Quiz
-","
-cycle
-1
-","
-cycle
-2
-","
-cycle
-3
-","
-exit
-Quiz
 "],"prompt":{"
 type":"
 text
 ","value":"
-Are
+Is
  the
  starter
  quiz
-,
- cycles
-,
- and
- exit
- quiz
- suitable
+ appropriate
  for
+ assessing
  your
- class
-?
- Would
- you
- like
- to
- adjust
- the
- difficulty
- of
- the
- quizzes
+ pupils
+'
+ prior
+ knowledge
 ?
  If
- everything
- looks
- good
+ not
+,
+ suggest
+ any
+ changes
+.
+ Otherwise
 ,
  tap
  **

@@ -46,18 +46,18 @@ const CreatingChatDialog = ({
   submit,
   closeDialog,
 }: CreatingChatDialogProps) => {
-  const demo = useDemoUser();
+  const { isDemoUser, demo } = useDemoUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [appSessionsRemaining, setAppSessionsRemaining] = useState<
     number | undefined
-  >(demo.isDemoUser ? demo.appSessionsRemaining : undefined);
+  >(isDemoUser ? demo.appSessionsRemaining : undefined);
 
   // Don't update the remaining count while submitting as the mutation will change it
   useEffect(() => {
-    if (demo.isDemoUser && !isSubmitting) {
+    if (isDemoUser && !isSubmitting) {
       setAppSessionsRemaining(demo.appSessionsRemaining);
     }
-  }, [isSubmitting, demo]);
+  }, [isSubmitting, isDemoUser, demo]);
 
   const createAppSession = useCallback(() => {
     if (!submit) {
@@ -74,7 +74,7 @@ const CreatingChatDialog = ({
     }
   }, [submit]);
 
-  if (!demo.isDemoUser) {
+  if (!isDemoUser) {
     return null;
   }
 

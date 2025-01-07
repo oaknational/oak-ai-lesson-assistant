@@ -3,64 +3,286 @@ type":"
 ll
 m
 Message
-","sectionsToEdit":[]
-,"patches":[]
-,"sectionsEdited":[]
-,"prompt":{"
+","sectionsToEdit":["
+cycle
+3
+"],"patches":[
+{"
 type":"
-text
-","value":"
-The
- sections
- you
- requested
-,
- including
- the
- Starter
- Quiz
-,
- Cycle
- 
-1
-,
- Cycle
- 
-2
-,
+patch
+","reasoning":"
+Develop
+ed
  Cycle
  
 3
-,
- and
- Exit
- Quiz
-,
- have
- already
- been
- generated
-.
- If
- there
- is
- anything
- specific
- you'd
- like
  to
- modify
- or
- if
- you
- need
- further
- assistance
+ help
+ pupils
+ understand
+ the
+ impact
+ of
+ Roman
+ departure
+ on
+ British
+ tribes
+.","
+value":{"
+type":"
+cycle
+","op":"
+add
+","path":"/
+cycle
+3
+","value":{"
+title":"
+Impact
+ on
+ British
+ tribes
+ after
+ Roman
+ departure
+","durationInMinutes":15
+,"explanation":{"
+spokenExplanation":["
+Discuss
+ how
+ British
+ tribes
+ had
+ to
+ reorgan
+ise
+ and
+ adapt
+ following
+ the
+ Roman
+ departure
+.","
+Explain
+ the
+ challenges
+ faced
+ by
+ tribes
+ without
+ Roman
+ protection
+ and
+ support
+.","
+Highlight
+ the
+ emergence
+ of
+ new
+ leaders
+ and
+ alliances
+ among
+ tribes
+.","
+Describe
+ the
+ influence
+ of
+ Roman
+ culture
+ that
+ remained
+ in
+ local
+ customs
+ and
+ infrastructure
+.","
+Connect
+ to
+ prior
+ knowledge
+ of
+ Roman
+ influence
+ and
+ its
+ significance
+ on
+ daily
+ life
+ in
+ Britain
+."
+],"accompanyingSlideDetails":"
+Images
+ showing
+ tribal
+ life
+ and
+ changes
+ in
+ Britain
+ post
+-R
+oman
+ rule
+.","
+imagePrompt":"
+British
+ tribes
+ post
+-R
+oman
+ departure
+","slideText":"
+The
+ departure
+ of
+ the
+ Romans
+ led
+ to
+ significant
+ changes
+ and
+ challenges
+ for
+ British
+ tribes
+."
+},"checkForUnderstanding":[
+{"
+question":"
+What
+ did
+ British
+ tribes
+ have
+ to
+ do
+ after
+ the
+ Romans
+ left
+?
+","answers":["
+Re
+organ
+ise
+ and
+ adapt
+"],"distractors":["
+Con
+quer
+ new
+ lands
+","
+Build
+ new
+ cities
+"]},{"
+question":"
+What
+ influence
+ remained
+ in
+ Britain
+ after
+ the
+ Romans
+?
+","answers":["
+Roman
+ culture
+"],"distractors":["
+Egypt
+ian
+ culture
+","
+V
+iking
+ culture
+"]}],"practice":"
+Identify
+ two
+ ways
+ in
+ which
+ British
+ tribes
+ adapted
+ after
+ the
+ Romans
+ left
+.
+ Use
+ examples
+ from
+ the
+ lesson
+ to
+ explain
+ your
+ answers
+.","
+feedback":"
+Model
+ answer
+:
+ British
+ tribes
+ adapted
+ by
+ forming
+ new
+ alliances
+ and
+ incorporating
+ Roman
+ culture
+ into
+ their
+ daily
+ lives
+."
+}},"status":"
+complete
+"}],"sectionsEdited":["
+cycle
+3
+"],"prompt":{"
+type":"
+text
+","value":"
+Is
+ Cycle
+ 
+3
+ structured
+ effectively
+ to
+ understand
+ the
+ impact
+ of
+ the
+ Roman
+ departure
+ on
+ British
+ tribes
+?
+ If
+ not
 ,
- please
- let
- me
- know
+ suggest
+ any
+ changes
 .
  Otherwise
 ,
@@ -69,7 +291,12 @@ The
 Continue
 **
  to
- proceed
+ move
+ on
+ to
+ the
+ next
+ step
 ."
 },"status":"
 complete

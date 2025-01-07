@@ -1,0 +1,34 @@
+{
+  "id": "chatcmpl-AgIXsrgohReHeIIItT6ly7Gpl5K5Y",
+  "object": "chat.completion",
+  "created": 1734644428,
+  "model": "gpt-4o-2024-08-06",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan on 'End of Roman Britain' is fully compliant across all categories. It does not contain any discriminatory language, offensive language, or strong language, making it compliant with language and discrimination guidelines. There is no depiction or discussion of conflict, violence, serious violence, or sexual violence, aligning with the violence and crime guidelines. The content is appropriate for Key Stage 1 and does not contain any upsetting, sensitive, or distressing content, such as depictions of criminal behavior, natural disasters, mental health issues, or sensitive topics like adoption, illness, or death. There is no depiction or discussion of nudity or sexual content, which complies with the nudity and sex guidelines. The lesson does not involve any exploration of objects, use of equipment requiring supervision, imitable behaviors, external content, or physical activity, ensuring compliance with physical activity and safety guidelines. Finally, the lesson plan does not contain any guides, instructions, or learning materials on how to harm oneself or others, create weapons or harmful substances, or encourage harmful behavior, illegal activity, or violence, ensuring full compliance with toxic content guidelines.\",\"categories\":[]}",
+        "refusal": null
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 2494,
+    "completion_tokens": 258,
+    "total_tokens": 2752,
+    "prompt_tokens_details": {
+      "cached_tokens": 2304,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "system_fingerprint": "fp_d28bcae782"
+}
