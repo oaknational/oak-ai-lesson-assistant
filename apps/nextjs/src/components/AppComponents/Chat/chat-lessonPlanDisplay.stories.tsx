@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
+import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
@@ -31,6 +32,9 @@ const meta = {
     chatEndRef: undefined,
     sectionRefs: {},
     showLessonMobile: false,
+  },
+  parameters: {
+    ...chromaticParams(["desktop"]),
   },
 } satisfies Meta<typeof LessonPlanDisplay>;
 

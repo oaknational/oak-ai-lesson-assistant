@@ -24,6 +24,8 @@ const ChatRightHandSideLesson = ({
   demo,
 }: Readonly<ChatRightHandSideLessonProps>) => {
   const { messages } = useLessonChat();
+  console.log({ messages, showLessonMobile });
+  console.log(messages.length);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
