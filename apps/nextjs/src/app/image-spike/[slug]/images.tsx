@@ -53,8 +53,9 @@ function promptConstructor(
 }
 
 const ImagesPage = ({ pageData }) => {
+  const [activeCycle, setActiveCycle] = useState("cycle1");
   const [selectedImagePrompt, setSelectedImagePrompt] = useState("");
-
+  const [userPrompt, setUserPrompt] = useState("");
   const [comparisonColumns, setComparisonColumns] = useState<
     {
       id: string;
@@ -145,9 +146,9 @@ const ImagesPage = ({ pageData }) => {
       error: null,
       imageSearchBatch: null,
     });
-
     try {
-      const images = await fetchImages(source, prompt);
+      const promptFromCycle = slideTexts[activeCycle];
+      const images = await fetchImages(source, prompt, promptFromCycle);
       updateColumn(columnId, { imageSearchBatch: images });
     } catch (err) {
       updateColumn(columnId, {
@@ -177,10 +178,8 @@ const ImagesPage = ({ pageData }) => {
     setComparisonColumns((prev) => prev.filter((col) => col.id !== columnId));
   };
 
-  console.log("basedon id", pageData.lessonPlan.basedOn.id);
-
   const basedOnLessonSlugFromId = trpc.lesson.getLessonSlugFromId.useQuery({
-    id: pageData.lessonPlan.basedOn.id,
+    id: pageData?.lessonPlan?.basedOn?.id,
   });
 
   const basedOnSlug = basedOnLessonSlugFromId.data;
@@ -190,6 +189,18 @@ const ImagesPage = ({ pageData }) => {
   });
   const data = basedOnLessonMedia?.data ?? [];
   const basedOnLessonMediaList: any[] = (data[0]?.media_list ?? []) as any[];
+
+  const handlePromptSubmit = (e) => {
+    e.preventDefault();
+    setSelectedImagePrompt(userPrompt);
+    setComparisonColumns((prev) =>
+      prev.map((col) => ({
+        ...col,
+        imageSearchBatch: null,
+        selectedImageSource: null,
+      })),
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -241,6 +252,8 @@ const ImagesPage = ({ pageData }) => {
           className="mb-8"
           onValueChange={(value) => {
             setSelectedImagePrompt(slideTexts[value]);
+            setActiveCycle(value);
+            setUserPrompt(slideTexts[value]);
             setComparisonColumns((prev) =>
               prev.map((col) => ({
                 ...col,
@@ -264,30 +277,53 @@ const ImagesPage = ({ pageData }) => {
 
           {Object.entries(slideTexts).map(([cycle, prompt]) => (
             <Tabs.Content key={cycle} value={cycle}>
-              <div className="mt-4 rounded-lg border bg-white p-6">
-                <h3 className="mb-2 font-medium">Image Prompt from aila</h3>
-                <p className="mb-2 text-gray-600">{prompt}</p>
-                <b />
-                <br />
+              <div className="mt-4 space-y-4">
+                <div className="rounded-lg border bg-white p-6">
+                  <h3 className="mb-2 font-medium">
+                    Original Image Prompt from AILA
+                  </h3>
+                  <p className="mb-4 text-gray-600">{prompt}</p>
 
-                <p className="mb-2 font-medium">
-                  Search expression used on search endpoints:
-                </p>
-                <p className="text-gray-600">{prompt}</p>
-                <b />
-                <br />
+                  <form onSubmit={handlePromptSubmit} className="space-y-4">
+                    <div>
+                      <label
+                        htmlFor="userPrompt"
+                        className="mb-2 block font-medium"
+                      >
+                        Edit or Create New Prompt
+                      </label>
+                      <textarea
+                        id="userPrompt"
+                        value={userPrompt}
+                        onChange={(e) => setUserPrompt(e.target.value)}
+                        className="min-h-[100px] w-full rounded-lg border p-2"
+                      />
+                    </div>
+                    <button type="submit">Update Prompt</button>
+                  </form>
+                </div>
 
-                <p className="mb-2 font-medium">Prompt used for generation:</p>
+                {selectedImagePrompt !== prompt && (
+                  <div className="rounded-lg border bg-white p-6">
+                    <h3 className="mb-2 font-medium">Current Active Prompt</h3>
+                    <p className="text-gray-600">{selectedImagePrompt}</p>
+                  </div>
+                )}
 
-                <p className="text-gray-600">
-                  {promptConstructor(
-                    prompt,
-                    pageData.title,
-                    pageData.subject,
-                    pageData.keyStage,
-                    pageData.lessonPlan,
-                  )}
-                </p>
+                <div className="rounded-lg border bg-white p-6">
+                  <h3 className="mb-2 font-medium">
+                    Prompt used for generation:
+                  </h3>
+                  <p className="text-gray-600">
+                    {promptConstructor(
+                      selectedImagePrompt,
+                      pageData.title,
+                      pageData.subject,
+                      pageData.keyStage,
+                      pageData.lessonPlan[cycle],
+                    )}
+                  </p>
+                </div>
               </div>
             </Tabs.Content>
           ))}
@@ -301,10 +337,7 @@ const ImagesPage = ({ pageData }) => {
                 onClick={addComparisonColumn}
                 className="flex items-center gap-2 rounded-lg border bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
               >
-                <div
-                  className="rotate-45
-                "
-                >
+                <div className="rotate-45">
                   <OakIcon iconName="cross" />
                 </div>
                 Add Comparison Column
@@ -351,7 +384,9 @@ const ImagesPage = ({ pageData }) => {
                     {bestImage.data.imagePrompt}
                   </p>
                   <p>
-                    <span className="font-medium">Reasoning:</span>{" "}
+                    <span className="font-medium">
+                      Reasoning for appropriateness score:
+                    </span>{" "}
                     {
                       bestImage.data.validationResult.metadata
                         .validationReasoning
@@ -436,7 +471,6 @@ const ImagesPage = ({ pageData }) => {
                 {column.imageSearchBatch && (
                   <div className="mt-6 space-y-6">
                     {column.imageSearchBatch?.map((image) => {
-                      console.log("iumage", image);
                       return (
                         <div
                           key={image.id}
@@ -471,20 +505,26 @@ const ImagesPage = ({ pageData }) => {
                               {image.license}
                             </p>
                             <p>
-                              <span className="font-medium">Score:</span>{" "}
+                              <span className="font-medium">
+                                Relevance/appropriateness score:
+                              </span>{" "}
                               {image.appropriatenessScore}
+                            </p>
+                            <p className="mb-12">
+                              <span className="font-medium">
+                                Reasoning for score:
+                              </span>{" "}
+                              {image.appropriatenessReasoning}
                             </p>
                             <p>
                               <span className="font-medium">Prompt used:</span>{" "}
                               {image.imagePrompt}
                             </p>
-                            <p>
-                              <span className="font-medium">Reasoning:</span>{" "}
-                              {image.appropriatenessReasoning}
-                            </p>
                             {image.photographer && (
                               <p>
-                                <span className="font-medium">By:</span>{" "}
+                                <span className="font-medium">
+                                  Photographer:
+                                </span>{" "}
                                 {image.photographer}
                               </p>
                             )}

@@ -419,16 +419,10 @@ function findTheRelevantCycle({
   searchExpression: string;
 }): Cycle {
   if (lessonPlan.cycle1.explanation.imagePrompt === searchExpression) {
-    console.log("searchExpression", searchExpression);
-    console.log("imagePrompt", lessonPlan.cycle1.explanation.imagePrompt);
     return lessonPlan.cycle1;
   } else if (lessonPlan.cycle2.explanation.imagePrompt === searchExpression) {
-    console.log("searchExpression", searchExpression);
-    console.log("imagePrompt", lessonPlan.cycle2.explanation.imagePrompt);
     return lessonPlan.cycle1;
   } else if (lessonPlan.cycle3.explanation.imagePrompt === searchExpression) {
-    console.log("searchExpression", searchExpression);
-    console.log("imagePrompt", lessonPlan.cycle3.explanation.imagePrompt);
     return lessonPlan.cycle1;
   } else {
     throw new Error("Cycle not found");
@@ -444,6 +438,7 @@ export const imageGen = router({
         lessonTitle: z.string(),
         subject: z.string(),
         keyStage: z.string(),
+        originalPrompt: z.string(),
       }),
     )
     .mutation(async ({ input }): Promise<ValidatedImage[]> => {
@@ -451,7 +446,7 @@ export const imageGen = router({
         const results: ValidatedImage[] = [];
         const cycleInfo = findTheRelevantCycle({
           lessonPlan: input.lessonPlan,
-          searchExpression: input.searchExpression,
+          searchExpression: input.originalPrompt,
         });
 
         // Get and validate Flickr images
@@ -640,13 +635,14 @@ export const imageGen = router({
         subject: z.string(),
         keyStage: z.string(),
         lessonPlan: imageLessonPlan,
+        originalPrompt: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
       try {
         const cycleInfo = findTheRelevantCycle({
           lessonPlan: input.lessonPlan,
-          searchExpression: input.searchExpression,
+          searchExpression: input.originalPrompt,
         });
         const providers = [
           tryFlickrImages,
@@ -692,13 +688,14 @@ export const imageGen = router({
         lessonPlan: imageLessonPlan,
         subject: z.string(),
         keyStage: z.string(),
+        originalPrompt: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
       try {
         const cycleInfo = findTheRelevantCycle({
           lessonPlan: input.lessonPlan,
-          searchExpression: input.searchExpression,
+          searchExpression: input.originalPrompt,
         });
         return await generateStabilityImage({
           endpoint: "ultra",
@@ -723,13 +720,14 @@ export const imageGen = router({
         lessonPlan: imageLessonPlan,
         subject: z.string(),
         keyStage: z.string(),
+        originalPrompt: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
       try {
         const cycleInfo = findTheRelevantCycle({
           lessonPlan: input.lessonPlan,
-          searchExpression: input.searchExpression,
+          searchExpression: input.originalPrompt,
         });
         return await generateStabilityImage({
           endpoint: "sd3",
@@ -754,13 +752,14 @@ export const imageGen = router({
         lessonPlan: imageLessonPlan,
         subject: z.string(),
         keyStage: z.string(),
+        originalPrompt: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
       try {
         const cycleInfo = findTheRelevantCycle({
           lessonPlan: input.lessonPlan,
-          searchExpression: input.searchExpression,
+          searchExpression: input.originalPrompt,
         });
         return await generateStabilityImage({
           endpoint: "core",
@@ -785,6 +784,7 @@ export const imageGen = router({
         lessonPlan: imageLessonPlan,
         subject: z.string(),
         keyStage: z.string(),
+        originalPrompt: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -795,7 +795,7 @@ export const imageGen = router({
 
         const cycleInfo = findTheRelevantCycle({
           lessonPlan: input.lessonPlan,
-          searchExpression: input.searchExpression,
+          searchExpression: input.originalPrompt,
         });
         const result = await tryDallE(
           input.searchExpression,
@@ -824,13 +824,14 @@ export const imageGen = router({
         keyStage: z.string(),
         subject: z.string(),
         imageWasGenerated: z.boolean().optional(),
+        originalPrompt: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
       try {
         const cycleInfo = findTheRelevantCycle({
           lessonPlan: input.lessonPlan,
-          searchExpression: input.prompt,
+          searchExpression: input.originalPrompt,
         });
 
         const prompt = input.imageWasGenerated
@@ -874,13 +875,14 @@ export const imageGen = router({
           }),
         ),
         searchExpression: z.string(),
+        originalPrompt: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
       try {
         const cycleInfo = findTheRelevantCycle({
           lessonPlan: input.lessonPlan,
-          searchExpression: input.searchExpression,
+          searchExpression: input.originalPrompt,
         });
         return await validateImagesInParallel(
           input.images,
@@ -953,8 +955,6 @@ export const imageGen = router({
         if (!refinedPrompt) {
           throw new Error("Failed to generate refined prompt");
         }
-
-        console.log("refinedPrompt", refinedPrompt);
 
         // pause operations for 10s
 

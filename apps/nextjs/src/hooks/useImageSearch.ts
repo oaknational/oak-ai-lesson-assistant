@@ -75,6 +75,7 @@ export const useImageSearch = ({ pageData }: ImageSearchHookProps) => {
         response,
         originalPrompt,
         true,
+        originalPrompt,
       );
       const endTime = performance.now();
       // generate random string for id
@@ -104,6 +105,7 @@ export const useImageSearch = ({ pageData }: ImageSearchHookProps) => {
     imageUrl: string,
     prompt: string,
     imageWasGenerated: boolean,
+    originalPrompt: string,
   ): Promise<ValidationResult> => {
     try {
       if (
@@ -123,6 +125,7 @@ export const useImageSearch = ({ pageData }: ImageSearchHookProps) => {
         subject: pageData.subject,
         lessonPlan: pageData.lessonPlan,
         imageWasGenerated,
+        originalPrompt,
       });
 
       return validationResult;
@@ -135,6 +138,7 @@ export const useImageSearch = ({ pageData }: ImageSearchHookProps) => {
   const fetchImages = async (
     source: string,
     prompt: string,
+    originalPrompt: string,
   ): Promise<ImageResponse[]> => {
     const startTime = performance.now();
 
@@ -164,7 +168,9 @@ export const useImageSearch = ({ pageData }: ImageSearchHookProps) => {
         subject: pageData.subject,
         keyStage: pageData.keyStage,
         lessonPlan: pageData.lessonPlan,
+        originalPrompt: originalPrompt,
       });
+
       const fetchEnd = performance.now();
 
       // Custom Pipeline already includes validation
@@ -191,6 +197,7 @@ export const useImageSearch = ({ pageData }: ImageSearchHookProps) => {
           response as string,
           prompt,
           true,
+          originalPrompt,
         );
         const endTime = performance.now();
 
@@ -221,6 +228,7 @@ export const useImageSearch = ({ pageData }: ImageSearchHookProps) => {
           response as string,
           prompt,
           true,
+          originalPrompt,
         );
         const endTime = performance.now();
 
@@ -262,6 +270,7 @@ export const useImageSearch = ({ pageData }: ImageSearchHookProps) => {
           subject: pageData.subject,
           keyStage: pageData.keyStage,
           lessonPlan: pageData.lessonPlan,
+          originalPrompt,
         });
         const endTime = performance.now();
 
@@ -297,6 +306,7 @@ export const useImageSearch = ({ pageData }: ImageSearchHookProps) => {
           subject: pageData.subject,
           keyStage: pageData.keyStage,
           lessonPlan: pageData.lessonPlan,
+          originalPrompt,
         });
         const endTime = performance.now();
 
@@ -340,6 +350,7 @@ export const useImageSearch = ({ pageData }: ImageSearchHookProps) => {
           singleImage.url,
           prompt,
           false,
+          originalPrompt,
         );
         const endTime = performance.now();
 

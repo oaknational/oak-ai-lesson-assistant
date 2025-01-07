@@ -93,7 +93,7 @@ export const lessonRouter = router({
 
         const data = await graphqlClient.request(query, variables);
 
-        console.log("***************", data);
+        // console.log("***************", data);
         const parsedData = z
           .object({
             lessons: z.array(z.object({}).passthrough().nullable()),
