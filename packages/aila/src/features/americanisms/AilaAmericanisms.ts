@@ -8,7 +8,7 @@ import type {
   AmericanismIssue,
   AmericanismIssueBySection,
 } from "../../features/americanisms";
-import type { LessonPlanKeys, LooseLessonPlan } from "../../protocol/schema";
+import type { LessonPlanKey, LooseLessonPlan } from "../../protocol/schema";
 
 export type TranslationResult = Record<
   string,
@@ -17,7 +17,7 @@ export type TranslationResult = Record<
 
 export class AilaAmericanisms implements AilaAmericanismsFeature {
   private findSectionAmericanisms(
-    section: LessonPlanKeys,
+    section: LessonPlanKey,
     lessonPlan: LooseLessonPlan,
   ): AmericanismIssueBySection | undefined {
     const filterOutPhrases = new Set([
@@ -58,7 +58,7 @@ export class AilaAmericanisms implements AilaAmericanismsFeature {
   public findAmericanisms(lessonPlan: LooseLessonPlan) {
     return Object.keys(lessonPlan).flatMap((section) => {
       const sectionIssues = this.findSectionAmericanisms(
-        section as LessonPlanKeys,
+        section as LessonPlanKey,
         lessonPlan,
       );
       return sectionIssues && sectionIssues.issues.length > 0
