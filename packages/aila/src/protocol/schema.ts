@@ -403,7 +403,7 @@ export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;
 
 export type LooseLessonPlan = z.infer<typeof LessonPlanSchemaWhilstStreaming>;
 
-export type LessonPlanKeys = keyof typeof CompletedLessonPlanSchema.shape;
+export type LessonPlanKey = keyof typeof CompletedLessonPlanSchema.shape;
 
 export const LessonPlanJsonSchema = zodToJsonSchema(
   CompletedLessonPlanSchema,

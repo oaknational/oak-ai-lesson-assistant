@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import type {
-  LessonPlanKeys,
+  LessonPlanKey,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { lessonPlanSectionsSchema } from "@oakai/exports/src/schema/input.schema";
@@ -15,7 +15,7 @@ export type ProgressForDownloads = {
 
 export type ProgressSection = {
   label: string;
-  key: LessonPlanKeys;
+  key: LessonPlanKey;
   complete: boolean;
 };
 
