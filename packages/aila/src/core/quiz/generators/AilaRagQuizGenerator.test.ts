@@ -1,5 +1,4 @@
 import { Client } from "@elastic/elasticsearch";
-import type { SearchResponseBody } from "@elastic/elasticsearch/lib/api/types";
 
 import { QuizSchema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
@@ -66,7 +65,7 @@ describe("AilaRagQuizGenerator", () => {
         apiKey: process.env.I_DOT_AI_ELASTIC_KEY as string,
       },
     });
-    const result: SearchResponseBody = await quizGenerator.searchQuestions(
+    const result = await quizGenerator.searchQuestions(
       client,
       "quiz-questions-text-only",
       ["QUES-XXXXX-XXXXX"],

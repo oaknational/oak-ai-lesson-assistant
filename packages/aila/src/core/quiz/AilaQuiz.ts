@@ -1,6 +1,4 @@
 import { Client } from "@elastic/elasticsearch";
-import type { SearchResponseBody } from "@elastic/elasticsearch/lib/api/types";
-import { SearchHit } from "@elastic/elasticsearch/lib/api/types";
 import { Json } from "@oakai/core/src/models/prompts";
 import { moderationResultSchema } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import {
@@ -40,6 +38,7 @@ import { processArray, withRandomDelay } from "./apiCallingUtils";
 import { testInput } from "./fixtures/cachedQuizOutput";
 import type { QuizzesForConsideration } from "./rerankers/RerankerStructuredOutputSchema";
 import { starterQuizQuestionSuitabilityDescriptionSchema } from "./rerankers/RerankerStructuredOutputSchema";
+import type { SearchResponseBody } from "./types";
 
 interface CustomMetadata {
   custom_id: string;

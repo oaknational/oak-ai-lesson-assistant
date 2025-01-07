@@ -1,5 +1,4 @@
 import { Client } from "@elastic/elasticsearch";
-import type { SearchResponseBody } from "@elastic/elasticsearch/lib/api/types";
 // TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { prisma } from "@oakai/db";
 import { CohereClient } from "cohere-ai";
@@ -27,6 +26,7 @@ import type { AilaQuizGeneratorService } from "../../AilaServices";
 import type { SimplifiedResult } from "../AilaQuiz";
 import type { CustomHit } from "../interfaces";
 import { CohereReranker } from "../rerankers";
+import type { SearchResponseBody } from "../types";
 import { lessonSlugQuizMap } from "./lessonSlugLookup";
 
 // Base abstract class
