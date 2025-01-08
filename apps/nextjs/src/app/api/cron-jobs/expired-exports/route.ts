@@ -135,7 +135,6 @@ export async function GET(request: NextRequest) {
 
       if (!files || files.length === 0) {
         log.info("No expired files found.");
-        hasMoreFiles = false;
         break;
       }
 
@@ -143,7 +142,6 @@ export async function GET(request: NextRequest) {
 
       if (validFileIds.length === 0) {
         log.info("No valid file IDs to process.");
-        hasMoreFiles = false;
         break;
       }
 
