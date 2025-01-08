@@ -35,6 +35,55 @@ function nodePassThroughToReadableStream(passThrough: PassThrough) {
   });
 }
 
+const handleFileDownloadError = (fileId: string, error: Error) => {
+  Sentry.captureException(error, { level: "error", extra: { fileId } });
+};
+
+const processFileDownload = async (
+  fileId: string,
+  formats: readonly ("pptx" | "docx" | "pdf")[],
+  lessonTitle: string,
+  userId: string,
+  archive: archiver.Archiver,
+) => {
+  const lessonExport = await prisma.lessonExport.findFirst({
+    where: { gdriveFileId: fileId, userId, expiredAt: null },
+  });
+
+  if (!lessonExport) {
+    const error = new Error(`Lesson export not found for fileId: ${fileId}`);
+    handleFileDownloadError(fileId, error);
+    return;
+  }
+
+  for (const ext of formats) {
+    try {
+      const res = await downloadDriveFile({ fileId, ext });
+
+      if ("error" in res) {
+        const err = new Error("Error downloading file, not included in zip", {
+          cause: res.error,
+        });
+        handleFileDownloadError(fileId, err);
+        continue;
+      }
+
+      const { data } = res;
+      const filename = `${lessonTitle} - ${lessonExport.id.slice(0, 5)} - ${getReadableExportType(lessonExport.exportType)}.${ext}`;
+
+      archive.append(data.stream, { name: filename });
+
+      await saveDownloadEvent({
+        lessonExportId: lessonExport.id,
+        downloadedBy: userId,
+        ext,
+      });
+    } catch (error) {
+      handleFileDownloadError(fileId, error as Error);
+    }
+  }
+};
+
 function getReadableExportType(exportType: LessonExportType) {
   switch (exportType) {
     case "EXIT_QUIZ_DOC":
@@ -95,67 +144,24 @@ async function getHandler(req: Request): Promise<Response> {
 
   let filesProcessed = 0;
 
-  for (const { fileId, formats } of fileIdsAndFormats) {
-    if (!fileId || !Array.isArray(formats)) {
-      const error = new Error(
-        `Invalid fileId or formats for fileId: ${fileId}`,
-      );
-      Sentry.captureException(error, { level: "warning" });
-      continue;
-    }
-
-    const lessonExport = await prisma.lessonExport.findFirst({
-      where: { gdriveFileId: fileId, userId, expiredAt: null },
-    });
-
-    if (!lessonExport) {
-      const error = new Error(`Lesson export not found for fileId: ${fileId}`);
-      Sentry.captureException(error, { level: "warning" });
-      continue;
-    }
-
-    for (const ext of formats) {
-      try {
-        const res = await downloadDriveFile({ fileId, ext });
-
-        if ("error" in res) {
-          const err = new Error("Error downloading file, not included in zip", {
-            cause: res.error,
-          });
-          Sentry.captureException(err, { level: "error" });
-          continue;
-        }
-
-        const { data } = res;
-
-        const filename = `${lessonTitle} - ${lessonExport.id.slice(0, 5)} - ${getReadableExportType(
-          lessonExport.exportType,
-        )}.${ext}`;
-
-        archive.append(data.stream, { name: filename });
-
-        await saveDownloadEvent({
-          lessonExportId: lessonExport.id,
-          downloadedBy: userId,
-          ext,
-        });
-
+  const downloadPromises = fileIdsAndFormats.map(({ fileId, formats }) =>
+    processFileDownload(fileId, formats, lessonTitle, userId, archive).then(
+      () => {
         filesProcessed++;
-      } catch (error) {
-        const err = new Error("Error downloading file, not included in zip", {
-          cause: error,
-        });
-        Sentry.captureException(err, { level: "error" });
-      }
-    }
-  }
+      },
+    ),
+  );
 
-  if (filesProcessed === 0) {
+  await Promise.all(downloadPromises);
+
+  if (filesProcessed > 0) {
+    archive.finalize().catch((error: Error) => {
+      Sentry.captureException(error, { level: "error" });
+    });
+  } else {
     await kv.set(taskId, "failed");
     return new Response("No files found or processed", { status: 404 });
   }
-
-  archive.finalize();
 
   const readableStream = nodePassThroughToReadableStream(zipStream);
 
