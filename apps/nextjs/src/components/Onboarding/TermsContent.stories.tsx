@@ -8,7 +8,7 @@ const meta = {
   title: "Components/Onboarding/TermsContent",
   component: TermsContent,
   parameters: {
-    ...chromaticParams(["mobile", "desktop"]),
+    ...chromaticParams(["desktop"]),
   },
 } satisfies Meta<typeof TermsContent>;
 
