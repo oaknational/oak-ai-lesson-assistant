@@ -6,12 +6,17 @@ import type {
 } from "@oakai/aila/src/protocol/schema";
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "@/storybook/chromatic";
+
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
 const meta = {
   title: "Components/LessonPlan/LessonPlanProgressDropdown",
   component: LessonPlanProgressDropdown,
   tags: ["autodocs"],
+  parameters: {
+    ...chromaticParams(["desktop"]),
+  },
 } satisfies Meta<typeof LessonPlanProgressDropdown>;
 
 export default meta;

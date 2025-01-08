@@ -1,6 +1,8 @@
 import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "@/storybook/chromatic";
+
 import { ChatMessagePart } from "./ChatMessagePart";
 
 const meta = {
@@ -9,6 +11,9 @@ const meta = {
   tags: ["autodocs"],
   args: {
     inspect: false,
+  },
+  parameters: {
+    ...chromaticParams(["desktop"]),
   },
 } satisfies Meta<typeof ChatMessagePart>;
 

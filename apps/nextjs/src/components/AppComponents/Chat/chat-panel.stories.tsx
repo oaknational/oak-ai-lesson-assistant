@@ -1,6 +1,7 @@
 import type { Message } from "@oakai/aila/src/core/chat";
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import { LessonPlanTrackingDecorator } from "@/storybook/decorators/LessonPlanTrackingDecorator";
 import { SidebarDecorator } from "@/storybook/decorators/SidebarDecorator";
@@ -22,6 +23,7 @@ const meta = {
     isDemoLocked: false,
   },
   parameters: {
+    ...chromaticParams(["desktop"]),
     chatContext: {
       messages: [DummyMessage],
     },
