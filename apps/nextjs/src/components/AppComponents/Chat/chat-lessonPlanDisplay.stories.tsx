@@ -15,7 +15,7 @@ const chatContext: Partial<ChatContextProps> = {
     keyStage: "Key Stage 2",
     subject: "Science",
     topic: "Amphibians",
-    basedOn: { title: "Frogs in Modern Britain" },
+    basedOn: { title: "Frogs in Modern Britain", id: "123" },
     learningOutcome:
       "To understand the importance of frogs in British society and culture",
   },

@@ -32,7 +32,9 @@ export async function prepareUser(
     | "nearly-banned"
     | "modify-lesson-plan"
     | "nearly-rate-limited"
-    | "sharing-chat",
+    | "sharing-chat"
+    | "needs-onboarding"
+    | "needs-demo-status",
 ) {
   return await test.step("Prepare user", async () => {
     const [login] = await Promise.all([

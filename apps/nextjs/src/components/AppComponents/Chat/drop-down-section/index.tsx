@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
 import { equals } from "ramda";
@@ -16,7 +16,7 @@ import ChatSection from "./chat-section";
 const HALF_SECOND = 500;
 
 export type DropDownSectionProps = Readonly<{
-  section: LessonPlanKeys;
+  section: LessonPlanKey;
   sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;

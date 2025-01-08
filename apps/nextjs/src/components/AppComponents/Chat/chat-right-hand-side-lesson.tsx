@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 
-import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
@@ -35,7 +35,7 @@ const ChatRightHandSideLesson = ({
 
   // This retains this existing bug, but is fixed on subsequent PRs
   const sectionRefs: Partial<
-    Record<LessonPlanKeys, React.MutableRefObject<HTMLDivElement | null>>
+    Record<LessonPlanKey, React.MutableRefObject<HTMLDivElement | null>>
   > = {};
 
   const scrollToBottom = () => {
