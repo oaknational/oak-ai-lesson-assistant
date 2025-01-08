@@ -5,7 +5,7 @@ async function sleep(ms: number) {
 }
 
 async function delayChunk() {
-  if (Math.random() < 0.2) {
+  if (Math.random() < 0.1) {
     await sleep(0);
   }
 }
