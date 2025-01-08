@@ -4,6 +4,12 @@ async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+async function delayChunk() {
+  if (Math.random() < 0.2) {
+    await sleep(0);
+  }
+}
+
 export class MockLLMService implements LLMService {
   name = "MockLLM";
   private responseChunks: string[];
@@ -29,7 +35,7 @@ export class MockLLMService implements LLMService {
       async start(controller) {
         for (const chunk of responseChunks) {
           controller.enqueue(chunk);
-          await sleep(0);
+          await delayChunk();
         }
         controller.close();
       },
