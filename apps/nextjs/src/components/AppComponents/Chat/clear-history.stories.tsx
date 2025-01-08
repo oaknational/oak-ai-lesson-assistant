@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "@/storybook/chromatic";
+
 import { ClearHistory } from "./clear-history";
 
 const meta = {
@@ -8,6 +10,9 @@ const meta = {
   tags: ["autodocs"],
   argTypes: {
     isEnabled: { control: "boolean" },
+  },
+  parameters: {
+    ...chromaticParams(["desktop"]),
   },
   decorators: [
     (Story) => {

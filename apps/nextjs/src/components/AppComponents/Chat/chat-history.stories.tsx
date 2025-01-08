@@ -1,6 +1,8 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "@/storybook/chromatic";
+
 import { ChatHistory } from "./chat-history";
 
 const meta = {
@@ -8,6 +10,7 @@ const meta = {
   component: ChatHistory,
   parameters: {
     layout: "centered",
+    ...chromaticParams(["desktop"]),
   },
   tags: ["autodocs"],
   decorators: [

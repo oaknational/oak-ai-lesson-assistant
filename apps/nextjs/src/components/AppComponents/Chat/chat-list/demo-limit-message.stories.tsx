@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { ChatModerationProvider } from "@/components/ContextProviders/ChatModerationContext";
+import { chromaticParams } from "@/storybook/chromatic";
 
 import { DemoLimitMessage } from "./demo-limit-message";
 
@@ -17,6 +18,9 @@ const meta = {
   ],
   args: {
     id: "test-chat-id",
+  },
+  parameters: {
+    ...chromaticParams(["desktop"]),
   },
 } satisfies Meta<typeof DemoLimitMessage>;
 

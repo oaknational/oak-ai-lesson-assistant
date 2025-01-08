@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { userEvent, within } from "@storybook/test";
 
+import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 
 import DropDownSection from "./";
@@ -25,6 +26,7 @@ const meta = {
   },
   decorators: [ChatDecorator],
   parameters: {
+    ...chromaticParams(["desktop"]),
     chatContext: {
       id: "123",
       lastModeration: null,

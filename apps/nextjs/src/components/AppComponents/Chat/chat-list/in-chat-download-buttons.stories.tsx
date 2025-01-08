@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "@/storybook/chromatic";
 import {
   DemoDecorator,
   demoParams,
@@ -16,6 +17,7 @@ const meta = {
   },
   decorators: [DemoDecorator],
   parameters: {
+    ...chromaticParams(["desktop"]),
     ...demoParams({ isDemoUser: true }),
   },
 } satisfies Meta<typeof InChatDownloadButtons>;

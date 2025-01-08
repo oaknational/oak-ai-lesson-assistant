@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 
+import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 
 import ChatLhsHeader from "./chat-lhs-header";
@@ -17,6 +18,7 @@ const meta = {
     isDemoUser: false,
   },
   parameters: {
+    ...chromaticParams(["desktop"]),
     chatContext: {
       ailaStreamingStatus: "Idle",
     },
