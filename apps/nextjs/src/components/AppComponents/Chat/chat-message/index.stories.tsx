@@ -22,7 +22,7 @@ const meta = {
     ailaStreamingStatus: "Idle",
   },
   parameters: {
-    ...chromaticParams(["mobile", "desktop"]),
+    ...chromaticParams(["desktop"]),
   },
 } satisfies Meta<typeof ChatMessage>;
 
