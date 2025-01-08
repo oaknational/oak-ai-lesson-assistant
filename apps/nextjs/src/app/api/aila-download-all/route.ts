@@ -159,7 +159,7 @@ async function getHandler(req: Request): Promise<Response> {
       Sentry.captureException(error, { level: "error" });
       await kv.set(taskId, "failed");
       return new Response("Archive finalize error", {
-        status: 404,
+        status: 500,
       });
     });
   } else {
