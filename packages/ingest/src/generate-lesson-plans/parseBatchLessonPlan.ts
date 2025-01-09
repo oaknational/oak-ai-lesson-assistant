@@ -1,4 +1,7 @@
-import { CompletedLessonPlanSchema } from "@oakai/aila/src/protocol/schema";
+import {
+  CompletedLessonPlanSchema,
+  type CompletedLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 
 import { IngestError } from "../IngestError";
 import { CompletionBatchResponseSchema } from "../zod-schema/zodSchema";
@@ -33,7 +36,7 @@ export function parseBatchLessonPlan(line: unknown) {
     });
   }
 
-  let lessonPlan;
+  let lessonPlan: CompletedLessonPlan;
   try {
     lessonPlan = CompletedLessonPlanSchema.parse(
       JSON.parse(maybeLessonPlanString),

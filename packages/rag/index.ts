@@ -5,7 +5,7 @@ import OpenAI from "openai";
 
 import { getEmbedding } from "./lib/embedding";
 import { rerankResults } from "./lib/rerank";
-import { vectorSearch } from "./lib/search";
+import { vectorSearch } from "./lib/search/search";
 import type { RagLessonPlanResult } from "./types";
 
 const log = aiLogger("rag");

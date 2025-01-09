@@ -1,8 +1,8 @@
 import { generateMock } from "@anatine/zod-mock";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { CompletedLessonPlanSchema } from "../../aila/src/protocol/schema";
-import type { RagLogger } from "../types";
+import { CompletedLessonPlanSchema } from "../../../aila/src/protocol/schema";
+import type { RagLogger } from "../../types";
 import { vectorSearch } from "./search";
 
 const mockLessonPlan1 = generateMock(CompletedLessonPlanSchema);
