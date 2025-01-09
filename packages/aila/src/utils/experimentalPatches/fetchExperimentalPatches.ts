@@ -87,7 +87,8 @@ export async function fetchExperimentalPatches({
       if (mathsStarterQuiz.length === 0) {
         mathsStarterQuiz = [
           {
-            question: "No questions found",
+            question:
+              "No questions have been found due to the lesson you have chosen to base your aila generation on not having a starter quiz in the legacy lesson plan set. You are seeing this message to simplify testing of the lesson plan set.",
             answers: ["No questions found"],
             distractors: ["No questions found"],
           },
@@ -126,7 +127,8 @@ export async function fetchExperimentalPatches({
       if (mathsExitQuiz.length === 0) {
         mathsExitQuiz = [
           {
-            question: "No questions found",
+            question:
+              "No questions have been found due to the lesson you have chosen to base your aila generation on not having an exit quiz in the legacy lesson plan set. You are seeing this message to simplify testing of the lesson plan set.",
             answers: ["No questions found"],
             distractors: ["No questions found"],
           },
