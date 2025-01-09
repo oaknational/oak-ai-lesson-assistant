@@ -48,7 +48,6 @@ describe("CompositeFullQuizServiceBuilder", () => {
     const mockRelevantLessons: AilaRagRelevantLesson[] = [
       { lessonPlanId: "clna7k8j400egp4qxrqmjx0qo", title: "test-title-2" },
       { lessonPlanId: "clna7k8kq00fip4qxsjvrmykv", title: "test-title-3" },
-      { lessonPlanId: "clna7k8pq00j1p4qxa9euac1c", title: "test-title-4" },
       { lessonPlanId: "clna7k8zr00qfp4qx44fdvikl", title: "test-title-5" },
       { lessonPlanId: "clna7k93700sap4qx741wdrz4", title: "test-title-6" },
       { lessonPlanId: "clna7k98j00vup4qx9nyfjtpm", title: "test-title-7" },
@@ -92,7 +91,7 @@ describe("CompositeFullQuizServiceBuilder", () => {
     const mockRelevantLessons: AilaRagRelevantLesson[] = [
       { lessonPlanId: "clna7k8j400egp4qxrqmjx0qo", title: "test-title-2" },
       { lessonPlanId: "clna7k8kq00fip4qxsjvrmykv", title: "test-title-3" },
-      { lessonPlanId: "clna7k8pq00j1p4qxa9euac1c", title: "test-title-4" },
+
       { lessonPlanId: "clna7k8zr00qfp4qx44fdvikl", title: "test-title-5" },
       { lessonPlanId: "clna7k93700sap4qx741wdrz4", title: "test-title-6" },
       { lessonPlanId: "clna7k98j00vup4qx9nyfjtpm", title: "test-title-7" },
