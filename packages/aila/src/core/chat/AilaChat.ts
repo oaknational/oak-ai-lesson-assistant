@@ -6,7 +6,6 @@ import {
 } from "@oakai/core/src/utils/subjects";
 // TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { aiLogger } from "@oakai/logger";
-import type { QuizBuilderSettings } from "core/quiz/schema";
 import invariant from "tiny-invariant";
 
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
@@ -37,6 +36,7 @@ import { AilaQuiz } from "../quiz/AilaQuiz";
 import { CompositeFullQuizServiceBuilder } from "../quiz/fullservices/CompositeFullQuizServiceBuilder";
 import type { FullQuizService } from "../quiz/interfaces";
 import { testRatingSchema } from "../quiz/rerankers/RerankerStructuredOutputSchema";
+import type { QuizBuilderSettings } from "../quiz/schema";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 import type { Message } from "./types";
@@ -94,7 +94,7 @@ export class AilaChat implements AilaChatService {
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
     this._relevantLessons = [];
     this._experimentalPatches = [];
-    // TODO: GCLOMAX - this is a hack to get the demo quiz service working. Add quiz options somewhere.
+    // T\ODO: GCLOMAX - this is a hack to get the demo quiz service working. Add quiz options somewhere.
     // this.fullQuizService = new FullQuizServiceFactory().create("simple");
     // {
     //   quizRatingSchema: testRatingSchema,
