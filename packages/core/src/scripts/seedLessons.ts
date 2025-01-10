@@ -1,13 +1,13 @@
 import { prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
-//import seedLessons from "@oakai/db/prisma/seed/lessons";
+const log = aiLogger("core");
 
 const main = async () => {
   try {
-    //await seedLessons();
-    console.log("Stubbed");
+    log.info("Stubbed");
   } catch (e) {
-    console.error(e);
+    log.error(e);
     process.exit(1);
   } finally {
     await prisma.$disconnect();
@@ -19,7 +19,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    log.error(e);
     await prisma.$disconnect();
     process.exit(1);
   });
