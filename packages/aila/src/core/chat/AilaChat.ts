@@ -41,8 +41,8 @@ import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 import type { Message } from "./types";
 
-const log = aiLogger("aila:chat");
-const QuizLogger = aiLogger("aila:quiz");
+const log = aiLogger("aila:protocol"); // TODO: GCLOMAX -  changing this as other logs are not being picked up?
+// const QuizLogger = aiLogger("aila:quiz");
 
 export class AilaChat implements AilaChatService {
   private readonly _id: string;
@@ -108,7 +108,7 @@ export class AilaChat implements AilaChatService {
       quizReranker: "return-first",
       quizGenerators: ["basedOnRag"],
     };
-    QuizLogger.info("Building quiz service with options: ", quizOptions);
+    log.info("Building quiz service with options: ", quizOptions);
     this.fullQuizService = new CompositeFullQuizServiceBuilder().build(
       quizOptions,
     );

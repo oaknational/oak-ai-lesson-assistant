@@ -9,7 +9,7 @@ import type {
 import type { LooseLessonPlan, Quiz } from "../../protocol/schema";
 import { mathsQuizFixture } from "./mathsQuiz.fixture";
 
-const log = aiLogger("aila:experimental-patches");
+const log = aiLogger("aila:protocol");
 
 /**
  * Wrap a value in an experimental patch 'document'
