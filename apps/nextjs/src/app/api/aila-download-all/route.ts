@@ -3,8 +3,8 @@ import { prisma, type LessonExportType } from "@oakai/db";
 import { downloadDriveFile } from "@oakai/exports";
 import * as Sentry from "@sentry/node";
 import { kv } from "@vercel/kv";
-import archiver from "archiver";
-import { PassThrough } from "stream";
+import * as archiver from "archiver";
+import { PassThrough, type Readable } from "stream";
 
 import { withSentry } from "@/lib/sentry/withSentry";
 
@@ -71,7 +71,7 @@ const processFileDownload = async (
       const { data } = res;
       const filename = `${lessonTitle} - ${lessonExport.id.slice(0, 5)} - ${getReadableExportType(lessonExport.exportType)}.${ext}`;
 
-      archive.append(data.stream, { name: filename });
+      archive.append(data.stream as Readable, { name: filename });
 
       await saveDownloadEvent({
         lessonExportId: lessonExport.id,
@@ -139,7 +139,7 @@ async function getHandler(req: Request): Promise<Response> {
   await kv.set(taskId, "loading");
 
   const zipStream = new PassThrough();
-  const archive = archiver("zip", { zlib: { level: 9 } });
+  const archive = archiver.create("zip", { zlib: { level: 9 } });
   archive.pipe(zipStream);
 
   let filesProcessed = 0;
