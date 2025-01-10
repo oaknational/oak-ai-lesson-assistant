@@ -109,6 +109,13 @@ function getModerationFromMessage(message?: { content: string }) {
   return moderation;
 }
 
+function isValidMessageRole(role: unknown): role is Message["role"] {
+  return (
+    typeof role === "string" &&
+    ["system", "assistant", "user", "data"].includes(role)
+  );
+}
+
 export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const {
     data: chat,
@@ -179,7 +186,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     setMessages,
   } = useChat({
     sendExtraMessageFields: true,
-    initialMessages: chat?.messages ?? [],
+    initialMessages: (chat?.messages ?? []).filter((m) =>
+      isValidMessageRole(m.role),
+    ) as Message[],
     generateId: () => generateMessageId({ role: "user" }),
     id,
     body: {

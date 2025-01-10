@@ -21,6 +21,7 @@ const meta = {
       },
     },
     ...demoParams({ isDemoUser: false }),
+    ...chromaticParams(["desktop"]),
   },
 } satisfies Meta<typeof Header>;
 

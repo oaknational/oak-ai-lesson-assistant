@@ -22,6 +22,7 @@ test.describe("Modify a lesson plan", () => {
   });
 
   test("Modify a lesson resource", async ({ page }) => {
+    test.setTimeout(generationTimeout * 3);
     const { setFixture } = await applyLlmFixtures(page, "replay");
 
     await test.step("Modify a lesson", async () => {

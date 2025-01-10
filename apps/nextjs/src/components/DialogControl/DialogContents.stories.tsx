@@ -4,6 +4,7 @@ import { http, HttpResponse } from "msw";
 import { SurveyQuestionType, SurveyType } from "posthog-js";
 import type { PostHog } from "posthog-js";
 
+import { chromaticParams } from "@/storybook/chromatic";
 import { AnalyticsDecorator } from "@/storybook/decorators/AnalyticsDecorator";
 import { DialogContentDecorator } from "@/storybook/decorators/DialogContentDecorator";
 
@@ -17,6 +18,9 @@ const meta = {
   args: {
     lesson: {},
     chatId: "example-chat-id",
+  },
+  parameters: {
+    ...chromaticParams(["desktop"]),
   },
 } satisfies Meta<typeof DialogContents>;
 

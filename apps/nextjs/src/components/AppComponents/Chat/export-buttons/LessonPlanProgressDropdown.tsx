@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import type {
-  LessonPlanKeys,
+  LessonPlanKey,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
@@ -16,7 +16,7 @@ export type LessonPlanProgressDropdownProps = Readonly<{
   lessonPlan: LooseLessonPlan;
   isStreaming: boolean;
   sectionRefs: Partial<
-    Record<LessonPlanKeys, React.MutableRefObject<HTMLDivElement | null>>
+    Record<LessonPlanKey, React.MutableRefObject<HTMLDivElement | null>>
   >;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
 }>;

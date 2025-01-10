@@ -10,7 +10,7 @@ export function chromaticParams(modes: ChromaticModes[]) {
           mobile: { viewport: "mobile" },
         }),
         ...(modes.includes("mobile-wide") && {
-          mobile: { viewport: "mobile-wide" },
+          "mobile-wide": { viewport: "mobile-wide" },
         }),
         ...(modes.includes("desktop") && {
           desktop: { viewport: "desktop" },
