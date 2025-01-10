@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { chatSchema } from "@oakai/aila/src/protocol/schema";
 import type { Prisma } from "@prisma/client";
 import { useImageSearch } from "hooks/useImageSearch";
+import Link from "next/link";
 import type { ImageResponse, PageData } from "types/imageTypes";
 
 import LoadingWheel from "@/components/LoadingWheel";
@@ -117,31 +118,35 @@ const ImageTestPage = ({
     mutateAsync: cycle3MutateAsync,
   } = trpc.imageGen.generateFourImages.useMutation();
 
-  useEffect(() => {
-    cycle1MutateAsync({
-      searchExpression: cycle1ImagePrompt as string,
-      lessonTitle: pageData.title as string,
-      subject: pageData.subject as string,
-      keyStage: pageData.keyStage as string,
-      lessonPlan: pageData.lessonPlan,
-      originalPrompt: cycle1ImagePrompt as string,
-    });
-    cycle2MutateAsync({
-      searchExpression: cycle2ImagePrompt as string,
-      lessonTitle: pageData.title as string,
-      subject: pageData.subject as string,
-      keyStage: pageData.keyStage as string,
-      lessonPlan: pageData.lessonPlan,
-      originalPrompt: cycle2ImagePrompt as string,
-    });
-    cycle3MutateAsync({
-      searchExpression: cycle3ImagePrompt as string,
-      lessonTitle: pageData.title as string,
-      subject: pageData.subject as string,
-      keyStage: pageData.keyStage as string,
-      lessonPlan: pageData.lessonPlan,
-      originalPrompt: cycle3ImagePrompt as string,
-    });
+  const generateEverything = useCallback(() => {
+    try {
+      cycle1MutateAsync({
+        searchExpression: cycle1ImagePrompt as string,
+        lessonTitle: pageData.title as string,
+        subject: pageData.subject as string,
+        keyStage: pageData.keyStage as string,
+        lessonPlan: pageData.lessonPlan,
+        originalPrompt: cycle1ImagePrompt as string,
+      });
+      cycle2MutateAsync({
+        searchExpression: cycle2ImagePrompt as string,
+        lessonTitle: pageData.title as string,
+        subject: pageData.subject as string,
+        keyStage: pageData.keyStage as string,
+        lessonPlan: pageData.lessonPlan,
+        originalPrompt: cycle2ImagePrompt as string,
+      });
+      cycle3MutateAsync({
+        searchExpression: cycle3ImagePrompt as string,
+        lessonTitle: pageData.title as string,
+        subject: pageData.subject as string,
+        keyStage: pageData.keyStage as string,
+        lessonPlan: pageData.lessonPlan,
+        originalPrompt: cycle3ImagePrompt as string,
+      });
+    } catch (error) {
+      console.error("callback error:", error);
+    }
   }, [
     cycle1ImagePrompt,
     cycle1MutateAsync,
@@ -154,59 +159,74 @@ const ImageTestPage = ({
     cycle3ImagePrompt,
     cycle3MutateAsync,
   ]);
-
+  const [hasClickedLoad, setHasClickedLoad] = useState(false);
   return (
     <div className="mx-auto max-w-[1600px] p-19">
-      <h1 className="mb-11 text-3xl font-bold">{lessonOutput.title}</h1>
-      <div className="flex flex-row gap-20">
-        <div className="flex w-[70%] flex-col gap-16 rounded bg-gray-100 p-9">
-          <div>
-            {(cycle1Loading || cycle2Loading || cycle3Loading) && (
-              <p className="font-bold">Loading this might take a few mins</p>
-            )}
-            <h2 className="text-2xl font-bold">Cycle 1</h2>
-            {cycle1Loading ? (
-              <LoadingWheel />
-            ) : (
-              // @ts-ignore
-              <Cycle cycle={cycle1} cycleImages={cycle1Images} />
-            )}
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-bold">Cycle 2</h2>
-            {cycle2Loading ? (
-              <LoadingWheel />
-            ) : (
-              // @ts-ignore
-              <Cycle cycle={cycle2} cycleImages={cycle2Images} />
-            )}
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold">Cycle 3</h2>
-            {cycle3Loading ? (
-              <LoadingWheel />
-            ) : (
-              // @ts-ignore
-              <Cycle cycle={cycle3} cycleImages={cycle3mages} />
-            )}
-          </div>
-        </div>
-        <div className="w-[30%]">
-          <button
-            onClick={() => {
-              setSeeLessonInfo(!seeLessonInfo);
-            }}
-          >
-            {seeLessonInfo ? "Hide Lesson Info" : "See Lesson Info"}
-          </button>
-          {seeLessonInfo && (
-            <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
-              {JSON.stringify(lessonOutput, null, 2)}
-            </pre>
-          )}
-        </div>
+      <div className="mb-11">
+        <Link href="/image-test">{`<- Back to start`}</Link>
       </div>
+      <h1 className="mb-11 text-3xl font-bold">{lessonOutput.title}</h1>
+      {hasClickedLoad ? (
+        <div className="flex flex-row gap-20">
+          <div className="flex w-[70%] flex-col gap-16 rounded bg-gray-100 p-9">
+            <div>
+              {(cycle1Loading || cycle2Loading || cycle3Loading) && (
+                <p className="font-bold">Loading this might take a few mins</p>
+              )}
+              <h2 className="text-2xl font-bold">Cycle 1</h2>
+              {cycle1Loading ? (
+                <LoadingWheel />
+              ) : (
+                // @ts-ignore
+                <Cycle cycle={cycle1} cycleImages={cycle1Images} />
+              )}
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold">Cycle 2</h2>
+              {cycle2Loading ? (
+                <LoadingWheel />
+              ) : (
+                // @ts-ignore
+                <Cycle cycle={cycle2} cycleImages={cycle2Images} />
+              )}
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold">Cycle 3</h2>
+              {cycle3Loading ? (
+                <LoadingWheel />
+              ) : (
+                // @ts-ignore
+                <Cycle cycle={cycle3} cycleImages={cycle3mages} />
+              )}
+            </div>
+          </div>
+          <div className="w-[30%]">
+            <button
+              onClick={() => {
+                setSeeLessonInfo(!seeLessonInfo);
+              }}
+            >
+              {seeLessonInfo ? "Hide Lesson Info" : "See Lesson Info"}
+            </button>
+            {seeLessonInfo && (
+              <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
+                {JSON.stringify(lessonOutput, null, 2)}
+              </pre>
+            )}
+          </div>
+        </div>
+      ) : (
+        <button
+          className="rounded bg-blue px-4 py-2 font-bold text-white hover:opacity-80"
+          onClick={() => {
+            generateEverything();
+            setHasClickedLoad(true);
+          }}
+        >
+          Load images
+        </button>
+      )}
     </div>
   );
 };
