@@ -104,6 +104,7 @@ const config = [
       },
     },
   },
+  
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
@@ -135,6 +136,24 @@ const config = [
         typescript: true,
         node: true,
       },
+    },
+  },
+  {
+    files: ["**/packages/db/prisma/zod-schemas/*.ts"],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+        project: ["./tsconfig.json"],
+      },
+    },
+    plugins: {
+      '@typescript-eslint': tsEslint,
+    },
+    rules: {
+      '@typescript-eslint/no-import-type-side-effects': 'off',
+      '@typescript-eslint/consistent-type-imports': 'off',
     },
   },
 ];
