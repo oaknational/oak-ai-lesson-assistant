@@ -77,7 +77,7 @@ export async function OpenAICompletionWithLogging(
   return { completion, metrics };
 }
 
-export async function reportCompletionAnalyticsEvent(
+export function reportCompletionAnalyticsEvent(
   payload: MetricsPayload,
   posthog?: PostHog,
 ) {
