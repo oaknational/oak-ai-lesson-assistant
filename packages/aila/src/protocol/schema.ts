@@ -612,7 +612,7 @@ export const chatSchema = z
     messages: z.array(
       z
         .object({
-          id: z.string(),
+          id: z.string().optional(),
           content: z.string(),
           role: z.union([
             z.literal("function"),
