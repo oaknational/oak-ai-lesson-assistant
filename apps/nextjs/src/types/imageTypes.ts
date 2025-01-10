@@ -87,7 +87,7 @@ export const imageLessonPlan = z.object({
     title: z.string(),
     durationInMinutes: z.number(),
     explanation: z.object({
-      spokenExplanation: z.array(z.string()),
+      spokenExplanation: z.array(z.string()).or(z.string()),
       accompanyingSlideDetails: z.string(),
       imagePrompt: z.string(),
       slideText: z.string(),
@@ -106,7 +106,7 @@ export const imageLessonPlan = z.object({
     title: z.string(),
     durationInMinutes: z.number(),
     explanation: z.object({
-      spokenExplanation: z.array(z.string()),
+      spokenExplanation: z.array(z.string()).or(z.string()),
       accompanyingSlideDetails: z.string(),
       imagePrompt: z.string(),
       slideText: z.string(),
@@ -125,7 +125,7 @@ export const imageLessonPlan = z.object({
     title: z.string(),
     durationInMinutes: z.number(),
     explanation: z.object({
-      spokenExplanation: z.array(z.string()),
+      spokenExplanation: z.array(z.string()).or(z.string()),
       accompanyingSlideDetails: z.string(),
       imagePrompt: z.string(),
       slideText: z.string(),

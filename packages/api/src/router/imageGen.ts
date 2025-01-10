@@ -65,7 +65,7 @@ export function promptConstructor(
   
   The lesson title is ${lessonTitle}. The lesson is broken down in to three learning sections, the title of this section is ${title}. 
   
-  The image you are generating is for a slide in this section that will be shown in class, the slide will have the following text on it: ${slideText} and the teacher will say the following: ${spokenExplanation.join(" ")}. Here are some additional details about the slide: ${accompanyingSlideDetails}.
+  The image you are generating is for a slide in this section that will be shown in class, the slide will have the following text on it: ${slideText} and the teacher will say the following: ${Array.isArray(spokenExplanation) ? spokenExplanation.join(" ") : spokenExplanation}. Here are some additional details about the slide: ${accompanyingSlideDetails}.
 
   The students will then practice what they have learned by ${practice} and the teacher will provide feedback by ${feedback}.
 
@@ -404,7 +404,7 @@ export type Cycle = {
   durationInMinutes: number;
   explanation: {
     imagePrompt: string;
-    spokenExplanation: string[];
+    spokenExplanation: string[] | string;
     accompanyingSlideDetails: string;
     slideText: string;
   };

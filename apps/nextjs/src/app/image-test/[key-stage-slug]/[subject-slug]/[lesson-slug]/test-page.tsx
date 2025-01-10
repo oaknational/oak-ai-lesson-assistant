@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { chatSchema } from "@oakai/aila/src/protocol/schema";
 import type { Prisma } from "@prisma/client";
-import { useImageSearch } from "hooks/useImageSearch";
+import Image from "next/image";
 import Link from "next/link";
 import type { ImageResponse, PageData } from "types/imageTypes";
 
@@ -272,7 +272,13 @@ const Cycle = ({
           <h3>Cloudinary</h3>
           {cycleImages?.cloudinary.map((image) => (
             <div key={image.id}>
-              <img src={image.url} alt={image.alt} />
+              <Image
+                src={image.url}
+                alt={image.alt}
+                objectFit="contain"
+                width="400"
+                height="400"
+              />
               <p>Relevance score judged by ai: {image.appropriatenessScore}</p>
             </div>
           ))}
@@ -281,7 +287,13 @@ const Cycle = ({
           <h3>Unsplash</h3>
           {cycleImages?.unsplash.map((image) => (
             <div key={image.id}>
-              <img src={image.url} alt={image.alt} />
+              <Image
+                src={image.url}
+                alt={image.alt}
+                objectFit="contain"
+                width="400"
+                height="400"
+              />
               <p>Relevance score judged by ai: {image.appropriatenessScore}</p>
             </div>
           ))}
@@ -290,7 +302,13 @@ const Cycle = ({
           <h3>Dale (AI)</h3>
           {cycleImages?.dale.map((image) => (
             <div key={image.id}>
-              <img src={image.url} alt={image.alt} />
+              <Image
+                src={image.url}
+                alt={image.alt}
+                objectFit="contain"
+                width="400"
+                height="400"
+              />
               <p>Relevance score judged by ai: {image.appropriatenessScore}</p>
             </div>
           ))}
@@ -299,7 +317,13 @@ const Cycle = ({
           <h3>Stable (AI)</h3>
           {cycleImages?.stable.map((image) => (
             <div key={image.id}>
-              <img src={image.url} alt={image.alt} />
+              <Image
+                src={image.url}
+                alt={image.alt}
+                objectFit="contain"
+                width="400"
+                height="400"
+              />
               <p>Relevance score judged by ai: {image.appropriatenessScore}</p>
             </div>
           ))}
