@@ -310,7 +310,7 @@ export function HomePageContent({ pageData }: HomePageProps) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              here
+              <OakLink>here</OakLink>
             </Link>
             .
           </OakP>
