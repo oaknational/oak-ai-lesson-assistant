@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { structuredLogger } from "@oakai/logger";
-import { aiLogger } from "@oakai/logger";
+import { structuredLogger, aiLogger } from "@oakai/logger";
 import { EventSchemas, Inngest } from "inngest";
 import getConfig from "next/config";
 
@@ -14,7 +13,7 @@ try {
   const { serverRuntimeConfig: nextServerRuntimeConfig } = getConfig();
   serverRuntimeConfig = nextServerRuntimeConfig;
 } catch (e) {
-  log.error("No Next environment");
+  log.error("No Next environment", e);
 }
 
 const CONTEXT = serverRuntimeConfig?.DEPLOY_CONTEXT as string | undefined;
