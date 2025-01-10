@@ -25,9 +25,7 @@ const createPrismaClient = () => {
   return client.$extends(withAccelerate());
 };
 
-// Create an instance to extract the type
-const extendedPrisma = createPrismaClient();
-export type PrismaClientWithAccelerate = typeof extendedPrisma;
+export type PrismaClientWithAccelerate = ReturnType<typeof createPrismaClient>;
 
 declare global {
   // allow global `var` declarations
