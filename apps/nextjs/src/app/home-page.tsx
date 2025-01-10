@@ -300,7 +300,20 @@ export function HomePageContent({ pageData }: HomePageProps) {
             Quiz designer
           </OakHeading>
 
-          <OakP>**insert text for quiz designer here deletion here**.</OakP>
+          <OakP>
+            Our AI quiz designer tool has been discontinued for the time being
+            as we focus on developing Aila, our AI-powered lesson assistant.
+            Your feedback will help shape how tools like this might be used in
+            the future – share your thoughts{" "}
+            <Link
+              href="mailto:help@thenational.academy?subject=AI quiz designer feedback"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              here
+            </Link>
+            .
+          </OakP>
         </OakFlex>
 
         <Image src={oakSupporting} alt="jigsaw image" />
