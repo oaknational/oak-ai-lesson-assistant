@@ -1,68 +1,60 @@
-import { prisma, type Lesson } from "@oakai/db";
+import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { z } from "zod";
 
 import { getCaptionsFromFile } from "../../utils/getCaptionsFromFile";
 
 const log = aiLogger("core");
+
 const newLessonContentSchema = z
   .object({
     videoTitle: z.string(),
   })
   .passthrough();
 
-async function getTranscriptAndContent(lesson: Lesson) {
-  const parsedLesson = newLessonContentSchema.parse(lesson?.newLessonContent);
-  const transcriptAndCaption = await getTranscriptForVideoTitle(
-    parsedLesson?.videoTitle,
-  );
-
-  return {
-    content: {
-      ...parsedLesson,
-      transcriptSentences: transcriptAndCaption?.transcript?.join(" "),
-    },
-    transcriptAndCaption,
-  };
-}
-
-async function updateLessonData(
-  lessonId: string,
-  content: ReturnType<typeof getTranscriptAndContent> extends Promise<infer T>
-    ? T
-    : never,
-) {
-  await Promise.all([
-    updateNewLessonContent(lessonId, content.content),
-    updateCaptions(lessonId, content.transcriptAndCaption?.caption),
-  ]);
-}
-
-async function processLesson(lesson: Lesson) {
-  const lessonId = lesson?.id;
-  if (typeof lessonId !== "string") return false;
-
-  const content = await getTranscriptAndContent(lesson);
-
-  log.info("lesson", lesson?.slug);
-  log.info(content.transcriptAndCaption?.transcript && "Transcript loaded ");
-  log.info(content.transcriptAndCaption?.caption && "Caption loaded ");
-
-  await updateLessonData(lessonId, content);
-  return true;
-}
-
 const main = async () => {
   try {
     log.info("Starting");
 
     const newLessons = await prisma.lesson.findMany({
-      where: { isNewLesson: true },
+      where: {
+        isNewLesson: true,
+      },
     });
 
-    const results = await Promise.all(newLessons.map(processLesson));
-    const numberOfProcessedLessons = results.filter(Boolean).length;
+    let numberOfProcessedLessons = 0;
 
+    await Promise.all(
+      newLessons.map(async (lesson) => {
+        const lessonId = lesson?.id;
+        const parsedLesson = newLessonContentSchema.parse(
+          lesson?.newLessonContent,
+        );
+        numberOfProcessedLessons++;
+        /*
+         *  Use function from OWA to capture transcripts from GCP based on video title
+         */
+        await getTranscriptForVideoTitle(parsedLesson?.videoTitle).then(
+          (transcriptAndCaption) => {
+            log.info("lesson", lesson?.slug);
+            const content = {
+              ...parsedLesson,
+
+              transcriptSentences: transcriptAndCaption?.transcript?.join(" "),
+            };
+            log.info(transcriptAndCaption?.transcript && "Transcript loaded ");
+            log.info(transcriptAndCaption?.caption && "Caption loaded ");
+            /*
+             *  Update newLessonContent with transcript
+             */
+            if (typeof lessonId === "string") {
+              updateNewLessonContent(lessonId, content);
+              updateCaptions(lessonId, transcriptAndCaption?.caption);
+            }
+          },
+        );
+      }),
+    );
     log.info("Script finished successfully");
     log.info("Processed lessons: ", numberOfProcessedLessons);
   } catch (e) {
