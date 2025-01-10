@@ -71,7 +71,7 @@ export async function OpenAICompletionWithLogging(
   const { completion, metricsPayload } =
     await performCompletionAndFetchMetricsPayload(payload, options);
   const metrics = await reportMetrics(metricsPayload);
-  await reportCompletionAnalyticsEvent(metricsPayload);
+  reportCompletionAnalyticsEvent(metricsPayload);
 
   log.info("Open AI Metrics", metrics);
   return { completion, metrics };
