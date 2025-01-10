@@ -2,11 +2,15 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { chatSchema } from "@oakai/aila/src/protocol/schema";
+import {
+  AilaRagRelevantLessonSchema,
+  LessonPlanSchemaWhilstStreaming,
+} from "@oakai/aila/src/protocol/schema";
 import type { Prisma } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import type { ImageResponse, PageData } from "types/imageTypes";
+import { z } from "zod";
 
 import LoadingWheel from "@/components/LoadingWheel";
 import { trpc } from "@/utils/trpc";
@@ -85,6 +89,40 @@ const ImageTestPage = ({
   if (!lesson) {
     return null;
   }
+
+  const chatSchema = z
+    .object({
+      id: z.string().optional(),
+      path: z.string().optional(),
+      title: z.string().optional(),
+      userId: z.string().optional(),
+      lessonPlan: LessonPlanSchemaWhilstStreaming,
+      relevantLessons: z.array(AilaRagRelevantLessonSchema).optional(),
+      isShared: z.boolean().optional(),
+      createdAt: z.union([z.date(), z.number()]).optional(),
+      updatedAt: z.union([z.date(), z.number()]).optional(),
+      iteration: z.number().optional(),
+      startingMessage: z.string().optional(),
+      messages: z.array(
+        z
+          .object({
+            id: z.string().optional(),
+            content: z.string().optional(),
+            role: z
+              .union([
+                z.literal("function"),
+                z.literal("data"),
+                z.literal("user"),
+                z.literal("system"),
+                z.literal("assistant"),
+                z.literal("tool"),
+              ])
+              .optional(),
+          })
+          .passthrough(),
+      ),
+    })
+    .passthrough();
   const parseOutput = chatSchema.parse(lesson.output);
   lesson;
   const lessonOutput = parseOutput.lessonPlan;

@@ -587,7 +587,7 @@ export const LessonPlanJsonSchema = zodToJsonSchema(
   "lessonPlanSchema",
 );
 
-const AilaRagRelevantLessonSchema = z.object({
+export const AilaRagRelevantLessonSchema = z.object({
   // @todo add this after next ingest
   // oakLessonId: z.number(),
   lessonPlanId: z.string(),
@@ -598,32 +598,30 @@ export type AilaRagRelevantLesson = z.infer<typeof AilaRagRelevantLessonSchema>;
 
 export const chatSchema = z
   .object({
-    id: z.string().optional(),
-    path: z.string().optional(),
-    title: z.string().optional(),
-    userId: z.string().optional(),
+    id: z.string(),
+    path: z.string(),
+    title: z.string(),
+    userId: z.string(),
     lessonPlan: LessonPlanSchemaWhilstStreaming,
     relevantLessons: z.array(AilaRagRelevantLessonSchema).optional(),
     isShared: z.boolean().optional(),
-    createdAt: z.union([z.date(), z.number()]).optional(),
+    createdAt: z.union([z.date(), z.number()]),
     updatedAt: z.union([z.date(), z.number()]).optional(),
     iteration: z.number().optional(),
     startingMessage: z.string().optional(),
     messages: z.array(
       z
         .object({
-          id: z.string().optional(),
-          content: z.string().optional(),
-          role: z
-            .union([
-              z.literal("function"),
-              z.literal("data"),
-              z.literal("user"),
-              z.literal("system"),
-              z.literal("assistant"),
-              z.literal("tool"),
-            ])
-            .optional(),
+          id: z.string(),
+          content: z.string(),
+          role: z.union([
+            z.literal("function"),
+            z.literal("data"),
+            z.literal("user"),
+            z.literal("system"),
+            z.literal("assistant"),
+            z.literal("tool"),
+          ]),
         })
         .passthrough(),
     ),
