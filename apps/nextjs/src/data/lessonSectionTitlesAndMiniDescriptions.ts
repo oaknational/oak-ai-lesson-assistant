@@ -1,7 +1,7 @@
-import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 
 export const lessonSectionTitlesAndMiniDescriptions: Record<
-  LessonPlanKeys,
+  LessonPlanKey,
   { description: string }
 > = {
   title: {

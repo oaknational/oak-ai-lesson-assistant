@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import {
   DemoDecorator,
@@ -8,7 +9,7 @@ import {
 
 import ExportButtons from "./";
 
-const meta: Meta<typeof ExportButtons> = {
+const meta = {
   title: "Components/LessonPlan/ExportButtons",
   component: ExportButtons,
   tags: ["autodocs"],
@@ -18,6 +19,7 @@ const meta: Meta<typeof ExportButtons> = {
     documentContainerRef: { current: null },
   },
   parameters: {
+    ...chromaticParams(["desktop"]),
     chatContext: {
       id: "123",
       isStreaming: false,
@@ -25,7 +27,7 @@ const meta: Meta<typeof ExportButtons> = {
     },
     ...demoParams({ isDemoUser: false }),
   },
-};
+} satisfies Meta<typeof ExportButtons>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
