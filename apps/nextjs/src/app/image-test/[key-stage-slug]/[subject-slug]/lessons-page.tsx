@@ -22,15 +22,13 @@ const LessonsPage = ({
     output: Prisma.JsonValue;
   }[];
 }) => {
-  const pathname = usePathname(); // Get the current pathname
-
   // zod parse lessons
   const lessonSchema = z
     .object({
       id: z.string(),
       createdAt: z.date(),
       updatedAt: z.date(),
-      deletedAt: z.date().nullable(),
+      deletedAt: z.date().nullable().optional(),
       appId: z.string(),
       userId: z.string(),
       output: z.object({
@@ -39,10 +37,24 @@ const LessonsPage = ({
     })
     .passthrough();
 
+  if (1 >= lessons.length) {
+    return (
+      <div className="mx-auto max-w-[1200px] p-19">
+        <div className="mb-11">
+          <Link href="/image-test">{`<- Back`}</Link>
+        </div>
+        <p>No lessons found</p>
+      </div>
+    );
+  }
+
   const parsedLessons = lessons.map((lesson) => lessonSchema.parse(lesson));
 
   return (
     <div className="mx-auto max-w-[1200px] p-19">
+      <div className="mb-11">
+        <Link href="/image-test">{`<- Back`}</Link>
+      </div>
       <h1 className="mb-11">
         Choose your keystage: {keyStageSlug}, subject: {subjectSlug}
       </h1>
