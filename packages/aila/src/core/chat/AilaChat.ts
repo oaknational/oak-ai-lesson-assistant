@@ -417,6 +417,7 @@ export class AilaChat implements AilaChatService {
   }
 
   public async complete() {
+    log.info("BING BONG the logger is working in complete of aila chat");
     await this.reportUsageMetrics();
     await fetchExperimentalPatches({
       fullQuizService: this.fullQuizService,
