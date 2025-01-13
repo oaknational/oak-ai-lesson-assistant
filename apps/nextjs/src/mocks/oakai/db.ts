@@ -4,10 +4,10 @@ See the readme for why this is needed.
 */
 export const prisma = {
   user: {
-    findUnique: async () => null,
-    findMany: async () => [],
-    create: async (data: unknown) => data,
-    update: async (data: unknown) => data,
-    delete: async () => null,
+    findUnique: async () => Promise.resolve(null),
+    findMany: async () => Promise.resolve([]),
+    create: async (data: unknown) => Promise.resolve(data),
+    update: async (data: unknown) => Promise.resolve(data),
+    delete: async () => Promise.resolve(null),
   },
 };
