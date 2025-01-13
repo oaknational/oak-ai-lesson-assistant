@@ -221,6 +221,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
         response,
         path,
       });
+      log.info("GCLOMAX DEBUG HERE");
 
       const messageModeration = getModerationFromMessage(response);
       if (messageModeration?.id) {
