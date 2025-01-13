@@ -1,10 +1,48 @@
 "use server";
 
-import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
-import { chatSchema } from "@oakai/aila/src/protocol/schema";
+import {
+  AilaRagRelevantLessonSchema,
+  LessonPlanSchemaWhilstStreaming,
+  type AilaPersistedChat,
+} from "@oakai/aila/src/protocol/schema";
 import type { Prisma } from "@oakai/db";
 import { prisma } from "@oakai/db";
 import * as Sentry from "@sentry/nextjs";
+import { z } from "zod";
+
+const chatSchema = z
+  .object({
+    id: z.string().optional(),
+    path: z.string().optional(),
+    title: z.string().optional(),
+    userId: z.string().optional(),
+    lessonPlan: LessonPlanSchemaWhilstStreaming,
+    relevantLessons: z.array(AilaRagRelevantLessonSchema).optional(),
+    isShared: z.boolean().optional(),
+    createdAt: z.union([z.date(), z.number()]).optional(),
+    updatedAt: z.union([z.date(), z.number()]).optional(),
+    iteration: z.number().optional(),
+    startingMessage: z.string().optional(),
+    messages: z.array(
+      z
+        .object({
+          id: z.string().optional(),
+          content: z.string().optional(),
+          role: z
+            .union([
+              z.literal("function"),
+              z.literal("data"),
+              z.literal("user"),
+              z.literal("system"),
+              z.literal("assistant"),
+              z.literal("tool"),
+            ])
+            .optional(),
+        })
+        .passthrough(),
+    ),
+  })
+  .passthrough();
 
 function parseChatAndReportError({
   sessionOutput,
@@ -14,7 +52,7 @@ function parseChatAndReportError({
   sessionOutput: Prisma.JsonValue;
   id: string;
   userId: string;
-}): AilaPersistedChat | undefined {
+}) {
   if (typeof sessionOutput !== "object") {
     throw new Error("sessionOutput is not an object");
   }
@@ -49,7 +87,7 @@ export async function getChatById(
   if (!session) {
     return null;
   }
-
+  // @ts-ignore
   return (
     parseChatAndReportError({
       id,
