@@ -131,7 +131,7 @@ export const DownloadAllButton = ({
             setZipStatus("complete");
             clearInterval(timer);
           }
-        } catch (error) {
+        } catch {
           clearInterval(timer);
         }
       }, 1000);
@@ -147,7 +147,7 @@ export const DownloadAllButton = ({
             trackDownload(ext, analyticsResourceType, lesson, track, chatId);
             handleZipDownloadStatus();
           }}
-          className="flex w-full items-center justify-start  gap-15 hover:underline"
+          className="flex w-full items-center justify-start gap-15 hover:underline"
           href={`/api/aila-download-all?fileIds=${encodeURIComponent(JSON.stringify(fileIdsAndFormats))}&lessonTitle=${encodeURIComponent(lesson.title as string)}`}
           prefetch={false}
           download
@@ -195,7 +195,7 @@ export const DownloadAllButton = ({
   return (
     <>
       <button
-        className={`flex items-center justify-between gap-9 rounded-md border-2 border-black px-14 py-10 ${downloadAvailable ? "border-opacity-100" : " border-opacity-40"}`}
+        className={`flex items-center justify-between gap-9 rounded-md border-2 border-black px-14 py-10 ${downloadAvailable ? "border-opacity-100" : "border-opacity-40"}`}
         onClick={() => onClick()}
         disabled={!downloadAvailable}
         data-testid={dataTestId}
