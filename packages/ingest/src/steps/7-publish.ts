@@ -50,9 +50,7 @@ export async function publishToRag({
     subjectSlug: string;
     keyStageSlug: string;
     lessonPlan: LooseLessonPlan;
-  }[] = [];
-
-  for (const lesson of lessons) {
+  }[] = lessons.map((lesson) => {
     if (!lesson.lessonPlan) {
       throw new IngestError("Lesson is missing lesson plan", {
         ingestId,
@@ -62,15 +60,15 @@ export async function publishToRag({
 
     const lessonPlan = LessonPlanSchema.parse(lesson.lessonPlan.data);
 
-    ragLessonPlans.push({
+    return {
       oakLessonId: lesson.oakLessonId,
       oakLessonSlug: lesson.data.lessonSlug,
       ingestLessonId: lesson.id,
       subjectSlug: lesson.data.subjectSlug,
       keyStageSlug: lesson.data.keyStageSlug,
       lessonPlan,
-    });
-  }
+    };
+  });
 
   log.info("About to chunk");
 
