@@ -9,7 +9,8 @@ import {
 } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 import type { Message } from "ai";
-import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey";
+
+import { usePosthogFeedbackSurvey } from "@/hooks/surveys/usePosthogFeedbackSurvey";
 
 import ModalFooterButtons from "./ModalFooterButtons";
 
@@ -36,7 +37,7 @@ const ReportContentDialog = ({
       surveyName: "Report Content",
     });
 
-  const close = useCallback(() =>{
+  const close = useCallback(() => {
     closeDialog();
     closeDialogWithPostHogDismiss();
   }, [closeDialog, closeDialogWithPostHogDismiss]);

@@ -2,7 +2,6 @@ import type { Dispatch } from "react";
 import { useRef } from "react";
 
 import { Box, Container } from "@radix-ui/themes";
-import useSuggestedQuestions from "hooks/useSuggestedQuestions";
 
 import ExportMenu from "@/components/AppComponents/QuizDesigner/ExportMenu";
 import Hero from "@/components/AppComponents/QuizDesigner/Hero";
@@ -10,6 +9,7 @@ import { QuizQuestionRow } from "@/components/AppComponents/QuizDesigner/QuizQue
 import ControllerRow from "@/components/AppComponents/QuizDesigner/QuizQuestionRow/ControllerRow";
 import RateLimitNotification from "@/components/AppComponents/common/RateLimitNotification";
 import Layout from "@/components/Layout";
+import useSuggestedQuestions from "@/hooks/useSuggestedQuestions";
 
 import type { QuizAppAction } from "../../../ai-apps/quiz-designer/state/actions";
 import type { QuizAppState } from "../../../ai-apps/quiz-designer/state/types";

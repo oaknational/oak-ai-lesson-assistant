@@ -17,14 +17,17 @@
     "allowImportingTsExtensions": true,
     "moduleDetection": "force",
     /* Path Aliases */
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/app/*": ["app/*"],
-      "@/lib/*": ["lib/*"],
-      "@/utils/*": ["utils/*"],
-      "@/assets/*": ["assets/*"],
-      "@/storybook/*": ["../.storybook/*"]
+      "@/components/*": ["src/components/*"],
+      "@/app/*": ["src/app/*"],
+      "@/ai-apps/*": ["src/ai-apps/*"],
+      "@/cms/*": ["src/cms/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/lib/*": ["src/lib/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/assets/*": ["src/assets/*"],
+      "@/storybook/*": [".storybook/*"]
     },
     "plugins": [
       {

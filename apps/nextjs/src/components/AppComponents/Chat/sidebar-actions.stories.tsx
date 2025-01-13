@@ -41,6 +41,7 @@ export const SharePending: Story = {
     const canvas = within(canvasElement);
     const deleteButton = canvas.getByRole("button", { name: "Share" });
     deleteButton.click();
+    return Promise.resolve();
   },
 };
 
@@ -54,5 +55,6 @@ export const RemovePending: Story = {
     const canvas = within(canvasElement);
     const deleteButton = canvas.getByRole("button", { name: "Delete" });
     deleteButton.click();
+    return Promise.resolve();
   },
 };

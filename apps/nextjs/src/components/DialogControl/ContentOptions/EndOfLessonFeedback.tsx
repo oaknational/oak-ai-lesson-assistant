@@ -1,9 +1,13 @@
 import { Box, Flex } from "@radix-ui/themes";
-import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey";
 
 import FeedBack from "@/components/Feedback";
+import { usePosthogFeedbackSurvey } from "@/hooks/surveys/usePosthogFeedbackSurvey";
 
-const EndOfLessonFeedback = ({ closeDialog }: { readonly closeDialog: () => void }) => {
+const EndOfLessonFeedback = ({
+  closeDialog,
+}: {
+  readonly closeDialog: () => void;
+}) => {
   const { survey, submitSurvey, closeDialogWithPostHogDismiss } =
     usePosthogFeedbackSurvey({
       closeDialog,

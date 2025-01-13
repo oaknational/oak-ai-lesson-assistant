@@ -1,11 +1,11 @@
 import type { Dispatch } from "react";
 
 import { Box, Flex, Grid, Text } from "@radix-ui/themes";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import type { UseGenerationError } from "hooks/useGeneration";
-import type { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
 
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
 import LoadingWheel from "@/components/LoadingWheel";
+import type { UseGenerationError } from "@/hooks/useGeneration";
+import type { PotentialQuestionsType } from "@/hooks/useSuggestedQuestions";
 
 import ChatButton from "../Chat/ui/chat-button";
 import { GenerationErrorBox } from "./ErrorBox";
