@@ -42,7 +42,13 @@ export function parseBatchLessonPlan(line: unknown) {
       JSON.parse(maybeLessonPlanString),
     );
 
-    lessonPlan.keyStage = parseKeyStage(lessonPlan.keyStage);
+    lessonPlan = {
+      ...lessonPlan,
+      keyStage: parseKeyStage(lessonPlan.keyStage),
+    };
+
+    // hack to remove basedOn as it often erroneously gets populated by LLM
+    delete lessonPlan.basedOn;
   } catch (cause) {
     throw new IngestError("Failed to parse lesson plan", {
       cause,
@@ -50,9 +56,6 @@ export function parseBatchLessonPlan(line: unknown) {
       errorDetail: maybeLessonPlanString,
     });
   }
-
-  // hack to remove basedOn as it often erroneously gets populated by LLM
-  delete lessonPlan.basedOn;
 
   return { lessonPlan, lessonId };
 }
