@@ -1,5 +1,5 @@
 import { Aila } from "@oakai/aila/src/core/Aila";
-import { AilaPlugin } from "@oakai/aila/src/core/plugins";
+import type { AilaPlugin } from "@oakai/aila/src/core/plugins";
 
 const cliPlugin: AilaPlugin = {
   onStreamError: async (error, { aila, enqueue }) => {
