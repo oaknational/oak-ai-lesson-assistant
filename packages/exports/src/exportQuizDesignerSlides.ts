@@ -1,10 +1,8 @@
 import { prepQuizDesignerForSlides } from "./dataHelpers/prepLessonForSlides";
 import { exportGeneric } from "./exportGeneric";
 import { googleSlides } from "./gSuite/slides/client";
-import {
-  deleteSlides,
-  type SpeakerNotesTag,
-} from "./gSuite/slides/deleteSlides";
+import type { QuestionNumber } from "./gSuite/slides/deleteSlides";
+import { QUESTION_TAGS, deleteSlides } from "./gSuite/slides/deleteSlides";
 import { populateSlides } from "./gSuite/slides/populateSlides";
 import type { ExportableQuizAppState } from "./schema/input.schema";
 import { getQuizDesignerSlidesTemplateIdWorksheet } from "./templates";
@@ -22,10 +20,11 @@ export const exportQuizDesignerSlides = async ({
   onStateChange: (state: State<OutputData>) => void;
 }): Promise<Result<OutputData>> => {
   try {
-    const speakerNotesTagsToDelete: SpeakerNotesTag[] = Array.from(
+    const speakerNotesTagsToDelete = Array.from(
       { length: 20 - quiz.questions.length },
-      (_, i) => i + quiz.questions.length + 1,
-    ).map((n) => `question${n}` as SpeakerNotesTag);
+      (_, i): QuestionNumber =>
+        (i + quiz.questions.length + 1) as QuestionNumber,
+    ).map((n) => QUESTION_TAGS[n]);
 
     const result = await exportGeneric({
       newFileName: `${quiz.topic + " " + quiz.subject + " " + quiz.keyStage} - ${snapshotId} - Quiz slides`,
