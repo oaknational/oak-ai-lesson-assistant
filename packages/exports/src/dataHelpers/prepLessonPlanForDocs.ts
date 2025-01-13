@@ -24,7 +24,7 @@ function processQuizAnswersForLessonPlanDoc(
 export async function prepLessonPlanForDocs(
   lessonPlan: LessonPlanDocInputData,
 ): Promise<LessonPlanDocsTemplateData> {
-  return {
+  return Promise.resolve({
     lesson_title: lessonPlan.title,
     subject: lessonPlan.subject,
     key_stage: camelCaseToTitleCase(lessonPlan.keyStage) ?? "",
@@ -400,5 +400,5 @@ export async function prepLessonPlanForDocs(
       )[2] ?? "",
     cycle_3_practice: lessonPlan.cycle3?.practice ?? " ",
     cycle_3_feedback: lessonPlan.cycle3?.feedback ?? " ",
-  };
+  });
 }
