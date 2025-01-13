@@ -10,7 +10,7 @@ export function findMessageIdFromContent({ content }: { content: string }) {
     .map((s) => {
       try {
         return JSON.parse(s.trim());
-      } catch (e) {
+      } catch {
         // ignore invalid JSON
         return null;
       }
@@ -30,7 +30,7 @@ export function findLatestServerSideState(workingMessages: Message[]) {
     .map((s) => {
       try {
         return JSON.parse(s.trim());
-      } catch (e) {
+      } catch {
         // ignore invalid JSON
         return null;
       }
