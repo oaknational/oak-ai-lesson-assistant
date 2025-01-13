@@ -12,6 +12,6 @@ const subjectMap: Record<string, string[]> = {
   ],
 };
 
-export function parseSubjects(subject: string): string[] {
+export function parseSubjectsForRagSearch(subject: string): string[] {
   return subjectMap[subject] ?? [subject];
 }

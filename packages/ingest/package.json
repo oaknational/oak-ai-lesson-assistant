@@ -31,6 +31,7 @@
     "@oakai/core": "*",
     "@oakai/db": "*",
     "@oakai/logger": "*",
+    "@oakai/rag": "*",
     "@paralleldrive/cuid2": "^2.2.2",
     "csv-parser": "^3.0.0",
     "graphql-request": "^6.1.0",

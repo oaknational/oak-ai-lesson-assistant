@@ -2,10 +2,10 @@ import {
   CompletedLessonPlanSchema,
   type CompletedLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
+import { parseKeyStage } from "@oakai/core";
 
 import { IngestError } from "../IngestError";
 import { CompletionBatchResponseSchema } from "../zod-schema/zodSchema";
-import { parseKeyStage } from "./parseKeyStage";
 
 export function parseBatchLessonPlan(line: unknown) {
   let result;
@@ -38,13 +38,13 @@ export function parseBatchLessonPlan(line: unknown) {
 
   let lessonPlan: CompletedLessonPlan;
   try {
-    lessonPlan = CompletedLessonPlanSchema.parse(
+    const parsedLessonPlan = CompletedLessonPlanSchema.parse(
       JSON.parse(maybeLessonPlanString),
     );
 
     lessonPlan = {
-      ...lessonPlan,
-      keyStage: parseKeyStage(lessonPlan.keyStage),
+      ...parsedLessonPlan,
+      keyStage: parseKeyStage(parsedLessonPlan.keyStage),
     };
 
     // hack to remove basedOn as it often erroneously gets populated by LLM

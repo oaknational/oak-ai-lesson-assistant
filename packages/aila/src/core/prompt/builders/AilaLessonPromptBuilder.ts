@@ -3,7 +3,11 @@ import type { TemplateProps } from "@oakai/core/src/prompts/lesson-assistant";
 import { template } from "@oakai/core/src/prompts/lesson-assistant";
 import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
-import { getRelevantLessonPlans } from "@oakai/rag";
+import {
+  getRelevantLessonPlans,
+  parseKeyStage,
+  parseSubjectsForRagSearch,
+} from "@oakai/rag";
 
 import { DEFAULT_RAG_LESSON_PLANS } from "../../../constants";
 import { tryWithErrorReporting } from "../../../helpers/errorReporting";
@@ -14,8 +18,6 @@ import { compressedLessonPlanForRag } from "../../../utils/lessonPlan/compressed
 import { fetchLessonPlan } from "../../../utils/lessonPlan/fetchLessonPlan";
 import type { RagLessonPlan } from "../../../utils/rag/fetchRagContent";
 import { fetchRagContent } from "../../../utils/rag/fetchRagContent";
-import { parseKeyStage } from "../../../utils/rag/parseKeyStage";
-import { parseSubjects } from "../../../utils/rag/parseSubjects";
 import type { AilaServices } from "../../AilaServices";
 import { AilaPromptBuilder } from "../AilaPromptBuilder";
 
@@ -89,7 +91,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
       log.info("Using new RAG schema");
 
       const keyStageSlugs = keyStage ? [parseKeyStage(keyStage)] : null;
-      const subjectSlugs = subject ? parseSubjects(subject) : null;
+      const subjectSlugs = subject ? parseSubjectsForRagSearch(subject) : null;
 
       const relevantLessonPlans = await getRelevantLessonPlans({
         title,

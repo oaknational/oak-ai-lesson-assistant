@@ -7,7 +7,7 @@
 import { prisma } from "@oakai/db";
 
 // import OpenAI from "openai";
-import ragFixtures from "./fixtures.json";
+import ragFixtures from "../fixtures.json";
 
 // const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 async function pgVectorSearch({

@@ -32,6 +32,7 @@ import { generateTranscriptEmbeddings } from "./src/functions/transcript/generat
 export { inngest } from "./src/inngest";
 export * from "./src/data/subjectsAndKeyStages";
 export * from "./src/models";
+export { parseKeyStage } from "./src/data/parseKeyStage";
 //export * from "./src/models/promptVariants";
 
 export const functions = [

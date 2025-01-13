@@ -868,6 +868,9 @@ importers:
       '@oakai/logger':
         specifier: '*'
         version: link:../logger
+      '@oakai/rag':
+        specifier: '*'
+        version: link:../rag
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
