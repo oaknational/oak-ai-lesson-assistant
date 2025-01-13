@@ -107,7 +107,7 @@ export function SidebarActions({ chat }: SidebarActionsProps) {
                     router.refresh();
                     router.push("/");
                     toast.success("Chat deleted");
-                  } catch (err) {
+                  } catch {
                     toast.error("Failed to delete chat");
                   }
                 });
