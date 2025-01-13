@@ -70,10 +70,7 @@ export function initializeTracer(options: DatadogOptions) {
           ),
       },
     };
-    console.log(
-      "Initializing Datadog tracer with options",
-      initialisationOptions,
-    );
+    log.info("Initializing Datadog tracer with options", initialisationOptions);
     tracer.init(initialisationOptions);
   }
 }
