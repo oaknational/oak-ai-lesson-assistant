@@ -15,7 +15,7 @@ import {
 
 import * as stories from "./LessonPlanProgressDropdown.stories";
 
-const { Default, PartiallyCompleted, FullyCompleted, PartialCycles } =
+const { PartiallyCompleted, FullyCompleted, PartialCycles } =
   composeStories(stories);
 
 describe("LessonPlanProgressDropdown", () => {
