@@ -23,6 +23,7 @@
       "@/app/*": ["src/app/*"],
       "@/ai-apps/*": ["src/ai-apps/*"],
       "@/cms/*": ["src/cms/*"],
+      "@/data/*": ["src/data/*"],
       "@/hooks/*": ["src/hooks/*"],
       "@/lib/*": ["src/lib/*"],
       "@/utils/*": ["src/utils/*"],
