@@ -236,6 +236,7 @@ export const generationRouter = router({
         logger.error(
           "Failed to save re-generation, generationId=%s",
           generation.id,
+          err,
         );
       }
 
