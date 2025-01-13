@@ -161,7 +161,7 @@ const Distractor = ({
             "User attempted to tweak distractor with missing lastGenerationId",
           );
         }
-      } catch (err) {
+      } catch {
         browserLogger.error("Failed to log distractor tweak");
       }
     },
