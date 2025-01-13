@@ -2,6 +2,7 @@ import type { slides_v1 } from "@googleapis/slides";
 
 import type { Result } from "../../types";
 
+// This type reflects the values available in the "speaker notes" of the template slides document
 export type SpeakerNotesTag =
   | `cycle${1 | 2 | 3}`
   | `question${1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20}`;
