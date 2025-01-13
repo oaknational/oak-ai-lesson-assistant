@@ -1,4 +1,7 @@
+import { aiLogger } from "@oakai/logger";
 import { PrismaClient } from "@prisma/client";
+
+const log = aiLogger("db");
 
 const prisma = new PrismaClient();
 
@@ -26,10 +29,8 @@ const main = async () => {
         }),
       ),
     );
-
-    //await seedLessons();
   } catch (e) {
-    console.error(e);
+    log.error(e);
     process.exit(1);
   } finally {
     await prisma.$disconnect();
@@ -41,7 +42,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    log.error(e);
     await prisma.$disconnect();
     process.exit(1);
   });
