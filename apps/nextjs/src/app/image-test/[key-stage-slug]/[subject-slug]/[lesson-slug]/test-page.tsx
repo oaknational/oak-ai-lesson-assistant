@@ -286,7 +286,7 @@ const Cycle = ({
         <div className="flex flex-col gap-5">
           {Array.isArray(cycle.explanation?.spokenExplanation) &&
             cycle.explanation?.spokenExplanation?.map((slide) => {
-              return "- " + slide;
+              return <p key={slide}>- {slide}</p>;
             })}
         </div>
         <p>
