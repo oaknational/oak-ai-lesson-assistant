@@ -107,8 +107,6 @@ export class AilaChat implements AilaChatService {
       quizGenerators: ["basedOnRag"],
     });
   }
-  // TODO: GCLOMAX This should be put in a new class called AilaQuizService, in the ailaservices class.
-  private quizService = new AilaQuiz();
 
   public get aila() {
     return this._aila;
