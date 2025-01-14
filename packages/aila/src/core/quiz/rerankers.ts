@@ -1,7 +1,6 @@
 import { CohereClient } from "cohere-ai";
 
-import type { SimplifiedResult } from "./AilaQuiz";
-import type { DocumentReranker } from "./interfaces";
+import type { DocumentReranker, SimplifiedResult } from "./interfaces";
 
 export class CohereReranker implements DocumentReranker {
   private cohere: CohereClient;
