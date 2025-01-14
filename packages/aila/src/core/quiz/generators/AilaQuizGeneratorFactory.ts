@@ -1,7 +1,8 @@
-import { AilaRagQuizGenerator } from "./AilaRagQuizGenerator";
+// import { AilaRagQuizGenerator } from "./AilaRagQuizGenerator";
 import type { BaseQuizGenerator } from "./BaseQuizGenerator";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
-import { MLQuizGenerator } from "./MLQuizGenerator";
+
+// import { MLQuizGenerator } from "./MLQuizGenerator";
 
 // Factory class
 
@@ -11,9 +12,11 @@ export class AilaQuizFactory {
   ): BaseQuizGenerator {
     switch (type) {
       case "rag":
-        return new AilaRagQuizGenerator();
+        throw new Error("RAG quiz generator not implemented");
+      // return new AilaRagQuizGenerator();
       case "ml":
-        return new MLQuizGenerator();
+        throw new Error("ML quiz generator not implemented");
+      // return new MLQuizGenerator();
       case "basedOnRag":
         return new BasedOnRagQuizGenerator();
       default:

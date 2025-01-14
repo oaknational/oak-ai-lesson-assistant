@@ -8,7 +8,7 @@ import type {
 } from "../../../protocol/schema";
 import type { AilaQuizGeneratorService } from "../../AilaServices";
 import type { BaseSchema, BaseType } from "../ChoiceModels";
-import { MLQuizGenerator } from "../generators/MLQuizGenerator";
+// import { MLQuizGenerator } from "../generators/MLQuizGenerator";
 import type {
   AilaQuizReranker,
   FullQuizService,
@@ -16,7 +16,7 @@ import type {
   QuizSelector,
 } from "../interfaces";
 import { testRatingSchema } from "../rerankers/RerankerStructuredOutputSchema";
-import { TestSchemaReranker } from "../rerankers/SchemaReranker";
+// import { TestSchemaReranker } from "../rerankers/SchemaReranker";
 import { SimpleQuizSelector } from "../selectors/SimpleQuizSelector";
 
 const log = aiLogger("aila:quiz");
@@ -75,11 +75,11 @@ export abstract class BaseFullQuizService implements FullQuizService {
   }
 }
 
-export class SimpleFullQuizService extends BaseFullQuizService {
-  public quizSelector: QuizSelector<BaseType> =
-    new SimpleQuizSelector<BaseType>();
+// export class SimpleFullQuizService extends BaseFullQuizService {
+//   public quizSelector: QuizSelector<BaseType> =
+//     new SimpleQuizSelector<BaseType>();
 
-  public quizReranker: AilaQuizReranker<typeof BaseSchema> =
-    new TestSchemaReranker(testRatingSchema, "/starterQuiz");
-  public quizGenerators: AilaQuizGeneratorService[] = [new MLQuizGenerator()];
-}
+//   public quizReranker: AilaQuizReranker<typeof BaseSchema> =
+//     new TestSchemaReranker(testRatingSchema, "/starterQuiz");
+//   public quizGenerators: AilaQuizGeneratorService[] = [new MLQuizGenerator()];
+// }
