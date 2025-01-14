@@ -282,7 +282,7 @@ const Cycle = ({
       <div className="flex flex-col gap-8">
         <p className="text-lg">{cycle.title}</p>
         <b>Explanation:</b>
-        <br />{" "}
+
         <div className="flex flex-col gap-5">
           {Array.isArray(cycle.explanation?.spokenExplanation) &&
             cycle.explanation?.spokenExplanation?.map((slide) => {
