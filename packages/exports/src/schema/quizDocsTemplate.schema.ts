@@ -1,32 +1,27 @@
 import { z } from "zod";
 
+const questionCount = 6;
+const answerOptions = ["a", "b", "c"] as const;
+
+const generateQuestionSchema = (num: number) => ({
+  [`question_${num}`]: z.string().nullish(),
+  ...Object.fromEntries(
+    answerOptions.map((letter) => [
+      `question_${num}_answer_${letter}`,
+      z.string().nullish(),
+    ]),
+  ),
+});
+
 export const quizDocsTemplateSchema = z.object({
   lesson_title: z.string(),
   quiz_type: z.string(),
-  question_1: z.string().nullish(),
-  question_1_answer_a: z.string().nullish(),
-  question_1_answer_b: z.string().nullish(),
-  question_1_answer_c: z.string().nullish(),
-  question_2: z.string().nullish(),
-  question_2_answer_a: z.string().nullish(),
-  question_2_answer_b: z.string().nullish(),
-  question_2_answer_c: z.string().nullish(),
-  question_3: z.string().nullish(),
-  question_3_answer_a: z.string().nullish(),
-  question_3_answer_b: z.string().nullish(),
-  question_3_answer_c: z.string().nullish(),
-  question_4: z.string().nullish(),
-  question_4_answer_a: z.string().nullish(),
-  question_4_answer_b: z.string().nullish(),
-  question_4_answer_c: z.string().nullish(),
-  question_5: z.string().nullish(),
-  question_5_answer_a: z.string().nullish(),
-  question_5_answer_b: z.string().nullish(),
-  question_5_answer_c: z.string().nullish(),
-  question_6: z.string().nullish(),
-  question_6_answer_a: z.string().nullish(),
-  question_6_answer_b: z.string().nullish(),
-  question_6_answer_c: z.string().nullish(),
+  ...Object.assign(
+    {},
+    ...Array.from({ length: questionCount }, (_, i) =>
+      generateQuestionSchema(i + 1),
+    ),
+  ),
 });
 
 export type QuizDocsTemplateData = z.infer<typeof quizDocsTemplateSchema>;
