@@ -39,6 +39,7 @@ const packageConfigs = packages.map(pkg => ({
     parserOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
+      projectService: true,
       project: [`${pkg.dir}/tsconfig.json`],
       tsconfigRootDir: projectRoot,
       warnOnUnsupportedTypeScriptVersion: false,
