@@ -39,6 +39,7 @@ type ChildKey =
   | "chat"
   | "cloudinary"
   | "consent"
+  | "core"
   | "cron"
   | "db"
   | "demo"

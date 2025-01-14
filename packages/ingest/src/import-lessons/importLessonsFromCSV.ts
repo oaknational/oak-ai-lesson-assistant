@@ -38,6 +38,10 @@ export function importLessonsFromCSV({
             subject_slug,
           } = row;
 
+          if (typeof lesson_id !== "string") {
+            throw new Error("lesson_id must be a string");
+          }
+
           const parsedLesson = RawLessonSchema.parse({
             oakLessonId: parseInt(lesson_id),
             lessonSlug: lesson_slug,
@@ -48,7 +52,7 @@ export function importLessonsFromCSV({
 
           parsedLessons.push(parsedLesson);
         })
-        .on("end", async () => {
+        .on("end", () => {
           const data = parsedLessons.map((lesson) => {
             return {
               ingestId,
@@ -60,7 +64,7 @@ export function importLessonsFromCSV({
             };
           });
 
-          await chunkAndPromiseAll({
+          void chunkAndPromiseAll({
             data,
             fn: async (data) => {
               await prisma.ingestLesson.createMany({
@@ -68,10 +72,10 @@ export function importLessonsFromCSV({
               });
             },
             chunkSize: 30000,
+          }).then(() => {
+            log.info(`Imported ${parsedLessons.length} lessons from CSV`);
+            resolve();
           });
-
-          log.info(`Imported ${parsedLessons.length} lessons from CSV`);
-          resolve();
         })
         .on("error", (cause) => {
           onError(

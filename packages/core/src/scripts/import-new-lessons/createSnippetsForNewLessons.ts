@@ -1,6 +1,9 @@
 import type { Snippet, SnippetVariant } from "@oakai/db";
 import { prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import { z } from "zod";
+
+const log = aiLogger("core");
 
 const captionsSchema = z.array(
   z.object({
@@ -12,7 +15,7 @@ const captionsSchema = z.array(
 
 const main = async () => {
   try {
-    console.log("Starting");
+    log.info("Starting");
 
     const newLessons = await prisma.lesson.findMany({
       where: {
@@ -33,20 +36,20 @@ const main = async () => {
           lessonId,
         },
       });
-      console.log("transcriptId", transcript);
-      console.log("lesson", lesson?.slug);
+      log.info("transcriptId", transcript);
+      log.info("lesson", lesson?.slug);
       let validCaptions: { end: number; text: string; start: number }[];
       try {
-        console.log("lesson.captions", lesson.captions);
+        log.info("lesson.captions", lesson.captions);
         validCaptions = captionsSchema.parse(lesson.captions);
       } catch (err) {
-        console.error("Failed to parse captions", err);
+        log.error("Failed to parse captions", err);
         return transcript;
       }
       let index = 1;
       if (transcript) {
         for (const caption of validCaptions) {
-          console.log("Creating snippet", caption);
+          log.info("Creating snippet", caption);
           const snippetAttributes = {
             sourceContent: caption.text,
             content: caption.text,
@@ -65,17 +68,17 @@ const main = async () => {
               data: snippetAttributes,
             });
           } catch (err) {
-            console.error("Failed to create snippet", err);
+            log.error("Failed to create snippet", err);
           }
-          console.log("Created snippet", snippet);
+          log.info("Created snippet", snippet);
           index++;
         }
       }
     });
 
-    console.log("Script finished successfully");
+    log.info("Script finished successfully");
   } catch (e) {
-    console.error(e);
+    log.error(e);
   }
 };
 
@@ -84,7 +87,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    log.error(e);
     await prisma.$disconnect();
     process.exit(1);
   });
