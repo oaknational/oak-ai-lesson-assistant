@@ -69,9 +69,13 @@ export function promptConstructor(
 
   The students will then practice what they have learned by ${practice} and the teacher will provide feedback by ${feedback}.
 
-  If you can avoid producing anything in a cartoon or illustrated style, if the prompt specifically asks for an illustration then you may produce one.
+  Avoid producing anything in a cartoon or illustrated style, if the prompt specifically asks for an illustration then you may produce one.
+
+  The preferred image style is a realistic photograph. The image should be clear and easy to understand.
   
   Do not annotate the image with any text or symbols. The image should be suitable for a classroom setting and should not contain any inappropriate content.
+
+  Focussing on the specific element described in the image prompt and not including any additional detail which might be distracting.
 
   The prompt for the image is ${searchExpression}.`;
 }
