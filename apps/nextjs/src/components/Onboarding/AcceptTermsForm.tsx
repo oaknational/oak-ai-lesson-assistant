@@ -13,12 +13,12 @@ import {
   OakPrimaryButton,
   OakSpan,
 } from "@oaknational/oak-components";
-import { useReloadSession } from "hooks/useReloadSession";
 import Link from "next/link";
 
 import Button from "@/components/Button";
 import CheckBox from "@/components/CheckBox";
 import SignUpSignInLayout from "@/components/SignUpSignInLayout";
+import { useReloadSession } from "@/hooks/useReloadSession";
 import { trpc } from "@/utils/trpc";
 
 import TermsContent from "./TermsContent";

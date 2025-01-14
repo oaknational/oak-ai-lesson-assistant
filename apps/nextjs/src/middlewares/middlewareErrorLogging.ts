@@ -28,7 +28,7 @@ export async function logError(
   try {
     const clonedRequest = request.clone();
     bodyText = await clonedRequest.text();
-  } catch (bodyError) {
+  } catch {
     bodyText = "Failed to read request body";
   }
 

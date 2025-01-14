@@ -1,7 +1,7 @@
 import { Flex } from "@radix-ui/themes";
-import type { UseGenerationStatus } from "hooks/useGeneration";
-import { isGenerationHookLoading } from "hooks/useGeneration";
 
+import type { UseGenerationStatus } from "@/hooks/useGeneration";
+import { isGenerationHookLoading } from "@/hooks/useGeneration";
 import { trpc } from "@/utils/trpc";
 
 import GenerateButton from "../GenerateAllButton";
@@ -33,7 +33,7 @@ const RegenButtonGroup = (props: RegenButtonGroupProps) => {
   const isDistractorLoading = isGenerationHookLoading(distractorStatus);
 
   return (
-    <Flex direction="row" className="gap-10 ">
+    <Flex direction="row" className="gap-10">
       <GenerateButton
         isLoading={isDistractorLoading}
         onClick={() => {

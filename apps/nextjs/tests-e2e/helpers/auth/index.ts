@@ -1,6 +1,7 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
 import type { TestSupportRouter } from "@oakai/api/src/router/testSupport";
 import { transformer } from "@oakai/api/transformer";
+import { aiLogger } from "@oakai/logger";
 import type { Page } from "@playwright/test";
 import { test } from "@playwright/test";
 import { createTRPCProxyClient, httpBatchLink, loggerLink } from "@trpc/client";
@@ -10,6 +11,8 @@ import {
   VERCEL_AUTOMATION_BYPASS_SECRET,
 } from "../../config/config";
 import { clerkSignInHelper, cspSafeWaitForFunction } from "./clerkHelpers";
+
+const logger = aiLogger("testing");
 
 const trpc = createTRPCProxyClient<TestSupportRouter>({
   transformer,
@@ -55,7 +58,7 @@ export async function prepareUser(
       try {
         await page.getByTestId("cookie-banner-accept").click();
       } catch (e) {
-        console.error("No cookie banner");
+        logger.error("No cookie banner", e);
       }
     });
 

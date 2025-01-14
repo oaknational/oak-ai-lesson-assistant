@@ -76,21 +76,6 @@ export const lessonSlidesTemplateSchema = z.object({
   learning_cycle_3_feedback: z.string().nullish(),
 });
 
-export const WARN_IF_MISSING = [
-  "learning_cycle_2_title",
-  "learning_cycle_2_text",
-  "learning_cycle_2_image_prompt",
-  "learning_cycle_2_question_1_check_question",
-  "learning_cycle_2_question_1_check_answer_1",
-  "learning_cycle_2_question_1_check_answer_2",
-  "learning_cycle_2_question_1_check_answer_3",
-  "learning_cycle_2_question_2_check_question",
-  "learning_cycle_2_question_2_check_answer_1",
-  "learning_cycle_2_question_2_check_answer_2",
-  "learning_cycle_2_question_2_check_answer_3",
-  "learning_cycle_2_practise",
-];
-
 export type LessonSlidesTemplateData = z.infer<
   typeof lessonSlidesTemplateSchema
 >;

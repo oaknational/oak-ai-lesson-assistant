@@ -1,5 +1,6 @@
-import type { MenuItem } from "data/menus";
 import { usePathname } from "next/navigation";
+
+import type { MenuItem } from "@/data/menus";
 
 import Button from "../Button";
 

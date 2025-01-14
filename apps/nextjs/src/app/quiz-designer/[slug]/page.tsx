@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
-import getSessionOutput from "ai-apps/common/getSessionOutput";
-import { quizAppStateSchema } from "ai-apps/quiz-designer/state/types";
+
+import getSessionOutput from "@/ai-apps/common/getSessionOutput";
+import { quizAppStateSchema } from "@/ai-apps/quiz-designer/state/types";
 
 import QuizDesignerPage from "./generation-page";
 

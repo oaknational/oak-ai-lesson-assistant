@@ -2,9 +2,9 @@ import type { Dispatch } from "react";
 import { useState } from "react";
 
 import { Flex, Heading } from "@radix-ui/themes";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
 
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import ChatButton from "../../Chat/ui/chat-button";

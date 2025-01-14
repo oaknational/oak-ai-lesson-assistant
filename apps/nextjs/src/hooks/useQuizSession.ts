@@ -4,13 +4,13 @@ import { useEffect, useRef } from "react";
 import { useUser } from "@clerk/nextjs";
 import browserLogger from "@oakai/logger/browser";
 import * as Sentry from "@sentry/nextjs";
-import { parseLocalStorageData } from "ai-apps/common/parseLocalStorageData";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
-import type { QuizAppState } from "ai-apps/quiz-designer/state/types";
-import { QuizAppStatus } from "ai-apps/quiz-designer/state/types";
 import { z } from "zod";
 
+import { parseLocalStorageData } from "@/ai-apps/common/parseLocalStorageData";
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
+import type { QuizAppState } from "@/ai-apps/quiz-designer/state/types";
+import { QuizAppStatus } from "@/ai-apps/quiz-designer/state/types";
 import { trpc } from "@/utils/trpc";
 
 import { usePreviousValue } from "./usePreviousValue";

@@ -1,9 +1,9 @@
 import { useState } from "react";
 
 import { aiLogger } from "@oakai/logger";
-import { optionSchema } from "ai-apps/comparative-judgement/state/types";
 import { z } from "zod";
 
+import { optionSchema } from "@/ai-apps/comparative-judgement/state/types";
 import { trpc } from "@/utils/trpc";
 
 const log = aiLogger("judgements");

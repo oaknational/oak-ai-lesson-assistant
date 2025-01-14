@@ -1,15 +1,15 @@
-const GOOGLE_SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-const GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY =
-  process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
+import invariant from "tiny-invariant";
 
-if (!GOOGLE_SERVICE_ACCOUNT_EMAIL) {
-  throw new Error("GOOGLE_SERVICE_ACCOUNT_EMAIL is required");
-}
-if (!GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY) {
-  throw new Error("GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY is required");
-}
+invariant(
+  process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+  "GOOGLE_SERVICE_ACCOUNT_EMAIL is required",
+);
+invariant(
+  process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
+  "GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY is required",
+);
 
 export const credentials = {
-  client_email: GOOGLE_SERVICE_ACCOUNT_EMAIL,
-  private_key: GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
+  client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+  private_key: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
 };

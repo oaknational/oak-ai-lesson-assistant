@@ -9,11 +9,11 @@ import {
   OakLink,
   OakSpan,
 } from "@oaknational/oak-components";
-import { useClerkDemoMetadata } from "hooks/useClerkDemoMetadata";
 import { usePathname } from "next/navigation";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import OakIconLogo from "@/components/OakIconLogo";
+import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
 
 import { useDialog } from "../DialogContext";
 import { BetaTagHeader } from "./beta-tag";
