@@ -1,8 +1,12 @@
 // ML-based Quiz Generator
 import { aiLogger } from "@oakai/logger";
 
-import type { Quiz, QuizPath, QuizQuestion } from "../../../protocol/schema";
-import type { LooseLessonPlan } from "../../../protocol/schema";
+import type {
+  LooseLessonPlan,
+  Quiz,
+  QuizPath,
+  QuizQuestion,
+} from "../../../protocol/schema";
 import type { CustomHit } from "../interfaces";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 

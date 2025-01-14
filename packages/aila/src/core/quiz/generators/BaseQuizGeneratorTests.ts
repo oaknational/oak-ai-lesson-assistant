@@ -1,9 +1,7 @@
 import type {
   AilaRagRelevantLesson,
-  Quiz,
-  QuizQuestion,
+  LooseLessonPlan,
 } from "../../../protocol/schema";
-import type { LooseLessonPlan } from "../../../protocol/schema";
 import { QuizSchema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import type { BaseQuizGenerator } from "./BaseQuizGenerator";

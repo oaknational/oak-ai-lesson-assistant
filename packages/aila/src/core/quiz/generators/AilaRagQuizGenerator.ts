@@ -1,12 +1,9 @@
-import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
+  LooseLessonPlan,
   Quiz,
   QuizPath,
-  QuizQuestion,
 } from "../../../protocol/schema";
-import type { LooseLessonPlan } from "../../../protocol/schema";
-import type { CustomHit } from "../interfaces";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 
 // This generates a quiz based on the *Underlying AILA RAG service* relevant lessons.

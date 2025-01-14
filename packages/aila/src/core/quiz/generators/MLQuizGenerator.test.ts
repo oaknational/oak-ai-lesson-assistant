@@ -1,4 +1,4 @@
-import { QuizQuestion, Quiz, QuizSchema } from "../../../protocol/schema";
+import { QuizSchema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { MLQuizGenerator } from "./MLQuizGenerator";
 

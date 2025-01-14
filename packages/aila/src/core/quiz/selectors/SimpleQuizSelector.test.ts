@@ -1,9 +1,6 @@
 import type { BaseType } from "../ChoiceModels";
 import { cachedQuizRatings } from "../fixtures/cachedQuizRatings";
-import {
-  testRatingSchema,
-  type TestRating,
-} from "../rerankers/RerankerStructuredOutputSchema";
+import { type TestRating } from "../rerankers/RerankerStructuredOutputSchema";
 import { SimpleQuizSelector } from "./SimpleQuizSelector";
 
 describe("SimpleQuizSelector", () => {

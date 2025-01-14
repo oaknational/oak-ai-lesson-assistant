@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-import type { BaseSchema } from "./ChoiceModels";
-
 export type retrievalStrategy = "bm25" | "blended";
 export type rerankerStrategy = "openai" | "elastic" | "blended";
 

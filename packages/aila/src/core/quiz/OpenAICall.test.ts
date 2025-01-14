@@ -1,11 +1,4 @@
-import { createVercelOpenAIClient } from "@oakai/core/src/llm/openai";
-import { OpenAI } from "openai";
-
-import {
-  DummyOpenAICall,
-  OpenAICallReranker,
-  OpenAICallRerankerWithSchema,
-} from "./OpenAIRanker";
+import { OpenAICallReranker } from "./OpenAIRanker";
 
 // describe("Test OpenAI Image Chat", () => {
 //   it("Should return a valid response", async () => {

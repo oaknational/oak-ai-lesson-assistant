@@ -2,10 +2,9 @@ import type { z } from "zod";
 
 import type {
   LooseLessonPlan,
-  QuizQuestion,
   QuizPath,
+  QuizQuestion,
 } from "../../../protocol/schema";
-import type { BaseSchema } from "../ChoiceModels";
 import { populateZodSchema } from "../utils/schemaPopulator";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";

@@ -1,10 +1,7 @@
-import type { z } from "zod";
-
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
-  Quiz,
   QuizPath,
   QuizQuestion,
 } from "../../protocol/schema";
@@ -12,8 +9,8 @@ import type {
   AilaQuizGeneratorService,
   AilaQuizService,
 } from "../AilaServices";
-import type { BaseSchema } from "./ChoiceModels";
 import type {
+  BaseSchema,
   BaseType,
   MaxRatingFunctionApplier,
   RatingFunction,

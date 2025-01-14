@@ -12,9 +12,9 @@ import { MLQuizGenerator } from "../generators/MLQuizGenerator";
 import type {
   AilaQuizReranker,
   FullQuizService,
+  quizPatchType,
   QuizSelector,
 } from "../interfaces";
-import type { quizPatchType } from "../interfaces";
 import { testRatingSchema } from "../rerankers/RerankerStructuredOutputSchema";
 import { TestSchemaReranker } from "../rerankers/SchemaReranker";
 import { SimpleQuizSelector } from "../selectors/SimpleQuizSelector";

@@ -1,10 +1,4 @@
 import { Client } from "@elastic/elasticsearch";
-import { Json } from "@oakai/core/src/models/prompts";
-import { moderationResultSchema } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import {
-  embedTextLarge,
-  embedWithCacheTextLarge,
-} from "@oakai/core/src/utils/embeddings";
 // TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { prisma } from "@oakai/db";
 // TODO: double check the prisma import
@@ -14,19 +8,17 @@ import { z } from "zod";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import {
-  JsonPatchAddSchema,
-  JsonPatchDocumentOptional,
   JsonPatchDocumentSchema,
   PatchQuiz,
 } from "../../protocol/jsonPatchProtocol";
 import type {
   LooseLessonPlan,
-  QuizQuestion,
-  QuizPath,
-  QuizOperationType,
   Quiz,
+  QuizOperationType,
+  QuizPath,
+  QuizQuestion,
 } from "../../protocol/schema";
-import { QuizQuestionSchema, QuizSchema } from "../../protocol/schema";
+import { QuizQuestionSchema } from "../../protocol/schema";
 import type { AilaQuizService } from "../AilaServices";
 import { selectHighestRated } from "./ChoiceModels";
 import {
@@ -35,9 +27,7 @@ import {
   parsedResponse,
 } from "./OpenAIRanker";
 import { processArray, withRandomDelay } from "./apiCallingUtils";
-import { testInput } from "./fixtures/cachedQuizOutput";
 import type { QuizzesForConsideration } from "./rerankers/RerankerStructuredOutputSchema";
-import { starterQuizQuestionSuitabilityDescriptionSchema } from "./rerankers/RerankerStructuredOutputSchema";
 import type { SearchResponseBody } from "./types";
 
 interface CustomMetadata {

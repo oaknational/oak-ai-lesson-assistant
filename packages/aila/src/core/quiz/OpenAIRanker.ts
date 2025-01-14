@@ -1,27 +1,20 @@
 // interface OpenAIRanker {
-import { openai } from "@ai-sdk/openai";
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
-import { replayCanvasIntegration } from "@sentry/nextjs";
 import type { OpenAI } from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 // import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { z } from "zod";
 
-import { DEFAULT_MODEL } from "../../constants";
-import { generateMessageId } from "../../helpers/chat/generateMessageId";
 import type {
   LooseLessonPlan,
-  QuizQuestion,
   QuizPath,
+  QuizQuestion,
 } from "../../protocol/schema";
-import { Message } from "../chat";
-import { OpenAIService } from "../llm/OpenAIService";
 import type { SystemPrompt } from "./QuestionAssesmentPrompt";
 import {
-  questionEffectivenessPrompt,
-  QuestionInspectionSystemPrompt,
-  priorKnowledgePrompt,
   keyLearningPointsPrompt,
+  priorKnowledgePrompt,
+  QuestionInspectionSystemPrompt,
   QuizInspectionSystemPrompt,
 } from "./QuestionAssesmentPrompt";
 import { starterQuizQuestionSuitabilityDescriptionSchema } from "./rerankers/RerankerStructuredOutputSchema";
@@ -316,11 +309,11 @@ export { evaluateQuiz };
 //   });
 
 export {
-  quizToLLMMessages,
   combinePrompts,
-  quizQuestionsToOpenAIMessageFormat,
   combinePromptsAndQuestions,
   evaluateStarterQuiz,
+  quizQuestionsToOpenAIMessageFormat,
+  quizToLLMMessages,
 };
 
 // // TODO: change messages to Message[]

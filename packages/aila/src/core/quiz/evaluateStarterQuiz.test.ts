@@ -1,11 +1,4 @@
-import {
-  DummyOpenAICall,
-  OpenAICallReranker,
-  combinePrompts,
-  OpenAICallRerankerWithSchema,
-  evaluateStarterQuiz,
-} from "./OpenAIRanker";
-import { parsedResponse } from "./OpenAIRanker";
+import { evaluateStarterQuiz, parsedResponse } from "./OpenAIRanker";
 import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
 import { starterQuizQuestionSuitabilityDescriptionSchema } from "./rerankers/RerankerStructuredOutputSchema";
 

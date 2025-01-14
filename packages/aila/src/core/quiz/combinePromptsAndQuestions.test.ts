@@ -1,14 +1,6 @@
-import { combinePromptsAndQuestions } from "./OpenAIRanker";
-import {
-  DummyOpenAICall,
-  OpenAICallReranker,
-  combinePrompts,
-  OpenAICallRerankerWithSchema,
-} from "./OpenAIRanker";
-import { parsedResponse } from "./OpenAIRanker";
+import { combinePrompts, combinePromptsAndQuestions } from "./OpenAIRanker";
 import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
 import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
-import { starterQuizQuestionSuitabilityDescriptionSchema } from "./rerankers/RerankerStructuredOutputSchema";
 
 describe("combinePromptsAndQuestions", () => {
   it("Should convert a lesson plan and quiz into valid OpenAI message format", () => {

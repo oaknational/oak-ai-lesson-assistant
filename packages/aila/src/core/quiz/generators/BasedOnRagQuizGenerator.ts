@@ -2,10 +2,9 @@ import { aiLogger } from "@oakai/logger";
 
 import type {
   AilaRagRelevantLesson,
+  LooseLessonPlan,
   Quiz,
-  QuizQuestion,
 } from "../../../protocol/schema";
-import type { LooseLessonPlan } from "../../../protocol/schema";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");

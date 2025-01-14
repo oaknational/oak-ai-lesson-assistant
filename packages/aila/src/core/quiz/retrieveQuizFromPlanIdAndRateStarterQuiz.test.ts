@@ -1,8 +1,3 @@
-import {
-  JsonPatchDocumentJsonSchema,
-  JsonPatchDocumentSchema,
-} from "../../protocol/jsonPatchProtocol";
-import { QuizSchema } from "../../protocol/schema";
 import { AilaQuiz } from "./AilaQuiz";
 import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
 import { starterQuizQuestionSuitabilityDescriptionSchema } from "./rerankers/RerankerStructuredOutputSchema";

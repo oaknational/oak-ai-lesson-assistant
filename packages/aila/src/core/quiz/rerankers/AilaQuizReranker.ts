@@ -1,18 +1,15 @@
 import { aiLogger } from "@oakai/logger";
 import { kv } from "@vercel/kv";
 import { Md5 } from "ts-md5";
-import type { z } from "zod";
 
-import type { QuizPath, QuizQuestion } from "../../../protocol/schema";
-import type { LooseLessonPlan } from "../../../protocol/schema";
-import {
-  selectHighestRated,
-  type BaseType,
-  type BaseSchema,
-} from "../ChoiceModels";
+import type {
+  LooseLessonPlan,
+  QuizPath,
+  QuizQuestion,
+} from "../../../protocol/schema";
+import { type BaseSchema } from "../ChoiceModels";
 import { evaluateQuiz } from "../OpenAIRanker";
-import { processArray } from "../apiCallingUtils";
-import { withRandomDelay } from "../apiCallingUtils";
+import { processArray, withRandomDelay } from "../apiCallingUtils";
 import type { AilaQuizReranker } from "../interfaces";
 
 const log = aiLogger("aila:quiz");

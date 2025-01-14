@@ -1,9 +1,5 @@
-import type { z } from "zod";
-
+import type { BaseType, MaxRatingFunctionApplier } from "../ChoiceModels";
 import { selectHighestRated, type RatingFunction } from "../ChoiceModels";
-import type { MaxRatingFunctionApplier } from "../ChoiceModels";
-import type { BaseType } from "../ChoiceModels";
-import { BaseSchema } from "../ChoiceModels";
 import { BaseQuizSelector } from "./BaseQuizSelector";
 
 // TODO: GCLOMAX - Why on earth is this not working?????????????
