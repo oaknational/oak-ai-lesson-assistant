@@ -2,11 +2,11 @@ import type { Dispatch } from "react";
 import { useState } from "react";
 
 import { Flex, Text } from "@radix-ui/themes";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
-import type { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
 
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
 import { Icon } from "@/components/Icon";
+import type { PotentialQuestionsType } from "@/hooks/useSuggestedQuestions";
 
 export type SuggestedLessonCardProps = Readonly<{
   answer: PotentialQuestionsType[0];

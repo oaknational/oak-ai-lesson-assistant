@@ -1,9 +1,9 @@
 "use client";
 
 import { Box, Container, Flex, Text } from "@radix-ui/themes";
-import { copyLinkToClipboard } from "ai-apps/common/copyLinkToClipboard";
-import { copyTextToClipboard } from "ai-apps/common/copyTextToClipboard";
 
+import { copyLinkToClipboard } from "@/ai-apps/common/copyLinkToClipboard";
+import { copyTextToClipboard } from "@/ai-apps/common/copyTextToClipboard";
 import { quizDisclaimerText } from "@/assets/text";
 import ChatButton from "@/components/AppComponents/Chat/ui/chat-button";
 import HeroContainer from "@/components/HeroContainer";

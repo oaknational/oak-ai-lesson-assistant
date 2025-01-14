@@ -4,7 +4,8 @@ import type {
 } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { OakFlex } from "@oaknational/oak-components";
-import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
+
+import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
 
 import { sectionTitle } from ".";
 import { MemoizedReactMarkdownWithStyles } from "../markdown";

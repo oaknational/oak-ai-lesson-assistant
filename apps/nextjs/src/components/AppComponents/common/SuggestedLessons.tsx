@@ -1,8 +1,8 @@
 import { Flex, Grid, Heading } from "@radix-ui/themes";
-import type { LessonPlannerAppState } from "ai-apps/lesson-planner/state/types";
-import type { QuizAppState } from "ai-apps/quiz-designer/state/types";
 import Link from "next/link";
 
+import type { LessonPlannerAppState } from "@/ai-apps/lesson-planner/state/types";
+import type { QuizAppState } from "@/ai-apps/quiz-designer/state/types";
 import { Icon } from "@/components/Icon";
 import { constructOwaLessonUrl } from "@/utils/constructOwaLessonUrl";
 import { trpc } from "@/utils/trpc";
@@ -63,7 +63,7 @@ const SuggestedLessons = ({
                     // See notes in constructURL
                     href={url}
                     key={summary.lesson.id}
-                    className=" rounded bg-pupilsPink p-12 hover:opacity-90"
+                    className="rounded bg-pupilsPink p-12 hover:opacity-90"
                     target="_blank"
                   >
                     <span className="flex flex-col gap-9">
