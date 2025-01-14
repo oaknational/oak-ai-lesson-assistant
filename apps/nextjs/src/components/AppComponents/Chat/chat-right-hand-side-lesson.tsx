@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 
 import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
+import { useChatStore } from "store/useChatStores";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
@@ -23,9 +24,7 @@ const ChatRightHandSideLesson = ({
   closeMobileLessonPullOut,
   demo,
 }: Readonly<ChatRightHandSideLessonProps>) => {
-  const { messages } = useLessonChat();
-  console.log({ messages, showLessonMobile });
-  console.log(messages.length);
+  const { messages } = useChatStore();
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 

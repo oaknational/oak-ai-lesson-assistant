@@ -3,8 +3,13 @@ import { useEffect, useState } from "react";
 import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
+import { useChatStore } from "store/useChatStores";
+import { useLessonPlanStore } from "store/useLessonPlanStore";
+import { useModerationStore } from "store/useModerationStore";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useChatActions } from "@/lib/hooks/useChatActions";
+import { useStreamingStatus } from "@/lib/hooks/useStreamingStatus";
 import { organiseSections } from "@/lib/lessonPlan/organiseSections";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
@@ -42,15 +47,45 @@ export const LessonPlanDisplay = ({
 }: LessonPlanDisplayProps) => {
   const chat = useLessonChat();
   const { ailaStreamingStatus, lastModeration } = chat;
-  const lessonPlan = {
-    ...chat.lessonPlan,
-    starterQuiz:
-      chat.lessonPlan._experimental_starterQuizMathsV0 ??
-      chat.lessonPlan.starterQuiz,
-    exitQuiz:
-      chat.lessonPlan._experimental_exitQuizMathsV0 ?? chat.lessonPlan.exitQuiz,
-  };
 
+  const { messages, isLoading } = useChatStore();
+  const { lessonPlan } = useLessonPlanStore();
+  const { toxicModeration } = useModerationStore();
+  const { append, stop } = useChatActions();
+  const streamingStatus = useStreamingStatus();
+
+  // const lessonPlan = {
+  //   ...chat.lessonPlan,
+  //   starterQuiz:
+  //     chat.lessonPlan._experimental_starterQuizMathsV0 ??
+  //     chat.lessonPlan.starterQuiz,
+  //   exitQuiz:
+  //     chat.lessonPlan._experimental_exitQuizMathsV0 ?? chat.lessonPlan.exitQuiz,
+  // };
+
+  /// make this wrap inside the parent div
+  return (
+    <div>
+      <pre className="whitespace-pre-wrap">
+        {JSON.stringify(streamingStatus, null, 2)}
+      </pre>
+      <pre className="whitespace-pre-wrap">
+        {JSON.stringify(messages, null, 2)}
+      </pre>
+      <pre className="whitespace-pre-wrap">
+        {JSON.stringify(isLoading, null, 2)}
+      </pre>
+      <pre className="whitespace-pre-wrap">
+        {JSON.stringify(lessonPlan, null, 2)}
+      </pre>
+      <pre className="whitespace-pre-wrap">
+        {JSON.stringify(toxicModeration, null, 2)}
+      </pre>
+      <pre className="whitespace-pre-wrap">
+        {JSON.stringify(append, null, 2)}
+      </pre>
+    </div>
+  );
   const [userHasCancelledAutoScroll, setUserHasCancelledAutoScroll] =
     useState(false);
 
