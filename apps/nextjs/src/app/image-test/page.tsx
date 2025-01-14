@@ -11,9 +11,9 @@ export default async function ImageSpikePage() {
     redirect("/sign-in?next=/image-spike");
   }
 
-  const keyStages = (await prisma.keyStage.findMany({})).map(
-    (keyStage) => keyStage.slug,
-  );
+  const keyStages = (await prisma.keyStage.findMany({}))
+    .map((keyStage) => keyStage.slug)
+    .sort();
 
   return <ImageTest keyStages={keyStages} />;
 }

@@ -280,35 +280,31 @@ const Cycle = ({
   return (
     <>
       <div className="flex flex-col gap-8">
-        <p>{cycle.title}</p>
-        Spoken explanation:
+        <p className="text-lg">{cycle.title}</p>
+        <b>Explanation:</b>
         <br />{" "}
-        {Array.isArray(cycle.explanation?.spokenExplanation) &&
-          cycle.explanation?.spokenExplanation?.map((slide) => slide)}
+        <div className="flex flex-col gap-5">
+          {Array.isArray(cycle.explanation?.spokenExplanation) &&
+            cycle.explanation?.spokenExplanation?.map((slide) => {
+              return "- " + slide;
+            })}
+        </div>
         <p>
-          Accompanying slide details:
+          <b>Accompanying slide details:</b>
           <br /> {cycle?.explanation?.accompanyingSlideDetails}
         </p>
         <p>
-          Image prompt:
+          <b>Image prompt:</b>
           <br /> {cycle?.explanation?.imagePrompt}
         </p>
         <p>
-          Slide text:
+          <b>Slide text:</b>
           <br /> {cycle?.explanation?.slideText}
-        </p>
-        <p>
-          Practise:
-          <br /> {cycle.practice}
-        </p>
-        <p>
-          Feedback:
-          <br /> {cycle.feedback}
         </p>
       </div>
       <div className="grid grid-cols-4 gap-8">
         <div>
-          <h3>Cloudinary</h3>
+          <h3 className="font-bold">Cloudinary</h3>
           {cycleImages?.cloudinary.map((image) => (
             <div key={image.id}>
               <Image
@@ -323,7 +319,7 @@ const Cycle = ({
           ))}
         </div>
         <div>
-          <h3>Unsplash</h3>
+          <h3 className="font-bold">Unsplash</h3>
           {cycleImages?.unsplash.map((image) => (
             <div key={image.id}>
               <Image
@@ -338,7 +334,7 @@ const Cycle = ({
           ))}
         </div>
         <div>
-          <h3>Dale (AI)</h3>
+          <h3 className="font-bold">DAL-E (AI)</h3>
           {cycleImages?.dale.map((image) => (
             <div key={image.id}>
               <Image
@@ -353,7 +349,7 @@ const Cycle = ({
           ))}
         </div>
         <div>
-          <h3>Stable (AI)</h3>
+          <h3 className="font-bold">Stable (AI)</h3>
           {cycleImages?.stable.map((image) => (
             <div key={image.id}>
               <Image

@@ -29,6 +29,6 @@ export default async function ImageSpikePage({
   });
 
   const subjects = keyStageSubject.map((subject) => subject.subject.slug);
-
-  return <SubjectsPage subjects={subjects} />;
+  const subjectsInAlphabeticalOrder = subjects.sort();
+  return <SubjectsPage subjects={subjectsInAlphabeticalOrder} />;
 }
