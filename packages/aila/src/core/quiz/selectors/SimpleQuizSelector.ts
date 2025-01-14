@@ -9,10 +9,4 @@ export class SimpleQuizSelector<
   public ratingFunction: RatingFunction<T> = (item: T) => item.rating;
   public maxRatingFunctionApplier: MaxRatingFunctionApplier<T> =
     selectHighestRated;
-  //   constructor(
-  //     ratingFunction: RatingFunction<T>,
-  //     maxRatingFunctionApplier: MaxRatingFunctionApplier<T>,
-  //   ) {
-  //     super(ratingFunction, maxRatingFunctionApplier);
-  //   }
 }

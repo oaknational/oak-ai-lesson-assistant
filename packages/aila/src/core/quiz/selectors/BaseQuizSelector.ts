@@ -11,15 +11,6 @@ export abstract class BaseQuizSelector<T extends BaseType>
 {
   public abstract ratingFunction: RatingFunction<T>;
   public abstract maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
-
-  //   constructor(
-  //     ratingFunction: RatingFunction<T>,
-  //     maxRatingFunctionApplier: MaxRatingFunctionApplier<T>,
-  //   ) {
-  //     this.ratingFunction = ratingFunction;
-  //     this.maxRatingFunctionApplier = maxRatingFunctionApplier;
-  //   }
-
   public selectBestQuiz(
     quizzes: QuizQuestion[][],
     ratingsSchemas: T[],
