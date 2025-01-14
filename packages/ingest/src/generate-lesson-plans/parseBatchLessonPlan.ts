@@ -2,7 +2,7 @@ import {
   CompletedLessonPlanSchema,
   type CompletedLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
-import { parseKeyStage } from "@oakai/core";
+import { parseKeyStage } from "@oakai/core/src/data/parseKeyStage";
 
 import { IngestError } from "../IngestError";
 import { CompletionBatchResponseSchema } from "../zod-schema/zodSchema";

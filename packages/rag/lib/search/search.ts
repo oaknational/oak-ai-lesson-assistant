@@ -38,18 +38,17 @@ export async function vectorSearch({
     subjectSlugs,
     limit,
   });
-  const parseErrors: Set<{ ragLessonPlanId?: string; error: string }> =
-    new Set();
+  const parseErrors: { ragLessonPlanId?: string; error: string }[] = [];
   const results = queryResponse
     .map(preparseResult)
-    .filter(parseResult({ onError: parseErrors.add }));
+    .filter(parseResult({ onError: (e) => parseErrors.push(e) }));
 
   /**
    * @todo Handle parse errors (i.e. record in DB so we can re-ingest!)
    */
-  log.info(`Parse errors: ${parseErrors.size}`);
-
-  log.info(results.map((r) => r.lessonPlan.title).join(",\n"));
+  log.info(`Parse errors: ${parseErrors.length}`);
+  log.info(`Invalid results: ${queryResponse.length - results.length}`);
+  log.info(`Valid results: ${results.length}`);
 
   const endAt = new Date();
   log.info(

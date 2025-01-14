@@ -1,13 +1,10 @@
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import { parseKeyStage } from "@oakai/core/src/data/parseKeyStage";
 import type { TemplateProps } from "@oakai/core/src/prompts/lesson-assistant";
 import { template } from "@oakai/core/src/prompts/lesson-assistant";
 import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
-import {
-  getRelevantLessonPlans,
-  parseKeyStage,
-  parseSubjectsForRagSearch,
-} from "@oakai/rag";
+import { getRelevantLessonPlans, parseSubjectsForRagSearch } from "@oakai/rag";
 
 import { DEFAULT_RAG_LESSON_PLANS } from "../../../constants";
 import { tryWithErrorReporting } from "../../../helpers/errorReporting";

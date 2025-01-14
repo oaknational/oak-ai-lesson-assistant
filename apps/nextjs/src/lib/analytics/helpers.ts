@@ -1,6 +1,6 @@
 import type { ModerationDocument } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import { parseKeyStage } from "@oakai/core";
+import { parseKeyStage } from "@oakai/core/src/data/parseKeyStage";
 import { lessonPlanSectionsSchema } from "@oakai/exports/src/schema/input.schema";
 import { isTruthy } from "remeda";
 
