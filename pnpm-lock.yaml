@@ -129,8 +129,8 @@ importers:
         specifier: '*'
         version: link:../../packages/prettier-config
       '@oaknational/oak-components':
-        specifier: ^1.68.0
-        version: 1.68.0(next-cloudinary@5.20.0)(next@14.2.21)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11)
+        specifier: ^1.68.1
+        version: 1.68.1(next-cloudinary@5.20.0)(next@14.2.21)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11)
       '@oaknational/oak-consent-client':
         specifier: ^2.1.0
         version: 2.1.0(react-dom@18.2.0)(react@18.2.0)(zod@3.23.8)
@@ -5649,8 +5649,8 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
 
-  /@oaknational/oak-components@1.68.0(next-cloudinary@5.20.0)(next@14.2.21)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11):
-    resolution: {integrity: sha512-iGEoswLwwi1jBLHliU5mjuHT2n1k3MUDQh4Ox4CTymbJxS5b6vvu8SJKtsYgiK9NaApS0yIo6Ht2Q+WbezJI2g==}
+  /@oaknational/oak-components@1.68.1(next-cloudinary@5.20.0)(next@14.2.21)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11):
+    resolution: {integrity: sha512-X+p57jdMb6txq7TSp+/Ut6Oml7JexhvPVyeF4RZscEDMnaivfQ7sqnvIdXf5AFnty/oIjQo9ArsXqEdtUADvow==}
     peerDependencies:
       next: ^14.2.12
       next-cloudinary: ^5.20.0
