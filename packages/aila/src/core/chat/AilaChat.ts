@@ -32,7 +32,6 @@ import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
-import { AilaQuiz } from "../quiz/AilaQuiz";
 import { CompositeFullQuizServiceBuilder } from "../quiz/fullservices/CompositeFullQuizServiceBuilder";
 import type { FullQuizService } from "../quiz/interfaces";
 import { testRatingSchema } from "../quiz/rerankers/RerankerStructuredOutputSchema";
