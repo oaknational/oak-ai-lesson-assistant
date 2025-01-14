@@ -1,15 +1,19 @@
 import { Aila } from "@oakai/aila/src/core/Aila";
-import { AilaPlugin } from "@oakai/aila/src/core/plugins";
+import type { AilaPlugin } from "@oakai/aila/src/core/plugins";
+import { aiLogger } from "@oakai/logger";
+
+const log = aiLogger("aila");
 
 const cliPlugin: AilaPlugin = {
-  onStreamError: async (error, { aila, enqueue }) => {
+  onStreamError: (error) => {
     // ...
     throw error;
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onToxicModeration: async (moderation, { aila, enqueue }) => {
     // ...
   },
-  onBackgroundWork: (promise) => {
+  onBackgroundWork: () => {
     // ...
   },
 };
@@ -18,5 +22,5 @@ const aila = new Aila({
   chat: { id: "my chat id", userId: undefined },
   plugins: [cliPlugin],
 });
-console.log("Hello from Next.js CLI!");
-console.log(aila.chatId);
+log.info("Hello from Next.js CLI!");
+log.info(aila.chatId);

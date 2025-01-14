@@ -115,7 +115,7 @@ const validateCSV = (
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           if (row[fk]) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            foreignKeyCheck[fk]!.add(row[fk]);
+            foreignKeyCheck[fk].add(row[fk]);
           }
         }
       })

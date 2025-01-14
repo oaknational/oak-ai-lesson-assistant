@@ -213,7 +213,7 @@ describe("AilaModeration", () => {
         categories: moderationResult.categories,
         id: "ABC",
       });
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+       
       expect(mockPlugin.onToxicModeration).toHaveBeenCalledWith(
         expect.objectContaining({
           categories: ["t/encouragement-illegal-activity"],
