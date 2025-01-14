@@ -23,7 +23,7 @@ import type {
   QuizPath,
 } from "../../../protocol/schema";
 import type { AilaQuizGeneratorService } from "../../AilaServices";
-import type { SimplifiedResult } from "../AilaQuiz";
+import type { SimplifiedResult } from "../interfaces";
 import type { CustomHit } from "../interfaces";
 import { CohereReranker } from "../rerankers";
 import type { SearchResponseBody } from "../types";
