@@ -142,23 +142,16 @@ async function getHandler(req: Request): Promise<Response> {
   const archive = archiver.create("zip", { zlib: { level: 9 } });
   archive.pipe(zipStream);
 
-  let filesProcessed = 0;
-
   const downloadPromises = fileIdsAndFormats.map(({ fileId, formats }) =>
-    processFileDownload(fileId, formats, lessonTitle, userId, archive).then(
-      () => {
-        filesProcessed++;
-      },
-    ),
+    processFileDownload(fileId, formats, lessonTitle, userId, archive),
   );
 
-  await Promise.all(downloadPromises);
-
-  if (filesProcessed > 0) {
-    await archive.finalize();
-  } else {
+  try {
+    await Promise.all(downloadPromises);
+  } catch (error) {
+    Sentry.captureException(error, { level: "error" });
     await kv.set(taskId, "failed");
-    return new Response("No files found or processed", { status: 404 });
+    return new Response("Error processing files", { status: 500 });
   }
 
   const readableStream = nodePassThroughToReadableStream(zipStream);
