@@ -1,6 +1,7 @@
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { isArray, isNumber, isObject, isString } from "remeda";
 
+import { toSentenceCase } from "../../../../apps/nextjs/src/utils/toSentenceCase";
 import type { QuizOptional } from "./schema";
 import { CycleOptionalSchema, QuizOptionalSchema } from "./schema";
 
@@ -69,6 +70,7 @@ export function sectionToMarkdown(
         }
 
         const firstObject = value[0];
+
         if (firstObject && Object.keys(firstObject).length === 2) {
           // This is a Key-Value object, and we will pick the first key as the header and the second key as the body
           // TODO - this probably is unreliable, and we should have a better way to detect this
@@ -81,17 +83,18 @@ export function sectionToMarkdown(
               .filter((v) => v[keys[0]] && v[keys[1]])
               .map((v) => {
                 // @ts-expect-error - we know that the keys exist
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
                 const header = v[keys[0]];
                 // @ts-expect-error - we know that the keys exist
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
                 const body = v[keys[1]];
-                return `### ${header}\n\n${body}`;
+                return `### ${toSentenceCase(header)}\n\n${toSentenceCase(body)}`;
               })
               .join("\n\n")
           );
         }
       }
+
       return value.map((v) => sectionToMarkdown(key, v)).join("\n\n");
     }
   }

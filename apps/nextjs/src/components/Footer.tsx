@@ -12,13 +12,13 @@ import {
   OakLI,
   OakIcon,
 } from "@oaknational/oak-components";
-import { aiTools } from "data/aiTools";
-import { legalMenuItems, menuItems, socialMenuItems } from "data/menus";
 import Image from "next/image";
 import Link from "next/link";
 import styled from "styled-components";
 
 import loop from "@/assets/svg/loop.svg";
+import { aiTools } from "@/data/aiTools";
+import { legalMenuItems, menuItems, socialMenuItems } from "@/data/menus";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import { ScaleSpan } from "./AppComponents/ScaleSpan";

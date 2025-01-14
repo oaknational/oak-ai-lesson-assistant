@@ -6,6 +6,6 @@ export class HeliconeThreatDetector extends AilaThreatDetector {
       error instanceof Error &&
       "code" in error &&
       error.code === "PROMPT_THREAT_DETECTED";
-    return isIt;
+    return Promise.resolve(isIt);
   }
 }

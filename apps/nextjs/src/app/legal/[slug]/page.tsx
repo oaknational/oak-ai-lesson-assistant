@@ -1,5 +1,6 @@
-import { fetchPolicyDocument } from "cms/data/fetchPolicyDocument";
 import { notFound } from "next/navigation";
+
+import { fetchPolicyDocument } from "@/cms/data/fetchPolicyDocument";
 
 import LegalContent from "./legal";
 

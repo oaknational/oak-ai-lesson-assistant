@@ -31,7 +31,7 @@ test(
       // Open 'download resources' menu
       const downloadResources = page.getByTestId("chat-download-resources");
       await downloadResources.click();
-      page.waitForURL(/aila\/.*\/download/);
+      await page.waitForURL(/aila\/.*\/download/);
       page.getByRole("heading", { name: "Download resources" });
 
       // Click to download lesson plan

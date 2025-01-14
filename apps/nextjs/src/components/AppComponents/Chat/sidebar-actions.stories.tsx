@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { within } from "@storybook/test";
 
+import { chromaticParams } from "@/storybook/chromatic";
+
 import { SidebarActions } from "./sidebar-actions";
 
 const meta = {
@@ -8,6 +10,7 @@ const meta = {
   component: SidebarActions,
   parameters: {
     layout: "centered",
+    ...chromaticParams(["desktop"]),
   },
   tags: ["autodocs"],
 } satisfies Meta<typeof SidebarActions>;
@@ -38,6 +41,7 @@ export const SharePending: Story = {
     const canvas = within(canvasElement);
     const deleteButton = canvas.getByRole("button", { name: "Share" });
     deleteButton.click();
+    return Promise.resolve();
   },
 };
 
@@ -51,5 +55,6 @@ export const RemovePending: Story = {
     const canvas = within(canvasElement);
     const deleteButton = canvas.getByRole("button", { name: "Delete" });
     deleteButton.click();
+    return Promise.resolve();
   },
 };

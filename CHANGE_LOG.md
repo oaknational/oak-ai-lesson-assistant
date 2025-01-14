@@ -1,3 +1,17 @@
+# [1.20.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.19.0...v1.20.0) (2025-01-10)
+
+
+### Bug Fixes
+
+* aria label for buttons and reduce complexity ([#464](https://github.com/oaknational/oak-ai-lesson-assistant/issues/464)) ([79972b4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/79972b4679d53cf486f952707b0f1d171be5f5c2))
+* rename LessonPlanKeys to LessonPlanKey ([#467](https://github.com/oaknational/oak-ai-lesson-assistant/issues/467)) ([fb071e7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/fb071e7943a5a4342a438a86cb50d9b614c38753))
+* show previously shared lessons in history ([#466](https://github.com/oaknational/oak-ai-lesson-assistant/issues/466)) ([fe39444](https://github.com/oaknational/oak-ai-lesson-assistant/commit/fe394443fd71eafa49247c8eab432f2c5e457d5e))
+
+
+### Features
+
+* react scan ([#445](https://github.com/oaknational/oak-ai-lesson-assistant/issues/445)) ([2f255b3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2f255b3656c4c1c53bafa3b1bed1b795c70a84c6))
+
 # [1.19.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.18.2...v1.19.0) (2024-12-18)
 
 

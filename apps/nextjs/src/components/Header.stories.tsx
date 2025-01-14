@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 
+import { chromaticParams } from "@/storybook/chromatic";
+
 import Header from "./Header";
 
 const meta = {
@@ -14,6 +16,7 @@ const meta = {
         height: "80px",
       },
     },
+    ...chromaticParams(["desktop"]),
   },
   args: {
     menuOpen: false,

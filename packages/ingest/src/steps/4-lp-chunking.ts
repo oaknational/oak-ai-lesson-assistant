@@ -52,6 +52,7 @@ export async function lpChunking({
       try {
         lessonPlan = CompletedLessonPlanSchema.parse(lessonPlanRecord.data);
       } catch (error) {
+        log.error("Failed to parse lesson plan", { error });
         lessonIdsFailed.push(lesson.id);
         continue;
       }
@@ -69,6 +70,7 @@ export async function lpChunking({
       });
       lessonIdsCompleted.push(lesson.id);
     } catch (error) {
+      log.error("Failed to chunk lesson plan", { error });
       lessonIdsFailed.push(lesson.id);
     }
   }
