@@ -6,25 +6,22 @@ import { CohereClient } from "cohere-ai";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import { z } from "zod";
 
+import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
 import {
   JsonPatchDocumentSchema,
   PatchQuiz,
 } from "../../../protocol/jsonPatchProtocol";
-import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
 import type {
-  QuizOperationType,
-  Quiz,
   AilaRagRelevantLesson,
+  LooseLessonPlan,
+  Quiz,
+  QuizOperationType,
+  QuizPath,
+  QuizQuestion,
 } from "../../../protocol/schema";
 import { QuizQuestionSchema } from "../../../protocol/schema";
-import type {
-  LooseLessonPlan,
-  QuizQuestion,
-  QuizPath,
-} from "../../../protocol/schema";
 import type { AilaQuizGeneratorService } from "../../AilaServices";
-import type { SimplifiedResult } from "../interfaces";
-import type { CustomHit } from "../interfaces";
+import type { CustomHit, SimplifiedResult } from "../interfaces";
 import { CohereReranker } from "../rerankers";
 import type { SearchResponseBody } from "../types";
 import { lessonSlugQuizMap } from "./lessonSlugLookup";
