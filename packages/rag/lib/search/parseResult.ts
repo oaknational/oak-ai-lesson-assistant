@@ -14,7 +14,11 @@ const databaseResponseSchema = z.object({
 });
 
 export const parseResult =
-  (onError: (error: { ragLessonPlanId?: string; error: string }) => void) =>
+  ({
+    onError,
+  }: {
+    onError: (error: { ragLessonPlanId?: string; error: string }) => void;
+  }) =>
   (result: DeepPartial<RagLessonPlanResult>): result is RagLessonPlanResult => {
     const parseResult = databaseResponseSchema.safeParse(result);
     if (parseResult.success) {

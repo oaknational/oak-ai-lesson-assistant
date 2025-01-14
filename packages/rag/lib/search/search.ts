@@ -42,11 +42,12 @@ export async function vectorSearch({
     new Set();
   const results = queryResponse
     .map(preparseResult)
-    .filter(parseResult(parseErrors.add));
+    .filter(parseResult({ onError: parseErrors.add }));
 
   /**
    * @todo Handle parse errors (i.e. record in DB so we can re-ingest!)
    */
+  log.info(`Parse errors: ${parseErrors.size}`);
 
   log.info(results.map((r) => r.lessonPlan.title).join(",\n"));
 
