@@ -69,6 +69,10 @@ export function promptConstructor(
 
   The students will then practice what they have learned by ${practice} and the teacher will provide feedback by ${feedback}.
 
+  If you can avoid producing anything in a cartoon or illustrated style, if the prompt specifically asks for an illustration then you may produce one.
+  
+  Do not annotate the image with any text or symbols. The image should be suitable for a classroom setting and should not contain any inappropriate content.
+
   The prompt for the image is ${searchExpression}.`;
 }
 

@@ -142,7 +142,7 @@ Should bear in mind the following requirements:
     imagePrompt: z
       .string()
       .describe(
-        "A prompt to generate an image, or a search term to use to find an image or video. Should tell the teacher what images to search for to display on the slides. Written in the EXPERT_TEACHER voice.",
+        "A prompt to generate an image, or a search term to use to find an image or video. This will be used in to generate an image with AI so consider how to structure a good prompt that could also be used as a search expression if nessecary. Written in the EXPERT_TEACHER voice.",
       ),
     slideText: z
       .string()
