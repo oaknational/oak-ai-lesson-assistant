@@ -23,7 +23,9 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
       lessonPlan.basedOn?.id,
     );
     if (!lessonPlan.basedOn?.id) {
-      throw new Error("Lesson plan basedOn is undefined");
+      // Generators should return an empty array if they cannot generate a quiz.
+      log.info("Lesson plan basedOn is undefined. Returning empty array.");
+      return [];
     }
     return [
       await this.questionArrayFromPlanId(
@@ -43,7 +45,8 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
       lessonPlan.basedOn?.id,
     );
     if (!lessonPlan.basedOn?.id) {
-      throw new Error("Lesson plan basedOn is undefined");
+      log.info("Lesson plan basedOn is undefined. Returning empty array.");
+      return [];
     }
     return [
       await this.questionArrayFromPlanId(lessonPlan.basedOn?.id, "/exitQuiz"),
