@@ -148,15 +148,14 @@ async function getHandler(req: Request): Promise<Response> {
 
   try {
     await Promise.all(downloadPromises);
+    await archive.finalize();
+    await kv.set(taskId, "complete");
   } catch (error) {
     Sentry.captureException(error, { level: "error" });
     await kv.set(taskId, "failed");
     return new Response("Error processing files", { status: 500 });
   }
-
   const readableStream = nodePassThroughToReadableStream(zipStream);
-
-  await kv.set(taskId, "complete");
 
   const sanitizedLessonTitle = sanitizeFilename(lessonTitle);
 
