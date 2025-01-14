@@ -1,6 +1,7 @@
 import { Client } from "@elastic/elasticsearch";
 // TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import { CohereClient } from "cohere-ai";
 // TODO: double check the prisma import
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
@@ -26,6 +27,7 @@ import { CohereReranker } from "../rerankers";
 import type { SearchResponseBody } from "../types";
 import { lessonSlugQuizMap } from "./lessonSlugLookup";
 
+const log = aiLogger("aila:quiz");
 // Base abstract class
 export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   protected client: Client;
@@ -92,7 +94,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
       return result?.lesson.slug || null;
     } catch (error) {
-      console.error("Error fetching lesson slug:", error);
+      log.error("Error fetching lesson slug:", error);
       return null;
     }
   }
@@ -307,9 +309,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   ): Promise<any> {
     // const client = new Client({ node: "http://localhost:9200" });
     try {
-      console.log(
-        `Searching index: ${index}, field: ${field}, query: ${query}`,
-      );
+      log.info(`Searching index: ${index}, field: ${field}, query: ${query}`);
       // const response = await client.search({
       //   index: index,
       //   body: {
@@ -348,12 +348,12 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
       //   if (source) {
       //     // Accessing known fields
-      //     console.log(`Text: ${source.text}`);
-      //     console.log(`Custom ID: ${source.metadata.custom_id}`);
+      //     log.info(`Text: ${source.text}`);
+      //     log.info(`Custom ID: ${source.metadata.custom_id}`);
       //   }
       // });
 
-      // console.log("Search response:", JSON.stringify(response, null, 2));
+      // log.info("Search response:", JSON.stringify(response, null, 2));
 
       if (!response.hits) {
         throw new Error("No hits property in the search response");
@@ -361,10 +361,10 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
       return response.hits;
     } catch (error) {
-      console.error("Error searching Elasticsearch:", error);
+      log.error("Error searching Elasticsearch:", error);
       if (error instanceof Error) {
-        console.error("Error message:", error.message);
-        console.error("Error stack:", error.stack);
+        log.error("Error message:", error.message);
+        log.error("Error stack:", error.stack);
       }
       throw error;
     }
@@ -396,17 +396,17 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
         rankFields: ["text"],
         returnDocuments: true,
       });
-      // console.log("Full response:", JSON.stringify(response, null, 2));
+      // log.info("Full response:", JSON.stringify(response, null, 2));
 
       // const rankedDocs = response.body.results.map((result) => ({
       //   ...docs[result.index],
       //   relevanceScore: result.relevance_score,
       // }));
-      console.log("Ranked documents:");
-      console.log(response.results);
+      log.info("Ranked documents:");
+      log.info(response.results);
       return response.results;
     } catch (error) {
-      console.error("Error during reranking:", error);
+      log.error("Error during reranking:", error);
       return [];
     }
   }
@@ -420,7 +420,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
         throw new Error("custom_id not found in parsed JSON");
       }
     } catch (error) {
-      console.error("Error in extractCustomId:", error);
+      log.error("Error in extractCustomId:", error);
       throw new Error("Failed to extract custom_id");
     }
   }
@@ -464,12 +464,9 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
     const result = PatchQuiz.safeParse(quizPatchObject);
     if (!result.success) {
-      console.error("Failed to validate patch object");
-      console.error(
-        "Failed Object: ",
-        JSON.stringify(quizPatchObject, null, 2),
-      );
-      console.error("Validation errors:", result.error);
+      log.error("Failed to validate patch object");
+      log.error("Failed Object: ", JSON.stringify(quizPatchObject, null, 2));
+      log.error("Validation errors:", result.error);
       throw new Error("Failed to validate patch object");
     }
     const patch: JsonPatchDocument = {
@@ -481,13 +478,13 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
     const jsonPatchParseResult = JsonPatchDocumentSchema.safeParse(patch);
     if (!jsonPatchParseResult.success) {
-      console.error("Failed to validate json patch object");
-      console.error("Validation errors:", jsonPatchParseResult.error);
-      console.error("Failed Object: ", JSON.stringify(patch, null, 2));
+      log.error("Failed to validate json patch object");
+      log.error("Validation errors:", jsonPatchParseResult.error);
+      log.error("Failed Object: ", JSON.stringify(patch, null, 2));
       throw new Error("Failed to validate json patch object");
     }
-    console.log("MATHS_EXIT_QUIZ_FOLLOWING");
-    console.log("FULL_QUIZ_PATCH: ", patch);
+    log.info("MATHS_EXIT_QUIZ_FOLLOWING");
+    log.info("FULL_QUIZ_PATCH: ", patch);
     return patch;
   }
   private parseQuizQuestion(jsonString: string): QuizQuestion | null {
@@ -499,15 +496,15 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       return QuizQuestionSchema.parse(data);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.error("Validation error:", error.errors);
+        log.error("Validation error:", error.errors);
       } else if (error instanceof SyntaxError) {
-        console.error(
+        log.error(
           "OFFENDING JSON STRING: ",
           JSON.stringify(jsonString, null, 2),
         );
-        console.error("JSON parsing error:", error.message);
+        log.error("JSON parsing error:", error.message);
       } else {
-        console.error("An unexpected error occurred:", error);
+        log.error("An unexpected error occurred:", error);
       }
       return null;
     }
