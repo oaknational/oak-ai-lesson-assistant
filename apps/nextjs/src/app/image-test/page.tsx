@@ -10,10 +10,17 @@ export default async function ImageSpikePage() {
   if (!userId) {
     redirect("/sign-in?next=/image-spike");
   }
+  //   const lessons = await prisma.appSession.findMany({
+  //     where: {
+  //       userId: userId,
+  //     },
+  //   });
 
   const keyStages = (await prisma.keyStage.findMany({}))
     .map((keyStage) => keyStage.slug)
     .sort();
+
+  console.log(keyStages);
 
   return <ImageTest keyStages={keyStages} />;
 }

@@ -8,7 +8,10 @@ const ImageTest = ({ keyStages }: { keyStages: string[] }) => {
       <h1 className="mb-11">Choose your keystage</h1>
       <div>
         {keyStages?.map((keyStage) => {
-          if (keyStage === "specialist" || "early-years-foundation-stage") {
+          if (
+            keyStage === "specialist" ||
+            keyStage === "early-years-foundation-stage"
+          ) {
             return null;
           }
           return (
