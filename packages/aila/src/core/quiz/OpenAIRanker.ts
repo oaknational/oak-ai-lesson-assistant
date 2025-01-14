@@ -14,7 +14,6 @@ import type {
   QuizQuestion,
   QuizPath,
 } from "../../protocol/schema";
-import { LessonPlanKeys } from "../../protocol/schema";
 import { Message } from "../chat";
 import { OpenAIService } from "../llm/OpenAIService";
 import type { SystemPrompt } from "./QuestionAssesmentPrompt";
