@@ -26,6 +26,7 @@
   "dependencies": {
     "@ai-sdk/openai": "^0.0.55",
     "@clerk/nextjs": "5.7.2",
+    "@elastic/elasticsearch": "^8.13.1",
     "@oakai/core": "*",
     "@oakai/db": "*",
     "@oakai/exports": "*",

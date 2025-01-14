@@ -1,4 +1,5 @@
-import dedent from "dedent";
+// import dedent from "dedent";
+import dedent from "ts-dedent";
 import z from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
@@ -71,6 +72,25 @@ export type MisconceptionsOptional = z.infer<
 
 // ********** QUIZ **********
 
+// TODO: GCLOMAX: Relax this constraint to allow for more than one answer.
+// Needs to be changed - to adapt for LLM handling.
+// Added hint and feedback to the schema.
+
+// hint: z
+//   .string()
+//   .optional()
+//   .describe("A hint to help the student answer the question."),
+// feedback: z
+//   .string()
+//   .optional()
+//   .describe("Feedback to be given to the student."),
+// html: z
+//   .array(z.string())
+//   .optional()
+//   .describe(
+//     "HTML content for the question for use when rendering a different question. DO NOT GENERATE THIS FIELD WHEN PASSED TO AN LLM",
+//   ),
+
 export const QUIZ_DESCRIPTIONS = {
   question: "The question to be asked in the quiz.",
   answers: "The correct answer. This should be an array of only one item.",
@@ -87,10 +107,10 @@ export const QuizQuestionSchemaWithoutLength = z.object({
   distractors: z.array(z.string()).describe(QUIZ_DESCRIPTIONS.distractors),
 });
 
-export const QuizQuestionSchema = QuizQuestionSchemaWithoutLength.extend({
-  answers: QuizQuestionSchemaWithoutLength.shape.answers.length(1),
-  distractors: QuizQuestionSchemaWithoutLength.shape.distractors.length(2),
-});
+export const QuizQuestionSchema = QuizQuestionSchemaWithoutLength; //.extend({
+//   answers: QuizQuestionSchemaWithoutLength.shape.answers.length(1),
+//   distractors: QuizQuestionSchemaWithoutLength.shape.distractors.length(2),
+// });
 
 export const QuizQuestionOptionalSchema = QuizQuestionSchema.partial();
 
@@ -495,3 +515,19 @@ export type LessonPlanSectionWhileStreaming =
   | string
   | string[]
   | number;
+
+// These are here due to zod refusing to infer the type of "add"
+// TODO: GCLOMAX: Refactor this to use a union type
+export const quizPathSchema = z.union([
+  z.literal("/starterQuiz"),
+  z.literal("/exitQuiz"),
+]);
+
+export type QuizPath = z.infer<typeof quizPathSchema>;
+
+export const quizOperationTypeSchema = z.union([
+  z.literal("add"),
+  z.literal("replace"),
+]);
+
+export type QuizOperationType = z.infer<typeof quizOperationTypeSchema>;

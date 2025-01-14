@@ -11,15 +11,22 @@ import type {
 } from "../features/types";
 import type {
   MessagePart,
+  JsonPatchDocument,
   ValidPatchDocument,
+} from "../protocol/jsonPatchProtocol";
+import {
+  JsonPatchDocumentOptional,
+  PatchQuiz,
 } from "../protocol/jsonPatchProtocol";
 import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
   LooseLessonPlan,
+  Quiz,
 } from "../protocol/schema";
 import type { Message } from "./chat";
 import type { AilaPlugin } from "./plugins";
+import type { FullQuizService } from "./quiz/interfaces";
 import type { AilaOptionsWithDefaultFallbackValues } from "./types";
 
 // This provides a set of interfaces between the Aila core and the features that use it.
@@ -50,9 +57,28 @@ export interface AilaChatService {
   set relevantLessons(lessons: AilaRagRelevantLesson[]);
   readonly parsedMessages: MessagePart[][];
   readonly isShared: boolean | undefined;
+  readonly fullQuizService: FullQuizService;
   loadChat({ store }: { store: string }): Promise<void>;
   addMessage(message: Message): void;
   startStreaming(abortController?: AbortController): ReadableStream;
+}
+
+export interface AilaQuizService {
+  generateMathsExitQuizPatch(
+    lessonPlan: LooseLessonPlan,
+  ): Promise<JsonPatchDocument>;
+}
+// TODO: GCLOMAX - move this to interfaces and rename.
+export interface AilaQuizGeneratorService {
+  generateMathsExitQuizPatch(
+    lessonPlan: LooseLessonPlan,
+    relevantLessons?: AilaRagRelevantLesson[],
+  ): Promise<Quiz[]>;
+  generateMathsStarterQuizPatch(
+    lessonPlan: LooseLessonPlan,
+    relevantLessons?: AilaRagRelevantLesson[],
+  ): Promise<Quiz[]>;
+  // invoke(lessonPlan: LooseLessonPlan): Promise<Quiz[]>;
 }
 
 export interface AilaServices {

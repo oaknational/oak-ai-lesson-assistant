@@ -1,8 +1,10 @@
+// TODO: GCLOMAX This is a bodge that is needed to get running on new branch, but MG's new functionality deprecates this.
 import {
   subjects,
   unsupportedSubjects,
   subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
+// TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
@@ -30,6 +32,10 @@ import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
+import { AilaQuiz } from "../quiz/AilaQuiz";
+import { CompositeFullQuizServiceBuilder } from "../quiz/fullservices/CompositeFullQuizServiceBuilder";
+import type { FullQuizService } from "../quiz/interfaces";
+import { testRatingSchema } from "../quiz/rerankers/RerankerStructuredOutputSchema";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 import type { Message } from "./types";
@@ -51,7 +57,11 @@ export class AilaChat implements AilaChatService {
   private _iteration: number | undefined;
   private _createdAt: Date | undefined;
   private _persistedChat: AilaPersistedChat | undefined;
-  private readonly _experimentalPatches: ExperimentalPatchDocument[];
+
+  private _experimentalPatches: ExperimentalPatchDocument[];
+  public readonly fullQuizService: FullQuizService;
+
+  // private readonly _experimentalPatches: ExperimentalPatchDocument[];
 
   constructor({
     id,
@@ -82,7 +92,24 @@ export class AilaChat implements AilaChatService {
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
     this._relevantLessons = [];
     this._experimentalPatches = [];
+    // TODO: GCLOMAX - this is a hack to get the demo quiz service working. Add quiz options somewhere.
+    // this.fullQuizService = new FullQuizServiceFactory().create("simple");
+    // {
+    //   quizRatingSchema: testRatingSchema,
+    //   quizSelector: "simple",
+    //   quizReranker: "schema-reranker",
+    //   quizGenerators: ["ml", "rag", "basedOnRag"],
+    // };
+    this.fullQuizService = new CompositeFullQuizServiceBuilder().build({
+      quizRatingSchema: testRatingSchema,
+      quizSelector: "simple",
+      quizReranker: "return-first",
+      // quizGenerators: ["ml", "rag", "basedOnRag"],
+      quizGenerators: ["basedOnRag"],
+    });
   }
+  // TODO: GCLOMAX This should be put in a new class called AilaQuizService, in the ailaservices class.
+  private quizService = new AilaQuiz();
 
   public get aila() {
     return this._aila;
@@ -387,6 +414,7 @@ export class AilaChat implements AilaChatService {
   public async complete() {
     await this.reportUsageMetrics();
     await fetchExperimentalPatches({
+      fullQuizService: this.fullQuizService,
       lessonPlan: this._aila.lesson.plan,
       llmPatches: extractPatches(this.accumulatedText()).validPatches,
       handlePatch: async (patch) => {

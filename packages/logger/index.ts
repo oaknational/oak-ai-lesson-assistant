@@ -31,6 +31,7 @@ type ChildKey =
   | "aila:stream"
   | "aila:rag"
   | "aila:testing"
+  | "aila:quiz"
   | "aila:experimental-patches"
   | "analytics"
   | "app"
