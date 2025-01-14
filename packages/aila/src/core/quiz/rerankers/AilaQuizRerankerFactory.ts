@@ -3,7 +3,6 @@ import type { AilaQuizReranker, AilaQuizRerankerFactory } from "../interfaces";
 import type { QuizRerankerType } from "../schema";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 import { ReturnFirstReranker } from "./ReturnFirstReranker";
-import { TestSchemaReranker } from "./SchemaReranker";
 
 export class AilaQuizRerankerFactoryImpl implements AilaQuizRerankerFactory {
   public createAilaQuizReranker(
@@ -11,7 +10,10 @@ export class AilaQuizRerankerFactoryImpl implements AilaQuizRerankerFactory {
   ): AilaQuizReranker<typeof BaseSchema> {
     switch (quizType) {
       case "schema-reranker":
-        return new TestSchemaReranker(testRatingSchema, "/starterQuiz");
+        throw new Error(
+          "Schema reranker not implemented import from other branch",
+        );
+      // return new TestSchemaReranker(testRatingSchema, "/starterQuiz");
       case "return-first":
         // TODO: GCLOMAX - This needs refactoring and is an issue.
         return new ReturnFirstReranker(testRatingSchema, "/starterQuiz");

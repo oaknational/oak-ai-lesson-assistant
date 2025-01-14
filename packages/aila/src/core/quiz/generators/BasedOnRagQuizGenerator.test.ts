@@ -1,7 +1,6 @@
 import type { LooseLessonPlan, QuizQuestion } from "../../../protocol/schema";
 import { QuizSchema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
-import { cachedQuiz } from "../fixtures/fixtures_for_matt";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 
 describe("BasedOnRagQuizGenerator", () => {
