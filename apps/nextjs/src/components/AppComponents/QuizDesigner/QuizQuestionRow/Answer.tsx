@@ -4,14 +4,14 @@ import type { GenerationPart } from "@oakai/core/src/types";
 import { GenerationPartType } from "@oakai/core/src/types";
 import browserLogger from "@oakai/logger/browser";
 import { Flex } from "@radix-ui/themes";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
+
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
 import type {
   QuizAppAnswer,
   QuizAppState,
   QuizAppStateQuestion,
-} from "ai-apps/quiz-designer/state/types";
-
+} from "@/ai-apps/quiz-designer/state/types";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
 
@@ -68,7 +68,7 @@ const Answer = ({
             "User attempted to tweak answer with missing answer / lastGenerationId",
           );
         }
-      } catch (err) {
+      } catch {
         browserLogger.error("Failed to log answer tweak");
       }
     },

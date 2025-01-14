@@ -2,7 +2,8 @@ import { useRef } from "react";
 
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
-import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
+
+import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
 
 import { notEmpty } from "./chat-lessonPlanDisplay";
 import { sectionTitle } from "./drop-down-section";

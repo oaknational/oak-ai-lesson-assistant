@@ -22,10 +22,10 @@ import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { useChat } from "ai/react";
-import { useTemporaryLessonPlanWithStreamingEdits } from "hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
 
+import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";

@@ -1,7 +1,6 @@
 import { createContext, useContext, useMemo } from "react";
 
-import { useClerkDemoMetadata } from "hooks/useClerkDemoMetadata";
-
+import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
 import { trpc } from "@/utils/trpc";
 
 if (!process.env.NEXT_PUBLIC_RATELIMIT_DEMO_APP_SESSIONS_PER_30D) {

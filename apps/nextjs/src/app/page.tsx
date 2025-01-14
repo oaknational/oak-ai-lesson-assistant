@@ -1,4 +1,4 @@
-import { fetchAiHomepage } from "cms/data/fetchAiHomepage";
+import { fetchAiHomepage } from "@/cms/data/fetchAiHomepage";
 
 import HomePage from "./home-page";
 

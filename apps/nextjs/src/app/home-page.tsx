@@ -10,15 +10,14 @@ import {
   OakLink,
   OakP,
   oakColorTokens,
-  OakPrimaryButton,
 } from "@oaknational/oak-components";
-import type { HomePageQueryResult } from "cms/types/aiHomePageType";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import styled from "styled-components";
 
 import oakSupporting from "@/assets/svg/illustration/oak_supporting.svg";
+import type { HomePageQueryResult } from "@/cms/types/aiHomePageType";
 import { BetaTagPage } from "@/components/AppComponents/Chat/beta-tag";
 import HeroContainer from "@/components/HeroContainer";
 import { HomePageCTA } from "@/components/Home/HomePageCTA";

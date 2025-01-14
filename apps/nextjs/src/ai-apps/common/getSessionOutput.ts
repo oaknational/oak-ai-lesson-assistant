@@ -1,6 +1,7 @@
 import { Apps } from "@oakai/core/src/models/apps";
 import { prisma } from "@oakai/db";
-import { outputSchema } from "ai-apps/generations/types";
+
+import { outputSchema } from "@/ai-apps/generations/types";
 
 export default async function getSessionOutput(
   userId: string | null,
