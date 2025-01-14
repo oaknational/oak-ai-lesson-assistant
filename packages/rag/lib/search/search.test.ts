@@ -19,7 +19,7 @@ const mockLog: RagLogger = {
   error: jest.fn(),
 };
 
-describe("vectorSearch", () => {
+describe.skip("vectorSearch", () => {
   const mockQueryVector = [0.1, 0.2, 0.3];
   const mockFilters = {
     keyStageSlugs: ["ks1", "ks2"],

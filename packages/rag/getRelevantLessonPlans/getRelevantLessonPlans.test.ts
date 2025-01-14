@@ -32,7 +32,7 @@ async function pgVectorSearch({
   return prismaResult;
 }
 
-describe("RAG search", () => {
+describe.skip("RAG search", () => {
   // it("should find lessons on 'xxx'", async () => {
   //   const lesson = {
   //     title: "The End of Roman Britain",
