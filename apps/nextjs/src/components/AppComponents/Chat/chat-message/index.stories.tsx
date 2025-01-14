@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { ChatModerationProvider } from "@/components/ContextProviders/ChatModerationContext";
+import { chromaticParams } from "@/storybook/chromatic";
 
 import { ChatMessage } from "./";
 
@@ -19,6 +20,9 @@ const meta = {
     chatId: "test-chat-id",
     persistedModerations: [],
     ailaStreamingStatus: "Idle",
+  },
+  parameters: {
+    ...chromaticParams(["desktop"]),
   },
 } satisfies Meta<typeof ChatMessage>;
 

@@ -1,5 +1,5 @@
 import type {
-  LessonPlanKeys,
+  LessonPlanKey,
   LessonPlanSectionWhileStreaming,
 } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
@@ -13,7 +13,7 @@ import FlagButton from "./flag-button";
 import ModifyButton from "./modify-button";
 
 export type ChatSectionProps = Readonly<{
-  section: LessonPlanKeys;
+  section: LessonPlanKey;
   value: LessonPlanSectionWhileStreaming;
 }>;
 
