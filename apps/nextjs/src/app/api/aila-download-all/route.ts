@@ -155,13 +155,7 @@ async function getHandler(req: Request): Promise<Response> {
   await Promise.all(downloadPromises);
 
   if (filesProcessed > 0) {
-    archive.finalize().catch(async (error: Error) => {
-      Sentry.captureException(error, { level: "error" });
-      await kv.set(taskId, "failed");
-      return new Response("Archive finalize error", {
-        status: 500,
-      });
-    });
+    await archive.finalize();
   } else {
     await kv.set(taskId, "failed");
     return new Response("No files found or processed", { status: 404 });
