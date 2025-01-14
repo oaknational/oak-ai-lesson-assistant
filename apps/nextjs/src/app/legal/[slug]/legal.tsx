@@ -2,8 +2,8 @@
 
 import { OakBox } from "@oaknational/oak-components";
 import { PortableText } from "@portabletext/react";
-import type { PolicyDocument } from "cms/types/policyDocument";
 
+import type { PolicyDocument } from "@/cms/types/policyDocument";
 import Layout from "@/components/Layout";
 import { portableTextComponents } from "@/components/PortableText/portableTextComponents";
 

@@ -1,5 +1,5 @@
-import { sanityClient } from "cms/sanityClient";
-import type { PolicyDocument } from "cms/types/policyDocument";
+import { sanityClient } from "@/cms/sanityClient";
+import type { PolicyDocument } from "@/cms/types/policyDocument";
 
 export async function fetchPolicyDocument({
   slug,

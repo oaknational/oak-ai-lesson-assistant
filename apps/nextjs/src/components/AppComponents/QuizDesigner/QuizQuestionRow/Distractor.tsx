@@ -7,21 +7,21 @@ import type { GenerationPart } from "@oakai/core/src/types";
 import { GenerationPartType } from "@oakai/core/src/types";
 import browserLogger from "@oakai/logger/browser";
 import { Flex } from "@radix-ui/themes";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
+import { z } from "zod";
+
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
 import type {
   QuizAppDistractor,
   QuizAppState,
   QuizAppStateQuestion,
-} from "ai-apps/quiz-designer/state/types";
+} from "@/ai-apps/quiz-designer/state/types";
+import { GenerationErrorBox } from "@/components/AppComponents/QuizDesigner/ErrorBox";
 import {
   UseGenerationStatus,
   isGenerationHookLoading,
-} from "hooks/useGeneration";
-import useGenerationCallbacks from "hooks/useGenerationCallbacks";
-import { z } from "zod";
-
-import { GenerationErrorBox } from "@/components/AppComponents/QuizDesigner/ErrorBox";
+} from "@/hooks/useGeneration";
+import useGenerationCallbacks from "@/hooks/useGenerationCallbacks";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { getAgesFromKeyStage } from "@/utils/getAgesFromKeyStage";
 import { trpc } from "@/utils/trpc";
