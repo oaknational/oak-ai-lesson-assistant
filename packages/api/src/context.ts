@@ -29,10 +29,10 @@ type AuthContextProps = {
 export const createContextInner = async ({
   auth,
 }: Readonly<AuthContextProps>) => {
-  return {
+  return Promise.resolve({
     auth,
     prisma,
-  };
+  });
 };
 
 type GetAuth = (req: NextRequest) => Promise<APIKeyAuthObject>;
