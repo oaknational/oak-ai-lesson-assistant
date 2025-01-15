@@ -28,20 +28,13 @@ export class CohereReranker implements DocumentReranker {
       const response = await this.cohere.rerank({
         model: "rerank-english-v2.0",
         query: query,
-        // documents: JSON.stringify(docs),
         documents: jsonDocs,
-        // documents: docs,
         topN: topN,
-        //@ts-ignore WARNING THIS IS INSECURE - WE WILL UPDATE COHERE TO FIX THIS.
+        //@ts-ignore issue with cohere client - will need version bumping in future.
         rankFields: ["text"],
         returnDocuments: true,
       });
-      // console.log("Full response:", JSON.stringify(response, null, 2));
 
-      // const rankedDocs = response.body.results.map((result) => ({
-      //   ...docs[result.index],
-      //   relevanceScore: result.relevance_score,
-      // }));
       console.log("Ranked documents:");
       console.log(response.results);
       return response.results;
@@ -59,6 +52,7 @@ export class ReplicateReranker implements DocumentReranker {
     topN: number = 10,
   ) {
     // TODO: GCLOMAX - we need to retrain rerankers due to embedding changes.
+    throw new Error("Not implemented");
     return [];
   }
 }

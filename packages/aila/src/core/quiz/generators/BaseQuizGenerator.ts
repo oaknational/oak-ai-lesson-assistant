@@ -29,6 +29,9 @@ import { lessonSlugQuizMap } from "./lessonSlugLookup";
 
 const log = aiLogger("aila:quiz");
 // Base abstract class
+// Quiz generator takes a lesson plan and returns a quiz object.
+// Quiz rerankers take a lesson plan and returns a list of quiz objects ranked by suitability.
+// Quiz selectors take a list of quiz objects and rankings and select the best one acording to some criteria or logic defined by a rating function.
 export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   protected client: Client;
   protected cohere: CohereClient;

@@ -20,7 +20,6 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
   public ratingSchema?: T;
   public quizType?: QuizPath;
 
-  //   TODO: GCLOMAX - we may not need this if going in the factory direction.
   constructor(ratingSchema?: T, quizType?: QuizPath) {
     this.ratingSchema = ratingSchema;
     this.quizType = quizType;
@@ -28,7 +27,6 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
 
   //  This takes a quiz array and evaluates it using the rating schema and quiz type and returns an array of evaluation schema objects.
   //   TODO: GCLOMAX - move evaluate quiz out to use dependancy injection - can then pass the different types of reranker types.
-  //   TODO: GCLOMAX - Cache this. This is where a lot of the expensive openai calling takes place.
   public async evaluateQuizArray(
     quizArray: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
