@@ -121,7 +121,7 @@ export const AcceptTermsForm = () => {
             </Button>
             <OakPrimaryButton
               onClick={() => {
-                handleAcceptTermsOfUse();
+                void handleAcceptTermsOfUse();
                 setTermsAcceptedLocal(true);
               }}
             >
