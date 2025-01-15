@@ -229,10 +229,8 @@ export type Cycle = z.infer<typeof CycleSchema>;
 // ********** KEYWORDS **********
 export const KEYWORD_DESCRIPTIONS = {
   keyword: dedent`The keyword itself.
-  Should be in sentence case starting with a capital letter and not end with a full stop.`,
-  definition: dedent`A short definition of the keyword including the keyword itself.
-    Should be in sentence case starting with a capital letter and not end with a full stop.
-    Written in TEACHER_TO_PUPIL_SLIDES voice.`,
+  Should be written in lowercase apart from proper nouns and not end with a full stop.`,
+  definition: dedent`A short definition of the keyword including the keyword itself. This definition should be written in lowercase apart from proper nouns and not end with a full stop.  Written in TEACHER_TO_PUPIL_SLIDES voice.`,
   description: "Not to be used, and included here only for legacy purposes.",
   schema: dedent`A keyword that is used in the lesson.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,

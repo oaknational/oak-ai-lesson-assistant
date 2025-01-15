@@ -17,13 +17,4 @@ export const aiTools: {
     description:
       "Save time creating lessons with our AI lesson planning assistant. Tailor high-quality resources to suit your pupils and export them in classroom-ready formats.",
   },
-  {
-    title: "Quiz designer",
-    href: "/quiz-designer",
-    id: "quiz-designer",
-    image: oakSupporting,
-    behindFeatureFlag: false,
-    description:
-      "Create quizzes for your pupils in a flash. Use our quiz designer to generate answers, both right and wrong. Share the quizzes with others or export them in a range of formats ready for the classroom.",
-  },
 ];

@@ -1,5 +1,8 @@
 import { AilaPersistence } from "../..";
-import type { AilaChatService, AilaServices } from "../../../../core/AilaServices";
+import type {
+  AilaChatService,
+  AilaServices,
+} from "../../../../core/AilaServices";
 import type { AilaGeneration } from "../../../generation/AilaGeneration";
 
 export class AilaFilePersistence extends AilaPersistence {
@@ -7,20 +10,19 @@ export class AilaFilePersistence extends AilaPersistence {
     super({ aila, chat, name: "AilaFilePersistence" });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async upsertChat(): Promise<void> {
     // Implementation goes here
-    throw new Error("Not implemented");
+    return Promise.reject(new Error("Not implemented"));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async upsertGeneration(generation?: AilaGeneration): Promise<void> {
     // Implementation goes here
-    throw new Error("Not implemented");
+    return Promise.reject(new Error("Not implemented"));
   }
 
   async loadChat(): Promise<null> {
     // Implementation goes here
-    throw new Error("Not implemented");
+    return Promise.reject(new Error("Not implemented"));
   }
 }
