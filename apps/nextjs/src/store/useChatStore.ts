@@ -1,4 +1,9 @@
 // stores/useChatStore.ts
+import {
+  type MessagePart,
+  parseMessageParts,
+  parseMessageRow,
+} from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import type { Message } from "ai";
 import { create } from "zustand";
@@ -15,8 +20,8 @@ type ChatStore = {
   queuedUserAction: string | null;
   chatAreaRef: React.RefObject<HTMLDivElement> | null;
 
-  stableMessages: Message[];
-  currentMessage: Message | null;
+  stableMessages: MessageWithParts[];
+  currentMessage: MessageWithParts | null;
 
   // Actions
   setChat: (chat: AilaPersistedChat) => void;
@@ -46,7 +51,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   setMessages: (messages, isLoading) => {
     if (!isLoading) {
       set({
-        stableMessages: messages,
+        stableMessages: parseMessages(messages),
         currentMessage: null,
       });
     } else {
@@ -54,14 +59,11 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       const stableMessages = messages.slice(0, messages.length - 1);
       const stableMessagesChanged =
         messageIds(stableMessages) !== messageIds(get().stableMessages);
-      console.log({
-        currentIds: messageIds(get().stableMessages),
-        newIds: messageIds(stableMessages),
-        stableMessagesChanged: stableMessagesChanged,
-      });
       set({
-        currentMessage,
-        ...(stableMessagesChanged && { stableMessages }),
+        currentMessage: currentMessage ? parseMessage(currentMessage) : null,
+        ...(stableMessagesChanged && {
+          stableMessages: parseMessages(stableMessages),
+        }),
       });
     }
   },
@@ -73,3 +75,18 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   clearQueuedAction: () => set({ queuedUserAction: null }),
   setChatAreaRef: (ref) => set({ chatAreaRef: ref }),
 }));
+
+type MessageWithParts = Message & {
+  parts: MessagePart[];
+};
+
+const parseMessages = (messages: Message[]): MessageWithParts[] => {
+  return messages.map((m) => parseMessage(m));
+};
+
+const parseMessage = (message: Message): MessageWithParts => {
+  return {
+    ...message,
+    parts: parseMessageParts(message.content),
+  };
+};

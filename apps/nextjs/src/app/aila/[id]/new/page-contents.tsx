@@ -8,6 +8,7 @@ import { useChatStore } from "store/useChatStore";
 import invariant from "tiny-invariant";
 
 import LessonPlanDisplay from "@/components/AppComponents/Chat/chat-lessonPlanDisplay";
+import { ChatMessagePart } from "@/components/AppComponents/Chat/chat-message/ChatMessagePart";
 import Layout from "@/components/AppComponents/Layout";
 import LoadingWheel from "@/components/LoadingWheel";
 
@@ -89,11 +90,25 @@ const CurrentMessage = () => {
 const ChatMessage = ({ message }: { readonly message: Message }) => {
   const renderCount = useRef(0);
   renderCount.current++;
+
+  // TODO:
+  // hasError
+  // isEditing: has partial parts or no content parts
+  // moderationMessagePart
+  // hide if action part
+
   return (
     <div>
       Renders: {renderCount.current}
+      <div>{message.role} - </div>
       <div>
-        {message.role} -{" "}
+        {message.parts.map((part) => (
+          <div className="w-full" key={part.id}>
+            <ChatMessagePart part={part} inspect={false} />
+          </div>
+        ))}
+      </div>
+      <div className="m-8 text-xs">
         {message.content.split("␞").map((m, i) => (
           <div key={i}>{m}</div>
         ))}

@@ -73,6 +73,7 @@ export function ChatMessage({
     return null;
   }
 
+  // TODO: invert control?
   function getAvatarType() {
     if (message.role === "user") {
       return "user";
