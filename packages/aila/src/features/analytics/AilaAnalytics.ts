@@ -22,7 +22,10 @@ export class AilaAnalytics {
     this._adapters.forEach((adapter) => adapter.initialiseAnalyticsContext());
   }
 
-  public async reportUsageMetrics(responseBody: string, startedAt?: number) {
+  public async reportUsageMetrics(
+    responseBody: string,
+    startedAt?: number,
+  ): Promise<void> {
     const promise = Promise.all(
       this._adapters.map((adapter) =>
         adapter.reportUsageMetrics(responseBody, startedAt),
@@ -30,7 +33,7 @@ export class AilaAnalytics {
     );
     this._operations.push(promise);
     this._aila.plugins.forEach((plugin) => plugin.onBackgroundWork(promise));
-    return Promise.resolve(null);
+    await promise;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,7 +52,7 @@ export class AilaAnalytics {
 
       this._aila.plugins.forEach((plugin) => plugin.onBackgroundWork(promise));
       this._isShutdown = true;
-      return Promise.resolve(null);
+      await promise;
     }
   }
 }
