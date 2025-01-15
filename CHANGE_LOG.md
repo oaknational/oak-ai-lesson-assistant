@@ -1,3 +1,15 @@
+# [1.21.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.20.0...v1.21.0) (2025-01-15)
+
+
+### Bug Fixes
+
+* async data prep functions should use Promise.resolve ([#475](https://github.com/oaknational/oak-ai-lesson-assistant/issues/475)) ([4bc7cd8](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4bc7cd8ee02fb192d3689c3441b00b3ddf3010cd))
+
+
+### Features
+
+* hide the qd ([#465](https://github.com/oaknational/oak-ai-lesson-assistant/issues/465)) ([dbac5c2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dbac5c2d2bc2a8113aa3518cd5f89d6e7b488042))
+
 # [1.20.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.19.0...v1.20.0) (2025-01-10)
 
 
