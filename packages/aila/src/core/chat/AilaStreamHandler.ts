@@ -89,9 +89,20 @@ export class AilaStreamHandler {
       type: "comment",
       value: "CHAT_START",
     });
-    const messages = this._chat.completionMessages();
-    this._streamReader =
-      await this._chat.createChatCompletionObjectStream(messages);
+    const currentLessonPlan = this._chat.aila.lessonPlan;
+
+    const AILA_ENGINE_STREAM_URL = process.env.AILA_ENGINE_STREAM_URL;
+
+    const lastUserMessage = this._chat.messages.slice(-1)[0];
+    if (AILA_ENGINE_STREAM_URL) {
+      this._streamReader = await createStreamReader(
+        `${AILA_ENGINE_STREAM_URL}?prompt=${JSON.stringify(currentLessonPlan)}\n\n\n\n${lastUserMessage?.content}`,
+      );
+    } else {
+      const messages = this._chat.completionMessages();
+      this._streamReader =
+        await this._chat.createChatCompletionObjectStream(messages);
+    }
   }
 
   private async readFromStream(abortController?: AbortController) {
@@ -148,4 +159,53 @@ export class AilaStreamHandler {
       this._controller.close();
     }
   }
+}
+
+async function createStreamReader(
+  apiUrl: string,
+): Promise<ReadableStreamDefaultReader<string>> {
+  const response = await fetch(apiUrl, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+
+  if (!response.ok || !response.body) {
+    throw new Error(`Failed to fetch stream from API: ${response.statusText}`);
+  }
+
+  const textDecoder = new TextDecoder(); // Decodes binary chunks to strings
+  const streamReader = response.body.getReader();
+
+  return new ReadableStream<string>({
+    async start(controller) {
+      const readChunk = async () => {
+        try {
+          const { done, value } = await streamReader.read();
+          if (done) {
+            controller.close();
+            return;
+          }
+
+          // Decode binary chunk and enqueue each line
+          const decoded = textDecoder.decode(value, { stream: true });
+          const lines = decoded.split("\n");
+          for (const line of lines) {
+            if (line.trim()) {
+              controller.enqueue(line.trim());
+            }
+          }
+          await readChunk();
+        } catch (error) {
+          controller.error(error);
+        }
+      };
+
+      await readChunk();
+    },
+    async cancel() {
+      await streamReader.cancel();
+    },
+  }).getReader();
 }
