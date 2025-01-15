@@ -57,7 +57,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       token: process.env.COHERE_API_KEY as string,
     });
 
-    // This should be changed to use our hosted models - use this for dev simplicity.
+    // This can be changed to use our hosted models - use this for dev simplicity.
     this.rerankService = new CohereReranker();
   }
 
@@ -71,7 +71,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
   ): Promise<Quiz[]>;
 
-  // ... other implementations
   public async generateMathsQuizFromRagPlanId(
     planIds: string,
   ): Promise<JsonPatchDocument> {
@@ -104,7 +103,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   ): Promise<string[]> {
     // Converts a lesson slug to a question ID via searching in index
     // TODO: reconfigure database to make this more efficient
-
     const response = await this.client.search({
       index: "oak-vector",
       body: {
@@ -193,11 +191,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     planId: string,
     quizType: QuizPath = "/starterQuiz",
   ): Promise<QuizQuestion[]> {
-    // const lessonSlug = await this.getLessonSlugFromPlanId(planId);
-    // const lessonSlugList = lessonSlug ? [lessonSlug] : [];
-    // const customIds = await this.lessonSlugToQuestionIdSearch(lessonSlugList);
-    // const quizQuestions = await this.questionArrayFromCustomIds(customIds);
-    // return quizQuestions;
     return await this.questionArrayFromPlanIdLookUpTable(planId, quizType);
   }
 
@@ -260,7 +253,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
           typeof source.text !== "string" ||
           typeof source.metadata?.custom_id !== "string"
         ) {
-          console.warn("Hit is missing required fields:", hit);
+          log.warn("Hit is missing required fields:", hit);
           return null;
         }
 
@@ -301,37 +294,13 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   }
   // TODO: GCLOMAX abstract this into a search service / class so can easily swap out for hybrid once re-ingested.
   protected async searchWithBM25(
-    // client: Client,
     index: string,
     field: string,
     query: string,
     size: number = 10,
   ): Promise<any> {
-    // const client = new Client({ node: "http://localhost:9200" });
     try {
       log.info(`Searching index: ${index}, field: ${field}, query: ${query}`);
-      // const response = await client.search({
-      //   index: index,
-      //   body: {
-      //     size: size,
-      //     query: {
-      //       match: {
-      //         [field]: {
-      //           query: query,
-      //           operator: 'and',
-      //           fuzziness: 'AUTO'
-      //         }
-      //       }
-      //     },
-      //     highlight: {
-      //       fields: {
-      //         [field]: {}
-      //       }
-      //     }
-      //   }
-      // })
-      //  Simple dummy search as placeholder.
-      // Searches over question descriptions
       const response = await this.client.search<CustomHit>({
         index: "oak-vector",
         query: {
@@ -341,19 +310,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
           },
         },
       });
-      // TODO: check if this is the correct type.
-      // TODO: Fix this retriever here.
-      // response.hits.hits.forEach((hit: SearchHit<CustomHit>) => {
-      //   const source: CustomHit | undefined = hit._source;
-
-      //   if (source) {
-      //     // Accessing known fields
-      //     log.info(`Text: ${source.text}`);
-      //     log.info(`Custom ID: ${source.metadata.custom_id}`);
-      //   }
-      // });
-
-      // log.info("Search response:", JSON.stringify(response, null, 2));
 
       if (!response.hits) {
         throw new Error("No hits property in the search response");
@@ -388,20 +344,13 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       const response = await this.cohere.rerank({
         model: "rerank-english-v2.0",
         query: query,
-        // documents: JSON.stringify(docs),
         documents: jsonDocs,
-        // documents: docs,
         topN: topN,
-        //@ts-ignore WARNING THIS IS INSECURE - WE WILL UPDATE COHERE TO FIX THIS.
+        //@ts-ignore Cohere client has some weirdness - should update version.
         rankFields: ["text"],
         returnDocuments: true,
       });
-      // log.info("Full response:", JSON.stringify(response, null, 2));
 
-      // const rankedDocs = response.body.results.map((result) => ({
-      //   ...docs[result.index],
-      //   relevanceScore: result.relevance_score,
-      // }));
       log.info("Ranked documents:");
       log.info(response.results);
       return response.results;
@@ -510,15 +459,3 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     }
   }
 }
-
-// // Combined Approach Quiz Generator
-// export class CombinedQuizGenerator extends BaseQuizGenerator {
-//   async combinedRerankingOpenAIMLQuizGeneration<T extends z.ZodType>(
-//     lessonPlan: LooseLessonPlan,
-//     ratingSchema: T,
-//     quizType: QuizPath,
-//   ): Promise<QuizQuestion[]> {
-//     // Implementation for combined approach
-//   }
-//   // ... other implementations
-// }
