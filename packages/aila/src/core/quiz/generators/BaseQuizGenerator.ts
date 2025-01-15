@@ -442,10 +442,8 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   }
   private parseQuizQuestion(jsonString: string): QuizQuestion | null {
     try {
-      // Parse JSON string into an object
       const data = JSON.parse(jsonString);
 
-      // Validate and parse the data against the schema
       return QuizQuestionSchema.parse(data);
     } catch (error) {
       if (error instanceof z.ZodError) {
