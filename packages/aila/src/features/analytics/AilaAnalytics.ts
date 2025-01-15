@@ -30,6 +30,7 @@ export class AilaAnalytics {
     );
     this._operations.push(promise);
     this._aila.plugins.forEach((plugin) => plugin.onBackgroundWork(promise));
+    return Promise.resolve(null);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -48,6 +49,7 @@ export class AilaAnalytics {
 
       this._aila.plugins.forEach((plugin) => plugin.onBackgroundWork(promise));
       this._isShutdown = true;
+      return Promise.resolve(null);
     }
   }
 }
