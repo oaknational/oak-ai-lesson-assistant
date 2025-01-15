@@ -181,7 +181,7 @@ export async function prepLessonForSlides(
     learning_cycle_3_practise: data.cycle3?.practice ?? "",
     learning_cycle_3_feedback: data.cycle3?.feedback ?? "",
   };
-  return newData;
+  return Promise.resolve(newData);
 }
 
 type QuizDesignerSlidesTemplateData = {
@@ -601,7 +601,7 @@ export async function prepQuizDesignerForSlides(
         data.questions[19]?.distractors,
       )[2] ?? "",
   };
-  return newData;
+  return Promise.resolve(newData);
 }
 
 export async function prepLessonForAdditionalMaterialsDoc(
@@ -611,5 +611,5 @@ export async function prepLessonForAdditionalMaterialsDoc(
     lesson_title: data.title,
     content: data.additionalMaterials ?? "",
   };
-  return newData;
+  return Promise.resolve(newData);
 }

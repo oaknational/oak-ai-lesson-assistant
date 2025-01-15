@@ -1,8 +1,11 @@
 import { prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
 import { PromptVariants } from "../models/promptVariants";
 import { lessonPlannerPrompts, quizGeneratorPrompts } from "../prompts";
 import { ailaGenerate } from "../prompts/lesson-assistant/variants";
+
+const log = aiLogger("core");
 
 export const apps = [
   {
@@ -30,21 +33,21 @@ const main = async () => {
       ),
     );
 
-    console.log("Setting up prompts");
-    console.log("Aila");
+    log.info("Setting up prompts");
+    log.info("Aila");
     for (const variant of ailaGenerate.variants) {
-      console.log("variant", variant.slug);
+      log.info("variant", variant.slug);
       const prompts = new PromptVariants(prisma, ailaGenerate, variant.slug);
       await prompts.setCurrent(variant.slug, true);
     }
-    console.log("Lesson Planner");
+    log.info("Lesson Planner");
     for (const k of Object.keys(lessonPlannerPrompts)) {
       const prompt =
         lessonPlannerPrompts[k as keyof typeof lessonPlannerPrompts];
       const prompts = new PromptVariants(prisma, prompt, "main");
       await prompts.setCurrent("main");
     }
-    console.log("Quiz Generator");
+    log.info("Quiz Generator");
     for (const k of Object.keys(quizGeneratorPrompts)) {
       const prompt =
         quizGeneratorPrompts[k as keyof typeof quizGeneratorPrompts];
@@ -52,7 +55,7 @@ const main = async () => {
       await prompts.setCurrent("main");
     }
   } catch (e) {
-    console.error(e);
+    log.error(e);
     process.exit(1);
   } finally {
     await prisma.$disconnect();
@@ -64,7 +67,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    log.error(e);
     await prisma.$disconnect();
     process.exit(1);
   });

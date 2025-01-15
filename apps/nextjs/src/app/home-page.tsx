@@ -301,19 +301,19 @@ export function HomePageContent({ pageData }: HomePageProps) {
           </OakHeading>
 
           <OakP>
-            Create quizzes for your pupils in a flash. Use our quiz designer to
-            generate answers, both right and wrong. Share the quizzes with
-            others or export them in a range of formats ready for the classroom.
+            Our AI quiz designer tool has been discontinued for the time being
+            as we focus on developing Aila, our AI-powered lesson assistant.
+            Your feedback will help shape how tools like this might be used in
+            the future – share your thoughts{" "}
+            <Link
+              href="mailto:help@thenational.academy?subject=AI quiz designer feedback"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <OakLink>here</OakLink>
+            </Link>
+            .
           </OakP>
-
-          <OakPrimaryButton
-            element={Link}
-            href="/quiz-designer"
-            iconName="arrow-right"
-            isTrailingIcon={true}
-          >
-            Get started
-          </OakPrimaryButton>
         </OakFlex>
 
         <Image src={oakSupporting} alt="jigsaw image" />
