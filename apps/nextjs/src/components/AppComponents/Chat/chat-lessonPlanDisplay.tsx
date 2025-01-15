@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
-import { useChatStore } from "store/useChatStores";
+import { useChatStore } from "store/useChatStore";
 import { useLessonPlanStore } from "store/useLessonPlanStore";
 import { useModerationStore } from "store/useModerationStore";
 

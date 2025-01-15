@@ -4,7 +4,7 @@ import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageI
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import logger from "@oakai/logger/structuredLogger";
 import { useChat, type Message } from "ai/react";
-import { useChatStore } from "store/useChatStores";
+import { useChatStore } from "store/useChatStore";
 import { useLessonPlanStore } from "store/useLessonPlanStore";
 import { useModerationStore } from "store/useModerationStore";
 

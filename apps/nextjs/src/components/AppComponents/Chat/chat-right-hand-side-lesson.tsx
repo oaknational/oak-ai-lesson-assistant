@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 
 import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
-import { useChatStore } from "store/useChatStores";
+import { useChatStore } from "store/useChatStore";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { useChatStore } from "store/useChatStores";
+import { useChatStore } from "store/useChatStore";
 
 import type { AilaStreamingStatus } from "@/components/AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
 
