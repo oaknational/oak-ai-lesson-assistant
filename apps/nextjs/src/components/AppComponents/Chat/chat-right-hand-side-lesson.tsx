@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 
 import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
+import { aiLogger } from "@oakai/logger";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 
@@ -11,6 +12,8 @@ import ExportButtons from "./export-buttons";
 import { LessonPlanProgressBar } from "./export-buttons/LessonPlanProgressBar";
 import { MobileExportButtons } from "./export-buttons/MobileExportButtons";
 import ChatButton from "./ui/chat-button";
+
+const log = aiLogger("chat");
 
 type ChatRightHandSideLessonProps = {
   showLessonMobile: boolean;
@@ -24,8 +27,8 @@ const ChatRightHandSideLesson = ({
   demo,
 }: Readonly<ChatRightHandSideLessonProps>) => {
   const { messages } = useLessonChat();
-  console.log({ messages, showLessonMobile });
-  console.log(messages.length);
+  log.info({ messages, showLessonMobile });
+  log.info(messages.length);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
