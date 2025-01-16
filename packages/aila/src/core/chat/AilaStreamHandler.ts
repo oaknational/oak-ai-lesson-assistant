@@ -94,8 +94,14 @@ export class AilaStreamHandler {
 
     const AILA_ENGINE_STREAM_URL = process.env.AILA_ENGINE_STREAM_URL;
 
-    const lastUserMessage = this._chat.messages.slice(-1)[0];
     if (AILA_ENGINE_STREAM_URL) {
+      /**
+       * If the AILA_ENGINE_STREAM_URL is defined, we will use it to stream the
+       * engine's response rather than using an AilaPromptBuilder with OpenAI's API.
+       *
+       * It allows us to experinent with different paradigms in a safe and unobtrusive way.
+       */
+      const lastUserMessage = this._chat.messages.slice(-1)[0];
       this._streamReader = await createStreamReaderFromURL(
         `${AILA_ENGINE_STREAM_URL}?prompt=${JSON.stringify(currentLessonPlan)}\n\n${lastUserMessage?.content}`,
       );

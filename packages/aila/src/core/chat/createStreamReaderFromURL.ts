@@ -1,3 +1,7 @@
+/**
+ * This function takes an API endpoint for an Aila compatible engine and returns a
+ * ReadableStreamDefaultReader, allowing it to be used in place of the OpenAI API.
+ */
 export async function createStreamReaderFromURL(
   apiUrl: string,
 ): Promise<ReadableStreamDefaultReader<string>> {
