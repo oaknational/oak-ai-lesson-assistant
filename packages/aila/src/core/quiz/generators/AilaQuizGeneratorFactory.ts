@@ -19,8 +19,6 @@ export class AilaQuizFactory {
       // return new MLQuizGenerator();
       case "basedOnRag":
         return new BasedOnRagQuizGenerator();
-      default:
-        throw new Error(`Unknown quiz generator type: ${type}`);
     }
   }
 }
