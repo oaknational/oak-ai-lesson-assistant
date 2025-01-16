@@ -1,13 +1,17 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 import { Message } from "ai";
 import { useReactScan } from "hooks/useReactScan";
-import { useChatStore } from "store/useChatStore";
+import { MessageWithParts, useChatStore } from "store/useChatStore";
 import invariant from "tiny-invariant";
 
 import LessonPlanDisplay from "@/components/AppComponents/Chat/chat-lessonPlanDisplay";
+import {
+  MessageTextWrapper,
+  MessageWrapper,
+} from "@/components/AppComponents/Chat/chat-message";
 import { ChatMessagePart } from "@/components/AppComponents/Chat/chat-message/ChatMessagePart";
 import Layout from "@/components/AppComponents/Layout";
 import LoadingWheel from "@/components/LoadingWheel";
@@ -42,6 +46,7 @@ const LeftHandSide = () => {
       {renderCount.current}
       <StableMessages />
       {isLoading && <CurrentMessage />}
+      {isLoading && <LoadingWheel />}
       <button
         className="m-10 w-40 bg-mint p-5"
         // TODO: set isLoading at this point
@@ -66,6 +71,8 @@ const RightHandSide = () => {
 
 const StableMessages = () => {
   const stableMessages = useChatStore((state) => state.stableMessages);
+  if (!stableMessages.length) return null;
+
   return (
     <div className="flex flex-col gap-14">
       {stableMessages.map((message) => (
@@ -79,42 +86,64 @@ const CurrentMessage = () => {
   const currentMessage = useChatStore((state) => state.currentMessage);
   invariant(currentMessage, "currentMessage is required");
 
-  return (
-    <div className="bg-aqua">
-      <ChatMessage message={currentMessage} />
-      <LoadingWheel />
-    </div>
-  );
+  return <ChatMessage message={currentMessage} />;
 };
 
-const ChatMessage = ({ message }: { readonly message: Message }) => {
+const ChatMessage = ({ message }: { readonly message: MessageWithParts }) => {
   const renderCount = useRef(0);
   renderCount.current++;
 
   // TODO:
-  // hasError
-  // isEditing: has partial parts or no content parts
   // moderationMessagePart
   // hide if action part
 
+  const [showInspect, setShowInspect] = useState(true);
+
   return (
-    <div>
-      Renders: {renderCount.current}
-      <div>{message.role} - </div>
-      <div>
-        {message.parts.map((part) => (
-          <div className="w-full" key={part.id}>
-            <ChatMessagePart part={part} inspect={false} />
-          </div>
-        ))}
-      </div>
-      <div className="m-8 text-xs">
-        {message.content.split("␞").map((m, i) => (
-          <div key={i}>{m}</div>
-        ))}
-      </div>
-    </div>
+    <>
+      <MessageWrapper
+        // TODO: is this needed?
+        type={getMessageType(message)}
+        errorType={message.hasError ? "generic" : null}
+      >
+        <MessageTextWrapper>
+          {message.parts.map((part) => (
+            <div className="w-full" key={part.id}>
+              <ChatMessagePart part={part} inspect={false} />
+            </div>
+          ))}
+        </MessageTextWrapper>
+      </MessageWrapper>
+
+      <button
+        className="absolute left-0 top-0 h-20 w-20"
+        onClick={() => {
+          setShowInspect(!showInspect);
+        }}
+      />
+      {showInspect && (
+        <div className="m-8 text-xs">
+          Renders: {renderCount.current}
+          {message.content.split("␞").map((m, i) => (
+            <div key={i}>{m}</div>
+          ))}
+        </div>
+      )}
+    </>
   );
 };
+
+function getMessageType(message: MessageWithParts) {
+  if (message.role === "user") {
+    return "user";
+  }
+  if (message.hasError) {
+    return "warning";
+  }
+  if (message.isEditing) {
+    return "editing";
+  }
+  return "aila";
+}
 
 export default ChatPageContents;

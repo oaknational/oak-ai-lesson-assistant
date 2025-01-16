@@ -69,6 +69,7 @@ export function ChatMessage({
   const matchingModeration =
     matchingPersistedModeration ?? moderationMessagePart;
 
+  // TODO: not replicated
   if (messageParts.every((part) => part.document.type === "action")) {
     return null;
   }
@@ -136,7 +137,7 @@ export function ChatMessage({
                 </div>
               );
             })}
-
+          {/* // TODO: put somewhere else */}
           {message.id === "working-on-it-initial" && (
             <div className="w-full animate-pulse">
               {ailaStreamingStatus === "StreamingChatResponse" ||
@@ -166,7 +167,7 @@ type MessageWrapperProps = Readonly<{
   children: ReactNode;
   type: "user" | "editing" | "warning" | "moderation" | "aila";
 }>;
-function MessageWrapper({
+export function MessageWrapper({
   className,
   errorType,
   children,
@@ -195,7 +196,9 @@ function MessageWrapper({
   );
 }
 
-function MessageTextWrapper({ children }: Readonly<{ children: ReactNode }>) {
+export function MessageTextWrapper({
+  children,
+}: Readonly<{ children: ReactNode }>) {
   return (
     <div className="flex w-full flex-col items-start justify-between">
       {children}

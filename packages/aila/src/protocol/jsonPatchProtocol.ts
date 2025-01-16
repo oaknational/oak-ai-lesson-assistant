@@ -352,7 +352,8 @@ export const PromptDocumentSchema = z.object({
   type: z.literal("prompt"),
   message: z.string(),
   options: z.array(z.object({ id: z.string(), title: z.string() })).optional(),
-  status: z.literal("complete").optional(),
+  status: z.literal("complete").optional(), // TODO: key can be empty
+  // if last value is empty, ignore it
 });
 
 export const PromptDocumentSchemaWithoutOptions = z.object({

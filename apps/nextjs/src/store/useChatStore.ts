@@ -2,13 +2,16 @@
 import {
   type MessagePart,
   parseMessageParts,
-  parseMessageRow,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
-import type { Message } from "ai";
+import { aiLogger } from "@oakai/logger";
+import type { Message as AiMessage } from "ai";
 import { create } from "zustand";
 
-const messageIds = (messages: Message[]) => messages.map((m) => m.id).join(",");
+const messageIds = (messages: AiMessage[]) =>
+  messages.map((m) => m.id).join(",");
+
+const log = aiLogger("chat:store");
 
 type ChatStore = {
   id: string;
@@ -25,7 +28,7 @@ type ChatStore = {
 
   // Actions
   setChat: (chat: AilaPersistedChat) => void;
-  setMessages: (messages: Message[], isLoading: boolean) => void;
+  setMessages: (messages: AiMessage[], isLoading: boolean) => void;
   setInput: (input: string) => void;
   setIsLoading: (isLoading: boolean) => void;
   setHasFinished: (hasFinished: boolean) => void;
@@ -76,17 +79,40 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   setChatAreaRef: (ref) => set({ chatAreaRef: ref }),
 }));
 
-type MessageWithParts = Message & {
+export type MessageWithParts = AiMessage & {
   parts: MessagePart[];
+  hasError: boolean;
+  isEditing: boolean;
 };
 
-const parseMessages = (messages: Message[]): MessageWithParts[] => {
+const parseMessages = (messages: AiMessage[]): MessageWithParts[] => {
   return messages.map((m) => parseMessage(m));
 };
 
-const parseMessage = (message: Message): MessageWithParts => {
-  return {
-    ...message,
-    parts: parseMessageParts(message.content),
-  };
+const parseMessage = (
+  message: AiMessage,
+  previousResult?: MessageWithParts,
+): MessageWithParts => {
+  try {
+    const parts = parseMessageParts(message.content);
+    return {
+      ...message,
+      parts,
+      hasError: parts.some((part) => part.document.type === "error"),
+      isEditing:
+        // TODO: this used to look at ailaStreamingStatus.
+        // Our equivalent would be to only add it to a currentMessage
+        parts.some((part) => part.isPartial) ||
+        parts.filter((part) => ["bad", "text", "prompt"].includes(part.type))
+          .length === 0,
+    };
+  } catch (e) {
+    if (previousResult && message.id === previousResult.id) {
+      log.warn("Failed to parse message. Using previous message", e);
+      return previousResult;
+    } else {
+      log.warn("Failed to parse message. Bailing", e);
+      throw e;
+    }
+  }
 };
