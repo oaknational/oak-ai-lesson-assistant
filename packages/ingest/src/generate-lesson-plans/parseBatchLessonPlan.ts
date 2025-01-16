@@ -1,4 +1,8 @@
-import { CompletedLessonPlanSchema } from "@oakai/aila/src/protocol/schema";
+import {
+  CompletedLessonPlanSchema,
+  type CompletedLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
+import { parseKeyStage } from "@oakai/core/src/data/parseKeyStage";
 
 import { IngestError } from "../IngestError";
 import { CompletionBatchResponseSchema } from "../zod-schema/zodSchema";
@@ -32,11 +36,19 @@ export function parseBatchLessonPlan(line: unknown) {
     });
   }
 
-  let lessonPlan;
+  let lessonPlan: CompletedLessonPlan;
   try {
-    lessonPlan = CompletedLessonPlanSchema.parse(
+    const parsedLessonPlan = CompletedLessonPlanSchema.parse(
       JSON.parse(maybeLessonPlanString),
     );
+
+    lessonPlan = {
+      ...parsedLessonPlan,
+      keyStage: parseKeyStage(parsedLessonPlan.keyStage),
+    };
+
+    // hack to remove basedOn as it often erroneously gets populated by LLM
+    delete lessonPlan.basedOn;
   } catch (cause) {
     throw new IngestError("Failed to parse lesson plan", {
       cause,
@@ -44,9 +56,6 @@ export function parseBatchLessonPlan(line: unknown) {
       errorDetail: maybeLessonPlanString,
     });
   }
-
-  // hack to remove basedOn as it often erroneously gets populated by LLM
-  delete lessonPlan.basedOn;
 
   return { lessonPlan, lessonId };
 }
