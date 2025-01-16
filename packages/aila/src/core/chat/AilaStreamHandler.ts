@@ -100,6 +100,10 @@ export class AilaStreamHandler {
        * engine's response rather than using an AilaPromptBuilder with OpenAI's API.
        *
        * It allows us to experinent with different paradigms in a safe and unobtrusive way.
+       *
+       * NOTE
+       * In order to use this in production, we'll need deeper changes in order
+       * to record that the source of the response is the engine and not OpenAI.
        */
       const lastUserMessage = this._chat.messages.slice(-1)[0];
       this._streamReader = await createStreamReaderFromURL(
