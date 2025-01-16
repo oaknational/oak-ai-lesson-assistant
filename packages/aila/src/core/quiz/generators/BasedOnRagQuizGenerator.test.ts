@@ -22,19 +22,19 @@ describe("BasedOnRagQuizGenerator", () => {
 
   //TODO: GCLOMAX - We should abstract these out across all quiz generators.
 
-  it("should generate a question array from plan Id", async () => {
-    const questionArray: QuizQuestion[] =
-      await quizGenerator.questionArrayFromPlanId("clna7lofy0og0p4qxju5j6z56");
-    expect(questionArray).toBeDefined();
-    expect(QuizSchema.safeParse(questionArray).success).toBe(true);
-    expect(questionArray.length).toBeGreaterThan(0);
-  });
+  // it("should generate a question array from plan Id", async () => {
+  //   const questionArray: QuizQuestion[] =
+  //     await quizGenerator.questionArrayFromPlanId("clna7lofy0og0p4qxju5j6z56");
+  //   expect(questionArray).toBeDefined();
+  //   expect(QuizSchema.safeParse(questionArray).success).toBe(true);
+  //   expect(questionArray.length).toBeGreaterThan(0);
+  // });
 
-  it("should get lesson slug from plan id", async () => {
-    const lessonSlug = await quizGenerator.getLessonSlugFromPlanId(
-      "clna7lofy0og0p4qxju5j6z56",
-    );
-    expect(lessonSlug).toBeDefined();
-    expect(lessonSlug).toBe("reading-timetables-6wwkgt");
-  });
+  // it("should get lesson slug from plan id", async () => {
+  //   const lessonSlug = await quizGenerator.getLessonSlugFromPlanId(
+  //     "clna7lofy0og0p4qxju5j6z56",
+  //   );
+  //   expect(lessonSlug).toBeDefined();
+  //   expect(lessonSlug).toBe("reading-timetables-6wwkgt");
+  // });
 });

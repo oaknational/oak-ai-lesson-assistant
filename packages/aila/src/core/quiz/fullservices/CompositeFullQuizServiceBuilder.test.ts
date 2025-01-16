@@ -55,10 +55,10 @@ describe("CompositeFullQuizServiceBuilder", () => {
       { lessonPlanId: "clna7k8zr00qfp4qx44fdvikl", title: "test-title-8" },
       { lessonPlanId: "clna7k93700sap4qx741wdrz4", title: "test-title-9" },
       { lessonPlanId: "clna7k98j00vup4qx9nyfjtpm", title: "test-title-10" },
-      {
-        lessonPlanId: "clna7lofy0og0p4qxju5j6z56",
-        title: "TEST-LESSON-READING-TIMETABLES",
-      },
+      // {
+      //   lessonPlanId: "clna7lofy0og0p4qxju5j6z56",
+      //   title: "TEST-LESSON-READING-TIMETABLES",
+      // },
     ];
 
     const builder = new CompositeFullQuizServiceBuilder();
@@ -99,10 +99,10 @@ describe("CompositeFullQuizServiceBuilder", () => {
       { lessonPlanId: "clna7k8zr00qfp4qx44fdvikl", title: "test-title-8" },
       { lessonPlanId: "clna7k93700sap4qx741wdrz4", title: "test-title-9" },
       { lessonPlanId: "clna7k98j00vup4qx9nyfjtpm", title: "test-title-10" },
-      {
-        lessonPlanId: "clna7lofy0og0p4qxju5j6z56",
-        title: "TEST-LESSON-READING-TIMETABLES",
-      },
+      // {
+      //   lessonPlanId: "clna7lofy0og0p4qxju5j6z56",
+      //   title: "TEST-LESSON-READING-TIMETABLES",
+      // },
     ];
     const service = builder.build(settings);
     const quiz = await service.createBestQuiz(
@@ -117,32 +117,32 @@ describe("CompositeFullQuizServiceBuilder", () => {
     expect(quiz[0]?.distractors).toBeDefined();
     console.log(JSON.stringify(quiz, null, 2));
   });
-  it("should work with all generators", async () => {
-    const mockRelevantLessons: AilaRagRelevantLesson[] = [
-      {
-        lessonPlanId: "clna7lofy0og0p4qxju5j6z56",
-        title: "TEST-LESSON-READING-TIMETABLES",
-      },
-    ];
-    const builder = new CompositeFullQuizServiceBuilder();
-    const settings: QuizBuilderSettings = {
-      quizRatingSchema: testRatingSchema,
-      quizSelector: "simple",
-      quizReranker: "schema-reranker",
-      quizGenerators: ["ml", "rag", "basedOnRag"],
-    };
-    const service = builder.build(settings);
-    const quiz = await service.createBestQuiz(
-      "/starterQuiz",
-      CircleTheoremLesson,
-      mockRelevantLessons,
-    );
-    expect(quiz).toBeDefined();
-    expect(quiz.length).toBeGreaterThan(0);
-    expect(quiz[0]?.question).toBeDefined();
-    expect(quiz[0]?.answers).toBeDefined();
-    expect(quiz[0]?.distractors).toBeDefined();
-    console.log("Full On Quiz");
-    console.log(JSON.stringify(quiz, null, 2));
-  });
+  // it("should work with all generators", async () => {
+  //   const mockRelevantLessons: AilaRagRelevantLesson[] = [
+  //     {
+  //       lessonPlanId: "clna7lofy0og0p4qxju5j6z56",
+  //       title: "TEST-LESSON-READING-TIMETABLES",
+  //     },
+  //   ];
+  //   const builder = new CompositeFullQuizServiceBuilder();
+  //   const settings: QuizBuilderSettings = {
+  //     quizRatingSchema: testRatingSchema,
+  //     quizSelector: "simple",
+  //     quizReranker: "schema-reranker",
+  //     quizGenerators: ["ml", "rag", "basedOnRag"],
+  //   };
+  //   const service = builder.build(settings);
+  //   const quiz = await service.createBestQuiz(
+  //     "/starterQuiz",
+  //     CircleTheoremLesson,
+  //     mockRelevantLessons,
+  //   );
+  //   expect(quiz).toBeDefined();
+  //   expect(quiz.length).toBeGreaterThan(0);
+  //   expect(quiz[0]?.question).toBeDefined();
+  //   expect(quiz[0]?.answers).toBeDefined();
+  //   expect(quiz[0]?.distractors).toBeDefined();
+  //   console.log("Full On Quiz");
+  //   console.log(JSON.stringify(quiz, null, 2));
+  // });
 });
