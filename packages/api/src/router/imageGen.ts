@@ -62,17 +62,17 @@ export function promptConstructor(
     explanation;
 
   return `
-  IMAGE STYLE
-  The preferred image style is a realistic photograph. The image should be clear and easy to understand.
-  Do not annotate the image with any text or symbols. The image should be suitable for a classroom setting and should not contain any inappropriate content.
-  Focussing on the specific element described in the image prompt and not including any additional detail which might be distracting.
-  
-  CONTEXT AND TASK
+  CONTEXT 
   You are generating an image for a lesson taught in a uk school following the uk national curriculum. The lesson is at the ${keyStage} level and the subject is  ${subject}. 
   The lesson title is ${lessonTitle}. The lesson is broken down in to three learning sections, the title of this section is ${title}. 
   The image you are generating is for a slide in this section that will be shown in class, the slide will have the following text on it: ${slideText} and the teacher will say the following: ${Array.isArray(spokenExplanation) ? spokenExplanation.join(" ") : spokenExplanation}. Here are some additional details about the slide: ${accompanyingSlideDetails}.
   The students will then practice what they have learned by ${practice} and the teacher will provide feedback by ${feedback}.
   Avoid producing anything in a cartoon or illustrated style, if the prompt specifically asks for an illustration then you may produce one.
+  Do not annotate the image with any text or symbols. The image should be suitable for a classroom setting and should not contain any inappropriate content.
+  Focussing on the specific element described in the image prompt and not including any additional detail which might be distracting.
+  
+
+  TASK
   The prompt for the image is ${searchExpression}.
 
   `;
