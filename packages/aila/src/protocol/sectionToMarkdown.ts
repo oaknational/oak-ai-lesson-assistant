@@ -125,10 +125,13 @@ export function organiseAnswersAndDistractors(quiz: QuizOptional) {
       // Sort options ignoring special characters
       const sortedOptions = sortIgnoringSpecialChars(allOptions);
 
-      // Map sorted options with letter prefixes and bullet points
+      // Map sorted options with letter prefixes and invisible bullets
       const answersAndDistractors = sortedOptions
-        .map((text, index) => `- ${String.fromCharCode(65 + index)}. ${text}`)
-        .join("\n");
+        .map(
+          (text, index) =>
+            `&nbsp;&nbsp;&nbsp;&nbsp;${String.fromCharCode(65 + index)}. ${text}`,
+        )
+        .join("\n\n");
 
       // Return formatted question with options
       return `### ${i + 1}. ${v.question ?? "…"}\n\n${answersAndDistractors}`;
