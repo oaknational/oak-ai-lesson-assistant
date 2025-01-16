@@ -148,7 +148,9 @@ async function getHandler(req: Request): Promise<Response> {
 
   try {
     await Promise.all(downloadPromises);
-    await archive.finalize();
+    archive.finalize().catch((error) => {
+      Sentry.captureException(error, { level: "error" });
+    });
     await kv.set(taskId, "complete");
   } catch (error) {
     Sentry.captureException(error, { level: "error" });
