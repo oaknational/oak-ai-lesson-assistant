@@ -409,8 +409,7 @@ export const LessonPlanJsonSchema = zodToJsonSchema(
 );
 
 const AilaRagRelevantLessonSchema = z.object({
-  // @todo add this after next ingest
-  // oakLessonId: z.number(),
+  oakLessonId: z.number().nullish(),
   lessonPlanId: z.string(),
   title: z.string(),
 });

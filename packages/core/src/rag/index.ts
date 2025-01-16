@@ -692,6 +692,8 @@ Thank you and happy classifying!`;
       };
     }
 
+    log.info("Filter:", filter);
+
     const vectorStore = PrismaVectorStore.withModel<LessonPlanPart>(
       this.prisma,
     ).create(
@@ -723,6 +725,8 @@ Thank you and happy classifying!`;
         similaritySearchTerm,
         k * 5, // search for more records than we need
       );
+
+      log.info("Initial search result", result);
     } catch (e) {
       if (e instanceof TypeError && e.message.includes("join([])")) {
         log.warn("Caught TypeError with join([]), returning empty array");
