@@ -1,4 +1,7 @@
-import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import {
+  type MessagePart,
+  parseMessageParts,
+} from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { aiLogger } from "@oakai/logger";
 
 import type { AiMessage, ParsedMessage } from "./types";
@@ -12,6 +15,9 @@ const stableMessagesMatch = (
   const idHash = (messages: AiMessage[]) => messages.map((m) => m.id).join(",");
   return idHash(messages) === idHash(stableMessages);
 };
+
+const isContentPart = (part: MessagePart): boolean =>
+  ["text", "bad", "prompt"].includes(part.type);
 
 export const getNextStableMessages = (
   messages: AiMessage[],
@@ -56,10 +62,6 @@ export const parseMessage = (message: AiMessage): ParsedMessage => {
     // Calculated fields
     hasError: parts.some((part) => part.document.type === "error"),
     isEditing:
-      // TODO: this used to look at ailaStreamingStatus.
-      // Our equivalent would be to only add it to a currentMessage
-      parts.some((part) => part.isPartial) ||
-      parts.filter((part) => ["bad", "text", "prompt"].includes(part.type))
-        .length === 0,
+      parts.some((part) => part.isPartial) || !parts.some(isContentPart),
   };
 };
