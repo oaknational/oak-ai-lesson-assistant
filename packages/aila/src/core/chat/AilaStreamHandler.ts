@@ -102,7 +102,7 @@ export class AilaStreamHandler {
        * It allows us to experinent with different paradigms in a safe and unobtrusive way.
        *
        * NOTE
-       * In order to use this in production, we'll need
+       * In order to use this in a non-local environment, we'll need
        * - authentication to the engine
        * - deeper changes in order to record that the source of the response is the engine and not OpenAI.
        */
