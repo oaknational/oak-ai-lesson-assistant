@@ -64,7 +64,7 @@ export function promptConstructor(
   return `
   IMAGE STYLE
   The preferred image style is a realistic photograph. The image should be clear and easy to understand.
-  i.e. if the prompt asks for a polar bear, the image should be a realistic photograph of a polar bear, not a cartoon or illustration.
+  i.e. if the prompt asks for something in the real world try to produce a photo realistic image of that thing.
   Do not annotate the image with any text or symbols. The image should be suitable for a classroom setting and should not contain any inappropriate content.
   Focussing on the specific element described in the image prompt and not including any additional detail which might be distracting.
   
