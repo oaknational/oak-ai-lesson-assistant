@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
 import { aiLogger } from "@oakai/logger";
@@ -29,7 +29,19 @@ const exampleMessages = [
   },
 ];
 
-export function ChatStart() {
+type ChatStartProps = {
+  keyStage?: string;
+  subject?: string;
+  unitTitle?: string;
+  searchExpression?: string;
+};
+
+export function ChatStart({
+  keyStage,
+  subject,
+  unitTitle,
+  searchExpression,
+}: Readonly<ChatStartProps>) {
   const { user } = useUser();
   const userFirstName = user?.firstName;
   const { trackEvent } = useAnalytics();
@@ -40,6 +52,19 @@ export function ChatStart() {
   const demo = useDemoUser();
   const createAppSession = trpc.chat.appSessions.create.useMutation();
   const trpcUtils = trpc.useUtils();
+
+  useEffect(() => {
+    if (keyStage || subject || unitTitle || searchExpression) {
+      setInput(
+        createStartingPromptFromSearchParams(
+          keyStage,
+          subject,
+          unitTitle,
+          searchExpression,
+        ),
+      );
+    }
+  }, [keyStage, subject, unitTitle, searchExpression]);
 
   const create = useCallback(
     async (message: string) => {
@@ -101,7 +126,7 @@ export function ChatStart() {
         className="h-[100vh] min-h-screen bg-lavender30 pt-26"
       >
         <div className="flex h-full justify-between">
-          <div className="h-full w-full overflow-y-scroll  p-18  px-10 sm:w-[66%]">
+          <div className="h-full w-full overflow-y-scroll p-18 px-10 sm:w-[66%]">
             <div className="mx-auto flex h-full max-w-[580px] flex-col justify-between">
               <div className="flex h-full flex-col justify-center gap-18">
                 <div>
@@ -111,7 +136,7 @@ export function ChatStart() {
                   >
                     Hello{userFirstName ? ", " + userFirstName : ""}
                   </h1>
-                  <p className="mb-7  text-base leading-normal">
+                  <p className="mb-7 text-base leading-normal">
                     I&apos;m Aila, Oak&apos;s AI lesson assistant.
                     <br />
                     Tell me what you want to teach and I&apos;ll help you create
@@ -130,15 +155,15 @@ export function ChatStart() {
                   />
                 </div>
                 <div>
-                  <h3 className=" mb-9 mt-22 text-base font-bold">
+                  <h3 className="mb-9 mt-22 text-base font-bold">
                     Or try an example:
                   </h3>
-                  <div className=" flex flex-col items-start space-y-14">
+                  <div className="flex flex-col items-start space-y-14">
                     {exampleMessages.map((message) => (
                       <Button
                         key={message.message}
                         variant="link"
-                        className=" pl-0"
+                        className="pl-0"
                         onClick={async () => {
                           trackEvent(`chat: ${message.message}`);
                           setInput(message.message);
@@ -156,7 +181,7 @@ export function ChatStart() {
               <ChatPanelDisclaimer size="sm" />
             </div>
           </div>
-          <div className="hidden h-full w-[34%] items-center overflow-y-scroll bg-white px-25  pb-9 sm:flex">
+          <div className="hidden h-full w-[34%] items-center overflow-y-scroll bg-white px-25 pb-9 sm:flex">
             <div className="relative -mt-45 w-full">
               <p className="mb-10 text-xl font-bold">Lesson downloads</p>
               <div className="absolute inset-x-0 top-full">
@@ -172,4 +197,33 @@ export function ChatStart() {
       </Flex>
     </DialogRoot>
   );
+}
+
+function createStartingPromptFromSearchParams(
+  keyStage?: string,
+  subject?: string,
+  unitTitle?: string,
+  searchExpression?: string,
+): string {
+  let prompt = "Create a lesson plan";
+
+  if (keyStage) {
+    prompt += ` for ${keyStage}`;
+  }
+
+  if (subject) {
+    prompt += ` about ${subject}`;
+  }
+
+  if (unitTitle) {
+    prompt += `, focusing on the unit "${unitTitle}"`;
+  }
+
+  if (searchExpression) {
+    prompt += ` titled "${searchExpression}"`;
+  }
+
+  prompt += ".";
+
+  return prompt.trim();
 }
