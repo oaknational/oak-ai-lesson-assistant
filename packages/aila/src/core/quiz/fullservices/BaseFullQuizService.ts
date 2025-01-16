@@ -31,24 +31,23 @@ export abstract class BaseFullQuizService implements FullQuizService {
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
   ): Promise<QuizQuestion[]> {
-    const quizzes: Quiz[] = [];
-    for (const quizGenerator of this.quizGenerators) {
+    const quizPromises = this.quizGenerators.map((quizGenerator) => {
       if (quizType === "/starterQuiz") {
-        quizzes.push(
-          ...(await quizGenerator.generateMathsStarterQuizPatch(
-            lessonPlan,
-            ailaRagRelevantLessons,
-          )),
+        return quizGenerator.generateMathsStarterQuizPatch(
+          lessonPlan,
+          ailaRagRelevantLessons,
         );
       } else if (quizType === "/exitQuiz") {
-        quizzes.push(
-          ...(await quizGenerator.generateMathsExitQuizPatch(
-            lessonPlan,
-            ailaRagRelevantLessons,
-          )),
+        return quizGenerator.generateMathsExitQuizPatch(
+          lessonPlan,
+          ailaRagRelevantLessons,
         );
       }
-    }
+      return Promise.resolve([]);
+    });
+
+    const quizArrays = await Promise.all(quizPromises);
+    const quizzes = quizArrays.flat();
     // TODO: GCLOMAX - make the typing stricter here.
     // TODO: GCLOMAX - make sure that the rating schema is the same for all rerankers.
     if (!this.quizReranker.ratingSchema) {
