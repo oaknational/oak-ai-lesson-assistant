@@ -24,6 +24,7 @@ import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
+import { useChatStoreMirror } from "src/stores/chatStore/hooks";
 
 import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
@@ -248,6 +249,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
     },
   });
+
+  // Hooks to update the Zustand chat store mirror
+  useChatStoreMirror(messages, isLoading);
 
   useEffect(() => {
     /**
