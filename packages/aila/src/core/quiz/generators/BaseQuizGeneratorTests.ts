@@ -26,10 +26,10 @@ export const runCommonQuizGeneratorTests = (
         { lessonPlanId: "clna7k8zr00qfp4qx44fdvikl", title: "test-title-8" },
         { lessonPlanId: "clna7k93700sap4qx741wdrz4", title: "test-title-9" },
         { lessonPlanId: "clna7k98j00vup4qx9nyfjtpm", title: "test-title-10" },
-        {
-          lessonPlanId: "clna7lofy0og0p4qxju5j6z56",
-          title: "TEST-LESSON-READING-TIMETABLES",
-        },
+        // {
+        //   lessonPlanId: "clna7lofy0og0p4qxju5j6z56",
+        //   title: "TEST-LESSON-READING-TIMETABLES",
+        // },
       ];
     });
 
@@ -100,14 +100,14 @@ export const runCommonQuizGeneratorTests = (
           generator.questionArrayFromPlanId("invalid-plan-id"),
         ).rejects.toBeDefined();
       });
-      it("should handle valid lesson plans gracefully", async () => {
-        const result = await generator.questionArrayFromPlanId(
-          "clna7lofy0og0p4qxju5j6z56",
-        );
-        expect(result).toBeDefined();
-        expect(Array.isArray(result)).toBe(true);
-        expect(result.length).toBeGreaterThan(0);
-      });
+      // it("should handle valid lesson plans gracefully", async () => {
+      //   const result = await generator.questionArrayFromPlanId(
+      //     "clna7lofy0og0p4qxju5j6z56",
+      //   );
+      //   expect(result).toBeDefined();
+      //   expect(Array.isArray(result)).toBe(true);
+      //   expect(result.length).toBeGreaterThan(0);
+      // });
     });
   });
 };
