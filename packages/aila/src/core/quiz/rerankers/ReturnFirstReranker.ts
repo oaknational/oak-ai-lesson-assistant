@@ -1,3 +1,4 @@
+import { generateMock } from "@anatine/zod-mock";
 import type { z } from "zod";
 
 import type {
@@ -5,7 +6,6 @@ import type {
   QuizPath,
   QuizQuestion,
 } from "../../../protocol/schema";
-import { populateZodSchema } from "../utils/schemaPopulator";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 
@@ -26,7 +26,7 @@ export class ReturnFirstReranker extends BasedOnRagAilaQuizReranker<
     const output: z.infer<typeof testRatingSchema>[] = [];
 
     quizzes.forEach((quiz) => {
-      const dummySchema = populateZodSchema(testRatingSchema);
+      const dummySchema = generateMock(testRatingSchema);
       dummySchema.rating = 0;
       output.push(dummySchema);
     });
