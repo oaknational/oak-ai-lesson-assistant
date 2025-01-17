@@ -228,14 +228,22 @@ export type Cycle = z.infer<typeof CycleSchema>;
 
 // ********** KEYWORDS **********
 export const KEYWORD_DESCRIPTIONS = {
-  keyword: dedent`The keyword itself.
-  Should be written in lowercase apart from proper nouns and not end with a full stop.`,
-  definition: dedent`A short definition of the keyword including the keyword itself. This definition should be written in lowercase apart from proper nouns and not end with a full stop.  Written in TEACHER_TO_PUPIL_SLIDES voice.`,
-  description: "Not to be used, and included here only for legacy purposes.",
-  schema: dedent`A keyword that is used in the lesson.
-    Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
-  keywords: dedent`The keywords that are used in the lesson.
-    Written in the TEACHER_TO_PUPIL_SLIDES voice.
+  keyword: dedent`the keyword itself.
+    should be written in lowercase apart from proper nouns, which should be capitalised`,
+
+  definition: dedent`a short definition of the keyword including the keyword itself.
+    should be in lowercase.
+    written in TEACHER_TO_PUPIL_SLIDES voice`,
+
+  description: dedent`not to be used, and included here only for legacy purposes`,
+
+  schema: dedent`a keyword that is used in the lesson.
+    the keyword should be written in lowercase apart from proper nouns, which should be capitalised.
+    the definition should start with a lowercase letter unless it is a proper noun, which should be capitalised.
+    written in TEACHER_TO_PUPIL_SLIDES voice`,
+
+  keywords: dedent`the keywords that are used in the lesson.
+    written in TEACHER_TO_PUPIL_SLIDES voice.
     ${minMaxText({ min: 1, max: 5, entity: "elements" })}`,
 } as const;
 
@@ -409,8 +417,7 @@ export const LessonPlanJsonSchema = zodToJsonSchema(
 );
 
 const AilaRagRelevantLessonSchema = z.object({
-  // @todo add this after next ingest
-  // oakLessonId: z.number(),
+  oakLessonId: z.number().nullish(),
   lessonPlanId: z.string(),
   title: z.string(),
 });

@@ -1,5 +1,6 @@
 import type { ModerationDocument } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { parseKeyStage } from "@oakai/core/src/data/parseKeyStage";
 import { lessonPlanSectionsSchema } from "@oakai/exports/src/schema/input.schema";
 import { isTruthy } from "remeda";
 
@@ -8,7 +9,6 @@ import type {
   ProductValueType,
 } from "../avo/Avo";
 import { ModeratedContentType } from "../avo/Avo";
-import { parseKeyStage } from "./keyStages";
 
 /**
  * These are the actions which a user could take which result in a message
