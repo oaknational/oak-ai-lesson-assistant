@@ -175,6 +175,11 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const { invokeActionMessages } = useActionMessages();
 
   /******************* Streaming of all chat starts from messages here *******************/
+  const initialMessages = useMemo(() => {
+    return chat?.messages?.filter((m) =>
+      isValidMessageRole(m.role),
+    ) as Message[];
+  }, [chat?.messages]);
 
   const {
     messages,
@@ -187,9 +192,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     setMessages,
   } = useChat({
     sendExtraMessageFields: true,
-    initialMessages: (chat?.messages ?? []).filter((m) =>
-      isValidMessageRole(m.role),
-    ) as Message[],
+    initialMessages,
     generateId: () => generateMessageId({ role: "user" }),
     id,
     body: {
