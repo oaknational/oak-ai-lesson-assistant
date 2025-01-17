@@ -88,7 +88,7 @@ export function sectionToMarkdown(
                 // @ts-expect-error - we know that the keys exist
 
                 const body = v[keys[1]];
-                return `### ${header}\n\n${body}`;
+                return `### ${toSentenceCase(header)}\n\n${toSentenceCase(body)}`;
               })
               .join("\n\n")
           );
