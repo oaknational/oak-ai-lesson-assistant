@@ -23,7 +23,7 @@ import type {
 } from "./schema";
 
 export interface CustomMetadata {
-  custom_id: string;
+  questionUid: string;
   [key: string]: unknown; // Allow for other unknown metadata fields
 }
 

@@ -1,4 +1,9 @@
 import { Client } from "@elastic/elasticsearch";
+import type {
+  SearchHit,
+  SearchResponse,
+  SearchHitsMetadata,
+} from "@elastic/elasticsearch/lib/api/types";
 // TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
@@ -22,7 +27,7 @@ import type {
 } from "../../../protocol/schema";
 import { QuizQuestionSchema } from "../../../protocol/schema";
 import type { AilaQuizGeneratorService } from "../../AilaServices";
-import type { CustomHit, SimplifiedResult } from "../interfaces";
+import type { CustomHit, CustomSource, SimplifiedResult } from "../interfaces";
 import { CohereReranker } from "../rerankers";
 import type { SearchResponseBody } from "../types";
 import { lessonSlugQuizMap } from "./lessonSlugLookup";
@@ -107,30 +112,33 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   ): Promise<string[]> {
     // Converts a lesson slug to a question ID via searching in index
     // TODO: reconfigure database to make this more efficient
-    const response = await this.client.search({
-      index: "oak-vector",
-      body: {
-        query: {
-          bool: {
-            must: [
-              { exists: { field: "metadata.lessonSlug" } },
-              { exists: { field: "metadata.questionUid" } },
-              {
-                terms: {
-                  "metadata.lessonSlug.keyword": lessonSlugs,
+    try {
+      const response = await this.client.search<CustomSource>({
+        index: "oak-vector",
+        body: {
+          query: {
+            bool: {
+              must: [
+                { exists: { field: "metadata.lessonSlug" } },
+                { exists: { field: "metadata.questionUid" } },
+                {
+                  terms: {
+                    "metadata.lessonSlug.keyword": lessonSlugs,
+                  },
                 },
-              },
-            ],
+              ],
+            },
           },
         },
-      },
-    });
-    // TODO type this.
-    // hit is unknown
-    const questionIds: string[] = response.hits.hits.map(
-      (hit: any) => hit._source.metadata.questionUid,
-    );
-    return questionIds;
+      });
+
+      return response.hits.hits
+        .map((hit) => hit._source?.metadata.questionUid)
+        .filter((id): id is string => id !== undefined);
+    } catch (error) {
+      log.error("Error searching for questions:", error);
+      return [];
+    }
   }
 
   public lessonSlugToQuestionIdsLookupTable(
