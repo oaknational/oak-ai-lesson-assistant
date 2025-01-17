@@ -77,9 +77,6 @@ export async function fetchExperimentalPatches({
         }),
       );
     } else {
-      // TODO: GCLOMAX - PUT PATCH HERE.
-      // TODO: MG - Review this please.
-      // Can we put this in here.
       let mathsStarterQuiz: Quiz = await fullQuizService.createBestQuiz(
         "/starterQuiz",
         lessonPlan,
