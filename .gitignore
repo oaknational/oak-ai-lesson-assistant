@@ -57,6 +57,4 @@ yarn-error.log*
 .sonar
 .sonar/**/*
 
-dependency-graph.svg
-logs/
-__pycache__/
+
