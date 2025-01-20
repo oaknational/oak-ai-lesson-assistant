@@ -1,8 +1,5 @@
 import type { AilaRagRelevantLesson } from "../../../protocol/schema";
-import {
-  CircleTheoremLesson,
-  CircleTheoremLessonPlan2,
-} from "../fixtures/CircleTheoremsExampleOutput";
+import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { testRatingSchema } from "../rerankers/RerankerStructuredOutputSchema";
 import type { QuizBuilderSettings } from "../schema";
 import { CompositeFullQuizServiceBuilder } from "./CompositeFullQuizServiceBuilder";
@@ -37,7 +34,7 @@ describe("CompositeFullQuizServiceBuilder", () => {
     const service = builder.build(settings);
     const quiz = await service.createBestQuiz(
       "/starterQuiz",
-      CircleTheoremLessonPlan2,
+      CircleTheoremLesson,
     );
     expect(quiz).toBeDefined();
     expect(quiz.length).toBeGreaterThan(0);

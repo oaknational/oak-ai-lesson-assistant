@@ -100,7 +100,11 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
         },
       });
 
-      return result?.lesson.slug || null;
+      if (!result) {
+        log.warn("Lesson plan could not be retrieved for planId: ", planId);
+        return null;
+      }
+      return result?.lesson.slug;
     } catch (error) {
       log.error("Error fetching lesson slug:", error);
       return null;
