@@ -3,12 +3,13 @@ import {
   generationPartPlaceholderSchema,
   generationPartSchema,
 } from "@oakai/core/src/types";
+import { z } from "zod";
+
 import {
   quizAppPlaceholderQuestionStateSchema,
   quizAppQuestionSchema,
   quizAppQuestionStateSchema,
-} from "ai-apps/quiz-designer/state/types";
-import { z } from "zod";
+} from "@/ai-apps/quiz-designer/state/types";
 
 /**
  * LessonPlannerApp / lessonPlannerAppSchema:            The simplest way a quiz is represented

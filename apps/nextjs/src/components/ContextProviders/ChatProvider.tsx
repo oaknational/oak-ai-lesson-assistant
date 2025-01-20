@@ -22,10 +22,10 @@ import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { useChat } from "ai/react";
-import { useTemporaryLessonPlanWithStreamingEdits } from "hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
 
+import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
@@ -174,6 +174,11 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const { invokeActionMessages } = useActionMessages();
 
   /******************* Streaming of all chat starts from messages here *******************/
+  const initialMessages = useMemo(() => {
+    return chat?.messages?.filter((m) =>
+      isValidMessageRole(m.role),
+    ) as Message[];
+  }, [chat?.messages]);
 
   const {
     messages,
@@ -186,9 +191,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     setMessages,
   } = useChat({
     sendExtraMessageFields: true,
-    initialMessages: (chat?.messages ?? []).filter((m) =>
-      isValidMessageRole(m.role),
-    ) as Message[],
+    initialMessages,
     generateId: () => generateMessageId({ role: "user" }),
     id,
     body: {

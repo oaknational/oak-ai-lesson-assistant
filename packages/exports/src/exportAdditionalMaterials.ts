@@ -28,7 +28,10 @@ export const exportAdditionalMaterials = async ({
       prepData: prepLessonForAdditionalMaterialsDoc,
       templateId: getDocsTemplateIdAdditionalMaterials(),
       updateTemplate: async ({ templateCopyId }) => {
-        log.info("templateCopyId", templateCopyId);
+        return new Promise((resolve) => {
+          log.info("templateCopyId", templateCopyId);
+          resolve();
+        });
       },
       populateTemplate: async ({ data, templateCopyId }) => {
         const client = await getDocsClient();

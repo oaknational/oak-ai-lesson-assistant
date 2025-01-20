@@ -1,11 +1,12 @@
 import { GenerationPartType } from "@oakai/core/src/types";
 import logger from "@oakai/logger/browser";
+
 import {
   createAIGeneratedPart,
   createTweakPart,
-} from "ai-apps/common/state/create-parts";
-import { removeAtIndex, updateAtIndex } from "ai-apps/common/state/helpers";
-import type { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
+} from "@/ai-apps/common/state/create-parts";
+import { removeAtIndex, updateAtIndex } from "@/ai-apps/common/state/helpers";
+import type { PotentialQuestionsType } from "@/hooks/useSuggestedQuestions";
 
 import type { QuizAppAction } from "./actions";
 import { QuizAppActions } from "./actions";

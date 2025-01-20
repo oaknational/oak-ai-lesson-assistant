@@ -1,11 +1,11 @@
 import Textarea from "react-textarea-autosize";
 
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import { useModerationFeedbackSurvey } from "hooks/surveys/useModerationFeedbackSurvey";
 import { useRouter } from "next/navigation";
 
 import Button from "@/components/Button";
 import { Icon } from "@/components/Icon";
+import { useModerationFeedbackSurvey } from "@/hooks/surveys/useModerationFeedbackSurvey";
 
 import ChatButton from "./ui/chat-button";
 
@@ -24,8 +24,8 @@ const ToxicModerationView = ({
     });
   const router = useRouter();
   return (
-    <div className="fixed inset-0 z-50 flex w-full items-center justify-center bg-lavender30 ">
-      <div className="m-18  max-w-[600px] flex-col gap-13 border-2 border-gray-900 bg-white p-18">
+    <div className="fixed inset-0 z-50 flex w-full items-center justify-center bg-lavender30">
+      <div className="m-18 max-w-[600px] flex-col gap-13 border-2 border-gray-900 bg-white p-18">
         <div className="flex justify-between">
           <Icon icon="warning" size="md" />
           <Button

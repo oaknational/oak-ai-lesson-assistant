@@ -1,15 +1,15 @@
 import { useMemo } from "react";
 
 import { Box, Flex, Heading, Text } from "@radix-ui/themes";
-import { convertQuizToCSV } from "ai-apps/quiz-designer/convertToCSV";
-import { makeExportable } from "ai-apps/quiz-designer/export-helpers";
-import type { QuizAppState } from "ai-apps/quiz-designer/state/types";
-import useShareContent from "hooks/useShareContent";
 
+import { convertQuizToCSV } from "@/ai-apps/quiz-designer/convertToCSV";
+import { makeExportable } from "@/ai-apps/quiz-designer/export-helpers";
+import type { QuizAppState } from "@/ai-apps/quiz-designer/state/types";
 import Button from "@/components/Button";
 import ExportMenuWrap from "@/components/ExportMenuWrap";
 import { useExportQuizDesignerSlides } from "@/components/ExportsDialogs/useExportQuizDesignerSlides";
 import LoadingWheel from "@/components/LoadingWheel";
+import useShareContent from "@/hooks/useShareContent";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import ChatButton from "../Chat/ui/chat-button";

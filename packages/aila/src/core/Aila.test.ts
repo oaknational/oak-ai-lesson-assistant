@@ -444,9 +444,8 @@ describe("Aila", () => {
       const mockCategoriser = new MockCategoriser({ mockedLessonPlan });
 
       const mockLLMResponse = [
-        // eslint-disable-next-line quotes
         '{"type":"patch","reasoning":"Update title","value":{"op":"replace","path":"/title","value":"Updated Mocked Lesson Plan"}}␞\n',
-        // eslint-disable-next-line quotes
+
         '{"type":"patch","reasoning":"Update subject","value":{"op":"replace","path":"/subject","value":"Updated Mocked Subject"}}␞\n',
       ];
       const mockLLMService = new MockLLMService(mockLLMResponse);

@@ -2,11 +2,11 @@ import { useCallback, useState } from "react";
 
 import { aiLogger } from "@oakai/logger";
 import { Box, Flex } from "@radix-ui/themes";
-import type { Resource } from "ai-apps/image-alt-generation/types";
 import encode from "base64url";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+import type { Resource } from "@/ai-apps/image-alt-generation/types";
 import { trpc } from "@/utils/trpc";
 
 import Button from "../Button";
@@ -105,7 +105,7 @@ const ImageRow = ({ resource, isPreview }: ImageRowProps) => {
           align="center"
         >
           <Flex
-            className=" w-[500px] pr-30"
+            className="w-[500px] pr-30"
             direction="column"
             justify="start"
             width="100%"
