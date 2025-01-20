@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 
 import { findLast } from "remeda";
+import { useChatStore } from "src/stores/chatStore";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
@@ -44,14 +45,8 @@ const QuickActionButtons = () => {
   const { trackEvent } = useAnalytics();
   const lessonPlanTracking = useLessonPlanTracking();
   const { setDialogWindow } = useDialog();
-  const {
-    messages,
-    id,
-    stop,
-    ailaStreamingStatus,
-    queueUserAction,
-    queuedUserAction,
-  } = chat;
+  const { queueUserAction, queuedUserAction, stop } = useChatStore();
+  const { messages, id, ailaStreamingStatus } = chat;
 
   const hasMessages = !!messages.length;
 
@@ -107,20 +102,22 @@ const QuickActionButtons = () => {
           hasMessages,
           queuedUserAction,
         ) && (
-          <ChatButton
-            size="sm"
-            variant="text-link"
-            onClick={() => {
-              trackEvent("chat:stop_generating");
-              stop();
-            }}
-            testId="chat-stop"
-          >
-            <span className="opacity-50">
-              <IconStop className="mr-3" />
-            </span>
-            <span className="font-light text-[#575757]">Stop</span>
-          </ChatButton>
+          <>
+            <ChatButton
+              size="sm"
+              variant="text-link"
+              onClick={() => {
+                trackEvent("chat:stop_generating");
+                stop();
+              }}
+              testId="chat-stop"
+            >
+              <span className="opacity-50">
+                <IconStop className="mr-3" />
+              </span>
+              <span className="font-light text-[#575757]">Stop</span>
+            </ChatButton>
+          </>
         )}
       </div>
       <ChatButton

@@ -1,7 +1,10 @@
 import { aiLogger } from "@oakai/logger";
+import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import invariant from "tiny-invariant";
 import { create } from "zustand";
 
+import { handleExecuteQueuedAction } from "./actionFunctions/handleExecuteQueuedAction";
+import { handleSetMessages } from "./actionFunctions/handleSetMessages";
 import { getNextStableMessages, parseStreamingMessage } from "./parsing";
 import type { AiMessage, ParsedMessage } from "./types";
 
@@ -12,10 +15,28 @@ type ChatStore = {
   isLoading: boolean;
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
+  queuedUserAction: string | null;
+  isExecutingAction: boolean;
 
   // Actions
+  append: (
+    message: Message | CreateMessage,
+    chatRequestOptions?: ChatRequestOptions | undefined,
+  ) => Promise<string | null | undefined>;
+  reload: () => void;
+  setAppend: (
+    append: (
+      message: Message | CreateMessage,
+      chatRequestOptions?: ChatRequestOptions | undefined,
+    ) => Promise<string | null | undefined>,
+  ) => void;
+  setReload: (reload: () => void) => void;
+  stop: () => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
+  setStop: (stop: () => void) => void;
+  queueUserAction: (action: string) => void;
+  executeQueuedAction: () => Promise<void>;
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
@@ -23,45 +44,24 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   isLoading: false,
   stableMessages: [],
   streamingMessage: null,
+  queuedUserAction: null,
+  isExecutingAction: false,
 
   // Actions
-  setMessages: (messages, isLoading) => {
-    if (!isLoading) {
-      // All messages are stable
-      const nextStableMessages = getNextStableMessages(
-        messages,
-        get().stableMessages,
-      );
-      set({
-        ...(nextStableMessages && {
-          stableMessages: nextStableMessages,
-        }),
-        streamingMessage: null,
-      });
-    } else {
-      // The latest message is streaming, previous messages are stable
-      const currentMessageData = messages[messages.length - 1];
-      invariant(currentMessageData, "Should have at least one message");
-      const streamingMessage = parseStreamingMessage(
-        currentMessageData,
-        get().streamingMessage,
-      );
-
-      const stableMessageData = messages.slice(0, messages.length - 1);
-      const nextStableMessages = getNextStableMessages(
-        stableMessageData,
-        get().stableMessages,
-      );
-
-      set({
-        streamingMessage,
-        ...(nextStableMessages && {
-          stableMessages: nextStableMessages,
-        }),
-      });
-    }
+  stop: () => {},
+  append: async () => "",
+  reload: () => {},
+  setAppend: (append) => set({ append }),
+  setReload: (reload) => set({ reload }),
+  queueUserAction: (action: string) => {
+    set({ queuedUserAction: action });
   },
+  setStop: (stop) => set({ stop }),
   setIsLoading: (isLoading) => set({ isLoading }),
+
+  // Action functions
+  executeQueuedAction: handleExecuteQueuedAction(set, get),
+  setMessages: handleSetMessages(set, get),
 }));
 
 useChatStore.subscribe((state) => {

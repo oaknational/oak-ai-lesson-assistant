@@ -1,3 +1,5 @@
+import { useChatStore } from "src/stores/chatStore";
+
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import { useDemoLocking } from "@/hooks/useDemoLocking";
@@ -23,7 +25,6 @@ export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
       messages,
       lessonPlan,
     });
-
   return (
     <div className={cn("fixed bottom-0 left-0 right-0 top-0 z-30", className)}>
       <div

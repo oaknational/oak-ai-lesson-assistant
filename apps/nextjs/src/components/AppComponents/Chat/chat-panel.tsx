@@ -1,4 +1,5 @@
 import { cva } from "class-variance-authority";
+import { useChatStore } from "src/stores/chatStore";
 
 import { PromptForm } from "@/components/AppComponents/Chat/prompt-form";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
@@ -26,9 +27,9 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
     setInput,
     append,
     ailaStreamingStatus,
-    queueUserAction,
-    queuedUserAction,
   } = chat;
+
+  const { queueUserAction, queuedUserAction } = useChatStore();
 
   const hasMessages = !!messages.length;
 
@@ -68,10 +69,10 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   );
 }
 
-const chatBoxWrap = cva(["mx-auto w-full  "], {
+const chatBoxWrap = cva(["mx-auto w-full"], {
   variants: {
     hasMessages: {
-      false: "max-w-2xl ",
+      false: "max-w-2xl",
       true: "",
     },
     readyToExport: {
