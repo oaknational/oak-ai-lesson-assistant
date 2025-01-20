@@ -1,3 +1,17 @@
+# [1.22.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.21.0...v1.22.0) (2025-01-20)
+
+
+### Bug Fixes
+
+* resolve "error typed" issue with linting ([#483](https://github.com/oaknational/oak-ai-lesson-assistant/issues/483)) ([e31b1c8](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e31b1c8abbf4a7286b134e7129bca45a5141f2d9))
+* use stable initialMessages for useChat ([#493](https://github.com/oaknational/oak-ai-lesson-assistant/issues/493)) ([3233c2e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3233c2e9deec046f47d2ceab8b9e3830ecab3ce1))
+
+
+### Features
+
+* add homepage testimonials ([#482](https://github.com/oaknational/oak-ai-lesson-assistant/issues/482)) ([05df1fe](https://github.com/oaknational/oak-ai-lesson-assistant/commit/05df1fed1039e08f2f08e84a08f844c6245250ce))
+* rag new schema, standalone package [AI-722] ([#448](https://github.com/oaknational/oak-ai-lesson-assistant/issues/448)) ([3f32c75](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3f32c75ba0741c7dd88d9800038bb05e17b38d1c))
+
 # [1.21.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.20.0...v1.21.0) (2025-01-15)
 
 
