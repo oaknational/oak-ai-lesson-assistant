@@ -61,7 +61,7 @@ export async function POST(req: Request) {
 
     let evt: WebhookEvent;
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+       
       const payload = await req.json();
       const body = JSON.stringify(payload);
       evt = wh.verify(body, {

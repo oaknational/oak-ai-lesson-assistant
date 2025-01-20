@@ -21,7 +21,7 @@ export async function waitForStreamingStatusChange(
   await page.waitForFunction(
     ([currentStatus, expectedStatus]) => {
       const statusElement = document.querySelector(
-        // eslint-disable-next-line quotes
+         
         '[data-testid="chat-aila-streaming-status"]',
       );
       return (

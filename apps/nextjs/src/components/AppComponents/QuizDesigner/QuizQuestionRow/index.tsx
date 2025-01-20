@@ -1,18 +1,18 @@
 import type { Dispatch } from "react";
 
 import { Box, Flex, Heading, Text } from "@radix-ui/themes";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
+import { cva } from "class-variance-authority";
+import { z } from "zod";
+
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
 import type {
   QuizAppState,
   QuizAppStateQuestion,
-} from "ai-apps/quiz-designer/state/types";
-import { cva } from "class-variance-authority";
-import useRegenerateAnswers from "hooks/useRegenerateAnswers";
-import useRegenerateDistractors from "hooks/useRegenerateDistractors";
-import { z } from "zod";
-
+} from "@/ai-apps/quiz-designer/state/types";
 import Input from "@/components/Input";
+import useRegenerateAnswers from "@/hooks/useRegenerateAnswers";
+import useRegenerateDistractors from "@/hooks/useRegenerateDistractors";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import ChatButton from "../../Chat/ui/chat-button";
@@ -116,7 +116,7 @@ export function QuizQuestionRow({
       className={quizQuestionRows({ oddOrEven: isRowOddOrEvenOrLessonPlan })}
     >
       <Flex width="100%" justify="between">
-        <Heading as="h2" size="6" className=" whitespace-nowrap bg-white">
+        <Heading as="h2" size="6" className="whitespace-nowrap bg-white">
           Question {questionIdx + 1}
         </Heading>
 
@@ -150,7 +150,7 @@ export function QuizQuestionRow({
           initial: "column",
           sm: "row",
         }}
-        className="w-full gap-12  sm:gap-24 "
+        className="w-full gap-12 sm:gap-24"
       >
         <Flex direction={"column"} className="min-w-[160px] gap-12">
           <Flex direction="column" justify={"start"} align={"start"}>

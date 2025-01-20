@@ -390,7 +390,7 @@ Thank you and happy classifying!`;
       new Set(plans.filter((i) => i.id).map((s) => s.id)),
     )
       .map((id) => plans.find((s) => s.id === id))
-      .filter((i) => typeof i !== "undefined") as LessonPlan[];
+      .filter((i) => typeof i !== "undefined");
     await this.setCachedSerialisedByHash<LessonPlan[]>(
       cacheKey,
       cacheHash,
@@ -692,6 +692,8 @@ Thank you and happy classifying!`;
       };
     }
 
+    log.info("Filter:", filter);
+
     const vectorStore = PrismaVectorStore.withModel<LessonPlanPart>(
       this.prisma,
     ).create(
@@ -723,6 +725,8 @@ Thank you and happy classifying!`;
         similaritySearchTerm,
         k * 5, // search for more records than we need
       );
+
+      log.info("Initial search result", result);
     } catch (e) {
       if (e instanceof TypeError && e.message.includes("join([])")) {
         log.warn("Caught TypeError with join([]), returning empty array");

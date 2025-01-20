@@ -10,15 +10,15 @@ import {
   OakLink,
   OakP,
   oakColorTokens,
-  OakPrimaryButton,
+  OakQuote,
 } from "@oaknational/oak-components";
-import type { HomePageQueryResult } from "cms/types/aiHomePageType";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import styled from "styled-components";
 
 import oakSupporting from "@/assets/svg/illustration/oak_supporting.svg";
+import type { HomePageQueryResult } from "@/cms/types/aiHomePageType";
 import { BetaTagPage } from "@/components/AppComponents/Chat/beta-tag";
 import HeroContainer from "@/components/HeroContainer";
 import { HomePageCTA } from "@/components/Home/HomePageCTA";
@@ -268,6 +268,19 @@ export function HomePageContent({ pageData }: HomePageProps) {
               Find out more about Aila
             </BoldOakLink>
           </OakFlex>
+
+          <OakQuote
+            quote="Using AI to support my planning and teaching wasn’t something I’d really considered until I came across Aila. To say I was blown away would be an understatement!"
+            authorName="Avril"
+            authorTitle="Deputy Headteacher at Bedford Drive Primary School"
+          />
+          <OakQuote
+            quote="Incorporating Aila into my teaching toolkit has the potential to not only save me time - around 30 minutes per lesson - but also enhance the quality and effectiveness of my lessons, ultimately benefiting both myself and my students."
+            color="bg-decorative4-main"
+            authorName="James"
+            authorTitle="Teacher at St Cuthbert Mayne School"
+          />
+
           <OakFlex $flexDirection={"column"} $gap={"all-spacing-5"}>
             <OakHeading $font="heading-5" tag="h3">
               Help us make Aila better

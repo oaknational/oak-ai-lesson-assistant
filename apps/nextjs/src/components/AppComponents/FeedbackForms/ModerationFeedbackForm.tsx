@@ -3,10 +3,10 @@ import { useEffect } from "react";
 import { moderationSlugToDescription } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { Dialog } from "@radix-ui/themes";
-import { useModerationFeedbackSurvey } from "hooks/surveys/useModerationFeedbackSurvey";
 
 import Button from "@/components/Button";
 import { Icon } from "@/components/Icon";
+import { useModerationFeedbackSurvey } from "@/hooks/surveys/useModerationFeedbackSurvey";
 
 import ChatButton from "../Chat/ui/chat-button";
 import { Textarea } from "../Chat/ui/textarea";
@@ -35,7 +35,7 @@ export const ModerationFeedbackForm = ({
   }, [hasSubmitted, closeModal]);
 
   return (
-    <div className="flex max-w-[600px] flex-col  gap-13 overflow-y-scroll bg-white p-18 sm:m-18 sm:border-2 sm:border-gray-900">
+    <div className="flex max-w-[600px] flex-col gap-13 overflow-y-scroll bg-white p-18 sm:m-18 sm:border-2 sm:border-gray-900">
       <div className="flex justify-between">
         <Icon icon="warning" size="md" />
         <Button

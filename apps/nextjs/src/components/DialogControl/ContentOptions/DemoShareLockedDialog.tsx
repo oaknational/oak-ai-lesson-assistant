@@ -16,14 +16,6 @@ function DialogContainer({ children }: { readonly children: React.ReactNode }) {
   );
 }
 
-function Heading({ children }: { readonly children: React.ReactNode }) {
-  return <p className="text-2xl font-bold">{children}</p>;
-}
-
-function Content({ children }: { readonly children: React.ReactNode }) {
-  return <p className="text-sm text-muted-foreground">{children}</p>;
-}
-
 const DemoShareLockedDialog = ({
   closeDialog,
 }: {

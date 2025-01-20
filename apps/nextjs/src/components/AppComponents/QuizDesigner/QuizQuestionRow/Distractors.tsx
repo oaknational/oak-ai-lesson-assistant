@@ -1,18 +1,18 @@
 import type { Dispatch } from "react";
 
 import { Box, Flex } from "@radix-ui/themes";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
+
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
 import type {
   QuizAppState,
   QuizAppStateQuestion,
-} from "ai-apps/quiz-designer/state/types";
+} from "@/ai-apps/quiz-designer/state/types";
+import { GenerationErrorBox } from "@/components/AppComponents/QuizDesigner/ErrorBox";
+import { Icon } from "@/components/Icon";
 import {
   UseGenerationStatus,
   isGenerationHookLoading,
-} from "hooks/useGeneration";
-
-import { GenerationErrorBox } from "@/components/AppComponents/QuizDesigner/ErrorBox";
-import { Icon } from "@/components/Icon";
+} from "@/hooks/useGeneration";
 
 import Skeleton from "../../common/Skeleton";
 import Distractor from "./Distractor";

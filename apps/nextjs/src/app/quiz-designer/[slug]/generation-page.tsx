@@ -3,12 +3,12 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
-import { quizAppReducer } from "ai-apps/quiz-designer/state/reducer";
-import { QuizAppStatus } from "ai-apps/quiz-designer/state/types";
-import useShareContent from "hooks/useShareContent";
 
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
+import { quizAppReducer } from "@/ai-apps/quiz-designer/state/reducer";
+import { QuizAppStatus } from "@/ai-apps/quiz-designer/state/types";
 import QuizDesignerPageContent from "@/components/AppComponents/QuizDesigner/QuizDesignerPageContent";
+import useShareContent from "@/hooks/useShareContent";
 import { trpc } from "@/utils/trpc";
 
 import { initialState } from "../quiz-designer-page";

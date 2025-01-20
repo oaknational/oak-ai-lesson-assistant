@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 
-import { usePosthogFeedbackSurvey } from "hooks/surveys/usePosthogFeedbackSurvey";
-
 import { useDialog } from "@/components/AppComponents/DialogContext";
+import { usePosthogFeedbackSurvey } from "@/hooks/surveys/usePosthogFeedbackSurvey";
 
 export function SurveyDialogLauncher() {
   const { survey } = usePosthogFeedbackSurvey({
