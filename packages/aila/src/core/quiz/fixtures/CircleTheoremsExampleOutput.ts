@@ -262,3 +262,258 @@ export const CircleTheoremLesson = {
     },
   ],
 };
+
+export const CircleTheoremLessonPlan2 = {
+  basedOn: { id: "clna7o1921o02p4qx8mwzancm", title: "Dummy title" },
+  title: "Circle Theorems: A tangent and radius are perpendicular",
+  topic: "Circle Theorems",
+  cycle1: {
+    title: "Explain Tangent-Radius Perpendicularity",
+    feedback:
+      "Model answer: The angle between the tangent and radius should measure 90 degrees. Ensure your tangent touches the circle at exactly one point.",
+    practice:
+      "Draw a circle and a tangent. Mark the radius to the point of contact. Measure the angle between the radius and tangent. Show that it's 90 degrees.",
+    explanation: {
+      slideText:
+        "A tangent meets a radius at a 90-degree angle at the point of contact.",
+      imagePrompt: "tangent radius 90 degrees circle diagram",
+      spokenExplanation: [
+        "Introduce the concept of a tangent as a line touching a circle at exactly one point.",
+        "Explain the radius as a line from the circle's centre to its boundary.",
+        "Demonstrate that the angle formed between the tangent and radius is always 90 degrees.",
+        "Show this through multiple examples with diagrams.",
+        "Highlight that this is a consistent property regardless of where the tangent is drawn.",
+        "Reinforce by stating that this relationship is a fundamental circle theorem.",
+      ],
+      accompanyingSlideDetails:
+        "Illustrations showing a tangent and radius meeting at 90 degrees across several examples.",
+    },
+    durationInMinutes: 15,
+    checkForUnderstanding: [
+      {
+        answers: ["90 degrees"],
+        question: "What angle is formed where a tangent meets a radius?",
+        distractors: ["45 degrees", "180 degrees"],
+      },
+      {
+        answers: ["No, it remains 90 degrees"],
+        question:
+          "Does changing the point of tangency affect the 90-degree angle?",
+        distractors: [
+          "Yes, depends on the circle size",
+          "Yes, depends on line length",
+        ],
+      },
+    ],
+  },
+  cycle2: {
+    title: "Apply The Theorem in Triangles",
+    feedback:
+      "Model answer: Subtract the known angles from 180 degrees. Verify that the tangent-radius angle is 90 degrees for accuracy.",
+    practice:
+      "Given a triangle with a tangent and radius, calculate the missing angle using the theorem and the triangle angle sum.",
+    explanation: {
+      slideText:
+        "Use tangent-radius 90-degree angle and triangle sum of 180 degrees to calculate unknown angles.",
+      imagePrompt: "triangle tangent radius angle calculation",
+      spokenExplanation: [
+        "Introduce the problem of finding angles within a triangle formed by a tangent, a radius, and another line.",
+        "Use the theorem that the tangent and radius form a 90-degree angle.",
+        "Emphasise that the angles in a triangle sum to 180 degrees.",
+        "Work through an example, subtracting the known angles to find the unknown angle.",
+        "Provide a second real-world application for practice.",
+      ],
+      accompanyingSlideDetails:
+        "Diagrams of triangles featuring a tangent-radii angle with measurements.",
+    },
+    durationInMinutes: 15,
+    checkForUnderstanding: [
+      {
+        answers: ["180 degrees"],
+        question: "What is the sum of angles in a triangle?",
+        distractors: ["90 degrees", "360 degrees"],
+      },
+      {
+        answers: ["90 degrees"],
+        question: "Which angle is always formed when a tangent meets a radius?",
+        distractors: ["45 degrees", "60 degrees"],
+      },
+    ],
+  },
+  cycle3: {
+    title: "Identify Isosceles Triangles and Equal Tangents",
+    feedback:
+      "Model answer: Use markings to verify equal sides. If tangents are from the same point, they are of equal length.",
+    practice:
+      "Identify isosceles triangles using markings on diagrams. Calculate lengths using equal tangents theorem.",
+    explanation: {
+      slideText:
+        "Isosceles triangles have 2 equal sides & base angles. Tangents from a point are equal lengths.",
+      imagePrompt: "isosceles triangle tangents equal length",
+      spokenExplanation: [
+        "Explain isosceles triangles have two equal sides, often marked with dashes.",
+        "Discuss that base angles in isosceles triangles are equal.",
+        "Introduce the circle theorem that tangents from the same point to the circle are equal in length.",
+        "Show by measuring tangents from an external point to the points of contact.",
+        "Apply this theorem to conclude equal tangents mean equal lengths.",
+      ],
+      accompanyingSlideDetails:
+        "Illustrations showing isosceles triangles and two tangents from the same external point.",
+    },
+    durationInMinutes: 15,
+    checkForUnderstanding: [
+      {
+        answers: ["Two equal sides and angles"],
+        question: "What defines an isosceles triangle?",
+        distractors: ["Three equal angles", "All sides different"],
+      },
+      {
+        answers: ["Always, from the same point to a circle"],
+        question: "When are two tangents from a point equal in length?",
+        distractors: ["Only when tangents are parallel", "Never equal"],
+      },
+    ],
+  },
+  subject: "maths",
+  exitQuiz: [
+    {
+      answers: ["A tangent meets a radius at 90 degrees"],
+      question: "What theorem relates tangents and radii?",
+      distractors: [
+        "Tangents are equal to the radius",
+        "Tangents form 45-degree angles",
+      ],
+    },
+    {
+      answers: ["Subtract known angles from 180 degrees"],
+      question: "How is the angle inside a triangle calculated?",
+      distractors: ["Add known angles to 90 degrees", "Multiply known angles"],
+    },
+    {
+      answers: ["Two equal sides and base angles"],
+      question: "What property do isosceles triangles have?",
+      distractors: ["Three equal sides", "Different angles"],
+    },
+    {
+      answers: ["When from the same exterior point"],
+      question: "When are tangents from a point equal?",
+      distractors: [
+        "When both touch different circles",
+        "When drawn to any circle part",
+      ],
+    },
+    {
+      answers: ["Tangent-radius perpendicularity"],
+      question: "Which theorem uses a 90-degree angle?",
+      distractors: ["Tangent equality", "Circle circumference"],
+    },
+    {
+      answers: ["For right-angle triangles from radius-tangent points"],
+      question: "How do you use Pythagoras in this context?",
+      distractors: ["Only for scalene triangles", "To find circumference"],
+    },
+  ],
+  keyStage: "key-stage-4",
+  keywords: [
+    {
+      keyword: "Circle theorem",
+      definition:
+        "A set of theorems related to angles and lines associated with circles",
+    },
+    {
+      keyword: "Tangent",
+      definition: "A straight line that touches a circle at exactly one point",
+    },
+    {
+      keyword: "Radius",
+      definition:
+        "A line from the centre of the circle to a point on its circumference",
+    },
+    {
+      keyword: "Perpendicular",
+      definition:
+        "Two lines or segments that intersect to form a 90-degree angle",
+    },
+    {
+      keyword: "Isosceles triangle",
+      definition: "A triangle with at least two sides of equal length",
+    },
+    {
+      keyword: "Pythagoras' theorem",
+      definition:
+        "A theorem stating that in a right triangle, a² + b² = c², where c is the hypotenuse",
+    },
+  ],
+  starterQuiz: [
+    {
+      answers: ["A straight line that touches a circle at one point"],
+      question: "What is a tangent?",
+      distractors: [
+        "A line that passes through the centre of the circle",
+        "A point on the circumference of the circle",
+      ],
+    },
+    {
+      answers: ["180 degrees"],
+      question: "What is the angle sum in a triangle?",
+      distractors: ["90 degrees", "360 degrees"],
+    },
+    {
+      answers: ["At least two equal sides"],
+      question: "What defines an isosceles triangle?",
+      distractors: ["All sides equal", "All angles different"],
+    },
+    {
+      answers: ["Calculating lengths in right triangles"],
+      question: "What is Pythagoras' theorem used for?",
+      distractors: [
+        "Finding angles in triangles",
+        "Calculating circumference of circles",
+      ],
+    },
+    {
+      answers: ["At 90 degrees"],
+      question: "Where does a tangent meet a radius in a circle?",
+      distractors: ["At any angle", "At 45 degrees"],
+    },
+    {
+      answers: ["Touches the circle at one point"],
+      question: "What distinguishes a tangent from other lines to a circle?",
+      distractors: ["Crosses the circle", "Passes through the centre"],
+    },
+  ],
+  learningCycles: [
+    "Explain the theorem where a tangent and radius meet at 90 degrees",
+    "Apply the theorem to solve angle problems within triangles",
+    "Identify isosceles triangles and apply the theorem of equal tangents",
+  ],
+  misconceptions: [
+    {
+      description:
+        "Tangents always meet the radius at a 90-degree angle. Emphasise this with visual aids and repeated examples.",
+      misconception: "Tangents can meet the radius at any angle",
+    },
+    {
+      description:
+        "Only tangents from a single external point to the circle are equal in length. Highlight the specific conditions.",
+      misconception: "Any two lines from a point to a circle are equal",
+    },
+  ],
+  priorKnowledge: [
+    "Basic properties of a circle, such as centre and radius",
+    "Understanding of angles and how they sum in a triangle",
+    "Familiarity with the concept of isosceles triangles",
+    "Basic knowledge of Pythagoras' theorem",
+    "How to measure angles in degrees",
+  ],
+  learningOutcome:
+    "I can understand and apply theorems that describe the properties of tangents and radii in circles.",
+  keyLearningPoints: [
+    "A tangent to a circle meets the radius at 90 degrees",
+    "The angles in a triangle sum to 180 degrees",
+    "In isosceles triangles, the base angles are equal",
+    "Two tangents from a point to a circle are equal in length",
+    "Pythagoras' theorem is used to calculate lengths in right triangles",
+  ],
+  additionalMaterials: "None",
+};
