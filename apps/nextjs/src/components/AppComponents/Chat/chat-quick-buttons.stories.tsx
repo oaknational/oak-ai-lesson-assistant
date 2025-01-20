@@ -97,7 +97,6 @@ export const StreamingWithQueuedUserAction: Story = {
   args: {},
   parameters: {
     chatContext: {
-      queuedUserAction: "regenerate",
       ailaStreamingStatus: "StreamingLessonPlan",
     },
   },
@@ -107,7 +106,6 @@ export const ModeratingWithQueuedUserAction: Story = {
   args: {},
   parameters: {
     chatContext: {
-      queuedUserAction: "regenerate",
       ailaStreamingStatus: "Moderating",
     },
   },
