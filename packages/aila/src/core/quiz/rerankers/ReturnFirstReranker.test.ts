@@ -1,7 +1,7 @@
 import type { z } from "zod";
 
 import type { QuizQuestion } from "../../../protocol/schema";
-import { cachedQuiz } from "../fixtures/fixtures_for_matt";
+import { cachedQuiz } from "../fixtures/CachedImageQuiz";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 import { ReturnFirstReranker } from "./ReturnFirstReranker";
 
