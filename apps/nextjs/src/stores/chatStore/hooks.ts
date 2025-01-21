@@ -9,7 +9,6 @@ import type {
 
 import { useChatStore } from "./index";
 
-// Hooks to update the Zustand chat store mirror from the AI SDK outputs
 export const useChatStoreMirror = (
   messages: AiMessage[],
   isLoading: boolean,
@@ -21,23 +20,13 @@ export const useChatStoreMirror = (
   reload: () => void,
 ) => {
   const setMessages = useChatStore((state) => state.setMessages);
-  const setStop = useChatStore((state) => state.setStop);
-  const setAppend = useChatStore((state) => state.setAppend);
-  const setReload = useChatStore((state) => state.setReload);
+  const setAiSdkActions = useChatStore((state) => state.setAiSdkActions);
 
   useEffect(() => {
     setMessages(messages, isLoading);
   }, [messages, isLoading, setMessages]);
 
   useEffect(() => {
-    setStop(stop);
-  }, [stop, setStop]);
-
-  useEffect(() => {
-    setAppend(append);
-  }, [append, setAppend]);
-
-  useEffect(() => {
-    setReload(reload);
-  }, [reload, setReload]);
+    setAiSdkActions({ stop, append, reload });
+  }, []);
 };

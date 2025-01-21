@@ -1,14 +1,21 @@
 import { aiLogger } from "@oakai/logger";
 import type { ChatRequestOptions, CreateMessage, Message } from "ai";
-import invariant from "tiny-invariant";
 import { create } from "zustand";
 
 import { handleExecuteQueuedAction } from "./actionFunctions/handleExecuteQueuedAction";
 import { handleSetMessages } from "./actionFunctions/handleSetMessages";
-import { getNextStableMessages, parseStreamingMessage } from "./parsing";
 import type { AiMessage, ParsedMessage } from "./types";
 
 const log = aiLogger("chat:store");
+
+type Actions = {
+  stop: () => void;
+  reload: () => void;
+  append: (
+    message: Message | CreateMessage,
+    chatRequestOptions?: ChatRequestOptions | undefined,
+  ) => Promise<string | null | undefined>;
+};
 
 type ChatStore = {
   // From AI SDK
@@ -18,24 +25,14 @@ type ChatStore = {
   queuedUserAction: string | null;
   isExecutingAction: boolean;
 
-  // Actions
-  append: (
-    message: Message | CreateMessage,
-    chatRequestOptions?: ChatRequestOptions | undefined,
-  ) => Promise<string | null | undefined>;
-  reload: () => void;
-  setAppend: (
-    append: (
-      message: Message | CreateMessage,
-      chatRequestOptions?: ChatRequestOptions | undefined,
-    ) => Promise<string | null | undefined>,
-  ) => void;
-  setReload: (reload: () => void) => void;
-  stop: () => void;
+  // Grouped Actions
+  actions: Actions;
+
+  // Setters
+  setAiSdkActions: (actions: Actions) => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
-  setStop: (stop: () => void) => void;
-  queueUserAction: (action: string) => void;
+  queueUserAction: (action: string) => Promise<void>;
   executeQueuedAction: () => Promise<void>;
 };
 
@@ -47,16 +44,16 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   queuedUserAction: null,
   isExecutingAction: false,
 
-  // Actions
-  stop: () => {},
-  append: async () => "",
-  reload: () => {},
-  setAppend: (append) => set({ append }),
-  setReload: (reload) => set({ reload }),
-  queueUserAction: (action: string) => {
-    set({ queuedUserAction: action });
+  actions: {
+    stop: () => {},
+    reload: () => {},
+    append: async () => "",
   },
-  setStop: (stop) => set({ stop }),
+  setAiSdkActions: (actions) => set({ actions }),
+  queueUserAction: async (action: string) => {
+    set({ queuedUserAction: action });
+    await get().executeQueuedAction();
+  },
   setIsLoading: (isLoading) => set({ isLoading }),
 
   // Action functions

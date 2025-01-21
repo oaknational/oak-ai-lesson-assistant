@@ -1,23 +1,25 @@
 export function handleExecuteQueuedAction(set, get) {
   return async () => {
-    const { queuedUserAction, isExecutingAction } = get();
+    const { queuedUserAction, isExecutingAction, actions } = get();
+    const { append, reload } = actions;
 
     if (!queuedUserAction || isExecutingAction) return;
 
-    set({ isExecutingAction: true });
     const actionToExecute = queuedUserAction;
-    set({ queuedUserAction: null });
+    set({ isExecutingAction: true, queuedUserAction: null });
+
+    console.log("*****", actionToExecute);
 
     try {
       if (actionToExecute === "continue") {
-        await get().append({
+        await append({
           content: "Continue",
           role: "user",
         });
       } else if (actionToExecute === "regenerate") {
-        get().reload();
+        reload();
       } else {
-        await get().append({
+        await append({
           content: actionToExecute,
           role: "user",
         });

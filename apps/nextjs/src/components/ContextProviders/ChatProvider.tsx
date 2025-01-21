@@ -254,8 +254,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     },
   });
 
-  // Hooks to update the Zustand chat store mirror
-
   useEffect(() => {
     /**
      * This is a hack to ensure that the assistant messages have a stable id
@@ -301,6 +299,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     }
   }, [hasFinished, executeQueuedAction]);
 
+  // Hooks to update the Zustand chat store mirror
   useChatStoreMirror(messages, isLoading, stopStreaming, append, reload);
 
   /**
