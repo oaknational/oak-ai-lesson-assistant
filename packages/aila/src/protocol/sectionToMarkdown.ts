@@ -1,9 +1,13 @@
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
+import { aiLogger } from "@oakai/logger";
 import { isArray, isNumber, isObject, isString } from "remeda";
+import { z } from "zod";
 
 import { toSentenceCase } from "../../../../apps/nextjs/src/utils/toSentenceCase";
 import type { QuizOptional } from "./schema";
 import { CycleOptionalSchema, QuizOptionalSchema } from "./schema";
+
+const log = aiLogger("chat");
 
 export function sortIgnoringSpecialChars(strings: string[]): string[] {
   // Function to normalize strings by removing *, -, and spaces
@@ -40,9 +44,10 @@ export function sectionToMarkdown(
     try {
       const cycle = CycleOptionalSchema.parse(value);
       const content = `## ${cycle.title ?? "…"}\n\n`;
-      return `${content}\n\n### Explanation\n\n${sectionToMarkdown("explanation", cycle.explanation ?? "…")}\n\n### Check for understanding\n\n${cycle.checkForUnderstanding ? organiseAnswersAndDistractors(cycle.checkForUnderstanding) : "…"}\n\n### Practice\n\n${cycle.practice ?? "…"}\n\n### Feedback\n\n${cycle.feedback ?? "…"}`;
-    } catch (e) {
-      // Invalid schema
+      const explanation =
+        sectionToMarkdown("explanation", cycle.explanation ?? "…") ?? "…";
+      return `${content}\n\n### Explanation\n\n${explanation}\n\n### Check for understanding\n\n${cycle.checkForUnderstanding ? organiseAnswersAndDistractors(cycle.checkForUnderstanding) : "…"}\n\n### Practice\n\n${cycle.practice ?? "…"}\n\n### Feedback\n\n${cycle.feedback ?? "…"}`;
+    } catch {
       return "## There's been a problem\n\nIt looks like this learning cycle hasn't generated properly. Tap **Retry** or ask for this section to be regenerated.";
     }
   }
@@ -58,50 +63,55 @@ export function sectionToMarkdown(
         }
 
         if (key === "misconceptions") {
+          const MisconceptionSchema = z.object({
+            misconception: z.string(),
+            description: z.string(),
+          });
+
           return value
             .map((misconception) => {
-              const m = misconception as {
-                misconception: string;
-                description: string;
-              };
-              return `### ${m.misconception}\n\n${m.description}`;
+              try {
+                const m = MisconceptionSchema.parse(misconception);
+                return `### ${m.misconception}\n\n${m.description}`;
+              } catch {
+                return "";
+              }
             })
+            .filter(Boolean)
             .join("\n\n");
         }
 
         const firstObject = value[0];
 
         if (firstObject && Object.keys(firstObject).length === 2) {
-          // This is a Key-Value object, and we will pick the first key as the header and the second key as the body
-          // TODO - this probably is unreliable, and we should have a better way to detect this
-          const keys = Object.keys(firstObject);
-          return (
-            value
-              .filter((v) => typeof v === "object")
-              .map((v) => v as object)
-              // @ts-expect-error - we know that the keys exist
-              .filter((v) => v[keys[0]] && v[keys[1]])
-              .map((v) => {
-                // @ts-expect-error - we know that the keys exist
+          const [key1, key2] = Object.keys(firstObject);
+          if (!key1 || !key2) return "";
 
-                const header = v[keys[0]];
-                // @ts-expect-error - we know that the keys exist
-
-                const body = v[keys[1]];
-                return `### ${toSentenceCase(header)}\n\n${toSentenceCase(body)}`;
-              })
-              .join("\n\n")
-          );
+          return value
+            .filter((v) => typeof v === "object")
+            .map((v) => v as Record<string, string>)
+            .filter(
+              (v) =>
+                Object.prototype.hasOwnProperty.call(v, key1) &&
+                Object.prototype.hasOwnProperty.call(v, key2),
+            )
+            .map((v) => {
+              const header = v[key1] ?? "…";
+              const body = v[key2] ?? "…";
+              return `### ${toSentenceCase(header)}\n\n${toSentenceCase(body)}`;
+            })
+            .join("\n\n");
         }
       }
 
-      return value.map((v) => sectionToMarkdown(key, v)).join("\n\n");
+      return value.map((v) => sectionToMarkdown(key, v) ?? "").join("\n\n");
     }
   }
   if (isObject(value)) {
     return Object.entries(value)
       .map(([k, v]) => {
-        return `## ${keyToHeading(k)}\n\n${sectionToMarkdown(k, v)}`;
+        const content = sectionToMarkdown(k, v) ?? "";
+        return `## ${keyToHeading(k)}\n\n${content}`;
       })
       .join("\n\n");
   }
