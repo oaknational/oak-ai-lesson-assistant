@@ -8,8 +8,6 @@ export function handleExecuteQueuedAction(set, get) {
     const actionToExecute = queuedUserAction;
     set({ isExecutingAction: true, queuedUserAction: null });
 
-    console.log("*****", actionToExecute);
-
     try {
       if (actionToExecute === "continue") {
         await append({

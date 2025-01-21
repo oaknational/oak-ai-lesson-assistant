@@ -20,7 +20,7 @@ const meta = {
   parameters: {
     ...chromaticParams(["desktop"]),
     chatContext: {
-      ailaStreamingStatus: "Idle",
+      // ailaStreamingStatus: "Idle",
     },
   },
 } satisfies Meta<typeof ChatLhsHeader>;
@@ -36,7 +36,7 @@ export const NonProdStreamingStatus: Story = {
   },
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "StreamingLessonPlan",
+      // ailaStreamingStatus: "StreamingLessonPlan",
     },
   },
 };

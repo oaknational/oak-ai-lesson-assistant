@@ -52,7 +52,7 @@ export const Idle: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "Idle",
+      // ailaStreamingStatus: "Idle",
     },
   },
 };
@@ -61,8 +61,8 @@ export const IdleWithQueuedUserAction: Story = {
   args: {},
   parameters: {
     chatContext: {
-      queuedUserAction: "regenerate",
-      ailaStreamingStatus: "Idle",
+      // queuedUserAction: "regenerate",
+      // ailaStreamingStatus: "Idle",
     },
   },
 };
@@ -71,7 +71,7 @@ export const Loading: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "Loading",
+      // ailaStreamingStatus: "Loading",
     },
   },
 };
@@ -80,7 +80,7 @@ export const RequestMade: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "RequestMade",
+      // ailaStreamingStatus: "RequestMade",
     },
   },
 };
@@ -89,7 +89,7 @@ export const StreamingLessonPlan: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "StreamingLessonPlan",
+      // ailaStreamingStatus: "StreamingLessonPlan",
     },
   },
 };
@@ -98,7 +98,7 @@ export const StreamingChatResponse: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "StreamingChatResponse",
+      // ailaStreamingStatus: "StreamingChatResponse",
     },
   },
 };
@@ -107,7 +107,7 @@ export const StreamingWithQueuedUserAction: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "StreamingLessonPlan",
+      // ailaStreamingStatus: "StreamingLessonPlan",
     },
   },
 };
@@ -116,7 +116,7 @@ export const Moderating: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "Moderating",
+      // ailaStreamingStatus: "Moderating",
     },
   },
 };
@@ -125,7 +125,7 @@ export const ModeratingWithRegenerateUserAction: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "Moderating",
+      // ailaStreamingStatus: "Moderating",
     },
   },
 };
@@ -134,7 +134,7 @@ export const CustomQueuedUserAction: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "Moderating",
+      // ailaStreamingStatus: "Moderating",
     },
   },
 };

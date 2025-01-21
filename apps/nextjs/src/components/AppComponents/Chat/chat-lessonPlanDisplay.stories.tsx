@@ -19,7 +19,7 @@ const chatContext: Partial<ChatContextProps> = {
     learningOutcome:
       "To understand the importance of frogs in British society and culture",
   },
-  ailaStreamingStatus: "Idle",
+  // ailaStreamingStatus: "Idle",
 };
 
 const meta = {

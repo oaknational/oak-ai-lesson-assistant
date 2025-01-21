@@ -46,7 +46,11 @@ const QuickActionButtons = () => {
   const lessonPlanTracking = useLessonPlanTracking();
   const { setDialogWindow } = useDialog();
   const { queueUserAction, queuedUserAction, actions } = useChatStore();
-  const { messages, id, ailaStreamingStatus } = chat;
+  const { messages, id } = chat;
+
+  const ailaStreamingStatus = useChatStore(
+    (state) => state.ailaStreamingStatus,
+  );
 
   const hasMessages = !!messages.length;
 

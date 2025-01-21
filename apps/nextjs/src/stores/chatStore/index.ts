@@ -1,8 +1,10 @@
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { create } from "zustand";
 
 import { handleExecuteQueuedAction } from "./actionFunctions/handleExecuteQueuedAction";
+import { handleQueueUserAction } from "./actionFunctions/handleQueueUserAction";
 import { handleSetMessages } from "./actionFunctions/handleSetMessages";
 import type { AiMessage, ParsedMessage } from "./types";
 
@@ -17,18 +19,30 @@ type Actions = {
   ) => Promise<string | null | undefined>;
 };
 
-type ChatStore = {
+export type AilaStreamingStatus =
+  | "Loading"
+  | "RequestMade"
+  | "StreamingLessonPlan"
+  | "StreamingChatResponse"
+  | "StreamingExperimentalPatches"
+  | "Moderating"
+  | "Idle";
+
+export type ChatStore = {
+  ailaStreamingStatus: AilaStreamingStatus;
+
   // From AI SDK
   isLoading: boolean;
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
   queuedUserAction: string | null;
   isExecutingAction: boolean;
-
+  lessonPlan: LooseLessonPlan | null;
   // Grouped Actions
   actions: Actions;
 
   // Setters
+  setLessonPlan: (lessonPlan: LooseLessonPlan) => void;
   setAiSdkActions: (actions: Actions) => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
@@ -37,26 +51,27 @@ type ChatStore = {
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
-  // From AI SDK
-  isLoading: false,
+  ailaStreamingStatus: "Idle",
   stableMessages: [],
   streamingMessage: null,
   queuedUserAction: null,
   isExecutingAction: false,
-
+  lessonPlan: null,
+  // From AI SDK
+  isLoading: false,
   actions: {
     stop: () => {},
     reload: () => {},
     append: async () => "",
   },
+
+  // Setters
   setAiSdkActions: (actions) => set({ actions }),
-  queueUserAction: async (action: string) => {
-    set({ queuedUserAction: action });
-    await get().executeQueuedAction();
-  },
   setIsLoading: (isLoading) => set({ isLoading }),
+  setLessonPlan: (lessonPlan) => set({ lessonPlan }),
 
   // Action functions
+  queueUserAction: handleQueueUserAction(set, get),
   executeQueuedAction: handleExecuteQueuedAction(set, get),
   setMessages: handleSetMessages(set, get),
 }));

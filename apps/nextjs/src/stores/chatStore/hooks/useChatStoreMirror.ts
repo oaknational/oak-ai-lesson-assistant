@@ -7,7 +7,7 @@ import type {
   Message,
 } from "ai";
 
-import { useChatStore } from "./index";
+import { useChatStore } from "../index";
 
 export const useChatStoreMirror = (
   messages: AiMessage[],

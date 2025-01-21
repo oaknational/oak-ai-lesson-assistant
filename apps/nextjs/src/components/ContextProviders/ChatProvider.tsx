@@ -25,15 +25,13 @@ import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { useChatStore } from "src/stores/chatStore";
-import { useChatStoreMirror } from "src/stores/chatStore/hooks";
+import { useChatStoreMirror } from "src/stores/chatStore/hooks/useChatStoreMirror";
 
 import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
 
-import type { AilaStreamingStatus } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
-import { useAilaStreamingStatus } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
 import {
   isAccountLocked,
@@ -52,7 +50,7 @@ export type ChatContextProps = {
   isLoading: boolean;
   isStreaming: boolean;
   lessonPlan: LooseLessonPlan;
-  ailaStreamingStatus: AilaStreamingStatus;
+  // ailaStreamingStatus: AilaStreamingStatus;
   append: (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions | undefined,
@@ -365,7 +363,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       ? lastModeration
       : toxicInitialModeration;
 
-  const ailaStreamingStatus = useAilaStreamingStatus({ isLoading, messages });
+  // const ailaStreamingStatus = useAilaStreamingStatus({ isLoading, messages });
 
   useEffect(() => {
     if (toxicModeration) {
@@ -386,7 +384,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       chatAreaRef,
       append,
       messages,
-      ailaStreamingStatus,
+      // ailaStreamingStatus,
       isLoading,
       isStreaming: !hasFinished,
       lastModeration,
@@ -405,7 +403,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       hasAppendedInitialMessage,
       chatAreaRef,
       messages,
-      ailaStreamingStatus,
+      // ailaStreamingStatus,
       isLoading,
       lastModeration,
       input,

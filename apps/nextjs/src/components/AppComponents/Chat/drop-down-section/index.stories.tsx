@@ -40,7 +40,7 @@ const meta = {
         learningOutcome:
           "To understand the importance of frogs in British society and culture",
       },
-      ailaStreamingStatus: "Idle",
+      // ailaStreamingStatus: "Idle",
     },
   },
 } satisfies Meta<typeof DropDownSection>;

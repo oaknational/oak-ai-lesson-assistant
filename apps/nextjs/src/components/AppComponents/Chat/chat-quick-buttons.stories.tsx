@@ -33,7 +33,7 @@ export const Idle: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "Idle",
+      // ailaStreamingStatus: "Idle",
     },
   },
 };
@@ -42,7 +42,7 @@ export const Loading: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "Loading",
+      // ailaStreamingStatus: "Loading",
     },
   },
 };
@@ -51,7 +51,7 @@ export const LoadingWithoutMessages: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "Loading",
+      // ailaStreamingStatus: "Loading",
       messages: [],
     },
   },
@@ -61,7 +61,7 @@ export const RequestMade: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "RequestMade",
+      // ailaStreamingStatus: "RequestMade",
     },
   },
 };
@@ -70,7 +70,7 @@ export const StreamingLessonPlan: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "StreamingLessonPlan",
+      // ailaStreamingStatus: "StreamingLessonPlan",
     },
   },
 };
@@ -79,7 +79,7 @@ export const StreamingChatResponse: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "StreamingChatResponse",
+      // ailaStreamingStatus: "StreamingChatResponse",
     },
   },
 };
@@ -88,7 +88,7 @@ export const Moderating: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "Moderating",
+      // ailaStreamingStatus: "Moderating",
     },
   },
 };
@@ -97,7 +97,7 @@ export const StreamingWithQueuedUserAction: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "StreamingLessonPlan",
+      // ailaStreamingStatus: "StreamingLessonPlan",
     },
   },
 };
@@ -106,7 +106,7 @@ export const ModeratingWithQueuedUserAction: Story = {
   args: {},
   parameters: {
     chatContext: {
-      ailaStreamingStatus: "Moderating",
+      // ailaStreamingStatus: "Moderating",
     },
   },
 };
