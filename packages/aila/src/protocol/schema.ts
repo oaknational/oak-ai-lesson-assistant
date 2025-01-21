@@ -494,3 +494,25 @@ export type LessonPlanSectionWhileStreaming =
   | string
   | string[]
   | number;
+
+export const CompletedLessonPlanSchemaWithoutLength = z.object({
+  title: LessonTitleSchema,
+  keyStage: KeyStageSchema,
+  subject: SubjectSchema,
+  topic: TopicSchema,
+  learningOutcome: LearningOutcomeSchema,
+  learningCycles: LearningCyclesSchema,
+  priorKnowledge: PriorKnowledgeSchema,
+  keyLearningPoints: KeyLearningPointsSchema,
+  misconceptions: MisconceptionsSchemaWithoutLength,
+  keywords: KeywordsSchemaWithoutLength,
+  basedOn: BasedOnSchema.optional(),
+  starterQuiz: QuizSchemaWithoutLength.describe(
+    LESSON_PLAN_DESCRIPTIONS.starterQuiz,
+  ),
+  cycle1: CycleSchemaWithoutLength.describe("The first learning cycle"),
+  cycle2: CycleSchemaWithoutLength.describe("The second learning cycle"),
+  cycle3: CycleSchemaWithoutLength.describe("The third learning cycle"),
+  exitQuiz: QuizSchemaWithoutLength.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+  additionalMaterials: AdditionalMaterialsSchema,
+});
