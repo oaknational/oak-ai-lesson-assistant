@@ -119,56 +119,58 @@ const validateCSV = (
           }
         }
       })
-      .on("end", async () => {
-        log(`Completed reading CSV file: ${filePath}`);
+      .on("end", () => {
+        void (() => {
+          log(`Completed reading CSV file: ${filePath}`);
 
-        // Validate foreign keys in CSV
-        for (const [fk, refTable] of Object.entries(foreignKeys)) {
-          const ids: string[] = Array.from(foreignKeyCheck[fk] ?? []);
+          // Validate foreign keys in CSV
+          for (const [fk, refTable] of Object.entries(foreignKeys)) {
+            const ids: string[] = Array.from(foreignKeyCheck[fk] ?? []);
 
-          function handleTable(table: string) {
-            if (table === "key_stage") {
-              return "key_stages";
+            function handleTable(table: string) {
+              if (table === "key_stage") {
+                return "key_stages";
+              }
             }
-          }
 
-          if (ids.length > 0) {
-            const refFilePath = path.join(
-              dataDir,
-              `${handleTable(refTable)}.csv`,
-            );
-            if (!fs.existsSync(refFilePath)) {
-              errors.push(
-                `CSV file for referenced table '${refTable}' does not exist.`,
+            if (ids.length > 0) {
+              const refFilePath = path.join(
+                dataDir,
+                `${handleTable(refTable)}.csv`,
               );
-            } else {
-              const refIds = new Set<string>();
-              fs.createReadStream(refFilePath)
-                .pipe(csvParser())
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                .on("data", (row: any) => {
-                  refIds.add(row.id);
-                })
-                .on("end", () => {
-                  ids.forEach((id: string) => {
-                    if (!refIds.has(id)) {
-                      errors.push(
-                        `Broken foreign key: '${fk}' references '${refTable}' but value '${id}' does not exist in table '${refTable}'.`,
-                      );
-                    }
+              if (!fs.existsSync(refFilePath)) {
+                errors.push(
+                  `CSV file for referenced table '${refTable}' does not exist.`,
+                );
+              } else {
+                const refIds = new Set<string>();
+                fs.createReadStream(refFilePath)
+                  .pipe(csvParser())
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  .on("data", (row: any) => {
+                    refIds.add(row.id);
+                  })
+                  .on("end", () => {
+                    ids.forEach((id: string) => {
+                      if (!refIds.has(id)) {
+                        errors.push(
+                          `Broken foreign key: '${fk}' references '${refTable}' but value '${id}' does not exist in table '${refTable}'.`,
+                        );
+                      }
+                    });
                   });
-                });
+              }
             }
           }
-        }
 
-        if (errors.length > 0) {
-          log(`Validation failed for CSV file: ${filePath}`);
-          reject(new Error(errors.join("\n")));
-        } else {
-          log(`Validation passed for CSV file: ${filePath}`);
-          resolve();
-        }
+          if (errors.length > 0) {
+            log(`Validation failed for CSV file: ${filePath}`);
+            reject(new Error(errors.join("\n")));
+          } else {
+            log(`Validation passed for CSV file: ${filePath}`);
+            resolve();
+          }
+        })();
       })
       .on("error", (error) => {
         reject(

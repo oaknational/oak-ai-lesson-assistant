@@ -67,6 +67,7 @@ const QuizRestoreDialog = ({
   return (
     <RestoreDialog
       closeDialog={closeRestoreDialog}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       handleReset={handleReset}
       titleText="Restore Quiz?"
       bodyText={bodyText}

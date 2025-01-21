@@ -145,8 +145,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   );
   // Ensure that we re-fetch on mount
   useEffect(() => {
-    refetchChat();
-    refetchModerations();
+    void refetchChat();
+    void refetchModerations();
   }, [refetchChat, refetchModerations]);
   const trpcUtils = trpc.useUtils();
 
@@ -246,7 +246,11 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
       invokeActionMessages(response.content);
 
-      trpcUtils.chat.appSessions.getChat.invalidate({ id });
+      void trpcUtils.chat.appSessions.getChat
+        .invalidate({ id })
+        .catch((err) => {
+          log.error("Failed to invalidate chat cache", err);
+        });
 
       setHasFinished(true);
       shouldTrackStreamFinished.current = true;
@@ -295,7 +299,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   useEffect(() => {
     if (hasFinished) {
-      executeQueuedAction();
+      void executeQueuedAction();
     }
   }, [hasFinished, executeQueuedAction]);
 
@@ -308,9 +312,12 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   useEffect(() => {
     if (chat?.startingMessage && !hasAppendedInitialMessage.current) {
-      append({
+      void append({
         content: chat.startingMessage,
         role: "user",
+      }).catch((err) => {
+        log.error("Failed to append initial message", err);
+        toast.error("Failed to start chat");
       });
       hasAppendedInitialMessage.current = true;
     }
@@ -327,7 +334,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
    */
   useEffect(() => {
     if (!hasFinished || !messages) return;
-    trpcUtils.chat.appSessions.getChat.invalidate({ id });
+    void trpcUtils.chat.appSessions.getChat.invalidate({ id }).catch((err) => {
+      log.error("Failed to invalidate chat cache", err);
+    });
     if (shouldTrackStreamFinished.current) {
       lessonPlanTracking.onStreamFinished({
         prevLesson: lessonPlanSnapshot.current,

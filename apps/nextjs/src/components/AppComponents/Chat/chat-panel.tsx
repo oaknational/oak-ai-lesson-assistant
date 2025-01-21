@@ -1,3 +1,7 @@
+import { useCallback } from "react";
+import { toast } from "react-hot-toast";
+
+import * as Sentry from "@sentry/nextjs";
 import { cva } from "class-variance-authority";
 import { useChatStore } from "src/stores/chatStore";
 
@@ -34,24 +38,34 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const hasMessages = !!messages.length;
 
   const { trackEvent } = useAnalytics();
+
+  const handleSubmit = useCallback(
+    (value: string) => {
+      if (isLoading) return;
+      trackEvent("chat:send_message", {
+        id,
+        message: value,
+      });
+
+      append({
+        content: value,
+        role: "user",
+      }).catch((error) => {
+        Sentry.captureException(error);
+        toast.error("Failed to send message");
+      });
+    },
+    [isLoading, trackEvent, id, append],
+  );
+
   const containerClass = `grid w-full grid-cols-1 ${hasMessages ? "sm:grid-cols-1" : ""} peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]`;
+
   return (
     <div className={containerClass}>
       <div className={chatBoxWrap({ hasMessages })}>
         {!isDemoLocked && (
           <PromptForm
-            onSubmit={async (value) => {
-              if (isLoading) return;
-              trackEvent("chat:send_message", {
-                id,
-                message: value,
-              });
-
-              await append({
-                content: value,
-                role: "user",
-              });
-            }}
+            onSubmit={handleSubmit}
             input={input}
             setInput={setInput}
             ailaStreamingStatus={ailaStreamingStatus}
