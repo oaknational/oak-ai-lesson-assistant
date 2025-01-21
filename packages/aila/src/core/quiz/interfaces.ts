@@ -142,20 +142,24 @@ export interface DocumentWrapper {
   relevanceScore: number;
 }
 
-interface QuizSet {
+export interface QuizSet {
   exitQuiz: string[];
   starterQuiz: string[];
 }
 
+export interface QuizIDSource {
+  text: QuizSet;
+  metadata: { lessonSlug: string };
+}
 export interface LessonSlugQuizMapping {
   [lessonSlug: string]: QuizSet;
 }
 
 export interface LessonSlugQuizLookup {
-  getStarterQuiz(lessonSlug: string): string[];
-  getExitQuiz(lessonSlug: string): string[];
-  hasStarterQuiz(lessonSlug: string): boolean;
-  hasExitQuiz(lessonSlug: string): boolean;
+  getStarterQuiz(lessonSlug: string): Promise<string[]>;
+  getExitQuiz(lessonSlug: string): Promise<string[]>;
+  hasStarterQuiz(lessonSlug: string): Promise<boolean>;
+  hasExitQuiz(lessonSlug: string): Promise<boolean>;
 }
 
 // FACTORIES BELOW
