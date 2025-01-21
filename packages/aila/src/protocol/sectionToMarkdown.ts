@@ -1,13 +1,10 @@
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
-import { aiLogger } from "@oakai/logger";
 import { isArray, isNumber, isObject, isString } from "remeda";
 import { z } from "zod";
 
 import { toSentenceCase } from "../../../../apps/nextjs/src/utils/toSentenceCase";
 import type { QuizOptional } from "./schema";
 import { CycleOptionalSchema, QuizOptionalSchema } from "./schema";
-
-const log = aiLogger("chat");
 
 export function sortIgnoringSpecialChars(strings: string[]): string[] {
   // Function to normalize strings by removing *, -, and spaces
