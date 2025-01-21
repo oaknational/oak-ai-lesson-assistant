@@ -80,22 +80,26 @@ export const ActionDropDown = ({
         $gap="space-between-s"
         $background="white"
       >
-        {options.map((option) => {
-          return (
-            <SmallRadioButton
-              id={`${id}-modify-options-${option.enumValue}`}
-              key={`${id}-modify-options-${option.enumValue}`}
-              value={option.enumValue}
-              label={handleLabelText({
-                text: option.label,
-                section: sectionTitle,
-              })}
-              onClick={() => {
-                setSelectedRadio(option);
-              }}
-            />
-          );
-        })}
+        {options.map(
+          (
+            option: ModifyOptions[number] | AdditionalMaterialOptions[number],
+          ) => {
+            return (
+              <SmallRadioButton
+                id={`${id}-modify-options-${option.enumValue}`}
+                key={`${id}-modify-options-${option.enumValue}`}
+                value={option.enumValue}
+                label={handleLabelText({
+                  text: option.label,
+                  section: sectionTitle,
+                })}
+                onClick={() => {
+                  setSelectedRadio(option);
+                }}
+              />
+            );
+          },
+        )}
 
         {selectedRadio?.label === "Other" && (
           <>
@@ -119,12 +123,13 @@ function handleLabelText({
   section: string;
 }): string {
   log.info("section", section);
-  if (
-    section === "Misconceptions" ||
-    section === "Key learning points" ||
-    section === "Learning cycles" ||
-    "additional materials"
-  ) {
+  const pluralSections = [
+    "misconceptions",
+    "key learning points",
+    "learning cycles",
+    "additional materials",
+  ];
+  if (pluralSections.includes(section.toLowerCase())) {
     if (text.split(" ").includes("it")) {
       return text.replace("it", "them");
     }
