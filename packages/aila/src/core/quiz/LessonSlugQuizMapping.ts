@@ -5,14 +5,14 @@ import type { LessonSlugQuizLookup, LessonSlugQuizMapping } from "./interfaces";
 
 const log = aiLogger("aila:quiz");
 
-export abstract class BaseLesssonQuizLookup implements LessonSlugQuizLookup {
+export abstract class BaseLessonQuizLookup implements LessonSlugQuizLookup {
   abstract getStarterQuiz(lessonSlug: string): string[];
   abstract getExitQuiz(lessonSlug: string): string[];
   abstract hasStarterQuiz(lessonSlug: string): boolean;
   abstract hasExitQuiz(lessonSlug: string): boolean;
 }
 
-export class InMemoryLessonQuizLookup extends BaseLesssonQuizLookup {
+export class InMemoryLessonQuizLookup extends BaseLessonQuizLookup {
   private readonly quizMap: LessonSlugQuizMapping;
   constructor(quizMap: LessonSlugQuizMapping) {
     super();
@@ -47,7 +47,8 @@ export class InMemoryLessonQuizLookup extends BaseLesssonQuizLookup {
   }
 }
 
-export class DBLessonQuizLookup extends BaseLesssonQuizLookup {
+// To be implemented later. No factories ect as this will become only implementation.
+export class DBLessonQuizLookup extends BaseLessonQuizLookup {
   constructor(private readonly prisma: PrismaClientWithAccelerate) {
     super();
     this.prisma = prisma;
