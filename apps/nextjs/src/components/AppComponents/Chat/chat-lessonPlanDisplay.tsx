@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
+import { useModerationStore } from "src/stores/moderationStore";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { organiseSections } from "@/lib/lessonPlan/organiseSections";
@@ -41,7 +42,8 @@ export const LessonPlanDisplay = ({
   showLessonMobile,
 }: LessonPlanDisplayProps) => {
   const chat = useLessonChat();
-  const { ailaStreamingStatus, lastModeration } = chat;
+  const { ailaStreamingStatus } = chat;
+  const lastModeration = useModerationStore((state) => state.lastModeration);
   const lessonPlan = {
     ...chat.lessonPlan,
     starterQuiz:

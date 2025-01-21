@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { Message } from "ai";
+import { useModerationStore } from "src/stores/moderationStore";
 
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
@@ -25,9 +26,10 @@ export function ChatList({
   demo,
 }: Readonly<ChatListProps>) {
   const chat = useLessonChat();
+  const persistedModerations = useModerationStore((state) => state.moderations);
+  const lastModeration = useModerationStore((state) => state.lastModeration);
 
-  const { id, messages, ailaStreamingStatus, lastModeration } = chat;
-  const persistedModerations = chat.initialModerations;
+  const { id, messages, ailaStreamingStatus } = chat;
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
@@ -72,7 +74,7 @@ export function ChatList({
   }
 
   return (
-    <div className="relative flex w-full flex-col " onScroll={handleScroll}>
+    <div className="relative flex w-full flex-col" onScroll={handleScroll}>
       <ChatMessagesDisplay
         messages={messages}
         id={id}

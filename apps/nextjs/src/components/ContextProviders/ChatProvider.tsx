@@ -25,6 +25,7 @@ import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { useChatStoreMirror } from "src/stores/chatStore/hooks";
+import { useModerationStoreMirror } from "src/stores/moderationStore/hooks";
 
 import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
@@ -142,6 +143,10 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       staleTime: 0,
     },
   );
+
+  // Hooks to update the Zustand moderation store mirror
+  useModerationStoreMirror(moderations);
+
   // Ensure that we re-fetch on mount
   useEffect(() => {
     refetchChat();

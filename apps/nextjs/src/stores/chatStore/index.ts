@@ -16,6 +16,7 @@ type ChatStore = {
   // Actions
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
+  clearMessages: () => void;
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
@@ -41,7 +42,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     } else {
       // The latest message is streaming, previous messages are stable
       const currentMessageData = messages[messages.length - 1];
-      invariant(currentMessageData, "Should have at least one message");
+      // invariant(currentMessageData, "Should have at least one message");
       const streamingMessage = parseStreamingMessage(
         currentMessageData,
         get().streamingMessage,
@@ -62,6 +63,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     }
   },
   setIsLoading: (isLoading) => set({ isLoading }),
+  clearMessages: () => set({ stableMessages: [], streamingMessage: null }),
 }));
 
 useChatStore.subscribe((state) => {

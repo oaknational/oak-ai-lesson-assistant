@@ -54,6 +54,7 @@ type ChildKey =
   | "lessons"
   | "middleware:auth"
   | "moderation"
+  | "moderation:store"
   | "prompts"
   | "qd"
   | "quiz"

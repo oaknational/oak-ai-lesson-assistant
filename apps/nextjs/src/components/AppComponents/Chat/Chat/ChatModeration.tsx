@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useModerationStore } from "src/stores/moderationStore";
+
 import {
   ChatModerationProvider,
   useChatModeration,
@@ -16,7 +18,8 @@ export type ChatModerationProps = Readonly<{
 const ChatModeration = ({ children }: ChatModerationProps) => {
   const chat = useLessonChat();
 
-  const { id, toxicModeration } = chat;
+  const { id } = chat;
+  const toxicModeration = useModerationStore((state) => state.toxicModeration);
 
   if (toxicModeration) {
     if (!id) throw new Error("Toxic moderation, but no chat id");
