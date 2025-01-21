@@ -1,5 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 import { kv } from "@vercel/kv";
+import { pick } from "remeda";
 import { Md5 } from "ts-md5";
 
 import type {
@@ -49,21 +50,14 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
     quizType: QuizPath,
   ): Promise<T[]> {
     const keyPrefix = "aila:quiz:openai:reranker";
-    const lessonPlanRerankerFields: string[] = [
+    const lessonPlanRerankerFields = [
       "title",
       "topic",
       "learningOutcome",
       "keyLearningPoints",
-    ];
+    ] as const;
 
-    // Extract only the relevant fields from lesson plan
-    const relevantLessonPlanData = lessonPlanRerankerFields.reduce(
-      (acc, field) => {
-        acc[field] = lessonPlan[field as keyof LooseLessonPlan];
-        return acc;
-      },
-      {} as Record<string, unknown>,
-    );
+    const relevantLessonPlanData = pick(lessonPlan, lessonPlanRerankerFields);
 
     // Create hash from relevant data
     const hash = Md5.hashStr(
