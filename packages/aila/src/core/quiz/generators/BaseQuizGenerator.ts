@@ -27,7 +27,10 @@ import type {
 } from "../../../protocol/schema";
 import { QuizQuestionSchema } from "../../../protocol/schema";
 import type { AilaQuizGeneratorService } from "../../AilaServices";
-import { InMemoryLessonQuizLookup } from "../LessonSlugQuizMapping";
+import {
+  DBLessonQuizLookup,
+  InMemoryLessonQuizLookup,
+} from "../LessonSlugQuizMapping";
 import type {
   CustomHit,
   CustomSource,
@@ -75,7 +78,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
     // This can be changed to use our hosted models - use this for dev simplicity.
     this.rerankService = new CohereReranker();
-    this.quizLookup = new InMemoryLessonQuizLookup(lessonSlugQuizMap);
+    this.quizLookup = new DBLessonQuizLookup();
   }
 
   // The below is overly bloated and a midstep in refactoring.
@@ -153,14 +156,14 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     }
   }
 
-  public lessonSlugToQuestionIdsLookupTable(
+  public async lessonSlugToQuestionIdsLookupTable(
     lessonSlug: string,
     quizType: QuizPath,
-  ): string[] {
+  ): Promise<string[]> {
     if (quizType === "/starterQuiz") {
-      return this.quizLookup.getStarterQuiz(lessonSlug);
+      return await this.quizLookup.getStarterQuiz(lessonSlug);
     } else if (quizType === "/exitQuiz") {
-      return this.quizLookup.getExitQuiz(lessonSlug);
+      return await this.quizLookup.getExitQuiz(lessonSlug);
     }
     throw new Error("Invalid quiz type");
   }
@@ -200,7 +203,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     if (!lessonSlug) {
       throw new Error("Lesson slug not found for planId: " + planId);
     }
-    const questionIds = this.lessonSlugToQuestionIdsLookupTable(
+    const questionIds = await this.lessonSlugToQuestionIdsLookupTable(
       lessonSlug,
       quizType,
     );
