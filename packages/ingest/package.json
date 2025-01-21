@@ -17,6 +17,7 @@
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
+    "single-lesson-dry": "pnpm with-env tsx ./src/singleLessonDryRun.ts",
     "ingest": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/index.ts",
     "with-env": "dotenv -e ../../.env --",
     "test": "pnpm with-env jest --colors --config jest.config.mjs",
@@ -35,6 +36,7 @@
     "@paralleldrive/cuid2": "^2.2.2",
     "csv-parser": "^3.0.0",
     "graphql-request": "^6.1.0",
+    "tsx": "^4.16.0",
     "webvtt-parser": "^2.2.0",
     "zod": "3.23.8"
   },

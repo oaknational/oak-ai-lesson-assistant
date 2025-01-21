@@ -880,6 +880,9 @@ importers:
       graphql-request:
         specifier: ^6.1.0
         version: 6.1.0(graphql@16.9.0)
+      tsx:
+        specifier: ^4.16.0
+        version: 4.16.0
       webvtt-parser:
         specifier: ^2.2.0
         version: 2.2.0
