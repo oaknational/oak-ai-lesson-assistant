@@ -1,4 +1,3 @@
-import { CompletedLessonPlanSchema } from "@oakai/aila/src/protocol/schema";
 import fs from "node:fs";
 import path from "node:path";
 import { zodResponseFormat } from "openai/helpers/zod.mjs";
@@ -11,6 +10,8 @@ import { getSystemPrompt } from "./generate-lesson-plans/getSystemPrompt";
 import { getUserPrompt } from "./generate-lesson-plans/getUserPrompt";
 import { graphqlClient } from "./import-lessons/graphql/client";
 import { query } from "./import-lessons/graphql/query";
+import { openai } from "./openai-batches/openai";
+import { CompletedLessonPlanSchemaWithoutLength } from "./zod-schema/completionSchema";
 import { type RawLesson, RawLessonSchema } from "./zod-schema/zodSchema";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -32,16 +33,31 @@ async function singleLessonDryRun() {
       sourcePartsToInclude: "all",
       captions,
     });
-    const model = "gpt-4o-2024-08-06";
-    const temperature = 0.7;
+
     const responseFormat = zodResponseFormat(
-      CompletedLessonPlanSchema,
+      CompletedLessonPlanSchemaWithoutLength,
       "lesson_plan",
     );
 
-    // Call openai completion endpoint
-    const response = {};
-    const lessonPlan = {};
+    const completion = await openai.beta.chat.completions.parse({
+      model: "gpt-4o-2024-08-06",
+      temperature: 0.7,
+      messages: [
+        { role: "system", content: systemPrompt },
+        {
+          role: "user",
+          content: userPrompt,
+        },
+      ],
+      response_format: responseFormat,
+    });
+
+    const lessonPlan = completion?.choices?.[0]?.message.parsed;
+
+    if (!lessonPlan) {
+      console.log(completion);
+      throw new Error("Failed to generate lesson plan");
+    }
 
     const DIR = path.join(__dirname, `_data/output/${rawLesson.lessonSlug}`);
 
