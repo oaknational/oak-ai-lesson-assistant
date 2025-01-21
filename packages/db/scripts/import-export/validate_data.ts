@@ -88,8 +88,6 @@ const CsvRowSchema = z
   })
   .passthrough();
 
-type CsvRow = z.infer<typeof CsvRowSchema>;
-
 const validateCSV = (
   filePath: string,
   nonNullable: string[],
