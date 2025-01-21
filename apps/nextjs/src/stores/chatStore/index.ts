@@ -42,7 +42,6 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     } else {
       // The latest message is streaming, previous messages are stable
       const currentMessageData = messages[messages.length - 1];
-      // invariant(currentMessageData, "Should have at least one message");
       invariant(currentMessageData, "Should have at least one message");
       const streamingMessage = parseStreamingMessage(
         currentMessageData,

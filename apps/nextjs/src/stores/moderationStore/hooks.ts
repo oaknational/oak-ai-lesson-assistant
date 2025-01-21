@@ -8,7 +8,7 @@ export const useModerationStoreMirror = (
   moderation: Moderation[] | undefined,
 ) => {
   const setModeration = useModerationStore(
-    (state) => state.initialiseModerations,
+    (state) => state.updateModerationState,
   );
 
   useEffect(() => {
