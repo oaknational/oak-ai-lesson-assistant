@@ -142,7 +142,12 @@ Should bear in mind the following requirements:
     imagePrompt: z
       .string()
       .describe(
-        "A prompt to generate an image, or a search term to use to find an image or video. Should tell the teacher what images to search for to display on the slides. Written in the EXPERT_TEACHER voice.",
+        "A prompt to generate an image from DAL-E. Think about what makes a good prompt for image generation. Ensure the prompt is as descriptive as possible, it should be multiple sentences describing the image exactly and should be a classroom appropriate image. Do not annotate the image with any text or symbols and the preference is for the image to be photo realistic. If it is not appropriate or possible to be photo realistic then make that judgment. If it is possible to be photorealistic prefix the prompt with 'A photograph of...'.  Written in the EXPERT_TEACHER voice.",
+      ),
+    imageSearch: z
+      .string()
+      .describe(
+        "A search term to use to find an image or video. Should tell the teacher what images to search for to display on the slides. Written in the EXPERT_TEACHER voice.",
       ),
     slideText: z
       .string()
@@ -158,6 +163,7 @@ export const ExplanationOptionalSchema = z.object({
   spokenExplanation: z.union([z.string(), z.array(z.string())]).optional(), // (about five or six sentences or 5-12 markdown list items)
   accompanyingSlideDetails: z.string().optional(), // (a description of the image or video to be used)
   imagePrompt: z.string().optional(), // (a prompt to generate an image, or a search term to use to find an image or video),
+  imageSearch: z.string().optional(), // (a search term to use to find an image or video)
   slideText: z.string().optional(), // The text that would appear on the slide when the teacher delivers this part of the lesson
 });
 

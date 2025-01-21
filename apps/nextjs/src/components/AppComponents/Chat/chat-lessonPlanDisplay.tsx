@@ -25,7 +25,7 @@ function basedOnTitle(basedOn: string | BasedOnOptional) {
 }
 
 const displayStyles = cva(
-  "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24 ",
+  "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24",
 );
 
 export const LessonPlanDisplay = ({
@@ -50,6 +50,7 @@ export const LessonPlanDisplay = ({
       chat.lessonPlan._experimental_exitQuizMathsV0 || chat.lessonPlan.exitQuiz,
   };
 
+  console.log("*****************lessonPlan", lessonPlan.cycle1);
   const [userHasCancelledAutoScroll, setUserHasCancelledAutoScroll] =
     useState(false);
 
