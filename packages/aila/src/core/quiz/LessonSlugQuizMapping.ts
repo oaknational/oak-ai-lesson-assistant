@@ -1,10 +1,8 @@
 import { Client } from "@elastic/elasticsearch";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
-import type { QuizPath } from "protocol/schema";
 
-import type { QuizIDSource, QuizSet } from "./interfaces";
-import type { LessonSlugQuizLookup, LessonSlugQuizMapping } from "./interfaces";
+import type { QuizPath } from "../../protocol/schema";
+import type { LessonSlugQuizLookup, QuizIDSource, QuizSet } from "./interfaces";
 
 const log = aiLogger("aila:quiz");
 
