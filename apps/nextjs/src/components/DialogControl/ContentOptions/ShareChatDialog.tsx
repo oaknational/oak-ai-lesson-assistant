@@ -39,19 +39,19 @@ const ShareChat = ({
   const { mutateAsync, isSuccess, isLoading, isError } =
     trpc.chat.appSessions.shareChat.useMutation();
 
-  const attemptToShareChat = async () => {
-    track.lessonPlanShared({
-      ...getLessonTrackingProps({ lesson }),
-      chatId,
-      componentType: "go_to_share_page_button",
-    });
-
-    try {
-      await mutateAsync({ id: chatId });
-    } catch (error) {
-      Sentry.captureException(error, { extra: { chatId } });
-    }
-  };
+  const attemptToShareChat = useCallback(() => {
+    mutateAsync({ id: chatId })
+      .then(() => {
+        track.lessonPlanShared({
+          ...getLessonTrackingProps({ lesson }),
+          chatId,
+          componentType: "go_to_share_page_button",
+        });
+      })
+      .catch((error) => {
+        Sentry.captureException(error, { extra: { chatId } });
+      });
+  }, [track, lesson, chatId, mutateAsync]);
 
   function handleShareButtonState() {
     if (isLoading) {

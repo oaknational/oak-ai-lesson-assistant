@@ -5,7 +5,6 @@ import {
   CYCLE_TAGS,
   deleteSlides,
   type CycleNumber,
-  type SpeakerNotesTag,
 } from "./gSuite/slides/deleteSlides";
 import { populateSlides } from "./gSuite/slides/populateSlides";
 import type { LessonSlidesInputData } from "./schema/input.schema";
