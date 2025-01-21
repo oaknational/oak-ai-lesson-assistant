@@ -10,7 +10,11 @@ import { getCaptionsFileNameForLesson } from "./captions/getCaptionsFileNameForL
 import { getSystemPrompt } from "./generate-lesson-plans/getSystemPrompt";
 import { getUserPrompt } from "./generate-lesson-plans/getUserPrompt";
 import { graphqlClient } from "./import-lessons/graphql/client";
-import { query } from "./import-lessons/graphql/query";
+import {
+  query,
+  type QueryVariables,
+  type QueryWhere,
+} from "./import-lessons/graphql/query";
 import { openai } from "./openai-batches/openai";
 import { type RawLesson, RawLessonSchema } from "./zod-schema/zodSchema";
 
@@ -83,10 +87,21 @@ async function singleLessonDryRun() {
 }
 
 async function fetchAndParseLesson(): Promise<RawLesson> {
-  const lessonData = await graphqlClient.request<{ lessons: unknown[] }>(
-    query,
-    { limit: 1, offset: 0 },
-  );
+  const where: QueryWhere = {
+    // videoTitle: {
+    //   _is_null: false,
+    // },
+    // isLegacy: {
+    //   _is_null: true,
+    // },
+    lessonSlug: {
+      _eq: "mansa-musas-pilgrimage",
+    },
+  };
+  const lessonData = await graphqlClient.request<
+    { lessons: unknown[] },
+    QueryVariables
+  >(query, { limit: 1, offset: 0, where });
 
   const [lesson] = lessonData.lessons;
 
