@@ -32,7 +32,7 @@ export const OnBoarding = () => {
         window.location.href = "/?reason=metadata-upgraded";
       }
     }
-    handleDemoStatusSet();
+    void handleDemoStatusSet();
   }, [userHasAlreadyAcceptedTerms, setDemoStatus, reloadSession]);
 
   if (userHasAlreadyAcceptedTerms) {

@@ -1,9 +1,16 @@
-import type { Dispatch, RefObject, SetStateAction } from "react";
+import {
+  useCallback,
+  type Dispatch,
+  type RefObject,
+  type SetStateAction,
+} from "react";
+import { toast } from "react-hot-toast";
 
 import { aiLogger } from "@oakai/logger";
 import { OakP, OakRadioGroup } from "@oaknational/oak-components";
 import type { $Enums, AilaUserModificationAction } from "@prisma/client";
 import { TextArea } from "@radix-ui/themes";
+import * as Sentry from "@sentry/nextjs";
 
 import type {
   AdditionalMaterialOptions,
@@ -48,9 +55,18 @@ export const ActionDropDown = ({
   dropdownRef,
   id,
 }: DropDownProps) => {
+  const performSubmit = useCallback(
+    (option: FeedbackOption<AilaUserModificationAction>) => {
+      handleSubmit(option).catch((error) => {
+        Sentry.captureException(error, { extra: { id } });
+        toast.error("Failed to submit feedback");
+      });
+    },
+    [handleSubmit, id],
+  );
   return (
     <DropDownFormWrapper
-      onClickActions={handleSubmit}
+      onClickActions={performSubmit}
       setIsOpen={setIsOpen}
       selectedRadio={selectedRadio}
       title={sectionTitle}

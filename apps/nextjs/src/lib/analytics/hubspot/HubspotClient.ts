@@ -22,7 +22,7 @@ export const hubspotClient: AnalyticsService<null, "hubspot"> = {
   name: "hubspot",
 
   init: async () => {
-    return null;
+    return Promise.resolve(null);
   },
 
   identify: (userId, properties) => {

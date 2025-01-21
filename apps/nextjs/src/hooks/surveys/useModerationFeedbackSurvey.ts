@@ -38,7 +38,7 @@ export const useModerationFeedbackSurvey = ({
       return;
     }
 
-    feedbackQuery.mutate({
+    await feedbackQuery.mutateAsync({
       moderationId: moderation.id,
       comment,
     });
