@@ -35,7 +35,7 @@ const main = async () => {
          *  Use function from OWA to capture transcripts from GCP based on video title
          */
         await getTranscriptForVideoTitle(parsedLesson?.videoTitle).then(
-          (transcriptAndCaption) => {
+          async (transcriptAndCaption) => {
             log.info("lesson", lesson?.slug);
             const content = {
               ...parsedLesson,
@@ -48,8 +48,8 @@ const main = async () => {
              *  Update newLessonContent with transcript
              */
             if (typeof lessonId === "string") {
-              updateNewLessonContent(lessonId, content);
-              updateCaptions(lessonId, transcriptAndCaption?.caption);
+              await updateNewLessonContent(lessonId, content);
+              await updateCaptions(lessonId, transcriptAndCaption?.caption);
             }
           },
         );

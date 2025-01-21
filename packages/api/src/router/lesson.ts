@@ -185,7 +185,7 @@ export const lessonRouter = router({
         summary = await ctx.prisma.lessonSummary.create({
           data: { lessonId: input.id },
         });
-        inngest.send({
+        await inngest.send({
           name: "app/lesson.summarise",
           data: { lessonId: input.id, lessonSummaryId: summary.id },
         });
