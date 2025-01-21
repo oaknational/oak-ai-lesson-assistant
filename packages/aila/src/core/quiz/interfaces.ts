@@ -157,6 +157,7 @@ export interface LessonSlugQuizLookup {
   hasStarterQuiz(lessonSlug: string): boolean;
   hasExitQuiz(lessonSlug: string): boolean;
 }
+
 // FACTORIES BELOW
 export interface FullServiceFactory {
   create(settings: QuizServiceSettings): FullQuizService;
