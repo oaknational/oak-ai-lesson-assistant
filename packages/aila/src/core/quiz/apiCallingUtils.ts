@@ -5,12 +5,13 @@
 // Beta chat.
 
 // Decorates (without experimental decorators) to add a random delay to a function.
-export function withRandomDelay(
-  fn: (...args: any[]) => Promise<any>,
+// Adds a random delay to a function
+export function withRandomDelay<TArgs extends unknown[], TResult>(
+  fn: (...args: TArgs) => Promise<TResult>,
   minDelay: number,
   maxDelay: number,
-) {
-  return async function (...args: any[]): Promise<any> {
+): (...args: TArgs) => Promise<TResult> {
+  return async function (...args: TArgs): Promise<TResult> {
     const delay = Math.floor(
       Math.random() * (maxDelay - minDelay + 1) + minDelay,
     );
@@ -20,12 +21,13 @@ export function withRandomDelay(
   };
 }
 
+// Example usage:
 // const delayedFetchData = withRandomDelay(fetchData, 1000, 5000);
 
-export async function processArray<T>(
+export async function processArray<T, TResult>(
   array: T[],
-  asyncFunction: (item: T) => Promise<any>,
-): Promise<any[]> {
+  asyncFunction: (item: T) => Promise<TResult>,
+): Promise<TResult[]> {
   const promises = array.map((item) => asyncFunction(item));
   return Promise.all(promises);
 }
