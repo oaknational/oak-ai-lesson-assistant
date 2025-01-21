@@ -151,6 +151,12 @@ export interface LessonSlugQuizMapping {
   [lessonSlug: string]: QuizSet;
 }
 
+export interface LessonSlugQuizLookup {
+  getStarterQuiz(lessonSlug: string): string[];
+  getExitQuiz(lessonSlug: string): string[];
+  hasStarterQuiz(lessonSlug: string): boolean;
+  hasExitQuiz(lessonSlug: string): boolean;
+}
 // FACTORIES BELOW
 export interface FullServiceFactory {
   create(settings: QuizServiceSettings): FullQuizService;
