@@ -120,7 +120,7 @@ const validateCSV = (
         }
       })
       .on("end", () => {
-        void (async () => {
+        void (() => {
           log(`Completed reading CSV file: ${filePath}`);
 
           // Validate foreign keys in CSV
