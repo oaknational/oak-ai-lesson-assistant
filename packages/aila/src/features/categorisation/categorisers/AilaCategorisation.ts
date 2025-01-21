@@ -131,7 +131,7 @@ Thank you and happy classifying!`;
       );
       log.info("Categorisation results", parsedResponse);
       return parsedResponse;
-    } catch (e) {
+    } catch {
       return { error: "Error parsing response" };
     }
   }
