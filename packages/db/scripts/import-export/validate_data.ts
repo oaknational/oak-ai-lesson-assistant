@@ -9,6 +9,7 @@ import csvParser from "csv-parser";
 import dotenv from "dotenv";
 import * as fs from "fs";
 import * as path from "path";
+import { z } from "zod";
 
 import { prisma } from "../..";
 
@@ -194,10 +195,11 @@ const main = async () => {
       }
 
       try {
+        const validatedConstraints = TableConstraintsSchema.parse(constraints);
         await validateCSV(
           filePath,
-          constraints.nonNullable,
-          constraints.foreignKeys,
+          validatedConstraints.nonNullable,
+          validatedConstraints.foreignKeys,
         );
         log(`Validation passed for table '${table}'`);
       } catch (errors) {
@@ -227,3 +229,9 @@ main()
   });
 
 export {};
+
+const TableConstraintsSchema = z.object({
+  id: z.string(),
+  nonNullable: z.array(z.string()),
+  foreignKeys: z.record(z.string(), z.string()),
+});
