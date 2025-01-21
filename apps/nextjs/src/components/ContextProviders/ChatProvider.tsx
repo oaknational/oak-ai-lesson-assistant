@@ -24,6 +24,7 @@ import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
+import { useChatStoreMirror } from "src/stores/chatStore/hooks";
 
 import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
@@ -174,6 +175,11 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const { invokeActionMessages } = useActionMessages();
 
   /******************* Streaming of all chat starts from messages here *******************/
+  const initialMessages = useMemo(() => {
+    return chat?.messages?.filter((m) =>
+      isValidMessageRole(m.role),
+    ) as Message[];
+  }, [chat?.messages]);
 
   const {
     messages,
@@ -186,9 +192,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     setMessages,
   } = useChat({
     sendExtraMessageFields: true,
-    initialMessages: (chat?.messages ?? []).filter((m) =>
-      isValidMessageRole(m.role),
-    ) as Message[],
+    initialMessages,
     generateId: () => generateMessageId({ role: "user" }),
     id,
     body: {
@@ -252,6 +256,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
     },
   });
+
+  // Hooks to update the Zustand chat store mirror
+  useChatStoreMirror(messages, isLoading);
 
   useEffect(() => {
     /**
