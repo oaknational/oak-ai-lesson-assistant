@@ -15,42 +15,6 @@ export abstract class BaseLessonQuizLookup implements LessonSlugQuizLookup {
   abstract hasExitQuiz(lessonSlug: string): Promise<boolean>;
 }
 
-export class InMemoryLessonQuizLookup extends BaseLessonQuizLookup {
-  private readonly quizMap: LessonSlugQuizMapping;
-  constructor(quizMap: LessonSlugQuizMapping) {
-    super();
-    this.quizMap = quizMap;
-  }
-
-  // These are errors as currently we expect a quiz for every lesson slug. Where these are not available in legacy lessons, we have filled with a placeholder quiz with empty quizzes.
-  async getStarterQuiz(lessonSlug: string): Promise<string[]> {
-    const starterQuiz = this.quizMap[lessonSlug]?.starterQuiz;
-    if (!starterQuiz) {
-      // log.error(`No starter quiz found for lesson slug: ${lessonSlug}`);
-      throw new Error(`No starter quiz found for lesson slug: ${lessonSlug}`);
-    }
-    return starterQuiz;
-  }
-
-  async getExitQuiz(lessonSlug: string): Promise<string[]> {
-    const exitQuiz = this.quizMap[lessonSlug]?.exitQuiz;
-    if (!exitQuiz) {
-      // log.error(`No exit quiz found for lesson slug: ${lessonSlug}`);
-      throw new Error(`No exit quiz found for lesson slug: ${lessonSlug}`);
-    }
-    return exitQuiz;
-  }
-
-  async hasStarterQuiz(lessonSlug: string): Promise<boolean> {
-    return this.quizMap[lessonSlug]?.starterQuiz !== undefined;
-  }
-
-  async hasExitQuiz(lessonSlug: string): Promise<boolean> {
-    return this.quizMap[lessonSlug]?.exitQuiz !== undefined;
-  }
-}
-
-// To be implemented later. No factories ect as this will become only implementation.
 export class DBLessonQuizLookup extends BaseLessonQuizLookup {
   private readonly client: Client;
 

@@ -27,10 +27,7 @@ import type {
 } from "../../../protocol/schema";
 import { QuizQuestionSchema } from "../../../protocol/schema";
 import type { AilaQuizGeneratorService } from "../../AilaServices";
-import {
-  DBLessonQuizLookup,
-  InMemoryLessonQuizLookup,
-} from "../LessonSlugQuizMapping";
+import { DBLessonQuizLookup } from "../LessonSlugQuizMapping";
 import type {
   CustomHit,
   CustomSource,

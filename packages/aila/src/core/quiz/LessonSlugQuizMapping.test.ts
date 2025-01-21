@@ -1,10 +1,6 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import {
-  DBLessonQuizLookup,
-  InMemoryLessonQuizLookup,
-} from "./LessonSlugQuizMapping";
-import type { LessonSlugQuizMapping } from "./interfaces";
+import { DBLessonQuizLookup } from "./LessonSlugQuizMapping";
 
 describe("DBLessonQuizLookup", () => {
   let dbLookup: DBLessonQuizLookup;
