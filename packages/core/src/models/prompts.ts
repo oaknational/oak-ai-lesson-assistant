@@ -158,7 +158,7 @@ export class Prompts {
     try {
       result = JSON.parse(completion.content as string);
     } catch (err) {
-      this.logger.error(meta, "Unable to parse completion JSON");
+      this.logger.error(meta, "Unable to parse completion JSON", err);
       throw new LLMCompletionError("Couldn't parse completion JSON", meta);
     }
 
