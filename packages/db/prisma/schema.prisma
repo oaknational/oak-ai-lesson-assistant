@@ -66,28 +66,6 @@ model Prompt {
   @@schema("public")
 }
 
-// Clerk users
-// Clerk is to be considered the source of truth for this table,
-// but we're storing the derived data as joining against clerk's
-// API makes analysis and filtering harder
-//
-// n.b. user_id columns are not currently set as relations
-//      but will be in future once this is complete
-model User {
-  id        String   @id // Defined by clerk, aka user_*****
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  isOakUser Boolean @map("is_oak_user")
-
-  // Email addresses should ONLY be stored when isOakUser is
-  // true. A constraint has been manually added via migrations
-  // to make sure we only track internal users emails
-  emailAddress String? @map("email_address")
-
-  @@map("users")
-  @@schema("public")
-}
 
 model KeyStage {
   id                    String                  @id @default(cuid())
