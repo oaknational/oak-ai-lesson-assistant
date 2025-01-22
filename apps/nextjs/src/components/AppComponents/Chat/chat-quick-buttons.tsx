@@ -66,7 +66,7 @@ const QuickActionButtons = () => {
     queueUserAction("regenerate");
   }, [queueUserAction, lessonPlanTracking, messages, trackEvent, id]);
 
-  const handleContinue = useCallback(async () => {
+  const handleContinue = useCallback(() => {
     trackEvent("chat:continue");
     lessonPlanTracking.onClickContinue();
     queueUserAction("continue");
@@ -127,8 +127,8 @@ const QuickActionButtons = () => {
         size="sm"
         variant="primary"
         disabled={!shouldAllowUserAction}
-        onClick={async () => {
-          await handleContinue();
+        onClick={() => {
+          handleContinue();
         }}
         testId="chat-continue"
       >

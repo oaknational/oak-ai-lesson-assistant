@@ -99,6 +99,7 @@ const QuizContent = ({
                 canExport={canExport}
                 hasQuestions={hasQuestions}
                 toggleExportMenu={toggleExportMenu}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 shareContent={shareContent}
                 shareId={shareId}
                 shareLoading={shareLoading}
