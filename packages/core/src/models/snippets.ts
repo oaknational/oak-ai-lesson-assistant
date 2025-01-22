@@ -397,7 +397,7 @@ Respond to the prompt as if it is the main prompt you are being given rather tha
       },
     });
 
-    inngest.send({
+    await inngest.send({
       name: "app/snippet.embed",
       data: { snippetId: snippet.id },
     });

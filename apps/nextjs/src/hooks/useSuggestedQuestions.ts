@@ -77,6 +77,7 @@ const useSuggestedQuestions = ({
     const { otherQuestions, extraContext } = extraQuizPromptInfo({
       state,
     });
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     requestSuggestedQuestionsGeneration({
       lastGenerationId: null,
       // lastGenerationId: null,

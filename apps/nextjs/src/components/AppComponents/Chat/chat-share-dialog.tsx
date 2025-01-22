@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 
 import { aiLogger } from "@oakai/logger";
 import type { DialogProps } from "@radix-ui/react-dialog";
+import * as Sentry from "@sentry/nextjs";
 
 import { Button } from "@/components/AppComponents/Chat/ui/button";
 import {
@@ -59,7 +60,8 @@ export function ChatShareDialog({
       toast.success("Link copied to clipboard");
     },
     onError(error) {
-      log.error(error); // TODO sentry?
+      log.error(error);
+      Sentry.captureException(error, { extra: { chatId: chat.id } });
       toast.error("Failed to share chat");
     },
   });
