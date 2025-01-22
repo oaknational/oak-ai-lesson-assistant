@@ -3,9 +3,12 @@ import type {
   QuizPath,
   QuizQuestion,
 } from "../../../protocol/schema";
-import { cachedQuiz } from "../fixtures/CachedImageQuiz";
+import { cachedQuiz, cachedBadQuiz } from "../fixtures/CachedImageQuiz";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
-import { testRatingSchema } from "./RerankerStructuredOutputSchema";
+import {
+  testRatingSchema,
+  type TestRating,
+} from "./RerankerStructuredOutputSchema";
 import { TestSchemaReranker } from "./SchemaReranker";
 
 describe("TestSchemaReranker", () => {
@@ -57,5 +60,33 @@ describe("TestSchemaReranker", () => {
       expect(testRatingSchema.safeParse(item).success).toBe(true);
     });
     console.log("result", JSON.stringify(result));
+  });
+});
+
+describe("TestSchemaReranker Integration", () => {
+  jest.setTimeout(60000);
+  it("should evaluate starter quiz and return a valid schema", async () => {
+    const reranker = new TestSchemaReranker();
+    const quizArray = [cachedQuiz, cachedBadQuiz];
+    const result = await reranker
+      .evaluateStarterQuiz(
+        quizArray,
+        CircleTheoremLesson,
+        testRatingSchema,
+        "/starterQuiz",
+      )
+      .then((schemas) =>
+        schemas.map((schema) => testRatingSchema.parse(schema)),
+      );
+    console.log("result", JSON.stringify(result));
+    expect(result).toBeDefined();
+    expect(result.length).toBe(2);
+    expect(result[0]).toBeDefined();
+    expect(result[1]).toBeDefined();
+    if (result[0] && result[1]) {
+      expect(result[0].rating).toBeDefined();
+      expect(result[1].rating).toBeDefined();
+      expect(result[0].rating).toBeGreaterThan(result[1].rating);
+    }
   });
 });

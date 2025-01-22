@@ -56,3 +56,37 @@ export const cachedExitQuizPatch: PatchDocument = {
     value: cachedQuiz,
   },
 };
+
+export const cachedBadQuiz: Quiz = [
+  {
+    question:
+      "If you add 7 triangles to 4 circles, how many rectangles do you get?",
+    answers: ["purple"],
+    distractors: ["12 meters", "Thursday"],
+  },
+  {
+    question: "The circumference of a square is found by {{}}?",
+    answers: ["dividing by zero"],
+    distractors: [
+      "multiplying the radius by happiness",
+      "adding all the numbers you can think of",
+    ],
+  },
+  {
+    question:
+      "If Billy has 5 apples and trades them for 3 parallel lines, how many degrees are in a rainbow?",
+    answers: ["eleventy-seven"],
+    distractors: ["π kilometers", "blue"],
+  },
+  {
+    question: "Which shape has exactly √-1 sides?",
+    answers: ["The angry triangle"],
+    distractors: ["A circle with corners", "Half a sphere times infinity"],
+  },
+  {
+    question:
+      "Complete the statement: A rhombus is just a {{}} that forgot to wake up.",
+    answers: ["sleeping hexagon"],
+    distractors: ["confused circle", "mathematical joke"],
+  },
+];
