@@ -1,8 +1,12 @@
+import { aiLogger } from "@oakai/logger";
+
 import type { AilaRagRelevantLesson } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { testRatingSchema } from "../rerankers/RerankerStructuredOutputSchema";
 import type { QuizBuilderSettings } from "../schema";
 import { CompositeFullQuizServiceBuilder } from "./CompositeFullQuizServiceBuilder";
+
+const log = aiLogger("aila:quiz");
 
 describe("CompositeFullQuizServiceBuilder", () => {
   jest.setTimeout(60000);
@@ -41,7 +45,7 @@ describe("CompositeFullQuizServiceBuilder", () => {
     expect(quiz[0]?.question).toBeDefined();
     expect(quiz[0]?.answers).toBeDefined();
     expect(quiz[0]?.distractors).toBeDefined();
-    console.log(JSON.stringify(quiz, null, 2));
+    log.info(JSON.stringify(quiz, null, 2));
   });
 
   it("Should work with a rag quiz generator", async () => {
@@ -79,7 +83,7 @@ describe("CompositeFullQuizServiceBuilder", () => {
     expect(quiz[0]?.question).toBeDefined();
     expect(quiz[0]?.answers).toBeDefined();
     expect(quiz[0]?.distractors).toBeDefined();
-    console.log(JSON.stringify(quiz, null, 2));
+    log.info(JSON.stringify(quiz, null, 2));
   });
   it("Should work with a schema reranker", async () => {
     const builder = new CompositeFullQuizServiceBuilder();
@@ -99,7 +103,7 @@ describe("CompositeFullQuizServiceBuilder", () => {
     expect(quiz[0]?.question).toBeDefined();
     expect(quiz[0]?.answers).toBeDefined();
     expect(quiz[0]?.distractors).toBeDefined();
-    console.log(JSON.stringify(quiz, null, 2));
+    log.info(JSON.stringify(quiz, null, 2));
   });
   // it("should work with rag and basedonrag", async () => {
   //   const builder = new CompositeFullQuizServiceBuilder();
@@ -135,7 +139,7 @@ describe("CompositeFullQuizServiceBuilder", () => {
   //   expect(quiz[0]?.question).toBeDefined();
   //   expect(quiz[0]?.answers).toBeDefined();
   //   expect(quiz[0]?.distractors).toBeDefined();
-  //   console.log(JSON.stringify(quiz, null, 2));
+  //   log.info(JSON.stringify(quiz, null, 2));
   // });
 
   // it("should work with all generators", async () => {
@@ -163,7 +167,7 @@ describe("CompositeFullQuizServiceBuilder", () => {
   //   expect(quiz[0]?.question).toBeDefined();
   //   expect(quiz[0]?.answers).toBeDefined();
   //   expect(quiz[0]?.distractors).toBeDefined();
-  //   console.log("Full On Quiz");
-  //   console.log(JSON.stringify(quiz, null, 2));
+  //   log.info("Full On Quiz");
+  //   log.info(JSON.stringify(quiz, null, 2));
   // });
 });
