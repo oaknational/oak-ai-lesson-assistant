@@ -1,3 +1,10 @@
+## [1.22.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.22.0...v1.22.1) (2025-01-22)
+
+
+### Bug Fixes
+
+* async / promise linting issues ([#489](https://github.com/oaknational/oak-ai-lesson-assistant/issues/489)) ([3083366](https://github.com/oaknational/oak-ai-lesson-assistant/commit/30833665b7cf7074bb5273f8ccf968adcddde3ef))
+
 # [1.22.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.21.0...v1.22.0) (2025-01-20)
 
 
