@@ -61,6 +61,28 @@ describe("TestSchemaReranker", () => {
     });
     console.log("result", JSON.stringify(result));
   });
+
+  it("should handle empty quiz array", async () => {
+    const emptyQuizzes: QuizQuestion[][] = [];
+    const result = await reranker.rerankQuiz(emptyQuizzes);
+    expect(result).toEqual([]);
+
+    const starterResult = await reranker.evaluateStarterQuiz(
+      emptyQuizzes,
+      mockLessonPlan,
+      testRatingSchema,
+      mockQuizType,
+    );
+    expect(starterResult).toEqual([]);
+
+    const exitResult = await reranker.evaluateExitQuiz(
+      emptyQuizzes,
+      mockLessonPlan,
+      testRatingSchema,
+      mockQuizType,
+    );
+    expect(exitResult).toEqual([]);
+  });
 });
 
 describe("TestSchemaReranker Integration", () => {
