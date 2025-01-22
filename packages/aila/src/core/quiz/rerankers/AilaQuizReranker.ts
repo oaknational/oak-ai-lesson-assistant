@@ -9,7 +9,7 @@ import type {
   QuizQuestion,
 } from "../../../protocol/schema";
 import { type BaseSchema } from "../ChoiceModels";
-// import { evaluateQuiz } from "../OpenAIRanker";
+import { evaluateQuiz } from "../OpenAIRanker";
 import { processArray, withRandomDelay } from "../apiCallingUtils";
 import type { AilaQuizReranker } from "../interfaces";
 
@@ -34,13 +34,28 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
     ratingSchema: typeof BaseSchema,
     quizType: QuizPath,
   ): Promise<T[]> {
-    // Placeholder implementation
-    const mockRatings = quizArray.map(() => ({
-      rating: Math.random() * 10,
-      explanation: "Placeholder rating explanation",
-    }));
+    // Decorates to delay the evaluation of each quiz. There is probably a better library for this.
+    const delayedRetrieveQuiz = withRandomDelay(
+      async (quiz: QuizQuestion[]) =>
+        await evaluateQuiz(lessonPlan, quiz, 1500, ratingSchema, quizType),
+      1000,
+      5000,
+    );
+    // Process array allows async eval in parallel, the above decorator tries to prevent rate limiting.
+    // TODO: GCLOMAX - make these generic types safer.
+    // In this case the output is coming from the openAI endpoint. We need to unpack the output and unparse it.
 
-    return mockRatings as unknown as T[];
+    const outputRatings: any[] = await processArray(
+      quizArray,
+      delayedRetrieveQuiz,
+    );
+    const extractedOutputRatings = outputRatings.map(
+      (item) => item.choices[0].message.parsed,
+    );
+    // const event = completion.choices[0].message.parsed;
+
+    // const bestRating = selectHighestRated(outputRatings, (item) => item.rating);
+    return extractedOutputRatings;
   }
 
   public async cachedEvaluateQuizArray(
