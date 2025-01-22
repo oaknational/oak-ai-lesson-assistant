@@ -81,6 +81,26 @@ describe("CompositeFullQuizServiceBuilder", () => {
     expect(quiz[0]?.distractors).toBeDefined();
     console.log(JSON.stringify(quiz, null, 2));
   });
+  it("Should work with a schema reranker", async () => {
+    const builder = new CompositeFullQuizServiceBuilder();
+    const settings: QuizBuilderSettings = {
+      quizRatingSchema: testRatingSchema,
+      quizSelector: "simple",
+      quizReranker: "schema-reranker",
+      quizGenerators: ["basedOnRag"],
+    };
+    const service = builder.build(settings);
+    const quiz = await service.createBestQuiz(
+      "/starterQuiz",
+      CircleTheoremLesson,
+    );
+    expect(quiz).toBeDefined();
+    expect(quiz.length).toBeGreaterThan(0);
+    expect(quiz[0]?.question).toBeDefined();
+    expect(quiz[0]?.answers).toBeDefined();
+    expect(quiz[0]?.distractors).toBeDefined();
+    console.log(JSON.stringify(quiz, null, 2));
+  });
   // it("should work with rag and basedonrag", async () => {
   //   const builder = new CompositeFullQuizServiceBuilder();
   //   const settings: QuizBuilderSettings = {
