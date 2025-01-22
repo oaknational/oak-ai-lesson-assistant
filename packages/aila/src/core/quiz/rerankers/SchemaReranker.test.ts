@@ -1,15 +1,16 @@
+import { aiLogger } from "@oakai/logger";
+
 import type {
   LooseLessonPlan,
   QuizPath,
   QuizQuestion,
 } from "../../../protocol/schema";
-import { cachedQuiz, cachedBadQuiz } from "../fixtures/CachedImageQuiz";
+import { cachedBadQuiz, cachedQuiz } from "../fixtures/CachedImageQuiz";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
-import {
-  testRatingSchema,
-  type TestRating,
-} from "./RerankerStructuredOutputSchema";
+import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 import { TestSchemaReranker } from "./SchemaReranker";
+
+const log = aiLogger("aila:quiz");
 
 describe("TestSchemaReranker", () => {
   jest.setTimeout(60000);
@@ -44,7 +45,7 @@ describe("TestSchemaReranker", () => {
     result.forEach((item) => {
       expect(testRatingSchema.safeParse(item).success).toBe(true);
     });
-    console.log("result", JSON.stringify(result));
+    log.info("result", JSON.stringify(result));
   });
 
   it("should evaluate exit quiz and return a valid schema", async () => {
@@ -59,7 +60,7 @@ describe("TestSchemaReranker", () => {
     result.forEach((item) => {
       expect(testRatingSchema.safeParse(item).success).toBe(true);
     });
-    console.log("result", JSON.stringify(result));
+    log.info("result", JSON.stringify(result));
   });
 
   it("should handle empty quiz array", async () => {
@@ -100,7 +101,7 @@ describe("TestSchemaReranker Integration", () => {
       .then((schemas) =>
         schemas.map((schema) => testRatingSchema.parse(schema)),
       );
-    console.log("result", JSON.stringify(result));
+    log.info("result", JSON.stringify(result));
     expect(result).toBeDefined();
     expect(result.length).toBe(2);
     expect(result[0]).toBeDefined();

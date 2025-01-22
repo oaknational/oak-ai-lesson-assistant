@@ -1,4 +1,3 @@
-// interface OpenAIRanker {
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import type { OpenAI } from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
@@ -52,33 +51,6 @@ export class OpenAIRanker {
   ): string {
     return "input";
   }
-
-  //   private async openAIRequest(
-  //     lessonPlan: LooseLessonPlan,
-  //     QuizQuestion: QuizQuestion,
-  //   ): Promise<LLMOutput> {
-  //     // Make a request to the OpenAI API
-  //     const lessonPlanStuffedPrompt = this.stuffLessonPlanIntoPrompt(lessonPlan);
-  //     const questionTransformedPayload =
-  //       this.transformQuestionSchemaToOpenAIPayload(QuizQuestion);
-
-  //     const combined = `${lessonPlanStuffedPrompt}\n${questionTransformedPayload}`;
-
-  //     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-  //     const response = await client.chat.completions.create({
-  //       model: "gpt-3.5-turbo",
-  //       messages: [combined],
-  //       stream: false,
-  //     });
-
-  //     return {
-  //       input: "input",
-  //       chainOfThought: [{ step: 1, thought: "thought" }],
-  //       finalRanking: 1,
-  //       conclusion: "conclusion",
-  //     };
-  //   }
 }
 
 function processStringWithImages(text: string): any[] {
