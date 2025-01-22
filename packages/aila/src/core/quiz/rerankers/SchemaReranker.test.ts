@@ -3,8 +3,8 @@ import type {
   QuizPath,
   QuizQuestion,
 } from "../../../protocol/schema";
+import { cachedQuiz } from "../fixtures/CachedImageQuiz";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
-import { cachedQuiz } from "../fixtures/fixtures_for_matt";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 import { TestSchemaReranker } from "./SchemaReranker";
 
