@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
+import { ModerationStoreDecorator } from "@/storybook/decorators/ModerationStoreDecorator";
 
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
 
@@ -26,7 +27,7 @@ const meta = {
   title: "Components/LessonPlan/LessonPlanDisplay",
   component: LessonPlanDisplay,
   tags: ["autodocs"],
-  decorators: [ChatDecorator],
+  decorators: [ChatDecorator, ModerationStoreDecorator],
   args: {
     documentContainerRef: { current: null },
     chatEndRef: undefined,
@@ -64,6 +65,8 @@ export const WithModeration: Story = {
   parameters: {
     chatContext: {
       ...chatContext,
+    },
+    moderationStoreContext: {
       lastModeration: {
         id: "123",
         categories: ["l/strong-language"],

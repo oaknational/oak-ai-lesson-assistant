@@ -8,7 +8,7 @@ export const handleToxicModeration = (
   set: (state: Pick<ModerationStore, "toxicModeration">) => void,
 ) => {
   set({ toxicModeration: mod });
-  console.log("cleer");
+
   useChatStore.getState().clearMessages();
   //  @TODO setOverrideLessonPlan({});
 };
