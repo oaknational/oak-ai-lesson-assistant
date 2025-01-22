@@ -123,13 +123,12 @@ function handleLabelText({
   section: string;
 }): string {
   log.info("section", section);
-  const pluralSections = [
-    "misconceptions",
-    "key learning points",
-    "learning cycles",
-    "additional materials",
-  ];
-  if (pluralSections.includes(section.toLowerCase())) {
+  if (
+    section === "Misconceptions" ||
+    section === "Key learning points" ||
+    section === "Learning cycles" ||
+    "additional materials"
+  ) {
     if (text.split(" ").includes("it")) {
       return text.replace("it", "them");
     }
