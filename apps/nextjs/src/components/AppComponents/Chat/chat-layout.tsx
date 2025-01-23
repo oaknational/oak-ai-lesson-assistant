@@ -13,7 +13,8 @@ export interface ChatLayoutProps {
 }
 
 export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
-  const { isLoading, lessonPlan, messages } = useLessonChat();
+  const { lessonPlan, messages } = useLessonChat();
+  const { isLoading } = useChatStore();
   const ailaStreamingStatus = useChatStore(
     (state) => state.ailaStreamingStatus,
   );

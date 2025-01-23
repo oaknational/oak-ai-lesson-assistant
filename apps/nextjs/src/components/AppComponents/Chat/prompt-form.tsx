@@ -15,13 +15,13 @@ import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
 import { useSidebar } from "@/lib/hooks/use-sidebar";
 import type { AilaStreamingStatus } from "@/stores/chatStore";
 
-export interface PromptFormProps
-  extends Pick<UseChatHelpers, "input" | "setInput"> {
+export interface PromptFormProps extends Pick<UseChatHelpers, "input"> {
   onSubmit: (value: string) => void;
   hasMessages: boolean;
   ailaStreamingStatus: AilaStreamingStatus;
   queuedUserAction?: string | null;
   queueUserAction?: (action: string) => void;
+  setInput: (input: string) => void;
 }
 
 export function PromptForm({

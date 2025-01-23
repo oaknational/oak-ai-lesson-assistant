@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useChatStore } from "@/stores/chatStore";
 
 import { useDialog } from "../../DialogContext";
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
@@ -23,7 +24,8 @@ const ExportButtons = ({
   documentContainerRef,
 }: ExportButtonsProps) => {
   const chat = useLessonChat();
-  const { id, isStreaming, lessonPlan } = chat;
+  const { id, lessonPlan } = chat;
+  const isStreaming = useChatStore((state) => state.isStreaming);
   const { trackEvent } = useAnalytics();
   const { setDialogWindow } = useDialog();
   const demo = useDemoUser();

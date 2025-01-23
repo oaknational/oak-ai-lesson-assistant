@@ -10,8 +10,9 @@ import {
 declare module "@storybook/csf" {
   interface Parameters {
     chatStoreState?: {
-      ailaStreamingStatus: AilaStreamingStatus;
+      ailaStreamingStatus?: AilaStreamingStatus;
       queuedUserAction?: string | null;
+      isStreaming?: boolean;
     };
   }
 }
@@ -23,8 +24,11 @@ export const ChatStoreDecorator: Decorator = (Story, { parameters }) => {
     if (!parameters.chatStoreState) {
       return;
     }
+    // This was to get around a type check, can clean up once reset is removed
+    const { ailaStreamingStatus, ...rest } = parameters.chatStoreState;
     reset({
-      ...parameters.chatStoreState,
+      ailaStreamingStatus: ailaStreamingStatus!,
+      ...rest,
     });
   }, [reset]);
 

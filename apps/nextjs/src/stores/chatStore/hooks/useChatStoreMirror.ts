@@ -18,6 +18,8 @@ export const useChatStoreMirror = (
     chatRequestOptions?: ChatRequestOptions | undefined,
   ) => Promise<string | null | undefined>,
   reload: () => void,
+  input: string,
+  setInput: (input: string) => void,
 ) => {
   const setMessages = useChatStore((state) => state.setMessages);
   const setAiSdkActions = useChatStore((state) => state.setAiSdkActions);
@@ -30,4 +32,10 @@ export const useChatStoreMirror = (
     setAiSdkActions({ stop, append, reload });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const storeSetInput = useChatStore((state) => state.setInput);
+
+  useEffect(() => {
+    storeSetInput(input);
+  }, [input, storeSetInput]);
 };

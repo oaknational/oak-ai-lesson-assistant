@@ -19,7 +19,7 @@ import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModerati
 import type { Moderation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
-import type { ChatRequestOptions, CreateMessage, Message } from "ai";
+import type { Message } from "ai";
 import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
@@ -42,26 +42,20 @@ const log = aiLogger("chat");
 export type ChatContextProps = {
   id: string;
   chat: AilaPersistedChat | undefined;
+  lessonPlan: LooseLessonPlan;
+
+  messages: Message[];
+
+  // //refactor
+  // chatAreaRef: React.RefObject<HTMLDivElement>;
+  // input: string;
+  // setInput: React.Dispatch<React.SetStateAction<string>>;
+  // isStreaming: boolean;
+
+  //mod
   initialModerations: Moderation[];
   toxicModeration: PersistedModerationBase | null;
   lastModeration: PersistedModerationBase | null;
-  messages: Message[];
-  isLoading: boolean;
-  isStreaming: boolean;
-  lessonPlan: LooseLessonPlan;
-  // ailaStreamingStatus: AilaStreamingStatus;
-  append: (
-    message: Message | CreateMessage,
-    chatRequestOptions?: ChatRequestOptions | undefined,
-  ) => Promise<string | null | undefined>;
-  // reload: () => void;
-  // stop: () => void;
-  input: string;
-  setInput: React.Dispatch<React.SetStateAction<string>>;
-  chatAreaRef: React.RefObject<HTMLDivElement>;
-  // queuedUserAction: string | null;
-  // queueUserAction: (action: string) => void;
-  // executeQueuedAction: () => Promise<void>;
 };
 
 export const ChatContext = createContext<ChatContextProps | null>(null);
@@ -167,8 +161,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const [overrideLessonPlan, setOverrideLessonPlan] = useState<
     LooseLessonPlan | undefined
   >(undefined);
-
-  /******************* Functions *******************/
 
   const { invokeActionMessages } = useActionMessages();
 
@@ -303,7 +295,15 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   }, [hasFinished, executeQueuedAction]);
 
   // Hooks to update the Zustand chat store mirror
-  useChatStoreMirror(messages, isLoading, stopStreaming, append, reload);
+  useChatStoreMirror(
+    messages,
+    isLoading,
+    stopStreaming,
+    append,
+    reload,
+    input,
+    setInput,
+  );
 
   /**
    *  If the state is being restored from a previous lesson plan, set the lesson plan
@@ -373,39 +373,29 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const value: ChatContextProps = useMemo(
     () => ({
+      //leave
       id,
       chat: chat ?? undefined,
-      initialModerations: moderations ?? [],
-      toxicModeration,
-      lessonPlan: overrideLessonPlan ?? tempLessonPlan,
-      hasFinished,
-      hasAppendedInitialMessage,
-      chatAreaRef,
-      append,
       messages,
-      isLoading,
-      isStreaming: !hasFinished,
-      lastModeration,
-      input,
-      setInput,
+
+      lessonPlan: overrideLessonPlan ?? tempLessonPlan,
       partialPatches,
       validPatches,
+
+      // mod
+      initialModerations: moderations ?? [],
+      toxicModeration,
+      lastModeration,
     }),
     [
       id,
       chat,
+      messages,
       moderations,
       toxicModeration,
-      tempLessonPlan,
-      hasFinished,
-      hasAppendedInitialMessage,
-      chatAreaRef,
-      messages,
-      isLoading,
       lastModeration,
-      input,
-      setInput,
-      append,
+
+      tempLessonPlan,
       partialPatches,
       validPatches,
       overrideLessonPlan,

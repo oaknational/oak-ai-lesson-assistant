@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
+import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
 import {
   DemoDecorator,
   demoParams,
@@ -13,16 +14,18 @@ const meta = {
   title: "Components/LessonPlan/ExportButtons",
   component: ExportButtons,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, DemoDecorator],
+  decorators: [ChatDecorator, DemoDecorator, ChatStoreDecorator],
   args: {
     sectionRefs: {},
     documentContainerRef: { current: null },
   },
   parameters: {
     ...chromaticParams(["desktop"]),
+    chatStoreState: {
+      isStreaming: false,
+    },
     chatContext: {
       id: "123",
-      isStreaming: false,
       lessonPlan: {},
     },
     ...demoParams({ isDemoUser: false }),
@@ -36,8 +39,8 @@ export const Default: Story = {};
 
 export const IsStreaming: Story = {
   parameters: {
-    chatContext: {
-      isStreaming: true,
+    chatStoreState: {
+      isStreaming: false,
     },
   },
 };

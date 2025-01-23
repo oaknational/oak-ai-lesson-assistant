@@ -38,12 +38,18 @@ export type ChatStore = {
   isExecutingQueuedAction: boolean;
   lessonPlan: LooseLessonPlan | null;
 
+  chatAreaRef: React.RefObject<HTMLDivElement>;
+  input: string;
+  isStreaming: boolean;
+
   // From AI SDK
   isLoading: boolean;
   // Grouped Actions
   actions: Actions;
 
   // Setters
+  setInput: (input: string) => void;
+  setChatAreaRef: (ref: React.RefObject<HTMLDivElement>) => void;
   setLessonPlan: (lessonPlan: LooseLessonPlan) => void;
   setAiSdkActions: (actions: Actions) => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
@@ -66,6 +72,9 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   queuedUserAction: null,
   isExecutingQueuedAction: false,
   lessonPlan: null,
+  chatAreaRef: { current: null },
+  input: "",
+  isStreaming: false,
 
   // From AI SDK
   isLoading: false,
@@ -79,6 +88,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   setAiSdkActions: (actions) => set({ actions }),
   setIsLoading: (isLoading) => set({ isLoading }),
   setLessonPlan: (lessonPlan) => set({ lessonPlan }),
+  setInput: (input) => set({ input }),
+  setChatAreaRef: (ref) => set({ chatAreaRef: ref }),
 
   // Action functions
   queueUserAction: handleQueueUserAction(set, get),

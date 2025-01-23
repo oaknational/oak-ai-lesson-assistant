@@ -23,7 +23,12 @@ function LockedPromptForm() {
 
 export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const chat = useLessonChat();
-  const { id, messages, isLoading, input, setInput, append } = chat;
+  const { id, messages } = chat;
+
+  const isLoading = useChatStore((state) => state.isLoading);
+  const input = useChatStore((state) => state.input);
+  const setInput = useChatStore((state) => state.setInput);
+  const append = useChatStore((state) => state.actions.append);
 
   const queueUserAction = useChatStore((state) => state.queueUserAction);
   const queuedUserAction = useChatStore((state) => state.queuedUserAction);
