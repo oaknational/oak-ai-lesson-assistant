@@ -22,7 +22,7 @@ export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
   const isDemoLocked = useDemoLocking(messages, isLoading);
   const { showLessonMobile, setShowLessonMobile, closeMobileLessonPullOut } =
     useMobileLessonPullOutControl({
-      ailaStreamingStatus,
+      ailaStreamingStatus: ailaStreamingStatus ?? "Idle",
       messages,
       lessonPlan,
     });
