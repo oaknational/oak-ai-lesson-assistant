@@ -74,7 +74,7 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
 
     const relevantLessonPlanData = pick(lessonPlan, lessonPlanRerankerFields);
 
-    // Create hash from relevant data
+    // create hash from relevant data - if one of these change due to user input then the quiz will be regenerated. Potentially this will slow down subsequent patches at the end of the lesson.
     const hash = Md5.hashStr(
       JSON.stringify({
         quizArray,
@@ -104,7 +104,6 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
       quizType,
     );
 
-    // Cache the results
     await kv.set(cacheKey, evaluatedQuizzes, {
       ex: 60 * 5,
     });
