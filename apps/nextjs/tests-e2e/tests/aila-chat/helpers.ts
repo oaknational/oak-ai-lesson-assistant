@@ -1,7 +1,7 @@
 import type { Page, TestInfo } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
-import type { AilaStreamingStatus } from "@/components/AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
+import type { AilaStreamingStatus } from "@/stores/chatStore";
 
 export async function expectStreamingStatus(
   page: Page,
@@ -21,7 +21,6 @@ export async function waitForStreamingStatusChange(
   await page.waitForFunction(
     ([currentStatus, expectedStatus]) => {
       const statusElement = document.querySelector(
-         
         '[data-testid="chat-aila-streaming-status"]',
       );
       return (

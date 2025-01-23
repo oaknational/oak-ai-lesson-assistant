@@ -7,6 +7,7 @@ import { cva } from "class-variance-authority";
 import { PromptForm } from "@/components/AppComponents/Chat/prompt-form";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useChatStore } from "@/stores/chatStore";
 
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 
@@ -22,17 +23,13 @@ function LockedPromptForm() {
 
 export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const chat = useLessonChat();
-  const {
-    id,
-    messages,
-    isLoading,
-    input,
-    setInput,
-    append,
-    ailaStreamingStatus,
-    queueUserAction,
-    queuedUserAction,
-  } = chat;
+  const { id, messages, isLoading, input, setInput, append } = chat;
+
+  const queueUserAction = useChatStore((state) => state.queueUserAction);
+  const queuedUserAction = useChatStore((state) => state.queuedUserAction);
+  const ailaStreamingStatus = useChatStore(
+    (state) => state.ailaStreamingStatus,
+  );
 
   const hasMessages = !!messages.length;
 
