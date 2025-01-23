@@ -193,6 +193,7 @@ const Distractor = ({
               userIsEditing={userIsEditing}
               isLoading={isLoading}
               index={distractorIdx}
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               tweak={tweakDistractor}
               setUserIsEditing={setUserIsEditing}
             >

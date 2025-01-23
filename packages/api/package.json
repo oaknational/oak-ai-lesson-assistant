@@ -35,6 +35,7 @@
   "devDependencies": {
     "@oakai/eslint-config": "*",
     "@oakai/prettier-config": "*",
+    "@types/archiver": "^6.0.3",
     "typescript": "5.7.2"
   },
   "engines": {

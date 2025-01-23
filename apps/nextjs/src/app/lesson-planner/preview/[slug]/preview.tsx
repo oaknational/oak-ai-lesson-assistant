@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 "use client";
 
 import { Box, Container, Flex, Heading, Text } from "@radix-ui/themes";
@@ -9,6 +10,8 @@ import Button from "@/components/Button";
 import HeroContainer from "@/components/HeroContainer";
 import { Icon } from "@/components/Icon";
 import Layout from "@/components/Layout";
+
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 export const LessonPlanPreview = ({ planSections }) => {
   if (!planSections) return null;

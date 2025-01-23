@@ -1,46 +1,65 @@
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import yaml from "yaml";
+import { z } from "zod";
+
+const TextifiableSchema = z.union([
+  z.string(),
+  z.array(z.string()),
+  z.record(z.string(), z.unknown()),
+]);
 
 // Simplifies the input to a string for embedding
-export function textify(input: string | string[] | object): string {
-  if (Array.isArray(input)) {
-    return input.map((row) => textify(row)).join("\n");
-  } else if (typeof input === "object") {
-    return yaml.stringify(input);
+export function textify(input: unknown): string {
+  const validated = TextifiableSchema.parse(input);
+  if (Array.isArray(validated)) {
+    return validated.map((row) => textify(row)).join("\n");
+  } else if (typeof validated === "object") {
+    return yaml.stringify(validated);
   } else {
-    return input;
+    return validated;
   }
 }
+
+const LessonPlanPartSchema = z.object({
+  key: z.string(),
+  content: z.string(),
+  json: z.union([
+    z.string(),
+    z.array(z.string()),
+    z.record(z.string(), z.unknown()),
+  ]),
+});
+
+type LessonPlanPart = z.infer<typeof LessonPlanPartSchema>;
 
 export function getLessonPlanParts({
   lessonPlan,
 }: {
   lessonPlan: LooseLessonPlan;
-}) {
-  const lessonPlanParts: {
-    key: string;
-    content: string;
-    json: (LooseLessonPlan[keyof LooseLessonPlan] & object) | string | string[];
-  }[] = [];
+}): LessonPlanPart[] {
+  const lessonPlanParts: LessonPlanPart[] = [];
+
   for (const [key, value] of Object.entries(lessonPlan)) {
     if (["subject", "keyStage", "basedOn"].includes(key)) {
-      // Skip these keys
       continue;
     }
 
     const textContent = textify(value);
-    const lessonPlanPart = {
-      key: key,
-      content: textContent,
-      json: value,
-    };
-
-    if (!textContent.trim() || !value || value === "None") {
-      // Skip empty content
+    if (shouldSkipContent(textContent, value)) {
       continue;
     }
-    lessonPlanParts.push(lessonPlanPart);
+
+    const part = LessonPlanPartSchema.parse({
+      key,
+      content: textContent,
+      json: value,
+    });
+    lessonPlanParts.push(part);
   }
 
   return lessonPlanParts;
+}
+
+function shouldSkipContent(content: string, value: unknown): boolean {
+  return !content.trim() || !value || value === "None";
 }

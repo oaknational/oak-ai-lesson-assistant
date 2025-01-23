@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { toast } from "react-hot-toast";
 
-import * as Sentry from "@sentry/nextjs";
 import type { UseChatHelpers } from "ai/react";
 
 import {

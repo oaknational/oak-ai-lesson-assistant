@@ -80,22 +80,26 @@ export const ActionDropDown = ({
         $gap="space-between-s"
         $background="white"
       >
-        {options.map((option) => {
-          return (
-            <SmallRadioButton
-              id={`${id}-modify-options-${option.enumValue}`}
-              key={`${id}-modify-options-${option.enumValue}`}
-              value={option.enumValue}
-              label={handleLabelText({
-                text: option.label,
-                section: sectionTitle,
-              })}
-              onClick={() => {
-                setSelectedRadio(option);
-              }}
-            />
-          );
-        })}
+        {options.map(
+          (
+            option: ModifyOptions[number] | AdditionalMaterialOptions[number],
+          ) => {
+            return (
+              <SmallRadioButton
+                id={`${id}-modify-options-${option.enumValue}`}
+                key={`${id}-modify-options-${option.enumValue}`}
+                value={option.enumValue}
+                label={handleLabelText({
+                  text: option.label,
+                  section: sectionTitle,
+                })}
+                onClick={() => {
+                  setSelectedRadio(option);
+                }}
+              />
+            );
+          },
+        )}
 
         {selectedRadio?.label === "Other" && (
           <>
