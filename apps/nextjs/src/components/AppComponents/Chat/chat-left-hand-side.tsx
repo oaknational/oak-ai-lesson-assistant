@@ -26,7 +26,7 @@ const ChatLeftHandSide = ({
   demo,
   isDemoUser,
 }: Readonly<ChatLeftHandSideProps>) => {
-  const { chatAreaRef } = useChatStore();
+  const chatAreaRef = useChatStore((state) => state.chatAreaRef);
   return (
     <Flex
       direction="column"

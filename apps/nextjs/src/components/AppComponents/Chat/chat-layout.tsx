@@ -14,7 +14,7 @@ export interface ChatLayoutProps {
 
 export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
   const { lessonPlan, messages } = useLessonChat();
-  const { isLoading } = useChatStore();
+  const isLoading = useChatStore((state) => state.isLoading);
   const ailaStreamingStatus = useChatStore(
     (state) => state.ailaStreamingStatus,
   );
