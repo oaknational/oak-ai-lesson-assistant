@@ -50,7 +50,7 @@ export type ChatContextProps = {
   isLoading: boolean;
   isStreaming: boolean;
   lessonPlan: LooseLessonPlan;
-  ailaStreamingStatus: AilaStreamingStatus;
+  // ailaStreamingStatus: AilaStreamingStatus;
   append: (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions | undefined,
