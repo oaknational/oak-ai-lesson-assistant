@@ -1,67 +1,94 @@
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
-import invariant from "tiny-invariant";
+import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { create } from "zustand";
 
-import { getNextStableMessages, parseStreamingMessage } from "./parsing";
+import { handleExecuteQueuedAction } from "./stateActionFunctions/handleExecuteQueuedAction";
+import { handleQueueUserAction } from "./stateActionFunctions/handleQueueUserAction";
+import { handleSetMessages } from "./stateActionFunctions/handleSetMessages";
 import type { AiMessage, ParsedMessage } from "./types";
 
 const log = aiLogger("chat:store");
 
-type ChatStore = {
+type Actions = {
+  stop: () => void;
+  reload: () => void;
+  append: (
+    message: Message | CreateMessage,
+    chatRequestOptions?: ChatRequestOptions | undefined,
+  ) => Promise<string | null | undefined>;
+};
+
+export type AilaStreamingStatus =
+  | "Loading"
+  | "RequestMade"
+  | "StreamingLessonPlan"
+  | "StreamingChatResponse"
+  | "StreamingExperimentalPatches"
+  | "Moderating"
+  | "Idle"
+  | undefined;
+
+export type ChatStore = {
+  ailaStreamingStatus: AilaStreamingStatus;
+
   // From AI SDK
   isLoading: boolean;
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
+  queuedUserAction: string | null;
+  isExecutingQueuedAction: boolean;
+  lessonPlan: LooseLessonPlan | null;
+  // Grouped Actions
+  actions: Actions;
 
-  // Actions
+  // Setters
+  setLessonPlan: (lessonPlan: LooseLessonPlan) => void;
+  setAiSdkActions: (actions: Actions) => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
+  queueUserAction: (action: string) => Promise<void>;
+  executeQueuedAction: () => Promise<void>;
+
+  reset: (
+    params: Pick<ChatStore, "ailaStreamingStatus"> & {
+      queuedUserAction?: ChatStore["queuedUserAction"];
+    },
+  ) => void;
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
-  // From AI SDK
-  isLoading: false,
+  ailaStreamingStatus: undefined,
   stableMessages: [],
   streamingMessage: null,
-
-  // Actions
-  setMessages: (messages, isLoading) => {
-    if (!isLoading) {
-      // All messages are stable
-      const nextStableMessages = getNextStableMessages(
-        messages,
-        get().stableMessages,
-      );
-      set({
-        ...(nextStableMessages && {
-          stableMessages: nextStableMessages,
-        }),
-        streamingMessage: null,
-      });
-    } else {
-      // The latest message is streaming, previous messages are stable
-      const currentMessageData = messages[messages.length - 1];
-      invariant(currentMessageData, "Should have at least one message");
-      const streamingMessage = parseStreamingMessage(
-        currentMessageData,
-        get().streamingMessage,
-      );
-
-      const stableMessageData = messages.slice(0, messages.length - 1);
-      const nextStableMessages = getNextStableMessages(
-        stableMessageData,
-        get().stableMessages,
-      );
-
-      set({
-        streamingMessage,
-        ...(nextStableMessages && {
-          stableMessages: nextStableMessages,
-        }),
-      });
-    }
+  queuedUserAction: null,
+  isExecutingQueuedAction: false,
+  lessonPlan: null,
+  // From AI SDK
+  isLoading: false,
+  actions: {
+    stop: () => {},
+    reload: () => {},
+    append: async () => "",
   },
+
+  // Setters
+  setAiSdkActions: (actions) => set({ actions }),
   setIsLoading: (isLoading) => set({ isLoading }),
+  setLessonPlan: (lessonPlan) => set({ lessonPlan }),
+
+  // Action functions
+  queueUserAction: handleQueueUserAction(set, get),
+  executeQueuedAction: handleExecuteQueuedAction(set, get),
+  setMessages: handleSetMessages(set, get),
+
+  // reset
+  reset: ({ ailaStreamingStatus = "Idle", queuedUserAction }) => {
+    set({
+      ailaStreamingStatus: ailaStreamingStatus,
+      queuedUserAction: queuedUserAction,
+    });
+  },
 }));
 
 useChatStore.subscribe((state) => {

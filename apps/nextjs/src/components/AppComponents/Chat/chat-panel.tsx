@@ -3,6 +3,7 @@ import { toast } from "react-hot-toast";
 
 import * as Sentry from "@sentry/nextjs";
 import { cva } from "class-variance-authority";
+import { useChatStore } from "src/stores/chatStore";
 
 import { PromptForm } from "@/components/AppComponents/Chat/prompt-form";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
@@ -22,17 +23,10 @@ function LockedPromptForm() {
 
 export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const chat = useLessonChat();
-  const {
-    id,
-    messages,
-    isLoading,
-    input,
-    setInput,
-    append,
-    ailaStreamingStatus,
-    queueUserAction,
-    queuedUserAction,
-  } = chat;
+  const { id, messages, isLoading, input, setInput, append } = chat;
+
+  const { queueUserAction, queuedUserAction, ailaStreamingStatus } =
+    useChatStore();
 
   const hasMessages = !!messages.length;
 
@@ -67,7 +61,7 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
             onSubmit={handleSubmit}
             input={input}
             setInput={setInput}
-            ailaStreamingStatus={ailaStreamingStatus}
+            ailaStreamingStatus={ailaStreamingStatus ?? "Idle"}
             hasMessages={hasMessages}
             queueUserAction={queueUserAction}
             queuedUserAction={queuedUserAction}

@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 
 import { findLast } from "remeda";
+import { useChatStore } from "src/stores/chatStore";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
@@ -44,14 +45,11 @@ const QuickActionButtons = () => {
   const { trackEvent } = useAnalytics();
   const lessonPlanTracking = useLessonPlanTracking();
   const { setDialogWindow } = useDialog();
-  const {
-    messages,
-    id,
-    stop,
-    ailaStreamingStatus,
-    queueUserAction,
-    queuedUserAction,
-  } = chat;
+  const { queueUserAction, queuedUserAction, actions } = useChatStore();
+  const { messages, id } = chat;
+
+  const ailaStreamingStatus =
+    useChatStore((state) => state.ailaStreamingStatus) ?? "Idle";
 
   const hasMessages = !!messages.length;
 
@@ -112,7 +110,7 @@ const QuickActionButtons = () => {
             variant="text-link"
             onClick={() => {
               trackEvent("chat:stop_generating");
-              stop();
+              actions.stop();
             }}
             testId="chat-stop"
           >
