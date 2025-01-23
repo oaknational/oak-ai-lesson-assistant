@@ -1,15 +1,15 @@
 import { useCallback } from "react";
 
 import { findLast } from "remeda";
-import { useChatStore } from "src/stores/chatStore";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import type { AilaStreamingStatus } from "@/stores/chatStore";
+import { useChatStore } from "@/stores/chatStore";
 
 import { useDialog } from "../DialogContext";
-import type { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
 import ChatButton from "./ui/chat-button";
 import { IconRefresh, IconStop } from "./ui/icons";
 

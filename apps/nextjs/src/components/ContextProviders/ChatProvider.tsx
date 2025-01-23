@@ -23,12 +23,12 @@ import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
-import { useChatStore } from "src/stores/chatStore";
 import { useChatStoreMirror } from "src/stores/chatStore/hooks/useChatStoreMirror";
 
 import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useChatStore } from "@/stores/chatStore";
 import { trpc } from "@/utils/trpc";
 
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
@@ -364,15 +364,12 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       ? lastModeration
       : toxicInitialModeration;
 
-  // const ailaStreamingStatus = useAilaStreamingStatus({ isLoading, messages });
-
   useEffect(() => {
     if (toxicModeration) {
       setMessages([]);
       setOverrideLessonPlan({});
     }
   }, [toxicModeration, setMessages]);
-  const ailaStreamingStatus = "Idle";
 
   const value: ChatContextProps = useMemo(
     () => ({
@@ -386,7 +383,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       chatAreaRef,
       append,
       messages,
-      ailaStreamingStatus,
       isLoading,
       isStreaming: !hasFinished,
       lastModeration,
@@ -405,7 +401,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       hasAppendedInitialMessage,
       chatAreaRef,
       messages,
-      ailaStreamingStatus,
       isLoading,
       lastModeration,
       input,

@@ -4,13 +4,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { Message } from "ai";
-import { useChatStore } from "src/stores/chatStore";
 
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
+import { useChatStore } from "@/stores/chatStore";
+import type { AilaStreamingStatus } from "@/stores/chatStore";
 
-import type { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 import { DemoLimitMessage } from "./demo-limit-message";
 import { InChatDownloadButtons } from "./in-chat-download-buttons";

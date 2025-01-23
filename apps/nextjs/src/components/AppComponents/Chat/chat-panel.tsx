@@ -3,11 +3,11 @@ import { toast } from "react-hot-toast";
 
 import * as Sentry from "@sentry/nextjs";
 import { cva } from "class-variance-authority";
-import { useChatStore } from "src/stores/chatStore";
 
 import { PromptForm } from "@/components/AppComponents/Chat/prompt-form";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useChatStore } from "@/stores/chatStore";
 
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 
