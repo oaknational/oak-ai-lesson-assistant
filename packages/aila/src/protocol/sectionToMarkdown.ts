@@ -32,27 +32,81 @@ export function keyToHeading(key: string) {
   }
   return camelCaseToSentenceCase(key);
 }
+
+function renderCycle(value: unknown) {
+  try {
+    const cycle = CycleOptionalSchema.parse(value);
+
+    const sections = {
+      title: cycle.title ?? "…",
+      explanation:
+        sectionToMarkdown("explanation", cycle.explanation ?? "…") ?? "…",
+      checkForUnderstanding: cycle.checkForUnderstanding
+        ? organiseAnswersAndDistractors(cycle.checkForUnderstanding)
+        : "…",
+      practice: cycle.practice ?? "…",
+      feedback: cycle.feedback ?? "…",
+    };
+
+    return `## ${sections.title}
+
+### Explanation
+
+${sections.explanation}
+
+### Check for understanding
+
+${sections.checkForUnderstanding}
+
+### Practice
+
+${sections.practice}
+
+### Feedback
+
+${sections.feedback}`;
+  } catch {
+    return `## There's been a problem
+
+It looks like this learning cycle hasn't generated properly. Tap **Retry** or ask for this section to be regenerated.`;
+  }
+}
+
+function renderMisconceptions(value: readonly unknown[]): string {
+  const MisconceptionSchema = z.object({
+    misconception: z.string(),
+    description: z.string(),
+  });
+
+  return value
+    .map((misconception) => {
+      try {
+        const m = MisconceptionSchema.parse(misconception);
+        return `### ${m.misconception}\n\n${m.description}`;
+      } catch {
+        return "";
+      }
+    })
+    .filter(Boolean)
+    .join("\n\n");
+}
+
+function renderStringArrayAsBullets(value: readonly string[]): string {
+  return value.map((v) => `- ${v}`).join("\n\n");
+}
+
 export function sectionToMarkdown(
   key: string,
   value: unknown,
   // headingLevel = 2, TODO support providing a heading level for consistent heading hierarchy
 ): string | undefined {
   if (key.includes("cycle")) {
-    try {
-      const cycle = CycleOptionalSchema.parse(value);
-      const content = `## ${cycle.title ?? "…"}\n\n`;
-      const explanation =
-        sectionToMarkdown("explanation", cycle.explanation ?? "…") ?? "…";
-      return `${content}\n\n### Explanation\n\n${explanation}\n\n### Check for understanding\n\n${cycle.checkForUnderstanding ? organiseAnswersAndDistractors(cycle.checkForUnderstanding) : "…"}\n\n### Practice\n\n${cycle.practice ?? "…"}\n\n### Feedback\n\n${cycle.feedback ?? "…"}`;
-    } catch {
-      return "## There's been a problem\n\nIt looks like this learning cycle hasn't generated properly. Tap **Retry** or ask for this section to be regenerated.";
-    }
+    return renderCycle(value);
   }
 
   if (isArray(value)) {
     if (value.every((v): v is string => typeof v === "string")) {
-      // Render arrays of strings as bullets
-      return value.map((v) => `- ${v}`).join("\n\n");
+      return renderStringArrayAsBullets(value);
     } else {
       if (typeof value[0] === "object") {
         if (key === "starterQuiz" || key === "exitQuiz") {
@@ -60,22 +114,7 @@ export function sectionToMarkdown(
         }
 
         if (key === "misconceptions") {
-          const MisconceptionSchema = z.object({
-            misconception: z.string(),
-            description: z.string(),
-          });
-
-          return value
-            .map((misconception) => {
-              try {
-                const m = MisconceptionSchema.parse(misconception);
-                return `### ${m.misconception}\n\n${m.description}`;
-              } catch {
-                return "";
-              }
-            })
-            .filter(Boolean)
-            .join("\n\n");
+          return renderMisconceptions(value);
         }
 
         const firstObject = value[0];
