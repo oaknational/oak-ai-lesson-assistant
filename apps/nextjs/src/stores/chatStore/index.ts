@@ -72,7 +72,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   actions: {
     stop: () => {},
     reload: () => {},
-    append: async () => "",
+    append: async () => Promise.resolve(""),
   },
 
   // Setters
