@@ -112,7 +112,7 @@ export const ChatMessagesDisplay = ({
   demo,
 }: ChatMessagesDisplayProps) => {
   const { lessonPlan } = useLessonChat();
-  const { isStreaming } = useChatStore();
+  const isStreaming = useChatStore((state) => state.isStreaming);
   const { totalSections, totalSectionsComplete } = useProgressForDownloads({
     lessonPlan,
     isStreaming,
