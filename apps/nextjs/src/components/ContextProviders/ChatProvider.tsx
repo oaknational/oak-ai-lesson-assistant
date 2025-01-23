@@ -1,6 +1,5 @@
 import React, {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -293,7 +292,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   // Handle queued user actions and messages
 
-  const { executeQueuedAction } = useChatStore();
+  const executeQueuedAction = useChatStore(
+    (state) => state.executeQueuedAction,
+  );
 
   useEffect(() => {
     if (hasFinished) {

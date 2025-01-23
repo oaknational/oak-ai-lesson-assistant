@@ -25,8 +25,11 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const chat = useLessonChat();
   const { id, messages, isLoading, input, setInput, append } = chat;
 
-  const { queueUserAction, queuedUserAction, ailaStreamingStatus } =
-    useChatStore();
+  const queueUserAction = useChatStore((state) => state.queueUserAction);
+  const queuedUserAction = useChatStore((state) => state.queuedUserAction);
+  const ailaStreamingStatus = useChatStore(
+    (state) => state.ailaStreamingStatus,
+  );
 
   const hasMessages = !!messages.length;
 

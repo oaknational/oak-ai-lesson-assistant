@@ -45,7 +45,9 @@ const QuickActionButtons = () => {
   const { trackEvent } = useAnalytics();
   const lessonPlanTracking = useLessonPlanTracking();
   const { setDialogWindow } = useDialog();
-  const { queueUserAction, queuedUserAction, actions } = useChatStore();
+  const queueUserAction = useChatStore((state) => state.queueUserAction);
+  const queuedUserAction = useChatStore((state) => state.queuedUserAction);
+  const stop = useChatStore((state) => state.stop);
   const { messages, id } = chat;
 
   const ailaStreamingStatus =
@@ -110,7 +112,7 @@ const QuickActionButtons = () => {
             variant="text-link"
             onClick={() => {
               trackEvent("chat:stop_generating");
-              actions.stop();
+              stop();
             }}
             testId="chat-stop"
           >

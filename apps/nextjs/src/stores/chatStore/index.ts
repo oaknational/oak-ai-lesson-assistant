@@ -6,6 +6,7 @@ import { create } from "zustand";
 import { handleExecuteQueuedAction } from "./stateActionFunctions/handleExecuteQueuedAction";
 import { handleQueueUserAction } from "./stateActionFunctions/handleQueueUserAction";
 import { handleSetMessages } from "./stateActionFunctions/handleSetMessages";
+import { handleStop } from "./stateActionFunctions/handleStop";
 import type { AiMessage, ParsedMessage } from "./types";
 
 const log = aiLogger("chat:store");
@@ -32,13 +33,14 @@ export type AilaStreamingStatus =
 export type ChatStore = {
   ailaStreamingStatus: AilaStreamingStatus;
 
-  // From AI SDK
-  isLoading: boolean;
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
   queuedUserAction: string | null;
   isExecutingQueuedAction: boolean;
   lessonPlan: LooseLessonPlan | null;
+
+  // From AI SDK
+  isLoading: boolean;
   // Grouped Actions
   actions: Actions;
 
@@ -49,6 +51,7 @@ export type ChatStore = {
   setIsLoading: (isLoading: boolean) => void;
   queueUserAction: (action: string) => Promise<void>;
   executeQueuedAction: () => Promise<void>;
+  stop: () => void;
 
   reset: (
     params: Pick<ChatStore, "ailaStreamingStatus"> & {
@@ -64,6 +67,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   queuedUserAction: null,
   isExecutingQueuedAction: false,
   lessonPlan: null,
+
   // From AI SDK
   isLoading: false,
   actions: {
@@ -80,6 +84,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   // Action functions
   queueUserAction: handleQueueUserAction(set, get),
   executeQueuedAction: handleExecuteQueuedAction(set, get),
+  stop: handleStop(set, get),
   setMessages: handleSetMessages(set, get),
 
   // reset
