@@ -69,7 +69,6 @@ function processStringWithImages(text: string): any[] {
     })
     .filter(Boolean);
 }
-// TODO: Use Messages fro ../Chat
 
 function quizToLLMMessages(
   quizQuestion: QuizQuestion,
@@ -94,18 +93,6 @@ function quizToLLMMessages(
     content.push(...processStringWithImages(distractor));
     content.push({ type: "text", text: "\n" });
   });
-
-  // Process hint if present
-  //   if (quizQuestion.hint) {
-  //     content.push({ type: "text", text: "\n\nHint:" });
-  //     content.push(...processStringWithImages(quizQuestion.hint));
-  //   }
-
-  //   // Process feedback if present
-  //   if (quizQuestion.feedback) {
-  //     content.push({ type: "text", text: "\n\nFeedback:" });
-  //     content.push(...processStringWithImages(quizQuestion.feedback));
-  //   }
 
   return content;
 }
@@ -274,12 +261,6 @@ async function evaluateQuiz(
 
 export { evaluateQuiz };
 
-// quizQuestion.answers.forEach((answer, index) => {
-//     content.push({ type: "text", text: `${index + 1}: ` });
-//     content.push(...processStringWithImages(answer));
-//     content.push({ type: "text", text: "\n" });
-//   });
-
 export {
   combinePrompts,
   combinePromptsAndQuestions,
@@ -287,32 +268,6 @@ export {
   quizQuestionsToOpenAIMessageFormat,
   quizToLLMMessages,
 };
-
-// // TODO: change messages to Message[]
-// // TODO: Updatge Message Type to include new image standards.
-// export async function OpenAICallReranker(
-//   messages: any[],
-//   max_tokens: number = 500,
-// ) {
-//   // Simple wrapper for chat completions.
-//   // Takes maths reranker model and messages and returns the completion.
-//   const userId = "test-user-id";
-//   const chatId = "test-chat-id";
-//   //   const llmService = new OpenAIService({ userId, chatId });
-//   const openai = createOpenAIClient({ app: "maths-reranker" });
-//   const startTime = Date.now();
-
-//   const response = await openai.chat.completions.create({
-//     model: "gpt-4o-2024-08-06",
-//     max_tokens: 500,
-//     messages: messages,
-//   });
-
-//   const endTime = Date.now();
-//   const durationInSeconds = (endTime - startTime) / 1000;
-//   console.log(`OpenAI API call took ${durationInSeconds.toFixed(2)} seconds`);
-//   return response.choices[0]?.message.content;
-// }
 
 export function parsedResponse(schema: z.ZodType<any>, response: any) {
   const math_reasoning = response.choices[0].message;
@@ -447,7 +402,6 @@ export async function OpenAICallRerankerWithSchema(
 export async function DummyOpenAICall() {
   const userId = "test-user-id";
   const chatId = "test-chat-id";
-  //   const llmService = new OpenAIService({ userId, chatId });
   const openai = createOpenAIClient({ app: "maths-reranker" });
 
   const Messages = [
@@ -507,83 +461,6 @@ export async function DummyOpenAICall() {
   });
   console.log("Image description received:", response);
   console.log("Image description received:", response.choices[0]);
-  //   const outputstream = llmService.createChatCompletionStream({
-  //     model: DEFAULT_MODEL,
-  //     messages: Messages,
-  //     temperature: 0.7,
-  //   });
+
   return response.choices[0]?.message.content;
 }
-
-// function evaluateStarterQuiz(lessonPlan: any, LooseLessonPlan: any, questions: any, arg3: any) {
-//     throw new Error("Function not implemented.");
-// }
-// async function main() {
-//   const llmService = new OpenAIService({});
-
-//   const Messages = [
-//     {
-//       role: "user",
-//       content: [
-//         {
-//           type: "text",
-//           text: "What are in these images? Is there any difference between them?",
-//         },
-//         {
-//           type: "image_url",
-//           image_url: {
-//             url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
-//           },
-//         },
-//         {
-//           type: "image_url",
-//           image_url: {
-//             url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
-//           },
-//         },
-//       ],
-//     },
-//   ];
-//   const outputstream = llmService.createChatCompletionStream({
-//     model: DEFAULT_MODEL,
-//     messages: Messages,
-//     temperature: 0.7,
-//   });
-
-//   const response = await openai.chat.completions.create({
-//     model: "gpt-4o-mini",
-//     messages: [
-//       {
-//         role: "user",
-//         content: [
-//           {
-//             type: "text",
-//             text: "What are in these images? Is there any difference between them?",
-//           },
-//           {
-//             type: "image_url",
-//             image_url: {
-//               url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
-//             },
-//           },
-//           {
-//             type: "image_url",
-//             image_url: {
-//               url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
-//             },
-//           },
-//         ],
-//       },
-//     ],
-//   });
-//   console.log(response.choices[0]);
-// }
-// main();
-
-// createChatCompletionStream(messages: Message[]) {
-//     return this._llmService.createChatCompletionStream({
-//       model: this._aila.options.model ?? DEFAULT_MODEL,
-//       messages,
-//       temperature: this._aila.options.temperature ?? DEFAULT_TEMPERATURE,
-//     });
-//   }
