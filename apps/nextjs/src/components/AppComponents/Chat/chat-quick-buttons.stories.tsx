@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
+import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
 import { LessonPlanTrackingDecorator } from "@/storybook/decorators/LessonPlanTrackingDecorator";
 
 import ChatQuickButtons from "./chat-quick-buttons";
@@ -17,7 +18,7 @@ const meta = {
   title: "Components/Chat/ChatQuickButtons",
   component: ChatQuickButtons,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, LessonPlanTrackingDecorator],
+  decorators: [ChatDecorator, ChatStoreDecorator, LessonPlanTrackingDecorator],
   parameters: {
     ...chromaticParams(["desktop"]),
     chatContext: {
@@ -99,6 +100,7 @@ export const StreamingWithQueuedUserAction: Story = {
   args: {},
   parameters: {
     chatStoreState: {
+      queuedUserAction: "regenerate",
       ailaStreamingStatus: "StreamingLessonPlan",
     },
   },
@@ -108,6 +110,7 @@ export const ModeratingWithQueuedUserAction: Story = {
   args: {},
   parameters: {
     chatStoreState: {
+      queuedUserAction: "regenerate",
       ailaStreamingStatus: "Moderating",
     },
   },

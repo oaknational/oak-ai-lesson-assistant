@@ -50,8 +50,9 @@ const QuickActionButtons = () => {
   const stop = useChatStore((state) => state.stop);
   const { messages, id } = chat;
 
-  const ailaStreamingStatus =
-    useChatStore((state) => state.ailaStreamingStatus) ?? "Idle";
+  const ailaStreamingStatus = useChatStore(
+    (state) => state.ailaStreamingStatus,
+  );
 
   const hasMessages = !!messages.length;
 
@@ -63,13 +64,13 @@ const QuickActionButtons = () => {
     const lastUserMessage =
       findLast(messages, (m) => m.role === "user")?.content ?? "";
     lessonPlanTracking.onClickRetry(lastUserMessage);
-    queueUserAction("regenerate");
+    void queueUserAction("regenerate");
   }, [queueUserAction, lessonPlanTracking, messages, trackEvent, id]);
 
   const handleContinue = useCallback(() => {
     trackEvent("chat:continue");
     lessonPlanTracking.onClickContinue();
-    queueUserAction("continue");
+    void queueUserAction("continue");
   }, [queueUserAction, lessonPlanTracking, trackEvent]);
 
   return (

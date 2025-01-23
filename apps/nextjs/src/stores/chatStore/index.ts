@@ -27,8 +27,7 @@ export type AilaStreamingStatus =
   | "StreamingChatResponse"
   | "StreamingExperimentalPatches"
   | "Moderating"
-  | "Idle"
-  | undefined;
+  | "Idle";
 
 export type ChatStore = {
   ailaStreamingStatus: AilaStreamingStatus;
@@ -61,7 +60,7 @@ export type ChatStore = {
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
-  ailaStreamingStatus: undefined,
+  ailaStreamingStatus: "Idle",
   stableMessages: [],
   streamingMessage: null,
   queuedUserAction: null,
