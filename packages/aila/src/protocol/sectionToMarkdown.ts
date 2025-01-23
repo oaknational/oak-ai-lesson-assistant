@@ -95,61 +95,80 @@ function renderStringArrayAsBullets(value: readonly string[]): string {
   return value.map((v) => `- ${v}`).join("\n\n");
 }
 
+function renderTwoKeyObjectArray(value: readonly unknown[]): string {
+  const firstObject = value[0];
+  if (
+    !firstObject ||
+    typeof firstObject !== "object" ||
+    Object.keys(firstObject).length !== 2
+  ) {
+    return "";
+  }
+
+  const [key1, key2] = Object.keys(firstObject);
+  if (!key1 || !key2) return "";
+
+  return value
+    .filter((v) => typeof v === "object")
+    .map((v) => v as Record<string, string>)
+    .filter(
+      (v) =>
+        Object.prototype.hasOwnProperty.call(v, key1) &&
+        Object.prototype.hasOwnProperty.call(v, key2),
+    )
+    .map((v) => {
+      const header = v[key1] ?? "…";
+      const body = v[key2] ?? "…";
+      return `### ${toSentenceCase(header)}\n\n${toSentenceCase(body)}`;
+    })
+    .join("\n\n");
+}
+
+function renderObject(value: Record<string, unknown>): string {
+  return Object.entries(value)
+    .map(([k, v]) => {
+      const content = sectionToMarkdown(k, v) ?? "";
+      return `## ${keyToHeading(k)}\n\n${content}`;
+    })
+    .join("\n\n");
+}
+
+function renderArray(key: string, value: readonly unknown[]): string {
+  if (value.every((v): v is string => typeof v === "string")) {
+    return renderStringArrayAsBullets(value);
+  }
+
+  if (typeof value[0] === "object") {
+    if (key === "starterQuiz" || key === "exitQuiz") {
+      return organiseAnswersAndDistractors(value as QuizOptional);
+    }
+
+    if (key === "misconceptions") {
+      return renderMisconceptions(value);
+    }
+
+    const firstObject = value[0];
+    if (firstObject && Object.keys(firstObject).length === 2) {
+      return renderTwoKeyObjectArray(value);
+    }
+  }
+
+  return value.map((v) => sectionToMarkdown(key, v) ?? "").join("\n\n");
+}
+
 export function sectionToMarkdown(
   key: string,
   value: unknown,
-  // headingLevel = 2, TODO support providing a heading level for consistent heading hierarchy
 ): string | undefined {
   if (key.includes("cycle")) {
     return renderCycle(value);
   }
 
   if (isArray(value)) {
-    if (value.every((v): v is string => typeof v === "string")) {
-      return renderStringArrayAsBullets(value);
-    } else {
-      if (typeof value[0] === "object") {
-        if (key === "starterQuiz" || key === "exitQuiz") {
-          return organiseAnswersAndDistractors(value as QuizOptional);
-        }
-
-        if (key === "misconceptions") {
-          return renderMisconceptions(value);
-        }
-
-        const firstObject = value[0];
-
-        if (firstObject && Object.keys(firstObject).length === 2) {
-          const [key1, key2] = Object.keys(firstObject);
-          if (!key1 || !key2) return "";
-
-          return value
-            .filter((v) => typeof v === "object")
-            .map((v) => v as Record<string, string>)
-            .filter(
-              (v) =>
-                Object.prototype.hasOwnProperty.call(v, key1) &&
-                Object.prototype.hasOwnProperty.call(v, key2),
-            )
-            .map((v) => {
-              const header = v[key1] ?? "…";
-              const body = v[key2] ?? "…";
-              return `### ${toSentenceCase(header)}\n\n${toSentenceCase(body)}`;
-            })
-            .join("\n\n");
-        }
-      }
-
-      return value.map((v) => sectionToMarkdown(key, v) ?? "").join("\n\n");
-    }
+    return renderArray(key, value);
   }
   if (isObject(value)) {
-    return Object.entries(value)
-      .map(([k, v]) => {
-        const content = sectionToMarkdown(k, v) ?? "";
-        return `## ${keyToHeading(k)}\n\n${content}`;
-      })
-      .join("\n\n");
+    return renderObject(value);
   }
   if (isString(value)) {
     return value;
