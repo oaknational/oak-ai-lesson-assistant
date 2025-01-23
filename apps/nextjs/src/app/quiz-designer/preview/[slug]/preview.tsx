@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 "use client";
 
 import { Box, Container, Flex, Text } from "@radix-ui/themes";
@@ -12,7 +11,6 @@ import { Icon } from "@/components/Icon";
 import Layout from "@/components/Layout";
 
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
