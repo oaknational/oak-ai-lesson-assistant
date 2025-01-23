@@ -41,7 +41,7 @@ const LessonPlanMapToMarkDown = ({
       .sort(({ key: a }, { key: b }) => {
         // sort the keys in a predefined order
         //  title, subject, topic, keyStage, basedOn, lessonReferences, learningOutcome, learningCycles, priorKnowledge, keyLearningPoints, misconceptions, keywords, starterQuiz, cycle1, cycle2, cycle3, exitQuiz, additionalMaterials
-        const order = [
+        const order: LessonPlanKey[] = [
           "learningOutcome",
           "learningCycles",
           "priorKnowledge",
@@ -55,14 +55,16 @@ const LessonPlanMapToMarkDown = ({
           "exitQuiz",
           "additionalMaterials",
         ];
-        return order.indexOf(a) - order.indexOf(b);
+        return (
+          order.indexOf(a as LessonPlanKey) - order.indexOf(b as LessonPlanKey)
+        );
       })
       .map(({ key, value }) => {
         return (
           <ChatSection
             key={key}
             sectionRefs={sectionRefs}
-            objectKey={key}
+            objectKey={key as LessonPlanKey}
             value={value}
           />
         );
