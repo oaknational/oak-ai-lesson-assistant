@@ -108,7 +108,7 @@ export const applyLlmFixtures = async (
 
 // The chat UI has a race condition when you submit a message too quickly after the previous response
 // This is a temporary fix to fix test flake
-export async function letUiSettle(page, testInfo: TestInfo) {
+export async function letUiSettle(page: Page, testInfo: TestInfo) {
   return await page.waitForTimeout(testInfo.retry === 0 ? 500 : 6000);
 }
 
