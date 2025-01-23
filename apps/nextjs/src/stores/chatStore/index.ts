@@ -50,14 +50,11 @@ export type ChatStore = {
   queueUserAction: (action: string) => Promise<void>;
   executeQueuedAction: () => Promise<void>;
 
-  // rest
-  reset: ({
-    ailaStreamingStatus,
-    queuedUserAction,
-  }: {
-    ailaStreamingStatus: AilaStreamingStatus;
-    queuedUserAction?: string | null;
-  }) => void;
+  reset: (
+    params: Pick<ChatStore, "ailaStreamingStatus"> & {
+      queuedUserAction?: ChatStore["queuedUserAction"];
+    },
+  ) => void;
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
