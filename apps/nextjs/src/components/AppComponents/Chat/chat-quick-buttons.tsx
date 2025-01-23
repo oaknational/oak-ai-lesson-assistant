@@ -48,9 +48,8 @@ const QuickActionButtons = () => {
   const { queueUserAction, queuedUserAction, actions } = useChatStore();
   const { messages, id } = chat;
 
-  const ailaStreamingStatus = useChatStore(
-    (state) => state.ailaStreamingStatus,
-  );
+  const ailaStreamingStatus =
+    useChatStore((state) => state.ailaStreamingStatus) ?? "Idle";
 
   const hasMessages = !!messages.length;
 

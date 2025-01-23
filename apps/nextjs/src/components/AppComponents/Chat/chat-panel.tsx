@@ -61,7 +61,7 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
             onSubmit={handleSubmit}
             input={input}
             setInput={setInput}
-            ailaStreamingStatus={ailaStreamingStatus}
+            ailaStreamingStatus={ailaStreamingStatus ?? "Idle"}
             hasMessages={hasMessages}
             queueUserAction={queueUserAction}
             queuedUserAction={queuedUserAction}

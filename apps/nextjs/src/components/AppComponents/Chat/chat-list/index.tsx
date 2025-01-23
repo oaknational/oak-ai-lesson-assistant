@@ -84,7 +84,7 @@ export function ChatList({
         id={id}
         lastModeration={lastModeration}
         persistedModerations={persistedModerations}
-        ailaStreamingStatus={ailaStreamingStatus}
+        ailaStreamingStatus={ailaStreamingStatus ?? "Idle"}
         demo={demo}
       />
 
