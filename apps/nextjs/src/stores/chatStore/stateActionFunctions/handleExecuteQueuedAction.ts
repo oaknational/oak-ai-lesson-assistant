@@ -1,12 +1,14 @@
+import { structuredLogger as logger } from "@oakai/logger";
+
 export function handleExecuteQueuedAction(set, get) {
   return async () => {
-    const { queuedUserAction, isExecutingAction, actions } = get();
+    const { queuedUserAction, isExecutingQueuedAction, actions } = get();
     const { append, reload } = actions;
 
-    if (!queuedUserAction || isExecutingAction) return;
+    if (!queuedUserAction || isExecutingQueuedAction) return;
 
     const actionToExecute = queuedUserAction;
-    set({ isExecutingAction: true, queuedUserAction: null });
+    set({ isExecutingQueuedAction: true, queuedUserAction: null });
 
     try {
       if (actionToExecute === "continue") {
@@ -23,9 +25,9 @@ export function handleExecuteQueuedAction(set, get) {
         });
       }
     } catch (error) {
-      console.error("Error handling queued action:", error);
+      logger.error("Error handling queued action:", error);
     } finally {
-      set({ isExecutingAction: false });
+      set({ isExecutingQueuedAction: false });
     }
   };
 }

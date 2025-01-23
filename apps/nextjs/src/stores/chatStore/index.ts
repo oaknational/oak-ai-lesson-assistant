@@ -3,9 +3,9 @@ import { aiLogger } from "@oakai/logger";
 import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { create } from "zustand";
 
-import { handleExecuteQueuedAction } from "./actionFunctions/handleExecuteQueuedAction";
-import { handleQueueUserAction } from "./actionFunctions/handleQueueUserAction";
-import { handleSetMessages } from "./actionFunctions/handleSetMessages";
+import { handleExecuteQueuedAction } from "./stateActionFunctions/handleExecuteQueuedAction";
+import { handleQueueUserAction } from "./stateActionFunctions/handleQueueUserAction";
+import { handleSetMessages } from "./stateActionFunctions/handleSetMessages";
 import type { AiMessage, ParsedMessage } from "./types";
 
 const log = aiLogger("chat:store");
@@ -37,7 +37,7 @@ export type ChatStore = {
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
   queuedUserAction: string | null;
-  isExecutingAction: boolean;
+  isExecutingQueuedAction: boolean;
   lessonPlan: LooseLessonPlan | null;
   // Grouped Actions
   actions: Actions;
@@ -62,7 +62,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   stableMessages: [],
   streamingMessage: null,
   queuedUserAction: null,
-  isExecutingAction: false,
+  isExecutingQueuedAction: false,
   lessonPlan: null,
   // From AI SDK
   isLoading: false,

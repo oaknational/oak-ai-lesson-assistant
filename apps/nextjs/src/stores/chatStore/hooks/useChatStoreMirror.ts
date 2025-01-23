@@ -28,5 +28,6 @@ export const useChatStoreMirror = (
 
   useEffect(() => {
     setAiSdkActions({ stop, append, reload });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

@@ -1,6 +1,7 @@
 import invariant from "tiny-invariant";
 
 import type { AilaStreamingStatus } from "..";
+import { calculateStreamingStatus } from "../actions/calculateStreamingStatus";
 import { getNextStableMessages, parseStreamingMessage } from "../parsing";
 import type { AiMessage } from "../types";
 
@@ -36,25 +37,10 @@ export function handleSetMessages(set, get) {
         get().stableMessages,
       );
 
-      // Determine streaming status
-      if (!currentMessageData) {
-        streamingStatus = "Loading";
-      } else if (currentMessageData.role === "user") {
-        streamingStatus = "RequestMade";
-      } else if (currentMessageData.content.includes("MODERATION_START")) {
-        streamingStatus = "Moderating";
-      } else if (currentMessageData.content.includes("experimentalPatch")) {
-        streamingStatus = "StreamingExperimentalPatches";
-      } else if (
-        currentMessageData.content.includes('"type":"prompt"') ||
-        currentMessageData.content.includes('\\"type\\":\\"prompt\\"')
-      ) {
-        streamingStatus = "StreamingChatResponse";
-      } else if (currentMessageData.content.includes("CHAT_START")) {
-        streamingStatus = "StreamingLessonPlan";
-      } else {
-        streamingStatus = "Loading";
-      }
+      streamingStatus = calculateStreamingStatus(
+        currentMessageData,
+        streamingStatus,
+      );
 
       set({
         streamingMessage,
