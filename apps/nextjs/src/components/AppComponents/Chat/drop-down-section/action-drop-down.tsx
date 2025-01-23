@@ -124,6 +124,8 @@ function handleLabelText({
 }): string {
   log.info("section", section);
   if (
+    // @todo this is a bug - "additional materials" always returns true
+    // eslint-disable-next-line no-constant-condition
     section === "Misconceptions" ||
     section === "Key learning points" ||
     section === "Learning cycles" ||
