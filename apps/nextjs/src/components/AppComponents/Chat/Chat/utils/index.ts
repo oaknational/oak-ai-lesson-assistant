@@ -4,18 +4,38 @@ import type { Message } from "ai/react";
 
 const log = aiLogger("chat");
 
-export function findMessageIdFromContent({ content }: { content: string }) {
+interface IdBlock {
+  type: "id";
+  value: string;
+}
+
+function isIdBlock(obj: unknown): obj is IdBlock {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    "type" in obj &&
+    obj.type === "id" &&
+    "value" in obj &&
+    typeof obj.value === "string"
+  );
+}
+
+export function findMessageIdFromContent({
+  content,
+}: {
+  content: string;
+}): string | undefined {
   return content
     .split("␞")
     .map((s) => {
       try {
-        return JSON.parse(s.trim());
+        return JSON.parse(s.trim()) as unknown;
       } catch {
         // ignore invalid JSON
         return null;
       }
     })
-    .find((i) => i?.type === "id")?.value;
+    .find(isIdBlock)?.value;
 }
 
 export function findLatestServerSideState(workingMessages: Message[]) {
