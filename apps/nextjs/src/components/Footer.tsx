@@ -156,7 +156,7 @@ const Footer = () => {
             </OakBox>
             <OakFlex $flexDirection="column" $gap="all-spacing-1">
               <p className="text-sm font-bold">
-                © Oak National Academy Limited, No 14174888
+                © Oak National Academy Limited 2025, No 14174888
               </p>
               <p className="text-sm">
                 1 Scott Place, 2 Hardman Street, Manchester, M3 3AA
