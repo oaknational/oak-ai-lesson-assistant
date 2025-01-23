@@ -52,10 +52,10 @@ export const Default: Story = {
 export const Loading: Story = {
   args: {},
   parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "Idle",
+    },
     chatContext: {
-      chatStoreState: {
-        ailaStreamingStatus: "Idle",
-      },
       ...chatContext,
 
       lessonPlan: {},
