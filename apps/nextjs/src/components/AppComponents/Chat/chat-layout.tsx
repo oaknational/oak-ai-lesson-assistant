@@ -29,6 +29,7 @@ export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
       <div
         className={`flex h-full flex-row justify-start ${demo.isDemoUser ? "pt-22" : ""}`}
       >
+        <>test</>
         <ChatLeftHandSide
           key="chat-left-hand-side"
           isDemoLocked={isDemoLocked}
