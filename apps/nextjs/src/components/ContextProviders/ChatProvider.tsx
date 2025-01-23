@@ -50,7 +50,7 @@ export type ChatContextProps = {
   isLoading: boolean;
   isStreaming: boolean;
   lessonPlan: LooseLessonPlan;
-  // ailaStreamingStatus: AilaStreamingStatus;
+  ailaStreamingStatus: AilaStreamingStatus;
   append: (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions | undefined,
@@ -371,6 +371,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       setOverrideLessonPlan({});
     }
   }, [toxicModeration, setMessages]);
+  const ailaStreamingStatus = "Idle";
 
   const value: ChatContextProps = useMemo(
     () => ({
@@ -384,7 +385,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       chatAreaRef,
       append,
       messages,
-      // ailaStreamingStatus,
+      ailaStreamingStatus,
       isLoading,
       isStreaming: !hasFinished,
       lastModeration,
@@ -403,7 +404,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       hasAppendedInitialMessage,
       chatAreaRef,
       messages,
-      // ailaStreamingStatus,
+      ailaStreamingStatus,
       isLoading,
       lastModeration,
       input,

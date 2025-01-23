@@ -3,6 +3,7 @@ import { userEvent, within } from "@storybook/test";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
+import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
 
 import DropDownSection from "./";
 
@@ -24,7 +25,7 @@ const meta = {
     sectionRefs: {},
     showLessonMobile: false,
   },
-  decorators: [ChatDecorator],
+  decorators: [ChatDecorator, ChatStoreDecorator],
   parameters: {
     ...chromaticParams(["desktop"]),
     chatContext: {
@@ -40,7 +41,9 @@ const meta = {
         learningOutcome:
           "To understand the importance of frogs in British society and culture",
       },
-      // ailaStreamingStatus: "Idle",
+    },
+    chatStoreState: {
+      ailaStreamingStatus: "Idle",
     },
   },
 } satisfies Meta<typeof DropDownSection>;

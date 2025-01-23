@@ -3,6 +3,7 @@ import { fn } from "@storybook/test";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
+import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
 
 import ChatLhsHeader from "./chat-lhs-header";
 
@@ -10,7 +11,7 @@ const meta = {
   title: "Components/Chat/ChatLhsHeader",
   component: ChatLhsHeader,
   tags: ["autodocs"],
-  decorators: [ChatDecorator],
+  decorators: [ChatDecorator, ChatStoreDecorator],
   args: {
     showStreamingStatus: false,
     setShowLessonMobile: fn(),
@@ -35,8 +36,8 @@ export const NonProdStreamingStatus: Story = {
     showStreamingStatus: true,
   },
   parameters: {
-    chatContext: {
-      // ailaStreamingStatus: "StreamingLessonPlan",
+    chatStoreState: {
+      ailaStreamingStatus: "StreamingLessonPlan",
     },
   },
 };

@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
+import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
 
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
 
@@ -19,14 +20,13 @@ const chatContext: Partial<ChatContextProps> = {
     learningOutcome:
       "To understand the importance of frogs in British society and culture",
   },
-  // ailaStreamingStatus: "Idle",
 };
 
 const meta = {
   title: "Components/LessonPlan/LessonPlanDisplay",
   component: LessonPlanDisplay,
   tags: ["autodocs"],
-  decorators: [ChatDecorator],
+  decorators: [ChatDecorator, ChatStoreDecorator],
   args: {
     documentContainerRef: { current: null },
     chatEndRef: undefined,
@@ -53,7 +53,11 @@ export const Loading: Story = {
   args: {},
   parameters: {
     chatContext: {
+      chatStoreState: {
+        ailaStreamingStatus: "Idle",
+      },
       ...chatContext,
+
       lessonPlan: {},
     },
   },
@@ -62,8 +66,12 @@ export const Loading: Story = {
 export const WithModeration: Story = {
   args: {},
   parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "Idle",
+    },
     chatContext: {
       ...chatContext,
+
       lastModeration: {
         id: "123",
         categories: ["l/strong-language"],

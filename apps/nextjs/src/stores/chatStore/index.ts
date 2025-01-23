@@ -26,7 +26,8 @@ export type AilaStreamingStatus =
   | "StreamingChatResponse"
   | "StreamingExperimentalPatches"
   | "Moderating"
-  | "Idle";
+  | "Idle"
+  | undefined;
 
 export type ChatStore = {
   ailaStreamingStatus: AilaStreamingStatus;
@@ -48,10 +49,19 @@ export type ChatStore = {
   setIsLoading: (isLoading: boolean) => void;
   queueUserAction: (action: string) => Promise<void>;
   executeQueuedAction: () => Promise<void>;
+
+  // rest
+  reset: ({
+    ailaStreamingStatus,
+    queuedUserAction,
+  }: {
+    ailaStreamingStatus: AilaStreamingStatus;
+    queuedUserAction?: string | null;
+  }) => void;
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
-  ailaStreamingStatus: "Idle",
+  ailaStreamingStatus: undefined,
   stableMessages: [],
   streamingMessage: null,
   queuedUserAction: null,
@@ -74,6 +84,14 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   queueUserAction: handleQueueUserAction(set, get),
   executeQueuedAction: handleExecuteQueuedAction(set, get),
   setMessages: handleSetMessages(set, get),
+
+  // reset
+  reset: ({ ailaStreamingStatus = "Idle", queuedUserAction }) => {
+    set({
+      ailaStreamingStatus: ailaStreamingStatus,
+      queuedUserAction: queuedUserAction,
+    });
+  },
 }));
 
 useChatStore.subscribe((state) => {
