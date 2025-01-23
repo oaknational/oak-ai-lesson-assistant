@@ -1,6 +1,9 @@
 import { useRef } from "react";
 
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type {
+  LessonPlanKey,
+  LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 
 import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
@@ -69,8 +72,18 @@ const LessonPlanMapToMarkDown = ({
 
 export default LessonPlanMapToMarkDown;
 
-const ChatSection = ({ sectionRefs, objectKey, value }) => {
-  const sectionRef = useRef(null);
+export interface ChatSectionProps {
+  sectionRefs?: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
+  objectKey: LessonPlanKey;
+  value: unknown;
+}
+
+const ChatSection = ({
+  sectionRefs,
+  objectKey,
+  value,
+}: Readonly<ChatSectionProps>) => {
+  const sectionRef = useRef<HTMLDivElement | null>(null);
   if (sectionRefs) sectionRefs[objectKey] = sectionRef;
 
   return (
