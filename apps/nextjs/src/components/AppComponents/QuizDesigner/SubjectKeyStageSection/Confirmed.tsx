@@ -2,6 +2,7 @@ import type { KeyStageName, SubjectName } from "@oakai/core";
 import { Flex, Heading, Text } from "@radix-ui/themes";
 
 type ConfirmedProps = {
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   subject?: SubjectName | string;
   keyStage?: KeyStageName | "";
   topic?: string;

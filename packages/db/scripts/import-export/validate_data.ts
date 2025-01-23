@@ -9,6 +9,7 @@ import csvParser from "csv-parser";
 import dotenv from "dotenv";
 import * as fs from "fs";
 import * as path from "path";
+import { z } from "zod";
 
 import { prisma } from "../..";
 
@@ -81,6 +82,12 @@ function getModelConstraints() {
   return modelConstraints;
 }
 
+const CsvRowSchema = z
+  .object({
+    id: z.string(),
+  })
+  .passthrough();
+
 const validateCSV = (
   filePath: string,
   nonNullable: string[],
@@ -94,29 +101,32 @@ const validateCSV = (
     log(`Validating CSV file: ${filePath}`);
     fs.createReadStream(filePath)
       .pipe(csvParser())
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .on("data", (row: any) => {
-        // Check non-nullable fields
-        nonNullable.forEach((col) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          if (!row[col]) {
-            errors.push(
-              `NULL value found in non-nullable column '${col}' in row ${JSON.stringify(
-                row,
-              )}`,
-            );
-          }
-        });
 
-        for (const fk of Object.keys(foreignKeys)) {
-          if (!foreignKeyCheck[fk]) {
-            foreignKeyCheck[fk] = new Set();
+      .on("data", (rawRow: unknown) => {
+        try {
+          const row = CsvRowSchema.parse(rawRow);
+          // Check non-nullable fields
+          nonNullable.forEach((col) => {
+            if (!row[col]) {
+              errors.push(
+                `NULL value found in non-nullable column '${col}' in row ${JSON.stringify(
+                  row,
+                )}`,
+              );
+            }
+          });
+
+          for (const fk of Object.keys(foreignKeys)) {
+            if (!foreignKeyCheck[fk]) {
+              foreignKeyCheck[fk] = new Set();
+            }
+
+            if (row[fk]) {
+              foreignKeyCheck[fk].add(row[fk]);
+            }
           }
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          if (row[fk]) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            foreignKeyCheck[fk].add(row[fk]);
-          }
+        } catch {
+          errors.push(`Invalid row format: missing or invalid id field`);
         }
       })
       .on("end", () => {
@@ -146,9 +156,15 @@ const validateCSV = (
                 const refIds = new Set<string>();
                 fs.createReadStream(refFilePath)
                   .pipe(csvParser())
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  .on("data", (row: any) => {
-                    refIds.add(row.id);
+                  .on("data", (rawRow: unknown) => {
+                    try {
+                      const row = CsvRowSchema.parse(rawRow);
+                      refIds.add(row.id);
+                    } catch {
+                      errors.push(
+                        `Invalid row format: missing or invalid id field`,
+                      );
+                    }
                   })
                   .on("end", () => {
                     ids.forEach((id: string) => {
@@ -194,10 +210,11 @@ const main = async () => {
       }
 
       try {
+        const validatedConstraints = TableConstraintsSchema.parse(constraints);
         await validateCSV(
           filePath,
-          constraints.nonNullable,
-          constraints.foreignKeys,
+          validatedConstraints.nonNullable,
+          validatedConstraints.foreignKeys,
         );
         log(`Validation passed for table '${table}'`);
       } catch (errors) {
@@ -227,3 +244,9 @@ main()
   });
 
 export {};
+
+const TableConstraintsSchema = z.object({
+  id: z.string(),
+  nonNullable: z.array(z.string()),
+  foreignKeys: z.record(z.string(), z.string()),
+});
