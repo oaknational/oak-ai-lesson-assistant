@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 "use client";
 
 import { Box, Container, Flex, Text } from "@radix-ui/themes";
@@ -9,6 +10,11 @@ import ChatButton from "@/components/AppComponents/Chat/ui/chat-button";
 import HeroContainer from "@/components/HeroContainer";
 import { Icon } from "@/components/Icon";
 import Layout from "@/components/Layout";
+
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 export default function QuizPreview(questions) {
   const sharedData = questions;
@@ -46,7 +52,9 @@ export default function QuizPreview(questions) {
                 </ul>
                 <p className="mt-14 font-semibold">Correct answer:</p>
                 <p>
-                  {question.answers.map((answer) => answer.value).join(", ")}
+                  {question.answers
+                    .map((answer: { value: any }) => answer.value)
+                    .join(", ")}
                 </p>
               </div>
             );
