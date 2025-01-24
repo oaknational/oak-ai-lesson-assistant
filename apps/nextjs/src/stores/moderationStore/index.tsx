@@ -70,3 +70,7 @@ export const useModerationStore = <T,>(
   }
   return useStore(store, selector);
 };
+
+useModerationStore.subscribe((state) => {
+  log.info("Moderation store updated", state);
+});
