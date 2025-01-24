@@ -1,6 +1,7 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import type { OpenAI } from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
+import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
 // import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { z } from "zod";
 
@@ -235,7 +236,7 @@ async function evaluateQuiz(
   max_tokens: number = 1500,
   ranking_schema: z.ZodType<any>,
   quizType: QuizPath,
-): Promise<OpenAI.Chat.Completions.ChatCompletion> {
+): Promise<ParsedChatCompletion<any>> {
   // TODO: change this to use the correct system prompt for the quiz type.
   // TODO: change this to use the correct lesson plan section for the quiz type.
 
@@ -385,7 +386,7 @@ export async function OpenAICallRerankerWithSchema(
   messages: any[],
   max_tokens: number = 500,
   schema: z.ZodType<any>,
-): Promise<OpenAI.Chat.Completions.ChatCompletion> {
+): Promise<ParsedChatCompletion<any>> {
   const userId = "test-user-id";
   const chatId = "test-chat-id";
   const openai = createOpenAIClient({ app: "maths-reranker" });

@@ -1,5 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 import { kv } from "@vercel/kv";
+import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
 import { pick } from "remeda";
 import { Md5 } from "ts-md5";
 
@@ -45,13 +46,19 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
     // TODO: GCLOMAX - make these generic types safer.
     // In this case the output is coming from the openAI endpoint. We need to unpack the output and unparse it.
 
-    const outputRatings: any[] = await processArray(
-      quizArray,
-      delayedRetrieveQuiz,
-    );
-    const extractedOutputRatings = outputRatings.map(
-      (item) => item.choices[0].message.parsed,
-    );
+    const outputRatings = await processArray<
+      QuizQuestion[],
+      ParsedChatCompletion<T>
+    >(quizArray, delayedRetrieveQuiz);
+    const extractedOutputRatings = outputRatings.map((item): T => {
+      if (item instanceof Error) {
+        throw item;
+      }
+      if (!item.choices?.[0]?.message?.parsed) {
+        throw new Error("Missing parsed response from OpenAI");
+      }
+      return item.choices[0].message.parsed;
+    });
     // const event = completion.choices[0].message.parsed;
 
     // const bestRating = selectHighestRated(outputRatings, (item) => item.rating);
