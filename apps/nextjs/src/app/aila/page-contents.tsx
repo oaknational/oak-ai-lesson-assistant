@@ -2,8 +2,6 @@
 
 import React from "react";
 
-import { ModerationStoreProvider } from "src/stores/moderationStore";
-
 import { Chat } from "@/components/AppComponents/Chat/Chat/chat";
 import LessonPlanDisplay from "@/components/AppComponents/Chat/chat-lessonPlanDisplay";
 import Layout from "@/components/AppComponents/Layout";
@@ -17,11 +15,9 @@ const ChatPageContents = ({ id }: { readonly id: string }) => {
   return (
     <Layout>
       <LessonPlanTrackingProvider chatId={id}>
-        <ModerationStoreProvider>
-          <ChatProvider id={id}>
-            <Chat />
-          </ChatProvider>
-        </ModerationStoreProvider>
+        <ChatProvider id={id}>
+          <Chat />
+        </ChatProvider>
       </LessonPlanTrackingProvider>
     </Layout>
   );
