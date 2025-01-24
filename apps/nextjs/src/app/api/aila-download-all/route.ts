@@ -132,6 +132,7 @@ async function getHandler(req: Request): Promise<Response> {
           lessonExport.exportType,
         )}.${ext}`;
 
+        // @ts-expect-error @todo fix this
         archive.append(data.stream, { name: filename });
 
         await saveDownloadEvent({
@@ -155,7 +156,7 @@ async function getHandler(req: Request): Promise<Response> {
     return new Response("No files found or processed", { status: 404 });
   }
 
-  archive.finalize();
+  await archive.finalize();
 
   const readableStream = nodePassThroughToReadableStream(zipStream);
 

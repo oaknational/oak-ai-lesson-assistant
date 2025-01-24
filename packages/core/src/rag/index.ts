@@ -143,6 +143,7 @@ Thank you and happy classifying!`;
       log.info("Categorisation results", parsedResponse);
       return parsedResponse;
     } catch (e) {
+      log.error("Error parsing response", e);
       return { error: "Error parsing response" };
     }
   }

@@ -49,6 +49,7 @@ export const portableTextComponents: PortableTextComponents = {
   },
   marks: {
     link: ({ value, children }) => (
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       <OakLink href={value.href} element={Link} target="_blank">
         {children}
       </OakLink>

@@ -7,6 +7,7 @@ import { useModerationStore } from "src/stores/moderationStore";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { organiseSections } from "@/lib/lessonPlan/organiseSections";
+import { useChatStore } from "@/stores/chatStore";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
@@ -42,8 +43,11 @@ export const LessonPlanDisplay = ({
   showLessonMobile,
 }: LessonPlanDisplayProps) => {
   const chat = useLessonChat();
-  const { ailaStreamingStatus } = chat;
+
   const lastModeration = useModerationStore((state) => state.lastModeration);
+  const ailaStreamingStatus = useChatStore(
+    (state) => state.ailaStreamingStatus,
+  );
   const lessonPlan = {
     ...chat.lessonPlan,
     starterQuiz:

@@ -186,7 +186,7 @@ AccordionContent.displayName = "AccordionContent";
 
 export default EmptyScreenAccordion;
 
-function convertTitleCaseToSentenceCase(titleCase) {
+function convertTitleCaseToSentenceCase(titleCase: string) {
   const lowerCaseTitle = titleCase.toLowerCase();
   return lowerCaseTitle.charAt(0).toUpperCase() + lowerCaseTitle.slice(1);
 }

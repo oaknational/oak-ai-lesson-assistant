@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
+import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
 import { LessonPlanTrackingDecorator } from "@/storybook/decorators/LessonPlanTrackingDecorator";
 
 import ChatQuickButtons from "./chat-quick-buttons";
@@ -17,7 +18,7 @@ const meta = {
   title: "Components/Chat/ChatQuickButtons",
   component: ChatQuickButtons,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, LessonPlanTrackingDecorator],
+  decorators: [ChatDecorator, ChatStoreDecorator, LessonPlanTrackingDecorator],
   parameters: {
     ...chromaticParams(["desktop"]),
     chatContext: {
@@ -32,7 +33,7 @@ type Story = StoryObj<typeof meta>;
 export const Idle: Story = {
   args: {},
   parameters: {
-    chatContext: {
+    chatStoreState: {
       ailaStreamingStatus: "Idle",
     },
   },
@@ -41,7 +42,7 @@ export const Idle: Story = {
 export const Loading: Story = {
   args: {},
   parameters: {
-    chatContext: {
+    chatStoreState: {
       ailaStreamingStatus: "Loading",
     },
   },
@@ -50,8 +51,10 @@ export const Loading: Story = {
 export const LoadingWithoutMessages: Story = {
   args: {},
   parameters: {
-    chatContext: {
+    chatStoreState: {
       ailaStreamingStatus: "Loading",
+    },
+    chatContext: {
       messages: [],
     },
   },
@@ -60,7 +63,7 @@ export const LoadingWithoutMessages: Story = {
 export const RequestMade: Story = {
   args: {},
   parameters: {
-    chatContext: {
+    chatStoreState: {
       ailaStreamingStatus: "RequestMade",
     },
   },
@@ -69,7 +72,7 @@ export const RequestMade: Story = {
 export const StreamingLessonPlan: Story = {
   args: {},
   parameters: {
-    chatContext: {
+    chatStoreState: {
       ailaStreamingStatus: "StreamingLessonPlan",
     },
   },
@@ -78,7 +81,7 @@ export const StreamingLessonPlan: Story = {
 export const StreamingChatResponse: Story = {
   args: {},
   parameters: {
-    chatContext: {
+    chatStoreState: {
       ailaStreamingStatus: "StreamingChatResponse",
     },
   },
@@ -87,7 +90,7 @@ export const StreamingChatResponse: Story = {
 export const Moderating: Story = {
   args: {},
   parameters: {
-    chatContext: {
+    chatStoreState: {
       ailaStreamingStatus: "Moderating",
     },
   },
@@ -96,7 +99,7 @@ export const Moderating: Story = {
 export const StreamingWithQueuedUserAction: Story = {
   args: {},
   parameters: {
-    chatContext: {
+    chatStoreState: {
       queuedUserAction: "regenerate",
       ailaStreamingStatus: "StreamingLessonPlan",
     },
@@ -106,7 +109,7 @@ export const StreamingWithQueuedUserAction: Story = {
 export const ModeratingWithQueuedUserAction: Story = {
   args: {},
   parameters: {
-    chatContext: {
+    chatStoreState: {
       queuedUserAction: "regenerate",
       ailaStreamingStatus: "Moderating",
     },

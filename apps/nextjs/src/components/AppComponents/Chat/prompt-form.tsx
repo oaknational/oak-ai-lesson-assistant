@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { toast } from "react-hot-toast";
 
-import * as Sentry from "@sentry/nextjs";
 import type { UseChatHelpers } from "ai/react";
 
 import {
@@ -13,8 +11,7 @@ import { Icon } from "@/components/Icon";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
 import { useSidebar } from "@/lib/hooks/use-sidebar";
-
-import type { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
+import type { AilaStreamingStatus } from "@/stores/chatStore";
 
 export interface PromptFormProps
   extends Pick<UseChatHelpers, "input" | "setInput"> {

@@ -9,8 +9,9 @@ import { useModerationStore } from "src/stores/moderationStore";
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
+import { useChatStore } from "@/stores/chatStore";
+import type { AilaStreamingStatus } from "@/stores/chatStore";
 
-import type { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 import { DemoLimitMessage } from "./demo-limit-message";
 import { InChatDownloadButtons } from "./in-chat-download-buttons";
@@ -29,7 +30,11 @@ export function ChatList({
   const persistedModerations = useModerationStore((state) => state.moderations);
   const lastModeration = useModerationStore((state) => state.lastModeration);
 
-  const { id, messages, ailaStreamingStatus } = chat;
+  const { id, messages } = chat;
+
+  const ailaStreamingStatus = useChatStore(
+    (state) => state.ailaStreamingStatus,
+  );
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
