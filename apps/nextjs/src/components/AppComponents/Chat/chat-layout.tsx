@@ -1,5 +1,6 @@
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
+import { ModerationSync } from "@/components/StoreComponents/ModerationSync";
 import { useDemoLocking } from "@/hooks/useDemoLocking";
 import { useMobileLessonPullOutControl } from "@/hooks/useMobileLessonPullOutControl";
 import { cn } from "@/lib/utils";
@@ -13,7 +14,7 @@ export interface ChatLayoutProps {
 }
 
 export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
-  const { isLoading, lessonPlan, messages } = useLessonChat();
+  const { isLoading, lessonPlan, messages, id } = useLessonChat();
   const ailaStreamingStatus = useChatStore(
     (state) => state.ailaStreamingStatus,
   );
@@ -25,11 +26,13 @@ export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
       messages,
       lessonPlan,
     });
+
   return (
     <div className={cn("fixed bottom-0 left-0 right-0 top-0 z-30", className)}>
       <div
         className={`flex h-full flex-row justify-start ${demo.isDemoUser ? "pt-22" : ""}`}
       >
+        <ModerationSync id={id} />
         <ChatLeftHandSide
           key="chat-left-hand-side"
           isDemoLocked={isDemoLocked}

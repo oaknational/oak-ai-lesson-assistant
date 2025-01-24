@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useModerationStore } from "@/stores/moderationStore";
 
 import AiIcon from "../../AiIcon";
 import type { DemoContextProps } from "../../ContextProviders/Demo";
@@ -58,6 +59,14 @@ const ChatRightHandSideLesson = ({
   };
 
   const endOfDocRef = useRef<HTMLDivElement>(null);
+
+  const isModerationsLoading = useModerationStore(
+    (state) => state.isModerationsLoading,
+  );
+
+  if (isModerationsLoading) {
+    return null;
+  }
 
   return (
     <div
