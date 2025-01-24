@@ -36,9 +36,27 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
     quizType: QuizPath,
   ): Promise<T[]> {
     // Decorates to delay the evaluation of each quiz. There is probably a better library for this.
-    const delayedRetrieveQuiz = withRandomDelay(
-      async (quiz: QuizQuestion[]) =>
-        await evaluateQuiz(lessonPlan, quiz, 1500, ratingSchema, quizType),
+    const delayedRetrieveQuiz = withRandomDelay<
+      [QuizQuestion[]],
+      ParsedChatCompletion<T>
+    >(
+      async (quiz: QuizQuestion[]) => {
+        try {
+          const result = await evaluateQuiz(
+            lessonPlan,
+            quiz,
+            1500,
+            ratingSchema,
+            quizType,
+          );
+          if (result instanceof Error) {
+            throw result;
+          }
+          return result as ParsedChatCompletion<T>;
+        } catch (error) {
+          throw error instanceof Error ? error : new Error(String(error));
+        }
+      },
       1000,
       5000,
     );
@@ -52,7 +70,13 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
     >(quizArray, delayedRetrieveQuiz);
     const extractedOutputRatings = outputRatings.map((item): T => {
       if (item instanceof Error) {
-        throw item;
+        log.error("Failed to evaluate quiz:", item);
+        // TODO: GCLOMAX - When merged add zod-mock for this, then overwrite the rating to be zero given that the schema must always have a root rating field.
+        // Return a default/fallback rating object that matches type T.
+        return {
+          rating: 0,
+          reasoning: `Error evaluating quiz: ${item.message}`,
+        } as unknown as T;
       }
       if (!item.choices?.[0]?.message?.parsed) {
         throw new Error("Missing parsed response from OpenAI");
