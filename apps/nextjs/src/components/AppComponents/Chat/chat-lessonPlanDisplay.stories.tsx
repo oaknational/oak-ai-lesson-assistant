@@ -4,12 +4,12 @@ import type { ChatContextProps } from "@/components/ContextProviders/ChatProvide
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
+import { ModerationStoreDecorator } from "@/storybook/decorators/ModerationStoreDecorator";
 
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
 
 const chatContext: Partial<ChatContextProps> = {
   id: "123",
-  lastModeration: null,
   messages: [],
   lessonPlan: {
     title: "About Frogs",
@@ -26,13 +26,14 @@ const meta = {
   title: "Components/LessonPlan/LessonPlanDisplay",
   component: LessonPlanDisplay,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, ChatStoreDecorator],
+  decorators: [ChatDecorator, ChatStoreDecorator, ModerationStoreDecorator],
   args: {
     documentContainerRef: { current: null },
     chatEndRef: undefined,
     sectionRefs: {},
     showLessonMobile: false,
   },
+
   parameters: {
     ...chromaticParams(["desktop"]),
   },
@@ -46,6 +47,26 @@ export const Default: Story = {
   args: {},
   parameters: {
     chatContext,
+    moderationStoreState: {
+      lastModeration: null,
+    },
+  },
+};
+export const WithModeration: Story = {
+  args: {},
+  parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "Idle",
+    },
+    moderationStoreState: {
+      lastModeration: {
+        id: "123",
+        categories: ["l/strong-language"],
+      },
+    },
+    chatContext: {
+      ...chatContext,
+    },
   },
 };
 
@@ -57,25 +78,10 @@ export const Loading: Story = {
     },
     chatContext: {
       ...chatContext,
-
       lessonPlan: {},
     },
-  },
-};
-
-export const WithModeration: Story = {
-  args: {},
-  parameters: {
-    chatStoreState: {
-      ailaStreamingStatus: "Idle",
-    },
-    chatContext: {
-      ...chatContext,
-
-      lastModeration: {
-        id: "123",
-        categories: ["l/strong-language"],
-      },
+    moderationStoreState: {
+      lastModeration: null,
     },
   },
 };
