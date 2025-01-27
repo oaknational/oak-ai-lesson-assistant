@@ -374,6 +374,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const value: ChatContextProps = useMemo(
     () => ({
+      id,
       //leave
 
       chat: chat ?? undefined,
@@ -389,6 +390,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       lastModeration,
     }),
     [
+      id,
       chat,
       messages,
       moderations,
