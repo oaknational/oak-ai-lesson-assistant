@@ -52,6 +52,7 @@ type ChildKey =
   | "inngest"
   | "judgements"
   | "lessons"
+  | "lessons:store"
   | "middleware:auth"
   | "moderation"
   | "prompts"

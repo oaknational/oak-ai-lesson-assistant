@@ -1,17 +1,18 @@
 import invariant from "tiny-invariant";
 
-import { PatchCycle, parseMessageRow } from "./jsonPatchProtocol";
+import { parseMessageRow } from "./jsonPatchProtocol";
+import { PatchCycle } from "./jsonPatchSchema";
 import type { Cycle } from "./schema";
 
-/* 
+/*
 
 Our Zod schema for valid message parts can be too relaxed, so this tests that we get back
 what we expect when parsing a message row.
 If you do [SomeZodSchema].safeParse it would return data = {} instead of data = {a validated cycle}.
 
-This is unexpected behaviour and would lead to sections appearing to be blank even 
+This is unexpected behaviour and would lead to sections appearing to be blank even
 though the client has received data. If there's just a small error in the schema, it would
-result in no validation error, and an empty object being returned. 
+result in no validation error, and an empty object being returned.
 There is a comment on the relevant type that was causing the problem, which is unresolved.
 */
 describe("parseMessageRow", () => {
