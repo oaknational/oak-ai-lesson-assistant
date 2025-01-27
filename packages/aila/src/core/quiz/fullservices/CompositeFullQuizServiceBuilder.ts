@@ -1,16 +1,16 @@
 import type { AilaQuizGeneratorService } from "../../AilaServices";
 import { AilaQuizFactory } from "../generators/AilaQuizGeneratorFactory";
-import type { QuizSelectorFactory } from "../interfaces";
-import type { FullQuizService } from "../interfaces";
+import type { FullQuizService, QuizSelectorFactory } from "../interfaces";
 import { AilaQuizRerankerFactoryImpl } from "../rerankers/AilaQuizRerankerFactory";
 import type { QuizBuilderSettings } from "../schema";
 import { QuizSelectorFactoryImpl } from "../selectors/QuizSelectorFactory";
 import { CompositeFullQuizService } from "./CompositeFullQuizService";
 
 export class CompositeFullQuizServiceBuilder {
-  private generatorFactory: AilaQuizFactory = new AilaQuizFactory();
-  private selectorFactory: QuizSelectorFactory = new QuizSelectorFactoryImpl();
-  private rerankerFactory: AilaQuizRerankerFactoryImpl =
+  private readonly generatorFactory: AilaQuizFactory = new AilaQuizFactory();
+  private readonly selectorFactory: QuizSelectorFactory =
+    new QuizSelectorFactoryImpl();
+  private readonly rerankerFactory: AilaQuizRerankerFactoryImpl =
     new AilaQuizRerankerFactoryImpl();
   public build(settings: QuizBuilderSettings): FullQuizService {
     const generatorArray: AilaQuizGeneratorService[] = [];

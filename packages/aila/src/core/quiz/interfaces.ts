@@ -27,12 +27,6 @@ export interface CustomMetadata {
   [key: string]: unknown; // Allow for other unknown metadata fields
 }
 
-// export interface QuizGenerator {
-//   retriever: DocumentRetriever;
-//   reranker: DocumentReranker;
-//   generateQuiz(context: string, options?: QuizGenerationOptions): Promise<Quiz>;
-// }
-
 export interface DocumentRetriever {
   retrieve(query: string): Promise<Document[]>;
 }
@@ -46,12 +40,6 @@ export interface DocumentReranker {
     topN: number,
   ): Promise<any[]>;
 }
-
-// export interface QuizGenerationOptions {
-//   numberOfQuestions?: number;
-//   difficulty?: "easy" | "medium" | "hard";
-//   questionTypes?: QuestionType[];
-// }
 
 export interface AilaQuizVariantService {
   rerankService: DocumentReranker;
@@ -130,10 +118,6 @@ export interface Document {
 export interface SimplifiedResultQuestion {
   text: string;
   questionUid: string;
-}
-
-export interface Document {
-  text: string;
 }
 
 export interface DocumentWrapper {

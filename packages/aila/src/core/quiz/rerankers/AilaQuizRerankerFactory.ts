@@ -13,7 +13,6 @@ export class AilaQuizRerankerFactoryImpl implements AilaQuizRerankerFactory {
         throw new Error(
           "Schema reranker not implemented import from other branch",
         );
-      // return new TestSchemaReranker(testRatingSchema, "/starterQuiz");
       case "return-first":
         return new ReturnFirstReranker(testRatingSchema, "/starterQuiz");
     }

@@ -14,7 +14,7 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
   //   This parameter is not used but we keep it for consistency with the other quiz generators
   async generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
-    ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+    _ailaRagRelevantLessons?: AilaRagRelevantLesson[],
   ): Promise<Quiz[]> {
     // If quiz is basedOn, give them the default quiz as a starter quiz
     log.info(
@@ -36,7 +36,7 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
 
   async generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
-    ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+    _ailaRagRelevantLessons?: AilaRagRelevantLesson[],
   ): Promise<Quiz[]> {
     // If quiz is basedOn, give them the default quiz as an exit quiz
     log.info(

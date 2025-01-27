@@ -3,9 +3,12 @@
 // Realistically we could make a queueing system for this but unsure how that works
 // With vercel serverless functions ect - or wait until openai adds batching support to its
 // Beta chat.
-
 // Decorates (without experimental decorators) to add a random delay to a function.
 // Adds a random delay to a function
+import { aiLogger } from "@oakai/logger";
+
+const log = aiLogger("aila");
+
 export function withRandomDelay<TArgs extends unknown[], TResult>(
   fn: (...args: TArgs) => Promise<TResult>,
   minDelay: number,
@@ -15,7 +18,7 @@ export function withRandomDelay<TArgs extends unknown[], TResult>(
     const delay = Math.floor(
       Math.random() * (maxDelay - minDelay + 1) + minDelay,
     );
-    console.log(`Delaying execution for ${delay}ms`);
+    log.info(`Delaying execution for ${delay}ms`);
     await new Promise((resolve) => setTimeout(resolve, delay));
     return fn(...args);
   };

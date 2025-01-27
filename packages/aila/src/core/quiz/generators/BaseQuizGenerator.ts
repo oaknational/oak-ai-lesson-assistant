@@ -1,14 +1,8 @@
 import { Client } from "@elastic/elasticsearch";
-import type {
-  SearchHit,
-  SearchResponse,
-  SearchHitsMetadata,
-} from "@elastic/elasticsearch/lib/api/types";
-// TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
+// TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up. Double check the prisma import.
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { CohereClient } from "cohere-ai";
-// TODO: double check the prisma import
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import { z } from "zod";
 
@@ -43,7 +37,6 @@ const log = aiLogger("aila:quiz");
 // Quiz generator takes a lesson plan and returns a quiz object.
 // Quiz rerankers take a lesson plan and returns a list of quiz objects ranked by suitability.
 // Quiz selectors take a list of quiz objects and rankings and select the best one acording to some criteria or logic defined by a rating function.
-// dummy comment for commit
 export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   protected client: Client;
   protected cohere: CohereClient;
@@ -92,7 +85,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     planIds: string,
   ): Promise<JsonPatchDocument> {
     const lessonSlugs = await this.getLessonSlugFromPlanId(planIds);
-    // TODO: add error throwing here if lessonSlugs is null
     const lessonSlugList = lessonSlugs ? [lessonSlugs] : [];
     const customIds = await this.lessonSlugToQuestionIdSearch(lessonSlugList);
     const patch = await this.patchFromCustomIDs(customIds);
@@ -178,8 +170,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   public async questionArrayFromCustomIds(
     customIds: string[],
   ): Promise<QuizQuestion[]> {
-    // TODO: GCLOMAX - dependancy injection of index here.
-
     const formattedQuestionSearchResponse = await this.searchQuestions(
       this.client,
       "quiz-questions-text-only",
@@ -255,7 +245,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       const content = lessonPlan[field as keyof LooseLessonPlan];
 
       if (Array.isArray(content)) {
-        // TODO Review this
         unpackedList.push(
           ...content.filter((item): item is string => typeof item === "string"),
         );
@@ -319,7 +308,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     index: string,
     field: string,
     query: string,
-    size: number = 10,
+    _size: number = 10,
   ): Promise<any> {
     try {
       log.info(`Searching index: ${index}, field: ${field}, query: ${query}`);

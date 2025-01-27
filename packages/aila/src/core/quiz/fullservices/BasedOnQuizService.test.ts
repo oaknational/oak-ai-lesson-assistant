@@ -1,7 +1,11 @@
-import type { Quiz, QuizPath, QuizQuestion } from "../../../protocol/schema";
+import { aiLogger } from "@oakai/logger";
+
+import type { QuizPath } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { AilaQuizFactory } from "../generators/AilaQuizGeneratorFactory";
 import { BasedOnQuizService } from "./BasedOnQuizService";
+
+const log = aiLogger("quiz");
 
 describe("BasedOnQuizService", () => {
   let quizService: BasedOnQuizService;
@@ -30,8 +34,8 @@ describe("BasedOnQuizService", () => {
         "/starterQuiz" as QuizPath,
         CircleTheoremLesson,
       );
-      console.log("QUIZ BELOW");
-      console.log(JSON.stringify(quiz));
+      log.info("QUIZ BELOW");
+      log.info(JSON.stringify(quiz));
       expect(quiz).toBeDefined();
       expect(Array.isArray(quiz)).toBe(true);
       expect(quiz[0]).toHaveProperty("question");
