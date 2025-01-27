@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 
 import { useUser } from "@clerk/nextjs";
 import { aiLogger } from "@oakai/logger";
 import { Flex } from "@radix-ui/themes";
+import * as Sentry from "@sentry/nextjs";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/AppComponents/Chat/ui/button";
@@ -73,7 +75,12 @@ export function ChatStart({
           { appId: "lesson-planner", message },
           {
             onSuccess: () => {
-              trpcUtils.chat.appSessions.remainingLimit.invalidate();
+              trpcUtils.chat.appSessions.remainingLimit
+                .invalidate()
+                .catch((e) => {
+                  Sentry.captureException(e);
+                  toast.error("Failed to invalidate remaining limit");
+                });
             },
           },
         );
@@ -87,6 +94,8 @@ export function ChatStart({
         router.push(`/aila/${result.id}`);
       } catch (error) {
         log.error("Error creating app session:", error);
+        Sentry.captureException(error);
+        toast.error("Failed to start the chat");
       }
     },
     [
@@ -98,19 +107,25 @@ export function ChatStart({
   );
 
   const submit = useCallback(
-    async (message: string) => {
+    (message: string) => {
       if (demo.isDemoUser) {
         setDialogWindow("demo-interstitial");
       } else {
         setIsSubmitting(true);
-        create(message);
+        create(message).catch((error) => {
+          Sentry.captureException(error);
+          toast.error("Failed to start the chat");
+        });
       }
     },
     [create, setDialogWindow, demo.isDemoUser, setIsSubmitting],
   );
 
-  const interstitialSubmit = useCallback(async () => {
-    create(input);
+  const interstitialSubmit = useCallback(() => {
+    create(input).catch((error) => {
+      Sentry.captureException(error);
+      toast.error("Failed to start the chat");
+    });
   }, [create, input]);
 
   return (
@@ -164,10 +179,10 @@ export function ChatStart({
                         key={message.message}
                         variant="link"
                         className="pl-0"
-                        onClick={async () => {
+                        onClick={() => {
                           trackEvent(`chat: ${message.message}`);
                           setInput(message.message);
-                          await submit(message.message);
+                          submit(message.message);
                         }}
                       >
                         <span className="mt-14 pb-7 text-left text-base font-light underline sm:mt-0">

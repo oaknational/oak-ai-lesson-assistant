@@ -28,6 +28,7 @@
       "@/lib/*": ["src/lib/*"],
       "@/utils/*": ["src/utils/*"],
       "@/assets/*": ["src/assets/*"],
+      "@/stores/*": ["src/stores/*"],
       "@/storybook/*": [".storybook/*"]
     },
     "plugins": [

@@ -11,8 +11,7 @@ import { Icon } from "@/components/Icon";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
 import { useSidebar } from "@/lib/hooks/use-sidebar";
-
-import type { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
+import type { AilaStreamingStatus } from "@/stores/chatStore";
 
 export interface PromptFormProps
   extends Pick<UseChatHelpers, "input" | "setInput"> {
@@ -45,7 +44,7 @@ export function PromptForm({
   const sidebar = useSidebar();
 
   const handleSubmit = useCallback(
-    async (value: string) => {
+    (value: string) => {
       setInput("");
       if (sidebar.isSidebarOpen) {
         sidebar.toggleSidebar();
@@ -66,7 +65,7 @@ export function PromptForm({
 
   return (
     <form
-      onSubmit={async (e) => {
+      onSubmit={(e) => {
         e.preventDefault();
         if (!input?.trim()) {
           return;
@@ -76,7 +75,7 @@ export function PromptForm({
       ref={formRef}
     >
       <div
-        className={`${!shouldAllowUserInput ? "block" : "hidden"} h-[60px] w-full rounded-md  border-2 border-oakGrey3 sm:hidden`}
+        className={`${!shouldAllowUserInput ? "block" : "hidden"} h-[60px] w-full rounded-md border-2 border-oakGrey3 sm:hidden`}
       />
       <div
         className={`${!shouldAllowUserInput ? "hidden" : "flex"} relative max-h-60 w-full grow flex-col overflow-hidden rounded-md border-2 border-black bg-white pr-20 sm:flex`}

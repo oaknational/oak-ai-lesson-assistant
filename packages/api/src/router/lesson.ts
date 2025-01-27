@@ -5,7 +5,6 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
-import { removeProperty } from "../remove-props";
 import { router } from "../trpc";
 
 type TranscriptResult = {
@@ -32,7 +31,7 @@ export const lessonRouter = router({
         q: z.string(),
       }),
     )
-    .output(z.any()) // FIXME: Define the output type using zod
+    .output(z.any()) // @TODO FIXME: Define the output type using zod
     .query(async ({ ctx, input }) => {
       return new Lessons(ctx.prisma).retrieve(input.q);
     }),
@@ -129,7 +128,9 @@ export const lessonRouter = router({
         });
       }
 
-      return removeProperty(res, "id");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id, ...lessonWithoutId } = res;
+      return lessonWithoutId;
     }),
   summary: protectedProcedure
     .input(
@@ -185,7 +186,7 @@ export const lessonRouter = router({
         summary = await ctx.prisma.lessonSummary.create({
           data: { lessonId: input.id },
         });
-        inngest.send({
+        await inngest.send({
           name: "app/lesson.summarise",
           data: { lessonId: input.id, lessonSummaryId: summary.id },
         });

@@ -2,6 +2,7 @@ import { jsonrepair } from "jsonrepair";
 
 import type { AilaServices } from "../../core/AilaServices";
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
+import { MessagePartDocumentSchema } from "../../protocol/jsonPatchProtocol";
 import type { Message } from "../chat";
 
 export abstract class AilaPromptBuilder {
@@ -30,11 +31,14 @@ export abstract class AilaPromptBuilder {
               return tryWithErrorReporting(
                 () => {
                   const toParse = jsonrepair(row);
-                  const parsed = JSON.parse(toParse);
+                  const parsed = MessagePartDocumentSchema.safeParse(
+                    JSON.parse(toParse),
+                  );
 
                   if (
+                    parsed.success &&
                     ["state", "comment", "moderation", "action", "id"].includes(
-                      parsed.type,
+                      parsed.data.type,
                     )
                   ) {
                     return null;

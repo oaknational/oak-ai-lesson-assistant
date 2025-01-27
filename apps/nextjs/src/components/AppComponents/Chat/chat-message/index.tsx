@@ -13,8 +13,8 @@ import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat
 import { useChatModeration } from "@/components/ContextProviders/ChatModerationContext";
 import { Icon } from "@/components/Icon";
 import { cn } from "@/lib/utils";
+import type { AilaStreamingStatus } from "@/stores/chatStore";
 
-import type { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import { ChatMessagePart } from "./ChatMessagePart";
 import { isModeration } from "./protocol";
 
