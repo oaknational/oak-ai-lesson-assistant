@@ -6,16 +6,7 @@ import { getNextStableMessages, parseStreamingMessage } from "../parsing";
 import type { AiMessage } from "../types";
 
 export function handleSetMessages(
-  set: {
-    (
-      partial:
-        | ChatStore
-        | Partial<ChatStore>
-        | ((state: ChatStore) => ChatStore | Partial<ChatStore>),
-      replace?: false,
-    ): void;
-    (state: ChatStore | ((state: ChatStore) => ChatStore), replace: true): void;
-  },
+  set: (partial: Partial<ChatStore>) => void,
   get: () => ChatStore,
 ) {
   return (messages: AiMessage[], isLoading: boolean) => {
