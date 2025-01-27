@@ -64,7 +64,23 @@ export type ChatStore = {
   reset: () => void;
 };
 
-export const useChatStore = create<ChatStore>((set, get) => ({
+// Define the initial state as a separate object
+const initialState: Omit<
+  ChatStore,
+  keyof {
+    setId: () => void;
+    setInput: () => void;
+    setChatAreaRef: () => void;
+    setLessonPlan: () => void;
+    setAiSdkActions: () => void;
+    setMessages: () => void;
+    setIsLoading: () => void;
+    queueUserAction: () => void;
+    executeQueuedAction: () => void;
+    stop: () => void;
+    reset: () => void;
+  }
+> = {
   id: "",
   ailaStreamingStatus: "Idle",
   stableMessages: [],
@@ -75,14 +91,16 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   chatAreaRef: { current: null },
   input: "",
   isStreaming: false,
-
-  // From AI SDK
   isLoading: false,
   actions: {
     stop: () => {},
     reload: () => {},
     append: async () => "",
   },
+};
+
+export const useChatStore = create<ChatStore>((set, get) => ({
+  ...initialState,
 
   // Setters
   setId: (id) => set({ id }),
@@ -98,27 +116,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   stop: handleStop(set, get),
   setMessages: handleSetMessages(set, get),
 
-  // reset
-  reset: () => {
-    set({
-      id: "",
-      ailaStreamingStatus: "Idle",
-      stableMessages: [],
-      streamingMessage: null,
-      queuedUserAction: null,
-      isExecutingQueuedAction: false,
-      lessonPlan: null,
-      chatAreaRef: { current: null },
-      input: "",
-      isStreaming: false,
-      isLoading: false,
-      actions: {
-        stop: () => {},
-        reload: () => {},
-        append: async () => "",
-      },
-    });
-  },
+  // Reset function
+  reset: () => set(initialState),
 }));
 
 useChatStore.subscribe((state) => {

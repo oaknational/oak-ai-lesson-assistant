@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Chat } from "@/components/AppComponents/Chat/Chat/chat";
 import LessonPlanDisplay from "@/components/AppComponents/Chat/chat-lessonPlanDisplay";
@@ -14,7 +14,11 @@ import useStoreReset from "@/stores/chatStore/hooks/useStoreReset";
 const ChatPageContents = ({ id }: { readonly id: string }) => {
   useReactScan({ component: LessonPlanDisplay, interval: 10000 });
   const setId = useChatStore((state) => state.setId);
-  setId(id);
+  useEffect(() => {
+    setId(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useStoreReset({ id });
   return (
     <Layout>
