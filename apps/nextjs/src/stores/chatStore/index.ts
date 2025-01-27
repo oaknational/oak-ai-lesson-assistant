@@ -30,6 +30,7 @@ export type AilaStreamingStatus =
   | "Idle";
 
 export type ChatStore = {
+  id: string;
   ailaStreamingStatus: AilaStreamingStatus;
 
   stableMessages: ParsedMessage[];
@@ -44,10 +45,12 @@ export type ChatStore = {
 
   // From AI SDK
   isLoading: boolean;
+
   // Grouped Actions
   actions: Actions;
 
   // Setters
+  setId: (id: string) => void;
   setInput: (input: string) => void;
   setChatAreaRef: (ref: React.RefObject<HTMLDivElement>) => void;
   setLessonPlan: (lessonPlan: LooseLessonPlan) => void;
@@ -58,14 +61,11 @@ export type ChatStore = {
   executeQueuedAction: () => Promise<void>;
   stop: () => void;
 
-  reset: (
-    params: Pick<ChatStore, "ailaStreamingStatus"> & {
-      queuedUserAction?: ChatStore["queuedUserAction"];
-    },
-  ) => void;
+  reset: () => void;
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
+  id: "",
   ailaStreamingStatus: "Idle",
   stableMessages: [],
   streamingMessage: null,
@@ -85,6 +85,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   // Setters
+  setId: (id) => set({ id }),
   setAiSdkActions: (actions) => set({ actions }),
   setIsLoading: (isLoading) => set({ isLoading }),
   setLessonPlan: (lessonPlan) => set({ lessonPlan }),
@@ -98,10 +99,24 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   setMessages: handleSetMessages(set, get),
 
   // reset
-  reset: ({ ailaStreamingStatus = "Idle", queuedUserAction }) => {
+  reset: () => {
     set({
-      ailaStreamingStatus: ailaStreamingStatus,
-      queuedUserAction: queuedUserAction,
+      id: "",
+      ailaStreamingStatus: "Idle",
+      stableMessages: [],
+      streamingMessage: null,
+      queuedUserAction: null,
+      isExecutingQueuedAction: false,
+      lessonPlan: null,
+      chatAreaRef: { current: null },
+      input: "",
+      isStreaming: false,
+      isLoading: false,
+      actions: {
+        stop: () => {},
+        reload: () => {},
+        append: async () => "",
+      },
     });
   },
 }));

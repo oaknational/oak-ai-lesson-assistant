@@ -14,6 +14,7 @@ import { useDemoUser } from "@/components/ContextProviders/Demo";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import useStoreReset from "@/stores/chatStore/hooks/useStoreReset";
 import { trpc } from "@/utils/trpc";
 
 import { useDialog } from "../DialogContext";
@@ -102,6 +103,8 @@ export function ChatStart() {
       toast.error("Failed to start the chat");
     });
   }, [create, input]);
+
+  useStoreReset({ id: null });
 
   return (
     <DialogRoot>

@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useChatStore } from "@/stores/chatStore";
 
 import AiIcon from "../../AiIcon";
 import type { DemoContextProps } from "../../ContextProviders/Demo";
@@ -23,7 +24,10 @@ const ChatRightHandSideLesson = ({
   closeMobileLessonPullOut,
   demo,
 }: Readonly<ChatRightHandSideLessonProps>) => {
-  const { messages } = useLessonChat();
+  // const { messages } = useLessonChat();
+  const stableMessages = useChatStore((state) => state.stableMessages);
+  const streamingMessage = useChatStore((state) => state.streamingMessage);
+  const messages = [...stableMessages, streamingMessage];
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 

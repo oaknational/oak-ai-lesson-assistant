@@ -40,6 +40,7 @@ import {
 const log = aiLogger("chat");
 
 export type ChatContextProps = {
+  // ID can only be removed when teh useChat changes location
   id: string;
   chat: AilaPersistedChat | undefined;
   lessonPlan: LooseLessonPlan;
@@ -374,7 +375,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const value: ChatContextProps = useMemo(
     () => ({
       //leave
-      id,
+
       chat: chat ?? undefined,
       messages,
 
@@ -388,7 +389,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       lastModeration,
     }),
     [
-      id,
       chat,
       messages,
       moderations,
