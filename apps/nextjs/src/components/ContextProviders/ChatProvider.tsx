@@ -29,6 +29,7 @@ import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLe
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { useChatStore } from "@/stores/chatStore";
+import { useLessonPlanStoreMirror } from "@/stores/lessonPlanStore/hooks/useLessonPlanStoreMirror";
 import { trpc } from "@/utils/trpc";
 
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
@@ -304,6 +305,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   // Hooks to update the Zustand chat store mirror
   useChatStoreMirror(messages, isLoading, stopStreaming, append, reload);
+  useLessonPlanStoreMirror(messages, isLoading);
 
   /**
    *  If the state is being restored from a previous lesson plan, set the lesson plan

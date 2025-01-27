@@ -310,7 +310,8 @@ export function applyLessonPlanPatchImmutable(
   log.info("Apply patch", JSON.stringify(command));
   if (command.type !== "patch" && command.type !== "experimentalPatch") {
     log.error("Invalid patch document type", command.type);
-    return lessonPlan;
+    // return lessonPlan;
+    return;
   }
   const patchValue = command.value;
   if (!isValidPatch(patchValue)) {
@@ -343,6 +344,6 @@ export function applyLessonPlanPatchImmutable(
       log.error("Failed to apply patch", patchValue, e);
     }
     Sentry.captureException(e, { level: "info" });
-    return lessonPlan;
+    return;
   }
 }

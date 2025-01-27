@@ -1,7 +1,5 @@
-import {
-  type MessagePart,
-  parseMessageParts,
-} from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchSchema";
 import { aiLogger } from "@oakai/logger";
 
 import type { AiMessage, ParsedMessage } from "./types";
