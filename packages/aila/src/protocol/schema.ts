@@ -506,7 +506,6 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   keyLearningPoints: KeyLearningPointsSchema,
   misconceptions: MisconceptionsSchemaWithoutLength,
   keywords: KeywordsSchemaWithoutLength,
-  basedOn: BasedOnSchema.optional(),
   starterQuiz: QuizSchemaWithoutLength.describe(
     LESSON_PLAN_DESCRIPTIONS.starterQuiz,
   ),
