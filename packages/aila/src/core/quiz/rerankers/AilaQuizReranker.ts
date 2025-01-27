@@ -27,7 +27,6 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
   }
 
   //  This takes a quiz array and evaluates it using the rating schema and quiz type and returns an array of evaluation schema objects.
-  //   TODO: GCLOMAX - move evaluate quiz out to use dependancy injection - can then pass the different types of reranker types.
   public async evaluateQuizArray(
     quizArray: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,

@@ -20,8 +20,8 @@ import type {
   QuizQuestion,
 } from "../../../protocol/schema";
 import { QuizQuestionSchema } from "../../../protocol/schema";
-import type { AilaQuizGeneratorService } from "../../AilaServices";
 import { InMemoryLessonQuizLookup } from "../LessonSlugQuizMapping";
+import type { AilaQuizGeneratorService } from "../interfaces";
 import type {
   CustomHit,
   CustomSource,
@@ -115,7 +115,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     lessonSlugs: string[],
   ): Promise<string[]> {
     // Converts a lesson slug to a question ID via searching in index
-    // TODO: reconfigure database to make this more efficient
     try {
       const response = await this.client.search<CustomSource>({
         index: "oak-vector",
@@ -278,7 +277,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   private extractQuizQuestions(
     processedResponse: ReturnType<typeof this.processResponse>,
   ): QuizQuestion[] {
-    //TODO: test that this is working properly - also typing as any is bad.
     return processedResponse
       .filter(
         (

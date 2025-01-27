@@ -1,5 +1,5 @@
-import type { AilaQuizGeneratorService } from "../../AilaServices";
 import type { BaseSchema, BaseType } from "../ChoiceModels";
+import type { AilaQuizGeneratorService } from "../interfaces";
 import type { AilaQuizReranker, QuizSelector } from "../interfaces";
 import { BaseFullQuizService } from "./BaseFullQuizService";
 

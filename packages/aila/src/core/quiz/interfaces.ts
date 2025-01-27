@@ -2,13 +2,10 @@ import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
+  Quiz,
   QuizPath,
   QuizQuestion,
 } from "../../protocol/schema";
-import type {
-  AilaQuizGeneratorService,
-  AilaQuizService,
-} from "../AilaServices";
 import type {
   BaseSchema,
   BaseType,
@@ -39,6 +36,24 @@ export interface DocumentReranker {
     docs: SimplifiedResult[],
     topN: number,
   ): Promise<any[]>;
+}
+
+export interface AilaQuizService {
+  generateMathsExitQuizPatch(
+    lessonPlan: LooseLessonPlan,
+  ): Promise<JsonPatchDocument>;
+}
+// TODO: GCLOMAX - move this to interfaces and rename.
+export interface AilaQuizGeneratorService {
+  generateMathsExitQuizPatch(
+    lessonPlan: LooseLessonPlan,
+    relevantLessons?: AilaRagRelevantLesson[],
+  ): Promise<Quiz[]>;
+  generateMathsStarterQuizPatch(
+    lessonPlan: LooseLessonPlan,
+    relevantLessons?: AilaRagRelevantLesson[],
+  ): Promise<Quiz[]>;
+  // invoke(lessonPlan: LooseLessonPlan): Promise<Quiz[]>;
 }
 
 export interface AilaQuizVariantService {
@@ -89,7 +104,6 @@ export interface QuizSelector<T extends BaseType> {
   ): QuizQuestion[];
 }
 
-// TODO: GCLOMAX - check whether we are redeclaring a pretty basic type here
 export type quizPatchType = "/starterQuiz" | "/exitQuiz";
 
 export interface CustomSource {

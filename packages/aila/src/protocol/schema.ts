@@ -72,24 +72,7 @@ export type MisconceptionsOptional = z.infer<
 
 // ********** QUIZ **********
 
-// TODO: GCLOMAX: Relax this constraint to allow for more than one answer.
 // Needs to be changed - to adapt for LLM handling.
-// Added hint and feedback to the schema.
-
-// hint: z
-//   .string()
-//   .optional()
-//   .describe("A hint to help the student answer the question."),
-// feedback: z
-//   .string()
-//   .optional()
-//   .describe("Feedback to be given to the student."),
-// html: z
-//   .array(z.string())
-//   .optional()
-//   .describe(
-//     "HTML content for the question for use when rendering a different question. DO NOT GENERATE THIS FIELD WHEN PASSED TO AN LLM",
-//   ),
 
 export const QUIZ_DESCRIPTIONS = {
   question: "The question to be asked in the quiz.",
@@ -107,6 +90,7 @@ export const QuizQuestionSchemaWithoutLength = z.object({
   distractors: z.array(z.string()).describe(QUIZ_DESCRIPTIONS.distractors),
 });
 
+// TODO: MG - Double check this is allowable.
 export const QuizQuestionSchema = QuizQuestionSchemaWithoutLength; //.extend({
 //   answers: QuizQuestionSchemaWithoutLength.shape.answers.length(1),
 //   distractors: QuizQuestionSchemaWithoutLength.shape.distractors.length(2),
@@ -517,7 +501,6 @@ export type LessonPlanSectionWhileStreaming =
   | number;
 
 // These are here due to zod refusing to infer the type of "add"
-// TODO: GCLOMAX: Refactor this to use a union type
 export const quizPathSchema = z.union([
   z.literal("/starterQuiz"),
   z.literal("/exitQuiz"),
