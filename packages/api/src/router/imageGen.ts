@@ -61,15 +61,9 @@ export function promptConstructor(
   const { spokenExplanation, accompanyingSlideDetails, slideText } =
     explanation;
 
-  return `
-  CONTEXT 
-  You are generating an image for a lesson taught in a uk school following the uk national curriculum. The lesson is at the ${keyStage} level and the subject is  ${subject}. 
-  The image should be suitable for a classroom setting and should not contain any inappropriate content.
-  
-  TASK
-  The prompt for the image is ${searchExpression}.
+  console.log("******************************************", searchExpression);
 
-  `;
+  return searchExpression;
 }
 
 // Utility Functions
