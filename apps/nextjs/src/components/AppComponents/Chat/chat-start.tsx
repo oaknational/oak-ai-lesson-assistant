@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
 import { useUser } from "@clerk/nextjs";
@@ -31,7 +31,19 @@ const exampleMessages = [
   },
 ];
 
-export function ChatStart() {
+type ChatStartProps = {
+  keyStage?: string;
+  subject?: string;
+  unitTitle?: string;
+  searchExpression?: string;
+};
+
+export function ChatStart({
+  keyStage,
+  subject,
+  unitTitle,
+  searchExpression,
+}: Readonly<ChatStartProps>) {
   const { user } = useUser();
   const userFirstName = user?.firstName;
   const { trackEvent } = useAnalytics();
@@ -42,6 +54,19 @@ export function ChatStart() {
   const demo = useDemoUser();
   const createAppSession = trpc.chat.appSessions.create.useMutation();
   const trpcUtils = trpc.useUtils();
+
+  useEffect(() => {
+    if (keyStage || subject || unitTitle || searchExpression) {
+      setInput(
+        createStartingPromptFromSearchParams(
+          keyStage,
+          subject,
+          unitTitle,
+          searchExpression,
+        ),
+      );
+    }
+  }, [keyStage, subject, unitTitle, searchExpression]);
 
   const create = useCallback(
     async (message: string) => {
@@ -187,4 +212,33 @@ export function ChatStart() {
       </Flex>
     </DialogRoot>
   );
+}
+
+function createStartingPromptFromSearchParams(
+  keyStage?: string,
+  subject?: string,
+  unitTitle?: string,
+  searchExpression?: string,
+): string {
+  let prompt = "Create a lesson plan";
+
+  if (keyStage) {
+    prompt += ` for ${keyStage}`;
+  }
+
+  if (subject) {
+    prompt += ` about ${subject}`;
+  }
+
+  if (unitTitle) {
+    prompt += `, focusing on the unit "${unitTitle}"`;
+  }
+
+  if (searchExpression) {
+    prompt += ` titled "${searchExpression}"`;
+  }
+
+  prompt += ".";
+
+  return prompt.trim();
 }
