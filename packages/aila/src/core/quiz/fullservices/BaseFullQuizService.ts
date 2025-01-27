@@ -43,8 +43,6 @@ export abstract class BaseFullQuizService implements FullQuizService {
 
     const quizArrays = await Promise.all(quizPromises);
     const quizzes = quizArrays.flat();
-    // TODO: GCLOMAX - make the typing stricter here.
-    // TODO: GCLOMAX - make sure that the rating schema is the same for all rerankers.
     if (!this.quizReranker.ratingSchema) {
       throw new Error("Reranker rating schema is undefined");
     }

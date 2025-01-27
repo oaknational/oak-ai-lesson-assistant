@@ -43,7 +43,7 @@ export interface AilaQuizService {
     lessonPlan: LooseLessonPlan,
   ): Promise<JsonPatchDocument>;
 }
-// TODO: GCLOMAX - move this to interfaces and rename.
+
 export interface AilaQuizGeneratorService {
   generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
@@ -160,7 +160,6 @@ export interface LessonSlugQuizLookup {
 export interface FullServiceFactory {
   create(settings: QuizServiceSettings): FullQuizService;
 }
-// TODO: GCLOMAX - the naming of these interfaces is confusing - sort them.
 
 export interface AilaQuizFactory {
   quizStrategySelector(lessonPlan: LooseLessonPlan): QuizRecommenderType;

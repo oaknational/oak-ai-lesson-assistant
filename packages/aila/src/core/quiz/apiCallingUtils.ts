@@ -1,4 +1,3 @@
-// TODO: GCLOMAX
 // This is a bodge to not get rate limited. It's a bit of a hack but it works.
 // Realistically we could make a queueing system for this but unsure how that works
 // With vercel serverless functions ect - or wait until openai adds batching support to its

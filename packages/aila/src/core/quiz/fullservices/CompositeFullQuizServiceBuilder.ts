@@ -1,5 +1,5 @@
-import type { AilaQuizGeneratorService } from "../../AilaServices";
 import { AilaQuizFactory } from "../generators/AilaQuizGeneratorFactory";
+import type { AilaQuizGeneratorService } from "../interfaces";
 import type { FullQuizService, QuizSelectorFactory } from "../interfaces";
 import { AilaQuizRerankerFactoryImpl } from "../rerankers/AilaQuizRerankerFactory";
 import type { QuizBuilderSettings } from "../schema";
