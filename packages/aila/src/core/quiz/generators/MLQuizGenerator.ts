@@ -7,6 +7,7 @@ import type {
   QuizPath,
   QuizQuestion,
 } from "../../../protocol/schema";
+import { missingQuizQuestion } from "../fixtures/MissingQuiz";
 import type { CustomHit } from "../interfaces";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
@@ -54,17 +55,12 @@ export class MLQuizGenerator extends BaseQuizGenerator {
       quizType === "/starterQuiz"
         ? lessonPlan.starterQuiz
         : lessonPlan.exitQuiz;
-
-    const backupQuestion: QuizQuestion = {
-      question: " ",
-      answers: [" ", " ", " "],
-      distractors: [" ", " ", " "],
-    };
+    // TODO: GCLOMAX - change this to make it consistent - put it out into fixtures.
     // Split questions into chunks of 6
     for (let i = 0; i < quizQuestions.length; i += chunkSize) {
       const chunk = quizQuestions.slice(i, i + chunkSize);
 
-      // If the last chunk has less than 6 questions, pad it with questions from lessonPlan
+      // If the last chunk has less than 6 questions, pad it with questions from lessonPlan, if not use a default question with a message explaining the issue.
       if (chunk.length < chunkSize && i + chunkSize >= quizQuestions.length) {
         const remainingCount = chunkSize - chunk.length;
 
@@ -76,10 +72,11 @@ export class MLQuizGenerator extends BaseQuizGenerator {
                   !!q?.question && !!q?.answers && !!q?.distractors,
               )
               .slice(0, remainingCount) ||
-            Array(remainingCount).fill(backupQuestion);
+            Array(remainingCount).fill(missingQuizQuestion);
           chunk.push(...paddingQuestions);
         } else {
-          const paddingQuestions = Array(remainingCount).fill(backupQuestion);
+          const paddingQuestions =
+            Array(remainingCount).fill(missingQuizQuestion);
           chunk.push(...paddingQuestions);
         }
       }
