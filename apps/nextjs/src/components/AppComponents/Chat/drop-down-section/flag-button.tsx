@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "react-hot-toast";
 
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import type { AilaUserFlagType } from "@oakai/db";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
+import * as Sentry from "@sentry/nextjs";
 import styled from "styled-components";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
@@ -53,23 +55,21 @@ const FlagButton = ({
     return typeof value === "object" && value !== null && !Array.isArray(value);
   };
 
-  const prepareSectionValue = (
-    value: LessonPlanSectionWhileStreaming,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): string | any[] | Record<string, unknown> => {
-    if (
-      typeof value === "string" ||
-      Array.isArray(value) ||
-      isPlainObject(value)
-    ) {
-      return value;
-    }
-    // For numbers or any other types, convert to string
-    return String(value);
-  };
-
-  const flagSectionContent = async () => {
+  const flagSectionContent = useCallback(() => {
     if (selectedRadio && lastAssistantMessage) {
+      const prepareSectionValue = (
+        value: LessonPlanSectionWhileStreaming,
+      ): string | unknown[] | Record<string, unknown> => {
+        if (
+          typeof value === "string" ||
+          Array.isArray(value) ||
+          isPlainObject(value)
+        ) {
+          return value;
+        }
+        return String(value);
+      };
+
       const payload = {
         chatId: id,
         messageId: lastAssistantMessage.id,
@@ -78,9 +78,20 @@ const FlagButton = ({
         sectionPath,
         sectionValue: prepareSectionValue(sectionValue),
       };
-      await mutateAsync(payload);
+      mutateAsync(payload).catch((error) => {
+        Sentry.captureException(error, { extra: { payload } });
+        toast.error("Failed to flag section content");
+      });
     }
-  };
+  }, [
+    id,
+    lastAssistantMessage,
+    mutateAsync,
+    selectedRadio,
+    sectionPath,
+    sectionValue,
+    userFeedbackText,
+  ]);
 
   useEffect(() => {
     !isOpen && setDisplayTextBox(null);

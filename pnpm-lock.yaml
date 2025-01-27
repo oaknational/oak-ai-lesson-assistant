@@ -359,6 +359,9 @@ importers:
       zod-to-json-schema:
         specifier: ^3.23.0
         version: 3.23.0(zod@3.23.8)
+      zustand:
+        specifier: ^5.0.3
+        version: 5.0.3(@types/react@18.2.57)(react@18.2.0)
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^1.6.1
@@ -614,6 +617,9 @@ importers:
       '@oakai/prettier-config':
         specifier: '*'
         version: link:../prettier-config
+      '@types/archiver':
+        specifier: ^6.0.3
+        version: 6.0.3
       typescript:
         specifier: 5.7.2
         version: 5.7.2
@@ -3324,7 +3330,7 @@ packages:
       '@clerk/shared': 2.9.0(react-dom@18.2.0)(react@18.2.0)
       '@clerk/types': 4.25.0
       crypto-js: 4.2.0
-      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.21(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       server-only: 0.0.1
@@ -9677,6 +9683,12 @@ packages:
   /@tsconfig/node16@1.0.4:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
 
+  /@types/archiver@6.0.3:
+    resolution: {integrity: sha512-a6wUll6k3zX6qs5KlxIggs1P1JcYJaTCx2gnlr+f0S1yd2DoaEwoIK10HmBaLnZwWneBz+JBm0dwcZu0zECBcQ==}
+    dependencies:
+      '@types/readdir-glob': 1.1.5
+    dev: true
+
   /@types/aria-query@5.0.4:
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
 
@@ -9995,6 +10007,12 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
       csstype: 3.1.1
+
+  /@types/readdir-glob@1.1.5:
+    resolution: {integrity: sha512-raiuEPUYqXu+nvtY2Pe8s8FEmZ3x5yAH4VkLdihcPdalvsHltomrRC9BzuStrJ9yk06470hS0Crw0f1pXqD+Hg==}
+    dependencies:
+      '@types/node': 20.17.9
+    dev: true
 
   /@types/request@2.48.12:
     resolution: {integrity: sha512-G3sY+NpsA9jnwm0ixhAFQSJ3Q9JkpLZpJbI3GMv0mIAT0y3mRabYeINzal5WOChIiaTEGQYlHOKgkaM9EisWHw==}
@@ -24779,6 +24797,28 @@ packages:
 
   /zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
+
+  /zustand@5.0.3(@types/react@18.2.57)(react@18.2.0):
+    resolution: {integrity: sha512-14fwWQtU3pH4dE0dOpdMiWjddcH+QzKIgk1cl8epwSE7yag43k/AD/m4L6+K7DytAOr9gGBe3/EXj9g7cdostg==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
+    dependencies:
+      '@types/react': 18.2.57
+      react: 18.2.0
+    dev: false
 
   /zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}

@@ -36,6 +36,7 @@ type ChildKey =
   | "app"
   | "auth"
   | "chat"
+  | "chat:store"
   | "cloudinary"
   | "consent"
   | "core"

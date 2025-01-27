@@ -121,6 +121,7 @@ const Hero = ({
               variant="text-link"
               icon="arrow-right"
               disabled={!canBegin}
+              // eslint-disable-next-line @typescript-eslint/require-await, @typescript-eslint/no-misused-promises
               onClick={async () => {
                 if (canBegin) {
                   if (hasQuestions) {
