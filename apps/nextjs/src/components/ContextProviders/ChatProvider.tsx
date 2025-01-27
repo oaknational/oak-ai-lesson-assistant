@@ -293,14 +293,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       messageHashes,
     });
 
-  const handleReload = useCallback(() => {
-    reload().catch((err) => {
-      log.error("Failed to reload chat", err);
-      toast.error("Failed to reload chat");
-      Sentry.captureException(err);
-    });
-  }, [reload]);
-
   // Hooks to update the Zustand chat store mirror
   useChatStoreAiSdkSync(
     messages,
@@ -309,6 +301,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     append,
     handleReload,
   );
+  useLessonPlanStoreMirror(messages, isLoading);
 
   /**
    *  If the state is being restored from a previous lesson plan, set the lesson plan
