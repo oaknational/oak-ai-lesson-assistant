@@ -89,6 +89,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     return quizQuestions2DArray;
   }
 
+  // This should return an array of questions - sometimes there are more than six questions, these are split later.
   private async generateMathsQuizML(
     lessonPlan: LooseLessonPlan,
   ): Promise<QuizQuestion[]> {
@@ -97,8 +98,6 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     const qq = this.unpackLessonPlanForRecommender(lessonPlan);
     const customIds = await this.rerankAndExtractCustomIds(hits, qq);
     const quizQuestions = await this.retrieveAndProcessQuestions(customIds);
-    // This should return an array of questions - sometimes there are more than six questions.
-    // TODO: GCLOMAX - make this return multiples of six.
     return quizQuestions;
   }
 
@@ -107,7 +106,6 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     lessonPlan: LooseLessonPlan,
   ): Promise<Quiz[]> {
     const quiz: QuizQuestion[] = await this.generateMathsQuizML(lessonPlan);
-    // Now we make the quiz into a 2D array
     const quiz2DArray = this.splitQuestionsIntoSixAndPad(
       lessonPlan,
       quiz,
@@ -120,7 +118,6 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     lessonPlan: LooseLessonPlan,
   ): Promise<Quiz[]> {
     const quiz: QuizQuestion[] = await this.generateMathsQuizML(lessonPlan);
-    // Now we make the quiz into a 2D array
     const quiz2DArray = this.splitQuestionsIntoSixAndPad(
       lessonPlan,
       quiz,
