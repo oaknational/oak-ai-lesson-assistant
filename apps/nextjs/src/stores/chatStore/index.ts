@@ -65,30 +65,15 @@ export type ChatStore = {
 };
 
 // Define the initial state as a separate object
-const initialState: Omit<
-  ChatStore,
-  keyof {
-    setId: () => void;
-    setInput: () => void;
-    setChatAreaRef: () => void;
-    setLessonPlan: () => void;
-    setAiSdkActions: () => void;
-    setMessages: () => void;
-    setIsLoading: () => void;
-    queueUserAction: () => void;
-    executeQueuedAction: () => void;
-    stop: () => void;
-    reset: () => void;
-  }
-> = {
+const initialState = {
   id: "",
-  ailaStreamingStatus: "Idle",
-  stableMessages: [],
+  ailaStreamingStatus: "Idle" as AilaStreamingStatus,
+  stableMessages: [] as ParsedMessage[],
   streamingMessage: null,
   queuedUserAction: null,
   isExecutingQueuedAction: false,
   lessonPlan: null,
-  chatAreaRef: { current: null },
+  chatAreaRef: { current: null } as React.RefObject<HTMLDivElement>,
   input: "",
   isStreaming: false,
   isLoading: false,
@@ -97,7 +82,7 @@ const initialState: Omit<
     reload: () => {},
     append: async () => "",
   },
-};
+} satisfies Partial<ChatStore>;
 
 export const useChatStore = create<ChatStore>((set, get) => ({
   ...initialState,
