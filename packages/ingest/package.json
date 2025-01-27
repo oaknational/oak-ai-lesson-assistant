@@ -18,7 +18,7 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "single-lesson-dry": "pnpm with-env tsx ./src/singleLessonDryRun.ts",
-    "ingest": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/index.ts",
+    "ingest": "pnpm with-env tsx ./src/index.ts",
     "with-env": "dotenv -e ../../.env --",
     "test": "pnpm with-env jest --colors --config jest.config.mjs",
     "test:seq": "pnpm with-env jest --colors --config jest.config.mjs --verbose --runInBand",
