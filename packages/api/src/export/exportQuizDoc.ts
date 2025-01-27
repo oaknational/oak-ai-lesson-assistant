@@ -12,6 +12,7 @@ import { getExistingExportData, getUserEmail } from "./exportHelpers";
 
 const log = aiLogger("exports");
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const lessonSnapshotSchema = z.object({}).passthrough();
 
 type LessonSnapshot = z.infer<typeof lessonSnapshotSchema>;

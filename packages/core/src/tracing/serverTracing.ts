@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { tracer as baseTracer, isTest } from "./baseTracing";
 import { mockTracer } from "./mockTracer";
 

@@ -9,6 +9,7 @@ import type {
 } from "@oakai/db";
 import { LessonPlanPartStatus, LessonPlanStatus } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
+import { z } from "zod";
 
 import { LLMResponseJsonSchema } from "../../../aila/src/protocol/jsonPatchProtocol";
 import { LessonPlanJsonSchema } from "../../../aila/src/protocol/schema";
@@ -23,6 +24,13 @@ import type { Caption } from "./types/caption";
 import { CaptionsSchema } from "./types/caption";
 
 const log = aiLogger("lessons");
+
+const LessonPlanContentSchema = z
+  .object({
+    subject: z.string().optional(),
+    keyStage: z.string().optional(),
+  })
+  .catchall(z.unknown());
 
 export type LessonPlanWithLesson = LessonPlan & {
   lesson: Omit<
@@ -222,7 +230,8 @@ export class LessonPlans {
       throw new Error("Unable to generate lesson summary");
     }
 
-    const json = JSON.parse(content);
+    const rawJson = JSON.parse(content);
+    const json = LessonPlanContentSchema.parse(rawJson);
 
     await this._prisma.lessonPlan.update({
       where: { id },
@@ -232,27 +241,37 @@ export class LessonPlans {
       },
     });
 
-    for (const key of Object.keys(json).filter(
-      (k) => !["subject", "keyStage"].includes(k),
-    )) {
-      // Ignore empty values
-      if (["", "None", undefined, null].includes(json[key])) {
-        break;
+    for (const [key, value] of Object.entries(json)) {
+      // Skip known top-level fields
+      if (["subject", "keyStage"].includes(key)) {
+        continue;
       }
+
+      // Skip empty values
+      if (
+        value === "" ||
+        value === "None" ||
+        value === undefined ||
+        value === null
+      ) {
+        continue;
+      }
+
       const existingPart = await this._prisma.lessonPlanPart.findFirst({
         where: {
           lessonPlanId: id,
           key,
         },
       });
+
       let newPart: LessonPlanPart | null = null;
       if (!existingPart) {
         newPart = await this._prisma.lessonPlanPart.create({
           data: {
             lessonPlanId: lessonPlan.id,
             key: key,
-            content: textify(json[key]),
-            json: json[key],
+            content: textify(String(value)),
+            json: value,
             subjectId: lessonPlan.lesson?.subjectId,
             keyStageId: lessonPlan.lesson?.keyStageId,
           },

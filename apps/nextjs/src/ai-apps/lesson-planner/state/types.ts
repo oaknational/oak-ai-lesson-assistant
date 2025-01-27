@@ -39,7 +39,7 @@ export type LPKeyword = z.infer<typeof keywordSchema>;
 
 export type LPKeyLearningPoint = string;
 
-const lessonPlanSectionsSchema = z.object({
+export const lessonPlanSectionsSchema = z.object({
   keyLearningPoints: z.array(z.string()),
   misconceptions: z.array(misconceptionSchema),
   keywords: z.array(keywordSchema),

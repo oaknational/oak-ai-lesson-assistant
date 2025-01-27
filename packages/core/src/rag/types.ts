@@ -14,6 +14,7 @@ export interface LessonPlanWithPartialLesson extends LessonPlan {
 }
 
 export type SimilarityResultWithScore = [
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   import("@langchain/core/documents").DocumentInterface<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Record<string, any>

@@ -38,7 +38,7 @@ export class OpenAIService implements LLMService {
       temperature: params.temperature,
     });
 
-    return stream.getReader();
+    return Promise.resolve(stream.getReader());
   }
 
   async createChatCompletionObjectStream(params: {

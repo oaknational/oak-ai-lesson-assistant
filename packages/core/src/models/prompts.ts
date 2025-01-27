@@ -65,8 +65,9 @@ export class Prompts {
     completion: CompletionResult,
     onPartialResponse?: (token: string) => void | Promise<void>,
   ): Promise<CompletionResult> {
-    // TODO Break the result into chunks and send them back sequentially?
-    onPartialResponse?.(completion.resultText ?? "");
+    if (onPartialResponse) {
+      await onPartialResponse(completion.resultText ?? "");
+    }
     return completion;
   }
 
@@ -101,7 +102,7 @@ export class Prompts {
     const completion: BaseMessage = await model.call(llmInput, {
       callbacks: [
         {
-          handleLLMNewToken: (token) => {
+          handleLLMNewToken: async (token) => {
             if (onPartialResponse) {
               /**
                * Only bother to start parsing it after we get a few tokens,
@@ -119,7 +120,7 @@ export class Prompts {
                   const partialJson = JSON.parse(
                     untruncateJson(partialJsonText),
                   );
-                  onPartialResponse(JSON.stringify(partialJson));
+                  await onPartialResponse(JSON.stringify(partialJson));
                 } catch (err) {
                   parseAttempts++;
                   this.logger.error(err, "Error parsing generation stream");
@@ -157,7 +158,7 @@ export class Prompts {
     try {
       result = JSON.parse(completion.content as string);
     } catch (err) {
-      this.logger.error(meta, "Unable to parse completion JSON");
+      this.logger.error(meta, "Unable to parse completion JSON", err);
       throw new LLMCompletionError("Couldn't parse completion JSON", meta);
     }
 

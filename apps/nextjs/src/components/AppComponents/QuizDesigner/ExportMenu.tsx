@@ -133,6 +133,7 @@ const ExportMenu = ({
             <Box mt="5">
               <ShareButtonGroup
                 loading={shareLoading}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 shareContent={shareContent}
                 shareId={shareId}
                 shareText="View as text"
