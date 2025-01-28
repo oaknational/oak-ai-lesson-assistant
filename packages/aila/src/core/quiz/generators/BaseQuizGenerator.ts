@@ -1,5 +1,4 @@
 import { Client } from "@elastic/elasticsearch";
-// TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up. Double check the prisma import.
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { CohereClient } from "cohere-ai";
@@ -20,7 +19,7 @@ import type {
   QuizQuestion,
 } from "../../../protocol/schema";
 import { QuizQuestionSchema } from "../../../protocol/schema";
-import { InMemoryLessonQuizLookup } from "../LessonSlugQuizMapping";
+import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
 import type { AilaQuizGeneratorService } from "../interfaces";
 import type {
   CustomHit,
@@ -30,7 +29,6 @@ import type {
 } from "../interfaces";
 import { CohereReranker } from "../rerankers";
 import type { SearchResponseBody } from "../types";
-import { lessonSlugQuizMap } from "./lessonSlugLookup";
 
 const log = aiLogger("aila:quiz");
 // Base abstract class
@@ -68,7 +66,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
     // This can be changed to use our hosted models - use this for dev simplicity.
     this.rerankService = new CohereReranker();
-    this.quizLookup = new InMemoryLessonQuizLookup(lessonSlugQuizMap);
+    this.quizLookup = new ElasticLessonQuizLookup();
   }
 
   // The below is overly bloated and a midstep in refactoring.
@@ -144,14 +142,14 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     }
   }
 
-  public lessonSlugToQuestionIdsLookupTable(
+  public async lessonSlugToQuestionIdsLookupTable(
     lessonSlug: string,
     quizType: QuizPath,
-  ): string[] {
+  ): Promise<string[]> {
     if (quizType === "/starterQuiz") {
-      return this.quizLookup.getStarterQuiz(lessonSlug);
+      return await this.quizLookup.getStarterQuiz(lessonSlug);
     } else if (quizType === "/exitQuiz") {
-      return this.quizLookup.getExitQuiz(lessonSlug);
+      return await this.quizLookup.getExitQuiz(lessonSlug);
     }
     throw new Error("Invalid quiz type");
   }
@@ -189,7 +187,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     if (!lessonSlug) {
       throw new Error("Lesson slug not found for planId: " + planId);
     }
-    const questionIds = this.lessonSlugToQuestionIdsLookupTable(
+    const questionIds = await this.lessonSlugToQuestionIdsLookupTable(
       lessonSlug,
       quizType,
     );
