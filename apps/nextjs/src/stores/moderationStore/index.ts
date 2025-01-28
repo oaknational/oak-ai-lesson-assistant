@@ -50,10 +50,6 @@ export const useModerationStore = create<ModerationStore>((set, get) => ({
   },
 }));
 
-export type ModerationStoreState = ReturnType<
-  typeof useModerationStore.getState
->;
-
 useModerationStore.subscribe((state) => {
   log.info("Moderation store updated", state);
 });
