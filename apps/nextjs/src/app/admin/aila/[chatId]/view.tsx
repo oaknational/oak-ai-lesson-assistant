@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/helpers";
@@ -10,6 +11,7 @@ import {
   OakSmallSecondaryButton,
   OakP,
 } from "@oaknational/oak-components";
+import * as Sentry from "@sentry/nextjs";
 
 import { trpc } from "@/utils/trpc";
 
@@ -19,9 +21,13 @@ function SafetyViolationItem({
   readonly safetyViolation: SafetyViolation;
 }) {
   const { recordId } = safetyViolation;
-  const removeSafetyViolation = trpc.admin.removeSafetyViolation.useMutation(
-    {},
-  );
+  const removeSafetyViolation = trpc.admin.removeSafetyViolation.useMutation({
+    onError: (err) => {
+      toast.error("Error removing safety violation");
+      Sentry.captureException(err);
+    },
+  });
+
   return (
     <>
       <OakFlex $alignItems="center" $background="pink" $pa="inner-padding-m">
@@ -32,12 +38,14 @@ function SafetyViolationItem({
           Reversing may unban a banned user
         </OakP>
         <OakSmallSecondaryButton
-          iconName="cross"
+          iconName={removeSafetyViolation.isSuccess ? "tick" : "cross"}
           onClick={() =>
             void removeSafetyViolation.mutateAsync({ recordId: recordId })
           }
           isLoading={removeSafetyViolation.isLoading}
-          disabled={!!removeSafetyViolation.isSuccess}
+          disabled={
+            removeSafetyViolation.isLoading || removeSafetyViolation.isSuccess
+          }
         >
           {removeSafetyViolation.isSuccess ? "Reversed" : "Reverse violation"}
         </OakSmallSecondaryButton>
