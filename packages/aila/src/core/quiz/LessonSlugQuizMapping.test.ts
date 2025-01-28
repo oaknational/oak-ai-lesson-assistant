@@ -1,12 +1,12 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { DBLessonQuizLookup } from "./LessonSlugQuizMapping";
+import { ElasticLessonQuizLookup } from "./LessonSlugQuizMapping";
 
-describe("DBLessonQuizLookup", () => {
-  let dbLookup: DBLessonQuizLookup;
+describe("ElasticLessonQuizLookup", () => {
+  let dbLookup: ElasticLessonQuizLookup;
 
   beforeEach(() => {
-    dbLookup = new DBLessonQuizLookup();
+    dbLookup = new ElasticLessonQuizLookup();
   });
 
   afterEach(() => {
@@ -142,9 +142,9 @@ describe("DBLessonQuizLookup", () => {
   });
 });
 
-describe("DBLessonQuizLookup integrations tests", () => {
+describe("ElasticLessonQuizLookup integrations tests", () => {
   it("Should pass integration test for starter quiz", async () => {
-    const dbLookup = new DBLessonQuizLookup();
+    const dbLookup = new ElasticLessonQuizLookup();
     const result = await dbLookup.getStarterQuiz(
       "sketching-quadratic-graphs-part-2-61h62d",
     );
@@ -157,7 +157,7 @@ describe("DBLessonQuizLookup integrations tests", () => {
     ]);
   });
   it("Should pass integration test for exit quiz", async () => {
-    const dbLookup = new DBLessonQuizLookup();
+    const dbLookup = new ElasticLessonQuizLookup();
     const result = await dbLookup.getExitQuiz(
       "sketching-quadratic-graphs-part-2-61h62d",
     );

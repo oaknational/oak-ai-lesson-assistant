@@ -14,7 +14,7 @@ export abstract class BaseLessonQuizLookup implements LessonSlugQuizLookup {
   abstract hasExitQuiz(lessonSlug: string): Promise<boolean>;
 }
 
-export class DBLessonQuizLookup extends BaseLessonQuizLookup {
+export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
   private readonly client: Client;
 
   constructor() {

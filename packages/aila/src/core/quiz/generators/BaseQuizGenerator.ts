@@ -22,7 +22,7 @@ import type {
 } from "../../../protocol/schema";
 import { QuizQuestionSchema } from "../../../protocol/schema";
 import type { AilaQuizGeneratorService } from "../../AilaServices";
-import { DBLessonQuizLookup } from "../LessonSlugQuizMapping";
+import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
 import type {
   CustomHit,
   CustomSource,
@@ -69,7 +69,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
     // This can be changed to use our hosted models - use this for dev simplicity.
     this.rerankService = new CohereReranker();
-    this.quizLookup = new DBLessonQuizLookup();
+    this.quizLookup = new ElasticLessonQuizLookup();
   }
 
   // The below is overly bloated and a midstep in refactoring.
