@@ -14,7 +14,7 @@ const debugBase = debug("ai");
 // By default debug logs to stderr, we want to use stdout
 debugBase.log = console.log.bind(console);
 
-type ChildKey =
+export type LoggerKey =
   | "admin"
   | "aila"
   | "aila:analytics"
@@ -88,7 +88,7 @@ const errorLogger =
  * const log = aiLogger("db");
  * log.info("Hello world");
  */
-export function aiLogger(childKey: ChildKey) {
+export function aiLogger(childKey: LoggerKey) {
   const debugLogger = debugBase.extend(childKey);
 
   const tableLogger = (tabularData: unknown[], columns?: string[]) => {
