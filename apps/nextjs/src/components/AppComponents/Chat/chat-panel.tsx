@@ -1,12 +1,12 @@
 import { useCallback } from "react";
-import { toast } from "react-hot-toast";
 
-import * as Sentry from "@sentry/nextjs";
 import { cva } from "class-variance-authority";
 
 import { PromptForm } from "@/components/AppComponents/Chat/prompt-form";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useSidebar } from "@/lib/hooks/use-sidebar";
 import { useChatStore } from "@/stores/chatStore";
 
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
@@ -23,7 +23,7 @@ function LockedPromptForm() {
 
 export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const chat = useLessonChat();
-  const { id, messages, isLoading, input, setInput, append } = chat;
+  const { id, messages, input, setInput, append } = chat;
 
   const queueUserAction = useChatStore((state) => state.queueUserAction);
   const queuedUserAction = useChatStore((state) => state.queuedUserAction);
@@ -35,34 +35,47 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
 
   const { trackEvent } = useAnalytics();
 
+  const sidebar = useSidebar();
+  const lessonPlanTracking = useLessonPlanTracking();
+
   const handleSubmit = useCallback(
     (value: string) => {
-      if (isLoading) return;
-      trackEvent("chat:send_message", {
-        id,
-        message: value,
-      });
+      setInput("");
+      if (sidebar.isSidebarOpen) {
+        sidebar.toggleSidebar();
+      }
 
-      append({
-        content: value,
-        role: "user",
-      }).catch((error) => {
-        Sentry.captureException(error);
-        toast.error("Failed to send message");
-      });
+      lessonPlanTracking.onSubmitText(value);
+
+      const isQueueable = ailaStreamingStatus === "Moderating";
+      if (isQueueable) {
+        queueUserAction(value);
+      } else {
+        trackEvent("chat:send_message", {
+          id,
+          message: value,
+        });
+
+        void append({
+          content: value,
+          role: "user",
+        });
+      }
     },
-    [isLoading, trackEvent, id, append],
+    [
+      lessonPlanTracking,
+      queueUserAction,
+      setInput,
+      sidebar,
+      ailaStreamingStatus,
+      trackEvent,
+      id,
+      append,
+    ],
   );
 
-  const wrappedQueueUserAction = useCallback(
-    (action: Parameters<typeof queueUserAction>[0]) => {
-      queueUserAction(action).catch((error) => {
-        Sentry.captureException(error);
-        toast.error("Failed to queue action");
-      });
-    },
-    [queueUserAction],
-  );
+  const shouldAllowUserInput =
+    ["Idle", "Moderating"].includes(ailaStreamingStatus) && !queuedUserAction;
 
   const containerClass = `grid w-full grid-cols-1 ${hasMessages ? "sm:grid-cols-1" : ""} peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]`;
 
@@ -72,12 +85,10 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
         {!isDemoLocked && (
           <PromptForm
             onSubmit={handleSubmit}
+            isDisabled={!shouldAllowUserInput}
             input={input}
             setInput={setInput}
-            ailaStreamingStatus={ailaStreamingStatus}
             hasMessages={hasMessages}
-            queueUserAction={wrappedQueueUserAction}
-            queuedUserAction={queuedUserAction}
           />
         )}
         {isDemoLocked && <LockedPromptForm />}

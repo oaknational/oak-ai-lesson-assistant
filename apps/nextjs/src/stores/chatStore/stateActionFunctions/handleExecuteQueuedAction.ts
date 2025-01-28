@@ -1,12 +1,21 @@
-import { structuredLogger as logger } from "@oakai/logger";
+import { aiLogger } from "@oakai/logger";
+
+const log = aiLogger("chat:store");
 
 export function handleExecuteQueuedAction(set, get) {
   return async () => {
     const { queuedUserAction, isExecutingQueuedAction, actions } = get();
     const { append, reload } = actions;
 
-    if (!queuedUserAction || isExecutingQueuedAction) return;
+    if (!queuedUserAction || isExecutingQueuedAction) {
+      log.warn("Ignored attempt to execute queued action", {
+        queuedUserAction,
+        isExecutingQueuedAction,
+      });
+      return;
+    }
 
+    log.info("Executing queued action");
     const actionToExecute = queuedUserAction;
     set({ isExecutingQueuedAction: true, queuedUserAction: null });
 
@@ -25,7 +34,7 @@ export function handleExecuteQueuedAction(set, get) {
         });
       }
     } catch (error) {
-      logger.error("Error handling queued action:", error);
+      log.error("Error handling queued action:", error);
     } finally {
       set({ isExecutingQueuedAction: false });
     }

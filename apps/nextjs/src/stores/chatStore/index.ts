@@ -49,7 +49,7 @@ export type ChatStore = {
   setAiSdkActions: (actions: Actions) => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
-  queueUserAction: (action: string) => Promise<void>;
+  queueUserAction: (action: string) => void;
   executeQueuedAction: () => Promise<void>;
   stop: () => void;
 
