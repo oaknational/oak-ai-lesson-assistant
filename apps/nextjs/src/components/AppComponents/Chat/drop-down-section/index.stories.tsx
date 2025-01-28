@@ -30,7 +30,6 @@ const meta = {
     ...chromaticParams(["desktop"]),
     chatContext: {
       id: "123",
-      lastModeration: null,
       messages: [],
       lessonPlan: {
         title: "About Frogs",

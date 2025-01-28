@@ -14,9 +14,6 @@ import type {
   AilaPersistedChat,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
-import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import type { Moderation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import type { ChatRequestOptions, CreateMessage, Message } from "ai";
@@ -24,7 +21,6 @@ import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { useChatStoreMirror } from "src/stores/chatStore/hooks/useChatStoreMirror";
-import { useModerationStoreMirror } from "src/stores/moderationStore/hooks";
 
 import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
