@@ -25,7 +25,8 @@ export const GleapProvider = ({ children }: PropsWithChildren) => {
       return;
     }
     if (gleapApiKey && analyticsAccepted) {
-      if (!Gleap.getInstance().initialized) {
+      const gleapInstance = Gleap.getInstance();
+      if (!gleapInstance.initialized) {
         // use first party domains
         Gleap.setFrameUrl(gleapFrameUrl);
         Gleap.setApiUrl(gleapApiUrl);

@@ -182,6 +182,9 @@ importers:
       '@trpc/server':
         specifier: 10.45.2
         version: 10.45.2
+      '@types/object-hash':
+        specifier: ^3.0.6
+        version: 3.0.6
       '@types/ramda':
         specifier: ^0.30.2
         version: 0.30.2
@@ -3339,7 +3342,7 @@ packages:
       '@clerk/shared': 2.9.0(react-dom@18.2.0)(react@18.2.0)
       '@clerk/types': 4.25.0
       crypto-js: 4.2.0
-      next: 14.2.21(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       server-only: 0.0.1
@@ -9962,6 +9965,10 @@ packages:
 
   /@types/normalize-package-data@2.4.2:
     resolution: {integrity: sha512-lqa4UEhhv/2sjjIQgjX8B+RBjj47eo0mzGasklVJ78UKGQY1r0VpB9XHDaZZO9qzEFDdy4MrXLuEaSmPrPSe/A==}
+    dev: false
+
+  /@types/object-hash@3.0.6:
+    resolution: {integrity: sha512-fOBV8C1FIu2ELinoILQ+ApxcUKz4ngq+IWUYrxSGjXzzjUALijilampwkMgEtJ+h2njAW3pi853QpzNVCHB73w==}
     dev: false
 
   /@types/pako@1.0.7:

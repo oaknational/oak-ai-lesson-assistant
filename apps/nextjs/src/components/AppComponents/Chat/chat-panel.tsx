@@ -54,6 +54,16 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
     [isLoading, trackEvent, id, append],
   );
 
+  const wrappedQueueUserAction = useCallback(
+    (action: Parameters<typeof queueUserAction>[0]) => {
+      queueUserAction(action).catch((error) => {
+        Sentry.captureException(error);
+        toast.error("Failed to queue action");
+      });
+    },
+    [queueUserAction],
+  );
+
   const containerClass = `grid w-full grid-cols-1 ${hasMessages ? "sm:grid-cols-1" : ""} peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]`;
 
   return (
@@ -66,7 +76,7 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
             setInput={setInput}
             ailaStreamingStatus={ailaStreamingStatus}
             hasMessages={hasMessages}
-            queueUserAction={queueUserAction}
+            queueUserAction={wrappedQueueUserAction}
             queuedUserAction={queuedUserAction}
           />
         )}
