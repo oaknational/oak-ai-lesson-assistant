@@ -383,7 +383,9 @@ export const generationRouter = router({
         await feedbackModel.recordUserTweak(
           tweakedItem.lastGenerationId,
           sessionId,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           tweakedItem.value,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           tweakedItem.originalValue,
         );
       } catch (err) {
