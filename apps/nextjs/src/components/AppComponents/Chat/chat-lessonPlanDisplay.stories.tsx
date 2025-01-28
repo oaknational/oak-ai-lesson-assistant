@@ -25,7 +25,7 @@ const chatContext: Partial<ChatContextProps> = {
 const meta = {
   title: "Components/LessonPlan/LessonPlanDisplay",
   component: LessonPlanDisplay,
-  tags: ["autodocs"],
+  // tags: ["autodocs"], // disabling docs due to bug with state from zustand store
   decorators: [ChatDecorator, ChatStoreDecorator, ModerationStoreDecorator],
   args: {
     documentContainerRef: { current: null },
