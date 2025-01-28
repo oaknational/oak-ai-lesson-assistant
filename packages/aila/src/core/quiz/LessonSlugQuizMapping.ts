@@ -1,5 +1,6 @@
 import { Client } from "@elastic/elasticsearch";
 import { aiLogger } from "@oakai/logger";
+import { z } from "zod";
 
 import type { QuizPath } from "../../protocol/schema";
 import type { LessonSlugQuizLookup, QuizIDSource, QuizSet } from "./interfaces";
@@ -52,13 +53,12 @@ export class DBLessonQuizLookup extends BaseLessonQuizLookup {
         },
       });
 
-      const hit = response.hits.hits[0];
-      if (!hit || !hit._source) {
+      if (!response.hits.hits[0]?._source) {
         log.error(`No ${quizType} found for lesson slug: ${lessonSlug}. Hit: `);
         throw new Error(`No ${quizType} found for lesson slug: ${lessonSlug}`);
       }
 
-      const source = hit._source;
+      const source = response.hits.hits[0]._source;
       log.info(`Source: ${JSON.stringify(source)}`);
 
       // Parse the text field if it's a string
@@ -72,7 +72,7 @@ export class DBLessonQuizLookup extends BaseLessonQuizLookup {
         quizIds = quizData.exitQuiz;
       }
 
-      if (!quizIds || !Array.isArray(quizIds)) {
+      if (!quizIds || !z.array(z.string()).safeParse(quizIds).success) {
         log.error(
           `Got invalid ${quizType} data for lesson slug: ${lessonSlug}. Data: ${JSON.stringify(
             quizData,
