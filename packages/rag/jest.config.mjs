@@ -6,13 +6,11 @@ const config = {
       {
         tsconfig: "tsconfig.test.json",
         useESM: true,
+        isolatedModules: true,
       },
     ],
   },
   preset: "ts-jest/presets/default-esm",
-  moduleNameMapper: {
-    "^(\\.{1,2}/.*)\\.js$": "$1",
-  },
   extensionsToTreatAsEsm: [".ts"],
   testEnvironment: "setup-polly-jest/jest-environment-node",
   testMatch: ["**/*.test.ts"],
@@ -21,4 +19,4 @@ const config = {
   resetMocks: true,
 };
 
-module.exports = config;
+export default config;

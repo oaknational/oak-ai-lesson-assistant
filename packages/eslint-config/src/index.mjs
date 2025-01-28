@@ -30,6 +30,7 @@ const packages = [
   { dir: 'packages/core' },
   { dir: 'packages/api' },
   { dir: 'packages/aila' },
+  { dir: 'packages/rag' },
 ];
 
 const packageConfigs = packages.map(pkg => ({
