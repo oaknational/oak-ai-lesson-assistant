@@ -13,14 +13,6 @@ describe("ReturnFirstReranker", () => {
   });
 
   describe("rerankQuiz", () => {
-    // The below is not required.
-    // it("should always return [0]", async () => {
-    //   const mockQuizzes: QuizQuestion[][] = [cachedQuiz, cachedQuiz];
-
-    //   const result = await reranker.rerankQuiz(mockQuizzes);
-    //   expect(result).toEqual([0, 0]);
-    // });
-
     it("should return [0] even with empty quiz array", async () => {
       const result = await reranker.rerankQuiz([]);
       expect(result).toEqual([0]);

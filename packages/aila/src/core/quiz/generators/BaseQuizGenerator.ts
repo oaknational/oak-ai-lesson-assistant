@@ -1,9 +1,7 @@
 import { Client } from "@elastic/elasticsearch";
-// TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { CohereClient } from "cohere-ai";
-// TODO: double check the prisma import
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import { z } from "zod";
 
@@ -21,8 +19,8 @@ import type {
   QuizQuestion,
 } from "../../../protocol/schema";
 import { QuizQuestionSchema } from "../../../protocol/schema";
-import type { AilaQuizGeneratorService } from "../../AilaServices";
 import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
+import type { AilaQuizGeneratorService } from "../interfaces";
 import type {
   CustomHit,
   CustomSource,
@@ -37,7 +35,6 @@ const log = aiLogger("aila:quiz");
 // Quiz generator takes a lesson plan and returns a quiz object.
 // Quiz rerankers take a lesson plan and returns a list of quiz objects ranked by suitability.
 // Quiz selectors take a list of quiz objects and rankings and select the best one acording to some criteria or logic defined by a rating function.
-// dummy comment for commit
 export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   protected client: Client;
   protected cohere: CohereClient;
@@ -86,7 +83,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     planIds: string,
   ): Promise<JsonPatchDocument> {
     const lessonSlugs = await this.getLessonSlugFromPlanId(planIds);
-    // TODO: add error throwing here if lessonSlugs is null
     const lessonSlugList = lessonSlugs ? [lessonSlugs] : [];
     const customIds = await this.lessonSlugToQuestionIdSearch(lessonSlugList);
     const patch = await this.patchFromCustomIDs(customIds);
@@ -117,7 +113,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     lessonSlugs: string[],
   ): Promise<string[]> {
     // Converts a lesson slug to a question ID via searching in index
-    // TODO: reconfigure database to make this more efficient
     try {
       const response = await this.client.search<CustomSource>({
         index: "oak-vector",
@@ -172,8 +167,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   public async questionArrayFromCustomIds(
     customIds: string[],
   ): Promise<QuizQuestion[]> {
-    // TODO: GCLOMAX - dependancy injection of index here.
-
     const formattedQuestionSearchResponse = await this.searchQuestions(
       this.client,
       "quiz-questions-text-only",
@@ -249,7 +242,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       const content = lessonPlan[field as keyof LooseLessonPlan];
 
       if (Array.isArray(content)) {
-        // TODO Review this
         unpackedList.push(
           ...content.filter((item): item is string => typeof item === "string"),
         );
@@ -283,7 +275,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   private extractQuizQuestions(
     processedResponse: ReturnType<typeof this.processResponse>,
   ): QuizQuestion[] {
-    //TODO: test that this is working properly - also typing as any is bad.
     return processedResponse
       .filter(
         (
@@ -313,7 +304,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     index: string,
     field: string,
     query: string,
-    size: number = 10,
+    _size: number = 10,
   ): Promise<any> {
     try {
       log.info(`Searching index: ${index}, field: ${field}, query: ${query}`);
@@ -347,7 +338,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     docs: SimplifiedResult[],
     topN: number = 10,
   ) {
-    // TODO: add in other reranking methods here.
     // conforming to https://github.com/cohere-ai/cohere-typescript/blob/2e1c087ed0ec7eacd39ad062f7293fb15e453f33/src/api/client/requests/RerankRequest.ts#L15
     try {
       const jsonDocs = docs.map((doc) =>

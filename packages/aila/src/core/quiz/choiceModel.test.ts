@@ -1,9 +1,5 @@
-import type { QuizPath } from "../../protocol/schema";
-// import { AilaQuiz } from "./AilaQuiz";
 import { selectHighestRated } from "./ChoiceModels";
-import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
 import type { TestRating } from "./rerankers/RerankerStructuredOutputSchema";
-import { testRatingSchema } from "./rerankers/RerankerStructuredOutputSchema";
 
 const testRatingArray: TestRating[] = [
   {

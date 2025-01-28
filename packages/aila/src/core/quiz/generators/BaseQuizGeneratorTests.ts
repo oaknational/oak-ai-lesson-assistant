@@ -100,14 +100,14 @@ export const runCommonQuizGeneratorTests = (
           generator.questionArrayFromPlanId("invalid-plan-id"),
         ).rejects.toBeDefined();
       });
-      // it("should handle valid lesson plans gracefully", async () => {
-      //   const result = await generator.questionArrayFromPlanId(
-      //     "clna7lofy0og0p4qxju5j6z56",
-      //   );
-      //   expect(result).toBeDefined();
-      //   expect(Array.isArray(result)).toBe(true);
-      //   expect(result.length).toBeGreaterThan(0);
-      // });
+      it("should handle valid lesson plans gracefully", async () => {
+        const result = await generator.questionArrayFromPlanId(
+          "DSemIaiDytA0PtrHTo9Zq",
+        );
+        expect(result).toBeDefined();
+        expect(Array.isArray(result)).toBe(true);
+        expect(result.length).toBeGreaterThan(0);
+      });
     });
   });
 };

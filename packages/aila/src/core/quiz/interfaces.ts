@@ -2,13 +2,10 @@ import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
+  Quiz,
   QuizPath,
   QuizQuestion,
 } from "../../protocol/schema";
-import type {
-  AilaQuizGeneratorService,
-  AilaQuizService,
-} from "../AilaServices";
 import type {
   BaseSchema,
   BaseType,
@@ -27,12 +24,6 @@ export interface CustomMetadata {
   [key: string]: unknown; // Allow for other unknown metadata fields
 }
 
-// export interface QuizGenerator {
-//   retriever: DocumentRetriever;
-//   reranker: DocumentReranker;
-//   generateQuiz(context: string, options?: QuizGenerationOptions): Promise<Quiz>;
-// }
-
 export interface DocumentRetriever {
   retrieve(query: string): Promise<Document[]>;
 }
@@ -47,11 +38,23 @@ export interface DocumentReranker {
   ): Promise<any[]>;
 }
 
-// export interface QuizGenerationOptions {
-//   numberOfQuestions?: number;
-//   difficulty?: "easy" | "medium" | "hard";
-//   questionTypes?: QuestionType[];
-// }
+export interface AilaQuizService {
+  generateMathsExitQuizPatch(
+    lessonPlan: LooseLessonPlan,
+  ): Promise<JsonPatchDocument>;
+}
+
+export interface AilaQuizGeneratorService {
+  generateMathsExitQuizPatch(
+    lessonPlan: LooseLessonPlan,
+    relevantLessons?: AilaRagRelevantLesson[],
+  ): Promise<Quiz[]>;
+  generateMathsStarterQuizPatch(
+    lessonPlan: LooseLessonPlan,
+    relevantLessons?: AilaRagRelevantLesson[],
+  ): Promise<Quiz[]>;
+  // invoke(lessonPlan: LooseLessonPlan): Promise<Quiz[]>;
+}
 
 export interface AilaQuizVariantService {
   rerankService: DocumentReranker;
@@ -101,7 +104,6 @@ export interface QuizSelector<T extends BaseType> {
   ): QuizQuestion[];
 }
 
-// TODO: GCLOMAX - check whether we are redeclaring a pretty basic type here
 export type quizPatchType = "/starterQuiz" | "/exitQuiz";
 
 export interface CustomSource {
@@ -130,10 +132,6 @@ export interface Document {
 export interface SimplifiedResultQuestion {
   text: string;
   questionUid: string;
-}
-
-export interface Document {
-  text: string;
 }
 
 export interface DocumentWrapper {
@@ -166,7 +164,6 @@ export interface LessonSlugQuizLookup {
 export interface FullServiceFactory {
   create(settings: QuizServiceSettings): FullQuizService;
 }
-// TODO: GCLOMAX - the naming of these interfaces is confusing - sort them.
 
 export interface AilaQuizFactory {
   quizStrategySelector(lessonPlan: LooseLessonPlan): QuizRecommenderType;

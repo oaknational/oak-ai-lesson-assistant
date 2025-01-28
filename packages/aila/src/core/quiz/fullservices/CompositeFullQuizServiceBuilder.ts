@@ -1,16 +1,23 @@
-import type { AilaQuizGeneratorService } from "../../AilaServices";
+import { aiLogger } from "@oakai/logger";
+
 import { AilaQuizFactory } from "../generators/AilaQuizGeneratorFactory";
-import type { QuizSelectorFactory } from "../interfaces";
-import type { FullQuizService } from "../interfaces";
+import type {
+  AilaQuizGeneratorService,
+  FullQuizService,
+  QuizSelectorFactory,
+} from "../interfaces";
 import { AilaQuizRerankerFactoryImpl } from "../rerankers/AilaQuizRerankerFactory";
 import type { QuizBuilderSettings } from "../schema";
 import { QuizSelectorFactoryImpl } from "../selectors/QuizSelectorFactory";
 import { CompositeFullQuizService } from "./CompositeFullQuizService";
 
+const log = aiLogger("quiz");
+
 export class CompositeFullQuizServiceBuilder {
-  private generatorFactory: AilaQuizFactory = new AilaQuizFactory();
-  private selectorFactory: QuizSelectorFactory = new QuizSelectorFactoryImpl();
-  private rerankerFactory: AilaQuizRerankerFactoryImpl =
+  private readonly generatorFactory: AilaQuizFactory = new AilaQuizFactory();
+  private readonly selectorFactory: QuizSelectorFactory =
+    new QuizSelectorFactoryImpl();
+  private readonly rerankerFactory: AilaQuizRerankerFactoryImpl =
     new AilaQuizRerankerFactoryImpl();
   public build(settings: QuizBuilderSettings): FullQuizService {
     const generatorArray: AilaQuizGeneratorService[] = [];
@@ -27,6 +34,7 @@ export class CompositeFullQuizServiceBuilder {
       generatorArray.push(AilaQuizFactory.createQuizGenerator(generator));
     }
 
+    log.info("Building Composite full quiz service with settings:", settings);
     return new CompositeFullQuizService(generatorArray, selector, reranker);
   }
 }
