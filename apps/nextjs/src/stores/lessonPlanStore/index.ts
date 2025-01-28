@@ -29,6 +29,4 @@ export const useLessonPlanStore = create<LessonPlanStore>((set, get) => ({
   messagesUpdated: handleMessagesUpdated(set, get), // NOT USED
 }));
 
-useLessonPlanStore.subscribe((state) => {
-  log.info("State updated", state);
-});
+logStoreUpdates(useLessonPlanStore, "lessons:store");
