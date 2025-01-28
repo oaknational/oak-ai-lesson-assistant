@@ -17,7 +17,7 @@ export type ModerationStore = {
 
   updateToxicModeration: (mod: PersistedModerationBase | null) => void;
   setLastModeration: (mod: PersistedModerationBase | null) => void;
-  setIsModerationsLoading: (isModerationLoading: boolean) => void;
+  setIsModerationsLoading: (isModerationsLoading: boolean) => void;
   updateModerationState: (mods?: Moderation[]) => void;
   reset: (params: Partial<ModerationStore>) => void;
 };
