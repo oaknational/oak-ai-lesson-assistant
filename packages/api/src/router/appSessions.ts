@@ -115,7 +115,7 @@ export const appSessionsRouter = router({
         return null;
       }
 
-      if (!userIsOwner(chat, ctx.auth)) {
+      if (typeof chat === "string" && !userIsOwner(chat, ctx.auth)) {
         return null;
       }
 

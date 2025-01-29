@@ -58,6 +58,6 @@ export async function vectorSearch({
   const uniqueLessonPlans = uniqBy(results, (r) => r.ragLessonPlanId);
 
   log.info(`Unique lesson plans: ${uniqueLessonPlans.length}`);
-
+  // @ts-ignore
   return uniqueLessonPlans;
 }
