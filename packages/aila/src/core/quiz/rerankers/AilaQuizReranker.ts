@@ -10,7 +10,6 @@ import type {
 } from "../../../protocol/schema";
 import { type BaseSchema } from "../ChoiceModels";
 // import { evaluateQuiz } from "../OpenAIRanker";
-import { processArray, withRandomDelay } from "../apiCallingUtils";
 import type { AilaQuizReranker } from "../interfaces";
 
 const log = aiLogger("aila:quiz");

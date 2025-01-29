@@ -1,5 +1,3 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
-
 import { ElasticLessonQuizLookup } from "./LessonSlugQuizMapping";
 
 describe("ElasticLessonQuizLookup", () => {

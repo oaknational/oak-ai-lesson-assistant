@@ -6,8 +6,8 @@ import type {
   QuizQuestion,
 } from "../../../protocol/schema";
 import type { BaseSchema, BaseType } from "../ChoiceModels";
-import type { AilaQuizGeneratorService } from "../interfaces";
 import type {
+  AilaQuizGeneratorService,
   AilaQuizReranker,
   FullQuizService,
   quizPatchType,

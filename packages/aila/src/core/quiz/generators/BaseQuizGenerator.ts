@@ -20,8 +20,8 @@ import type {
 } from "../../../protocol/schema";
 import { QuizQuestionSchema } from "../../../protocol/schema";
 import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
-import type { AilaQuizGeneratorService } from "../interfaces";
 import type {
+  AilaQuizGeneratorService,
   CustomHit,
   CustomSource,
   LessonSlugQuizLookup,

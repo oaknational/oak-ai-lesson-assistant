@@ -1,6 +1,9 @@
 import type { BaseSchema, BaseType } from "../ChoiceModels";
-import type { AilaQuizGeneratorService } from "../interfaces";
-import type { AilaQuizReranker, QuizSelector } from "../interfaces";
+import type {
+  AilaQuizGeneratorService,
+  AilaQuizReranker,
+  QuizSelector,
+} from "../interfaces";
 import { BaseFullQuizService } from "./BaseFullQuizService";
 
 export class CompositeFullQuizService extends BaseFullQuizService {
