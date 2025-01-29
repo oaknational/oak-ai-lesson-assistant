@@ -133,6 +133,7 @@ function sampleCycle(i: number): Cycle {
       spokenExplanation: "Sample spoken explanation",
       accompanyingSlideDetails: "Sample slide details",
       imagePrompt: "Sample image prompt",
+      imageSearch: "Sample image search",
       slideText: "Sample slide text",
     },
     checkForUnderstanding: [

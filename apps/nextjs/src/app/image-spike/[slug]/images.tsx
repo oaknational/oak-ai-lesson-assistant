@@ -5,14 +5,14 @@ import React, { useCallback, useState } from "react";
 import { OakIcon } from "@oaknational/oak-components";
 import * as Select from "@radix-ui/react-select";
 import * as Tabs from "@radix-ui/react-tabs";
-import { useBestImage } from "hooks/useBestImage";
-import { useImageSearch } from "hooks/useImageSearch";
 import Image from "next/image";
 import Link from "next/link";
-import type { ImageResponse } from "types/imageTypes";
+import type { ImageResponse } from "src/types/imageTypes";
 
 import LoadingWheel from "@/components/LoadingWheel";
 import { RegenerationForm } from "@/components/RegenerationForm";
+import { useBestImage } from "@/hooks/useBestImage";
+import { useImageSearch } from "@/hooks/useImageSearch";
 import { trpc } from "@/utils/trpc";
 
 export type Cycle = {

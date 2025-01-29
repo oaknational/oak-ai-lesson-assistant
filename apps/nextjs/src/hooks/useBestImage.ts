@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-import type { PageData, ValidatedImage } from "types/imageTypes";
+import type { PageData, ValidatedImage } from "src/types/imageTypes";
 
 import { trpc } from "@/utils/trpc";
 

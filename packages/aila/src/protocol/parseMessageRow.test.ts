@@ -27,6 +27,7 @@ describe("parseMessageRow", () => {
         accompanyingSlideDetails:
           "Diagram comparing Roman and Anglo-Saxon societies.",
         imagePrompt: "Roman vs Anglo-Saxon Britain",
+        imageSearch: "Roman withdrawal from Britain",
         slideText:
           "Roman withdrawal led to cultural blending and societal transformation.",
       },

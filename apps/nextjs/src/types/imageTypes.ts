@@ -1,6 +1,7 @@
 import type { ValidationResult } from "@oakai/api/src/imageGen/validateImageWithOpenAI";
-import type { Resource } from "ai-apps/image-alt-generation/types";
 import { z } from "zod";
+
+import type { Resource } from "../ai-apps/image-alt-generation/types";
 
 export type ValidatedImage = {
   imageData: ImageResponse;

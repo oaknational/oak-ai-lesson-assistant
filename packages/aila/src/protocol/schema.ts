@@ -124,18 +124,13 @@ export const EXPLANATION_DESCRIPTIONS = {
   Should describe what should be displayed on the slides for pupils to look at during the explanation.
   This is to enable dual coding of a visual image and the teachers explanation being given verbally.
   Written in the EXPERT_TEACHER voice.`,
-  imagePrompt: z.string().describe(
-    `A prompt to generate an image from DAL-E. Think about what makes a good prompt for image generation. 
-
-      You must first make a decision about whether the requirement is for a diagram or a photo realistic image and use the appropriate prompt below.
-
-      DIAGRAM PROMPT:
-      The image should be a diagram or illustration.
-      Prefix the prompt with 'A clear diagram of...'. 
-      Ensure the prompt is as descriptive as possible.
-      The prompt MUST be at least THREE SENTENCES describing the image in detail. 
-      Written in the EXPERT_TEACHER voice.
-
+  imagePrompt: dedent`
+      A prompt to generate an image from DAL-E. Think about what makes a good prompt for image generation. 
+      
+      You must first make a decision about whether the requirement is for a diagram or a photo realistic, your preference is to do photo realistic images.
+      If the image should be photo realistic use the PHOTO REALISTIC PROMPT.
+      If the image should be a diagram or illustration use the DIAGRAM PROMPT.
+      
 
       PHOTO REALISTIC PROMPT:
       The image should be photo realistic.
@@ -144,16 +139,20 @@ export const EXPLANATION_DESCRIPTIONS = {
       The image should not have any labelling, symbols or text on it.
       The end image should be a classroom and age appropriate image.   
       Prefix the prompt with 'A highly detailed 8K photograph taken on a Canon EOS R5 Mark II of a...'. 
+      Include in the prompt that the image should not have any labelling, symbols or text on it.
       Ensure the prompt is as descriptive as possible.
+      The description MUST be at least THREE SENTENCES describing the image in detail. 
+      Written in the EXPERT_TEACHER voice.
+      
+      DIAGRAM PROMPT:
+      The image should be a diagram or illustration.
+      Prefix the prompt with 'A clear diagram of...'. 
+      Ensure the prompt is as descriptive as possible.
+      Include in the prompt that the image should not have any labelling, symbols or text on it.
       The prompt MUST be at least THREE SENTENCES describing the image in detail. 
-      Written in the EXPERT_TEACHER voice.`,
-  ),
-
-  imageSearch: z
-    .string()
-    .describe(
-      "A search term to use to find an image or video. Should tell the teacher what images to search for to display on the slides. Written in the EXPERT_TEACHER voice.",
-    ),
+      Written in the EXPERT_TEACHER voice.  
+      `,
+  imageSearch: dedent`A search term to use to find an image or video. Should tell the teacher what images to search for to display on the slides. Written in the EXPERT_TEACHER voice.`,
   slideText: dedent`The slide text would appear on the slide when the teacher delivers this part of the lesson.
   It should be a short, succinct summary of the content in the explanation.
   It should be no longer than 2 sentences.
@@ -170,6 +169,7 @@ export const ExplanationSchema = z
       .string()
       .describe(EXPLANATION_DESCRIPTIONS.accompanyingSlideDetails),
     imagePrompt: z.string().describe(EXPLANATION_DESCRIPTIONS.imagePrompt),
+    imageSearch: z.string().describe(EXPLANATION_DESCRIPTIONS.imageSearch),
     slideText: z.string().describe(EXPLANATION_DESCRIPTIONS.slideText),
   })
   .describe(EXPLANATION_DESCRIPTIONS.schema);

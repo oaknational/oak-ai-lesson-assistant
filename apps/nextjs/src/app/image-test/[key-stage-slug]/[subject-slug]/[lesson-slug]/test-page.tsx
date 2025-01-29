@@ -3,15 +3,16 @@
 import { useCallback, useEffect, useState } from "react";
 
 import {
-  AilaRagRelevantLessonSchema,
+  chatSchema,
   LessonPlanSchemaWhilstStreaming,
 } from "@oakai/aila/src/protocol/schema";
 import type { Prisma } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import type { ImageResponse, PageData } from "types/imageTypes";
+import type { PageData } from "src/types/imageTypes";
 import { z } from "zod";
 
+import { Loading } from "@/components/AppComponents/Chat/chat-lessonPlanDisplay.stories";
 import LoadingWheel from "@/components/LoadingWheel";
 import { trpc } from "@/utils/trpc";
 
@@ -70,40 +71,6 @@ export interface Stable {
   imagePrompt: string;
 }
 
-export const chatSchema = z
-  .object({
-    id: z.string().optional(),
-    path: z.string().optional(),
-    title: z.string().optional(),
-    userId: z.string().optional(),
-    lessonPlan: LessonPlanSchemaWhilstStreaming,
-    relevantLessons: z.array(AilaRagRelevantLessonSchema).optional(),
-    isShared: z.boolean().optional(),
-    createdAt: z.union([z.date(), z.number()]).optional(),
-    updatedAt: z.union([z.date(), z.number()]).optional(),
-    iteration: z.number().optional(),
-    startingMessage: z.string().optional(),
-    messages: z.array(
-      z
-        .object({
-          id: z.string().optional(),
-          content: z.string().optional(),
-          role: z
-            .union([
-              z.literal("function"),
-              z.literal("data"),
-              z.literal("user"),
-              z.literal("system"),
-              z.literal("assistant"),
-              z.literal("tool"),
-            ])
-            .optional(),
-        })
-        .passthrough(),
-    ),
-  })
-  .passthrough();
-
 const ImageTestPage = ({
   lesson,
   pageData,
@@ -157,34 +124,49 @@ const ImageTestPage = ({
     mutateAsync: cycle3MutateAsync,
   } = trpc.imageGen.generateFourImages.useMutation();
 
-  const generateEverything = useCallback(() => {
+  const {
+    data: imagePromptFromImagePromptAgent,
+    isLoading: imagePromptLoading,
+    mutateAsync: imagePromptMutateAsync,
+  } = trpc.imageGen.createImagePrompt.useMutation();
+
+  const generateImagePrompt = useCallback(
+    ({ cycle }: { cycle: 1 | 2 | 3 }) => {
+      try {
+        imagePromptMutateAsync({
+          lessonTitle: pageData.title as string,
+          subject: pageData.subject as string,
+          keyStage: pageData.keyStage as string,
+          lessonPlan: pageData.lessonPlan,
+          cycle,
+        });
+      } catch (error) {
+        console.error("callback error:", error);
+        throw error;
+      }
+    },
+    [
+      imagePromptMutateAsync,
+      pageData.keyStage,
+      pageData.lessonPlan,
+      pageData.subject,
+      pageData.title,
+    ],
+  );
+
+  const generateCycle1 = useCallback(() => {
     try {
       cycle1MutateAsync({
-        searchExpression: cycle1ImagePrompt as string,
+        searchExpression: cycle1ImagePrompt,
         lessonTitle: pageData.title as string,
         subject: pageData.subject as string,
         keyStage: pageData.keyStage as string,
         lessonPlan: pageData.lessonPlan,
-        originalPrompt: cycle1ImagePrompt as string,
-      });
-      cycle2MutateAsync({
-        searchExpression: cycle2ImagePrompt as string,
-        lessonTitle: pageData.title as string,
-        subject: pageData.subject as string,
-        keyStage: pageData.keyStage as string,
-        lessonPlan: pageData.lessonPlan,
-        originalPrompt: cycle2ImagePrompt as string,
-      });
-      cycle3MutateAsync({
-        searchExpression: cycle3ImagePrompt as string,
-        lessonTitle: pageData.title as string,
-        subject: pageData.subject as string,
-        keyStage: pageData.keyStage as string,
-        lessonPlan: pageData.lessonPlan,
-        originalPrompt: cycle3ImagePrompt as string,
+        originalPrompt: cycle1ImagePrompt,
       });
     } catch (error) {
       console.error("callback error:", error);
+      throw error;
     }
   }, [
     cycle1ImagePrompt,
@@ -193,11 +175,64 @@ const ImageTestPage = ({
     pageData.lessonPlan,
     pageData.subject,
     pageData.title,
+  ]);
+
+  const generateCycle2 = useCallback(() => {
+    try {
+      cycle2MutateAsync({
+        searchExpression: cycle2ImagePrompt,
+        lessonTitle: pageData.title as string,
+        subject: pageData.subject as string,
+        keyStage: pageData.keyStage as string,
+        lessonPlan: pageData.lessonPlan,
+        originalPrompt: cycle2ImagePrompt,
+      });
+    } catch (error) {
+      console.error("callback error:", error);
+      throw error;
+    }
+  }, [
     cycle2ImagePrompt,
     cycle2MutateAsync,
+    pageData.keyStage,
+    pageData.lessonPlan,
+    pageData.subject,
+    pageData.title,
+  ]);
+
+  const generateCycle3 = useCallback(() => {
+    try {
+      cycle3MutateAsync({
+        searchExpression: cycle3ImagePrompt,
+        lessonTitle: pageData.title as string,
+        subject: pageData.subject as string,
+        keyStage: pageData.keyStage as string,
+        lessonPlan: pageData.lessonPlan,
+        originalPrompt: cycle3ImagePrompt,
+      });
+    } catch (error) {
+      console.error("callback error:", error);
+      throw error;
+    }
+  }, [
     cycle3ImagePrompt,
     cycle3MutateAsync,
+    pageData.keyStage,
+    pageData.lessonPlan,
+    pageData.subject,
+    pageData.title,
   ]);
+
+  const generateEverything = useCallback(() => {
+    try {
+      generateCycle1();
+      generateCycle2();
+      generateCycle3();
+    } catch (error) {
+      console.error("callback error:", error);
+    }
+  }, [generateCycle1, generateCycle2, generateCycle3]);
+
   const [hasClickedLoad, setHasClickedLoad] = useState(false);
   return (
     <div className="mx-auto max-w-[1600px] p-19">
@@ -205,7 +240,7 @@ const ImageTestPage = ({
         <Link href="/image-test">{`<- Back to start`}</Link>
       </div>
       <h1 className="mb-11 text-3xl font-bold">{lessonOutput.title}</h1>
-      {hasClickedLoad ? (
+      {true ? (
         <div className="flex flex-row gap-20">
           <div className="flex w-[70%] flex-col gap-16 rounded bg-gray-100 p-9">
             <div>
@@ -216,8 +251,15 @@ const ImageTestPage = ({
               {cycle1Loading ? (
                 <LoadingWheel />
               ) : (
-                // @ts-ignore
-                <Cycle cycle={cycle1} cycleImages={cycle1Images} />
+                <Cycle
+                  cycle={cycle1}
+                  // @ts-ignore
+                  cycleImages={cycle1Images}
+                  generateImagePrompt={generateImagePrompt}
+                  cycleNumber={1}
+                  newImagePrompt={imagePromptFromImagePromptAgent}
+                  pageData={pageData}
+                />
               )}
             </div>
 
@@ -226,8 +268,15 @@ const ImageTestPage = ({
               {cycle2Loading ? (
                 <LoadingWheel />
               ) : (
-                // @ts-ignore
-                <Cycle cycle={cycle2} cycleImages={cycle2Images} />
+                <Cycle
+                  cycle={cycle2}
+                  // @ts-ignore
+                  cycleImages={cycle2Images}
+                  generateImagePrompt={generateImagePrompt}
+                  cycleNumber={2}
+                  newImagePrompt={imagePromptFromImagePromptAgent}
+                  pageData={pageData}
+                />
               )}
             </div>
             <div>
@@ -235,8 +284,15 @@ const ImageTestPage = ({
               {cycle3Loading ? (
                 <LoadingWheel />
               ) : (
-                // @ts-ignore
-                <Cycle cycle={cycle3} cycleImages={cycle3mages} />
+                <Cycle
+                  cycle={cycle3}
+                  // @ts-ignore
+                  cycleImages={cycle3mages}
+                  generateImagePrompt={generateImagePrompt}
+                  cycleNumber={3}
+                  newImagePrompt={imagePromptFromImagePromptAgent}
+                  pageData={pageData}
+                />
               )}
             </div>
           </div>
@@ -259,7 +315,7 @@ const ImageTestPage = ({
         <button
           className="rounded bg-blue px-4 py-2 font-bold text-white hover:opacity-80"
           onClick={() => {
-            generateEverything();
+            // generateEverything();
             setHasClickedLoad(true);
           }}
         >
@@ -272,100 +328,210 @@ const ImageTestPage = ({
 
 const Cycle = ({
   cycle,
-  cycleImages,
+  cycleNumber,
+  pageData,
 }: {
   cycle: any;
-  cycleImages?: CycleData | undefined;
+  cycleNumber: 1 | 2 | 3;
+  pageData: PageData;
 }) => {
-  return (
-    <>
-      <div className="flex flex-col gap-8">
-        <p className="text-lg">{cycle.title}</p>
-        <b>Explanation:</b>
+  const {
+    data: newImagePrompt,
+    isLoading: newPromptLoading,
+    mutateAsync: generateImagePrompt,
+  } = trpc.imageGen.createImagePrompt.useMutation();
 
-        <div className="flex flex-col gap-5">
-          {Array.isArray(cycle.explanation?.spokenExplanation) &&
-            cycle.explanation?.spokenExplanation?.map((slide) => {
-              return <p key={slide}>- {slide}</p>;
-            })}
-        </div>
-        <p>
-          <b>Accompanying slide details:</b>
-          <br /> {cycle?.explanation?.accompanyingSlideDetails}
-        </p>
-        <p>
-          <b>Image prompt:</b>
-          <br /> {cycle?.explanation?.imagePrompt}
-        </p>
-        <p>
-          <b>Slide text:</b>
-          <br /> {cycle?.explanation?.slideText}
-        </p>
+  const {
+    data: cycleImagesFromAilaPrompt,
+    isLoading: cycleImagesFromAilaPromptLoading,
+    mutateAsync: ailaPromptImagesMutateAsync,
+  } = trpc.imageGen.generateFourImages.useMutation();
+
+  const {
+    data: cycleImagesFromAgentPrompt,
+    isLoading: cycleImagesFromAgentPromptLoading,
+    mutateAsync: agentPromptImagesMutateAsync,
+  } = trpc.imageGen.generateFourImages.useMutation();
+
+  const sources = ["cloudinary", "unsplash", "dale", "stable"];
+
+  const allAilaPromptImagesSortedByRelavanceScore = sources
+    .flatMap((source) =>
+      (cycleImagesFromAilaPrompt?.[source] || []).map((image) => ({
+        ...image,
+        source,
+      })),
+    )
+    .sort((a, b) => b.appropriatenessScore - a.appropriatenessScore);
+
+  const allAgentPromptImagesSortedByRelavanceScore = sources
+    .flatMap((source) =>
+      (cycleImagesFromAgentPrompt?.[source] || []).map((image) => ({
+        ...image,
+        source,
+      })),
+    )
+    .sort((a, b) => b.appropriatenessScore - a.appropriatenessScore);
+
+  const handleGeneratePrompt = useCallback(() => {
+    generateImagePrompt({
+      lessonTitle: pageData.title ?? "",
+      subject: pageData.subject ?? "",
+      keyStage: pageData.keyStage ?? "",
+      lessonPlan: pageData.lessonPlan ?? "",
+      cycle: cycleNumber,
+    });
+  }, [generateImagePrompt, pageData, cycleNumber]);
+
+  const generateImagesFromAilaPrompt = useCallback(() => {
+    ailaPromptImagesMutateAsync({
+      searchExpression: cycle.explanation.imageSearch,
+      lessonTitle: pageData.title as string,
+      subject: pageData.subject as string,
+      keyStage: pageData.keyStage as string,
+      lessonPlan: pageData.lessonPlan,
+      originalPrompt: cycle.explanation.imagePrompt,
+    });
+  }, [
+    ailaPromptImagesMutateAsync,
+    cycle.explanation.imagePrompt,
+    cycleNumber,
+    pageData.keyStage,
+    pageData.lessonPlan,
+    pageData.subject,
+    pageData.title,
+  ]);
+
+  const generateImagesFromAgentPrompt = useCallback(() => {
+    agentPromptImagesMutateAsync({
+      searchExpression: cycle.explanation.imageSearch,
+      lessonTitle: pageData.title as string,
+      subject: pageData.subject as string,
+      keyStage: pageData.keyStage as string,
+      lessonPlan: pageData.lessonPlan,
+      originalPrompt: cycle.explanation.imagePrompt,
+      agentImagePrompt: newImagePrompt,
+    });
+  }, [
+    agentPromptImagesMutateAsync,
+    cycle.explanation.imagePrompt,
+    cycleNumber,
+    newImagePrompt,
+    pageData.keyStage,
+    pageData.lessonPlan,
+    pageData.subject,
+    pageData.title,
+  ]);
+
+  return (
+    <div className="flex flex-col gap-8">
+      <p className="my-8 text-lg font-bold">{cycle?.title}</p>
+      <b>Explanation:</b>
+      <div className="flex flex-col gap-5">
+        {Array.isArray(cycle?.explanation?.spokenExplanation) &&
+          cycle?.explanation.spokenExplanation.map((slide) => (
+            <p key={slide}>- {slide}</p>
+          ))}
       </div>
-      <div className="grid grid-cols-4 gap-8">
-        <div>
-          <h3 className="font-bold">Cloudinary</h3>
-          {cycleImages?.cloudinary.map((image) => (
-            <div key={image.id}>
-              <Image
-                src={image.url}
-                alt={image.alt}
-                objectFit="contain"
-                width="400"
-                height="400"
-              />
-              <p>Relevance score judged by ai: {image.appropriatenessScore}</p>
-            </div>
-          ))}
+      <p>
+        <b>Image prompt from aila:</b>
+        <br /> {cycle?.explanation?.imagePrompt}
+      </p>
+      {newImagePrompt ? (
+        <p>
+          <b>New Image Prompt:</b>
+          <br /> {cleanPrompt(newImagePrompt)}
+        </p>
+      ) : (
+        <div className="my-7 flex justify-start">
+          <button
+            className="rounded bg-blue px-4 py-2 font-bold text-white hover:opacity-80"
+            onClick={handleGeneratePrompt}
+          >
+            Generate a new prompt from agent
+          </button>
+          {newPromptLoading && <LoadingWheel />}
         </div>
-        <div>
-          <h3 className="font-bold">Unsplash</h3>
-          {cycleImages?.unsplash.map((image) => (
-            <div key={image.id}>
-              <Image
-                src={image.url}
-                alt={image.alt}
-                objectFit="contain"
-                width="400"
-                height="400"
-              />
-              <p>Relevance score judged by ai: {image.appropriatenessScore}</p>
+      )}
+
+      {newImagePrompt && (
+        <>
+          <h3 className="font-bold">Images</h3>
+          <div className="grid grid-cols-2 gap-8">
+            {/* Aila Prompt Images */}
+            <div className="w-full">
+              <h4 className="font-bold">Images from Aila prompt</h4>
+              {allAilaPromptImagesSortedByRelavanceScore.length > 0 ? (
+                allAilaPromptImagesSortedByRelavanceScore.map((image) => (
+                  <div key={image.id} className="mb-4">
+                    <Image
+                      src={image.url}
+                      alt={image.alt}
+                      objectFit="contain"
+                      width="400"
+                      height="400"
+                    />
+                    <p>Score: {image.appropriatenessScore}</p>
+                    <p>Source: {image.source}</p>
+                  </div>
+                ))
+              ) : (
+                <>
+                  <button
+                    className="rounded bg-blue px-4 py-2 font-bold text-white hover:opacity-80"
+                    onClick={generateImagesFromAilaPrompt}
+                  >
+                    Generate images from Aila prompt
+                  </button>
+                  {cycleImagesFromAilaPromptLoading && <LoadingWheel />}
+                </>
+              )}
             </div>
-          ))}
-        </div>
-        <div>
-          <h3 className="font-bold">DAL-E (AI)</h3>
-          {cycleImages?.dale.map((image) => (
-            <div key={image.id}>
-              <Image
-                src={image.url}
-                alt={image.alt}
-                objectFit="contain"
-                width="400"
-                height="400"
-              />
-              <p>Relevance score judged by ai: {image.appropriatenessScore}</p>
+
+            {/* Agent Prompt Images */}
+            <div className="w-full">
+              <h4 className="font-bold">Images from Agent prompt</h4>
+              {allAgentPromptImagesSortedByRelavanceScore.length > 0 ? (
+                allAgentPromptImagesSortedByRelavanceScore.map((image) => (
+                  <div key={image.id} className="mb-4">
+                    <Image
+                      src={image.url}
+                      alt={image.alt}
+                      objectFit="contain"
+                      width="400"
+                      height="400"
+                    />
+                    <p>Score: {image.appropriatenessScore}</p>
+                    <p>Source: {image.source}</p>
+                  </div>
+                ))
+              ) : (
+                <>
+                  <button
+                    className="rounded bg-blue px-4 py-2 font-bold text-white hover:opacity-80"
+                    onClick={generateImagesFromAgentPrompt} // ✅ Fixed button action
+                  >
+                    Generate images from Agent prompt
+                  </button>
+                  {cycleImagesFromAgentPromptLoading && <LoadingWheel />}
+                </>
+              )}
             </div>
-          ))}
-        </div>
-        <div>
-          <h3 className="font-bold">Stable (AI)</h3>
-          {cycleImages?.stable.map((image) => (
-            <div key={image.id}>
-              <Image
-                src={image.url}
-                alt={image.alt}
-                objectFit="contain"
-                width="400"
-                height="400"
-              />
-              <p>Relevance score judged by ai: {image.appropriatenessScore}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </>
+          </div>
+        </>
+      )}
+    </div>
   );
 };
+
+function cleanPrompt(prompt: string) {
+  if (prompt.startsWith("DIAGRAM_PROMPT:")) {
+    return prompt.split("DIAGRAM_PROMPT:")[1];
+  }
+  if (prompt.startsWith("PHOTO_REALISTIC_PROMPT:")) {
+    return prompt.split("PHOTO_REALISTIC_PROMPT:")[1];
+  }
+  return prompt;
+}
 
 export default ImageTestPage;

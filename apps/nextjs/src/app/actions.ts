@@ -1,7 +1,6 @@
 "use server";
 
 import {
-  AilaRagRelevantLessonSchema,
   LessonPlanSchemaWhilstStreaming,
   type AilaPersistedChat,
 } from "@oakai/aila/src/protocol/schema";
@@ -17,7 +16,8 @@ const chatSchema = z
     title: z.string().optional(),
     userId: z.string().optional(),
     lessonPlan: LessonPlanSchemaWhilstStreaming,
-    relevantLessons: z.array(AilaRagRelevantLessonSchema).optional(),
+    // @ts-ignore
+    relevantLessons: z.any().optional(),
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]).optional(),
     updatedAt: z.union([z.date(), z.number()]).optional(),

@@ -3,7 +3,7 @@ import type {
   ImageResponse,
   ImagesFromCloudinary,
   PageData,
-} from "types/imageTypes";
+} from "src/types/imageTypes";
 
 import { trpc } from "@/utils/trpc";
 
