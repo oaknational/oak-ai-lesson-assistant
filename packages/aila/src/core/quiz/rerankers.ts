@@ -44,15 +44,3 @@ export class CohereReranker implements DocumentReranker {
     }
   }
 }
-
-export class ReplicateReranker implements DocumentReranker {
-  public async rerankDocuments(
-    query: string,
-    docs: SimplifiedResult[],
-    _topN: number = 10,
-  ) {
-    // TODO: GCLOMAX - we need to retrain rerankers due to embedding changes.
-    throw new Error("Not implemented");
-    return Promise.resolve([]);
-  }
-}

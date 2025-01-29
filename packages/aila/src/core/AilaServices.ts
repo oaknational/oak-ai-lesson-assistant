@@ -11,18 +11,12 @@ import type {
 } from "../features/types";
 import type {
   MessagePart,
-  JsonPatchDocument,
   ValidPatchDocument,
-} from "../protocol/jsonPatchProtocol";
-import {
-  JsonPatchDocumentOptional,
-  PatchQuiz,
 } from "../protocol/jsonPatchProtocol";
 import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
   LooseLessonPlan,
-  Quiz,
 } from "../protocol/schema";
 import type { Message } from "./chat";
 import type { AilaPlugin } from "./plugins";
