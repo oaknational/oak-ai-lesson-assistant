@@ -6,12 +6,12 @@ export const STEP = [
   "lesson_plan_generation",
   "chunking",
   "embedding",
+  "publishing",
 ] as const;
 
-const STEP_STATUS = ["started", "completed", "failed"] as const;
+export type StepStatus = "started" | "completed" | "failed";
 
 export type Step = (typeof STEP)[number];
-export type StepStatus = (typeof STEP_STATUS)[number];
 
 export function getPrevStep(step: Step) {
   const index = STEP.indexOf(step);

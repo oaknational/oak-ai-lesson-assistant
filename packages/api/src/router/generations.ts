@@ -6,16 +6,14 @@ import {
   serializeGeneration,
   serializedGenerationSchema,
 } from "@oakai/core/src/models/serializers";
-import type {
-  GenerationPart} from "@oakai/core/src/types";
+import type { GenerationPart } from "@oakai/core/src/types";
 import {
   generationPartSchema,
   generationPartUserTweakedSchema,
 } from "@oakai/core/src/types";
 import { sendQuizFeedbackEmail } from "@oakai/core/src/utils/sendQuizFeedbackEmail";
 import { requestGenerationWorker } from "@oakai/core/src/workers/generations/requestGeneration";
-import { structuredLogger as logger } from "@oakai/logger";
-import { aiLogger } from "@oakai/logger";
+import { aiLogger, structuredLogger as logger } from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 import { Redis } from "@upstash/redis";
 import { waitUntil } from "@vercel/functions";
@@ -238,6 +236,7 @@ export const generationRouter = router({
         logger.error(
           "Failed to save re-generation, generationId=%s",
           generation.id,
+          err,
         );
       }
 
@@ -384,7 +383,9 @@ export const generationRouter = router({
         await feedbackModel.recordUserTweak(
           tweakedItem.lastGenerationId,
           sessionId,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           tweakedItem.value,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           tweakedItem.originalValue,
         );
       } catch (err) {

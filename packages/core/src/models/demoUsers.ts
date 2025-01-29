@@ -1,6 +1,6 @@
 import type { User } from "@clerk/nextjs/server";
 
-const DEVELOPMENT_USER_REGION = process.env.DEVELOPMENT_USER_REGION || null;
+const DEVELOPMENT_USER_REGION = process.env.DEVELOPMENT_USER_REGION ?? null;
 if (process.env.NODE_ENV === "development" && !DEVELOPMENT_USER_REGION) {
   throw new Error("DEVELOPMENT_USER_REGION is required for development");
 }
@@ -58,11 +58,11 @@ class DemoUsers {
 
     const isDemoRegion = isOakDemoUser(user) || !this.isSupportedRegion(region);
 
-    return { region, isDemoRegion };
+    return Promise.resolve({ region, isDemoRegion });
   }
 
   isDemoStatusSet(user: LabsUser): user is UserWithDemoStatus {
-    const labsMetadata = user.publicMetadata.labs || {};
+    const labsMetadata = user.publicMetadata.labs ?? {};
     return "isDemoUser" in labsMetadata && labsMetadata.isDemoUser !== null;
   }
 

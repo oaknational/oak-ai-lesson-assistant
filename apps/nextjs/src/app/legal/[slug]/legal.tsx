@@ -2,14 +2,14 @@
 
 import { OakBox } from "@oaknational/oak-components";
 import { PortableText } from "@portabletext/react";
-import type { PolicyDocument } from "cms/types/policyDocument";
 
+import type { PolicyDocument } from "@/cms/types/policyDocument";
 import Layout from "@/components/Layout";
 import { portableTextComponents } from "@/components/PortableText/portableTextComponents";
 
-interface LegalContentProps {
+export type LegalContentProps = Readonly<{
   pageData: PolicyDocument;
-}
+}>;
 
 export const LegalContent = ({ pageData }: LegalContentProps) => {
   return (

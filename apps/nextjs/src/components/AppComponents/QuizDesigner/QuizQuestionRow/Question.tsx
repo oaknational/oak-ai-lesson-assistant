@@ -2,23 +2,23 @@ import type { Dispatch } from "react";
 import { useCallback } from "react";
 
 import { Box, Flex } from "@radix-ui/themes";
-import { quizRequestGeneration } from "ai-apps/quiz-designer/quizRequestGeneration";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
+import { z } from "zod";
+
+import { quizRequestGeneration } from "@/ai-apps/quiz-designer/quizRequestGeneration";
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
 import type {
   QuizAppState,
   QuizAppStateQuestion,
-} from "ai-apps/quiz-designer/state/types";
-import type { GenerationWithResponse } from "hooks/useGeneration";
+} from "@/ai-apps/quiz-designer/state/types";
+import { GenerationErrorBox } from "@/components/AppComponents/QuizDesigner/ErrorBox";
+import Input from "@/components/Input";
+import type { GenerationWithResponse } from "@/hooks/useGeneration";
 import {
   UseGenerationStatus,
   isGenerationHookLoading,
-} from "hooks/useGeneration";
-import useGenerationCallbacks from "hooks/useGenerationCallbacks";
-import { z } from "zod";
-
-import { GenerationErrorBox } from "@/components/AppComponents/QuizDesigner/ErrorBox";
-import Input from "@/components/Input";
+} from "@/hooks/useGeneration";
+import useGenerationCallbacks from "@/hooks/useGenerationCallbacks";
 import { trpc } from "@/utils/trpc";
 
 import GenerateButton from "../GenerateAllButton";
@@ -76,13 +76,13 @@ const Question = ({
   const medianTimeTakenForPrompt =
     promptTimings.data?.["median-generation-total-duration-ms"];
 
-  const requestAnswersAndDistractorGeneration = useCallback(() => {
+  const requestAnswersAndDistractorGeneration = useCallback(async () => {
     const lastGeneration = [
       ...questionRow.answers,
       ...questionRow.distractors,
     ].find((answer) => Boolean(answer.lastGenerationId));
 
-    quizRequestGeneration({
+    await quizRequestGeneration({
       state,
       questionRow,
       requestGeneration,
@@ -101,7 +101,7 @@ const Question = ({
       onSubmit={(e) => {
         e.preventDefault();
         if (canGenerate) {
-          requestAnswersAndDistractorGeneration();
+          void requestAnswersAndDistractorGeneration();
         }
       }}
       className="w-full"
@@ -146,7 +146,7 @@ const Question = ({
                    * regenerate all prompt currently
                    */
                   if (canGenerate) {
-                    requestAnswersAndDistractorGeneration();
+                    void requestAnswersAndDistractorGeneration();
                   }
                 }}
                 disabled={!canGenerate}
@@ -161,7 +161,7 @@ const Question = ({
                 buttonText="Generate answers & distractors"
                 onClick={() => {
                   if (canGenerate) {
-                    requestAnswersAndDistractorGeneration();
+                    void requestAnswersAndDistractorGeneration();
                     suggestedQuestionsGeneration();
                   }
                 }}

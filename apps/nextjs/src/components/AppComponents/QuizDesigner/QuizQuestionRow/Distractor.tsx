@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+// TODO - if we are maintaining the quiz designer, check the hook dependencies
 import type { Dispatch } from "react";
 import { useCallback, useState } from "react";
 
@@ -5,21 +7,21 @@ import type { GenerationPart } from "@oakai/core/src/types";
 import { GenerationPartType } from "@oakai/core/src/types";
 import browserLogger from "@oakai/logger/browser";
 import { Flex } from "@radix-ui/themes";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
+import { z } from "zod";
+
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
 import type {
   QuizAppDistractor,
   QuizAppState,
   QuizAppStateQuestion,
-} from "ai-apps/quiz-designer/state/types";
+} from "@/ai-apps/quiz-designer/state/types";
+import { GenerationErrorBox } from "@/components/AppComponents/QuizDesigner/ErrorBox";
 import {
   UseGenerationStatus,
   isGenerationHookLoading,
-} from "hooks/useGeneration";
-import useGenerationCallbacks from "hooks/useGenerationCallbacks";
-import { z } from "zod";
-
-import { GenerationErrorBox } from "@/components/AppComponents/QuizDesigner/ErrorBox";
+} from "@/hooks/useGeneration";
+import useGenerationCallbacks from "@/hooks/useGenerationCallbacks";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { getAgesFromKeyStage } from "@/utils/getAgesFromKeyStage";
 import { trpc } from "@/utils/trpc";
@@ -84,6 +86,7 @@ const Distractor = ({
 
     const extraContext = `${state.topic} : ${questionRow.question.value}. Other questions include: ${otherQuestions}`;
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     requestGeneration({
       lastGenerationId: distractor.lastGenerationId,
       sessionId: state.sessionId as string,
@@ -159,7 +162,7 @@ const Distractor = ({
             "User attempted to tweak distractor with missing lastGenerationId",
           );
         }
-      } catch (err) {
+      } catch {
         browserLogger.error("Failed to log distractor tweak");
       }
     },
@@ -190,6 +193,7 @@ const Distractor = ({
               userIsEditing={userIsEditing}
               isLoading={isLoading}
               index={distractorIdx}
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               tweak={tweakDistractor}
               setUserIsEditing={setUserIsEditing}
             >

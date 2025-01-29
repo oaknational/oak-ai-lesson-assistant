@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
-import type { OakIconName } from "@oaknational/oak-components";
 import {
   OakBox,
   OakFlex,
@@ -13,13 +12,13 @@ import {
   OakLI,
   OakIcon,
 } from "@oaknational/oak-components";
-import { aiTools } from "data/aiTools";
-import { legalMenuItems, menuItems, socialMenuItems } from "data/menus";
 import Image from "next/image";
 import Link from "next/link";
 import styled from "styled-components";
 
 import loop from "@/assets/svg/loop.svg";
+import { aiTools } from "@/data/aiTools";
+import { legalMenuItems, menuItems, socialMenuItems } from "@/data/menus";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import { ScaleSpan } from "./AppComponents/ScaleSpan";
@@ -198,19 +197,21 @@ const StyledOakLink = styled(OakLink)`
   }
 `;
 
+export type FooterButtonProps = Readonly<{
+  href?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  target?: string;
+  children: React.ReactNode;
+}>;
+
 const FooterButton = ({
   href,
   onClick,
   disabled,
   target,
   children,
-}: {
-  href?: string;
-  onClick?: () => void;
-  disabled?: boolean;
-  target?: string;
-  children: React.ReactNode;
-}) => {
+}: FooterButtonProps) => {
   const element = href ? Link : "button";
   return (
     <StyledOakLink
@@ -228,7 +229,7 @@ const FooterButton = ({
         $textDecoration="none"
       >
         <span>{children}</span>
-        {href && href.includes("http") && (
+        {href?.includes("http") && (
           <ScaleSpan $scale={0.8}>
             <OakIcon iconName="external" />
           </ScaleSpan>

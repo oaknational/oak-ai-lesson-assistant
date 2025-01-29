@@ -6,6 +6,7 @@ import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/mod
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
+import * as Sentry from "@sentry/nextjs";
 import { waitUntil } from "@vercel/functions";
 
 const log = aiLogger("chat");
@@ -56,17 +57,24 @@ export const createWebActionsPlugin: PluginCreator = (
       throw new Error("User ID not set");
     }
 
-    await inngest.send({
-      name: "app/slack.notifyModeration",
-      user: {
-        id: userId,
-      },
-      data: {
-        chatId: aila.chatId || "Unknown",
-        categories: moderation.categories as string[],
-        justification: moderation.justification || "Unknown",
-      },
-    });
+    try {
+      log.info("Sending slack notification");
+      await inngest.send({
+        name: "app/slack.notifyModeration",
+        user: {
+          id: userId,
+        },
+        data: {
+          chatId: aila.chatId || "Unknown",
+          categories: moderation.categories as string[],
+          justification: moderation.justification ?? "Unknown",
+        },
+      });
+    } catch (e) {
+      log.error("Error scheduling slack notification", e);
+      Sentry.captureException(e);
+      throw e;
+    }
 
     try {
       const safetyViolations = new SafetyViolations(prisma);

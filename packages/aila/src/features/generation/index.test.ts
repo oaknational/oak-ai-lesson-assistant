@@ -14,7 +14,7 @@ const ailaArgs: AilaInitializationOptions = {
 
 describe("calculateTokenUsage", () => {
   // correctly calculates prompt tokens from chat messages
-  it("should correctly calculate prompt tokens from chat messages", async () => {
+  it("should correctly calculate prompt tokens from chat messages", () => {
     const messages: Message[] = [
       { id: "1", role: "user", content: "Hello" },
       { id: "2", role: "user", content: "How are you?" },
@@ -44,7 +44,7 @@ describe("calculateTokenUsage", () => {
       systemPrompt: "Test system prompt",
       promptId: "test",
     });
-    await ailaGeneration.complete({
+    ailaGeneration.complete({
       status: "SUCCESS",
       responseText: "I am fine, thank you!",
     });
@@ -52,7 +52,7 @@ describe("calculateTokenUsage", () => {
   });
 
   // correctly calculates completion tokens from response text
-  it("should correctly calculate completion tokens from response text", async () => {
+  it("should correctly calculate completion tokens from response text", () => {
     const messages: Message[] = [
       { id: "1", role: "user", content: "Hello" },
       { id: "2", role: "user", content: "How are you?" },
@@ -82,7 +82,7 @@ describe("calculateTokenUsage", () => {
       systemPrompt: "Test system prompt",
       promptId: "test",
     });
-    await ailaGeneration.complete({
+    ailaGeneration.complete({
       status: "SUCCESS",
       responseText: "I am fine, thank you!",
     });

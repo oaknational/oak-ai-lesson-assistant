@@ -1,6 +1,11 @@
+import type {
+  LessonPlanKey,
+  LessonPlanSectionWhileStreaming,
+} from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { OakFlex } from "@oaknational/oak-components";
-import { lessonSectionTitlesAndMiniDescriptions } from "data/lessonSectionTitlesAndMiniDescriptions";
+
+import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
 
 import { sectionTitle } from ".";
 import { MemoizedReactMarkdownWithStyles } from "../markdown";
@@ -8,20 +13,19 @@ import AddAdditionalMaterialsButton from "./add-additional-materials-button";
 import FlagButton from "./flag-button";
 import ModifyButton from "./modify-button";
 
-const ChatSection = ({
-  objectKey,
-  value,
-}: {
-  objectKey: string;
-  value: Record<string, unknown> | string | Array<unknown>;
-}) => {
+export type ChatSectionProps = Readonly<{
+  section: LessonPlanKey;
+  value: LessonPlanSectionWhileStreaming;
+}>;
+
+const ChatSection = ({ section, value }: ChatSectionProps) => {
   return (
     <OakFlex $flexDirection="column">
       <MemoizedReactMarkdownWithStyles
         lessonPlanSectionDescription={
-          lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
+          lessonSectionTitlesAndMiniDescriptions[section]?.description
         }
-        markdown={`${sectionToMarkdown(objectKey, value)}`}
+        markdown={`${sectionToMarkdown(section, value)}`}
       />
       <OakFlex
         $gap="all-spacing-3"
@@ -29,23 +33,23 @@ const ChatSection = ({
         $position="relative"
         $display={["none", "flex"]}
       >
-        {objectKey === "additionalMaterials" && value === "None" ? (
+        {section === "additionalMaterials" && value === "None" ? (
           <AddAdditionalMaterialsButton
-            sectionTitle={sectionTitle(objectKey)}
-            sectionPath={objectKey}
+            sectionTitle={sectionTitle(section)}
+            sectionPath={section}
             sectionValue={value}
           />
         ) : (
           <ModifyButton
-            sectionTitle={sectionTitle(objectKey)}
-            sectionPath={objectKey}
+            sectionTitle={sectionTitle(section)}
+            sectionPath={section}
             sectionValue={value}
           />
         )}
 
         <FlagButton
-          sectionTitle={sectionTitle(objectKey)}
-          sectionPath={objectKey}
+          sectionTitle={sectionTitle(section)}
+          sectionPath={section}
           sectionValue={value}
         />
       </OakFlex>

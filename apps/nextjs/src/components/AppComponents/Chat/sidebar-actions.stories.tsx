@@ -1,24 +1,28 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { within } from "@storybook/test";
 
+import { chromaticParams } from "@/storybook/chromatic";
+
 import { SidebarActions } from "./sidebar-actions";
 
-const meta: Meta<typeof SidebarActions> = {
+const meta = {
   title: "Components/Sidebar/Actions",
   component: SidebarActions,
   parameters: {
     layout: "centered",
+    ...chromaticParams(["desktop"]),
   },
   tags: ["autodocs"],
-};
+} satisfies Meta<typeof SidebarActions>;
 
 export default meta;
-type Story = StoryObj<typeof SidebarActions>;
+type Story = StoryObj<typeof meta>;
 
 const mockChat = {
   id: "1",
   title: "Mock chat title",
   isShared: false,
+  updatedAt: new Date(),
 };
 
 export const Default: Story = {
@@ -37,6 +41,7 @@ export const SharePending: Story = {
     const canvas = within(canvasElement);
     const deleteButton = canvas.getByRole("button", { name: "Share" });
     deleteButton.click();
+    return Promise.resolve();
   },
 };
 
@@ -50,5 +55,6 @@ export const RemovePending: Story = {
     const canvas = within(canvasElement);
     const deleteButton = canvas.getByRole("button", { name: "Delete" });
     deleteButton.click();
+    return Promise.resolve();
   },
 };

@@ -4,10 +4,10 @@ import { useEffect, useRef } from "react";
 
 import { useUser } from "@clerk/nextjs";
 import logger from "@oakai/logger/browser";
-import { useReloadSession } from "hooks/useReloadSession";
 
 import { AcceptTermsForm } from "@/components/Onboarding/AcceptTermsForm";
 import { LegacyUpgradeNotice } from "@/components/Onboarding/LegacyUpgradeNotice";
+import { useReloadSession } from "@/hooks/useReloadSession";
 import { trpc } from "@/utils/trpc";
 
 export const OnBoarding = () => {
@@ -32,7 +32,7 @@ export const OnBoarding = () => {
         window.location.href = "/?reason=metadata-upgraded";
       }
     }
-    handleDemoStatusSet();
+    void handleDemoStatusSet();
   }, [userHasAlreadyAcceptedTerms, setDemoStatus, reloadSession]);
 
   if (userHasAlreadyAcceptedTerms) {

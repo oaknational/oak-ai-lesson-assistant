@@ -1,8 +1,10 @@
-import type { Quiz } from "@oakai/db";
 import { prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import { GraphQLClient, gql } from "graphql-request";
 
-const batchSize = parseInt(process.env.LESSON_QUERY_BATCH_SIZE || "");
+const log = aiLogger("core");
+
+const batchSize = parseInt(process.env.LESSON_QUERY_BATCH_SIZE ?? "");
 const LESSON_QUERY_BATCH_SIZE = Number.isInteger(batchSize) ? batchSize : 10;
 const QUERY_SLEEP_MS = 1000; // Delay between API calls to avoid rate limiting/hammering the db
 const MAX_LESSONS = Infinity; // Set a smaller limit for testing when we don't want all ~10k
@@ -73,7 +75,7 @@ const graphqlClient = new GraphQLClient(
 
 const main = async () => {
   try {
-    console.log("Starting");
+    log.info("Starting");
 
     let offset = 0;
     let done = false;
@@ -144,10 +146,10 @@ const main = async () => {
         lessons: Lesson[];
       }>(query, variables);
 
-      console.log("lessonData", lessonData.lessons.length);
+      log.info("lessonData", lessonData.lessons.length);
       // Map through lessons and add them to the Prisma database
 
-      console.log("Writing to Prisma");
+      log.info("Writing to Prisma");
 
       await Promise.all(
         lessonData.lessons.map(async (lesson: Lesson) => {
@@ -205,15 +207,19 @@ const main = async () => {
             },
           });
           /// Create Quiz questions
-          lesson?.starterQuiz?.map(async (quiz: Quiz) => {
-            await addQuizQuestion(quiz, lessonTyped);
-            await addQuizAnswer(quiz, lessonTyped, createdLesson.id);
-          });
+          await Promise.all(
+            lesson?.starterQuiz?.map(async (quiz: Quiz) => {
+              await addQuizQuestion(quiz, lessonTyped);
+              await addQuizAnswer(quiz, lessonTyped, createdLesson.id);
+            }) ?? [],
+          );
 
-          lesson?.exitQuiz?.map(async (quiz: Quiz) => {
-            await addQuizQuestion(quiz, lessonTyped);
-            await addQuizAnswer(quiz, lessonTyped, createdLesson.id);
-          });
+          await Promise.all(
+            lesson?.exitQuiz?.map(async (quiz: Quiz) => {
+              await addQuizQuestion(quiz, lessonTyped);
+              await addQuizAnswer(quiz, lessonTyped, createdLesson.id);
+            }) ?? [],
+          );
         }),
       );
 
@@ -225,18 +231,18 @@ const main = async () => {
       }
 
       offset += LESSON_QUERY_BATCH_SIZE;
-      console.log("offset", offset);
+      log.info("offset", offset);
       // Don't rate limit ourselves
       await sleep(QUERY_SLEEP_MS);
     }
   } catch (e) {
-    console.error(e);
+    log.error(e);
 
-    console.log("something went wrong");
-    console.log("error", e);
+    log.info("something went wrong");
+    log.info("error", e);
     process.exit(1);
   } finally {
-    console.log("Done");
+    log.info("Done");
     await prisma.$disconnect();
   }
 };
@@ -246,7 +252,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    log.error(e);
     await prisma.$disconnect();
     process.exit(1);
   });
@@ -275,7 +281,7 @@ async function addQuizQuestion(quiz: Quiz, lessonTyped: TypedLesson) {
       },
     },
   });
-  console.log("question added");
+  log.info("question added");
 }
 
 function kebabCaseKeyStage(keyStage: string) {
@@ -354,14 +360,14 @@ async function addQuizAnswer(
               },
             })
             .catch((e) => {
-              console.log("error", e);
+              log.info("error", e);
             });
         }),
       );
     }),
   );
 
-  console.log("answers added");
+  log.info("answers added");
 }
 
 async function sleep(ms: number) {

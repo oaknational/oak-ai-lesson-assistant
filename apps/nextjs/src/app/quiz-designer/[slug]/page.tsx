@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
-import getSessionOutput from "ai-apps/common/getSessionOutput";
-import { quizAppStateSchema } from "ai-apps/quiz-designer/state/types";
+
+import getSessionOutput from "@/ai-apps/common/getSessionOutput";
+import { quizAppStateSchema } from "@/ai-apps/quiz-designer/state/types";
 
 import QuizDesignerPage from "./generation-page";
 
@@ -19,11 +20,13 @@ async function getData(slug: string) {
   return parsedData;
 }
 
+export type GenerationsPageProps = Readonly<{
+  params: { readonly slug: string };
+}>;
+
 export default async function GenerationsPage({
   params,
-}: {
-  params: { slug: string };
-}) {
+}: GenerationsPageProps) {
   const data = await getData(params.slug);
   return <QuizDesignerPage data={data} />;
 }

@@ -1,9 +1,10 @@
+// This file should be in Common JS format to be compatible with Next.js
 const {
   getAppVersion,
   getReleaseStage,
   RELEASE_STAGE_PRODUCTION,
   RELEASE_STAGE_TESTING,
-} = require("./scripts/build_config_helpers.js");
+} = require("./scripts/build_config_helpers.cjs");
 const path = require("path");
 
 const { PHASE_PRODUCTION_BUILD, PHASE_TEST } = require("next/constants");

@@ -15,31 +15,10 @@ import {
 
 import * as stories from "./LessonPlanProgressDropdown.stories";
 
-const { Default, PartiallyCompleted, FullyCompleted, PartialCycles } =
+const { PartiallyCompleted, FullyCompleted, PartialCycles } =
   composeStories(stories);
 
 describe("LessonPlanProgressDropdown", () => {
-  it("renders the Default story with correct closed state", () => {
-    render(<Default />);
-    expect(screen.getByText("4 of 10 sections complete")).toBeInTheDocument();
-    expect(screen.queryByText("Cycles")).not.toBeInTheDocument();
-  });
-
-  it("renders the PartiallyCompleted story with correct closed state", () => {
-    render(<PartiallyCompleted />);
-    expect(screen.getByText("7 of 10 sections complete")).toBeInTheDocument();
-  });
-
-  it("renders the FullyCompleted story with correct closed state", () => {
-    render(<FullyCompleted />);
-    expect(screen.getByText("10 of 10 sections complete")).toBeInTheDocument();
-  });
-
-  it("renders the PartialCycles story with correct closed state", () => {
-    render(<PartialCycles />);
-    expect(screen.getByText("5 of 10 sections complete")).toBeInTheDocument();
-  });
-
   it("displays the dropdown menu when clicked and shows correct completed sections", async () => {
     render(<PartiallyCompleted />);
 

@@ -29,7 +29,7 @@ export function initializeTracer(options: DatadogOptions) {
   const debugMode =
     !isTest && !isLocalDev
       ? true
-      : options.debug || process.env.DD_TRACE_DEBUG === "true";
+      : (options.debug ?? process.env.DD_TRACE_DEBUG === "true");
 
   const logLevel: "debug" | "error" = debugMode ? "debug" : "error";
   if (isTest || isLocalDev) {
@@ -45,29 +45,32 @@ export function initializeTracer(options: DatadogOptions) {
       env: options.env ?? environment,
       service: options.service ?? "oak-ai",
       hostname,
-      logInjection:
-        options.logInjection !== undefined ? options.logInjection : true,
-      runtimeMetrics:
-        options.runtimeMetrics !== undefined ? options.runtimeMetrics : true,
+      logInjection: options.logInjection ?? true,
+      runtimeMetrics: options.runtimeMetrics ?? true,
       sampleRate: options.sampleRate ?? 1,
-      profiling: options.profiling !== undefined ? options.profiling : true,
-      plugins: options.plugins !== undefined ? options.plugins : false,
+      profiling: options.profiling ?? true,
+      plugins: options.plugins ?? false,
       logLevel,
       logger: {
         debug: (message: string | Error) =>
-          log.info(`[dd-trace debug] ${message}`),
+          log.info(
+            `[dd-trace debug] ${typeof message === "string" ? message : message.message}`,
+          ),
         info: (message: string | Error) =>
-          log.info(`[dd-trace info] ${message}`),
+          log.info(
+            `[dd-trace info] ${typeof message === "string" ? message : message.message}`,
+          ),
         warn: (message: string | Error) =>
-          log.info(`[dd-trace warn] ${message}`),
+          log.info(
+            `[dd-trace warn] ${typeof message === "string" ? message : message.message}`,
+          ),
         error: (message: string | Error) =>
-          log.error(`[dd-trace error] ${message}`),
+          log.error(
+            `[dd-trace error] ${typeof message === "string" ? message : message.message}`,
+          ),
       },
     };
-    console.log(
-      "Initializing Datadog tracer with options",
-      initialisationOptions,
-    );
+    log.info("Initializing Datadog tracer with options", initialisationOptions);
     tracer.init(initialisationOptions);
   }
 }

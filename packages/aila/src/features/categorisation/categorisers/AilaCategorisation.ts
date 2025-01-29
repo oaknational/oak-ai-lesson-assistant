@@ -1,7 +1,7 @@
 import { CategoriseKeyStageAndSubjectResponse } from "@oakai/core/src/rag/categorisation";
 import { keyStages, subjects } from "@oakai/core/src/utils/subjects";
 import { aiLogger } from "@oakai/logger";
-import type { ChatCompletionMessageParam } from "openai/resources";
+import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { Md5 } from "ts-md5";
 
 import { DEFAULT_CATEGORISE_MODEL } from "../../../constants";
@@ -15,7 +15,7 @@ import type { AilaCategorisationFeature } from "../../types";
 const log = aiLogger("aila:categorisation");
 
 export class AilaCategorisation implements AilaCategorisationFeature {
-  private _aila: AilaServices;
+  private readonly _aila: AilaServices;
   constructor({ aila }: { aila: AilaServices }) {
     this._aila = aila;
   }
@@ -132,6 +132,7 @@ Thank you and happy classifying!`;
       log.info("Categorisation results", parsedResponse);
       return parsedResponse;
     } catch (e) {
+      log.error("Error parsing categorisation response", e);
       return { error: "Error parsing response" };
     }
   }

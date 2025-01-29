@@ -533,7 +533,7 @@ export const MessagePartDocumentSchemaByType: {
   id: MessageIdDocumentSchema,
 };
 
-const MessagePartSchema = z.object({
+export const MessagePartSchema = z.object({
   type: z.literal("message-part"),
   id: z.string(),
   isPartial: z.boolean(),
@@ -587,7 +587,7 @@ function tryParseJson(str: string): {
       throw new Error("The JSON object does not have a type");
     }
     return { parsed, isPartial: false };
-  } catch (e) {
+  } catch {
     try {
       // Is this a JSON streaming in?
       const parsedTruncated = JSON.parse(untruncateJson(str));
@@ -596,7 +596,7 @@ function tryParseJson(str: string): {
       } else {
         throw new Error("The parsed JSON object does not have a type");
       }
-    } catch (e) {
+    } catch {
       // If parsing fails, assume it's partial
       return { parsed: null, isPartial: true };
     }
@@ -612,23 +612,25 @@ export function tryParsePart(
 ): MessagePartDocument | UnknownDocument {
   const { type } = obj;
 
-  // Assert the message part type is allowed
   if (!MessagePartDocumentSchemaByType[type as MessagePartType]) {
-    log.error("Invalid message part type", type);
     return {
-      type: "unknown",
-      value: JSON.stringify,
+      type: "unknown" as const,
+      value: JSON.stringify(obj),
       error: "Invalid message part type",
     };
   }
-  // Parse the object with the correct schema
+
   const parsed =
     MessagePartDocumentSchemaByType[type as MessagePartType].safeParse(obj);
   if (parsed.success) {
-    return parsed.data;
-  } else {
-    return { type: "unknown", value: JSON.stringify(obj), error: parsed.error };
+    return parsed.data as MessagePartDocument;
   }
+
+  return {
+    type: "unknown" as const,
+    value: JSON.stringify(obj),
+    error: parsed.error,
+  };
 }
 
 export function tryParsePatch(obj: object): PatchDocument | UnknownDocument {
@@ -843,21 +845,5 @@ export function applyLessonPlanPatch(
     });
   }
 
-  // #TODO This is slightly ridiculous! Remove this once we are live
-  if (updatedLessonPlan.misconceptions) {
-    const working = updatedLessonPlan.misconceptions;
-    for (const misconception of working) {
-      misconception.description =
-        misconception.description ?? misconception.definition;
-    }
-    updatedLessonPlan.misconceptions = working;
-  }
-  if (updatedLessonPlan.keywords) {
-    const working = updatedLessonPlan.keywords;
-    for (const keyword of working) {
-      keyword.definition = keyword.definition ?? keyword.description;
-    }
-    updatedLessonPlan.keywords = working;
-  }
   return updatedLessonPlan;
 }

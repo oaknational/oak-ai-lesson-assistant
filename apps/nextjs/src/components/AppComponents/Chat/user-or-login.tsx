@@ -10,17 +10,15 @@ export function UserOrLogin() {
     return <></>;
   }
   return (
-    <>
-      <div className="flex items-center sm:ml-8">
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
-        <SignedOut>
-          <Button variant="link" asChild className="-ml-7">
-            <Link href="/sign-in?callbackUrl=/">Log in</Link>
-          </Button>
-        </SignedOut>
-      </div>
-    </>
+    <div className="flex items-center sm:ml-8">
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
+      <SignedOut>
+        <Button variant="link" asChild className="-ml-7">
+          <Link href="/sign-in?callbackUrl=/">Log in</Link>
+        </Button>
+      </SignedOut>
+    </div>
   );
 }

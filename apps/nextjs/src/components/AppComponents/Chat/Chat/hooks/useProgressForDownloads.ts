@@ -1,8 +1,25 @@
 import { useMemo } from "react";
 
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type {
+  LessonPlanKey,
+  LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 import { lessonPlanSectionsSchema } from "@oakai/exports/src/schema/input.schema";
 import type { ZodIssue } from "zod";
+
+export type ProgressForDownloads = {
+  sections: ProgressSection[];
+  totalSections: number;
+  totalSectionsComplete: number;
+};
+
+export type ProgressSection = {
+  label: string;
+  key: LessonPlanKey;
+  complete: boolean;
+};
+
+export type ProgressSections = ProgressSection[];
 
 /**
  * For a given list of Zod issues and lessonPlan fields, checks that none of
@@ -16,16 +33,6 @@ function getCompleteness(errors: ZodIssue[], fields: string[]) {
 
   return !hasErrorInSomeField;
 }
-export type ProgressSections = {
-  label: string;
-  key: string;
-  complete: boolean;
-}[];
-type ProgressForDownloads = {
-  sections: ProgressSections;
-  totalSections: number;
-  totalSectionsComplete: number;
-};
 
 export function useProgressForDownloads({
   lessonPlan,
@@ -59,8 +66,9 @@ export function useProgressForDownloads({
            */
           return true;
         }
-      }) || [];
-    const sections = [
+      }) ?? [];
+
+    const sections: ProgressSection[] = [
       {
         label: "Lesson details",
         key: "title",

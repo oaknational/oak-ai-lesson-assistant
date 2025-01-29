@@ -2,11 +2,20 @@ import type { Dispatch } from "react";
 import { useState } from "react";
 
 import { Flex, Text } from "@radix-ui/themes";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
-import type { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
 
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
 import { Icon } from "@/components/Icon";
+import type { PotentialQuestionsType } from "@/hooks/useSuggestedQuestions";
+
+export type SuggestedLessonCardProps = Readonly<{
+  answer: PotentialQuestionsType[0];
+  dispatch: Dispatch<QuizAppAction>;
+  questionsWrapperRef: React.RefObject<HTMLDivElement>;
+  potentialNewQuestions: PotentialQuestionsType;
+  setPotentialNewQuestions: React.Dispatch<PotentialQuestionsType>;
+  questionRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
+}>;
 
 const SuggestedLessonCard = ({
   answer: question,
@@ -15,14 +24,7 @@ const SuggestedLessonCard = ({
   potentialNewQuestions,
   setPotentialNewQuestions,
   questionRefs,
-}: {
-  answer: PotentialQuestionsType[0];
-  dispatch: Dispatch<QuizAppAction>;
-  questionsWrapperRef: React.RefObject<HTMLDivElement>;
-  potentialNewQuestions: PotentialQuestionsType;
-  setPotentialNewQuestions: React.Dispatch<PotentialQuestionsType>;
-  questionRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
-}) => {
+}: SuggestedLessonCardProps) => {
   const [showAnswers, setShowAnswers] = useState(false);
   return (
     <Flex
@@ -34,6 +36,7 @@ const SuggestedLessonCard = ({
         <Text className="text-sm">Question:</Text>
         <button
           onClick={() => {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             removeQuestionFromArray(
               question,
               potentialNewQuestions,
@@ -59,6 +62,7 @@ const SuggestedLessonCard = ({
           </Flex>
         </button>
         <button
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={async () => {
             dispatch({
               type: QuizAppActions.AddPopulatedQuestion,
@@ -77,7 +81,7 @@ const SuggestedLessonCard = ({
                 if (questionRef) {
                   const { top } = questionRef.getBoundingClientRect();
                   window.scrollTo({
-                    top: top + window.pageYOffset - 200,
+                    top: top + window.scrollY - 200,
                     behavior: "smooth",
                   });
                 }
@@ -128,6 +132,7 @@ async function removeQuestionFromArray(
     newArr.splice(index, 1);
   }
   setPotentialNewQuestions(newArr);
+  return Promise.resolve();
 }
 
 export default SuggestedLessonCard;

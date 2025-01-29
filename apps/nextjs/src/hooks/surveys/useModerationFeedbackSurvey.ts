@@ -22,7 +22,7 @@ export const useModerationFeedbackSurvey = ({
 
   useEffect(() => {
     if (moderationRecord.data) {
-      setComment(moderationRecord.data.userComment || "");
+      setComment(moderationRecord.data.userComment ?? "");
     }
   }, [moderationRecord.data]);
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -38,7 +38,7 @@ export const useModerationFeedbackSurvey = ({
       return;
     }
 
-    feedbackQuery.mutate({
+    await feedbackQuery.mutateAsync({
       moderationId: moderation.id,
       comment,
     });

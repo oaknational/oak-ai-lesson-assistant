@@ -6,7 +6,6 @@ import { GraphQLClient, gql } from "graphql-request";
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
-import { removeProperty } from "../remove-props";
 import { router } from "../trpc";
 
 type TranscriptResult = {
@@ -24,6 +23,8 @@ type CustomError = {
   code?: number;
 };
 
+type LessonWithSnippetsType = z.infer<typeof LessonWithSnippets>;
+
 export const lessonRouter = router({
   retrieve: protectedProcedure
     .input(
@@ -31,7 +32,7 @@ export const lessonRouter = router({
         q: z.string(),
       }),
     )
-    .output(z.any()) // FIXME: Define the output type using zod
+    .output(z.any()) // @TODO FIXME: Define the output type using zod
     .query(async ({ ctx, input }) => {
       return new Lessons(ctx.prisma).retrieve(input.q);
     }),
@@ -119,14 +120,14 @@ export const lessonRouter = router({
     )
     .output(z.array(LessonWithSnippets))
     .query(async ({ ctx, input }) => {
-      // FIXME make this a slug based search
+      // TODO make this a slug based search
       const foundLessons = await new Lessons(ctx.prisma).searchByTranscript(
         input.q,
         input.keyStage,
         input.subject,
         5,
       );
-      return foundLessons as LessonWithSnippets[];
+      return foundLessons as LessonWithSnippetsType[];
     }),
   searchByTextSimilarity: protectedProcedure
     .input(
@@ -169,7 +170,7 @@ export const lessonRouter = router({
 
       return res.map(({ slug, title, content }) => {
         content = content as Content;
-        const description = (content?.lessonDescription || "") as string;
+        const description = (content?.lessonDescription ?? "") as string;
         return {
           slug,
           title,
@@ -197,7 +198,9 @@ export const lessonRouter = router({
         });
       }
 
-      return removeProperty(res, "id");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id, ...lessonWithoutId } = res;
+      return lessonWithoutId;
     }),
   summary: protectedProcedure
     .input(
@@ -230,7 +233,7 @@ export const lessonRouter = router({
         },
       });
 
-      if (!res || !res.summaries[0]) {
+      if (!res?.summaries?.[0]) {
         throw new TRPCError({
           message: "Lesson not found",
           code: "NOT_FOUND",
@@ -253,7 +256,7 @@ export const lessonRouter = router({
         summary = await ctx.prisma.lessonSummary.create({
           data: { lessonId: input.id },
         });
-        inngest.send({
+        await inngest.send({
           name: "app/lesson.summarise",
           data: { lessonId: input.id, lessonSummaryId: summary.id },
         });
@@ -288,7 +291,7 @@ export const lessonRouter = router({
         where: { lessonId: lesson.id, variant: "ORIGINAL" },
         cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
       });
-      if (!transcript || !transcript.content) {
+      if (!transcript?.content) {
         throw new TRPCError({
           message: "Transcript not found",
           code: "NOT_FOUND",

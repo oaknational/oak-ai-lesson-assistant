@@ -1,7 +1,10 @@
 import { prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 import { z } from "zod";
 
 import { getCaptionsFromFile } from "../../utils/getCaptionsFromFile";
+
+const log = aiLogger("core");
 
 const newLessonContentSchema = z
   .object({
@@ -11,7 +14,7 @@ const newLessonContentSchema = z
 
 const main = async () => {
   try {
-    console.log("Starting");
+    log.info("Starting");
 
     const newLessons = await prisma.lesson.findMany({
       where: {
@@ -32,32 +35,30 @@ const main = async () => {
          *  Use function from OWA to capture transcripts from GCP based on video title
          */
         await getTranscriptForVideoTitle(parsedLesson?.videoTitle).then(
-          (transcriptAndCaption) => {
-            console.log("lesson", lesson?.slug);
+          async (transcriptAndCaption) => {
+            log.info("lesson", lesson?.slug);
             const content = {
               ...parsedLesson,
 
               transcriptSentences: transcriptAndCaption?.transcript?.join(" "),
             };
-            console.log(
-              transcriptAndCaption?.transcript && "Transcript loaded ",
-            );
-            console.log(transcriptAndCaption?.caption && "Caption loaded ");
+            log.info(transcriptAndCaption?.transcript && "Transcript loaded ");
+            log.info(transcriptAndCaption?.caption && "Caption loaded ");
             /*
              *  Update newLessonContent with transcript
              */
             if (typeof lessonId === "string") {
-              updateNewLessonContent(lessonId, content);
-              updateCaptions(lessonId, transcriptAndCaption?.caption);
+              await updateNewLessonContent(lessonId, content);
+              await updateCaptions(lessonId, transcriptAndCaption?.caption);
             }
           },
         );
       }),
     );
-    console.log("Script finished successfully");
-    console.log("Processed lessons: ", numberOfProcessedLessons);
+    log.info("Script finished successfully");
+    log.info("Processed lessons: ", numberOfProcessedLessons);
   } catch (e) {
-    console.error(e);
+    log.error(e);
   }
 };
 
@@ -66,7 +67,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    log.error(e);
     await prisma.$disconnect();
     process.exit(1);
   });

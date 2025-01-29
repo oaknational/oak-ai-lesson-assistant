@@ -1,8 +1,8 @@
 import React from "react";
 
 import * as Accordion from "@radix-ui/react-accordion";
-import { lessonSections } from "ai-apps/lesson-planner/lessonSection";
 
+import { lessonSections } from "@/ai-apps/lesson-planner/lessonSection";
 import { Icon } from "@/components/Icon";
 import AiIcon from "@/components/SVGParts/AiIcon";
 import LessonIcon from "@/components/SVGParts/LessonIcon";
@@ -117,7 +117,7 @@ const EmptyScreenAccordion = () => {
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-4">
-        <div className="flex w-full items-center justify-between ">
+        <div className="flex w-full items-center justify-between">
           <span className="flex w-full items-center gap-10 text-left text-base font-bold">
             <LessonIcon />1 worksheet
           </span>
@@ -130,17 +130,17 @@ const EmptyScreenAccordion = () => {
 // Define prop types for each component
 interface AccordionItemProps
   extends React.ComponentPropsWithoutRef<typeof Accordion.Item> {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }
 
 interface AccordionTriggerProps
   extends React.ComponentPropsWithoutRef<typeof Accordion.Trigger> {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }
 
 interface AccordionContentProps
   extends React.ComponentPropsWithoutRef<typeof Accordion.Content> {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }
 
 const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
@@ -163,7 +163,7 @@ const AccordionTrigger = React.forwardRef<
   <Accordion.Trigger
     {...props}
     ref={forwardedRef}
-    className="flex w-full items-center justify-between "
+    className="flex w-full items-center justify-between"
   >
     <span className="flex w-full items-center gap-10 text-left text-base font-bold">
       {children}
@@ -186,7 +186,7 @@ AccordionContent.displayName = "AccordionContent";
 
 export default EmptyScreenAccordion;
 
-function convertTitleCaseToSentenceCase(titleCase) {
+function convertTitleCaseToSentenceCase(titleCase: string) {
   const lowerCaseTitle = titleCase.toLowerCase();
   return lowerCaseTitle.charAt(0).toUpperCase() + lowerCaseTitle.slice(1);
 }

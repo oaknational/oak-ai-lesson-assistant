@@ -14,7 +14,7 @@ import { equals } from "remeda";
 
 type PatchDocumentWithHash = PatchDocument & { hash: string };
 
-const hashFor = (obj: object, messageHashes) => {
+const hashFor = (obj: object, messageHashes: Record<string, string>) => {
   const cached = messageHashes[JSON.stringify(obj)];
   if (cached) return cached;
   const h = hash(obj, { algorithm: "md5" });
@@ -106,7 +106,7 @@ export const useTemporaryLessonPlanWithStreamingEdits = ({
   // );
 
   return useMemo(() => {
-    if (!throttledAssistantMessages || !throttledAssistantMessages.length) {
+    if (!throttledAssistantMessages?.length) {
       return {
         tempLessonPlan: tempLessonPlanRef.current,
         partialPatches: [],

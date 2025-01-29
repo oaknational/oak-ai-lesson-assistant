@@ -1,14 +1,17 @@
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "@/storybook/chromatic";
+
 import { DemoProvider } from "../../../../../src/components/ContextProviders/Demo";
 import { DownloadContent } from "./DownloadView";
 
-const meta: Meta<typeof DownloadContent> = {
+const meta = {
   title: "Pages/Chat/Download",
   component: DownloadContent,
   parameters: {
     layout: "fullscreen",
+    ...chromaticParams(["mobile", "desktop"]),
   },
   decorators: [
     (Story) => (
@@ -17,10 +20,10 @@ const meta: Meta<typeof DownloadContent> = {
       </DemoProvider>
     ),
   ],
-};
+} satisfies Meta<typeof DownloadContent>;
 
 export default meta;
-type Story = StoryObj<typeof DownloadContent>;
+type Story = StoryObj<typeof meta>;
 
 const chat: AilaPersistedChat = {
   id: "nSLmbQ1LO75zLTcA",

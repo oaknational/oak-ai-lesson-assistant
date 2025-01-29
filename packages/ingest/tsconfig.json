@@ -4,8 +4,12 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "types": ["jest"]
+    "types": ["jest"],
+    "allowImportingTsExtensions": true,
+    "moduleDetection": "force",
+    "baseUrl": "./src",
+    "allowSyntheticDefaultImports": true
   }
 }

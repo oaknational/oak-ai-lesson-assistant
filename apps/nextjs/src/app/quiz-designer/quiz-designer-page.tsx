@@ -4,19 +4,19 @@ import { memo, useCallback, useEffect, useReducer, useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
 import { aiLogger } from "@oakai/logger";
-import { quizAppReducer } from "ai-apps/quiz-designer/state/reducer";
-import type { QuizAppState } from "ai-apps/quiz-designer/state/types";
-import { QuizAppStatus } from "ai-apps/quiz-designer/state/types";
-import { useQuizSession } from "hooks/useQuizSession";
 import { useRouter } from "next/navigation";
 import { equals } from "remeda";
 
+import { quizAppReducer } from "@/ai-apps/quiz-designer/state/reducer";
+import type { QuizAppState } from "@/ai-apps/quiz-designer/state/types";
+import { QuizAppStatus } from "@/ai-apps/quiz-designer/state/types";
 import ExportMenu from "@/components/AppComponents/QuizDesigner/ExportMenu";
 import QuizContent from "@/components/AppComponents/QuizDesigner/QuizContent";
 import QuizRestoreDialog from "@/components/AppComponents/QuizDesigner/QuizRestoreDialog";
 import RateLimitNotification from "@/components/AppComponents/common/RateLimitNotification";
 import { RestoreDialogRoot } from "@/components/AppComponents/common/RestoreDialog";
 import Layout from "@/components/Layout";
+import { useQuizSession } from "@/hooks/useQuizSession";
 import { trpc } from "@/utils/trpc";
 
 const log = aiLogger("qd");
@@ -103,6 +103,7 @@ const StatePersistence = ({ state }: Readonly<{ state: QuizAppState }>) => {
 
     if (state.sessionId) {
       log.info("Update session state", { state });
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       updateSessionStateMutationCall({
         sessionId: state.sessionId,
         output: restOfState,

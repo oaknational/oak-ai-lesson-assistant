@@ -1,15 +1,20 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "@/storybook/chromatic";
+
 import { ChatStartForm } from "./chat-start-form";
 
-const meta: Meta<typeof ChatStartForm> = {
-  title: "Components/Chat/ChatStartForm",
+const meta = {
+  title: "Components/Chat Start/ChatStartForm",
   component: ChatStartForm,
   tags: ["autodocs"],
-};
+  parameters: {
+    ...chromaticParams(["desktop"]),
+  },
+} satisfies Meta<typeof ChatStartForm>;
 
 export default meta;
-type Story = StoryObj<typeof ChatStartForm>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {

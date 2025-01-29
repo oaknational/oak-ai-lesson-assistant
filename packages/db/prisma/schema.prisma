@@ -344,14 +344,15 @@ model AppSession {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-
+  deletedAt DateTime? @map("deleted_at")
+  
   app   App    @relation(fields: [appId], references: [id], onDelete: Cascade)
   appId String @map("app_id")
 
   userId String @map("user_id") // The user that requested this generation
 
   output Json? // The final output of the session
-
+  
   userTweaks          UserTweak[]
   reGenerations       ReGeneration[]
   generationUserFlags GenerationUserFlag[]
@@ -789,6 +790,7 @@ model Moderation {
   appSessionId     String    @map("app_session_id")
   messageId        String    @map("message_id")
   categories       Json[]
+  scores           Json?     @map("scores") @db.JsonB
   justification    String?
   lessonSnapshotId String?   @map("lesson_snapshot_id")
   // A user's comment in relation to the moderation. Likely they are contesting it.
@@ -1117,16 +1119,21 @@ model IngestError {
 }
 
 model RagLessonPlan {
-  id                String              @id @default(cuid())
-  oakLessonId       Int                 @map("oak_lesson_id")
-  ingestLessonId    String?             @map("ingest_lesson_id")
-  lessonPlan        Json                @map("lesson_plan") @db.JsonB
-  subjectSlug       String              @map("subject_slug")
-  keyStageSlug      String              @map("key_stage_slug")
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
-  ragLessonPlanPart RagLessonPlanPart[]
+  id                 String              @id @default(cuid())
+  oakLessonId        Int?                @map("oak_lesson_id")
+  oakLessonSlug      String              @map("oak_lesson_slug")
+  ingestLessonId     String?             @map("ingest_lesson_id")
+  lessonPlan         Json                @map("lesson_plan") @db.JsonB
+  subjectSlug        String              @map("subject_slug")
+  keyStageSlug       String              @map("key_stage_slug")
+  isPublished        Boolean             @default(false) @map("is_published")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  ragLessonPlanParts RagLessonPlanPart[]
+  // The following index is not supported by prisma so is applied manually in ./additions/rag_lesson_plans_unique_slug_index.sql
+  //  @@index([oakLessonSlug], name: "unique_published_oak_lesson_slug", dbIndex: false) @db.PartialIndex("is_published = TRUE")
 
+  @@index([isPublished, keyStageSlug, subjectSlug], name: "idx_rag_lesson_plans_published_key_stage_subject")
   @@map("rag_lesson_plans")
   @@schema("rag")
 }

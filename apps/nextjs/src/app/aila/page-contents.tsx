@@ -3,15 +3,19 @@
 import React from "react";
 
 import { Chat } from "@/components/AppComponents/Chat/Chat/chat";
+import LessonPlanDisplay from "@/components/AppComponents/Chat/chat-lessonPlanDisplay";
 import Layout from "@/components/AppComponents/Layout";
 import { ChatProvider } from "@/components/ContextProviders/ChatProvider";
+import { useReactScan } from "@/hooks/useReactScan";
 import LessonPlanTrackingProvider from "@/lib/analytics/lessonPlanTrackingContext";
 
-const ChatPageContents = ({ id }: { id: string }) => {
+const ChatPageContents = ({ id }: { readonly id: string }) => {
+  useReactScan({ component: LessonPlanDisplay, interval: 10000 });
+
   return (
     <Layout>
       <LessonPlanTrackingProvider chatId={id}>
-        <ChatProvider key={`chat-${id}`} id={id}>
+        <ChatProvider id={id}>
           <Chat />
         </ChatProvider>
       </LessonPlanTrackingProvider>

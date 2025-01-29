@@ -9,25 +9,26 @@ import {
   OakLink,
   OakSpan,
 } from "@oaknational/oak-components";
-import { useClerkDemoMetadata } from "hooks/useClerkDemoMetadata";
 import { usePathname } from "next/navigation";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import OakIconLogo from "@/components/OakIconLogo";
+import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
 
+import { useDialog } from "../DialogContext";
 import { BetaTagHeader } from "./beta-tag";
 import { ChatHistory } from "./chat-history";
-import { SidebarMobile } from "./sidebar-mobile";
+import { OpenSideBarButton } from "./open-side-bar-button";
 import { UserOrLogin } from "./user-or-login";
 
 export function Header() {
-  const demo = useDemoUser();
+  const { isDemoUser, demo } = useDemoUser();
 
   // Check whether clerk metadata has loaded to prevent the banner from flashing
   const clerkMetadata = useClerkDemoMetadata();
 
   const ailaId = usePathname().split("aila/")[1];
-
+  const { setOpenSidebar } = useDialog();
   return (
     <OakBox
       as={"header"}
@@ -35,7 +36,7 @@ export function Header() {
       $zIndex={"banner"}
       $width={"100%"}
     >
-      {clerkMetadata.isSet && demo.isDemoUser && (
+      {clerkMetadata.isSet && isDemoUser && (
         <OakFlex
           $alignItems={"center"}
           $bb={"border-solid-m"}
@@ -122,9 +123,8 @@ export function Header() {
             <UserOrLogin />
           </OakFlex>
           <OakFlex>
-            <SidebarMobile>
-              <ChatHistory />
-            </SidebarMobile>
+            <OpenSideBarButton setOpenSidebar={setOpenSidebar} />
+            <ChatHistory />
           </OakFlex>
         </OakFlex>
       </OakFlex>

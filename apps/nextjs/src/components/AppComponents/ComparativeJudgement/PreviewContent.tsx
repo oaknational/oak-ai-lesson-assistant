@@ -1,15 +1,15 @@
 import { Box, Flex, Text } from "@radix-ui/themes";
-import type { OptionWithPrompt } from "ai-apps/comparative-judgement/state/types";
 
+import type { OptionWithPrompt } from "@/ai-apps/comparative-judgement/state/types";
 import { sortAlphabetically } from "@/utils/alphabetiseArray";
 
 import PromptTemplate from "./PromptTemplate";
 import QuestionInner from "./QuestionInner";
 
-type PreviewContentProps = {
+export type PreviewContentProps = Readonly<{
   option: OptionWithPrompt;
   question?: string;
-};
+}>;
 
 const PreviewContent = ({ option, question }: PreviewContentProps) => {
   if (!option?.answerAndDistractor) return null;

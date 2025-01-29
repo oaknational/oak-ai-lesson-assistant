@@ -1,14 +1,17 @@
+import { useCallback } from "react";
+import { toast } from "react-hot-toast";
+
+import * as Sentry from "@sentry/nextjs";
 import { cva } from "class-variance-authority";
 
-import { ButtonScrollToBottom } from "@/components/AppComponents/Chat/button-scroll-to-bottom";
 import { PromptForm } from "@/components/AppComponents/Chat/prompt-form";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useChatStore } from "@/stores/chatStore";
 
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 
 interface ChatPanelProps {
-  isEmptyScreen: boolean;
   isDemoLocked: boolean;
 }
 
@@ -18,47 +21,62 @@ function LockedPromptForm() {
   );
 }
 
-export function ChatPanel({
-  isEmptyScreen,
-  isDemoLocked,
-}: Readonly<ChatPanelProps>) {
+export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const chat = useLessonChat();
-  const {
-    id,
-    isLoading,
-    input,
-    setInput,
-    append,
-    ailaStreamingStatus,
-    queueUserAction,
-    queuedUserAction,
-  } = chat;
+  const { id, messages, isLoading, input, setInput, append } = chat;
+
+  const queueUserAction = useChatStore((state) => state.queueUserAction);
+  const queuedUserAction = useChatStore((state) => state.queuedUserAction);
+  const ailaStreamingStatus = useChatStore(
+    (state) => state.ailaStreamingStatus,
+  );
+
+  const hasMessages = !!messages.length;
 
   const { trackEvent } = useAnalytics();
-  const containerClass = `grid w-full grid-cols-1 ${isEmptyScreen ? "sm:grid-cols-1" : ""} peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]`;
+
+  const handleSubmit = useCallback(
+    (value: string) => {
+      if (isLoading) return;
+      trackEvent("chat:send_message", {
+        id,
+        message: value,
+      });
+
+      append({
+        content: value,
+        role: "user",
+      }).catch((error) => {
+        Sentry.captureException(error);
+        toast.error("Failed to send message");
+      });
+    },
+    [isLoading, trackEvent, id, append],
+  );
+
+  const wrappedQueueUserAction = useCallback(
+    (action: Parameters<typeof queueUserAction>[0]) => {
+      queueUserAction(action).catch((error) => {
+        Sentry.captureException(error);
+        toast.error("Failed to queue action");
+      });
+    },
+    [queueUserAction],
+  );
+
+  const containerClass = `grid w-full grid-cols-1 ${hasMessages ? "sm:grid-cols-1" : ""} peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]`;
+
   return (
     <div className={containerClass}>
-      <ButtonScrollToBottom />
-      <div className={chatBoxWrap({ isEmptyScreen })}>
+      <div className={chatBoxWrap({ hasMessages })}>
         {!isDemoLocked && (
           <PromptForm
-            onSubmit={async (value) => {
-              if (isLoading) return;
-              trackEvent("chat:send_message", {
-                id,
-                message: value,
-              });
-
-              await append({
-                content: value,
-                role: "user",
-              });
-            }}
+            onSubmit={handleSubmit}
             input={input}
             setInput={setInput}
             ailaStreamingStatus={ailaStreamingStatus}
-            isEmptyScreen={isEmptyScreen}
-            queueUserAction={queueUserAction}
+            hasMessages={hasMessages}
+            queueUserAction={wrappedQueueUserAction}
             queuedUserAction={queuedUserAction}
           />
         )}
@@ -71,10 +89,10 @@ export function ChatPanel({
   );
 }
 
-const chatBoxWrap = cva(["mx-auto w-full  "], {
+const chatBoxWrap = cva(["mx-auto w-full"], {
   variants: {
-    isEmptyScreen: {
-      false: "max-w-2xl ",
+    hasMessages: {
+      false: "max-w-2xl",
       true: "",
     },
     readyToExport: {

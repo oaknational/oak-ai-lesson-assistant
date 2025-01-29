@@ -1,5 +1,6 @@
 "use client";
 
+import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 import { OakSmallSecondaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
@@ -10,10 +11,12 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 import { useDialog } from "../../DialogContext";
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
-export type ExportButtonsProps = {
-  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
+export type ExportButtonsProps = Readonly<{
+  sectionRefs: Partial<
+    Record<LessonPlanKey, React.MutableRefObject<HTMLDivElement | null>>
+  >;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
-};
+}>;
 
 const ExportButtons = ({
   sectionRefs,
@@ -26,7 +29,7 @@ const ExportButtons = ({
   const demo = useDemoUser();
 
   return (
-    <div className=" sticky left-0 right-10 top-26 z-10 mt-26 hidden bg-white p-14 px-24 shadow-md sm:block">
+    <div className="sticky left-0 right-10 top-26 z-10 mt-26 hidden bg-white p-14 px-24 shadow-md sm:block">
       <div className="flex flex-col">
         <div className="flex items-center space-x-14">
           <LessonPlanProgressDropdown

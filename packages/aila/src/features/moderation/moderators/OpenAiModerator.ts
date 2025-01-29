@@ -7,7 +7,7 @@ import type OpenAI from "openai";
 import type {
   ChatCompletion,
   ChatCompletionCreateParamsNonStreaming,
-} from "openai/resources";
+} from "openai/resources/index.mjs";
 import zodToJsonSchema from "zod-to-json-schema";
 
 import { AilaModerator, AilaModerationError } from ".";
@@ -41,9 +41,9 @@ export interface OpenAILike {
 
 export class OpenAiModerator extends AilaModerator {
   protected _openAIClient: OpenAILike;
-  private _temperature: number = DEFAULT_MODERATION_TEMPERATURE;
-  private _model: string = DEFAULT_MODERATION_MODEL;
-  private _aila?: AilaServices;
+  private readonly _temperature: number = DEFAULT_MODERATION_TEMPERATURE;
+  private readonly _model: string = DEFAULT_MODERATION_MODEL;
+  private readonly _aila?: AilaServices;
 
   constructor({
     chatId,
@@ -105,7 +105,7 @@ export class OpenAiModerator extends AilaModerator {
           json_schema: {
             name: "moderationResponse",
             /**
-             * Currently `strict` mode does not support minimum/maxiumum integer types, which
+             * Currently `strict` mode does not support minimum/maximum integer types, which
              * we use for the likert scale in the moderation schema.
              * @see https://community.openai.com/t/new-function-calling-with-strict-has-a-problem-with-minimum-integer-type/903258
              */
@@ -123,10 +123,7 @@ export class OpenAiModerator extends AilaModerator {
     );
 
     const log = aiLogger("aila:moderation:response");
-    log.info(
-      "Moderation response: ",
-      JSON.stringify(moderationResponse, null, 2),
-    );
+    log.info(JSON.stringify(moderationResponse));
 
     const response = moderationResponseSchema.safeParse(
       JSON.parse(moderationResponse.choices[0]?.message.content ?? "null"),
@@ -152,6 +149,7 @@ export class OpenAiModerator extends AilaModerator {
 
     return {
       justification,
+      scores,
       categories: categories.filter((category) => {
         /**
          * We only want to include the category if the parent category scores below a certain threshold.

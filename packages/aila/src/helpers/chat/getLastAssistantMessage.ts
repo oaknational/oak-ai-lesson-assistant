@@ -1,22 +1,12 @@
-import type { Message as AiMessage } from "ai";
-import { findLast } from "remeda";
-
-import type { Message as AilaMessage } from "../../core/chat/types";
-
-interface AssistantMessage extends AilaMessage {
-  role: "assistant";
+interface HasRole {
+  role: string;
+  id: string;
 }
 
-/**
- * This function takes an array of messages, and returns the last message from the assistant.
- */
-export function getLastAssistantMessage(
-  messages: AiMessage[],
-): AssistantMessage | undefined {
-  const lastAssistantMessage = findLast(
-    messages,
-    (m): m is AssistantMessage => m.role === "assistant",
-  ) as AssistantMessage | undefined;
-
-  return lastAssistantMessage;
+export function getLastAssistantMessage<T extends HasRole>(
+  messages: T[],
+): (T & { role: "assistant" }) | undefined {
+  return messages.filter((m) => m.role === "assistant").pop() as
+    | (T & { role: "assistant" })
+    | undefined;
 }

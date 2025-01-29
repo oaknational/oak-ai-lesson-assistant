@@ -9,19 +9,27 @@
     "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noImplicitAny": false,
     "jsx": "preserve",
+    "allowImportingTsExtensions": true,
+    "moduleDetection": "force",
     /* Path Aliases */
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/app/*": ["app/*"],
-      "@/lib/*": ["lib/*"],
-      "@/utils/*": ["utils/*"],
-      "@/assets/*": ["assets/*"]
+      "@/components/*": ["src/components/*"],
+      "@/app/*": ["src/app/*"],
+      "@/ai-apps/*": ["src/ai-apps/*"],
+      "@/cms/*": ["src/cms/*"],
+      "@/data/*": ["src/data/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/lib/*": ["src/lib/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/assets/*": ["src/assets/*"],
+      "@/stores/*": ["src/stores/*"],
+      "@/storybook/*": [".storybook/*"]
     },
     "plugins": [
       {
@@ -40,7 +48,8 @@
     "../../packages/aila/src/utils/types/chatApi.ts",
     "../../packages/core/src/analytics/posthogAiBetaServerClient.ts",
     "../../packages/aila/src/rateLimiting/rate-limiting.ts",
-    "jest.setup.js"
+    "jest.setup.cjs",
+    "scripts/build_config_helpers.mjs"
   ],
   "exclude": ["node_modules"],
   "extends": "../../tsconfig.json"

@@ -16,6 +16,7 @@ export default function PreviewRedirect() {
   const id =
     searchParams &&
     searchParams?.entries.length > 1 &&
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     searchParams.entries[0][1];
   router.push(`/quiz-designer/preview/${id}`);
   return null;

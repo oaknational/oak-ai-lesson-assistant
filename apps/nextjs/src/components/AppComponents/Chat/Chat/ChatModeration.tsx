@@ -9,9 +9,9 @@ import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import ModerationFeedbackModal from "../../FeedbackForms/ModerationFeedbackModal";
 import { ChatModerationDisplay } from "./ChatModerationDisplay";
 
-interface ChatModerationProps {
+export type ChatModerationProps = Readonly<{
   children: React.ReactNode;
-}
+}>;
 
 const ChatModeration = ({ children }: ChatModerationProps) => {
   const chat = useLessonChat();

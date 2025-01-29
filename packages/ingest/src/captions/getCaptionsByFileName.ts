@@ -1,7 +1,12 @@
 import { Storage } from "@google-cloud/storage";
 import { aiLogger } from "@oakai/logger";
-import type { Cue} from "webvtt-parser";
-import { WebVTTParser } from "webvtt-parser";
+import type { Cue } from "webvtt-parser";
+import * as WebVTTModule from "webvtt-parser";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const WebVTTParser = WebVTTModule.default
+  .WebVTTParser as typeof WebVTTModule.WebVTTParser;
 
 const log = aiLogger("ingest");
 
@@ -74,7 +79,13 @@ async function getFileFromBucket(bucketName: string, fileName: string) {
     return contents.toString();
   } catch (err) {
     log.error(
-      `Error fetching file: ${fileName} from bucket: ${bucketName}. Error: ${err}`,
+      `Error fetching file: ${fileName} from bucket: ${bucketName}. Error: ${
+        typeof err === "string"
+          ? err
+          : err instanceof Error
+            ? err.message
+            : JSON.stringify(err)
+      }`,
     );
     return;
   }

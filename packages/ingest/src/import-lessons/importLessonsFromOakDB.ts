@@ -6,7 +6,7 @@ import { getDataHash } from "../utils/getDataHash";
 import type { RawLesson } from "../zod-schema/zodSchema";
 import { RawLessonSchema } from "../zod-schema/zodSchema";
 import { graphqlClient } from "./graphql/client";
-import { query } from "./graphql/query";
+import { query, type QueryVariables } from "./graphql/query";
 
 type ImportLessonsFromOakDBProps = {
   ingestId: string;
@@ -31,11 +31,19 @@ export async function importLessonsFromOakDB({
     const variables = {
       limit: perPage,
       offset,
+      where: {
+        videoTitle: {
+          _is_null: false,
+        },
+        isLegacy: {
+          _is_null: false,
+        },
+      },
     };
-    const lessonData = await graphqlClient.request<{ lessons: unknown[] }>(
-      query,
-      variables,
-    );
+    const lessonData = await graphqlClient.request<
+      { lessons: unknown[] },
+      QueryVariables
+    >(query, variables);
 
     const parsedLessons: RawLesson[] = [];
 

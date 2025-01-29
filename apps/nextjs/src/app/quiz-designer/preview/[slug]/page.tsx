@@ -1,6 +1,9 @@
 import { Apps } from "@oakai/core";
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
+import { redirect } from "next/navigation";
+
+import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
 import QuizPreview from "./preview";
 
@@ -14,20 +17,26 @@ async function getData(slug: string) {
       notFound: true,
     };
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  //   const { updatedAt, createdAt, ...rest } = sharedData;
 
   const questions = sharedData.content;
 
   return questions;
 }
 
+export type QuizPreviewPageProps = Readonly<{
+  params: { readonly slug: string };
+}>;
+
 export default async function QuizPreviewPage({
   params,
-}: {
-  params: { slug: string };
-}) {
+}: QuizPreviewPageProps) {
   log.info("params", params);
+
+  const canSeeQuizDesigner = await serverSideFeatureFlag("quiz-designer");
+
+  if (!canSeeQuizDesigner) {
+    redirect("/");
+  }
 
   const questions = await getData(params.slug);
 

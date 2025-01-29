@@ -1,23 +1,24 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { OakPrimaryButton } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 import type { Survey } from "posthog-js";
+import { SurveyQuestionType } from "posthog-js";
 
-import ChatButton from "../AppComponents/Chat/ui/chat-button";
 import { Icon } from "../Icon";
 
+export type FeedBackProps = Readonly<{
+  submitSurvey: (usersResponse: { [key: string]: string }) => void;
+  survey: Survey;
+  onSubmit: () => void;
+  closeDialogWithPostHogDismiss: () => void;
+}>;
 const FeedBack = ({
   submitSurvey,
   survey,
   onSubmit,
   closeDialogWithPostHogDismiss,
-}: {
-  survey: Survey;
-  submitSurvey: (usersResponse: { [key: string]: string }) => void;
-  closeDialogWithPostHogDismiss: () => void;
-  onSubmit: () => void;
-}) => {
+}: FeedBackProps) => {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const rating = [
     { number: 1 },
@@ -43,7 +44,7 @@ const FeedBack = ({
       {/* Close Button */}
 
       <form
-        onSubmit={async (e) => {
+        onSubmit={(e) => {
           e.preventDefault();
         }}
         className="flex w-full flex-col gap-14"
@@ -58,7 +59,7 @@ const FeedBack = ({
         {survey?.questions.map((question, i) => {
           const surveyResponseKey =
             i === 0 ? "$survey_response" : `$survey_response_${i}`;
-          if (question.type === "rating") {
+          if (question.type === SurveyQuestionType.Rating) {
             return (
               <div
                 key={question.question}
@@ -92,11 +93,11 @@ const FeedBack = ({
                       }}
                     >
                       <span
-                        className={`rounded-sm border-2  p-8 px-9 text-lg sm:px-15 ${
+                        className={`rounded-sm border-2 p-8 px-9 text-lg sm:px-15 ${
                           usersResponse[surveyResponseKey] ===
                           feedback.number.toString()
                             ? "border-black bg-black text-white"
-                            : " border-oakGrey3 bg-white text-black"
+                            : "border-oakGrey3 bg-white text-black"
                         }`}
                       >
                         {feedback.number}
@@ -117,7 +118,7 @@ const FeedBack = ({
               </div>
             );
           }
-          if (question.type === "open") {
+          if (question.type === SurveyQuestionType.Open) {
             return (
               <div
                 key={question.question}

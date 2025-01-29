@@ -21,7 +21,7 @@ type OnStreamFinishedProps = {
   nextLesson: LooseLessonPlan;
   messages: Message[];
 };
-type LessonPlanTrackingContext = {
+type LessonPlanTrackingContextProps = {
   onStreamFinished: (props: OnStreamFinishedProps) => void;
   onSubmitText: (text: string) => void;
   onClickContinue: () => void;
@@ -30,13 +30,17 @@ type LessonPlanTrackingContext = {
   onClickStartFromFreeText: (text: string) => void;
 };
 
-const lessonPlanTrackingContext =
-  createContext<LessonPlanTrackingContext | null>(null);
+export const LessonPlanTrackingContext =
+  createContext<LessonPlanTrackingContextProps | null>(null);
 
-const LessonPlanTrackingProvider: FC<{
-  children?: React.ReactNode;
-  chatId: string;
-}> = ({ children, chatId }) => {
+export type LessonPlanTrackingProviderProps = Readonly<{
+  readonly children?: React.ReactNode;
+  readonly chatId: string;
+}>;
+const LessonPlanTrackingProvider: FC<LessonPlanTrackingProviderProps> = ({
+  children,
+  chatId,
+}) => {
   const { track } = useAnalytics();
   const [action, setAction] = useState<UserAction | null>(null);
   const [userMessageContent, setUserMessageContent] = useState<string>("");
@@ -87,7 +91,7 @@ const LessonPlanTrackingProvider: FC<{
     setUserMessageContent(text);
   }, []);
 
-  const value: LessonPlanTrackingContext = useMemo(
+  const value: LessonPlanTrackingContextProps = useMemo(
     () => ({
       onStreamFinished,
       onSubmitText,
@@ -107,14 +111,14 @@ const LessonPlanTrackingProvider: FC<{
   );
 
   return (
-    <lessonPlanTrackingContext.Provider value={value}>
+    <LessonPlanTrackingContext.Provider value={value}>
       {children}
-    </lessonPlanTrackingContext.Provider>
+    </LessonPlanTrackingContext.Provider>
   );
 };
 
 export const useLessonPlanTracking = () => {
-  const context = useContext(lessonPlanTrackingContext);
+  const context = useContext(LessonPlanTrackingContext);
   if (!context) {
     throw new Error(
       "useLessonPlanTracking must be used within a LessonPlanTrackingProvider",

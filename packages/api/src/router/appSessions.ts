@@ -1,7 +1,6 @@
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
 import { demoUsers } from "@oakai/core";
-import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting/rateLimit";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
 import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
@@ -80,6 +79,7 @@ export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
   const chatRecord = await prisma.appSession.findUnique({
     where: {
       id: id,
+      deletedAt: null,
     },
   });
   if (!chatRecord) {
@@ -199,12 +199,14 @@ export const appSessionsRouter = router({
     const sessions = await ctx.prisma.$queryRaw`
       SELECT
         id,
+        "updated_at" as "updatedAt",
         output->>'title' as title,
-        output->>'isShared' as "isShared"
+        output->'isShared' as "isShared"
       FROM
         "app_sessions"
       WHERE
         "user_id" = ${userId} AND "app_id" = 'lesson-planner'
+        AND "deleted_at" IS NULL
       ORDER BY
         "updated_at" DESC
     `;
@@ -221,9 +223,15 @@ export const appSessionsRouter = router({
               id: z.string(),
               title: z.string(),
               isShared: z.boolean().nullish(),
+              updatedAt: z.date(),
             })
             .parse(session);
         } catch (error) {
+          Sentry.captureException(error, {
+            extra: {
+              session,
+            },
+          });
           return null;
         }
       })
@@ -239,21 +247,26 @@ export const appSessionsRouter = router({
       const { userId } = ctx.auth;
       const { id } = input;
 
-      await ctx.prisma.appSession.deleteMany({
+      await ctx.prisma.appSession.update({
         where: {
           id,
           appId: "lesson-planner",
           userId,
         },
+        data: {
+          deletedAt: new Date(),
+        },
       });
     }),
   deleteAllChats: protectedProcedure.mutation(async ({ ctx }) => {
     const { userId } = ctx.auth;
-
-    await ctx.prisma.appSession.deleteMany({
+    await ctx.prisma.appSession.updateMany({
       where: {
         userId,
         appId: "lesson-planner",
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   }),
@@ -272,6 +285,7 @@ export const appSessionsRouter = router({
           id,
           userId,
           appId: "lesson-planner",
+          deletedAt: null,
         },
       });
 

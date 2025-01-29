@@ -7,7 +7,7 @@ import {
 } from "./featureFlagEvaluation";
 
 const host = process.env.NEXT_PUBLIC_POSTHOG_HOST as string;
-const apiKey = process.env.NEXT_PUBLIC_POSTHOG_API_KEY || "*";
+const apiKey = process.env.NEXT_PUBLIC_POSTHOG_API_KEY ?? "*";
 const personalApiKey = process.env.POSTHOG_PERSONAL_KEY_FLAGS;
 invariant(personalApiKey, "POSTHOG_PERSONAL_KEY_FLAGS is required");
 

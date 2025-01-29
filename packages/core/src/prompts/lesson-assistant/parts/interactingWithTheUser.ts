@@ -3,14 +3,14 @@ import { aiLogger } from "@oakai/logger";
 import type { TemplateProps } from "..";
 import { allSectionsInOrder } from "../../../../../../apps/nextjs/src/lib/lessonPlan/sectionsInOrder";
 import type {
-  LessonPlanKeys,
+  LessonPlanKey,
   LooseLessonPlan,
 } from "../../../../../aila/src/protocol/schema";
 
 interface LessonConstructionStep {
   title: string;
   content: string;
-  sections?: LessonPlanKeys[];
+  sections?: LessonPlanKey[];
 }
 
 const log = aiLogger("chat");
@@ -19,8 +19,8 @@ const lessonConstructionSteps = (
   lessonPlan: LooseLessonPlan,
   relevantLessonPlans: string | undefined,
 ): LessonConstructionStep[] => {
-  const presentLessonPlanKeys = (
-    Object.keys(lessonPlan) as LessonPlanKeys[]
+  const presentLessonPlanKey = (
+    Object.keys(lessonPlan) as LessonPlanKey[]
   ).filter((k) => lessonPlan[k]);
   const hasRelevantLessons =
     relevantLessonPlans && relevantLessonPlans.length > 3; // TODO This is a string, not an array!
@@ -49,6 +49,8 @@ These Oak lessons might be relevant:
 1. Introduction to the Periodic Table 
 2. Chemical Reactions and Equations
 3. The Structure of the Atom
+4. The Mole Concept
+5. Acids, Bases and Salts
 \n
 To base your lesson on one of these existing Oak lessons, type the lesson number. Tap **Continue** to start from scratch.
 END OF EXAMPLE RESPONSE`,
@@ -56,7 +58,7 @@ END OF EXAMPLE RESPONSE`,
       : undefined,
     !hasRelevantLessons
       ? {
-          sections: ["learningOutcome", "learningCycles"] as LessonPlanKeys[],
+          sections: ["learningOutcome", "learningCycles"] as LessonPlanKey[],
           title: "GENERATE SECTION GROUP [learningOutcome, learningCycles]",
           content: `Generate learning outcomes and the learning cycles overview.
 Generate both of these sections together in one interaction with the user.
@@ -64,7 +66,7 @@ Do not add any additional explanation about the content you have generated.
 In some cases it is possible for the user to base their lesson on existing ones, but that is not the case here. Ensure you start your reply to the user with this: "There are no existing Oak lessons for this topic, so I've started a new lesson from scratch." Ensure you ALWAYS generate the learning outcomes and learning cycles together in your response.`,
         }
       : {
-          sections: ["learningOutcome", "learningCycles"] as LessonPlanKeys[],
+          sections: ["learningOutcome", "learningCycles"] as LessonPlanKey[],
           title:
             "GENERATE SECTION GROUP [basedOn, learningOutcome, learningCycles]",
           content: `You need to generate three sections in one interaction with the user. Do these all in one interaction.
@@ -146,7 +148,7 @@ END OF EXAMPLE RESPONSE`,
     if (step.sections) {
       // If the step has sections defined, check if all of them are already present in the lesson plan
       const allSectionsPresent = step.sections.every((section) =>
-        presentLessonPlanKeys.includes(section),
+        presentLessonPlanKey.includes(section),
       );
 
       // Exclude the step if all its sections are already present

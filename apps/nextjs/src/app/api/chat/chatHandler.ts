@@ -1,10 +1,10 @@
 import type { Aila } from "@oakai/aila/src/core/Aila";
 import type { AilaServices } from "@oakai/aila/src/core/AilaServices";
 import type { Message } from "@oakai/aila/src/core/chat";
-import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
 import type {
   AilaOptions,
   AilaPublicChatOptions,
+  AilaInitializationOptions,
 } from "@oakai/aila/src/core/types";
 import { AilaAmericanisms } from "@oakai/aila/src/features/americanisms/AilaAmericanisms";
 import {
@@ -18,10 +18,6 @@ import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
-// #TODO StreamingTextResponse is deprecated. If we choose to adopt the "ai" package
-// more fully, we should refactor to support its approach to streaming
-// but this could be a significant change given we have our record-separator approach
-import { StreamingTextResponse } from "ai";
 import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
 
@@ -40,7 +36,7 @@ export const maxDuration = 300;
 const prisma: PrismaClientWithAccelerate = globalPrisma;
 
 export async function GET() {
-  return new Response("Chat API is working", { status: 200 });
+  return Promise.resolve(new Response("Chat API is working", { status: 200 }));
 }
 
 async function setupChatHandler(req: NextRequest) {
@@ -124,23 +120,41 @@ function handleConnectionAborted(req: NextRequest) {
 async function generateChatStream(
   aila: Aila,
   abortController: AbortController,
-) {
+): Promise<Response> {
   return await withTelemetry(
     "chat-aila-generate",
     { chat_id: aila.chatId, user_id: aila.userId },
     async () => {
-      invariant(aila, "Aila instance is required");
-      const result = await aila.generate({ abortController });
-      const transformStream = new TransformStream({
-        transform(chunk, controller) {
-          const formattedChunk = new TextEncoder().encode(
-            `0:${JSON.stringify(chunk)}\n`,
-          );
-          controller.enqueue(formattedChunk);
-        },
-      });
+      try {
+        invariant(aila, "Aila instance is required");
+        const result = await aila.generate({ abortController });
+        const transformStream = new TransformStream({
+          transform(chunk, controller) {
+            const formattedChunk = new TextEncoder().encode(
+              `0:${JSON.stringify(chunk)}\n`,
+            );
+            controller.enqueue(formattedChunk);
+          },
+        });
 
-      return result.pipeThrough(transformStream);
+        const stream = result.pipeThrough(transformStream);
+        return new Response(stream, {
+          headers: {
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache",
+            Connection: "keep-alive",
+          },
+        });
+      } catch (error) {
+        log.error("Error generating chat stream", { error });
+        return new Response(
+          JSON.stringify({ error: "Stream generation failed" }),
+          {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          },
+        );
+      }
     },
   );
 }
@@ -199,7 +213,7 @@ export async function handleChatPostRequest(
 
       const abortController = handleConnectionAborted(req);
       const stream = await generateChatStream(aila, abortController);
-      return new StreamingTextResponse(stream);
+      return stream;
     } catch (e) {
       return handleChatException(span, e, chatId, prisma);
     } finally {

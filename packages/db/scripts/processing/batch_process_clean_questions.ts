@@ -1,6 +1,11 @@
+import { aiLogger } from "@oakai/logger";
+
 import { prisma } from "../../";
 
-async function getQuestionsAndWriteBatch(skip: number) {
+const logger = aiLogger("db");
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function getQuestionsAndWriteBatch(_skip: number) {
   const questions = await prisma.quizQuestion.findMany({
     include: {
       answers: {
@@ -32,7 +37,7 @@ async function getQuestionsAndWriteBatch(skip: number) {
       },
     },
   });
-  console.log("questions", questions);
+  logger.info("questions", questions);
   await prisma.questionsForJudgement.createMany({
     data: questions
       .filter(
@@ -42,7 +47,7 @@ async function getQuestionsAndWriteBatch(skip: number) {
             question.answers[0]?.lesson.subject?.id &&
             question.answers[0]?.lesson.subject?.id !== undefined &&
             question.answers[0]?.lesson.subject?.id !== null &&
-            question.question.endsWith("?")) ||
+            question.question.endsWith("?")) ??
           (question.question &&
             question.question.split(" ").length > 2 &&
             question.answers[0]?.lesson.subject?.id &&
@@ -68,14 +73,14 @@ async function removeQuestionsContainingWords(string: string) {
   const questionsToRemove = questions.filter((question) =>
     question?.quizQuestion?.question?.includes(string),
   );
-  prisma.questionsForJudgement.deleteMany({
+  await prisma.questionsForJudgement.deleteMany({
     where: {
       id: {
         in: questionsToRemove.map((question) => question.id),
       },
     },
   });
-  console.log("Removed number of questions", questionsToRemove.length);
+  logger.info("Removed number of questions", questionsToRemove.length);
 }
 
 const main = async () => {
@@ -88,10 +93,10 @@ const main = async () => {
     await getQuestionsAndWriteBatch(0);
     await removeQuestionsContainingWords("**not**");
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     process.exit(1);
   } finally {
-    console.log("Done");
+    logger.info("Done");
     await prisma.$disconnect();
   }
 };
@@ -101,7 +106,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    logger.error(e);
     await prisma.$disconnect();
     process.exit(1);
   });

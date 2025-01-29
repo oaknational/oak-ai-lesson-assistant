@@ -72,6 +72,9 @@ export async function handleEmbeddingBatchSuccess({
       continue;
     }
 
+    if (errors.length > 0) {
+      log.info(`Errors: ${errors.length}`);
+    }
     lessonIdsCompleted.add(lessonId);
   }
 

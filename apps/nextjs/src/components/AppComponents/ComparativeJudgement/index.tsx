@@ -2,9 +2,9 @@ import { useCallback, useState } from "react";
 
 import type { KeyStageName, SubjectName } from "@oakai/core";
 import { Flex } from "@radix-ui/themes";
-import useQuestionsForJudgement from "hooks/useQuestionsForJudgement";
 
 import { Icon } from "@/components/Icon";
+import useQuestionsForJudgement from "@/hooks/useQuestionsForJudgement";
 
 import JudgementContent from "./JudgementContent";
 import JudgementFeedbackDialog, {
@@ -80,6 +80,7 @@ const ComparativeJudgement = ({
           title={data?.questionForJudgement?.quizQuestion?.lesson.title ?? ""}
           lessonDescription={lessonDescription}
           setFlaggedItems={setFlaggedOption}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           skipQuestion={skipQuestion}
           questionText={questionText}
           optionA={optionA}
@@ -88,6 +89,7 @@ const ComparativeJudgement = ({
           winnerId={winnerId}
           setReasonForChoice={setReasonForChoice}
           clearReasonForChoice={() => setReasonForChoice("")}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           chooseQuestion={chooseQuestion}
           judgementId={judgementId}
         />

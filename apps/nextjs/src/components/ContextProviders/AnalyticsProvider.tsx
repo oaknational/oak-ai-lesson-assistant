@@ -133,9 +133,9 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   avoOptions,
   bootstrappedFeatures,
 }) => {
-  const [hubspotScriptLoaded, setHubspotScriptLoadedFn] = useState(false);
-  const setHubspotScriptLoaded = useCallback(() => {
-    setHubspotScriptLoadedFn(true);
+  const [hubspotScriptLoaded, setHubspotScriptLoaded] = useState(false);
+  const setHubspotScriptLoadedOnce = useCallback(() => {
+    setHubspotScriptLoaded(true);
   }, []);
 
   /**
@@ -285,7 +285,10 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   return (
     <analyticsContext.Provider value={analytics}>
       {children}
-      <HubspotLoader consent={hubspotConsent} onLoad={setHubspotScriptLoaded} />
+      <HubspotLoader
+        consent={hubspotConsent}
+        onLoad={setHubspotScriptLoadedOnce}
+      />
     </analyticsContext.Provider>
   );
 };

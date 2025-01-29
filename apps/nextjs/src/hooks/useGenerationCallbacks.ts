@@ -1,20 +1,20 @@
 import { useCallback, useEffect } from "react";
 
 import * as Sentry from "@sentry/nextjs";
+import type { z } from "zod";
+
 import type {
   AdditionalUseGenerationOptions,
   FailedGenerationState,
   GeneratingGenerationState,
   PendingGenerationState,
   SuccessfulGenerationState,
-} from "hooks/useGeneration";
+} from "@/hooks/useGeneration";
 import {
   UseGenerationError,
   UseGenerationStatus,
   useGeneration,
-} from "hooks/useGeneration";
-import type { z } from "zod";
-
+} from "@/hooks/useGeneration";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import { usePreviousValue } from "./usePreviousValue";

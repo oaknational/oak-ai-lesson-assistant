@@ -10,6 +10,7 @@ export const useLocalStorage = <T>(
     // Retrieve from localStorage
     const item = window.localStorage.getItem(key);
     if (item) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setStoredValue(JSON.parse(item));
     }
   }, [key]);

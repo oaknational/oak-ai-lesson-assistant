@@ -9,9 +9,9 @@ import type { PatchEnqueuer } from "./PatchEnqueuer";
 
 const log = aiLogger("aila:stream");
 export class AilaStreamHandler {
-  private _chat: AilaChat;
+  private readonly _chat: AilaChat;
   private _controller?: ReadableStreamDefaultController;
-  private _patchEnqueuer: PatchEnqueuer;
+  private readonly _patchEnqueuer: PatchEnqueuer;
   private _streamReader?: ReadableStreamDefaultReader<string>;
 
   constructor(chat: AilaChat) {
@@ -61,7 +61,7 @@ export class AilaStreamHandler {
         this._chat.id,
       );
     } catch (e) {
-      this.handleStreamError(e);
+      await this.handleStreamError(e);
       log.info("Stream error", e, this._chat.iteration, this._chat.id);
     } finally {
       try {

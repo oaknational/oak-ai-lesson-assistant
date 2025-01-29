@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
+import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
 import { equals } from "ramda";
@@ -14,19 +15,20 @@ import ChatSection from "./chat-section";
 
 const HALF_SECOND = 500;
 
-type DropDownSectionProps = {
-  objectKey: string;
+export type DropDownSectionProps = Readonly<{
+  section: LessonPlanKey;
   sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
+  // @todo this is bug - LessonPlanSectionWhileStreaming and string is passed in but the type of prevValue is Record<string, unknown>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
   userHasCancelledAutoScroll: boolean;
   showLessonMobile: boolean;
   streamingTimeout?: number;
-};
+}>;
 
 const DropDownSection = ({
-  objectKey,
+  section,
   sectionRefs,
   value,
   documentContainerRef,
@@ -35,7 +37,7 @@ const DropDownSection = ({
   streamingTimeout = HALF_SECOND,
 }: DropDownSectionProps) => {
   const sectionRef = useRef(null);
-  if (sectionRefs) sectionRefs[objectKey] = sectionRef;
+  if (sectionRefs) sectionRefs[section] = sectionRef;
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState<"empty" | "isStreaming" | "isLoaded">(
     "empty",
@@ -56,7 +58,7 @@ const DropDownSection = ({
       setStatus("isStreaming");
 
       if (sectionRef && sectionHasFired === false && status === "isStreaming") {
-        if (objectKey && value) {
+        if (section && value) {
           function scrollToSection() {
             if (!userHasCancelledAutoScroll) {
               scrollToRef({
@@ -73,6 +75,8 @@ const DropDownSection = ({
       setIsOpen(true);
       const timer = setTimeout(() => {
         setStatus("isLoaded");
+        // @todo this is a bug - value is not typed
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setPrevValue(value);
       }, streamingTimeout);
 
@@ -86,11 +90,12 @@ const DropDownSection = ({
     sectionRef,
     sectionHasFired,
     status,
-    objectKey,
+    section,
     setIsOpen,
     prevValue,
     documentContainerRef,
     userHasCancelledAutoScroll,
+    streamingTimeout,
   ]);
 
   return (
@@ -109,7 +114,7 @@ const DropDownSection = ({
 
         <FullWidthButton onClick={() => setIsOpen(!isOpen)} aria-label="toggle">
           <OakFlex $width="100%" $justifyContent="space-between">
-            <OakP $font="heading-6">{sectionTitle(objectKey)}</OakP>
+            <OakP $font="heading-6">{sectionTitle(section)}</OakP>
             <Icon icon={isOpen ? "chevron-up" : "chevron-down"} size="sm" />
           </OakFlex>
         </FullWidthButton>
@@ -118,7 +123,7 @@ const DropDownSection = ({
       {isOpen && (
         <div className="mt-12 w-full">
           {status === "isLoaded" ? (
-            <ChatSection objectKey={objectKey} value={value} />
+            <ChatSection section={section} value={value} />
           ) : (
             <Skeleton loaded={false} numberOfRows={1}>
               <p>Loading</p>

@@ -1,14 +1,15 @@
 import type { Dispatch } from "react";
 import { useCallback } from "react";
 
-import { quizRequestGeneration } from "ai-apps/quiz-designer/quizRequestGeneration";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
+import { z } from "zod";
+
+import { quizRequestGeneration } from "@/ai-apps/quiz-designer/quizRequestGeneration";
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
 import type {
   QuizAppState,
   QuizAppStateQuestion,
-} from "ai-apps/quiz-designer/state/types";
-import { z } from "zod";
+} from "@/ai-apps/quiz-designer/state/types";
 
 import useGenerationCallbacks from "./useGenerationCallbacks";
 
@@ -54,7 +55,7 @@ const useRegenerateDistractors = ({
     Boolean(distractor.lastGenerationId),
   );
   const requestRegenerateAllDistractorsGeneration = useCallback(() => {
-    quizRequestGeneration({
+    void quizRequestGeneration({
       state,
       questionRow,
       requestGeneration,

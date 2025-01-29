@@ -2,9 +2,9 @@ import type { AilaServices } from "../../core/AilaServices";
 import type { AnalyticsAdapter } from "./adapters/AnalyticsAdapter";
 
 export class AilaAnalytics {
-  private _aila: AilaServices;
-  private _adapters: AnalyticsAdapter[];
-  private _operations: Promise<unknown>[] = [];
+  private readonly _aila: AilaServices;
+  private readonly _adapters: AnalyticsAdapter[];
+  private readonly _operations: Promise<unknown>[] = [];
   private _isShutdown: boolean = false;
 
   constructor({
@@ -14,7 +14,7 @@ export class AilaAnalytics {
     aila: AilaServices;
     adapters?: AnalyticsAdapter[];
   }) {
-    this._adapters = adapters || [];
+    this._adapters = adapters ?? [];
     this._aila = aila;
   }
 
@@ -22,7 +22,10 @@ export class AilaAnalytics {
     this._adapters.forEach((adapter) => adapter.initialiseAnalyticsContext());
   }
 
-  public async reportUsageMetrics(responseBody: string, startedAt?: number) {
+  public async reportUsageMetrics(
+    responseBody: string,
+    startedAt?: number,
+  ): Promise<void> {
     const promise = Promise.all(
       this._adapters.map((adapter) =>
         adapter.reportUsageMetrics(responseBody, startedAt),
@@ -30,6 +33,7 @@ export class AilaAnalytics {
     );
     this._operations.push(promise);
     this._aila.plugins.forEach((plugin) => plugin.onBackgroundWork(promise));
+    return Promise.resolve();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,5 +53,6 @@ export class AilaAnalytics {
       this._aila.plugins.forEach((plugin) => plugin.onBackgroundWork(promise));
       this._isShutdown = true;
     }
+    return Promise.resolve();
   }
 }

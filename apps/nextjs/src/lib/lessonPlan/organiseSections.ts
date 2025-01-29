@@ -1,8 +1,8 @@
-import { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 
 export const organiseSections: {
-  trigger: LessonPlanKeys;
-  dependants: LessonPlanKeys[];
+  trigger: LessonPlanKey;
+  dependants: LessonPlanKey[];
 }[] = [
   {
     trigger: "learningOutcome",

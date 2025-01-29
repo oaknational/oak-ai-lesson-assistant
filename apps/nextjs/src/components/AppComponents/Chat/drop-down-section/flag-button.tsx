@@ -1,8 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "react-hot-toast";
 
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
+import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import type { AilaUserFlagType } from "@oakai/db";
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
+import * as Sentry from "@sentry/nextjs";
 import styled from "styled-components";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
@@ -23,11 +26,11 @@ const flagOptions = [
 
 type FlagButtonOptions = typeof flagOptions;
 
-type FlagButtonProps = {
+export type FlagButtonProps = Readonly<{
   sectionTitle: string;
   sectionPath: string;
-  sectionValue: Record<string, unknown> | string | Array<unknown>;
-};
+  sectionValue: LessonPlanSectionWhileStreaming;
+}>;
 
 const FlagButton = ({
   sectionTitle,
@@ -48,19 +51,47 @@ const FlagButton = ({
 
   const { mutateAsync } = trpc.chat.chatFeedback.flagSection.useMutation();
 
-  const flagSectionContent = async () => {
+  const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+  };
+
+  const flagSectionContent = useCallback(() => {
     if (selectedRadio && lastAssistantMessage) {
+      const prepareSectionValue = (
+        value: LessonPlanSectionWhileStreaming,
+      ): string | unknown[] | Record<string, unknown> => {
+        if (
+          typeof value === "string" ||
+          Array.isArray(value) ||
+          isPlainObject(value)
+        ) {
+          return value;
+        }
+        return String(value);
+      };
+
       const payload = {
         chatId: id,
         messageId: lastAssistantMessage.id,
         flagType: selectedRadio.enumValue,
         userComment: userFeedbackText,
         sectionPath,
-        sectionValue,
+        sectionValue: prepareSectionValue(sectionValue),
       };
-      await mutateAsync(payload);
+      mutateAsync(payload).catch((error) => {
+        Sentry.captureException(error, { extra: { payload } });
+        toast.error("Failed to flag section content");
+      });
     }
-  };
+  }, [
+    id,
+    lastAssistantMessage,
+    mutateAsync,
+    selectedRadio,
+    sectionPath,
+    sectionValue,
+    userFeedbackText,
+  ]);
 
   useEffect(() => {
     !isOpen && setDisplayTextBox(null);
@@ -93,7 +124,7 @@ const FlagButton = ({
           >
             {flagOptions.map((option) => (
               <FlagButtonFormItem
-                key={`flagbuttonformitem-${option.enumValue}`}
+                key={`flagButtonFormItem-${option.enumValue}`}
                 option={option}
                 setSelectedRadio={setSelectedRadio}
                 setDisplayTextBox={setDisplayTextBox}
@@ -115,11 +146,11 @@ const FlagButtonFormItem = ({
   displayTextBox,
   setUserFeedbackText,
 }: {
-  option: FlagButtonOptions[number];
-  setSelectedRadio: (value: FeedbackOption<AilaUserFlagType>) => void;
-  setDisplayTextBox: (value: string | null) => void;
-  displayTextBox: string | null;
-  setUserFeedbackText: (value: string) => void;
+  readonly option: FlagButtonOptions[number];
+  readonly setSelectedRadio: (value: FeedbackOption<AilaUserFlagType>) => void;
+  readonly setDisplayTextBox: (value: string | null) => void;
+  readonly displayTextBox: string | null;
+  readonly setUserFeedbackText: (value: string) => void;
 }) => {
   return (
     <>

@@ -1,7 +1,12 @@
 import fs from "node:fs";
 import readline from "node:readline";
+import { z } from "zod";
 
 import { IngestError } from "../IngestError";
+
+const JsonlLineSchema = z.object({
+  custom_id: z.string(),
+});
 
 export function getCustomIdsFromJsonlFile({
   filePath,
@@ -21,11 +26,8 @@ export function getCustomIdsFromJsonlFile({
         return;
       }
       try {
-        const customId = JSON.parse(line).custom_id;
-        if (typeof customId !== "string") {
-          throw new IngestError("custom_id is not a string");
-        }
-        ids.push(customId);
+        const parsed = JsonlLineSchema.parse(JSON.parse(line));
+        ids.push(parsed.custom_id);
       } catch (cause) {
         const error = new IngestError("Failed to parse customId", {
           cause,

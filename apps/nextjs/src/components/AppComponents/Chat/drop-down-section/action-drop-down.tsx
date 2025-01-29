@@ -1,20 +1,28 @@
-import { Dispatch, RefObject, SetStateAction } from "react";
+import {
+  useCallback,
+  type Dispatch,
+  type RefObject,
+  type SetStateAction,
+} from "react";
+import { toast } from "react-hot-toast";
 
 import { aiLogger } from "@oakai/logger";
 import { OakP, OakRadioGroup } from "@oaknational/oak-components";
-import { $Enums, AilaUserModificationAction } from "@prisma/client";
+import type { $Enums, AilaUserModificationAction } from "@prisma/client";
 import { TextArea } from "@radix-ui/themes";
+import * as Sentry from "@sentry/nextjs";
 
-import {
+import type {
   AdditionalMaterialOptions,
   ModifyOptions,
 } from "./action-button.types";
-import { DropDownFormWrapper, FeedbackOption } from "./drop-down-form-wrapper";
+import type { FeedbackOption } from "./drop-down-form-wrapper";
+import { DropDownFormWrapper } from "./drop-down-form-wrapper";
 import { SmallRadioButton } from "./small-radio-button";
 
 const log = aiLogger("chat");
 
-type DropDownProps = {
+export type DropDownProps = Readonly<{
   sectionTitle: string;
   options: ModifyOptions | AdditionalMaterialOptions;
   selectedRadio: FeedbackOption<AilaUserModificationAction> | null;
@@ -31,7 +39,7 @@ type DropDownProps = {
   userSuggestionTitle: string;
   dropdownRef: RefObject<HTMLDivElement>;
   id: string;
-};
+}>;
 
 export const ActionDropDown = ({
   sectionTitle,
@@ -47,9 +55,18 @@ export const ActionDropDown = ({
   dropdownRef,
   id,
 }: DropDownProps) => {
+  const performSubmit = useCallback(
+    (option: FeedbackOption<AilaUserModificationAction>) => {
+      handleSubmit(option).catch((error) => {
+        Sentry.captureException(error, { extra: { id } });
+        toast.error("Failed to submit feedback");
+      });
+    },
+    [handleSubmit, id],
+  );
   return (
     <DropDownFormWrapper
-      onClickActions={handleSubmit}
+      onClickActions={performSubmit}
       setIsOpen={setIsOpen}
       selectedRadio={selectedRadio}
       title={sectionTitle}
@@ -63,22 +80,26 @@ export const ActionDropDown = ({
         $gap="space-between-s"
         $background="white"
       >
-        {options.map((option) => {
-          return (
-            <SmallRadioButton
-              id={`${id}-modify-options-${option.enumValue}`}
-              key={`${id}-modify-options-${option.enumValue}`}
-              value={option.enumValue}
-              label={handleLabelText({
-                text: option.label,
-                section: sectionTitle,
-              })}
-              onClick={() => {
-                setSelectedRadio(option);
-              }}
-            />
-          );
-        })}
+        {options.map(
+          (
+            option: ModifyOptions[number] | AdditionalMaterialOptions[number],
+          ) => {
+            return (
+              <SmallRadioButton
+                id={`${id}-modify-options-${option.enumValue}`}
+                key={`${id}-modify-options-${option.enumValue}`}
+                value={option.enumValue}
+                label={handleLabelText({
+                  text: option.label,
+                  section: sectionTitle,
+                })}
+                onClick={() => {
+                  setSelectedRadio(option);
+                }}
+              />
+            );
+          },
+        )}
 
         {selectedRadio?.label === "Other" && (
           <>
@@ -103,6 +124,8 @@ function handleLabelText({
 }): string {
   log.info("section", section);
   if (
+    // @todo this is a bug - "additional materials" always returns true
+    // eslint-disable-next-line no-constant-condition
     section === "Misconceptions" ||
     section === "Key learning points" ||
     section === "Learning cycles" ||
