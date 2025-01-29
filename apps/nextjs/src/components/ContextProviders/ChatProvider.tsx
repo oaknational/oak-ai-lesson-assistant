@@ -1,5 +1,6 @@
 import React, {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -284,8 +285,16 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     }
   }, [hasFinished, executeQueuedAction]);
 
+  const handleReload = useCallback(() => {
+    reload().catch((err) => {
+      log.error("Failed to reload chat", err);
+      toast.error("Failed to reload chat");
+      Sentry.captureException(err);
+    });
+  }, [reload]);
+
   // Hooks to update the Zustand chat store mirror
-  useChatStoreMirror(messages, isLoading, stopStreaming, append, reload);
+  useChatStoreMirror(messages, isLoading, stopStreaming, append, handleReload);
 
   /**
    *  If the state is being restored from a previous lesson plan, set the lesson plan

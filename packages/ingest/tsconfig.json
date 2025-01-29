@@ -9,6 +9,7 @@
     "types": ["jest"],
     "allowImportingTsExtensions": true,
     "moduleDetection": "force",
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "allowSyntheticDefaultImports": true
   }
 }

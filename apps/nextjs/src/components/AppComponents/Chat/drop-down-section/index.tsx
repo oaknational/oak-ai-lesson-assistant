@@ -75,6 +75,8 @@ const DropDownSection = ({
       setIsOpen(true);
       const timer = setTimeout(() => {
         setStatus("isLoaded");
+        // @todo this is a bug - value is not typed
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setPrevValue(value);
       }, streamingTimeout);
 

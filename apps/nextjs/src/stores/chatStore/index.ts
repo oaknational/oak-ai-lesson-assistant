@@ -3,6 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { create } from "zustand";
 
+import { logStoreUpdates } from "../zustandHelpers";
 import { handleExecuteQueuedAction } from "./stateActionFunctions/handleExecuteQueuedAction";
 import { handleQueueUserAction } from "./stateActionFunctions/handleQueueUserAction";
 import { handleSetMessages } from "./stateActionFunctions/handleSetMessages";
@@ -73,7 +74,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   actions: {
     stop: () => {},
     reload: () => {},
-    append: async () => "",
+    append: async () => Promise.resolve(""),
   },
 
   // Setters
@@ -97,6 +98,4 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   },
 }));
 
-useChatStore.subscribe((state) => {
-  log.info("Chat store updated", state);
-});
+logStoreUpdates(useChatStore, "chat:store");

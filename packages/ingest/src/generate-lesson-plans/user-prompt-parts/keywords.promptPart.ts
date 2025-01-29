@@ -3,7 +3,7 @@ import { toMarkdownList } from "./toMarkdownList";
 
 export const lessonKeywordsPromptPart = ({ lessonKeywords }: RawLesson) =>
   lessonKeywords?.length
-    ? `The lesson should include the following keywords. Include these in the lesson plan:
+    ? `The lesson's keywords should match exactly this list of keyword/definition pairs:
 
 ${toMarkdownList(lessonKeywords, getKeywordText)}`
     : null;

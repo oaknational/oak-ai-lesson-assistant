@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 "use client";
 
 import { Box, Container, Flex, Heading, Text } from "@radix-ui/themes";

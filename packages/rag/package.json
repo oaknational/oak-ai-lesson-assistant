@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "with-env": "dotenv -e ../../.env --",
-    "test": "pnpm with-env jest --colors --config jest.config.js"
+    "test": "pnpm with-env jest --colors --config jest.config.mjs"
   },
   "prettier": "@oakai/prettier-config",
   "dependencies": {
