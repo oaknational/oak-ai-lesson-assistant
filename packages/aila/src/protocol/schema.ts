@@ -169,7 +169,10 @@ export const ExplanationSchema = z
       .string()
       .describe(EXPLANATION_DESCRIPTIONS.accompanyingSlideDetails),
     imagePrompt: z.string().describe(EXPLANATION_DESCRIPTIONS.imagePrompt),
-    imageSearch: z.string().describe(EXPLANATION_DESCRIPTIONS.imageSearch),
+    imageSearch: z
+      .string()
+      .describe(EXPLANATION_DESCRIPTIONS.imageSearch)
+      .optional(),
     slideText: z.string().describe(EXPLANATION_DESCRIPTIONS.slideText),
   })
   .describe(EXPLANATION_DESCRIPTIONS.schema);
