@@ -1,42 +1,43 @@
 import { aiLogger } from "@oakai/logger";
 
+import type { ChatStore } from "..";
+
 const log = aiLogger("chat:store");
 
-export function handleExecuteQueuedAction(set, get) {
-  return async () => {
-    const { queuedUserAction, isExecutingQueuedAction, actions } = get();
-    const { append, reload } = actions;
+export function handleExecuteQueuedAction(
+  set: (partial: Partial<ChatStore>) => void,
+  get: () => ChatStore,
+) {
+  return () => {
+    const { queuedUserAction, aiSdkActions } = get();
 
-    if (!queuedUserAction || isExecutingQueuedAction) {
+    if (!queuedUserAction) {
       log.warn("Ignored attempt to execute queued action", {
         queuedUserAction,
-        isExecutingQueuedAction,
       });
       return;
     }
 
     log.info("Executing queued action");
     const actionToExecute = queuedUserAction;
-    set({ isExecutingQueuedAction: true, queuedUserAction: null });
+    set({ queuedUserAction: null });
 
     try {
       if (actionToExecute === "continue") {
-        await append({
+        void aiSdkActions.append({
           content: "Continue",
           role: "user",
         });
       } else if (actionToExecute === "regenerate") {
-        reload();
+        aiSdkActions.reload();
       } else {
-        await append({
+        void aiSdkActions.append({
           content: actionToExecute,
           role: "user",
         });
       }
     } catch (error) {
       log.error("Error handling queued action:", error);
-    } finally {
-      set({ isExecutingQueuedAction: false });
     }
   };
 }

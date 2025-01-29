@@ -8,6 +8,7 @@ import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { useSidebar } from "@/lib/hooks/use-sidebar";
 import { useChatStore } from "@/stores/chatStore";
+import { canAppendSelector } from "@/stores/chatStore/selectors";
 
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 
@@ -23,13 +24,10 @@ function LockedPromptForm() {
 
 export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const chat = useLessonChat();
-  const { id, messages, input, setInput, append } = chat;
+  const { id, messages, input, setInput } = chat;
 
-  const queueUserAction = useChatStore((state) => state.queueUserAction);
-  const queuedUserAction = useChatStore((state) => state.queuedUserAction);
-  const ailaStreamingStatus = useChatStore(
-    (state) => state.ailaStreamingStatus,
-  );
+  const append = useChatStore((state) => state.append);
+  const shouldAllowUserInput = useChatStore(canAppendSelector);
 
   const hasMessages = !!messages.length;
 
@@ -47,35 +45,12 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
 
       lessonPlanTracking.onSubmitText(value);
 
-      const isQueueable = ailaStreamingStatus === "Moderating";
-      if (isQueueable) {
-        queueUserAction(value);
-      } else {
-        trackEvent("chat:send_message", {
-          id,
-          message: value,
-        });
+      trackEvent("chat:send_message", { id, message: value });
 
-        void append({
-          content: value,
-          role: "user",
-        });
-      }
+      append(value);
     },
-    [
-      lessonPlanTracking,
-      queueUserAction,
-      setInput,
-      sidebar,
-      ailaStreamingStatus,
-      trackEvent,
-      id,
-      append,
-    ],
+    [lessonPlanTracking, setInput, sidebar, trackEvent, id, append],
   );
-
-  const shouldAllowUserInput =
-    ["Idle", "Moderating"].includes(ailaStreamingStatus) && !queuedUserAction;
 
   const containerClass = `grid w-full grid-cols-1 ${hasMessages ? "sm:grid-cols-1" : ""} peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]`;
 
