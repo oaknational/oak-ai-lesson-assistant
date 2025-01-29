@@ -44,6 +44,9 @@ jobs:
 
       - name: Run tests
         run: pnpm turbo test --cache-dir=".turbo" -- --maxWorkers=33% --coverage
+        env:
+          I_DOT_AI_ELASTIC_CLOUD_ID: ${{ steps.doppler.outputs.I_DOT_AI_ELASTIC_CLOUD_ID }}
+          I_DOT_AI_ELASTIC_KEY: ${{ steps.doppler.outputs.I_DOT_AI_ELASTIC_KEY }}
 
       # Run only on production branch
       - name: Report coverage to SonarCloud
