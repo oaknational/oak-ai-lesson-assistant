@@ -19,9 +19,9 @@ export class ReturnFirstReranker extends BasedOnRagAilaQuizReranker<
   }
   public evaluateQuizArray(
     quizzes: QuizQuestion[][],
-    lessonPlan: LooseLessonPlan,
-    ratingSchema: typeof testRatingSchema,
-    quizType: QuizPath,
+    _lessonPlan: LooseLessonPlan,
+    _ratingSchema: typeof testRatingSchema,
+    _quizType: QuizPath,
   ): Promise<(typeof testRatingSchema)[]> {
     const output: z.infer<typeof testRatingSchema>[] = [];
 
@@ -34,6 +34,6 @@ export class ReturnFirstReranker extends BasedOnRagAilaQuizReranker<
       output[0].rating = 1;
     }
 
-    return Promise.resolve(output as any);
+    return Promise.resolve(output.map(() => testRatingSchema));
   }
 }
