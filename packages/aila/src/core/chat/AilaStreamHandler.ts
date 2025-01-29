@@ -6,6 +6,7 @@ import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
+import { createStreamReaderFromURL } from "./createStreamReaderFromURL";
 
 const log = aiLogger("aila:stream");
 export class AilaStreamHandler {
@@ -89,9 +90,31 @@ export class AilaStreamHandler {
       type: "comment",
       value: "CHAT_START",
     });
-    const messages = this._chat.completionMessages();
-    this._streamReader =
-      await this._chat.createChatCompletionObjectStream(messages);
+    const currentLessonPlan = this._chat.aila.lessonPlan;
+
+    const AILA_ENGINE_STREAM_URL = process.env.AILA_ENGINE_STREAM_URL;
+
+    if (AILA_ENGINE_STREAM_URL) {
+      /**
+       * If the AILA_ENGINE_STREAM_URL is defined, we will use it to stream the
+       * engine's response rather than using an AilaPromptBuilder with OpenAI's API.
+       *
+       * It allows us to experinent with different paradigms in a safe and unobtrusive way.
+       *
+       * NOTE
+       * In order to use this in a non-local environment, we'll need
+       * - authentication to the engine
+       * - deeper changes in order to record that the source of the response is the engine and not OpenAI.
+       */
+      const lastUserMessage = this._chat.messages.slice(-1)[0];
+      this._streamReader = await createStreamReaderFromURL(
+        `${AILA_ENGINE_STREAM_URL}?prompt=${JSON.stringify(currentLessonPlan)}\n\n${lastUserMessage?.content}`,
+      );
+    } else {
+      const messages = this._chat.completionMessages();
+      this._streamReader =
+        await this._chat.createChatCompletionObjectStream(messages);
+    }
   }
 
   private async readFromStream(abortController?: AbortController) {
