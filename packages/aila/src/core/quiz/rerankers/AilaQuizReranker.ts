@@ -2,18 +2,19 @@ import { aiLogger } from "@oakai/logger";
 import { kv } from "@vercel/kv";
 import { pick } from "remeda";
 import { Md5 } from "ts-md5";
+import type { z } from "zod";
 
 import type {
   LooseLessonPlan,
   QuizPath,
   QuizQuestion,
 } from "../../../protocol/schema";
-import { type BaseSchema } from "../ChoiceModels";
+import { type BaseType } from "../ChoiceModels";
 // import { evaluateQuiz } from "../OpenAIRanker";
 import type { AilaQuizReranker } from "../interfaces";
 
 const log = aiLogger("aila:quiz");
-export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
+export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
   implements AilaQuizReranker<T>
 {
   abstract rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]>;
@@ -25,28 +26,19 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
     this.quizType = quizType;
   }
 
-  //  This takes a quiz array and evaluates it using the rating schema and quiz type and returns an array of evaluation schema objects.
-  public async evaluateQuizArray(
+  public abstract evaluateQuizArray(
     quizArray: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
-    ratingSchema: typeof BaseSchema,
+    ratingSchema: T,
     quizType: QuizPath,
-  ): Promise<T[]> {
-    // Placeholder implementation
-    const mockRatings = quizArray.map(() => ({
-      rating: Math.random() * 10,
-      explanation: "Placeholder rating explanation",
-    }));
-
-    return mockRatings as unknown as T[];
-  }
+  ): Promise<z.infer<T>[]>;
 
   public async cachedEvaluateQuizArray(
     quizArray: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
-    ratingSchema: typeof BaseSchema,
+    ratingSchema: T,
     quizType: QuizPath,
-  ): Promise<T[]> {
+  ): Promise<z.infer<T>[]> {
     const keyPrefix = "aila:quiz:openai:reranker";
     const lessonPlanRerankerFields = [
       "title",
@@ -57,7 +49,6 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
 
     const relevantLessonPlanData = pick(lessonPlan, lessonPlanRerankerFields);
 
-    // Create hash from relevant data
     const hash = Md5.hashStr(
       JSON.stringify({
         quizArray,
@@ -69,14 +60,14 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
     const cacheKey = `${keyPrefix}:${hash}`;
 
     try {
-      const cached = await kv.get<T[]>(cacheKey);
+      const cached = await kv.get<z.infer<T>[]>(cacheKey);
       if (cached) {
         log.info(`Cache hit for key: ${cacheKey}`);
         return cached;
       }
     } catch (e) {
       log.error(`Error getting cached value for key: ${cacheKey}`, e);
-      await kv.del(cacheKey); // Remove potentially corrupted cache entry
+      await kv.del(cacheKey);
     }
 
     log.info(`Cache miss for key: ${cacheKey}, evaluating for openAI`);
@@ -87,7 +78,6 @@ export abstract class BasedOnRagAilaQuizReranker<T extends typeof BaseSchema>
       quizType,
     );
 
-    // Cache the results
     await kv.set(cacheKey, evaluatedQuizzes, {
       ex: 60 * 5,
     });

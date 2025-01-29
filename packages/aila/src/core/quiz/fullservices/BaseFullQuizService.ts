@@ -1,4 +1,5 @@
 import { aiLogger } from "@oakai/logger";
+import type { z } from "zod";
 
 import type {
   AilaRagRelevantLesson,
@@ -18,7 +19,7 @@ const log = aiLogger("aila:quiz");
 
 export abstract class BaseFullQuizService implements FullQuizService {
   public abstract quizSelector: QuizSelector<BaseType>;
-  public abstract quizReranker: AilaQuizReranker<typeof BaseSchema>;
+  public abstract quizReranker: AilaQuizReranker<z.ZodType<BaseType>>;
   public abstract quizGenerators: AilaQuizGeneratorService[];
   // TODO: MG - does having ailaRagRelevantLessons as a default parameter work? It feels a bit hacky.
   public async createBestQuiz(

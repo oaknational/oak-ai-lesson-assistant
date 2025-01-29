@@ -1,3 +1,5 @@
+import type * as z from "zod";
+
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
@@ -63,29 +65,29 @@ export interface AilaQuizVariantService {
   ): Promise<JsonPatchDocument>;
 }
 
-export interface AilaQuizReranker<T extends typeof BaseSchema> {
+export interface AilaQuizReranker<T extends z.ZodType<BaseType>> {
   rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]>;
   evaluateQuizArray(
     quizzes: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
-    ratingSchema: typeof BaseSchema,
+    ratingSchema: T,
     quizType: QuizPath,
-  ): Promise<T[]>;
+  ): Promise<z.infer<T>[]>;
   cachedEvaluateQuizArray(
     quizzes: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
-    ratingSchema: typeof BaseSchema,
+    ratingSchema: T,
     quizType: QuizPath,
-  ): Promise<T[]>;
+  ): Promise<z.infer<T>[]>;
   ratingSchema?: T;
   quizType?: QuizPath;
-  ratingFunction?: RatingFunction<BaseType>;
+  ratingFunction?: RatingFunction<z.infer<T>>;
 }
 
 // TODO: GCLOMAX - make generic by extending BaseType and BaseSchema as <T,U>
 export interface FullQuizService {
   quizSelector: QuizSelector<BaseType>;
-  quizReranker: AilaQuizReranker<typeof BaseSchema>;
+  quizReranker: AilaQuizReranker<z.ZodType<BaseType>>;
   quizGenerators: AilaQuizGeneratorService[];
   createBestQuiz(
     quizType: quizPatchType,
@@ -173,7 +175,7 @@ export interface AilaQuizFactory {
 export interface AilaQuizRerankerFactory {
   createAilaQuizReranker(
     quizType: QuizRerankerType,
-  ): AilaQuizReranker<typeof BaseSchema>;
+  ): AilaQuizReranker<z.ZodType<BaseType>>;
 }
 
 export interface QuizSelectorFactory {

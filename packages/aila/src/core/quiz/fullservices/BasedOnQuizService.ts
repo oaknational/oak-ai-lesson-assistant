@@ -1,3 +1,5 @@
+import type { z } from "zod";
+
 import type { BaseSchema, BaseType } from "../ChoiceModels";
 import { AilaQuizFactory } from "../generators/AilaQuizGeneratorFactory";
 import type { AilaQuizGeneratorService } from "../interfaces";
@@ -10,7 +12,7 @@ export class BasedOnQuizService extends BaseFullQuizService {
   public quizGenerators: AilaQuizGeneratorService[] = [
     AilaQuizFactory.createQuizGenerator("basedOnRag"),
   ];
-  public quizReranker: AilaQuizReranker<typeof BaseSchema> =
+  public quizReranker: AilaQuizReranker<z.ZodType<BaseType>> =
     new AilaQuizRerankerFactoryImpl().createAilaQuizReranker("return-first");
 
   public quizSelector: QuizSelector<BaseType> =

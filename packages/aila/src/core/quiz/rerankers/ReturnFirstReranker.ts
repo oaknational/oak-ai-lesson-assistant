@@ -20,20 +20,19 @@ export class ReturnFirstReranker extends BasedOnRagAilaQuizReranker<
   public evaluateQuizArray(
     quizzes: QuizQuestion[][],
     _lessonPlan: LooseLessonPlan,
-    _ratingSchema: typeof testRatingSchema,
+    ratingSchema: typeof testRatingSchema,
     _quizType: QuizPath,
-  ): Promise<(typeof testRatingSchema)[]> {
-    const output: z.infer<typeof testRatingSchema>[] = [];
-
-    quizzes.forEach((quiz) => {
+  ): Promise<z.infer<typeof testRatingSchema>[]> {
+    const output = quizzes.map(() => {
       const dummySchema = generateMock(testRatingSchema);
       dummySchema.rating = 0;
-      output.push(dummySchema);
+      return dummySchema;
     });
+
     if (output[0]) {
       output[0].rating = 1;
     }
 
-    return Promise.resolve(output.map(() => testRatingSchema));
+    return Promise.resolve(output);
   }
 }
