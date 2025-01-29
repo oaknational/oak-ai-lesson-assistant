@@ -2,6 +2,7 @@ import { Storage } from "@google-cloud/storage";
 import { aiLogger } from "@oakai/logger";
 import type { Cue } from "webvtt-parser";
 import { WebVTTParser } from "webvtt-parser";
+import { z } from "zod";
 
 const log = aiLogger("transcripts");
 
@@ -24,9 +25,17 @@ export type StorageClientArgs = {
   captionBucket: string;
 };
 
-const formatCredentials = (credentials: string) => {
+const credentialSchema = z.object({
+  client_email: z.string(),
+  private_key: z.string(),
+});
+
+const formatCredentials = (credentials: string): CredentialBody => {
   try {
-    return JSON.parse(Buffer.from(credentials, "base64").toString("utf8"));
+    const parsed = JSON.parse(
+      Buffer.from(credentials, "base64").toString("utf8"),
+    );
+    return credentialSchema.parse(parsed);
   } catch (error) {
     const err = error as Error;
     throw new GoogleStorageError(
@@ -37,7 +46,7 @@ const formatCredentials = (credentials: string) => {
 
 const getClient = (credentialsJson: string) => {
   try {
-    const credentials: CredentialBody = formatCredentials(credentialsJson);
+    const credentials = formatCredentials(credentialsJson);
     return new Storage({
       credentials,
     });

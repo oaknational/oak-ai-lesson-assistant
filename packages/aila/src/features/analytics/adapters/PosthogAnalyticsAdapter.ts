@@ -1,3 +1,4 @@
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { getEncoding } from "js-tiktoken";
 import { PostHog } from "posthog-node";
 import invariant from "tiny-invariant";
@@ -5,6 +6,15 @@ import invariant from "tiny-invariant";
 import type { AilaServices } from "../../../core/AilaServices";
 import { reportCompletionAnalyticsEvent } from "../../../lib/openai/OpenAICompletionWithLogging";
 import { AnalyticsAdapter } from "./AnalyticsAdapter";
+
+export interface ModerationAnalyticsEvent {
+  distinctId: string;
+  event: "moderation_result";
+  properties: {
+    chat_id: string;
+    moderation_id: string;
+  } & ModerationResult;
+}
 
 export class PosthogAnalyticsAdapter extends AnalyticsAdapter {
   private readonly _posthogClient: PostHog;
@@ -35,8 +45,9 @@ export class PosthogAnalyticsAdapter extends AnalyticsAdapter {
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public reportModerationResult(moderationResultEvent: any) {
+  public reportModerationResult(
+    moderationResultEvent: ModerationAnalyticsEvent,
+  ) {
     this._posthogClient.capture(moderationResultEvent);
   }
 

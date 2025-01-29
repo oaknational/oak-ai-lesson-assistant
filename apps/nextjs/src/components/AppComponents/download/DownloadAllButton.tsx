@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
@@ -116,24 +117,32 @@ export const DownloadAllButton = ({
           exitQuizLink: parsedData.exitQuiz,
           additionalMaterialsLink: parsedData.additionalMaterials,
           lessonPlanLink: parsedData.lessonPlan,
+        }).catch((error) => {
+          log.error(error);
+          Sentry.captureException(error, { extra: { chatId } });
+          toast.error("Failed to send email");
         });
       } catch (error) {
         log.error(error);
         Sentry.captureException(error);
+        toast.error("Failed to send email");
       }
     }
     function handleZipDownloadStatus() {
-      const timer = setInterval(async () => {
+      const timer = setInterval(() => {
         setZipStatus("loading");
-        try {
-          const response = await zipStatusMutateAsync({ taskId });
-          if (response === "complete") {
-            setZipStatus("complete");
+        zipStatusMutateAsync({ taskId })
+          .then((response) => {
+            if (response === "complete") {
+              setZipStatus("complete");
+              clearInterval(timer);
+            }
+          })
+          .catch((error) => {
+            log.error(error);
+            Sentry.captureException(error, { extra: { chatId } });
             clearInterval(timer);
-          }
-        } catch {
-          clearInterval(timer);
-        }
+          });
       }, 1000);
     }
 

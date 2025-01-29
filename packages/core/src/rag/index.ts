@@ -24,11 +24,13 @@ import type { JsonValue } from "../models/prompts";
 import { slugify } from "../utils/slugify";
 import { keyStages, subjects } from "../utils/subjects";
 import { CategoriseKeyStageAndSubjectResponse } from "./categorisation";
+import { SimilarityResultWithScoreSchema } from "./types";
 import type {
   FilterOptions,
   KeyStageAndSubject,
   LessonPlanWithPartialLesson,
   SimilarityResultWithScore,
+  SimilarityResultWithScoreAndMetadata,
 } from "./types";
 
 const log = aiLogger("rag");
@@ -143,6 +145,7 @@ Thank you and happy classifying!`;
       log.info("Categorisation results", parsedResponse);
       return parsedResponse;
     } catch (e) {
+      log.error("Error parsing response", e);
       return { error: "Error parsing response" };
     }
   }
@@ -451,7 +454,23 @@ Thank you and happy classifying!`;
     });
     const result = await vectorStore.similaritySearchWithScore(query, perPage);
 
-    const relevantResults = result.filter((r) => r[1] > 0.8).map((r) => r[0]);
+    const validatedResults = result
+      .map((item) => {
+        try {
+          const validated = SimilarityResultWithScoreSchema.parse(item);
+          return validated as SimilarityResultWithScoreAndMetadata;
+        } catch (error) {
+          log.error("Invalid similarity result:", error);
+          return null;
+        }
+      })
+      .filter(
+        (item): item is SimilarityResultWithScoreAndMetadata => item !== null,
+      );
+
+    const relevantResults = validatedResults
+      .filter((r) => r[1] > 0.1)
+      .map((r) => r[0]);
 
     if (relevantResults.length === 0) {
       return [];
@@ -692,6 +711,8 @@ Thank you and happy classifying!`;
       };
     }
 
+    log.info("Filter:", filter);
+
     const vectorStore = PrismaVectorStore.withModel<LessonPlanPart>(
       this.prisma,
     ).create(
@@ -723,6 +744,8 @@ Thank you and happy classifying!`;
         similaritySearchTerm,
         k * 5, // search for more records than we need
       );
+
+      log.info("Initial search result", result);
     } catch (e) {
       if (e instanceof TypeError && e.message.includes("join([])")) {
         log.warn("Caught TypeError with join([]), returning empty array");
@@ -731,16 +754,29 @@ Thank you and happy classifying!`;
       throw e;
     }
 
-    const relevantResults = result.filter((r) => r[1] > 0.1).map((r) => r[0]);
+    const validatedResults = result
+      .map((item) => {
+        try {
+          const validated = SimilarityResultWithScoreSchema.parse(item);
+          return validated as SimilarityResultWithScoreAndMetadata;
+        } catch (error) {
+          log.error("Invalid similarity result:", error);
+          return null;
+        }
+      })
+      .filter(
+        (item): item is SimilarityResultWithScoreAndMetadata => item !== null,
+      );
 
-    if (relevantResults.length === 0) {
+    // Now validatedResults is of type SimilarityResultWithScore[]
+    if (validatedResults.length === 0) {
       // Avoids a TypeError when there are no relevant results
       return [];
     }
     const lessonPlans: LessonPlanWithPartialLesson[] =
       await this.prisma.lessonPlan.findMany({
         where: {
-          id: { in: relevantResults.map((r) => r.metadata.lesson_plan_id) },
+          id: { in: validatedResults.map((r) => r[0].metadata.lesson_plan_id) },
         },
         include: {
           lesson: {
@@ -833,7 +869,24 @@ Thank you and happy classifying!`;
 
     const result = await vectorStore.similaritySearchWithScore(query, perPage);
 
-    const relevantResults = result.filter((r) => r[1] > 0.1).map((r) => r[0]);
+    const validatedResults = result
+      .map((item) => {
+        try {
+          const validated = SimilarityResultWithScoreSchema.parse(item);
+          return validated as SimilarityResultWithScoreAndMetadata;
+        } catch (error) {
+          log.error("Invalid similarity result:", error);
+          return null;
+        }
+      })
+      .filter(
+        (item): item is SimilarityResultWithScoreAndMetadata => item !== null,
+      );
+
+    const relevantResults = validatedResults
+      .filter((r) => r[1] > 0.1)
+      .map((r) => r[0]);
+
     const snippets = await this.prisma.snippet.findMany({
       where: {
         id: { in: relevantResults.map((r) => r.metadata.id) },

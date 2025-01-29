@@ -61,7 +61,7 @@ export class AilaStreamHandler {
         this._chat.id,
       );
     } catch (e) {
-      this.handleStreamError(e);
+      await this.handleStreamError(e);
       log.info("Stream error", e, this._chat.iteration, this._chat.id);
     } finally {
       try {

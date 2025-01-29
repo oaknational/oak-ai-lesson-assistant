@@ -15,8 +15,12 @@
       "schedule": "0 3 * * *"
     },
     {
-      "path": "/api/cron-jobs/google-drive-size-quota",
+      "path": "/api/cron-jobs/expired-exports",
       "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron-jobs/google-drive-size-quota",
+      "schedule": "0 5 * * *"
     }
   ]
 }

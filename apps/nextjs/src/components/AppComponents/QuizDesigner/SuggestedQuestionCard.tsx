@@ -36,6 +36,7 @@ const SuggestedLessonCard = ({
         <Text className="text-sm">Question:</Text>
         <button
           onClick={() => {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             removeQuestionFromArray(
               question,
               potentialNewQuestions,
@@ -61,6 +62,7 @@ const SuggestedLessonCard = ({
           </Flex>
         </button>
         <button
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={async () => {
             dispatch({
               type: QuizAppActions.AddPopulatedQuestion,
@@ -130,6 +132,7 @@ async function removeQuestionFromArray(
     newArr.splice(index, 1);
   }
   setPotentialNewQuestions(newArr);
+  return Promise.resolve();
 }
 
 export default SuggestedLessonCard;

@@ -1,17 +1,19 @@
 "use client";
 
 import type { PropsWithChildren } from "react";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 import {
   OakCookieConsentProvider,
   OakCookieConsent,
   useCookieConsent as useCookieConsentUI,
+  type Consent,
 } from "@oaknational/oak-components";
 import {
   OakConsentProvider,
   useOakConsent,
 } from "@oaknational/oak-consent-client";
+import * as Sentry from "@sentry/nextjs";
 
 import { consentClient } from "@/lib/cookie-consent/consentClient";
 
@@ -33,10 +35,19 @@ const RequiresInteraction = () => {
 const CookieConsentUIProvider = ({ children }: PropsWithChildren) => {
   const { state, logConsents } = useOakConsent();
 
+  const performLogConsents = useCallback(
+    (consents: Consent[]) => {
+      logConsents(consents).catch((error) => {
+        Sentry.captureException(error, { extra: { consents } });
+      });
+    },
+    [logConsents],
+  );
+
   return (
     <OakCookieConsentProvider
       policyConsents={state.policyConsents}
-      onConsentChange={logConsents}
+      onConsentChange={performLogConsents}
     >
       {children}
       <OakCookieConsent

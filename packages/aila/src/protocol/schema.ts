@@ -395,8 +395,8 @@ export const CompletedLessonPlanSchema = z.object({
 export type CompletedLessonPlan = z.infer<typeof CompletedLessonPlanSchema>;
 
 export const LessonPlanSchema = CompletedLessonPlanSchema.partial().extend({
-  _experimental_starterQuizMathsV0: QuizOptionalSchema.optional(),
-  _experimental_exitQuizMathsV0: QuizOptionalSchema.optional(),
+  _experimental_starterQuizMathsV0: QuizSchema.optional(),
+  _experimental_exitQuizMathsV0: QuizSchema.optional(),
 });
 
 export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;
@@ -413,8 +413,7 @@ export const LessonPlanJsonSchema = zodToJsonSchema(
 );
 
 const AilaRagRelevantLessonSchema = z.object({
-  // @todo add this after next ingest
-  // oakLessonId: z.number(),
+  oakLessonId: z.number().nullish(),
   lessonPlanId: z.string(),
   title: z.string(),
 });
@@ -514,3 +513,24 @@ export const quizOperationTypeSchema = z.union([
 ]);
 
 export type QuizOperationType = z.infer<typeof quizOperationTypeSchema>;
+
+export const CompletedLessonPlanSchemaWithoutLength = z.object({
+  title: LessonTitleSchema,
+  keyStage: KeyStageSchema,
+  subject: SubjectSchema,
+  topic: TopicSchema,
+  learningOutcome: LearningOutcomeSchema,
+  learningCycles: LearningCyclesSchema,
+  priorKnowledge: PriorKnowledgeSchema,
+  keyLearningPoints: KeyLearningPointsSchema,
+  misconceptions: MisconceptionsSchemaWithoutLength,
+  keywords: KeywordsSchemaWithoutLength,
+  starterQuiz: QuizSchemaWithoutLength.describe(
+    LESSON_PLAN_DESCRIPTIONS.starterQuiz,
+  ),
+  cycle1: CycleSchemaWithoutLength.describe("The first learning cycle"),
+  cycle2: CycleSchemaWithoutLength.describe("The second learning cycle"),
+  cycle3: CycleSchemaWithoutLength.describe("The third learning cycle"),
+  exitQuiz: QuizSchemaWithoutLength.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+  additionalMaterials: AdditionalMaterialsSchema,
+});
