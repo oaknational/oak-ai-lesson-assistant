@@ -1,4 +1,5 @@
 import { Client } from "@elastic/elasticsearch";
+import type { SearchHitsMetadata } from "@elastic/elasticsearch/lib/api/types";
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { CohereClient } from "cohere-ai";
@@ -305,7 +306,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     field: string,
     query: string,
     _size: number = 10,
-  ): Promise<any> {
+  ): Promise<SearchHitsMetadata<CustomHit>> {
     try {
       log.info(`Searching index: ${index}, field: ${field}, query: ${query}`);
       const response = await this.client.search<CustomHit>({
