@@ -1,5 +1,6 @@
 "use client";
 
+import { chatSchema } from "@oakai/aila/src/protocol/schema";
 import type { Prisma } from "@prisma/client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -59,16 +60,22 @@ const LessonsPage = ({
         Choose your keystage: {keyStageSlug}, subject: {subjectSlug}
       </h1>
       <div>
-        {parsedLessons?.map((lesson) => (
-          <div key={lesson.id} className="mb-5">
-            <Link
-              href={`/image-test/${keyStageSlug}/${subjectSlug}/${lesson.id}`}
-              className="text-blue hover:underline"
-            >
-              {lesson.output.title}
-            </Link>
-          </div>
-        ))}
+        {parsedLessons?.map((lesson) => {
+          // Check is lesson output is valid chat schema, dont throw an error just skip
+          if (!chatSchema.safeParse(lesson.output)) {
+            return null;
+          }
+          return (
+            <div key={lesson.id} className="mb-5">
+              <Link
+                href={`/image-test/${keyStageSlug}/${subjectSlug}/${lesson.id}`}
+                className="text-blue hover:underline"
+              >
+                {lesson.output.title}
+              </Link>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

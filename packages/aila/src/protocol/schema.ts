@@ -206,8 +206,9 @@ export const CheckForUnderstandingSchemaWithoutLength = z.object({
 export const CheckForUnderstandingSchema =
   CheckForUnderstandingSchemaWithoutLength.extend({
     answers: CheckForUnderstandingSchemaWithoutLength.shape.answers.length(1),
-    distractors:
-      CheckForUnderstandingSchemaWithoutLength.shape.distractors.min(2),
+    distractors: CheckForUnderstandingSchemaWithoutLength.shape.distractors
+      .min(1)
+      .optional(),
   });
 
 export const CheckForUnderstandingOptionalSchema =

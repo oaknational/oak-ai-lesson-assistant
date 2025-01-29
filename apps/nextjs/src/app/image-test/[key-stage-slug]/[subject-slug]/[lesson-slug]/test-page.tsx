@@ -92,7 +92,7 @@ const ImageTestPage = ({
   }
 
   const parseOutput = chatSchema.parse(lesson.output);
-  lesson;
+
   const lessonOutput = parseOutput.lessonPlan;
   // @ts-ignore
   const { checkForUnderstanding, ...cycle1 } = lessonOutput.cycle1;
