@@ -61,7 +61,6 @@ export type ChatContextProps = {
   setInput: React.Dispatch<React.SetStateAction<string>>;
   chatAreaRef: React.RefObject<HTMLDivElement>;
   // queuedUserAction: string | null;
-  // queueUserAction: (action: string) => void;
   // executeQueuedAction: () => Promise<void>;
 };
 

@@ -3,8 +3,7 @@ import type { AiMessage } from "../types";
 
 export function calculateStreamingStatus(
   currentMessageData: AiMessage | null,
-): AilaStreamingStatus {
-  // Determine streaming status
+): Exclude<AilaStreamingStatus, "Idle"> {
   if (!currentMessageData) {
     return "Loading";
   } else if (currentMessageData.role === "user") {
@@ -23,5 +22,4 @@ export function calculateStreamingStatus(
   } else {
     return "Loading";
   }
-  // TODO: look at isLoading to determine idle?
 }

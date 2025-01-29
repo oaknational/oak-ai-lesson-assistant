@@ -38,7 +38,6 @@ export type ChatStore = {
   streamingMessage: ParsedMessage | null;
   queuedUserAction: string | null;
   lessonPlan: LooseLessonPlan | null;
-  // canAppend: boolean;
 
   // From AI SDK
   aiSdkActions: AiSdkActions;
