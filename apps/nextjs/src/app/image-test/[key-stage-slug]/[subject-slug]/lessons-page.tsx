@@ -3,7 +3,6 @@
 import { chatSchema } from "@oakai/aila/src/protocol/schema";
 import type { Prisma } from "@prisma/client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { z } from "zod";
 
 const LessonsPage = ({

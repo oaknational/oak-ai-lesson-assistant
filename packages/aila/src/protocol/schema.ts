@@ -449,11 +449,11 @@ export type AilaRagRelevantLesson = z.infer<typeof AilaRagRelevantLessonSchema>;
 
 export const chatSchema = z
   .object({
-    id: z.string(),
-    path: z.string(),
-    title: z.string(),
-    userId: z.string(),
-    lessonPlan: LessonPlanSchemaWhilstStreaming,
+    id: z.string().optional(),
+    path: z.string().optional(),
+    title: z.string().optional(),
+    userId: z.string().optional(),
+    lessonPlan: LessonPlanSchemaWhilstStreaming.optional(),
     relevantLessons: z.array(AilaRagRelevantLessonSchema).optional(),
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]),
@@ -463,18 +463,21 @@ export const chatSchema = z
     messages: z.array(
       z
         .object({
-          id: z.string(),
-          content: z.string(),
-          role: z.union([
-            z.literal("function"),
-            z.literal("data"),
-            z.literal("user"),
-            z.literal("system"),
-            z.literal("assistant"),
-            z.literal("tool"),
-          ]),
+          id: z.string().optional(),
+          content: z.string().optional(),
+          role: z
+            .union([
+              z.literal("function"),
+              z.literal("data"),
+              z.literal("user"),
+              z.literal("system"),
+              z.literal("assistant"),
+              z.literal("tool"),
+            ])
+            .optional(),
         })
-        .passthrough(),
+        .passthrough()
+        .optional(),
     ),
   })
   .passthrough();
