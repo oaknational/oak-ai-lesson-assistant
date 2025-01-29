@@ -1,6 +1,9 @@
+import { aiLogger } from "@oakai/logger";
 import { CohereClient } from "cohere-ai";
 
 import type { DocumentReranker, SimplifiedResult } from "./interfaces";
+
+const log = aiLogger("quiz");
 
 export class CohereReranker implements DocumentReranker {
   private readonly cohere: CohereClient;
@@ -35,11 +38,10 @@ export class CohereReranker implements DocumentReranker {
         returnDocuments: true,
       });
 
-      console.log("Ranked documents:");
-      console.log(response.results);
+      log.info("Ranked documents:", response.results);
       return response.results;
     } catch (error) {
-      console.error("Error during reranking:", error);
+      log.error("Error during reranking:", error);
       return [];
     }
   }
