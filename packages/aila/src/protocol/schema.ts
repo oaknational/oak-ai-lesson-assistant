@@ -124,9 +124,36 @@ export const EXPLANATION_DESCRIPTIONS = {
   Should describe what should be displayed on the slides for pupils to look at during the explanation.
   This is to enable dual coding of a visual image and the teachers explanation being given verbally.
   Written in the EXPERT_TEACHER voice.`,
-  imagePrompt: dedent`A prompt to generate an image, or a search term to use to find an image or video.
-  Should tell the teacher what images to search for to display on the slides.
-  Written in the EXPERT_TEACHER voice.`,
+  imagePrompt: z.string().describe(
+    `A prompt to generate an image from DAL-E. Think about what makes a good prompt for image generation. 
+
+      You must first make a decision about whether the requirement is for a diagram or a photo realistic image and use the appropriate prompt below.
+
+      DIAGRAM PROMPT:
+      The image should be a diagram or illustration.
+      Prefix the prompt with 'A clear diagram of...'. 
+      Ensure the prompt is as descriptive as possible.
+      The prompt MUST be at least THREE SENTENCES describing the image in detail. 
+      Written in the EXPERT_TEACHER voice.
+
+
+      PHOTO REALISTIC PROMPT:
+      The image should be photo realistic.
+      You should include what the focus of the image should be e.g. if the image is showing pupils what a penguins is the image should be of a penguin on its own rather than a larger scene with multiple penguins.
+      You should be really specific about the image, suggesting an image that will support pupils with their understanding of the explanation. For example if the explanation was about the organelles in a plant cell, the prompt should specify that the image should be a diagram of a plant cell and which organelles should be included in the image. 
+      The image should not have any labelling, symbols or text on it.
+      The end image should be a classroom and age appropriate image.   
+      Prefix the prompt with 'A highly detailed 8K photograph taken on a Canon EOS R5 Mark II of a...'. 
+      Ensure the prompt is as descriptive as possible.
+      The prompt MUST be at least THREE SENTENCES describing the image in detail. 
+      Written in the EXPERT_TEACHER voice.`,
+  ),
+
+  imageSearch: z
+    .string()
+    .describe(
+      "A search term to use to find an image or video. Should tell the teacher what images to search for to display on the slides. Written in the EXPERT_TEACHER voice.",
+    ),
   slideText: dedent`The slide text would appear on the slide when the teacher delivers this part of the lesson.
   It should be a short, succinct summary of the content in the explanation.
   It should be no longer than 2 sentences.
