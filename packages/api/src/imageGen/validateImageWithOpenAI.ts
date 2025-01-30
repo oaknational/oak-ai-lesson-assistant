@@ -48,6 +48,7 @@ export async function validateImageWithOpenAI(
 
           content:
             "You are an image validator assessing if images are suitable for a classroom setting. " +
+            "You should assess whether the image is appropriate given the prompt and the context of the lesson. Images should not have symbols or text on them" +
             "Always return your output as strict JSON. Do not include any additional text outside the JSON format. " +
             "The JSON should have the following structure:\n" +
             `{

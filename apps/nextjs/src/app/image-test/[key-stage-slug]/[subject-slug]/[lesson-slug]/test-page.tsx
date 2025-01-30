@@ -381,7 +381,9 @@ const Cycle = ({
     mutateAsync: agentPromptImagesMutateAsync,
   } = trpc.imageGen.generateFourImages.useMutation();
 
-  const sources = ["cloudinary", "unsplash", "dale", "stable"];
+  const sources = ["cloudinary", "unsplash", "dale", "stable", "stableUltra"];
+
+  console.log("cycleImagesFromAilaPrompt", cycleImagesFromAilaPrompt);
 
   const allAilaPromptImagesSortedByRelavanceScore = sources
     .flatMap((source) =>
@@ -412,8 +414,10 @@ const Cycle = ({
   }, [generateImagePrompt, pageData, cycleNumber]);
 
   const generateImagesFromAilaPrompt = useCallback(() => {
+    const searchExpression =
+      cycle.explanation.imageSearch || cycle.explanation.imagePrompt;
     ailaPromptImagesMutateAsync({
-      searchExpression: cycle.explanation.imageSearch,
+      searchExpression: searchExpression,
       lessonTitle: pageData.title as string,
       subject: pageData.subject as string,
       keyStage: pageData.keyStage as string,
@@ -431,8 +435,10 @@ const Cycle = ({
   ]);
 
   const generateImagesFromAgentPrompt = useCallback(() => {
+    const searchExpression =
+      cycle.explanation.imageSearch || cycle.explanation.imagePrompt;
     agentPromptImagesMutateAsync({
-      searchExpression: cycle.explanation.imageSearch,
+      searchExpression: searchExpression,
       lessonTitle: pageData.title as string,
       subject: pageData.subject as string,
       keyStage: pageData.keyStage as string,
@@ -521,7 +527,7 @@ const Cycle = ({
               <h4 className="font-bold">Images from Agent prompt</h4>
               {allAgentPromptImagesSortedByRelavanceScore.length > 0 ? (
                 allAgentPromptImagesSortedByRelavanceScore.map((image) => (
-                  <div key={image.id} className="mb-4">
+                  <div key={image.id} className="my-10">
                     <Image
                       src={image.url}
                       alt={image.alt}
