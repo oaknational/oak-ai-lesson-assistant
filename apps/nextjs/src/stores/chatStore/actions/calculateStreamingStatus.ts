@@ -3,26 +3,23 @@ import type { AiMessage } from "../types";
 
 export function calculateStreamingStatus(
   currentMessageData: AiMessage | null,
-  streamingStatus: AilaStreamingStatus,
-) {
-  // Determine streaming status
+): Exclude<AilaStreamingStatus, "Idle"> {
   if (!currentMessageData) {
-    streamingStatus = "Loading";
+    return "Loading";
   } else if (currentMessageData.role === "user") {
-    streamingStatus = "RequestMade";
+    return "RequestMade";
   } else if (currentMessageData.content.includes("MODERATION_START")) {
-    streamingStatus = "Moderating";
+    return "Moderating";
   } else if (currentMessageData.content.includes("experimentalPatch")) {
-    streamingStatus = "StreamingExperimentalPatches";
+    return "StreamingExperimentalPatches";
   } else if (
     currentMessageData.content.includes('"type":"prompt"') ||
     currentMessageData.content.includes('\\"type\\":\\"prompt\\"')
   ) {
-    streamingStatus = "StreamingChatResponse";
+    return "StreamingChatResponse";
   } else if (currentMessageData.content.includes("CHAT_START")) {
-    streamingStatus = "StreamingLessonPlan";
+    return "StreamingLessonPlan";
   } else {
-    streamingStatus = "Loading";
+    return "Loading";
   }
-  return streamingStatus;
 }
