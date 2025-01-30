@@ -9,8 +9,16 @@ export function handleSetMessages(
   set: (partial: Partial<ChatStore>) => void,
   get: () => ChatStore,
 ) {
+  function handleChangedAilaStreamingStatus(
+    ailaStreamingStatus: AilaStreamingStatus,
+  ) {
+    if (ailaStreamingStatus === "Idle" && get().queuedUserAction) {
+      void get().executeQueuedAction();
+    }
+  }
+
   return (messages: AiMessage[], isLoading: boolean) => {
-    let streamingStatus: AilaStreamingStatus = "Idle";
+    const originalStreamingStatus = get().ailaStreamingStatus;
 
     if (!isLoading) {
       const nextStableMessages = getNextStableMessages(
@@ -38,18 +46,19 @@ export function handleSetMessages(
         get().stableMessages,
       );
 
-      streamingStatus = calculateStreamingStatus(
-        currentMessageData,
-        streamingStatus,
-      );
-
       set({
         streamingMessage,
         ...(nextStableMessages && {
           stableMessages: nextStableMessages,
         }),
-        ailaStreamingStatus: streamingStatus,
+        ailaStreamingStatus: calculateStreamingStatus(currentMessageData),
       });
+    }
+
+    const streamingStatusChanged =
+      get().ailaStreamingStatus !== originalStreamingStatus;
+    if (streamingStatusChanged) {
+      handleChangedAilaStreamingStatus(get().ailaStreamingStatus);
     }
   };
 }

@@ -5,6 +5,6 @@ export const handleStop =
     if (get().queuedUserAction) {
       set({ queuedUserAction: null });
     } else {
-      get().actions.stop();
+      get().aiSdkActions.stop();
     }
   };
