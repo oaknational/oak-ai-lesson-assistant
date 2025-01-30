@@ -1,3 +1,4 @@
+import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import type * as z from "zod";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
@@ -9,7 +10,6 @@ import type {
   QuizQuestion,
 } from "../../protocol/schema";
 import type {
-  BaseSchema,
   BaseType,
   MaxRatingFunctionApplier,
   RatingFunction,
@@ -37,7 +37,7 @@ export interface DocumentReranker {
     query: string,
     docs: SimplifiedResult[],
     topN: number,
-  ): Promise<any[]>;
+  ): Promise<RerankResponseResultsItem[]>;
 }
 
 export interface AilaQuizService {

@@ -35,7 +35,7 @@ export const QuizServiceSettingsSchema = z.enum(["simple", "demo", "basedOn"]);
 export type QuizServiceSettings = z.infer<typeof QuizServiceSettingsSchema>;
 
 export type QuizBuilderSettings = {
-  quizRatingSchema: z.ZodSchema<any, any, any>;
+  quizRatingSchema: z.ZodSchema<unknown>;
   quizSelector: QuizSelectorType;
   quizReranker: QuizRerankerType;
   quizGenerators: QuizGeneratorType[];
