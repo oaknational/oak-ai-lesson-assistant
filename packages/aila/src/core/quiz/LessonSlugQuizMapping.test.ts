@@ -38,7 +38,7 @@ describe("ElasticLessonQuizLookup", () => {
       it("should return starter quiz questions for valid lesson slug", async () => {
         const result = await dbLookup.getStarterQuiz("test-lesson");
         expect(result).toEqual(["q1", "q2"]);
-        // @ts-expect-error
+        // @ts-expect-error - Mock the Elasticsearch client search method
         expect(dbLookup.client.search).toHaveBeenCalledWith({
           index: "lesson-slug-lookup",
           query: {
@@ -52,7 +52,7 @@ describe("ElasticLessonQuizLookup", () => {
       });
 
       it("should throw error when no quiz found", async () => {
-        // @ts-expect-error
+        // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({ hits: { hits: [] } });
         await expect(dbLookup.getStarterQuiz("non-existent")).rejects.toThrow(
           "No /starterQuiz found for lesson slug: non-existent",
@@ -60,7 +60,7 @@ describe("ElasticLessonQuizLookup", () => {
       });
 
       it("should throw error when quiz data is invalid", async () => {
-        // @ts-expect-error
+        // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({
           hits: {
             hits: [{ _source: { text: { starterQuiz: null } } }],
@@ -76,7 +76,7 @@ describe("ElasticLessonQuizLookup", () => {
       it("should return exit quiz questions for valid lesson slug", async () => {
         const result = await dbLookup.getExitQuiz("test-lesson");
         expect(result).toEqual(["q3", "q4"]);
-        // @ts-expect-error
+        // @ts-expect-error- Mock the Elasticsearch client search method
         expect(dbLookup.client.search).toHaveBeenCalledWith({
           index: "lesson-slug-lookup",
           query: {
@@ -90,7 +90,7 @@ describe("ElasticLessonQuizLookup", () => {
       });
 
       it("should throw error when no quiz found", async () => {
-        // @ts-expect-error
+        // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({ hits: { hits: [] } });
         await expect(dbLookup.getExitQuiz("non-existent")).rejects.toThrow(
           "No /exitQuiz found for lesson slug: non-existent",
@@ -98,7 +98,7 @@ describe("ElasticLessonQuizLookup", () => {
       });
 
       it("should throw error when quiz data is invalid", async () => {
-        // @ts-expect-error
+        // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({
           hits: {
             hits: [{ _source: { text: { exitQuiz: null } } }],
@@ -117,7 +117,7 @@ describe("ElasticLessonQuizLookup", () => {
       });
 
       it("should return false when starter quiz doesn't exist", async () => {
-        // @ts-expect-error
+        // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({ hits: { hits: [] } });
         const result = await dbLookup.hasStarterQuiz("non-existent");
         expect(result).toBe(false);
@@ -131,7 +131,7 @@ describe("ElasticLessonQuizLookup", () => {
       });
 
       it("should return false when exit quiz doesn't exist", async () => {
-        // @ts-expect-error
+        // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({ hits: { hits: [] } });
         const result = await dbLookup.hasExitQuiz("non-existent");
         expect(result).toBe(false);

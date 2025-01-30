@@ -370,7 +370,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
         query: query,
         documents: jsonDocs,
         topN: topN,
-        //@ts-ignore Cohere client has some weirdness - should update version.
+        //@ts-expect-error Cohere client has some weirdness - should update version.
         rankFields: ["text"],
         returnDocuments: true,
       });
