@@ -64,16 +64,6 @@ export const Idle: Story = {
   },
 };
 
-export const IdleWithQueuedUserAction: Story = {
-  args: {},
-  parameters: {
-    chatStoreState: {
-      queuedUserAction: "regenerate",
-      ailaStreamingStatus: "Idle",
-    },
-  },
-};
-
 export const Loading: Story = {
   args: {},
   parameters: {
@@ -109,17 +99,6 @@ export const StreamingChatResponse: Story = {
     },
   },
 };
-
-export const StreamingWithQueuedUserAction: Story = {
-  args: {},
-  parameters: {
-    chatStoreState: {
-      queuedUserAction: "regenerate",
-      ailaStreamingStatus: "StreamingLessonPlan",
-    },
-  },
-};
-
 export const Moderating: Story = {
   args: {},
   parameters: {
