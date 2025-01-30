@@ -61,7 +61,6 @@ export type ChatContextProps = {
   setInput: React.Dispatch<React.SetStateAction<string>>;
   chatAreaRef: React.RefObject<HTMLDivElement>;
   // queuedUserAction: string | null;
-  // queueUserAction: (action: string) => void;
   // executeQueuedAction: () => Promise<void>;
 };
 
@@ -169,6 +168,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     LooseLessonPlan | undefined
   >(undefined);
 
+  const streamingFinished = useChatStore((state) => state.streamingFinished);
+
   /******************* Functions *******************/
 
   const { invokeActionMessages } = useActionMessages();
@@ -253,6 +254,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       setHasFinished(true);
       shouldTrackStreamFinished.current = true;
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
+      streamingFinished();
     },
   });
 
@@ -290,18 +292,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       isStreaming: !hasFinished,
       messageHashes,
     });
-
-  // Handle queued user actions and messages
-
-  const executeQueuedAction = useChatStore(
-    (state) => state.executeQueuedAction,
-  );
-
-  useEffect(() => {
-    if (hasFinished) {
-      void executeQueuedAction();
-    }
-  }, [hasFinished, executeQueuedAction]);
 
   const handleReload = useCallback(() => {
     reload().catch((err) => {
