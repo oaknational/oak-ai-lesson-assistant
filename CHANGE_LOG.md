@@ -1,3 +1,36 @@
+## [1.22.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.22.0...v1.22.1) (2025-01-22)
+
+
+### Bug Fixes
+
+* async / promise linting issues ([#489](https://github.com/oaknational/oak-ai-lesson-assistant/issues/489)) ([3083366](https://github.com/oaknational/oak-ai-lesson-assistant/commit/30833665b7cf7074bb5273f8ccf968adcddde3ef))
+
+# [1.22.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.21.0...v1.22.0) (2025-01-20)
+
+
+### Bug Fixes
+
+* resolve "error typed" issue with linting ([#483](https://github.com/oaknational/oak-ai-lesson-assistant/issues/483)) ([e31b1c8](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e31b1c8abbf4a7286b134e7129bca45a5141f2d9))
+* use stable initialMessages for useChat ([#493](https://github.com/oaknational/oak-ai-lesson-assistant/issues/493)) ([3233c2e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3233c2e9deec046f47d2ceab8b9e3830ecab3ce1))
+
+
+### Features
+
+* add homepage testimonials ([#482](https://github.com/oaknational/oak-ai-lesson-assistant/issues/482)) ([05df1fe](https://github.com/oaknational/oak-ai-lesson-assistant/commit/05df1fed1039e08f2f08e84a08f844c6245250ce))
+* rag new schema, standalone package [AI-722] ([#448](https://github.com/oaknational/oak-ai-lesson-assistant/issues/448)) ([3f32c75](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3f32c75ba0741c7dd88d9800038bb05e17b38d1c))
+
+# [1.21.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.20.0...v1.21.0) (2025-01-15)
+
+
+### Bug Fixes
+
+* async data prep functions should use Promise.resolve ([#475](https://github.com/oaknational/oak-ai-lesson-assistant/issues/475)) ([4bc7cd8](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4bc7cd8ee02fb192d3689c3441b00b3ddf3010cd))
+
+
+### Features
+
+* hide the qd ([#465](https://github.com/oaknational/oak-ai-lesson-assistant/issues/465)) ([dbac5c2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dbac5c2d2bc2a8113aa3518cd5f89d6e7b488042))
+
 # [1.20.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.19.0...v1.20.0) (2025-01-10)
 
 

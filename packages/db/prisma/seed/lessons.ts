@@ -1,12 +1,12 @@
 /*
  * This script is no longer in use or maintained hence has been removed.
  * If you would like to find the original script go to an old commit.
- * The new process is the importLessons script which can be found in core pakcage.json
+ * The new process is the importLessons script which can be found in core package.json
  *
  */
 
 export async function processGraphQLLesson() {
-  return null;
+  return Promise.resolve(null);
 }
 
 /**
@@ -17,7 +17,7 @@ export async function processGraphQLLesson() {
  * start mirroring the 2023 database structure
  */
 export async function seedLessons() {
-  return null;
+  return Promise.resolve(null);
 }
 
 /**
@@ -28,8 +28,7 @@ export async function seedLessons() {
  * 5. Assign the captions back to the matching lessons
  */
 export async function getLessonBatch() {
-  return null;
+  return Promise.resolve(null);
 }
 
-// seedLessons();
 export default seedLessons;

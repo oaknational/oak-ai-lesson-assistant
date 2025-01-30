@@ -5,6 +5,7 @@
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
+import { IngestError } from "./IngestError";
 import { getLatestIngestId } from "./db-helpers/getLatestIngestId";
 import { ingestStart } from "./steps/0-start";
 import { captions } from "./steps/1-captions";
@@ -13,6 +14,7 @@ import { lpBatchSync } from "./steps/3-lp-batch-sync";
 import { lpChunking } from "./steps/4-lp-chunking";
 import { lpPartsEmbedStart } from "./steps/5-lp-parts-embed-start";
 import { lpPartsEmbedSync } from "./steps/6-lp-parts-embed-sync";
+import { publishToRag } from "./steps/7-publish";
 
 const command = process.argv[2];
 
@@ -47,13 +49,24 @@ async function main() {
     case "embed-sync":
       await lpPartsEmbedSync({ prisma, log, ingestId });
       break;
+
+    case "publish":
+      await publishToRag({ prisma, log, ingestId });
+      break;
     default:
       log.error("Unknown command");
       process.exit(1);
   }
 }
 
-main().catch((error) => {
-  log.error("Error running command", error);
+main().catch((error: unknown) => {
+  const errorMessage =
+    error instanceof Error ? error.toString() : String(error);
+  log.info(errorMessage);
+  if (error instanceof IngestError) {
+    log.info("Ingest ID " + error.ingestId);
+    log.info("Lesson ID " + error.lessonId);
+  }
+  log.error("Error running command, see above");
   process.exit(1);
 });

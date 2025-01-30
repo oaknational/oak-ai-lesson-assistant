@@ -18,6 +18,7 @@ const HALF_SECOND = 500;
 export type DropDownSectionProps = Readonly<{
   section: LessonPlanKey;
   sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
+  // @todo this is bug - LessonPlanSectionWhileStreaming and string is passed in but the type of prevValue is Record<string, unknown>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
@@ -74,6 +75,8 @@ const DropDownSection = ({
       setIsOpen(true);
       const timer = setTimeout(() => {
         setStatus("isLoaded");
+        // @todo this is a bug - value is not typed
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setPrevValue(value);
       }, streamingTimeout);
 

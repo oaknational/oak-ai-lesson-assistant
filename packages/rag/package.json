@@ -1,0 +1,31 @@
+{
+  "name": "@oakai/rag",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --",
+    "test": "pnpm with-env jest --colors --config jest.config.mjs"
+  },
+  "prettier": "@oakai/prettier-config",
+  "dependencies": {
+    "@anatine/zod-mock": "^3.13.4",
+    "@faker-js/faker": "^9.3.0",
+    "@oakai/core": "*",
+    "@oakai/db": "*",
+    "@oakai/logger": "*",
+    "@oakai/prettier-config": "*",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5"
+  }
+}

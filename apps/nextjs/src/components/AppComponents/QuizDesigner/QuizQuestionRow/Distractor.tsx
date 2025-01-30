@@ -86,6 +86,7 @@ const Distractor = ({
 
     const extraContext = `${state.topic} : ${questionRow.question.value}. Other questions include: ${otherQuestions}`;
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     requestGeneration({
       lastGenerationId: distractor.lastGenerationId,
       sessionId: state.sessionId as string,
@@ -161,7 +162,7 @@ const Distractor = ({
             "User attempted to tweak distractor with missing lastGenerationId",
           );
         }
-      } catch (err) {
+      } catch {
         browserLogger.error("Failed to log distractor tweak");
       }
     },
@@ -192,6 +193,7 @@ const Distractor = ({
               userIsEditing={userIsEditing}
               isLoading={isLoading}
               index={distractorIdx}
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               tweak={tweakDistractor}
               setUserIsEditing={setUserIsEditing}
             >

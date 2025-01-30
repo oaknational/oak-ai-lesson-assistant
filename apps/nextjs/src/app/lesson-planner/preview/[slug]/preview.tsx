@@ -10,6 +10,8 @@ import HeroContainer from "@/components/HeroContainer";
 import { Icon } from "@/components/Icon";
 import Layout from "@/components/Layout";
 
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 export const LessonPlanPreview = ({ planSections }) => {
   if (!planSections) return null;
   return (

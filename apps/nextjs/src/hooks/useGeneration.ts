@@ -156,7 +156,10 @@ export const useGeneration = <TSchema extends z.Schema>(
 
         const isRateLimited =
           err instanceof TRPCClientError &&
-          err?.data.code === "TOO_MANY_REQUESTS";
+          typeof err.data === "object" &&
+          err.data !== null &&
+          "code" in err.data &&
+          (err.data as { code: string }).code === "TOO_MANY_REQUESTS";
 
         const message = isRateLimited
           ? "You are out of generations, please come back later"

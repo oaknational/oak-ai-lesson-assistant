@@ -15,6 +15,7 @@ export default function PreviewRedirect() {
 
   // Potentially incorrect
   const id =
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     searchParams && searchParams?.entries.length > 1 && searchParams[0][1];
   router.push(`/lesson-planner/preview/${id}`);
   return null;
