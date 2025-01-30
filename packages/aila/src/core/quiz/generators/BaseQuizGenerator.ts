@@ -33,6 +33,7 @@ import { CohereReranker } from "../rerankers";
 import type { SearchResponseBody } from "../types";
 
 const log = aiLogger("aila:quiz");
+
 // Base abstract class
 // Quiz generator takes a lesson plan and returns a quiz object.
 // Quiz rerankers take a lesson plan and returns a list of quiz objects ranked by suitability.
@@ -412,13 +413,16 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   }
   protected extractCustomId(doc: RerankResponseResultsItem): string {
     try {
-      // TODO quick fix to get around that doc.document may be unknown
       const parsedText = JSON.parse(doc.document?.text || "");
-      if (parsedText.custom_id) {
-        return parsedText.custom_id;
-      } else {
-        throw new Error("custom_id not found in parsed JSON");
+      if (
+        typeof parsedText !== "object" ||
+        parsedText === null ||
+        !("custom_id" in parsedText)
+      ) {
+        throw new Error("Parsed text is not an object or missing custom_id");
       }
+
+      throw new Error("Invalid document format");
     } catch (error) {
       log.error("Error in extractCustomId:", error);
       throw new Error("Failed to extract custom_id");

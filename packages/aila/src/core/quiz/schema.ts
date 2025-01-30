@@ -1,3 +1,4 @@
+import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import { z } from "zod";
 
 export type retrievalStrategy = "bm25" | "blended";
