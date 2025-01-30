@@ -1,4 +1,5 @@
 import { Client } from "@elastic/elasticsearch";
+import type { SearchHitsMetadata } from "@elastic/elasticsearch/lib/api/types";
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { CohereClient } from "cohere-ai";
@@ -25,12 +26,14 @@ import type {
   CustomHit,
   CustomSource,
   LessonSlugQuizLookup,
+  QuizQuestionTextOnlySource,
   SimplifiedResult,
 } from "../interfaces";
 import { CohereReranker } from "../rerankers";
 import type { SearchResponseBody } from "../types";
 
 const log = aiLogger("aila:quiz");
+
 // Base abstract class
 // Quiz generator takes a lesson plan and returns a quiz object.
 // Quiz rerankers take a lesson plan and returns a list of quiz objects ranked by suitability.
@@ -165,18 +168,41 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     return patch;
   }
   public async questionArrayFromCustomIds(
-    customIds: string[],
+    questionUids: string[],
   ): Promise<QuizQuestion[]> {
-    const formattedQuestionSearchResponse = await this.searchQuestions(
-      this.client,
-      "quiz-questions-text-only",
-      customIds,
-    );
-    const processsedQuestionsAndIds = this.processResponse(
-      formattedQuestionSearchResponse,
-    );
-    const quizQuestions = this.extractQuizQuestions(processsedQuestionsAndIds);
-    return quizQuestions;
+    const response = await this.client.search<QuizQuestionTextOnlySource>({
+      index: "quiz-questions-text-only",
+      body: {
+        query: {
+          bool: {
+            must: [
+              {
+                terms: {
+                  "metadata.questionUid.keyword": questionUids,
+                },
+              },
+            ],
+          },
+        },
+      },
+    });
+    if (!response.hits.hits[0]?._source) {
+      log.error("No questions found for questionUids: ", questionUids);
+      return Promise.resolve([]);
+    } else {
+      // Gives us an array of quiz questions or null, which are then filtered out.
+      const filteredQuizQuestions: QuizQuestion[] = response.hits.hits
+        .map((hit) => {
+          if (!hit._source) {
+            log.error("Hit source is undefined");
+            return null;
+          }
+          const quizQuestion = this.parseQuizQuestion(hit._source.text);
+          return quizQuestion;
+        })
+        .filter((item): item is QuizQuestion => item !== null);
+      return Promise.resolve(filteredQuizQuestions);
+    }
   }
 
   public async questionArrayFromPlanIdLookUpTable(
@@ -203,13 +229,13 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     return await this.questionArrayFromPlanIdLookUpTable(planId, quizType);
   }
 
-  public async searchQuestions(
+  public async searchQuestions<T>(
     client: Client,
     index: string,
     questionUids: string[],
-  ): Promise<SearchResponseBody> {
+  ): Promise<SearchResponseBody<T>> {
     // Retrieves questions by questionUids
-    const response = await client.search({
+    const response = await client.search<T>({
       index: index,
       body: {
         query: {
@@ -272,23 +298,15 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       })
       .filter((item): item is SimplifiedResult => item !== null);
   }
-  private extractQuizQuestions(
-    processedResponse: ReturnType<typeof this.processResponse>,
-  ): QuizQuestion[] {
-    return processedResponse
-      .filter(
-        (
-          item: any,
-        ): item is { questionUid: string; quizQuestion: QuizQuestion } =>
-          "quizQuestion" in item,
-      )
-      .map(
-        (item: { questionUid: string; quizQuestion: QuizQuestion }) =>
-          item.quizQuestion,
-      );
-  }
-  private processResponse(response: SearchResponseBody) {
-    return response.hits.hits.map((hit: any) => {
+
+  private processResponse<T extends CustomSource>(
+    response: SearchResponseBody<T>,
+  ) {
+    return response.hits.hits.map((hit) => {
+      if (!hit._source) {
+        log.error("Hit source is undefined");
+        return null;
+      }
       const parsedQuestion = this.parseQuizQuestion(hit._source.text);
 
       return {
@@ -305,7 +323,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     field: string,
     query: string,
     _size: number = 10,
-  ): Promise<any> {
+  ): Promise<SearchHitsMetadata<CustomHit>> {
     try {
       log.info(`Searching index: ${index}, field: ${field}, query: ${query}`);
       const response = await this.client.search<CustomHit>({
@@ -367,13 +385,16 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   }
   protected extractCustomId(doc: RerankResponseResultsItem): string {
     try {
-      // TODO quick fix to get around that doc.document may be unknown
       const parsedText = JSON.parse(doc.document?.text || "");
-      if (parsedText.custom_id) {
-        return parsedText.custom_id;
-      } else {
-        throw new Error("custom_id not found in parsed JSON");
+      if (
+        typeof parsedText !== "object" ||
+        parsedText === null ||
+        !("custom_id" in parsedText)
+      ) {
+        throw new Error("Parsed text is not an object or missing custom_id");
       }
+
+      throw new Error("Invalid document format");
     } catch (error) {
       log.error("Error in extractCustomId:", error);
       throw new Error("Failed to extract custom_id");
@@ -394,16 +415,8 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   protected async retrieveAndProcessQuestions(
     customIds: string[],
   ): Promise<QuizQuestion[]> {
-    const formattedQuestionSearchResponse = await this.searchQuestions(
-      this.client,
-      // "oak-vector",
-      "quiz-questions-text-only",
-      customIds,
-    );
-    const processedQuestionsAndIds = this.processResponse(
-      formattedQuestionSearchResponse,
-    );
-    return this.extractQuizQuestions(processedQuestionsAndIds);
+    const quizQuestions = await this.questionArrayFromCustomIds(customIds);
+    return quizQuestions;
   }
 
   protected quizToJsonPatch(
