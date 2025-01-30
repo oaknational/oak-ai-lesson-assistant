@@ -1,33 +1,43 @@
-import { structuredLogger as logger } from "@oakai/logger";
+import { aiLogger } from "@oakai/logger";
 
-export function handleExecuteQueuedAction(set, get) {
-  return async () => {
-    const { queuedUserAction, isExecutingQueuedAction, actions } = get();
-    const { append, reload } = actions;
+import type { ChatStore } from "..";
 
-    if (!queuedUserAction || isExecutingQueuedAction) return;
+const log = aiLogger("chat:store");
 
+export function handleExecuteQueuedAction(
+  set: (partial: Partial<ChatStore>) => void,
+  get: () => ChatStore,
+) {
+  return () => {
+    const { queuedUserAction, aiSdkActions } = get();
+
+    if (!queuedUserAction) {
+      log.warn("Ignored attempt to execute queued action", {
+        queuedUserAction,
+      });
+      return;
+    }
+
+    log.info("Executing queued action");
     const actionToExecute = queuedUserAction;
-    set({ isExecutingQueuedAction: true, queuedUserAction: null });
+    set({ queuedUserAction: null });
 
     try {
       if (actionToExecute === "continue") {
-        await append({
+        void aiSdkActions.append({
           content: "Continue",
           role: "user",
         });
       } else if (actionToExecute === "regenerate") {
-        reload();
+        aiSdkActions.reload();
       } else {
-        await append({
+        void aiSdkActions.append({
           content: actionToExecute,
           role: "user",
         });
       }
     } catch (error) {
-      logger.error("Error handling queued action:", error);
-    } finally {
-      set({ isExecutingQueuedAction: false });
+      log.error("Error handling queued action:", error);
     }
   };
 }
