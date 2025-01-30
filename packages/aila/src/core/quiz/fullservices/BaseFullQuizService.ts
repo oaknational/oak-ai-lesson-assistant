@@ -39,7 +39,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
           ailaRagRelevantLessons,
         );
       }
-      throw new Error(`Invalid quiz type: ${quizType}`);
+      throw new Error(`Invalid quiz type: ${quizType as string}`);
     });
 
     const quizArrays = await Promise.all(quizPromises);
