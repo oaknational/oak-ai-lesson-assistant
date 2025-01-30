@@ -8,9 +8,11 @@ import Layout from "@/components/AppComponents/Layout";
 import { ChatProvider } from "@/components/ContextProviders/ChatProvider";
 import { useReactScan } from "@/hooks/useReactScan";
 import LessonPlanTrackingProvider from "@/lib/analytics/lessonPlanTrackingContext";
+import { useChatStoreReset } from "@/stores/chatStore/hooks/useChatStoreReset";
 
 const ChatPageContents = ({ id }: { readonly id: string }) => {
   useReactScan({ component: LessonPlanDisplay, interval: 10000 });
+  useChatStoreReset({ id });
 
   return (
     <Layout>

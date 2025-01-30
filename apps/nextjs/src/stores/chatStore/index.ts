@@ -32,6 +32,7 @@ export type AilaStreamingStatus =
   | "Idle";
 
 export type ChatStore = {
+  id: string | null;
   ailaStreamingStatus: AilaStreamingStatus;
 
   stableMessages: ParsedMessage[];
@@ -53,14 +54,11 @@ export type ChatStore = {
   stop: () => void;
   streamingFinished: () => void;
 
-  reset: (
-    params: Pick<ChatStore, "ailaStreamingStatus"> & {
-      queuedUserAction?: ChatStore["queuedUserAction"];
-    },
-  ) => void;
+  reset: (id: string | null) => void;
 };
 
-export const useChatStore = create<ChatStore>((set, get) => ({
+const initialState = {
+  id: null,
   ailaStreamingStatus: "Idle",
   stableMessages: [],
   streamingMessage: null,
@@ -73,6 +71,10 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     reload: () => {},
     append: async () => Promise.resolve(""),
   },
+} satisfies Partial<ChatStore>;
+
+export const useChatStore = create<ChatStore>((set, get) => ({
+  ...initialState,
 
   // Setters
   setAiSdkActions: (aiSdkActions) => set({ aiSdkActions }),
@@ -85,11 +87,12 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   setMessages: handleSetMessages(set, get),
   streamingFinished: handleStreamingFinished(set, get),
 
-  // reset
-  reset: ({ ailaStreamingStatus = "Idle", queuedUserAction }) => {
+  // Reset function
+  reset: (id) => {
+    log.info(`Resetting to ${id ?? "null"}`);
     set({
-      ailaStreamingStatus: ailaStreamingStatus,
-      queuedUserAction: queuedUserAction,
+      ...initialState,
+      id,
     });
   },
 }));

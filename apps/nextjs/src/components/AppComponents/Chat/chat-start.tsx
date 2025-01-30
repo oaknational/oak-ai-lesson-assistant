@@ -14,6 +14,7 @@ import { useDemoUser } from "@/components/ContextProviders/Demo";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useChatStoreReset } from "@/stores/chatStore/hooks/useChatStoreReset";
 import { trpc } from "@/utils/trpc";
 
 import { useDialog } from "../DialogContext";
@@ -120,6 +121,8 @@ export function ChatStart({
     },
     [create, setDialogWindow, demo.isDemoUser, setIsSubmitting],
   );
+
+  useChatStoreReset({ id: null });
 
   const interstitialSubmit = useCallback(() => {
     create(input).catch((error) => {

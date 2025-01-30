@@ -9,7 +9,7 @@ import type {
 
 import { useChatStore } from "../index";
 
-export const useChatStoreMirror = (
+export const useChatStoreAiSdkSync = (
   messages: AiMessage[],
   isLoading: boolean,
   stop: () => void,

@@ -24,7 +24,7 @@ import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
-import { useChatStoreMirror } from "src/stores/chatStore/hooks/useChatStoreMirror";
+import { useChatStoreAiSdkSync } from "src/stores/chatStore/hooks/useChatStoreAiSdkSync";
 
 import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
@@ -301,8 +301,14 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     });
   }, [reload]);
 
-  // Hooks to update the Zustand chat store mirror
-  useChatStoreMirror(messages, isLoading, stopStreaming, append, handleReload);
+  // Hooks to update the Zustand chat store
+  useChatStoreAiSdkSync(
+    messages,
+    isLoading,
+    stopStreaming,
+    append,
+    handleReload,
+  );
 
   /**
    *  If the state is being restored from a previous lesson plan, set the lesson plan
