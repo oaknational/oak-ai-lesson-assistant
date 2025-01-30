@@ -19,7 +19,7 @@ export type ModerationStore = {
   setLastModeration: (mod: PersistedModerationBase | null) => void;
   setIsModerationsLoading: (isModerationsLoading: boolean) => void;
   updateModerationState: (mods?: Moderation[]) => void;
-  reset: (params: Partial<ModerationStore>) => void;
+  reset: () => void;
 };
 
 export const useModerationStore = create<ModerationStore>((set, get) => ({
@@ -34,18 +34,18 @@ export const useModerationStore = create<ModerationStore>((set, get) => ({
     set({ isModerationsLoading }),
 
   updateToxicModeration: (mod) => {
-    handleToxicModeration(mod, set);
+    handleToxicModeration(mod, set, get);
   },
   updateModerationState: (mod) => {
     handleUpdateModerationState(mod, set, get);
   },
   // reset
-  reset: (mod) => {
+  reset: () => {
     set({
-      moderations: mod.moderations ?? [],
-      toxicInitialModeration: mod.toxicModeration ?? null,
-      toxicModeration: mod.toxicModeration ?? null,
-      lastModeration: mod.lastModeration ?? null,
+      moderations: [],
+      toxicInitialModeration: null,
+      toxicModeration: null,
+      lastModeration: null,
     });
   },
 }));
