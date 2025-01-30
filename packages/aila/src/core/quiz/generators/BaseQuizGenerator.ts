@@ -203,20 +203,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
         .filter((item): item is QuizQuestion => item !== null);
       return Promise.resolve(filteredQuizQuestions);
     }
-
-    // const source = response.hits.hits[0]._source;
-    // log.info("This is the source structure:", JSON.stringify(source));
-    // // Parse the text field if its a string.
-    // const quiz: QuizQuestion[] =
-    //   typeof source.text === "string" ? JSON.parse(source.text) : source.text;
-    // log.info("This is the quiz structure:", JSON.stringify(quiz));
-    // return Promise.resolve(quiz);
-
-    // const processsedQuestionsAndIds = this.processResponse(
-    //   formattedQuestionSearchResponse,
-    // );
-    // const quizQuestions = this.extractQuizQuestions(processsedQuestionsAndIds);
-    // return quizQuestions;
   }
 
   public async questionArrayFromPlanIdLookUpTable(
@@ -312,21 +298,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       })
       .filter((item): item is SimplifiedResult => item !== null);
   }
-  // private extractQuizQuestions(
-  //   processedResponse: ReturnType<typeof this.processResponse>,
-  // ): QuizQuestion[] {
-  //   return processedResponse
-  //     .filter(
-  //       (
-  //         item: any,
-  //       ): item is { questionUid: string; quizQuestion: QuizQuestion } =>
-  //         "quizQuestion" in item,
-  //     )
-  //     .map(
-  //       (item: { questionUid: string; quizQuestion: QuizQuestion }) =>
-  //         item.quizQuestion,
-  //     );
-  // }
+
   private processResponse<T extends CustomSource>(
     response: SearchResponseBody<T>,
   ) {
@@ -445,17 +417,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   ): Promise<QuizQuestion[]> {
     const quizQuestions = await this.questionArrayFromCustomIds(customIds);
     return quizQuestions;
-    // const formattedQuestionSearchResponse = await this.searchQuestions(
-    //   this.client,
-    //   // "oak-vector",
-    //   "quiz-questions-text-only",
-    //   customIds,
-    // );
-    // // const formattedQuestionSearchResponse = await this.client.search<QuizQuestionTextOnlySource>({
-    // // const processedQuestionsAndIds = this.processResponse(
-    // //   formattedQuestionSearchResponse,
-    // // );
-    // return this.extractQuizQuestions(processedQuestionsAndIds);
   }
 
   protected quizToJsonPatch(
