@@ -26,6 +26,7 @@ import type {
   CustomHit,
   CustomSource,
   LessonSlugQuizLookup,
+  QuizQuestionTextOnlySource,
   SimplifiedResult,
 } from "../interfaces";
 import { CohereReranker } from "../rerankers";
@@ -166,18 +167,55 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     return patch;
   }
   public async questionArrayFromCustomIds(
-    customIds: string[],
+    questionUids: string[],
   ): Promise<QuizQuestion[]> {
-    const formattedQuestionSearchResponse = await this.searchQuestions(
-      this.client,
-      "quiz-questions-text-only",
-      customIds,
-    );
-    const processsedQuestionsAndIds = this.processResponse(
-      formattedQuestionSearchResponse,
-    );
-    const quizQuestions = this.extractQuizQuestions(processsedQuestionsAndIds);
-    return quizQuestions;
+    const response = await this.client.search<QuizQuestionTextOnlySource>({
+      index: "quiz-questions-text-only",
+      body: {
+        query: {
+          bool: {
+            must: [
+              {
+                terms: {
+                  "metadata.questionUid.keyword": questionUids,
+                },
+              },
+            ],
+          },
+        },
+      },
+    });
+    if (!response.hits.hits[0]?._source) {
+      log.error("No questions found for questionUids: ", questionUids);
+      return Promise.resolve([]);
+    } else {
+      // Gives us an array of quiz questions or null, which are then filtered out.
+      const filteredQuizQuestions: QuizQuestion[] = response.hits.hits
+        .map((hit) => {
+          if (!hit._source) {
+            log.error("Hit source is undefined");
+            return null;
+          }
+          const quizQuestion = this.parseQuizQuestion(hit._source.text);
+          return quizQuestion;
+        })
+        .filter((item): item is QuizQuestion => item !== null);
+      return Promise.resolve(filteredQuizQuestions);
+    }
+
+    // const source = response.hits.hits[0]._source;
+    // log.info("This is the source structure:", JSON.stringify(source));
+    // // Parse the text field if its a string.
+    // const quiz: QuizQuestion[] =
+    //   typeof source.text === "string" ? JSON.parse(source.text) : source.text;
+    // log.info("This is the quiz structure:", JSON.stringify(quiz));
+    // return Promise.resolve(quiz);
+
+    // const processsedQuestionsAndIds = this.processResponse(
+    //   formattedQuestionSearchResponse,
+    // );
+    // const quizQuestions = this.extractQuizQuestions(processsedQuestionsAndIds);
+    // return quizQuestions;
   }
 
   public async questionArrayFromPlanIdLookUpTable(
@@ -204,13 +242,13 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     return await this.questionArrayFromPlanIdLookUpTable(planId, quizType);
   }
 
-  public async searchQuestions(
+  public async searchQuestions<T>(
     client: Client,
     index: string,
     questionUids: string[],
-  ): Promise<SearchResponseBody> {
+  ): Promise<SearchResponseBody<T>> {
     // Retrieves questions by questionUids
-    const response = await client.search({
+    const response = await client.search<T>({
       index: index,
       body: {
         query: {
@@ -273,23 +311,29 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       })
       .filter((item): item is SimplifiedResult => item !== null);
   }
-  private extractQuizQuestions(
-    processedResponse: ReturnType<typeof this.processResponse>,
-  ): QuizQuestion[] {
-    return processedResponse
-      .filter(
-        (
-          item: any,
-        ): item is { questionUid: string; quizQuestion: QuizQuestion } =>
-          "quizQuestion" in item,
-      )
-      .map(
-        (item: { questionUid: string; quizQuestion: QuizQuestion }) =>
-          item.quizQuestion,
-      );
-  }
-  private processResponse(response: SearchResponseBody) {
-    return response.hits.hits.map((hit: any) => {
+  // private extractQuizQuestions(
+  //   processedResponse: ReturnType<typeof this.processResponse>,
+  // ): QuizQuestion[] {
+  //   return processedResponse
+  //     .filter(
+  //       (
+  //         item: any,
+  //       ): item is { questionUid: string; quizQuestion: QuizQuestion } =>
+  //         "quizQuestion" in item,
+  //     )
+  //     .map(
+  //       (item: { questionUid: string; quizQuestion: QuizQuestion }) =>
+  //         item.quizQuestion,
+  //     );
+  // }
+  private processResponse<T extends CustomSource>(
+    response: SearchResponseBody<T>,
+  ) {
+    return response.hits.hits.map((hit) => {
+      if (!hit._source) {
+        log.error("Hit source is undefined");
+        return null;
+      }
       const parsedQuestion = this.parseQuizQuestion(hit._source.text);
 
       return {
@@ -395,16 +439,19 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   protected async retrieveAndProcessQuestions(
     customIds: string[],
   ): Promise<QuizQuestion[]> {
-    const formattedQuestionSearchResponse = await this.searchQuestions(
-      this.client,
-      // "oak-vector",
-      "quiz-questions-text-only",
-      customIds,
-    );
-    const processedQuestionsAndIds = this.processResponse(
-      formattedQuestionSearchResponse,
-    );
-    return this.extractQuizQuestions(processedQuestionsAndIds);
+    const quizQuestions = await this.questionArrayFromCustomIds(customIds);
+    return quizQuestions;
+    // const formattedQuestionSearchResponse = await this.searchQuestions(
+    //   this.client,
+    //   // "oak-vector",
+    //   "quiz-questions-text-only",
+    //   customIds,
+    // );
+    // // const formattedQuestionSearchResponse = await this.client.search<QuizQuestionTextOnlySource>({
+    // // const processedQuestionsAndIds = this.processResponse(
+    // //   formattedQuestionSearchResponse,
+    // // );
+    // return this.extractQuizQuestions(processedQuestionsAndIds);
   }
 
   protected quizToJsonPatch(

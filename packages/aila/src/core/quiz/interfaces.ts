@@ -114,6 +114,11 @@ export interface CustomSource {
   [key: string]: unknown; // Allow for other unknown fields at the top level
 }
 
+export interface QuizQuestionTextOnlySource {
+  text: string;
+  metadata: { questionUid: string; lessonSlug: string };
+}
+
 export interface CustomHit {
   _source: CustomSource;
 }
