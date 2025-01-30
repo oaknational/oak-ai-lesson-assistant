@@ -7,7 +7,7 @@ import { useModerationStore } from "src/stores/moderationStore";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { organiseSections } from "@/lib/lessonPlan/organiseSections";
-import { useChatStore } from "@/stores/chatStore";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";

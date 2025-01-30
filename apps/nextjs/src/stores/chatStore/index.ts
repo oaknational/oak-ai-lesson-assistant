@@ -1,22 +1,24 @@
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
-import type { ChatRequestOptions, CreateMessage, Message } from "ai";
-import { create } from "zustand";
+import type { ChatRequestOptions, CreateMessage } from "ai";
+import { createStore } from "zustand";
 
 import { logStoreUpdates } from "../zustandHelpers";
+import { handleAppend } from "./stateActionFunctions/handleAppend";
 import { handleExecuteQueuedAction } from "./stateActionFunctions/handleExecuteQueuedAction";
-import { handleQueueUserAction } from "./stateActionFunctions/handleQueueUserAction";
 import { handleSetMessages } from "./stateActionFunctions/handleSetMessages";
 import { handleStop } from "./stateActionFunctions/handleStop";
+import { handleStreamingFinished } from "./stateActionFunctions/handleStreamingFinished";
 import type { AiMessage, ParsedMessage } from "./types";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const log = aiLogger("chat:store");
 
-type Actions = {
+type AiSdkActions = {
   stop: () => void;
   reload: () => void;
   append: (
-    message: Message | CreateMessage,
+    message: AiMessage | CreateMessage,
     chatRequestOptions?: ChatRequestOptions | undefined,
   ) => Promise<string | null | undefined>;
 };
@@ -36,17 +38,14 @@ export type ChatStore = {
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
   queuedUserAction: string | null;
-  isExecutingQueuedAction: boolean;
   lessonPlan: LooseLessonPlan | null;
 
   // From AI SDK
-  isLoading: boolean;
-  // Grouped Actions
-  actions: Actions;
+  aiSdkActions: AiSdkActions;
 
   // Setters
   setLessonPlan: (lessonPlan: LooseLessonPlan) => void;
-  setAiSdkActions: (actions: Actions) => void;
+  setAiSdkActions: (actions: AiSdkActions) => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
   clearMessages: () => void;
@@ -84,18 +83,41 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   setLessonPlan: (lessonPlan) => set({ lessonPlan }),
 
   // Action functions
-  queueUserAction: handleQueueUserAction(set, get),
-  executeQueuedAction: handleExecuteQueuedAction(set, get),
-  stop: handleStop(set, get),
-  setMessages: handleSetMessages(set, get),
+  executeQueuedAction: () => void;
+  append: (message: string) => void;
+  stop: () => void;
+  streamingFinished: () => void;
+};
 
-  // reset
-  reset: ({ ailaStreamingStatus = "Idle", queuedUserAction }) => {
-    set({
-      ailaStreamingStatus: ailaStreamingStatus,
-      queuedUserAction: queuedUserAction,
-    });
-  },
-}));
+export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
+  const chatStore = createStore<ChatStore>((set, get) => ({
+    ailaStreamingStatus: "Idle",
+    stableMessages: [],
+    streamingMessage: null,
+    queuedUserAction: null,
+    lessonPlan: null,
 
-logStoreUpdates(useChatStore, "chat:store");
+    // From AI SDK
+    aiSdkActions: {
+      stop: () => {},
+      reload: () => {},
+      append: async () => Promise.resolve(""),
+    },
+
+    // Setters
+    setAiSdkActions: (aiSdkActions) => set({ aiSdkActions }),
+    setLessonPlan: (lessonPlan) => set({ lessonPlan }),
+
+    // Action functions
+    executeQueuedAction: handleExecuteQueuedAction(set, get),
+    append: handleAppend(set, get),
+    stop: handleStop(set, get),
+    setMessages: handleSetMessages(set, get),
+    streamingFinished: handleStreamingFinished(set, get),
+
+    ...initialValues,
+  }));
+
+  logStoreUpdates(chatStore, "chat:store");
+  return chatStore;
+};

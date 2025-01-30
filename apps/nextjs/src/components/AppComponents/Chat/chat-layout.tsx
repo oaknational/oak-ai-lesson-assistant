@@ -4,7 +4,7 @@ import { ModerationSync } from "@/components/StoreComponents/ModerationSync";
 import { useDemoLocking } from "@/hooks/useDemoLocking";
 import { useMobileLessonPullOutControl } from "@/hooks/useMobileLessonPullOutControl";
 import { cn } from "@/lib/utils";
-import { useChatStore } from "@/stores/chatStore";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 import ChatLeftHandSide from "./chat-left-hand-side";
 import ChatRightHandSideLesson from "./chat-right-hand-side-lesson";

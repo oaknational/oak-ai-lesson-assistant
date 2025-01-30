@@ -7,9 +7,9 @@ import type {
   Message,
 } from "ai";
 
-import { useChatStore } from "../index";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
-export const useChatStoreMirror = (
+export const useChatStoreAiSdkSync = (
   messages: AiMessage[],
   isLoading: boolean,
   stop: () => void,
