@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { useModerationStore } from "@/stores/moderationStore";
+import { useModerationStore } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
 export const ModerationSync = ({ id }: { id: string }) => {
@@ -30,6 +30,7 @@ export const ModerationSync = ({ id }: { id: string }) => {
 
   useEffect(() => {
     if (moderations !== undefined) {
+      console.log("moderations IN SYNC", moderations);
       setModeration(moderations || []);
     }
   }, [moderations, setModeration]);

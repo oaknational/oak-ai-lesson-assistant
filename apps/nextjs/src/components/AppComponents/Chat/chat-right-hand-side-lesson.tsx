@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
-import { useModerationStore } from "@/stores/moderationStore";
+import { useModerationStore } from "@/stores/AilaStoresProvider";
 
 import AiIcon from "../../AiIcon";
 import type { DemoContextProps } from "../../ContextProviders/Demo";

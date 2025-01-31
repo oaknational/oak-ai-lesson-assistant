@@ -1,5 +1,6 @@
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import { useChatStore } from "src/stores/chatStore";
+
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 import type { ModerationStore } from "..";
 
@@ -8,6 +9,6 @@ export const handleToxicModeration = (
   set: (state: Pick<ModerationStore, "toxicModeration">) => void,
 ) => {
   set({ toxicModeration: mod });
-  useChatStore.getState().clearMessages();
+
   //  @TODO setOverrideLessonPlan({});
 };

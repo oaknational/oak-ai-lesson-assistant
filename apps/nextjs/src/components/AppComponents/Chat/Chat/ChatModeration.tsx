@@ -1,12 +1,11 @@
 import React from "react";
 
-import { useModerationStore } from "src/stores/moderationStore";
-
 import {
   ChatModerationProvider,
   useChatModeration,
 } from "@/components/ContextProviders/ChatModerationContext";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useModerationStore } from "@/stores/AilaStoresProvider";
 
 import ModerationFeedbackModal from "../../FeedbackForms/ModerationFeedbackModal";
 import { ChatModerationDisplay } from "./ChatModerationDisplay";

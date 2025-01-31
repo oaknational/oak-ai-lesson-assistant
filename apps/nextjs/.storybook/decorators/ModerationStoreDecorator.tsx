@@ -2,10 +2,9 @@ import React, { useEffect } from "react";
 
 import type { Decorator } from "@storybook/react";
 
-import {
-  useModerationStore,
-  type ModerationStore,
-} from "../../src/stores/moderationStore";
+import { useModerationStore } from "@/stores/AilaStoresProvider";
+
+import { type ModerationStore } from "../../src/stores/moderationStore";
 
 declare module "@storybook/csf" {
   interface Parameters {

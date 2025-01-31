@@ -4,12 +4,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { Message } from "ai";
-import { useModerationStore } from "src/stores/moderationStore";
 
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
-import { useChatStore } from "@/stores/AilaStoresProvider";
+import { useChatStore, useModerationStore } from "@/stores/AilaStoresProvider";
 import type { AilaStreamingStatus } from "@/stores/chatStore";
 
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";

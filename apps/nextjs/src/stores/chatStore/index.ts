@@ -47,40 +47,6 @@ export type ChatStore = {
   setLessonPlan: (lessonPlan: LooseLessonPlan) => void;
   setAiSdkActions: (actions: AiSdkActions) => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
-  setIsLoading: (isLoading: boolean) => void;
-  clearMessages: () => void;
-  queueUserAction: (action: string) => Promise<void>;
-  executeQueuedAction: () => Promise<void>;
-  stop: () => void;
-
-  reset: (
-    params: Pick<ChatStore, "ailaStreamingStatus"> & {
-      queuedUserAction?: ChatStore["queuedUserAction"];
-    },
-  ) => void;
-};
-
-export const useChatStore = create<ChatStore>((set, get) => ({
-  ailaStreamingStatus: "Idle",
-  stableMessages: [],
-  streamingMessage: null,
-  queuedUserAction: null,
-  isExecutingQueuedAction: false,
-  lessonPlan: null,
-
-  // From AI SDK
-  isLoading: false,
-  actions: {
-    stop: () => {},
-    reload: () => {},
-    append: async () => Promise.resolve(""),
-  },
-
-  // Setters
-  setAiSdkActions: (actions) => set({ actions }),
-  setIsLoading: (isLoading) => set({ isLoading }),
-  clearMessages: () => set({ stableMessages: [], streamingMessage: null }),
-  setLessonPlan: (lessonPlan) => set({ lessonPlan }),
 
   // Action functions
   executeQueuedAction: () => void;

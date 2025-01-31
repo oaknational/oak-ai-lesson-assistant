@@ -26,8 +26,7 @@ import { useChatStoreAiSdkSync } from "src/stores/chatStore/hooks/useChatStoreAi
 import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { useChatStore } from "@/stores/AilaStoresProvider";
-import { useModerationStore } from "@/stores/moderationStore";
+import { useChatStore, useModerationStore } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
@@ -217,13 +216,13 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
         path,
       });
 
-      const messageModeration = getModerationFromMessage(response);
-      if (messageModeration?.id) {
-        setLastModeration({
-          categories: messageModeration.categories,
-          id: messageModeration.id,
-        });
-      }
+      // const messageModeration = getModerationFromMessage(response);
+      // if (messageModeration?.id) {
+      //   setLastModeration({
+      //     categories: messageModeration.categories,
+      //     id: messageModeration.id,
+      //   });
+      // }
 
       invokeActionMessages(response.content);
 
