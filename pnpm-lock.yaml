@@ -968,10 +968,10 @@ importers:
     dependencies:
       '@anatine/zod-mock':
         specifier: ^3.13.4
-        version: 3.13.4(@faker-js/faker@9.3.0)(zod@3.23.8)
+        version: 3.13.4(@faker-js/faker@9.4.0)(zod@3.23.8)
       '@faker-js/faker':
-        specifier: ^9.3.0
-        version: 9.3.0
+        specifier: ^9.4.0
+        version: 9.4.0
       '@oakai/core':
         specifier: '*'
         version: link:../core
@@ -1131,17 +1131,6 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
-
-  /@anatine/zod-mock@3.13.4(@faker-js/faker@9.3.0)(zod@3.23.8):
-    resolution: {integrity: sha512-yO/KeuyYsEDCTcQ+7CiRuY3dnafMHIZUMok6Ci7aERRCTQ+/XmsiPk/RnMx5wlLmWBTmX9kw+PavbMsjM+sAJA==}
-    peerDependencies:
-      '@faker-js/faker': ^7.0.0 || ^8.0.0
-      zod: ^3.21.4
-    dependencies:
-      '@faker-js/faker': 9.3.0
-      randexp: 0.5.3
-      zod: 3.23.8
-    dev: false
 
   /@anatine/zod-mock@3.13.4(@faker-js/faker@9.4.0)(zod@3.23.8):
     resolution: {integrity: sha512-yO/KeuyYsEDCTcQ+7CiRuY3dnafMHIZUMok6Ci7aERRCTQ+/XmsiPk/RnMx5wlLmWBTmX9kw+PavbMsjM+sAJA==}
@@ -3934,11 +3923,6 @@ packages:
       ansi-to-html: 0.7.2
       marked: 12.0.2
     dev: true
-
-  /@faker-js/faker@9.3.0:
-    resolution: {integrity: sha512-r0tJ3ZOkMd9xsu3VRfqlFR6cz0V/jFYRswAIpC+m/DIfAUXq7g8N7wTAlhSANySXYGKzGryfDXwtwsY8TxEIDw==}
-    engines: {node: '>=18.0.0', npm: '>=9.0.0'}
-    dev: false
 
   /@faker-js/faker@9.4.0:
     resolution: {integrity: sha512-85+k0AxaZSTowL0gXp8zYWDIrWclTbRPg/pm/V0dSFZ6W6D4lhcG3uuZl4zLsEKfEvs69xDbLN2cHQudwp95JA==}
