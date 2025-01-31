@@ -102,10 +102,7 @@ export const appSessionsRouter = router({
       const moderations = await getSessionModerations(id);
       return moderations
         .filter((moderation) => userIsOwner(moderation, ctx.auth))
-        .sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        );
+        .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
     }),
   getChat: protectedProcedure
     .input(z.object({ id: z.string() }))

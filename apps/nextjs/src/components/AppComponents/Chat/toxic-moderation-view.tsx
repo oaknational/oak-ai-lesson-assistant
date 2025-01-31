@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
 import { Icon } from "@/components/Icon";
 import { useModerationFeedbackSurvey } from "@/hooks/surveys/useModerationFeedbackSurvey";
+import { useModerationStore } from "@/stores/AilaStoresProvider";
 
 import ChatButton from "./ui/chat-button";
 
@@ -34,6 +35,9 @@ const ToxicModerationView = ({
     },
     [onSubmit, chatId],
   );
+  const clearModerations = useModerationStore(
+    (state) => state.clearModerations,
+  );
   const router = useRouter();
   return (
     <div className="fixed inset-0 z-50 flex w-full items-center justify-center bg-lavender30">
@@ -45,6 +49,7 @@ const ToxicModerationView = ({
             variant="icon-only"
             title="New lesson"
             onClick={() => {
+              clearModerations();
               router.push("/aila");
             }}
           />

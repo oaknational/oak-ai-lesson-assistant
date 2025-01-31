@@ -1,14 +1,17 @@
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-
-import { useChatStore } from "@/stores/AilaStoresProvider";
+import invariant from "tiny-invariant";
 
 import type { ModerationStore } from "..";
 
 export const handleToxicModeration = (
   mod: PersistedModerationBase | null,
   set: (state: Pick<ModerationStore, "toxicModeration">) => void,
+  get: () => ModerationStore,
 ) => {
   set({ toxicModeration: mod });
+  const { chatActions } = get();
+  invariant(chatActions, "Passed into store in provider");
+  chatActions.setMessages([], false);
 
   //  @TODO setOverrideLessonPlan({});
 };

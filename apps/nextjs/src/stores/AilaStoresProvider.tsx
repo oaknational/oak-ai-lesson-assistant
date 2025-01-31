@@ -1,4 +1,10 @@
-import { useState, createContext, useContext } from "react";
+import {
+  useState,
+  createContext,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
 
 import { useStore, type StoreApi } from "zustand";
 
@@ -17,17 +23,33 @@ export const AilaStoresContext = createContext<
   AilaStoresContextProps | undefined
 >(undefined);
 
-export const AilaStoresProvider = ({ children }) => {
-  const [store] = useState(() => ({
-    chat: createChatStore(),
-    moderation: createModerationStore(),
-  }));
+export interface AilaStoresProviderProps {
+  children: React.ReactNode;
+  id: string | null;
+}
 
-  store.moderation.subscribe((state) => {
-    if (state.toxicModeration) {
-      console.log("moderation toxicModeration!!!!!!!!");
-      store.chat.getState().setMessages([], false);
-    }
+export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
+  children,
+  id,
+}) => {
+  const [store] = useState(() => {
+    const moderationStore = createModerationStore(id);
+    const chatStore = createChatStore(id);
+
+    moderationStore.setState((state) => ({
+      ...state,
+      chatActions: chatStore.getState(),
+    }));
+
+    chatStore.setState((state) => ({
+      ...state,
+      moderationActions: moderationStore.getState(),
+    }));
+
+    return {
+      chat: chatStore,
+      moderation: moderationStore,
+    };
   });
 
   return (
