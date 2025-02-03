@@ -1,32 +1,72 @@
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type {
+  LessonPlanKey,
+  LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
-import { create } from "zustand";
+import { createStore } from "zustand";
 
 import type { AiMessage } from "../chatStore/types";
+import { logStoreUpdates } from "../zustandHelpers";
 import { handleMessagesUpdated } from "./stateActionFunctions/handleMessagesUpdated";
 
 const log = aiLogger("lessons:store");
 
 export type LessonPlanStore = {
-  lessonPlan: LooseLessonPlan | null;
+  lessonPlan: LooseLessonPlan;
   // NOTE: https://zustand.docs.pmnd.rs/guides/maps-and-sets-usage
   appliedPatchHashes: Set<string>;
+  appliedPatchPaths: LessonPlanKey[];
+  sectionsToEdit: LessonPlanKey[];
   iteration: number | undefined;
+  isAcceptingChanges: boolean;
+  numberOfStreamedCompleteParts: number;
 
+  messageStarted: () => void;
   messagesUpdated: (messages: AiMessage[], isLoading: boolean) => void;
+  messageFinished: () => void;
 };
 
-export const useLessonPlanStore = create<LessonPlanStore>((set, get) => ({
-  lessonPlan: null,
+const initialPerMessageState = {
+  sectionsToEdit: [],
   appliedPatchHashes: new Set(),
-  iteration: undefined,
+  appliedPatchPaths: [],
+  numberOfStreamedCompleteParts: 0,
+} satisfies Partial<LessonPlanStore>;
 
-  // Setters
-  // NOTE: lessonPlanManager does a deep clone here
-  setInitialLessonPlan: (lessonPlan: LooseLessonPlan) => set({ lessonPlan }),
+export const createLessonPlanStore = (
+  initialValues: Partial<LessonPlanStore> = {},
+) => {
+  const lessonPlanStore = createStore<LessonPlanStore>((set, get) => ({
+    lessonPlan: {},
+    iteration: undefined,
+    isAcceptingChanges: false,
 
-  // Action functions
-  messagesUpdated: handleMessagesUpdated(set, get), // NOT USED
-}));
+    ...initialPerMessageState,
 
-logStoreUpdates(useLessonPlanStore, "lessons:store");
+    // Setters
+    setInitialLessonPlan: (lessonPlan: LooseLessonPlan) => set({ lessonPlan }),
+
+    // Action functions
+    messageStarted: () => {
+      log.info("Message started");
+      set({ isAcceptingChanges: true });
+    },
+    messagesUpdated: handleMessagesUpdated(set, get),
+    messageFinished: () => {
+      // TODO: time to refetch lesson plan from getChat?
+      log.info("Message finished");
+      set({ isAcceptingChanges: false, ...initialPerMessageState });
+    },
+
+    ...initialValues,
+  }));
+
+  // For early state debugging. Remove later
+  lessonPlanStore.subscribe((state) => {
+    log.info("sectionsToEdit ", state.sectionsToEdit);
+    log.info("appliedPatchPaths ", state.appliedPatchPaths);
+  });
+
+  logStoreUpdates(lessonPlanStore, "lessons:store");
+  return lessonPlanStore;
+};

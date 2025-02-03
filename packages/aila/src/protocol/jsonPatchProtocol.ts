@@ -757,34 +757,44 @@ export function parseMessageParts(content: string): MessagePart[] {
   return messageParts;
 }
 
+const timeOperation = <T>(fn: () => T): T => {
+  const startTime = performance.now();
+  const result = fn();
+  const endTime = performance.now();
+  log.info(`extractPatches took ${endTime - startTime} milliseconds`);
+  return result;
+};
+
 export function extractPatches(edit: string): {
   validPatches: PatchDocument[];
   partialPatches: PatchDocument[];
 } {
-  const parts: MessagePart[] | undefined = parseMessageParts(edit);
+  return timeOperation(() => {
+    const parts: MessagePart[] | undefined = parseMessageParts(edit);
 
-  if (!parts) {
-    // Handle parsing failure
-    throw new Error("Failed to parse the edit content");
-  }
+    if (!parts) {
+      // Handle parsing failure
+      throw new Error("Failed to parse the edit content");
+    }
 
-  const patchMessageParts: MessagePart[] = parts.filter(
-    (p) =>
-      p.document.type === "patch" || p.document.type === "experimentalPatch",
-  );
-  const validPatches: PatchDocument[] = patchMessageParts
-    .filter((p) => !p.isPartial)
-    .map((p) => p.document as PatchDocument);
-  const partialPatches: PatchDocument[] = patchMessageParts
-    .filter((p) => p.isPartial)
-    .map((p) => p.document as PatchDocument);
+    const patchMessageParts: MessagePart[] = parts.filter(
+      (p) =>
+        p.document.type === "patch" || p.document.type === "experimentalPatch",
+    );
+    const validPatches: PatchDocument[] = patchMessageParts
+      .filter((p) => !p.isPartial)
+      .map((p) => p.document as PatchDocument);
+    const partialPatches: PatchDocument[] = patchMessageParts
+      .filter((p) => p.isPartial)
+      .map((p) => p.document as PatchDocument);
 
-  log.info(
-    "Extracted patches",
-    validPatches.map((i) => i.value.path),
-    partialPatches.map((i) => i.value.path),
-  );
-  return { validPatches, partialPatches };
+    // log.info(
+    //   "Extracted patches",
+    //   validPatches.map((i) => i.value.path),
+    //   partialPatches.map((i) => i.value.path),
+    // );
+    return { validPatches, partialPatches };
+  });
 }
 
 // This isValidatePatch function only tells us if it contains an add / replace and a value
@@ -804,7 +814,7 @@ export function applyLessonPlanPatch(
   lessonPlan: LooseLessonPlan,
   command: JsonPatchDocument | ExperimentalPatchDocument,
 ) {
-  log.info("Apply patch", JSON.stringify(command));
+  log.info("Apply patch (old)", JSON.stringify(command));
   let updatedLessonPlan = { ...lessonPlan };
   if (command.type !== "patch" && command.type !== "experimentalPatch") {
     log.error("Invalid patch document type", command.type);
@@ -857,10 +867,9 @@ export function applyLessonPlanPatchImmutable(
   lessonPlan: LooseLessonPlan,
   command: JsonPatchDocument | ExperimentalPatchDocument,
 ) {
-  log.info("Apply patch", JSON.stringify(command));
+  log.info("Apply patch (immutable)", JSON.stringify(command));
   if (command.type !== "patch" && command.type !== "experimentalPatch") {
     log.error("Invalid patch document type", command.type);
-    // return lessonPlan;
     return;
   }
   const patchValue = command.value;

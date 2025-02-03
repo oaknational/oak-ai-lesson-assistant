@@ -1,7 +1,9 @@
 import invariant from "tiny-invariant";
 
-import { applyLessonPlanPatchImmutable } from "./jsonPatchProtocol";
-import type { JsonPatchDocument } from "./jsonPatchSchema";
+import {
+  applyLessonPlanPatchImmutable,
+  type JsonPatchDocument,
+} from "./jsonPatchProtocol";
 
 describe("applyLessonPlanPatchImmutable", () => {
   it("keeps stable object references for keys that haven't changed", () => {
