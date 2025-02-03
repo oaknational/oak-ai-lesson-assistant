@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
 
-import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
+import type {
+  BasedOnOptional,
+  LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
+import type { ImageCycle } from "@oakai/api/src/router/imageGen";
+import type { LessonPlan } from "@prisma/client";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
+import useGetImages from "@/app/images/hooks/useGetImages";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { organiseSections } from "@/lib/lessonPlan/organiseSections";
 import { useChatStore } from "@/stores/chatStore";
