@@ -20,6 +20,7 @@ import type {
 } from "../protocol/schema";
 import type { Message } from "./chat";
 import type { AilaPlugin } from "./plugins";
+import type { FullQuizService } from "./quiz/interfaces";
 import type { AilaOptionsWithDefaultFallbackValues } from "./types";
 
 // This provides a set of interfaces between the Aila core and the features that use it.
@@ -50,6 +51,7 @@ export interface AilaChatService {
   set relevantLessons(lessons: AilaRagRelevantLesson[]);
   readonly parsedMessages: MessagePart[][];
   readonly isShared: boolean | undefined;
+  readonly fullQuizService: FullQuizService;
   loadChat({ store }: { store: string }): Promise<void>;
   addMessage(message: Message): void;
   startStreaming(abortController?: AbortController): ReadableStream;

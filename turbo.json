@@ -112,6 +112,7 @@
     "GOOGLE_SLIDES_*",
     "HELICONE_*",
     "HUBSPOT_ACCESS_TOKEN",
+    "I_DOT_AI_ELASTIC_*",
     "INGEST_OPENAI_API_KEY",
     "INNGEST_*",
     "KV_*",

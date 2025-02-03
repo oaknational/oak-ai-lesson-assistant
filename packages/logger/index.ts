@@ -31,6 +31,7 @@ export type LoggerKey =
   | "aila:stream"
   | "aila:rag"
   | "aila:testing"
+  | "aila:quiz"
   | "aila:experimental-patches"
   | "analytics"
   | "app"
