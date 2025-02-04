@@ -1,14 +1,17 @@
+import type { z } from "zod";
+
 import type {
   LooseLessonPlan,
   QuizPath,
   QuizQuestion,
 } from "../../../protocol/schema";
+import type { BaseType } from "../ChoiceModels";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 
-export class TestSchemaReranker extends BasedOnRagAilaQuizReranker<
-  typeof testRatingSchema
-> {
+export class TestSchemaReranker<
+  T extends z.ZodType<BaseType & Record<string, unknown>>,
+> extends BasedOnRagAilaQuizReranker<T> {
   public rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]> {
     return Promise.resolve([]);
   }
@@ -16,17 +19,17 @@ export class TestSchemaReranker extends BasedOnRagAilaQuizReranker<
   public evaluateStarterQuiz(
     quizzes: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
-    ratingSchema: typeof testRatingSchema,
+    ratingSchema: T,
     quizType: QuizPath,
-  ): Promise<(typeof testRatingSchema)[]> {
+  ): Promise<z.infer<T>[]> {
     return this.evaluateQuizArray(quizzes, lessonPlan, ratingSchema, quizType);
   }
   public evaluateExitQuiz(
     quizzes: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
-    ratingSchema: typeof testRatingSchema,
+    ratingSchema: T,
     quizType: QuizPath,
-  ): Promise<(typeof testRatingSchema)[]> {
+  ): Promise<z.infer<T>[]> {
     return this.evaluateQuizArray(quizzes, lessonPlan, ratingSchema, quizType);
   }
 }

@@ -1,3 +1,4 @@
+import { aiLogger } from "@oakai/logger";
 import type { z } from "zod";
 
 import type { QuizQuestion } from "../../../protocol/schema";
