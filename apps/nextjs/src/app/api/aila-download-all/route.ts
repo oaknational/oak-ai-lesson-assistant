@@ -11,6 +11,8 @@ import { withSentry } from "@/lib/sentry/withSentry";
 import { saveDownloadEvent } from "../aila-download/downloadHelpers";
 import { sanitizeFilename } from "../sanitizeFilename";
 
+export const maxDuration = 500;
+
 type FileIdsAndFormats = {
   fileId: string;
   formats: ReadonlyArray<"pptx" | "docx" | "pdf">;
