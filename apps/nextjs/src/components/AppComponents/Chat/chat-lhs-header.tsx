@@ -2,7 +2,7 @@ import React from "react";
 
 import { useRouter } from "next/navigation";
 
-import { useChatStore } from "@/stores/chatStore";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 import AiIcon from "../../AiIcon";
 import ChatButton from "./ui/chat-button";

@@ -9,7 +9,7 @@ import {
 } from "@/components/AppComponents/Chat/ui/tooltip";
 import { Icon } from "@/components/Icon";
 import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
-import { useChatStore } from "@/stores/chatStore";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 export interface PromptFormProps
   extends Pick<UseChatHelpers, "input" | "setInput"> {
