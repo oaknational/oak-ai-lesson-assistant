@@ -3,7 +3,7 @@ import { useDemoUser } from "@/components/ContextProviders/Demo";
 import { useDemoLocking } from "@/hooks/useDemoLocking";
 import { useMobileLessonPullOutControl } from "@/hooks/useMobileLessonPullOutControl";
 import { cn } from "@/lib/utils";
-import { useChatStore } from "@/stores/chatStore";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 import ChatLeftHandSide from "./chat-left-hand-side";
 import ChatRightHandSideLesson from "./chat-right-hand-side-lesson";
