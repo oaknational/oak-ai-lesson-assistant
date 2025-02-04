@@ -37,7 +37,6 @@ export type ChatStore = {
   moderationActions?: Pick<ModerationStore, "fetchModerations">;
   ailaStreamingStatus: AilaStreamingStatus;
 
-  id: string | null;
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
   queuedUserAction: string | null;
@@ -58,13 +57,9 @@ export type ChatStore = {
   streamingFinished: () => void;
 };
 
-export const createChatStore = (
-  id: string | null,
-  initialValues: Partial<ChatStore> = {},
-) => {
+export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
   const chatStore = createStore<ChatStore>((set, get) => ({
     moderationActions: undefined, // Passed in the provider
-    id,
     ailaStreamingStatus: "Idle",
     stableMessages: [],
     streamingMessage: null,

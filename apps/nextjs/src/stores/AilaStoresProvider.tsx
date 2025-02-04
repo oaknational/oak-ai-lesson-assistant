@@ -1,10 +1,4 @@
-import {
-  useState,
-  createContext,
-  useContext,
-  useEffect,
-  useCallback,
-} from "react";
+import { useState, createContext, useContext } from "react";
 
 import { useStore, type StoreApi } from "zustand";
 
@@ -33,8 +27,10 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
   id,
 }) => {
   const [store] = useState(() => {
-    const moderationStore = createModerationStore(id);
-    const chatStore = createChatStore(id);
+    const moderationStore = createModerationStore({
+      id,
+    });
+    const chatStore = createChatStore();
 
     moderationStore.setState((state) => ({
       ...state,

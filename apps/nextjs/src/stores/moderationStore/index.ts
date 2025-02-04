@@ -1,9 +1,6 @@
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import { aiLogger } from "@oakai/logger";
 import type { Moderation } from "@prisma/client";
 import { create } from "zustand";
-
-import { trpcClient } from "@/utils/trpcClient";
 
 import type { ChatStore } from "../chatStore";
 import { logStoreUpdates } from "../zustandHelpers";
@@ -30,10 +27,13 @@ export type ModerationStore = {
   clearModerations: () => void;
 };
 
-export const createModerationStore = (
-  id: string | null,
-  initialValues: Partial<ModerationStore> = {},
-) => {
+export const createModerationStore = ({
+  id = null,
+  initialValues = {},
+}: {
+  id?: string | null;
+  initialValues?: Partial<ModerationStore>;
+}) => {
   const moderationStore = create<ModerationStore>((set, get) => ({
     id,
     chatActions: undefined, // Passed in the provider
