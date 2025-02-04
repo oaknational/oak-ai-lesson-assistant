@@ -67,7 +67,7 @@ export class Lessons {
       for (const unsummarisedLesson of lessons.filter(
         (l) => l.summaries.length === 0,
       )) {
-        inngest.send({
+        void inngest.send({
           name: "app/lesson.summarise",
           data: { lessonId: unsummarisedLesson.id },
         });
@@ -98,7 +98,7 @@ export class Lessons {
       for (const unsummarisedLesson of lessons.filter(
         (l) => l.summaries.length === 0,
       )) {
-        inngest.send({
+        void inngest.send({
           name: "app/lesson.summarise",
           data: { lessonId: unsummarisedLesson.id },
         });

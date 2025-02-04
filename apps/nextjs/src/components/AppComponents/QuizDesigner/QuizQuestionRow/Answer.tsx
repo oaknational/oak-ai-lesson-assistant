@@ -95,6 +95,7 @@ const Answer = ({
           isLoading={isLoading}
           index={answerIdx}
           setUserIsEditing={setUserIsEditing}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           tweak={tweakAnswer}
         >
           {answer.value}

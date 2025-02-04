@@ -1,16 +1,15 @@
+import type { RerankResponseResultsItem } from "cohere-ai/api/types";
+import type * as z from "zod";
+
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
+  Quiz,
   QuizPath,
   QuizQuestion,
 } from "../../protocol/schema";
 import type {
-  AilaQuizGeneratorService,
-  AilaQuizService,
-} from "../AilaServices";
-import type {
-  BaseSchema,
   BaseType,
   MaxRatingFunctionApplier,
   RatingFunction,
@@ -27,12 +26,6 @@ export interface CustomMetadata {
   [key: string]: unknown; // Allow for other unknown metadata fields
 }
 
-// export interface QuizGenerator {
-//   retriever: DocumentRetriever;
-//   reranker: DocumentReranker;
-//   generateQuiz(context: string, options?: QuizGenerationOptions): Promise<Quiz>;
-// }
-
 export interface DocumentRetriever {
   retrieve(query: string): Promise<Document[]>;
 }
@@ -44,14 +37,26 @@ export interface DocumentReranker {
     query: string,
     docs: SimplifiedResult[],
     topN: number,
-  ): Promise<any[]>;
+  ): Promise<RerankResponseResultsItem[]>;
 }
 
-// export interface QuizGenerationOptions {
-//   numberOfQuestions?: number;
-//   difficulty?: "easy" | "medium" | "hard";
-//   questionTypes?: QuestionType[];
-// }
+export interface AilaQuizService {
+  generateMathsExitQuizPatch(
+    lessonPlan: LooseLessonPlan,
+  ): Promise<JsonPatchDocument>;
+}
+
+export interface AilaQuizGeneratorService {
+  generateMathsExitQuizPatch(
+    lessonPlan: LooseLessonPlan,
+    relevantLessons?: AilaRagRelevantLesson[],
+  ): Promise<Quiz[]>;
+  generateMathsStarterQuizPatch(
+    lessonPlan: LooseLessonPlan,
+    relevantLessons?: AilaRagRelevantLesson[],
+  ): Promise<Quiz[]>;
+  // invoke(lessonPlan: LooseLessonPlan): Promise<Quiz[]>;
+}
 
 export interface AilaQuizVariantService {
   rerankService: DocumentReranker;
@@ -60,29 +65,29 @@ export interface AilaQuizVariantService {
   ): Promise<JsonPatchDocument>;
 }
 
-export interface AilaQuizReranker<T extends typeof BaseSchema> {
+export interface AilaQuizReranker<T extends z.ZodType<BaseType>> {
   rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]>;
   evaluateQuizArray(
     quizzes: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
-    ratingSchema: typeof BaseSchema,
+    ratingSchema: T,
     quizType: QuizPath,
-  ): Promise<T[]>;
+  ): Promise<z.infer<T>[]>;
   cachedEvaluateQuizArray(
     quizzes: QuizQuestion[][],
     lessonPlan: LooseLessonPlan,
-    ratingSchema: typeof BaseSchema,
+    ratingSchema: T,
     quizType: QuizPath,
-  ): Promise<T[]>;
+  ): Promise<z.infer<T>[]>;
   ratingSchema?: T;
   quizType?: QuizPath;
-  ratingFunction?: RatingFunction<BaseType>;
+  ratingFunction?: RatingFunction<z.infer<T>>;
 }
 
 // TODO: GCLOMAX - make generic by extending BaseType and BaseSchema as <T,U>
 export interface FullQuizService {
   quizSelector: QuizSelector<BaseType>;
-  quizReranker: AilaQuizReranker<typeof BaseSchema>;
+  quizReranker: AilaQuizReranker<z.ZodType<BaseType>>;
   quizGenerators: AilaQuizGeneratorService[];
   createBestQuiz(
     quizType: quizPatchType,
@@ -101,13 +106,17 @@ export interface QuizSelector<T extends BaseType> {
   ): QuizQuestion[];
 }
 
-// TODO: GCLOMAX - check whether we are redeclaring a pretty basic type here
 export type quizPatchType = "/starterQuiz" | "/exitQuiz";
 
 export interface CustomSource {
   text: string;
   metadata: CustomMetadata;
   [key: string]: unknown; // Allow for other unknown fields at the top level
+}
+
+export interface QuizQuestionTextOnlySource {
+  text: string;
+  metadata: { questionUid: string; lessonSlug: string };
 }
 
 export interface CustomHit {
@@ -132,37 +141,36 @@ export interface SimplifiedResultQuestion {
   questionUid: string;
 }
 
-export interface Document {
-  text: string;
-}
-
 export interface DocumentWrapper {
   document: Document;
   index: number;
   relevanceScore: number;
 }
 
-interface QuizSet {
+export interface QuizSet {
   exitQuiz: string[];
   starterQuiz: string[];
 }
 
+export interface QuizIDSource {
+  text: QuizSet;
+  metadata: { lessonSlug: string };
+}
 export interface LessonSlugQuizMapping {
   [lessonSlug: string]: QuizSet;
 }
 
 export interface LessonSlugQuizLookup {
-  getStarterQuiz(lessonSlug: string): string[];
-  getExitQuiz(lessonSlug: string): string[];
-  hasStarterQuiz(lessonSlug: string): boolean;
-  hasExitQuiz(lessonSlug: string): boolean;
+  getStarterQuiz(lessonSlug: string): Promise<string[]>;
+  getExitQuiz(lessonSlug: string): Promise<string[]>;
+  hasStarterQuiz(lessonSlug: string): Promise<boolean>;
+  hasExitQuiz(lessonSlug: string): Promise<boolean>;
 }
 
 // FACTORIES BELOW
 export interface FullServiceFactory {
   create(settings: QuizServiceSettings): FullQuizService;
 }
-// TODO: GCLOMAX - the naming of these interfaces is confusing - sort them.
 
 export interface AilaQuizFactory {
   quizStrategySelector(lessonPlan: LooseLessonPlan): QuizRecommenderType;
@@ -172,7 +180,7 @@ export interface AilaQuizFactory {
 export interface AilaQuizRerankerFactory {
   createAilaQuizReranker(
     quizType: QuizRerankerType,
-  ): AilaQuizReranker<typeof BaseSchema>;
+  ): AilaQuizReranker<z.ZodType<BaseType>>;
 }
 
 export interface QuizSelectorFactory {

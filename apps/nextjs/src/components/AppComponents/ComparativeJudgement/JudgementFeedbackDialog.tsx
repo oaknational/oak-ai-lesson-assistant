@@ -81,6 +81,7 @@ function JudgementFeedbackDialog({
       setContentIsInappropriate={setContentIsInappropriate}
       setContentIsFactuallyIncorrect={setContentIsFactuallyIncorrect}
       setContentIsNotHelpful={setContentIsNotHelpful}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       sendFeedback={sendFeedback}
       setHasSubmitted={setHasSubmitted}
     />

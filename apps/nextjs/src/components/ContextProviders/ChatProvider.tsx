@@ -24,14 +24,14 @@ import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
+import { useChatStoreAiSdkSync } from "src/stores/chatStore/hooks/useChatStoreAiSdkSync";
 
 import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
-import type { AilaStreamingStatus } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
-import { useAilaStreamingStatus } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
 import {
   isAccountLocked,
@@ -50,19 +50,18 @@ export type ChatContextProps = {
   isLoading: boolean;
   isStreaming: boolean;
   lessonPlan: LooseLessonPlan;
-  ailaStreamingStatus: AilaStreamingStatus;
+  // ailaStreamingStatus: AilaStreamingStatus;
   append: (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions | undefined,
   ) => Promise<string | null | undefined>;
-  reload: () => void;
-  stop: () => void;
+  // reload: () => void;
+  // stop: () => void;
   input: string;
   setInput: React.Dispatch<React.SetStateAction<string>>;
   chatAreaRef: React.RefObject<HTMLDivElement>;
-  queuedUserAction: string | null;
-  queueUserAction: (action: string) => void;
-  executeQueuedAction: () => Promise<void>;
+  // queuedUserAction: string | null;
+  // executeQueuedAction: () => Promise<void>;
 };
 
 export const ChatContext = createContext<ChatContextProps | null>(null);
@@ -143,8 +142,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   );
   // Ensure that we re-fetch on mount
   useEffect(() => {
-    refetchChat();
-    refetchModerations();
+    void refetchChat();
+    void refetchModerations();
   }, [refetchChat, refetchModerations]);
   const trpcUtils = trpc.useUtils();
 
@@ -169,11 +168,18 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     LooseLessonPlan | undefined
   >(undefined);
 
+  const streamingFinished = useChatStore((state) => state.streamingFinished);
+
   /******************* Functions *******************/
 
   const { invokeActionMessages } = useActionMessages();
 
   /******************* Streaming of all chat starts from messages here *******************/
+  const initialMessages = useMemo(() => {
+    return chat?.messages?.filter((m) =>
+      isValidMessageRole(m.role),
+    ) as Message[];
+  }, [chat?.messages]);
 
   const {
     messages,
@@ -186,9 +192,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     setMessages,
   } = useChat({
     sendExtraMessageFields: true,
-    initialMessages: (chat?.messages ?? []).filter((m) =>
-      isValidMessageRole(m.role),
-    ) as Message[],
+    initialMessages,
     generateId: () => generateMessageId({ role: "user" }),
     id,
     body: {
@@ -241,11 +245,16 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
       invokeActionMessages(response.content);
 
-      trpcUtils.chat.appSessions.getChat.invalidate({ id });
+      void trpcUtils.chat.appSessions.getChat
+        .invalidate({ id })
+        .catch((err) => {
+          log.error("Failed to invalidate chat cache", err);
+        });
 
       setHasFinished(true);
       shouldTrackStreamFinished.current = true;
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
+      streamingFinished();
     },
   });
 
@@ -284,57 +293,22 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       messageHashes,
     });
 
-  // Handle queued user actions and messages
+  const handleReload = useCallback(() => {
+    reload().catch((err) => {
+      log.error("Failed to reload chat", err);
+      toast.error("Failed to reload chat");
+      Sentry.captureException(err);
+    });
+  }, [reload]);
 
-  const [queuedUserAction, setQueuedUserAction] = useState<string | null>(null);
-  const isExecutingAction = useRef(false);
-
-  const queueUserAction = useCallback((action: string) => {
-    setQueuedUserAction(action);
-  }, []);
-
-  const executeQueuedAction = useCallback(async () => {
-    if (!queuedUserAction || !hasFinished || isExecutingAction.current) return;
-
-    isExecutingAction.current = true;
-    const actionToExecute = queuedUserAction;
-    setQueuedUserAction(null);
-
-    try {
-      if (actionToExecute === "continue") {
-        await append({
-          content: "Continue",
-          role: "user",
-        });
-      } else if (actionToExecute === "regenerate") {
-        reload();
-      } else {
-        // Assume it's a user message
-        await append({
-          content: actionToExecute,
-          role: "user",
-        });
-      }
-    } catch (error) {
-      log.error("Error handling queued action:", error);
-    } finally {
-      isExecutingAction.current = false;
-    }
-  }, [queuedUserAction, hasFinished, append, reload]);
-
-  useEffect(() => {
-    if (hasFinished) {
-      executeQueuedAction();
-    }
-  }, [hasFinished, executeQueuedAction]);
-
-  const stop = useCallback(() => {
-    if (queuedUserAction) {
-      setQueuedUserAction(null);
-    } else {
-      stopStreaming();
-    }
-  }, [queuedUserAction, setQueuedUserAction, stopStreaming]);
+  // Hooks to update the Zustand chat store mirror
+  useChatStoreAiSdkSync(
+    messages,
+    isLoading,
+    stopStreaming,
+    append,
+    handleReload,
+  );
 
   /**
    *  If the state is being restored from a previous lesson plan, set the lesson plan
@@ -342,9 +316,12 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   useEffect(() => {
     if (chat?.startingMessage && !hasAppendedInitialMessage.current) {
-      append({
+      void append({
         content: chat.startingMessage,
         role: "user",
+      }).catch((err) => {
+        log.error("Failed to append initial message", err);
+        toast.error("Failed to start chat");
       });
       hasAppendedInitialMessage.current = true;
     }
@@ -361,7 +338,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
    */
   useEffect(() => {
     if (!hasFinished || !messages) return;
-    trpcUtils.chat.appSessions.getChat.invalidate({ id });
+    void trpcUtils.chat.appSessions.getChat.invalidate({ id }).catch((err) => {
+      log.error("Failed to invalidate chat cache", err);
+    });
     if (shouldTrackStreamFinished.current) {
       lessonPlanTracking.onStreamFinished({
         prevLesson: lessonPlanSnapshot.current,
@@ -390,8 +369,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       ? lastModeration
       : toxicInitialModeration;
 
-  const ailaStreamingStatus = useAilaStreamingStatus({ isLoading, messages });
-
   useEffect(() => {
     if (toxicModeration) {
       setMessages([]);
@@ -411,19 +388,13 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       chatAreaRef,
       append,
       messages,
-      ailaStreamingStatus,
       isLoading,
       isStreaming: !hasFinished,
       lastModeration,
-      reload,
-      stop,
       input,
       setInput,
       partialPatches,
       validPatches,
-      queuedUserAction,
-      queueUserAction,
-      executeQueuedAction,
     }),
     [
       id,
@@ -435,20 +406,14 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       hasAppendedInitialMessage,
       chatAreaRef,
       messages,
-      ailaStreamingStatus,
       isLoading,
       lastModeration,
-      reload,
-      stop,
       input,
       setInput,
       append,
       partialPatches,
       validPatches,
       overrideLessonPlan,
-      queuedUserAction,
-      queueUserAction,
-      executeQueuedAction,
     ],
   );
 

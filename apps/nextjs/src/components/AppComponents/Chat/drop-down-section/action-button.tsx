@@ -24,8 +24,8 @@ const ActionButton = ({ children, onClick, tooltip }: ActionButtonProps) => {
       $color="white"
     >
       <OakBox
-        onMouseEnter={async () => {
-          await waitThenExecute(0).then(() => {
+        onMouseEnter={() => {
+          void waitThenExecute(0).then(() => {
             setShowTooltip(true);
           });
         }}

@@ -72,24 +72,7 @@ export type MisconceptionsOptional = z.infer<
 
 // ********** QUIZ **********
 
-// TODO: GCLOMAX: Relax this constraint to allow for more than one answer.
 // Needs to be changed - to adapt for LLM handling.
-// Added hint and feedback to the schema.
-
-// hint: z
-//   .string()
-//   .optional()
-//   .describe("A hint to help the student answer the question."),
-// feedback: z
-//   .string()
-//   .optional()
-//   .describe("Feedback to be given to the student."),
-// html: z
-//   .array(z.string())
-//   .optional()
-//   .describe(
-//     "HTML content for the question for use when rendering a different question. DO NOT GENERATE THIS FIELD WHEN PASSED TO AN LLM",
-//   ),
 
 export const QUIZ_DESCRIPTIONS = {
   question: "The question to be asked in the quiz.",
@@ -107,6 +90,7 @@ export const QuizQuestionSchemaWithoutLength = z.object({
   distractors: z.array(z.string()).describe(QUIZ_DESCRIPTIONS.distractors),
 });
 
+// TODO: MG - Double check this is allowable.
 export const QuizQuestionSchema = QuizQuestionSchemaWithoutLength; //.extend({
 //   answers: QuizQuestionSchemaWithoutLength.shape.answers.length(1),
 //   distractors: QuizQuestionSchemaWithoutLength.shape.distractors.length(2),
@@ -411,8 +395,8 @@ export const CompletedLessonPlanSchema = z.object({
 export type CompletedLessonPlan = z.infer<typeof CompletedLessonPlanSchema>;
 
 export const LessonPlanSchema = CompletedLessonPlanSchema.partial().extend({
-  _experimental_starterQuizMathsV0: QuizOptionalSchema.optional(),
-  _experimental_exitQuizMathsV0: QuizOptionalSchema.optional(),
+  _experimental_starterQuizMathsV0: QuizSchema.optional(),
+  _experimental_exitQuizMathsV0: QuizSchema.optional(),
 });
 
 export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;
@@ -429,8 +413,7 @@ export const LessonPlanJsonSchema = zodToJsonSchema(
 );
 
 const AilaRagRelevantLessonSchema = z.object({
-  // @todo add this after next ingest
-  // oakLessonId: z.number(),
+  oakLessonId: z.number().nullish(),
   lessonPlanId: z.string(),
   title: z.string(),
 });
@@ -517,7 +500,6 @@ export type LessonPlanSectionWhileStreaming =
   | number;
 
 // These are here due to zod refusing to infer the type of "add"
-// TODO: GCLOMAX: Refactor this to use a union type
 export const quizPathSchema = z.union([
   z.literal("/starterQuiz"),
   z.literal("/exitQuiz"),
@@ -531,3 +513,24 @@ export const quizOperationTypeSchema = z.union([
 ]);
 
 export type QuizOperationType = z.infer<typeof quizOperationTypeSchema>;
+
+export const CompletedLessonPlanSchemaWithoutLength = z.object({
+  title: LessonTitleSchema,
+  keyStage: KeyStageSchema,
+  subject: SubjectSchema,
+  topic: TopicSchema,
+  learningOutcome: LearningOutcomeSchema,
+  learningCycles: LearningCyclesSchema,
+  priorKnowledge: PriorKnowledgeSchema,
+  keyLearningPoints: KeyLearningPointsSchema,
+  misconceptions: MisconceptionsSchemaWithoutLength,
+  keywords: KeywordsSchemaWithoutLength,
+  starterQuiz: QuizSchemaWithoutLength.describe(
+    LESSON_PLAN_DESCRIPTIONS.starterQuiz,
+  ),
+  cycle1: CycleSchemaWithoutLength.describe("The first learning cycle"),
+  cycle2: CycleSchemaWithoutLength.describe("The second learning cycle"),
+  cycle3: CycleSchemaWithoutLength.describe("The third learning cycle"),
+  exitQuiz: QuizSchemaWithoutLength.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+  additionalMaterials: AdditionalMaterialsSchema,
+});

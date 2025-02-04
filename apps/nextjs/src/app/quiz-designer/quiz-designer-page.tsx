@@ -103,6 +103,7 @@ const StatePersistence = ({ state }: Readonly<{ state: QuizAppState }>) => {
 
     if (state.sessionId) {
       log.info("Update session state", { state });
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       updateSessionStateMutationCall({
         sessionId: state.sessionId,
         output: restOfState,

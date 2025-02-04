@@ -6,7 +6,7 @@ import { testRatingSchema } from "../rerankers/RerankerStructuredOutputSchema";
 import type { QuizBuilderSettings } from "../schema";
 import { CompositeFullQuizServiceBuilder } from "./CompositeFullQuizServiceBuilder";
 
-const log = aiLogger("aila:quiz");
+const log = aiLogger("aila");
 
 describe("CompositeFullQuizServiceBuilder", () => {
   jest.setTimeout(60000);
@@ -59,10 +59,13 @@ describe("CompositeFullQuizServiceBuilder", () => {
       { lessonPlanId: "clna7k8zr00qfp4qx44fdvikl", title: "test-title-8" },
       { lessonPlanId: "clna7k93700sap4qx741wdrz4", title: "test-title-9" },
       { lessonPlanId: "clna7k98j00vup4qx9nyfjtpm", title: "test-title-10" },
+<<<<<<< HEAD
       // {
       //   lessonPlanId: "clna7lofy0og0p4qxju5j6z56",
       //   title: "TEST-LESSON-READING-TIMETABLES",
       // },
+=======
+>>>>>>> main
     ];
 
     const builder = new CompositeFullQuizServiceBuilder();
@@ -85,6 +88,7 @@ describe("CompositeFullQuizServiceBuilder", () => {
     expect(quiz[0]?.distractors).toBeDefined();
     log.info(JSON.stringify(quiz, null, 2));
   });
+<<<<<<< HEAD
   it("Should work with a schema reranker", async () => {
     const builder = new CompositeFullQuizServiceBuilder();
     const settings: QuizBuilderSettings = {
@@ -170,4 +174,6 @@ describe("CompositeFullQuizServiceBuilder", () => {
   //   log.info("Full On Quiz");
   //   log.info(JSON.stringify(quiz, null, 2));
   // });
+=======
+>>>>>>> main
 });

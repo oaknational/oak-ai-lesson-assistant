@@ -28,7 +28,7 @@ const main = async () => {
       },
     });
 
-    newLessons.forEach(async (lesson) => {
+    for (const lesson of newLessons) {
       const lessonId = lesson?.id;
 
       const transcript = await prisma.transcript.findFirst({
@@ -74,7 +74,7 @@ const main = async () => {
           index++;
         }
       }
-    });
+    }
 
     log.info("Script finished successfully");
   } catch (e) {

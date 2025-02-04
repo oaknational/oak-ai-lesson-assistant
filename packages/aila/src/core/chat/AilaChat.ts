@@ -91,20 +91,11 @@ export class AilaChat implements AilaChatService {
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
     this._relevantLessons = [];
     this._experimentalPatches = [];
-    // TODO: GCLOMAX - this is a hack to get the demo quiz service working. Add quiz options somewhere.
-    // this.fullQuizService = new FullQuizServiceFactory().create("simple");
-    // {
-    //   quizRatingSchema: testRatingSchema,
-    //   quizSelector: "simple",
-    //   quizReranker: "schema-reranker",
-    //   quizGenerators: ["ml", "rag", "basedOnRag"],
-    // };
+
     this.fullQuizService = new CompositeFullQuizServiceBuilder().build({
       quizRatingSchema: testRatingSchema,
       quizSelector: "simple",
-      // quizReranker: "return-first",
-      quizReranker: "schema-reranker",
-      // quizGenerators: ["ml", "rag", "basedOnRag"],
+      quizReranker: "return-first",
       quizGenerators: ["basedOnRag"],
     });
   }

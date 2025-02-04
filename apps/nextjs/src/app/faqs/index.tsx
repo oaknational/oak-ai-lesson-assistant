@@ -27,7 +27,7 @@ export const FAQPageContent = () => {
   const updatesRef = useRef(null);
   const concernsRef = useRef(null);
   const dataRef = useRef(null);
-  const scrollToRefWithOffset = (ref) => {
+  const scrollToRefWithOffset = (ref: React.RefObject<HTMLElement>) => {
     if (ref?.current) {
       const yOffset = -72; // Adjust this value as needed
       const y =

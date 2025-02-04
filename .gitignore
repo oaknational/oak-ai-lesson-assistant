@@ -53,6 +53,9 @@ yarn-error.log*
 # Allow each developer to have personal settings, but ignore these files
 .vscode/launch.json
 .vscode/*.settings.json
+.gitleaks.toml
+.pre-commit-config.yaml
+
 
 .sonar
 .sonar/**/*

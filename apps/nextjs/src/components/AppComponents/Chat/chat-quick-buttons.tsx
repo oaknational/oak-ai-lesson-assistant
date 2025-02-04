@@ -6,9 +6,11 @@ import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useChatStore } from "@/stores/AilaStoresProvider";
+import type { AilaStreamingStatus } from "@/stores/chatStore";
+import { canAppendSelector } from "@/stores/chatStore/selectors";
 
 import { useDialog } from "../DialogContext";
-import type { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
 import ChatButton from "./ui/chat-button";
 import { IconRefresh, IconStop } from "./ui/icons";
 
@@ -44,33 +46,31 @@ const QuickActionButtons = () => {
   const { trackEvent } = useAnalytics();
   const lessonPlanTracking = useLessonPlanTracking();
   const { setDialogWindow } = useDialog();
-  const {
-    messages,
-    id,
-    stop,
-    ailaStreamingStatus,
-    queueUserAction,
-    queuedUserAction,
-  } = chat;
+  const queuedUserAction = useChatStore((state) => state.queuedUserAction);
+  const append = useChatStore((state) => state.append);
+  const stop = useChatStore((state) => state.stop);
+  const { messages, id } = chat;
+
+  const ailaStreamingStatus = useChatStore(
+    (state) => state.ailaStreamingStatus,
+  );
+  const shouldAllowUserAction = useChatStore(canAppendSelector);
 
   const hasMessages = !!messages.length;
-
-  const shouldAllowUserAction =
-    ["Idle", "Moderating"].includes(ailaStreamingStatus) && !queuedUserAction;
 
   const handleRegenerate = useCallback(() => {
     trackEvent("chat:regenerate", { id: id });
     const lastUserMessage =
       findLast(messages, (m) => m.role === "user")?.content ?? "";
     lessonPlanTracking.onClickRetry(lastUserMessage);
-    queueUserAction("regenerate");
-  }, [queueUserAction, lessonPlanTracking, messages, trackEvent, id]);
+    append("regenerate");
+  }, [append, lessonPlanTracking, messages, trackEvent, id]);
 
-  const handleContinue = useCallback(async () => {
+  const handleContinue = useCallback(() => {
     trackEvent("chat:continue");
     lessonPlanTracking.onClickContinue();
-    queueUserAction("continue");
-  }, [queueUserAction, lessonPlanTracking, trackEvent]);
+    append("continue");
+  }, [append, lessonPlanTracking, trackEvent]);
 
   return (
     <div className="-ml-7 flex justify-between space-x-7 rounded-bl rounded-br pt-8">
@@ -127,8 +127,8 @@ const QuickActionButtons = () => {
         size="sm"
         variant="primary"
         disabled={!shouldAllowUserAction}
-        onClick={async () => {
-          await handleContinue();
+        onClick={() => {
+          handleContinue();
         }}
         testId="chat-continue"
       >

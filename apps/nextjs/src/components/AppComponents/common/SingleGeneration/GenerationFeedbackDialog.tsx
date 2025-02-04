@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
 import type { GenerationPart } from "@oakai/core/src/types";
 import { structuredLogger as logger } from "@oakai/logger";
 import * as Dialog from "@radix-ui/react-dialog";
+import * as Sentry from "@sentry/nextjs";
 
 import { trpc } from "@/utils/trpc";
 
@@ -33,62 +34,82 @@ function GenerationFeedbackDialog({
 
   const giveFlaggedFeedback = trpc.generations.flag.useMutation();
 
-  const sendFeedback = async () => {
-    const email = user?.user?.emailAddresses[0]?.emailAddress;
+  const handleSendFeedback = useCallback(() => {
+    const sendFeedback = async () => {
+      const email = user?.user?.emailAddresses[0]?.emailAddress;
 
-    if (!email) {
-      // This case really shouldn't happen as the user should be logged in
-      logger.error("User attempted to give feedback without an email address");
-      return null;
-    }
-
-    if (!flaggedItems) {
-      logger.error("User attempted to give feedback but flaggedItem was null");
-      return null;
-    }
-
-    if (!sessionId) {
-      logger.error("User attempted to give feedback but sessionId was null");
-      return null;
-    }
-
-    let flattenedFlaggedItem;
-
-    if (Array.isArray(flaggedItems)) {
-      const firstFlaggedItem = flaggedItems[0];
-      if (!firstFlaggedItem) {
-        throw new Error(
-          "Attempted to flag an item but provided an empty list of flaggedItems",
+      if (!email) {
+        // This case really shouldn't happen as the user should be logged in
+        logger.error(
+          "User attempted to give feedback without an email address",
         );
+        return null;
       }
 
-      flattenedFlaggedItem = {
-        ...firstFlaggedItem,
-        value: flaggedItems.map((item) => item.value),
-      };
-    } else {
-      flattenedFlaggedItem = flaggedItems;
-    }
+      if (!flaggedItems) {
+        logger.error(
+          "User attempted to give feedback but flaggedItem was null",
+        );
+        return null;
+      }
 
-    const feedBackObject = {
-      sessionId,
-      user: {
-        email: email,
-      },
-      feedback: {
-        typedFeedback: typedFeedback,
-        contentIsInappropriate: contentIsInappropriate,
-        contentIsFactuallyIncorrect: contentIsFactuallyIncorrect,
-        contentIsNotHelpful: contentIsNotHelpful,
-      },
-      flaggedItem: flattenedFlaggedItem,
+      if (!sessionId) {
+        logger.error("User attempted to give feedback but sessionId was null");
+        return null;
+      }
+
+      let flattenedFlaggedItem: GenerationPart<unknown>;
+
+      if (Array.isArray(flaggedItems)) {
+        const firstFlaggedItem = flaggedItems[0];
+        if (!firstFlaggedItem) {
+          throw new Error(
+            "Attempted to flag an item but provided an empty list of flaggedItems",
+          );
+        }
+
+        flattenedFlaggedItem = {
+          ...firstFlaggedItem,
+          value: flaggedItems.map((item) => item.value),
+        };
+      } else {
+        flattenedFlaggedItem = flaggedItems;
+      }
+
+      const feedBackObject = {
+        sessionId,
+        user: {
+          email: email,
+        },
+        feedback: {
+          typedFeedback: typedFeedback,
+          contentIsInappropriate: contentIsInappropriate,
+          contentIsFactuallyIncorrect: contentIsFactuallyIncorrect,
+          contentIsNotHelpful: contentIsNotHelpful,
+        },
+        flaggedItem: flattenedFlaggedItem,
+      };
+
+      const result = await giveFlaggedFeedback.mutateAsync(feedBackObject);
+
+      if (result) {
+        setHasSubmitted(true);
+      }
     };
 
-    const result = await giveFlaggedFeedback.mutateAsync(feedBackObject);
-    if (result) {
-      setHasSubmitted(true);
-    }
-  };
+    sendFeedback().catch((error) => {
+      Sentry.captureException(error, { extra: { flaggedItems, sessionId } });
+    });
+  }, [
+    flaggedItems,
+    sessionId,
+    user?.user?.emailAddresses,
+    contentIsFactuallyIncorrect,
+    contentIsInappropriate,
+    contentIsNotHelpful,
+    giveFlaggedFeedback,
+    typedFeedback,
+  ]);
 
   return (
     <FeedbackDialog
@@ -98,7 +119,7 @@ function GenerationFeedbackDialog({
       setContentIsInappropriate={setContentIsInappropriate}
       setContentIsFactuallyIncorrect={setContentIsFactuallyIncorrect}
       setContentIsNotHelpful={setContentIsNotHelpful}
-      sendFeedback={sendFeedback}
+      sendFeedback={handleSendFeedback}
       setHasSubmitted={setHasSubmitted}
     />
   );

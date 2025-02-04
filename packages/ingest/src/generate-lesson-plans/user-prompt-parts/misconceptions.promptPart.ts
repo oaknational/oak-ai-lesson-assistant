@@ -5,7 +5,7 @@ export const misconceptionsPromptPart = ({
   misconceptionsAndCommonMistakes,
 }: RawLesson) =>
   misconceptionsAndCommonMistakes?.length
-    ? `The lesson should include the following misconceptions. Include these in the lesson plan:
+    ? `The lesson's misconceptions should match exactly this list of misconception/description pairs:
 
 ${toMarkdownList(misconceptionsAndCommonMistakes, misconceptionText)}`
     : null;
