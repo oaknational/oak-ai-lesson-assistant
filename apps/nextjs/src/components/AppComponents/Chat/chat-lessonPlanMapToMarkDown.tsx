@@ -5,8 +5,8 @@ import type {
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
+import { MathJax } from "better-react-mathjax";
 
-// import { MathJax } from "better-react-mathjax";
 import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
 
 import { notEmpty } from "./chat-lessonPlanDisplay";
@@ -114,15 +114,15 @@ const ChatSection = ({
 
   return (
     <div ref={sectionRef}>
-      {/* <MathJax> */}
-      <MemoizedReactMarkdownWithStyles
-        lessonPlanSectionDescription={
-          lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
-        }
-        markdown={`# ${sectionTitle(objectKey)}
+      <MathJax>
+        <MemoizedReactMarkdownWithStyles
+          lessonPlanSectionDescription={
+            lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
+          }
+          markdown={`# ${sectionTitle(objectKey)}
 ${sectionToMarkdown(objectKey, value)}`}
-      />
-      {/* </MathJax> */}
+        />
+      </MathJax>
     </div>
   );
 };

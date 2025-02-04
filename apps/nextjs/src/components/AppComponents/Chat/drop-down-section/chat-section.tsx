@@ -4,8 +4,8 @@ import type {
 } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { OakFlex } from "@oaknational/oak-components";
+import { MathJax } from "better-react-mathjax";
 
-// import { MathJax } from "better-react-mathjax";
 import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
 
 import { sectionTitle } from ".";
@@ -22,14 +22,14 @@ export type ChatSectionProps = Readonly<{
 const ChatSection = ({ section, value }: ChatSectionProps) => {
   return (
     <OakFlex $flexDirection="column">
-      {/* <MathJax> */}
-      <MemoizedReactMarkdownWithStyles
-        lessonPlanSectionDescription={
-          lessonSectionTitlesAndMiniDescriptions[section]?.description
-        }
-        markdown={`${sectionToMarkdown(section, value)}`}
-      />
-      {/* </MathJax> */}
+      <MathJax>
+        <MemoizedReactMarkdownWithStyles
+          lessonPlanSectionDescription={
+            lessonSectionTitlesAndMiniDescriptions[section]?.description
+          }
+          markdown={`${sectionToMarkdown(section, value)}`}
+        />
+      </MathJax>
       <OakFlex
         $gap="all-spacing-3"
         $mt="space-between-s"

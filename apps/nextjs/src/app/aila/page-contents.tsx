@@ -2,7 +2,8 @@
 
 import React from "react";
 
-// import { MathJaxContext } from "better-react-mathjax";
+import { MathJaxContext } from "better-react-mathjax";
+
 import { Chat } from "@/components/AppComponents/Chat/Chat/chat";
 import LessonPlanDisplay from "@/components/AppComponents/Chat/chat-lessonPlanDisplay";
 import Layout from "@/components/AppComponents/Layout";
@@ -16,15 +17,15 @@ const ChatPageContents = ({ id }: { readonly id: string }) => {
 
   return (
     <Layout>
-      {/* <MathJaxContext> */}
-      <LessonPlanTrackingProvider chatId={id}>
-        <AilaStoresProvider>
-          <ChatProvider id={id}>
-            <Chat />
-          </ChatProvider>
-        </AilaStoresProvider>
-      </LessonPlanTrackingProvider>
-      {/* </MathJaxContext> */}
+      <MathJaxContext>
+        <LessonPlanTrackingProvider chatId={id}>
+          <AilaStoresProvider>
+            <ChatProvider id={id}>
+              <Chat />
+            </ChatProvider>
+          </AilaStoresProvider>
+        </LessonPlanTrackingProvider>
+      </MathJaxContext>
     </Layout>
   );
 };
