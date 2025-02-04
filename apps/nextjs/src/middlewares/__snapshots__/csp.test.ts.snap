@@ -7,7 +7,7 @@ script-src 'self' 'nonce-REPLACED_NONCE' 'strict-dynamic' https: http: 'unsafe-i
 style-src 'self' 'unsafe-inline' https://*.mux.com
 connect-src 'self' *.thenational.academy *.hubspot.com *.clerk.accounts.dev https://api.avo.app/ https://eu.i.posthog.com https://europe-west2-oak-ai-beta-staging.cloudfunctions.net https://mux.com https://*.mux.com https://stream.mux.com https://inferred.litix.io
 worker-src 'self' blob:
-img-src 'self' blob: data: https://img.clerk.com https://res.cloudinary.com https://*.hubspot.com https://*.hsforms.com https://*.mux.com https://stream.mux.com
+img-src 'self' blob: data: https://img.clerk.com https://res.cloudinary.com https://oaknationalacademy-res.cloudinary.com https://*.hubspot.com https://*.hsforms.com https://*.mux.com https://stream.mux.com
 font-src 'self' gstatic-fonts.thenational.academy fonts.gstatic.com
 object-src 'none'
 base-uri 'self'
@@ -24,7 +24,7 @@ script-src 'self' 'nonce-REPLACED_NONCE' 'strict-dynamic' https: http: 'unsafe-i
 style-src 'self' 'unsafe-inline' https://vercel.live/ https://*.mux.com
 connect-src 'self' *.thenational.academy *.hubspot.com https://vercel.live/ https://vercel.com *.pusher.com *.pusherapp.com *.clerk.accounts.dev https://api.avo.app/ https://mux.com https://*.mux.com https://stream.mux.com https://inferred.litix.io
 worker-src 'self' blob:
-img-src 'self' blob: data: https://img.clerk.com https://res.cloudinary.com https://*.hubspot.com https://*.hsforms.com https://vercel.live/ https://vercel.com *.pusher.com/ data: blob: https://*.mux.com https://stream.mux.com
+img-src 'self' blob: data: https://img.clerk.com https://res.cloudinary.com https://oaknationalacademy-res.cloudinary.com https://*.hubspot.com https://*.hsforms.com https://vercel.live/ https://vercel.com *.pusher.com/ data: blob: https://*.mux.com https://stream.mux.com
 font-src 'self' gstatic-fonts.thenational.academy fonts.gstatic.com https://vercel.live/ https://assets.vercel.com
 object-src 'none'
 base-uri 'self'
@@ -42,7 +42,7 @@ script-src 'self' 'nonce-REPLACED_NONCE' 'strict-dynamic' https: http: 'unsafe-i
 style-src 'self' 'unsafe-inline' https://*.mux.com
 connect-src 'self' *.thenational.academy *.hubspot.com https://mux.com https://*.mux.com https://stream.mux.com https://inferred.litix.io
 worker-src 'self' blob:
-img-src 'self' blob: data: https://img.clerk.com https://res.cloudinary.com https://*.hubspot.com https://*.hsforms.com https://*.mux.com https://stream.mux.com
+img-src 'self' blob: data: https://img.clerk.com https://res.cloudinary.com https://oaknationalacademy-res.cloudinary.com https://*.hubspot.com https://*.hsforms.com https://*.mux.com https://stream.mux.com
 font-src 'self' gstatic-fonts.thenational.academy fonts.gstatic.com
 object-src 'none'
 base-uri 'self'
@@ -60,7 +60,7 @@ script-src 'self' 'nonce-REPLACED_NONCE'  https: http: 'unsafe-inline' 'unsafe-e
 style-src 'self' 'unsafe-inline' https://*.mux.com
 connect-src 'self' *.thenational.academy *.hubspot.com *.clerk.accounts.dev https://api.avo.app/ https://mux.com https://*.mux.com https://stream.mux.com https://inferred.litix.io
 worker-src 'self' blob:
-img-src 'self' blob: data: https://img.clerk.com https://res.cloudinary.com https://*.hubspot.com https://*.hsforms.com https://*.mux.com https://stream.mux.com
+img-src 'self' blob: data: https://img.clerk.com https://res.cloudinary.com https://oaknationalacademy-res.cloudinary.com https://*.hubspot.com https://*.hsforms.com https://*.mux.com https://stream.mux.com
 font-src 'self' gstatic-fonts.thenational.academy fonts.gstatic.com
 object-src 'none'
 base-uri 'self'
