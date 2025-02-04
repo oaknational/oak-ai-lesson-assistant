@@ -3,8 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
-import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
-import { ModerationStoreDecorator } from "@/storybook/decorators/ModerationStoreDecorator";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
 
@@ -25,8 +24,8 @@ const chatContext: Partial<ChatContextProps> = {
 const meta = {
   title: "Components/LessonPlan/LessonPlanDisplay",
   component: LessonPlanDisplay,
-  // tags: ["autodocs"], // disabling docs due to bug with state from zustand store
-  decorators: [ChatDecorator, ChatStoreDecorator, ModerationStoreDecorator],
+  tags: ["autodocs"],
+  decorators: [ChatDecorator, StoreDecorator],
   args: {
     documentContainerRef: { current: null },
     chatEndRef: undefined,

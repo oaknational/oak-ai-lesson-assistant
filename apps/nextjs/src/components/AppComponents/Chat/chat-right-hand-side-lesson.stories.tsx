@@ -4,11 +4,11 @@ import { fn } from "@storybook/test";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
-import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
 import {
   DemoDecorator,
   demoParams,
 } from "@/storybook/decorators/DemoDecorator";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import ChatRightHandSideLesson from "./chat-right-hand-side-lesson";
 
@@ -30,7 +30,7 @@ const meta = {
   title: "Components/LessonPlan/ChatRightHandSideLesson",
   component: ChatRightHandSideLesson,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, DemoDecorator, ChatStoreDecorator],
+  decorators: [ChatDecorator, DemoDecorator, StoreDecorator],
   args: {
     showLessonMobile: true,
     closeMobileLessonPullOut: fn,

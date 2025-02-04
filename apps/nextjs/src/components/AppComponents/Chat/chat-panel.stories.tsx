@@ -3,9 +3,9 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
-import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
 import { LessonPlanTrackingDecorator } from "@/storybook/decorators/LessonPlanTrackingDecorator";
 import { SidebarDecorator } from "@/storybook/decorators/SidebarDecorator";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import { ChatPanel } from "./chat-panel";
 
@@ -23,7 +23,7 @@ const meta = {
     ChatDecorator,
     LessonPlanTrackingDecorator,
     SidebarDecorator,
-    ChatStoreDecorator,
+    StoreDecorator,
   ],
   args: {
     isDemoLocked: false,
