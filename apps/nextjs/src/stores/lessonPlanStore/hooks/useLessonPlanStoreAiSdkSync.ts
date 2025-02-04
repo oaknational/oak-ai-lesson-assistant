@@ -10,6 +10,6 @@ export const useLessonPlanStoreAiSdkSync = (
   const messagesUpdated = useLessonPlanStore((state) => state.messagesUpdated);
 
   useEffect(() => {
-    messagesUpdated(messages, isLoading);
+    messagesUpdated(messages);
   }, [messages, isLoading, messagesUpdated]);
 };

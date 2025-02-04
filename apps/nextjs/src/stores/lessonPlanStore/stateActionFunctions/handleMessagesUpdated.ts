@@ -1,8 +1,9 @@
 import {
   applyLessonPlanPatchImmutable,
   extractPatches,
-  PatchDocument,
+  type PatchDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import { LessonPlanKeySchema } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import { createHash } from "crypto";
 
@@ -31,12 +32,59 @@ const countCompleteParts = (messageStr: string) => {
   return [...messageStr.matchAll(/"status":"complete"/g)].length;
 };
 
-export const handleMessagesUpdated =
-  (
-    set: (partial: Partial<LessonPlanStore>) => void,
-    get: () => LessonPlanStore,
-  ) =>
-  (messages: AiMessage[], isLoading: boolean) => {
+const extractSectionsToEdit = (messageStr: string) => {
+  // ...,"sectionsToEdit":["a","b","c"],...
+  const sectionsToEditStr = messageStr.match(
+    /"sectionsToEdit":\[("([a-zA-Z0-9])+",?)*\]/,
+  )?.[0];
+  if (!sectionsToEditStr) {
+    return [];
+  }
+  // '"sectionsToEdit":["a","b","c"]' => ["a", "b", "c"]
+  return sectionsToEditStr.match(/([a-zA-Z0-9])+/g) ?? [];
+};
+
+export const handleMessagesUpdated = (
+  set: (
+    partial:
+      | Partial<LessonPlanStore>
+      | ((state: LessonPlanStore) => Partial<LessonPlanStore>),
+  ) => void,
+  get: () => LessonPlanStore,
+) => {
+  const applyMessageToLessonPlan = (message: AiMessage) => {
+    log.info("Extracting patches from message", message);
+    // NOTE: we don't need partial patches as weextract them with a regex
+    const { validPatches } = extractPatches(message.content);
+    log.info("valid patches", validPatches);
+
+    validPatches.forEach((patch) => {
+      const { appliedPatchHashes, lessonPlan } = get();
+      const patchHash = generatePatchHash(patch);
+
+      if (!appliedPatchHashes.includes(patchHash)) {
+        const updatedLessonPlan = timeOperation(() => {
+          // NOTE: It's important that there isn't any cloning when applying the patch
+          return applyLessonPlanPatchImmutable(lessonPlan ?? {}, patch);
+        });
+        if (updatedLessonPlan) {
+          log.info("Applying patch", patch.value.path);
+          const patchPath = LessonPlanKeySchema.parse(
+            patch.value.path.replace("/", ""),
+          );
+          set((state) => ({
+            lessonPlan: updatedLessonPlan,
+            appliedPatchHashes: [...state.appliedPatchHashes, patchHash],
+            appliedPatchPaths: [...state.appliedPatchPaths, patchPath],
+          }));
+        } else {
+          log.info("Patch failed to apply");
+        }
+      }
+    });
+  };
+
+  return (messages: AiMessage[]) => {
     if (!get().isAcceptingChanges) {
       log.info("message skipped: not accepting changes");
       return;
@@ -60,50 +108,15 @@ export const handleMessagesUpdated =
         `numberOfCompleteParts changed to ${numberOfStreamedCompleteParts}`,
       );
       set({ numberOfStreamedCompleteParts });
-      applyMessageToLessonPlan(get, set, streamingMessage);
+      applyMessageToLessonPlan(streamingMessage);
     }
 
-    // ...,"sectionsToEdit":["a","b","c"],...
-    const sectionsToEditStr = streamingMessage.content.match(
-      /"sectionsToEdit":\[("([a-zA-Z0-9])+",?)*\]/,
-    )?.[0];
-    // '"sectionsToEdit":["a","b","c"]' => ["a", "b", "c"]
-    const sectionsToEdit = sectionsToEditStr?.match(/([a-zA-Z0-9])+/g) ?? [];
-    if (sectionsToEdit?.join(",") !== get().sectionsToEdit?.join(",")) {
-      log.info(`sectionsToEdit changed to ${sectionsToEdit}`);
-      set({ sectionsToEdit });
+    const sectionsToEdit = extractSectionsToEdit(streamingMessage.content);
+    if (sectionsToEdit.join(",") !== get().sectionsToEdit?.join(",")) {
+      log.info(`sectionsToEdit changed to ${sectionsToEdit.join(",")}`);
+      const parsedSectionsToEdit =
+        LessonPlanKeySchema.array().parse(sectionsToEdit);
+      set({ sectionsToEdit: parsedSectionsToEdit });
     }
   };
-
-const applyMessageToLessonPlan = (get, set, message) => {
-  log.info("Extracting patches from message", message);
-  // NOTE: we don't need partial patches as weextract them with a regex
-  const { validPatches } = extractPatches(message.content);
-  log.info("valid patches", validPatches);
-
-  validPatches.forEach((patch) => {
-    const { appliedPatchHashes, lessonPlan } = get();
-    const patchHash = generatePatchHash(patch);
-
-    if (!appliedPatchHashes.has(patchHash)) {
-      const updatedLessonPlan = timeOperation(() => {
-        // NOTE: It's important that there isn't any cloning when applying the patch
-        return applyLessonPlanPatchImmutable(lessonPlan ?? {}, patch);
-      });
-      if (updatedLessonPlan) {
-        log.info("Applying patch", patch.value.path);
-        set((state) => ({
-          lessonPlan: updatedLessonPlan,
-          // https://zustand.docs.pmnd.rs/guides/maps-and-sets-usage
-          appliedPatchHashes: new Set(state.appliedPatchHashes).add(patchHash),
-          appliedPatchPaths: [
-            ...state.appliedPatchPaths,
-            patch.value.path.replace("/", ""),
-          ],
-        }));
-      } else {
-        log.info("Patch failed to apply");
-      }
-    }
-  });
 };

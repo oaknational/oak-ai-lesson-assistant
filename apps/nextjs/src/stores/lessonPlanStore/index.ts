@@ -13,8 +13,7 @@ const log = aiLogger("lessons:store");
 
 export type LessonPlanStore = {
   lessonPlan: LooseLessonPlan;
-  // NOTE: https://zustand.docs.pmnd.rs/guides/maps-and-sets-usage
-  appliedPatchHashes: Set<string>;
+  appliedPatchHashes: string[];
   appliedPatchPaths: LessonPlanKey[];
   sectionsToEdit: LessonPlanKey[];
   iteration: number | undefined;
@@ -22,13 +21,13 @@ export type LessonPlanStore = {
   numberOfStreamedCompleteParts: number;
 
   messageStarted: () => void;
-  messagesUpdated: (messages: AiMessage[], isLoading: boolean) => void;
+  messagesUpdated: (messages: AiMessage[]) => void;
   messageFinished: () => void;
 };
 
 const initialPerMessageState = {
   sectionsToEdit: [],
-  appliedPatchHashes: new Set(),
+  appliedPatchHashes: [],
   appliedPatchPaths: [],
   numberOfStreamedCompleteParts: 0,
 } satisfies Partial<LessonPlanStore>;
