@@ -14,11 +14,12 @@ const debugBase = debug("ai");
 // By default debug logs to stderr, we want to use stdout
 debugBase.log = console.log.bind(console);
 
-type ChildKey =
+export type LoggerKey =
   | "admin"
   | "aila"
   | "aila:analytics"
   | "aila:categorisation"
+  | "aila:chat"
   | "aila:errors"
   | "aila:lesson"
   | "aila:llm"
@@ -30,14 +31,17 @@ type ChildKey =
   | "aila:stream"
   | "aila:rag"
   | "aila:testing"
-  | "aila:chat"
+  | "aila:quiz"
   | "aila:experimental-patches"
   | "analytics"
   | "app"
   | "auth"
   | "chat"
+  | "chat:store"
   | "cloudinary"
   | "consent"
+  | "core"
+  | "cron"
   | "db"
   | "demo"
   | "exports"
@@ -56,14 +60,15 @@ type ChildKey =
   | "quiz"
   | "rag"
   | "rate-limiting"
+  | "scrolling"
   | "snippets"
   | "testing"
   | "tracing"
   | "transcripts"
   | "trpc"
   | "ui"
-  | "webhooks"
-  | "cron";
+  | "ui:performance"
+  | "webhooks";
 
 const errorLogger =
   typeof window === "undefined"
@@ -84,13 +89,19 @@ const errorLogger =
  * const log = aiLogger("db");
  * log.info("Hello world");
  */
-export function aiLogger(childKey: ChildKey) {
+export function aiLogger(childKey: LoggerKey) {
   const debugLogger = debugBase.extend(childKey);
 
+  const tableLogger = (tabularData: unknown[], columns?: string[]) => {
+    if (typeof console !== "undefined" && console.table) {
+      console.table(tabularData, columns);
+    }
+  };
   return {
     info: debugLogger,
     warn: debugLogger,
     error: errorLogger.bind(structuredLogger),
+    table: tableLogger,
   };
 }
 

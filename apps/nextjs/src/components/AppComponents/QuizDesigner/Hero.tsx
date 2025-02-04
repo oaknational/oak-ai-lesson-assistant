@@ -3,12 +3,12 @@ import { useCallback } from "react";
 
 import type { KeyStageName, SubjectName } from "@oakai/core";
 import { Box, Flex, Heading, Text } from "@radix-ui/themes";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
-import type { QuizAppState } from "ai-apps/quiz-designer/state/types";
-import { QuizAppStatus } from "ai-apps/quiz-designer/state/types";
 import Image from "next/image";
 
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
+import type { QuizAppState } from "@/ai-apps/quiz-designer/state/types";
+import { QuizAppStatus } from "@/ai-apps/quiz-designer/state/types";
 import jigsaw from "@/assets/svg/illustration/jigsaw.svg";
 import ErrorBox from "@/components/AppComponents/QuizDesigner/ErrorBox";
 import SubjectKeyStageSection from "@/components/AppComponents/QuizDesigner/SubjectKeyStageSection";
@@ -121,6 +121,7 @@ const Hero = ({
               variant="text-link"
               icon="arrow-right"
               disabled={!canBegin}
+              // eslint-disable-next-line @typescript-eslint/require-await, @typescript-eslint/no-misused-promises
               onClick={async () => {
                 if (canBegin) {
                   if (hasQuestions) {

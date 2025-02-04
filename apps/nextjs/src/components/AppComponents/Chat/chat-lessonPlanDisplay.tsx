@@ -6,6 +6,7 @@ import { cva } from "class-variance-authority";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { organiseSections } from "@/lib/lessonPlan/organiseSections";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
@@ -24,7 +25,7 @@ function basedOnTitle(basedOn: string | BasedOnOptional) {
 }
 
 const displayStyles = cva(
-  "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24 ",
+  "relative flex flex-col space-y-10 px-14 pb-28 opacity-100 sm:px-24",
 );
 
 export type LessonPlanDisplayProps = Readonly<{
@@ -41,7 +42,10 @@ export const LessonPlanDisplay = ({
   showLessonMobile,
 }: LessonPlanDisplayProps) => {
   const chat = useLessonChat();
-  const { ailaStreamingStatus, lastModeration } = chat;
+  const { lastModeration } = chat;
+  const ailaStreamingStatus = useChatStore(
+    (state) => state.ailaStreamingStatus,
+  );
   const lessonPlan = {
     ...chat.lessonPlan,
     starterQuiz:
@@ -143,7 +147,7 @@ export const LessonPlanDisplay = ({
                 return (
                   <DropDownSection
                     key={dependant}
-                    objectKey={dependant}
+                    section={dependant}
                     sectionRefs={sectionRefs}
                     value={value}
                     userHasCancelledAutoScroll={userHasCancelledAutoScroll}

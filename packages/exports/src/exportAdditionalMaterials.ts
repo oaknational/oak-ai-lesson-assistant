@@ -4,7 +4,7 @@ import { prepLessonForAdditionalMaterialsDoc } from "./dataHelpers/prepLessonFor
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
 import { populateDoc } from "./gSuite/docs/populateDoc";
-import type { LessonSlidesInputData } from "./schema/input.schema";
+import type { LessonInputData } from "./schema/input.schema";
 import { getSlidesTemplateIdAdditionalMaterials as getDocsTemplateIdAdditionalMaterials } from "./templates";
 import type { OutputData, Result, State } from "./types";
 
@@ -17,7 +17,7 @@ export const exportAdditionalMaterials = async ({
   onStateChange,
 }: {
   snapshotId: string;
-  lesson: LessonSlidesInputData;
+  lesson: LessonInputData;
   userEmail: string;
   onStateChange: (state: State<OutputData>) => void;
 }): Promise<Result<OutputData>> => {
@@ -28,7 +28,10 @@ export const exportAdditionalMaterials = async ({
       prepData: prepLessonForAdditionalMaterialsDoc,
       templateId: getDocsTemplateIdAdditionalMaterials(),
       updateTemplate: async ({ templateCopyId }) => {
-        log.info("templateCopyId", templateCopyId);
+        return new Promise((resolve) => {
+          log.info("templateCopyId", templateCopyId);
+          resolve();
+        });
       },
       populateTemplate: async ({ data, templateCopyId }) => {
         const client = await getDocsClient();

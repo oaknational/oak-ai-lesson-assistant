@@ -1,60 +1,63 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
-import { ChatContext } from "@/components/ContextProviders/ChatProvider";
+import { chromaticParams } from "@/storybook/chromatic";
+import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
+import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
 
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
 
-const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
-  <ChatContext.Provider
-    value={
-      {
-        id: "123",
-        lastModeration: null,
-        messages: [],
-        lessonPlan: {
-          title: "About Frogs",
-          keyStage: "Key Stage 2",
-          subject: "Science",
-          topic: "Amphibians",
-          basedOn: "Frogs in Modern Britain",
-          learningOutcome:
-            "To understand the importance of frogs in British society and culture",
-        },
-        ailaStreamingStatus: "Idle",
-        ...parameters.chatContext,
-      } as unknown as ChatContextProps
-    }
-  >
-    <Story />
-  </ChatContext.Provider>
-);
-
-const meta: Meta<typeof LessonPlanDisplay> = {
-  title: "Components/LessonPlan/LessonPlanDisplay",
-  component: LessonPlanDisplay,
-  tags: ["autodocs"],
-  decorators: [ChatDecorator],
-  args: {
-    documentContainerRef: { current: null },
+const chatContext: Partial<ChatContextProps> = {
+  id: "123",
+  lastModeration: null,
+  messages: [],
+  lessonPlan: {
+    title: "About Frogs",
+    keyStage: "Key Stage 2",
+    subject: "Science",
+    topic: "Amphibians",
+    basedOn: { title: "Frogs in Modern Britain", id: "123" },
+    learningOutcome:
+      "To understand the importance of frogs in British society and culture",
   },
 };
 
+const meta = {
+  title: "Components/LessonPlan/LessonPlanDisplay",
+  component: LessonPlanDisplay,
+  tags: ["autodocs"],
+  decorators: [ChatDecorator, ChatStoreDecorator],
+  args: {
+    documentContainerRef: { current: null },
+    chatEndRef: undefined,
+    sectionRefs: {},
+    showLessonMobile: false,
+  },
+  parameters: {
+    ...chromaticParams(["desktop"]),
+  },
+} satisfies Meta<typeof LessonPlanDisplay>;
+
 export default meta;
 
-type Story = StoryObj<typeof LessonPlanDisplay>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},
   parameters: {
-    chatContext: {},
+    chatContext,
   },
 };
 
 export const Loading: Story = {
   args: {},
   parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "Idle",
+    },
     chatContext: {
+      ...chatContext,
+
       lessonPlan: {},
     },
   },
@@ -63,8 +66,14 @@ export const Loading: Story = {
 export const WithModeration: Story = {
   args: {},
   parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "Idle",
+    },
     chatContext: {
+      ...chatContext,
+
       lastModeration: {
+        id: "123",
         categories: ["l/strong-language"],
       },
     },

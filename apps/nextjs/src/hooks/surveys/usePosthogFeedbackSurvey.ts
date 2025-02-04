@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/react";
 import type { Survey } from "posthog-js";
+import { SurveyType } from "posthog-js";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
@@ -27,7 +28,9 @@ export const usePosthogFeedbackSurvey = ({
 
   useEffect(() => {
     posthogAiBetaClient.getSurveys((surveys) => {
-      const filteredSurveys = surveys.filter((survey) => survey.type === "api");
+      const filteredSurveys = surveys.filter(
+        (survey) => survey.type === SurveyType.API,
+      );
 
       const matchingSurvey = filteredSurveys.find(
         (survey) => survey.name === surveyName,

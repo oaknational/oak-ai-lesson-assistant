@@ -3,12 +3,12 @@ import { forwardRef } from "react";
 
 import { useAuth } from "@clerk/nextjs";
 import { Box, Flex } from "@radix-ui/themes";
-import { aiTools } from "data/aiTools";
-import { socialMenuItems } from "data/menus";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 import loopingLine from "@/assets/svg/looping-line-1.svg";
+import { aiTools } from "@/data/aiTools";
+import { socialMenuItems } from "@/data/menus";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import type { MainNavigationProps } from ".";

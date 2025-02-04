@@ -30,7 +30,7 @@ export async function prepQuizForDocs({
 }) {
   const quizTypeText = quizType === "exit" ? "Exit quiz" : "Starter quiz";
 
-  return {
+  return Promise.resolve({
     lesson_title: title,
     quiz_type: quizTypeText,
     question_1: processQuizQuestionText(quiz[0]?.question, 0),
@@ -96,5 +96,5 @@ export async function prepQuizForDocs({
     question_6_answer_c:
       processQuizAnswersForQuiz(quiz[5]?.answers, quiz[5]?.distractors)[2] ??
       " ",
-  };
+  });
 }

@@ -1,19 +1,24 @@
-import { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { Meta, StoryObj } from "@storybook/react";
+
+import { chromaticParams } from "@/storybook/chromatic";
 
 import { ChatMessagePart } from "./ChatMessagePart";
 
-const meta: Meta<typeof ChatMessagePart> = {
+const meta = {
   title: "Components/Chat/ChatMessagePart",
   component: ChatMessagePart,
   tags: ["autodocs"],
   args: {
     inspect: false,
   },
-};
+  parameters: {
+    ...chromaticParams(["desktop"]),
+  },
+} satisfies Meta<typeof ChatMessagePart>;
 
 export default meta;
-type Story = StoryObj<typeof ChatMessagePart>;
+type Story = StoryObj<typeof meta>;
 
 const basePart: Omit<MessagePart, "document"> = {
   type: "message-part",

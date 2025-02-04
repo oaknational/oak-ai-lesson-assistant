@@ -3,12 +3,12 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
-import { quizAppReducer } from "ai-apps/quiz-designer/state/reducer";
-import { QuizAppStatus } from "ai-apps/quiz-designer/state/types";
-import useShareContent from "hooks/useShareContent";
 
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
+import { quizAppReducer } from "@/ai-apps/quiz-designer/state/reducer";
+import { QuizAppStatus } from "@/ai-apps/quiz-designer/state/types";
 import QuizDesignerPageContent from "@/components/AppComponents/QuizDesigner/QuizDesignerPageContent";
+import useShareContent from "@/hooks/useShareContent";
 import { trpc } from "@/utils/trpc";
 
 import { initialState } from "../quiz-designer-page";
@@ -38,6 +38,7 @@ export default function QuizDesignerPage({ data }) {
   const questionsWrapperRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (state.sessionId === initialState.sessionId) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const sessionId = stateFromProps.sessionId;
       const sessionWithCorrectedStatus = {
         ...stateFromProps,
@@ -57,7 +58,9 @@ export default function QuizDesignerPage({ data }) {
     stateFromProps,
     state.sessionId,
     state.status,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     stateFromProps.sessionId,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     stateFromProps.status,
   ]);
 
@@ -68,6 +71,7 @@ export default function QuizDesignerPage({ data }) {
     const { rateLimit, sessionId, ...restOfState } = state;
 
     if (state.sessionId) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       updateOutputMutation({
         sessionId: state.sessionId,
         output: restOfState,
@@ -88,6 +92,7 @@ export default function QuizDesignerPage({ data }) {
       questionsWrapperRef={questionsWrapperRef}
       canExport={canExport}
       hasQuestions={hasQuestions}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       shareContent={shareContent}
       shareId={shareId}
       shareLoading={shareLoading}

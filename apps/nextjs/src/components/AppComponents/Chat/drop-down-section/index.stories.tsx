@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { userEvent, within } from "@storybook/test";
 
-import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
-import { ChatContext } from "@/components/ContextProviders/ChatProvider";
+import { chromaticParams } from "@/storybook/chromatic";
+import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
+import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
 
 import DropDownSection from "./";
 
@@ -10,47 +11,45 @@ const MAX_INT32 = 2 ** 31 - 1;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
-  <ChatContext.Provider
-    value={
-      {
-        id: "123",
-        lastModeration: null,
-        messages: [],
-        lessonPlan: {
-          title: "About Frogs",
-          keyStage: "Key Stage 2",
-          subject: "Science",
-          topic: "Amphibians",
-          basedOn: "Frogs in Modern Britain",
-          learningOutcome:
-            "To understand the importance of frogs in British society and culture",
-        },
-        ailaStreamingStatus: "Idle",
-        ...parameters.chatContext,
-      } as unknown as ChatContextProps
-    }
-  >
-    <Story />
-  </ChatContext.Provider>
-);
-
-const meta: Meta<typeof DropDownSection> = {
+const meta = {
   title: "Components/LessonPlan/DropDownSection",
   component: DropDownSection,
   tags: ["autodocs"],
   args: {
-    objectKey: "learningOutcome",
+    section: "learningOutcome",
     value:
       "I can explain the reasons why frogs are so important to British society and culture",
     documentContainerRef: { current: null },
     streamingTimeout: 0,
+    userHasCancelledAutoScroll: false,
+    sectionRefs: {},
+    showLessonMobile: false,
   },
-  decorators: [ChatDecorator],
-};
+  decorators: [ChatDecorator, ChatStoreDecorator],
+  parameters: {
+    ...chromaticParams(["desktop"]),
+    chatContext: {
+      id: "123",
+      lastModeration: null,
+      messages: [],
+      lessonPlan: {
+        title: "About Frogs",
+        keyStage: "Key Stage 2",
+        subject: "Science",
+        topic: "Amphibians",
+        basedOn: { id: "testId", title: "Frogs in Modern Britain" },
+        learningOutcome:
+          "To understand the importance of frogs in British society and culture",
+      },
+    },
+    chatStoreState: {
+      ailaStreamingStatus: "Idle",
+    },
+  },
+} satisfies Meta<typeof DropDownSection>;
 
 export default meta;
-type Story = StoryObj<typeof DropDownSection>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},
@@ -89,7 +88,7 @@ export const Closed: Story = {
 
 export const AdditionalMaterials: Story = {
   args: {
-    objectKey: "additionalMaterials",
+    section: "additionalMaterials",
     value: "None",
   },
 };
@@ -116,7 +115,7 @@ export const ModifyAdditionalMaterials: Story = {
     },
   },
   args: {
-    objectKey: "additionalMaterials",
+    section: "additionalMaterials",
     value: "None",
   },
   play: async ({ canvasElement }) => {

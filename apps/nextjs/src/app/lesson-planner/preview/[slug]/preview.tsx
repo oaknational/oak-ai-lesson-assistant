@@ -1,14 +1,16 @@
 "use client";
 
 import { Box, Container, Flex, Heading, Text } from "@radix-ui/themes";
-import { copyLinkToClipboard } from "ai-apps/common/copyLinkToClipboard";
-import { copyTextToClipboard } from "ai-apps/common/copyTextToClipboard";
 
+import { copyLinkToClipboard } from "@/ai-apps/common/copyLinkToClipboard";
+import { copyTextToClipboard } from "@/ai-apps/common/copyTextToClipboard";
 import { quizDisclaimerText } from "@/assets/text";
 import Button from "@/components/Button";
 import HeroContainer from "@/components/HeroContainer";
 import { Icon } from "@/components/Icon";
 import Layout from "@/components/Layout";
+
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 export const LessonPlanPreview = ({ planSections }) => {
   if (!planSections) return null;
@@ -148,7 +150,7 @@ type QuizProps = {
 const Quiz = ({ question }: Readonly<QuizProps>) => {
   return (
     <Box className="mt-14">
-      <Text className="text-lg font-bold ">{question.question.value}</Text>
+      <Text className="text-lg font-bold">{question.question.value}</Text>
       <ul className="mt-10">
         {question.distractors.map((distractor) => {
           return (

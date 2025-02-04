@@ -1,9 +1,11 @@
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "@/storybook/chromatic";
+
 import { ChatModerationDisplay } from "./ChatModerationDisplay";
 
-const meta: Meta<typeof ChatModerationDisplay> = {
+const meta = {
   title: "Components/Dialogs/ChatModerationDisplay",
   component: ChatModerationDisplay,
   tags: ["autodocs"],
@@ -14,10 +16,13 @@ const meta: Meta<typeof ChatModerationDisplay> = {
       </div>
     ),
   ],
-};
+  parameters: {
+    ...chromaticParams(["desktop"]),
+  },
+} satisfies Meta<typeof ChatModerationDisplay>;
 
 export default meta;
-type Story = StoryObj<typeof ChatModerationDisplay>;
+type Story = StoryObj<typeof meta>;
 
 const toxicModeration: PersistedModerationBase = {
   id: "mock-moderation-id",

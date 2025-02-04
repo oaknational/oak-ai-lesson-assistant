@@ -2,11 +2,12 @@ import type { Dispatch } from "react";
 import { useRef } from "react";
 
 import { Box, Container } from "@radix-ui/themes";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import type { QuizAppState } from "ai-apps/quiz-designer/state/types";
-import { QuizAppStatus } from "ai-apps/quiz-designer/state/types";
-import useShareContent from "hooks/useShareContent";
-import useSuggestedQuestions from "hooks/useSuggestedQuestions";
+
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import type { QuizAppState } from "@/ai-apps/quiz-designer/state/types";
+import { QuizAppStatus } from "@/ai-apps/quiz-designer/state/types";
+import useShareContent from "@/hooks/useShareContent";
+import useSuggestedQuestions from "@/hooks/useSuggestedQuestions";
 
 import SuggestedLessons from "../common/SuggestedLessons";
 import Hero from "./Hero";
@@ -48,7 +49,7 @@ const QuizContent = ({
   });
 
   return (
-    <Container className=" min-h-[800px]">
+    <Container className="min-h-[800px]">
       <Hero
         state={state}
         dispatch={dispatch}
@@ -98,6 +99,7 @@ const QuizContent = ({
                 canExport={canExport}
                 hasQuestions={hasQuestions}
                 toggleExportMenu={toggleExportMenu}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 shareContent={shareContent}
                 shareId={shareId}
                 shareLoading={shareLoading}

@@ -192,6 +192,9 @@ describe("addCspHeaders", () => {
     expect(cspHeader).toContain("*.hubspot.com");
     expect(cspHeader).toContain("https://img.clerk.com");
     expect(cspHeader).toContain("https://res.cloudinary.com");
+    expect(cspHeader).toContain(
+      "https://oaknationalacademy-res.cloudinary.com",
+    );
   });
 
   it("includes Clerk policies when enabled", () => {

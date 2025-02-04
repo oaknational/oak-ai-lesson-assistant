@@ -1,6 +1,6 @@
 // Inspired by Chatbot-UI and modified to fit the needs of this project
 // @see https://github.com/mckaywrigley/chatbot-ui/blob/main/components/Chat/ChatMessage.tsx
-import type { ReactNode } from "react";
+import type { ReactNode, JSX } from "react";
 import { useState } from "react";
 
 import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
@@ -13,8 +13,8 @@ import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat
 import { useChatModeration } from "@/components/ContextProviders/ChatModerationContext";
 import { Icon } from "@/components/Icon";
 import { cn } from "@/lib/utils";
+import type { AilaStreamingStatus } from "@/stores/chatStore";
 
-import type { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import { ChatMessagePart } from "./ChatMessagePart";
 import { isModeration } from "./protocol";
 
@@ -131,11 +131,7 @@ export function ChatMessage({
             messageParts.map((part) => {
               return (
                 <div className="w-full" key={part.id}>
-                  <ChatMessagePart
-                    part={part}
-                    moderationModalHelpers={moderationModalHelpers}
-                    inspect={inspect}
-                  />
+                  <ChatMessagePart part={part} inspect={inspect} />
                 </div>
               );
             })}
@@ -200,7 +196,7 @@ function MessageWrapper({
 
 function MessageTextWrapper({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <div className=" flex w-full flex-col items-start justify-between">
+    <div className="flex w-full flex-col items-start justify-between">
       {children}
     </div>
   );

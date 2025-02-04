@@ -2,10 +2,10 @@ import type { Dispatch } from "react";
 import { useCallback } from "react";
 
 import * as Sentry from "@sentry/nextjs";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
-import type { QuizAppState } from "ai-apps/quiz-designer/state/types";
 
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
+import type { QuizAppState } from "@/ai-apps/quiz-designer/state/types";
 import { trpc } from "@/utils/trpc";
 
 import RestoreDialog from "../common/RestoreDialog";
@@ -67,6 +67,7 @@ const QuizRestoreDialog = ({
   return (
     <RestoreDialog
       closeDialog={closeRestoreDialog}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       handleReset={handleReset}
       titleText="Restore Quiz?"
       bodyText={bodyText}

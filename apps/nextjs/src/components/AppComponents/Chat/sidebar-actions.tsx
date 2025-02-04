@@ -3,6 +3,7 @@
 import * as React from "react";
 import { toast } from "react-hot-toast";
 
+import * as Sentry from "@sentry/nextjs";
 import { useRouter } from "next/navigation";
 
 import { ChatShareDialog } from "@/components/AppComponents/Chat/chat-share-dialog";
@@ -107,8 +108,9 @@ export function SidebarActions({ chat }: SidebarActionsProps) {
                     router.refresh();
                     router.push("/");
                     toast.success("Chat deleted");
-                  } catch (err) {
+                  } catch (e) {
                     toast.error("Failed to delete chat");
+                    Sentry.captureException(e);
                   }
                 });
               }}

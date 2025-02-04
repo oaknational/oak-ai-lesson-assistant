@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { OakFlex, OakSpan } from "@oaknational/oak-components";
 
 import { OakLinkNoUnderline } from "@/components/OakLinkNoUnderline";

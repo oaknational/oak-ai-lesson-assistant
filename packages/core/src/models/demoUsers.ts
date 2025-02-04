@@ -58,7 +58,7 @@ class DemoUsers {
 
     const isDemoRegion = isOakDemoUser(user) || !this.isSupportedRegion(region);
 
-    return { region, isDemoRegion };
+    return Promise.resolve({ region, isDemoRegion });
   }
 
   isDemoStatusSet(user: LabsUser): user is UserWithDemoStatus {

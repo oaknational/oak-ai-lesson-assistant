@@ -1,7 +1,10 @@
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import { parseKeyStage } from "@oakai/core/src/data/parseKeyStage";
 import type { TemplateProps } from "@oakai/core/src/prompts/lesson-assistant";
 import { template } from "@oakai/core/src/prompts/lesson-assistant";
 import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
+import { getRelevantLessonPlans, parseSubjectsForRagSearch } from "@oakai/rag";
 
 import { DEFAULT_RAG_LESSON_PLANS } from "../../../constants";
 import { tryWithErrorReporting } from "../../../helpers/errorReporting";
@@ -55,6 +58,10 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
   }> {
     const noRelevantLessonPlans = "None";
     const { chatId, userId } = this._aila;
+    if (!userId) {
+      throw new Error("User ID is required to fetch relevant lesson plans");
+    }
+
     if (!this._aila?.options.useRag || !chatId) {
       return {
         ragLessonPlans: [],
@@ -63,6 +70,45 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
     }
 
     const { title, subject, keyStage, topic } = this._aila?.lessonPlan ?? {};
+
+    if (!title || !subject || !keyStage) {
+      log.error("Missing title, subject or keyStage, returning empty content");
+      return {
+        ragLessonPlans: [],
+        stringifiedRelevantLessonPlans: noRelevantLessonPlans,
+      };
+    }
+
+    const newRagEnabled = await posthogAiBetaServerClient.isFeatureEnabled(
+      "rag-schema-2024-12",
+      userId,
+    );
+
+    if (newRagEnabled) {
+      log.info("Using new RAG schema");
+
+      const keyStageSlugs = keyStage ? [parseKeyStage(keyStage)] : null;
+      const subjectSlugs = subject ? parseSubjectsForRagSearch(subject) : null;
+
+      const relevantLessonPlans = await getRelevantLessonPlans({
+        title,
+        keyStageSlugs,
+        subjectSlugs,
+      });
+      const stringifiedRelevantLessonPlans = JSON.stringify(
+        relevantLessonPlans,
+        null,
+        2,
+      );
+
+      return {
+        ragLessonPlans: relevantLessonPlans.map((l) => ({
+          ...l.lessonPlan,
+          id: l.ragLessonPlanId,
+        })),
+        stringifiedRelevantLessonPlans,
+      };
+    }
 
     let relevantLessonPlans: RagLessonPlan[] = [];
     await tryWithErrorReporting(async () => {

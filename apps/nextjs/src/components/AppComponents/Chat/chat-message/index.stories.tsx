@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { ChatModerationProvider } from "@/components/ContextProviders/ChatModerationContext";
+import { chromaticParams } from "@/storybook/chromatic";
 
 import { ChatMessage } from "./";
 
-const meta: Meta<typeof ChatMessage> = {
+const meta = {
   title: "Components/Chat/ChatMessage",
   component: ChatMessage,
   tags: ["autodocs"],
@@ -16,12 +17,17 @@ const meta: Meta<typeof ChatMessage> = {
     ),
   ],
   args: {
+    chatId: "test-chat-id",
     persistedModerations: [],
+    ailaStreamingStatus: "Idle",
   },
-};
+  parameters: {
+    ...chromaticParams(["desktop"]),
+  },
+} satisfies Meta<typeof ChatMessage>;
 
 export default meta;
-type Story = StoryObj<typeof ChatMessage>;
+type Story = StoryObj<typeof meta>;
 
 export const UserMessage: Story = {
   args: {

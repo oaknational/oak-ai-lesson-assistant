@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import type { LessonPlanKeys } from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 import type { Message } from "ai";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
@@ -20,7 +20,7 @@ const KEYS_TO_COMPLETE = [
   "cycle2",
   "cycle3",
   "exitQuiz",
-] satisfies LessonPlanKeys[];
+] satisfies LessonPlanKey[];
 
 if (!process.env.NEXT_PUBLIC_DEMO_MESSAGES_AFTER_COMPLETE) {
   throw new Error("NEXT_PUBLIC_DEMO_MESSAGES_AFTER_COMPLETE is not set");

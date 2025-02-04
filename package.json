@@ -1,5 +1,6 @@
 {
   "name": "oak-ai-web-app",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "FIXME:lint": "turbo lint && manypkg check",
@@ -17,12 +18,15 @@
     "db-push-force": "turbo db-push-force",
     "db-seed": "turbo db-seed",
     "dev": "FORCE_COLOR=1 turbo dev --parallel --ui=stream --log-prefix=none --filter=!@oakai/db",
+    "dev:react-scan": "NEXT_PUBLIC_ENABLE_RENDER_SCAN=true pnpm dev",
+    "dev:react-scan-monitor-cloud": "NEXT_PUBLIC_RENDER_MONITOR=true pnpm dev",
     "doppler:pull:dev": "doppler secrets download --config dev --no-file --format env > .env",
     "doppler:pull:stg": "doppler secrets download --config stg --no-file --format env > .env",
     "doppler:run:stg": "doppler run -c stg --silent",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",
     "lint:fix": "pnpm lint -- --fix",
+    "lint:debug": "pnpm lint -- --debug",
     "prompts": "turbo prompts",
     "prompts:dev": "turbo prompts:dev",
     "sonar": "dotenv -e ./.env -- sonar-scanner",
@@ -38,35 +42,36 @@
     "storybook": "turbo storybook"
   },
   "prettier": "@oakai/prettier-config",
+  "eslintConfig": {
+    "extends": "@oakai/eslint-config"
+  },
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@actions/github": "^6.0.0",
     "@manypkg/cli": "^0.21.1",
     "@next/env": "14.2.18",
+    "@oakai/eslint-config": "*",
     "@oakai/prettier-config": "*",
-    "@prisma/client": "5.16.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@types/jest": "^29.5.12",
+    "@types/jest": "^29.5.14",
     "autoprefixer": "^10.4.16",
-    "eslint-config-custom": "0.0.0",
-    "eslint-plugin-turbo": "^2.2.3",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
-    "next": "14.2.18",
+    "next": "14.2.21",
     "postcss": "^8.4.32",
-    "prettier": "^3.1.1",
+    "prettier": "^3.4.1",
     "semantic-release": "^21.1.1",
     "sonarqube-scanner": "^4.2.6",
     "sort-package-json": "^2.6.0",
-    "tailwindcss": "^3.3.7",
     "turbo": "^2.2.3",
-    "typescript": "5.3.3"
+    "typescript": "5.7.2"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {
     "node": ">=20.9.0",
     "pnpm": ">=8"
-  }
+  },
+  "type": "module"
 }

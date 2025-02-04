@@ -1,6 +1,7 @@
 import type { RateLimitInfo } from "@oakai/api/src/types";
 import type { KeyStageName, SubjectName } from "@oakai/core";
-import type { PotentialQuestionsType } from "hooks/useSuggestedQuestions";
+
+import type { PotentialQuestionsType } from "@/hooks/useSuggestedQuestions";
 
 import type { QuizAppState, QuizQuestionType } from "./types";
 

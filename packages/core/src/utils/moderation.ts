@@ -108,6 +108,7 @@ export function checkEnglishLanguageScores(
  */
 const censor = new TextCensor();
 const matcher = new RegExpMatcher({
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   ...englishDataset.build(),
   ...englishRecommendedTransformers,
   whitelistedTerms: ["Oral tradition", "Language analysis", "analysis"],
@@ -130,8 +131,11 @@ type ProfanityResult = [true, string] | [false, null];
 export function detectProfanity(userInput: string[]): ProfanityResult {
   const inputText = userInput.join(" | ");
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (matcher.hasMatch(inputText)) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const allMatches = matcher.getAllMatches(inputText);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const censoredResult = censor.applyTo(inputText, allMatches);
     return [true, censoredResult];
   }

@@ -1,5 +1,5 @@
-import { sanityClient } from "cms/sanityClient";
-import type { PolicyDocument } from "cms/types/policyDocument";
+import { sanityClient } from "@/cms/sanityClient";
+import type { PolicyDocument } from "@/cms/types/policyDocument";
 
 export async function fetchPolicyDocument({
   slug,
@@ -16,7 +16,7 @@ export async function fetchPolicyDocument({
   ...seoFields[]               
 }`;
 
-  const result = await sanityClient.fetch(query);
+  const result = await sanityClient.fetch<PolicyDocument[]>(query);
 
   const policyDocument = result.filter((policy) => policy.slug === slug)[0];
 

@@ -1,61 +1,41 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
-import { ChatContext } from "@/components/ContextProviders/ChatProvider";
-import { DemoContext } from "@/components/ContextProviders/Demo";
+import { chromaticParams } from "@/storybook/chromatic";
+import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
+import {
+  DemoDecorator,
+  demoParams,
+} from "@/storybook/decorators/DemoDecorator";
 
 import { MobileExportButtons } from "./MobileExportButtons";
 
-const ChatDecorator: Story["decorators"] = (Story, { parameters }) => (
-  <ChatContext.Provider
-    value={
-      {
-        id: "123",
-        ...parameters.chatContext,
-      } as unknown as ChatContextProps
-    }
-  >
-    <Story />
-  </ChatContext.Provider>
-);
-
-const DemoDecorator: Story["decorators"] = (Story, { parameters }) => (
-  <DemoContext.Provider
-    value={{
-      isDemoUser: false,
-      isSharingEnabled: true,
-      ...parameters.demoContext,
-    }}
-  >
-    <Story />
-  </DemoContext.Provider>
-);
-
-const meta: Meta<typeof MobileExportButtons> = {
+const meta = {
   title: "Components/LessonPlan/MobileExportButtons",
   component: MobileExportButtons,
   tags: ["autodocs"],
   decorators: [ChatDecorator, DemoDecorator],
   parameters: {
     viewport: {
-      defaultViewport: "mobile1",
+      defaultViewport: "mobile",
+    },
+    ...chromaticParams(["mobile"]),
+    ...demoParams({ isDemoUser: false }),
+    chatContext: {
+      id: "123",
     },
   },
   args: {
     closeMobileLessonPullOut: () => {},
   },
-};
+} satisfies Meta<typeof MobileExportButtons>;
 
 export default meta;
-type Story = StoryObj<typeof MobileExportButtons>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
 export const SharingDisabled: Story = {
   parameters: {
-    demoContext: {
-      isDemoUser: true,
-      isSharingEnabled: false,
-    },
+    ...demoParams({ isDemoUser: true, isSharingEnabled: false }),
   },
 };

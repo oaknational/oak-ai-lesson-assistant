@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { extraQuizPromptInfo } from "ai-apps/quiz-designer/extraQuizPromptInfo";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
-import type { QuizAppState } from "ai-apps/quiz-designer/state/types";
-import { QuizAppStatus } from "ai-apps/quiz-designer/state/types";
 import { z } from "zod";
 
+import { extraQuizPromptInfo } from "@/ai-apps/quiz-designer/extraQuizPromptInfo";
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
+import type { QuizAppState } from "@/ai-apps/quiz-designer/state/types";
+import { QuizAppStatus } from "@/ai-apps/quiz-designer/state/types";
 import { answersAndDistractorOutputSchema } from "@/components/AppComponents/QuizDesigner/QuizQuestionRow";
 import { getAgesFromKeyStage } from "@/utils/getAgesFromKeyStage";
 import { trpc } from "@/utils/trpc";
@@ -77,6 +77,7 @@ const useSuggestedQuestions = ({
     const { otherQuestions, extraContext } = extraQuizPromptInfo({
       state,
     });
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     requestSuggestedQuestionsGeneration({
       lastGenerationId: null,
       // lastGenerationId: null,

@@ -1,0 +1,117 @@
+import type { Message } from "@oakai/aila/src/core/chat";
+import type { Meta, StoryObj } from "@storybook/react";
+
+import { chromaticParams } from "@/storybook/chromatic";
+import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
+import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
+import { LessonPlanTrackingDecorator } from "@/storybook/decorators/LessonPlanTrackingDecorator";
+
+import ChatQuickButtons from "./chat-quick-buttons";
+
+const DummyMessage: Message = {
+  content: "Dummy message",
+  id: "123",
+  role: "user",
+};
+
+const meta = {
+  title: "Components/Chat/ChatQuickButtons",
+  component: ChatQuickButtons,
+  tags: ["autodocs"],
+  decorators: [ChatDecorator, ChatStoreDecorator, LessonPlanTrackingDecorator],
+  parameters: {
+    ...chromaticParams(["desktop"]),
+    chatContext: {
+      messages: [DummyMessage],
+    },
+  },
+} satisfies Meta<typeof ChatQuickButtons>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Idle: Story = {
+  args: {},
+  parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "Idle",
+    },
+  },
+};
+
+export const Loading: Story = {
+  args: {},
+  parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "Loading",
+    },
+  },
+};
+
+export const LoadingWithoutMessages: Story = {
+  args: {},
+  parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "Loading",
+    },
+    chatContext: {
+      messages: [],
+    },
+  },
+};
+
+export const RequestMade: Story = {
+  args: {},
+  parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "RequestMade",
+    },
+  },
+};
+
+export const StreamingLessonPlan: Story = {
+  args: {},
+  parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "StreamingLessonPlan",
+    },
+  },
+};
+
+export const StreamingChatResponse: Story = {
+  args: {},
+  parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "StreamingChatResponse",
+    },
+  },
+};
+
+export const Moderating: Story = {
+  args: {},
+  parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "Moderating",
+    },
+  },
+};
+
+export const StreamingWithQueuedUserAction: Story = {
+  args: {},
+  parameters: {
+    chatStoreState: {
+      queuedUserAction: "regenerate",
+      ailaStreamingStatus: "StreamingLessonPlan",
+    },
+  },
+};
+
+export const ModeratingWithQueuedUserAction: Story = {
+  args: {},
+  parameters: {
+    chatStoreState: {
+      queuedUserAction: "regenerate",
+      ailaStreamingStatus: "Moderating",
+    },
+  },
+};

@@ -29,7 +29,7 @@ export class OpenAIService implements LLMService {
     messages: Message[];
     temperature: number;
   }): Promise<ReadableStreamDefaultReader<string>> {
-    const { textStream: stream } = await streamText({
+    const { textStream: stream } = streamText({
       model: this._openAIProvider(params.model),
       messages: params.messages.map((m) => ({
         role: m.role,
@@ -38,7 +38,7 @@ export class OpenAIService implements LLMService {
       temperature: params.temperature,
     });
 
-    return stream.getReader();
+    return Promise.resolve(stream.getReader());
   }
 
   async createChatCompletionObjectStream(params: {
@@ -53,7 +53,7 @@ export class OpenAIService implements LLMService {
       return this.createChatCompletionStream({ model, messages, temperature });
     }
     const startTime = Date.now();
-    const { textStream: stream } = await streamObject({
+    const { textStream: stream } = streamObject({
       model: this._openAIProvider(model, { structuredOutputs: true }),
       output: "object",
       schema,

@@ -43,7 +43,7 @@ export const useAnalyticsService = <T, S extends ServiceName>({
       }
     };
     if (consentState === "granted" && !hasAttemptedInit) {
-      attemptInit();
+      void attemptInit();
     }
   }, [consentState, hasAttemptedInit, config, service, setPosthogDistinctId]);
 

@@ -4,13 +4,13 @@ import { useEffect, useRef } from "react";
 import { useUser } from "@clerk/nextjs";
 import browserLogger from "@oakai/logger/browser";
 import * as Sentry from "@sentry/nextjs";
-import { parseLocalStorageData } from "ai-apps/common/parseLocalStorageData";
-import type { QuizAppAction } from "ai-apps/quiz-designer/state/actions";
-import { QuizAppActions } from "ai-apps/quiz-designer/state/actions";
-import type { QuizAppState } from "ai-apps/quiz-designer/state/types";
-import { QuizAppStatus } from "ai-apps/quiz-designer/state/types";
 import { z } from "zod";
 
+import { parseLocalStorageData } from "@/ai-apps/common/parseLocalStorageData";
+import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
+import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
+import type { QuizAppState } from "@/ai-apps/quiz-designer/state/types";
+import { QuizAppStatus } from "@/ai-apps/quiz-designer/state/types";
 import { trpc } from "@/utils/trpc";
 
 import { usePreviousValue } from "./usePreviousValue";
@@ -94,19 +94,31 @@ export const useQuizSession = ({
       } else {
         setRestoreDialogIsOpen(false);
         (async () => {
-          if (!sessionCreationAttempted.current) {
-            sessionCreationAttempted.current = true;
-            const sessionId = await createSessionId();
-            localStorage.removeItem("quizData");
+          try {
+            if (!sessionCreationAttempted.current) {
+              sessionCreationAttempted.current = true;
+              const sessionId = await createSessionId();
+              localStorage.removeItem("quizData");
 
-            if (sessionId) {
-              dispatch({
-                type: QuizAppActions.CreateSession,
-                sessionId: sessionId,
-              });
+              if (sessionId) {
+                dispatch({
+                  type: QuizAppActions.CreateSession,
+                  sessionId: sessionId,
+                });
+              }
             }
+          } catch (err) {
+            browserLogger.error("Failed to create initial session", err);
+            dispatch({
+              type: QuizAppActions.EncounteredNonRecoverableError,
+            });
           }
-        })();
+        })().catch((err) => {
+          browserLogger.error("Unhandled error in session creation", err);
+          dispatch({
+            type: QuizAppActions.EncounteredNonRecoverableError,
+          });
+        });
       }
     } else if (
       /**
@@ -118,16 +130,28 @@ export const useQuizSession = ({
     ) {
       setRestoreDialogIsOpen(false);
       (async () => {
-        const sessionId = await createSessionId();
-        localStorage.removeItem("quizData");
+        try {
+          const sessionId = await createSessionId();
+          localStorage.removeItem("quizData");
 
-        if (sessionId) {
+          if (sessionId) {
+            dispatch({
+              type: QuizAppActions.ResetSession,
+              sessionId: sessionId,
+            });
+          }
+        } catch (err) {
+          browserLogger.error("Failed to reset session", err);
           dispatch({
-            type: QuizAppActions.ResetSession,
-            sessionId: sessionId,
+            type: QuizAppActions.EncounteredNonRecoverableError,
           });
         }
-      })();
+      })().catch((err) => {
+        browserLogger.error("Unhandled error in session reset", err);
+        dispatch({
+          type: QuizAppActions.EncounteredNonRecoverableError,
+        });
+      });
     }
   }, [
     createSessionMutation,

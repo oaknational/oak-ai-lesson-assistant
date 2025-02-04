@@ -10,7 +10,7 @@ import type {
 } from "../../../../core/AilaServices";
 import type {
   AilaPersistedChat,
-  LessonPlanKeys,
+  LessonPlanKey,
 } from "../../../../protocol/schema";
 import { chatSchema } from "../../../../protocol/schema";
 import type { AilaGeneration } from "../../../generation/AilaGeneration";
@@ -39,6 +39,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
     const appSession = await this._prisma.appSession.findFirst({
       where: {
         id,
+        deletedAt: null,
       },
     });
 
@@ -58,7 +59,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
   async upsertChat(): Promise<void> {
     const currentIteration = this._chat.iteration;
     const payload = this.createChatPayload();
-    const keys = (Object.keys(payload.lessonPlan) as LessonPlanKeys[]).filter(
+    const keys = (Object.keys(payload.lessonPlan) as LessonPlanKey[]).filter(
       (k) => payload.lessonPlan[k],
     );
 

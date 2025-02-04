@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import type { UseChatHelpers } from "ai/react";
 
@@ -8,35 +8,26 @@ import {
   TooltipTrigger,
 } from "@/components/AppComponents/Chat/ui/tooltip";
 import { Icon } from "@/components/Icon";
-import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
-import { useSidebar } from "@/lib/hooks/use-sidebar";
-
-import type { AilaStreamingStatus } from "./Chat/hooks/useAilaStreamingStatus";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 export interface PromptFormProps
   extends Pick<UseChatHelpers, "input" | "setInput"> {
   onSubmit: (value: string) => void;
-  isEmptyScreen: boolean;
-  placeholder?: string;
-  ailaStreamingStatus: AilaStreamingStatus;
-  queuedUserAction?: string | null;
-  queueUserAction?: (action: string) => void;
+  hasMessages: boolean;
+  isDisabled: boolean;
 }
 
 export function PromptForm({
-  ailaStreamingStatus,
   onSubmit,
+  isDisabled,
   input,
   setInput,
-  isEmptyScreen,
-  placeholder,
-  queuedUserAction,
-  queueUserAction,
+  hasMessages,
 }: Readonly<PromptFormProps>) {
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const lessonPlanTracking = useLessonPlanTracking();
+  const queuedUserAction = useChatStore((state) => state.queuedUserAction);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -44,48 +35,26 @@ export function PromptForm({
     }
   }, []);
 
-  const sidebar = useSidebar();
-
-  const handleSubmit = useCallback(
-    async (value: string) => {
-      setInput("");
-      if (sidebar.isSidebarOpen) {
-        sidebar.toggleSidebar();
-      }
-
-      lessonPlanTracking.onSubmitText(value);
-      if (queueUserAction) {
-        queueUserAction(value);
-      } else {
-        onSubmit(value);
-      }
-    },
-    [lessonPlanTracking, queueUserAction, onSubmit, setInput, sidebar],
-  );
-
-  const shouldAllowUserInput =
-    ["Idle", "Moderating"].includes(ailaStreamingStatus) && !queuedUserAction;
-
   return (
     <form
-      onSubmit={async (e) => {
+      onSubmit={(e) => {
         e.preventDefault();
         if (!input?.trim()) {
           return;
         }
-        handleSubmit(input);
+        onSubmit(input);
       }}
       ref={formRef}
     >
       <div
-        className={`${!shouldAllowUserInput ? "block" : "hidden"} h-[60px] w-full rounded-md  border-2 border-oakGrey3 sm:hidden`}
+        className={`${isDisabled ? "block" : "hidden"} h-[60px] w-full rounded-md border-2 border-oakGrey3 sm:hidden`}
       />
       <div
-        className={`${!shouldAllowUserInput ? "hidden" : "flex"} relative max-h-60 w-full grow flex-col overflow-hidden rounded-md border-2 border-black bg-white pr-20 sm:flex`}
+        className={`${isDisabled ? "hidden" : "flex"} relative max-h-60 w-full grow flex-col overflow-hidden rounded-md border-2 border-black bg-white pr-20 sm:flex`}
       >
         <textarea
           data-testid="chat-input"
-          disabled={!shouldAllowUserInput}
+          disabled={isDisabled}
           ref={inputRef}
           tabIndex={0}
           onKeyDown={onKeyDown}
@@ -93,8 +62,8 @@ export function PromptForm({
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={handlePlaceholder(
-            isEmptyScreen,
-            queuedUserAction ?? placeholder,
+            hasMessages,
+            queuedUserAction ?? undefined,
           )}
           spellCheck={false}
           className="min-h-[60px] w-full resize-none bg-transparent px-10 py-[1.3rem] text-base focus-within:outline-none"
@@ -105,8 +74,8 @@ export function PromptForm({
               <button
                 data-testid="send-message"
                 type="submit"
-                className={`rounded-full bg-black p-4 ${!shouldAllowUserInput ? "cursor-not-allowed opacity-50" : ""}`}
-                disabled={!shouldAllowUserInput}
+                className={`rounded-full bg-black p-4 ${isDisabled ? "cursor-not-allowed opacity-50" : ""}`}
+                disabled={isDisabled}
               >
                 <Icon icon="chevron-right" color="white" size="sm" />
               </button>
@@ -119,11 +88,14 @@ export function PromptForm({
   );
 }
 
-function handlePlaceholder(isEmptyScreen: boolean, placeholder?: string) {
-  if (placeholder && !["continue", "regenerate"].includes(placeholder)) {
-    return placeholder;
+function handlePlaceholder(hasMessages: boolean, queuedUserAction?: string) {
+  if (
+    queuedUserAction &&
+    !["continue", "regenerate"].includes(queuedUserAction)
+  ) {
+    return queuedUserAction;
   }
-  return !isEmptyScreen
-    ? "Type a subject, key stage and title"
-    : "Type your response here";
+  return hasMessages
+    ? "Type your response here"
+    : "Type a subject, key stage and title";
 }
