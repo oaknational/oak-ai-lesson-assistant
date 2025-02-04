@@ -24,12 +24,12 @@ import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
-import { useChatStoreMirror } from "src/stores/chatStore/hooks/useChatStoreMirror";
+import { useChatStoreAiSdkSync } from "src/stores/chatStore/hooks/useChatStoreAiSdkSync";
 
 import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { useChatStore } from "@/stores/chatStore";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
@@ -61,7 +61,6 @@ export type ChatContextProps = {
   setInput: React.Dispatch<React.SetStateAction<string>>;
   chatAreaRef: React.RefObject<HTMLDivElement>;
   // queuedUserAction: string | null;
-  // queueUserAction: (action: string) => void;
   // executeQueuedAction: () => Promise<void>;
 };
 
@@ -169,6 +168,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     LooseLessonPlan | undefined
   >(undefined);
 
+  const streamingFinished = useChatStore((state) => state.streamingFinished);
+
   /******************* Functions *******************/
 
   const { invokeActionMessages } = useActionMessages();
@@ -253,6 +254,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       setHasFinished(true);
       shouldTrackStreamFinished.current = true;
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
+      streamingFinished();
     },
   });
 
@@ -291,18 +293,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       messageHashes,
     });
 
-  // Handle queued user actions and messages
-
-  const executeQueuedAction = useChatStore(
-    (state) => state.executeQueuedAction,
-  );
-
-  useEffect(() => {
-    if (hasFinished) {
-      void executeQueuedAction();
-    }
-  }, [hasFinished, executeQueuedAction]);
-
   const handleReload = useCallback(() => {
     reload().catch((err) => {
       log.error("Failed to reload chat", err);
@@ -312,7 +302,13 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   }, [reload]);
 
   // Hooks to update the Zustand chat store mirror
-  useChatStoreMirror(messages, isLoading, stopStreaming, append, handleReload);
+  useChatStoreAiSdkSync(
+    messages,
+    isLoading,
+    stopStreaming,
+    append,
+    handleReload,
+  );
 
   /**
    *  If the state is being restored from a previous lesson plan, set the lesson plan
