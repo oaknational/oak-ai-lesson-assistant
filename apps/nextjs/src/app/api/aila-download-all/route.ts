@@ -16,6 +16,24 @@ type FileIdsAndFormats = {
   formats: ReadonlyArray<"pptx" | "docx" | "pdf">;
 }[];
 
+async function retryOperation<T>(
+  operation: () => Promise<T>,
+  maxRetries = 3,
+): Promise<T> {
+  let retries = 0;
+  while (retries < maxRetries) {
+    try {
+      return await operation();
+    } catch (error) {
+      if (retries === maxRetries - 1) throw error;
+      const delay = Math.pow(2, retries) * 1000; // Exponential backoff
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      retries++;
+    }
+  }
+  throw new Error("Operation failed");
+}
+
 function nodePassThroughToReadableStream(passThrough: PassThrough) {
   return new ReadableStream({
     start(controller) {
@@ -46,9 +64,12 @@ const processFileDownload = async (
   userId: string,
   archive: archiver.Archiver,
 ) => {
-  const lessonExport = await prisma.lessonExport.findFirst({
-    where: { gdriveFileId: fileId, userId, expiredAt: null },
-  });
+  const lessonExport = await retryOperation(() =>
+    prisma.lessonExport.findFirst({
+      where: { gdriveFileId: fileId, userId, expiredAt: null },
+      select: { id: true, exportType: true },
+    }),
+  );
 
   if (!lessonExport) {
     const error = new Error(`Lesson export not found for fileId: ${fileId}`);
