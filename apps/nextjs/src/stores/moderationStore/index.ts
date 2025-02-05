@@ -66,24 +66,6 @@ export const createModerationStore = ({
 
     fetchModerations: async () => {
       await handleFetchModerations(set, get);
-      // console.log("fetchModerations");
-      // const { setIsModerationsLoading, updateModerationState, moderations } =
-      //   get();
-      // setIsModerationsLoading(true);
-      // try {
-      //   const fetchedModerations =
-      //     await trpcClient.chat.appSessions.getModerations.query({
-      //       id,
-      //     });
-
-      //   console.log("moderations", moderations);
-      //   console.log("fetchedModerations", fetchedModerations);
-      //   updateModerationState([...fetchedModerations]);
-      // } catch (error) {
-      //   console.error("Error fetching moderations", error);
-      // } finally {
-      //   setIsModerationsLoading(false);
-      // }
     },
 
     clearModerations: () => {

@@ -15,7 +15,6 @@ export const handleUpdateModerationState = (
   const toxicMod = lastMod ? isToxic(lastMod) : null;
   set({
     moderations: mods,
-    // toxicInitialModeration: toxicInitial, // this shouls be in the updateToxic mod section?
     lastModeration: lastMod,
   });
 

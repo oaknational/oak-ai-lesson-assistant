@@ -12,12 +12,10 @@ export function handleSetMessages(
   function handleChangedAilaStreamingStatus(
     ailaStreamingStatus: AilaStreamingStatus,
   ) {
-    // const { id } = get();
     if (ailaStreamingStatus === "Idle" && get().queuedUserAction) {
       void get().executeQueuedAction();
     }
     if (ailaStreamingStatus === "Idle") {
-      // if (ailaStreamingStatus === "Idle" && id) {
       const { moderationActions } = get();
       invariant(moderationActions, "Passed into store in provider");
       void moderationActions.fetchModerations();
