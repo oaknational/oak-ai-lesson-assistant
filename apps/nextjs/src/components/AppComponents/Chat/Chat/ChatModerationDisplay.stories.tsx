@@ -2,6 +2,7 @@ import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModerati
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import { ChatModerationDisplay } from "./ChatModerationDisplay";
 
@@ -15,6 +16,7 @@ const meta = {
         <Story />
       </div>
     ),
+    StoreDecorator,
   ],
   parameters: {
     ...chromaticParams(["desktop"]),
