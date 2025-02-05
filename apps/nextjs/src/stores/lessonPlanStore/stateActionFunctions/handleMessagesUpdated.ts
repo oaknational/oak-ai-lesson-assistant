@@ -6,12 +6,10 @@ import {
 import { LessonPlanKeySchema } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import { createHash } from "crypto";
-import { StoreApi } from "zustand";
 
 import type { AiMessage } from "@/stores/chatStore/types";
 
-import type { LessonPlanStore } from "..";
-import { LessonPlanGetter, LessonPlanSetter } from "../types";
+import type { LessonPlanGetter, LessonPlanSetter } from "../types";
 
 const log = aiLogger("lessons:store");
 
