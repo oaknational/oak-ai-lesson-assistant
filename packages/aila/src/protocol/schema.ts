@@ -420,9 +420,15 @@ export const allSectionsInOrder = [
   "cycle3",
   "exitQuiz",
   "additionalMaterials",
-] as const satisfies LessonPlanKey[];
+] as const;
 
-export const LessonPlanKeySchema = z.enum(allSectionsInOrder);
+export const LessonPlanKeySchema = z.enum([
+  "title",
+  "keyStage",
+  "subject",
+  "topic",
+  ...allSectionsInOrder,
+]);
 
 export const LessonPlanJsonSchema = zodToJsonSchema(
   CompletedLessonPlanSchema,

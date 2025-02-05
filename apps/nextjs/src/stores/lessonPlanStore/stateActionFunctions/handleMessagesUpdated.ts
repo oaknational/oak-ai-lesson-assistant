@@ -6,10 +6,12 @@ import {
 import { LessonPlanKeySchema } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import { createHash } from "crypto";
+import { StoreApi } from "zustand";
 
 import type { AiMessage } from "@/stores/chatStore/types";
 
 import type { LessonPlanStore } from "..";
+import { LessonPlanGetter, LessonPlanSetter } from "../types";
 
 const log = aiLogger("lessons:store");
 
@@ -41,16 +43,16 @@ const extractSectionsToEdit = (messageStr: string) => {
     return [];
   }
   // '"sectionsToEdit":["a","b","c"]' => ["a", "b", "c"]
-  return sectionsToEditStr.match(/([a-zA-Z0-9])+/g) ?? [];
+  return (
+    sectionsToEditStr
+      .replace('"sectionsToEdit":', "")
+      .match(/([a-zA-Z0-9])+/g) ?? []
+  );
 };
 
 export const handleMessagesUpdated = (
-  set: (
-    partial:
-      | Partial<LessonPlanStore>
-      | ((state: LessonPlanStore) => Partial<LessonPlanStore>),
-  ) => void,
-  get: () => LessonPlanStore,
+  set: LessonPlanSetter,
+  get: LessonPlanGetter,
 ) => {
   const applyMessageToLessonPlan = (message: AiMessage) => {
     log.info("Extracting patches from message", message);
