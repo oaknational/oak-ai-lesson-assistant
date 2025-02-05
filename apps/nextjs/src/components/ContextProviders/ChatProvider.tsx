@@ -30,10 +30,7 @@ import { useChatStore, useModerationStore } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
-import {
-  isAccountLocked,
-  isModeration,
-} from "../AppComponents/Chat/chat-message/protocol";
+import { isAccountLocked } from "../AppComponents/Chat/chat-message/protocol";
 
 const log = aiLogger("chat");
 
@@ -95,16 +92,6 @@ function useActionMessages() {
   };
 }
 
-function getModerationFromMessage(message?: { content: string }) {
-  if (!message) {
-    return;
-  }
-  const messageParts = parseMessageParts(message.content);
-  const moderation = messageParts.map((p) => p.document).find(isModeration);
-
-  return moderation;
-}
-
 function isValidMessageRole(role: unknown): role is Message["role"] {
   return (
     typeof role === "string" &&
@@ -131,9 +118,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const lessonPlanTracking = useLessonPlanTracking();
   const shouldTrackStreamFinished = useRef(false);
 
-  const setLastModeration = useModerationStore(
-    (state) => state.setLastModeration,
-  );
   const toxicModeration = useModerationStore((state) => state.toxicModeration);
 
   const router = useRouter();
@@ -215,14 +199,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
         response,
         path,
       });
-
-      // const messageModeration = getModerationFromMessage(response);
-      // if (messageModeration?.id) {
-      //   setLastModeration({
-      //     categories: messageModeration.categories,
-      //     id: messageModeration.id,
-      //   });
-      // }
 
       invokeActionMessages(response.content);
 
