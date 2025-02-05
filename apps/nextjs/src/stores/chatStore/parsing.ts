@@ -24,7 +24,6 @@ export const getNextStableMessages = (
   currentMessages: ParsedMessage[],
 ): ParsedMessage[] | null => {
   if (stableMessagesMatch(messages, currentMessages)) {
-    log.info("Stable messages unchanged, not updating");
     return null;
   }
   return messages.map((m) => parseMessage(m));

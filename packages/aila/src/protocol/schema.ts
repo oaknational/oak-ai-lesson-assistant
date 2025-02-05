@@ -407,6 +407,29 @@ export type LooseLessonPlan = z.infer<typeof LessonPlanSchemaWhilstStreaming>;
 
 export type LessonPlanKey = keyof typeof CompletedLessonPlanSchema.shape;
 
+export const allSectionsInOrder = [
+  "learningOutcome",
+  "learningCycles",
+  "priorKnowledge",
+  "keyLearningPoints",
+  "misconceptions",
+  "keywords",
+  "starterQuiz",
+  "cycle1",
+  "cycle2",
+  "cycle3",
+  "exitQuiz",
+  "additionalMaterials",
+] as const;
+
+export const LessonPlanKeySchema = z.enum([
+  "title",
+  "keyStage",
+  "subject",
+  "topic",
+  ...allSectionsInOrder,
+]);
+
 export const LessonPlanJsonSchema = zodToJsonSchema(
   CompletedLessonPlanSchema,
   "lessonPlanSchema",

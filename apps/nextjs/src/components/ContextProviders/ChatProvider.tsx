@@ -1,6 +1,5 @@
 import React, {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -25,11 +24,12 @@ import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { useChatStoreAiSdkSync } from "src/stores/chatStore/hooks/useChatStoreAiSdkSync";
+import { useLessonPlanStoreAiSdkSync } from "src/stores/lessonPlanStore/hooks/useLessonPlanStoreAiSdkSync";
 
 import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { useChatStore } from "@/stores/AilaStoresProvider";
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
@@ -169,6 +169,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   >(undefined);
 
   const streamingFinished = useChatStore((state) => state.streamingFinished);
+  const messageStarted = useLessonPlanStore((state) => state.messageStarted);
+  const messageFinished = useLessonPlanStore((state) => state.messageFinished);
 
   /******************* Functions *******************/
 
@@ -205,6 +207,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     },
     fetch(input: RequestInfo | URL, init?: RequestInit | undefined) {
       lessonPlanSnapshot.current = chat?.lessonPlan ?? {};
+      messageStarted();
       return fetch(input, init);
     },
     onError(error) {
@@ -254,7 +257,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       setHasFinished(true);
       shouldTrackStreamFinished.current = true;
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
+
       streamingFinished();
+      messageFinished();
     },
   });
 
@@ -293,22 +298,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       messageHashes,
     });
 
-  const handleReload = useCallback(() => {
-    reload().catch((err) => {
-      log.error("Failed to reload chat", err);
-      toast.error("Failed to reload chat");
-      Sentry.captureException(err);
-    });
-  }, [reload]);
-
-  // Hooks to update the Zustand chat store mirror
-  useChatStoreAiSdkSync(
-    messages,
-    isLoading,
-    stopStreaming,
-    append,
-    handleReload,
-  );
+  // Hooks to update the Zustand stores
+  useChatStoreAiSdkSync(messages, isLoading, stopStreaming, append, reload);
+  useLessonPlanStoreAiSdkSync(messages, isLoading);
 
   /**
    *  If the state is being restored from a previous lesson plan, set the lesson plan
