@@ -111,11 +111,7 @@ export const ChatMessagesDisplay = ({
   ailaStreamingStatus,
   demo,
 }: ChatMessagesDisplayProps) => {
-  const { lessonPlan, isStreaming } = useLessonChat();
-  const { totalSections, totalSectionsComplete } = useProgressForDownloads({
-    lessonPlan,
-    isStreaming,
-  });
+  const { totalSections, totalSectionsComplete } = useProgressForDownloads();
 
   return (
     <>

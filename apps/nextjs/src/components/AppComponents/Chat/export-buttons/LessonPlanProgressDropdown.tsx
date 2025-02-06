@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 
-import type {
-  LessonPlanKey,
-  LooseLessonPlan,
-} from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Flex } from "@radix-ui/themes";
 
@@ -13,8 +10,6 @@ import { scrollToRef } from "@/utils/scrollToRef";
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 
 export type LessonPlanProgressDropdownProps = Readonly<{
-  lessonPlan: LooseLessonPlan;
-  isStreaming: boolean;
   sectionRefs: Partial<
     Record<LessonPlanKey, React.MutableRefObject<HTMLDivElement | null>>
   >;
@@ -23,9 +18,9 @@ export type LessonPlanProgressDropdownProps = Readonly<{
 
 export const LessonPlanProgressDropdown: React.FC<
   LessonPlanProgressDropdownProps
-> = ({ lessonPlan, sectionRefs, documentContainerRef, isStreaming }) => {
+> = ({ sectionRefs, documentContainerRef }) => {
   const { sections, totalSections, totalSectionsComplete } =
-    useProgressForDownloads({ lessonPlan, isStreaming });
+    useProgressForDownloads();
   const [openProgressDropDown, setOpenProgressDropDown] = useState(false);
 
   return (
