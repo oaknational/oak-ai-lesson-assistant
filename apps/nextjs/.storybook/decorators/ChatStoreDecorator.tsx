@@ -8,7 +8,7 @@ import {
   createLessonPlanStore,
   type LessonPlanStore,
 } from "@/stores/lessonPlanStore";
-import { trpc } from "@/utils/trpc";
+import { trpc, TrpcUtils } from "@/utils/trpc";
 
 declare module "@storybook/csf" {
   interface Parameters {
@@ -20,7 +20,7 @@ declare module "@storybook/csf" {
 export const ChatStoreDecorator: Decorator = (Story, { parameters }) => {
   const value = useMemo(() => {
     const id = "dummy-chat-id";
-    const trpcUtils = trpc.useUtils();
+    const trpcUtils = {} as TrpcUtils;
 
     return {
       chat: createChatStore(parameters.chatStoreState),
