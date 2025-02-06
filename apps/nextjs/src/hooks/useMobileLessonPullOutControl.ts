@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import type { Message } from "ai";
 
-import type { AilaStreamingStatus } from "@/components/AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
+import type { AilaStreamingStatus } from "@/stores/chatStore";
 
 export const useMobileLessonPullOutControl = ({
   ailaStreamingStatus,

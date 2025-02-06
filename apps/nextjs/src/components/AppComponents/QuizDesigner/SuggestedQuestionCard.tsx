@@ -132,6 +132,7 @@ async function removeQuestionFromArray(
     newArr.splice(index, 1);
   }
   setPotentialNewQuestions(newArr);
+  return Promise.resolve();
 }
 
 export default SuggestedLessonCard;

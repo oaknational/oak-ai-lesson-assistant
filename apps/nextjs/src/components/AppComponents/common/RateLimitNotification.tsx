@@ -124,7 +124,7 @@ const RateLimitNotification = ({
                 <Button
                   onClick={() => {
                     setHasSubmitted(false);
-                    requestMoreGenerationsFunction();
+                    void requestMoreGenerationsFunction();
                   }}
                   variant="text-link"
                 >
