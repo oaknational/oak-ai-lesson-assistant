@@ -1,13 +1,13 @@
-import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import * as Sentry from "@sentry/nextjs";
 
-import { trpcClient } from "@/utils/trpcClient";
+import type { TrpcUtils } from "@/utils/trpc";
 
 import type { ModerationStore } from "..";
 
 export const handleFetchModerations = async (
   set: (state: Pick<ModerationStore, "isModerationsLoading">) => void,
   get: () => ModerationStore,
+  trpcUtils: TrpcUtils,
 ) => {
   const { updateModerationState, id } = get();
 
@@ -19,7 +19,7 @@ export const handleFetchModerations = async (
   });
   try {
     const fetchedModerations =
-      await trpcClient.chat.appSessions.getModerations.query({
+      await trpcUtils.chat.appSessions.getModerations.fetch({
         id,
       });
     updateModerationState([...fetchedModerations]);

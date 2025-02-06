@@ -7,6 +7,7 @@ import {
   type ModerationStore,
   createModerationStore,
 } from "@/stores/moderationStore";
+import { trpc } from "@/utils/trpc";
 
 type AilaStoresContextProps = {
   chat: StoreApi<ChatStore>;
@@ -26,9 +27,12 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
   children,
   id,
 }) => {
+  const trpcUtils = trpc.useUtils();
+
   const [store] = useState(() => {
     const moderationStore = createModerationStore({
       id,
+      trpcUtils,
     });
     const chatStore = createChatStore();
 
