@@ -427,6 +427,7 @@ export const LessonPlanKeySchema = z.enum([
   "keyStage",
   "subject",
   "topic",
+  "basedOn",
   ...allSectionsInOrder,
 ]);
 
