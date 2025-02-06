@@ -20,7 +20,7 @@ export const AilaStoresContext = createContext<
 
 export interface AilaStoresProviderProps {
   children: React.ReactNode;
-  id: string | null;
+  id: string;
 }
 
 export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({

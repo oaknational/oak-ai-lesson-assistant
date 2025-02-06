@@ -1,8 +1,11 @@
+import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 
 import type { TrpcUtils } from "@/utils/trpc";
 
 import type { ModerationStore } from "..";
+
+const log = aiLogger("moderation:store");
 
 export const handleFetchModerations = async (
   set: (state: Pick<ModerationStore, "isModerationsLoading">) => void,
@@ -11,9 +14,6 @@ export const handleFetchModerations = async (
 ) => {
   const { updateModerationState, id } = get();
 
-  if (!id) {
-    return;
-  }
   set({
     isModerationsLoading: true,
   });
@@ -22,8 +22,9 @@ export const handleFetchModerations = async (
       await trpcUtils.chat.appSessions.getModerations.fetch({
         id,
       });
-    updateModerationState([...fetchedModerations]);
+    updateModerationState(fetchedModerations);
   } catch (error) {
+    log.error("Error fetching moderation", error);
     Sentry.captureException(error);
   } finally {
     set({
