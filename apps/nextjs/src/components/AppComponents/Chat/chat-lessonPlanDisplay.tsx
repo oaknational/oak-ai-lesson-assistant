@@ -74,7 +74,7 @@ export const LessonPlanDisplay = ({
 
     const container = documentContainerRef.current;
     if (container) {
-      container.addEventListener("wheel", handleUserScroll);
+      container.addEventListener("wheel", handleUserScroll, { passive: true });
     }
 
     return () => {
