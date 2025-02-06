@@ -196,15 +196,7 @@ const ImageComponent = ({
               )}
             </>
           )}
-          {imageCategory === "MAP" && (
-            <button
-              onClick={() => {
-                searchForMaps();
-              }}
-            >
-              Load map
-            </button>
-          )}
+
           {isLoading && <pre>Loading map</pre>}
           <Images
             cycleImages={allAgentPromptImagesSortedByRelavanceScore}
