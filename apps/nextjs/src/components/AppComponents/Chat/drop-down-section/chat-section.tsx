@@ -9,6 +9,7 @@ import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import type { ImageCycle } from "@oakai/api/src/router/imageGen";
 import {
   OakFlex,
+  OakLink,
   OakP,
   OakSmallPrimaryButton,
 } from "@oaknational/oak-components";
@@ -124,7 +125,15 @@ const ImageComponent = ({
     cycle,
     pageData,
   });
-
+  console.log(
+    "allAgentPromptImagesSortedByRelavanceScore",
+    allAgentPromptImagesSortedByRelavanceScore,
+    allAgentPromptImagesSortedByRelavanceScore.length,
+  );
+  console.log(
+    "cycleImagesFromAgentPromptLoading",
+    cycleImagesFromAgentPromptLoading,
+  );
   return (
     <div className="flex flex-col space-y-5 rounded-sm bg-slate-200 p-6">
       <div className="mb-10">
@@ -145,6 +154,12 @@ const ImageComponent = ({
         </>
       )}
       {imageCategory && <OakP $font="body-2">{imageCategory}</OakP>}
+      {!!imageCategory && imageCategory !== "PHOTO_REALISTIC" && (
+        <OakP $font="body-3">
+          We search unsplash, cloudinary and flickr for the {imageCategory}{" "}
+          category. We do not use gen AI for {imageCategory}
+        </OakP>
+      )}
       {newImagePrompt && (
         <>
           <OakP $font="body-2">Image prompt Loaded ✅</OakP>
@@ -153,28 +168,34 @@ const ImageComponent = ({
       )}
       {imageCategory && (
         <div className="flex flex-col space-y-5">
-          {(!cycleImagesFromAgentPromptLoading ||
-            allAgentPromptImagesSortedByRelavanceScore.length === 0) && (
-            <OakSmallPrimaryButton
-              onClick={() => {
-                generateImagesFromAgentPrompt({ imageCategory }).catch(
-                  console.error,
-                );
-              }}
-            >
-              Load {imageCategory} images
-            </OakSmallPrimaryButton>
+          {allAgentPromptImagesSortedByRelavanceScore.length === 0 && (
+            <>
+              {cycleImagesFromAgentPromptLoading ? (
+                <OakP>Loading images...</OakP>
+              ) : (
+                <OakSmallPrimaryButton
+                  onClick={() => {
+                    generateImagesFromAgentPrompt({ imageCategory }).catch(
+                      console.error,
+                    );
+                  }}
+                >
+                  Load {imageCategory} images
+                </OakSmallPrimaryButton>
+              )}
+            </>
           )}
-
-          {cycleImagesFromAgentPromptLoading && <OakP>Loading images...</OakP>}
-          <Images cycleImages={allAgentPromptImagesSortedByRelavanceScore} />
+          <Images
+            cycleImages={allAgentPromptImagesSortedByRelavanceScore}
+            imageCategory={imageCategory}
+          />
         </div>
       )}
     </div>
   );
 };
 
-const Images = ({ cycleImages }) => {
+const Images = ({ cycleImages, imageCategory }) => {
   const imagesWithAScoreOfMoreThan5 = cycleImages.filter(
     (image) => image.appropriatenessScore >= 5,
   );
@@ -194,16 +215,29 @@ const Images = ({ cycleImages }) => {
           </div>
         </>
       ))}
+      {cycleImages.length > 0 && imagesWithAScoreOfMoreThan5.length === 0 && (
+        <div className="flex flex-col gap-7 bg-white p-7">
+          {imageCategory === "PHOTO_REALISTIC" ? (
+            <OakP>The generated images have not met the quality criteria</OakP>
+          ) : (
+            <OakP>
+              We have searched flickr, unsplash and cloudinary and have not any
+              images that are good enough.
+            </OakP>
+          )}
+        </div>
+      )}
+
       {imagesWithAScoreOfLessThan5.length > 0 && (
         <button className="text-left">
-          <OakP
-            $font="body-3"
+          <OakLink
+            element="button"
             onClick={() => {
               setShowPoorImages(!showPoorImages);
             }}
           >
             {showPoorImages ? "Hide" : "Show"} poor images
-          </OakP>
+          </OakLink>
         </button>
       )}
       {showPoorImages &&
