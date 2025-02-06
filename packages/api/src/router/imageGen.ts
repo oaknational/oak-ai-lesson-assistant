@@ -1205,25 +1205,16 @@ export const imageGen = router({
             input.keyStage,
             cycleInfo,
           ),
+          validateImagesInParallel(
+            wikiResponse,
+            input.searchExpression,
+            input.lessonTitle,
+            input.subject,
+            input.keyStage,
+            cycleInfo,
+            input.agentImagePrompt,
+          ),
         ];
-
-        if (
-          input.imageCategory === "MAP" ||
-          input.imageCategory === "TIMELINE" ||
-          input.imageCategory === "HISTORICAL_PAINTING"
-        ) {
-          validationPromises.push(
-            validateImagesInParallel(
-              wikiResponse,
-              input.searchExpression,
-              input.lessonTitle,
-              input.subject,
-              input.keyStage,
-              cycleInfo,
-              input.agentImagePrompt,
-            ),
-          );
-        }
 
         if (input.imageCategory === "PHOTO_REALISTIC") {
           validationPromises.push(
