@@ -8,7 +8,7 @@ import {
   createModerationStore,
   type ModerationStore,
 } from "@/stores/moderationStore";
-import { trpc } from "@/utils/trpc";
+import { type TrpcUtils } from "@/utils/trpc";
 
 declare module "@storybook/csf" {
   interface Parameters {
@@ -20,7 +20,7 @@ declare module "@storybook/csf" {
 export const StoreDecorator: Decorator = (Story, { parameters }) => {
   const store = useMemo(() => {
     const id = "123";
-    const trpcUtils = trpc.useUtils();
+    const trpcUtils = {} as TrpcUtils;
     const moderationStore = createModerationStore({ id, trpcUtils });
     const chatStore = createChatStore();
 
