@@ -14,6 +14,7 @@ import {
 } from "../imageGen/validateImageWithOpenAI";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
+import { typesOfImage } from "./imageCategoriser";
 import {
   flickrImages,
   unsplashImages,
@@ -413,6 +414,7 @@ export type ImageCycle =
         spokenExplanation: string | string[];
         accompanyingSlideDetails: string;
         slideText: string;
+        imageSearch?: string;
       };
       checkForUnderstanding: {
         question: string;
@@ -479,7 +481,6 @@ export const imageGen = router({
         const prompt = ` 
             You are writing a prompt to generate an image using DALE. 
              
-
             The image you are writing a prompt to generate will live with a learning cycle of a lesson on a slide. 
             The lesson is about ${input.lessonTitle} for ${input.keyStage} students. The subject is ${input.subject}.
             The key learning points are ${input?.lessonPlan?.keyLearningPoints?.join(", ")}.
@@ -487,13 +488,16 @@ export const imageGen = router({
             The slide details and slide text are: ${cycleInfo?.explanation?.accompanyingSlideDetails} and ${cycleInfo?.explanation?.slideText}.
 
             Safety and appropriateness:
-            What every you describe will be generated into an image shown in schools. The image should not include anything not school appropriate.
+            What ever you describe will be generated into an image shown in schools. The image should not include anything not school appropriate.
 
 
             DETAILS FOR CREATING IMAGE PROMPT:
-            You must first make a decision about whether the requirement is for a diagram or a photo realistic, your preference is to do photo realistic images.
+            You must first make a decision about whether the requirement is for a diagram, a map, a timeline, a historical painting or a photo realistic. The preference is always to do photo realistic images.
             If the image should be photo realistic use the PHOTO_REALISTIC_PROMP.
             If the image should be a diagram or illustration use the DIAGRAM_PROMPT.
+            If the image should be a map use the MAP_PROMPT.
+            If the image should be a timeline use the TIMELINE_PROMPT.
+            If the image should be a historical painting use the HISTORICAL_PAINTING.
             Your response should be the prompt and the prompt alone with no extra context.
             Think about what makes a good prompt for image generation, the prompt should be very clear and concise whilst also being detailed enough to get the desired image.
             Try to avoid adding any extra wording that might confuse the AI.
@@ -507,17 +511,24 @@ export const imageGen = router({
             The image should not have any labelling, symbols or text on it.
             The end image should be a classroom and age appropriate image.   
             Prefix the prompt with 'A highly detailed 8K photograph taken on a Canon EOS R5 Mark II of a...'. 
-            Include in the prompt that the image should not have any labelling, symbols or text on it.
+            Focus on specific, visually representable elements.
+            Describe actions and scenarios rather than abstract concepts.
+            The image should not have any labelling, symbols or text on it, avoid using any trigger words that the AI might interpret as text.
+            Avoid ambiguous language that could be interpreted as including text.
             The description MUST be at least THREE SENTENCES describing the image in detail. 
             Written in the EXPERT_TEACHER voice.
             
             DIAGRAM_PROMPT:
-            The image should be a diagram or illustration.
-            Prefix the prompt with 'A clear diagram of...'. 
-            Include in the prompt that the image should not have any labelling, symbols or text on it.
-            The prompt MUST be at least THREE SENTENCES describing the image in detail. 
-            Written in the EXPERT_TEACHER voice.
+            return: "DIAGRAM_PROMPT: We do not currently support generating diagrams.
 
+            MAP_PROMPT:
+            return: "MAP_PROMPT: We do not currently support generating maps.
+
+            TIMELINE_PROMPT:
+            return: "TIMELINE_PROMPT: We do not currently support generating timelines.
+
+            HISTORICAL_PAINTING:
+            return: "HISTORICAL_PAINTING: We do not currently support generating historical paintings.
 
             
           `;
@@ -1018,6 +1029,7 @@ export const imageGen = router({
         keyStage: z.string(),
         originalPrompt: z.string(),
         agentImagePrompt: z.string().optional(),
+        imageCategory: typesOfImage.optional(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -1039,14 +1051,8 @@ export const imageGen = router({
           searchExpression: input.originalPrompt,
         });
 
-        // Fetch images from all sources in parallel
-        const [
-          cloudinaryResponse,
-          unsplashResponse,
-          dallEResponse,
-          // stabilityCoreResponse,
-          // stabilityUltraResponse,
-        ] = await Promise.all([
+        // Initialize arrays for Promise.all
+        const searchPromises = [
           // Cloudinary search
           cloudinary.search
             .expression(input.searchExpression)
@@ -1054,7 +1060,6 @@ export const imageGen = router({
             .with_field("context")
             .execute()
             .then((result: any) => {
-              // Transform Cloudinary results to ImageResponse format
               return result.resources.map((resource: any) => ({
                 id: resource.public_id,
                 url: resource.secure_url,
@@ -1067,101 +1072,115 @@ export const imageGen = router({
 
           // Unsplash search
           unsplashImages({ searchExpression: input.searchExpression }),
+        ];
 
-          // DALL-E generation
-          openai.images
-            .generate({
-              model: "dall-e-3",
-              prompt:
-                input.agentImagePrompt ??
-                promptConstructor(
-                  input.searchExpression,
-                  input.lessonTitle,
-                  input.subject,
-                  input.keyStage,
-                  cycleInfo,
-                ),
-              n: 1,
-              size: "1024x1024",
-            })
-            .then((response) => {
-              // Only include the image if URL exists
-              if (response.data?.[0]?.url) {
+        // Only add AI generation promises if imageCategory is PHOTO_REALISTIC
+        if (input.imageCategory === "PHOTO_REALISTIC") {
+          // Add DALL-E generation
+          searchPromises.push(
+            openai.images
+              .generate({
+                model: "dall-e-3",
+                prompt:
+                  input.agentImagePrompt ??
+                  promptConstructor(
+                    input.searchExpression,
+                    input.lessonTitle,
+                    input.subject,
+                    input.keyStage,
+                    cycleInfo,
+                  ),
+                n: 1,
+                size: "1024x1024",
+              })
+              .then((response) => {
+                if (response.data?.[0]?.url) {
+                  return [
+                    {
+                      id: uuidv4(),
+                      url: response.data[0].url,
+                      title: `AI Generated: ${input.searchExpression}`,
+                      alt: input.searchExpression,
+                      license: "OpenAI DALL-E 3",
+                      photographer: "Generated by DALL-E 3",
+                    },
+                  ];
+                }
+                return [];
+              }),
+          );
+
+          // Add Stability Core generation
+          searchPromises.push(
+            generateStabilityImage({
+              endpoint: "core",
+              searchExpression: input.searchExpression,
+              outputFormat: "webp",
+              subject: input.subject,
+              keyStage: input.keyStage,
+              lessonTitle: input.lessonTitle,
+              cycleInfo,
+              agentImagePrompt: input.agentImagePrompt,
+            }).then((imageUrl) => {
+              if (imageUrl) {
                 return [
                   {
                     id: uuidv4(),
-                    url: response.data[0].url,
+                    url: imageUrl,
                     title: `AI Generated: ${input.searchExpression}`,
                     alt: input.searchExpression,
-                    license: "OpenAI DALL-E 3",
-                    photographer: "Generated by DALL-E 3",
+                    license: "Stability AI - Core",
+                    photographer: "Generated by Stability AI",
                   },
                 ];
               }
-              return []; // Return empty array if no valid URL
+              return [];
             }),
+          );
 
-          // // Stability generation
-          // generateStabilityImage({
-          //   endpoint: "core",
-          //   searchExpression: input.searchExpression,
-          //   outputFormat: "webp",
-          //   subject: input.subject,
-          //   keyStage: input.keyStage,
-          //   lessonTitle: input.lessonTitle,
-          //   cycleInfo,
-          //   agentImagePrompt: input.agentImagePrompt,
-          // }).then((imageUrl) => {
-          //   if (imageUrl) {
-          //     return [
-          //       {
-          //         id: uuidv4(),
-          //         url: imageUrl,
-          //         title: `AI Generated: ${input.searchExpression}`,
-          //         alt: input.searchExpression,
-          //         license: "Stability AI - Core",
-          //         photographer: "Generated by Stability AI",
-          //       },
-          //     ];
-          //   }
-          //   return []; // Return empty array if no valid URL
-          // }),
+          // Add Stability Ultra generation
+          searchPromises.push(
+            generateStabilityImage({
+              endpoint: "ultra",
+              searchExpression: input.searchExpression,
+              outputFormat: "webp",
+              subject: input.subject,
+              keyStage: input.keyStage,
+              lessonTitle: input.lessonTitle,
+              cycleInfo,
+              agentImagePrompt: input.agentImagePrompt,
+            }).then((imageUrl) => {
+              if (imageUrl) {
+                return [
+                  {
+                    id: uuidv4(),
+                    url: imageUrl,
+                    title: `AI Generated: ${input.searchExpression}`,
+                    alt: input.searchExpression,
+                    license: "Stability AI - Core",
+                    photographer: "Generated by Stability AI",
+                  },
+                ];
+              }
+              return [];
+            }),
+          );
+        }
 
-          // // Stability Ultra generation
-          // generateStabilityImage({
-          //   endpoint: "ultra",
-          //   searchExpression: input.searchExpression,
-          //   outputFormat: "webp",
-          //   subject: input.subject,
-          //   keyStage: input.keyStage,
-          //   lessonTitle: input.lessonTitle,
-          //   cycleInfo,
-          //   agentImagePrompt: input.agentImagePrompt,
-          // }).then((imageUrl) => {
-          //   if (imageUrl) {
-          //     return [
-          //       {
-          //         id: uuidv4(),
-          //         url: imageUrl,
-          //         title: `AI Generated: ${input.searchExpression}`,
-          //         alt: input.searchExpression,
-          //         license: "Stability AI - Core",
-          //         photographer: "Generated by Stability AI",
-          //       },
-          //     ];
-          //   }
-          //   return []; // Return empty array if no valid URL
-          // }),
-        ]);
+        // Execute all promises in parallel
+        const responses = await Promise.all(searchPromises);
+
+        // Destructure responses based on imageCategory
+        const [
+          cloudinaryResponse,
+          unsplashResponse,
+          dallEResponse = [],
+          stabilityCoreResponse = [],
+          stabilityUltraResponse = [],
+        ] = responses;
 
         // Validate all images in parallel
-        const [
-          validatedCloudinary,
-          validatedUnsplash,
-          validatedDallE,
-          validatedCoreStability,
-          validatedCoreStabilityUltra,
-        ] = await Promise.all([
+        const validationPromises = [
           validateImagesInParallel(
             cloudinaryResponse,
             input.searchExpression,
@@ -1178,38 +1197,51 @@ export const imageGen = router({
             input.keyStage,
             cycleInfo,
           ),
-          validateImagesInParallel(
-            dallEResponse,
-            input.searchExpression,
-            input.lessonTitle,
-            input.subject,
-            input.keyStage,
-            cycleInfo,
-            input.agentImagePrompt,
-          ),
-          // validateImagesInParallel(
-          //   stabilityCoreResponse,
-          //   input.searchExpression,
-          //   input.lessonTitle,
-          //   input.subject,
-          //   input.keyStage,
-          //   cycleInfo,
-          //   input.agentImagePrompt,
-          // ),
-          // validateImagesInParallel(
-          //   stabilityUltraResponse,
-          //   input.searchExpression,
-          //   input.lessonTitle,
-          //   input.subject,
-          //   input.keyStage,
-          //   cycleInfo,
-          //   input.agentImagePrompt,
-          // ),
-        ]);
+        ];
+
+        if (input.imageCategory === "PHOTO_REALISTIC") {
+          validationPromises.push(
+            validateImagesInParallel(
+              dallEResponse,
+              input.searchExpression,
+              input.lessonTitle,
+              input.subject,
+              input.keyStage,
+              cycleInfo,
+              input.agentImagePrompt,
+            ),
+            validateImagesInParallel(
+              stabilityCoreResponse,
+              input.searchExpression,
+              input.lessonTitle,
+              input.subject,
+              input.keyStage,
+              cycleInfo,
+              input.agentImagePrompt,
+            ),
+            validateImagesInParallel(
+              stabilityUltraResponse,
+              input.searchExpression,
+              input.lessonTitle,
+              input.subject,
+              input.keyStage,
+              cycleInfo,
+              input.agentImagePrompt,
+            ),
+          );
+        }
+
+        const [
+          validatedCloudinary,
+          validatedUnsplash,
+          validatedDallE = [],
+          validatedCoreStability = [],
+          validatedCoreStabilityUltra = [],
+        ] = await Promise.all(validationPromises);
 
         // Transform validation results into final format
         return {
-          cloudinary: validatedCloudinary.map((result) => ({
+          cloudinary: validatedCloudinary?.map((result) => ({
             ...result.imageData,
             appropriatenessScore:
               result.validationResult.metadata.appropriatenessScore,
@@ -1217,7 +1249,7 @@ export const imageGen = router({
               result.validationResult.metadata.validationReasoning,
             imagePrompt: result.imagePrompt,
           })),
-          unsplash: validatedUnsplash.map((result) => ({
+          unsplash: validatedUnsplash?.map((result) => ({
             ...result.imageData,
             appropriatenessScore:
               result.validationResult.metadata.appropriatenessScore,
@@ -1233,22 +1265,22 @@ export const imageGen = router({
               result.validationResult.metadata.validationReasoning,
             imagePrompt: result.imagePrompt,
           })),
-          // stable: validatedCoreStability.map((result) => ({
-          //   ...result.imageData,
-          //   appropriatenessScore:
-          //     result.validationResult.metadata.appropriatenessScore,
-          //   appropriatenessReasoning:
-          //     result.validationResult.metadata.validationReasoning,
-          //   imagePrompt: result.imagePrompt,
-          // })),
-          // stableUltra: validatedCoreStabilityUltra.map((result) => ({
-          //   ...result.imageData,
-          //   appropriatenessScore:
-          //     result.validationResult.metadata.appropriatenessScore,
-          //   appropriatenessReasoning:
-          //     result.validationResult.metadata.validationReasoning,
-          //   imagePrompt: result.imagePrompt,
-          // })),
+          stable: validatedCoreStability.map((result) => ({
+            ...result.imageData,
+            appropriatenessScore:
+              result.validationResult.metadata.appropriatenessScore,
+            appropriatenessReasoning:
+              result.validationResult.metadata.validationReasoning,
+            imagePrompt: result.imagePrompt,
+          })),
+          stableUltra: validatedCoreStabilityUltra.map((result) => ({
+            ...result.imageData,
+            appropriatenessScore:
+              result.validationResult.metadata.appropriatenessScore,
+            appropriatenessReasoning:
+              result.validationResult.metadata.validationReasoning,
+            imagePrompt: result.imagePrompt,
+          })),
         };
       } catch (error) {
         console.error("[GenerateFourImages] Error:", error);

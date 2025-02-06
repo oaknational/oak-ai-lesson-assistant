@@ -6,6 +6,7 @@ import { cloudinaryRouter } from "./cloudinary";
 import { exportsRouter } from "./exports";
 import { generationRouter } from "./generations";
 import { healthRouter } from "./health";
+import { imageCategoriserRouter } from "./imageCategoriser";
 import { imageGen } from "./imageGen";
 import { imageSearch } from "./imageSearch";
 import { judgementRouter } from "./judgements";
@@ -33,6 +34,7 @@ export const oakAppRouter = router({
   admin: adminRouter,
   imageGen: imageGen,
   imageSearch: imageSearch,
+  imageCategoriser: imageCategoriserRouter,
 });
 
 // export type definition of API

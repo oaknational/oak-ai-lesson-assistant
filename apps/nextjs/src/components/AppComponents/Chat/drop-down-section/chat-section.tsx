@@ -30,9 +30,13 @@ export type ChatSectionProps = Readonly<{
 }>;
 
 const ChatSection = ({ section, value }: ChatSectionProps) => {
+  const chat = useLessonChat();
+  const { subject } = chat?.lessonPlan;
+
   return (
     <OakFlex $flexDirection="column">
-      {section === "cycle1" || section === "cycle2" || section === "cycle3" ? (
+      {subject === "history" &&
+      (section === "cycle1" || section === "cycle2" || section === "cycle3") ? (
         <div className="grid grid-cols-3">
           <div className="col-span-2">
             <MemoizedReactMarkdownWithStyles
@@ -109,15 +113,12 @@ const ImageComponent = ({
   const {
     newImagePrompt,
     newPromptLoading,
-    cycleImagesFromAilaPrompt,
-    cycleImagesFromAilaPromptLoading,
-    cycleImagesFromAgentPrompt,
     cycleImagesFromAgentPromptLoading,
-    allAilaPromptImagesSortedByRelavanceScore,
     allAgentPromptImagesSortedByRelavanceScore,
-    handleGeneratePrompt,
-    generateImagesFromAilaPrompt,
     generateImagesFromAgentPrompt,
+    categoriseImage,
+    imageCategory,
+    imageCategoryLoading,
   } = useGetImages({
     cycleNumber,
     cycle,
@@ -127,33 +128,45 @@ const ImageComponent = ({
   return (
     <div className="flex flex-col space-y-5 rounded-sm bg-slate-200 p-6">
       <div className="mb-10">
-        <OakP>Images:</OakP>
+        <OakP $font="body-2">Images:</OakP>
       </div>
-      {newImagePrompt ? (
-        <ImagePrompt newImagePrompt={newImagePrompt} />
+      {imageCategory ? (
+        <OakP $font="body-2">Images:</OakP>
       ) : (
         <>
           <OakSmallPrimaryButton
             onClick={() => {
-              handleGeneratePrompt().catch(console.error);
+              categoriseImage().catch(console.error);
             }}
           >
-            Load image prompts
+            Categorise required image
           </OakSmallPrimaryButton>
-          {newPromptLoading && <OakP>Loading image prompts...</OakP>}
+          {imageCategoryLoading && <OakP>Loading image category...</OakP>}
         </>
       )}
+      {imageCategory && <OakP $font="body-2">{imageCategory}</OakP>}
       {newImagePrompt && (
+        <>
+          <OakP $font="body-2">Image prompt Loaded ✅</OakP>
+          <ImagePrompt newImagePrompt={newImagePrompt} />
+        </>
+      )}
+      {imageCategory && (
         <div className="flex flex-col space-y-5">
-          <OakSmallPrimaryButton
-            onClick={() => {
-              generateImagesFromAgentPrompt().catch(console.error);
-            }}
-          >
-            Load images
-          </OakSmallPrimaryButton>
-          {cycleImagesFromAgentPromptLoading && <OakP>Loading images...</OakP>}
+          {(!cycleImagesFromAgentPromptLoading ||
+            allAgentPromptImagesSortedByRelavanceScore.length === 0) && (
+            <OakSmallPrimaryButton
+              onClick={() => {
+                generateImagesFromAgentPrompt({ imageCategory }).catch(
+                  console.error,
+                );
+              }}
+            >
+              Load {imageCategory} images
+            </OakSmallPrimaryButton>
+          )}
 
+          {cycleImagesFromAgentPromptLoading && <OakP>Loading images...</OakP>}
           <Images cycleImages={allAgentPromptImagesSortedByRelavanceScore} />
         </div>
       )}
@@ -163,17 +176,23 @@ const ImageComponent = ({
 
 const Images = ({ cycleImages }) => {
   const imagesWithAScoreOfMoreThan5 = cycleImages.filter(
-    (image) => image.appropriatenessScore > 5,
+    (image) => image.appropriatenessScore >= 5,
   );
   const imagesWithAScoreOfLessThan5 = cycleImages.filter(
-    (image) => image.appropriatenessScore <= 5,
+    (image) => image.appropriatenessScore < 5,
   );
   const [showPoorImages, setShowPoorImages] = useState(false);
-
   return (
     <div className="flex flex-col space-y-5">
       {imagesWithAScoreOfMoreThan5.map((image) => (
-        <Image src={image.url} width={300} height={300} alt="" />
+        <>
+          <Image src={image.url} width={300} height={300} alt="" />
+
+          <div className="flex items-center justify-between">
+            <OakP>Score: {image.appropriatenessScore}</OakP>
+            <OakP $font="body-2">{image.source}</OakP>
+          </div>
+        </>
       ))}
       {imagesWithAScoreOfLessThan5.length > 0 && (
         <button className="text-left">
@@ -189,7 +208,13 @@ const Images = ({ cycleImages }) => {
       )}
       {showPoorImages &&
         imagesWithAScoreOfLessThan5.map((image) => (
-          <Image src={image.url} width={300} height={300} alt="" />
+          <>
+            <Image src={image.url} width={300} height={300} alt="" />
+            <div className="flex items-center justify-between">
+              <OakP>Score: {image.appropriatenessScore}</OakP>
+              <OakP $font="body-2">{image.source}</OakP>
+            </div>
+          </>
         ))}
     </div>
   );
