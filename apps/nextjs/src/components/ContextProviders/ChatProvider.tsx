@@ -1,6 +1,5 @@
 import React, {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -24,15 +23,14 @@ import type { ChatRequestOptions, CreateMessage, Message } from "ai";
 import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
 import { redirect, usePathname, useRouter } from "next/navigation";
-import { useChatStoreMirror } from "src/stores/chatStore/hooks";
+import { useChatStoreMirror } from "src/stores/chatStore/hooks/useChatStoreMirror";
 
 import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useChatStore } from "@/stores/chatStore";
 import { trpc } from "@/utils/trpc";
 
-import type { AilaStreamingStatus } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
-import { useAilaStreamingStatus } from "../AppComponents/Chat/Chat/hooks/useAilaStreamingStatus";
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
 import {
   isAccountLocked,
@@ -51,19 +49,18 @@ export type ChatContextProps = {
   isLoading: boolean;
   isStreaming: boolean;
   lessonPlan: LooseLessonPlan;
-  ailaStreamingStatus: AilaStreamingStatus;
+  // ailaStreamingStatus: AilaStreamingStatus;
   append: (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions | undefined,
   ) => Promise<string | null | undefined>;
-  reload: () => void;
-  stop: () => void;
+  // reload: () => void;
+  // stop: () => void;
   input: string;
   setInput: React.Dispatch<React.SetStateAction<string>>;
   chatAreaRef: React.RefObject<HTMLDivElement>;
-  queuedUserAction: string | null;
-  queueUserAction: (action: string) => void;
-  executeQueuedAction: () => Promise<void>;
+  // queuedUserAction: string | null;
+  // executeQueuedAction: () => Promise<void>;
 };
 
 export const ChatContext = createContext<ChatContextProps | null>(null);
@@ -170,6 +167,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     LooseLessonPlan | undefined
   >(undefined);
 
+  const streamingFinished = useChatStore((state) => state.streamingFinished);
+
   /******************* Functions *******************/
 
   const { invokeActionMessages } = useActionMessages();
@@ -254,11 +253,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       setHasFinished(true);
       shouldTrackStreamFinished.current = true;
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
+      streamingFinished();
     },
   });
-
-  // Hooks to update the Zustand chat store mirror
-  useChatStoreMirror(messages, isLoading);
 
   useEffect(() => {
     /**
@@ -295,57 +292,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       messageHashes,
     });
 
-  // Handle queued user actions and messages
-
-  const [queuedUserAction, setQueuedUserAction] = useState<string | null>(null);
-  const isExecutingAction = useRef(false);
-
-  const queueUserAction = useCallback((action: string) => {
-    setQueuedUserAction(action);
-  }, []);
-
-  const executeQueuedAction = useCallback(async () => {
-    if (!queuedUserAction || !hasFinished || isExecutingAction.current) return;
-
-    isExecutingAction.current = true;
-    const actionToExecute = queuedUserAction;
-    setQueuedUserAction(null);
-
-    try {
-      if (actionToExecute === "continue") {
-        await append({
-          content: "Continue",
-          role: "user",
-        });
-      } else if (actionToExecute === "regenerate") {
-        await reload();
-      } else {
-        // Assume it's a user message
-        await append({
-          content: actionToExecute,
-          role: "user",
-        });
-      }
-    } catch (error) {
-      log.error("Error handling queued action:", error);
-    } finally {
-      isExecutingAction.current = false;
-    }
-  }, [queuedUserAction, hasFinished, append, reload]);
-
-  useEffect(() => {
-    if (hasFinished) {
-      void executeQueuedAction();
-    }
-  }, [hasFinished, executeQueuedAction]);
-
-  const stop = useCallback(() => {
-    if (queuedUserAction) {
-      setQueuedUserAction(null);
-    } else {
-      stopStreaming();
-    }
-  }, [queuedUserAction, setQueuedUserAction, stopStreaming]);
+  // Hooks to update the Zustand chat store mirror
+  useChatStoreMirror(messages, isLoading, stopStreaming, append, reload);
 
   /**
    *  If the state is being restored from a previous lesson plan, set the lesson plan
@@ -406,8 +354,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       ? lastModeration
       : toxicInitialModeration;
 
-  const ailaStreamingStatus = useAilaStreamingStatus({ isLoading, messages });
-
   useEffect(() => {
     if (toxicModeration) {
       setMessages([]);
@@ -427,19 +373,13 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       chatAreaRef,
       append,
       messages,
-      ailaStreamingStatus,
       isLoading,
       isStreaming: !hasFinished,
       lastModeration,
-      reload,
-      stop,
       input,
       setInput,
       partialPatches,
       validPatches,
-      queuedUserAction,
-      queueUserAction,
-      executeQueuedAction,
     }),
     [
       id,
@@ -451,20 +391,14 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       hasAppendedInitialMessage,
       chatAreaRef,
       messages,
-      ailaStreamingStatus,
       isLoading,
       lastModeration,
-      reload,
-      stop,
       input,
       setInput,
       append,
       partialPatches,
       validPatches,
       overrideLessonPlan,
-      queuedUserAction,
-      queueUserAction,
-      executeQueuedAction,
     ],
   );
 

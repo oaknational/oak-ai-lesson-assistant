@@ -1,67 +1,96 @@
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
-import invariant from "tiny-invariant";
+import type { ChatRequestOptions, CreateMessage } from "ai";
 import { create } from "zustand";
 
-import { getNextStableMessages, parseStreamingMessage } from "./parsing";
+import { handleAppend } from "./stateActionFunctions/handleAppend";
+import { handleExecuteQueuedAction } from "./stateActionFunctions/handleExecuteQueuedAction";
+import { handleSetMessages } from "./stateActionFunctions/handleSetMessages";
+import { handleStop } from "./stateActionFunctions/handleStop";
+import { handleStreamingFinished } from "./stateActionFunctions/handleStreamingFinished";
 import type { AiMessage, ParsedMessage } from "./types";
 
 const log = aiLogger("chat:store");
 
-type ChatStore = {
-  // From AI SDK
-  isLoading: boolean;
+type AiSdkActions = {
+  stop: () => void;
+  reload: () => void;
+  append: (
+    message: AiMessage | CreateMessage,
+    chatRequestOptions?: ChatRequestOptions | undefined,
+  ) => Promise<string | null | undefined>;
+};
+
+export type AilaStreamingStatus =
+  | "Loading"
+  | "RequestMade"
+  | "StreamingLessonPlan"
+  | "StreamingChatResponse"
+  | "StreamingExperimentalPatches"
+  | "Moderating"
+  | "Idle";
+
+export type ChatStore = {
+  ailaStreamingStatus: AilaStreamingStatus;
+
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
+  queuedUserAction: string | null;
+  lessonPlan: LooseLessonPlan | null;
 
-  // Actions
+  // From AI SDK
+  aiSdkActions: AiSdkActions;
+
+  // Setters
+  setLessonPlan: (lessonPlan: LooseLessonPlan) => void;
+  setAiSdkActions: (actions: AiSdkActions) => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
-  setIsLoading: (isLoading: boolean) => void;
+
+  // Action functions
+  executeQueuedAction: () => void;
+  append: (message: string) => void;
+  stop: () => void;
+  streamingFinished: () => void;
+
+  reset: (
+    params: Pick<ChatStore, "ailaStreamingStatus"> & {
+      queuedUserAction?: ChatStore["queuedUserAction"];
+    },
+  ) => void;
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
-  // From AI SDK
-  isLoading: false,
+  ailaStreamingStatus: "Idle",
   stableMessages: [],
   streamingMessage: null,
+  queuedUserAction: null,
+  lessonPlan: null,
 
-  // Actions
-  setMessages: (messages, isLoading) => {
-    if (!isLoading) {
-      // All messages are stable
-      const nextStableMessages = getNextStableMessages(
-        messages,
-        get().stableMessages,
-      );
-      set({
-        ...(nextStableMessages && {
-          stableMessages: nextStableMessages,
-        }),
-        streamingMessage: null,
-      });
-    } else {
-      // The latest message is streaming, previous messages are stable
-      const currentMessageData = messages[messages.length - 1];
-      invariant(currentMessageData, "Should have at least one message");
-      const streamingMessage = parseStreamingMessage(
-        currentMessageData,
-        get().streamingMessage,
-      );
-
-      const stableMessageData = messages.slice(0, messages.length - 1);
-      const nextStableMessages = getNextStableMessages(
-        stableMessageData,
-        get().stableMessages,
-      );
-
-      set({
-        streamingMessage,
-        ...(nextStableMessages && {
-          stableMessages: nextStableMessages,
-        }),
-      });
-    }
+  // From AI SDK
+  aiSdkActions: {
+    stop: () => {},
+    reload: () => {},
+    append: async () => "",
   },
-  setIsLoading: (isLoading) => set({ isLoading }),
+
+  // Setters
+  setAiSdkActions: (aiSdkActions) => set({ aiSdkActions }),
+  setLessonPlan: (lessonPlan) => set({ lessonPlan }),
+
+  // Action functions
+  executeQueuedAction: handleExecuteQueuedAction(set, get),
+  append: handleAppend(set, get),
+  stop: handleStop(set, get),
+  setMessages: handleSetMessages(set, get),
+  streamingFinished: handleStreamingFinished(set, get),
+
+  // reset
+  reset: ({ ailaStreamingStatus = "Idle", queuedUserAction }) => {
+    set({
+      ailaStreamingStatus: ailaStreamingStatus,
+      queuedUserAction: queuedUserAction,
+    });
+  },
 }));
 
 useChatStore.subscribe((state) => {

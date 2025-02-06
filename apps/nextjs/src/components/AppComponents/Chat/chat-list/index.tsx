@@ -8,8 +8,9 @@ import type { Message } from "ai";
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
+import { useChatStore } from "@/stores/chatStore";
+import type { AilaStreamingStatus } from "@/stores/chatStore";
 
-import type { AilaStreamingStatus } from "../Chat/hooks/useAilaStreamingStatus";
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 import { DemoLimitMessage } from "./demo-limit-message";
 import { InChatDownloadButtons } from "./in-chat-download-buttons";
@@ -26,7 +27,12 @@ export function ChatList({
 }: Readonly<ChatListProps>) {
   const chat = useLessonChat();
 
-  const { id, messages, ailaStreamingStatus, lastModeration } = chat;
+  const { id, messages, lastModeration } = chat;
+
+  const ailaStreamingStatus = useChatStore(
+    (state) => state.ailaStreamingStatus,
+  );
+
   const persistedModerations = chat.initialModerations;
 
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -72,7 +78,7 @@ export function ChatList({
   }
 
   return (
-    <div className="relative flex w-full flex-col " onScroll={handleScroll}>
+    <div className="relative flex w-full flex-col" onScroll={handleScroll}>
       <ChatMessagesDisplay
         messages={messages}
         id={id}

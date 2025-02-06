@@ -59,8 +59,10 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  log.info(error.toString());
+main().catch((error: unknown) => {
+  const errorMessage =
+    error instanceof Error ? error.toString() : String(error);
+  log.info(errorMessage);
   if (error instanceof IngestError) {
     log.info("Ingest ID " + error.ingestId);
     log.info("Lesson ID " + error.lessonId);
