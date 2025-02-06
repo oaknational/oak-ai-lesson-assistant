@@ -9,9 +9,12 @@ import {
 } from "@/stores/moderationStore";
 import { trpc } from "@/utils/trpc";
 
+import { type LessonPlanStore, createLessonPlanStore } from "./lessonPlanStore";
+
 type AilaStoresContextProps = {
   chat: StoreApi<ChatStore>;
   moderation: StoreApi<ModerationStore>;
+  lessonPlan: StoreApi<LessonPlanStore>;
 };
 
 export const AilaStoresContext = createContext<
@@ -49,6 +52,7 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
     return {
       chat: chatStore,
       moderation: moderationStore,
+      lessonPlan: createLessonPlanStore(),
     };
   });
 
@@ -75,4 +79,14 @@ export const useModerationStore = <T,>(
     throw new Error("Missing AilaStoresProvider");
   }
   return useStore(context.moderation, selector);
+};
+
+export const useLessonPlanStore = <T,>(
+  selector: (store: LessonPlanStore) => T,
+) => {
+  const context = useContext(AilaStoresContext);
+  if (!context) {
+    throw new Error("Missing AilaStoresProvider");
+  }
+  return useStore(context.lessonPlan, selector);
 };

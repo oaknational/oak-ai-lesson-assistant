@@ -45,7 +45,7 @@ jobs:
           echo "version=$APP_VERSION" >> $GITHUB_OUTPUT
 
       - name: SonarCloud scan
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v4.2.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ steps.doppler.outputs.SONAR_TOKEN }}

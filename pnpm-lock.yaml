@@ -525,6 +525,9 @@ importers:
       dotenv-cli:
         specifier: ^6.0.0
         version: 6.0.0
+      immer:
+        specifier: ^10.1.1
+        version: 10.1.1
       jsonrepair:
         specifier: ^3.8.0
         version: 3.8.0
@@ -15885,6 +15888,10 @@ packages:
 
   /immediate@3.0.6:
     resolution: {integrity: sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==}
+    dev: false
+
+  /immer@10.1.1:
+    resolution: {integrity: sha512-s2MPrmjovJcoMaHtx6K11Ra7oD05NT97w1IC5zpMkT6Atjr7H8LjaDd81iIxUYpMKSRRNMJE703M1Fhr/TctHw==}
     dev: false
 
   /immutable@3.7.6:

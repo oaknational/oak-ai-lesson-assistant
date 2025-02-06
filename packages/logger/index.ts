@@ -53,6 +53,7 @@ export type LoggerKey =
   | "inngest"
   | "judgements"
   | "lessons"
+  | "lessons:store"
   | "middleware:auth"
   | "moderation"
   | "moderation:store"
