@@ -4,6 +4,7 @@ import type { Decorator } from "@storybook/react";
 
 import { AilaStoresContext } from "@/stores/AilaStoresProvider";
 import { createChatStore, type ChatStore } from "@/stores/chatStore";
+import { createLessonPlanStore } from "@/stores/lessonPlanStore";
 import {
   createModerationStore,
   type ModerationStore,
@@ -39,6 +40,7 @@ export const StoreDecorator: Decorator = (Story, { parameters }) => {
     return {
       chat: chatStore,
       moderation: moderationStore,
+      lessonPlan: createLessonPlanStore(),
     };
   }, [parameters.moderationStoreState, parameters.chatStoreState]);
 
