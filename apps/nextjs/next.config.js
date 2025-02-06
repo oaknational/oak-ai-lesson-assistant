@@ -80,6 +80,7 @@ const getConfig = async (phase) => {
         "live.staticflickr.com",
         "images.unsplash.com",
         "oaidalleapiprodscus.blob.core.windows.net",
+        "upload.wikimedia.org",
       ],
     },
     transpilePackages: ["@oakai/api", "@oakai/db", "@oakai/exports"],

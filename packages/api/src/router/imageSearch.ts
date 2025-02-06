@@ -25,6 +25,7 @@ export interface ImageResponse {
   license: string;
   photographer?: string;
   imagePrompt?: string;
+  source?: string;
   imageSearchPrompt?: string;
   timing?: {
     total: number;
@@ -451,6 +452,166 @@ export async function flickrImages({
   }
 }
 
+export async function wikiMapImages({
+  searchExpression,
+}: {
+  searchExpression: string;
+}): Promise<ImageResponse[]> {
+  try {
+    const WIKIMEDIA_API_URL = "https://commons.wikimedia.org/w/api.php";
+
+    interface WikimediaSearchResult {
+      title: string;
+    }
+
+    interface WikimediaImageInfo {
+      url: string;
+      mime?: string;
+      extmetadata?: {
+        License?: { value: string };
+        UsageTerms?: { value: string };
+      };
+    }
+
+    interface WikimediaPage {
+      imageinfo?: WikimediaImageInfo[];
+    }
+
+    // Define acceptable web image formats
+    const ACCEPTABLE_MIME_TYPES = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+      "image/svg+xml",
+    ];
+
+    // Updated search parameters
+    const params = new URLSearchParams({
+      action: "query",
+      format: "json",
+      list: "search",
+      srsearch: `${searchExpression} map`,
+      srnamespace: "6",
+      srlimit: "10",
+      origin: "*",
+      formatversion: "2",
+    });
+
+    const searchResponse = await fetch(`${WIKIMEDIA_API_URL}?${params}`, {
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "OakAI/1.0",
+      },
+    });
+
+    if (!searchResponse.ok) {
+      throw new Error(`Search request failed: ${searchResponse.statusText}`);
+    }
+
+    const searchData = await searchResponse.json();
+    const results: WikimediaSearchResult[] = searchData?.query?.search || [];
+
+    const imageResponses: ImageResponse[] = (
+      await Promise.all(
+        results.map(async (result): Promise<ImageResponse | null> => {
+          const title = result.title;
+
+          const imageParams = new URLSearchParams({
+            action: "query",
+            format: "json",
+            titles: title,
+            prop: "imageinfo",
+            iiprop: "url|extmetadata|mime", // Added mime to get file format
+            origin: "*",
+            formatversion: "2",
+          });
+
+          try {
+            const imageResponse = await fetch(
+              `${WIKIMEDIA_API_URL}?${imageParams}`,
+              {
+                headers: {
+                  Accept: "application/json",
+                  "User-Agent": "OakAI/1.0",
+                },
+              },
+            );
+
+            if (!imageResponse.ok) {
+              console.log(
+                `Failed to fetch image data for ${title}: ${imageResponse.statusText}`,
+              );
+              return null;
+            }
+
+            const imageData = await imageResponse.json();
+            const pages = imageData.query?.pages || [];
+            const page = pages[0];
+
+            if (!page?.imageinfo?.[0]) {
+              console.log("No imageinfo found for:", title);
+              return null;
+            }
+
+            const { url, extmetadata, mime } = page.imageinfo[0];
+            const license = extmetadata?.License?.value || "";
+            const usageTerms = extmetadata?.UsageTerms?.value || "";
+
+            // Check both license and file format
+            const hasValidLicense =
+              license.toLowerCase().includes("pd") ||
+              usageTerms.toLowerCase().includes("public domain") ||
+              license.toLowerCase().includes("cc-by") ||
+              license.toLowerCase().includes("cc-by-sa") ||
+              license.toLowerCase().includes("cc0");
+
+            const hasValidFormat = ACCEPTABLE_MIME_TYPES.includes(
+              mime?.toLowerCase() || "",
+            );
+
+            if (hasValidLicense && hasValidFormat) {
+              console.log(
+                "Accepted image:",
+                title,
+                "with license:",
+                license,
+                "and format:",
+                mime,
+              );
+              return {
+                id: Math.random().toString(36).substr(2, 9),
+                url,
+                title,
+                alt: "",
+                source: "Wikimedia Commons",
+                license: usageTerms || license,
+              };
+            }
+            console.log(
+              "Rejected image:",
+              title,
+              "due to license:",
+              license,
+              "or format:",
+              mime,
+            );
+            return null;
+          } catch (error) {
+            console.error(`Error processing ${title}:`, error);
+            return null;
+          }
+        }),
+      )
+    ).filter(Boolean) as ImageResponse[];
+
+    console.log("Final number of accepted images:", imageResponses.length);
+    return imageResponses;
+  } catch (error) {
+    console.error("Error fetching images from Wikimedia:", error);
+    throw new Error("Failed to fetch images from Wikimedia.");
+  }
+}
 // Router Definition with Enhanced Procedures
 export const imageSearch = router({
   getImagesFromUnsplash: protectedProcedure
@@ -501,5 +662,11 @@ export const imageSearch = router({
       const searchService = new SimpleGoogleImageSearchService();
 
       return searchService.searchImages(searchExpression);
+    }),
+  wikiMapSearch: protectedProcedure
+    .input(SearchInputSchema)
+    .mutation(async ({ input }): Promise<ImageResponse[]> => {
+      const { searchExpression } = input;
+      return wikiMapImages({ searchExpression });
     }),
 });

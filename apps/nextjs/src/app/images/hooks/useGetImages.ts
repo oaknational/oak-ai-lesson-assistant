@@ -46,7 +46,14 @@ const useGetImages = ({
     mutateAsync: agentPromptImagesMutateAsync,
   } = trpc.imageGen.generateFourImages.useMutation();
 
-  const sources = ["cloudinary", "unsplash", "dale", "stable", "stableUltra"];
+  const sources = [
+    "cloudinary",
+    "unsplash",
+    "dale",
+    "stable",
+    "stableUltra",
+    "wiki",
+  ];
 
   const allAilaPromptImagesSortedByRelavanceScore = sources
     .flatMap((source) =>
@@ -79,7 +86,6 @@ const useGetImages = ({
   // }, [generateImagePrompt, pageData, cycleNumber]);
 
   const categoriseImage = useCallback(async () => {
-    console.log("^^^^^^^^^^^^^^^^^^^^Categorising image");
     try {
       await categoriseImageMutateAsync({
         lessonPlan: pageData.lessonPlan,

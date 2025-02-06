@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import type {
   LessonPlanKey,
@@ -18,6 +18,7 @@ import Image from "next/image";
 import useGetImages from "@/app/images/hooks/useGetImages";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
+import { trpc } from "@/utils/trpc";
 
 import { sectionTitle } from ".";
 import { MemoizedReactMarkdownWithStyles } from "../markdown";
@@ -125,6 +126,16 @@ const ImageComponent = ({
     cycle,
     pageData,
   });
+
+  const { data, isLoading, mutateAsync } =
+    trpc.imageSearch.wikiMapSearch.useMutation();
+
+  console.log("%%%%%%%%%%%%%%%%data", data);
+
+  const searchForMaps = useCallback(async () => {
+    await mutateAsync({ searchExpression: "map" });
+  }, [mutateAsync]);
+
   console.log(
     "allAgentPromptImagesSortedByRelavanceScore",
     allAgentPromptImagesSortedByRelavanceScore,
@@ -156,8 +167,8 @@ const ImageComponent = ({
       {imageCategory && <OakP $font="body-2">{imageCategory}</OakP>}
       {!!imageCategory && imageCategory !== "PHOTO_REALISTIC" && (
         <OakP $font="body-3">
-          We search unsplash, cloudinary and flickr for the {imageCategory}{" "}
-          category. We do not use gen AI for {imageCategory}
+          We search unsplash, cloudinary and wiki uploads for the{" "}
+          {imageCategory} category. We do not use gen AI for {imageCategory}
         </OakP>
       )}
       {newImagePrompt && (
@@ -185,6 +196,16 @@ const ImageComponent = ({
               )}
             </>
           )}
+          {imageCategory === "MAP" && (
+            <button
+              onClick={() => {
+                searchForMaps();
+              }}
+            >
+              Load map
+            </button>
+          )}
+          {isLoading && <pre>Loading map</pre>}
           <Images
             cycleImages={allAgentPromptImagesSortedByRelavanceScore}
             imageCategory={imageCategory}
@@ -221,8 +242,8 @@ const Images = ({ cycleImages, imageCategory }) => {
             <OakP>The generated images have not met the quality criteria</OakP>
           ) : (
             <OakP>
-              We have searched flickr, unsplash and cloudinary and have not any
-              images that are good enough.
+              We have searched wiki uploads, unsplash and cloudinary and have
+              not any images that are good enough.
             </OakP>
           )}
         </div>
@@ -258,7 +279,6 @@ const ImagePrompt = ({ newImagePrompt }) => {
   const [showPrompt, setShowPrompt] = useState(false);
   return (
     <>
-      <OakP $font="body-2">Image prompt Loaded ✅</OakP>
       <button className="text-left">
         <OakP
           $font="body-3"

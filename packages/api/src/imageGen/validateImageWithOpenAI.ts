@@ -28,6 +28,7 @@ export async function validateImageWithOpenAI(
   keyStage: string,
   subject: string,
   cycleInfo: ImageCycle | null,
+  isGeneratedImage: boolean,
 ): Promise<ValidationResult> {
   console.log(`[OpenAI Validation] Starting validation for image: ${imageUrl}`);
   console.log(`[OpenAI Validation] Prompt: ${prompt}`);
@@ -40,24 +41,39 @@ export async function validateImageWithOpenAI(
 
     console.log("[OpenAI Validation] Sending request to OpenAI");
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-
-          content:
-            "You are an image validator assessing if images are suitable for a classroom setting. " +
-            "You should assess whether the image is appropriate given the prompt and the context of the lesson. Images should not have symbols or text on them" +
-            "Always return your output as strict JSON. Do not include any additional text outside the JSON format. " +
-            "The JSON should have the following structure:\n" +
-            `{
+    const systemPromptForGeneratedImage =
+      "You are an image validator assessing if images are suitable for a classroom setting. " +
+      "You should assess whether the image is appropriate given the prompt and the context of the lesson. Images should not have symbols or text on them" +
+      "Always return your output as strict JSON. Do not include any additional text outside the JSON format. " +
+      "The JSON should have the following structure:\n" +
+      `{
                             "imageContent": "Description of the image content",
                             "prompt": "The provided prompt",
                             "validationReasoning": "Start by listing various image examples that could be used to match this prompt. Then describe exactly what is in this image. Finally provide reasoning for or against why this image is suitable for the prompt according to your own reasoning. And finally give it a relevance score. Feel free to be strict.",
                             "appropriatenessScore": 1-10,
                             "valid": true or false
-                        }`,
+                        }`;
+    const systemPromptForSearchImage =
+      "You are an image validator assessing if images are suitable for a classroom setting. " +
+      "You should assess whether the image is appropriate given the prompt and the context of the lesson." +
+      "Always return your output as strict JSON. Do not include any additional text outside the JSON format. " +
+      "The JSON should have the following structure:\n" +
+      `{
+                            "imageContent": "Description of the image content",
+                            "prompt": "The provided prompt",
+                            "validationReasoning": "Start by listing various image examples that could be used to match this prompt. Then describe exactly what is in this image. Finally provide reasoning for or against why this image is suitable for the prompt according to your own reasoning. And finally give it a relevance score. Feel free to be strict.",
+                            "appropriatenessScore": 1-10,
+                            "valid": true or false
+                        }`;
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "system",
+          content: isGeneratedImage
+            ? systemPromptForGeneratedImage
+            : systemPromptForSearchImage,
         },
         {
           role: "user",

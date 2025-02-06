@@ -18,6 +18,7 @@ import { typesOfImage } from "./imageCategoriser";
 import {
   flickrImages,
   unsplashImages,
+  wikiMapImages,
   type ImageResponse,
 } from "./imageSearch";
 
@@ -105,6 +106,7 @@ export async function validateImagesInParallel(
         keyStage,
         subject,
         cycleInfo,
+        isGeneratedImage,
       );
 
       // @todo correct prompt constructor
@@ -317,6 +319,7 @@ async function tryStabilityCore(
       keyStage,
       subject,
       cycleInfo,
+      true,
     );
 
     if (!validationResponse.isValid) return null;
@@ -383,6 +386,7 @@ async function tryDallE(
       keyStage,
       subject,
       cycleInfo,
+      true,
     );
 
     if (!validationResponse.isValid) return null;
@@ -660,6 +664,7 @@ export const imageGen = router({
             input.keyStage,
             input.subject,
             cycleInfo,
+            true,
           );
           results.push({
             id: uuidv4(),
@@ -712,6 +717,7 @@ export const imageGen = router({
               input.keyStage,
               input.subject,
               cycleInfo,
+              true,
             );
             results.push({
               id: uuidv4(),
@@ -936,49 +942,49 @@ export const imageGen = router({
       }
     }),
 
-  validateImage: protectedProcedure
-    .input(
-      z.object({
-        imageUrl: z.string(),
-        prompt: z.string(),
-        lessonPlan: LessonPlanSchemaWhilstStreaming,
-        lessonTitle: z.string(),
-        keyStage: z.string(),
-        subject: z.string(),
-        imageWasGenerated: z.boolean().optional(),
-        originalPrompt: z.string(),
-      }),
-    )
-    .mutation(async ({ input }) => {
-      try {
-        const cycleInfo = findTheRelevantCycle({
-          lessonPlan: input.lessonPlan,
-          searchExpression: input.originalPrompt,
-        });
+  // validateImage: protectedProcedure
+  //   .input(
+  //     z.object({
+  //       imageUrl: z.string(),
+  //       prompt: z.string(),
+  //       lessonPlan: LessonPlanSchemaWhilstStreaming,
+  //       lessonTitle: z.string(),
+  //       keyStage: z.string(),
+  //       subject: z.string(),
+  //       imageWasGenerated: z.boolean().optional(),
+  //       originalPrompt: z.string(),
+  //     }),
+  //   )
+  //   .mutation(async ({ input }) => {
+  //     try {
+  //       const cycleInfo = findTheRelevantCycle({
+  //         lessonPlan: input.lessonPlan,
+  //         searchExpression: input.originalPrompt,
+  //       });
 
-        const prompt = input.imageWasGenerated
-          ? promptConstructor(
-              input.prompt,
-              input.lessonTitle,
-              input.subject,
-              input.keyStage,
-              cycleInfo,
-            )
-          : input.prompt;
-
-        return await validateImageWithOpenAI(
-          input.imageUrl,
-          prompt,
-          input.lessonTitle,
-          input.keyStage,
-          input.subject,
-          cycleInfo,
-        );
-      } catch (error) {
-        console.error("[ValidateImage] Error:", error);
-        throw error;
-      }
-    }),
+  //       const prompt = input.imageWasGenerated
+  //         ? promptConstructor(
+  //             input.prompt,
+  //             input.lessonTitle,
+  //             input.subject,
+  //             input.keyStage,
+  //             cycleInfo,
+  //           )
+  //         : input.prompt;
+  //       const isGeneratedImage
+  //       return await validateImageWithOpenAI(
+  //         input.imageUrl,
+  //         prompt,
+  //         input.lessonTitle,
+  //         input.keyStage,
+  //         input.subject,
+  //         cycleInfo,
+  //       );
+  //     } catch (error) {
+  //       console.error("[ValidateImage] Error:", error);
+  //       throw error;
+  //     }
+  //   }),
 
   validateImagesInParallel: protectedProcedure
     .input(
@@ -1072,6 +1078,7 @@ export const imageGen = router({
 
           // Unsplash search
           unsplashImages({ searchExpression: input.searchExpression }),
+          wikiMapImages({ searchExpression: input.searchExpression }),
         ];
 
         // Only add AI generation promises if imageCategory is PHOTO_REALISTIC
@@ -1174,6 +1181,7 @@ export const imageGen = router({
         const [
           cloudinaryResponse,
           unsplashResponse,
+          wikiResponse,
           dallEResponse = [],
           stabilityCoreResponse = [],
           stabilityUltraResponse = [],
@@ -1198,6 +1206,24 @@ export const imageGen = router({
             cycleInfo,
           ),
         ];
+
+        if (
+          input.imageCategory === "MAP" ||
+          input.imageCategory === "TIMELINE" ||
+          input.imageCategory === "HISTORICAL_PAINTING"
+        ) {
+          validationPromises.push(
+            validateImagesInParallel(
+              wikiResponse,
+              input.searchExpression,
+              input.lessonTitle,
+              input.subject,
+              input.keyStage,
+              cycleInfo,
+              input.agentImagePrompt,
+            ),
+          );
+        }
 
         if (input.imageCategory === "PHOTO_REALISTIC") {
           validationPromises.push(
@@ -1234,6 +1260,7 @@ export const imageGen = router({
         const [
           validatedCloudinary,
           validatedUnsplash,
+          validatedWiki,
           validatedDallE = [],
           validatedCoreStability = [],
           validatedCoreStabilityUltra = [],
@@ -1241,6 +1268,14 @@ export const imageGen = router({
 
         // Transform validation results into final format
         return {
+          wiki: validatedWiki?.map((result) => ({
+            ...result.imageData,
+            appropriatenessScore:
+              result.validationResult.metadata.appropriatenessScore,
+            appropriatenessReasoning:
+              result.validationResult.metadata.validationReasoning,
+            imagePrompt: result.imagePrompt,
+          })),
           cloudinary: validatedCloudinary?.map((result) => ({
             ...result.imageData,
             appropriatenessScore:
