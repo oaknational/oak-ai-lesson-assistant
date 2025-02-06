@@ -7,7 +7,7 @@ import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { useSidebar } from "@/lib/hooks/use-sidebar";
-import { useChatStore } from "@/stores/chatStore";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 import { canAppendSelector } from "@/stores/chatStore/selectors";
 
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";

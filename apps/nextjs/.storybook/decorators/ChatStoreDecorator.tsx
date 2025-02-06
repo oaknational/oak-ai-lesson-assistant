@@ -1,32 +1,32 @@
-import React, { useEffect } from "react";
+import React, { useMemo } from "react";
 
 import type { Decorator } from "@storybook/react";
 
+import { AilaStoresContext } from "@/stores/AilaStoresProvider";
+import { createChatStore, type ChatStore } from "@/stores/chatStore";
 import {
-  useChatStore,
-  type AilaStreamingStatus,
-} from "../../src/stores/chatStore";
+  createLessonPlanStore,
+  type LessonPlanStore,
+} from "@/stores/lessonPlanStore";
 
 declare module "@storybook/csf" {
   interface Parameters {
-    chatStoreState?: {
-      ailaStreamingStatus: AilaStreamingStatus;
-      queuedUserAction?: string | null;
-    };
+    chatStoreState?: Partial<ChatStore>;
+    lessonPlanStoreState?: Partial<LessonPlanStore>;
   }
 }
 
 export const ChatStoreDecorator: Decorator = (Story, { parameters }) => {
-  const reset = useChatStore((state) => state.reset);
+  const value = useMemo(() => {
+    return {
+      chat: createChatStore(parameters.chatStoreState),
+      lessonPlan: createLessonPlanStore(parameters.lessonPlanStoreState),
+    };
+  }, [parameters.chatStoreState]);
 
-  useEffect(() => {
-    if (!parameters.chatStoreState) {
-      return;
-    }
-    reset({
-      ...parameters.chatStoreState,
-    });
-  }, [reset]);
-
-  return <Story />;
+  return (
+    <AilaStoresContext.Provider value={value}>
+      <Story />
+    </AilaStoresContext.Provider>
+  );
 };

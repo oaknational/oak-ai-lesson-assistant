@@ -1,6 +1,7 @@
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { aiLogger } from "@oakai/logger";
 
+import type { FullQuizService } from "../../core/quiz/interfaces";
 import type {
   ExperimentalPatchDocument,
   PatchDocument,
@@ -29,11 +30,13 @@ export async function fetchExperimentalPatches({
   lessonPlan,
   llmPatches,
   handlePatch,
+  fullQuizService,
   userId,
 }: {
   lessonPlan: LooseLessonPlan;
   llmPatches: PatchDocument[];
   handlePatch: (patch: ExperimentalPatchDocument) => Promise<void>;
+  fullQuizService: FullQuizService;
   userId?: string;
 }) {
   if (lessonPlan.subject !== "maths") {
@@ -74,7 +77,25 @@ export async function fetchExperimentalPatches({
         }),
       );
     } else {
-      const mathsStarterQuiz: Quiz | null = mathsQuizFixture;
+      let mathsStarterQuiz: Quiz = await fullQuizService.createBestQuiz(
+        "/starterQuiz",
+        lessonPlan,
+      );
+      if (mathsStarterQuiz.length === 0) {
+        log.info("No starter quiz found. Creating placeholder starter quiz.");
+        mathsStarterQuiz = [
+          {
+            question: "No questions found",
+            answers: [
+              "No questions found: The recommendation system you are trialling does not have suitable questions with the basedOn recommendation path. You are seeing this in place of an LLM generated quiz to make it clear that the recommendation system does not have suitable questions",
+            ],
+            distractors: [
+              "Why am i seeing this? If you do not believe you should be trialling this system please provide feedback using the flag button and selecting other. Please use this for any other feedback on the recommended quiz with the title **Experimental Quiz**",
+            ],
+          },
+        ];
+      }
+
       if (mathsStarterQuiz) {
         await handlePatch(
           preparePatch({
@@ -99,7 +120,26 @@ export async function fetchExperimentalPatches({
         }),
       );
     } else {
-      const mathsExitQuiz: Quiz | null = mathsQuizFixture;
+      // TODO: GCLOMAX - Once this is deprecated we will need logic to not overwrite the origonal.
+      let mathsExitQuiz: Quiz = await fullQuizService.createBestQuiz(
+        "/exitQuiz",
+        lessonPlan,
+      );
+      if (mathsExitQuiz.length === 0) {
+        log.info("No exit quiz found. Creating placeholder exit quiz.");
+        mathsExitQuiz = [
+          {
+            question: "No questions found",
+            answers: [
+              "No questions found: The recommendation system you are trialling does not have suitable questions with the basedOn recommendation path. You are seeing this in place of an LLM generated quiz to make it clear that the recommendation system does not have suitable questions",
+            ],
+            distractors: [
+              "Why am i seeing this? If you do not believe you should be trialling this system please provide feedback using the flag button and selecting other. Please use this for any other feedback on the recommended quiz with the title **Experimental Quiz**",
+            ],
+          },
+        ];
+      }
+
       if (mathsExitQuiz) {
         await handlePatch(
           preparePatch({

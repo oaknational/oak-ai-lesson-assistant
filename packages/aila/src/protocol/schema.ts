@@ -1,4 +1,5 @@
-import dedent from "dedent";
+// import dedent from "dedent";
+import dedent from "ts-dedent";
 import z from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
@@ -71,6 +72,8 @@ export type MisconceptionsOptional = z.infer<
 
 // ********** QUIZ **********
 
+// Needs to be changed - to adapt for LLM handling.
+
 export const QUIZ_DESCRIPTIONS = {
   question: "The question to be asked in the quiz.",
   answers: "The correct answer. This should be an array of only one item.",
@@ -87,10 +90,11 @@ export const QuizQuestionSchemaWithoutLength = z.object({
   distractors: z.array(z.string()).describe(QUIZ_DESCRIPTIONS.distractors),
 });
 
-export const QuizQuestionSchema = QuizQuestionSchemaWithoutLength.extend({
-  answers: QuizQuestionSchemaWithoutLength.shape.answers.length(1),
-  distractors: QuizQuestionSchemaWithoutLength.shape.distractors.length(2),
-});
+// TODO: MG - Double check this is allowable.
+export const QuizQuestionSchema = QuizQuestionSchemaWithoutLength; //.extend({
+//   answers: QuizQuestionSchemaWithoutLength.shape.answers.length(1),
+//   distractors: QuizQuestionSchemaWithoutLength.shape.distractors.length(2),
+// });
 
 export const QuizQuestionOptionalSchema = QuizQuestionSchema.partial();
 
@@ -403,6 +407,29 @@ export type LooseLessonPlan = z.infer<typeof LessonPlanSchemaWhilstStreaming>;
 
 export type LessonPlanKey = keyof typeof CompletedLessonPlanSchema.shape;
 
+export const allSectionsInOrder = [
+  "learningOutcome",
+  "learningCycles",
+  "priorKnowledge",
+  "keyLearningPoints",
+  "misconceptions",
+  "keywords",
+  "starterQuiz",
+  "cycle1",
+  "cycle2",
+  "cycle3",
+  "exitQuiz",
+  "additionalMaterials",
+] as const;
+
+export const LessonPlanKeySchema = z.enum([
+  "title",
+  "keyStage",
+  "subject",
+  "topic",
+  ...allSectionsInOrder,
+]);
+
 export const LessonPlanJsonSchema = zodToJsonSchema(
   CompletedLessonPlanSchema,
   "lessonPlanSchema",
@@ -494,6 +521,21 @@ export type LessonPlanSectionWhileStreaming =
   | string
   | string[]
   | number;
+
+// These are here due to zod refusing to infer the type of "add"
+export const quizPathSchema = z.union([
+  z.literal("/starterQuiz"),
+  z.literal("/exitQuiz"),
+]);
+
+export type QuizPath = z.infer<typeof quizPathSchema>;
+
+export const quizOperationTypeSchema = z.union([
+  z.literal("add"),
+  z.literal("replace"),
+]);
+
+export type QuizOperationType = z.infer<typeof quizOperationTypeSchema>;
 
 export const CompletedLessonPlanSchemaWithoutLength = z.object({
   title: LessonTitleSchema,

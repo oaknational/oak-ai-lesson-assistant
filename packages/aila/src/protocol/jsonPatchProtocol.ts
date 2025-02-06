@@ -3,6 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import type { Operation } from "fast-json-patch";
 import { applyPatch, deepClone, JsonPatchError } from "fast-json-patch";
+import * as immer from "immer";
 import untruncateJson from "untruncate-json";
 import { z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
@@ -756,34 +757,44 @@ export function parseMessageParts(content: string): MessagePart[] {
   return messageParts;
 }
 
+const timeOperation = <T>(fn: () => T): T => {
+  const startTime = performance.now();
+  const result = fn();
+  const endTime = performance.now();
+  log.info(`extractPatches took ${endTime - startTime} milliseconds`);
+  return result;
+};
+
 export function extractPatches(edit: string): {
   validPatches: PatchDocument[];
   partialPatches: PatchDocument[];
 } {
-  const parts: MessagePart[] | undefined = parseMessageParts(edit);
+  return timeOperation(() => {
+    const parts: MessagePart[] | undefined = parseMessageParts(edit);
 
-  if (!parts) {
-    // Handle parsing failure
-    throw new Error("Failed to parse the edit content");
-  }
+    if (!parts) {
+      // Handle parsing failure
+      throw new Error("Failed to parse the edit content");
+    }
 
-  const patchMessageParts: MessagePart[] = parts.filter(
-    (p) =>
-      p.document.type === "patch" || p.document.type === "experimentalPatch",
-  );
-  const validPatches: PatchDocument[] = patchMessageParts
-    .filter((p) => !p.isPartial)
-    .map((p) => p.document as PatchDocument);
-  const partialPatches: PatchDocument[] = patchMessageParts
-    .filter((p) => p.isPartial)
-    .map((p) => p.document as PatchDocument);
+    const patchMessageParts: MessagePart[] = parts.filter(
+      (p) =>
+        p.document.type === "patch" || p.document.type === "experimentalPatch",
+    );
+    const validPatches: PatchDocument[] = patchMessageParts
+      .filter((p) => !p.isPartial)
+      .map((p) => p.document as PatchDocument);
+    const partialPatches: PatchDocument[] = patchMessageParts
+      .filter((p) => p.isPartial)
+      .map((p) => p.document as PatchDocument);
 
-  log.info(
-    "Extracted patches",
-    validPatches.map((i) => i.value.path),
-    partialPatches.map((i) => i.value.path),
-  );
-  return { validPatches, partialPatches };
+    // log.info(
+    //   "Extracted patches",
+    //   validPatches.map((i) => i.value.path),
+    //   partialPatches.map((i) => i.value.path),
+    // );
+    return { validPatches, partialPatches };
+  });
 }
 
 // This isValidatePatch function only tells us if it contains an add / replace and a value
@@ -803,7 +814,7 @@ export function applyLessonPlanPatch(
   lessonPlan: LooseLessonPlan,
   command: JsonPatchDocument | ExperimentalPatchDocument,
 ) {
-  log.info("Apply patch", JSON.stringify(command));
+  log.info("Apply patch (old)", JSON.stringify(command));
   let updatedLessonPlan = { ...lessonPlan };
   if (command.type !== "patch" && command.type !== "experimentalPatch") {
     log.error("Invalid patch document type", command.type);
@@ -846,4 +857,52 @@ export function applyLessonPlanPatch(
   }
 
   return updatedLessonPlan;
+}
+
+/**
+ * Applies a patch to a lesson plan, keeping stable object references for keys
+ * that haven't changed
+ */
+export function applyLessonPlanPatchImmutable(
+  lessonPlan: LooseLessonPlan,
+  command: JsonPatchDocument | ExperimentalPatchDocument,
+) {
+  log.info("Apply patch (immutable)", JSON.stringify(command));
+  if (command.type !== "patch" && command.type !== "experimentalPatch") {
+    log.error("Invalid patch document type", command.type);
+    return;
+  }
+  const patchValue = command.value;
+  if (!isValidPatch(patchValue)) {
+    log.error("Invalid patch");
+    return;
+  }
+
+  try {
+    // applyPatch mutates the document being passed in.
+    // Immer applies the mutations to a draft copy of the document and returns
+    // an altered copy of the original with stable references for unchanged values
+    const newLessonPlan = immer.produce(lessonPlan, (draftLessonPlan) => {
+      applyPatch(draftLessonPlan, [patchValue]);
+    });
+
+    // Zod returns a deep-cloned result which we can't use.
+    // We can just rely on the fact that it didn't throw
+    LessonPlanSchemaWhilstStreaming.parse(newLessonPlan);
+
+    return newLessonPlan;
+  } catch (e) {
+    if (e instanceof z.ZodError) {
+      log.error(
+        "Zod Error:",
+        e.errors
+          .map((err) => `${err.path.join(".")}: ${err.message}`)
+          .join(", "),
+      );
+    } else {
+      log.error("Failed to apply patch", patchValue, e);
+    }
+    Sentry.captureException(e, { level: "info" });
+    return;
+  }
 }
