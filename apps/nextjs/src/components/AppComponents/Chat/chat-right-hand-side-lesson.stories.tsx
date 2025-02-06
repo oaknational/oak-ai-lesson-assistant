@@ -67,6 +67,13 @@ const meta = {
         title: "About Frogs",
       },
     },
+    lessonPlanStoreState: {
+      lessonPlan: {
+        subject: "biology",
+        keyStage: "key-stage-3",
+        title: "About Frogs",
+      },
+    },
     ...demoParams({ isDemoUser: false }),
   },
 } satisfies Meta<typeof ChatRightHandSideLesson>;
