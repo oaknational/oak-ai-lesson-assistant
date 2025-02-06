@@ -89,7 +89,6 @@ const LessonPlanMapToMarkDown = ({
             sectionRefs={sectionRefs}
             objectKey={key}
             value={value}
-            subject={lessonPlan.subject}
           />
         );
       })
