@@ -13,7 +13,7 @@ import { handleUpdateModerationState } from "./actionFunctions/handleUpdateModer
 export type ModerationStore = {
   chatActions?: Pick<ChatStore, "setMessages">;
 
-  id: string | null;
+  id: string;
   moderations: Moderation[] | [];
   isModerationsLoading: boolean | null;
   toxicInitialModeration: PersistedModerationBase | null;
@@ -25,16 +25,16 @@ export type ModerationStore = {
   setIsModerationsLoading: (isModerationsLoading: boolean) => void;
   updateModerationState: (mods?: Moderation[]) => void;
   fetchModerations: () => Promise<void>;
-  reset: (params: Partial<ModerationStore>) => void;
+
   clearModerations: () => void;
 };
 
 export const createModerationStore = ({
-  id = null,
+  id,
   initialValues = {},
   trpcUtils,
 }: {
-  id?: string | null;
+  id: string;
   initialValues?: Partial<ModerationStore>;
   trpcUtils: TrpcUtils;
 }) => {
@@ -56,16 +56,6 @@ export const createModerationStore = ({
     },
     updateModerationState: (mod) => {
       handleUpdateModerationState(mod, set, get);
-    },
-
-    // reset
-    reset: (mod) => {
-      set({
-        moderations: mod.moderations ?? [],
-        toxicInitialModeration: mod.toxicModeration ?? null,
-        toxicModeration: mod.toxicModeration ?? null,
-        lastModeration: mod.lastModeration ?? null,
-      });
     },
 
     fetchModerations: async () => {
