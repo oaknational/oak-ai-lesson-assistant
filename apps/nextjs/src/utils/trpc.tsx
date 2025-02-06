@@ -22,7 +22,7 @@ type CombinedRouter = AppRouter & ChatAppRouter;
 
 const trpc = createTRPCReact<CombinedRouter>();
 
-export const discriminatingRouterLink: TRPCLink<CombinedRouter> = (runtime) => {
+const discriminatingRouterLink: TRPCLink<CombinedRouter> = (runtime) => {
   const headers = () => ({
     "x-trpc-source": "react",
   });
