@@ -75,7 +75,13 @@ const getConfig = async (phase) => {
     reactStrictMode: true,
     swcMinify: true,
     images: {
-      domains: ["oaknationalacademy-res.cloudinary.com"],
+      domains: [
+        "oaknationalacademy-res.cloudinary.com",
+        "live.staticflickr.com",
+        "images.unsplash.com",
+        "oaidalleapiprodscus.blob.core.windows.net",
+        "upload.wikimedia.org",
+      ],
     },
     transpilePackages: ["@oakai/api", "@oakai/db", "@oakai/exports"],
     compiler: {
