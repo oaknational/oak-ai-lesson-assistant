@@ -37,7 +37,7 @@ const ChatSection = ({ section, value }: ChatSectionProps) => {
 
   return (
     <OakFlex $flexDirection="column">
-      {subject === "history" &&
+      {subject !== "-" &&
       (section === "cycle1" || section === "cycle2" || section === "cycle3") ? (
         <div className="grid grid-cols-3">
           <div className="col-span-2">
