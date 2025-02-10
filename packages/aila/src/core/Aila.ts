@@ -107,6 +107,7 @@ export class Aila implements AilaServices {
     this._threatDetection = AilaFeatureFactory.createThreatDetection(
       this,
       this._options,
+      options.services?.threatDetectors?.(this),
     );
     this._errorReporter = AilaFeatureFactory.createErrorReporter(
       this,
