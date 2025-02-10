@@ -211,8 +211,9 @@ export async function handleChatPostRequest(
                 new PosthogAnalyticsAdapter(aila),
                 new DatadogAnalyticsAdapter(aila),
               ],
+              threatDetectors: () => threatDetectors,
             },
-            threatDetectors,
+
             lessonPlan: lessonPlan ?? {},
           };
           const result = await config.createAila(ailaOptions);

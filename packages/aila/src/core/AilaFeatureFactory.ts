@@ -67,10 +67,10 @@ export class AilaFeatureFactory {
   static createThreatDetection(
     _aila: AilaServices,
     options: AilaOptions,
-    detectors: AilaThreatDetector[] = [],
+    detectors: (aila: AilaServices) => AilaThreatDetector[],
   ): AilaThreatDetectionFeature | undefined {
     if (options.useThreatDetection) {
-      return new AilaThreatDetection(detectors);
+      return new AilaThreatDetection(detectors(_aila));
     }
     return undefined;
   }
