@@ -152,17 +152,19 @@ export class AilaStreamHandler {
         throw error;
       }
 
-      if (this._chat.aila.threatDetection?.detector.isThreatError(error)) {
-        invariant(this._chat.userId, "User ID is required");
-        throw new AilaThreatDetectionError(
-          this._chat.userId,
-          "Threat detected",
-          { cause: error },
-        );
-      } else {
-        this._chat.aila.errorReporter?.reportError(error);
-        throw new AilaChatError(error.message, { cause: error });
+      const detectors = this._chat.aila.threatDetection?.detectors ?? [];
+      for (const detector of detectors) {
+        if (await detector.isThreatError(error)) {
+          invariant(this._chat.userId, "User ID is required");
+          throw new AilaThreatDetectionError(
+            this._chat.userId,
+            "Threat detected",
+            { cause: error },
+          );
+        }
       }
+      this._chat.aila.errorReporter?.reportError(error);
+      throw new AilaChatError(error.message, { cause: error });
     } else {
       throw new AilaChatError("Unknown error", { cause: error });
     }
