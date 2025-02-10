@@ -48,6 +48,7 @@ export class BasicThreatDetector extends AilaThreatDetector {
       message: "Potential SQL injection attempt detected",
     },
     {
+      // eslint-disable-next-line no-control-regex
       pattern: /\x1B|\x7F|\x1F/,
       category: "ascii_smuggling",
       severity: "medium",

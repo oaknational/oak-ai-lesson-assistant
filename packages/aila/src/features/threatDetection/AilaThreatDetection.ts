@@ -38,12 +38,12 @@ export class AilaThreatDetection implements AilaThreatDetectionFeature {
       "critical",
     ];
     return threatResults.reduce((highest, current) => {
-      if (!highest.severity || !current.severity) return current;
+      if (!highest?.severity || !current.severity) return current;
       return severityOrder.indexOf(current.severity) >
         severityOrder.indexOf(highest.severity)
         ? current
         : highest;
-    });
+    }, threatResults[0]!);
   }
 
   async isThreatError(error: unknown): Promise<boolean> {
