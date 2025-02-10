@@ -34,6 +34,24 @@ export class AilaStreamHandler {
     log.info(`Streaming step: ${step}`);
   }
 
+  private async checkForThreats() {
+    if (!this._chat.aila.threatDetection?.detector) return;
+
+    const lastMessage = this._chat.messages[this._chat.messages.length - 1];
+    if (!lastMessage) return;
+
+    const result = await this._chat.aila.threatDetection.detector.detectThreat(
+      this._chat.messages,
+    );
+
+    if (result.isThreat) {
+      throw new AilaThreatDetectionError(
+        this._chat.userId ?? "unknown",
+        result.message,
+      );
+    }
+  }
+
   private async stream(
     controller: ReadableStreamDefaultController,
     abortController?: AbortController,
@@ -48,6 +66,9 @@ export class AilaStreamHandler {
 
       await this._chat.handleSubjectWarning();
       this.logStreamingStep("Handle subject warning complete");
+
+      await this.checkForThreats();
+      this.logStreamingStep("Check for threats complete");
 
       await this.startLLMStream();
       this.logStreamingStep("Start LLM stream complete");
@@ -127,7 +148,11 @@ export class AilaStreamHandler {
     }
 
     if (error instanceof Error) {
-      if (this._chat.aila.threatDetection?.detector.isThreat(error)) {
+      if (error instanceof AilaThreatDetectionError) {
+        throw error;
+      }
+
+      if (this._chat.aila.threatDetection?.detector.isThreatError(error)) {
         invariant(this._chat.userId, "User ID is required");
         throw new AilaThreatDetectionError(
           this._chat.userId,
