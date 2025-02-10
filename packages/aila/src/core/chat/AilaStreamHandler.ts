@@ -35,20 +35,20 @@ export class AilaStreamHandler {
   }
 
   private async checkForThreats() {
-    if (!this._chat.aila.threatDetection?.detector) return;
+    if (!this._chat.aila.threatDetection?.detectors) return;
 
     const lastMessage = this._chat.messages[this._chat.messages.length - 1];
     if (!lastMessage) return;
 
-    const result = await this._chat.aila.threatDetection.detector.detectThreat(
-      this._chat.messages,
-    );
-
-    if (result.isThreat) {
-      throw new AilaThreatDetectionError(
-        this._chat.userId ?? "unknown",
-        result.message,
-      );
+    const detectors = this._chat.aila.threatDetection?.detectors ?? [];
+    for (const detector of detectors) {
+      const result = await detector.detectThreat(this._chat.messages);
+      if (result.isThreat) {
+        throw new AilaThreatDetectionError(
+          this._chat.userId ?? "unknown",
+          result.message,
+        );
+      }
     }
   }
 

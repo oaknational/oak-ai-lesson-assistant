@@ -46,6 +46,5 @@ export abstract class AilaThreatDetector {
 
   abstract detectThreat(content: unknown): Promise<ThreatDetectionResult>;
 
-  // Keep existing method for backward compatibility
   abstract isThreatError(error: unknown): Promise<boolean>;
 }
