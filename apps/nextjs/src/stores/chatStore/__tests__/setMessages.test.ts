@@ -199,7 +199,7 @@ describe("Chat Store setMessage state", () => {
       expect(newState.stableMessages).toBe(initialState.stableMessages); // Same reference
       expect(newState.ailaStreamingStatus).toBe("Moderating");
     });
-    test.only("No unnecessary re-renders when stableMessages stay the same", () => {
+    test("No unnecessary re-renders when stableMessages stay the same", () => {
       const renderSpy = jest.fn();
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       store.subscribe((state) => renderSpy(state.stableMessages));

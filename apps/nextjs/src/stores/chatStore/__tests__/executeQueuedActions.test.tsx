@@ -1,6 +1,6 @@
 import type { StoreApi } from "zustand";
 
-import { createChatStore, type AiSdkActions, type ChatStore } from ".";
+import { createChatStore, type AiSdkActions, type ChatStore } from "..";
 
 describe("Chat Store executeQueuedAction", () => {
   let store: StoreApi<ChatStore>;
@@ -29,7 +29,7 @@ describe("Chat Store executeQueuedAction", () => {
 
   test("should do nothing if there is no queued action", () => {
     const initialState = store.getState();
-    // Initial state has no queued action
+
     store.getState().executeQueuedAction();
 
     const newState = store.getState();
@@ -41,7 +41,6 @@ describe("Chat Store executeQueuedAction", () => {
   });
 
   test('should handle "continue" action correctly', () => {
-    // Set up the queued action
     const initialState = store.getState();
     store.setState({ queuedUserAction: "continue" });
 
@@ -57,7 +56,6 @@ describe("Chat Store executeQueuedAction", () => {
   });
 
   test('should handle "regenerate" action correctly', () => {
-    // Set up the queued action
     const initialState = store.getState();
     store.setState({ queuedUserAction: "regenerate" });
 
