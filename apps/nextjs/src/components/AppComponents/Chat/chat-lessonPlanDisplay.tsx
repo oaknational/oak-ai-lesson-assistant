@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
 import { Flex, Text } from "@radix-ui/themes";
@@ -6,7 +6,7 @@ import { cva } from "class-variance-authority";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { organiseSections } from "@/lib/lessonPlan/organiseSections";
-import { useChatStore } from "@/stores/AilaStoresProvider";
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
@@ -35,26 +35,13 @@ export type LessonPlanDisplayProps = Readonly<{
   showLessonMobile: boolean;
 }>;
 
-export const LessonPlanDisplay = ({
-  chatEndRef,
-  sectionRefs,
-  documentContainerRef,
-  showLessonMobile,
-}: LessonPlanDisplayProps) => {
-  const chat = useLessonChat();
-  const { lastModeration } = chat;
+// TODO: replace with central scroll management
+const useDetectScrollOverride = (
+  documentContainerRef: React.RefObject<HTMLDivElement>,
+) => {
   const ailaStreamingStatus = useChatStore(
     (state) => state.ailaStreamingStatus,
   );
-  const lessonPlan = {
-    ...chat.lessonPlan,
-    starterQuiz:
-      chat.lessonPlan._experimental_starterQuizMathsV0 ??
-      chat.lessonPlan.starterQuiz,
-    exitQuiz:
-      chat.lessonPlan._experimental_exitQuizMathsV0 ?? chat.lessonPlan.exitQuiz,
-  };
-
   const [userHasCancelledAutoScroll, setUserHasCancelledAutoScroll] =
     useState(false);
 
@@ -87,6 +74,35 @@ export const LessonPlanDisplay = ({
     setUserHasCancelledAutoScroll,
     documentContainerRef,
   ]);
+
+  return { userHasCancelledAutoScroll };
+};
+
+export const LessonPlanDisplay = ({
+  chatEndRef,
+  sectionRefs,
+  documentContainerRef,
+  showLessonMobile,
+}: LessonPlanDisplayProps) => {
+  const chat = useLessonChat();
+  const lessonPlanFromStore = useLessonPlanStore((state) => state.lessonPlan);
+  const { lastModeration } = chat;
+
+  const lessonPlan = useMemo(
+    () => ({
+      ...lessonPlanFromStore,
+      starterQuiz:
+        lessonPlanFromStore._experimental_starterQuizMathsV0 ??
+        lessonPlanFromStore.starterQuiz,
+      exitQuiz:
+        lessonPlanFromStore._experimental_exitQuizMathsV0 ??
+        lessonPlanFromStore.exitQuiz,
+    }),
+    [lessonPlanFromStore],
+  );
+
+  const { userHasCancelledAutoScroll } =
+    useDetectScrollOverride(documentContainerRef);
 
   if (Object.keys(lessonPlan).length === 0) {
     return (
