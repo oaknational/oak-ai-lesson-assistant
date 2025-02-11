@@ -50,22 +50,8 @@ const meta = {
       defaultViewport: "mobile",
     },
     ...chromaticParams(["mobile"]),
-    chatContext: {
-      lessonPlan: {
-        subject: "biology",
-        keyStage: "key-stage-3",
-        title: "About Frogs",
-      },
-    },
     chatStoreState: {
       stableMessages: DummyParsedMessages,
-    },
-    lessonPlanStoreState: {
-      lessonPlan: {
-        subject: "biology",
-        keyStage: "key-stage-3",
-        title: "About Frogs",
-      },
     },
     lessonPlanStoreState: {
       lessonPlan: {
