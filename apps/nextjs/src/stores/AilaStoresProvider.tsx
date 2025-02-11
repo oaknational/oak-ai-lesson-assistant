@@ -1,8 +1,9 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useEffect } from "react";
 
 import { useStore, type StoreApi } from "zustand";
 
 import { type ChatStore, createChatStore } from "@/stores/chatStore";
+import { trpc } from "@/utils/trpc";
 
 import { type LessonPlanStore, createLessonPlanStore } from "./lessonPlanStore";
 
@@ -15,14 +16,29 @@ export const AilaStoresContext = createContext<
   AilaStoresContextProps | undefined
 >(undefined);
 
-export const AilaStoresProvider = ({ children }) => {
-  const [store] = useState(() => ({
+type AilaStoresProviderProps = {
+  id: string;
+  children: React.ReactNode;
+};
+
+export const AilaStoresProvider = ({
+  id,
+  children,
+}: AilaStoresProviderProps) => {
+  const trpcUtils = trpc.useUtils();
+
+  const [stores] = useState(() => ({
     chat: createChatStore(),
-    lessonPlan: createLessonPlanStore(),
+    lessonPlan: createLessonPlanStore(id, trpcUtils),
   }));
 
+  // Store initialisation
+  useEffect(() => {
+    void stores.lessonPlan.getState().refetch();
+  }, [stores.lessonPlan, id]);
+
   return (
-    <AilaStoresContext.Provider value={store}>
+    <AilaStoresContext.Provider value={stores}>
       {children}
     </AilaStoresContext.Provider>
   );
