@@ -1,8 +1,7 @@
-import type { Message } from "@oakai/aila/src/core/chat";
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 
-import { ParsedMessage } from "@/stores/chatStore/types";
+import type { ParsedMessage } from "@/stores/chatStore/types";
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
@@ -51,15 +50,15 @@ const meta = {
       defaultViewport: "mobile",
     },
     ...chromaticParams(["mobile"]),
-    chatStoreState: {
-      stableMessages: DummyParsedMessages,
-    },
-    lessonPlanStoreState: {
+    chatContext: {
       lessonPlan: {
         subject: "biology",
         keyStage: "key-stage-3",
         title: "About Frogs",
       },
+    },
+    chatStoreState: {
+      stableMessages: DummyParsedMessages,
     },
     ...demoParams({ isDemoUser: false }),
   },

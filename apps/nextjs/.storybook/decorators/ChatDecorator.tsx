@@ -1,6 +1,7 @@
 import React from "react";
 
 import type { Decorator } from "@storybook/react";
+import invariant from "tiny-invariant";
 
 import {
   ChatContext,
@@ -13,8 +14,14 @@ declare module "@storybook/csf" {
   }
 }
 
-export const ChatDecorator: Decorator = (Story, { parameters }) => (
-  <ChatContext.Provider value={parameters.chatContext as ChatContextProps}>
-    <Story />
-  </ChatContext.Provider>
-);
+export const ChatDecorator: Decorator = (Story, { parameters }) => {
+  invariant(
+    parameters.chatContext,
+    "chatContext is required in Storybook parameters",
+  );
+  return (
+    <ChatContext.Provider value={parameters.chatContext as ChatContextProps}>
+      <Story />
+    </ChatContext.Provider>
+  );
+};
