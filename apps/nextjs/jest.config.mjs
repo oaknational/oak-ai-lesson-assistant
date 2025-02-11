@@ -36,7 +36,6 @@ const config = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   rootDir: ".",
   resetMocks: true,
-  testEnvironment: "jsdom",
   setupFilesAfterEnv: ["<rootDir>/jest.setup.cjs"],
   collectCoverageFrom: ["src/**/*.{ts,tsx,js,jsx}"],
   collectCoverage:
