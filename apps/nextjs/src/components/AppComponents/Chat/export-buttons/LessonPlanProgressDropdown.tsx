@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 
+<<<<<<< HEAD
+=======
+import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
+>>>>>>> 9a2c8fa1 (feat: add section scrolling)
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Flex } from "@radix-ui/themes";
 
@@ -58,9 +62,13 @@ export const LessonPlanProgressDropdown: React.FC = () => {
                   disabled={!complete}
                   className="mb-7 flex gap-6"
                   onClick={() => {
+<<<<<<< HEAD
                     if (complete) {
                       setScrollToSection(key);
                     }
+=======
+                    setScrollToSection(key);
+>>>>>>> 9a2c8fa1 (feat: add section scrolling)
                   }}
                 >
                   <span className="flex w-14 items-center justify-center">
