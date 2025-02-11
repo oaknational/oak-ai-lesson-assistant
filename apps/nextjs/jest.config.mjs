@@ -27,6 +27,7 @@ const config = {
     "^(\\.{1,2}/.*)\\.js$": "$1",
     "^@/components/(.*)$": "<rootDir>/src/components/$1",
     "^@/assets/(.*)$": "<rootDir>/src/assets/$1",
+    "^@/stores/(.*)$": "<rootDir>/src/stores/$1",
     "^@/storybook/(.*)$": "<rootDir>/.storybook/$1",
   },
   extensionsToTreatAsEsm: [".ts", ".tsx"],

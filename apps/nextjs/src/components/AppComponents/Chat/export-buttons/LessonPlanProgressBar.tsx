@@ -1,9 +1,18 @@
 import React from "react";
 
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
+
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 
 export const LessonPlanProgressBar = () => {
-  const { totalSections, totalSectionsComplete } = useProgressForDownloads();
+  const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
+  const isStreaming = useChatStore(
+    (state) => state.ailaStreamingStatus !== "Idle",
+  );
+  const { totalSections, totalSectionsComplete } = useProgressForDownloads({
+    lessonPlan,
+    isStreaming,
+  });
 
   return (
     <div className="flex items-center justify-center gap-10">

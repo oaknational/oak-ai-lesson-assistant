@@ -1,10 +1,11 @@
 import { useMemo } from "react";
 
-import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
+import type {
+  LessonPlanKey,
+  LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 import { lessonPlanSectionsSchema } from "@oakai/exports/src/schema/input.schema";
 import type { ZodIssue } from "zod";
-
-import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 
 export type ProgressForDownloads = {
   sections: ProgressSection[];
@@ -33,12 +34,13 @@ function getCompleteness(errors: ZodIssue[], fields: string[]) {
   return !hasErrorInSomeField;
 }
 
-export function useProgressForDownloads(): ProgressForDownloads {
-  const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
-  const isStreaming = useChatStore(
-    (state) => state.ailaStreamingStatus !== "Idle",
-  );
-
+export function useProgressForDownloads({
+  lessonPlan,
+  isStreaming,
+}: {
+  lessonPlan: LooseLessonPlan;
+  isStreaming: boolean;
+}): ProgressForDownloads {
   return useMemo(() => {
     const parsedLessonPlan = lessonPlanSectionsSchema.safeParse(lessonPlan);
     const errors =
