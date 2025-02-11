@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
 
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import type { Message } from "ai";
 
-import type { AilaStreamingStatus } from "@/stores/chatStore";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 export const useMobileLessonPullOutControl = ({
-  ailaStreamingStatus,
-  messages,
   lessonPlan,
 }: {
-  ailaStreamingStatus: AilaStreamingStatus;
-  messages: Message[];
   lessonPlan: LooseLessonPlan;
 }) => {
+  const ailaStreamingStatus = useChatStore(
+    (state) => state.ailaStreamingStatus,
+  );
   const [showLessonMobile, setShowLessonMobile] = useState(false);
   const [userHasOverRiddenAutoPullOut, setUserHasOverRiddenAutoPullOut] =
     useState(false);
@@ -31,7 +29,6 @@ export const useMobileLessonPullOutControl = ({
     }
   }, [
     ailaStreamingStatus,
-    messages,
     userHasOverRiddenAutoPullOut,
     setUserHasOverRiddenAutoPullOut,
     setShowLessonMobile,
