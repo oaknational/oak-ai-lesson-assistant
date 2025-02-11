@@ -14,7 +14,7 @@ import type { AiMessage, ParsedMessage } from "./types";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const log = aiLogger("chat:store");
 
-type AiSdkActions = {
+export type AiSdkActions = {
   stop: () => void;
   reload: () => void;
   append: (
@@ -32,14 +32,16 @@ export type AilaStreamingStatus =
   | "Moderating"
   | "Idle";
 
-export type ChatStore = {
+type ChatStoreState = {
   ailaStreamingStatus: AilaStreamingStatus;
 
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
   queuedUserAction: string | null;
   lessonPlan: LooseLessonPlan | null;
+};
 
+type ChatStoreActions = {
   // From AI SDK
   aiSdkActions: AiSdkActions;
 
@@ -53,15 +55,22 @@ export type ChatStore = {
   append: (message: string) => void;
   stop: () => void;
   streamingFinished: () => void;
+  reset: () => void;
 };
+
+const initialState: ChatStoreState = {
+  ailaStreamingStatus: "Idle",
+  stableMessages: [],
+  streamingMessage: null,
+  queuedUserAction: null,
+  lessonPlan: null,
+};
+
+export type ChatStore = ChatStoreState & ChatStoreActions;
 
 export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
   const chatStore = createStore<ChatStore>((set, get) => ({
-    ailaStreamingStatus: "Idle",
-    stableMessages: [],
-    streamingMessage: null,
-    queuedUserAction: null,
-    lessonPlan: null,
+    ...initialState,
 
     // From AI SDK
     aiSdkActions: {
@@ -80,7 +89,9 @@ export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
     stop: handleStop(set, get),
     setMessages: handleSetMessages(set, get),
     streamingFinished: handleStreamingFinished(set, get),
-
+    reset: () => {
+      set(initialState);
+    },
     ...initialValues,
   }));
 

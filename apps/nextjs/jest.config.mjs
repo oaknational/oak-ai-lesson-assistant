@@ -28,6 +28,7 @@ const config = {
     "^@/components/(.*)$": "<rootDir>/src/components/$1",
     "^@/assets/(.*)$": "<rootDir>/src/assets/$1",
     "^@/storybook/(.*)$": "<rootDir>/.storybook/$1",
+    "^@/stores/(.*)$": "<rootDir>/src/stores/$1",
   },
   extensionsToTreatAsEsm: [".ts", ".tsx"],
   testMatch: ["**/*.test.ts", "**/*.test.tsx"],
@@ -35,6 +36,7 @@ const config = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   rootDir: ".",
   resetMocks: true,
+  testEnvironment: "jsdom",
   setupFilesAfterEnv: ["<rootDir>/jest.setup.cjs"],
   collectCoverageFrom: ["src/**/*.{ts,tsx,js,jsx}"],
   collectCoverage:
