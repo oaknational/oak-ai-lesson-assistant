@@ -5,6 +5,7 @@ import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
 import { organiseSections } from "@/lib/lessonPlan/organiseSections";
+import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
 import {
   useChatStore,
   useModerationStore,
@@ -19,6 +20,8 @@ import { GuidanceRequired } from "./guidance-required";
 export function notEmpty(value: unknown) {
   return value !== null && value !== undefined && value !== "";
 }
+
+const shouldUseLessonPlanStore = true;
 
 function basedOnTitle(basedOn: string | BasedOnOptional) {
   if (typeof basedOn === "object") {
@@ -155,28 +158,41 @@ export const LessonPlanDisplay = ({
       )}
 
       <div className="flex w-full flex-col justify-center">
-        {organiseSections.map((section) => {
-          const trigger = lessonPlan[section.trigger];
-          return (
-            !!trigger &&
-            section.dependants.map((dependant) => {
-              const value = lessonPlan[dependant];
-              if (value !== null && value !== undefined) {
-                return (
-                  <DropDownSection
-                    key={dependant}
-                    section={dependant}
-                    sectionRefs={sectionRefs}
-                    value={value}
-                    userHasCancelledAutoScroll={userHasCancelledAutoScroll}
-                    documentContainerRef={documentContainerRef}
-                    showLessonMobile={showLessonMobile}
-                  />
-                );
-              }
+        {shouldUseLessonPlanStore
+          ? allSectionsInOrder.map((section) => {
+              return (
+                <LessonPlanSection
+                  key={section}
+                  sectionKey={section}
+                  sectionRefs={sectionRefs}
+                  userHasCancelledAutoScroll={userHasCancelledAutoScroll}
+                  documentContainerRef={documentContainerRef}
+                  showLessonMobile={showLessonMobile}
+                />
+              );
             })
-          );
-        })}
+          : organiseSections.map((section) => {
+              const trigger = lessonPlan[section.trigger];
+              return (
+                !!trigger &&
+                section.dependants.map((dependant) => {
+                  const value = lessonPlan[dependant];
+                  if (value !== null && value !== undefined) {
+                    return (
+                      <DropDownSection
+                        key={dependant}
+                        section={dependant}
+                        sectionRefs={sectionRefs}
+                        value={value}
+                        userHasCancelledAutoScroll={userHasCancelledAutoScroll}
+                        documentContainerRef={documentContainerRef}
+                        showLessonMobile={showLessonMobile}
+                      />
+                    );
+                  }
+                })
+              );
+            })}
       </div>
       <div ref={chatEndRef} />
     </div>

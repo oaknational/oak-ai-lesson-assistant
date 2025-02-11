@@ -11,7 +11,7 @@ import LoadingWheel from "@/components/LoadingWheel";
 import { scrollToRef } from "@/utils/scrollToRef";
 
 import Skeleton from "../../common/Skeleton";
-import ChatSection from "./chat-section";
+import { LessonPlanSectionContent } from "./lesson-plan-section-content";
 
 const HALF_SECOND = 500;
 
@@ -27,6 +27,9 @@ export type DropDownSectionProps = Readonly<{
   streamingTimeout?: number;
 }>;
 
+/**
+ * @deprecated
+ */
 const DropDownSection = ({
   section,
   sectionRefs,
@@ -123,7 +126,7 @@ const DropDownSection = ({
       {isOpen && (
         <div className="mt-12 w-full">
           {status === "isLoaded" ? (
-            <ChatSection section={section} value={value} />
+            <LessonPlanSectionContent sectionKey={section} value={value} />
           ) : (
             <Skeleton loaded={false} numberOfRows={1}>
               <p>Loading</p>
