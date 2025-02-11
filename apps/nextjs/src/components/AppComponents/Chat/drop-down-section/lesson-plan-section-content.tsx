@@ -7,11 +7,11 @@ import { OakFlex } from "@oaknational/oak-components";
 
 import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
 
-import { sectionTitle } from ".";
 import { MemoizedReactMarkdownWithStyles } from "../markdown";
 import AddAdditionalMaterialsButton from "./add-additional-materials-button";
 import FlagButton from "./flag-button";
 import ModifyButton from "./modify-button";
+import { sectionTitle } from "./sectionTitle";
 
 export type LessonPlanSectionContentProps = Readonly<{
   sectionKey: LessonPlanKey;

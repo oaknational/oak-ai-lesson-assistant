@@ -4,7 +4,6 @@ import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
-import { organiseSections } from "@/lib/lessonPlan/organiseSections";
 import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
 import {
   useChatStore,
@@ -14,14 +13,12 @@ import {
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
-import DropDownSection from "./drop-down-section";
 import { GuidanceRequired } from "./guidance-required";
+import { LessonPlanSection } from "./lesson-plan-section";
 
 export function notEmpty(value: unknown) {
   return value !== null && value !== undefined && value !== "";
 }
-
-const shouldUseLessonPlanStore = true;
 
 function basedOnTitle(basedOn: string | BasedOnOptional) {
   if (typeof basedOn === "object") {
@@ -158,41 +155,18 @@ export const LessonPlanDisplay = ({
       )}
 
       <div className="flex w-full flex-col justify-center">
-        {shouldUseLessonPlanStore
-          ? allSectionsInOrder.map((section) => {
-              return (
-                <LessonPlanSection
-                  key={section}
-                  sectionKey={section}
-                  sectionRefs={sectionRefs}
-                  userHasCancelledAutoScroll={userHasCancelledAutoScroll}
-                  documentContainerRef={documentContainerRef}
-                  showLessonMobile={showLessonMobile}
-                />
-              );
-            })
-          : organiseSections.map((section) => {
-              const trigger = lessonPlan[section.trigger];
-              return (
-                !!trigger &&
-                section.dependants.map((dependant) => {
-                  const value = lessonPlan[dependant];
-                  if (value !== null && value !== undefined) {
-                    return (
-                      <DropDownSection
-                        key={dependant}
-                        section={dependant}
-                        sectionRefs={sectionRefs}
-                        value={value}
-                        userHasCancelledAutoScroll={userHasCancelledAutoScroll}
-                        documentContainerRef={documentContainerRef}
-                        showLessonMobile={showLessonMobile}
-                      />
-                    );
-                  }
-                })
-              );
-            })}
+        {allSectionsInOrder.map((section) => {
+          return (
+            <LessonPlanSection
+              key={section}
+              sectionKey={section}
+              sectionRefs={sectionRefs}
+              userHasCancelledAutoScroll={userHasCancelledAutoScroll}
+              documentContainerRef={documentContainerRef}
+              showLessonMobile={showLessonMobile}
+            />
+          );
+        })}
       </div>
       <div ref={chatEndRef} />
     </div>

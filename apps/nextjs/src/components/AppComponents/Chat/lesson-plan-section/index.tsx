@@ -4,7 +4,6 @@ import type {
   LessonPlanKey,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
-import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
 // import { equals } from "ramda";
 import styled from "styled-components";
@@ -16,6 +15,7 @@ import { scrollToRef } from "@/utils/scrollToRef";
 
 import Skeleton from "../../common/Skeleton";
 import { LessonPlanSectionContent } from "../drop-down-section/lesson-plan-section-content";
+import { sectionTitle } from "../drop-down-section/sectionTitle";
 
 export type LessonPlanSectionProps = Readonly<{
   sectionKey: LessonPlanKey;
@@ -163,14 +163,6 @@ export const LessonPlanSection = ({
     </DropDownSectionWrapper>
   );
 };
-
-export function sectionTitle(str: string) {
-  if (str.startsWith("cycle")) {
-    return "Learning cycle " + str.split("cycle")[1];
-  }
-
-  return camelCaseToSentenceCase(str);
-}
 
 const FullWidthButton = styled.button`
   width: 100%;

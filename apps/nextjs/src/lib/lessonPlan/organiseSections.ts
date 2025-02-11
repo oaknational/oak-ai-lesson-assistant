@@ -1,5 +1,7 @@
 import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 
+// NOTE: This is currently unused.
+// If it's still not required after switching to the lesson plan store, please remove it
 export const organiseSections: {
   trigger: LessonPlanKey;
   dependants: LessonPlanKey[];
