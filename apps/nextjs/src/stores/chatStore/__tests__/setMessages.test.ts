@@ -44,6 +44,35 @@ const messageStates: { [key: string]: AiMessage[] } = {
       createdAt: fixedDate,
     },
   ],
+  stableAndStreaming: [
+    {
+      content:
+        "Create a lesson plan about the end of Roman Britain for key stage 3 history",
+      role: "user",
+      id: "u-ROEdSl4mxvurLJqg",
+      createdAt: fixedDate,
+    },
+    {
+      id: "a-G7_z8CnQIGUjdFEk",
+      role: "assistant",
+      content:
+        '\n␞\n{"type":"patch","reasoning":"generated","value":{"op":"add","path":"/title","value":"The end of Roman Britain"},"status":"complete"}\n␞\n\n␞\n{"type":"patch","reasoning":"generated","value":{"op":"add","path":"/subject","value":"history"},"status":"complete"}\n␞\n\n␞\n{"type":"patch","reasoning":"generated","value":{"op":"add","path":"/keyStage","value":"key-stage-3"},"status":"complete"}\n␞\n\n␞\n{"type":"comment","value":"CHAT_START"}\n␞\n{"type":"llmMessage","sectionsToEdit":[],"patches":[],"sectionsEdited":[],"prompt":{"type":"text","value":"These Oak lessons might be relevant:\\n1. The End of Roman Britain\\n2. Anglo-Saxon Society and the Dark Ages\\n3. The Anglo-Saxon Kingdoms\\n4. The arrival of the Anglo-Saxons\\n5. The return of towns in Anglo-Saxon Britain\\n\\nTo base your lesson on one of these existing Oak lessons, type the lesson number. Tap **Continue** to start from scratch."},"status":"complete"}\n␞\n{"type":"id","value":"a-G7_z8CnQIGUjdFEk"}\n␞\n\n␞\n{"type":"comment","value":"MODERATION_START"}\n␞\n\n␞\n{"type":"comment","value":"MODERATING"}\n␞\n\n␞\n{"type":"moderation","categories":[],"id":"cm6uzvfh1000nn41l37dl414n"}\n␞\n\n␞\n{"type":"comment","value":"CHAT_COMPLETE"}\n␞\n',
+      createdAt: fixedDate,
+    },
+    {
+      content: "continue",
+      role: "user",
+      id: "u-U53lt6NJM6Pqjz4L",
+      createdAt: fixedDate,
+    },
+    {
+      id: "TEMP_PENDING_wNvS0UN9dKM6eCgmLU54w",
+      role: "assistant",
+      content:
+        '\n␞\n{"type":"comment","value":"CHAT_START"}\n␞\n{"type":"llmMessage","sectionsToEdit":[],"patches":[{"type":"patch","reasoning":"Setting the learning outcome to ',
+      createdAt: fixedDate,
+    },
+  ],
   streamingMessage: [
     {
       id: "TEMP_PENDING_wNvS0UN9dKM6eCgmLU54w",
@@ -89,6 +118,22 @@ describe("Chat Store setMessages", () => {
     expect(newState.streamingMessage?.parts).toHaveLength(4);
     expect(newState.streamingMessage?.parts[3]?.isPartial).toBe(true);
     expect(newState.stableMessages).toBe(initialState.stableMessages);
+    expect(newState.ailaStreamingStatus).toBe("StreamingLessonPlan");
+  });
+  test("state when streaming and stable messages, loading true", () => {
+    const store = createChatStore();
+    const initialState = store.getState();
+
+    store
+      .getState()
+      .setMessages(messageStates.stableAndStreaming as AiMessage[], true);
+
+    const newState = store.getState();
+
+    expect(newState.streamingMessage?.parts).toHaveLength(2);
+    expect(newState.streamingMessage?.parts[1]?.isPartial).toBe(true);
+    expect(newState.stableMessages).toHaveLength(3);
+    expect(newState.stableMessages).not.toBe(initialState.stableMessages);
     expect(newState.ailaStreamingStatus).toBe("StreamingLessonPlan");
   });
   test("state when there are next stable messages, loading true", () => {
