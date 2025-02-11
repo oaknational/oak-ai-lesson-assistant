@@ -18,7 +18,7 @@ export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
     (state) => state.ailaStreamingStatus,
   );
   const demo = useDemoUser();
-  const isDemoLocked = useDemoLocking(messages, isLoading);
+  const isDemoLocked = useDemoLocking();
   const { showLessonMobile, setShowLessonMobile, closeMobileLessonPullOut } =
     useMobileLessonPullOutControl({
       ailaStreamingStatus: ailaStreamingStatus,
