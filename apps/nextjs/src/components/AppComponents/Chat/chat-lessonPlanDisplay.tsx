@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
+import { aiLogger } from "@oakai/logger";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
@@ -10,11 +12,14 @@ import {
   useModerationStore,
   useLessonPlanStore,
 } from "@/stores/AilaStoresProvider";
+import { scrollToRefNative } from "@/utils/scrollToRef";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
 import { GuidanceRequired } from "./guidance-required";
 import { LessonPlanSection } from "./lesson-plan-section";
+
+const scrollingLog = aiLogger("lessons:scrolling");
 
 export function notEmpty(value: unknown) {
   return value !== null && value !== undefined && value !== "";
@@ -38,7 +43,42 @@ export type LessonPlanDisplayProps = Readonly<{
   showLessonMobile: boolean;
 }>;
 
-// TODO: replace with central scroll management
+const useSectionScrolling = ({
+  sectionRefs,
+  documentContainerRef,
+  userHasCancelledAutoScroll,
+}: {
+  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
+  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
+  userHasCancelledAutoScroll: boolean;
+}) => {
+  const scrollToSection = useLessonPlanStore((state) => state.scrollToSection);
+  const lastScrollToSectionRef = useRef<LessonPlanKey | null>(null);
+
+  useEffect(() => {
+    if (scrollToSection === null) {
+      return;
+    }
+
+    const isSectionChanged = lastScrollToSectionRef.current !== scrollToSection;
+    if (isSectionChanged) {
+      const sectionRef = sectionRefs[scrollToSection];
+      if (sectionRef) {
+        scrollingLog.info(`Scrolling to ${scrollToSection}`);
+        setTimeout(() => {
+          sectionRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 20);
+      }
+      lastScrollToSectionRef.current = scrollToSection;
+    }
+  }, [
+    scrollToSection,
+    sectionRefs,
+    documentContainerRef,
+    userHasCancelledAutoScroll,
+  ]);
+};
+
 const useDetectScrollOverride = (
   documentContainerRef: React.RefObject<HTMLDivElement>,
 ) => {
@@ -51,12 +91,16 @@ const useDetectScrollOverride = (
   useEffect(() => {
     const handleUserScroll = (event: WheelEvent) => {
       // Check for mousewheel or touch pad scroll event
-      event?.type === "wheel" && setUserHasCancelledAutoScroll(true);
+      if (event?.type === "wheel") {
+        scrollingLog.info("User cancelled auto scroll");
+        setUserHasCancelledAutoScroll(true);
+      }
     };
 
     if (ailaStreamingStatus === "Idle") {
       // hack to account for lag
       const timer = setTimeout(() => {
+        scrollingLog.info("Enabling auto scroll");
         setUserHasCancelledAutoScroll(false);
       }, 1000);
       return () => clearTimeout(timer);
@@ -105,6 +149,12 @@ export const LessonPlanDisplay = ({
 
   const { userHasCancelledAutoScroll } =
     useDetectScrollOverride(documentContainerRef);
+
+  useSectionScrolling({
+    sectionRefs,
+    documentContainerRef,
+    userHasCancelledAutoScroll,
+  });
 
   if (Object.keys(lessonPlan).length === 0) {
     return (

@@ -1,17 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 
-import type {
-  LessonPlanKey,
-  LooseLessonPlan,
-} from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
-// import { equals } from "ramda";
 import styled from "styled-components";
 
 import { Icon } from "@/components/Icon";
 import LoadingWheel from "@/components/LoadingWheel";
 import { useLessonPlanStore } from "@/stores/AilaStoresProvider";
-import { scrollToRef } from "@/utils/scrollToRef";
+import { sectionStatusSelector } from "@/stores/lessonPlanStore/selectors";
 
 import Skeleton from "../../common/Skeleton";
 import { LessonPlanSectionContent } from "../drop-down-section/lesson-plan-section-content";
@@ -25,83 +21,17 @@ export type LessonPlanSectionProps = Readonly<{
   showLessonMobile: boolean;
 }>;
 
-// TODO: move to selector?
-const useGetStatus = (sectionKey: LessonPlanKey) => {
-  const section = useLessonPlanStore((state) => state.lessonPlan[sectionKey]);
-  const isStreaming = useLessonPlanStore(
-    (state) =>
-      state.sectionsToEdit.includes(sectionKey) &&
-      !state.appliedPatchPaths.includes(sectionKey),
-  );
-
-  if (isStreaming) {
-    return "streaming";
-  }
-  if (section) {
-    return "loaded";
-  }
-  return "empty";
-};
-
-// TODO: move to central manager
-const useScrollToSection = ({
-  status,
-  sectionRef,
-  userHasCancelledAutoScroll,
-  section,
-  documentContainerRef,
-}: {
-  status: ReturnType<typeof useGetStatus>;
-  sectionRef: React.MutableRefObject<HTMLDivElement | null>;
-  userHasCancelledAutoScroll: boolean;
-  section: LooseLessonPlan[keyof LooseLessonPlan];
-  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
-}) => {
-  const sectionHasFiredRef = useRef(false);
-
-  useEffect(() => {
-    if (
-      status === "streaming" &&
-      section &&
-      sectionHasFiredRef.current === false
-    ) {
-      function scrollToSection() {
-        if (sectionRef && !userHasCancelledAutoScroll) {
-          scrollToRef({
-            ref: sectionRef,
-            containerRef: documentContainerRef,
-            duration: 1000,
-          });
-        }
-        sectionHasFiredRef.current = true;
-      }
-      scrollToSection();
-    }
-  }, [
-    section,
-    sectionRef,
-    sectionHasFiredRef,
-    status,
-    documentContainerRef,
-    userHasCancelledAutoScroll,
-  ]);
-};
-
 export const LessonPlanSection = ({
   sectionKey,
   sectionRefs,
-  documentContainerRef,
-  userHasCancelledAutoScroll,
   showLessonMobile,
 }: LessonPlanSectionProps) => {
   const section = useLessonPlanStore((state) => state.lessonPlan[sectionKey]);
-  const status = useGetStatus(sectionKey);
+  const status = useLessonPlanStore(sectionStatusSelector(sectionKey));
 
-  // TODO rework refs
   const sectionRef = useRef(null);
-  if (sectionRefs) sectionRefs[sectionKey] = sectionRef;
+  sectionRefs[sectionKey] = sectionRef;
 
-  // TODO: behaviour when changing existing section
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -115,15 +45,6 @@ export const LessonPlanSection = ({
     }
   }, [showLessonMobile, setIsOpen]);
 
-  // TODO: old implementation, move to central manager
-  useScrollToSection({
-    status,
-    userHasCancelledAutoScroll,
-    section,
-    documentContainerRef,
-    sectionRef,
-  });
-
   if (status === "empty") {
     return null;
   }
@@ -133,7 +54,7 @@ export const LessonPlanSection = ({
       $borderColor="black"
       $bb="border-solid-m"
       $pv="inner-padding-xl"
-      // ref={sectionRef}
+      ref={sectionRef}
     >
       <OakFlex $gap="all-spacing-2">
         <OakBox>
@@ -172,4 +93,5 @@ const DropDownSectionWrapper = styled(OakBox)`
   &:first-child {
     border-top: 2px solid black;
   }
+  scroll-margin-top: 180px;
 `;
