@@ -60,6 +60,13 @@ const meta = {
     chatStoreState: {
       stableMessages: DummyParsedMessages,
     },
+    lessonPlanStoreState: {
+      lessonPlan: {
+        subject: "biology",
+        keyStage: "key-stage-3",
+        title: "About Frogs",
+      },
+    },
     ...demoParams({ isDemoUser: false }),
   },
 } satisfies Meta<typeof ChatRightHandSideLesson>;
@@ -73,8 +80,8 @@ export const Default: Story = {
 
 export const OnlyOneMessage: Story = {
   parameters: {
-    chatContext: {
-      messages: [DummyUserMessage],
+    chatStoreState: {
+      stableMessages: [DummyUserMessage],
     },
   },
 };

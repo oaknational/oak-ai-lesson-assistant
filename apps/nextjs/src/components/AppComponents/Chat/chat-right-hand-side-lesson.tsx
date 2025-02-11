@@ -23,7 +23,7 @@ const ChatRightHandSideLesson = ({
   closeMobileLessonPullOut,
   demo,
 }: Readonly<ChatRightHandSideLessonProps>) => {
-  const hasMessages = useChatStore((state) => state.stableMessages.length > 0);
+  const hasResponses = useChatStore((state) => state.stableMessages.length > 1);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -96,7 +96,7 @@ const ChatRightHandSideLesson = ({
         />
       </div>
       <div
-        className={`${hasMessages && showLessonMobile ? "flex" : "hidden"} fixed bottom-20 left-0 right-0 items-center justify-center duration-150 sm:hidden`}
+        className={`${hasResponses && showLessonMobile ? "flex" : "hidden"} fixed bottom-20 left-0 right-0 items-center justify-center duration-150 sm:hidden`}
       >
         <ChatButton
           variant="primary"
