@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 
-import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
+import type {
+  LessonPlanKey,
+  LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Flex } from "@radix-ui/themes";
 
@@ -25,10 +28,7 @@ export const LessonPlanProgressDropdown: React.FC<
     (state) => state.ailaStreamingStatus !== "Idle",
   );
   const { sections, totalSections, totalSectionsComplete } =
-    useProgressForDownloads({
-      lessonPlan,
-      isStreaming,
-    });
+    useProgressForDownloads({ lessonPlan, isStreaming });
   const [openProgressDropDown, setOpenProgressDropDown] = useState(false);
 
   return (
