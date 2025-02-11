@@ -3,7 +3,6 @@ import type { StoreApi } from "zustand";
 import { createChatStore, type AiSdkActions, type ChatStore } from "..";
 
 describe("Chat Store executeQueuedAction", () => {
-  let store: StoreApi<ChatStore>;
   let mockAiSdkActions: {
     append: jest.Mock;
     reload: jest.Mock;
@@ -14,20 +13,16 @@ describe("Chat Store executeQueuedAction", () => {
       append: jest.fn(),
       reload: jest.fn(),
     };
-
-    store = createChatStore();
-    // Set up AI SDK actions
-    store
-      .getState()
-      .setAiSdkActions(mockAiSdkActions as unknown as AiSdkActions);
   });
 
   afterEach(() => {
-    store.getState().reset();
     jest.clearAllMocks();
   });
 
   test("should do nothing if there is no queued action", () => {
+    const store = createChatStore({
+      aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
+    });
     const initialState = store.getState();
 
     store.getState().executeQueuedAction();
@@ -41,6 +36,9 @@ describe("Chat Store executeQueuedAction", () => {
   });
 
   test('should handle "continue" action correctly', () => {
+    const store = createChatStore({
+      aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
+    });
     const initialState = store.getState();
     store.setState({ queuedUserAction: "continue" });
 
@@ -56,6 +54,9 @@ describe("Chat Store executeQueuedAction", () => {
   });
 
   test('should handle "regenerate" action correctly', () => {
+    const store = createChatStore({
+      aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
+    });
     const initialState = store.getState();
     store.setState({ queuedUserAction: "regenerate" });
 
@@ -68,6 +69,9 @@ describe("Chat Store executeQueuedAction", () => {
   });
 
   test("should handle user message actions correctly", () => {
+    const store = createChatStore({
+      aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
+    });
     const initialState = store.getState();
     const customMessage = "Hello, world!";
     store.setState({ queuedUserAction: customMessage });
@@ -84,6 +88,9 @@ describe("Chat Store executeQueuedAction", () => {
   });
 
   test("should maintain correct state after multiple actions", () => {
+    const store = createChatStore({
+      aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
+    });
     const initialState = store.getState();
     store.setState({ queuedUserAction: "continue" });
     store.getState().executeQueuedAction();

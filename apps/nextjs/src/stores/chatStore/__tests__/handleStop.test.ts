@@ -3,7 +3,6 @@ import type { StoreApi } from "zustand";
 import { createChatStore, type AiSdkActions, type ChatStore } from "..";
 
 describe("handleStop", () => {
-  let store: StoreApi<ChatStore>;
   let mockAiSdkActions: {
     stop: jest.Mock;
   };
@@ -12,20 +11,16 @@ describe("handleStop", () => {
     mockAiSdkActions = {
       stop: jest.fn(),
     };
-
-    store = createChatStore();
-    store
-      .getState()
-      .setAiSdkActions(mockAiSdkActions as unknown as AiSdkActions);
   });
-
   afterEach(() => {
-    store.getState().reset();
     jest.clearAllMocks();
   });
 
   test("should clear queued action if one exists", () => {
-    store.setState({ queuedUserAction: "Some action" });
+    const store = createChatStore({
+      queuedUserAction: "Some action",
+      aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
+    });
     store.getState().stop();
 
     expect(store.getState().queuedUserAction).toBeNull();
@@ -33,6 +28,9 @@ describe("handleStop", () => {
   });
 
   test("should call aiSdkActions.stop if no queued action exists", () => {
+    const store = createChatStore({
+      aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
+    });
     store.getState().stop();
 
     expect(mockAiSdkActions.stop).toHaveBeenCalled();

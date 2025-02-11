@@ -1,6 +1,4 @@
-import type { StoreApi } from "zustand";
-
-import { createChatStore, type ChatStore } from "..";
+import { createChatStore } from "..";
 import type { AiMessage } from "../types";
 
 const fixedDate = new Date("2023-01-01T12:00:00.000Z");
@@ -56,171 +54,172 @@ const messageStates: { [key: string]: AiMessage[] } = {
     },
   ],
 };
-describe("Chat Store setMessage state", () => {
-  let store: StoreApi<ChatStore>;
 
-  beforeEach(() => {
-    store = createChatStore({ executeQueuedAction });
+describe("Chat Store setMessages", () => {
+  test("When there no messages, loading true throw error", () => {
+    const store = createChatStore();
+    expect(() => {
+      store.getState().setMessages([], true);
+    }).toThrow();
   });
 
-  afterEach(() => {
-    store.getState().reset();
+  test("expected state when there no messages, loading false", () => {
+    const store = createChatStore();
+    const initialState = store.getState();
+    store.getState().setMessages([], false);
+    const newState = store.getState();
+
+    expect(newState.streamingMessage).toBe(null);
+    expect(newState.stableMessages).toBe(initialState.stableMessages);
+    expect(newState.ailaStreamingStatus).toBe("Idle");
+    expect(newState.aiSdkActions).toBe(initialState.aiSdkActions);
+    expect(executeQueuedAction).not.toHaveBeenCalled();
   });
 
-  describe("setMessages", () => {
-    test("When there no messages, loading true throw error", () => {
-      expect(() => {
-        store.getState().setMessages([], true);
-      }).toThrow();
-    });
+  test("state when streaming, no stable messages, loading true", () => {
+    const store = createChatStore();
+    const initialState = store.getState();
 
-    test("expected state when there no messages, loading false", () => {
-      const initialState = store.getState();
-      store.getState().setMessages([], false);
-      const newState = store.getState();
+    store
+      .getState()
+      .setMessages(messageStates.streamingMessage as AiMessage[], true);
 
-      expect(newState.streamingMessage).toBe(null);
-      expect(newState.stableMessages).toBe(initialState.stableMessages);
-      expect(newState.ailaStreamingStatus).toBe("Idle");
-      expect(newState.aiSdkActions).toBe(initialState.aiSdkActions);
-      expect(executeQueuedAction).not.toHaveBeenCalled();
-    });
+    const newState = store.getState();
 
-    test("state when streaming, no stable messages, loading true", () => {
-      const initialState = store.getState();
+    expect(newState.streamingMessage?.parts).toHaveLength(4);
+    expect(newState.streamingMessage?.parts[3]?.isPartial).toBe(true);
+    expect(newState.stableMessages).toBe(initialState.stableMessages);
+    expect(newState.ailaStreamingStatus).toBe("StreamingLessonPlan");
+  });
+  test("state when there are next stable messages, loading true", () => {
+    const store = createChatStore();
+    store
+      .getState()
+      .setMessages(messageStates.stableMessages as AiMessage[], true);
 
-      store
-        .getState()
-        .setMessages(messageStates.streamingMessage as AiMessage[], true);
+    const newState = store.getState();
+    expect(newState.stableMessages.length).toBe(
+      (messageStates.stableMessages?.length ?? 0) - 1,
+    );
 
-      const newState = store.getState();
+    expect(newState.ailaStreamingStatus).toBe("Moderating");
+  });
 
-      expect(newState.streamingMessage?.parts).toHaveLength(4);
-      expect(newState.streamingMessage?.parts[3]?.isPartial).toBe(true);
-      expect(newState.stableMessages).toBe(initialState.stableMessages);
-      expect(newState.ailaStreamingStatus).toBe("StreamingLessonPlan");
-    });
-    test("state when there are next stable messages, loading true", () => {
-      store
-        .getState()
-        .setMessages(messageStates.stableMessages as AiMessage[], true);
+  test("When there is a next stable message, no streaming, loading false", () => {
+    const store = createChatStore();
+    store
+      .getState()
+      .setMessages(messageStates.userRequest as AiMessage[], false);
 
-      const newState = store.getState();
-      expect(newState.stableMessages.length).toBe(
-        (messageStates.stableMessages?.length ?? 0) - 1,
-      );
+    const newState = store.getState();
 
-      expect(newState.ailaStreamingStatus).toBe("Moderating");
-    });
-
-    test("When there is a next stable message, no streaming, loading false", () => {
-      store
-        .getState()
-        .setMessages(messageStates.userRequest as AiMessage[], false);
-
-      const newState = store.getState();
-
-      expect(newState.streamingMessage).toBe(null);
-      expect(newState.stableMessages).toEqual([
-        {
-          content:
-            "Create a lesson plan about the end of Roman Britain for key stage 3 history",
-          role: "user",
-          id: "u-xE6aXHnAeBTzFTu8",
-          createdAt: fixedDate,
-          parts: [
-            {
-              type: "message-part",
-              document: {
-                type: "text",
-                value:
-                  "Create a lesson plan about the end of Roman Britain for key stage 3 history",
-              },
-              id: "0",
-              isPartial: false,
+    expect(newState.streamingMessage).toBe(null);
+    expect(newState.stableMessages).toEqual([
+      {
+        content:
+          "Create a lesson plan about the end of Roman Britain for key stage 3 history",
+        role: "user",
+        id: "u-xE6aXHnAeBTzFTu8",
+        createdAt: fixedDate,
+        parts: [
+          {
+            type: "message-part",
+            document: {
+              type: "text",
+              value:
+                "Create a lesson plan about the end of Roman Britain for key stage 3 history",
             },
-          ],
-          hasError: false,
-          isEditing: true,
-        },
-      ]);
+            id: "0",
+            isPartial: false,
+          },
+        ],
+        hasError: false,
+        isEditing: true,
+      },
+    ]);
 
-      expect(newState.ailaStreamingStatus).toBe("Idle");
+    expect(newState.ailaStreamingStatus).toBe("Idle");
+  });
+  test("execute queued action is called when streaming status changes to idle and there is a queued item", () => {
+    const store = createChatStore({
+      executeQueuedAction,
+      queuedUserAction: "continue",
+      ailaStreamingStatus: "Loading",
     });
-    test("execute queued action is called when streaming status changes to idle and there is a queued item", () => {
-      store = createChatStore({
-        executeQueuedAction,
-        queuedUserAction: "continue",
-        ailaStreamingStatus: "Loading",
-      });
-      store
-        .getState()
-        .setMessages(messageStates.stableMessages as AiMessage[], false);
+    store
+      .getState()
+      .setMessages(messageStates.stableMessages as AiMessage[], false);
 
-      expect(executeQueuedAction).toHaveBeenCalled();
+    expect(executeQueuedAction).toHaveBeenCalled();
+  });
+  test("No executeQueuedAction call when streaming status changes to Idle and no queued action", () => {
+    const store = createChatStore({
+      executeQueuedAction,
+      queuedUserAction: null,
+      ailaStreamingStatus: "StreamingLessonPlan",
     });
-    test("No executeQueuedAction call when streaming status changes to Idle and no queued action", () => {
-      store = createChatStore({
-        executeQueuedAction,
-        queuedUserAction: null,
-        ailaStreamingStatus: "StreamingLessonPlan",
-      });
 
-      store
-        .getState()
-        .setMessages(messageStates.stableMessages as AiMessage[], false);
+    store
+      .getState()
+      .setMessages(messageStates.stableMessages as AiMessage[], false);
 
-      expect(executeQueuedAction).not.toHaveBeenCalled();
-    });
-    test("Streaming message correctly marked as partial", () => {
-      store
-        .getState()
-        .setMessages(messageStates.streamingMessage as AiMessage[], true);
+    expect(executeQueuedAction).not.toHaveBeenCalled();
+  });
+  test("Streaming message correctly marked as partial", () => {
+    const store = createChatStore();
+    store
+      .getState()
+      .setMessages(messageStates.streamingMessage as AiMessage[], true);
 
-      const newState = store.getState();
-      expect(newState.streamingMessage?.parts).toBeDefined();
-      expect(
-        newState.streamingMessage?.parts.some((part) => part.isPartial),
-      ).toBe(true);
-    });
-    test("stableMessages do not update when getNextStableMessages returns null", () => {
-      store
-        .getState()
-        .setMessages(messageStates.stableMessages as AiMessage[], true);
+    const newState = store.getState();
+    expect(newState.streamingMessage?.parts).toBeDefined();
+    expect(
+      newState.streamingMessage?.parts.some((part) => part.isPartial),
+    ).toBe(true);
+  });
+  test("stableMessages do not update when getNextStableMessages returns null", () => {
+    const store = createChatStore();
+    store
+      .getState()
+      .setMessages(messageStates.stableMessages as AiMessage[], true);
 
-      const initialState = store.getState();
+    const initialState = store.getState();
 
-      store
-        .getState()
-        .setMessages(messageStates.stableMessages as AiMessage[], true);
+    store
+      .getState()
+      .setMessages(messageStates.stableMessages as AiMessage[], true);
 
-      const newState = store.getState();
+    const newState = store.getState();
 
-      expect(newState.stableMessages).toBe(initialState.stableMessages); // Same reference
-      expect(newState.ailaStreamingStatus).toBe("Moderating");
-    });
-    test("No unnecessary re-renders when stableMessages stay the same", () => {
-      const renderSpy = jest.fn();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      store.subscribe((state) => renderSpy(state.stableMessages));
-      store
-        .getState()
-        .setMessages(messageStates.stableMessages as AiMessage[], true);
-      store
-        .getState()
-        .setMessages(messageStates.stableMessages as AiMessage[], true);
-      expect(renderSpy).toHaveBeenCalledTimes(2); //Was expecting 1 here ?
-    });
-    test("ailaStreamingStatus updates correctly based on messages", () => {
-      store
-        .getState()
-        .setMessages(messageStates.stableMessages as AiMessage[], true);
-      expect(store.getState().ailaStreamingStatus).toBe("Moderating");
+    expect(newState.stableMessages).toBe(initialState.stableMessages); // Same reference
+    expect(newState.ailaStreamingStatus).toBe("Moderating");
+  });
+  test("No unnecessary re-renders when stableMessages stay the same", () => {
+    const store = createChatStore();
+    const renderSpy = jest.fn();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    store.subscribe((state) => renderSpy(state.stableMessages));
+    store
+      .getState()
+      .setMessages(messageStates.stableMessages as AiMessage[], true);
+    const initialState = store.getState();
+    store
+      .getState()
+      .setMessages(messageStates.stableMessages as AiMessage[], true);
+    const newState = store.getState();
+    expect(renderSpy).toHaveBeenCalledTimes(2);
+    expect(newState.stableMessages).toBe(initialState.stableMessages);
+  });
+  test("ailaStreamingStatus updates correctly based on messages", () => {
+    const store = createChatStore();
+    store
+      .getState()
+      .setMessages(messageStates.stableMessages as AiMessage[], true);
+    expect(store.getState().ailaStreamingStatus).toBe("Moderating");
 
-      store
-        .getState()
-        .setMessages(messageStates.userRequest as AiMessage[], false);
-      expect(store.getState().ailaStreamingStatus).toBe("Idle");
-    });
+    store
+      .getState()
+      .setMessages(messageStates.userRequest as AiMessage[], false);
+    expect(store.getState().ailaStreamingStatus).toBe("Idle");
   });
 });

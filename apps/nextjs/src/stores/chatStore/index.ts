@@ -32,16 +32,14 @@ export type AilaStreamingStatus =
   | "Moderating"
   | "Idle";
 
-type ChatStoreState = {
+export type ChatStore = {
   ailaStreamingStatus: AilaStreamingStatus;
 
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
   queuedUserAction: string | null;
   lessonPlan: LooseLessonPlan | null;
-};
 
-type ChatStoreActions = {
   // From AI SDK
   aiSdkActions: AiSdkActions;
 
@@ -55,22 +53,15 @@ type ChatStoreActions = {
   append: (message: string) => void;
   stop: () => void;
   streamingFinished: () => void;
-  reset: () => void;
 };
-
-const initialState: ChatStoreState = {
-  ailaStreamingStatus: "Idle",
-  stableMessages: [],
-  streamingMessage: null,
-  queuedUserAction: null,
-  lessonPlan: null,
-};
-
-export type ChatStore = ChatStoreState & ChatStoreActions;
 
 export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
   const chatStore = createStore<ChatStore>((set, get) => ({
-    ...initialState,
+    ailaStreamingStatus: "Idle",
+    stableMessages: [],
+    streamingMessage: null,
+    queuedUserAction: null,
+    lessonPlan: null,
 
     // From AI SDK
     aiSdkActions: {
@@ -89,9 +80,7 @@ export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
     stop: handleStop(set, get),
     setMessages: handleSetMessages(set, get),
     streamingFinished: handleStreamingFinished(set, get),
-    reset: () => {
-      set(initialState);
-    },
+
     ...initialValues,
   }));
 

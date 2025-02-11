@@ -3,7 +3,6 @@ import type { StoreApi } from "zustand";
 import { createChatStore, type AiSdkActions, type ChatStore } from "../index";
 
 describe("handleAppend", () => {
-  let store: StoreApi<ChatStore>;
   let mockAiSdkActions: {
     append: jest.Mock;
   };
@@ -12,20 +11,17 @@ describe("handleAppend", () => {
     mockAiSdkActions = {
       append: jest.fn(),
     };
-
-    store = createChatStore();
-    store
-      .getState()
-      .setAiSdkActions(mockAiSdkActions as unknown as AiSdkActions);
   });
 
   afterEach(() => {
-    store.getState().reset();
     jest.clearAllMocks();
   });
 
   test("should not append when canAppend is false", () => {
-    store.getState().ailaStreamingStatus = "StreamingChatResponse";
+    const store = createChatStore({
+      ailaStreamingStatus: "StreamingChatResponse",
+      aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
+    });
 
     store.getState().append("Hello");
 
@@ -33,7 +29,11 @@ describe("handleAppend", () => {
   });
 
   test("should queue action when streaming is not idle", () => {
-    store.getState().ailaStreamingStatus = "Moderating";
+    const store = createChatStore({
+      ailaStreamingStatus: "Moderating",
+      aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
+    });
+
     store.getState().append("Hello");
 
     expect(store.getState().queuedUserAction).toBe("Hello");
@@ -41,7 +41,11 @@ describe("handleAppend", () => {
   });
 
   test("should append message when streaming is idle and canAppend is true", () => {
-    store.getState().ailaStreamingStatus = "Idle";
+    const store = createChatStore({
+      ailaStreamingStatus: "Idle",
+      aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
+    });
+
     store.getState().append("Hello");
 
     expect(mockAiSdkActions.append).toHaveBeenCalledWith({
