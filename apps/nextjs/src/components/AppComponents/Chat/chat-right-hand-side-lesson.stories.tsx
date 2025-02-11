@@ -60,6 +60,13 @@ const meta = {
     chatStoreState: {
       stableMessages: DummyParsedMessages,
     },
+    lessonPlanStoreState: {
+      lessonPlan: {
+        subject: "biology",
+        keyStage: "key-stage-3",
+        title: "About Frogs",
+      },
+    },
     ...demoParams({ isDemoUser: false }),
   },
 } satisfies Meta<typeof ChatRightHandSideLesson>;
