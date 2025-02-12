@@ -34,7 +34,7 @@
     "@oakai/exports": "*",
     "@oakai/logger": "*",
     "@oakai/rag": "*",
-    "@sentry/nextjs": "^8.35.0",
+    "@sentry/nextjs": "^8.49.0",
     "@vercel/kv": "^0.2.2",
     "ai": "^4.0.20",
     "american-british-english-translator": "^0.2.1",
