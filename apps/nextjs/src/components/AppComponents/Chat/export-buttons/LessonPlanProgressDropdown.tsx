@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 
-import type {
-  LessonPlanKey,
-  LooseLessonPlan,
-} from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Flex } from "@radix-ui/themes";
 
