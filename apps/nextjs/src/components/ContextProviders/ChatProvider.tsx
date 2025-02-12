@@ -10,10 +10,7 @@ import { toast } from "react-hot-toast";
 
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import type {
-  AilaPersistedChat,
-  LooseLessonPlan,
-} from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import type { Message } from "ai";
@@ -39,10 +36,6 @@ import { isAccountLocked } from "../AppComponents/Chat/chat-message/protocol";
 const log = aiLogger("chat");
 
 export type ChatContextProps = {
-  chat: AilaPersistedChat | undefined;
-  // initialModerations: Moderation[];
-  // toxicModeration: PersistedModerationBase | null;
-  // lastModeration: PersistedModerationBase | null;
   messages: Message[];
   lessonPlan: LooseLessonPlan;
   input: string;
@@ -300,20 +293,12 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const value: ChatContextProps = useMemo(
     () => ({
-      chat: chat ?? undefined,
       lessonPlan: overrideLessonPlan ?? tempLessonPlan,
       messages,
       input,
       setInput,
     }),
-    [
-      chat,
-      tempLessonPlan,
-      messages,
-      input,
-      setInput,
-      overrideLessonPlan,
-    ],
+    [tempLessonPlan, messages, input, setInput, overrideLessonPlan],
   );
 
   if (!chat && !isChatLoading) {
