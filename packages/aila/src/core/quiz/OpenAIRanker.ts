@@ -319,9 +319,9 @@ export {
 // }
 
 export async function OpenAICallReranker(
-  messages: any[],
+  messages: ChatMessage[],
   max_tokens: number = 500,
-  schema?: z.ZodType<any>,
+  schema?: z.ZodType<BaseType & Record<string, unknown>>,
 ): Promise<OpenAI.Chat.Completions.ChatCompletion> {
   const userId = "test-user-id";
   const chatId = "test-chat-id";
@@ -347,7 +347,7 @@ export async function OpenAICallReranker(
 
 // TODO: type logit_bias properly.
 export async function OpenAICallLogProbs(
-  messages: any[],
+  messages: ChatMessage[],
   max_tokens: number = 500,
   logit_bias: Record<number, number>,
 ): Promise<OpenAI.Chat.Completions.ChatCompletion> {
@@ -375,7 +375,7 @@ export async function OpenAICallLogProbs(
 
 export async function OpenAICallCrossEncoder(
   reranking_prompt: OpenAI.Chat.Completions.ChatCompletionSystemMessageParam,
-  reranking_messages: any[],
+  reranking_messages: ChatMessage[],
   bias_constant: number = 100,
 ) {
   const max_tokens = 1;
@@ -406,10 +406,10 @@ export async function OpenAICallCrossEncoder(
 }
 
 export async function OpenAICallRerankerWithSchema(
-  messages: any[],
+  messages: ChatMessage[],
   max_tokens: number = 500,
-  schema: z.ZodType<any>,
-): Promise<ParsedChatCompletion<any>> {
+  schema: z.ZodType<BaseType & Record<string, unknown>>,
+): Promise<ParsedChatCompletion<z.infer<typeof schema>>> {
   const userId = "test-user-id";
   const chatId = "test-chat-id";
   const openai = createOpenAIClient({ app: "maths-reranker" });
