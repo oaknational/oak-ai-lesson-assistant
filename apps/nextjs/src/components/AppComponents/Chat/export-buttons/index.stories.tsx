@@ -2,11 +2,11 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
-import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
 import {
   DemoDecorator,
   demoParams,
 } from "@/storybook/decorators/DemoDecorator";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import ExportButtons from "./";
 
@@ -14,7 +14,7 @@ const meta = {
   title: "Components/LessonPlan/ExportButtons",
   component: ExportButtons,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, DemoDecorator, ChatStoreDecorator],
+  decorators: [ChatDecorator, DemoDecorator, StoreDecorator],
   args: {
     sectionRefs: {},
     documentContainerRef: { current: null },
