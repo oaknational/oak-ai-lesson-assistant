@@ -20,7 +20,7 @@ const meta = {
     },
     ...chromaticParams(["mobile"]),
     ...demoParams({ isDemoUser: false }),
-    chatContext: {
+    lessonPlanStoreState: {
       id: "123",
     },
   },

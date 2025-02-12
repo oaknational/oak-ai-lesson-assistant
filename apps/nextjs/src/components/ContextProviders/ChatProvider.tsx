@@ -16,10 +16,10 @@ import type {
 } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
-import type { ChatRequestOptions, CreateMessage, Message } from "ai";
+import type { Message } from "ai";
 import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { useChatStoreAiSdkSync } from "src/stores/chatStore/hooks/useChatStoreAiSdkSync";
 import { useLessonPlanStoreAiSdkSync } from "src/stores/lessonPlanStore/hooks/useLessonPlanStoreAiSdkSync";
 
@@ -111,7 +111,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const toxicModeration = useModerationStore((state) => state.toxicModeration);
 
-  const router = useRouter();
   const path = usePathname();
   const [hasFinished, setHasFinished] = useState(true);
 
@@ -239,13 +238,12 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     });
   }, [messages]);
 
-  const { tempLessonPlan, partialPatches, validPatches } =
-    useTemporaryLessonPlanWithStreamingEdits({
-      lessonPlan: chat?.lessonPlan ?? {},
-      messages,
-      isStreaming: !hasFinished,
-      messageHashes,
-    });
+  const { tempLessonPlan } = useTemporaryLessonPlanWithStreamingEdits({
+    lessonPlan: chat?.lessonPlan ?? {},
+    messages,
+    isStreaming: !hasFinished,
+    messageHashes,
+  });
 
   // Hooks to update the Zustand stores
   useChatStoreAiSdkSync(messages, isLoading, stopStreaming, append, reload);
@@ -307,8 +305,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       messages,
       input,
       setInput,
-      partialPatches,
-      validPatches,
     }),
     [
       chat,
@@ -316,8 +312,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       messages,
       input,
       setInput,
-      partialPatches,
-      validPatches,
       overrideLessonPlan,
     ],
   );
