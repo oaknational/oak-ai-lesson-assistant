@@ -1,3 +1,4 @@
+import { aiLogger } from "@oakai/logger";
 import { z } from "zod";
 
 import {
@@ -9,10 +10,19 @@ import {
 import type { Message, LakeraGuardResponse, BreakdownItem } from "./schema";
 import { lakeraGuardRequestSchema, lakeraGuardResponseSchema } from "./schema";
 
+const log = {
+  info: (message: string, data: Record<string, unknown>) => {
+    console.log(`[LakeraThreatDetector] ${message}`, data);
+  },
+  error: (message: string, data: Record<string, unknown>) => {
+    console.error(`[LakeraThreatDetector] ${message}`, data);
+  },
+};
+
 export class LakeraThreatDetector extends AilaThreatDetector {
   private readonly apiKey: string;
   private readonly projectId?: string;
-  private readonly apiUrl = "https://api.lakera.ai/v1/guard";
+  private readonly apiUrl = "https://api.lakera.ai/v2/guard";
 
   constructor() {
     super();
@@ -68,9 +78,34 @@ export class LakeraThreatDetector extends AilaThreatDetector {
   ): Promise<LakeraGuardResponse> {
     const requestBody = {
       messages,
-      breakdown: true,
       ...(this.projectId && { project_id: this.projectId }),
+      payload: true,
+      breakdown: true,
     };
+
+    log.info("Lakera API request", {
+      url: this.apiUrl,
+      projectId: this.projectId,
+      exactRequestBody: JSON.stringify(requestBody),
+      messages: messages.map((m) => ({
+        role: m.role,
+        contentLength: m.content.length,
+        contentPreview: m.content.slice(0, 100),
+      })),
+    });
+
+    const parsedBody = lakeraGuardRequestSchema.parse(requestBody);
+
+    log.info("Lakera API request", {
+      url: this.apiUrl,
+      projectId: this.projectId,
+      exactRequestBody: JSON.stringify(parsedBody),
+      messages: messages.map((m) => ({
+        role: m.role,
+        contentLength: m.content.length,
+        contentPreview: m.content.slice(0, 100),
+      })),
+    });
 
     const response = await fetch(this.apiUrl, {
       method: "POST",
@@ -78,14 +113,29 @@ export class LakeraThreatDetector extends AilaThreatDetector {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.apiKey}`,
       },
-      body: JSON.stringify(lakeraGuardRequestSchema.parse(requestBody)),
+      body: JSON.stringify(parsedBody),
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const responseData = await response.json();
+
     if (!response.ok) {
+      log.error("Lakera API error", {
+        status: response.status,
+        statusText: response.statusText,
+        responseBody: responseData,
+        requestBody: parsedBody,
+      });
       throw new Error(`Lakera API error: ${response.statusText}`);
     }
 
-    return lakeraGuardResponseSchema.parse(await response.json());
+    const parsed = lakeraGuardResponseSchema.parse(responseData);
+    log.info("Lakera API response parsed", {
+      flagged: parsed.flagged,
+      breakdown: parsed.breakdown,
+      payload: parsed.payload,
+    });
+    return parsed;
   }
 
   private getHighestThreatFromBreakdown(
@@ -132,10 +182,17 @@ export class LakeraThreatDetector extends AilaThreatDetector {
   }
 
   async detectThreat(content: unknown): Promise<ThreatDetectionResult> {
+    log.info("Detecting threat", {
+      contentType: typeof content,
+      isArray: Array.isArray(content),
+      length: Array.isArray(content) ? content.length : 0,
+    });
+
     if (
       !Array.isArray(content) ||
       !content.every((msg) => this.isMessage(msg))
     ) {
+      log.error("Invalid input format", { content });
       throw new Error("Input must be an array of Messages");
     }
 
