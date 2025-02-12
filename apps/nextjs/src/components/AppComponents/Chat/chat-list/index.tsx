@@ -35,24 +35,29 @@ export function ChatList({
   const lastModeration = useModerationStore((state) => state.lastModeration);
 
   const { id, messages } = chat;
+  const hasMessages = useChatStore(
+    (state) => state.stableMessages.length > 0 || !!state.streamingMessage,
+  );
+  const hasResponses = useChatStore((state) => state.stableMessages.length > 1);
 
   const ailaStreamingStatus = useChatStore(
     (state) => state.ailaStreamingStatus,
   );
 
+  // NOTE: This is a similar (and better?) apprach to the chat store/s scrolling with chatAreaRef
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
 
   const scrollToBottom = useCallback(() => {
-    if (chatEndRef.current && messages.length > 1) {
+    if (chatEndRef.current && hasResponses) {
       // Use ponyfill for safari support
       scrollIntoView(chatEndRef.current, { behavior: "smooth" });
     }
-  }, [chatEndRef, messages]);
+  }, [chatEndRef, hasResponses]);
 
   useEffect(() => {
     autoScroll && scrollToBottom();
-  }, [messages, autoScroll, ailaStreamingStatus, scrollToBottom]);
+  }, [hasResponses, autoScroll, ailaStreamingStatus, scrollToBottom]);
 
   useEffect(() => {
     scrollToBottom();
@@ -64,7 +69,7 @@ export function ChatList({
       scrollToBottom();
     }, 1500);
     return () => clearTimeout(timeout);
-  }, [ailaStreamingStatus, messages, scrollToBottom]);
+  }, [ailaStreamingStatus, hasResponses, scrollToBottom]);
 
   const handleScroll = () => {
     if (chatEndRef.current) {
@@ -79,7 +84,7 @@ export function ChatList({
     }
   };
 
-  if (!messages.length) {
+  if (!hasMessages) {
     return null;
   }
 
