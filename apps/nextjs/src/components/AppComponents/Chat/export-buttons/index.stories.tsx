@@ -23,8 +23,10 @@ const meta = {
     ...chromaticParams(["desktop"]),
     chatContext: {
       id: "123",
-      isStreaming: false,
       lessonPlan: {},
+    },
+    chatStoreState: {
+      ailaStreamingStatus: "Idle",
     },
     ...demoParams({ isDemoUser: false }),
   },
@@ -37,8 +39,8 @@ export const Default: Story = {};
 
 export const IsStreaming: Story = {
   parameters: {
-    chatContext: {
-      isStreaming: true,
+    chatStoreState: {
+      ailaStreamingStatus: "StreamingChatResponse",
     },
   },
 };
