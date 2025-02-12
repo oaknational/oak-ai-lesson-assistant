@@ -14,7 +14,7 @@ const log = aiLogger("aila:quiz");
 
 describe("TestSchemaReranker", () => {
   jest.setTimeout(60000);
-  let reranker: TestSchemaReranker;
+  let reranker: TestSchemaReranker<typeof testRatingSchema>;
   let mockQuizzes: QuizQuestion[][];
   let mockLessonPlan: LooseLessonPlan;
   let mockQuizType: QuizPath;
