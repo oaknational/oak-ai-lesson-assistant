@@ -4,6 +4,7 @@ import { Flex } from "@radix-ui/themes";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 import ChatLhsHeader from "./chat-lhs-header";
 import { ChatList } from "./chat-list";
@@ -26,7 +27,6 @@ const ChatLeftHandSide = ({
   demo,
   isDemoUser,
 }: Readonly<ChatLeftHandSideProps>) => {
-  const { chatAreaRef } = useLessonChat();
   return (
     <Flex
       direction="column"
@@ -42,7 +42,7 @@ const ChatLeftHandSide = ({
         showStreamingStatus={process.env.NEXT_PUBLIC_ENVIRONMENT !== "prd"}
       />
       <div>
-        <ChatPanelArea chatAreaRef={chatAreaRef} isDemoLocked={isDemoLocked}>
+        <ChatPanelArea isDemoLocked={isDemoLocked}>
           <ChatList
             isDemoLocked={isDemoLocked}
             showLessonMobile={showLessonMobile}

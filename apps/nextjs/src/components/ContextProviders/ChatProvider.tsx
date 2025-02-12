@@ -48,18 +48,12 @@ export type ChatContextProps = {
   isLoading: boolean;
   isStreaming: boolean;
   lessonPlan: LooseLessonPlan;
-  // ailaStreamingStatus: AilaStreamingStatus;
   append: (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions | undefined,
   ) => Promise<string | null | undefined>;
-  // reload: () => void;
-  // stop: () => void;
   input: string;
   setInput: React.Dispatch<React.SetStateAction<string>>;
-  chatAreaRef: React.RefObject<HTMLDivElement>;
-  // queuedUserAction: string | null;
-  // executeQueuedAction: () => Promise<void>;
 };
 
 export const ChatContext = createContext<ChatContextProps | null>(null);
@@ -126,7 +120,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const router = useRouter();
   const path = usePathname();
-  const chatAreaRef = useRef<HTMLDivElement>(null);
   const [hasFinished, setHasFinished] = useState(true);
 
   const hasAppendedInitialMessage = useRef<boolean>(false);
@@ -138,6 +131,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   >(undefined);
 
   const streamingFinished = useChatStore((state) => state.streamingFinished);
+  const scrollToBottom = useChatStore((state) => state.scrollToBottom);
   const messageStarted = useLessonPlanStore((state) => state.messageStarted);
   const messageFinished = useLessonPlanStore((state) => state.messageFinished);
 
@@ -189,7 +183,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     onResponse(response) {
       log.info("Chat: On Response");
 
-      chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
+      // TODO: create onResponse handler in store and call from there
+      scrollToBottom();
+
       if (response.status === 401) {
         toast.error(response.statusText);
         setHasFinished(true);
@@ -217,7 +213,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
       setHasFinished(true);
       shouldTrackStreamFinished.current = true;
-      chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
+
       streamingFinished();
       messageFinished();
     },
@@ -327,7 +323,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       lessonPlan: overrideLessonPlan ?? tempLessonPlan,
       hasFinished,
       hasAppendedInitialMessage,
-      chatAreaRef,
       append,
       messages,
       isLoading,
@@ -343,7 +338,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       tempLessonPlan,
       hasFinished,
       hasAppendedInitialMessage,
-      chatAreaRef,
       messages,
       isLoading,
       input,
