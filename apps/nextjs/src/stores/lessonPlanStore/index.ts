@@ -5,13 +5,17 @@ import type {
 import { aiLogger } from "@oakai/logger";
 import { createStore } from "zustand";
 
+import type { TrpcUtils } from "@/utils/trpc";
+
 import type { AiMessage } from "../chatStore/types";
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleMessagesUpdated } from "./stateActionFunctions/handleMessagesUpdated";
+import { handleRefetch } from "./stateActionFunctions/handleRefetch";
 
 const log = aiLogger("lessons:store");
 
 export type LessonPlanStore = {
+  id: string;
   lessonPlan: LooseLessonPlan;
   appliedPatchHashes: string[];
   appliedPatchPaths: LessonPlanKey[];
@@ -23,6 +27,7 @@ export type LessonPlanStore = {
   messageStarted: () => void;
   messagesUpdated: (messages: AiMessage[]) => void;
   messageFinished: () => void;
+  refetch: () => Promise<void>;
 };
 
 const initialPerMessageState = {
@@ -33,9 +38,12 @@ const initialPerMessageState = {
 } satisfies Partial<LessonPlanStore>;
 
 export const createLessonPlanStore = (
+  id: string,
+  trpc: TrpcUtils,
   initialValues: Partial<LessonPlanStore> = {},
 ) => {
   const lessonPlanStore = createStore<LessonPlanStore>((set, get) => ({
+    id,
     lessonPlan: {},
     iteration: undefined,
     isAcceptingChanges: false,
@@ -52,10 +60,12 @@ export const createLessonPlanStore = (
     },
     messagesUpdated: handleMessagesUpdated(set, get),
     messageFinished: () => {
-      // TODO: time to refetch lesson plan from getChat?
       log.info("Message finished");
       set({ isAcceptingChanges: false, ...initialPerMessageState });
+      // TODO: should we refetch when we start moderating?
+      void handleRefetch(set, get, trpc)();
     },
+    refetch: handleRefetch(set, get, trpc),
 
     ...initialValues,
   }));

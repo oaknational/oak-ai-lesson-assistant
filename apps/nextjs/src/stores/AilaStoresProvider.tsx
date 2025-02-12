@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useEffect } from "react";
 
 import { useStore, type StoreApi } from "zustand";
 
@@ -32,7 +32,7 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
 }) => {
   const trpcUtils = trpc.useUtils();
 
-  const [store] = useState(() => {
+  const [stores] = useState(() => {
     const moderationStore = createModerationStore({
       id,
       trpcUtils,
@@ -52,12 +52,18 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
     return {
       chat: chatStore,
       moderation: moderationStore,
-      lessonPlan: createLessonPlanStore(),
+      lessonPlan: createLessonPlanStore(id, trpcUtils),
     };
   });
 
+  // Store initialisation
+  useEffect(() => {
+    void stores.lessonPlan.getState().refetch();
+    void stores.moderation.getState().fetchModerations();
+  }, [stores.lessonPlan, id, stores.moderation]);
+
   return (
-    <AilaStoresContext.Provider value={store}>
+    <AilaStoresContext.Provider value={stores}>
       {children}
     </AilaStoresContext.Provider>
   );
