@@ -39,7 +39,6 @@ import { isAccountLocked } from "../AppComponents/Chat/chat-message/protocol";
 const log = aiLogger("chat");
 
 export type ChatContextProps = {
-  id: string;
   chat: AilaPersistedChat | undefined;
   // initialModerations: Moderation[];
   // toxicModeration: PersistedModerationBase | null;
@@ -303,7 +302,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const value: ChatContextProps = useMemo(
     () => ({
-      id,
       chat: chat ?? undefined,
       lessonPlan: overrideLessonPlan ?? tempLessonPlan,
       messages,
@@ -313,7 +311,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       validPatches,
     }),
     [
-      id,
       chat,
       tempLessonPlan,
       messages,

@@ -34,7 +34,8 @@ export function ChatList({
   const persistedModerations = useModerationStore((state) => state.moderations);
   const lastModeration = useModerationStore((state) => state.lastModeration);
 
-  const { id, messages } = chat;
+  const { messages } = chat;
+  const id = useLessonPlanStore((state) => state.id);
   const hasMessages = useChatStore(
     (state) => state.stableMessages.length > 0 || !!state.streamingMessage,
   );

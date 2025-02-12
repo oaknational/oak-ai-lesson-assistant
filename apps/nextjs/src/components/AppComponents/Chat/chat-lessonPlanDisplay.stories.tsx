@@ -19,7 +19,6 @@ const lessonPlan = {
 } satisfies LooseLessonPlan;
 
 const chatContext: Partial<ChatContextProps> = {
-  id: "123",
   messages: [],
   lessonPlan,
 };
@@ -37,6 +36,9 @@ const meta = {
 
   parameters: {
     ...chromaticParams(["desktop"]),
+    lessonPlanStoreState: {
+      id: "123",
+    },
   },
 } satisfies Meta<typeof LessonPlanDisplay>;
 

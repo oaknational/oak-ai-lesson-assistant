@@ -22,11 +22,13 @@ const meta = {
   parameters: {
     ...chromaticParams(["desktop"]),
     chatContext: {
-      id: "123",
       lessonPlan: {},
     },
     chatStoreState: {
       ailaStreamingStatus: "Idle",
+    },
+    lessonPlanStoreState: {
+      id: "123",
     },
     ...demoParams({ isDemoUser: false }),
   },
