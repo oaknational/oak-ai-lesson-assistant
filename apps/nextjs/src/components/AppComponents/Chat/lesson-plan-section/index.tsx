@@ -15,35 +15,42 @@ import { sectionTitle } from "../drop-down-section/sectionTitle";
 
 export type LessonPlanSectionProps = Readonly<{
   sectionKey: LessonPlanKey;
-  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
-  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
-  userHasCancelledAutoScroll: boolean;
+  setSectionRef: (
+    key: LessonPlanKey,
+    ref: React.MutableRefObject<HTMLDivElement | null>,
+  ) => void;
   showLessonMobile: boolean;
 }>;
 
 export const LessonPlanSection = ({
   sectionKey,
-  sectionRefs,
   showLessonMobile,
+  setSectionRef,
 }: LessonPlanSectionProps) => {
   const section = useLessonPlanStore((state) => state.lessonPlan[sectionKey]);
   const status = useLessonPlanStore(sectionStatusSelector(sectionKey));
 
   const sectionRef = useRef(null);
-  sectionRefs[sectionKey] = sectionRef;
+  useEffect(() => {
+    setSectionRef(sectionKey, sectionRef);
+  }, [setSectionRef, sectionKey, sectionRef]);
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(status === "loaded");
+
+  // NOTE: from old implementation, close section when hiding mobile popout
+  const prevShowLessonMobile = useRef(showLessonMobile);
+  useEffect(() => {
+    const showLessonMobileChanged =
+      showLessonMobile !== prevShowLessonMobile.current;
+    if (showLessonMobileChanged && !showLessonMobile) {
+      setIsOpen(false);
+      prevShowLessonMobile.current = showLessonMobile;
+    }
+  }, [showLessonMobile, setIsOpen]);
 
   useEffect(() => {
     setIsOpen(status === "loaded");
   }, [status]);
-
-  // TODO: from old implementation, close section when hiding mobile popout
-  useEffect(() => {
-    if (!showLessonMobile) {
-      setIsOpen(false);
-    }
-  }, [showLessonMobile, setIsOpen]);
 
   if (status === "empty") {
     return null;

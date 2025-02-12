@@ -31,11 +31,6 @@ const ChatRightHandSideLesson = ({
 
   const [showScrollButton, setShowScrollButton] = useState(false);
 
-  // This retains this existing bug, but is fixed on subsequent PRs
-  const sectionRefs: Partial<
-    Record<LessonPlanKey, React.MutableRefObject<HTMLDivElement | null>>
-  > = {};
-
   const scrollToBottom = () => {
     if (chatEndRef.current) {
       setShowScrollButton(false);
@@ -75,10 +70,7 @@ const ChatRightHandSideLesson = ({
       onScroll={handleScroll}
       style={{ overflowY: "auto" }}
     >
-      <ExportButtons
-        sectionRefs={sectionRefs}
-        documentContainerRef={documentContainerRef}
-      />
+      <ExportButtons />
       <MobileExportButtons
         closeMobileLessonPullOut={closeMobileLessonPullOut}
       />
@@ -99,7 +91,6 @@ const ChatRightHandSideLesson = ({
         <LessonPlanDisplay
           showLessonMobile={showLessonMobile}
           chatEndRef={chatEndRef}
-          sectionRefs={sectionRefs}
           documentContainerRef={documentContainerRef}
         />
       </div>

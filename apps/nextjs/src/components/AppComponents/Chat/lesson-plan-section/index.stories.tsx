@@ -1,28 +1,22 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { userEvent, within } from "@storybook/test";
+import { fn } from "@storybook/test";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
-import DropDownSection from "./";
-
-const MAX_INT32 = 2 ** 31 - 1;
+import { LessonPlanSection } from "../lesson-plan-section";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const meta = {
-  title: "Components/LessonPlan/DropDownSection",
-  component: DropDownSection,
+  title: "Components/LessonPlan/LessonPlanSection",
+  component: LessonPlanSection,
   tags: ["autodocs"],
   args: {
-    section: "learningOutcome",
-    value:
-      "I can explain the reasons why frogs are so important to British society and culture",
-    documentContainerRef: { current: null },
-    streamingTimeout: 0,
-    userHasCancelledAutoScroll: false,
-    sectionRefs: {},
+    sectionKey: "learningOutcome",
+    setSectionRef: fn(),
     showLessonMobile: false,
   },
   decorators: [ChatDecorator, StoreDecorator],
@@ -31,6 +25,11 @@ const meta = {
     chatContext: {
       id: "123",
       messages: [],
+    },
+    chatStoreState: {
+      ailaStreamingStatus: "Idle",
+    },
+    lessonPlanStoreState: {
       lessonPlan: {
         title: "About Frogs",
         keyStage: "Key Stage 2",
@@ -38,41 +37,43 @@ const meta = {
         topic: "Amphibians",
         basedOn: { id: "testId", title: "Frogs in Modern Britain" },
         learningOutcome:
-          "To understand the importance of frogs in British society and culture",
+          "I can explain the reasons why frogs are so important to British society and culture",
       },
     },
-    chatStoreState: {
-      ailaStreamingStatus: "Idle",
-    },
   },
-} satisfies Meta<typeof DropDownSection>;
+} satisfies Meta<typeof LessonPlanSection>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {},
-};
+export const Default: Story = {};
 
 export const Markdown: Story = {
-  args: {
-    value: `# Title 1
+  parameters: {
+    lessonPlanStoreState: {
+      lessonPlan: {
+        learningOutcome: `# Title 1
 ## Title 2
 ### Title 3
 - **Bold**
 - *Italic*
 - Normal`,
+      },
+    },
   },
 };
 
 export const Streaming: Story = {
-  args: { streamingTimeout: MAX_INT32 },
+  parameters: {
+    lessonPlanStoreState: {
+      sectionsToEdit: ["learningOutcome"],
+    },
+  },
 };
 
 export const Closed: Story = {
   parameters: {
     docs: {
-      // NOTE: This should run the play function in the docs page, but seems broken
       story: { autoplay: true },
     },
   },
@@ -87,8 +88,14 @@ export const Closed: Story = {
 
 export const AdditionalMaterials: Story = {
   args: {
-    section: "additionalMaterials",
-    value: "None",
+    sectionKey: "additionalMaterials",
+  },
+  parameters: {
+    lessonPlanStoreState: {
+      lessonPlan: {
+        additionalMaterials: "None",
+      },
+    },
   },
 };
 
@@ -107,15 +114,19 @@ export const Modify: Story = {
 };
 
 export const ModifyAdditionalMaterials: Story = {
+  args: {
+    sectionKey: "additionalMaterials",
+  },
   parameters: {
     docs: {
       // NOTE: This should run the play function in the docs page, but seems broken
       story: { autoplay: true },
     },
-  },
-  args: {
-    section: "additionalMaterials",
-    value: "None",
+    lessonPlanStoreState: {
+      lessonPlan: {
+        additionalMaterials: "None",
+      },
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

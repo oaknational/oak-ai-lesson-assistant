@@ -59,7 +59,9 @@ export const LessonPlanProgressDropdown: React.FC = () => {
                   disabled={!complete}
                   className="mb-7 flex gap-6"
                   onClick={() => {
-                    setScrollToSection(key);
+                    if (complete) {
+                      setScrollToSection(key);
+                    }
                   }}
                 >
                   <span className="flex w-14 items-center justify-center">

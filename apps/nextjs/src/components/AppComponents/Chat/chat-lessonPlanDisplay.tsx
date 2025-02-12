@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
 import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
@@ -12,7 +12,6 @@ import {
   useModerationStore,
   useLessonPlanStore,
 } from "@/stores/AilaStoresProvider";
-import { scrollToRefNative } from "@/utils/scrollToRef";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
@@ -38,7 +37,6 @@ const displayStyles = cva(
 
 export type LessonPlanDisplayProps = Readonly<{
   chatEndRef: React.MutableRefObject<HTMLDivElement | null>;
-  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
   showLessonMobile: boolean;
 }>;
@@ -127,7 +125,6 @@ const useDetectScrollOverride = (
 
 export const LessonPlanDisplay = ({
   chatEndRef,
-  sectionRefs,
   documentContainerRef,
   showLessonMobile,
 }: LessonPlanDisplayProps) => {
@@ -150,8 +147,23 @@ export const LessonPlanDisplay = ({
   const { userHasCancelledAutoScroll } =
     useDetectScrollOverride(documentContainerRef);
 
+  const sectionRefs = useRef<
+    Partial<
+      Record<LessonPlanKey, React.MutableRefObject<HTMLDivElement | null>>
+    >
+  >({});
+  const setSectionRef = useCallback(
+    (
+      key: LessonPlanKey,
+      ref: React.MutableRefObject<HTMLDivElement | null>,
+    ) => {
+      sectionRefs.current[key] = ref;
+    },
+    [sectionRefs],
+  );
+
   useSectionScrolling({
-    sectionRefs,
+    sectionRefs: sectionRefs.current,
     documentContainerRef,
     userHasCancelledAutoScroll,
   });
@@ -210,9 +222,7 @@ export const LessonPlanDisplay = ({
             <LessonPlanSection
               key={section}
               sectionKey={section}
-              sectionRefs={sectionRefs}
-              userHasCancelledAutoScroll={userHasCancelledAutoScroll}
-              documentContainerRef={documentContainerRef}
+              setSectionRef={setSectionRef}
               showLessonMobile={showLessonMobile}
             />
           );
