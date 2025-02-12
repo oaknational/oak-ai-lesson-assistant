@@ -3,6 +3,7 @@ import React from "react";
 import { Flex } from "@radix-ui/themes";
 
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 import ChatLhsHeader from "./chat-lhs-header";
 import { ChatList } from "./chat-list";
