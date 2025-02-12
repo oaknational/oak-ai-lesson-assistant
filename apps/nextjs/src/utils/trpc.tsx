@@ -81,6 +81,4 @@ export function TRPCReactProvider(
 
 export type RouterInputs = inferRouterInputs<AppRouter>;
 
-export type TrpcUtils = ReturnType<typeof trpc.useUtils>;
-
 export { trpc };
