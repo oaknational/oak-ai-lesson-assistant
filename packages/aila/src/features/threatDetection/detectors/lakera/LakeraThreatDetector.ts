@@ -11,17 +11,16 @@ import { lakeraGuardRequestSchema, lakeraGuardResponseSchema } from "./schema";
 
 export class LakeraThreatDetector extends AilaThreatDetector {
   private readonly apiKey: string;
-  private readonly projectId: string;
+  private readonly projectId?: string;
   private readonly apiUrl = "https://api.lakera.ai/v1/guard";
 
   constructor() {
     super();
-    const apiKey = process.env.LAKERA_API_KEY;
-    const projectId = process.env.LAKERA_PROJECT_ID;
+    const apiKey = process.env.LAKERA_GUARD_API_KEY;
+    const projectId = process.env.LAKERA_GUARD_PROJECT_ID;
 
-    if (!apiKey) throw new Error("LAKERA_API_KEY environment variable not set");
-    if (!projectId)
-      throw new Error("LAKERA_PROJECT_ID environment variable not set");
+    if (!apiKey)
+      throw new Error("LAKERA_GUARD_API_KEY environment variable not set");
 
     this.apiKey = apiKey;
     this.projectId = projectId;
@@ -42,9 +41,9 @@ export class LakeraThreatDetector extends AilaThreatDetector {
       case "sensitive_info":
         return "high";
       case "harmful_content":
-        return "medium";
+        return "high";
       default:
-        return "low";
+        return "high";
     }
   }
 
@@ -67,19 +66,19 @@ export class LakeraThreatDetector extends AilaThreatDetector {
   private async callLakeraAPI(
     messages: Message[],
   ): Promise<LakeraGuardResponse> {
+    const requestBody = {
+      messages,
+      breakdown: true,
+      ...(this.projectId && { project_id: this.projectId }),
+    };
+
     const response = await fetch(this.apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.apiKey}`,
       },
-      body: JSON.stringify(
-        lakeraGuardRequestSchema.parse({
-          messages,
-          project_id: this.projectId,
-          breakdown: true,
-        }),
-      ),
+      body: JSON.stringify(lakeraGuardRequestSchema.parse(requestBody)),
     });
 
     if (!response.ok) {

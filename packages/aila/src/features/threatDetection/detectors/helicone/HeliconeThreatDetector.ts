@@ -1,5 +1,5 @@
-import type { ThreatDetectionResult } from "./AilaThreatDetector";
-import { AilaThreatDetector } from "./AilaThreatDetector";
+import type { ThreatDetectionResult } from "../AilaThreatDetector";
+import { AilaThreatDetector } from "../AilaThreatDetector";
 
 export class HeliconeThreatDetector extends AilaThreatDetector {
   protected async authenticate(): Promise<void> {

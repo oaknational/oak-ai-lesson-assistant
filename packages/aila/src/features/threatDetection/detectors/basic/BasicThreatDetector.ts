@@ -2,8 +2,8 @@ import type {
   ThreatCategory,
   ThreatDetectionResult,
   ThreatSeverity,
-} from "./AilaThreatDetector";
-import { AilaThreatDetector } from "./AilaThreatDetector";
+} from "../AilaThreatDetector";
+import { AilaThreatDetector } from "../AilaThreatDetector";
 
 type ThreatPattern = {
   pattern: RegExp;

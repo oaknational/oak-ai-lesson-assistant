@@ -1,4 +1,4 @@
-import { BasicThreatDetector } from "../../basic/BasicThreatDetector";
+import { BasicThreatDetector } from "../../../basic/BasicThreatDetector";
 
 describe("BasicThreatDetector", () => {
   let detector: BasicThreatDetector;
