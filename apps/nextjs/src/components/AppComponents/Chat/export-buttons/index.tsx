@@ -23,7 +23,7 @@ const ExportButtons = ({
   documentContainerRef,
 }: ExportButtonsProps) => {
   const chat = useLessonChat();
-  const { id, isStreaming, lessonPlan } = chat;
+  const { id, isStreaming } = chat;
   const { trackEvent } = useAnalytics();
   const { setDialogWindow } = useDialog();
   const demo = useDemoUser();
@@ -33,8 +33,6 @@ const ExportButtons = ({
       <div className="flex flex-col">
         <div className="flex items-center space-x-14">
           <LessonPlanProgressDropdown
-            lessonPlan={lessonPlan}
-            isStreaming={isStreaming}
             sectionRefs={sectionRefs}
             documentContainerRef={documentContainerRef}
           />

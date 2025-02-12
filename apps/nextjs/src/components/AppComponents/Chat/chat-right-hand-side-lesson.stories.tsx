@@ -1,7 +1,7 @@
-import type { Message } from "@oakai/aila/src/core/chat";
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 
+import type { ParsedMessage } from "@/stores/chatStore/types";
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
@@ -12,19 +12,28 @@ import {
 
 import ChatRightHandSideLesson from "./chat-right-hand-side-lesson";
 
-const DummyUserMessage: Message = {
+const DummyUserMessage: ParsedMessage = {
   id: "123",
   role: "user",
   content: "Dummy message",
+  parts: [],
+  hasError: false,
+  isEditing: false,
 };
 
-const DummyAssistantMessage: Message = {
+const DummyAssistantMessage: ParsedMessage = {
   id: "123",
   role: "assistant",
   content: "Dummy message",
+  parts: [],
+  hasError: false,
+  isEditing: false,
 };
 
-const DummyMessages: Message[] = [DummyUserMessage, DummyAssistantMessage];
+const DummyParsedMessages: ParsedMessage[] = [
+  DummyUserMessage,
+  DummyAssistantMessage,
+];
 
 const meta = {
   title: "Components/LessonPlan/ChatRightHandSideLesson",
@@ -47,7 +56,16 @@ const meta = {
         keyStage: "key-stage-3",
         title: "About Frogs",
       },
-      messages: DummyMessages,
+    },
+    chatStoreState: {
+      stableMessages: DummyParsedMessages,
+    },
+    lessonPlanStoreState: {
+      lessonPlan: {
+        subject: "biology",
+        keyStage: "key-stage-3",
+        title: "About Frogs",
+      },
     },
     ...demoParams({ isDemoUser: false }),
   },
@@ -62,8 +80,8 @@ export const Default: Story = {
 
 export const OnlyOneMessage: Story = {
   parameters: {
-    chatContext: {
-      messages: [DummyUserMessage],
+    chatStoreState: {
+      stableMessages: [DummyUserMessage],
     },
   },
 };
