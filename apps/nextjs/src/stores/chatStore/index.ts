@@ -14,7 +14,7 @@ import type { AiMessage, ParsedMessage } from "./types";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const log = aiLogger("chat:store");
 
-type AiSdkActions = {
+export type AiSdkActions = {
   stop: () => void;
   reload: () => void;
   append: (
