@@ -1,6 +1,4 @@
-import type { StoreApi } from "zustand";
-
-import { createChatStore, type AiSdkActions, type ChatStore } from "..";
+import { createChatStore, type AiSdkActions } from "..";
 
 describe("Chat Store executeQueuedAction", () => {
   let mockAiSdkActions: {
