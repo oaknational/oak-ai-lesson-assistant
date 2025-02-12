@@ -46,10 +46,6 @@ export type ChatContextProps = {
   // lastModeration: PersistedModerationBase | null;
   messages: Message[];
   lessonPlan: LooseLessonPlan;
-  append: (
-    message: Message | CreateMessage,
-    chatRequestOptions?: ChatRequestOptions | undefined,
-  ) => Promise<string | null | undefined>;
   input: string;
   setInput: React.Dispatch<React.SetStateAction<string>>;
 };
@@ -256,22 +252,13 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   useChatStoreAiSdkSync(messages, isLoading, stopStreaming, append, reload);
   useLessonPlanStoreAiSdkSync(messages, isLoading);
 
-  /**
-   *  If the state is being restored from a previous lesson plan, set the lesson plan
-   */
-
+  const storeAppend = useChatStore((state) => state.append);
   useEffect(() => {
     if (chat?.startingMessage && !hasAppendedInitialMessage.current) {
-      void append({
-        content: chat.startingMessage,
-        role: "user",
-      }).catch((err) => {
-        log.error("Failed to append initial message", err);
-        toast.error("Failed to start chat");
-      });
+      void storeAppend(chat.startingMessage);
       hasAppendedInitialMessage.current = true;
     }
-  }, [chat?.startingMessage, append, router, path, hasAppendedInitialMessage]);
+  }, [chat?.startingMessage, storeAppend, hasAppendedInitialMessage]);
 
   // Clear the hash cache each completed message
   useEffect(() => {
@@ -319,8 +306,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       id,
       chat: chat ?? undefined,
       lessonPlan: overrideLessonPlan ?? tempLessonPlan,
-      hasAppendedInitialMessage,
-      append,
       messages,
       input,
       setInput,
@@ -331,11 +316,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       id,
       chat,
       tempLessonPlan,
-      hasAppendedInitialMessage,
       messages,
       input,
       setInput,
-      append,
       partialPatches,
       validPatches,
       overrideLessonPlan,
