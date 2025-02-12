@@ -10,6 +10,7 @@ import type {
   QuizPath,
   QuizQuestion,
 } from "../../protocol/schema";
+import type { BaseType } from "./ChoiceModels";
 // import type { SystemPrompt } from "./QuestionAssesmentPrompt";
 import {
   keyLearningPointsPrompt,
@@ -17,7 +18,10 @@ import {
   QuestionInspectionSystemPrompt,
   QuizInspectionSystemPrompt,
 } from "./QuestionAssesmentPrompt";
-import { starterQuizQuestionSuitabilityDescriptionSchema } from "./rerankers/RerankerStructuredOutputSchema";
+import {
+  starterQuizQuestionSuitabilityDescriptionSchema,
+  testRatingSchema,
+} from "./rerankers/RerankerStructuredOutputSchema";
 
 const ThoughtStep = z.object({
   step: z.number(),
@@ -211,11 +215,13 @@ function combinePromptsAndQuestions(
  *
  * @returns {Promise<OpenAI.Chat.Completions.ChatCompletion>} A promise that resolves to the OpenAI chat completion response.
  */
-async function evaluateStarterQuiz(
+async function evaluateStarterQuiz<
+  T extends z.ZodType<BaseType & Record<string, unknown>>,
+>(
   lessonPlan: LooseLessonPlan,
   questions: QuizQuestion[],
   max_tokens: number = 1500,
-  ranking_schema: z.ZodType<any> = starterQuizQuestionSuitabilityDescriptionSchema,
+  ranking_schema: T,
 ): Promise<OpenAI.Chat.Completions.ChatCompletion> {
   const openAIMessage = combinePromptsAndQuestions(
     lessonPlan,
@@ -245,13 +251,15 @@ async function evaluateStarterQuiz(
  * @param {z.ZodType<any>} [ranking_schema=starterQuizQuestionSuitabilityDescriptionSchema] - The schema to be used for parsing the response. Defaults to the starter quiz question suitability description schema.
  * @returns {Promise<OpenAI.Chat.Completions.ChatCompletion>} A promise that resolves to the OpenAI chat completion response.
  */
-async function evaluateQuiz(
+async function evaluateQuiz<
+  T extends z.ZodType<BaseType & Record<string, unknown>>,
+>(
   lessonPlan: LooseLessonPlan,
   questions: QuizQuestion[],
   max_tokens: number = 1500,
-  ranking_schema: z.ZodType<any>,
+  ranking_schema: T,
   quizType: QuizPath,
-): Promise<ParsedChatCompletion<any>> {
+): Promise<ParsedChatCompletion<z.infer<T>>> {
   // TODO: change this to use the correct system prompt for the quiz type.
   // TODO: change this to use the correct lesson plan section for the quiz type.
 
@@ -285,30 +293,30 @@ export {
   quizToLLMMessages,
 };
 
-export function parsedResponse(schema: z.ZodType<any>, response: any) {
-  const math_reasoning = response.choices[0].message;
+// export function parsedResponse(schema: z.ZodType<any>, response: any) {
+//   const math_reasoning = response.choices[0].message;
 
-  // If the model refuses to respond, you will get a refusal message
-  if (math_reasoning.refusal) {
-    console.log(math_reasoning.refusal);
-  } else {
-    console.log(math_reasoning.parsed);
-  }
+//   // If the model refuses to respond, you will get a refusal message
+//   if (math_reasoning.refusal) {
+//     console.log(math_reasoning.refusal);
+//   } else {
+//     console.log(math_reasoning.parsed);
+//   }
 
-  const content = response.choices[0]?.message.content;
+//   const content = response.choices[0]?.message.content;
 
-  if (schema && content) {
-    try {
-      const parsedContent = JSON.parse(content);
-      return schema.parse(parsedContent);
-    } catch (error) {
-      console.error("Failed to parse or validate response:", error);
-      throw new Error("Invalid response format");
-    }
-  }
+//   if (schema && content) {
+//     try {
+//       const parsedContent = JSON.parse(content);
+//       return schema.parse(parsedContent);
+//     } catch (error) {
+//       console.error("Failed to parse or validate response:", error);
+//       throw new Error("Invalid response format");
+//     }
+//   }
 
-  return content;
-}
+//   return content;
+// }
 
 export async function OpenAICallReranker(
   messages: any[],

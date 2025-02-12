@@ -45,7 +45,7 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
     >(
       async (quiz: QuizQuestion[]) => {
         try {
-          const result = await evaluateQuiz(
+          const result = await evaluateQuiz<T>(
             lessonPlan,
             quiz,
             1500,
@@ -55,7 +55,7 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
           if (result instanceof Error) {
             throw result;
           }
-          return result as ParsedChatCompletion<z.infer<T>>;
+          return result;
         } catch (error) {
           throw error instanceof Error ? error : new Error(String(error));
         }
