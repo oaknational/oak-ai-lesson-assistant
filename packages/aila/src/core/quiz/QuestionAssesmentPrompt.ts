@@ -1,7 +1,8 @@
-export interface SystemPrompt {
-  role: string;
-  content: string;
-}
+import type { OpenAI } from "openai";
+
+// export type SystemPrompt = OpenAI.Chat.Completions.ChatCompletionMessage & {
+//   role: "system";
+// };
 
 export const questionEffectivenessPrompt = `Given a lesson plan with prior knowledge requirements and key learning points, along with a proposed assessment question, rate the question's effectiveness on a scale of 1-10 (1 being least effective, 10 being most effective) based on the following criteria:
   1. Relevance to Prior Knowledge:
@@ -39,15 +40,17 @@ export const quizEffectivenessPrompt = `Given a lesson plan with prior knowledge
      - Can it help identify gaps in knowledge that need to be addressed during the lesson?
   Provide a numerical rating for each criterion and an overall rating. Justify your ratings with brief explanations, highlighting strengths and areas for improvement in the question.`;
 
-export const QuestionInspectionSystemPrompt: SystemPrompt = {
-  role: "system",
-  content: questionEffectivenessPrompt,
-};
+export const QuestionInspectionSystemPrompt: OpenAI.Chat.Completions.ChatCompletionSystemMessageParam =
+  {
+    role: "system" as const,
+    content: questionEffectivenessPrompt,
+  };
 
-export const QuizInspectionSystemPrompt: SystemPrompt = {
-  role: "system",
-  content: quizEffectivenessPrompt,
-};
+export const QuizInspectionSystemPrompt: OpenAI.Chat.Completions.ChatCompletionSystemMessageParam =
+  {
+    role: "system" as const,
+    content: quizEffectivenessPrompt,
+  };
 export const priorKnowledgePrompt =
   "#Prior Knowledge \nThe below is the prior knowledge for the lesson in which the question is being assessed as part of a starter Quiz for the lesson. Please consider how well the question aligns with this prior knowledge.";
 

@@ -10,7 +10,7 @@ import type {
   QuizPath,
   QuizQuestion,
 } from "../../protocol/schema";
-import type { SystemPrompt } from "./QuestionAssesmentPrompt";
+// import type { SystemPrompt } from "./QuestionAssesmentPrompt";
 import {
   keyLearningPointsPrompt,
   priorKnowledgePrompt,
@@ -35,6 +35,16 @@ type LLMOutput = z.infer<typeof OutputSchema>;
 // TODO Change implementation to openai Provider
 type sectionCategory = "priorKnowledge" | "keyLearningPoints";
 
+type ChatContent =
+  | OpenAI.Chat.Completions.ChatCompletionContentPartText
+  | OpenAI.Chat.Completions.ChatCompletionContentPartImage;
+
+// type ChatMessage = OpenAI.Chat.Completions.ChatCompletionMessageParam;
+
+type ChatMessage =
+  | OpenAI.Chat.Completions.ChatCompletionSystemMessageParam
+  | OpenAI.Chat.Completions.ChatCompletionUserMessageParam;
+
 export class OpenAIRanker {
   public async rankQuestion(
     lessonPlan: LooseLessonPlan,
@@ -54,55 +64,52 @@ export class OpenAIRanker {
   }
 }
 
-function processStringWithImages(text: string): any[] {
+function processStringWithImages(text: string): ChatContent[] {
   const parts = text.split(/(\!\[.*?\]\(.*?\))/);
   return parts
-    .map((part) => {
+    .map((part): ChatContent | null => {
       if (part.startsWith("![")) {
         const imageUrl = part.match(/\((.*?)\)/)?.[1];
         return imageUrl
-          ? { type: "image_url", image_url: { url: imageUrl } }
+          ? { type: "image_url" as const, image_url: { url: imageUrl } }
           : null;
       } else if (part.trim()) {
-        return { type: "text", text: part.trim() };
+        return { type: "text" as const, text: part.trim() };
       }
       return null;
     })
-    .filter(Boolean);
+    .filter((part): part is ChatContent => part !== null);
 }
 
-function quizToLLMMessages(
-  quizQuestion: QuizQuestion,
-): Array<{ role: string; content: any[] }> {
-  const content: any[] = [];
+function quizToLLMMessages(quizQuestion: QuizQuestion): ChatMessage {
+  const content: ChatContent[] = [];
 
   // Process question
   content.push(...processStringWithImages(quizQuestion.question));
 
   // Process answers
-  content.push({ type: "text", text: "\n\nCorrect answer(s):" });
+  content.push({ type: "text" as const, text: "\n\nCorrect answer(s):" });
   quizQuestion.answers.forEach((answer, index) => {
-    content.push({ type: "text", text: `${index + 1}: ` });
+    content.push({ type: "text" as const, text: `${index + 1}: ` });
     content.push(...processStringWithImages(answer));
-    content.push({ type: "text", text: "\n" });
+    content.push({ type: "text" as const, text: "\n" });
   });
 
   // Process distractors
-  content.push({ type: "text", text: "\n\nDistractors:" });
+  content.push({ type: "text" as const, text: "\n\nDistractors:" });
   quizQuestion.distractors.forEach((distractor, index) => {
-    content.push({ type: "text", text: `${index + 1}: ` });
+    content.push({ type: "text" as const, text: `${index + 1}: ` });
     content.push(...processStringWithImages(distractor));
-    content.push({ type: "text", text: "\n" });
+    content.push({ type: "text" as const, text: "\n" });
   });
 
-  return content;
+  return { role: "user" as const, content };
 }
 
 function lessonPlanSectionToMessage(
   lessonPlan: LooseLessonPlan,
   lessonPlanSectionName: sectionCategory,
-) {
-  // TODO - Insert Error Handling for empty lessonPlanSection
+): ChatContent {
   let promptprefix = "";
   if (lessonPlanSectionName === "priorKnowledge") {
     promptprefix = priorKnowledgePrompt;
@@ -115,26 +122,27 @@ function lessonPlanSectionToMessage(
   const lessonPlanSection = lessonPlan[lessonPlanSectionName] ?? [];
   const sectionContent = lessonPlanSection.join("\n");
   const outputContent = `${promptprefix}\n${sectionContent}`;
-  return { type: "text", text: outputContent };
+  return { type: "text" as const, text: outputContent };
 }
 
-// TODO: Properly type these with openAI types
-
-function contentListToUser(messages: any[]) {
-  return { role: "user", content: messages };
+function contentListToUser(messages: ChatContent[]): ChatMessage {
+  return { role: "user" as const, content: messages };
 }
 
 function combinePrompts(
   lessonPlan: LooseLessonPlan,
   question: QuizQuestion,
-): any[] {
-  const Messages: any[] = [];
-  const Content: any[] = [];
+): ChatMessage[] {
+  const Messages: ChatMessage[] = [];
+  const Content: ChatContent[] = [];
 
   Messages.push(QuestionInspectionSystemPrompt);
 
   Content.push(lessonPlanSectionToMessage(lessonPlan, "priorKnowledge"));
-  Content.push(...quizToLLMMessages(question));
+  const questionMessage = quizToLLMMessages(question);
+  if (Array.isArray(questionMessage.content)) {
+    Content.push(...questionMessage.content);
+  }
   Messages.push(contentListToUser(Content));
   //   Messages.push(lessonPlanSectionToMessage(lessonPlan, "priorKnowledge"));
   //   Messages.push(quizToLLMMessages(question));
@@ -147,14 +155,18 @@ function combinePrompts(
  * @param {QuizQuestion[]} questions - An array of QuizQuestion objects to be converted.
  * @returns {any[]} An array of formatted content objects ready for use with a language model.
  */
-function quizQuestionsToOpenAIMessageFormat(questions: QuizQuestion[]): any[] {
-  const Content: any[] = [];
+function quizQuestionsToOpenAIMessageFormat(
+  questions: QuizQuestion[],
+): ChatMessage {
+  const content: ChatContent[] = [];
   const promptList = questions.map((question) => quizToLLMMessages(question));
   promptList.forEach((prompt, index) => {
-    Content.push({ type: "text", text: `# Question ${index + 1}:\n` });
-    Content.push(...prompt);
+    content.push({ type: "text" as const, text: `# Question ${index + 1}:\n` });
+    if (Array.isArray(prompt.content)) {
+      content.push(...prompt.content);
+    }
   });
-  return Content;
+  return { role: "user" as const, content };
 }
 
 /**
@@ -168,18 +180,21 @@ function quizQuestionsToOpenAIMessageFormat(questions: QuizQuestion[]): any[] {
 function combinePromptsAndQuestions(
   lessonPlan: LooseLessonPlan,
   questions: QuizQuestion[],
-  systemPrompt: SystemPrompt,
+  systemPrompt: OpenAI.Chat.Completions.ChatCompletionSystemMessageParam,
   lessonPlanSectionForConsideration: sectionCategory,
-): any[] {
-  const Messages: any[] = [];
-  const Content: any[] = [];
+): ChatMessage[] {
+  const Messages: ChatMessage[] = [];
+  const Content: ChatContent[] = [];
 
   Messages.push(systemPrompt);
 
   Content.push(
     lessonPlanSectionToMessage(lessonPlan, lessonPlanSectionForConsideration),
   );
-  Content.push(...quizQuestionsToOpenAIMessageFormat(questions));
+  const questionMessage = quizQuestionsToOpenAIMessageFormat(questions);
+  if (Array.isArray(questionMessage.content)) {
+    Content.push(...questionMessage.content);
+  }
   Messages.push(contentListToUser(Content));
   return Messages;
 }
@@ -351,7 +366,7 @@ export async function OpenAICallLogProbs(
 }
 
 export async function OpenAICallCrossEncoder(
-  reranking_prompt: SystemPrompt,
+  reranking_prompt: OpenAI.Chat.Completions.ChatCompletionSystemMessageParam,
   reranking_messages: any[],
   bias_constant: number = 100,
 ) {
