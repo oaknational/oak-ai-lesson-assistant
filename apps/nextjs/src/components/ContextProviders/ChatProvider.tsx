@@ -45,7 +45,6 @@ export type ChatContextProps = {
   // toxicModeration: PersistedModerationBase | null;
   // lastModeration: PersistedModerationBase | null;
   messages: Message[];
-  isLoading: boolean;
   lessonPlan: LooseLessonPlan;
   append: (
     message: Message | CreateMessage,
@@ -323,7 +322,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       hasAppendedInitialMessage,
       append,
       messages,
-      isLoading,
       input,
       setInput,
       partialPatches,
@@ -335,7 +333,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       tempLessonPlan,
       hasAppendedInitialMessage,
       messages,
-      isLoading,
       input,
       setInput,
       append,
