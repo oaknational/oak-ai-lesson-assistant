@@ -58,9 +58,7 @@ export const createModerationStore = ({
       handleUpdateModerationState(mod, set, get);
     },
 
-    fetchModerations: async () => {
-      await handleFetchModerations(set, get, trpcUtils);
-    },
+    fetchModerations: handleFetchModerations(set, get, trpcUtils),
 
     clearModerations: () => {
       set({

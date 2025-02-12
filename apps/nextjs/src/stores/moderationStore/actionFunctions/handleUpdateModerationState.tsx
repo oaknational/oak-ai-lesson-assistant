@@ -12,7 +12,7 @@ export const handleUpdateModerationState = (
     return;
   }
   const lastMod = mods[mods.length - 1] ?? null;
-  const toxicMod = lastMod ? isToxic(lastMod) : null;
+  const toxicMod = mods.find((mod) => isToxic(mod));
   set({
     moderations: mods,
     lastModeration: lastMod,

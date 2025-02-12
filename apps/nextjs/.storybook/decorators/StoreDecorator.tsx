@@ -40,9 +40,17 @@ export const StoreDecorator: Decorator = (Story, { parameters }) => {
     return {
       chat: chatStore,
       moderation: moderationStore,
-      lessonPlan: createLessonPlanStore(),
+      lessonPlan: createLessonPlanStore(
+        id,
+        trpcUtils,
+        parameters.lessonPlanStoreState,
+      ),
     };
-  }, [parameters.moderationStoreState, parameters.chatStoreState]);
+  }, [
+    parameters.moderationStoreState,
+    parameters.chatStoreState,
+    parameters.lessonPlanStoreState,
+  ]);
 
   return (
     <AilaStoresContext.Provider value={store}>
