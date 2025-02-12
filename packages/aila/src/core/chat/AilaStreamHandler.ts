@@ -155,9 +155,8 @@ export class AilaStreamHandler {
       const detectors = this._chat.aila.threatDetection?.detectors ?? [];
       for (const detector of detectors) {
         if (await detector.isThreatError(error)) {
-          invariant(this._chat.userId, "User ID is required");
           throw new AilaThreatDetectionError(
-            this._chat.userId,
+            this._chat.userId ?? "unknown",
             "Threat detected",
             { cause: error },
           );
