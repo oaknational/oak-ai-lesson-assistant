@@ -8,7 +8,11 @@ import type { Message } from "ai";
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
-import { useChatStore, useModerationStore } from "@/stores/AilaStoresProvider";
+import {
+  useChatStore,
+  useModerationStore,
+  useLessonPlanStore,
+} from "@/stores/AilaStoresProvider";
 import type { AilaStreamingStatus } from "@/stores/chatStore";
 
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
@@ -111,7 +115,10 @@ export const ChatMessagesDisplay = ({
   ailaStreamingStatus,
   demo,
 }: ChatMessagesDisplayProps) => {
-  const { lessonPlan, isStreaming } = useLessonChat();
+  const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
+  const isStreaming = useChatStore(
+    (state) => state.ailaStreamingStatus !== "Idle",
+  );
   const { totalSections, totalSectionsComplete } = useProgressForDownloads({
     lessonPlan,
     isStreaming,

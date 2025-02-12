@@ -1,3 +1,4 @@
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
@@ -7,18 +8,20 @@ import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
 
+const lessonPlan = {
+  title: "About Frogs",
+  keyStage: "Key Stage 2",
+  subject: "Science",
+  topic: "Amphibians",
+  basedOn: { title: "Frogs in Modern Britain", id: "123" },
+  learningOutcome:
+    "To understand the importance of frogs in British society and culture",
+} satisfies LooseLessonPlan;
+
 const chatContext: Partial<ChatContextProps> = {
   id: "123",
   messages: [],
-  lessonPlan: {
-    title: "About Frogs",
-    keyStage: "Key Stage 2",
-    subject: "Science",
-    topic: "Amphibians",
-    basedOn: { title: "Frogs in Modern Britain", id: "123" },
-    learningOutcome:
-      "To understand the importance of frogs in British society and culture",
-  },
+  lessonPlan,
 };
 
 const meta = {
@@ -66,6 +69,9 @@ export const WithModeration: Story = {
     chatContext: {
       ...chatContext,
     },
+    lessonPlanStoreState: {
+      lessonPlan,
+    },
   },
 };
 
@@ -79,8 +85,12 @@ export const Loading: Story = {
       ...chatContext,
       lessonPlan: {},
     },
+
     moderationStoreState: {
       lastModeration: null,
+    },
+    lessonPlanStoreState: {
+      lessonPlan,
     },
   },
 };

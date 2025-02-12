@@ -1,20 +1,16 @@
 import React, { useState } from "react";
 
-import type {
-  LessonPlanKey,
-  LooseLessonPlan,
-} from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Flex } from "@radix-ui/themes";
 
 import { Icon } from "@/components/Icon";
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 import { scrollToRef } from "@/utils/scrollToRef";
 
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 
 export type LessonPlanProgressDropdownProps = Readonly<{
-  lessonPlan: LooseLessonPlan;
-  isStreaming: boolean;
   sectionRefs: Partial<
     Record<LessonPlanKey, React.MutableRefObject<HTMLDivElement | null>>
   >;
@@ -23,7 +19,11 @@ export type LessonPlanProgressDropdownProps = Readonly<{
 
 export const LessonPlanProgressDropdown: React.FC<
   LessonPlanProgressDropdownProps
-> = ({ lessonPlan, sectionRefs, documentContainerRef, isStreaming }) => {
+> = ({ sectionRefs, documentContainerRef }) => {
+  const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
+  const isStreaming = useChatStore(
+    (state) => state.ailaStreamingStatus !== "Idle",
+  );
   const { sections, totalSections, totalSectionsComplete } =
     useProgressForDownloads({ lessonPlan, isStreaming });
   const [openProgressDropDown, setOpenProgressDropDown] = useState(false);
