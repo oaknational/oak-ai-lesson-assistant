@@ -7,36 +7,16 @@ import type {
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
+import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
 
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
 const meta = {
   title: "Components/LessonPlan/LessonPlanProgressDropdown",
   component: LessonPlanProgressDropdown,
+  decorators: [ChatStoreDecorator],
   tags: ["autodocs"],
-  parameters: {
-    ...chromaticParams(["desktop"]),
-  },
-} satisfies Meta<typeof LessonPlanProgressDropdown>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = {
   args: {
-    isStreaming: false,
-    lessonPlan: {
-      // 1 (lesson details)
-      title: "Introduction to Glaciation",
-      keyStage: "key-stage-3",
-      subject: "geography",
-      // 2
-      learningOutcome: "Sample learning outcome",
-      // 3
-      learningCycles: ["Sample learning cycles"],
-      // 4
-      priorKnowledge: ["Sample prior knowledge"],
-    },
     sectionRefs: {
       title: { current: null },
       keyStage: { current: null },
@@ -50,77 +30,110 @@ export const Default: Story = {
     },
     documentContainerRef: { current: null },
   },
+  parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "Idle",
+    },
+    ...chromaticParams(["desktop"]),
+  },
+} satisfies Meta<typeof LessonPlanProgressDropdown>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  parameters: {
+    lessonPlanStoreState: {
+      lessonPlan: {
+        // 1 (lesson details)
+        title: "Introduction to Glaciation",
+        keyStage: "key-stage-3",
+        subject: "geography",
+        // 2
+        learningOutcome: "Sample learning outcome",
+        // 3
+        learningCycles: ["Sample learning cycles"],
+        // 4
+        priorKnowledge: ["Sample prior knowledge"],
+      },
+    },
+  },
 };
 
 export const PartiallyCompleted: Story = {
-  args: {
-    ...Default.args,
-    isStreaming: true,
-    lessonPlan: {
-      // 1 (lesson details)
-      title: "Introduction to Glaciation",
-      keyStage: "key-stage-3",
-      subject: "geography",
-      // 2
-      learningOutcome: "Sample learning outcome",
-      // 3
-      learningCycles: ["Sample learning cycles"],
-      // 4
-      priorKnowledge: ["Sample prior knowledge"],
-      // 5
-      keyLearningPoints: ["Sample key learning point"],
-      // 6
-      misconceptions: [sampleMisconception()],
-      // 7
-      cycle1: sampleCycle(1),
-      // Only cycle1 is completed, but that is sufficient for downloads
+  parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "StreamingLessonPlan",
+    },
+    lessonPlanStoreState: {
+      lessonPlan: {
+        // 1 (lesson details)
+        title: "Introduction to Glaciation",
+        keyStage: "key-stage-3",
+        subject: "geography",
+        // 2
+        learningOutcome: "Sample learning outcome",
+        // 3
+        learningCycles: ["Sample learning cycles"],
+        // 4
+        priorKnowledge: ["Sample prior knowledge"],
+        // 5
+        keyLearningPoints: ["Sample key learning point"],
+        // 6
+        misconceptions: [sampleMisconception()],
+        // 7
+        cycle1: sampleCycle(1),
+        // Only cycle1 is completed, but that is sufficient for downloads
+      },
     },
   },
 };
 
 export const FullyCompleted: Story = {
-  args: {
-    ...Default.args,
-    lessonPlan: {
-      // 1 (lesson details)
-      title: "Introduction to Glaciation",
-      keyStage: "key-stage-3",
-      subject: "geography",
-      // 2
-      learningOutcome: "Sample learning outcome",
-      // 3
-      learningCycles: ["Sample learning cycles"],
-      // 4
-      priorKnowledge: ["Sample prior knowledge"],
-      // 5
-      keyLearningPoints: ["Sample key learning points"],
-      // 6
-      misconceptions: [sampleMisconception()],
-      // 7
-      keywords: [sampleKeyword()],
-      // 8
-      starterQuiz: sampleQuiz(),
-      // 9
-      cycle1: sampleCycle(1),
-      cycle2: sampleCycle(2),
-      cycle3: sampleCycle(3),
-      // 10
-      exitQuiz: sampleQuiz(),
-      additionalMaterials: "Sample additional materials",
+  parameters: {
+    lessonPlanStoreState: {
+      lessonPlan: {
+        // 1 (lesson details)
+        title: "Introduction to Glaciation",
+        keyStage: "key-stage-3",
+        subject: "geography",
+        // 2
+        learningOutcome: "Sample learning outcome",
+        // 3
+        learningCycles: ["Sample learning cycles"],
+        // 4
+        priorKnowledge: ["Sample prior knowledge"],
+        // 5
+        keyLearningPoints: ["Sample key learning points"],
+        // 6
+        misconceptions: [sampleMisconception()],
+        // 7
+        keywords: [sampleKeyword()],
+        // 8
+        starterQuiz: sampleQuiz(),
+        // 9
+        cycle1: sampleCycle(1),
+        cycle2: sampleCycle(2),
+        cycle3: sampleCycle(3),
+        // 10
+        exitQuiz: sampleQuiz(),
+        additionalMaterials: "Sample additional materials",
+      },
     },
   },
 };
 
 export const PartialCycles: Story = {
-  args: {
-    ...Default.args,
-    lessonPlan: {
-      // 1 - 4
-      ...(Default?.args?.lessonPlan ?? {}),
-      // 5
-      cycle1: sampleCycle(1),
-      cycle2: sampleCycle(2),
-      // cycle3 is missing, but that is sufficient for downloads
+  parameters: {
+    lessonPlanStoreState: {
+      lessonPlan: {
+        // 1 - 4
+        ...(Default?.parameters?.lessonPlanStoreState?.lessonPlan ?? {}),
+        // 5
+        cycle1: sampleCycle(1),
+        cycle2: sampleCycle(2),
+        // cycle3 is missing, but that is sufficient for downloads
+      },
     },
   },
 };

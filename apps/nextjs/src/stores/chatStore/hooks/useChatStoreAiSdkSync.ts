@@ -17,7 +17,7 @@ export const useChatStoreAiSdkSync = (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions | undefined,
   ) => Promise<string | null | undefined>,
-  reload: () => void,
+  reload: () => Promise<string | null | undefined>,
 ) => {
   const setMessages = useChatStore((state) => state.setMessages);
   const setAiSdkActions = useChatStore((state) => state.setAiSdkActions);
