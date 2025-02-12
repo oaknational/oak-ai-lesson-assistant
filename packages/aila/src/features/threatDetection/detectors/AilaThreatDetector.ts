@@ -8,7 +8,6 @@ export const threatSeveritySchema = z.enum([
 ]);
 export type ThreatSeverity = z.infer<typeof threatSeveritySchema>;
 
-// Establish this list of categories
 export const threatCategorySchema = z.enum([
   "ascii_smuggling",
   "prompt_injection",
@@ -42,9 +41,20 @@ export const threatDetectionResultSchema = z.object({
 export type ThreatDetectionResult = z.infer<typeof threatDetectionResultSchema>;
 
 export abstract class AilaThreatDetector {
+  protected readonly severityOrder: ThreatSeverity[] = [
+    "low",
+    "medium",
+    "high",
+    "critical",
+  ];
+
   protected abstract authenticate(): Promise<void>;
 
   abstract detectThreat(content: unknown): Promise<ThreatDetectionResult>;
 
   abstract isThreatError(error: unknown): Promise<boolean>;
+
+  protected compareSeverity(a: ThreatSeverity, b: ThreatSeverity): number {
+    return this.severityOrder.indexOf(a) - this.severityOrder.indexOf(b);
+  }
 }

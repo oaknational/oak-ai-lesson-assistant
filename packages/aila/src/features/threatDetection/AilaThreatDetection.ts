@@ -2,6 +2,7 @@ import type { AilaThreatDetectionFeature } from "../types";
 import type {
   AilaThreatDetector,
   ThreatDetectionResult,
+  ThreatSeverity,
 } from "./detectors/AilaThreatDetector";
 
 export class AilaThreatDetection implements AilaThreatDetectionFeature {
@@ -31,7 +32,7 @@ export class AilaThreatDetection implements AilaThreatDetectionFeature {
     }
 
     // Return the highest severity threat
-    const severityOrder: ["low", "medium", "high", "critical"] = [
+    const severityOrder: ThreatSeverity[] = [
       "low",
       "medium",
       "high",
