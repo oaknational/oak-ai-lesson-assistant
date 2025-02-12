@@ -1,3 +1,15 @@
+# [1.23.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.22.1...v1.23.0) (2025-02-06)
+
+
+### Bug Fixes
+
+* add message queueing to chat store ([#517](https://github.com/oaknational/oak-ai-lesson-assistant/issues/517)) ([47d5552](https://github.com/oaknational/oak-ai-lesson-assistant/commit/47d555280bcd47aac0481079cde84c1e0a40d76c))
+
+
+### Features
+
+* move actions to chat store ([#510](https://github.com/oaknational/oak-ai-lesson-assistant/issues/510)) ([c9b45cb](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c9b45cbfc2e2d1b28db4c042c21112406650884a))
+
 ## [1.22.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.22.0...v1.22.1) (2025-01-22)
 
 
