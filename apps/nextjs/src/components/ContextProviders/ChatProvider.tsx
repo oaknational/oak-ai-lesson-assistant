@@ -257,7 +257,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       setHasFinished(true);
       shouldTrackStreamFinished.current = true;
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
-
       streamingFinished();
       messageFinished();
     },
