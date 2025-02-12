@@ -5,7 +5,7 @@ export const keyLearningPointsPromptPart = ({
   keyLearningPoints,
 }: RawLesson) =>
   keyLearningPoints?.length
-    ? `The lesson should include the following key learning points. Include these in the lesson plan:
+    ? `The lesson's keyLearningPoints should match exactly this list of key learning points:
 
 ${toMarkdownList(keyLearningPoints, (k) => k.keyLearningPoint)}`
     : null;

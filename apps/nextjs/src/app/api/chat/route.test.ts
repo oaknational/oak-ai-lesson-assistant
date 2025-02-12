@@ -36,31 +36,35 @@ describe("Chat API Route", () => {
     jest.spyOn(mockLLMService, "createChatCompletionObjectStream");
 
     testConfig = {
-      createAila: jest.fn().mockImplementation(async (options) => {
-        const ailaConfig: AilaInitializationOptions = {
-          options: {
-            usePersistence: false,
-            useRag: false,
-            useAnalytics: false,
-            useModeration: false,
-            useErrorReporting: false,
-            useThreatDetection: false,
+      createAila: jest
+        .fn()
+        .mockImplementation(
+          async (options: Partial<AilaInitializationOptions>) => {
+            const ailaConfig: AilaInitializationOptions = {
+              options: {
+                usePersistence: false,
+                useRag: false,
+                useAnalytics: false,
+                useModeration: false,
+                useErrorReporting: false,
+                useThreatDetection: false,
+              },
+              chat: {
+                id: chatId,
+                userId,
+                messages: options?.chat?.messages ?? [],
+              },
+              plugins: [],
+              services: {
+                chatLlmService: mockLLMService,
+                chatCategoriser: mockChatCategoriser,
+              },
+            };
+            const ailaInstance = new Aila(ailaConfig);
+            await ailaInstance.initialise();
+            return ailaInstance;
           },
-          chat: {
-            id: chatId,
-            userId,
-            messages: options.chat.messages ?? [],
-          },
-          plugins: [],
-          services: {
-            chatLlmService: mockLLMService,
-            chatCategoriser: mockChatCategoriser,
-          },
-        };
-        const ailaInstance = new Aila(ailaConfig);
-        await ailaInstance.initialise();
-        return ailaInstance;
-      }),
+        ),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       prisma: {} as any,
     };

@@ -6,8 +6,8 @@ import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 import type { AilaStreamingStatus } from "@/stores/chatStore";
-import { useChatStore } from "@/stores/chatStore";
 import { canAppendSelector } from "@/stores/chatStore/selectors";
 
 import { useDialog } from "../DialogContext";

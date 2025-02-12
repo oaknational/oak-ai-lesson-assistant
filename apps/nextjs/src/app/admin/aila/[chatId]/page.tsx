@@ -44,5 +44,11 @@ export default function AdminChat({ params }: Readonly<AdminChatProps>) {
     return <div>No moderations found</div>;
   }
 
-  return <AdminChatView chat={chat} moderations={moderations} />;
+  return (
+    <AdminChatView
+      chat={chat}
+      moderations={moderations.moderations}
+      safetyViolations={moderations.safetyViolations}
+    />
+  );
 }

@@ -6,7 +6,7 @@ export function starterQuizPromptPart(rawLesson: RawLesson) {
 
   const starterQuizQuestions = starterQuiz ? transformQuiz(starterQuiz) : [];
   return starterQuizQuestions.length
-    ? `The lesson should include the following starter quiz questions. Include them within the lesson plan's starter quiz:
+    ? `The lesson should include the following starter quiz questions. Include them UNEDITED within the lesson plan's starter quiz:
 
 ${JSON.stringify(starterQuizQuestions)}`
     : null;

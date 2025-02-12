@@ -5,18 +5,40 @@ import { redirect } from "next/navigation";
 import { ChatStart } from "@/components/AppComponents/Chat/chat-start";
 import Layout from "@/components/AppComponents/Layout";
 
-export default function IndexPage() {
+interface IndexPageProps {
+  searchParams: {
+    keyStage?: string;
+    subject?: string;
+    unitTitle?: string;
+    searchExpression?: string;
+  };
+}
+
+export default async function IndexPage({ searchParams }: IndexPageProps) {
   const clerkAuthentication = auth();
   const { userId }: { userId: string | null } = clerkAuthentication;
   if (!userId) {
     redirect("/sign-in?next=/aila");
   }
 
+  // Destructure searchParams with default values of null if not present
+  const {
+    keyStage = undefined,
+    subject = undefined,
+    unitTitle = undefined,
+    searchExpression = undefined,
+  } = searchParams;
+
   return (
     <>
       <SignedIn>
         <Layout>
-          <ChatStart />
+          <ChatStart
+            keyStage={keyStage}
+            subject={subject}
+            unitTitle={unitTitle}
+            searchExpression={searchExpression}
+          />
         </Layout>
       </SignedIn>
       <SignedOut></SignedOut>
