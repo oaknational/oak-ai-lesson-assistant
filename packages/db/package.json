@@ -70,7 +70,7 @@
   "prettier": "@oakai/prettier-config",
   "dependencies": {
     "@oakai/logger": "*",
-    "@prisma/client": "^5.16.1",
+    "@prisma/client": "^6.3.1",
     "@prisma/extension-accelerate": "^1.2.1",
     "@types/chunk-text": "^1.0.0",
     "cheerio": "1.0.0-rc.12",
@@ -87,7 +87,7 @@
     "@oakai/eslint-config": "*",
     "@oakai/prettier-config": "*",
     "dotenv-cli": "^6.0.0",
-    "prisma": "5.16.1",
+    "prisma": "6.3.1",
     "typescript": "5.7.2",
     "zod-prisma": "^0.5.4"
   },
