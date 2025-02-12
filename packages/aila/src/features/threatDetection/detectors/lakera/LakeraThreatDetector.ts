@@ -126,7 +126,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
         : "No threats detected",
       rawResponse: data,
       details: {
-        detectedElements: data.payload?.map((p) => p.text) || [],
+        detectedElements: data.payload?.map((p) => p.text) ?? [],
       },
     };
   }
