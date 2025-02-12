@@ -17,7 +17,8 @@
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
-    "ingest": "pnpm with-env ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/index.ts",
+    "single-lesson-dry": "pnpm with-env tsx ./src/singleLessonDryRun.ts",
+    "ingest": "pnpm with-env tsx ./src/index.ts",
     "with-env": "dotenv -e ../../.env --",
     "test": "pnpm with-env jest --colors --config jest.config.mjs",
     "test:seq": "pnpm with-env jest --colors --config jest.config.mjs --verbose --runInBand",
@@ -33,9 +34,12 @@
     "@oakai/logger": "*",
     "@oakai/rag": "*",
     "@paralleldrive/cuid2": "^2.2.2",
+    "@types/yargs": "^17.0.33",
     "csv-parser": "^3.0.0",
     "graphql-request": "^6.1.0",
+    "tsx": "^4.16.0",
     "webvtt-parser": "^2.2.0",
+    "yargs": "^17.7.2",
     "zod": "3.23.8"
   },
   "devDependencies": {

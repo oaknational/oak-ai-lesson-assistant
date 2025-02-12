@@ -7,9 +7,9 @@ import type {
   Message,
 } from "ai";
 
-import { useChatStore } from "../index";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
-export const useChatStoreMirror = (
+export const useChatStoreAiSdkSync = (
   messages: AiMessage[],
   isLoading: boolean,
   stop: () => void,
@@ -17,7 +17,7 @@ export const useChatStoreMirror = (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions | undefined,
   ) => Promise<string | null | undefined>,
-  reload: () => void,
+  reload: () => Promise<string | null | undefined>,
 ) => {
   const setMessages = useChatStore((state) => state.setMessages);
   const setAiSdkActions = useChatStore((state) => state.setAiSdkActions);

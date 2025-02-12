@@ -8,6 +8,7 @@ import Layout from "@/components/AppComponents/Layout";
 import { ChatProvider } from "@/components/ContextProviders/ChatProvider";
 import { useReactScan } from "@/hooks/useReactScan";
 import LessonPlanTrackingProvider from "@/lib/analytics/lessonPlanTrackingContext";
+import { AilaStoresProvider } from "@/stores/AilaStoresProvider";
 
 const ChatPageContents = ({ id }: { readonly id: string }) => {
   useReactScan({ component: LessonPlanDisplay, interval: 10000 });
@@ -15,9 +16,11 @@ const ChatPageContents = ({ id }: { readonly id: string }) => {
   return (
     <Layout>
       <LessonPlanTrackingProvider chatId={id}>
-        <ChatProvider id={id}>
-          <Chat />
-        </ChatProvider>
+        <AilaStoresProvider id={id}>
+          <ChatProvider id={id}>
+            <Chat />
+          </ChatProvider>
+        </AilaStoresProvider>
       </LessonPlanTrackingProvider>
     </Layout>
   );

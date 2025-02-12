@@ -1,7 +1,12 @@
 import { Storage } from "@google-cloud/storage";
 import { aiLogger } from "@oakai/logger";
 import type { Cue } from "webvtt-parser";
-import { WebVTTParser } from "webvtt-parser";
+import * as WebVTTModule from "webvtt-parser";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const WebVTTParser = WebVTTModule.default
+  .WebVTTParser as typeof WebVTTModule.WebVTTParser;
 
 const log = aiLogger("ingest");
 

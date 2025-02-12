@@ -19,7 +19,9 @@ export function parseLocalStorageData<S extends z.ZodTypeAny>(
   try {
     if (storedData) {
       const jsonParsedData = JSON.parse(storedData);
-      return schema.parse(jsonParsedData);
+      const parsed = schema.parse(jsonParsedData);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return parsed;
     }
   } catch (err) {
     log.error(err);

@@ -6,7 +6,7 @@ import { getDataHash } from "../utils/getDataHash";
 import type { RawLesson } from "../zod-schema/zodSchema";
 import { RawLessonSchema } from "../zod-schema/zodSchema";
 import { graphqlClient } from "./graphql/client";
-import { query } from "./graphql/query";
+import { query, type QueryVariables } from "./graphql/query";
 
 const log = aiLogger("ingest");
 
@@ -28,13 +28,21 @@ export async function importLessons({
   const variables = {
     limit,
     offset,
+    where: {
+      videoTitle: {
+        _is_null: false,
+      },
+      isLegacy: {
+        _is_null: false,
+      },
+    },
   };
 
   while (true) {
-    const lessonData = await graphqlClient.request<{ lessons: unknown[] }>(
-      query,
-      variables,
-    );
+    const lessonData = await graphqlClient.request<
+      { lessons: unknown[] },
+      QueryVariables
+    >(query, variables);
 
     const parsedLessons: RawLesson[] = [];
 

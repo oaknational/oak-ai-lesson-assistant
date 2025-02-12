@@ -1,5 +1,5 @@
 import { Moderations, SafetyViolations } from "@oakai/core";
-import type { Moderation } from "@oakai/db";
+import type { Moderation, SafetyViolation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { z } from "zod";
 
@@ -12,17 +12,34 @@ import { router } from "../trpc";
 const log = aiLogger("admin");
 
 export const adminRouter = router({
-  getModerations: adminProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ input }): Promise<Moderation[]> => {
+  getModerations: adminProcedure.input(z.object({ id: z.string() })).query(
+    async ({
+      ctx,
+      input,
+    }): Promise<{
+      moderations: Moderation[];
+      safetyViolations: SafetyViolation[];
+    }> => {
       const { id } = input;
 
-      const moderations = await getSessionModerations(id, {
+      const moderationService = new Moderations(ctx.prisma);
+      const moderations = await moderationService.byAppSessionId(id, {
         includeInvalidated: true,
       });
 
-      return moderations;
-    }),
+      // The SafetyViolation table wasn't designed with relationships to other
+      // tables like Moderation. Manually fetch by recordId for now
+      const safetyViolations = await ctx.prisma.safetyViolation.findMany({
+        where: {
+          recordId: {
+            in: moderations.map((m) => m.id),
+          },
+        },
+      });
+
+      return { moderations, safetyViolations };
+    },
+  ),
   getChat: adminProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }): Promise<AilaPersistedChat | null> => {
@@ -73,5 +90,16 @@ export const adminRouter = router({
       log.info("Removing safety violation", { moderationId });
       const safetyViolations = new SafetyViolations(prisma);
       await safetyViolations.removeViolationsByRecordId(moderationId);
+    }),
+  removeSafetyViolation: adminProcedure
+    .input(z.object({ recordId: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const { recordId } = input;
+      const { prisma } = ctx;
+
+      // remove safety violation (and potentially unban user)
+      log.info("Removing safety violation", { recordId });
+      const safetyViolations = new SafetyViolations(prisma);
+      await safetyViolations.removeViolationsByRecordId(recordId);
     }),
 });
