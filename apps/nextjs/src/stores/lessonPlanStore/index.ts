@@ -25,6 +25,7 @@ export type LessonPlanStore = {
   numberOfStreamedCompleteParts: number;
   // Used for lessonPlanTracking.onStreamFinished
   lastLessonPlan: LooseLessonPlan;
+  isShared: boolean;
 
   messageStarted: () => void;
   messagesUpdated: (messages: AiMessage[]) => void;
@@ -51,6 +52,7 @@ export const createLessonPlanStore = (
     iteration: undefined,
     isAcceptingChanges: false,
     lastLessonPlan: {},
+    isShared: false,
 
     ...initialPerMessageState,
 
