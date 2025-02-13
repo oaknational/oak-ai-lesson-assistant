@@ -41,6 +41,7 @@ export type ChatStore = {
   streamingMessage: ParsedMessage | null;
   queuedUserAction: string | null;
   lessonPlan: LooseLessonPlan | null;
+  input: string;
 
   // From AI SDK
   aiSdkActions: AiSdkActions;
@@ -49,6 +50,7 @@ export type ChatStore = {
   setLessonPlan: (lessonPlan: LooseLessonPlan) => void;
   setAiSdkActions: (actions: AiSdkActions) => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
+  setInput: (input: string) => void;
 
   // Action functions
   executeQueuedAction: () => void;
@@ -65,6 +67,7 @@ export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
     streamingMessage: null,
     queuedUserAction: null,
     lessonPlan: null,
+    input: "",
 
     // From AI SDK
     aiSdkActions: {
@@ -76,6 +79,7 @@ export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
     // Setters
     setAiSdkActions: (aiSdkActions) => set({ aiSdkActions }),
     setLessonPlan: (lessonPlan) => set({ lessonPlan }),
+    setInput: (input) => set({ input }),
 
     // Action functions
     executeQueuedAction: handleExecuteQueuedAction(set, get),
