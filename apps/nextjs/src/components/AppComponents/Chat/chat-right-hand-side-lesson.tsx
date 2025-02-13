@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 
-import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
+import scrollIntoView from "scroll-into-view-if-needed";
 
 import { useModerationStore, useChatStore } from "@/stores/AilaStoresProvider";
 
@@ -34,7 +34,8 @@ const ChatRightHandSideLesson = ({
   const scrollToBottom = () => {
     if (chatEndRef.current) {
       setShowScrollButton(false);
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+      // Use ponyfill for safari support
+      scrollIntoView(chatEndRef.current, { behavior: "smooth" });
     }
   };
 

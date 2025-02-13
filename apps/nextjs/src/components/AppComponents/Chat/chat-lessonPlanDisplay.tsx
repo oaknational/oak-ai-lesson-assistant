@@ -5,6 +5,7 @@ import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
+import scrollIntoView from "scroll-into-view-if-needed";
 
 import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
 import {
@@ -64,7 +65,13 @@ const useSectionScrolling = ({
       if (sectionRef) {
         scrollingLog.info(`Scrolling to ${scrollToSection}`);
         setTimeout(() => {
-          sectionRef.current?.scrollIntoView({ behavior: "smooth" });
+          if (sectionRef.current) {
+            // Use ponyfill for safari support
+            scrollIntoView(sectionRef.current, {
+              behavior: "smooth",
+              scrollMode: "if-needed",
+            });
+          }
         }, 20);
       }
       lastScrollToSectionRef.current = scrollToSection;
