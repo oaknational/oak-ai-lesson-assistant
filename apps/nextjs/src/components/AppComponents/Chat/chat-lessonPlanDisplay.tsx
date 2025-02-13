@@ -52,10 +52,14 @@ const useSectionScrolling = ({
   userHasCancelledAutoScroll: boolean;
 }) => {
   const scrollToSection = useLessonPlanStore((state) => state.scrollToSection);
+  const setScrollToSection = useLessonPlanStore(
+    (state) => state.setScrollToSection,
+  );
   const lastScrollToSectionRef = useRef<LessonPlanKey | null>(null);
 
   useEffect(() => {
     if (scrollToSection === null) {
+      lastScrollToSectionRef.current = scrollToSection;
       return;
     }
 
@@ -69,9 +73,10 @@ const useSectionScrolling = ({
             // Use ponyfill for safari support
             scrollIntoView(sectionRef.current, {
               behavior: "smooth",
-              scrollMode: "if-needed",
+              block: "start",
             });
           }
+          setScrollToSection(null);
         }, 20);
       }
       lastScrollToSectionRef.current = scrollToSection;
@@ -81,6 +86,7 @@ const useSectionScrolling = ({
     sectionRefs,
     documentContainerRef,
     userHasCancelledAutoScroll,
+    setScrollToSection,
   ]);
 };
 
@@ -154,11 +160,12 @@ export const LessonPlanDisplay = ({
   const { userHasCancelledAutoScroll } =
     useDetectScrollOverride(documentContainerRef);
 
+  const titleSectionRef = useRef(null);
   const sectionRefs = useRef<
     Partial<
       Record<LessonPlanKey, React.MutableRefObject<HTMLDivElement | null>>
     >
-  >({});
+  >({ title: titleSectionRef });
   const setSectionRef = useCallback(
     (
       key: LessonPlanKey,
@@ -188,7 +195,7 @@ export const LessonPlanDisplay = ({
   return (
     <div className={displayStyles()}>
       {lessonPlan["title"] && (
-        <Flex direction="column" gap="2">
+        <Flex direction="column" gap="2" ref={titleSectionRef}>
           <Flex direction="row" gap="2" className="opacity-90">
             {notEmpty(lessonPlan.keyStage) && (
               <Text className="font-bold">

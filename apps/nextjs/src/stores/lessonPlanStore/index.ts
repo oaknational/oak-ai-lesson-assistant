@@ -27,7 +27,7 @@ export type LessonPlanStore = {
   scrollToSection: LessonPlanKey | null;
 
   // setters
-  setScrollToSection: (sectionKey: LessonPlanKey) => void;
+  setScrollToSection: (sectionKey: LessonPlanKey | null) => void;
 
   // actions
   messageStarted: () => void;
@@ -59,8 +59,7 @@ export const createLessonPlanStore = (
     ...initialPerMessageState,
 
     // Setters
-    setScrollToSection: (sectionKey: LessonPlanKey) =>
-      set({ scrollToSection: sectionKey }),
+    setScrollToSection: (sectionKey) => set({ scrollToSection: sectionKey }),
 
     // Action functions
     messageStarted: () => {
