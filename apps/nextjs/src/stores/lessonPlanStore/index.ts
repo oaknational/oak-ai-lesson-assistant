@@ -23,11 +23,14 @@ export type LessonPlanStore = {
   iteration: number | undefined;
   isAcceptingChanges: boolean;
   numberOfStreamedCompleteParts: number;
+  // Used for lessonPlanTracking.onStreamFinished
+  lastLessonPlan: LooseLessonPlan;
 
   messageStarted: () => void;
   messagesUpdated: (messages: AiMessage[]) => void;
   messageFinished: () => void;
   refetch: () => Promise<void>;
+  getState: () => LessonPlanStore;
 };
 
 const initialPerMessageState = {
@@ -47,6 +50,7 @@ export const createLessonPlanStore = (
     lessonPlan: {},
     iteration: undefined,
     isAcceptingChanges: false,
+    lastLessonPlan: {},
 
     ...initialPerMessageState,
 
@@ -56,7 +60,10 @@ export const createLessonPlanStore = (
     // Action functions
     messageStarted: () => {
       log.info("Message started");
-      set({ isAcceptingChanges: true });
+      set({
+        isAcceptingChanges: true,
+        lastLessonPlan: get().lessonPlan,
+      });
     },
     messagesUpdated: handleMessagesUpdated(set, get),
     messageFinished: () => {
@@ -66,6 +73,8 @@ export const createLessonPlanStore = (
       void handleRefetch(set, get, trpc)();
     },
     refetch: handleRefetch(set, get, trpc),
+
+    getState: () => get(),
 
     ...initialValues,
   }));
