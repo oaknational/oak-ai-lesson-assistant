@@ -83,21 +83,6 @@ export class AilaStreamHandler {
       await this.checkForThreats();
       this.logStreamingStep("Check for threats complete");
 
-      log.info("Setting initial lesson plan using categoriser");
-      await this._chat.aila.lesson.setUpInitialLessonPlan(this._chat.messages);
-      this.logStreamingStep("Set initial lesson plan complete");
-
-      if (this._chat.aila.lesson.hasSetInitialState) {
-        log.info("Check for threats for the initialised lesson plan");
-        await this.checkForThreats([
-          ...this._chat.messages,
-          {
-            role: "assistant",
-            content: JSON.stringify(this._chat.aila.lesson.plan),
-          },
-        ]);
-      }
-
       await this._chat.handleSettingInitialState();
       log.info("Setting initial state");
       await this._chat.handleSettingInitialState();

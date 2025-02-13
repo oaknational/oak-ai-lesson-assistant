@@ -9,7 +9,7 @@ exports[`LakeraThreatDetector detectThreat PII detection detects PII in messages
     ],
   },
   "isThreat": true,
-  "message": "Potential threat detected by Lakera Guard",
+  "message": "Potential threat detected",
   "rawResponse": {
     "breakdown": [
       {
@@ -55,7 +55,7 @@ exports[`LakeraThreatDetector detectThreat system prompt override attempts detec
     ],
   },
   "isThreat": true,
-  "message": "Potential threat detected by Lakera Guard",
+  "message": "Potential threat detected",
   "rawResponse": {
     "breakdown": [
       {

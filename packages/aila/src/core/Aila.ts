@@ -147,6 +147,8 @@ export class Aila implements AilaServices {
     if (persistedLessonPlan) {
       this._lesson.setPlan(persistedLessonPlan);
     }
+    await this._lesson.setUpInitialLessonPlan(this._chat.messages);
+
     this._initialised = true;
   }
 

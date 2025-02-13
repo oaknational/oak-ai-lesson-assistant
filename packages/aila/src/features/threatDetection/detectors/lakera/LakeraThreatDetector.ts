@@ -172,7 +172,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
         ? this.mapCategory(highestThreat.detector_type)
         : undefined,
       message: data.flagged
-        ? "Potential threat detected by Lakera Guard"
+        ? "Potential threat detected"
         : "No threats detected",
       rawResponse: data,
       details: {
