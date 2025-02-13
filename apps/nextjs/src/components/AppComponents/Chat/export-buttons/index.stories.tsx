@@ -14,16 +14,13 @@ const meta = {
   title: "Components/LessonPlan/ExportButtons",
   component: ExportButtons,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, DemoDecorator, StoreDecorator],
+  decorators: [DemoDecorator, StoreDecorator],
   args: {
     sectionRefs: {},
     documentContainerRef: { current: null },
   },
   parameters: {
     ...chromaticParams(["desktop"]),
-    chatContext: {
-      lessonPlan: {},
-    },
     chatStoreState: {
       ailaStreamingStatus: "Idle",
     },

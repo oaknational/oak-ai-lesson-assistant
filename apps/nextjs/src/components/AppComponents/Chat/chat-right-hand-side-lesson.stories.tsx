@@ -39,7 +39,7 @@ const meta = {
   title: "Components/LessonPlan/ChatRightHandSideLesson",
   component: ChatRightHandSideLesson,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, DemoDecorator, StoreDecorator],
+  decorators: [DemoDecorator, StoreDecorator],
   args: {
     showLessonMobile: true,
     closeMobileLessonPullOut: fn,

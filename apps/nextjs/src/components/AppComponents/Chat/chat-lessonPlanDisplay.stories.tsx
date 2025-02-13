@@ -20,7 +20,6 @@ const lessonPlan = {
 
 const chatContext: Partial<ChatContextProps> = {
   messages: [],
-  lessonPlan,
 };
 
 const meta = {
@@ -92,7 +91,6 @@ export const Loading: Story = {
     },
     chatContext: {
       ...chatContext,
-      lessonPlan: {},
     },
 
     moderationStoreState: {

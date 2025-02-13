@@ -37,9 +37,6 @@ const log = aiLogger("chat");
 
 export type ChatContextProps = {
   messages: Message[];
-  lessonPlan: LooseLessonPlan;
-  input: string;
-  setInput: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const ChatContext = createContext<ChatContextProps | null>(null);
@@ -137,8 +134,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     reload,
     stop: stopStreaming,
     isLoading,
-    input,
-    setInput,
     setMessages,
   } = useChat({
     sendExtraMessageFields: true,
@@ -245,7 +240,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const storeAppend = useChatStore((state) => state.append);
   useEffect(() => {
     if (chat?.startingMessage && !hasAppendedInitialMessage.current) {
-      void storeAppend(chat.startingMessage);
+      storeAppend(chat.startingMessage);
       hasAppendedInitialMessage.current = true;
     }
   }, [chat?.startingMessage, storeAppend, hasAppendedInitialMessage]);
@@ -293,12 +288,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const value: ChatContextProps = useMemo(
     () => ({
-      lessonPlan: overrideLessonPlan ?? tempLessonPlan,
       messages,
-      input,
-      setInput,
     }),
-    [tempLessonPlan, messages, input, setInput, overrideLessonPlan],
+    [messages],
   );
 
   if (!chat && !isChatLoading) {
