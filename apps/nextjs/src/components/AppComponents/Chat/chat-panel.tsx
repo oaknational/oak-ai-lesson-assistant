@@ -24,7 +24,9 @@ function LockedPromptForm() {
 
 export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const chat = useLessonChat();
-  const { id, messages, input, setInput } = chat;
+  const { id, messages } = chat;
+  const input = useChatStore((state) => state.input);
+  const setInput = useChatStore((state) => state.setInput);
 
   const append = useChatStore((state) => state.append);
   const shouldAllowUserInput = useChatStore(canAppendSelector);

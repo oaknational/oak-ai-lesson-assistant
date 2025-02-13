@@ -3,7 +3,7 @@ import { fn } from "@storybook/test";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
-import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import ChatLhsHeader from "./chat-lhs-header";
 
@@ -11,7 +11,7 @@ const meta = {
   title: "Components/Chat/ChatLhsHeader",
   component: ChatLhsHeader,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, ChatStoreDecorator],
+  decorators: [ChatDecorator, StoreDecorator],
   args: {
     showStreamingStatus: false,
     setShowLessonMobile: fn(),

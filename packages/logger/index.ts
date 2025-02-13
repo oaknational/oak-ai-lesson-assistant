@@ -56,6 +56,7 @@ export type LoggerKey =
   | "lessons:store"
   | "middleware:auth"
   | "moderation"
+  | "moderation:store"
   | "prompts"
   | "qd"
   | "quiz"

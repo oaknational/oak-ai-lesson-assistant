@@ -2,7 +2,7 @@ import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
-import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import { DemoProvider } from "../../../../../src/components/ContextProviders/Demo";
 import { DownloadContent } from "./DownloadView";
@@ -20,7 +20,7 @@ const meta = {
         <Story />
       </DemoProvider>
     ),
-    ChatStoreDecorator,
+    StoreDecorator,
   ],
 } satisfies Meta<typeof DownloadContent>;
 

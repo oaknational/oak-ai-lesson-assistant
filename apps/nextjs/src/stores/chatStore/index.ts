@@ -3,6 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import type { ChatRequestOptions, CreateMessage } from "ai";
 import { createStore } from "zustand";
 
+import type { ModerationStore } from "../moderationStore";
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleAppend } from "./stateActionFunctions/handleAppend";
 import { handleExecuteQueuedAction } from "./stateActionFunctions/handleExecuteQueuedAction";
@@ -33,12 +34,14 @@ export type AilaStreamingStatus =
   | "Idle";
 
 export type ChatStore = {
+  moderationActions?: Pick<ModerationStore, "fetchModerations">;
   ailaStreamingStatus: AilaStreamingStatus;
 
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
   queuedUserAction: string | null;
   lessonPlan: LooseLessonPlan | null;
+  input: string;
 
   // From AI SDK
   aiSdkActions: AiSdkActions;
@@ -47,6 +50,7 @@ export type ChatStore = {
   setLessonPlan: (lessonPlan: LooseLessonPlan) => void;
   setAiSdkActions: (actions: AiSdkActions) => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
+  setInput: (input: string) => void;
 
   // Action functions
   executeQueuedAction: () => void;
@@ -57,11 +61,13 @@ export type ChatStore = {
 
 export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
   const chatStore = createStore<ChatStore>((set, get) => ({
+    moderationActions: undefined, // Passed in the provider
     ailaStreamingStatus: "Idle",
     stableMessages: [],
     streamingMessage: null,
     queuedUserAction: null,
     lessonPlan: null,
+    input: "",
 
     // From AI SDK
     aiSdkActions: {
@@ -73,6 +79,7 @@ export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
     // Setters
     setAiSdkActions: (aiSdkActions) => set({ aiSdkActions }),
     setLessonPlan: (lessonPlan) => set({ lessonPlan }),
+    setInput: (input) => set({ input }),
 
     // Action functions
     executeQueuedAction: handleExecuteQueuedAction(set, get),
