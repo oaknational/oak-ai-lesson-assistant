@@ -4,9 +4,12 @@ import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { organiseSections } from "@/lib/lessonPlan/organiseSections";
-import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
+import {
+  useChatStore,
+  useModerationStore,
+  useLessonPlanStore,
+} from "@/stores/AilaStoresProvider";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
@@ -84,9 +87,8 @@ export const LessonPlanDisplay = ({
   documentContainerRef,
   showLessonMobile,
 }: LessonPlanDisplayProps) => {
-  const chat = useLessonChat();
   const lessonPlanFromStore = useLessonPlanStore((state) => state.lessonPlan);
-  const { lastModeration } = chat;
+  const lastModeration = useModerationStore((state) => state.lastModeration);
 
   const lessonPlan = useMemo(
     () => ({

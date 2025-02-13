@@ -3,8 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
-import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
 import { LessonPlanTrackingDecorator } from "@/storybook/decorators/LessonPlanTrackingDecorator";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import ChatQuickButtons from "./chat-quick-buttons";
 
@@ -18,7 +18,7 @@ const meta = {
   title: "Components/Chat/ChatQuickButtons",
   component: ChatQuickButtons,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, ChatStoreDecorator, LessonPlanTrackingDecorator],
+  decorators: [ChatDecorator, StoreDecorator, LessonPlanTrackingDecorator],
   parameters: {
     ...chromaticParams(["desktop"]),
     chatContext: {
