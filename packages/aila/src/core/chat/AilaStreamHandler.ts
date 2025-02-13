@@ -61,7 +61,8 @@ export class AilaStreamHandler {
         log.info("Threat detected", { result });
         throw new AilaThreatDetectionError(
           this._chat.userId ?? "unknown",
-          result.message,
+          "Potential threat detected",
+          { cause: result },
         );
       }
     }
@@ -113,10 +114,6 @@ export class AilaStreamHandler {
       if (e instanceof AilaThreatDetectionError) {
         log.info("Handling threat detection error");
         await this._chat.generationFailed(e);
-        await this._chat.enqueue({
-          type: "prompt",
-          message: "Sorry, I can't do that.",
-        });
         throw e;
       }
       await this.handleStreamError(e);

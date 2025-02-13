@@ -10,14 +10,7 @@ import {
 import type { Message, LakeraGuardResponse, BreakdownItem } from "./schema";
 import { lakeraGuardRequestSchema, lakeraGuardResponseSchema } from "./schema";
 
-const log = {
-  info: (message: string, data: Record<string, unknown>) => {
-    console.log(`[LakeraThreatDetector] ${message}`, data);
-  },
-  error: (message: string, data: Record<string, unknown>) => {
-    console.error(`[LakeraThreatDetector] ${message}`, data);
-  },
-};
+const log = aiLogger("aila:threat");
 
 export class LakeraThreatDetector extends AilaThreatDetector {
   private readonly apiKey: string;

@@ -12,7 +12,6 @@ import {
   PosthogAnalyticsAdapter,
 } from "@oakai/aila/src/features/analytics";
 import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
-import { BasicThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/basic/BasicThreatDetector";
 import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/helicone/HeliconeThreatDetector";
 import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
@@ -75,7 +74,6 @@ async function setupChatHandler(req: NextRequest) {
       );
 
       const threatDetectors = [
-        new BasicThreatDetector(),
         new HeliconeThreatDetector(),
         new LakeraThreatDetector(),
       ];
