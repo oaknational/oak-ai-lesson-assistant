@@ -7,14 +7,14 @@ import type {
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
-import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
 const meta = {
   title: "Components/LessonPlan/LessonPlanProgressDropdown",
   component: LessonPlanProgressDropdown,
-  decorators: [ChatStoreDecorator],
+  decorators: [StoreDecorator],
   tags: ["autodocs"],
   args: {
     sectionRefs: {

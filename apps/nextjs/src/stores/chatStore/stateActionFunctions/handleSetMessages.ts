@@ -15,6 +15,11 @@ export function handleSetMessages(
     if (ailaStreamingStatus === "Idle" && get().queuedUserAction) {
       void get().executeQueuedAction();
     }
+    if (ailaStreamingStatus === "Idle") {
+      const { moderationActions } = get();
+      invariant(moderationActions, "Passed into store in provider");
+      void moderationActions.fetchModerations();
+    }
   }
 
   return (messages: AiMessage[], isLoading: boolean) => {

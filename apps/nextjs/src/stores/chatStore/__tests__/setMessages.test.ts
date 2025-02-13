@@ -1,4 +1,7 @@
-import { createChatStore } from "..";
+import { createModerationStore } from "@/stores/moderationStore";
+import type { TrpcUtils } from "@/utils/trpc";
+
+import { createChatStore, type ChatStore } from "..";
 import type { AiMessage } from "../types";
 
 const fixedDate = new Date("2023-01-01T12:00:00.000Z");
@@ -84,16 +87,29 @@ const messageStates: { [key: string]: AiMessage[] } = {
   ],
 };
 
+const setupStore = (initialValues?: Partial<ChatStore>) => {
+  const trpcUtils = {} as TrpcUtils;
+  const store = createChatStore(initialValues);
+  const modStore = createModerationStore({ id: "123", trpcUtils });
+
+  store.setState((state) => ({
+    ...state,
+    moderationActions: modStore.getState(),
+  }));
+  return store;
+};
+
 describe("Chat Store setMessages", () => {
   test("When there no messages, loading true throw error", () => {
-    const store = createChatStore();
+    const store = setupStore();
+
     expect(() => {
       store.getState().setMessages([], true);
     }).toThrow();
   });
 
   test("expected state when there no messages, loading false", () => {
-    const store = createChatStore();
+    const store = setupStore();
     const initialState = store.getState();
     store.getState().setMessages([], false);
     const newState = store.getState();
@@ -106,7 +122,7 @@ describe("Chat Store setMessages", () => {
   });
 
   test("state when streaming, no stable messages, loading true", () => {
-    const store = createChatStore();
+    const store = setupStore();
     const initialState = store.getState();
 
     store
@@ -121,7 +137,7 @@ describe("Chat Store setMessages", () => {
     expect(newState.ailaStreamingStatus).toBe("StreamingLessonPlan");
   });
   test("state when streaming and stable messages, loading true", () => {
-    const store = createChatStore();
+    const store = setupStore();
     const initialState = store.getState();
 
     store
@@ -137,7 +153,7 @@ describe("Chat Store setMessages", () => {
     expect(newState.ailaStreamingStatus).toBe("StreamingLessonPlan");
   });
   test("state when there are next stable messages, loading true", () => {
-    const store = createChatStore();
+    const store = setupStore();
     store
       .getState()
       .setMessages(messageStates.stableMessages as AiMessage[], true);
@@ -151,7 +167,7 @@ describe("Chat Store setMessages", () => {
   });
 
   test("When there is a next stable message, no streaming, loading false", () => {
-    const store = createChatStore();
+    const store = setupStore();
     store
       .getState()
       .setMessages(messageStates.userRequest as AiMessage[], false);
@@ -186,7 +202,7 @@ describe("Chat Store setMessages", () => {
     expect(newState.ailaStreamingStatus).toBe("Idle");
   });
   test("execute queued action is called when streaming status changes to idle and there is a queued item", () => {
-    const store = createChatStore({
+    const store = setupStore({
       executeQueuedAction,
       queuedUserAction: "continue",
       ailaStreamingStatus: "Loading",
@@ -198,7 +214,7 @@ describe("Chat Store setMessages", () => {
     expect(executeQueuedAction).toHaveBeenCalled();
   });
   test("No executeQueuedAction call when streaming status changes to Idle and no queued action", () => {
-    const store = createChatStore({
+    const store = setupStore({
       executeQueuedAction,
       queuedUserAction: null,
       ailaStreamingStatus: "StreamingLessonPlan",
@@ -211,7 +227,7 @@ describe("Chat Store setMessages", () => {
     expect(executeQueuedAction).not.toHaveBeenCalled();
   });
   test("Streaming message correctly marked as partial", () => {
-    const store = createChatStore();
+    const store = setupStore();
     store
       .getState()
       .setMessages(messageStates.streamingMessage as AiMessage[], true);
@@ -223,7 +239,7 @@ describe("Chat Store setMessages", () => {
     ).toBe(true);
   });
   test("stableMessages do not update when getNextStableMessages returns null", () => {
-    const store = createChatStore();
+    const store = setupStore();
     store
       .getState()
       .setMessages(messageStates.stableMessages as AiMessage[], true);
@@ -240,7 +256,7 @@ describe("Chat Store setMessages", () => {
     expect(newState.ailaStreamingStatus).toBe("Moderating");
   });
   test("No unnecessary re-renders when stableMessages stay the same", () => {
-    const store = createChatStore();
+    const store = setupStore();
     const renderSpy = jest.fn();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     store.subscribe((state) => renderSpy(state.stableMessages));
@@ -256,7 +272,7 @@ describe("Chat Store setMessages", () => {
     expect(newState.stableMessages).toBe(initialState.stableMessages);
   });
   test("ailaStreamingStatus updates correctly based on messages", () => {
-    const store = createChatStore();
+    const store = setupStore();
     store
       .getState()
       .setMessages(messageStates.stableMessages as AiMessage[], true);

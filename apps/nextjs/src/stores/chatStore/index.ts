@@ -3,6 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import type { ChatRequestOptions, CreateMessage } from "ai";
 import { createStore } from "zustand";
 
+import type { ModerationStore } from "../moderationStore";
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleAppend } from "./stateActionFunctions/handleAppend";
 import { handleExecuteQueuedAction } from "./stateActionFunctions/handleExecuteQueuedAction";
@@ -33,6 +34,7 @@ export type AilaStreamingStatus =
   | "Idle";
 
 export type ChatStore = {
+  moderationActions?: Pick<ModerationStore, "fetchModerations">;
   ailaStreamingStatus: AilaStreamingStatus;
 
   stableMessages: ParsedMessage[];
@@ -59,6 +61,7 @@ export type ChatStore = {
 
 export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
   const chatStore = createStore<ChatStore>((set, get) => ({
+    moderationActions: undefined, // Passed in the provider
     ailaStreamingStatus: "Idle",
     stableMessages: [],
     streamingMessage: null,
