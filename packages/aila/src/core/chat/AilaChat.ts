@@ -56,7 +56,7 @@ export class AilaChat implements AilaChatService {
   private _createdAt: Date | undefined;
   private _persistedChat: AilaPersistedChat | undefined;
 
-  private _experimentalPatches: ExperimentalPatchDocument[];
+  private readonly _experimentalPatches: ExperimentalPatchDocument[];
   public readonly fullQuizService: FullQuizService;
 
   // private readonly _experimentalPatches: ExperimentalPatchDocument[];
@@ -139,6 +139,10 @@ export class AilaChat implements AilaChatService {
     return this._relevantLessons;
   }
 
+  public get generation() {
+    return this._generation;
+  }
+
   public set relevantLessons(lessons: AilaRagRelevantLesson[]) {
     this._relevantLessons = lessons;
   }
@@ -164,6 +168,7 @@ export class AilaChat implements AilaChatService {
   }
 
   public async generationFailed(error: unknown) {
+    log.info("Marking generation as failed", { error });
     invariant(this._generation, "Generation not initialised");
     this.aila.errorReporter?.reportError(
       error,
@@ -174,6 +179,7 @@ export class AilaChat implements AilaChatService {
       await this.reportError({ message: error.message });
     }
     await this.persistGeneration("FAILED");
+    log.info("Generation marked as failed");
   }
 
   private async reportError({ message }: { message: string }) {
@@ -312,14 +318,12 @@ export class AilaChat implements AilaChatService {
 
     if (status === "SUCCESS") {
       const responseText = this.accumulatedText();
-      invariant(responseText, "Response text not set");
       this._generation.complete({ status, responseText });
     }
     await this._generation.persist(status);
   }
 
   private async persistChat() {
-    log.info("Persisting chat");
     await Promise.all(
       (this._aila.persistence ?? []).map((p) => p.upsertChat()),
     );
@@ -400,6 +404,7 @@ export class AilaChat implements AilaChatService {
   }
 
   public async complete() {
+    log.info("Starting chat completion");
     await this.reportUsageMetrics();
     await fetchExperimentalPatches({
       fullQuizService: this.fullQuizService,
@@ -422,6 +427,7 @@ export class AilaChat implements AilaChatService {
       type: "comment",
       value: "CHAT_COMPLETE",
     });
+    log.info("Chat completion finished");
   }
 
   public async saveSnapshot({ messageId }: { messageId: string }) {
@@ -464,8 +470,10 @@ export class AilaChat implements AilaChatService {
   }
 
   public async setupGeneration() {
+    log.info("Starting new generation setup");
     await this.startNewGeneration();
     await this.persistGeneration("REQUESTED");
+    log.info("Generation setup complete");
   }
 
   public startStreaming(abortController?: AbortController): ReadableStream {

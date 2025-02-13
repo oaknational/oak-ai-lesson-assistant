@@ -33,6 +33,7 @@ export type LoggerKey =
   | "aila:testing"
   | "aila:quiz"
   | "aila:experimental-patches"
+  | "aila:threat"
   | "analytics"
   | "app"
   | "auth"
