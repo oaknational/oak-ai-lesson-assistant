@@ -25,6 +25,7 @@ export type LessonPlanStore = {
   numberOfStreamedCompleteParts: number;
   isShared: boolean;
   scrollToSection: LessonPlanKey | null;
+  isShared: boolean;
 
   // setters
   setScrollToSection: (sectionKey: LessonPlanKey | null) => void;
@@ -55,6 +56,7 @@ export const createLessonPlanStore = (
     isAcceptingChanges: false,
     isShared: false,
     scrollToSection: null,
+    isShared: false,
 
     ...initialPerMessageState,
 
