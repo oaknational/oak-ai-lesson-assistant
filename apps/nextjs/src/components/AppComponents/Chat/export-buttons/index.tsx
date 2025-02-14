@@ -1,29 +1,20 @@
 "use client";
 
-import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 import { OakSmallSecondaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 
 import { useDialog } from "../../DialogContext";
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
-export type ExportButtonsProps = Readonly<{
-  sectionRefs: Partial<
-    Record<LessonPlanKey, React.MutableRefObject<HTMLDivElement | null>>
-  >;
-  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
-}>;
-
-const ExportButtons = ({
-  sectionRefs,
-  documentContainerRef,
-}: ExportButtonsProps) => {
-  const chat = useLessonChat();
-  const { id, isStreaming } = chat;
+const ExportButtons = () => {
+  const id = useLessonPlanStore((store) => store.id);
+  const isStreaming = useChatStore(
+    (state) => state.ailaStreamingStatus !== "Idle",
+  );
   const { trackEvent } = useAnalytics();
   const { setDialogWindow } = useDialog();
   const demo = useDemoUser();
@@ -32,10 +23,7 @@ const ExportButtons = ({
     <div className="sticky left-0 right-10 top-26 z-10 mt-26 hidden bg-white p-14 px-24 shadow-md sm:block">
       <div className="flex flex-col">
         <div className="flex items-center space-x-14">
-          <LessonPlanProgressDropdown
-            sectionRefs={sectionRefs}
-            documentContainerRef={documentContainerRef}
-          />
+          <LessonPlanProgressDropdown />
           <div className="flex space-x-10">
             <OakSmallSecondaryButton
               disabled={isStreaming}

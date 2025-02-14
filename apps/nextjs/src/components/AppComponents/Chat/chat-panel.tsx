@@ -7,7 +7,7 @@ import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { useSidebar } from "@/lib/hooks/use-sidebar";
-import { useChatStore } from "@/stores/AilaStoresProvider";
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 import { canAppendSelector } from "@/stores/chatStore/selectors";
 
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
@@ -24,9 +24,10 @@ function LockedPromptForm() {
 
 export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const chat = useLessonChat();
-  const { id, messages } = chat;
+  const { messages } = chat;
   const input = useChatStore((state) => state.input);
   const setInput = useChatStore((state) => state.setInput);
+  const id = useLessonPlanStore((state) => state.id);
 
   const append = useChatStore((state) => state.append);
   const shouldAllowUserInput = useChatStore(canAppendSelector);

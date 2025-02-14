@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 
-import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
+import scrollIntoView from "scroll-into-view-if-needed";
 
-import { useModerationStore, useChatStore } from "@/stores/AilaStoresProvider";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 import AiIcon from "../../AiIcon";
 import type { DemoContextProps } from "../../ContextProviders/Demo";
@@ -31,15 +31,11 @@ const ChatRightHandSideLesson = ({
 
   const [showScrollButton, setShowScrollButton] = useState(false);
 
-  // This retains this existing bug, but is fixed on subsequent PRs
-  const sectionRefs: Partial<
-    Record<LessonPlanKey, React.MutableRefObject<HTMLDivElement | null>>
-  > = {};
-
   const scrollToBottom = () => {
     if (chatEndRef.current) {
       setShowScrollButton(false);
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+      // Use ponyfill for safari support
+      scrollIntoView(chatEndRef.current, { behavior: "smooth" });
     }
   };
 
@@ -59,14 +55,6 @@ const ChatRightHandSideLesson = ({
 
   const endOfDocRef = useRef<HTMLDivElement>(null);
 
-  const isModerationsLoading = useModerationStore(
-    (state) => state.isModerationsLoading,
-  );
-
-  if (isModerationsLoading) {
-    return null;
-  }
-
   return (
     <div
       className={`fixed bottom-0 ${showLessonMobile ? "right-0" : "right-[-100%] sm:right-0"} right-0 ${demo.isDemoUser ? "top-8 sm:top-0" : "top-0"} z-30 w-[95%] bg-white shadow-md duration-300 sm:relative sm:z-0 sm:w-[50%] sm:shadow-none lg:w-full`}
@@ -75,10 +63,7 @@ const ChatRightHandSideLesson = ({
       onScroll={handleScroll}
       style={{ overflowY: "auto" }}
     >
-      <ExportButtons
-        sectionRefs={sectionRefs}
-        documentContainerRef={documentContainerRef}
-      />
+      <ExportButtons />
       <MobileExportButtons
         closeMobileLessonPullOut={closeMobileLessonPullOut}
       />
@@ -99,7 +84,6 @@ const ChatRightHandSideLesson = ({
         <LessonPlanDisplay
           showLessonMobile={showLessonMobile}
           chatEndRef={chatEndRef}
-          sectionRefs={sectionRefs}
           documentContainerRef={documentContainerRef}
         />
       </div>

@@ -30,6 +30,7 @@ export function handleSetMessages(
         messages,
         get().stableMessages,
       );
+      // NOTE: currently will update the store even if no value needs changing
       set({
         ...(nextStableMessages && {
           stableMessages: nextStableMessages,
