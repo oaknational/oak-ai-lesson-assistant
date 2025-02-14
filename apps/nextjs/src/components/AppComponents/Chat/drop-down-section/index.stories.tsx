@@ -3,7 +3,7 @@ import { userEvent, within } from "@storybook/test";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
-import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import DropDownSection from "./";
 
@@ -25,12 +25,11 @@ const meta = {
     sectionRefs: {},
     showLessonMobile: false,
   },
-  decorators: [ChatDecorator, ChatStoreDecorator],
+  decorators: [ChatDecorator, StoreDecorator],
   parameters: {
     ...chromaticParams(["desktop"]),
     chatContext: {
       id: "123",
-      lastModeration: null,
       messages: [],
       lessonPlan: {
         title: "About Frogs",

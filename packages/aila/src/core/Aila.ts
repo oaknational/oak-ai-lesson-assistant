@@ -107,6 +107,7 @@ export class Aila implements AilaServices {
     this._threatDetection = AilaFeatureFactory.createThreatDetection(
       this,
       this._options,
+      options.services?.threatDetectors?.(this),
     );
     this._errorReporter = AilaFeatureFactory.createErrorReporter(
       this,
@@ -147,6 +148,7 @@ export class Aila implements AilaServices {
       this._lesson.setPlan(persistedLessonPlan);
     }
     await this._lesson.setUpInitialLessonPlan(this._chat.messages);
+
     this._initialised = true;
   }
 
@@ -289,6 +291,7 @@ export class Aila implements AilaServices {
     subject,
     keyStage,
     topic,
+    abortController,
   }: AilaGenerateLessonPlanOptions) {
     this.checkInitialised();
     if (this._isShutdown) {
@@ -318,7 +321,7 @@ export class Aila implements AilaServices {
       this._lesson.plan.topic = topic;
     }
     await this.initialise();
-    return this._chat.startStreaming();
+    return this._chat.startStreaming(abortController);
   }
 
   // Shutdown method

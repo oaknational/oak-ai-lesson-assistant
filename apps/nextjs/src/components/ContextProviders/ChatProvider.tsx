@@ -14,9 +14,6 @@ import type {
   AilaPersistedChat,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
-import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import type { Moderation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import type { ChatRequestOptions, CreateMessage, Message } from "ai";
@@ -29,23 +26,24 @@ import { useLessonPlanStoreAiSdkSync } from "src/stores/lessonPlanStore/hooks/us
 import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
+import {
+  useChatStore,
+  useModerationStore,
+  useLessonPlanStore,
+} from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
-import {
-  isAccountLocked,
-  isModeration,
-} from "../AppComponents/Chat/chat-message/protocol";
+import { isAccountLocked } from "../AppComponents/Chat/chat-message/protocol";
 
 const log = aiLogger("chat");
 
 export type ChatContextProps = {
   id: string;
   chat: AilaPersistedChat | undefined;
-  initialModerations: Moderation[];
-  toxicModeration: PersistedModerationBase | null;
-  lastModeration: PersistedModerationBase | null;
+  // initialModerations: Moderation[];
+  // toxicModeration: PersistedModerationBase | null;
+  // lastModeration: PersistedModerationBase | null;
   messages: Message[];
   isLoading: boolean;
   isStreaming: boolean;
@@ -98,16 +96,6 @@ function useActionMessages() {
   };
 }
 
-function getModerationFromMessage(message?: { content: string }) {
-  if (!message) {
-    return;
-  }
-  const messageParts = parseMessageParts(message.content);
-  const moderation = messageParts.map((p) => p.document).find(isModeration);
-
-  return moderation;
-}
-
 function isValidMessageRole(role: unknown): role is Message["role"] {
   return (
     typeof role === "string" &&
@@ -128,32 +116,13 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       staleTime: 0,
     },
   );
-  const {
-    data: moderations,
-    isLoading: isModerationsLoading,
-    refetch: refetchModerations,
-  } = trpc.chat.appSessions.getModerations.useQuery(
-    { id },
-    {
-      refetchOnMount: true,
-      refetchOnWindowFocus: true,
-      staleTime: 0,
-    },
-  );
-  // Ensure that we re-fetch on mount
-  useEffect(() => {
-    void refetchChat();
-    void refetchModerations();
-  }, [refetchChat, refetchModerations]);
+
   const trpcUtils = trpc.useUtils();
 
   const lessonPlanTracking = useLessonPlanTracking();
   const shouldTrackStreamFinished = useRef(false);
 
-  const [lastModeration, setLastModeration] =
-    useState<PersistedModerationBase | null>(
-      moderations?.[moderations.length - 1] ?? null,
-    );
+  const toxicModeration = useModerationStore((state) => state.toxicModeration);
 
   const router = useRouter();
   const path = usePathname();
@@ -237,14 +206,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
         response,
         path,
       });
-
-      const messageModeration = getModerationFromMessage(response);
-      if (messageModeration?.id) {
-        setLastModeration({
-          categories: messageModeration.categories,
-          id: messageModeration.id,
-        });
-      }
 
       invokeActionMessages(response.content);
 
@@ -353,16 +314,8 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
    * Get the sensitive moderation id and pass to dialog
    */
 
-  const toxicInitialModeration = moderations?.find(isToxic) ?? null;
-
-  const toxicModeration =
-    lastModeration && isToxic(lastModeration)
-      ? lastModeration
-      : toxicInitialModeration;
-
   useEffect(() => {
     if (toxicModeration) {
-      setMessages([]);
       setOverrideLessonPlan({});
     }
   }, [toxicModeration, setMessages]);
@@ -371,8 +324,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     () => ({
       id,
       chat: chat ?? undefined,
-      initialModerations: moderations ?? [],
-      toxicModeration,
       lessonPlan: overrideLessonPlan ?? tempLessonPlan,
       hasFinished,
       hasAppendedInitialMessage,
@@ -381,7 +332,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
       messages,
       isLoading,
       isStreaming: !hasFinished,
-      lastModeration,
       input,
       setInput,
       partialPatches,
@@ -390,15 +340,12 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     [
       id,
       chat,
-      moderations,
-      toxicModeration,
       tempLessonPlan,
       hasFinished,
       hasAppendedInitialMessage,
       chatAreaRef,
       messages,
       isLoading,
-      lastModeration,
       input,
       setInput,
       append,
@@ -414,7 +361,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   return (
     <ChatContext.Provider value={value}>
-      {isChatLoading || isModerationsLoading ? null : children}
+      {isChatLoading ? null : children}
     </ChatContext.Provider>
   );
 }

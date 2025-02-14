@@ -12,6 +12,8 @@ import {
   PosthogAnalyticsAdapter,
 } from "@oakai/aila/src/features/analytics";
 import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
+import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/helicone/HeliconeThreatDetector";
+import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";
@@ -71,6 +73,11 @@ async function setupChatHandler(req: NextRequest) {
         chatId,
       );
 
+      const threatDetectors = [
+        new HeliconeThreatDetector(),
+        new LakeraThreatDetector(),
+      ];
+
       span.setTag("chat_id", chatId);
       span.setTag("messages.count", messages.length);
       span.setTag("options", JSON.stringify(options));
@@ -82,6 +89,7 @@ async function setupChatHandler(req: NextRequest) {
         options,
         llmService,
         moderationAiClient,
+        threatDetectors,
       };
     },
   );
@@ -171,6 +179,7 @@ export async function handleChatPostRequest(
       options,
       llmService,
       moderationAiClient,
+      threatDetectors,
     } = await setupChatHandler(req);
 
     setTelemetryMetadata(span, chatId, messages, lessonPlan, options);
@@ -202,7 +211,9 @@ export async function handleChatPostRequest(
                 new PosthogAnalyticsAdapter(aila),
                 new DatadogAnalyticsAdapter(aila),
               ],
+              threatDetectors: () => threatDetectors,
             },
+
             lessonPlan: lessonPlan ?? {},
           };
           const result = await config.createAila(ailaOptions);
