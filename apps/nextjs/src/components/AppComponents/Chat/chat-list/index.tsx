@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import scrollIntoView from "scroll-into-view-if-needed";
 
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
@@ -126,10 +127,23 @@ const StableMessages = () => {
   );
 };
 
+const visiblePart = (part: MessagePart) => {
+  return (
+    part.document.type === "text" ||
+    part.document.type === "prompt" ||
+    part.document.type === "error"
+  );
+};
+
 // NOTE: We isolate streamingMessage to reduce rerenders in other components during streaming
 const StreamingMessage = () => {
   const message = useChatStore((state) => state.streamingMessage);
   if (!message) {
+    return null;
+  }
+
+  // Don't show empty space above "waiting for it" if message wouldn't be visible
+  if (!message.parts.some(visiblePart)) {
     return null;
   }
 

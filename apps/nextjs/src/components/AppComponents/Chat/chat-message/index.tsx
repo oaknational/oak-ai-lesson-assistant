@@ -77,7 +77,6 @@ function roleType(message: ParsedMessage) {
 }
 
 export function ChatMessage({ message }: Readonly<ChatMessageProps>) {
-  // const chatId = useLessonPlanStore((state) => state.id);
   const persistedModerations = useModerationStore((state) => state.moderations);
 
   const [inspect, setInspect] = useState(false);
