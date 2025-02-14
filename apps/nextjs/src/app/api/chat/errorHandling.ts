@@ -4,7 +4,7 @@ import type {
   ActionDocument,
   ErrorDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import { handleHeliconeError } from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
+import { handleThreatDetectionError } from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
@@ -31,20 +31,20 @@ function reportErrorTelemetry(
   });
 }
 
-async function handleThreatDetectionError(
+async function handleThreatError(
   span: TracingSpan,
   e: AilaThreatDetectionError,
   id: string,
   prisma: PrismaClientWithAccelerate,
 ) {
-  const heliconeErrorMessage = await handleHeliconeError(
+  const threatErrorMessage = await handleThreatDetectionError(
     e.userId,
     id,
     e,
     prisma,
   );
   reportErrorTelemetry(span, e, "AilaThreatDetectionError", "Threat detected");
-  return streamingJSON(heliconeErrorMessage);
+  return streamingJSON(threatErrorMessage);
 }
 
 async function handleAilaAuthenticationError(
@@ -109,7 +109,7 @@ export async function handleChatException(
   }
 
   if (e instanceof AilaThreatDetectionError) {
-    return handleThreatDetectionError(span, e, chatId, prisma);
+    return handleThreatError(span, e, chatId, prisma);
   }
 
   if (e instanceof RateLimitExceededError) {

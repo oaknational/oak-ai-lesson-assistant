@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
-import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
+import type {
+  BasedOnOptional,
+  LessonPlanKey,
+} from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
@@ -195,7 +197,14 @@ export const LessonPlanDisplay = ({
   return (
     <div className={displayStyles()}>
       {lessonPlan["title"] && (
-        <Flex direction="column" gap="2" ref={titleSectionRef}>
+        <Flex
+          direction="column"
+          gap="2"
+          ref={titleSectionRef}
+          style={{
+            scrollMarginTop: 100,
+          }}
+        >
           <Flex direction="row" gap="2" className="opacity-90">
             {notEmpty(lessonPlan.keyStage) && (
               <Text className="font-bold">
