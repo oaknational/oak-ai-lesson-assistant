@@ -55,7 +55,10 @@ export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
 
       if (!response.hits.hits[0]?._source) {
         log.error(`No ${quizType} found for lesson slug: ${lessonSlug}. Hit: `);
-        throw new Error(`No ${quizType} found for lesson slug: ${lessonSlug}`);
+        // This is caused by the lesson slug not being in the index due to being a non legacy lesson.
+        throw new Error(
+          `No ${quizType} found for lesson slug: ${lessonSlug}. Returning placeholder quiz.`,
+        );
       }
 
       const source = response.hits.hits[0]._source;
@@ -71,6 +74,19 @@ export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
       } else if (quizType === "/exitQuiz") {
         quizIds = quizData.exitQuiz;
       }
+      if (!quizData.is_legacy) {
+        log.warn(
+          `Lesson slug ${lessonSlug} is not legacy. Returning placeholder quiz.`,
+        );
+        return [
+          "QUES-XXXXX-XXXXX",
+          "QUES-XXXXX-XXXXX",
+          "QUES-XXXXX-XXXXX",
+          "QUES-XXXXX-XXXXX",
+          "QUES-XXXXX-XXXXX",
+          "QUES-XXXXX-XXXXX",
+        ];
+      }
 
       if (!quizIds || !z.array(z.string()).safeParse(quizIds).success) {
         log.error(
@@ -84,7 +100,6 @@ export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
           )}`,
         );
       }
-
       return quizIds;
     } catch (error) {
       log.error(

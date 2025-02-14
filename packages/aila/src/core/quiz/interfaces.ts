@@ -150,6 +150,7 @@ export interface DocumentWrapper {
 export interface QuizSet {
   exitQuiz: string[];
   starterQuiz: string[];
+  is_legacy: boolean;
 }
 
 export interface QuizIDSource {

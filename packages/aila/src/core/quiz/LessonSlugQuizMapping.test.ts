@@ -12,30 +12,56 @@ describe("ElasticLessonQuizLookup", () => {
   });
 
   describe("quiz methods", () => {
-    const mockSearchResponse = {
+    const mockLegacyResponse = {
       hits: {
         hits: [
           {
             _source: {
-              text: {
+              text: JSON.stringify({
                 starterQuiz: ["q1", "q2"],
                 exitQuiz: ["q3", "q4"],
-              },
+                is_legacy: true,
+              }),
             },
           },
         ],
       },
     };
 
+    const mockNonLegacyResponse = {
+      hits: {
+        hits: [
+          {
+            _source: {
+              text: JSON.stringify({
+                starterQuiz: ["q1", "q2"],
+                exitQuiz: ["q3", "q4"],
+                is_legacy: false,
+              }),
+            },
+          },
+        ],
+      },
+    };
+
+    const placeholderQuizIds = [
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+    ];
+
     beforeEach(() => {
       // @ts-expect-error - Mock the Elasticsearch client search method
       dbLookup.client = {
-        search: jest.fn().mockResolvedValue(mockSearchResponse),
+        search: jest.fn().mockResolvedValue(mockLegacyResponse),
       };
     });
 
     describe("getStarterQuiz", () => {
-      it("should return starter quiz questions for valid lesson slug", async () => {
+      it("should return starter quiz questions for valid legacy lesson slug", async () => {
         const result = await dbLookup.getStarterQuiz("test-lesson");
         expect(result).toEqual(["q1", "q2"]);
         // @ts-expect-error - Mock the Elasticsearch client search method
@@ -51,6 +77,13 @@ describe("ElasticLessonQuizLookup", () => {
         });
       });
 
+      it("should return placeholder quiz for non-legacy lesson", async () => {
+        // @ts-expect-error - Mock the Elasticsearch client search method
+        dbLookup.client.search.mockResolvedValueOnce(mockNonLegacyResponse);
+        const result = await dbLookup.getStarterQuiz("test-lesson");
+        expect(result).toEqual(placeholderQuizIds);
+      });
+
       it("should throw error when no quiz found", async () => {
         // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({ hits: { hits: [] } });
@@ -63,7 +96,13 @@ describe("ElasticLessonQuizLookup", () => {
         // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({
           hits: {
-            hits: [{ _source: { text: { starterQuiz: null } } }],
+            hits: [
+              {
+                _source: {
+                  text: JSON.stringify({ starterQuiz: null, is_legacy: true }),
+                },
+              },
+            ],
           },
         });
         await expect(dbLookup.getStarterQuiz("test-lesson")).rejects.toThrow(
@@ -73,7 +112,7 @@ describe("ElasticLessonQuizLookup", () => {
     });
 
     describe("getExitQuiz", () => {
-      it("should return exit quiz questions for valid lesson slug", async () => {
+      it("should return exit quiz questions for valid legacy lesson slug", async () => {
         const result = await dbLookup.getExitQuiz("test-lesson");
         expect(result).toEqual(["q3", "q4"]);
         // @ts-expect-error- Mock the Elasticsearch client search method
@@ -89,6 +128,13 @@ describe("ElasticLessonQuizLookup", () => {
         });
       });
 
+      it("should return placeholder quiz for non-legacy lesson", async () => {
+        // @ts-expect-error - Mock the Elasticsearch client search method
+        dbLookup.client.search.mockResolvedValueOnce(mockNonLegacyResponse);
+        const result = await dbLookup.getExitQuiz("test-lesson");
+        expect(result).toEqual(placeholderQuizIds);
+      });
+
       it("should throw error when no quiz found", async () => {
         // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({ hits: { hits: [] } });
@@ -101,7 +147,13 @@ describe("ElasticLessonQuizLookup", () => {
         // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({
           hits: {
-            hits: [{ _source: { text: { exitQuiz: null } } }],
+            hits: [
+              {
+                _source: {
+                  text: JSON.stringify({ exitQuiz: null, is_legacy: true }),
+                },
+              },
+            ],
           },
         });
         await expect(dbLookup.getExitQuiz("test-lesson")).rejects.toThrow(
@@ -111,7 +163,14 @@ describe("ElasticLessonQuizLookup", () => {
     });
 
     describe("hasStarterQuiz", () => {
-      it("should return true when starter quiz exists", async () => {
+      it("should return true when starter quiz exists for legacy lesson", async () => {
+        const result = await dbLookup.hasStarterQuiz("test-lesson");
+        expect(result).toBe(true);
+      });
+
+      it("should return true when non-legacy lesson (returns placeholder)", async () => {
+        // @ts-expect-error - Mock the Elasticsearch client search method
+        dbLookup.client.search.mockResolvedValueOnce(mockNonLegacyResponse);
         const result = await dbLookup.hasStarterQuiz("test-lesson");
         expect(result).toBe(true);
       });
@@ -125,7 +184,14 @@ describe("ElasticLessonQuizLookup", () => {
     });
 
     describe("hasExitQuiz", () => {
-      it("should return true when exit quiz exists", async () => {
+      it("should return true when exit quiz exists for legacy lesson", async () => {
+        const result = await dbLookup.hasExitQuiz("test-lesson");
+        expect(result).toBe(true);
+      });
+
+      it("should return true when non-legacy lesson (returns placeholder)", async () => {
+        // @ts-expect-error - Mock the Elasticsearch client search method
+        dbLookup.client.search.mockResolvedValueOnce(mockNonLegacyResponse);
         const result = await dbLookup.hasExitQuiz("test-lesson");
         expect(result).toBe(true);
       });
@@ -137,6 +203,24 @@ describe("ElasticLessonQuizLookup", () => {
         expect(result).toBe(false);
       });
     });
+  });
+});
+
+describe("Edge case of legacy lesson", () => {
+  it("Should return placeholder quizIds for legacy lessons that HB has previously tried to migrate", async () => {
+    const placeholderQuizIds = [
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+    ];
+    const dbLookup = new ElasticLessonQuizLookup();
+    const result = await dbLookup.getStarterQuiz(
+      "finding-the-perimeter-of-polygons",
+    );
+    expect(result).toEqual(placeholderQuizIds);
   });
 });
 
