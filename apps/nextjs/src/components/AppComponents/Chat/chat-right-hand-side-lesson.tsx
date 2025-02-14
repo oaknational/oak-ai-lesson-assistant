@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 
 import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 
-import { useModerationStore, useChatStore } from "@/stores/AilaStoresProvider";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 import AiIcon from "../../AiIcon";
 import type { DemoContextProps } from "../../ContextProviders/Demo";
