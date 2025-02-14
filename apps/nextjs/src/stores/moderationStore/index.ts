@@ -5,6 +5,7 @@ import { create } from "zustand";
 import type { TrpcUtils } from "@/utils/trpc";
 
 import type { ChatStore } from "../chatStore";
+import type { LessonPlanStore } from "../lessonPlanStore";
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleFetchModerations } from "./actionFunctions/handleFetchModeration";
 import { handleToxicModeration } from "./actionFunctions/handleToxicModeration";
@@ -12,6 +13,7 @@ import { handleUpdateModerationState } from "./actionFunctions/handleUpdateModer
 
 export type ModerationStore = {
   chatActions?: Pick<ChatStore, "setMessages">;
+  lessonPlanActions?: Pick<LessonPlanStore, "resetStore">;
 
   id: string;
   moderations: Moderation[] | [];
@@ -41,6 +43,7 @@ export const createModerationStore = ({
   const moderationStore = create<ModerationStore>((set, get) => ({
     id,
     chatActions: undefined, // Passed in the provider
+    lessonPlanActions: undefined, // Passed in the provider
     moderations: [],
     isModerationsLoading: null,
     toxicInitialModeration: null,

@@ -9,9 +9,9 @@ export const handleToxicModeration = (
   get: () => ModerationStore,
 ) => {
   set({ toxicModeration: mod });
-  const { chatActions } = get();
+  const { chatActions, lessonPlanActions } = get();
   invariant(chatActions, "Passed into store in provider");
+  invariant(lessonPlanActions, "Passed into store in provider");
   chatActions.setMessages([], false);
-
-  //  @TODO setOverrideLessonPlan({});
+  lessonPlanActions.resetStore();
 };

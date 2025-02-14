@@ -49,7 +49,6 @@ const LessonPlanTrackingProvider: FC<LessonPlanTrackingProviderProps> = ({
   }, [chatId]);
   const onStreamFinished = useCallback(
     ({ prevLesson, nextLesson, messages }: OnStreamFinishedProps) => {
-      console.log("onStreamFinished", { prevLesson, nextLesson, messages });
       const ailaMessageContent = getLastAssistantMessage(messages)?.content;
 
       if (!ailaMessageContent) {

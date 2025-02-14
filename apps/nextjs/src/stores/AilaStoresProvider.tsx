@@ -105,6 +105,7 @@ function setupStoreDependencies(
   moderationStore.setState((state) => ({
     ...state,
     chatActions: chatStore.getState(),
+    lessonPlanActions: lessonPlanStore.getState(),
   }));
 
   chatStore.setState((state) => ({
