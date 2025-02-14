@@ -6,6 +6,7 @@ import {
   DemoDecorator,
   demoParams,
 } from "@/storybook/decorators/DemoDecorator";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import ExportButtons from "./";
 
@@ -13,7 +14,7 @@ const meta = {
   title: "Components/LessonPlan/ExportButtons",
   component: ExportButtons,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, DemoDecorator],
+  decorators: [ChatDecorator, DemoDecorator, StoreDecorator],
   args: {
     sectionRefs: {},
     documentContainerRef: { current: null },

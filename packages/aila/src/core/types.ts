@@ -69,7 +69,6 @@ export type AilaInitializationOptions = {
   persistence?: AilaPersistence[];
   analytics?: AilaAnalyticsFeature;
   threatDetection?: AilaThreatDetectionFeature;
-  threatDetector?: AilaThreatDetector;
   errorReporter?: AilaErrorReportingFeature;
   promptBuilder?: AilaPromptBuilder;
   plugins: AilaPlugin[];
@@ -80,5 +79,6 @@ export type AilaInitializationOptions = {
     ragService?: (aila: AilaServices) => AilaRagFeature;
     americanismsService?: (aila: AilaServices) => AilaAmericanismsFeature;
     analyticsAdapters?: (aila: AilaServices) => AnalyticsAdapter[];
+    threatDetectors?: (aila: AilaServices) => AilaThreatDetector[];
   };
 };

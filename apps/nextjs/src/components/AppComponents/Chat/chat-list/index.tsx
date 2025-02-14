@@ -8,7 +8,11 @@ import type { Message } from "ai";
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import type { DemoContextProps } from "@/components/ContextProviders/Demo";
-import { useChatStore } from "@/stores/AilaStoresProvider";
+import {
+  useChatStore,
+  useModerationStore,
+  useLessonPlanStore,
+} from "@/stores/AilaStoresProvider";
 import type { AilaStreamingStatus } from "@/stores/chatStore";
 
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
@@ -26,14 +30,14 @@ export function ChatList({
   demo,
 }: Readonly<ChatListProps>) {
   const chat = useLessonChat();
+  const persistedModerations = useModerationStore((state) => state.moderations);
+  const lastModeration = useModerationStore((state) => state.lastModeration);
 
-  const { id, messages, lastModeration } = chat;
+  const { id, messages } = chat;
 
   const ailaStreamingStatus = useChatStore(
     (state) => state.ailaStreamingStatus,
   );
-
-  const persistedModerations = chat.initialModerations;
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
@@ -111,7 +115,10 @@ export const ChatMessagesDisplay = ({
   ailaStreamingStatus,
   demo,
 }: ChatMessagesDisplayProps) => {
-  const { lessonPlan, isStreaming } = useLessonChat();
+  const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
+  const isStreaming = useChatStore(
+    (state) => state.ailaStreamingStatus !== "Idle",
+  );
   const { totalSections, totalSectionsComplete } = useProgressForDownloads({
     lessonPlan,
     isStreaming,

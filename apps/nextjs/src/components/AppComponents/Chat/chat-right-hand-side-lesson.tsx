@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 
 import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useModerationStore, useChatStore } from "@/stores/AilaStoresProvider";
 
 import AiIcon from "../../AiIcon";
 import type { DemoContextProps } from "../../ContextProviders/Demo";
@@ -23,7 +23,7 @@ const ChatRightHandSideLesson = ({
   closeMobileLessonPullOut,
   demo,
 }: Readonly<ChatRightHandSideLessonProps>) => {
-  const { messages } = useLessonChat();
+  const hasResponses = useChatStore((state) => state.stableMessages.length > 1);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -58,6 +58,14 @@ const ChatRightHandSideLesson = ({
   };
 
   const endOfDocRef = useRef<HTMLDivElement>(null);
+
+  const isModerationsLoading = useModerationStore(
+    (state) => state.isModerationsLoading,
+  );
+
+  if (isModerationsLoading) {
+    return null;
+  }
 
   return (
     <div
@@ -96,7 +104,7 @@ const ChatRightHandSideLesson = ({
         />
       </div>
       <div
-        className={`${messages.length > 1 && showLessonMobile ? "flex" : "hidden"} fixed bottom-20 left-0 right-0 items-center justify-center duration-150 sm:hidden`}
+        className={`${hasResponses && showLessonMobile ? "flex" : "hidden"} fixed bottom-20 left-0 right-0 items-center justify-center duration-150 sm:hidden`}
       >
         <ChatButton
           variant="primary"

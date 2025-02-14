@@ -23,6 +23,7 @@ export type LessonPlanStore = {
   iteration: number | undefined;
   isAcceptingChanges: boolean;
   numberOfStreamedCompleteParts: number;
+  isShared: boolean;
 
   messageStarted: () => void;
   messagesUpdated: (messages: AiMessage[]) => void;
@@ -47,6 +48,7 @@ export const createLessonPlanStore = (
     lessonPlan: {},
     iteration: undefined,
     isAcceptingChanges: false,
+    isShared: false,
 
     ...initialPerMessageState,
 
