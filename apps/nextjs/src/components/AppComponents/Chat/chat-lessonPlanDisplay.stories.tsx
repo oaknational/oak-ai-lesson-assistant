@@ -1,9 +1,7 @@
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import type { Meta, StoryObj } from "@storybook/react";
 
-import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
 import { chromaticParams } from "@/storybook/chromatic";
-import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
@@ -18,15 +16,11 @@ const lessonPlan = {
     "To understand the importance of frogs in British society and culture",
 } satisfies LooseLessonPlan;
 
-const chatContext: Partial<ChatContextProps> = {
-  messages: [],
-};
-
 const meta = {
   title: "Components/LessonPlan/LessonPlanDisplay",
   component: LessonPlanDisplay,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, StoreDecorator],
+  decorators: [StoreDecorator],
   args: {
     documentContainerRef: { current: null },
     chatEndRef: undefined,
@@ -51,9 +45,6 @@ export const Default: Story = {
     chatStoreState: {
       ailaStreamingStatus: "Idle",
     },
-    chatContext: {
-      ...chatContext,
-    },
     moderationStoreState: {
       lastModeration: null,
     },
@@ -74,9 +65,6 @@ export const WithModeration: Story = {
         categories: ["l/strong-language"],
       },
     },
-    chatContext: {
-      ...chatContext,
-    },
     lessonPlanStoreState: {
       lessonPlan,
     },
@@ -88,9 +76,6 @@ export const Loading: Story = {
   parameters: {
     chatStoreState: {
       ailaStreamingStatus: "Loading",
-    },
-    chatContext: {
-      ...chatContext,
     },
 
     moderationStoreState: {

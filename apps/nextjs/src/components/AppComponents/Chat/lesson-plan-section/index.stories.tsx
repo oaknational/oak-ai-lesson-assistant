@@ -3,7 +3,6 @@ import { userEvent, within } from "@storybook/test";
 import { fn } from "@storybook/test";
 
 import { chromaticParams } from "@/storybook/chromatic";
-import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import { LessonPlanSection } from "../lesson-plan-section";
@@ -19,12 +18,9 @@ const meta = {
     setSectionRef: fn(),
     showLessonMobile: false,
   },
-  decorators: [ChatDecorator, StoreDecorator],
+  decorators: [StoreDecorator],
   parameters: {
     ...chromaticParams(["desktop"]),
-    chatContext: {
-      messages: [],
-    },
     chatStoreState: {
       ailaStreamingStatus: "Idle",
     },

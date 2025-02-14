@@ -4,19 +4,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import scrollIntoView from "scroll-into-view-if-needed";
 
-import {
-  ChatMessage,
-  MessageTextWrapper,
-  MessageWrapper,
-} from "@/components/AppComponents/Chat/chat-message";
+import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
 import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
-import { MemoizedReactMarkdownWithStyles } from "../markdown";
 import { DemoLimitMessage } from "./demo-limit-message";
 import { InChatDownloadButtons } from "./in-chat-download-buttons";
+import { WorkingOnItMessage } from "./working-on-it-message";
 
-const Separator = () => <span className="my-10 flex" />;
+export const Separator = () => <span className="my-10 flex" />;
 
 const useShowDownloadButtons = () => {
   const stableMessages = useChatStore((state) => state.stableMessages);
@@ -144,39 +140,4 @@ const StreamingMessage = () => {
       <ChatMessage message={message} />
     </>
   );
-};
-
-const WorkingOnItMessage = () => {
-  const streamingMessage = useChatStore((state) => state.streamingMessage);
-  const ailaStreamingStatus = useChatStore(
-    (state) => state.ailaStreamingStatus,
-  );
-
-  const shouldShow =
-    streamingMessage &&
-    (streamingMessage.role === "user" ||
-      !streamingMessage.parts.some((part) => part.document.type === "text"));
-
-  const isFinishingUp =
-    ailaStreamingStatus === "StreamingChatResponse" ||
-    ailaStreamingStatus === "Moderating";
-  const text = isFinishingUp ? "Finishing up…" : "Working on it …";
-
-  if (shouldShow) {
-    return (
-      <>
-        <Separator />
-
-        <MessageWrapper>
-          <MessageTextWrapper>
-            <div className="w-full animate-pulse">
-              <MemoizedReactMarkdownWithStyles markdown={text} />
-            </div>
-          </MessageTextWrapper>
-        </MessageWrapper>
-      </>
-    );
-  }
-
-  return null;
 };

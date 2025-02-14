@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 
 import { chromaticParams } from "@/storybook/chromatic";
-import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import ChatLhsHeader from "./chat-lhs-header";
@@ -11,7 +10,7 @@ const meta = {
   title: "Components/Chat/ChatLhsHeader",
   component: ChatLhsHeader,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, StoreDecorator],
+  decorators: [StoreDecorator],
   args: {
     showStreamingStatus: false,
     setShowLessonMobile: fn(),
@@ -20,9 +19,6 @@ const meta = {
   },
   parameters: {
     ...chromaticParams(["desktop"]),
-    chatContext: {
-      // ailaStreamingStatus: "Idle",
-    },
   },
 } satisfies Meta<typeof ChatLhsHeader>;
 
