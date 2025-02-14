@@ -32,7 +32,6 @@ const meta = {
   args: {
     documentContainerRef: { current: null },
     chatEndRef: undefined,
-    sectionRefs: {},
     showLessonMobile: false,
   },
 
