@@ -21,7 +21,7 @@ type OnStreamFinishedProps = {
   nextLesson: LooseLessonPlan;
   messages: Message[];
 };
-type LessonPlanTrackingContextProps = {
+export type LessonPlanTrackingContextProps = {
   onStreamFinished: (props: OnStreamFinishedProps) => void;
   onSubmitText: (text: string) => void;
   onClickContinue: () => void;
@@ -50,10 +50,12 @@ const LessonPlanTrackingProvider: FC<LessonPlanTrackingProviderProps> = ({
   const onStreamFinished = useCallback(
     ({ prevLesson, nextLesson, messages }: OnStreamFinishedProps) => {
       const ailaMessageContent = getLastAssistantMessage(messages)?.content;
+
       if (!ailaMessageContent) {
         return;
       }
-      const isFirstMessage = messages.length === 2;
+      const isFirstMessage = messages.length === 3;
+
       trackLessonPlanRefined({
         chatId,
         prevLesson,
@@ -76,7 +78,7 @@ const LessonPlanTrackingProvider: FC<LessonPlanTrackingProviderProps> = ({
   }, []);
   const onClickContinue = useCallback(() => {
     setAction("button_continue");
-    setUserMessageContent("");
+    setUserMessageContent(""); // bug - a user could enter text and click continue but the text would not be cleared and not sent with tracking
   }, []);
   const onClickRetry = useCallback((text: string) => {
     setAction("button_retry");

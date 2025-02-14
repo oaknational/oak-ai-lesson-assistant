@@ -107,11 +107,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const trpcUtils = trpc.useUtils();
 
-  const lessonPlanTracking = useLessonPlanTracking();
-  const shouldTrackStreamFinished = useRef(false);
-
-  const toxicModeration = useModerationStore((state) => state.toxicModeration);
-
   const router = useRouter();
   const path = usePathname();
   const chatAreaRef = useRef<HTMLDivElement>(null);
@@ -124,7 +119,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const streamingFinished = useChatStore((state) => state.streamingFinished);
   const messageStarted = useLessonPlanStore((state) => state.messageStarted);
   const messageFinished = useLessonPlanStore((state) => state.messageFinished);
-  const getLessonPlanStoreState = useLessonPlanStore((state) => state.getState);
 
   /******************* Functions *******************/
 
@@ -145,7 +139,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     isLoading,
     input,
     setInput,
-    setMessages,
   } = useChat({
     sendExtraMessageFields: true,
     initialMessages,
@@ -201,16 +194,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
         });
 
       setHasFinished(true);
-      shouldTrackStreamFinished.current = true;
       chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
       streamingFinished();
       messageFinished();
-
-      lessonPlanTracking.onStreamFinished({
-        prevLesson: getLessonPlanStoreState().lastLessonPlan,
-        nextLesson: getLessonPlanStoreState().lessonPlan,
-        messages,
-      });
     },
   });
 

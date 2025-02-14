@@ -51,6 +51,7 @@ export type ChatStore = {
   setAiSdkActions: (actions: AiSdkActions) => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
   setInput: (input: string) => void;
+  getMessages: () => ParsedMessage[];
 
   // Action functions
   executeQueuedAction: () => void;
@@ -87,6 +88,7 @@ export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
     stop: handleStop(set, get),
     setMessages: handleSetMessages(set, get),
     streamingFinished: handleStreamingFinished(set, get),
+    getMessages: () => get().stableMessages,
 
     ...initialValues,
   }));

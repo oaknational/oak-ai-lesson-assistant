@@ -2,6 +2,7 @@ import { useState, createContext, useContext, useEffect } from "react";
 
 import { useStore, type StoreApi } from "zustand";
 
+import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import { type ChatStore, createChatStore } from "@/stores/chatStore";
 import {
   type ModerationStore,
@@ -31,6 +32,7 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
   id,
 }) => {
   const trpcUtils = trpc.useUtils();
+  const lessonPlanTracking = useLessonPlanTracking();
 
   const [stores] = useState(() => {
     const moderationStore = createModerationStore({
@@ -39,6 +41,11 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
     });
     const chatStore = createChatStore();
 
+    const lessonPlanStore = createLessonPlanStore(
+      id,
+      trpcUtils,
+      lessonPlanTracking,
+    );
     moderationStore.setState((state) => ({
       ...state,
       chatActions: chatStore.getState(),
@@ -49,10 +56,15 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
       moderationActions: moderationStore.getState(),
     }));
 
+    lessonPlanStore.setState((state) => ({
+      ...state,
+      chatActions: chatStore.getState(),
+    }));
+
     return {
       chat: chatStore,
       moderation: moderationStore,
-      lessonPlan: createLessonPlanStore(id, trpcUtils),
+      lessonPlan: lessonPlanStore,
     };
   });
 
@@ -96,3 +108,23 @@ export const useLessonPlanStore = <T,>(
   }
   return useStore(context.lessonPlan, selector);
 };
+
+function setupStoreDependencies(
+  chatStore: StoreApi<ChatStore>,
+  lessonPlan: StoreApi<LessonPlanStore>,
+) {
+  lessonPlan.setState((state) => ({
+    ...state,
+    chatActions: chatStore.getState(),
+  }));
+
+  chatStore.setState((state) => ({
+    ...state,
+    // when mod is merged into chatStore, this will be needed
+    // moderationActions: moderationStore.getState(),
+  }));
+  // moderationStore.setState((state) => ({
+  //   ...state,
+  //   chatActions: chatStore.getState(),
+  // }));
+}
