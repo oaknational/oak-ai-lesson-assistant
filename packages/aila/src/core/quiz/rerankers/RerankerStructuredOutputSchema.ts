@@ -28,7 +28,12 @@ export const starterQuizQuestionSuitabilityDescriptionSchema = z.object({
   justification: z
     .string()
     .describe("Justification for the overall suitability rating"),
-});
+  rating: z
+    .number()
+    .describe(
+      "The rating for the given criteria and response taking the chain of thought into account. The rating is a float between 0 and 1.",
+    ),
+}) satisfies z.ZodType<BaseType>;
 
 export const starterQuizSuitabilitySchema = z.object({
   consideration: starterQuizQuestionSuitabilityDescriptionSchema,
@@ -43,15 +48,15 @@ export const starterQuizSuitabilitySchema = z.object({
 });
 
 export const testRatingSchema = z.object({
+  justification: z
+    .string()
+    .describe("The chain of thought that led to the rating"),
   rating: z
     .number()
     .describe(
       "The rating for the given criteria and response taking the chain of thought into account. The rating is a float between 0 and 1.",
     ),
-  justification: z
-    .string()
-    .describe("The chain of thought that led to the rating"),
-}) satisfies z.ZodType<BaseType>;
+}) satisfies z.ZodType<BaseType & Record<string, unknown>>;
 
 export type TestRating = z.infer<typeof testRatingSchema>;
 

@@ -11,12 +11,18 @@ import type {
 } from "../features/types";
 import type {
   MessagePart,
+  JsonPatchDocument,
   ValidPatchDocument,
+} from "../protocol/jsonPatchProtocol";
+import {
+  JsonPatchDocumentOptional,
+  PatchQuiz,
 } from "../protocol/jsonPatchProtocol";
 import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
   LooseLessonPlan,
+  Quiz,
 } from "../protocol/schema";
 import type { Message } from "./chat";
 import type { AilaPlugin } from "./plugins";
@@ -55,6 +61,24 @@ export interface AilaChatService {
   loadChat({ store }: { store: string }): Promise<void>;
   addMessage(message: Message): void;
   startStreaming(abortController?: AbortController): ReadableStream;
+}
+
+export interface AilaQuizService {
+  generateMathsExitQuizPatch(
+    lessonPlan: LooseLessonPlan,
+  ): Promise<JsonPatchDocument>;
+}
+// TODO: GCLOMAX - move this to interfaces and rename.
+export interface AilaQuizGeneratorService {
+  generateMathsExitQuizPatch(
+    lessonPlan: LooseLessonPlan,
+    relevantLessons?: AilaRagRelevantLesson[],
+  ): Promise<Quiz[]>;
+  generateMathsStarterQuizPatch(
+    lessonPlan: LooseLessonPlan,
+    relevantLessons?: AilaRagRelevantLesson[],
+  ): Promise<Quiz[]>;
+  // invoke(lessonPlan: LooseLessonPlan): Promise<Quiz[]>;
 }
 
 export interface AilaServices {
