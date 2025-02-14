@@ -76,6 +76,7 @@ export const handleMessagesUpdated = (
             lessonPlan: updatedLessonPlan,
             appliedPatchHashes: [...state.appliedPatchHashes, patchHash],
             appliedPatchPaths: [...state.appliedPatchPaths, patchPath],
+            scrollToSection: patchPath,
           }));
         } else {
           log.info("Patch failed to apply");
@@ -116,7 +117,10 @@ export const handleMessagesUpdated = (
       log.info(`sectionsToEdit changed to ${sectionsToEdit.join(",")}`);
       const parsedSectionsToEdit =
         LessonPlanKeySchema.array().parse(sectionsToEdit);
-      set({ sectionsToEdit: parsedSectionsToEdit });
+      set({
+        sectionsToEdit: parsedSectionsToEdit,
+        scrollToSection: parsedSectionsToEdit[0],
+      });
     }
   };
 };

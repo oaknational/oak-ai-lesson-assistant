@@ -112,6 +112,7 @@
     "react-textarea-autosize": "^8.5.3",
     "remark-gfm": "^4.0.0",
     "remeda": "^1.29.0",
+    "scroll-into-view-if-needed": "^3.1.0",
     "storybook": "^8.4.1",
     "superjson": "^1.9.1",
     "svix": "^1.37.0",

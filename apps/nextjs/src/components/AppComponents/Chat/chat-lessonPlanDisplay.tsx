@@ -1,10 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
+import type {
+  BasedOnOptional,
+  LessonPlanKey,
+} from "@oakai/aila/src/protocol/schema";
+import { aiLogger } from "@oakai/logger";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
+import scrollIntoView from "scroll-into-view-if-needed";
 
-import { organiseSections } from "@/lib/lessonPlan/organiseSections";
+import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
 import {
   useChatStore,
   useModerationStore,
@@ -13,8 +18,10 @@ import {
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
-import DropDownSection from "./drop-down-section";
 import { GuidanceRequired } from "./guidance-required";
+import { LessonPlanSection } from "./lesson-plan-section";
+
+const scrollingLog = aiLogger("lessons:scrolling");
 
 export function notEmpty(value: unknown) {
   return value !== null && value !== undefined && value !== "";
@@ -33,12 +40,58 @@ const displayStyles = cva(
 
 export type LessonPlanDisplayProps = Readonly<{
   chatEndRef: React.MutableRefObject<HTMLDivElement | null>;
-  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
   showLessonMobile: boolean;
 }>;
 
-// TODO: replace with central scroll management
+const useSectionScrolling = ({
+  sectionRefs,
+  documentContainerRef,
+  userHasCancelledAutoScroll,
+}: {
+  sectionRefs: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
+  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
+  userHasCancelledAutoScroll: boolean;
+}) => {
+  const scrollToSection = useLessonPlanStore((state) => state.scrollToSection);
+  const setScrollToSection = useLessonPlanStore(
+    (state) => state.setScrollToSection,
+  );
+  const lastScrollToSectionRef = useRef<LessonPlanKey | null>(null);
+
+  useEffect(() => {
+    if (scrollToSection === null) {
+      lastScrollToSectionRef.current = scrollToSection;
+      return;
+    }
+
+    const isSectionChanged = lastScrollToSectionRef.current !== scrollToSection;
+    if (isSectionChanged) {
+      const sectionRef = sectionRefs[scrollToSection];
+      if (sectionRef) {
+        scrollingLog.info(`Scrolling to ${scrollToSection}`);
+        setTimeout(() => {
+          if (sectionRef.current) {
+            // Use ponyfill for safari support
+            scrollIntoView(sectionRef.current, {
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+          setScrollToSection(null);
+        }, 20);
+      }
+      lastScrollToSectionRef.current = scrollToSection;
+    }
+  }, [
+    scrollToSection,
+    sectionRefs,
+    documentContainerRef,
+    userHasCancelledAutoScroll,
+    setScrollToSection,
+  ]);
+};
+
 const useDetectScrollOverride = (
   documentContainerRef: React.RefObject<HTMLDivElement>,
 ) => {
@@ -51,12 +104,16 @@ const useDetectScrollOverride = (
   useEffect(() => {
     const handleUserScroll = (event: WheelEvent) => {
       // Check for mousewheel or touch pad scroll event
-      event?.type === "wheel" && setUserHasCancelledAutoScroll(true);
+      if (event?.type === "wheel") {
+        scrollingLog.info("User cancelled auto scroll");
+        setUserHasCancelledAutoScroll(true);
+      }
     };
 
     if (ailaStreamingStatus === "Idle") {
       // hack to account for lag
       const timer = setTimeout(() => {
+        scrollingLog.info("Enabling auto scroll");
         setUserHasCancelledAutoScroll(false);
       }, 1000);
       return () => clearTimeout(timer);
@@ -83,7 +140,6 @@ const useDetectScrollOverride = (
 
 export const LessonPlanDisplay = ({
   chatEndRef,
-  sectionRefs,
   documentContainerRef,
   showLessonMobile,
 }: LessonPlanDisplayProps) => {
@@ -106,6 +162,28 @@ export const LessonPlanDisplay = ({
   const { userHasCancelledAutoScroll } =
     useDetectScrollOverride(documentContainerRef);
 
+  const titleSectionRef = useRef(null);
+  const sectionRefs = useRef<
+    Partial<
+      Record<LessonPlanKey, React.MutableRefObject<HTMLDivElement | null>>
+    >
+  >({ title: titleSectionRef });
+  const setSectionRef = useCallback(
+    (
+      key: LessonPlanKey,
+      ref: React.MutableRefObject<HTMLDivElement | null>,
+    ) => {
+      sectionRefs.current[key] = ref;
+    },
+    [sectionRefs],
+  );
+
+  useSectionScrolling({
+    sectionRefs: sectionRefs.current,
+    documentContainerRef,
+    userHasCancelledAutoScroll,
+  });
+
   if (Object.keys(lessonPlan).length === 0) {
     return (
       <div className="w-full gap-5 px-23 pt-26">
@@ -119,7 +197,14 @@ export const LessonPlanDisplay = ({
   return (
     <div className={displayStyles()}>
       {lessonPlan["title"] && (
-        <Flex direction="column" gap="2">
+        <Flex
+          direction="column"
+          gap="2"
+          ref={titleSectionRef}
+          style={{
+            scrollMarginTop: 100,
+          }}
+        >
           <Flex direction="row" gap="2" className="opacity-90">
             {notEmpty(lessonPlan.keyStage) && (
               <Text className="font-bold">
@@ -155,26 +240,14 @@ export const LessonPlanDisplay = ({
       )}
 
       <div className="flex w-full flex-col justify-center">
-        {organiseSections.map((section) => {
-          const trigger = lessonPlan[section.trigger];
+        {allSectionsInOrder.map((section) => {
           return (
-            !!trigger &&
-            section.dependants.map((dependant) => {
-              const value = lessonPlan[dependant];
-              if (value !== null && value !== undefined) {
-                return (
-                  <DropDownSection
-                    key={dependant}
-                    section={dependant}
-                    sectionRefs={sectionRefs}
-                    value={value}
-                    userHasCancelledAutoScroll={userHasCancelledAutoScroll}
-                    documentContainerRef={documentContainerRef}
-                    showLessonMobile={showLessonMobile}
-                  />
-                );
-              }
-            })
+            <LessonPlanSection
+              key={section}
+              sectionKey={section}
+              setSectionRef={setSectionRef}
+              showLessonMobile={showLessonMobile}
+            />
           );
         })}
       </div>

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { Message } from "ai";
+import scrollIntoView from "scroll-into-view-if-needed";
 
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
@@ -44,7 +45,8 @@ export function ChatList({
 
   const scrollToBottom = useCallback(() => {
     if (chatEndRef.current && messages.length > 1) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+      // Use ponyfill for safari support
+      scrollIntoView(chatEndRef.current, { behavior: "smooth" });
     }
   }, [chatEndRef, messages]);
 
