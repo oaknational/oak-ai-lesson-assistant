@@ -59,14 +59,6 @@ const ChatRightHandSideLesson = ({
 
   const endOfDocRef = useRef<HTMLDivElement>(null);
 
-  const isModerationsLoading = useModerationStore(
-    (state) => state.isModerationsLoading,
-  );
-
-  if (isModerationsLoading) {
-    return null;
-  }
-
   return (
     <div
       className={`fixed bottom-0 ${showLessonMobile ? "right-0" : "right-[-100%] sm:right-0"} right-0 ${demo.isDemoUser ? "top-8 sm:top-0" : "top-0"} z-30 w-[95%] bg-white shadow-md duration-300 sm:relative sm:z-0 sm:w-[50%] sm:shadow-none lg:w-full`}
