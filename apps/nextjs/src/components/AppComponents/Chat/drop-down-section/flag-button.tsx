@@ -9,6 +9,7 @@ import * as Sentry from "@sentry/nextjs";
 import styled from "styled-components";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useLessonPlanStore } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
@@ -46,7 +47,8 @@ const FlagButton = ({
   const [userFeedbackText, setUserFeedbackText] = useState("");
   const chat = useLessonChat();
 
-  const { id, messages } = chat;
+  const { messages } = chat;
+  const id = useLessonPlanStore((state) => state.id);
   const lastAssistantMessage = getLastAssistantMessage(messages);
 
   const { mutateAsync } = trpc.chat.chatFeedback.flagSection.useMutation();

@@ -3,16 +3,18 @@
 import { OakSmallSecondaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 
 import { useDialog } from "../../DialogContext";
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
 
 const ExportButtons = () => {
-  const chat = useLessonChat();
-  const { id, isStreaming } = chat;
+  const id = useLessonPlanStore((store) => store.id);
+  const isStreaming = useChatStore(
+    (state) => state.ailaStreamingStatus !== "Idle",
+  );
   const { trackEvent } = useAnalytics();
   const { setDialogWindow } = useDialog();
   const demo = useDemoUser();
