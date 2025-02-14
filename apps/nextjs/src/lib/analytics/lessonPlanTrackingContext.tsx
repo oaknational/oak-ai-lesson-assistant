@@ -49,6 +49,7 @@ const LessonPlanTrackingProvider: FC<LessonPlanTrackingProviderProps> = ({
   }, [chatId]);
   const onStreamFinished = useCallback(
     ({ prevLesson, nextLesson, messages }: OnStreamFinishedProps) => {
+      console.log("onStreamFinished", { prevLesson, nextLesson, messages });
       const ailaMessageContent = getLastAssistantMessage(messages)?.content;
 
       if (!ailaMessageContent) {
@@ -78,7 +79,7 @@ const LessonPlanTrackingProvider: FC<LessonPlanTrackingProviderProps> = ({
   }, []);
   const onClickContinue = useCallback(() => {
     setAction("button_continue");
-    setUserMessageContent(""); // @todo bug - a user could enter text and click continue but the text would not be cleared and not sent with tracking
+    setUserMessageContent(""); // @todo bug - a user could enter text and click continue rather than the input button, the text would be cleared and not sent with tracking
   }, []);
   const onClickRetry = useCallback((text: string) => {
     setAction("button_retry");

@@ -41,7 +41,6 @@ export type LessonPlanStore = {
   messagesUpdated: (messages: AiMessage[]) => void;
   messageFinished: () => void;
   refetch: () => Promise<void>;
-  getState: () => LessonPlanStore;
 };
 
 const initialPerMessageState = {
@@ -89,8 +88,6 @@ export const createLessonPlanStore = (
       void handleRefetch(set, get, trpc)();
     },
     refetch: handleRefetch(set, get, trpc),
-
-    getState: () => get(),
 
     ...initialValues,
   }));
