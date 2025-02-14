@@ -1,6 +1,5 @@
 "use client";
 
-import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 import { OakSmallSecondaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 

@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import type { BasedOnOptional } from "@oakai/aila/src/protocol/schema";
-import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
+import type {
+  BasedOnOptional,
+  LessonPlanKey,
+} from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
