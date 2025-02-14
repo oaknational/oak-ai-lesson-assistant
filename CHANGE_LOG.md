@@ -1,3 +1,15 @@
+# [1.25.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.24.0...v1.25.0) (2025-02-14)
+
+
+### Bug Fixes
+
+* add placeholder quiz and annotation for experimental patches. ([#537](https://github.com/oaknational/oak-ai-lesson-assistant/issues/537)) ([66508e4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/66508e4a0fcddcd7d8205a8c9a7fe5b2e734cce9))
+
+
+### Features
+
+* aila threat detection ([#533](https://github.com/oaknational/oak-ai-lesson-assistant/issues/533)) ([9555778](https://github.com/oaknational/oak-ai-lesson-assistant/commit/95557785d318c461927f969aa5481043e9e2e132))
+
 # [1.24.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.23.0...v1.24.0) (2025-02-12)
 
 
