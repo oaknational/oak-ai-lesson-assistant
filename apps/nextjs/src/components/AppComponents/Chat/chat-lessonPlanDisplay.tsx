@@ -197,7 +197,14 @@ export const LessonPlanDisplay = ({
   return (
     <div className={displayStyles()}>
       {lessonPlan["title"] && (
-        <Flex direction="column" gap="2" ref={titleSectionRef}>
+        <Flex
+          direction="column"
+          gap="2"
+          ref={titleSectionRef}
+          style={{
+            scrollMarginTop: 100,
+          }}
+        >
           <Flex direction="row" gap="2" className="opacity-90">
             {notEmpty(lessonPlan.keyStage) && (
               <Text className="font-bold">
