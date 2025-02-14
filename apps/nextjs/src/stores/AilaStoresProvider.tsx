@@ -46,20 +46,8 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
       trpcUtils,
       lessonPlanTracking,
     );
-    moderationStore.setState((state) => ({
-      ...state,
-      chatActions: chatStore.getState(),
-    }));
 
-    chatStore.setState((state) => ({
-      ...state,
-      moderationActions: moderationStore.getState(),
-    }));
-
-    lessonPlanStore.setState((state) => ({
-      ...state,
-      chatActions: chatStore.getState(),
-    }));
+    setupStoreDependencies(chatStore, lessonPlanStore, moderationStore);
 
     return {
       chat: chatStore,
@@ -111,20 +99,21 @@ export const useLessonPlanStore = <T,>(
 
 function setupStoreDependencies(
   chatStore: StoreApi<ChatStore>,
-  lessonPlan: StoreApi<LessonPlanStore>,
+  lessonPlanStore: StoreApi<LessonPlanStore>,
+  moderationStore: StoreApi<ModerationStore>,
 ) {
-  lessonPlan.setState((state) => ({
+  moderationStore.setState((state) => ({
     ...state,
     chatActions: chatStore.getState(),
   }));
 
   chatStore.setState((state) => ({
     ...state,
-    // when mod is merged into chatStore, this will be needed
-    // moderationActions: moderationStore.getState(),
+    moderationActions: moderationStore.getState(),
   }));
-  // moderationStore.setState((state) => ({
-  //   ...state,
-  //   chatActions: chatStore.getState(),
-  // }));
+
+  lessonPlanStore.setState((state) => ({
+    ...state,
+    chatActions: chatStore.getState(),
+  }));
 }

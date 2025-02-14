@@ -92,6 +92,7 @@ export function trackLessonPlanRefined({
       (patch) => patch.value.path === "/basedOn",
     );
     track.lessonPlanRefined({
+      // @todo - this is firing every time the user clicks continue, not just refinements
       ...getLessonTrackingProps({ lesson: nextLesson }),
       chatId,
       moderatedContentType: getModerationTypes(moderation),
@@ -116,7 +117,7 @@ export function trackLessonPlanRefined({
   /**
    * Lesson plan terminated: When the user is blocked or the content is flagged toxic
    */
-  const isTerminated = accountLocked || (moderation && isToxic(moderation));
+  const isTerminated = accountLocked || (moderation && isToxic(moderation)); // @todo: broken for toxic moderation
   if (isTerminated) {
     track.lessonPlanTerminated({
       chatId,
