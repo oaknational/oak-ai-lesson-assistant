@@ -91,7 +91,7 @@ export const LlmMessage: Story = {
               value: [
                 "Identify the key events leading to the end of Roman Britain.",
                 "Describe the societal changes that occurred post-Roman withdrawal.",
-                "Analyse the archaeological evidence of Roman Britain\'s legacy.",
+                "Analyse the archaeological evidence of Roman Britain's legacy.",
               ],
             },
             status: "complete",

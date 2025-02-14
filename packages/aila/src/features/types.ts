@@ -2,7 +2,10 @@ import type { Message } from "../core/chat";
 import type { AilaPluginContext } from "../core/plugins";
 import type { ModerationDocument } from "../protocol/jsonPatchProtocol";
 import type { AilaPersistedChat, LooseLessonPlan } from "../protocol/schema";
-import type { AilaErrorBreadcrumb, AilaErrorSeverity } from "./errorReporting/types";
+import type {
+  AilaErrorBreadcrumb,
+  AilaErrorSeverity,
+} from "./errorReporting/types";
 import type { AilaGeneration } from "./generation/AilaGeneration";
 import type { AilaThreatDetector } from "./threatDetection";
 
@@ -30,7 +33,7 @@ export interface AilaPersistenceFeature {
 }
 
 export interface AilaThreatDetectionFeature {
-  detector: AilaThreatDetector;
+  detectors: AilaThreatDetector[];
 }
 
 export interface AilaErrorReportingFeature {

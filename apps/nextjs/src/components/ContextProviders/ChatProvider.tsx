@@ -69,18 +69,15 @@ function isValidMessageRole(role: unknown): role is Message["role"] {
 }
 
 export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
-  const {
-    data: chat,
-    isLoading: isChatLoading,
-    refetch: refetchChat,
-  } = trpc.chat.appSessions.getChat.useQuery(
-    { id },
-    {
-      refetchOnMount: true,
-      refetchOnWindowFocus: true,
-      staleTime: 0,
-    },
-  );
+  const { data: chat, isLoading: isChatLoading } =
+    trpc.chat.appSessions.getChat.useQuery(
+      { id },
+      {
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        staleTime: 0,
+      },
+    );
 
   const trpcUtils = trpc.useUtils();
 

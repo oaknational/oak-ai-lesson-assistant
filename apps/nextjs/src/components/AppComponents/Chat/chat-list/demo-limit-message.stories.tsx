@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { ChatModerationProvider } from "@/components/ContextProviders/ChatModerationContext";
 import { chromaticParams } from "@/storybook/chromatic";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 

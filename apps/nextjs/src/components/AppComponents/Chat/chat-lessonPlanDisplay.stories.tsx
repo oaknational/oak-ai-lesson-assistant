@@ -77,7 +77,6 @@ export const Loading: Story = {
     chatStoreState: {
       ailaStreamingStatus: "Loading",
     },
-
     moderationStoreState: {
       lastModeration: null,
     },

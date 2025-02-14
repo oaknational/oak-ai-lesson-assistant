@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 
 import scrollIntoView from "scroll-into-view-if-needed";
 
-import { useModerationStore, useChatStore } from "@/stores/AilaStoresProvider";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 import AiIcon from "../../AiIcon";
 import type { DemoContextProps } from "../../ContextProviders/Demo";
@@ -54,14 +54,6 @@ const ChatRightHandSideLesson = ({
   };
 
   const endOfDocRef = useRef<HTMLDivElement>(null);
-
-  const isModerationsLoading = useModerationStore(
-    (state) => state.isModerationsLoading,
-  );
-
-  if (isModerationsLoading) {
-    return null;
-  }
 
   return (
     <div

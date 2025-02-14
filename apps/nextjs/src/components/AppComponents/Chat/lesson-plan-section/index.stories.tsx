@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { userEvent, within } from "@storybook/test";
-import { fn } from "@storybook/test";
+import { fn, userEvent, within } from "@storybook/test";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";

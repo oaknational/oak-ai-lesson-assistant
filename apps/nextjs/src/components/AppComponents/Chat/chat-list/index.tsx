@@ -44,7 +44,6 @@ export function ChatList({
   isDemoLocked,
   showLessonMobile,
 }: Readonly<ChatListProps>) {
-  const id = useLessonPlanStore((state) => state.id);
   const hasMessages = useChatStore(
     (state) => state.stableMessages.length > 0 || !!state.streamingMessage,
   );
@@ -106,7 +105,7 @@ export function ChatList({
       <StreamingMessage />
       <WorkingOnItMessage />
       {shouldShowDownloadButtons && <InChatDownloadButtons />}
-      {isDemoLocked && <DemoLimitMessage id={id} />}
+      {isDemoLocked && <DemoLimitMessage />}
       <div ref={chatEndRef} />
     </div>
   );
