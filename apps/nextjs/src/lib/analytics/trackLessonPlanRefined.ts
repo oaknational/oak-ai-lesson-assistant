@@ -70,7 +70,7 @@ export function trackLessonPlanRefined({
   const accountLocked = messageParts
     .map((p) => p.document)
     .some(isAccountLocked);
-  const componentType = actionToComponentType(action);
+  const componentType = actionToComponentType(action); // @todo this is broken
 
   /**
    * Lesson plan initiated: When the user starts a lesson plan

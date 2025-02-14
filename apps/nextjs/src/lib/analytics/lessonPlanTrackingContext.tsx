@@ -78,7 +78,7 @@ const LessonPlanTrackingProvider: FC<LessonPlanTrackingProviderProps> = ({
   }, []);
   const onClickContinue = useCallback(() => {
     setAction("button_continue");
-    setUserMessageContent(""); // bug - a user could enter text and click continue but the text would not be cleared and not sent with tracking
+    setUserMessageContent(""); // @todo bug - a user could enter text and click continue but the text would not be cleared and not sent with tracking
   }, []);
   const onClickRetry = useCallback((text: string) => {
     setAction("button_retry");
