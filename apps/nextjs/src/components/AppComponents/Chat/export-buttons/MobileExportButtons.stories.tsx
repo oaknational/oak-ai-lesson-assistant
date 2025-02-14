@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
-import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import {
   DemoDecorator,
   demoParams,
 } from "@/storybook/decorators/DemoDecorator";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import { MobileExportButtons } from "./MobileExportButtons";
 
@@ -13,14 +13,14 @@ const meta = {
   title: "Components/LessonPlan/MobileExportButtons",
   component: MobileExportButtons,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, DemoDecorator],
+  decorators: [DemoDecorator, StoreDecorator],
   parameters: {
     viewport: {
       defaultViewport: "mobile",
     },
     ...chromaticParams(["mobile"]),
     ...demoParams({ isDemoUser: false }),
-    chatContext: {
+    lessonPlanStoreState: {
       id: "123",
     },
   },

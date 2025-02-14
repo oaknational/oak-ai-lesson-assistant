@@ -39,7 +39,7 @@ const meta = {
   title: "Components/LessonPlan/ChatRightHandSideLesson",
   component: ChatRightHandSideLesson,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, DemoDecorator, StoreDecorator],
+  decorators: [DemoDecorator, StoreDecorator],
   args: {
     showLessonMobile: true,
     closeMobileLessonPullOut: fn,
@@ -50,13 +50,6 @@ const meta = {
       defaultViewport: "mobile",
     },
     ...chromaticParams(["mobile"]),
-    chatContext: {
-      lessonPlan: {
-        subject: "biology",
-        keyStage: "key-stage-3",
-        title: "About Frogs",
-      },
-    },
     chatStoreState: {
       stableMessages: DummyParsedMessages,
     },

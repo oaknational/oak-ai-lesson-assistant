@@ -10,26 +10,18 @@ import { toast } from "react-hot-toast";
 
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import type {
-  AilaPersistedChat,
-  LooseLessonPlan,
-} from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
-import type { ChatRequestOptions, CreateMessage, Message } from "ai";
+import type { Message } from "ai";
 import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { useChatStoreAiSdkSync } from "src/stores/chatStore/hooks/useChatStoreAiSdkSync";
 import { useLessonPlanStoreAiSdkSync } from "src/stores/lessonPlanStore/hooks/useLessonPlanStoreAiSdkSync";
 
-import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import {
-  useChatStore,
-  useModerationStore,
-  useLessonPlanStore,
-} from "@/stores/AilaStoresProvider";
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
@@ -38,26 +30,7 @@ import { isAccountLocked } from "../AppComponents/Chat/chat-message/protocol";
 const log = aiLogger("chat");
 
 export type ChatContextProps = {
-  id: string;
-  chat: AilaPersistedChat | undefined;
-  // initialModerations: Moderation[];
-  // toxicModeration: PersistedModerationBase | null;
-  // lastModeration: PersistedModerationBase | null;
   messages: Message[];
-  isLoading: boolean;
-  isStreaming: boolean;
-  // ailaStreamingStatus: AilaStreamingStatus;
-  append: (
-    message: Message | CreateMessage,
-    chatRequestOptions?: ChatRequestOptions | undefined,
-  ) => Promise<string | null | undefined>;
-  // reload: () => void;
-  // stop: () => void;
-  input: string;
-  setInput: React.Dispatch<React.SetStateAction<string>>;
-  chatAreaRef: React.RefObject<HTMLDivElement>;
-  // queuedUserAction: string | null;
-  // executeQueuedAction: () => Promise<void>;
 };
 
 export const ChatContext = createContext<ChatContextProps | null>(null);
@@ -107,9 +80,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const trpcUtils = trpc.useUtils();
 
-  const router = useRouter();
   const path = usePathname();
-  const chatAreaRef = useRef<HTMLDivElement>(null);
   const [hasFinished, setHasFinished] = useState(true);
 
   const hasAppendedInitialMessage = useRef<boolean>(false);
@@ -117,6 +88,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const lessonPlanSnapshot = useRef<LooseLessonPlan>({});
 
   const streamingFinished = useChatStore((state) => state.streamingFinished);
+  const scrollToBottom = useChatStore((state) => state.scrollToBottom);
   const messageStarted = useLessonPlanStore((state) => state.messageStarted);
   const messageFinished = useLessonPlanStore((state) => state.messageFinished);
 
@@ -137,8 +109,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     reload,
     stop: stopStreaming,
     isLoading,
-    input,
-    setInput,
   } = useChat({
     sendExtraMessageFields: true,
     initialMessages,
@@ -167,7 +137,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     onResponse(response) {
       log.info("Chat: On Response");
 
-      chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
+      // TODO: create onResponse handler in store and call from there
+      scrollToBottom();
+
       if (response.status === 401) {
         toast.error(response.statusText);
         setHasFinished(true);
@@ -194,7 +166,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
         });
 
       setHasFinished(true);
-      chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
       streamingFinished();
       messageFinished();
     },
@@ -231,22 +202,13 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   useChatStoreAiSdkSync(messages, isLoading, stopStreaming, append, reload);
   useLessonPlanStoreAiSdkSync(messages, isLoading);
 
-  /**
-   *  If the state is being restored from a previous lesson plan, set the lesson plan
-   */
-
+  const storeAppend = useChatStore((state) => state.append);
   useEffect(() => {
     if (chat?.startingMessage && !hasAppendedInitialMessage.current) {
-      void append({
-        content: chat.startingMessage,
-        role: "user",
-      }).catch((err) => {
-        log.error("Failed to append initial message", err);
-        toast.error("Failed to start chat");
-      });
+      storeAppend(chat.startingMessage);
       hasAppendedInitialMessage.current = true;
     }
-  }, [chat?.startingMessage, append, router, path, hasAppendedInitialMessage]);
+  }, [chat?.startingMessage, storeAppend, hasAppendedInitialMessage]);
 
   /**
    *  Update the lesson plan if the chat has finished updating
@@ -265,30 +227,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const value: ChatContextProps = useMemo(
     () => ({
-      id,
-      chat: chat ?? undefined,
-      hasFinished,
-      hasAppendedInitialMessage,
-      chatAreaRef,
-      append,
       messages,
-      isLoading,
-      isStreaming: !hasFinished,
-      input,
-      setInput,
     }),
-    [
-      id,
-      chat,
-      hasFinished,
-      hasAppendedInitialMessage,
-      chatAreaRef,
-      messages,
-      isLoading,
-      input,
-      setInput,
-      append,
-    ],
+    [messages],
   );
 
   if (!chat && !isChatLoading) {

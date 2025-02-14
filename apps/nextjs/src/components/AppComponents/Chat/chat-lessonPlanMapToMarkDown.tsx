@@ -9,7 +9,7 @@ import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
 
 import { notEmpty } from "./chat-lessonPlanDisplay";
-import { sectionTitle } from "./drop-down-section";
+import { sectionTitle } from "./drop-down-section/sectionTitle";
 import { MemoizedReactMarkdownWithStyles } from "./markdown";
 
 const excludedKeys = [

@@ -7,6 +7,7 @@ import type { ModerationStore } from "../moderationStore";
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleAppend } from "./stateActionFunctions/handleAppend";
 import { handleExecuteQueuedAction } from "./stateActionFunctions/handleExecuteQueuedAction";
+import { handleScrollToBottom } from "./stateActionFunctions/handleScrollToBottom";
 import { handleSetMessages } from "./stateActionFunctions/handleSetMessages";
 import { handleStop } from "./stateActionFunctions/handleStop";
 import { handleStreamingFinished } from "./stateActionFunctions/handleStreamingFinished";
@@ -42,6 +43,7 @@ export type ChatStore = {
   queuedUserAction: string | null;
   lessonPlan: LooseLessonPlan | null;
   input: string;
+  chatAreaRef: React.RefObject<HTMLDivElement> | null;
 
   // From AI SDK
   aiSdkActions: AiSdkActions;
@@ -58,6 +60,7 @@ export type ChatStore = {
   append: (message: string) => void;
   stop: () => void;
   streamingFinished: () => void;
+  scrollToBottom: () => void;
 };
 
 export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
@@ -69,6 +72,7 @@ export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
     queuedUserAction: null,
     lessonPlan: null,
     input: "",
+    chatAreaRef: null,
 
     // From AI SDK
     aiSdkActions: {
@@ -81,6 +85,7 @@ export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
     setAiSdkActions: (aiSdkActions) => set({ aiSdkActions }),
     setLessonPlan: (lessonPlan) => set({ lessonPlan }),
     setInput: (input) => set({ input }),
+    setChatAreaRef: (ref) => set({ chatAreaRef: ref }),
 
     // Action functions
     executeQueuedAction: handleExecuteQueuedAction(set, get),
@@ -89,6 +94,7 @@ export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
     setMessages: handleSetMessages(set, get),
     streamingFinished: handleStreamingFinished(set, get),
     getMessages: () => get().stableMessages,
+    scrollToBottom: handleScrollToBottom(set, get),
 
     ...initialValues,
   }));

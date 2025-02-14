@@ -31,7 +31,12 @@ export type LessonPlanStore = {
   // Used for lessonPlanTracking.onStreamFinished
   lastLessonPlan: LooseLessonPlan;
   isShared: boolean;
+  scrollToSection: LessonPlanKey | null;
 
+  // setters
+  setScrollToSection: (sectionKey: LessonPlanKey | null) => void;
+
+  // actions
   messageStarted: () => void;
   messagesUpdated: (messages: AiMessage[]) => void;
   messageFinished: () => void;
@@ -60,11 +65,12 @@ export const createLessonPlanStore = (
     isAcceptingChanges: false,
     lastLessonPlan: {},
     isShared: false,
+    scrollToSection: null,
 
     ...initialPerMessageState,
 
     // Setters
-    setInitialLessonPlan: (lessonPlan: LooseLessonPlan) => set({ lessonPlan }),
+    setScrollToSection: (sectionKey) => set({ scrollToSection: sectionKey }),
 
     // Action functions
     messageStarted: () => {
@@ -88,12 +94,6 @@ export const createLessonPlanStore = (
 
     ...initialValues,
   }));
-
-  // For early state debugging. Remove later
-  lessonPlanStore.subscribe((state) => {
-    log.info("sectionsToEdit ", state.sectionsToEdit);
-    log.info("appliedPatchPaths ", state.appliedPatchPaths);
-  });
 
   logStoreUpdates(lessonPlanStore, "lessons:store");
   return lessonPlanStore;

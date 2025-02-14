@@ -1,3 +1,10 @@
+## [1.25.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.0...v1.25.1) (2025-02-14)
+
+
+### Bug Fixes
+
+* lesson flash after moderation ([#545](https://github.com/oaknational/oak-ai-lesson-assistant/issues/545)) ([74b0cba](https://github.com/oaknational/oak-ai-lesson-assistant/commit/74b0cba13edeba9aa153362fb86174fcf571edff))
+
 # [1.25.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.24.0...v1.25.0) (2025-02-14)
 
 
