@@ -1,11 +1,7 @@
 "use client";
 
-import {
-  MessageTextWrapper,
-  MessageWrapper,
-} from "@/components/AppComponents/Chat/chat-message";
+import { Message } from "@/components/AppComponents/Chat/chat-message/layout";
 
-import { Separator } from ".";
 import { MemoizedReactMarkdownWithStyles } from "../markdown";
 
 const text =
@@ -13,14 +9,12 @@ const text =
 
 export function DemoLimitMessage() {
   return (
-    <div className="w-full flex-col gap-11">
-      <Separator />
-
-      <MessageWrapper roleType="error">
-        <MessageTextWrapper>
+    <Message.Spacing>
+      <Message.Container roleType="error">
+        <Message.Content>
           <MemoizedReactMarkdownWithStyles markdown={text} />
-        </MessageTextWrapper>
-      </MessageWrapper>
-    </div>
+        </Message.Content>
+      </Message.Container>
+    </Message.Spacing>
   );
 }

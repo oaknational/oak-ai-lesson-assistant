@@ -5,36 +5,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import scrollIntoView from "scroll-into-view-if-needed";
 
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
-import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
+import { Message } from "@/components/AppComponents/Chat/chat-message/layout";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
-import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 import { DemoLimitMessage } from "./demo-limit-message";
 import { InChatDownloadButtons } from "./in-chat-download-buttons";
 import { WorkingOnItMessage } from "./working-on-it-message";
-
-export const Separator = () => <span className="my-10 flex" />;
-
-const useShowDownloadButtons = () => {
-  const stableMessages = useChatStore((state) => state.stableMessages);
-  const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
-  const isStreaming = useChatStore(
-    (state) => state.ailaStreamingStatus !== "Idle",
-  );
-
-  const { totalSections, totalSectionsComplete } = useProgressForDownloads({
-    lessonPlan,
-    isStreaming,
-  });
-
-  if (totalSectionsComplete < totalSections) {
-    return stableMessages.some(
-      ({ role, content }) =>
-        role !== "user" &&
-        content.includes("download") &&
-        (content.includes("slides") || content.includes("share")),
-    );
-  }
-};
 
 export interface ChatListProps {
   isDemoLocked: boolean;
@@ -80,8 +56,6 @@ export function ChatList({
     return () => clearTimeout(timeout);
   }, [ailaStreamingStatus, hasResponses, scrollToBottom]);
 
-  const shouldShowDownloadButtons = useShowDownloadButtons();
-
   const handleScroll = () => {
     if (chatEndRef.current) {
       const isAtBottom =
@@ -103,7 +77,7 @@ export function ChatList({
     <div className="relative flex w-full flex-col" onScroll={handleScroll}>
       <StableMessages />
       <StreamingMessage />
-      {shouldShowDownloadButtons && <InChatDownloadButtons />}
+      <InChatDownloadButtons />
       {isDemoLocked && <DemoLimitMessage />}
       <div ref={chatEndRef} />
     </div>
@@ -116,10 +90,9 @@ const StableMessages = () => {
   return (
     <>
       {stableMessages.map((message) => (
-        <>
-          <Separator />
-          <ChatMessage key={message.id} message={message} />
-        </>
+        <Message.Spacing key={message.id}>
+          <ChatMessage message={message} />
+        </Message.Spacing>
       ))}
     </>
   );
@@ -139,10 +112,9 @@ const StreamingMessage = () => {
 
   if (shouldShowWorkingOnIt) {
     return (
-      <>
-        <Separator />
+      <Message.Spacing>
         <WorkingOnItMessage />
-      </>
+      </Message.Spacing>
     );
   }
 
@@ -151,9 +123,8 @@ const StreamingMessage = () => {
   }
 
   return (
-    <>
-      <Separator />
-      <ChatMessage message={message} />
-    </>
+    <Message.Spacing>
+      <ChatMessage key={message.id} message={message} />
+    </Message.Spacing>
   );
 };

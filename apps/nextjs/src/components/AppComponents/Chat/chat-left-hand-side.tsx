@@ -1,6 +1,7 @@
-import React from "react";
-
 import { Flex } from "@radix-ui/themes";
+
+import { useDemoUser } from "@/components/ContextProviders/Demo";
+import { useDemoLocking } from "@/hooks/useDemoLocking";
 
 import ChatLhsHeader from "./chat-lhs-header";
 import { ChatList } from "./chat-list";
@@ -9,18 +10,16 @@ import { ChatPanelArea } from "./chat-panel-area";
 import QuickActionButtons from "./chat-quick-buttons";
 
 type ChatLeftHandSideProps = {
-  isDemoLocked: boolean;
   showLessonMobile: boolean;
   setShowLessonMobile: (value: boolean) => void;
-  isDemoUser: boolean;
 };
 
 const ChatLeftHandSide = ({
-  isDemoLocked,
   showLessonMobile,
   setShowLessonMobile,
-  isDemoUser,
 }: Readonly<ChatLeftHandSideProps>) => {
+  const isDemoLocked = useDemoLocking();
+
   return (
     <Flex
       direction="column"
@@ -32,7 +31,6 @@ const ChatLeftHandSide = ({
       <ChatLhsHeader
         setShowLessonMobile={setShowLessonMobile}
         showLessonMobile={showLessonMobile}
-        isDemoUser={isDemoUser}
         showStreamingStatus={process.env.NEXT_PUBLIC_ENVIRONMENT !== "prd"}
       />
       <div>
