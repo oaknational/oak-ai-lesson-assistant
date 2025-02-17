@@ -28,7 +28,6 @@ export const WorkingOnItMessage = () => {
       <>
         <Separator />
 
-        {/* TODO: is is the right type? */}
         <MessageWrapper roleType="aila">
           <MessageTextWrapper>
             <div className="w-full animate-pulse">
