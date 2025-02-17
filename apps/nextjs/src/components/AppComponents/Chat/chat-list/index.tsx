@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import scrollIntoView from "scroll-into-view-if-needed";
 
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
@@ -104,7 +103,6 @@ export function ChatList({
     <div className="relative flex w-full flex-col" onScroll={handleScroll}>
       <StableMessages />
       <StreamingMessage />
-      <WorkingOnItMessage />
       {shouldShowDownloadButtons && <InChatDownloadButtons />}
       {isDemoLocked && <DemoLimitMessage />}
       <div ref={chatEndRef} />
@@ -127,23 +125,28 @@ const StableMessages = () => {
   );
 };
 
-const visiblePart = (part: MessagePart) => {
-  return (
-    part.document.type === "text" ||
-    part.document.type === "prompt" ||
-    part.document.type === "error"
-  );
-};
-
 // NOTE: We isolate streamingMessage to reduce rerenders in other components during streaming
 const StreamingMessage = () => {
   const message = useChatStore((state) => state.streamingMessage);
-  if (!message) {
-    return null;
+  const ailaStreamingStatus = useChatStore(
+    (state) => state.ailaStreamingStatus,
+  );
+
+  // Don't show any text content from the response until part streaming has finished
+  // Note that this prevents us from showing any text ahead of patches
+  const shouldShowWorkingOnIt =
+    ailaStreamingStatus !== "Idle" && ailaStreamingStatus !== "Moderating";
+
+  if (shouldShowWorkingOnIt) {
+    return (
+      <>
+        <Separator />
+        <WorkingOnItMessage />
+      </>
+    );
   }
 
-  // Don't show empty space above "waiting for it" if message wouldn't be visible
-  if (!message.parts.some(visiblePart)) {
+  if (!message) {
     return null;
   }
 
