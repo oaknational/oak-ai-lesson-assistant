@@ -44,9 +44,9 @@ const createComponents = (
         <Tooltip.Provider delayDuration={0}>
           <Tooltip.Root>
             <Tooltip.Trigger asChild>
-              <Box className="mb-0 mt-0 ">
-                <button className="my-0 flex h-[24px] w-[24px] items-center justify-center overflow-hidden rounded-full bg-black p-4 ">
-                  <span className=" p-3 text-xs text-white">i</span>
+              <Box className="mb-0 mt-0">
+                <button className="my-0 flex h-[24px] w-[24px] items-center justify-center overflow-hidden rounded-full bg-black p-4">
+                  <span className="p-3 text-xs text-white">i</span>
                 </button>
               </Box>
             </Tooltip.Trigger>
