@@ -6,6 +6,7 @@ import { OakBox } from "@oaknational/oak-components";
 import type { AilaUserModificationAction } from "@prisma/client";
 
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
@@ -49,7 +50,9 @@ const ActionButtonWrapper = ({
     useState<FeedbackOption<AilaUserModificationAction> | null>(null);
 
   const chat = useLessonChat();
-  const { append, id, messages } = chat;
+  const { messages } = chat;
+  const id = useLessonPlanStore((state) => state.id);
+  const append = useChatStore((state) => state.append);
   const { mutateAsync } = trpc.chat.chatFeedback.modifySection.useMutation();
 
   const lastAssistantMessage = getLastAssistantMessage(messages);
@@ -71,10 +74,7 @@ const ActionButtonWrapper = ({
   const handleSubmit = async () => {
     if (!selectedRadio) return;
     const message = generateMessage(selectedRadio, userFeedbackText);
-    await Promise.all([
-      append({ content: message, role: "user" }),
-      recordUserModifySectionContent(),
-    ]);
+    await Promise.all([append(message), recordUserModifySectionContent()]);
     setIsOpen(false);
   };
 

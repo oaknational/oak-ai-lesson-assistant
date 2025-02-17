@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { Message } from "ai";
+import scrollIntoView from "scroll-into-view-if-needed";
 
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
 import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
@@ -33,24 +34,31 @@ export function ChatList({
   const persistedModerations = useModerationStore((state) => state.moderations);
   const lastModeration = useModerationStore((state) => state.lastModeration);
 
-  const { id, messages } = chat;
+  const { messages } = chat;
+  const id = useLessonPlanStore((state) => state.id);
+  const hasMessages = useChatStore(
+    (state) => state.stableMessages.length > 0 || !!state.streamingMessage,
+  );
+  const hasResponses = useChatStore((state) => state.stableMessages.length > 1);
 
   const ailaStreamingStatus = useChatStore(
     (state) => state.ailaStreamingStatus,
   );
 
+  // NOTE: This is a similar (and better?) apprach to the chat store/s scrolling with chatAreaRef
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
 
   const scrollToBottom = useCallback(() => {
-    if (chatEndRef.current && messages.length > 1) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    if (chatEndRef.current && hasResponses) {
+      // Use ponyfill for safari support
+      scrollIntoView(chatEndRef.current, { behavior: "smooth" });
     }
-  }, [chatEndRef, messages]);
+  }, [chatEndRef, hasResponses]);
 
   useEffect(() => {
     autoScroll && scrollToBottom();
-  }, [messages, autoScroll, ailaStreamingStatus, scrollToBottom]);
+  }, [hasResponses, autoScroll, ailaStreamingStatus, scrollToBottom]);
 
   useEffect(() => {
     scrollToBottom();
@@ -62,7 +70,7 @@ export function ChatList({
       scrollToBottom();
     }, 1500);
     return () => clearTimeout(timeout);
-  }, [ailaStreamingStatus, messages, scrollToBottom]);
+  }, [ailaStreamingStatus, hasResponses, scrollToBottom]);
 
   const handleScroll = () => {
     if (chatEndRef.current) {
@@ -77,7 +85,7 @@ export function ChatList({
     }
   };
 
-  if (!messages.length) {
+  if (!hasMessages) {
     return null;
   }
 

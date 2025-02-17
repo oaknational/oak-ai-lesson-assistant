@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 
-import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
+import scrollIntoView from "scroll-into-view-if-needed";
 
 import { useChatStore } from "@/stores/AilaStoresProvider";
 
@@ -31,15 +31,11 @@ const ChatRightHandSideLesson = ({
 
   const [showScrollButton, setShowScrollButton] = useState(false);
 
-  // This retains this existing bug, but is fixed on subsequent PRs
-  const sectionRefs: Partial<
-    Record<LessonPlanKey, React.MutableRefObject<HTMLDivElement | null>>
-  > = {};
-
   const scrollToBottom = () => {
     if (chatEndRef.current) {
       setShowScrollButton(false);
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+      // Use ponyfill for safari support
+      scrollIntoView(chatEndRef.current, { behavior: "smooth" });
     }
   };
 
@@ -67,10 +63,7 @@ const ChatRightHandSideLesson = ({
       onScroll={handleScroll}
       style={{ overflowY: "auto" }}
     >
-      <ExportButtons
-        sectionRefs={sectionRefs}
-        documentContainerRef={documentContainerRef}
-      />
+      <ExportButtons />
       <MobileExportButtons
         closeMobileLessonPullOut={closeMobileLessonPullOut}
       />
@@ -91,7 +84,6 @@ const ChatRightHandSideLesson = ({
         <LessonPlanDisplay
           showLessonMobile={showLessonMobile}
           chatEndRef={chatEndRef}
-          sectionRefs={sectionRefs}
           documentContainerRef={documentContainerRef}
         />
       </div>

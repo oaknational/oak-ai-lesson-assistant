@@ -10,16 +10,13 @@ import { toast } from "react-hot-toast";
 
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import type {
-  AilaPersistedChat,
-  LooseLessonPlan,
-} from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
-import type { ChatRequestOptions, CreateMessage, Message } from "ai";
+import type { Message } from "ai";
 import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { useChatStoreAiSdkSync } from "src/stores/chatStore/hooks/useChatStoreAiSdkSync";
 import { useLessonPlanStoreAiSdkSync } from "src/stores/lessonPlanStore/hooks/useLessonPlanStoreAiSdkSync";
 
@@ -39,27 +36,7 @@ import { isAccountLocked } from "../AppComponents/Chat/chat-message/protocol";
 const log = aiLogger("chat");
 
 export type ChatContextProps = {
-  id: string;
-  chat: AilaPersistedChat | undefined;
-  // initialModerations: Moderation[];
-  // toxicModeration: PersistedModerationBase | null;
-  // lastModeration: PersistedModerationBase | null;
   messages: Message[];
-  isLoading: boolean;
-  isStreaming: boolean;
-  lessonPlan: LooseLessonPlan;
-  // ailaStreamingStatus: AilaStreamingStatus;
-  append: (
-    message: Message | CreateMessage,
-    chatRequestOptions?: ChatRequestOptions | undefined,
-  ) => Promise<string | null | undefined>;
-  // reload: () => void;
-  // stop: () => void;
-  input: string;
-  setInput: React.Dispatch<React.SetStateAction<string>>;
-  chatAreaRef: React.RefObject<HTMLDivElement>;
-  // queuedUserAction: string | null;
-  // executeQueuedAction: () => Promise<void>;
 };
 
 export const ChatContext = createContext<ChatContextProps | null>(null);
@@ -124,9 +101,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const toxicModeration = useModerationStore((state) => state.toxicModeration);
 
-  const router = useRouter();
   const path = usePathname();
-  const chatAreaRef = useRef<HTMLDivElement>(null);
   const [hasFinished, setHasFinished] = useState(true);
 
   const hasAppendedInitialMessage = useRef<boolean>(false);
@@ -138,6 +113,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   >(undefined);
 
   const streamingFinished = useChatStore((state) => state.streamingFinished);
+  const scrollToBottom = useChatStore((state) => state.scrollToBottom);
   const messageStarted = useLessonPlanStore((state) => state.messageStarted);
   const messageFinished = useLessonPlanStore((state) => state.messageFinished);
 
@@ -158,8 +134,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     reload,
     stop: stopStreaming,
     isLoading,
-    input,
-    setInput,
     setMessages,
   } = useChat({
     sendExtraMessageFields: true,
@@ -189,7 +163,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     onResponse(response) {
       log.info("Chat: On Response");
 
-      chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
+      // TODO: create onResponse handler in store and call from there
+      scrollToBottom();
+
       if (response.status === 401) {
         toast.error(response.statusText);
         setHasFinished(true);
@@ -217,7 +193,7 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
       setHasFinished(true);
       shouldTrackStreamFinished.current = true;
-      chatAreaRef.current?.scrollTo(0, chatAreaRef.current?.scrollHeight);
+
       streamingFinished();
       messageFinished();
     },
@@ -250,34 +226,24 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     });
   }, [messages]);
 
-  const { tempLessonPlan, partialPatches, validPatches } =
-    useTemporaryLessonPlanWithStreamingEdits({
-      lessonPlan: chat?.lessonPlan ?? {},
-      messages,
-      isStreaming: !hasFinished,
-      messageHashes,
-    });
+  const { tempLessonPlan } = useTemporaryLessonPlanWithStreamingEdits({
+    lessonPlan: chat?.lessonPlan ?? {},
+    messages,
+    isStreaming: !hasFinished,
+    messageHashes,
+  });
 
   // Hooks to update the Zustand stores
   useChatStoreAiSdkSync(messages, isLoading, stopStreaming, append, reload);
   useLessonPlanStoreAiSdkSync(messages, isLoading);
 
-  /**
-   *  If the state is being restored from a previous lesson plan, set the lesson plan
-   */
-
+  const storeAppend = useChatStore((state) => state.append);
   useEffect(() => {
     if (chat?.startingMessage && !hasAppendedInitialMessage.current) {
-      void append({
-        content: chat.startingMessage,
-        role: "user",
-      }).catch((err) => {
-        log.error("Failed to append initial message", err);
-        toast.error("Failed to start chat");
-      });
+      storeAppend(chat.startingMessage);
       hasAppendedInitialMessage.current = true;
     }
-  }, [chat?.startingMessage, append, router, path, hasAppendedInitialMessage]);
+  }, [chat?.startingMessage, storeAppend, hasAppendedInitialMessage]);
 
   // Clear the hash cache each completed message
   useEffect(() => {
@@ -322,37 +288,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
 
   const value: ChatContextProps = useMemo(
     () => ({
-      id,
-      chat: chat ?? undefined,
-      lessonPlan: overrideLessonPlan ?? tempLessonPlan,
-      hasFinished,
-      hasAppendedInitialMessage,
-      chatAreaRef,
-      append,
       messages,
-      isLoading,
-      isStreaming: !hasFinished,
-      input,
-      setInput,
-      partialPatches,
-      validPatches,
     }),
-    [
-      id,
-      chat,
-      tempLessonPlan,
-      hasFinished,
-      hasAppendedInitialMessage,
-      chatAreaRef,
-      messages,
-      isLoading,
-      input,
-      setInput,
-      append,
-      partialPatches,
-      validPatches,
-      overrideLessonPlan,
-    ],
+    [messages],
   );
 
   if (!chat && !isChatLoading) {
