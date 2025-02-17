@@ -7,7 +7,7 @@ import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 import { useDialog } from "../../DialogContext";
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 
-const useShowDownloadButtons = () => {
+export const useShowDownloadButtons = () => {
   const stableMessages = useChatStore((state) => state.stableMessages);
   const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
   const isStreaming = useChatStore(
@@ -33,12 +33,6 @@ export const InChatDownloadButtons = () => {
   const demo = useDemoUser();
   const { setDialogWindow } = useDialog();
   const id = useLessonPlanStore((state) => state.id);
-
-  const shouldShow = useShowDownloadButtons();
-
-  if (!shouldShow) {
-    return null;
-  }
 
   return (
     <OakFlex $flexDirection="column" $gap="all-spacing-7" $mv="space-between-l">

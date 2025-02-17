@@ -2,6 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 
 import { chromaticParams } from "@/storybook/chromatic";
+import {
+  DemoDecorator,
+  demoParams,
+} from "@/storybook/decorators/DemoDecorator";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import ChatLhsHeader from "./chat-lhs-header";
@@ -10,15 +14,15 @@ const meta = {
   title: "Components/Chat/ChatLhsHeader",
   component: ChatLhsHeader,
   tags: ["autodocs"],
-  decorators: [StoreDecorator],
+  decorators: [DemoDecorator, StoreDecorator],
   args: {
     showStreamingStatus: false,
     setShowLessonMobile: fn(),
     showLessonMobile: false,
-    isDemoUser: false,
   },
   parameters: {
     ...chromaticParams(["desktop"]),
+    ...demoParams({ isDemoUser: false }),
   },
 } satisfies Meta<typeof ChatLhsHeader>;
 
@@ -39,7 +43,7 @@ export const NonProdStreamingStatus: Story = {
 };
 
 export const DemoBannerPadding: Story = {
-  args: {
-    isDemoUser: true,
+  parameters: {
+    ...demoParams({ isDemoUser: true }),
   },
 };

@@ -9,7 +9,10 @@ import { Message } from "@/components/AppComponents/Chat/chat-message/layout";
 import { useChatStore } from "@/stores/AilaStoresProvider";
 
 import { DemoLimitMessage } from "./demo-limit-message";
-import { InChatDownloadButtons } from "./in-chat-download-buttons";
+import {
+  InChatDownloadButtons,
+  useShowDownloadButtons,
+} from "./in-chat-download-buttons";
 import { WorkingOnItMessage } from "./working-on-it-message";
 
 export interface ChatListProps {
@@ -69,6 +72,8 @@ export function ChatList({
     }
   };
 
+  const shouldShowDownloadButtons = useShowDownloadButtons();
+
   if (!hasMessages) {
     return null;
   }
@@ -77,7 +82,7 @@ export function ChatList({
     <div className="relative flex w-full flex-col" onScroll={handleScroll}>
       <StableMessages />
       <StreamingMessage />
-      <InChatDownloadButtons />
+      {shouldShowDownloadButtons && <InChatDownloadButtons />}
       {isDemoLocked && <DemoLimitMessage />}
       <div ref={chatEndRef} />
     </div>

@@ -6,7 +6,7 @@ import { Icon } from "@/components/Icon";
 import { useModerationStore } from "@/stores/AilaStoresProvider";
 import type { ParsedMessage } from "@/stores/chatStore/types";
 
-import { Message } from ".";
+import { Message } from "./layout";
 import { isModeration } from "./protocol";
 
 export function getModeration(
