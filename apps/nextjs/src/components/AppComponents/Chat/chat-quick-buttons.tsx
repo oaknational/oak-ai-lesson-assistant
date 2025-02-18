@@ -42,13 +42,14 @@ const shouldAllowStop = (
 };
 
 const QuickActionButtons = () => {
+  const chat = useLessonChat();
+  const { messages } = chat;
   const { trackEvent } = useAnalytics();
   const lessonPlanTracking = useLessonPlanTracking();
   const { setDialogWindow } = useDialog();
   const queuedUserAction = useChatStore((state) => state.queuedUserAction);
   const append = useChatStore((state) => state.append);
   const stop = useChatStore((state) => state.stop);
-  const messages = useChatStore((state) => state.stableMessages);
   const id = useLessonPlanStore((state) => state.id);
 
   const ailaStreamingStatus = useChatStore(
