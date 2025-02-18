@@ -39,7 +39,9 @@ export async function prepLessonPlanForDocs(
     learning_cycle_outcome_3: lessonPlan.learningCycles
       ? "3.     " + lessonPlan.learningCycles[2]
       : " ",
-    prior_knowledge: lessonPlan.priorKnowledge ?? [" "],
+    prior_knowledge: lessonPlan.priorKnowledge?.map((pk) => "•  " + pk) ?? [
+      " ",
+    ],
     misconception_1: lessonPlan.misconceptions
       ? "1.     " + lessonPlan.misconceptions[0]?.description
       : "",
@@ -278,8 +280,10 @@ export async function prepLessonPlanForDocs(
     cycle_1_spoken_explanation: stringOrBullets(
       lessonPlan.cycle1.explanation.spokenExplanation,
     ),
-    cycle_1_check_for_understanding_question_1:
-      lessonPlan.cycle1.checkForUnderstanding[0]?.question ?? "",
+    cycle_1_check_for_understanding_question_1: lessonPlan.cycle1
+      .checkForUnderstanding[0]
+      ? "1. " + lessonPlan.cycle1.checkForUnderstanding[0]?.question
+      : "",
     cycle_1_check_for_understanding_question_1_answer_1:
       processQuizAnswersForLessonPlanDoc(
         lessonPlan.cycle1.checkForUnderstanding[0]?.answers,
@@ -296,8 +300,11 @@ export async function prepLessonPlanForDocs(
         lessonPlan.cycle1.checkForUnderstanding[0]?.distractors,
       )[2] ?? "",
 
-    cycle_1_check_for_understanding_question_2:
-      lessonPlan.cycle1.checkForUnderstanding[1]?.question ?? "",
+    cycle_1_check_for_understanding_question_2: lessonPlan.cycle1
+      .checkForUnderstanding[1]
+      ? "2. " + lessonPlan.cycle1.checkForUnderstanding[1]?.question
+      : "",
+
     cycle_1_check_for_understanding_question_2_answer_1:
       processQuizAnswersForLessonPlanDoc(
         lessonPlan.cycle1.checkForUnderstanding[1]?.answers,
@@ -321,8 +328,10 @@ export async function prepLessonPlanForDocs(
     cycle_2_spoken_explanation: stringOrBullets(
       lessonPlan.cycle2?.explanation.spokenExplanation,
     ),
-    cycle_2_check_for_understanding_question_1:
-      lessonPlan.cycle2?.checkForUnderstanding[0]?.question ?? "",
+    cycle_2_check_for_understanding_question_1: lessonPlan.cycle2
+      ?.checkForUnderstanding[0]
+      ? "1. " + lessonPlan.cycle2?.checkForUnderstanding[0]?.question
+      : "",
     cycle_2_check_for_understanding_question_1_answer_1:
       processQuizAnswersForLessonPlanDoc(
         lessonPlan.cycle2?.checkForUnderstanding[0]?.answers ?? [],
@@ -339,8 +348,11 @@ export async function prepLessonPlanForDocs(
         lessonPlan.cycle2?.checkForUnderstanding[0]?.distractors ?? [],
       )[2] ?? " ",
 
-    cycle_2_check_for_understanding_question_2:
-      lessonPlan.cycle2?.checkForUnderstanding[1]?.question ?? "",
+    cycle_2_check_for_understanding_question_2: lessonPlan.cycle2
+      ?.checkForUnderstanding[1]?.question
+      ? "2. " + lessonPlan.cycle2?.checkForUnderstanding[1]?.question
+      : "",
+
     cycle_2_check_for_understanding_question_2_answer_1:
       processQuizAnswersForLessonPlanDoc(
         lessonPlan.cycle2?.checkForUnderstanding[1]?.answers ?? [],
@@ -364,8 +376,10 @@ export async function prepLessonPlanForDocs(
     cycle_3_spoken_explanation: stringOrBullets(
       lessonPlan.cycle3?.explanation.spokenExplanation,
     ),
-    cycle_3_check_for_understanding_question_1:
-      lessonPlan.cycle3?.checkForUnderstanding[0]?.question ?? "",
+    cycle_3_check_for_understanding_question_1: lessonPlan.cycle3
+      ?.checkForUnderstanding[0]?.question
+      ? "1. " + lessonPlan.cycle3?.checkForUnderstanding[0]?.question
+      : "",
     cycle_3_check_for_understanding_question_1_answer_1:
       processQuizAnswersForLessonPlanDoc(
         lessonPlan.cycle3?.checkForUnderstanding[0]?.answers ?? [],
@@ -381,8 +395,10 @@ export async function prepLessonPlanForDocs(
         lessonPlan.cycle3?.checkForUnderstanding[0]?.answers ?? [],
         lessonPlan.cycle3?.checkForUnderstanding[0]?.distractors ?? [],
       )[2] ?? " ",
-    cycle_3_check_for_understanding_question_2:
-      lessonPlan.cycle3?.checkForUnderstanding[1]?.question ?? "",
+    cycle_3_check_for_understanding_question_2: lessonPlan.cycle3
+      ?.checkForUnderstanding[1]?.question
+      ? "2. " + lessonPlan.cycle3?.checkForUnderstanding[1]?.question
+      : "",
     cycle_3_check_for_understanding_question_2_answer_1:
       processQuizAnswersForLessonPlanDoc(
         lessonPlan.cycle3?.checkForUnderstanding[1]?.answers ?? [],
