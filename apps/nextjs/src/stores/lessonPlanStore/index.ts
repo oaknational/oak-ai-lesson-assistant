@@ -51,12 +51,17 @@ const initialPerMessageState = {
   numberOfStreamedCompleteParts: 0,
 } satisfies Partial<LessonPlanStore>;
 
-export const createLessonPlanStore = (
-  id: string,
-  trpc: TrpcUtils,
-  lessonPlanTracking: LessonPlanTrackingContextProps,
-  initialValues: Partial<LessonPlanStore> = {},
-) => {
+export const createLessonPlanStore = ({
+  id,
+  trpcUtils,
+  lessonPlanTracking,
+  initialValues,
+}: {
+  id: string;
+  trpcUtils: TrpcUtils;
+  lessonPlanTracking: LessonPlanTrackingContextProps;
+  initialValues?: Partial<LessonPlanStore>;
+}) => {
   const lessonPlanStore = createStore<LessonPlanStore>((set, get) => ({
     chatActions: undefined,
     id,
@@ -86,9 +91,9 @@ export const createLessonPlanStore = (
       set({ isAcceptingChanges: false, ...initialPerMessageState });
       handleTrackingEvents(lessonPlanTracking, get);
       // TODO: should we refetch when we start moderating?
-      void handleRefetch(set, get, trpc)();
+      void handleRefetch(set, get, trpcUtils)();
     },
-    refetch: handleRefetch(set, get, trpc),
+    refetch: handleRefetch(set, get, trpcUtils),
     resetStore: () => set({ lessonPlan: {} }),
 
     ...initialValues,

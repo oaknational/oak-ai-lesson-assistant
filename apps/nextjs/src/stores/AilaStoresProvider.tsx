@@ -41,11 +41,11 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
     });
     const chatStore = createChatStore();
 
-    const lessonPlanStore = createLessonPlanStore(
+    const lessonPlanStore = createLessonPlanStore({
       id,
       trpcUtils,
       lessonPlanTracking,
-    );
+    });
 
     setupStoreDependencies(chatStore, lessonPlanStore, moderationStore);
 
