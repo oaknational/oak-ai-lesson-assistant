@@ -15,14 +15,13 @@ import { useLessonPlanStoreAiSdkSync } from "src/stores/lessonPlanStore/hooks/us
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 
-import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
-import { isAccountLocked } from "../AppComponents/Chat/chat-message/protocol";
+import { findMessageIdFromContent } from "./Chat/utils";
+import { isAccountLocked } from "./chat-message/protocol";
 
 const log = aiLogger("chat");
 
-export type ChatProviderProps = {
+export type AiSdkProps = {
   id: string;
-  children: React.ReactNode;
 };
 
 function useActionMessages() {
@@ -42,7 +41,7 @@ function useActionMessages() {
   };
 }
 
-export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
+export function AiSdk({ id }: Readonly<AiSdkProps>) {
   const path = usePathname();
   const [hasFinished, setHasFinished] = useState(true);
 
@@ -152,5 +151,5 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   useChatStoreAiSdkSync(messages, isLoading, stopStreaming, append, reload);
   useLessonPlanStoreAiSdkSync(messages, isLoading);
 
-  return children;
+  return null;
 }
