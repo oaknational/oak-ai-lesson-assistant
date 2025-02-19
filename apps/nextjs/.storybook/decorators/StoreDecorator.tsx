@@ -1,8 +1,11 @@
 import React, { useMemo } from "react";
 
 import type { Decorator } from "@storybook/react";
+import invariant from "tiny-invariant";
+import { type ExtractState } from "zustand";
 
 import type { LessonPlanTrackingContextProps } from "@/lib/analytics/lessonPlanTrackingContext";
+import type { AilaStores } from "@/stores/AilaStoresProvider";
 import { AilaStoresContext } from "@/stores/AilaStoresProvider";
 import { createChatStore, type ChatStore } from "@/stores/chatStore";
 import {
@@ -26,24 +29,29 @@ export const StoreDecorator: Decorator = (Story, { parameters }) => {
   const store = useMemo(() => {
     const id = "123";
     const trpcUtils = {} as TrpcUtils;
-    const moderationStore = createModerationStore({
+    const stores: Partial<AilaStores> = {};
+
+    const getStore = <T extends keyof AilaStores>(storeName: T) => {
+      invariant(stores[storeName], `Store ${storeName} not initialised`);
+      return stores[storeName].getState() as ExtractState<AilaStores[T]>;
+    };
+
+    stores.moderation = createModerationStore({
       id,
+      getStore,
       trpcUtils,
       initialValues: parameters.moderationStoreState,
     });
-    const chatStore = createChatStore(parameters.chatStoreState);
-    const lessonPlanStore = createLessonPlanStore({
+    stores.chat = createChatStore(getStore, parameters.chatStoreState);
+    stores.lessonPlan = createLessonPlanStore({
       id,
+      getStore,
       trpcUtils,
       lessonPlanTracking: {} as unknown as LessonPlanTrackingContextProps,
       initialValues: parameters.lessonPlanStoreState,
     });
 
-    return {
-      chat: chatStore,
-      moderation: moderationStore,
-      lessonPlan: lessonPlanStore,
-    };
+    return stores as AilaStores;
   }, [
     parameters.moderationStoreState,
     parameters.chatStoreState,

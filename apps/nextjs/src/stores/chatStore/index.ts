@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import type { ChatRequestOptions, CreateMessage } from "ai";
 import { createStore } from "zustand";
 
-import type { ModerationStore } from "../moderationStore";
+import type { GetStore } from "../AilaStoresProvider";
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleAppend } from "./stateActionFunctions/handleAppend";
 import { handleExecuteQueuedAction } from "./stateActionFunctions/handleExecuteQueuedAction";
@@ -35,7 +35,6 @@ export type AilaStreamingStatus =
   | "Idle";
 
 export type ChatStore = {
-  moderationActions?: Pick<ModerationStore, "fetchModerations">;
   ailaStreamingStatus: AilaStreamingStatus;
 
   stableMessages: ParsedMessage[];
@@ -53,7 +52,6 @@ export type ChatStore = {
   setAiSdkActions: (actions: AiSdkActions) => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
   setInput: (input: string) => void;
-  getMessages: () => ParsedMessage[];
   setChatAreaRef: (ref: React.RefObject<HTMLDivElement>) => void;
 
   // Action functions
@@ -64,9 +62,11 @@ export type ChatStore = {
   scrollToBottom: () => void;
 };
 
-export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
+export const createChatStore = (
+  getStore: GetStore,
+  initialValues: Partial<ChatStore> = {},
+) => {
   const chatStore = createStore<ChatStore>((set, get) => ({
-    moderationActions: undefined, // Passed in the provider
     ailaStreamingStatus: "Idle",
     stableMessages: [],
     streamingMessage: null,
@@ -92,9 +92,8 @@ export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
     executeQueuedAction: handleExecuteQueuedAction(set, get),
     append: handleAppend(set, get),
     stop: handleStop(set, get),
-    setMessages: handleSetMessages(set, get),
+    setMessages: handleSetMessages(getStore, set, get),
     streamingFinished: handleStreamingFinished(set, get),
-    getMessages: () => get().stableMessages,
     scrollToBottom: handleScrollToBottom(set, get),
 
     ...initialValues,

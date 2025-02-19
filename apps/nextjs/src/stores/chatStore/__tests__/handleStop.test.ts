@@ -1,21 +1,19 @@
+import type { GetStore } from "@/stores/AilaStoresProvider";
+
 import { createChatStore, type AiSdkActions } from "..";
 
 describe("handleStop", () => {
-  let mockAiSdkActions: {
-    stop: jest.Mock;
+  const mockAiSdkActions = {
+    stop: jest.fn(),
   };
+  const getStore = jest.fn() as unknown as GetStore;
 
-  beforeEach(() => {
-    mockAiSdkActions = {
-      stop: jest.fn(),
-    };
-  });
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   test("should clear queued action if one exists", () => {
-    const store = createChatStore({
+    const store = createChatStore(getStore, {
       queuedUserAction: "Some action",
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
@@ -26,7 +24,7 @@ describe("handleStop", () => {
   });
 
   test("should call aiSdkActions.stop if no queued action exists", () => {
-    const store = createChatStore({
+    const store = createChatStore(getStore, {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     store.getState().stop();
