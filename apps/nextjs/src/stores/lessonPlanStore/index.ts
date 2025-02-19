@@ -5,16 +5,21 @@ import type {
 import { aiLogger } from "@oakai/logger";
 import { createStore } from "zustand";
 
+import type { LessonPlanTrackingContextProps } from "@/lib/analytics/lessonPlanTrackingContext";
 import type { TrpcUtils } from "@/utils/trpc";
 
+import type { ChatStore } from "../chatStore";
 import type { AiMessage } from "../chatStore/types";
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleMessagesUpdated } from "./stateActionFunctions/handleMessagesUpdated";
 import { handleRefetch } from "./stateActionFunctions/handleRefetch";
+import { handleTrackingEvents } from "./stateActionFunctions/handleTrackingEvents";
 
 const log = aiLogger("lessons:store");
 
 export type LessonPlanStore = {
+  chatActions?: ChatStore;
+
   id: string;
   lessonPlan: LooseLessonPlan;
   appliedPatchHashes: string[];
@@ -23,6 +28,8 @@ export type LessonPlanStore = {
   iteration: number | undefined;
   isAcceptingChanges: boolean;
   numberOfStreamedCompleteParts: number;
+  // Used for lessonPlanTracking.onStreamFinished
+  lastLessonPlan: LooseLessonPlan;
   isShared: boolean;
   scrollToSection: LessonPlanKey | null;
 
@@ -34,6 +41,7 @@ export type LessonPlanStore = {
   messagesUpdated: (messages: AiMessage[]) => void;
   messageFinished: () => void;
   refetch: () => Promise<void>;
+  resetStore: () => void;
 };
 
 const initialPerMessageState = {
@@ -43,16 +51,24 @@ const initialPerMessageState = {
   numberOfStreamedCompleteParts: 0,
 } satisfies Partial<LessonPlanStore>;
 
-export const createLessonPlanStore = (
-  id: string,
-  trpc: TrpcUtils,
-  initialValues: Partial<LessonPlanStore> = {},
-) => {
+export const createLessonPlanStore = ({
+  id,
+  trpcUtils,
+  lessonPlanTracking,
+  initialValues,
+}: {
+  id: string;
+  trpcUtils: TrpcUtils;
+  lessonPlanTracking: LessonPlanTrackingContextProps;
+  initialValues?: Partial<LessonPlanStore>;
+}) => {
   const lessonPlanStore = createStore<LessonPlanStore>((set, get) => ({
+    chatActions: undefined,
     id,
     lessonPlan: {},
     iteration: undefined,
     isAcceptingChanges: false,
+    lastLessonPlan: {},
     isShared: false,
     scrollToSection: null,
 
@@ -64,16 +80,21 @@ export const createLessonPlanStore = (
     // Action functions
     messageStarted: () => {
       log.info("Message started");
-      set({ isAcceptingChanges: true });
+      set({
+        isAcceptingChanges: true,
+        lastLessonPlan: get().lessonPlan,
+      });
     },
     messagesUpdated: handleMessagesUpdated(set, get),
     messageFinished: () => {
       log.info("Message finished");
       set({ isAcceptingChanges: false, ...initialPerMessageState });
+      handleTrackingEvents(lessonPlanTracking, get);
       // TODO: should we refetch when we start moderating?
-      void handleRefetch(set, get, trpc)();
+      void handleRefetch(set, get, trpcUtils)();
     },
-    refetch: handleRefetch(set, get, trpc),
+    refetch: handleRefetch(set, get, trpcUtils),
+    resetStore: () => set({ lessonPlan: {} }),
 
     ...initialValues,
   }));

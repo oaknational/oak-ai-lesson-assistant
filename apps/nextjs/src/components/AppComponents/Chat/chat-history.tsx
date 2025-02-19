@@ -66,7 +66,11 @@ export function ChatHistory() {
       </OakBox>
       <div className="flex h-full flex-col">
         <div className="my-10 flex flex-col px-7">
-          <ChatButton href="/aila" variant="text-link" onClick={() => {}}>
+          <ChatButton
+            href="/aila"
+            variant="text-link"
+            onClick={() => setOpenSidebar(false)}
+          >
             <span className="rotate-45">
               <OakIcon
                 iconName="cross"

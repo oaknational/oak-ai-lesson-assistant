@@ -5,6 +5,7 @@ import {
   DemoDecorator,
   demoParams,
 } from "@/storybook/decorators/DemoDecorator";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import { InChatDownloadButtons } from "./in-chat-download-buttons";
 
@@ -15,7 +16,7 @@ const meta = {
   args: {
     id: "test-chat-id",
   },
-  decorators: [DemoDecorator],
+  decorators: [DemoDecorator, StoreDecorator],
   parameters: {
     ...chromaticParams(["desktop"]),
     ...demoParams({ isDemoUser: true }),
