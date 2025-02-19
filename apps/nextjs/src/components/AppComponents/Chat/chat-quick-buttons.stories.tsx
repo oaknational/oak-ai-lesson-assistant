@@ -1,28 +1,30 @@
-import type { Message } from "@oakai/aila/src/core/chat";
 import type { Meta, StoryObj } from "@storybook/react";
 
+import type { ParsedMessage } from "@/stores/chatStore/types";
 import { chromaticParams } from "@/storybook/chromatic";
-import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import { LessonPlanTrackingDecorator } from "@/storybook/decorators/LessonPlanTrackingDecorator";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import ChatQuickButtons from "./chat-quick-buttons";
 
-const DummyMessage: Message = {
+const DummyMessage: ParsedMessage = {
   content: "Dummy message",
   id: "123",
   role: "user",
+  parts: [],
+  isEditing: false,
+  hasError: false,
 };
 
 const meta = {
   title: "Components/Chat/ChatQuickButtons",
   component: ChatQuickButtons,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, StoreDecorator, LessonPlanTrackingDecorator],
+  decorators: [StoreDecorator, LessonPlanTrackingDecorator],
   parameters: {
     ...chromaticParams(["desktop"]),
-    chatContext: {
-      messages: [DummyMessage],
+    chatStoreState: {
+      stableMessages: [DummyMessage],
     },
   },
 } satisfies Meta<typeof ChatQuickButtons>;
@@ -53,9 +55,7 @@ export const LoadingWithoutMessages: Story = {
   parameters: {
     chatStoreState: {
       ailaStreamingStatus: "Loading",
-    },
-    chatContext: {
-      messages: [],
+      stableMessages: [],
     },
   },
 };

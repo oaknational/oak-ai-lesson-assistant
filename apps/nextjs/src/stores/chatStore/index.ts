@@ -54,6 +54,7 @@ export type ChatStore = {
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
   setInput: (input: string) => void;
   getMessages: () => ParsedMessage[];
+  setChatAreaRef: (ref: React.RefObject<HTMLDivElement>) => void;
 
   // Action functions
   executeQueuedAction: () => void;

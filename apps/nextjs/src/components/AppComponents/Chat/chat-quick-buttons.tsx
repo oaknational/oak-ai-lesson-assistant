@@ -2,7 +2,6 @@ import { useCallback } from "react";
 
 import { findLast } from "remeda";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
@@ -42,8 +41,6 @@ const shouldAllowStop = (
 };
 
 const QuickActionButtons = () => {
-  const chat = useLessonChat();
-  const { messages } = chat;
   const { trackEvent } = useAnalytics();
   const lessonPlanTracking = useLessonPlanTracking();
   const { setDialogWindow } = useDialog();
@@ -57,15 +54,18 @@ const QuickActionButtons = () => {
   );
   const shouldAllowUserAction = useChatStore(canAppendSelector);
 
-  const hasMessages = !!messages.length;
+  const stableMessages = useChatStore((state) => state.stableMessages);
+  const hasMessages = useChatStore(
+    (state) => state.stableMessages.length > 0 || !!state.streamingMessage,
+  );
 
   const handleRegenerate = useCallback(() => {
     trackEvent("chat:regenerate", { id: id });
     const lastUserMessage =
-      findLast(messages, (m) => m.role === "user")?.content ?? "";
+      findLast(stableMessages, (m) => m.role === "user")?.content ?? "";
     lessonPlanTracking.onClickRetry(lastUserMessage);
     append("regenerate");
-  }, [append, lessonPlanTracking, messages, trackEvent, id]);
+  }, [append, lessonPlanTracking, stableMessages, trackEvent, id]);
 
   const handleContinue = useCallback(() => {
     trackEvent("chat:continue");

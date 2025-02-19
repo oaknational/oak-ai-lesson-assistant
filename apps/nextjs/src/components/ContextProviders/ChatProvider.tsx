@@ -1,11 +1,5 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import type React from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
@@ -28,12 +22,6 @@ import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
 import { isAccountLocked } from "../AppComponents/Chat/chat-message/protocol";
 
 const log = aiLogger("chat");
-
-export type ChatContextProps = {
-  messages: Message[];
-};
-
-export const ChatContext = createContext<ChatContextProps | null>(null);
 
 export type ChatProviderProps = {
   id: string;
@@ -65,18 +53,15 @@ function isValidMessageRole(role: unknown): role is Message["role"] {
 }
 
 export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
-  const {
-    data: chat,
-    isLoading: isChatLoading,
-    refetch: refetchChat,
-  } = trpc.chat.appSessions.getChat.useQuery(
-    { id },
-    {
-      refetchOnMount: true,
-      refetchOnWindowFocus: true,
-      staleTime: 0,
-    },
-  );
+  const { data: chat, isLoading: isChatLoading } =
+    trpc.chat.appSessions.getChat.useQuery(
+      { id },
+      {
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        staleTime: 0,
+      },
+    );
 
   const trpcUtils = trpc.useUtils();
 
@@ -221,34 +206,9 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     });
   }, [id, trpcUtils.chat.appSessions.getChat, hasFinished, messages]);
 
-  /**
-   * Get the sensitive moderation id and pass to dialog
-   */
-
-  const value: ChatContextProps = useMemo(
-    () => ({
-      messages,
-    }),
-    [messages],
-  );
-
   if (!chat && !isChatLoading) {
     redirect("/aila");
   }
 
-  return (
-    <ChatContext.Provider value={value}>
-      {isChatLoading ? null : children}
-    </ChatContext.Provider>
-  );
-}
-
-export function useLessonChat(): ChatContextProps {
-  const context = useContext(ChatContext);
-
-  if (!context) {
-    throw new Error("useChat must be used within a ChatProvider");
-  }
-
-  return context;
+  return isChatLoading ? null : children;
 }

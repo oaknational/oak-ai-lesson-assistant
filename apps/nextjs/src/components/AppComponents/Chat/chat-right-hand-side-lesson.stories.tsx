@@ -3,7 +3,6 @@ import { fn } from "@storybook/test";
 
 import type { ParsedMessage } from "@/stores/chatStore/types";
 import { chromaticParams } from "@/storybook/chromatic";
-import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import {
   DemoDecorator,
   demoParams,
