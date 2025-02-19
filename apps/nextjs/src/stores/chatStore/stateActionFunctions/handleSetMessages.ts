@@ -22,10 +22,16 @@ export function handleSetMessages(
     }
   }
 
+  function lastMessageIsUser(messages: AiMessage[]) {
+    return messages[messages.length - 1]?.role === "user";
+  }
+
   return (messages: AiMessage[], isLoading: boolean) => {
     const originalStreamingStatus = get().ailaStreamingStatus;
 
     if (!isLoading) {
+      // The AI SDK isn't loading: we're idle and all messages are stable
+
       const nextStableMessages = getNextStableMessages(
         messages,
         get().stableMessages,
@@ -38,7 +44,23 @@ export function handleSetMessages(
         streamingMessage: null,
         ailaStreamingStatus: "Idle",
       });
+    } else if (lastMessageIsUser(messages)) {
+      // AI SDK is loading without a message from the API: we're waiting for a response
+
+      const nextStableMessages = getNextStableMessages(
+        messages,
+        get().stableMessages,
+      );
+      set({
+        ...(nextStableMessages && {
+          stableMessages: nextStableMessages,
+        }),
+        streamingMessage: null,
+        ailaStreamingStatus: "RequestMade",
+      });
     } else {
+      // AI SDK is loading with a message from the API: we're streaming
+
       const currentMessageData = messages[messages.length - 1];
       invariant(currentMessageData, "Should have at least one message");
       const streamingMessage = parseStreamingMessage(

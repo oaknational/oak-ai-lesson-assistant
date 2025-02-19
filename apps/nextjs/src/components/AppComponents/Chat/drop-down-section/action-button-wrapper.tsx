@@ -5,7 +5,6 @@ import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/s
 import { OakBox } from "@oaknational/oak-components";
 import type { AilaUserModificationAction } from "@prisma/client";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
@@ -49,12 +48,12 @@ const ActionButtonWrapper = ({
   const [selectedRadio, setSelectedRadio] =
     useState<FeedbackOption<AilaUserModificationAction> | null>(null);
 
-  const chat = useLessonChat();
-  const { messages } = chat;
   const id = useLessonPlanStore((state) => state.id);
   const append = useChatStore((state) => state.append);
   const { mutateAsync } = trpc.chat.chatFeedback.modifySection.useMutation();
 
+  const messages = useChatStore((state) => state.stableMessages);
+  // NOTE: The last assistant message will be streamingMessage if we allow selection during moderation
   const lastAssistantMessage = getLastAssistantMessage(messages);
 
   const recordUserModifySectionContent = async () => {

@@ -44,7 +44,7 @@ test("User is restricted after message rate limit is reached", async ({
     await waitForGeneration(page, GENERATION_TIMEOUT);
 
     await expect(
-      page.getByTestId("chat-message-wrapper-error-generic"),
+      page.getByTestId("chat-message-wrapper-error"),
     ).not.toBeAttached();
     await expect(page.getByTestId("chat-message-wrapper-aila")).toContainText(
       "Are the learning outcome and learning cycles appropriate for your pupils?",
@@ -56,9 +56,7 @@ test("User is restricted after message rate limit is reached", async ({
     await continueChat(page);
     await waitForGeneration(page, 10000);
 
-    const errorMessage = page.getByTestId(
-      "chat-message-wrapper-warning-generic",
-    );
+    const errorMessage = page.getByTestId("chat-message-wrapper-error");
     await expect(errorMessage).toContainText(
       "Unfortunately you’ve exceeded your fair usage limit",
     );
@@ -69,7 +67,7 @@ test("User is restricted after message rate limit is reached", async ({
     await waitForGeneration(page, 10000);
 
     await expect(
-      page.getByTestId("chat-message-wrapper-warning-generic").last(),
+      page.getByTestId("chat-message-wrapper-error").last(),
     ).toContainText("Unfortunately you’ve exceeded your fair usage limit", {});
   });
 });

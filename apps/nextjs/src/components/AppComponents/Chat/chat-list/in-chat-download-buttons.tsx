@@ -2,12 +2,37 @@ import { OakBox, OakFlex, OakIcon, OakSpan } from "@oaknational/oak-components";
 import Link from "next/link";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 
 import { useDialog } from "../../DialogContext";
+import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 
-export const InChatDownloadButtons = ({ id }: { readonly id: string }) => {
+export const useShowDownloadButtons = () => {
+  const stableMessages = useChatStore((state) => state.stableMessages);
+  const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
+  const isStreaming = useChatStore(
+    (state) => state.ailaStreamingStatus !== "Idle",
+  );
+
+  const { totalSections, totalSectionsComplete } = useProgressForDownloads({
+    lessonPlan,
+    isStreaming,
+  });
+
+  if (totalSectionsComplete < totalSections) {
+    return stableMessages.some(
+      ({ role, content }) =>
+        role !== "user" &&
+        content.includes("download") &&
+        (content.includes("slides") || content.includes("share")),
+    );
+  }
+};
+
+export const InChatDownloadButtons = () => {
   const demo = useDemoUser();
   const { setDialogWindow } = useDialog();
+  const id = useLessonPlanStore((state) => state.id);
 
   return (
     <OakFlex $flexDirection="column" $gap="all-spacing-7" $mv="space-between-l">
