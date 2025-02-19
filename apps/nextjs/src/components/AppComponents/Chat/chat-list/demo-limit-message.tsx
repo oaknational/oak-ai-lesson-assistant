@@ -1,22 +1,20 @@
 "use client";
 
-import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
+import { Message } from "@/components/AppComponents/Chat/chat-message/layout";
 
-export function DemoLimitMessage({ id }: Readonly<{ id: string }>) {
+import { MemoizedReactMarkdownWithStyles } from "../markdown";
+
+const text =
+  "**Your lesson is complete**\n\nYou can no longer edit this lesson. [Create new lesson.](/aila)";
+
+export function DemoLimitMessage() {
   return (
-    <div className="w-full flex-col gap-11">
-      <ChatMessage
-        chatId={id}
-        ailaStreamingStatus="Idle"
-        message={{
-          id: "demo-limit",
-          role: "assistant",
-          content:
-            '{"type": "error", "message": "**Your lesson is complete**\\nYou can no longer edit this lesson. [Create new lesson.](/aila)"}',
-        }}
-        persistedModerations={[]}
-        separator={<span className="my-10 flex" />}
-      />
-    </div>
+    <Message.Spacing>
+      <Message.Container roleType="error">
+        <Message.Content>
+          <MemoizedReactMarkdownWithStyles markdown={text} />
+        </Message.Content>
+      </Message.Container>
+    </Message.Spacing>
   );
 }

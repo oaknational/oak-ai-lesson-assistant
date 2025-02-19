@@ -53,6 +53,7 @@ export type ChatStore = {
   setAiSdkActions: (actions: AiSdkActions) => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
   setInput: (input: string) => void;
+  setChatAreaRef: (ref: React.RefObject<HTMLDivElement>) => void;
 
   // Action functions
   executeQueuedAction: () => void;
