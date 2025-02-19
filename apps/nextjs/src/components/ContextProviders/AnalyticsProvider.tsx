@@ -228,21 +228,6 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   }, []);
 
   /**
-   * Legacy event tracking
-   * Calls PostHog tracking directly rather than using Avo's tracking plan.
-   * @todo remove this once all events are migrated to Avo
-   * @deprecated Use the `track` function from the analytics context instead
-   */
-  const trackEvent = useCallback(
-    (name: EventName, properties?: EventProperties) => {
-      // **Note: we are not sending legacy events to the Oak PostHog instance**
-      posthogAiBeta.track(name, properties);
-      hubspot.track(name, properties);
-    },
-    [posthogAiBeta, hubspot],
-  );
-
-  /**
    * Page view tracking
    */
   const page: PageFn = useCallback(
