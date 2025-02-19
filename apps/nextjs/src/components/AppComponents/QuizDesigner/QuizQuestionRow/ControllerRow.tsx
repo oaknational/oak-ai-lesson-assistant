@@ -5,7 +5,6 @@ import { Flex, Heading } from "@radix-ui/themes";
 
 import type { QuizAppAction } from "@/ai-apps/quiz-designer/state/actions";
 import { QuizAppActions } from "@/ai-apps/quiz-designer/state/actions";
-import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import ChatButton from "../../Chat/ui/chat-button";
 import ShareButtonGroup from "../../common/ShareButtonGroup";
@@ -30,7 +29,6 @@ const ControllerRow = ({
   shareLoading,
 }: Readonly<ControllerProps>) => {
   const [restartWarning, setRestartWarning] = useState(false);
-  const { trackEvent } = useAnalytics();
 
   if (!hasQuestions && !canExport) return null;
 
@@ -57,7 +55,6 @@ const ControllerRow = ({
             <ChatButton
               variant="primary"
               onClick={() => {
-                trackEvent("quiz_designer:add_question");
                 dispatch({ type: QuizAppActions.AddQuestion });
               }}
               icon="mini-menu"
@@ -116,7 +113,6 @@ const ControllerRow = ({
             variant="text-link"
             icon="reload"
             onClick={() => {
-              trackEvent("quiz_designer:restart");
               setRestartWarning(true);
             }}
           >

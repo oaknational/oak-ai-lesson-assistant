@@ -1,7 +1,6 @@
 import type { ExportableQuizAppState } from "@oakai/exports/src/schema/input.schema";
 
 import { convertToGIFTFormat } from "@/ai-apps/quiz-designer/convertToGIFTFormat";
-import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import Button from "../../Button";
 
@@ -33,15 +32,11 @@ function DownloadGiftButton({ quizData }: Readonly<DownloadGiftButtonProps>) {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
   };
-  const { trackEvent } = useAnalytics();
   return (
     <Button
       variant="text-link"
       onClick={() => {
         generateGiftText();
-        trackEvent("quiz_designer:click_export", {
-          export_type: "gift",
-        });
       }}
       icon="download"
     >

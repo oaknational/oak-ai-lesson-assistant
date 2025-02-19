@@ -4,15 +4,12 @@ import { OakFlex, OakSpan } from "@oaknational/oak-components";
 
 import { Button } from "@/components/AppComponents/Chat/ui/button";
 import { Icon } from "@/components/Icon";
-import useAnalytics from "@/lib/analytics/useAnalytics";
 
 export function OpenSideBarButton({
   setOpenSidebar,
 }: Readonly<{
   setOpenSidebar: (value: boolean) => void;
 }>) {
-  const { trackEvent } = useAnalytics();
-
   return (
     <Button
       variant="ghost"
@@ -20,7 +17,6 @@ export function OpenSideBarButton({
       className="flex items-center px-5"
       onClick={() => {
         setOpenSidebar(true);
-        trackEvent("chat:toggle_sidebar");
       }}
     >
       <Icon icon="sidebar" size="md" />

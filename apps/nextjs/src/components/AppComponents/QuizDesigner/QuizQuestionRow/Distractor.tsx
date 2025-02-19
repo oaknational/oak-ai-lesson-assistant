@@ -22,7 +22,6 @@ import {
   isGenerationHookLoading,
 } from "@/hooks/useGeneration";
 import useGenerationCallbacks from "@/hooks/useGenerationCallbacks";
-import useAnalytics from "@/lib/analytics/useAnalytics";
 import { getAgesFromKeyStage } from "@/utils/getAgesFromKeyStage";
 import { trpc } from "@/utils/trpc";
 
@@ -38,8 +37,6 @@ const Distractor = ({
   dispatch,
   state,
 }: Readonly<DistractorProps>) => {
-  const { trackEvent } = useAnalytics();
-
   const [userIsEditing, setUserIsEditing] = useState(false);
 
   const { requestGeneration, status, error } = useGenerationCallbacks(
@@ -130,11 +127,6 @@ const Distractor = ({
 
   const tweakDistractor = useCallback(
     async (distractorIdx: number, tweakedDistractor: string) => {
-      trackEvent("quiz_designer:tweak_distractor", {
-        previous_distractor: distractor.value,
-        new_distractor: tweakDistractor,
-      });
-
       dispatch({
         type: QuizAppActions.TweakedDistractor,
         questionIdx: questionIdx,
@@ -176,7 +168,6 @@ const Distractor = ({
       questionIdx,
       recordUserTweak,
       state.sessionId,
-      trackEvent,
     ],
   );
 

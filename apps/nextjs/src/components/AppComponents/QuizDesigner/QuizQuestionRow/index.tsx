@@ -13,7 +13,6 @@ import type {
 import Input from "@/components/Input";
 import useRegenerateAnswers from "@/hooks/useRegenerateAnswers";
 import useRegenerateDistractors from "@/hooks/useRegenerateDistractors";
-import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import ChatButton from "../../Chat/ui/chat-button";
 import Answers from "./Answers";
@@ -70,8 +69,6 @@ export function QuizQuestionRow({
   suggestedQuestionsGeneration,
   ref,
 }: Readonly<QuizQuestionRowProps>) {
-  const { trackEvent } = useAnalytics();
-
   // This is a proxy for has the user clicked generate
   // we could explicitly flag that they have instead if we need
   const hasQuestionBeenGenerated = questionRow.answers.length > 0;
@@ -138,7 +135,6 @@ export function QuizQuestionRow({
                 type: QuizAppActions.DeleteQuestion,
                 questionIdx,
               });
-              trackEvent("quiz_designer:delete_question");
             }
           }}
         >

@@ -33,7 +33,6 @@ function useGenerationCallbacks<TSchema extends z.Schema>(
   additionalOptions: AdditionalUseGenerationOptions,
   callbacks: UseGenerationCallbackTypes<TSchema>,
 ) {
-  const { trackEvent } = useAnalytics();
   const generationState = useGeneration(
     appSlug,
     promptSlug,
@@ -44,17 +43,8 @@ function useGenerationCallbacks<TSchema extends z.Schema>(
 
   const { generationId, status } = generationState;
 
-  const trackGeneration = useCallback(
-    (eventName: string) => {
-      const appNamePrefix = appSlug.replace("-", "_");
-      trackEvent(`${appNamePrefix}:${eventName}`, {
-        app_slug: appSlug,
-        prompt_slug: promptSlug,
-        generation_id: generationId,
-      });
-    },
-    [appSlug, generationId, promptSlug, trackEvent],
-  );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const trackGeneration = useCallback((eventName: string) => null, []);
 
   useEffect(() => {
     if (

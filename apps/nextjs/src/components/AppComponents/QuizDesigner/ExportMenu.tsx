@@ -10,7 +10,6 @@ import ExportMenuWrap from "@/components/ExportMenuWrap";
 import { useExportQuizDesignerSlides } from "@/components/ExportsDialogs/useExportQuizDesignerSlides";
 import LoadingWheel from "@/components/LoadingWheel";
 import useShareContent from "@/hooks/useShareContent";
-import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import ChatButton from "../Chat/ui/chat-button";
 import ShareButtonGroup from "../common/ShareButtonGroup";
@@ -58,7 +57,6 @@ const ExportMenu = ({
   const errorMessage = data && "message" in data ? data.message : "";
   const fileId =
     data && "link" in data && data.link?.split("/edit")[0]?.split("/d/")[1];
-  const { trackEvent } = useAnalytics();
 
   const { shareContent, shareId, shareLoading } = useShareContent({
     state: quizData,
@@ -115,9 +113,6 @@ const ExportMenu = ({
                     variant="primary"
                     onClick={() => {
                       quizSlidesExport.start();
-                      trackEvent("quiz_designer:click_export", {
-                        export_type: "powerpoint",
-                      });
                     }}
                     icon="download"
                   >
@@ -156,9 +151,6 @@ const ExportMenu = ({
                   icon="download"
                   onClick={() => {
                     handleCSVDownload();
-                    trackEvent("quiz_designer:click_export", {
-                      export_type: "csv",
-                    });
                   }}
                 >
                   CSV
