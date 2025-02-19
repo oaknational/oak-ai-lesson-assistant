@@ -72,7 +72,7 @@ export type ChatStore = {
 
 export const createChatStore = (
   id: string,
-  trpc: TrpcUtils,
+  trpcUtils: TrpcUtils,
   initialValues: Partial<ChatStore> = {},
 ) => {
   const chatStore = createStore<ChatStore>((set, get) => ({
@@ -108,7 +108,7 @@ export const createChatStore = (
     streamingFinished: handleStreamingFinished(set, get),
     getMessages: () => get().stableMessages,
     scrollToBottom: handleScrollToBottom(set, get),
-    fetchInitialMessages: handleFetchInitialMessages(set, get, trpc),
+    fetchInitialMessages: handleFetchInitialMessages(set, get, trpcUtils),
 
     ...initialValues,
   }));

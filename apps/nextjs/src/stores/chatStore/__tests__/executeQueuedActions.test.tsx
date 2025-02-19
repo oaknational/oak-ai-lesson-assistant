@@ -1,3 +1,5 @@
+import type { TrpcUtils } from "@/utils/trpc";
+
 import { createChatStore, type AiSdkActions } from "..";
 
 describe("Chat Store executeQueuedAction", () => {
@@ -17,8 +19,11 @@ describe("Chat Store executeQueuedAction", () => {
     jest.clearAllMocks();
   });
 
+  const id = "test-id";
+  const trpcUtils = {} as unknown as TrpcUtils;
+
   test("should do nothing if there is no queued action", () => {
-    const store = createChatStore({
+    const store = createChatStore(id, trpcUtils, {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     const initialState = store.getState();
@@ -34,7 +39,7 @@ describe("Chat Store executeQueuedAction", () => {
   });
 
   test('should handle "continue" action correctly', () => {
-    const store = createChatStore({
+    const store = createChatStore(id, trpcUtils, {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     const initialState = store.getState();
@@ -52,7 +57,7 @@ describe("Chat Store executeQueuedAction", () => {
   });
 
   test('should handle "regenerate" action correctly', () => {
-    const store = createChatStore({
+    const store = createChatStore(id, trpcUtils, {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     const initialState = store.getState();
@@ -67,7 +72,7 @@ describe("Chat Store executeQueuedAction", () => {
   });
 
   test("should handle user message actions correctly", () => {
-    const store = createChatStore({
+    const store = createChatStore(id, trpcUtils, {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     const initialState = store.getState();
@@ -86,7 +91,7 @@ describe("Chat Store executeQueuedAction", () => {
   });
 
   test("should maintain correct state after multiple actions", () => {
-    const store = createChatStore({
+    const store = createChatStore(id, trpcUtils, {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     const initialState = store.getState();

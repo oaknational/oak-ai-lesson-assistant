@@ -17,10 +17,7 @@ export const LessonPlanProgressDropdown: React.FC = () => {
     (state) => state.ailaStreamingStatus !== "Idle",
   );
   const { sections, totalSections, totalSectionsComplete } =
-    useProgressForDownloads({
-      lessonPlan,
-      isStreaming,
-    });
+    useProgressForDownloads({ lessonPlan, isStreaming });
   const [openProgressDropDown, setOpenProgressDropDown] = useState(false);
 
   return (
