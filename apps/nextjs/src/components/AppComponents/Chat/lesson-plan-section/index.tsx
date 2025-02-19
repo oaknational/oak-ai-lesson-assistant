@@ -101,4 +101,5 @@ const DropDownSectionWrapper = styled(OakBox)`
     border-top: 2px solid black;
   }
   scroll-margin-top: 90px;
+  scroll-margin-bottom: 90px;
 `;

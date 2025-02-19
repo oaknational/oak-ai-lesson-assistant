@@ -1,7 +1,5 @@
 import { useEffect, useRef } from "react";
 
-import type { UseChatHelpers } from "ai/react";
-
 import {
   Tooltip,
   TooltipContent,
