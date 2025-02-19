@@ -6,19 +6,22 @@ import * as Sentry from "@sentry/nextjs";
 
 import type { AnalyticsService } from "@/components/ContextProviders/AnalyticsProvider";
 
+import type { HubspotConfig } from "../analytics/hubspot/HubspotClient";
 import type { PosthogConfig } from "../posthog/posthog";
 import type { CustomDestination } from "./Avo";
 
 type AnalyticsServices = {
   posthog: Pick<AnalyticsService<PosthogConfig, "posthog">, "track">;
+  hubspot: Pick<AnalyticsService<HubspotConfig, "hubspot">, "track">;
 };
+
 /**
  * getAvoBridge returns the bridge between Avo and our analytics services.
  * Namely, when we call Avo.myEvent(), logEvent() gets fired below.
  * We are only using it for named tracking events, not for page views or
  * identify calls.
  */
-export const getAvoBridge = ({ posthog }: AnalyticsServices) => {
+export const getAvoBridge = ({ posthog, hubspot }: AnalyticsServices) => {
   const logEvent: CustomDestination["logEvent"] = (
     eventName,
     eventProperties = {},
@@ -37,6 +40,7 @@ export const getAvoBridge = ({ posthog }: AnalyticsServices) => {
     }
     try {
       posthog.track(eventName, eventProperties);
+      hubspot.track(eventName, eventProperties);
     } catch (err) {
       Sentry.captureException(new Error("Failed to track event"), {
         extra: { originalError: err },
