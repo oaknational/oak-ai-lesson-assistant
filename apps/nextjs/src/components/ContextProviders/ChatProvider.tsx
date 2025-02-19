@@ -1,11 +1,5 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import type React from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
@@ -20,14 +14,8 @@ import { redirect, usePathname } from "next/navigation";
 import { useChatStoreAiSdkSync } from "src/stores/chatStore/hooks/useChatStoreAiSdkSync";
 import { useLessonPlanStoreAiSdkSync } from "src/stores/lessonPlanStore/hooks/useLessonPlanStoreAiSdkSync";
 
-import { useTemporaryLessonPlanWithStreamingEdits } from "@/hooks/useTemporaryLessonPlanWithStreamingEdits";
-import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import {
-  useChatStore,
-  useModerationStore,
-  useLessonPlanStore,
-} from "@/stores/AilaStoresProvider";
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
 import { findMessageIdFromContent } from "../AppComponents/Chat/Chat/utils";
@@ -35,26 +23,10 @@ import { isAccountLocked } from "../AppComponents/Chat/chat-message/protocol";
 
 const log = aiLogger("chat");
 
-export type ChatContextProps = {
-  messages: Message[];
-};
-
-export const ChatContext = createContext<ChatContextProps | null>(null);
-
 export type ChatProviderProps = {
   id: string;
   children: React.ReactNode;
 };
-
-const messageHashes = {};
-
-function clearHashCache() {
-  for (const key in messageHashes) {
-    if (Object.prototype.hasOwnProperty.call(messageHashes, key)) {
-      delete messageHashes[key];
-    }
-  }
-}
 
 function useActionMessages() {
   const analytics = useAnalytics();
@@ -81,25 +53,17 @@ function isValidMessageRole(role: unknown): role is Message["role"] {
 }
 
 export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
-  const {
-    data: chat,
-    isLoading: isChatLoading,
-    refetch: refetchChat,
-  } = trpc.chat.appSessions.getChat.useQuery(
-    { id },
-    {
-      refetchOnMount: true,
-      refetchOnWindowFocus: true,
-      staleTime: 0,
-    },
-  );
+  const { data: chat, isLoading: isChatLoading } =
+    trpc.chat.appSessions.getChat.useQuery(
+      { id },
+      {
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        staleTime: 0,
+      },
+    );
 
   const trpcUtils = trpc.useUtils();
-
-  const lessonPlanTracking = useLessonPlanTracking();
-  const shouldTrackStreamFinished = useRef(false);
-
-  const toxicModeration = useModerationStore((state) => state.toxicModeration);
 
   const path = usePathname();
   const [hasFinished, setHasFinished] = useState(true);
@@ -107,10 +71,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
   const hasAppendedInitialMessage = useRef<boolean>(false);
 
   const lessonPlanSnapshot = useRef<LooseLessonPlan>({});
-
-  const [overrideLessonPlan, setOverrideLessonPlan] = useState<
-    LooseLessonPlan | undefined
-  >(undefined);
 
   const streamingFinished = useChatStore((state) => state.streamingFinished);
   const scrollToBottom = useChatStore((state) => state.scrollToBottom);
@@ -134,7 +94,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     reload,
     stop: stopStreaming,
     isLoading,
-    setMessages,
   } = useChat({
     sendExtraMessageFields: true,
     initialMessages,
@@ -192,8 +151,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
         });
 
       setHasFinished(true);
-      shouldTrackStreamFinished.current = true;
-
       streamingFinished();
       messageFinished();
     },
@@ -226,13 +183,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     });
   }, [messages]);
 
-  const { tempLessonPlan } = useTemporaryLessonPlanWithStreamingEdits({
-    lessonPlan: chat?.lessonPlan ?? {},
-    messages,
-    isStreaming: !hasFinished,
-    messageHashes,
-  });
-
   // Hooks to update the Zustand stores
   useChatStoreAiSdkSync(messages, isLoading, stopStreaming, append, reload);
   useLessonPlanStoreAiSdkSync(messages, isLoading);
@@ -245,11 +195,6 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     }
   }, [chat?.startingMessage, storeAppend, hasAppendedInitialMessage]);
 
-  // Clear the hash cache each completed message
-  useEffect(() => {
-    clearHashCache();
-  }, [hasFinished]);
-
   /**
    *  Update the lesson plan if the chat has finished updating
    *  Fetch the state from the last "state" command in the most recent assistant message
@@ -259,57 +204,11 @@ export function ChatProvider({ id, children }: Readonly<ChatProviderProps>) {
     void trpcUtils.chat.appSessions.getChat.invalidate({ id }).catch((err) => {
       log.error("Failed to invalidate chat cache", err);
     });
-    if (shouldTrackStreamFinished.current) {
-      lessonPlanTracking.onStreamFinished({
-        prevLesson: lessonPlanSnapshot.current,
-        nextLesson: tempLessonPlan,
-        messages,
-      });
-      shouldTrackStreamFinished.current = false;
-    }
-  }, [
-    id,
-    trpcUtils.chat.appSessions.getChat,
-    hasFinished,
-    messages,
-    lessonPlanTracking,
-    tempLessonPlan,
-  ]);
-
-  /**
-   * Get the sensitive moderation id and pass to dialog
-   */
-
-  useEffect(() => {
-    if (toxicModeration) {
-      setOverrideLessonPlan({});
-    }
-  }, [toxicModeration, setMessages]);
-
-  const value: ChatContextProps = useMemo(
-    () => ({
-      messages,
-    }),
-    [messages],
-  );
+  }, [id, trpcUtils.chat.appSessions.getChat, hasFinished, messages]);
 
   if (!chat && !isChatLoading) {
     redirect("/aila");
   }
 
-  return (
-    <ChatContext.Provider value={value}>
-      {isChatLoading ? null : children}
-    </ChatContext.Provider>
-  );
-}
-
-export function useLessonChat(): ChatContextProps {
-  const context = useContext(ChatContext);
-
-  if (!context) {
-    throw new Error("useChat must be used within a ChatProvider");
-  }
-
-  return context;
+  return isChatLoading ? null : children;
 }

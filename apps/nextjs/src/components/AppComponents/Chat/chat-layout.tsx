@@ -1,5 +1,4 @@
 import { useDemoUser } from "@/components/ContextProviders/Demo";
-import { useDemoLocking } from "@/hooks/useDemoLocking";
 import { useMobileLessonPullOutControl } from "@/hooks/useMobileLessonPullOutControl";
 import { cn } from "@/lib/utils";
 import { useLessonPlanStore } from "@/stores/AilaStoresProvider";
@@ -14,7 +13,6 @@ export interface ChatLayoutProps {
 export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
   const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
   const demo = useDemoUser();
-  const isDemoLocked = useDemoLocking();
   const { showLessonMobile, setShowLessonMobile, closeMobileLessonPullOut } =
     useMobileLessonPullOutControl({ lessonPlan });
   return (
@@ -24,11 +22,8 @@ export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
       >
         <ChatLeftHandSide
           key="chat-left-hand-side"
-          isDemoLocked={isDemoLocked}
           showLessonMobile={showLessonMobile}
           setShowLessonMobile={setShowLessonMobile}
-          demo={demo}
-          isDemoUser={demo.isDemoUser}
         />
         <ChatRightHandSideLesson
           key="chat-right-hand-side-lesson"

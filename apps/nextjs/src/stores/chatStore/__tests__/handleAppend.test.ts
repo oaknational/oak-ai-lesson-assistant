@@ -1,6 +1,4 @@
-import type { StoreApi } from "zustand";
-
-import { createChatStore, type AiSdkActions, type ChatStore } from "../index";
+import { createChatStore, type AiSdkActions } from "../index";
 
 describe("handleAppend", () => {
   let mockAiSdkActions: {

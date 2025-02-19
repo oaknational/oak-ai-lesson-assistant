@@ -29,6 +29,7 @@ const config = {
     "^@/assets/(.*)$": "<rootDir>/src/assets/$1",
     "^@/stores/(.*)$": "<rootDir>/src/stores/$1",
     "^@/storybook/(.*)$": "<rootDir>/.storybook/$1",
+    "^@/hooks/(.*)$": "<rootDir>/src/hooks/$1",
   },
   extensionsToTreatAsEsm: [".ts", ".tsx"],
   testMatch: ["**/*.test.ts", "**/*.test.tsx"],
