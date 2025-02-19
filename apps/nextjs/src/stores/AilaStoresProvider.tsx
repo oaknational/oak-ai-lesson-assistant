@@ -2,6 +2,7 @@ import { useState, createContext, useContext, useEffect } from "react";
 
 import { useStore, type StoreApi } from "zustand";
 
+import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import { type ChatStore, createChatStore } from "@/stores/chatStore";
 import {
   type ModerationStore,
@@ -31,6 +32,7 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
   id,
 }) => {
   const trpcUtils = trpc.useUtils();
+  const lessonPlanTracking = useLessonPlanTracking();
 
   const [stores] = useState(() => {
     const moderationStore = createModerationStore({
@@ -39,20 +41,18 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
     });
     const chatStore = createChatStore();
 
-    moderationStore.setState((state) => ({
-      ...state,
-      chatActions: chatStore.getState(),
-    }));
+    const lessonPlanStore = createLessonPlanStore({
+      id,
+      trpcUtils,
+      lessonPlanTracking,
+    });
 
-    chatStore.setState((state) => ({
-      ...state,
-      moderationActions: moderationStore.getState(),
-    }));
+    setupStoreDependencies(chatStore, lessonPlanStore, moderationStore);
 
     return {
       chat: chatStore,
       moderation: moderationStore,
-      lessonPlan: createLessonPlanStore(id, trpcUtils),
+      lessonPlan: lessonPlanStore,
     };
   });
 
@@ -96,3 +96,25 @@ export const useLessonPlanStore = <T,>(
   }
   return useStore(context.lessonPlan, selector);
 };
+
+function setupStoreDependencies(
+  chatStore: StoreApi<ChatStore>,
+  lessonPlanStore: StoreApi<LessonPlanStore>,
+  moderationStore: StoreApi<ModerationStore>,
+) {
+  moderationStore.setState((state) => ({
+    ...state,
+    chatActions: chatStore.getState(),
+    lessonPlanActions: lessonPlanStore.getState(),
+  }));
+
+  chatStore.setState((state) => ({
+    ...state,
+    moderationActions: moderationStore.getState(),
+  }));
+
+  lessonPlanStore.setState((state) => ({
+    ...state,
+    chatActions: chatStore.getState(),
+  }));
+}
