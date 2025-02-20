@@ -143,21 +143,8 @@ export const LessonPlanDisplay = ({
   documentContainerRef,
   showLessonMobile,
 }: LessonPlanDisplayProps) => {
-  const lessonPlanFromStore = useLessonPlanStore((state) => state.lessonPlan);
+  const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
   const lastModeration = useModerationStore((state) => state.lastModeration);
-
-  const lessonPlan = useMemo(
-    () => ({
-      ...lessonPlanFromStore,
-      starterQuiz:
-        lessonPlanFromStore._experimental_starterQuizMathsV0 ??
-        lessonPlanFromStore.starterQuiz,
-      exitQuiz:
-        lessonPlanFromStore._experimental_exitQuizMathsV0 ??
-        lessonPlanFromStore.exitQuiz,
-    }),
-    [lessonPlanFromStore],
-  );
 
   const { userHasCancelledAutoScroll } =
     useDetectScrollOverride(documentContainerRef);
