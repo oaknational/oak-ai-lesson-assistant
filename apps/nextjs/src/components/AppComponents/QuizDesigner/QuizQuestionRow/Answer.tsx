@@ -71,7 +71,6 @@ const Answer = ({
       questionRow.answers,
       recordUserTweak,
       state.sessionId,
-      answer.value,
     ],
   );
 
