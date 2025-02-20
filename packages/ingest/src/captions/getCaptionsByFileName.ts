@@ -4,7 +4,7 @@ import type { Cue } from "webvtt-parser";
 import * as WebVTTModule from "webvtt-parser";
 
 const WebVTTParser =
-  // @ts-expect-error import issue: TO doesn't think .default exists
+  // @ts-expect-error import issue: TS doesn't think .default exists
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   WebVTTModule.default.WebVTTParser as typeof WebVTTModule.WebVTTParser;
 
