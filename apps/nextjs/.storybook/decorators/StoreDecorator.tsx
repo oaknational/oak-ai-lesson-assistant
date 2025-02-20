@@ -31,7 +31,7 @@ export const StoreDecorator: Decorator = (Story, { parameters }) => {
       trpcUtils,
       initialValues: parameters.moderationStoreState,
     });
-    const chatStore = createChatStore(parameters.chatStoreState);
+    const chatStore = createChatStore(id, trpcUtils, parameters.chatStoreState);
     const lessonPlanStore = createLessonPlanStore({
       id,
       trpcUtils,

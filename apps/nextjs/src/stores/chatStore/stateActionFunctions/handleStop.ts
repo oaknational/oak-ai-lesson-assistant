@@ -1,10 +1,9 @@
-import type { ChatStore } from "../index";
+import type { ChatSetter, ChatGetter } from "../types";
 
-export const handleStop =
-  (set: (partial: Partial<ChatStore>) => void, get: () => ChatStore) => () => {
-    if (get().queuedUserAction) {
-      set({ queuedUserAction: null });
-    } else {
-      get().aiSdkActions.stop();
-    }
-  };
+export const handleStop = (set: ChatSetter, get: ChatGetter) => () => {
+  if (get().queuedUserAction) {
+    set({ queuedUserAction: null });
+  } else {
+    get().aiSdkActions.stop();
+  }
+};
