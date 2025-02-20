@@ -2,17 +2,6 @@ import tsEslint from '@typescript-eslint/eslint-plugin';
 
 const typescript = tsEslint.configs.recommended;
 
-// These are rules that are currently set to "warn"
-// But should be set to "error" once we fix all the existing issues
-const rulesToMoveToError = {
-  "@typescript-eslint/no-unsafe-return": "warn",
-  "@typescript-eslint/no-misused-promises": "warn",
-  "@typescript-eslint/no-unsafe-argument": "warn",
-  "@typescript-eslint/no-floating-promises": "warn",
-  "@typescript-eslint/no-unsafe-member-access": "warn",
-  "@typescript-eslint/no-redundant-type-constituents": "warn",       
-}
-
 const rulesToDecideOn = {
   "@typescript-eslint/no-unsafe-assignment": "off", // this rule is buggy and is causing a lot of false positives
   "@typescript-eslint/no-unsafe-call": "off", // this rule is buggy and is causing a lot of false positives
@@ -22,7 +11,6 @@ const rulesToDecideOn = {
 /** @type {Partial<Record<string, import('@typescript-eslint/utils/ts-eslint').SharedConfig.RuleEntry>>} */
 export const rules = {
   ...typescript.rules,
-  ...rulesToMoveToError,
   ...rulesToDecideOn,
   "@typescript-eslint/prefer-nullish-coalescing": "warn",
   "@typescript-eslint/no-unsafe-enum-comparison": "error",
@@ -36,7 +24,7 @@ export const rules = {
     allowTernary: true,
     allowTaggedTemplates: true,
   }],
-  "@typescript-eslint/require-await": "warn",  
+  "@typescript-eslint/require-await": "warn",
   "@typescript-eslint/unbound-method": "off",
   "@typescript-eslint/restrict-template-expressions": "error",
   "@typescript-eslint/await-thenable": "error",
@@ -44,6 +32,12 @@ export const rules = {
     allowExpressions: true,
     allowTypedFunctionExpressions: true,
   }],
+  "@typescript-eslint/no-unsafe-return": "error",
+  "@typescript-eslint/no-misused-promises": "error",
+  "@typescript-eslint/no-unsafe-argument": "error",
+  "@typescript-eslint/no-floating-promises": "error",
+  "@typescript-eslint/no-unsafe-member-access": "error",
+  "@typescript-eslint/no-redundant-type-constituents": "error",
 
   // Import plugin rules
   "import/no-cycle": ["warn", { maxDepth: Infinity }],

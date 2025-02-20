@@ -1,7 +1,6 @@
 import type { ChatSetter, ChatGetter } from "../types";
 
 export const handleStreamingFinished =
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (set: ChatSetter, get: ChatGetter) => () => {
     get().scrollToBottom();
 
