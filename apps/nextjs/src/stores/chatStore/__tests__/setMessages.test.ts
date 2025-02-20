@@ -1,5 +1,5 @@
-import { createModerationStore } from "@/stores/moderationStore";
-import type { TrpcUtils } from "@/utils/trpc";
+import type { GetStore } from "@/stores/AilaStoresProvider";
+import { TrpcUtils } from "@/utils/trpc";
 
 import { createChatStore, type ChatStore } from "..";
 import type { AiMessage } from "../types";
@@ -88,17 +88,13 @@ const messageStates: { [key: string]: AiMessage[] } = {
 };
 
 const id = "test-id";
+const trpcUtils = {} as unknown as TrpcUtils;
 
 const setupStore = (initialValues?: Partial<ChatStore>) => {
-  const trpcUtils = {} as TrpcUtils;
-  const store = createChatStore(id, trpcUtils, initialValues);
-  const modStore = createModerationStore({ id: "123", trpcUtils });
-
-  store.setState((state) => ({
-    ...state,
-    moderationActions: modStore.getState(),
-  }));
-  return store;
+  const getStore = jest.fn().mockReturnValue({
+    fetchModerations: jest.fn().mockResolvedValue({}),
+  }) as unknown as GetStore;
+  return createChatStore(id, getStore, trpcUtils, initialValues);
 };
 
 describe("Chat Store setMessages", () => {

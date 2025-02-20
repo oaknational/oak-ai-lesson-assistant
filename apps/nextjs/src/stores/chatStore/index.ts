@@ -5,7 +5,7 @@ import { createStore } from "zustand";
 
 import type { TrpcUtils } from "@/utils/trpc";
 
-import type { ModerationStore } from "../moderationStore";
+import type { GetStore } from "../AilaStoresProvider";
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleAppend } from "./stateActionFunctions/handleAppend";
 import { handleExecuteQueuedAction } from "./stateActionFunctions/handleExecuteQueuedAction";
@@ -39,7 +39,6 @@ export type AilaStreamingStatus =
 
 export type ChatStore = {
   id: string;
-  moderationActions?: Pick<ModerationStore, "fetchModerations">;
   ailaStreamingStatus: AilaStreamingStatus;
 
   initialMessages: AiMessage[];
@@ -58,7 +57,6 @@ export type ChatStore = {
   setAiSdkActions: (actions: AiSdkActions) => void;
   setMessages: (messages: AiMessage[], isLoading: boolean) => void;
   setInput: (input: string) => void;
-  getMessages: () => ParsedMessage[];
   setChatAreaRef: (ref: React.RefObject<HTMLDivElement>) => void;
 
   // Action functions
@@ -72,6 +70,7 @@ export type ChatStore = {
 
 export const createChatStore = (
   id: string,
+  getStore: GetStore,
   trpcUtils: TrpcUtils,
   initialValues: Partial<ChatStore> = {},
 ) => {
@@ -104,9 +103,8 @@ export const createChatStore = (
     executeQueuedAction: handleExecuteQueuedAction(set, get),
     append: handleAppend(set, get),
     stop: handleStop(set, get),
-    setMessages: handleSetMessages(set, get),
+    setMessages: handleSetMessages(getStore, set, get),
     streamingFinished: handleStreamingFinished(set, get),
-    getMessages: () => get().stableMessages,
     scrollToBottom: handleScrollToBottom(set, get),
     fetchInitialMessages: handleFetchInitialMessages(set, get, trpcUtils),
 
