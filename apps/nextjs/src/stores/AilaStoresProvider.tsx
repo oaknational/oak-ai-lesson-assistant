@@ -31,6 +31,13 @@ export interface AilaStoresProviderProps {
   id: string;
 }
 
+export const buildStoreGetter =
+  (stores: Partial<AilaStores>) =>
+  <T extends keyof AilaStores>(storeName: T) => {
+    invariant(stores[storeName], `Store ${storeName} not initialised`);
+    return stores[storeName].getState() as ExtractState<AilaStores[T]>;
+  };
+
 export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
   children,
   id,
@@ -40,11 +47,7 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
 
   const [stores] = useState(() => {
     const stores: Partial<AilaStores> = {};
-
-    const getStore = <T extends keyof AilaStores>(storeName: T) => {
-      invariant(stores[storeName], `Store ${storeName} not initialised`);
-      return stores[storeName].getState() as ExtractState<AilaStores[T]>;
-    };
+    const getStore = buildStoreGetter(stores);
 
     stores.moderation = createModerationStore({
       id,

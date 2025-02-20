@@ -6,7 +6,10 @@ import { type ExtractState } from "zustand";
 
 import type { LessonPlanTrackingContextProps } from "@/lib/analytics/lessonPlanTrackingContext";
 import type { AilaStores } from "@/stores/AilaStoresProvider";
-import { AilaStoresContext } from "@/stores/AilaStoresProvider";
+import {
+  AilaStoresContext,
+  buildStoreGetter,
+} from "@/stores/AilaStoresProvider";
 import { createChatStore, type ChatStore } from "@/stores/chatStore";
 import {
   createLessonPlanStore,
@@ -30,11 +33,7 @@ export const StoreDecorator: Decorator = (Story, { parameters }) => {
     const id = "123";
     const trpcUtils = {} as TrpcUtils;
     const stores: Partial<AilaStores> = {};
-
-    const getStore = <T extends keyof AilaStores>(storeName: T) => {
-      invariant(stores[storeName], `Store ${storeName} not initialised`);
-      return stores[storeName].getState() as ExtractState<AilaStores[T]>;
-    };
+    const getStore = buildStoreGetter(stores);
 
     stores.moderation = createModerationStore({
       id,
