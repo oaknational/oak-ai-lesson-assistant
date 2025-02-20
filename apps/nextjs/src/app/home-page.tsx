@@ -243,7 +243,7 @@ export function HomePageContent({ pageData }: HomePageProps) {
                   track.lessonAssistantAccessed({
                     product: "ai lesson assistant",
                     isLoggedIn: !!user.isSignedIn,
-                    componentType: "homepage_secondary_create_a_lesson_button",
+                    componentType: "search_get_started_button",
                   });
                 }}
               >

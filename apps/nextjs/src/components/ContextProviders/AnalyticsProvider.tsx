@@ -48,7 +48,6 @@ export type TrackFns = Omit<
 export type AnalyticsContext = {
   track: TrackFns;
   // @deprecated Use the `track` function from the analytics context instead
-  trackEvent: EventFn; // for legacy events
   identify: IdentifyFn;
   page: PageFn;
   reset: ResetFn;
@@ -246,13 +245,12 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   const analytics: AnalyticsContext = useMemo(() => {
     return {
       track,
-      trackEvent,
       identify,
       reset,
       page,
       posthogAiBetaClient: posthogAiBeta.client,
     };
-  }, [track, trackEvent, identify, reset, page, posthogAiBeta.client]);
+  }, [track, identify, reset, page, posthogAiBeta.client]);
 
   const onClerkIdentify = useCallback(
     (user: { userId: string; email: string; isDemoUser?: boolean }) => {

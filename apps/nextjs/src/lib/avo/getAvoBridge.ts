@@ -12,7 +12,7 @@ import type { CustomDestination } from "./Avo";
 
 type AnalyticsServices = {
   posthog: Pick<AnalyticsService<PosthogConfig, "posthog">, "track">;
-  hubspot: Pick<AnalyticsService<HubspotConfig, "hubspot">, "track">;
+  hubspot?: Pick<AnalyticsService<HubspotConfig, "hubspot">, "track">;
 };
 
 /**
@@ -40,7 +40,7 @@ export const getAvoBridge = ({ posthog, hubspot }: AnalyticsServices) => {
     }
     try {
       posthog.track(eventName, eventProperties);
-      hubspot.track(eventName, eventProperties);
+      hubspot?.track(eventName, eventProperties);
     } catch (err) {
       Sentry.captureException(new Error("Failed to track event"), {
         extra: { originalError: err },
