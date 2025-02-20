@@ -87,9 +87,11 @@ const messageStates: { [key: string]: AiMessage[] } = {
   ],
 };
 
+const id = "test-id";
+
 const setupStore = (initialValues?: Partial<ChatStore>) => {
   const trpcUtils = {} as TrpcUtils;
-  const store = createChatStore(initialValues);
+  const store = createChatStore(id, trpcUtils, initialValues);
   const modStore = createModerationStore({ id: "123", trpcUtils });
 
   store.setState((state) => ({
