@@ -207,7 +207,7 @@ describe("ElasticLessonQuizLookup", () => {
 });
 
 describe("Edge case of legacy lesson", () => {
-  it("Should return placeholder quizIds for legacy lessons that HB has previously tried to migrate", async () => {
+  it("Should return placeholder quizIds for A legacy lessons that HB has previously tested", async () => {
     const placeholderQuizIds = [
       "QUES-XXXXX-XXXXX",
       "QUES-XXXXX-XXXXX",
@@ -250,5 +250,27 @@ describe("ElasticLessonQuizLookup integrations tests", () => {
       "QUES-TTEF1-76449",
       "QUES-FRFV1-76452",
     ]);
+  });
+});
+
+describe("ElasticLessonQuizLookup", () => {
+  it("Should return placeholder quizIds for starter quiz where they are missing and filled with placeholders in the elasticDB and real quizIds for exit quiz of legacy lessons", async () => {
+    const placeholderQuizIds = [
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+    ];
+    const dbLookup = new ElasticLessonQuizLookup();
+    const result = await dbLookup.getStarterQuiz(
+      "calculate-and-measure-perimeter-crv36r",
+    );
+    const result2 = await dbLookup.getExitQuiz(
+      "calculate-and-measure-perimeter-crv36r",
+    );
+    expect(result).toEqual(placeholderQuizIds);
+    expect(result2).not.toEqual(placeholderQuizIds);
   });
 });

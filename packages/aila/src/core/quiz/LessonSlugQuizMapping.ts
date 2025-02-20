@@ -74,19 +74,6 @@ export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
       } else if (quizType === "/exitQuiz") {
         quizIds = quizData.exitQuiz;
       }
-      if (!quizData.is_legacy) {
-        log.warn(
-          `Lesson slug ${lessonSlug} is not legacy. Returning placeholder quiz.`,
-        );
-        return [
-          "QUES-XXXXX-XXXXX",
-          "QUES-XXXXX-XXXXX",
-          "QUES-XXXXX-XXXXX",
-          "QUES-XXXXX-XXXXX",
-          "QUES-XXXXX-XXXXX",
-          "QUES-XXXXX-XXXXX",
-        ];
-      }
 
       if (!quizIds || !z.array(z.string()).safeParse(quizIds).success) {
         log.error(
@@ -99,6 +86,21 @@ export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
             quizData,
           )}`,
         );
+      }
+
+      if (!quizData.is_legacy) {
+        log.warn(
+          `Lesson slug ${lessonSlug} is not legacy. Returning placeholder quiz due to awaiting copyright approval.`,
+        );
+
+        return [
+          "QUES-XXXXX-XXXXX",
+          "QUES-XXXXX-XXXXX",
+          "QUES-XXXXX-XXXXX",
+          "QUES-XXXXX-XXXXX",
+          "QUES-XXXXX-XXXXX",
+          "QUES-XXXXX-XXXXX",
+        ];
       }
       return quizIds;
     } catch (error) {
