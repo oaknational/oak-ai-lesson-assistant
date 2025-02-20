@@ -1,7 +1,7 @@
-import type { ChatStore } from "../index";
+import type { ChatSetter, ChatGetter } from "../types";
 
 export const handleStreamingFinished =
-  (set: (partial: Partial<ChatStore>) => void, get: () => ChatStore) => () => {
+  (set: ChatSetter, get: ChatGetter) => () => {
     get().scrollToBottom();
 
     // TODO: commented while we have the same in handleSetMessages

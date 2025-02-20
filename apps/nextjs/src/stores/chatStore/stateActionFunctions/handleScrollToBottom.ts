@@ -1,11 +1,11 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { ChatStore } from "../index";
+import type { ChatSetter, ChatGetter } from "../types";
 
 const log = aiLogger("chat:store");
 
 export const handleScrollToBottom =
-  (set: (partial: Partial<ChatStore>) => void, get: () => ChatStore) => () => {
+  (set: ChatSetter, get: ChatGetter) => () => {
     const { chatAreaRef } = get();
     if (!chatAreaRef?.current) {
       return;

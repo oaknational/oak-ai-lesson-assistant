@@ -1,14 +1,11 @@
 import invariant from "tiny-invariant";
 
-import type { AilaStreamingStatus, ChatStore } from "..";
+import type { AilaStreamingStatus } from "..";
 import { calculateStreamingStatus } from "../actions/calculateStreamingStatus";
 import { getNextStableMessages, parseStreamingMessage } from "../parsing";
-import type { AiMessage } from "../types";
+import type { ChatSetter, ChatGetter, AiMessage } from "../types";
 
-export function handleSetMessages(
-  set: (partial: Partial<ChatStore>) => void,
-  get: () => ChatStore,
-) {
+export function handleSetMessages(set: ChatSetter, get: ChatGetter) {
   function handleChangedAilaStreamingStatus(
     ailaStreamingStatus: AilaStreamingStatus,
   ) {
