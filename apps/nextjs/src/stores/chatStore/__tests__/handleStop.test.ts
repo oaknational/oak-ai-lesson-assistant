@@ -1,17 +1,14 @@
+import type { GetStore } from "@/stores/AilaStoresProvider";
 import type { TrpcUtils } from "@/utils/trpc";
 
 import { createChatStore, type AiSdkActions } from "..";
 
 describe("handleStop", () => {
-  let mockAiSdkActions: {
-    stop: jest.Mock;
+  const mockAiSdkActions = {
+    stop: jest.fn(),
   };
+  const getStore = jest.fn() as unknown as GetStore;
 
-  beforeEach(() => {
-    mockAiSdkActions = {
-      stop: jest.fn(),
-    };
-  });
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -20,7 +17,7 @@ describe("handleStop", () => {
   const trpcUtils = {} as unknown as TrpcUtils;
 
   test("should clear queued action if one exists", () => {
-    const store = createChatStore(id, trpcUtils, {
+    const store = createChatStore(id, getStore, trpcUtils, {
       queuedUserAction: "Some action",
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
@@ -31,7 +28,7 @@ describe("handleStop", () => {
   });
 
   test("should call aiSdkActions.stop if no queued action exists", () => {
-    const store = createChatStore(id, trpcUtils, {
+    const store = createChatStore(id, getStore, trpcUtils, {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     store.getState().stop();
