@@ -14,7 +14,6 @@ import ErrorBox from "@/components/AppComponents/QuizDesigner/ErrorBox";
 import SubjectKeyStageSection from "@/components/AppComponents/QuizDesigner/SubjectKeyStageSection";
 import Button from "@/components/Button";
 import HeroContainer from "@/components/HeroContainer";
-import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import ChatButton from "../Chat/ui/chat-button";
 
@@ -29,8 +28,6 @@ const Hero = ({
   dispatch,
   questionsWrapperRef,
 }: Readonly<HeroProps>) => {
-  const { trackEvent } = useAnalytics();
-
   const setTopic = useCallback(
     (topic: string) => {
       dispatch({ type: QuizAppActions.SetTopic, topic });
@@ -127,7 +124,6 @@ const Hero = ({
                   if (hasQuestions) {
                     dispatch({ type: QuizAppActions.BackToEditQuestions });
                   } else {
-                    trackEvent("quiz_designer:begin");
                     dispatch({ type: QuizAppActions.Begin });
                   }
                   const questionsWrapper = questionsWrapperRef.current;

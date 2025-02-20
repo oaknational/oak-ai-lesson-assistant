@@ -48,7 +48,6 @@ export type TrackFns = Omit<
 export type AnalyticsContext = {
   track: TrackFns;
   // @deprecated Use the `track` function from the analytics context instead
-  trackEvent: EventFn; // for legacy events
   identify: IdentifyFn;
   page: PageFn;
   reset: ResetFn;
@@ -186,7 +185,7 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
     { env: getAvoEnv(), ...avoOptions },
     {},
     getAvoBridge({ posthog: posthogOak }),
-    getAvoBridge({ posthog: posthogAiBeta }),
+    getAvoBridge({ posthog: posthogAiBeta, hubspot }),
   );
 
   /**
@@ -228,21 +227,6 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   }, []);
 
   /**
-   * Legacy event tracking
-   * Calls PostHog tracking directly rather than using Avo's tracking plan.
-   * @todo remove this once all events are migrated to Avo
-   * @deprecated Use the `track` function from the analytics context instead
-   */
-  const trackEvent = useCallback(
-    (name: EventName, properties?: EventProperties) => {
-      // **Note: we are not sending legacy events to the Oak PostHog instance**
-      posthogAiBeta.track(name, properties);
-      hubspot.track(name, properties);
-    },
-    [posthogAiBeta, hubspot],
-  );
-
-  /**
    * Page view tracking
    */
   const page: PageFn = useCallback(
@@ -261,13 +245,12 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   const analytics: AnalyticsContext = useMemo(() => {
     return {
       track,
-      trackEvent,
       identify,
       reset,
       page,
       posthogAiBetaClient: posthogAiBeta.client,
     };
-  }, [track, trackEvent, identify, reset, page, posthogAiBeta.client]);
+  }, [track, identify, reset, page, posthogAiBeta.client]);
 
   const onClerkIdentify = useCallback(
     (user: { userId: string; email: string; isDemoUser?: boolean }) => {
