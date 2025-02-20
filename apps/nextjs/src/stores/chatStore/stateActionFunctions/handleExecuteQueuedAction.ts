@@ -29,7 +29,7 @@ export function handleExecuteQueuedAction(
           role: "user",
         });
       } else if (actionToExecute === "regenerate") {
-        aiSdkActions.reload();
+        void aiSdkActions.reload();
       } else {
         void aiSdkActions.append({
           content: actionToExecute,

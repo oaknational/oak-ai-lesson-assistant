@@ -18,7 +18,7 @@ const log = aiLogger("chat:store");
 
 export type AiSdkActions = {
   stop: () => void;
-  reload: () => void;
+  reload: () => Promise<string | null | undefined>;
   append: (
     message: AiMessage | CreateMessage,
     chatRequestOptions?: ChatRequestOptions | undefined,
@@ -78,8 +78,8 @@ export const createChatStore = (initialValues: Partial<ChatStore> = {}) => {
     // From AI SDK
     aiSdkActions: {
       stop: () => {},
-      reload: () => {},
-      append: async () => Promise.resolve(""),
+      reload: () => Promise.resolve(null),
+      append: () => Promise.resolve(""),
     },
 
     // Setters

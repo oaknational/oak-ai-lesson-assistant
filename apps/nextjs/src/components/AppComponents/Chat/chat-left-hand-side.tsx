@@ -1,6 +1,5 @@
 import { Flex } from "@radix-ui/themes";
 
-import { useDemoUser } from "@/components/ContextProviders/Demo";
 import { useDemoLocking } from "@/hooks/useDemoLocking";
 
 import ChatLhsHeader from "./chat-lhs-header";
