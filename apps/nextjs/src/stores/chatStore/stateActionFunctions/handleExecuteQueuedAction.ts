@@ -26,7 +26,7 @@ export function handleExecuteQueuedAction(set: ChatSetter, get: ChatGetter) {
           role: "user",
         });
       } else if (actionToExecute === "regenerate") {
-        aiSdkActions.reload();
+        void aiSdkActions.reload();
       } else {
         void aiSdkActions.append({
           content: actionToExecute,
