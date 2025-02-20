@@ -26,9 +26,6 @@ const mockTrack: typeof Avo = new Proxy(Avo, {
 
 const mockAnalyticsContext: AnalyticsContext = {
   track: mockTrack,
-  trackEvent: (eventName: string, properties?: Record<string, unknown>) => {
-    log.info("Mock trackEvent called:", eventName, properties);
-  },
   identify: (userId: string, properties: { email?: string }) => {
     log.info("Mock identify called:", userId, properties);
   },
@@ -46,9 +43,9 @@ const mockAnalyticsContext: AnalyticsContext = {
   } as unknown as PostHog,
 };
 
-export const AnalyticsProvider: React.FC<{ readonly children: React.ReactNode }> = ({
-  children,
-}) => (
+export const AnalyticsProvider: React.FC<{
+  readonly children: React.ReactNode;
+}> = ({ children }) => (
   <analyticsContext.Provider value={mockAnalyticsContext}>
     {children}
   </analyticsContext.Provider>
