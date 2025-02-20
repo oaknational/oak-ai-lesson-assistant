@@ -1,4 +1,5 @@
 import type { GetStore } from "@/stores/AilaStoresProvider";
+import { TrpcUtils } from "@/utils/trpc";
 
 import { createChatStore, type ChatStore } from "..";
 import type { AiMessage } from "../types";
@@ -86,11 +87,14 @@ const messageStates: { [key: string]: AiMessage[] } = {
   ],
 };
 
+const id = "test-id";
+const trpcUtils = {} as unknown as TrpcUtils;
+
 const setupStore = (initialValues?: Partial<ChatStore>) => {
   const getStore = jest.fn().mockReturnValue({
     fetchModerations: jest.fn().mockResolvedValue({}),
   }) as unknown as GetStore;
-  return createChatStore(getStore, initialValues);
+  return createChatStore(id, getStore, trpcUtils, initialValues);
 };
 
 describe("Chat Store setMessages", () => {

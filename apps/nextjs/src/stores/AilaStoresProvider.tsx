@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, useEffect } from "react";
+import { useState, useRef, createContext, useContext, useEffect } from "react";
 
 import invariant from "tiny-invariant";
 import { useStore, type StoreApi, type ExtractState } from "zustand";
@@ -54,7 +54,7 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
       trpcUtils,
       getStore,
     });
-    stores.chat = createChatStore(getStore);
+    stores.chat = createChatStore(id, getStore, trpcUtils);
     stores.lessonPlan = createLessonPlanStore({
       id,
       trpcUtils,
@@ -66,10 +66,17 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
   });
 
   // Store initialisation
+  const haveInitialized = useRef(false);
   useEffect(() => {
+    // work around react strict mode double rendering
+    if (haveInitialized.current) {
+      return;
+    }
+    void stores.chat.getState().fetchInitialMessages();
     void stores.lessonPlan.getState().refetch();
     void stores.moderation.getState().fetchModerations();
-  }, [stores.lessonPlan, id, stores.moderation]);
+    haveInitialized.current = true;
+  }, [stores.lessonPlan, id, stores.moderation, stores.chat]);
 
   return (
     <AilaStoresContext.Provider value={stores}>

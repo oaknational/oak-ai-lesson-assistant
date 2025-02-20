@@ -2,15 +2,15 @@ import invariant from "tiny-invariant";
 
 import type { GetStore } from "@/stores/AilaStoresProvider";
 
-import type { AilaStreamingStatus, ChatStore } from "..";
+import type { AilaStreamingStatus } from "..";
 import { calculateStreamingStatus } from "../actions/calculateStreamingStatus";
 import { getNextStableMessages, parseStreamingMessage } from "../parsing";
-import type { AiMessage } from "../types";
+import type { ChatSetter, ChatGetter, AiMessage } from "../types";
 
 export function handleSetMessages(
   getStore: GetStore,
-  set: (partial: Partial<ChatStore>) => void,
-  get: () => ChatStore,
+  set: ChatSetter,
+  get: ChatGetter,
 ) {
   function handleChangedAilaStreamingStatus(
     ailaStreamingStatus: AilaStreamingStatus,

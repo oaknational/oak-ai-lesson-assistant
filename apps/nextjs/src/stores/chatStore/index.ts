@@ -3,10 +3,13 @@ import { aiLogger } from "@oakai/logger";
 import type { ChatRequestOptions, CreateMessage } from "ai";
 import { createStore } from "zustand";
 
+import type { TrpcUtils } from "@/utils/trpc";
+
 import type { GetStore } from "../AilaStoresProvider";
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleAppend } from "./stateActionFunctions/handleAppend";
 import { handleExecuteQueuedAction } from "./stateActionFunctions/handleExecuteQueuedAction";
+import { handleFetchInitialMessages } from "./stateActionFunctions/handleFetchInitialMessages";
 import { handleScrollToBottom } from "./stateActionFunctions/handleScrollToBottom";
 import { handleSetMessages } from "./stateActionFunctions/handleSetMessages";
 import { handleStop } from "./stateActionFunctions/handleStop";
@@ -35,8 +38,10 @@ export type AilaStreamingStatus =
   | "Idle";
 
 export type ChatStore = {
+  id: string;
   ailaStreamingStatus: AilaStreamingStatus;
 
+  initialMessages: AiMessage[];
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
   queuedUserAction: string | null;
@@ -60,14 +65,20 @@ export type ChatStore = {
   stop: () => void;
   streamingFinished: () => void;
   scrollToBottom: () => void;
+  fetchInitialMessages: () => Promise<void>;
 };
 
 export const createChatStore = (
+  id: string,
   getStore: GetStore,
+  trpcUtils: TrpcUtils,
   initialValues: Partial<ChatStore> = {},
 ) => {
   const chatStore = createStore<ChatStore>((set, get) => ({
+    id,
+    moderationActions: undefined, // Passed in the provider
     ailaStreamingStatus: "Idle",
+    initialMessages: [],
     stableMessages: [],
     streamingMessage: null,
     queuedUserAction: null,
@@ -95,6 +106,7 @@ export const createChatStore = (
     setMessages: handleSetMessages(getStore, set, get),
     streamingFinished: handleStreamingFinished(set, get),
     scrollToBottom: handleScrollToBottom(set, get),
+    fetchInitialMessages: handleFetchInitialMessages(set, get, trpcUtils),
 
     ...initialValues,
   }));

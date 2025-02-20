@@ -1,3 +1,12 @@
+## [1.25.4](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.3...v1.25.4) (2025-02-20)
+
+
+### Bug Fixes
+
+* maths lesson plan overrides ([#557](https://github.com/oaknational/oak-ai-lesson-assistant/issues/557)) ([e84f44c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e84f44c7cf76397d35ed46a3c7d0310cbd2457e5))
+
+## [1.25.3](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.2...v1.25.3) (2025-02-19)
+
 ## [1.25.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.1...v1.25.2) (2025-02-17)
 
 ## [1.25.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.0...v1.25.1) (2025-02-14)
