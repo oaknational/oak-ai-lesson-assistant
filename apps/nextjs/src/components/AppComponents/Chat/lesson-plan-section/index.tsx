@@ -7,7 +7,10 @@ import styled from "styled-components";
 import { Icon } from "@/components/Icon";
 import LoadingWheel from "@/components/LoadingWheel";
 import { useLessonPlanStore } from "@/stores/AilaStoresProvider";
-import { sectionStatusSelector } from "@/stores/lessonPlanStore/selectors";
+import {
+  lessonPlanSectionSelector,
+  sectionStatusSelector,
+} from "@/stores/lessonPlanStore/selectors";
 
 import Skeleton from "../../common/Skeleton";
 import { LessonPlanSectionContent } from "../drop-down-section/lesson-plan-section-content";
@@ -27,7 +30,7 @@ export const LessonPlanSection = ({
   showLessonMobile,
   setSectionRef,
 }: LessonPlanSectionProps) => {
-  const section = useLessonPlanStore((state) => state.lessonPlan[sectionKey]);
+  const section = useLessonPlanStore(lessonPlanSectionSelector(sectionKey));
   const status = useLessonPlanStore(sectionStatusSelector(sectionKey));
 
   const sectionRef = useRef(null);

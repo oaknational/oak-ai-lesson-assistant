@@ -52,11 +52,9 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
   const messageStarted = useLessonPlanStore((state) => state.messageStarted);
   const messageFinished = useLessonPlanStore((state) => state.messageFinished);
 
-  /******************* Functions *******************/
-
+  // TODO: move to chat store
   const { invokeActionMessages } = useActionMessages();
 
-  /******************* Streaming of all chat starts from messages here *******************/
   const {
     messages,
     append,
