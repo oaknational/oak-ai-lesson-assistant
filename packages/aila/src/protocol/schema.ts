@@ -20,6 +20,7 @@ export const BasedOnSchema = z
     id: z.string().describe(BASED_ON_DESCRIPTIONS.id),
     title: z.string().describe(BASED_ON_DESCRIPTIONS.title),
   })
+
   .describe(BASED_ON_DESCRIPTIONS.schema);
 export type BasedOn = z.infer<typeof BasedOnSchema>;
 
@@ -232,14 +233,16 @@ export type Cycle = z.infer<typeof CycleSchema>;
 
 // ********** KEYWORDS **********
 export const KEYWORD_DESCRIPTIONS = {
-  keyword: dedent`The keyword itself.
-  Should be written in lowercase apart from proper nouns and not end with a full stop.`,
-  definition: dedent`A short definition of the keyword including the keyword itself. This definition should be written in lowercase apart from proper nouns and not end with a full stop.  Written in TEACHER_TO_PUPIL_SLIDES voice.`,
-  description: "Not to be used, and included here only for legacy purposes.",
-  schema: dedent`A keyword that is used in the lesson.
-    Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
-  keywords: dedent`The keywords that are used in the lesson.
-    Written in the TEACHER_TO_PUPIL_SLIDES voice.
+  keyword: dedent`The keyword itself. Should be in sentence case starting with a capital letter and not end with a full stop.`,
+
+  definition: dedent`A short definition of the keyword including the keyword itself. Should be in sentence case starting with a capital letter and not end with a full stop. Written in TEACHER_TO_PUPIL_SLIDES voice.`,
+
+  description: dedent`not to be used, and included here only for legacy purposes`,
+
+  schema: dedent`A keyword that is used in the lesson. Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
+
+  keywords: dedent`the keywords that are used in the lesson.
+    written in TEACHER_TO_PUPIL_SLIDES voice.
     ${minMaxText({ min: 1, max: 5, entity: "elements" })}`,
 } as const;
 

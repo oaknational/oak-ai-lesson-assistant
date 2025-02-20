@@ -47,7 +47,7 @@ export default function ShareChat({
         className="bg-lavender50 px-9 py-14 text-sm lg:px-24"
       >
         Created {!!creatorsName && "by " + creatorsName} with{" "}
-        <Link href="/aila" className="bv-3 text-hyperlink underline">
+        <Link href="/" className="bv-3 text-hyperlink underline">
           Aila, Oak’s AI lesson assistant
         </Link>
         {". "}

@@ -1,37 +1,34 @@
-import type { Message } from "@oakai/aila/src/core/chat";
 import type { Meta, StoryObj } from "@storybook/react";
 
+import type { ParsedMessage } from "@/stores/chatStore/types";
 import { chromaticParams } from "@/storybook/chromatic";
-import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
 import { LessonPlanTrackingDecorator } from "@/storybook/decorators/LessonPlanTrackingDecorator";
 import { SidebarDecorator } from "@/storybook/decorators/SidebarDecorator";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import { ChatPanel } from "./chat-panel";
 
-const DummyMessage: Message = {
+const DummyMessage: ParsedMessage = {
   content: "Dummy message",
   id: "123",
   role: "user",
+  parts: [],
+  hasError: false,
+  isEditing: false,
 };
 
 const meta = {
   title: "Components/Chat/ChatPanel",
   component: ChatPanel,
   tags: ["autodocs"],
-  decorators: [
-    ChatDecorator,
-    LessonPlanTrackingDecorator,
-    SidebarDecorator,
-    StoreDecorator,
-  ],
+  decorators: [LessonPlanTrackingDecorator, SidebarDecorator, StoreDecorator],
   args: {
     isDemoLocked: false,
   },
   parameters: {
     ...chromaticParams(["desktop"]),
-    chatContext: {
-      messages: [DummyMessage],
+    chatStoreState: {
+      stableMessages: [DummyMessage],
     },
   },
 } satisfies Meta<typeof ChatPanel>;
@@ -43,8 +40,8 @@ type Story = StoryObj<typeof meta>;
 export const NoMessages: Story = {
   args: {},
   parameters: {
-    chatContext: {
-      messages: [],
+    chatStoreState: {
+      stableMessages: [],
     },
   },
 };

@@ -8,7 +8,6 @@ import {
   OakSmallPrimaryButton,
 } from "@oaknational/oak-components";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { useChatStore } from "@/stores/AilaStoresProvider";
 
 export type FeedbackOption<T> = {
