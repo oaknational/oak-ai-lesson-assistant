@@ -2,19 +2,15 @@ import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModerati
 import type { Moderation } from "@prisma/client";
 import { create } from "zustand";
 
+import type { GetStore } from "@/stores/AilaStoresProvider";
 import type { TrpcUtils } from "@/utils/trpc";
 
-import type { ChatStore } from "../chatStore";
-import type { LessonPlanStore } from "../lessonPlanStore";
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleFetchModerations } from "./actionFunctions/handleFetchModeration";
 import { handleToxicModeration } from "./actionFunctions/handleToxicModeration";
 import { handleUpdateModerationState } from "./actionFunctions/handleUpdateModerationState";
 
 export type ModerationStore = {
-  chatActions?: Pick<ChatStore, "setMessages">;
-  lessonPlanActions?: Pick<LessonPlanStore, "resetStore">;
-
   id: string;
   moderations: Moderation[] | [];
   isModerationsLoading: boolean | null;
@@ -34,16 +30,16 @@ export type ModerationStore = {
 export const createModerationStore = ({
   id,
   initialValues = {},
+  getStore,
   trpcUtils,
 }: {
   id: string;
   initialValues?: Partial<ModerationStore>;
+  getStore: GetStore;
   trpcUtils: TrpcUtils;
 }) => {
   const moderationStore = create<ModerationStore>((set, get) => ({
     id,
-    chatActions: undefined, // Passed in the provider
-    lessonPlanActions: undefined, // Passed in the provider
     moderations: [],
     isModerationsLoading: null,
     toxicInitialModeration: null,
@@ -54,12 +50,8 @@ export const createModerationStore = ({
     setIsModerationsLoading: (isModerationsLoading) =>
       set({ isModerationsLoading }),
 
-    updateToxicModeration: (mod) => {
-      handleToxicModeration(mod, set, get);
-    },
-    updateModerationState: (mod) => {
-      handleUpdateModerationState(mod, set, get);
-    },
+    updateToxicModeration: handleToxicModeration(getStore, set, get),
+    updateModerationState: handleUpdateModerationState(set, get),
 
     fetchModerations: handleFetchModerations(set, get, trpcUtils),
 

@@ -1,6 +1,7 @@
-import { useState, createContext, useContext, useEffect } from "react";
+import { useState, useRef, createContext, useContext, useEffect } from "react";
 
-import { useStore, type StoreApi } from "zustand";
+import invariant from "tiny-invariant";
+import { useStore, type StoreApi, type ExtractState } from "zustand";
 
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import { type ChatStore, createChatStore } from "@/stores/chatStore";
@@ -12,20 +13,30 @@ import { trpc } from "@/utils/trpc";
 
 import { type LessonPlanStore, createLessonPlanStore } from "./lessonPlanStore";
 
-type AilaStoresContextProps = {
+export type AilaStores = {
   chat: StoreApi<ChatStore>;
   moderation: StoreApi<ModerationStore>;
   lessonPlan: StoreApi<LessonPlanStore>;
 };
+export type GetStore = <T extends keyof AilaStores>(
+  storeName: T,
+) => ExtractState<AilaStores[T]>;
 
-export const AilaStoresContext = createContext<
-  AilaStoresContextProps | undefined
->(undefined);
+export const AilaStoresContext = createContext<AilaStores | undefined>(
+  undefined,
+);
 
 export interface AilaStoresProviderProps {
   children: React.ReactNode;
   id: string;
 }
+
+export const buildStoreGetter =
+  (stores: Partial<AilaStores>) =>
+  <T extends keyof AilaStores>(storeName: T) => {
+    invariant(stores[storeName], `Store ${storeName} not initialised`);
+    return stores[storeName].getState() as ExtractState<AilaStores[T]>;
+  };
 
 export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
   children,
@@ -35,32 +46,37 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
   const lessonPlanTracking = useLessonPlanTracking();
 
   const [stores] = useState(() => {
-    const moderationStore = createModerationStore({
+    const stores: Partial<AilaStores> = {};
+    const getStore = buildStoreGetter(stores);
+
+    stores.moderation = createModerationStore({
       id,
       trpcUtils,
+      getStore,
     });
-    const chatStore = createChatStore();
-
-    const lessonPlanStore = createLessonPlanStore({
+    stores.chat = createChatStore(id, getStore, trpcUtils);
+    stores.lessonPlan = createLessonPlanStore({
       id,
       trpcUtils,
       lessonPlanTracking,
+      getStore,
     });
 
-    setupStoreDependencies(chatStore, lessonPlanStore, moderationStore);
-
-    return {
-      chat: chatStore,
-      moderation: moderationStore,
-      lessonPlan: lessonPlanStore,
-    };
+    return stores as AilaStores;
   });
 
   // Store initialisation
+  const haveInitialized = useRef(false);
   useEffect(() => {
+    // work around react strict mode double rendering
+    if (haveInitialized.current) {
+      return;
+    }
+    void stores.chat.getState().fetchInitialMessages();
     void stores.lessonPlan.getState().refetch();
     void stores.moderation.getState().fetchModerations();
-  }, [stores.lessonPlan, id, stores.moderation]);
+    haveInitialized.current = true;
+  }, [stores.lessonPlan, id, stores.moderation, stores.chat]);
 
   return (
     <AilaStoresContext.Provider value={stores}>
@@ -96,25 +112,3 @@ export const useLessonPlanStore = <T,>(
   }
   return useStore(context.lessonPlan, selector);
 };
-
-function setupStoreDependencies(
-  chatStore: StoreApi<ChatStore>,
-  lessonPlanStore: StoreApi<LessonPlanStore>,
-  moderationStore: StoreApi<ModerationStore>,
-) {
-  moderationStore.setState((state) => ({
-    ...state,
-    chatActions: chatStore.getState(),
-    lessonPlanActions: lessonPlanStore.getState(),
-  }));
-
-  chatStore.setState((state) => ({
-    ...state,
-    moderationActions: moderationStore.getState(),
-  }));
-
-  lessonPlanStore.setState((state) => ({
-    ...state,
-    chatActions: chatStore.getState(),
-  }));
-}

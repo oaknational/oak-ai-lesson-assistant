@@ -1,13 +1,16 @@
 import invariant from "tiny-invariant";
 
-import type { AilaStreamingStatus, ChatStore } from "..";
+import type { GetStore } from "@/stores/AilaStoresProvider";
+
+import type { AilaStreamingStatus } from "..";
 import { calculateStreamingStatus } from "../actions/calculateStreamingStatus";
 import { getNextStableMessages, parseStreamingMessage } from "../parsing";
-import type { AiMessage } from "../types";
+import type { ChatSetter, ChatGetter, AiMessage } from "../types";
 
 export function handleSetMessages(
-  set: (partial: Partial<ChatStore>) => void,
-  get: () => ChatStore,
+  getStore: GetStore,
+  set: ChatSetter,
+  get: ChatGetter,
 ) {
   function handleChangedAilaStreamingStatus(
     ailaStreamingStatus: AilaStreamingStatus,
@@ -16,9 +19,7 @@ export function handleSetMessages(
       void get().executeQueuedAction();
     }
     if (ailaStreamingStatus === "Idle") {
-      const { moderationActions } = get();
-      invariant(moderationActions, "Passed into store in provider");
-      void moderationActions.fetchModerations();
+      void getStore("moderation").fetchModerations();
     }
   }
 
