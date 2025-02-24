@@ -111,11 +111,7 @@ export class AilaStreamHandler {
         error: e,
         type: e?.constructor?.name,
       });
-      if (e instanceof AilaThreatDetectionError) {
-        log.info("Handling threat detection error");
-        await this._chat.generationFailed(e);
-        throw e;
-      }
+      await this._chat.generationFailed(e);
       await this.handleStreamError(e);
       log.info("Stream error", e, this._chat.iteration, this._chat.id);
     } finally {
