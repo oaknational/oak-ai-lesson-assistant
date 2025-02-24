@@ -1,10 +1,20 @@
 import React, { useMemo } from "react";
 
 import type { Decorator } from "@storybook/react";
+import invariant from "tiny-invariant";
+import { type ExtractState } from "zustand";
 
-import { AilaStoresContext } from "@/stores/AilaStoresProvider";
+import type { LessonPlanTrackingContextProps } from "@/lib/analytics/lessonPlanTrackingContext";
+import type { AilaStores } from "@/stores/AilaStoresProvider";
+import {
+  AilaStoresContext,
+  buildStoreGetter,
+} from "@/stores/AilaStoresProvider";
 import { createChatStore, type ChatStore } from "@/stores/chatStore";
-import { createLessonPlanStore } from "@/stores/lessonPlanStore";
+import {
+  createLessonPlanStore,
+  type LessonPlanStore,
+} from "@/stores/lessonPlanStore";
 import {
   createModerationStore,
   type ModerationStore,
@@ -15,43 +25,42 @@ declare module "@storybook/csf" {
   interface Parameters {
     moderationStoreState?: Partial<ModerationStore>;
     chatStoreState?: Partial<ChatStore>;
+    lessonPlanStoreState?: Partial<LessonPlanStore>;
   }
 }
-
 export const StoreDecorator: Decorator = (Story, { parameters }) => {
   const store = useMemo(() => {
     const id = "123";
     const trpcUtils = {} as TrpcUtils;
-    const moderationStore = createModerationStore({ id, trpcUtils });
-    const chatStore = createChatStore();
+    const stores: Partial<AilaStores> = {};
+    const getStore = buildStoreGetter(stores);
 
-    moderationStore.setState((state) => ({
-      ...state,
-      ...parameters.moderationStoreState,
-      chatActions: chatStore.getState(),
-    }));
+    stores.moderation = createModerationStore({
+      id,
+      getStore,
+      trpcUtils,
+      initialValues: parameters.moderationStoreState,
+    });
+    stores.chat = createChatStore(
+      id,
+      getStore,
+      trpcUtils,
+      parameters.chatStoreState,
+    );
+    stores.lessonPlan = createLessonPlanStore({
+      id,
+      getStore,
+      trpcUtils,
+      lessonPlanTracking: {} as unknown as LessonPlanTrackingContextProps,
+      initialValues: parameters.lessonPlanStoreState,
+    });
 
-    chatStore.setState((state) => ({
-      ...state,
-      ...parameters.chatStoreState,
-      moderationActions: moderationStore.getState(),
-    }));
-
-    return {
-      chat: chatStore,
-      moderation: moderationStore,
-      lessonPlan: createLessonPlanStore(
-        id,
-        trpcUtils,
-        parameters.lessonPlanStoreState,
-      ),
-    };
+    return stores as AilaStores;
   }, [
     parameters.moderationStoreState,
     parameters.chatStoreState,
     parameters.lessonPlanStoreState,
   ]);
-
   return (
     <AilaStoresContext.Provider value={store}>
       <Story />
