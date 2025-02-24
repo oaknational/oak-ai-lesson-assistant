@@ -1,5 +1,4 @@
-// import dedent from "dedent";
-import dedent from "ts-dedent";
+import dedent from "dedent";
 import z from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
