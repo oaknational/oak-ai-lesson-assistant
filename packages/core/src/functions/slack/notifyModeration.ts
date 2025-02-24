@@ -25,7 +25,6 @@ export const notifyModeration = inngest.createFunction(
   async ({ event, step }) => {
     await step.run("Send message to slack", async () => {
       const args = notifyModerationSchema.data.parse(event.data);
-
       const response = await slackWebClient.chat.postMessage({
         channel: slackNotificationChannelId,
         text: "Toxic user input detected",

@@ -17,6 +17,7 @@
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
+    "print-prompt": "pnpm with-env tsx ./src/printPrompt.ts",
     "single-lesson-dry": "pnpm with-env tsx ./src/singleLessonDryRun.ts",
     "ingest": "pnpm with-env tsx ./src/index.ts",
     "with-env": "dotenv -e ../../.env --",
