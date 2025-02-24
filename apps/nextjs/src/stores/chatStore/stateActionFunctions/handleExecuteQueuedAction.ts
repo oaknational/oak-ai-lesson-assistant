@@ -1,13 +1,10 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { ChatStore } from "..";
+import type { ChatSetter, ChatGetter } from "../types";
 
 const log = aiLogger("chat:store");
 
-export function handleExecuteQueuedAction(
-  set: (partial: Partial<ChatStore>) => void,
-  get: () => ChatStore,
-) {
+export function handleExecuteQueuedAction(set: ChatSetter, get: ChatGetter) {
   return () => {
     const { queuedUserAction, aiSdkActions } = get();
 
@@ -29,7 +26,7 @@ export function handleExecuteQueuedAction(
           role: "user",
         });
       } else if (actionToExecute === "regenerate") {
-        aiSdkActions.reload();
+        void aiSdkActions.reload();
       } else {
         void aiSdkActions.append({
           content: actionToExecute,

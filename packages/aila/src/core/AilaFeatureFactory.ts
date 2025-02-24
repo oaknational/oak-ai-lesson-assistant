@@ -8,6 +8,7 @@ import { OpenAiModerator } from "../features/moderation/moderators/OpenAiModerat
 import { AilaPrismaPersistence } from "../features/persistence/adaptors/prisma";
 import { AilaSnapshotStore } from "../features/snapshotStore";
 import { AilaThreatDetection } from "../features/threatDetection";
+import type { AilaThreatDetector } from "../features/threatDetection/detectors/AilaThreatDetector";
 import type {
   AilaAnalyticsFeature,
   AilaErrorReportingFeature,
@@ -64,17 +65,18 @@ export class AilaFeatureFactory {
   }
 
   static createThreatDetection(
-    aila: AilaServices,
+    _aila: AilaServices,
     options: AilaOptions,
+    detectors?: AilaThreatDetector[],
   ): AilaThreatDetectionFeature | undefined {
-    if (options.useThreatDetection) {
-      return new AilaThreatDetection({ detector: undefined });
+    if (options.useThreatDetection && detectors) {
+      return new AilaThreatDetection(detectors);
     }
     return undefined;
   }
 
   static createErrorReporter(
-    aila: AilaServices,
+    _aila: AilaServices,
     options: AilaOptions,
   ): AilaErrorReportingFeature | undefined {
     if (options.useErrorReporting) {

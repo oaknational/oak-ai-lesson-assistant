@@ -34,6 +34,7 @@ const ToxicModerationView = ({
     },
     [onSubmit, chatId],
   );
+
   const router = useRouter();
   return (
     <div className="fixed inset-0 z-50 flex w-full items-center justify-center bg-lavender30">

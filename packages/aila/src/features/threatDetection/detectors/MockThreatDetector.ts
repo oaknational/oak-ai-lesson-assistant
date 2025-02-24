@@ -1,4 +1,7 @@
-import { AilaThreatDetector } from "./AilaThreatDetector";
+import {
+  AilaThreatDetector,
+  type ThreatDetectionResult,
+} from "./AilaThreatDetector";
 
 export class MockThreatDetector extends AilaThreatDetector {
   private readonly _response: boolean;
@@ -6,7 +9,15 @@ export class MockThreatDetector extends AilaThreatDetector {
     super();
     this._response = response;
   }
-  async isThreat() {
-    return Promise.resolve(this._response);
+
+  async authenticate(): Promise<void> {}
+  async detectThreat(): Promise<ThreatDetectionResult> {
+    return Promise.resolve({
+      isThreat: this._response,
+      message: "Mocked response",
+    });
+  }
+  async isThreatError(): Promise<boolean> {
+    return Promise.resolve(false);
   }
 }

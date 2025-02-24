@@ -19,7 +19,7 @@ export const handleRefetch = (
       const id = get().id;
       const result = await trpc.client.chat.appSessions.getChat.query({ id });
       invariant(result, "result should not be null");
-      const { lessonPlan, iteration } = result;
+      const { lessonPlan, iteration, isShared } = result;
 
       if (get().isAcceptingChanges) {
         log.info("Lesson plan from DB ignored while streaming");
@@ -31,7 +31,7 @@ export const handleRefetch = (
         return;
       }
 
-      set({ lessonPlan, iteration });
+      set({ lessonPlan, iteration, isShared });
       log.info(`Set lesson plan iteration #${iteration} from DB`);
     } catch (err) {
       log.error("Error refetching lessonPlanStore", err);
