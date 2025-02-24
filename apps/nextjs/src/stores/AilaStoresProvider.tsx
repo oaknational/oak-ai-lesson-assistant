@@ -92,7 +92,7 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
     return () => {
       unsubscribe();
     };
-  });
+  }, [stores.chat, stores.moderation]);
 
   return (
     <AilaStoresContext.Provider value={stores}>
