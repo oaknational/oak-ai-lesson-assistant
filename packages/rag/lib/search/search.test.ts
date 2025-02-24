@@ -85,6 +85,7 @@ describe.skip("vectorSearch", () => {
       filters: mockFilters,
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect((mockPrisma.$queryRaw as jest.Mock).mock.calls[0][0][0]).toEqual(
       expect.stringContaining("SELECT"),
     );
