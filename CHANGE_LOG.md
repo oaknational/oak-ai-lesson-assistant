@@ -1,3 +1,10 @@
+## [1.25.5](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.4...v1.25.5) (2025-02-24)
+
+
+### Bug Fixes
+
+* getChat overfetching - move initialMessages to store ([#550](https://github.com/oaknational/oak-ai-lesson-assistant/issues/550)) ([0ea1694](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0ea169487451e97ab5975c7db3bb7fb511c223a8))
+
 ## [1.25.4](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.3...v1.25.4) (2025-02-20)
 
 
