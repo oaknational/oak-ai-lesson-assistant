@@ -3,7 +3,7 @@ import type {
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 
-import type { LessonPlanStore } from "./index";
+import type { LessonPlanState } from "./index";
 
 const sectionKeyOverrides = {
   starterQuiz: "_experimental_starterQuizMathsV0",
@@ -12,7 +12,7 @@ const sectionKeyOverrides = {
 
 export const lessonPlanSectionSelector = (sectionKey: LessonPlanKey) => {
   return (
-    state: LessonPlanStore,
+    state: LessonPlanState,
   ): LooseLessonPlan[LessonPlanKey] | undefined => {
     if (sectionKey === "starterQuiz" || sectionKey === "exitQuiz") {
       const overiddenSection =
@@ -29,7 +29,7 @@ export const lessonPlanSectionSelector = (sectionKey: LessonPlanKey) => {
 type SectionStatus = "empty" | "streaming" | "loaded";
 
 export const sectionStatusSelector = (sectionKey: LessonPlanKey) => {
-  return (state: LessonPlanStore): SectionStatus => {
+  return (state: LessonPlanState): SectionStatus => {
     const section = state.lessonPlan[sectionKey];
 
     const isStreaming =
