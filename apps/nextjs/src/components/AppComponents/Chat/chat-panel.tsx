@@ -4,9 +4,8 @@ import { cva } from "class-variance-authority";
 
 import { PromptForm } from "@/components/AppComponents/Chat/prompt-form";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
-import useAnalytics from "@/lib/analytics/useAnalytics";
 import { useSidebar } from "@/lib/hooks/use-sidebar";
-import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 import { canAppendSelector } from "@/stores/chatStore/selectors";
 
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
@@ -24,7 +23,6 @@ function LockedPromptForm() {
 export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const input = useChatStore((state) => state.input);
   const setInput = useChatStore((state) => state.setInput);
-  const id = useLessonPlanStore((state) => state.id);
 
   const append = useChatStore((state) => state.append);
   const shouldAllowUserInput = useChatStore(canAppendSelector);
@@ -32,8 +30,6 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const hasMessages = useChatStore(
     (state) => state.stableMessages.length > 0 || !!state.streamingMessage,
   );
-
-  const { trackEvent } = useAnalytics();
 
   const sidebar = useSidebar();
   const lessonPlanTracking = useLessonPlanTracking();
@@ -47,11 +43,9 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
 
       lessonPlanTracking.onSubmitText(value);
 
-      trackEvent("chat:send_message", { id, message: value });
-
       append(value);
     },
-    [lessonPlanTracking, setInput, sidebar, trackEvent, id, append],
+    [lessonPlanTracking, setInput, sidebar, append],
   );
 
   const containerClass = `grid w-full grid-cols-1 ${hasMessages ? "sm:grid-cols-1" : ""} peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]`;
