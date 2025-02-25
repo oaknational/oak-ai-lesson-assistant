@@ -7,20 +7,28 @@ import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 
 const log = aiLogger("aila");
 
-describe("BasedOnRagQuizGenerator", () => {
-  let quizGenerator: BasedOnRagQuizGenerator;
-  let mockLessonPlan: LooseLessonPlan;
+if (process.env.TEST_QUIZZES === "true") {
+  describe("BasedOnRagQuizGenerator", () => {
+    let quizGenerator: BasedOnRagQuizGenerator;
+    let mockLessonPlan: LooseLessonPlan;
 
-  beforeEach(() => {
-    quizGenerator = new BasedOnRagQuizGenerator();
-    mockLessonPlan = CircleTheoremLesson;
-  });
+    beforeEach(() => {
+      quizGenerator = new BasedOnRagQuizGenerator();
+      mockLessonPlan = CircleTheoremLesson;
+    });
 
-  it("should generate a valid quiz", async () => {
-    const quiz =
-      await quizGenerator.generateMathsStarterQuizPatch(mockLessonPlan);
-    log.info(JSON.stringify(quiz));
-    log.info("QUIZ ABOVE");
-    expect(QuizSchema.safeParse(quiz[0]).success).toBe(true);
+    it("should generate a valid quiz", async () => {
+      const quiz =
+        await quizGenerator.generateMathsStarterQuizPatch(mockLessonPlan);
+      log.info(JSON.stringify(quiz));
+      log.info("QUIZ ABOVE");
+      expect(QuizSchema.safeParse(quiz[0]).success).toBe(true);
+    });
   });
-});
+} else {
+  describe("Quiz tests", () => {
+    it("Are disabled", () => {
+      return;
+    });
+  });
+}

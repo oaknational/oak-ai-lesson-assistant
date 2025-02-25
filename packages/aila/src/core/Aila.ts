@@ -242,6 +242,7 @@ export class Aila implements AilaServices {
   }
 
   public get rag() {
+    throw new Error("Attempting to use RAG service");
     return this._rag;
   }
 
