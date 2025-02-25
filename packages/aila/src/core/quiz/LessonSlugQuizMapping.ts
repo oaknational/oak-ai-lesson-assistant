@@ -13,6 +13,7 @@ const log = aiLogger("aila:quiz");
 const NON_LEGACY_QUIZZES_FLAG = "non-legacy-quizzes-v0";
 
 export abstract class BaseLessonQuizLookup implements LessonSlugQuizLookup {
+  public abstract isLegacyLessonSlug(lessonSlug: string): Promise<boolean>;
   abstract getStarterQuiz(
     lessonSlug: string,
     userId?: string,
