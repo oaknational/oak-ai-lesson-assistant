@@ -37,12 +37,12 @@ async function handleThreatError(
   id: string,
   prisma: PrismaClientWithAccelerate,
 ) {
-  const threatErrorMessage = await handleThreatDetectionError(
-    e.userId,
-    id,
-    e,
+  const threatErrorMessage = await handleThreatDetectionError({
+    userId: e.userId,
+    chatId: id,
+    error: e,
     prisma,
-  );
+  });
   reportErrorTelemetry(span, e, "AilaThreatDetectionError", "Threat detected");
   return streamingJSON(threatErrorMessage);
 }
