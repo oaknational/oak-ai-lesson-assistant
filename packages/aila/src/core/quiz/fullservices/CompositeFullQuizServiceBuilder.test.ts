@@ -7,7 +7,7 @@ import type { QuizBuilderSettings } from "../schema";
 import { CompositeFullQuizServiceBuilder } from "./CompositeFullQuizServiceBuilder";
 
 const log = aiLogger("aila");
-if (process.env.TEST_QUIZZES === "true") {
+if (process.env.TEST_QUIZZES !== "false") {
   describe("CompositeFullQuizServiceBuilder", () => {
     jest.setTimeout(60000);
     it("should build a CompositeFullQuizService", () => {

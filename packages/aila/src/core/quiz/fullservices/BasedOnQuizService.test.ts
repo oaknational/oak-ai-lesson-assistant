@@ -7,7 +7,7 @@ import { BasedOnQuizService } from "./BasedOnQuizService";
 
 const log = aiLogger("quiz");
 
-if (process.env.TEST_QUIZZES === "true") {
+if (process.env.TEST_QUIZZES !== "false") {
   describe("BasedOnQuizService", () => {
     let quizService: BasedOnQuizService;
 
