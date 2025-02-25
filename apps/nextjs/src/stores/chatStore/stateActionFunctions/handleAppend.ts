@@ -1,14 +1,13 @@
 import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
-import type { ChatStore } from "../index";
 import { canAppendSelector } from "../selectors";
+import type { ChatSetter, ChatGetter } from "../types";
 
 const log = aiLogger("chat:store");
 
 export const handleAppend =
-  (set: (partial: Partial<ChatStore>) => void, get: () => ChatStore) =>
-  (message: string) => {
+  (set: ChatSetter, get: ChatGetter) => (message: string) => {
     const { ailaStreamingStatus, queuedUserAction, aiSdkActions } = get();
     const canAppend = canAppendSelector(get());
     if (!canAppend) {
