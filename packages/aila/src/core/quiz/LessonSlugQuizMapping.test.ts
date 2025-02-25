@@ -1,4 +1,13 @@
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+
 import { ElasticLessonQuizLookup } from "./LessonSlugQuizMapping";
+
+// Mock the posthogAiBetaServerClient
+jest.mock("@oakai/core/src/analytics/posthogAiBetaServerClient", () => ({
+  posthogAiBetaServerClient: {
+    isFeatureEnabled: jest.fn().mockResolvedValue(false),
+  },
+}));
 
 describe("ElasticLessonQuizLookup", () => {
   let dbLookup: ElasticLessonQuizLookup;
@@ -77,11 +86,43 @@ describe("ElasticLessonQuizLookup", () => {
         });
       });
 
-      it("should return placeholder quiz for non-legacy lesson", async () => {
+      it("should return placeholder quiz for non-legacy lesson without userId", async () => {
         // @ts-expect-error - Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce(mockNonLegacyResponse);
         const result = await dbLookup.getStarterQuiz("test-lesson");
         expect(result).toEqual(placeholderQuizIds);
+      });
+
+      it("should return placeholder quiz for non-legacy lesson when feature flag is disabled", async () => {
+        // @ts-expect-error - Mock the Elasticsearch client search method
+        dbLookup.client.search.mockResolvedValueOnce(mockNonLegacyResponse);
+        (
+          posthogAiBetaServerClient.isFeatureEnabled as jest.Mock
+        ).mockResolvedValueOnce(false);
+
+        const result = await dbLookup.getStarterQuiz("test-lesson", "user-123");
+
+        expect(posthogAiBetaServerClient.isFeatureEnabled).toHaveBeenCalledWith(
+          "non-legacy-quizzes-v0",
+          "user-123",
+        );
+        expect(result).toEqual(placeholderQuizIds);
+      });
+
+      it("should return actual quiz for non-legacy lesson when feature flag is enabled", async () => {
+        // @ts-expect-error - Mock the Elasticsearch client search method
+        dbLookup.client.search.mockResolvedValueOnce(mockNonLegacyResponse);
+        (
+          posthogAiBetaServerClient.isFeatureEnabled as jest.Mock
+        ).mockResolvedValueOnce(true);
+
+        const result = await dbLookup.getStarterQuiz("test-lesson", "user-123");
+
+        expect(posthogAiBetaServerClient.isFeatureEnabled).toHaveBeenCalledWith(
+          "non-legacy-quizzes-v0",
+          "user-123",
+        );
+        expect(result).toEqual(["q1", "q2"]);
       });
 
       it("should throw error when no quiz found", async () => {
@@ -115,7 +156,7 @@ describe("ElasticLessonQuizLookup", () => {
       it("should return exit quiz questions for valid legacy lesson slug", async () => {
         const result = await dbLookup.getExitQuiz("test-lesson");
         expect(result).toEqual(["q3", "q4"]);
-        // @ts-expect-error- Mock the Elasticsearch client search method
+        // @ts-expect-error - Mock the Elasticsearch client search method
         expect(dbLookup.client.search).toHaveBeenCalledWith({
           index: "lesson-slug-lookup",
           query: {
@@ -128,11 +169,43 @@ describe("ElasticLessonQuizLookup", () => {
         });
       });
 
-      it("should return placeholder quiz for non-legacy lesson", async () => {
+      it("should return placeholder quiz for non-legacy lesson without userId", async () => {
         // @ts-expect-error - Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce(mockNonLegacyResponse);
         const result = await dbLookup.getExitQuiz("test-lesson");
         expect(result).toEqual(placeholderQuizIds);
+      });
+
+      it("should return placeholder quiz for non-legacy lesson when feature flag is disabled", async () => {
+        // @ts-expect-error - Mock the Elasticsearch client search method
+        dbLookup.client.search.mockResolvedValueOnce(mockNonLegacyResponse);
+        (
+          posthogAiBetaServerClient.isFeatureEnabled as jest.Mock
+        ).mockResolvedValueOnce(false);
+
+        const result = await dbLookup.getExitQuiz("test-lesson", "user-123");
+
+        expect(posthogAiBetaServerClient.isFeatureEnabled).toHaveBeenCalledWith(
+          "non-legacy-quizzes-v0",
+          "user-123",
+        );
+        expect(result).toEqual(placeholderQuizIds);
+      });
+
+      it("should return actual quiz for non-legacy lesson when feature flag is enabled", async () => {
+        // @ts-expect-error - Mock the Elasticsearch client search method
+        dbLookup.client.search.mockResolvedValueOnce(mockNonLegacyResponse);
+        (
+          posthogAiBetaServerClient.isFeatureEnabled as jest.Mock
+        ).mockResolvedValueOnce(true);
+
+        const result = await dbLookup.getExitQuiz("test-lesson", "user-123");
+
+        expect(posthogAiBetaServerClient.isFeatureEnabled).toHaveBeenCalledWith(
+          "non-legacy-quizzes-v0",
+          "user-123",
+        );
+        expect(result).toEqual(["q3", "q4"]);
       });
 
       it("should throw error when no quiz found", async () => {
@@ -175,6 +248,17 @@ describe("ElasticLessonQuizLookup", () => {
         expect(result).toBe(true);
       });
 
+      it("should return true when non-legacy lesson with feature flag enabled", async () => {
+        // @ts-expect-error - Mock the Elasticsearch client search method
+        dbLookup.client.search.mockResolvedValueOnce(mockNonLegacyResponse);
+        (
+          posthogAiBetaServerClient.isFeatureEnabled as jest.Mock
+        ).mockResolvedValueOnce(true);
+
+        const result = await dbLookup.hasStarterQuiz("test-lesson", "user-123");
+        expect(result).toBe(true);
+      });
+
       it("should return false when starter quiz doesn't exist", async () => {
         // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({ hits: { hits: [] } });
@@ -196,6 +280,17 @@ describe("ElasticLessonQuizLookup", () => {
         expect(result).toBe(true);
       });
 
+      it("should return true when non-legacy lesson with feature flag enabled", async () => {
+        // @ts-expect-error - Mock the Elasticsearch client search method
+        dbLookup.client.search.mockResolvedValueOnce(mockNonLegacyResponse);
+        (
+          posthogAiBetaServerClient.isFeatureEnabled as jest.Mock
+        ).mockResolvedValueOnce(true);
+
+        const result = await dbLookup.hasExitQuiz("test-lesson", "user-123");
+        expect(result).toBe(true);
+      });
+
       it("should return false when exit quiz doesn't exist", async () => {
         // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({ hits: { hits: [] } });
@@ -203,6 +298,72 @@ describe("ElasticLessonQuizLookup", () => {
         expect(result).toBe(false);
       });
     });
+  });
+});
+
+describe("Testing feature flags on live legacy lessons", () => {
+  it("Should return placeholder quizIds for a non legacy (new) lesson, when the feature flag is disabled", async () => {
+    const placeholderQuizIds = [
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+      "QUES-XXXXX-XXXXX",
+    ];
+    const dbLookup = new ElasticLessonQuizLookup();
+    (
+      posthogAiBetaServerClient.isFeatureEnabled as jest.Mock
+    ).mockResolvedValueOnce(false);
+    const starterQuiz = await dbLookup.getStarterQuiz(
+      "comparing-multiple-representations-to-calculate-theoretical-probabilities",
+      "user-123",
+    );
+    (
+      posthogAiBetaServerClient.isFeatureEnabled as jest.Mock
+    ).mockResolvedValueOnce(false);
+    const exitQuiz = await dbLookup.getExitQuiz(
+      "comparing-multiple-representations-to-calculate-theoretical-probabilities",
+      "user-123",
+    );
+    expect(starterQuiz).toEqual(placeholderQuizIds);
+    expect(exitQuiz).toEqual(placeholderQuizIds);
+  });
+
+  it("Should return non placeholder quizIds for a non legacy (new) lesson, when the feature flag is enabled", async () => {
+    const dbLookup = new ElasticLessonQuizLookup();
+    (
+      posthogAiBetaServerClient.isFeatureEnabled as jest.Mock
+    ).mockResolvedValueOnce(true);
+    const starterQuiz = await dbLookup.getStarterQuiz(
+      "comparing-multiple-representations-to-calculate-theoretical-probabilities",
+      "user-123",
+    );
+    (
+      posthogAiBetaServerClient.isFeatureEnabled as jest.Mock
+    ).mockResolvedValueOnce(true);
+    const exitQuiz = await dbLookup.getExitQuiz(
+      "comparing-multiple-representations-to-calculate-theoretical-probabilities",
+      "user-123",
+    );
+
+    const expectedExitQuiz = [
+      "QUES-LUSO2-37461",
+      "QUES-DNJM2-37462",
+      "QUES-KVSD2-37463",
+      "QUES-HPLU2-37464",
+      "QUES-MCAK2-37465",
+      "QUES-OFCP2-37466",
+    ];
+    const expectedStarterQuiz = [
+      "QUES-EYIT2-37455",
+      "QUES-GJWN2-37457",
+      "QUES-QUMT2-37458",
+      "QUES-MNVZ2-37459",
+      "QUES-MDXX2-37460",
+    ];
+    expect(starterQuiz).toEqual(expectedStarterQuiz);
+    expect(exitQuiz).toEqual(expectedExitQuiz);
   });
 });
 

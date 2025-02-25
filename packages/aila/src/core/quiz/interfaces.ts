@@ -162,10 +162,10 @@ export interface LessonSlugQuizMapping {
 }
 
 export interface LessonSlugQuizLookup {
-  getStarterQuiz(lessonSlug: string): Promise<string[]>;
-  getExitQuiz(lessonSlug: string): Promise<string[]>;
-  hasStarterQuiz(lessonSlug: string): Promise<boolean>;
-  hasExitQuiz(lessonSlug: string): Promise<boolean>;
+  getStarterQuiz(lessonSlug: string, userId?: string): Promise<string[]>;
+  getExitQuiz(lessonSlug: string, userId?: string): Promise<string[]>;
+  hasStarterQuiz(lessonSlug: string, userId?: string): Promise<boolean>;
+  hasExitQuiz(lessonSlug: string, userId?: string): Promise<boolean>;
 }
 
 // FACTORIES BELOW

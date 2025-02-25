@@ -1,4 +1,5 @@
 import { Client } from "@elastic/elasticsearch";
+import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { aiLogger } from "@oakai/logger";
 import { z } from "zod";
 
@@ -7,11 +8,20 @@ import type { LessonSlugQuizLookup, QuizIDSource, QuizSet } from "./interfaces";
 
 const log = aiLogger("aila:quiz");
 
+// Feature flag for allowing non-legacy quizzes
+const NON_LEGACY_QUIZZES_FLAG = "non-legacy-quizzes-v0";
+
 export abstract class BaseLessonQuizLookup implements LessonSlugQuizLookup {
-  abstract getStarterQuiz(lessonSlug: string): Promise<string[]>;
-  abstract getExitQuiz(lessonSlug: string): Promise<string[]>;
-  abstract hasStarterQuiz(lessonSlug: string): Promise<boolean>;
-  abstract hasExitQuiz(lessonSlug: string): Promise<boolean>;
+  abstract getStarterQuiz(
+    lessonSlug: string,
+    userId?: string,
+  ): Promise<string[]>;
+  abstract getExitQuiz(lessonSlug: string, userId?: string): Promise<string[]>;
+  abstract hasStarterQuiz(
+    lessonSlug: string,
+    userId?: string,
+  ): Promise<boolean>;
+  abstract hasExitQuiz(lessonSlug: string, userId?: string): Promise<boolean>;
 }
 
 export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
@@ -42,6 +52,7 @@ export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
   private async searchQuizByLessonSlug(
     lessonSlug: string,
     quizType: QuizPath,
+    userId?: string,
   ): Promise<string[]> {
     try {
       const response = await this.client.search<QuizIDSource>({
@@ -88,19 +99,37 @@ export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
         );
       }
 
+      // Check if this is a non-legacy quiz and if the user is allowed to view it
       if (!quizData.is_legacy) {
-        log.warn(
-          `Lesson slug ${lessonSlug} is not legacy. Returning placeholder quiz due to awaiting copyright approval.`,
-        );
+        let userAllowedNonLegacyQuizzes = false;
 
-        return [
-          "QUES-XXXXX-XXXXX",
-          "QUES-XXXXX-XXXXX",
-          "QUES-XXXXX-XXXXX",
-          "QUES-XXXXX-XXXXX",
-          "QUES-XXXXX-XXXXX",
-          "QUES-XXXXX-XXXXX",
-        ];
+        // Check feature flag if userId is provided
+        if (userId) {
+          userAllowedNonLegacyQuizzes =
+            (await posthogAiBetaServerClient.isFeatureEnabled(
+              NON_LEGACY_QUIZZES_FLAG,
+              userId,
+            )) ?? false;
+
+          log.info(
+            `User ${userId} ${userAllowedNonLegacyQuizzes ? "is" : "is not"} allowed to see non-legacy quizzes.`,
+          );
+        }
+
+        if (!userAllowedNonLegacyQuizzes) {
+          log.warn(
+            `Lesson slug ${lessonSlug} is not legacy. Returning placeholder quiz due to awaiting copyright approval.`,
+          );
+
+          return [
+            "QUES-XXXXX-XXXXX",
+            "QUES-XXXXX-XXXXX",
+            "QUES-XXXXX-XXXXX",
+            "QUES-XXXXX-XXXXX",
+            "QUES-XXXXX-XXXXX",
+            "QUES-XXXXX-XXXXX",
+          ];
+        }
       }
       return quizIds;
     } catch (error) {
@@ -112,26 +141,26 @@ export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
     }
   }
 
-  async getStarterQuiz(lessonSlug: string): Promise<string[]> {
-    return this.searchQuizByLessonSlug(lessonSlug, "/starterQuiz");
+  async getStarterQuiz(lessonSlug: string, userId?: string): Promise<string[]> {
+    return this.searchQuizByLessonSlug(lessonSlug, "/starterQuiz", userId);
   }
 
-  async getExitQuiz(lessonSlug: string): Promise<string[]> {
-    return this.searchQuizByLessonSlug(lessonSlug, "/exitQuiz");
+  async getExitQuiz(lessonSlug: string, userId?: string): Promise<string[]> {
+    return this.searchQuizByLessonSlug(lessonSlug, "/exitQuiz", userId);
   }
 
-  async hasStarterQuiz(lessonSlug: string): Promise<boolean> {
+  async hasStarterQuiz(lessonSlug: string, userId?: string): Promise<boolean> {
     try {
-      await this.getStarterQuiz(lessonSlug);
+      await this.getStarterQuiz(lessonSlug, userId);
       return true;
     } catch {
       return false;
     }
   }
 
-  async hasExitQuiz(lessonSlug: string): Promise<boolean> {
+  async hasExitQuiz(lessonSlug: string, userId?: string): Promise<boolean> {
     try {
-      await this.getExitQuiz(lessonSlug);
+      await this.getExitQuiz(lessonSlug, userId);
       return true;
     } catch {
       return false;

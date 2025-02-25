@@ -148,11 +148,12 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   public async lessonSlugToQuestionIdsLookupTable(
     lessonSlug: string,
     quizType: QuizPath,
+    userId?: string,
   ): Promise<string[]> {
     if (quizType === "/starterQuiz") {
-      return await this.quizLookup.getStarterQuiz(lessonSlug);
+      return await this.quizLookup.getStarterQuiz(lessonSlug, userId);
     } else if (quizType === "/exitQuiz") {
-      return await this.quizLookup.getExitQuiz(lessonSlug);
+      return await this.quizLookup.getExitQuiz(lessonSlug, userId);
     }
     throw new Error("Invalid quiz type");
   }
@@ -208,6 +209,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   public async questionArrayFromPlanIdLookUpTable(
     planId: string,
     quizType: QuizPath,
+    userId?: string,
   ): Promise<QuizQuestion[]> {
     const lessonSlug = await this.getLessonSlugFromPlanId(planId);
     if (!lessonSlug) {
@@ -216,6 +218,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     const questionIds = await this.lessonSlugToQuestionIdsLookupTable(
       lessonSlug,
       quizType,
+      userId,
     );
 
     const quizQuestions = await this.questionArrayFromCustomIds(questionIds);
@@ -225,8 +228,13 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   public async questionArrayFromPlanId(
     planId: string,
     quizType: QuizPath = "/starterQuiz",
+    userId?: string,
   ): Promise<QuizQuestion[]> {
-    return await this.questionArrayFromPlanIdLookUpTable(planId, quizType);
+    return await this.questionArrayFromPlanIdLookUpTable(
+      planId,
+      quizType,
+      userId,
+    );
   }
 
   public async searchQuestions<T>(
