@@ -1,5 +1,6 @@
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
-import type * as z from "zod";
+// import type * as z from "zod";
+import z from "zod";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import type {
@@ -47,6 +48,7 @@ export interface AilaQuizService {
 }
 
 export interface AilaQuizGeneratorService {
+  quizLookup: LessonSlugQuizLookup;
   generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
@@ -150,11 +152,13 @@ export interface DocumentWrapper {
   relevanceScore: number;
 }
 
-export interface QuizSet {
-  exitQuiz: string[];
-  starterQuiz: string[];
-  is_legacy: boolean;
-}
+export const QuizSetSchema = z.object({
+  exitQuiz: z.array(z.string()),
+  starterQuiz: z.array(z.string()),
+  is_legacy: z.boolean(),
+});
+
+export type QuizSet = z.infer<typeof QuizSetSchema>;
 
 export interface QuizIDSource {
   text: QuizSet;
@@ -169,6 +173,7 @@ export interface LessonSlugQuizLookup {
   getExitQuiz(lessonSlug: string, userId?: string): Promise<string[]>;
   hasStarterQuiz(lessonSlug: string, userId?: string): Promise<boolean>;
   hasExitQuiz(lessonSlug: string, userId?: string): Promise<boolean>;
+  isLegacyLessonSlug(lessonSlug: string): Promise<boolean>;
 }
 
 // FACTORIES BELOW

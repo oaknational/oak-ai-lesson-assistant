@@ -42,7 +42,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   protected client: Client;
   protected cohere: CohereClient;
   protected rerankService: CohereReranker;
-  protected quizLookup: LessonSlugQuizLookup;
+  public quizLookup: LessonSlugQuizLookup;
 
   constructor() {
     if (

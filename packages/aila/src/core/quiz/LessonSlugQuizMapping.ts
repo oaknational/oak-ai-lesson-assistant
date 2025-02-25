@@ -4,6 +4,7 @@ import { aiLogger } from "@oakai/logger";
 import { z } from "zod";
 
 import type { QuizPath } from "../../protocol/schema";
+import { QuizSetSchema } from "./interfaces";
 import type { LessonSlugQuizLookup, QuizIDSource, QuizSet } from "./interfaces";
 
 const log = aiLogger("aila:quiz");
@@ -47,6 +48,36 @@ export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
         apiKey: process.env.I_DOT_AI_ELASTIC_KEY,
       },
     });
+  }
+  public async isLegacyLessonSlug(lessonSlug: string): Promise<boolean> {
+    try {
+      const response = await this.client.search<QuizIDSource>({
+        index: "lesson-slug-lookup",
+        query: {
+          bool: {
+            must: [{ term: { "metadata.lessonSlug.keyword": lessonSlug } }],
+          },
+        },
+      });
+
+      if (!response.hits.hits[0]?._source) {
+        log.error(`No quiz found for lesson slug: ${lessonSlug}. Hit: `);
+        // This is caused by the lesson slug not being in the index due to being a non legacy lesson.
+        throw new Error(
+          `No quiz found for lesson slug: ${lessonSlug}. Returning placeholder quiz.`,
+        );
+      }
+      // Parse the text field if it's a string
+      const quizSet = QuizSetSchema.parse(response.hits.hits[0]._source.text);
+
+      return quizSet.is_legacy;
+    } catch (error) {
+      log.error(
+        `Error fetching legacy lesson for lesson slug ${lessonSlug}:`,
+        error,
+      );
+      return false;
+    }
   }
 
   private async searchQuizByLessonSlug(
