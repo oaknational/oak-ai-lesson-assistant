@@ -2,6 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import type { AilaRagRelevantLesson } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
+import type { AilaQuizGeneratorService } from "../interfaces";
 import { testRatingSchema } from "../rerankers/RerankerStructuredOutputSchema";
 import type { QuizBuilderSettings } from "../schema";
 import { CompositeFullQuizServiceBuilder } from "./CompositeFullQuizServiceBuilder";
@@ -57,6 +58,73 @@ describe("CompositeFullQuizServiceBuilder", () => {
       { lessonPlanId: "clna7k93700sap4qx741wdrz4", title: "test-title-6" },
       { lessonPlanId: "clna7k98j00vup4qx9nyfjtpm", title: "test-title-7" },
       { lessonPlanId: "clna7k8zr00qfp4qx44fdvikl", title: "test-title-8" },
+      { lessonPlanId: "clna7k93700sap4qx741wdrz4", title: "test-title-9" },
+      { lessonPlanId: "clna7k98j00vup4qx9nyfjtpm", title: "test-title-10" },
+    ];
+
+    const builder = new CompositeFullQuizServiceBuilder();
+    const settings: QuizBuilderSettings = {
+      quizRatingSchema: testRatingSchema,
+      quizSelector: "simple",
+      quizReranker: "return-first",
+      quizGenerators: ["basedOnRag"],
+    };
+    const service = builder.build(settings);
+    const quiz = await service.createBestQuiz(
+      "/starterQuiz",
+      CircleTheoremLesson,
+      mockRelevantLessons,
+    );
+    expect(quiz).toBeDefined();
+    expect(quiz.length).toBeGreaterThan(0);
+    expect(quiz[0]?.question).toBeDefined();
+    expect(quiz[0]?.answers).toBeDefined();
+    expect(quiz[0]?.distractors).toBeDefined();
+    log.info(JSON.stringify(quiz, null, 2));
+  });
+
+  it("Should pass userId to quiz generators for feature flag checking", async () => {
+    const builder = new CompositeFullQuizServiceBuilder();
+    const settings: QuizBuilderSettings = {
+      quizRatingSchema: testRatingSchema,
+      quizSelector: "simple",
+      quizReranker: "return-first",
+      quizGenerators: ["basedOnRag"],
+    };
+    const service = builder.build(settings);
+
+    // Make sure we have a generator
+    expect(service.quizGenerators.length).toBeGreaterThan(0);
+
+    // Mock the generateMathsStarterQuizPatch method to verify userId is passed
+    const mockGenerator = service.quizGenerators[0] as AilaQuizGeneratorService;
+    const mockGenerateMethod = jest.spyOn(
+      mockGenerator,
+      "generateMathsStarterQuizPatch",
+    );
+
+    const testUserId = "test-user-456";
+
+    await service.createBestQuiz(
+      "/starterQuiz",
+      CircleTheoremLesson,
+      [], // Use empty array instead of undefined to match BaseFullQuizService default
+      testUserId,
+    );
+
+    // Verify that generateMathsStarterQuizPatch was called with the userId
+    expect(mockGenerateMethod).toHaveBeenCalledWith(
+      CircleTheoremLesson,
+      [], // Expect empty array instead of undefined
+      testUserId,
+    );
+
+    mockGenerateMethod.mockRestore();
+  });
+
+  it("Should work with relevant lessons", async () => {
+    const mockRelevantLessons = [
+      { lessonPlanId: "clna7k8yw00qcp4qxbxnxvnxl", title: "test-title-1" },
       { lessonPlanId: "clna7k93700sap4qx741wdrz4", title: "test-title-9" },
       { lessonPlanId: "clna7k98j00vup4qx9nyfjtpm", title: "test-title-10" },
     ];

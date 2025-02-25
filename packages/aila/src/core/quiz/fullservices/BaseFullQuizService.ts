@@ -26,17 +26,20 @@ export abstract class BaseFullQuizService implements FullQuizService {
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
+    userId?: string,
   ): Promise<QuizQuestion[]> {
     const quizPromises = this.quizGenerators.map((quizGenerator) => {
       if (quizType === "/starterQuiz") {
         return quizGenerator.generateMathsStarterQuizPatch(
           lessonPlan,
           ailaRagRelevantLessons,
+          userId,
         );
       } else if (quizType === "/exitQuiz") {
         return quizGenerator.generateMathsExitQuizPatch(
           lessonPlan,
           ailaRagRelevantLessons,
+          userId,
         );
       }
       throw new Error(`Invalid quiz type: ${quizType as string}`);

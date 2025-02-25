@@ -15,6 +15,7 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
   async generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
     _ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+    userId?: string,
   ): Promise<Quiz[]> {
     // If quiz is basedOn, give them the default quiz as a starter quiz
     log.info(
@@ -30,6 +31,7 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
       await this.questionArrayFromPlanId(
         lessonPlan.basedOn?.id,
         "/starterQuiz",
+        userId,
       ),
     ];
   }
@@ -37,6 +39,7 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
   async generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
     _ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+    userId?: string,
   ): Promise<Quiz[]> {
     // If quiz is basedOn, give them the default quiz as an exit quiz
     log.info(
@@ -44,11 +47,16 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
       lessonPlan.basedOn?.id,
     );
     if (!lessonPlan.basedOn?.id) {
+      // Generators should return an empty array if they cannot generate a quiz.
       log.info("Lesson plan basedOn is undefined. Returning empty array.");
       return [];
     }
     return [
-      await this.questionArrayFromPlanId(lessonPlan.basedOn?.id, "/exitQuiz"),
+      await this.questionArrayFromPlanId(
+        lessonPlan.basedOn?.id,
+        "/exitQuiz",
+        userId,
+      ),
     ];
   }
 }

@@ -50,10 +50,12 @@ export interface AilaQuizGeneratorService {
   generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
+    userId?: string,
   ): Promise<Quiz[]>;
   generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
+    userId?: string,
   ): Promise<Quiz[]>;
   // invoke(lessonPlan: LooseLessonPlan): Promise<Quiz[]>;
 }
@@ -93,6 +95,7 @@ export interface FullQuizService {
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+    userId?: string,
   ): Promise<QuizQuestion[]>;
 }
 

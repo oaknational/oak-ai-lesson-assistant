@@ -76,10 +76,12 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   abstract generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+    userId?: string,
   ): Promise<Quiz[]>;
   abstract generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+    userId?: string,
   ): Promise<Quiz[]>;
 
   public async generateMathsQuizFromRagPlanId(
