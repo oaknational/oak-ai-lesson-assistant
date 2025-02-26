@@ -3,13 +3,13 @@ import * as Sentry from "@sentry/nextjs";
 
 import type { TrpcUtils } from "@/utils/trpc";
 
-import type { ModerationStore } from "..";
+import type { ModerationSetter, ModerationGetter } from "../types";
 
 const log = aiLogger("moderation:store");
 
 export const handleFetchModerations = (
-  set: (state: Pick<ModerationStore, "isModerationsLoading">) => void,
-  get: () => ModerationStore,
+  set: ModerationSetter,
+  get: ModerationGetter,
   trpcUtils: TrpcUtils,
 ) => {
   return async () => {

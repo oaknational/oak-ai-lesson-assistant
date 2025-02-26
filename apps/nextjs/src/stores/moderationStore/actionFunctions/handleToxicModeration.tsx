@@ -2,14 +2,14 @@ import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModerati
 
 import type { GetStore } from "@/stores/AilaStoresProvider";
 
-import type { ModerationStore } from "..";
+import type { ModerationSetter, ModerationGetter } from "../types";
 
 export const handleToxicModeration =
   (
     getStore: GetStore,
-    set: (state: Pick<ModerationStore, "toxicModeration">) => void,
+    set: ModerationSetter,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    get: () => ModerationStore,
+    get: ModerationGetter,
   ) =>
   (mod: PersistedModerationBase | null) => {
     set({ toxicModeration: mod });
