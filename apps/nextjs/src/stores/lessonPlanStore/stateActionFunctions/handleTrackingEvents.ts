@@ -3,12 +3,12 @@ import invariant from "tiny-invariant";
 import type { LessonPlanTrackingContextProps } from "@/lib/analytics/lessonPlanTrackingContext";
 import type { GetStore } from "@/stores/AilaStoresProvider";
 
-import type { LessonPlanStore } from "..";
+import type { LessonPlanState } from "..";
 
 export const handleTrackingEvents = (
   lessonPlanTracking: LessonPlanTrackingContextProps,
   getStore: GetStore,
-  get: () => LessonPlanStore,
+  get: () => LessonPlanState,
 ) => {
   const messages = getStore("chat").stableMessages;
 
