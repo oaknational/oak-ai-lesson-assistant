@@ -12,24 +12,11 @@ export function handleSetMessages(
   set: ChatSetter,
   get: ChatGetter,
 ) {
-  function handleChangedAilaStreamingStatus(
-    ailaStreamingStatus: AilaStreamingStatus,
-  ) {
-    if (ailaStreamingStatus === "Idle" && get().queuedUserAction) {
-      void get().executeQueuedAction();
-    }
-    if (ailaStreamingStatus === "Idle") {
-      void getStore("moderation").fetchModerations();
-    }
-  }
-
   function lastMessageIsUser(messages: AiMessage[]) {
     return messages[messages.length - 1]?.role === "user";
   }
 
   return (messages: AiMessage[], isLoading: boolean) => {
-    const originalStreamingStatus = get().ailaStreamingStatus;
-
     if (!isLoading) {
       // The AI SDK isn't loading: we're idle and all messages are stable
 
@@ -82,12 +69,6 @@ export function handleSetMessages(
         }),
         ailaStreamingStatus: calculateStreamingStatus(currentMessageData),
       });
-    }
-
-    const streamingStatusChanged =
-      get().ailaStreamingStatus !== originalStreamingStatus;
-    if (streamingStatusChanged) {
-      handleChangedAilaStreamingStatus(get().ailaStreamingStatus);
     }
   };
 }
