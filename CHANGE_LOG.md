@@ -1,3 +1,11 @@
+## [1.25.6](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.5...v1.25.6) (2025-02-26)
+
+
+### Bug Fixes
+
+* bullet styling for portable text ([#567](https://github.com/oaknational/oak-ai-lesson-assistant/issues/567)) ([73e9446](https://github.com/oaknational/oak-ai-lesson-assistant/commit/73e94467a2f93b7e96a44a4fbc0141bbe969a552))
+* next router skipping signed-in check ([#146](https://github.com/oaknational/oak-ai-lesson-assistant/issues/146)) ([c1b9939](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c1b9939563dc20e3ffaf0a56d73d015a11047149))
+
 ## [1.25.5](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.4...v1.25.5) (2025-02-24)
 
 
