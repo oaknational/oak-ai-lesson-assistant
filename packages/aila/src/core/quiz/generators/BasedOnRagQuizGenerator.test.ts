@@ -7,28 +7,22 @@ import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 
 const log = aiLogger("aila");
 
-if (process.env.TEST_QUIZZES !== "false") {
-  describe("BasedOnRagQuizGenerator", () => {
-    let quizGenerator: BasedOnRagQuizGenerator;
-    let mockLessonPlan: LooseLessonPlan;
+const shouldSkipTests = process.env.TEST_QUIZZES === "false";
 
-    beforeEach(() => {
-      quizGenerator = new BasedOnRagQuizGenerator();
-      mockLessonPlan = CircleTheoremLesson;
-    });
+(shouldSkipTests ? describe.skip : describe)("BasedOnRagQuizGenerator", () => {
+  let quizGenerator: BasedOnRagQuizGenerator;
+  let mockLessonPlan: LooseLessonPlan;
 
-    it("should generate a valid quiz", async () => {
-      const quiz =
-        await quizGenerator.generateMathsStarterQuizPatch(mockLessonPlan);
-      log.info(JSON.stringify(quiz));
-      log.info("QUIZ ABOVE");
-      expect(QuizSchema.safeParse(quiz[0]).success).toBe(true);
-    });
+  beforeEach(() => {
+    quizGenerator = new BasedOnRagQuizGenerator();
+    mockLessonPlan = CircleTheoremLesson;
   });
-} else {
-  describe("Quiz tests", () => {
-    it("Are disabled", () => {
-      return;
-    });
+
+  it("should generate a valid quiz", async () => {
+    const quiz =
+      await quizGenerator.generateMathsStarterQuizPatch(mockLessonPlan);
+    log.info(JSON.stringify(quiz));
+    log.info("QUIZ ABOVE");
+    expect(QuizSchema.safeParse(quiz[0]).success).toBe(true);
   });
-}
+});
