@@ -42,7 +42,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
   }
 
   private async fetchBaseLessonPlan(): Promise<LooseLessonPlan | undefined> {
-    const basedOnId = this._aila.lesson?.plan?.basedOn?.id;
+    const basedOnId = this._aila.document?.plan?.basedOn?.id;
     if (!basedOnId) {
       return;
     }

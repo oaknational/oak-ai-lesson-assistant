@@ -50,15 +50,15 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
       await ailaInstance.generateSync({ input: "Continue" });
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const secondParsedMessage = checkLastMessage(ailaInstance);
+      const _secondParsedMessage = checkLastMessage(ailaInstance);
 
       await ailaInstance.generateSync({ input: "Continue" });
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const thirdParsedMessage = checkLastMessage(ailaInstance);
+      const _thirdParsedMessage = checkLastMessage(ailaInstance);
 
       // Check that the title is set appropriately
-      expect(ailaInstance.lesson.plan.title).toBeDefined();
+      expect(ailaInstance.document.plan.title).toBeDefined();
     }, 30000);
   },
 );
@@ -117,8 +117,8 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
       );
       expectPatch(secondParsedMessage, "replace", "/title");
 
-      expect(ailaInstance.lesson.plan.title).toBeDefined();
-      expect(ailaInstance.lesson.plan.title?.toLowerCase()).toContain(
+      expect(ailaInstance.document.plan.title).toBeDefined();
+      expect(ailaInstance.document.plan.title?.toLowerCase()).toContain(
         "glaciation",
       );
     }, 30000);

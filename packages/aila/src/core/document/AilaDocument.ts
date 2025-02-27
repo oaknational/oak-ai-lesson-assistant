@@ -9,12 +9,12 @@ import {
   extractPatches,
 } from "../../protocol/jsonPatchProtocol";
 import type { LooseLessonPlan } from "../../protocol/schema";
-import type { AilaLessonService, AilaServices } from "../AilaServices";
+import type { AilaDocumentService, AilaServices } from "../AilaServices";
 import type { Message } from "../chat";
 
 const log = aiLogger("aila:lesson");
 
-export class AilaLesson implements AilaLessonService {
+export class AilaDocument implements AilaDocumentService {
   private readonly _aila: AilaServices;
   private _plan: LooseLessonPlan;
   private _hasSetInitialState = false;
