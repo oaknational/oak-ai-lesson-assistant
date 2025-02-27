@@ -159,7 +159,7 @@ export class AilaStreamHandler {
     }
     log.info("Starting to read from stream");
     try {
-      while (!abortController?.signal.aborted) {
+      while (abortController ? !abortController?.signal.aborted : true) {
         log.info("Reading next chunk");
         const { done, value } = await this._streamReader.read();
         if (done) {
