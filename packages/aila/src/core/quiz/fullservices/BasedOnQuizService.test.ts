@@ -7,7 +7,9 @@ import { BasedOnQuizService } from "./BasedOnQuizService";
 
 const log = aiLogger("quiz");
 
-describe("BasedOnQuizService", () => {
+const shouldSkipTests = process.env.TEST_QUIZZES === "false";
+
+(shouldSkipTests ? describe.skip : describe)("BasedOnQuizService", () => {
   let quizService: BasedOnQuizService;
 
   beforeEach(() => {

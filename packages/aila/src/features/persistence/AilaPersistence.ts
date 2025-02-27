@@ -47,8 +47,13 @@ export abstract class AilaPersistence {
 
     invariant(userId, "userId is required for chat persistence");
 
-    const { lesson, options } = this._aila;
-    const { subject = "", title = "", keyStage = "", topic = "" } = lesson.plan;
+    const { document, options } = this._aila;
+    const {
+      subject = "",
+      title = "",
+      keyStage = "",
+      topic = "",
+    } = document.plan;
 
     return {
       id,
@@ -62,7 +67,7 @@ export abstract class AilaPersistence {
       iteration: iteration ? iteration + 1 : 1,
       isShared,
       path: `/aila/${id}`,
-      lessonPlan: lesson.plan,
+      lessonPlan: document.plan,
       relevantLessons,
       messages: messages.filter((m) => ["assistant", "user"].includes(m.role)),
       options,
