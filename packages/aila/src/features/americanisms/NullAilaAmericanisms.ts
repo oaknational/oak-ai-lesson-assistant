@@ -2,7 +2,8 @@ import type { AilaAmericanismsFeature } from ".";
 import type { AilaDocumentContent } from "./AilaAmericanisms";
 
 export class NullAilaAmericanisms implements AilaAmericanismsFeature {
-  public findAmericanisms<T extends AilaDocumentContent>() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public findAmericanisms<T extends AilaDocumentContent>(_document: T) {
     return [];
   }
 }
