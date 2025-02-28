@@ -69,8 +69,6 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
     id,
     body: {
       id,
-      // NOTE: this lesson plan is used by the chat endpoint
-      lessonPlan,
       options: {
         useRag: true,
         temperature: 0.7,

@@ -50,12 +50,10 @@ async function setupChatHandler(req: NextRequest) {
       const {
         id: chatId,
         messages,
-        lessonPlan = {},
         options: chatOptions = {},
       }: {
         id: string;
         messages: Message[];
-        lessonPlan?: LooseLessonPlan;
         options?: AilaPublicChatOptions;
       } = json;
 
@@ -85,7 +83,6 @@ async function setupChatHandler(req: NextRequest) {
       return {
         chatId,
         messages,
-        lessonPlan,
         options,
         llmService,
         moderationAiClient,
@@ -95,13 +92,19 @@ async function setupChatHandler(req: NextRequest) {
   );
 }
 
-function setTelemetryMetadata(
-  span: TracingSpan,
-  id: string,
-  messages: Message[],
-  lessonPlan: LooseLessonPlan,
-  options: AilaOptions,
-) {
+function setTelemetryMetadata({
+  span,
+  id,
+  messages,
+  lessonPlan,
+  options,
+}: {
+  span: TracingSpan;
+  id: string;
+  messages: Message[];
+  lessonPlan: LooseLessonPlan;
+  options: AilaOptions;
+}) {
   span.setTag("chat_id", id);
   span.setTag("messages.count", messages.length);
   span.setTag("has_lesson_plan", Object.keys(lessonPlan).length > 0);
@@ -119,7 +122,7 @@ function handleConnectionAborted(req: NextRequest) {
   const abortController = new AbortController();
 
   req.signal.addEventListener("abort", () => {
-    log.info("Client has disconnected");
+    log.info("Connection aborted: client has disconnected");
     abortController.abort();
   });
   return abortController;
@@ -167,6 +170,69 @@ async function generateChatStream(
   );
 }
 
+function hasLessonPlan(obj: unknown): obj is { lessonPlan: unknown } {
+  return obj !== null && typeof obj === "object" && "lessonPlan" in obj;
+}
+
+function isValidLessonPlan(lessonPlan: unknown): boolean {
+  return lessonPlan !== null && typeof lessonPlan === "object";
+}
+
+function parseLessonPlanFromOutput(output: unknown): LooseLessonPlan {
+  if (!output) return {};
+
+  try {
+    const parsedOutput =
+      typeof output === "string" ? JSON.parse(output) : output;
+
+    if (
+      hasLessonPlan(parsedOutput) &&
+      isValidLessonPlan(parsedOutput.lessonPlan)
+    ) {
+      return parsedOutput.lessonPlan as LooseLessonPlan;
+    }
+  } catch (error) {
+    log.error("Error parsing output to extract lesson plan", error);
+  }
+
+  return {};
+}
+
+async function loadLessonPlanFromDatabase(
+  chatId: string,
+  userId: string,
+): Promise<LooseLessonPlan> {
+  try {
+    const chat = await prisma.appSession.findUnique({
+      where: { id: chatId },
+      select: {
+        id: true,
+        userId: true,
+        output: true,
+      },
+    });
+
+    if (!chat) {
+      log.info(`No existing chat found for id: ${chatId}`);
+      return {};
+    }
+
+    if (chat.userId !== userId) {
+      log.error(
+        `User ${userId} attempted to access chat ${chatId} which belongs to ${chat.userId}`,
+      );
+      throw new Error("Unauthorized access to chat");
+    }
+
+    const lessonPlan = parseLessonPlanFromOutput(chat.output);
+    log.info(`Loaded lesson plan for chat ${chatId}`);
+    return lessonPlan;
+  } catch (error) {
+    log.error(`Error loading lesson plan for chat ${chatId}`, error);
+    return {};
+  }
+}
+
 export async function handleChatPostRequest(
   req: NextRequest,
   config: Config,
@@ -175,22 +241,29 @@ export async function handleChatPostRequest(
     const {
       chatId,
       messages,
-      lessonPlan,
       options,
       llmService,
       moderationAiClient,
       threatDetectors,
     } = await setupChatHandler(req);
 
-    setTelemetryMetadata(span, chatId, messages, lessonPlan, options);
-
     let userId: string | undefined;
     let aila: Aila | undefined;
 
     try {
       userId = await fetchAndCheckUser(chatId);
-
       span.setTag("user_id", userId);
+
+      const dbLessonPlan = await loadLessonPlanFromDatabase(chatId, userId);
+
+      setTelemetryMetadata({
+        span,
+        id: chatId,
+        messages,
+        lessonPlan: dbLessonPlan,
+        options,
+      });
+
       aila = await withTelemetry(
         "chat-create-aila",
         { chat_id: chatId, user_id: userId },
@@ -213,8 +286,7 @@ export async function handleChatPostRequest(
               ],
               threatDetectors: () => threatDetectors,
             },
-
-            lessonPlan: lessonPlan ?? {},
+            lessonPlan: dbLessonPlan ?? {},
           };
           const result = await config.createAila(ailaOptions);
           return result;
