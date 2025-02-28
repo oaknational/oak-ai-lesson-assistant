@@ -433,7 +433,7 @@ export class AilaChat implements AilaChatService {
   public async saveSnapshot({ messageId }: { messageId: string }) {
     await this._aila.snapshotStore.saveSnapshot({
       messageId,
-      lessonPlan: this._aila.document.content,
+      content: this._aila.document.content,
       trigger: "ASSISTANT_MESSAGE",
     });
   }

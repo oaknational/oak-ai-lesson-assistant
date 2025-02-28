@@ -1,0 +1,8 @@
+To do list for migrating the Aila package from just handling lessons, to allow it it handle different types of document.
+
+## Snapshots
+
+We need to generate a JSON schema for each document type.
+
+## Schemas for documents
+The document schemas should be in the Aila package, and move out of protocol.

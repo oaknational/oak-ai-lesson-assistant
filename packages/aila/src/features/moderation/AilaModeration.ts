@@ -74,7 +74,7 @@ export class AilaModeration implements AilaModerationFeature {
       categories: moderationResult.categories,
       scores: moderationResult.scores,
       justification: moderationResult.justification,
-      lesson: content,
+      content,
     });
 
     return moderation;
