@@ -12,6 +12,7 @@ import {
   PosthogAnalyticsAdapter,
 } from "@oakai/aila/src/features/analytics";
 import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
+import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetection";
 import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/helicone/HeliconeThreatDetector";
 import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
@@ -178,30 +179,59 @@ function isValidLessonPlan(lessonPlan: unknown): boolean {
   return lessonPlan !== null && typeof lessonPlan === "object";
 }
 
-function parseLessonPlanFromOutput(output: unknown): LooseLessonPlan {
-  if (!output) return {};
+function hasMessages(obj: unknown): obj is { messages: unknown } {
+  return obj !== null && typeof obj === "object" && "messages" in obj;
+}
+
+function isValidMessages(messages: unknown): boolean {
+  return Array.isArray(messages);
+}
+
+function verifyChatOwnership(
+  chat: { userId: string },
+  requestUserId: string,
+  chatId: string,
+): void {
+  if (chat.userId !== requestUserId) {
+    log.error(
+      `User ${requestUserId} attempted to access chat ${chatId} which belongs to ${chat.userId}`,
+    );
+    throw new Error("Unauthorized access to chat");
+  }
+}
+
+function parseChatOutput(
+  output: unknown,
+  chatId: string,
+): { messages: Message[]; lessonPlan: LooseLessonPlan } {
+  let messages: Message[] = [];
+  let lessonPlan: LooseLessonPlan = {};
 
   try {
     const parsedOutput =
       typeof output === "string" ? JSON.parse(output) : output;
 
+    if (hasMessages(parsedOutput) && isValidMessages(parsedOutput.messages)) {
+      messages = parsedOutput.messages as Message[];
+    }
+
     if (
       hasLessonPlan(parsedOutput) &&
       isValidLessonPlan(parsedOutput.lessonPlan)
     ) {
-      return parsedOutput.lessonPlan as LooseLessonPlan;
+      lessonPlan = parsedOutput.lessonPlan as LooseLessonPlan;
     }
   } catch (error) {
-    log.error("Error parsing output to extract lesson plan", error);
+    log.error(`Error parsing output for chat ${chatId}`, error);
   }
 
-  return {};
+  return { messages, lessonPlan };
 }
 
-async function loadLessonPlanFromDatabase(
+async function loadChatDataFromDatabase(
   chatId: string,
   userId: string,
-): Promise<LooseLessonPlan> {
+): Promise<{ messages: Message[]; lessonPlan: LooseLessonPlan }> {
   try {
     const chat = await prisma.appSession.findUnique({
       where: { id: chatId },
@@ -214,23 +244,109 @@ async function loadLessonPlanFromDatabase(
 
     if (!chat) {
       log.info(`No existing chat found for id: ${chatId}`);
-      return {};
+      return { messages: [], lessonPlan: {} };
     }
 
-    if (chat.userId !== userId) {
-      log.error(
-        `User ${userId} attempted to access chat ${chatId} which belongs to ${chat.userId}`,
-      );
-      throw new Error("Unauthorized access to chat");
-    }
+    verifyChatOwnership(chat, userId, chatId);
 
-    const lessonPlan = parseLessonPlanFromOutput(chat.output);
-    log.info(`Loaded lesson plan for chat ${chatId}`);
-    return lessonPlan;
+    const { messages, lessonPlan } = parseChatOutput(chat.output, chatId);
+
+    log.info(
+      `Loaded ${messages.length} messages and lesson plan for chat ${chatId}`,
+    );
+    return { messages, lessonPlan };
   } catch (error) {
-    log.error(`Error loading lesson plan for chat ${chatId}`, error);
-    return {};
+    log.error(`Error loading chat data for chat ${chatId}`, error);
+    return { messages: [], lessonPlan: {} };
   }
+}
+
+// Extract the latest user message from frontend messages
+function extractLatestUserMessage(frontendMessages: Message[]): Message | null {
+  if (!frontendMessages || frontendMessages.length === 0) {
+    return null;
+  }
+
+  // Find the last user message
+  for (let i = frontendMessages.length - 1; i >= 0; i--) {
+    const message = frontendMessages[i];
+    if (message && message.role === "user") {
+      return message;
+    }
+  }
+
+  return null;
+}
+
+function prepareMessages(
+  dbMessages: Message[],
+  frontendMessages: Message[],
+  chatId: string,
+): Message[] {
+  const latestUserMessage = extractLatestUserMessage(frontendMessages);
+
+  let messages = [...dbMessages];
+  if (
+    latestUserMessage &&
+    !messages.some((m) => m.id === latestUserMessage.id)
+  ) {
+    messages.push(latestUserMessage);
+    log.info(`Appended new user message to history for chat ${chatId}`);
+  }
+
+  return messages;
+}
+
+// Helper function to create Aila instance
+async function createAilaInstance({
+  config,
+  options,
+  chatId,
+  userId,
+  messages,
+  lessonPlan,
+  llmService,
+  moderationAiClient,
+  threatDetectors,
+}: {
+  config: Config;
+  options: AilaOptions;
+  chatId: string;
+  userId: string | undefined;
+  messages: Message[];
+  lessonPlan: LooseLessonPlan;
+  llmService: ReturnType<typeof getFixtureLLMService>;
+  moderationAiClient: ReturnType<typeof getFixtureModerationOpenAiClient>;
+  threatDetectors: AilaThreatDetector[];
+}): Promise<Aila> {
+  return await withTelemetry(
+    "chat-create-aila",
+    { chat_id: chatId, user_id: userId },
+    async (): Promise<Aila> => {
+      const ailaOptions: Partial<AilaInitializationOptions> = {
+        options,
+        chat: {
+          id: chatId,
+          userId,
+          messages,
+        },
+        services: {
+          chatLlmService: llmService,
+          moderationAiClient,
+          ragService: (aila: AilaServices) => new AilaRag({ aila }),
+          americanismsService: () => new AilaAmericanisms(),
+          analyticsAdapters: (aila: AilaServices) => [
+            new PosthogAnalyticsAdapter(aila),
+            new DatadogAnalyticsAdapter(aila),
+          ],
+          threatDetectors: () => threatDetectors,
+        },
+        lessonPlan: lessonPlan ?? {},
+      };
+      const result = await config.createAila(ailaOptions);
+      return result;
+    },
+  );
 }
 
 export async function handleChatPostRequest(
@@ -240,7 +356,7 @@ export async function handleChatPostRequest(
   return await withTelemetry("chat-api", {}, async (span: TracingSpan) => {
     const {
       chatId,
-      messages,
+      messages: frontendMessages,
       options,
       llmService,
       moderationAiClient,
@@ -254,7 +370,12 @@ export async function handleChatPostRequest(
       userId = await fetchAndCheckUser(chatId);
       span.setTag("user_id", userId);
 
-      const dbLessonPlan = await loadLessonPlanFromDatabase(chatId, userId);
+      // Load both message history and lesson plan from database
+      const { messages: dbMessages, lessonPlan: dbLessonPlan } =
+        await loadChatDataFromDatabase(chatId, userId);
+
+      // Prepare messages by combining database messages with the latest user message
+      const messages = prepareMessages(dbMessages, frontendMessages, chatId);
 
       setTelemetryMetadata({
         span,
@@ -264,34 +385,19 @@ export async function handleChatPostRequest(
         options,
       });
 
-      aila = await withTelemetry(
-        "chat-create-aila",
-        { chat_id: chatId, user_id: userId },
-        async (): Promise<Aila> => {
-          const ailaOptions: Partial<AilaInitializationOptions> = {
-            options,
-            chat: {
-              id: chatId,
-              userId,
-              messages,
-            },
-            services: {
-              chatLlmService: llmService,
-              moderationAiClient,
-              ragService: (aila: AilaServices) => new AilaRag({ aila }),
-              americanismsService: () => new AilaAmericanisms(),
-              analyticsAdapters: (aila: AilaServices) => [
-                new PosthogAnalyticsAdapter(aila),
-                new DatadogAnalyticsAdapter(aila),
-              ],
-              threatDetectors: () => threatDetectors,
-            },
-            lessonPlan: dbLessonPlan ?? {},
-          };
-          const result = await config.createAila(ailaOptions);
-          return result;
-        },
-      );
+      // Create Aila instance
+      aila = await createAilaInstance({
+        config,
+        options,
+        chatId,
+        userId,
+        messages,
+        lessonPlan: dbLessonPlan,
+        llmService,
+        moderationAiClient,
+        threatDetectors,
+      });
+
       invariant(aila, "Aila instance is required");
 
       const abortController = handleConnectionAborted(req);
