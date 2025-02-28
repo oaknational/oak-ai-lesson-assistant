@@ -78,7 +78,7 @@ export class Aila implements AilaServices {
 
     this._document = new AilaDocument({
       aila: this,
-      lessonPlan: options.lessonPlan ?? {},
+      content: options.document?.content ?? {},
       categoriser:
         options.services?.chatCategoriser ??
         new AilaCategorisation({
@@ -141,9 +141,9 @@ export class Aila implements AilaServices {
     await this.loadChatIfPersisting();
     const persistedLessonPlan = this._chat.persistedChat?.lessonPlan;
     if (persistedLessonPlan) {
-      this._document.setPlan(persistedLessonPlan);
+      this._document.setContent(persistedLessonPlan);
     }
-    await this._document.setUpInitialLessonPlan(this._chat.messages);
+    await this._document.initialiseContentFromMessages(this._chat.messages);
 
     this._initialised = true;
   }
@@ -186,7 +186,7 @@ export class Aila implements AilaServices {
 
   // #TODO we should not need this
   public get lessonPlan() {
-    return this._document.plan;
+    return this._document.content;
   }
 
   public get snapshotStore() {

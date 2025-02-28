@@ -13,10 +13,10 @@ import invariant from "tiny-invariant";
 
 import type { AilaServices } from "../../core/AilaServices";
 import type { Message } from "../../core/chat";
+import type { AilaDocumentContent } from "../../core/document/types";
 import type { AilaPluginContext } from "../../core/plugins/types";
 import { getLastAssistantMessage } from "../../helpers/chat/getLastAssistantMessage";
 import type { ModerationDocument } from "../../protocol/jsonPatchProtocol";
-import type { LooseLessonPlan } from "../../protocol/schema";
 import type { AilaModerationFeature } from "../types";
 import type { AilaModerator } from "./moderators";
 import { OpenAiModerator } from "./moderators/OpenAiModerator";
@@ -60,7 +60,7 @@ export class AilaModeration implements AilaModerationFeature {
   public async persistModerationResult(
     moderationResult: ModerationResult,
     lastAssistantMessage: Message,
-    lessonPlan: LooseLessonPlan,
+    content: AilaDocumentContent,
   ) {
     const userId = this._aila.userId;
     const chatId = this._aila.chatId;
@@ -74,18 +74,18 @@ export class AilaModeration implements AilaModerationFeature {
       categories: moderationResult.categories,
       scores: moderationResult.scores,
       justification: moderationResult.justification,
-      lesson: lessonPlan,
+      lesson: content,
     });
 
     return moderation;
   }
 
   public async moderate({
-    lessonPlan,
+    content,
     messages,
     pluginContext,
   }: {
-    lessonPlan: LooseLessonPlan;
+    content: AilaDocumentContent;
     messages: Message[];
     pluginContext: AilaPluginContext;
   }) {
@@ -107,7 +107,7 @@ export class AilaModeration implements AilaModerationFeature {
 
     const moderationResult: ModerationResult = await this.performModeration({
       messages,
-      lessonPlan,
+      content,
       retries: 3,
     });
 
@@ -115,7 +115,7 @@ export class AilaModeration implements AilaModerationFeature {
       const moderation = await this.persistModerationResult(
         moderationResult,
         lastAssistantMessage,
-        lessonPlan,
+        content,
       );
       this.reportModerationToAnalytics(moderationResult, moderation);
 
@@ -175,11 +175,11 @@ export class AilaModeration implements AilaModerationFeature {
 
   public async performModeration({
     messages,
-    lessonPlan,
+    content,
     retries = 0,
   }: {
     messages: Message[];
-    lessonPlan: LooseLessonPlan;
+    content: AilaDocumentContent;
     retries?: number;
   }): Promise<ModerationResult> {
     log.info("Performing moderation");
@@ -190,20 +190,19 @@ export class AilaModeration implements AilaModerationFeature {
     } else {
       log.info("No mocked response found. Continuing to moderate");
     }
-    const response = await this._moderator.moderate(JSON.stringify(lessonPlan));
+    const response = await this._moderator.moderate(JSON.stringify(content));
     return (
-      response ??
-      (await this.retryModeration({ messages, lessonPlan, retries }))
+      response ?? (await this.retryModeration({ messages, content, retries }))
     );
   }
 
   public async retryModeration({
     messages,
-    lessonPlan,
+    content,
     retries,
   }: {
     messages: Message[];
-    lessonPlan: LooseLessonPlan;
+    content: AilaDocumentContent;
     retries: number;
   }): Promise<ModerationResult> {
     if (retries < 1) {
@@ -220,7 +219,7 @@ export class AilaModeration implements AilaModerationFeature {
 
     return this.performModeration({
       messages,
-      lessonPlan,
+      content,
       retries: retries - 1,
     });
   }

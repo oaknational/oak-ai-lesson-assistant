@@ -214,7 +214,9 @@ export async function handleChatPostRequest(
               threatDetectors: () => threatDetectors,
             },
 
-            lessonPlan: lessonPlan ?? {},
+            document: {
+              content: lessonPlan ?? {},
+            },
           };
           const result = await config.createAila(ailaOptions);
           return result;
