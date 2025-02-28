@@ -295,7 +295,6 @@ function prepareMessages(
   return messages;
 }
 
-// Helper function to create Aila instance
 async function createAilaInstance({
   config,
   options,
@@ -368,11 +367,9 @@ export async function handleChatPostRequest(
       userId = await fetchAndCheckUser(chatId);
       span.setTag("user_id", userId);
 
-      // Load both message history and lesson plan from database
       const { messages: dbMessages, lessonPlan: dbLessonPlan } =
         await loadChatDataFromDatabase(chatId, userId);
 
-      // Prepare messages by combining database messages with the latest user message
       const messages = prepareMessages(dbMessages, frontendMessages, chatId);
 
       setTelemetryMetadata({
@@ -383,7 +380,6 @@ export async function handleChatPostRequest(
         options,
       });
 
-      // Create Aila instance
       aila = await createAilaInstance({
         config,
         options,
