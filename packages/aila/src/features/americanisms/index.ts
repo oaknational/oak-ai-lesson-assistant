@@ -1,4 +1,3 @@
-import type { LooseLessonPlan } from "../../protocol/schema";
 import type { AilaDocumentContent } from "./AilaAmericanisms";
 
 export type AmericanismIssueBySection = {
