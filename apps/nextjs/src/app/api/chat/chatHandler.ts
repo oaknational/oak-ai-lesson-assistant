@@ -261,13 +261,11 @@ async function loadChatDataFromDatabase(
   }
 }
 
-// Extract the latest user message from frontend messages
 function extractLatestUserMessage(frontendMessages: Message[]): Message | null {
   if (!frontendMessages || frontendMessages.length === 0) {
     return null;
   }
 
-  // Find the last user message
   for (let i = frontendMessages.length - 1; i >= 0; i--) {
     const message = frontendMessages[i];
     if (message && message.role === "user") {
