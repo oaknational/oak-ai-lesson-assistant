@@ -1,4 +1,5 @@
 import type { LooseLessonPlan } from "../../protocol/schema";
+import type { AilaDocumentContent } from "./AilaAmericanisms";
 
 export type AmericanismIssueBySection = {
   section: string;
@@ -12,5 +13,7 @@ export type AmericanismIssue = {
 };
 
 export interface AilaAmericanismsFeature {
-  findAmericanisms(lessonPlan: LooseLessonPlan): AmericanismIssueBySection[];
+  findAmericanisms<T extends AilaDocumentContent>(
+    document: T,
+  ): AmericanismIssueBySection[];
 }

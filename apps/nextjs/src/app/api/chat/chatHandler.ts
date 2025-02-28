@@ -206,7 +206,8 @@ export async function handleChatPostRequest(
               chatLlmService: llmService,
               moderationAiClient,
               ragService: (aila: AilaServices) => new AilaRag({ aila }),
-              americanismsService: () => new AilaAmericanisms(),
+              americanismsService: () =>
+                new AilaAmericanisms<LooseLessonPlan>(),
               analyticsAdapters: (aila: AilaServices) => [
                 new PosthogAnalyticsAdapter(aila),
                 new DatadogAnalyticsAdapter(aila),
