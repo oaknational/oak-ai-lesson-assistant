@@ -24,7 +24,7 @@
     "doppler:pull:stg": "doppler secrets download --config stg --no-file --format env > .env",
     "doppler:run:stg": "doppler run -c stg --silent",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "lint": "turbo lint --pass-with-no-tests",
+    "lint": "turbo lint",
     "lint:file": "eslint",
     "lint:fix": "pnpm lint -- --fix",
     "lint:debug": "pnpm lint -- --debug",
