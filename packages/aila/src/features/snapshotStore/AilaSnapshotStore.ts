@@ -5,7 +5,7 @@ import type { LessonSnapshotTrigger } from "@prisma/client";
 import invariant from "tiny-invariant";
 
 import type { AilaServices } from "../../core/AilaServices";
-import type { LooseLessonPlan } from "../../protocol/schema";
+import type { AilaDocumentContent } from "../../core/document/types";
 
 export class AilaSnapshotStore {
   protected _name: string;
@@ -32,11 +32,11 @@ export class AilaSnapshotStore {
 
   public async saveSnapshot({
     messageId,
-    lessonPlan,
+    content,
     trigger,
   }: {
     messageId: string;
-    lessonPlan: LooseLessonPlan;
+    content: AilaDocumentContent;
     trigger: LessonSnapshotTrigger;
   }) {
     invariant(this._aila.userId, "userId is required for saving snapshots");
@@ -45,7 +45,7 @@ export class AilaSnapshotStore {
     await lessonSnapshots.create({
       userId: this._aila.userId,
       chatId: this._aila.chatId,
-      snapshot: lessonPlan,
+      snapshot: content,
       messageId,
       trigger,
     });

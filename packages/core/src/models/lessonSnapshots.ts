@@ -5,13 +5,13 @@ import type {
 } from "@oakai/db";
 import crypto from "crypto";
 
-import type { LooseLessonPlan } from "../../../aila/src/protocol/schema";
+import type { AilaDocumentContent } from "../../../aila/src/core/document/types";
 import { LessonPlanJsonSchema } from "../../../aila/src/protocol/schema";
 // #TODO this import is reaching out of the package because it would otherwise be a circular dependency
 import type { DeepNullable } from "../utils/DeepNullable";
 import type { DeepPartial } from "../utils/DeepPartial";
 
-export type Snapshot = DeepPartial<DeepNullable<LooseLessonPlan>>;
+export type Snapshot = DeepPartial<DeepNullable<AilaDocumentContent>>;
 const JsonSchemaString = JSON.stringify(LessonPlanJsonSchema);
 
 const LESSON_JSON_SCHEMA_HASH = crypto

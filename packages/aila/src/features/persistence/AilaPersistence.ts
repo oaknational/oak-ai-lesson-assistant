@@ -53,7 +53,7 @@ export abstract class AilaPersistence {
       title = "",
       keyStage = "",
       topic = "",
-    } = document.plan;
+    } = document.content;
 
     return {
       id,
@@ -67,7 +67,7 @@ export abstract class AilaPersistence {
       iteration: iteration ? iteration + 1 : 1,
       isShared,
       path: `/aila/${id}`,
-      lessonPlan: document.plan,
+      lessonPlan: document.content,
       relevantLessons,
       messages: messages.filter((m) => ["assistant", "user"].includes(m.role)),
       options,

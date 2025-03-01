@@ -1,16 +1,19 @@
-import type { LooseLessonPlan } from "../../../protocol/schema";
+import type { AilaDocumentContent } from "../../../core/document/types";
 import type { AilaCategorisationFeature } from "../../types";
 
 export class MockCategoriser implements AilaCategorisationFeature {
-  private readonly _mockedLessonPlan: LooseLessonPlan | undefined;
+  private readonly _mockedContent: AilaDocumentContent | undefined;
   constructor({
-    mockedLessonPlan,
+    mockedContent,
   }: {
-    mockedLessonPlan: LooseLessonPlan | undefined;
+    mockedContent: AilaDocumentContent | undefined;
   }) {
-    this._mockedLessonPlan = mockedLessonPlan;
+    this._mockedContent = mockedContent;
   }
-  public async categorise(): Promise<LooseLessonPlan | undefined> {
-    return Promise.resolve(this._mockedLessonPlan);
+  public async categorise<T extends AilaDocumentContent>(): Promise<
+    T | undefined
+  > {
+    // Cast is  because we're returning a predefined value
+    return Promise.resolve(this._mockedContent as T | undefined);
   }
 }

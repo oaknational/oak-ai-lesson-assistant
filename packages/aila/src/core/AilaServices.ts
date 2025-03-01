@@ -30,13 +30,13 @@ export interface AilaAnalyticsService {
 }
 
 export interface AilaDocumentService {
-  readonly plan: LooseLessonPlan;
-  readonly hasSetInitialState: boolean;
-  setPlan(plan: LooseLessonPlan): void;
+  readonly content: LooseLessonPlan;
+  readonly hasInitialisedContentFromMessages: boolean;
+  setContent(content: LooseLessonPlan): void;
   extractAndApplyLlmPatches(patches: string): void;
   applyValidPatches(validPatches: ValidPatchDocument[]): void;
-  initialise(plan: LooseLessonPlan): void;
-  setUpInitialLessonPlan(messages: Message[]): Promise<void>;
+  initialise(content: LooseLessonPlan): void;
+  initialiseContentFromMessages(messages: Message[]): Promise<void>;
 }
 
 export interface AilaChatService {

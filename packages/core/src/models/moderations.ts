@@ -36,7 +36,7 @@ export class Moderations {
     categories,
     scores,
     justification,
-    lesson,
+    content,
   }: {
     userId: string;
     appSessionId: string;
@@ -44,14 +44,14 @@ export class Moderations {
     categories: ModerationResult["categories"];
     scores: ModerationResult["scores"];
     justification?: string;
-    lesson: Snapshot;
+    content: Snapshot;
   }): Promise<Moderation> {
     const { id: lessonSnapshotId } =
       await this.lessonSnapshots.getOrSaveSnapshot({
         userId,
         chatId: appSessionId,
         messageId,
-        snapshot: lesson,
+        snapshot: content,
         trigger: "MODERATION",
       });
 
