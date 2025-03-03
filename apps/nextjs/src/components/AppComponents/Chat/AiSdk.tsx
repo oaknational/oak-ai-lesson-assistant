@@ -45,7 +45,6 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
   const [hasFinished, setHasFinished] = useState(true);
 
   const initialMessages = useChatStore((state) => state.initialMessages);
-  const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
   const streamingFinished = useChatStore((state) => state.streamingFinished);
   const scrollToBottom = useChatStore((state) => state.scrollToBottom);
   const messageStarted = useLessonPlanStore((state) => state.messageStarted);
