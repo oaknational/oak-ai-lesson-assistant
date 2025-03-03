@@ -1,7 +1,7 @@
 "use server";
 
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
-import { chatSchema } from "@oakai/aila/src/protocol/schema";
+import { AilaPersistedChatSchema } from "@oakai/aila/src/protocol/schema";
 import type { Prisma } from "@oakai/db";
 import { prisma } from "@oakai/db";
 import * as Sentry from "@sentry/nextjs";
@@ -18,7 +18,7 @@ function parseChatAndReportError({
   if (typeof sessionOutput !== "object") {
     throw new Error("sessionOutput is not an object");
   }
-  const parseResult = chatSchema.safeParse({
+  const parseResult = AilaPersistedChatSchema.safeParse({
     ...sessionOutput,
     userId,
     id,

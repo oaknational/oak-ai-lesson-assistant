@@ -4,7 +4,7 @@ import { TRPCError } from "@trpc/server";
 import { isTruthy } from "remeda";
 import { z } from "zod";
 
-import { chatSchema } from "../../../aila/src/protocol/schema";
+import { AilaPersistedChatSchema } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 
@@ -17,7 +17,7 @@ function parseChatAndReportError({
   chat: unknown;
   id: string;
 }) {
-  const parseResult = chatSchema.safeParse(chat);
+  const parseResult = AilaPersistedChatSchema.safeParse(chat);
 
   if (!parseResult.success) {
     const error = new Error(`${caller} :: Failed to parse chat`);
