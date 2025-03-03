@@ -279,14 +279,18 @@ export async function handleChatPostRequest(
               chatLlmService: llmService,
               moderationAiClient,
               ragService: (aila: AilaServices) => new AilaRag({ aila }),
-              americanismsService: () => new AilaAmericanisms(),
+              americanismsService: () =>
+                new AilaAmericanisms<LooseLessonPlan>(),
               analyticsAdapters: (aila: AilaServices) => [
                 new PosthogAnalyticsAdapter(aila),
                 new DatadogAnalyticsAdapter(aila),
               ],
               threatDetectors: () => threatDetectors,
             },
-            lessonPlan: dbLessonPlan ?? {},
+
+            document: {
+              content: dbLessonPlan ?? {},
+            },
           };
           const result = await config.createAila(ailaOptions);
           return result;

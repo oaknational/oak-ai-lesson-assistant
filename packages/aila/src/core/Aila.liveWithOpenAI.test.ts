@@ -13,7 +13,7 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
 
     beforeEach(() => {
       ailaInstance = new Aila({
-        lessonPlan: {},
+        document: { content: {} },
         chat: { id: "test-chat", userId: "test-user" },
         options: {
           usePersistence: false,
@@ -24,7 +24,7 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
         plugins: [],
         services: {
           chatCategoriser: new MockCategoriser({
-            mockedLessonPlan: {
+            mockedContent: {
               keyStage: "specialist",
               subject: "design-technology",
               title: "Motorcycle Maintenance",
@@ -58,7 +58,7 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
       const _thirdParsedMessage = checkLastMessage(ailaInstance);
 
       // Check that the title is set appropriately
-      expect(ailaInstance.document.plan.title).toBeDefined();
+      expect(ailaInstance.document.content.title).toBeDefined();
     }, 30000);
   },
 );
@@ -70,7 +70,7 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
 
     beforeEach(() => {
       const options: AilaInitializationOptions = {
-        lessonPlan: {},
+        document: { content: {} },
         chat: { id: "test-chat", userId: "test-user" },
         options: {
           usePersistence: false,
@@ -83,7 +83,7 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
         plugins: [],
         services: {
           chatCategoriser: new MockCategoriser({
-            mockedLessonPlan: {
+            mockedContent: {
               keyStage: "key-stage-3",
               subject: "geography",
               title: "Glaciation",
@@ -117,8 +117,8 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
       );
       expectPatch(secondParsedMessage, "replace", "/title");
 
-      expect(ailaInstance.document.plan.title).toBeDefined();
-      expect(ailaInstance.document.plan.title?.toLowerCase()).toContain(
+      expect(ailaInstance.document.content.title).toBeDefined();
+      expect(ailaInstance.document.content.title?.toLowerCase()).toContain(
         "glaciation",
       );
     }, 30000);
