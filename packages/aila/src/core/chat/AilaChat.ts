@@ -207,7 +207,7 @@ export class AilaChat implements AilaChatService {
     const systemMessage = this.systemMessage();
     const applicableMessages: Message[] = [systemMessage, ...reducedMessages]; // only send
 
-    if (this._aila?.document.hasSetInitialState) {
+    if (this._aila?.document.hasInitialisedContentFromMessages) {
       applicableMessages.push({
         id: generateMessageId({ role: "user" }),
         role: "user",
@@ -223,9 +223,9 @@ export class AilaChat implements AilaChatService {
   // generation of lessons rather than being applicable to all
   // chats so that we can generate different types of document
   async handleSettingInitialState() {
-    if (this._aila.document.hasSetInitialState) {
+    if (this._aila.document.hasInitialisedContentFromMessages) {
       // #TODO sending these events in a different place to where they are set seems like a bad idea
-      const plan = this._aila.document.plan;
+      const plan = this._aila.document.content;
       const keys = Object.keys(plan) as Array<keyof typeof plan>;
       for (const key of keys) {
         const value = plan[key];
@@ -237,7 +237,7 @@ export class AilaChat implements AilaChatService {
   }
 
   private warningAboutSubject() {
-    const { subject } = this._aila.document.plan;
+    const { subject } = this._aila.document.content;
     if (!subject || this.messages.length > 2) {
       return;
     }
@@ -408,7 +408,7 @@ export class AilaChat implements AilaChatService {
     await this.reportUsageMetrics();
     await fetchExperimentalPatches({
       fullQuizService: this.fullQuizService,
-      lessonPlan: this._aila.document.plan,
+      lessonPlan: this._aila.document.content,
       llmPatches: extractPatches(this.accumulatedText()).validPatches,
       handlePatch: async (patch) => {
         await this.enqueue(patch);
@@ -433,7 +433,7 @@ export class AilaChat implements AilaChatService {
   public async saveSnapshot({ messageId }: { messageId: string }) {
     await this._aila.snapshotStore.saveSnapshot({
       messageId,
-      lessonPlan: this._aila.document.plan,
+      content: this._aila.document.content,
       trigger: "ASSISTANT_MESSAGE",
     });
   }
@@ -458,7 +458,7 @@ export class AilaChat implements AilaChatService {
         value: "MODERATING",
       });
       const message = await this._aila.moderation.moderate({
-        lessonPlan: this._aila.document.plan,
+        content: this._aila.document.content,
         messages: this._aila.messages,
         pluginContext: {
           aila: this._aila,

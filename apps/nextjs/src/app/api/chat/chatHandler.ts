@@ -338,7 +338,9 @@ async function createAilaInstance({
           ],
           threatDetectors: () => threatDetectors,
         },
-        lessonPlan: lessonPlan ?? {},
+        document: {
+          content: lessonPlan ?? {},
+        },
       };
       const result = await config.createAila(ailaOptions);
       return result;
@@ -391,7 +393,6 @@ export async function handleChatPostRequest(
         moderationAiClient,
         threatDetectors,
       });
-
       invariant(aila, "Aila instance is required");
 
       const abortController = handleConnectionAborted(req);
