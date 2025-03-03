@@ -25,7 +25,7 @@ describe("Chat API Route", () => {
     jest.clearAllMocks();
 
     mockChatCategoriser = new MockCategoriser({
-      mockedLessonPlan: {
+      mockedContent: {
         title: "Glaciation",
         topic: "The Landscapes of the UK",
         subject: "geography",

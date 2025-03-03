@@ -2,7 +2,6 @@ import invariant from "tiny-invariant";
 
 import type { GetStore } from "@/stores/AilaStoresProvider";
 
-import type { AilaStreamingStatus } from "..";
 import { calculateStreamingStatus } from "../actions/calculateStreamingStatus";
 import { getNextStableMessages, parseStreamingMessage } from "../parsing";
 import type { ChatSetter, ChatGetter, AiMessage } from "../types";

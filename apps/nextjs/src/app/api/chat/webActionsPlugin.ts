@@ -28,10 +28,12 @@ export const createWebActionsPlugin: PluginCreator = (
       // #TODO change this to handleThreatDetectionError and move
       // the logic elsewhere. Stop passing Prisma
       const threatError = await handleThreatDetectionError(
-        aila.userId ?? "anonymous", // This should never be "anonymous" because we would get an authentication error
-        aila.chatId ?? "unknown",
-        error,
-        prisma,
+        {
+          userId: aila.userId ?? "anonymous", // This should never be "anonymous" because we would get an authentication error
+          chatId: aila.chatId ?? "unknown",
+          error,
+          prisma,
+        },
         SafetyViolations,
       );
       await enqueue(threatError);

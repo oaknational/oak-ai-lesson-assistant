@@ -1,6 +1,8 @@
 import { ElasticLessonQuizLookup } from "./LessonSlugQuizMapping";
 
-describe("ElasticLessonQuizLookup", () => {
+const shouldSkipTests = process.env.TEST_QUIZZES === "false";
+
+(shouldSkipTests ? describe.skip : describe)("ElasticLessonQuizLookup", () => {
   let dbLookup: ElasticLessonQuizLookup;
 
   beforeEach(() => {

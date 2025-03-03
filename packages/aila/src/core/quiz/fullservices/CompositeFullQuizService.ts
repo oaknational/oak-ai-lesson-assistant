@@ -1,6 +1,6 @@
 import type { z } from "zod";
 
-import type { BaseSchema, BaseType } from "../ChoiceModels";
+import type { BaseType } from "../ChoiceModels";
 import type {
   AilaQuizGeneratorService,
   AilaQuizReranker,

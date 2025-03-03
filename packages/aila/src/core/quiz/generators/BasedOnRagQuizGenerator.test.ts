@@ -7,7 +7,9 @@ import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 
 const log = aiLogger("aila");
 
-describe("BasedOnRagQuizGenerator", () => {
+const shouldSkipTests = process.env.TEST_QUIZZES === "false";
+
+(shouldSkipTests ? describe.skip : describe)("BasedOnRagQuizGenerator", () => {
   let quizGenerator: BasedOnRagQuizGenerator;
   let mockLessonPlan: LooseLessonPlan;
 

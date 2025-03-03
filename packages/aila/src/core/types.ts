@@ -17,6 +17,7 @@ import type {
 import type { LooseLessonPlan } from "../protocol/schema";
 import type { AilaServices } from "./AilaServices";
 import type { Message } from "./chat";
+import type { AilaDocumentContent } from "./document/types";
 import type { LLMService } from "./llm/LLMService";
 import type { AilaPlugin } from "./plugins/types";
 import type { AilaPromptBuilder } from "./prompt/AilaPromptBuilder";
@@ -60,7 +61,9 @@ export type AilaChatInitializationOptions = {
 };
 
 export type AilaInitializationOptions = {
-  lessonPlan?: LooseLessonPlan;
+  document?: {
+    content: AilaDocumentContent;
+  };
   chat: Omit<AilaChatInitializationOptions, "llmService">;
   options?: AilaOptions;
   prisma?: PrismaClientWithAccelerate;

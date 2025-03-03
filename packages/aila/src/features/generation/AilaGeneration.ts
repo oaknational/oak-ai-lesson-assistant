@@ -155,7 +155,7 @@ export class AilaGeneration {
     const appSlug = "lesson-planner";
     const promptSlug = "generate-lesson-plan";
     const responseMode = "interactive";
-    const basedOn = !!this._aila.lesson.plan.basedOn;
+    const basedOn = !!this._aila.document.content.basedOn;
     const useRag = this._aila.options.useRag ?? true;
 
     const variantSlug = generateAilaPromptVersionVariantSlug(

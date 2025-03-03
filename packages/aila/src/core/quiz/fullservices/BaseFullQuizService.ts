@@ -6,7 +6,7 @@ import type {
   LooseLessonPlan,
   QuizQuestion,
 } from "../../../protocol/schema";
-import type { BaseSchema, BaseType } from "../ChoiceModels";
+import type { BaseType } from "../ChoiceModels";
 import type {
   AilaQuizGeneratorService,
   AilaQuizReranker,
