@@ -45,21 +45,23 @@ export const createChatStore = (
       append: () => Promise.resolve(""),
     },
 
-    // Setters
-    setAiSdkActions: (aiSdkActions) => set({ aiSdkActions }),
-    setLessonPlan: (lessonPlan) => set({ lessonPlan }),
-    setInput: (input) => set({ input }),
-    setChatAreaRef: (ref) => set({ chatAreaRef: ref }),
+    actions: {
+      // Setters
+      setAiSdkActions: (aiSdkActions) => set({ aiSdkActions }),
+      setLessonPlan: (lessonPlan) => set({ lessonPlan }),
+      setInput: (input) => set({ input }),
+      setChatAreaRef: (ref) => set({ chatAreaRef: ref }),
 
-    // Action functions
-    executeQueuedAction: handleExecuteQueuedAction(set, get),
-    append: handleAppend(set, get),
-    stop: handleStop(set, get),
-    setMessages: handleSetMessages(getStore, set, get),
-    streamingFinished: handleStreamingFinished(set, get),
-    scrollToBottom: handleScrollToBottom(set, get),
-    fetchInitialMessages: handleFetchInitialMessages(set, get, trpcUtils),
-    ailaStreamingStatusUpdated: handleAilaStreamingStatusUpdated(set, get),
+      // Action functions
+      executeQueuedAction: handleExecuteQueuedAction(set, get),
+      append: handleAppend(set, get),
+      stop: handleStop(set, get),
+      setMessages: handleSetMessages(getStore, set, get),
+      streamingFinished: handleStreamingFinished(set, get),
+      scrollToBottom: handleScrollToBottom(set, get),
+      fetchInitialMessages: handleFetchInitialMessages(set, get, trpcUtils),
+      ailaStreamingStatusUpdated: handleAilaStreamingStatusUpdated(set, get),
+    },
 
     ...initialValues,
   }));
