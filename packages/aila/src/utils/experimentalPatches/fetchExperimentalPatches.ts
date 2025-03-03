@@ -92,10 +92,10 @@ export async function fetchExperimentalPatches({
         "/starterQuiz",
         lessonPlan,
       );
-      if (mathsStarterQuiz.length === 0) {
-        log.info("No starter quiz found. Creating placeholder starter quiz.");
-        mathsStarterQuiz = placeholderQuiz;
-      }
+      // if (mathsStarterQuiz.length === 0) {
+      //   log.info("No starter quiz found. Creating placeholder starter quiz.");
+      //   mathsStarterQuiz = placeholderQuiz;
+      // }
       // if the starter quiz contains the text placeholder_quiz_question then we make it into a placeholder quiz.
       if (
         mathsStarterQuiz.some((q) =>
@@ -134,10 +134,10 @@ export async function fetchExperimentalPatches({
         "/exitQuiz",
         lessonPlan,
       );
-      if (mathsExitQuiz.length === 0) {
-        log.info("No exit quiz found. Creating placeholder exit quiz.");
-        mathsExitQuiz = placeholderQuiz;
-      }
+      // if (mathsExitQuiz.length === 0) {
+      //   log.info("No exit quiz found. Creating placeholder exit quiz.");
+      //   mathsExitQuiz = placeholderQuiz;
+      // }
       // if the exit quiz contains the text placeholder_quiz_question then we make it into a placeholder quiz.
       if (
         mathsExitQuiz.some((q) =>
