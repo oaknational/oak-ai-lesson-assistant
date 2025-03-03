@@ -21,6 +21,7 @@ import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
+import { captureException } from "@sentry/nextjs";
 import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
 
@@ -223,6 +224,11 @@ function parseChatOutput(
     }
   } catch (error) {
     log.error(`Error parsing output for chat ${chatId}`, error);
+    // Report to Sentry
+    captureException(error, {
+      extra: { chatId, output },
+      tags: { context: "parseChatOutput" },
+    });
   }
 
   return { messages, lessonPlan };
@@ -257,23 +263,17 @@ async function loadChatDataFromDatabase(
     return { messages, lessonPlan };
   } catch (error) {
     log.error(`Error loading chat data for chat ${chatId}`, error);
-    return { messages: [], lessonPlan: {} };
+    // Report to Sentry
+    captureException(error, {
+      extra: { chatId, userId },
+      tags: { context: "loadChatDataFromDatabase" },
+    });
+    throw error; // Re-throw after logging to Sentry
   }
 }
 
 function extractLatestUserMessage(frontendMessages: Message[]): Message | null {
-  if (!frontendMessages || frontendMessages.length === 0) {
-    return null;
-  }
-
-  for (let i = frontendMessages.length - 1; i >= 0; i--) {
-    const message = frontendMessages[i];
-    if (message && message.role === "user") {
-      return message;
-    }
-  }
-
-  return null;
+  return (frontendMessages ?? []).findLast((m) => m?.role === "user") ?? null;
 }
 
 function prepareMessages(
@@ -295,6 +295,18 @@ function prepareMessages(
   return messages;
 }
 
+type CreateAilaInstanceArguments = {
+  config: Config;
+  options: AilaOptions;
+  chatId: string;
+  userId: string | undefined;
+  messages: Message[];
+  lessonPlan: LooseLessonPlan;
+  llmService: ReturnType<typeof getFixtureLLMService>;
+  moderationAiClient: ReturnType<typeof getFixtureModerationOpenAiClient>;
+  threatDetectors: AilaThreatDetector[];
+};
+
 async function createAilaInstance({
   config,
   options,
@@ -305,17 +317,7 @@ async function createAilaInstance({
   llmService,
   moderationAiClient,
   threatDetectors,
-}: {
-  config: Config;
-  options: AilaOptions;
-  chatId: string;
-  userId: string | undefined;
-  messages: Message[];
-  lessonPlan: LooseLessonPlan;
-  llmService: ReturnType<typeof getFixtureLLMService>;
-  moderationAiClient: ReturnType<typeof getFixtureModerationOpenAiClient>;
-  threatDetectors: AilaThreatDetector[];
-}): Promise<Aila> {
+}: CreateAilaInstanceArguments): Promise<Aila> {
   return await withTelemetry(
     "chat-create-aila",
     { chat_id: chatId, user_id: userId },
