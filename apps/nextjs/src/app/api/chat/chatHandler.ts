@@ -60,7 +60,7 @@ async function setupChatHandler(req: NextRequest) {
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
         temperature: chatOptions.temperature ?? 0.7,
-        numberOfLessonPlansInRag: chatOptions.numberOfLessonPlansInRag ?? 5,
+        numberOfRecordsInRag: chatOptions.numberOfRecordsInRag ?? 5,
         usePersistence: true,
         useModeration: true,
       };
@@ -110,10 +110,7 @@ function setTelemetryMetadata({
   span.setTag("has_lesson_plan", Object.keys(lessonPlan).length > 0);
   span.setTag("use_rag", options.useRag);
   span.setTag("temperature", options.temperature);
-  span.setTag(
-    "number_of_lesson_plans_in_rag",
-    options.numberOfLessonPlansInRag,
-  );
+  span.setTag("number_of_records_in_rag", options.numberOfRecordsInRag);
   span.setTag("use_persistence", options.usePersistence);
   span.setTag("use_moderation", options.useModeration);
 }

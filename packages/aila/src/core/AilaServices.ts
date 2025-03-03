@@ -59,7 +59,6 @@ export interface AilaChatService {
 export interface AilaServices {
   readonly userId: string | undefined;
   readonly chatId: string;
-  readonly lessonPlan: LooseLessonPlan;
   readonly messages: Message[];
   readonly options: AilaOptionsWithDefaultFallbackValues;
   readonly analytics?: AilaAnalyticsFeature;
