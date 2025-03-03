@@ -83,7 +83,6 @@ export class AilaStreamHandler {
       await this.checkForThreats();
       this.logStreamingStep("Check for threats complete");
 
-      await this._chat.handleSettingInitialState();
       log.info("Setting initial state");
       await this._chat.handleSettingInitialState();
       this.logStreamingStep("Handle initial state complete");
