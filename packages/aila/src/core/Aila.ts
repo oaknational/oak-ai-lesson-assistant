@@ -141,7 +141,7 @@ export class Aila implements AilaServices {
     await this.loadChatIfPersisting();
     const persistedLessonPlan = this._chat.persistedChat?.lessonPlan;
     if (persistedLessonPlan) {
-      this._document.setContent(persistedLessonPlan);
+      this._document.content = persistedLessonPlan;
     }
     await this._document.initialiseContentFromMessages(this._chat.messages);
 

@@ -6,6 +6,10 @@ export type AilaDummyDocumentContent = {
   keyStage: string;
   topic?: string;
   body: string;
+  basedOn?: {
+    id: string;
+    title: string;
+  };
 };
 
 export type AilaDocumentContent = LooseLessonPlan | AilaDummyDocumentContent;
