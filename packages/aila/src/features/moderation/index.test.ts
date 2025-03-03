@@ -16,7 +16,9 @@ import { MockModerator } from "./moderators/MockModerator";
 const prismaMock = {} as PrismaClientWithAccelerate;
 
 type SetUpModerationOptions = {
-  lessonPlan: LooseLessonPlan;
+  document: {
+    content: LooseLessonPlan;
+  };
   chat: AilaChatInitializationOptions;
   moderator: AilaModerator;
   moderations?: Moderations;
@@ -25,7 +27,7 @@ type SetUpModerationOptions = {
 };
 
 const setUpModeration = ({
-  lessonPlan,
+  document,
   chat,
   moderator,
   moderations,
@@ -33,7 +35,7 @@ const setUpModeration = ({
   plugins = [],
 }: SetUpModerationOptions) => {
   const aila = new Aila({
-    lessonPlan,
+    document,
     chat,
     options: {
       useModeration: true,
@@ -79,17 +81,19 @@ describe("AilaModeration", () => {
         userId: "456",
         messages,
       };
-      const lessonPlan = {};
+      const content = {};
 
       const { ailaModeration, pluginContext } = setUpModeration({
-        lessonPlan,
+        document: {
+          content,
+        },
         chat,
         moderator,
       });
 
       const result = await ailaModeration.moderate({
         messages,
-        lessonPlan,
+        content,
         pluginContext,
       });
 
@@ -113,17 +117,17 @@ describe("AilaModeration", () => {
         userId: "456",
         messages,
       };
-      const lessonPlan = {};
+      const document = { content: {} };
 
       const { ailaModeration, pluginContext } = setUpModeration({
-        lessonPlan,
+        document,
         chat,
         moderator,
       });
 
       const result = await ailaModeration.moderate({
         messages,
-        lessonPlan,
+        content: document.content,
         pluginContext,
       });
 
@@ -146,16 +150,16 @@ describe("AilaModeration", () => {
         messages,
       };
 
-      const lessonPlan = {};
+      const document = { content: {} };
       const { ailaModeration, pluginContext } = setUpModeration({
-        lessonPlan,
+        document,
         chat,
         moderator: new MockModerator([]),
       });
 
       const result = await ailaModeration.moderate({
         messages,
-        lessonPlan,
+        content: document.content,
         pluginContext,
       });
 
@@ -190,9 +194,9 @@ describe("AilaModeration", () => {
         onToxicModeration: jest.fn(() => {}),
       } as unknown as AilaPlugin;
 
-      const lessonPlan = {};
+      const document = { content: {} };
       const { ailaModeration, pluginContext } = setUpModeration({
-        lessonPlan,
+        document,
         chat,
         moderator,
         // shouldPersist must be true to trigger the safety violation
@@ -204,7 +208,7 @@ describe("AilaModeration", () => {
 
       const result = await ailaModeration.moderate({
         messages,
-        lessonPlan,
+        content: document.content,
         pluginContext,
       });
 
@@ -213,7 +217,7 @@ describe("AilaModeration", () => {
         categories: moderationResult.categories,
         id: "ABC",
       });
-       
+
       expect(mockPlugin.onToxicModeration).toHaveBeenCalledWith(
         expect.objectContaining({
           categories: ["t/encouragement-illegal-activity"],
