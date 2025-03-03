@@ -224,7 +224,6 @@ function parseChatOutput(
     }
   } catch (error) {
     log.error(`Error parsing output for chat ${chatId}`, error);
-    // Report to Sentry
     captureException(error, {
       extra: { chatId, output },
       tags: { context: "parseChatOutput" },
@@ -263,12 +262,11 @@ async function loadChatDataFromDatabase(
     return { messages, lessonPlan };
   } catch (error) {
     log.error(`Error loading chat data for chat ${chatId}`, error);
-    // Report to Sentry
     captureException(error, {
       extra: { chatId, userId },
       tags: { context: "loadChatDataFromDatabase" },
     });
-    throw error; // Re-throw after logging to Sentry
+    throw error;
   }
 }
 
