@@ -32,7 +32,7 @@ export const handleFetchInitialMessages =
 
       if (startingMessage) {
         log.info("Appending starting message");
-        get().append(startingMessage);
+        get().actions.append(startingMessage);
       }
       log.info(`Set initial messages for AI SDK from DB`);
     } catch (err) {

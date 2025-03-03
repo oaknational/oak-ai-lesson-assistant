@@ -7,7 +7,7 @@ import type {
   Message,
 } from "ai";
 
-import { useChatStore } from "@/stores/AilaStoresProvider";
+import { useChatActions } from "@/stores/AilaStoresProvider";
 
 export const useChatStoreAiSdkSync = (
   messages: AiMessage[],
@@ -19,8 +19,7 @@ export const useChatStoreAiSdkSync = (
   ) => Promise<string | null | undefined>,
   reload: () => Promise<string | null | undefined>,
 ) => {
-  const setMessages = useChatStore((state) => state.setMessages);
-  const setAiSdkActions = useChatStore((state) => state.setAiSdkActions);
+  const { setMessages, setAiSdkActions } = useChatActions();
 
   useEffect(() => {
     setMessages(messages, isLoading);
