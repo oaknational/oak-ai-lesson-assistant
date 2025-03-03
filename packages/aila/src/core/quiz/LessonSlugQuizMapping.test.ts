@@ -435,3 +435,21 @@ describe("ElasticLessonQuizLookup", () => {
     expect(result2).not.toEqual(placeholderQuizIds);
   });
 });
+
+describe("Testing isLegacyLessonSlug", () => {
+  jest.clearAllMocks();
+  it("Should return true for legacy lesson slug", async () => {
+    const dbLookup = new ElasticLessonQuizLookup();
+    const result = await dbLookup.isLegacyLessonSlug(
+      "to-describe-and-classify-2d-shapes-64ukjd",
+    );
+    expect(result).toBe(true);
+  });
+  it("Should return false for non legacy lesson slug", async () => {
+    const dbLookup = new ElasticLessonQuizLookup();
+    const result = await dbLookup.isLegacyLessonSlug(
+      "comparing-multiple-representations-to-calculate-theoretical-probabilities",
+    );
+    expect(result).toBe(false);
+  });
+});
