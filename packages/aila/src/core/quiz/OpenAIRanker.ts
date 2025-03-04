@@ -2,7 +2,6 @@ import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import type { OpenAI } from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
-// import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { z } from "zod";
 
 import type {
@@ -11,7 +10,6 @@ import type {
   QuizQuestion,
 } from "../../protocol/schema";
 import type { BaseType } from "./ChoiceModels";
-// import type { SystemPrompt } from "./QuestionAssesmentPrompt";
 import {
   keyLearningPointsPrompt,
   priorKnowledgePrompt,
@@ -301,31 +299,6 @@ export {
   quizToLLMMessages,
 };
 
-// export function parsedResponse(schema: z.ZodType<any>, response: any) {
-//   const math_reasoning = response.choices[0].message;
-
-//   // If the model refuses to respond, you will get a refusal message
-//   if (math_reasoning.refusal) {
-//     console.log(math_reasoning.refusal);
-//   } else {
-//     console.log(math_reasoning.parsed);
-//   }
-
-//   const content = response.choices[0]?.message.content;
-
-//   if (schema && content) {
-//     try {
-//       const parsedContent = JSON.parse(content);
-//       return schema.parse(parsedContent);
-//     } catch (error) {
-//       console.error("Failed to parse or validate response:", error);
-//       throw new Error("Invalid response format");
-//     }
-//   }
-
-//   return content;
-// }
-
 /**
  * Makes an OpenAI API call for reranking purposes.
  *
@@ -350,16 +323,11 @@ export async function OpenAICallReranker(
     model: OPENAI_MODEL,
     max_tokens,
     messages,
-    // response_format: schema ? { type: "json_object" } : undefined,
-    // response_format: schema ?? undefined,
   });
 
   const endTime = Date.now();
   const durationInSeconds = (endTime - startTime) / 1000;
   console.log(`OpenAI API call took ${durationInSeconds.toFixed(2)} seconds`);
-
-  //   const content = response.choices[0]?.message.content;
-
   return response;
 }
 
