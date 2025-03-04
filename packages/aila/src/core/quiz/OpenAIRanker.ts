@@ -154,8 +154,6 @@ function combinePrompts(
     Content.push(...questionMessage.content);
   }
   Messages.push(contentListToUser(Content));
-  //   Messages.push(lessonPlanSectionToMessage(lessonPlan, "priorKnowledge"));
-  //   Messages.push(quizToLLMMessages(question));
   return Messages;
 }
 
@@ -270,11 +268,6 @@ async function evaluateQuiz<
   ranking_schema: T,
   quizType: QuizPath,
 ): Promise<ParsedChatCompletion<z.infer<T>>> {
-  // TODO: change this to use the correct system prompt for the quiz type.
-  // TODO: change this to use the correct lesson plan section for the quiz type.
-
-  // if starter quiz, use prior knowledge, if exit quiz use key learning points.
-  // TODO: abstract this to a more generic function for including other parts of the quiz.
   const lessonSectionSelection: sectionCategory =
     quizType === "/starterQuiz" ? "priorKnowledge" : "keyLearningPoints";
 
