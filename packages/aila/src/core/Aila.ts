@@ -10,8 +10,6 @@ import {
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
 import { AilaCategorisation } from "../features/categorisation";
-import type { AilaRagFeature } from "../features/rag";
-import { NullAilaRag } from "../features/rag/NullAilaRag";
 import type { AilaSnapshotStore } from "../features/snapshotStore";
 import type {
   AilaAnalyticsFeature,
@@ -25,12 +23,12 @@ import { AilaAuthenticationError, AilaGenerationError } from "./AilaError";
 import { AilaFeatureFactory } from "./AilaFeatureFactory";
 import type {
   AilaChatService,
-  AilaLessonService,
+  AilaDocumentService,
   AilaServices,
 } from "./AilaServices";
 import type { Message } from "./chat";
 import { AilaChat } from "./chat";
-import { AilaLesson } from "./lesson";
+import { AilaDocument } from "./document";
 import type { LLMService } from "./llm/LLMService";
 import { OpenAIService } from "./llm/OpenAIService";
 import type { AilaPlugin } from "./plugins/types";
@@ -48,7 +46,7 @@ export class Aila implements AilaServices {
   private readonly _chat: AilaChatService;
   private readonly _errorReporter?: AilaErrorReportingFeature;
   private _isShutdown: boolean = false;
-  private readonly _lesson: AilaLessonService;
+  private readonly _document: AilaDocumentService;
   private readonly _chatLlmService: LLMService;
   private readonly _moderation?: AilaModerationFeature;
   private readonly _options: AilaOptionsWithDefaultFallbackValues;
@@ -56,7 +54,6 @@ export class Aila implements AilaServices {
   private readonly _persistence: AilaPersistenceFeature[] = [];
   private readonly _threatDetection?: AilaThreatDetectionFeature;
   private readonly _prisma: PrismaClientWithAccelerate;
-  private readonly _rag: AilaRagFeature;
   private readonly _plugins: AilaPlugin[];
   private readonly _userId!: string | undefined;
   private readonly _chatId!: string;
@@ -79,9 +76,9 @@ export class Aila implements AilaServices {
 
     this._prisma = options.prisma ?? globalPrisma;
 
-    this._lesson = new AilaLesson({
+    this._document = new AilaDocument({
       aila: this,
-      lessonPlan: options.lessonPlan ?? {},
+      content: options.document?.content ?? {},
       categoriser:
         options.services?.chatCategoriser ??
         new AilaCategorisation({
@@ -107,12 +104,12 @@ export class Aila implements AilaServices {
     this._threatDetection = AilaFeatureFactory.createThreatDetection(
       this,
       this._options,
+      options.services?.threatDetectors?.(this),
     );
     this._errorReporter = AilaFeatureFactory.createErrorReporter(
       this,
       this._options,
     );
-    this._rag = options.services?.ragService?.(this) ?? new NullAilaRag();
     this._americanisms =
       options.services?.americanismsService?.(this) ??
       new NullAilaAmericanisms();
@@ -144,9 +141,10 @@ export class Aila implements AilaServices {
     await this.loadChatIfPersisting();
     const persistedLessonPlan = this._chat.persistedChat?.lessonPlan;
     if (persistedLessonPlan) {
-      this._lesson.setPlan(persistedLessonPlan);
+      this._document.setContent(persistedLessonPlan);
     }
-    await this._lesson.setUpInitialLessonPlan(this._chat.messages);
+    await this._document.initialiseContentFromMessages(this._chat.messages);
+
     this._initialised = true;
   }
 
@@ -182,13 +180,13 @@ export class Aila implements AilaServices {
   // #TODO we should refactor this to be a document
   // and not be specifically tied to a "lesson"
   // so that we can handle any type of generation
-  public get lesson(): AilaLessonService {
-    return this._lesson;
+  public get document(): AilaDocumentService {
+    return this._document;
   }
 
   // #TODO we should not need this
   public get lessonPlan() {
-    return this._lesson.plan;
+    return this._document.content;
   }
 
   public get snapshotStore() {
@@ -240,7 +238,7 @@ export class Aila implements AilaServices {
   }
 
   public get rag() {
-    return this._rag;
+    throw new Error("Attempting to use old, unused RAG service");
   }
 
   public get americanisms() {
@@ -279,16 +277,9 @@ export class Aila implements AilaServices {
     }
   }
 
-  // #TODO this method should not accept these keys so
-  // that the Aila class does not need to know about the shape
-  // of the data that it is handling - this will enable us to use
-  // the same logic for any type of content generation
   public async generate({
     input,
-    title,
-    subject,
-    keyStage,
-    topic,
+    abortController,
   }: AilaGenerateLessonPlanOptions) {
     this.checkInitialised();
     if (this._isShutdown) {
@@ -305,20 +296,9 @@ export class Aila implements AilaServices {
       };
       this._chat.addMessage(message);
     }
-    if (title) {
-      this._lesson.plan.title = title;
-    }
-    if (subject) {
-      this._lesson.plan.subject = subject;
-    }
-    if (keyStage) {
-      this._lesson.plan.keyStage = keyStage;
-    }
-    if (topic) {
-      this._lesson.plan.topic = topic;
-    }
+
     await this.initialise();
-    return this._chat.startStreaming();
+    return this._chat.startStreaming(abortController);
   }
 
   // Shutdown method

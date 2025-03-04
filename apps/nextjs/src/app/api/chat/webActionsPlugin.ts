@@ -1,6 +1,6 @@
 import type { AilaPlugin } from "@oakai/aila/src/core/plugins";
 import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
-import { handleHeliconeError } from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
+import { handleThreatDetectionError } from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
 import { inngest } from "@oakai/core/src/inngest";
 import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
@@ -27,14 +27,16 @@ export const createWebActionsPlugin: PluginCreator = (
     if (error instanceof AilaThreatDetectionError) {
       // #TODO change this to handleThreatDetectionError and move
       // the logic elsewhere. Stop passing Prisma
-      const heliconeErrorMessage = await handleHeliconeError(
-        aila.userId ?? "anonymous", // This should never be "anonymous" because we would get an authentication error
-        aila.chatId ?? "unknown",
-        error,
-        prisma,
+      const threatError = await handleThreatDetectionError(
+        {
+          userId: aila.userId ?? "anonymous", // This should never be "anonymous" because we would get an authentication error
+          chatId: aila.chatId ?? "unknown",
+          error,
+          prisma,
+        },
         SafetyViolations,
       );
-      await enqueue(heliconeErrorMessage);
+      await enqueue(threatError);
     }
 
     if (error instanceof Error) {

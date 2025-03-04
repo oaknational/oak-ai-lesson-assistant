@@ -8,7 +8,7 @@ import {
   OakSmallPrimaryButton,
 } from "@oaknational/oak-components";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 export type FeedbackOption<T> = {
   label: string;
@@ -37,7 +37,9 @@ export const DropDownFormWrapper = <
   isOpen: boolean;
   dropdownRef: React.RefObject<HTMLDivElement>;
 }>) => {
-  const { isStreaming } = useLessonChat();
+  const isStreaming = useChatStore(
+    (state) => state.ailaStreamingStatus !== "Idle",
+  );
   const firstButtonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (isOpen && firstButtonRef.current) {

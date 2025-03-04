@@ -1,7 +1,6 @@
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import type { AilaErrorReporter } from "../features/errorReporting";
-import type { AilaRagFeature } from "../features/rag";
 import type { AilaSnapshotStore } from "../features/snapshotStore";
 import type {
   AilaAnalyticsFeature,
@@ -36,14 +35,14 @@ export interface AilaAnalyticsService {
   reportUsageMetrics(text: string): Promise<void>;
 }
 
-export interface AilaLessonService {
-  readonly plan: LooseLessonPlan;
-  readonly hasSetInitialState: boolean;
-  setPlan(plan: LooseLessonPlan): void;
+export interface AilaDocumentService {
+  readonly content: LooseLessonPlan;
+  readonly hasInitialisedContentFromMessages: boolean;
+  setContent(content: LooseLessonPlan): void;
   extractAndApplyLlmPatches(patches: string): void;
   applyValidPatches(validPatches: ValidPatchDocument[]): void;
-  initialise(plan: LooseLessonPlan): void;
-  setUpInitialLessonPlan(messages: Message[]): Promise<void>;
+  initialise(content: LooseLessonPlan): void;
+  initialiseContentFromMessages(messages: Message[]): Promise<void>;
 }
 
 export interface AilaChatService {
@@ -91,11 +90,10 @@ export interface AilaServices {
   readonly errorReporter?: AilaErrorReporter;
   readonly threatDetection?: AilaThreatDetectionFeature;
   readonly chat: AilaChatService;
-  readonly lesson: AilaLessonService;
+  readonly document: AilaDocumentService;
   readonly snapshotStore: AilaSnapshotStore;
   readonly persistence?: AilaPersistenceFeature[];
   readonly moderation?: AilaModerationFeature;
   readonly plugins: AilaPlugin[];
-  readonly rag: AilaRagFeature;
   readonly americanisms: AilaAmericanismsFeature;
 }

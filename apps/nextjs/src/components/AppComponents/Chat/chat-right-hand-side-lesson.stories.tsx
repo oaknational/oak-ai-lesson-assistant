@@ -3,12 +3,11 @@ import { fn } from "@storybook/test";
 
 import type { ParsedMessage } from "@/stores/chatStore/types";
 import { chromaticParams } from "@/storybook/chromatic";
-import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
-import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
 import {
   DemoDecorator,
   demoParams,
 } from "@/storybook/decorators/DemoDecorator";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import ChatRightHandSideLesson from "./chat-right-hand-side-lesson";
 
@@ -39,7 +38,7 @@ const meta = {
   title: "Components/LessonPlan/ChatRightHandSideLesson",
   component: ChatRightHandSideLesson,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, DemoDecorator, ChatStoreDecorator],
+  decorators: [DemoDecorator, StoreDecorator],
   args: {
     showLessonMobile: true,
     closeMobileLessonPullOut: fn,
@@ -50,13 +49,6 @@ const meta = {
       defaultViewport: "mobile",
     },
     ...chromaticParams(["mobile"]),
-    chatContext: {
-      lessonPlan: {
-        subject: "biology",
-        keyStage: "key-stage-3",
-        title: "About Frogs",
-      },
-    },
     chatStoreState: {
       stableMessages: DummyParsedMessages,
     },

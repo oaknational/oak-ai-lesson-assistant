@@ -14,7 +14,7 @@ interface IndexPageProps {
   };
 }
 
-export default async function IndexPage({ searchParams }: IndexPageProps) {
+export default function IndexPage({ searchParams }: IndexPageProps) {
   const clerkAuthentication = auth();
   const { userId }: { userId: string | null } = clerkAuthentication;
   if (!userId) {

@@ -16,9 +16,9 @@ import { handleChatException } from "./errorHandling";
 
 describe("handleChatException", () => {
   describe("AilaThreatDetectionError", () => {
-    it("should forward the message from handleHeliconeError", async () => {
+    it("should forward the message from handleThreatDetectionError", async () => {
       jest
-        .spyOn(moderationErrorHandling, "handleHeliconeError")
+        .spyOn(moderationErrorHandling, "handleThreatDetectionError")
         .mockResolvedValue({
           type: "error",
           value: "Threat detected",

@@ -1,3 +1,48 @@
+## [1.25.6](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.5...v1.25.6) (2025-02-26)
+
+
+### Bug Fixes
+
+* bullet styling for portable text ([#567](https://github.com/oaknational/oak-ai-lesson-assistant/issues/567)) ([73e9446](https://github.com/oaknational/oak-ai-lesson-assistant/commit/73e94467a2f93b7e96a44a4fbc0141bbe969a552))
+* next router skipping signed-in check ([#146](https://github.com/oaknational/oak-ai-lesson-assistant/issues/146)) ([c1b9939](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c1b9939563dc20e3ffaf0a56d73d015a11047149))
+
+## [1.25.5](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.4...v1.25.5) (2025-02-24)
+
+
+### Bug Fixes
+
+* getChat overfetching - move initialMessages to store ([#550](https://github.com/oaknational/oak-ai-lesson-assistant/issues/550)) ([0ea1694](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0ea169487451e97ab5975c7db3bb7fb511c223a8))
+
+## [1.25.4](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.3...v1.25.4) (2025-02-20)
+
+
+### Bug Fixes
+
+* maths lesson plan overrides ([#557](https://github.com/oaknational/oak-ai-lesson-assistant/issues/557)) ([e84f44c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e84f44c7cf76397d35ed46a3c7d0310cbd2457e5))
+
+## [1.25.3](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.2...v1.25.3) (2025-02-19)
+
+## [1.25.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.1...v1.25.2) (2025-02-17)
+
+## [1.25.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.0...v1.25.1) (2025-02-14)
+
+
+### Bug Fixes
+
+* lesson flash after moderation ([#545](https://github.com/oaknational/oak-ai-lesson-assistant/issues/545)) ([74b0cba](https://github.com/oaknational/oak-ai-lesson-assistant/commit/74b0cba13edeba9aa153362fb86174fcf571edff))
+
+# [1.25.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.24.0...v1.25.0) (2025-02-14)
+
+
+### Bug Fixes
+
+* add placeholder quiz and annotation for experimental patches. ([#537](https://github.com/oaknational/oak-ai-lesson-assistant/issues/537)) ([66508e4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/66508e4a0fcddcd7d8205a8c9a7fe5b2e734cce9))
+
+
+### Features
+
+* aila threat detection ([#533](https://github.com/oaknational/oak-ai-lesson-assistant/issues/533)) ([9555778](https://github.com/oaknational/oak-ai-lesson-assistant/commit/95557785d318c461927f969aa5481043e9e2e132))
+
 # [1.24.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.23.0...v1.24.0) (2025-02-12)
 
 

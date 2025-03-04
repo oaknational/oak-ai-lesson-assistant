@@ -8,8 +8,11 @@ import { CompositeFullQuizServiceBuilder } from "./CompositeFullQuizServiceBuild
 
 const log = aiLogger("aila");
 
-describe("CompositeFullQuizServiceBuilder", () => {
+const shouldSkipTests = process.env.TEST_QUIZZES === "false";
+
+(shouldSkipTests ? describe.skip : describe)("CompositeFullQuizServiceBuilder", () => {
   jest.setTimeout(60000);
+
   it("should build a CompositeFullQuizService", () => {
     const builder = new CompositeFullQuizServiceBuilder();
     const settings: QuizBuilderSettings = {

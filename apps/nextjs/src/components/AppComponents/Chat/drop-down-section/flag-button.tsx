@@ -8,7 +8,7 @@ import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/nextjs";
 import styled from "styled-components";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useLessonPlanStore, useChatStore } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
@@ -44,9 +44,11 @@ const FlagButton = ({
   const [displayTextBox, setDisplayTextBox] = useState<string | null>(null);
 
   const [userFeedbackText, setUserFeedbackText] = useState("");
-  const chat = useLessonChat();
 
-  const { id, messages } = chat;
+  const id = useLessonPlanStore((state) => state.id);
+
+  const messages = useChatStore((state) => state.stableMessages);
+  // NOTE: The last assistant message will be streamingMessage if we allow selection during moderation
   const lastAssistantMessage = getLastAssistantMessage(messages);
 
   const { mutateAsync } = trpc.chat.chatFeedback.flagSection.useMutation();

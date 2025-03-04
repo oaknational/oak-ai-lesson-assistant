@@ -1,10 +1,8 @@
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import type { Meta, StoryObj } from "@storybook/react";
 
-import type { ChatContextProps } from "@/components/ContextProviders/ChatProvider";
 import { chromaticParams } from "@/storybook/chromatic";
-import { ChatDecorator } from "@/storybook/decorators/ChatDecorator";
-import { ChatStoreDecorator } from "@/storybook/decorators/ChatStoreDecorator";
+import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
 
@@ -18,26 +16,22 @@ const lessonPlan = {
     "To understand the importance of frogs in British society and culture",
 } satisfies LooseLessonPlan;
 
-const chatContext: Partial<ChatContextProps> = {
-  id: "123",
-  lastModeration: null,
-  messages: [],
-  lessonPlan,
-};
-
 const meta = {
   title: "Components/LessonPlan/LessonPlanDisplay",
   component: LessonPlanDisplay,
   tags: ["autodocs"],
-  decorators: [ChatDecorator, ChatStoreDecorator],
+  decorators: [StoreDecorator],
   args: {
     documentContainerRef: { current: null },
     chatEndRef: undefined,
-    sectionRefs: {},
     showLessonMobile: false,
   },
+
   parameters: {
     ...chromaticParams(["desktop"]),
+    lessonPlanStoreState: {
+      id: "123",
+    },
   },
 } satisfies Meta<typeof LessonPlanDisplay>;
 
@@ -48,7 +42,29 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {},
   parameters: {
-    chatContext,
+    chatStoreState: {
+      ailaStreamingStatus: "Idle",
+    },
+    moderationStoreState: {
+      lastModeration: null,
+    },
+    lessonPlanStoreState: {
+      lessonPlan,
+    },
+  },
+};
+export const WithModeration: Story = {
+  args: {},
+  parameters: {
+    chatStoreState: {
+      ailaStreamingStatus: "Idle",
+    },
+    moderationStoreState: {
+      lastModeration: {
+        id: "123",
+        categories: ["l/strong-language"],
+      },
+    },
     lessonPlanStoreState: {
       lessonPlan,
     },
@@ -59,34 +75,13 @@ export const Loading: Story = {
   args: {},
   parameters: {
     chatStoreState: {
-      ailaStreamingStatus: "Idle",
+      ailaStreamingStatus: "Loading",
     },
-    chatContext: {
-      ...chatContext,
-      lessonPlan: {},
-    },
-    lessonPlanStoreState: {
-      lessonPlan: {},
-    },
-  },
-};
-
-export const WithModeration: Story = {
-  args: {},
-  parameters: {
-    chatStoreState: {
-      ailaStreamingStatus: "Idle",
-    },
-    chatContext: {
-      ...chatContext,
-
-      lastModeration: {
-        id: "123",
-        categories: ["l/strong-language"],
-      },
+    moderationStoreState: {
+      lastModeration: null,
     },
     lessonPlanStoreState: {
-      lessonPlan,
+      lessonPlan: {},
     },
   },
 };

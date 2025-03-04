@@ -1,8 +1,8 @@
 import { OakIcon, OakSmallSecondaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
+import { useLessonPlanStore } from "@/stores/AilaStoresProvider";
 
 import { useDialog } from "../../DialogContext";
 
@@ -13,7 +13,7 @@ export type MobileExportButtonsProps = Readonly<{
 export const MobileExportButtons = ({
   closeMobileLessonPullOut,
 }: MobileExportButtonsProps) => {
-  const { id } = useLessonChat();
+  const id = useLessonPlanStore((state) => state.id);
   const { setDialogWindow } = useDialog();
   const demo = useDemoUser();
 

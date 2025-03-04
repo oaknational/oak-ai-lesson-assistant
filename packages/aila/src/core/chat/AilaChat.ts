@@ -57,7 +57,7 @@ export class AilaChat implements AilaChatService {
   private _createdAt: Date | undefined;
   private _persistedChat: AilaPersistedChat | undefined;
 
-  private _experimentalPatches: ExperimentalPatchDocument[];
+  private readonly _experimentalPatches: ExperimentalPatchDocument[];
   public readonly fullQuizService: FullQuizService;
 
   // private readonly _experimentalPatches: ExperimentalPatchDocument[];
@@ -140,6 +140,10 @@ export class AilaChat implements AilaChatService {
     return this._relevantLessons;
   }
 
+  public get generation() {
+    return this._generation;
+  }
+
   public set relevantLessons(lessons: AilaRagRelevantLesson[]) {
     this._relevantLessons = lessons;
   }
@@ -165,6 +169,7 @@ export class AilaChat implements AilaChatService {
   }
 
   public async generationFailed(error: unknown) {
+    log.info("Marking generation as failed", { error });
     invariant(this._generation, "Generation not initialised");
     this.aila.errorReporter?.reportError(
       error,
@@ -175,6 +180,7 @@ export class AilaChat implements AilaChatService {
       await this.reportError({ message: error.message });
     }
     await this.persistGeneration("FAILED");
+    log.info("Generation marked as failed");
   }
 
   private async reportError({ message }: { message: string }) {
@@ -202,7 +208,7 @@ export class AilaChat implements AilaChatService {
     const systemMessage = this.systemMessage();
     const applicableMessages: Message[] = [systemMessage, ...reducedMessages]; // only send
 
-    if (this._aila?.lesson.hasSetInitialState) {
+    if (this._aila?.document.hasInitialisedContentFromMessages) {
       applicableMessages.push({
         id: generateMessageId({ role: "user" }),
         role: "user",
@@ -218,9 +224,9 @@ export class AilaChat implements AilaChatService {
   // generation of lessons rather than being applicable to all
   // chats so that we can generate different types of document
   async handleSettingInitialState() {
-    if (this._aila.lesson.hasSetInitialState) {
+    if (this._aila.document.hasInitialisedContentFromMessages) {
       // #TODO sending these events in a different place to where they are set seems like a bad idea
-      const plan = this._aila.lesson.plan;
+      const plan = this._aila.document.content;
       const keys = Object.keys(plan) as Array<keyof typeof plan>;
       for (const key of keys) {
         const value = plan[key];
@@ -232,7 +238,7 @@ export class AilaChat implements AilaChatService {
   }
 
   private warningAboutSubject() {
-    const { subject } = this._aila.lesson.plan;
+    const { subject } = this._aila.document.content;
     if (!subject || this.messages.length > 2) {
       return;
     }
@@ -301,7 +307,7 @@ export class AilaChat implements AilaChatService {
       experimentalPatches,
     );
 
-    this._aila.lesson.applyValidPatches(experimentalPatches);
+    this._aila.document.applyValidPatches(experimentalPatches);
   }
 
   private async reportUsageMetrics() {
@@ -313,14 +319,12 @@ export class AilaChat implements AilaChatService {
 
     if (status === "SUCCESS") {
       const responseText = this.accumulatedText();
-      invariant(responseText, "Response text not set");
       this._generation.complete({ status, responseText });
     }
     await this._generation.persist(status);
   }
 
   private async persistChat() {
-    log.info("Persisting chat");
     await Promise.all(
       (this._aila.persistence ?? []).map((p) => p.upsertChat()),
     );
@@ -359,7 +363,7 @@ export class AilaChat implements AilaChatService {
     if (!llmPatches) {
       return;
     }
-    this._aila.lesson.extractAndApplyLlmPatches(llmPatches);
+    this._aila.document.extractAndApplyLlmPatches(llmPatches);
     this.applyExperimentalPatches();
   }
 
@@ -401,10 +405,11 @@ export class AilaChat implements AilaChatService {
   }
 
   public async complete() {
+    log.info("Starting chat completion");
     await this.reportUsageMetrics();
     await fetchExperimentalPatches({
       fullQuizService: this.fullQuizService,
-      lessonPlan: this._aila.lesson.plan,
+      lessonPlan: this._aila.document.content,
       llmPatches: extractPatches(this.accumulatedText()).validPatches,
       handlePatch: async (patch) => {
         await this.enqueue(patch);
@@ -423,12 +428,13 @@ export class AilaChat implements AilaChatService {
       type: "comment",
       value: "CHAT_COMPLETE",
     });
+    log.info("Chat completion finished");
   }
 
   public async saveSnapshot({ messageId }: { messageId: string }) {
     await this._aila.snapshotStore.saveSnapshot({
       messageId,
-      lessonPlan: this._aila.lesson.plan,
+      content: this._aila.document.content,
       trigger: "ASSISTANT_MESSAGE",
     });
   }
@@ -453,7 +459,7 @@ export class AilaChat implements AilaChatService {
         value: "MODERATING",
       });
       const message = await this._aila.moderation.moderate({
-        lessonPlan: this._aila.lesson.plan,
+        content: this._aila.document.content,
         messages: this._aila.messages,
         pluginContext: {
           aila: this._aila,
@@ -465,8 +471,10 @@ export class AilaChat implements AilaChatService {
   }
 
   public async setupGeneration() {
+    log.info("Starting new generation setup");
     await this.startNewGeneration();
     await this.persistGeneration("REQUESTED");
+    log.info("Generation setup complete");
   }
 
   public startStreaming(abortController?: AbortController): ReadableStream {

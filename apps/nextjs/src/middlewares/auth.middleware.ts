@@ -43,6 +43,7 @@ const publicRoutes = [
    */
   "/aila/:chatId/share",
   "/",
+  "/faqs",
   "/legal/(.*)",
   /**
    * Sentry proxy endpoint
