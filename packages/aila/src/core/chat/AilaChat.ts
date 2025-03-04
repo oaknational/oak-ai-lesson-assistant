@@ -323,7 +323,10 @@ export class AilaChat implements AilaChatService {
     if (!warning) {
       return;
     }
-    await this.enqueue({ type: "prompt", message: warning });
+    // Optional "?" Necessary to avoid a "terminated" error
+    if (this?._patchEnqueuer) {
+      await this.enqueue({ type: "prompt", message: warning });
+    }
   }
 
   public async enqueue(message: JsonPatchDocumentOptional) {
@@ -342,8 +345,10 @@ export class AilaChat implements AilaChatService {
       log.warn("Unsafe value provided to enqueuePatch", { path });
       return;
     }
-
-    await this._patchEnqueuer.enqueuePatch(path, safeValue);
+    // Optional "?" Necessary to avoid a "terminated" error
+    if (this?._patchEnqueuer) {
+      await this._patchEnqueuer.enqueuePatch(path, safeValue);
+    }
   }
 
   private async startNewGeneration() {
@@ -482,7 +487,9 @@ export class AilaChat implements AilaChatService {
       llmPatches: extractPatches(this.accumulatedText()).validPatches,
       handlePatch: async (patch) => {
         await this.enqueue(patch);
+        this.appendExperimentalPatch(patch);
       },
+      userId: this._userId,
     });
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
