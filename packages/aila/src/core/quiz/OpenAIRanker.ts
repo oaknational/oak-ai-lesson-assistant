@@ -23,6 +23,10 @@ import {
   testRatingSchema,
 } from "./rerankers/RerankerStructuredOutputSchema";
 
+// OpenAI model constant
+// const OPENAI_MODEL = "gpt-4o-2024-08-06";
+const OPENAI_MODEL = "gpt-4o-mini";
+
 const ThoughtStep = z.object({
   step: z.number(),
   thought: z.string(),
@@ -329,7 +333,7 @@ export async function OpenAICallReranker(
   const startTime = Date.now();
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4o-2024-08-06",
+    model: OPENAI_MODEL,
     max_tokens,
     messages,
     // response_format: schema ? { type: "json_object" } : undefined,
@@ -358,7 +362,7 @@ export async function OpenAICallLogProbs(
   const openai = createOpenAIClient({ app: "maths-reranker" });
   const startTime = Date.now();
   const response = await openai.chat.completions.create({
-    model: "gpt-4o-2024-08-06",
+    model: OPENAI_MODEL,
     max_tokens,
     messages,
     logit_bias,
@@ -415,7 +419,7 @@ export async function OpenAICallRerankerWithSchema(
   const openai = createOpenAIClient({ app: "maths-reranker" });
   const startTime = Date.now();
   const response = await openai.beta.chat.completions.parse({
-    model: "gpt-4o-2024-08-06",
+    model: OPENAI_MODEL,
     max_tokens,
     messages,
     response_format: zodResponseFormat(schema, "QuizRatingResponse"),
@@ -455,7 +459,7 @@ export async function DummyOpenAICall() {
   ];
   //  This adds an id to each message.
   const response = await openai.chat.completions.create({
-    model: "gpt-4o-2024-08-06",
+    model: OPENAI_MODEL,
     max_tokens: 500,
     messages: [
       {
