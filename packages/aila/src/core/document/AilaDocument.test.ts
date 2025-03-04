@@ -7,7 +7,6 @@ import type { AilaDocumentContent, CategorisationPlugin } from "./types";
 
 const log = aiLogger("aila");
 
-// Create a simplified version of AilaDocument for testing without circular references
 class TestDocument {
   private _content: AilaDocumentContent = {};
   private _hasInitialisedContentFromMessages = false;
@@ -145,48 +144,44 @@ class TestDocument {
 describe("Document Tests", () => {
   describe("basic functionality", () => {
     it("should create a document with initial content", () => {
-      console.log("Starting basic test");
+      log.info("Starting basic test");
 
-      // Create the document with initial content
       const initialContent: AilaDocumentContent = {
         keyStage: "key-stage-2",
         subject: "history",
         title: "Roman Britain",
       };
 
-      console.log("Creating document");
+      log.info("Creating document");
       const document = new TestDocument({
         content: initialContent,
         categorisationPlugins: [],
         schema: LessonPlanSchema,
       });
 
-      console.log("Checking content");
-      // Check that the content was set correctly
+      log.info("Checking content");
       expect(document.content.title).toBe("Roman Britain");
       expect(document.content.subject).toBe("history");
       expect(document.content.keyStage).toBe("key-stage-2");
-      console.log("Basic test completed");
+      log.info("Basic test completed");
     });
 
     it("should not change content when initialising from messages with no categorisation plugins", async () => {
-      console.log("Starting test with initialiseContentFromMessages");
+      log.info("Starting test with initialiseContentFromMessages");
 
-      // Create the document with initial content
       const initialContent: AilaDocumentContent = {
         keyStage: "key-stage-2",
         subject: "history",
         title: "Roman Britain",
       };
 
-      console.log("Creating document");
+      log.info("Creating document");
       const document = new TestDocument({
         content: initialContent,
-        categorisationPlugins: [], // No categorisation plugins
+        categorisationPlugins: [],
         schema: LessonPlanSchema,
       });
 
-      // Create some test messages
       const messages: Message[] = [
         {
           role: "user",
@@ -196,32 +191,27 @@ describe("Document Tests", () => {
         },
       ];
 
-      console.log("Calling initialiseContentFromMessages");
-      // Initialize content from messages
+      log.info("Calling initialiseContentFromMessages");
       await document.initialiseContentFromMessages(messages);
 
-      console.log("Checking content after initialisation");
-      // Check that the content was not changed
+      log.info("Checking content after initialisation");
       expect(document.content.title).toBe("Roman Britain");
       expect(document.content.subject).toBe("history");
       expect(document.content.keyStage).toBe("key-stage-2");
-      console.log("Test with initialiseContentFromMessages completed");
+      log.info("Test with initialiseContentFromMessages completed");
     });
 
     it("should use a minimal categorisation plugin", async () => {
-      console.log("Starting test with categorisation plugin");
+      log.info("Starting test with categorisation plugin");
 
-      // Track if methods were called
       let shouldCategoriseCalled = false;
       let categoriseFromMessagesCalled = false;
 
-      console.log("Creating minimal plugin");
-      // Create a minimal categorisation plugin without Jest mocks
+      log.info("Creating minimal plugin");
       const minimalPlugin: CategorisationPlugin = {
         id: "minimal-plugin",
-        // We'll keep this for the test to verify it's called, but it's now optional
         shouldCategorise: (content) => {
-          console.log(
+          log.info(
             "shouldCategorise called with content:",
             JSON.stringify(content),
           );
@@ -229,32 +219,30 @@ describe("Document Tests", () => {
           return true;
         },
         categoriseFromMessages: async (messages, content) => {
-          console.log(
+          log.info(
             "categoriseFromMessages called with messages:",
             messages.length,
           );
-          console.log(
+          log.info(
             "categoriseFromMessages called with content:",
             JSON.stringify(content),
           );
           categoriseFromMessagesCalled = true;
-          return {
+          return Promise.resolve({
             keyStage: "key-stage-3",
             subject: "science",
             title: "The Solar System",
-          };
+          });
         },
       };
 
-      console.log("Creating document with plugin");
-      // Create the document with empty content
+      log.info("Creating document with plugin");
       const document = new TestDocument({
         content: {},
         categorisationPlugins: [minimalPlugin],
         schema: LessonPlanSchema,
       });
 
-      // Create some test messages
       const messages: Message[] = [
         {
           role: "user",
@@ -263,27 +251,24 @@ describe("Document Tests", () => {
         },
       ];
 
-      console.log("Calling initialiseContentFromMessages with plugin");
+      log.info("Calling initialiseContentFromMessages with plugin");
       try {
-        // Initialize content from messages
         await document.initialiseContentFromMessages(messages);
-        console.log("initialiseContentFromMessages completed successfully");
+        log.info("initialiseContentFromMessages completed successfully");
       } catch (error) {
-        console.error("Error in initialiseContentFromMessages:", error);
+        log.error("Error in initialiseContentFromMessages:", error);
         throw error;
       }
 
-      console.log("Checking if methods were called");
-      // Check that the plugin methods were called
+      log.info("Checking if methods were called");
       expect(shouldCategoriseCalled).toBe(true);
       expect(categoriseFromMessagesCalled).toBe(true);
 
-      console.log("Checking content after categorisation");
-      // Check that the content was updated
+      log.info("Checking content after categorisation");
       expect(document.content.title).toBe("The Solar System");
       expect(document.content.subject).toBe("science");
       expect(document.content.keyStage).toBe("key-stage-3");
-      console.log("Test with categorisation plugin completed");
+      log.info("Test with categorisation plugin completed");
     });
   });
 });

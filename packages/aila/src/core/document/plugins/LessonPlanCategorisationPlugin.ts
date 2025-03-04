@@ -31,12 +31,10 @@ export class LessonPlanCategorisationPlugin implements CategorisationPlugin {
    * Only categorise if essential fields are missing
    */
   shouldCategorise(content: AilaDocumentContent): boolean {
-    // Check if essential fields are present
     const hasTitle = !!content.title;
     const hasSubject = !!content.subject;
     const hasKeyStage = !!content.keyStage;
 
-    // Only categorise if any essential fields are missing
     const shouldCategorise = !hasTitle || !hasSubject || !hasKeyStage;
 
     log.info("LessonPlanCategorisationPlugin.shouldCategorise", {
@@ -65,7 +63,6 @@ export class LessonPlanCategorisationPlugin implements CategorisationPlugin {
     );
 
     try {
-      // Use the categoriser to determine lesson plan details
       log.info("Calling categoriser.categorise");
       const result = await this._categoriser.categorise(
         messages,
