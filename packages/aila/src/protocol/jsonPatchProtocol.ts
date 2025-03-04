@@ -722,7 +722,6 @@ export function parseMessageRow(row: string, index: number): MessagePart[] {
       return result;
     } catch (e) {
       log.error("LLM Message parsing error", e);
-      log.error(e);
       return [
         {
           type: "message-part",
