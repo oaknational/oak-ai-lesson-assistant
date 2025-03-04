@@ -295,7 +295,10 @@ export class AilaDocument implements AilaDocumentService {
     for (const plugin of this._categorisationPlugins) {
       log.info(`Checking plugin ${plugin.id} for categorisation`);
 
-      if (plugin.shouldCategorise(contentToCategorisе)) {
+      if (
+        !plugin.shouldCategorise ||
+        plugin.shouldCategorise(contentToCategorisе)
+      ) {
         log.info(`Plugin ${plugin.id} will attempt categorisation`);
 
         try {

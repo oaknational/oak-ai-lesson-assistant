@@ -109,7 +109,10 @@ class TestDocument {
     for (const plugin of this._categorisationPlugins) {
       log.info(`Checking plugin ${plugin.id} for categorisation`);
 
-      if (plugin.shouldCategorise(contentToCategorisе)) {
+      if (
+        !plugin.shouldCategorise ||
+        plugin.shouldCategorise(contentToCategorisе)
+      ) {
         log.info(`Plugin ${plugin.id} will attempt categorisation`);
 
         try {
@@ -216,6 +219,7 @@ describe("Document Tests", () => {
       // Create a minimal categorisation plugin without Jest mocks
       const minimalPlugin: CategorisationPlugin = {
         id: "minimal-plugin",
+        // We'll keep this for the test to verify it's called, but it's now optional
         shouldCategorise: (content) => {
           console.log(
             "shouldCategorise called with content:",

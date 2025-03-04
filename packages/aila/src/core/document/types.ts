@@ -58,8 +58,9 @@ export interface CategorisationPlugin {
 
   /**
    * Method to check if categorisation is needed
+   * If not provided, defaults to always returning true
    */
-  shouldCategorise: (content: AilaDocumentContent) => boolean;
+  shouldCategorise?: (content: AilaDocumentContent) => boolean;
 }
 
 /**

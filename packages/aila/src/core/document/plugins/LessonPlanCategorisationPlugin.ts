@@ -28,10 +28,25 @@ export class LessonPlanCategorisationPlugin implements CategorisationPlugin {
 
   /**
    * Check if categorisation is needed
+   * Only categorise if essential fields are missing
    */
   shouldCategorise(content: AilaDocumentContent): boolean {
-    // Always categorize in tests
-    return true;
+    // Check if essential fields are present
+    const hasTitle = !!content.title;
+    const hasSubject = !!content.subject;
+    const hasKeyStage = !!content.keyStage;
+
+    // Only categorise if any essential fields are missing
+    const shouldCategorise = !hasTitle || !hasSubject || !hasKeyStage;
+
+    log.info("LessonPlanCategorisationPlugin.shouldCategorise", {
+      hasTitle,
+      hasSubject,
+      hasKeyStage,
+      shouldCategorise,
+    });
+
+    return shouldCategorise;
   }
 
   /**
