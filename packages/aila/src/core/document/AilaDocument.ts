@@ -43,20 +43,16 @@ export class AilaDocument implements AilaDocumentService {
   }) {
     log.info(`Creating ${this.constructor.name}`);
 
-    // Initialize empty arrays
     this._plugins = [];
     this._categorisationPlugins = [];
 
-    // Set initial content and schema
     this._content = content;
     this._schema = schema;
 
-    // Register plugins
     if (plugins && plugins.length > 0) {
       plugins.forEach((plugin) => this.registerPlugin(plugin));
     }
 
-    // Register categorisation plugins
     if (categorisationPlugins && categorisationPlugins.length > 0) {
       categorisationPlugins.forEach((plugin) =>
         this.registerCategorisationPlugin(plugin),
@@ -179,7 +175,6 @@ export class AilaDocument implements AilaDocumentService {
     content: AilaDocumentContent,
     patch: ValidPatchDocument,
   ): AilaDocumentContent {
-    // Try to use a plugin-specific patch method if available
     const plugin = this.getPluginForContent();
     if (plugin?.applyPatch) {
       const result = plugin.applyPatch(content, patch);
@@ -188,7 +183,6 @@ export class AilaDocument implements AilaDocumentService {
       }
     }
 
-    // Fall back to generic patch application
     const patchResult = applyPatch(content, [patch.value], true, false);
     return this.validateContent(patchResult.newDocument);
   }
