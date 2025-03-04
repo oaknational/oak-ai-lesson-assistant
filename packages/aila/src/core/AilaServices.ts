@@ -32,10 +32,33 @@ export interface AilaAnalyticsService {
 export interface AilaDocumentService {
   content: AilaDocumentContent;
   readonly hasInitialisedContentFromMessages: boolean;
+
+  /**
+   * Extract and apply patches from a string of JSON patches.
+   */
   extractAndApplyLlmPatches(patches: string): void;
+
+  /**
+   * Apply a set of valid patches to the document content.
+   */
   applyValidPatches(validPatches: ValidPatchDocument[]): void;
+
+  /**
+   * Initialize the document with content.
+   */
   initialise(content: AilaDocumentContent): void;
+
+  /**
+   * Initialize the document content based on messages.
+   */
   initialiseContentFromMessages(messages: Message[]): Promise<void>;
+
+  /**
+   * Get the initial state of the document after initialization from messages.
+   * Always returns a document content object, which may be empty if not initialized.
+   * Used to enqueue patches for the initial document state.
+   */
+  getInitialState(): AilaDocumentContent;
 }
 
 export interface AilaChatService {

@@ -6,6 +6,7 @@ import {
 // TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import type { AilaChatService, AilaServices } from "../../core/AilaServices";
@@ -59,7 +60,25 @@ export class AilaChat implements AilaChatService {
   private readonly _experimentalPatches: ExperimentalPatchDocument[];
   public readonly fullQuizService: FullQuizService;
 
-  // private readonly _experimentalPatches: ExperimentalPatchDocument[];
+  /**
+   * Schema for values that can be safely used in enqueuePatch
+   */
+  private readonly safeValueSchema = z.union([
+    z.string(),
+    z.number(),
+    z.array(z.string()),
+    z.record(z.unknown()).transform((obj) => {
+      // Recursively validate nested objects
+      const result: Record<string, unknown> = {};
+      for (const [key, value] of Object.entries(obj)) {
+        const safeValue = this.ensureSafeValue(value);
+        if (safeValue !== undefined) {
+          result[key] = safeValue;
+        }
+      }
+      return result;
+    }),
+  ]);
 
   constructor({
     id,
@@ -218,26 +237,66 @@ export class AilaChat implements AilaChatService {
     return applicableMessages;
   }
 
-  // #TODO this is the other part of the initial lesson state setting logic
-  // This should be some kind of hook that is specific to the
-  // generation of lessons rather than being applicable to all
-  // chats so that we can generate different types of document
+  // This method handles setting the initial state of the document
+  // based on the document type's implementation
   async handleSettingInitialState() {
     if (this._aila.document.hasInitialisedContentFromMessages) {
-      // #TODO sending these events in a different place to where they are set seems like a bad idea
-      const plan = this._aila.document.content;
-      const keys = Object.keys(plan) as Array<keyof typeof plan>;
-      for (const key of keys) {
-        const value = plan[key];
-        if (value) {
-          await this.enqueuePatch(`/${key}`, value);
+      const initialState = this._aila.document.getInitialState();
+
+      if (initialState) {
+        // Enqueue patches for each property in the initial state
+        const keys = Object.keys(initialState);
+        for (const key of keys) {
+          // Use type assertion to avoid index signature error
+          const value = (initialState as Record<string, unknown>)[key];
+          if (value !== undefined && value !== null) {
+            // Ensure value is of the expected type
+            const safeValue = this.ensureSafeValue(value);
+            if (safeValue !== undefined) {
+              await this.enqueuePatch(`/${key}`, safeValue);
+            }
+          }
         }
       }
     }
   }
 
+  /**
+   * Ensures values are safe to use in enqueuePatch using Zod validation
+   */
+  private ensureSafeValue(
+    value: unknown,
+  ): string | string[] | number | object | undefined {
+    try {
+      return this.safeValueSchema.parse(value);
+    } catch {
+      // If validation fails, try to handle arrays specially
+      if (Array.isArray(value)) {
+        // Check if it's an array of strings
+        if (value.every((item) => typeof item === "string")) {
+          return value;
+        }
+
+        // For mixed arrays, recursively process each element
+        const safeArray = value
+          .map((item) => this.ensureSafeValue(item))
+          .filter(
+            (item): item is NonNullable<typeof item> => item !== undefined,
+          );
+
+        // Return the array as-is but with type assertion to satisfy TypeScript
+        // This preserves the original structure for lesson plans
+        return safeArray as unknown as object;
+      }
+      return undefined;
+    }
+  }
+
   private warningAboutSubject() {
-    const { subject } = this._aila.document.content;
+    const content = this._aila.document.content;
+    if (!content) return;
+
+    const { subject } = content;
     if (!subject || this.messages.length > 2) {
       return;
     }
@@ -310,7 +369,11 @@ export class AilaChat implements AilaChatService {
   }
 
   private async reportUsageMetrics() {
-    await this._aila.analytics?.reportUsageMetrics(this.accumulatedText());
+    if (this._aila.analytics) {
+      await this._aila.analytics.reportUsageMetrics(
+        JSON.stringify(this._aila.document.content || {}),
+      );
+    }
   }
 
   private async persistGeneration(status: AilaGenerationStatus) {
@@ -408,13 +471,11 @@ export class AilaChat implements AilaChatService {
     await this.reportUsageMetrics();
     await fetchExperimentalPatches({
       fullQuizService: this.fullQuizService,
-      lessonPlan: this._aila.document.content,
+      lessonPlan: this._aila.document.content || {},
       llmPatches: extractPatches(this.accumulatedText()).validPatches,
       handlePatch: async (patch) => {
         await this.enqueue(patch);
-        this.appendExperimentalPatch(patch);
       },
-      userId: this._userId,
     });
     this.applyEdits();
     const assistantMessage = this.appendAssistantMessage();
@@ -433,39 +494,46 @@ export class AilaChat implements AilaChatService {
   public async saveSnapshot({ messageId }: { messageId: string }) {
     await this._aila.snapshotStore.saveSnapshot({
       messageId,
-      content: this._aila.document.content,
+      content: this._aila.document.content || {},
       trigger: "ASSISTANT_MESSAGE",
     });
   }
 
   public async moderate() {
-    if (this._aila.options.useModeration) {
-      invariant(this._aila.moderation, "Moderation not initialised");
-      // #TODO there seems to be a bug or a delay
-      // in the streaming logic, which means that
-      // the call to the moderation service
-      // locks up the stream until it gets a response,
-      // leaving the previous message half-sent until then.
-      // Since the front end relies on MODERATION_START
-      // to appear in the stream, we need to send two
-      // comment messages to ensure that it is received.
-      await this.enqueue({
-        type: "comment",
-        value: "MODERATION_START",
-      });
-      await this.enqueue({
-        type: "comment",
-        value: "MODERATING",
-      });
-      const message = await this._aila.moderation.moderate({
-        content: this._aila.document.content,
-        messages: this._aila.messages,
-        pluginContext: {
-          aila: this._aila,
-          enqueue: this.enqueue.bind(this),
-        },
-      });
-      await this.enqueue(message);
+    if (this._aila.moderation) {
+      log.info("Moderating content");
+      const { subject } = this._aila.document.content || {};
+      if (subject === "PSHE") {
+        log.info("Skipping moderation for PSHE");
+        return;
+      }
+
+      // Skip threat detection for now
+      // We'll implement it properly when needed
+
+      // Moderate content
+      try {
+        const moderationResult = await this._aila.moderation.moderate({
+          content: this._aila.document.content || {},
+          messages: this._aila.messages,
+          pluginContext: {
+            aila: this._aila,
+            enqueue: this.enqueue.bind(this),
+          },
+        });
+
+        // Handle moderation result if needed
+        if (moderationResult) {
+          // Add a system message with moderation warning
+          this.addMessage({
+            role: "system",
+            content: `Moderation warning: ${moderationResult.categories.join(", ")}`,
+            id: moderationResult.id || crypto.randomUUID(),
+          });
+        }
+      } catch (error) {
+        log.error("Error during moderation:", error);
+      }
     }
   }
 

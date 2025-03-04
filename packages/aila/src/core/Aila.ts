@@ -9,7 +9,7 @@ import {
 } from "../constants";
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
-import { AilaCategorisation } from "../features/categorisation";
+import { AilaCategorisation } from "../features/categorisation/categorisers/AilaCategorisation";
 import type { AilaSnapshotStore } from "../features/snapshotStore";
 import type {
   AilaAnalyticsFeature,
@@ -28,7 +28,10 @@ import type {
 } from "./AilaServices";
 import type { Message } from "./chat";
 import { AilaChat } from "./chat";
-import { AilaDocument } from "./document";
+import { createAilaDocument } from "./document/AilaDocumentFactory";
+import { LessonPlanCategorisationPlugin } from "./document/plugins/LessonPlanCategorisationPlugin";
+import { LessonPlanPlugin } from "./document/plugins/LessonPlanPlugin";
+import { LessonPlanSchema } from "./document/schemas/lessonPlan";
 import type { LLMService } from "./llm/LLMService";
 import { OpenAIService } from "./llm/OpenAIService";
 import type { AilaPlugin } from "./plugins/types";
@@ -76,15 +79,22 @@ export class Aila implements AilaServices {
 
     this._prisma = options.prisma ?? globalPrisma;
 
-    this._document = new AilaDocument({
-      aila: this,
-      content: options.document?.content ?? {},
-      categoriser:
-        options.services?.chatCategoriser ??
-        new AilaCategorisation({
-          aila: this,
-        }),
-    });
+    this._document =
+      options.services?.documentService ??
+      createAilaDocument({
+        aila: this,
+        content: options.document?.content ?? {},
+        plugin: options.document?.plugin ?? new LessonPlanPlugin(),
+        categorisationPlugin:
+          options.document?.categorisationPlugin ??
+          (this._options.useCategorisation
+            ? new LessonPlanCategorisationPlugin(
+                options.services?.chatCategoriser ??
+                  new AilaCategorisation({ aila: this }),
+              )
+            : undefined),
+        schema: options.document?.schema ?? LessonPlanSchema,
+      });
 
     this._analytics = AilaFeatureFactory.createAnalytics(
       this,
@@ -153,14 +163,15 @@ export class Aila implements AilaServices {
   ): AilaOptionsWithDefaultFallbackValues {
     return {
       useRag: options?.useRag ?? true,
+      useErrorReporting: options?.useErrorReporting ?? true,
+      usePersistence: options?.usePersistence ?? true,
+      useModeration: options?.useModeration ?? true,
+      useAnalytics: options?.useAnalytics ?? true,
+      useThreatDetection: options?.useThreatDetection ?? true,
+      useCategorisation: options?.useCategorisation ?? true,
       temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
       numberOfRecordsInRag:
         options?.numberOfRecordsInRag ?? DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
-      usePersistence: options?.usePersistence ?? true,
-      useAnalytics: options?.useAnalytics ?? true,
-      useModeration: options?.useModeration ?? true,
-      useThreatDetection: options?.useThreatDetection ?? true,
-      useErrorReporting: options?.useErrorReporting ?? true,
       model: options?.model ?? DEFAULT_MODEL,
       mode: options?.mode ?? "interactive",
     };

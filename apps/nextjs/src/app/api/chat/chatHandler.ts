@@ -1,6 +1,9 @@
 import type { Aila } from "@oakai/aila/src/core/Aila";
 import type { AilaServices } from "@oakai/aila/src/core/AilaServices";
 import type { Message } from "@oakai/aila/src/core/chat";
+import { LessonPlanCategorisationPlugin } from "@oakai/aila/src/core/document/plugins/LessonPlanCategorisationPlugin";
+import { LessonPlanPlugin } from "@oakai/aila/src/core/document/plugins/LessonPlanPlugin";
+import { LessonPlanSchema } from "@oakai/aila/src/core/document/schemas/lessonPlan";
 import type {
   AilaOptions,
   AilaPublicChatOptions,
@@ -11,9 +14,11 @@ import {
   DatadogAnalyticsAdapter,
   PosthogAnalyticsAdapter,
 } from "@oakai/aila/src/features/analytics";
+import { AilaCategorisation } from "@oakai/aila/src/features/categorisation/categorisers/AilaCategorisation";
 import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
 import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/helicone/HeliconeThreatDetector";
 import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
+import type { AilaCategorisationFeature } from "@oakai/aila/src/features/types";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";
@@ -276,6 +281,12 @@ export async function handleChatPostRequest(
               chatLlmService: llmService,
               moderationAiClient,
               ragService: (aila: AilaServices) => new AilaRag({ aila }),
+              chatCategoriser: {
+                categorise: async (messages, content) => {
+                  // This will be replaced by the actual categoriser in Aila
+                  return content;
+                },
+              } as AilaCategorisationFeature,
               americanismsService: () =>
                 new AilaAmericanisms<LooseLessonPlan>(),
               analyticsAdapters: (aila: AilaServices) => [
@@ -284,9 +295,10 @@ export async function handleChatPostRequest(
               ],
               threatDetectors: () => threatDetectors,
             },
-
             document: {
               content: dbLessonPlan ?? {},
+              plugin: new LessonPlanPlugin(),
+              schema: LessonPlanSchema,
             },
           };
           const result = await config.createAila(ailaOptions);

@@ -1,4 +1,5 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db/client";
+import type { z } from "zod";
 
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AnalyticsAdapter } from "../features/analytics";
@@ -14,9 +15,13 @@ import type {
   AilaModerationFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
-import type { AilaServices } from "./AilaServices";
+import type { AilaServices, AilaDocumentService } from "./AilaServices";
 import type { Message } from "./chat";
-import type { AilaDocumentContent } from "./document/types";
+import type {
+  AilaDocumentContent,
+  DocumentPlugin,
+  CategorisationPlugin,
+} from "./document/types";
 import type { LLMService } from "./llm/LLMService";
 import type { AilaPlugin } from "./plugins/types";
 import type { AilaPromptBuilder } from "./prompt/AilaPromptBuilder";
@@ -45,6 +50,7 @@ export type AilaOptions = AilaPublicChatOptions & {
   useModeration?: boolean;
   useAnalytics?: boolean;
   useThreatDetection?: boolean;
+  useCategorisation?: boolean;
   model?: string;
   mode?: AilaGenerateDocumentMode;
 };
@@ -62,6 +68,9 @@ export type AilaChatInitializationOptions = {
 export type AilaInitializationOptions = {
   document?: {
     content: AilaDocumentContent;
+    plugin?: DocumentPlugin;
+    categorisationPlugin?: CategorisationPlugin;
+    schema?: z.ZodType<AilaDocumentContent>;
   };
   chat: Omit<AilaChatInitializationOptions, "llmService">;
   options?: AilaOptions;
@@ -78,6 +87,7 @@ export type AilaInitializationOptions = {
     chatCategoriser?: AilaCategorisationFeature;
     chatLlmService?: LLMService;
     moderationAiClient?: OpenAILike;
+    documentService?: AilaDocumentService;
     ragService?: (aila: AilaServices) => AilaRagFeature;
     americanismsService?: (aila: AilaServices) => AilaAmericanismsFeature;
     analyticsAdapters?: (aila: AilaServices) => AnalyticsAdapter[];
