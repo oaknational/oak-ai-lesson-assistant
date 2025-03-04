@@ -51,7 +51,7 @@ type ChatContent =
 
 // type ChatMessage = OpenAI.Chat.Completions.ChatCompletionMessageParam;
 
-type ChatMessage =
+export type ChatMessage =
   | OpenAI.Chat.Completions.ChatCompletionSystemMessageParam
   | OpenAI.Chat.Completions.ChatCompletionUserMessageParam;
 

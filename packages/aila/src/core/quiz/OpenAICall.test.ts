@@ -1,10 +1,11 @@
 import { OpenAICallReranker } from "./OpenAIRanker";
+import type { ChatMessage } from "./OpenAIRanker";
 
 // This is here for the purpose of having method of timing / testing other parts of OpenAI Image rating outside of the large reranker set up.
 describe("Test OpenAI Image Chat", () => {
   jest.setTimeout(60000);
   it("Should return a valid response", async () => {
-    const Messages = [
+    const Messages: ChatMessage[] = [
       {
         role: "user",
         content: [
