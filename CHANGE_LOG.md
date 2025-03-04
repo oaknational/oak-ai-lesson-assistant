@@ -1,3 +1,13 @@
+# [1.26.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.6...v1.26.0) (2025-03-04)
+
+
+### Features
+
+* do not trust front end message history ([#570](https://github.com/oaknational/oak-ai-lesson-assistant/issues/570)) ([d504476](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d50447640ea925ef6e0a8a78fbd5adbb9b05f470))
+* further migration steps towards AilaDocument ([#571](https://github.com/oaknational/oak-ai-lesson-assistant/issues/571)) ([4764d0e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4764d0ef7df9b69c64354a73ed1b4f19aee35677))
+* only trust the lesson plan from the server side ([#569](https://github.com/oaknational/oak-ai-lesson-assistant/issues/569)) ([26f4f4d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/26f4f4dfcd1a0d7dfe8868c0e298a8aeeda1add6))
+* start migrating to have an AilaDocument ([#566](https://github.com/oaknational/oak-ai-lesson-assistant/issues/566)) ([16513da](https://github.com/oaknational/oak-ai-lesson-assistant/commit/16513daf41ecf2fb31f3eada67fb09df4811e626))
+
 ## [1.25.6](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.5...v1.25.6) (2025-02-26)
 
 
