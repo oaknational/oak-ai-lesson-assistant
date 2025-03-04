@@ -24,6 +24,7 @@ import type {
   Quiz,
 } from "../protocol/schema";
 import type { Message } from "./chat";
+import type { AilaDocumentContent } from "./document/types";
 import type { AilaPlugin } from "./plugins";
 import type { FullQuizService } from "./quiz/interfaces";
 import type { AilaOptionsWithDefaultFallbackValues } from "./types";
@@ -36,12 +37,11 @@ export interface AilaAnalyticsService {
 }
 
 export interface AilaDocumentService {
-  readonly content: LooseLessonPlan;
+  content: AilaDocumentContent;
   readonly hasInitialisedContentFromMessages: boolean;
-  setContent(content: LooseLessonPlan): void;
   extractAndApplyLlmPatches(patches: string): void;
   applyValidPatches(validPatches: ValidPatchDocument[]): void;
-  initialise(content: LooseLessonPlan): void;
+  initialise(content: AilaDocumentContent): void;
   initialiseContentFromMessages(messages: Message[]): Promise<void>;
 }
 
@@ -83,7 +83,6 @@ export interface AilaQuizGeneratorService {
 export interface AilaServices {
   readonly userId: string | undefined;
   readonly chatId: string;
-  readonly lessonPlan: LooseLessonPlan;
   readonly messages: Message[];
   readonly options: AilaOptionsWithDefaultFallbackValues;
   readonly analytics?: AilaAnalyticsFeature;
