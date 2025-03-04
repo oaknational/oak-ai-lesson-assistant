@@ -85,26 +85,22 @@ describe("Aila", () => {
     });
 
     it("should use the categoriser to determine the lesson plan from user input when it is not already set up", async () => {
-      // Create a mock categorisation plugin directly
-      const mockCategorisationPlugin = {
-        id: "mock-categorisation-plugin",
-        shouldCategorise: jest.fn().mockReturnValue(true),
-        categoriseFromMessages: jest.fn().mockResolvedValue({
+      // Create a proper MockCategoriser instance instead of a manual mock
+      const mockCategoriser = new MockCategoriser({
+        mockedContent: {
           keyStage: "key-stage-2",
           subject: "history",
           title: "Roman Britain",
           topic: "The Roman Empire",
-        }),
-        constructor: { name: "MockCategoriser" },
-        aila: null,
-      };
+        },
+      });
 
       const ailaInstance = new Aila({
         document: {
           content: {},
           schema: LessonPlanSchema,
           categorisationPlugin: () =>
-            new LessonPlanCategorisationPlugin(mockCategorisationPlugin),
+            new LessonPlanCategorisationPlugin(mockCategoriser),
         },
         chat: {
           id: "123",
@@ -153,19 +149,15 @@ describe("Aila", () => {
     });
 
     it("should not use the categoriser to determine the lesson plan from user input if the lesson plan is already set up", async () => {
-      // Create a mock categorisation plugin directly
-      const mockCategorisationPlugin = {
-        id: "mock-categorisation-plugin",
-        shouldCategorise: jest.fn().mockReturnValue(false),
-        categoriseFromMessages: jest.fn().mockResolvedValue({
+      // Create a proper MockCategoriser instance instead of a manual mock
+      const mockCategoriser = new MockCategoriser({
+        mockedContent: {
           keyStage: "key-stage-2",
           subject: "history",
           title: "Roman Britain",
           topic: "The Roman Empire",
-        }),
-        constructor: { name: "MockCategoriser" },
-        aila: null,
-      };
+        },
+      });
 
       const ailaInstance = new Aila({
         document: {
@@ -177,7 +169,7 @@ describe("Aila", () => {
           },
           schema: LessonPlanSchema,
           categorisationPlugin: () =>
-            new LessonPlanCategorisationPlugin(mockCategorisationPlugin),
+            new LessonPlanCategorisationPlugin(mockCategoriser),
         },
         chat: {
           id: "123",
@@ -418,13 +410,15 @@ describe("Aila", () => {
         JSON.stringify(mockedResponse),
       ]);
 
-      // Define mockCategoriser for the test
-      const mockedContent = {
-        title: "Test Title",
-        subject: "Test Subject",
-        keyStage: "key-stage-2",
-      };
-      const mockCategoriser = new MockCategoriser({ mockedContent });
+      // Create a proper MockCategoriser instance instead of a manual mock
+      const mockCategoriser = new MockCategoriser({
+        mockedContent: {
+          keyStage: "key-stage-2",
+          subject: "history",
+          title: "Roman Britain",
+          topic: "The Roman Empire",
+        },
+      });
 
       const ailaInstance = new Aila({
         document: {
