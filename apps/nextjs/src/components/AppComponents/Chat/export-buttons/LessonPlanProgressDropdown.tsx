@@ -1,29 +1,21 @@
 import React, { useState } from "react";
 
-import type {
-  LessonPlanKey,
-  LooseLessonPlan,
-} from "@oakai/aila/src/protocol/schema";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Flex } from "@radix-ui/themes";
 
 import { Icon } from "@/components/Icon";
-import { scrollToRef } from "@/utils/scrollToRef";
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 
-export type LessonPlanProgressDropdownProps = Readonly<{
-  lessonPlan: LooseLessonPlan;
-  isStreaming: boolean;
-  sectionRefs: Partial<
-    Record<LessonPlanKey, React.MutableRefObject<HTMLDivElement | null>>
-  >;
-  documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
-}>;
-
-export const LessonPlanProgressDropdown: React.FC<
-  LessonPlanProgressDropdownProps
-> = ({ lessonPlan, sectionRefs, documentContainerRef, isStreaming }) => {
+export const LessonPlanProgressDropdown: React.FC = () => {
+  const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
+  const setScrollToSection = useLessonPlanStore(
+    (state) => state.setScrollToSection,
+  );
+  const isStreaming = useChatStore(
+    (state) => state.ailaStreamingStatus !== "Idle",
+  );
   const { sections, totalSections, totalSectionsComplete } =
     useProgressForDownloads({ lessonPlan, isStreaming });
   const [openProgressDropDown, setOpenProgressDropDown] = useState(false);
@@ -66,20 +58,8 @@ export const LessonPlanProgressDropdown: React.FC<
                   disabled={!complete}
                   className="mb-7 flex gap-6"
                   onClick={() => {
-                    if (key === "cycle1" && complete) {
-                      if (sectionRefs["cycle1"]) {
-                        scrollToRef({
-                          ref: sectionRefs["cycle1"],
-                          containerRef: documentContainerRef,
-                        });
-                      }
-                    } else if (complete) {
-                      if (sectionRefs[key]) {
-                        scrollToRef({
-                          ref: sectionRefs[key] as React.RefObject<HTMLElement>,
-                          containerRef: documentContainerRef,
-                        });
-                      }
+                    if (complete) {
+                      setScrollToSection(key);
                     }
                   }}
                 >

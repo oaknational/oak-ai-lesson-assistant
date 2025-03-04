@@ -1,7 +1,5 @@
 import { useEffect, useRef } from "react";
 
-import type { UseChatHelpers } from "ai/react";
-
 import {
   Tooltip,
   TooltipContent,
@@ -11,8 +9,9 @@ import { Icon } from "@/components/Icon";
 import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
 import { useChatStore } from "@/stores/AilaStoresProvider";
 
-export interface PromptFormProps
-  extends Pick<UseChatHelpers, "input" | "setInput"> {
+export interface PromptFormProps {
+  input: string;
+  setInput: (input: string) => void;
   onSubmit: (value: string) => void;
   hasMessages: boolean;
   isDisabled: boolean;

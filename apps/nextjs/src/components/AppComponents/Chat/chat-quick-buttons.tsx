@@ -2,11 +2,10 @@ import { useCallback } from "react";
 
 import { findLast } from "remeda";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
 import { Icon } from "@/components/Icon";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { useChatStore } from "@/stores/AilaStoresProvider";
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 import type { AilaStreamingStatus } from "@/stores/chatStore";
 import { canAppendSelector } from "@/stores/chatStore/selectors";
 
@@ -42,29 +41,31 @@ const shouldAllowStop = (
 };
 
 const QuickActionButtons = () => {
-  const chat = useLessonChat();
   const { trackEvent } = useAnalytics();
   const lessonPlanTracking = useLessonPlanTracking();
   const { setDialogWindow } = useDialog();
   const queuedUserAction = useChatStore((state) => state.queuedUserAction);
   const append = useChatStore((state) => state.append);
   const stop = useChatStore((state) => state.stop);
-  const { messages, id } = chat;
+  const id = useLessonPlanStore((state) => state.id);
 
   const ailaStreamingStatus = useChatStore(
     (state) => state.ailaStreamingStatus,
   );
   const shouldAllowUserAction = useChatStore(canAppendSelector);
 
-  const hasMessages = !!messages.length;
+  const stableMessages = useChatStore((state) => state.stableMessages);
+  const hasMessages = useChatStore(
+    (state) => state.stableMessages.length > 0 || !!state.streamingMessage,
+  );
 
   const handleRegenerate = useCallback(() => {
     trackEvent("chat:regenerate", { id: id });
     const lastUserMessage =
-      findLast(messages, (m) => m.role === "user")?.content ?? "";
+      findLast(stableMessages, (m) => m.role === "user")?.content ?? "";
     lessonPlanTracking.onClickRetry(lastUserMessage);
     append("regenerate");
-  }, [append, lessonPlanTracking, messages, trackEvent, id]);
+  }, [append, lessonPlanTracking, stableMessages, trackEvent, id]);
 
   const handleContinue = useCallback(() => {
     trackEvent("chat:continue");

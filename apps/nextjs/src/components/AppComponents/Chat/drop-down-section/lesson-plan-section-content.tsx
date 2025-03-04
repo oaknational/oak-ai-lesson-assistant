@@ -8,26 +8,29 @@ import { MathJax } from "better-react-mathjax";
 
 import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
 
-import { sectionTitle } from ".";
 import { MemoizedReactMarkdownWithStyles } from "../markdown";
 import AddAdditionalMaterialsButton from "./add-additional-materials-button";
 import FlagButton from "./flag-button";
 import ModifyButton from "./modify-button";
+import { sectionTitle } from "./sectionTitle";
 
-export type ChatSectionProps = Readonly<{
-  section: LessonPlanKey;
+export type LessonPlanSectionContentProps = Readonly<{
+  sectionKey: LessonPlanKey;
   value: LessonPlanSectionWhileStreaming;
 }>;
 
-const ChatSection = ({ section, value }: ChatSectionProps) => {
+export const LessonPlanSectionContent = ({
+  sectionKey,
+  value,
+}: LessonPlanSectionContentProps) => {
   return (
     <OakFlex $flexDirection="column">
       <MathJax>
         <MemoizedReactMarkdownWithStyles
           lessonPlanSectionDescription={
-            lessonSectionTitlesAndMiniDescriptions[section]?.description
+            lessonSectionTitlesAndMiniDescriptions[sectionKey]?.description
           }
-          markdown={`${sectionToMarkdown(section, value)}`}
+          markdown={`${sectionToMarkdown(sectionKey, value)}`}
         />
       </MathJax>
       <OakFlex
@@ -36,28 +39,26 @@ const ChatSection = ({ section, value }: ChatSectionProps) => {
         $position="relative"
         $display={["none", "flex"]}
       >
-        {section === "additionalMaterials" && value === "None" ? (
+        {sectionKey === "additionalMaterials" && value === "None" ? (
           <AddAdditionalMaterialsButton
-            sectionTitle={sectionTitle(section)}
-            sectionPath={section}
+            sectionTitle={sectionTitle(sectionKey)}
+            sectionPath={sectionKey}
             sectionValue={value}
           />
         ) : (
           <ModifyButton
-            sectionTitle={sectionTitle(section)}
-            sectionPath={section}
+            sectionTitle={sectionTitle(sectionKey)}
+            sectionPath={sectionKey}
             sectionValue={value}
           />
         )}
 
         <FlagButton
-          sectionTitle={sectionTitle(section)}
-          sectionPath={section}
+          sectionTitle={sectionTitle(sectionKey)}
+          sectionPath={sectionKey}
           sectionValue={value}
         />
       </OakFlex>
     </OakFlex>
   );
 };
-
-export default ChatSection;

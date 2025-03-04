@@ -4,6 +4,7 @@ import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 import type { Message } from "ai";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 const KEYS_TO_COMPLETE = [
   "title",
@@ -38,7 +39,12 @@ const stateLineHasAllSections = (line: string) => {
   return KEYS_TO_COMPLETE.every((key) => line.includes(`"${key}":`));
 };
 
-export function useDemoLocking(messages: Message[], isLoading: boolean) {
+/**
+ * Demo users are allowed to make 10 edits to the lesson plan once all sections are complete
+ */
+export function useDemoLocking() {
+  const isLoading = useChatStore((state) => state.ailaStreamingStatus);
+  const stableMessages = useChatStore((state) => state.stableMessages);
   const demo = useDemoUser();
 
   const [firstCompleteResponse, setFirstCompleteResponse] =
@@ -55,7 +61,7 @@ export function useDemoLocking(messages: Message[], isLoading: boolean) {
       return;
     }
 
-    const message = messages.find(
+    const message = stableMessages.find(
       (m) =>
         m.role === "assistant" &&
         m.content.split("\n").find(stateLineHasAllSections),
@@ -63,7 +69,7 @@ export function useDemoLocking(messages: Message[], isLoading: boolean) {
     if (message) {
       setFirstCompleteResponse(message);
     }
-  }, [demo.isDemoUser, isLoading, messages, firstCompleteResponse]);
+  }, [demo.isDemoUser, isLoading, stableMessages, firstCompleteResponse]);
 
   if (!demo.isDemoUser) {
     return false;
@@ -73,10 +79,10 @@ export function useDemoLocking(messages: Message[], isLoading: boolean) {
     return false;
   }
 
-  const completeMessageIndex = messages.findIndex(
+  const completeMessageIndex = stableMessages.findIndex(
     (m) => m.id === firstCompleteResponse.id,
   );
-  const userMessagesAfterComplete = messages.filter(
+  const userMessagesAfterComplete = stableMessages.filter(
     (m, i) => i > completeMessageIndex && m.role === "user",
   ).length;
 

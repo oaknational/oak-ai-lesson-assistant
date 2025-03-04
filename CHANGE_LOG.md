@@ -1,3 +1,86 @@
+# [1.26.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.6...v1.26.0) (2025-03-04)
+
+
+### Features
+
+* do not trust front end message history ([#570](https://github.com/oaknational/oak-ai-lesson-assistant/issues/570)) ([d504476](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d50447640ea925ef6e0a8a78fbd5adbb9b05f470))
+* further migration steps towards AilaDocument ([#571](https://github.com/oaknational/oak-ai-lesson-assistant/issues/571)) ([4764d0e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4764d0ef7df9b69c64354a73ed1b4f19aee35677))
+* only trust the lesson plan from the server side ([#569](https://github.com/oaknational/oak-ai-lesson-assistant/issues/569)) ([26f4f4d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/26f4f4dfcd1a0d7dfe8868c0e298a8aeeda1add6))
+* start migrating to have an AilaDocument ([#566](https://github.com/oaknational/oak-ai-lesson-assistant/issues/566)) ([16513da](https://github.com/oaknational/oak-ai-lesson-assistant/commit/16513daf41ecf2fb31f3eada67fb09df4811e626))
+
+## [1.25.6](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.5...v1.25.6) (2025-02-26)
+
+
+### Bug Fixes
+
+* bullet styling for portable text ([#567](https://github.com/oaknational/oak-ai-lesson-assistant/issues/567)) ([73e9446](https://github.com/oaknational/oak-ai-lesson-assistant/commit/73e94467a2f93b7e96a44a4fbc0141bbe969a552))
+* next router skipping signed-in check ([#146](https://github.com/oaknational/oak-ai-lesson-assistant/issues/146)) ([c1b9939](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c1b9939563dc20e3ffaf0a56d73d015a11047149))
+
+## [1.25.5](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.4...v1.25.5) (2025-02-24)
+
+
+### Bug Fixes
+
+* getChat overfetching - move initialMessages to store ([#550](https://github.com/oaknational/oak-ai-lesson-assistant/issues/550)) ([0ea1694](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0ea169487451e97ab5975c7db3bb7fb511c223a8))
+
+## [1.25.4](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.3...v1.25.4) (2025-02-20)
+
+
+### Bug Fixes
+
+* maths lesson plan overrides ([#557](https://github.com/oaknational/oak-ai-lesson-assistant/issues/557)) ([e84f44c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e84f44c7cf76397d35ed46a3c7d0310cbd2457e5))
+
+## [1.25.3](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.2...v1.25.3) (2025-02-19)
+
+## [1.25.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.1...v1.25.2) (2025-02-17)
+
+## [1.25.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.0...v1.25.1) (2025-02-14)
+
+
+### Bug Fixes
+
+* lesson flash after moderation ([#545](https://github.com/oaknational/oak-ai-lesson-assistant/issues/545)) ([74b0cba](https://github.com/oaknational/oak-ai-lesson-assistant/commit/74b0cba13edeba9aa153362fb86174fcf571edff))
+
+# [1.25.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.24.0...v1.25.0) (2025-02-14)
+
+
+### Bug Fixes
+
+* add placeholder quiz and annotation for experimental patches. ([#537](https://github.com/oaknational/oak-ai-lesson-assistant/issues/537)) ([66508e4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/66508e4a0fcddcd7d8205a8c9a7fe5b2e734cce9))
+
+
+### Features
+
+* aila threat detection ([#533](https://github.com/oaknational/oak-ai-lesson-assistant/issues/533)) ([9555778](https://github.com/oaknational/oak-ai-lesson-assistant/commit/95557785d318c461927f969aa5481043e9e2e132))
+
+# [1.24.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.23.0...v1.24.0) (2025-02-12)
+
+
+### Bug Fixes
+
+* add basedOn to LessonPlanKeySchema ([#531](https://github.com/oaknational/oak-ai-lesson-assistant/issues/531)) ([b3fd72f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b3fd72f1a341eaa724f956ff152081abf06ffab0))
+* add message queueing to chat store ([#517](https://github.com/oaknational/oak-ai-lesson-assistant/issues/517)) ([ff4b00f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ff4b00f51998c8200f0a789411ce9803d5671f14))
+
+
+### Features
+
+* add feature where the url can define the prompt ([#491](https://github.com/oaknational/oak-ai-lesson-assistant/issues/491)) ([577278b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/577278bc2649cf0baa6edbd2454f8d734e5c484f))
+* admin button to reverse safety violations ([#497](https://github.com/oaknational/oak-ai-lesson-assistant/issues/497)) ([6167aba](https://github.com/oaknational/oak-ai-lesson-assistant/commit/6167abac019cb28d492dceda714ca2245397c58e))
+* ingest dry run single ([#501](https://github.com/oaknational/oak-ai-lesson-assistant/issues/501)) ([6bcf537](https://github.com/oaknational/oak-ai-lesson-assistant/commit/6bcf53715b800a953097e253f6d9399dd543f46d))
+* refetch lesson plan when streaming completes ([#529](https://github.com/oaknational/oak-ai-lesson-assistant/issues/529)) ([a96f702](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a96f7020109ecca9652fbf3dcad6ba0fac19dfc6))
+
+# [1.23.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.22.1...v1.23.0) (2025-02-06)
+
+
+### Bug Fixes
+
+* add message queueing to chat store ([#517](https://github.com/oaknational/oak-ai-lesson-assistant/issues/517)) ([47d5552](https://github.com/oaknational/oak-ai-lesson-assistant/commit/47d555280bcd47aac0481079cde84c1e0a40d76c))
+
+
+### Features
+
+* move actions to chat store ([#510](https://github.com/oaknational/oak-ai-lesson-assistant/issues/510)) ([c9b45cb](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c9b45cbfc2e2d1b28db4c042c21112406650884a))
+
 ## [1.22.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.22.0...v1.22.1) (2025-01-22)
 
 

@@ -1,26 +1,39 @@
 import invariant from "tiny-invariant";
 
-import type { AilaStreamingStatus, ChatStore } from "..";
+import type { GetStore } from "@/stores/AilaStoresProvider";
+
 import { calculateStreamingStatus } from "../actions/calculateStreamingStatus";
 import { getNextStableMessages, parseStreamingMessage } from "../parsing";
-import type { AiMessage } from "../types";
+import type { ChatSetter, ChatGetter, AiMessage } from "../types";
 
 export function handleSetMessages(
-  set: (partial: Partial<ChatStore>) => void,
-  get: () => ChatStore,
+  getStore: GetStore,
+  set: ChatSetter,
+  get: ChatGetter,
 ) {
-  function handleChangedAilaStreamingStatus(
-    ailaStreamingStatus: AilaStreamingStatus,
-  ) {
-    if (ailaStreamingStatus === "Idle" && get().queuedUserAction) {
-      void get().executeQueuedAction();
-    }
+  function lastMessageIsUser(messages: AiMessage[]) {
+    return messages[messages.length - 1]?.role === "user";
   }
 
   return (messages: AiMessage[], isLoading: boolean) => {
-    const originalStreamingStatus = get().ailaStreamingStatus;
-
     if (!isLoading) {
+      // The AI SDK isn't loading: we're idle and all messages are stable
+
+      const nextStableMessages = getNextStableMessages(
+        messages,
+        get().stableMessages,
+      );
+      // NOTE: currently will update the store even if no value needs changing
+      set({
+        ...(nextStableMessages && {
+          stableMessages: nextStableMessages,
+        }),
+        streamingMessage: null,
+        ailaStreamingStatus: "Idle",
+      });
+    } else if (lastMessageIsUser(messages)) {
+      // AI SDK is loading without a message from the API: we're waiting for a response
+
       const nextStableMessages = getNextStableMessages(
         messages,
         get().stableMessages,
@@ -30,9 +43,11 @@ export function handleSetMessages(
           stableMessages: nextStableMessages,
         }),
         streamingMessage: null,
-        ailaStreamingStatus: "Idle",
+        ailaStreamingStatus: "RequestMade",
       });
     } else {
+      // AI SDK is loading with a message from the API: we're streaming
+
       const currentMessageData = messages[messages.length - 1];
       invariant(currentMessageData, "Should have at least one message");
       const streamingMessage = parseStreamingMessage(
@@ -53,12 +68,6 @@ export function handleSetMessages(
         }),
         ailaStreamingStatus: calculateStreamingStatus(currentMessageData),
       });
-    }
-
-    const streamingStatusChanged =
-      get().ailaStreamingStatus !== originalStreamingStatus;
-    if (streamingStatusChanged) {
-      handleChangedAilaStreamingStatus(get().ailaStreamingStatus);
     }
   };
 }

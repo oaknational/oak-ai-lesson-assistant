@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 
-import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
+import scrollIntoView from "scroll-into-view-if-needed";
 
-import { useLessonChat } from "@/components/ContextProviders/ChatProvider";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 
 import AiIcon from "../../AiIcon";
 import type { DemoContextProps } from "../../ContextProviders/Demo";
@@ -23,7 +23,7 @@ const ChatRightHandSideLesson = ({
   closeMobileLessonPullOut,
   demo,
 }: Readonly<ChatRightHandSideLessonProps>) => {
-  const { messages } = useLessonChat();
+  const hasResponses = useChatStore((state) => state.stableMessages.length > 1);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -31,15 +31,11 @@ const ChatRightHandSideLesson = ({
 
   const [showScrollButton, setShowScrollButton] = useState(false);
 
-  // This retains this existing bug, but is fixed on subsequent PRs
-  const sectionRefs: Partial<
-    Record<LessonPlanKey, React.MutableRefObject<HTMLDivElement | null>>
-  > = {};
-
   const scrollToBottom = () => {
     if (chatEndRef.current) {
       setShowScrollButton(false);
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+      // Use ponyfill for safari support
+      scrollIntoView(chatEndRef.current, { behavior: "smooth" });
     }
   };
 
@@ -67,10 +63,7 @@ const ChatRightHandSideLesson = ({
       onScroll={handleScroll}
       style={{ overflowY: "auto" }}
     >
-      <ExportButtons
-        sectionRefs={sectionRefs}
-        documentContainerRef={documentContainerRef}
-      />
+      <ExportButtons />
       <MobileExportButtons
         closeMobileLessonPullOut={closeMobileLessonPullOut}
       />
@@ -91,12 +84,11 @@ const ChatRightHandSideLesson = ({
         <LessonPlanDisplay
           showLessonMobile={showLessonMobile}
           chatEndRef={chatEndRef}
-          sectionRefs={sectionRefs}
           documentContainerRef={documentContainerRef}
         />
       </div>
       <div
-        className={`${messages.length > 1 && showLessonMobile ? "flex" : "hidden"} fixed bottom-20 left-0 right-0 items-center justify-center duration-150 sm:hidden`}
+        className={`${hasResponses && showLessonMobile ? "flex" : "hidden"} fixed bottom-20 left-0 right-0 items-center justify-center duration-150 sm:hidden`}
       >
         <ChatButton
           variant="primary"

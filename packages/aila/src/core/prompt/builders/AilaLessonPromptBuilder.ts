@@ -6,7 +6,7 @@ import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 import { getRelevantLessonPlans, parseSubjectsForRagSearch } from "@oakai/rag";
 
-import { DEFAULT_RAG_LESSON_PLANS } from "../../../constants";
+import { DEFAULT_NUMBER_OF_RECORDS_IN_RAG } from "../../../constants";
 import { tryWithErrorReporting } from "../../../helpers/errorReporting";
 import { LLMResponseJsonSchema } from "../../../protocol/jsonPatchProtocol";
 import type { LooseLessonPlan } from "../../../protocol/schema";
@@ -42,7 +42,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
   }
 
   private async fetchBaseLessonPlan(): Promise<LooseLessonPlan | undefined> {
-    const basedOnId = this._aila.lesson?.plan?.basedOn?.id;
+    const basedOnId = this._aila.document?.content?.basedOn?.id;
     if (!basedOnId) {
       return;
     }
@@ -69,7 +69,8 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
       };
     }
 
-    const { title, subject, keyStage, topic } = this._aila?.lessonPlan ?? {};
+    const { title, subject, keyStage, topic } =
+      this._aila?.document?.content ?? {};
 
     if (!title || !subject || !keyStage) {
       log.error("Missing title, subject or keyStage, returning empty content");
@@ -119,8 +120,8 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
         keyStage,
         id: chatId,
         k:
-          this._aila?.options.numberOfLessonPlansInRag ??
-          DEFAULT_RAG_LESSON_PLANS,
+          this._aila?.options.numberOfRecordsInRag ??
+          DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
         prisma: globalPrisma,
         chatId,
         userId,
@@ -146,7 +147,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
     relevantLessonPlans: string,
     baseLessonPlan: LooseLessonPlan | undefined,
   ): string {
-    const lessonPlan = this._aila?.lessonPlan ?? {};
+    const lessonPlan = this._aila?.document?.content ?? {};
     const args: TemplateProps = {
       lessonPlan,
       relevantLessonPlans,

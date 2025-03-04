@@ -9,19 +9,18 @@ import type {
 } from "../../protocol/jsonPatchProtocol";
 import { safelyReportAnalyticsEvent } from "../reportAnalyticsEvent";
 
-export function isHeliconeError(error: unknown): error is Error {
-  return (
-    error instanceof Error &&
-    "code" in error &&
-    error.code === "PROMPT_THREAT_DETECTED"
-  );
-}
-
-export async function handleHeliconeError(
-  userId: string,
-  chatId: string,
-  error: AilaThreatDetectionError,
-  prisma: PrismaClientWithAccelerate,
+export async function handleThreatDetectionError(
+  {
+    userId,
+    chatId,
+    error,
+    prisma,
+  }: {
+    userId: string;
+    chatId: string;
+    error: AilaThreatDetectionError;
+    prisma: PrismaClientWithAccelerate;
+  },
   SafetyViolations = defaultSafetyViolations,
 ): Promise<ErrorDocument | ActionDocument> {
   await safelyReportAnalyticsEvent({

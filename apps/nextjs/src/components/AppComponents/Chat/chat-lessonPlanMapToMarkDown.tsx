@@ -10,7 +10,7 @@ import { MathJax } from "better-react-mathjax";
 import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
 
 import { notEmpty } from "./chat-lessonPlanDisplay";
-import { sectionTitle } from "./drop-down-section";
+import { sectionTitle } from "./drop-down-section/sectionTitle";
 import { MemoizedReactMarkdownWithStyles } from "./markdown";
 
 const excludedKeys = [

@@ -1,15 +1,19 @@
 import type { Message } from "../core/chat";
+import type { AilaDocumentContent } from "../core/document/types";
 import type { AilaPluginContext } from "../core/plugins";
 import type { ModerationDocument } from "../protocol/jsonPatchProtocol";
-import type { AilaPersistedChat, LooseLessonPlan } from "../protocol/schema";
-import type { AilaErrorBreadcrumb, AilaErrorSeverity } from "./errorReporting/types";
+import type { AilaPersistedChat } from "../protocol/schema";
+import type {
+  AilaErrorBreadcrumb,
+  AilaErrorSeverity,
+} from "./errorReporting/types";
 import type { AilaGeneration } from "./generation/AilaGeneration";
 import type { AilaThreatDetector } from "./threatDetection";
 
 export interface AilaModerationFeature {
   moderate(options: {
     messages: Message[];
-    lessonPlan: LooseLessonPlan;
+    content: AilaDocumentContent;
     pluginContext: AilaPluginContext;
   }): Promise<ModerationDocument>;
 }
@@ -30,7 +34,7 @@ export interface AilaPersistenceFeature {
 }
 
 export interface AilaThreatDetectionFeature {
-  detector: AilaThreatDetector;
+  detectors: AilaThreatDetector[];
 }
 
 export interface AilaErrorReportingFeature {
@@ -57,8 +61,8 @@ export interface AilaErrorReportingFeature {
 }
 
 export interface AilaCategorisationFeature {
-  categorise(
+  categorise<T extends AilaDocumentContent>(
     messages: Message[],
-    lessonPlan: LooseLessonPlan,
-  ): Promise<LooseLessonPlan | undefined>;
+    content: AilaDocumentContent,
+  ): Promise<T | undefined>;
 }

@@ -20,6 +20,8 @@ const getBaseUrl = () => {
 
 type CombinedRouter = AppRouter & ChatAppRouter;
 
+export type TrpcUtils = ReturnType<typeof trpc.useUtils>;
+
 const trpc = createTRPCReact<CombinedRouter>();
 
 const discriminatingRouterLink: TRPCLink<CombinedRouter> = (runtime) => {

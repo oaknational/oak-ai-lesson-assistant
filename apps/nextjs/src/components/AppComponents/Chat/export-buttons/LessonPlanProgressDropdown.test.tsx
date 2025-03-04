@@ -18,6 +18,10 @@ import * as stories from "./LessonPlanProgressDropdown.stories";
 const { PartiallyCompleted, FullyCompleted, PartialCycles } =
   composeStories(stories);
 
+export const useClerkDemoMetadata = jest.fn(() => ({
+  demoFeatureEnabled: false,
+}));
+
 describe("LessonPlanProgressDropdown", () => {
   it("displays the dropdown menu when clicked and shows correct completed sections", async () => {
     render(<PartiallyCompleted />);
