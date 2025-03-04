@@ -495,8 +495,8 @@ export async function DummyOpenAICall() {
       },
     ],
   });
-  console.log("Image description received:", response);
-  console.log("Image description received:", response.choices[0]);
+  log.info("Image description received:", response);
+  log.info("Image description received:", response.choices[0]);
 
   return response.choices[0]?.message.content;
 }
