@@ -84,15 +84,11 @@ export class Aila implements AilaServices {
       createAilaDocument({
         aila: this,
         content: options.document?.content ?? {},
-        plugin: options.document?.plugin ?? new LessonPlanPlugin(),
+        plugin: options.document?.plugin,
         categorisationPlugin:
-          options.document?.categorisationPlugin ??
-          (this._options.useCategorisation
-            ? new LessonPlanCategorisationPlugin(
-                options.services?.chatCategoriser ??
-                  new AilaCategorisation({ aila: this }),
-              )
-            : undefined),
+          options.document?.categorisationPlugin instanceof Function
+            ? options.document.categorisationPlugin(this)
+            : options.document?.categorisationPlugin,
         schema: options.document?.schema ?? LessonPlanSchema,
       });
 
@@ -168,7 +164,6 @@ export class Aila implements AilaServices {
       useModeration: options?.useModeration ?? true,
       useAnalytics: options?.useAnalytics ?? true,
       useThreatDetection: options?.useThreatDetection ?? true,
-      useCategorisation: options?.useCategorisation ?? true,
       temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
       numberOfRecordsInRag:
         options?.numberOfRecordsInRag ?? DEFAULT_NUMBER_OF_RECORDS_IN_RAG,

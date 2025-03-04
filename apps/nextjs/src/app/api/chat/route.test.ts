@@ -1,4 +1,6 @@
 import { Aila } from "@oakai/aila/src/core/Aila";
+import { LessonPlanCategorisationPlugin } from "@oakai/aila/src/core/document/plugins/LessonPlanCategorisationPlugin";
+import { LessonPlanSchema } from "@oakai/aila/src/core/document/schemas/lessonPlan";
 import { MockLLMService } from "@oakai/aila/src/core/llm/MockLLMService";
 import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
 import { MockCategoriser } from "@oakai/aila/src/features/categorisation/categorisers/MockCategoriser";
@@ -54,10 +56,15 @@ describe("Chat API Route", () => {
                 userId,
                 messages: options?.chat?.messages ?? [],
               },
+              document: {
+                content: {},
+                schema: LessonPlanSchema,
+                categorisationPlugin: () =>
+                  new LessonPlanCategorisationPlugin(mockChatCategoriser),
+              },
               plugins: [],
               services: {
                 chatLlmService: mockLLMService,
-                chatCategoriser: mockChatCategoriser,
               },
             };
             const ailaInstance = new Aila(ailaConfig);

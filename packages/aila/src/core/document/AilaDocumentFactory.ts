@@ -10,7 +10,7 @@ import type {
 } from "./types";
 
 /**
- * Create a new AilaDocument with the specified plugin and schema
+ * Create a new AilaDocument with the specified schema and optional plugins
  */
 export function createAilaDocument({
   aila,
@@ -21,10 +21,16 @@ export function createAilaDocument({
 }: {
   aila: AilaServices;
   content?: AilaDocumentContent;
-  plugin: DocumentPlugin;
+  plugin?: DocumentPlugin;
   categorisationPlugin?: CategorisationPlugin;
   schema: z.ZodType<AilaDocumentContent>;
 }): AilaDocumentService {
+  // Create plugins array if a plugin is provided
+  const plugins: DocumentPlugin[] = [];
+  if (plugin) {
+    plugins.push(plugin);
+  }
+
   // Create categorisation plugins array if a plugin is provided
   const categorisationPlugins: CategorisationPlugin[] = [];
   if (categorisationPlugin) {
@@ -34,7 +40,7 @@ export function createAilaDocument({
   return AilaDocument.create({
     aila,
     content,
-    plugins: [plugin],
+    plugins,
     categorisationPlugins,
     schema,
   });

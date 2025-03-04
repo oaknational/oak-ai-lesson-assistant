@@ -5,6 +5,8 @@ import type { AilaCategorisation } from "../features/categorisation";
 import { MockCategoriser } from "../features/categorisation/categorisers/MockCategoriser";
 import { Aila } from "./Aila";
 import { AilaAuthenticationError } from "./AilaError";
+import { LessonPlanCategorisationPlugin } from "./document/plugins/LessonPlanCategorisationPlugin";
+import { LessonPlanSchema } from "./document/schemas/lessonPlan";
 import { MockLLMService } from "./llm/MockLLMService";
 
 describe("Aila", () => {
@@ -96,6 +98,11 @@ describe("Aila", () => {
       const ailaInstance = new Aila({
         document: {
           content: {},
+          schema: LessonPlanSchema,
+          categorisationPlugin: () =>
+            new LessonPlanCategorisationPlugin(
+              mockCategoriser as unknown as AilaCategorisation,
+            ),
         },
         chat: {
           id: "123",
@@ -116,9 +123,6 @@ describe("Aila", () => {
           useModeration: false,
         },
         plugins: [],
-        services: {
-          chatCategoriser: mockCategoriser as unknown as AilaCategorisation,
-        },
       });
 
       await ailaInstance.initialise();
@@ -145,6 +149,11 @@ describe("Aila", () => {
             subject: "history",
             keyStage: "key-stage-2",
           },
+          schema: LessonPlanSchema,
+          categorisationPlugin: () =>
+            new LessonPlanCategorisationPlugin(
+              mockCategoriser as unknown as AilaCategorisation,
+            ),
         },
         chat: {
           id: "123",
@@ -165,9 +174,6 @@ describe("Aila", () => {
           useModeration: false,
         },
         plugins: [],
-        services: {
-          chatCategoriser: mockCategoriser as unknown as AilaCategorisation,
-        },
       });
 
       await ailaInstance.initialise();
@@ -323,7 +329,6 @@ describe("Aila", () => {
         plugins: [],
         services: {
           chatLlmService: mockLLMService,
-          chatCategoriser: mockChatCategoriser,
         },
       });
 
@@ -386,6 +391,16 @@ describe("Aila", () => {
             keyStage: "key-stage-2",
             topic: "Roman Britain",
           },
+          schema: LessonPlanSchema,
+          categorisationPlugin: () =>
+            new LessonPlanCategorisationPlugin({
+              categorise: jest.fn().mockResolvedValue({
+                keyStage: "key-stage-2",
+                subject: "history",
+                title: "Roman Britain",
+                topic: "Roman Britain",
+              }),
+            }),
         },
         chat: {
           id: "123",
@@ -428,6 +443,11 @@ describe("Aila", () => {
       const ailaInstance = new Aila({
         document: {
           content: {},
+          schema: LessonPlanSchema,
+          categorisationPlugin: () =>
+            new LessonPlanCategorisationPlugin(
+              mockCategoriser as unknown as AilaCategorisation,
+            ),
         },
         chat: { id: "123", userId: "user123" },
         options: {
@@ -438,7 +458,6 @@ describe("Aila", () => {
         },
         services: {
           chatLlmService: new MockLLMService(),
-          chatCategoriser: mockCategoriser,
         },
         plugins: [],
       });
@@ -471,6 +490,11 @@ describe("Aila", () => {
       const ailaInstance = new Aila({
         document: {
           content: {},
+          schema: LessonPlanSchema,
+          categorisationPlugin: () =>
+            new LessonPlanCategorisationPlugin(
+              mockCategoriser as unknown as AilaCategorisation,
+            ),
         },
         chat: { id: "123", userId: "user123" },
         options: {
@@ -480,7 +504,6 @@ describe("Aila", () => {
           useModeration: false,
         },
         services: {
-          chatCategoriser: mockCategoriser,
           chatLlmService: mockLLMService,
         },
         plugins: [],

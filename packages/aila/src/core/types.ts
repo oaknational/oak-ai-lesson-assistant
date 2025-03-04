@@ -50,7 +50,6 @@ export type AilaOptions = AilaPublicChatOptions & {
   useModeration?: boolean;
   useAnalytics?: boolean;
   useThreatDetection?: boolean;
-  useCategorisation?: boolean;
   model?: string;
   mode?: AilaGenerateDocumentMode;
 };
@@ -69,7 +68,9 @@ export type AilaInitializationOptions = {
   document?: {
     content: AilaDocumentContent;
     plugin?: DocumentPlugin;
-    categorisationPlugin?: CategorisationPlugin;
+    categorisationPlugin?:
+      | CategorisationPlugin
+      | ((aila: AilaServices) => CategorisationPlugin);
     schema?: z.ZodType<AilaDocumentContent>;
   };
   chat: Omit<AilaChatInitializationOptions, "llmService">;
@@ -84,7 +85,6 @@ export type AilaInitializationOptions = {
   promptBuilder?: AilaPromptBuilder;
   plugins: AilaPlugin[];
   services?: {
-    chatCategoriser?: AilaCategorisationFeature;
     chatLlmService?: LLMService;
     moderationAiClient?: OpenAILike;
     documentService?: AilaDocumentService;

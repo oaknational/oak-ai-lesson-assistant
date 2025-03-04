@@ -281,12 +281,6 @@ export async function handleChatPostRequest(
               chatLlmService: llmService,
               moderationAiClient,
               ragService: (aila: AilaServices) => new AilaRag({ aila }),
-              chatCategoriser: {
-                categorise: async (messages, content) => {
-                  // This will be replaced by the actual categoriser in Aila
-                  return content;
-                },
-              } as AilaCategorisationFeature,
               americanismsService: () =>
                 new AilaAmericanisms<LooseLessonPlan>(),
               analyticsAdapters: (aila: AilaServices) => [
@@ -297,8 +291,11 @@ export async function handleChatPostRequest(
             },
             document: {
               content: dbLessonPlan ?? {},
-              plugin: new LessonPlanPlugin(),
               schema: LessonPlanSchema,
+              categorisationPlugin: (aila: AilaServices) =>
+                new LessonPlanCategorisationPlugin(
+                  new AilaCategorisation({ aila }),
+                ),
             },
           };
           const result = await config.createAila(ailaOptions);
