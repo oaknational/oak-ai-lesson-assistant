@@ -1,4 +1,5 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
+import { aiLogger } from "@oakai/logger";
 import type { OpenAI } from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
@@ -20,6 +21,9 @@ import {
   starterQuizQuestionSuitabilityDescriptionSchema,
   testRatingSchema,
 } from "./rerankers/RerankerStructuredOutputSchema";
+
+// Create a logger instance for the quiz module
+const log = aiLogger("aila:quiz");
 
 // OpenAI model constant
 // const OPENAI_MODEL = "gpt-4o-2024-08-06";
@@ -235,7 +239,7 @@ async function evaluateStarterQuiz<
     "priorKnowledge",
   );
   // TODO: Change remove zodtype any - make specific type.
-  console.log("openAIMessage", JSON.stringify(openAIMessage));
+  log.info("openAIMessage", JSON.stringify(openAIMessage));
   const response = await OpenAICallRerankerWithSchema(
     openAIMessage,
     max_tokens,
@@ -327,7 +331,7 @@ export async function OpenAICallReranker(
 
   const endTime = Date.now();
   const durationInSeconds = (endTime - startTime) / 1000;
-  console.log(`OpenAI API call took ${durationInSeconds.toFixed(2)} seconds`);
+  log.info(`OpenAI API call took ${durationInSeconds.toFixed(2)} seconds`);
   return response;
 }
 
@@ -353,7 +357,7 @@ export async function OpenAICallLogProbs(
   });
   const endTime = Date.now();
   const durationInSeconds = (endTime - startTime) / 1000;
-  console.log(
+  log.info(
     `OpenAI API log_probs call took ${durationInSeconds.toFixed(2)} seconds`,
   );
   return response;
