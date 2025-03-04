@@ -103,8 +103,8 @@ describe("Aila", () => {
         document: {
           content: {},
           schema: LessonPlanSchema,
-          // Don't use the categorisation plugin to avoid circular references
-          // categorisationPlugin: mockCategorisationPlugin,
+          categorisationPlugin: () =>
+            new LessonPlanCategorisationPlugin(mockCategorisationPlugin),
         },
         chat: {
           id: "123",
@@ -113,8 +113,7 @@ describe("Aila", () => {
             {
               id: "1",
               role: "user",
-              content:
-                "Create a lesson about Roman Britain for Key Stage 2 History",
+              content: "Create a lesson plan about science",
             },
           ],
         },
@@ -123,6 +122,9 @@ describe("Aila", () => {
           useRag: false,
           useAnalytics: false,
           useModeration: false,
+        },
+        services: {
+          chatLlmService: new MockLLMService(),
         },
         plugins: [],
       });
@@ -174,8 +176,8 @@ describe("Aila", () => {
             topic: "The Roman Empire",
           },
           schema: LessonPlanSchema,
-          // Don't use the categorisation plugin to avoid circular references
-          // categorisationPlugin: mockCategorisationPlugin,
+          categorisationPlugin: () =>
+            new LessonPlanCategorisationPlugin(mockCategorisationPlugin),
         },
         chat: {
           id: "123",
@@ -347,6 +349,7 @@ describe("Aila", () => {
       const ailaInstance = new Aila({
         document: {
           content: {},
+          schema: LessonPlanSchema,
           categorisationPlugin: () =>
             new LessonPlanCategorisationPlugin(mockChatCategoriser),
         },
@@ -414,6 +417,15 @@ describe("Aila", () => {
       const chatLlmService = new MockLLMService([
         JSON.stringify(mockedResponse),
       ]);
+
+      // Define mockCategoriser for the test
+      const mockedContent = {
+        title: "Test Title",
+        subject: "Test Subject",
+        keyStage: "key-stage-2",
+      };
+      const mockCategoriser = new MockCategoriser({ mockedContent });
+
       const ailaInstance = new Aila({
         document: {
           content: {
@@ -424,14 +436,7 @@ describe("Aila", () => {
           },
           schema: LessonPlanSchema,
           categorisationPlugin: () =>
-            new LessonPlanCategorisationPlugin({
-              categorise: jest.fn().mockResolvedValue({
-                keyStage: "key-stage-2",
-                subject: "history",
-                title: "Roman Britain",
-                topic: "Roman Britain",
-              }),
-            }),
+            new LessonPlanCategorisationPlugin(mockCategoriser),
         },
         chat: {
           id: "123",
@@ -478,7 +483,17 @@ describe("Aila", () => {
           categorisationPlugin: () =>
             new LessonPlanCategorisationPlugin(mockCategoriser),
         },
-        chat: { id: "123", userId: "user123" },
+        chat: {
+          id: "123",
+          userId: "user123",
+          messages: [
+            {
+              id: "1",
+              role: "user",
+              content: "Create a lesson plan about science",
+            },
+          ],
+        },
         options: {
           usePersistence: false,
           useRag: false,
@@ -523,7 +538,17 @@ describe("Aila", () => {
           categorisationPlugin: () =>
             new LessonPlanCategorisationPlugin(mockCategoriser),
         },
-        chat: { id: "123", userId: "user123" },
+        chat: {
+          id: "123",
+          userId: "user123",
+          messages: [
+            {
+              id: "1",
+              role: "user",
+              content: "Create a lesson plan about science",
+            },
+          ],
+        },
         options: {
           usePersistence: false,
           useRag: false,

@@ -21,7 +21,7 @@ export class AilaDocument implements AilaDocumentService {
   private readonly _invalidPatches: ValidPatchDocument[] = [];
   private readonly _plugins: DocumentPlugin[] = [];
   private readonly _categorisationPlugins: CategorisationPlugin[] = [];
-  private readonly _schema: z.ZodType<AilaDocumentContent>;
+  private readonly _schema?: z.ZodType<AilaDocumentContent>;
 
   /**
    * Create a new AilaDocument
@@ -31,7 +31,7 @@ export class AilaDocument implements AilaDocumentService {
    * @param schema Schema for document validation
    */
   constructor({
-    content,
+    content = {},
     plugins = [],
     categorisationPlugins = [],
     schema,
@@ -39,24 +39,28 @@ export class AilaDocument implements AilaDocumentService {
     content?: AilaDocumentContent;
     plugins?: DocumentPlugin[];
     categorisationPlugins?: CategorisationPlugin[];
-    schema: z.ZodType<AilaDocumentContent>;
+    schema?: z.ZodType<AilaDocumentContent>;
   }) {
-    log.info("Creating AilaDocument");
+    log.info(`Creating ${this.constructor.name}`);
 
-    if (content) {
-      this._content = content;
-    }
+    // Initialize empty arrays
+    this._plugins = [];
+    this._categorisationPlugins = [];
 
-    this._plugins = plugins;
-    this._categorisationPlugins = categorisationPlugins;
+    // Set initial content and schema
+    this._content = content;
     this._schema = schema;
 
-    for (const plugin of plugins) {
-      this.registerPlugin(plugin);
+    // Register plugins
+    if (plugins && plugins.length > 0) {
+      plugins.forEach((plugin) => this.registerPlugin(plugin));
     }
 
-    for (const plugin of categorisationPlugins) {
-      this.registerCategorisationPlugin(plugin);
+    // Register categorisation plugins
+    if (categorisationPlugins && categorisationPlugins.length > 0) {
+      categorisationPlugins.forEach((plugin) =>
+        this.registerCategorisationPlugin(plugin),
+      );
     }
   }
 
@@ -71,6 +75,9 @@ export class AilaDocument implements AilaDocumentService {
    * Register a categorisation plugin
    */
   registerCategorisationPlugin(plugin: CategorisationPlugin): void {
+    log.info("registerCategorisationPlugin called", {
+      pluginId: plugin.id,
+    });
     this._categorisationPlugins.push(plugin);
   }
 
@@ -191,7 +198,7 @@ export class AilaDocument implements AilaDocumentService {
    */
   private validateContent(content: AilaDocumentContent): AilaDocumentContent {
     try {
-      return this._schema.parse(content);
+      return this._schema?.parse(content) ?? content;
     } catch (error) {
       log.warn("Content validation failed", { error });
       return content;
