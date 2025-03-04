@@ -158,10 +158,10 @@ function combinePrompts(
 }
 
 /**
- * Converts an array of quiz questions into a formatted array of prompts for OpenAI
+ * Converts an array of quiz questions into a formatted message for OpenAI
  *
  * @param {QuizQuestion[]} questions - An array of QuizQuestion objects to be converted.
- * @returns {any[]} An array of formatted content objects ready for use with a language model.
+ * @returns {ChatMessage} A formatted ChatMessage object ready for use with OpenAI API.
  */
 function quizQuestionsToOpenAIMessageFormat(
   questions: QuizQuestion[],
@@ -178,12 +178,15 @@ function quizQuestionsToOpenAIMessageFormat(
 }
 
 /**
- * Combines a lesson plan, quiz questions, and a system prompt into a formatted array of prompts for OpenAI Reranking. Interleaves the quiz questions with messages annotating which lesson it is. Dynamically adds the correct system prompt for the quiz type, with a system prompt section for either the prior knowledge or key learning points.
+ * Combines a lesson plan, quiz questions, and a system prompt into a formatted array of messages for OpenAI.
+ * Includes the appropriate section of the lesson plan (prior knowledge or key learning points) based on the
+ * provided section category.
+ *
  * @param {LooseLessonPlan} lessonPlan - The lesson plan to be used in the prompts.
  * @param {QuizQuestion[]} questions - An array of QuizQuestion objects to be converted.
- * @param {SystemPrompt} systemPrompt - The system prompt to be used in the prompts.
- * @param {sectionCategory} lessonPlanSectionForConsideration - The section of the lesson plan to be considered in the prompts.
- * @returns {any[]} An array of formatted content objects ready for use with a language model.
+ * @param {OpenAI.Chat.Completions.ChatCompletionSystemMessageParam} systemPrompt - The system prompt to be used.
+ * @param {sectionCategory} lessonPlanSectionForConsideration - The section of the lesson plan to be considered.
+ * @returns {ChatMessage[]} An array of formatted messages ready for use with OpenAI API.
  */
 function combinePromptsAndQuestions(
   lessonPlan: LooseLessonPlan,
@@ -215,8 +218,8 @@ function combinePromptsAndQuestions(
  * @function
  * @param {LooseLessonPlan} lessonPlan - The lesson plan object containing information about the lesson.
  * @param {QuizQuestion[]} questions - An array of quiz questions to be evaluated.
- * @param {number} [max_tokens=1500] - The maximum number of tokens to be used in the OpenAI API call. Defaults to 1500.
- *
+ * @param {number} [max_tokens=1500] - The maximum number of tokens to be used in the OpenAI API call.
+ * @param {T} ranking_schema - The Zod schema to be used for parsing the response.
  * @returns {Promise<OpenAI.Chat.Completions.ChatCompletion>} A promise that resolves to the OpenAI chat completion response.
  */
 async function evaluateStarterQuiz<
@@ -245,15 +248,16 @@ async function evaluateStarterQuiz<
 
 /**
  * Evaluates a quiz by combining lesson plan information, quiz questions, and a system prompt,
- * then sends this combined information to an OpenAI model for analysis. Generic version of evaluateStarterQuiz
+ * then sends this combined information to an OpenAI model for analysis.
  *
  * @async
  * @function
  * @param {LooseLessonPlan} lessonPlan - The lesson plan object containing information about the lesson.
  * @param {QuizQuestion[]} questions - An array of quiz questions to be evaluated.
- * @param {number} [max_tokens=1500] - The maximum number of tokens to be used in the OpenAI API call. Defaults to 1500.
- * @param {z.ZodType<any>} [ranking_schema=starterQuizQuestionSuitabilityDescriptionSchema] - The schema to be used for parsing the response. Defaults to the starter quiz question suitability description schema.
- * @returns {Promise<OpenAI.Chat.Completions.ChatCompletion>} A promise that resolves to the OpenAI chat completion response.
+ * @param {number} [max_tokens=1500] - The maximum number of tokens to be used in the OpenAI API call.
+ * @param {T} ranking_schema - The Zod schema to be used for parsing the response.
+ * @param {QuizPath} quizType - The type of quiz being evaluated (determines which lesson plan section to use).
+ * @returns {Promise<ParsedChatCompletion<z.infer<T>>>} A promise that resolves to the parsed OpenAI chat completion response.
  */
 async function evaluateQuiz<
   T extends z.ZodType<BaseType & Record<string, unknown>>,
@@ -322,6 +326,16 @@ export {
 //   return content;
 // }
 
+/**
+ * Makes an OpenAI API call for reranking purposes.
+ *
+ * @async
+ * @function
+ * @param {ChatMessage[]} messages - The messages to send to the OpenAI API.
+ * @param {number} [max_tokens=500] - The maximum number of tokens to generate.
+ * @param {z.ZodType<BaseType & Record<string, unknown>>} [schema] - Optional schema for response validation.
+ * @returns {Promise<OpenAI.Chat.Completions.ChatCompletion>} A promise that resolves to the OpenAI chat completion response.
+ */
 export async function OpenAICallReranker(
   messages: ChatMessage[],
   max_tokens: number = 500,
@@ -377,6 +391,17 @@ export async function OpenAICallLogProbs(
   return response;
 }
 
+/**
+ * Implements a cross-encoder approach using OpenAI's API by manipulating logit biases.
+ * This function allows for comparing multiple options by analyzing token probabilities.
+ *
+ * @async
+ * @function
+ * @param {OpenAI.Chat.Completions.ChatCompletionSystemMessageParam} reranking_prompt - The system prompt for reranking.
+ * @param {ChatMessage[]} reranking_messages - The messages to be ranked (must be fewer than 10).
+ * @param {number} [bias_constant=100] - The bias value to apply to tokens.
+ * @returns {Promise<OpenAI.Chat.Completions.ChatCompletion>} A promise that resolves to the OpenAI chat completion response.
+ */
 export async function OpenAICallCrossEncoder(
   reranking_prompt: OpenAI.Chat.Completions.ChatCompletionSystemMessageParam,
   reranking_messages: ChatMessage[],
@@ -409,6 +434,16 @@ export async function OpenAICallCrossEncoder(
   return response;
 }
 
+/**
+ * Makes an OpenAI API call with schema validation using the beta completions API.
+ *
+ * @async
+ * @function
+ * @param {ChatMessage[]} messages - The messages to send to the OpenAI API.
+ * @param {number} [max_tokens=500] - The maximum number of tokens to generate.
+ * @param {z.ZodType<BaseType & Record<string, unknown>>} schema - The Zod schema for response validation.
+ * @returns {Promise<ParsedChatCompletion<z.infer<typeof schema>>>} A promise that resolves to the parsed OpenAI chat completion.
+ */
 export async function OpenAICallRerankerWithSchema(
   messages: ChatMessage[],
   max_tokens: number = 500,
@@ -427,6 +462,14 @@ export async function OpenAICallRerankerWithSchema(
   return response;
 }
 
+/**
+ * A test function that makes a simple OpenAI API call with image inputs.
+ * Used for testing the OpenAI client configuration.
+ *
+ * @async
+ * @function
+ * @returns {Promise<string | undefined>} The content of the OpenAI response or undefined.
+ */
 export async function DummyOpenAICall() {
   const userId = "test-user-id";
   const chatId = "test-chat-id";
