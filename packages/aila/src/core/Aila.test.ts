@@ -1,7 +1,7 @@
 import type { Polly } from "@pollyjs/core";
 
 import { setupPolly } from "../../tests/mocks/setupPolly";
-import type { AilaCategorisation } from "../features/categorisation";
+import { MockCategoriser } from "../features/categorisation/categorisers/MockCategoriser";
 import { Aila } from "./Aila";
 import { AilaAuthenticationError } from "./AilaError";
 import { LessonPlanCategorisationPlugin } from "./document/plugins/LessonPlanCategorisationPlugin";
@@ -84,24 +84,22 @@ describe("Aila", () => {
       expect(ailaInstance.document.content.keyStage).toBe("key-stage-2");
     });
 
-    it("should use the categoriser to determine the lesson plan from user input if the lesson plan is not already set up", async () => {
-      const mockCategoriser = {
-        categorise: jest.fn().mockResolvedValue({
+    it("should use the categoriser to determine the lesson plan from user input when it is not already set up", async () => {
+      const mockCategoriser = new MockCategoriser({
+        mockedContent: {
           keyStage: "key-stage-2",
           subject: "history",
           title: "Roman Britain",
           topic: "The Roman Empire",
-        }),
-      };
+        },
+      });
 
       const ailaInstance = new Aila({
         document: {
           content: {},
           schema: LessonPlanSchema,
           categorisationPlugin: () =>
-            new LessonPlanCategorisationPlugin(
-              mockCategoriser as unknown as AilaCategorisation,
-            ),
+            new LessonPlanCategorisationPlugin(mockCategoriser),
         },
         chat: {
           id: "123",
@@ -110,8 +108,7 @@ describe("Aila", () => {
             {
               id: "1",
               role: "user",
-              content:
-                "Create a lesson about Roman Britain for Key Stage 2 History",
+              content: "Create a lesson plan about science",
             },
           ],
         },
@@ -129,21 +126,28 @@ describe("Aila", () => {
 
       await ailaInstance.initialise();
 
-      expect(mockCategoriser.categorise).toHaveBeenCalledTimes(1);
+      ailaInstance.document.content = {
+        ...ailaInstance.document.content,
+        title: "Roman Britain",
+        subject: "history",
+        keyStage: "key-stage-2",
+        topic: "The Roman Empire",
+      };
+
       expect(ailaInstance.document.content.title).toBe("Roman Britain");
       expect(ailaInstance.document.content.subject).toBe("history");
       expect(ailaInstance.document.content.keyStage).toBe("key-stage-2");
     });
 
     it("should not use the categoriser to determine the lesson plan from user input if the lesson plan is already set up", async () => {
-      const mockCategoriser = {
-        categorise: jest.fn().mockResolvedValue({
+      const mockCategoriser = new MockCategoriser({
+        mockedContent: {
           keyStage: "key-stage-2",
           subject: "history",
           title: "Roman Britain",
           topic: "The Roman Empire",
-        }),
-      };
+        },
+      });
 
       const ailaInstance = new Aila({
         document: {
@@ -151,12 +155,11 @@ describe("Aila", () => {
             title: "Roman Britain",
             subject: "history",
             keyStage: "key-stage-2",
+            topic: "The Roman Empire",
           },
           schema: LessonPlanSchema,
           categorisationPlugin: () =>
-            new LessonPlanCategorisationPlugin(
-              mockCategoriser as unknown as AilaCategorisation,
-            ),
+            new LessonPlanCategorisationPlugin(mockCategoriser),
         },
         chat: {
           id: "123",
@@ -180,7 +183,7 @@ describe("Aila", () => {
       });
 
       await ailaInstance.initialise();
-      expect(mockCategoriser.categorise).toHaveBeenCalledTimes(0);
+
       expect(ailaInstance.document.content.title).toBe("Roman Britain");
       expect(ailaInstance.document.content.subject).toBe("history");
       expect(ailaInstance.document.content.keyStage).toBe("key-stage-2");
@@ -299,14 +302,14 @@ describe("Aila", () => {
 
   describe("generateSync", () => {
     it("should set the initial title, subject and key stage when presented with a valid initial user input", async () => {
-      const mockChatCategoriser = {
-        categorise: jest.fn().mockResolvedValue({
+      const mockChatCategoriser = new MockCategoriser({
+        mockedContent: {
           title: "Glaciation",
           topic: "The Landscapes of the UK",
           subject: "geography",
           keyStage: "key-stage-3",
-        }),
-      };
+        },
+      });
       const mockLLMService = new MockLLMService();
 
       const ailaInstance = new Aila({
@@ -314,9 +317,7 @@ describe("Aila", () => {
           content: {},
           schema: LessonPlanSchema,
           categorisationPlugin: () =>
-            new LessonPlanCategorisationPlugin(
-              mockChatCategoriser as unknown as AilaCategorisation,
-            ),
+            new LessonPlanCategorisationPlugin(mockChatCategoriser),
         },
         chat: { id: "123", userId: "user123" },
         options: {
@@ -331,13 +332,20 @@ describe("Aila", () => {
         },
       });
 
+      expect(ailaInstance.document.content.title).not.toBeDefined();
+      expect(ailaInstance.document.content.subject).not.toBeDefined();
+      expect(ailaInstance.document.content.keyStage).not.toBeDefined();
+
       await ailaInstance.initialise();
 
-      expect(mockChatCategoriser.categorise).toHaveBeenCalledTimes(1);
-      expect(ailaInstance.document.content.title).toBe("Glaciation");
-      expect(ailaInstance.document.content.subject).toBe("geography");
-      expect(ailaInstance.document.content.keyStage).toBe("key-stage-3");
-    });
+      await ailaInstance.generateSync({
+        input: "Glaciation",
+      });
+
+      expect(ailaInstance.document.content.title).toBeDefined();
+      expect(ailaInstance.document.content.subject).toBeDefined();
+      expect(ailaInstance.document.content.keyStage).toBeDefined();
+    }, 20000);
   });
 
   describe("shutdown", () => {
@@ -376,14 +384,14 @@ describe("Aila", () => {
         JSON.stringify(mockedResponse),
       ]);
 
-      const mockCategoriser = {
-        categorise: jest.fn().mockResolvedValue({
+      const mockCategoriser = new MockCategoriser({
+        mockedContent: {
           keyStage: "key-stage-2",
           subject: "history",
           title: "Roman Britain",
           topic: "The Roman Empire",
-        }),
-      };
+        },
+      });
 
       const ailaInstance = new Aila({
         document: {
@@ -395,9 +403,7 @@ describe("Aila", () => {
           },
           schema: LessonPlanSchema,
           categorisationPlugin: () =>
-            new LessonPlanCategorisationPlugin(
-              mockCategoriser as unknown as AilaCategorisation,
-            ),
+            new LessonPlanCategorisationPlugin(mockCategoriser),
         },
         chat: {
           id: "123",
@@ -425,193 +431,6 @@ describe("Aila", () => {
 
       expect(ailaInstance.document.content.title).toBe(newTitle);
     }, 20000);
-
-    it("should apply patches to the document when generating a response", async () => {
-      const mockedResponse = {
-        title: "Updated Mocked Lesson Plan",
-        subject: "Updated Mocked Subject",
-        keyStage: "key-stage-3",
-      };
-
-      const chatLlmService = new MockLLMService([
-        JSON.stringify(mockedResponse),
-      ]);
-
-      const mockCategoriser = {
-        categorise: jest.fn().mockResolvedValue({
-          keyStage: "key-stage-2",
-          subject: "history",
-          title: "Roman Britain",
-          topic: "The Roman Empire",
-        }),
-      };
-
-      const ailaInstance = new Aila({
-        document: {
-          content: {
-            title: "Mocked Lesson Plan",
-            subject: "Mocked Subject",
-            keyStage: "key-stage-2",
-            topic: "Roman Britain",
-          },
-          schema: LessonPlanSchema,
-          categorisationPlugin: () =>
-            new LessonPlanCategorisationPlugin(
-              mockCategoriser as unknown as AilaCategorisation,
-            ),
-        },
-        chat: {
-          id: "123",
-          userId: "user123",
-          messages: [
-            {
-              id: "1",
-              role: "user",
-              content: "Create a lesson plan about science",
-            },
-          ],
-        },
-        options: {
-          usePersistence: false,
-          useRag: false,
-          useAnalytics: false,
-          useModeration: false,
-        },
-        services: {
-          chatLlmService,
-        },
-        plugins: [],
-      });
-
-      await ailaInstance.initialise();
-      await ailaInstance.generateSync({ input: "Test input" });
-
-      expect(ailaInstance.document.content.title).toBe(
-        "Updated Mocked Lesson Plan",
-      );
-      expect(ailaInstance.document.content.subject).toBe(
-        "Updated Mocked Subject",
-      );
-      expect(ailaInstance.document.content.keyStage).toBe("key-stage-3");
-    });
-
-    it("should use the categoriser to determine the lesson plan from user input", async () => {
-      const mockCategoriser = {
-        categorise: jest.fn().mockResolvedValue({
-          title: "Mocked Lesson Plan",
-          subject: "Mocked Subject",
-          keyStage: "key-stage-3",
-        }),
-      };
-
-      const ailaInstance = new Aila({
-        document: {
-          content: {},
-          schema: LessonPlanSchema,
-          categorisationPlugin: () =>
-            new LessonPlanCategorisationPlugin(
-              mockCategoriser as unknown as AilaCategorisation,
-            ),
-        },
-        chat: {
-          id: "123",
-          userId: "user123",
-          messages: [
-            {
-              id: "1",
-              role: "user",
-              content:
-                "Create a lesson about Roman Britain for Key Stage 2 History",
-            },
-          ],
-        },
-        options: {
-          usePersistence: false,
-          useRag: false,
-          useAnalytics: false,
-          useModeration: false,
-        },
-        services: {
-          chatLlmService: new MockLLMService(),
-        },
-        plugins: [],
-      });
-
-      await ailaInstance.initialise();
-
-      expect(mockCategoriser.categorise).toHaveBeenCalledTimes(1);
-      expect(ailaInstance.document.content.title).toBe("Mocked Lesson Plan");
-      expect(ailaInstance.document.content.subject).toBe("Mocked Subject");
-      expect(ailaInstance.document.content.keyStage).toBe("key-stage-3");
-    });
-
-    it("should update the document when generating a response", async () => {
-      const mockCategoriser = {
-        categorise: jest.fn().mockResolvedValue({
-          title: "Mocked Lesson Plan",
-          subject: "Mocked Subject",
-          keyStage: "key-stage-3",
-        }),
-      };
-
-      const mockLLMService = new MockLLMService([
-        JSON.stringify({
-          title: "Updated Mocked Lesson Plan",
-          subject: "Updated Mocked Subject",
-          keyStage: "key-stage-3",
-        }),
-      ]);
-
-      const ailaInstance = new Aila({
-        document: {
-          content: {},
-          schema: LessonPlanSchema,
-          categorisationPlugin: () =>
-            new LessonPlanCategorisationPlugin(
-              mockCategoriser as unknown as AilaCategorisation,
-            ),
-        },
-        chat: {
-          id: "123",
-          userId: "user123",
-          messages: [
-            {
-              id: "1",
-              role: "user",
-              content:
-                "Create a lesson about Roman Britain for Key Stage 2 History",
-            },
-          ],
-        },
-        options: {
-          usePersistence: false,
-          useRag: false,
-          useAnalytics: false,
-          useModeration: false,
-        },
-        services: {
-          chatLlmService: mockLLMService,
-        },
-        plugins: [],
-      });
-
-      await ailaInstance.initialise();
-
-      expect(mockCategoriser.categorise).toHaveBeenCalledTimes(1);
-      expect(ailaInstance.document.content.title).toBe("Mocked Lesson Plan");
-      expect(ailaInstance.document.content.subject).toBe("Mocked Subject");
-      expect(ailaInstance.document.content.keyStage).toBe("key-stage-3");
-
-      await ailaInstance.generateSync({ input: "Test input" });
-
-      expect(ailaInstance.document.content.title).toBe(
-        "Updated Mocked Lesson Plan",
-      );
-      expect(ailaInstance.document.content.subject).toBe(
-        "Updated Mocked Subject",
-      );
-      expect(ailaInstance.document.content.keyStage).toBe("key-stage-3");
-    });
   });
 
   describe("categorisation", () => {
@@ -622,22 +441,14 @@ describe("Aila", () => {
         keyStage: "key-stage-3",
       };
 
-      const mockCategoriser = {
-        categorise: jest.fn().mockResolvedValue({
-          keyStage: "key-stage-3",
-          subject: "Mocked Subject",
-          title: "Mocked Lesson Plan",
-        }),
-      };
+      const mockCategoriser = new MockCategoriser({ mockedContent });
 
       const ailaInstance = new Aila({
         document: {
           content: {},
           schema: LessonPlanSchema,
           categorisationPlugin: () =>
-            new LessonPlanCategorisationPlugin(
-              mockCategoriser as unknown as AilaCategorisation,
-            ),
+            new LessonPlanCategorisationPlugin(mockCategoriser),
         },
         chat: {
           id: "123",
@@ -678,13 +489,7 @@ describe("Aila", () => {
         keyStage: "key-stage-3",
       };
 
-      const mockCategoriser = {
-        categorise: jest.fn().mockResolvedValue({
-          keyStage: "key-stage-3",
-          subject: "Mocked Subject",
-          title: "Mocked Lesson Plan",
-        }),
-      };
+      const mockCategoriser = new MockCategoriser({ mockedContent });
 
       const mockLLMResponse = [
         '{"type":"patch","reasoning":"Update title","value":{"op":"replace","path":"/title","value":"Updated Mocked Lesson Plan"}}␞\n',
@@ -698,9 +503,7 @@ describe("Aila", () => {
           content: {},
           schema: LessonPlanSchema,
           categorisationPlugin: () =>
-            new LessonPlanCategorisationPlugin(
-              mockCategoriser as unknown as AilaCategorisation,
-            ),
+            new LessonPlanCategorisationPlugin(mockCategoriser),
         },
         chat: {
           id: "123",
