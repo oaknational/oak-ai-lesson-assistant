@@ -5,7 +5,7 @@ import { aiLogger } from "@oakai/logger";
 import {
   DEFAULT_MODEL,
   DEFAULT_TEMPERATURE,
-  DEFAULT_RAG_LESSON_PLANS,
+  DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
 } from "../constants";
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
@@ -33,7 +33,7 @@ import type { LLMService } from "./llm/LLMService";
 import { OpenAIService } from "./llm/OpenAIService";
 import type { AilaPlugin } from "./plugins/types";
 import type {
-  AilaGenerateLessonPlanOptions,
+  AilaGenerateDocumentOptions,
   AilaOptions,
   AilaOptionsWithDefaultFallbackValues,
   AilaInitializationOptions,
@@ -141,21 +141,21 @@ export class Aila implements AilaServices {
     await this.loadChatIfPersisting();
     const persistedLessonPlan = this._chat.persistedChat?.lessonPlan;
     if (persistedLessonPlan) {
-      this._document.setContent(persistedLessonPlan);
+      this._document.content = persistedLessonPlan;
     }
     await this._document.initialiseContentFromMessages(this._chat.messages);
 
     this._initialised = true;
   }
 
-  private initialiseOptions(options?: AilaOptions) {
+  private initialiseOptions(
+    options?: AilaOptions,
+  ): AilaOptionsWithDefaultFallbackValues {
     return {
       useRag: options?.useRag ?? true,
       temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
-      // #TODO we should find a way to make this less specifically tied
-      // to lesson RAG
-      numberOfLessonPlansInRag:
-        options?.numberOfLessonPlansInRag ?? DEFAULT_RAG_LESSON_PLANS,
+      numberOfRecordsInRag:
+        options?.numberOfRecordsInRag ?? DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
       usePersistence: options?.usePersistence ?? true,
       useAnalytics: options?.useAnalytics ?? true,
       useModeration: options?.useModeration ?? true,
@@ -177,16 +177,8 @@ export class Aila implements AilaServices {
     return this._chat;
   }
 
-  // #TODO we should refactor this to be a document
-  // and not be specifically tied to a "lesson"
-  // so that we can handle any type of generation
   public get document(): AilaDocumentService {
     return this._document;
-  }
-
-  // #TODO we should not need this
-  public get lessonPlan() {
-    return this._document.content;
   }
 
   public get snapshotStore() {
@@ -259,7 +251,7 @@ export class Aila implements AilaServices {
   }
 
   // Generation methods
-  public async generateSync(opts: AilaGenerateLessonPlanOptions) {
+  public async generateSync(opts: AilaGenerateDocumentOptions) {
     this.checkInitialised();
     const stream = await this.generate(opts);
 
@@ -280,7 +272,7 @@ export class Aila implements AilaServices {
   public async generate({
     input,
     abortController,
-  }: AilaGenerateLessonPlanOptions) {
+  }: AilaGenerateDocumentOptions) {
     this.checkInitialised();
     if (this._isShutdown) {
       throw new AilaGenerationError(
