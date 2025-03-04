@@ -10,7 +10,6 @@ import type { AilaRagFeature } from "../features/rag";
 import type { AilaThreatDetector } from "../features/threatDetection";
 import type {
   AilaAnalyticsFeature,
-  AilaCategorisationFeature,
   AilaErrorReportingFeature,
   AilaModerationFeature,
   AilaThreatDetectionFeature,

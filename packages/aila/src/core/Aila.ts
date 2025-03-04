@@ -158,17 +158,17 @@ export class Aila implements AilaServices {
     options?: AilaOptions,
   ): AilaOptionsWithDefaultFallbackValues {
     return {
-      useRag: options?.useRag ?? true,
-      useErrorReporting: options?.useErrorReporting ?? true,
-      usePersistence: options?.usePersistence ?? true,
-      useModeration: options?.useModeration ?? true,
-      useAnalytics: options?.useAnalytics ?? true,
-      useThreatDetection: options?.useThreatDetection ?? true,
-      temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
+      mode: options?.mode ?? "interactive",
+      model: options?.model ?? DEFAULT_MODEL,
       numberOfRecordsInRag:
         options?.numberOfRecordsInRag ?? DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
-      model: options?.model ?? DEFAULT_MODEL,
-      mode: options?.mode ?? "interactive",
+      temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
+      useAnalytics: options?.useAnalytics ?? true,
+      useErrorReporting: options?.useErrorReporting ?? true,
+      useModeration: options?.useModeration ?? true,
+      usePersistence: options?.usePersistence ?? true,
+      useRag: options?.useRag ?? true,
+      useThreatDetection: options?.useThreatDetection ?? true,
     };
   }
 

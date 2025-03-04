@@ -122,7 +122,7 @@ export class AilaDocument implements AilaDocumentService {
   /**
    * Set the document content
    */
-  set content(content: AilaDocumentContent) {
+  public set content(content: AilaDocumentContent) {
     const validatedContent = this.validateContent(content);
     this._content = validatedContent;
   }
