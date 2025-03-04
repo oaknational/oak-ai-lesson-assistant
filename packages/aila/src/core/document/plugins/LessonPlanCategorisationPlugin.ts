@@ -17,6 +17,13 @@ export class LessonPlanCategorisationPlugin implements CategorisationPlugin {
 
   constructor(categoriser: AilaCategorisationFeature) {
     this._categoriser = categoriser;
+    log.info(
+      "LessonPlanCategorisationPlugin created with categoriser:",
+      JSON.stringify({
+        categoriserType: categoriser.constructor.name,
+        categoriserKeys: Object.keys(categoriser),
+      }),
+    );
   }
 
   /**
@@ -32,7 +39,22 @@ export class LessonPlanCategorisationPlugin implements CategorisationPlugin {
     const isLessonPlan = "objectives" in content || "lessonPlan" in content;
 
     // Only categorise if it's a lesson plan and missing essential fields
-    return isLessonPlan && (!hasTitle || !hasSubject || !hasKeyStage);
+    const shouldCategorise =
+      isLessonPlan && (!hasTitle || !hasSubject || !hasKeyStage);
+
+    log.info(
+      "shouldCategorise check:",
+      JSON.stringify({
+        hasTitle,
+        hasSubject,
+        hasKeyStage,
+        isLessonPlan,
+        shouldCategorise,
+        contentKeys: Object.keys(content),
+      }),
+    );
+
+    return shouldCategorise;
   }
 
   /**
@@ -42,19 +64,36 @@ export class LessonPlanCategorisationPlugin implements CategorisationPlugin {
     messages: Message[],
     currentContent: AilaDocumentContent,
   ): Promise<AilaDocumentContent | null> {
-    log.info("Categorising lesson plan based on messages");
-
-    // Use the categoriser to determine lesson plan details
-    const result = await this._categoriser.categorise(
-      messages,
-      currentContent as LooseLessonPlan,
+    log.info(
+      "Categorising lesson plan based on messages",
+      JSON.stringify({
+        messageCount: messages.length,
+        currentContentKeys: Object.keys(currentContent),
+      }),
     );
 
-    if (result) {
-      log.info("Categorisation successful");
-      return result;
-    } else {
-      log.info("Categorisation failed");
+    try {
+      // Use the categoriser to determine lesson plan details
+      log.info("Calling categoriser.categorise");
+      const result = await this._categoriser.categorise(
+        messages,
+        currentContent as LooseLessonPlan,
+      );
+
+      if (result) {
+        log.info(
+          "Categorisation successful",
+          JSON.stringify({
+            resultKeys: Object.keys(result),
+          }),
+        );
+        return result;
+      } else {
+        log.info("Categorisation failed - null result");
+        return null;
+      }
+    } catch (error) {
+      log.error("Error during categorisation:", error);
       return null;
     }
   }

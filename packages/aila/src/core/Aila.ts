@@ -27,7 +27,7 @@ import type {
 } from "./AilaServices";
 import type { Message } from "./chat";
 import { AilaChat } from "./chat";
-import { createAilaDocument } from "./document/AilaDocumentFactory";
+import { AilaDocument } from "./document/AilaDocument";
 import { LessonPlanSchema } from "./document/schemas/lessonPlan";
 import type { LLMService } from "./llm/LLMService";
 import { OpenAIService } from "./llm/OpenAIService";
@@ -78,14 +78,16 @@ export class Aila implements AilaServices {
 
     this._document =
       options.services?.documentService ??
-      createAilaDocument({
-        aila: this,
+      new AilaDocument({
         content: options.document?.content ?? {},
-        plugin: options.document?.plugin,
-        categorisationPlugin:
-          options.document?.categorisationPlugin instanceof Function
-            ? options.document.categorisationPlugin(this)
-            : options.document?.categorisationPlugin,
+        plugins: options.document?.plugin ? [options.document.plugin] : [],
+        categorisationPlugins: options.document?.categorisationPlugin
+          ? [
+              options.document.categorisationPlugin instanceof Function
+                ? options.document.categorisationPlugin(this)
+                : options.document.categorisationPlugin,
+            ]
+          : [],
         schema: options.document?.schema ?? LessonPlanSchema,
       });
 

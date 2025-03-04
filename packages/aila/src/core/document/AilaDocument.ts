@@ -15,7 +15,6 @@ import type {
 const log = aiLogger("aila:document");
 
 export class AilaDocument implements AilaDocumentService {
-  private readonly _aila: AilaServices;
   private _content: AilaDocumentContent = {};
   private _hasInitialisedContentFromMessages = false;
   private readonly _appliedPatches: ValidPatchDocument[] = [];
@@ -26,52 +25,23 @@ export class AilaDocument implements AilaDocumentService {
 
   /**
    * Create a new AilaDocument
-   * @param aila The Aila services
    * @param content Initial content (optional)
    * @param plugins Document plugins for document-specific operations
    * @param categorisationPlugins Plugins for content categorisation
    * @param schema Schema for document validation
    */
-  public static create({
-    aila,
-    content,
-    plugins = [],
-    categorisationPlugins = [],
-    schema,
-  }: {
-    aila: AilaServices;
-    content?: AilaDocumentContent;
-    plugins?: DocumentPlugin[];
-    categorisationPlugins?: CategorisationPlugin[];
-    schema: z.ZodType<AilaDocumentContent>;
-  }): AilaDocumentService {
-    return new AilaDocument({
-      aila,
-      content,
-      plugins,
-      categorisationPlugins,
-      schema,
-    });
-  }
-
-  /**
-   * Create a new AilaDocument
-   */
   constructor({
-    aila,
     content,
     plugins = [],
     categorisationPlugins = [],
     schema,
   }: {
-    aila: AilaServices;
     content?: AilaDocumentContent;
     plugins?: DocumentPlugin[];
     categorisationPlugins?: CategorisationPlugin[];
     schema: z.ZodType<AilaDocumentContent>;
   }) {
     log.info("Creating AilaDocument");
-    this._aila = aila;
 
     if (content) {
       this._content = content;
@@ -109,7 +79,7 @@ export class AilaDocument implements AilaDocumentService {
    * Since we now only register one plugin, we just return the first one
    */
   private getPluginForContent(): DocumentPlugin | null {
-    return this._plugins[0] || null;
+    return this._plugins[0] ?? null;
   }
 
   /**
@@ -243,6 +213,13 @@ export class AilaDocument implements AilaDocumentService {
   public async initialiseContentFromMessages(
     messages: Message[],
   ): Promise<void> {
+    log.info("initialiseContentFromMessages called", {
+      hasInitialisedContentFromMessages:
+        this._hasInitialisedContentFromMessages,
+      hasExistingContent: this.hasExistingContent(),
+      messageCount: messages.length,
+    });
+
     if (this._hasInitialisedContentFromMessages || this.hasExistingContent()) {
       this._hasInitialisedContentFromMessages = true;
       return;
@@ -255,7 +232,13 @@ export class AilaDocument implements AilaDocumentService {
    * Check if the document has existing content
    */
   private hasExistingContent(): boolean {
-    return this._content !== null && Object.keys(this._content).length > 0;
+    const hasContent =
+      this._content !== null && Object.keys(this._content).length > 0;
+    log.info("hasExistingContent check", {
+      hasContent,
+      contentKeys: this._content ? Object.keys(this._content) : [],
+    });
+    return hasContent;
   }
 
   /**
@@ -264,12 +247,22 @@ export class AilaDocument implements AilaDocumentService {
   private async createAndCategoriseNewContent(
     messages: Message[],
   ): Promise<void> {
+    log.info("createAndCategoriseNewContent called", {
+      messageCount: messages.length,
+      pluginCount: this._categorisationPlugins.length,
+    });
+
     const emptyContent = {} as AilaDocumentContent;
 
     const wasContentCategorised = await this.attemptContentCategorisation(
       messages,
       emptyContent,
     );
+
+    log.info("createAndCategoriseNewContent result", {
+      wasContentCategorised,
+      resultContentKeys: Object.keys(this._content),
+    });
 
     if (!wasContentCategorised) {
       this._content = emptyContent;
@@ -286,20 +279,45 @@ export class AilaDocument implements AilaDocumentService {
     messages: Message[],
     contentToCategorisе: AilaDocumentContent,
   ): Promise<boolean> {
-    for (const plugin of this._categorisationPlugins) {
-      if (plugin.shouldCategorise(contentToCategorisе)) {
-        const categorisedContent = await plugin.categoriseFromMessages(
-          messages,
-          contentToCategorisе,
-        );
+    log.info("attemptContentCategorisation called", {
+      messageCount: messages.length,
+      pluginCount: this._categorisationPlugins.length,
+      pluginTypes: this._categorisationPlugins.map((p) => p.id),
+    });
 
-        if (categorisedContent) {
-          this._content = categorisedContent;
-          return true;
+    for (const plugin of this._categorisationPlugins) {
+      log.info(`Checking plugin ${plugin.id} for categorisation`);
+
+      if (plugin.shouldCategorise(contentToCategorisе)) {
+        log.info(`Plugin ${plugin.id} will attempt categorisation`);
+
+        try {
+          const categorisedContent = await plugin.categoriseFromMessages(
+            messages,
+            contentToCategorisе,
+          );
+
+          if (categorisedContent) {
+            log.info(`Plugin ${plugin.id} successfully categorised content`, {
+              resultKeys: Object.keys(categorisedContent),
+            });
+            this._content = categorisedContent;
+            return true;
+          } else {
+            log.info(`Plugin ${plugin.id} failed to categorise content`);
+          }
+        } catch (error) {
+          log.error(
+            `Error in plugin ${plugin.id} during categorisation:`,
+            error,
+          );
         }
+      } else {
+        log.info(`Plugin ${plugin.id} decided not to categorise`);
       }
     }
 
+    log.info("No plugins successfully categorised content");
     return false;
   }
 }

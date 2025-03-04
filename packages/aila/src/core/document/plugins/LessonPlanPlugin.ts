@@ -43,7 +43,7 @@ export class LessonPlanPlugin implements DocumentPlugin {
   ): AilaDocumentContent | null {
     try {
       const result = applyLessonPlanPatch(content as LooseLessonPlan, patch);
-      return result || null; // Convert undefined to null
+      return result ?? null; // Convert undefined to null
     } catch (error) {
       log.warn("Failed to apply patch to lesson plan", error);
       return null;
