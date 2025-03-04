@@ -4,7 +4,7 @@ import type { z } from "zod";
 
 import type { ValidPatchDocument } from "../../protocol/jsonPatchProtocol";
 import { extractPatches } from "../../protocol/jsonPatchProtocol";
-import type { AilaDocumentService, AilaServices } from "../AilaServices";
+import type { AilaDocumentService } from "../AilaServices";
 import type { Message } from "../chat";
 import type {
   AilaDocumentContent,

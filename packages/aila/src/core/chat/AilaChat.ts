@@ -256,22 +256,18 @@ export class AilaChat implements AilaChatService {
     value: unknown,
     depth: number = 0,
   ): string | string[] | number | object | undefined {
-    // Prevent excessive recursion
     if (depth > 10) {
       return undefined;
     }
 
     try {
-      // Try basic validation first
       return this.safeValueSchema.parse(value);
     } catch {
-      // Handle arrays specially
       if (Array.isArray(value)) {
         if (value.every((item) => typeof item === "string")) {
           return value;
         }
 
-        // Process nested arrays with depth control
         const safeArray = value
           .map((item) => this.ensureSafeValue(item, depth + 1))
           .filter(
@@ -281,7 +277,6 @@ export class AilaChat implements AilaChatService {
         return safeArray.length > 0 ? safeArray : undefined;
       }
 
-      // Handle objects manually with depth control
       if (value && typeof value === "object" && !Array.isArray(value)) {
         const result: Record<string, unknown> = {};
         let hasValidProperties = false;
