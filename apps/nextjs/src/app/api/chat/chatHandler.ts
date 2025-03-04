@@ -2,7 +2,6 @@ import type { Aila } from "@oakai/aila/src/core/Aila";
 import type { AilaServices } from "@oakai/aila/src/core/AilaServices";
 import type { Message } from "@oakai/aila/src/core/chat";
 import { LessonPlanCategorisationPlugin } from "@oakai/aila/src/core/document/plugins/LessonPlanCategorisationPlugin";
-import { LessonPlanPlugin } from "@oakai/aila/src/core/document/plugins/LessonPlanPlugin";
 import { LessonPlanSchema } from "@oakai/aila/src/core/document/schemas/lessonPlan";
 import type {
   AilaOptions,
@@ -19,7 +18,6 @@ import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
 import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetection";
 import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/helicone/HeliconeThreatDetector";
 import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
-import type { AilaCategorisationFeature } from "@oakai/aila/src/features/types";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";

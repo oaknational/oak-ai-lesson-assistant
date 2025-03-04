@@ -85,7 +85,6 @@ describe("Aila", () => {
     });
 
     it("should use the categoriser to determine the lesson plan from user input when it is not already set up", async () => {
-      // Create a proper MockCategoriser instance instead of a manual mock
       const mockCategoriser = new MockCategoriser({
         mockedContent: {
           keyStage: "key-stage-2",
@@ -127,7 +126,6 @@ describe("Aila", () => {
 
       await ailaInstance.initialise();
 
-      // Directly set the document content to simulate what the categoriser would have done
       ailaInstance.document.content = {
         ...ailaInstance.document.content,
         title: "Roman Britain",
@@ -136,20 +134,12 @@ describe("Aila", () => {
         topic: "The Roman Empire",
       };
 
-      // Skip the categoriser checks since we're not using it
-      // expect(mockCategorisationPlugin.shouldCategorise).toHaveBeenCalled();
-      // expect(
-      //   mockCategorisationPlugin.categoriseFromMessages,
-      // ).toHaveBeenCalled();
-
-      // Just verify the content is as expected
       expect(ailaInstance.document.content.title).toBe("Roman Britain");
       expect(ailaInstance.document.content.subject).toBe("history");
       expect(ailaInstance.document.content.keyStage).toBe("key-stage-2");
     });
 
     it("should not use the categoriser to determine the lesson plan from user input if the lesson plan is already set up", async () => {
-      // Create a proper MockCategoriser instance instead of a manual mock
       const mockCategoriser = new MockCategoriser({
         mockedContent: {
           keyStage: "key-stage-2",
@@ -194,19 +184,11 @@ describe("Aila", () => {
 
       await ailaInstance.initialise();
 
-      // Skip the categoriser checks since we're not using it
-      // expect(mockCategorisationPlugin.shouldCategorise).not.toHaveBeenCalled();
-      // expect(
-      //   mockCategorisationPlugin.categoriseFromMessages,
-      // ).not.toHaveBeenCalled();
-
-      // Just verify the content is as expected
       expect(ailaInstance.document.content.title).toBe("Roman Britain");
       expect(ailaInstance.document.content.subject).toBe("history");
       expect(ailaInstance.document.content.keyStage).toBe("key-stage-2");
     });
 
-    // Calling initialise method successfully initializes the Aila instance
     it("should successfully initialize the Aila instance when calling the initialise method, and by default not set the lesson plan to initial values", async () => {
       const ailaInstance = new Aila({
         document: {
@@ -232,7 +214,6 @@ describe("Aila", () => {
   });
 
   describe("checkUserIdPresentIfPersisting", () => {
-    // Throws AilaAuthenticationError when userId is not set and usePersistence is true
     it("should throw AilaAuthenticationError when userId is not set and usePersistence is true", () => {
       const ailaInstance = new Aila({
         chat: { id: "123", userId: undefined },
@@ -247,7 +228,6 @@ describe("Aila", () => {
       }).toThrow(AilaAuthenticationError);
     });
 
-    // userId is an empty string and usePersistence is true
     it("should throw AilaAuthenticationError when userId is an empty string and usePersistence is true", () => {
       const ailaInstance = new Aila({
         chat: { id: "123", userId: "" },
@@ -260,7 +240,6 @@ describe("Aila", () => {
       }).toThrow(AilaAuthenticationError);
     });
 
-    // userId is an empty string and usePersistence is true
     it("should not throw AilaAuthenticationError when userId is not set and usePersistence is false", () => {
       const ailaInstance = new Aila({
         chat: { id: "123", userId: "" },
@@ -272,7 +251,6 @@ describe("Aila", () => {
       }).not.toThrow(AilaAuthenticationError);
     });
 
-    // Throws AilaAuthenticationError when userId is an empty string and usePersistence is true
     it("should throw AilaAuthenticationError when userId is an empty string and usePersistence is true", () => {
       const ailaInstance = new Aila({
         chat: { id: "123", userId: "" },
@@ -285,7 +263,6 @@ describe("Aila", () => {
       }).toThrow(AilaAuthenticationError);
     });
 
-    // Does not throw AilaAuthenticationError when userId is not set and usePersistence is false
     it("should not throw AilaAuthenticationError when userId is not set and usePersistence is false", () => {
       const ailaInstance = new Aila({
         chat: { id: "123", userId: undefined },
@@ -298,7 +275,6 @@ describe("Aila", () => {
       }).not.toThrow(AilaAuthenticationError);
     });
 
-    // Throws AilaAuthenticationError when userId is an empty string and usePersistence is true
     it("should throw AilaAuthenticationError when userId is an empty string and usePersistence is true", () => {
       const ailaInstance = new Aila({
         chat: { id: "123", userId: "" },
@@ -311,7 +287,6 @@ describe("Aila", () => {
       }).toThrow(AilaAuthenticationError);
     });
 
-    // Does not throw AilaAuthenticationError when userId is not set and usePersistence is false
     it("should not throw AilaAuthenticationError when userId is not set and usePersistence is false", () => {
       const ailaInstance = new Aila({
         chat: { id: "123", userId: undefined },
@@ -326,7 +301,6 @@ describe("Aila", () => {
   });
 
   describe("generateSync", () => {
-    // Should return a stream when generating a lesson plan with valid input
     it("should set the initial title, subject and key stage when presented with a valid initial user input", async () => {
       const mockChatCategoriser = new MockCategoriser({
         mockedContent: {
@@ -410,7 +384,6 @@ describe("Aila", () => {
         JSON.stringify(mockedResponse),
       ]);
 
-      // Create a proper MockCategoriser instance instead of a manual mock
       const mockCategoriser = new MockCategoriser({
         mockedContent: {
           keyStage: "key-stage-2",
@@ -557,15 +530,12 @@ describe("Aila", () => {
 
       await ailaInstance.initialise();
 
-      // Check if MockCategoriser was used
       expect(ailaInstance.document.content.title).toBe("Mocked Lesson Plan");
       expect(ailaInstance.document.content.subject).toBe("Mocked Subject");
       expect(ailaInstance.document.content.keyStage).toBe("key-stage-3");
 
-      // Use MockLLMService to generate a response
       await ailaInstance.generateSync({ input: "Test input" });
 
-      // Check if MockLLMService updates were applied
       expect(ailaInstance.document.content.title).toBe(
         "Updated Mocked Lesson Plan",
       );
