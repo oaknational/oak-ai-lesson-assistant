@@ -9,7 +9,6 @@ import {
 } from "../constants";
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
-import { AilaCategorisation } from "../features/categorisation/categorisers/AilaCategorisation";
 import type { AilaSnapshotStore } from "../features/snapshotStore";
 import type {
   AilaAnalyticsFeature,
@@ -29,8 +28,6 @@ import type {
 import type { Message } from "./chat";
 import { AilaChat } from "./chat";
 import { createAilaDocument } from "./document/AilaDocumentFactory";
-import { LessonPlanCategorisationPlugin } from "./document/plugins/LessonPlanCategorisationPlugin";
-import { LessonPlanPlugin } from "./document/plugins/LessonPlanPlugin";
 import { LessonPlanSchema } from "./document/schemas/lessonPlan";
 import type { LLMService } from "./llm/LLMService";
 import { OpenAIService } from "./llm/OpenAIService";

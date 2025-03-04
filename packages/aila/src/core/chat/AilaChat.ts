@@ -67,17 +67,7 @@ export class AilaChat implements AilaChatService {
     z.string(),
     z.number(),
     z.array(z.string()),
-    z.record(z.unknown()).transform((obj) => {
-      // Recursively validate nested objects
-      const result: Record<string, unknown> = {};
-      for (const [key, value] of Object.entries(obj)) {
-        const safeValue = this.ensureSafeValue(value);
-        if (safeValue !== undefined) {
-          result[key] = safeValue;
-        }
-      }
-      return result;
-    }),
+    z.record(z.unknown()),
   ]);
 
   constructor({
@@ -260,26 +250,53 @@ export class AilaChat implements AilaChatService {
 
   /**
    * Ensures values are safe to use in enqueuePatch using Zod validation
+   * with a maximum recursion depth to prevent stack overflow
    */
   private ensureSafeValue(
     value: unknown,
+    depth: number = 0,
   ): string | string[] | number | object | undefined {
+    // Prevent excessive recursion
+    if (depth > 10) {
+      return undefined;
+    }
+
     try {
+      // Try basic validation first
       return this.safeValueSchema.parse(value);
     } catch {
+      // Handle arrays specially
       if (Array.isArray(value)) {
         if (value.every((item) => typeof item === "string")) {
           return value;
         }
 
+        // Process nested arrays with depth control
         const safeArray = value
-          .map((item) => this.ensureSafeValue(item))
+          .map((item) => this.ensureSafeValue(item, depth + 1))
           .filter(
             (item): item is NonNullable<typeof item> => item !== undefined,
           );
 
-        return safeArray as unknown as object;
+        return safeArray.length > 0 ? safeArray : undefined;
       }
+
+      // Handle objects manually with depth control
+      if (value && typeof value === "object" && !Array.isArray(value)) {
+        const result: Record<string, unknown> = {};
+        let hasValidProperties = false;
+
+        for (const [key, propValue] of Object.entries(value)) {
+          const safeValue = this.ensureSafeValue(propValue, depth + 1);
+          if (safeValue !== undefined) {
+            result[key] = safeValue;
+            hasValidProperties = true;
+          }
+        }
+
+        return hasValidProperties ? result : undefined;
+      }
+
       return undefined;
     }
   }
@@ -325,10 +342,13 @@ export class AilaChat implements AilaChatService {
     path: string,
     value: string | string[] | number | object,
   ) {
-    // Optional "?" necessary to avoid a "terminated" error
-    if (this?._patchEnqueuer) {
-      await this._patchEnqueuer.enqueuePatch(path, value);
+    const safeValue = this.ensureSafeValue(value);
+    if (safeValue === undefined) {
+      log.warn("Unsafe value provided to enqueuePatch", { path });
+      return;
     }
+
+    await this._patchEnqueuer.enqueuePatch(path, safeValue);
   }
 
   private async startNewGeneration() {
