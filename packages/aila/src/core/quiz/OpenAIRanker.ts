@@ -75,7 +75,7 @@ export class OpenAIRanker {
 }
 
 function processStringWithImages(text: string): ChatContent[] {
-  const parts = text.split(/(\!\[.*?\]\(.*?\))/);
+  const parts = text.split(/(![.*?]\(.*?\))/);
   return parts
     .map((part): ChatContent | null => {
       if (part.startsWith("![")) {
