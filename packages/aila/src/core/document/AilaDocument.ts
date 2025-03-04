@@ -9,31 +9,32 @@ import {
   extractPatches,
 } from "../../protocol/jsonPatchProtocol";
 import type { LooseLessonPlan } from "../../protocol/schema";
-import type { AilaLessonService, AilaServices } from "../AilaServices";
+import type { AilaDocumentService, AilaServices } from "../AilaServices";
 import type { Message } from "../chat";
+import type { AilaDocumentContent } from "./types";
 
 const log = aiLogger("aila:lesson");
 
-export class AilaLesson implements AilaLessonService {
+export class AilaDocument implements AilaDocumentService {
   private readonly _aila: AilaServices;
-  private _plan: LooseLessonPlan;
-  private _hasSetInitialState = false;
+  private _content: AilaDocumentContent;
+  private _hasInitialisedContentFromMessages = false;
   private readonly _appliedPatches: ValidPatchDocument[] = [];
   private readonly _invalidPatches: ValidPatchDocument[] = [];
   private readonly _categoriser: AilaCategorisationFeature;
 
   constructor({
     aila,
-    lessonPlan,
+    content,
     categoriser,
   }: {
     aila: AilaServices;
-    lessonPlan?: LooseLessonPlan;
+    content?: LooseLessonPlan;
     categoriser?: AilaCategorisationFeature;
   }) {
-    log.info("Creating AilaLesson", lessonPlan?.title);
+    log.info("Creating AilaDocument");
     this._aila = aila;
-    this._plan = lessonPlan ?? {};
+    this._content = content ?? {};
     this._categoriser =
       categoriser ??
       new AilaCategorisation({
@@ -41,24 +42,20 @@ export class AilaLesson implements AilaLessonService {
       });
   }
 
-  public get plan(): LooseLessonPlan {
-    return this._plan;
+  public get content(): AilaDocumentContent {
+    return this._content;
   }
 
-  public set plan(plan: LooseLessonPlan) {
-    this._plan = plan;
+  public set content(content: AilaDocumentContent) {
+    this._content = content;
   }
 
-  public setPlan(plan: LooseLessonPlan) {
-    this._plan = plan;
+  public setContent(content: AilaDocumentContent) {
+    this._content = content;
   }
 
-  public get hasSetInitialState(): boolean {
-    return this._hasSetInitialState;
-  }
-
-  public set hasSetInitialState(value: boolean) {
-    this._hasSetInitialState = value;
+  public get hasInitialisedContentFromMessages(): boolean {
+    return this._hasInitialisedContentFromMessages;
   }
 
   public initialise(plan: LooseLessonPlan) {
@@ -66,18 +63,18 @@ export class AilaLesson implements AilaLessonService {
       plan.title && plan.keyStage && plan.subject,
     );
     if (shouldSetInitialState) {
-      this._plan = {
+      this._content = {
         title: plan.title ?? "Untitled",
         subject: plan.subject ?? "No subject",
         keyStage: plan.keyStage ?? "No keystage",
         topic: plan.topic ?? undefined,
       };
-      this._hasSetInitialState = true;
+      this._hasInitialisedContentFromMessages = true;
     }
   }
 
   public applyValidPatches(validPatches: ValidPatchDocument[]) {
-    let workingLessonPlan = deepClone(this._plan) as LooseLessonPlan;
+    let workingLessonPlan = deepClone(this._content) as LooseLessonPlan;
     const beforeKeys = Object.entries(workingLessonPlan)
       .filter(([, v]) => v)
       .map(([k]) => k);
@@ -117,7 +114,7 @@ export class AilaLesson implements AilaLessonService {
       afterKeys.join("|"),
     );
 
-    this._plan = workingLessonPlan;
+    this._content = workingLessonPlan;
   }
 
   public extractAndApplyLlmPatches(patches: string) {
@@ -135,16 +132,19 @@ export class AilaLesson implements AilaLessonService {
     this.applyValidPatches(validPatches);
   }
 
-  public async setUpInitialLessonPlan(messages: Message[]) {
-    log.info("Setting up initial lesson plan", this._plan.title);
+  public async initialiseContentFromMessages(messages: Message[]) {
+    log.info("Initialise content based on messages", this._content.title);
     const shouldCategoriseBasedOnInitialMessages = Boolean(
-      !this._plan.subject && !this._plan.keyStage && !this._plan.title,
+      !this._content.subject && !this._content.keyStage && !this._content.title,
     );
 
     // The initial lesson plan is blank, so we take the first messages
     // and attempt to deduce the lesson plan key stage, subject, title and topic
     if (shouldCategoriseBasedOnInitialMessages) {
-      const result = await this._categoriser.categorise(messages, this._plan);
+      const result = await this._categoriser.categorise(
+        messages,
+        this._content,
+      );
 
       if (result) {
         this.initialise(result);

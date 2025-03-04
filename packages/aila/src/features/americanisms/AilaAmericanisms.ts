@@ -8,17 +8,20 @@ import type {
   AmericanismIssue,
   AmericanismIssueBySection,
 } from "../../features/americanisms";
-import type { LessonPlanKey, LooseLessonPlan } from "../../protocol/schema";
 
 export type TranslationResult = Record<
   string,
   Array<{ [phrase: string]: { issue: string; details: string } }>
 >;
 
-export class AilaAmericanisms implements AilaAmericanismsFeature {
+export type AilaDocumentContent = Record<string, unknown>;
+
+export class AilaAmericanisms<T extends AilaDocumentContent>
+  implements AilaAmericanismsFeature
+{
   private findSectionAmericanisms(
-    section: LessonPlanKey,
-    lessonPlan: LooseLessonPlan,
+    section: keyof T,
+    document: T,
   ): AmericanismIssueBySection | undefined {
     const filterOutPhrases = new Set([
       "practice",
@@ -31,7 +34,7 @@ export class AilaAmericanisms implements AilaAmericanismsFeature {
       "falls",
     ]);
 
-    const sectionContent = lessonPlan[section];
+    const sectionContent = document[section];
     if (!sectionContent) return;
 
     const sectionText = textify(sectionContent);
@@ -52,14 +55,16 @@ export class AilaAmericanisms implements AilaAmericanismsFeature {
       });
     });
 
-    return { section, issues };
+    return { section: String(section), issues };
   }
 
-  public findAmericanisms(lessonPlan: LooseLessonPlan) {
-    return Object.keys(lessonPlan).flatMap((section) => {
+  public findAmericanisms<U extends AilaDocumentContent = T>(
+    document: U,
+  ): AmericanismIssueBySection[] {
+    return Object.keys(document).flatMap((section) => {
       const sectionIssues = this.findSectionAmericanisms(
-        section as LessonPlanKey,
-        lessonPlan,
+        section as keyof T,
+        document as unknown as T,
       );
       return sectionIssues && sectionIssues.issues.length > 0
         ? [sectionIssues]
