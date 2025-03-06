@@ -750,7 +750,7 @@ export function parseMessageParts(content: string): MessagePart[] {
   const messageParts = content
     .split("␞")
     .map((r) => r.trim())
-    .filter((r) => r.length > 5)
+    .filter((r) => r.length > 0)
     .flatMap((row, index) => parseMessageRow(row, index))
     .filter((part) => part !== undefined)
     .flat();
