@@ -50,10 +50,6 @@ export class AilaDocument implements AilaDocumentService {
     this._content = content;
   }
 
-  public setContent(content: AilaDocumentContent) {
-    this._content = content;
-  }
-
   public get hasInitialisedContentFromMessages(): boolean {
     return this._hasInitialisedContentFromMessages;
   }

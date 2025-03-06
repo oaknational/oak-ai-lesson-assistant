@@ -32,17 +32,17 @@ export class AilaRag implements AilaRagFeature {
   }
 
   public async fetchRagContent({
-    numberOfLessonPlansInRag,
+    numberOfRecordsInRag,
     lessonPlan,
   }: {
-    numberOfLessonPlansInRag?: number;
+    numberOfRecordsInRag?: number;
     lessonPlan?: LooseLessonPlan;
   }) {
     // #TODO Refactor to return an array rather than stringified JSON
     let content = "[]";
 
     const { title, keyStage, subject, topic } =
-      lessonPlan ?? this._aila?.lessonPlan ?? {};
+      lessonPlan ?? this._aila?.document?.content ?? {};
     const chatId = this._aila?.chatId ?? "anonymous"; // #TODO add proper support for CLI RAG requests without a user
     if (!title) {
       return content;
@@ -57,8 +57,8 @@ export class AilaRag implements AilaRagFeature {
               subject,
               topic,
               k:
-                numberOfLessonPlansInRag ??
-                this._aila?.options.numberOfLessonPlansInRag ??
+                numberOfRecordsInRag ??
+                this._aila?.options.numberOfRecordsInRag ??
                 5,
             })
           : [];
