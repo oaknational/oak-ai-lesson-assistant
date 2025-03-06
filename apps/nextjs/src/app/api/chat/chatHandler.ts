@@ -1,6 +1,8 @@
 import type { Aila } from "@oakai/aila/src/core/Aila";
 import type { AilaServices } from "@oakai/aila/src/core/AilaServices";
 import type { Message } from "@oakai/aila/src/core/chat";
+import { LessonPlanCategorisationPlugin } from "@oakai/aila/src/core/document/plugins/LessonPlanCategorisationPlugin";
+import { LessonPlanSchema } from "@oakai/aila/src/core/document/schemas/lessonPlan";
 import type {
   AilaOptions,
   AilaPublicChatOptions,
@@ -11,6 +13,7 @@ import {
   DatadogAnalyticsAdapter,
   PosthogAnalyticsAdapter,
 } from "@oakai/aila/src/features/analytics";
+import { AilaCategorisation } from "@oakai/aila/src/features/categorisation/categorisers/AilaCategorisation";
 import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
 import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetection";
 import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/helicone/HeliconeThreatDetector";
@@ -328,7 +331,7 @@ async function createAilaInstance({
           chatLlmService: llmService,
           moderationAiClient,
           ragService: (aila: AilaServices) => new AilaRag({ aila }),
-          americanismsService: () => new AilaAmericanisms(),
+          americanismsService: () => new AilaAmericanisms<LooseLessonPlan>(),
           analyticsAdapters: (aila: AilaServices) => [
             new PosthogAnalyticsAdapter(aila),
             new DatadogAnalyticsAdapter(aila),
@@ -337,6 +340,11 @@ async function createAilaInstance({
         },
         document: {
           content: lessonPlan ?? {},
+          schema: LessonPlanSchema,
+          categorisationPlugin: (aila: AilaServices) =>
+            new LessonPlanCategorisationPlugin(
+              new AilaCategorisation({ aila }),
+            ),
         },
       };
       const result = await config.createAila(ailaOptions);

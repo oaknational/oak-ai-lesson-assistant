@@ -6,6 +6,7 @@ import {
 // TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import type { AilaChatService, AilaServices } from "../../core/AilaServices";
@@ -59,7 +60,15 @@ export class AilaChat implements AilaChatService {
   private readonly _experimentalPatches: ExperimentalPatchDocument[];
   public readonly fullQuizService: FullQuizService;
 
-  // private readonly _experimentalPatches: ExperimentalPatchDocument[];
+  /**
+   * Schema for values that can be safely used in enqueuePatch
+   */
+  private readonly safeValueSchema = z.union([
+    z.string(),
+    z.number(),
+    z.array(z.string()),
+    z.record(z.unknown()),
+  ]);
 
   constructor({
     id,
@@ -218,26 +227,80 @@ export class AilaChat implements AilaChatService {
     return applicableMessages;
   }
 
-  // #TODO this is the other part of the initial lesson state setting logic
-  // This should be some kind of hook that is specific to the
-  // generation of lessons rather than being applicable to all
-  // chats so that we can generate different types of document
+  // This method handles setting the initial state of the document
+  // based on the document type's implementation
   async handleSettingInitialState() {
     if (this._aila.document.hasInitialisedContentFromMessages) {
-      // #TODO sending these events in a different place to where they are set seems like a bad idea
-      const plan = this._aila.document.content;
-      const keys = Object.keys(plan) as Array<keyof typeof plan>;
-      for (const key of keys) {
-        const value = plan[key];
-        if (value) {
-          await this.enqueuePatch(`/${key}`, value);
+      const initialState = this._aila.document.getInitialState();
+
+      if (initialState) {
+        const keys = Object.keys(initialState);
+        for (const key of keys) {
+          const value = (initialState as Record<string, unknown>)[key];
+          if (value !== undefined && value !== null) {
+            const safeValue = this.ensureSafeValue(value);
+            if (safeValue !== undefined) {
+              await this.enqueuePatch(`/${key}`, safeValue);
+            }
+          }
         }
       }
     }
   }
 
+  /**
+   * Ensures values are safe to use in enqueuePatch using Zod validation
+   * with a maximum recursion depth to prevent stack overflow
+   */
+  private ensureSafeValue(
+    value: unknown,
+    depth: number = 0,
+  ): string | string[] | number | object | undefined {
+    if (depth > 10) {
+      return undefined;
+    }
+
+    try {
+      return this.safeValueSchema.parse(value);
+    } catch {
+      if (Array.isArray(value)) {
+        if (value.every((item) => typeof item === "string")) {
+          return value;
+        }
+
+        const safeArray = value
+          .map((item) => this.ensureSafeValue(item, depth + 1))
+          .filter(
+            (item): item is NonNullable<typeof item> => item !== undefined,
+          );
+
+        return safeArray.length > 0 ? safeArray : undefined;
+      }
+
+      if (value && typeof value === "object" && !Array.isArray(value)) {
+        const result: Record<string, unknown> = {};
+        let hasValidProperties = false;
+
+        for (const [key, propValue] of Object.entries(value)) {
+          const safeValue = this.ensureSafeValue(propValue, depth + 1);
+          if (safeValue !== undefined) {
+            result[key] = safeValue;
+            hasValidProperties = true;
+          }
+        }
+
+        return hasValidProperties ? result : undefined;
+      }
+
+      return undefined;
+    }
+  }
+
   private warningAboutSubject() {
-    const { subject } = this._aila.document.content;
+    const content = this._aila.document.content;
+    if (!content) return;
+
+    const { subject } = content;
     if (!subject || this.messages.length > 2) {
       return;
     }
@@ -260,7 +323,10 @@ export class AilaChat implements AilaChatService {
     if (!warning) {
       return;
     }
-    await this.enqueue({ type: "prompt", message: warning });
+    // Optional "?" Necessary to avoid a "terminated" error
+    if (this?._patchEnqueuer) {
+      await this.enqueue({ type: "prompt", message: warning });
+    }
   }
 
   public async enqueue(message: JsonPatchDocumentOptional) {
@@ -274,9 +340,14 @@ export class AilaChat implements AilaChatService {
     path: string,
     value: string | string[] | number | object,
   ) {
-    // Optional "?" necessary to avoid a "terminated" error
+    const safeValue = this.ensureSafeValue(value);
+    if (safeValue === undefined) {
+      log.warn("Unsafe value provided to enqueuePatch", { path });
+      return;
+    }
+    // Optional "?" Necessary to avoid a "terminated" error
     if (this?._patchEnqueuer) {
-      await this._patchEnqueuer.enqueuePatch(path, value);
+      await this._patchEnqueuer.enqueuePatch(path, safeValue);
     }
   }
 
@@ -310,7 +381,11 @@ export class AilaChat implements AilaChatService {
   }
 
   private async reportUsageMetrics() {
-    await this._aila.analytics?.reportUsageMetrics(this.accumulatedText());
+    if (this._aila.analytics) {
+      await this._aila.analytics.reportUsageMetrics(
+        JSON.stringify(this._aila.document.content || {}),
+      );
+    }
   }
 
   private async persistGeneration(status: AilaGenerationStatus) {
@@ -408,7 +483,7 @@ export class AilaChat implements AilaChatService {
     await this.reportUsageMetrics();
     await fetchExperimentalPatches({
       fullQuizService: this.fullQuizService,
-      lessonPlan: this._aila.document.content,
+      lessonPlan: this._aila.document.content || {},
       llmPatches: extractPatches(this.accumulatedText()).validPatches,
       handlePatch: async (patch) => {
         await this.enqueue(patch);
@@ -433,7 +508,7 @@ export class AilaChat implements AilaChatService {
   public async saveSnapshot({ messageId }: { messageId: string }) {
     await this._aila.snapshotStore.saveSnapshot({
       messageId,
-      content: this._aila.document.content,
+      content: this._aila.document.content || {},
       trigger: "ASSISTANT_MESSAGE",
     });
   }

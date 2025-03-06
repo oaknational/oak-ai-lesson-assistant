@@ -9,7 +9,6 @@ import {
 } from "../constants";
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
-import { AilaCategorisation } from "../features/categorisation";
 import type { AilaSnapshotStore } from "../features/snapshotStore";
 import type {
   AilaAnalyticsFeature,
@@ -28,7 +27,8 @@ import type {
 } from "./AilaServices";
 import type { Message } from "./chat";
 import { AilaChat } from "./chat";
-import { AilaDocument } from "./document";
+import { AilaDocument } from "./document/AilaDocument";
+import { LessonPlanSchema } from "./document/schemas/lessonPlan";
 import type { LLMService } from "./llm/LLMService";
 import { OpenAIService } from "./llm/OpenAIService";
 import type { AilaPlugin } from "./plugins/types";
@@ -76,15 +76,20 @@ export class Aila implements AilaServices {
 
     this._prisma = options.prisma ?? globalPrisma;
 
-    this._document = new AilaDocument({
-      aila: this,
-      content: options.document?.content ?? {},
-      categoriser:
-        options.services?.chatCategoriser ??
-        new AilaCategorisation({
-          aila: this,
-        }),
-    });
+    this._document =
+      options.services?.documentService ??
+      new AilaDocument({
+        content: options.document?.content ?? {},
+        plugins: options.document?.plugin ? [options.document.plugin] : [],
+        categorisationPlugins: options.document?.categorisationPlugin
+          ? [
+              options.document.categorisationPlugin instanceof Function
+                ? options.document.categorisationPlugin(this)
+                : options.document.categorisationPlugin,
+            ]
+          : [],
+        schema: options.document?.schema ?? LessonPlanSchema,
+      });
 
     this._analytics = AilaFeatureFactory.createAnalytics(
       this,
@@ -152,17 +157,17 @@ export class Aila implements AilaServices {
     options?: AilaOptions,
   ): AilaOptionsWithDefaultFallbackValues {
     return {
-      useRag: options?.useRag ?? true,
-      temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
+      mode: options?.mode ?? "interactive",
+      model: options?.model ?? DEFAULT_MODEL,
       numberOfRecordsInRag:
         options?.numberOfRecordsInRag ?? DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
-      usePersistence: options?.usePersistence ?? true,
+      temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
       useAnalytics: options?.useAnalytics ?? true,
-      useModeration: options?.useModeration ?? true,
-      useThreatDetection: options?.useThreatDetection ?? true,
       useErrorReporting: options?.useErrorReporting ?? true,
-      model: options?.model ?? DEFAULT_MODEL,
-      mode: options?.mode ?? "interactive",
+      useModeration: options?.useModeration ?? true,
+      usePersistence: options?.usePersistence ?? true,
+      useRag: options?.useRag ?? true,
+      useThreatDetection: options?.useThreatDetection ?? true,
     };
   }
 

@@ -4,7 +4,7 @@ import { aiLogger } from "@oakai/logger";
 import { z } from "zod";
 
 import type { AilaPersistedChat } from "../../../aila/src/protocol/schema";
-import { chatSchema } from "../../../aila/src/protocol/schema";
+import { AilaPersistedChatSchema } from "../../../aila/src/protocol/schema";
 import { adminProcedure } from "../middleware/adminAuth";
 import { router } from "../trpc";
 
@@ -58,7 +58,7 @@ export const adminRouter = router({
       if (typeof output !== "object") {
         throw new Error("sessionOutput is not an object");
       }
-      const parseResult = chatSchema.safeParse({
+      const parseResult = AilaPersistedChatSchema.safeParse({
         ...output,
         userId: chatRecord.userId,
         id,

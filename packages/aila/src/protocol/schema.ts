@@ -446,7 +446,7 @@ const AilaRagRelevantLessonSchema = z.object({
 
 export type AilaRagRelevantLesson = z.infer<typeof AilaRagRelevantLessonSchema>;
 
-export const chatSchema = z
+export const AilaPersistedChatSchema = z
   .object({
     id: z.string(),
     path: z.string(),
@@ -478,42 +478,7 @@ export const chatSchema = z
   })
   .passthrough();
 
-export type AilaPersistedChat = z.infer<typeof chatSchema>;
-
-export const chatSchemaWithMissingMessageIds = z
-  .object({
-    id: z.string(),
-    path: z.string(),
-    title: z.string(),
-    userId: z.string(),
-    lessonPlan: LessonPlanSchemaWhilstStreaming,
-    isShared: z.boolean().optional(),
-    createdAt: z.union([z.date(), z.number()]),
-    updatedAt: z.union([z.date(), z.number()]).optional(),
-    iteration: z.number().optional(),
-    startingMessage: z.string().optional(),
-    messages: z.array(
-      z
-        .object({
-          id: z.string().optional(),
-          content: z.string(),
-          role: z.union([
-            z.literal("function"),
-            z.literal("data"),
-            z.literal("user"),
-            z.literal("system"),
-            z.literal("assistant"),
-            z.literal("tool"),
-          ]),
-        })
-        .passthrough(),
-    ),
-  })
-  .passthrough();
-
-export type AilaPersistedChatWithMissingMessageIds = z.infer<
-  typeof chatSchemaWithMissingMessageIds
->;
+export type AilaPersistedChat = z.infer<typeof AilaPersistedChatSchema>;
 
 export type LessonPlanSectionWhileStreaming =
   | BasedOnOptional
@@ -540,6 +505,7 @@ export const quizOperationTypeSchema = z.union([
 
 export type QuizOperationType = z.infer<typeof quizOperationTypeSchema>;
 
+// This seems to only be used for singleLessonDryRun in the ingest package
 export const CompletedLessonPlanSchemaWithoutLength = z.object({
   title: LessonTitleSchema,
   keyStage: KeyStageSchema,

@@ -12,7 +12,7 @@ import type {
   AilaPersistedChat,
   LessonPlanKey,
 } from "../../../../protocol/schema";
-import { chatSchema } from "../../../../protocol/schema";
+import { AilaPersistedChatSchema } from "../../../../protocol/schema";
 import type { AilaGeneration } from "../../../generation/AilaGeneration";
 
 const log = aiLogger("aila:persistence");
@@ -51,7 +51,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
       throw new AilaAuthenticationError("User not authorised to access chat");
     }
 
-    const parsedChat = chatSchema.parse(appSession?.output);
+    const parsedChat = AilaPersistedChatSchema.parse(appSession?.output);
 
     return parsedChat;
   }

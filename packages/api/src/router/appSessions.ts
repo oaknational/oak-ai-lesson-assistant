@@ -12,7 +12,7 @@ import { z } from "zod";
 import { getSessionModerations } from "../../../aila/src/features/moderation/getSessionModerations";
 import { generateChatId } from "../../../aila/src/helpers/chat/generateChatId";
 import type { AilaPersistedChat } from "../../../aila/src/protocol/schema";
-import { chatSchema } from "../../../aila/src/protocol/schema";
+import { AilaPersistedChatSchema } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 
@@ -32,7 +32,7 @@ function parseChatAndReportError({
   if (typeof sessionOutput !== "object") {
     throw new Error("sessionOutput is not an object");
   }
-  const parseResult = chatSchema.safeParse({
+  const parseResult = AilaPersistedChatSchema.safeParse({
     ...sessionOutput,
     userId,
     id,
