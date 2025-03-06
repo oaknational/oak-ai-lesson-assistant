@@ -1,3 +1,15 @@
+# [1.27.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.26.0...v1.27.0) (2025-03-06)
+
+
+### Bug Fixes
+
+* initial state being called twice ([#574](https://github.com/oaknational/oak-ai-lesson-assistant/issues/574)) ([f61bc92](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f61bc92e9c11c7ead4a014d4a217895bab3d5684))
+
+
+### Features
+
+* continue migrating Aila package to support variable documents ([#575](https://github.com/oaknational/oak-ai-lesson-assistant/issues/575)) ([0c25081](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0c25081addc806e24e36df4c5356dba41ee7bb80))
+
 # [1.26.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.25.6...v1.26.0) (2025-03-04)
 
 
