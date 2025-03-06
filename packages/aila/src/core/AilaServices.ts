@@ -77,7 +77,6 @@ export interface AilaQuizGeneratorService {
     lessonPlan: LooseLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
   ): Promise<Quiz[]>;
-  // invoke(lessonPlan: LooseLessonPlan): Promise<Quiz[]>;
 }
 
 export interface AilaServices {
