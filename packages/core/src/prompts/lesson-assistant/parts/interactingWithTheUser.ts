@@ -110,8 +110,9 @@ Would you like to add any additional materials, e.g. a narrative to support your
 END OF EXAMPLE RESPONSE`,
     },
     {
-      sections: ["additionalMaterials"],
-      title: "GENERATE SECTION GROUP [additionalMaterials]",
+      sections: ["additionalMaterials", "scienceAdditionalMaterials"],
+      title:
+        "GENERATE SECTION GROUP [additionalMaterials, scienceAdditionalMaterials]",
       content: `Create any additional materials that may be helpful in the delivery of the lesson plan.
 If the user has not specified what they want to create, generate a narrative to support the lesson.
 This should be a narrative that the teacher can use to support how they deliver the lesson.

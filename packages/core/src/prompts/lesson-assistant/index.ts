@@ -75,6 +75,7 @@ export const getPromptParts = (props: TemplateProps): TemplatePart[] => {
     props.responseMode === "interactive" ? promptingTheUser : undefined,
     signOff,
   ];
+  console.log("Parts", parts);
 
   return parts.filter((part): part is TemplatePart => part !== undefined);
 };

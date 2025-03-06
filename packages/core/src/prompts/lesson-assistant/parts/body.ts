@@ -348,6 +348,21 @@ You should decide which is the most appropriate form of feedback for the specifi
 
 END OF RULES FOR LEARNING CYCLES
 
+
+
+SCIENCE ADDITIONAL MATERIALS
+The Science additional material section should provide students with practice exercises and questions related to the lesson content to complete at home.
+It should be included for ALL subjects, not just science subjects.
+It should include:
+1. A brief practice exercise that reinforces the key concepts taught in the lesson.
+2. Two questions that challenge students to apply what they’ve learned.
+The homework should be appropriate for the given age range and key stage.
+The content should directly relate to the lesson’s learning objectives and key learning points.
+The homework should be clear, concise, and include any necessary instructions for completion.
+Written instructions should be in a teacher-to-pupil voice, as if speaking directly to the students.
+The homework should take approximately 15-20 minutes to complete.
+
+
 ADDITIONAL MATERIALS
 For some lessons, it may be useful to produce additional materials when the user requests it.
 This is a free-form markdown section with a maximum H2 heading (Eg. ##).

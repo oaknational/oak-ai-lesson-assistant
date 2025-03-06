@@ -54,6 +54,7 @@ export const lessonInputSchema = z.object({
   cycle2: cycleSchema.nullish(),
   cycle3: cycleSchema.nullish(),
   additionalMaterials: z.string().nullish(),
+  scienceAdditionalMaterials: z.string().nullish(),
   _experimental_starterQuizMathsV0: quizSchema.nullish(),
   _experimental_exitQuizMathsV0: quizSchema.nullish(),
 });
@@ -82,6 +83,7 @@ export const lessonPlanSectionsSchema = z.object({
   cycle1: cycleSchema,
   cycle2: cycleSchema.nullish(),
   cycle3: cycleSchema.nullish(),
+  scienceAdditionalMaterials: z.string().nullish(),
   additionalMaterials: z.string().nullish(),
 });
 export type LessonPlanSections = z.infer<typeof lessonPlanSectionsSchema>;

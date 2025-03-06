@@ -115,6 +115,11 @@ export function useProgressForDownloads({
         complete: getCompleteness(errors, ["cycle1", "cycle2", "cycle3"]),
       },
       {
+        label: "Science additional materials",
+        key: "scienceAdditionalMaterials",
+        complete: getCompleteness(errors, ["scienceAdditionalMaterials"]),
+      },
+      {
         label: "Exit quiz",
         key: "exitQuiz",
         complete: getCompleteness(errors, ["exitQuiz"]),

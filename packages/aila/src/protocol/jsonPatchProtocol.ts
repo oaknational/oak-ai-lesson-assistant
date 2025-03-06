@@ -10,6 +10,7 @@ import zodToJsonSchema from "zod-to-json-schema";
 
 import type { LooseLessonPlan } from "./schema";
 import {
+  AdditionalScienceMaterialsSchema,
   BasedOnOptionalSchema,
   BasedOnSchema,
   CycleOptionalSchema,
@@ -37,6 +38,7 @@ export const PatchString = z.object({
     z.literal("/topic"),
     z.literal("/subject"),
     z.literal("/additionalMaterials"),
+    // z.literal("/scienceAdditionalMaterials"),
     z.literal("/learningOutcome"),
   ]),
   value: z.string(),
@@ -54,6 +56,7 @@ export const PatchStringForLLM = z.object({
     z.literal("/topic"),
     z.literal("/subject"),
     z.literal("/additionalMaterials"),
+    // z.literal("/scienceAdditionalMaterials"),
     z.literal("/learningOutcome"),
   ]),
   value: z.string(),
@@ -228,6 +231,22 @@ export const JsonPatchReplaceSchema = z.object({
   path: z.string(),
   value: z.union([z.string(), z.object({}), z.number(), z.array(z.string())]), // TODO - Allows any value type
 });
+export const PatchScienceAdditionalForLLM = z.object({
+  type: z.literal("scienceAdditionalMaterials"),
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.literal("/scienceAdditionalMaterials"),
+  value: AdditionalScienceMaterialsSchema.describe(
+    "This is the definition of the learning cycle that you are proposing. You MUST include this definition for the patch to be valid. It should never be just an empty object {}.",
+  ),
+});
+
+export const PatchScienceAdditional = z.object({
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.literal("/scienceAdditionalMaterials"),
+  value: AdditionalScienceMaterialsSchema.describe(
+    "This is the definition of the learning cycle that you are proposing. You MUST include this definition for the patch to be valid. It should never be just an empty object {}.",
+  ),
+});
 
 export const JsonPatchValueSchema = z.union([
   //JsonPatchAddSchema, // Generic add for any path
@@ -240,6 +259,7 @@ export const JsonPatchValueSchema = z.union([
   PatchQuiz,
   PatchMisconceptions,
   PatchKeywords,
+  PatchScienceAdditional,
 ]);
 
 // Because we cannot use min/max lengths for arrays and strings we have a separate schema
@@ -255,6 +275,7 @@ export const JsonPatchValueForLLMSchema = z.union([
   PatchQuizForLLM,
   PatchMisconceptionsForLLM,
   PatchKeywordsForLLM,
+  PatchScienceAdditionalForLLM,
 ]);
 
 export const JsonPatchValueOptionalSchema = z.union([
@@ -302,6 +323,7 @@ export const LLMPatchDocumentSchema = z.object({
     PatchKeywordsForLLM,
     PatchCycleForLLM,
     JsonPatchRemoveSchemaForLLM,
+    PatchScienceAdditionalForLLM,
   ]),
   status: z.literal("complete"),
 });
@@ -470,19 +492,6 @@ export type JsonPatchDocument = z.infer<typeof JsonPatchDocumentSchema>;
 export const JsonPatchDocumentJsonSchema = zodToJsonSchema(
   JsonPatchDocumentSchema,
   "patchDocumentSchema",
-);
-
-export const LLMResponseSchema = z.discriminatedUnion("type", [
-  PatchDocumentSchema,
-  PromptDocumentSchema,
-  StateDocumentSchema,
-  CommentDocumentSchema,
-  ErrorDocumentSchema,
-]);
-
-export const LLMResponseJsonSchema = zodToJsonSchema(
-  LLMResponseSchema,
-  "llmResponseSchema",
 );
 
 export const MessagePartDocumentSchema = z.discriminatedUnion("type", [
@@ -906,3 +915,12 @@ export function applyLessonPlanPatchImmutable(
     return;
   }
 }
+
+export const LLMResponseSchema = z.discriminatedUnion("type", [
+  LLMMessageSchema,
+]);
+
+export const LLMResponseJsonSchema = zodToJsonSchema(
+  LLMResponseSchema,
+  "llmResponseSchema",
+);

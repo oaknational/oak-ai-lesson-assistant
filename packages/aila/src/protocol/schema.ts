@@ -1,3 +1,4 @@
+// import dedent from "dedent";
 import dedent from "ts-dedent";
 import z from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
@@ -321,6 +322,8 @@ export const LESSON_PLAN_DESCRIPTIONS = {
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
   exitQuiz: dedent`The exit quiz for the lesson, which tests the content that is delivered in the lesson. 
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
+  scienceAdditionalMaterials: dedent`An object containing the science additional materials that are required for the lesson. `,
+  // scienceAdditionalMaterials: dedent`Any science additional materials that are required for the lesson. `,
   additionalMaterials:
     "Any additional materials or notes that are required or useful for the lesson",
 } as const;
@@ -391,6 +394,15 @@ export const CompletedLessonPlanSchema = z.object({
   cycle2: CycleSchema.describe("The second learning cycle"),
   cycle3: CycleSchema.describe("The third learning cycle"),
   exitQuiz: QuizSchema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+  scienceAdditionalMaterials: z
+    .object({
+      practicals: z.string().optional(),
+      demonstrations: z.string().optional(),
+      experiments: z.string().optional(),
+    })
+    .describe(LESSON_PLAN_DESCRIPTIONS.scienceAdditionalMaterials),
+  // scienceAdditionalMaterials: AdditionalMaterialsSchema,
+
   additionalMaterials: AdditionalMaterialsSchema,
 });
 
@@ -421,6 +433,7 @@ export const allSectionsInOrder = [
   "cycle2",
   "cycle3",
   "exitQuiz",
+  "scienceAdditionalMaterials",
   "additionalMaterials",
 ] as const;
 
@@ -430,6 +443,7 @@ export const LessonPlanKeySchema = z.enum([
   "subject",
   "topic",
   "basedOn",
+  "scienceAdditionalMaterials",
   ...allSectionsInOrder,
 ]);
 
@@ -540,6 +554,12 @@ export const quizOperationTypeSchema = z.union([
 
 export type QuizOperationType = z.infer<typeof quizOperationTypeSchema>;
 
+export const AdditionalScienceMaterialsSchema = z.object({
+  practicals: z.string().optional(),
+  demonstrations: z.string().optional(),
+  experiments: z.string().optional(),
+});
+
 export const CompletedLessonPlanSchemaWithoutLength = z.object({
   title: LessonTitleSchema,
   keyStage: KeyStageSchema,
@@ -558,5 +578,9 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   cycle2: CycleSchemaWithoutLength.describe("The second learning cycle"),
   cycle3: CycleSchemaWithoutLength.describe("The third learning cycle"),
   exitQuiz: QuizSchemaWithoutLength.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+  // scienceAdditionalMaterials: AdditionalMaterialsSchema,
+  scienceAdditionalMaterials: AdditionalScienceMaterialsSchema.describe(
+    LESSON_PLAN_DESCRIPTIONS.scienceAdditionalMaterials,
+  ),
   additionalMaterials: AdditionalMaterialsSchema,
 });
