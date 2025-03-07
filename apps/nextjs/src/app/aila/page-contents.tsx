@@ -2,6 +2,8 @@
 
 import React from "react";
 
+import { MathJaxContext } from "better-react-mathjax";
+
 import { AiSdk } from "@/components/AppComponents/Chat/AiSdk";
 import { Chat } from "@/components/AppComponents/Chat/Chat/chat";
 import LessonPlanDisplay from "@/components/AppComponents/Chat/chat-lessonPlanDisplay";
@@ -15,12 +17,14 @@ const ChatPageContents = ({ id }: { readonly id: string }) => {
 
   return (
     <Layout>
-      <LessonPlanTrackingProvider chatId={id}>
-        <AilaStoresProvider id={id}>
-          <AiSdk id={id} />
-          <Chat />
-        </AilaStoresProvider>
-      </LessonPlanTrackingProvider>
+      <MathJaxContext>
+        <LessonPlanTrackingProvider chatId={id}>
+          <AilaStoresProvider id={id}>
+            <AiSdk id={id} />
+            <Chat />
+          </AilaStoresProvider>
+        </LessonPlanTrackingProvider>
+      </MathJaxContext>
     </Layout>
   );
 };

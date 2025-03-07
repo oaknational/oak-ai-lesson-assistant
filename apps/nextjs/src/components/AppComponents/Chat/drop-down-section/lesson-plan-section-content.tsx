@@ -4,6 +4,7 @@ import type {
 } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { OakFlex } from "@oaknational/oak-components";
+import { MathJax } from "better-react-mathjax";
 
 import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
 
@@ -24,12 +25,14 @@ export const LessonPlanSectionContent = ({
 }: LessonPlanSectionContentProps) => {
   return (
     <OakFlex $flexDirection="column">
-      <MemoizedReactMarkdownWithStyles
-        lessonPlanSectionDescription={
-          lessonSectionTitlesAndMiniDescriptions[sectionKey]?.description
-        }
-        markdown={`${sectionToMarkdown(sectionKey, value)}`}
-      />
+      <MathJax>
+        <MemoizedReactMarkdownWithStyles
+          lessonPlanSectionDescription={
+            lessonSectionTitlesAndMiniDescriptions[sectionKey]?.description
+          }
+          markdown={`${sectionToMarkdown(sectionKey, value)}`}
+        />
+      </MathJax>
       <OakFlex
         $gap="all-spacing-3"
         $mt="space-between-s"
