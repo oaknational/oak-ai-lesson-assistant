@@ -125,7 +125,7 @@ export function useProgressForDownloads({
         complete: getCompleteness(errors, ["homework"]),
       },
     ];
-    console.log("sections", sections);
+
     const totalSections = sections.length;
     const totalSectionsComplete = sections.filter(
       (section) => section.complete,
