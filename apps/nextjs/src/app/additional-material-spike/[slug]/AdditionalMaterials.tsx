@@ -26,6 +26,7 @@ import { slugToSentenceCase } from "@/utils/toSentenceCase";
 import {
   isComprehensionMaterial,
   isHomeworkMaterial,
+  type ComprehensionTaskType,
   type HomeworkMaterialType,
   type SchemaMapType,
 } from "../../../../../../packages/additional-materials/src/schemas";
@@ -98,7 +99,9 @@ export type Cycle = {
 } | null;
 
 interface AdditionalMaterialsProps {
-  pageData: AilaPersistedChat;
+  pageData: {
+    lessonPlan: AilaPersistedChat["lessonPlan"];
+  };
 }
 
 const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
@@ -146,7 +149,7 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
     <Layout>
       <OakFlex $flexDirection="column">
         <OakHeading tag="h1">
-          {`${pageData.title} - ${pageData.lessonPlan.subject} - ${pageData.lessonPlan.keyStage}`}
+          {`${pageData.lessonPlan.title} - ${pageData.lessonPlan.subject} - ${pageData.lessonPlan.keyStage}`}
         </OakHeading>
 
         {mapLessonPlanSections(pageData).map((section) => {

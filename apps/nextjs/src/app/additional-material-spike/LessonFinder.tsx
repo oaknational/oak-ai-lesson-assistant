@@ -9,11 +9,15 @@ import {
   OakTextInput,
   OakHeading,
   OakSpan,
+  OakPrimaryButton,
 } from "@oaknational/oak-components";
 import Link from "next/link";
 
+import { fetchOakLessons } from "../actions";
+
 const LessonFinder = ({ lessons }: { lessons: any }) => {
   const [searchText, setSearchText] = useState("");
+  const [owaLessons, setOwaLessons] = useState([]);
   const lessonTitles = lessons.map((lesson: any) => ({
     sessionId: lesson.id,
     lessonTitle: lesson?.output?.lessonPlan?.title || "",
@@ -28,6 +32,18 @@ const LessonFinder = ({ lessons }: { lessons: any }) => {
 
   console.log("**********", lessons[lessons.length - 1]);
 
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch(`/api/search-lesson?q=${searchText}`);
+      const data = await response.json();
+      console.log("data", data);
+
+      setOwaLessons(data);
+    } catch (e) {
+      console.error("Error fetching lessons:", e);
+    }
+  };
+
   return (
     <OakFlex $flexDirection="column" $mb="space-between-m">
       <OakFlex
@@ -37,11 +53,14 @@ const LessonFinder = ({ lessons }: { lessons: any }) => {
       >
         <OakHeading tag="h1">Choose a Oak lesson to test</OakHeading>
         <OakTextInput onChange={(value) => setSearchText(value.target.value)} />
-        {searchText && (
-          <Link href={`/additional-material-spike/${searchText}`}>
-            {searchText}
-          </Link>
-        )}
+        <OakPrimaryButton onClick={handleSubmit}>Submit</OakPrimaryButton>
+        {searchText &&
+          owaLessons &&
+          owaLessons.map((lesson: any) => (
+            <Link href={`/additional-material-spike/owa/${lesson.lessonSlug}`}>
+              {lesson.lessonTitle}
+            </Link>
+          ))}
       </OakFlex>
       <OakHeading tag="h1">Choose a Aila lesson to test</OakHeading>
       <OakSpan $mb="space-between-m" $font={"body-3"}>

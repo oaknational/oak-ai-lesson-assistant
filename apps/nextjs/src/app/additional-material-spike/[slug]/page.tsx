@@ -22,16 +22,19 @@ export default async function ImageTestPage({
 
   try {
     const response = await fetch(
-      `https://open-api.thenational.academy/api/v0/search/lessons/${lessonSlug}`,
+      `https://open-api.thenational.academy/api/v0/lessons/${lessonSlug}/summary`,
       {
-        method: "POST",
+        method: "GET",
         headers: {
-          Authorization: OPEN_AI_AUTH_TOKEN,
+          Authorization: `Bearer ${OPEN_AI_AUTH_TOKEN}`,
           Accept: "application/json",
         },
       },
     );
-    console.log(response);
+
+    const data = await response.json();
+
+    console.log("data", data);
   } catch (e) {
     console.log(e);
   }

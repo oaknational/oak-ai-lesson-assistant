@@ -1,9 +1,13 @@
 import { openai } from "@ai-sdk/openai";
-import { generateObject, generateText } from "ai";
+import { generateObject, generateText, type CoreMessage } from "ai";
 import type { ZodSchema } from "zod";
 
 import type { LooseLessonPlan } from "../../aila/src/protocol/schema";
 import { schema } from "../../core/src/prompts/lesson-assistant/parts";
+import {
+  additionalHomeworkPrompt,
+  additionalHomeworkSystemPrompt,
+} from "./prompts/prompt";
 import { comprehensionTaskSchema } from "./schema/comprehensionTask";
 import { homeworkMaterialSchema } from "./schema/homework";
 import { schemaMap, type SchemaMapType } from "./schemas";
@@ -16,14 +20,12 @@ function getSchema(action: SchemaMapType): ZodSchema {
   return schema;
 }
 
-const generatePrompt = (lessonPlan: LooseLessonPlan, action: string) => {
+const getPrompt = (lessonPlan: LooseLessonPlan, action: string) => {
   switch (action) {
     case "additional-homework":
       return {
-        prompt: `Generate a homework task for the lesson: "${lessonPlan.title}" with key learning points: "${lessonPlan.keyLearningPoints}"`,
-        systemMessage:
-          "You are generating homework tasks. Ensure the task is clear, subject-specific, and appropriate for students. Keep questions engaging and relevant. Respond to the user in Markdown format.",
-        schema: homeworkMaterialSchema,
+        prompt: additionalHomeworkPrompt(lessonPlan),
+        systemMessage: additionalHomeworkSystemPrompt(),
       };
 
     case "additional-comprehension":
@@ -41,14 +43,14 @@ const generatePrompt = (lessonPlan: LooseLessonPlan, action: string) => {
 
 export const fetchAdditionalMaterials = async ({
   lessonPlan,
-  userMessage,
+  userMessages,
   action,
 }: {
   lessonPlan: LooseLessonPlan;
-  userMessage: string;
+  userMessages: Array<CoreMessage>;
   action: SchemaMapType;
 }) => {
-  const generationProps = generatePrompt(lessonPlan, action);
+  const generationProps = getPrompt(lessonPlan, action);
 
   console.log("acton", action);
 
@@ -57,6 +59,7 @@ export const fetchAdditionalMaterials = async ({
     schema: getSchema(action),
     model: openai("gpt-4-turbo"),
     system: generationProps.systemMessage,
+    messages: userMessages,
   });
 
   console.log("TEXT", object);
