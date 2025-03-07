@@ -5,7 +5,11 @@ import { findLast } from "remeda";
 import { Icon } from "@/components/Icon";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
+import {
+  useChatActions,
+  useChatStore,
+  useLessonPlanStore,
+} from "@/stores/AilaStoresProvider";
 import type { AilaStreamingStatus } from "@/stores/chatStore";
 import { canAppendSelector } from "@/stores/chatStore/selectors";
 
@@ -45,8 +49,7 @@ const QuickActionButtons = () => {
   const lessonPlanTracking = useLessonPlanTracking();
   const { setDialogWindow } = useDialog();
   const queuedUserAction = useChatStore((state) => state.queuedUserAction);
-  const append = useChatStore((state) => state.append);
-  const stop = useChatStore((state) => state.stop);
+  const { append, stop } = useChatActions();
   const id = useLessonPlanStore((state) => state.id);
 
   const ailaStreamingStatus = useChatStore(
