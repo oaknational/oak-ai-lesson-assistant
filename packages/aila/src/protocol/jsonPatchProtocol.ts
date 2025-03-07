@@ -15,6 +15,9 @@ import {
   CycleOptionalSchema,
   CycleSchema,
   CycleSchemaWithoutLength,
+  HomeworkOptionalSchema,
+  HomeworkSchema,
+  HomeworkSchemaWithoutLength,
   KeywordsOptionalSchema,
   KeywordsSchema,
   KeywordsSchemaWithoutLength,
@@ -38,6 +41,7 @@ export const PatchString = z.object({
     z.literal("/subject"),
     z.literal("/additionalMaterials"),
     z.literal("/learningOutcome"),
+    z.literal("/homework"),
   ]),
   value: z.string(),
 });
@@ -55,6 +59,7 @@ export const PatchStringForLLM = z.object({
     z.literal("/subject"),
     z.literal("/additionalMaterials"),
     z.literal("/learningOutcome"),
+    z.literal("/homework"),
   ]),
   value: z.string(),
 });
@@ -193,6 +198,25 @@ export const PatchKeywords = z.object({
   value: KeywordsSchema,
 });
 
+export const PatchHomework = z.object({
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.literal("/homework"),
+  value: HomeworkSchema,
+});
+
+export const PatchHomeWorkForLLM = z.object({
+  type: z.literal("homework"),
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.literal("/homework"),
+  value: HomeworkSchemaWithoutLength,
+});
+
+export const PatchHomeworkOptional = z.object({
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.literal("/homework"),
+  value: HomeworkOptionalSchema,
+});
+
 // When using Structured Outputs we cannot specify the length of arrays or strings
 // so we have to use a different schema and pass in the spec with a description and in the prompt
 export const PatchKeywordsForLLM = z.object({
@@ -240,6 +264,7 @@ export const JsonPatchValueSchema = z.union([
   PatchQuiz,
   PatchMisconceptions,
   PatchKeywords,
+  PatchHomework,
 ]);
 
 // Because we cannot use min/max lengths for arrays and strings we have a separate schema
@@ -255,6 +280,7 @@ export const JsonPatchValueForLLMSchema = z.union([
   PatchQuizForLLM,
   PatchMisconceptionsForLLM,
   PatchKeywordsForLLM,
+  PatchHomeWorkForLLM,
 ]);
 
 export const JsonPatchValueOptionalSchema = z.union([
@@ -274,6 +300,7 @@ export const JsonPatchValueOptionalSchema = z.union([
   PatchQuizOptional,
   PatchMisconceptionsOptional,
   PatchKeywordsOptional,
+  PatchHomeworkOptional,
 ]);
 
 export const PatchDocumentSchema = z.object({
@@ -302,6 +329,7 @@ export const LLMPatchDocumentSchema = z.object({
     PatchKeywordsForLLM,
     PatchCycleForLLM,
     JsonPatchRemoveSchemaForLLM,
+    PatchHomeWorkForLLM,
   ]),
   status: z.literal("complete"),
 });
@@ -868,6 +896,7 @@ export function applyLessonPlanPatchImmutable(
   command: JsonPatchDocument | ExperimentalPatchDocument,
 ) {
   log.info("Apply patch (immutable)", JSON.stringify(command));
+
   if (command.type !== "patch" && command.type !== "experimentalPatch") {
     log.error("Invalid patch document type", command.type);
     return;

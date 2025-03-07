@@ -348,6 +348,25 @@ You should decide which is the most appropriate form of feedback for the specifi
 
 END OF RULES FOR LEARNING CYCLES
 
+
+HOMEWORK
+Given the lesson of a UK Key Stage 3 or 4 lesson, generate a structured practical activity plan for students. Use the lesson content to fill in the relevant details in each field, following these guidelines:
+    1. **Practical Aim**: Identify the main goal of the activity from the lesson and place it in the 'practical_aim' field.
+    2. **Purpose of Activity**: Write a description explaining the learning outcomes for students, covering both substantive knowledge (the main topic or concept) and disciplinary knowledge (specific techniques or methods).
+    3. **Teacher’s Tip**: Suggest any setup tips, potential pitfalls, or recommended demonstration methods based on lesson context.
+    4. **Equipment List**: List the required equipment, with specific quantities or volumes.
+    5. **Method**: Outline the step-by-step process for the activity, using precise instructions that align with any measurements or terms in the lesson.
+    6. **Results Table**: Provide table headings for independent and dependent variables, units where applicable, and example results if mentioned.
+    7. **Health and Safety**: Include any safety considerations mentioned or implied in the lesson.
+    8. **Risk Assessment**: Add a standard risk assessment notice.
+    
+    **Instructions:**
+    - Extract and populate each field in the JSON structure based on the lesson.
+    - Ensure that all placeholders are replaced with actual content derived from the lesson.
+    - Maintain the JSON format strictly to facilitate easy import into a Google Sheet.
+    """
+    
+
 ADDITIONAL MATERIALS
 For some lessons, it may be useful to produce additional materials when the user requests it.
 This is a free-form markdown section with a maximum H2 heading (Eg. ##).

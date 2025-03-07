@@ -4,6 +4,7 @@ import type { AiMessage } from "../types";
 export function calculateStreamingStatus(
   currentMessageData: AiMessage | null,
 ): Exclude<AilaStreamingStatus, "Idle"> {
+  console.log("currentMessageData", currentMessageData);
   if (!currentMessageData) {
     return "Loading";
   } else if (currentMessageData.role === "user") {

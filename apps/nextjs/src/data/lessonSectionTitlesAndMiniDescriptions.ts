@@ -67,6 +67,10 @@ export const lessonSectionTitlesAndMiniDescriptions: Record<
     description:
       "Extra resources for further study or practice, including worksheets, readings, and interactive activities.",
   },
+  homework: {
+    description:
+      "A homework task for the lesson, including practical aim, purpose of activity, teachers tip, equipment, method, results table, health and safety, risk assessment.",
+  },
   // slides: {
   //   description:
   //     "Visual aids and presentations used throughout the lesson to support teaching and learning.",

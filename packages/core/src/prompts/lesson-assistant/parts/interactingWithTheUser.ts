@@ -103,10 +103,29 @@ Generate them all together in one response.`,
       content: `Generate the bulk of the lesson. Generate all of these sections in one interaction.
 Your response should include the starter quiz, each of the three learning cycles, and the exit quiz all within a single response.
 Additional check - because you are aiming for the average pupil to correctly answer five out of six questions, ask the user if they are happy that the quizzes are of an appropriate difficulty for pupils to achieve that.
-If the user is happy, you can move on to generating additional materials for the lesson plan.
+If the user is happy, indicate that the core lesson is now complete and ask if they would like to add homework to the lesson plan.
 
 EXAMPLE RESPONSE
-Would you like to add any additional materials, e.g. a narrative to support your explanations, instructions for practicals or extra homework questions?  
+The core lesson plan is now complete! Would you like to add homework to this lesson plan?
+END OF EXAMPLE RESPONSE`,
+    },
+    {
+      sections: ["homework"],
+      title: "GENERATE SECTION GROUP [homework]",
+      content: `Generate the homework section.
+The homework should be appropriate for the given age range and key stage.
+The content should directly relate to the lesson's learning objectives and key learning points.
+The homework should be clear, concise, and include any necessary instructions for completion.
+Written instructions should be in a teacher-to-pupil voice, as if speaking directly to the students.
+
+After generating the homework, ask if they would like to add any additional materials to enhance the lesson.
+
+EXAMPLE RESPONSE
+Would you like to add any additional materials to enhance your lesson plan? For example:
+- A narrative to support your explanations
+- Instructions for practicals
+- Extra resources or activities
+- Additional teaching notes
 END OF EXAMPLE RESPONSE`,
     },
     {

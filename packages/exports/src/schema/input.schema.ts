@@ -66,6 +66,23 @@ export type LessonSlidesInputData = z.infer<typeof lessonSlidesInputSchema>;
 
 export const lessonPlanDocInputSchema = lessonSlidesInputSchema;
 
+const resultsTableSchema = z.object({
+  independentVariable: z.string(),
+  dependentVariable: z.string(),
+  exampleResults: z.array(z.record(z.string(), z.string())).optional(),
+});
+
+export const homeworkSchema = z.object({
+  practicalAim: z.string(),
+  purposeOfActivity: z.string(),
+  teachersTip: z.string(),
+  equipment: z.array(z.string()),
+  method: z.array(z.string()),
+  resultsTable: resultsTableSchema,
+  healthAndSafety: z.array(z.string()),
+  riskAssessment: z.string(),
+});
+
 export const lessonPlanSectionsSchema = z.object({
   title: z.string(),
   subject: z.string(),
@@ -83,7 +100,9 @@ export const lessonPlanSectionsSchema = z.object({
   cycle2: cycleSchema.nullish(),
   cycle3: cycleSchema.nullish(),
   additionalMaterials: z.string().nullish(),
+  homework: homeworkSchema,
 });
+
 export type LessonPlanSections = z.infer<typeof lessonPlanSectionsSchema>;
 
 export type LessonPlanDocInputData = z.infer<typeof lessonPlanDocInputSchema>;
