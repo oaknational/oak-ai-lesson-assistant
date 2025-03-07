@@ -271,6 +271,56 @@ export const KeywordsOptionalSchema = z.array(KeywordOptionalSchema);
 export type KeywordOptional = z.infer<typeof KeywordOptionalSchema>;
 export type Keyword = z.infer<typeof KeywordSchema>;
 
+// ********** HOMEWORK **********
+
+const resultsTableSchema = z.object({
+  independentVariable: z.string(),
+  dependentVariable: z.string(),
+  exampleResults: z
+    .array(
+      z.record(z.string(), z.string()), // Each example result is an object with a single key-value pair
+    )
+    .optional(),
+});
+
+export const HOMEWORK_DESCRIPTIONS = {
+  practicalAim: dedent`The practical aim of the homework.`,
+  purposeOfActivity: dedent`The purpose of the activity.`,
+  teachersTip: dedent`The teachers tip.`,
+  equipment: dedent`The equipment.`,
+  method: dedent`The method.`,
+  resultsTable: dedent`The results table.`,
+  healthAndSafety: dedent`The health and safety.`,
+  riskAssessment: dedent`The risk assessment.`,
+} as const;
+
+export const HomeworkSchemaWithoutLength = z.object({
+  practicalAim: z.string().describe(HOMEWORK_DESCRIPTIONS.practicalAim),
+  purposeOfActivity: z
+    .string()
+    .describe(HOMEWORK_DESCRIPTIONS.purposeOfActivity),
+  teachersTip: z.string().describe(HOMEWORK_DESCRIPTIONS.teachersTip),
+  equipment: z.array(z.string()).describe(HOMEWORK_DESCRIPTIONS.equipment),
+  method: z.array(z.string()).describe(HOMEWORK_DESCRIPTIONS.method),
+  resultsTable: resultsTableSchema.describe(HOMEWORK_DESCRIPTIONS.resultsTable),
+  healthAndSafety: z
+    .array(z.string())
+    .describe(HOMEWORK_DESCRIPTIONS.healthAndSafety),
+  riskAssessment: z.string().describe(HOMEWORK_DESCRIPTIONS.riskAssessment),
+});
+
+export const HomeworkSchema = HomeworkSchemaWithoutLength.extend({
+  practicalAim: HomeworkSchemaWithoutLength.shape.practicalAim.max(300),
+  purposeOfActivity:
+    HomeworkSchemaWithoutLength.shape.purposeOfActivity.max(300),
+  teachersTip: HomeworkSchemaWithoutLength.shape.teachersTip.max(300),
+  equipment: HomeworkSchemaWithoutLength.shape.equipment.max(300),
+  method: HomeworkSchemaWithoutLength.shape.method.max(300),
+});
+
+export const HomeworkOptionalSchema = HomeworkSchemaWithoutLength.partial();
+export type HomeworkOptional = z.infer<typeof HomeworkOptionalSchema>;
+
 // ********** LESSON PLAN **********
 export const LESSON_PLAN_DESCRIPTIONS = {
   title: dedent`The title of the lesson. Lesson titles should be a unique and succinct statement, not a question. 
@@ -320,6 +370,8 @@ export const LESSON_PLAN_DESCRIPTIONS = {
     Obey the rules as specified in the STARTER QUIZ section of the lesson plan guidance. 
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
   exitQuiz: dedent`The exit quiz for the lesson, which tests the content that is delivered in the lesson. 
+    Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
+  homework: dedent`The homework for the lesson, which includes a practice exercise and two questions related to the lesson content.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
   additionalMaterials:
     "Any additional materials or notes that are required or useful for the lesson",
@@ -391,6 +443,7 @@ export const CompletedLessonPlanSchema = z.object({
   cycle2: CycleSchema.describe("The second learning cycle"),
   cycle3: CycleSchema.describe("The third learning cycle"),
   exitQuiz: QuizSchema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+  homework: HomeworkSchema.describe(LESSON_PLAN_DESCRIPTIONS.homework),
   additionalMaterials: AdditionalMaterialsSchema,
 });
 
@@ -421,6 +474,7 @@ export const allSectionsInOrder = [
   "cycle2",
   "cycle3",
   "exitQuiz",
+  "homework",
   "additionalMaterials",
 ] as const;
 
@@ -521,6 +575,7 @@ export type LessonPlanSectionWhileStreaming =
   | KeywordOptional[]
   | QuizOptional
   | CycleOptional
+  | HomeworkOptional
   | string
   | string[]
   | number;
@@ -558,5 +613,8 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   cycle2: CycleSchemaWithoutLength.describe("The second learning cycle"),
   cycle3: CycleSchemaWithoutLength.describe("The third learning cycle"),
   exitQuiz: QuizSchemaWithoutLength.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+  homework: HomeworkSchemaWithoutLength.describe(
+    LESSON_PLAN_DESCRIPTIONS.homework,
+  ),
   additionalMaterials: AdditionalMaterialsSchema,
 });

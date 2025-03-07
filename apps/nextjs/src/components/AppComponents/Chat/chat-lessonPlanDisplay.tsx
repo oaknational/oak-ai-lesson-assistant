@@ -5,10 +5,12 @@ import type {
   LessonPlanKey,
 } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
+import { OakIcon } from "@oaknational/oak-components";
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 import scrollIntoView from "scroll-into-view-if-needed";
 
+import AiIcon from "@/components/AiIcon";
 import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
 import {
   useChatStore,
@@ -18,6 +20,7 @@ import {
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
+import { useProgressForDownloads } from "./Chat/hooks/useProgressForDownloads";
 import { GuidanceRequired } from "./guidance-required";
 import { LessonPlanSection } from "./lesson-plan-section";
 
@@ -145,7 +148,15 @@ export const LessonPlanDisplay = ({
 }: LessonPlanDisplayProps) => {
   const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
   const lastModeration = useModerationStore((state) => state.lastModeration);
+  const ailaStreamingStatus = useChatStore(
+    (state) => state.ailaStreamingStatus,
+  );
+  const { totalSectionsComplete } = useProgressForDownloads({
+    lessonPlan,
+    isStreaming: false,
+  });
 
+  const append = useChatStore((state) => state.append);
   const { userHasCancelledAutoScroll } =
     useDetectScrollOverride(documentContainerRef);
 
@@ -238,6 +249,38 @@ export const LessonPlanDisplay = ({
           );
         })}
       </div>
+      {totalSectionsComplete >= 10 && ailaStreamingStatus === "Idle" && (
+        <div className="flex w-full justify-center gap-16">
+          {!("homework" in lessonPlan) && (
+            <button
+              className="flex w-full justify-start gap-6 rounded-md border-2 border-black border-opacity-20 p-10"
+              onClick={() => append("add homework task")}
+            >
+              <div className="mt-5">
+                <AiIcon />
+              </div>
+              <div className="flex flex-col items-start justify-start">
+                <span>Add homework task</span>
+                <span className="opacity-70">Create a homework task</span>
+              </div>
+            </button>
+          )}
+          {!("homework" in lessonPlan) && (
+            <button
+              className="flex w-full justify-start gap-6 rounded-md border-2 border-black border-opacity-20 p-10"
+              onClick={() => null}
+            >
+              <div className="mt-5">
+                <AiIcon />
+              </div>
+              <div className="flex flex-col items-start justify-start">
+                <span>Another additonal mat</span>
+                <span className="opacity-70">This button doesn't work</span>
+              </div>
+            </button>
+          )}
+        </div>
+      )}
       <div ref={chatEndRef} />
     </div>
   );

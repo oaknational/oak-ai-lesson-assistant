@@ -119,6 +119,11 @@ export function useProgressForDownloads({
         key: "exitQuiz",
         complete: getCompleteness(errors, ["exitQuiz"]),
       },
+      {
+        label: "Homework",
+        key: "homework",
+        complete: getCompleteness(errors, ["homework"]),
+      },
     ];
 
     const totalSections = sections.length;
