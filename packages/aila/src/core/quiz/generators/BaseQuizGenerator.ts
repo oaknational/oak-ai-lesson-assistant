@@ -290,7 +290,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
           log.warn("Hit source is undefined:", hit);
           return null;
         }
-        log.info("This code is being called");
 
         // Check if the required fields exist
         if (
