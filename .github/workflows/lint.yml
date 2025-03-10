@@ -42,4 +42,4 @@ jobs:
         run: pnpm manypkg check
 
       - name: Check formatting
-        run: pnpm prettier --check "**/*.{ts,tsx,md}" --cache
+        run: pnpm prettier --check --cache
