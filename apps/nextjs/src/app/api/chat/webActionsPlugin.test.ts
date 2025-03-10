@@ -118,7 +118,7 @@ describe("webActionsPlugin", () => {
 });
 
 describe("onStreamError", () => {
-  it("should record a safety violation when a helicone error is encountered", async () => {
+  it("should record a safety violation when a threat error is encountered", async () => {
     const recordViolation = jest.fn();
     const safetyViolations = jest.fn().mockImplementation(() => ({
       recordViolation,
