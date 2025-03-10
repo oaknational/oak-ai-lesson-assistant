@@ -43,8 +43,6 @@ export const rules = {
   "import/no-cycle": ["warn", { maxDepth: Infinity }],
   "import/newline-after-import": "off",
   "import/no-duplicates": "off",
-
-  // JSON files plugin rules are now in a dedicated config
   
   // General ESLint rules
   "no-console": "warn",
