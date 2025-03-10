@@ -12,6 +12,7 @@ import type { CustomDestination } from "./Avo";
 type AnalyticsServices = {
   posthog: Pick<AnalyticsService<PosthogConfig, "posthog">, "track">;
 };
+
 /**
  * getAvoBridge returns the bridge between Avo and our analytics services.
  * Namely, when we call Avo.myEvent(), logEvent() gets fired below.

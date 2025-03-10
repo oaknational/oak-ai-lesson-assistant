@@ -13,7 +13,7 @@ import { Button } from "@/components/AppComponents/Chat/ui/button";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
-import useAnalytics from "@/lib/analytics/useAnalytics";
+import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import { trpc } from "@/utils/trpc";
 
 import { useDialog } from "../DialogContext";
@@ -46,7 +46,6 @@ export function ChatStart({
 }: Readonly<ChatStartProps>) {
   const { user } = useUser();
   const userFirstName = user?.firstName;
-  const { trackEvent } = useAnalytics();
   const [input, setInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { setDialogWindow } = useDialog();
@@ -86,10 +85,6 @@ export function ChatStart({
         );
 
         log.info("App session created:", result);
-        trackEvent("chat:send_message", {
-          id: result.id,
-          message,
-        });
 
         router.push(`/aila/${result.id}`);
       } catch (error) {
@@ -98,12 +93,7 @@ export function ChatStart({
         toast.error("Failed to start the chat");
       }
     },
-    [
-      createAppSession,
-      trpcUtils.chat.appSessions.remainingLimit,
-      trackEvent,
-      router,
-    ],
+    [createAppSession, trpcUtils, router],
   );
 
   const submit = useCallback(
@@ -180,7 +170,7 @@ export function ChatStart({
                         variant="link"
                         className="pl-0"
                         onClick={() => {
-                          trackEvent(`chat: ${message.message}`);
+                          lessonPlanTracking.onSubmitText(message.message);
                           setInput(message.message);
                           submit(message.message);
                         }}

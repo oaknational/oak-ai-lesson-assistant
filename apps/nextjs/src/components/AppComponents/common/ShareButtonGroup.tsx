@@ -1,7 +1,6 @@
 import { Box } from "@radix-ui/themes";
 
 import { Icon } from "@/components/Icon";
-import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import ChatButton from "../Chat/ui/chat-button";
 
@@ -21,7 +20,6 @@ const ShareButtonGroup = ({
   app,
   disabled,
 }: Readonly<ShareButtonGroupProps>) => {
-  const { trackEvent } = useAnalytics();
   if (loading) {
     return (
       <Box>
@@ -43,7 +41,6 @@ const ShareButtonGroup = ({
         href={`/${app}/preview/${shareId}`}
         target="_blank"
         icon="external"
-        onClick={() => trackEvent(`${app}:share_link`)}
       >
         Go to share link
       </ChatButton>
