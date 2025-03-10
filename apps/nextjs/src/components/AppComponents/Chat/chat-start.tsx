@@ -53,7 +53,6 @@ export function ChatStart({
   const demo = useDemoUser();
   const createAppSession = trpc.chat.appSessions.create.useMutation();
   const trpcUtils = trpc.useUtils();
-  const lessonPlanTracking = useLessonPlanTracking();
 
   useEffect(() => {
     if (keyStage || subject || unitTitle || searchExpression) {
@@ -86,7 +85,6 @@ export function ChatStart({
         );
 
         log.info("App session created:", result);
-        lessonPlanTracking.onSubmitText(message);
 
         router.push(`/aila/${result.id}`);
       } catch (error) {
@@ -95,7 +93,7 @@ export function ChatStart({
         toast.error("Failed to start the chat");
       }
     },
-    [createAppSession, trpcUtils, router, lessonPlanTracking],
+    [createAppSession, trpcUtils, router],
   );
 
   const submit = useCallback(
