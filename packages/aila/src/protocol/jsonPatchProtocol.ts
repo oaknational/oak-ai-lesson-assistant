@@ -750,11 +750,20 @@ export function parseMessageParts(content: string): MessagePart[] {
   const messageParts = content
     .split("␞")
     .map((r) => r.trim())
-    .filter((r) => r.length > 0)
+    .filter((r) => r.length > 5)
     .flatMap((row, index) => parseMessageRow(row, index))
     .filter((part) => part !== undefined)
     .flat();
   return messageParts;
+}
+
+export function userMessageTextPart(content: string): MessagePart {
+  return {
+    type: "message-part",
+    document: { type: "text", value: content.trim() },
+    id: `${0}`,
+    isPartial: false,
+  };
 }
 
 const timeOperation = <T>(fn: () => T): T => {
