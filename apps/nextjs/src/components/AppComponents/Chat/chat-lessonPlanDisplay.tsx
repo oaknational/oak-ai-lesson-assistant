@@ -14,6 +14,7 @@ import {
   useChatStore,
   useModerationStore,
   useLessonPlanStore,
+  useLessonPlanActions,
 } from "@/stores/AilaStoresProvider";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
@@ -54,9 +55,7 @@ const useSectionScrolling = ({
   userHasCancelledAutoScroll: boolean;
 }) => {
   const scrollToSection = useLessonPlanStore((state) => state.scrollToSection);
-  const setScrollToSection = useLessonPlanStore(
-    (state) => state.setScrollToSection,
-  );
+  const { setScrollToSection } = useLessonPlanActions();
   const lastScrollToSectionRef = useRef<LessonPlanKey | null>(null);
 
   useEffect(() => {
