@@ -38,8 +38,8 @@ jobs:
       - name: Build, lint and type-check
         run: pnpm turbo lint type-check --cache-dir=".turbo"
 
-      - name: Check workspaces
+      - name: Check workspaces with Manypkg
         run: pnpm manypkg check
 
-      - name: Check formatting
+      - name: Check formatting with Prettier
         run: pnpm prettier --check --cache
