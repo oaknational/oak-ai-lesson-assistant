@@ -106,5 +106,25 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       expect(quiz[0]?.distractors).toBeDefined();
       log.info(JSON.stringify(quiz, null, 2));
     });
+    it("Should work with a schema reranker and a ml reranker", async () => {
+      const builder = new CompositeFullQuizServiceBuilder();
+      const settings: QuizBuilderSettings = {
+        quizRatingSchema: testRatingSchema,
+        quizSelector: "simple",
+        quizReranker: "schema-reranker",
+        quizGenerators: ["basedOnRag", "ml"],
+      };
+      const service = builder.build(settings);
+      const quiz = await service.createBestQuiz(
+        "/starterQuiz",
+        CircleTheoremLesson,
+      );
+      expect(quiz).toBeDefined();
+      expect(quiz.length).toBeGreaterThan(0);
+      expect(quiz[0]?.question).toBeDefined();
+      expect(quiz[0]?.answers).toBeDefined();
+      expect(quiz[0]?.distractors).toBeDefined();
+      log.info(JSON.stringify(quiz, null, 2));
+    });
   },
 );

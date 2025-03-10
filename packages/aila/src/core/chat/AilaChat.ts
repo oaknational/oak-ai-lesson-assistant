@@ -93,8 +93,8 @@ export class AilaChat implements AilaChatService {
     this.fullQuizService = new CompositeFullQuizServiceBuilder().build({
       quizRatingSchema: testRatingSchema,
       quizSelector: "simple",
-      quizReranker: "return-first",
-      quizGenerators: ["basedOnRag"],
+      quizReranker: "schema-reranker",
+      quizGenerators: ["basedOnRag", "ml"],
     });
   }
 
