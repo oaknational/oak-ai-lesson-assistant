@@ -2,7 +2,8 @@
 export default {
   plugins: [
     "@trivago/prettier-plugin-sort-imports",
-    "prettier-plugin-tailwindcss"
+    "prettier-plugin-packagejson",
+    "prettier-plugin-tailwindcss",
   ],
   tailwindAttributes: ['className'],
   importOrder: ["^react(.*)", "<THIRD_PARTY_MODULES>", "@/(.*)", "^[./]"],

@@ -3,10 +3,15 @@
   "version": "1.0.0",
   "description": "Custom ESLint configuration for React, Next.js, and TypeScript",
   "license": "MIT",
+  "type": "module",
   "main": "src/index.mjs",
   "files": [
     "src/*"
   ],
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit"
+  },
   "devDependencies": {
     "@eslint/js": "^9.16.0",
     "@next/eslint-plugin-next": "^15.0.3",
@@ -36,10 +41,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "type": "module",
-  "scripts": {
-    "build": "tsc",
-    "type-check": "tsc --noEmit"
   }
 }

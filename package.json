@@ -2,6 +2,8 @@
   "name": "oak-ai-web-app",
   "version": "1.0.0",
   "private": true,
+  "license": "MIT",
+  "type": "module",
   "scripts": {
     "FIXME:lint": "turbo lint && manypkg check",
     "build": "turbo build",
@@ -25,21 +27,21 @@
     "doppler:run:stg": "doppler run -c stg --silent",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",
+    "lint:debug": "pnpm lint -- --debug",
     "lint:file": "eslint",
     "lint:fix": "turbo lint:fix",
-    "lint:debug": "pnpm lint -- --debug",
+    "node-version": "node -v",
     "prompts": "turbo prompts",
     "prompts:dev": "turbo prompts:dev",
     "sonar": "dotenv -e ./.env -- sonar-scanner",
-    "type-check": "turbo type-check",
-    "node-version": "node -v",
-    "with-env": "dotenv -e ../../.env --",
+    "storybook": "turbo storybook",
     "test": "turbo test -- --maxWorkers=33%",
-    "test:seq": "turbo test:seq --concurrency=1 --",
+    "test-coverage": "COLLECT_TEST_COVERAGE=true turbo test-coverage -- --maxWorkers=33%",
     "test-e2e": "turbo test-e2e --",
     "test-e2e-ui": "turbo test-e2e-ui --",
-    "test-coverage": "COLLECT_TEST_COVERAGE=true turbo test-coverage -- --maxWorkers=33%",
-    "storybook": "turbo storybook"
+    "test:seq": "turbo test:seq --concurrency=1 --",
+    "type-check": "turbo type-check",
+    "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@oakai/prettier-config",
   "eslintConfig": {
@@ -70,7 +72,5 @@
   "engines": {
     "node": ">=20.9.0",
     "pnpm": ">=8"
-  },
-  "type": "module",
-  "license": "MIT"
+  }
 }
