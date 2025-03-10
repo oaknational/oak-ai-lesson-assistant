@@ -386,15 +386,16 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   protected extractCustomId(doc: RerankResponseResultsItem): string {
     try {
       const parsedText = JSON.parse(doc.document?.text || "");
-      if (
-        typeof parsedText !== "object" ||
-        parsedText === null ||
-        !("custom_id" in parsedText)
-      ) {
-        throw new Error("Parsed text is not an object or missing custom_id");
+      if (typeof parsedText !== "object" || parsedText === null) {
+        throw new Error("Parsed text is not an object");
       }
 
-      throw new Error("Invalid document format");
+      const customId = parsedText.custom_id;
+      if (typeof customId !== "string") {
+        throw new Error("custom_id is not a string");
+      }
+
+      return customId;
     } catch (error) {
       log.error("Error in extractCustomId:", error);
       throw new Error("Failed to extract custom_id");
