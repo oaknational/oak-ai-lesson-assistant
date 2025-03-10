@@ -61,7 +61,6 @@ export async function POST(req: Request) {
 
     let evt: WebhookEvent;
     try {
-       
       const payload = await req.json();
       const body = JSON.stringify(payload);
       evt = wh.verify(body, {

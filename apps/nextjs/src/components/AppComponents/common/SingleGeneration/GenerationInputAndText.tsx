@@ -34,7 +34,7 @@ function GenerationInputAndText({
       <textarea
         className={`${
           userIsEditing ? "flex" : "hidden"
-        }  w-full rounded border border-black p-10`}
+        } w-full rounded border border-black p-10`}
         value={inputValue}
         onChange={(evt) => {
           setInputValue(evt.target.value);
@@ -59,7 +59,7 @@ function GenerationInputAndText({
         className={
           userIsEditing
             ? "hidden"
-            : `flex text-lg ${isLoading && "line-through opacity-60	"}`
+            : `flex text-lg ${isLoading && "line-through opacity-60"}`
         }
       >
         {children}
