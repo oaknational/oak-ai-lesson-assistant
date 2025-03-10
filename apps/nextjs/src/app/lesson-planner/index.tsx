@@ -7,15 +7,11 @@ import Layout from "@/components/Layout";
 export const LessonPlannerPage = () => {
   return (
     <Layout>
-      <div
-        className="
-       relative -mt-26 w-full bg-lemon30 py-28 before:absolute before:left-[-50vw] before:top-0 before:z-[-1] before:h-full before:w-[150vw] before:bg-lemon30
-      "
-      >
+      <div className="relative -mt-26 w-full bg-lemon30 py-28 before:absolute before:left-[-50vw] before:top-0 before:z-[-1] before:h-full before:w-[150vw] before:bg-lemon30">
         <h1 className="mb-10 text-center text-5xl font-bold">
           AI Lesson Planning Assistant
         </h1>
-        <p className=" mb-20 text-center text-4xl font-light opacity-80">
+        <p className="mb-20 text-center text-4xl font-light opacity-80">
           Coming Soon...
         </p>
         <div className="mb-30 text-center">

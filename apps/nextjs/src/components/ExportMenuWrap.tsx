@@ -20,12 +20,12 @@ const exportMenuStyles = cva(
 );
 
 const exportMenuOverlayStyles = cva(
-  "fixed inset-0  bg-black bg-opacity-60 delay-100 duration-200 hover:bg-opacity-30 ",
+  "fixed inset-0 bg-black bg-opacity-60 delay-100 duration-200 hover:bg-opacity-30",
   {
     variants: {
       open: {
         true: "z-50 flex",
-        false: "-z-50  hidden",
+        false: "-z-50 hidden",
       },
     },
     defaultVariants: {

@@ -1,8 +1,5 @@
-import type {
-  LooseLessonPlan} from "@oakai/aila/src/protocol/schema";
-import {
-  LessonPlanJsonSchema,
-} from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { LessonPlanJsonSchema } from "@oakai/aila/src/protocol/schema";
 import { template } from "@oakai/core/src/prompts/lesson-assistant";
 
 import type { RawLesson } from "../zod-schema/zodSchema";

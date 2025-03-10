@@ -1,11 +1,7 @@
 import { ChatOpenAI as LangchainChatOpenAI } from "langchain/chat_models/openai";
 import type { BaseLLMParams } from "langchain/llms/base";
-import type {
-  AzureOpenAIInput,
-  OpenAIInput} from "langchain/llms/openai";
-import {
-  OpenAI as OpenAILangchain,
-} from "langchain/llms/openai";
+import type { AzureOpenAIInput, OpenAIInput } from "langchain/llms/openai";
+import { OpenAI as OpenAILangchain } from "langchain/llms/openai";
 import type { ClientOptions } from "openai";
 
 import { heliconeHeaders } from "./helicone";

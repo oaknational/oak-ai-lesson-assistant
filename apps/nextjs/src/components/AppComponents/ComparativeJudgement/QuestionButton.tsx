@@ -14,11 +14,11 @@ import { FeedbackDialogTrigger } from "./JudgementFeedbackDialog";
 import QuestionInner from "./QuestionInner";
 
 const questionButtonStyles = cva(
-  "relative flex h-full w-full flex-col items-start justify-start rounded-xl border border-black bg-white p-10 text-left shadow-lg delay-100  duration-150 hover:shadow-2xl sm:p-22",
+  "relative flex h-full w-full flex-col items-start justify-start rounded-xl border border-black bg-white p-10 text-left shadow-lg delay-100 duration-150 hover:shadow-2xl sm:p-22",
   {
     variants: {
       winnerId: {
-        true: "border-2 border-pupilsAccentPink border-opacity-100 ",
+        true: "border-2 border-pupilsAccentPink border-opacity-100",
         false: "border-opacity-25 hover:border-opacity-75",
       },
     },

@@ -1,10 +1,7 @@
 import { startBatch } from "../openai-batches/startBatch";
 import type { OpenAiBatchSubmitCallback } from "../openai-batches/submitOpenAiBatch";
-import type {
-  EmbeddingBatchLineProps} from "./getPartEmbeddingBatchFileLine";
-import {
-  getPartEmbeddingBatchFileLine,
-} from "./getPartEmbeddingBatchFileLine";
+import type { EmbeddingBatchLineProps } from "./getPartEmbeddingBatchFileLine";
+import { getPartEmbeddingBatchFileLine } from "./getPartEmbeddingBatchFileLine";
 
 export async function startEmbedding({
   ingestId,

@@ -44,7 +44,7 @@ const QuestionInner = ({
                   <Box className="absolute bottom-0 left-0 top-0 flex h-full w-18 items-center justify-center">
                     <Icon icon="tick" size="sm" />
                   </Box>
-                  <Text size={"3"} className="font-bold ">
+                  <Text size={"3"} className="font-bold">
                     <Markdown>{answerAndDistractor.value}</Markdown>
                   </Text>
                 </Flex>

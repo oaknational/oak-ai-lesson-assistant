@@ -24,7 +24,7 @@ export const MobileExportButtons = ({
           onClick={() => {
             closeMobileLessonPullOut();
           }}
-          className={`${demo.isDemoUser ? "mt-25" : ""} flex items-center justify-center gap-3 `}
+          className={`${demo.isDemoUser ? "mt-25" : ""} flex items-center justify-center gap-3`}
         >
           <span className="scale-75">
             <OakIcon iconName="cross" />

@@ -12,7 +12,7 @@ export class MockModerator extends AilaModerator {
     super({});
     this._mockedResults = results;
   }
-   
+
   async moderate(input: string): Promise<ModerationResult> {
     const result = this._mockedResults.shift();
     log.info("Mock moderation: ", input, result);

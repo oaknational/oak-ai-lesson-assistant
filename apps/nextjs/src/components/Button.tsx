@@ -50,7 +50,7 @@ const button = cva(
         sm: "text-sm",
         md: "text-sm sm:text-base",
         lg: "py-6 text-lg",
-        xl: "text-xl ",
+        xl: "text-xl",
         xxl: "text-2xl",
       },
       disabled: {

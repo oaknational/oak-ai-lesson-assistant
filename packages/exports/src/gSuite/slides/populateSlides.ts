@@ -1,7 +1,7 @@
 import type { slides_v1 } from "@googleapis/slides";
 
 import type { Result } from "../../types";
-import type { ValueToString} from "../../utils";
+import type { ValueToString } from "../../utils";
 import { defaultValueToString } from "../../utils";
 
 /**

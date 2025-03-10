@@ -153,11 +153,9 @@ async function getQuestionsForKSAndSubject(
 }
 
 export const subjectAndKeyStagesRouter = router({
-  getAllSubjects: protectedProcedure
-    .output(z.string().array())
-    .query(() => {
-      return subjectsAndKeyStages.allSubjects;
-    }),
+  getAllSubjects: protectedProcedure.output(z.string().array()).query(() => {
+    return subjectsAndKeyStages.allSubjects;
+  }),
   searchSubjects: protectedProcedure
 
     .input(z.object({ q: z.string() }))
