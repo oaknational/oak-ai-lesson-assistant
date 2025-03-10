@@ -9,6 +9,6 @@ export const handleAilaStreamingStatusUpdated =
   (set: ChatSetter, get: ChatGetter) =>
   (streamingStatus: AilaStreamingStatus) => {
     if (streamingStatus === "Idle" && get().queuedUserAction) {
-      void get().executeQueuedAction();
+      void get().actions.executeQueuedAction();
     }
   };

@@ -31,25 +31,28 @@ export const createModerationStore = ({
     toxicModeration: null,
     lastModeration: null,
 
-    setLastModeration: (mod) => set({ lastModeration: mod }),
-    setIsModerationsLoading: (isModerationsLoading) =>
-      set({ isModerationsLoading }),
+    actions: {
+      setLastModeration: (mod) => set({ lastModeration: mod }),
+      setIsModerationsLoading: (isModerationsLoading) =>
+        set({ isModerationsLoading }),
 
-    updateToxicModeration: handleToxicModeration(getStore, set, get),
-    updateModerationState: handleUpdateModerationState(set, get),
+      updateToxicModeration: handleToxicModeration(getStore, set, get),
+      updateModerationState: handleUpdateModerationState(set, get),
 
-    fetchModerations: handleFetchModerations(set, get, trpcUtils),
+      fetchModerations: handleFetchModerations(set, get, trpcUtils),
 
-    clearModerations: () => {
-      set({
-        moderations: [],
-        isModerationsLoading: null,
-        toxicInitialModeration: null,
-        toxicModeration: null,
-        lastModeration: null,
-      });
+      clearModerations: () => {
+        set({
+          moderations: [],
+          isModerationsLoading: null,
+          toxicInitialModeration: null,
+          toxicModeration: null,
+          lastModeration: null,
+        });
+      },
+      ailaStreamingStatusUpdated: handleAilaStreamingStatusUpdated(set, get),
     },
-    ailaStreamingStatusUpdated: handleAilaStreamingStatusUpdated(set, get),
+
     ...initialValues,
   }));
   logStoreUpdates(moderationStore, "moderation:store");

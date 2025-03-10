@@ -23,7 +23,7 @@ describe("Chat Store executeQueuedAction", () => {
     });
     const initialState = store.getState();
 
-    store.getState().executeQueuedAction();
+    store.getState().actions.executeQueuedAction();
 
     const newState = store.getState();
 
@@ -40,7 +40,7 @@ describe("Chat Store executeQueuedAction", () => {
     const initialState = store.getState();
     store.setState({ queuedUserAction: "continue" });
 
-    store.getState().executeQueuedAction();
+    store.getState().actions.executeQueuedAction();
 
     const newState = store.getState();
     expect(store.getState().queuedUserAction).toBeNull();
@@ -58,7 +58,7 @@ describe("Chat Store executeQueuedAction", () => {
     const initialState = store.getState();
     store.setState({ queuedUserAction: "regenerate" });
 
-    store.getState().executeQueuedAction();
+    store.getState().actions.executeQueuedAction();
 
     const newState = store.getState();
     expect(store.getState().queuedUserAction).toBeNull();
@@ -74,7 +74,7 @@ describe("Chat Store executeQueuedAction", () => {
     const customMessage = "Hello, world!";
     store.setState({ queuedUserAction: customMessage });
 
-    store.getState().executeQueuedAction();
+    store.getState().actions.executeQueuedAction();
 
     const newState = store.getState();
     expect(store.getState().queuedUserAction).toBeNull();
@@ -91,7 +91,7 @@ describe("Chat Store executeQueuedAction", () => {
     });
     const initialState = store.getState();
     store.setState({ queuedUserAction: "continue" });
-    store.getState().executeQueuedAction();
+    store.getState().actions.executeQueuedAction();
     expect(store.getState().queuedUserAction).toBeNull();
     expect(mockAiSdkActions.append).toHaveBeenCalledWith({
       content: "Continue",
@@ -99,7 +99,7 @@ describe("Chat Store executeQueuedAction", () => {
     });
 
     store.setState({ queuedUserAction: "regenerate" });
-    store.getState().executeQueuedAction();
+    store.getState().actions.executeQueuedAction();
     const newState = store.getState();
     expect(store.getState().queuedUserAction).toBeNull();
     expect(mockAiSdkActions.reload).toHaveBeenCalled();

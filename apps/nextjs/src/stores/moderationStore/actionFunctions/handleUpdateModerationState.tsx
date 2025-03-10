@@ -19,7 +19,7 @@ export const handleUpdateModerationState = (
     });
 
     if (toxicMod) {
-      get().updateToxicModeration(lastMod);
+      get().actions.updateToxicModeration(lastMod);
     }
   };
 };
