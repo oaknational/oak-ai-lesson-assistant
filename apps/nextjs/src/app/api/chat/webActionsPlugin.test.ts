@@ -144,7 +144,7 @@ describe("onStreamError", () => {
     expect(recordViolation).toHaveBeenCalledWith(
       "user_abc",
       "CHAT_MESSAGE",
-      "HELICONE",
+      "THREAT",
       "CHAT_SESSION",
       "chat_abc",
     );
