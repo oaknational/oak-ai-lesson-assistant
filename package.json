@@ -67,7 +67,7 @@
     "sonarqube-scanner": "^4.2.6",
     "sort-package-json": "^2.6.0",
     "turbo": "^2.2.3",
-    "typescript": "5.7.2"
+    "typescript": "5.8.2"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {
