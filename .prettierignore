@@ -44,3 +44,7 @@
 # Playwright reports
 **/playwright-report/
 **/test-results/
+**/tests-e2e/recordings/
+
+# HAR files
+**/*.har

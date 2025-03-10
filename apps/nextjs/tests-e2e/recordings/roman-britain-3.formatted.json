@@ -1,6 +1,12 @@
 {
   "type": "llmMessage",
-  "sectionsToEdit": ["starterQuiz", "cycle1", "cycle2", "cycle3", "exitQuiz"],
+  "sectionsToEdit": [
+    "starterQuiz",
+    "cycle1",
+    "cycle2",
+    "cycle3",
+    "exitQuiz"
+  ],
   "patches": [
     {
       "type": "patch",
@@ -12,22 +18,39 @@
         "value": [
           {
             "question": "What did the Romans build in Britain during their rule?",
-            "answers": ["Roads and towns"],
-            "distractors": ["Castles and forts", "Schools and hospitals"]
+            "answers": [
+              "Roads and towns"
+            ],
+            "distractors": [
+              "Castles and forts",
+              "Schools and hospitals"
+            ]
           },
           {
             "question": "How long did the Romans rule over Britain?",
-            "answers": ["Several centuries"],
-            "distractors": ["A few years", "A decade"]
+            "answers": [
+              "Several centuries"
+            ],
+            "distractors": [
+              "A few years",
+              "A decade"
+            ]
           },
           {
             "question": "What is an empire?",
-            "answers": ["A large group of territories ruled by one authority"],
-            "distractors": ["A small country", "A type of government"]
+            "answers": [
+              "A large group of territories ruled by one authority"
+            ],
+            "distractors": [
+              "A small country",
+              "A type of government"
+            ]
           },
           {
             "question": "What role do archaeologists play in history?",
-            "answers": ["They study human history by digging up ancient sites"],
+            "answers": [
+              "They study human history by digging up ancient sites"
+            ],
             "distractors": [
               "They write history books",
               "They teach history in schools"
@@ -35,12 +58,19 @@
           },
           {
             "question": "Which empire did Britain belong to during Roman rule?",
-            "answers": ["The Roman Empire"],
-            "distractors": ["The Greek Empire", "The Egyptian Empire"]
+            "answers": [
+              "The Roman Empire"
+            ],
+            "distractors": [
+              "The Greek Empire",
+              "The Egyptian Empire"
+            ]
           },
           {
             "question": "What is one thing pupils should understand before this lesson?",
-            "answers": ["The concept of an empire"],
+            "answers": [
+              "The concept of an empire"
+            ],
             "distractors": [
               "The history of the Saxons",
               "The fall of the Roman Empire"
@@ -75,7 +105,9 @@
           "checkForUnderstanding": [
             {
               "question": "Why did the Romans decide to leave Britain?",
-              "answers": ["Due to internal and external pressures"],
+              "answers": [
+                "Due to internal and external pressures"
+              ],
               "distractors": [
                 "They were defeated by Britons",
                 "They found new lands"
@@ -83,8 +115,13 @@
             },
             {
               "question": "What was a major factor in the Roman departure from Britain?",
-              "answers": ["Resource needs elsewhere"],
-              "distractors": ["British rebellion", "New Roman emperor"]
+              "answers": [
+                "Resource needs elsewhere"
+              ],
+              "distractors": [
+                "British rebellion",
+                "New Roman emperor"
+              ]
             }
           ],
           "practice": "List two reasons why the Romans left Britain and explain how these reasons impacted their empire.",
@@ -118,7 +155,9 @@
           "checkForUnderstanding": [
             {
               "question": "What happened to Britain after the Romans left?",
-              "answers": ["It faced invasions from other groups"],
+              "answers": [
+                "It faced invasions from other groups"
+              ],
               "distractors": [
                 "It became a Roman province",
                 "It remained peaceful"
@@ -126,8 +165,13 @@
             },
             {
               "question": "Which group invaded Britain after the Romans?",
-              "answers": ["The Saxons"],
-              "distractors": ["The Greeks", "The Normans"]
+              "answers": [
+                "The Saxons"
+              ],
+              "distractors": [
+                "The Greeks",
+                "The Normans"
+              ]
             }
           ],
           "practice": "Draw a picture showing a Roman road. Label it and describe its importance in post-Roman Britain.",
@@ -161,13 +205,23 @@
           "checkForUnderstanding": [
             {
               "question": "What do archaeologists do?",
-              "answers": ["Study history through excavations"],
-              "distractors": ["Write history books", "Teach in schools"]
+              "answers": [
+                "Study history through excavations"
+              ],
+              "distractors": [
+                "Write history books",
+                "Teach in schools"
+              ]
             },
             {
               "question": "Why are Roman artifacts important?",
-              "answers": ["They help us understand Roman life"],
-              "distractors": ["They are decorative", "They are made of gold"]
+              "answers": [
+                "They help us understand Roman life"
+              ],
+              "distractors": [
+                "They are decorative",
+                "They are made of gold"
+              ]
             }
           ],
           "practice": "Match pictures of Roman artifacts with their descriptions and explain their significance in Roman history.",
@@ -186,27 +240,49 @@
         "value": [
           {
             "question": "When did the Romans leave Britain?",
-            "answers": ["Around AD 410"],
-            "distractors": ["Around AD 300", "Around AD 500"]
+            "answers": [
+              "Around AD 410"
+            ],
+            "distractors": [
+              "Around AD 300",
+              "Around AD 500"
+            ]
           },
           {
             "question": "What was one reason for the Roman departure?",
-            "answers": ["Internal empire pressures"],
-            "distractors": ["Defeat by Britons", "Lack of interest in Britain"]
+            "answers": [
+              "Internal empire pressures"
+            ],
+            "distractors": [
+              "Defeat by Britons",
+              "Lack of interest in Britain"
+            ]
           },
           {
             "question": "Who invaded Britain after the Romans left?",
-            "answers": ["The Saxons"],
-            "distractors": ["The Normans", "The Vikings"]
+            "answers": [
+              "The Saxons"
+            ],
+            "distractors": [
+              "The Normans",
+              "The Vikings"
+            ]
           },
           {
             "question": "What did archaeologists find in Roman Britain?",
-            "answers": ["Artifacts like coins and pottery"],
-            "distractors": ["Modern buildings", "Ancient books"]
+            "answers": [
+              "Artifacts like coins and pottery"
+            ],
+            "distractors": [
+              "Modern buildings",
+              "Ancient books"
+            ]
           },
           {
             "question": "Why are Roman roads significant?",
-            "answers": ["They influenced travel and trade"],
+            "answers": [
+              "They influenced travel and trade"
+            ],
             "distractors": [
               "They were all destroyed",
               "They were only decorative"
@@ -214,15 +290,26 @@
           },
           {
             "question": "What role do archaeologists play in history?",
-            "answers": ["They uncover past through excavations"],
-            "distractors": ["They build new sites", "They rule ancient lands"]
+            "answers": [
+              "They uncover past through excavations"
+            ],
+            "distractors": [
+              "They build new sites",
+              "They rule ancient lands"
+            ]
           }
         ]
       },
       "status": "complete"
     }
   ],
-  "sectionsEdited": ["starterQuiz", "cycle1", "cycle2", "cycle3", "exitQuiz"],
+  "sectionsEdited": [
+    "starterQuiz",
+    "cycle1",
+    "cycle2",
+    "cycle3",
+    "exitQuiz"
+  ],
   "prompt": {
     "type": "text",
     "value": "Are the starter quiz, learning cycles, and exit quiz sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."

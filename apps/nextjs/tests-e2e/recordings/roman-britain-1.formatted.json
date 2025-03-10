@@ -1,6 +1,9 @@
 {
   "type": "llmMessage",
-  "sectionsToEdit": ["learningOutcome", "learningCycles"],
+  "sectionsToEdit": [
+    "learningOutcome",
+    "learningCycles"
+  ],
   "patches": [
     {
       "type": "patch",
@@ -29,7 +32,10 @@
       "status": "complete"
     }
   ],
-  "sectionsEdited": ["learningOutcome", "learningCycles"],
+  "sectionsEdited": [
+    "learningOutcome",
+    "learningCycles"
+  ],
   "prompt": {
     "type": "text",
     "value": "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step."
