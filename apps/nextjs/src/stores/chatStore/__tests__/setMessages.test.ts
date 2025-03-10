@@ -198,7 +198,7 @@ describe("Chat Store setMessages", () => {
           },
         ],
         hasError: false,
-        isEditing: true,
+        isEditing: false,
       },
     ]);
 
