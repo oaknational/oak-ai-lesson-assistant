@@ -185,7 +185,7 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
     { env: getAvoEnv(), ...avoOptions },
     {},
     getAvoBridge({ posthog: posthogOak }),
-    getAvoBridge({ posthog: posthogAiBeta, hubspot }),
+    getAvoBridge({ posthog: posthogAiBeta }),
   );
 
   /**

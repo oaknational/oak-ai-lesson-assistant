@@ -4,10 +4,6 @@ import { consentClient } from "@/lib/cookie-consent/consentClient";
 
 type HubspotEvent = [string, unknown?];
 
-export type HubspotConfig = {
-  apiKey: string;
-};
-
 declare global {
   interface Window {
     _hsq: HubspotEvent[] & { push: (event: HubspotEvent) => void };
