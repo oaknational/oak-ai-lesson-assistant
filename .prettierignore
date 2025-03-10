@@ -40,3 +40,7 @@
 **/*.bak
 
 **/*/mockServiceWorker.js
+
+# Playwright reports
+**/playwright-report/
+**/test-results/
