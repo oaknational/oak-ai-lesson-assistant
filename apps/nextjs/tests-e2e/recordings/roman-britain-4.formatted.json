@@ -1,8 +1,6 @@
 {
   "type": "llmMessage",
-  "sectionsToEdit": [
-    "additionalMaterials"
-  ],
+  "sectionsToEdit": ["additionalMaterials"],
   "patches": [
     {
       "type": "patch",
@@ -16,9 +14,7 @@
       "status": "complete"
     }
   ],
-  "sectionsEdited": [
-    "additionalMaterials"
-  ],
+  "sectionsEdited": ["additionalMaterials"],
   "prompt": {
     "type": "text",
     "value": "I have added a narrative script to support the lesson delivery. Are the additional materials appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to complete the lesson plan."

@@ -31,10 +31,10 @@
   },
   "prettier": "@oakai/prettier-config",
   "eslintConfig": {
-    "extends": "@oakai/eslint-config",
     "parserOptions": {
       "project": "./tsconfig.json"
-    }
+    },
+    "extends": "@oakai/eslint-config"
   },
   "dependencies": {
     "@clerk/nextjs": "5.7.2",

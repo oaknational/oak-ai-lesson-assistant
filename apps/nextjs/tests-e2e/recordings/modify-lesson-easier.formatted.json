@@ -1,8 +1,6 @@
 {
   "type": "llmMessage",
-  "sectionsToEdit": [
-    "learningOutcome"
-  ],
+  "sectionsToEdit": ["learningOutcome"],
   "patches": [
     {
       "type": "patch",
@@ -16,9 +14,7 @@
       "status": "complete"
     }
   ],
-  "sectionsEdited": [
-    "learningOutcome"
-  ],
+  "sectionsEdited": ["learningOutcome"],
   "prompt": {
     "type": "text",
     "value": "I've simplified the learning outcome. If this is suitable, please let me know or suggest further changes. Otherwise, tap **Continue** to proceed."

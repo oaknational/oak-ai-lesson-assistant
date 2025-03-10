@@ -1,8 +1,6 @@
 {
   "type": "llmMessage",
-  "sectionsToEdit": [
-    "additionalMaterials"
-  ],
+  "sectionsToEdit": ["additionalMaterials"],
   "patches": [
     {
       "type": "patch",
@@ -16,9 +14,7 @@
       "status": "complete"
     }
   ],
-  "sectionsEdited": [
-    "additionalMaterials"
-  ],
+  "sectionsEdited": ["additionalMaterials"],
   "prompt": {
     "type": "text",
     "value": "A homework task has been added to the additional materials section. If you have any more changes or are ready to finalise the lesson, please let me know!"
