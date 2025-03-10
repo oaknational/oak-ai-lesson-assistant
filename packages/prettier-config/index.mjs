@@ -16,17 +16,17 @@ if (hasTailwind) {
 }
 
 export default {
-  plugins,
-  tailwindAttributes: ['className'],
+  arrowParens: "always",
   importOrder: ["^react(.*)", "<THIRD_PARTY_MODULES>", "@/(.*)", "^[./]"],
   importOrderSeparation: true,
-  tailwindFunctions: ["cva"],
-  arrowParens: "always",
-  printWidth: 80,
-  singleQuote: false,
   jsxSingleQuote: false,
+  plugins,
+  printWidth: 80,
   semi: true,
-  trailingComma: "all",
+  singleQuote: false,
   tabWidth: 2,
-  ...(hasTailwind && { tailwindConfig: tailwindConfigPath })
+  tailwindAttributes: ['className'],
+  ...(hasTailwind && { tailwindConfig: tailwindConfigPath }),
+  tailwindFunctions: ["cva"],
+  trailingComma: "all"
 };
