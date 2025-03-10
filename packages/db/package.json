@@ -2,44 +2,34 @@
   "name": "@oakai/db",
   "version": "1.0.0",
   "license": "MIT",
+  "type": "module",
   "main": "./index.ts",
   "types": "./index.ts",
-  "eslintConfig": {
-    "extends": "@oakai/eslint-config",
-    "parserOptions": {
-      "project": "./tsconfig.json"
-    },
-    "rules": {}
-  },
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
     "db-dump:prd": "docker exec oak-ai-beta pg_dump $(doppler secrets get -c prd --plain DATABASE_ADMIN_URL | sed -e 's/?sslmode=required//g') --no-owner --exclude-table-data public.generations --exclude-table-data public.snippets --exclude-table-data public.downloads",
     "db-dump:stg": "docker exec oak-ai-beta pg_dump $(doppler secrets get -c stg --plain DATABASE_ADMIN_URL | sed -e 's/?sslmode=required//g') --no-owner --exclude-table-data public.generations --exclude-table-data public.snippets --exclude-table-data public.downloads",
     "db-dump:stg:homebrew": "pg_dump $(doppler secrets get -c stg --plain DATABASE_ADMIN_URL | sed -e 's/?sslmode=required/?sslcert=./certs/db_stg.pem/g') --no-owner --exclude-table-data public.generations --exclude-table-data public.snippets --exclude-table-data public.downloads",
-    "db-seed-local-from:stg": "doppler run --config stg -- bash -c 'source scripts/import-export/db_seed.sh stg dev'",
-    "db-seed-local-from:prd": "doppler run --config prd -- bash -c 'source scripts/import-export/db_seed.sh prd dev'",
-    "db-seed-stg-from:local": "doppler run --config stg -- bash -c 'source scripts/import-export/db_seed.sh dev stg'",
-    "db-seed-prd-from:local": "doppler run --config prd -- bash -c 'source scripts/import-export/db_seed.sh dev prd'",
     "db-export": "DB_ENV=dev doppler run --config dev -- bash scripts/import-export/db_export.sh",
     "db-export:prd": "DB_ENV=prd doppler run --config prd -- bash scripts/import-export/db_export.sh",
     "db-export:stg": "DB_ENV=stg doppler run --config stg -- bash scripts/import-export/db_export.sh",
     "db-generate": "echo 'Running db-generate...' && pnpm with-env prisma generate --schema=./prisma/schema.prisma",
-    "db-generate:no-engine": "echo 'Running db-generate:no-engine...' && pnpm with-env prisma generate --no-engine --schema=./prisma/schema.prisma",
     "db-generate:dev": "pnpm with-env prisma generate",
-    "db-migrate-deploy": "pnpm with-env prisma migrate deploy",
+    "db-generate:no-engine": "echo 'Running db-generate:no-engine...' && pnpm with-env prisma generate --no-engine --schema=./prisma/schema.prisma",
     "db-migrate": "pnpm with-env prisma migrate dev",
-    "db-migrate:dev": "pnpm with-env prisma migrate dev",
-    "db-migrate:status": "pnpm with-env prisma migrate status",
-    "db-migrate:status:stg": "DB_ENV=stg doppler run --config stg -- prisma migrate status",
-    "db-migrate:status:prd": "DB_ENV=prd doppler run --config prd -- prisma migrate status",
+    "db-migrate-deploy": "pnpm with-env prisma migrate deploy",
     "db-migrate-resolve-applied:prd": "doppler run --config prd -- prisma migrate resolve --applied",
     "db-migrate-resolve-applied:stg": "doppler run --config stg -- prisma migrate resolve --applied",
     "db-migrate-resolve-rolled-back:prd": "doppler run --config prd -- prisma migrate resolve --rolled-back",
     "db-migrate-resolve-rolled-back:stg": "doppler run --config stg -- prisma migrate resolve --rolled-back",
+    "db-migrate:dev": "pnpm with-env prisma migrate dev",
     "db-migrate:prd": "DB_ENV=prd doppler run --config prd -- bash scripts/import-export/db_migrate.sh",
+    "db-migrate:status": "pnpm with-env prisma migrate status",
+    "db-migrate:status:prd": "DB_ENV=prd doppler run --config prd -- prisma migrate status",
+    "db-migrate:status:stg": "DB_ENV=stg doppler run --config stg -- prisma migrate status",
     "db-migrate:stg": "DB_ENV=stg doppler run --config stg -- bash scripts/import-export/db_migrate.sh",
-    "db-new-migration-blank": "pnpm with-env prisma migrate dev --create-only",
     "db-new-migration": "pnpm with-env prisma migrate dev --name",
+    "db-new-migration-blank": "pnpm with-env prisma migrate dev --create-only",
     "db-new-migration-create-only": "pnpm with-env prisma migrate dev --create-only --name",
     "db-publish:prd": "DB_ENV=prd doppler run --config prd -- bash scripts/import-export/db_publish.sh",
     "db-publish:stg": "DB_ENV=stg doppler run --config stg -- bash scripts/import-export/db_publish.sh",
@@ -49,6 +39,10 @@
     "db-restore-from:stg": "pnpm run --silent db-dump:stg | docker exec -i oak-ai-beta psql -U oai",
     "db-restore-from:stg:homebrew": "pnpm run --silent db-dump:stg:homebrew | psql -U oai",
     "db-seed": "pnpm prisma db seed",
+    "db-seed-local-from:prd": "doppler run --config prd -- bash -c 'source scripts/import-export/db_seed.sh prd dev'",
+    "db-seed-local-from:stg": "doppler run --config stg -- bash -c 'source scripts/import-export/db_seed.sh stg dev'",
+    "db-seed-prd-from:local": "doppler run --config prd -- bash -c 'source scripts/import-export/db_seed.sh dev prd'",
+    "db-seed-stg-from:local": "doppler run --config stg -- bash -c 'source scripts/import-export/db_seed.sh dev stg'",
     "db-validate-schema": "pnpm with-env prisma validate",
     "dev": "pnpm with-env prisma studio --port 5556",
     "docker-bootstrap": "pnpm run docker-build && pnpm run docker-clear && pnpm run docker-run",
@@ -63,11 +57,17 @@
     "script-add-metadata-to-lesson-summaries": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/add_metadata_to_lesson_summaries.ts",
     "script-batch-process-clean-questions": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/batch_process_clean_questions.ts",
     "script-batch-update-clerk-users": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/update_clerk_users.ts",
-    "validate-data": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/import-export/validate_data.ts",
     "type-check": "tsc --noEmit",
+    "validate-data": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/import-export/validate_data.ts",
     "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@oakai/prettier-config",
+  "eslintConfig": {
+    "extends": "@oakai/eslint-config",
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    }
+  },
   "dependencies": {
     "@oakai/logger": "*",
     "@prisma/client": "^6.3.1",
@@ -97,6 +97,5 @@
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
-  },
-  "type": "module"
+  }
 }

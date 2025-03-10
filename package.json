@@ -26,7 +26,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",
     "lint:file": "eslint",
-    "lint:fix": "pnpm lint -- --fix",
+    "lint:fix": "turbo lint:fix",
     "lint:debug": "pnpm lint -- --debug",
     "prompts": "turbo prompts",
     "prompts:dev": "turbo prompts:dev",
@@ -71,5 +71,6 @@
     "node": ">=20.9.0",
     "pnpm": ">=8"
   },
-  "type": "module"
+  "type": "module",
+  "license": "MIT"
 }
