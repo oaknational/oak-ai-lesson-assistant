@@ -3,47 +3,57 @@ import React, { useMemo } from "react";
 import type { Decorator } from "@storybook/react";
 
 import type { LessonPlanTrackingContextProps } from "@/lib/analytics/lessonPlanTrackingContext";
-import { AilaStoresContext } from "@/stores/AilaStoresProvider";
-import { createChatStore, type ChatStore } from "@/stores/chatStore";
+import type { AilaStores } from "@/stores/AilaStoresProvider";
+import {
+  AilaStoresContext,
+  buildStoreGetter,
+} from "@/stores/AilaStoresProvider";
+import { createChatStore, type ChatState } from "@/stores/chatStore";
 import {
   createLessonPlanStore,
-  type LessonPlanStore,
+  type LessonPlanState,
 } from "@/stores/lessonPlanStore";
 import {
   createModerationStore,
-  type ModerationStore,
+  type ModerationState,
 } from "@/stores/moderationStore";
 import { type TrpcUtils } from "@/utils/trpc";
 
 declare module "@storybook/csf" {
   interface Parameters {
-    moderationStoreState?: Partial<ModerationStore>;
-    chatStoreState?: Partial<ChatStore>;
-    lessonPlanStoreState?: Partial<LessonPlanStore>;
+    moderationStoreState?: Partial<ModerationState>;
+    chatStoreState?: Partial<ChatState>;
+    lessonPlanStoreState?: Partial<LessonPlanState>;
   }
 }
 export const StoreDecorator: Decorator = (Story, { parameters }) => {
   const store = useMemo(() => {
     const id = "123";
     const trpcUtils = {} as TrpcUtils;
-    const moderationStore = createModerationStore({
+    const stores: Partial<AilaStores> = {};
+    const getStore = buildStoreGetter(stores);
+
+    stores.moderation = createModerationStore({
       id,
+      getStore,
       trpcUtils,
       initialValues: parameters.moderationStoreState,
     });
-    const chatStore = createChatStore(parameters.chatStoreState);
-    const lessonPlanStore = createLessonPlanStore({
+    stores.chat = createChatStore(
       id,
+      getStore,
+      trpcUtils,
+      parameters.chatStoreState,
+    );
+    stores.lessonPlan = createLessonPlanStore({
+      id,
+      getStore,
       trpcUtils,
       lessonPlanTracking: {} as unknown as LessonPlanTrackingContextProps,
       initialValues: parameters.lessonPlanStoreState,
     });
 
-    return {
-      chat: chatStore,
-      moderation: moderationStore,
-      lessonPlan: lessonPlanStore,
-    };
+    return stores as AilaStores;
   }, [
     parameters.moderationStoreState,
     parameters.chatStoreState,

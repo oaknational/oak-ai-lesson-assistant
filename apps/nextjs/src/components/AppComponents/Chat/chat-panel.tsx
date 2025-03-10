@@ -5,7 +5,11 @@ import { cva } from "class-variance-authority";
 import { PromptForm } from "@/components/AppComponents/Chat/prompt-form";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import { useSidebar } from "@/lib/hooks/use-sidebar";
-import { useChatStore } from "@/stores/AilaStoresProvider";
+import {
+  useChatActions,
+  useChatStore,
+  useLessonPlanStore,
+} from "@/stores/AilaStoresProvider";
 import { canAppendSelector } from "@/stores/chatStore/selectors";
 
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
@@ -22,9 +26,8 @@ function LockedPromptForm() {
 
 export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const input = useChatStore((state) => state.input);
-  const setInput = useChatStore((state) => state.setInput);
+  const { setInput, append } = useChatActions();
 
-  const append = useChatStore((state) => state.append);
   const shouldAllowUserInput = useChatStore(canAppendSelector);
 
   const hasMessages = useChatStore(

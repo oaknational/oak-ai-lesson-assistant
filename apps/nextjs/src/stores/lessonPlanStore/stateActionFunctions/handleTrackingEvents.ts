@@ -1,16 +1,17 @@
 import invariant from "tiny-invariant";
 
 import type { LessonPlanTrackingContextProps } from "@/lib/analytics/lessonPlanTrackingContext";
+import type { GetStore } from "@/stores/AilaStoresProvider";
 
-import type { LessonPlanStore } from "..";
+import type { LessonPlanState } from "..";
 
 export const handleTrackingEvents = (
   lessonPlanTracking: LessonPlanTrackingContextProps,
-  get: () => LessonPlanStore,
+  getStore: GetStore,
+  get: () => LessonPlanState,
 ) => {
-  const { chatActions } = get();
+  const messages = getStore("chat").stableMessages;
 
-  const messages = chatActions?.getMessages();
   const prevLesson = get().lastLessonPlan;
   const nextLesson = get().lessonPlan;
   invariant(

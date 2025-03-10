@@ -1,34 +1,21 @@
 import invariant from "tiny-invariant";
 
-import type { AilaStreamingStatus, ChatStore } from "..";
+import type { GetStore } from "@/stores/AilaStoresProvider";
+
 import { calculateStreamingStatus } from "../actions/calculateStreamingStatus";
 import { getNextStableMessages, parseStreamingMessage } from "../parsing";
-import type { AiMessage } from "../types";
+import type { ChatSetter, ChatGetter, AiMessage } from "../types";
 
 export function handleSetMessages(
-  set: (partial: Partial<ChatStore>) => void,
-  get: () => ChatStore,
+  getStore: GetStore,
+  set: ChatSetter,
+  get: ChatGetter,
 ) {
-  function handleChangedAilaStreamingStatus(
-    ailaStreamingStatus: AilaStreamingStatus,
-  ) {
-    if (ailaStreamingStatus === "Idle" && get().queuedUserAction) {
-      void get().executeQueuedAction();
-    }
-    if (ailaStreamingStatus === "Idle") {
-      const { moderationActions } = get();
-      invariant(moderationActions, "Passed into store in provider");
-      void moderationActions.fetchModerations();
-    }
-  }
-
   function lastMessageIsUser(messages: AiMessage[]) {
     return messages[messages.length - 1]?.role === "user";
   }
 
   return (messages: AiMessage[], isLoading: boolean) => {
-    const originalStreamingStatus = get().ailaStreamingStatus;
-
     if (!isLoading) {
       // The AI SDK isn't loading: we're idle and all messages are stable
 
@@ -81,12 +68,6 @@ export function handleSetMessages(
         }),
         ailaStreamingStatus: calculateStreamingStatus(currentMessageData),
       });
-    }
-
-    const streamingStatusChanged =
-      get().ailaStreamingStatus !== originalStreamingStatus;
-    if (streamingStatusChanged) {
-      handleChangedAilaStreamingStatus(get().ailaStreamingStatus);
     }
   };
 }

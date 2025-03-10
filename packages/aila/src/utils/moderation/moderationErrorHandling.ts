@@ -10,10 +10,17 @@ import type {
 import { safelyReportAnalyticsEvent } from "../reportAnalyticsEvent";
 
 export async function handleThreatDetectionError(
-  userId: string,
-  chatId: string,
-  error: AilaThreatDetectionError,
-  prisma: PrismaClientWithAccelerate,
+  {
+    userId,
+    chatId,
+    error,
+    prisma,
+  }: {
+    userId: string;
+    chatId: string;
+    error: AilaThreatDetectionError;
+    prisma: PrismaClientWithAccelerate;
+  },
   SafetyViolations = defaultSafetyViolations,
 ): Promise<ErrorDocument | ActionDocument> {
   await safelyReportAnalyticsEvent({

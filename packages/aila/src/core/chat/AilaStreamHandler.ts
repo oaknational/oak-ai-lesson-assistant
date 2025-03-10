@@ -1,5 +1,4 @@
 import { aiLogger } from "@oakai/logger";
-import type { Message } from "ai";
 import type { ReadableStreamDefaultController } from "stream/web";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
@@ -84,7 +83,6 @@ export class AilaStreamHandler {
       await this.checkForThreats();
       this.logStreamingStep("Check for threats complete");
 
-      await this._chat.handleSettingInitialState();
       log.info("Setting initial state");
       await this._chat.handleSettingInitialState();
       this.logStreamingStep("Handle initial state complete");
@@ -160,7 +158,7 @@ export class AilaStreamHandler {
     }
     log.info("Starting to read from stream");
     try {
-      while (true) {
+      while (abortController ? !abortController?.signal.aborted : true) {
         log.info("Reading next chunk");
         const { done, value } = await this._streamReader.read();
         if (done) {

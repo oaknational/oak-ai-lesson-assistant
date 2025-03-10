@@ -3,17 +3,17 @@ import * as Sentry from "@sentry/nextjs";
 
 import type { TrpcUtils } from "@/utils/trpc";
 
-import type { ModerationStore } from "..";
+import type { ModerationSetter, ModerationGetter } from "../types";
 
 const log = aiLogger("moderation:store");
 
 export const handleFetchModerations = (
-  set: (state: Pick<ModerationStore, "isModerationsLoading">) => void,
-  get: () => ModerationStore,
+  set: ModerationSetter,
+  get: ModerationGetter,
   trpcUtils: TrpcUtils,
 ) => {
   return async () => {
-    const { updateModerationState, id } = get();
+    const { actions, id } = get();
 
     set({
       isModerationsLoading: true,
@@ -23,7 +23,7 @@ export const handleFetchModerations = (
         await trpcUtils.chat.appSessions.getModerations.fetch({
           id,
         });
-      updateModerationState(fetchedModerations);
+      actions.updateModerationState(fetchedModerations);
     } catch (error) {
       log.error("Error fetching moderation", error);
       Sentry.captureException(error);

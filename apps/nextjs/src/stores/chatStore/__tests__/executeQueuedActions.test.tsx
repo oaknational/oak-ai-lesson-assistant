@@ -1,29 +1,29 @@
+import type { GetStore } from "@/stores/AilaStoresProvider";
+import type { TrpcUtils } from "@/utils/trpc";
+
 import { createChatStore, type AiSdkActions } from "..";
 
 describe("Chat Store executeQueuedAction", () => {
-  let mockAiSdkActions: {
-    append: jest.Mock;
-    reload: jest.Mock;
+  const mockAiSdkActions = {
+    append: jest.fn(),
+    reload: jest.fn(),
   };
-
-  beforeEach(() => {
-    mockAiSdkActions = {
-      append: jest.fn(),
-      reload: jest.fn(),
-    };
-  });
+  const getStore = jest.fn() as unknown as GetStore;
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
+  const id = "test-id";
+  const trpcUtils = {} as unknown as TrpcUtils;
+
   test("should do nothing if there is no queued action", () => {
-    const store = createChatStore({
+    const store = createChatStore(id, getStore, trpcUtils, {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     const initialState = store.getState();
 
-    store.getState().executeQueuedAction();
+    store.getState().actions.executeQueuedAction();
 
     const newState = store.getState();
 
@@ -34,13 +34,13 @@ describe("Chat Store executeQueuedAction", () => {
   });
 
   test('should handle "continue" action correctly', () => {
-    const store = createChatStore({
+    const store = createChatStore(id, getStore, trpcUtils, {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     const initialState = store.getState();
     store.setState({ queuedUserAction: "continue" });
 
-    store.getState().executeQueuedAction();
+    store.getState().actions.executeQueuedAction();
 
     const newState = store.getState();
     expect(store.getState().queuedUserAction).toBeNull();
@@ -52,13 +52,13 @@ describe("Chat Store executeQueuedAction", () => {
   });
 
   test('should handle "regenerate" action correctly', () => {
-    const store = createChatStore({
+    const store = createChatStore(id, getStore, trpcUtils, {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     const initialState = store.getState();
     store.setState({ queuedUserAction: "regenerate" });
 
-    store.getState().executeQueuedAction();
+    store.getState().actions.executeQueuedAction();
 
     const newState = store.getState();
     expect(store.getState().queuedUserAction).toBeNull();
@@ -67,14 +67,14 @@ describe("Chat Store executeQueuedAction", () => {
   });
 
   test("should handle user message actions correctly", () => {
-    const store = createChatStore({
+    const store = createChatStore(id, getStore, trpcUtils, {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     const initialState = store.getState();
     const customMessage = "Hello, world!";
     store.setState({ queuedUserAction: customMessage });
 
-    store.getState().executeQueuedAction();
+    store.getState().actions.executeQueuedAction();
 
     const newState = store.getState();
     expect(store.getState().queuedUserAction).toBeNull();
@@ -86,12 +86,12 @@ describe("Chat Store executeQueuedAction", () => {
   });
 
   test("should maintain correct state after multiple actions", () => {
-    const store = createChatStore({
+    const store = createChatStore(id, getStore, trpcUtils, {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     const initialState = store.getState();
     store.setState({ queuedUserAction: "continue" });
-    store.getState().executeQueuedAction();
+    store.getState().actions.executeQueuedAction();
     expect(store.getState().queuedUserAction).toBeNull();
     expect(mockAiSdkActions.append).toHaveBeenCalledWith({
       content: "Continue",
@@ -99,7 +99,7 @@ describe("Chat Store executeQueuedAction", () => {
     });
 
     store.setState({ queuedUserAction: "regenerate" });
-    store.getState().executeQueuedAction();
+    store.getState().actions.executeQueuedAction();
     const newState = store.getState();
     expect(store.getState().queuedUserAction).toBeNull();
     expect(mockAiSdkActions.reload).toHaveBeenCalled();

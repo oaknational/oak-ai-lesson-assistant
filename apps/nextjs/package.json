@@ -58,7 +58,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@radix-ui/themes": "^1.0.0",
     "@sanity/client": "^6.21.3",
-    "@sentry/nextjs": "^8.35.0",
+    "@sentry/nextjs": "^8.49.0",
     "@tanstack/react-query": "^4.16.1",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type {
   BasedOnOptional,
@@ -14,6 +14,7 @@ import {
   useChatStore,
   useModerationStore,
   useLessonPlanStore,
+  useLessonPlanActions,
 } from "@/stores/AilaStoresProvider";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
@@ -54,9 +55,7 @@ const useSectionScrolling = ({
   userHasCancelledAutoScroll: boolean;
 }) => {
   const scrollToSection = useLessonPlanStore((state) => state.scrollToSection);
-  const setScrollToSection = useLessonPlanStore(
-    (state) => state.setScrollToSection,
-  );
+  const { setScrollToSection } = useLessonPlanActions();
   const lastScrollToSectionRef = useRef<LessonPlanKey | null>(null);
 
   useEffect(() => {
@@ -143,21 +142,8 @@ export const LessonPlanDisplay = ({
   documentContainerRef,
   showLessonMobile,
 }: LessonPlanDisplayProps) => {
-  const lessonPlanFromStore = useLessonPlanStore((state) => state.lessonPlan);
+  const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
   const lastModeration = useModerationStore((state) => state.lastModeration);
-
-  const lessonPlan = useMemo(
-    () => ({
-      ...lessonPlanFromStore,
-      starterQuiz:
-        lessonPlanFromStore._experimental_starterQuizMathsV0 ??
-        lessonPlanFromStore.starterQuiz,
-      exitQuiz:
-        lessonPlanFromStore._experimental_exitQuizMathsV0 ??
-        lessonPlanFromStore.exitQuiz,
-    }),
-    [lessonPlanFromStore],
-  );
 
   const { userHasCancelledAutoScroll } =
     useDetectScrollOverride(documentContainerRef);

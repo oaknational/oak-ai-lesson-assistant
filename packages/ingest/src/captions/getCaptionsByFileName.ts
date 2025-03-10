@@ -3,10 +3,10 @@ import { aiLogger } from "@oakai/logger";
 import type { Cue } from "webvtt-parser";
 import * as WebVTTModule from "webvtt-parser";
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-const WebVTTParser = WebVTTModule.default
-  .WebVTTParser as typeof WebVTTModule.WebVTTParser;
+const WebVTTParser =
+  // @ts-expect-error import issue: TS doesn't think .default exists
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  WebVTTModule.default.WebVTTParser as typeof WebVTTModule.WebVTTParser;
 
 const log = aiLogger("ingest");
 

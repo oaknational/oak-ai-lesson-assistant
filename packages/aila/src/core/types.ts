@@ -14,17 +14,17 @@ import type {
   AilaModerationFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
-import type { LooseLessonPlan } from "../protocol/schema";
 import type { AilaServices } from "./AilaServices";
 import type { Message } from "./chat";
+import type { AilaDocumentContent } from "./document/types";
 import type { LLMService } from "./llm/LLMService";
 import type { AilaPlugin } from "./plugins/types";
 import type { AilaPromptBuilder } from "./prompt/AilaPromptBuilder";
 
-export type AilaGenerateLessonPlanMode = "interactive" | "generate";
+export type AilaGenerateDocumentMode = "interactive" | "generate";
 
-export type AilaGenerateLessonPlanOptions = {
-  mode?: AilaGenerateLessonPlanMode;
+export type AilaGenerateDocumentOptions = {
+  mode?: AilaGenerateDocumentMode;
   input?: string;
   title?: string;
   topic?: string;
@@ -36,7 +36,7 @@ export type AilaGenerateLessonPlanOptions = {
 export type AilaPublicChatOptions = {
   useRag?: boolean;
   temperature?: number;
-  numberOfLessonPlansInRag?: number;
+  numberOfRecordsInRag?: number;
 };
 
 export type AilaOptions = AilaPublicChatOptions & {
@@ -46,7 +46,7 @@ export type AilaOptions = AilaPublicChatOptions & {
   useAnalytics?: boolean;
   useThreatDetection?: boolean;
   model?: string;
-  mode?: AilaGenerateLessonPlanMode;
+  mode?: AilaGenerateDocumentMode;
 };
 
 export type AilaOptionsWithDefaultFallbackValues = Required<AilaOptions>;
@@ -60,7 +60,9 @@ export type AilaChatInitializationOptions = {
 };
 
 export type AilaInitializationOptions = {
-  lessonPlan?: LooseLessonPlan;
+  document?: {
+    content: AilaDocumentContent;
+  };
   chat: Omit<AilaChatInitializationOptions, "llmService">;
   options?: AilaOptions;
   prisma?: PrismaClientWithAccelerate;

@@ -1,7 +1,6 @@
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import type { AilaErrorReporter } from "../features/errorReporting";
-import type { AilaRagFeature } from "../features/rag";
 import type { AilaSnapshotStore } from "../features/snapshotStore";
 import type {
   AilaAnalyticsFeature,
@@ -16,9 +15,9 @@ import type {
 import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
-  LooseLessonPlan,
 } from "../protocol/schema";
 import type { Message } from "./chat";
+import type { AilaDocumentContent } from "./document/types";
 import type { AilaPlugin } from "./plugins";
 import type { FullQuizService } from "./quiz/interfaces";
 import type { AilaOptionsWithDefaultFallbackValues } from "./types";
@@ -30,14 +29,13 @@ export interface AilaAnalyticsService {
   reportUsageMetrics(text: string): Promise<void>;
 }
 
-export interface AilaLessonService {
-  readonly plan: LooseLessonPlan;
-  readonly hasSetInitialState: boolean;
-  setPlan(plan: LooseLessonPlan): void;
+export interface AilaDocumentService {
+  content: AilaDocumentContent;
+  readonly hasInitialisedContentFromMessages: boolean;
   extractAndApplyLlmPatches(patches: string): void;
   applyValidPatches(validPatches: ValidPatchDocument[]): void;
-  initialise(plan: LooseLessonPlan): void;
-  setUpInitialLessonPlan(messages: Message[]): Promise<void>;
+  initialise(content: AilaDocumentContent): void;
+  initialiseContentFromMessages(messages: Message[]): Promise<void>;
 }
 
 export interface AilaChatService {
@@ -60,18 +58,16 @@ export interface AilaChatService {
 export interface AilaServices {
   readonly userId: string | undefined;
   readonly chatId: string;
-  readonly lessonPlan: LooseLessonPlan;
   readonly messages: Message[];
   readonly options: AilaOptionsWithDefaultFallbackValues;
   readonly analytics?: AilaAnalyticsFeature;
   readonly errorReporter?: AilaErrorReporter;
   readonly threatDetection?: AilaThreatDetectionFeature;
   readonly chat: AilaChatService;
-  readonly lesson: AilaLessonService;
+  readonly document: AilaDocumentService;
   readonly snapshotStore: AilaSnapshotStore;
   readonly persistence?: AilaPersistenceFeature[];
   readonly moderation?: AilaModerationFeature;
   readonly plugins: AilaPlugin[];
-  readonly rag: AilaRagFeature;
   readonly americanisms: AilaAmericanismsFeature;
 }

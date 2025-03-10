@@ -3,7 +3,6 @@ import type { Moderation, SafetyViolation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { z } from "zod";
 
-import { getSessionModerations } from "../../../aila/src/features/moderation/getSessionModerations";
 import type { AilaPersistedChat } from "../../../aila/src/protocol/schema";
 import { chatSchema } from "../../../aila/src/protocol/schema";
 import { adminProcedure } from "../middleware/adminAuth";
