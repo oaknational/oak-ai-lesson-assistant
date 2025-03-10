@@ -864,9 +864,6 @@ importers:
       jsonc-eslint-parser:
         specifier: ^2.4.0
         version: 2.4.0
-      prettier:
-        specifier: ^3.4.1
-        version: 3.5.3
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.17.9)(typescript@5.8.2)
@@ -972,11 +969,8 @@ importers:
         specifier: ^4.3.0
         version: 4.3.0(prettier@3.5.3)
       prettier:
-        specifier: ^3.4.1
+        specifier: ^3.5.3
         version: 3.5.3
-      prettier-plugin-packagejson:
-        specifier: ^2.5.10
-        version: 2.5.10(prettier@3.5.3)
       prettier-plugin-tailwindcss:
         specifier: ^0.6.9
         version: 0.6.9(@trivago/prettier-plugin-sort-imports@4.3.0)(prettier@3.5.3)
@@ -20993,19 +20987,6 @@ packages:
       fast-diff: 1.3.0
     dev: true
 
-  /prettier-plugin-packagejson@2.5.10(prettier@3.5.3):
-    resolution: {integrity: sha512-LUxATI5YsImIVSaaLJlJ3aE6wTD+nvots18U3GuQMJpUyClChaZlQrqx3dBnbhF20OnKWZyx8EgyZypQtBDtgQ==}
-    peerDependencies:
-      prettier: '>= 1.16.0'
-    peerDependenciesMeta:
-      prettier:
-        optional: true
-    dependencies:
-      prettier: 3.5.3
-      sort-package-json: 2.15.1
-      synckit: 0.9.2
-    dev: true
-
   /prettier-plugin-tailwindcss@0.6.9(@trivago/prettier-plugin-sort-imports@4.3.0)(prettier@3.5.3):
     resolution: {integrity: sha512-r0i3uhaZAXYP0At5xGfJH876W3HHGHDp+LCRUJrs57PBeQ6mYHMwr25KH8NPX44F2yGTvdnH7OqCshlQx183Eg==}
     engines: {node: '>=14.21.3'}
@@ -22740,20 +22721,6 @@ packages:
       globby: 10.0.0
       is-plain-obj: 2.1.0
       sort-object-keys: 1.1.3
-    dev: true
-
-  /sort-package-json@2.15.1:
-    resolution: {integrity: sha512-9x9+o8krTT2saA9liI4BljNjwAbvUnWf11Wq+i/iZt8nl2UGYnf3TH5uBydE7VALmP7AGwlfszuEeL8BDyb0YA==}
-    hasBin: true
-    dependencies:
-      detect-indent: 7.0.1
-      detect-newline: 4.0.1
-      get-stdin: 9.0.0
-      git-hooks-list: 3.1.0
-      is-plain-obj: 4.1.0
-      semver: 7.7.1
-      sort-object-keys: 1.1.3
-      tinyglobby: 0.2.12
     dev: true
 
   /sort-package-json@3.0.0:
