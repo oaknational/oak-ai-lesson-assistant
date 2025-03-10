@@ -46,6 +46,18 @@ export interface AilaQuizService {
   ): Promise<JsonPatchDocument>;
 }
 
+// // TODO: GCLOMAX - move this to interfaces and rename.
+// export interface AilaQuizGeneratorService {
+//   generateMathsExitQuizPatch(
+//     lessonPlan: LooseLessonPlan,
+//     relevantLessons?: AilaRagRelevantLesson[],
+//   ): Promise<Quiz[]>;
+//   generateMathsStarterQuizPatch(
+//     lessonPlan: LooseLessonPlan,
+//     relevantLessons?: AilaRagRelevantLesson[],
+//   ): Promise<Quiz[]>;
+// }
+
 export interface AilaQuizGeneratorService {
   generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
@@ -55,7 +67,6 @@ export interface AilaQuizGeneratorService {
     lessonPlan: LooseLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
   ): Promise<Quiz[]>;
-  // invoke(lessonPlan: LooseLessonPlan): Promise<Quiz[]>;
 }
 
 export interface AilaQuizVariantService {
