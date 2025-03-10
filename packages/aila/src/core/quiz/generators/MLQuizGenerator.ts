@@ -1,4 +1,8 @@
 // ML-based Quiz Generator
+import type {
+  SearchHit,
+  SearchHitsMetadata,
+} from "@elastic/elasticsearch/lib/api/types";
 import { aiLogger } from "@oakai/logger";
 
 import type {
@@ -15,12 +19,13 @@ const log = aiLogger("aila:quiz");
 export class MLQuizGenerator extends BaseQuizGenerator {
   private async unpackAndSearch(
     lessonPlan: LooseLessonPlan,
-  ): Promise<CustomHit[]> {
+  ): Promise<SearchHit<CustomHit>[]> {
     const qq = this.unpackLessonPlanForRecommender(lessonPlan);
     // TODO: GCLOMAX - change this to use the new search service.
     const results = await this.searchWithBM25("oak-vector", "text", qq, 100);
     return results.hits;
   }
+
   /**
    * Validates the lesson plan
    * @throws {Error} If the lesson plan is invalid

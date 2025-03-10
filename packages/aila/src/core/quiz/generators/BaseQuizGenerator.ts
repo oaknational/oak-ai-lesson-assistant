@@ -282,6 +282,12 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       .map((hit) => {
         const source = hit._source;
 
+        // First check if source exists
+        if (!source) {
+          log.warn("Hit source is undefined:", hit);
+          return null;
+        }
+
         // Check if the required fields exist
         if (
           typeof source.text !== "string" ||
@@ -335,7 +341,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
           },
         },
       });
-
+      log.info(`search response found ${response.hits.hits.length} hits`);
       if (!response.hits) {
         throw new Error("No hits property in the search response");
       }
@@ -356,6 +362,10 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     docs: SimplifiedResult[],
     topN: number = 10,
   ) {
+    if (docs.length === 0) {
+      log.error("No documents to rerank");
+      return [];
+    }
     // conforming to https://github.com/cohere-ai/cohere-typescript/blob/2e1c087ed0ec7eacd39ad062f7293fb15e453f33/src/api/client/requests/RerankRequest.ts#L15
     try {
       const jsonDocs = docs.map((doc) =>
