@@ -1,8 +1,18 @@
 "use client";
 
-import { OakHeading, OakLink } from "@oaknational/oak-components";
+import { OakHeading, OakLink, OakUL } from "@oaknational/oak-components";
 import type { PortableTextComponents } from "@portabletext/react";
 import Link from "next/link";
+import styled from "styled-components";
+
+// default styling is being overridden here by tailwind, we can remove this when re removing tailwind
+const StyledUL = styled(OakUL)`
+  list-style-type: disc;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-left: 40px;
+  padding-left: 20px;
+`;
 
 export const portableTextComponents: PortableTextComponents = {
   block: {
@@ -54,5 +64,8 @@ export const portableTextComponents: PortableTextComponents = {
         {children}
       </OakLink>
     ),
+  },
+  list: {
+    bullet: (props) => <StyledUL>{props.children}</StyledUL>,
   },
 };

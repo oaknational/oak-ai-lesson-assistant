@@ -25,6 +25,7 @@
     "doppler:run:stg": "doppler run -c stg --silent",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",
+    "lint:file": "eslint",
     "lint:fix": "pnpm lint -- --fix",
     "lint:debug": "pnpm lint -- --debug",
     "prompts": "turbo prompts",
@@ -66,7 +67,7 @@
     "sonarqube-scanner": "^4.2.6",
     "sort-package-json": "^2.6.0",
     "turbo": "^2.2.3",
-    "typescript": "5.7.2"
+    "typescript": "5.8.2"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

@@ -7,9 +7,9 @@ import { Md5 } from "ts-md5";
 import { DEFAULT_CATEGORISE_MODEL } from "../../../constants";
 import type { AilaServices } from "../../../core/AilaServices";
 import type { Message } from "../../../core/chat";
+import type { AilaDocumentContent } from "../../../core/document/types";
 import type { OpenAICompletionWithLoggingOptions } from "../../../lib/openai/OpenAICompletionWithLogging";
 import { OpenAICompletionWithLogging } from "../../../lib/openai/OpenAICompletionWithLogging";
-import type { LooseLessonPlan } from "../../../protocol/schema";
 import type { AilaCategorisationFeature } from "../../types";
 
 const log = aiLogger("aila:categorisation");
@@ -19,18 +19,18 @@ export class AilaCategorisation implements AilaCategorisationFeature {
   constructor({ aila }: { aila: AilaServices }) {
     this._aila = aila;
   }
-  public async categorise(
+  public async categorise<T extends AilaDocumentContent>(
     messages: Message[],
-    lessonPlan: LooseLessonPlan,
-  ): Promise<LooseLessonPlan | undefined> {
-    const { title, subject, keyStage, topic } = lessonPlan;
+    content: AilaDocumentContent,
+  ): Promise<T | undefined> {
+    const { title, subject, keyStage, topic } = content;
     const input = messages.map((i) => i.content).join("\n\n");
     const categorisationInput = [title, subject, keyStage, topic, input]
       .filter((i) => i)
       .join(" ");
 
     const result = await this.fetchCategorisedInput(categorisationInput);
-    return result;
+    return result as T | undefined;
   }
 
   private async categoriseKeyStageAndSubject(
@@ -139,7 +139,7 @@ Thank you and happy classifying!`;
 
   private async fetchCategorisedInput(
     input: string,
-  ): Promise<LooseLessonPlan | undefined> {
+  ): Promise<AilaDocumentContent | undefined> {
     const parsedCategorisation = await this.categoriseKeyStageAndSubject(
       input,
       {
@@ -148,7 +148,7 @@ Thank you and happy classifying!`;
       },
     );
     const { keyStage, subject, title, topic } = parsedCategorisation;
-    const plan: LooseLessonPlan = {
+    const plan: AilaDocumentContent = {
       keyStage: keyStage ?? undefined,
       subject: subject ?? undefined,
       title: title ?? undefined,

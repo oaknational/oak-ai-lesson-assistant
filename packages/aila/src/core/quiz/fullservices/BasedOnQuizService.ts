@@ -1,9 +1,12 @@
 import type { z } from "zod";
 
-import type { BaseSchema, BaseType } from "../ChoiceModels";
+import type { BaseType } from "../ChoiceModels";
 import { AilaQuizFactory } from "../generators/AilaQuizGeneratorFactory";
-import type { AilaQuizGeneratorService } from "../interfaces";
-import type { AilaQuizReranker, QuizSelector } from "../interfaces";
+import type {
+  AilaQuizReranker,
+  QuizSelector,
+  AilaQuizGeneratorService,
+} from "../interfaces";
 import { AilaQuizRerankerFactoryImpl } from "../rerankers/AilaQuizRerankerFactory";
 import { QuizSelectorFactoryImpl } from "../selectors/QuizSelectorFactory";
 import { BaseFullQuizService } from "./BaseFullQuizService";
