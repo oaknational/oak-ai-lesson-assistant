@@ -753,6 +753,15 @@ export function parseMessageParts(content: string): MessagePart[] {
   return messageParts;
 }
 
+export function userMessageTextPart(content: string): MessagePart {
+  return {
+    type: "message-part",
+    document: { type: "text", value: content.trim() },
+    id: `${0}`,
+    isPartial: false,
+  };
+}
+
 const timeOperation = <T>(fn: () => T): T => {
   const startTime = performance.now();
   const result = fn();
