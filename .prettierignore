@@ -1,11 +1,40 @@
 # Auto-generated files
 **/avo/Avo.ts
-CHANGE_LOG.md
+**/CHANGE_LOG.md
+**/*.generated.*
+**/*.gen.*
+**/generated/
 
 # Build output
-dist/
-.next/
-build/
+**/dist/
+**/.next/
+**/build/
+**/.turbo/
+**/out/
 
-# Node modules
-node_modules/ 
+# Package management
+**/node_modules/
+**/.pnpm-store/
+**/pnpm-lock.yaml
+**/yarn.lock
+**/package-lock.json
+
+# Cache and logs
+**/.cache/
+**/.eslintcache
+**/.stylelintcache
+**/tsconfig.tsbuildinfo
+**/*.log
+
+# Coverage reports
+**/coverage/
+**/.nyc_output/
+
+# Environment and config
+**/.env*
+
+# Database
+**/*.sql
+**/*.dump
+**/*.backup
+**/*.bak
