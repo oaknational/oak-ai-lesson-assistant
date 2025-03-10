@@ -12,14 +12,14 @@ import type {
   QuizQuestion,
 } from "../../../protocol/schema";
 import { missingQuizQuestion } from "../fixtures/MissingQuiz";
-import type { CustomHit } from "../interfaces";
+import type { CustomHit, CustomSource } from "../interfaces";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");
 export class MLQuizGenerator extends BaseQuizGenerator {
   private async unpackAndSearch(
     lessonPlan: LooseLessonPlan,
-  ): Promise<SearchHit<CustomHit>[]> {
+  ): Promise<SearchHit<CustomSource>[]> {
     const qq = this.unpackLessonPlanForRecommender(lessonPlan);
     // TODO: GCLOMAX - change this to use the new search service.
     const results = await this.searchWithBM25("oak-vector", "text", qq, 100);

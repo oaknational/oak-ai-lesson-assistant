@@ -1,5 +1,8 @@
 import { Client } from "@elastic/elasticsearch";
-import type { SearchHitsMetadata } from "@elastic/elasticsearch/lib/api/types";
+import type {
+  SearchHit,
+  SearchHitsMetadata,
+} from "@elastic/elasticsearch/lib/api/types";
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { CohereClient } from "cohere-ai";
@@ -277,7 +280,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     }
     return unpackedList.join("");
   }
-  protected transformHits(hits: CustomHit[]): SimplifiedResult[] {
+  protected transformHits(hits: SearchHit<CustomSource>[]): SimplifiedResult[] {
     return hits
       .map((hit) => {
         const source = hit._source;
@@ -287,6 +290,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
           log.warn("Hit source is undefined:", hit);
           return null;
         }
+        log.info("This code is being called");
 
         // Check if the required fields exist
         if (
@@ -329,10 +333,10 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     field: string,
     query: string,
     _size: number = 10,
-  ): Promise<SearchHitsMetadata<CustomHit>> {
+  ): Promise<SearchHitsMetadata<CustomSource>> {
     try {
       log.info(`Searching index: ${index}, field: ${field}, query: ${query}`);
-      const response = await this.client.search<CustomHit>({
+      const response = await this.client.search<CustomSource>({
         index: "oak-vector",
         query: {
           bool: {
@@ -412,7 +416,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     }
   }
   protected async rerankAndExtractCustomIds(
-    hits: CustomHit[],
+    hits: SearchHit<CustomSource>[],
     query: string,
   ): Promise<string[]> {
     const simplifiedResults = this.transformHits(hits);
