@@ -5,11 +5,7 @@ import { cva } from "class-variance-authority";
 import { PromptForm } from "@/components/AppComponents/Chat/prompt-form";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import { useSidebar } from "@/lib/hooks/use-sidebar";
-import {
-  useChatActions,
-  useChatStore,
-  useLessonPlanStore,
-} from "@/stores/AilaStoresProvider";
+import { useChatActions, useChatStore } from "@/stores/AilaStoresProvider";
 import { canAppendSelector } from "@/stores/chatStore/selectors";
 
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
