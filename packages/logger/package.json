@@ -1,14 +1,15 @@
 {
   "name": "@oakai/logger",
   "version": "1.0.0",
-  "description": "",
-  "keywords": [],
-  "license": "ISC",
+  "description": "Logger for the Oak AI project",
+  "license": "MIT",
   "author": "",
+  "type": "module",
   "main": "./index.ts",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit"
   },
   "prettier": "@oakai/prettier-config",
@@ -19,6 +20,5 @@
   "devDependencies": {
     "@oakai/prettier-config": "*",
     "pino-pretty": "^10.2.0"
-  },
-  "type": "module"
+  }
 }
