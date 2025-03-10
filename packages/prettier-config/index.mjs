@@ -6,7 +6,8 @@ export default {
   jsxSingleQuote: false,
   plugins: [
     "@trivago/prettier-plugin-sort-imports",
-    "prettier-plugin-tailwindcss"
+    "prettier-plugin-packagejson",
+    "prettier-plugin-tailwindcss",
   ],
   printWidth: 80,
   semi: true,

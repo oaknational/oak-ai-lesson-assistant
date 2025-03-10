@@ -3,10 +3,15 @@
   "version": "1.0.0",
   "description": "Custom ESLint configuration for React, Next.js, and TypeScript",
   "license": "MIT",
+  "type": "module",
   "main": "src/index.mjs",
   "files": [
     "src/*"
   ],
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit"
+  },
   "devDependencies": {
     "@eslint/js": "^9.16.0",
     "@next/eslint-plugin-next": "^15.0.3",
@@ -21,22 +26,20 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.9.0",
+    "eslint-plugin-json-files": "^4.4.2",
+    "eslint-plugin-package-json": "^0.26.3",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-storybook": "^0.11.1",
     "eslint-plugin-turbo": "^2.3.3",
     "globals": "^15.13.0",
+    "jsonc-eslint-parser": "^2.4.0",
     "ts-node": "^10.9.2",
     "typescript": "5.8.2"
   },
   "prettier": "@oakai/prettier-config",
   "publishConfig": {
     "access": "public"
-  },
-  "type": "module",
-  "scripts": {
-    "build": "tsc",
-    "type-check": "tsc --noEmit"
   }
 }
