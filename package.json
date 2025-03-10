@@ -31,7 +31,6 @@
     "prompts": "turbo prompts",
     "prompts:dev": "turbo prompts:dev",
     "sonar": "dotenv -e ./.env -- sonar-scanner",
-    "sort-package-json": "sort-package-json \"package.json\" \"packages/*/package.json\" \"apps/*/package.json\"",
     "type-check": "turbo type-check",
     "node-version": "node -v",
     "with-env": "dotenv -e ../../.env --",
@@ -62,10 +61,8 @@
     "lint-staged": "^15.2.0",
     "next": "14.2.21",
     "postcss": "^8.4.32",
-    "prettier": "^3.4.1",
     "semantic-release": "^21.1.1",
     "sonarqube-scanner": "^4.2.6",
-    "sort-package-json": "^2.6.0",
     "turbo": "^2.2.3",
     "typescript": "5.7.2"
   },

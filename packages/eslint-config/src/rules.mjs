@@ -44,6 +44,8 @@ export const rules = {
   "import/newline-after-import": "off",
   "import/no-duplicates": "off",
 
+  // JSON files plugin rules are now in a dedicated config
+  
   // General ESLint rules
   "no-console": "warn",
   "no-extra-boolean-cast": "error",
