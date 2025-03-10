@@ -1,0 +1,11 @@
+# Auto-generated files
+**/avo/Avo.ts
+CHANGE_LOG.md
+
+# Build output
+dist/
+.next/
+build/
+
+# Node modules
+node_modules/ 
