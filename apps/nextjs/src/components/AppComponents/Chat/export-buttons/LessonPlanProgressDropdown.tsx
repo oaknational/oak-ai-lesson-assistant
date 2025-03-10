@@ -4,15 +4,17 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Flex } from "@radix-ui/themes";
 
 import { Icon } from "@/components/Icon";
-import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
+import {
+  useChatStore,
+  useLessonPlanActions,
+  useLessonPlanStore,
+} from "@/stores/AilaStoresProvider";
 
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
 
 export const LessonPlanProgressDropdown: React.FC = () => {
   const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
-  const setScrollToSection = useLessonPlanStore(
-    (state) => state.setScrollToSection,
-  );
+  const { setScrollToSection } = useLessonPlanActions();
   const isStreaming = useChatStore(
     (state) => state.ailaStreamingStatus !== "Idle",
   );

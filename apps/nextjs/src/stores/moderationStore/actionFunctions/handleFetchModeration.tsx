@@ -13,7 +13,7 @@ export const handleFetchModerations = (
   trpcUtils: TrpcUtils,
 ) => {
   return async () => {
-    const { updateModerationState, id } = get();
+    const { actions, id } = get();
 
     set({
       isModerationsLoading: true,
@@ -23,7 +23,7 @@ export const handleFetchModerations = (
         await trpcUtils.chat.appSessions.getModerations.fetch({
           id,
         });
-      updateModerationState(fetchedModerations);
+      actions.updateModerationState(fetchedModerations);
     } catch (error) {
       log.error("Error fetching moderation", error);
       Sentry.captureException(error);

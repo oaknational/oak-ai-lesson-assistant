@@ -13,6 +13,6 @@ export const handleToxicModeration =
   ) =>
   (mod: PersistedModerationBase | null) => {
     set({ toxicModeration: mod });
-    getStore("chat").setMessages([], false);
-    getStore("lessonPlan").resetStore();
+    getStore("chat").actions.setMessages([], false);
+    getStore("lessonPlan").actions.resetStore();
   };

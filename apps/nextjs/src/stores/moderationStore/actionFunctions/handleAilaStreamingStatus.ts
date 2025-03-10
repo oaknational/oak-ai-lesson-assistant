@@ -11,6 +11,6 @@ export const handleAilaStreamingStatusUpdated =
   (set: ModerationSetter, get: ModerationGetter) =>
   (streamingStatus: AilaStreamingStatus) => {
     if (streamingStatus === "Idle") {
-      void get().fetchModerations();
+      void get().actions.fetchModerations();
     }
   };
