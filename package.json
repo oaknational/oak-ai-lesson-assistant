@@ -73,5 +73,10 @@
     "node": ">=20.9.0",
     "pnpm": ">=8"
   },
-  "type": "module"
+  "type": "module",
+  "pnpm": {
+    "overrides": {
+      "@octokit/endpoint": "9.0.6"
+    }
+  }
 }
