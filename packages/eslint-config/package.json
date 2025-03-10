@@ -27,10 +27,10 @@
     "eslint-plugin-storybook": "^0.11.1",
     "eslint-plugin-turbo": "^2.3.3",
     "globals": "^15.13.0",
-    "prettier": "^3.4.1",
     "ts-node": "^10.9.2",
     "typescript": "5.7.2"
   },
+  "prettier": "@oakai/prettier-config",
   "publishConfig": {
     "access": "public"
   },
