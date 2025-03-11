@@ -1,8 +1,11 @@
 import { Client } from "@elastic/elasticsearch";
+import { aiLogger } from "@oakai/logger";
 
 import { QuizSchema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { AilaRagQuizGenerator } from "./AilaRagQuizGenerator";
+
+const log = aiLogger("aila:quiz");
 
 describe("AilaRagQuizGenerator", () => {
   let quizGenerator: AilaRagQuizGenerator;
@@ -64,5 +67,26 @@ describe("AilaRagQuizGenerator", () => {
     expect(result).toBeDefined();
     // in this case we are using the dummy elasticsearch client, so we expect to get a hit.
     expect(result.hits.hits.length).toBeGreaterThan(0);
+  });
+  it("should generate a quiz from a given lesson plan and aila rag relevant lessons", async () => {
+    const mockRelevantLessons = [
+      { lessonPlanId: "0anVg2hmAKl2YwsPjUXL0", title: "test-title-2" },
+      { lessonPlanId: "08_VNQ-oPRwaXs7hOSHtL", title: "test-title-3" },
+      { lessonPlanId: "0bz8ZgPlNRRPb5AT5hhqO", title: "test-title-4" },
+      { lessonPlanId: "0ChBXkONXh8IOVS00iTlm", title: "test-title-5" },
+    ];
+    const result = await quizGenerator.generateMathsStarterQuizPatch(
+      CircleTheoremLesson,
+      mockRelevantLessons,
+    );
+    expect(result).toBeDefined();
+    // console.log(JSON.stringify(result, null, 2));
+    expect(result).toBeDefined();
+    expect(Array.isArray(result)).toBe(true);
+    // expect(result.length).toBe(1);
+    expect(result[0]![0]!.question).toBeDefined();
+    expect(result[0]![0]!.answers).toBeDefined();
+    expect(result[0]![0]!.distractors).toBeDefined();
+    log.info("Quiz generated with rag: ", result[0]![0]);
   });
 });
