@@ -1,12 +1,13 @@
-import { setupClerkTestingToken } from "@clerk/testing/playwright";
 import { aiLogger } from "@oakai/logger";
+
+import { setupClerkTestingToken } from "@clerk/testing/playwright";
 import type { Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
 import {
+  TEST_BASE_URL,
   TEST_USER_EMAIL,
   TEST_USER_PASSWORD,
-  TEST_BASE_URL,
 } from "../config/config";
 import { bypassVercelProtection } from "../helpers/vercel";
 

@@ -1,7 +1,8 @@
-import { Client } from "@elastic/elasticsearch";
-import type { SearchHitsMetadata } from "@elastic/elasticsearch/lib/api/types";
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
+
+import { Client } from "@elastic/elasticsearch";
+import type { SearchHitsMetadata } from "@elastic/elasticsearch/lib/api/types";
 import { CohereClient } from "cohere-ai";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import { z } from "zod";

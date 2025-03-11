@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type MutableRefObject } from "react";
+import { type MutableRefObject, useRef } from "react";
 
 import {
   OakBox,

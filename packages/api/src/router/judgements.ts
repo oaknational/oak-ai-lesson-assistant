@@ -4,7 +4,8 @@ import type {
   subjectsAndKeyStages,
 } from "@oakai/core";
 import { sendJudgementFeedbackEmail } from "@oakai/core/src/utils/sendJudgementFeedbackEmail";
-import { structuredLogger as logger, aiLogger } from "@oakai/logger";
+import { aiLogger, structuredLogger as logger } from "@oakai/logger";
+
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";

@@ -1,7 +1,7 @@
 import type { GetStore } from "@/stores/AilaStoresProvider";
 import type { TrpcUtils } from "@/utils/trpc";
 
-import { createChatStore, type AiSdkActions } from "..";
+import { type AiSdkActions, createChatStore } from "..";
 
 describe("handleStop", () => {
   const mockAiSdkActions = {

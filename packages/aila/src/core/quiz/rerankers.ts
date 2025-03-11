@@ -1,4 +1,5 @@
 import { aiLogger } from "@oakai/logger";
+
 import { CohereClient } from "cohere-ai";
 
 import type { DocumentReranker, SimplifiedResult } from "./interfaces";

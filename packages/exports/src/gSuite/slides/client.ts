@@ -1,4 +1,4 @@
-import { slides, auth } from "@googleapis/slides";
+import { auth, slides } from "@googleapis/slides";
 
 import { credentials } from "../credentials";
 

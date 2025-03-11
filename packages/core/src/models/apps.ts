@@ -1,4 +1,5 @@
-import type { Prompt, PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate, Prompt } from "@oakai/db";
+
 import { Prisma } from "@prisma/client";
 import type { App } from "@prisma/client";
 
