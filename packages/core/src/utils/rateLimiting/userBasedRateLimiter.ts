@@ -1,66 +1,68 @@
-import type { User } from "@clerk/nextjs/server";
+import { type User } from "@clerk/nextjs/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { aiLogger } from "@oakai/logger";
-import type { Ratelimit } from "@upstash/ratelimit";
+import { Ratelimit } from "@upstash/ratelimit";
 import { waitUntil } from "@vercel/functions";
+import { kv } from "@vercel/kv";
+
+import { RateLimitExceededError } from "./errors";
+import type { Duration, RateLimiter } from "./types";
 
 const log = aiLogger("rate-limiting");
 
-// NOTE: Duplicates RateLimitInfo in packages/api/src/types.ts
-export type RateLimitInfo =
-  | {
-      isSubjectToRateLimiting: false;
-    }
-  | {
-      isSubjectToRateLimiting: true;
-      limit: number;
-      remaining: number;
-      reset: number;
-    };
-
-export type RateLimiter = {
-  check: (userId: string, options?: { rate: number }) => Promise<RateLimitInfo>;
-  getRemaining: (userId: string) => Promise<number>;
-  resetUsedTokens: (userId: string) => Promise<void>;
+type UserBasedRateLimiterArgs = {
+  prefix: string;
+  limit: (
+    isOakUser: boolean,
+    userPrivateMetadata: User["privateMetadata"],
+  ) => number;
+  window: Duration;
 };
 
-export class RateLimitExceededError extends Error {
-  public readonly userId: string;
-  public readonly limit: number;
-  public readonly reset: number;
-
-  constructor(userId: string, limit: number, reset: number) {
-    super("Rate limit exceeded");
-    this.name = "RateLimitExceededError";
-    this.userId = userId;
-    this.limit = limit;
-    this.reset = reset;
-  }
-}
-
 /**
- * Function to create a user-based rate limiter with a given rate limit
+ * Function to create a user-based rate limiter with a user-specific rate limit
  * @returns A function enforcing user rate limits
  * @example
- * const rateLimiter = userBasedRateLimiter(rateLimits.generations.standard)
+ * const rateLimiter = userBasedRateLimiter({
+ *   prefix: "rateLimit:myRateLimit",
+ *   limit: (isOakUser, privateMetadata) => {
+ *     if (isOakUser) {
+ *       return 1000;
+ *     }
+ *     return 100
+ *   },
+ *   window: "24 h",
+ * }),
  * rateLimiter.check(userId)
  */
-export const userBasedRateLimiter = (rateLimit: Ratelimit): RateLimiter => {
+export const userBasedRateLimiter = ({
+  prefix,
+  limit,
+  window,
+}: UserBasedRateLimiterArgs): RateLimiter => {
+  const getRateLimiter = async (userId: string) => {
+    if (!userId) {
+      throw new Error(
+        "authenticated user is required for userBasedRateLimiter",
+      );
+    }
+
+    const user = await clerkClient.users.getUser(userId);
+
+    const tokenLimit = limit(userHasOakEmail(user), user.privateMetadata);
+    log.info(`Using limit ${tokenLimit} for user ${userId}`);
+
+    return new Ratelimit({
+      redis: kv,
+      prefix,
+      limiter: Ratelimit.slidingWindow(tokenLimit, window),
+    });
+  };
+
   return {
     check: async (userId, options) => {
-      if (!userId) {
-        throw new Error(
-          "authenticated user is required for userBasedRateLimiter",
-        );
-      }
-
-      const limitFreeReason = await isLimitFreeUser(userId);
-      if (limitFreeReason) {
-        log.info(`Bypassing rate-limit for ${limitFreeReason} user ${userId}`);
-        return { isSubjectToRateLimiting: false };
-      }
-
-      const { success, pending, ...rest } = await rateLimit.limit(
+      const rateLimiter = await getRateLimiter(userId);
+      const { success, pending, ...rest } = await rateLimiter.limit(
         userId,
         options,
       );
@@ -79,27 +81,16 @@ export const userBasedRateLimiter = (rateLimit: Ratelimit): RateLimiter => {
     },
 
     getRemaining: async (userId) => {
-      return (await rateLimit.getRemaining(userId)).remaining;
+      const rateLimiter = await getRateLimiter(userId);
+      return (await rateLimiter.getRemaining(userId)).remaining;
     },
 
     resetUsedTokens: async (userId) => {
-      return await rateLimit.resetUsedTokens(userId);
+      const rateLimiter = await getRateLimiter(userId);
+      return await rateLimiter.resetUsedTokens(userId);
     },
   };
 };
-
-async function isLimitFreeUser(
-  userId: string,
-): Promise<"oak" | "metadata" | null> {
-  const user = await clerkClient.users.getUser(userId);
-  if (userHasOakEmail(user)) {
-    return "oak";
-  }
-  if (userHasHigherLimitMetadata(user)) {
-    return "metadata";
-  }
-  return null;
-}
 
 /**
  * Is the user an oak user, and should we still rate limit them?
@@ -112,11 +103,4 @@ function userHasOakEmail(user: User) {
       !email.emailAddress.includes("rate-limited") &&
       !email.emailAddress.includes("demo"),
   );
-}
-
-/**
- * Does the user have hasHigherLimits metadata?
- */
-function userHasHigherLimitMetadata(user: User) {
-  return user.privateMetadata.hasHigherLimits === true;
 }
