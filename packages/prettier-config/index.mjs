@@ -1,19 +1,19 @@
 /** @type {import('prettier').Config} */
-import fs from 'fs';
-import path from 'path';
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-// Determine if we're in a package that uses tailwind
-const tailwindConfigPath = path.resolve(process.cwd(), 'apps/nextjs/tailwind.config.cjs');
-const hasTailwind = fs.existsSync(tailwindConfigPath);
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Fixed path to the tailwind config
+const tailwindConfigPath = resolve(
+  __dirname,
+  "../../apps/nextjs/tailwind.config.cjs",
+);
 
 const plugins = [
   "@trivago/prettier-plugin-sort-imports",
+  "prettier-plugin-tailwindcss",
 ];
-
-// Only include the tailwind plugin if we have a tailwind config
-if (hasTailwind) {
-  plugins.push("prettier-plugin-tailwindcss");
-}
 
 export default {
   arrowParens: "always",
@@ -25,8 +25,8 @@ export default {
   semi: true,
   singleQuote: false,
   tabWidth: 2,
-  tailwindAttributes: ['className'],
-  ...(hasTailwind && { tailwindConfig: tailwindConfigPath }),
+  tailwindAttributes: ["className"],
+  tailwindConfig: tailwindConfigPath,
   tailwindFunctions: ["cva"],
-  trailingComma: "all"
+  trailingComma: "all",
 };

@@ -1,3 +1,3 @@
-import config from '@oakai/eslint-config';
+import config from "@oakai/eslint-config";
 
 export default config;
