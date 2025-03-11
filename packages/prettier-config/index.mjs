@@ -7,7 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // Fixed path to the tailwind config
 const tailwindConfigPath = resolve(
   __dirname,
-  "../../apps/nextjs/tailwind.config.cjs"
+  "../../apps/nextjs/tailwind.config.cjs",
 );
 
 const plugins = [
