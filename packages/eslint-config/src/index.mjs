@@ -11,6 +11,7 @@ import reactHooksPlugin from "eslint-plugin-react-hooks";
 import storybookPlugin from "eslint-plugin-storybook";
 import turboPlugin from "eslint-plugin-turbo";
 import globals from "globals";
+import jsonParser from "jsonc-eslint-parser";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -100,6 +101,32 @@ const config = [
   eslint.configs.recommended,
   prettierConfig,
   packageJsonRecommended,
+  {
+    files: ["**/*.json"],
+    languageOptions: {
+      parser: jsonParser,
+    },
+  },
+  {
+    files: ["**/turbo.json"],
+    languageOptions: {
+      parser: jsonParser,
+      parserOptions: {
+        jsonSyntax: "JSON",
+      },
+    },
+    plugins: {
+      turbo: turboPlugin,
+    },
+    rules: {
+      "turbo/no-undeclared-env-vars": "error",
+    },
+    settings: {
+      turbo: {
+        // Optional: Add any specific turbo settings here if needed
+      },
+    },
+  },
   {
     files: ["**/*.cjs"],
     languageOptions: {
