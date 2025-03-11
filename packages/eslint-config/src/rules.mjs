@@ -7,6 +7,20 @@ const rulesToDecideOn = {
   "@typescript-eslint/no-unsafe-call": "off", // this rule is buggy and is causing a lot of false positives
 };
 
+// Define JavaScript-specific rules to avoid duplication
+export const javascriptRules = {
+  "no-unused-vars": [
+    "warn",
+    {
+      argsIgnorePattern: "^_",
+      caughtErrors: "all",
+      caughtErrorsIgnorePattern: "^_",
+      destructuredArrayIgnorePattern: "^_",
+      varsIgnorePattern: "^_",
+    },
+  ],
+};
+
 // @ts-check
 /** @type {Partial<Record<string, import('@typescript-eslint/utils/ts-eslint').SharedConfig.RuleEntry>>} */
 export const rules = {
@@ -18,7 +32,16 @@ export const rules = {
   "@typescript-eslint/consistent-type-imports": "warn",
   "@typescript-eslint/comma-dangle": "off",
   "@typescript-eslint/no-duplicate-enum-values": "off",
-  "@typescript-eslint/no-unused-vars": "warn",
+  "@typescript-eslint/no-unused-vars": [
+    "warn",
+    {
+      argsIgnorePattern: "^_",
+      caughtErrors: "all",
+      caughtErrorsIgnorePattern: "^_",
+      destructuredArrayIgnorePattern: "^_",
+      varsIgnorePattern: "^_",
+    },
+  ],
   "@typescript-eslint/no-unused-expressions": [
     "warn",
     {
