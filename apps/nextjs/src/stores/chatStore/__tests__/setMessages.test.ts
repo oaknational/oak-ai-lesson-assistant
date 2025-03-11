@@ -102,14 +102,14 @@ describe("Chat Store setMessages", () => {
     const store = setupStore();
 
     expect(() => {
-      store.getState().setMessages([], true);
+      store.getState().actions.setMessages([], true);
     }).toThrow();
   });
 
   test("expected state when there no messages, loading false", () => {
     const store = setupStore();
     const initialState = store.getState();
-    store.getState().setMessages([], false);
+    store.getState().actions.setMessages([], false);
     const newState = store.getState();
 
     expect(newState.streamingMessage).toBe(null);
@@ -125,7 +125,7 @@ describe("Chat Store setMessages", () => {
 
     store
       .getState()
-      .setMessages(messageStates.streamingMessage as AiMessage[], true);
+      .actions.setMessages(messageStates.streamingMessage as AiMessage[], true);
 
     const newState = store.getState();
 
@@ -141,7 +141,10 @@ describe("Chat Store setMessages", () => {
 
     store
       .getState()
-      .setMessages(messageStates.stableAndStreaming as AiMessage[], true);
+      .actions.setMessages(
+        messageStates.stableAndStreaming as AiMessage[],
+        true,
+      );
 
     const newState = store.getState();
 
@@ -156,7 +159,7 @@ describe("Chat Store setMessages", () => {
     const store = setupStore();
     store
       .getState()
-      .setMessages(messageStates.stableMessages as AiMessage[], true);
+      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
 
     const newState = store.getState();
     expect(newState.stableMessages.length).toBe(
@@ -170,7 +173,7 @@ describe("Chat Store setMessages", () => {
     const store = setupStore();
     store
       .getState()
-      .setMessages(messageStates.userRequest as AiMessage[], false);
+      .actions.setMessages(messageStates.userRequest as AiMessage[], false);
 
     const newState = store.getState();
 
@@ -195,7 +198,7 @@ describe("Chat Store setMessages", () => {
           },
         ],
         hasError: false,
-        isEditing: true,
+        isEditing: false,
       },
     ]);
 
@@ -206,7 +209,7 @@ describe("Chat Store setMessages", () => {
     const store = setupStore();
     store
       .getState()
-      .setMessages(messageStates.streamingMessage as AiMessage[], true);
+      .actions.setMessages(messageStates.streamingMessage as AiMessage[], true);
 
     const newState = store.getState();
     expect(newState.streamingMessage?.parts).toBeDefined();
@@ -219,13 +222,13 @@ describe("Chat Store setMessages", () => {
     const store = setupStore();
     store
       .getState()
-      .setMessages(messageStates.stableMessages as AiMessage[], true);
+      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
 
     const initialState = store.getState();
 
     store
       .getState()
-      .setMessages(messageStates.stableMessages as AiMessage[], true);
+      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
 
     const newState = store.getState();
 
@@ -240,11 +243,11 @@ describe("Chat Store setMessages", () => {
     store.subscribe((state) => renderSpy(state.stableMessages));
     store
       .getState()
-      .setMessages(messageStates.stableMessages as AiMessage[], true);
+      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
     const initialState = store.getState();
     store
       .getState()
-      .setMessages(messageStates.stableMessages as AiMessage[], true);
+      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
     const newState = store.getState();
     expect(renderSpy).toHaveBeenCalledTimes(2);
     expect(newState.stableMessages).toBe(initialState.stableMessages);
@@ -254,12 +257,12 @@ describe("Chat Store setMessages", () => {
     const store = setupStore();
     store
       .getState()
-      .setMessages(messageStates.stableMessages as AiMessage[], true);
+      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
     expect(store.getState().ailaStreamingStatus).toBe("Moderating");
 
     store
       .getState()
-      .setMessages(messageStates.userRequest as AiMessage[], false);
+      .actions.setMessages(messageStates.userRequest as AiMessage[], false);
     expect(store.getState().ailaStreamingStatus).toBe("Idle");
   });
 });

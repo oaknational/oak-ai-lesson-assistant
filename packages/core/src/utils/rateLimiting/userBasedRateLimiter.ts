@@ -54,8 +54,9 @@ export const userBasedRateLimiter = (rateLimit: Ratelimit): RateLimiter => {
         );
       }
 
-      if (await isLimitFreeOakUser(userId)) {
-        log.info("Bypassing rate-limit for oak user %s", userId);
+      const limitFreeReason = await isLimitFreeUser(userId);
+      if (limitFreeReason) {
+        log.info(`Bypassing rate-limit for ${limitFreeReason} user ${userId}`);
         return { isSubjectToRateLimiting: false };
       }
 
@@ -87,14 +88,22 @@ export const userBasedRateLimiter = (rateLimit: Ratelimit): RateLimiter => {
   };
 };
 
+async function isLimitFreeUser(
+  userId: string,
+): Promise<"oak" | "metadata" | null> {
+  const user = await clerkClient.users.getUser(userId);
+  if (userHasOakEmail(user)) {
+    return "oak";
+  }
+  if (userHasHigherLimitMetadata(user)) {
+    return "metadata";
+  }
+  return null;
+}
+
 /**
  * Is the user an oak user, and should we still rate limit them?
  */
-async function isLimitFreeOakUser(userId: string): Promise<boolean> {
-  const user = await clerkClient.users.getUser(userId);
-  return userHasOakEmail(user);
-}
-
 function userHasOakEmail(user: User) {
   return user.emailAddresses.some(
     (email) =>
@@ -103,4 +112,11 @@ function userHasOakEmail(user: User) {
       !email.emailAddress.includes("rate-limited") &&
       !email.emailAddress.includes("demo"),
   );
+}
+
+/**
+ * Does the user have hasHigherLimits metadata?
+ */
+function userHasHigherLimitMetadata(user: User) {
+  return user.privateMetadata.hasHigherLimits === true;
 }

@@ -1,4 +1,8 @@
-const AiIcon = ({ color = "black" }: { readonly color?: "black" | "white" }) => {
+const AiIcon = ({
+  color = "black",
+}: {
+  readonly color?: "black" | "white";
+}) => {
   return (
     <svg
       width="24"
