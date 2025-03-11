@@ -17,15 +17,6 @@ describe("AilaRagQuizGenerator", () => {
       { lessonPlanId: "08_VNQ-oPRwaXs7hOSHtL", title: "test-title-3" },
       { lessonPlanId: "0bz8ZgPlNRRPb5AT5hhqO", title: "test-title-4" },
       { lessonPlanId: "0ChBXkONXh8IOVS00iTlm", title: "test-title-5" },
-      //   { lessonPlanId: "clna7k93700sap4qx741wdrz4", title: "test-title-6" },
-      //   { lessonPlanId: "clna7k98j00vup4qx9nyfjtpm", title: "test-title-7" },
-      //   { lessonPlanId: "clna7k86k0079p4qx0g6dfe6x", title: "test-title-8" },
-      //   { lessonPlanId: "clna7k8kq00fip4qxsjvrmykv", title: "test-title-9" },
-      //   { lessonPlanId: "clna7k98j00vup4qx9nyfjtpm", title: "test-title-10" },
-      //   {
-      //     lessonPlanId: "clna7lofy0og0p4qxju5j6z56",
-      //     title: "TEST-LESSON-READING-TIMETABLES",
-      //   },
     ];
 
     const result = await quizGenerator.mappedQuizFromAilaRagRelevantLessons(
