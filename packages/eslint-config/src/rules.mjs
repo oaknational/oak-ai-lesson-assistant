@@ -72,7 +72,7 @@ export const rules = {
   "import/no-cycle": ["warn", { maxDepth: Infinity }],
   "import/newline-after-import": "off",
   "import/no-duplicates": "off",
-
+  
   // General ESLint rules
   "no-console": "warn",
   "no-extra-boolean-cast": "error",
