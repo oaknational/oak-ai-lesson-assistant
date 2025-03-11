@@ -63,7 +63,7 @@ export const DownloadButton = ({
           onClick={() =>
             trackDownload(ext, analyticsResourceType, lesson, track, chatId)
           }
-          className="flex w-full items-center justify-start  gap-15 hover:underline"
+          className="flex w-full items-center justify-start gap-15 hover:underline"
           href={`/api/aila-download?fileId=${fileId}&ext=${ext}&lessonTitle=${lessonTitle}`}
           target="_blank"
         >
@@ -80,7 +80,7 @@ export const DownloadButton = ({
           onClick={() =>
             trackDownload("pdf", analyticsResourceType, lesson, track, chatId)
           }
-          className="flex w-full items-center justify-start  gap-15 hover:underline"
+          className="flex w-full items-center justify-start gap-15 hover:underline"
           href={`/api/aila-download?fileId=${fileId}&ext=pdf&lessonTitle=${lessonTitle}`}
           target="_blank"
         >
@@ -104,7 +104,7 @@ export const DownloadButton = ({
               chatId,
             )
           }
-          className="hidden w-full items-center  justify-start gap-15 hover:underline sm:flex"
+          className="hidden w-full items-center justify-start gap-15 hover:underline sm:flex"
           target="_blank"
           href={`${link.split("/edit")[0]}/copy`}
           data-testid={`${dataTestId}-open-google-drive`}
@@ -120,7 +120,7 @@ export const DownloadButton = ({
           </div>
         </Link>
         <button
-          className="flex w-full items-center  justify-start gap-15 hover:underline sm:hidden"
+          className="flex w-full items-center justify-start gap-15 hover:underline sm:hidden"
           onClick={() => {
             const lessonTitle = lesson.title;
             if (!lessonTitle) return;

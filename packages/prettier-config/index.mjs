@@ -1,20 +1,32 @@
 /** @type {import('prettier').Config} */
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Fixed path to the tailwind config
+const tailwindConfigPath = resolve(
+  __dirname,
+  "../../apps/nextjs/tailwind.config.cjs",
+);
+
+const plugins = [
+  "@trivago/prettier-plugin-sort-imports",
+  "prettier-plugin-tailwindcss",
+];
+
 export default {
-  plugins: [
-    "@trivago/prettier-plugin-sort-imports",
-    "prettier-plugin-packagejson",
-    "prettier-plugin-tailwindcss",
-  ],
-  tailwindAttributes: ['className'],
+  arrowParens: "always",
   importOrder: ["^react(.*)", "<THIRD_PARTY_MODULES>", "@/(.*)", "^[./]"],
   importOrderSeparation: true,
-  tailwindFunctions: ["cva"],
-  arrowParens: "always",
-  printWidth: 80,
-  singleQuote: false,
   jsxSingleQuote: false,
+  plugins,
+  printWidth: 80,
   semi: true,
-  trailingComma: "all",
+  singleQuote: false,
   tabWidth: 2,
-  tailwindConfig: `./../../apps/nextjs/tailwind.config.cjs`
+  tailwindAttributes: ["className"],
+  tailwindConfig: tailwindConfigPath,
+  tailwindFunctions: ["cva"],
+  trailingComma: "all",
 };
