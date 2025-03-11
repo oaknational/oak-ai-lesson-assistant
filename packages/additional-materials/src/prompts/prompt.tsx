@@ -28,9 +28,7 @@ ${lessonPlan.priorKnowledge?.map((pk) => `- ${pk}`).join("\n") || "- N/A"}
 **Learning Cycles**:
 ${lessonPlan.learningCycles?.map((cycle) => `- ${cycle}`).join("\n") || "- N/A"}
 
-**Quizzes**:
-- **Starter Quiz**: ${lessonPlan.starterQuiz ? "Included" : "Not provided"}
-- **Exit Quiz**: ${lessonPlan.exitQuiz ? "Included" : "Not provided"}
+
 `;
 };
 

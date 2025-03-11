@@ -2,6 +2,7 @@
 
 import type { FC } from "react";
 import React, { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
@@ -187,17 +188,28 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
             })}
           </OakFlex>
         </OakAccordion>
+        {pageData.transcript && (
+          <OakAccordion id={"transcript"} header="Transcript">
+            <OakFlex>
+              <OakP>{pageData.transcript}</OakP>
+            </OakFlex>
+          </OakAccordion>
+        )}
         {prompt && (
           <>
             <OakAccordion id={"prompt"} header="Prompt">
-              <OakFlex>
-                <OakP>{prompt.prompt}</OakP>
-              </OakFlex>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: prompt.prompt.replace(/\n/g, "<br />"),
+                }}
+              />
             </OakAccordion>
             <OakAccordion id={"sprompt"} header="System message">
-              <OakFlex>
-                <OakP>{prompt.systemMessage}</OakP>
-              </OakFlex>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: prompt.systemMessage.replace(/\n/g, "<br />"),
+                }}
+              />
             </OakAccordion>
           </>
         )}
@@ -233,9 +245,20 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
 
           {isLoading && <OakP>Loading...</OakP>}
           <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
-          <OakPrimaryButton onClick={() => void handleSubmit("Make it easier")}>
-            {"Make it easier"}
-          </OakPrimaryButton>
+          {generation && (
+            <OakFlex>
+              <OakPrimaryButton
+                onClick={() => void handleSubmit("Make it easier")}
+              >
+                {"Make it easier"}
+              </OakPrimaryButton>
+              <OakPrimaryButton
+                onClick={() => void handleSubmit("Make it harder")}
+              >
+                {"Make it harder"}
+              </OakPrimaryButton>
+            </OakFlex>
+          )}
         </OakFlex>
       </OakFlex>
     </Layout>

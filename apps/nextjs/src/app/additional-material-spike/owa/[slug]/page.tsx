@@ -45,8 +45,8 @@ const lessonSchema = z.object({
 type Lesson = z.infer<typeof lessonSchema>;
 
 const transcriptSchema = z.object({
-  transcript: z.string(),
-  vtt: z.string(),
+  transcript: z.string().nullish(),
+  vtt: z.string().nullish(),
 });
 
 export function mapLessonToSchema(lessonData: Lesson): LooseLessonPlan {
@@ -121,7 +121,8 @@ export default async function ImageTestPage({
   );
   const pageData = {
     lessonPlan: mapLessonToSchema(summaryData),
-    transcript: transcriptData,
+    transcript:
+      transcriptData.transcript ?? "No transcript available from Oak Open ApI",
   };
 
   if (!pageData) {
