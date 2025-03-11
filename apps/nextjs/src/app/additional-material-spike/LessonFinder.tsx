@@ -4,16 +4,11 @@ import { useState } from "react";
 
 import {
   OakFlex,
-  OakGrid,
-  OakGridArea,
   OakTextInput,
   OakHeading,
-  OakSpan,
   OakPrimaryButton,
 } from "@oaknational/oak-components";
 import Link from "next/link";
-
-import { fetchOakLessons } from "../actions";
 
 const LessonFinder = ({ lessons }: { lessons: any }) => {
   const [searchText, setSearchText] = useState("");
@@ -23,7 +18,6 @@ const LessonFinder = ({ lessons }: { lessons: any }) => {
     lessonTitle: lesson?.output?.lessonPlan?.title || "",
     keyStage: lesson?.output?.lessonPlan?.keyStage || "",
     subject: lesson?.output?.lessonPlan?.subject || "",
-    basedOn: lesson?.output?.lessonPlan?.basedOn?.title || "",
     hasThreeCycles:
       !!lesson?.output?.lessonPlan?.cycle1 &&
       !!lesson?.output?.lessonPlan?.cycle2 &&
@@ -36,7 +30,6 @@ const LessonFinder = ({ lessons }: { lessons: any }) => {
     try {
       const response = await fetch(`/api/search-lesson?q=${searchText}`);
       const data = await response.json();
-      console.log("data", data);
 
       setOwaLessons(data);
     } catch (e) {
@@ -45,25 +38,37 @@ const LessonFinder = ({ lessons }: { lessons: any }) => {
   };
 
   return (
-    <OakFlex $flexDirection="column" $mb="space-between-m">
+    <OakFlex
+      $mh="space-between-m"
+      $flexDirection="column"
+      $mb="space-between-m"
+    >
       <OakFlex
         $gap={"space-between-m"}
         $flexDirection={"column"}
         $mb="space-between-m"
       >
-        <OakHeading tag="h1">Choose a Oak lesson to test</OakHeading>
+        <OakHeading $font={"heading-5"} tag="h1">
+          Choose a Oak lesson to test
+        </OakHeading>
         <OakTextInput onChange={(value) => setSearchText(value.target.value)} />
-        <OakPrimaryButton onClick={handleSubmit}>Submit</OakPrimaryButton>
+        <OakPrimaryButton onClick={handleSubmit}>Search</OakPrimaryButton>
         {searchText &&
           owaLessons &&
           owaLessons.map((lesson: any) => (
             <Link href={`/additional-material-spike/owa/${lesson.lessonSlug}`}>
-              {lesson.lessonTitle}
+              {`${lesson.lessonTitle} - ${lesson.units[0].keyStageSlug} - ${lesson.units[0].subjectSlug}`}
             </Link>
           ))}
       </OakFlex>
-      <OakHeading tag="h1">Choose a Aila lesson to test</OakHeading>
-      <OakSpan $mb="space-between-m" $font={"body-3"}>
+      <OakFlex
+        $gap={"space-between-m"}
+        $flexDirection={"column"}
+        $mb="space-between-m"
+      >
+        <OakHeading $font={"heading-5"} tag="h1">
+          Choose a Aila lesson to test
+        </OakHeading>
         {lessonTitles.map(
           ({
             sessionId,
@@ -71,30 +76,29 @@ const LessonFinder = ({ lessons }: { lessons: any }) => {
             hasThreeCycles,
             keyStage,
             subject,
-            basedOn,
           }: {
             sessionId: string;
             lessonTitle: string;
             hasThreeCycles: boolean;
             keyStage: string;
             subject: string;
-            basedOn: string;
           }) => {
             if (!lessonTitle || !hasThreeCycles) {
               return null;
             }
             return (
+              // <OakSpan $mb="space-between-s" $font={"body-3"}>
               <Link
                 key={sessionId}
                 href={`/additional-material-spike/${sessionId}`}
               >
-                {lessonTitle}: {sessionId} ------- {subject}, {keyStage}, BASED
-                ON: {basedOn}
+                {lessonTitle}: {sessionId} : {subject}, {keyStage},
               </Link>
+              // </OakSpan>
             );
           },
         )}
-      </OakSpan>
+      </OakFlex>
     </OakFlex>
   );
 };

@@ -1,32 +1,87 @@
-import { prisma } from "@oakai/db";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { notFound } from "next/navigation";
-
-import { getChatById } from "@/app/actions";
+import { z } from "zod";
 
 import AdditionalMaterials from "../../[slug]/AdditionalMaterials";
 
 const OPEN_AI_AUTH_TOKEN = process.env.OPEN_AI_AUTH_TOKEN;
 
-export function mapLessonToSchema(lessonData) {
+const lessonSchema = z.object({
+  lessonTitle: z.string(),
+  unitSlug: z.string(),
+  unitTitle: z.string(),
+  subjectSlug: z.string(),
+  subjectTitle: z.string(),
+  keyStageSlug: z.string(),
+  keyStageTitle: z.string(),
+  lessonKeywords: z.array(
+    z.object({
+      keyword: z.string(),
+      description: z.string(),
+    }),
+  ),
+  keyLearningPoints: z.array(
+    z.object({
+      keyLearningPoint: z.string(),
+    }),
+  ),
+  misconceptionsAndCommonMistakes: z.array(
+    z.object({
+      misconception: z.string(),
+      response: z.string(),
+    }),
+  ),
+  pupilLessonOutcome: z.string(),
+  teacherTips: z.array(
+    z.object({
+      teacherTip: z.string(),
+    }),
+  ),
+  contentGuidance: z.array(z.object({}).passthrough()).nullish(),
+  supervisionLevel: z.string().nullable(),
+  downloadsAvailable: z.boolean(),
+});
+
+type Lesson = z.infer<typeof lessonSchema>;
+
+const transcriptSchema = z.object({
+  transcript: z.string(),
+  vtt: z.string(),
+});
+
+export function mapLessonToSchema(lessonData: Lesson): LooseLessonPlan {
   return {
     title: lessonData.lessonTitle,
     keyStage: lessonData.keyStageSlug,
     subject: lessonData.subjectTitle,
-    topic: undefined,
+    topic: lessonData.unitTitle,
     learningOutcome: lessonData.pupilLessonOutcome,
-    learningCycles: [], // You may need to define learning cycles from the given data
-    priorKnowledge: [], // Define any relevant prior knowledge
-    keyLearningPoints: lessonData.keyLearningPoints,
-    misconceptions: lessonData.misconceptionsAndCommonMistakes,
-    keywords: lessonData.lessonKeywords,
-    basedOn: undefined, // Optional field, assign if necessary
-    starterQuiz: [], // Define quiz structure
-    cycle1: {}, // Define first learning cycle
-    cycle2: {}, // Define second learning cycle
-    cycle3: {}, // Define third learning cycle
-    exitQuiz: [], // Define quiz structure
-    scienceAdditionalMaterials: {},
-    additionalMaterials: [], // Define additional materials as needed
+    learningCycles: [],
+    priorKnowledge: [],
+    keyLearningPoints: lessonData.keyLearningPoints.map(
+      (point) => point.keyLearningPoint,
+    ),
+    misconceptions: lessonData.misconceptionsAndCommonMistakes.map(
+      (misconception) => {
+        return {
+          misconception: misconception.misconception,
+          description: misconception.response,
+        };
+      },
+    ),
+    keywords: lessonData.lessonKeywords.map((keyword) => {
+      return {
+        keyword: keyword.keyword,
+        definition: keyword.description,
+      };
+    }),
+    basedOn: undefined,
+    starterQuiz: [],
+    cycle1: {},
+    cycle2: {},
+    cycle3: {},
+    exitQuiz: [],
+    additionalMaterials: "",
   };
 }
 
@@ -35,13 +90,11 @@ export default async function ImageTestPage({
 }: {
   params: { slug: string };
 }) {
-  const lessonSlug = "joining-using-and";
-
   if (!OPEN_AI_AUTH_TOKEN) {
     throw new Error("No OpenAI auth token found");
   }
 
-  const response = await fetch(
+  const responseSummary = await fetch(
     `https://open-api.thenational.academy/api/v0/lessons/${params.slug}/summary`,
     {
       method: "GET",
@@ -51,12 +104,25 @@ export default async function ImageTestPage({
       },
     },
   );
+  const responseTranscript = await fetch(
+    `https://open-api.thenational.academy/api/v0/lessons/${params.slug}/transcript`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${OPEN_AI_AUTH_TOKEN}`,
+        Accept: "application/json",
+      },
+    },
+  );
 
-  const data = await response.json();
-  const pageData = { lessonPlan: mapLessonToSchema(data) };
-  console.log("data", pageData);
-
-  // if lesson plan has based on key then fetch the slug for that lesson plan
+  const summaryData = lessonSchema.parse(await responseSummary.json());
+  const transcriptData = transcriptSchema.parse(
+    await responseTranscript.json(),
+  );
+  const pageData = {
+    lessonPlan: mapLessonToSchema(summaryData),
+    transcript: transcriptData,
+  };
 
   if (!pageData) {
     notFound();

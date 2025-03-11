@@ -1,28 +1,29 @@
 "use client";
 
 import type { FC } from "react";
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 
+import { experimental_useObject as useObject } from "@ai-sdk/react";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import {
+  OakAccordion,
+  OakBox,
   OakFlex,
   OakHeading,
-  OakIcon,
-  OakMaxWidth,
   OakP,
   OakPrimaryButton,
+  OakPrimaryInvertedButton,
   OakRadioButton,
   OakRadioGroup,
 } from "@oaknational/oak-components";
-import { Flex } from "@radix-ui/themes";
-import { SemanticClassificationFormat } from "typescript";
+import Link from "next/link";
+import { z } from "zod";
 
-import { notEmpty } from "@/components/AppComponents/Chat/chat-lessonPlanDisplay";
 import { LessonPlanSectionContent } from "@/components/AppComponents/Chat/drop-down-section/lesson-plan-section-content";
-import { LessonPlanSection } from "@/components/AppComponents/Chat/lesson-plan-section";
 import Layout from "@/components/Layout";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
+import { getPrompt } from "../../../../../../packages/additional-materials/src/fetchAdditionalMaterials";
 import {
   isComprehensionMaterial,
   isHomeworkMaterial,
@@ -32,26 +33,6 @@ import {
 } from "../../../../../../packages/additional-materials/src/schemas";
 import { ComprehensionTask } from "./ComprehensionTask";
 import { Homework } from "./Homework";
-
-export const allSectionsInOrder = [
-  "title",
-  "keyStage",
-  "subject",
-  "topic",
-  "learningOutcome",
-  "learningCycles",
-  "priorKnowledge",
-  "keyLearningPoints",
-  "misconceptions",
-  "keywords",
-  "starterQuiz",
-  "cycle1",
-  "cycle2",
-  "cycle3",
-  "exitQuiz",
-  "scienceAdditionalMaterials",
-  "additionalMaterials",
-] as const;
 
 export function mapLessonPlanSections(pageData: AilaPersistedChat) {
   if (!pageData.lessonPlan) {
@@ -75,7 +56,6 @@ export function mapLessonPlanSections(pageData: AilaPersistedChat) {
     "cycle2",
     "cycle3",
     "exitQuiz",
-    "scienceAdditionalMaterials",
     "additionalMaterials",
   ];
 
@@ -110,10 +90,23 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
   >(null);
   const [action, setAction] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [prompt, setPrompt] = useState<string | null>(null);
 
-  const handleSubmit = async () => {
+  useEffect(() => {
+    if (action) {
+      const prompt = getPrompt(pageData.lessonPlan, action);
+      setPrompt(prompt);
+    }
+  }, [action, pageData.lessonPlan]);
+
+  // const { object, submit } = useObject({
+  //   api: "/api/use-object",
+  //   schema: homeworkMaterialSchema,
+  // });
+
+  const handleSubmit = async (message?: string) => {
     if (!action) {
-      console.log("No action selected");
+      alert("No action selected");
       return;
     }
 
@@ -123,18 +116,15 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
       const res = await fetch("/api/additional-materials", {
         method: "POST",
         body: JSON.stringify({
-          prompt: "Messages during finals week.",
           lessonPlan: pageData.lessonPlan,
           action: action,
+          message: message ?? undefined,
+          previousOutput: generation,
         }),
       });
-
-      console.log(res);
-
       const { data } = await res.json();
-      console.log("data", data);
-      //   const parsedData = schemaMap[action].parse(data);
-      //   console.log("parsedData", parsedData);
+
+      // const data = additionalMaterialUnion.parse(sata);
 
       setGeneration(data);
       setIsLoading(false);
@@ -142,67 +132,110 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
       console.error("error", error);
     }
   };
+  const renderGeneratedMaterial = () => {
+    if (!generation) return null;
+
+    if (action === "additional-homework" && isHomeworkMaterial(generation)) {
+      return <Homework action={action} generation={generation} />;
+    }
+
+    if (
+      action === "additional-comprehension" &&
+      isComprehensionMaterial(generation)
+    ) {
+      return <ComprehensionTask action={action} generation={generation} />;
+    }
+
+    return null;
+  };
 
   console.log("pageData", mapLessonPlanSections(pageData));
 
   return (
     <Layout>
-      <OakFlex $flexDirection="column">
+      <OakBox $mb={"space-between-m"}>
+        <OakPrimaryInvertedButton
+          element="a"
+          href="/additional-material-spike/"
+        >
+          Choose another lesson
+        </OakPrimaryInvertedButton>
+      </OakBox>
+
+      <OakFlex $gap={"space-between-m"} $flexDirection="column">
         <OakHeading tag="h1">
-          {`${pageData.lessonPlan.title} - ${pageData.lessonPlan.subject} - ${pageData.lessonPlan.keyStage}`}
+          {`LESSON: ${pageData.lessonPlan.title} - ${pageData.lessonPlan.subject} - ${pageData.lessonPlan.keyStage}`}
         </OakHeading>
-
-        {mapLessonPlanSections(pageData).map((section) => {
-          return (
-            <>
-              <OakFlex $flexDirection={"column"}>
-                <OakHeading $font={"heading-4"} tag="h2">
-                  {section.key}
-                </OakHeading>
-                <OakFlex $pv={"space-between-m"}>
-                  <LessonPlanSectionContent
-                    sectionKey={section.key}
-                    value={section.data}
-                  />
-                </OakFlex>
+        <OakAccordion id={"lesson-plan"} header="Lesson plan">
+          <OakFlex $flexDirection="column">
+            {mapLessonPlanSections(pageData).map((section) => {
+              return (
+                <>
+                  <OakFlex $flexDirection={"column"}>
+                    <OakHeading $font={"heading-5"} tag="h2">
+                      {section.key}
+                    </OakHeading>
+                    <OakFlex>
+                      <LessonPlanSectionContent
+                        sectionKey={section.key}
+                        value={section.data}
+                      />
+                    </OakFlex>
+                  </OakFlex>
+                </>
+              );
+            })}
+          </OakFlex>
+        </OakAccordion>
+        {prompt && (
+          <>
+            <OakAccordion id={"prompt"} header="Prompt">
+              <OakFlex>
+                <OakP>{prompt.prompt}</OakP>
               </OakFlex>
-            </>
-          );
-        })}
-        <OakFlex $ma="space-between-m">
-          <OakRadioGroup
-            name="radio-group"
-            onChange={(value) => setAction(value.target.value as SchemaMapType)}
-            $flexDirection="column"
-          >
-            <OakRadioButton
-              id="radio-1"
-              value="additional-homework"
-              label="Homework"
-            />
-            <OakRadioButton
-              id="radio-2"
-              value="additional-comprehension"
-              label="Comprehension"
-            />
-          </OakRadioGroup>
-        </OakFlex>
-        <OakPrimaryButton $ma="space-between-m" onClick={handleSubmit}>
-          Submit
-        </OakPrimaryButton>
-        {isLoading && <OakP>Loading...</OakP>}
+            </OakAccordion>
+            <OakAccordion id={"sprompt"} header="System message">
+              <OakFlex>
+                <OakP>{prompt.systemMessage}</OakP>
+              </OakFlex>
+            </OakAccordion>
+          </>
+        )}
 
-        <OakFlex $mt={"space-between-m"}>
-          {!isLoading &&
-            action === "additional-homework" &&
-            isHomeworkMaterial(generation) && (
-              <Homework action={action} generation={generation} />
-            )}
-          {!isLoading &&
-            action === "additional-comprehension" &&
-            isComprehensionMaterial(generation) && (
-              <ComprehensionTask action={action} generation={generation} />
-            )}
+        <OakFlex $flexDirection={"column"} $background={"grey10"}>
+          <OakHeading tag="h2">Select an material</OakHeading>
+          <OakFlex $ma="space-between-m">
+            <OakRadioGroup
+              name="radio-group"
+              onChange={(value) =>
+                setAction(value.target.value as SchemaMapType)
+              }
+              $flexDirection="column"
+            >
+              <OakRadioButton
+                id="radio-1"
+                value="additional-homework"
+                label="Homework"
+              />
+              <OakRadioButton
+                id="radio-2"
+                value="additional-comprehension"
+                label="Comprehension"
+              />
+            </OakRadioGroup>
+          </OakFlex>
+          <OakPrimaryButton
+            $mh="space-between-m"
+            onClick={() => void handleSubmit()}
+          >
+            Submit
+          </OakPrimaryButton>
+
+          {isLoading && <OakP>Loading...</OakP>}
+          <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
+          <OakPrimaryButton onClick={() => void handleSubmit("Make it easier")}>
+            {"Make it easier"}
+          </OakPrimaryButton>
         </OakFlex>
       </OakFlex>
     </Layout>

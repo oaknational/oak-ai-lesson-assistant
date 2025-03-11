@@ -3,13 +3,14 @@ import { generateObject, generateText, type CoreMessage } from "ai";
 import type { ZodSchema } from "zod";
 
 import type { LooseLessonPlan } from "../../aila/src/protocol/schema";
-import { schema } from "../../core/src/prompts/lesson-assistant/parts";
 import {
+  additionalComprehensionPrompt,
+  additionalComprehensionSystemPrompt,
   additionalHomeworkPrompt,
   additionalHomeworkSystemPrompt,
+  additionalSciencePracticalActivityPrompt,
+  additionalSciencePracticalActivitySystemPrompt,
 } from "./prompts/prompt";
-import { comprehensionTaskSchema } from "./schema/comprehensionTask";
-import { homeworkMaterialSchema } from "./schema/homework";
 import { schemaMap, type SchemaMapType } from "./schemas";
 
 function getSchema(action: SchemaMapType): ZodSchema {
@@ -20,20 +21,38 @@ function getSchema(action: SchemaMapType): ZodSchema {
   return schema;
 }
 
-const getPrompt = (lessonPlan: LooseLessonPlan, action: string) => {
+export const getPrompt = (
+  lessonPlan: LooseLessonPlan,
+  action: string,
+  previousOutput?: Object | null,
+  message?: string | null,
+  transcript?: string,
+) => {
   switch (action) {
     case "additional-homework":
       return {
-        prompt: additionalHomeworkPrompt(lessonPlan),
+        prompt: additionalHomeworkPrompt(lessonPlan, previousOutput, message),
         systemMessage: additionalHomeworkSystemPrompt(),
       };
 
     case "additional-comprehension":
       return {
-        prompt: `Create a comprehension task for the lesson: "${lessonPlan.title}" focusing on key learning points: "${lessonPlan.keyLearningPoints}". Ensure the task assesses students' understanding effectively.`,
-        systemMessage:
-          "You are generating a comprehension task. Make it subject-specific, engaging, and appropriately challenging for students.",
-        schema: comprehensionTaskSchema,
+        prompt: additionalComprehensionPrompt(
+          lessonPlan,
+          previousOutput,
+          message,
+        ),
+        systemMessage: additionalComprehensionSystemPrompt(),
+      };
+    case "additional-science-practical-activity":
+      return {
+        prompt: additionalSciencePracticalActivityPrompt(
+          lessonPlan,
+          previousOutput,
+          message,
+          transcript,
+        ),
+        systemMessage: additionalSciencePracticalActivitySystemPrompt(),
       };
 
     default:
@@ -43,50 +62,31 @@ const getPrompt = (lessonPlan: LooseLessonPlan, action: string) => {
 
 export const fetchAdditionalMaterials = async ({
   lessonPlan,
-  userMessages,
+  message,
   action,
+  previousOutput,
+  transcript,
 }: {
   lessonPlan: LooseLessonPlan;
-  userMessages: Array<CoreMessage>;
+  message?: string | null;
   action: SchemaMapType;
+  previousOutput?: Object | null;
+  transcript?: string;
 }) => {
-  const generationProps = getPrompt(lessonPlan, action);
-
-  console.log("acton", action);
+  const generateObjectPrompt = getPrompt(
+    lessonPlan,
+    action,
+    previousOutput,
+    message,
+    transcript,
+  );
 
   const { object } = await generateObject({
-    prompt: generationProps.prompt,
+    prompt: generateObjectPrompt.prompt,
     schema: getSchema(action),
     model: openai("gpt-4-turbo"),
-    system: generationProps.systemMessage,
-    messages: userMessages,
+    system: generateObjectPrompt.systemMessage,
   });
 
-  console.log("TEXT", object);
-
   return object;
-
-  // return {
-  //   type: "patch",
-  //   reasoning: text.reasoning,
-  //   value: {
-  //     type: "string",
-  //     op: "add",
-  //     path: "/additionalMaterials",
-  //     value: text.text,
-  //   },
-  // };
 };
-
-// export const createHomework = async (prompt: string) => {
-//   const { object } = await generateObject({
-//     model: openai("gpt-4-turbo"),
-//     schema: HomeworkTaskSchema,
-//     prompt,
-//     system:
-//       `You are a teacher helping a user (another teacher) create a homework task. You will be given a list of key learning points to base the homework on` +
-//       `Use British English`,
-//   });
-
-//   return object.homework;
-// };

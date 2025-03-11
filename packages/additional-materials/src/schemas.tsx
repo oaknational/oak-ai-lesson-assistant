@@ -1,5 +1,29 @@
 import { z } from "zod";
 
+const sciencePracticalActivity = z.object({
+  sciencePracticalActivity: z.object({
+    practical_aim: z.string(),
+    purpose_of_activity: z.string(),
+    teachers_tip: z.string(),
+    equipment: z.array(z.string()),
+    method: z.array(z.string()),
+    results_table: z.object({
+      independent_variable: z.string(),
+      dependent_variable: z.string(),
+      example_results: z.object({
+        example_independent_result_1: z.string(),
+        example_dependent_result_1: z.string(),
+        example_independent_result_2: z.string(),
+        example_dependent_result_2: z.string(),
+        example_independent_result_3: z.string(),
+        example_dependent_result_3: z.string(),
+      }),
+    }),
+    health_and_safety: z.array(z.string()),
+    risk_assessment: z.string(),
+  }),
+});
+
 export const comprehensionTaskSchema = z.object({
   comprehension: z.object({
     title: z.string().min(3).max(100),
@@ -30,14 +54,20 @@ export const homeworkMaterialSchema = z.object({
 export const schemaMap = {
   "additional-comprehension": comprehensionTaskSchema,
   "additional-homework": homeworkMaterialSchema,
+  "additional-science-practical-activity": sciencePracticalActivity,
 };
 
 export type SchemaMapType = keyof typeof schemaMap;
 export type HomeworkMaterialType = z.infer<typeof homeworkMaterialSchema>;
 export type ComprehensionTaskType = z.infer<typeof comprehensionTaskSchema>;
+export type SciencePracticalActivityType = z.infer<
+  typeof sciencePracticalActivity
+>;
+
 export type AdditionalMaterialType =
   | HomeworkMaterialType
-  | ComprehensionTaskType;
+  | ComprehensionTaskType
+  | SciencePracticalActivityType;
 
 export const isHomeworkMaterial = (
   gen: AdditionalMaterialType | null,
@@ -46,3 +76,8 @@ export const isHomeworkMaterial = (
 export const isComprehensionMaterial = (
   gen: AdditionalMaterialType | null,
 ): gen is ComprehensionTaskType => gen !== null && "comprehension" in gen;
+
+export const isSciencePracticalActivity = (
+  gen: AdditionalMaterialType | null,
+): gen is SciencePracticalActivityType =>
+  gen !== null && "sciencePracticalActivity" in gen;

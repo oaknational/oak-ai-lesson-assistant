@@ -36,7 +36,7 @@ export const LessonPlanSectionContent = ({
         $position="relative"
         $display={["none", "flex"]}
       >
-        {sectionKey === "additionalMaterials" && value === "None" ? (
+        {/* {sectionKey === "additionalMaterials" && value === "None" ? (
           <AddAdditionalMaterialsButton
             sectionTitle={sectionTitle(sectionKey)}
             sectionPath={sectionKey}
@@ -54,7 +54,7 @@ export const LessonPlanSectionContent = ({
           sectionTitle={sectionTitle(sectionKey)}
           sectionPath={sectionKey}
           sectionValue={value}
-        />
+        /> */}
       </OakFlex>
     </OakFlex>
   );
