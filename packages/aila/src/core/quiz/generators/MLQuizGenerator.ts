@@ -80,7 +80,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
             Array(remainingCount).fill(missingQuizQuestion);
           chunk.push(...paddingQuestions);
         } else {
-          const paddingQuestions =
+          const paddingQuestions: QuizQuestion[] =
             Array(remainingCount).fill(missingQuizQuestion);
           chunk.push(...paddingQuestions);
         }
