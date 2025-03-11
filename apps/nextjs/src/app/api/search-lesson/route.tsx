@@ -1,4 +1,4 @@
-const OPEN_AI_AUTH_TOKEN = process.env.OPEN_AI_AUTH_TOKEN;
+const OPENAI_AUTH_TOKEN = process.env.OPENAI_AUTH_TOKEN;
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -13,7 +13,7 @@ export async function GET(req: Request) {
     {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${OPEN_AI_AUTH_TOKEN}`,
+        Authorization: `Bearer ${OPENAI_AUTH_TOKEN}`,
         Accept: "application/json",
       },
     },

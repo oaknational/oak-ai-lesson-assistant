@@ -5,7 +5,7 @@ import { getChatById } from "@/app/actions";
 
 import AdditionalMaterials from "./AdditionalMaterials";
 
-const OPEN_AI_AUTH_TOKEN = process.env.OPEN_AI_AUTH_TOKEN;
+const OPENAI_AUTH_TOKEN = process.env.OPENAI_AUTH_TOKEN;
 
 export default async function ImageTestPage({
   params,
@@ -16,7 +16,7 @@ export default async function ImageTestPage({
 
   const lessonSlug = "joining-using-and";
 
-  if (!OPEN_AI_AUTH_TOKEN) {
+  if (!OPENAI_AUTH_TOKEN) {
     throw new Error("No OpenAI auth token found");
   }
 
@@ -26,7 +26,7 @@ export default async function ImageTestPage({
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${OPEN_AI_AUTH_TOKEN}`,
+          Authorization: `Bearer ${OPENAI_AUTH_TOKEN}`,
           Accept: "application/json",
         },
       },
