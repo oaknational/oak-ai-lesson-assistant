@@ -17,8 +17,15 @@ const plugins = [
 
 export default {
   arrowParens: "always",
-  importOrder: ["^react(.*)", "<THIRD_PARTY_MODULES>", "@/(.*)", "^[./]"],
+  importOrder: [
+    "^react",
+    "^@oakai/(.*)$",
+    "<THIRD_PARTY_MODULES>",
+    "^@/(.*)$",
+    "^[./]",
+  ],
   importOrderSeparation: true,
+  importOrderSortSpecifiers: true,
   jsxSingleQuote: false,
   plugins,
   printWidth: 80,
