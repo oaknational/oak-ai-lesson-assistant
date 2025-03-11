@@ -1,21 +1,22 @@
 {
   "name": "@oakai/exports",
   "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit"
+  },
+  "prettier": "@oakai/prettier-config",
   "eslintConfig": {
     "extends": "@oakai/eslint-config",
     "parserOptions": {
       "project": "./tsconfig.json"
-    },
-    "rules": {}
-  },
-  "scripts": {
-    "lint": "eslint .",
-    "type-check": "tsc --noEmit"
+    }
   },
   "dependencies": {
     "@oakai/logger": "*",
     "typescript": "5.8.2"
-  },
-  "prettier": "@oakai/prettier-config",
-  "type": "module"
+  }
 }
