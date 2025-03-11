@@ -56,3 +56,36 @@ export const cachedExitQuizPatch: PatchDocument = {
     value: cachedQuiz,
   },
 };
+
+export const cachedBadQuiz: Quiz = [
+  {
+    question: "angles?????",
+    answers: ["180"],
+    distractors: ["elephant", "banana"],
+  },
+  {
+    question:
+      "SHAPES ARE WHAT WHEN THEY LOOK KINDA THE SAME BUT DIFFERENT SIZES????????",
+    answers: ["similar", "Similar", "SIMILAR", "similiar"],
+    distractors: ["idk", "maybe"],
+  },
+  {
+    question:
+      "cherries cost £5 per box and boxes have 8 cherries but then theres a sale for 20% off and you buy 3 boxes how many cherries????",
+    answers: ["24"],
+    distractors: ["£12", "sale price"],
+  },
+  {
+    question: "which one has the ? on it lol",
+    answers: [
+      "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/fg4uyx41rfnksbvav2nh.png)",
+    ],
+    distractors: ["this one", "the other one"],
+  },
+  {
+    question:
+      "triangles ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png)",
+    answers: ["theyre the same angles init"],
+    distractors: ["they look pretty", "triangles are my favorite shape"],
+  },
+];

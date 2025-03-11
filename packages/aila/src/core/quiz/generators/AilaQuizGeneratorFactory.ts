@@ -1,5 +1,6 @@
 import type { BaseQuizGenerator } from "./BaseQuizGenerator";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
+import { MLQuizGenerator } from "./MLQuizGenerator";
 
 // Factory class
 
@@ -11,7 +12,7 @@ export class AilaQuizFactory {
       case "rag":
         throw new Error("RAG quiz generator not implemented");
       case "ml":
-        throw new Error("ML quiz generator not implemented");
+        return new MLQuizGenerator();
       case "basedOnRag":
         return new BasedOnRagQuizGenerator();
     }
