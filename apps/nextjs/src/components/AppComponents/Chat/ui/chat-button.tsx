@@ -31,8 +31,8 @@ const button = cva(
   {
     variants: {
       variant: {
-        primary: "border-2 border-black bg-black  text-white",
-        secondary: "border-2 border-black bg-white  text-black",
+        primary: "border-2 border-black bg-black text-white",
+        secondary: "border-2 border-black bg-white text-black",
         "text-link": "border-0 bg-transparent px-0 text-black",
         "icon-only":
           "rounded-full border-0 bg-transparent px-0 text-black focus:outline-none focus:ring-2 focus:ring-offset-2",
@@ -48,7 +48,7 @@ const button = cva(
         sm: "px-8 py-6 text-sm",
         md: "px-10 py-8 text-sm",
         lg: "px-9 py-8 text-md",
-        xl: "text-xl ",
+        xl: "text-xl",
         xxl: "text-2xl",
       },
       disabled: {

@@ -10,10 +10,10 @@
   },
   "prettier": "@oakai/prettier-config",
   "eslintConfig": {
-    "extends": "@oakai/eslint-config",
     "parserOptions": {
       "project": "./tsconfig.json"
-    }
+    },
+    "extends": "@oakai/eslint-config"
   },
   "dependencies": {
     "@oakai/logger": "*",

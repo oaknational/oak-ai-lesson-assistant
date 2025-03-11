@@ -166,7 +166,7 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
               </Flex>
               <Box>
                 <div className="mb-17">
-                  <span className=" font-bold">
+                  <span className="font-bold">
                     {`${totalSectionsComplete} of ${totalSections} sections complete`}
                   </span>
                 </div>

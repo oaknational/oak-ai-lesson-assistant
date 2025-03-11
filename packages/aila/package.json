@@ -18,10 +18,10 @@
   },
   "prettier": "@oakai/prettier-config",
   "eslintConfig": {
-    "extends": "@oakai/eslint-config",
     "parserOptions": {
       "project": "./tsconfig.json"
-    }
+    },
+    "extends": "@oakai/eslint-config"
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.55",

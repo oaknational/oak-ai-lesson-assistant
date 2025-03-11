@@ -6,11 +6,8 @@
   "main": "index.mjs",
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "prettier": "^3.4.1",
+    "prettier": "^3.5.3",
     "prettier-plugin-packagejson": "^2.5.10",
     "prettier-plugin-tailwindcss": "^0.6.9"
-  },
-  "peerDependencies": {
-    "prettier": "^3.1.1"
   }
 }
