@@ -2,7 +2,7 @@ import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModerati
 
 import type { GetStore } from "@/stores/AilaStoresProvider";
 
-import type { ModerationSetter, ModerationGetter } from "../types";
+import type { ModerationGetter, ModerationSetter } from "../types";
 
 export const handleToxicModeration =
   (

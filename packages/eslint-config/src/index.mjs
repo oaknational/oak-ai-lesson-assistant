@@ -16,7 +16,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import { ignores } from "./ignores.mjs";
-import { rules, javascriptRules } from "./rules.mjs";
+import { javascriptRules, rules } from "./rules.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

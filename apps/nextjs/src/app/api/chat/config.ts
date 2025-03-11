@@ -1,9 +1,10 @@
 import { Aila } from "@oakai/aila/src/core/Aila";
 import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
 import {
-  prisma as globalPrisma,
   type PrismaClientWithAccelerate,
+  prisma as globalPrisma,
 } from "@oakai/db";
+
 import { nanoid } from "nanoid";
 
 import { createWebActionsPlugin } from "./webActionsPlugin";

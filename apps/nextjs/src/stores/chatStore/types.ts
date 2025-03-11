@@ -1,5 +1,6 @@
 import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+
 import type { Message as AiMessage } from "ai";
 import type { ChatRequestOptions, CreateMessage } from "ai";
 import type { StoreApi } from "zustand";

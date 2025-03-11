@@ -1,10 +1,10 @@
 import type { ActionsBlock, SectionBlock } from "@slack/web-api";
 import { WebClient } from "@slack/web-api";
 import {
-  uniqueNamesGenerator,
   adjectives,
-  colors,
   animals,
+  colors,
+  uniqueNamesGenerator,
 } from "unique-names-generator";
 
 import { getExternalFacingUrl } from "../functions/slack/getExternalFacingUrl";

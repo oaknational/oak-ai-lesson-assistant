@@ -3,9 +3,9 @@ import type { z } from "zod";
 import type { BaseType } from "../ChoiceModels";
 import { AilaQuizFactory } from "../generators/AilaQuizGeneratorFactory";
 import type {
+  AilaQuizGeneratorService,
   AilaQuizReranker,
   QuizSelector,
-  AilaQuizGeneratorService,
 } from "../interfaces";
 import { AilaQuizRerankerFactoryImpl } from "../rerankers/AilaQuizRerankerFactory";
 import { QuizSelectorFactoryImpl } from "../selectors/QuizSelectorFactory";

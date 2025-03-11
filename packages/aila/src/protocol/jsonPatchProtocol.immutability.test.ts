@@ -1,8 +1,8 @@
 import invariant from "tiny-invariant";
 
 import {
-  applyLessonPlanPatchImmutable,
   type JsonPatchDocument,
+  applyLessonPlanPatchImmutable,
 } from "./jsonPatchProtocol";
 
 describe("applyLessonPlanPatchImmutable", () => {

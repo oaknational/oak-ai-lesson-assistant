@@ -1,5 +1,6 @@
 import { CompletedLessonPlanSchemaWithoutLength } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
+
 import fs from "node:fs";
 import path from "node:path";
 import { zodResponseFormat } from "openai/helpers/zod.mjs";
@@ -14,9 +15,9 @@ import { getSystemPrompt } from "./generate-lesson-plans/getSystemPrompt";
 import { getUserPrompt } from "./generate-lesson-plans/getUserPrompt";
 import { graphqlClient } from "./import-lessons/graphql/client";
 import {
-  query,
   type QueryVariables,
   type QueryWhere,
+  query,
 } from "./import-lessons/graphql/query";
 import { openai } from "./openai-batches/openai";
 import { type RawLesson, RawLessonSchema } from "./zod-schema/zodSchema";
