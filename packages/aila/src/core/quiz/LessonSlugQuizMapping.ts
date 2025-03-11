@@ -108,8 +108,8 @@ export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
 
   async hasStarterQuiz(lessonSlug: string): Promise<boolean> {
     try {
-      await this.getStarterQuiz(lessonSlug);
-      return true;
+      const quizIds = await this.getStarterQuiz(lessonSlug);
+      return quizIds.length > 0;
     } catch {
       return false;
     }
@@ -117,8 +117,8 @@ export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
 
   async hasExitQuiz(lessonSlug: string): Promise<boolean> {
     try {
-      await this.getExitQuiz(lessonSlug);
-      return true;
+      const quizIds = await this.getExitQuiz(lessonSlug);
+      return quizIds.length > 0;
     } catch {
       return false;
     }

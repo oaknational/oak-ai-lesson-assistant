@@ -54,12 +54,11 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         });
       });
 
-      it("should throw error when no quiz found", async () => {
+      it("should return empty array when no quiz found", async () => {
         // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({ hits: { hits: [] } });
-        await expect(dbLookup.getStarterQuiz("non-existent")).rejects.toThrow(
-          "No /starterQuiz found for lesson slug: non-existent",
-        );
+        const result = await dbLookup.getStarterQuiz("non-existent");
+        expect(result).toEqual([]);
       });
 
       it("should throw error when quiz data is invalid", async () => {
@@ -92,12 +91,11 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         });
       });
 
-      it("should throw error when no quiz found", async () => {
+      it("should return empty array when no quiz found", async () => {
         // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({ hits: { hits: [] } });
-        await expect(dbLookup.getExitQuiz("non-existent")).rejects.toThrow(
-          "No /exitQuiz found for lesson slug: non-existent",
-        );
+        const result = await dbLookup.getExitQuiz("non-existent");
+        expect(result).toEqual([]);
       });
 
       it("should throw error when quiz data is invalid", async () => {
@@ -119,7 +117,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         expect(result).toBe(true);
       });
 
-      it("should return false when starter quiz doesn't exist", async () => {
+      it("should return false when starter quiz returns empty array", async () => {
         // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({ hits: { hits: [] } });
         const result = await dbLookup.hasStarterQuiz("non-existent");
@@ -133,7 +131,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         expect(result).toBe(true);
       });
 
-      it("should return false when exit quiz doesn't exist", async () => {
+      it("should return false when exit quiz returns empty array", async () => {
         // @ts-expect-error- Mock the Elasticsearch client search method
         dbLookup.client.search.mockResolvedValueOnce({ hits: { hits: [] } });
         const result = await dbLookup.hasExitQuiz("non-existent");
