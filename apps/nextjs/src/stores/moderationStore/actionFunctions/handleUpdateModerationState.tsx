@@ -1,11 +1,11 @@
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { Moderation } from "@prisma/client";
 
-import type { ModerationStore } from "..";
+import type { ModerationSetter, ModerationGetter } from "../types";
 
 export const handleUpdateModerationState = (
-  set: (state: Pick<ModerationStore, "moderations" | "lastModeration">) => void,
-  get: () => ModerationStore,
+  set: ModerationSetter,
+  get: ModerationGetter,
 ) => {
   return (mods: Moderation[] | undefined) => {
     if (!mods || mods.length === 0) {
@@ -19,7 +19,7 @@ export const handleUpdateModerationState = (
     });
 
     if (toxicMod) {
-      get().updateToxicModeration(lastMod);
+      get().actions.updateToxicModeration(lastMod);
     }
   };
 };

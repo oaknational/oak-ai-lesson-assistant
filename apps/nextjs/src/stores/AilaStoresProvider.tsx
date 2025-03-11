@@ -4,19 +4,20 @@ import invariant from "tiny-invariant";
 import { useStore, type StoreApi, type ExtractState } from "zustand";
 
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
-import { type ChatStore, createChatStore } from "@/stores/chatStore";
+import { createChatStore } from "@/stores/chatStore";
+import type { ChatState } from "@/stores/chatStore/types";
 import {
-  type ModerationStore,
   createModerationStore,
+  type ModerationState,
 } from "@/stores/moderationStore";
 import { trpc } from "@/utils/trpc";
 
-import { type LessonPlanStore, createLessonPlanStore } from "./lessonPlanStore";
+import { createLessonPlanStore, type LessonPlanState } from "./lessonPlanStore";
 
 export type AilaStores = {
-  chat: StoreApi<ChatStore>;
-  moderation: StoreApi<ModerationStore>;
-  lessonPlan: StoreApi<LessonPlanStore>;
+  chat: StoreApi<ChatState>;
+  moderation: StoreApi<ModerationState>;
+  lessonPlan: StoreApi<LessonPlanState>;
 };
 export type GetStore = <T extends keyof AilaStores>(
   storeName: T,
@@ -72,11 +73,28 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
     if (haveInitialized.current) {
       return;
     }
-    void stores.chat.getState().fetchInitialMessages();
-    void stores.lessonPlan.getState().refetch();
-    void stores.moderation.getState().fetchModerations();
+    void stores.chat.getState().actions.fetchInitialMessages();
+    void stores.lessonPlan.getState().actions.refetch();
+    void stores.moderation.getState().actions.fetchModerations();
     haveInitialized.current = true;
   }, [stores.lessonPlan, id, stores.moderation, stores.chat]);
+
+  useEffect(() => {
+    const unsubscribe = stores.chat.subscribe((state, prevState) => {
+      const streamingStatus = state.ailaStreamingStatus;
+      if (streamingStatus !== prevState.ailaStreamingStatus) {
+        stores.chat
+          .getState()
+          .actions.ailaStreamingStatusUpdated(streamingStatus);
+        stores.moderation
+          .getState()
+          .actions.ailaStreamingStatusUpdated(streamingStatus);
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [stores.chat, stores.moderation]);
 
   return (
     <AilaStoresContext.Provider value={stores}>
@@ -85,7 +103,7 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
   );
 };
 
-export const useChatStore = <T,>(selector: (store: ChatStore) => T) => {
+export const useChatStore = <T,>(selector: (store: ChatState) => T) => {
   const context = useContext(AilaStoresContext);
   if (!context) {
     throw new Error("Missing AilaStoresProvider");
@@ -93,8 +111,17 @@ export const useChatStore = <T,>(selector: (store: ChatStore) => T) => {
   return useStore(context.chat, selector);
 };
 
+// Actions are stable so we can bundle them up to be easier to use
+export const useChatActions = () => {
+  const context = useContext(AilaStoresContext);
+  if (!context) {
+    throw new Error("Missing AilaStoresProvider");
+  }
+  return useStore(context.chat, (state) => state.actions);
+};
+
 export const useModerationStore = <T,>(
-  selector: (store: ModerationStore) => T,
+  selector: (store: ModerationState) => T,
 ) => {
   const context = useContext(AilaStoresContext);
   if (!context) {
@@ -103,12 +130,30 @@ export const useModerationStore = <T,>(
   return useStore(context.moderation, selector);
 };
 
+// Actions are stable so we can bundle them up to be easier to use
+export const useModerationActions = () => {
+  const context = useContext(AilaStoresContext);
+  if (!context) {
+    throw new Error("Missing AilaStoresProvider");
+  }
+  return useStore(context.moderation, (state) => state.actions);
+};
+
 export const useLessonPlanStore = <T,>(
-  selector: (store: LessonPlanStore) => T,
+  selector: (store: LessonPlanState) => T,
 ) => {
   const context = useContext(AilaStoresContext);
   if (!context) {
     throw new Error("Missing AilaStoresProvider");
   }
   return useStore(context.lessonPlan, selector);
+};
+
+// Actions are stable so we can bundle them up to be easier to use
+export const useLessonPlanActions = () => {
+  const context = useContext(AilaStoresContext);
+  if (!context) {
+    throw new Error("Missing AilaStoresProvider");
+  }
+  return useStore(context.lessonPlan, (state) => state.actions);
 };

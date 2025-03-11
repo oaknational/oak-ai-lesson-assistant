@@ -21,7 +21,9 @@ describe("Aila", () => {
   describe("constructing", () => {
     it("should initialise Aila instance with persistence", () => {
       const ailaInstance = new Aila({
-        lessonPlan: {},
+        document: {
+          content: {},
+        },
         chat: { id: "123", userId: "user123" },
         options: {
           useAnalytics: false,
@@ -37,7 +39,9 @@ describe("Aila", () => {
 
     it("should initialize Aila instance with analytics", () => {
       const ailaInstance = new Aila({
-        lessonPlan: {},
+        document: {
+          content: {},
+        },
         chat: { id: "123", userId: "user123" },
         options: {
           useAnalytics: true,
@@ -55,10 +59,12 @@ describe("Aila", () => {
   describe("initialise", () => {
     it("should not set the initial title, subject and key stage when passed values for title, key stage and subject", async () => {
       const ailaInstance = new Aila({
-        lessonPlan: {
-          title: "Roman Britain",
-          subject: "history",
-          keyStage: "key-stage-2",
+        document: {
+          content: {
+            title: "Roman Britain",
+            subject: "history",
+            keyStage: "key-stage-2",
+          },
         },
         chat: { id: "123", userId: "user123" },
         options: {
@@ -72,9 +78,9 @@ describe("Aila", () => {
 
       await ailaInstance.initialise();
 
-      expect(ailaInstance.lesson.plan.title).toBe("Roman Britain");
-      expect(ailaInstance.lesson.plan.subject).toBe("history");
-      expect(ailaInstance.lesson.plan.keyStage).toBe("key-stage-2");
+      expect(ailaInstance.document.content.title).toBe("Roman Britain");
+      expect(ailaInstance.document.content.subject).toBe("history");
+      expect(ailaInstance.document.content.keyStage).toBe("key-stage-2");
     });
 
     it("should use the categoriser to determine the lesson plan from user input if the lesson plan is not already set up", async () => {
@@ -88,7 +94,9 @@ describe("Aila", () => {
       };
 
       const ailaInstance = new Aila({
-        lessonPlan: {},
+        document: {
+          content: {},
+        },
         chat: {
           id: "123",
           userId: "user123",
@@ -116,9 +124,9 @@ describe("Aila", () => {
       await ailaInstance.initialise();
 
       expect(mockCategoriser.categorise).toHaveBeenCalledTimes(1);
-      expect(ailaInstance.lesson.plan.title).toBe("Roman Britain");
-      expect(ailaInstance.lesson.plan.subject).toBe("history");
-      expect(ailaInstance.lesson.plan.keyStage).toBe("key-stage-2");
+      expect(ailaInstance.document.content.title).toBe("Roman Britain");
+      expect(ailaInstance.document.content.subject).toBe("history");
+      expect(ailaInstance.document.content.keyStage).toBe("key-stage-2");
     });
 
     it("should not use the categoriser to determine the lesson plan from user input if the lesson plan is already set up", async () => {
@@ -131,10 +139,12 @@ describe("Aila", () => {
         }),
       };
       const ailaInstance = new Aila({
-        lessonPlan: {
-          title: "Roman Britain",
-          subject: "history",
-          keyStage: "key-stage-2",
+        document: {
+          content: {
+            title: "Roman Britain",
+            subject: "history",
+            keyStage: "key-stage-2",
+          },
         },
         chat: {
           id: "123",
@@ -162,15 +172,17 @@ describe("Aila", () => {
 
       await ailaInstance.initialise();
       expect(mockCategoriser.categorise).toHaveBeenCalledTimes(0);
-      expect(ailaInstance.lesson.plan.title).toBe("Roman Britain");
-      expect(ailaInstance.lesson.plan.subject).toBe("history");
-      expect(ailaInstance.lesson.plan.keyStage).toBe("key-stage-2");
+      expect(ailaInstance.document.content.title).toBe("Roman Britain");
+      expect(ailaInstance.document.content.subject).toBe("history");
+      expect(ailaInstance.document.content.keyStage).toBe("key-stage-2");
     });
 
     // Calling initialise method successfully initializes the Aila instance
     it("should successfully initialize the Aila instance when calling the initialise method, and by default not set the lesson plan to initial values", async () => {
       const ailaInstance = new Aila({
-        lessonPlan: {},
+        document: {
+          content: {},
+        },
         chat: { id: "123", userId: "user123" },
         options: {
           useAnalytics: false,
@@ -184,9 +196,9 @@ describe("Aila", () => {
       await ailaInstance.initialise();
 
       expect(ailaInstance).toBeInstanceOf(Aila);
-      expect(ailaInstance.lesson.plan.title).not.toBeDefined();
-      expect(ailaInstance.lesson.plan.subject).not.toBeDefined();
-      expect(ailaInstance.lesson.plan.keyStage).not.toBeDefined();
+      expect(ailaInstance.document.content.title).not.toBeDefined();
+      expect(ailaInstance.document.content.subject).not.toBeDefined();
+      expect(ailaInstance.document.content.keyStage).not.toBeDefined();
     }, 10000);
   });
 
@@ -288,7 +300,7 @@ describe("Aila", () => {
     // Should return a stream when generating a lesson plan with valid input
     it("should set the initial title, subject and key stage when presented with a valid initial user input", async () => {
       const mockChatCategoriser = new MockCategoriser({
-        mockedLessonPlan: {
+        mockedContent: {
           title: "Glaciation",
           topic: "The Landscapes of the UK",
           subject: "geography",
@@ -298,7 +310,9 @@ describe("Aila", () => {
       const mockLLMService = new MockLLMService();
 
       const ailaInstance = new Aila({
-        lessonPlan: {},
+        document: {
+          content: {},
+        },
         chat: { id: "123", userId: "user123" },
         options: {
           usePersistence: false,
@@ -313,9 +327,9 @@ describe("Aila", () => {
         },
       });
 
-      expect(ailaInstance.lesson.plan.title).not.toBeDefined();
-      expect(ailaInstance.lesson.plan.subject).not.toBeDefined();
-      expect(ailaInstance.lesson.plan.keyStage).not.toBeDefined();
+      expect(ailaInstance.document.content.title).not.toBeDefined();
+      expect(ailaInstance.document.content.subject).not.toBeDefined();
+      expect(ailaInstance.document.content.keyStage).not.toBeDefined();
 
       await ailaInstance.initialise();
 
@@ -323,9 +337,9 @@ describe("Aila", () => {
         input: "Glaciation",
       });
 
-      expect(ailaInstance.lesson.plan.title).toBeDefined();
-      expect(ailaInstance.lesson.plan.subject).toBeDefined();
-      expect(ailaInstance.lesson.plan.keyStage).toBeDefined();
+      expect(ailaInstance.document.content.title).toBeDefined();
+      expect(ailaInstance.document.content.subject).toBeDefined();
+      expect(ailaInstance.document.content.keyStage).toBeDefined();
     }, 20000);
   });
 
@@ -365,11 +379,13 @@ describe("Aila", () => {
         JSON.stringify(mockedResponse),
       ]);
       const ailaInstance = new Aila({
-        lessonPlan: {
-          title: "Roman Britain",
-          subject: "history",
-          keyStage: "key-stage-2",
-          topic: "Roman Britain",
+        document: {
+          content: {
+            title: "Roman Britain",
+            subject: "history",
+            keyStage: "key-stage-2",
+            topic: "Roman Britain",
+          },
         },
         chat: {
           id: "123",
@@ -395,22 +411,24 @@ describe("Aila", () => {
           "Change the title to 'This should be ignored by the mocked service'",
       });
 
-      expect(ailaInstance.lesson.plan.title).toBe(newTitle);
+      expect(ailaInstance.document.content.title).toBe(newTitle);
     }, 20000);
   });
 
   describe("categorisation", () => {
     it("should use the provided MockCategoriser", async () => {
-      const mockedLessonPlan = {
+      const mockedContent = {
         title: "Mocked Lesson Plan",
         subject: "Mocked Subject",
         keyStage: "key-stage-3",
       };
 
-      const mockCategoriser = new MockCategoriser({ mockedLessonPlan });
+      const mockCategoriser = new MockCategoriser({ mockedContent });
 
       const ailaInstance = new Aila({
-        lessonPlan: {},
+        document: {
+          content: {},
+        },
         chat: { id: "123", userId: "user123" },
         options: {
           usePersistence: false,
@@ -427,21 +445,21 @@ describe("Aila", () => {
 
       await ailaInstance.initialise();
 
-      expect(ailaInstance.lesson.plan.title).toBe("Mocked Lesson Plan");
-      expect(ailaInstance.lesson.plan.subject).toBe("Mocked Subject");
-      expect(ailaInstance.lesson.plan.keyStage).toBe("key-stage-3");
+      expect(ailaInstance.document.content.title).toBe("Mocked Lesson Plan");
+      expect(ailaInstance.document.content.subject).toBe("Mocked Subject");
+      expect(ailaInstance.document.content.keyStage).toBe("key-stage-3");
     }, 8000);
   });
 
   describe("categorisation and LLM service", () => {
     it("should use both MockCategoriser and MockLLMService", async () => {
-      const mockedLessonPlan = {
+      const mockedContent = {
         title: "Mocked Lesson Plan",
         subject: "Mocked Subject",
         keyStage: "key-stage-3",
       };
 
-      const mockCategoriser = new MockCategoriser({ mockedLessonPlan });
+      const mockCategoriser = new MockCategoriser({ mockedContent });
 
       const mockLLMResponse = [
         '{"type":"patch","reasoning":"Update title","value":{"op":"replace","path":"/title","value":"Updated Mocked Lesson Plan"}}␞\n',
@@ -451,7 +469,9 @@ describe("Aila", () => {
       const mockLLMService = new MockLLMService(mockLLMResponse);
 
       const ailaInstance = new Aila({
-        lessonPlan: {},
+        document: {
+          content: {},
+        },
         chat: { id: "123", userId: "user123" },
         options: {
           usePersistence: false,
@@ -469,16 +489,20 @@ describe("Aila", () => {
       await ailaInstance.initialise();
 
       // Check if MockCategoriser was used
-      expect(ailaInstance.lesson.plan.title).toBe("Mocked Lesson Plan");
-      expect(ailaInstance.lesson.plan.subject).toBe("Mocked Subject");
-      expect(ailaInstance.lesson.plan.keyStage).toBe("key-stage-3");
+      expect(ailaInstance.document.content.title).toBe("Mocked Lesson Plan");
+      expect(ailaInstance.document.content.subject).toBe("Mocked Subject");
+      expect(ailaInstance.document.content.keyStage).toBe("key-stage-3");
 
       // Use MockLLMService to generate a response
       await ailaInstance.generateSync({ input: "Test input" });
 
       // Check if MockLLMService updates were applied
-      expect(ailaInstance.lesson.plan.title).toBe("Updated Mocked Lesson Plan");
-      expect(ailaInstance.lesson.plan.subject).toBe("Updated Mocked Subject");
+      expect(ailaInstance.document.content.title).toBe(
+        "Updated Mocked Lesson Plan",
+      );
+      expect(ailaInstance.document.content.subject).toBe(
+        "Updated Mocked Subject",
+      );
     }, 8000);
   });
 });

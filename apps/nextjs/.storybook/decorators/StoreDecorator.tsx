@@ -1,8 +1,6 @@
 import React, { useMemo } from "react";
 
 import type { Decorator } from "@storybook/react";
-import invariant from "tiny-invariant";
-import { type ExtractState } from "zustand";
 
 import type { LessonPlanTrackingContextProps } from "@/lib/analytics/lessonPlanTrackingContext";
 import type { AilaStores } from "@/stores/AilaStoresProvider";
@@ -10,22 +8,22 @@ import {
   AilaStoresContext,
   buildStoreGetter,
 } from "@/stores/AilaStoresProvider";
-import { createChatStore, type ChatStore } from "@/stores/chatStore";
+import { createChatStore, type ChatState } from "@/stores/chatStore";
 import {
   createLessonPlanStore,
-  type LessonPlanStore,
+  type LessonPlanState,
 } from "@/stores/lessonPlanStore";
 import {
   createModerationStore,
-  type ModerationStore,
+  type ModerationState,
 } from "@/stores/moderationStore";
 import { type TrpcUtils } from "@/utils/trpc";
 
 declare module "@storybook/csf" {
   interface Parameters {
-    moderationStoreState?: Partial<ModerationStore>;
-    chatStoreState?: Partial<ChatStore>;
-    lessonPlanStoreState?: Partial<LessonPlanStore>;
+    moderationStoreState?: Partial<ModerationState>;
+    chatStoreState?: Partial<ChatState>;
+    lessonPlanStoreState?: Partial<LessonPlanState>;
   }
 }
 export const StoreDecorator: Decorator = (Story, { parameters }) => {

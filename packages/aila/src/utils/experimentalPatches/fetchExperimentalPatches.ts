@@ -129,7 +129,7 @@ export async function fetchExperimentalPatches({
         }),
       );
     } else {
-      // TODO: GCLOMAX - Once this is deprecated we will need logic to not overwrite the origonal.
+      // TODO: GCLOMAX - Once this is deprecated we will need logic to not overwrite the original.
       let mathsExitQuiz: Quiz = await fullQuizService.createBestQuiz(
         "/exitQuiz",
         lessonPlan,

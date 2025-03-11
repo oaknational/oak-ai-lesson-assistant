@@ -49,7 +49,7 @@ const ActionButtonsGroup = ({
 function ReloadDistractorButton(props: Readonly<ReloadDistractorButtonProps>) {
   return (
     <button
-      className=" flex items-center"
+      className="flex items-center"
       disabled={props.userIsEditing || props.isLoading || props.disabled}
       onClick={() => {
         props.onClick();

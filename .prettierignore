@@ -1,0 +1,50 @@
+# Auto-generated files
+**/avo/Avo.ts
+**/CHANGE_LOG.md
+**/*.generated.*
+**/*.gen.*
+**/generated/
+
+# Build output
+**/dist/
+**/.next/
+**/build/
+**/.turbo/
+**/out/
+
+# Package management
+**/node_modules/
+**/.pnpm-store/
+**/pnpm-lock.yaml
+**/yarn.lock
+**/package-lock.json
+
+# Cache and logs
+**/.cache/
+**/.eslintcache
+**/.stylelintcache
+**/tsconfig.tsbuildinfo
+**/*.log
+
+# Coverage reports
+**/coverage/
+**/.nyc_output/
+
+# Environment and config
+**/.env*
+
+# Database
+**/*.sql
+**/*.dump
+**/*.backup
+**/*.bak
+
+**/*/mockServiceWorker.js
+
+# Playwright reports
+**/playwright-report/
+**/test-results/
+**/tests-e2e/recordings/
+
+# HAR files
+**/*.har
