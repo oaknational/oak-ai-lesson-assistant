@@ -8,6 +8,7 @@ import storybookPlugin from 'eslint-plugin-storybook';
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import reactPlugin from "eslint-plugin-react";
 import turboPlugin from 'eslint-plugin-turbo';
+import packageJsonRecommended from 'eslint-plugin-package-json/configs/recommended';
 import prettierConfig from 'eslint-config-prettier';
 import globals from 'globals';
 import { ignores } from "./ignores.mjs";
@@ -92,6 +93,7 @@ const config = [
   ignores,
   eslint.configs.recommended,
   prettierConfig,
+  packageJsonRecommended,
   {
     files: ['**/*.cjs'],
     languageOptions: {
@@ -134,7 +136,6 @@ const config = [
     },
   },
   ...packageConfigs,
-  // Special case for prisma zod-schemas
   {
     files: ["**/packages/db/prisma/zod-schemas/*.ts"],
     languageOptions: {
