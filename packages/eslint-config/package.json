@@ -25,6 +25,7 @@
     "eslint": "^9.16.0",
     "eslint-config-next": "15.0.3",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-config-turbo": "^2.4.4",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.9.0",
     "eslint-plugin-json-files": "^4.4.2",
