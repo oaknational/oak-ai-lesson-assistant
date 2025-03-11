@@ -1,5 +1,6 @@
-import { generateMock } from "@anatine/zod-mock";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
+
+import { generateMock } from "@anatine/zod-mock";
 
 import { CompletedLessonPlanSchema } from "../../../aila/src/protocol/schema";
 import type { RagLogger } from "../../types";

@@ -2,6 +2,7 @@ import type {
   LessonPlanKey,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
+
 import type { StoreApi } from "zustand";
 
 import type { AiMessage } from "../chatStore/types";

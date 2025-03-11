@@ -1,6 +1,6 @@
-import { useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-import { useUser, useAuth } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 
 import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
 

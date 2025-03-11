@@ -4,8 +4,8 @@ import { aiLogger } from "@oakai/logger";
 
 import {
   DEFAULT_MODEL,
-  DEFAULT_TEMPERATURE,
   DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
+  DEFAULT_TEMPERATURE,
 } from "../constants";
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
@@ -34,9 +34,9 @@ import { OpenAIService } from "./llm/OpenAIService";
 import type { AilaPlugin } from "./plugins/types";
 import type {
   AilaGenerateDocumentOptions,
+  AilaInitializationOptions,
   AilaOptions,
   AilaOptionsWithDefaultFallbackValues,
-  AilaInitializationOptions,
 } from "./types";
 
 const log = aiLogger("aila");

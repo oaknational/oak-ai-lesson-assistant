@@ -1,8 +1,9 @@
-import type { SignedInAuthObject } from "@clerk/backend/internal";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { exportAdditionalMaterials } from "@oakai/exports";
 import type { LessonInputData } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
+
+import type { SignedInAuthObject } from "@clerk/backend/internal";
 import * as Sentry from "@sentry/nextjs";
 
 import type { OutputSchema } from "../router/exports";

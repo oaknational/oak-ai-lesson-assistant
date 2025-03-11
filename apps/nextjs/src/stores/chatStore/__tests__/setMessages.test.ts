@@ -1,7 +1,7 @@
 import type { GetStore } from "@/stores/AilaStoresProvider";
 import type { TrpcUtils } from "@/utils/trpc";
 
-import { createChatStore, type ChatState } from "..";
+import { type ChatState, createChatStore } from "..";
 import type { AiMessage } from "../types";
 
 const fixedDate = new Date("2023-01-01T12:00:00.000Z");

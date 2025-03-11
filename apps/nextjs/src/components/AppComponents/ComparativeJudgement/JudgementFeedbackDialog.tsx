@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-import { useUser } from "@clerk/nextjs";
 import { aiLogger } from "@oakai/logger";
+
+import { useUser } from "@clerk/nextjs";
 import * as Dialog from "@radix-ui/react-dialog";
 
 import { trpc } from "@/utils/trpc";

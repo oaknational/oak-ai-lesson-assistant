@@ -1,6 +1,6 @@
 import {
-  allSectionsInOrder,
   type LessonPlanKey,
+  allSectionsInOrder,
 } from "@oakai/aila/src/protocol/schema";
 
 export { allSectionsInOrder };

@@ -2,11 +2,11 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
-  useEffect,
-  useCallback,
 } from "react";
 
 const LOCAL_STORAGE_KEY = "sidebar";

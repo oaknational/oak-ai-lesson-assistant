@@ -1,5 +1,6 @@
-import { clerkClient } from "@clerk/nextjs/server";
 import { aiLogger } from "@oakai/logger";
+
+import { clerkClient } from "@clerk/nextjs/server";
 
 import { inngest } from "../../inngest";
 import { populateDemoStatusesSchema } from "./populateDemoStatuses.schema";

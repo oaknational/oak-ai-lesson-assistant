@@ -1,12 +1,13 @@
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+
 import * as Sentry from "@sentry/nextjs";
 
 import {
-  isPatch,
-  isModeration,
   isAccountLocked,
+  isModeration,
+  isPatch,
 } from "@/components/AppComponents/Chat/chat-message/protocol";
 import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 

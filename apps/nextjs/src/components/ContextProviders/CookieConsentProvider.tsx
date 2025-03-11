@@ -4,10 +4,10 @@ import type { PropsWithChildren } from "react";
 import { useCallback, useEffect } from "react";
 
 import {
-  OakCookieConsentProvider,
-  OakCookieConsent,
-  useCookieConsent as useCookieConsentUI,
   type Consent,
+  OakCookieConsent,
+  OakCookieConsentProvider,
+  useCookieConsent as useCookieConsentUI,
 } from "@oaknational/oak-components";
 import {
   OakConsentProvider,
