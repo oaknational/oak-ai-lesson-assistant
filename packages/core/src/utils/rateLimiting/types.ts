@@ -1,5 +1,5 @@
 type Unit = "ms" | "s" | "m" | "h" | "d";
-export type Duration = `${number} ${Unit}` | `${number}${Unit}`;
+export type RateLimitDuration = `${number} ${Unit}` | `${number}${Unit}`;
 
 // NOTE: Duplicates RateLimitInfo in packages/api/src/types.ts
 export type RateLimitInfo = {

@@ -4,15 +4,15 @@ import { waitUntil } from "@vercel/functions";
 import { kv } from "@vercel/kv";
 
 import { RateLimitExceededError } from "./errors";
-import type { Duration, RateLimiter } from "./types";
+import type { RateLimitDuration, RateLimiter } from "./types";
 
 const log = aiLogger("rate-limiting");
 
-type SlidingWindowRateLimiterArgs = {
+export interface SlidingWindowRateLimiterArgs {
   prefix: string;
   limit: number;
-  window: Duration;
-};
+  window: RateLimitDuration;
+}
 
 /**
  * Function to create a rate limiter with a given rate limit

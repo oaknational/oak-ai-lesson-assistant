@@ -6,7 +6,7 @@ import { waitUntil } from "@vercel/functions";
 import { kv } from "@vercel/kv";
 
 import { RateLimitExceededError } from "./errors";
-import type { Duration, RateLimiter } from "./types";
+import type { RateLimitDuration, RateLimiter } from "./types";
 
 const log = aiLogger("rate-limiting");
 
@@ -16,7 +16,7 @@ type UserBasedRateLimiterArgs = {
     isOakUser: boolean,
     userPrivateMetadata: User["privateMetadata"],
   ) => number;
-  window: Duration;
+  window: RateLimitDuration;
 };
 
 /**
