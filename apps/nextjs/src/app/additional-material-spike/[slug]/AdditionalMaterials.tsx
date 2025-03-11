@@ -2,9 +2,7 @@
 
 import type { FC } from "react";
 import React, { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
 
-import { experimental_useObject as useObject } from "@ai-sdk/react";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import {
   OakAccordion,
@@ -17,12 +15,9 @@ import {
   OakRadioButton,
   OakRadioGroup,
 } from "@oaknational/oak-components";
-import Link from "next/link";
-import { z } from "zod";
 
 import { LessonPlanSectionContent } from "@/components/AppComponents/Chat/drop-down-section/lesson-plan-section-content";
 import Layout from "@/components/Layout";
-import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import { getPrompt } from "../../../../../../packages/additional-materials/src/fetchAdditionalMaterials";
 import {
