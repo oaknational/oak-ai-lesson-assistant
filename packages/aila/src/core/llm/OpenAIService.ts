@@ -1,7 +1,8 @@
-import type { OpenAIProvider } from "@ai-sdk/openai";
 import type { HeliconeChatMeta } from "@oakai/core/src/llm/helicone";
 import { createVercelOpenAIClient } from "@oakai/core/src/llm/openai";
 import { aiLogger } from "@oakai/logger";
+
+import type { OpenAIProvider } from "@ai-sdk/openai";
 import { streamObject, streamText } from "ai";
 import type { ZodSchema } from "zod";
 

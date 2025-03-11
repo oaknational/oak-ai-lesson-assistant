@@ -6,9 +6,9 @@ import React from "react";
 
 import { composeStories } from "@storybook/react";
 import {
+  fireEvent,
   render,
   screen,
-  fireEvent,
   waitFor,
   within,
 } from "@testing-library/react";

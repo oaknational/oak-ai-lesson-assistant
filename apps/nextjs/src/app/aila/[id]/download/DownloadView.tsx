@@ -1,6 +1,7 @@
 "use client";
 
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+
 import { Box, Flex, Grid } from "@radix-ui/themes";
 
 import Layout from "@/components/AppComponents/Layout";
@@ -166,7 +167,7 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
               </Flex>
               <Box>
                 <div className="mb-17">
-                  <span className=" font-bold">
+                  <span className="font-bold">
                     {`${totalSectionsComplete} of ${totalSections} sections complete`}
                   </span>
                 </div>

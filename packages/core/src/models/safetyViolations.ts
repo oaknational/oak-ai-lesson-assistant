@@ -1,12 +1,13 @@
-import { clerkClient } from "@clerk/nextjs/server";
 import type {
+  PrismaClientWithAccelerate,
   SafetyViolationAction,
   SafetyViolationRecordType,
   SafetyViolationSource,
-  PrismaClientWithAccelerate,
 } from "@oakai/db";
 import type { StructuredLogger } from "@oakai/logger";
 import { structuredLogger } from "@oakai/logger";
+
+import { clerkClient } from "@clerk/nextjs/server";
 import type { Logger as InngestLogger } from "inngest/middleware/logger";
 
 import { posthogAiBetaServerClient } from "../analytics/posthogAiBetaServerClient";

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { structuredLogger, aiLogger } from "@oakai/logger";
+import { aiLogger, structuredLogger } from "@oakai/logger";
+
 import { EventSchemas, Inngest } from "inngest";
 import getConfig from "next/config";
 

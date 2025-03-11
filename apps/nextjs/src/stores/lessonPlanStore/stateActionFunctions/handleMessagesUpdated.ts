@@ -1,10 +1,11 @@
 import {
+  type PatchDocument,
   applyLessonPlanPatchImmutable,
   extractPatches,
-  type PatchDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { LessonPlanKeySchema } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
+
 import { createHash } from "crypto";
 
 import type { AiMessage } from "@/stores/chatStore/types";
