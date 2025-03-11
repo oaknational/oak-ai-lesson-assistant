@@ -1,19 +1,12 @@
-import { task } from "@oakai/core/src/prompts/lesson-assistant/parts";
 import {
   OakFlex,
   OakHeading,
-  OakIcon,
   OakLI,
   OakOL,
   OakP,
 } from "@oaknational/oak-components";
 
-import {
-  homeworkMaterialSchema,
-  type HomeworkMaterial,
-  type SchemaMapType,
-  type ComprehensionTaskType,
-} from "../../../../../../packages/additional-materials/src/schemas";
+import { type ComprehensionTaskType } from "../../../../../../packages/additional-materials/src/schemas";
 
 export const ComprehensionTask = ({
   action,
@@ -25,8 +18,6 @@ export const ComprehensionTask = ({
   if (!generation || !action) {
     return;
   }
-  console.log("generation", generation);
-  //   const parsedGeneration = homeworkMaterialSchema.parse(generation);
 
   return (
     <OakFlex $gap={"space-between-s"} $flexDirection="column">

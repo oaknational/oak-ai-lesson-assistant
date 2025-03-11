@@ -3,7 +3,10 @@
 import type { FC } from "react";
 import React, { useEffect, useState } from "react";
 
-import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+import type {
+  AilaPersistedChat,
+  LessonPlanKey,
+} from "@oakai/aila/src/protocol/schema";
 import {
   OakAccordion,
   OakBox,
@@ -77,6 +80,7 @@ export type Cycle = {
 interface AdditionalMaterialsProps {
   pageData: {
     lessonPlan: AilaPersistedChat["lessonPlan"];
+    transcript?: string | null;
   };
 }
 
@@ -86,19 +90,22 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
   >(null);
   const [action, setAction] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [prompt, setPrompt] = useState<string | null>(null);
+  const [prompt, setPrompt] = useState<{
+    prompt: string;
+    systemMessage: string;
+  } | null>(null);
 
   useEffect(() => {
     if (action) {
       const prompt = getPrompt(pageData.lessonPlan, action);
-      setPrompt(prompt);
+      setPrompt(
+        prompt as {
+          prompt: string;
+          systemMessage: string;
+        },
+      );
     }
   }, [action, pageData.lessonPlan]);
-
-  // const { object, submit } = useObject({
-  //   api: "/api/use-object",
-  //   schema: homeworkMaterialSchema,
-  // });
 
   const handleSubmit = async (message?: string) => {
     if (!action) {
@@ -119,8 +126,6 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
         }),
       });
       const { data } = await res.json();
-
-      // const data = additionalMaterialUnion.parse(sata);
 
       setGeneration(data);
       setIsLoading(false);
@@ -145,8 +150,6 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
     return null;
   };
 
-  console.log("pageData", mapLessonPlanSections(pageData));
-
   return (
     <Layout>
       <OakBox $mb={"space-between-m"}>
@@ -164,7 +167,9 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
         </OakHeading>
         <OakAccordion id={"lesson-plan"} header="Lesson plan">
           <OakFlex $flexDirection="column">
-            {mapLessonPlanSections(pageData).map((section) => {
+            {mapLessonPlanSections(
+              pageData as unknown as AilaPersistedChat,
+            ).map((section) => {
               return (
                 <>
                   <OakFlex $flexDirection={"column"}>
@@ -173,8 +178,8 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
                     </OakHeading>
                     <OakFlex>
                       <LessonPlanSectionContent
-                        sectionKey={section.key}
-                        value={section.data}
+                        sectionKey={section.key as LessonPlanKey}
+                        value={section.data as string}
                       />
                     </OakFlex>
                   </OakFlex>

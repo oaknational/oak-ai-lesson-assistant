@@ -38,7 +38,9 @@ export const lessonSchema = z.object({
   downloadsAvailable: z.boolean(),
 });
 
-export function mapLessonToSchema(lessonData: Lesson): LooseLessonPlan {
+export function mapLessonToSchema(
+  lessonData: Lesson,
+): Partial<LooseLessonPlan> {
   return {
     title: lessonData.lessonTitle,
     keyStage: lessonData.keyStageSlug,
@@ -66,8 +68,11 @@ export function mapLessonToSchema(lessonData: Lesson): LooseLessonPlan {
     }),
     basedOn: undefined,
     starterQuiz: [],
+    // @ts-ignore
     cycle1: {},
+    // @ts-ignore
     cycle2: {},
+    // @ts-ignore
     cycle3: {},
     exitQuiz: [],
     additionalMaterials: "",

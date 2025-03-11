@@ -1,28 +1,17 @@
-import {
-  OakFlex,
-  OakHeading,
-  OakIcon,
-  OakP,
-} from "@oaknational/oak-components";
+import { OakFlex, OakHeading, OakP } from "@oaknational/oak-components";
 
-import {
-  homeworkMaterialSchema,
-  type HomeworkMaterial,
-  type SchemaMapType,
-} from "../../../../../../packages/additional-materials/src/schemas";
+import type { HomeworkMaterialType } from "../../../../../../packages/additional-materials/src/schemas";
 
 export const Homework = ({
   action,
   generation,
 }: {
   action: string;
-  generation: HomeworkMaterial;
+  generation: HomeworkMaterialType;
 }) => {
   if (!generation || !action) {
     return;
   }
-  console.log("generation", generation);
-  //   const parsedGeneration = homeworkMaterialSchema.parse(generation);
 
   return (
     <OakFlex $gap={"space-between-s"} $flexDirection="column">

@@ -15,16 +15,14 @@ const LessonFinder = ({ lessons }: { lessons: any }) => {
   const [owaLessons, setOwaLessons] = useState([]);
   const lessonTitles = lessons.map((lesson: any) => ({
     sessionId: lesson.id,
-    lessonTitle: lesson?.output?.lessonPlan?.title || "",
-    keyStage: lesson?.output?.lessonPlan?.keyStage || "",
-    subject: lesson?.output?.lessonPlan?.subject || "",
+    lessonTitle: lesson?.output?.lessonPlan?.title ?? "",
+    keyStage: lesson?.output?.lessonPlan?.keyStage ?? "",
+    subject: lesson?.output?.lessonPlan?.subject ?? "",
     hasThreeCycles:
       !!lesson?.output?.lessonPlan?.cycle1 &&
       !!lesson?.output?.lessonPlan?.cycle2 &&
       !!lesson?.output?.lessonPlan?.cycle3,
   }));
-
-  console.log("**********", lessons[lessons.length - 1]);
 
   const handleSubmit = async () => {
     try {

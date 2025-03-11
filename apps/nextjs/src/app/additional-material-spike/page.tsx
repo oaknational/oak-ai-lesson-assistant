@@ -2,7 +2,6 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@oakai/db";
 import { redirect } from "next/navigation";
 
-import Layout from "../layout";
 import LessonFinder from "./LessonFinder";
 
 export default async function ImageSpikePage() {
