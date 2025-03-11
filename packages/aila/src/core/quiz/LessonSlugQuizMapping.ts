@@ -40,6 +40,7 @@ export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
     });
   }
 
+  // Returns a list of quiz IDs for a given lesson slug and quiz type
   private async searchQuizByLessonSlug(
     lessonSlug: string,
     quizType: QuizPath,
@@ -56,7 +57,8 @@ export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
 
       if (!response.hits.hits[0]?._source) {
         log.error(`No ${quizType} found for lesson slug: ${lessonSlug}. Hit: `);
-        throw new Error(`No ${quizType} found for lesson slug: ${lessonSlug}`);
+        // throw new Error(`No ${quizType} found for lesson slug: ${lessonSlug}`);
+        return [];
       }
 
       const source = response.hits.hits[0]._source;
