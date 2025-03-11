@@ -15,7 +15,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import { ignores } from "./ignores.mjs";
-import { rules } from "./rules.mjs";
+import { rules, javascriptRules } from "./rules.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -115,6 +115,9 @@ const config = [
         console: "readonly",
       },
     },
+    rules: {
+      ...javascriptRules,
+    },
   },
   {
     files: ["**/*.{js,mjs}"],
@@ -139,6 +142,7 @@ const config = [
       "@typescript-eslint/no-require-imports": "off",
       "import/no-commonjs": "off",
       "@typescript-eslint/ban-ts-comment": "off",
+      ...javascriptRules,
     },
   },
   ...packageConfigs,
