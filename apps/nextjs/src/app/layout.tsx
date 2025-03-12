@@ -123,9 +123,9 @@ export default async function RootLayout({
                         avoOptions={{
                           webDebugger: false,
                           webDebuggerOptions: {
-                            position: WebDebuggerPosition.BottomLeft({
+                            position: WebDebuggerPosition.BottomRight({
                               bottom: 0,
-                              left: 0,
+                              right: 0,
                             }),
                           },
                         }}
