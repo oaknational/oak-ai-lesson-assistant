@@ -1,3 +1,10 @@
+# [1.29.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.28.0...v1.29.0) (2025-03-12)
+
+
+### Features
+
+* add user metadata-based rate limiting ([#603](https://github.com/oaknational/oak-ai-lesson-assistant/issues/603)) ([c179ff6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c179ff6eb71003bc996d879c1ec3492959a11532))
+
 # [1.28.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.27.0...v1.28.0) (2025-03-12)
 
 
