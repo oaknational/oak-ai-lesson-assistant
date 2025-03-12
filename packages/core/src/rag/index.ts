@@ -1,5 +1,3 @@
-import { PrismaVectorStore } from "@langchain/community/vectorstores/prisma";
-import { OpenAIEmbeddings } from "@langchain/openai";
 import type {
   KeyStage,
   LessonPlanPart,
@@ -7,6 +5,9 @@ import type {
   Subject,
 } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
+
+import { PrismaVectorStore } from "@langchain/community/vectorstores/prisma";
+import { OpenAIEmbeddings } from "@langchain/openai";
 import type { LessonPlan, LessonSummary, Snippet } from "@prisma/client";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";

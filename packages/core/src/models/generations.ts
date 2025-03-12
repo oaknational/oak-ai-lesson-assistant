@@ -7,6 +7,7 @@ import type {
 import { GenerationStatus } from "@oakai/db";
 import type { StructuredLogger } from "@oakai/logger";
 import { structuredLogger } from "@oakai/logger";
+
 import type { Logger as InngestLogger } from "inngest/middleware/logger";
 import { omit } from "remeda";
 import { Md5 } from "ts-md5";

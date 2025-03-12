@@ -2,6 +2,7 @@ import type {
   LessonPlanKey,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
+
 import type { StoreApi } from "zustand";
 
 import type { AiMessage } from "../chatStore/types";
@@ -20,15 +21,17 @@ export type LessonPlanState = {
   isShared: boolean;
   scrollToSection: LessonPlanKey | null;
 
-  // setters
-  setScrollToSection: (sectionKey: LessonPlanKey | null) => void;
+  actions: {
+    // setters
+    setScrollToSection: (sectionKey: LessonPlanKey | null) => void;
 
-  // actions
-  messageStarted: () => void;
-  messagesUpdated: (messages: AiMessage[]) => void;
-  messageFinished: () => void;
-  refetch: () => Promise<void>;
-  resetStore: () => void;
+    // actions
+    messageStarted: () => void;
+    messagesUpdated: (messages: AiMessage[]) => void;
+    messageFinished: () => void;
+    refetch: () => Promise<void>;
+    resetStore: () => void;
+  };
 };
 
 export type LessonPlanSetter = StoreApi<LessonPlanState>["setState"];

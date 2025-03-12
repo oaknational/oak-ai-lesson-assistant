@@ -1,4 +1,4 @@
-import type { ChatSetter, ChatGetter } from "../types";
+import type { ChatGetter, ChatSetter } from "../types";
 
 export const handleStop = (set: ChatSetter, get: ChatGetter) => () => {
   if (get().queuedUserAction) {

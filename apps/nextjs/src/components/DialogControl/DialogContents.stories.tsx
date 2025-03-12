@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { SurveyQuestionType, SurveyType } from "posthog-js";
 import type { PostHog } from "posthog-js";
 

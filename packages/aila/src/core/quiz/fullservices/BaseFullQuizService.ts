@@ -1,4 +1,5 @@
 import { aiLogger } from "@oakai/logger";
+
 import type { z } from "zod";
 
 import type {
@@ -11,8 +12,8 @@ import type {
   AilaQuizGeneratorService,
   AilaQuizReranker,
   FullQuizService,
-  quizPatchType,
   QuizSelector,
+  quizPatchType,
 } from "../interfaces";
 
 const log = aiLogger("aila:quiz");

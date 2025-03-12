@@ -1,18 +1,11 @@
 {
   "name": "@oakai/core",
   "version": "1.0.0",
-  "description": "",
-  "keywords": [],
-  "license": "ISC",
+  "description": "Core functionality for the project",
+  "license": "MIT",
   "author": "",
+  "type": "module",
   "main": "./index.ts",
-  "eslintConfig": {
-    "extends": "@oakai/eslint-config",
-    "parserOptions": {
-      "project": "./tsconfig.json"
-    },
-    "rules": {}
-  },
   "scripts": {
     "admin": "open http://localhost:8288",
     "check": "tsc --noEmit",
@@ -23,10 +16,11 @@
     "doppler:run:prd": "doppler run -c prd --silent",
     "doppler:run:stg": "doppler run -c stg --silent",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "process:answersAndDistractors": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/batchAnswersAndDistractorsForJudgement.ts",
     "process:createSnippetsForNewLessons": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/import-new-lessons/createSnippetsForNewLessons.ts",
-    "process:importNewLessons": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/import-new-lessons/importNewLessons.ts",
     "process:getTranscriptsForNewLessons": "ts-node --compilerOptions \"{\\\"module\\\": \\\"CommonJS\\\", \\\"allowJs\\\": true}\" ./src/scripts/import-new-lessons/getTranscriptsForNewLessons.ts",
+    "process:importNewLessons": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/import-new-lessons/importNewLessons.ts",
     "process:lessons": "pnpm doppler:run:dev -- ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/processLessons.ts",
     "process:lessons:dev": "pnpm doppler:run:dev -- pnpm process:lessons",
     "prompts": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/setupPrompts.ts",
@@ -38,6 +32,12 @@
     "type-check": "tsc --noEmit"
   },
   "prettier": "@oakai/prettier-config",
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": "@oakai/eslint-config"
+  },
   "dependencies": {
     "@google-cloud/storage": "^7.7.0",
     "@googleapis/docs": "^3.0.0",
@@ -71,6 +71,5 @@
   "devDependencies": {
     "@oakai/prettier-config": "*",
     "inngest-cli": "^0.29.0"
-  },
-  "type": "module"
+  }
 }

@@ -3,6 +3,7 @@ import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetecti
 import { inngest } from "@oakai/core/src/inngest";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
+
 import type { Moderation } from "@prisma/client";
 
 import { createWebActionsPlugin } from "./webActionsPlugin";
@@ -118,7 +119,7 @@ describe("webActionsPlugin", () => {
 });
 
 describe("onStreamError", () => {
-  it("should record a safety violation when a helicone error is encountered", async () => {
+  it("should record a safety violation when a threat error is encountered", async () => {
     const recordViolation = jest.fn();
     const safetyViolations = jest.fn().mockImplementation(() => ({
       recordViolation,
@@ -144,7 +145,7 @@ describe("onStreamError", () => {
     expect(recordViolation).toHaveBeenCalledWith(
       "user_abc",
       "CHAT_MESSAGE",
-      "HELICONE",
+      "THREAT",
       "CHAT_SESSION",
       "chat_abc",
     );

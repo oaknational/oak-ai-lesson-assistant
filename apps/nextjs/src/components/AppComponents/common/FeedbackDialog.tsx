@@ -29,7 +29,7 @@ export const dialogOverlay = cva([
   "flex items-center justify-center",
   "cursor-pointer",
   "bg-white bg-opacity-80 duration-300 hover:bg-opacity-50",
-  "fixed inset-0 z-40 ",
+  "fixed inset-0 z-40",
 ]);
 
 const FeedbackDialog = ({

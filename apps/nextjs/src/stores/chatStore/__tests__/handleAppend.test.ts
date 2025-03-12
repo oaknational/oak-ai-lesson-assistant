@@ -1,7 +1,7 @@
 import type { GetStore } from "@/stores/AilaStoresProvider";
 import type { TrpcUtils } from "@/utils/trpc";
 
-import { createChatStore, type AiSdkActions } from "../index";
+import { type AiSdkActions, createChatStore } from "../index";
 
 describe("handleAppend", () => {
   const mockAiSdkActions = {
@@ -22,7 +22,7 @@ describe("handleAppend", () => {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
 
-    store.getState().append("Hello");
+    store.getState().actions.append("Hello");
 
     expect(mockAiSdkActions.append).not.toHaveBeenCalled();
   });
@@ -33,7 +33,7 @@ describe("handleAppend", () => {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
 
-    store.getState().append("Hello");
+    store.getState().actions.append("Hello");
 
     expect(store.getState().queuedUserAction).toBe("Hello");
     expect(mockAiSdkActions.append).not.toHaveBeenCalled();
@@ -45,7 +45,7 @@ describe("handleAppend", () => {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
 
-    store.getState().append("Hello");
+    store.getState().actions.append("Hello");
 
     expect(mockAiSdkActions.append).toHaveBeenCalledWith({
       content: "Hello",
