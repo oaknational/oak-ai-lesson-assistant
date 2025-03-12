@@ -242,5 +242,24 @@
     "file:///c%3A/Users/Simon/.vscode/extensions/atlassian.atlascode-2.8.6/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml",
     "https://www.artillery.io/schema.json": []
   },
-  "typescript.preferences.preferTypeOnlyAutoImports": true
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#b2bfe1",
+    "activityBar.background": "#b2bfe1",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#c05e7a",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "commandCenter.border": "#15202b99",
+    "sash.hoverBorder": "#b2bfe1",
+    "statusBar.background": "#8da0d3",
+    "statusBar.foreground": "#15202b",
+    "statusBarItem.hoverBackground": "#6881c5",
+    "statusBarItem.remoteBackground": "#8da0d3",
+    "statusBarItem.remoteForeground": "#15202b",
+    "titleBar.activeBackground": "#8da0d3",
+    "titleBar.activeForeground": "#15202b",
+    "titleBar.inactiveBackground": "#8da0d399",
+    "titleBar.inactiveForeground": "#15202b99"
+  }
 }

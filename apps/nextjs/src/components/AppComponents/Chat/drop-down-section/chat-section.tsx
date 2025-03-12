@@ -121,6 +121,8 @@ const ImageComponent = ({
     categoriseImage,
     imageCategory,
     imageCategoryLoading,
+    promptCopyrightCheck,
+    promptCopyrightCheckLoading,
   } = useGetImages({
     cycleNumber,
     cycle,
@@ -130,21 +132,12 @@ const ImageComponent = ({
   const { data, isLoading, mutateAsync } =
     trpc.imageSearch.wikiMapSearch.useMutation();
 
-  console.log("%%%%%%%%%%%%%%%%data", data);
-
   const searchForMaps = useCallback(async () => {
     await mutateAsync({ searchExpression: "map" });
   }, [mutateAsync]);
 
-  console.log(
-    "allAgentPromptImagesSortedByRelavanceScore",
-    allAgentPromptImagesSortedByRelavanceScore,
-    allAgentPromptImagesSortedByRelavanceScore.length,
-  );
-  console.log(
-    "cycleImagesFromAgentPromptLoading",
-    cycleImagesFromAgentPromptLoading,
-  );
+  console.log("**********", allAgentPromptImagesSortedByRelavanceScore);
+
   return (
     <div className="flex flex-col space-y-5 rounded-sm bg-slate-200 p-6">
       <div className="mb-10">
@@ -177,23 +170,41 @@ const ImageComponent = ({
           <ImagePrompt newImagePrompt={newImagePrompt} />
         </>
       )}
+      {promptCopyrightCheck?.copyright && (
+        <>
+          <OakP $font="body-2">
+            Image generation has been halted as the prompt is copyrighted ❌
+          </OakP>
+          <OakP $font="body-2">
+            Reasoning: {promptCopyrightCheck?.reasoning}
+          </OakP>
+        </>
+      )}
       {imageCategory && (
         <div className="flex flex-col space-y-5">
           {allAgentPromptImagesSortedByRelavanceScore.length === 0 && (
             <>
-              {cycleImagesFromAgentPromptLoading ? (
-                <OakP>Loading images...</OakP>
-              ) : (
-                <OakSmallPrimaryButton
-                  onClick={() => {
-                    generateImagesFromAgentPrompt({ imageCategory }).catch(
-                      console.error,
-                    );
-                  }}
-                >
-                  Load {imageCategory} images
-                </OakSmallPrimaryButton>
+              {newPromptLoading && <OakP>Loading prompt...</OakP>}
+              {promptCopyrightCheckLoading && (
+                <OakP>Checking prompt for copyright infringements...</OakP>
               )}
+              {cycleImagesFromAgentPromptLoading && (
+                <OakP>Generating Images...</OakP>
+              )}
+              {!cycleImagesFromAgentPromptLoading &&
+                !newPromptLoading &&
+                !promptCopyrightCheckLoading &&
+                !promptCopyrightCheck?.copyright && (
+                  <OakSmallPrimaryButton
+                    onClick={() => {
+                      generateImagesFromAgentPrompt({ imageCategory }).catch(
+                        console.error,
+                      );
+                    }}
+                  >
+                    Load {imageCategory} images
+                  </OakSmallPrimaryButton>
+                )}
             </>
           )}
 
@@ -210,10 +221,15 @@ const ImageComponent = ({
 
 const Images = ({ cycleImages, imageCategory }) => {
   const imagesWithAScoreOfMoreThan5 = cycleImages.filter(
-    (image) => image.appropriatenessScore >= 5,
+    (image) =>
+      image.appropriatenessScore >= 5 && image.copyrightInfringement === false,
   );
   const imagesWithAScoreOfLessThan5 = cycleImages.filter(
-    (image) => image.appropriatenessScore < 5,
+    (image) =>
+      image.appropriatenessScore < 5 && image.copyrightInfringement === false,
+  );
+  const imagesThatInfringeCopyright = cycleImages.filter(
+    (image) => image.copyrightInfringement === true,
   );
   const [showPoorImages, setShowPoorImages] = useState(false);
   return (
@@ -263,6 +279,24 @@ const Images = ({ cycleImages, imageCategory }) => {
             </div>
           </>
         ))}
+      {imagesThatInfringeCopyright.length > 0 && (
+        <>
+          <OakP>
+            Images that would be blocked as they infringe on copyright:
+          </OakP>
+          {imagesThatInfringeCopyright.map((image) => {
+            return (
+              <>
+                <Image src={image.url} width={300} height={300} alt="" />
+                <OakP $font="body-2">{image.source}</OakP>
+                <OakP $font="body-2">
+                  Reason for infrigment: {image.copyrightConcerns}
+                </OakP>
+              </>
+            );
+          })}
+        </>
+      )}
     </div>
   );
 };

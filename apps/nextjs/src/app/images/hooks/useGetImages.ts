@@ -46,6 +46,12 @@ const useGetImages = ({
     mutateAsync: agentPromptImagesMutateAsync,
   } = trpc.imageGen.generateFourImages.useMutation();
 
+  const {
+    data: promptCopyrightCheck,
+    isLoading: promptCopyrightCheckLoading,
+    mutateAsync: promptCopyrightCheckMutateAsync,
+  } = trpc.imageCategoriser.promptCopyrightCheck.useMutation();
+
   const sources = [
     "cloudinary",
     "unsplash",
@@ -75,16 +81,6 @@ const useGetImages = ({
     )
     .sort((a, b) => b.appropriatenessScore - a.appropriatenessScore);
 
-  // const handleGeneratePrompt = useCallback(async () => {
-  //   await generateImagePrompt({
-  //     lessonTitle: pageData.title ?? "",
-  //     subject: pageData.subject ?? "",
-  //     keyStage: pageData.keyStage ?? "",
-  //     lessonPlan: pageData.lessonPlan ?? "",
-  //     cycle: cycleNumber,
-  //   });
-  // }, [generateImagePrompt, pageData, cycleNumber]);
-
   const categoriseImage = useCallback(async () => {
     try {
       await categoriseImageMutateAsync({
@@ -113,61 +109,59 @@ const useGetImages = ({
     pageData.title,
   ]);
 
-  // const generateImagesFromAilaPrompt = useCallback(async () => {
-  //   const searchExpression =
-  //     cycle.explanation.imageSearch || cycle.explanation.imagePrompt;
-  //   await ailaPromptImagesMutateAsync({
-  //     searchExpression: searchExpression,
-  //     lessonTitle: pageData.title as string,
-  //     subject: pageData.subject as string,
-  //     keyStage: pageData.keyStage as string,
-  //     lessonPlan: pageData.lessonPlan,
-  //     originalPrompt: cycle.explanation.imagePrompt,
-
-  //   });
-  // }, [
-  //   ailaPromptImagesMutateAsync,
-  //   cycle.explanation.imagePrompt,
-  //   cycleNumber,
-  //   pageData.keyStage,
-  //   pageData.lessonPlan,
-  //   pageData.subject,
-  //   pageData.title,
-  // ]);
-
   const generateImagesFromAgentPrompt = useCallback(
     async ({ imageCategory }: { imageCategory: TypesOfImage }) => {
-      let newImagePrompt;
-      const searchExpression =
-        cycle?.explanation?.imageSearch || cycle?.explanation?.imagePrompt;
+      try {
+        let newImagePrompt;
+        const searchExpression =
+          cycle?.explanation?.imageSearch || cycle?.explanation?.imagePrompt;
 
-      console.log("The image category is: ", imageCategory);
+        console.log("The image category is: ", imageCategory);
 
-      if (imageCategory === "PHOTO_REALISTIC") {
-        const data = await generateImagePrompt({
+        if (imageCategory === "PHOTO_REALISTIC") {
+          const data = await generateImagePrompt({
+            lessonPlan: pageData.lessonPlan,
+            lessonTitle: pageData.title as string,
+            subject: pageData.subject as string,
+            keyStage: pageData.keyStage as string,
+            cycle: cycleNumber,
+            searchExpression: searchExpression ?? "",
+          });
+          newImagePrompt = data;
+          console.log("The new image prompt is: ", newImagePrompt);
+        }
+
+        const isCopyrightFree = await promptCopyrightCheckMutateAsync({
           lessonPlan: pageData.lessonPlan,
           lessonTitle: pageData.title as string,
           subject: pageData.subject as string,
           keyStage: pageData.keyStage as string,
           cycle: cycleNumber,
+          prompt: newImagePrompt,
           searchExpression: searchExpression ?? "",
         });
-        newImagePrompt = data;
-        console.log("The new image prompt is: ", newImagePrompt);
+
+        if (isCopyrightFree.copyright) {
+          throw new Error("Prompt is copyrighted");
+        } else {
+          await agentPromptImagesMutateAsync({
+            searchExpression: searchExpression ?? "",
+            lessonTitle: pageData.title as string,
+            subject: pageData.subject as string,
+            keyStage: pageData.keyStage as string,
+            lessonPlan: pageData.lessonPlan,
+            originalPrompt: cycle?.explanation?.imagePrompt ?? "",
+            agentImagePrompt: newImagePrompt,
+            imageCategory: imageCategory,
+          });
+          console.log("Images generated from agent prompt");
+        }
+
+        console.log("Images generated from agent prompt");
+      } catch (e) {
+        console.error("Error while generating images from agent prompt", e);
+        throw e;
       }
-
-      await agentPromptImagesMutateAsync({
-        searchExpression: searchExpression ?? "",
-        lessonTitle: pageData.title as string,
-        subject: pageData.subject as string,
-        keyStage: pageData.keyStage as string,
-        lessonPlan: pageData.lessonPlan,
-        originalPrompt: cycle?.explanation?.imagePrompt ?? "",
-        agentImagePrompt: newImagePrompt,
-        imageCategory: imageCategory,
-      });
-
-      console.log("Images generated from agent prompt");
     },
     [
       agentPromptImagesMutateAsync,
@@ -179,6 +173,7 @@ const useGetImages = ({
       pageData.lessonPlan,
       pageData.subject,
       pageData.title,
+      promptCopyrightCheckMutateAsync,
     ],
   );
 
@@ -196,6 +191,8 @@ const useGetImages = ({
     categoriseImage,
     imageCategory,
     imageCategoryLoading,
+    promptCopyrightCheck,
+    promptCopyrightCheckLoading,
   };
 };
 

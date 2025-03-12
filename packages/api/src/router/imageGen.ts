@@ -8,6 +8,7 @@ import {
   type CycleSchema,
   type LooseLessonPlan,
 } from "../../../aila/src/protocol/schema";
+import { copyrightInfringementCheckerWithOpenAI } from "../imageGen/copyrightInfringementCheckerWithOpenAI";
 import {
   validateImageWithOpenAI,
   type ValidationResult,
@@ -446,6 +447,65 @@ function findTheRelevantCycle({
   } else {
     throw new Error("Cycle not found");
   }
+}
+
+// Add this helper function after validateImagesInParallel function
+async function checkCopyrightForImages(
+  images: ImageResponse[],
+  originalPrompt: string,
+  lessonTitle: string,
+  subject: string,
+  keyStage: string,
+  cycleInfo: ImageCycle | null,
+): Promise<
+  Map<string, { copyrightInfringement: boolean; copyrightConcerns: string }>
+> {
+  console.log(
+    `[Copyright Check] Starting copyright check for ${images.length} images`,
+  );
+
+  const copyrightResults = new Map<
+    string,
+    { copyrightInfringement: boolean; copyrightConcerns: string }
+  >();
+
+  if (images.length === 0) return copyrightResults;
+
+  const checkPromises = images.map(async (image) => {
+    try {
+      const isGeneratedImage =
+        image.license.includes("Stability AI") ||
+        image.license.includes("OpenAI") ||
+        image.license.includes("DALL-E");
+
+      const result = await copyrightInfringementCheckerWithOpenAI(
+        image.url,
+        originalPrompt,
+        lessonTitle,
+        keyStage,
+        subject,
+        cycleInfo,
+        isGeneratedImage,
+      );
+
+      copyrightResults.set(image.id, {
+        copyrightInfringement: result.copyRightInfringement,
+        copyrightConcerns: result.copyrightConcerns,
+      });
+    } catch (error) {
+      console.error(
+        `[Copyright Check] Error checking copyright for image ${image.id}:`,
+        error,
+      );
+      copyrightResults.set(image.id, {
+        copyrightInfringement: false,
+        copyrightConcerns: "Error checking copyright",
+      });
+    }
+  });
+
+  await Promise.all(checkPromises);
+  return copyrightResults;
 }
 
 export const imageGen = router({
@@ -942,50 +1002,57 @@ export const imageGen = router({
       }
     }),
 
-  // validateImage: protectedProcedure
-  //   .input(
-  //     z.object({
-  //       imageUrl: z.string(),
-  //       prompt: z.string(),
-  //       lessonPlan: LessonPlanSchemaWhilstStreaming,
-  //       lessonTitle: z.string(),
-  //       keyStage: z.string(),
-  //       subject: z.string(),
-  //       imageWasGenerated: z.boolean().optional(),
-  //       originalPrompt: z.string(),
-  //     }),
-  //   )
-  //   .mutation(async ({ input }) => {
-  //     try {
-  //       const cycleInfo = findTheRelevantCycle({
-  //         lessonPlan: input.lessonPlan,
-  //         searchExpression: input.originalPrompt,
-  //       });
-
-  //       const prompt = input.imageWasGenerated
-  //         ? promptConstructor(
-  //             input.prompt,
-  //             input.lessonTitle,
-  //             input.subject,
-  //             input.keyStage,
-  //             cycleInfo,
-  //           )
-  //         : input.prompt;
-  //       const isGeneratedImage
-  //       return await validateImageWithOpenAI(
-  //         input.imageUrl,
-  //         prompt,
-  //         input.lessonTitle,
-  //         input.keyStage,
-  //         input.subject,
-  //         cycleInfo,
-  //       );
-  //     } catch (error) {
-  //       console.error("[ValidateImage] Error:", error);
-  //       throw error;
-  //     }
-  //   }),
-
+  checkImagesForCopyRightInfringementInParallel: protectedProcedure
+    .input(
+      z.object({
+        lessonTitle: z.string(),
+        subject: z.string(),
+        keyStage: z.string(),
+        lessonPlan: LessonPlanSchemaWhilstStreaming,
+        images: z.array(
+          z.object({
+            id: z.string(),
+            url: z.string(),
+            license: z.string(),
+            photographer: z.string().optional(),
+            alt: z.string().optional(),
+          }),
+        ),
+        searchExpression: z.string(),
+        originalPrompt: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      try {
+        const cycleInfo = findTheRelevantCycle({
+          lessonPlan: input.lessonPlan,
+          searchExpression: input.originalPrompt,
+        });
+        const results = await Promise.all(
+          input.images.map(async (image) => {
+            const result = await copyrightInfringementCheckerWithOpenAI(
+              image.url,
+              input.originalPrompt,
+              input.lessonTitle,
+              input.keyStage,
+              input.subject,
+              cycleInfo,
+              image.license.includes("Stability AI") ||
+                image.license.includes("OpenAI"),
+            );
+            return {
+              id: image.id,
+              copyrightInfringement: result.copyRightInfringement,
+              copyrightConcerns: result.copyrightConcerns,
+            };
+          }),
+        );
+        return results;
+      } catch (error) {
+        console.error("[CheckImagesForCopyRightInfringement] Error:", error);
+        throw error;
+      }
+    }),
   validateImagesInParallel: protectedProcedure
     .input(
       z.object({
@@ -1257,56 +1324,52 @@ export const imageGen = router({
           validatedCoreStabilityUltra = [],
         ] = await Promise.all(validationPromises);
 
-        // Transform validation results into final format
+        // Run copyright checks for all validated images
+        const allImages = [
+          ...(validatedCloudinary?.map((r) => r.imageData) || []),
+          ...(validatedUnsplash?.map((r) => r.imageData) || []),
+          ...(validatedWiki?.map((r) => r.imageData) || []),
+          ...validatedDallE.map((r) => r.imageData),
+          ...validatedCoreStability.map((r) => r.imageData),
+          ...validatedCoreStabilityUltra.map((r) => r.imageData),
+        ];
+
+        const copyrightResults = await checkCopyrightForImages(
+          allImages,
+          input.originalPrompt,
+          input.lessonTitle,
+          input.subject,
+          input.keyStage,
+          cycleInfo,
+        );
+
+        // Helper function to add copyright info to image results
+        const addCopyrightInfo = (result: any) => {
+          const copyrightInfo = copyrightResults.get(result.imageData.id) || {
+            copyrightInfringement: false,
+            copyrightConcerns: "No copyright check performed",
+          };
+
+          return {
+            ...result.imageData,
+            appropriatenessScore:
+              result.validationResult.metadata.appropriatenessScore,
+            appropriatenessReasoning:
+              result.validationResult.metadata.validationReasoning,
+            imagePrompt: result.imagePrompt,
+            copyrightInfringement: copyrightInfo.copyrightInfringement,
+            copyrightConcerns: copyrightInfo.copyrightConcerns,
+          };
+        };
+
+        // Transform validation results into final format with copyright info
         return {
-          wiki: validatedWiki?.map((result) => ({
-            ...result.imageData,
-            appropriatenessScore:
-              result.validationResult.metadata.appropriatenessScore,
-            appropriatenessReasoning:
-              result.validationResult.metadata.validationReasoning,
-            imagePrompt: result.imagePrompt,
-          })),
-          cloudinary: validatedCloudinary?.map((result) => ({
-            ...result.imageData,
-            appropriatenessScore:
-              result.validationResult.metadata.appropriatenessScore,
-            appropriatenessReasoning:
-              result.validationResult.metadata.validationReasoning,
-            imagePrompt: result.imagePrompt,
-          })),
-          unsplash: validatedUnsplash?.map((result) => ({
-            ...result.imageData,
-            appropriatenessScore:
-              result.validationResult.metadata.appropriatenessScore,
-            appropriatenessReasoning:
-              result.validationResult.metadata.validationReasoning,
-            imagePrompt: result.imagePrompt,
-          })),
-          dale: validatedDallE.map((result) => ({
-            ...result.imageData,
-            appropriatenessScore:
-              result.validationResult.metadata.appropriatenessScore,
-            appropriatenessReasoning:
-              result.validationResult.metadata.validationReasoning,
-            imagePrompt: result.imagePrompt,
-          })),
-          stable: validatedCoreStability.map((result) => ({
-            ...result.imageData,
-            appropriatenessScore:
-              result.validationResult.metadata.appropriatenessScore,
-            appropriatenessReasoning:
-              result.validationResult.metadata.validationReasoning,
-            imagePrompt: result.imagePrompt,
-          })),
-          stableUltra: validatedCoreStabilityUltra.map((result) => ({
-            ...result.imageData,
-            appropriatenessScore:
-              result.validationResult.metadata.appropriatenessScore,
-            appropriatenessReasoning:
-              result.validationResult.metadata.validationReasoning,
-            imagePrompt: result.imagePrompt,
-          })),
+          wiki: validatedWiki?.map(addCopyrightInfo),
+          cloudinary: validatedCloudinary?.map(addCopyrightInfo),
+          unsplash: validatedUnsplash?.map(addCopyrightInfo),
+          dale: validatedDallE.map(addCopyrightInfo),
+          stable: validatedCoreStability.map(addCopyrightInfo),
+          stableUltra: validatedCoreStabilityUltra.map(addCopyrightInfo),
         };
       } catch (error) {
         console.error("[GenerateFourImages] Error:", error);

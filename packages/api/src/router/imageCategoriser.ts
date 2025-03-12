@@ -6,6 +6,12 @@ import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 import type { ImageCycle } from "./imageGen";
 
+// Define the response schema for the copyright check
+const CopyrightCheckResponseSchema = z.object({
+  copyright: z.boolean(),
+  reasoning: z.string(),
+});
+
 export const typesOfImage = z.enum([
   "PHOTO_REALISTIC",
   "DIAGRAM",
@@ -14,8 +20,145 @@ export const typesOfImage = z.enum([
   "HISTORICAL_PAINTING",
 ]);
 
+export type CopyrightCheckResponse = z.infer<
+  typeof CopyrightCheckResponseSchema
+>;
+
 export type TypesOfImage = z.infer<typeof typesOfImage>;
 export const imageCategoriserRouter = router({
+  promptCopyrightCheck: protectedProcedure
+    .input(
+      z.object({
+        lessonPlan: LessonPlanSchemaWhilstStreaming,
+        lessonTitle: z.string(),
+        subject: z.string(),
+        keyStage: z.string(),
+        cycle: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+        searchExpression: z.string(),
+        prompt: z.string(),
+      }),
+    )
+    .output(
+      z.object({
+        copyright: z.boolean(),
+        reasoning: z.string(),
+      }),
+    )
+    .mutation(
+      async ({
+        input,
+      }): Promise<{
+        copyright: boolean;
+        reasoning: string;
+      }> => {
+        const { prompt: promptToCheck } = input;
+        let cycleInfo: ImageCycle | null = null;
+
+        if (input.cycle === 1) {
+          cycleInfo = input.lessonPlan.cycle1;
+        }
+        if (input.cycle === 2) {
+          cycleInfo = input.lessonPlan.cycle2;
+        }
+        if (input.cycle === 3) {
+          cycleInfo = input.lessonPlan.cycle3;
+        }
+
+        try {
+          if (!process.env.OPENAI_API_KEY || !process.env.HELICONE_EU_HOST) {
+            throw new Error("Missing required OpenAI configuration");
+          }
+
+          const openai = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+            baseURL: process.env.HELICONE_EU_HOST,
+          });
+
+          const userPrompt = `
+          You are an expert at checking if a prompt is likely to lead to copyrighted material.
+          The prompt is: ${promptToCheck}.
+          The lesson title is: ${input.lessonTitle}.
+          The subject is: ${input.subject}.
+          The key learning points are: ${input?.lessonPlan?.keyLearningPoints?.join(", ")}.
+          The title of the cycle this image belongs in is ${cycleInfo?.title}.
+          The slide details and slide text are: ${cycleInfo?.explanation?.accompanyingSlideDetails} and ${cycleInfo?.explanation?.slideText}.
+          The search term provided is: ${input.searchExpression}.
+        `;
+
+          // Use the tools parameter with function calling for structured output
+          const response = await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+              {
+                role: "system",
+                content: ` 
+                You are a copyright expert. It is your job to assess prompts that are going to be used for image generation and determine if they are likely to lead to copyrighted material.
+                You will be given a prompt and you will need to determine if the prompt is likely to lead to copyrighted material.
+                You will be given the context of the lesson which is not your concern however may be useful. 
+                Your sole concern is the prompt and whether it is likely to lead to copyrighted material.
+                The main culprit for copyright infringement would be the prompt asking for characters from a book, film or TV show. 
+                I.e. if the prompt asks for micky mouse or harry potter characters its a definate fail.
+                If the prompt asks for a generic character like 'a superhero' or 'a cartoon character' then this is less clear cut.
+                If the prompt is asking for a specific image that is not a character from a book, film or TV show then it is likely to be ok.  
+              `,
+              },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [
+              {
+                type: "function",
+                function: {
+                  name: "checkCopyright",
+                  description:
+                    "Determines if a prompt is likely to lead to copyrighted material",
+                  parameters: {
+                    type: "object",
+                    properties: {
+                      copyright: {
+                        type: "boolean",
+                        description:
+                          "True if the prompt is likely to lead to copyrighted material, false otherwise",
+                      },
+                      reasoning: {
+                        type: "string",
+                        description:
+                          "Explanation of why the prompt is or is not likely to lead to copyrighted material",
+                      },
+                    },
+                    required: ["copyright", "reasoning"],
+                  },
+                },
+              },
+            ],
+            tool_choice: {
+              type: "function",
+              function: { name: "checkCopyright" },
+            },
+          });
+
+          // Extract the function call arguments
+          const toolCall = response.choices[0]?.message?.tool_calls?.[0];
+
+          if (
+            !toolCall ||
+            toolCall.type !== "function" ||
+            toolCall.function.name !== "checkCopyright"
+          ) {
+            throw new Error("Unexpected response format from OpenAI");
+          }
+
+          const parsedArguments = JSON.parse(toolCall.function.arguments);
+          const validatedResponse =
+            CopyrightCheckResponseSchema.parse(parsedArguments);
+
+          return validatedResponse;
+        } catch (error) {
+          console.error("[CreateImagePrompt] Error:", error);
+          throw error;
+        }
+      },
+    ),
+  // Rest of the router methods remain unchanged
   imageCategoriser: protectedProcedure
     .input(
       z.object({
@@ -29,6 +172,7 @@ export const imageCategoriserRouter = router({
     )
     .output(typesOfImage)
     .mutation(async ({ input }): Promise<TypesOfImage> => {
+      // Implementation remains the same
       let cycleInfo: ImageCycle | null = null;
 
       if (input.cycle === 1) {
@@ -119,6 +263,7 @@ export const imageCategoriserRouter = router({
       }),
     )
     .mutation(async ({ input }): Promise<string> => {
+      // Implementation remains the same
       let cycleInfo: ImageCycle | null = null;
 
       if (input.cycle === 1) {
@@ -201,6 +346,7 @@ export const imageCategoriserRouter = router({
       }),
     )
     .mutation(async ({ input }): Promise<string> => {
+      // Implementation remains the same
       let cycleInfo: ImageCycle | null = null;
 
       if (input.cycle === 1) {
