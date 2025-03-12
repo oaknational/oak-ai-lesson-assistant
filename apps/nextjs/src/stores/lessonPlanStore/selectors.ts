@@ -15,10 +15,10 @@ export const lessonPlanSectionSelector = (sectionKey: LessonPlanKey) => {
     state: LessonPlanState,
   ): LooseLessonPlan[LessonPlanKey] | undefined => {
     if (sectionKey === "starterQuiz" || sectionKey === "exitQuiz") {
-      const overiddenSection =
+      const overriddenSection =
         state.lessonPlan[sectionKeyOverrides[sectionKey]];
-      if (overiddenSection) {
-        return overiddenSection;
+      if (overriddenSection) {
+        return overriddenSection;
       }
     }
 
