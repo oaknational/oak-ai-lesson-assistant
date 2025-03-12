@@ -122,7 +122,6 @@ export default async function RootLayout({
                       <AnalyticsProvider
                         avoOptions={{
                           webDebugger: false,
-                          inspector: undefined,
                           webDebuggerOptions: {
                             position: WebDebuggerPosition.BottomLeft({
                               bottom: 0,
