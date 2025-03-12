@@ -1,9 +1,10 @@
 import {
-  subjectsAndKeyStages,
   type KeyStageName,
   type SubjectName,
+  subjectsAndKeyStages,
 } from "@oakai/core";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
+
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
@@ -153,11 +154,9 @@ async function getQuestionsForKSAndSubject(
 }
 
 export const subjectAndKeyStagesRouter = router({
-  getAllSubjects: protectedProcedure
-    .output(z.string().array())
-    .query(() => {
-      return subjectsAndKeyStages.allSubjects;
-    }),
+  getAllSubjects: protectedProcedure.output(z.string().array()).query(() => {
+    return subjectsAndKeyStages.allSubjects;
+  }),
   searchSubjects: protectedProcedure
 
     .input(z.object({ q: z.string() }))

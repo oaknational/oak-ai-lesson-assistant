@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { aiLogger } from "@oakai/logger";
+
 import * as Sentry from "@sentry/nextjs";
 import { useChat } from "ai/react";
 import { nanoid } from "nanoid";
@@ -12,7 +13,12 @@ import { useChatStoreAiSdkSync } from "src/stores/chatStore/hooks/useChatStoreAi
 import { useLessonPlanStoreAiSdkSync } from "src/stores/lessonPlanStore/hooks/useLessonPlanStoreAiSdkSync";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
+import {
+  useChatActions,
+  useChatStore,
+  useLessonPlanActions,
+  useLessonPlanStore,
+} from "@/stores/AilaStoresProvider";
 
 import { findMessageIdFromContent } from "./Chat/utils";
 import { isAccountLocked } from "./chat-message/protocol";
@@ -42,13 +48,11 @@ function useActionMessages() {
 
 export function AiSdk({ id }: Readonly<AiSdkProps>) {
   const path = usePathname();
-  const [hasFinished, setHasFinished] = useState(true);
 
   const initialMessages = useChatStore((state) => state.initialMessages);
-  const streamingFinished = useChatStore((state) => state.streamingFinished);
-  const scrollToBottom = useChatStore((state) => state.scrollToBottom);
-  const messageStarted = useLessonPlanStore((state) => state.messageStarted);
-  const messageFinished = useLessonPlanStore((state) => state.messageFinished);
+  const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
+  const chatActions = useChatActions();
+  const lessonPlanActions = useLessonPlanActions();
 
   // TODO: move to chat store
   const { invokeActionMessages } = useActionMessages();
@@ -73,7 +77,7 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
       },
     },
     fetch(input: RequestInfo | URL, init?: RequestInit | undefined) {
-      messageStarted();
+      lessonPlanActions.messageStarted();
       return fetch(input, init);
     },
     onError(error) {
@@ -81,20 +85,15 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
         extra: { originalError: error },
       });
       log.error("UseChat error", { error, messages });
-      setHasFinished(true);
     },
     onResponse(response) {
       log.info("Chat: On Response");
 
       // TODO: create onResponse handler in store and call from there
-      scrollToBottom();
+      chatActions.scrollToBottom();
 
       if (response.status === 401) {
         toast.error(response.statusText);
-        setHasFinished(true);
-      }
-      if (hasFinished) {
-        setHasFinished(false);
       }
       if (!path?.includes("chat/[id]")) {
         window.history.pushState({}, "", `/aila/${id}`);
@@ -108,9 +107,8 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
 
       invokeActionMessages(response.content);
 
-      setHasFinished(true);
-      streamingFinished();
-      messageFinished();
+      chatActions.streamingFinished();
+      lessonPlanActions.messageFinished();
     },
   });
 

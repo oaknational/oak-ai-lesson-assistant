@@ -1,7 +1,8 @@
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+
 import type { Moderation } from "@prisma/client";
 
-import type { ModerationSetter, ModerationGetter } from "../types";
+import type { ModerationGetter, ModerationSetter } from "../types";
 
 export const handleUpdateModerationState = (
   set: ModerationSetter,
@@ -19,7 +20,7 @@ export const handleUpdateModerationState = (
     });
 
     if (toxicMod) {
-      get().updateToxicModeration(lastMod);
+      get().actions.updateToxicModeration(lastMod);
     }
   };
 };

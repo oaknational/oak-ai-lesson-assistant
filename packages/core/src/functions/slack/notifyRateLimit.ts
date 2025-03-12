@@ -1,8 +1,8 @@
 import { inngest } from "../../inngest";
 import {
+  actionsBlock,
   slackNotificationChannelId,
   slackWebClient,
-  actionsBlock,
   userIdBlock,
 } from "../../utils/slack";
 import { notifyRateLimitSchema } from "./notifyRateLimit.schema";

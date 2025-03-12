@@ -1,5 +1,6 @@
-import type { docs_v1 } from "@googleapis/docs";
 import { aiLogger } from "@oakai/logger";
+
+import type { docs_v1 } from "@googleapis/docs";
 
 import type { Result } from "../../types";
 import type { ValueToString } from "../../utils";

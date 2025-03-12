@@ -4,7 +4,7 @@ import type { GetStore } from "@/stores/AilaStoresProvider";
 
 import { calculateStreamingStatus } from "../actions/calculateStreamingStatus";
 import { getNextStableMessages, parseStreamingMessage } from "../parsing";
-import type { ChatSetter, ChatGetter, AiMessage } from "../types";
+import type { AiMessage, ChatGetter, ChatSetter } from "../types";
 
 export function handleSetMessages(
   getStore: GetStore,

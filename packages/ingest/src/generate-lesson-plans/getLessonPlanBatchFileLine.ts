@@ -1,8 +1,6 @@
-import type {
-  LooseLessonPlan} from "@oakai/aila/src/protocol/schema";
-import {
-  CompletedLessonPlanSchema
-} from "@oakai/aila/src/protocol/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { CompletedLessonPlanSchema } from "@oakai/aila/src/protocol/schema";
+
 import { zodResponseFormat } from "openai/helpers/zod";
 
 import type { PersistedIngest } from "../db-helpers/getIngestById";

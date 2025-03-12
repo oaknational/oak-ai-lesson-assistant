@@ -1,7 +1,7 @@
 import type { GetStore } from "@/stores/AilaStoresProvider";
 import type { TrpcUtils } from "@/utils/trpc";
 
-import { createChatStore, type AiSdkActions } from "..";
+import { type AiSdkActions, createChatStore } from "..";
 
 describe("handleStop", () => {
   const mockAiSdkActions = {
@@ -21,7 +21,7 @@ describe("handleStop", () => {
       queuedUserAction: "Some action",
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
-    store.getState().stop();
+    store.getState().actions.stop();
 
     expect(store.getState().queuedUserAction).toBeNull();
     expect(mockAiSdkActions.stop).not.toHaveBeenCalled();
@@ -31,7 +31,7 @@ describe("handleStop", () => {
     const store = createChatStore(id, getStore, trpcUtils, {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
-    store.getState().stop();
+    store.getState().actions.stop();
 
     expect(mockAiSdkActions.stop).toHaveBeenCalled();
   });

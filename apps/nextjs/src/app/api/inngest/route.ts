@@ -1,4 +1,5 @@
 import { functions, inngest } from "@oakai/core";
+
 import { serve } from "inngest/next";
 
 const inngestServer = serve({ client: inngest, functions });

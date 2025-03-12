@@ -1,11 +1,25 @@
-import tsEslint from '@typescript-eslint/eslint-plugin';
+import tsEslint from "@typescript-eslint/eslint-plugin";
 
 const typescript = tsEslint.configs.recommended;
 
 const rulesToDecideOn = {
   "@typescript-eslint/no-unsafe-assignment": "off", // this rule is buggy and is causing a lot of false positives
   "@typescript-eslint/no-unsafe-call": "off", // this rule is buggy and is causing a lot of false positives
-}
+};
+
+// Define JavaScript-specific rules to avoid duplication
+export const javascriptRules = {
+  "no-unused-vars": [
+    "warn",
+    {
+      argsIgnorePattern: "^_",
+      caughtErrors: "all",
+      caughtErrorsIgnorePattern: "^_",
+      destructuredArrayIgnorePattern: "^_",
+      varsIgnorePattern: "^_",
+    },
+  ],
+};
 
 // @ts-check
 /** @type {Partial<Record<string, import('@typescript-eslint/utils/ts-eslint').SharedConfig.RuleEntry>>} */
@@ -18,20 +32,35 @@ export const rules = {
   "@typescript-eslint/consistent-type-imports": "warn",
   "@typescript-eslint/comma-dangle": "off",
   "@typescript-eslint/no-duplicate-enum-values": "off",
-  "@typescript-eslint/no-unused-vars": "warn",
-  "@typescript-eslint/no-unused-expressions": ["warn", {
-    allowShortCircuit: true,
-    allowTernary: true,
-    allowTaggedTemplates: true,
-  }],
+  "@typescript-eslint/no-unused-vars": [
+    "warn",
+    {
+      argsIgnorePattern: "^_",
+      caughtErrors: "all",
+      caughtErrorsIgnorePattern: "^_",
+      destructuredArrayIgnorePattern: "^_",
+      varsIgnorePattern: "^_",
+    },
+  ],
+  "@typescript-eslint/no-unused-expressions": [
+    "warn",
+    {
+      allowShortCircuit: true,
+      allowTernary: true,
+      allowTaggedTemplates: true,
+    },
+  ],
   "@typescript-eslint/require-await": "warn",
   "@typescript-eslint/unbound-method": "off",
   "@typescript-eslint/restrict-template-expressions": "error",
   "@typescript-eslint/await-thenable": "error",
-  "@typescript-eslint/explicit-function-return-type": ["off", {
-    allowExpressions: true,
-    allowTypedFunctionExpressions: true,
-  }],
+  "@typescript-eslint/explicit-function-return-type": [
+    "off",
+    {
+      allowExpressions: true,
+      allowTypedFunctionExpressions: true,
+    },
+  ],
   "@typescript-eslint/no-unsafe-return": "error",
   "@typescript-eslint/no-misused-promises": "error",
   "@typescript-eslint/no-unsafe-argument": "error",
@@ -65,4 +94,4 @@ export const rules = {
       ],
     },
   ],
-}
+};

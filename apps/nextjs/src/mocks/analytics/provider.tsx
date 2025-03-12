@@ -5,6 +5,7 @@ See the readme for why this is needed.
 import React from "react";
 
 import { aiLogger } from "@oakai/logger";
+
 import type { PostHog } from "posthog-js";
 
 import Avo from "@/lib/avo/Avo";
@@ -46,9 +47,9 @@ const mockAnalyticsContext: AnalyticsContext = {
   } as unknown as PostHog,
 };
 
-export const AnalyticsProvider: React.FC<{ readonly children: React.ReactNode }> = ({
-  children,
-}) => (
+export const AnalyticsProvider: React.FC<{
+  readonly children: React.ReactNode;
+}> = ({ children }) => (
   <analyticsContext.Provider value={mockAnalyticsContext}>
     {children}
   </analyticsContext.Provider>

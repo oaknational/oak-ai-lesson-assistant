@@ -1,4 +1,4 @@
-import { docs_v1, auth } from "@googleapis/docs";
+import { auth, docs_v1 } from "@googleapis/docs";
 
 import { credentials } from "../credentials";
 

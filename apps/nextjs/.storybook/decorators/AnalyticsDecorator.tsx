@@ -4,8 +4,8 @@ import type { Decorator } from "@storybook/react";
 import { fn } from "@storybook/test";
 
 import {
-  analyticsContext,
   type AnalyticsContext,
+  analyticsContext,
 } from "../../src/components/ContextProviders/AnalyticsProvider";
 
 declare module "@storybook/csf" {

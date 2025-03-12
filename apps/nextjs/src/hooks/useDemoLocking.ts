@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
+
 import type { Message } from "ai";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
