@@ -3,7 +3,7 @@ import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetecti
 import * as moderationErrorHandling from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
-import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
+import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import invariant from "tiny-invariant";
