@@ -88,8 +88,10 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
   const [generation, setGeneration] = useState<
     HomeworkMaterialType | ComprehensionTaskType | null
   >(null);
+  const [moderation, setModeration] = useState<string | null>(null);
   const [action, setAction] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingModeration, setIsLoadingModeration] = useState(false);
   const [prompt, setPrompt] = useState<{
     prompt: string;
     systemMessage: string;
@@ -106,6 +108,30 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
       );
     }
   }, [action, pageData.lessonPlan]);
+
+  useEffect(() => {
+    if (generation !== null) {
+      console.log("fetching moderation");
+      const fetchData = async () => {
+        try {
+          setIsLoadingModeration(true);
+          const res = await fetch("/api/additional-materials-moderate", {
+            method: "POST",
+            body: JSON.stringify({
+              input: JSON.stringify(generation),
+            }),
+          });
+          const { data } = await res.json();
+
+          setModeration(data);
+          setIsLoadingModeration(false);
+        } catch (error) {
+          console.error("error", error);
+        }
+      };
+      void fetchData();
+    }
+  }, [generation]);
 
   const handleSubmit = async (message?: string) => {
     if (!action) {
@@ -219,9 +245,10 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
           <OakFlex $ma="space-between-m">
             <OakRadioGroup
               name="radio-group"
-              onChange={(value) =>
-                setAction(value.target.value as SchemaMapType)
-              }
+              onChange={(value) => {
+                setAction(value.target.value as SchemaMapType);
+                setModeration(null);
+              }}
               $flexDirection="column"
             >
               <OakRadioButton
@@ -259,6 +286,20 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
               </OakPrimaryButton>
             </OakFlex>
           )}
+          {isLoadingModeration && <OakP>Loading moderation...</OakP>}
+          <OakFlex
+            $mt={"space-between-l"}
+            $gap={"space-between-m"}
+            $flexDirection="column"
+          >
+            {moderation && (
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: moderation.replace(/\n/g, "<br />"),
+                }}
+              />
+            )}
+          </OakFlex>
         </OakFlex>
       </OakFlex>
     </Layout>
