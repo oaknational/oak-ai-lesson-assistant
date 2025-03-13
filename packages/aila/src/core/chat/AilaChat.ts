@@ -1,10 +1,11 @@
 import {
+  subjectWarnings,
   subjects,
   unsupportedSubjects,
-  subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
 // TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { aiLogger } from "@oakai/logger";
+
 import invariant from "tiny-invariant";
 
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
@@ -17,8 +18,8 @@ import type {
   JsonPatchDocumentOptional,
 } from "../../protocol/jsonPatchProtocol";
 import {
-  extractPatches,
   LLMMessageSchema,
+  extractPatches,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
 import type {

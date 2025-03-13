@@ -1,6 +1,7 @@
 export const CircleTheoremLesson = {
   basedOn: {
-    id: "Tr9r1RlwSNes3X2ZgRQSi", // This is the corresponsing label in the lesson table for slug reading-timetables-6wwkgt
+    // eslint-disable-next-line @cspell/spellchecker
+    id: "Tr9r1RlwSNes3X2ZgRQSi", // This is the corresponding label in the lesson table for slug reading-timetables-6wwkgt
     title: "TEST-LESSON-READING-TIMETABLES",
   },
   title: "Circle Theorems",

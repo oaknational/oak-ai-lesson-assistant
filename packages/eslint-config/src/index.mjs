@@ -1,3 +1,4 @@
+import cspellPlugin from "@cspell/eslint-plugin";
 import eslint from "@eslint/js";
 import nextPlugin from "@next/eslint-plugin-next";
 import tsEslint from "@typescript-eslint/eslint-plugin";
@@ -11,15 +12,19 @@ import reactHooksPlugin from "eslint-plugin-react-hooks";
 import storybookPlugin from "eslint-plugin-storybook";
 import turboPlugin from "eslint-plugin-turbo";
 import globals from "globals";
+import jsonParser from "jsonc-eslint-parser";
 import path from "path";
 import { fileURLToPath } from "url";
 
 import { ignores } from "./ignores.mjs";
-import { rules } from "./rules.mjs";
+import { javascriptRules, rules } from "./rules.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, "../../..");
+
+// Define the path to the .cspell.json file in the root of the monorepo
+const cspellConfigPath = path.resolve(projectRoot, ".cspell.json");
 
 const packages = [
   { dir: "apps/nextjs", isReact: true, isBrowser: true },
@@ -56,6 +61,7 @@ const packageConfigs = packages.map((pkg) => ({
   },
   plugins: {
     "@typescript-eslint": tsEslint,
+    "@cspell": cspellPlugin,
     import: importPlugin,
     jest: jestPlugin,
     turbo: turboPlugin,
@@ -91,6 +97,9 @@ const packageConfigs = packages.map((pkg) => ({
       },
       node: true,
     },
+    "@cspell/spellchecker": {
+      configFile: cspellConfigPath,
+    },
   },
 }));
 
@@ -101,7 +110,36 @@ const config = [
   prettierConfig,
   packageJsonRecommended,
   {
+    files: ["**/*.json"],
+    languageOptions: {
+      parser: jsonParser,
+    },
+  },
+  {
+    files: ["**/turbo.json"],
+    languageOptions: {
+      parser: jsonParser,
+      parserOptions: {
+        jsonSyntax: "JSON",
+      },
+    },
+    plugins: {
+      turbo: turboPlugin,
+    },
+    rules: {
+      "turbo/no-undeclared-env-vars": "error",
+    },
+    settings: {
+      turbo: {
+        // Optional: Add any specific turbo settings here if needed
+      },
+    },
+  },
+  {
     files: ["**/*.cjs"],
+    plugins: {
+      "@cspell": cspellPlugin,
+    },
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -113,6 +151,14 @@ const config = [
         ...globals.jest,
         ...globals.browser,
         console: "readonly",
+      },
+    },
+    rules: {
+      ...javascriptRules,
+    },
+    settings: {
+      "@cspell/spellchecker": {
+        configFile: cspellConfigPath,
       },
     },
   },
@@ -133,12 +179,19 @@ const config = [
     },
     plugins: {
       "@typescript-eslint": tsEslint,
+      "@cspell": cspellPlugin,
       import: importPlugin,
     },
     rules: {
       "@typescript-eslint/no-require-imports": "off",
       "import/no-commonjs": "off",
       "@typescript-eslint/ban-ts-comment": "off",
+      ...javascriptRules,
+    },
+    settings: {
+      "@cspell/spellchecker": {
+        configFile: cspellConfigPath,
+      },
     },
   },
   ...packageConfigs,
@@ -159,6 +212,11 @@ const config = [
     rules: {
       "@typescript-eslint/no-import-type-side-effects": "off",
       "@typescript-eslint/consistent-type-imports": "off",
+    },
+    settings: {
+      "@cspell/spellchecker": {
+        configFile: cspellConfigPath,
+      },
     },
   },
 ];

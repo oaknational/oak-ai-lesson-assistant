@@ -2,8 +2,9 @@
 
 import { useEffect, useRef } from "react";
 
-import { useUser } from "@clerk/nextjs";
 import logger from "@oakai/logger/browser";
+
+import { useUser } from "@clerk/nextjs";
 
 import { AcceptTermsForm } from "@/components/Onboarding/AcceptTermsForm";
 import { LegacyUpgradeNotice } from "@/components/Onboarding/LegacyUpgradeNotice";

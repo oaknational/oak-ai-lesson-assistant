@@ -1,3 +1,26 @@
+# [1.29.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.28.0...v1.29.0) (2025-03-12)
+
+
+### Features
+
+* add user metadata-based rate limiting ([#603](https://github.com/oaknational/oak-ai-lesson-assistant/issues/603)) ([c179ff6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c179ff6eb71003bc996d879c1ec3492959a11532))
+
+# [1.28.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.27.0...v1.28.0) (2025-03-12)
+
+
+### Bug Fixes
+
+* render short user messages ([#581](https://github.com/oaknational/oak-ai-lesson-assistant/issues/581)) ([8d3eee6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/8d3eee6056d30199425c80389928f380ff7258d9))
+* use llmMessage JSON schema in prompt ([#579](https://github.com/oaknational/oak-ai-lesson-assistant/issues/579)) ([b8f93a7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b8f93a74c32e96bfa81e7315f2660989101a8441))
+* use type key rather than response for llmMesage ([#578](https://github.com/oaknational/oak-ai-lesson-assistant/issues/578)) ([1cce025](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1cce0251ef9db271c66168ad515d655a301610f5))
+
+
+### Features
+
+* allow lifted rate limits for certain users ([#586](https://github.com/oaknational/oak-ai-lesson-assistant/issues/586)) ([d0c49c6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d0c49c65d11c71d59c6bf49accc95d3a94dd0fbb))
+* prettier enforce import order ([#608](https://github.com/oaknational/oak-ai-lesson-assistant/issues/608)) ([c53bb75](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c53bb7519a8216cc2f99484279b88d1ef6010536))
+* record THREAT in the database rather than HELICONE ([#584](https://github.com/oaknational/oak-ai-lesson-assistant/issues/584)) ([16ffcf0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/16ffcf0e3c837ee22a3caa4b98e0df6f842e12ba))
+
 # [1.27.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.26.0...v1.27.0) (2025-03-06)
 
 

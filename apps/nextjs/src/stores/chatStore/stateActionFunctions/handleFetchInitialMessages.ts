@@ -1,10 +1,11 @@
 import { aiLogger } from "@oakai/logger";
+
 import * as Sentry from "@sentry/nextjs";
 import invariant from "tiny-invariant";
 
 import type { TrpcUtils } from "@/utils/trpc";
 
-import type { ChatSetter, ChatGetter, AiMessage } from "../types";
+import type { AiMessage, ChatGetter, ChatSetter } from "../types";
 
 const log = aiLogger("chat:store");
 

@@ -1,10 +1,11 @@
 import {
+  type PatchDocument,
   applyLessonPlanPatchImmutable,
   extractPatches,
-  type PatchDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { LessonPlanKeySchema } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
+
 import { createHash } from "crypto";
 
 import type { AiMessage } from "@/stores/chatStore/types";
@@ -54,7 +55,7 @@ export const handleMessagesUpdated = (
 ) => {
   const applyMessageToLessonPlan = (message: AiMessage) => {
     log.info("Extracting patches from message", message);
-    // NOTE: we don't need partial patches as weextract them with a regex
+    // NOTE: we don't need partial patches as we extract them with a regex
     const { validPatches } = extractPatches(message.content);
     log.info("valid patches", validPatches);
 

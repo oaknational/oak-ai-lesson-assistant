@@ -1,6 +1,7 @@
+import { aiLogger } from "@oakai/logger";
+
 import type { ClerkMiddlewareAuth } from "@clerk/nextjs/server";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { aiLogger } from "@oakai/logger";
 import type { NextFetchEvent, NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
