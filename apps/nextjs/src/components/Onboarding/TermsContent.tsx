@@ -219,7 +219,7 @@ const TermsContent = () => {
         prior written consent.
       </OakP>
       <OakP $mb="space-between-s">
-        We have used our best endeavors to remove information which could
+        We have used our best endeavours to remove information which could
         identify an individual and/or content which is owned by third parties,
         including that which is subject to copyright.
       </OakP>

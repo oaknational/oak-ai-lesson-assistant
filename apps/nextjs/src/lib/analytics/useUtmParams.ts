@@ -36,12 +36,12 @@ export const usePersistUtmParams = (
 
   const utmParamsFromQuery = useMemo(
     () =>
-      UTM_PARAMS.reduce((accum: UtmParams, key) => {
+      UTM_PARAMS.reduce((accumulated: UtmParams, key) => {
         const param = currentParams.get(key);
         if (param) {
-          accum[key] = param;
+          accumulated[key] = param;
         }
-        return accum;
+        return accumulated;
       }, {}),
     [currentParams],
   );

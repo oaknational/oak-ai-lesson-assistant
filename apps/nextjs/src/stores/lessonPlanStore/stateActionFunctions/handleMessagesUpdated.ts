@@ -55,7 +55,7 @@ export const handleMessagesUpdated = (
 ) => {
   const applyMessageToLessonPlan = (message: AiMessage) => {
     log.info("Extracting patches from message", message);
-    // NOTE: we don't need partial patches as weextract them with a regex
+    // NOTE: we don't need partial patches as we extract them with a regex
     const { validPatches } = extractPatches(message.content);
     log.info("valid patches", validPatches);
 

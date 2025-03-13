@@ -17,7 +17,7 @@ export const ratingAndJustificationSchema = z.object({
 export const starterQuizQuestionSuitabilityDescriptionSchema = z.object({
   relevanceToPriorKnowledge: ratingAndJustificationSchema,
   alignmentWithKeyLearningPoints: ratingAndJustificationSchema,
-  congitiveLevel: ratingAndJustificationSchema,
+  cognitiveLevel: ratingAndJustificationSchema,
   clarityAndSpecificity: ratingAndJustificationSchema,
   potentialForInsight: ratingAndJustificationSchema,
   overallSuitability: z

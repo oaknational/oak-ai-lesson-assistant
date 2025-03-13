@@ -64,7 +64,7 @@ const QuestionButton = ({
             setWinningId(optionId);
           }}
         >
-          <span>Oak queston: {option?.isOakQuestion?.toString()}</span>
+          <span>Oak question: {option?.isOakQuestion?.toString()}</span>
         </button>
       </div>
       <FeedbackDialogTrigger asChild>
