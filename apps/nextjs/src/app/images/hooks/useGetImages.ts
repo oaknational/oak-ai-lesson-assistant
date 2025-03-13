@@ -128,35 +128,31 @@ const useGetImages = ({
             searchExpression: searchExpression ?? "",
           });
           newImagePrompt = data;
-          console.log("The new image prompt is: ", newImagePrompt);
-        }
-
-        const isCopyrightFree = await promptCopyrightCheckMutateAsync({
-          lessonPlan: pageData.lessonPlan,
-          lessonTitle: pageData.title as string,
-          subject: pageData.subject as string,
-          keyStage: pageData.keyStage as string,
-          cycle: cycleNumber,
-          prompt: newImagePrompt,
-          searchExpression: searchExpression ?? "",
-        });
-
-        if (isCopyrightFree.copyright) {
-          throw new Error("Prompt is copyrighted");
-        } else {
-          await agentPromptImagesMutateAsync({
-            searchExpression: searchExpression ?? "",
+          const promptIsCopyrightFree = await promptCopyrightCheckMutateAsync({
+            lessonPlan: pageData.lessonPlan,
             lessonTitle: pageData.title as string,
             subject: pageData.subject as string,
             keyStage: pageData.keyStage as string,
-            lessonPlan: pageData.lessonPlan,
-            originalPrompt: cycle?.explanation?.imagePrompt ?? "",
-            agentImagePrompt: newImagePrompt,
-            imageCategory: imageCategory,
+            cycle: cycleNumber,
+            prompt: newImagePrompt,
+            searchExpression: searchExpression ?? "",
           });
-          console.log("Images generated from agent prompt");
+          if (promptIsCopyrightFree.copyright) {
+            throw new Error("Prompt is copyrighted");
+          }
+          console.log("The new image prompt is: ", newImagePrompt);
         }
 
+        await agentPromptImagesMutateAsync({
+          searchExpression: searchExpression ?? "",
+          lessonTitle: pageData.title as string,
+          subject: pageData.subject as string,
+          keyStage: pageData.keyStage as string,
+          lessonPlan: pageData.lessonPlan,
+          originalPrompt: cycle?.explanation?.imagePrompt ?? "",
+          agentImagePrompt: newImagePrompt,
+          imageCategory: imageCategory,
+        });
         console.log("Images generated from agent prompt");
       } catch (e) {
         console.error("Error while generating images from agent prompt", e);
