@@ -235,14 +235,7 @@ const Images = ({ cycleImages, imageCategory }) => {
   return (
     <div className="flex flex-col space-y-5">
       {imagesWithAScoreOfMoreThan5.map((image) => (
-        <>
-          <Image src={image.url} width={300} height={300} alt="" />
-
-          <div className="flex items-center justify-between">
-            <OakP>Score: {image.appropriatenessScore}</OakP>
-            <OakP $font="body-2">{image.source}</OakP>
-          </div>
-        </>
+        <ImageWithText image={image} />
       ))}
       {cycleImages.length > 0 && imagesWithAScoreOfMoreThan5.length === 0 && (
         <div className="flex flex-col gap-7 bg-white p-7">
@@ -271,31 +264,25 @@ const Images = ({ cycleImages, imageCategory }) => {
       )}
       {showPoorImages &&
         imagesWithAScoreOfLessThan5.map((image) => (
-          <>
-            <Image src={image.url} width={300} height={300} alt="" />
-            <div className="flex items-center justify-between">
-              <OakP>Score: {image.appropriatenessScore}</OakP>
-              <OakP $font="body-2">{image.source}</OakP>
-            </div>
-          </>
+          <ImageWithText image={image} />
         ))}
       {imagesThatInfringeCopyright.length > 0 && (
-        <>
-          <OakP>
+        <div className="mt-11">
+          <OakP>❌❌❌</OakP>
+          <OakP $font="body-2">
             Images that would be blocked as they infringe on copyright:
           </OakP>
           {imagesThatInfringeCopyright.map((image) => {
             return (
               <>
-                <Image src={image.url} width={300} height={300} alt="" />
-                <OakP $font="body-2">{image.source}</OakP>
+                <ImageWithText image={image} />
                 <OakP $font="body-2">
                   Reason for infrigment: {image.copyrightConcerns}
                 </OakP>
               </>
             );
           })}
-        </>
+        </div>
       )}
     </div>
   );
@@ -321,5 +308,26 @@ const ImagePrompt = ({ newImagePrompt }) => {
         </div>
       )}
     </>
+  );
+};
+
+const ImageWithText = ({ image }) => {
+  return (
+    <div className="mb-7">
+      <Image src={image.url} width={300} height={300} alt="" />
+
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <OakP $font="body-3">Score: {image.appropriatenessScore}</OakP>
+          <OakP $font="body-3">{image.source}</OakP>
+        </div>
+        <div>
+          <OakP $font="body-3">
+            Copyright image infringement checker agent result:{" "}
+            {image.copyrightInfringement ? "❌" : "✅"}
+          </OakP>
+        </div>
+      </div>
+    </div>
   );
 };
