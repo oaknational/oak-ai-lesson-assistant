@@ -473,6 +473,19 @@ export const JsonPatchDocumentJsonSchema = zodToJsonSchema(
   "patchDocumentSchema",
 );
 
+export const LLMResponseSchema = z.discriminatedUnion("type", [
+  PatchDocumentSchema,
+  PromptDocumentSchema,
+  StateDocumentSchema,
+  CommentDocumentSchema,
+  ErrorDocumentSchema,
+]);
+
+export const LLMResponseJsonSchema = zodToJsonSchema(
+  LLMResponseSchema,
+  "llmResponseSchema",
+);
+
 export const MessagePartDocumentSchema = z.discriminatedUnion("type", [
   ModerationDocumentSchema,
   ErrorDocumentSchema,
@@ -562,15 +575,6 @@ const LLMMessageSchemaWhileStreaming = z.object({
   prompt: TextDocumentSchema.optional(),
   status: z.literal("complete").optional(),
 });
-
-export const LLMResponseSchema = z.discriminatedUnion("type", [
-  LLMMessageSchema,
-]);
-
-export const LLMResponseJsonSchema = zodToJsonSchema(
-  LLMResponseSchema,
-  "llmResponseSchema",
-);
 
 function tryParseJson(str: string): {
   parsed: { type: string } | null;
