@@ -1,5 +1,8 @@
+import { aiLogger } from "@oakai/logger";
+
 import { openai } from "@ai-sdk/openai";
-import { generateObject, generateText, type CoreMessage } from "ai";
+import * as Sentry from "@sentry/nextjs";
+import { generateObject } from "ai";
 import type { ZodSchema } from "zod";
 
 import type { LooseLessonPlan } from "../../aila/src/protocol/schema";
@@ -10,11 +13,18 @@ import {
   additionalHomeworkSystemPrompt,
   additionalSciencePracticalActivityPrompt,
   additionalSciencePracticalActivitySystemPrompt,
-} from "./prompts/prompt";
-import { schemaMap, type SchemaMapType } from "./schemas";
+} from "./prompts/additionalMaterialsPrompts";
+import {
+  type AdditionalMaterialType,
+  isValidSchemaKey,
+  schemaMap,
+} from "./schemas";
 
-function getSchema(action: SchemaMapType): ZodSchema {
-  const schema = schemaMap[action];
+const log = aiLogger("additional-materials");
+
+function getSchema(action: string): ZodSchema {
+  const isValidKey = isValidSchemaKey(action);
+  const schema = isValidKey ? schemaMap[action] : null;
   if (!schema) {
     throw new Error(`No schema found for action: ${action}`);
   }
@@ -24,7 +34,7 @@ function getSchema(action: SchemaMapType): ZodSchema {
 export const getPrompt = (
   lessonPlan: LooseLessonPlan,
   action: string,
-  previousOutput?: Object | null,
+  previousOutput?: object | null,
   message?: string | null,
   transcript?: string,
 ) => {
@@ -60,7 +70,7 @@ export const getPrompt = (
   }
 };
 
-export const fetchAdditionalMaterials = async ({
+export const fetchAdditionalMaterial = async ({
   lessonPlan,
   message,
   action,
@@ -68,11 +78,19 @@ export const fetchAdditionalMaterials = async ({
   transcript,
 }: {
   lessonPlan: LooseLessonPlan;
-  message?: string | null;
-  action: SchemaMapType;
-  previousOutput?: Object | null;
+  message?: string;
+  action: string;
+  previousOutput?: object | null;
   transcript?: string;
-}) => {
+}): Promise<AdditionalMaterialType> => {
+  const passedAction = isValidSchemaKey(action) ? action : undefined;
+
+  log.info("fetching additional materials", action);
+
+  if (!passedAction) {
+    throw new Error(`Action "${action}" is not supported.`);
+  }
+
   const generateObjectPrompt = getPrompt(
     lessonPlan,
     action,
@@ -80,13 +98,23 @@ export const fetchAdditionalMaterials = async ({
     message,
     transcript,
   );
+  try {
+    const { object } = await generateObject({
+      prompt: generateObjectPrompt.prompt,
+      schema: getSchema(action),
+      model: openai("gpt-4-turbo"),
+      system: generateObjectPrompt.systemMessage,
+    });
 
-  const { object } = await generateObject({
-    prompt: generateObjectPrompt.prompt,
-    schema: getSchema(action),
-    model: openai("gpt-4-turbo"),
-    system: generateObjectPrompt.systemMessage,
-  });
-
-  return object;
+    return schemaMap[passedAction].parse(object);
+  } catch (error) {
+    log.error(
+      `Error generating additional materials for action: ${action}`,
+      error,
+    );
+    Sentry.captureException(error);
+    throw new Error(
+      `Failed to generate additional materials for action: ${action}`,
+    );
+  }
 };

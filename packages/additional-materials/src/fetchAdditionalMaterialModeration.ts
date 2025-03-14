@@ -1,9 +1,9 @@
 import { openai } from "@ai-sdk/openai";
 import { generateText } from "ai";
 
-import { moderationPrompt } from "./moderation/prompt";
+import { moderationPrompt } from "./prompts/moderationPrompt";
 
-export const moderateResponse = async (input: string) => {
+export const fetchAdditionalMaterialModeration = async (input: string) => {
   const { text } = await generateText({
     system: moderationPrompt,
     prompt: input,

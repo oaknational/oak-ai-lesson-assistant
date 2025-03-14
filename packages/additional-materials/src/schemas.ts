@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import type { LooseLessonPlan } from "../../aila/src/protocol/schema";
 
-export const lessonSchema = z.object({
+export const oakOpenAiLessonSummarySchema = z.object({
   lessonTitle: z.string(),
   unitSlug: z.string(),
   unitTitle: z.string(),
@@ -38,8 +38,27 @@ export const lessonSchema = z.object({
   downloadsAvailable: z.boolean(),
 });
 
+export const oakOpenApiSearchSchema = z.array(
+  z.object({
+    lessonTitle: z.string(),
+    lessonSlug: z.string(),
+    similarity: z.number(),
+    units: z.array(
+      z.object({
+        keyStageSlug: z.string(),
+        subjectSlug: z.string(),
+        unitSlug: z.string(),
+        unitTitle: z.string(),
+        examBoardTitle: z.string().nullable(),
+      }),
+    ),
+  }),
+);
+
+export type OakOpenApiSearchSchema = z.infer<typeof oakOpenApiSearchSchema>;
+
 export function mapLessonToSchema(
-  lessonData: Lesson,
+  lessonData: OakOpenAiLessonSummary,
 ): Partial<LooseLessonPlan> {
   return {
     title: lessonData.lessonTitle,
@@ -79,12 +98,16 @@ export function mapLessonToSchema(
   };
 }
 
-export type Lesson = z.infer<typeof lessonSchema>;
+export type OakOpenAiLessonSummary = z.infer<
+  typeof oakOpenAiLessonSummarySchema
+>;
 
-export const transcriptSchema = z.object({
+export const oakOpenAiTranscriptSchema = z.object({
   transcript: z.string().nullish(),
   vtt: z.string().nullish(),
 });
+
+export type OakOpenAiTranscript = z.infer<typeof oakOpenAiTranscriptSchema>;
 
 const sciencePracticalActivity = z.object({
   sciencePracticalActivity: z.object({
@@ -154,6 +177,10 @@ export type AdditionalMaterialType =
   | HomeworkMaterialType
   | ComprehensionTaskType
   | SciencePracticalActivityType;
+
+export const isValidSchemaKey = (key: string): key is SchemaMapType => {
+  return key in schemaMap;
+};
 
 export const isHomeworkMaterial = (
   gen: AdditionalMaterialType | null,

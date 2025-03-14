@@ -2,26 +2,26 @@
   "name": "@oakai/additional-materials",
   "version": "1.0.0",
   "license": "MIT",
+  "type": "module",
   "main": "./index.ts",
   "types": "./index.ts",
   "scripts": {
     "check": "tsc --noEmit",
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
-    "type-check": "tsc --noEmit",
     "test": "pnpm with-env jest --colors --config jest.config.mjs",
-    "test:seq": "pnpm with-env jest --colors --config jest.config.mjs --verbose --runInBand",
-    "test-file": "pnpm with-env jest --config jest.config.mjs --runTestsByPath TEST_FILEPATH",
     "test-coverage": "COLLECT_TEST_COVERAGE=true pnpm with-env jest --colors --config jest.config.mjs --coverage",
+    "test-file": "pnpm with-env jest --config jest.config.mjs --runTestsByPath TEST_FILEPATH",
+    "test:seq": "pnpm with-env jest --colors --config jest.config.mjs --verbose --runInBand",
+    "type-check": "tsc --noEmit",
     "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@oakai/prettier-config",
   "eslintConfig": {
-    "extends": "@oakai/eslint-config",
     "parserOptions": {
       "project": "./tsconfig.json"
     },
-    "rules": {}
+    "extends": "@oakai/eslint-config"
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.55",
@@ -46,6 +46,5 @@
   "engines": {
     "node": ">=20.9.0",
     "pnpm": ">=8"
-  },
-  "type": "module"
+  }
 }

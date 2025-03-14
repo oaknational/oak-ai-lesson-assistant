@@ -1,1 +1,2 @@
-export { LessonMaterialGenerator } from "./src/llm/model";
+export { fetchAdditionalMaterial } from "./src/fetchAdditionalMaterial";
+export { fetchAdditionalMaterialModeration } from "./src/fetchAdditionalMaterialModeration";

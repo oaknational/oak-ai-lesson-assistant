@@ -7,6 +7,8 @@ import type {
   AilaPersistedChat,
   LessonPlanKey,
 } from "@oakai/aila/src/protocol/schema";
+import { aiLogger } from "@oakai/logger";
+
 import {
   OakAccordion,
   OakBox,
@@ -19,19 +21,21 @@ import {
   OakRadioGroup,
 } from "@oaknational/oak-components";
 
+import { ComprehensionTask } from "@/components/AppComponents/AdditionalMaterials/ComprehensionTask";
+import { Homework } from "@/components/AppComponents/AdditionalMaterials/Homework";
 import { LessonPlanSectionContent } from "@/components/AppComponents/Chat/drop-down-section/lesson-plan-section-content";
 import Layout from "@/components/Layout";
+import { trpc } from "@/utils/trpc";
 
-import { getPrompt } from "../../../../../../packages/additional-materials/src/fetchAdditionalMaterials";
+import { getPrompt } from "../../../../../packages/additional-materials/src/fetchAdditionalMaterial";
 import {
+  type AdditionalMaterialType,
+  type SchemaMapType,
   isComprehensionMaterial,
   isHomeworkMaterial,
-  type ComprehensionTaskType,
-  type HomeworkMaterialType,
-  type SchemaMapType,
-} from "../../../../../../packages/additional-materials/src/schemas";
-import { ComprehensionTask } from "./ComprehensionTask";
-import { Homework } from "./Homework";
+} from "../../../../../packages/additional-materials/src/schemas";
+
+const log = aiLogger("additional-materials");
 
 export function mapLessonPlanSections(pageData: AilaPersistedChat) {
   if (!pageData.lessonPlan) {
@@ -85,13 +89,15 @@ interface AdditionalMaterialsProps {
 }
 
 const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
-  const [generation, setGeneration] = useState<
-    HomeworkMaterialType | ComprehensionTaskType | null
-  >(null);
+  const [generation, setGeneration] = useState<AdditionalMaterialType | null>(
+    null,
+  );
   const [moderation, setModeration] = useState<string | null>(null);
   const [action, setAction] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingModeration, setIsLoadingModeration] = useState(false);
+  const fetchMaterialModeration =
+    trpc.additionalMaterials.getAdditionalMaterialModeration.useMutation();
+  const fetchMaterial =
+    trpc.additionalMaterials.getAdditionalMaterial.useMutation();
   const [prompt, setPrompt] = useState<{
     prompt: string;
     systemMessage: string;
@@ -110,53 +116,44 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
   }, [action, pageData.lessonPlan]);
 
   useEffect(() => {
-    if (generation !== null) {
-      console.log("fetching moderation");
+    if (
+      generation !== null &&
+      !fetchMaterialModeration.isLoading &&
+      !moderation
+    ) {
       const fetchData = async () => {
         try {
-          setIsLoadingModeration(true);
-          const res = await fetch("/api/additional-materials-moderate", {
-            method: "POST",
-            body: JSON.stringify({
-              input: JSON.stringify(generation),
-            }),
+          const data = await fetchMaterialModeration.mutateAsync({
+            generation: JSON.stringify(generation),
           });
-          const { data } = await res.json();
 
           setModeration(data);
-          setIsLoadingModeration(false);
         } catch (error) {
-          console.error("error", error);
+          log.error("error", error);
         }
       };
       void fetchData();
     }
-  }, [generation]);
+  }, [fetchMaterialModeration, generation, moderation]);
 
   const handleSubmit = async (message?: string) => {
+    setGeneration(null);
     if (!action) {
       alert("No action selected");
       return;
     }
 
-    setIsLoading(true);
-
     try {
-      const res = await fetch("/api/additional-materials", {
-        method: "POST",
-        body: JSON.stringify({
-          lessonPlan: pageData.lessonPlan,
-          action: action,
-          message: message ?? undefined,
-          previousOutput: generation,
-        }),
+      const res = await fetchMaterial.mutateAsync({
+        lessonPlan: pageData.lessonPlan,
+        action: action,
+        message: message ?? undefined,
+        previousOutput: generation,
       });
-      const { data } = await res.json();
 
-      setGeneration(data);
-      setIsLoading(false);
+      setGeneration(res);
     } catch (error) {
-      console.error("error", error);
+      log.error("error", error);
     }
   };
   const renderGeneratedMaterial = () => {
@@ -183,7 +180,7 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
           element="a"
           href="/additional-material-spike/"
         >
-          Choose another lesson
+          * Choose another lesson *
         </OakPrimaryInvertedButton>
       </OakBox>
 
@@ -230,7 +227,7 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
                 }}
               />
             </OakAccordion>
-            <OakAccordion id={"sprompt"} header="System message">
+            <OakAccordion id={"system-prompt"} header="System message">
               <p
                 dangerouslySetInnerHTML={{
                   __html: prompt.systemMessage.replace(/\n/g, "<br />"),
@@ -248,6 +245,7 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
               onChange={(value) => {
                 setAction(value.target.value as SchemaMapType);
                 setModeration(null);
+                setGeneration(null);
               }}
               $flexDirection="column"
             >
@@ -270,7 +268,7 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
             Submit
           </OakPrimaryButton>
 
-          {isLoading && <OakP>Loading...</OakP>}
+          {fetchMaterial.isLoading && <OakP>Loading...</OakP>}
           <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
           {generation && (
             <OakFlex>
@@ -286,7 +284,9 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
               </OakPrimaryButton>
             </OakFlex>
           )}
-          {isLoadingModeration && <OakP>Loading moderation...</OakP>}
+          {fetchMaterialModeration.isLoading && (
+            <OakP>Loading moderation...</OakP>
+          )}
           <OakFlex
             $mt={"space-between-l"}
             $gap={"space-between-m"}

@@ -1,19 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import {
-  OakFlex,
-  OakTextInput,
-  OakHeading,
-  OakPrimaryButton,
-} from "@oaknational/oak-components";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { aiLogger } from "@oakai/logger";
+
+import { OakFlex, OakHeading, OakTextInput } from "@oaknational/oak-components";
 import Link from "next/link";
 
-const LessonFinder = ({ lessons }: { lessons: any }) => {
-  const [searchText, setSearchText] = useState("");
-  const [owaLessons, setOwaLessons] = useState([]);
-  const lessonTitles = lessons.map((lesson: any) => ({
+import { trpc } from "@/utils/trpc";
+
+import type { OakOpenApiSearchSchema } from "../../../../../packages/additional-materials/src/schemas";
+
+type Lesson = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  appId: string;
+  deletedAt: Date | null;
+  userId: string;
+  output: { lessonPlan: LooseLessonPlan } | null;
+};
+
+const LessonFinder = ({ lessons }: { lessons: Lesson[] }) => {
+  const [searchText, setSearchText] = useState<string>("");
+  const [owaLessons, setOwaLessons] = useState<OakOpenApiSearchSchema | []>();
+  const { data, isLoading } = trpc.additionalMaterials.searchOWALesson.useQuery(
+    { query: searchText },
+    { enabled: !!searchText }, // Run query only when searchText is not empty
+  );
+  const lessonTitles = lessons.map((lesson: Lesson) => ({
     sessionId: lesson.id,
     lessonTitle: lesson?.output?.lessonPlan?.title ?? "",
     keyStage: lesson?.output?.lessonPlan?.keyStage ?? "",
@@ -24,16 +40,11 @@ const LessonFinder = ({ lessons }: { lessons: any }) => {
       !!lesson?.output?.lessonPlan?.cycle3,
   }));
 
-  const handleSubmit = async () => {
-    try {
-      const response = await fetch(`/api/search-lesson?q=${searchText}`);
-      const data = await response.json();
-
+  useEffect(() => {
+    if (data && data !== owaLessons) {
       setOwaLessons(data);
-    } catch (e) {
-      console.error("Error fetching lessons:", e);
     }
-  };
+  }, [data, owaLessons]);
 
   return (
     <OakFlex
@@ -49,13 +60,13 @@ const LessonFinder = ({ lessons }: { lessons: any }) => {
         <OakHeading $font={"heading-5"} tag="h1">
           Choose a Oak lesson to test
         </OakHeading>
-        <OakTextInput onChange={(value) => setSearchText(value.target.value)} />
-        <OakPrimaryButton onClick={handleSubmit}>Search</OakPrimaryButton>
+        <OakTextInput onChange={(e) => setSearchText(e.target.value)} />
+
         {searchText &&
           owaLessons &&
-          owaLessons.map((lesson: any) => (
+          owaLessons.map((lesson: OakOpenApiSearchSchema[number]) => (
             <Link href={`/additional-material-spike/owa/${lesson.lessonSlug}`}>
-              {`${lesson.lessonTitle} - ${lesson.units[0].keyStageSlug} - ${lesson.units[0].subjectSlug}`}
+              {`${lesson.lessonTitle} - ${lesson?.units[0]?.keyStageSlug} - ${lesson?.units[0]?.subjectSlug}`}
             </Link>
           ))}
       </OakFlex>
@@ -85,14 +96,12 @@ const LessonFinder = ({ lessons }: { lessons: any }) => {
               return null;
             }
             return (
-              // <OakSpan $mb="space-between-s" $font={"body-3"}>
               <Link
                 key={sessionId}
                 href={`/additional-material-spike/${sessionId}`}
               >
                 {lessonTitle}: {sessionId} : {subject}, {keyStage},
               </Link>
-              // </OakSpan>
             );
           },
         )}
