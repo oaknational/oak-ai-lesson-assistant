@@ -1,5 +1,6 @@
-import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@oakai/db";
+
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 import LessonFinder from "./LessonFinder";

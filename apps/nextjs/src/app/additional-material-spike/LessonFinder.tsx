@@ -2,15 +2,35 @@
 
 import { useEffect, useState } from "react";
 
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import { aiLogger } from "@oakai/logger";
+import { LessonPlanSchemaWhilstStreaming } from "@oakai/aila/src/protocol/schema";
 
 import { OakFlex, OakHeading, OakTextInput } from "@oaknational/oak-components";
+import type { JsonValue } from "@prisma/client/runtime/library";
 import Link from "next/link";
 
 import { trpc } from "@/utils/trpc";
 
 import type { OakOpenApiSearchSchema } from "../../../../../packages/additional-materials/src/schemas";
+
+const getLessonTitle = (lessons: Lesson[]) => {
+  const lessonTitles = lessons.map((lesson) => {
+    const parsedLesson = LessonPlanSchemaWhilstStreaming.parse({
+      // "@ts-expect-error"
+      ...lesson?.output?.lessonPlan,
+    });
+
+    return {
+      sessionId: lesson.id ?? "",
+      lessonTitle: parsedLesson.title ?? "",
+      keyStage: parsedLesson.keyStage ?? "",
+      subject: parsedLesson.subject ?? "",
+      hasThreeCycles:
+        !!parsedLesson.cycle1 && !!parsedLesson.cycle2 && !!parsedLesson.cycle3,
+    };
+  });
+
+  return lessonTitles;
+};
 
 type Lesson = {
   id: string;
@@ -19,26 +39,17 @@ type Lesson = {
   appId: string;
   deletedAt: Date | null;
   userId: string;
-  output: { lessonPlan: LooseLessonPlan } | null;
+  output: JsonValue | null;
 };
 
 const LessonFinder = ({ lessons }: { lessons: Lesson[] }) => {
   const [searchText, setSearchText] = useState<string>("");
   const [owaLessons, setOwaLessons] = useState<OakOpenApiSearchSchema | []>();
-  const { data, isLoading } = trpc.additionalMaterials.searchOWALesson.useQuery(
+  const { data } = trpc.additionalMaterials.searchOWALesson.useQuery(
     { query: searchText },
     { enabled: !!searchText }, // Run query only when searchText is not empty
   );
-  const lessonTitles = lessons.map((lesson: Lesson) => ({
-    sessionId: lesson.id,
-    lessonTitle: lesson?.output?.lessonPlan?.title ?? "",
-    keyStage: lesson?.output?.lessonPlan?.keyStage ?? "",
-    subject: lesson?.output?.lessonPlan?.subject ?? "",
-    hasThreeCycles:
-      !!lesson?.output?.lessonPlan?.cycle1 &&
-      !!lesson?.output?.lessonPlan?.cycle2 &&
-      !!lesson?.output?.lessonPlan?.cycle3,
-  }));
+  const lessonTitles = getLessonTitle(lessons);
 
   useEffect(() => {
     if (data && data !== owaLessons) {
@@ -80,17 +91,17 @@ const LessonFinder = ({ lessons }: { lessons: Lesson[] }) => {
         </OakHeading>
         {lessonTitles.map(
           ({
-            sessionId,
             lessonTitle,
             hasThreeCycles,
             keyStage,
             subject,
+            sessionId,
           }: {
-            sessionId: string;
             lessonTitle: string;
             hasThreeCycles: boolean;
             keyStage: string;
             subject: string;
+            sessionId: string;
           }) => {
             if (!lessonTitle || !hasThreeCycles) {
               return null;
