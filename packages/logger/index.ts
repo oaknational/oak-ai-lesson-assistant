@@ -16,6 +16,7 @@ debugBase.log = console.log.bind(console);
 
 export type LoggerKey =
   | "admin"
+  | "additional-materials"
   | "aila"
   | "aila:analytics"
   | "aila:categorisation"
