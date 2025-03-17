@@ -1,3 +1,15 @@
+# [1.30.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.29.0...v1.30.0) (2025-03-17)
+
+
+### Features
+
+* use cspell to enforce spell-checking ([#610](https://github.com/oaknational/oak-ai-lesson-assistant/issues/610)) ([db7c6c8](https://github.com/oaknational/oak-ai-lesson-assistant/commit/db7c6c8c9c49bc84e12173b32f63c98c0a054db4))
+
+
+### Reverts
+
+* revert prompt schema alignment ([#617](https://github.com/oaknational/oak-ai-lesson-assistant/issues/617)) ([d31eb0f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d31eb0fa7c25b9dac587b72962511ae32040a6a4))
+
 # [1.29.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.28.0...v1.29.0) (2025-03-12)
 
 
