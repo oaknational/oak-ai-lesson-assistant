@@ -1,3 +1,4 @@
+/* eslint-disable @cspell/spellchecker */
 import { extractPatches, parseMessageParts } from "./jsonPatchProtocol";
 
 describe("parseMessageParts", () => {
