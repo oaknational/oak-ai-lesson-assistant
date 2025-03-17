@@ -1,0 +1,16 @@
+import { aiLogger } from "@oakai/logger";
+
+import type { AilaStreamingStatus } from "@/stores/chatStore/types";
+
+import type { LessonPlanGetter, LessonPlanSetter } from "../types";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const log = aiLogger("analytics:lesson:store");
+
+export const handleAilaStreamingStatusUpdated =
+  (set: LessonPlanSetter, get: LessonPlanGetter) =>
+  (streamingStatus: AilaStreamingStatus) => {
+    if (streamingStatus === "Idle") {
+      void get().actions.trackCompletion();
+    }
+  };
