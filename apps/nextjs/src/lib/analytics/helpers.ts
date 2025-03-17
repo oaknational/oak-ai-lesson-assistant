@@ -22,16 +22,18 @@ export type UserAction =
   | "button_retry"
   | "submit_text";
 
-export function getLessonTrackingProps({
-  lesson,
-}: {
-  lesson: LooseLessonPlan;
-}): {
+export type LessonTrackingProps = {
   product: ProductValueType;
   lessonPlanTitle: string;
   subjectSlug: string;
   keyStageSlug: string;
-} {
+};
+
+export function getLessonTrackingProps({
+  lesson,
+}: {
+  lesson: LooseLessonPlan;
+}): LessonTrackingProps {
   return {
     product: "ai lesson assistant",
     lessonPlanTitle: lesson.title ?? "",
