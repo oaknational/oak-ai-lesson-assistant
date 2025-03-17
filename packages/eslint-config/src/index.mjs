@@ -1,3 +1,4 @@
+import cspellPlugin from "@cspell/eslint-plugin";
 import eslint from "@eslint/js";
 import nextPlugin from "@next/eslint-plugin-next";
 import tsEslint from "@typescript-eslint/eslint-plugin";
@@ -21,6 +22,9 @@ import { javascriptRules, rules } from "./rules.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, "../../..");
+
+// Define the path to the .cspell.json file in the root of the monorepo
+const cspellConfigPath = path.resolve(projectRoot, ".cspell.json");
 
 const packages = [
   { dir: "apps/nextjs", isReact: true, isBrowser: true },
@@ -57,6 +61,7 @@ const packageConfigs = packages.map((pkg) => ({
   },
   plugins: {
     "@typescript-eslint": tsEslint,
+    "@cspell": cspellPlugin,
     import: importPlugin,
     jest: jestPlugin,
     turbo: turboPlugin,
@@ -91,6 +96,9 @@ const packageConfigs = packages.map((pkg) => ({
         alwaysTryTypes: true,
       },
       node: true,
+    },
+    "@cspell/spellchecker": {
+      configFile: cspellConfigPath,
     },
   },
 }));
@@ -129,6 +137,9 @@ const config = [
   },
   {
     files: ["**/*.cjs"],
+    plugins: {
+      "@cspell": cspellPlugin,
+    },
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -144,6 +155,11 @@ const config = [
     },
     rules: {
       ...javascriptRules,
+    },
+    settings: {
+      "@cspell/spellchecker": {
+        configFile: cspellConfigPath,
+      },
     },
   },
   {
@@ -163,6 +179,7 @@ const config = [
     },
     plugins: {
       "@typescript-eslint": tsEslint,
+      "@cspell": cspellPlugin,
       import: importPlugin,
     },
     rules: {
@@ -170,6 +187,11 @@ const config = [
       "import/no-commonjs": "off",
       "@typescript-eslint/ban-ts-comment": "off",
       ...javascriptRules,
+    },
+    settings: {
+      "@cspell/spellchecker": {
+        configFile: cspellConfigPath,
+      },
     },
   },
   ...packageConfigs,
@@ -190,6 +212,11 @@ const config = [
     rules: {
       "@typescript-eslint/no-import-type-side-effects": "off",
       "@typescript-eslint/consistent-type-imports": "off",
+    },
+    settings: {
+      "@cspell/spellchecker": {
+        configFile: cspellConfigPath,
+      },
     },
   },
 ];

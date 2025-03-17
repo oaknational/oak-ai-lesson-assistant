@@ -10,7 +10,7 @@ export default function NotFound() {
       <FullPageWarning.Header>404: Page not found</FullPageWarning.Header>
 
       <FullPageWarning.Content>
-        The page you are looking for doesn’t exist. Try going back to the
+        The page you are looking for doesn&apos;t exist. Try going back to the
         previous page, or head to the homepage
       </FullPageWarning.Content>
 
