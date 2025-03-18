@@ -87,12 +87,6 @@ export function mapLessonToSchema(
     }),
     basedOn: undefined,
     starterQuiz: [],
-    // "@ts-expect-error"
-    cycle1: {},
-    // "@ts-expect-error"
-    cycle2: {},
-    // "@ts-expect-error"
-    cycle3: {},
     exitQuiz: [],
     additionalMaterials: "",
   };

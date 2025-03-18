@@ -106,6 +106,9 @@ importers:
       '@mux/mux-player-react':
         specifier: ^2.9.1
         version: 2.9.1(@types/react-dom@18.2.19)(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
+      '@oakai/additional-materials':
+        specifier: '*'
+        version: link:../../packages/additional-materials
       '@oakai/aila':
         specifier: '*'
         version: link:../../packages/aila

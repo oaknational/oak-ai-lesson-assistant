@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 
+import type { OakOpenApiSearchSchema } from "@oakai/additional-materials/src/schemas";
+
 import { OakFlex, OakHeading, OakTextInput } from "@oaknational/oak-components";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { useClientSideFeatureFlag } from "@/components/ContextProviders/FeatureFlagProvider";
 import { trpc } from "@/utils/trpc";
-
-import type { OakOpenApiSearchSchema } from "../../../../../packages/additional-materials/src/schemas";
 
 type AilALessonTitles = {
   sessionId: string;

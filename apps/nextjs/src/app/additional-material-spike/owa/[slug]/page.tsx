@@ -1,8 +1,9 @@
+import { mapLessonToSchema } from "@oakai/additional-materials/src/schemas";
+
 import { notFound } from "next/navigation";
 
 import { getOakOpenAiLessonData } from "@/app/actions";
 
-import { mapLessonToSchema } from "../../../../../../../packages/additional-materials/src/schemas";
 import AdditionalMaterials from "../../AdditionalMaterials";
 
 export default async function AdditionalMaterialsTestPage({

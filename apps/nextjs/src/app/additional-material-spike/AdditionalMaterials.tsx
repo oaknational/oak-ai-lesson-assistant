@@ -3,6 +3,7 @@
 import type { FC } from "react";
 import React, { useEffect, useState } from "react";
 
+import { getPrompt } from "@oakai/additional-materials/src/fetchAdditionalMaterial";
 import type {
   AilaPersistedChat,
   LessonPlanKey,
@@ -29,7 +30,6 @@ import { useClientSideFeatureFlag } from "@/components/ContextProviders/FeatureF
 import Layout from "@/components/Layout";
 import { trpc } from "@/utils/trpc";
 
-import { getPrompt } from "../../../../../packages/additional-materials/src/fetchAdditionalMaterial";
 import {
   type AdditionalMaterialType,
   type SchemaMapType,
