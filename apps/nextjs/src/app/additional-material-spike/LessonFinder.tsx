@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 
 import { OakFlex, OakHeading, OakTextInput } from "@oaknational/oak-components";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
+import { useClientSideFeatureFlag } from "@/components/ContextProviders/FeatureFlagProvider";
 import { trpc } from "@/utils/trpc";
 
 import type { OakOpenApiSearchSchema } from "../../../../../packages/additional-materials/src/schemas";
@@ -24,6 +26,11 @@ const LessonFinder = ({ lessons }: { lessons: AilALessonTitles }) => {
     { query: searchText },
     { enabled: !!searchText },
   );
+  const canSeeSpike = useClientSideFeatureFlag("additional-materials");
+
+  if (!canSeeSpike) {
+    redirect("/");
+  }
 
   useEffect(() => {
     if (owaData && owaData !== owaLessons) {

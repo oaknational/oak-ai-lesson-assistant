@@ -20,10 +20,12 @@ import {
   OakRadioButton,
   OakRadioGroup,
 } from "@oaknational/oak-components";
+import { redirect } from "next/navigation";
 
 import { ComprehensionTask } from "@/components/AppComponents/AdditionalMaterials/ComprehensionTask";
 import { Homework } from "@/components/AppComponents/AdditionalMaterials/Homework";
 import { LessonPlanSectionContent } from "@/components/AppComponents/Chat/drop-down-section/lesson-plan-section-content";
+import { useClientSideFeatureFlag } from "@/components/ContextProviders/FeatureFlagProvider";
 import Layout from "@/components/Layout";
 import { trpc } from "@/utils/trpc";
 
@@ -102,6 +104,12 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
     prompt: string;
     systemMessage: string;
   } | null>(null);
+
+  const canSeeSpike = useClientSideFeatureFlag("additional-materials");
+
+  if (!canSeeSpike) {
+    redirect("/");
+  }
 
   useEffect(() => {
     if (action) {

@@ -7,11 +7,12 @@ import { isTruthy } from "remeda";
 
 import LessonFinder from "./LessonFinder";
 
-export default async function AMSpikePage() {
+export default async function AdditionalMaterialsSpikePage() {
   const clerkAuthentication = auth();
   const { userId }: { userId: string | null } = clerkAuthentication;
+
   if (!userId) {
-    redirect("/sign-in?next=/image-spike");
+    redirect("/");
   }
   const lessons = await prisma.appSession.findMany({
     where: {
