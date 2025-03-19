@@ -4,10 +4,14 @@ import type { FC } from "react";
 import React, { useEffect, useState } from "react";
 
 import { getPrompt } from "@oakai/additional-materials/src/fetchAdditionalMaterial";
-import type {
-  AilaPersistedChat,
-  LessonPlanKey,
-} from "@oakai/aila/src/protocol/schema";
+import {
+  type AdditionalMaterialType,
+  type SchemaMapType,
+  isComprehensionMaterial,
+  isHomeworkMaterial,
+} from "@oakai/additional-materials/src/schemas";
+import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { aiLogger } from "@oakai/logger";
 
 import {
@@ -25,26 +29,20 @@ import { redirect } from "next/navigation";
 
 import { ComprehensionTask } from "@/components/AppComponents/AdditionalMaterials/ComprehensionTask";
 import { Homework } from "@/components/AppComponents/AdditionalMaterials/Homework";
-import { LessonPlanSectionContent } from "@/components/AppComponents/Chat/drop-down-section/lesson-plan-section-content";
+import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 import { useClientSideFeatureFlag } from "@/components/ContextProviders/FeatureFlagProvider";
 import Layout from "@/components/Layout";
 import { trpc } from "@/utils/trpc";
 
-import {
-  type AdditionalMaterialType,
-  type SchemaMapType,
-  isComprehensionMaterial,
-  isHomeworkMaterial,
-} from "../../../../../packages/additional-materials/src/schemas";
-
 const log = aiLogger("additional-materials");
 
-export function mapLessonPlanSections(pageData: AilaPersistedChat) {
-  if (!pageData.lessonPlan) {
+export function mapLessonPlanSections(
+  lessonPlan: AilaPersistedChat["lessonPlan"],
+) {
+  if (!lessonPlan) {
     return [];
   }
 
-  const lessonPlan = pageData.lessonPlan;
   const sectionKeys = [
     "title",
     "keyStage",
@@ -198,20 +196,19 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
         </OakHeading>
         <OakAccordion id={"lesson-plan"} header="Lesson plan">
           <OakFlex $flexDirection="column">
-            {mapLessonPlanSections(
-              pageData as unknown as AilaPersistedChat,
-            ).map((section) => {
+            {mapLessonPlanSections(pageData.lessonPlan).map((section) => {
               return (
                 <>
                   <OakFlex $flexDirection={"column"}>
                     <OakHeading $font={"heading-5"} tag="h2">
                       {section.key}
                     </OakHeading>
-                    <OakFlex>
-                      <LessonPlanSectionContent
-                        sectionKey={section.key as LessonPlanKey}
-                        value={section.data as string}
-                      />
+                    <OakFlex $pv="inner-padding-m">
+                      <OakFlex $flexDirection="column">
+                        <MemoizedReactMarkdownWithStyles
+                          markdown={`${sectionToMarkdown(section.key, section.data)}`}
+                        />
+                      </OakFlex>
                     </OakFlex>
                   </OakFlex>
                 </>
