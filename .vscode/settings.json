@@ -60,12 +60,10 @@
   "jest.runMode": "on-demand",
   "peacock.color": "8DA0D3",
   "typescript.preferences.preferTypeOnlyAutoImports": true,
-  "prettier.useEditorConfig": true,
   "files.associations": {
     "*.css": "tailwindcss"
   },
   "editor.quickSuggestions": {
     "strings": true
-  },
-  "typescript.updateImportsOnFileMove.enabled": "always"
+  }
 }
