@@ -4,6 +4,7 @@ import type {
   GenerationPart,
   GenerationPartPlaceholder,
 } from "@oakai/core/src/types";
+
 import { Text } from "@radix-ui/themes";
 
 function GenerationInputAndText({

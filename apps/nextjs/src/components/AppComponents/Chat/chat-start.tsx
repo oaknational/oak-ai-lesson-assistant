@@ -3,8 +3,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
-import { useUser } from "@clerk/nextjs";
 import { aiLogger } from "@oakai/logger";
+
+import { useUser } from "@clerk/nextjs";
 import { Flex } from "@radix-ui/themes";
 import * as Sentry from "@sentry/nextjs";
 import { useRouter } from "next/navigation";

@@ -1,18 +1,18 @@
-import { useState, useRef, createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 import invariant from "tiny-invariant";
-import { useStore, type StoreApi, type ExtractState } from "zustand";
+import { type ExtractState, type StoreApi, useStore } from "zustand";
 
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import { createChatStore } from "@/stores/chatStore";
 import type { ChatState } from "@/stores/chatStore/types";
 import {
-  createModerationStore,
   type ModerationState,
+  createModerationStore,
 } from "@/stores/moderationStore";
 import { trpc } from "@/utils/trpc";
 
-import { createLessonPlanStore, type LessonPlanState } from "./lessonPlanStore";
+import { type LessonPlanState, createLessonPlanStore } from "./lessonPlanStore";
 
 export type AilaStores = {
   chat: StoreApi<ChatState>;

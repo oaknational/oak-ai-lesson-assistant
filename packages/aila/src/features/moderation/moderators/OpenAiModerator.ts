@@ -3,6 +3,7 @@ import { moderationPrompt } from "@oakai/core/src/utils/ailaModeration/moderatio
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { moderationResponseSchema } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { aiLogger } from "@oakai/logger";
+
 import type OpenAI from "openai";
 import type {
   ChatCompletion,
@@ -10,7 +11,7 @@ import type {
 } from "openai/resources/index.mjs";
 import zodToJsonSchema from "zod-to-json-schema";
 
-import { AilaModerator, AilaModerationError } from ".";
+import { AilaModerationError, AilaModerator } from ".";
 import {
   DEFAULT_MODERATION_MODEL,
   DEFAULT_MODERATION_TEMPERATURE,

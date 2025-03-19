@@ -1,7 +1,8 @@
 import { aiLogger } from "@oakai/logger";
+
 import * as Sentry from "@sentry/nextjs";
 
-import type { AilaErrorSeverity, AilaErrorBreadcrumb } from "../types";
+import type { AilaErrorBreadcrumb, AilaErrorSeverity } from "../types";
 import { AilaErrorReporter } from "./AilaErrorReporter";
 
 const log = aiLogger("aila:errors");

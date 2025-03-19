@@ -3,6 +3,7 @@
 // Then, we can use the errorReporting feature instance
 // to report errors using the correct error reporting back-end
 import { aiLogger } from "@oakai/logger";
+
 import * as Sentry from "@sentry/nextjs";
 
 const log = aiLogger("aila:errors");

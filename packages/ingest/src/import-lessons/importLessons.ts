@@ -6,7 +6,7 @@ import { getDataHash } from "../utils/getDataHash";
 import type { RawLesson } from "../zod-schema/zodSchema";
 import { RawLessonSchema } from "../zod-schema/zodSchema";
 import { graphqlClient } from "./graphql/client";
-import { query, type QueryVariables } from "./graphql/query";
+import { type QueryVariables, query } from "./graphql/query";
 
 const log = aiLogger("ingest");
 

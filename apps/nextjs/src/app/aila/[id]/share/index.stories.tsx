@@ -1,4 +1,5 @@
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";

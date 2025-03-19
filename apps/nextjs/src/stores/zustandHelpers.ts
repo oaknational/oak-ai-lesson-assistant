@@ -1,4 +1,5 @@
-import { aiLogger, type LoggerKey } from "@oakai/logger";
+import { type LoggerKey, aiLogger } from "@oakai/logger";
+
 import type { StoreApi } from "zustand";
 
 export const logStoreUpdates = <T extends object>(

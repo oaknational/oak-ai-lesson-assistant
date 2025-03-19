@@ -1,5 +1,32 @@
 {
   "version": "0.2",
+  "language": "en-GB",
+  "dictionaries": [
+    "en-gb",
+    "companies",
+    "softwareTerms",
+    "misc",
+    "typescript",
+    "node",
+    "html",
+    "css",
+    "filetypes"
+  ],
+  "dictionaryDefinitions": [
+    {
+      "name": "en-gb",
+      "path": "./node_modules/@cspell/dict-en-gb/en_GB.trie.gz",
+      "repMap": [["'|`|'", "'"]],
+      "description": "British English Dictionary"
+    }
+  ],
+  "languageSettings": [
+    {
+      "languageId": "*",
+      "locale": "en-GB",
+      "dictionaries": ["en-gb"]
+    }
+  ],
   "ignorePaths": [
     "pnpm-lock.json",
     "node_modules",

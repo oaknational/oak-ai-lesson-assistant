@@ -1,3 +1,4 @@
+/* eslint-disable @cspell/spellchecker */
 import { aiLogger } from "@oakai/logger";
 
 import type { AilaRagRelevantLesson } from "../../../protocol/schema";

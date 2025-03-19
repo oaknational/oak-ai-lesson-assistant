@@ -8,12 +8,12 @@ import {
   context,
   endingTheInteraction,
   generateResponse,
+  interactingWithTheUser,
   protocol,
   rag,
   schema,
   signOff,
   task,
-  interactingWithTheUser,
 } from "./parts";
 import { currentLessonPlan } from "./parts/currentLessonPlan";
 import { languageAndVoice } from "./parts/languageAndVoice";
