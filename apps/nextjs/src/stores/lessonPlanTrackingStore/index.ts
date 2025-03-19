@@ -1,17 +1,22 @@
+import { aiLogger } from "@oakai/logger";
+
 import { create } from "zustand";
 
+import { exampleMessages } from "@/components/AppComponents/Chat/chat-start";
 import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
+import { ComponentType } from "@/lib/avo/Avo";
 import type { GetStore } from "@/stores/AilaStoresProvider";
 
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleAilaStreamingStatusUpdated } from "./actionFunctions/handleAilaStreamingStatusUpdated";
 import { handleTrackCompletion } from "./actionFunctions/handleTrackStreamingComplete";
+import { handleUserIntent } from "./actionFunctions/handleUserIntent";
 import type { LessonPlanTrackingState } from "./types";
 
 export * from "./types";
 
-// TODO check queueing
-// TODO trigger first message at the right time
+const log = aiLogger("analytics:lesson:store");
+
 export const createLessonPlanTrackingStore = ({
   id,
   getStore,
@@ -25,38 +30,62 @@ export const createLessonPlanTrackingStore = ({
     (set, get) => ({
       id,
 
-      userAction: null,
-      userMessageContent: null,
+      currentMessage: null,
+      queuedMessage: null,
+
+      lastLessonPlan: {},
 
       actions: {
         // Actions to record the user intent
         submittedText: (text: string) => {
-          set({ userAction: "submit_text", userMessageContent: text });
+          handleUserIntent(set, get, {
+            componentType: ComponentType.TYPE_EDIT,
+            text,
+          });
         },
         clickedContinue: () => {
-          set({ userAction: "button_continue", userMessageContent: "" });
+          handleUserIntent(set, get, {
+            componentType: ComponentType.CONTINUE_BUTTON,
+            text: "",
+          });
         },
         clickedRetry: (text: string) => {
-          set({ userAction: "button_retry", userMessageContent: text });
-        },
-        clickedStartFromExample: (text: string) => {
-          set({
-            userAction: "start_from_example",
-            userMessageContent: text,
+          handleUserIntent(set, get, {
+            componentType: ComponentType.REGENERATE_RESPONSE_BUTTON,
+            text,
           });
         },
-        clickedStartFromFreeText: (text: string) => {
-          set({
-            userAction: "start_from_free_text",
-            userMessageContent: text,
-          });
+        clickedStart: (text: string) => {
+          // We can't store the start action as this store won't exist at that point
+          // Instead, infer whether it was started from an example or free text
+          const isExample = exampleMessages.some(
+            (message) => message.message === text,
+          );
+          if (isExample) {
+            handleUserIntent(set, get, {
+              componentType: ComponentType.EXAMPLE_LESSON_BUTTON,
+              text,
+            });
+          } else {
+            handleUserIntent(set, get, {
+              componentType: ComponentType.TEXT_INPUT,
+              text,
+            });
+          }
+        },
+        clickedModify: (text: string) => {
+          log.warn("clickedModify not implemented");
+          // handleUserIntent(set, get, {
+          //   componentType: ComponentType.MODIFY_BUTTON,
+          //   text,
+          // });
         },
 
         // Action to submit the event with the result
         trackCompletion: handleTrackCompletion(set, get, getStore, track),
 
         // Hook into ailaStreamingStatus
-        ailaStreamingStatusChanged: handleAilaStreamingStatusUpdated(set, get),
+        ailaStreamingStatusUpdated: handleAilaStreamingStatusUpdated(set, get),
       },
     }),
   );

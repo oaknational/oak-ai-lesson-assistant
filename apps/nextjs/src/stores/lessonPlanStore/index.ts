@@ -34,7 +34,6 @@ export const createLessonPlanStore = ({
     lessonPlan: {},
     iteration: undefined,
     isAcceptingChanges: false,
-    lastLessonPlan: {},
     isShared: false,
     scrollToSection: null,
 
@@ -49,7 +48,6 @@ export const createLessonPlanStore = ({
         log.info("Message started");
         set({
           isAcceptingChanges: true,
-          lastLessonPlan: get().lessonPlan,
         });
       },
       messagesUpdated: handleMessagesUpdated(set, get),

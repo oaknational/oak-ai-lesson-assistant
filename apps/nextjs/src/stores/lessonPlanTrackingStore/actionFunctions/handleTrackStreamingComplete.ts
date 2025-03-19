@@ -13,58 +13,43 @@ import {
 } from "@/components/AppComponents/Chat/chat-message/protocol";
 import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 import {
-  type UserAction,
   getLessonTrackingProps,
   getModerationTypes,
   isLessonComplete,
 } from "@/lib/analytics/helpers";
-import { ComponentType, type ComponentTypeValueType } from "@/lib/avo/Avo";
+import { ComponentType } from "@/lib/avo/Avo";
 import type { GetStore } from "@/stores/AilaStoresProvider";
 
-import type { LessonPlanGetter, LessonPlanSetter } from "../types";
+import type {
+  LessonPlanTrackingGetter,
+  LessonPlanTrackingSetter,
+} from "../types";
 
 const log = aiLogger("analytics:lesson:store");
 
-function actionToComponentType(
-  action: UserAction | null,
-): ComponentTypeValueType {
-  invariant(action, "actionToComponentType called with null action");
-  switch (action) {
-    case "button_continue":
-      return ComponentType.CONTINUE_BUTTON;
-    case "button_retry":
-      return ComponentType.REGENERATE_RESPONSE_BUTTON;
-    case "start_from_example":
-      return ComponentType.EXAMPLE_LESSON_BUTTON;
-    case "start_from_free_text":
-      return ComponentType.TEXT_INPUT;
-    case "submit_text":
-      return ComponentType.TYPE_EDIT;
-  }
-}
-
 export const handleTrackCompletion =
   (
-    set: LessonPlanSetter,
-    get: LessonPlanGetter,
+    set: LessonPlanTrackingSetter,
+    get: LessonPlanTrackingGetter,
     getStore: GetStore,
     track: TrackFns,
   ) =>
   () => {
+    log.info("handleTrackCompletion");
     try {
       // Get values from this store
-      const { id: chatId, userAction, userMessageContent } = get();
-      if (!userMessageContent || !userAction) {
-        log.error("No recorded action to track");
+      const { id: chatId, currentMessage, lastLessonPlan } = get();
+      if (!currentMessage) {
+        log.error("analytics:lesson:store: No recorded action to track");
         Sentry.captureMessage("No recorded action to track");
         return;
       }
 
       // Get values from other stores
       const { streamingMessage, stableMessages: messages } = getStore("chat");
-      invariant(streamingMessage, "stableMessages isn't up to date");
+      invariant(!streamingMessage, "stableMessages isn't up to date");
       invariant(messages, "stable messages is defined");
-      const { lastLessonPlan, lessonPlan } = getStore("lessonPlan");
+      const { lessonPlan } = getStore("lessonPlan");
 
       const ailaMessageContent = getLastAssistantMessage(messages)?.content;
       if (!ailaMessageContent) {
@@ -74,12 +59,7 @@ export const handleTrackCompletion =
 
       // Shared parts
       const messageParts = parseMessageParts(ailaMessageContent);
-      const patches = messageParts.map((p) => p.document).filter(isPatch);
       const moderation = messageParts.map((p) => p.document).find(isModeration);
-      const accountLocked = messageParts
-        .map((p) => p.document)
-        .some(isAccountLocked);
-      const componentType = actionToComponentType(userAction);
 
       const isFirstMessage =
         messages.filter((message) => message.role === "user").length === 1;
@@ -92,24 +72,26 @@ export const handleTrackCompletion =
           ...getLessonTrackingProps({ lesson: lessonPlan }),
           chatId,
           moderatedContentType: getModerationTypes(moderation),
-          text: userMessageContent,
-          componentType,
+          text: currentMessage.text,
+          componentType: currentMessage.componentType,
         });
       } else {
         /**
          * Lesson plan refined: a user message to the LLM such as an explicit instruction or "continue"
          */
+        const patches = messageParts.map((p) => p.document).filter(isPatch);
         const isSelectingOakLesson = patches.some(
           (patch) => patch.value.path === "/basedOn",
         );
+        const componentType = isSelectingOakLesson
+          ? ComponentType.EXAMPLE_LESSON_BUTTON
+          : currentMessage.componentType;
         track.lessonPlanRefined({
           ...getLessonTrackingProps({ lesson: lessonPlan }),
           chatId,
           moderatedContentType: getModerationTypes(moderation),
-          text: userMessageContent,
-          componentType: isSelectingOakLesson
-            ? "select_oak_lesson"
-            : componentType,
+          text: currentMessage.text,
+          componentType,
           refinements: patches.map((patch) => ({
             refinementPath: patch.value.path,
             refinementType: patch.value.op,
@@ -135,6 +117,9 @@ export const handleTrackCompletion =
       /**
        * Lesson plan terminated: When the user is blocked or the content is flagged toxic
        */
+      const accountLocked = messageParts
+        .map((p) => p.document)
+        .some(isAccountLocked);
       const isTerminated = accountLocked || (moderation && isToxic(moderation)); // @todo: broken for toxic moderation
       if (isTerminated) {
         track.lessonPlanTerminated({
@@ -145,9 +130,11 @@ export const handleTrackCompletion =
         });
       }
     } finally {
+      const { queuedMessage } = get();
       set({
-        userAction: null,
-        userMessageContent: null,
+        currentMessage: queuedMessage,
+        queuedMessage: null,
+        lastLessonPlan: getStore("lessonPlan").lessonPlan,
       });
     }
   };

@@ -10,6 +10,7 @@ import {
   useChatActions,
   useChatStore,
   useLessonPlanStore,
+  useLessonPlanTrackingActions,
 } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
@@ -55,6 +56,7 @@ const ActionButtonWrapper = ({
 
   const id = useLessonPlanStore((state) => state.id);
   const { append } = useChatActions();
+  const lessonPlanTracking = useLessonPlanTrackingActions();
   const { mutateAsync } = trpc.chat.chatFeedback.modifySection.useMutation();
 
   const messages = useChatStore((state) => state.stableMessages);
@@ -78,6 +80,8 @@ const ActionButtonWrapper = ({
   const handleSubmit = async () => {
     if (!selectedRadio) return;
     const message = generateMessage(selectedRadio, userFeedbackText);
+    lessonPlanTracking.clickedModify();
+
     await Promise.all([append(message), recordUserModifySectionContent()]);
     setIsOpen(false);
   };

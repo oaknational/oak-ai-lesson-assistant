@@ -24,7 +24,7 @@ import EmptyScreenAccordion from "./empty-screen-accordion";
 
 const log = aiLogger("chat");
 
-const exampleMessages = [
+export const exampleMessages = [
   {
     heading: "History • Key stage 3 • The end of Roman Britain ",
     message:
