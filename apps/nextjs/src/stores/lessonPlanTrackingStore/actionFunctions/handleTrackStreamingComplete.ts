@@ -1,5 +1,4 @@
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
-import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { aiLogger } from "@oakai/logger";
 

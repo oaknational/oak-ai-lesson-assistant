@@ -6,7 +6,7 @@ import type { ChatState } from "@/stores/chatStore";
 import type { LessonPlanState } from "@/stores/lessonPlanStore";
 
 import { createLessonPlanTrackingStore } from "..";
-import { messages } from "./fixtures";
+import { lessonPlans, messages } from "./fixtures";
 
 const chatStoreMock = {
   getState: jest.fn(),
@@ -64,6 +64,12 @@ describe("lessonPlanTracking tracking", () => {
   describe("lessonPlanInitiated", () => {
     it("tracks when started from an example", () => {
       const store = createLessonPlanTrackingStore(createArgs);
+      const actions = store.getState().actions;
+
+      actions.clickedStart(
+        "Create a lesson plan about the end of Roman Britain for key stage 3 history",
+      );
+
       chatStoreMock.getState.mockReturnValue({
         stableMessages: [
           {
@@ -81,11 +87,7 @@ describe("lessonPlanTracking tracking", () => {
           keyStage: "key-stage-3",
         },
       });
-      const actions = store.getState().actions;
 
-      actions.clickedStart(
-        "Create a lesson plan about the end of Roman Britain for key stage 3 history",
-      );
       actions.trackCompletion();
 
       expect(createArgs.track.lessonPlanInitiated).toHaveBeenCalledWith({
@@ -99,6 +101,10 @@ describe("lessonPlanTracking tracking", () => {
 
     it("tracks when started from free text", () => {
       const store = createLessonPlanTrackingStore(createArgs);
+      const actions = store.getState().actions;
+
+      actions.clickedStart("Make me a custom lesson plan about Roman Britain");
+
       chatStoreMock.getState.mockReturnValue({
         stableMessages: [messages.user1, messages.assistant1],
       });
@@ -109,9 +115,7 @@ describe("lessonPlanTracking tracking", () => {
           keyStage: "key-stage-3",
         },
       });
-      const actions = store.getState().actions;
 
-      actions.clickedStart("Make me a custom lesson plan about Roman Britain");
       actions.trackCompletion();
 
       expect(createArgs.track.lessonPlanInitiated).toHaveBeenCalledWith({
@@ -127,12 +131,18 @@ describe("lessonPlanTracking tracking", () => {
   describe("lessonPlanRefined", () => {
     it("tracks when selecting a RAG lesson", () => {
       const store = createLessonPlanTrackingStore(createArgs);
+      const actions = store.getState().actions;
+
+      actions.submittedText("1");
+
       chatStoreMock.getState.mockReturnValue({
         stableMessages: [
           messages.user1,
           {
             role: "assistant",
             content: "Please pick from the following options:",
+            // TODO: add realistic parts
+            parts: [],
           },
           {
             role: "user",
@@ -141,6 +151,21 @@ describe("lessonPlanTracking tracking", () => {
           {
             role: "assistant",
             content: "Here's your lesson",
+            parts: [
+              {
+                document: {
+                  type: "patch",
+                  value: {
+                    path: "/basedOn",
+                    op: "add",
+                    value: {
+                      id: "based-on-test-id",
+                      title: "Oak Lesson on Romans",
+                    },
+                  },
+                },
+              },
+            ],
           },
         ],
       });
@@ -156,17 +181,18 @@ describe("lessonPlanTracking tracking", () => {
         },
       });
 
-      const actions = store.getState().actions;
-
-      actions.submittedText("1");
       actions.trackCompletion();
 
       expect(createArgs.track.lessonPlanRefined).toHaveBeenCalledWith({
-        componentType: "select_lesson",
+        componentType: "select_oak_lesson",
         text: "1",
         moderatedContentType: null,
-        // TODO: refinements
-        refinements: [],
+        refinements: [
+          {
+            refinementPath: "/basedOn",
+            refinementType: "add",
+          },
+        ],
         ...ragTrackingFields,
         ...commonTrackingFields,
       });
@@ -174,6 +200,10 @@ describe("lessonPlanTracking tracking", () => {
 
     it("tracks when typing free text", () => {
       const store = createLessonPlanTrackingStore(createArgs);
+      const actions = store.getState().actions;
+
+      actions.submittedText("Add more castles");
+
       chatStoreMock.getState.mockReturnValue({
         stableMessages: [
           messages.user1,
@@ -189,9 +219,7 @@ describe("lessonPlanTracking tracking", () => {
           keyStage: "key-stage-3",
         },
       });
-      const actions = store.getState().actions;
 
-      actions.submittedText("Add more castles");
       actions.trackCompletion();
 
       expect(createArgs.track.lessonPlanRefined).toHaveBeenCalledWith({
@@ -207,11 +235,15 @@ describe("lessonPlanTracking tracking", () => {
 
     it("tracks when continuing", () => {
       const store = createLessonPlanTrackingStore(createArgs);
+      const actions = store.getState().actions;
+
+      actions.clickedContinue();
+
       chatStoreMock.getState.mockReturnValue({
         stableMessages: [
           messages.user1,
           messages.assistant1,
-          messages.user2Refinement,
+          messages.user2Continue,
           messages.assistant2Refinement,
         ],
       });
@@ -222,9 +254,7 @@ describe("lessonPlanTracking tracking", () => {
           keyStage: "key-stage-3",
         },
       });
-      const actions = store.getState().actions;
 
-      actions.clickedContinue();
       actions.trackCompletion();
 
       expect(createArgs.track.lessonPlanRefined).toHaveBeenCalledWith({
@@ -242,19 +272,59 @@ describe("lessonPlanTracking tracking", () => {
   describe("lessonPlanCompleted", () => {
     it("tracks when the lesson plan becomes completed", () => {
       const store = createLessonPlanTrackingStore(createArgs);
+      store.setState({
+        lastLessonPlan: { ...lessonPlans.completed, exitQuiz: undefined },
+      });
       const actions = store.getState().actions;
 
-      // TODO: less plan state diff
+      actions.clickedContinue();
+
+      chatStoreMock.getState.mockReturnValue({
+        stableMessages: [
+          messages.user1,
+          messages.assistant1,
+          messages.user2Continue,
+          messages.assistant2Refinement,
+        ],
+      });
+      lessonPlanStoreMock.getState.mockReturnValue({
+        lessonPlan: lessonPlans.completed,
+      });
       actions.trackCompletion();
 
-      expect(createArgs.track.lessonPlanCompleted).toHaveBeenCalledWith({});
+      expect(createArgs.track.lessonPlanCompleted).toHaveBeenCalledWith({
+        moderatedContentType: null,
+        // TODO: fixture is for software testing techniques
+        ...ragTrackingFields,
+        ...commonTrackingFields,
+      });
     });
 
     it("doesn't track when the lesson plan is not completed", () => {
       const store = createLessonPlanTrackingStore(createArgs);
+      const lessonPlanWithoutExitQuiz = {
+        ...lessonPlans.completed,
+        exitQuiz: undefined,
+      };
+      store.setState({
+        lastLessonPlan: lessonPlanWithoutExitQuiz,
+      });
       const actions = store.getState().actions;
 
       // TODO: less plan state diff
+      actions.clickedContinue();
+
+      chatStoreMock.getState.mockReturnValue({
+        stableMessages: [
+          messages.user1,
+          messages.assistant1,
+          messages.user2Continue,
+          messages.assistant2Refinement,
+        ],
+      });
+      lessonPlanStoreMock.getState.mockReturnValue({
+        lessonPlan: lessonPlanWithoutExitQuiz,
+      });
       actions.trackCompletion();
 
       expect(createArgs.track.lessonPlanCompleted).not.toHaveBeenCalled();
@@ -262,9 +332,24 @@ describe("lessonPlanTracking tracking", () => {
 
     it("doesn't track when the lesson plan is already completed", () => {
       const store = createLessonPlanTrackingStore(createArgs);
+      store.setState({
+        lastLessonPlan: lessonPlans.completed,
+      });
       const actions = store.getState().actions;
 
-      // TODO: less plan state diff
+      actions.clickedContinue();
+
+      chatStoreMock.getState.mockReturnValue({
+        stableMessages: [
+          messages.user1,
+          messages.assistant1,
+          messages.user2Continue,
+          messages.assistant2Refinement,
+        ],
+      });
+      lessonPlanStoreMock.getState.mockReturnValue({
+        lessonPlan: lessonPlans.completed,
+      });
       actions.trackCompletion();
 
       expect(createArgs.track.lessonPlanCompleted).not.toHaveBeenCalled();
@@ -293,5 +378,8 @@ describe("lessonPlanTracking tracking", () => {
 
       expect(createArgs.track.lessonPlanTerminated).toHaveBeenCalledWith({});
     });
+
+    // NOTE: not applicable as a threat doesn't terminate the chat
+    it.skip("tracks when a threat is detected");
   });
 });
