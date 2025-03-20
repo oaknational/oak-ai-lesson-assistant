@@ -49,17 +49,11 @@ export const handleTrackCompletion =
     invariant(!streamingMessage, "stableMessages isn't up to date");
     const { lessonPlan } = getStore("lessonPlan");
 
-    const ailaMessageContent = getLastAssistantMessage(messages)?.content;
-    if (!ailaMessageContent) {
-      log.warn("No assistant message content found");
-      Sentry.captureMessage("No assistant message content found");
-      return;
-    }
-
-    // Shared parts
-    const messageParts = parseMessageParts(ailaMessageContent);
-    const moderation = messageParts.map((p) => p.document).find(isModeration);
-
+    const messageParts = getLastAssistantMessage(messages)?.parts;
+    invariant(messageParts, "No assistant message found");
+    const moderation = messageParts
+      .map((part) => part.document)
+      .find(isModeration);
     const isFirstMessage =
       messages.filter((message) => message.role === "user").length === 1;
 
