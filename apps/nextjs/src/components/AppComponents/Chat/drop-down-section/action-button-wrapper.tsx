@@ -80,7 +80,7 @@ const ActionButtonWrapper = ({
   const handleSubmit = async () => {
     if (!selectedRadio) return;
     const message = generateMessage(selectedRadio, userFeedbackText);
-    lessonPlanTracking.clickedModify();
+    lessonPlanTracking.clickedModify(message);
 
     await Promise.all([append(message), recordUserModifySectionContent()]);
     setIsOpen(false);

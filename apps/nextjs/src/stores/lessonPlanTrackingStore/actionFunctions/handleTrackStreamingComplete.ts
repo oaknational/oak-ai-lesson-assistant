@@ -36,105 +36,94 @@ export const handleTrackCompletion =
   ) =>
   () => {
     log.info("handleTrackCompletion");
-    try {
-      // Get values from this store
-      const { id: chatId, currentMessage, lastLessonPlan } = get();
-      if (!currentMessage) {
-        log.error("analytics:lesson:store: No recorded action to track");
-        Sentry.captureMessage("No recorded action to track");
-        return;
-      }
+    // Get values from this store
+    const { id: chatId, currentMessage, lastLessonPlan } = get();
+    if (!currentMessage) {
+      log.error("analytics:lesson:store: No recorded action to track");
+      Sentry.captureMessage("No recorded action to track");
+      return;
+    }
 
-      // Get values from other stores
-      const { streamingMessage, stableMessages: messages } = getStore("chat");
-      invariant(!streamingMessage, "stableMessages isn't up to date");
-      invariant(messages, "stable messages is defined");
-      const { lessonPlan } = getStore("lessonPlan");
+    // Get values from other stores
+    const { streamingMessage, stableMessages: messages } = getStore("chat");
+    invariant(!streamingMessage, "stableMessages isn't up to date");
+    const { lessonPlan } = getStore("lessonPlan");
 
-      const ailaMessageContent = getLastAssistantMessage(messages)?.content;
-      if (!ailaMessageContent) {
-        log.warn("No assistant message content found");
-        return;
-      }
+    const ailaMessageContent = getLastAssistantMessage(messages)?.content;
+    if (!ailaMessageContent) {
+      log.warn("No assistant message content found");
+      Sentry.captureMessage("No assistant message content found");
+      return;
+    }
 
-      // Shared parts
-      const messageParts = parseMessageParts(ailaMessageContent);
-      const moderation = messageParts.map((p) => p.document).find(isModeration);
+    // Shared parts
+    const messageParts = parseMessageParts(ailaMessageContent);
+    const moderation = messageParts.map((p) => p.document).find(isModeration);
 
-      const isFirstMessage =
-        messages.filter((message) => message.role === "user").length === 1;
+    const isFirstMessage =
+      messages.filter((message) => message.role === "user").length === 1;
 
-      if (isFirstMessage) {
-        /**
-         * Lesson plan initiated: When the user starts a lesson plan
-         */
-        track.lessonPlanInitiated({
-          ...getLessonTrackingProps({ lesson: lessonPlan }),
-          chatId,
-          moderatedContentType: getModerationTypes(moderation),
-          text: currentMessage.text,
-          componentType: currentMessage.componentType,
-        });
-      } else {
-        /**
-         * Lesson plan refined: a user message to the LLM such as an explicit instruction or "continue"
-         */
-        const patches = messageParts.map((p) => p.document).filter(isPatch);
-        const isSelectingOakLesson = patches.some(
-          (patch) => patch.value.path === "/basedOn",
-        );
-        const componentType = isSelectingOakLesson
-          ? ComponentType.EXAMPLE_LESSON_BUTTON
-          : currentMessage.componentType;
-        track.lessonPlanRefined({
-          ...getLessonTrackingProps({ lesson: lessonPlan }),
-          chatId,
-          moderatedContentType: getModerationTypes(moderation),
-          text: currentMessage.text,
-          componentType,
-          refinements: patches.map((patch) => ({
-            refinementPath: patch.value.path,
-            refinementType: patch.value.op,
-          })),
-        });
-      }
-
+    if (isFirstMessage) {
       /**
-       * Lesson plan completed: When the user finishes a lesson plan
+       * Lesson plan initiated: When the user starts a lesson plan
        */
-      // TODO: confirm timings of lastLessonPlan.
-      // TODO: store lastLessonPlan in the store
-      const becameComplete =
-        !isLessonComplete(lastLessonPlan) && isLessonComplete(lessonPlan);
-      if (becameComplete) {
-        track.lessonPlanCompleted({
-          ...getLessonTrackingProps({ lesson: lessonPlan }),
-          chatId,
-          moderatedContentType: getModerationTypes(moderation),
-        });
-      }
-
+      track.lessonPlanInitiated({
+        ...getLessonTrackingProps({ lesson: lessonPlan }),
+        chatId,
+        moderatedContentType: getModerationTypes(moderation),
+        text: currentMessage.text,
+        componentType: currentMessage.componentType,
+      });
+    } else {
       /**
-       * Lesson plan terminated: When the user is blocked or the content is flagged toxic
+       * Lesson plan refined: a user message to the LLM such as an explicit instruction or "continue"
        */
-      const accountLocked = messageParts
-        .map((p) => p.document)
-        .some(isAccountLocked);
-      const isTerminated = accountLocked || (moderation && isToxic(moderation)); // @todo: broken for toxic moderation
-      if (isTerminated) {
-        track.lessonPlanTerminated({
-          chatId,
-          isUserBlocked: accountLocked,
-          isToxicContent: moderation ? isToxic(moderation) : false,
-          isThreatDetected: false, // @fixme currently we can't access threat detection here
-        });
-      }
-    } finally {
-      const { queuedMessage } = get();
-      set({
-        currentMessage: queuedMessage,
-        queuedMessage: null,
-        lastLessonPlan: getStore("lessonPlan").lessonPlan,
+      const patches = messageParts.map((p) => p.document).filter(isPatch);
+      const isSelectingOakLesson = patches.some(
+        (patch) => patch.value.path === "/basedOn",
+      );
+      const componentType = isSelectingOakLesson
+        ? ComponentType.SELECT_OAK_LESSON
+        : currentMessage.componentType;
+      track.lessonPlanRefined({
+        ...getLessonTrackingProps({ lesson: lessonPlan }),
+        chatId,
+        moderatedContentType: getModerationTypes(moderation),
+        text: currentMessage.text,
+        componentType,
+        refinements: patches.map((patch) => ({
+          refinementPath: patch.value.path,
+          refinementType: patch.value.op,
+        })),
+      });
+    }
+
+    /**
+     * Lesson plan completed: When the user finishes a lesson plan
+     */
+    const becameComplete =
+      !isLessonComplete(lastLessonPlan) && isLessonComplete(lessonPlan);
+    if (becameComplete) {
+      track.lessonPlanCompleted({
+        ...getLessonTrackingProps({ lesson: lessonPlan }),
+        chatId,
+        moderatedContentType: getModerationTypes(moderation),
+      });
+    }
+
+    /**
+     * Lesson plan terminated: When the user is blocked or the content is flagged toxic
+     */
+    const accountLocked = messageParts
+      .map((p) => p.document)
+      .some(isAccountLocked);
+    const isTerminated = accountLocked || (moderation && isToxic(moderation)); // @todo: broken for toxic moderation
+    if (isTerminated) {
+      track.lessonPlanTerminated({
+        chatId,
+        isUserBlocked: accountLocked,
+        isToxicContent: moderation ? isToxic(moderation) : false,
+        isThreatDetected: false, // @fixme currently we can't access threat detection here
       });
     }
   };

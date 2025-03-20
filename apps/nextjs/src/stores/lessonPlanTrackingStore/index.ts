@@ -7,8 +7,8 @@ import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 import { ComponentType } from "@/lib/avo/Avo";
 import type { GetStore } from "@/stores/AilaStoresProvider";
 
+import type { AilaStreamingStatus } from "../chatStore";
 import { logStoreUpdates } from "../zustandHelpers";
-import { handleAilaStreamingStatusUpdated } from "./actionFunctions/handleAilaStreamingStatusUpdated";
 import { handleTrackCompletion } from "./actionFunctions/handleTrackStreamingComplete";
 import { handleUserIntent } from "./actionFunctions/handleUserIntent";
 import type { LessonPlanTrackingState } from "./types";
@@ -74,7 +74,7 @@ export const createLessonPlanTrackingStore = ({
           }
         },
         clickedModify: (text: string) => {
-          log.warn("clickedModify not implemented");
+          log.warn("clickedModify not implemented", text);
           // handleUserIntent(set, get, {
           //   componentType: ComponentType.MODIFY_BUTTON,
           //   text,
@@ -84,8 +84,26 @@ export const createLessonPlanTrackingStore = ({
         // Action to submit the event with the result
         trackCompletion: handleTrackCompletion(set, get, getStore, track),
 
+        prepareForNextMessage: () => {
+          const { queuedMessage } = get();
+          // TODO: behaviour to unqueue when cancelling
+          set({
+            currentMessage: queuedMessage,
+            queuedMessage: null,
+            lastLessonPlan: getStore("lessonPlan").lessonPlan,
+          });
+        },
+
         // Hook into ailaStreamingStatus
-        ailaStreamingStatusUpdated: handleAilaStreamingStatusUpdated(set, get),
+        ailaStreamingStatusUpdated: (streamingStatus: AilaStreamingStatus) => {
+          if (streamingStatus === "Idle") {
+            try {
+              get().actions.trackCompletion();
+            } finally {
+              get().actions.prepareForNextMessage();
+            }
+          }
+        },
       },
     }),
   );

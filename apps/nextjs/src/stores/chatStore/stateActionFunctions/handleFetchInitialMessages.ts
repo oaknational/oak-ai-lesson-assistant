@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import invariant from "tiny-invariant";
 
-import { GetStore } from "@/stores/AilaStoresProvider";
+import type { GetStore } from "@/stores/AilaStoresProvider";
 import type { TrpcUtils } from "@/utils/trpc";
 
 import type { AiMessage, ChatGetter, ChatSetter } from "../types";

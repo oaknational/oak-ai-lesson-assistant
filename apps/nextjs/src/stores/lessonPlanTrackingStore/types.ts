@@ -30,6 +30,8 @@ export type LessonPlanTrackingState = {
     // Action to submit the event with the result
     trackCompletion: () => void;
 
+    prepareForNextMessage: () => void;
+
     // Hook into ailaStreamingStatus
     ailaStreamingStatusUpdated: (status: AilaStreamingStatus) => void;
   };
