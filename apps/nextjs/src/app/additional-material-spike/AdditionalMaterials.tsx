@@ -3,7 +3,7 @@
 import type { FC } from "react";
 import React, { useEffect, useState } from "react";
 
-import { getPrompt } from "@oakai/additional-materials/src/fetchAdditionalMaterial";
+import { getPrompt } from "@oakai/additional-materials/src/helpers";
 import {
   type AdditionalMaterialType,
   type SchemaMapType,
