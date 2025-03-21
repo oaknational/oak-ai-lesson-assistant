@@ -1,10 +1,5 @@
-import { aiLogger } from "@oakai/logger";
-
-import * as Sentry from "@sentry/nextjs";
-import { z } from "zod";
-
-import { fetchAdditionalMaterial } from "../../../additional-materials/src/fetchAdditionalMaterial";
-import { fetchAdditionalMaterialModeration } from "../../../additional-materials/src/fetchAdditionalMaterialModeration";
+import { fetchAdditionalMaterial } from "@oakai/additional-materials/src/fetchAdditionalMaterial";
+import { fetchAdditionalMaterialModeration } from "@oakai/additional-materials/src/fetchAdditionalMaterialModeration";
 import {
   type AdditionalMaterialType,
   type OakOpenAiLessonSummary,
@@ -13,7 +8,12 @@ import {
   oakOpenAiLessonSummarySchema,
   oakOpenAiTranscriptSchema,
   oakOpenApiSearchSchema,
-} from "../../../additional-materials/src/schemas";
+} from "@oakai/additional-materials/src/schemas";
+import { aiLogger } from "@oakai/logger";
+
+import * as Sentry from "@sentry/nextjs";
+import { z } from "zod";
+
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 
@@ -32,7 +32,7 @@ export const additionalMaterialsRouter = router({
     )
     .mutation(async ({ ctx, input }): Promise<AdditionalMaterialType> => {
       const { lessonPlan, action, message, previousOutput } = input;
-      log.info("fetching additional materials", ctx);
+      log.info("fetching additional materials");
 
       try {
         const result = await fetchAdditionalMaterial({
@@ -42,7 +42,7 @@ export const additionalMaterialsRouter = router({
           previousOutput,
         });
 
-        return result;
+        return result as AdditionalMaterialType;
       } catch (cause) {
         const TrpcError = new Error("Failed to fetch additional material", {
           cause,

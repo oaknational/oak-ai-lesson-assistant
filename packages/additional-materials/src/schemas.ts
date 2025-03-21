@@ -158,9 +158,12 @@ export const schemaMap = {
   "additional-comprehension": comprehensionTaskSchema,
   "additional-homework": homeworkMaterialSchema,
   "additional-science-practical-activity": sciencePracticalActivity,
-};
+} as const;
 
-export type SchemaMapType = keyof typeof schemaMap;
+export type SchemaMap = typeof schemaMap;
+export type SchemaKey = keyof SchemaMap;
+export type SchemaOutput<K extends SchemaKey> = z.infer<SchemaMap[K]>;
+
 export type HomeworkMaterialType = z.infer<typeof homeworkMaterialSchema>;
 export type ComprehensionTaskType = z.infer<typeof comprehensionTaskSchema>;
 export type SciencePracticalActivityType = z.infer<
@@ -172,7 +175,7 @@ export type AdditionalMaterialType =
   | ComprehensionTaskType
   | SciencePracticalActivityType;
 
-export const isValidSchemaKey = (key: string): key is SchemaMapType => {
+export const isValidSchemaKey = (key: string): key is SchemaKey => {
   return key in schemaMap;
 };
 
