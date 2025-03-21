@@ -85,12 +85,16 @@ export const createLessonPlanTrackingStore = ({
 
         prepareForNextMessage: () => {
           const { queuedMessage } = get();
-          // TODO: behaviour to unqueue when cancelling
           set({
             currentMessage: queuedMessage,
             queuedMessage: null,
             lastLessonPlan: getStore("lessonPlan").lessonPlan,
           });
+        },
+        clearQueuedIntent: () => {
+          if (get().queuedMessage) {
+            set({ queuedMessage: null });
+          }
         },
 
         // Hook into ailaStreamingStatus

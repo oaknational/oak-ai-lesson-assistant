@@ -116,6 +116,7 @@ const QuickActionButtons = () => {
             variant="text-link"
             onClick={() => {
               trackEvent("chat:stop_generating");
+              lessonPlanTracking.clearQueuedIntent();
               stop();
             }}
             testId="chat-stop"

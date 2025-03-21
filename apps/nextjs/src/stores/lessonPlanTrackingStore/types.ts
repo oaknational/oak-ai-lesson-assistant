@@ -36,6 +36,7 @@ export type LessonPlanTrackingState = {
     trackCompletion: () => void;
 
     prepareForNextMessage: () => void;
+    clearQueuedIntent: () => void;
 
     // Hook into ailaStreamingStatus
     ailaStreamingStatusUpdated: (status: AilaStreamingStatus) => void;

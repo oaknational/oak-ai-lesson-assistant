@@ -318,7 +318,7 @@ describe("lessonPlanTracking tracking", () => {
         ],
       });
       lessonPlanStoreMock.getState.mockReturnValue({
-        lessonPlan: lessonPlans.completedExceptExitQuiz,
+        lessonPlan: lessonPlanWithoutExitQuiz,
       });
       actions.trackCompletion();
 
