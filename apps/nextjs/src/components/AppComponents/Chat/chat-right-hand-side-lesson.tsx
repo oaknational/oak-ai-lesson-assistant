@@ -1,11 +1,17 @@
-import React, { useRef, useState } from "react";
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
+
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import scrollIntoView from "scroll-into-view-if-needed";
 
-import { useChatStore } from "@/stores/AilaStoresProvider";
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 
 import AiIcon from "../../AiIcon";
 import type { DemoContextProps } from "../../ContextProviders/Demo";
+import { useDialog } from "../DialogContext";
 import LessonPlanDisplay from "./chat-lessonPlanDisplay";
 import ExportButtons from "./export-buttons";
 import { LessonPlanProgressBar } from "./export-buttons/LessonPlanProgressBar";
@@ -26,10 +32,13 @@ const ChatRightHandSideLesson = ({
   const hasResponses = useChatStore((state) => state.stableMessages.length > 1);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
-
+  const lessonId = useLessonPlanStore((state) => state.id);
   const documentContainerRef = useRef<HTMLDivElement>(null);
-
+  const [translatedLessonPlan, setTranslatedLessonPlan] =
+    useState<LooseLessonPlan | null>(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const { setDialogWindow, dialogWindow, dialogProps } = useDialog();
+  const { t, language } = useTranslation();
 
   const scrollToBottom = () => {
     if (chatEndRef.current) {
@@ -52,6 +61,20 @@ const ChatRightHandSideLesson = ({
       }
     }
   };
+
+  useEffect(() => {
+    // Checks when dialog changes
+    const translatedLessonPlan =
+      localStorage.getItem(`${lessonId}-translatedLessonPlan`) ?? "";
+    if (!translatedLessonPlan) {
+      return;
+    }
+    const parsedTranslatedLessonPlan: LooseLessonPlan =
+      JSON.parse(translatedLessonPlan);
+    if (translatedLessonPlan) {
+      setTranslatedLessonPlan(parsedTranslatedLessonPlan);
+    }
+  }, [dialogWindow, lessonId]);
 
   const endOfDocRef = useRef<HTMLDivElement>(null);
 
@@ -79,14 +102,23 @@ const ChatRightHandSideLesson = ({
       >
         <LessonPlanProgressBar />
       </button>
-
+      {language === "en" && (
+        <button
+          className="sticky left-0 top-32 z-10 block w-fit bg-red-500 px-14 pb-9 pt-12"
+          onClick={() => setDialogWindow("translate-window")}
+        >
+          {t("chat.translateLesson")}
+        </button>
+      )}
       <div className="w-full pt-9 sm:pt-20">
         <LessonPlanDisplay
           showLessonMobile={showLessonMobile}
           chatEndRef={chatEndRef}
           documentContainerRef={documentContainerRef}
+          translatedLessonPlan={translatedLessonPlan}
         />
       </div>
+
       <div
         className={`${hasResponses && showLessonMobile ? "flex" : "hidden"} fixed bottom-20 left-0 right-0 items-center justify-center duration-150 sm:hidden`}
       >
@@ -98,7 +130,7 @@ const ChatRightHandSideLesson = ({
           }}
         >
           <AiIcon color="white" />
-          Continue building
+          {t("chat.continueBuilding")}
         </ChatButton>
       </div>
       <span
@@ -111,7 +143,7 @@ const ChatRightHandSideLesson = ({
             scrollToBottom();
           }}
         >
-          View more
+          {t("chat.viewMore")}
         </ChatButton>
       </span>
       <div ref={endOfDocRef} />

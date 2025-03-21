@@ -5,6 +5,7 @@ import * as React from "react";
 import { OakFlex, OakSpan } from "@oaknational/oak-components";
 
 import BinIcon from "@/components/BinIcon";
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
 
 import { useDialog } from "../DialogContext";
 
@@ -14,6 +15,8 @@ type ClearHistoryProps = {
 
 export function ClearHistory({ isEnabled }: Readonly<ClearHistoryProps>) {
   const { setDialogWindow, setOpenSidebar } = useDialog();
+  const { t } = useTranslation();
+
   if (!isEnabled) {
     return null;
   }
@@ -31,7 +34,7 @@ export function ClearHistory({ isEnabled }: Readonly<ClearHistoryProps>) {
         }}
       >
         <OakSpan $font="body-3-bold" $color="black" $textDecoration="none">
-          Delete all lessons
+          {t("sidebar.clearHistory")}
         </OakSpan>
       </button>
     </OakFlex>

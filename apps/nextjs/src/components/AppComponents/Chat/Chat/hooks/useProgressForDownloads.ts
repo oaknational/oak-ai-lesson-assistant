@@ -8,6 +8,8 @@ import { lessonPlanSectionsSchema } from "@oakai/exports/src/schema/input.schema
 
 import type { ZodIssue } from "zod";
 
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
+
 export type ProgressForDownloads = {
   sections: ProgressSection[];
   totalSections: number;
@@ -42,6 +44,8 @@ export function useProgressForDownloads({
   lessonPlan: LooseLessonPlan;
   isStreaming: boolean;
 }): ProgressForDownloads {
+  const { t } = useTranslation();
+
   return useMemo(() => {
     const parsedLessonPlan = lessonPlanSectionsSchema.safeParse(lessonPlan);
     const errors =
@@ -71,52 +75,52 @@ export function useProgressForDownloads({
 
     const sections: ProgressSection[] = [
       {
-        label: "Lesson details",
+        label: t("progressDropdown.lessonDetails"),
         key: "title",
         complete: getCompleteness(errors, ["title", "subject", "keyStage"]),
       },
       {
-        label: "Learning outcome",
+        label: t("progressDropdown.learningOutcome"),
         key: "learningOutcome",
         complete: getCompleteness(errors, ["learningOutcome"]),
       },
       {
-        label: "Learning cycle outcomes",
+        label: t("progressDropdown.learningCycleOutcomes"),
         key: "learningCycles",
         complete: getCompleteness(errors, ["learningCycles"]),
       },
       {
-        label: "Prior knowledge",
+        label: t("progressDropdown.priorKnowledge"),
         key: "priorKnowledge",
         complete: getCompleteness(errors, ["priorKnowledge"]),
       },
       {
-        label: "Key learning points",
+        label: t("progressDropdown.keyLearningPoints"),
         key: "keyLearningPoints",
         complete: getCompleteness(errors, ["keyLearningPoints"]),
       },
       {
-        label: "Misconceptions",
+        label: t("progressDropdown.misconceptions"),
         key: "misconceptions",
         complete: getCompleteness(errors, ["misconceptions"]),
       },
       {
-        label: "Keywords",
+        label: t("progressDropdown.keywords"),
         key: "keywords",
         complete: getCompleteness(errors, ["keywords"]),
       },
       {
-        label: "Starter quiz",
+        label: t("progressDropdown.starterQuiz"),
         key: "starterQuiz",
         complete: getCompleteness(errors, ["starterQuiz"]),
       },
       {
-        label: "Learning cycles",
+        label: t("progressDropdown.learningCycles"),
         key: "cycle1",
         complete: getCompleteness(errors, ["cycle1", "cycle2", "cycle3"]),
       },
       {
-        label: "Exit quiz",
+        label: t("progressDropdown.exitQuiz"),
         key: "exitQuiz",
         complete: getCompleteness(errors, ["exitQuiz"]),
       },
@@ -132,5 +136,5 @@ export function useProgressForDownloads({
       totalSections,
       totalSectionsComplete,
     };
-  }, [lessonPlan, isStreaming]);
+  }, [lessonPlan, isStreaming, t]);
 }

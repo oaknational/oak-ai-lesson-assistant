@@ -66,7 +66,12 @@ async function setupChatHandler(req: NextRequest) {
         numberOfRecordsInRag: chatOptions.numberOfRecordsInRag ?? 5,
         usePersistence: true,
         useModeration: true,
+        language: chatOptions.language,
       };
+
+      // Log the options for debugging
+      log.info(`Chat options: ${JSON.stringify(options)}`);
+      log.info(`Language parameter explicitly: ${options.language}`);
 
       const llmService = getFixtureLLMService(req.headers, chatId);
       const moderationAiClient = getFixtureModerationOpenAiClient(
@@ -318,6 +323,14 @@ async function createAilaInstance({
     "chat-create-aila",
     { chat_id: chatId, user_id: userId },
     async (): Promise<Aila> => {
+      console.log("====== CRITICAL API HANDLER DEBUG ======");
+      console.log(`Received language from AiSdk: ${options.language}`);
+      console.log("Using original language value from request");
+      console.log(`Final language being used: ${options.language}`);
+      console.log("====== END CRITICAL API HANDLER DEBUG ======");
+
+      log.info(`Creating Aila with language: ${options.language}`);
+
       const ailaOptions: Partial<AilaInitializationOptions> = {
         options,
         chat: {

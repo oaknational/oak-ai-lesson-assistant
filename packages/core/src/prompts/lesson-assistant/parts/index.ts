@@ -10,3 +10,4 @@ export { schema } from "./schema";
 export { signOff } from "./signOff";
 export { task } from "./task";
 export { interactingWithTheUser } from "./interactingWithTheUser";
+export { languageInstruction } from "./languageInstruction";

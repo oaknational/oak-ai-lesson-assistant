@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { Box, Flex } from "@radix-ui/themes";
 
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
 import LoadingWheel from "@/components/LoadingWheel";
 
 type GeneratingProps = {
@@ -16,6 +17,7 @@ const Generating = ({
   showTime = true,
 }: Readonly<GeneratingProps>) => {
   const fallbackDuration = 18000;
+  const { t } = useTranslation();
 
   // Calculate the duration in seconds, padding it by 2 to err on the
   // side of returning early rather than late
@@ -40,15 +42,15 @@ const Generating = ({
           <>
             {countdown > 0 ? (
               <Flex direction="column">
-                <p className="mb-2 text-sm">Working on it! </p>
+                <p className="mb-2 text-sm">
+                  {t("chat.workingOnItExclamation")}{" "}
+                </p>
                 <p className="text-sm opacity-80">
-                  Average time for this request: {countdown}s
+                  {t("chat.averageTime", { seconds: countdown })}
                 </p>
               </Flex>
             ) : (
-              <p className="max-w-[260px] text-sm">
-                This is taking longer than usual, just one more moment
-              </p>
+              <p className="max-w-[260px] text-sm">{t("chat.takingLonger")}</p>
             )}
           </>
         ) : null}

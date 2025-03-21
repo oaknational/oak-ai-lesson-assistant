@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/AppComponents/Chat/ui/button";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import useAnalytics from "@/lib/analytics/useAnalytics";
@@ -24,11 +25,12 @@ import EmptyScreenAccordion from "./empty-screen-accordion";
 
 const log = aiLogger("chat");
 
-const exampleMessages = [
+const exampleMessages = (
+  t: (key: string, replacements?: Record<string, string | number>) => string,
+) => [
   {
-    heading: "History • Key stage 3 • The end of Roman Britain ",
-    message:
-      "Create a lesson plan about the end of Roman Britain for key stage 3 history",
+    heading: t("chat.historyExample"),
+    message: t("chat.exampleMessage"),
   },
 ];
 
@@ -55,11 +57,13 @@ export function ChatStart({
   const demo = useDemoUser();
   const createAppSession = trpc.chat.appSessions.create.useMutation();
   const trpcUtils = trpc.useUtils();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (keyStage || subject || unitTitle || searchExpression) {
       setInput(
         createStartingPromptFromSearchParams(
+          t,
           keyStage,
           subject,
           unitTitle,
@@ -67,7 +71,7 @@ export function ChatStart({
         ),
       );
     }
-  }, [keyStage, subject, unitTitle, searchExpression]);
+  }, [keyStage, subject, unitTitle, searchExpression, t]);
 
   const create = useCallback(
     async (message: string) => {
@@ -129,6 +133,8 @@ export function ChatStart({
     });
   }, [create, input]);
 
+  const messages = React.useMemo(() => exampleMessages(t), [t]);
+
   return (
     <DialogRoot>
       <DialogContents
@@ -150,18 +156,18 @@ export function ChatStart({
                     data-testid="chat-h1"
                     className="mb-11 text-3xl font-semibold capitalize"
                   >
-                    Hello{userFirstName ? ", " + userFirstName : ""}
+                    {t("common.hello")}
+                    {userFirstName ? ", " + userFirstName : ""}
                   </h1>
                   <p className="mb-7 text-base leading-normal">
-                    I&apos;m Aila, Oak&apos;s AI lesson assistant.
+                    {t("chat.greeting")}
                     <br />
-                    Tell me what you want to teach and I&apos;ll help you create
-                    your lesson.
+                    {t("chat.instruction")}
                   </p>
                 </div>
                 <div>
                   <p className="mb-13 text-xl font-bold">
-                    What do you want to teach?
+                    {t("chat.question")}
                   </p>
                   <ChatStartForm
                     input={input}
@@ -172,10 +178,10 @@ export function ChatStart({
                 </div>
                 <div>
                   <h3 className="mb-9 mt-22 text-base font-bold">
-                    Or try an example:
+                    {t("chat.tryExample")}
                   </h3>
                   <div className="flex flex-col items-start space-y-14">
-                    {exampleMessages.map((message) => (
+                    {messages.map((message) => (
                       <Button
                         key={message.message}
                         variant="link"
@@ -199,11 +205,12 @@ export function ChatStart({
           </div>
           <div className="hidden h-full w-[34%] items-center overflow-y-scroll bg-white px-25 pb-9 sm:flex">
             <div className="relative -mt-45 w-full">
-              <p className="mb-10 text-xl font-bold">Lesson downloads</p>
+              <p className="mb-10 text-xl font-bold">
+                {t("chat.lessonDownloads")}
+              </p>
               <div className="absolute inset-x-0 top-full">
                 <p className="mb-10 text-base">
-                  Once you&apos;ve finished, you&apos;ll be able to download a
-                  range of editable lesson resources.
+                  {t("chat.downloadExplanation")}
                 </p>
                 <EmptyScreenAccordion />
               </div>
@@ -216,27 +223,28 @@ export function ChatStart({
 }
 
 function createStartingPromptFromSearchParams(
+  t: (key: string, replacements?: Record<string, string | number>) => string,
   keyStage?: string,
   subject?: string,
   unitTitle?: string,
   searchExpression?: string,
 ): string {
-  let prompt = "Create a lesson plan";
+  let prompt = t("prompts.createLessonPlan");
 
   if (keyStage) {
-    prompt += ` for ${keyStage}`;
+    prompt += ` ${t("prompts.forKeyStage", { keyStage })}`;
   }
 
   if (subject) {
-    prompt += ` about ${subject}`;
+    prompt += ` ${t("prompts.aboutSubject", { subject })}`;
   }
 
   if (unitTitle) {
-    prompt += `, focusing on the unit "${unitTitle}"`;
+    prompt += ` ${t("prompts.focusingOnUnit", { unitTitle })}`;
   }
 
   if (searchExpression) {
-    prompt += ` titled "${searchExpression}"`;
+    prompt += ` ${t("prompts.titled", { searchExpression })}`;
   }
 
   prompt += ".";

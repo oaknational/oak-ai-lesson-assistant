@@ -79,7 +79,6 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
     </div>
   );
 }
-
 const chatBoxWrap = cva(["mx-auto w-full"], {
   variants: {
     hasMessages: {

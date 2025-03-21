@@ -3,6 +3,10 @@ import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import invariant from "tiny-invariant";
 
+import {
+  type Language,
+  useTranslation,
+} from "@/components/ContextProviders/LanguageContext";
 import type { TrpcUtils } from "@/utils/trpc";
 
 import type { AiMessage, ChatGetter, ChatSetter } from "../types";
@@ -24,7 +28,11 @@ export const handleFetchInitialMessages =
       const result = await trpc.client.chat.appSessions.getChat.query({ id });
       invariant(result, "result should not be null");
       const { messages, startingMessage } = result;
-
+      const { language } = result.options as { language: Language };
+      const { setLanguage } = useTranslation();
+      if (language) {
+        setLanguage(language);
+      }
       const initialMessages = messages.filter((m) =>
         isValidMessageRole(m.role),
       ) as AiMessage[];

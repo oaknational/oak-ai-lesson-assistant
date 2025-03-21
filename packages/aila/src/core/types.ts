@@ -37,6 +37,7 @@ export type AilaPublicChatOptions = {
   useRag?: boolean;
   temperature?: number;
   numberOfRecordsInRag?: number;
+  language?: string;
 };
 
 export type AilaOptions = AilaPublicChatOptions & {
@@ -49,7 +50,21 @@ export type AilaOptions = AilaPublicChatOptions & {
   mode?: AilaGenerateDocumentMode;
 };
 
-export type AilaOptionsWithDefaultFallbackValues = Required<AilaOptions>;
+export type AilaOptionsWithDefaultFallbackValues = Required<
+  Pick<
+    AilaOptions,
+    | "useRag"
+    | "temperature"
+    | "numberOfRecordsInRag"
+    | "usePersistence"
+    | "useAnalytics"
+    | "useModeration"
+    | "useThreatDetection"
+    | "useErrorReporting"
+    | "model"
+    | "mode"
+  >
+> & { language?: string };
 
 export type AilaChatInitializationOptions = {
   id: string;
