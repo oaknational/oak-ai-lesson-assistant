@@ -3,9 +3,9 @@ import { aiLogger } from "@oakai/logger";
 import { openai } from "@ai-sdk/openai";
 import * as Sentry from "@sentry/nextjs";
 import { generateObject } from "ai";
-import { getPrompt, getSchema } from "helpers";
 
 import type { LooseLessonPlan } from "../../aila/src/protocol/schema";
+import { getPrompt, getSchema } from "./helpers";
 import {
   type AdditionalMaterialType,
   isValidSchemaKey,
