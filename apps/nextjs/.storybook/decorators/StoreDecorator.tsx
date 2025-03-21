@@ -1,8 +1,9 @@
 import React, { useMemo } from "react";
 
 import type { Decorator } from "@storybook/react";
+import { fn } from "@storybook/test";
 
-import type { LessonPlanTrackingContextProps } from "@/lib/analytics/lessonPlanTrackingContext";
+import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 import type { AilaStores } from "@/stores/AilaStoresProvider";
 import {
   AilaStoresContext,
@@ -13,6 +14,7 @@ import {
   type LessonPlanState,
   createLessonPlanStore,
 } from "@/stores/lessonPlanStore";
+import { createLessonPlanTrackingStore } from "@/stores/lessonPlanTrackingStore";
 import {
   type ModerationState,
   createModerationStore,
@@ -26,6 +28,14 @@ declare module "@storybook/csf" {
     lessonPlanStoreState?: Partial<LessonPlanState>;
   }
 }
+
+const trackEvents = {
+  lessonPlanInitiated: fn(),
+  lessonPlanRefined: fn(),
+  lessonPlanCompleted: fn(),
+  lessonPlanTerminated: fn(),
+} as unknown as TrackFns;
+
 export const StoreDecorator: Decorator = (Story, { parameters }) => {
   const store = useMemo(() => {
     const id = "123";
@@ -47,10 +57,13 @@ export const StoreDecorator: Decorator = (Story, { parameters }) => {
     );
     stores.lessonPlan = createLessonPlanStore({
       id,
-      getStore,
       trpcUtils,
-      lessonPlanTracking: {} as unknown as LessonPlanTrackingContextProps,
       initialValues: parameters.lessonPlanStoreState,
+    });
+    stores.lessonPlanTracking = createLessonPlanTrackingStore({
+      id,
+      getStore,
+      track: trackEvents,
     });
 
     return stores as AilaStores;

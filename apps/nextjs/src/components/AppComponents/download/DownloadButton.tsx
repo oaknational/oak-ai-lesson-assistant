@@ -4,7 +4,6 @@ import { Box } from "@radix-ui/themes";
 import Link from "next/link";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { trackDownload } from "@/utils/trackDownload";
 import { trpc } from "@/utils/trpc";
 
 import type { ExportsType } from "../../ExportsDialogs/exports.helpers";
@@ -15,6 +14,7 @@ import LessonIcon from "../../SVGParts/LessonIcon";
 import QuizIcon from "../../SVGParts/QuizIcon";
 import SlidesIcon from "../../SVGParts/SlidesIcon";
 import { SendEmailIcon } from "./DownloadAllButton";
+import { trackDownload } from "./trackDownload";
 
 export type DownloadButtonProps = Readonly<{
   chatId: string;
