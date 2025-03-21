@@ -47,6 +47,7 @@
     "@headlessui/react": "^1.7.17",
     "@langchain/community": "^0.0.26",
     "@mux/mux-player-react": "^2.9.1",
+    "@oakai/additional-materials": "*",
     "@oakai/aila": "*",
     "@oakai/api": "*",
     "@oakai/core": "*",
