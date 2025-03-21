@@ -34,7 +34,8 @@
     "finishingUp": "Завершуємо…",
     "workingOnItExclamation": "Працюємо над цим!",
     "averageTime": "Середній час для цього запиту: {seconds}с",
-    "takingLonger": "Це займає більше часу, ніж зазвичай, ще одну мить"
+    "takingLonger": "Це займає більше часу, ніж зазвичай, ще одну мить",
+    "backToLesson": "Повернутися до уроку"
   },
   "demo": {
     "createLessons": "Створюйте {count} уроків на місяць •",
@@ -89,5 +90,24 @@
     "starterQuiz": "Стартовий тест",
     "learningCycles": "Навчальні цикли",
     "exitQuiz": "Підсумковий тест"
+  },
+  "download": {
+    "allResources": "Завантажити всі ресурси",
+    "allResourcesSubtitle": "План уроку, стартовий та підсумковий тести, слайди та робочий аркуш",
+    "allTranslatedResources": "Завантажити всі перекладені ресурси",
+    "lessonPlanSubtitle": "Огляд повного уроку",
+    "starterQuizSubtitle": "Питання та відповіді для оцінки попередніх знань",
+    "slideDeck": "Набір слайдів",
+    "slideDeckSubtitle": "Навчальний результат, ключові слова та навчальні цикли",
+    "worksheetSubtitle": "Практичні завдання",
+    "exitQuizSubtitle": "Питання та відповіді для оцінки розуміння",
+    "additionalMaterials": "Додаткові матеріали",
+    "additionalMaterialsSubtitle": "Документ, що містить будь-які додаткові матеріали",
+    "translatedLessonPlan": "Перекладений план уроку",
+    "translatedStarterQuiz": "Перекладений стартовий тест",
+    "translatedSlideDeck": "Перекладений набір слайдів",
+    "translatedWorksheet": "Перекладений робочий аркуш",
+    "translatedExitQuiz": "Перекладений підсумковий тест",
+    "translatedAdditionalMaterials": "Перекладені додаткові матеріали"
   }
 }

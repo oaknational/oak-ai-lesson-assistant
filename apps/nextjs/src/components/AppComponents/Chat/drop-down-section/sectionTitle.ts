@@ -10,7 +10,6 @@ import { getTranslatedSectionTitle } from "@/utils/translations";
  * @returns The formatted section title
  */
 export function sectionTitle(str: string, languageCode?: string): string {
-  console.log("language code", languageCode);
   // Use Ukrainian translations if the language code is 'uk'
   if (languageCode === "uk") {
     return getTranslatedSectionTitle(str as LessonPlanKey);

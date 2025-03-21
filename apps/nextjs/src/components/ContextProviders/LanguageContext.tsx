@@ -72,8 +72,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
 }) => {
   // Get the language from environment variable or default to English
   // In a real implementation, this might come from localStorage, user preferences, etc.
-  const defaultLanguage =
-    (process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE as Language) || "en";
+  const defaultLanguage = "en";
   const [language, setLanguage] = useState<Language>(defaultLanguage);
 
   // Expose the translation function

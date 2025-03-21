@@ -22,7 +22,6 @@ export const LanguageSwitcher: React.FC = () => {
   if (hasIdAndIsNotHome) {
     return (
       <div className="flex flex-row gap-2">
-        <p className="bold">{language}</p>
         <p>
           This lesson is being conducted in{" "}
           {language === "en" ? "🇬🇧 English" : "🇺🇦 Ukrainian"}
@@ -31,15 +30,14 @@ export const LanguageSwitcher: React.FC = () => {
     );
   }
   return (
-    <div className="flex flex-row gap-2">
-      <p className="bold">{language}</p>
+    <div className="flex flex-row gap-20">
       <p className="text-sm">
         This lesson is being conducted in{" "}
         {language === "en" ? "🇬🇧 English" : "🇺🇦 Ukrainian"}
       </p>
       <button
         onClick={toggleLanguage}
-        className="bg-blue-500 hover:bg-blue-600 focus:ring-blue-300 rounded-md px-3 py-1 text-black focus:outline-none focus:ring-2"
+        className="focus:ring-blue-300 rounded-md px-3 py-1 text-blue focus:outline-none focus:ring-2"
       >
         Translate to {language === "en" ? "🇺🇦 Ukrainian" : "🇬🇧 English"}
       </button>

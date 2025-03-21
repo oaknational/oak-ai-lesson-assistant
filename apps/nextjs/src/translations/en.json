@@ -22,7 +22,7 @@
     "report": "Report",
     "stop": "Stop",
     "continue": "Continue",
-    "translateLesson": "Translate this lessons outputs in another language",
+    "translateLesson": "Add a translation of this lesson in another language",
     "continueBuilding": "Continue building",
     "viewMore": "View more",
     "newLesson": "New lesson",
@@ -34,7 +34,8 @@
     "finishingUp": "Finishing up…",
     "workingOnItExclamation": "Working on it!",
     "averageTime": "Average time for this request: {seconds}s",
-    "takingLonger": "This is taking longer than usual, just one more moment"
+    "takingLonger": "This is taking longer than usual, just one more moment",
+    "backToLesson": "Back to lesson"
   },
   "demo": {
     "createLessons": "Create {count} lessons per month •",
@@ -89,5 +90,24 @@
     "starterQuiz": "Starter quiz",
     "learningCycles": "Learning cycles",
     "exitQuiz": "Exit quiz"
+  },
+  "download": {
+    "allResources": "Download all resources",
+    "allResourcesSubtitle": "Lesson plan, starter and exit quiz, slides and worksheet",
+    "allTranslatedResources": "Download all translated resources",
+    "lessonPlanSubtitle": "Overview of the complete lesson",
+    "starterQuizSubtitle": "Questions and answers to assess prior knowledge",
+    "slideDeck": "Slide deck",
+    "slideDeckSubtitle": "Learning outcome, keywords and learning cycles",
+    "worksheetSubtitle": "Practice tasks",
+    "exitQuizSubtitle": "Questions and answers to assess understanding",
+    "additionalMaterials": "Additional materials",
+    "additionalMaterialsSubtitle": "Document containing any additional materials",
+    "translatedLessonPlan": "Translated Lesson plan",
+    "translatedStarterQuiz": "Translated Starter quiz",
+    "translatedSlideDeck": "Translated Slide deck",
+    "translatedWorksheet": "Translated Worksheet",
+    "translatedExitQuiz": "Translated Exit quiz",
+    "translatedAdditionalMaterials": "Translated Additional materials"
   }
 }

@@ -15,6 +15,7 @@ import { DownloadButton } from "@/components/AppComponents/download/DownloadButt
 import SectionsCompleteDownloadNotice from "@/components/AppComponents/download/SectionsCompleteDownloadNotice";
 import SectionsNotCompleteDownloadNotice from "@/components/AppComponents/download/SectionsNotCompleteDownloadNotice";
 import Button from "@/components/Button";
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import { Icon } from "@/components/Icon";
@@ -29,6 +30,7 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
   const [translatedLessonPlan, setTranslatedLessonPlan] =
     useState<LooseLessonPlan | null>(null);
   const { lessonPlan, id } = chat;
+  const { t } = useTranslation();
   const {
     lessonSlidesExport,
     worksheetExport,
@@ -47,6 +49,9 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
   useEffect(() => {
     const translatedLessonPlan =
       localStorage.getItem(`${id}-translatedLessonPlan`) ?? "";
+    if (!translatedLessonPlan) {
+      return;
+    }
     const parsedTranslatedLessonPlan: LooseLessonPlan =
       JSON.parse(translatedLessonPlan);
     if (translatedLessonPlan) {
@@ -73,12 +78,14 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
               size="sm"
             >
               <span className="text-base font-light underline">
-                Back to lesson
+                {t("chat.backToLesson")}
               </span>
             </Button>
 
             <div>
-              <h1 className="my-24 text-4xl font-bold">Download resources</h1>
+              <h1 className="my-24 text-4xl font-bold">
+                {t("chat.downloadResources")}
+              </h1>
               <p className="mb-24 max-w-[600px]">
                 {isLessonComplete ? (
                   <SectionsCompleteDownloadNotice />
@@ -99,8 +106,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                   <Flex direction="column" className="gap-14">
                     <DownloadAllButton
                       onClick={() => exportAllAssets.start()}
-                      title="Download all resources"
-                      subTitle="Lesson plan, starter and exit quiz, slides and worksheet"
+                      title={t("download.allResources")}
+                      subTitle={t("download.allResourcesSubtitle")}
                       downloadAvailable={!!exportAllAssets.readyToExport}
                       downloadLoading={exportAllAssets.status === "loading"}
                       data={exportAllAssets.data}
@@ -111,8 +118,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                     <DownloadButton
                       chatId={id}
                       onClick={() => lessonPlanExport.start()}
-                      title="Lesson plan"
-                      subTitle="Overview of the complete lesson"
+                      title={t("accordion.lessonPlan")}
+                      subTitle={t("download.lessonPlanSubtitle")}
                       downloadAvailable={!!lessonPlanExport.readyToExport}
                       downloadLoading={lessonPlanExport.status === "loading"}
                       data={lessonPlanExport.data}
@@ -123,8 +130,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                     <DownloadButton
                       chatId={id}
                       onClick={() => starterQuizExport.start()}
-                      title="Starter quiz"
-                      subTitle="Questions and answers to assess prior knowledge"
+                      title={t("progressDropdown.starterQuiz")}
+                      subTitle={t("download.starterQuizSubtitle")}
                       downloadAvailable={!!starterQuizExport.readyToExport}
                       downloadLoading={starterQuizExport.status === "loading"}
                       data={starterQuizExport.data}
@@ -135,8 +142,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                       chatId={id}
                       onClick={() => lessonSlidesExport.start()}
                       data-testid="chat-download-slides-btn"
-                      title="Slide deck"
-                      subTitle="Learning outcome, keywords and learning cycles"
+                      title={t("download.slideDeck")}
+                      subTitle={t("download.slideDeckSubtitle")}
                       downloadAvailable={lessonSlidesExport.readyToExport}
                       downloadLoading={lessonSlidesExport.status === "loading"}
                       data={lessonSlidesExport.data}
@@ -146,8 +153,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                     <DownloadButton
                       chatId={id}
                       onClick={() => worksheetExport.start()}
-                      title="Worksheet"
-                      subTitle="Practice tasks"
+                      title={t("accordion.pupilWorksheet")}
+                      subTitle={t("download.worksheetSubtitle")}
                       downloadAvailable={!!worksheetExport.readyToExport}
                       downloadLoading={worksheetExport.status === "loading"}
                       data={worksheetExport.data}
@@ -157,8 +164,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                     <DownloadButton
                       chatId={id}
                       onClick={() => exitQuizExport.start()}
-                      title="Exit quiz"
-                      subTitle="Questions and answers to assess understanding"
+                      title={t("progressDropdown.exitQuiz")}
+                      subTitle={t("download.exitQuizSubtitle")}
                       downloadAvailable={!!exitQuizExport.readyToExport}
                       downloadLoading={exitQuizExport.status === "loading"}
                       data={exitQuizExport.data}
@@ -170,8 +177,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                         <DownloadButton
                           chatId={id}
                           onClick={() => additionalMaterialsExport.start()}
-                          title="Additional materials"
-                          subTitle="Document containing any additional materials"
+                          title={t("download.additionalMaterials")}
+                          subTitle={t("download.additionalMaterialsSubtitle")}
                           downloadAvailable={
                             !!additionalMaterialsExport.readyToExport
                           }
@@ -187,8 +194,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                   <Flex direction="column" className="gap-14">
                     <DownloadAllButton
                       onClick={() => exportAllAssets.start()}
-                      title="Download all translated resources"
-                      subTitle="Lesson plan, starter and exit quiz, slides and worksheet"
+                      title={t("download.allTranslatedResources")}
+                      subTitle={t("download.allResourcesSubtitle")}
                       downloadAvailable={!!exportAllAssets.readyToExport}
                       downloadLoading={exportAllAssets.status === "loading"}
                       data={exportAllAssets.data}
@@ -199,8 +206,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                     <DownloadButton
                       chatId={id}
                       onClick={() => lessonPlanExport.start()}
-                      title="Translated Lesson plan"
-                      subTitle="Overview of the complete lesson"
+                      title={t("download.translatedLessonPlan")}
+                      subTitle={t("download.lessonPlanSubtitle")}
                       downloadAvailable={!!lessonPlanExport.readyToExport}
                       downloadLoading={lessonPlanExport.status === "loading"}
                       data={lessonPlanExport.data}
@@ -211,8 +218,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                     <DownloadButton
                       chatId={id}
                       onClick={() => starterQuizExport.start()}
-                      title="Translated Starter quiz"
-                      subTitle="Questions and answers to assess prior knowledge"
+                      title={t("download.translatedStarterQuiz")}
+                      subTitle={t("download.starterQuizSubtitle")}
                       downloadAvailable={!!starterQuizExport.readyToExport}
                       downloadLoading={starterQuizExport.status === "loading"}
                       data={starterQuizExport.data}
@@ -223,8 +230,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                       chatId={id}
                       onClick={() => lessonSlidesExport.start()}
                       data-testid="chat-download-slides-btn"
-                      title="Translated Slide deck"
-                      subTitle="Learning outcome, keywords and learning cycles"
+                      title={t("download.translatedSlideDeck")}
+                      subTitle={t("download.slideDeckSubtitle")}
                       downloadAvailable={lessonSlidesExport.readyToExport}
                       downloadLoading={lessonSlidesExport.status === "loading"}
                       data={lessonSlidesExport.data}
@@ -234,8 +241,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                     <DownloadButton
                       chatId={id}
                       onClick={() => worksheetExport.start()}
-                      title="Translated Worksheet"
-                      subTitle="Practice tasks"
+                      title={t("download.translatedWorksheet")}
+                      subTitle={t("download.worksheetSubtitle")}
                       downloadAvailable={!!worksheetExport.readyToExport}
                       downloadLoading={worksheetExport.status === "loading"}
                       data={worksheetExport.data}
@@ -245,8 +252,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                     <DownloadButton
                       chatId={id}
                       onClick={() => exitQuizExport.start()}
-                      title="Translated Exit quiz"
-                      subTitle="Questions and answers to assess understanding"
+                      title={t("download.translatedExitQuiz")}
+                      subTitle={t("download.exitQuizSubtitle")}
                       downloadAvailable={!!exitQuizExport.readyToExport}
                       downloadLoading={exitQuizExport.status === "loading"}
                       data={exitQuizExport.data}
@@ -258,8 +265,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                         <DownloadButton
                           chatId={id}
                           onClick={() => additionalMaterialsExport.start()}
-                          title="Translated Additional materials"
-                          subTitle="Document containing any additional materials"
+                          title={t("download.translatedAdditionalMaterials")}
+                          subTitle={t("download.additionalMaterialsSubtitle")}
                           downloadAvailable={
                             !!additionalMaterialsExport.readyToExport
                           }
@@ -277,8 +284,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                 <Flex direction="column" className="gap-14">
                   <DownloadAllButton
                     onClick={() => exportAllAssets.start()}
-                    title="Download all resources"
-                    subTitle="Lesson plan, starter and exit quiz, slides and worksheet"
+                    title={t("download.allResources")}
+                    subTitle={t("download.allResourcesSubtitle")}
                     downloadAvailable={!!exportAllAssets.readyToExport}
                     downloadLoading={exportAllAssets.status === "loading"}
                     data={exportAllAssets.data}
@@ -289,8 +296,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                   <DownloadButton
                     chatId={id}
                     onClick={() => lessonPlanExport.start()}
-                    title="Lesson plan"
-                    subTitle="Overview of the complete lesson"
+                    title={t("accordion.lessonPlan")}
+                    subTitle={t("download.lessonPlanSubtitle")}
                     downloadAvailable={!!lessonPlanExport.readyToExport}
                     downloadLoading={lessonPlanExport.status === "loading"}
                     data={lessonPlanExport.data}
@@ -301,8 +308,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                   <DownloadButton
                     chatId={id}
                     onClick={() => starterQuizExport.start()}
-                    title="Starter quiz"
-                    subTitle="Questions and answers to assess prior knowledge"
+                    title={t("progressDropdown.starterQuiz")}
+                    subTitle={t("download.starterQuizSubtitle")}
                     downloadAvailable={!!starterQuizExport.readyToExport}
                     downloadLoading={starterQuizExport.status === "loading"}
                     data={starterQuizExport.data}
@@ -313,8 +320,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                     chatId={id}
                     onClick={() => lessonSlidesExport.start()}
                     data-testid="chat-download-slides-btn"
-                    title="Slide deck"
-                    subTitle="Learning outcome, keywords and learning cycles"
+                    title={t("download.slideDeck")}
+                    subTitle={t("download.slideDeckSubtitle")}
                     downloadAvailable={lessonSlidesExport.readyToExport}
                     downloadLoading={lessonSlidesExport.status === "loading"}
                     data={lessonSlidesExport.data}
@@ -324,8 +331,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                   <DownloadButton
                     chatId={id}
                     onClick={() => worksheetExport.start()}
-                    title="Worksheet"
-                    subTitle="Practice tasks"
+                    title={t("accordion.pupilWorksheet")}
+                    subTitle={t("download.worksheetSubtitle")}
                     downloadAvailable={!!worksheetExport.readyToExport}
                     downloadLoading={worksheetExport.status === "loading"}
                     data={worksheetExport.data}
@@ -335,8 +342,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                   <DownloadButton
                     chatId={id}
                     onClick={() => exitQuizExport.start()}
-                    title="Exit quiz"
-                    subTitle="Questions and answers to assess understanding"
+                    title={t("progressDropdown.exitQuiz")}
+                    subTitle={t("download.exitQuizSubtitle")}
                     downloadAvailable={!!exitQuizExport.readyToExport}
                     downloadLoading={exitQuizExport.status === "loading"}
                     data={exitQuizExport.data}
@@ -348,8 +355,8 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                       <DownloadButton
                         chatId={id}
                         onClick={() => additionalMaterialsExport.start()}
-                        title="Additional materials"
-                        subTitle="Document containing any additional materials"
+                        title={t("download.additionalMaterials")}
+                        subTitle={t("download.additionalMaterialsSubtitle")}
                         downloadAvailable={
                           !!additionalMaterialsExport.readyToExport
                         }
@@ -367,7 +374,9 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
               <Box>
                 <div className="mb-17">
                   <span className="font-bold">
-                    {`${totalSectionsComplete} of ${totalSections} sections complete`}
+                    {t("chat.sectionsComplete")
+                      .replace("{complete}", String(totalSectionsComplete))
+                      .replace("{total}", String(totalSections))}
                   </span>
                 </div>
                 {sections.map((section) => {
