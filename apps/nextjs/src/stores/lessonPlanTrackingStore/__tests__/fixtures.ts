@@ -285,6 +285,12 @@ const completedLessonPlan = {
   additionalMaterials: "None",
 };
 
+const lessonPlanWithoutExitQuiz = {
+  ...completedLessonPlan,
+  exitQuiz: undefined,
+};
+
 export const lessonPlans = {
   completed: completedLessonPlan,
+  completedExceptExitQuiz: lessonPlanWithoutExitQuiz,
 };

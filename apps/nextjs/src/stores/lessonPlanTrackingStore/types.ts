@@ -1,7 +1,9 @@
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 
+import type { AilaUserModificationAction } from "@prisma/client";
 import type { StoreApi } from "zustand";
 
+import type { FeedbackOption } from "@/components/AppComponents/Chat/drop-down-section/drop-down-form-wrapper";
 import type { ComponentTypeValueType } from "@/lib/avo/Avo";
 
 import type { AilaStreamingStatus } from "../chatStore";
@@ -25,7 +27,10 @@ export type LessonPlanTrackingState = {
     clickedContinue: () => void;
     clickedRetry: (text: string) => void;
     clickedStart: (text: string) => void;
-    clickedModify: (text: string) => void;
+    clickedModify: (
+      option: FeedbackOption<AilaUserModificationAction>,
+      feedbackText: string,
+    ) => void;
 
     // Action to submit the event with the result
     trackCompletion: () => void;

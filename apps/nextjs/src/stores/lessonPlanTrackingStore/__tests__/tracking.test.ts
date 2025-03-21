@@ -273,7 +273,7 @@ describe("lessonPlanTracking tracking", () => {
     it("tracks when the lesson plan becomes completed", () => {
       const store = createLessonPlanTrackingStore(createArgs);
       store.setState({
-        lastLessonPlan: { ...lessonPlans.completed, exitQuiz: undefined },
+        lastLessonPlan: lessonPlans.completedExceptExitQuiz,
       });
       const actions = store.getState().actions;
 
@@ -302,16 +302,11 @@ describe("lessonPlanTracking tracking", () => {
 
     it("doesn't track when the lesson plan is not completed", () => {
       const store = createLessonPlanTrackingStore(createArgs);
-      const lessonPlanWithoutExitQuiz = {
-        ...lessonPlans.completed,
-        exitQuiz: undefined,
-      };
       store.setState({
-        lastLessonPlan: lessonPlanWithoutExitQuiz,
+        lastLessonPlan: lessonPlans.completedExceptExitQuiz,
       });
       const actions = store.getState().actions;
 
-      // TODO: less plan state diff
       actions.clickedContinue();
 
       chatStoreMock.getState.mockReturnValue({
@@ -323,7 +318,7 @@ describe("lessonPlanTracking tracking", () => {
         ],
       });
       lessonPlanStoreMock.getState.mockReturnValue({
-        lessonPlan: lessonPlanWithoutExitQuiz,
+        lessonPlan: lessonPlans.completedExceptExitQuiz,
       });
       actions.trackCompletion();
 

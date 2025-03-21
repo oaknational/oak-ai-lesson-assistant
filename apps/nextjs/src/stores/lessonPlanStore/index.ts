@@ -54,8 +54,6 @@ export const createLessonPlanStore = ({
       messageFinished: () => {
         log.info("Message finished");
         set({ isAcceptingChanges: false, ...initialPerMessageState });
-        // TODO: check timing and race conditions
-        // handleTrackingEvents(lessonPlanTracking, getStore, get);
         // TODO: should we refetch when we start moderating?
         void handleRefetch(set, get, trpcUtils)();
       },

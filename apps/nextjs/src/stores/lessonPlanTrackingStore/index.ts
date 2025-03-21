@@ -7,7 +7,6 @@ import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 import { ComponentType } from "@/lib/avo/Avo";
 import type { GetStore } from "@/stores/AilaStoresProvider";
 
-import type { AilaStreamingStatus } from "../chatStore";
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleTrackCompletion } from "./actionFunctions/handleTrackStreamingComplete";
 import { handleUserIntent } from "./actionFunctions/handleUserIntent";
@@ -15,6 +14,7 @@ import type { LessonPlanTrackingState } from "./types";
 
 export * from "./types";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const log = aiLogger("analytics:lesson:store");
 
 export const createLessonPlanTrackingStore = ({
@@ -37,7 +37,7 @@ export const createLessonPlanTrackingStore = ({
 
       actions: {
         // Actions to record the user intent
-        submittedText: (text: string) => {
+        submittedText: (text) => {
           handleUserIntent(set, get, {
             componentType: ComponentType.TYPE_EDIT,
             text,
@@ -49,13 +49,13 @@ export const createLessonPlanTrackingStore = ({
             text: "",
           });
         },
-        clickedRetry: (text: string) => {
+        clickedRetry: (text) => {
           handleUserIntent(set, get, {
             componentType: ComponentType.REGENERATE_RESPONSE_BUTTON,
             text,
           });
         },
-        clickedStart: (text: string) => {
+        clickedStart: (text) => {
           // We can't store the start action as this store won't exist at that point
           // Instead, infer whether it was started from an example or free text
           const isExample = exampleMessages.some(
@@ -73,12 +73,11 @@ export const createLessonPlanTrackingStore = ({
             });
           }
         },
-        clickedModify: (text: string) => {
-          log.warn("clickedModify not implemented", text);
-          // handleUserIntent(set, get, {
-          //   componentType: ComponentType.MODIFY_BUTTON,
-          //   text,
-          // });
+        clickedModify: (option, feedbackText) => {
+          handleUserIntent(set, get, {
+            componentType: ComponentType.MODIFY_BUTTON,
+            text: option.label === "Other" ? feedbackText : option.label,
+          });
         },
 
         // Action to submit the event with the result
@@ -95,7 +94,7 @@ export const createLessonPlanTrackingStore = ({
         },
 
         // Hook into ailaStreamingStatus
-        ailaStreamingStatusUpdated: (streamingStatus: AilaStreamingStatus) => {
+        ailaStreamingStatusUpdated: (streamingStatus) => {
           if (streamingStatus === "Idle") {
             try {
               get().actions.trackCompletion();
