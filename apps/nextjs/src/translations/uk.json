@@ -1,0 +1,93 @@
+{
+  "common": {
+    "hello": "Привіт",
+    "help": "Допомога",
+    "menu": "Меню",
+    "beta": "Бета",
+    "aila": "Айла",
+    "disclaimer": "Айла може помилятися. Перевірте свій урок перед використанням. Перегляньте наші умови та положення."
+  },
+  "chat": {
+    "greeting": "Я Айла, AI-асистент уроків Oak.",
+    "instruction": "Розкажіть, що ви хочете викладати, і я допоможу вам створити урок.",
+    "question": "Що ви хочете викладати?",
+    "tryExample": "Або спробуйте приклад:",
+    "lessonDownloads": "Завантаження уроків",
+    "downloadExplanation": "Після завершення ви зможете завантажити низку редагованих навчальних ресурсів.",
+    "historyExample": "Історія • Ключовий етап 3 • Кінець римської Британії",
+    "inputPlaceholder": "Предмет, ключовий етап та назва",
+    "sendMessage": "Надіслати повідомлення",
+    "exampleMessage": "Створіть план уроку про кінець римської Британії для історії ключового етапу 3",
+    "retry": "Повторити",
+    "report": "Повідомити",
+    "stop": "Зупинити",
+    "continue": "Продовжити",
+    "translateLesson": "Перекласти цей урок",
+    "continueBuilding": "Продовжити створення",
+    "viewMore": "Переглянути більше",
+    "newLesson": "Новий урок",
+    "viewLesson": "Переглянути урок >",
+    "shareLesson": "Поділитися уроком",
+    "downloadResources": "Завантажити ресурси",
+    "sectionsComplete": "{complete} з {total} розділів завершено",
+    "workingOnIt": "Працюємо над цим…",
+    "finishingUp": "Завершуємо…",
+    "workingOnItExclamation": "Працюємо над цим!",
+    "averageTime": "Середній час для цього запиту: {seconds}с",
+    "takingLonger": "Це займає більше часу, ніж зазвичай, ще одну мить"
+  },
+  "demo": {
+    "createLessons": "Створюйте {count} уроків на місяць •",
+    "contactUs": "Якщо ви вчитель у Великобританії, зв'яжіться з нами для повного доступу",
+    "remaining": "{remaining} з {total} уроків залишилось"
+  },
+  "prompts": {
+    "createLessonPlan": "Створіть план уроку",
+    "forKeyStage": "для {keyStage}",
+    "aboutSubject": "про {subject}",
+    "focusingOnUnit": "зосереджуючись на розділі \"{unitTitle}\"",
+    "titled": "під назвою \"{searchExpression}\""
+  },
+  "sidebar": {
+    "yourHistory": "Ваша історія",
+    "clearHistory": "Очистити історію",
+    "newChat": "Новий чат",
+    "logout": "Вийти",
+    "aiExperimentsPage": "Сторінка AI-експериментів",
+    "close": "Закрити"
+  },
+  "accordion": {
+    "lessonPlan": "План уроку",
+    "lessonPresentation": "Презентація уроку",
+    "pupilWorksheet": "Робочий аркуш учня",
+    "teacherNotes": "Нотатки вчителя",
+    "quizzes": "тести",
+    "sections": {
+      "Title": "Заголовок",
+      "Keystage": "Ключовий етап",
+      "Subject": "Предмет",
+      "Priorknowledge": "Попередні знання",
+      "Keylearningpoints": "Ключові навчальні моменти",
+      "Misconceptions": "Помилкові уявлення",
+      "Keywords": "Ключові слова",
+      "Starterquiz": "Стартовий тест",
+      "Exitquiz": "Підсумковий тест",
+      "Learningoutcome": "Навчальні цілі",
+      "Learningcycles": "Навчальні цикли",
+      "Learningcycle1": "Навчальні цикли",
+      "LearningCycleOutcomes": "Навчальні цикли"
+    }
+  },
+  "progressDropdown": {
+    "lessonDetails": "Деталі уроку",
+    "learningOutcome": "Навчальний результат",
+    "learningCycleOutcomes": "Результати навчального циклу",
+    "priorKnowledge": "Попередні знання",
+    "keyLearningPoints": "Ключові навчальні моменти",
+    "misconceptions": "Помилкові уявлення",
+    "keywords": "Ключові слова",
+    "starterQuiz": "Стартовий тест",
+    "learningCycles": "Навчальні цикли",
+    "exitQuiz": "Підсумковий тест"
+  }
+}

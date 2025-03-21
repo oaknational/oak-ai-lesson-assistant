@@ -2,6 +2,7 @@ import { useCallback } from "react";
 
 import { findLast } from "remeda";
 
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
 import { Icon } from "@/components/Icon";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
@@ -51,6 +52,7 @@ const QuickActionButtons = () => {
   const queuedUserAction = useChatStore((state) => state.queuedUserAction);
   const { append, stop } = useChatActions();
   const id = useLessonPlanStore((state) => state.id);
+  const { t } = useTranslation();
 
   const ailaStreamingStatus = useChatStore(
     (state) => state.ailaStreamingStatus,
@@ -92,7 +94,9 @@ const QuickActionButtons = () => {
               <span className="opacity-70">
                 <IconRefresh className="mr-3" />
               </span>
-              <span className="font-light text-[#575757]">Retry</span>
+              <span className="font-light text-[#575757]">
+                {t("chat.retry")}
+              </span>
             </ChatButton>
             <ChatButton
               variant="text-link"
@@ -101,7 +105,9 @@ const QuickActionButtons = () => {
               <span className="opacity-70">
                 <Icon icon="warning" className="mr-3" size="xs" />
               </span>
-              <span className="font-light text-[#575757]">Report</span>
+              <span className="font-light text-[#575757]">
+                {t("chat.report")}
+              </span>
             </ChatButton>
           </>
         )}
@@ -123,7 +129,7 @@ const QuickActionButtons = () => {
             <span className="opacity-50">
               <IconStop className="mr-3" />
             </span>
-            <span className="font-light text-[#575757]">Stop</span>
+            <span className="font-light text-[#575757]">{t("chat.stop")}</span>
           </ChatButton>
         )}
       </div>
@@ -136,7 +142,7 @@ const QuickActionButtons = () => {
         }}
         testId="chat-continue"
       >
-        Continue
+        {t("chat.continue")}
       </ChatButton>
     </div>
   );

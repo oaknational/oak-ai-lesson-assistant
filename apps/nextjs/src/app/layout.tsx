@@ -24,6 +24,7 @@ import { CookieConsentProvider } from "@/components/ContextProviders/CookieConse
 import { FeatureFlagProvider } from "@/components/ContextProviders/FeatureFlagProvider";
 import FontProvider from "@/components/ContextProviders/FontProvider";
 import { GleapProvider } from "@/components/ContextProviders/GleapProvider";
+import { LanguageProvider } from "@/components/ContextProviders/LanguageContext";
 import { WebDebuggerPosition } from "@/lib/avo/Avo";
 import { getBootstrappedFeatures } from "@/lib/feature-flags/bootstrap";
 import { SentryIdentify } from "@/lib/sentry/SentryIdentify";
@@ -135,7 +136,7 @@ export default async function RootLayout({
                           <FeatureFlagProvider
                             bootstrappedFeatures={bootstrappedFeatures}
                           >
-                            {children}
+                            <LanguageProvider>{children}</LanguageProvider>
                           </FeatureFlagProvider>
                         </GleapProvider>
                       </AnalyticsProvider>

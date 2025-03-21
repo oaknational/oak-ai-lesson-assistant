@@ -1,0 +1,93 @@
+{
+  "common": {
+    "hello": "Hello",
+    "help": "Help",
+    "menu": "Menu",
+    "beta": "Beta",
+    "aila": "Aila",
+    "disclaimer": "Aila can make mistakes. Check your lesson before use. See our terms and conditions."
+  },
+  "chat": {
+    "greeting": "I'm Aila, Oak's AI lesson assistant.",
+    "instruction": "Tell me what you want to teach and I'll help you create your lesson.",
+    "question": "What do you want to teach?",
+    "tryExample": "Or try an example:",
+    "lessonDownloads": "Lesson downloads",
+    "downloadExplanation": "Once you've finished, you'll be able to download a range of editable lesson resources.",
+    "historyExample": "History • Key stage 3 • The end of Roman Britain",
+    "inputPlaceholder": "Subject, key stage and title",
+    "sendMessage": "Send message",
+    "exampleMessage": "Create a lesson plan about the end of Roman Britain for key stage 3 history",
+    "retry": "Retry",
+    "report": "Report",
+    "stop": "Stop",
+    "continue": "Continue",
+    "translateLesson": "Translate this lessons outputs in another language",
+    "continueBuilding": "Continue building",
+    "viewMore": "View more",
+    "newLesson": "New lesson",
+    "viewLesson": "View lesson >",
+    "shareLesson": "Share lesson",
+    "downloadResources": "Download resources",
+    "sectionsComplete": "{complete} of {total} sections complete",
+    "workingOnIt": "Working on it…",
+    "finishingUp": "Finishing up…",
+    "workingOnItExclamation": "Working on it!",
+    "averageTime": "Average time for this request: {seconds}s",
+    "takingLonger": "This is taking longer than usual, just one more moment"
+  },
+  "demo": {
+    "createLessons": "Create {count} lessons per month •",
+    "contactUs": "If you are a teacher in the UK, contact us for full access",
+    "remaining": "{remaining} of {total} lessons remaining"
+  },
+  "prompts": {
+    "createLessonPlan": "Create a lesson plan",
+    "forKeyStage": "for {keyStage}",
+    "aboutSubject": "about {subject}",
+    "focusingOnUnit": "focusing on the unit \"{unitTitle}\"",
+    "titled": "titled \"{searchExpression}\""
+  },
+  "sidebar": {
+    "yourHistory": "Your history",
+    "clearHistory": "Clear history",
+    "newChat": "New chat",
+    "logout": "Log out",
+    "aiExperimentsPage": "AI experiments page",
+    "close": "Close"
+  },
+  "accordion": {
+    "lessonPlan": "Lesson plan",
+    "lessonPresentation": "Lesson presentation",
+    "pupilWorksheet": "Pupil worksheet",
+    "teacherNotes": "Teacher notes",
+    "quizzes": "quizzes",
+    "sections": {
+      "Title": "Title",
+      "Keystage": "Key stage",
+      "Subject": "Subject",
+      "Priorknowledge": "Prior knowledge",
+      "Keylearningpoints": "Key learning points",
+      "Misconceptions": "Misconceptions",
+      "Keywords": "Keywords",
+      "Starterquiz": "Starter quiz",
+      "Exitquiz": "Exit quiz",
+      "Learningoutcome": "Learning objectives",
+      "Learningcycles": "Learning cycles",
+      "Learningcycle1": "Learning cycles",
+      "LearningCycleOutcomes": "Learning cycles"
+    }
+  },
+  "progressDropdown": {
+    "lessonDetails": "Lesson details",
+    "learningOutcome": "Learning outcome",
+    "learningCycleOutcomes": "Learning cycle outcomes",
+    "priorKnowledge": "Prior knowledge",
+    "keyLearningPoints": "Key learning points",
+    "misconceptions": "Misconceptions",
+    "keywords": "Keywords",
+    "starterQuiz": "Starter quiz",
+    "learningCycles": "Learning cycles",
+    "exitQuiz": "Exit quiz"
+  }
+}

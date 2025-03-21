@@ -1,5 +1,6 @@
 import "@/components/AppComponents/Chat/chat-message";
 import { Message } from "@/components/AppComponents/Chat/chat-message/layout";
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
 import { useChatStore } from "@/stores/AilaStoresProvider";
 
 import { MemoizedReactMarkdownWithStyles } from "../markdown";
@@ -8,9 +9,10 @@ export const WorkingOnItMessage = () => {
   const ailaStreamingStatus = useChatStore(
     (state) => state.ailaStreamingStatus,
   );
+  const { t } = useTranslation();
 
   const isFinishingUp = ailaStreamingStatus === "StreamingChatResponse";
-  const text = isFinishingUp ? "Finishing up…" : "Working on it…";
+  const text = isFinishingUp ? t("chat.finishingUp") : t("chat.workingOnIt");
 
   return (
     <Message.Container roleType="aila">

@@ -4,6 +4,7 @@ import { OakSmallSecondaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 
@@ -18,6 +19,7 @@ const ExportButtons = () => {
   const { trackEvent } = useAnalytics();
   const { setDialogWindow } = useDialog();
   const demo = useDemoUser();
+  const { t } = useTranslation();
 
   return (
     <div className="sticky left-0 right-10 top-26 z-10 mt-26 hidden bg-white p-14 px-24 shadow-md sm:block">
@@ -40,7 +42,7 @@ const ExportButtons = () => {
                 }
               }}
             >
-              Share lesson
+              {t("chat.shareLesson")}
             </OakSmallSecondaryButton>
             <OakSmallSecondaryButton
               element={!isStreaming ? Link : "button"}
@@ -57,7 +59,7 @@ const ExportButtons = () => {
                 }
               }}
             >
-              Download resources
+              {t("chat.downloadResources")}
             </OakSmallSecondaryButton>
           </div>
         </div>

@@ -9,6 +9,7 @@ import {
   endingTheInteraction,
   generateResponse,
   interactingWithTheUser,
+  languageInstruction,
   protocol,
   rag,
   schema,
@@ -31,6 +32,7 @@ export interface TemplateProps {
   lessonPlanJsonSchema: string;
   llmResponseJsonSchema: string;
   isUsingStructuredOutput: boolean;
+  language?: string;
 }
 
 type TemplatePart = (props: TemplateProps) => string;
@@ -74,6 +76,7 @@ export const getPromptParts = (props: TemplateProps): TemplatePart[] => {
     response,
     props.responseMode === "interactive" ? promptingTheUser : undefined,
     signOff,
+    languageInstruction,
   ];
 
   return parts.filter((part): part is TemplatePart => part !== undefined);
@@ -81,6 +84,44 @@ export const getPromptParts = (props: TemplateProps): TemplatePart[] => {
 
 export const template = function (props: TemplateProps) {
   const parts = getPromptParts(props);
+
+  // Debug logging for language parameter
+  if (props.language === "ukrainian") {
+    console.log("=== TEMPLATE PARTS DEBUG FOR UKRAINIAN ===");
+    console.log(`Template has ${parts.length} parts`);
+    console.log(`Language parameter: "${props.language}"`);
+
+    // Check if languageInstruction is included in parts
+    const languageInstructionIndex = parts.findIndex(
+      (part) =>
+        part.name === "languageInstruction" ||
+        part.toString().includes("languageInstruction"),
+    );
+
+    console.log(
+      `Language instruction included in parts: ${languageInstructionIndex !== -1 ? "YES" : "NO"}, position: ${languageInstructionIndex}`,
+    );
+
+    // Show function names of all parts
+    console.log("Parts included:");
+    parts.forEach((part, index) => {
+      const partName = part.name || "unnamed";
+      console.log(`  ${index}: ${partName}`);
+
+      // If this is the language instruction part, let's see what it returns
+      if (
+        partName === "languageInstruction" ||
+        part.toString().includes("languageInstruction")
+      ) {
+        const content = part(props);
+        console.log(`  Content length: ${content.length} characters`);
+        console.log(`  First 100 chars: ${content.substring(0, 100)}...`);
+      }
+    });
+
+    console.log("=== END TEMPLATE PARTS DEBUG FOR UKRAINIAN ===");
+  }
+
   return parts.map((part) => part(props)).join("\n\n");
 };
 

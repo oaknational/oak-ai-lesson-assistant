@@ -1,17 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 
-import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
+import type {
+  LessonPlanKey,
+  LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
 import styled from "styled-components";
 
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
 import { Icon } from "@/components/Icon";
 import LoadingWheel from "@/components/LoadingWheel";
 import { useLessonPlanStore } from "@/stores/AilaStoresProvider";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 import {
   lessonPlanSectionSelector,
   sectionStatusSelector,
 } from "@/stores/lessonPlanStore/selectors";
+import { getTranslatedSectionTitle } from "@/utils/translations";
 
 import Skeleton from "../../common/Skeleton";
 import { LessonPlanSectionContent } from "../drop-down-section/lesson-plan-section-content";
@@ -24,15 +30,18 @@ export type LessonPlanSectionProps = Readonly<{
     ref: React.MutableRefObject<HTMLDivElement | null>,
   ) => void;
   showLessonMobile: boolean;
+  translatedLessonPlan: LooseLessonPlan | null;
 }>;
 
 export const LessonPlanSection = ({
   sectionKey,
   showLessonMobile,
   setSectionRef,
+  translatedLessonPlan,
 }: LessonPlanSectionProps) => {
   const section = useLessonPlanStore(lessonPlanSectionSelector(sectionKey));
   const status = useLessonPlanStore(sectionStatusSelector(sectionKey));
+  const { language } = useTranslation();
 
   const sectionRef = useRef(null);
   useEffect(() => {
@@ -75,7 +84,7 @@ export const LessonPlanSection = ({
 
         <FullWidthButton onClick={() => setIsOpen(!isOpen)} aria-label="toggle">
           <OakFlex $width="100%" $justifyContent="space-between">
-            <OakP $font="heading-6">{sectionTitle(sectionKey)}</OakP>
+            <OakP $font="heading-6">{sectionTitle(sectionKey, language)}</OakP>
             <Icon icon={isOpen ? "chevron-up" : "chevron-down"} size="sm" />
           </OakFlex>
         </FullWidthButton>
@@ -84,7 +93,11 @@ export const LessonPlanSection = ({
       {isOpen && (
         <div className="mt-12 w-full">
           {status === "loaded" && section ? (
-            <LessonPlanSectionContent sectionKey={sectionKey} value={section} />
+            <LessonPlanSectionContent
+              sectionKey={sectionKey}
+              value={section}
+              translatedLessonPlan={translatedLessonPlan}
+            />
           ) : (
             <Skeleton loaded={false} numberOfRows={1}>
               <p>Loading</p>

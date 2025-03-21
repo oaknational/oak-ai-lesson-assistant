@@ -17,43 +17,27 @@ import DemoShareLockedDialog from "./ContentOptions/DemoShareLockedDialog";
 import EndOfLessonFeedback from "./ContentOptions/EndOfLessonFeedback";
 import ReportContentDialog from "./ContentOptions/ReportContentDialog";
 import ShareChatDialog from "./ContentOptions/ShareChatDialog";
+import TranslateWindow from "./ContentOptions/TranslateWindow";
 
 const dialogTitlesAndIcons: Record<
   Exclude<DialogTypes, "">,
   { title: string; iconName: OakIconName | null }
 > = {
-  "share-chat": {
-    title: "Share lesson",
-    iconName: null,
-  },
-  feedback: {
-    title: "",
-    iconName: null,
-  },
-  "report-content": {
-    title: "Report content",
-    iconName: "warning",
-  },
+  "share-chat": { title: "Share lesson", iconName: null },
+  feedback: { title: "", iconName: null },
+  "report-content": { title: "Report content", iconName: "warning" },
   "sensitive-moderation-user-comment": {
     title: "Sensitive moderation user comment",
     iconName: "warning",
   },
-  "demo-interstitial": {
-    title: "Demo lesson limits",
-    iconName: "warning",
-  },
+  "demo-interstitial": { title: "Demo lesson limits", iconName: "warning" },
   "demo-share-locked": {
     title: "Sharing and downloading",
     iconName: "warning",
   },
-  "clear-history": {
-    title: "Are you absolutely sure?",
-    iconName: null,
-  },
-  "clear-single-chat": {
-    title: "Are you absolutely sure?",
-    iconName: null,
-  },
+  "clear-history": { title: "Are you absolutely sure?", iconName: null },
+  "clear-single-chat": { title: "Are you absolutely sure?", iconName: null },
+  "translate-window": { title: "Translate lesson", iconName: null },
 };
 
 const OakModalAtTheFront = styled(OakModalCenter)`
@@ -108,6 +92,9 @@ const DialogContents = ({
                 closeDialog={closeDialog}
                 messages={messages}
               />
+            )}
+            {dialogWindow === "translate-window" && (
+              <TranslateWindow closeDialog={closeDialog} />
             )}
             {dialogWindow === "demo-share-locked" && (
               <DemoShareLockedDialog closeDialog={closeDialog} />

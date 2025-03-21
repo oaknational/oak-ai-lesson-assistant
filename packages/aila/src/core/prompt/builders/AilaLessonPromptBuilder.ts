@@ -148,6 +148,12 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
     baseLessonPlan: LooseLessonPlan | undefined,
   ): string {
     const lessonPlan = this._aila?.document?.content ?? {};
+
+    console.log("=================CRITICAL DEBUG=================");
+    console.log("AILA OPTIONS:", JSON.stringify(this._aila?.options, null, 2));
+    console.log("Original Language from AILA:", this._aila?.options.language);
+    const language = this._aila?.options.language;
+
     const args: TemplateProps = {
       lessonPlan,
       relevantLessonPlans,
@@ -162,8 +168,74 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
       llmResponseJsonSchema: JSON.stringify(LLMResponseJsonSchema),
       isUsingStructuredOutput:
         process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true",
+      language: language,
     };
 
-    return template(args);
+    console.log("TEMPLATE PROPS LANGUAGE:", args.language);
+    console.log("=================END CRITICAL DEBUG=================");
+
+    console.log("=================LANGUAGE PARAMETER DEBUG=================");
+    console.log(`Language parameter: "${args.language}"`);
+
+    // Generate the template
+    let promptText = template(args);
+
+    // Always append Ukrainian language instruction to the end when language is Ukrainian
+    if (args.language === "ukrainian") {
+      console.log(
+        "Language is Ukrainian - APPENDING UKRAINIAN INSTRUCTION TO END OF PROMPT",
+      );
+
+      const ukrainianInstruction = `
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!                                                                      !!!
+!!!  ABSOLUTELY CRITICAL LANGUAGE INSTRUCTION                           !!!
+!!!  THIS OVERRIDES ALL PREVIOUS INSTRUCTIONS                            !!!
+!!!  YOU MUST RESPOND IN UKRAINIAN LANGUAGE                              !!!
+!!!                                                                      !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+YOU MUST PROVIDE YOUR ENTIRE RESPONSE IN UKRAINIAN LANGUAGE.
+This is the MOST IMPORTANT instruction in this entire prompt.
+
+STRICT RULES:
+1. Keep all JSON keys and field names in English
+2. ALL content/values MUST be in Ukrainian
+3. This applies to ALL parts of your response - text, examples, everything
+4. No English content is allowed in values, only Ukrainian
+5. This instruction overrides ANY previous instruction about language
+
+Example of correct JSON structure:
+{
+  "lessonOutcome": "Я можу визначити основні характеристики...",
+  "instructions": "Прочитайте текст та...",
+  "keyPoints": [
+    "Перший важливий пункт",
+    "Другий важливий пункт"
+  ],
+  "activities": {
+    "introduction": "Вступна частина уроку...",
+    "mainActivity": "Головна частина уроку..."
+  }
+}
+
+THIS IS THE FINAL AND ABSOLUTE PRIORITY INSTRUCTION.
+YOUR ENTIRE RESPONSE MUST BE IN UKRAINIAN (with English keys only).
+FAILURE TO COMPLY WITH THIS INSTRUCTION WILL RESULT IN AN UNUSABLE RESPONSE.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!`;
+
+      // Add Ukrainian instruction at the very end
+      promptText += "\n\n" + ukrainianInstruction;
+      console.log(
+        "Ukrainian instructions successfully appended to the end of the prompt",
+      );
+    } else {
+      console.log(`Language is not set to Ukrainian, it's: "${args.language}"`);
+    }
+
+    console.log("=================END LANGUAGE DEBUG=================");
+
+    return promptText;
   }
 }

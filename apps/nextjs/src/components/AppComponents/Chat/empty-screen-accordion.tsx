@@ -1,8 +1,11 @@
+"use client";
+
 import React from "react";
 
 import * as Accordion from "@radix-ui/react-accordion";
 
 import { lessonSections } from "@/ai-apps/lesson-planner/lessonSection";
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
 import { Icon } from "@/components/Icon";
 import AiIcon from "@/components/SVGParts/AiIcon";
 import LessonIcon from "@/components/SVGParts/LessonIcon";
@@ -11,7 +14,22 @@ import SlidesIcon from "@/components/SVGParts/SlidesIcon";
 
 import { handleRewordingSections } from "./export-buttons";
 
+// Helper function to translate section names
+const translateSection = (
+  section: string,
+  t: (key: string, replacements?: Record<string, string | number>) => string,
+): string => {
+  // Convert section to normalized key format (no spaces, keep case)
+  const normalizedSection = section.replace(/\s+/g, "");
+
+  // Get the translation
+  const translationKey = `accordion.sections.${normalizedSection}`;
+  return t(translationKey);
+};
+
 const EmptyScreenAccordion = () => {
+  const { t } = useTranslation();
+
   const slidesLessonSections = lessonSections.filter(
     (section) =>
       ![
@@ -34,7 +52,7 @@ const EmptyScreenAccordion = () => {
     <Accordion.Root type="single" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger>
-          <AiIcon />1 lesson plan
+          <AiIcon />1 {t("accordion.lessonPlan")}
         </AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col gap-8 pl-20">
@@ -50,9 +68,7 @@ const EmptyScreenAccordion = () => {
                 <div className="flex items-center gap-8" key={section}>
                   <Icon icon="tick" size="sm" />
                   <span className="text-base">
-                    {convertTitleCaseToSentenceCase(
-                      handleRewordingSections(section),
-                    )}
+                    {translateSection(section, t)}
                   </span>
                 </div>
               );
@@ -62,7 +78,7 @@ const EmptyScreenAccordion = () => {
       </AccordionItem>
       <AccordionItem value="item-2">
         <AccordionTrigger>
-          <SlidesIcon />1 slide deck
+          <SlidesIcon />1 {t("accordion.lessonPresentation")}
         </AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col gap-8 pl-20">
@@ -78,9 +94,7 @@ const EmptyScreenAccordion = () => {
                 <div className="flex items-center gap-8" key={section}>
                   <Icon icon="tick" size="sm" />
                   <span className="text-base">
-                    {convertTitleCaseToSentenceCase(
-                      handleRewordingSections(section),
-                    )}
+                    {translateSection(section, t)}
                   </span>
                 </div>
               );
@@ -90,7 +104,7 @@ const EmptyScreenAccordion = () => {
       </AccordionItem>
       <AccordionItem value="item-3">
         <AccordionTrigger>
-          <QuizIcon />2 quizzes
+          <QuizIcon />2 {t("accordion.quizzes")}
         </AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col gap-8 pl-20">
@@ -106,9 +120,7 @@ const EmptyScreenAccordion = () => {
                 <div className="flex items-center gap-8" key={section}>
                   <Icon icon="tick" size="sm" />
                   <span className="text-base">
-                    {convertTitleCaseToSentenceCase(
-                      handleRewordingSections(section),
-                    )}
+                    {translateSection(section, t)}
                   </span>
                 </div>
               );
@@ -119,7 +131,7 @@ const EmptyScreenAccordion = () => {
       <AccordionItem value="item-4">
         <div className="flex w-full items-center justify-between">
           <span className="flex w-full items-center gap-10 text-left text-base font-bold">
-            <LessonIcon />1 worksheet
+            <LessonIcon />1 {t("accordion.pupilWorksheet")}
           </span>
         </div>
       </AccordionItem>

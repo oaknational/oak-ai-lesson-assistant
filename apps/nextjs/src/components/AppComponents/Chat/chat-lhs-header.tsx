@@ -3,6 +3,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
 import { useChatStore } from "@/stores/AilaStoresProvider";
 
 import AiIcon from "../../AiIcon";
@@ -24,6 +25,7 @@ const ChatLhsHeader = ({
     (state) => state.ailaStreamingStatus,
   );
   const isDemoUser = useDemoUser().isDemoUser;
+  const { t } = useTranslation();
 
   return (
     <>
@@ -42,7 +44,7 @@ const ChatLhsHeader = ({
           }}
           size="sm"
         >
-          New lesson
+          {t("chat.newLesson")}
         </ChatButton>
       </div>
       <div className={`${isDemoUser && "mt-16"} flex justify-end sm:hidden`}>
@@ -51,7 +53,7 @@ const ChatLhsHeader = ({
           className="flex items-center gap-5"
         >
           <AiIcon />{" "}
-          <span className={"text-base font-bold"}>View lesson &gt;</span>
+          <span className={"text-base font-bold"}>{t("chat.viewLesson")}</span>
         </button>
       </div>
     </>

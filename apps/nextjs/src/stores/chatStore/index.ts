@@ -31,6 +31,7 @@ export const createChatStore = (
     id,
     moderationActions: undefined, // Passed in the provider
     ailaStreamingStatus: "Idle",
+    language: "english",
     initialMessages: [],
     stableMessages: [],
     streamingMessage: null,
@@ -52,6 +53,7 @@ export const createChatStore = (
       setLessonPlan: (lessonPlan) => set({ lessonPlan }),
       setInput: (input) => set({ input }),
       setChatAreaRef: (ref) => set({ chatAreaRef: ref }),
+      setLanguage: (language) => set({ language }),
 
       // Action functions
       executeQueuedAction: handleExecuteQueuedAction(set, get),

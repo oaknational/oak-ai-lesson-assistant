@@ -7,4 +7,5 @@ export type DialogTypes =
   | "demo-interstitial"
   | "demo-share-locked"
   | "clear-history"
-  | "clear-single-chat";
+  | "clear-single-chat"
+  | "translate-window";

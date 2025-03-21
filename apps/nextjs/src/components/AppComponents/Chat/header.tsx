@@ -12,6 +12,8 @@ import {
 import { usePathname } from "next/navigation";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import OakIconLogo from "@/components/OakIconLogo";
 import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
 
@@ -23,6 +25,7 @@ import { UserOrLogin } from "./user-or-login";
 
 export function Header() {
   const { isDemoUser, demo } = useDemoUser();
+  const { t } = useTranslation();
 
   // Check whether clerk metadata has loaded to prevent the banner from flashing
   const clerkMetadata = useClerkDemoMetadata();
@@ -36,6 +39,16 @@ export function Header() {
       $zIndex={"banner"}
       $width={"100%"}
     >
+      <OakFlex
+        $alignItems={"center"}
+        $justifyContent={"space-between"}
+        $background="white"
+      >
+        <p>Translation prototype</p>
+        <div className="mr-4">
+          <LanguageSwitcher />
+        </div>
+      </OakFlex>
       {clerkMetadata.isSet && isDemoUser && (
         <OakFlex
           $alignItems={"center"}
@@ -47,9 +60,9 @@ export function Header() {
         >
           <OakSpan $font={["body-3", "body-2", "body-1"]}>
             <OakSpan $font={["body-3-bold", "body-2-bold", "body-1-bold"]}>
-              Create {demo.appSessionsPerMonth} lessons per month •
+              {t("demo.createLessons", { count: demo.appSessionsPerMonth })}
             </OakSpan>{" "}
-            If you are a teacher in the UK,{" "}
+            {t("demo.contactUs")}{" "}
             <OakLink
               iconName="chevron-right"
               isTrailingIcon
@@ -64,8 +77,10 @@ export function Header() {
           {demo.appSessionsRemaining !== undefined && (
             <OakBox $display={["none", "none", "block"]}>
               <OakSpan $font={"body-1-bold"}>
-                {demo.appSessionsRemaining} of {demo.appSessionsPerMonth}{" "}
-                lessons remaining
+                {t("demo.remaining", {
+                  remaining: demo.appSessionsRemaining,
+                  total: demo.appSessionsPerMonth,
+                })}
               </OakSpan>
             </OakBox>
           )}
@@ -89,7 +104,7 @@ export function Header() {
             <OakLink href="/" aria-label="go to home page">
               <OakIconLogo />
             </OakLink>
-            <OakSpan $font="heading-6">Aila</OakSpan>
+            <OakSpan $font="heading-6">{t("common.aila")}</OakSpan>
           </OakFlex>
           <OakFlex>
             <BetaTagHeader />
@@ -114,7 +129,7 @@ export function Header() {
                   iconName={"question-mark"}
                 />
                 <OakSpan $font="body-2" $color={"black"}>
-                  Help
+                  {t("common.help")}
                 </OakSpan>
               </OakFlex>
             </OakLink>

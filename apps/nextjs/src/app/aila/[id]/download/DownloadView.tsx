@@ -1,6 +1,11 @@
 "use client";
 
-import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+import { useEffect, useState } from "react";
+
+import type {
+  AilaPersistedChat,
+  LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 
 import { Box, Flex, Grid } from "@radix-ui/themes";
 
@@ -21,6 +26,8 @@ type DownloadViewProps = Readonly<{
   chat: AilaPersistedChat;
 }>;
 export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
+  const [translatedLessonPlan, setTranslatedLessonPlan] =
+    useState<LooseLessonPlan | null>(null);
   const { lessonPlan, id } = chat;
   const {
     lessonSlidesExport,
@@ -36,6 +43,16 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
   } = useDownloadView(chat);
 
   const isLessonComplete = totalSectionsComplete >= totalSections;
+
+  useEffect(() => {
+    const translatedLessonPlan =
+      localStorage.getItem(`${id}-translatedLessonPlan`) ?? "";
+    const parsedTranslatedLessonPlan: LooseLessonPlan =
+      JSON.parse(translatedLessonPlan);
+    if (translatedLessonPlan) {
+      setTranslatedLessonPlan(parsedTranslatedLessonPlan);
+    }
+  }, [id]);
 
   return (
     <DialogRoot>
@@ -77,94 +94,276 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
               }}
               className="gap-26"
             >
-              <Flex direction="column" className="gap-14">
-                <DownloadAllButton
-                  onClick={() => exportAllAssets.start()}
-                  title="Download all resources"
-                  subTitle="Lesson plan, starter and exit quiz, slides and worksheet"
-                  downloadAvailable={!!exportAllAssets.readyToExport}
-                  downloadLoading={exportAllAssets.status === "loading"}
-                  data={exportAllAssets.data}
-                  data-testid="chat-download-all-resources"
-                  lesson={lessonPlan}
-                  chatId={id}
-                />
-                <DownloadButton
-                  chatId={id}
-                  onClick={() => lessonPlanExport.start()}
-                  title="Lesson plan"
-                  subTitle="Overview of the complete lesson"
-                  downloadAvailable={!!lessonPlanExport.readyToExport}
-                  downloadLoading={lessonPlanExport.status === "loading"}
-                  data={lessonPlanExport.data}
-                  exportsType="lessonPlanDoc"
-                  data-testid="chat-download-lesson-plan"
-                  lesson={lessonPlan}
-                />
-                <DownloadButton
-                  chatId={id}
-                  onClick={() => starterQuizExport.start()}
-                  title="Starter quiz"
-                  subTitle="Questions and answers to assess prior knowledge"
-                  downloadAvailable={!!starterQuizExport.readyToExport}
-                  downloadLoading={starterQuizExport.status === "loading"}
-                  data={starterQuizExport.data}
-                  exportsType="starterQuiz"
-                  lesson={lessonPlan}
-                />
-                <DownloadButton
-                  chatId={id}
-                  onClick={() => lessonSlidesExport.start()}
-                  data-testid="chat-download-slides-btn"
-                  title="Slide deck"
-                  subTitle="Learning outcome, keywords and learning cycles"
-                  downloadAvailable={lessonSlidesExport.readyToExport}
-                  downloadLoading={lessonSlidesExport.status === "loading"}
-                  data={lessonSlidesExport.data}
-                  exportsType="lessonSlides"
-                  lesson={lessonPlan}
-                />
-                <DownloadButton
-                  chatId={id}
-                  onClick={() => worksheetExport.start()}
-                  title="Worksheet"
-                  subTitle="Practice tasks"
-                  downloadAvailable={!!worksheetExport.readyToExport}
-                  downloadLoading={worksheetExport.status === "loading"}
-                  data={worksheetExport.data}
-                  lesson={lessonPlan}
-                  exportsType="worksheet"
-                />
-                <DownloadButton
-                  chatId={id}
-                  onClick={() => exitQuizExport.start()}
-                  title="Exit quiz"
-                  subTitle="Questions and answers to assess understanding"
-                  downloadAvailable={!!exitQuizExport.readyToExport}
-                  downloadLoading={exitQuizExport.status === "loading"}
-                  data={exitQuizExport.data}
-                  exportsType="exitQuiz"
-                  lesson={lessonPlan}
-                />
-                {lessonPlan.additionalMaterials &&
-                  lessonPlan.additionalMaterials !== "None" && (
+              {translatedLessonPlan ? (
+                <Flex direction="row" className="gap-14">
+                  <Flex direction="column" className="gap-14">
+                    <DownloadAllButton
+                      onClick={() => exportAllAssets.start()}
+                      title="Download all resources"
+                      subTitle="Lesson plan, starter and exit quiz, slides and worksheet"
+                      downloadAvailable={!!exportAllAssets.readyToExport}
+                      downloadLoading={exportAllAssets.status === "loading"}
+                      data={exportAllAssets.data}
+                      data-testid="chat-download-all-resources"
+                      lesson={lessonPlan}
+                      chatId={id}
+                    />
                     <DownloadButton
                       chatId={id}
-                      onClick={() => additionalMaterialsExport.start()}
-                      title="Additional materials"
-                      subTitle="Document containing any additional materials"
-                      downloadAvailable={
-                        !!additionalMaterialsExport.readyToExport
-                      }
-                      downloadLoading={
-                        additionalMaterialsExport.status === "loading"
-                      }
-                      data={additionalMaterialsExport.data}
-                      exportsType="additionalMaterials"
+                      onClick={() => lessonPlanExport.start()}
+                      title="Lesson plan"
+                      subTitle="Overview of the complete lesson"
+                      downloadAvailable={!!lessonPlanExport.readyToExport}
+                      downloadLoading={lessonPlanExport.status === "loading"}
+                      data={lessonPlanExport.data}
+                      exportsType="lessonPlanDoc"
+                      data-testid="chat-download-lesson-plan"
                       lesson={lessonPlan}
                     />
-                  )}
-              </Flex>
+                    <DownloadButton
+                      chatId={id}
+                      onClick={() => starterQuizExport.start()}
+                      title="Starter quiz"
+                      subTitle="Questions and answers to assess prior knowledge"
+                      downloadAvailable={!!starterQuizExport.readyToExport}
+                      downloadLoading={starterQuizExport.status === "loading"}
+                      data={starterQuizExport.data}
+                      exportsType="starterQuiz"
+                      lesson={lessonPlan}
+                    />
+                    <DownloadButton
+                      chatId={id}
+                      onClick={() => lessonSlidesExport.start()}
+                      data-testid="chat-download-slides-btn"
+                      title="Slide deck"
+                      subTitle="Learning outcome, keywords and learning cycles"
+                      downloadAvailable={lessonSlidesExport.readyToExport}
+                      downloadLoading={lessonSlidesExport.status === "loading"}
+                      data={lessonSlidesExport.data}
+                      exportsType="lessonSlides"
+                      lesson={lessonPlan}
+                    />
+                    <DownloadButton
+                      chatId={id}
+                      onClick={() => worksheetExport.start()}
+                      title="Worksheet"
+                      subTitle="Practice tasks"
+                      downloadAvailable={!!worksheetExport.readyToExport}
+                      downloadLoading={worksheetExport.status === "loading"}
+                      data={worksheetExport.data}
+                      lesson={lessonPlan}
+                      exportsType="worksheet"
+                    />
+                    <DownloadButton
+                      chatId={id}
+                      onClick={() => exitQuizExport.start()}
+                      title="Exit quiz"
+                      subTitle="Questions and answers to assess understanding"
+                      downloadAvailable={!!exitQuizExport.readyToExport}
+                      downloadLoading={exitQuizExport.status === "loading"}
+                      data={exitQuizExport.data}
+                      exportsType="exitQuiz"
+                      lesson={lessonPlan}
+                    />
+                    {lessonPlan.additionalMaterials &&
+                      lessonPlan.additionalMaterials !== "None" && (
+                        <DownloadButton
+                          chatId={id}
+                          onClick={() => additionalMaterialsExport.start()}
+                          title="Additional materials"
+                          subTitle="Document containing any additional materials"
+                          downloadAvailable={
+                            !!additionalMaterialsExport.readyToExport
+                          }
+                          downloadLoading={
+                            additionalMaterialsExport.status === "loading"
+                          }
+                          data={additionalMaterialsExport.data}
+                          exportsType="additionalMaterials"
+                          lesson={lessonPlan}
+                        />
+                      )}
+                  </Flex>
+                  <Flex direction="column" className="gap-14">
+                    <DownloadAllButton
+                      onClick={() => exportAllAssets.start()}
+                      title="Download all translated resources"
+                      subTitle="Lesson plan, starter and exit quiz, slides and worksheet"
+                      downloadAvailable={!!exportAllAssets.readyToExport}
+                      downloadLoading={exportAllAssets.status === "loading"}
+                      data={exportAllAssets.data}
+                      data-testid="chat-download-all-resources"
+                      lesson={translatedLessonPlan}
+                      chatId={id}
+                    />
+                    <DownloadButton
+                      chatId={id}
+                      onClick={() => lessonPlanExport.start()}
+                      title="Translated Lesson plan"
+                      subTitle="Overview of the complete lesson"
+                      downloadAvailable={!!lessonPlanExport.readyToExport}
+                      downloadLoading={lessonPlanExport.status === "loading"}
+                      data={lessonPlanExport.data}
+                      exportsType="lessonPlanDoc"
+                      data-testid="chat-download-lesson-plan"
+                      lesson={translatedLessonPlan}
+                    />
+                    <DownloadButton
+                      chatId={id}
+                      onClick={() => starterQuizExport.start()}
+                      title="Translated Starter quiz"
+                      subTitle="Questions and answers to assess prior knowledge"
+                      downloadAvailable={!!starterQuizExport.readyToExport}
+                      downloadLoading={starterQuizExport.status === "loading"}
+                      data={starterQuizExport.data}
+                      exportsType="starterQuiz"
+                      lesson={translatedLessonPlan}
+                    />
+                    <DownloadButton
+                      chatId={id}
+                      onClick={() => lessonSlidesExport.start()}
+                      data-testid="chat-download-slides-btn"
+                      title="Translated Slide deck"
+                      subTitle="Learning outcome, keywords and learning cycles"
+                      downloadAvailable={lessonSlidesExport.readyToExport}
+                      downloadLoading={lessonSlidesExport.status === "loading"}
+                      data={lessonSlidesExport.data}
+                      exportsType="lessonSlides"
+                      lesson={translatedLessonPlan}
+                    />
+                    <DownloadButton
+                      chatId={id}
+                      onClick={() => worksheetExport.start()}
+                      title="Translated Worksheet"
+                      subTitle="Practice tasks"
+                      downloadAvailable={!!worksheetExport.readyToExport}
+                      downloadLoading={worksheetExport.status === "loading"}
+                      data={worksheetExport.data}
+                      lesson={translatedLessonPlan}
+                      exportsType="worksheet"
+                    />
+                    <DownloadButton
+                      chatId={id}
+                      onClick={() => exitQuizExport.start()}
+                      title="Translated Exit quiz"
+                      subTitle="Questions and answers to assess understanding"
+                      downloadAvailable={!!exitQuizExport.readyToExport}
+                      downloadLoading={exitQuizExport.status === "loading"}
+                      data={exitQuizExport.data}
+                      exportsType="exitQuiz"
+                      lesson={translatedLessonPlan}
+                    />
+                    {lessonPlan.additionalMaterials &&
+                      lessonPlan.additionalMaterials !== "None" && (
+                        <DownloadButton
+                          chatId={id}
+                          onClick={() => additionalMaterialsExport.start()}
+                          title="Translated Additional materials"
+                          subTitle="Document containing any additional materials"
+                          downloadAvailable={
+                            !!additionalMaterialsExport.readyToExport
+                          }
+                          downloadLoading={
+                            additionalMaterialsExport.status === "loading"
+                          }
+                          data={additionalMaterialsExport.data}
+                          exportsType="additionalMaterials"
+                          lesson={translatedLessonPlan}
+                        />
+                      )}
+                  </Flex>
+                </Flex>
+              ) : (
+                <Flex direction="column" className="gap-14">
+                  <DownloadAllButton
+                    onClick={() => exportAllAssets.start()}
+                    title="Download all resources"
+                    subTitle="Lesson plan, starter and exit quiz, slides and worksheet"
+                    downloadAvailable={!!exportAllAssets.readyToExport}
+                    downloadLoading={exportAllAssets.status === "loading"}
+                    data={exportAllAssets.data}
+                    data-testid="chat-download-all-resources"
+                    lesson={lessonPlan}
+                    chatId={id}
+                  />
+                  <DownloadButton
+                    chatId={id}
+                    onClick={() => lessonPlanExport.start()}
+                    title="Lesson plan"
+                    subTitle="Overview of the complete lesson"
+                    downloadAvailable={!!lessonPlanExport.readyToExport}
+                    downloadLoading={lessonPlanExport.status === "loading"}
+                    data={lessonPlanExport.data}
+                    exportsType="lessonPlanDoc"
+                    data-testid="chat-download-lesson-plan"
+                    lesson={lessonPlan}
+                  />
+                  <DownloadButton
+                    chatId={id}
+                    onClick={() => starterQuizExport.start()}
+                    title="Starter quiz"
+                    subTitle="Questions and answers to assess prior knowledge"
+                    downloadAvailable={!!starterQuizExport.readyToExport}
+                    downloadLoading={starterQuizExport.status === "loading"}
+                    data={starterQuizExport.data}
+                    exportsType="starterQuiz"
+                    lesson={lessonPlan}
+                  />
+                  <DownloadButton
+                    chatId={id}
+                    onClick={() => lessonSlidesExport.start()}
+                    data-testid="chat-download-slides-btn"
+                    title="Slide deck"
+                    subTitle="Learning outcome, keywords and learning cycles"
+                    downloadAvailable={lessonSlidesExport.readyToExport}
+                    downloadLoading={lessonSlidesExport.status === "loading"}
+                    data={lessonSlidesExport.data}
+                    exportsType="lessonSlides"
+                    lesson={lessonPlan}
+                  />
+                  <DownloadButton
+                    chatId={id}
+                    onClick={() => worksheetExport.start()}
+                    title="Worksheet"
+                    subTitle="Practice tasks"
+                    downloadAvailable={!!worksheetExport.readyToExport}
+                    downloadLoading={worksheetExport.status === "loading"}
+                    data={worksheetExport.data}
+                    lesson={lessonPlan}
+                    exportsType="worksheet"
+                  />
+                  <DownloadButton
+                    chatId={id}
+                    onClick={() => exitQuizExport.start()}
+                    title="Exit quiz"
+                    subTitle="Questions and answers to assess understanding"
+                    downloadAvailable={!!exitQuizExport.readyToExport}
+                    downloadLoading={exitQuizExport.status === "loading"}
+                    data={exitQuizExport.data}
+                    exportsType="exitQuiz"
+                    lesson={lessonPlan}
+                  />
+                  {lessonPlan.additionalMaterials &&
+                    lessonPlan.additionalMaterials !== "None" && (
+                      <DownloadButton
+                        chatId={id}
+                        onClick={() => additionalMaterialsExport.start()}
+                        title="Additional materials"
+                        subTitle="Document containing any additional materials"
+                        downloadAvailable={
+                          !!additionalMaterialsExport.readyToExport
+                        }
+                        downloadLoading={
+                          additionalMaterialsExport.status === "loading"
+                        }
+                        data={additionalMaterialsExport.data}
+                        exportsType="additionalMaterials"
+                        lesson={lessonPlan}
+                      />
+                    )}
+                </Flex>
+              )}
+
               <Box>
                 <div className="mb-17">
                   <span className="font-bold">

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Flex } from "@radix-ui/themes";
 
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
 import { Icon } from "@/components/Icon";
 import {
   useChatStore,
@@ -21,6 +22,7 @@ export const LessonPlanProgressDropdown: React.FC = () => {
   const { sections, totalSections, totalSectionsComplete } =
     useProgressForDownloads({ lessonPlan, isStreaming });
   const [openProgressDropDown, setOpenProgressDropDown] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <DropdownMenu.Root
@@ -36,7 +38,10 @@ export const LessonPlanProgressDropdown: React.FC = () => {
           data-testid="chat-progress"
         >
           <span>
-            {`${totalSectionsComplete} of ${totalSections} sections complete`}
+            {t("chat.sectionsComplete", {
+              complete: totalSectionsComplete,
+              total: totalSections,
+            })}
           </span>
           <Icon
             icon={openProgressDropDown ? "chevron-up" : "chevron-down"}

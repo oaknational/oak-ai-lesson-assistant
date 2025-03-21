@@ -6,6 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/AppComponents/Chat/ui/tooltip";
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
 import { Icon } from "@/components/Icon";
 import LoadingWheel from "@/components/LoadingWheel";
 import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
@@ -23,6 +24,7 @@ export function ChatStartForm({
 }>) {
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (inputRef.current) {
@@ -52,7 +54,7 @@ export function ChatStartForm({
           rows={1}
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder={"Subject, key stage and title"}
+          placeholder={t("chat.inputPlaceholder")}
           spellCheck={false}
           className="min-h-[60px] w-full resize-none bg-transparent px-10 py-[1.3rem] text-lg focus-within:outline-none"
           disabled={isSubmitting}
@@ -70,7 +72,7 @@ export function ChatStartForm({
                 <Icon icon="chevron-right" color="white" size="sm" />
               </button>
             </TooltipTrigger>
-            <TooltipContent>Send message</TooltipContent>
+            <TooltipContent>{t("chat.sendMessage")}</TooltipContent>
           </Tooltip>
         </div>
       </div>
