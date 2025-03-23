@@ -1,4 +1,5 @@
 import { aiLogger } from "@oakai/logger";
+
 import type { z } from "zod";
 
 import type { Message } from "../chat";
@@ -7,6 +8,12 @@ import type { AilaDocumentContent, CategorisationPlugin } from "./types";
 
 const log = aiLogger("aila");
 
+/**
+ * TestDocument is a test implementation used to verify document categorization behavior.
+ * It simulates the core document functionality of AilaDocument, focusing specifically on
+ * content initialization and categorization through plugins. This allows us to test the
+ * categorization logic in isolation from other document features.
+ */
 class TestDocument {
   private _content: AilaDocumentContent = {};
   private _hasInitialisedContentFromMessages = false;

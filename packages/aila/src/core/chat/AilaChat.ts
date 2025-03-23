@@ -1,10 +1,11 @@
 import {
+  subjectWarnings,
   subjects,
   unsupportedSubjects,
-  subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
 // TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { aiLogger } from "@oakai/logger";
+
 import invariant from "tiny-invariant";
 import { z } from "zod";
 
@@ -18,8 +19,8 @@ import type {
   JsonPatchDocumentOptional,
 } from "../../protocol/jsonPatchProtocol";
 import {
-  extractPatches,
   LLMMessageSchema,
+  extractPatches,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
 import type {
@@ -216,7 +217,7 @@ export class AilaChat implements AilaChatService {
     const systemMessage = this.systemMessage();
     const applicableMessages: Message[] = [systemMessage, ...reducedMessages]; // only send
 
-    if (this._aila?.document.hasInitialisedContentFromMessages) {
+    if (this._aila.document.hasInitialisedContentFromMessages) {
       applicableMessages.push({
         id: generateMessageId({ role: "user" }),
         role: "user",
@@ -230,22 +231,12 @@ export class AilaChat implements AilaChatService {
   // This method handles setting the initial state of the document
   // based on the document type's implementation
   async handleSettingInitialState() {
-    if (this._aila.document.hasInitialisedContentFromMessages) {
-      const initialState = this._aila.document.getInitialState();
-
-      if (initialState) {
-        const keys = Object.keys(initialState);
-        for (const key of keys) {
-          const value = (initialState as Record<string, unknown>)[key];
-          if (value !== undefined && value !== null) {
-            const safeValue = this.ensureSafeValue(value);
-            if (safeValue !== undefined) {
-              await this.enqueuePatch(`/${key}`, safeValue);
-            }
-          }
-        }
+    await this._aila.document.applyInitialStatePatches(async (path, value) => {
+      const safeValue = this.ensureSafeValue(value);
+      if (safeValue !== undefined) {
+        await this.enqueuePatch(path, safeValue);
       }
-    }
+    });
   }
 
   /**
@@ -279,17 +270,15 @@ export class AilaChat implements AilaChatService {
 
       if (value && typeof value === "object" && !Array.isArray(value)) {
         const result: Record<string, unknown> = {};
-        let hasValidProperties = false;
 
         for (const [key, propValue] of Object.entries(value)) {
           const safeValue = this.ensureSafeValue(propValue, depth + 1);
           if (safeValue !== undefined) {
             result[key] = safeValue;
-            hasValidProperties = true;
           }
         }
 
-        return hasValidProperties ? result : undefined;
+        return Object.keys(result).length ? result : undefined;
       }
 
       return undefined;

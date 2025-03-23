@@ -2,6 +2,7 @@
   "name": "oak-ai-web-app",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "FIXME:lint": "turbo lint && manypkg check",
     "build": "turbo build",
@@ -24,23 +25,24 @@
     "doppler:pull:stg": "doppler secrets download --config stg --no-file --format env > .env",
     "doppler:run:stg": "doppler run -c stg --silent",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "github:pr:comments": "tsx scripts/github-pr-comments.ts",
     "lint": "turbo lint",
+    "lint:debug": "pnpm lint -- --debug",
     "lint:file": "eslint",
     "lint:fix": "pnpm lint -- --fix",
-    "lint:debug": "pnpm lint -- --debug",
+    "node-version": "node -v",
     "prompts": "turbo prompts",
     "prompts:dev": "turbo prompts:dev",
     "sonar": "dotenv -e ./.env -- sonar-scanner",
     "sort-package-json": "sort-package-json \"package.json\" \"packages/*/package.json\" \"apps/*/package.json\"",
-    "type-check": "turbo type-check",
-    "node-version": "node -v",
-    "with-env": "dotenv -e ../../.env --",
+    "storybook": "turbo storybook",
     "test": "turbo test -- --maxWorkers=33%",
-    "test:seq": "turbo test:seq --concurrency=1 --",
+    "test-coverage": "COLLECT_TEST_COVERAGE=true turbo test-coverage -- --maxWorkers=33%",
     "test-e2e": "turbo test-e2e --",
     "test-e2e-ui": "turbo test-e2e-ui --",
-    "test-coverage": "COLLECT_TEST_COVERAGE=true turbo test-coverage -- --maxWorkers=33%",
-    "storybook": "turbo storybook"
+    "test:seq": "turbo test:seq --concurrency=1 --",
+    "type-check": "turbo type-check",
+    "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@oakai/prettier-config",
   "eslintConfig": {
@@ -66,6 +68,7 @@
     "semantic-release": "^21.1.1",
     "sonarqube-scanner": "^4.2.6",
     "sort-package-json": "^2.6.0",
+    "tsx": "^4.16.0",
     "turbo": "^2.2.3",
     "typescript": "5.7.2"
   },
@@ -73,6 +76,5 @@
   "engines": {
     "node": ">=20.9.0",
     "pnpm": ">=8"
-  },
-  "type": "module"
+  }
 }

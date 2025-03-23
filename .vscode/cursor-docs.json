@@ -1,0 +1,14 @@
+{
+  "docs": [
+    {
+      "name": "Vercel AI SDK",
+      "url": "https://sdk.vercel.ai/llms.txt",
+      "description": "Documentation for the Vercel AI SDK."
+    },
+    {
+      "name": "Clerk",
+      "url": "https://github.com/clerk/clerk-docs",
+      "description": "Documentation for Clerk authentication and user management platform."
+    }
+  ]
+}

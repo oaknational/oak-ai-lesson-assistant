@@ -59,6 +59,8 @@ describe("Aila", () => {
 
   describe("initialise", () => {
     it("should not set the initial title, subject and key stage when passed values for title, key stage and subject", async () => {
+      // This test verifies that initial values for title, subject and key stage are preserved
+      // during initialization, ensuring they are not accidentally overwritten
       const ailaInstance = new Aila({
         document: {
           content: {

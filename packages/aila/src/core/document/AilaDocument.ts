@@ -1,4 +1,5 @@
 import { aiLogger } from "@oakai/logger";
+
 import { applyPatch, deepClone } from "fast-json-patch";
 import type { z } from "zod";
 
@@ -323,5 +324,27 @@ export class AilaDocument implements AilaDocumentService {
 
     log.info("No plugins successfully categorised content");
     return false;
+  }
+
+  /**
+   * Apply patches for initial state values
+   * @param patchFn Function to apply patches
+   */
+  async applyInitialStatePatches(
+    patchFn: (path: string, value: unknown) => Promise<void>,
+  ) {
+    if (this._hasInitialisedContentFromMessages) {
+      const initialState = this.getInitialState();
+
+      if (initialState) {
+        const keys = Object.keys(initialState);
+        for (const key of keys) {
+          const value = (initialState as Record<string, unknown>)[key];
+          if (value !== undefined && value !== null) {
+            await patchFn(`/${key}`, value);
+          }
+        }
+      }
+    }
   }
 }
