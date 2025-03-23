@@ -1,30 +1,140 @@
 export const messages = {
   user1: {
     role: "user",
-    content: "Make me a custom lesson plan about Roman Britain",
+    content: "[ ... Make me a custom lesson plan about Roman Britain ... ]",
+  },
+  user1RomansExample: {
+    role: "user",
+    content:
+      "Create a lesson plan about the end of Roman Britain for key stage 3 history",
+  },
+  user1Inappropriate: {
+    role: "User",
+    content: "[ ... Do something inappropriate ... ]",
   },
   assistant1: {
     role: "assistant",
-    content: "Here's a lesson about Roman Britain",
-    // TODO: add realistic parts
-    parts: [],
+    content: "[ ... Here's a lesson about Roman Britain ... ]",
+    parts: [], // Not needed for the test but the code expects an array
   },
+  assistant1RagOptions: {
+    role: "assistant",
+    content: "[... Please pick from the following options: ... ]",
+    parts: [], // Not needed for the test but the code expects an array
+  },
+  assistant1AccountLocked: {
+    role: "assistant",
+    content: "[ ... account locked ... ]",
+    parts: [
+      {
+        document: {
+          type: "action",
+          action: "SHOW_ACCOUNT_LOCKED",
+        },
+      },
+    ],
+  },
+  assistant1ToxicModeration: {
+    role: "assistant",
+    content: "[ ... response marked toxic ... ]",
+    parts: [
+      {
+        document: {
+          type: "moderation",
+          categories: ["t/encouragement-violence"],
+        },
+      },
+    ],
+  },
+
   user2Refinement: {
     role: "user",
     content: "Add more castles",
   },
   user2Continue: {
     role: "user",
-    // TODO: check
     content: "continue",
+  },
+  user2Modify: {
+    role: "user",
+    content: "Make the learning cycles easier",
+  },
+  user2SelectRagOption: {
+    role: "user",
+    content: "1",
   },
   assistant2Refinement: {
     role: "assistant",
-    content: "Here's a lesson about Roman Britain with more castles",
-    // TODO: add realistic parts
-    parts: [],
+    content:
+      "[ ... Here's a lesson about Roman Britain with more castles ... ]",
+    parts: [
+      {
+        document: {
+          type: "patch",
+          value: {
+            type: "string",
+            op: "replace",
+            path: "/learningOutcome",
+            value:
+              "I understand the end of Roman Britain, in particular the castles",
+          },
+        },
+      },
+    ],
+  },
+  assistant2ModifyResponse: {
+    role: "assistant",
+    content: "[ ... I've made those changes for you ... ]",
+    parts: [
+      {
+        document: {
+          type: "patch",
+          value: {
+            type: "string",
+            op: "replace",
+            path: "/cycle1",
+            value: "[Simple version of cycle 1]",
+          },
+        },
+      },
+    ],
+  },
+  assistant2RagResult: {
+    role: "assistant",
+    content: "[ ... Here's your lesson ... ]",
+    parts: [
+      {
+        document: {
+          type: "patch",
+          value: {
+            path: "/basedOn",
+            op: "add",
+            value: {
+              id: "based-on-test-id",
+              title: "Oak Lesson on Romans",
+            },
+          },
+        },
+      },
+    ],
   },
 } as const;
+
+const lessonPlanCategorised = {
+  title: "Roman Britain",
+  subject: "history",
+  keyStage: "key-stage-3",
+};
+
+const lessonPlanRagResult = {
+  title: "Roman Britain",
+  subject: "history",
+  keyStage: "key-stage-3",
+  basedOn: {
+    id: "based-on-test-id",
+    title: "Oak Lesson on Romans",
+  },
+};
 
 const completedLessonPlan = {
   title: "Software Testing Techniques",
@@ -291,6 +401,8 @@ const lessonPlanWithoutExitQuiz = {
 };
 
 export const lessonPlans = {
+  categorised: lessonPlanCategorised,
+  ragResult: lessonPlanRagResult,
   completed: completedLessonPlan,
   completedExceptExitQuiz: lessonPlanWithoutExitQuiz,
 };

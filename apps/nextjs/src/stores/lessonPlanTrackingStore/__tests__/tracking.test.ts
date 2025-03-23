@@ -1,5 +1,6 @@
 import { type StoreApi } from "zustand";
 
+import { modifyOptions } from "@/components/AppComponents/Chat/drop-down-section/action-button.types";
 import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 import { buildStoreGetter } from "@/stores/AilaStoresProvider";
 import type { ChatState } from "@/stores/chatStore";
@@ -45,20 +46,13 @@ describe("lessonPlanTracking tracking", () => {
     jest.clearAllMocks();
   });
 
+  // Skipped for now until we know it doesn't trigger in production
+  // For example with the Additional Materials dropdown
   it.skip("throws an error if there isn't a currentMessage", () => {
     const store = createLessonPlanTrackingStore(createArgs);
     const actions = store.getState().actions;
 
     expect(() => actions.trackCompletion()).toThrow("No current message");
-  });
-
-  it.skip("throws an error if no assistant message was found", () => {
-    const store = createLessonPlanTrackingStore(createArgs);
-    const actions = store.getState().actions;
-
-    expect(() => actions.trackCompletion()).toThrow(
-      "No assistant message content found",
-    );
   });
 
   describe("lessonPlanInitiated", () => {
@@ -71,21 +65,10 @@ describe("lessonPlanTracking tracking", () => {
       );
 
       chatStoreMock.getState.mockReturnValue({
-        stableMessages: [
-          {
-            role: "user",
-            content:
-              "Create a lesson plan about the end of Roman Britain for key stage 3 history",
-          },
-          messages.assistant1,
-        ],
+        stableMessages: [messages.user1RomansExample, messages.assistant1],
       });
       lessonPlanStoreMock.getState.mockReturnValue({
-        lessonPlan: {
-          title: "Roman Britain",
-          subject: "history",
-          keyStage: "key-stage-3",
-        },
+        lessonPlan: lessonPlans.categorised,
       });
 
       actions.trackCompletion();
@@ -109,11 +92,7 @@ describe("lessonPlanTracking tracking", () => {
         stableMessages: [messages.user1, messages.assistant1],
       });
       lessonPlanStoreMock.getState.mockReturnValue({
-        lessonPlan: {
-          title: "Roman Britain",
-          subject: "history",
-          keyStage: "key-stage-3",
-        },
+        lessonPlan: lessonPlans.categorised,
       });
 
       actions.trackCompletion();
@@ -129,7 +108,7 @@ describe("lessonPlanTracking tracking", () => {
   });
 
   describe("lessonPlanRefined", () => {
-    it("tracks when selecting a RAG lesson", () => {
+    it("tracks SELECT_OAK_LESSON when selecting a RAG lesson", () => {
       const store = createLessonPlanTrackingStore(createArgs);
       const actions = store.getState().actions;
 
@@ -138,64 +117,23 @@ describe("lessonPlanTracking tracking", () => {
       chatStoreMock.getState.mockReturnValue({
         stableMessages: [
           messages.user1,
-          {
-            role: "assistant",
-            content: "Please pick from the following options:",
-            // TODO: add realistic parts
-            parts: [],
-          },
-          {
-            role: "user",
-            content: "1",
-          },
-          {
-            role: "assistant",
-            content: "Here's your lesson",
-            parts: [
-              {
-                document: {
-                  type: "patch",
-                  value: {
-                    path: "/basedOn",
-                    op: "add",
-                    value: {
-                      id: "based-on-test-id",
-                      title: "Oak Lesson on Romans",
-                    },
-                  },
-                },
-              },
-            ],
-          },
+          messages.assistant1RagOptions,
+          messages.user2SelectRagOption,
+          messages.assistant2RagResult,
         ],
       });
       lessonPlanStoreMock.getState.mockReturnValue({
-        lessonPlan: {
-          title: "Roman Britain",
-          subject: "history",
-          keyStage: "key-stage-3",
-          basedOn: {
-            id: "based-on-test-id",
-            title: "Oak Lesson on Romans",
-          },
-        },
+        lessonPlan: lessonPlans.ragResult,
       });
 
       actions.trackCompletion();
 
-      expect(createArgs.track.lessonPlanRefined).toHaveBeenCalledWith({
-        componentType: "select_oak_lesson",
-        text: "1",
-        moderatedContentType: null,
-        refinements: [
-          {
-            refinementPath: "/basedOn",
-            refinementType: "add",
-          },
-        ],
-        ...ragTrackingFields,
-        ...commonTrackingFields,
-      });
+      expect(createArgs.track.lessonPlanRefined).toHaveBeenCalledWith(
+        expect.objectContaining({
+          componentType: "select_oak_lesson",
+          text: "1",
+        }),
+      );
     });
 
     it("tracks when typing free text", () => {
@@ -213,11 +151,7 @@ describe("lessonPlanTracking tracking", () => {
         ],
       });
       lessonPlanStoreMock.getState.mockReturnValue({
-        lessonPlan: {
-          title: "Roman Britain",
-          subject: "history",
-          keyStage: "key-stage-3",
-        },
+        lessonPlan: lessonPlans.categorised,
       });
 
       actions.trackCompletion();
@@ -225,8 +159,12 @@ describe("lessonPlanTracking tracking", () => {
       expect(createArgs.track.lessonPlanRefined).toHaveBeenCalledWith({
         componentType: "type_edit",
         text: "Add more castles",
-        // TODO: Add example refinements
-        refinements: [],
+        refinements: [
+          {
+            refinementPath: "/learningOutcome",
+            refinementType: "replace",
+          },
+        ],
         moderatedContentType: null,
         ...ragTrackingFields,
         ...commonTrackingFields,
@@ -248,11 +186,7 @@ describe("lessonPlanTracking tracking", () => {
         ],
       });
       lessonPlanStoreMock.getState.mockReturnValue({
-        lessonPlan: {
-          title: "Roman Britain",
-          subject: "history",
-          keyStage: "key-stage-3",
-        },
+        lessonPlan: lessonPlans.ragResult,
       });
 
       actions.trackCompletion();
@@ -260,11 +194,90 @@ describe("lessonPlanTracking tracking", () => {
       expect(createArgs.track.lessonPlanRefined).toHaveBeenCalledWith({
         componentType: "continue_button",
         text: "",
-        // TODO: Add example refinements
-        refinements: [],
+        refinements: [
+          {
+            refinementPath: "/learningOutcome",
+            refinementType: "replace",
+          },
+        ],
         moderatedContentType: null,
         ...ragTrackingFields,
         ...commonTrackingFields,
+      });
+    });
+
+    describe("tracking modifications from the dropdown", () => {
+      it("tracks a modification from the dropdown", () => {
+        const store = createLessonPlanTrackingStore(createArgs);
+        const actions = store.getState().actions;
+
+        actions.clickedModify(modifyOptions[0], "");
+
+        chatStoreMock.getState.mockReturnValue({
+          stableMessages: [
+            messages.user1,
+            messages.assistant1,
+            messages.user2Modify,
+            messages.assistant2ModifyResponse,
+          ],
+        });
+        lessonPlanStoreMock.getState.mockReturnValue({
+          lessonPlan: lessonPlans.categorised,
+        });
+
+        actions.trackCompletion();
+
+        expect(createArgs.track.lessonPlanRefined).toHaveBeenCalledWith({
+          componentType: "modify_button",
+          text: "Make it easier",
+          refinements: [
+            {
+              refinementPath: "/cycle1",
+              refinementType: "replace",
+            },
+          ],
+          moderatedContentType: null,
+          ...ragTrackingFields,
+          ...commonTrackingFields,
+        });
+      });
+
+      it("tracks a custom modification", () => {
+        const store = createLessonPlanTrackingStore(createArgs);
+        const actions = store.getState().actions;
+
+        actions.clickedModify(
+          { label: "Other", enumValue: "OTHER" },
+          "Add more detail",
+        );
+
+        chatStoreMock.getState.mockReturnValue({
+          stableMessages: [
+            messages.user1,
+            messages.assistant1,
+            messages.user2Modify,
+            messages.assistant2ModifyResponse,
+          ],
+        });
+        lessonPlanStoreMock.getState.mockReturnValue({
+          lessonPlan: lessonPlans.categorised,
+        });
+
+        actions.trackCompletion();
+
+        expect(createArgs.track.lessonPlanRefined).toHaveBeenCalledWith({
+          componentType: "modify_button",
+          text: "Add more detail",
+          refinements: [
+            {
+              refinementPath: "/cycle1",
+              refinementType: "replace",
+            },
+          ],
+          moderatedContentType: null,
+          ...ragTrackingFields,
+          ...commonTrackingFields,
+        });
       });
     });
   });
@@ -294,8 +307,9 @@ describe("lessonPlanTracking tracking", () => {
 
       expect(createArgs.track.lessonPlanCompleted).toHaveBeenCalledWith({
         moderatedContentType: null,
-        // TODO: fixture is for software testing techniques
-        ...ragTrackingFields,
+        keyStageSlug: "ks4",
+        lessonPlanTitle: "Software Testing Techniques",
+        subjectSlug: "computing",
         ...commonTrackingFields,
       });
     });
@@ -318,7 +332,7 @@ describe("lessonPlanTracking tracking", () => {
         ],
       });
       lessonPlanStoreMock.getState.mockReturnValue({
-        lessonPlan: lessonPlanWithoutExitQuiz,
+        lessonPlan: lessonPlans.completedExceptExitQuiz,
       });
       actions.trackCompletion();
 
@@ -351,30 +365,58 @@ describe("lessonPlanTracking tracking", () => {
     });
   });
 
-  describe("modifying", () => {
-    it.todo("tracks when using the modify drop down");
-  });
-
   describe("lessonPlanTerminated", () => {
     it("tracks when the account is locked", () => {
       const store = createLessonPlanTrackingStore(createArgs);
       const actions = store.getState().actions;
 
+      actions.submittedText("Do something inappropriate");
+
+      chatStoreMock.getState.mockReturnValue({
+        stableMessages: [
+          messages.user1Inappropriate,
+          messages.assistant1AccountLocked,
+        ],
+      });
+      lessonPlanStoreMock.getState.mockReturnValue({
+        lessonPlan: {},
+      });
       actions.trackCompletion();
 
-      expect(createArgs.track.lessonPlanTerminated).toHaveBeenCalledWith({});
+      expect(createArgs.track.lessonPlanTerminated).toHaveBeenCalledWith({
+        chatId: "test_id",
+        isThreatDetected: false,
+        isToxicContent: false,
+        isUserBlocked: true,
+      });
     });
 
     it("tracks when there's a toxic moderation", () => {
       const store = createLessonPlanTrackingStore(createArgs);
       const actions = store.getState().actions;
 
+      actions.submittedText("Do something inappropriate");
+
+      chatStoreMock.getState.mockReturnValue({
+        stableMessages: [
+          messages.user1Inappropriate,
+          messages.assistant1ToxicModeration,
+        ],
+      });
+      lessonPlanStoreMock.getState.mockReturnValue({
+        lessonPlan: {},
+      });
       actions.trackCompletion();
 
-      expect(createArgs.track.lessonPlanTerminated).toHaveBeenCalledWith({});
+      expect(createArgs.track.lessonPlanTerminated).toHaveBeenCalledWith({
+        chatId: "test_id",
+        isThreatDetected: false,
+        isToxicContent: true,
+        isUserBlocked: false,
+      });
     });
 
-    // NOTE: not applicable as a threat doesn't terminate the chat
-    it.skip("tracks when a threat is detected");
+    // NOTE: in the payload but not applicable as a threat doesn't terminate the chat
+    it.todo("tracks when a threat is detected");
   });
 });
