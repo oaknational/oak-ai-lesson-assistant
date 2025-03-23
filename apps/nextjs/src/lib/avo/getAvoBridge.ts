@@ -2,6 +2,7 @@
  * @see https://www.avo.app/docs/implementation/start-using-avo-functions
  */
 import browserLogger from "@oakai/logger/browser";
+
 import * as Sentry from "@sentry/nextjs";
 
 import type { AnalyticsService } from "@/components/ContextProviders/AnalyticsProvider";

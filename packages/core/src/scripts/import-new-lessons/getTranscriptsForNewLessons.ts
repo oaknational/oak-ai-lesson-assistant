@@ -1,5 +1,6 @@
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
+
 import { z } from "zod";
 
 import { getCaptionsFromFile } from "../../utils/getCaptionsFromFile";

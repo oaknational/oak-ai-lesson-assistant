@@ -6,7 +6,7 @@ import { Box } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 
 const checkBoxRootStyles = cva(
-  "flex h-13 w-13 items-center justify-center border border-black border-opacity-100 bg-white ",
+  "flex h-13 w-13 items-center justify-center border border-black border-opacity-100 bg-white",
   {
     variants: {
       size: {

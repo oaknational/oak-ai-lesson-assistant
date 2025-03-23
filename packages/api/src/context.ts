@@ -1,9 +1,10 @@
+import { prisma } from "@oakai/db";
+
 import type {
   SignedInAuthObject,
   SignedOutAuthObject,
 } from "@clerk/backend/internal";
 import { getAuth } from "@clerk/nextjs/server";
-import { prisma } from "@oakai/db";
 import type { inferAsyncReturnType } from "@trpc/server";
 import type { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http";
 import type { NextRequest, NextResponse } from "next/server";

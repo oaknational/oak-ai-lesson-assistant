@@ -1,8 +1,9 @@
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+
 import {
+  type OakIconName,
   OakModalCenter,
   OakModalCenterBody,
-  type OakIconName,
 } from "@oaknational/oak-components";
 import type { Message } from "ai";
 import styled from "styled-components";

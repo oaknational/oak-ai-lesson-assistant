@@ -1,5 +1,6 @@
 import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+
 import type { Message as AiMessage } from "ai";
 import type { ChatRequestOptions, CreateMessage } from "ai";
 import type { StoreApi } from "zustand";
@@ -39,21 +40,23 @@ export type ChatState = {
   // From AI SDK
   aiSdkActions: AiSdkActions;
 
-  // Setters
-  setLessonPlan: (lessonPlan: LooseLessonPlan) => void;
-  setAiSdkActions: (actions: AiSdkActions) => void;
-  setMessages: (messages: AiMessage[], isLoading: boolean) => void;
-  setInput: (input: string) => void;
-  setChatAreaRef: (ref: React.RefObject<HTMLDivElement>) => void;
+  actions: {
+    // Setters
+    setLessonPlan: (lessonPlan: LooseLessonPlan) => void;
+    setAiSdkActions: (actions: AiSdkActions) => void;
+    setMessages: (messages: AiMessage[], isLoading: boolean) => void;
+    setInput: (input: string) => void;
+    setChatAreaRef: (ref: React.RefObject<HTMLDivElement>) => void;
 
-  // Action functions
-  executeQueuedAction: () => void;
-  append: (message: string) => void;
-  stop: () => void;
-  streamingFinished: () => void;
-  scrollToBottom: () => void;
-  fetchInitialMessages: () => Promise<void>;
-  ailaStreamingStatusUpdated: (streamingStatus: AilaStreamingStatus) => void;
+    // Action functions
+    executeQueuedAction: () => void;
+    append: (message: string) => void;
+    stop: () => void;
+    streamingFinished: () => void;
+    scrollToBottom: () => void;
+    fetchInitialMessages: () => Promise<void>;
+    ailaStreamingStatusUpdated: (streamingStatus: AilaStreamingStatus) => void;
+  };
 };
 
 export type ParsedMessage = AiMessage & {

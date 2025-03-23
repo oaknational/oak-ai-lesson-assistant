@@ -1,5 +1,6 @@
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
+
 import { GraphQLClient, gql } from "graphql-request";
 
 const log = aiLogger("core");

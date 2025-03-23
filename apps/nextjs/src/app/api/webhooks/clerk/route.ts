@@ -1,7 +1,8 @@
-import type { UserJSON } from "@clerk/backend";
-import type { WebhookEvent } from "@clerk/nextjs/server";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { aiLogger } from "@oakai/logger";
+
+import type { UserJSON } from "@clerk/backend";
+import type { WebhookEvent } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/node";
 import { headers } from "next/headers";
 import { Webhook } from "svix";
@@ -61,7 +62,6 @@ export async function POST(req: Request) {
 
     let evt: WebhookEvent;
     try {
-       
       const payload = await req.json();
       const body = JSON.stringify(payload);
       evt = wh.verify(body, {

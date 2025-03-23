@@ -5,6 +5,7 @@ import type {
   LessonPlanKey,
 } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
+
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 import scrollIntoView from "scroll-into-view-if-needed";
@@ -12,8 +13,9 @@ import scrollIntoView from "scroll-into-view-if-needed";
 import { allSectionsInOrder } from "@/lib/lessonPlan/sectionsInOrder";
 import {
   useChatStore,
-  useModerationStore,
+  useLessonPlanActions,
   useLessonPlanStore,
+  useModerationStore,
 } from "@/stores/AilaStoresProvider";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
@@ -54,9 +56,7 @@ const useSectionScrolling = ({
   userHasCancelledAutoScroll: boolean;
 }) => {
   const scrollToSection = useLessonPlanStore((state) => state.scrollToSection);
-  const setScrollToSection = useLessonPlanStore(
-    (state) => state.setScrollToSection,
-  );
+  const { setScrollToSection } = useLessonPlanActions();
   const lastScrollToSectionRef = useRef<LessonPlanKey | null>(null);
 
   useEffect(() => {

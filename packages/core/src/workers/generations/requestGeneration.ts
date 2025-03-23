@@ -1,7 +1,8 @@
 import type { Prisma } from "@oakai/db";
 import { GenerationStatus, ModerationType, prisma } from "@oakai/db";
 import type { StructuredLogger } from "@oakai/logger";
-import { structuredLogger as baseLogger, aiLogger } from "@oakai/logger";
+import { aiLogger, structuredLogger as baseLogger } from "@oakai/logger";
+
 import { Redis } from "@upstash/redis";
 import { NonRetriableError } from "inngest";
 import type { z } from "zod";

@@ -1,6 +1,6 @@
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { inngest } from "@oakai/core/src/inngest";
-import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
+import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 
 import { reportRateLimitError } from "./user";
 

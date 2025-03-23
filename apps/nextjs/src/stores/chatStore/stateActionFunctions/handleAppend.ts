@@ -1,8 +1,9 @@
 import { aiLogger } from "@oakai/logger";
+
 import invariant from "tiny-invariant";
 
 import { canAppendSelector } from "../selectors";
-import type { ChatSetter, ChatGetter } from "../types";
+import type { ChatGetter, ChatSetter } from "../types";
 
 const log = aiLogger("chat:store");
 

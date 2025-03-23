@@ -2,6 +2,7 @@
   "name": "@oakai/api",
   "version": "1.0.0",
   "license": "MIT",
+  "type": "module",
   "main": "./index.ts",
   "types": "./index.ts",
   "scripts": {
@@ -10,14 +11,13 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit"
   },
+  "prettier": "@oakai/prettier-config",
   "eslintConfig": {
-    "extends": "@oakai/eslint-config",
     "parserOptions": {
       "project": "./tsconfig.json"
     },
-    "rules": {}
+    "extends": "@oakai/eslint-config"
   },
-  "prettier": "@oakai/prettier-config",
   "dependencies": {
     "@clerk/nextjs": "5.7.2",
     "@oakai/core": "*",
@@ -36,11 +36,10 @@
     "@oakai/eslint-config": "*",
     "@oakai/prettier-config": "*",
     "@types/archiver": "^6.0.3",
-    "typescript": "5.7.2"
+    "typescript": "5.8.2"
   },
   "engines": {
     "node": ">=20.9.0",
     "pnpm": ">=8"
-  },
-  "type": "module"
+  }
 }

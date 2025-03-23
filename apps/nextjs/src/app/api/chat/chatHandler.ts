@@ -4,9 +4,9 @@ import type { Message } from "@oakai/aila/src/core/chat";
 import { LessonPlanCategorisationPlugin } from "@oakai/aila/src/core/document/plugins/LessonPlanCategorisationPlugin";
 import { LessonPlanSchema } from "@oakai/aila/src/core/document/schemas/lessonPlan";
 import type {
+  AilaInitializationOptions,
   AilaOptions,
   AilaPublicChatOptions,
-  AilaInitializationOptions,
 } from "@oakai/aila/src/core/types";
 import { AilaAmericanisms } from "@oakai/aila/src/features/americanisms/AilaAmericanisms";
 import {
@@ -24,6 +24,7 @@ import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
+
 import { captureException } from "@sentry/nextjs";
 import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";

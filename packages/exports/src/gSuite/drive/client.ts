@@ -1,4 +1,4 @@
-import { drive, auth } from "@googleapis/drive";
+import { auth, drive } from "@googleapis/drive";
 
 import { credentials } from "../credentials";
 
