@@ -41,7 +41,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {},
+  args: {
+    translatedLessonPlan: lessonPlan,
+  },
   parameters: {
     chatStoreState: {
       ailaStreamingStatus: "Idle",
@@ -55,7 +57,9 @@ export const Default: Story = {
   },
 };
 export const WithModeration: Story = {
-  args: {},
+  args: {
+    translatedLessonPlan: lessonPlan,
+  },
   parameters: {
     chatStoreState: {
       ailaStreamingStatus: "Idle",
@@ -73,7 +77,9 @@ export const WithModeration: Story = {
 };
 
 export const Loading: Story = {
-  args: {},
+  args: {
+    translatedLessonPlan: lessonPlan,
+  },
   parameters: {
     chatStoreState: {
       ailaStreamingStatus: "Loading",

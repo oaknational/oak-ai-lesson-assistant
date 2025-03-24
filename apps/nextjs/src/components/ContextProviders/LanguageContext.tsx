@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 import englishTranslations from "../../translations/en.json";
 import ukrainianTranslations from "../../translations/uk.json";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Define available languages
 export type Language = "en" | "uk";
