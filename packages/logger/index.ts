@@ -76,7 +76,7 @@ export type LoggerKey =
 
 const errorLogger =
   typeof window === "undefined"
-    ? structuredLogger.error.bind(structuredLogger)
+    ? console.error.bind(console)
     : browserLogger.error.bind(browserLogger);
 
 /**

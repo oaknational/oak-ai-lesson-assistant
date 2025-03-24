@@ -1,3 +1,5 @@
+import type { LanguageModelUsage } from "ai";
+
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import type { AilaErrorReporter } from "../features/errorReporting";
@@ -26,7 +28,7 @@ import type { AilaOptionsWithDefaultFallbackValues } from "./types";
 // We can then mock these out in tests without needing to instantiate the entire Aila object.
 export interface AilaAnalyticsService {
   readonly analytics?: AilaAnalytics;
-  reportUsageMetrics(text: string): Promise<void>;
+  reportUsageMetrics(usage: LanguageModelUsage): Promise<void>;
 }
 
 export interface AilaDocumentService {

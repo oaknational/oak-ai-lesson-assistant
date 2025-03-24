@@ -46,7 +46,7 @@ export async function fetchExperimentalPatches({
 }: {
   lessonPlan: LooseLessonPlan;
   llmPatches: PatchDocument[];
-  handlePatch: (patch: ExperimentalPatchDocument) => Promise<void>;
+  handlePatch: (patch: ExperimentalPatchDocument) => void;
   fullQuizService: FullQuizService;
   userId?: string;
 }) {
@@ -81,7 +81,7 @@ export async function fetchExperimentalPatches({
   if (starterQuizPatch) {
     const op = starterQuizPatch.value.op;
     if (op === "remove") {
-      await handlePatch(
+      handlePatch(
         preparePatch({
           op,
           path: "/_experimental_starterQuizMathsV0",
@@ -106,7 +106,7 @@ export async function fetchExperimentalPatches({
       }
 
       if (mathsStarterQuiz) {
-        await handlePatch(
+        handlePatch(
           preparePatch({
             path: "/_experimental_starterQuizMathsV0",
             op,
@@ -122,7 +122,7 @@ export async function fetchExperimentalPatches({
   if (exitQuizPatch) {
     const op = exitQuizPatch.value.op;
     if (op === "remove") {
-      await handlePatch(
+      handlePatch(
         preparePatch({
           op,
           path: "/_experimental_exitQuizMathsV0",
@@ -148,7 +148,7 @@ export async function fetchExperimentalPatches({
       }
 
       if (mathsExitQuiz) {
-        await handlePatch(
+        handlePatch(
           preparePatch({
             path: "/_experimental_exitQuizMathsV0",
             op,

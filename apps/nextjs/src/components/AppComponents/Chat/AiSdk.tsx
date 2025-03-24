@@ -59,6 +59,7 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
     reload,
     stop: stopStreaming,
     isLoading,
+    data,
   } = useChat({
     sendExtraMessageFields: true,
     // NOTE: these initial messages are used by the chat endpoint
@@ -80,6 +81,7 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
       Sentry.captureException(new Error("Use chat error"), {
         extra: { originalError: error },
       });
+      console.error(error);
       log.error("UseChat error", { error, messages });
       setHasFinished(true);
     },
@@ -113,6 +115,8 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
       messageFinished();
     },
   });
+  log.info("ai sdk data", data);
+  log.info(messages[messages.length - 1]);
 
   useEffect(() => {
     /**
@@ -147,3 +151,11 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
 
   return null;
 }
+
+// {"response":"llmMessage",
+//   "patches":[
+//     {"type":"patch","reasoning":"There are no existing Oak lessons for this topic, so I've started a new lesson from scratch. I've added a learning outcome for the lesson.","value":{"op":"add","path":"/learningOutcome","value":"I can explain the reasons for the end of Roman rule in Britain."}},
+//     {"type":"patch","reasoning":"Added learning cycles to break down the lesson into manageable parts for pupils.","value":{"op":"add","path":"/learningCycles","value":["Identify the key events leading to the end of Roman rule in Britain","Explain the impact of the Roman withdrawal on British society","Discuss the role of archaeology in understanding this historical period"]}
+//   }],
+//   "prompt":{"type":"text","message":"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step."}
+// }

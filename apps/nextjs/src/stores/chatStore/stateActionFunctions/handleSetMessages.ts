@@ -1,3 +1,4 @@
+import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
 import type { GetStore } from "@/stores/AilaStoresProvider";
@@ -5,6 +6,8 @@ import type { GetStore } from "@/stores/AilaStoresProvider";
 import { calculateStreamingStatus } from "../actions/calculateStreamingStatus";
 import { getNextStableMessages, parseStreamingMessage } from "../parsing";
 import type { ChatSetter, ChatGetter, AiMessage } from "../types";
+
+const log = aiLogger("chat:store");
 
 export function handleSetMessages(
   getStore: GetStore,
@@ -32,6 +35,7 @@ export function handleSetMessages(
         ailaStreamingStatus: "Idle",
       });
     } else if (lastMessageIsUser(messages)) {
+      log.info("last message is user");
       // AI SDK is loading without a message from the API: we're waiting for a response
 
       const nextStableMessages = getNextStableMessages(
@@ -54,6 +58,7 @@ export function handleSetMessages(
         currentMessageData,
         get().streamingMessage,
       );
+      log.info("streaming message", streamingMessage);
 
       const stableMessageData = messages.slice(0, messages.length - 1);
       const nextStableMessages = getNextStableMessages(

@@ -1,3 +1,5 @@
+import { LanguageModelUsage } from "ai";
+
 import type { Message } from "../core/chat";
 import type { AilaDocumentContent } from "../core/document/types";
 import type { AilaPluginContext } from "../core/plugins";
@@ -20,7 +22,10 @@ export interface AilaModerationFeature {
 
 export interface AilaAnalyticsFeature {
   initialiseAnalyticsContext(): void;
-  reportUsageMetrics(responseBody: string, startedAt?: number): Promise<void>;
+  reportUsageMetrics(
+    usage: LanguageModelUsage,
+    startedAt?: number,
+  ): Promise<void>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   reportModerationResult(moderationResultEvent: any): void;
   shutdown(): Promise<void>;

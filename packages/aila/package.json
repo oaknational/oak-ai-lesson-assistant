@@ -36,7 +36,7 @@
     "@oakai/rag": "*",
     "@sentry/nextjs": "^8.49.0",
     "@vercel/kv": "^0.2.2",
-    "ai": "^4.0.20",
+    "ai": "^4.1.0",
     "american-british-english-translator": "^0.2.1",
     "cloudinary": "^1.41.1",
     "dedent": "^1.5.3",

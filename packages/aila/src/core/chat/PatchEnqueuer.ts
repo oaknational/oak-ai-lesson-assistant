@@ -67,6 +67,7 @@ export class PatchEnqueuer {
     };
   }
 
+  // TODO: replace all RS with custom data messages?
   private formatPatch(patch: JsonPatchDocumentOptional): string {
     return `\n␞\n${JSON.stringify(patch)}\n␞\n`; // #TODO remove duplicate separators
   }

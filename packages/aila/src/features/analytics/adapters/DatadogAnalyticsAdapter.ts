@@ -1,5 +1,5 @@
 import { aiLogger } from "@oakai/logger";
-import { getEncoding } from "js-tiktoken";
+import type { LanguageModelUsage } from "ai";
 import { z } from "zod";
 
 import { AnalyticsAdapter } from "./AnalyticsAdapter";
@@ -37,7 +37,10 @@ export class DatadogAnalyticsAdapter extends AnalyticsAdapter {
     // Implement any necessary initialisation logic for Datadog
   }
 
-  public async reportUsageMetrics(responseBody: string, startedAt?: number) {
+  public async reportUsageMetrics(
+    responseBody: LanguageModelUsage,
+    startedAt?: number,
+  ) {
     const metrics = this.calculateMetrics(responseBody, startedAt);
     await this.reportMetrics(metrics);
   }
@@ -50,23 +53,17 @@ export class DatadogAnalyticsAdapter extends AnalyticsAdapter {
     // Implement any necessary shutdown logic for Datadog
   }
 
-  private calculateMetrics(responseBody: string, startedAt?: number) {
+  private calculateMetrics(usage: LanguageModelUsage, startedAt?: number) {
     const now = Date.now();
     const queryDuration = now - (startedAt ?? this._startedAt);
-    const modelEncoding = getEncoding("cl100k_base");
-    const promptTokens = this._aila.messages.reduce((acc, message) => {
-      return acc + modelEncoding.encode(message.content).length;
-    }, 0);
-    const completionTokens = modelEncoding.encode(responseBody).length;
-    const totalTokens = promptTokens + completionTokens;
     return {
       userId: this._aila.userId,
       chatId: this._aila.chatId,
       queryDuration,
       model: this._aila.options.model,
-      totalTokens,
-      promptTokens,
-      completionTokens,
+      totalTokens: usage.totalTokens,
+      promptTokens: usage.promptTokens,
+      completionTokens: usage.completionTokens,
     };
   }
 

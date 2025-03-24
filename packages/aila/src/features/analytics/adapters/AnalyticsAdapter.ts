@@ -1,3 +1,5 @@
+import type { LanguageModelUsage } from "ai";
+
 import type { AilaServices } from "../../../core/AilaServices";
 
 export abstract class AnalyticsAdapter {
@@ -9,7 +11,7 @@ export abstract class AnalyticsAdapter {
 
   abstract initialiseAnalyticsContext(): void;
   abstract reportUsageMetrics(
-    responseBody: string,
+    usage: LanguageModelUsage,
     startedAt?: number,
   ): Promise<void>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

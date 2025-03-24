@@ -290,6 +290,8 @@ export class Aila implements AilaServices {
     }
 
     await this.initialise();
+    // TODO: not in service
+    // await this._chat.setupGeneration();
     return this._chat.startStreaming(abortController);
   }
 

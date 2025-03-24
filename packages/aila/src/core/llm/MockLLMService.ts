@@ -21,21 +21,6 @@ export class MockLLMService implements LLMService {
     this.responseObject = responseObject;
   }
 
-  async createChatCompletionStream(): Promise<
-    ReadableStreamDefaultReader<string>
-  > {
-    const responseChunks = this.responseChunks;
-    const stream = new ReadableStream<string>({
-      async start(controller) {
-        for (const chunk of responseChunks) {
-          controller.enqueue(chunk);
-          await sleep(0);
-        }
-        controller.close();
-      },
-    });
-    return Promise.resolve(stream.getReader());
-  }
   async createChatCompletionObjectStream(): Promise<
     ReadableStreamDefaultReader<string>
   > {

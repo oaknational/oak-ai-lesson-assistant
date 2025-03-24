@@ -138,6 +138,7 @@ export class AilaGeneration {
     );
   }
 
+  // TODO: use LanguqgeModelUsage?
   private calculateTokenUsage() {
     if (!this._responseText) {
       return;

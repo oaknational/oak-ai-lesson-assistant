@@ -1,4 +1,5 @@
 import { aiLogger } from "@oakai/logger";
+import { omit } from "remeda/dist/commonjs/omit";
 
 import { AilaQuizFactory } from "../generators/AilaQuizGeneratorFactory";
 import type {
@@ -34,7 +35,10 @@ export class CompositeFullQuizServiceBuilder {
       generatorArray.push(AilaQuizFactory.createQuizGenerator(generator));
     }
 
-    log.info("Building Composite full quiz service with settings:", settings);
+    // log.info(
+    //   "Building Composite full quiz service with settings:",
+    //   omit(settings, "quizRatingSchema" as unknown),
+    // );
     return new CompositeFullQuizService(generatorArray, selector, reranker);
   }
 }

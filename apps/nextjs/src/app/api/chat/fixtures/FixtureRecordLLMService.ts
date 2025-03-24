@@ -18,14 +18,6 @@ export class FixtureRecordLLMService implements LLMService {
     this._openAIService = new OpenAIService({ userId: undefined, chatId });
   }
 
-  async createChatCompletionStream(params: {
-    model: string;
-    messages: Message[];
-    temperature: number;
-  }): Promise<ReadableStreamDefaultReader<string>> {
-    return this._openAIService.createChatCompletionStream(params);
-  }
-
   async createChatCompletionObjectStream(params: {
     model: string;
     schema: ZodSchema;

@@ -1,24 +1,28 @@
 import {
+  subjectWarnings,
   subjects,
   unsupportedSubjects,
-  subjectWarnings,
 } from "@oakai/core/src/utils/subjects";
 // TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { aiLogger } from "@oakai/logger";
+
+import type {
+  CoreAssistantMessage,
+  CoreToolMessage,
+  DataStreamWriter,
+  JSONValue,
+  LanguageModelUsage,
+} from "ai";
+import { AilaThreatDetectionError } from "features/threatDetection";
 import invariant from "tiny-invariant";
 
-import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import type { AilaChatService, AilaServices } from "../../core/AilaServices";
 import { AilaGeneration } from "../../features/generation/AilaGeneration";
 import type { AilaGenerationStatus } from "../../features/generation/types";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
-import type {
-  ExperimentalPatchDocument,
-  JsonPatchDocumentOptional,
-} from "../../protocol/jsonPatchProtocol";
+import type { ExperimentalPatchDocument } from "../../protocol/jsonPatchProtocol";
 import {
   extractPatches,
-  LLMMessageSchema,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
 import type {
@@ -48,7 +52,6 @@ export class AilaChat implements AilaChatService {
   private readonly _userId: string | undefined;
   private readonly _aila: AilaServices;
   private _generation?: AilaGeneration;
-  private _chunks?: string[];
   private readonly _patchEnqueuer: PatchEnqueuer;
   private readonly _llmService: LLMService;
   private readonly _promptBuilder: AilaPromptBuilder;
@@ -155,40 +158,32 @@ export class AilaChat implements AilaChatService {
     this._messages.push(message);
   }
 
-  public appendChunk(value?: string) {
-    invariant(this._chunks, "Chunks not initialised");
-    if (!value) {
-      return;
-    }
-    this._chunks.push(value);
-  }
-
   public appendExperimentalPatch(patch: ExperimentalPatchDocument) {
     this._experimentalPatches.push(patch);
   }
 
-  public async generationFailed(error: unknown) {
-    log.info("Marking generation as failed", { error });
-    invariant(this._generation, "Generation not initialised");
-    this.aila.errorReporter?.reportError(
-      error,
-      "Error reading from the OpenAI stream",
-      "info",
-    );
-    if (error instanceof Error) {
-      await this.reportError({ message: error.message });
-    }
-    await this.persistGeneration("FAILED");
-    log.info("Generation marked as failed");
-  }
+  // public async generationFailed(error: unknown) {
+  //   log.info("Marking generation as failed", { error });
+  //   invariant(this._generation, "Generation not initialised");
+  //   this.aila.errorReporter?.reportError(
+  //     error,
+  //     "Error reading from the OpenAI stream",
+  //     "info",
+  //   );
+  //   if (error instanceof Error) {
+  //     await this.reportError({ message: error.message });
+  //   }
+  //   await this.persistGeneration("FAILED");
+  //   log.info("Generation marked as failed");
+  // }
 
-  private async reportError({ message }: { message: string }) {
-    await this.enqueue({
-      type: "error",
-      message,
-      value: "Sorry, an error occurred. Please try again.",
-    });
-  }
+  // private async reportError({ message }: { message: string }) {
+  //   await this.enqueue({
+  //     type: "error",
+  //     message,
+  //     value: "Sorry, an error occurred. Please try again.",
+  //   });
+  // }
 
   public systemMessage() {
     invariant(this._generation?.systemPrompt, "System prompt not initialised");
@@ -222,7 +217,7 @@ export class AilaChat implements AilaChatService {
   // This should be some kind of hook that is specific to the
   // generation of lessons rather than being applicable to all
   // chats so that we can generate different types of document
-  async handleSettingInitialState() {
+  async handleSettingInitialState(dataStream: DataStreamWriter) {
     if (this._aila.document.hasInitialisedContentFromMessages) {
       // #TODO sending these events in a different place to where they are set seems like a bad idea
       const plan = this._aila.document.content;
@@ -230,7 +225,16 @@ export class AilaChat implements AilaChatService {
       for (const key of keys) {
         const value = plan[key];
         if (value) {
-          await this.enqueuePatch(`/${key}`, value);
+          // await this.enqueuePatch(`/${key}`, value);
+
+          // TODO: ripped from PatchEnqueuer
+          const path = `/${key}`;
+          dataStream.writeData({
+            type: "patch",
+            reasoning: "generated",
+            value: { op: "add", path, value },
+            status: "complete",
+          });
         }
       }
     }
@@ -255,30 +259,30 @@ export class AilaChat implements AilaChatService {
   // #TODO This is specific to lesson plan generation
   // We should move this to a hook in the generation process
   // so that we can generate other types of document
-  public async handleSubjectWarning() {
+  public handleSubjectWarning(dataStream: DataStreamWriter) {
     const warning = this.warningAboutSubject();
     if (!warning) {
       return;
     }
-    await this.enqueue({ type: "prompt", message: warning });
+    dataStream.writeData({ type: "prompt", message: warning });
   }
 
-  public async enqueue(message: JsonPatchDocumentOptional) {
-    // Optional "?" Necessary to avoid a "terminated" error
-    if (this?._patchEnqueuer) {
-      await this._patchEnqueuer.enqueueMessage(message);
-    }
-  }
+  // public async enqueue(message: JsonPatchDocumentOptional) {
+  //   // Optional "?" Necessary to avoid a "terminated" error
+  //   if (this?._patchEnqueuer) {
+  //     await this._patchEnqueuer.enqueueMessage(message);
+  //   }
+  // }
 
-  public async enqueuePatch(
-    path: string,
-    value: string | string[] | number | object,
-  ) {
-    // Optional "?" necessary to avoid a "terminated" error
-    if (this?._patchEnqueuer) {
-      await this._patchEnqueuer.enqueuePatch(path, value);
-    }
-  }
+  // public async enqueuePatch(
+  //   path: string,
+  //   value: string | string[] | number | object,
+  // ) {
+  //   // Optional "?" necessary to avoid a "terminated" error
+  //   if (this?._patchEnqueuer) {
+  //     await this._patchEnqueuer.enqueuePatch(path, value);
+  //   }
+  // }
 
   private async startNewGeneration() {
     const systemPrompt = await this._promptBuilder.build();
@@ -290,12 +294,6 @@ export class AilaChat implements AilaChatService {
       status: "PENDING",
     });
     await this._generation.setupPromptId();
-    this._chunks = [];
-  }
-
-  private accumulatedText() {
-    const accumulated = this._chunks?.join("");
-    return accumulated ?? "";
   }
 
   private applyExperimentalPatches() {
@@ -309,16 +307,16 @@ export class AilaChat implements AilaChatService {
     this._aila.document.applyValidPatches(experimentalPatches);
   }
 
-  private async reportUsageMetrics() {
-    await this._aila.analytics?.reportUsageMetrics(this.accumulatedText());
+  private async reportUsageMetrics(usage: LanguageModelUsage) {
+    log.info("Reporting usage metrics", usage);
+    await this._aila.analytics?.reportUsageMetrics(usage);
   }
 
-  private async persistGeneration(status: AilaGenerationStatus) {
+  private async persistGeneration(status: AilaGenerationStatus, text: string) {
     invariant(this._generation, "Generation not initialised");
 
     if (status === "SUCCESS") {
-      const responseText = this.accumulatedText();
-      this._generation.complete({ status, responseText });
+      this._generation.complete({ status, responseText: text });
     }
     await this._generation.persist(status);
   }
@@ -357,8 +355,8 @@ export class AilaChat implements AilaChatService {
     }
   }
 
-  private applyEdits() {
-    const llmPatches = this.accumulatedText();
+  private applyEdits(text: string) {
+    const llmPatches = text;
     if (!llmPatches) {
       return;
     }
@@ -366,8 +364,10 @@ export class AilaChat implements AilaChatService {
     this.applyExperimentalPatches();
   }
 
-  private appendAssistantMessage() {
-    const content = this.accumulatedText();
+  // TODO: what is this actually doing?
+  // Getting the content from the LLM and putting it in an assistant message?
+  // Does this mean that the same content wasn't streamed in realtime?
+  private appendAssistantMessage(content: string) {
     const assistantMessage: Message = {
       id: generateMessageId({ role: "assistant" }),
       role: "assistant",
@@ -378,52 +378,105 @@ export class AilaChat implements AilaChatService {
     return assistantMessage;
   }
 
-  private async enqueueMessageId(messageId: string) {
-    await this.enqueue({
+  private enqueueMessageId(messageId: string, dataStream: DataStreamWriter) {
+    // TODO: should things like this be a message annotation?
+    dataStream.writeData({
       type: "id",
       value: messageId,
     });
   }
 
-  public async createChatCompletionStream(messages: Message[]) {
-    return this._llmService.createChatCompletionStream({
-      model: this._aila.options.model ?? DEFAULT_MODEL,
-      messages,
-      temperature: this._aila.options.temperature ?? DEFAULT_TEMPERATURE,
-    });
+  // public async createChatCompletionObjectStream(messages: Message[]) {
+  //   return this._llmService.createChatCompletionObjectStream({
+  //     model: this._aila.options.model ?? DEFAULT_MODEL,
+  //     schema: LLMMessageSchema,
+  //     schemaName: "response",
+  //     messages,
+  //     temperature: this._aila.options.temperature ?? DEFAULT_TEMPERATURE,
+  //   });
+  // }
+
+  private async checkForThreats(
+    messages?: {
+      role: "system" | "assistant" | "user" | "data";
+      content: string;
+    }[],
+  ) {
+    const messagesToCheck = messages ?? this.messages;
+    log.info("Starting threat check");
+    if (!this.aila.threatDetection?.detectors) {
+      log.info("No threat detectors configured");
+      return;
+    }
+
+    const lastMessage = messagesToCheck[this.messages.length - 1];
+    if (!lastMessage) {
+      log.info("No messages to check for threats");
+      return;
+    }
+
+    const detectors = this.aila.threatDetection?.detectors ?? [];
+    for (const detector of detectors) {
+      log.info("Running detector", { detector: detector.constructor.name });
+      const result = await detector.detectThreat(messagesToCheck);
+      if (result.isThreat) {
+        log.info("Threat detected", { result });
+        throw new AilaThreatDetectionError(
+          this.userId ?? "unknown",
+          "Potential threat detected",
+          { cause: result },
+        );
+      }
+    }
+    log.info("Threat check complete - no threats found");
   }
 
-  public async createChatCompletionObjectStream(messages: Message[]) {
-    return this._llmService.createChatCompletionObjectStream({
-      model: this._aila.options.model ?? DEFAULT_MODEL,
-      schema: LLMMessageSchema,
-      schemaName: "response",
-      messages,
-      temperature: this._aila.options.temperature ?? DEFAULT_TEMPERATURE,
-    });
+  public async initialSetup(dataStream: DataStreamWriter) {
+    log.info("Setting up generation");
+    await this.setupGeneration();
+
+    log.info("Checking for threats for the user input");
+    await this.checkForThreats();
+
+    log.info("Setting initial state");
+    this.handleSettingInitialState(dataStream);
+
+    log.info("Handling subject warning");
+    this.handleSubjectWarning(dataStream);
   }
 
-  public async complete() {
+  // TODO: pass datastream to complete?
+  // public async complete() {
+  public async complete(
+    text: string,
+    usage: LanguageModelUsage,
+    messages: (CoreAssistantMessage | CoreToolMessage)[],
+    dataStream: DataStreamWriter,
+  ) {
     log.info("Starting chat completion");
-    await this.reportUsageMetrics();
+
+    await this.reportUsageMetrics(usage);
     await fetchExperimentalPatches({
       fullQuizService: this.fullQuizService,
       lessonPlan: this._aila.document.content,
-      llmPatches: extractPatches(this.accumulatedText()).validPatches,
-      handlePatch: async (patch) => {
-        await this.enqueue(patch);
+      llmPatches: extractPatches(text).validPatches,
+      handlePatch: (patch) => {
+        dataStream.writeData(patch as JSONValue);
         this.appendExperimentalPatch(patch);
       },
       userId: this._userId,
     });
-    this.applyEdits();
-    const assistantMessage = this.appendAssistantMessage();
-    await this.enqueueMessageId(assistantMessage.id);
+    // TODO: why is this using a document on the class?
+    this.applyEdits(text);
+    // TODO: this is a bit restritcive. For example it prevents the LLM from sending a message to the user before it does an action
+    // Also, it doesn't stream
+    const assistantMessage = this.appendAssistantMessage(text);
+    this.enqueueMessageId(assistantMessage.id, dataStream);
     await this.saveSnapshot({ messageId: assistantMessage.id });
-    await this.moderate();
+    await this.moderate(dataStream);
     await this.persistChat();
-    await this.persistGeneration("SUCCESS");
-    await this.enqueue({
+    await this.persistGeneration("SUCCESS", text);
+    dataStream.writeData({
       type: "comment",
       value: "CHAT_COMPLETE",
     });
@@ -438,7 +491,7 @@ export class AilaChat implements AilaChatService {
     });
   }
 
-  public async moderate() {
+  public async moderate(dataStream: DataStreamWriter) {
     if (this._aila.options.useModeration) {
       invariant(this._aila.moderation, "Moderation not initialised");
       // #TODO there seems to be a bug or a delay
@@ -449,11 +502,11 @@ export class AilaChat implements AilaChatService {
       // Since the front end relies on MODERATION_START
       // to appear in the stream, we need to send two
       // comment messages to ensure that it is received.
-      await this.enqueue({
+      dataStream.writeData({
         type: "comment",
         value: "MODERATION_START",
       });
-      await this.enqueue({
+      dataStream.writeData({
         type: "comment",
         value: "MODERATING",
       });
@@ -462,21 +515,21 @@ export class AilaChat implements AilaChatService {
         messages: this._aila.messages,
         pluginContext: {
           aila: this._aila,
-          enqueue: this.enqueue.bind(this),
+          enqueue: dataStream.writeData.bind(dataStream),
         },
       });
-      await this.enqueue(message);
+      dataStream.writeData(message);
     }
   }
 
   public async setupGeneration() {
     log.info("Starting new generation setup");
     await this.startNewGeneration();
-    await this.persistGeneration("REQUESTED");
+    await this.persistGeneration("REQUESTED", ""); // TODO: empty string is a hack
     log.info("Generation setup complete");
   }
 
-  public startStreaming(abortController?: AbortController): ReadableStream {
+  public startStreaming(abortController: AbortController): ReadableStream {
     const streamHandler = new AilaStreamHandler(this);
     return streamHandler.startStreaming(abortController);
   }

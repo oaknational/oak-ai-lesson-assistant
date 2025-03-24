@@ -1,3 +1,5 @@
+import type { LanguageModelUsage } from "ai";
+
 import type { AilaServices } from "../../core/AilaServices";
 import type { AnalyticsAdapter } from "./adapters/AnalyticsAdapter";
 
@@ -23,12 +25,12 @@ export class AilaAnalytics {
   }
 
   public async reportUsageMetrics(
-    responseBody: string,
+    usage: LanguageModelUsage,
     startedAt?: number,
   ): Promise<void> {
     const promise = Promise.all(
       this._adapters.map((adapter) =>
-        adapter.reportUsageMetrics(responseBody, startedAt),
+        adapter.reportUsageMetrics(usage, startedAt),
       ),
     );
     this._operations.push(promise);

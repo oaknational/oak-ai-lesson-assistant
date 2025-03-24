@@ -2,9 +2,9 @@ import type { Aila } from "@oakai/aila/src/core/Aila";
 import type { AilaServices } from "@oakai/aila/src/core/AilaServices";
 import type { Message } from "@oakai/aila/src/core/chat";
 import type {
+  AilaInitializationOptions,
   AilaOptions,
   AilaPublicChatOptions,
-  AilaInitializationOptions,
 } from "@oakai/aila/src/core/types";
 import { AilaAmericanisms } from "@oakai/aila/src/features/americanisms/AilaAmericanisms";
 import {
@@ -21,6 +21,7 @@ import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
+
 import { captureException } from "@sentry/nextjs";
 import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
@@ -117,7 +118,7 @@ function setTelemetryMetadata({
   span.setTag("use_moderation", options.useModeration);
 }
 
-function handleConnectionAborted(req: NextRequest) {
+function bindConnectionAborted(req: NextRequest) {
   const abortController = new AbortController();
 
   req.signal.addEventListener("abort", () => {
@@ -136,18 +137,8 @@ async function generateChatStream(
     { chat_id: aila.chatId, user_id: aila.userId },
     async () => {
       try {
-        invariant(aila, "Aila instance is required");
-        const result = await aila.generate({ abortController });
-        const transformStream = new TransformStream({
-          transform(chunk, controller) {
-            const formattedChunk = new TextEncoder().encode(
-              `0:${JSON.stringify(chunk)}\n`,
-            );
-            controller.enqueue(formattedChunk);
-          },
-        });
+        const stream = await aila.generate({ abortController });
 
-        const stream = result.pipeThrough(transformStream);
         return new Response(stream, {
           headers: {
             "Content-Type": "text/event-stream",
@@ -156,7 +147,7 @@ async function generateChatStream(
           },
         });
       } catch (error) {
-        log.error("Error generating chat stream", { error });
+        log.error("Error generating chat stream", error);
         return new Response(
           JSON.stringify({ error: "Stream generation failed" }),
           {
@@ -360,7 +351,7 @@ export async function handleChatPostRequest(
     } = await setupChatHandler(req);
 
     let userId: string | undefined;
-    let aila: Aila | undefined;
+    let shutdown: (() => Promise<void>) | undefined;
 
     try {
       userId = await fetchAndCheckUser(chatId);
@@ -379,28 +370,57 @@ export async function handleChatPostRequest(
         options,
       });
 
-      aila = await createAilaInstance({
-        config,
-        options,
-        chatId,
-        userId,
-        messages,
-        lessonPlan: dbLessonPlan,
-        llmService,
-        moderationAiClient,
-        threatDetectors,
-      });
-      invariant(aila, "Aila instance is required");
+      // <<<<<<< Updated upstream
+      //       aila = await createAilaInstance({
+      //         config,
+      //         options,
+      //         chatId,
+      //         userId,
+      //         messages,
+      //         lessonPlan: dbLessonPlan,
+      //         llmService,
+      //         moderationAiClient,
+      //         threatDetectors,
+      //       });
+      //       invariant(aila, "Aila instance is required");
+      // =======
+      const aila = await withTelemetry(
+        "chat-create-aila",
+        { chat_id: chatId, user_id: userId },
+        async (): Promise<Aila> => {
+          const ailaOptions: Partial<AilaInitializationOptions> = {
+            options,
+            chat: {
+              id: chatId,
+              userId,
+              messages,
+            },
+            services: {
+              chatLlmService: llmService,
+              moderationAiClient,
+              ragService: (aila: AilaServices) => new AilaRag({ aila }),
+              americanismsService: () => new AilaAmericanisms(),
+              analyticsAdapters: (aila: AilaServices) => [
+                new PosthogAnalyticsAdapter(aila),
+                new DatadogAnalyticsAdapter(aila),
+              ],
+              threatDetectors: () => threatDetectors,
+            },
+            lessonPlan: dbLessonPlan ?? {},
+          };
+          const result = await config.createAila(ailaOptions);
+          return result;
+        },
+      );
+      shutdown = () => aila.ensureShutdown();
 
-      const abortController = handleConnectionAborted(req);
+      const abortController = bindConnectionAborted(req);
       const stream = await generateChatStream(aila, abortController);
       return stream;
     } catch (e) {
       return handleChatException(span, e, chatId, prisma);
     } finally {
-      if (aila) {
-        await aila.ensureShutdown();
-      }
+      await shutdown?.();
     }
   });
 }

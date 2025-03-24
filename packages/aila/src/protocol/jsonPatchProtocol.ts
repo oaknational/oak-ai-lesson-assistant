@@ -349,6 +349,7 @@ const PatchDocumentOptionalSchema = z.object({
 
 export type PatchDocumentOptional = z.infer<typeof PatchDocumentOptionalSchema>;
 
+// TODO: be caseful this isn't picked up as the type for the prompt inside an llm message
 export const PromptDocumentSchema = z.object({
   type: z.literal("prompt"),
   message: z.string(),
@@ -472,19 +473,6 @@ export const JsonPatchDocumentJsonSchema = zodToJsonSchema(
   "patchDocumentSchema",
 );
 
-export const LLMResponseSchema = z.discriminatedUnion("type", [
-  PatchDocumentSchema,
-  PromptDocumentSchema,
-  StateDocumentSchema,
-  CommentDocumentSchema,
-  ErrorDocumentSchema,
-]);
-
-export const LLMResponseJsonSchema = zodToJsonSchema(
-  LLMResponseSchema,
-  "llmResponseSchema",
-);
-
 export const MessagePartDocumentSchema = z.discriminatedUnion("type", [
   ModerationDocumentSchema,
   ErrorDocumentSchema,
@@ -574,6 +562,21 @@ const LLMMessageSchemaWhileStreaming = z.object({
   prompt: TextDocumentSchema.optional(),
   status: z.literal("complete").optional(),
 });
+
+export const LLMResponseSchema = z.discriminatedUnion("type", [
+  PatchDocumentSchema,
+  TextDocumentSchema,
+  PromptDocumentSchema,
+  StateDocumentSchema,
+  CommentDocumentSchema,
+  ErrorDocumentSchema,
+  LLMMessageSchemaWhileStreaming,
+]);
+
+export const LLMResponseJsonSchema = zodToJsonSchema(
+  LLMResponseSchema,
+  "llmResponseSchema",
+);
 
 function tryParseJson(str: string): {
   parsed: { type: string } | null;
@@ -747,6 +750,8 @@ export function parseMessageRow(row: string, index: number): MessagePart[] {
 // {"type":"llmMessage","patches":[{...},{...}]},"prompt":{"type":"text","message":"Some message"}}
 
 export function parseMessageParts(content: string): MessagePart[] {
+  log.info("parseMessageParts", content);
+  console.log("Parsing message parts", content);
   const messageParts = content
     .split("␞")
     .map((r) => r.trim())
@@ -761,7 +766,9 @@ const timeOperation = <T>(fn: () => T): T => {
   const startTime = performance.now();
   const result = fn();
   const endTime = performance.now();
-  log.info(`extractPatches took ${endTime - startTime} milliseconds`);
+  log.info(
+    `extractPatches took ${Math.round(endTime - startTime)} milliseconds`,
+  );
   return result;
 };
 

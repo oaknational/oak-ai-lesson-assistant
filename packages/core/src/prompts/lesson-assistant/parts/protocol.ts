@@ -1,6 +1,8 @@
 import type { TemplateProps } from "..";
 
-const responseFormatWithStructuredOutputs = "{\"response\":\"llmMessage\", patches:[{},{}...], prompt:{}}";
+// TODO structured outputs seems broken as this was wrong and not picked up
+const responseFormatWithStructuredOutputs =
+  '{"type":"llmMessage", patches:[{},{}...], prompt:{}}';
 const responseFormatWithoutStructuredOutputs = `A series of JSON documents separated using the JSON Text Sequences specification, where each row is separated by the ␞ character and ends with a new line character.
 Your response should be a series of patches followed by one and only one prompt to the user.`;
 
@@ -15,6 +17,7 @@ const responseFormat = ({
 
 export const protocol = ({
   isUsingStructuredOutput,
+  // TODO: do you need this is using structured outputs?
   llmResponseJsonSchema,
 }: TemplateProps) => `RULES FOR RESPONDING TO THE USER INTERACTIVELY WHILE CREATING THE LESSON PLAN
 

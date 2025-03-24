@@ -38,8 +38,12 @@ export const parseStreamingMessage = (
   previousIteration: ParsedMessage | null,
 ): ParsedMessage => {
   try {
-    return parseMessage(message);
+    log.info("will parse message", message);
+    const parsed = parseMessage(message);
+    log.info("parsed message", parsed);
+    return parsed;
   } catch (e) {
+    log.error("parsing failed", e);
     if (message.id === previousIteration?.id) {
       log.warn(
         "Failed to parse streaming message. Falling back to previous iteration",

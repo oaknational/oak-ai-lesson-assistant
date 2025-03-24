@@ -1,33 +1,88 @@
+import { createVercelOpenAIClient } from "@oakai/core/src/llm/openai";
 import { aiLogger } from "@oakai/logger";
-import type { ReadableStreamDefaultController } from "stream/web";
+import { createDataStream, generateId, streamText, Output } from "ai";
+import { LLMMessageSchema } from "protocol/jsonPatchProtocol";
 
-import { AilaThreatDetectionError } from "../../features/threatDetection/types";
-import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
-import type { PatchEnqueuer } from "./PatchEnqueuer";
 
 const log = aiLogger("aila:stream");
+
 export class AilaStreamHandler {
   private readonly _chat: AilaChat;
-  private _controller?: ReadableStreamDefaultController;
-  private readonly _patchEnqueuer: PatchEnqueuer;
-  private _streamReader?: ReadableStreamDefaultReader<string>;
 
   constructor(chat: AilaChat) {
+    // TODO: can this be replaced?
+    // maybe by passing into startStreaming?
+    // maybe with a new class/module for setup/teardown actions
     this._chat = chat;
-    this._patchEnqueuer = chat.getPatchEnqueuer();
   }
 
-  public startStreaming(abortController?: AbortController): ReadableStream {
-    return new ReadableStream({
-      start: (controller) => {
-        this.stream(controller, abortController).catch((error) => {
-          log.error("Error in stream:", error);
-          controller.error(error);
+  public startStreaming(abortController: AbortController): ReadableStream {
+    // TODO: using createDataStream to return a readablestream, but it might be better to return the response
+    // return createDataStreamResponse({
+    return createDataStream({
+      execute: async (dataStream) => {
+        await this._chat.initialSetup(dataStream);
+
+        // dataStream.writeData("initialized call");
+        // dataStream.writeMessageAnnotation("test annotation");
+        // NOTE: errors halt processing on the client
+        // dataStream.write(`3:"custom error"\n`);
+
+        const openAIProvider = createVercelOpenAIClient({
+          chatMeta: { userId: "dummy", chatId: "dummy" },
+          app: "lesson-assistant",
         });
+        const model = openAIProvider("gpt-4o", { structuredOutputs: true });
+        const messages = this._chat.completionMessages();
+        const chatClass = this._chat;
+
+        // TODO: streamText is shortcutting OpenAiService
+        const result = streamText({
+          model,
+          messages, // TODO: map role and content
+          experimental_output: Output.object({
+            schema: LLMMessageSchema,
+          }),
+          abortSignal: abortController.signal,
+          // TODO: temperature
+          onChunk() {
+            // dataStream.writeMessageAnnotation({ chunk: "123" });
+            // appendChunk(chunk);
+          },
+          async onFinish({ text, usage, response }) {
+            // message annotation:
+            dataStream.writeMessageAnnotation({
+              id: generateId(), // e.g. id from saved DB record
+              other: "information",
+            });
+
+            // call annotation:
+            // dataStream.writeData("call completed");
+
+            await chatClass.complete(
+              text,
+              usage,
+              response.messages,
+              dataStream,
+            );
+          },
+        });
+
+        //
+        // TODO: can we use mergeIntoDataStream for other types of data?
+        // eg rag
+
+        result.mergeIntoDataStream(dataStream);
+      },
+      onError: (error) => {
+        // Error messages are masked by default for security reasons.
+        // If you want to expose the error message to the client, you can do so here:
+        return error instanceof Error ? error.message : String(error);
       },
     });
   }
+<<<<<<< Updated upstream
 
   private logStreamingStep(step: string) {
     log.info(`Streaming step: ${step}`);
@@ -218,4 +273,6 @@ export class AilaStreamHandler {
       this._controller.close();
     }
   }
+=======
+>>>>>>> Stashed changes
 }

@@ -1,4 +1,5 @@
 import { aiLogger } from "@oakai/logger";
+
 import { deepClone } from "fast-json-patch";
 
 import { AilaCategorisation } from "../../features/categorisation/categorisers/AilaCategorisation";
@@ -14,6 +15,27 @@ import type { Message } from "../chat";
 import type { AilaDocumentContent } from "./types";
 
 const log = aiLogger("aila:lesson");
+
+function logChangedKeys<T extends object>(state: T, prevState: T) {
+  const changedKeys = Object.keys(state)
+    .filter((key) => state[key] !== prevState[key])
+    .map((key) => {
+      const value = state[key];
+      if (value && typeof value === "object") {
+        const prevValue = prevState[key] || {};
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        const changedKeys = Object.keys(value).filter(
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          (key) => value[key] !== prevValue[key],
+        );
+        return `/${key}/{${changedKeys.join(",")}}`;
+      }
+
+      return `/${key}`;
+    });
+
+  log.info(`Changed keys: ${changedKeys.join(", ") || "None"}`);
+}
 
 export class AilaDocument implements AilaDocumentService {
   private readonly _aila: AilaServices;
@@ -71,16 +93,9 @@ export class AilaDocument implements AilaDocumentService {
 
   public applyValidPatches(validPatches: ValidPatchDocument[]) {
     let workingLessonPlan = deepClone(this._content) as LooseLessonPlan;
-    const beforeKeys = Object.entries(workingLessonPlan)
-      .filter(([, v]) => v)
-      .map(([k]) => k);
+    const beforeState = workingLessonPlan;
     log.info(
-      "Apply patches: Lesson state before:",
-      `${beforeKeys.length} keys`,
-      beforeKeys.join("|"),
-    );
-    log.info(
-      "Attempting to apply patches",
+      "Applying patches",
       validPatches
         .map((p) => [p.value.op, p.value.path])
         .flat()
@@ -101,14 +116,7 @@ export class AilaDocument implements AilaDocumentService {
       log.info("Applied patch", patch.value.path);
     }
 
-    const afterKeys = Object.entries(workingLessonPlan)
-      .filter(([, v]) => v)
-      .map(([k]) => k);
-    log.info(
-      "Apply patches: Lesson state after:",
-      `${afterKeys.length} keys`,
-      afterKeys.join("|"),
-    );
+    logChangedKeys(beforeState, workingLessonPlan);
 
     this._content = workingLessonPlan;
   }
