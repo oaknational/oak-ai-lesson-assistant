@@ -1,9 +1,12 @@
+import { aiLogger } from "@oakai/logger";
 import type { z } from "zod";
 
 import type { QuizQuestion } from "../../../protocol/schema";
 import { cachedQuiz } from "../fixtures/CachedImageQuiz";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 import { ReturnFirstReranker } from "./ReturnFirstReranker";
+
+const log = aiLogger("aila:quiz");
 
 describe("ReturnFirstReranker", () => {
   let reranker: ReturnFirstReranker;
@@ -37,7 +40,7 @@ describe("ReturnFirstReranker", () => {
 
       expect(result[0]?.rating).toBe(1);
       expect(result[1]?.rating).toBe(0);
-      console.log(JSON.stringify(result, null, 2));
+      log.info(JSON.stringify(result, null, 2));
     });
 
     it("should handle empty quiz array", async () => {

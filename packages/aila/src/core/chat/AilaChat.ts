@@ -3,9 +3,7 @@ import {
   subjects,
   unsupportedSubjects,
 } from "@oakai/core/src/utils/subjects";
-// TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { aiLogger } from "@oakai/logger";
-
 import invariant from "tiny-invariant";
 
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
@@ -96,7 +94,7 @@ export class AilaChat implements AilaChatService {
       quizRatingSchema: testRatingSchema,
       quizSelector: "simple",
       quizReranker: "return-first",
-      quizGenerators: ["rag"],
+      quizGenerators: ["rag", "basedOnRag", "ml"],
     });
   }
 

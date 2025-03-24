@@ -1,8 +1,10 @@
+import { Client } from "@elastic/elasticsearch";
+import type {
+  SearchHit,
+  SearchHitsMetadata,
+} from "@elastic/elasticsearch/lib/api/types";
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
-
-import { Client } from "@elastic/elasticsearch";
-import type { SearchHitsMetadata } from "@elastic/elasticsearch/lib/api/types";
 import { CohereClient } from "cohere-ai";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import { z } from "zod";
@@ -24,7 +26,6 @@ import { QuizQuestionSchema } from "../../../protocol/schema";
 import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
 import type {
   AilaQuizGeneratorService,
-  CustomHit,
   CustomSource,
   LessonSlugQuizLookup,
   QuizQuestionTextOnlySource,
@@ -278,10 +279,16 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     }
     return unpackedList.join("");
   }
-  protected transformHits(hits: CustomHit[]): SimplifiedResult[] {
+  protected transformHits(hits: SearchHit<CustomSource>[]): SimplifiedResult[] {
     return hits
       .map((hit) => {
         const source = hit._source;
+
+        // First check if source exists
+        if (!source) {
+          log.warn("Hit source is undefined:", hit);
+          return null;
+        }
 
         // Check if the required fields exist
         if (
@@ -324,10 +331,10 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     field: string,
     query: string,
     _size: number = 10,
-  ): Promise<SearchHitsMetadata<CustomHit>> {
+  ): Promise<SearchHitsMetadata<CustomSource>> {
     try {
       log.info(`Searching index: ${index}, field: ${field}, query: ${query}`);
-      const response = await this.client.search<CustomHit>({
+      const response = await this.client.search<CustomSource>({
         index: "oak-vector",
         query: {
           bool: {
@@ -336,7 +343,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
           },
         },
       });
-
+      log.info(`search response found ${response.hits.hits.length} hits`);
       if (!response.hits) {
         throw new Error("No hits property in the search response");
       }
@@ -357,6 +364,10 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     docs: SimplifiedResult[],
     topN: number = 10,
   ) {
+    if (docs.length === 0) {
+      log.error("No documents to rerank");
+      return [];
+    }
     // conforming to https://github.com/cohere-ai/cohere-typescript/blob/2e1c087ed0ec7eacd39ad062f7293fb15e453f33/src/api/client/requests/RerankRequest.ts#L15
     try {
       const jsonDocs = docs.map((doc) =>
@@ -386,23 +397,25 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   }
   protected extractCustomId(doc: RerankResponseResultsItem): string {
     try {
-      const parsedText = JSON.parse(doc.document?.text || "");
-      if (
-        typeof parsedText !== "object" ||
-        parsedText === null ||
-        !("custom_id" in parsedText)
-      ) {
-        throw new Error("Parsed text is not an object or missing custom_id");
+      const parsedText = JSON.parse(
+        doc.document?.text || "",
+      ) as SimplifiedResult;
+      if (!parsedText || typeof parsedText !== "object") {
+        throw new Error("Parsed text is not an object");
       }
 
-      throw new Error("Invalid document format");
+      if (!parsedText.custom_id || typeof parsedText.custom_id !== "string") {
+        throw new Error("custom_id is not a string");
+      }
+
+      return parsedText.custom_id;
     } catch (error) {
       log.error("Error in extractCustomId:", error);
       throw new Error("Failed to extract custom_id");
     }
   }
   protected async rerankAndExtractCustomIds(
-    hits: CustomHit[],
+    hits: SearchHit<CustomSource>[],
     query: string,
   ): Promise<string[]> {
     const simplifiedResults = this.transformHits(hits);
