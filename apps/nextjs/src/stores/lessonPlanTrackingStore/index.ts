@@ -30,8 +30,8 @@ export const createLessonPlanTrackingStore = ({
     (set, get) => ({
       id,
 
-      currentMessage: null,
-      queuedMessage: null,
+      currentIntent: null,
+      queuedIntent: null,
 
       lastLessonPlan: {},
 
@@ -84,16 +84,16 @@ export const createLessonPlanTrackingStore = ({
         trackCompletion: handleTrackCompletion(set, get, getStore, track),
 
         prepareForNextMessage: () => {
-          const { queuedMessage } = get();
+          const { queuedIntent } = get();
           set({
-            currentMessage: queuedMessage,
-            queuedMessage: null,
+            currentIntent: queuedIntent,
+            queuedIntent: null,
             lastLessonPlan: getStore("lessonPlan").lessonPlan,
           });
         },
         clearQueuedIntent: () => {
-          if (get().queuedMessage) {
-            set({ queuedMessage: null });
+          if (get().queuedIntent) {
+            set({ queuedIntent: null });
           }
         },
 

@@ -36,8 +36,8 @@ export const handleTrackCompletion =
   () => {
     log.info("handleTrackCompletion");
     // Get values from this store
-    const { id: chatId, currentMessage, lastLessonPlan } = get();
-    if (!currentMessage) {
+    const { id: chatId, currentIntent, lastLessonPlan } = get();
+    if (!currentIntent) {
       log.error("analytics:lesson:store: No recorded action to track");
       Sentry.captureMessage("No recorded action to track");
       return;
@@ -64,8 +64,8 @@ export const handleTrackCompletion =
         ...getLessonTrackingProps({ lesson: lessonPlan }),
         chatId,
         moderatedContentType: getModerationTypes(moderation),
-        text: currentMessage.text,
-        componentType: currentMessage.componentType,
+        text: currentIntent.text,
+        componentType: currentIntent.componentType,
       });
     } else {
       /**
@@ -77,12 +77,12 @@ export const handleTrackCompletion =
       );
       const componentType = isSelectingOakLesson
         ? ComponentType.SELECT_OAK_LESSON
-        : currentMessage.componentType;
+        : currentIntent.componentType;
       track.lessonPlanRefined({
         ...getLessonTrackingProps({ lesson: lessonPlan }),
         chatId,
         moderatedContentType: getModerationTypes(moderation),
-        text: currentMessage.text,
+        text: currentIntent.text,
         componentType,
         refinements: patches.map((patch) => ({
           refinementPath: patch.value.path,

@@ -16,8 +16,8 @@ export type MessageIntent = {
 export type LessonPlanTrackingState = {
   id: string;
 
-  currentMessage: MessageIntent | null;
-  queuedMessage: MessageIntent | null;
+  currentIntent: MessageIntent | null;
+  queuedIntent: MessageIntent | null;
 
   lastLessonPlan: LooseLessonPlan;
 
