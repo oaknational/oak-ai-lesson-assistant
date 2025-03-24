@@ -11,6 +11,7 @@ jobs:
       # @link https://turborepo.org/docs/core-concepts/remote-caching#remote-caching-on-vercel-builds
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      NODE_OPTIONS: "--experimental-vm-modules"
 
     runs-on: ubuntu-latest
 
@@ -26,7 +27,7 @@ jobs:
       - name: Setup Node 20
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: "20.9.0"
           cache: "pnpm"
 
       - name: Install deps (with cache)
