@@ -1007,6 +1007,9 @@ importers:
       '@oakai/prettier-config':
         specifier: '*'
         version: link:../prettier-config
+      dedent:
+        specifier: ^1.5.3
+        version: 1.5.3
       zod:
         specifier: 3.23.8
         version: 3.23.8
