@@ -249,7 +249,7 @@ describe("lessonPlanTracking tracking", () => {
 
         actions.clickedModify(
           { label: "Other", enumValue: "OTHER" },
-          "Add more detail",
+          "include more information about London",
         );
 
         chatStoreMock.getState.mockReturnValue({
@@ -268,7 +268,7 @@ describe("lessonPlanTracking tracking", () => {
 
         expect(createArgs.track.lessonPlanRefined).toHaveBeenCalledWith({
           componentType: "modify_button",
-          text: "ADD_MORE_DETAIL",
+          text: "include more information about London",
           refinements: [
             {
               refinementPath: "/cycle1",
