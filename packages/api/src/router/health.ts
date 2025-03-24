@@ -1,7 +1,8 @@
 import { aiLogger } from "@oakai/logger";
+
 import { TRPCError } from "@trpc/server";
 
-import { router, publicProcedure } from "../trpc";
+import { publicProcedure, router } from "../trpc";
 
 const log = aiLogger("db");
 

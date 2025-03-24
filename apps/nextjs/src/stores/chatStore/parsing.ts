@@ -1,6 +1,7 @@
 import {
   type MessagePart,
   parseMessageParts,
+  userMessageTextPart,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { aiLogger } from "@oakai/logger";
 
@@ -52,6 +53,15 @@ export const parseStreamingMessage = (
 };
 
 export const parseMessage = (message: AiMessage): ParsedMessage => {
+  if (message.role === "user") {
+    return {
+      ...message,
+      parts: [userMessageTextPart(message.content)],
+      hasError: false,
+      isEditing: false,
+    };
+  }
+
   const parts = parseMessageParts(message.content);
 
   return {

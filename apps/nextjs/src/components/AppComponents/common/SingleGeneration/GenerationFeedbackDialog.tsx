@@ -1,8 +1,9 @@
 import { useCallback, useState } from "react";
 
-import { useUser } from "@clerk/nextjs";
 import type { GenerationPart } from "@oakai/core/src/types";
 import { structuredLogger as logger } from "@oakai/logger";
+
+import { useUser } from "@clerk/nextjs";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Sentry from "@sentry/nextjs";
 

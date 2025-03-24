@@ -2,8 +2,9 @@
 
 import { memo, useCallback, useEffect, useReducer, useState } from "react";
 
-import { useUser } from "@clerk/nextjs";
 import { aiLogger } from "@oakai/logger";
+
+import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { equals } from "remeda";
 

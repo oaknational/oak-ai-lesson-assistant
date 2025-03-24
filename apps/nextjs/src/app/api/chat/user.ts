@@ -1,12 +1,13 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
 import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
 import { demoUsers } from "@oakai/core";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { inngest } from "@oakai/core/src/inngest";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";
-import { rateLimits } from "@oakai/core/src/utils/rateLimiting/rateLimit";
-import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/userBasedRateLimiter";
+import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
+import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
+
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
 async function checkRateLimit(
   userId: string,

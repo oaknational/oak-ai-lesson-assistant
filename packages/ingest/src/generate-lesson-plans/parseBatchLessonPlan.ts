@@ -1,6 +1,6 @@
 import {
-  CompletedLessonPlanSchema,
   type CompletedLessonPlan,
+  CompletedLessonPlanSchema,
 } from "@oakai/aila/src/protocol/schema";
 import { parseKeyStage } from "@oakai/core/src/data/parseKeyStage";
 

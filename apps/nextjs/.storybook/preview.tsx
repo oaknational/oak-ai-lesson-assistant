@@ -7,11 +7,11 @@ import "@fontsource/lexend/700.css";
 import "@fontsource/lexend/800.css";
 import "@fontsource/lexend/900.css";
 import { OakThemeProvider, oakDefaultTheme } from "@oaknational/oak-components";
-import type { Preview, Decorator } from "@storybook/react";
+import type { Decorator, Preview } from "@storybook/react";
 import {
+  MswParameters,
   initialize as initializeMsw,
   mswLoader,
-  MswParameters,
 } from "msw-storybook-addon";
 
 import { TooltipProvider } from "../src/components/AppComponents/Chat/ui/tooltip";

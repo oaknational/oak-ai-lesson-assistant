@@ -10,6 +10,7 @@ import {
 
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+
 import type { Message } from "ai";
 
 import type { UserAction } from "./helpers";

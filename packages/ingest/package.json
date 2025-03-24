@@ -1,31 +1,31 @@
 {
   "name": "@oakai/ingest",
   "version": "1.0.0",
-  "description": "",
-  "keywords": [],
-  "license": "ISC",
+  "description": "Ingestion service for Oak lessons",
+  "license": "MIT",
   "author": "",
+  "type": "module",
   "main": "./index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "ingest": "pnpm with-env tsx ./src/index.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "single-lesson-dry": "pnpm with-env tsx ./src/singleLessonDryRun.ts",
+    "test": "pnpm with-env jest --colors --config jest.config.mjs",
+    "test-coverage": "COLLECT_TEST_COVERAGE=true pnpm with-env jest --colors --config jest.config.mjs --coverage",
+    "test-file": "pnpm with-env jest --config jest.config.mjs --runTestsByPath TEST_FILEPATH",
+    "test:seq": "pnpm with-env jest --colors --config jest.config.mjs --verbose --runInBand",
+    "type-check": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "prettier": "@oakai/prettier-config",
   "eslintConfig": {
-    "extends": "@oakai/eslint-config",
     "parserOptions": {
       "project": "./tsconfig.json"
     },
-    "rules": {}
+    "extends": "@oakai/eslint-config"
   },
-  "scripts": {
-    "clean": "rm -rf .turbo node_modules",
-    "lint": "eslint .",
-    "type-check": "tsc --noEmit",
-    "single-lesson-dry": "pnpm with-env tsx ./src/singleLessonDryRun.ts",
-    "ingest": "pnpm with-env tsx ./src/index.ts",
-    "with-env": "dotenv -e ../../.env --",
-    "test": "pnpm with-env jest --colors --config jest.config.mjs",
-    "test:seq": "pnpm with-env jest --colors --config jest.config.mjs --verbose --runInBand",
-    "test-coverage": "COLLECT_TEST_COVERAGE=true pnpm with-env jest --colors --config jest.config.mjs --coverage",
-    "test-file": "pnpm with-env jest --config jest.config.mjs --runTestsByPath TEST_FILEPATH"
-  },
-  "prettier": "@oakai/prettier-config",
   "dependencies": {
     "@google-cloud/storage": "^7.7.0",
     "@oakai/aila": "*",
@@ -50,6 +50,5 @@
     "jest": "^29.7.0",
     "setup-polly-jest": "^0.11.0",
     "ts-jest": "^29.2.5"
-  },
-  "type": "module"
+  }
 }

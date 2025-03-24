@@ -1,3 +1,4 @@
+/* eslint-disable @cspell/spellchecker */
 import { aiLogger } from "@oakai/logger";
 
 import type { AilaRagRelevantLesson } from "../../../protocol/schema";
@@ -86,6 +87,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       expect(quiz[0]?.distractors).toBeDefined();
       log.info(JSON.stringify(quiz, null, 2));
     });
+
     it("Should work with a schema reranker", async () => {
       const builder = new CompositeFullQuizServiceBuilder();
       const settings: QuizBuilderSettings = {

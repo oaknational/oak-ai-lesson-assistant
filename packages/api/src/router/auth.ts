@@ -1,7 +1,8 @@
-import { clerkClient } from "@clerk/nextjs/server";
 import { demoUsers } from "@oakai/core";
 import { createHubspotCustomer } from "@oakai/core/src/analytics/hubspotClient";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+
+import { clerkClient } from "@clerk/nextjs/server";
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
