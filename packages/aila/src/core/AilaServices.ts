@@ -59,6 +59,14 @@ export interface AilaDocumentService {
    * Used to enqueue patches for the initial document state.
    */
   getInitialState(): AilaDocumentContent;
+
+  /**
+   * Apply patches to the initial state of the document.
+   * @param patchCallback Callback function that receives the path and value for each patch
+   */
+  applyInitialStatePatches(
+    patchCallback: (path: string, value: unknown) => Promise<void>,
+  ): Promise<void>;
 }
 
 export interface AilaChatService {

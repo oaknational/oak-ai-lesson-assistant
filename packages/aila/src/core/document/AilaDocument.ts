@@ -125,6 +125,19 @@ export class AilaDocument implements AilaDocumentService {
   }
 
   /**
+   * Apply patches to the initial state of the document.
+   * @param patchCallback Callback function that receives the path and value for each patch
+   */
+  public async applyInitialStatePatches(
+    patchCallback: (path: string, value: unknown) => Promise<void>,
+  ): Promise<void> {
+    const initialState = this.getInitialState();
+    for (const [path, value] of Object.entries(initialState)) {
+      await patchCallback(path, value);
+    }
+  }
+
+  /**
    * Initialize the document with content
    */
   public initialise(content: AilaDocumentContent) {
@@ -324,27 +337,5 @@ export class AilaDocument implements AilaDocumentService {
 
     log.info("No plugins successfully categorised content");
     return false;
-  }
-
-  /**
-   * Apply patches for initial state values
-   * @param patchFn Function to apply patches
-   */
-  async applyInitialStatePatches(
-    patchFn: (path: string, value: unknown) => Promise<void>,
-  ) {
-    if (this._hasInitialisedContentFromMessages) {
-      const initialState = this.getInitialState();
-
-      if (initialState) {
-        const keys = Object.keys(initialState);
-        for (const key of keys) {
-          const value = (initialState as Record<string, unknown>)[key];
-          if (value !== undefined && value !== null) {
-            await patchFn(`/${key}`, value);
-          }
-        }
-      }
-    }
   }
 }
