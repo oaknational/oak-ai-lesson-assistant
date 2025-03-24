@@ -23,7 +23,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "../../..");
 
 // Define the path to the .cspell.json file in the root of the monorepo
-const cspellConfigPath = resolve(projectRoot, ".cspell.json");
+const cspellConfigPath = path.resolve(projectRoot, "cspell.json");
 
 const packages = [
   { dir: "apps/nextjs", isReact: true, isBrowser: true },
