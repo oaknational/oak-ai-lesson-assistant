@@ -13,13 +13,13 @@ export const handleUserIntent = (
   get: LessonPlanTrackingGetter,
   message: MessageIntent,
 ) => {
-  const willQueue = !!get().currentMessage;
+  const willQueue = !!get().currentIntent;
 
   if (willQueue) {
     log.info("Queueing user intent");
-    set({ queuedMessage: message });
+    set({ queuedIntent: message });
   } else {
     log.info("Setting user intent");
-    set({ currentMessage: message });
+    set({ currentIntent: message });
   }
 };

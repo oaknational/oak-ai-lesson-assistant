@@ -28,12 +28,12 @@ describe("lessonPlanTracking queueing", () => {
 
     actions.clickedContinue();
 
-    const { currentMessage, queuedMessage } = store.getState();
-    expect(currentMessage).toEqual({
+    const { currentIntent, queuedIntent } = store.getState();
+    expect(currentIntent).toEqual({
       componentType: "continue_button",
       text: "",
     });
-    expect(queuedMessage).toBeNull();
+    expect(queuedIntent).toBeNull();
   });
 
   it("queues the intent if another message is in flight", () => {
@@ -44,12 +44,12 @@ describe("lessonPlanTracking queueing", () => {
     // Queued intent (while moderating)
     actions.submittedText("queued message");
 
-    const { currentMessage, queuedMessage } = store.getState();
-    expect(currentMessage).toEqual({
+    const { currentIntent, queuedIntent } = store.getState();
+    expect(currentIntent).toEqual({
       componentType: "continue_button",
       text: "",
     });
-    expect(queuedMessage).toEqual({
+    expect(queuedIntent).toEqual({
       componentType: "type_edit",
       text: "queued message",
     });
@@ -62,17 +62,17 @@ describe("lessonPlanTracking queueing", () => {
     actions.clickedContinue();
     // Queued intent (while moderating)
     actions.submittedText("queued message");
-    // Simulate trackCompletion clearing currentMessage
-    store.setState({ currentMessage: null });
+    // Simulate trackCompletion clearing currentIntent
+    store.setState({ currentIntent: null });
     // Move queued message to current
     actions.prepareForNextMessage();
 
-    const { currentMessage, queuedMessage } = store.getState();
-    expect(currentMessage).toEqual({
+    const { currentIntent, queuedIntent } = store.getState();
+    expect(currentIntent).toEqual({
       componentType: "type_edit",
       text: "queued message",
     });
-    expect(queuedMessage).toBeNull();
+    expect(queuedIntent).toBeNull();
   });
 
   it("clears queued message if it's cancelled", () => {
@@ -83,13 +83,13 @@ describe("lessonPlanTracking queueing", () => {
     // Queued intent (while moderating)
     actions.submittedText("queued message");
     actions.clearQueuedIntent();
-    // Simulate trackCompletion clearing currentMessage
-    store.setState({ currentMessage: null });
+    // Simulate trackCompletion clearing currentIntent
+    store.setState({ currentIntent: null });
     // Move queued message to current
     actions.prepareForNextMessage();
 
-    const { currentMessage, queuedMessage } = store.getState();
-    expect(currentMessage).toBeNull();
-    expect(queuedMessage).toBeNull();
+    const { currentIntent, queuedIntent } = store.getState();
+    expect(currentIntent).toBeNull();
+    expect(queuedIntent).toBeNull();
   });
 });
