@@ -37,7 +37,12 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
+    useCache: boolean = true,
   ): Promise<z.infer<T>[]> {
+    if (useCache) {
+      return this.cachedEvaluateQuizArray(quizArray, lessonPlan, ratingSchema, quizType);
+    }
+    
     // Decorates to delay the evaluation of each quiz. There is probably a better library for this.
     const delayedRetrieveQuiz = withRandomDelay<
       [QuizQuestion[]],
@@ -136,15 +141,17 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
     }
 
     log.info(`Cache miss for key: ${cacheKey}, evaluating for openAI`);
+    // No caching otherwise we will get stuck in a loop. 
     const evaluatedQuizzes = await this.evaluateQuizArray(
       quizArray,
       lessonPlan,
       ratingSchema,
       quizType,
+      false,
     );
 
     await kv.set(cacheKey, evaluatedQuizzes, {
-      ex: 60 * 5,
+      ex: 60 * 10,
     });
     return evaluatedQuizzes;
   }
