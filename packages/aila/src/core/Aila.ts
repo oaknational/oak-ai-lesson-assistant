@@ -172,15 +172,6 @@ export class Aila implements AilaServices {
       language: options?.language,
     };
 
-    console.log(
-      "AILA INITIALISE OPTIONS - After initialization:",
-      JSON.stringify(initializedOptions, null, 2),
-    );
-    console.log(
-      "Language parameter after initialization:",
-      initializedOptions.language,
-    );
-
     return initializedOptions;
   }
 

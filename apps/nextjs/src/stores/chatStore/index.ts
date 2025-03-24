@@ -31,7 +31,7 @@ export const createChatStore = (
     id,
     moderationActions: undefined, // Passed in the provider
     ailaStreamingStatus: "Idle",
-    language: "english",
+    language: "en",
     initialMessages: [],
     stableMessages: [],
     streamingMessage: null,

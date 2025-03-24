@@ -16,7 +16,6 @@ export const translateRouter = router({
     .input(z.object({ lessonPlan: LessonPlanSchema, language: z.string() }))
     .mutation(async ({ input }) => {
       const { lessonPlan, language } = input;
-      console.log("*********************", lessonPlan);
 
       const response = await openai.chat.completions.create({
         model: "gpt-4o-mini",
@@ -38,7 +37,7 @@ export const translateRouter = router({
       const parsedResponse = JSON.parse(
         response?.choices[0]?.message.content ?? "{}",
       );
-      console.log("*****************", parsedResponse);
+
       return parsedResponse;
     }),
 });

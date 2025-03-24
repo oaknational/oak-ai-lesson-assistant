@@ -148,10 +148,6 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
     baseLessonPlan: LooseLessonPlan | undefined,
   ): string {
     const lessonPlan = this._aila?.document?.content ?? {};
-
-    console.log("=================CRITICAL DEBUG=================");
-    console.log("AILA OPTIONS:", JSON.stringify(this._aila?.options, null, 2));
-    console.log("Original Language from AILA:", this._aila?.options.language);
     const language = this._aila?.options.language;
 
     const args: TemplateProps = {
@@ -170,12 +166,6 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
         process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true",
       language: language,
     };
-
-    console.log("TEMPLATE PROPS LANGUAGE:", args.language);
-    console.log("=================END CRITICAL DEBUG=================");
-
-    console.log("=================LANGUAGE PARAMETER DEBUG=================");
-    console.log(`Language parameter: "${args.language}"`);
 
     // Generate the template
     let promptText = template(args);

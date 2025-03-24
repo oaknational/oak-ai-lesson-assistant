@@ -8,8 +8,6 @@ import type { NextRequest, NextResponse } from "next/server";
 
 import { withSentry } from "@/lib/sentry/withSentry";
 
-const log = aiLogger("trpc");
-
 const handler = (req: NextRequest, res: NextResponse) =>
   fetchRequestHandler({
     endpoint: "/api/trpc/chat",
@@ -19,9 +17,6 @@ const handler = (req: NextRequest, res: NextResponse) =>
       return createContext({ req, res });
     },
     onError: (e) => {
-      if (process.env.NODE_ENV === "development") {
-        log.error(e);
-      }
       Sentry.captureException(e.error);
     },
   });

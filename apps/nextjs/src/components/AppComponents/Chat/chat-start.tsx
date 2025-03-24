@@ -58,7 +58,7 @@ export function ChatStart({
   const createAppSession = trpc.chat.appSessions.create.useMutation();
   const trpcUtils = trpc.useUtils();
   const { t } = useTranslation();
-
+  const { language } = useTranslation();
   useEffect(() => {
     if (keyStage || subject || unitTitle || searchExpression) {
       setInput(
@@ -77,7 +77,7 @@ export function ChatStart({
     async (message: string) => {
       try {
         const result = await createAppSession.mutateAsync(
-          { appId: "lesson-planner", message },
+          { appId: "lesson-planner", message, language },
           {
             onSuccess: () => {
               trpcUtils.chat.appSessions.remainingLimit

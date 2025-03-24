@@ -28,8 +28,7 @@ export type AilaStreamingStatus =
 export type ChatState = {
   id: string;
   ailaStreamingStatus: AilaStreamingStatus;
-  language: string;
-
+  language: "en" | "uk" | null;
   initialMessages: AiMessage[];
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;

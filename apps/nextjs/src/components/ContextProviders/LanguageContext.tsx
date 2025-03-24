@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
+
+import { z } from "zod";
 
 import englishTranslations from "../../translations/en.json";
 import ukrainianTranslations from "../../translations/uk.json";
@@ -9,7 +10,8 @@ import ukrainianTranslations from "../../translations/uk.json";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Define available languages
-export type Language = "en" | "uk";
+export const languageSchema = z.enum(["en", "uk"]);
+export type Language = z.infer<typeof languageSchema>;
 
 // Define the context shape
 type LanguageContextType = {
