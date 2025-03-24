@@ -41,9 +41,16 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  args: {
+    translatedLessonPlan: null,
+  },
+};
 
 export const Markdown: Story = {
+  args: {
+    translatedLessonPlan: null,
+  },
   parameters: {
     lessonPlanStoreState: {
       lessonPlan: {
@@ -59,6 +66,9 @@ export const Markdown: Story = {
 };
 
 export const Streaming: Story = {
+  args: {
+    translatedLessonPlan: null,
+  },
   parameters: {
     lessonPlanStoreState: {
       sectionsToEdit: ["learningOutcome"],
@@ -67,6 +77,9 @@ export const Streaming: Story = {
 };
 
 export const Closed: Story = {
+  args: {
+    translatedLessonPlan: null,
+  },
   parameters: {
     docs: {
       story: { autoplay: true },
@@ -84,6 +97,7 @@ export const Closed: Story = {
 export const AdditionalMaterials: Story = {
   args: {
     sectionKey: "additionalMaterials",
+    translatedLessonPlan: null,
   },
   parameters: {
     lessonPlanStoreState: {
@@ -95,6 +109,9 @@ export const AdditionalMaterials: Story = {
 };
 
 export const Modify: Story = {
+  args: {
+    translatedLessonPlan: null,
+  },
   parameters: {
     docs: {
       // NOTE: This should run the play function in the docs page, but seems broken
@@ -111,6 +128,7 @@ export const Modify: Story = {
 export const ModifyAdditionalMaterials: Story = {
   args: {
     sectionKey: "additionalMaterials",
+    translatedLessonPlan: null,
   },
   parameters: {
     docs: {
@@ -133,6 +151,9 @@ export const ModifyAdditionalMaterials: Story = {
 };
 
 export const Flag: Story = {
+  args: {
+    translatedLessonPlan: null,
+  },
   parameters: {
     docs: {
       // NOTE: This should run the play function in the docs page, but seems broken
