@@ -26,7 +26,9 @@ jobs:
       - name: Setup Node 20
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # NOTE: We're fixing at 20.18 as 20.19 changes require(esm) logic https://nodejs.org/en/blog/release/v20.19.0
+          #       That change is incompatible with jest v29. jest v30 is still in alpha https://github.com/jestjs/jest/pull/15447
+          node-version: 20.18
           cache: "pnpm"
 
       - name: Install deps (with cache)
