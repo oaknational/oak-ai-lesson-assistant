@@ -13,18 +13,17 @@ import storybookPlugin from "eslint-plugin-storybook";
 import turboPlugin from "eslint-plugin-turbo";
 import globals from "globals";
 import jsonParser from "jsonc-eslint-parser";
-import path from "path";
+import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 
 import { ignores } from "./ignores.mjs";
 import { javascriptRules, rules } from "./rules.mjs";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const projectRoot = path.resolve(__dirname, "../../..");
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const projectRoot = resolve(__dirname, "../../..");
 
 // Define the path to the .cspell.json file in the root of the monorepo
-const cspellConfigPath = path.resolve(projectRoot, ".cspell.json");
+const cspellConfigPath = resolve(projectRoot, ".cspell.json");
 
 const packages = [
   { dir: "apps/nextjs", isReact: true, isBrowser: true },

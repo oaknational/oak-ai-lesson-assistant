@@ -3,10 +3,13 @@ import { aiLogger } from "@oakai/logger";
 import fs from "node:fs";
 
 import { IngestError } from "../IngestError";
+import { getDirname } from "../utils/path";
 
 const log = aiLogger("ingest");
 
-function getBatchDataDir({ ingestId }: { ingestId: string }) {
+const __dirname = getDirname(import.meta.url);
+
+export function getBatchFilePath(ingestId: string) {
   return `${__dirname}/data/ingest_${ingestId}`;
 }
 
@@ -24,7 +27,7 @@ export function writeBatchFile<T>({
   return new Promise<{ filePath: string; batchDir: string }>(
     (resolve, reject) => {
       const timestamp = Math.floor(Date.now() / 1000);
-      const batchDir = getBatchDataDir({ ingestId });
+      const batchDir = getBatchFilePath(ingestId);
       fs.mkdirSync(batchDir, { recursive: true });
       const filePath = `${batchDir}/batch_${timestamp}.jsonl`;
       const writeStream = fs.createWriteStream(filePath, {

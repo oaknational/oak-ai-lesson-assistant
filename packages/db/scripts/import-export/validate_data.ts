@@ -9,14 +9,18 @@ import { Prisma } from "@prisma/client";
 import csvParser from "csv-parser";
 import dotenv from "dotenv";
 import * as fs from "fs";
-import * as path from "path";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 import { z } from "zod";
 
 import { prisma } from "../..";
 
 const logger = aiLogger("db");
 
-const dataDir = path.join(__dirname, "data");
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const dataDir = join(__dirname, "data");
+const tablesFilePath = join(__dirname, "tables.txt");
 
 dotenv.config();
 
@@ -35,7 +39,6 @@ function getModelConstraints() {
 
   models.forEach((model) => {
     if (model.dbName) {
-      const tablesFilePath = path.join(__dirname, "tables.txt");
       const tables = fs
         .readFileSync(tablesFilePath, "utf-8")
         .split("\n")
@@ -145,10 +148,7 @@ const validateCSV = (
             }
 
             if (ids.length > 0) {
-              const refFilePath = path.join(
-                dataDir,
-                `${handleTable(refTable)}.csv`,
-              );
+              const refFilePath = join(dataDir, `${handleTable(refTable)}.csv`);
               if (!fs.existsSync(refFilePath)) {
                 errors.push(
                   `CSV file for referenced table '${refTable}' does not exist.`,
@@ -204,7 +204,7 @@ const main = async () => {
     const modelConstraints = getModelConstraints();
 
     for (const [table, constraints] of Object.entries(modelConstraints)) {
-      const filePath = path.join(dataDir, `${table}.csv`);
+      const filePath = join(dataDir, `${table}.csv`);
       if (!fs.existsSync(filePath)) {
         logger.error(`CSV file for table '${table}' does not exist.`);
         process.exit(1);
