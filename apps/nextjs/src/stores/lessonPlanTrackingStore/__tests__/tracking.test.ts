@@ -7,6 +7,7 @@ import type { ChatState } from "@/stores/chatStore";
 import type { LessonPlanState } from "@/stores/lessonPlanStore";
 
 import { createLessonPlanTrackingStore } from "..";
+import { LessonPlanTrackingError } from "../actionFunctions/handleTrackStreamingComplete";
 import { lessonPlans, messages } from "./fixtures";
 
 const chatStoreMock = {
@@ -46,13 +47,13 @@ describe("lessonPlanTracking tracking", () => {
     jest.clearAllMocks();
   });
 
-  // Skipped for now until we know it doesn't trigger in production
-  // For example with the Additional Materials dropdown
-  it.skip("throws an error if there isn't a currentMessage", () => {
+  it("throws an error if there isn't a currentIntent", () => {
     const store = createLessonPlanTrackingStore(createArgs);
     const actions = store.getState().actions;
 
-    expect(() => actions.trackCompletion()).toThrow("No current message");
+    expect(() => actions.trackCompletion()).toThrow(
+      new LessonPlanTrackingError("No recorded intent to track"),
+    );
   });
 
   describe("lessonPlanInitiated", () => {

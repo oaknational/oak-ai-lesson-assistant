@@ -2,7 +2,6 @@ import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAss
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { aiLogger } from "@oakai/logger";
 
-import * as Sentry from "@sentry/nextjs";
 import invariant from "tiny-invariant";
 
 import {
@@ -26,6 +25,13 @@ import type {
 
 const log = aiLogger("analytics:lesson:store");
 
+export class LessonPlanTrackingError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "LessonPlanTrackingError";
+  }
+}
+
 export const handleTrackCompletion =
   (
     set: LessonPlanTrackingSetter,
@@ -38,9 +44,7 @@ export const handleTrackCompletion =
     // Get values from this store
     const { id: chatId, currentIntent, lastLessonPlan } = get();
     if (!currentIntent) {
-      log.error("analytics:lesson:store: No recorded action to track");
-      Sentry.captureMessage("No recorded action to track");
-      return;
+      throw new LessonPlanTrackingError("No recorded intent to track");
     }
 
     // Get values from other stores
