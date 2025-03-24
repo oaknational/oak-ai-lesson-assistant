@@ -32,6 +32,7 @@
     "lint:file": "eslint",
     "lint:fix": "pnpm lint -- --fix",
     "node-version": "node -v",
+    "prettier": "prettier --check \"**/*.{ts,tsx,md}\"",
     "prompts": "turbo prompts",
     "prompts:dev": "turbo prompts:dev",
     "sonar": "dotenv -e ./.env -- sonar-scanner",

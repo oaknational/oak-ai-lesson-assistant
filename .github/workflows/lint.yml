@@ -42,4 +42,4 @@ jobs:
         run: pnpm manypkg check
 
       - name: Check formatting with Prettier
-        run: pnpm prettier
+        run: pnpm format

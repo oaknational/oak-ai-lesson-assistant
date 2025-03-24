@@ -1,4 +1,5 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db/client";
+
 import type { z } from "zod";
 
 import type { AilaAmericanismsFeature } from "../features/americanisms";
@@ -14,12 +15,12 @@ import type {
   AilaModerationFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
-import type { AilaServices, AilaDocumentService } from "./AilaServices";
+import type { AilaDocumentService, AilaServices } from "./AilaServices";
 import type { Message } from "./chat";
 import type {
   AilaDocumentContent,
-  DocumentPlugin,
   CategorisationPlugin,
+  DocumentPlugin,
 } from "./document/types";
 import type { LLMService } from "./llm/LLMService";
 import type { AilaPlugin } from "./plugins/types";
