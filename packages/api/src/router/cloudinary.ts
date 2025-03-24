@@ -1,5 +1,6 @@
 import { requestImageDescription } from "@oakai/core/src/functions/generation/imageAltTextRequestGeneration.ts/requestImageDescription";
 import { aiLogger } from "@oakai/logger";
+
 import { v2 as cloudinary } from "cloudinary";
 import { z } from "zod";
 

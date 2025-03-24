@@ -32,7 +32,7 @@ export function ChatList({
     (state) => state.ailaStreamingStatus,
   );
 
-  // NOTE: This is a similar (and better?) apprach to the chat store/s scrolling with chatAreaRef
+  // NOTE: This is a similar (and better?) approach to the chat store/s scrolling with chatAreaRef
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
 

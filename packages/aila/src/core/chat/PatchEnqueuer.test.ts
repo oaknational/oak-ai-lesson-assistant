@@ -14,7 +14,6 @@ describe("PatchEnqueuer", () => {
 
     await patchEnqueuer.enqueuePatch(path, value);
 
-     
     expect(controller.enqueue).toHaveBeenCalled();
     const expectedPatch = `\n␞\n${JSON.stringify({
       type: "patch",
@@ -22,7 +21,7 @@ describe("PatchEnqueuer", () => {
       value: { op: "add", path, value },
       status: "complete",
     })}\n␞\n`;
-     
+
     expect(controller.enqueue).toHaveBeenCalledWith(expectedPatch);
   });
 

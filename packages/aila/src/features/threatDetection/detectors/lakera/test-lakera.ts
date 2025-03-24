@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { resolve, dirname } from "path";
+import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 
 /* eslint-disable no-console */

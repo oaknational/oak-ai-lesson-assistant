@@ -845,6 +845,7 @@ enum SafetyViolationSource {
   HELICONE
   OPENAI
   MODERATION
+  THREAT
 
   @@schema("public")
 }

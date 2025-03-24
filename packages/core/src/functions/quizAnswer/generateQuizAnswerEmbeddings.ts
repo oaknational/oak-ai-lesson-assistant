@@ -1,4 +1,4 @@
-import { prisma, QuizAnswerStatus } from "@oakai/db";
+import { QuizAnswerStatus, prisma } from "@oakai/db";
 
 import { inngest } from "../../inngest";
 import { QuizAnswers } from "../../models";

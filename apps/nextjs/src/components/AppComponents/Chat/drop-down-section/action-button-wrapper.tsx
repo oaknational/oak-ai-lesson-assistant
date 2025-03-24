@@ -2,10 +2,15 @@ import { useRef, useState } from "react";
 
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
+
 import { OakBox } from "@oaknational/oak-components";
 import type { AilaUserModificationAction } from "@prisma/client";
 
-import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
+import {
+  useChatActions,
+  useChatStore,
+  useLessonPlanStore,
+} from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";
@@ -49,7 +54,7 @@ const ActionButtonWrapper = ({
     useState<FeedbackOption<AilaUserModificationAction> | null>(null);
 
   const id = useLessonPlanStore((state) => state.id);
-  const append = useChatStore((state) => state.append);
+  const { append } = useChatActions();
   const { mutateAsync } = trpc.chat.chatFeedback.modifySection.useMutation();
 
   const messages = useChatStore((state) => state.stableMessages);

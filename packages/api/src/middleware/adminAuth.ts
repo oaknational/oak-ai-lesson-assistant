@@ -1,6 +1,7 @@
+import { aiLogger } from "@oakai/logger";
+
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
-import { aiLogger } from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 
 import { t } from "../trpc";

@@ -10,6 +10,7 @@ import type {
 import { ZLesson } from "@oakai/db";
 import { ZNewLesson } from "@oakai/db/schemas/lesson";
 import { aiLogger } from "@oakai/logger";
+
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { PromptTemplate } from "langchain/prompts";
 import { RunnableSequence } from "langchain/schema/runnable";

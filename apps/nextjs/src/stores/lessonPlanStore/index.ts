@@ -1,4 +1,5 @@
 import { aiLogger } from "@oakai/logger";
+
 import { createStore } from "zustand";
 
 import type { LessonPlanTrackingContextProps } from "@/lib/analytics/lessonPlanTrackingContext";
@@ -46,27 +47,29 @@ export const createLessonPlanStore = ({
 
     ...initialPerMessageState,
 
-    // Setters
-    setScrollToSection: (sectionKey) => set({ scrollToSection: sectionKey }),
+    actions: {
+      // Setters
+      setScrollToSection: (sectionKey) => set({ scrollToSection: sectionKey }),
 
-    // Action functions
-    messageStarted: () => {
-      log.info("Message started");
-      set({
-        isAcceptingChanges: true,
-        lastLessonPlan: get().lessonPlan,
-      });
+      // Action functions
+      messageStarted: () => {
+        log.info("Message started");
+        set({
+          isAcceptingChanges: true,
+          lastLessonPlan: get().lessonPlan,
+        });
+      },
+      messagesUpdated: handleMessagesUpdated(set, get),
+      messageFinished: () => {
+        log.info("Message finished");
+        set({ isAcceptingChanges: false, ...initialPerMessageState });
+        handleTrackingEvents(lessonPlanTracking, getStore, get);
+        // TODO: should we refetch when we start moderating?
+        void handleRefetch(set, get, trpcUtils)();
+      },
+      refetch: handleRefetch(set, get, trpcUtils),
+      resetStore: () => set({ lessonPlan: {} }),
     },
-    messagesUpdated: handleMessagesUpdated(set, get),
-    messageFinished: () => {
-      log.info("Message finished");
-      set({ isAcceptingChanges: false, ...initialPerMessageState });
-      handleTrackingEvents(lessonPlanTracking, getStore, get);
-      // TODO: should we refetch when we start moderating?
-      void handleRefetch(set, get, trpcUtils)();
-    },
-    refetch: handleRefetch(set, get, trpcUtils),
-    resetStore: () => set({ lessonPlan: {} }),
 
     ...initialValues,
   }));

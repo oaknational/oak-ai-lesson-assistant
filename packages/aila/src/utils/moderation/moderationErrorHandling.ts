@@ -24,7 +24,7 @@ export async function handleThreatDetectionError(
   SafetyViolations = defaultSafetyViolations,
 ): Promise<ErrorDocument | ActionDocument> {
   await safelyReportAnalyticsEvent({
-    eventName: "helicone_threat_detected",
+    eventName: "threat_detected",
     userId,
     payload: {
       chat_id: chatId,
@@ -37,7 +37,7 @@ export async function handleThreatDetectionError(
     await safetyViolations.recordViolation(
       userId,
       "CHAT_MESSAGE",
-      "HELICONE",
+      "THREAT",
       "CHAT_SESSION",
       chatId,
     );

@@ -2,8 +2,9 @@
 
 import { useEffect, useRef } from "react";
 
-import { useClerk } from "@clerk/nextjs";
 import { aiLogger } from "@oakai/logger";
+
+import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
 const log = aiLogger("auth");

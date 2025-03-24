@@ -6,7 +6,7 @@ import { cva } from "class-variance-authority";
 import { Icon } from "./Icon";
 import BoxEdges from "./SVGParts/BoxEdges";
 
-const inputContainer = cva("relative w-full appearance-none ", {
+const inputContainer = cva("relative w-full appearance-none", {
   variants: {
     type: {
       textarea: "relative h-fit min-h-[120px] pb-4",

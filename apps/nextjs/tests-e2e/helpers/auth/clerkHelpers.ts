@@ -27,7 +27,7 @@ export const clerkSignInHelper = async (identifier: string) => {
     if (!identifier.includes("+clerk_test")) {
       throw new Error(
         `Email should be a test email.\n
-      Any email with the +clerk_test subaddress is a test email address.\n
+      Any email with the +clerk_test extension is a test email address.\n
       Learn more here: https://clerk.com/docs/testing/test-emails-and-phones#email-addresses`,
       );
     }
