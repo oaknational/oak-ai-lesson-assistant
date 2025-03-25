@@ -24,6 +24,7 @@ import {
   OakRadioButton,
   OakRadioGroup,
 } from "@oaknational/oak-components";
+import * as Sentry from "@sentry/nextjs";
 import { redirect } from "next/navigation";
 
 import { ComprehensionTask } from "@/components/AppComponents/AdditionalMaterials/ComprehensionTask";
@@ -38,10 +39,6 @@ const log = aiLogger("additional-materials");
 export function mapLessonPlanSections(
   lessonPlan: AilaPersistedChat["lessonPlan"],
 ) {
-  if (!lessonPlan) {
-    return [];
-  }
-
   const sectionKeys = [
     "title",
     "keyStage",
@@ -63,7 +60,7 @@ export function mapLessonPlanSections(
 
   return sectionKeys.map((key) => ({
     key,
-    data: lessonPlan[key as keyof typeof lessonPlan] ?? null,
+    data: lessonPlan[key] ?? null,
   }));
 }
 
@@ -137,6 +134,7 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
           setModeration(data);
         } catch (error) {
           log.error("error", error);
+          Sentry.captureException(error);
         }
       };
       void fetchData();
@@ -161,11 +159,10 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
       setGeneration(res);
     } catch (error) {
       log.error("error", error);
+      Sentry.captureException(error);
     }
   };
   const renderGeneratedMaterial = () => {
-    if (!generation) return null;
-
     if (action === "additional-homework" && isHomeworkMaterial(generation)) {
       return <Homework action={action} generation={generation} />;
     }
@@ -199,7 +196,7 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
           <OakFlex $flexDirection="column">
             {mapLessonPlanSections(pageData.lessonPlan).map((section) => {
               return (
-                <OakFlex $flexDirection={"column"}>
+                <OakFlex key={section.key} $flexDirection={"column"}>
                   <OakHeading $font={"heading-5"} tag="h2">
                     {section.key}
                   </OakHeading>

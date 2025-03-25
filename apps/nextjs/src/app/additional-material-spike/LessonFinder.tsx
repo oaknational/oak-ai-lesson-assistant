@@ -6,9 +6,7 @@ import type { OakOpenApiSearchSchema } from "@oakai/additional-materials/src/doc
 
 import { OakFlex, OakHeading, OakTextInput } from "@oaknational/oak-components";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
-import { useClientSideFeatureFlag } from "@/components/ContextProviders/FeatureFlagProvider";
 import { trpc } from "@/utils/trpc";
 
 type AilALessonTitles = {
@@ -28,7 +26,7 @@ const LessonFinder = ({ lessons }: { lessons: AilALessonTitles }) => {
   );
 
   useEffect(() => {
-    if (owaData && owaData !== owaLessons) {
+    if (owaData) {
       setOwaLessons(owaData);
     }
   }, [owaData, owaLessons]);

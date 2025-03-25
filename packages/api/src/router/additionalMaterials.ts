@@ -104,31 +104,34 @@ export const additionalMaterialsRouter = router({
         log.info("Fetch oak lesson from oak open api", ctx);
 
         try {
-          const responseSummary = await fetch(
-            `https://open-api.thenational.academy/api/v0/lessons/${lessonSlug}/summary`,
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${OPENAI_AUTH_TOKEN}`,
-                Accept: "application/json",
+          const [summaryRes, transcriptRes] = await Promise.all([
+            fetch(
+              `https://open-api.thenational.academy/api/v0/lessons/${lessonSlug}/summary`,
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${OPENAI_AUTH_TOKEN}`,
+                  Accept: "application/json",
+                },
               },
-            },
-          );
-          const responseTranscript = await fetch(
-            `https://open-api.thenational.academy/api/v0/lessons/${lessonSlug}/transcript`,
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${OPENAI_AUTH_TOKEN}`,
-                Accept: "application/json",
+            ),
+            fetch(
+              `https://open-api.thenational.academy/api/v0/lessons/${lessonSlug}/transcript`,
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${OPENAI_AUTH_TOKEN}`,
+                  Accept: "application/json",
+                },
               },
-            },
-          );
+            ),
+          ]);
+
           const summaryData = oakOpenAiLessonSummarySchema.parse(
-            await responseSummary.json(),
+            await summaryRes.json(),
           );
           const transcriptData = oakOpenAiTranscriptSchema.parse(
-            await responseTranscript.json(),
+            await transcriptRes.json(),
           );
 
           return {
