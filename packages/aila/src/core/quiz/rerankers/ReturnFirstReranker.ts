@@ -14,16 +14,16 @@ import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 export class ReturnFirstReranker extends BasedOnRagAilaQuizReranker<
   typeof testRatingSchema
 > {
-  public rerankQuiz(_quizzes: QuizQuestion[][]): Promise<number[]> {
+  public rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]> {
     return Promise.resolve([0]);
   }
   public evaluateQuizArray(
-    _quizzes: QuizQuestion[][],
+    quizzes: QuizQuestion[][],
     _lessonPlan: LooseLessonPlan,
-    _ratingSchema: typeof testRatingSchema,
+    ratingSchema: typeof testRatingSchema,
     _quizType: QuizPath,
   ): Promise<z.infer<typeof testRatingSchema>[]> {
-    const output = _quizzes.map(() => {
+    const output = quizzes.map(() => {
       const dummySchema = generateMock(testRatingSchema);
       dummySchema.rating = 0;
       return dummySchema;
