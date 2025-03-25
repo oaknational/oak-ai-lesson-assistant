@@ -3,8 +3,8 @@ import { exportGeneric } from "./exportGeneric";
 import { googleSlides } from "./gSuite/slides/client";
 import {
   CYCLE_TAGS,
-  deleteSlides,
   type CycleNumber,
+  deleteSlides,
 } from "./gSuite/slides/deleteSlides";
 import { populateSlides } from "./gSuite/slides/populateSlides";
 import type { LessonSlidesInputData } from "./schema/input.schema";

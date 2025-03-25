@@ -1,13 +1,14 @@
 import { aiLogger } from "@oakai/logger";
+
 import { z } from "zod";
 
 import {
+  AilaThreatDetector,
   type ThreatCategory,
   type ThreatDetectionResult,
   type ThreatSeverity,
-  AilaThreatDetector,
 } from "../AilaThreatDetector";
-import type { Message, LakeraGuardResponse, BreakdownItem } from "./schema";
+import type { BreakdownItem, LakeraGuardResponse, Message } from "./schema";
 import { lakeraGuardRequestSchema, lakeraGuardResponseSchema } from "./schema";
 
 const log = aiLogger("aila:threat");

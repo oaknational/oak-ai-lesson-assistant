@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 
 import type { AilaUserFlagType, AilaUserModificationAction } from "@oakai/db";
+
 import {
   OakBox,
   OakFlex,

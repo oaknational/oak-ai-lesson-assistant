@@ -1,7 +1,8 @@
-import { Client } from "@elastic/elasticsearch";
-import type { SearchHitsMetadata } from "@elastic/elasticsearch/lib/api/types";
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
+
+import { Client } from "@elastic/elasticsearch";
+import type { SearchHitsMetadata } from "@elastic/elasticsearch/lib/api/types";
 import { CohereClient } from "cohere-ai";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import { z } from "zod";
@@ -37,7 +38,7 @@ const log = aiLogger("aila:quiz");
 // Base abstract class
 // Quiz generator takes a lesson plan and returns a quiz object.
 // Quiz rerankers take a lesson plan and returns a list of quiz objects ranked by suitability.
-// Quiz selectors take a list of quiz objects and rankings and select the best one acording to some criteria or logic defined by a rating function.
+// Quiz selectors take a list of quiz objects and rankings and select the best one according to some criteria or logic defined by a rating function.
 export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   protected client: Client;
   protected cohere: CohereClient;
@@ -72,7 +73,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     this.quizLookup = new ElasticLessonQuizLookup();
   }
 
-  // The below is overly bloated and a midstep in refactoring.
+  // The below is overly bloated and a mid-step in refactoring.
   abstract generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],

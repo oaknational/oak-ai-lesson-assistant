@@ -1,8 +1,9 @@
 import type { Dispatch } from "react";
 import { useEffect, useRef } from "react";
 
-import { useUser } from "@clerk/nextjs";
 import browserLogger from "@oakai/logger/browser";
+
+import { useUser } from "@clerk/nextjs";
 import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 

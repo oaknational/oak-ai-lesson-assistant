@@ -1,4 +1,5 @@
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+
 import { Box } from "@radix-ui/themes";
 import Link from "next/link";
 

@@ -19,6 +19,7 @@ export const javascriptRules = {
       varsIgnorePattern: "^_",
     },
   ],
+  "@cspell/spellchecker": ["warn"],
 };
 
 // @ts-check
@@ -94,4 +95,7 @@ export const rules = {
       ],
     },
   ],
+
+  // Spellings
+  "@cspell/spellchecker": ["warn"],
 };

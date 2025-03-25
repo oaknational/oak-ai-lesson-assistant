@@ -1,6 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { ChatSetter, ChatGetter } from "../types";
+import type { ChatGetter, ChatSetter } from "../types";
 
 const log = aiLogger("chat:store");
 

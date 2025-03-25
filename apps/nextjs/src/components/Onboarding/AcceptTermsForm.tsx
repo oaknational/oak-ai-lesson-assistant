@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 
-import { useUser } from "@clerk/nextjs";
 import logger from "@oakai/logger/browser";
+
+import { useUser } from "@clerk/nextjs";
 import {
   OakBox,
   OakFlex,

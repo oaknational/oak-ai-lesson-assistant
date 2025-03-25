@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
+
 import { OakBox } from "@oaknational/oak-components";
 import type { AilaUserModificationAction } from "@prisma/client";
 

@@ -1,4 +1,4 @@
-import { rateLimits } from "@oakai/core/src/utils/rateLimiting/rateLimit";
+import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import { aiLogger } from "@oakai/logger";
 
 const log = aiLogger("testing");
