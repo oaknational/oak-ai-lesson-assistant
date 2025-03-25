@@ -76,7 +76,8 @@ export const createLessonPlanTrackingStore = ({
         clickedModify: (option, feedbackText) => {
           handleUserIntent(set, get, {
             componentType: ComponentType.MODIFY_BUTTON,
-            text: option.enumValue === "OTHER" ? feedbackText : option.label,
+            text:
+              option.enumValue === "OTHER" ? feedbackText : option.enumValue,
           });
         },
 

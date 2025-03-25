@@ -230,7 +230,7 @@ describe("lessonPlanTracking tracking", () => {
 
         expect(createArgs.track.lessonPlanRefined).toHaveBeenCalledWith({
           componentType: "modify_button",
-          text: "Make it easier",
+          text: "MAKE_IT_EASIER",
           refinements: [
             {
               refinementPath: "/cycle1",
