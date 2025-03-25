@@ -59,6 +59,10 @@ export const messages = {
     role: "user",
     content: "Make the learning cycles easier",
   },
+  user2AdditionalMaterials: {
+    role: "user",
+    content: `Add a homework task to the additional materials section`,
+  },
   user2SelectRagOption: {
     role: "user",
     content: "1",
@@ -94,6 +98,26 @@ export const messages = {
             op: "replace",
             path: "/cycle1",
             value: "[Simple version of cycle 1]",
+          },
+        },
+      },
+    ],
+  },
+  assistant2AdditionalMaterialsResponse: {
+    role: "assistant",
+    content: "[ ... I've added the homework task ... ]",
+    parts: [
+      {
+        document: {
+          type: "patch",
+          value: {
+            type: "string",
+            op: "add",
+            path: "/additionalMaterials",
+            value: {
+              id: "additional-materials-test-id",
+              title: "Homework Task",
+            },
           },
         },
       },

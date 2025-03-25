@@ -1,6 +1,9 @@
 import { type StoreApi } from "zustand";
 
-import { modifyOptions } from "@/components/AppComponents/Chat/drop-down-section/action-button.types";
+import {
+  additionalMaterialsModifyOptions,
+  modifyOptions,
+} from "@/components/AppComponents/Chat/drop-down-section/action-button.types";
 import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 import { buildStoreGetter } from "@/stores/AilaStoresProvider";
 import type { ChatState } from "@/stores/chatStore";
@@ -273,6 +276,84 @@ describe("lessonPlanTracking tracking", () => {
             {
               refinementPath: "/cycle1",
               refinementType: "replace",
+            },
+          ],
+          moderatedContentType: null,
+          ...ragTrackingFields,
+          ...commonTrackingFields,
+        });
+      });
+    });
+
+    describe("tracking additional materials from the dropdown", () => {
+      it("tracks a modification from the dropdown", () => {
+        const store = createLessonPlanTrackingStore(createArgs);
+        const actions = store.getState().actions;
+
+        actions.clickedAdditionalMaterials(
+          additionalMaterialsModifyOptions[0],
+          "",
+        );
+
+        chatStoreMock.getState.mockReturnValue({
+          stableMessages: [
+            messages.user1,
+            messages.assistant1,
+            messages.user2AdditionalMaterials,
+            messages.assistant2AdditionalMaterialsResponse,
+          ],
+        });
+        lessonPlanStoreMock.getState.mockReturnValue({
+          lessonPlan: lessonPlans.categorised,
+        });
+
+        actions.trackCompletion();
+
+        expect(createArgs.track.lessonPlanRefined).toHaveBeenCalledWith({
+          componentType: "add_additional_materials_button",
+          text: "ADD_HOMEWORK_TASK",
+          refinements: [
+            {
+              refinementPath: "/additionalMaterials",
+              refinementType: "add",
+            },
+          ],
+          moderatedContentType: null,
+          ...ragTrackingFields,
+          ...commonTrackingFields,
+        });
+      });
+
+      it("tracks a custom modification", () => {
+        const store = createLessonPlanTrackingStore(createArgs);
+        const actions = store.getState().actions;
+
+        actions.clickedAdditionalMaterials(
+          { label: "Other", enumValue: "OTHER" },
+          "outdoor exercise",
+        );
+
+        chatStoreMock.getState.mockReturnValue({
+          stableMessages: [
+            messages.user1,
+            messages.assistant1,
+            messages.user2AdditionalMaterials,
+            messages.assistant2AdditionalMaterialsResponse,
+          ],
+        });
+        lessonPlanStoreMock.getState.mockReturnValue({
+          lessonPlan: lessonPlans.categorised,
+        });
+
+        actions.trackCompletion();
+
+        expect(createArgs.track.lessonPlanRefined).toHaveBeenCalledWith({
+          componentType: "add_additional_materials_button",
+          text: "outdoor exercise",
+          refinements: [
+            {
+              refinementPath: "/additionalMaterials",
+              refinementType: "add",
             },
           ],
           moderatedContentType: null,

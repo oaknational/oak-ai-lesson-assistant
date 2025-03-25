@@ -2,6 +2,8 @@ import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/s
 
 import type { AilaUserModificationAction } from "@prisma/client";
 
+import { ComponentType } from "@/lib/avo/Avo";
+
 import ActionButtonWrapper from "./action-button-wrapper";
 import { modifyOptions } from "./action-button.types";
 import type { FeedbackOption } from "./drop-down-form-wrapper";
@@ -36,6 +38,7 @@ const ModifyButton = ({
       userSuggestionTitle="Provide modification options:"
       buttonText="Modify section"
       generateMessage={generateMessage}
+      trackingComponentType={ComponentType.MODIFY_BUTTON}
     />
   );
 };

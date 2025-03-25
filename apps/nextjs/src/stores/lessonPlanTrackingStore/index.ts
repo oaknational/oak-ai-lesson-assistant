@@ -80,6 +80,13 @@ export const createLessonPlanTrackingStore = ({
               option.enumValue === "OTHER" ? feedbackText : option.enumValue,
           });
         },
+        clickedAdditionalMaterials: (option, feedbackText) => {
+          handleUserIntent(set, get, {
+            componentType: ComponentType.ADD_ADDITIONAL_MATERIALS_BUTTON,
+            text:
+              option.enumValue === "OTHER" ? feedbackText : option.enumValue,
+          });
+        },
 
         // Action to submit the event with the result
         trackCompletion: handleTrackCompletion(set, get, getStore, track),

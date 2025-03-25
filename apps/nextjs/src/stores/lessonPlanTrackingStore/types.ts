@@ -31,6 +31,10 @@ export type LessonPlanTrackingState = {
       option: FeedbackOption<AilaUserModificationAction>,
       feedbackText: string,
     ) => void;
+    clickedAdditionalMaterials: (
+      option: FeedbackOption<AilaUserModificationAction>,
+      feedbackText: string,
+    ) => void;
 
     // Action to submit the event with the result
     trackCompletion: () => void;
