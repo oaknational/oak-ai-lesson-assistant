@@ -1,4 +1,4 @@
-import { mapLessonToSchema } from "@oakai/additional-materials/src/schemas";
+import { mapOpenApiLessonToAilaLesson } from "@oakai/additional-materials/src/helpers";
 
 import { notFound } from "next/navigation";
 
@@ -14,7 +14,7 @@ export default async function AdditionalMaterialsTestPage({
   const data = await getOakOpenAiLessonData(params.slug);
 
   const pageData = {
-    lessonPlan: mapLessonToSchema(data.lessonSummary),
+    lessonPlan: mapOpenApiLessonToAilaLesson(data.lessonSummary),
     transcript:
       data.lessonTranscript.transcript ??
       "No transcript available from Oak Open ApI",

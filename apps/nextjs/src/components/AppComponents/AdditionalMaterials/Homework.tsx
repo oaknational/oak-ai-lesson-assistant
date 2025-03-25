@@ -1,6 +1,6 @@
-import { OakFlex, OakHeading, OakP } from "@oaknational/oak-components";
+import type { HomeworkMaterialType } from "@oakai/additional-materials/src/additionalMaterials";
 
-import type { HomeworkMaterialType } from "../../../../../../packages/additional-materials/src/schemas";
+import { OakFlex, OakHeading, OakP } from "@oaknational/oak-components";
 
 export const Homework = ({
   action,

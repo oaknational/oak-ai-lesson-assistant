@@ -1,3 +1,5 @@
+import { type ComprehensionTaskType } from "@oakai/additional-materials/src/additionalMaterials";
+
 import {
   OakFlex,
   OakHeading,
@@ -5,8 +7,6 @@ import {
   OakOL,
   OakP,
 } from "@oaknational/oak-components";
-
-import { type ComprehensionTaskType } from "../../../../../../packages/additional-materials/src/schemas";
 
 export const ComprehensionTask = ({
   action,

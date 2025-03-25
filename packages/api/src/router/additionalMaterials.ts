@@ -1,14 +1,18 @@
-import { fetchAdditionalMaterial } from "@oakai/additional-materials/src/fetchAdditionalMaterial";
-import { fetchAdditionalMaterialModeration } from "@oakai/additional-materials/src/fetchAdditionalMaterialModeration";
 import {
-  type AdditionalMaterialType,
+  additionalMaterialsConfig,
+  fetchAdditionalMaterialModeration,
+  generateDocument,
+} from "@oakai/additional-materials";
+import type { AdditionalMaterialPromptContext } from "@oakai/additional-materials/src/documents/additionalMaterials/additionalMaterialsConfig";
+import type { AdditionalMaterialType } from "@oakai/additional-materials/src/documents/schemas/additionalMaterials";
+import {
   type OakOpenAiLessonSummary,
   type OakOpenAiTranscript,
   type OakOpenApiSearchSchema,
   oakOpenAiLessonSummarySchema,
   oakOpenAiTranscriptSchema,
   oakOpenApiSearchSchema,
-} from "@oakai/additional-materials/src/schemas";
+} from "@oakai/additional-materials/src/documents/schemas/oakOpenApi";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
@@ -35,14 +39,20 @@ export const additionalMaterialsRouter = router({
       log.info("fetching additional materials");
 
       try {
-        const result = await fetchAdditionalMaterial({
-          lessonPlan,
-          action,
-          message,
-          previousOutput,
+        const result = generateDocument<
+          AdditionalMaterialType,
+          AdditionalMaterialPromptContext
+        >({
+          documentType: action,
+          context: {
+            lessonPlan,
+            message,
+            previousOutput,
+          },
+          documentConfig: additionalMaterialsConfig,
         });
 
-        return result as AdditionalMaterialType;
+        return result;
       } catch (cause) {
         const TrpcError = new Error("Failed to fetch additional material", {
           cause,

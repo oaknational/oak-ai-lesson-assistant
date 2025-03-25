@@ -1,16 +1,15 @@
 "use server";
 
+import {
+  oakOpenAiLessonSummarySchema,
+  oakOpenAiTranscriptSchema,
+} from "@oakai/additional-materials/src/documents/schemas/oakOpenApi";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { chatSchema } from "@oakai/aila/src/protocol/schema";
 import type { Prisma } from "@oakai/db";
 import { prisma } from "@oakai/db";
 
 import * as Sentry from "@sentry/nextjs";
-
-import {
-  oakOpenAiLessonSummarySchema,
-  oakOpenAiTranscriptSchema,
-} from "../../../../packages/additional-materials/src/schemas";
 
 const OPENAI_AUTH_TOKEN = process.env.OPENAI_AUTH_TOKEN;
 

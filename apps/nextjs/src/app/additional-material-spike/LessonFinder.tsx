@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import type { OakOpenApiSearchSchema } from "@oakai/additional-materials/src/schemas";
+import type { OakOpenApiSearchSchema } from "@oakai/additional-materials/src/documents/schemas/oakOpenApi";
 
 import { OakFlex, OakHeading, OakTextInput } from "@oaknational/oak-components";
 import Link from "next/link";

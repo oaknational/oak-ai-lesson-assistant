@@ -3,14 +3,12 @@
 import type { FC } from "react";
 import React, { useEffect, useState } from "react";
 
-import { actionRegistry } from "@oakai/additional-materials/src/helpers";
+import { additionalMaterialsConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/additionalMaterialsConfig";
 import {
   type AdditionalMaterialType,
-  type SchemaKey,
   isComprehensionMaterial,
   isHomeworkMaterial,
-  isValidSchemaKey,
-} from "@oakai/additional-materials/src/schemas";
+} from "@oakai/additional-materials/src/documents/schemas/additionalMaterials";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { aiLogger } from "@oakai/logger";
@@ -112,11 +110,7 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
 
   useEffect(() => {
     if (action) {
-      const passedAction = isValidSchemaKey(action) ? action : undefined;
-      if (!passedAction) {
-        throw new Error(`Unsupported action: ${action}`);
-      }
-      const prompt = actionRegistry[passedAction].getPrompt({
+      const prompt = additionalMaterialsConfig[action]?.getPrompt({
         lessonPlan: pageData.lessonPlan,
       });
       setPrompt(
@@ -255,7 +249,7 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
             <OakRadioGroup
               name="radio-group"
               onChange={(value) => {
-                setAction(value.target.value as SchemaKey);
+                setAction(value.target.value);
                 setModeration(null);
                 setGeneration(null);
               }}

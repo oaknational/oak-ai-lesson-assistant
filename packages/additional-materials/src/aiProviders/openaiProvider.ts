@@ -2,9 +2,7 @@ import { openai } from "@ai-sdk/openai";
 import { generateObject } from "ai";
 import type { ZodSchema } from "zod";
 
-import type { ModelProvider } from "./base";
-
-export const OpenAIProvider: ModelProvider = {
+export const OpenAIProvider = {
   async generateObject<T>({
     prompt,
     schema,

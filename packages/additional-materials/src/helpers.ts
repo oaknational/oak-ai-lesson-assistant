@@ -1,64 +1,38 @@
-// additionalMaterials/actionRegistry.ts
-import type { ZodSchema } from "zod";
+import type { OakOpenAiLessonSummary } from "documents/schemas/oakOpenApi";
 
 import type { LooseLessonPlan } from "../../aila/src/protocol/schema";
-import {
-  additionalComprehensionPrompt,
-  additionalComprehensionSystemPrompt,
-  additionalHomeworkPrompt,
-  additionalHomeworkSystemPrompt,
-  additionalSciencePracticalActivityPrompt,
-  additionalSciencePracticalActivitySystemPrompt,
-} from "./prompts/additionalMaterialsPrompts";
-import { schemaMap } from "./schemas";
 
-type PromptContext = {
-  lessonPlan: LooseLessonPlan;
-  previousOutput?: object | null;
-  message?: string | null;
-  transcript?: string;
-};
-
-export type ActionKey = keyof typeof schemaMap;
-
-export const actionRegistry: Record<
-  ActionKey,
-  {
-    schema: ZodSchema;
-    getPrompt: (ctx: PromptContext) => {
-      prompt: string;
-      systemMessage?: string;
-    };
-  }
-> = {
-  "additional-homework": {
-    schema: schemaMap["additional-homework"],
-    getPrompt: ({ lessonPlan, previousOutput, message }) => ({
-      prompt: additionalHomeworkPrompt(lessonPlan, previousOutput, message),
-      systemMessage: additionalHomeworkSystemPrompt(),
+export function mapOpenApiLessonToAilaLesson(
+  lessonData: OakOpenAiLessonSummary,
+): Partial<LooseLessonPlan> {
+  return {
+    title: lessonData.lessonTitle,
+    keyStage: lessonData.keyStageSlug,
+    subject: lessonData.subjectTitle,
+    topic: lessonData.unitTitle,
+    learningOutcome: lessonData.pupilLessonOutcome,
+    learningCycles: [],
+    priorKnowledge: [],
+    keyLearningPoints: lessonData.keyLearningPoints.map(
+      (point) => point.keyLearningPoint,
+    ),
+    misconceptions: lessonData.misconceptionsAndCommonMistakes.map(
+      (misconception) => {
+        return {
+          misconception: misconception.misconception,
+          description: misconception.response,
+        };
+      },
+    ),
+    keywords: lessonData.lessonKeywords.map((keyword) => {
+      return {
+        keyword: keyword.keyword,
+        definition: keyword.description,
+      };
     }),
-  },
-  "additional-comprehension": {
-    schema: schemaMap["additional-comprehension"],
-    getPrompt: ({ lessonPlan, previousOutput, message }) => ({
-      prompt: additionalComprehensionPrompt(
-        lessonPlan,
-        previousOutput,
-        message,
-      ),
-      systemMessage: additionalComprehensionSystemPrompt(),
-    }),
-  },
-  "additional-science-practical-activity": {
-    schema: schemaMap["additional-science-practical-activity"],
-    getPrompt: ({ lessonPlan, previousOutput, message, transcript }) => ({
-      prompt: additionalSciencePracticalActivityPrompt(
-        lessonPlan,
-        previousOutput,
-        message,
-        transcript,
-      ),
-      systemMessage: additionalSciencePracticalActivitySystemPrompt(),
-    }),
-  },
-};
+    basedOn: undefined,
+    starterQuiz: [],
+    exitQuiz: [],
+    additionalMaterials: "",
+  };
+}
