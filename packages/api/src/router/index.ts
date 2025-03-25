@@ -1,4 +1,5 @@
 import { router } from "../trpc";
+import { additionalMaterialsRouter } from "./additionalMaterials";
 import { adminRouter } from "./admin";
 import { appRouter } from "./app";
 import { authRouter } from "./auth";
@@ -29,6 +30,7 @@ export const oakAppRouter = router({
   moderations: moderationsRouter,
   health: healthRouter,
   admin: adminRouter,
+  additionalMaterials: additionalMaterialsRouter,
 });
 
 // export type definition of API

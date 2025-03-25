@@ -44,6 +44,7 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
   id,
 }) => {
   const trpcUtils = trpc.useUtils();
+
   const lessonPlanTracking = useLessonPlanTracking();
 
   const [stores] = useState(() => {

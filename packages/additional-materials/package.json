@@ -1,14 +1,14 @@
 {
-  "name": "@oakai/api",
+  "name": "@oakai/additional-materials",
   "version": "1.0.0",
   "license": "MIT",
   "type": "module",
   "main": "./index.ts",
   "types": "./index.ts",
   "scripts": {
-    "check": "tsc --noEmit",
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit"
   },
   "prettier": "@oakai/prettier-config",
@@ -19,24 +19,19 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^0.0.55",
     "@clerk/nextjs": "5.7.2",
-    "@oakai/additional-materials": "*",
-    "@oakai/core": "*",
-    "@oakai/db": "*",
-    "@oakai/exports": "*",
     "@oakai/logger": "*",
-    "@trpc/server": "10.45.2",
-    "@vercel/kv": "^0.2.2",
-    "cloudinary": "^1.41.1",
-    "next": "14.2.21",
-    "remeda": "^1.29.0",
-    "superjson": "^1.9.1",
-    "zod": "3.23.8"
+    "@sentry/nextjs": "^8.49.0",
+    "ai": "^4.1.00",
+    "dotenv-cli": "^6.0.0",
+    "openai": "^4.58.1",
+    "zod": "3.23.8",
+    "zod-to-json-schema": "^3.23.0"
   },
   "devDependencies": {
     "@oakai/eslint-config": "*",
     "@oakai/prettier-config": "*",
-    "@types/archiver": "^6.0.3",
     "typescript": "5.8.2"
   },
   "engines": {
