@@ -33,7 +33,7 @@ export const createLessonPlanTrackingStore = ({
       currentIntent: null,
       queuedIntent: null,
 
-      lastLessonPlan: {},
+      lessonPlanBeforeChanges: {},
 
       actions: {
         // Actions to record the user intent
@@ -84,12 +84,11 @@ export const createLessonPlanTrackingStore = ({
         // Action to submit the event with the result
         trackCompletion: handleTrackCompletion(set, get, getStore, track),
 
-        prepareForNextMessage: () => {
+        popQueuedIntent: () => {
           const { queuedIntent } = get();
           set({
             currentIntent: queuedIntent,
             queuedIntent: null,
-            lastLessonPlan: getStore("lessonPlan").lessonPlan,
           });
         },
         clearQueuedIntent: () => {
@@ -97,14 +96,24 @@ export const createLessonPlanTrackingStore = ({
             set({ queuedIntent: null });
           }
         },
+        setLessonPlanBeforeChanges: () => {
+          set({
+            lessonPlanBeforeChanges: getStore("lessonPlan").lessonPlan,
+          });
+        },
 
         // Hook into ailaStreamingStatus
         ailaStreamingStatusUpdated: (streamingStatus) => {
+          // Request started
+          if (streamingStatus === "RequestMade") {
+            get().actions.setLessonPlanBeforeChanges();
+          }
+          // Request ended
           if (streamingStatus === "Idle") {
             try {
               get().actions.trackCompletion();
             } finally {
-              get().actions.prepareForNextMessage();
+              get().actions.popQueuedIntent();
             }
           }
         },

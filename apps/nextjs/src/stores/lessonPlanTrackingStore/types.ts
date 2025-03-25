@@ -19,7 +19,7 @@ export type LessonPlanTrackingState = {
   currentIntent: MessageIntent | null;
   queuedIntent: MessageIntent | null;
 
-  lastLessonPlan: LooseLessonPlan;
+  lessonPlanBeforeChanges: LooseLessonPlan;
 
   actions: {
     // Actions to record the user intent
@@ -35,8 +35,10 @@ export type LessonPlanTrackingState = {
     // Action to submit the event with the result
     trackCompletion: () => void;
 
-    prepareForNextMessage: () => void;
+    popQueuedIntent: () => void;
     clearQueuedIntent: () => void;
+
+    setLessonPlanBeforeChanges: () => void;
 
     // Hook into ailaStreamingStatus
     ailaStreamingStatusUpdated: (status: AilaStreamingStatus) => void;

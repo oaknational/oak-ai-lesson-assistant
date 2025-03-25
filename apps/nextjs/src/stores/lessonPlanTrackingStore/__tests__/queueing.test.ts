@@ -65,7 +65,7 @@ describe("lessonPlanTracking queueing", () => {
     // Simulate trackCompletion clearing currentIntent
     store.setState({ currentIntent: null });
     // Move queued message to current
-    actions.prepareForNextMessage();
+    actions.popQueuedIntent();
 
     const { currentIntent, queuedIntent } = store.getState();
     expect(currentIntent).toEqual({
@@ -86,7 +86,7 @@ describe("lessonPlanTracking queueing", () => {
     // Simulate trackCompletion clearing currentIntent
     store.setState({ currentIntent: null });
     // Move queued message to current
-    actions.prepareForNextMessage();
+    actions.popQueuedIntent();
 
     const { currentIntent, queuedIntent } = store.getState();
     expect(currentIntent).toBeNull();

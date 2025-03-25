@@ -42,7 +42,7 @@ export const handleTrackCompletion =
   () => {
     log.info("handleTrackCompletion");
     // Get values from this store
-    const { id: chatId, currentIntent, lastLessonPlan } = get();
+    const { id: chatId, currentIntent, lessonPlanBeforeChanges } = get();
     if (!currentIntent) {
       throw new LessonPlanTrackingError("No recorded intent to track");
     }
@@ -99,7 +99,8 @@ export const handleTrackCompletion =
      * Lesson plan completed: When the user finishes a lesson plan
      */
     const becameComplete =
-      !isLessonComplete(lastLessonPlan) && isLessonComplete(lessonPlan);
+      !isLessonComplete(lessonPlanBeforeChanges) &&
+      isLessonComplete(lessonPlan);
     if (becameComplete) {
       track.lessonPlanCompleted({
         ...getLessonTrackingProps({ lesson: lessonPlan }),

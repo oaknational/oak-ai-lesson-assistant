@@ -287,7 +287,7 @@ describe("lessonPlanTracking tracking", () => {
     it("tracks when the lesson plan becomes completed", () => {
       const store = createLessonPlanTrackingStore(createArgs);
       store.setState({
-        lastLessonPlan: lessonPlans.completedExceptExitQuiz,
+        lessonPlanBeforeChanges: lessonPlans.completedExceptExitQuiz,
       });
       const actions = store.getState().actions;
 
@@ -318,7 +318,7 @@ describe("lessonPlanTracking tracking", () => {
     it("doesn't track when the lesson plan is not completed", () => {
       const store = createLessonPlanTrackingStore(createArgs);
       store.setState({
-        lastLessonPlan: lessonPlans.completedExceptExitQuiz,
+        lessonPlanBeforeChanges: lessonPlans.completedExceptExitQuiz,
       });
       const actions = store.getState().actions;
 
@@ -343,7 +343,7 @@ describe("lessonPlanTracking tracking", () => {
     it("doesn't track when the lesson plan is already completed", () => {
       const store = createLessonPlanTrackingStore(createArgs);
       store.setState({
-        lastLessonPlan: lessonPlans.completed,
+        lessonPlanBeforeChanges: lessonPlans.completed,
       });
       const actions = store.getState().actions;
 
