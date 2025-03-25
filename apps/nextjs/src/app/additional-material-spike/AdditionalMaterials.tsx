@@ -199,20 +199,18 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
           <OakFlex $flexDirection="column">
             {mapLessonPlanSections(pageData.lessonPlan).map((section) => {
               return (
-                <>
-                  <OakFlex $flexDirection={"column"}>
-                    <OakHeading $font={"heading-5"} tag="h2">
-                      {section.key}
-                    </OakHeading>
-                    <OakFlex $pv="inner-padding-m">
-                      <OakFlex $flexDirection="column">
-                        <MemoizedReactMarkdownWithStyles
-                          markdown={`${sectionToMarkdown(section.key, section.data)}`}
-                        />
-                      </OakFlex>
+                <OakFlex $flexDirection={"column"}>
+                  <OakHeading $font={"heading-5"} tag="h2">
+                    {section.key}
+                  </OakHeading>
+                  <OakFlex $pv="inner-padding-m">
+                    <OakFlex $flexDirection="column">
+                      <MemoizedReactMarkdownWithStyles
+                        markdown={`${sectionToMarkdown(section.key, section.data)}`}
+                      />
                     </OakFlex>
                   </OakFlex>
-                </>
+                </OakFlex>
               );
             })}
           </OakFlex>

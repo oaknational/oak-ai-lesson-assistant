@@ -1,4 +1,4 @@
-import { type ComprehensionTaskType } from "@oakai/additional-materials/src/additionalMaterials";
+import { type ComprehensionTaskType } from "@oakai/additional-materials/src/documents/schemas/additionalMaterials";
 
 import {
   OakFlex,
@@ -33,7 +33,7 @@ export const ComprehensionTask = ({
             {task.options && (
               <OakOL>
                 {task.options.map((option, index) => (
-                  <OakLI key={index}>{option}</OakLI>
+                  <OakLI key={`${option}-${index}`}>{option}</OakLI>
                 ))}
               </OakOL>
             )}

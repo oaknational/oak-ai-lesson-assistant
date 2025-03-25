@@ -1,4 +1,4 @@
-import type { HomeworkMaterialType } from "@oakai/additional-materials/src/additionalMaterials";
+import type { HomeworkMaterialType } from "@oakai/additional-materials/src/documents/schemas/additionalMaterials";
 
 import { OakFlex, OakHeading, OakP } from "@oaknational/oak-components";
 
@@ -21,7 +21,7 @@ export const Homework = ({
       <OakP>{generation.homework.description}</OakP>
       <OakFlex $gap={"space-between-s"} $flexDirection="column">
         {generation.homework.tasks.map((task, index) => (
-          <OakFlex key={index}>
+          <OakFlex key={`${task}-${index}`}>
             <OakP>{task}</OakP>
           </OakFlex>
         ))}

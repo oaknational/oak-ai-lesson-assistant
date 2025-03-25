@@ -39,7 +39,7 @@ export const additionalMaterialsRouter = router({
       log.info("fetching additional materials");
 
       try {
-        const result = generateDocument<
+        const result = await generateDocument<
           AdditionalMaterialType,
           AdditionalMaterialPromptContext
         >({

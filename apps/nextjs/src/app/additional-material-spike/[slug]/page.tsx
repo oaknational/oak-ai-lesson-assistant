@@ -7,7 +7,7 @@ import AdditionalMaterials from "../AdditionalMaterials";
 export default async function AdditionalMaterialsTestPage({
   params,
 }: {
-  params: { slug: string };
+  params: { readonly slug: string };
 }) {
   const pageData = await getChatById(params.slug);
 

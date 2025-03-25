@@ -55,9 +55,11 @@ const LessonFinder = ({ lessons }: { lessons: AilALessonTitles }) => {
         <OakTextInput onChange={(e) => setSearchText(e.target.value)} />
 
         {searchText &&
-          owaLessons &&
-          owaLessons.map((lesson: OakOpenApiSearchSchema[number]) => (
-            <Link href={`/additional-material-spike/owa/${lesson.lessonSlug}`}>
+          owaLessons?.map((lesson: OakOpenApiSearchSchema[number]) => (
+            <Link
+              key={lesson.lessonSlug}
+              href={`/additional-material-spike/owa/${lesson.lessonSlug}`}
+            >
               {`${lesson.lessonTitle} - ${lesson?.units[0]?.keyStageSlug} - ${lesson?.units[0]?.subjectSlug}`}
             </Link>
           ))}

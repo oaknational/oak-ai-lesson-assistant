@@ -45,7 +45,7 @@ export default async function AdditionalMaterialsSpikePage() {
           !!parsedLesson.cycle3,
       };
     })
-    .filter((lesson) => lesson && lesson.hasThreeCycles)
+    .filter((lesson) => lesson?.hasThreeCycles)
     .filter(isTruthy);
 
   return <LessonFinder lessons={parsedLessons} />;
