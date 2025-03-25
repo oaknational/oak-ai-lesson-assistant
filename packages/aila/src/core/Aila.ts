@@ -151,7 +151,13 @@ export class Aila implements AilaServices {
   private initialiseOptions(
     options?: AilaOptions,
   ): AilaOptionsWithDefaultFallbackValues {
-    return {
+    console.log(
+      "AILA INITIALISE OPTIONS - Original:",
+      JSON.stringify(options, null, 2),
+    );
+    console.log("Language parameter in options:", options?.language);
+
+    const initializedOptions = {
       useRag: options?.useRag ?? true,
       temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
       numberOfRecordsInRag:
@@ -163,7 +169,10 @@ export class Aila implements AilaServices {
       useErrorReporting: options?.useErrorReporting ?? true,
       model: options?.model ?? DEFAULT_MODEL,
       mode: options?.mode ?? "interactive",
+      language: options?.language,
     };
+
+    return initializedOptions;
   }
 
   private async loadChatIfPersisting() {

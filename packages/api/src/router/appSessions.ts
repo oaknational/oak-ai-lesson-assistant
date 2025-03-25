@@ -127,6 +127,7 @@ export const appSessionsRouter = router({
       z.object({
         appId: z.string(),
         message: z.string().optional(),
+        language: z.enum(["en", "uk"]).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -142,6 +143,7 @@ export const appSessionsRouter = router({
         path: `/aila/${chatId}`,
         title: "",
         topic: "",
+        language: input.language,
         userId,
         lessonPlan: {},
         createdAt: Date.now(),
@@ -165,7 +167,23 @@ export const appSessionsRouter = router({
       const session = await ctx.prisma.appSession.create(appSession);
       return session;
     }),
-
+  getLanguage: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const { id } = input;
+      const chat = await getChat(id, ctx.prisma);
+      const options = chat?.options as {
+        language: "en" | "uk" | "ukrainian" | "english" | undefined;
+      };
+      const language = options?.language;
+      if (language === "ukrainian" || language === "uk") {
+        return "uk";
+      }
+      if (language === "english" || language === "en") {
+        return "en";
+      }
+      return "en";
+    }),
   remainingLimit: protectedProcedure.query(async ({ ctx }) => {
     const { userId } = ctx.auth;
     const clerkUser = await clerkClient.users.getUser(userId);

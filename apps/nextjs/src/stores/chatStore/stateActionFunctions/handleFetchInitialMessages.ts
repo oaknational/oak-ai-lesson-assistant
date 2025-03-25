@@ -38,6 +38,7 @@ export const handleFetchInitialMessages =
       log.info(`Set initial messages for AI SDK from DB`);
     } catch (err) {
       log.error("Error fetching initial messages", err);
+      throw err;
       Sentry.captureException(err);
     }
   };

@@ -12,6 +12,7 @@ import { usePathname } from "next/navigation";
 import { useChatStoreAiSdkSync } from "src/stores/chatStore/hooks/useChatStoreAiSdkSync";
 import { useLessonPlanStoreAiSdkSync } from "src/stores/lessonPlanStore/hooks/useLessonPlanStoreAiSdkSync";
 
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import {
   useChatActions,
@@ -53,7 +54,7 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
   const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
   const chatActions = useChatActions();
   const lessonPlanActions = useLessonPlanActions();
-
+  const { language } = useTranslation();
   // TODO: move to chat store
   const { invokeActionMessages } = useActionMessages();
 
@@ -74,6 +75,7 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
       options: {
         useRag: true,
         temperature: 0.7,
+        language: language === "en" ? "english" : "ukrainian",
       },
     },
     fetch(input: RequestInfo | URL, init?: RequestInit | undefined) {

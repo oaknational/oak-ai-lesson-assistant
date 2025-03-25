@@ -3,9 +3,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type {
   BasedOnOptional,
   LessonPlanKey,
+  LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
-
 import { Flex, Text } from "@radix-ui/themes";
 import { cva } from "class-variance-authority";
 import scrollIntoView from "scroll-into-view-if-needed";
@@ -44,6 +44,7 @@ export type LessonPlanDisplayProps = Readonly<{
   chatEndRef: React.MutableRefObject<HTMLDivElement | null>;
   documentContainerRef: React.MutableRefObject<HTMLDivElement | null>;
   showLessonMobile: boolean;
+  translatedLessonPlan: LooseLessonPlan | null;
 }>;
 
 const useSectionScrolling = ({
@@ -142,6 +143,7 @@ export const LessonPlanDisplay = ({
   chatEndRef,
   documentContainerRef,
   showLessonMobile,
+  translatedLessonPlan,
 }: LessonPlanDisplayProps) => {
   const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
   const lastModeration = useModerationStore((state) => state.lastModeration);
@@ -188,9 +190,7 @@ export const LessonPlanDisplay = ({
           direction="column"
           gap="2"
           ref={titleSectionRef}
-          style={{
-            scrollMarginTop: 100,
-          }}
+          style={{ scrollMarginTop: 100 }}
         >
           <Flex direction="row" gap="2" className="opacity-90">
             {notEmpty(lessonPlan.keyStage) && (
@@ -234,6 +234,7 @@ export const LessonPlanDisplay = ({
               sectionKey={section}
               setSectionRef={setSectionRef}
               showLessonMobile={showLessonMobile}
+              translatedLessonPlan={translatedLessonPlan}
             />
           );
         })}

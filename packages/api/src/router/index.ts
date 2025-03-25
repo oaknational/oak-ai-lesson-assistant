@@ -13,6 +13,7 @@ import { moderationsRouter } from "./moderations";
 import { newFeatureFlag } from "./newFeatureFlag";
 import { snippetRouter } from "./snippet";
 import { subjectAndKeyStagesRouter } from "./subjectsAndKeyStage";
+import { translateRouter } from "./translate";
 
 export const oakAppRouter = router({
   app: appRouter,
@@ -29,6 +30,7 @@ export const oakAppRouter = router({
   moderations: moderationsRouter,
   health: healthRouter,
   admin: adminRouter,
+  translate: translateRouter,
 });
 
 // export type definition of API

@@ -39,6 +39,19 @@ export class AilaCategorisation implements AilaCategorisationFeature {
     chatMeta: OpenAICompletionWithLoggingOptions,
   ) {
     log.info("Categorise input", JSON.stringify(input));
+
+    const language = this._aila.options.language;
+
+    const translaterPrompt = `IMPORTANT:
+      You must translate your response into ${language}.
+      The keys of the object should remain in english, it is essential that they are not translated.
+      Only the values of the object should be translated.
+      The values should be translated to the ${language} language.
+      The keystage must be translated. 
+      The subject must be translated.
+      The title must be translated.
+      The topic must be translated.
+    `;
     //# TODO Duplicated for now until we refactor the RAG class
     const systemMessage = `You are a classifier which can help me categorise the intent of the user's input for an application which helps a teacher build a lesson plan their students in a UK school.
 You accept a string as input and return an object with the keys keyStage, subject, title and topic.
@@ -99,7 +112,10 @@ All keys are optional but always prefer sending back a keyStage or subject if yo
 Always respond with a valid JSON document. If you are not able to respond for some reason, respond with another valid JSON document with the keys set to null and an "error" key with the value specifying the reason for the error.
 Never respond with slugs that are not in the list of slugs provided above. If you are not able to categorise the input, return null for the key stage and subject. This is very important! We use the slugs to categorise the input in our database, so if you return a slug that is not in the list above, we will not be able to categorise the input correctly.
 Do not respond with any other output than the object described above. If you do, the system will not be able to understand your response and will not be able to categorise the input correctly.
-Thank you and happy classifying!`;
+Thank you and happy classifying!
+
+${language !== "english" && translaterPrompt}
+`;
 
     const promptVersion = Md5.hashStr(systemMessage);
     const messages: ChatCompletionMessageParam[] = [

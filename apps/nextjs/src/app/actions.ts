@@ -7,6 +7,8 @@ import { prisma } from "@oakai/db";
 
 import * as Sentry from "@sentry/nextjs";
 
+import type { Language } from "@/components/ContextProviders/LanguageContext";
+
 function parseChatAndReportError({
   sessionOutput,
   id,
@@ -38,6 +40,19 @@ function parseChatAndReportError({
   }
 
   return parseResult.data;
+}
+
+export async function getChatLanguage(id: string): Promise<Language | null> {
+  const chat = await getChatById(id);
+  let language: Language = "en";
+  const languageFromChat = chat?.language;
+  if (languageFromChat === "ukrainian" || languageFromChat === "uk") {
+    language = "uk";
+  }
+  if (languageFromChat === "english" || languageFromChat === "en") {
+    language = "en";
+  }
+  return language;
 }
 
 export async function getChatById(

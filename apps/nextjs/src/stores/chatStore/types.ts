@@ -28,7 +28,7 @@ export type AilaStreamingStatus =
 export type ChatState = {
   id: string;
   ailaStreamingStatus: AilaStreamingStatus;
-
+  language: "en" | "uk" | null;
   initialMessages: AiMessage[];
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
@@ -47,6 +47,7 @@ export type ChatState = {
     setMessages: (messages: AiMessage[], isLoading: boolean) => void;
     setInput: (input: string) => void;
     setChatAreaRef: (ref: React.RefObject<HTMLDivElement>) => void;
+    setLanguage: (language: string) => void;
 
     // Action functions
     executeQueuedAction: () => void;

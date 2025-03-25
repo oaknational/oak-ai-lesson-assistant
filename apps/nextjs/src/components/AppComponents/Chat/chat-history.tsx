@@ -14,6 +14,7 @@ import {
 import { usePathname } from "next/navigation";
 
 import { SidebarList } from "@/components/AppComponents/Chat/sidebar-list";
+import { useTranslation } from "@/components/ContextProviders/LanguageContext";
 
 import { useDialog } from "../DialogContext";
 import { ClearHistory } from "./clear-history";
@@ -22,6 +23,7 @@ import ChatButton from "./ui/chat-button";
 export function ChatHistory() {
   const ailaId = usePathname().split("aila/")[1];
   const { openSidebar, setOpenSidebar } = useDialog();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (openSidebar) {
@@ -60,7 +62,7 @@ export function ChatHistory() {
       >
         <OakLink element="button" onClick={() => setOpenSidebar(false)}>
           <OakSpan $opacity="transparent" $font="body-3">
-            Close
+            {t("sidebar.close")}
           </OakSpan>
         </OakLink>
       </OakBox>
@@ -78,14 +80,14 @@ export function ChatHistory() {
                 $height="all-spacing-6"
               />
             </span>
-            <span>Create new lesson</span>
+            <span>{t("sidebar.newChat")}</span>
           </ChatButton>
 
           <ChatButton href="/" variant="text-link">
             <span className="scale-90">
               <OakIcon iconName="home" />
             </span>{" "}
-            AI experiments page
+            {t("sidebar.aiExperimentsPage")}
           </ChatButton>
           <ChatButton
             href={ailaId ? `/aila/help/?ailaId=${ailaId}` : "/aila/help"}
@@ -94,7 +96,7 @@ export function ChatHistory() {
             <span className="scale-90">
               <OakIcon iconName="question-mark" />
             </span>{" "}
-            Help
+            {t("common.help")}
           </ChatButton>
         </div>
         <React.Suspense>
