@@ -1,6 +1,8 @@
 import { MockCategoriser } from "../features/categorisation/categorisers/MockCategoriser";
 import { Aila } from "./Aila";
 import { checkLastMessage, expectPatch, expectText } from "./Aila.testHelpers";
+import { LessonPlanCategorisationPlugin } from "./document/plugins/LessonPlanCategorisationPlugin";
+import { LessonPlanSchema } from "./document/schemas/lessonPlan";
 import type { AilaInitializationOptions } from "./types";
 
 const runInCI = process.env.CI === "true";
@@ -13,7 +15,21 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
 
     beforeEach(() => {
       ailaInstance = new Aila({
-        document: { content: {} },
+        document: {
+          content: {},
+          schema: LessonPlanSchema,
+          categorisationPlugin: () =>
+            new LessonPlanCategorisationPlugin(
+              new MockCategoriser({
+                mockedContent: {
+                  keyStage: "specialist",
+                  subject: "design-technology",
+                  title: "Motorcycle Maintenance",
+                  topic: "Basics and Advanced Techniques",
+                },
+              }),
+            ),
+        },
         chat: { id: "test-chat", userId: "test-user" },
         options: {
           usePersistence: false,
@@ -22,16 +38,6 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
           useModeration: false,
         },
         plugins: [],
-        services: {
-          chatCategoriser: new MockCategoriser({
-            mockedContent: {
-              keyStage: "specialist",
-              subject: "design-technology",
-              title: "Motorcycle Maintenance",
-              topic: "Basics and Advanced Techniques",
-            },
-          }),
-        },
       });
     });
 
@@ -70,7 +76,21 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
 
     beforeEach(() => {
       const options: AilaInitializationOptions = {
-        document: { content: {} },
+        document: {
+          content: {},
+          schema: LessonPlanSchema,
+          categorisationPlugin: () =>
+            new LessonPlanCategorisationPlugin(
+              new MockCategoriser({
+                mockedContent: {
+                  keyStage: "key-stage-3",
+                  subject: "geography",
+                  title: "Glaciation",
+                  topic: "The Formation of Glacial Landscapes",
+                },
+              }),
+            ),
+        },
         chat: { id: "test-chat", userId: "test-user" },
         options: {
           usePersistence: false,
@@ -81,16 +101,6 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
           useErrorReporting: false,
         },
         plugins: [],
-        services: {
-          chatCategoriser: new MockCategoriser({
-            mockedContent: {
-              keyStage: "key-stage-3",
-              subject: "geography",
-              title: "Glaciation",
-              topic: "The Formation of Glacial Landscapes",
-            },
-          }),
-        },
       };
       ailaInstance = new Aila(options);
     });

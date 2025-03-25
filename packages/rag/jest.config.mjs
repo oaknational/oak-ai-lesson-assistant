@@ -17,6 +17,13 @@ const config = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   rootDir: ".",
   resetMocks: true,
+  globals: {
+    "ts-jest": {
+      useESM: true,
+      isolatedModules: true,
+    },
+  },
+  setupFiles: ["./jest.setup.ts"],
 };
 
 export default config;

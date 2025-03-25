@@ -20,6 +20,7 @@ export type LoggerKey =
   | "aila:analytics"
   | "aila:categorisation"
   | "aila:chat"
+  | "aila:document"
   | "aila:errors"
   | "aila:lesson"
   | "aila:llm"

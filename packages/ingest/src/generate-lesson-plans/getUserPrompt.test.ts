@@ -1,8 +1,11 @@
 import fs from "node:fs";
 
 import rawLesson from "../fixtures/rawLesson.json";
+import { getDirname } from "../utils/path";
 import type { Captions } from "../zod-schema/zodSchema";
 import { getUserPrompt } from "./getUserPrompt";
+
+const __dirname = getDirname(import.meta.url);
 
 describe("getUserPrompt", () => {
   it("should return a user prompt, with all source parts by default", () => {
@@ -22,18 +25,21 @@ describe("getUserPrompt", () => {
       rawLesson,
       captions,
     });
+
     const expected = fs
       .readFileSync(`${__dirname}/../fixtures/userPrompt.txt`, "utf-8")
       .replace(/\r\n/g, "\n");
 
     expect(result).toBe(expected);
   });
+
   it("should return a user prompt with only title, subject and key stage", () => {
     const result = getUserPrompt({
       rawLesson,
       captions: [],
       sourcePartsToInclude: "title-subject-key-stage",
     });
+
     const expected = fs
       .readFileSync(
         `${__dirname}/../fixtures/userPromptTitleSubjectKeyStage.txt`,

@@ -20,6 +20,7 @@ import {
   query,
 } from "./import-lessons/graphql/query";
 import { openai } from "./openai-batches/openai";
+import { getDirname } from "./utils/path";
 import { type RawLesson, RawLessonSchema } from "./zod-schema/zodSchema";
 
 const argv = await yargs(hideBin(process.argv))
@@ -32,7 +33,7 @@ const argv = await yargs(hideBin(process.argv))
   .help().argv;
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = getDirname(__filename);
 
 const log = aiLogger("ingest");
 

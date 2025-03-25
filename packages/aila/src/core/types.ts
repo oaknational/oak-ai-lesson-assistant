@@ -1,5 +1,7 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db/client";
 
+import type { z } from "zod";
+
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AnalyticsAdapter } from "../features/analytics";
 import type { AilaModerator } from "../features/moderation/moderators";
@@ -9,14 +11,17 @@ import type { AilaRagFeature } from "../features/rag";
 import type { AilaThreatDetector } from "../features/threatDetection";
 import type {
   AilaAnalyticsFeature,
-  AilaCategorisationFeature,
   AilaErrorReportingFeature,
   AilaModerationFeature,
   AilaThreatDetectionFeature,
 } from "../features/types";
-import type { AilaServices } from "./AilaServices";
+import type { AilaDocumentService, AilaServices } from "./AilaServices";
 import type { Message } from "./chat";
-import type { AilaDocumentContent } from "./document/types";
+import type {
+  AilaDocumentContent,
+  CategorisationPlugin,
+  DocumentPlugin,
+} from "./document/types";
 import type { LLMService } from "./llm/LLMService";
 import type { AilaPlugin } from "./plugins/types";
 import type { AilaPromptBuilder } from "./prompt/AilaPromptBuilder";
@@ -62,6 +67,11 @@ export type AilaChatInitializationOptions = {
 export type AilaInitializationOptions = {
   document?: {
     content: AilaDocumentContent;
+    plugin?: DocumentPlugin;
+    categorisationPlugin?:
+      | CategorisationPlugin
+      | ((aila: AilaServices) => CategorisationPlugin);
+    schema?: z.ZodType<AilaDocumentContent>;
   };
   chat: Omit<AilaChatInitializationOptions, "llmService">;
   options?: AilaOptions;
@@ -75,9 +85,9 @@ export type AilaInitializationOptions = {
   promptBuilder?: AilaPromptBuilder;
   plugins: AilaPlugin[];
   services?: {
-    chatCategoriser?: AilaCategorisationFeature;
     chatLlmService?: LLMService;
     moderationAiClient?: OpenAILike;
+    documentService?: AilaDocumentService;
     ragService?: (aila: AilaServices) => AilaRagFeature;
     americanismsService?: (aila: AilaServices) => AilaAmericanismsFeature;
     analyticsAdapters?: (aila: AilaServices) => AnalyticsAdapter[];
