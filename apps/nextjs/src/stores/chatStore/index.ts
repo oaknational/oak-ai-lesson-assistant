@@ -53,7 +53,7 @@ export const createChatStore = (
       setLessonPlan: (lessonPlan) => set({ lessonPlan }),
       setInput: (input) => set({ input }),
       setChatAreaRef: (ref) => set({ chatAreaRef: ref }),
-      setLanguage: (language) => set({ language }),
+      setLanguage: (language) => set({ language: language as "en" | "uk" }),
 
       // Action functions
       executeQueuedAction: handleExecuteQueuedAction(set, get),
