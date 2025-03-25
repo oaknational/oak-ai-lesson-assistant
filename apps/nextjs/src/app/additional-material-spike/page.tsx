@@ -5,11 +5,18 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { isTruthy } from "remeda";
 
+import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
+
 import LessonFinder from "./LessonFinder";
 
 export default async function AdditionalMaterialsSpikePage() {
   const clerkAuthentication = auth();
   const { userId }: { userId: string | null } = clerkAuthentication;
+  const canSeeAM = await serverSideFeatureFlag("additional-materials");
+
+  if (!canSeeAM) {
+    redirect("/");
+  }
 
   if (!userId) {
     redirect("/");

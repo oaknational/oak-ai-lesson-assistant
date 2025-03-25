@@ -1,8 +1,9 @@
 import { mapOpenApiLessonToAilaLesson } from "@oakai/additional-materials/src/helpers";
 
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { getOakOpenAiLessonData } from "@/app/actions";
+import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
 import AdditionalMaterials from "../../AdditionalMaterials";
 
@@ -11,6 +12,11 @@ export default async function AdditionalMaterialsTestPage({
 }: {
   params: { slug: string };
 }) {
+  const canSeeAM = await serverSideFeatureFlag("additional-materials");
+
+  if (!canSeeAM) {
+    redirect("/");
+  }
   const data = await getOakOpenAiLessonData(params.slug);
 
   const pageData = {

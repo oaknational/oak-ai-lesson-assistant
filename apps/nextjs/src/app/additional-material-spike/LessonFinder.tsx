@@ -26,11 +26,6 @@ const LessonFinder = ({ lessons }: { lessons: AilALessonTitles }) => {
     { query: searchText },
     { enabled: !!searchText },
   );
-  const canSeeSpike = useClientSideFeatureFlag("additional-materials");
-
-  if (!canSeeSpike) {
-    redirect("/");
-  }
 
   useEffect(() => {
     if (owaData && owaData !== owaLessons) {
