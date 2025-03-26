@@ -25,7 +25,7 @@ const log = aiLogger("additional-materials");
 const OPENAI_AUTH_TOKEN = process.env.OPENAI_AUTH_TOKEN;
 
 export const additionalMaterialsRouter = router({
-  getAdditionalMaterial: protectedProcedure
+  generateAdditionalMaterial: protectedProcedure
     .input(
       z.object({
         lessonPlan: z.any(),
@@ -62,7 +62,7 @@ export const additionalMaterialsRouter = router({
         throw TrpcError;
       }
     }),
-  getAdditionalMaterialModeration: protectedProcedure
+  generateAdditionalMaterialModeration: protectedProcedure
     .input(
       z.object({
         generation: z.string(),

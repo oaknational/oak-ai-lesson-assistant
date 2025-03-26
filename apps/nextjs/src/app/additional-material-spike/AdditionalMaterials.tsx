@@ -91,9 +91,9 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
   const [moderation, setModeration] = useState<string | null>(null);
   const [action, setAction] = useState<string | null>(null);
   const fetchMaterialModeration =
-    trpc.additionalMaterials.getAdditionalMaterialModeration.useMutation();
+    trpc.additionalMaterials.generateAdditionalMaterialModeration.useMutation();
   const fetchMaterial =
-    trpc.additionalMaterials.getAdditionalMaterial.useMutation();
+    trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
   const [prompt, setPrompt] = useState<{
     prompt: string;
     systemMessage: string;
