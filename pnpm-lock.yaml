@@ -8,6 +8,7 @@ overrides:
   '@octokit/endpoint': 9.0.6
   '@octokit/plugin-paginate-rest': 9.2.2
   '@octokit/request': 8.4.1
+  playwright: 1.51.1
 
 importers:
 
@@ -51,7 +52,7 @@ importers:
         version: 10.4.17(postcss@8.4.35)
       cursor-tools:
         specifier: latest
-        version: 0.5.0(@playwright/test@1.47.2)(deepmerge@4.3.1)(openai@4.89.0)(playwright@1.50.1)
+        version: 0.5.0(@playwright/test@1.51.1)(deepmerge@4.3.1)(openai@4.89.0)(playwright@1.51.1)
       husky:
         specifier: ^8.0.3
         version: 8.0.3
@@ -60,7 +61,7 @@ importers:
         version: 15.2.2
       next:
         specifier: 14.2.21
-        version: 14.2.21(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0)
+        version: 14.2.21(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       postcss:
         specifier: ^8.4.32
         version: 8.4.35
@@ -84,7 +85,7 @@ importers:
         version: 5.7.2(next@14.2.21)(react-dom@18.2.0)(react@18.2.0)
       '@clerk/testing':
         specifier: ^1.3.7
-        version: 1.3.7(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.3.7(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       '@cloudinary/react':
         specifier: ^1.11.2
         version: 1.11.2(react@18.2.0)
@@ -267,7 +268,7 @@ importers:
         version: 2.0.0
       next:
         specifier: 14.2.21
-        version: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0)
+        version: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       object-hash:
         specifier: ^3.0.0
         version: 3.0.0
@@ -379,7 +380,7 @@ importers:
         version: 1.6.1(react@18.2.0)
       '@estruyf/github-actions-reporter':
         specifier: ^1.7.0
-        version: 1.7.0(@playwright/test@1.47.2)
+        version: 1.7.0(@playwright/test@1.51.1)
       '@graphql-codegen/cli':
         specifier: ^5.0.2
         version: 5.0.2(@types/node@20.17.9)(graphql@16.9.0)(typescript@5.8.2)
@@ -390,8 +391,8 @@ importers:
         specifier: ^4.2.3
         version: 4.2.3(graphql@16.9.0)
       '@playwright/test':
-        specifier: ^1.47.0
-        version: 1.47.2
+        specifier: ^1.51.1
+        version: 1.51.1
       '@sentry/webpack-plugin':
         specifier: ^2.21.1
         version: 2.21.1(webpack@5.98.0)
@@ -623,7 +624,7 @@ importers:
         version: 1.41.1
       next:
         specifier: 14.2.21
-        version: 14.2.21(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0)
+        version: 14.2.21(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       remeda:
         specifier: ^1.29.0
         version: 1.29.0
@@ -702,7 +703,7 @@ importers:
         version: 5.0.1
       langchain:
         specifier: ^0.0.184
-        version: 0.0.184(@google-cloud/storage@7.7.0)(@upstash/redis@1.22.0)(google-auth-library@9.7.0)(lodash@4.17.21)(playwright@1.50.1)
+        version: 0.0.184(@google-cloud/storage@7.7.0)(@upstash/redis@1.22.0)(google-auth-library@9.7.0)(lodash@4.17.21)(playwright@1.51.1)
       obscenity:
         specifier: ^0.1.4
         version: 0.1.4
@@ -3378,7 +3379,7 @@ packages:
       - encoding
     dev: true
 
-  /@browserbasehq/stagehand@1.12.0(@playwright/test@1.47.2)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.89.0)(zod@3.24.1):
+  /@browserbasehq/stagehand@1.12.0(@playwright/test@1.51.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.89.0)(zod@3.24.1):
     resolution: {integrity: sha512-RWhdGxs2tUKyNpUh710ct/1Wwhv4jsEc1Qs8lz8Qngm3y7onRu0WYH0Cf3mnFZqYLTf3ni9x17VNju8YJACa5Q==}
     peerDependencies:
       '@playwright/test': ^1.42.1
@@ -3389,7 +3390,7 @@ packages:
     dependencies:
       '@anthropic-ai/sdk': 0.27.3
       '@browserbasehq/sdk': 2.4.0
-      '@playwright/test': 1.47.2
+      '@playwright/test': 1.51.1
       deepmerge: 4.3.1
       dotenv: 16.4.7
       openai: 4.89.0(zod@3.24.1)
@@ -3521,7 +3522,7 @@ packages:
       '@clerk/shared': 2.9.0(react-dom@18.2.0)(react@18.2.0)
       '@clerk/types': 4.25.0
       crypto-js: 4.2.0
-      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       server-only: 0.0.1
@@ -3572,7 +3573,7 @@ packages:
       swr: 2.2.5(react@18.2.0)
     dev: false
 
-  /@clerk/testing@1.3.7(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0):
+  /@clerk/testing@1.3.7(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-Pw8VwoLZcztiY4tW59Khjqs7ADoyGfsNbxbxcXe5usRDtXOS+xNdibt8RPvVpK7sABXR8Qc/SpdPy8xShVcI5Q==}
     engines: {node: '>=18.17.0'}
     peerDependencies:
@@ -3587,7 +3588,7 @@ packages:
       '@clerk/backend': 1.13.6(react-dom@18.2.0)(react@18.2.0)
       '@clerk/shared': 2.8.4(react-dom@18.2.0)(react@18.2.0)
       '@clerk/types': 4.23.0
-      '@playwright/test': 1.47.2
+      '@playwright/test': 1.51.1
       dotenv: 16.4.5
     transitivePeerDependencies:
       - react
@@ -4455,13 +4456,13 @@ packages:
       levn: 0.4.1
     dev: true
 
-  /@estruyf/github-actions-reporter@1.7.0(@playwright/test@1.47.2):
+  /@estruyf/github-actions-reporter@1.7.0(@playwright/test@1.51.1):
     resolution: {integrity: sha512-Kucb/LNB9HnU4w1wIxiVyhcLajlT1p/Gs3yyNb4D/skz371Jy67dmq8pb3pL9SEGFXMxQVkHlQL5TegPux/9ag==}
     peerDependencies:
       '@playwright/test': ^1.42.1
     dependencies:
       '@actions/core': 1.10.1
-      '@playwright/test': 1.47.2
+      '@playwright/test': 1.51.1
       ansi-to-html: 0.7.2
       marked: 12.0.2
     dev: true
@@ -6438,7 +6439,7 @@ packages:
       react-dom: ^18.2.0
       styled-components: ^5.3.11
     dependencies:
-      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       next-cloudinary: 5.20.0(next@14.2.21)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -7182,12 +7183,12 @@ packages:
       tslib: 2.8.1
     dev: true
 
-  /@playwright/test@1.47.2:
-    resolution: {integrity: sha512-jTXRsoSPONAs8Za9QEQdyjFn+0ZQFjCiIztAIF6bi1HqhBzG9Ma7g1WotyiGqFSBRZjIEqMdT8RUlbk1QVhzCQ==}
+  /@playwright/test@1.51.1:
+    resolution: {integrity: sha512-nM+kEaTSAoVlXmMPH10017vn3FSiFqr/bh4fKg9vmAdMfd9SDqRZNvPSiAHADc/itWak+qPvMPZQOPwCBW7k7Q==}
     engines: {node: '>=18'}
     hasBin: true
     dependencies:
-      playwright: 1.47.2
+      playwright: 1.51.1
 
   /@pmmmwh/react-refresh-webpack-plugin@0.5.15(react-refresh@0.14.2)(webpack@5.98.0):
     resolution: {integrity: sha512-LFWllMA55pzB9D34w/wXUCf8+c+IYKuJDgxiZ3qMhl64KRMBHYM1I3VdGaD2BV5FNPV2/S2596bppxHbv2ZydQ==}
@@ -9513,7 +9514,7 @@ packages:
       '@sentry/vercel-edge': 8.49.0
       '@sentry/webpack-plugin': 2.22.7(webpack@5.98.0)
       chalk: 3.0.0
-      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       resolve: 1.22.8
       rollup: 3.29.5
       stacktrace-parser: 0.1.10
@@ -10054,7 +10055,7 @@ packages:
       find-up: 5.0.0
       image-size: 1.0.2
       loader-utils: 3.3.1
-      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       node-polyfill-webpack-plugin: 2.0.1(webpack@5.98.0)
       pnp-webpack-plugin: 1.7.0(typescript@5.8.2)
       postcss: 8.4.38
@@ -10393,7 +10394,7 @@ packages:
       '@trpc/client': 10.45.2(@trpc/server@10.45.2)
       '@trpc/react-query': 10.45.2(@tanstack/react-query@4.19.1)(@trpc/client@10.45.2)(@trpc/server@10.45.2)(react-dom@18.2.0)(react@18.2.0)
       '@trpc/server': 10.45.2
-      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
@@ -13908,17 +13909,17 @@ packages:
       minimist: 1.2.8
     dev: false
 
-  /cursor-tools@0.5.0(@playwright/test@1.47.2)(deepmerge@4.3.1)(openai@4.89.0)(playwright@1.50.1):
+  /cursor-tools@0.5.0(@playwright/test@1.51.1)(deepmerge@4.3.1)(openai@4.89.0)(playwright@1.51.1):
     resolution: {integrity: sha512-Fz0Q+qx5ac3AEc7jrvZQ/nKPeRvpaoSDqAx7R1vCAgYyMLnJr9DoAsEQi4tq/I7qOh8H2qNm+JL6FRzjNhP+Xg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
-      playwright: 1.50.1
+      playwright: 1.51.1
     dependencies:
-      '@browserbasehq/stagehand': 1.12.0(@playwright/test@1.47.2)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.89.0)(zod@3.24.1)
+      '@browserbasehq/stagehand': 1.12.0(@playwright/test@1.51.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.89.0)(zod@3.24.1)
       dotenv: 16.4.7
       eventsource-client: 1.1.3
-      playwright: 1.50.1
+      playwright: 1.51.1
       punycode: 2.3.1
       repomix: 0.2.24
       zod: 3.24.1
@@ -16191,7 +16192,7 @@ packages:
     peerDependencies:
       next: '>=13.2.0 <15'
     dependencies:
-      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
   /gensequence@7.0.0:
@@ -18826,7 +18827,7 @@ packages:
     engines: {node: '>=18'}
     dev: true
 
-  /langchain@0.0.184(@google-cloud/storage@7.7.0)(@upstash/redis@1.22.0)(google-auth-library@9.7.0)(lodash@4.17.21)(playwright@1.50.1):
+  /langchain@0.0.184(@google-cloud/storage@7.7.0)(@upstash/redis@1.22.0)(google-auth-library@9.7.0)(lodash@4.17.21)(playwright@1.51.1):
     resolution: {integrity: sha512-/v0zl1yGeivGRaPXKr9AuIxV/Yt2Muc8UWxCk3Z4GzC5A/T5/0uOAgd6/ingcg3XoSF9fjupoSn1/UNarKUH7g==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -18910,7 +18911,7 @@ packages:
       pg: ^8.11.0
       pg-copy-streams: ^6.0.5
       pickleparser: ^0.2.1
-      playwright: ^1.32.1
+      playwright: 1.51.1
       portkey-ai: ^0.1.11
       puppeteer: ^19.7.2
       redis: ^4.6.4
@@ -19144,7 +19145,7 @@ packages:
       openapi-types: 12.1.3
       p-queue: 6.6.2
       p-retry: 4.6.2
-      playwright: 1.50.1
+      playwright: 1.51.1
       uuid: 9.0.1
       yaml: 2.4.1
       zod: 3.23.8
@@ -20518,11 +20519,11 @@ packages:
     dependencies:
       '@cloudinary-util/url-loader': 4.2.0
       '@cloudinary-util/util': 2.4.0
-      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
     dev: false
 
-  /next@14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0):
+  /next@14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-rZmLwucLHr3/zfDMYbJXbw0ZeoBpirxkXuvsJbk7UPorvPYZhP7vq7aHbKnU7dQNCYIimRrbB2pp3xmf+wsYUg==}
     engines: {node: '>=18.17.0'}
     hasBin: true
@@ -20542,7 +20543,7 @@ packages:
     dependencies:
       '@next/env': 14.2.21
       '@opentelemetry/api': 1.8.0
-      '@playwright/test': 1.47.2
+      '@playwright/test': 1.51.1
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
       caniuse-lite: 1.0.30001685
@@ -20565,7 +20566,7 @@ packages:
       - '@babel/core'
       - babel-plugin-macros
 
-  /next@14.2.21(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0):
+  /next@14.2.21(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-rZmLwucLHr3/zfDMYbJXbw0ZeoBpirxkXuvsJbk7UPorvPYZhP7vq7aHbKnU7dQNCYIimRrbB2pp3xmf+wsYUg==}
     engines: {node: '>=18.17.0'}
     hasBin: true
@@ -20585,7 +20586,7 @@ packages:
     dependencies:
       '@next/env': 14.2.21
       '@opentelemetry/api': 1.9.0
-      '@playwright/test': 1.47.2
+      '@playwright/test': 1.51.1
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
       caniuse-lite: 1.0.30001685
@@ -21814,47 +21815,17 @@ packages:
       find-up: 6.3.0
     dev: true
 
-  /playwright-core@1.47.2:
-    resolution: {integrity: sha512-3JvMfF+9LJfe16l7AbSmU555PaTl2tPyQsVInqm3id16pdDfvZ8TTZ/pyzmkbDrZTQefyzU7AIHlZqQnxpqHVQ==}
+  /playwright-core@1.51.1:
+    resolution: {integrity: sha512-/crRMj8+j/Nq5s8QcvegseuyeZPxpQCZb6HNk3Sos3BlZyAknRjoyJPFWkpNn8v0+P3WiwqFF8P+zQo4eqiNuw==}
     engines: {node: '>=18'}
     hasBin: true
 
-  /playwright-core@1.49.1:
-    resolution: {integrity: sha512-BzmpVcs4kE2CH15rWfzpjzVGhWERJfmnXmniSyKeRZUs9Ws65m+RGIi7mjJK/euCegfn3i7jvqWeWyHe9y3Vgg==}
-    engines: {node: '>=18'}
-    hasBin: true
-    dev: false
-
-  /playwright-core@1.50.1:
-    resolution: {integrity: sha512-ra9fsNWayuYumt+NiM069M6OkcRb1FZSK8bgi66AtpFoWkg2+y0bJSNmkFrWhMbEBbVKC/EruAHH3g0zmtwGmQ==}
-    engines: {node: '>=18'}
-    hasBin: true
-
-  /playwright@1.47.2:
-    resolution: {integrity: sha512-nx1cLMmQWqmA3UsnjaaokyoUpdVaaDhJhMoxX2qj3McpjnsqFHs516QAKYhqHAgOP+oCFTEOCOAaD1RgD/RQfA==}
+  /playwright@1.51.1:
+    resolution: {integrity: sha512-kkx+MB2KQRkyxjYPc3a0wLZZoDczmppyGJIvQ43l+aZihkaVvmu/21kiyaHeHjiFxjxNNFnUncKmcGIyOojsaw==}
     engines: {node: '>=18'}
     hasBin: true
     dependencies:
-      playwright-core: 1.47.2
-    optionalDependencies:
-      fsevents: 2.3.2
-
-  /playwright@1.49.1:
-    resolution: {integrity: sha512-VYL8zLoNTBxVOrJBbDuRgDWa3i+mfQgDTrL8Ah9QXZ7ax4Dsj0MSq5bYgytRnDVVe+njoKnfsYkH3HzqVj5UZA==}
-    engines: {node: '>=18'}
-    hasBin: true
-    dependencies:
-      playwright-core: 1.49.1
-    optionalDependencies:
-      fsevents: 2.3.2
-    dev: false
-
-  /playwright@1.50.1:
-    resolution: {integrity: sha512-G8rwsOQJ63XG6BbKj2w5rHeavFjy5zynBA9zsJMMtBoe/Uf757oG12NXz6e6OirF7RCrTVAKFXbLmn1RbL7Qaw==}
-    engines: {node: '>=18'}
-    hasBin: true
-    dependencies:
-      playwright-core: 1.50.1
+      playwright-core: 1.51.1
     optionalDependencies:
       fsevents: 2.3.2
 
@@ -22699,8 +22670,8 @@ packages:
       estree-walker: 3.0.3
       kleur: 4.1.5
       mri: 1.2.0
-      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.47.2)(react-dom@18.2.0)(react@18.2.0)
-      playwright: 1.49.1
+      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
+      playwright: 1.51.1
       preact: 10.25.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
