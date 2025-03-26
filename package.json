@@ -80,7 +80,8 @@
     "overrides": {
       "@octokit/endpoint": "9.0.6",
       "@octokit/plugin-paginate-rest": "9.2.2",
-      "@octokit/request": "8.4.1"
+      "@octokit/request": "8.4.1",
+      "playwright": "1.51.1"
     }
   }
 }
