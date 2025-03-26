@@ -11,10 +11,10 @@ export type OakPromptDefinition = {
 
 export type OakPromptVariant = {
   slug: string;
-  parts: OakPrompParts;
+  parts: OakPromptParts;
 };
 
-export type OakPrompParts = {
+export type OakPromptParts = {
   body: string;
   context: string;
   output: string;

@@ -96,7 +96,6 @@ export function checkEnglishLanguageScores(
   });
 
   const isEnglish = englishScores.every(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ([_word, score]) => score >= ENGLISH_THRESHOLD,
   );
 

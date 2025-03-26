@@ -4,7 +4,6 @@ import { prisma } from "../../";
 
 const logger = aiLogger("db");
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function getQuestionsAndWriteBatch(_skip: number) {
   const questions = await prisma.quizQuestion.findMany({
     include: {

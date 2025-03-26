@@ -31,9 +31,7 @@ const LessonPlanMapToMarkDown = ({
   sectionRefs?: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
 }) => {
   const {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _experimental_starterQuizMathsV0,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _experimental_exitQuizMathsV0,
     ...restOfLessonPlan
   } = lessonPlan;

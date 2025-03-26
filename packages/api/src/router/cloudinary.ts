@@ -16,7 +16,7 @@ cloudinary.config({
 });
 
 export const cloudinaryRouter = router({
-  getCloundinaryImages: protectedProcedure
+  getCloudinaryImages: protectedProcedure
     .input(
       z.object({
         batchId: z.string().nullable(),

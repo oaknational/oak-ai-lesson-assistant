@@ -1,6 +1,6 @@
 import type { QuizAppState, QuizAppStateQuestion } from "./state/types";
 
-type OtherQuestionForPromptPropos = {
+type OtherQuestionForPromptProps = {
   state: QuizAppState;
   questionRow?: QuizAppStateQuestion;
 };
@@ -8,7 +8,7 @@ type OtherQuestionForPromptPropos = {
 export const extraQuizPromptInfo = ({
   state,
   questionRow,
-}: OtherQuestionForPromptPropos) => {
+}: OtherQuestionForPromptProps) => {
   const topic = state.topic;
   const otherQuestions = state.questions
     .filter((q) => q.question.value !== questionRow?.question.value)
