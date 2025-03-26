@@ -163,8 +163,9 @@ export abstract class BaseFullQuizService implements FullQuizService {
       );
       return [];
     }
+    const ratingSchema = this.quizReranker.ratingSchema;
     const parsedRankings = quizRankings.map((ranking) =>
-      this.quizReranker.ratingSchema!.parse(ranking),
+      ratingSchema.parse(ranking),
     );
 
     const bestQuiz = this.quizSelector.selectBestQuiz(quizzes, parsedRankings);
