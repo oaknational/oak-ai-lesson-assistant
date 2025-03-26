@@ -60,7 +60,12 @@ export const createChatStore = (
       setMessages: handleSetMessages(getStore, set, get),
       streamingFinished: handleStreamingFinished(set, get),
       scrollToBottom: handleScrollToBottom(set, get),
-      fetchInitialMessages: handleFetchInitialMessages(set, get, trpcUtils),
+      fetchInitialMessages: handleFetchInitialMessages(
+        set,
+        get,
+        getStore,
+        trpcUtils,
+      ),
       ailaStreamingStatusUpdated: handleAilaStreamingStatusUpdated(set, get),
     },
 
