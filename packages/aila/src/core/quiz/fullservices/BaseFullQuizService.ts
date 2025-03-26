@@ -1,5 +1,5 @@
 import { aiLogger } from "@oakai/logger";
-
+import invariant from "tiny-invariant";
 import type { z } from "zod";
 
 import type {
@@ -145,9 +145,10 @@ export abstract class BaseFullQuizService implements FullQuizService {
 
     const quizArrays = await Promise.all(quizPromises);
     const quizzes = quizArrays.flat();
-    if (!this.quizReranker.ratingSchema) {
-      throw new Error("Reranker rating schema is undefined");
-    }
+    invariant(
+      this.quizReranker.ratingSchema,
+      "Reranker rating schema is undefined",
+    );
     // TODO: GCLOMAX - This is changed to be cached.
     const quizRankings = await this.quizReranker.evaluateQuizArray(
       quizzes,
