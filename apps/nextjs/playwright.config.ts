@@ -51,7 +51,9 @@ export default defineConfig({
   },
   retries: process.env.CI ? 1 : 0,
   maxFailures: process.env.CI ? 10 : undefined,
-  workers: process.env.NODE_ENV === "development" ? 5 : undefined,
+  // By default, Playwright uses half the number of available cores.
+  // For an M3 macbook pro that's 5 processes, which leads to test timeouts in dev
+  workers: process.env.CI ? undefined : 3,
   outputDir: "./tests-e2e/test-results",
   forbidOnly: process.env.CI === "true",
 });
