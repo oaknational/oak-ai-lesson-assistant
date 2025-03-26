@@ -48,16 +48,8 @@ const ExportMenuWrap = ({
   toggleIsOpen,
   keyStage,
   subject,
-  appSlug,
   children,
 }: Readonly<ExportMenuProps>) => {
-  const { trackEvent } = useAnalytics();
-  useEffect(() => {
-    if (isOpen) {
-      const appNamePrefix = appSlug.replace("-", "_");
-      trackEvent(`${appNamePrefix}:export_menu_open`);
-    }
-  }, [appSlug, isOpen, trackEvent]);
   return (
     <>
       <button

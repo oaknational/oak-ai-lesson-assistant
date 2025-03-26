@@ -27,9 +27,6 @@ const mockTrack: typeof Avo = new Proxy(Avo, {
 
 const mockAnalyticsContext: AnalyticsContext = {
   track: mockTrack,
-  trackEvent: (eventName: string, properties?: Record<string, unknown>) => {
-    log.info("Mock trackEvent called:", eventName, properties);
-  },
   identify: (userId: string, properties: { email?: string }) => {
     log.info("Mock identify called:", userId, properties);
   },

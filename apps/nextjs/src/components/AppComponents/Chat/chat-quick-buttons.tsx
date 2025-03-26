@@ -4,7 +4,6 @@ import { findLast } from "remeda";
 
 import { Icon } from "@/components/Icon";
 import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
-import useAnalytics from "@/lib/analytics/useAnalytics";
 import {
   useChatActions,
   useChatStore,
@@ -45,13 +44,11 @@ const shouldAllowStop = (
 };
 
 const QuickActionButtons = () => {
-  const { trackEvent } = useAnalytics();
   const lessonPlanTracking = useLessonPlanTracking();
   const { setDialogWindow } = useDialog();
   const queuedUserAction = useChatStore((state) => state.queuedUserAction);
   const { append, stop } = useChatActions();
   const id = useLessonPlanStore((state) => state.id);
-
   const ailaStreamingStatus = useChatStore(
     (state) => state.ailaStreamingStatus,
   );
@@ -63,18 +60,16 @@ const QuickActionButtons = () => {
   );
 
   const handleRegenerate = useCallback(() => {
-    trackEvent("chat:regenerate", { id: id });
     const lastUserMessage =
       findLast(stableMessages, (m) => m.role === "user")?.content ?? "";
     lessonPlanTracking.onClickRetry(lastUserMessage);
     append("regenerate");
-  }, [append, lessonPlanTracking, stableMessages, trackEvent, id]);
+  }, [append, lessonPlanTracking, stableMessages]);
 
   const handleContinue = useCallback(() => {
-    trackEvent("chat:continue");
     lessonPlanTracking.onClickContinue();
     append("continue");
-  }, [append, lessonPlanTracking, trackEvent]);
+  }, [append, lessonPlanTracking]);
 
   return (
     <div className="-ml-7 flex justify-between space-x-7 rounded-bl rounded-br pt-8">
@@ -115,7 +110,6 @@ const QuickActionButtons = () => {
             size="sm"
             variant="text-link"
             onClick={() => {
-              trackEvent("chat:stop_generating");
               stop();
             }}
             testId="chat-stop"

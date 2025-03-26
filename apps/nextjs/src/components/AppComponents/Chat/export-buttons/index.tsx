@@ -4,7 +4,6 @@ import { OakSmallSecondaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
-import useAnalytics from "@/lib/analytics/useAnalytics";
 import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 
 import { useDialog } from "../../DialogContext";
@@ -15,7 +14,7 @@ const ExportButtons = () => {
   const isStreaming = useChatStore(
     (state) => state.ailaStreamingStatus !== "Idle",
   );
-  const { trackEvent } = useAnalytics();
+
   const { setDialogWindow } = useDialog();
   const demo = useDemoUser();
 
@@ -30,9 +29,6 @@ const ExportButtons = () => {
               title={demo.isSharingEnabled ? undefined : "Not available"}
               data-testid="chat-share-button"
               onClick={() => {
-                trackEvent("chat:share_chat", {
-                  id,
-                });
                 if (demo.isSharingEnabled) {
                   setDialogWindow("share-chat");
                 } else {
@@ -49,9 +45,6 @@ const ExportButtons = () => {
               href={demo.isSharingEnabled ? `/aila/download/${id}` : "#"}
               title={demo.isSharingEnabled ? undefined : "Not available"}
               onClick={() => {
-                trackEvent("chat:open_chat_actions", {
-                  id,
-                });
                 if (!demo.isSharingEnabled) {
                   setDialogWindow("demo-share-locked");
                 }

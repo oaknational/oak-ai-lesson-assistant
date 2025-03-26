@@ -13,7 +13,6 @@ import type {
   QuizAppState,
   QuizAppStateQuestion,
 } from "@/ai-apps/quiz-designer/state/types";
-import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
 
 import ActionButtonsGroup from "../../common/SingleGeneration/ActionButtonsGroup";
@@ -31,16 +30,10 @@ const Answer = ({
   questionRow,
   state,
 }: Readonly<AnswerProps>) => {
-  const { trackEvent } = useAnalytics();
   const recordUserTweak = trpc.generations.recordUserTweak.useMutation();
 
   const tweakAnswer = useCallback(
     async (answerIdx: number, tweakedAnswer: string) => {
-      trackEvent("quiz_designer:tweak_answer", {
-        previous_answer: answer.value,
-        new_answer: tweakedAnswer,
-      });
-
       dispatch({
         type: QuizAppActions.TweakedAnswer,
         questionIdx,
@@ -79,8 +72,6 @@ const Answer = ({
       questionRow.answers,
       recordUserTweak,
       state.sessionId,
-      trackEvent,
-      answer.value,
     ],
   );
 
