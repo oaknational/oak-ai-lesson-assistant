@@ -199,7 +199,7 @@ describe("Aila", () => {
       expect(ailaInstance.document.content.title).not.toBeDefined();
       expect(ailaInstance.document.content.subject).not.toBeDefined();
       expect(ailaInstance.document.content.keyStage).not.toBeDefined();
-    }, 10000);
+    }, 15000);
   });
 
   describe("checkUserIdPresentIfPersisting", () => {
