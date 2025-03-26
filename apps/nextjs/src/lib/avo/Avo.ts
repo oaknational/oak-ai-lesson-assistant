@@ -974,8 +974,8 @@ _avo_invoke = function _avo_invoke(env: AvoEnv, eventId: string, hash: string, m
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-          "ac": "XJxkgFVR6udgBxCsXlSz",
-          "br": "i3M8C159BfnPoZTuXWwgD",
+          "ac": "IK4lfTOvPGWHmk0ieLNw",
+          "br": "master",
           "en": env,
           "ev": eventId,
           "ha": hash,
@@ -1001,8 +1001,8 @@ _avo_invoke_meta = function _avo_invoke_meta(env: AvoEnv, type: string, messages
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-          "ac": "XJxkgFVR6udgBxCsXlSz",
-          "br": "i3M8C159BfnPoZTuXWwgD",
+          "ac": "IK4lfTOvPGWHmk0ieLNw",
+          "br": "master",
           "en": env,
           "ty": type,
           "sc": "5PhajbVijwhXVKIJtGMT",
@@ -1174,8 +1174,8 @@ export const ComponentType = {
   'VIDEO': 'video',
   'WHY_THIS_WHY_NOW': 'why_this_why_now',
   'YEAR_GROUP_BUTTON': 'year_group_button',
-  'MODIFY_BUTTON': 'modify_button',
   'ADD_ADDITIONAL_MATERIALS_BUTTON': 'add_additional_materials_button',
+  'MODIFY_BUTTON': 'modify_button',
 } as const;
 export type ComponentTypeType = typeof ComponentType;
 export type ComponentTypeValueType = ComponentTypeType[keyof ComponentTypeType];
@@ -1370,22 +1370,22 @@ export interface LessonAssistantAccessedProperties {
  * 
  * When to trigger this event:
  * 1. User clicked on the 'primary' 'Create a lesson' button
- * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/xsOZT-77ro/trigger/Dz17HUwt4
+ * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/xsOZT-77ro/trigger/Dz17HUwt4
  * 2. User selects the lesson assistant from the hamburger menu
- * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/xsOZT-77ro/trigger/FlhqUH53S
+ * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/xsOZT-77ro/trigger/FlhqUH53S
  * 3. User selects the 'secondary' 'Create a lesson' button/link lower down the labs homepage
- * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/xsOZT-77ro/trigger/zF4LQ3vWd
+ * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/xsOZT-77ro/trigger/zF4LQ3vWd
  * 4. The user selects the Lesson Planner from the footer menu on the labs homepage
- * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/xsOZT-77ro/trigger/DLeioZeJ8
+ * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/xsOZT-77ro/trigger/DLeioZeJ8
  * 5. User clicks on the 'Get started' button from the search results
- * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/xsOZT-77ro/trigger/LCMU0NPnivcZrJQ58uvzN
+ * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/xsOZT-77ro/trigger/LCMU0NPnivcZrJQ58uvzN
  * 
  * @param properties the properties associatied with this event
  * @param properties.isLoggedIn: Flags whether the user logged in or not before accessing the Oak object 
  * @param properties.componentType: The web component used to carry out the action on the Oak object
  * @param properties.product: Product that the event was sent from to clear distinguish between Oak products
  * 
- * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/xsOZT-77ro}
+ * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/xsOZT-77ro}
  */
 export function lessonAssistantAccessed(properties: LessonAssistantAccessedProperties) {
   // @ts-ignore
@@ -1440,9 +1440,9 @@ export interface LessonPlanInitiatedProperties {
  * 
  * When to trigger this event:
  * 1. 
- * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/6LvrtHjncf/trigger/1MZ802Uxn
+ * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/6LvrtHjncf/trigger/1MZ802Uxn
  * 2. 
- * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/6LvrtHjncf/trigger/xgthFuV7v
+ * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/6LvrtHjncf/trigger/xgthFuV7v
  * 
  * @param properties the properties associatied with this event
  * @param properties.text: Text captured during the event action e.g. when a user types into a text box and hits enter
@@ -1454,7 +1454,7 @@ export interface LessonPlanInitiatedProperties {
  * @param properties.product: Product that the event was sent from to clear distinguish between Oak products
  * @param properties.chatId: Distinct ID of the Lesson Plan Chat
  * 
- * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/6LvrtHjncf}
+ * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/6LvrtHjncf}
  */
 export function lessonPlanInitiated(properties: LessonPlanInitiatedProperties) {
   // @ts-ignore
@@ -1526,7 +1526,7 @@ export interface LessonPlanCompletedProperties {
  * @param properties.product: Product that the event was sent from to clear distinguish between Oak products
  * @param properties.chatId: Distinct ID of the Lesson Plan Chat
  * 
- * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/bpddOGEuH6}
+ * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/bpddOGEuH6}
  */
 export function lessonPlanCompleted(properties: LessonPlanCompletedProperties) {
   // @ts-ignore
@@ -1591,7 +1591,7 @@ export interface LessonPlanResourcesDownloadedProperties {
  * 
  * When to trigger this event:
  * 1. 
- * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/3JLctzBEI/trigger/G_q-2ddJD
+ * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/3JLctzBEI/trigger/G_q-2ddJD
  * 
  * @param properties the properties associatied with this event
  * @param properties.subjectSlug: Human-readable unique ID of the current subject.
@@ -1602,7 +1602,7 @@ export interface LessonPlanResourcesDownloadedProperties {
  * @param properties.resourceFileType: The file type of the resource related to the event
  * @param properties.chatId: Distinct ID of the Lesson Plan Chat
  * 
- * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/3JLctzBEI}
+ * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/3JLctzBEI}
  */
 export function lessonPlanResourcesDownloaded(properties: LessonPlanResourcesDownloadedProperties) {
   // @ts-ignore
@@ -1665,7 +1665,7 @@ export interface LessonPlanSharedProperties {
  * 
  * When to trigger this event:
  * 1. 
- * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/_SfSF_WDX/trigger/MtMTyJ4g7
+ * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/_SfSF_WDX/trigger/MtMTyJ4g7
  * 
  * @param properties the properties associatied with this event
  * @param properties.componentType: The web component used to carry out the action on the Oak object
@@ -1675,7 +1675,7 @@ export interface LessonPlanSharedProperties {
  * @param properties.product: Product that the event was sent from to clear distinguish between Oak products
  * @param properties.chatId: Distinct ID of the Lesson Plan Chat
  * 
- * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/_SfSF_WDX}
+ * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/_SfSF_WDX}
  */
 export function lessonPlanShared(properties: LessonPlanSharedProperties) {
   // @ts-ignore
@@ -1734,13 +1734,13 @@ export interface LessonPlanRefinedProperties {
  * 
  * When to trigger this event:
  * 1. User clicks 'regenerate response'
- * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/KbUf1Z4y1/trigger/rsVGVBp2i
+ * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/KbUf1Z4y1/trigger/rsVGVBp2i
  * 2. User types a selection from a list of suggested Oak lessons
- * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/KbUf1Z4y1/trigger/0IIeoDG3x
+ * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/KbUf1Z4y1/trigger/0IIeoDG3x
  * 3. A user types an edit in the text box and clicks 'send message'
- * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/KbUf1Z4y1/trigger/PihT6ErP1
+ * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/KbUf1Z4y1/trigger/PihT6ErP1
  * 4. The user selects one of the radial options and then clicks on 'Modify section'
- * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/KbUf1Z4y1/trigger/ElTiEFofSw3JMlJMz6I69
+ * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/KbUf1Z4y1/trigger/ElTiEFofSw3JMlJMz6I69
  * 
  * @param properties the properties associatied with this event
  * @param properties.subjectSlug: Human-readable unique ID of the current subject.
@@ -1753,7 +1753,7 @@ export interface LessonPlanRefinedProperties {
  * @param properties.refinements: An array that outlines the refinements made on an object and what part of the object has been impacted by the refinement
  * @param properties.chatId: Distinct ID of the Lesson Plan Chat
  * 
- * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/KbUf1Z4y1}
+ * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/KbUf1Z4y1}
  */
 export function lessonPlanRefined(properties: LessonPlanRefinedProperties) {
   // @ts-ignore
@@ -1834,7 +1834,7 @@ export interface LessonPlanTerminatedProperties {
  * @param properties.isThreatDetected: no description
  * @param properties.chatId: Distinct ID of the Lesson Plan Chat
  * 
- * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/v4cCB-DHB}
+ * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/v4cCB-DHB}
  */
 export function lessonPlanTerminated(properties: LessonPlanTerminatedProperties) {
   // @ts-ignore
@@ -1897,7 +1897,7 @@ Analytics Use Case: N/A
  * 
  * When to trigger this event:
  * 1. A user uses SSO or email/password combination to create an account in Clerk.
- * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/fOlHJypRwg/trigger/aV1XekNBLU
+ * View in Avo: https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/fOlHJypRwg/trigger/aV1XekNBLU
  * 
  * @param properties the properties associatied with this event
  * @param properties.platform: Describes the 'platform' or 'codebase' from which the event was sent. Historically this would have been acorn, but now this will cover OWA and Aila. These should typically also have a one to one relationship with the 'sources' as defined in this Avo project (Oak's Tracking Plan).
@@ -1913,7 +1913,7 @@ NB - This will be removed, but keeping to ease transition from AUC to 'product'
  * @param properties.userId_: The value used to identify the user. Make sure it's a unique sequence of characters used to identify the user.
  * @param properties.singleSignOnService: The Single Sign-On (SSO) Service used at a given stage of sign-up / sign-on.
  * 
- * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/branches/i3M8C159BfnPoZTuXWwgD/events/fOlHJypRwg}
+ * @see {@link https://www.avo.app/schemas/5PhajbVijwhXVKIJtGMT/events/fOlHJypRwg}
  */
 export function userSignUpCompleted(properties: UserSignMinusUpCompletedProperties) {
   // @ts-ignore
