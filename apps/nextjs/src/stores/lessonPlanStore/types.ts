@@ -16,8 +16,6 @@ export type LessonPlanState = {
   iteration: number | undefined;
   isAcceptingChanges: boolean;
   numberOfStreamedCompleteParts: number;
-  // Used for lessonPlanTracking.onStreamFinished
-  lastLessonPlan: LooseLessonPlan;
   isShared: boolean;
   scrollToSection: LessonPlanKey | null;
 
