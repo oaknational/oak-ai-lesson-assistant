@@ -14,6 +14,11 @@ export const glossarySchema = z.object({
 
 export type GlossarySchema = z.infer<typeof glossarySchema>;
 
+export const isGlossary = (data: unknown): data is GlossarySchema => {
+  const result = glossarySchema.safeParse(data);
+  return result.success;
+};
+
 export const glossaryContextSchema = z.object({
   ...baseContext,
   previousOutput: glossarySchema.nullish(),

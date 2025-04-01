@@ -26,6 +26,13 @@ export const comprehensionTaskSchema = z.object({
 
 export type ComprehensionTask = z.infer<typeof comprehensionTaskSchema>;
 
+export const isComprehensionTask = (
+  data: unknown,
+): data is ComprehensionTask => {
+  const result = comprehensionTaskSchema.safeParse(data);
+  return result.success;
+};
+
 export const comprehensionContextSchema = z.object({
   ...baseContext,
   previousOutput: comprehensionTaskSchema.nullish(),

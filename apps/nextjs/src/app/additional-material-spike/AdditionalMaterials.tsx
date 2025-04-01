@@ -3,7 +3,9 @@
 import type { FC } from "react";
 import React, { useEffect, useState } from "react";
 
+import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
 import { type AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import { isGlossary } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { aiLogger } from "@oakai/logger";
@@ -20,12 +22,10 @@ import {
   OakRadioGroup,
 } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/nextjs";
-import { redirect } from "next/navigation";
 
 import { ComprehensionTask } from "@/components/AppComponents/AdditionalMaterials/ComprehensionTask";
-import { Glossary } from "@/components/AppComponents/AdditionalMaterials/Homework";
+import { Glossary } from "@/components/AppComponents/AdditionalMaterials/Glossary";
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
-import { useClientSideFeatureFlag } from "@/components/ContextProviders/FeatureFlagProvider";
 import Layout from "@/components/Layout";
 import { trpc } from "@/utils/trpc";
 
@@ -89,12 +89,6 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 
-  const canSeeSpike = useClientSideFeatureFlag("additional-materials");
-
-  if (!canSeeSpike) {
-    redirect("/");
-  }
-
   useEffect(() => {
     if (
       generation !== null &&
@@ -143,10 +137,16 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
     }
   };
   const renderGeneratedMaterial = () => {
-    if (action === "additional-glossary") {
+    if (!generation) {
+      return null;
+    }
+    if (action === "additional-glossary" && isGlossary(generation)) {
       return <Glossary action={action} generation={generation} />;
     }
-    if (action === "additional-comprehension") {
+    if (
+      action === "additional-comprehension" &&
+      isComprehensionTask(generation)
+    ) {
       return <ComprehensionTask action={action} generation={generation} />;
     }
 
