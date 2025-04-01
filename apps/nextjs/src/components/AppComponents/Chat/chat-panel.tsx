@@ -3,13 +3,13 @@ import { useCallback } from "react";
 import { cva } from "class-variance-authority";
 
 import { PromptForm } from "@/components/AppComponents/Chat/prompt-form";
-import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { useSidebar } from "@/lib/hooks/use-sidebar";
 import {
   useChatActions,
   useChatStore,
   useLessonPlanStore,
+  useLessonPlanTrackingActions,
 } from "@/stores/AilaStoresProvider";
 import { canAppendSelector } from "@/stores/chatStore/selectors";
 
@@ -39,7 +39,7 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
   const { trackEvent } = useAnalytics();
 
   const sidebar = useSidebar();
-  const lessonPlanTracking = useLessonPlanTracking();
+  const lessonPlanTracking = useLessonPlanTrackingActions();
 
   const handleSubmit = useCallback(
     (value: string) => {
@@ -48,7 +48,7 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
         sidebar.toggleSidebar();
       }
 
-      lessonPlanTracking.onSubmitText(value);
+      lessonPlanTracking.submittedText(value);
 
       trackEvent("chat:send_message", { id, message: value });
 
