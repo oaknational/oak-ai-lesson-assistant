@@ -147,6 +147,16 @@ export async function prepLessonForSlides(
         data.exitQuiz[0]?.answers,
         data.exitQuiz[0]?.distractors,
       )[0] ?? "",
+    eq_q1_answer_2:
+      processQuizAnswersForSlides(
+        data.exitQuiz[0]?.answers,
+        data.exitQuiz[0]?.distractors,
+      )[1] ?? "",
+    eq_q1_answer_3:
+      processQuizAnswersForSlides(
+        data.exitQuiz[0]?.answers,
+        data.exitQuiz[0]?.distractors,
+      )[2] ?? "",
     exit_quiz_question_2: data.exitQuiz[1]?.question ?? "",
     eq_q2_answer_1:
       processQuizAnswersForSlides(
@@ -158,6 +168,11 @@ export async function prepLessonForSlides(
         data.exitQuiz[1]?.answers,
         data.exitQuiz[1]?.distractors,
       )[1] ?? "",
+    eq_q2_answer_3:
+      processQuizAnswersForSlides(
+        data.exitQuiz[1]?.answers,
+        data.exitQuiz[1]?.distractors,
+      )[2] ?? "",
     exit_quiz_question_3: data.exitQuiz[2]?.question ?? "",
     eq_q3_answer_1:
       processQuizAnswersForSlides(
@@ -189,6 +204,22 @@ export async function prepLessonForSlides(
       processQuizAnswersForSlides(
         data.exitQuiz[3]?.answers,
         data.exitQuiz[3]?.distractors,
+      )[2] ?? "",
+    exit_quiz_question_5: data.exitQuiz[4]?.question ?? "",
+    eq_q5_answer_1:
+      processQuizAnswersForSlides(
+        data.exitQuiz[4]?.answers,
+        data.exitQuiz[4]?.distractors,
+      )[0] ?? "",
+    eq_q5_answer_2:
+      processQuizAnswersForSlides(
+        data.exitQuiz[4]?.answers,
+        data.exitQuiz[4]?.distractors,
+      )[1] ?? "",
+    eq_q5_answer_3:
+      processQuizAnswersForSlides(
+        data.exitQuiz[4]?.answers,
+        data.exitQuiz[4]?.distractors,
       )[2] ?? "",
     exit_quiz_question_6: data.exitQuiz[5]?.question ?? "",
     eq_q6_answer_1:
