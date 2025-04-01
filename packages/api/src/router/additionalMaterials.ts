@@ -1,10 +1,10 @@
+import { generateAdditionalMaterialModeration } from "@oakai/additional-materials";
 import {
-  additionalMaterialsConfig,
-  fetchAdditionalMaterialModeration,
-  generateDocument,
-} from "@oakai/additional-materials";
-import type { AdditionalMaterialPromptContext } from "@oakai/additional-materials/src/documents/additionalMaterials/additionalMaterialsConfig";
-import type { AdditionalMaterialType } from "@oakai/additional-materials/src/documents/schemas/additionalMaterials";
+  type AdditionalMaterialSchemas,
+  actionEnum,
+  generateAdditionalMaterialInputSchema,
+} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import { generateAdditionalMaterialObject } from "@oakai/additional-materials/src/documents/additionalMaterials/generateAdditionalMaterialObject";
 import {
   type OakOpenAiLessonSummary,
   type OakOpenAiTranscript,
@@ -12,11 +12,11 @@ import {
   oakOpenAiLessonSummarySchema,
   oakOpenAiTranscriptSchema,
   oakOpenApiSearchSchema,
-} from "@oakai/additional-materials/src/documents/schemas/oakOpenApi";
+} from "@oakai/additional-materials/src/schemas/oakOpenApi";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
-import { z } from "zod";
+import { ZodError, z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
@@ -28,38 +28,37 @@ export const additionalMaterialsRouter = router({
   generateAdditionalMaterial: protectedProcedure
     .input(
       z.object({
-        lessonPlan: z.any(),
         action: z.string(),
-        message: z.string().optional(),
-        previousOutput: z.object({}).passthrough().nullable(),
+        context: z.unknown(),
+        documentType: z.string(),
       }),
     )
-    .mutation(async ({ ctx, input }): Promise<AdditionalMaterialType> => {
-      const { lessonPlan, action, message, previousOutput } = input;
+    .mutation(async ({ ctx, input }): Promise<AdditionalMaterialSchemas> => {
       log.info("fetching additional materials");
 
       try {
-        const result = await generateDocument<
-          AdditionalMaterialType,
-          AdditionalMaterialPromptContext
-        >({
-          documentType: action,
-          context: {
-            lessonPlan,
-            message,
-            previousOutput,
-          },
-          documentConfig: additionalMaterialsConfig,
+        const parsedInput =
+          generateAdditionalMaterialInputSchema.safeParse(input);
+        if (!parsedInput.success) {
+          log.error("Failed to parse input", parsedInput.error);
+          throw new ZodError(parsedInput.error.issues);
+        }
+        const parsedAction = actionEnum.parse(input.action);
+
+        const result = await generateAdditionalMaterialObject({
+          provider: "openai",
+          parsedInput: parsedInput.data,
+          action: parsedAction,
         });
+
+        if (!result) {
+          throw new Error("Failed to generate additional material");
+        }
 
         return result;
       } catch (cause) {
-        const TrpcError = new Error("Failed to fetch additional material", {
-          cause,
-        });
         log.error("Failed to fetch additional material", cause);
-        Sentry.captureException(TrpcError);
-        throw TrpcError;
+        throw new Error("Failed to fetch additional material");
       }
     }),
   generateAdditionalMaterialModeration: protectedProcedure
@@ -73,7 +72,7 @@ export const additionalMaterialsRouter = router({
       log.info("Fetch additional materials moderation", ctx);
 
       try {
-        const result = await fetchAdditionalMaterialModeration(generation);
+        const result = await generateAdditionalMaterialModeration(generation);
 
         return result;
       } catch (cause) {

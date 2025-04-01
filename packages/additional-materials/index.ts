@@ -1,3 +1,2 @@
-export { generateDocument } from "./src/documents/generateDocument";
-export { additionalMaterialsConfig } from "./src/documents/additionalMaterials/additionalMaterialsConfig";
-export { fetchAdditionalMaterialModeration } from "./src/moderation/fetchAdditionalMaterialModeration";
+export { generateAdditionalMaterialModeration } from "./src/moderation/generateAdditionalMaterialModeration";
+export { generateAdditionalMaterialObject } from "./src/documents/additionalMaterials/generateAdditionalMaterialObject";

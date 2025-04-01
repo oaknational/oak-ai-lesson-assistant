@@ -3,7 +3,7 @@ import { generateText } from "ai";
 
 import { moderationPrompt } from "./moderationPrompt";
 
-export const fetchAdditionalMaterialModeration = async (input: string) => {
+export const generateAdditionalMaterialModeration = async (input: string) => {
   const { text } = await generateText({
     system: moderationPrompt,
     prompt: input,
