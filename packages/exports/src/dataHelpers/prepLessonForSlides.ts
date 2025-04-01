@@ -44,6 +44,168 @@ export async function prepLessonForSlides(
     keyword_definition_3: data.keywords?.[2]?.definition ?? " ",
     keyword_definition_4: data.keywords?.[3]?.definition ?? " ",
     keyword_definition_5: data.keywords?.[4]?.definition ?? " ",
+
+    starter_quiz_question_1: data.starterQuiz[0]?.question ?? "",
+    sq_q1_answer_1:
+      processQuizAnswersForSlides(
+        data.starterQuiz[0]?.answers,
+        data.starterQuiz[0]?.distractors,
+      )[0] ?? "",
+    sq_q1_answer_2:
+      processQuizAnswersForSlides(
+        data.starterQuiz[0]?.answers,
+        data.starterQuiz[0]?.distractors,
+      )[1] ?? "",
+    sq_q1_answer_3:
+      processQuizAnswersForSlides(
+        data.starterQuiz[0]?.answers,
+        data.starterQuiz[0]?.distractors,
+      )[2] ?? "",
+    starter_quiz_question_2: data.starterQuiz[1]?.question ?? "",
+    sq_q2_answer_1:
+      processQuizAnswersForSlides(
+        data.starterQuiz[1]?.answers,
+        data.starterQuiz[1]?.distractors,
+      )[0] ?? "",
+    sq_q2_answer_2:
+      processQuizAnswersForSlides(
+        data.starterQuiz[1]?.answers,
+        data.starterQuiz[1]?.distractors,
+      )[1] ?? "",
+    sq_q2_answer_3:
+      processQuizAnswersForSlides(
+        data.starterQuiz[1]?.answers,
+        data.starterQuiz[1]?.distractors,
+      )[2] ?? "",
+    starter_quiz_question_3: data.starterQuiz[2]?.question ?? "",
+    sq_q3_answer_1:
+      processQuizAnswersForSlides(
+        data.starterQuiz[2]?.answers,
+        data.starterQuiz[2]?.distractors,
+      )[0] ?? "",
+    sq_q3_answer_2:
+      processQuizAnswersForSlides(
+        data.starterQuiz[2]?.answers,
+        data.starterQuiz[2]?.distractors,
+      )[1] ?? "",
+    sq_q3_answer_3:
+      processQuizAnswersForSlides(
+        data.starterQuiz[2]?.answers,
+        data.starterQuiz[2]?.distractors,
+      )[2] ?? "",
+    starter_quiz_question_4: data.starterQuiz[3]?.question ?? "",
+    sq_q4_answer_1:
+      processQuizAnswersForSlides(
+        data.starterQuiz[3]?.answers,
+        data.starterQuiz[3]?.distractors,
+      )[0] ?? "",
+    sq_q4_answer_2:
+      processQuizAnswersForSlides(
+        data.starterQuiz[3]?.answers,
+        data.starterQuiz[3]?.distractors,
+      )[1] ?? "",
+    sq_q4_answer_3:
+      processQuizAnswersForSlides(
+        data.starterQuiz[3]?.answers,
+        data.starterQuiz[3]?.distractors,
+      )[2] ?? "",
+    starter_quiz_question_5: data.starterQuiz[4]?.question ?? "",
+    sq_q5_answer_1:
+      processQuizAnswersForSlides(
+        data.starterQuiz[4]?.answers,
+        data.starterQuiz[4]?.distractors,
+      )[0] ?? "",
+    sq_q5_answer_2:
+      processQuizAnswersForSlides(
+        data.starterQuiz[4]?.answers,
+        data.starterQuiz[4]?.distractors,
+      )[1] ?? "",
+    sq_q5_answer_3:
+      processQuizAnswersForSlides(
+        data.starterQuiz[4]?.answers,
+        data.starterQuiz[4]?.distractors,
+      )[2] ?? "",
+    starter_quiz_question_6: data.starterQuiz[5]?.question ?? "",
+    sq_q6_answer_1:
+      processQuizAnswersForSlides(
+        data.starterQuiz[5]?.answers,
+        data.starterQuiz[5]?.distractors,
+      )[0] ?? "",
+    sq_q6_answer_2:
+      processQuizAnswersForSlides(
+        data.starterQuiz[5]?.answers,
+        data.starterQuiz[5]?.distractors,
+      )[1] ?? "",
+    sq_q6_answer_3:
+      processQuizAnswersForSlides(
+        data.starterQuiz[5]?.answers,
+        data.starterQuiz[5]?.distractors,
+      )[2] ?? "",
+    exit_quiz_question_1: data.exitQuiz[0]?.question ?? "",
+    eq_q1_answer_1:
+      processQuizAnswersForSlides(
+        data.exitQuiz[0]?.answers,
+        data.exitQuiz[0]?.distractors,
+      )[0] ?? "",
+    exit_quiz_question_2: data.exitQuiz[1]?.question ?? "",
+    eq_q2_answer_1:
+      processQuizAnswersForSlides(
+        data.exitQuiz[1]?.answers,
+        data.exitQuiz[1]?.distractors,
+      )[0] ?? "",
+    eq_q2_answer_2:
+      processQuizAnswersForSlides(
+        data.exitQuiz[1]?.answers,
+        data.exitQuiz[1]?.distractors,
+      )[1] ?? "",
+    exit_quiz_question_3: data.exitQuiz[2]?.question ?? "",
+    eq_q3_answer_1:
+      processQuizAnswersForSlides(
+        data.exitQuiz[2]?.answers,
+        data.exitQuiz[2]?.distractors,
+      )[0] ?? "",
+    eq_q3_answer_2:
+      processQuizAnswersForSlides(
+        data.exitQuiz[2]?.answers,
+        data.exitQuiz[2]?.distractors,
+      )[1] ?? "",
+    eq_q3_answer_3:
+      processQuizAnswersForSlides(
+        data.exitQuiz[2]?.answers,
+        data.exitQuiz[2]?.distractors,
+      )[2] ?? "",
+    exit_quiz_question_4: data.exitQuiz[3]?.question ?? "",
+    eq_q4_answer_1:
+      processQuizAnswersForSlides(
+        data.exitQuiz[3]?.answers,
+        data.exitQuiz[3]?.distractors,
+      )[0] ?? "",
+    eq_q4_answer_2:
+      processQuizAnswersForSlides(
+        data.exitQuiz[3]?.answers,
+        data.exitQuiz[3]?.distractors,
+      )[1] ?? "",
+    eq_q4_answer_3:
+      processQuizAnswersForSlides(
+        data.exitQuiz[3]?.answers,
+        data.exitQuiz[3]?.distractors,
+      )[2] ?? "",
+    exit_quiz_question_6: data.exitQuiz[5]?.question ?? "",
+    eq_q6_answer_1:
+      processQuizAnswersForSlides(
+        data.exitQuiz[5]?.answers,
+        data.exitQuiz[5]?.distractors,
+      )[0] ?? "",
+    eq_q6_answer_2:
+      processQuizAnswersForSlides(
+        data.exitQuiz[5]?.answers,
+        data.exitQuiz[5]?.distractors,
+      )[1] ?? "",
+    eq_q6_answer_3:
+      processQuizAnswersForSlides(
+        data.exitQuiz[5]?.answers,
+        data.exitQuiz[5]?.distractors,
+      )[2] ?? "",
     learning_cycle_1_title_long: data.learningCycles[0] ?? "",
     learning_cycle_2_title_long: data.learningCycles[1] ?? "",
     learning_cycle_3_title_long: data.learningCycles[2] ?? "",
