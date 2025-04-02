@@ -124,7 +124,7 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
   const [action, setAction] = useState<string | null>(null);
   const [lessonFields, setLessonField] = useState<
     PartialLessonPlanFieldKeys[] | []
-  >([]);
+  >(["title", "keyStage", "subject"]);
   const [prompt, setPrompt] = useState<{
     prompt: string;
     systemMessage: string;
@@ -304,7 +304,9 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
           key={field}
           id={field}
           value={field}
-          checked={field === "title"}
+          defaultChecked={
+            field === "title" || field === "keyStage" || field === "subject"
+          }
           onChange={(value) => {
             value.target.checked
               ? setLessonField((prev) => [...prev, field])
