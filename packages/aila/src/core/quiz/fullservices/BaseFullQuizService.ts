@@ -1,4 +1,5 @@
 import { aiLogger } from "@oakai/logger";
+
 import invariant from "tiny-invariant";
 import type { z } from "zod";
 
@@ -118,14 +119,16 @@ export abstract class BaseFullQuizService implements FullQuizService {
           ailaRagRelevantLessons,
         );
       }
-      if (quizArray[0]!.length > 0) {
-        return quizArray[0]!;
+      if (quizArray && quizArray[0] && quizArray[0].length > 0) {
+        return quizArray[0];
       }
     }
 
     // If we dont have a based on rag quiz generator, or it didnt produce a quiz, generate a quiz using the rest of the quiz generators.
     const quizGenerators = this.quizGenerators.filter(
-      (cls) => !(cls instanceof BasedOnRagQuizGenerator),
+      (cls) =>
+        !(cls instanceof BasedOnRagQuizGenerator) ||
+        cls instanceof AilaRagQuizGenerator,
     );
 
     const quizPromises = quizGenerators.map((quizGenerator) => {
