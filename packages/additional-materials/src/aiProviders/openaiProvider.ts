@@ -15,10 +15,17 @@ export const OpenAIProvider = {
     const { object } = await generateObject({
       prompt,
       schema,
-      model: openai("gpt-4-turbo"),
+      model: openai("gpt-4o"),
       system: systemMessage,
     });
 
-    return schema.parse(object);
+    const parsedObject = schema.safeParse(object);
+    if (!parsedObject.success) {
+      console.log("Error in getLLMGeneration", parsedObject.error);
+      throw new Error(
+        `Context schema validation failed: ${JSON.stringify(parsedObject.error.issues, null, 2)}`,
+      );
+    }
+    return parsedObject.data;
   },
 };

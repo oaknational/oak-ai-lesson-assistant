@@ -1,11 +1,14 @@
+import { z } from "zod";
+
 import { LessonPlanSchema } from "../../../../aila/src/protocol/schema";
 import type { ProviderKey } from "../../aiProviders";
 import { getLLMGeneration } from "../../aiProviders/getGeneration";
+import { getKeystageFromYearGroup } from "../additionalMaterials/promptHelpers";
 import {
   buildPartialLessonPrompt,
   buildPartialLessonSystemMessage,
 } from "./buildPartialLessonPrompt";
-import type { LessonPlanField, PartialLessonContextSchemaType } from "./schema";
+import { type PartialLessonContextSchemaType, lessonFieldKeys } from "./schema";
 
 export const generatePartialLessonPlanObject = async ({
   parsedInput,
@@ -20,25 +23,29 @@ export const generatePartialLessonPlanObject = async ({
 }) => {
   const { context } = parsedInput;
 
-  const schema = LessonPlanSchema.pick(
-    Object.fromEntries(context.lessonParts.map((field) => [field, true])) as {
-      [K in LessonPlanField]?: true;
-    },
-  ).required();
+  const { year } = context;
 
-  // console.log("schema", schema.shape);
-  // console.log(
-  //   "prompt",
-  //   buildPartialLessonSystemMessage({
-  //     lessonParts: context.lessonParts,
-  //   }),
-  // );
+  const derivedKeystage = getKeystageFromYearGroup(year);
+
+  const sortedLessonParts = context.lessonParts.sort(
+    (a, b) => lessonFieldKeys.indexOf(a) - lessonFieldKeys.indexOf(b),
+  );
+
+  const orderedLessonParts = Object.fromEntries(
+    sortedLessonParts.map((field) => [field, LessonPlanSchema.shape[field]]),
+  );
+
+  const schema = z.object(orderedLessonParts).required();
 
   return await getLLMGeneration(
     {
-      prompt: buildPartialLessonPrompt({ ...context }),
+      prompt: buildPartialLessonPrompt({
+        lessonParts: sortedLessonParts,
+        year: context.year,
+      }),
       systemMessage: buildPartialLessonSystemMessage({
-        lessonParts: context.lessonParts,
+        ...context,
+        keyStage: derivedKeystage,
       }),
       schema: schema,
     },

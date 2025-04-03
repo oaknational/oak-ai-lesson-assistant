@@ -55,7 +55,7 @@ export const additionalMaterialsRouter = router({
         });
 
         if (!result) {
-          throw new Error("Failed to generate additional material");
+          throw new Error("Failed to generate additional material", result);
         }
 
         return result;
@@ -109,7 +109,7 @@ export const additionalMaterialsRouter = router({
         });
 
         if (!result) {
-          throw new Error("Failed to generate additional material");
+          throw new Error("Failed to generate additional material", result);
         }
 
         return result;

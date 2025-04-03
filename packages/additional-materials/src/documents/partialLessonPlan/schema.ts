@@ -12,28 +12,22 @@ export const LessonPlanKeysSchema = z.enum(
 export type LessonPlanKeysType = keyof z.infer<typeof LessonPlanSchema>;
 
 export type LessonPlanField = keyof z.infer<typeof LessonPlanSchema>;
-// export type PartialLessonPlanFieldKeys = Extract<
-//   LessonPlanField,
-//   | "learningOutcome"
-//   | "learningCycles"
-//   | "priorKnowledge"
-//   | "keyLearningPoints"
-//   | "misconceptions"
-//   | "keywords"
-//   | "starterQuiz"
-//   | "exitQuiz"
-// >;
+
 export const lessonFieldKeys = [
   "title",
   "keyStage",
   "subject",
   "learningOutcome",
+  "learningCycles",
   "priorKnowledge",
   "keyLearningPoints",
   "misconceptions",
   "keywords",
-  // "starterQuiz",
-  // "exitQuiz",
+  "starterQuiz",
+  "cycle1",
+  "cycle2",
+  "cycle3",
+  "exitQuiz",
 ] as const;
 
 export const partialLessonPlanFieldKeys = z.enum(lessonFieldKeys);
@@ -49,7 +43,8 @@ export const PartialLessonPlanFieldKeyArraySchema = z
   .nonempty();
 
 export const partialLessonContextSchema = z.object({
-  keyStage: z.string(),
+  keyStage: z.string().optional(),
+  year: z.string(),
   subject: z.string(),
   title: z.string(),
   lessonParts: PartialLessonPlanFieldKeyArraySchema,

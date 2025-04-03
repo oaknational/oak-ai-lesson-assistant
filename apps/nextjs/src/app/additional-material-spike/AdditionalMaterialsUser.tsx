@@ -46,25 +46,6 @@ const log = aiLogger("additional-materials");
 export function mapLessonPlanSections(
   lessonPlan: AilaPersistedChat["lessonPlan"],
 ) {
-  //   const sectionKeys = [
-  //     "title",
-  //     "keyStage",
-  //     "subject",
-  //     "topic",
-  //     "learningOutcome",
-  //     "learningCycles",
-  //     "priorKnowledge",
-  //     "keyLearningPoints",
-  //     "misconceptions",
-  //     "keywords",
-  //     "starterQuiz",
-  //     "cycle1",
-  //     "cycle2",
-  //     "cycle3",
-  //     "exitQuiz",
-  //     "additionalMaterials",
-  //   ];
-
   return lessonFieldKeys.map((key) => ({
     key,
     data: lessonPlan[key] ?? null,
@@ -136,6 +117,7 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
   const [keyStage, setKeyStage] = useState<string | null>(null);
   const [subject, setSubject] = useState<string | null>(null);
   const [title, setTitle] = useState<string | null>(null);
+  const [year, setYear] = useState<string | null>(null);
   const fetchMaterialModeration =
     trpc.additionalMaterials.generateAdditionalMaterialModeration.useMutation();
   const fetchMaterial =
@@ -168,19 +150,28 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
   useEffect(() => {
     if (action) {
       const systemMessage = buildPartialLessonSystemMessage({
-        lessonParts: lessonFields,
-      });
-      const prompt = buildPartialLessonPrompt({
         keyStage: keyStage ?? "",
         subject: subject ?? "",
         title: title ?? "",
+        year: year ?? "",
+      });
+      const prompt = buildPartialLessonPrompt({
+        lessonParts: lessonFields,
       });
       setPrompt({
         prompt,
         systemMessage,
       });
     }
-  }, [action, keyStage, lessonFields, pageData.lessonPlan, subject, title]);
+  }, [
+    action,
+    keyStage,
+    lessonFields,
+    pageData.lessonPlan,
+    subject,
+    title,
+    year,
+  ]);
 
   useEffect(() => {
     if (
@@ -209,6 +200,7 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
       title: title ?? "",
       subject: subject ?? "",
       keyStage: keyStage ?? "",
+      year: year ?? "",
       lessonParts: ["title", ...lessonFields],
     });
     setPageData({ lessonPlan: { ...res } });
@@ -262,8 +254,8 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
       <p>{lessonFields}</p>
 
       <OakTextInput
-        onChange={(value) => setKeyStage(value.target.value)}
-        placeholder="key stage"
+        onChange={(value) => setYear(value.target.value)}
+        placeholder="year (1-11)"
       />
       <OakTextInput
         onChange={(value) => setSubject(value.target.value)}
