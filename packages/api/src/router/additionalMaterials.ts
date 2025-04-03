@@ -57,8 +57,12 @@ export const additionalMaterialsRouter = router({
 
         return result;
       } catch (cause) {
+        const TrpcError = new Error("Failed to fetch additional materials", {
+          cause,
+        });
         log.error("Failed to fetch additional material", cause);
-        throw new Error("Failed to fetch additional material");
+        Sentry.captureException(TrpcError);
+        throw TrpcError;
       }
     }),
   generateAdditionalMaterialModeration: protectedProcedure

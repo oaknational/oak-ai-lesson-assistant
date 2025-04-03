@@ -1,3 +1,4 @@
+import { serializeError } from "serialize-error";
 import { ZodError, type ZodType } from "zod";
 
 import { type ProviderKey, providers } from ".";
@@ -18,11 +19,12 @@ export const getLLMGeneration = async <T>(
 
     return validatedDocumentObject;
   } catch (error) {
+    const serialized = serializeError(error);
     if (error instanceof ZodError) {
       throw new Error(
-        `Context schema validation failed: ${JSON.stringify(error.issues, null, 2)}`,
+        `Context schema validation failed: ${JSON.stringify(serialized)}`,
       );
     }
-    throw new Error(`Failed to generate : ${String(error)}`);
+    throw new Error(`Failed to generate : ${JSON.stringify(serialized)}`);
   }
 };
