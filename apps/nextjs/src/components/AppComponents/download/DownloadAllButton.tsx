@@ -3,13 +3,13 @@ import { toast } from "react-hot-toast";
 
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
+
 import { Box } from "@radix-ui/themes";
 import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
 import { z } from "zod";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { trackDownload } from "@/utils/trackDownload";
 import { trpc } from "@/utils/trpc";
 
 import { getExportsConfig } from "../../ExportsDialogs/exports.helpers";
@@ -18,6 +18,7 @@ import LoadingWheel from "../../LoadingWheel";
 import LessonIcon from "../../SVGParts/LessonIcon";
 import QuizIcon from "../../SVGParts/QuizIcon";
 import SlidesIcon from "../../SVGParts/SlidesIcon";
+import { trackDownload } from "./trackDownload";
 
 const log = aiLogger("chat");
 

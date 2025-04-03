@@ -1,6 +1,11 @@
-import type { KeyStageName, SubjectName, subjectsAndKeyStages } from "@oakai/core";
+import type {
+  KeyStageName,
+  SubjectName,
+  subjectsAndKeyStages,
+} from "@oakai/core";
 import { sendJudgementFeedbackEmail } from "@oakai/core/src/utils/sendJudgementFeedbackEmail";
-import { structuredLogger as logger, aiLogger } from "@oakai/logger";
+import { aiLogger, structuredLogger as logger } from "@oakai/logger";
+
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
@@ -20,11 +25,10 @@ interface QuestionForJudgement {
 }
 
 export const judgementRouter = router({
-  getAvailableKeyStageAndSubjectPairingsFromComparativeJudgement: protectedProcedure
-    .input(z.object({}))
-    .query(async ({ ctx }) => {
-      const keyStagesAndSubjects = await ctx.prisma.comparativeJudgement.findMany(
-        {
+  getAvailableKeyStageAndSubjectPairingsFromComparativeJudgement:
+    protectedProcedure.input(z.object({})).query(async ({ ctx }) => {
+      const keyStagesAndSubjects =
+        await ctx.prisma.comparativeJudgement.findMany({
           select: {
             questionForJudgement: {
               select: {
@@ -41,11 +45,10 @@ export const judgementRouter = router({
               },
             },
           },
-        }
-      );
+        });
 
       return reshapeSubjectAndKeyStageData(
-        keyStagesAndSubjects as QuestionForJudgement[]
+        keyStagesAndSubjects as QuestionForJudgement[],
       );
     }),
   getShareableComparisonFromId: protectedProcedure
@@ -83,21 +86,20 @@ export const judgementRouter = router({
       z.object({
         keyStage: z.string(),
         subject: z.string(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const { keyStage, subject } = input;
       const userId = ctx.auth.userId;
       if (typeof userId === "string") {
-        const userComparativeJudgements = await ctx.prisma.comparativeJudgementResult.findMany(
-          {
+        const userComparativeJudgements =
+          await ctx.prisma.comparativeJudgementResult.findMany({
             where: {
               userId: userId,
             },
-          }
-        );
-        const unjudgedQuestionsByUser = await ctx.prisma.comparativeJudgement.findFirst(
-          {
+          });
+        const unjudgedQuestionsByUser =
+          await ctx.prisma.comparativeJudgement.findFirst({
             where: {
               id: {
                 notIn: userComparativeJudgements.map((judgement) => {
@@ -128,8 +130,7 @@ export const judgementRouter = router({
                 },
               },
             },
-          }
-        );
+          });
 
         return unjudgedQuestionsByUser;
       }
@@ -140,7 +141,7 @@ export const judgementRouter = router({
         judgementId: z.string(),
         winnerId: z.string(),
         reason: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const { judgementId, winnerId, reason } = input;
@@ -168,7 +169,7 @@ export const judgementRouter = router({
         flaggedOrSkipped: z
           .union([z.literal("FLAGGED"), z.literal("SKIPPED")])
           .nullable(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const { judgementId, flaggedOrSkipped } = input;
@@ -201,15 +202,11 @@ export const judgementRouter = router({
           contentIsFactuallyIncorrect: z.boolean(),
           contentIsNotHelpful: z.boolean(),
         }),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
-      const {
-        feedback,
-        user,
-        judgementId,
-        flaggedAnswerAndDistractorId,
-      } = input;
+      const { feedback, user, judgementId, flaggedAnswerAndDistractorId } =
+        input;
       // We currently have some inconsistencies with zod generated
       // types in which value is coming back as potentially undefined
       // so cast it here for now
@@ -222,7 +219,7 @@ export const judgementRouter = router({
 
       logger.debug(
         "Giving feedback for generation %s",
-        flaggedAnswerAndDistractorId
+        flaggedAnswerAndDistractorId,
       );
 
       try {

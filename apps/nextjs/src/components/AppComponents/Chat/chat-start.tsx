@@ -3,8 +3,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
-import { useUser } from "@clerk/nextjs";
 import { aiLogger } from "@oakai/logger";
+
+import { useUser } from "@clerk/nextjs";
 import { Flex } from "@radix-ui/themes";
 import * as Sentry from "@sentry/nextjs";
 import { useRouter } from "next/navigation";
@@ -23,7 +24,7 @@ import EmptyScreenAccordion from "./empty-screen-accordion";
 
 const log = aiLogger("chat");
 
-const exampleMessages = [
+export const exampleMessages = [
   {
     heading: "History • Key stage 3 • The end of Roman Britain ",
     message:

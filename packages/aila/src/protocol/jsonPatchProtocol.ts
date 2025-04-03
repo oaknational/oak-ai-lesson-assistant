@@ -1,8 +1,9 @@
 import { moderationCategoriesSchema } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { aiLogger } from "@oakai/logger";
+
 import * as Sentry from "@sentry/nextjs";
 import type { Operation } from "fast-json-patch";
-import { applyPatch, deepClone, JsonPatchError } from "fast-json-patch";
+import { JsonPatchError, applyPatch, deepClone } from "fast-json-patch";
 import * as immer from "immer";
 import untruncateJson from "untruncate-json";
 import { z } from "zod";
@@ -755,6 +756,15 @@ export function parseMessageParts(content: string): MessagePart[] {
     .filter((part) => part !== undefined)
     .flat();
   return messageParts;
+}
+
+export function userMessageTextPart(content: string): MessagePart {
+  return {
+    type: "message-part",
+    document: { type: "text", value: content.trim() },
+    id: `${0}`,
+    isPartial: false,
+  };
 }
 
 const timeOperation = <T>(fn: () => T): T => {

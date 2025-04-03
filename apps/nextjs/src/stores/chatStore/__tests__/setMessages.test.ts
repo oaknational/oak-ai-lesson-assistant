@@ -1,91 +1,15 @@
 import type { GetStore } from "@/stores/AilaStoresProvider";
 import type { TrpcUtils } from "@/utils/trpc";
 
-import { createChatStore, type ChatState } from "..";
+import { type ChatState, createChatStore } from "..";
 import type { AiMessage } from "../types";
+import { createMessageStates } from "./messageStates";
 
 const fixedDate = new Date("2023-01-01T12:00:00.000Z");
 
-const executeQueuedAction = jest.fn();
+const messageStates = createMessageStates(fixedDate);
 
-const messageStates: { [key: string]: AiMessage[] } = {
-  userRequest: [
-    {
-      content:
-        "Create a lesson plan about the end of Roman Britain for key stage 3 history",
-      role: "user",
-      id: "u-xE6aXHnAeBTzFTu8",
-      createdAt: fixedDate,
-    },
-  ],
-  stableMessages: [
-    {
-      content:
-        "Create a lesson plan about the end of Roman Britain for key stage 3 history",
-      role: "user",
-      id: "u-ROEdSl4mxvurLJqg",
-      createdAt: fixedDate,
-    },
-    {
-      id: "a-G7_z8CnQIGUjdFEk",
-      role: "assistant",
-      content:
-        '\n␞\n{"type":"patch","reasoning":"generated","value":{"op":"add","path":"/title","value":"The end of Roman Britain"},"status":"complete"}\n␞\n\n␞\n{"type":"patch","reasoning":"generated","value":{"op":"add","path":"/subject","value":"history"},"status":"complete"}\n␞\n\n␞\n{"type":"patch","reasoning":"generated","value":{"op":"add","path":"/keyStage","value":"key-stage-3"},"status":"complete"}\n␞\n\n␞\n{"type":"comment","value":"CHAT_START"}\n␞\n{"type":"llmMessage","sectionsToEdit":[],"patches":[],"sectionsEdited":[],"prompt":{"type":"text","value":"These Oak lessons might be relevant:\\n1. The End of Roman Britain\\n2. Anglo-Saxon Society and the Dark Ages\\n3. The Anglo-Saxon Kingdoms\\n4. The arrival of the Anglo-Saxons\\n5. The return of towns in Anglo-Saxon Britain\\n\\nTo base your lesson on one of these existing Oak lessons, type the lesson number. Tap **Continue** to start from scratch."},"status":"complete"}\n␞\n{"type":"id","value":"a-G7_z8CnQIGUjdFEk"}\n␞\n\n␞\n{"type":"comment","value":"MODERATION_START"}\n␞\n\n␞\n{"type":"comment","value":"MODERATING"}\n␞\n\n␞\n{"type":"moderation","categories":[],"id":"cm6uzvfh1000nn41l37dl414n"}\n␞\n\n␞\n{"type":"comment","value":"CHAT_COMPLETE"}\n␞\n',
-      createdAt: fixedDate,
-    },
-    {
-      content: "continue",
-      role: "user",
-      id: "u-U53lt6NJM6Pqjz4L",
-      createdAt: fixedDate,
-    },
-    {
-      id: "a-MA06spVOqZu1-MaD",
-      role: "assistant",
-      content:
-        '\n␞\n{"type":"comment","value":"CHAT_START"}\n␞\n{"type":"llmMessage","sectionsToEdit":[],"patches":[{"type":"patch","reasoning":"Setting the learning outcome to establish the focus of the lesson by detailing the impact of the Roman Empire\'s departure from Britain.","value":{"type":"string","op":"add","path":"/learningOutcome","value":"I can describe the impact of the Roman Empire\'s departure from Britain."},"status":"complete"}],"sectionsEdited":["learningOutcome"],"prompt":{"type":"text","value":"Is the learning outcome appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step."},"status":"complete"}\n␞\n{"type":"id","value":"a-MA06spVOqZu1-MaD"}\n␞\n\n␞\n{"type":"comment","value":"MODERATION_START"}\n␞\n\n␞\n{"type":"comment","value":"MODERATING"}\n␞\n',
-      createdAt: fixedDate,
-    },
-  ],
-  stableAndStreaming: [
-    {
-      content:
-        "Create a lesson plan about the end of Roman Britain for key stage 3 history",
-      role: "user",
-      id: "u-ROEdSl4mxvurLJqg",
-      createdAt: fixedDate,
-    },
-    {
-      id: "a-G7_z8CnQIGUjdFEk",
-      role: "assistant",
-      content:
-        '\n␞\n{"type":"patch","reasoning":"generated","value":{"op":"add","path":"/title","value":"The end of Roman Britain"},"status":"complete"}\n␞\n\n␞\n{"type":"patch","reasoning":"generated","value":{"op":"add","path":"/subject","value":"history"},"status":"complete"}\n␞\n\n␞\n{"type":"patch","reasoning":"generated","value":{"op":"add","path":"/keyStage","value":"key-stage-3"},"status":"complete"}\n␞\n\n␞\n{"type":"comment","value":"CHAT_START"}\n␞\n{"type":"llmMessage","sectionsToEdit":[],"patches":[],"sectionsEdited":[],"prompt":{"type":"text","value":"These Oak lessons might be relevant:\\n1. The End of Roman Britain\\n2. Anglo-Saxon Society and the Dark Ages\\n3. The Anglo-Saxon Kingdoms\\n4. The arrival of the Anglo-Saxons\\n5. The return of towns in Anglo-Saxon Britain\\n\\nTo base your lesson on one of these existing Oak lessons, type the lesson number. Tap **Continue** to start from scratch."},"status":"complete"}\n␞\n{"type":"id","value":"a-G7_z8CnQIGUjdFEk"}\n␞\n\n␞\n{"type":"comment","value":"MODERATION_START"}\n␞\n\n␞\n{"type":"comment","value":"MODERATING"}\n␞\n\n␞\n{"type":"moderation","categories":[],"id":"cm6uzvfh1000nn41l37dl414n"}\n␞\n\n␞\n{"type":"comment","value":"CHAT_COMPLETE"}\n␞\n',
-      createdAt: fixedDate,
-    },
-    {
-      content: "continue",
-      role: "user",
-      id: "u-U53lt6NJM6Pqjz4L",
-      createdAt: fixedDate,
-    },
-    {
-      id: "TEMP_PENDING_wNvS0UN9dKM6eCgmLU54w",
-      role: "assistant",
-      content:
-        '\n␞\n{"type":"comment","value":"CHAT_START"}\n␞\n{"type":"llmMessage","sectionsToEdit":[],"patches":[{"type":"patch","reasoning":"Setting the learning outcome to ',
-      createdAt: fixedDate,
-    },
-  ],
-  streamingMessage: [
-    {
-      id: "TEMP_PENDING_wNvS0UN9dKM6eCgmLU54w",
-      role: "assistant",
-      content:
-        '\n␞\n{"type":"comment","value":"CHAT_START"}\n␞\n{"type":"llmMessage","sectionsToEdit":["learningOutcome","learningCycles","priorKnowledge","keyLearningPoints"],"patches":[{"type":"patch","reasoning":"Set the learning outcome to focus the lesson on the impact of the Roman Empire\'s departure from Britain.","value":{"type":"string","op":"add","path":"/learningOutcome","value":"I can describe the impact of the Roman Empire\'s departure from Britain."},"status":"complete"},{"type":"patch","reasoning":"Break down the learning outcome into specific learning cycles to guide the lesson structure.","value":{"type":"string-array","op":"add","path":"/learningCycles","value":["Explain why the Roman Empire left Britain","Describe the changes in Britain after the Romans left","Recognise the role of archaeologists in understanding Roman Britain"]},"status":"complete"},{"type":"',
-      createdAt: fixedDate,
-    },
-  ],
-};
+const executeQueuedAction = jest.fn();
 
 const id = "test-id";
 const trpcUtils = {} as unknown as TrpcUtils;
@@ -102,14 +26,14 @@ describe("Chat Store setMessages", () => {
     const store = setupStore();
 
     expect(() => {
-      store.getState().setMessages([], true);
+      store.getState().actions.setMessages([], true);
     }).toThrow();
   });
 
   test("expected state when there no messages, loading false", () => {
     const store = setupStore();
     const initialState = store.getState();
-    store.getState().setMessages([], false);
+    store.getState().actions.setMessages([], false);
     const newState = store.getState();
 
     expect(newState.streamingMessage).toBe(null);
@@ -125,7 +49,7 @@ describe("Chat Store setMessages", () => {
 
     store
       .getState()
-      .setMessages(messageStates.streamingMessage as AiMessage[], true);
+      .actions.setMessages(messageStates.streamingMessage as AiMessage[], true);
 
     const newState = store.getState();
 
@@ -141,7 +65,10 @@ describe("Chat Store setMessages", () => {
 
     store
       .getState()
-      .setMessages(messageStates.stableAndStreaming as AiMessage[], true);
+      .actions.setMessages(
+        messageStates.stableAndStreaming as AiMessage[],
+        true,
+      );
 
     const newState = store.getState();
 
@@ -156,7 +83,7 @@ describe("Chat Store setMessages", () => {
     const store = setupStore();
     store
       .getState()
-      .setMessages(messageStates.stableMessages as AiMessage[], true);
+      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
 
     const newState = store.getState();
     expect(newState.stableMessages.length).toBe(
@@ -170,7 +97,7 @@ describe("Chat Store setMessages", () => {
     const store = setupStore();
     store
       .getState()
-      .setMessages(messageStates.userRequest as AiMessage[], false);
+      .actions.setMessages(messageStates.userRequest as AiMessage[], false);
 
     const newState = store.getState();
 
@@ -195,7 +122,7 @@ describe("Chat Store setMessages", () => {
           },
         ],
         hasError: false,
-        isEditing: true,
+        isEditing: false,
       },
     ]);
 
@@ -206,7 +133,7 @@ describe("Chat Store setMessages", () => {
     const store = setupStore();
     store
       .getState()
-      .setMessages(messageStates.streamingMessage as AiMessage[], true);
+      .actions.setMessages(messageStates.streamingMessage as AiMessage[], true);
 
     const newState = store.getState();
     expect(newState.streamingMessage?.parts).toBeDefined();
@@ -219,13 +146,13 @@ describe("Chat Store setMessages", () => {
     const store = setupStore();
     store
       .getState()
-      .setMessages(messageStates.stableMessages as AiMessage[], true);
+      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
 
     const initialState = store.getState();
 
     store
       .getState()
-      .setMessages(messageStates.stableMessages as AiMessage[], true);
+      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
 
     const newState = store.getState();
 
@@ -240,11 +167,11 @@ describe("Chat Store setMessages", () => {
     store.subscribe((state) => renderSpy(state.stableMessages));
     store
       .getState()
-      .setMessages(messageStates.stableMessages as AiMessage[], true);
+      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
     const initialState = store.getState();
     store
       .getState()
-      .setMessages(messageStates.stableMessages as AiMessage[], true);
+      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
     const newState = store.getState();
     expect(renderSpy).toHaveBeenCalledTimes(2);
     expect(newState.stableMessages).toBe(initialState.stableMessages);
@@ -254,12 +181,12 @@ describe("Chat Store setMessages", () => {
     const store = setupStore();
     store
       .getState()
-      .setMessages(messageStates.stableMessages as AiMessage[], true);
+      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
     expect(store.getState().ailaStreamingStatus).toBe("Moderating");
 
     store
       .getState()
-      .setMessages(messageStates.userRequest as AiMessage[], false);
+      .actions.setMessages(messageStates.userRequest as AiMessage[], false);
     expect(store.getState().ailaStreamingStatus).toBe("Idle");
   });
 });

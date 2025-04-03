@@ -2,16 +2,16 @@
   "name": "@oakai/rag",
   "version": "1.0.0",
   "description": "",
-  "keywords": [],
-  "license": "ISC",
+  "license": "MIT",
   "author": "",
   "main": "./index.ts",
   "types": "./index.ts",
   "scripts": {
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "pnpm with-env jest --config jest.config.mjs",
     "type-check": "tsc --noEmit",
-    "with-env": "dotenv -e ../../.env --",
-    "test": "pnpm with-env jest --colors --config jest.config.mjs"
+    "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@oakai/prettier-config",
   "dependencies": {

@@ -2,33 +2,40 @@
   "name": "@oakai/nextjs",
   "version": "1.0.0",
   "private": true,
+  "license": "MIT",
   "scripts": {
+    "aila": "tsx scripts/aila-cli.ts",
     "build": "next build",
+    "build-storybook": "dotenv -e ../../.env -- storybook build",
     "build:dev": "pnpm with-env next build",
     "check": "tsc --noEmit",
+    "chromatic": "pnpm with-env pnpm dlx chromatic",
     "clean": "rm -rf .next .turbo node_modules",
     "dev": "FORCE_COLOR=1 SENTRY_SUPPRESS_TURBOPACK_WARNING=1 pnpm with-env next dev --port 2525 --turbo | pino-pretty -C",
-    "dev:sentry": "FORCE_COLOR=1 pnpm with-env next dev --port 2525 | pino-pretty -C",
     "dev-trace-deprecation": "NODE_OPTIONS=\"--trace-deprecation\" next dev --port 2525 | pino-pretty -C",
+    "dev:sentry": "FORCE_COLOR=1 pnpm with-env next dev --port 2525 | pino-pretty -C",
     "lint": "eslint .",
-    "lint-fix": "next lint --fix",
     "lint-debug": "eslint --debug .",
+    "lint:fix": "eslint . --fix",
     "start": "next start",
-    "type-check": "tsc --noEmit",
-    "test": "pnpm with-env jest --colors --config jest.config.mjs",
-    "test:seq": "pnpm with-env jest --colors --config jest.config.mjs --verbose --runInBand --no-cache",
+    "storybook": "dotenv -e ../../.env -- storybook dev -p 6006 --no-open",
+    "test": "pnpm with-env jest --config jest.config.mjs",
+    "test-coverage": "COLLECT_TEST_COVERAGE=true pnpm with-env jest --config jest.config.mjs --coverage",
     "test-e2e": "pnpm with-env playwright test",
     "test-e2e-ui": "pnpm with-env playwright test --ui",
-    "test-e2e-ui-serve": "pnpm build && pnpm start --port 4848 --turbo",
     "test-e2e-ui-built": "PORT=4848 pnpm with-env playwright test --ui",
-    "test-coverage": "COLLECT_TEST_COVERAGE=true pnpm with-env jest --colors --config jest.config.mjs --coverage",
-    "with-env": "dotenv -e ../../.env --",
-    "aila": "tsx scripts/aila-cli.ts",
-    "storybook": "dotenv -e ../../.env -- storybook dev -p 6006 --no-open",
-    "build-storybook": "dotenv -e ../../.env -- storybook build",
-    "chromatic": "pnpm with-env pnpm dlx chromatic"
+    "test-e2e-ui-serve": "pnpm build && pnpm start --port 4848 --turbo",
+    "test:seq": "pnpm with-env jest --config jest.config.mjs --verbose --runInBand --no-cache",
+    "type-check": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@oakai/prettier-config",
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": "@oakai/eslint-config"
+  },
   "dependencies": {
     "@clerk/nextjs": "5.7.2",
     "@clerk/testing": "^1.3.7",
@@ -40,6 +47,7 @@
     "@headlessui/react": "^1.7.17",
     "@langchain/community": "^0.0.26",
     "@mux/mux-player-react": "^2.9.1",
+    "@oakai/additional-materials": "*",
     "@oakai/aila": "*",
     "@oakai/api": "*",
     "@oakai/core": "*",
@@ -72,7 +80,7 @@
     "ai": "^4.0.20",
     "american-british-english-translator": "^0.2.1",
     "archiver": "^7.0.1",
-    "axios": "^1.6.8",
+    "axios": "^1.8.2",
     "base64url": "^3.0.1",
     "better-react-mathjax": "2.0.4-beta1",
     "class-variance-authority": "^0.7.0",
@@ -136,7 +144,7 @@
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/typescript": "^4.0.9",
     "@graphql-codegen/typescript-operations": "^4.2.3",
-    "@playwright/test": "^1.47.0",
+    "@playwright/test": "^1.51.1",
     "@sentry/webpack-plugin": "^2.21.1",
     "@storybook/addon-essentials": "^8.4.1",
     "@storybook/addon-interactions": "^8.4.1",
@@ -164,7 +172,7 @@
     "postcss": "^8.4.32",
     "tailwindcss": "^3.3.7",
     "ts-jest": "^29.2.5",
-    "typescript": "5.7.2",
+    "typescript": "5.8.2",
     "web-streams-polyfill": "^4.0.0"
   },
   "engines": {
@@ -175,12 +183,5 @@
     "workerDirectory": [
       ".storybook/public"
     ]
-  },
-  "eslintConfig": {
-    "extends": "@oakai/eslint-config",
-    "parserOptions": {
-      "project": "./tsconfig.json"
-    },
-    "rules": {}
   }
 }

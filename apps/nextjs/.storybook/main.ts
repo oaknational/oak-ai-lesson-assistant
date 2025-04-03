@@ -1,5 +1,5 @@
 import type { StorybookConfig } from "@storybook/nextjs";
-import { join, dirname, resolve } from "path";
+import { dirname, join, resolve } from "path";
 import webpack from "webpack";
 
 process.env.NEXT_PUBLIC_DEBUG = process.env.DEBUG;

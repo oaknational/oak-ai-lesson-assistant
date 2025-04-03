@@ -1,39 +1,46 @@
-import eslint from '@eslint/js';
-import tsEslint from '@typescript-eslint/eslint-plugin';
-import tsParser from '@typescript-eslint/parser';
-import importPlugin from 'eslint-plugin-import';
-import jestPlugin from 'eslint-plugin-jest';
-import nextPlugin from '@next/eslint-plugin-next';
-import storybookPlugin from 'eslint-plugin-storybook';
-import reactHooksPlugin from "eslint-plugin-react-hooks";
+import cspellPlugin from "@cspell/eslint-plugin";
+import eslint from "@eslint/js";
+import nextPlugin from "@next/eslint-plugin-next";
+import tsEslint from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
+import prettierConfig from "eslint-config-prettier";
+import importPlugin from "eslint-plugin-import";
+import jestPlugin from "eslint-plugin-jest";
+import packageJsonRecommended from "eslint-plugin-package-json/configs/recommended";
 import reactPlugin from "eslint-plugin-react";
-import turboPlugin from 'eslint-plugin-turbo';
-import prettierConfig from 'eslint-config-prettier';
-import globals from 'globals';
-import { ignores } from "./ignores.mjs";
-import { rules } from "./rules.mjs";
+import reactHooksPlugin from "eslint-plugin-react-hooks";
+import storybookPlugin from "eslint-plugin-storybook";
+import turboPlugin from "eslint-plugin-turbo";
+import globals from "globals";
+import jsonParser from "jsonc-eslint-parser";
+import path from "path";
+import { fileURLToPath } from "url";
 
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { ignores } from "./ignores.mjs";
+import { javascriptRules, rules } from "./rules.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const projectRoot = path.resolve(__dirname, '../../..');
+const projectRoot = path.resolve(__dirname, "../../..");
+
+// Define the path to the .cspell.json file in the root of the monorepo
+const cspellConfigPath = path.resolve(projectRoot, "cspell.json");
 
 const packages = [
-  { dir: 'apps/nextjs', isReact: true, isBrowser: true },
-  { dir: 'packages/logger', isBrowser: true, allowConsole: true },
-  { dir: 'packages/ingest' },
-  { dir: 'packages/exports' },
-  { dir: 'packages/eslint-config' },
-  { dir: 'packages/db' },
-  { dir: 'packages/core' },
-  { dir: 'packages/api' },
-  { dir: 'packages/aila' },
-  { dir: 'packages/rag' },
+  { dir: "apps/nextjs", isReact: true, isBrowser: true },
+  { dir: "packages/logger", isBrowser: true, allowConsole: true },
+  { dir: "packages/ingest" },
+  { dir: "packages/exports" },
+  { dir: "packages/eslint-config" },
+  { dir: "packages/db" },
+  { dir: "packages/core" },
+  { dir: "packages/api" },
+  { dir: "packages/aila" },
+  { dir: "packages/rag" },
+  { dir: "packages/additional-materials" },
 ];
 
-const packageConfigs = packages.map(pkg => ({
+const packageConfigs = packages.map((pkg) => ({
   files: [`**/${pkg.dir}/**/*.{ts,tsx}`],
   languageOptions: {
     parser: tsParser,
@@ -49,40 +56,50 @@ const packageConfigs = packages.map(pkg => ({
       ...globals.node,
       ...globals.jest,
       ...(pkg.isBrowser ? globals.browser : {}),
-      "NodeJS": "readonly",
-      ...(pkg.isReact ? { "React": "readonly" } : {}),
+      NodeJS: "readonly",
+      ...(pkg.isReact ? { React: "readonly" } : {}),
     },
   },
   plugins: {
-    '@typescript-eslint': tsEslint,
-    'import': importPlugin,
-    'jest': jestPlugin,
-    'turbo': turboPlugin,
-    ...(pkg.isReact ? {
-      "next": nextPlugin,
-      "storybook": storybookPlugin,
-      "react-hooks": reactHooksPlugin,
-      "react": reactPlugin,
-    } : {}),
+    "@typescript-eslint": tsEslint,
+    "@cspell": cspellPlugin,
+    import: importPlugin,
+    jest: jestPlugin,
+    turbo: turboPlugin,
+    ...(pkg.isReact
+      ? {
+          next: nextPlugin,
+          storybook: storybookPlugin,
+          "react-hooks": reactHooksPlugin,
+          react: reactPlugin,
+        }
+      : {}),
   },
   rules: {
     ...rules,
-    ...(pkg.isReact ? {
-      "react/jsx-no-comment-textnodes": "warn",
-      "react-hooks/exhaustive-deps": "error",
-      "react-hooks/rules-of-hooks": "error",
-    } : {}),
-    ...(pkg.allowConsole ? {
-      "no-console": "off", 
-    } : {}),
+    ...(pkg.isReact
+      ? {
+          "react/jsx-no-comment-textnodes": "warn",
+          "react-hooks/exhaustive-deps": "error",
+          "react-hooks/rules-of-hooks": "error",
+        }
+      : {}),
+    ...(pkg.allowConsole
+      ? {
+          "no-console": "off",
+        }
+      : {}),
   },
   settings: {
     "import/resolver": {
       typescript: {
         project: [`${pkg.dir}/tsconfig.json`],
-        alwaysTryTypes: true
+        alwaysTryTypes: true,
       },
       node: true,
+    },
+    "@cspell/spellchecker": {
+      configFile: cspellConfigPath,
     },
   },
 }));
@@ -92,49 +109,93 @@ const config = [
   ignores,
   eslint.configs.recommended,
   prettierConfig,
+  packageJsonRecommended,
   {
-    files: ['**/*.cjs'],
+    files: ["**/*.json"],
     languageOptions: {
-      parser: tsParser,
-      parserOptions: {
-        sourceType: 'script',
-        ecmaVersion: "latest",
-      },
-      globals: {
-        ...globals.node,
-        ...globals.jest,
-        ...globals.browser,
-        "console": "readonly",
-      },
+      parser: jsonParser,
     },
   },
   {
-    files: ['**/*.{js,mjs}'],
+    files: ["**/turbo.json"],
     languageOptions: {
-      parser: tsParser,
+      parser: jsonParser,
       parserOptions: {
-        sourceType: 'module',
-        ecmaVersion: "latest",
-      },
-      globals: {
-        ...globals.node,
-        ...globals.jest,
-        ...globals.browser,
-        "console": "readonly",
+        jsonSyntax: "JSON",
       },
     },
     plugins: {
-      '@typescript-eslint': tsEslint,
-      'import': importPlugin,
+      turbo: turboPlugin,
     },
     rules: {
-      '@typescript-eslint/no-require-imports': 'off',
-      'import/no-commonjs': 'off',
-      '@typescript-eslint/ban-ts-comment': 'off',
+      "turbo/no-undeclared-env-vars": "error",
+    },
+    settings: {
+      turbo: {
+        // Optional: Add any specific turbo settings here if needed
+      },
+    },
+  },
+  {
+    files: ["**/*.cjs"],
+    plugins: {
+      "@cspell": cspellPlugin,
+    },
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        sourceType: "script",
+        ecmaVersion: "latest",
+      },
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+        ...globals.browser,
+        console: "readonly",
+      },
+    },
+    rules: {
+      ...javascriptRules,
+    },
+    settings: {
+      "@cspell/spellchecker": {
+        configFile: cspellConfigPath,
+      },
+    },
+  },
+  {
+    files: ["**/*.{js,mjs}"],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        sourceType: "module",
+        ecmaVersion: "latest",
+      },
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+        ...globals.browser,
+        console: "readonly",
+      },
+    },
+    plugins: {
+      "@typescript-eslint": tsEslint,
+      "@cspell": cspellPlugin,
+      import: importPlugin,
+    },
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+      "import/no-commonjs": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
+      ...javascriptRules,
+    },
+    settings: {
+      "@cspell/spellchecker": {
+        configFile: cspellConfigPath,
+      },
     },
   },
   ...packageConfigs,
-  // Special case for prisma zod-schemas
   {
     files: ["**/packages/db/prisma/zod-schemas/*.ts"],
     languageOptions: {
@@ -147,11 +208,16 @@ const config = [
       },
     },
     plugins: {
-      '@typescript-eslint': tsEslint,
+      "@typescript-eslint": tsEslint,
     },
     rules: {
-      '@typescript-eslint/no-import-type-side-effects': 'off',
-      '@typescript-eslint/consistent-type-imports': 'off',
+      "@typescript-eslint/no-import-type-side-effects": "off",
+      "@typescript-eslint/consistent-type-imports": "off",
+    },
+    settings: {
+      "@cspell/spellchecker": {
+        configFile: cspellConfigPath,
+      },
     },
   },
 ];

@@ -3,6 +3,7 @@ import type {
   LessonPlanSectionWhileStreaming,
 } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
+
 import { OakFlex } from "@oaknational/oak-components";
 import { MathJax } from "better-react-mathjax";
 

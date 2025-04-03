@@ -59,7 +59,7 @@ const Header = ({ menuOpen, setMenuOpen }: Readonly<HeaderProps>) => {
 
         <HeaderAuth />
 
-        <div className=" h-22 py-8">
+        <div className="h-22 py-8">
           <HamburgerButton onClick={() => setMenuOpen(!menuOpen)}>
             <OakIcon $colorFilter={"black"} iconName="hamburger" />
           </HamburgerButton>

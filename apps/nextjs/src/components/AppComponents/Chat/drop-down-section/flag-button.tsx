@@ -4,11 +4,12 @@ import { toast } from "react-hot-toast";
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
 import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import type { AilaUserFlagType } from "@oakai/db";
+
 import { OakBox, OakP, OakRadioGroup } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/nextjs";
 import styled from "styled-components";
 
-import { useLessonPlanStore, useChatStore } from "@/stores/AilaStoresProvider";
+import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
 import ActionButton from "./action-button";

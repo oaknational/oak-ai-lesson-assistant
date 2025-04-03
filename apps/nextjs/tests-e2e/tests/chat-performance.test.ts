@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { type Page, expect, test } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
@@ -27,7 +27,7 @@ test.describe("Component renders during lesson chat", () => {
     });
   });
 
-  // this is disabled because react scan is not currently working in preview deplyments.
+  // this is disabled because react scan is not currently working in preview deployments.
   test.skip("There are no unnecessary rerenders across left and right side of chat", async ({
     page,
   }) => {

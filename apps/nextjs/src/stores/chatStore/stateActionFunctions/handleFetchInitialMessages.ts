@@ -1,10 +1,12 @@
 import { aiLogger } from "@oakai/logger";
+
 import * as Sentry from "@sentry/nextjs";
 import invariant from "tiny-invariant";
 
+import type { GetStore } from "@/stores/AilaStoresProvider";
 import type { TrpcUtils } from "@/utils/trpc";
 
-import type { ChatSetter, ChatGetter, AiMessage } from "../types";
+import type { AiMessage, ChatGetter, ChatSetter } from "../types";
 
 const log = aiLogger("chat:store");
 
@@ -16,7 +18,8 @@ function isValidMessageRole(role: unknown): role is AiMessage["role"] {
 }
 
 export const handleFetchInitialMessages =
-  (set: ChatSetter, get: ChatGetter, trpc: TrpcUtils) => async () => {
+  (set: ChatSetter, get: ChatGetter, getStore: GetStore, trpc: TrpcUtils) =>
+  async () => {
     log.info("Fetching initial messages");
     try {
       const id = get().id;
@@ -32,7 +35,8 @@ export const handleFetchInitialMessages =
 
       if (startingMessage) {
         log.info("Appending starting message");
-        get().append(startingMessage);
+        getStore("lessonPlanTracking").actions.clickedStart(startingMessage);
+        get().actions.append(startingMessage);
       }
       log.info(`Set initial messages for AI SDK from DB`);
     } catch (err) {

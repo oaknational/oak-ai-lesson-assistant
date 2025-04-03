@@ -1,5 +1,6 @@
-import { Client } from "@elastic/elasticsearch";
 import { aiLogger } from "@oakai/logger";
+
+import { Client } from "@elastic/elasticsearch";
 import { z } from "zod";
 
 import type { QuizPath } from "../../protocol/schema";

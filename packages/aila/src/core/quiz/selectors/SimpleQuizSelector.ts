@@ -1,5 +1,5 @@
 import type { BaseType, MaxRatingFunctionApplier } from "../ChoiceModels";
-import { selectHighestRated, type RatingFunction } from "../ChoiceModels";
+import { type RatingFunction, selectHighestRated } from "../ChoiceModels";
 import { BaseQuizSelector } from "./BaseQuizSelector";
 
 export class SimpleQuizSelector<

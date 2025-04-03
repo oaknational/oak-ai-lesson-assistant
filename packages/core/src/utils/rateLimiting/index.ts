@@ -1,6 +1,4 @@
-import { Ratelimit as RateLimit } from "@upstash/ratelimit";
-import { kv } from "@vercel/kv";
-
+import { slidingWindowRateLimiter } from "./slidingWindowRateLimiter";
 import { userBasedRateLimiter } from "./userBasedRateLimiter";
 
 if (!process.env.RATELIMIT_GENERATIONS_PER_24H) {
@@ -31,28 +29,31 @@ const DEMO_APP_SESSIONS_PER_30D = parseInt(
 
 export const rateLimits = {
   generations: {
-    standard: userBasedRateLimiter(
-      new RateLimit({
-        redis: kv,
-        prefix: "rateLimit:generations:standard",
-        limiter: RateLimit.slidingWindow(GENERATIONS_PER_24H, "24 h"),
-      }),
-    ),
-    demo: userBasedRateLimiter(
-      new RateLimit({
-        redis: kv,
-        prefix: "rateLimit:generations:demo",
-        limiter: RateLimit.slidingWindow(DEMO_GENERATIONS_PER_30D, "30 d"),
-      }),
-    ),
+    standard: userBasedRateLimiter({
+      prefix: "rateLimit:generations:standard",
+      limit: (isOakUser, privateMetadata) => {
+        const customRateLimit = privateMetadata["customRateLimit"];
+        if (typeof customRateLimit === "number") {
+          return customRateLimit;
+        }
+        if (isOakUser) {
+          return 1000;
+        }
+        return GENERATIONS_PER_24H;
+      },
+      window: "24 h",
+    }),
+    demo: slidingWindowRateLimiter({
+      prefix: "rateLimit:generations:demo",
+      limit: DEMO_GENERATIONS_PER_30D,
+      window: "30 d",
+    }),
   },
   appSessions: {
-    demo: userBasedRateLimiter(
-      new RateLimit({
-        redis: kv,
-        prefix: "rateLimit:lessons:demo",
-        limiter: RateLimit.slidingWindow(DEMO_APP_SESSIONS_PER_30D, "30 d"),
-      }),
-    ),
+    demo: slidingWindowRateLimiter({
+      prefix: "rateLimit:lessons:demo",
+      limit: DEMO_APP_SESSIONS_PER_30D,
+      window: "30 d",
+    }),
   },
 } as const;
