@@ -5,6 +5,7 @@ import type {
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
+
 import { MathJax } from "better-react-mathjax";
 
 import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
