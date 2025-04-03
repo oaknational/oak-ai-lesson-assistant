@@ -78,6 +78,7 @@ describe("BasedOnRagAilaQuizReranker", () => {
           mockLessonPlan,
           testRatingSchema,
           mockQuizType,
+          false,
         ),
       ).rejects.toThrow("Missing parsed response from OpenAI");
     });
@@ -116,6 +117,7 @@ describe("BasedOnRagAilaQuizReranker", () => {
         mockLessonPlan,
         testRatingSchema,
         mockQuizType,
+        false,
       );
 
       expect(result).toHaveLength(1);

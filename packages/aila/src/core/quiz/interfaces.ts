@@ -104,6 +104,7 @@ export interface FullQuizService {
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+    override?: boolean,
   ): Promise<QuizQuestion[]>;
 }
 
