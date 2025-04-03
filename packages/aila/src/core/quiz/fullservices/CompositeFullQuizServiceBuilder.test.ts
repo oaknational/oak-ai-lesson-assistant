@@ -183,7 +183,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         quizRatingSchema: testRatingSchema,
         quizSelector: "simple",
         quizReranker: "return-first",
-        quizGenerators: ["rag", "basedOnRag"], // Only include rag generator to test fallback behavior
+        quizGenerators: ["basedOnRag", "rag"], // Only include rag generator to test fallback behavior
       };
       const service = builder.build(settings);
 
