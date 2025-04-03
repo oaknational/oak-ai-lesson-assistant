@@ -18,6 +18,7 @@ export const OpenAIProvider = {
       model: openai("gpt-4-turbo"),
       system: systemMessage,
     });
+
     return schema.parse(object);
   },
 };

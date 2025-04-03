@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
+import { serializeError } from "serialize-error";
 
 import { type ProviderKey, providers } from "../aiProviders";
 import type { DocumentConfig } from "./documentConfig";
@@ -36,9 +37,10 @@ export const generateDocument = async <S, P>({
 
     return validatedDocumentObject;
   } catch (error) {
-    Sentry.captureException(error);
+    const serialized = serializeError(error);
+    Sentry.captureException(serialized);
     throw new Error(
-      `Failed to generate document of type: ${documentType}. Error: ${error instanceof Error ? error.message : String(error)}`,
+      `Failed to generate document of type: ${documentType}. Error: ${JSON.stringify(serialized)}`,
     );
   }
 };
