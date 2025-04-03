@@ -91,6 +91,8 @@ export async function fetchExperimentalPatches({
       let mathsStarterQuiz: Quiz = await fullQuizService.createBestQuiz(
         "/starterQuiz",
         lessonPlan,
+        undefined,
+        true,
       );
       if (mathsStarterQuiz.length === 0) {
         log.info("No starter quiz found. Creating placeholder starter quiz.");
@@ -133,6 +135,8 @@ export async function fetchExperimentalPatches({
       let mathsExitQuiz: Quiz = await fullQuizService.createBestQuiz(
         "/exitQuiz",
         lessonPlan,
+        undefined,
+        true,
       );
       if (mathsExitQuiz.length === 0) {
         log.info("No exit quiz found. Creating placeholder exit quiz.");
