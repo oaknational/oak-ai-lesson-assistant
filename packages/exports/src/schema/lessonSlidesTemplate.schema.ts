@@ -46,7 +46,7 @@ export const lessonSlidesTemplateSchema = z.object({
   sq_q6_answer_1: z.string(),
   sq_q6_answer_2: z.string(),
   sq_q6_answer_3: z.string(),
-
+  learning_cycle_1_explanation: z.string(),
   learning_cycle_1_title: z.string(),
   learning_cycle_2_title: z.string().nullish(),
   learning_cycle_3_title: z.string().nullish(),
@@ -69,6 +69,7 @@ export const lessonSlidesTemplateSchema = z.object({
   learning_cycle_1_practise: z.string().nullish(),
   learning_cycle_1_feedback: z.string().nullish(),
 
+  learning_cycle_2_explanation: z.string().nullish(),
   learning_cycle_2_text: z.string().nullish(),
   learning_cycle_2_image_prompt: z.string().nullish(),
   learning_cycle_2_question_1_check_question: z.string().nullish(),
@@ -84,6 +85,7 @@ export const lessonSlidesTemplateSchema = z.object({
   learning_cycle_2_practise: z.string().nullish(),
   learning_cycle_2_feedback: z.string().nullish(),
 
+  learning_cycle_3_explanation: z.string().nullish(),
   learning_cycle_3_text: z.string().nullish(),
   learning_cycle_3_image_prompt: z.string().nullish(),
 

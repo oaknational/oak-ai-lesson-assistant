@@ -385,7 +385,24 @@ export async function prepLessonForSlides(
 
     learning_cycle_3_practise: data.cycle3?.practice ?? "",
     learning_cycle_3_feedback: data.cycle3?.feedback ?? "",
+
+    learning_cycle_3_explanation: Array.isArray(
+      data.cycle3?.explanation.spokenExplanation,
+    )
+      ? data.cycle3?.explanation.spokenExplanation.join("\n")
+      : (data.cycle3?.explanation.spokenExplanation ?? ""),
+    learning_cycle_2_explanation: Array.isArray(
+      data.cycle2?.explanation.spokenExplanation,
+    )
+      ? data.cycle2?.explanation.spokenExplanation.join("\n")
+      : (data.cycle2?.explanation.spokenExplanation ?? ""),
+    learning_cycle_1_explanation: Array.isArray(
+      data.cycle1.explanation.spokenExplanation,
+    )
+      ? data.cycle1.explanation.spokenExplanation.join("\n")
+      : (data.cycle1.explanation.spokenExplanation ?? ""),
   };
+
   return Promise.resolve(newData);
 }
 
