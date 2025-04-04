@@ -7,9 +7,13 @@ import { isComprehensionTask } from "@oakai/additional-materials/src/documents/a
 import {
   type AdditionalMaterialSchemas,
   type AdditionalMaterialType,
+  additionalMaterialContextSchemasMap,
   additionalMaterialsConfigMap,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import { isGlossary } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
+import {
+  isGlossary,
+  readingAgeRefinement,
+} from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
 import { getKeystageFromYearGroup } from "@oakai/additional-materials/src/documents/additionalMaterials/promptHelpers";
 import {
   buildPartialLessonPrompt,
@@ -103,7 +107,7 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
   const [generation, setGeneration] =
     useState<AdditionalMaterialSchemas | null>(null);
   const [moderation, setModeration] = useState<string | null>(null);
-  const [action, setAction] = useState<string | null>(null);
+  const [docType, setDocType] = useState<string | null>(null);
   const [lessonFields, setLessonField] = useState<
     PartialLessonPlanFieldKeys[] | []
   >(["title", "keyStage", "subject"]);
@@ -127,9 +131,9 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
     trpc.additionalMaterials.generatePartialLessonPlanObject.useMutation();
 
   useEffect(() => {
-    if (action) {
+    if (docType) {
       const prompt = additionalMaterialsConfigMap[
-        action as AdditionalMaterialType
+        docType as AdditionalMaterialType
       ].buildPrompt(
         {
           lessonPlan: pageData.lessonPlan,
@@ -138,7 +142,7 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
       );
       const systemMessage =
         additionalMaterialsConfigMap[
-          action as AdditionalMaterialType
+          docType as AdditionalMaterialType
         ].systemMessage();
 
       setAmPrompt({
@@ -146,15 +150,15 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
         systemMessage,
       });
     }
-  }, [action, pageData.lessonPlan]);
+  }, [docType, pageData.lessonPlan]);
 
   useEffect(() => {
-    if (action) {
+    if (docType) {
       const systemMessage = buildPartialLessonSystemMessage({
         keyStage: year ? getKeystageFromYearGroup(year) : "",
         subject: subject ?? "",
         title: title ?? "",
-        year: year ?? "",
+        year: year ?? "7",
       });
       const prompt = buildPartialLessonPrompt({
         lessonParts: lessonFields,
@@ -165,7 +169,7 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
       });
     }
   }, [
-    action,
+    docType,
     keyStage,
     lessonFields,
     pageData.lessonPlan,
@@ -210,14 +214,14 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
 
   const handleSubmit = async (message?: string) => {
     setGeneration(null);
-    if (!action) {
-      alert("No action selected");
+    if (!docType) {
+      alert("No docType selected");
       return;
     }
 
     try {
       const res = await fetchMaterial.mutateAsync({
-        documentType: action,
+        documentType: docType,
         action: message ? "refine" : "generate",
         context: {
           lessonPlan: pageData.lessonPlan,
@@ -234,17 +238,50 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
     }
   };
   const renderGeneratedMaterial = () => {
+    const handleRefine = async (refinement: string) => {
+      setGeneration(null);
+      if (!docType) {
+        alert("No docType selected");
+        return;
+      }
+
+      try {
+        const res = await fetchMaterial.mutateAsync({
+          documentType: docType,
+          action: "refine",
+          context: {
+            lessonPlan: pageData.lessonPlan,
+            previousOutput: generation ?? null,
+            options: null,
+            refinement: [{ type: refinement }],
+          },
+        });
+
+        setGeneration(res);
+      } catch (error) {
+        log.error("error", error);
+        Sentry.captureException(error);
+      }
+    };
     if (!generation) {
       return null;
     }
-    if (action === "additional-glossary" && isGlossary(generation)) {
-      return <Glossary action={action} generation={generation} />;
+    if (docType === "additional-glossary" && isGlossary(generation)) {
+      return (
+        <Glossary
+          handleSubmit={(refinement) => {
+            void handleRefine(refinement);
+          }}
+          action={docType}
+          generation={generation}
+        />
+      );
     }
     if (
-      action === "additional-comprehension" &&
+      docType === "additional-comprehension" &&
       isComprehensionTask(generation)
     ) {
-      return <ComprehensionTask action={action} generation={generation} />;
+      return <ComprehensionTask action={docType} generation={generation} />;
     }
 
     return null;
@@ -367,7 +404,7 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
             <OakRadioGroup
               name="radio-group"
               onChange={(value) => {
-                setAction(value.target.value);
+                setDocType(value.target.value);
                 setModeration(null);
                 setGeneration(null);
               }}
@@ -394,20 +431,20 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
 
           {fetchMaterial.isLoading && <OakP>Loading...</OakP>}
           <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
-          {generation && (
-            <OakFlex>
-              <OakPrimaryButton
-                onClick={() => void handleSubmit("Make it easier")}
-              >
-                {"Make it easier"}
-              </OakPrimaryButton>
-              <OakPrimaryButton
-                onClick={() => void handleSubmit("Make it harder")}
-              >
-                {"Make it harder"}
-              </OakPrimaryButton>
-            </OakFlex>
-          )}
+          {/* {isGlossary(generation) &&
+            additionalMaterialContextSchemasMap[
+              docType as AdditionalMaterialType
+            ].shape.refinement?._def.type.shape.type.options.map(
+              (refinement) => (
+                <OakFlex key={refinement}>
+                  <OakPrimaryButton
+                    onClick={() => void handleSubmit(refinement)}
+                  >
+                    {"Make it easier"}
+                  </OakPrimaryButton>
+                </OakFlex>
+              ),
+            )} */}
           {fetchMaterialModeration.isLoading && (
             <OakP>Loading moderation...</OakP>
           )}

@@ -1,5 +1,9 @@
 import type { Action, ContextByMaterialType } from "../configSchema";
 import { getLessonDetails } from "../promptHelpers";
+import {
+  type AllowedReadingAgeRefinement,
+  readingAgeRefinementMap,
+} from "./schema";
 
 export const buildGlossaryPrompt = (
   context: ContextByMaterialType["additional-glossary"],
@@ -7,7 +11,7 @@ export const buildGlossaryPrompt = (
 ) => {
   const { lessonPlan } = context;
 
-  if (action === "refine") {
+  if (context.refinement) {
     return refineGlossaryPrompt(context);
   }
 
@@ -22,16 +26,16 @@ export const buildGlossaryPrompt = (
 const refineGlossaryPrompt = (
   context: ContextByMaterialType["additional-glossary"],
 ) => {
-  const { lessonPlan, previousOutput, message } = context;
+  const { lessonPlan, previousOutput } = context;
   return `Modify the following glossary based on user feedback.
   
   **Previous Output**:  
   ${JSON.stringify(previousOutput, null, 2)}
   
   **User Request**:  
-  ${message}
+  ${context.refinement && context.refinement.map((r) => readingAgeRefinementMap[r.type as AllowedReadingAgeRefinement]).join("\n")}
   
-  Adapt the glossary to reflect the request while ensuring it aligns with the following lesson details:
+  Adapt the glossary to reflect the request while ensuring it continues to aligns with the following lesson details:
   
   ${getLessonDetails(lessonPlan)}
       `;
@@ -66,5 +70,6 @@ Water: A liquid absorbed by roots, vital for plant processes.
 **Rules**:
 - **Do not** include markdown in your response.
 - **Do not** include any americanisms.
+- definitions start with lower case (unless it is a known acronym or proper noun).
   `;
 };
