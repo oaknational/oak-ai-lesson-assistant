@@ -17,7 +17,7 @@ export const Glossary = ({
 }: {
   action: string;
   generation: GlossarySchema;
-  handleSubmit: (refinement: string) => void;
+  handleSubmit?: (refinement: string) => void;
 }) => {
   if (!generation || !action) {
     return null;
@@ -41,6 +41,7 @@ export const Glossary = ({
         </OakFlex>
       ))}
       {generation &&
+        handleSubmit &&
         readingAgeRefinement.map((refinement) => (
           <OakFlex key={refinement}>
             <OakPrimaryButton onClick={() => void handleSubmit(refinement)}>
