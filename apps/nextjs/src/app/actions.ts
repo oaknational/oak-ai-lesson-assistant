@@ -3,7 +3,7 @@
 import {
   oakOpenAiLessonSummarySchema,
   oakOpenAiTranscriptSchema,
-} from "@oakai/additional-materials/src/documents/schemas/oakOpenApi";
+} from "@oakai/additional-materials/src/schemas/oakOpenApi";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { chatSchema } from "@oakai/aila/src/protocol/schema";
 import type { Prisma } from "@oakai/db";

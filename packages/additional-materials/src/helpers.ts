@@ -1,5 +1,5 @@
 import type { LooseLessonPlan } from "../../aila/src/protocol/schema";
-import type { OakOpenAiLessonSummary } from "./documents/schemas/oakOpenApi";
+import type { OakOpenAiLessonSummary } from "./schemas/oakOpenApi";
 
 export function mapOpenApiLessonToAilaLesson(
   lessonData: OakOpenAiLessonSummary,
