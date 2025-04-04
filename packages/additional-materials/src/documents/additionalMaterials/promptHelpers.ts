@@ -5,7 +5,7 @@ export const getLessonTranscript = (transcript: string) => {
 };
 
 const renderCycle = (cycle: LooseLessonPlan["cycle1"], label: string) => {
-  if (!cycle) return undefined;
+  if (!cycle) return "";
 
   const {
     title,

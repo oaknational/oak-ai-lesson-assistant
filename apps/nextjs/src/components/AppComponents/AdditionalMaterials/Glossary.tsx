@@ -15,19 +15,19 @@ export const Glossary = ({
 
   return (
     <OakFlex $gap="space-between-s" $flexDirection="column">
-      <OakHeading $font="heading-4" tag="h2">
+      <OakHeading $font="heading-5" tag="h2">
         Glossary
       </OakHeading>
       {generation.glossary.map((item, index) => (
         <OakFlex
           key={`${item.term}-${index}`}
-          $flexDirection="column"
-          $gap="space-between-s"
+          $flexDirection="row"
+          // $alignItems={"start"}
         >
-          <OakHeading $font="heading-5" tag="h3">
-            {item.term}
-          </OakHeading>
-          <OakP>{item.definition}</OakP>
+          <OakP $mr={"space-between-ssx"} $font="body-2-bold">
+            {item.term}:
+          </OakP>
+          <OakP $font={"body-2"}>{item.definition}</OakP>
         </OakFlex>
       ))}
     </OakFlex>
