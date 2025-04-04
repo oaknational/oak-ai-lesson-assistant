@@ -10,6 +10,7 @@ import {
   additionalMaterialsConfigMap,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { isGlossary } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
+import { getKeystageFromYearGroup } from "@oakai/additional-materials/src/documents/additionalMaterials/promptHelpers";
 import {
   buildPartialLessonPrompt,
   buildPartialLessonSystemMessage,
@@ -150,7 +151,7 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
   useEffect(() => {
     if (action) {
       const systemMessage = buildPartialLessonSystemMessage({
-        keyStage: keyStage ?? "",
+        keyStage: year ? getKeystageFromYearGroup(year) : "",
         subject: subject ?? "",
         title: title ?? "",
         year: year ?? "",

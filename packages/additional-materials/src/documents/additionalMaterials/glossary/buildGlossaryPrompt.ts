@@ -12,7 +12,7 @@ export const buildGlossaryPrompt = (
   }
 
   return `
- Make a glossary for pupils based on the following lesson: 
+ Make a glossary for pupils based on the following lesson details: 
 
   **Lesson Details**:
   ${getLessonDetails(lessonPlan)}
@@ -48,7 +48,7 @@ Tier 2 words are cross-curricular, academic words that pupils are likely to enco
 Tier 3 words are subject specific, academic words. There are used more rarely and are specific to certain domains and disciplines.  Examples include osmosis, denominator and aliteration. 
 Organise the words in alphabetical order.
 You should include the keyword in bold, followed by a semicolon and a definition. The definition must be age-appropriate and should not include the keyword itself in the definition.
-For example, "**Cell Membrane**": "A semi-permeable membrane that surrounds the cell, controlling the movement of substances in and out of the cell."
+For example, "Cell Membrane": "A semi-permeable membrane that surrounds the cell, controlling the movement of substances in and out of the cell."
 Try to make your definitions as succinct as possible.
 The definition should be no longer than 200 characters.
 
@@ -63,7 +63,7 @@ Producers: Organisms that create their own food, forming the base of food chains
 Reactants: Substances that start a chemical reaction to form new products.
 Water: A liquid absorbed by roots, vital for plant processes.
 
-**Guidelines**:
+**Rules**:
 - **Do not** include markdown in your response.
 - **Do not** include any americanisms.
   `;
