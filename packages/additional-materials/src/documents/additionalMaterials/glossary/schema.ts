@@ -7,7 +7,6 @@ export const glossarySchema = z.object({
     z.object({
       term: z.string().min(1, "Term is required"),
       definition: z.string().min(1, "Definition is required"),
-      example: z.string().optional(),
     }),
   ),
 });

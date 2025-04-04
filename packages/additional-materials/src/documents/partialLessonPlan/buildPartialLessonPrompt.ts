@@ -9,7 +9,7 @@ export const buildPartialLessonPrompt = ({
   year?: string;
 }) => {
   let prompt = `Write a lesson plan for a class of pupils in the UK ${year ? `in year group ${year}.` : "."} 
-  The lesson plan should be structured and include all the following parts and should match the given schema: `;
+  The lesson plan should be structured and include all the parts in the given schema: `;
   lessonParts.forEach((part) => {
     prompt += `\n **${part}** ${lessonPlanPromptParts[part]}`;
   });

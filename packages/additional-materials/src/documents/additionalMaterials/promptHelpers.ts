@@ -5,7 +5,7 @@ export const getLessonTranscript = (transcript: string) => {
 };
 
 const renderCycle = (cycle: LooseLessonPlan["cycle1"], label: string) => {
-  if (!cycle) return "";
+  if (!cycle) return undefined;
 
   const {
     title,
@@ -59,41 +59,84 @@ ${distractors.map((d) => `  - ${d}`).join("\n")}
 };
 
 export const getLessonDetails = (lessonPlan: LooseLessonPlan) => {
-  return `
-- **Key Stage**: ${lessonPlan.keyStage}
-- **Subject**: ${lessonPlan.subject}
-- **Topic**: ${lessonPlan.topic}
+  const lines = [
+    `- **Key Stage**: ${lessonPlan.keyStage}`,
+    `- **Subject**: ${lessonPlan.subject}`,
+    `- **Topic**: ${lessonPlan.topic ?? "N/A"}`,
+    "",
+  ];
 
-- **Learning Outcome**: ${lessonPlan.learningOutcome}
+  if (lessonPlan.learningOutcome) {
+    lines.push(`- **Learning Outcome**: ${lessonPlan.learningOutcome}`);
+    lines.push("");
+  }
 
+  if (lessonPlan.learningCycles?.length) {
+    lines.push("**Learning cycles outcomes**:");
+    lines.push(...lessonPlan.learningCycles.map((cycle) => `- ${cycle}`));
+    lines.push("");
+  }
 
-**Learning cycles outcomes**:
-${lessonPlan.learningCycles?.map((cycle) => `- ${cycle}`).join("\n") ?? "- N/A"}
+  if (lessonPlan.priorKnowledge?.length) {
+    lines.push("**Prior Knowledge Required**:");
+    lines.push(...lessonPlan.priorKnowledge.map((pk) => `- ${pk}`));
+    lines.push("");
+  }
 
-**Prior Knowledge Required**:
-${lessonPlan.priorKnowledge?.map((pk) => `- ${pk}`).join("\n") ?? "- N/A"}
+  if (lessonPlan.keyLearningPoints?.length) {
+    lines.push("**Key Learning Points**:");
+    lines.push(...lessonPlan.keyLearningPoints.map((point) => `- ${point}`));
+    lines.push("");
+  }
 
-**Key Learning Points**:
-${lessonPlan.keyLearningPoints?.map((point) => `- ${point}`).join("\n") ?? "- N/A"}
+  if (lessonPlan.misconceptions?.length) {
+    lines.push("**Misconceptions to Address**:");
+    lines.push(
+      ...lessonPlan.misconceptions.map(
+        ({ misconception, description }) =>
+          `- **${misconception}**: ${description}`,
+      ),
+    );
+    lines.push("");
+  }
 
-**Misconceptions to Address**:
-${lessonPlan.misconceptions?.map(({ misconception, description }) => `- **${misconception}**: ${description}`).join("\n") ?? "- None specified"}
+  if (lessonPlan.keywords?.length) {
+    lines.push("**Keywords**:");
+    lines.push(
+      ...lessonPlan.keywords.map(
+        ({ keyword, definition }) => `- **${keyword}**: ${definition}`,
+      ),
+    );
+    lines.push("");
+  }
 
-**Keywords**:
-${lessonPlan.keywords?.map(({ keyword, definition }) => `- **${keyword}**: ${definition}`).join("\n") ?? "- N/A"}
+  if (lessonPlan.starterQuiz) {
+    const starterQuiz = renderQuiz(lessonPlan.starterQuiz);
+    lines.push("**Starter Quiz**:");
+    lines.push(starterQuiz);
+    lines.push("");
+  }
 
-**Starter Quiz**:
-${renderQuiz(lessonPlan.starterQuiz)}
+  const cycleSections = [
+    renderCycle(lessonPlan.cycle1, "Cycle 1"),
+    renderCycle(lessonPlan.cycle2, "Cycle 2"),
+    renderCycle(lessonPlan.cycle3, "Cycle 3"),
+  ].filter(Boolean);
 
-**Learning Cycles**:
-${renderCycle(lessonPlan.cycle1, "Cycle 1") || "- N/A"}
-${renderCycle(lessonPlan.cycle2, "Cycle 2") || "- N/A"}
-${renderCycle(lessonPlan.cycle3, "Cycle 3") || "- N/A"}
+  if (cycleSections.length) {
+    lines.push("**Learning Cycles**:");
+    lines.push(...cycleSections);
+    lines.push("");
+  }
 
-**Exit Quiz**:
-${renderQuiz(lessonPlan.starterQuiz)}
+  if (lessonPlan.exitQuiz) {
+    const exitQuiz = renderQuiz(lessonPlan.exitQuiz);
+    lines.push("**Exit Quiz**:");
+    lines.push(exitQuiz);
+    lines.push("");
+  }
 
-`;
+  return lines.join("\n");
 };
 
 export const getKeystageFromYearGroup = (yearGroup: string) => {

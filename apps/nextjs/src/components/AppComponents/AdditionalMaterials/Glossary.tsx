@@ -28,11 +28,6 @@ export const Glossary = ({
             {item.term}
           </OakHeading>
           <OakP>{item.definition}</OakP>
-          {item.example && (
-            <OakP>
-              <em>Example: {item.example}</em>
-            </OakP>
-          )}
         </OakFlex>
       ))}
     </OakFlex>
