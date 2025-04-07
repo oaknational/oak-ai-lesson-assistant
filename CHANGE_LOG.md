@@ -1,3 +1,10 @@
+# [1.32.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.31.0...v1.32.0) (2025-04-03)
+
+
+### Features
+
+* additional material package ([#597](https://github.com/oaknational/oak-ai-lesson-assistant/issues/597)) ([765b050](https://github.com/oaknational/oak-ai-lesson-assistant/commit/765b0500fbd6e672eab0f540789bfe1c2387c3e4))
+
 # [1.31.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.30.0...v1.31.0) (2025-04-02)
 
 
