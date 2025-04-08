@@ -18,7 +18,6 @@ import {
   hubspotClient,
 } from "@/lib/analytics/hubspot/HubspotClient";
 import HubspotLoader from "@/lib/analytics/hubspot/HubspotLoader";
-import { getHubspotContactIdAction } from "@/lib/analytics/hubspot/getHubspotContactIdAction";
 import { useAnalyticsService } from "@/lib/analytics/useAnalyticsService";
 import Avo, { initAvo } from "@/lib/avo/Avo";
 import getAvoBridge from "@/lib/avo/getAvoBridge";
@@ -204,21 +203,12 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
     (userId, properties, services) => {
       const allServices = !services;
       if (allServices || services?.includes("posthog")) {
-        // Get the HubSpot contact_id if available
         const hubspotId = getHubspotContactId();
 
-        // Add the hubspot_contact_id to the user properties
         const posthogProperties = {
           ...properties,
           ...(hubspotId && { hubspot_contact_id: hubspotId }),
         };
-
-        // Log the properties being sent to PostHog
-        console.log("***********Identifying user in PostHog:", {
-          userId,
-          properties: posthogProperties,
-          hubspotContactId: hubspotId,
-        });
 
         posthogAiBeta.identify(userId, posthogProperties);
 
@@ -300,66 +290,15 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
       // First identify the user with what we have
       identify(user.userId, { email: user.email, isDemoUser: user.isDemoUser });
 
-      // Log the initial identification
-      console.log("Initial user identification:", {
-        userId: user.userId,
-        email: user.email,
-        hubspotId: getHubspotContactId(),
-      });
+      const hubspotId = getHubspotContactId();
 
-      // Wait a bit to let HubSpot script initialize and possibly populate contact ID
-      setTimeout(async () => {
-        // Check if we have a HubSpot contact ID now
-        const hubspotId = getHubspotContactId();
-
-        if (hubspotId) {
-          console.log("Got HubSpot contact_id after delay:", hubspotId);
-          // Update PostHog with the HubSpot contact ID
-          identify(
-            user.userId,
-            {
-              email: user.email,
-              isDemoUser: user.isDemoUser,
-              hubspot_contact_id: hubspotId,
-            },
-            ["posthog"],
-          );
-        } else {
-          console.log(
-            "Still no HubSpot contact_id after delay, using server action fallback",
-          );
-          try {
-            // Use our server action to get the contact ID directly from HubSpot's API
-            const contactId = await getHubspotContactIdAction(user.email);
-
-            if (contactId) {
-              console.log(
-                "Got HubSpot contact_id from server action:",
-                contactId,
-              );
-              // Update PostHog with the HubSpot contact ID from the server
-              identify(
-                user.userId,
-                {
-                  email: user.email,
-                  isDemoUser: user.isDemoUser,
-                  hubspot_contact_id: contactId,
-                },
-                ["posthog"],
-              );
-            } else {
-              console.log(
-                "No HubSpot contact found for user, even via server action",
-              );
-            }
-          } catch (error) {
-            console.error(
-              "Error using server action to get HubSpot contact ID:",
-              error,
-            );
-          }
-        }
-      }, 3000);
+      if (hubspotId) {
+        identify(user.userId, {
+          email: user.email,
+          isDemoUser: user.isDemoUser,
+          hubspot_contact_id: hubspotId,
+        });
+      }
     },
     [identify],
   );

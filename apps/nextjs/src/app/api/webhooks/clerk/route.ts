@@ -35,7 +35,6 @@ async function syncUserToPosthog(user: UserJSON) {
   const featureFlagGroup = user.public_metadata.labs?.featureFlagGroup ?? "";
   const email = getPrimaryEmail(user);
 
-  // Get HubSpot contact ID if available
   let hubspotContactId: string | null = null;
   try {
     hubspotContactId = await getHubspotContactIdByEmail(email);
@@ -50,13 +49,6 @@ async function syncUserToPosthog(user: UserJSON) {
     featureFlagGroup,
     ...(hubspotContactId && { hubspot_contact_id: hubspotContactId }),
   };
-
-  // Log the properties being sent to PostHog
-  log.info("Identifying user in PostHog (server-side):", {
-    email,
-    properties,
-    hubspotContactId,
-  });
 
   posthogAiBetaServerClient.identify({
     distinctId: email,
