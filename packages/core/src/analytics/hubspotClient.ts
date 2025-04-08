@@ -15,6 +15,33 @@ interface CreateHubspotCustomerInput {
   marketingAccepted: boolean;
 }
 
+/**
+ * Get HubSpot contact ID by email
+ * @param email The email address to look up
+ * @returns The HubSpot contact ID, or null if not found
+ */
+export const getHubspotContactIdByEmail = async (
+  email: string,
+): Promise<string | null> => {
+  try {
+    const result = await hubspotClient.crm.contacts.basicApi.getById(
+      email,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      "email",
+    );
+    return result.id;
+  } catch (e) {
+    const isNotFoundError = e instanceof ApiException && e.code === 404;
+    if (isNotFoundError) {
+      return null;
+    }
+    throw e;
+  }
+};
+
 export const createHubspotCustomer = async ({
   email,
   firstName,
@@ -32,6 +59,7 @@ export const createHubspotCustomer = async ({
       "email",
     );
     id = result.id;
+    console.log("Existing HubSpot contact_id:", id);
   } catch (e) {
     const isNotFoundError = e instanceof ApiException && e.code === 404;
     if (!isNotFoundError) {
@@ -51,13 +79,27 @@ export const createHubspotCustomer = async ({
   };
 
   if (id) {
-    return await hubspotClient.crm.contacts.basicApi.update(id, {
-      properties,
-    });
+    const updatedContact = await hubspotClient.crm.contacts.basicApi.update(
+      id,
+      {
+        properties,
+      },
+    );
+    console.log("Updated HubSpot contact_id:", id);
+    return {
+      ...updatedContact,
+      id,
+    };
   }
 
-  return await hubspotClient.crm.contacts.basicApi.create({
+  const newContact = await hubspotClient.crm.contacts.basicApi.create({
     properties,
     associations: [],
   });
+  console.log("New HubSpot contact_id:", newContact.id);
+
+  return {
+    ...newContact,
+    id: newContact.id,
+  };
 };

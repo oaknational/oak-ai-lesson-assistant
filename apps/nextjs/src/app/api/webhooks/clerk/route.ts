@@ -1,3 +1,4 @@
+import { getHubspotContactIdByEmail } from "@oakai/core/src/analytics/hubspotClient";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { aiLogger } from "@oakai/logger";
 
@@ -32,10 +33,36 @@ function getPrimaryEmail(user: UserJSON): string {
 
 async function syncUserToPosthog(user: UserJSON) {
   const featureFlagGroup = user.public_metadata.labs?.featureFlagGroup ?? "";
-  posthogAiBetaServerClient.identify({
-    distinctId: getPrimaryEmail(user),
-    properties: { featureFlagGroup },
+  const email = getPrimaryEmail(user);
+
+  // Get HubSpot contact ID if available
+  let hubspotContactId: string | null = null;
+  try {
+    hubspotContactId = await getHubspotContactIdByEmail(email);
+    if (hubspotContactId) {
+      log.info("Found HubSpot contact_id for user:", hubspotContactId);
+    }
+  } catch (error) {
+    log.error("Error fetching HubSpot contact_id:", error);
+  }
+
+  const properties = {
+    featureFlagGroup,
+    ...(hubspotContactId && { hubspot_contact_id: hubspotContactId }),
+  };
+
+  // Log the properties being sent to PostHog
+  log.info("Identifying user in PostHog (server-side):", {
+    email,
+    properties,
+    hubspotContactId,
   });
+
+  posthogAiBetaServerClient.identify({
+    distinctId: email,
+    properties,
+  });
+
   await posthogAiBetaServerClient.flush();
   log.info("featureFlagGroup synced:", user.id, featureFlagGroup);
 }

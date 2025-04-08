@@ -68,7 +68,7 @@ export const authRouter = router({
           throw new Error("Email address is expected on clerk user");
         }
 
-        await createHubspotCustomer({
+        const hubspotContact = await createHubspotCustomer({
           email,
           firstName: updatedUser.firstName,
           lastName: updatedUser.lastName,
@@ -76,6 +76,16 @@ export const authRouter = router({
             updatedUser.privateMetadata.acceptedPrivacyPolicy,
           ),
         });
+
+        if (hubspotContact.id) {
+          posthogAiBetaServerClient.identify({
+            distinctId: email,
+            properties: {
+              hubspot_contact_id: hubspotContact.id,
+            },
+          });
+          await posthogAiBetaServerClient.flush();
+        }
 
         const { acceptedPrivacyPolicy, acceptedTermsOfUse } =
           updatedUser.privateMetadata;
