@@ -26,7 +26,7 @@ export const LessonPlanSectionContent = ({
 }: LessonPlanSectionContentProps) => {
   return (
     <OakFlex $flexDirection="column">
-      <MathJax>
+      <MathJax hideUntilTypeset="every" dynamic>
         <MemoizedReactMarkdownWithStyles
           lessonPlanSectionDescription={
             lessonSectionTitlesAndMiniDescriptions[sectionKey]?.description

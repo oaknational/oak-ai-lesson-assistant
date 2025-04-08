@@ -33,9 +33,8 @@ const LessonPlanMapToMarkDown = ({
   sectionRefs?: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
 }) => {
   const {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _experimental_starterQuizMathsV0,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     _experimental_exitQuizMathsV0,
     ...restOfLessonPlan
   } = lessonPlan;
@@ -45,56 +44,54 @@ const LessonPlanMapToMarkDown = ({
       lessonPlan._experimental_starterQuizMathsV0 ?? lessonPlan.starterQuiz,
     exitQuiz: lessonPlan._experimental_exitQuizMathsV0 ?? lessonPlan.exitQuiz,
   };
-  return (
-    Object.entries(lessonPlanWithExperiments)
-      .filter(
-        (
-          entry,
-        ): entry is [
-          ValidLessonPlanKey,
-          NonNullable<LooseLessonPlan[ValidLessonPlanKey]>,
-        ] => {
-          const [k] = entry;
-          return !excludedKeys.includes(k as ExcludedKeys);
-        },
-      )
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .filter(([_, v]) => notEmpty(v))
-      .map(([key, value]) => {
-        return { key, value };
-      })
-      .sort(({ key: a }, { key: b }) => {
-        // sort the keys in a predefined order
-        //  title, subject, topic, keyStage, basedOn, lessonReferences, learningOutcome, learningCycles, priorKnowledge, keyLearningPoints, misconceptions, keywords, starterQuiz, cycle1, cycle2, cycle3, exitQuiz, additionalMaterials
-        const order: LessonPlanKey[] = [
-          "learningOutcome",
-          "learningCycles",
-          "priorKnowledge",
-          "keyLearningPoints",
-          "misconceptions",
-          "keywords",
-          "starterQuiz",
-          "cycle1",
-          "cycle2",
-          "cycle3",
-          "exitQuiz",
-          "additionalMaterials",
-        ];
-        return (
-          order.indexOf(a as LessonPlanKey) - order.indexOf(b as LessonPlanKey)
-        );
-      })
-      .map(({ key, value }) => {
-        return (
-          <ChatSection
-            key={key}
-            sectionRefs={sectionRefs}
-            objectKey={key}
-            value={value}
-          />
-        );
-      })
-  );
+  return Object.entries(lessonPlanWithExperiments)
+    .filter(
+      (
+        entry,
+      ): entry is [
+        ValidLessonPlanKey,
+        NonNullable<LooseLessonPlan[ValidLessonPlanKey]>,
+      ] => {
+        const [k] = entry;
+        return !excludedKeys.includes(k as ExcludedKeys);
+      },
+    )
+
+    .filter(([_, v]) => notEmpty(v))
+    .map(([key, value]) => {
+      return { key, value };
+    })
+    .sort(({ key: a }, { key: b }) => {
+      // sort the keys in a predefined order
+      //  title, subject, topic, keyStage, basedOn, lessonReferences, learningOutcome, learningCycles, priorKnowledge, keyLearningPoints, misconceptions, keywords, starterQuiz, cycle1, cycle2, cycle3, exitQuiz, additionalMaterials
+      const order: LessonPlanKey[] = [
+        "learningOutcome",
+        "learningCycles",
+        "priorKnowledge",
+        "keyLearningPoints",
+        "misconceptions",
+        "keywords",
+        "starterQuiz",
+        "cycle1",
+        "cycle2",
+        "cycle3",
+        "exitQuiz",
+        "additionalMaterials",
+      ];
+      return (
+        order.indexOf(a as LessonPlanKey) - order.indexOf(b as LessonPlanKey)
+      );
+    })
+    .map(({ key, value }) => {
+      return (
+        <ChatSection
+          key={key}
+          sectionRefs={sectionRefs}
+          objectKey={key}
+          value={value}
+        />
+      );
+    });
 };
 
 export default LessonPlanMapToMarkDown;
@@ -115,7 +112,7 @@ const ChatSection = ({
 
   return (
     <div ref={sectionRef}>
-      <MathJax>
+      <MathJax hideUntilTypeset="every" dynamic>
         <MemoizedReactMarkdownWithStyles
           lessonPlanSectionDescription={
             lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
