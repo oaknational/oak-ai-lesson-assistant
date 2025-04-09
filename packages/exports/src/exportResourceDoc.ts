@@ -1,6 +1,9 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { GlossaryTemplate } from "schema/resourceDoc.schema";
+import {
+  type GlossaryTemplate,
+  glossaryTemplate,
+} from "schema/resourceDoc.schema";
 
 import { prepWorksheetForSlides } from "./dataHelpers/prepWorksheetForSlides";
 import { exportGeneric } from "./exportGeneric";
@@ -12,7 +15,7 @@ import type { OutputData, Result, State } from "./types";
 
 const log = aiLogger("exports");
 
-export const exportDocsWorksheet = async <
+export const exportResourceDoc = async <
   TemplateData extends Record<string, string | string[] | null | undefined>,
   InputData extends Record<string, string | string[] | null | undefined>,
 >({
@@ -22,6 +25,7 @@ export const exportDocsWorksheet = async <
   userEmail,
   onStateChange,
   prepDataHandler,
+  transformDataMap
 }: {
   snapshotId: string;
   documentType: "comp" | "glossary";
@@ -29,27 +33,34 @@ export const exportDocsWorksheet = async <
   userEmail: string;
   onStateChange: (state: State<OutputData>) => void;
   prepDataHandler: (data: InputData) => Promise<TemplateData>;
+  transformDataMap: 
 }): Promise<Result<OutputData>> => {
   try {
     const templateId = getDocsTemplateIdWorksheet();
 
-    const transformDataMap: Record<
-      string,
-      (data: InputData) => Promise<TemplateData>
-    > = {
-      comp: async (data) => {
-        // transform logic here
-        return { ...data }; // just an example
-      },
-      glossary: async (data) => {
-        // transform logic here
-        return { ...data }; // another example
-      },
-    };
+    // const transformDataMap = {
+    //   glossary: async (data: InputData): Promise<TemplateData> => {
+    //     const parsedData = glossaryTemplate.parse(data);
+    //     const { title, labelValueArray } = parsedData;
+    //     const transformedData = {
+    //       title,
+    //       labelValueArray: labelValueArray.map(({ label, value }) => ({
+    //         label,
+    //         value,
+    //       })),
+    //     };
+    //     // transform logic here
+    //     return transformedData as unknown as TemplateData;
+    //   },
+    //   comp: async (data: InputData): Promise<TemplateData> => {
+    //     // transform logic here
+    //     return { ...data };
+    //   },
+    // };
     const result = await exportGeneric<InputData, TemplateData>({
       newFileName: `${snapshotId} - ${documentType} `,
       data: inputData,
-      prepData: transformDataMap,
+      prepData: transformDataMap[documentType],
       templateId,
       populateTemplate: async ({ data, templateCopyId }) => {
         const client = await getDocsClient();
@@ -77,3 +88,35 @@ export const exportDocsWorksheet = async <
     return { error, message: "Failed to export worksheet" };
   }
 };
+
+const transformDataMap = {
+  glossary: async (data: InputData): Promise<TemplateData> => {
+    const parsedData = glossaryTemplate.parse(data);
+    const { title, labelValueArray } = parsedData;
+    const transformedData = {
+      title,
+      labelValueArray: labelValueArray.map(({ label, value }) => ({
+        label,
+        value,
+      })),
+    };
+    // transform logic here
+    return transformedData as unknown as TemplateData;
+  },
+  comp: async (data: InputData): Promise<TemplateData> => {
+    // transform logic here
+    return { ...data };
+  },
+};
+
+const doc = exportResourceDoc(
+  {documentType: "glossary",
+  
+    snapshotId: "123",
+    data: {},
+    userEmail: "email",
+    onStateChange: () => console.log("change"),
+    prepDataHandler: () => console.log("handler"),
+    transformDataMap
+  }
+)
