@@ -39,6 +39,16 @@ const processQuizAnswersForSlides = (
   );
 };
 
+/**
+ * Creates a bullet point list from an array of strings
+ * @param items Array of strings to convert to bullet points
+ * @returns String with each item on a new line prefixed with a bullet point
+ */
+const createBulletsListFromArray = (items: string[] | undefined): string => {
+  if (!items) return "";
+  return items.map((item) => `• ${item}`).join("\n");
+};
+
 export async function prepLessonForSlides(
   data: LessonSlidesInputData,
 ): Promise<LessonSlidesTemplateData> {
@@ -517,7 +527,7 @@ export async function prepLessonForSlides(
     learning_cycle_1_image_prompt: data.cycle1.explanation.imagePrompt,
     learning_cycle_1_check_question_1_question: data.cycle1
       .checkForUnderstanding[0]?.question
-      ? "1. " + data.cycle1.checkForUnderstanding[0]?.question
+      ? data.cycle1.checkForUnderstanding[0]?.question
       : "   ",
     learning_cycle_1_question_1_check_answer_1:
       processQuizAnswersForSlides(
@@ -557,7 +567,7 @@ export async function prepLessonForSlides(
       )[2] ?? "",
     learning_cycle_1_check_question_2: data.cycle1.checkForUnderstanding[1]
       ?.question
-      ? "2. " + data.cycle1.checkForUnderstanding[1]?.question
+      ? data.cycle1.checkForUnderstanding[1]?.question
       : "   ",
     learning_cycle_1_question_2_check_answer_1:
       processQuizAnswersForSlides(
@@ -581,7 +591,7 @@ export async function prepLessonForSlides(
     learning_cycle_2_image_prompt: data.cycle2?.explanation.imagePrompt ?? "",
     learning_cycle_2_question_1_check_question: data.cycle2
       ?.checkForUnderstanding[0]?.question
-      ? "1. " + data.cycle2?.checkForUnderstanding[0]?.question
+      ? data.cycle2?.checkForUnderstanding[0]?.question
       : "   ",
     learning_cycle_2_question_1_check_answer_1: data.cycle2
       ? processQuizAnswersForSlides(
@@ -603,7 +613,7 @@ export async function prepLessonForSlides(
       : "   ",
     learning_cycle_2_question_2_check_question: data.cycle2
       ?.checkForUnderstanding[1]?.question
-      ? "2. " + data.cycle2?.checkForUnderstanding[1]?.question
+      ? data.cycle2?.checkForUnderstanding[1]?.question
       : "   ",
     learning_cycle_2_question_2_check_answer_1: data.cycle2
       ? processQuizAnswersForSlides(
@@ -631,7 +641,7 @@ export async function prepLessonForSlides(
     learning_cycle_3_image_prompt: data.cycle3?.explanation?.imagePrompt ?? "",
     learning_cycle_3_question_1_check_question: data.cycle3
       ?.checkForUnderstanding[0]?.question
-      ? "1. " + data.cycle3?.checkForUnderstanding[0]?.question
+      ? data.cycle3?.checkForUnderstanding[0]?.question
       : "   ",
     learning_cycle_3_question_1_check_answer_1: data.cycle3
       ? processQuizAnswersForSlides(
@@ -653,7 +663,7 @@ export async function prepLessonForSlides(
       : "   ",
     learning_cycle_3_question_2_check_question: data.cycle3
       ?.checkForUnderstanding[1]?.question
-      ? "2. " + data.cycle3?.checkForUnderstanding[1]?.question
+      ? data.cycle3?.checkForUnderstanding[1]?.question
       : "   ",
     learning_cycle_3_question_2_check_answer_1: data.cycle3
       ? processQuizAnswersForSlides(
@@ -680,17 +690,17 @@ export async function prepLessonForSlides(
     learning_cycle_3_explanation: Array.isArray(
       data.cycle3?.explanation.spokenExplanation,
     )
-      ? data.cycle3?.explanation.spokenExplanation.join("\n")
+      ? createBulletsListFromArray(data.cycle3?.explanation.spokenExplanation)
       : (data.cycle3?.explanation.spokenExplanation ?? ""),
     learning_cycle_2_explanation: Array.isArray(
       data.cycle2?.explanation.spokenExplanation,
     )
-      ? data.cycle2?.explanation.spokenExplanation.join("\n")
+      ? createBulletsListFromArray(data.cycle2?.explanation.spokenExplanation)
       : (data.cycle2?.explanation.spokenExplanation ?? ""),
     learning_cycle_1_explanation: Array.isArray(
       data.cycle1.explanation.spokenExplanation,
     )
-      ? data.cycle1.explanation.spokenExplanation.join("\n")
+      ? createBulletsListFromArray(data.cycle1.explanation.spokenExplanation)
       : (data.cycle1.explanation.spokenExplanation ?? ""),
     lc1_q2_answer_1_tick: isCorrectAnswer(
       0,
