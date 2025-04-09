@@ -1,4 +1,4 @@
-import { type ComprehensionTaskType } from "@oakai/additional-materials/src/documents/schemas/additionalMaterials";
+import type { ComprehensionTask as ComprehensionTaskType } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
 
 import {
   OakFlex,
