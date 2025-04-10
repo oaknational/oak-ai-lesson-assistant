@@ -60,8 +60,13 @@ export const additionalMaterialsRouter = router({
 
         return result;
       } catch (cause) {
-        log.error("Failed to fetch additional material", cause);
-        throw new Error("Failed to fetch additional material");
+        const TrpcError = new Error(
+          "Failed to fetch additional material moderation",
+          { cause },
+        );
+        log.error("Failed to fetch additional material moderation", cause);
+        Sentry.captureException(TrpcError);
+        throw TrpcError;
       }
     }),
   generateAdditionalMaterialModeration: protectedProcedure
