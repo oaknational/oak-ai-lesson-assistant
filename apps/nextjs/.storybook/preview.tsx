@@ -20,6 +20,7 @@ import { AnalyticsProvider } from "../src/mocks/analytics/provider";
 import { ClerkDecorator } from "../src/mocks/clerk/ClerkDecorator";
 import { TRPCReactProvider } from "../src/utils/trpc";
 import { ChromaticValidationDecorator } from "./decorators/ChromaticValidationDecorator";
+import { MathJaxDecorator } from "./decorators/MathJaxDecorator";
 import { RadixThemeDecorator } from "./decorators/RadixThemeDecorator";
 import "./preview.css";
 
@@ -67,6 +68,7 @@ const preview: Preview = {
 
 export const decorators: Decorator[] = [
   RadixThemeDecorator,
+  MathJaxDecorator,
   ClerkDecorator,
   ChromaticValidationDecorator,
   (Story) => (
