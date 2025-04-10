@@ -3,12 +3,9 @@
 import type { FC } from "react";
 import React, { useEffect, useState } from "react";
 
-import { additionalMaterialsConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/additionalMaterialsConfig";
-import {
-  type AdditionalMaterialType,
-  isComprehensionMaterial,
-  isHomeworkMaterial,
-} from "@oakai/additional-materials/src/documents/schemas/additionalMaterials";
+import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
+import { type AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import { isGlossary } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { aiLogger } from "@oakai/logger";
@@ -25,12 +22,10 @@ import {
   OakRadioGroup,
 } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/nextjs";
-import { redirect } from "next/navigation";
 
 import { ComprehensionTask } from "@/components/AppComponents/AdditionalMaterials/ComprehensionTask";
-import { Homework } from "@/components/AppComponents/AdditionalMaterials/Homework";
+import { Glossary } from "@/components/AppComponents/AdditionalMaterials/Glossary";
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
-import { useClientSideFeatureFlag } from "@/components/ContextProviders/FeatureFlagProvider";
 import Layout from "@/components/Layout";
 import { trpc } from "@/utils/trpc";
 
@@ -85,39 +80,14 @@ interface AdditionalMaterialsProps {
 }
 
 const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
-  const [generation, setGeneration] = useState<AdditionalMaterialType | null>(
-    null,
-  );
+  const [generation, setGeneration] =
+    useState<AdditionalMaterialSchemas | null>(null);
   const [moderation, setModeration] = useState<string | null>(null);
   const [action, setAction] = useState<string | null>(null);
   const fetchMaterialModeration =
     trpc.additionalMaterials.generateAdditionalMaterialModeration.useMutation();
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
-  const [prompt, setPrompt] = useState<{
-    prompt: string;
-    systemMessage: string;
-  } | null>(null);
-
-  const canSeeSpike = useClientSideFeatureFlag("additional-materials");
-
-  if (!canSeeSpike) {
-    redirect("/");
-  }
-
-  useEffect(() => {
-    if (action) {
-      const prompt = additionalMaterialsConfig[action]?.getPrompt({
-        lessonPlan: pageData.lessonPlan,
-      });
-      setPrompt(
-        prompt as {
-          prompt: string;
-          systemMessage: string;
-        },
-      );
-    }
-  }, [action, pageData.lessonPlan]);
 
   useEffect(() => {
     if (
@@ -150,10 +120,14 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
 
     try {
       const res = await fetchMaterial.mutateAsync({
-        lessonPlan: pageData.lessonPlan,
-        action: action,
-        message: message ?? undefined,
-        previousOutput: generation,
+        documentType: action,
+        action: message ? "refine" : "generate",
+        context: {
+          lessonPlan: pageData.lessonPlan,
+          message: message ?? null,
+          previousOutput: generation ?? null,
+          options: null,
+        },
       });
 
       setGeneration(res);
@@ -163,13 +137,15 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
     }
   };
   const renderGeneratedMaterial = () => {
-    if (action === "additional-homework" && isHomeworkMaterial(generation)) {
-      return <Homework action={action} generation={generation} />;
+    if (!generation) {
+      return null;
     }
-
+    if (action === "additional-glossary" && isGlossary(generation)) {
+      return <Glossary action={action} generation={generation} />;
+    }
     if (
       action === "additional-comprehension" &&
-      isComprehensionMaterial(generation)
+      isComprehensionTask(generation)
     ) {
       return <ComprehensionTask action={action} generation={generation} />;
     }
@@ -219,24 +195,6 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
             </OakFlex>
           </OakAccordion>
         )}
-        {prompt && (
-          <>
-            <OakAccordion id={"prompt"} header="Prompt">
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: prompt.prompt.replace(/\n/g, "<br />"),
-                }}
-              />
-            </OakAccordion>
-            <OakAccordion id={"system-prompt"} header="System message">
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: prompt.systemMessage.replace(/\n/g, "<br />"),
-                }}
-              />
-            </OakAccordion>
-          </>
-        )}
 
         <OakFlex $flexDirection={"column"} $background={"grey10"}>
           <OakHeading tag="h2">Select an material</OakHeading>
@@ -252,8 +210,8 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
             >
               <OakRadioButton
                 id="radio-1"
-                value="additional-homework"
-                label="Homework"
+                value="additional-glossary"
+                label="Glossary"
               />
               <OakRadioButton
                 id="radio-2"
