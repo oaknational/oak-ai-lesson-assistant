@@ -1,3 +1,10 @@
+# [1.33.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.32.0...v1.33.0) (2025-04-10)
+
+
+### Features
+
+* maths tex notation ([#577](https://github.com/oaknational/oak-ai-lesson-assistant/issues/577)) ([2b373e4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2b373e4bb4ee148a91d1bbd472e5d31c248629ed))
+
 # [1.32.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.31.0...v1.32.0) (2025-04-03)
 
 
