@@ -1,13 +1,23 @@
-import type { GlossarySchema } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
+import {
+  type GlossarySchema,
+  readingAgeRefinement,
+} from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
 
-import { OakFlex, OakHeading, OakP } from "@oaknational/oak-components";
+import {
+  OakFlex,
+  OakHeading,
+  OakP,
+  OakPrimaryButton,
+} from "@oaknational/oak-components";
 
 export const Glossary = ({
   action,
   generation,
+  handleSubmit,
 }: {
   action: string;
   generation: GlossarySchema;
+  handleSubmit?: (refinement: string) => void;
 }) => {
   if (!generation || !action) {
     return null;
@@ -15,26 +25,30 @@ export const Glossary = ({
 
   return (
     <OakFlex $gap="space-between-s" $flexDirection="column">
-      <OakHeading $font="heading-4" tag="h2">
+      <OakHeading $font="heading-5" tag="h2">
         Glossary
       </OakHeading>
       {generation.glossary.map((item, index) => (
         <OakFlex
           key={`${item.term}-${index}`}
-          $flexDirection="column"
-          $gap="space-between-s"
+          $flexDirection="row"
+          // $alignItems={"start"}
         >
-          <OakHeading $font="heading-5" tag="h3">
-            {item.term}
-          </OakHeading>
-          <OakP>{item.definition}</OakP>
-          {item.example && (
-            <OakP>
-              <em>Example: {item.example}</em>
-            </OakP>
-          )}
+          <OakP $mr={"space-between-ssx"} $font="body-2-bold">
+            {item.term}:
+          </OakP>
+          <OakP $font={"body-2"}>{item.definition}</OakP>
         </OakFlex>
       ))}
+      {generation &&
+        handleSubmit &&
+        readingAgeRefinement.map((refinement) => (
+          <OakFlex key={refinement}>
+            <OakPrimaryButton onClick={() => void handleSubmit(refinement)}>
+              {refinement}
+            </OakPrimaryButton>
+          </OakFlex>
+        ))}
     </OakFlex>
   );
 };

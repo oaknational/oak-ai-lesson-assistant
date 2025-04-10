@@ -33,13 +33,20 @@ export const isComprehensionTask = (
   return result.success;
 };
 
+const refinementTypes = z.enum(["custom"]);
+
+const refinementSchema = z.object({
+  type: refinementTypes,
+  payload: z.string().optional(),
+});
+
+const optionsSchema = z.object({
+  difficulty: z.enum(["easy", "medium", "hard"]),
+  questionCount: z.number().min(1).max(10),
+});
 export const comprehensionContextSchema = z.object({
   ...baseContext,
   previousOutput: comprehensionTaskSchema.nullish(),
-  options: z
-    .object({
-      difficulty: z.enum(["easy", "medium", "hard"]),
-      questionCount: z.number().min(1).max(10),
-    })
-    .nullish(),
+  options: optionsSchema.nullish(),
+  refinement: z.array(refinementSchema).nullish(),
 });
