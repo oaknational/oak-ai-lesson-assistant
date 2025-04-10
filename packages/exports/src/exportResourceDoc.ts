@@ -1,9 +1,12 @@
 import { aiLogger } from "@oakai/logger";
 
+import { extractDataFromBlocks } from "dataHelpers/extractDataFromBlocks";
 import {
   type GlossaryTemplate,
+  blocksSchema,
   glossaryTemplate,
 } from "schema/resourceDoc.schema";
+import { z } from "zod";
 
 import { prepWorksheetForSlides } from "./dataHelpers/prepWorksheetForSlides";
 import { exportGeneric } from "./exportGeneric";
@@ -16,58 +19,41 @@ import type { OutputData, Result, State } from "./types";
 const log = aiLogger("exports");
 
 export const exportResourceDoc = async <
-  TemplateData extends Record<string, string | string[] | null | undefined>,
-  InputData extends Record<string, string | string[] | null | undefined>,
+  // TemplateData extends Record<string, string | string[] | null | undefined>,
+  // InputData extends Record<string, string | string[] | null | undefined>,
+  TemplateData,
+  InputData,
 >({
   documentType,
   snapshotId,
   data: inputData,
   userEmail,
   onStateChange,
-  prepDataHandler,
-  transformDataMap
+  transformData,
 }: {
   snapshotId: string;
   documentType: "comp" | "glossary";
   data: InputData;
   userEmail: string;
   onStateChange: (state: State<OutputData>) => void;
-  prepDataHandler: (data: InputData) => Promise<TemplateData>;
-  transformDataMap: 
+  transformData: (data: InputData) => Promise<TemplateData>;
 }): Promise<Result<OutputData>> => {
   try {
-    const templateId = getDocsTemplateIdWorksheet();
+    const templateId = "1hJIGdIPImcqsRYuD13CNueYHvNKz_Vx9JDSVgcRVrLM";
 
-    // const transformDataMap = {
-    //   glossary: async (data: InputData): Promise<TemplateData> => {
-    //     const parsedData = glossaryTemplate.parse(data);
-    //     const { title, labelValueArray } = parsedData;
-    //     const transformedData = {
-    //       title,
-    //       labelValueArray: labelValueArray.map(({ label, value }) => ({
-    //         label,
-    //         value,
-    //       })),
-    //     };
-    //     // transform logic here
-    //     return transformedData as unknown as TemplateData;
-    //   },
-    //   comp: async (data: InputData): Promise<TemplateData> => {
-    //     // transform logic here
-    //     return { ...data };
-    //   },
-    // };
     const result = await exportGeneric<InputData, TemplateData>({
       newFileName: `${snapshotId} - ${documentType} `,
       data: inputData,
-      prepData: transformDataMap[documentType],
+      prepData: transformData,
       templateId,
       populateTemplate: async ({ data, templateCopyId }) => {
         const client = await getDocsClient();
+        const dataFromBlocks = extractDataFromBlocks(data);
+        console.log("dataFromBlocks", dataFromBlocks);
         return populateDoc({
           googleDocs: client,
           documentId: templateCopyId,
-          data,
+          data: dataFromBlocks,
         });
       },
       userEmail,
@@ -89,34 +75,112 @@ export const exportResourceDoc = async <
   }
 };
 
-const transformDataMap = {
-  glossary: async (data: InputData): Promise<TemplateData> => {
-    const parsedData = glossaryTemplate.parse(data);
-    const { title, labelValueArray } = parsedData;
-    const transformedData = {
-      title,
-      labelValueArray: labelValueArray.map(({ label, value }) => ({
-        label,
-        value,
-      })),
-    };
-    // transform logic here
-    return transformedData as unknown as TemplateData;
-  },
-  comp: async (data: InputData): Promise<TemplateData> => {
-    // transform logic here
-    return { ...data };
-  },
+export const glossarySchema = z.object({
+  glossary: z.array(
+    z.object({
+      term: z.string(),
+      definition: z.string(),
+    }),
+  ),
+});
+
+export const transformDataGlossary =
+  <InputData, TemplateData>() =>
+  (data: InputData): Promise<TemplateData> => {
+    const parsedData = glossarySchema.parse(data);
+    const { glossary } = parsedData;
+    const transformedData = [
+      { type: "title", text: "Glossary" },
+      {
+        type: "labelValue",
+        items: glossary.map(({ term, definition }) => ({
+          label: term,
+          value: definition,
+        })),
+      },
+    ];
+    console.log("transfprmed 1", transformedData);
+    console.log("transfprmed 2", transformedData[1]?.items);
+    const parsedGlossaryTemplate = blocksSchema.parse(transformedData);
+    console.log("transfprmed 3", parsedGlossaryTemplate);
+
+    return Promise.resolve(parsedGlossaryTemplate) as Promise<TemplateData>;
+  };
+
+// const transformDataMap = {
+//   glossary: async (data: InputData): Promise<TemplateData> => {
+//     const parsedData = glossaryTemplate.parse(data);
+//     const { title, labelValueArray } = parsedData;
+//     const transformedData = {
+//       title,
+//       labelValueArray: labelValueArray.map(({ label, value }) => ({
+//         label,
+//         value,
+//       })),
+//     };
+//     // transform logic here
+//     return transformedData as unknown as TemplateData;
+//   },
+//   comp: async (data: InputData): Promise<TemplateData> => {
+//     // transform logic here
+//     return { ...data };
+//   },
+// };
+
+// const doc = exportResourceDoc({
+//   documentType: "glossary",
+//   snapshotId: "123",
+//   data: {},
+//   userEmail: "email",
+//   onStateChange: () => console.log("change"),
+//   prepDataHandler: () => console.log("handler"),
+//   transformDataMap,
+// });
+
+const dummyGlossaryData = {
+  title: "Key Terms in Climate Change",
+  labelValueArray: [
+    {
+      label: "Greenhouse Effect",
+      value: "The trapping of the sun's warmth in a planet's lower atmosphere.",
+    },
+    {
+      label: "Carbon Footprint",
+      value: "The total amount of greenhouse gases generated by our actions.",
+    },
+    {
+      label: "Global Warming",
+      value:
+        "The long-term heating of Earth's climate system due to human activities.",
+    },
+    {
+      label: "Fossil Fuels",
+      value: "Natural fuels such as coal or gas formed in the geological past.",
+    },
+    {
+      label: "Renewable Energy",
+      value:
+        "Energy from sources that are naturally replenished like wind and solar.",
+    },
+  ],
 };
 
-const doc = exportResourceDoc(
-  {documentType: "glossary",
-  
-    snapshotId: "123",
-    data: {},
-    userEmail: "email",
-    onStateChange: () => console.log("change"),
-    prepDataHandler: () => console.log("handler"),
-    transformDataMap
-  }
-)
+export const result = await exportResourceDoc({
+  snapshotId: "123",
+  userEmail: "email",
+  onStateChange: (state) => {
+    log.info(state);
+
+    // Sentry.addBreadcrumb({
+    //   category: "exportWorksheetDocs",
+    //   message: "Export state change",
+    //   data: state,
+    // });
+  },
+  documentType: "glossary",
+  data: dummyGlossaryData,
+  transformData: transformDataGlossary<
+    { title: string; labelValueArray: { label: string; value: string }[] },
+    GlossaryTemplate
+  >(),
+});

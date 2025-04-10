@@ -45,6 +45,7 @@ export const exportGeneric = async <InputData, TemplateData>({
       status: "loading",
       message: "Converting document to template data...",
     });
+
     const templateData = await prepData(inputData);
 
     if (updateTemplate) {

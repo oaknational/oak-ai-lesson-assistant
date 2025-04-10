@@ -5,7 +5,6 @@ import type { docs_v1 } from "@googleapis/docs";
 import type { Result } from "../../types";
 import type { ValueToString } from "../../utils";
 import { defaultValueToString } from "../../utils";
-import { cleanupUnusedPlaceholdersRequests } from "./cleanupUnusedPlaceholdersRequests";
 import { findMarkdownImages } from "./findMarkdownImages";
 import { imageReplacements } from "./imageReplacements";
 import { textReplacements } from "./textReplacements";
@@ -15,7 +14,7 @@ const log = aiLogger("exports");
 /**
  * Populates the template document with the given data, handling image replacements for all placeholders.
  */
-export async function populateDoc<
+export async function populateDocBlocks<
   Data extends Record<string, string | string[] | null | undefined>,
 >({
   googleDocs,
@@ -44,20 +43,6 @@ export async function populateDoc<
         documentId,
         requestBody: {
           requests: textRequests,
-        },
-      });
-    }
-
-    const cleanupRequests = await cleanupUnusedPlaceholdersRequests(
-      googleDocs,
-      documentId,
-    );
-
-    if (cleanupRequests.length > 0) {
-      await googleDocs.documents.batchUpdate({
-        documentId,
-        requestBody: {
-          requests: cleanupRequests,
         },
       });
     }
