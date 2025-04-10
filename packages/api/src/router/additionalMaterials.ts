@@ -5,6 +5,7 @@ import {
   generateAdditionalMaterialInputSchema,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { generateAdditionalMaterialObject } from "@oakai/additional-materials/src/documents/additionalMaterials/generateAdditionalMaterialObject";
+import type { GlossarySchema } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
 import {
   type OakOpenAiLessonSummary,
   type OakOpenAiTranscript,
@@ -12,11 +13,12 @@ import {
   oakOpenAiLessonSummarySchema,
   oakOpenAiTranscriptSchema,
   oakOpenApiSearchSchema,
-} from "@oakai/additional-materials/src/documents/schemas/oakOpenApi";
+} from "@oakai/additional-materials/src/schemas/oakOpenApi";
 import {
   exportResourceDoc,
   transformDataGlossary,
 } from "@oakai/exports/src/exportResourceDoc";
+import type { GlossaryTemplate } from "@oakai/exports/src/schema/resourceDoc.schema";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
@@ -27,17 +29,6 @@ import { router } from "../trpc";
 
 const log = aiLogger("additional-materials");
 const OPENAI_AUTH_TOKEN = process.env.OPENAI_AUTH_TOKEN;
-
-export const glossarySchema = z.object({
-  glossary: z.array(
-    z.object({
-      term: z.string().min(1, "Term is required"),
-      definition: z.string().min(1, "Definition is required"),
-    }),
-  ),
-});
-
-type GlossarySchema = z.infer<typeof glossarySchema>;
 
 const dummyGlossaryData = {
   glossary: [
@@ -59,32 +50,6 @@ const dummyGlossaryData = {
   ],
 };
 
-const title = z.object({
-  type: z.literal("title"),
-  text: z.string(),
-});
-
-const labelValue = z.object({
-  label: z.string(),
-  value: z.string(),
-});
-const labelValueArray = z.object({
-  type: z.literal("labelValue"),
-  items: z.array(labelValue),
-});
-
-export const block = z.union([title, labelValueArray]);
-export type Block = z.infer<typeof block>;
-
-export const blocksSchema = z.array(block);
-export type Blocks = z.infer<typeof blocksSchema>;
-
-// Resource schemas
-
-export const glossaryTemplate = z.union([title, labelValueArray]);
-
-export type GlossaryTemplate = z.infer<typeof glossaryTemplate>;
-
 export const additionalMaterialsRouter = router({
   generateAdditionalMaterial: protectedProcedure
     .input(
@@ -97,41 +62,45 @@ export const additionalMaterialsRouter = router({
     .mutation(async ({ ctx, input }): Promise<AdditionalMaterialSchemas> => {
       log.info("fetching additional materials");
 
-      const testExport = await exportResourceDoc({
-        snapshotId: "123",
-        userEmail: "email",
-        onStateChange: (state) => {
-          log.info(state);
-
-          // Sentry.addBreadcrumb({
-          //   category: "exportWorksheetDocs",
-          //   message: "Export state change",
-          //   data: state,
-          // });
-        },
-        documentType: "glossary",
-        data: dummyGlossaryData,
-        transformData: transformDataGlossary<
-          GlossarySchema,
-          GlossaryTemplate
-        >(),
-      });
-
-      console.log("testExport", testExport);
-
       try {
-        const result = await generateDocument<
-          AdditionalMaterialType,
-          AdditionalMaterialPromptContext
-        >({
-          documentType: action,
-          context: {
-            lessonPlan,
-            message,
-            previousOutput,
-          },
-          documentConfig: additionalMaterialsConfig,
+        const parsedInput =
+          generateAdditionalMaterialInputSchema.safeParse(input);
+        if (!parsedInput.success) {
+          log.error("Failed to parse input", parsedInput.error);
+          throw new ZodError(parsedInput.error.issues);
+        }
+        const parsedAction = actionEnum.parse(input.action);
+
+        const result = await generateAdditionalMaterialObject({
+          provider: "openai",
+          parsedInput: parsedInput.data,
+          action: parsedAction,
         });
+
+        const testExport = await exportResourceDoc({
+          snapshotId: "123",
+          userEmail: "email",
+          onStateChange: (state) => {
+            log.info(state);
+
+            // Sentry.addBreadcrumb({
+            //   category: "exportWorksheetDocs",
+            //   message: "Export state change",
+            //   data: state,
+            // });
+          },
+          documentType: "glossary",
+          data: result,
+          transformData: transformDataGlossary<
+            GlossarySchema,
+            GlossaryTemplate
+          >(),
+        });
+
+        console.log("testExport", testExport);
+        if (!result) {
+          throw new Error("Failed to generate additional material");
+        }
 
         return result;
       } catch (cause) {
