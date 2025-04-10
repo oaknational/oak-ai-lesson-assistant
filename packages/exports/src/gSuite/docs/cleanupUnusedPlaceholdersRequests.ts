@@ -3,7 +3,6 @@ import type { docs_v1 } from "@googleapis/docs";
 export async function cleanupUnusedPlaceholdersRequests(
   googleDocs: docs_v1.Docs,
   documentId: string,
-  prefix: string = "oak_",
 ): Promise<docs_v1.Schema$Request[]> {
   const requests: docs_v1.Schema$Request[] = [];
 

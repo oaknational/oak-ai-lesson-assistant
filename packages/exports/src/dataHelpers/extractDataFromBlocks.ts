@@ -1,12 +1,10 @@
-import { type Blocks, blocksSchema } from "schema/resourceDoc.schema";
+import { blocksSchema } from "schema/resourceDoc.schema";
 
 export const extractDataFromBlocks = <T>(
   blocks: T,
 ): Record<string, string | string[] | null | undefined> => {
   const map: Record<string, string | string[] | null | undefined> = {};
-  console.log("blocks", blocks);
   const passedBlocks = blocksSchema.parse(blocks);
-  console.log("passedBlocks", passedBlocks);
 
   for (const block of passedBlocks) {
     switch (block.type) {
@@ -18,7 +16,6 @@ export const extractDataFromBlocks = <T>(
           map[`label_${i + 1}`] = item.label;
           map[`value_${i + 1}`] = item.value;
         }
-
         break;
     }
 
