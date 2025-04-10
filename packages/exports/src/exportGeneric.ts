@@ -43,8 +43,9 @@ export const exportGeneric = async <InputData, TemplateData>({
 
     onStateChange({
       status: "loading",
-      message: "Converting lesson plan to template data...",
+      message: "Converting document to template data...",
     });
+
     const templateData = await prepData(inputData);
 
     if (updateTemplate) {
