@@ -21,7 +21,6 @@ export const OpenAIProvider = {
 
     const parsedObject = schema.safeParse(object);
     if (!parsedObject.success) {
-      console.log("Error in getLLMGeneration", parsedObject.error);
       throw new Error(
         `Context schema validation failed: ${JSON.stringify(parsedObject.error.issues, null, 2)}`,
       );
