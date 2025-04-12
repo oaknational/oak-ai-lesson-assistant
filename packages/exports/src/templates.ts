@@ -97,3 +97,19 @@ invariant(
 export function getQuizDesignerSlidesTemplateIdWorksheet() {
   return process.env.GOOGLE_SLIDES_QUIZ_DESIGNER_TEMPLATE_ID as string;
 }
+
+/*
+ * Additional Resources
+ */
+
+export const getAdditionalResourcesTemplateId = (docType: string) => {
+  if (docType === "glossary") {
+    return process.env.GOOGLE_DOCS_ADDITIONAL_RESOURCE_GLOSSARY as string;
+  }
+
+  if (docType === "worksheet") {
+    return process.env.GOOGLE_DOCS_ADDITIONAL_RESOURCE_COMPREHENSION as string;
+  }
+
+  throw new Error(`Unknown docType: ${docType}`);
+};

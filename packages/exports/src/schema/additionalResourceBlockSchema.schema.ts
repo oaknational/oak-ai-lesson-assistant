@@ -11,6 +11,12 @@ const labelValue = z.object({
   label: z.string(),
   value: z.string(),
 });
+
+const paragraph = z.object({
+  type: z.literal("paragraph"),
+  text: z.string(),
+});
+
 const labelValueArray = z.object({
   type: z.literal("labelValue"),
   items: z.array(labelValue),
