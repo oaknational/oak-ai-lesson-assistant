@@ -5,6 +5,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { waitUntil } from "@vercel/functions";
 import { kv } from "@vercel/kv";
+import invariant from "tiny-invariant";
 
 import { RateLimitExceededError } from "./errors";
 import type { RateLimitDuration, RateLimiter } from "./types";
@@ -17,11 +18,12 @@ type UserBasedRateLimiterArgs = {
     isOakUser: boolean,
     userPrivateMetadata: User["privateMetadata"],
   ) => number;
-  window: RateLimitDuration;
+  refillRate: number;
+  interval: RateLimitDuration;
 };
 
 /**
- * Function to create a user-based rate limiter with a user-specific rate limit
+ * Create rate limiter with a user-specific rate limit. Refill tokens up to a max limit
  * @returns A function enforcing user rate limits
  * @example
  * const rateLimiter = userBasedRateLimiter({
@@ -32,31 +34,42 @@ type UserBasedRateLimiterArgs = {
  *     }
  *     return 100
  *   },
- *   window: "24 h",
+ *   refillRate: 0.5,
+ *   interval: "24 h",
  * }),
  * rateLimiter.check(userId)
  */
 export const userBasedRateLimiter = ({
   prefix,
   limit,
-  window,
+  refillRate,
+  interval,
 }: UserBasedRateLimiterArgs): RateLimiter => {
+  invariant(
+    refillRate > 0 && refillRate <= 1,
+    "refillRate must be between 0 and 1",
+  );
+
   const getRateLimiter = async (userId: string) => {
-    if (!userId) {
-      throw new Error(
-        "authenticated user is required for userBasedRateLimiter",
-      );
-    }
+    invariant(
+      userId,
+      "authenticated user is required for userBasedRateLimiter",
+    );
 
     const user = await clerkClient.users.getUser(userId);
-
-    const tokenLimit = limit(userHasOakEmail(user), user.privateMetadata);
-    log.info(`Using limit ${tokenLimit} for user ${userId}`);
+    const maxTokens = limit(userHasOakEmail(user), user.privateMetadata);
+    log.info(
+      `TokenBucket: Max tokens: ${maxTokens}, refill rate: ${maxTokens * refillRate}, every ${interval} (${userId})`,
+    );
 
     return new Ratelimit({
       redis: kv,
       prefix,
-      limiter: Ratelimit.slidingWindow(tokenLimit, window),
+      limiter: Ratelimit.tokenBucket(
+        maxTokens * refillRate,
+        interval,
+        maxTokens,
+      ),
     });
   };
 
@@ -71,9 +84,10 @@ export const userBasedRateLimiter = ({
       waitUntil(pending);
 
       if (!success) {
-        log.info("Rate limit exceeded for user %s", userId, rest);
+        log.info(`Limit exceeded (${userId})`, rest);
         throw new RateLimitExceededError(userId, rest.limit, rest.reset);
       }
+      log.info(`Remaining tokens: ${rest.remaining} (${userId})`);
 
       return {
         isSubjectToRateLimiting: true,
