@@ -1,3 +1,29 @@
+# [1.33.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.32.0...v1.33.0) (2025-04-10)
+
+
+### Features
+
+* maths tex notation ([#577](https://github.com/oaknational/oak-ai-lesson-assistant/issues/577)) ([2b373e4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2b373e4bb4ee148a91d1bbd472e5d31c248629ed))
+
+# [1.32.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.31.0...v1.32.0) (2025-04-03)
+
+
+### Features
+
+* additional material package ([#597](https://github.com/oaknational/oak-ai-lesson-assistant/issues/597)) ([765b050](https://github.com/oaknational/oak-ai-lesson-assistant/commit/765b0500fbd6e672eab0f540789bfe1c2387c3e4))
+
+# [1.31.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.30.0...v1.31.0) (2025-04-02)
+
+
+### Bug Fixes
+
+* add lesson plan tracking store ([#619](https://github.com/oaknational/oak-ai-lesson-assistant/issues/619)) ([9cea080](https://github.com/oaknational/oak-ai-lesson-assistant/commit/9cea08000dab60c19cde0c39204d0a41ab54b025))
+
+
+### Features
+
+* .cursorrules and CLAUDE.md ([#593](https://github.com/oaknational/oak-ai-lesson-assistant/issues/593)) ([e6b1cbc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e6b1cbcd530daf061c10026a646861b041c32d17))
+
 # [1.30.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.29.0...v1.30.0) (2025-03-17)
 
 

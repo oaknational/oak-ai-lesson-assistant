@@ -76,7 +76,7 @@ export const createWebActionsPlugin: PluginCreator = (
     } catch (e) {
       log.error("Error scheduling slack notification", e);
       Sentry.captureException(e);
-      throw e;
+      // NOTE: don't throw as it will prevent a toxic moderation from streaming to the client
     }
 
     try {

@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import type { ParsedMessage } from "@/stores/chatStore/types";
 import { chromaticParams } from "@/storybook/chromatic";
-import { LessonPlanTrackingDecorator } from "@/storybook/decorators/LessonPlanTrackingDecorator";
 import { SidebarDecorator } from "@/storybook/decorators/SidebarDecorator";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
@@ -21,7 +20,7 @@ const meta = {
   title: "Components/Chat/ChatPanel",
   component: ChatPanel,
   tags: ["autodocs"],
-  decorators: [LessonPlanTrackingDecorator, SidebarDecorator, StoreDecorator],
+  decorators: [SidebarDecorator, StoreDecorator],
   args: {
     isDemoLocked: false,
   },
