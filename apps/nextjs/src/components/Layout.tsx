@@ -9,7 +9,7 @@ const Layout = ({ children }: Readonly<LayoutProps>) => {
   return (
     <>
       <HeaderManager />
-      <Main>{children}</Main>
+      <Main defaultMaxWidth={true}>{children}</Main>
       <Footer />
     </>
   );
