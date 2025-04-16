@@ -1,6 +1,7 @@
 import { router } from "../trpc";
 import { additionalMaterialsRouter } from "./additionalMaterials";
 import { adminRouter } from "./admin";
+import { analyticsRouter } from "./analytics";
 import { appRouter } from "./app";
 import { authRouter } from "./auth";
 import { cloudinaryRouter } from "./cloudinary";
@@ -31,6 +32,7 @@ export const oakAppRouter = router({
   health: healthRouter,
   admin: adminRouter,
   additionalMaterials: additionalMaterialsRouter,
+  analytics: analyticsRouter,
 });
 
 // export type definition of API
