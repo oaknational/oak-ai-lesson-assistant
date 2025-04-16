@@ -47,7 +47,7 @@ export class ElasticLessonQuizLookup extends BaseLessonQuizLookup {
   ): Promise<string[]> {
     try {
       const response = await this.client.search<QuizIDSource>({
-        index: "lesson-slug-lookup",
+        index: "lesson-slug-lookup-2025-04-16",
         query: {
           bool: {
             must: [{ term: { "metadata.lessonSlug.keyword": lessonSlug } }],

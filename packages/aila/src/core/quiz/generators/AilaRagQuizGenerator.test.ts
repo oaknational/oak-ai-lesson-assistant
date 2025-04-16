@@ -1,5 +1,6 @@
-import { Client } from "@elastic/elasticsearch";
 import { aiLogger } from "@oakai/logger";
+
+import { Client } from "@elastic/elasticsearch";
 
 import { QuizSchema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
@@ -60,7 +61,7 @@ describe("AilaRagQuizGenerator", () => {
     });
     const result = await quizGenerator.searchQuestions(
       client,
-      "quiz-questions-text-only",
+      "quiz-questions-text-only-2025-04-16",
       ["QUES-XXXXX-XXXXX"],
     );
     // console.log(JSON.stringify(result, null, 2));

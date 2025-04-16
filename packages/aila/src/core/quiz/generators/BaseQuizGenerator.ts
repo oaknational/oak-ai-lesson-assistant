@@ -1,10 +1,11 @@
+import { prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
+
 import { Client } from "@elastic/elasticsearch";
 import type {
   SearchHit,
   SearchHitsMetadata,
 } from "@elastic/elasticsearch/lib/api/types";
-import { prisma } from "@oakai/db";
-import { aiLogger } from "@oakai/logger";
 import { CohereClient } from "cohere-ai";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import { z } from "zod";
@@ -120,7 +121,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     // Converts a lesson slug to a question ID via searching in index
     try {
       const response = await this.client.search<CustomSource>({
-        index: "oak-vector",
+        index: "oak-vector-2025-04-16",
         body: {
           query: {
             bool: {
@@ -173,7 +174,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     questionUids: string[],
   ): Promise<QuizQuestion[]> {
     const response = await this.client.search<QuizQuestionTextOnlySource>({
-      index: "quiz-questions-text-only",
+      index: "quiz-questions-text-only-2025-04-16",
       body: {
         query: {
           bool: {
@@ -335,7 +336,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     try {
       log.info(`Searching index: ${index}, field: ${field}, query: ${query}`);
       const response = await this.client.search<CustomSource>({
-        index: "oak-vector",
+        index: "oak-vector-2025-04-16",
         query: {
           bool: {
             must: [{ match: { text: query } }],
