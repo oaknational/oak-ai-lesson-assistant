@@ -410,10 +410,8 @@ export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;
 
 export type LooseLessonPlan = z.infer<typeof LessonPlanSchemaWhilstStreaming>;
 
-export type LessonPlanKey = keyof typeof CompletedLessonPlanSchema.shape;
-
-export type LessonPlanKeyWithExperiments =
-  | LessonPlanKey
+export type LessonPlanKey =
+  | keyof typeof CompletedLessonPlanSchema.shape
   | "_experimental_starterQuizMathsV1"
   | "_experimental_exitQuizMathsV1";
 
@@ -438,6 +436,8 @@ export const LessonPlanKeySchema = z.enum([
   "subject",
   "topic",
   "basedOn",
+  "_experimental_starterQuizMathsV1",
+  "_experimental_exitQuizMathsV1",
   ...allSectionsInOrder,
 ]);
 

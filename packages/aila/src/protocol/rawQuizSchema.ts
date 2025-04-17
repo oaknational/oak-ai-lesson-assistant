@@ -286,32 +286,37 @@ export const rawQuizFixture: NonNullable<RawQuiz> = keysToCamelCase([
     questionType: "multiple-choice",
   },
   {
+    questionId: 1880981,
+    questionUid: "QUES-EZZN1-00001",
+    active: true,
+    // above weren't included
     questionStem: [
       { text: "Match the calculations to their answer.", type: "text" },
     ],
     hint: "This is our ten times tables - we can count in tens to help us.",
     answers: {
       match: [
-        {
-          match_option: [{ text: "2 x 10 =", type: "text" }],
-          correct_choice: [{ text: "20", type: "text" }],
-        },
-        {
-          match_option: [{ text: "5 x 10 =", type: "text" }],
-          correct_choice: [{ text: "50", type: "text" }],
-        },
-        {
-          match_option: [{ text: "9 x 10 =", type: "text" }],
-          correct_choice: [{ text: "90", type: "text" }],
-        },
-        {
-          match_option: [{ text: "4 x 10 =", type: "text" }],
-          correct_choice: [{ text: "40", type: "text" }],
-        },
-        {
-          match_option: [{ text: "7 x 10", type: "text" }],
-          correct_choice: [{ text: "70", type: "text" }],
-        },
+        // below is failing schema parsing
+        // {
+        //   match_option: [{ text: "2 x 10 =", type: "text" }],
+        //   correct_choice: [{ text: "20", type: "text" }],
+        // },
+        // {
+        //   match_option: [{ text: "5 x 10 =", type: "text" }],
+        //   correct_choice: [{ text: "50", type: "text" }],
+        // },
+        // {
+        //   match_option: [{ text: "9 x 10 =", type: "text" }],
+        //   correct_choice: [{ text: "90", type: "text" }],
+        // },
+        // {
+        //   match_option: [{ text: "4 x 10 =", type: "text" }],
+        //   correct_choice: [{ text: "40", type: "text" }],
+        // },
+        // {
+        //   match_option: [{ text: "7 x 10", type: "text" }],
+        //   correct_choice: [{ text: "70", type: "text" }],
+        // },
       ],
     },
     feedback:
@@ -319,6 +324,10 @@ export const rawQuizFixture: NonNullable<RawQuiz> = keysToCamelCase([
     questionType: "match",
   },
   {
+    questionId: 1880982,
+    questionUid: "QUES-EZZN1-00002",
+    active: true,
+    // above weren't included
     questionStem: [
       {
         text: "Starting with the smallest volume, put these jugs in the order of the volume of liquid that they contain.",
@@ -370,6 +379,10 @@ export const rawQuizFixture: NonNullable<RawQuiz> = keysToCamelCase([
     questionType: "order",
   },
   {
+    questionId: 1880983,
+    questionUid: "QUES-EZZN1-00003",
+    active: true,
+    // above weren't included
     questionStem: [
       {
         text: "A sequence is defined as follows: Start with any positive integer value (𝑛). Each term is found from the previous term as follows: If the value is even, divide it by 2 (𝑛/2). If the value is odd, multiply it by 3 and add 1 (3𝑛+1).",

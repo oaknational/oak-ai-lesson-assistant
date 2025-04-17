@@ -3,7 +3,6 @@ import { useRef } from "react";
 import { rawQuizFixture } from "@oakai/aila/src/protocol/rawQuizSchema";
 import type {
   LessonPlanKey,
-  LessonPlanKeyWithExperiments,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
@@ -26,7 +25,7 @@ const excludedKeys = [
   "lessonReferences",
 ] as const;
 type ExcludedKeys = (typeof excludedKeys)[number];
-type ValidLessonPlanKey = Exclude<LessonPlanKeyWithExperiments, ExcludedKeys>;
+type ValidLessonPlanKey = Exclude<LessonPlanKey, ExcludedKeys>;
 
 const LessonPlanMapToMarkDown = ({
   lessonPlan,
@@ -67,7 +66,7 @@ const LessonPlanMapToMarkDown = ({
     .sort(({ key: a }, { key: b }) => {
       // sort the keys in a predefined order
       //  title, subject, topic, keyStage, basedOn, lessonReferences, learningOutcome, learningCycles, priorKnowledge, keyLearningPoints, misconceptions, keywords, starterQuiz, cycle1, cycle2, cycle3, exitQuiz, additionalMaterials
-      const order: LessonPlanKeyWithExperiments[] = [
+      const order: LessonPlanKey[] = [
         "learningOutcome",
         "learningCycles",
         "priorKnowledge",
@@ -84,8 +83,7 @@ const LessonPlanMapToMarkDown = ({
         "additionalMaterials",
       ];
       return (
-        order.indexOf(a as LessonPlanKeyWithExperiments) -
-        order.indexOf(b as LessonPlanKeyWithExperiments)
+        order.indexOf(a as LessonPlanKey) - order.indexOf(b as LessonPlanKey)
       );
     })
     .map(({ key, value }) => {
