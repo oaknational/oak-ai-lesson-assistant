@@ -128,7 +128,11 @@ export interface CustomSource {
 
 export interface QuizQuestionTextOnlySource {
   text: string;
-  metadata: { questionUid: string; lessonSlug: string };
+  metadata: {
+    questionUid: string;
+    lessonSlug: string;
+    raw_json?: unknown; // Allow for raw JSON data
+  };
 }
 
 export interface CustomHit {
