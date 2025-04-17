@@ -7,6 +7,8 @@ import {
   OakSpan,
 } from "@oaknational/oak-components";
 
+import { toSentenceCase } from "@/utils/toSentenceCase";
+
 import HeaderManager from "./HeaderManager";
 
 type LayoutProps = {
@@ -14,12 +16,14 @@ type LayoutProps = {
   title: string;
   subTitle: string;
   step: number;
+  docTypeName: string | null;
 };
 const ResourcesLayout = ({
   children,
   title,
   subTitle,
   step,
+  docTypeName,
 }: Readonly<LayoutProps>) => {
   return (
     <>
@@ -42,6 +46,8 @@ const ResourcesLayout = ({
           $left="all-spacing-0"
           $right="all-spacing-0"
           $overflowY={"scroll"}
+          $mb="space-between-xxxl"
+          $pb="inner-padding-xl"
         >
           <OakBox $pa="inner-padding-xl4">
             <OakFlex
@@ -58,7 +64,10 @@ const ResourcesLayout = ({
                 $borderRadius="border-radius-circle"
                 $width="fit-content"
               >
-                <OakP $font="body-3">Step {step} of 3</OakP>
+                <OakP $font="body-3">
+                  Step {step} of 3{" "}
+                  {docTypeName && `- ${toSentenceCase(docTypeName)}`}
+                </OakP>
               </OakBox>
               <OakHeading as="h1" tag="h1" $font="heading-4">
                 {title}

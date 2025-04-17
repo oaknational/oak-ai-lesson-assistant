@@ -1,57 +1,26 @@
 "use client";
 
 import type { FC } from "react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
-import {
-  type AdditionalMaterialSchemas,
-  type AdditionalMaterialType,
-  additionalMaterialsConfigMap,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import { type AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { isGlossary } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
-import { getKeystageFromYearGroup } from "@oakai/additional-materials/src/documents/additionalMaterials/promptHelpers";
-import {
-  buildPartialLessonPrompt,
-  buildPartialLessonSystemMessage,
-} from "@oakai/additional-materials/src/documents/partialLessonPlan/buildPartialLessonPrompt";
-import {
-  type PartialLessonPlanFieldKeys,
-  lessonFieldKeys,
-} from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
+import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
-import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { aiLogger } from "@oakai/logger";
 
-import {
-  OakAccordion,
-  OakCheckBox,
-  OakFlex,
-  OakHeading,
-  OakP,
-  OakPrimaryButton,
-  OakRadioButton,
-  OakRadioGroup,
-  OakTextInput,
-} from "@oaknational/oak-components";
 import * as Sentry from "@sentry/nextjs";
 
 import { ComprehensionTask } from "@/components/AppComponents/AdditionalMaterials/ComprehensionTask";
 import { Glossary } from "@/components/AppComponents/AdditionalMaterials/Glossary";
-import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
+import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
+import StepThree from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepThree";
+import StepTwo from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepTwo";
 import ResourcesLayout from "@/components/ResroucesLayout";
 import { trpc } from "@/utils/trpc";
 
 const log = aiLogger("additional-materials");
-
-export function mapLessonPlanSections(
-  lessonPlan: AilaPersistedChat["lessonPlan"],
-) {
-  return lessonFieldKeys.map((key) => ({
-    key,
-    data: lessonPlan[key] ?? null,
-  }));
-}
 
 export type Cycle = {
   title: string;
@@ -78,7 +47,7 @@ interface AdditionalMaterialsUserProps {
 }
 
 const ResourcesContents: FC<AdditionalMaterialsUserProps> = () => {
-  const [stageNumber, setStageNumber] = useState<number>(0);
+  const [stepNumber, setStepNumber] = useState<number>(0);
   const [pageData, setPageData] = useState<
     AdditionalMaterialsProps["pageData"]
   >({
@@ -105,21 +74,7 @@ const ResourcesContents: FC<AdditionalMaterialsUserProps> = () => {
     useState<AdditionalMaterialSchemas | null>(null);
   const [moderation, setModeration] = useState<string | null>(null);
   const [docType, setDocType] = useState<string | null>(null);
-  const [lessonFields, setLessonField] = useState<
-    PartialLessonPlanFieldKeys[] | []
-  >(["title", "keyStage", "subject"]);
-  const [prompt, setPrompt] = useState<{
-    prompt: string;
-    systemMessage: string;
-  } | null>(null);
-  const [amPrompt, setAmPrompt] = useState<{
-    prompt: string;
-    systemMessage: string;
-  } | null>(null);
-  const [keyStage, setKeyStage] = useState<string | null>(null);
-  const [subject, setSubject] = useState<string | null>(null);
-  const [title, setTitle] = useState<string | null>(null);
-  const [year, setYear] = useState<string | null>(null);
+
   const fetchMaterialModeration =
     trpc.additionalMaterials.generateAdditionalMaterialModeration.useMutation();
   const fetchMaterial =
@@ -127,53 +82,9 @@ const ResourcesContents: FC<AdditionalMaterialsUserProps> = () => {
   const generateLessonPlan =
     trpc.additionalMaterials.generatePartialLessonPlanObject.useMutation();
 
-  useEffect(() => {
-    if (docType) {
-      const prompt = additionalMaterialsConfigMap[
-        docType as AdditionalMaterialType
-      ].buildPrompt(
-        {
-          lessonPlan: pageData.lessonPlan,
-        },
-        "generate",
-      );
-      const systemMessage =
-        additionalMaterialsConfigMap[
-          docType as AdditionalMaterialType
-        ].systemMessage();
-
-      setAmPrompt({
-        prompt,
-        systemMessage,
-      });
-    }
-  }, [docType, pageData.lessonPlan]);
-
-  useEffect(() => {
-    if (docType) {
-      const systemMessage = buildPartialLessonSystemMessage({
-        keyStage: year ? getKeystageFromYearGroup(year) : "",
-        subject: subject ?? "",
-        title: title ?? "",
-        year: year ?? "7",
-      });
-      const prompt = buildPartialLessonPrompt({
-        lessonParts: lessonFields,
-      });
-      setPrompt({
-        prompt,
-        systemMessage,
-      });
-    }
-  }, [
-    docType,
-    keyStage,
-    lessonFields,
-    pageData.lessonPlan,
-    subject,
-    title,
-    year,
-  ]);
+  const lessonFields = useMemo(() => {
+    return lessonFieldKeys.filter((key) => pageData.lessonPlan[key]);
+  }, [pageData.lessonPlan]);
 
   useEffect(() => {
     if (
@@ -197,20 +108,29 @@ const ResourcesContents: FC<AdditionalMaterialsUserProps> = () => {
     }
   }, [fetchMaterialModeration, generation, moderation]);
 
-  const handleSubmitLessonPlan = async () => {
+  const handleSubmitLessonPlan = async ({
+    title,
+    subject,
+    keyStage,
+    year,
+  }: {
+    title: string;
+    subject: string;
+    keyStage: string;
+    year: string;
+  }) => {
+    setStepNumber(1);
     const res = await generateLessonPlan.mutateAsync({
       title: title ?? "",
       subject: subject ?? "",
-      keyStage: keyStage ?? "",
       year: year ?? "",
-      lessonParts: ["title", ...lessonFields],
+      lessonParts: ["title", "keyStage", "subject", ...lessonFields],
     });
     setPageData({ lessonPlan: { ...res } });
     console.log("lessonPlan", res);
-    setStageNumber(1);
   };
 
-  const handleSubmit = async (message?: string) => {
+  const handleStepTwoSubmit = async (message?: string) => {
     setGeneration(null);
     if (!docType) {
       alert("No docType selected");
@@ -295,178 +215,49 @@ const ResourcesContents: FC<AdditionalMaterialsUserProps> = () => {
       subTitle:
         "If these details are not quite right, try editing the previous page.",
     },
+    2: {
+      title: pageData.lessonPlan.title,
+      subTitle: `${pageData.lessonPlan.keyStage} ${pageData.lessonPlan.subject}`,
+    },
+  };
+
+  const stepComponents = {
+    0: (
+      <StepOne
+        setDocType={setDocType}
+        setModeration={setModeration}
+        setGeneration={setGeneration}
+        setStepNumber={setStepNumber}
+        handleSubmitLessonPlan={handleSubmitLessonPlan}
+      />
+    ),
+    1: (
+      <StepTwo
+        setStepNumber={setStepNumber}
+        pageData={pageData}
+        handleSubmit={handleStepTwoSubmit}
+        docTypeName={docType?.split("-")[1] ?? null}
+        isLessonPlanLoading={generateLessonPlan.isLoading}
+      />
+    ),
+    2: (
+      <StepThree
+        fetchMaterial={fetchMaterial}
+        fetchMaterialModeration={fetchMaterialModeration}
+        renderGeneratedMaterial={renderGeneratedMaterial}
+        moderation={moderation}
+      />
+    ),
   };
 
   return (
     <ResourcesLayout
-      title={titleAreaControl[stageNumber].title}
-      subTitle={titleAreaControl[stageNumber].subTitle}
-      step={stageNumber + 1}
+      title={titleAreaControl[stepNumber].title}
+      subTitle={titleAreaControl[stepNumber].subTitle}
+      step={stepNumber + 1}
+      docTypeName={docType?.split("-")[1] ?? null}
     >
-      {stageNumber === 0 && (
-        <>
-          <OakTextInput
-            onChange={(value) => setYear(value.target.value)}
-            placeholder="year (1-11)"
-          />
-          <OakTextInput
-            onChange={(value) => setSubject(value.target.value)}
-            placeholder="subject"
-          />
-          <OakTextInput
-            onChange={(value) => setTitle(value.target.value)}
-            placeholder="title"
-          />
-          <OakPrimaryButton
-            $mh="space-between-m"
-            onClick={() => void handleSubmitLessonPlan()}
-          >
-            Submit
-          </OakPrimaryButton>
-          {prompt && (
-            <>
-              <OakAccordion id={"prompt"} header="Lesson Prompt">
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: prompt.prompt.replace(/\n/g, "<br />"),
-                  }}
-                />
-              </OakAccordion>
-              <OakAccordion id={"system-prompt"} header="System message">
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: prompt.systemMessage.replace(/\n/g, "<br />"),
-                  }}
-                />
-              </OakAccordion>
-            </>
-          )}
-          {generateLessonPlan.isLoading && <OakP>Building lesson plan...</OakP>}
-          <p>Select lesson plan parts</p>
-          {lessonFieldKeys.map((field) => (
-            <OakCheckBox
-              key={field}
-              id={field}
-              value={field}
-              defaultChecked={true}
-              onChange={(value) => {
-                value.target.checked
-                  ? setLessonField((prev) => [...prev, field])
-                  : setLessonField((prev) =>
-                      prev.filter((lessonField) => lessonField !== field),
-                    );
-              }}
-            />
-          ))}
-          <OakFlex $gap={"space-between-m"} $flexDirection="column">
-            <OakFlex $flexDirection={"column"} $background={"grey10"}>
-              <OakHeading tag="h2">Select an additional material</OakHeading>
-              <OakFlex $ma="space-between-m">
-                <OakRadioGroup
-                  name="radio-group"
-                  onChange={(value) => {
-                    setDocType(value.target.value);
-                    setModeration(null);
-                    setGeneration(null);
-                  }}
-                  $flexDirection="column"
-                >
-                  <OakRadioButton
-                    id="radio-1"
-                    value="additional-glossary"
-                    label="Glossary"
-                  />
-                  <OakRadioButton
-                    id="radio-2"
-                    value="additional-comprehension"
-                    label="Comprehension"
-                  />
-                </OakRadioGroup>
-              </OakFlex>
-            </OakFlex>
-          </OakFlex>
-        </>
-      )}
-
-      {stageNumber === 1 && (
-        <>
-          <OakHeading tag="h1">
-            {`LESSON: ${pageData.lessonPlan.title} - ${pageData.lessonPlan.subject} - ${pageData.lessonPlan.keyStage}`}
-          </OakHeading>
-          <OakAccordion id={"lesson-plan"} header="Lesson plan">
-            <OakFlex $flexDirection="column">
-              {mapLessonPlanSections(pageData.lessonPlan).map((section) => {
-                return (
-                  <OakFlex key={section.key} $flexDirection={"column"}>
-                    <OakHeading $font={"heading-5"} tag="h2">
-                      {section.key}
-                    </OakHeading>
-                    <OakFlex $pv="inner-padding-m">
-                      <OakFlex $flexDirection="column">
-                        <MemoizedReactMarkdownWithStyles
-                          markdown={`${sectionToMarkdown(section.key, section.data)}`}
-                        />
-                      </OakFlex>
-                    </OakFlex>
-                  </OakFlex>
-                );
-              })}
-            </OakFlex>
-          </OakAccordion>
-          {amPrompt && (
-            <>
-              <OakAccordion id={"prompt"} header="AM Prompt">
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: amPrompt.prompt.replace(/\n/g, "<br />"),
-                  }}
-                />
-              </OakAccordion>
-              <OakAccordion id={"system-prompt"} header="System message">
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: amPrompt.systemMessage.replace(/\n/g, "<br />"),
-                  }}
-                />
-              </OakAccordion>
-            </>
-          )}
-          {pageData.transcript && (
-            <OakAccordion id={"transcript"} header="Transcript">
-              <OakFlex>
-                <OakP>{pageData.transcript}</OakP>
-              </OakFlex>
-            </OakAccordion>
-          )}
-
-          <OakPrimaryButton
-            $mh="space-between-m"
-            onClick={() => void handleSubmit()}
-          >
-            Generate Additional Materials
-          </OakPrimaryButton>
-
-          {fetchMaterial.isLoading && <OakP>Loading...</OakP>}
-          <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
-
-          {fetchMaterialModeration.isLoading && (
-            <OakP>Loading moderation...</OakP>
-          )}
-          <OakFlex
-            $mt={"space-between-l"}
-            $gap={"space-between-m"}
-            $flexDirection="column"
-          >
-            {moderation && (
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: moderation.replace(/\n/g, "<br />"),
-                }}
-              />
-            )}
-          </OakFlex>
-        </>
-      )}
+      {stepComponents[stepNumber]}
     </ResourcesLayout>
   );
 };
