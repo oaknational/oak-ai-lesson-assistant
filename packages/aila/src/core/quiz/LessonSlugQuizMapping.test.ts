@@ -43,7 +43,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         expect(result).toEqual(["q1", "q2"]);
         // @ts-expect-error - Mock the Elasticsearch client search method
         expect(dbLookup.client.search).toHaveBeenCalledWith({
-          index: "lesson-slug-lookup",
+          index: "lesson-slug-lookup-2025-04-16",
           query: {
             bool: {
               must: [
@@ -80,7 +80,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         expect(result).toEqual(["q3", "q4"]);
         // @ts-expect-error- Mock the Elasticsearch client search method
         expect(dbLookup.client.search).toHaveBeenCalledWith({
-          index: "lesson-slug-lookup",
+          index: "lesson-slug-lookup-2025-04-16",
           query: {
             bool: {
               must: [
