@@ -1,6 +1,8 @@
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { aiLogger } from "@oakai/logger";
 
+import { rawQuizFixture } from "protocol/rawQuizSchema";
+
 import { placeholderQuiz } from "../../core/quiz/fixtures/placeholderQuestion";
 import type { FullQuizService } from "../../core/quiz/interfaces";
 import type {
@@ -84,7 +86,7 @@ export async function fetchExperimentalPatches({
       await handlePatch(
         preparePatch({
           op,
-          path: "/_experimental_starterQuizMathsV0",
+          path: "/_experimental_starterQuizMathsV1",
         }),
       );
     } else {
@@ -106,11 +108,12 @@ export async function fetchExperimentalPatches({
       }
 
       if (mathsStarterQuiz) {
+        console.log("ADDING STARTER QUIZ");
         await handlePatch(
           preparePatch({
-            path: "/_experimental_starterQuizMathsV0",
+            path: "/_experimental_starterQuizMathsV1",
             op,
-            value: annotateQuestions(mathsStarterQuiz),
+            value: rawQuizFixture,
           }),
         );
       }
@@ -125,7 +128,7 @@ export async function fetchExperimentalPatches({
       await handlePatch(
         preparePatch({
           op,
-          path: "/_experimental_exitQuizMathsV0",
+          path: "/_experimental_exitQuizMathsV1",
         }),
       );
     } else {
@@ -150,9 +153,9 @@ export async function fetchExperimentalPatches({
       if (mathsExitQuiz) {
         await handlePatch(
           preparePatch({
-            path: "/_experimental_exitQuizMathsV0",
+            path: "/_experimental_exitQuizMathsV1",
             op,
-            value: annotateQuestions(mathsExitQuiz),
+            value: rawQuizFixture,
           }),
         );
       }

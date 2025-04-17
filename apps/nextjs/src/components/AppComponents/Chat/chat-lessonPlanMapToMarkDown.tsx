@@ -1,7 +1,9 @@
 import { useRef } from "react";
 
+import { rawQuizFixture } from "@oakai/aila/src/protocol/rawQuizSchema";
 import type {
   LessonPlanKey,
+  LessonPlanKeyWithExperiments,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
@@ -10,6 +12,7 @@ import { MathJax } from "better-react-mathjax";
 
 import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
 
+import LessonOverviewQuizContainer from "./Quiz/LessonOverviewQuizContainer";
 import { notEmpty } from "./chat-lessonPlanDisplay";
 import { sectionTitle } from "./drop-down-section/sectionTitle";
 import { MemoizedReactMarkdownWithStyles } from "./markdown";
@@ -23,7 +26,7 @@ const excludedKeys = [
   "lessonReferences",
 ] as const;
 type ExcludedKeys = (typeof excludedKeys)[number];
-type ValidLessonPlanKey = Exclude<LessonPlanKey, ExcludedKeys>;
+type ValidLessonPlanKey = Exclude<LessonPlanKeyWithExperiments, ExcludedKeys>;
 
 const LessonPlanMapToMarkDown = ({
   lessonPlan,
@@ -35,6 +38,8 @@ const LessonPlanMapToMarkDown = ({
   const {
     _experimental_starterQuizMathsV0,
     _experimental_exitQuizMathsV0,
+    _experimental_starterQuizMathsV1,
+    _experimental_exitQuizMathsV1,
     ...restOfLessonPlan
   } = lessonPlan;
   const lessonPlanWithExperiments: LooseLessonPlan = {
@@ -43,7 +48,7 @@ const LessonPlanMapToMarkDown = ({
       lessonPlan._experimental_starterQuizMathsV0 ?? lessonPlan.starterQuiz,
     exitQuiz: lessonPlan._experimental_exitQuizMathsV0 ?? lessonPlan.exitQuiz,
   };
-  return Object.entries(lessonPlanWithExperiments)
+  const coreComponents = Object.entries(lessonPlanWithExperiments)
     .filter(
       (
         entry,
@@ -55,7 +60,6 @@ const LessonPlanMapToMarkDown = ({
         return !excludedKeys.includes(k as ExcludedKeys);
       },
     )
-
     .filter(([_, v]) => notEmpty(v))
     .map(([key, value]) => {
       return { key, value };
@@ -63,7 +67,7 @@ const LessonPlanMapToMarkDown = ({
     .sort(({ key: a }, { key: b }) => {
       // sort the keys in a predefined order
       //  title, subject, topic, keyStage, basedOn, lessonReferences, learningOutcome, learningCycles, priorKnowledge, keyLearningPoints, misconceptions, keywords, starterQuiz, cycle1, cycle2, cycle3, exitQuiz, additionalMaterials
-      const order: LessonPlanKey[] = [
+      const order: LessonPlanKeyWithExperiments[] = [
         "learningOutcome",
         "learningCycles",
         "priorKnowledge",
@@ -71,17 +75,34 @@ const LessonPlanMapToMarkDown = ({
         "misconceptions",
         "keywords",
         "starterQuiz",
+        "_experimental_starterQuizMathsV1",
         "cycle1",
         "cycle2",
         "cycle3",
         "exitQuiz",
+        "_experimental_exitQuizMathsV1",
         "additionalMaterials",
       ];
       return (
-        order.indexOf(a as LessonPlanKey) - order.indexOf(b as LessonPlanKey)
+        order.indexOf(a as LessonPlanKeyWithExperiments) -
+        order.indexOf(b as LessonPlanKeyWithExperiments)
       );
     })
     .map(({ key, value }) => {
+      console.log(key);
+      if (
+        key === "_experimental_starterQuizMathsV1" ||
+        key === "_experimental_exitQuizMathsV1"
+      ) {
+        return (
+          <LessonOverviewQuizContainer
+            key={key}
+            questions={value ?? rawQuizFixture}
+            imageAttribution={[]}
+            isMathJaxLesson={true}
+          />
+        );
+      }
       return (
         <ChatSection
           key={key}
@@ -91,6 +112,8 @@ const LessonPlanMapToMarkDown = ({
         />
       );
     });
+
+  return coreComponents;
 };
 
 export default LessonPlanMapToMarkDown;
