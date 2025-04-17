@@ -1,10 +1,11 @@
+import { prisma } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
+
 import { Client } from "@elastic/elasticsearch";
 import type {
   SearchHit,
   SearchHitsMetadata,
 } from "@elastic/elasticsearch/lib/api/types";
-import { prisma } from "@oakai/db";
-import { aiLogger } from "@oakai/logger";
 import { CohereClient } from "cohere-ai";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import { z } from "zod";
@@ -120,16 +121,16 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     // Converts a lesson slug to a question ID via searching in index
     try {
       const response = await this.client.search<CustomSource>({
-        index: "oak-vector",
+        index: "oak-vector-2025-04-16",
         body: {
           query: {
             bool: {
               must: [
-                { exists: { field: "metadata.lessonSlug" } },
-                { exists: { field: "metadata.questionUid" } },
+                { exists: { field: "lessonSlug" } },
+                { exists: { field: "questionUid" } },
                 {
                   terms: {
-                    "metadata.lessonSlug.keyword": lessonSlugs,
+                    "lessonSlug.keyword": lessonSlugs,
                   },
                 },
               ],
@@ -139,7 +140,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       });
 
       return response.hits.hits
-        .map((hit) => hit._source?.metadata.questionUid)
+        .map((hit) => hit._source?.questionUid)
         .filter((id): id is string => id !== undefined);
     } catch (error) {
       log.error("Error searching for questions:", error);
@@ -173,7 +174,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     questionUids: string[],
   ): Promise<QuizQuestion[]> {
     const response = await this.client.search<QuizQuestionTextOnlySource>({
-      index: "quiz-questions-text-only",
+      index: "quiz-questions-text-only-2025-04-16",
       body: {
         query: {
           bool: {
@@ -293,7 +294,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
         // Check if the required fields exist
         if (
           typeof source.text !== "string" ||
-          typeof source.metadata?.custom_id !== "string"
+          typeof source.questionUid !== "string"
         ) {
           log.warn("Hit is missing required fields:", hit);
           return null;
@@ -301,7 +302,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
         return {
           text: source.text,
-          custom_id: source.metadata.custom_id,
+          custom_id: source.questionUid,
         };
       })
       .filter((item): item is SimplifiedResult => item !== null);
@@ -318,7 +319,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       const parsedQuestion = this.parseQuizQuestion(hit._source.text);
 
       return {
-        questionUid: hit._source.metadata.questionUid,
+        questionUid: hit._source.questionUid,
         ...(parsedQuestion
           ? { quizQuestion: parsedQuestion }
           : { text: hit._source.text }),
@@ -335,11 +336,11 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     try {
       log.info(`Searching index: ${index}, field: ${field}, query: ${query}`);
       const response = await this.client.search<CustomSource>({
-        index: "oak-vector",
+        index: "oak-vector-2025-04-16",
         query: {
           bool: {
             must: [{ match: { text: query } }],
-            filter: [{ exists: { field: "metadata.is_question_description" } }],
+            filter: [{ term: { isLegacy: false } }], // filter out legacy items
           },
         },
       });
