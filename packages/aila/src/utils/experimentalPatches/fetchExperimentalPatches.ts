@@ -1,14 +1,13 @@
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { aiLogger } from "@oakai/logger";
 
-import { rawQuizFixture } from "protocol/rawQuizSchema";
-
 import { placeholderQuiz } from "../../core/quiz/fixtures/placeholderQuestion";
 import type { FullQuizService } from "../../core/quiz/interfaces";
 import type {
   ExperimentalPatchDocument,
   PatchDocument,
 } from "../../protocol/jsonPatchProtocol";
+import { rawQuizFixture } from "../../protocol/rawQuizSchema";
 import type {
   LooseLessonPlan,
   Quiz,

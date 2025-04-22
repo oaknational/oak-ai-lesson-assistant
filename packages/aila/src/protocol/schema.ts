@@ -2,7 +2,7 @@ import dedent from "ts-dedent";
 import z from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
-import { rawQuizSchema } from "./rawQuizSchema";
+import { type RawQuiz, rawQuizSchema } from "./rawQuizSchema";
 import { minMaxText } from "./schemaHelpers";
 
 // ********** BASED_ON **********
@@ -531,7 +531,8 @@ export type LessonPlanSectionWhileStreaming =
   | CycleOptional
   | string
   | string[]
-  | number;
+  | number
+  | NonNullable<RawQuiz[]>;
 
 // These are here due to zod refusing to infer the type of "add"
 export const quizPathSchema = z.union([

@@ -1,6 +1,9 @@
 import { useRef } from "react";
 
-import { rawQuizFixture } from "@oakai/aila/src/protocol/rawQuizSchema";
+import {
+  type RawQuiz,
+  rawQuizFixture,
+} from "@oakai/aila/src/protocol/rawQuizSchema";
 import type {
   LessonPlanKey,
   LooseLessonPlan,
@@ -95,7 +98,7 @@ const LessonPlanMapToMarkDown = ({
           <LessonOverviewQuizContainer
             key={key}
             // @todo remove fixture
-            questions={value ?? rawQuizFixture}
+            questions={(value as NonNullable<RawQuiz>) ?? rawQuizFixture}
             imageAttribution={[]}
             isMathJaxLesson={true}
           />

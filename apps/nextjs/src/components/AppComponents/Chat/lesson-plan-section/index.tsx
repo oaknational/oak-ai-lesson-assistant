@@ -84,6 +84,7 @@ export const LessonPlanSection = ({
       {isOpen && (
         <div className="mt-12 w-full">
           {status === "loaded" && section ? (
+            // @ts-expect-error TODO: Fix type error
             <LessonPlanSectionContent sectionKey={sectionKey} value={section} />
           ) : (
             <Skeleton loaded={false} numberOfRows={1}>

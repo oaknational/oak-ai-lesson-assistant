@@ -134,6 +134,7 @@ export function keysToCamelCase<T>(obj: T): ConvertKeysToCamelCase<T> {
   return obj as ConvertKeysToCamelCase<T>;
 }
 
+// @ts-expect-error we should explore why the below is causing a compiler error
 export const rawQuizFixture: NonNullable<RawQuiz> = keysToCamelCase([
   {
     hint: "Think about the words increase and decrease. You could think of adding and subtracting.",
