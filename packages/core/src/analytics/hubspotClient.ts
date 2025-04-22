@@ -1,8 +1,7 @@
-import { aiLogger } from "@oakai/logger";
-
 import { Client } from "@hubspot/api-client";
 import { ApiException } from "@hubspot/api-client/lib/codegen/crm/contacts/apis/exception";
 import type { SimplePublicObject } from "@hubspot/api-client/lib/codegen/crm/contacts/models/SimplePublicObject";
+import { aiLogger } from "@oakai/logger";
 
 const accessToken = process.env.HUBSPOT_ACCESS_TOKEN;
 if (!accessToken) {
@@ -56,7 +55,6 @@ export const createHubspotCustomer = async ({
       "email",
     );
     id = result.id;
-    log.info("********record", result);
   } catch (e) {
     const isNotFoundError = e instanceof ApiException && e.code === 404;
     if (!isNotFoundError) {
@@ -79,7 +77,7 @@ export const createHubspotCustomer = async ({
     const response = await hubspotClient.crm.contacts.basicApi.update(id, {
       properties,
     });
-    log.info("********record", response);
+
     return response;
   }
 
@@ -87,6 +85,6 @@ export const createHubspotCustomer = async ({
     properties,
     associations: [],
   });
-  log.info("********record", response);
+
   return response;
 };
