@@ -129,7 +129,7 @@ export function Header() {
           </OakFlex>
         </OakFlex>
       </OakFlex>
-      {!isSignedIn || (isSignedIn && !isDemoUser && <TempBanner />)}
+      {(!isSignedIn || (isSignedIn && isDemoUser)) && <TempBanner />}
     </OakBox>
   );
 }
