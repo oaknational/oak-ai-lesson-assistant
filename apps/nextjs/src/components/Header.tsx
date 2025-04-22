@@ -1,12 +1,5 @@
 import { useAuth } from "@clerk/nextjs";
-import {
-  OakBox,
-  OakFlex,
-  OakIcon,
-  OakP,
-  OakSpan,
-  OakTypography,
-} from "@oaknational/oak-components";
+import { OakBox, OakFlex, OakIcon, OakP } from "@oaknational/oak-components";
 import Link from "next/link";
 import styled from "styled-components";
 
