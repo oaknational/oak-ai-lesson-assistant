@@ -72,7 +72,7 @@ const Header = ({ menuOpen, setMenuOpen }: Readonly<HeaderProps>) => {
           </div>
         </OakFlex>
       </OakFlex>
-      {(!isSignedIn || (isSignedIn && isDemoUser)) && <TempBanner />}
+      {(!isSignedIn || (isSignedIn && !isDemoUser)) && <TempBanner />}
     </OakBox>
   );
 };
