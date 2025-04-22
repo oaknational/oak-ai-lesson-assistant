@@ -1,12 +1,13 @@
 "use client";
 
+import { rawQuizFixture } from "@oakai/aila/src/protocol/rawQuizSchema";
+
 import LessonOverviewQuizContainer from "@/components/AppComponents/Chat/Quiz/LessonOverviewQuizContainer";
-import { fixtures } from "@/components/AppComponents/Chat/Quiz/fixtures";
 
 export default function TestQuizPage() {
   return (
     <LessonOverviewQuizContainer
-      questions={fixtures}
+      questions={rawQuizFixture}
       imageAttribution={[]}
       isMathJaxLesson={true}
     />

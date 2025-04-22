@@ -1,3 +1,5 @@
+import type { ConvertKeysToCamelCase } from "@oakai/aila/src/protocol/rawQuizSchema";
+
 import type {
   imageItemSchema,
   quizQuestionSchema,
@@ -10,8 +12,6 @@ import {
   shortAnswerSchema,
 } from "@oaknational/oak-curriculum-schema";
 import { z } from "zod";
-
-import type { ConvertKeysToCamelCase } from "./snakeCaseConverter";
 
 export type QuizQuestion = ConvertKeysToCamelCase<
   z.infer<typeof quizQuestionSchema>

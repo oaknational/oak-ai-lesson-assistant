@@ -238,7 +238,8 @@ export const LessonPlanDisplay = ({
             />
           );
         })}
-        <h2>Starter quiz RAW</h2>
+        {/* RENDER RAW QUIZZES */}
+        {/* <h2>Starter quiz RAW</h2>
         {lessonPlan._experimental_starterQuizMathsV1 && (
           <LessonOverviewQuizContainer
             key={"_experimental_starterQuizMathsV1"}
@@ -246,7 +247,7 @@ export const LessonPlanDisplay = ({
             imageAttribution={[]}
             isMathJaxLesson={true}
           />
-        )}{" "}
+        )}
         <h2>Exit quiz RAW</h2>
         {lessonPlan._experimental_exitQuizMathsV1 && (
           <LessonOverviewQuizContainer
@@ -255,7 +256,7 @@ export const LessonPlanDisplay = ({
             imageAttribution={[]}
             isMathJaxLesson={true}
           />
-        )}
+        )} */}
       </div>
       <div ref={chatEndRef} />
     </div>

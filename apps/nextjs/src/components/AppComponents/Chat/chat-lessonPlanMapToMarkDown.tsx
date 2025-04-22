@@ -47,7 +47,7 @@ const LessonPlanMapToMarkDown = ({
       lessonPlan._experimental_starterQuizMathsV0 ?? lessonPlan.starterQuiz,
     exitQuiz: lessonPlan._experimental_exitQuizMathsV0 ?? lessonPlan.exitQuiz,
   };
-  const coreComponents = Object.entries(lessonPlanWithExperiments)
+  const lessonPlanComponents = Object.entries(lessonPlanWithExperiments)
     .filter(
       (
         entry,
@@ -87,7 +87,6 @@ const LessonPlanMapToMarkDown = ({
       );
     })
     .map(({ key, value }) => {
-      console.log(key);
       if (
         key === "_experimental_starterQuizMathsV1" ||
         key === "_experimental_exitQuizMathsV1"
@@ -95,6 +94,7 @@ const LessonPlanMapToMarkDown = ({
         return (
           <LessonOverviewQuizContainer
             key={key}
+            // @todo remove fixture
             questions={value ?? rawQuizFixture}
             imageAttribution={[]}
             isMathJaxLesson={true}
@@ -111,7 +111,7 @@ const LessonPlanMapToMarkDown = ({
       );
     });
 
-  return coreComponents;
+  return lessonPlanComponents;
 };
 
 export default LessonPlanMapToMarkDown;
