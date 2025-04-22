@@ -29,19 +29,26 @@ import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat
 import Layout from "@/components/Layout";
 import { trpc } from "@/utils/trpc";
 
-const downloadZip = async (resource: any) => {
-  const response = await fetch("/api/additional-resources", {
+const downloadZip = async ({
+  generation,
+  documentType,
+  lessonTitle,
+}: {
+  generation: AdditionalMaterialSchemas;
+  documentType: string;
+  lessonTitle?: string;
+}) => {
+  const response = await fetch("/api/additional-resources-download", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      documentType: "additional-glossary",
-      resource,
+      documentType: documentType,
+      resource: generation,
+      lessonTitle: lessonTitle,
     }),
   });
-
-  console.log("response", response);
 
   if (!response.ok) {
     throw new Error("Failed to generate ZIP");
@@ -51,7 +58,7 @@ const downloadZip = async (resource: any) => {
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "lesson.zip";
+  link.download = "resource.zip";
   link.click();
   window.URL.revokeObjectURL(url);
 };
@@ -288,9 +295,19 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
           </OakFlex>
         </OakFlex>
       </OakFlex>
-      <OakPrimaryButton onClick={() => void downloadZip(generation)}>
-        {"Download ZIP"}
-      </OakPrimaryButton>
+      {generation && action && (
+        <OakPrimaryButton
+          onClick={() =>
+            void downloadZip({
+              generation,
+              documentType: action,
+              lessonTitle: pageData.lessonPlan.title,
+            })
+          }
+        >
+          {"Download ZIP"}
+        </OakPrimaryButton>
+      )}
     </Layout>
   );
 };

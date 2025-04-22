@@ -60,6 +60,7 @@ ${distractors.map((d) => `  - ${d}`).join("\n")}
 
 export const getLessonDetails = (lessonPlan: LooseLessonPlan) => {
   const lines = [
+    `- **Lesson title**: ${lessonPlan.title}`,
     `- **Key Stage**: ${lessonPlan.keyStage}`,
     `- **Subject**: ${lessonPlan.subject}`,
     `- **Topic**: ${lessonPlan.topic ?? "N/A"}`,

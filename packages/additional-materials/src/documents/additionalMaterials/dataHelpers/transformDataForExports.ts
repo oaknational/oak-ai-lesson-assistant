@@ -1,7 +1,5 @@
 import { blocksSchema } from "@oakai/exports/src/schema/additionalResourceBlockSchema.schema";
 
-import type { ZodSchema } from "zod";
-
 import { comprehensionTaskSchema } from "../comprehension/schema";
 import type { AdditionalMaterialType } from "../configSchema";
 import { glossarySchema } from "../glossary/schema";
@@ -23,13 +21,13 @@ export const transformDataGlossary =
   <InputData, TemplateData>() =>
   (data: InputData): Promise<TemplateData> => {
     const parsedData = glossarySchema.parse(data);
-    const { glossary } = parsedData;
+    const { glossary, lessonTitle } = parsedData;
     const transformedData = [
-      { type: "title", text: "Lesson about...." },
+      { type: "title", text: lessonTitle },
       {
         type: "labelValue",
         items: glossary.map(({ term, definition }) => ({
-          label: term,
+          label: `${term}:`,
           value: definition,
         })),
       },

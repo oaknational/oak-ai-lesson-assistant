@@ -5,6 +5,7 @@ import { baseContext } from "../comprehension/schema";
 // Output from LLM
 
 export const glossarySchema = z.object({
+  lessonTitle: z.string(),
   glossary: z.array(
     z.object({
       term: z.string().min(1, "Term is required"),

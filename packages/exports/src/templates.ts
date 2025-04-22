@@ -103,12 +103,12 @@ export function getQuizDesignerSlidesTemplateIdWorksheet() {
  */
 
 export const getAdditionalResourcesTemplateId = (docType: string) => {
-  if (docType === "glossary") {
+  if (docType === "additional-glossary") {
     return process.env.GOOGLE_DOCS_ADDITIONAL_RESOURCE_GLOSSARY as string;
   }
 
-  if (docType === "worksheet") {
-    return process.env.GOOGLE_DOCS_ADDITIONAL_RESOURCE_COMPREHENSION as string;
+  if (docType === "additional-comprehension") {
+    return process.env.GOOGLE_DOCS_ADDITIONAL_RESOURCE_GLOSSARY as string;
   }
 
   throw new Error(`Unknown docType: ${docType}`);

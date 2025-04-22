@@ -11,6 +11,7 @@ const log = aiLogger("exports");
 
 export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
   documentType,
+  lessonTitle,
   id,
   data: inputData,
   userEmail,
@@ -19,6 +20,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
 }: {
   id?: string;
   documentType: string;
+  lessonTitle: string;
   data: InputData;
   userEmail: string;
   onStateChange: (state: State<OutputData>) => void;
@@ -29,7 +31,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
     // const templateId = getAdditionalResourcesTemplateId(documentType);
 
     const result = await exportGeneric<InputData, TemplateData>({
-      newFileName: `${id ? id + "- " : ""}${documentType} - ${Date.now()}`,
+      newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${documentType} - ${Date.now()}`,
       data: inputData,
       prepData: transformData,
       templateId,
@@ -57,6 +59,6 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
   } catch (error) {
     log.error("Error", error);
     onStateChange({ status: "error", error });
-    return { error, message: "Failed to export worksheet" };
+    return { error, message: "Failed to export resource" };
   }
 };

@@ -8,21 +8,26 @@ export const ext = ["pdf", "docx", "pptx"] as const;
 
 const log = aiLogger("additional-materials");
 
-type Ext = typeof ext;
+type Ext = (typeof ext)[number][];
 
-export async function zipDownloadedDriveFiles(
-  fileId: string,
-  ext: Ext,
-  documentTitle: string,
-) {
+export async function getDriveDocsZipStream({
+  fileId,
+  ext,
+  documentTitle,
+}: {
+  fileId: string;
+  ext: Ext;
+  documentTitle: string;
+}) {
+  log.info("Zipping files", fileId, ext);
   const zipStream = new PassThrough();
   const archive = archiver("zip", { zlib: { level: 9 } });
   archive.pipe(zipStream);
   for (const e of ext) {
     const res = await downloadDriveFile({ fileId, ext: e });
     if ("error" in res) {
-      // throw new Error("Error downloading file, not included in zip");
-      log.info(res.error);
+      log.error(res.error);
+      throw new Error("Error downloading file, not included in zip");
     }
     const { data } = res;
 
@@ -32,7 +37,6 @@ export async function zipDownloadedDriveFiles(
     archive.append(data.stream, { name: filename });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  archive.finalize();
-  return archive;
+  await archive.finalize();
+  return zipStream;
 }
