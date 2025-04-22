@@ -9,7 +9,7 @@ export const extractDataFromBlocks = <T>(
   for (const block of passedBlocks) {
     switch (block.type) {
       case "title":
-        map[block.type] = block.text ?? null;
+        map[block.type] = block.text;
         break;
       case "labelValue":
         for (const [i, item] of block.items.entries()) {
