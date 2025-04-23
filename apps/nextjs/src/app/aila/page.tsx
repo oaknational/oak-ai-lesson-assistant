@@ -2,7 +2,7 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-import { AilaStart } from "@/components/AppComponents/Chat/aila-start";
+import { ChatStart } from "@/components/AppComponents/Chat/chat-start";
 import Layout from "@/components/AppComponents/Layout";
 
 interface IndexPageProps {
@@ -33,7 +33,7 @@ export default function IndexPage({ searchParams }: IndexPageProps) {
     <>
       <SignedIn>
         <Layout>
-          <AilaStart
+          <ChatStart
             keyStage={keyStage}
             subject={subject}
             unitTitle={unitTitle}

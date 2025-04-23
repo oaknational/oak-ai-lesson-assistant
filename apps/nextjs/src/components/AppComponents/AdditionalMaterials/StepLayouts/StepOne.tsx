@@ -1,7 +1,3 @@
-import { useEffect } from "react";
-
-import type { AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import {
   OakFlex,
   OakIcon,
@@ -13,7 +9,6 @@ import {
   OakRadioGroup,
   OakTextInput,
 } from "@oaknational/oak-components";
-import type { UseMutateAsyncFunction } from "@tanstack/react-query";
 
 import {
   useResourcesActions,
