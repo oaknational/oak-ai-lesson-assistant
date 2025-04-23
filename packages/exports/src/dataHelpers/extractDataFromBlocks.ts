@@ -1,4 +1,4 @@
-import { blocksSchema } from "schema/additionalResourceBlockSchema.schema";
+import { blocksSchema } from "../schema/additionalResourceBlockSchema.schema";
 
 export const extractDataFromBlocks = <T>(
   blocks: T,

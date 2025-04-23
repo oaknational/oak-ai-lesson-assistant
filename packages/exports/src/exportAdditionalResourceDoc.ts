@@ -1,10 +1,10 @@
 import { aiLogger } from "@oakai/logger";
 
-import { extractDataFromBlocks } from "dataHelpers/extractDataFromBlocks";
-
+import { extractDataFromBlocks } from "./dataHelpers/extractDataFromBlocks";
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
 import { populateDoc } from "./gSuite/docs/populateDoc";
+import { getAdditionalResourcesTemplateId } from "./templates";
 import type { OutputData, Result, State } from "./types";
 
 const log = aiLogger("exports");
@@ -27,8 +27,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
   transformData: (data: InputData) => Promise<TemplateData>;
 }): Promise<Result<OutputData>> => {
   try {
-    const templateId = "1hJIGdIPImcqsRYuD13CNueYHvNKz_Vx9JDSVgcRVrLM";
-    // const templateId = getAdditionalResourcesTemplateId(documentType);
+    const templateId = getAdditionalResourcesTemplateId(documentType);
 
     const result = await exportGeneric<InputData, TemplateData>({
       newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${documentType} - ${Date.now()}`,
