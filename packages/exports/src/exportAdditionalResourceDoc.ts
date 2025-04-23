@@ -1,5 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
+import { dynamicPlaceholderTemplateIds } from "gSuite/docs/cleanupUnusedPlaceholdersRequests";
+
 import { extractDataFromBlocks } from "./dataHelpers/extractDataFromBlocks";
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
@@ -41,6 +43,8 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
           googleDocs: client,
           documentId: templateCopyId,
           data: dataFromBlocks,
+          enablePlaceholderCleanup:
+            dynamicPlaceholderTemplateIds.includes(templateId),
         });
       },
       userEmail,

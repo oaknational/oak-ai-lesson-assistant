@@ -1,5 +1,9 @@
 import type { docs_v1 } from "@googleapis/docs";
 
+export const dynamicPlaceholderTemplateIds = [
+  process.env.GOOGLE_DOCS_GLOSSARY_TEMPLATE_ID,
+];
+
 export async function cleanupUnusedPlaceholdersRequests(
   googleDocs: docs_v1.Docs,
   documentId: string,
@@ -13,8 +17,8 @@ export async function cleanupUnusedPlaceholdersRequests(
   // Find all unique placeholder patterns in the document
   const placeholderSet = new Set<string>();
 
-  // Regular expression to match {{anything}} pattern
-  const fullPlaceholderRegex = /\{\{[^}]+\}\}/g;
+  // Regular expression to match {{...}} pattern with bounds
+  const fullPlaceholderRegex = /\{\{[^{}]{1,100}?\}\}/g;
 
   // Scan the document for placeholders
   for (const element of bodyContent) {

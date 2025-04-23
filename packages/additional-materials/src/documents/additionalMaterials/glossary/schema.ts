@@ -6,12 +6,14 @@ import { baseContext } from "../comprehension/schema";
 
 export const glossarySchema = z.object({
   lessonTitle: z.string(),
-  glossary: z.array(
-    z.object({
-      term: z.string().min(1, "Term is required"),
-      definition: z.string().min(1, "Definition is required"),
-    }),
-  ),
+  glossary: z
+    .array(
+      z.object({
+        term: z.string().min(1, "Term is required"),
+        definition: z.string().min(1, "Definition is required"),
+      }),
+    )
+    .max(15, "Glossary can have at most 15 terms"),
 });
 
 export type GlossarySchema = z.infer<typeof glossarySchema>;
