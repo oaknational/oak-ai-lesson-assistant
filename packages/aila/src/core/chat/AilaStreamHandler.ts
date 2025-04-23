@@ -1,8 +1,10 @@
+import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import type { ReadableStreamDefaultController } from "stream/web";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
+import { handleThreatDetectionError } from "../../utils/threatDetection/threatDetectionHandling";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
@@ -112,6 +114,12 @@ export class AilaStreamHandler {
       });
       if (e instanceof AilaThreatDetectionError) {
         log.info("Handling threat detection error");
+        await handleThreatDetectionError({
+          userId: this._chat.userId ?? "anonymous",
+          chatId: this._chat.id,
+          prisma,
+          error: e,
+        });
         await this._chat.generationFailed(e);
         throw e;
       }
