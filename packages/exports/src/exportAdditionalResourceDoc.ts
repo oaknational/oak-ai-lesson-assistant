@@ -1,9 +1,8 @@
 import { aiLogger } from "@oakai/logger";
 
-import { dynamicPlaceholderTemplateIds } from "gSuite/docs/cleanupUnusedPlaceholdersRequests";
-
 import { extractDataFromBlocks } from "./dataHelpers/extractDataFromBlocks";
 import { exportGeneric } from "./exportGeneric";
+import { dynamicPlaceholderTemplateIds } from "./gSuite/docs/cleanupUnusedPlaceholdersRequests";
 import { getDocsClient } from "./gSuite/docs/client";
 import { populateDoc } from "./gSuite/docs/populateDoc";
 import { getAdditionalResourcesTemplateId } from "./templates";
