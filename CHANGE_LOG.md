@@ -1,3 +1,15 @@
+# [1.34.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.33.0...v1.34.0) (2025-04-23)
+
+
+### Bug Fixes
+
+* don't throw on slack notification failure ([#621](https://github.com/oaknational/oak-ai-lesson-assistant/issues/621)) ([663989b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/663989b734ec6ea498b920b55081096db50f029c))
+
+
+### Features
+
+* additional resource from partial aila lesson ([#644](https://github.com/oaknational/oak-ai-lesson-assistant/issues/644)) ([e7c1796](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e7c179602c1d23a82e4c6a897caf82e05bfff27f))
+
 # [1.33.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.32.0...v1.33.0) (2025-04-10)
 
 
