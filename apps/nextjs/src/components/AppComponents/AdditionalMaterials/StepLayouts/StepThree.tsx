@@ -1,36 +1,137 @@
-import { OakFlex, OakP } from "@oaknational/oak-components";
+import { useState } from "react";
 
-type StepThreeProps = {
-  fetchMaterial: Record<string, any>;
-  fetchMaterialModeration: Record<string, any>;
-  renderGeneratedMaterial: () => React.ReactNode;
-  moderation: string | null;
-};
-const StepThree = ({
-  fetchMaterial,
-  fetchMaterialModeration,
-  renderGeneratedMaterial,
-  moderation,
-}: StepThreeProps) => {
+import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
+import {
+  isGlossary,
+  readingAgeRefinement,
+} from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
+import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
+import {
+  OakFlex,
+  OakIcon,
+  OakP,
+  OakPrimaryButton,
+  OakSecondaryButton,
+  OakSpan,
+} from "@oaknational/oak-components";
+
+import {
+  useResourcesActions,
+  useResourcesStore,
+} from "@/stores/ResourcesStoreProvider";
+import {
+  docTypeSelector,
+  generationSelector,
+  isResourcesLoadingSelector,
+} from "@/stores/resourcesStore/selectors";
+import { trpc } from "@/utils/trpc";
+
+import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
+import { Glossary } from "../../AdditionalMaterials/Glossary";
+import InlineButton from "../InlineButton";
+import ResourcesFooter from "../ResourcesFooter";
+
+const StepThree = () => {
+  const generation = useResourcesStore(generationSelector);
+  const docType = useResourcesStore(docTypeSelector);
+  const isResourcesLoading = useResourcesStore(isResourcesLoadingSelector);
+  const { setStepNumber, refineMaterial } = useResourcesActions();
+  const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
+
+  const fetchMaterial =
+    trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
+
+  const getRefinementOptions = () => {
+    if (docType === "additional-glossary") {
+      return readingAgeRefinement;
+    }
+
+    if (docType === "additional-comprehension") {
+      return [];
+    }
+
+    return [];
+  };
+
+  const renderGeneratedMaterial = () => {
+    if (!generation) {
+      return null;
+    }
+
+    if (docType === "additional-glossary" && isGlossary(generation)) {
+      return <Glossary action={docType} generation={generation} />;
+    }
+
+    if (
+      docType === "additional-comprehension" &&
+      isComprehensionTask(generation)
+    ) {
+      return <ComprehensionTask action={docType} generation={generation} />;
+    }
+
+    return null;
+  };
+
+  const refinementOptions = getRefinementOptions();
+
   return (
     <>
-      {fetchMaterial.isLoading && <OakP>Loading...</OakP>}
+      {isResourcesLoading && <OakP>Loading...</OakP>}
       <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
+      <ResourcesFooter>
+        {isFooterAdaptOpen ? (
+          <OakFlex $flexDirection="column" $gap="all-spacing-5" $width="100%">
+            <button onClick={() => setIsFooterAdaptOpen(false)}>
+              <OakFlex $alignItems="center" $gap="all-spacing-2">
+                <OakIcon iconName="cross" />
+                <OakSpan $color="black" $textDecoration="none">
+                  Close
+                </OakSpan>
+              </OakFlex>
+            </button>
 
-      {fetchMaterialModeration.isLoading && <OakP>Loading moderation...</OakP>}
-      <OakFlex
-        $mt={"space-between-l"}
-        $gap={"space-between-m"}
-        $flexDirection="column"
-      >
-        {moderation && (
-          <p
-            dangerouslySetInnerHTML={{
-              __html: moderation.replace(/\n/g, "<br />"),
-            }}
-          />
+            <OakFlex $gap="all-spacing-2" $flexWrap="wrap">
+              {refinementOptions.map((refinement) => (
+                <InlineButton
+                  key={refinement}
+                  onClick={() => {
+                    void refineMaterial({
+                      refinement,
+                      mutateAsync: fetchMaterial.mutateAsync,
+                    });
+                    setIsFooterAdaptOpen(false);
+                  }}
+                >
+                  {camelCaseToSentenceCase(refinement)}
+                </InlineButton>
+              ))}
+            </OakFlex>
+          </OakFlex>
+        ) : (
+          <OakFlex $justifyContent="space-between" $width={"100%"}>
+            <OakSecondaryButton onClick={() => setStepNumber(0)}>
+              Start again
+            </OakSecondaryButton>
+            <OakFlex $gap="all-spacing-2">
+              <OakSecondaryButton
+                onClick={() => {
+                  setIsFooterAdaptOpen(true);
+                }}
+                disabled={refinementOptions.length === 0}
+              >
+                Adapt
+              </OakSecondaryButton>
+              <OakPrimaryButton
+                onClick={() => null}
+                iconName="download"
+                isTrailingIcon={true}
+              >
+                Download (.zip)
+              </OakPrimaryButton>
+            </OakFlex>
+          </OakFlex>
         )}
-      </OakFlex>
+      </ResourcesFooter>
     </>
   );
 };

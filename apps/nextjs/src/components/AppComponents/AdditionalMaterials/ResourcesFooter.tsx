@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { OakFlex, OakMaxWidth } from "@oaknational/oak-components";
 
@@ -15,6 +15,7 @@ const ResourcesFooter = ({ children }: ResourcesFooterProps) => {
       $right="all-spacing-0"
       $pv="inner-padding-l"
       $ph="inner-padding-xl4"
+      $zIndex="neutral"
     >
       <OakFlex $justifyContent="space-between">{children}</OakFlex>
     </OakMaxWidth>

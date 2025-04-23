@@ -2,7 +2,7 @@ import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/parti
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { camelCaseToTitleCase } from "@oakai/exports/src/utils";
-
+import { aiLogger } from "@oakai/logger";
 import {
   OakBox,
   OakFlex,
@@ -11,6 +11,18 @@ import {
   OakP,
   OakPrimaryButton,
 } from "@oaknational/oak-components";
+import * as Sentry from "@sentry/nextjs";
+
+import {
+  useResourcesActions,
+  useResourcesStore,
+} from "@/stores/ResourcesStoreProvider";
+import {
+  docTypeSelector,
+  isLoadingLessonPlanSelector,
+  pageDataSelector,
+} from "@/stores/resourcesStore/selectors";
+import { trpc } from "@/utils/trpc";
 
 import { MemoizedReactMarkdownWithStyles } from "../../Chat/markdown";
 import ResourcesFooter from "../ResourcesFooter";
@@ -21,25 +33,36 @@ export function mapLessonPlanSections(
   return lessonFieldKeys.map((key) => ({ key, data: lessonPlan[key] ?? null }));
 }
 
-type StepTwoProps = {
-  setStepNumber: (stepNumber: number) => void;
-  pageData: {
-    lessonPlan: AilaPersistedChat["lessonPlan"];
-    transcript?: string | null;
-  };
-  handleSubmit: () => void;
-  docTypeName: string | null;
-  isLessonPlanLoading: boolean;
-};
+const log = aiLogger("additional-materials");
 
-const StepTwo = ({
-  setStepNumber,
-  pageData,
-  handleSubmit,
-  docTypeName,
-  isLessonPlanLoading,
-}: StepTwoProps) => {
-  if (isLessonPlanLoading) {
+const StepTwo = () => {
+  const pageData = useResourcesStore(pageDataSelector);
+  const docType = useResourcesStore(docTypeSelector);
+  const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
+  const docTypeName = docType?.split("-")[1] ?? null;
+
+  const { setStepNumber, generateMaterial } = useResourcesActions();
+  const fetchMaterial =
+    trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
+
+  const handleSubmit = (message) => {
+    const generatePromise = generateMaterial({
+      message,
+      mutateAsync: fetchMaterial.mutateAsync,
+    });
+
+    // Navigate to the next step
+    generatePromise
+      .then(() => setStepNumber(2))
+      .catch((error) => {
+        log.error("Failed to generate material", error);
+        Sentry.captureException(error);
+      });
+
+    return generatePromise;
+  };
+
+  if (isLoadingLessonPlan) {
     return <OakP>Building lesson plan...</OakP>;
   }
   return (

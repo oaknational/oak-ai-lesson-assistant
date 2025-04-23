@@ -1,7 +1,7 @@
-import { type Dispatch, type SetStateAction, useState } from "react";
+import { useEffect } from "react";
 
 import type { AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-
+import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import {
   OakFlex,
   OakIcon,
@@ -13,37 +13,51 @@ import {
   OakRadioGroup,
   OakTextInput,
 } from "@oaknational/oak-components";
+import type { UseMutateAsyncFunction } from "@tanstack/react-query";
+
+import {
+  useResourcesActions,
+  useResourcesStore,
+} from "@/stores/ResourcesStoreProvider";
+import {
+  activeDropdownSelector,
+  docTypeSelector,
+  subjectSelector,
+  titleSelector,
+  yearSelector,
+} from "@/stores/resourcesStore/selectors";
+import { trpc } from "@/utils/trpc";
 
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
 
-const StepOne = ({
-  setDocType,
-  setModeration,
-  setGeneration,
-  setStepNumber,
-  handleSubmitLessonPlan,
-}: {
-  setDocType: (docType: string) => void;
-  setModeration: (moderation: string | null) => void;
-  setGeneration: Dispatch<SetStateAction<AdditionalMaterialSchemas | null>>;
-  setStepNumber: (stepNumber: number) => void;
-  handleSubmitLessonPlan: ({
-    title,
-    subject,
-    keyStage,
-    year,
-  }: {
-    title: string;
-    subject: string;
-    keyStage: string;
-    year: string;
-  }) => void;
-}) => {
-  const [subject, setSubject] = useState<string | null>(null);
-  const [title, setTitle] = useState<string | null>(null);
-  const [year, setYear] = useState<string | null>(null);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+const StepOne = () => {
+  const {
+    setStepNumber,
+    setDocType,
+    setGeneration,
+    submitLessonPlan,
+    setSubject,
+    setTitle,
+    setYear,
+    setActiveDropdown,
+  } = useResourcesActions();
+
+  const subject = useResourcesStore(subjectSelector);
+  const title = useResourcesStore(titleSelector);
+  const year = useResourcesStore(yearSelector);
+  const activeDropdown = useResourcesStore(activeDropdownSelector);
+  const docType = useResourcesStore(docTypeSelector);
+
+  const generateLessonPlan =
+    trpc.additionalMaterials.generatePartialLessonPlanObject.useMutation();
+
+  const handleSubmitLessonPlan = (params) =>
+    submitLessonPlan({
+      ...params,
+      mutateAsync: generateLessonPlan.mutateAsync,
+    });
+
   return (
     <>
       <div className="mb-15 flex gap-10">
@@ -71,7 +85,6 @@ const StepOne = ({
               name="radio-group"
               onChange={(value) => {
                 setDocType(value.target.value);
-                setModeration(null);
                 setGeneration(null);
               }}
               $flexDirection="column"
@@ -132,11 +145,14 @@ const StepOne = ({
               void handleSubmitLessonPlan({
                 title: title || "",
                 subject: subject || "",
+                keyStage: "ks2",
                 year: year || "",
+                mutateAsync: generateLessonPlan.mutateAsync,
               })
             }
             iconName="arrow-right"
             isTrailingIcon={true}
+            disabled={!title || !subject || !year || !docType}
           >
             Generate overview
           </OakPrimaryButton>
