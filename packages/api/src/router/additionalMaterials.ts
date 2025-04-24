@@ -15,6 +15,7 @@ import {
   oakOpenAiTranscriptSchema,
   oakOpenApiSearchSchema,
 } from "@oakai/additional-materials/src/schemas/oakOpenApi";
+import { performLakeraThreatCheck } from "@oakai/additional-materials/src/threatDetection/lakeraThreatCheck";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
@@ -99,35 +100,65 @@ export const additionalMaterialsRouter = router({
     }),
   generatePartialLessonPlanObject: protectedProcedure
     .input(partialLessonContextSchema)
-    .mutation(async ({ ctx, input }): Promise<LooseLessonPlan> => {
-      log.info("Generate partial lesson plan", input);
-      const parsedInput = partialLessonContextSchema.safeParse(input);
-      if (!parsedInput.success) {
-        log.error("Failed to parse input", parsedInput.error);
-        throw new ZodError(parsedInput.error.issues);
-      }
-
-      try {
-        const result = await generatePartialLessonPlanObject({
-          provider: "openai",
-          parsedInput: { context: parsedInput.data },
-        });
-
-        if (!result) {
-          throw new Error("Failed to generate additional material", result);
+    .mutation(
+      async ({
+        ctx,
+        input,
+      }): Promise<LooseLessonPlan | { threatDetection: boolean }> => {
+        const userId = ctx.auth.userId;
+        log.info("Generate partial lesson plan", input);
+        const parsedInput = partialLessonContextSchema.safeParse(input);
+        if (!parsedInput.success) {
+          log.error("Failed to parse input", parsedInput.error);
+          throw new ZodError(parsedInput.error.issues);
         }
 
-        return result;
-      } catch (cause) {
-        const TrpcError = new Error(
-          "Failed to fetch additional material moderation",
-          { cause },
-        );
-        log.error("Failed to fetch additional material moderation", cause);
-        Sentry.captureException(TrpcError);
-        throw TrpcError;
-      }
-    }),
+        const { subject, title } = parsedInput.data;
+
+        try {
+          const lakeraResult = await performLakeraThreatCheck({
+            messages: [{ role: "user", content: `${subject} - ${title}` }],
+          });
+
+          if (lakeraResult.flagged) {
+            log.error("Threat detected in input");
+
+            await ctx.prisma.interaction.create({
+              data: {
+                userId,
+                inputText: `${subject} - ${title}`,
+                config: {},
+                inputThreatDetection: {
+                  flagged: true,
+                  reason: "Flagged by Lakera",
+                  metadata: lakeraResult,
+                },
+              },
+            });
+            return { threatDetection: true };
+          }
+
+          const result = await generatePartialLessonPlanObject({
+            provider: "openai",
+            parsedInput: { context: parsedInput.data },
+          });
+
+          if (!result) {
+            throw new Error("Failed to generate additional material", result);
+          }
+
+          return result;
+        } catch (cause) {
+          const TrpcError = new Error(
+            "Failed to fetch additional material moderation",
+            { cause },
+          );
+          log.error("Failed to fetch lesson plan", cause);
+          Sentry.captureException(TrpcError);
+          throw TrpcError;
+        }
+      },
+    ),
   fetchOWALessonData: protectedProcedure
     .input(
       z.object({
