@@ -21,6 +21,7 @@
   "dependencies": {
     "@ai-sdk/openai": "^0.0.55",
     "@clerk/nextjs": "5.7.2",
+    "@oakai/core": "*",
     "@oakai/logger": "*",
     "@sentry/nextjs": "^8.49.0",
     "ai": "^4.1.00",
