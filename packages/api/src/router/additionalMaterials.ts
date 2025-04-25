@@ -49,7 +49,7 @@ export const additionalMaterialsRouter = router({
         }
         actionEnum.parse(input.action);
 
-        return generateAdditionalMaterial({
+        return await generateAdditionalMaterial({
           prisma: ctx.prisma,
           userId: ctx.auth.userId,
           input: parsedInput.data,
@@ -76,7 +76,7 @@ export const additionalMaterialsRouter = router({
       }
 
       try {
-        return generatePartialLessonPlan({
+        return await generatePartialLessonPlan({
           prisma: ctx.prisma,
           userId: ctx.auth.userId,
           input: parsedInput.data,
