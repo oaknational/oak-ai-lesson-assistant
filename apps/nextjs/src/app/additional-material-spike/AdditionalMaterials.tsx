@@ -84,8 +84,6 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
     useState<AdditionalMaterialSchemas | null>(null);
   const [moderation, setModeration] = useState<string | null>(null);
   const [action, setAction] = useState<string | null>(null);
-  const fetchMaterialModeration =
-    trpc.additionalMaterials.generateAdditionalMaterialModeration.useMutation();
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 
@@ -225,9 +223,7 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
               </OakPrimaryButton>
             </OakFlex>
           )}
-          {fetchMaterialModeration.isLoading && (
-            <OakP>Loading moderation...</OakP>
-          )}
+
           <OakFlex
             $mt={"space-between-l"}
             $gap={"space-between-m"}

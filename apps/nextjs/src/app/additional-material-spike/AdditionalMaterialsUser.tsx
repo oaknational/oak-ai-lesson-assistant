@@ -121,8 +121,7 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
   const [subject, setSubject] = useState<string | null>(null);
   const [title, setTitle] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
-  const fetchMaterialModeration =
-    trpc.additionalMaterials.generateAdditionalMaterialModeration.useMutation();
+
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
   const generateLessonPlan =
@@ -279,7 +278,6 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
   return (
     <Layout>
       <p>{lessonFields}</p>
-      <button onClick={() => console.log(pageData)}>CLICK</button>
 
       <OakTextInput
         onChange={(value) => setYear(value.target.value)}
@@ -422,9 +420,6 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
           {fetchMaterial.isLoading && <OakP>Loading...</OakP>}
           <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
 
-          {fetchMaterialModeration.isLoading && (
-            <OakP>Loading moderation...</OakP>
-          )}
           <OakFlex
             $mt={"space-between-l"}
             $gap={"space-between-m"}
