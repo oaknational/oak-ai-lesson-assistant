@@ -7,13 +7,9 @@ import { isComprehensionTask } from "@oakai/additional-materials/src/documents/a
 import {
   type AdditionalMaterialSchemas,
   type AdditionalMaterialType,
-  additionalMaterialContextSchemasMap,
   additionalMaterialsConfigMap,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import {
-  isGlossary,
-  readingAgeRefinement,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
+import { isGlossary } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
 import { getKeystageFromYearGroup } from "@oakai/additional-materials/src/documents/additionalMaterials/promptHelpers";
 import {
   buildPartialLessonPrompt,
@@ -82,6 +78,8 @@ interface AdditionalMaterialsUserProps {
 }
 
 const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
+  const [lessonId, setLessonId] = useState<string | null>(null);
+  const [resourceId, setResourceId] = useState<string | null>(null);
   const [pageData, setPageData] = useState<
     AdditionalMaterialsProps["pageData"]
   >({
@@ -178,28 +176,6 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
     year,
   ]);
 
-  useEffect(() => {
-    if (
-      generation !== null &&
-      !fetchMaterialModeration.isLoading &&
-      !moderation
-    ) {
-      const fetchData = async () => {
-        try {
-          const data = await fetchMaterialModeration.mutateAsync({
-            generation: JSON.stringify(generation),
-          });
-
-          setModeration(data);
-        } catch (error) {
-          log.error("error", error);
-          Sentry.captureException(error);
-        }
-      };
-      void fetchData();
-    }
-  }, [fetchMaterialModeration, generation, moderation]);
-
   const handleSubmitLessonPlan = async () => {
     const res = await generateLessonPlan.mutateAsync({
       title: title ?? "",
@@ -208,8 +184,13 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
       year: year ?? "",
       lessonParts: ["title", ...lessonFields],
     });
-    setPageData({ lessonPlan: { ...res } });
-    console.log("lessonPlan", res);
+
+    if (res.threatDetection || res.lesson === null) {
+      return;
+    }
+
+    setPageData({ lessonPlan: res.lesson });
+    setLessonId(res.lessonId);
   };
 
   const handleSubmit = async (message?: string) => {
@@ -223,6 +204,8 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
       const res = await fetchMaterial.mutateAsync({
         documentType: docType,
         action: message ? "refine" : "generate",
+        lessonId: lessonId,
+        resourceId: resourceId ?? null,
         context: {
           lessonPlan: pageData.lessonPlan,
           message: message ?? null,
@@ -231,7 +214,9 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
         },
       });
 
-      setGeneration(res);
+      setGeneration(res.resource);
+      setModeration(res.moderation.justification ?? null);
+      setResourceId(res.resourceId ?? null);
     } catch (error) {
       log.error("error", error);
       Sentry.captureException(error);
@@ -249,6 +234,8 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
         const res = await fetchMaterial.mutateAsync({
           documentType: docType,
           action: "refine",
+          lessonId: lessonId,
+          resourceId: resourceId ?? null,
           context: {
             lessonPlan: pageData.lessonPlan,
             previousOutput: generation ?? null,
@@ -257,7 +244,9 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
           },
         });
 
-        setGeneration(res);
+        setGeneration(res.resource);
+        setModeration(res.moderation.justification ?? null);
+        setResourceId(res.resourceId ?? null);
       } catch (error) {
         log.error("error", error);
         Sentry.captureException(error);
@@ -290,6 +279,7 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
   return (
     <Layout>
       <p>{lessonFields}</p>
+      <button onClick={() => console.log(pageData)}>CLICK</button>
 
       <OakTextInput
         onChange={(value) => setYear(value.target.value)}
@@ -431,20 +421,7 @@ const AdditionalMaterialsUser: FC<AdditionalMaterialsUserProps> = () => {
 
           {fetchMaterial.isLoading && <OakP>Loading...</OakP>}
           <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
-          {/* {isGlossary(generation) &&
-            additionalMaterialContextSchemasMap[
-              docType as AdditionalMaterialType
-            ].shape.refinement?._def.type.shape.type.options.map(
-              (refinement) => (
-                <OakFlex key={refinement}>
-                  <OakPrimaryButton
-                    onClick={() => void handleSubmit(refinement)}
-                  >
-                    {"Make it easier"}
-                  </OakPrimaryButton>
-                </OakFlex>
-              ),
-            )} */}
+
           {fetchMaterialModeration.isLoading && (
             <OakP>Loading moderation...</OakP>
           )}

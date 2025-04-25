@@ -9,7 +9,7 @@ const messageSchema = z.object({
   content: z.string(),
 });
 
-type Message = z.infer<typeof messageSchema>;
+export type Message = z.infer<typeof messageSchema>;
 
 export const lakeraGuardRequestSchema = z.object({
   messages: z.array(messageSchema),

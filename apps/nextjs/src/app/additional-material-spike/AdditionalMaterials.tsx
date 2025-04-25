@@ -1,7 +1,7 @@
 "use client";
 
 import type { FC } from "react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
 import { type AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
@@ -89,28 +89,6 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 
-  useEffect(() => {
-    if (
-      generation !== null &&
-      !fetchMaterialModeration.isLoading &&
-      !moderation
-    ) {
-      const fetchData = async () => {
-        try {
-          const data = await fetchMaterialModeration.mutateAsync({
-            generation: JSON.stringify(generation),
-          });
-
-          setModeration(data);
-        } catch (error) {
-          log.error("error", error);
-          Sentry.captureException(error);
-        }
-      };
-      void fetchData();
-    }
-  }, [fetchMaterialModeration, generation, moderation]);
-
   const handleSubmit = async (message?: string) => {
     setGeneration(null);
     if (!action) {
@@ -119,6 +97,7 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
     }
 
     try {
+      log.info("fetching additional materials");
       const res = await fetchMaterial.mutateAsync({
         documentType: action,
         action: message ? "refine" : "generate",
@@ -130,7 +109,10 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
         },
       });
 
-      setGeneration(res);
+      log.info("res **************", res);
+
+      setGeneration(res.resource);
+      setModeration(res.moderation.justification ?? null);
     } catch (error) {
       log.error("error", error);
       Sentry.captureException(error);

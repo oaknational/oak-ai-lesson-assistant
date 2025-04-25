@@ -1159,13 +1159,17 @@ model Interaction {
   id     String @id @default(uuid())
   userId String @map("user_id")
 
+  derivedFromId String?       @map("derived_from_id")
+  derivedFrom   Interaction?  @relation("DerivedFrom", fields: [derivedFromId], references: [id])
+  derivatives   Interaction[] @relation("DerivedFrom")
+
   adaptsOutputId String?       @map("adapts_output_id")
   adaptsOutput   Interaction?  @relation("AdaptedOutput", fields: [adaptsOutputId], references: [id])
   adaptedBy      Interaction[] @relation("AdaptedOutput")
 
-  config               Json   @db.JsonB
-  inputText            String @map("input_text")
-  inputThreatDetection Json?  @map("input_threat_detection") @db.JsonB
+  config               Json    @db.JsonB
+  inputText            String? @map("input_text")
+  inputThreatDetection Json?   @map("input_threat_detection") @db.JsonB
 
   output           Json? @db.JsonB
   outputModeration Json? @map("output_moderation") @db.JsonB
