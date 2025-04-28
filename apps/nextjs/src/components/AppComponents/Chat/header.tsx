@@ -2,7 +2,6 @@
 
 import * as React from "react";
 
-import { useAuth } from "@clerk/nextjs";
 import {
   OakBox,
   OakFlex,
@@ -14,7 +13,6 @@ import { usePathname } from "next/navigation";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import OakIconLogo from "@/components/OakIconLogo";
-import TempBanner from "@/components/TempBanner";
 import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
 
 import { useDialog } from "../DialogContext";
@@ -25,7 +23,6 @@ import { UserOrLogin } from "./user-or-login";
 
 export function Header() {
   const { isDemoUser, demo } = useDemoUser();
-  const { isSignedIn } = useAuth();
   // Check whether clerk metadata has loaded to prevent the banner from flashing
   const clerkMetadata = useClerkDemoMetadata();
 
@@ -129,7 +126,6 @@ export function Header() {
           </OakFlex>
         </OakFlex>
       </OakFlex>
-      {(!isSignedIn || (isSignedIn && !isDemoUser)) && <TempBanner />}
     </OakBox>
   );
 }
