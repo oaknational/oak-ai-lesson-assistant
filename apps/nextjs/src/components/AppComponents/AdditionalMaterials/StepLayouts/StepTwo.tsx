@@ -113,8 +113,8 @@ const StepTwo = () => {
           </OakLink>
 
           <OakPrimaryButton
-            onClick={() => {
-              handleSubmit();
+            onClick={async () => {
+              await handleSubmit("Create a lesson plan for this lesson");
               setStepNumber(2);
             }}
             iconName="arrow-right"

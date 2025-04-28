@@ -6,6 +6,7 @@ import {
   readingAgeRefinement,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
+
 import {
   OakFlex,
   OakIcon,
@@ -97,7 +98,15 @@ const StepThree = () => {
                   onClick={() => {
                     void refineMaterial({
                       refinement,
-                      mutateAsync: fetchMaterial.mutateAsync,
+                      mutateAsync: async (input) => {
+                        try {
+                          return await fetchMaterial.mutateAsync(input);
+                        } catch (error) {
+                          throw error instanceof Error
+                            ? error
+                            : new Error(String(error));
+                        }
+                      },
                     });
                     setIsFooterAdaptOpen(false);
                   }}

@@ -19,7 +19,7 @@ import {
 } from "@/stores/resourcesStore/selectors";
 
 interface AdditionalMaterialsUserProps {
-  pageData: {
+  pageData?: {
     lessonPlan: {
       title: string;
       keyStage: string;
@@ -59,11 +59,13 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
     1: <StepTwo />,
     2: <StepThree />,
   };
-
+  const stepNumberParsed = stepNumber as keyof typeof titleAreaControl;
+  const title = titleAreaControl?.[stepNumberParsed]?.title ?? "";
+  const subTitle = titleAreaControl?.[stepNumberParsed]?.subTitle ?? "";
   return (
     <ResourcesLayout
-      title={titleAreaControl[stepNumber].title}
-      subTitle={titleAreaControl[stepNumber].subTitle}
+      title={title}
+      subTitle={subTitle}
       step={stepNumber + 1}
       docTypeName={docType?.split("-")[1] ?? null}
     >

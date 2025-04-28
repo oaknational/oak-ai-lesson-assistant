@@ -11,5 +11,5 @@ export default async function AdditionalMaterialsTestPage() {
     redirect("/");
   }
 
-  return <ResourcesContents pageData={{ "": "" }} />;
+  return <ResourcesContents />;
 }

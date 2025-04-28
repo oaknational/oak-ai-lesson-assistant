@@ -1,5 +1,6 @@
 import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
@@ -14,7 +15,11 @@ export type SubmitLessonPlanParams = {
   subject: string;
   keyStage: string;
   year: string;
-  mutateAsync: UseMutateAsyncFunction<any, any, PartialLessonContextSchemaType>;
+  mutateAsync: UseMutateAsyncFunction<
+    LooseLessonPlan,
+    Error,
+    PartialLessonContextSchemaType
+  >;
 };
 
 export const handleSubmitLessonPlan =

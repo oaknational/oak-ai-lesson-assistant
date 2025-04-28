@@ -1,7 +1,10 @@
 import type { AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import type { GenerateAdditionalMaterialInput } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { aiLogger } from "@oakai/logger";
+
 import * as Sentry from "@sentry/nextjs";
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
+import { z } from "zod";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
 
@@ -9,7 +12,11 @@ const log = aiLogger("additional-materials");
 
 export type GenerateMaterialParams = {
   message?: string;
-  mutateAsync: UseMutateAsyncFunction<AdditionalMaterialSchemas, any, any>;
+  mutateAsync: UseMutateAsyncFunction<
+    AdditionalMaterialSchemas,
+    Error,
+    GenerateAdditionalMaterialInput
+  >;
 };
 
 export const handleGenerateMaterial =
@@ -19,6 +26,11 @@ export const handleGenerateMaterial =
     get().actions.setGeneration(null);
     get().actions.setIsResourcesLoading(true);
     const docType = get().docType;
+    const docTypeEnum = z.enum([
+      "additional-comprehension",
+      "additional-glossary",
+    ]);
+    const docTypeParsed = docTypeEnum.parse(docType);
     if (!docType) {
       log.error("No document type selected");
       throw new Error("No document type selected");
@@ -29,7 +41,7 @@ export const handleGenerateMaterial =
 
       // Make the API call
       const result = await mutateAsync({
-        documentType: docType,
+        documentType: docTypeParsed,
         action: message ? "refine" : "generate",
         context: {
           lessonPlan: get().pageData.lessonPlan,

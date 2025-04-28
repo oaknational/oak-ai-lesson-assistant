@@ -26,6 +26,12 @@ import { trpc } from "@/utils/trpc";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
 
+type SubmitLessonPlanParams = {
+  title: string;
+  subject: string;
+  keyStage: string;
+  year: string;
+};
 const StepOne = () => {
   const {
     setStepNumber,
@@ -47,7 +53,7 @@ const StepOne = () => {
   const generateLessonPlan =
     trpc.additionalMaterials.generatePartialLessonPlanObject.useMutation();
 
-  const handleSubmitLessonPlan = (params) =>
+  const handleSubmitLessonPlan = (params: SubmitLessonPlanParams) =>
     submitLessonPlan({
       ...params,
       mutateAsync: generateLessonPlan.mutateAsync,
