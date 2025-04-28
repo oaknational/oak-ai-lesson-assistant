@@ -18,21 +18,14 @@ import {
   stepNumberSelector,
 } from "@/stores/resourcesStore/selectors";
 
-export type Cycle = {
-  title: string;
-  durationInMinutes: number;
-  explanation: {
-    imagePrompt: string;
-    spokenExplanation: string[];
-    accompanyingSlideDetails: string;
-    slideText: string;
-  };
-  practice: string;
-  feedback: string;
-} | null;
-
 interface AdditionalMaterialsUserProps {
-  pageData: { "" };
+  pageData: {
+    lessonPlan: {
+      title: string;
+      keyStage: string;
+      subject: string;
+    };
+  };
 }
 
 const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {

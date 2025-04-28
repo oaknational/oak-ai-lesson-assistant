@@ -16,6 +16,7 @@ import {
   oakOpenApiSearchSchema,
 } from "@oakai/additional-materials/src/schemas/oakOpenApi";
 import { aiLogger } from "@oakai/logger";
+
 import * as Sentry from "@sentry/nextjs";
 import { ZodError, z } from "zod";
 
@@ -63,7 +64,7 @@ export const additionalMaterialsRouter = router({
           "Failed to fetch additional material moderation",
           { cause },
         );
-        log.error("Failed to fetch additional material moderation", cause);
+        log.error("Failed to fetch additional material", cause);
         Sentry.captureException(TrpcError);
         throw TrpcError;
       }
@@ -76,7 +77,7 @@ export const additionalMaterialsRouter = router({
     )
     .mutation(async ({ ctx, input }): Promise<string> => {
       const { generation } = input;
-      log.info("Fetch additional materials moderation", ctx);
+      log.info("Fetch additional material moderation", ctx);
 
       try {
         const result = await generateAdditionalMaterialModeration(generation);
@@ -113,7 +114,7 @@ export const additionalMaterialsRouter = router({
         });
 
         if (!result) {
-          throw new Error("Failed to generate additional material", result);
+          throw new Error("Failed to generate partial lesson plan", result);
         }
 
         return result;

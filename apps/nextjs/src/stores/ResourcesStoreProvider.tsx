@@ -1,7 +1,6 @@
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 import { nanoid } from "nanoid";
-import invariant from "tiny-invariant";
 import { type ExtractState, type StoreApi, useStore } from "zustand";
 
 import { createResourcesStore } from "./resourcesStore";
@@ -33,9 +32,6 @@ export const ResourcesStoresProvider: React.FC<
     };
     return storesObj;
   });
-
-  // Mark initialization so we don't initialize twice in dev mode with StrictMode
-  const initialized = useRef(false);
 
   return (
     <ResourcesStoresContext.Provider value={stores}>

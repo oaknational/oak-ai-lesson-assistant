@@ -1,6 +1,7 @@
 import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { aiLogger } from "@oakai/logger";
+
 import * as Sentry from "@sentry/nextjs";
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
 
@@ -33,7 +34,7 @@ export const handleSubmitLessonPlan =
     try {
       log.info("Processing lesson plan", { title, subject, keyStage, year });
       setIsLoadingLessonPlan(true);
-      // Get existing lesson fields that are filled
+      // @todo move this to the backend
       const validLessonFields = lessonFieldKeys.filter(
         (key) => get().pageData.lessonPlan[key],
       );

@@ -3,6 +3,7 @@ import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { camelCaseToTitleCase } from "@oakai/exports/src/utils";
 import { aiLogger } from "@oakai/logger";
+
 import {
   OakBox,
   OakFlex,
@@ -80,27 +81,25 @@ const StepTwo = () => {
         </OakFlex>
 
         {mapLessonPlanSections(pageData.lessonPlan).map((section) => {
-          if (
-            section.key === "title" ||
-            section.key === "keyStage" ||
-            section.key === "subject"
-          ) {
-            return null;
-          }
-
           const title = camelCaseToTitleCase(section.key) ?? "";
-          return (
-            <OakFlex key={section.key} $flexDirection={"column"}>
-              <OakP $font={"heading-5"}>{section.key}</OakP>
-              <OakFlex $pv="inner-padding-m">
-                <OakFlex $flexDirection="column">
-                  <MemoizedReactMarkdownWithStyles
-                    markdown={`${sectionToMarkdown(title, section.data)}`}
-                  />
+          if (
+            section.key === "learningOutcome" ||
+            section.key === "learningCycles"
+          ) {
+            return (
+              <OakFlex key={section.key} $flexDirection={"column"}>
+                <OakP $font={"heading-5"}>{section.key}</OakP>
+                <OakFlex $pv="inner-padding-m">
+                  <OakFlex $flexDirection="column">
+                    <MemoizedReactMarkdownWithStyles
+                      markdown={`${sectionToMarkdown(title, section.data)}`}
+                    />
+                  </OakFlex>
                 </OakFlex>
               </OakFlex>
-            </OakFlex>
-          );
+            );
+          }
+          return null;
         })}
       </OakFlex>
 
