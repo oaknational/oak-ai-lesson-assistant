@@ -20,6 +20,7 @@ const HamburgerButton = styled.button`
 const Header = ({ menuOpen, setMenuOpen }: Readonly<HeaderProps>) => {
   const { isDemoUser } = useDemoUser();
   const { isSignedIn } = useAuth();
+  const showTempBanner = !isSignedIn || (isSignedIn && !isDemoUser);
   return (
     <OakBox
       $position="absolute"
@@ -27,6 +28,7 @@ const Header = ({ menuOpen, setMenuOpen }: Readonly<HeaderProps>) => {
       $left="all-spacing-0"
       $right="all-spacing-0"
       $zIndex="fixed-header"
+      $bb={showTempBanner ? undefined : "border-solid-m"}
     >
       <OakFlex
         as="header"
@@ -72,7 +74,7 @@ const Header = ({ menuOpen, setMenuOpen }: Readonly<HeaderProps>) => {
           </div>
         </OakFlex>
       </OakFlex>
-      {(!isSignedIn || (isSignedIn && !isDemoUser)) && <TempBanner />}
+      {showTempBanner && <TempBanner />}
     </OakBox>
   );
 };
