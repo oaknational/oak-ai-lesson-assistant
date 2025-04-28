@@ -119,9 +119,10 @@ const StepTwo = () => {
           </OakLink>
 
           <OakPrimaryButton
-            onClick={async () => {
-              await handleSubmit("Create a lesson plan for this lesson");
+            onClick={() => {
+              handleSubmit("Create a lesson plan for this lesson");
               setStepNumber(2);
+              return null;
             }}
             iconName="arrow-right"
             isTrailingIcon={true}
