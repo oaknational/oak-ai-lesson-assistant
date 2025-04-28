@@ -1,6 +1,8 @@
 import { aiLogger } from "@oakai/logger";
 
+import { selectAgent } from "lib/agents/selectAgent";
 import type { ReadableStreamDefaultController } from "stream/web";
+import invariant from "tiny-invariant";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { AilaChatError } from "../AilaError";
@@ -91,6 +93,18 @@ export class AilaStreamHandler {
       log.info("Handling subject warning");
       await this._chat.handleSubjectWarning();
       this.logStreamingStep("Handle subject warning complete");
+
+      const userMessage = this._chat.messages.findLast(
+        (m) => m.role === "user",
+      )?.content;
+      invariant(userMessage, "Cannot stream if no user message");
+      log.info("Routing user's message to appropriate agent");
+      await selectAgent({
+        userId: this._chat.userId ?? "anonymous",
+        chatId: this._chat.id,
+        document: this._chat.aila.document.content,
+        userMessage,
+      });
 
       log.info("Starting LLM stream");
       await this.startLLMStream();
