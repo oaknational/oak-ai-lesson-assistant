@@ -154,7 +154,6 @@ const StepOne = () => {
                 subject: subject || "",
                 keyStage: "ks2",
                 year: year || "",
-                mutateAsync: generateLessonPlan.mutateAsync,
               })
             }
             iconName="arrow-right"
