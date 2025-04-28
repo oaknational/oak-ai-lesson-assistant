@@ -80,7 +80,7 @@ const StepTwo = () => {
 
           <OakBox $pa="inner-padding-m">
             <OakP>
-              {kebabCaseToSentenceCase(pageData.lessonPlan.keyStage || "")},{" "}
+              {kebabCaseToSentenceCase(pageData.lessonPlan.keyStage ?? "")},{" "}
               {pageData.lessonPlan.subject}, {pageData.lessonPlan.title}
             </OakP>
           </OakBox>
@@ -120,7 +120,7 @@ const StepTwo = () => {
 
           <OakPrimaryButton
             onClick={() => {
-              handleSubmit("Create a lesson plan for this lesson");
+              void handleSubmit("Create a lesson plan for this lesson");
               setStepNumber(2);
               return null;
             }}
