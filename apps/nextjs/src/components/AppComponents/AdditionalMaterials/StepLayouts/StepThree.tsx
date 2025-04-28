@@ -111,7 +111,7 @@ const StepThree = () => {
                     setIsFooterAdaptOpen(false);
                   }}
                 >
-                  {camelCaseToSentenceCase(refinement)}
+                  {camelCaseToSentenceCase(refinement as string)}
                 </InlineButton>
               ))}
             </OakFlex>
