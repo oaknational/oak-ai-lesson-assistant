@@ -53,11 +53,28 @@ export const handleRefineMaterial =
         action: "refine",
         context: {
           lessonPlan: get().pageData.lessonPlan,
-          previousOutput: get().generation,
+          previousOutput:
+            docTypeParsed === "additional-glossary"
+              ? (get().generation as {
+                  glossary: { term: string; definition: string }[];
+                } | null)
+              : (get().generation as {
+                  comprehension: {
+                    title: string;
+                    questions: {
+                      type: "multiple-choice" | "open-ended";
+                      questionText: string;
+                      correctAnswer: string | string[];
+                      options?: string[];
+                    }[];
+                    passage: string;
+                    difficulty?: "easy" | "medium" | "hard";
+                  };
+                } | null),
           options: null,
           refinement: [{ type: refinementParsed }],
         },
-      });
+      } as GenerateAdditionalMaterialInput);
 
       // Update the store with the result
       get().actions.setGeneration(result);

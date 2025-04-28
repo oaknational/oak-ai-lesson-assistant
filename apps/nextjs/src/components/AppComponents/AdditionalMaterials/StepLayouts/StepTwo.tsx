@@ -49,7 +49,13 @@ const StepTwo = () => {
   const handleSubmit = (message) => {
     const generatePromise = generateMaterial({
       message,
-      mutateAsync: fetchMaterial.mutateAsync,
+      mutateAsync: async (input) => {
+        try {
+          return await fetchMaterial.mutateAsync(input);
+        } catch (error) {
+          throw error instanceof Error ? error : new Error(String(error));
+        }
+      },
     });
 
     // Navigate to the next step

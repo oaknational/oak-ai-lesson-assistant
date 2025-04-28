@@ -56,7 +56,13 @@ const StepOne = () => {
   const handleSubmitLessonPlan = (params: SubmitLessonPlanParams) =>
     submitLessonPlan({
       ...params,
-      mutateAsync: generateLessonPlan.mutateAsync,
+      mutateAsync: async (input) => {
+        try {
+          return await generateLessonPlan.mutateAsync(input);
+        } catch (error) {
+          throw error instanceof Error ? error : new Error(String(error));
+        }
+      },
     });
 
   return (
