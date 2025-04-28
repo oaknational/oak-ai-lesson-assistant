@@ -23,6 +23,7 @@ import { UserOrLogin } from "./user-or-login";
 
 export function Header() {
   const { isDemoUser, demo } = useDemoUser();
+
   // Check whether clerk metadata has loaded to prevent the banner from flashing
   const clerkMetadata = useClerkDemoMetadata();
 
@@ -73,6 +74,7 @@ export function Header() {
 
       <OakFlex
         $background="white"
+        $bb="border-solid-m"
         $pa={"inner-padding-l"}
         $alignItems="center"
         $justifyContent="space-between"
