@@ -56,10 +56,8 @@ export function AilaStart({
   const userFirstName = user?.firstName;
   const { trackEvent } = useAnalytics();
   const [input, setInput] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setDialogWindow } = useDialog();
   const router = useRouter();
-  const demo = useDemoUser();
+
   const createAppSession = trpc.chat.appSessions.create.useMutation();
   const trpcUtils = trpc.useUtils();
 
@@ -112,21 +110,6 @@ export function AilaStart({
       trackEvent,
       router,
     ],
-  );
-
-  const submit = useCallback(
-    (message: string) => {
-      if (demo.isDemoUser) {
-        setDialogWindow("demo-interstitial");
-      } else {
-        setIsSubmitting(true);
-        create(message).catch((error) => {
-          Sentry.captureException(error);
-          toast.error("Failed to start the chat");
-        });
-      }
-    },
-    [create, setDialogWindow, demo.isDemoUser, setIsSubmitting],
   );
 
   const interstitialSubmit = useCallback(() => {
