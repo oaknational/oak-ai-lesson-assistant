@@ -1,4 +1,7 @@
-import type { AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import {
+  type AdditionalMaterialSchemas,
+  additionalMaterialTypeEnum,
+} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { GenerateAdditionalMaterialInput } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { aiLogger } from "@oakai/logger";
 
@@ -34,11 +37,7 @@ export const handleRefineMaterial =
     try {
       log.info("Refining material", { docType, refinement });
 
-      const docTypeEnum = z.enum([
-        "additional-comprehension",
-        "additional-glossary",
-      ]);
-      const docTypeParsed = docTypeEnum.parse(docType);
+      const docTypeParsed = additionalMaterialTypeEnum.parse(docType);
 
       const refinementEnum = z.enum([
         "custom",

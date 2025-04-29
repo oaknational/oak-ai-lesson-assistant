@@ -1,4 +1,7 @@
-import type { AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import {
+  type AdditionalMaterialSchemas,
+  additionalMaterialTypeEnum,
+} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { GenerateAdditionalMaterialInput } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { aiLogger } from "@oakai/logger";
 
@@ -26,11 +29,8 @@ export const handleGenerateMaterial =
     get().actions.setGeneration(null);
     get().actions.setIsResourcesLoading(true);
     const docType = get().docType;
-    const docTypeEnum = z.enum([
-      "additional-comprehension",
-      "additional-glossary",
-    ]);
-    const docTypeParsed = docTypeEnum.parse(docType);
+
+    const docTypeParsed = additionalMaterialTypeEnum.parse(docType);
     if (!docType) {
       log.error("No document type selected");
       throw new Error("No document type selected");
