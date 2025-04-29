@@ -1155,17 +1155,17 @@ model RagLessonPlanPart {
   @@schema("rag")
 }
 
-model Interaction {
+model AdditionalResourceInteraction {
   id     String @id @default(uuid())
   userId String @map("user_id")
 
-  derivedFromId String?       @map("derived_from_id")
-  derivedFrom   Interaction?  @relation("DerivedFrom", fields: [derivedFromId], references: [id])
-  derivatives   Interaction[] @relation("DerivedFrom")
+  derivedFromId String?                         @map("derived_from_id")
+  derivedFrom   AdditionalResourceInteraction?  @relation("DerivedFrom", fields: [derivedFromId], references: [id])
+  derivatives   AdditionalResourceInteraction[] @relation("DerivedFrom")
 
-  adaptsOutputId String?       @map("adapts_output_id")
-  adaptsOutput   Interaction?  @relation("AdaptedOutput", fields: [adaptsOutputId], references: [id])
-  adaptedBy      Interaction[] @relation("AdaptedOutput")
+  adaptsOutputId String?                         @map("adapts_output_id")
+  adaptsOutput   AdditionalResourceInteraction?  @relation("AdaptedOutput", fields: [adaptsOutputId], references: [id])
+  adaptedBy      AdditionalResourceInteraction[] @relation("AdaptedOutput")
 
   config               Json    @db.JsonB
   inputText            String? @map("input_text")
@@ -1177,6 +1177,6 @@ model Interaction {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("interactions")
+  @@map("AdditionalResourceInteractions")
   @@schema("additional_resources")
 }
