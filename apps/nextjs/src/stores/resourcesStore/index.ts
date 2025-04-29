@@ -1,4 +1,3 @@
-import { aiLogger } from "@oakai/logger";
 import { create } from "zustand";
 
 import { logStoreUpdates } from "../zustandHelpers";
