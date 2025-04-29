@@ -16,15 +16,19 @@ const log = aiLogger("aila:threat");
 export class LakeraThreatDetector extends AilaThreatDetector {
   private readonly apiKey: string;
   private readonly projectId?: string;
-  private readonly apiUrl = "https://api.lakera.ai/v2/guard";
+  private readonly apiUrl?: string;
 
   constructor() {
     super();
     const apiKey = process.env.LAKERA_GUARD_API_KEY;
     const projectId = process.env.LAKERA_GUARD_PROJECT_ID;
+    const apiUrl = process.env.LAKERA_GUARD_API_URL;
 
     if (!apiKey)
       throw new Error("LAKERA_GUARD_API_KEY environment variable not set");
+
+    if (!apiUrl)
+      throw new Error("LAKERA_GUARD_API_URL environment variable not set");
 
     this.apiKey = apiKey;
     this.projectId = projectId;
@@ -110,7 +114,6 @@ export class LakeraThreatDetector extends AilaThreatDetector {
       body: JSON.stringify(parsedBody),
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const responseData = await response.json();
 
     if (!response.ok) {

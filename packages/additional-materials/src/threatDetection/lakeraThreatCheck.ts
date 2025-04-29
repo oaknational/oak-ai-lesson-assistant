@@ -40,16 +40,26 @@ export const lakeraGuardResponseSchema = z.object({
 
 export async function performLakeraThreatCheck({
   messages,
-  projectId = process.env.LAKERA_GUARD_PROJECT_ID,
+  projectId = process.env.LAKERA_GUARD_PROJECT_ID_ADDITIONAL_RESOURCES,
   apiKey = process.env.LAKERA_GUARD_API_KEY,
+  URL = process.env.LAKERA_GUARD_API_URL,
 }: {
   messages: Message[];
   projectId?: string;
   apiKey?: string;
+  URL?: string;
 }): Promise<z.infer<typeof lakeraGuardResponseSchema>> {
   if (!apiKey) {
     log.error("Lakera API key not found");
     throw new Error("Lakera API key not found");
+  }
+  if (!projectId) {
+    log.error("Lakera projectId key not found");
+    throw new Error("Lakera projectId not found");
+  }
+  if (!URL) {
+    log.error("Lakera URL was not found");
+    throw new Error("Lakera projectId not found");
   }
 
   const requestBody = {
@@ -61,7 +71,7 @@ export async function performLakeraThreatCheck({
 
   const parsedBody = lakeraGuardRequestSchema.parse(requestBody);
 
-  const response = await fetch("https://api.lakera.ai/v2/guard", {
+  const response = await fetch(URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
