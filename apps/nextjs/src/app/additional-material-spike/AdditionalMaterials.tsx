@@ -107,8 +107,6 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
         },
       });
 
-      log.info("res **************", res);
-
       setGeneration(res.resource);
       setModeration(res.moderation.justification ?? null);
     } catch (error) {
