@@ -9,11 +9,11 @@ export const glossarySchema = z.object({
   glossary: z
     .array(
       z.object({
-        term: z.string().min(1, "Term is required"),
-        definition: z.string().min(1, "Definition is required"),
+        term: z.string(),
+        definition: z.string(),
       }),
     )
-    .max(15, "Glossary can have at most 15 terms"),
+    .describe("Glossary can have at most 15 term and definition pairs"),
 });
 
 export type GlossarySchema = z.infer<typeof glossarySchema>;
