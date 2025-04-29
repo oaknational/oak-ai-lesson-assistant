@@ -1,5 +1,6 @@
 import type { AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+
 import type { StoreApi } from "zustand";
 
 import type { GenerateMaterialParams } from "./actionFunctions/handleGenerateMaterial";
