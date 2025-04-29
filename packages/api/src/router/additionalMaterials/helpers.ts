@@ -12,17 +12,19 @@ import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/mode
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
+import * as Sentry from "@sentry/nextjs";
+
 import type { LooseLessonPlan } from "../../../../aila/src/protocol/schema";
 
 const log = aiLogger("additional-materials");
 
-interface GenerateAdditionalMaterialParams {
+type GenerateAdditionalMaterialParams = {
   prisma: PrismaClientWithAccelerate;
   userId: string;
   input: GenerateAdditionalMaterialInput & {
     lessonId?: string | null;
   };
-}
+};
 
 export async function generateAdditionalMaterial({
   prisma,
@@ -41,7 +43,10 @@ export async function generateAdditionalMaterial({
   });
 
   if (!result) {
-    throw new Error("Failed to generate additional material");
+    const error = new Error(
+      `Failed to generate additional material - Action: ${input.action} - Doctype: ${input.documentType} - lessonId ${input.lessonId}`,
+    );
+    Sentry.captureException(error);
   }
 
   const moderation = await generateAdditionalMaterialModeration({

@@ -82,11 +82,9 @@ export const additionalMaterialsRouter = router({
           input: parsedInput.data,
         });
       } catch (cause) {
-        const TrpcError = new Error(
-          "Failed to fetch additional material moderation",
-          { cause },
-        );
-        log.error("Failed to fetch lesson plan", cause);
+        const errorContext = `Failed to fetch additional material moderation for - ${parsedInput.data.title} - ${parsedInput.data.subject} `;
+        const TrpcError = new Error(errorContext, { cause });
+        log.error(errorContext, cause);
         Sentry.captureException(TrpcError);
         throw TrpcError;
       }
