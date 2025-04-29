@@ -13,6 +13,10 @@ overrides:
 importers:
 
   .:
+    dependencies:
+      serialize-error:
+        specifier: ^12.0.0
+        version: 12.0.0
     devDependencies:
       '@actions/core':
         specifier: ^1.10.1
