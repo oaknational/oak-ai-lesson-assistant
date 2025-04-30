@@ -6,13 +6,13 @@ import {
 // TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { aiLogger } from "@oakai/logger";
 
-import { AilaThreatDetectionError } from "features/threatDetection";
 import invariant from "tiny-invariant";
 
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import type { AilaChatService, AilaServices } from "../../core/AilaServices";
 import { AilaGeneration } from "../../features/generation/AilaGeneration";
 import type { AilaGenerationStatus } from "../../features/generation/types";
+import { AilaThreatDetectionError } from "../../features/threatDetection";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
 import type {
   ExperimentalPatchDocument,
