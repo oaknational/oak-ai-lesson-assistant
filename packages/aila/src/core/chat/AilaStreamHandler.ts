@@ -1,10 +1,10 @@
 import { aiLogger } from "@oakai/logger";
 
-import { selectAgent } from "lib/agents/selectAgent";
 import type { ReadableStreamDefaultController } from "stream/web";
 import invariant from "tiny-invariant";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
+import { interact } from "../../lib/agents/interact";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
@@ -99,12 +99,16 @@ export class AilaStreamHandler {
       )?.content;
       invariant(userMessage, "Cannot stream if no user message");
       log.info("Routing user's message to appropriate agent");
-      await selectAgent({
-        userId: this._chat.userId ?? "anonymous",
-        chatId: this._chat.id,
-        document: this._chat.aila.document.content,
-        userMessage,
-      });
+      try {
+        await interact({
+          userId: this._chat.userId ?? "anonymous",
+          chatId: this._chat.id,
+          initialDocument: this._chat.aila.document.content,
+          userMessage,
+        });
+      } catch (error) {
+        console.error("Error in interact", error);
+      }
 
       log.info("Starting LLM stream");
       await this.startLLMStream();
