@@ -29,11 +29,7 @@ export const Glossary = ({
         Glossary
       </OakHeading>
       {generation.glossary.map((item, index) => (
-        <OakFlex
-          key={`${item.term}-${index}`}
-          $flexDirection="row"
-          // $alignItems={"start"}
-        >
+        <OakFlex key={`${item.term}-${index}`} $flexDirection="row">
           <OakP $mr={"space-between-ssx"} $font="body-2-bold">
             {item.term}:
           </OakP>
