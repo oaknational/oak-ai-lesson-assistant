@@ -104,7 +104,12 @@ export class AilaStreamHandler {
           userId: this._chat.userId ?? "anonymous",
           chatId: this._chat.id,
           initialDocument: this._chat.aila.document.content,
-          userMessage,
+          messageHistory: this._chat.messages
+            .filter((m) => m.role === "user" || m.role === "assistant")
+            .map((m) => {
+              log.info(m);
+              return m;
+            }) as { role: "user" | "assistant"; content: string }[],
         });
       } catch (error) {
         console.error("Error in interact", error);
