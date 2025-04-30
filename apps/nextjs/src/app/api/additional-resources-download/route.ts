@@ -78,6 +78,13 @@ export async function POST(req: Request, res: NextApiResponse) {
 
     const readableStream = nodePassThroughToReadableStream(stream);
 
+    if (!readableStream) {
+      const error = new Error("Failed to create readable stream");
+      Sentry.captureException(error, { extra: { readableStream } });
+      res.status(500).end("Failed to create readable stream");
+      return;
+    }
+
     return new Response(readableStream, {
       status: 200,
       headers: new Headers({
