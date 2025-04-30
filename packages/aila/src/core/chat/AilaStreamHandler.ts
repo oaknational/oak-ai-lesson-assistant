@@ -114,12 +114,7 @@ export class AilaStreamHandler {
       });
       if (e instanceof AilaThreatDetectionError) {
         log.info("Handling threat detection error");
-        await handleThreatDetectionError({
-          userId: this._chat.userId ?? "anonymous",
-          chatId: this._chat.id,
-          prisma,
-          error: e,
-        });
+
         await this._chat.generationFailed(e);
         throw e;
       }

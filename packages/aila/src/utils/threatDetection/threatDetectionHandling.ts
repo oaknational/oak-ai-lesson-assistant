@@ -1,6 +1,7 @@
 import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import type { AilaThreatDetectionError } from "../../features/threatDetection/types";
@@ -17,12 +18,12 @@ export async function handleThreatDetectionError(
     userId,
     chatId,
     error,
-    prisma,
+    prisma = globalPrisma,
   }: {
     userId: string;
     chatId: string;
     error: AilaThreatDetectionError;
-    prisma: PrismaClientWithAccelerate;
+    prisma?: PrismaClientWithAccelerate;
   },
   SafetyViolations = defaultSafetyViolations,
 ): Promise<ErrorDocument | ActionDocument> {

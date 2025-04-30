@@ -6,6 +6,7 @@ import {
 // TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { aiLogger } from "@oakai/logger";
 
+import { AilaThreatDetectionError } from "features/threatDetection";
 import invariant from "tiny-invariant";
 
 import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
@@ -27,6 +28,7 @@ import type {
   AilaRagRelevantLesson,
 } from "../../protocol/schema";
 import { fetchExperimentalPatches } from "../../utils/experimentalPatches/fetchExperimentalPatches";
+import { handleThreatDetectionError } from "../../utils/threatDetection/threatDetectionHandling";
 import { AilaError } from "../AilaError";
 import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
@@ -176,18 +178,24 @@ export class AilaChat implements AilaChatService {
       "Error reading from the OpenAI stream",
       "info",
     );
-    if (error instanceof Error) {
-      await this.reportError({ message: error.message });
+    if (error instanceof AilaThreatDetectionError) {
+      const errorObject = await handleThreatDetectionError({
+        userId: this.userId ?? "anonymous",
+        chatId: this.id,
+        error,
+      });
+      await this.enqueue(errorObject);
+    } else if (error instanceof Error) {
+      await this.enqueueError({ message: error.message });
     }
     await this.persistGeneration("FAILED");
     log.info("Generation marked as failed");
   }
 
-  private async reportError({ message }: { message: string }) {
+  private async enqueueError({ message }: { message: string }) {
     await this.enqueue({
       type: "error",
       message,
-      value: "Sorry, an error occurred. Please try again.",
     });
   }
 
