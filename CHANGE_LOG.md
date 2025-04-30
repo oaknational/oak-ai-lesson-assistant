@@ -1,3 +1,10 @@
+# [1.35.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.34.0...v1.35.0) (2025-04-30)
+
+
+### Features
+
+* banner implementaion ([#647](https://github.com/oaknational/oak-ai-lesson-assistant/issues/647)) ([441c311](https://github.com/oaknational/oak-ai-lesson-assistant/commit/441c311a5586e1f75414830e1eea3b636e566f9b))
+
 # [1.34.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.33.0...v1.34.0) (2025-04-23)
 
 
