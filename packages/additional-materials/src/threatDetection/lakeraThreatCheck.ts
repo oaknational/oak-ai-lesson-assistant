@@ -42,7 +42,7 @@ export async function performLakeraThreatCheck({
   messages,
   projectId = process.env.LAKERA_GUARD_PROJECT_ID_ADDITIONAL_RESOURCES,
   apiKey = process.env.LAKERA_GUARD_API_KEY,
-  URL = process.env.LAKERA_GUARD_API_URL,
+  URL = process.env.LAKERA_GUARD_URL,
 }: {
   messages: Message[];
   projectId?: string;

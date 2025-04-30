@@ -22,7 +22,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
     super();
     const apiKey = process.env.LAKERA_GUARD_API_KEY;
     const projectId = process.env.LAKERA_GUARD_PROJECT_ID;
-    const apiUrl = process.env.LAKERA_GUARD_API_URL;
+    const apiUrl = process.env.LAKERA_GUARD_URL;
 
     if (!apiKey)
       throw new Error("LAKERA_GUARD_API_KEY environment variable not set");
