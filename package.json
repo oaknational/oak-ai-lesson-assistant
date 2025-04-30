@@ -67,6 +67,7 @@
     "next": "14.2.21",
     "postcss": "^8.4.32",
     "semantic-release": "^21.1.1",
+    "serialize-error": "^12.0.0",
     "sonarqube-scanner": "^4.2.6",
     "turbo": "^2.4.4",
     "typescript": "5.8.2"
@@ -83,8 +84,5 @@
       "@octokit/request": "8.4.1",
       "playwright": "1.51.1"
     }
-  },
-  "dependencies": {
-    "serialize-error": "^12.0.0"
   }
 }

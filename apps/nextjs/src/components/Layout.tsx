@@ -10,7 +10,7 @@ const Layout = ({ children }: Readonly<LayoutProps>) => {
   return (
     <DemoProvider>
       <HeaderManager />
-      <Main>{children}</Main>
+      <Main defaultMaxWidth={true}>{children}</Main>
       <Footer />
     </DemoProvider>
   );
