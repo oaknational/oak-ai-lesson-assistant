@@ -1,6 +1,7 @@
 import {
   type AdditionalMaterialSchemas,
   additionalMaterialTypeEnum,
+  generateAdditionalMaterialInputSchema,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { GenerateAdditionalMaterialInput } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { aiLogger } from "@oakai/logger";
@@ -39,41 +40,22 @@ export const handleRefineMaterial =
 
       const docTypeParsed = additionalMaterialTypeEnum.parse(docType);
 
-      const refinementEnum = z.enum([
-        "custom",
-        "lowerReadingAge",
-        "increaseReadingAge",
-      ]);
-      const refinementParsed = refinementEnum.parse(refinement);
-
-      // Make the API call
-      const result = await mutateAsync({
+      const payload = {
         documentType: docTypeParsed,
         action: "refine",
         context: {
           lessonPlan: get().pageData.lessonPlan,
-          previousOutput:
-            docTypeParsed === "additional-glossary"
-              ? (get().generation as {
-                  glossary: { term: string; definition: string }[];
-                } | null)
-              : (get().generation as {
-                  comprehension: {
-                    title: string;
-                    questions: {
-                      type: "multiple-choice" | "open-ended";
-                      questionText: string;
-                      correctAnswer: string | string[];
-                      options?: string[];
-                    }[];
-                    passage: string;
-                    difficulty?: "easy" | "medium" | "hard";
-                  };
-                } | null),
+          previousOutput: get().generation,
           options: null,
-          refinement: [{ type: refinementParsed }],
+          refinement: refinement,
         },
-      } as GenerateAdditionalMaterialInput);
+      };
+
+      const parsedPayload =
+        generateAdditionalMaterialInputSchema.parse(payload);
+
+      // Make the API call
+      const result = await mutateAsync(parsedPayload);
 
       // Update the store with the result
       get().actions.setGeneration(result);
