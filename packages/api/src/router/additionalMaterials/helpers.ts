@@ -57,7 +57,7 @@ export async function generateAdditionalMaterial({
   const { resourceId, documentType } = input;
   const version = additionalMaterialsConfigMap[documentType].version;
 
-  const interaction = await prisma.interaction.create({
+  const interaction = await prisma.additionalResourceInteraction.create({
     data: {
       userId,
       config: {
@@ -142,7 +142,7 @@ export async function generatePartialLessonPlan({
     provider: "openai",
   });
 
-  const interaction = await prisma.interaction.create({
+  const interaction = await prisma.additionalResourceInteraction.create({
     data: {
       userId,
       inputText: `${input.subject} - ${input.title}`,
