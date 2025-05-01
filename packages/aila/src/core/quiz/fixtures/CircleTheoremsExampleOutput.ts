@@ -16,7 +16,7 @@ export const CircleTheoremLesson = {
     "Evaluate the use of different circle theorems in complex scenarios.",
   ],
   priorKnowledge: [
-    "Understanding of basic geometric shapes and their properties.",
+    "Understanding of basic geometric shapes and theirs properties.",
     "Familiarity with the concept of a circle, including radius, diameter, and circumference.",
     "Knowledge of angles and how to measure them.",
     "Ability to perform basic algebraic manipulations.",
