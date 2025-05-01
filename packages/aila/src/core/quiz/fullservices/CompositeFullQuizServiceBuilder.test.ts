@@ -350,5 +350,37 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         quizWithOverride,
       );
     });
+    it("Test data from a known rag lesson.", async () => {
+      const mockRelevantLessons: AilaRagRelevantLesson[] = [
+        { lessonPlanId: "OmUHQwwm_XZpE--c1whvX", title: "test-title-2" },
+      ];
+
+      const builder = new CompositeFullQuizServiceBuilder();
+      const settings: QuizBuilderSettings = {
+        quizRatingSchema: testRatingSchema,
+        quizSelector: "simple",
+        quizReranker: "schema-reranker",
+        quizGenerators: ["rag"], // Only include rag generator to test fallback behavior
+      };
+      const service = builder.build(settings);
+
+      // Test with override enabled but no basedOn lesson
+      const quizWithOverride = await service.createBestQuiz(
+        "/starterQuiz",
+        CircleTheoremLessonWithoutBasedOn,
+        mockRelevantLessons,
+        false, // Enable override
+      );
+
+      expect(quizWithOverride).toBeDefined();
+      expect(quizWithOverride.length).toBeGreaterThan(0);
+      expect(quizWithOverride[0]?.question).toBeDefined();
+      expect(quizWithOverride[0]?.answers).toBeDefined();
+      expect(quizWithOverride[0]?.distractors).toBeDefined();
+      log.info(
+        "Edge case test that works in test env but not upon deployment. ",
+        quizWithOverride,
+      );
+    });
   },
 );
