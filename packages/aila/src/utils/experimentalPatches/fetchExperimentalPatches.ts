@@ -92,7 +92,7 @@ export async function fetchExperimentalPatches({
         "/starterQuiz",
         lessonPlan,
         undefined,
-        true,
+        false,
       );
       if (mathsStarterQuiz.length === 0) {
         log.info("No starter quiz found. Creating placeholder starter quiz.");
@@ -136,7 +136,7 @@ export async function fetchExperimentalPatches({
         "/exitQuiz",
         lessonPlan,
         undefined,
-        true,
+        false,
       );
       if (mathsExitQuiz.length === 0) {
         log.info("No exit quiz found. Creating placeholder exit quiz.");

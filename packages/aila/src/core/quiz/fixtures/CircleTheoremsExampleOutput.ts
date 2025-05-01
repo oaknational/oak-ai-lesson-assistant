@@ -16,6 +16,7 @@ export const CircleTheoremLesson = {
     "Evaluate the use of different circle theorems in complex scenarios.",
   ],
   priorKnowledge: [
+    "Milkman",
     "Understanding of basic geometric shapes and theirs properties.",
     "Familiarity with the concept of a circle, including radius, diameter, and circumference.",
     "Knowledge of angles and how to measure them.",
@@ -23,6 +24,7 @@ export const CircleTheoremLesson = {
     "Understanding of congruence and similarity in geometric figures.",
   ],
   keyLearningPoints: [
+    "Postman",
     "The angle at the centre of a circle is twice the angle at the circumference.",
     "Angles in the same segment of a circle are equal.",
     "The opposite angles of a cyclic quadrilateral sum to 180 degrees.",

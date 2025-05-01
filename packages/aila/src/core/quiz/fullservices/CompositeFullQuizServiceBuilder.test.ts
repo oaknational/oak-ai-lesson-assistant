@@ -352,8 +352,13 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
     });
     it("Test data from a known rag lesson.", async () => {
       const mockRelevantLessons: AilaRagRelevantLesson[] = [
-        { lessonPlanId: "OmUHQwwm_XZpE--c1whvX", title: "test-title-2" },
+        // { lessonPlanId: "OmUHQwwm_XZpE--c1whvX", title: "test-title-2" },
+        // { lessonPlanId: "5uHXXJq_3aL7ygK_Dm_UI", title: "test-title-3" },
+        { lessonPlanId: "2Z3lzRDiGDqxzmCG9jOX3", title: "test-title-4" },
+        { lessonPlanId: "cFB1BHLO51iY3Y0_ldgVE", title: "test-title-5" },
+        { lessonPlanId: "a8LpF832R0Iep5Gp7FJF1", title: "test-title-6" },
       ];
+      // clyegoy2104u68zxky2w8g2ls
 
       const builder = new CompositeFullQuizServiceBuilder();
       const settings: QuizBuilderSettings = {
