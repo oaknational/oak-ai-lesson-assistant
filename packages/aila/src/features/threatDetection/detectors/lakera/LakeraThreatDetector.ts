@@ -27,9 +27,6 @@ export class LakeraThreatDetector extends AilaThreatDetector {
     if (!apiKey)
       throw new Error("LAKERA_GUARD_API_KEY environment variable not set");
 
-    // if (!apiUrl)
-    //   throw new Error("LAKERA_GUARD_URL environment variable not set");
-
     this.apiKey = apiKey;
     this.projectId = projectId;
     this.apiUrl = apiUrl;
@@ -106,9 +103,6 @@ export class LakeraThreatDetector extends AilaThreatDetector {
       })),
     });
 
-    if (!this.apiUrl) {
-      throw new Error("API URL is not defined");
-    }
     const response = await fetch("https://api.lakera.ai/v2/guard", {
       method: "POST",
       headers: {
