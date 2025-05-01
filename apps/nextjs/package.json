@@ -81,7 +81,7 @@
     "ai": "^4.0.20",
     "american-british-english-translator": "^0.2.1",
     "archiver": "^7.0.1",
-    "axios": "^1.8.2",
+    "axios": "^1.8.3",
     "base64url": "^3.0.1",
     "better-react-mathjax": "2.0.4-beta1",
     "class-variance-authority": "^0.7.0",
