@@ -1,0 +1,42 @@
+{
+  "name": "@oakai/additional-materials",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit"
+  },
+  "prettier": "@oakai/prettier-config",
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": "@oakai/eslint-config"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^0.0.55",
+    "@clerk/nextjs": "5.7.2",
+    "@oakai/logger": "*",
+    "@sentry/nextjs": "^8.49.0",
+    "ai": "^4.1.00",
+    "dotenv-cli": "^6.0.0",
+    "openai": "^4.58.1",
+    "serialize-error": "^12.0.0",
+    "zod": "3.23.8",
+    "zod-to-json-schema": "^3.23.0"
+  },
+  "devDependencies": {
+    "@oakai/eslint-config": "*",
+    "@oakai/prettier-config": "*",
+    "typescript": "5.8.2"
+  },
+  "engines": {
+    "node": ">=20.9.0",
+    "pnpm": ">=8"
+  }
+}
