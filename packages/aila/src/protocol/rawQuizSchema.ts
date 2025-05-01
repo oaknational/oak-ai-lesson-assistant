@@ -26,7 +26,7 @@ export type ConvertKeysToCamelCase<T> =
         }
       : T;
 export function convertKey(key: string): string {
-  return key.replace(/(_\w)/g, (_, m) => m[1].toUpperCase());
+  return key.replace(/(_\w)/g, (_, [, m]) => (m as string)?.toUpperCase());
 }
 export type QuizQuestion = ConvertKeysToCamelCase<
   z.infer<typeof quizQuestionSchema>
@@ -122,7 +122,7 @@ export type QuizProps = {
 export function keysToCamelCase<T>(obj: T): ConvertKeysToCamelCase<T> {
   if (Array.isArray(obj)) {
     return obj.map((item) =>
-      keysToCamelCase(item),
+      keysToCamelCase(item as unknown[]),
     ) as ConvertKeysToCamelCase<T>;
   } else if (obj && typeof obj === "object") {
     return Object.entries(obj).reduce((acc, [key, value]) => {
