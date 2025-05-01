@@ -59,7 +59,7 @@ export const additionalMaterialsRouter = router({
           "Failed to fetch additional material moderation",
           { cause },
         );
-        log.error("Failed to fetch additional material moderation", cause);
+        log.error("Failed to fetch additional material", cause);
         Sentry.captureException(TrpcError);
         throw TrpcError;
       }
