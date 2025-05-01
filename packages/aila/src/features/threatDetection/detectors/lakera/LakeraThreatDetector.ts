@@ -32,6 +32,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
 
     this.apiKey = apiKey;
     this.projectId = projectId;
+    this.apiUrl = apiUrl;
   }
 
   protected async authenticate(): Promise<void> {
@@ -105,6 +106,9 @@ export class LakeraThreatDetector extends AilaThreatDetector {
       })),
     });
 
+    if (!this.apiUrl) {
+      throw new Error("API URL is not defined");
+    }
     const response = await fetch(this.apiUrl, {
       method: "POST",
       headers: {
