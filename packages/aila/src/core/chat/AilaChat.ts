@@ -415,6 +415,7 @@ export class AilaChat implements AilaChatService {
         await this.enqueue(patch);
         this.appendExperimentalPatch(patch);
       },
+      ailaRagRelevantLessons: this._relevantLessons,
       userId: this._userId,
     });
     this.applyEdits();

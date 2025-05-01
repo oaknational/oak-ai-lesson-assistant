@@ -1,3 +1,5 @@
+import { aiLogger } from "@oakai/logger";
+
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
@@ -5,6 +7,8 @@ import type {
   QuizPath,
 } from "../../../protocol/schema";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
+
+const log = aiLogger("aila:quiz");
 
 // This generates a quiz based on the *Underlying AILA RAG service* relevant lessons.
 // TODO: GCLOMAX - Seperate out starter and exit quizzes.
@@ -14,6 +18,10 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
     quizType: QuizPath = "/starterQuiz",
   ): Promise<Quiz[]> {
+    log.info(
+      "Getting quizzes for relevant lessons:",
+      ailaRagRelevantLessons.map((lesson) => "\n- " + lesson.title),
+    );
     // TODO: MG - This is a load of DB queries and may make it spiky.
     const quizPromises = ailaRagRelevantLessons.map((relevantLesson) =>
       this.questionArrayFromPlanId(relevantLesson.lessonPlanId, quizType),

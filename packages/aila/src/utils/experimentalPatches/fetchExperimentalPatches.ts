@@ -8,6 +8,7 @@ import type {
   PatchDocument,
 } from "../../protocol/jsonPatchProtocol";
 import type {
+  AilaRagRelevantLesson,
   LooseLessonPlan,
   Quiz,
   QuizQuestion,
@@ -43,12 +44,14 @@ export async function fetchExperimentalPatches({
   handlePatch,
   fullQuizService,
   userId,
+  ailaRagRelevantLessons,
 }: {
   lessonPlan: LooseLessonPlan;
   llmPatches: PatchDocument[];
   handlePatch: (patch: ExperimentalPatchDocument) => Promise<void>;
   fullQuizService: FullQuizService;
   userId?: string;
+  ailaRagRelevantLessons: AilaRagRelevantLesson[];
 }) {
   if (lessonPlan.subject !== "maths") {
     // Only maths has experimental patches for now
@@ -91,7 +94,7 @@ export async function fetchExperimentalPatches({
       let mathsStarterQuiz: Quiz = await fullQuizService.createBestQuiz(
         "/starterQuiz",
         lessonPlan,
-        undefined,
+        ailaRagRelevantLessons,
         false,
       );
       if (mathsStarterQuiz.length === 0) {
@@ -135,7 +138,7 @@ export async function fetchExperimentalPatches({
       let mathsExitQuiz: Quiz = await fullQuizService.createBestQuiz(
         "/exitQuiz",
         lessonPlan,
-        undefined,
+        ailaRagRelevantLessons,
         false,
       );
       if (mathsExitQuiz.length === 0) {
