@@ -85,7 +85,7 @@ const StepThree = () => {
             <button onClick={() => setIsFooterAdaptOpen(false)}>
               <OakFlex $alignItems="center" $gap="all-spacing-2">
                 <OakIcon iconName="cross" />
-                <OakSpan $color="black" $textDecoration="none">
+                <OakSpan $color="black" $textDecoration="none" $font="body-2">
                   Close
                 </OakSpan>
               </OakFlex>

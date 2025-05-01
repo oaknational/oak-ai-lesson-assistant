@@ -2,7 +2,6 @@ import {
   OakFlex,
   OakIcon,
   OakLabel,
-  OakLink,
   OakP,
   OakPrimaryButton,
   OakRadioButton,
@@ -67,24 +66,26 @@ const StepOne = () => {
 
   return (
     <>
-      <div className="mb-15 flex gap-10">
-        <YearGroupDropDown
-          selectedYear={year || ""}
-          setSelectedYear={setYear}
-          activeDropdown={activeDropdown}
-          setActiveDropdown={setActiveDropdown}
+      <OakFlex $flexDirection={"column"} $gap={"space-between-m"}>
+        <OakFlex $flexDirection={"row"} $gap={"space-between-m"}>
+          <YearGroupDropDown
+            selectedYear={year || ""}
+            setSelectedYear={setYear}
+            activeDropdown={activeDropdown}
+            setActiveDropdown={setActiveDropdown}
+          />
+          <SubjectsDropDown
+            selectedSubject={subject || ""}
+            setSelectedSubject={setSubject}
+            activeDropdown={activeDropdown}
+            setActiveDropdown={setActiveDropdown}
+          />
+        </OakFlex>
+        <OakTextInput
+          onChange={(value) => setTitle(value.target.value)}
+          placeholder="Type a lesson title or learning outcome"
         />
-        <SubjectsDropDown
-          selectedSubject={subject || ""}
-          setSelectedSubject={setSubject}
-          activeDropdown={activeDropdown}
-          setActiveDropdown={setActiveDropdown}
-        />
-      </div>
-      <OakTextInput
-        onChange={(value) => setTitle(value.target.value)}
-        placeholder="Type a lesson title or learning outcome"
-      />
+      </OakFlex>
       <OakFlex $gap={"space-between-m"} $flexDirection="column">
         <OakFlex $flexDirection={"column"}>
           <OakFlex $mv={"space-between-l"}>
@@ -100,6 +101,8 @@ const StepOne = () => {
                 <OakRadioButton
                   id="additional-glossary"
                   value="additional-glossary"
+                  radioInnerSize="all-spacing-6"
+                  radioOuterSize="all-spacing-7"
                   label={
                     <OakFlex
                       $flexDirection="column"
@@ -119,6 +122,8 @@ const StepOne = () => {
                 <OakRadioButton
                   id="additional-comprehension"
                   value="additional-comprehension"
+                  radioInnerSize="all-spacing-6"
+                  radioOuterSize="all-spacing-7"
                   label={
                     <OakFlex
                       $flexDirection="column"
@@ -140,12 +145,12 @@ const StepOne = () => {
 
       <ResourcesFooter>
         <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <OakLink onClick={() => setStepNumber(0)}>
+          <button onClick={() => setStepNumber(0)}>
             <OakFlex $alignItems="center" $gap="all-spacing-2">
               <OakIcon iconName="chevron-left" />
               Back a step
             </OakFlex>
-          </OakLink>
+          </button>
 
           <OakPrimaryButton
             onClick={() =>

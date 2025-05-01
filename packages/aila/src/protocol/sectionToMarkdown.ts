@@ -136,6 +136,7 @@ function renderObject(value: Record<string, unknown>): string {
 
 function renderArray(key: string, value: readonly unknown[]): string {
   if (value.every((v): v is string => typeof v === "string")) {
+    console.log("!!!!!!!!!!!!!!!!!we here 2");
     return renderStringArrayAsBullets(value);
   }
 
