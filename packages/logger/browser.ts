@@ -69,10 +69,11 @@ const searchParamLogLevel =
   typeof window !== "undefined"
     ? new URLSearchParams(window.location.search).get("logLevel")
     : null;
-const logLevel =
-  searchParamLogLevel ??
-  process.env.NEXT_PUBLIC_PINO_BROWSER_LOG_LEVEL ??
-  "info";
+// const logLevel =
+//   searchParamLogLevel ??
+//   process.env.NEXT_PUBLIC_PINO_BROWSER_LOG_LEVEL ??
+//   "info";
+const logLevel = "debug";
 
 const browserLogger = pino({
   level: logLevel,
