@@ -25,6 +25,7 @@ export type ResourcesState = {
   stepNumber: number;
   isLoadingLessonPlan: boolean;
   isResourcesLoading: boolean;
+  isDownloading: boolean;
   pageData: PageData;
   generation: AdditionalMaterialSchemas | null;
   docType: string | null;
@@ -44,6 +45,7 @@ export type ResourcesState = {
     setTitle: (title: string | null) => void;
     setYear: (year: string | null) => void;
     setActiveDropdown: (dropdown: string | null) => void;
+    setIsResourceDownloading: (isDownloading: boolean) => void;
 
     // Clear form state
     resetFormState: () => void;
@@ -58,6 +60,7 @@ export type ResourcesState = {
     refineMaterial: (
       params: RefineMaterialParams,
     ) => Promise<AdditionalMaterialSchemas>;
+    downloadMaterial: () => Promise<void>;
   };
 };
 
