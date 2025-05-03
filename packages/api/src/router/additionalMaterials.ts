@@ -82,12 +82,11 @@ export const additionalMaterialsRouter = router({
       }
 
       try {
-        const lesson = await generatePartialLessonPlan({
+        return await generatePartialLessonPlan({
           prisma: ctx.prisma,
           userId: ctx.auth.userId,
           input: parsedInput.data,
         });
-        return lesson?.lesson;
       } catch (cause) {
         const errorContext = `Failed to fetch additional material moderation for - ${parsedInput.data.title} - ${parsedInput.data.subject} `;
         const TrpcError = new Error(errorContext, { cause });
