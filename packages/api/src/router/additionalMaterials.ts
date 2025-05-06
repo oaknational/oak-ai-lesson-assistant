@@ -5,6 +5,8 @@ import {
   generateAdditionalMaterialInputSchema,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { generateAdditionalMaterialObject } from "@oakai/additional-materials/src/documents/additionalMaterials/generateAdditionalMaterialObject";
+import { generatePartialLessonPlanObject } from "@oakai/additional-materials/src/documents/partialLessonPlan/generateLessonPlan";
+import { partialLessonContextSchema } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import {
   type OakOpenAiLessonSummary,
   type OakOpenAiTranscript,
@@ -18,6 +20,7 @@ import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { ZodError, z } from "zod";
 
+import type { LooseLessonPlan } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 
@@ -52,14 +55,15 @@ export const additionalMaterialsRouter = router({
         });
 
         if (!result) {
-          throw new Error("Failed to generate additional material");
+          throw new Error("Failed to generate additional material", result);
         }
 
         return result;
       } catch (cause) {
-        const TrpcError = new Error("Failed to fetch additional materials", {
-          cause,
-        });
+        const TrpcError = new Error(
+          "Failed to fetch additional material moderation",
+          { cause },
+        );
         log.error("Failed to fetch additional material", cause);
         Sentry.captureException(TrpcError);
         throw TrpcError;
@@ -73,10 +77,45 @@ export const additionalMaterialsRouter = router({
     )
     .mutation(async ({ ctx, input }): Promise<string> => {
       const { generation } = input;
-      log.info("Fetch additional materials moderation", ctx);
+      log.info("Fetch additional material moderation", ctx);
 
       try {
         const result = await generateAdditionalMaterialModeration(generation);
+
+        if (!result) {
+          throw new Error("Failed to generate additional material");
+        }
+
+        return result;
+      } catch (cause) {
+        const TrpcError = new Error(
+          "Failed to fetch additional material moderation",
+          { cause },
+        );
+        log.error("Failed to fetch additional material moderation", cause);
+        Sentry.captureException(TrpcError);
+        throw TrpcError;
+      }
+    }),
+  generatePartialLessonPlanObject: protectedProcedure
+    .input(partialLessonContextSchema)
+    .mutation(async ({ ctx, input }): Promise<LooseLessonPlan> => {
+      log.info("Generate partial lesson plan", input);
+      const parsedInput = partialLessonContextSchema.safeParse(input);
+      if (!parsedInput.success) {
+        log.error("Failed to parse input", parsedInput.error);
+        throw new ZodError(parsedInput.error.issues);
+      }
+
+      try {
+        const result = await generatePartialLessonPlanObject({
+          provider: "openai",
+          parsedInput: { context: parsedInput.data },
+        });
+
+        if (!result) {
+          throw new Error("Failed to generate partial lesson plan", result);
+        }
 
         return result;
       } catch (cause) {

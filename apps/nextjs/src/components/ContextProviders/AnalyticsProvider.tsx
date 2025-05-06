@@ -22,6 +22,7 @@ import getAvoEnv from "@/lib/avo/getAvoEnv";
 import { useClerkIdentify } from "@/lib/clerk/useClerkIdentify";
 import { ServicePolicyMap } from "@/lib/cookie-consent/ServicePolicyMap";
 import { posthogToAnalyticsService } from "@/lib/posthog/posthog";
+import { trpc } from "@/utils/trpc";
 
 export type ServiceName = "posthog" | "hubspot";
 
@@ -138,6 +139,14 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
     setHubspotScriptLoaded(true);
   }, []);
 
+  // Check for HubSpot contact information
+  const { data: hubspotContactData } =
+    trpc.analytics.getHubspotContact.useQuery(undefined, {
+      enabled: hubspotScriptLoaded,
+    });
+
+  const hubspot_contact_id = hubspotContactData?.contact?.id;
+
   /**
    * Posthog - main AI beta instance
    */
@@ -197,8 +206,15 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
     (userId, properties, services) => {
       const allServices = !services;
       if (allServices || services?.includes("posthog")) {
-        posthogAiBeta.identify(userId, properties);
-        const { ...nonPiiProperties } = properties;
+        // Add hubspot_contact_id to properties for posthog
+        const posthogProperties = {
+          ...properties,
+          ...(hubspot_contact_id && { hubspot_contact_id }),
+        };
+
+        posthogAiBeta.identify(userId, posthogProperties);
+
+        const { ...nonPiiProperties } = posthogProperties;
         delete nonPiiProperties.email;
         posthogOak.identify(userId, nonPiiProperties);
       }
@@ -206,7 +222,7 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
         hubspot.identify(userId, properties);
       }
     },
-    [posthogOak, posthogAiBeta, hubspot],
+    [posthogOak, posthogAiBeta, hubspot, hubspot_contact_id],
   );
 
   /**
@@ -272,7 +288,10 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
 
   const onClerkIdentify = useCallback(
     (user: { userId: string; email: string; isDemoUser?: boolean }) => {
-      identify(user.userId, { email: user.email, isDemoUser: user.isDemoUser });
+      identify(user.userId, {
+        email: user.email,
+        isDemoUser: user.isDemoUser,
+      });
     },
     [identify],
   );

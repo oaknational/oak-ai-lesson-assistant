@@ -1,5 +1,6 @@
 import { type ZodSchema, type ZodType, z } from "zod";
 
+import { partialLessonContextSchema } from "../partialLessonPlan/schema";
 import { glossaryContextSchema, glossarySchema } from ".//glossary/schema";
 import {
   buildComprehensionPrompt,
@@ -21,6 +22,7 @@ import {
 const additionalMaterialDocType = [
   "additional-comprehension",
   "additional-glossary",
+  // "partial-lesson-plan",
 ] as const;
 
 export const actionEnum = z.enum(["generate", "refine", "translate"]);
@@ -39,6 +41,7 @@ export type AdditionalMaterialType = z.infer<typeof additionalMaterialTypeEnum>;
 export const additionalMaterialContextSchemasMap = {
   "additional-comprehension": comprehensionContextSchema,
   "additional-glossary": glossaryContextSchema,
+  // "partial-lesson-plan": partialLessonContextSchema,
 } satisfies {
   [K in AdditionalMaterialType]: ZodSchema;
 };
