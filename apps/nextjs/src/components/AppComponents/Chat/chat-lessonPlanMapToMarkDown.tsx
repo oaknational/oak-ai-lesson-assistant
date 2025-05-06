@@ -6,6 +6,8 @@ import type {
 } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 
+import { MathJax } from "better-react-mathjax";
+
 import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
 
 import { notEmpty } from "./chat-lessonPlanDisplay";
@@ -41,56 +43,54 @@ const LessonPlanMapToMarkDown = ({
       lessonPlan._experimental_starterQuizMathsV0 ?? lessonPlan.starterQuiz,
     exitQuiz: lessonPlan._experimental_exitQuizMathsV0 ?? lessonPlan.exitQuiz,
   };
-  return (
-    Object.entries(lessonPlanWithExperiments)
-      .filter(
-        (
-          entry,
-        ): entry is [
-          ValidLessonPlanKey,
-          NonNullable<LooseLessonPlan[ValidLessonPlanKey]>,
-        ] => {
-          const [k] = entry;
-          return !excludedKeys.includes(k as ExcludedKeys);
-        },
-      )
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .filter(([_, v]) => notEmpty(v))
-      .map(([key, value]) => {
-        return { key, value };
-      })
-      .sort(({ key: a }, { key: b }) => {
-        // sort the keys in a predefined order
-        //  title, subject, topic, keyStage, basedOn, lessonReferences, learningOutcome, learningCycles, priorKnowledge, keyLearningPoints, misconceptions, keywords, starterQuiz, cycle1, cycle2, cycle3, exitQuiz, additionalMaterials
-        const order: LessonPlanKey[] = [
-          "learningOutcome",
-          "learningCycles",
-          "priorKnowledge",
-          "keyLearningPoints",
-          "misconceptions",
-          "keywords",
-          "starterQuiz",
-          "cycle1",
-          "cycle2",
-          "cycle3",
-          "exitQuiz",
-          "additionalMaterials",
-        ];
-        return (
-          order.indexOf(a as LessonPlanKey) - order.indexOf(b as LessonPlanKey)
-        );
-      })
-      .map(({ key, value }) => {
-        return (
-          <ChatSection
-            key={key}
-            sectionRefs={sectionRefs}
-            objectKey={key}
-            value={value}
-          />
-        );
-      })
-  );
+  return Object.entries(lessonPlanWithExperiments)
+    .filter(
+      (
+        entry,
+      ): entry is [
+        ValidLessonPlanKey,
+        NonNullable<LooseLessonPlan[ValidLessonPlanKey]>,
+      ] => {
+        const [k] = entry;
+        return !excludedKeys.includes(k as ExcludedKeys);
+      },
+    )
+
+    .filter(([_, v]) => notEmpty(v))
+    .map(([key, value]) => {
+      return { key, value };
+    })
+    .sort(({ key: a }, { key: b }) => {
+      // sort the keys in a predefined order
+      //  title, subject, topic, keyStage, basedOn, lessonReferences, learningOutcome, learningCycles, priorKnowledge, keyLearningPoints, misconceptions, keywords, starterQuiz, cycle1, cycle2, cycle3, exitQuiz, additionalMaterials
+      const order: LessonPlanKey[] = [
+        "learningOutcome",
+        "learningCycles",
+        "priorKnowledge",
+        "keyLearningPoints",
+        "misconceptions",
+        "keywords",
+        "starterQuiz",
+        "cycle1",
+        "cycle2",
+        "cycle3",
+        "exitQuiz",
+        "additionalMaterials",
+      ];
+      return (
+        order.indexOf(a as LessonPlanKey) - order.indexOf(b as LessonPlanKey)
+      );
+    })
+    .map(({ key, value }) => {
+      return (
+        <ChatSection
+          key={key}
+          sectionRefs={sectionRefs}
+          objectKey={key}
+          value={value}
+        />
+      );
+    });
 };
 
 export default LessonPlanMapToMarkDown;
@@ -111,13 +111,15 @@ const ChatSection = ({
 
   return (
     <div ref={sectionRef}>
-      <MemoizedReactMarkdownWithStyles
-        lessonPlanSectionDescription={
-          lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
-        }
-        markdown={`# ${sectionTitle(objectKey)}
+      <MathJax hideUntilTypeset="every" dynamic>
+        <MemoizedReactMarkdownWithStyles
+          lessonPlanSectionDescription={
+            lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
+          }
+          markdown={`# ${sectionTitle(objectKey)}
 ${sectionToMarkdown(objectKey, value)}`}
-      />
+        />
+      </MathJax>
     </div>
   );
 };
