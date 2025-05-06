@@ -315,8 +315,6 @@ const ExperimentalPatchMessagePartSchema = z.union([
     path: z.union([
       z.literal("/_experimental_starterQuizMathsV0"),
       z.literal("/_experimental_exitQuizMathsV0"),
-      z.literal("/_experimental_starterQuizMathsV1"),
-      z.literal("/_experimental_exitQuizMathsV1"),
     ]),
     value: z.array(z.object({}).passthrough()),
   }),
@@ -325,8 +323,6 @@ const ExperimentalPatchMessagePartSchema = z.union([
     path: z.union([
       z.literal("/_experimental_starterQuizMathsV0"),
       z.literal("/_experimental_exitQuizMathsV0"),
-      z.literal("/_experimental_starterQuizMathsV1"),
-      z.literal("/_experimental_exitQuizMathsV1"),
     ]),
   }),
 ]);

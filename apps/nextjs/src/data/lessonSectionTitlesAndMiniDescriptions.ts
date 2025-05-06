@@ -1,10 +1,7 @@
 import type { LessonPlanKey } from "@oakai/aila/src/protocol/schema";
 
 export const lessonSectionTitlesAndMiniDescriptions: Record<
-  Exclude<
-    LessonPlanKey,
-    "_experimental_starterQuizMathsV1" | "_experimental_exitQuizMathsV1"
-  >,
+  LessonPlanKey,
   { description: string }
 > = {
   title: {

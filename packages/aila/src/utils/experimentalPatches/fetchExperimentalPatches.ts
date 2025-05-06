@@ -7,7 +7,6 @@ import type {
   ExperimentalPatchDocument,
   PatchDocument,
 } from "../../protocol/jsonPatchProtocol";
-import { rawQuizFixture } from "../../protocol/rawQuizSchema";
 import type {
   LooseLessonPlan,
   Quiz,
@@ -85,7 +84,7 @@ export async function fetchExperimentalPatches({
       await handlePatch(
         preparePatch({
           op,
-          path: "/_experimental_starterQuizMathsV1",
+          path: "/_experimental_starterQuizMathsV0",
         }),
       );
     } else {
@@ -107,12 +106,11 @@ export async function fetchExperimentalPatches({
       }
 
       if (mathsStarterQuiz) {
-        console.log("ADDING STARTER QUIZ");
         await handlePatch(
           preparePatch({
-            path: "/_experimental_starterQuizMathsV1",
+            path: "/_experimental_starterQuizMathsV0",
             op,
-            value: rawQuizFixture,
+            value: annotateQuestions(mathsStarterQuiz),
           }),
         );
       }
@@ -127,7 +125,7 @@ export async function fetchExperimentalPatches({
       await handlePatch(
         preparePatch({
           op,
-          path: "/_experimental_exitQuizMathsV1",
+          path: "/_experimental_exitQuizMathsV0",
         }),
       );
     } else {
@@ -152,9 +150,9 @@ export async function fetchExperimentalPatches({
       if (mathsExitQuiz) {
         await handlePatch(
           preparePatch({
-            path: "/_experimental_exitQuizMathsV1",
+            path: "/_experimental_exitQuizMathsV0",
             op,
-            value: rawQuizFixture,
+            value: annotateQuestions(mathsExitQuiz),
           }),
         );
       }
