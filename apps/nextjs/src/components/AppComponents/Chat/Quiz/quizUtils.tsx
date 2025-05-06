@@ -1,7 +1,8 @@
 import React from "react";
 import reactStringReplace from "react-string-replace";
-import styled from "styled-components";
+
 import { OakCodeRenderer } from "@oaknational/oak-components";
+import styled from "styled-components";
 
 const UnderlineSpan = styled.span`
   display: inline-block;
