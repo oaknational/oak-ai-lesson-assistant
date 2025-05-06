@@ -11,6 +11,7 @@ jobs:
       # @link https://turborepo.org/docs/core-concepts/remote-caching#remote-caching-on-vercel-builds
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      NODE_OPTIONS: "--experimental-vm-modules"
 
     runs-on: ubuntu-latest
 
