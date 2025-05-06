@@ -10,6 +10,7 @@ import styled from "styled-components";
 
 import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
 import { useDialog } from "../AppComponents/DialogContext";
+import AdditionalMaterialsModeration from "./ContentOptions/AdditionalMaterialsModeration";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
 import DemoInterstitialDialog from "./ContentOptions/DemoInterstitialDialog";
@@ -52,6 +53,10 @@ const dialogTitlesAndIcons: Record<
   },
   "clear-single-chat": {
     title: "Are you absolutely sure?",
+    iconName: null,
+  },
+  "additional-materials-moderation": {
+    title: "Additional Materials Moderation",
     iconName: null,
   },
 };
@@ -126,6 +131,9 @@ const DialogContents = ({
             )}
             {dialogWindow === "clear-single-chat" && (
               <ClearSingleChatFromChatHistory closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "additional-materials-moderation" && (
+              <AdditionalMaterialsModeration closeDialog={closeDialog} />
             )}
           </OakModalCenterBody>
         </OakModalAtTheFront>
