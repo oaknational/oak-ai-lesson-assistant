@@ -1,9 +1,14 @@
-import { rawQuizFixture } from "@oakai/aila/src/protocol/rawQuizSchema";
+import {
+  type RawQuiz,
+  keysToCamelCase,
+} from "@oakai/aila/src/protocol/rawQuizSchema";
 import { isOakEmail } from "@oakai/core/src/utils/isOakEmail";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
 import LessonOverviewQuizContainer from "@/components/AppComponents/Chat/Quiz/LessonOverviewQuizContainer";
+
+import rawQuizFixture from "./rawQuizFixture.json";
 
 export default async function TestQuizPage() {
   const { userId } = auth();
@@ -18,7 +23,7 @@ export default async function TestQuizPage() {
 
   return (
     <LessonOverviewQuizContainer
-      questions={rawQuizFixture}
+      questions={keysToCamelCase(rawQuizFixture) as NonNullable<RawQuiz>}
       imageAttribution={[]}
       isMathJaxLesson={true}
     />
