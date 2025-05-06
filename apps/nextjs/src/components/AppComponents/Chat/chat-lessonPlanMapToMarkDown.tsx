@@ -1,9 +1,5 @@
 import { useRef } from "react";
 
-import {
-  type RawQuiz,
-  rawQuizFixture,
-} from "@oakai/aila/src/protocol/rawQuizSchema";
 import type {
   LessonPlanKey,
   LooseLessonPlan,
@@ -14,7 +10,6 @@ import { MathJax } from "better-react-mathjax";
 
 import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
 
-import LessonOverviewQuizContainer from "./Quiz/LessonOverviewQuizContainer";
 import { notEmpty } from "./chat-lessonPlanDisplay";
 import { sectionTitle } from "./drop-down-section/sectionTitle";
 import { MemoizedReactMarkdownWithStyles } from "./markdown";
@@ -40,8 +35,6 @@ const LessonPlanMapToMarkDown = ({
   const {
     _experimental_starterQuizMathsV0,
     _experimental_exitQuizMathsV0,
-    _experimental_starterQuizMathsV1,
-    _experimental_exitQuizMathsV1,
     ...restOfLessonPlan
   } = lessonPlan;
   const lessonPlanWithExperiments: LooseLessonPlan = {
@@ -50,7 +43,7 @@ const LessonPlanMapToMarkDown = ({
       lessonPlan._experimental_starterQuizMathsV0 ?? lessonPlan.starterQuiz,
     exitQuiz: lessonPlan._experimental_exitQuizMathsV0 ?? lessonPlan.exitQuiz,
   };
-  const lessonPlanComponents = Object.entries(lessonPlanWithExperiments)
+  return Object.entries(lessonPlanWithExperiments)
     .filter(
       (
         entry,
@@ -77,12 +70,10 @@ const LessonPlanMapToMarkDown = ({
         "misconceptions",
         "keywords",
         "starterQuiz",
-        "_experimental_starterQuizMathsV1",
         "cycle1",
         "cycle2",
         "cycle3",
         "exitQuiz",
-        "_experimental_exitQuizMathsV1",
         "additionalMaterials",
       ];
       return (
@@ -90,20 +81,6 @@ const LessonPlanMapToMarkDown = ({
       );
     })
     .map(({ key, value }) => {
-      if (
-        key === "_experimental_starterQuizMathsV1" ||
-        key === "_experimental_exitQuizMathsV1"
-      ) {
-        return (
-          <LessonOverviewQuizContainer
-            key={key}
-            // @todo remove fixture
-            questions={(value as NonNullable<RawQuiz>) ?? rawQuizFixture}
-            imageAttribution={[]}
-            isMathJaxLesson={true}
-          />
-        );
-      }
       return (
         <ChatSection
           key={key}
@@ -113,8 +90,6 @@ const LessonPlanMapToMarkDown = ({
         />
       );
     });
-
-  return lessonPlanComponents;
 };
 
 export default LessonPlanMapToMarkDown;

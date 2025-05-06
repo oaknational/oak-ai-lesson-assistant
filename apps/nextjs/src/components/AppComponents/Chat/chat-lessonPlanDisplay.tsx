@@ -20,7 +20,6 @@ import {
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
-import LessonOverviewQuizContainer from "./Quiz/LessonOverviewQuizContainer";
 import { GuidanceRequired } from "./guidance-required";
 import { LessonPlanSection } from "./lesson-plan-section";
 
@@ -238,25 +237,6 @@ export const LessonPlanDisplay = ({
             />
           );
         })}
-        {/* RENDER RAW QUIZZES */}
-        {/* <h2>Starter quiz RAW</h2>
-        {lessonPlan._experimental_starterQuizMathsV1 && (
-          <LessonOverviewQuizContainer
-            key={"_experimental_starterQuizMathsV1"}
-            questions={lessonPlan._experimental_starterQuizMathsV1}
-            imageAttribution={[]}
-            isMathJaxLesson={true}
-          />
-        )}
-        <h2>Exit quiz RAW</h2>
-        {lessonPlan._experimental_exitQuizMathsV1 && (
-          <LessonOverviewQuizContainer
-            key={"_experimental_exitQuizMathsV1"}
-            questions={lessonPlan._experimental_exitQuizMathsV1}
-            imageAttribution={[]}
-            isMathJaxLesson={true}
-          />
-        )} */}
       </div>
       <div ref={chatEndRef} />
     </div>
