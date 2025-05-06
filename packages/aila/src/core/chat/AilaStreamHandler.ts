@@ -1,7 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { ReadableStreamDefaultController } from "stream/web";
-import invariant from "tiny-invariant";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { interact } from "../../lib/agents/interact";
@@ -94,16 +93,16 @@ export class AilaStreamHandler {
       await this._chat.handleSubjectWarning();
       this.logStreamingStep("Handle subject warning complete");
 
-      const userMessage = this._chat.messages.findLast(
-        (m) => m.role === "user",
-      )?.content;
-      invariant(userMessage, "Cannot stream if no user message");
-      log.info("Routing user's message to appropriate agent");
       try {
         await interact({
           userId: this._chat.userId ?? "anonymous",
           chatId: this._chat.id,
-          initialDocument: this._chat.aila.document.content,
+          initialDocument: {
+            subject: "history",
+            keyStage: "key-stage-3",
+            title: "The end of Roman Britain",
+            ...this._chat.aila.document.content,
+          },
           messageHistory: this._chat.messages
             .filter((m) => m.role === "user" || m.role === "assistant")
             .map((m) => {

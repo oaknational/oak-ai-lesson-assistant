@@ -18,6 +18,7 @@ export type LoggerKey =
   | "admin"
   | "additional-materials"
   | "aila"
+  | "aila:agents"
   | "aila:analytics"
   | "aila:categorisation"
   | "aila:chat"

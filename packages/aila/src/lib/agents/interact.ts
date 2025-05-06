@@ -1,3 +1,5 @@
+import { aiLogger } from "@oakai/logger";
+
 import { compare } from "fast-json-patch/index.mjs";
 
 import { type LooseLessonPlan } from "../../protocol/schema";
@@ -5,6 +7,8 @@ import { agents, sectionAgentMap } from "./agents";
 import { messageToUserAgent } from "./messageToUser";
 import { promptAgentHandler } from "./promptAgentHandler";
 import { agentRouter } from "./router";
+
+const log = aiLogger("aila:agents");
 
 export async function interact({
   chatId,
@@ -17,6 +21,7 @@ export async function interact({
   initialDocument: LooseLessonPlan;
   messageHistory: { role: "user" | "assistant"; content: string }[];
 }): Promise<{ document: LooseLessonPlan; ailaMessage?: string }> {
+  log.info("Starting interaction with Aila agents");
   let document = initialDocument;
 
   const routerResponse = await agentRouter({
@@ -25,6 +30,8 @@ export async function interact({
     document,
     messageHistory,
   });
+
+  log.info("Router response", routerResponse);
 
   if (!routerResponse) {
     throw new Error("Router returned null");
@@ -39,6 +46,7 @@ export async function interact({
   const { plan } = result;
 
   for (const action of plan) {
+    log.info("Processing action", action);
     const { sectionKey, action: actionType, context } = action;
     const agentName = sectionAgentMap[sectionKey];
     const agentDefinition = agents[agentName];
@@ -70,6 +78,8 @@ export async function interact({
   }
 
   const jsonDiff = JSON.stringify(compare(initialDocument, document));
+
+  log.info("JSON diff", jsonDiff);
 
   const messageResult = await messageToUserAgent({
     chatId,
