@@ -8,4 +8,5 @@ export type DialogTypes =
   | "demo-share-locked"
   | "clear-history"
   | "clear-single-chat"
-  | "additional-materials-moderation";
+  | "additional-materials-moderation"
+  | "additional-materials-threat-detected";

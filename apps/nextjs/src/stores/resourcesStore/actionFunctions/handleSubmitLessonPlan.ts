@@ -63,7 +63,13 @@ export const handleSubmitLessonPlan =
       const result = await mutateAsync(apiInput);
       setIsLoadingLessonPlan(false);
       // Update the store with the result
-      set({ pageData: { lessonPlan: { ...result.lesson } } });
+      set({
+        pageData: {
+          lessonPlan: { ...result.lesson },
+        },
+        moderation: result.moderation,
+        threatDetection: result.threatDetection,
+      });
       log.info("Lesson plan updated successfully");
 
       return get().pageData.lessonPlan;

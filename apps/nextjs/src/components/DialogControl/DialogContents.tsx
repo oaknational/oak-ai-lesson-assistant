@@ -11,6 +11,7 @@ import styled from "styled-components";
 import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
 import { useDialog } from "../AppComponents/DialogContext";
 import AdditionalMaterialsModeration from "./ContentOptions/AdditionalMaterialsModeration";
+import AdditionalMaterialsThreatDetected from "./ContentOptions/AdditionalMaterialsThreatDetected";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
 import DemoInterstitialDialog from "./ContentOptions/DemoInterstitialDialog";
@@ -56,8 +57,12 @@ const dialogTitlesAndIcons: Record<
     iconName: null,
   },
   "additional-materials-moderation": {
-    title: "Additional Materials Moderation",
-    iconName: null,
+    title: "Guidance",
+    iconName: "warning",
+  },
+  "additional-materials-threat-detected": {
+    title: "Threat detected",
+    iconName: "warning",
   },
 };
 
@@ -134,6 +139,9 @@ const DialogContents = ({
             )}
             {dialogWindow === "additional-materials-moderation" && (
               <AdditionalMaterialsModeration closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "additional-materials-threat-detected" && (
+              <AdditionalMaterialsThreatDetected closeDialog={closeDialog} />
             )}
           </OakModalCenterBody>
         </OakModalAtTheFront>

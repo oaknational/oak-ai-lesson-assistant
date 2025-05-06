@@ -1,5 +1,6 @@
 import type { AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import type { StoreApi } from "zustand";
 
@@ -30,6 +31,8 @@ export type ResourcesState = {
   generation: AdditionalMaterialSchemas | null;
   docType: string | null;
   formState: StepOneFormState;
+  moderation?: ModerationResult;
+  threatDetection?: boolean;
 
   actions: {
     // setters
@@ -39,6 +42,7 @@ export type ResourcesState = {
     setDocType: (docType: string | null) => void;
     setIsLoadingLessonPlan: (isLoading: boolean) => void;
     setIsResourcesLoading: (isLoading: boolean) => void;
+    setThreatDetection: (threatDetection: boolean) => void;
 
     // Form state setters
     setSubject: (subject: string | null) => void;
@@ -61,6 +65,9 @@ export type ResourcesState = {
       params: RefineMaterialParams,
     ) => Promise<AdditionalMaterialSchemas>;
     downloadMaterial: () => Promise<void>;
+
+    // Reset store to default state
+    resetToDefault: () => void;
   };
 };
 

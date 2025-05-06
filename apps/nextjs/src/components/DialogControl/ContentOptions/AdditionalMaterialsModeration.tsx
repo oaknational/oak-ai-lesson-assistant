@@ -1,8 +1,7 @@
-import { useCallback } from "react";
-
 import { OakFlex, OakP } from "@oaknational/oak-components";
 
-import type { DialogTypes } from "@/components/AppComponents/Chat/Chat/types";
+import { useResourcesStore } from "@/stores/ResourcesStoreProvider";
+import { moderationSelector } from "@/stores/resourcesStore/selectors";
 
 import ModalFooterButtons from "./ModalFooterButtons";
 
@@ -13,6 +12,7 @@ type AdditionalMaterialsModerationProps = {
 const AdditionalMaterialsModeration = ({
   closeDialog,
 }: Readonly<AdditionalMaterialsModerationProps>) => {
+  const moderation = useResourcesStore(moderationSelector);
   return (
     <OakFlex
       data-testid="chat-share-dialog"
@@ -21,7 +21,12 @@ const AdditionalMaterialsModeration = ({
       $flexDirection="column"
       $justifyContent="space-between"
     >
-      <OakP>Additional Materials Moderation</OakP>
+      <OakP>
+        This content that needs additional guidance. Please check carefully
+        before using. Learn more about moderation and content guidelines.
+      </OakP>
+      {moderation?.categories.map((category) => <OakP>{category}</OakP>)}
+
       <ModalFooterButtons
         closeDialog={closeDialog}
         // TODO: Add action button states

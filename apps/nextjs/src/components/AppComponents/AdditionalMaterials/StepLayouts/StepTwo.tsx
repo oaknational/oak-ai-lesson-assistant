@@ -21,11 +21,15 @@ import {
 import {
   docTypeSelector,
   isLoadingLessonPlanSelector,
+  moderationSelector,
   pageDataSelector,
+  threatDetectionSelector,
 } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
 
 import { MemoizedReactMarkdownWithStyles } from "../../Chat/markdown";
+import { useDialog } from "../../DialogContext";
+import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
 
 export function mapLessonPlanSections(
@@ -39,8 +43,11 @@ const log = aiLogger("additional-materials");
 const StepTwo = () => {
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
+  const moderation = useResourcesStore(moderationSelector);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
+  const threatDetected = useResourcesStore(threatDetectionSelector);
   const docTypeName = docType?.split("-")[1] ?? null;
+  const { setDialogWindow } = useDialog();
 
   const { setStepNumber, generateMaterial } = useResourcesActions();
   const fetchMaterial =
@@ -72,11 +79,16 @@ const StepTwo = () => {
   if (isLoadingLessonPlan) {
     return <OakP>Building lesson plan...</OakP>;
   }
+  if (threatDetected) {
+    setDialogWindow("additional-materials-threat-detected");
+  }
+
   return (
     <>
       <OakFlex $flexDirection="column">
         <OakFlex $flexDirection="column">
           <OakP $font={"heading-5"}>Lesson details</OakP>
+          {moderation?.categories && <ModerationMessage />}
 
           <OakBox $pa="inner-padding-m">
             <OakP>
