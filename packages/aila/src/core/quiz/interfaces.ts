@@ -104,6 +104,7 @@ export interface FullQuizService {
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+    override?: boolean,
   ): Promise<QuizQuestion[]>;
 }
 
@@ -121,13 +122,21 @@ export type quizPatchType = "/starterQuiz" | "/exitQuiz";
 
 export interface CustomSource {
   text: string;
-  metadata: CustomMetadata;
+  questionUid: string;
+  lessonSlug: string;
+  quizPatchType: string;
+  isLegacy: boolean;
+  embedding: number[];
   [key: string]: unknown; // Allow for other unknown fields at the top level
 }
 
 export interface QuizQuestionTextOnlySource {
   text: string;
-  metadata: { questionUid: string; lessonSlug: string };
+  metadata: {
+    questionUid: string;
+    lessonSlug: string;
+    raw_json?: unknown; // Allow for raw JSON data
+  };
 }
 
 export interface CustomHit {
@@ -136,7 +145,7 @@ export interface CustomHit {
 
 export interface SimplifiedResult {
   text: string;
-  custom_id: string;
+  custom_id: string; // This will be populated with questionUid from the source
 }
 
 export interface Document {

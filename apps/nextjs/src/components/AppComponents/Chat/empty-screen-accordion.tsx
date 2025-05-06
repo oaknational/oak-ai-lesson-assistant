@@ -1,5 +1,6 @@
 import React from "react";
 
+import { OakBox } from "@oaknational/oak-components";
 import * as Accordion from "@radix-ui/react-accordion";
 
 import { lessonSections } from "@/ai-apps/lesson-planner/lessonSection";
@@ -34,7 +35,7 @@ const EmptyScreenAccordion = () => {
     <Accordion.Root type="single" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger>
-          <AiIcon />1 lesson plan
+          <AiIcon backgroundColor="lavender" />1 lesson plan
         </AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col gap-8 pl-20">
@@ -49,6 +50,7 @@ const EmptyScreenAccordion = () => {
               return (
                 <div className="flex items-center gap-8" key={section}>
                   <Icon icon="tick" size="sm" />
+
                   <span className="text-base">
                     {convertTitleCaseToSentenceCase(
                       handleRewordingSections(section),
@@ -62,7 +64,7 @@ const EmptyScreenAccordion = () => {
       </AccordionItem>
       <AccordionItem value="item-2">
         <AccordionTrigger>
-          <SlidesIcon />1 slide deck
+          <SlidesIcon backgroundColor="aqua" />1 slide deck
         </AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col gap-8 pl-20">
@@ -90,7 +92,7 @@ const EmptyScreenAccordion = () => {
       </AccordionItem>
       <AccordionItem value="item-3">
         <AccordionTrigger>
-          <QuizIcon />2 quizzes
+          <QuizIcon backgroundColor="pink" />2 quizzes
         </AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col gap-8 pl-20">
@@ -119,7 +121,7 @@ const EmptyScreenAccordion = () => {
       <AccordionItem value="item-4">
         <div className="flex w-full items-center justify-between">
           <span className="flex w-full items-center gap-10 text-left text-base font-bold">
-            <LessonIcon />1 worksheet
+            <LessonIcon backgroundColor="lemon" />1 worksheet
           </span>
         </div>
       </AccordionItem>

@@ -54,7 +54,7 @@ const ShareChat = ({
       });
   }, [track, lesson, chatId, mutateAsync]);
 
-  function handleShareButtonState() {
+  function renderShareButton() {
     if (isLoading) {
       return (
         <OakFlex $justifyContent="center" $alignItems="center">
@@ -100,7 +100,7 @@ const ShareChat = ({
       </OakBox>
       <ModalFooterButtons
         closeDialog={closeDialog}
-        actionButtonStates={handleShareButtonState}
+        actionButtonStates={renderShareButton}
       />
       {isError && <p>There was an error sharing the chat.</p>}
     </OakFlex>

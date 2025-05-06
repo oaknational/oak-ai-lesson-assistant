@@ -12,10 +12,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "single-lesson-dry": "pnpm with-env tsx ./src/singleLessonDryRun.ts",
-    "test": "pnpm with-env jest --colors --config jest.config.mjs",
-    "test-coverage": "COLLECT_TEST_COVERAGE=true pnpm with-env jest --colors --config jest.config.mjs --coverage",
+    "test": "pnpm with-env jest --config jest.config.mjs",
+    "test-coverage": "COLLECT_TEST_COVERAGE=true pnpm with-env jest --config jest.config.mjs --coverage",
     "test-file": "pnpm with-env jest --config jest.config.mjs --runTestsByPath TEST_FILEPATH",
-    "test:seq": "pnpm with-env jest --colors --config jest.config.mjs --verbose --runInBand",
+    "test:seq": "pnpm with-env jest --config jest.config.mjs --verbose --runInBand",
     "type-check": "tsc --noEmit",
     "with-env": "dotenv -e ../../.env --"
   },

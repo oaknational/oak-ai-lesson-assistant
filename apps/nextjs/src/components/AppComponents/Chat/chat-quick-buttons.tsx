@@ -3,12 +3,12 @@ import { useCallback } from "react";
 import { findLast } from "remeda";
 
 import { Icon } from "@/components/Icon";
-import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import {
   useChatActions,
   useChatStore,
   useLessonPlanStore,
+  useLessonPlanTrackingActions,
 } from "@/stores/AilaStoresProvider";
 import type { AilaStreamingStatus } from "@/stores/chatStore";
 import { canAppendSelector } from "@/stores/chatStore/selectors";
@@ -46,7 +46,7 @@ const shouldAllowStop = (
 
 const QuickActionButtons = () => {
   const { trackEvent } = useAnalytics();
-  const lessonPlanTracking = useLessonPlanTracking();
+  const lessonPlanTracking = useLessonPlanTrackingActions();
   const { setDialogWindow } = useDialog();
   const queuedUserAction = useChatStore((state) => state.queuedUserAction);
   const { append, stop } = useChatActions();
@@ -66,13 +66,13 @@ const QuickActionButtons = () => {
     trackEvent("chat:regenerate", { id: id });
     const lastUserMessage =
       findLast(stableMessages, (m) => m.role === "user")?.content ?? "";
-    lessonPlanTracking.onClickRetry(lastUserMessage);
+    lessonPlanTracking.clickedRetry(lastUserMessage);
     append("regenerate");
   }, [append, lessonPlanTracking, stableMessages, trackEvent, id]);
 
   const handleContinue = useCallback(() => {
     trackEvent("chat:continue");
-    lessonPlanTracking.onClickContinue();
+    lessonPlanTracking.clickedContinue();
     append("continue");
   }, [append, lessonPlanTracking, trackEvent]);
 
@@ -116,6 +116,7 @@ const QuickActionButtons = () => {
             variant="text-link"
             onClick={() => {
               trackEvent("chat:stop_generating");
+              lessonPlanTracking.clearQueuedIntent();
               stop();
             }}
             testId="chat-stop"

@@ -21,7 +21,6 @@ export default function IndexPage({ searchParams }: IndexPageProps) {
     redirect("/sign-in?next=/aila");
   }
 
-  // Destructure searchParams with default values of null if not present
   const {
     keyStage = undefined,
     subject = undefined,
