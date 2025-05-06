@@ -35,7 +35,7 @@
     ".git/{index,*refs,*HEAD}",
     ".vscode",
     ".vscode-insiders",
-    ".cspell.json",
+    "cspell.json",
     ".env.*",
     "**/*/package.json",
     "pnpm-lock.yaml",

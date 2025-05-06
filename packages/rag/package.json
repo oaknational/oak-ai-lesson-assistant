@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "pnpm with-env jest --colors --config jest.config.mjs",
+    "test": "pnpm with-env jest --config jest.config.mjs",
     "type-check": "tsc --noEmit",
     "with-env": "dotenv -e ../../.env --"
   },

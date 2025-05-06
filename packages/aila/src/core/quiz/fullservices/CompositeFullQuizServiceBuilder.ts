@@ -34,7 +34,10 @@ export class CompositeFullQuizServiceBuilder {
       generatorArray.push(AilaQuizFactory.createQuizGenerator(generator));
     }
 
-    log.info("Building Composite full quiz service with settings:", settings);
+    log.info("Building Composite full quiz service with settings:", {
+      ...settings,
+      quizSchema: "redacted to reduce log noise",
+    });
     return new CompositeFullQuizService(generatorArray, selector, reranker);
   }
 }
