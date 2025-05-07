@@ -1,6 +1,5 @@
 import { demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
-import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
@@ -16,6 +15,7 @@ import type { AilaPersistedChat } from "../../../aila/src/protocol/schema";
 import { chatSchema } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
+import { checkMutationPermissions } from "./helpers/checkMutationPermissions";
 
 function userIsOwner(entity: { userId: string }, auth: SignedInAuthObject) {
   return entity.userId === auth.userId;
@@ -52,28 +52,6 @@ function parseChatAndReportError({
   }
 
   return parseResult.data;
-}
-
-async function checkMutationPermissions(userId: string) {
-  const clerkUser = await clerkClient.users.getUser(userId);
-  if (clerkUser.banned) {
-    throw new Error("User is banned");
-  }
-
-  if (demoUsers.isDemoUser(clerkUser)) {
-    try {
-      await rateLimits.appSessions.demo.check(userId);
-    } catch (e) {
-      if (e instanceof RateLimitExceededError) {
-        throw new TRPCError({
-          code: "TOO_MANY_REQUESTS",
-          message: "Rate limit exceeded",
-          cause: e,
-        });
-      }
-      throw e;
-    }
-  }
 }
 
 export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {

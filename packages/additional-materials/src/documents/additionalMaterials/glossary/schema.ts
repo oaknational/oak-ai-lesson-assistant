@@ -5,12 +5,15 @@ import { baseContext } from "../comprehension/schema";
 // Output from LLM
 
 export const glossarySchema = z.object({
-  glossary: z.array(
-    z.object({
-      term: z.string().min(1, "Term is required"),
-      definition: z.string().min(1, "Definition is required"),
-    }),
-  ),
+  lessonTitle: z.string(),
+  glossary: z
+    .array(
+      z.object({
+        term: z.string(),
+        definition: z.string(),
+      }),
+    )
+    .describe("Glossary can have at most 15 term and definition pairs"),
 });
 
 export type GlossarySchema = z.infer<typeof glossarySchema>;
