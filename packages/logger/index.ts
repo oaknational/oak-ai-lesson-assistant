@@ -19,6 +19,7 @@ export type LoggerKey =
   | "additional-materials"
   | "aila"
   | "aila:agents"
+  | "aila:agents:stream"
   | "aila:analytics"
   | "aila:categorisation"
   | "aila:chat"

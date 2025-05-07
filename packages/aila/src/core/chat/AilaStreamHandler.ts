@@ -4,6 +4,7 @@ import type { ReadableStreamDefaultController } from "stream/web";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { interact } from "../../lib/agents/interact";
+import { streamInteractResultToClient } from "../../lib/agents/streamHandling";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
@@ -94,22 +95,36 @@ export class AilaStreamHandler {
       this.logStreamingStep("Handle subject warning complete");
 
       try {
-        await interact({
-          userId: this._chat.userId ?? "anonymous",
-          chatId: this._chat.id,
-          initialDocument: {
-            subject: "history",
-            keyStage: "key-stage-3",
-            title: "The end of Roman Britain",
-            ...this._chat.aila.document.content,
-          },
-          messageHistory: this._chat.messages
-            .filter((m) => m.role === "user" || m.role === "assistant")
-            .map((m) => {
-              log.info(m);
-              return m;
-            }) as { role: "user" | "assistant"; content: string }[],
-        });
+        const initialDocument = {
+          ...this._chat.aila.document.content,
+        };
+
+        if (
+          initialDocument.title &&
+          initialDocument.subject &&
+          initialDocument.keyStage
+        ) {
+          // Call interact and get the result
+          const interactResult = await interact({
+            userId: this._chat.userId ?? "anonymous",
+            chatId: this._chat.id,
+            initialDocument: initialDocument,
+            messageHistory: this._chat.messages
+              .filter((m) => m.role === "user" || m.role === "assistant")
+              .map((m) => {
+                log.info(m);
+                return m;
+              }) as { role: "user" | "assistant"; content: string }[],
+          });
+
+          // Stream the result to the client
+          await streamInteractResultToClient(
+            this._chat,
+            this._controller!,
+            initialDocument,
+            interactResult,
+          );
+        }
       } catch (error) {
         console.error("Error in interact", error);
       }
