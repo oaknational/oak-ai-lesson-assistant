@@ -97,8 +97,9 @@ const StepThree = () => {
                   key={refinement}
                   onClick={() => {
                     void refineMaterial({
-                      refinement,
+                      refinement: [{ type: refinement }],
                       mutateAsync: async (input) => {
+                        console.log("************refining material", input);
                         try {
                           return await fetchMaterial.mutateAsync(input);
                         } catch (error) {
@@ -126,7 +127,7 @@ const StepThree = () => {
                 onClick={() => {
                   setIsFooterAdaptOpen(true);
                 }}
-                disabled={refinementOptions.length === 0}
+                disabled={refinementOptions.length === 0 || isResourcesLoading}
               >
                 Adapt
               </OakSecondaryButton>
@@ -134,6 +135,7 @@ const StepThree = () => {
                 onClick={() => null}
                 iconName="download"
                 isTrailingIcon={true}
+                disabled={isResourcesLoading}
               >
                 Download (.zip)
               </OakPrimaryButton>
