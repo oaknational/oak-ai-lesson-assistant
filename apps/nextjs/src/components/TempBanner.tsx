@@ -1,3 +1,9 @@
+/*
+ *
+ * Keeping this component in the codebase as can be reused for as a banner for other features
+ * @todo sync with OWA through oak components
+ *
+ */
 import {
   OakBox,
   OakFlex,
