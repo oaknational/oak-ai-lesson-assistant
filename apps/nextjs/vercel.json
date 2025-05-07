@@ -11,6 +11,10 @@
   },
   "crons": [
     {
+      "path": "/api/cron-jobs/expired-exports-am",
+      "schedule": "0 2 * * *"
+    },
+    {
       "path": "/api/cron-jobs/expired-exports",
       "schedule": "0 3 * * *"
     },
