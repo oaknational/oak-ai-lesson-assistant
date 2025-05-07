@@ -34,7 +34,6 @@ const LessonPlanMapToMarkDown = ({
 }) => {
   const {
     _experimental_starterQuizMathsV0,
-
     _experimental_exitQuizMathsV0,
     ...restOfLessonPlan
   } = lessonPlan;
