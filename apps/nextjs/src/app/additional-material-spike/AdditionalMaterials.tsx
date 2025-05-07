@@ -29,6 +29,40 @@ import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat
 import Layout from "@/components/Layout";
 import { trpc } from "@/utils/trpc";
 
+const downloadZip = async ({
+  generation,
+  documentType,
+  lessonTitle,
+}: {
+  generation: AdditionalMaterialSchemas;
+  documentType: string;
+  lessonTitle?: string;
+}) => {
+  const response = await fetch("/api/additional-resources-download", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      documentType: documentType,
+      resource: generation,
+      lessonTitle: lessonTitle,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to generate ZIP");
+  }
+
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "resource.zip";
+  link.click();
+  window.URL.revokeObjectURL(url);
+};
+
 const log = aiLogger("additional-materials");
 
 export function mapLessonPlanSections(
@@ -261,6 +295,19 @@ const AdditionalMaterials: FC<AdditionalMaterialsProps> = ({ pageData }) => {
           </OakFlex>
         </OakFlex>
       </OakFlex>
+      {generation && action && (
+        <OakPrimaryButton
+          onClick={() =>
+            void downloadZip({
+              generation,
+              documentType: action,
+              lessonTitle: pageData.lessonPlan.title,
+            })
+          }
+        >
+          {"Download ZIP"}
+        </OakPrimaryButton>
+      )}
     </Layout>
   );
 };
