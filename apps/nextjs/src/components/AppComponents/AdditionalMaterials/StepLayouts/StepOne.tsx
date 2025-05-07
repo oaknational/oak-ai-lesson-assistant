@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import {
   OakFlex,
   OakIcon,
@@ -48,6 +50,15 @@ const StepOne = () => {
   const year = useResourcesStore(yearSelector);
   const activeDropdown = useResourcesStore(activeDropdownSelector);
   const docType = useResourcesStore(docTypeSelector);
+
+  useEffect(() => {
+    // Reset the form when the component is mounted
+    // This should be removed once we are persisting in the database and the flow is based on an ID
+    setSubject(null);
+    setTitle(null);
+    setYear(null);
+    setDocType(null);
+  }, [setSubject, setTitle, setYear, setDocType]);
 
   const generateLessonPlan =
     trpc.additionalMaterials.generatePartialLessonPlanObject.useMutation();

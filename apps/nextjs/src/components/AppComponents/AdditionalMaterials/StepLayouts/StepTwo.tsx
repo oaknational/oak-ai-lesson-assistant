@@ -5,14 +5,12 @@ import {
   camelCaseToSentenceCase,
   kebabCaseToSentenceCase,
 } from "@oakai/core/src/utils/camelCaseConversion";
-import { camelCaseToTitleCase } from "@oakai/exports/src/utils";
 import { aiLogger } from "@oakai/logger";
 
 import {
   OakBox,
   OakFlex,
   OakIcon,
-  OakLink,
   OakP,
   OakPrimaryButton,
 } from "@oaknational/oak-components";
@@ -78,7 +76,6 @@ const StepTwo = () => {
     return <OakP>Building lesson plan...</OakP>;
   }
 
-  console.log("***pageData", pageData.lessonPlan);
   return (
     <>
       <OakFlex $flexDirection="column">
@@ -123,7 +120,7 @@ const StepTwo = () => {
 
       <ResourcesFooter>
         <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <button onClick={() => setStepNumber(1)}>
+          <button onClick={() => setStepNumber(0)}>
             <OakFlex $alignItems="center" $gap="all-spacing-2">
               <OakIcon iconName="chevron-left" />
               Back a step

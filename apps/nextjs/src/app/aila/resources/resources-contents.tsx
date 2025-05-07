@@ -54,7 +54,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
       ),
     },
     1: {
-      title: "Review details",
+      title: "Lesson overview",
       subTitle: (
         <OakP $font="body-2" $color="grey70">
           This lesson overview will provide context for your{" "}
