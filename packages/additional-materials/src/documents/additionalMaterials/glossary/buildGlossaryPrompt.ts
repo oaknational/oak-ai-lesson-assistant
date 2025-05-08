@@ -7,7 +7,6 @@ import {
 
 export const buildGlossaryPrompt = (
   context: ContextByMaterialType["additional-glossary"],
-  action: Action,
 ) => {
   const { lessonPlan } = context;
 

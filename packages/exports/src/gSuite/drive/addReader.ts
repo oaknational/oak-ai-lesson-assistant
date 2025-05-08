@@ -17,6 +17,7 @@ export async function addReader({
   try {
     await drive.permissions.create({
       fileId,
+      supportsAllDrives: true,
       sendNotificationEmail: false,
       requestBody: {
         role: "reader",

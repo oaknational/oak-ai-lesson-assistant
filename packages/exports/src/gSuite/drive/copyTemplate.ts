@@ -2,13 +2,6 @@ import type { drive_v3 } from "@googleapis/drive";
 
 import type { Result } from "../../types";
 
-const folderId = process.env.GOOGLE_DRIVE_OUTPUT_FOLDER_ID;
-
-if (!folderId) {
-  // Checking at build time for extra safety
-  throw new Error("GOOGLE_DRIVE_OUTPUT_FOLDER_ID is not set");
-}
-
 /**
  * @description Copies the template presentation to a new file.
  * @returns The new presentation or document ID
@@ -17,10 +10,12 @@ export async function copyTemplate({
   drive,
   templateId,
   newFileName,
+  folderId = process.env.GOOGLE_DRIVE_OUTPUT_FOLDER_ID,
 }: {
   drive: drive_v3.Drive;
   templateId: string;
   newFileName: string;
+  folderId?: string;
 }): Promise<Result<{ fileCopyId: string }>> {
   try {
     if (!folderId) {
@@ -30,6 +25,7 @@ export async function copyTemplate({
 
     const response = await drive.files.copy({
       fileId: templateId,
+      supportsAllDrives: true,
       requestBody: {
         name: newFileName,
         parents: [folderId],
