@@ -1,13 +1,10 @@
-import { useAuth } from "@clerk/nextjs";
 import { OakBox, OakFlex, OakIcon, OakP } from "@oaknational/oak-components";
 import Link from "next/link";
 import styled from "styled-components";
 
-import { useDemoUser } from "./ContextProviders/Demo";
 import HeaderAuth from "./HeaderAuth";
 import { Logo } from "./Logo";
 import OakIconLogo from "./OakIconLogo";
-import TempBanner from "./TempBanner";
 
 type HeaderProps = { menuOpen: boolean; setMenuOpen: (open: boolean) => void };
 
@@ -18,9 +15,6 @@ const HamburgerButton = styled.button`
 `;
 
 const Header = ({ menuOpen, setMenuOpen }: Readonly<HeaderProps>) => {
-  const { isDemoUser } = useDemoUser();
-  const { isSignedIn } = useAuth();
-  const showTempBanner = !isSignedIn || (isSignedIn && !isDemoUser);
   return (
     <OakBox
       $position="absolute"
@@ -28,7 +22,7 @@ const Header = ({ menuOpen, setMenuOpen }: Readonly<HeaderProps>) => {
       $left="all-spacing-0"
       $right="all-spacing-0"
       $zIndex="fixed-header"
-      $bb={showTempBanner ? undefined : "border-solid-m"}
+      $bb={"border-solid-m"}
     >
       <OakFlex
         as="header"
@@ -74,7 +68,6 @@ const Header = ({ menuOpen, setMenuOpen }: Readonly<HeaderProps>) => {
           </div>
         </OakFlex>
       </OakFlex>
-      {showTempBanner && <TempBanner />}
     </OakBox>
   );
 };
