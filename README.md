@@ -36,6 +36,7 @@ Oak AI Lesson Assistant is a project focused on experimenting with AI models and
     - [Prettier](#prettier)
     - [Tsconfig]("#tsconfig)
     - [Dependency cruiser](#dependency-cruiser)
+    - [CSpell](#cpsell)
   - [Release process](#release-process)
   - [PNPM / dependency problems](#pnpm--dependency-problems)
   - [External contributions](#external-contributions)
@@ -247,6 +248,14 @@ You can check the codebase for any Typescript issues by running the following co
 ```shell
 pnpm type-check
 ```
+
+### Dependency Cruiser
+
+This is [a utility](https://www.npmjs.com/package/dependency-cruiser) that you can use to generate a dependency graph to check for circularities in dependencies.
+
+### Cspell
+
+If you install the [Cspell extension](https://cspell.org/) in your editor, you'll be able to see if you have any typos in your code, and ensure that variables, classes, etc. are named correctly.
 
 ## Release process
 

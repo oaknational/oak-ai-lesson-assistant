@@ -1,3 +1,19 @@
+# [1.36.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.35.0...v1.36.0) (2025-05-08)
+
+
+### Bug Fixes
+
+* clean up typos and linting issues in codebase ([#631](https://github.com/oaknational/oak-ai-lesson-assistant/issues/631)) ([3e82e69](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3e82e6938495b739569a496c297b48734d1678b4))
+* prisma schema drift [AI-1111] ([#663](https://github.com/oaknational/oak-ai-lesson-assistant/issues/663)) ([778fd41](https://github.com/oaknational/oak-ai-lesson-assistant/commit/778fd4195fa6019486dd98f59c709500540341da))
+
+
+### Features
+
+* add the hubspot contact record id to posthog ([#650](https://github.com/oaknational/oak-ai-lesson-assistant/issues/650)) ([5fe9373](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5fe93737c5b5b6ac8d51f2c7d94a86fd7791d224))
+* additional material exports - AI-916 ([#654](https://github.com/oaknational/oak-ai-lesson-assistant/issues/654)) ([0a2558e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0a2558e50890f5e97e24ad512ff5780efdbbe8bb))
+* am styling ([#655](https://github.com/oaknational/oak-ai-lesson-assistant/issues/655)) ([78b87bf](https://github.com/oaknational/oak-ai-lesson-assistant/commit/78b87bf5bfb7f33bc2f374af9e1e7c84fd38ff81))
+* prettier editor config for vscode ([#609](https://github.com/oaknational/oak-ai-lesson-assistant/issues/609)) ([60bb769](https://github.com/oaknational/oak-ai-lesson-assistant/commit/60bb769708f05be2c82e862b9446e7637b936442))
+
 # [1.35.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.34.0...v1.35.0) (2025-04-30)
 
 
