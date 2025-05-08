@@ -28,7 +28,7 @@ export async function requestImageDescription(
     log.info("Requesting image description...");
 
     // Assuming you have a loading state variable to manage the loading state
-    // Set loading state to true"openai": "^4.24.1",
+    // Set loading state to true
     log.info("Loading");
 
     const promptInUse = inQuizMode ? promptInQuizMode : prompt;
