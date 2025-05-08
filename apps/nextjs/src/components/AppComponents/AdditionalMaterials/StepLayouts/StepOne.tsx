@@ -58,7 +58,11 @@ const StepOne = () => {
       ...params,
       mutateAsync: async (input) => {
         try {
-          return await generateLessonPlan.mutateAsync(input);
+          const result = await generateLessonPlan.mutateAsync(input);
+          if (!result) {
+            throw new Error("Mutation returned null");
+          }
+          return result;
         } catch (error) {
           throw error instanceof Error ? error : new Error(String(error));
         }
