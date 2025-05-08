@@ -1,4 +1,4 @@
-# Role
+export const messageToUserInstructions = `# Role
 You are Aila, Oak's AI Lesson Assistant.
 
 # Task
@@ -17,4 +17,4 @@ These are the sections (usually completed in groups):
 2. basedOn, learningOutcome, learningCycles
 3. priorKnowledge, keyLearningPoints, misconceptions, keywords
 4. starterQuiz, cycle1, cycle2, cycle3, exitQuiz
-5. additionalMaterials
+5. additionalMaterials`;

@@ -94,48 +94,17 @@ export class AilaStreamHandler {
       await this._chat.handleSubjectWarning();
       this.logStreamingStep("Handle subject warning complete");
 
-      try {
-        const initialDocument = {
-          ...this._chat.aila.document.content,
-        };
+      log.info("Start Agent stream");
+      await this.startAgentStream();
+      this.logStreamingStep("Agent stream complete");
 
-        if (
-          initialDocument.title &&
-          initialDocument.subject &&
-          initialDocument.keyStage
-        ) {
-          // Call interact and get the result
-          const interactResult = await interact({
-            userId: this._chat.userId ?? "anonymous",
-            chatId: this._chat.id,
-            initialDocument: initialDocument,
-            messageHistory: this._chat.messages
-              .filter((m) => m.role === "user" || m.role === "assistant")
-              .map((m) => {
-                log.info(m);
-                return m;
-              }) as { role: "user" | "assistant"; content: string }[],
-          });
+      // log.info("Starting LLM stream");
+      // await this.startLLMStream();
+      // this.logStreamingStep("Start LLM stream complete");
 
-          // Stream the result to the client
-          await streamInteractResultToClient(
-            this._chat,
-            this._controller!,
-            initialDocument,
-            interactResult,
-          );
-        }
-      } catch (error) {
-        console.error("Error in interact", error);
-      }
-
-      log.info("Starting LLM stream");
-      await this.startLLMStream();
-      this.logStreamingStep("Start LLM stream complete");
-
-      log.info("Reading from stream");
-      await this.readFromStream(abortController);
-      this.logStreamingStep("Read from stream complete");
+      // log.info("Reading from stream");
+      // await this.readFromStream(abortController);
+      // this.logStreamingStep("Read from stream complete");
 
       log.info(
         "Finished reading from stream",
@@ -157,7 +126,7 @@ export class AilaStreamHandler {
     } finally {
       const status = this._chat.generation?.status;
       log.info("In finally block", { status, chatId: this._chat.id });
-      if (!(status === "FAILED")) {
+      if (status !== "FAILED") {
         try {
           log.info("Completing chat");
           await this._chat.complete();
@@ -178,6 +147,45 @@ export class AilaStreamHandler {
   private setupController(controller: ReadableStreamDefaultController) {
     this._controller = controller;
     this._patchEnqueuer.setController(controller);
+  }
+
+  private async startAgentStream() {
+    await this._chat.enqueue({
+      type: "comment",
+      value: "CHAT_START",
+    });
+
+    const initialDocument = {
+      ...this._chat.aila.document.content,
+    };
+
+    if (
+      !initialDocument.title ||
+      !initialDocument.subject ||
+      !initialDocument.keyStage
+    ) {
+      throw new Error("title subject keyStage required");
+    }
+    // Call interact and get the result
+    const interactResult = await interact({
+      userId: this._chat.userId ?? "anonymous",
+      chatId: this._chat.id,
+      initialDocument: initialDocument,
+      messageHistory: this._chat.messages
+        .filter((m) => m.role === "user" || m.role === "assistant")
+        .map((m) => {
+          log.info(m);
+          return m;
+        }) as { role: "user" | "assistant"; content: string }[],
+    });
+
+    // Stream the result to the client
+    await streamInteractResultToClient(
+      this._chat,
+      this._controller!,
+      initialDocument,
+      interactResult,
+    );
   }
 
   private async startLLMStream() {

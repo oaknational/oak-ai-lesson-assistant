@@ -30,22 +30,31 @@ export function createPatchesFromInteractResult(
     // Convert path from /subject to subject
     const sectionKey = patch.path.substring(1); // Remove leading slash
 
-    patchesWithMetadata.push({
-      type: "patch",
-      reasoning: `Updated ${sectionKey} based on user request`,
-      value: {
-        type:
-          typeof patch.value === "string"
-            ? "string"
-            : Array.isArray(patch.value)
-              ? "string-array"
-              : "object",
-        op: patch.op,
-        path: patch.path,
-        value: patch.value,
-      },
-      status: "complete",
-    });
+    function getValueType(
+      value: unknown,
+    ): "string" | "string-array" | "object" {
+      if (typeof value === "string") {
+        return "string";
+      }
+      if (Array.isArray(value)) {
+        return "string-array";
+      }
+      return "object";
+    }
+
+    if ("value" in patch) {
+      patchesWithMetadata.push({
+        type: "patch",
+        reasoning: `Updated ${sectionKey} based on user request`,
+        value: {
+          type: getValueType(patch.value),
+          op: patch.op,
+          path: patch.path,
+          value: patch.value,
+        },
+        status: "complete",
+      });
+    }
   }
 
   // Identify which sections were edited
@@ -75,7 +84,7 @@ export function createLlmMessageFromInteractResult(
     prompt: {
       type: "text",
       value:
-        result.ailaMessage ||
+        result.ailaMessage ??
         "Here's the updated lesson plan. Do you want to make any more changes?",
     },
     status: "complete",
@@ -103,6 +112,7 @@ export async function streamInteractResultToClient(
 
   // Send the message to the client
   controller.enqueue(formattedMessage);
+  chat.appendChunk(formattedMessage);
 
   // Update the chat's document content
   chat.aila.document.content = result.document;

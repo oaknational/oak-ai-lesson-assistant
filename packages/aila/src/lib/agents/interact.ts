@@ -31,7 +31,7 @@ export async function interact({
     messageHistory,
   });
 
-  log.info("Router response", routerResponse);
+  log.info("Router response", JSON.stringify(routerResponse, null, 2));
 
   if (!routerResponse) {
     throw new Error("Router returned null");
@@ -72,7 +72,7 @@ export async function interact({
         break;
       default:
         throw new Error(
-          `Unknown action type: ${actionType}. Expected "add", "replace", or "delete".`,
+          `Unknown action type: ${actionType as string}. Expected "add", "replace", or "delete".`,
         );
     }
   }
