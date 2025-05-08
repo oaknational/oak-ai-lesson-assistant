@@ -48,12 +48,10 @@
   "eslintConfig": {
     "extends": "@oakai/eslint-config"
   },
-  "dependencies": {
-    "@ai-sdk/openai": "^0.0.55"
-  },
   "devDependencies": {
     "@actions/core": "^1.10.1",
     "@actions/github": "^6.0.0",
+    "@ai-sdk/openai": "^0.0.55",
     "@cspell/dict-en-gb": "^4.1.58",
     "@manypkg/cli": "^0.23.0",
     "@next/env": "14.2.18",
