@@ -7,22 +7,40 @@ import { agents, sectionAgentMap } from "./agents";
 import { messageToUserAgent } from "./messageToUser";
 import { promptAgentHandler } from "./promptAgentHandler";
 import { agentRouter } from "./router";
+import {
+  createPatchesFromInteractResult,
+  formatMessageWithRecordSeparators,
+} from "./streamHandling";
+import type { InteractResult } from "./streamHandling";
 
 const log = aiLogger("aila:agents");
+
+export type InteractCallback = (update: {
+  type: "progress" | "section_update" | "complete";
+  data: any;
+}) => void;
 
 export async function interact({
   chatId,
   userId,
   initialDocument,
   messageHistory,
+  onUpdate,
 }: {
   chatId: string;
   userId: string;
   initialDocument: LooseLessonPlan;
   messageHistory: { role: "user" | "assistant"; content: string }[];
-}): Promise<{ document: LooseLessonPlan; ailaMessage?: string }> {
+  onUpdate?: InteractCallback;
+}): Promise<InteractResult> {
   log.info("Starting interaction with Aila agents");
   let document = initialDocument;
+
+  // Notify about starting the routing process
+  onUpdate?.({
+    type: "progress",
+    data: { step: "routing", status: "started" },
+  });
 
   const routerResponse = await agentRouter({
     chatId,
@@ -37,6 +55,12 @@ export async function interact({
     throw new Error("Router returned null");
   }
 
+  // Notify about completed routing
+  onUpdate?.({
+    type: "progress",
+    data: { step: "routing", status: "completed", plan: routerResponse.result },
+  });
+
   const result = routerResponse.result;
 
   if (result.type === "end_turn") {
@@ -45,11 +69,21 @@ export async function interact({
 
   const { plan } = result;
 
-  for (const action of plan) {
+  for (const [index, action] of plan.entries()) {
     log.info("Processing action", action);
     const { sectionKey, action: actionType, context } = action;
     const agentName = sectionAgentMap[sectionKey];
     const agentDefinition = agents[agentName];
+
+    // Notify about starting an action
+    onUpdate?.({
+      type: "progress",
+      data: {
+        step: "action",
+        status: "started",
+        action: { sectionKey, actionType, index, total: plan.length },
+      },
+    });
 
     switch (actionType) {
       case "delete":
@@ -69,13 +103,47 @@ export async function interact({
           userId,
           additionalInstructions: context,
         });
+
+        // Create patches to represent the changes made to this section
+        const currentPatches = createPatchesFromInteractResult(
+          initialDocument,
+          { document },
+        );
+
+        // Send section update with current state
+        onUpdate?.({
+          type: "section_update",
+          data: {
+            sectionKey,
+            actionType,
+            patches: currentPatches.patches.filter(
+              (p) => p.value.path.substring(1) === sectionKey,
+            ),
+          },
+        });
         break;
       default:
         throw new Error(
           `Unknown action type: ${actionType as string}. Expected "add", "replace", or "delete".`,
         );
     }
+
+    // Notify about completed action
+    onUpdate?.({
+      type: "progress",
+      data: {
+        step: "action",
+        status: "completed",
+        action: { sectionKey, actionType, index, total: plan.length },
+      },
+    });
   }
+
+  // Notify about starting the message generation
+  onUpdate?.({
+    type: "progress",
+    data: { step: "message", status: "started" },
+  });
 
   const jsonDiff = JSON.stringify(compare(initialDocument, document));
 
@@ -92,6 +160,12 @@ export async function interact({
   if (!messageResult) {
     throw new Error("Message to user agent returned null");
   }
+
+  // Notify about completion
+  onUpdate?.({
+    type: "complete",
+    data: { document, ailaMessage: messageResult.message },
+  });
 
   return { document, ailaMessage: messageResult.message };
 }

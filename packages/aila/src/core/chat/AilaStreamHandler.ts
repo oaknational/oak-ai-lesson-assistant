@@ -4,7 +4,10 @@ import type { ReadableStreamDefaultController } from "stream/web";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { interact } from "../../lib/agents/interact";
-import { streamInteractResultToClient } from "../../lib/agents/streamHandling";
+import {
+  createInteractStreamHandler,
+  streamInteractResultToClient,
+} from "../../lib/agents/streamHandling";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
@@ -166,7 +169,14 @@ export class AilaStreamHandler {
     ) {
       throw new Error("title subject keyStage required");
     }
-    // Call interact and get the result
+
+    // Create a stream handler
+    const streamHandler = createInteractStreamHandler(
+      this._chat,
+      this._controller!,
+    );
+
+    // Call interact with the stream handler
     const interactResult = await interact({
       userId: this._chat.userId ?? "anonymous",
       chatId: this._chat.id,
@@ -177,9 +187,10 @@ export class AilaStreamHandler {
           log.info(m);
           return m;
         }) as { role: "user" | "assistant"; content: string }[],
+      onUpdate: streamHandler, // This is the new part
     });
 
-    // Stream the result to the client
+    // Stream the final result to the client
     await streamInteractResultToClient(
       this._chat,
       this._controller!,
