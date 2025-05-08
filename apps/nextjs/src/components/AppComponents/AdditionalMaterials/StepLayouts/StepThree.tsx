@@ -50,7 +50,7 @@ const StepThree = () => {
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 
-  const handleDownload = async () => {
+  const handleDownloadMaterial = async () => {
     if (!generation || !docType) {
       return;
     }
@@ -155,7 +155,7 @@ const StepThree = () => {
                 Adapt
               </OakSecondaryButton>
               <OakPrimaryButton
-                onClick={() => void handleDownload()}
+                onClick={() => void handleDownloadMaterial()}
                 iconName="download"
                 isTrailingIcon={true}
                 isLoading={isDownloading}
