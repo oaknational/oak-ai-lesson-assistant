@@ -1,16 +1,13 @@
 import { aiLogger } from "@oakai/logger";
 
-import { compare } from "fast-json-patch/index.mjs";
+import { compare } from "fast-json-patch";
 
 import { type LooseLessonPlan } from "../../protocol/schema";
 import { agents, sectionAgentMap } from "./agents";
 import { messageToUserAgent } from "./messageToUser";
 import { promptAgentHandler } from "./promptAgentHandler";
 import { agentRouter } from "./router";
-import {
-  createPatchesFromInteractResult,
-  formatMessageWithRecordSeparators,
-} from "./streamHandling";
+import { createPatchesFromInteractResult } from "./streamHandling";
 import type { InteractResult } from "./streamHandling";
 
 const log = aiLogger("aila:agents");
@@ -94,6 +91,11 @@ export async function interact({
         break;
       case "add":
       case "replace":
+        if (!("prompt" in agentDefinition)) {
+          throw new Error(
+            `Unable to process 'replace' action. No prompt found`,
+          );
+        }
         // Add or edit the section in the document
         document = await promptAgentHandler({
           agent: agentDefinition,
