@@ -99,7 +99,6 @@ const StepThree = () => {
                     void refineMaterial({
                       refinement: [{ type: refinement }],
                       mutateAsync: async (input) => {
-                        console.log("************refining material", input);
                         try {
                           return await fetchMaterial.mutateAsync(input);
                         } catch (error) {
