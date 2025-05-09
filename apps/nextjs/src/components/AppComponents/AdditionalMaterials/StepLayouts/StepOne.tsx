@@ -1,8 +1,11 @@
+import { useEffect } from "react";
+
+import { getResourceTypes } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+
 import {
   OakFlex,
   OakIcon,
   OakLabel,
-  OakLink,
   OakP,
   OakPrimaryButton,
   OakRadioButton,
@@ -50,6 +53,15 @@ const StepOne = () => {
   const activeDropdown = useResourcesStore(activeDropdownSelector);
   const docType = useResourcesStore(docTypeSelector);
 
+  useEffect(() => {
+    // Reset the form when the component is mounted
+    // This should be removed once we are persisting in the database and the flow is based on an ID
+    setSubject(null);
+    setTitle(null);
+    setYear(null);
+    setDocType(null);
+  }, [setSubject, setTitle, setYear, setDocType]);
+
   const generateLessonPlan =
     trpc.additionalMaterials.generatePartialLessonPlanObject.useMutation();
 
@@ -69,26 +81,32 @@ const StepOne = () => {
       },
     });
 
+  const resourceTypes = getResourceTypes().filter(
+    (resourceType) => resourceType.isAvailable,
+  );
+
   return (
     <>
-      <div className="mb-15 flex gap-10">
-        <YearGroupDropDown
-          selectedYear={year || ""}
-          setSelectedYear={setYear}
-          activeDropdown={activeDropdown}
-          setActiveDropdown={setActiveDropdown}
+      <OakFlex $flexDirection={"column"} $gap={"space-between-m"}>
+        <OakFlex $flexDirection={"row"} $gap={"space-between-m"}>
+          <YearGroupDropDown
+            selectedYear={year || ""}
+            setSelectedYear={setYear}
+            activeDropdown={activeDropdown}
+            setActiveDropdown={setActiveDropdown}
+          />
+          <SubjectsDropDown
+            selectedSubject={subject || ""}
+            setSelectedSubject={setSubject}
+            activeDropdown={activeDropdown}
+            setActiveDropdown={setActiveDropdown}
+          />
+        </OakFlex>
+        <OakTextInput
+          onChange={(value) => setTitle(value.target.value)}
+          placeholder="Type a lesson title or learning outcome"
         />
-        <SubjectsDropDown
-          selectedSubject={subject || ""}
-          setSelectedSubject={setSubject}
-          activeDropdown={activeDropdown}
-          setActiveDropdown={setActiveDropdown}
-        />
-      </div>
-      <OakTextInput
-        onChange={(value) => setTitle(value.target.value)}
-        placeholder="Type a lesson title or learning outcome"
-      />
+      </OakFlex>
       <OakFlex $gap={"space-between-m"} $flexDirection="column">
         <OakFlex $flexDirection={"column"}>
           <OakFlex $mv={"space-between-l"}>
@@ -100,43 +118,28 @@ const StepOne = () => {
               }}
               $flexDirection="column"
             >
-              <OakLabel>
-                <OakRadioButton
-                  id="additional-glossary"
-                  value="additional-glossary"
-                  label={
-                    <OakFlex
-                      $flexDirection="column"
-                      $gap="all-spacing-2"
-                      $ml="space-between-xs"
-                    >
-                      <OakP $font="heading-6">Glossary</OakP>
-                      <OakP>
-                        Additional lesson vocabulary with pupil friendly
-                        definitions
-                      </OakP>
-                    </OakFlex>
-                  }
-                />
-              </OakLabel>
-              <OakLabel>
-                <OakRadioButton
-                  id="additional-comprehension"
-                  value="additional-comprehension"
-                  label={
-                    <OakFlex
-                      $flexDirection="column"
-                      $gap="all-spacing-2"
-                      $ml="space-between-xs"
-                    >
-                      <OakP $font="heading-6">Comprehension tasks</OakP>
-                      <OakP>
-                        Comprehension tasks which can be adapted for pupils
-                      </OakP>
-                    </OakFlex>
-                  }
-                />
-              </OakLabel>
+              {resourceTypes.map((resourceType) => (
+                <OakLabel key={resourceType.id}>
+                  <OakRadioButton
+                    id={resourceType.id}
+                    value={resourceType.id}
+                    radioInnerSize="all-spacing-6"
+                    radioOuterSize="all-spacing-7"
+                    label={
+                      <OakFlex
+                        $flexDirection="column"
+                        $gap="all-spacing-2"
+                        $ml="space-between-xs"
+                      >
+                        <OakP $font="heading-6">
+                          {resourceType.displayName}
+                        </OakP>
+                        <OakP>{resourceType.description}</OakP>
+                      </OakFlex>
+                    }
+                  />
+                </OakLabel>
+              ))}
             </OakRadioGroup>
           </OakFlex>
         </OakFlex>
@@ -144,12 +147,12 @@ const StepOne = () => {
 
       <ResourcesFooter>
         <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <OakLink onClick={() => setStepNumber(0)}>
+          <button onClick={() => setStepNumber(0)}>
             <OakFlex $alignItems="center" $gap="all-spacing-2">
               <OakIcon iconName="chevron-left" />
               Back a step
             </OakFlex>
-          </OakLink>
+          </button>
 
           <OakPrimaryButton
             onClick={() =>

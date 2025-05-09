@@ -47,7 +47,7 @@ export const handleRefineMaterial =
           lessonPlan: get().pageData.lessonPlan,
           previousOutput: get().generation,
           options: null,
-          refinement: refinement,
+          refinement: [{ type: refinement }],
         },
       };
 

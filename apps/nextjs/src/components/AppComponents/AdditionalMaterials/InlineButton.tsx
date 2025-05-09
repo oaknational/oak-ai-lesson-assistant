@@ -9,14 +9,16 @@ const InlineButton = ({ onClick, children }: Readonly<InlineButtonProps>) => {
   return (
     <OakFlex
       as="button"
-      $ba="border-solid-m"
+      $ba="border-solid-s"
       $borderColor="grey50"
-      $borderRadius="border-radius-l"
+      $borderRadius="border-radius-m"
       $ph="inner-padding-xs"
       $pv="inner-padding-ssx"
       onClick={onClick}
     >
-      <OakP $color="blue">{children}</OakP>
+      <OakP $color="blue" $font="body-2">
+        {children}
+      </OakP>
     </OakFlex>
   );
 };
