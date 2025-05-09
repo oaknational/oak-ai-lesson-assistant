@@ -49,17 +49,11 @@ export const additionalMaterialsRouter = router({
         }
         actionEnum.parse(input.action);
 
-        const material = await generateAdditionalMaterial({
+        return await generateAdditionalMaterial({
           prisma: ctx.prisma,
           userId: ctx.auth.userId,
           input: parsedInput.data,
         });
-
-        if (!material.resource) {
-          throw new Error("Failed to generate additional material");
-        }
-
-        return material?.resource;
       } catch (cause) {
         const TrpcError = new Error(
           "Failed to fetch additional material moderation",

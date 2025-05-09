@@ -53,9 +53,8 @@ const StepTwo = () => {
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 
-  const handleSubmit = (message) => {
+  const handleSubmit = () => {
     const generatePromise = generateMaterial({
-      message,
       mutateAsync: async (input) => {
         try {
           return fetchMaterial.mutateAsync(input);
@@ -88,7 +87,9 @@ const StepTwo = () => {
       <OakFlex $flexDirection="column">
         <OakFlex $flexDirection="column">
           <OakP $font={"heading-5"}>Lesson details</OakP>
-          {moderation?.categories && <ModerationMessage />}
+          {moderation?.categories && moderation.categories.length > 0 && (
+            <ModerationMessage />
+          )}
 
           <OakBox $pa="inner-padding-m">
             <OakP>
@@ -132,7 +133,7 @@ const StepTwo = () => {
 
           <OakPrimaryButton
             onClick={() => {
-              void handleSubmit("Create a lesson plan for this lesson");
+              void handleSubmit();
               setStepNumber(2);
               return null;
             }}

@@ -1,7 +1,6 @@
 import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { GeneratePartialLessonPlanResponse } from "@oakai/api/src/router/additionalMaterials/helpers";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
@@ -17,12 +16,7 @@ export type SubmitLessonPlanParams = {
   keyStage: string;
   year: string;
   mutateAsync: UseMutateAsyncFunction<
-    {
-      lesson: PartialLessonContextSchemaType;
-      threatDetection: boolean;
-      lessonId: string;
-      moderation: ModerationResult;
-    },
+    GeneratePartialLessonPlanResponse,
     Error,
     PartialLessonContextSchemaType
   >;
@@ -65,7 +59,7 @@ export const handleSubmitLessonPlan =
       // Update the store with the result
       set({
         pageData: {
-          lessonPlan: { ...result.lesson },
+          lessonPlan: { ...result.lesson, lessonId: result.lessonId },
         },
         moderation: result.moderation,
         threatDetection: result.threatDetection,

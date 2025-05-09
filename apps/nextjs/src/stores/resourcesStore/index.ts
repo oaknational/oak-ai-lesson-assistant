@@ -33,6 +33,7 @@ const DEFAULT_STATE = {
   isDownloading: false,
   pageData: {
     lessonPlan: {
+      lessonId: "",
       title: "",
       keyStage: "",
       subject: "",

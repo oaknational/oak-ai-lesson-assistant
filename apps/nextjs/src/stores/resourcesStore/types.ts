@@ -1,5 +1,9 @@
 import type { AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+import type {
+  GenerateAdditionalMaterialResponse,
+  GeneratePartialLessonPlanResponse,
+} from "@oakai/api/src/router/additionalMaterials/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import type { StoreApi } from "zustand";
@@ -9,7 +13,7 @@ import type { RefineMaterialParams } from "./actionFunctions/handleRefineMateria
 import type { SubmitLessonPlanParams } from "./actionFunctions/handleSubmitLessonPlan";
 
 export type PageData = {
-  lessonPlan: AilaPersistedChat["lessonPlan"];
+  lessonPlan: AilaPersistedChat["lessonPlan"] & { lessonId: string };
   transcript?: string | null;
 };
 
@@ -57,10 +61,10 @@ export type ResourcesState = {
     // business logic actions
     submitLessonPlan: (
       params: SubmitLessonPlanParams,
-    ) => Promise<AilaPersistedChat["lessonPlan"]>;
+    ) => Promise<GeneratePartialLessonPlanResponse>;
     generateMaterial: (
       params: GenerateMaterialParams,
-    ) => Promise<AdditionalMaterialSchemas>;
+    ) => Promise<GenerateAdditionalMaterialResponse>;
     refineMaterial: (
       params: RefineMaterialParams,
     ) => Promise<AdditionalMaterialSchemas>;
