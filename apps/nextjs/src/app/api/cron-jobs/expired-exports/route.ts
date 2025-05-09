@@ -33,6 +33,7 @@ async function updateExpiredAtAndDelete(fileIds: string[]) {
 
       if (!record) {
         log.warn(`No database record found for gdriveFileId: ${id}`);
+        log.warn(`No database record found for gdriveFileId: ${id}`);
         failedIds.push(id);
         continue;
       }
