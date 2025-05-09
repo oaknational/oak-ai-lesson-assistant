@@ -63,8 +63,6 @@ export const handleRefineMaterial =
         id: result.resourceId,
       });
       log.info("Material refined successfully");
-
-      return result;
     } catch (error) {
       log.error("Error refining material", error);
       Sentry.captureException(error);

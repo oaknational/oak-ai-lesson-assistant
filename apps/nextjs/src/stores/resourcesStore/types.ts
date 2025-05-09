@@ -55,9 +55,9 @@ export type ResourcesState = {
     resetFormState: () => void;
 
     // business logic actions
-    submitLessonPlan: (params: SubmitLessonPlanParams) => void;
-    generateMaterial: (params: GenerateMaterialParams) => void;
-    refineMaterial: (params: RefineMaterialParams) => void;
+    submitLessonPlan: (params: SubmitLessonPlanParams) => Promise<void>;
+    generateMaterial: (params: GenerateMaterialParams) => Promise<void>;
+    refineMaterial: (params: RefineMaterialParams) => Promise<void>;
     downloadMaterial: () => Promise<void>;
 
     // Reset store to default state
