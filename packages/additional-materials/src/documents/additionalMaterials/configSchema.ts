@@ -11,9 +11,22 @@ import {
   comprehensionTaskSchema,
 } from "./comprehension/schema";
 import {
+  buildExitQuizPrompt,
+  buildExitQuizSystemMessage,
+} from "./exitQuiz/buildExitQuizPrompt";
+import { exitQuizContextSchema, exitQuizSchema } from "./exitQuiz/schema";
+import {
   buildGlossaryPrompt,
   buildGlossarySystemMessage,
 } from "./glossary/buildGlossaryPrompt";
+import {
+  buildStarterQuizPrompt,
+  buildStarterQuizSystemMessage,
+} from "./starterQuiz/buildStarterQuizPrompt";
+import {
+  starterQuizContextSchema,
+  starterQuizSchema,
+} from "./starterQuiz/schema";
 
 // -----------------------
 // Base Types
@@ -22,6 +35,8 @@ import {
 const additionalMaterialDocType = [
   "additional-comprehension",
   "additional-glossary",
+  "additional-starter-quiz",
+  "additional-exit-quiz",
   // "partial-lesson-plan",
 ] as const;
 
@@ -41,6 +56,8 @@ export type AdditionalMaterialType = z.infer<typeof additionalMaterialTypeEnum>;
 export const additionalMaterialContextSchemasMap = {
   "additional-comprehension": comprehensionContextSchema,
   "additional-glossary": glossaryContextSchema,
+  "additional-starter-quiz": starterQuizContextSchema,
+  "additional-exit-quiz": exitQuizContextSchema,
   // "partial-lesson-plan": partialLessonContextSchema,
 } satisfies {
   [K in AdditionalMaterialType]: ZodSchema;
@@ -56,6 +73,8 @@ export type ContextByMaterialType = {
 export const additionalMaterialSchemasMap = {
   "additional-comprehension": comprehensionTaskSchema,
   "additional-glossary": glossarySchema,
+  "additional-starter-quiz": starterQuizSchema,
+  "additional-exit-quiz": exitQuizSchema,
 } satisfies {
   [K in AdditionalMaterialType]: ZodSchema;
 };
@@ -75,6 +94,14 @@ export const additionalMaterialPromptBuilderMap = {
     buildPrompt: buildGlossaryPrompt,
     buildSystemMessage: buildGlossarySystemMessage,
   },
+  "additional-starter-quiz": {
+    buildPrompt: buildStarterQuizPrompt,
+    buildSystemMessage: buildStarterQuizSystemMessage,
+  },
+  "additional-exit-quiz": {
+    buildPrompt: buildExitQuizPrompt,
+    buildSystemMessage: buildExitQuizSystemMessage,
+  },
 } satisfies {
   [K in AdditionalMaterialType]: {
     buildSystemMessage: () => string;
@@ -89,6 +116,8 @@ export const additionalMaterialPromptBuilderMap = {
 const additionalMaterialVersions: Record<AdditionalMaterialType, number> = {
   "additional-comprehension": 1,
   "additional-glossary": 1,
+  "additional-starter-quiz": 1,
+  "additional-exit-quiz": 1,
 };
 
 type AdditionalMaterialsConfigMap = {
@@ -138,6 +167,8 @@ export const generateAdditionalMaterialInputSchema = z.discriminatedUnion(
   [
     makeInputVariant("additional-comprehension", comprehensionContextSchema),
     makeInputVariant("additional-glossary", glossaryContextSchema),
+    makeInputVariant("additional-starter-quiz", starterQuizContextSchema),
+    makeInputVariant("additional-exit-quiz", exitQuizContextSchema),
   ],
 );
 

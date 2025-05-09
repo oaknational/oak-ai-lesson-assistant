@@ -14,13 +14,8 @@ import type { ResourcesGetter, ResourcesSetter } from "../types";
 
 const log = aiLogger("additional-materials");
 
-// Define type for refinement object
-type RefinementOption = {
-  type: string;
-};
-
 export type RefineMaterialParams = {
-  refinement: RefinementOption[];
+  refinement: string;
   mutateAsync: UseMutateAsyncFunction<
     AdditionalMaterialSchemas,
     Error,
@@ -52,11 +47,9 @@ export const handleRefineMaterial =
           lessonPlan: get().pageData.lessonPlan,
           previousOutput: get().generation,
           options: null,
-          refinement: refinement,
+          refinement: [{ type: refinement }],
         },
       };
-
-      console.log("************payload", payload);
 
       const parsedPayload =
         generateAdditionalMaterialInputSchema.parse(payload);

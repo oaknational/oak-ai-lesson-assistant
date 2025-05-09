@@ -3,7 +3,8 @@
 import type { FC } from "react";
 import React, { useEffect } from "react";
 
-import { kebabCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
+import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 
 import { OakP, OakSpan } from "@oaknational/oak-components";
 
@@ -36,14 +37,18 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
-  const docTypeName = docType?.split("-")[1] ?? null;
+
+  // Get resource type information from configuration
+  const resourceType = docType ? getResourceType(docType) : null;
+  const docTypeName = resourceType?.displayName || null;
+
   const { resetFormState } = useResourcesActions();
 
   useEffect(() => {
     resetFormState();
   }, [resetFormState]);
 
-  const titleAreaControl = {
+  const titleAreaContent = {
     0: {
       title: "What do you want to teach?",
       subTitle: (
@@ -67,7 +72,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
       title: pageData.lessonPlan.title,
       subTitle: (
         <OakP $font="body-2" $color="grey70">
-          {kebabCaseToSentenceCase(pageData.lessonPlan.keyStage ?? "")} •{" "}
+          {toTitleCase(pageData.lessonPlan.keyStage ?? "")} •{" "}
           {pageData.lessonPlan.subject}
         </OakP>
       ),
@@ -79,15 +84,15 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
     1: <StepTwo />,
     2: <StepThree />,
   };
-  const stepNumberParsed = stepNumber as keyof typeof titleAreaControl;
-  const title = titleAreaControl?.[stepNumberParsed]?.title ?? "";
-  const subTitle = titleAreaControl?.[stepNumberParsed]?.subTitle ?? "";
+  const stepNumberParsed = stepNumber as keyof typeof titleAreaContent;
+  const title = titleAreaContent?.[stepNumberParsed]?.title ?? "";
+  const subTitle = titleAreaContent?.[stepNumberParsed]?.subTitle ?? "";
   return (
     <ResourcesLayout
       title={title}
       subTitle={subTitle}
       step={stepNumber + 1}
-      docTypeName={docTypeName}
+      docTypeName={docTypeName || ""}
     >
       {stepComponents[stepNumber]}
     </ResourcesLayout>
@@ -101,5 +106,10 @@ const ResourcesContents: FC<AdditionalMaterialsUserProps> = (props) => {
     </ResourcesStoresProvider>
   );
 };
+
+// Helper function to convert to title case
+function toTitleCase(str: string) {
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+}
 
 export default ResourcesContents;
