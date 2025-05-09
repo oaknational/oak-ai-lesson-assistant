@@ -17,7 +17,6 @@ import {
   useChatActions,
   useChatStore,
   useLessonPlanActions,
-  useLessonPlanStore,
 } from "@/stores/AilaStoresProvider";
 
 import { findMessageIdFromContent } from "./Chat/utils";
@@ -50,7 +49,6 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
   const path = usePathname();
 
   const initialMessages = useChatStore((state) => state.initialMessages);
-  const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
   const chatActions = useChatActions();
   const lessonPlanActions = useLessonPlanActions();
 
