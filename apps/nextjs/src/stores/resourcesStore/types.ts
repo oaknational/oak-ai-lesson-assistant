@@ -22,7 +22,7 @@ export type StepOneFormState = {
 };
 
 export type ResourcesState = {
-  id: string;
+  id: string | null;
   stepNumber: number;
   isLoadingLessonPlan: boolean;
   isResourcesLoading: boolean;

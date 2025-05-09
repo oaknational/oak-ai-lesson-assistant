@@ -5,7 +5,6 @@ import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
-import { z } from "zod";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
 

@@ -22,10 +22,6 @@ import type { ResourcesState } from "./types";
 
 export * from "./types";
 
-export type CreateResourcesStoreParams = {
-  id: string;
-};
-
 const DEFAULT_STATE = {
   stepNumber: 0,
   isLoadingLessonPlan: false,
@@ -64,9 +60,9 @@ const DEFAULT_STATE = {
   threatDetection: undefined,
 };
 
-export const createResourcesStore = ({ id }: CreateResourcesStoreParams) => {
+export const createResourcesStore = () => {
   const resourcesStore = create<ResourcesState>()((set, get) => ({
-    id,
+    id: null,
     ...DEFAULT_STATE,
 
     actions: {
