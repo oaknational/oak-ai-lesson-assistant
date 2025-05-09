@@ -64,7 +64,7 @@ importers:
         version: 15.2.2
       next:
         specifier: 14.2.21
-        version: 14.2.21(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
+        version: 14.2.21(@babel/core@7.26.8)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       postcss:
         specifier: ^8.4.32
         version: 8.4.35
@@ -682,7 +682,7 @@ importers:
         version: 1.41.1
       next:
         specifier: 14.2.21
-        version: 14.2.21(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
+        version: 14.2.21(@babel/core@7.26.8)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       remeda:
         specifier: ^1.29.0
         version: 1.29.0
@@ -1461,6 +1461,7 @@ packages:
       semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
 
   /@babel/generator@7.17.7:
     resolution: {integrity: sha512-oLcVCTeIFadUoArDTwpluncplrYBmTCCZZgXCbgNGvOBBiSDDK3eWO4b/+eOTli5tKv1lg+a5/NAXg+nTcei1w==}
@@ -1700,6 +1701,7 @@ packages:
       '@babel/traverse': 7.26.8(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
+    dev: true
 
   /@babel/helper-optimise-call-expression@7.24.7:
     resolution: {integrity: sha512-jKiTsW2xmWwxT1ixIdfXUZp+P5yURx2suzLZr5Hi64rURpDYdMW0pv+Uf17EYk2Rd428Lx4tLsnjGJzYKDM/6A==}
@@ -1822,6 +1824,7 @@ packages:
     dependencies:
       '@babel/template': 7.26.9
       '@babel/types': 7.26.9
+    dev: true
 
   /@babel/parser@7.26.2:
     resolution: {integrity: sha512-DWMCZH9WA4Maitz2q21SRKHo9QXZxkDsbNZoVD62gusNtNBBqDg9i7uOhASfTfIGNzW+O+r7+jAlM8dwphcJKQ==}
@@ -20773,7 +20776,7 @@ packages:
       - '@babel/core'
       - babel-plugin-macros
 
-  /next@14.2.21(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0):
+  /next@14.2.21(@babel/core@7.26.8)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-rZmLwucLHr3/zfDMYbJXbw0ZeoBpirxkXuvsJbk7UPorvPYZhP7vq7aHbKnU7dQNCYIimRrbB2pp3xmf+wsYUg==}
     engines: {node: '>=18.17.0'}
     hasBin: true
@@ -20801,7 +20804,7 @@ packages:
       postcss: 8.4.31
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      styled-jsx: 5.1.1(@babel/core@7.26.9)(react@18.2.0)
+      styled-jsx: 5.1.1(@babel/core@7.26.8)(react@18.2.0)
     optionalDependencies:
       '@next/swc-darwin-arm64': 14.2.21
       '@next/swc-darwin-x64': 14.2.21
@@ -24626,7 +24629,7 @@ packages:
       client-only: 0.0.1
       react: 18.2.0
 
-  /styled-jsx@5.1.1(@babel/core@7.26.9)(react@18.2.0):
+  /styled-jsx@5.1.1(@babel/core@7.26.8)(react@18.2.0):
     resolution: {integrity: sha512-pW7uC1l4mBZ8ugbiZrcIsiIvVx1UmTfw7UkC3Um2tmfUq9Bhk8IiyEIPl6F8agHgjzku6j0xQEZbfA5uSgSaCw==}
     engines: {node: '>= 12.0.0'}
     peerDependencies:
@@ -24639,7 +24642,7 @@ packages:
       babel-plugin-macros:
         optional: true
     dependencies:
-      '@babel/core': 7.26.9
+      '@babel/core': 7.26.8
       client-only: 0.0.1
       react: 18.2.0
 

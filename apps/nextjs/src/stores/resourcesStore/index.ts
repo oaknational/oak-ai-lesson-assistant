@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import { logStoreUpdates } from "../zustandHelpers";
+import { handleDownload } from "./actionFunctions/handleDownload";
 import {
   handleResetFormState,
   handleSetActiveDropdown,
@@ -21,44 +22,48 @@ import type { ResourcesState } from "./types";
 
 export * from "./types";
 
-export type CreateResourcesStoreParams = {
-  id: string;
+const DEFAULT_STATE = {
+  stepNumber: 0,
+  isLoadingLessonPlan: false,
+  isResourcesLoading: false,
+  isDownloading: false,
+  pageData: {
+    lessonPlan: {
+      lessonId: "",
+      title: "",
+      keyStage: "",
+      subject: "",
+      topic: "",
+      learningOutcome: "",
+      learningCycles: [],
+      priorKnowledge: [],
+      keyLearningPoints: [],
+      misconceptions: [],
+      keywords: [],
+      starterQuiz: [],
+      cycle1: undefined,
+      cycle2: undefined,
+      cycle3: undefined,
+      exitQuiz: undefined,
+      additionalMaterials: undefined,
+    },
+  },
+  generation: null,
+  docType: null,
+  formState: {
+    subject: null,
+    title: null,
+    year: null,
+    activeDropdown: null,
+  },
+  moderation: undefined,
+  threatDetection: undefined,
 };
 
-export const createResourcesStore = ({ id }: CreateResourcesStoreParams) => {
+export const createResourcesStore = () => {
   const resourcesStore = create<ResourcesState>()((set, get) => ({
-    id,
-    stepNumber: 0,
-    isLoadingLessonPlan: false,
-    isResourcesLoading: false,
-    pageData: {
-      lessonPlan: {
-        title: "",
-        keyStage: "",
-        subject: "",
-        topic: "",
-        learningOutcome: "",
-        learningCycles: [],
-        priorKnowledge: [],
-        keyLearningPoints: [],
-        misconceptions: [],
-        keywords: [],
-        starterQuiz: [],
-        cycle1: undefined,
-        cycle2: undefined,
-        cycle3: undefined,
-        exitQuiz: undefined,
-        additionalMaterials: undefined,
-      },
-    },
-    generation: null,
-    docType: null,
-    formState: {
-      subject: null,
-      title: null,
-      year: null,
-      activeDropdown: null,
-    },
+    id: null,
+    ...DEFAULT_STATE,
 
     actions: {
       // Setters
@@ -68,6 +73,11 @@ export const createResourcesStore = ({ id }: CreateResourcesStoreParams) => {
       setDocType: handleSetDocType(set, get),
       setIsLoadingLessonPlan: handleSetIsLoadingLessonPlan(set, get),
       setIsResourcesLoading: handleSetIsResourcesLoading(set, get),
+      setIsResourceDownloading: (isDownloading: boolean) =>
+        set({ isDownloading }),
+      setThreatDetection: (threatDetection: boolean) => {
+        set({ threatDetection });
+      },
       // Form state setters
       setSubject: handleSetSubject(set, get),
       setTitle: handleSetTitle(set, get),
@@ -79,6 +89,11 @@ export const createResourcesStore = ({ id }: CreateResourcesStoreParams) => {
       submitLessonPlan: handleSubmitLessonPlan(set, get),
       generateMaterial: handleGenerateMaterial(set, get),
       refineMaterial: handleRefineMaterial(set, get),
+      downloadMaterial: handleDownload(set, get),
+
+      // Reset store to default state
+      resetToDefault: () =>
+        set((state) => ({ ...DEFAULT_STATE, id: state.id })),
     },
   }));
 

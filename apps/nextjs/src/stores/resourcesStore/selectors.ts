@@ -31,6 +31,13 @@ export const docTypeSelector = (state: ResourcesState) => state.docType;
 export const isResourcesLoadingSelector = (state: ResourcesState) =>
   state.isResourcesLoading;
 
+/**
+ * Selector for the is resources loading in the resources workflow
+ * @example const isResourcesDownloading = useResourcesStore(isResourcesLoadingSelector);
+ */
+export const isResourcesDownloadingSelector = (state: ResourcesState) =>
+  state.isDownloading;
+
 // Form state selectors
 export const formStateSelector = (state: ResourcesState) => state.formState;
 export const subjectSelector = (state: ResourcesState) =>
@@ -43,3 +50,12 @@ export const activeDropdownSelector = (state: ResourcesState) =>
 // Is loading lesson plan selector
 export const isLoadingLessonPlanSelector = (state: ResourcesState) =>
   state.isLoadingLessonPlan;
+
+export const moderationSelector = (state: ResourcesState) => state.moderation;
+
+/**
+ * Selector for the threat detection state in the resources workflow
+ * @example const threatDetection = useResourcesStore(threatDetectionSelector);
+ */
+export const threatDetectionSelector = (state: ResourcesState) =>
+  state.threatDetection;
