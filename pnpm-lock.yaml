@@ -55,11 +55,7 @@ importers:
         version: 10.4.17(postcss@8.4.35)
       cursor-tools:
         specifier: latest
-<<<<<<< HEAD
         version: 0.60.0(@playwright/test@1.51.1)(deepmerge@4.3.1)(react@18.2.0)
-=======
-        version: 0.5.0(@playwright/test@1.51.1)(deepmerge@4.3.1)(openai@4.96.0)(playwright@1.51.1)
->>>>>>> origin/main
       husky:
         specifier: ^8.0.3
         version: 8.0.3
@@ -149,7 +145,7 @@ importers:
         version: link:../../packages/prettier-config
       '@oaknational/oak-components':
         specifier: ^1.68.1
-        version: 1.108.0(next-cloudinary@6.16.0)(next@14.2.21)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11)
+        version: 1.68.1(next-cloudinary@5.20.0)(next@14.2.21)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11)
       '@oaknational/oak-consent-client':
         specifier: ^2.1.0
         version: 2.1.0(react-dom@18.2.0)(react@18.2.0)(zod@3.23.8)
@@ -290,7 +286,7 @@ importers:
         version: 3.0.0
       openai:
         specifier: ^4.96.0
-        version: 4.96.0(ws@8.18.0)(zod@3.23.8)
+        version: 4.98.0(ws@8.18.1)(zod@3.23.8)
       p-limit:
         specifier: ^6.1.0
         version: 6.1.0
@@ -522,7 +518,7 @@ importers:
         version: 6.0.0
       openai:
         specifier: ^4.96.0
-        version: 4.96.0(ws@8.18.0)(zod@3.23.8)
+        version: 4.98.0(ws@8.18.1)(zod@3.23.8)
       serialize-error:
         specifier: ^12.0.0
         version: 12.0.0
@@ -601,7 +597,7 @@ importers:
         version: 3.8.0
       openai:
         specifier: ^4.96.0
-        version: 4.96.0(ws@8.18.0)(zod@3.23.8)
+        version: 4.98.0(ws@8.18.1)(zod@3.23.8)
       remeda:
         specifier: ^1.29.0
         version: 1.29.0
@@ -771,7 +767,7 @@ importers:
         version: 0.1.4
       openai:
         specifier: ^4.96.0
-        version: 4.96.0(ws@8.18.0)(zod@3.23.8)
+        version: 4.98.0(ws@8.18.1)(zod@3.23.8)
       tiny-invariant:
         specifier: ^1.3.1
         version: 1.3.1
@@ -832,7 +828,7 @@ importers:
         version: 6.1.0(graphql@16.10.0)
       openai:
         specifier: ^4.96.0
-        version: 4.96.0(ws@8.18.0)(zod@3.23.8)
+        version: 4.98.0(ws@8.18.1)(zod@3.23.8)
       p-queue:
         specifier: ^7.4.1
         version: 7.4.1
@@ -3719,13 +3715,8 @@ packages:
       - encoding
     dev: true
 
-<<<<<<< HEAD
   /@browserbasehq/stagehand@2.2.1-alpha-12754d0b0568ef48ff2b433a7b6ecee3d86af4b7(@playwright/test@1.51.1)(deepmerge@4.3.1)(dotenv@16.4.7)(react@18.2.0)(zod@3.24.2):
     resolution: {integrity: sha512-kEbzFYxRmpXSYNb255zi1qnX6Gb2Cjguqn8dVu1vgzq3kHxOGMhIZybgiHxv9xzEZwA8nGcrkO0y9RvAxIGr7w==}
-=======
-  /@browserbasehq/stagehand@1.12.0(@playwright/test@1.51.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.96.0)(zod@3.24.1):
-    resolution: {integrity: sha512-RWhdGxs2tUKyNpUh710ct/1Wwhv4jsEc1Qs8lz8Qngm3y7onRu0WYH0Cf3mnFZqYLTf3ni9x17VNju8YJACa5Q==}
->>>>>>> origin/main
     peerDependencies:
       '@playwright/test': ^1.42.1
       deepmerge: ^4.3.1
@@ -3739,8 +3730,7 @@ packages:
       ai: 4.3.13(react@18.2.0)(zod@3.24.2)
       deepmerge: 4.3.1
       dotenv: 16.4.7
-<<<<<<< HEAD
-      openai: 4.93.0(ws@8.18.1)(zod@3.24.2)
+      openai: 4.98.0(ws@8.18.1)(zod@3.24.2)
       pino: 9.6.0
       pino-pretty: 13.0.0
       playwright: 1.51.1
@@ -3760,12 +3750,6 @@ packages:
       '@ai-sdk/togetherai': 0.2.13(zod@3.24.2)
       '@ai-sdk/xai': 1.2.15(zod@3.24.2)
       ollama-ai-provider: 1.2.0(zod@3.24.2)
-=======
-      openai: 4.96.0(ws@8.18.0)(zod@3.23.8)
-      ws: 8.18.0
-      zod: 3.24.1
-      zod-to-json-schema: 3.24.1(zod@3.24.1)
->>>>>>> origin/main
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -3893,7 +3877,7 @@ packages:
       '@clerk/shared': 2.9.0(react-dom@18.2.0)(react@18.2.0)
       '@clerk/types': 4.25.0
       crypto-js: 4.2.0
-      next: 14.2.21(@babel/core@7.26.8)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       server-only: 0.0.1
@@ -3980,25 +3964,20 @@ packages:
       csstype: 3.1.1
     dev: false
 
-  /@cloudinary-util/types@1.5.10:
-    resolution: {integrity: sha512-n5lrm7SdAXhgWEbkSJKHZGnaoO9G/g4WYS6HYnq/k4nLj79sYfQZOoKjyR8hF2iyLRdLkT+qlk68RNFFv5tKew==}
-    dev: false
-
-  /@cloudinary-util/url-loader@5.10.4:
-    resolution: {integrity: sha512-gHkdvOaV+rlcwuIT7Vqd0ts/H5bsH4+bwFten/gIZ8oRjzdTBvgIY3R6F8bbJt0pFIEfpFEQLe4rPkl0NNqEWg==}
+  /@cloudinary-util/url-loader@4.2.0:
+    resolution: {integrity: sha512-fpCFqFPAN/f9Gt//25qLXNDYwy5EcOudRzDPOrsEBH6aMwEdFaJuPxvLiP0IP5MCihKji/XDr9QJQ9Wa+amNSA==}
     dependencies:
-      '@cloudinary-util/types': 1.5.10
-      '@cloudinary-util/util': 3.3.2
+      '@cloudinary-util/util': 3.0.0
       '@cloudinary/url-gen': 1.15.0
       zod: 3.23.8
     dev: false
 
-  /@cloudinary-util/util@3.3.2:
-    resolution: {integrity: sha512-Cc0iFxzfl7fcOXuznpeZFGYC885Of/vDgccRDnhTe/8Rf8YKv2PjLtezyo0VgmdA/CpeZy29NCXAsf6liokbwg==}
+  /@cloudinary-util/util@2.4.0:
+    resolution: {integrity: sha512-RJW/K1hvm+qL2civTWgg7iKdTPDMLmpFBvH03KUkDxuDk/xi9E9x9nPthEsmdDy65GdCcZm0UKnErXXgKzMOQQ==}
     dev: false
 
-  /@cloudinary-util/util@4.0.0:
-    resolution: {integrity: sha512-S4xcou/3A7l5o+bcKlw2VHBNgwups7/0lbVDT/cO5YmtrcEYXgj6LGmwnjvpTm/x571VPVN8x5jWdT3rLZiKJQ==}
+  /@cloudinary-util/util@3.0.0:
+    resolution: {integrity: sha512-o6cJsN49OIelLcSkqUf4WzgefpePDFsAaeQfJbpcKhVdtvmWv71K0oZwMXuX62IY1OolqIg0etMiHtWZPhvPNA==}
     dev: false
 
   /@cloudinary/html@1.11.2:
@@ -6389,11 +6368,7 @@ packages:
         optional: true
     dependencies:
       '@langchain/core': 0.1.30
-<<<<<<< HEAD
       '@langchain/openai': 0.0.14(ws@8.18.1)
-=======
-      '@langchain/openai': 0.0.14(ws@8.18.0)
->>>>>>> origin/main
       cohere-ai: 7.8.0
       flat: 5.0.2
       langsmith: 0.0.48
@@ -6422,21 +6397,13 @@ packages:
       zod-to-json-schema: 3.24.5(zod@3.23.8)
     dev: false
 
-<<<<<<< HEAD
   /@langchain/openai@0.0.14(ws@8.18.1):
-=======
-  /@langchain/openai@0.0.14(ws@8.18.0):
->>>>>>> origin/main
     resolution: {integrity: sha512-co6nRylPrLGY/C3JYxhHt6cxLq07P086O7K3QaZH7SFFErIN9wSzJonpvhZR07DEUq6eK6wKgh2ORxA/NcjSRQ==}
     engines: {node: '>=18'}
     dependencies:
       '@langchain/core': 0.1.30
       js-tiktoken: 1.0.7
-<<<<<<< HEAD
-      openai: 4.93.0(ws@8.18.1)(zod@3.23.8)
-=======
-      openai: 4.96.0(ws@8.18.0)(zod@3.23.8)
->>>>>>> origin/main
+      openai: 4.98.0(ws@8.18.1)(zod@3.23.8)
       zod: 3.23.8
       zod-to-json-schema: 3.24.5(zod@3.23.8)
     transitivePeerDependencies:
@@ -6849,17 +6816,17 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
 
-  /@oaknational/oak-components@1.108.0(next-cloudinary@6.16.0)(next@14.2.21)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11):
-    resolution: {integrity: sha512-NQnk6WFaVnBuPgOq5zeNIN/ItTnzbUbi5f05lL7Ti0fmNinyuHchn3q+EIqoLXBElX1A1xodGiN00TtrgE4EnA==}
+  /@oaknational/oak-components@1.68.1(next-cloudinary@5.20.0)(next@14.2.21)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11):
+    resolution: {integrity: sha512-X+p57jdMb6txq7TSp+/Ut6Oml7JexhvPVyeF4RZscEDMnaivfQ7sqnvIdXf5AFnty/oIjQo9ArsXqEdtUADvow==}
     peerDependencies:
-      next: '>=14.2.12'
-      next-cloudinary: '>=6.16.0'
-      react: '>=18.2.0'
-      react-dom: '>=18.2.0'
-      styled-components: '>=5.3.11'
+      next: ^14.2.12
+      next-cloudinary: ^5.20.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      styled-components: ^5.3.11
     dependencies:
       next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
-      next-cloudinary: 6.16.0(next@14.2.21)(react@18.2.0)
+      next-cloudinary: 5.20.0(next@14.2.21)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       styled-components: 5.3.11(@babel/core@7.26.0)(react-dom@18.2.0)(react-is@19.1.0)(react@18.2.0)
@@ -7068,6 +7035,16 @@ packages:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
     dependencies:
       '@opentelemetry/api': 1.9.0
+      '@opentelemetry/semantic-conventions': 1.28.0
+    dev: false
+
+  /@opentelemetry/core@1.30.1(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-OOCM2C/QIURhJMuKaekP3TRBxBKxG/TWWA0TL2J6nXUtDnuCtccy49LUJF8xPFXMX+0LMcxFpCo8M9cGY1W6rQ==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@opentelemetry/api': '>=1.0.0 <1.10.0'
+    dependencies:
+      '@opentelemetry/api': 1.8.0
       '@opentelemetry/semantic-conventions': 1.28.0
     dev: false
 
@@ -7426,6 +7403,23 @@ packages:
       - supports-color
     dev: false
 
+  /@opentelemetry/instrumentation@0.56.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-2KkGBKE+FPXU1F0zKww+stnlUxUTlBvLCiWdP63Z9sqXYeNI/ziNzsxAp4LAdUcTQmXjw1IWgvm5CAb/BHy99w==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@opentelemetry/api': ^1.3.0
+    dependencies:
+      '@opentelemetry/api': 1.8.0
+      '@opentelemetry/api-logs': 0.56.0
+      '@types/shimmer': 1.2.0
+      import-in-the-middle: 1.13.0
+      require-in-the-middle: 7.5.1
+      semver: 7.7.1
+      shimmer: 1.2.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@opentelemetry/instrumentation@0.56.0(@opentelemetry/api@1.9.0):
     resolution: {integrity: sha512-2KkGBKE+FPXU1F0zKww+stnlUxUTlBvLCiWdP63Z9sqXYeNI/ziNzsxAp4LAdUcTQmXjw1IWgvm5CAb/BHy99w==}
     engines: {node: '>=14'}
@@ -7448,6 +7442,17 @@ packages:
     engines: {node: '>=14'}
     dev: false
 
+  /@opentelemetry/resources@1.30.1(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-5UxZqiAgLYGFjS4s9qm5mBVo433u+dSPUFWVWXmLAD4wB65oMCoXaJP1KJa9DIYYMeHu3z4BZcStG3LC593cWA==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@opentelemetry/api': '>=1.0.0 <1.10.0'
+    dependencies:
+      '@opentelemetry/api': 1.8.0
+      '@opentelemetry/core': 1.30.1(@opentelemetry/api@1.8.0)
+      '@opentelemetry/semantic-conventions': 1.28.0
+    dev: false
+
   /@opentelemetry/resources@1.30.1(@opentelemetry/api@1.9.0):
     resolution: {integrity: sha512-5UxZqiAgLYGFjS4s9qm5mBVo433u+dSPUFWVWXmLAD4wB65oMCoXaJP1KJa9DIYYMeHu3z4BZcStG3LC593cWA==}
     engines: {node: '>=14'}
@@ -7456,6 +7461,18 @@ packages:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.30.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/semantic-conventions': 1.28.0
+    dev: false
+
+  /@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-jVPgBbH1gCy2Lb7X0AVQ8XAfgg0pJ4nvl8/IiQA6nxOsPvS+0zMJaFSs2ltXe0J6C8dqjcnpyqINDJmU30+uOg==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@opentelemetry/api': '>=1.0.0 <1.10.0'
+    dependencies:
+      '@opentelemetry/api': 1.8.0
+      '@opentelemetry/core': 1.30.1(@opentelemetry/api@1.8.0)
+      '@opentelemetry/resources': 1.30.1(@opentelemetry/api@1.8.0)
       '@opentelemetry/semantic-conventions': 1.28.0
     dev: false
 
@@ -9913,7 +9930,7 @@ packages:
       '@sentry/vercel-edge': 8.49.0
       '@sentry/webpack-plugin': 2.22.7(webpack@5.99.5)
       chalk: 3.0.0
-      next: 14.2.21(@babel/core@7.26.8)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       resolve: 1.22.8
       rollup: 3.29.5
       stacktrace-parser: 0.1.10
@@ -9981,9 +9998,9 @@ packages:
       '@opentelemetry/semantic-conventions': ^1.28.0
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.30.1(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation': 0.56.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-base': 1.30.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 1.30.1(@opentelemetry/api@1.8.0)
+      '@opentelemetry/instrumentation': 0.56.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/sdk-trace-base': 1.30.1(@opentelemetry/api@1.8.0)
       '@opentelemetry/semantic-conventions': 1.30.0
       '@sentry/core': 8.49.0
     dev: false
@@ -10032,7 +10049,7 @@ packages:
       '@sentry/bundler-plugin-core': 2.22.7
       unplugin: 1.0.1
       uuid: 9.0.1
-      webpack: 5.99.5
+      webpack: 5.99.5(esbuild@0.21.5)
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -11127,12 +11144,6 @@ packages:
     resolution: {integrity: sha512-4slmbtwV59ZxitY4ixUZdy1uRLf9eSIvBWPQxNjhHYWEtn0FryfKpyS2cvADYXTayWdKEIsJengncrVvkI4I6A==}
     dev: false
 
-  /@types/node@18.19.75:
-    resolution: {integrity: sha512-UIksWtThob6ZVSyxcOqCLOUNg/dyO1Qvx4McgeuhrEtHTLFTf7BBhEazaE4K806FGTPtzd/2sE90qn4fVr7cyw==}
-    dependencies:
-      undici-types: 5.26.5
-    dev: false
-
   /@types/node@18.19.86:
     resolution: {integrity: sha512-fifKayi175wLyKyc5qUfyENhQ1dCNI1UNjp653d8kuYcPQN5JhX3dGuP/XmvPTg/xRBn1VTLpbmi+H/Mr7tLfQ==}
     dependencies:
@@ -11957,13 +11968,6 @@ packages:
   /agent-base@7.1.3:
     resolution: {integrity: sha512-jRR5wdylq8CkOe6hei19GGZnxM6rBGwFl3Bg0YItGDimvjGtAvdZk4Pu6Cl4u4Igsws4a1fd1Vq3ezrhn4KmFw==}
     engines: {node: '>= 14'}
-
-  /agentkeepalive@4.5.0:
-    resolution: {integrity: sha512-5GG/5IbQQpC9FpkRGsSvZI5QYeSCzlJHdpBQntCsuTOxhKD8lqKhrleg2Yi7yvMIf82Ycmmqln9U8V9qwEiJew==}
-    engines: {node: '>= 8.0.0'}
-    dependencies:
-      humanize-ms: 1.2.1
-    dev: false
 
   /agentkeepalive@4.6.0:
     resolution: {integrity: sha512-kja8j7PjmncONqaTsB8fQ+wE2mSU2DJ9D4XKoJ5PFWIdRMa6SLSN1ff4mOr4jCbfRSsxR4keIiySJU0N9T5hIQ==}
@@ -14445,30 +14449,21 @@ packages:
       minimist: 1.2.8
     dev: false
 
-<<<<<<< HEAD
   /cursor-tools@0.60.0(@playwright/test@1.51.1)(deepmerge@4.3.1)(react@18.2.0):
     resolution: {integrity: sha512-EwwK5GGMEzRwinnN4N3BZ0I5XtsMAmHZFmvJhMjUYmiPeslshjOEQH0Oo2oDQt9NK1knxkFuhF2deQ9TgsGFpg==}
-=======
-  /cursor-tools@0.5.0(@playwright/test@1.51.1)(deepmerge@4.3.1)(openai@4.96.0)(playwright@1.51.1):
-    resolution: {integrity: sha512-Fz0Q+qx5ac3AEc7jrvZQ/nKPeRvpaoSDqAx7R1vCAgYyMLnJr9DoAsEQi4tq/I7qOh8H2qNm+JL6FRzjNhP+Xg==}
->>>>>>> origin/main
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
-<<<<<<< HEAD
       '@anthropic-ai/sdk': 0.39.0
       '@browserbasehq/stagehand': 2.2.1-alpha-12754d0b0568ef48ff2b433a7b6ecee3d86af4b7(@playwright/test@1.51.1)(deepmerge@4.3.1)(dotenv@16.4.7)(react@18.2.0)(zod@3.24.2)
       '@modelcontextprotocol/sdk': 1.9.0
       '@types/glob': 8.1.0
-=======
-      '@browserbasehq/stagehand': 1.12.0(@playwright/test@1.51.1)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.96.0)(zod@3.24.1)
->>>>>>> origin/main
       dotenv: 16.4.7
       eventsource-client: 1.1.3
       fast-glob: 3.3.3
       glob: 11.0.1
       google-auth-library: 9.15.1
-      openai: 4.93.0(ws@8.18.1)(zod@3.24.2)
+      openai: 4.98.0(ws@8.18.1)(zod@3.24.2)
       p-queue: 8.1.0
       playwright: 1.51.1
       playwright-core: 1.50.1
@@ -19846,7 +19841,7 @@ packages:
       langsmith: 0.0.48
       lodash: 4.17.21
       ml-distance: 4.0.1
-      openai: 4.96.0(ws@8.18.0)(zod@3.23.8)
+      openai: 4.98.0(ws@8.18.1)(zod@3.23.8)
       openapi-types: 12.1.3
       p-queue: 6.6.2
       p-retry: 4.6.2
@@ -21251,15 +21246,14 @@ packages:
     resolution: {integrity: sha512-EZSPZB70jiVsivaBLYDCyntd5eH8NTSMOn3rB+HxwdmKThGELLdYv8qVIMWvZEFy9w8ZZpW9h9OB32l1rGtj7g==}
     dev: true
 
-  /next-cloudinary@6.16.0(next@14.2.21)(react@18.2.0):
-    resolution: {integrity: sha512-gbw/A1aBHJBC2thm4/veI77IkmbAQXuRUj8kNEuxf1zgjGkUWkShho/cXS4VsFhnHuDieqb30gMjZnZdBDrQ/Q==}
+  /next-cloudinary@5.20.0(next@14.2.21)(react@18.2.0):
+    resolution: {integrity: sha512-oEe//iguL/fZAJH2zTSs0Kyfv6k0vhXoA07L1rX4UzQrqEmyT741UwwasnYN1qOYSZuLdum97CbJO9JkDARwIQ==}
     peerDependencies:
-      next: ^12 || ^13 || ^14 || >=15.0.0-rc || ^15
-      react: ^17 || ^18 || >=19.0.0-beta || ^19
+      next: ^12 || ^13 || ^14
+      react: ^17 || ^18
     dependencies:
-      '@cloudinary-util/types': 1.5.10
-      '@cloudinary-util/url-loader': 5.10.4
-      '@cloudinary-util/util': 4.0.0
+      '@cloudinary-util/url-loader': 4.2.0
+      '@cloudinary-util/util': 2.4.0
       next: 14.2.21(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
     dev: false
@@ -21349,50 +21343,6 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
-
-  /next@14.2.21(@babel/core@7.26.8)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-rZmLwucLHr3/zfDMYbJXbw0ZeoBpirxkXuvsJbk7UPorvPYZhP7vq7aHbKnU7dQNCYIimRrbB2pp3xmf+wsYUg==}
-    engines: {node: '>=18.17.0'}
-    hasBin: true
-    peerDependencies:
-      '@opentelemetry/api': ^1.1.0
-      '@playwright/test': ^1.41.2
-      react: ^18.2.0
-      react-dom: ^18.2.0
-      sass: ^1.3.0
-    peerDependenciesMeta:
-      '@opentelemetry/api':
-        optional: true
-      '@playwright/test':
-        optional: true
-      sass:
-        optional: true
-    dependencies:
-      '@next/env': 14.2.21
-      '@opentelemetry/api': 1.9.0
-      '@playwright/test': 1.51.1
-      '@swc/helpers': 0.5.5
-      busboy: 1.6.0
-      caniuse-lite: 1.0.30001685
-      graceful-fs: 4.2.11
-      postcss: 8.4.31
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      styled-jsx: 5.1.1(@babel/core@7.26.8)(react@18.2.0)
-    optionalDependencies:
-      '@next/swc-darwin-arm64': 14.2.21
-      '@next/swc-darwin-x64': 14.2.21
-      '@next/swc-linux-arm64-gnu': 14.2.21
-      '@next/swc-linux-arm64-musl': 14.2.21
-      '@next/swc-linux-x64-gnu': 14.2.21
-      '@next/swc-linux-x64-musl': 14.2.21
-      '@next/swc-win32-arm64-msvc': 14.2.21
-      '@next/swc-win32-ia32-msvc': 14.2.21
-      '@next/swc-win32-x64-msvc': 14.2.21
-    transitivePeerDependencies:
-      - '@babel/core'
-      - babel-plugin-macros
-    dev: false
 
   /no-case@2.3.2:
     resolution: {integrity: sha512-rmTZ9kz+f3rCvK2TD1Ue/oZlns7OGoIWP4fc3llxxRXlOkHKoWPPWJOfFYpITabSow43QJbRIoHQXtt10VldyQ==}
@@ -21890,36 +21840,8 @@ packages:
       is-wsl: 2.2.0
     dev: true
 
-<<<<<<< HEAD
-  /openai@4.58.2(zod@3.23.8):
-    resolution: {integrity: sha512-hIalypYELt7/PcryFpz4Gi1z/8ZDzukWyOhr+jKM6L/GVE+t4NseaENXKt+OxnkkIm/1R2EkdGxgnHrZ0kB5bQ==}
-    hasBin: true
-    peerDependencies:
-      zod: ^3.23.8
-    peerDependenciesMeta:
-      zod:
-        optional: true
-    dependencies:
-      '@types/node': 18.19.75
-      '@types/node-fetch': 2.6.4
-      '@types/qs': 6.9.15
-      abort-controller: 3.0.0
-      agentkeepalive: 4.5.0
-      form-data-encoder: 1.7.2
-      formdata-node: 4.4.1
-      node-fetch: 2.7.0
-      qs: 6.13.0
-      zod: 3.23.8
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /openai@4.93.0(ws@8.18.1)(zod@3.23.8):
-    resolution: {integrity: sha512-2kONcISbThKLfm7T9paVzg+QCE1FOZtNMMUfXyXckUAoXRRS/mTP89JSDHPMp8uM5s0bz28RISbvQjArD6mgUQ==}
-=======
-  /openai@4.96.0(ws@8.18.0)(zod@3.23.8):
-    resolution: {integrity: sha512-dKoW56i02Prv2XQolJ9Rl9Svqubqkzg3QpwEOBuSVZLk05Shelu7s+ErRTwFc1Bs3JZ2qBqBfVpXQiJhwOGG8A==}
->>>>>>> origin/main
+  /openai@4.98.0(ws@8.18.1)(zod@3.23.8):
+    resolution: {integrity: sha512-TmDKur1WjxxMPQAtLG5sgBSCJmX7ynTsGmewKzoDwl1fRxtbLOsiR0FA/AOAAtYUmP6azal+MYQuOENfdU+7yg==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -21937,15 +21859,14 @@ packages:
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
       node-fetch: 2.7.0
-<<<<<<< HEAD
       ws: 8.18.1
       zod: 3.23.8
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /openai@4.93.0(ws@8.18.1)(zod@3.24.2):
-    resolution: {integrity: sha512-2kONcISbThKLfm7T9paVzg+QCE1FOZtNMMUfXyXckUAoXRRS/mTP89JSDHPMp8uM5s0bz28RISbvQjArD6mgUQ==}
+  /openai@4.98.0(ws@8.18.1)(zod@3.24.2):
+    resolution: {integrity: sha512-TmDKur1WjxxMPQAtLG5sgBSCJmX7ynTsGmewKzoDwl1fRxtbLOsiR0FA/AOAAtYUmP6azal+MYQuOENfdU+7yg==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -21965,12 +21886,9 @@ packages:
       node-fetch: 2.7.0
       ws: 8.18.1
       zod: 3.24.2
-=======
-      ws: 8.18.0
-      zod: 3.23.8
->>>>>>> origin/main
     transitivePeerDependencies:
       - encoding
+    dev: true
 
   /openapi-types@12.1.3:
     resolution: {integrity: sha512-N4YtSYJqghVu4iek2ZUvcN/0aqH1kRDuNqzcycDxhOUpg7GdvLa2F3DgS6yBNhInhv2r/6I0Flkn7CqL8+nIcw==}
@@ -23342,23 +23260,11 @@ packages:
       side-channel: 1.1.0
     dev: false
 
-  /qs@6.13.0:
-    resolution: {integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==}
-    engines: {node: '>=0.6'}
-    dependencies:
-<<<<<<< HEAD
-      side-channel: 1.1.0
-    dev: false
-
   /qs@6.14.0:
     resolution: {integrity: sha512-YWWTjgABSKcvs/nWBi9PycY/JiPJqOD4JA6o9Sej2AtvSGarXxKC3OQSk4pAarbdQlKAh5D4FCQkJNkW+GAn3w==}
     engines: {node: '>=0.6'}
     dependencies:
       side-channel: 1.1.0
-=======
-      side-channel: 1.0.6
-    dev: true
->>>>>>> origin/main
 
   /querystring-es3@0.2.1:
     resolution: {integrity: sha512-773xhDQnZBMFobEiztv8LIl70ch5MSF/jUQVlhwFyBILqq96anmoctVIYz+ZRp0qbCKATTn6ev02M3r7Ga5vqA==}
@@ -24765,16 +24671,10 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       es-errors: 1.3.0
-<<<<<<< HEAD
       object-inspect: 1.13.4
       side-channel-list: 1.0.0
       side-channel-map: 1.0.1
       side-channel-weakmap: 1.0.2
-=======
-      get-intrinsic: 1.3.0
-      object-inspect: 1.13.1
-    dev: true
->>>>>>> origin/main
 
   /signal-exit@3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
@@ -25521,24 +25421,6 @@ packages:
       client-only: 0.0.1
       react: 18.2.0
 
-  /styled-jsx@5.1.1(@babel/core@7.26.8)(react@18.2.0):
-    resolution: {integrity: sha512-pW7uC1l4mBZ8ugbiZrcIsiIvVx1UmTfw7UkC3Um2tmfUq9Bhk8IiyEIPl6F8agHgjzku6j0xQEZbfA5uSgSaCw==}
-    engines: {node: '>= 12.0.0'}
-    peerDependencies:
-      '@babel/core': '*'
-      babel-plugin-macros: '*'
-      react: '>= 16.8.0 || 17.x.x || ^18.0.0-0'
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      babel-plugin-macros:
-        optional: true
-    dependencies:
-      '@babel/core': 7.26.8
-      client-only: 0.0.1
-      react: 18.2.0
-    dev: false
-
   /styled-jsx@5.1.6(@babel/core@7.24.5)(react@18.2.0):
     resolution: {integrity: sha512-qSVyDTeMotdvQYoHWLNGwRFJHC+i+ZvdBRYosOFgC+Wg1vx4frN2/RG/NA7SYqqvKNLf39P2LSRA2pu6n0XYZA==}
     engines: {node: '>= 12.0.0'}
@@ -25648,12 +25530,7 @@ packages:
     dependencies:
       client-only: 0.0.1
       react: 18.2.0
-<<<<<<< HEAD
       use-sync-external-store: 1.5.0(react@18.2.0)
-=======
-      use-sync-external-store: 1.2.0(react@18.2.0)
-    dev: false
->>>>>>> origin/main
 
   /symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
@@ -25824,31 +25701,6 @@ packages:
       serialize-javascript: 6.0.2
       terser: 5.39.0
       webpack: 5.99.5(esbuild@0.21.5)
-    dev: true
-
-  /terser-webpack-plugin@5.3.14(webpack@5.99.5):
-    resolution: {integrity: sha512-vkZjpUjb6OMS7dhV+tILUW6BhpDR7P2L/aQSAv+Uwk+m8KATX9EccViHTJR2qDtACKPIYndLGCyl3FMo+r2LMw==}
-    engines: {node: '>= 10.13.0'}
-    peerDependencies:
-      '@swc/core': '*'
-      esbuild: '*'
-      uglify-js: '*'
-      webpack: ^5.1.0
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      esbuild:
-        optional: true
-      uglify-js:
-        optional: true
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
-      jest-worker: 27.5.1
-      schema-utils: 4.3.0
-      serialize-javascript: 6.0.2
-      terser: 5.39.0
-      webpack: 5.99.5
-    dev: false
 
   /terser@5.31.3:
     resolution: {integrity: sha512-pAfYn3NIZLyZpa83ZKigvj6Rn9c/vd5KfYGX7cN1mnzqgDcxWvrU5ZtAfIKhEXz9nRecw4z3LXkjaq96/qZqAA==}
@@ -27294,45 +27146,6 @@ packages:
       - uglify-js
     dev: true
 
-  /webpack@5.99.5:
-    resolution: {integrity: sha512-q+vHBa6H9qwBLUlHL4Y7L0L1/LlyBKZtS9FHNCQmtayxjI5RKC9yD8gpvLeqGv5lCQp1Re04yi0MF40pf30Pvg==}
-    engines: {node: '>=10.13.0'}
-    hasBin: true
-    peerDependencies:
-      webpack-cli: '*'
-    peerDependenciesMeta:
-      webpack-cli:
-        optional: true
-    dependencies:
-      '@types/eslint-scope': 3.7.7
-      '@types/estree': 1.0.7
-      '@webassemblyjs/ast': 1.14.1
-      '@webassemblyjs/wasm-edit': 1.14.1
-      '@webassemblyjs/wasm-parser': 1.14.1
-      acorn: 8.14.1
-      browserslist: 4.24.4
-      chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.18.1
-      es-module-lexer: 1.6.0
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.3.0
-      mime-types: 2.1.35
-      neo-async: 2.6.2
-      schema-utils: 4.3.0
-      tapable: 2.2.1
-      terser-webpack-plugin: 5.3.14(webpack@5.99.5)
-      watchpack: 2.4.2
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - '@swc/core'
-      - esbuild
-      - uglify-js
-    dev: false
-
   /webpack@5.99.5(esbuild@0.21.5):
     resolution: {integrity: sha512-q+vHBa6H9qwBLUlHL4Y7L0L1/LlyBKZtS9FHNCQmtayxjI5RKC9yD8gpvLeqGv5lCQp1Re04yi0MF40pf30Pvg==}
     engines: {node: '>=10.13.0'}
@@ -27370,7 +27183,6 @@ packages:
       - '@swc/core'
       - esbuild
       - uglify-js
-    dev: true
 
   /webvtt-parser@2.2.0:
     resolution: {integrity: sha512-FzmaED+jZyt8SCJPTKbSsimrrnQU8ELlViE1wuF3x1pgiQUM8Llj5XWj2j/s6Tlk71ucPfGSMFqZWBtKn/0uEA==}
