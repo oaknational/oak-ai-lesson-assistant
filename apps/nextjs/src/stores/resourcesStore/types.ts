@@ -1,9 +1,5 @@
 import type { AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
-import type {
-  GenerateAdditionalMaterialResponse,
-  GeneratePartialLessonPlanResponse,
-} from "@oakai/api/src/router/additionalMaterials/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import type { StoreApi } from "zustand";
@@ -59,15 +55,9 @@ export type ResourcesState = {
     resetFormState: () => void;
 
     // business logic actions
-    submitLessonPlan: (
-      params: SubmitLessonPlanParams,
-    ) => Promise<GeneratePartialLessonPlanResponse>;
-    generateMaterial: (
-      params: GenerateMaterialParams,
-    ) => Promise<GenerateAdditionalMaterialResponse>;
-    refineMaterial: (
-      params: RefineMaterialParams,
-    ) => Promise<AdditionalMaterialSchemas>;
+    submitLessonPlan: (params: SubmitLessonPlanParams) => void;
+    generateMaterial: (params: GenerateMaterialParams) => void;
+    refineMaterial: (params: RefineMaterialParams) => void;
     downloadMaterial: () => Promise<void>;
 
     // Reset store to default state

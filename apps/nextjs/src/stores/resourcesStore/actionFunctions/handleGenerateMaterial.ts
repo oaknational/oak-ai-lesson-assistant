@@ -58,6 +58,7 @@ export const handleGenerateMaterial =
       });
 
       log.info("Material generated successfully");
+      get().actions.setStepNumber(2);
 
       return result;
     } catch (error) {

@@ -65,8 +65,6 @@ export const handleSubmitLessonPlan =
         threatDetection: result.threatDetection,
       });
       log.info("Lesson plan updated successfully");
-
-      return get().pageData.lessonPlan;
     } catch (error) {
       log.error("Error handling lesson plan", error);
       Sentry.captureException(error);

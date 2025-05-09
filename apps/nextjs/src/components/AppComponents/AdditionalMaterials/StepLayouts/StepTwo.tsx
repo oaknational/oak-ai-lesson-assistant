@@ -54,7 +54,7 @@ const StepTwo = () => {
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 
   const handleSubmit = () => {
-    const generatePromise = generateMaterial({
+    generateMaterial({
       mutateAsync: async (input) => {
         try {
           return fetchMaterial.mutateAsync(input);
@@ -63,16 +63,6 @@ const StepTwo = () => {
         }
       },
     });
-
-    // Navigate to the next step
-    generatePromise
-      .then(() => setStepNumber(2))
-      .catch((error) => {
-        log.error("Failed to generate material", error);
-        Sentry.captureException(error);
-      });
-
-    return generatePromise;
   };
 
   if (isLoadingLessonPlan) {
