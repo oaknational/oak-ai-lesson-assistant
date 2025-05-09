@@ -54,12 +54,15 @@ const StepTwo = () => {
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 
   const handleSubmit = () => {
-    generateMaterial({
+    void generateMaterial({
       mutateAsync: async (input) => {
         try {
-          return fetchMaterial.mutateAsync(input);
-        } catch (error) {
-          throw error instanceof Error ? error : new Error(String(error));
+          return await fetchMaterial.mutateAsync(input);
+        } catch (e) {
+          const error = e instanceof Error ? e : new Error(String(e));
+          Sentry.captureException(error);
+
+          throw error;
         }
       },
     });
