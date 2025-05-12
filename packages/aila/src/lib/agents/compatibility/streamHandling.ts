@@ -20,9 +20,12 @@ export type InteractResult = {
 export function createPatchesFromInteractResult(
   initialDocument: LooseLessonPlan,
   result: InteractResult,
-) {
+): {
+  patches: JsonPatchDocumentOptional[];
+  sectionsEdited: string[];
+} {
   // Generate patches from the document changes
-  const patchesWithMetadata = [];
+  const patchesWithMetadata: JsonPatchDocumentOptional[] = [];
 
   // Use fast-json-patch to detect changes
   const patches = compare(initialDocument, result.document);
@@ -45,11 +48,14 @@ export function createPatchesFromInteractResult(
     }
 
     if ("value" in patch) {
+      if (patch.op === "test" || patch.op === "_get") {
+        continue;
+      }
       patchesWithMetadata.push({
         type: "patch",
         reasoning: `Updated ${sectionKey} based on user request`,
         value: {
-          type: getValueType(patch.value),
+          // type: getValueType(patch.value),
           op: patch.op,
           path: patch.path,
           value: patch.value,
@@ -103,8 +109,7 @@ export function createInteractStreamHandler(
 ): InteractCallback {
   // Track sections and patches for the message
   const sectionsToEdit: string[] = [];
-  const patches: ReturnType<typeof createPatchesFromInteractResult>["patches"] =
-    [];
+  const patches: JsonPatchDocumentOptional[] = [];
 
   return (update) => {
     log.info("Stream update received", update.type);
@@ -141,9 +146,23 @@ export function createInteractStreamHandler(
           // Stream each patch
           for (let i = 0; i < update.data.patches.length; i++) {
             const patch = update.data.patches[i];
+            if (
+              !patch ||
+              typeof patch !== "object" ||
+              !("value" in patch) ||
+              !patch.value ||
+              typeof patch.value !== "object" ||
+              !("op" in patch.value) ||
+              !patch.value.op
+            ) {
+              continue;
+            }
+            if (patch?.value?.op === "test" || patch?.value?.op === "_get") {
+              continue;
+            }
             const patchJson = JSON.stringify(patch);
             streamChunks(controller, chat, i > 0 ? "," + patchJson : patchJson);
-            if (patch) patches.push(patch);
+            if (patch) patches.push(patch as JsonPatchDocumentOptional);
           }
         }
         break;

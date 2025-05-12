@@ -1,6 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import { compare } from "fast-json-patch";
+import type { JsonPatchDocumentOptional } from "protocol/jsonPatchProtocol";
 
 import { type LooseLessonPlan } from "../../protocol/schema";
 import { agents, sectionAgentMap } from "./agents";
@@ -46,17 +47,7 @@ type InteractUpdate =
       data: {
         sectionKey: string;
         actionType: string;
-        patches: {
-          type: string;
-          reasoning: string;
-          value: {
-            type: "string" | "object" | "string-array";
-            op: "add" | "replace" | "test" | "_get";
-            path: string;
-            value: unknown;
-          };
-          status: string;
-        }[];
+        patches: JsonPatchDocumentOptional[];
       };
     }
   | {
@@ -189,7 +180,7 @@ export async function interact({
         const currentPatches = createPatchesFromInteractResult(
           initialDocument,
           { document },
-        );
+        ).patches;
 
         // Send section update with current state
         onUpdate?.({
@@ -197,9 +188,7 @@ export async function interact({
           data: {
             sectionKey,
             actionType,
-            patches: currentPatches.patches.filter(
-              (p) => p.value.path.substring(1) === sectionKey,
-            ),
+            patches: currentPatches,
           },
         });
         break;
