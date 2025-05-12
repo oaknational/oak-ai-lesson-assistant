@@ -5,6 +5,7 @@ import type { docs_v1 } from "@googleapis/docs";
 import type { Result } from "../../types";
 import type { ValueToString } from "../../utils";
 import { defaultValueToString } from "../../utils";
+import { cleanupUnusedPlaceholdersRequests } from "./cleanupUnusedPlaceholdersRequests";
 import { findMarkdownImages } from "./findMarkdownImages";
 import { imageReplacements } from "./imageReplacements";
 import { textReplacements } from "./textReplacements";
@@ -22,12 +23,14 @@ export async function populateDoc<
   data,
   warnIfMissing = [],
   valueToString = defaultValueToString,
+  enablePlaceholderCleanup = false,
 }: {
   googleDocs: docs_v1.Docs;
   documentId: string;
   data: Data;
   warnIfMissing?: (keyof Data)[];
   valueToString?: ValueToString<Data>;
+  enablePlaceholderCleanup?: boolean;
 }): Promise<Result<{ missingData: string[] }>> {
   try {
     const missingData: string[] = [];
@@ -58,6 +61,22 @@ export async function populateDoc<
           requests: imageRequests,
         },
       });
+    }
+
+    if (enablePlaceholderCleanup) {
+      const cleanupRequests = await cleanupUnusedPlaceholdersRequests(
+        googleDocs,
+        documentId,
+      );
+
+      if (cleanupRequests.length > 0) {
+        await googleDocs.documents.batchUpdate({
+          documentId,
+          requestBody: {
+            requests: cleanupRequests,
+          },
+        });
+      }
     }
 
     return {
