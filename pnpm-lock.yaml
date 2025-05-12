@@ -144,11 +144,14 @@ importers:
         specifier: '*'
         version: link:../../packages/prettier-config
       '@oaknational/oak-components':
-        specifier: ^1.68.1
+        specifier: ^1.102.1
         version: 1.108.0(next-cloudinary@6.16.0)(next@14.2.21)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11)
       '@oaknational/oak-consent-client':
         specifier: ^2.1.0
         version: 2.1.0(react-dom@18.2.0)(react@18.2.0)(zod@3.23.8)
+      '@oaknational/oak-curriculum-schema':
+        specifier: ^1.59.1
+        version: 1.61.0(zod@3.23.8)
       '@portabletext/react':
         specifier: ^3.1.0
         version: 3.1.0(react@18.2.0)
@@ -326,6 +329,9 @@ importers:
       react-scan:
         specifier: ^0.0.43
         version: 0.0.43(next@14.2.21)(react-dom@18.2.0)(react@18.2.0)
+      react-string-replace:
+        specifier: ^1.1.1
+        version: 1.1.1
       react-syntax-highlighter:
         specifier: ^15.5.0
         version: 15.5.0(react@18.2.0)
@@ -6579,6 +6585,14 @@ packages:
       nanoid: 5.0.7
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+      zod: 3.23.8
+    dev: false
+
+  /@oaknational/oak-curriculum-schema@1.61.0(zod@3.23.8):
+    resolution: {integrity: sha512-pmwpN/z63+eXxuv8hOe2NZ04H8LRbEBc+ScLZysutctFUNQR1+Vdi4P7QNLuMDA1jETaHHurIgvFQ287HdsMGQ==}
+    peerDependencies:
+      zod: ^3.22.4
+    dependencies:
       zod: 3.23.8
     dev: false
 
@@ -22866,6 +22880,11 @@ packages:
     transitivePeerDependencies:
       - rollup
       - supports-color
+    dev: false
+
+  /react-string-replace@1.1.1:
+    resolution: {integrity: sha512-26TUbLzLfHQ5jO5N7y3Mx88eeKo0Ml0UjCQuX4BMfOd/JX+enQqlKpL1CZnmjeBRvQE8TR+ds9j1rqx9CxhKHQ==}
+    engines: {node: '>=0.12.0'}
     dev: false
 
   /react-style-singleton@2.2.3(@types/react@18.2.57)(react@18.2.0):
