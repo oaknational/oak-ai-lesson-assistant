@@ -5,7 +5,10 @@ import { compare } from "fast-json-patch/index.mjs";
 import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import { type LooseLessonPlan } from "../../protocol/schema";
 import { agents, sectionAgentMap } from "./agents";
-import type { InteractResult } from "./compatibility/streamHandling";
+import {
+  type InteractResult,
+  createPatchesFromInteractResult,
+} from "./compatibility/streamHandling";
 import { messageToUserAgent } from "./messageToUser";
 import { promptAgentHandler } from "./promptAgentHandler";
 import { type TurnPlan, agentRouter } from "./router";
@@ -175,35 +178,35 @@ export async function interact({
           additionalInstructions: context,
         });
 
-        const patch: JsonPatchDocumentOptional = {
-          type: "patch",
-          value: {
-            path: `/${sectionKey}`,
-            op: actionType,
-            value: response.content,
-          },
-          status: "complete",
-          // @todo improve 'reasoning here
-          reasoning: `Updated ${sectionKey} based on user request`,
-        };
-
-        // Create patches to represent the changes made to this section
-        // const currentPatches = createPatchesFromInteractResult(
-        //   initialDocument,
-        //   { document },
-        // ).patches;
+        // const patch: JsonPatchDocumentOptional = {
+        //   type: "patch",
+        //   value: {
+        //     path: `/${sectionKey}`,
+        //     op: actionType,
+        //     value: response.content,
+        //   },
+        //   status: "complete",
+        //   // @todo improve 'reasoning here
+        //   reasoning: `Updated ${sectionKey} based on user request`,
+        // };
 
         document = {
           ...document,
           [sectionKey]: response.content,
         };
+        // Create patches to represent the changes made to this section
+        const currentPatches = createPatchesFromInteractResult(
+          initialDocument,
+          { document },
+        ).patches;
+
         // Send section update with current state
         onUpdate?.({
           type: "section_update",
           data: {
             sectionKey,
             actionType,
-            patches: [patch],
+            patches: currentPatches,
           },
         });
         break;

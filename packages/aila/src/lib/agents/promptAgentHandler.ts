@@ -33,8 +33,6 @@ export async function promptAgentHandler<Schema extends z.ZodType>({
     `${agent.name}_response_schema`,
   );
 
-  console.log(agent.prompt);
-
   const result = await openAIClient.responses.parse({
     instructions: agent.prompt,
     input: `### Document
