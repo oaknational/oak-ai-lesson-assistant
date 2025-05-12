@@ -1,7 +1,7 @@
 // packages/aila/src/lib/agents/streamHandling.ts
 import { aiLogger } from "@oakai/logger";
 
-import { compare } from "fast-json-patch";
+import { compare } from "fast-json-patch/index.mjs";
 import type { ReadableStreamDefaultController } from "stream/web";
 
 import type { AilaChat } from "../../../core/chat/AilaChat";

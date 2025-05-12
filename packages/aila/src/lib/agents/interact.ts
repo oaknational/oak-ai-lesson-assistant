@@ -178,27 +178,28 @@ export async function interact({
           additionalInstructions: context,
         });
 
-        // const patch: JsonPatchDocumentOptional = {
-        //   type: "patch",
-        //   value: {
-        //     path: `/${sectionKey}`,
-        //     op: actionType,
-        //     value: response.content,
-        //   },
-        //   status: "complete",
-        //   // @todo improve 'reasoning here
-        //   reasoning: `Updated ${sectionKey} based on user request`,
-        // };
+        const patch: JsonPatchDocumentOptional = {
+          type: "patch",
+          value: {
+            path: `/${sectionKey}`,
+            op: actionType,
+            value: response.content,
+          },
+          status: "complete",
+          // @todo improve 'reasoning here
+          reasoning: `Updated ${sectionKey} based on user request`,
+        };
+        const patches = [patch];
 
         document = {
           ...document,
           [sectionKey]: response.content,
         };
-        // Create patches to represent the changes made to this section
-        const currentPatches = createPatchesFromInteractResult(
-          initialDocument,
-          { document },
-        ).patches;
+        // // Create patches to represent the changes made to this section
+        // const { patches} = createPatchesFromInteractResult(
+        //   initialDocument,
+        //   { document },
+        // );
 
         // Send section update with current state
         onUpdate?.({
@@ -206,7 +207,7 @@ export async function interact({
           data: {
             sectionKey,
             actionType,
-            patches: currentPatches,
+            patches,
           },
         });
         break;

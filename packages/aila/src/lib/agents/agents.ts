@@ -47,15 +47,31 @@ export const agentNames = z.enum([
 
 export type AgentName = z.infer<typeof agentNames>;
 
-export type PromptAgentDefinition<Schema extends z.ZodType = z.ZodTypeAny> = {
+const _unknownAgentResponseSchema = z.object({
+  value: z.unknown(),
+});
+export type AgentResponse = z.infer<typeof _unknownAgentResponseSchema>;
+
+const _agentResponseAnySchema = z
+  .object({
+    value: z.any(),
+  })
+  .required();
+
+type AgentResponseAny = z.infer<typeof _agentResponseAnySchema>;
+export type SchemaWithValue = z.ZodObject<{ value: z.ZodTypeAny }>;
+
+export type PromptAgentDefinition<
+  Schema extends SchemaWithValue = typeof _agentResponseAnySchema,
+> = {
   type: "prompt";
   name: AgentName;
   prompt: string;
   schema: Schema;
   whenToUse?: string[];
 };
-export type AgentDefinition<Schema extends z.ZodType = z.ZodTypeAny> =
-  | PromptAgentDefinition<Schema>
+export type AgentDefinition<Schema extends AgentResponse = AgentResponseAny> =
+  | PromptAgentDefinition<SchemaWithValue>
   | {
       type: "custom";
       name: AgentName;

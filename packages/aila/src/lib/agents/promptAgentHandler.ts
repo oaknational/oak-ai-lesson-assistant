@@ -4,9 +4,9 @@ import { zodTextFormat } from "openai/helpers/zod.mjs";
 import type { z } from "zod";
 
 import type { LessonPlanKey, LooseLessonPlan } from "../../protocol/schema";
-import type { PromptAgentDefinition } from "./agents";
+import type { PromptAgentDefinition, SchemaWithValue } from "./agents";
 
-export async function promptAgentHandler<Schema extends z.ZodType>({
+export async function promptAgentHandler<Schema extends SchemaWithValue>({
   agent,
   document,
   additionalInstructions,
@@ -20,7 +20,7 @@ export async function promptAgentHandler<Schema extends z.ZodType>({
   additionalInstructions: string;
   chatId: string;
   userId: string;
-}): Promise<{ content: Schema }> {
+}): Promise<{ content: z.infer<Schema>["value"] }> {
   const openAIClient = createOpenAIClient({
     app: "lesson-assistant",
     chatMeta: {
@@ -57,6 +57,6 @@ ${additionalInstructions}`,
   }
 
   return {
-    content: parsedResult,
+    content: parsedResult.value,
   };
 }
