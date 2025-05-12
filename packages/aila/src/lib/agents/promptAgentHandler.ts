@@ -1,9 +1,9 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 
 import { zodTextFormat } from "openai/helpers/zod.mjs";
-import type { LessonPlanKey, LooseLessonPlan } from "protocol/schema";
 import type { z } from "zod";
 
+import type { LessonPlanKey, LooseLessonPlan } from "../../protocol/schema";
 import type { PromptAgentDefinition } from "./agents";
 
 export async function promptAgentHandler<Schema extends z.ZodType>({
