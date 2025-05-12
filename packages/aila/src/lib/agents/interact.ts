@@ -1,14 +1,11 @@
 import { aiLogger } from "@oakai/logger";
 
-import { compare } from "fast-json-patch/index.mjs";
+import { compare } from "fast-json-patch";
 
 import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import { type LooseLessonPlan } from "../../protocol/schema";
 import { agents, sectionAgentMap } from "./agents";
-import {
-  type InteractResult,
-  createPatchesFromInteractResult,
-} from "./compatibility/streamHandling";
+import { type InteractResult } from "./compatibility/streamHandling";
 import { messageToUserAgent } from "./messageToUser";
 import { promptAgentHandler } from "./promptAgentHandler";
 import { type TurnPlan, agentRouter } from "./router";

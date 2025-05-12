@@ -1,7 +1,7 @@
 // packages/aila/src/lib/agents/streamHandling.ts
 import { aiLogger } from "@oakai/logger";
 
-import { compare } from "fast-json-patch/index.mjs";
+import { compare } from "fast-json-patch";
 import type { ReadableStreamDefaultController } from "stream/web";
 
 import type { AilaChat } from "../../../core/chat/AilaChat";
@@ -35,17 +35,17 @@ export function createPatchesFromInteractResult(
     // Convert path from /subject to subject
     const sectionKey = patch.path.substring(1); // Remove leading slash
 
-    function getValueType(
-      value: unknown,
-    ): "string" | "string-array" | "object" {
-      if (typeof value === "string") {
-        return "string";
-      }
-      if (Array.isArray(value)) {
-        return "string-array";
-      }
-      return "object";
-    }
+    // function getValueType(
+    //   value: unknown,
+    // ): "string" | "string-array" | "object" {
+    //   if (typeof value === "string") {
+    //     return "string";
+    //   }
+    //   if (Array.isArray(value)) {
+    //     return "string-array";
+    //   }
+    //   return "object";
+    // }
 
     if ("value" in patch) {
       if (patch.op === "test" || patch.op === "_get") {
