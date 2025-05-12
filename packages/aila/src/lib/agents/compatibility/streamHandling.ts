@@ -35,18 +35,6 @@ export function createPatchesFromInteractResult(
     // Convert path from /subject to subject
     const sectionKey = patch.path.substring(1); // Remove leading slash
 
-    // function getValueType(
-    //   value: unknown,
-    // ): "string" | "string-array" | "object" {
-    //   if (typeof value === "string") {
-    //     return "string";
-    //   }
-    //   if (Array.isArray(value)) {
-    //     return "string-array";
-    //   }
-    //   return "object";
-    // }
-
     if ("value" in patch) {
       if (patch.op === "test" || patch.op === "_get") {
         continue;
@@ -122,15 +110,12 @@ export function createInteractStreamHandler(
         ) {
           // When routing is complete, we have the sections to edit
           if (update.data.plan?.type === "turn_plan") {
-            // Extract section keys from the plan
-            const newSections = update.data.plan.plan.map(
-              (p: TurnPlan["plan"][number]) => p.sectionKey,
-            );
-            sectionsToEdit.push(...newSections);
-
-            // Stream the opening part of the message with sectionsToEdit
-            const openingPart = `{"type":"llmMessage","sectionsToEdit":${JSON.stringify(sectionsToEdit)},"patches":[`;
-            streamChunks(controller, chat, openingPart);
+            onTurnPlan({
+              turnPlan: update.data.plan,
+              controller,
+              chat,
+              sectionsToEdit,
+            });
           }
         }
         break;
@@ -138,32 +123,12 @@ export function createInteractStreamHandler(
       case "section_update":
         // When a section is updated, we have a new patch
         if (update.data.patches && update.data.patches.length > 0) {
-          // Add comma if not the first patch
-          if (patches.length > 0) {
-            streamChunks(controller, chat, ",");
-          }
-
-          // Stream each patch
-          for (let i = 0; i < update.data.patches.length; i++) {
-            const patch = update.data.patches[i];
-            if (
-              !patch ||
-              typeof patch !== "object" ||
-              !("value" in patch) ||
-              !patch.value ||
-              typeof patch.value !== "object" ||
-              !("op" in patch.value) ||
-              !patch.value.op
-            ) {
-              continue;
-            }
-            if (patch?.value?.op === "test" || patch?.value?.op === "_get") {
-              continue;
-            }
-            const patchJson = JSON.stringify(patch);
-            streamChunks(controller, chat, i > 0 ? "," + patchJson : patchJson);
-            if (patch) patches.push(patch as JsonPatchDocumentOptional);
-          }
+          onSectionUpdate({
+            update,
+            controller,
+            chat,
+            patches,
+          });
         }
         break;
 
@@ -173,6 +138,71 @@ export function createInteractStreamHandler(
         return;
     }
   };
+}
+
+function onTurnPlan({
+  turnPlan,
+  controller,
+  chat,
+  sectionsToEdit,
+}: {
+  turnPlan: TurnPlan;
+  controller: ReadableStreamDefaultController;
+  chat: AilaChat;
+  sectionsToEdit: string[];
+}) {
+  // Extract section keys from the plan
+  const newSections = turnPlan.plan.map(
+    (p: TurnPlan["plan"][number]) => p.sectionKey,
+  );
+  sectionsToEdit.push(...newSections);
+
+  // Stream the opening part of the message with sectionsToEdit
+  const openingPart = `{"type":"llmMessage","sectionsToEdit":${JSON.stringify(sectionsToEdit)},"patches":[`;
+  streamChunks(controller, chat, openingPart);
+}
+
+function onSectionUpdate({
+  update,
+  controller,
+  chat,
+  patches,
+}: {
+  update: {
+    data: {
+      patches: JsonPatchDocumentOptional[];
+    };
+  };
+  controller: ReadableStreamDefaultController;
+  chat: AilaChat;
+  patches: JsonPatchDocumentOptional[];
+}) {
+  // Add comma if not the first patch
+  if (patches.length > 0) {
+    streamChunks(controller, chat, ",");
+  }
+
+  // Stream each patch
+  for (let i = 0; i < update.data.patches.length; i++) {
+    const patch = update.data.patches[i];
+    if (
+      !patch ||
+      typeof patch !== "object" ||
+      !("value" in patch) ||
+      !patch.value ||
+      typeof patch.value !== "object" ||
+      !("op" in patch.value) ||
+      !patch.value.op
+    ) {
+      continue;
+    }
+    if (patch?.value?.op === "test" || patch?.value?.op === "_get") {
+      continue;
+    }
+    const patchJson = JSON.stringify(patch);
+    streamChunks(controller, chat, i > 0 ? "," + patchJson : patchJson);
+    if (patch) patches.push(patch as JsonPatchDocumentOptional);
+  }
 }
 
 // Helper to stream chunks of text

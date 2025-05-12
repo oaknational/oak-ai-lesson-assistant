@@ -192,11 +192,6 @@ export async function interact({
           ...document,
           [sectionKey]: response.content,
         };
-        // // Create patches to represent the changes made to this section
-        // const { patches} = createPatchesFromInteractResult(
-        //   initialDocument,
-        //   { document },
-        // );
 
         // Send section update with current state
         onUpdate?.({
