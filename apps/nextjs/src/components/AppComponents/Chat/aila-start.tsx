@@ -129,13 +129,15 @@ export function AilaStart({
       <Flex
         direction="column"
         justify="center"
-        className="h-[100vh] min-h-screen bg-lavender30 pt-26"
+        className="min-h-screen bg-lavender30 pt-26"
       >
         <OakFlexWithHeight
           $flexDirection="column"
           $justifyContent="space-between"
           $maxWidth="all-spacing-23"
           $mh="auto"
+          $gap="space-between-l"
+          $ph={["inner-padding-l", "inner-padding-none"]}
         >
           <OakFlex $flexDirection="column" $gap="all-spacing-2">
             <OakHeading tag="h1" $font="heading-5">
@@ -146,7 +148,7 @@ export function AilaStart({
               want to create.
             </OakP>
           </OakFlex>
-          <OakFlex $flexDirection="row" $gap="space-between-l">
+          <OakFlex $flexDirection={["column", "row"]} $gap="space-between-l">
             <Card>
               <OakFlex $flexDirection="column" $gap="all-spacing-2">
                 <OakP $font="heading-5">Create an adaptable lesson</OakP>
@@ -181,7 +183,9 @@ export function AilaStart({
               </OakPrimaryButton>
             </Card>
           </OakFlex>
-          <ChatPanelDisclaimer size="sm" />
+          <OakFlex $mt="space-between-l">
+            <ChatPanelDisclaimer size="sm" />
+          </OakFlex>
         </OakFlexWithHeight>
       </Flex>
     </DialogRoot>
@@ -209,6 +213,9 @@ const Card = ({ children }: { children: React.ReactNode }) => {
 const OakFlex50 = styled(OakFlex)`
   width: 50%;
   height: fit-content;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 function createStartingPromptFromSearchParams(
