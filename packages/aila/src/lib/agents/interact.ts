@@ -1,8 +1,8 @@
 import { aiLogger } from "@oakai/logger";
 
 import { compare } from "fast-json-patch";
-import type { JsonPatchDocumentOptional } from "protocol/jsonPatchProtocol";
 
+import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import { type LooseLessonPlan } from "../../protocol/schema";
 import { agents, sectionAgentMap } from "./agents";
 import { createPatchesFromInteractResult } from "./compatibility/streamHandling";
