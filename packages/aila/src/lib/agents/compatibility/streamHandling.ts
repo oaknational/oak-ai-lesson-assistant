@@ -4,17 +4,18 @@ import { aiLogger } from "@oakai/logger";
 import { compare } from "fast-json-patch";
 import type { ReadableStreamDefaultController } from "stream/web";
 
-import type { AilaChat } from "../../core/chat/AilaChat";
-import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
-import type { LooseLessonPlan } from "../../protocol/schema";
-import type { InteractCallback } from "./interact";
+import type { AilaChat } from "../../../core/chat/AilaChat";
+import type { JsonPatchDocumentOptional } from "../../../protocol/jsonPatchProtocol";
+import type { LooseLessonPlan } from "../../../protocol/schema";
+import type { InteractCallback } from "../interact";
+import type { TurnPlan } from "../router";
 
 const log = aiLogger("aila:agents:stream");
 
-export interface InteractResult {
+export type InteractResult = {
   document: LooseLessonPlan;
   ailaMessage?: string;
-}
+};
 
 export function createPatchesFromInteractResult(
   initialDocument: LooseLessonPlan,
@@ -92,7 +93,7 @@ export function createLlmMessageFromInteractResult(
   };
 }
 
-export function formatMessageWithRecordSeparators(message: any): string {
+export function formatMessageWithRecordSeparators(message: string): string {
   return `\n␞\n${JSON.stringify(message)}\n␞\n`;
 }
 
@@ -102,7 +103,8 @@ export function createInteractStreamHandler(
 ): InteractCallback {
   // Track sections and patches for the message
   const sectionsToEdit: string[] = [];
-  const patches: any[] = [];
+  const patches: ReturnType<typeof createPatchesFromInteractResult>["patches"] =
+    [];
 
   return (update) => {
     log.info("Stream update received", update.type);
@@ -117,7 +119,7 @@ export function createInteractStreamHandler(
           if (update.data.plan?.type === "turn_plan") {
             // Extract section keys from the plan
             const newSections = update.data.plan.plan.map(
-              (p: any) => p.sectionKey,
+              (p: TurnPlan["plan"][number]) => p.sectionKey,
             );
             sectionsToEdit.push(...newSections);
 
@@ -141,7 +143,7 @@ export function createInteractStreamHandler(
             const patch = update.data.patches[i];
             const patchJson = JSON.stringify(patch);
             streamChunks(controller, chat, i > 0 ? "," + patchJson : patchJson);
-            patches.push(patch);
+            if (patch) patches.push(patch);
           }
         }
         break;

@@ -31,6 +31,7 @@ const responseSchema = z.object({
 });
 
 export type RouterResponse = z.infer<typeof responseSchema>;
+export type TurnPlan = Extract<RouterResponse["result"], { type: "turn_plan" }>;
 
 export async function agentRouter({
   chatId,

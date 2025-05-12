@@ -3,11 +3,11 @@ import { aiLogger } from "@oakai/logger";
 import type { ReadableStreamDefaultController } from "stream/web";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
-import { interact } from "../../lib/agents/interact";
 import {
   createInteractStreamHandler,
   streamInteractResultToClient,
-} from "../../lib/agents/streamHandling";
+} from "../../lib/agents/compatibility/streamHandling";
+import { interact } from "../../lib/agents/interact";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";

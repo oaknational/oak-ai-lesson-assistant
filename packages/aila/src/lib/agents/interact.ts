@@ -4,18 +4,91 @@ import { compare } from "fast-json-patch";
 
 import { type LooseLessonPlan } from "../../protocol/schema";
 import { agents, sectionAgentMap } from "./agents";
+import { createPatchesFromInteractResult } from "./compatibility/streamHandling";
+import type { InteractResult } from "./compatibility/streamHandling";
 import { messageToUserAgent } from "./messageToUser";
 import { promptAgentHandler } from "./promptAgentHandler";
-import { agentRouter } from "./router";
-import { createPatchesFromInteractResult } from "./streamHandling";
-import type { InteractResult } from "./streamHandling";
+import { type TurnPlan, agentRouter } from "./router";
 
 const log = aiLogger("aila:agents");
 
-export type InteractCallback = (update: {
-  type: "progress" | "section_update" | "complete";
-  data: any;
-}) => void;
+type InteractUpdate =
+  | {
+      type: "progress";
+      data: {
+        step: "routing";
+        status: "started";
+      };
+    }
+  | {
+      type: "progress";
+      data: {
+        step: "routing";
+        status: "completed";
+        plan: TurnPlan;
+      };
+    }
+  | {
+      type: "progress";
+      data: {
+        step: "action";
+        status: "started" | "completed";
+        action: {
+          sectionKey: string;
+          actionType: string;
+          index: number;
+          total: number;
+        };
+      };
+    }
+  | {
+      type: "section_update";
+      data: {
+        sectionKey: string;
+        actionType: string;
+        patches: {
+          type: string;
+          reasoning: string;
+          value: {
+            type: "string" | "object" | "string-array";
+            op: "add" | "replace" | "test" | "_get";
+            path: string;
+            value: unknown;
+          };
+          status: string;
+        }[];
+      };
+    }
+  | {
+      type: "progress";
+      data: {
+        step: "action";
+        status: "completed";
+        action: {
+          sectionKey: string;
+          actionType: string;
+          index: number;
+          total: number;
+        };
+      };
+    }
+  | {
+      type: "progress";
+      data: {
+        step: "message";
+        status: "started";
+      };
+    }
+  | {
+      type: "complete";
+      data: {
+        document: LooseLessonPlan;
+        ailaMessage: string;
+      };
+    };
+export type InteractCallback = <Update extends InteractUpdate>(
+  update: Update,
+) => void;
 
 export async function interact({
   chatId,
@@ -52,6 +125,16 @@ export async function interact({
     throw new Error("Router returned null");
   }
 
+  if (routerResponse.result.type === "end_turn") {
+    // Notify about completion
+    onUpdate?.({
+      type: "complete",
+      data: { document, ailaMessage: routerResponse.result.message },
+    });
+
+    return { document, ailaMessage: routerResponse.result.message };
+  }
+
   // Notify about completed routing
   onUpdate?.({
     type: "progress",
@@ -59,10 +142,6 @@ export async function interact({
   });
 
   const result = routerResponse.result;
-
-  if (result.type === "end_turn") {
-    return { document, ailaMessage: result.message };
-  }
 
   const { plan } = result;
 
@@ -90,7 +169,7 @@ export async function interact({
         }
         break;
       case "add":
-      case "replace":
+      case "replace": {
         if (!("prompt" in agentDefinition)) {
           throw new Error(
             `Unable to process 'replace' action. No prompt found`,
@@ -124,6 +203,7 @@ export async function interact({
           },
         });
         break;
+      }
       default:
         throw new Error(
           `Unknown action type: ${actionType as string}. Expected "add", "replace", or "delete".`,
