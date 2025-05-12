@@ -376,7 +376,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       );
       // this should have na error below - https://github.com/cohere-ai/cohere-typescript/blob/499bde51cee5d1f2ea2068580f938123297515f9/src/api/client/requests/RerankRequest.ts#L31
       const response = await this.cohere.rerank({
-        model: "rerank-english-v2.0",
+        model: "rerank-v3.5",
         query: query,
         documents: jsonDocs,
         topN: topN,
