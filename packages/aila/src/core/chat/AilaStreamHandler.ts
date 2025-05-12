@@ -97,17 +97,18 @@ export class AilaStreamHandler {
       await this._chat.handleSubjectWarning();
       this.logStreamingStep("Handle subject warning complete");
 
-      log.info("Start Agent stream");
-      await this.startAgentStream();
-      this.logStreamingStep("Agent stream complete");
-
-      // log.info("Starting LLM stream");
-      // await this.startLLMStream();
-      // this.logStreamingStep("Start LLM stream complete");
-
-      // log.info("Reading from stream");
-      // await this.readFromStream(abortController);
-      // this.logStreamingStep("Read from stream complete");
+      if (this._chat.aila.options.useAgenticAila) {
+        log.info("Start Agent stream");
+        await this.startAgentStream();
+        this.logStreamingStep("Agent stream complete");
+      } else {
+        log.info("Starting LLM stream");
+        await this.startLLMStream();
+        this.logStreamingStep("Start LLM stream complete");
+        log.info("Reading from stream");
+        await this.readFromStream(abortController);
+        this.logStreamingStep("Read from stream complete");
+      }
 
       log.info(
         "Finished reading from stream",
