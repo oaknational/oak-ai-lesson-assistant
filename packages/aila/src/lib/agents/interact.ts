@@ -1,11 +1,10 @@
 import { aiLogger } from "@oakai/logger";
 
-import { compare } from "fast-json-patch";
+import { compare } from "fast-json-patch/index.mjs";
 
 import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import { type LooseLessonPlan } from "../../protocol/schema";
 import { agents, sectionAgentMap } from "./agents";
-import { createPatchesFromInteractResult } from "./compatibility/streamHandling";
 import type { InteractResult } from "./compatibility/streamHandling";
 import { messageToUserAgent } from "./messageToUser";
 import { promptAgentHandler } from "./promptAgentHandler";
@@ -167,7 +166,7 @@ export async function interact({
           );
         }
         // Add or edit the section in the document
-        document = await promptAgentHandler({
+        const response = await promptAgentHandler({
           agent: agentDefinition,
           document,
           targetKey: sectionKey,
@@ -176,19 +175,35 @@ export async function interact({
           additionalInstructions: context,
         });
 
-        // Create patches to represent the changes made to this section
-        const currentPatches = createPatchesFromInteractResult(
-          initialDocument,
-          { document },
-        ).patches;
+        const patch: JsonPatchDocumentOptional = {
+          type: "patch",
+          value: {
+            path: `/${sectionKey}`,
+            op: actionType,
+            value: response.content,
+          },
+          status: "complete",
+          // @todo improve 'reasoning here
+          reasoning: `Updated ${sectionKey} based on user request`,
+        };
 
+        // Create patches to represent the changes made to this section
+        // const currentPatches = createPatchesFromInteractResult(
+        //   initialDocument,
+        //   { document },
+        // ).patches;
+
+        document = {
+          ...document,
+          [sectionKey]: response.content,
+        };
         // Send section update with current state
         onUpdate?.({
           type: "section_update",
           data: {
             sectionKey,
             actionType,
-            patches: currentPatches,
+            patches: [patch],
           },
         });
         break;

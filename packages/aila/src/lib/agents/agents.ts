@@ -15,6 +15,16 @@ import {
   SubjectSchema,
   TopicSchema,
 } from "../../protocol/schema";
+import { exitQuizInstructions } from "./prompts/exitQuizInstructions";
+import { keyLearningPointsInstructions } from "./prompts/keyLearningPointsInstructions";
+import { keywordsInstructions } from "./prompts/keywordsInstructions";
+import { learningCycleTitlesInstructions } from "./prompts/learningCycleTitlesInstructions";
+import { learningCyclesInstructions } from "./prompts/learningCyclesInstructions";
+import { learningOutcomeInstructions } from "./prompts/learningOutcomeInstructions";
+import { misconceptionsInstructions } from "./prompts/misconceptionsInstructions";
+import { priorKnowledgeInstructions } from "./prompts/priorKnowledgeInstructions";
+import { quizInstructions } from "./prompts/quizInstructions";
+import { starterQuizInstructions } from "./prompts/starterQuizInstructions";
 
 export const agentNames = z.enum([
   "title",
@@ -81,55 +91,55 @@ export const agents: Record<AgentName, AgentDefinition> = {
   learningOutcome: {
     type: "prompt",
     name: "learningOutcome",
-    prompt: "Generate the learning outcome for this lesson.",
+    prompt: learningOutcomeInstructions,
     schema: z.object({ value: LearningOutcomeSchema }),
   },
   learningCycles: {
     type: "prompt",
     name: "learningCycles",
-    prompt: "Generate the learning cycles for this lesson.",
+    prompt: learningCycleTitlesInstructions,
     schema: z.object({ value: LearningCyclesSchema }),
   },
   priorKnowledge: {
     type: "prompt",
     name: "priorKnowledge",
-    prompt: "List the prior knowledge required for this lesson.",
+    prompt: priorKnowledgeInstructions,
     schema: z.object({ value: PriorKnowledgeSchema }),
   },
   keyLearningPoints: {
     type: "prompt",
     name: "keyLearningPoints",
-    prompt: "List the key learning points for this lesson.",
+    prompt: keyLearningPointsInstructions,
     schema: z.object({ value: KeyLearningPointsSchema }),
   },
   misconceptions: {
     type: "prompt",
     name: "misconceptions",
-    prompt: "List common misconceptions and corrections.",
+    prompt: misconceptionsInstructions,
     schema: z.object({ value: MisconceptionsSchemaWithoutLength }),
   },
   keywords: {
     type: "prompt",
     name: "keywords",
-    prompt: "List keywords and their definitions.",
+    prompt: keywordsInstructions,
     schema: z.object({ value: KeywordsSchemaWithoutLength }),
   },
   starterQuiz: {
     type: "prompt",
     name: "starterQuiz",
-    prompt: "Generate a starter quiz for this lesson.",
+    prompt: [starterQuizInstructions, quizInstructions].join(`\n\n`),
     schema: z.object({ value: QuizSchemaWithoutLength }),
   },
   cycle: {
     type: "prompt",
     name: "cycle",
-    prompt: "Generate a cycle.",
+    prompt: learningCyclesInstructions,
     schema: z.object({ value: CycleSchemaWithoutLength }),
   },
   exitQuiz: {
     type: "prompt",
     name: "exitQuiz",
-    prompt: "Generate an exit quiz for this lesson.",
+    prompt: [exitQuizInstructions, quizInstructions].join(`\n\n`),
     schema: z.object({ value: QuizSchemaWithoutLength }),
   },
   mathsQuiz: {

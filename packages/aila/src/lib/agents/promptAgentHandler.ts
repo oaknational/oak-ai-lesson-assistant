@@ -20,7 +20,7 @@ export async function promptAgentHandler<Schema extends z.ZodType>({
   additionalInstructions: string;
   chatId: string;
   userId: string;
-}): Promise<LooseLessonPlan> {
+}): Promise<{ content: Schema }> {
   const openAIClient = createOpenAIClient({
     app: "lesson-assistant",
     chatMeta: {
@@ -32,6 +32,8 @@ export async function promptAgentHandler<Schema extends z.ZodType>({
     agent.schema,
     `${agent.name}_response_schema`,
   );
+
+  console.log(agent.prompt);
 
   const result = await openAIClient.responses.parse({
     instructions: agent.prompt,
@@ -57,7 +59,6 @@ ${additionalInstructions}`,
   }
 
   return {
-    ...document,
-    [targetKey]: parsedResult.value,
+    content: parsedResult,
   };
 }
