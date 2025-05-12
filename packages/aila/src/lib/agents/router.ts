@@ -1,6 +1,6 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 
-import { zodTextFormat } from "openai/helpers/zod.mjs";
+import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
 import { type LooseLessonPlan } from "../../protocol/schema";
