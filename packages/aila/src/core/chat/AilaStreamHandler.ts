@@ -121,6 +121,7 @@ export class AilaStreamHandler {
       });
       if (e instanceof AilaThreatDetectionError) {
         log.info("Handling threat detection error");
+
         await this._chat.generationFailed(e);
         throw e;
       }

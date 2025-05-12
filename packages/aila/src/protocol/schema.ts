@@ -2,6 +2,7 @@ import { dedent } from "ts-dedent";
 import z from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
+import { type RawQuiz, rawQuizSchema } from "./rawQuizSchema";
 import { minMaxText } from "./schemaHelpers";
 
 // ********** BASED_ON **********
@@ -399,6 +400,8 @@ export type CompletedLessonPlan = z.infer<typeof CompletedLessonPlanSchema>;
 export const LessonPlanSchema = CompletedLessonPlanSchema.partial().extend({
   _experimental_starterQuizMathsV0: QuizSchema.optional(),
   _experimental_exitQuizMathsV0: QuizSchema.optional(),
+  _experimental_starterQuizMathsV1: rawQuizSchema.optional(),
+  _experimental_exitQuizMathsV1: rawQuizSchema.optional(),
 });
 
 export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;
@@ -523,7 +526,8 @@ export type LessonPlanSectionWhileStreaming =
   | CycleOptional
   | string
   | string[]
-  | number;
+  | number
+  | NonNullable<RawQuiz[]>;
 
 // These are here due to zod refusing to infer the type of "add"
 export const quizPathSchema = z.union([

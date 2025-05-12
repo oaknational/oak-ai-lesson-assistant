@@ -85,7 +85,7 @@ const StepThree = () => {
             <button onClick={() => setIsFooterAdaptOpen(false)}>
               <OakFlex $alignItems="center" $gap="all-spacing-2">
                 <OakIcon iconName="cross" />
-                <OakSpan $color="black" $textDecoration="none">
+                <OakSpan $color="black" $textDecoration="none" $font="body-2">
                   Close
                 </OakSpan>
               </OakFlex>
@@ -97,7 +97,7 @@ const StepThree = () => {
                   key={refinement}
                   onClick={() => {
                     void refineMaterial({
-                      refinement,
+                      refinement: [{ type: refinement }],
                       mutateAsync: async (input) => {
                         try {
                           return await fetchMaterial.mutateAsync(input);
@@ -126,7 +126,7 @@ const StepThree = () => {
                 onClick={() => {
                   setIsFooterAdaptOpen(true);
                 }}
-                disabled={refinementOptions.length === 0}
+                disabled={refinementOptions.length === 0 || isResourcesLoading}
               >
                 Adapt
               </OakSecondaryButton>
@@ -134,6 +134,7 @@ const StepThree = () => {
                 onClick={() => null}
                 iconName="download"
                 isTrailingIcon={true}
+                disabled={isResourcesLoading}
               >
                 Download (.zip)
               </OakPrimaryButton>
