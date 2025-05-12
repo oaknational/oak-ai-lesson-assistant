@@ -51,7 +51,7 @@ const StepTwo = () => {
       message,
       mutateAsync: async (input) => {
         try {
-          return await fetchMaterial.mutateAsync(input);
+          return fetchMaterial.mutateAsync(input);
         } catch (error) {
           throw error instanceof Error ? error : new Error(String(error));
         }

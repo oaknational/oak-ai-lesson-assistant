@@ -86,12 +86,18 @@ export const additionalMaterialPromptBuilderMap = {
 //  Additional Material Config Map
 // -----------------------
 
+const additionalMaterialVersions: Record<AdditionalMaterialType, number> = {
+  "additional-comprehension": 1,
+  "additional-glossary": 1,
+};
+
 type AdditionalMaterialsConfigMap = {
   [K in AdditionalMaterialType]: {
     systemMessage: () => string;
     buildPrompt: (context: ContextByMaterialType[K], action: Action) => string;
     schema: ZodType;
     promptContextSchema: ZodType;
+    version: number;
   };
 };
 
@@ -103,6 +109,7 @@ export const additionalMaterialsConfigMap = additionalMaterialDocType.reduce(
       buildPrompt: additionalMaterialPromptBuilderMap[type].buildPrompt,
       schema: additionalMaterialSchemasMap[type],
       promptContextSchema: additionalMaterialContextSchemasMap[type],
+      version: additionalMaterialVersions[type],
     };
     return acc;
   },
@@ -121,6 +128,8 @@ function makeInputVariant<T extends AdditionalMaterialType>(
     action: actionEnum,
     documentType: z.literal(documentType),
     context,
+    resourceId: z.string().nullish(),
+    lessonId: z.string().nullish(),
   });
 }
 
