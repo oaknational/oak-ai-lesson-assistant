@@ -1,6 +1,5 @@
 import { type ZodSchema, type ZodType, z } from "zod";
 
-import { partialLessonContextSchema } from "../partialLessonPlan/schema";
 import { glossaryContextSchema, glossarySchema } from ".//glossary/schema";
 import {
   buildComprehensionPrompt,
