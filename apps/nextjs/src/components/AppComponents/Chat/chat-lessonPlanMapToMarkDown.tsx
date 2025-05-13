@@ -55,7 +55,6 @@ const LessonPlanMapToMarkDown = ({
         return !excludedKeys.includes(k as ExcludedKeys);
       },
     )
-
     .filter(([_, v]) => notEmpty(v))
     .map(([key, value]) => {
       return { key, value };
