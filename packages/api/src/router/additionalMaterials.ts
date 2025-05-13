@@ -53,6 +53,7 @@ export const additionalMaterialsRouter = router({
           prisma: ctx.prisma,
           userId: ctx.auth.userId,
           input: parsedInput.data,
+          auth: ctx.auth,
         });
 
         if (!material.resource) {
@@ -86,6 +87,7 @@ export const additionalMaterialsRouter = router({
           prisma: ctx.prisma,
           userId: ctx.auth.userId,
           input: parsedInput.data,
+          auth: ctx.auth,
         });
         return lesson?.lesson;
       } catch (cause) {

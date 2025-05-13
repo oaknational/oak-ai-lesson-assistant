@@ -8,7 +8,6 @@ import { aiLogger } from "@oakai/logger";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 
-import { handleContentSafetyIssue } from "./contentSafetyUtils";
 import { recordSafetyViolation } from "./safetyUtils";
 
 const log = aiLogger("additional-materials");
