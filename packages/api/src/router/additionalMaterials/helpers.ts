@@ -7,11 +7,13 @@ import { generateAdditionalMaterialObject } from "@oakai/additional-materials/sr
 import { generatePartialLessonPlanObject } from "@oakai/additional-materials/src/documents/partialLessonPlan/generateLessonPlan";
 import { type PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { performLakeraThreatCheck } from "@oakai/additional-materials/src/threatDetection/lakeraThreatCheck";
+import { SafetyViolations } from "@oakai/core";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
+import type { SignedInAuthObject } from "@clerk/backend/internal";
 import * as Sentry from "@sentry/nextjs";
 
 import type { LooseLessonPlan } from "../../../../aila/src/protocol/schema";
@@ -20,6 +22,7 @@ const log = aiLogger("additional-materials");
 
 type GenerateAdditionalMaterialParams = {
   prisma: PrismaClientWithAccelerate;
+  auth: SignedInAuthObject;
   userId: string;
   input: GenerateAdditionalMaterialInput & {
     lessonId?: string | null;
@@ -30,6 +33,7 @@ export async function generateAdditionalMaterial({
   prisma,
   userId,
   input,
+  auth,
 }: GenerateAdditionalMaterialParams) {
   log.info("Generating additional material");
 
@@ -74,6 +78,13 @@ export async function generateAdditionalMaterial({
   });
 
   if (isToxic(moderation)) {
+    await recordSafetyViolation({
+      prisma,
+      auth,
+      interactionId: interaction.id,
+      violationType: "MODERATION",
+    });
+
     log.error("Toxic content detected in moderation", moderation);
     return {
       resource: null,
@@ -93,6 +104,36 @@ interface GeneratePartialLessonPlanParams {
   prisma: PrismaClientWithAccelerate;
   userId: string;
   input: PartialLessonContextSchemaType;
+  auth: SignedInAuthObject;
+}
+
+async function recordSafetyViolation({
+  prisma,
+  auth,
+  interactionId,
+  violationType,
+}: {
+  prisma: PrismaClientWithAccelerate;
+  auth: SignedInAuthObject;
+  interactionId: string;
+  violationType: "MODERATION" | "THREAT";
+}) {
+  const safetyViolations = new SafetyViolations(prisma, console);
+  try {
+    await safetyViolations.recordViolation(
+      auth.userId,
+      "CHAT_MESSAGE",
+      violationType,
+      "CHAT_SESSION",
+      interactionId,
+    );
+  } catch (e) {
+    Sentry.captureException(e);
+    log.error(
+      `Failed to record ${violationType.toLowerCase()} safety violation`,
+      e,
+    );
+  }
 }
 
 function handleContentSafetyIssue({
@@ -119,6 +160,7 @@ function handleContentSafetyIssue({
 
 export async function generatePartialLessonPlan({
   prisma,
+  auth,
   userId,
   input,
 }: GeneratePartialLessonPlanParams) {
@@ -160,6 +202,13 @@ export async function generatePartialLessonPlan({
   });
 
   if (isToxic(moderation)) {
+    await recordSafetyViolation({
+      prisma,
+      auth,
+      interactionId: interaction.id,
+      violationType: "MODERATION",
+    });
+
     return handleContentSafetyIssue({
       logMessage: "Toxic content detected in moderation",
       threatDetection: lakeraResult.flagged,
@@ -170,13 +219,19 @@ export async function generatePartialLessonPlan({
   }
 
   if (lakeraResult.flagged) {
-    return handleContentSafetyIssue({
-      logMessage: "Threat detected in input",
+    await recordSafetyViolation({
+      prisma,
+      auth,
+      interactionId: interaction.id,
+      violationType: "THREAT",
+    });
+
+    return {
       threatDetection: true,
       lesson: null,
       lessonId: interaction.id,
       moderation,
-    });
+    };
   }
 
   return {
