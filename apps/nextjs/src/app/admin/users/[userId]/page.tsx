@@ -39,7 +39,7 @@ export default function AdminUser({ params }: Readonly<AdminUserProps>) {
     <AdminUserView
       userId={userId}
       safetyViolations={safetyViolations}
-      refetchSafetyViolations={refetch}
+      refetchSafetyViolations={() => void refetch()}
     />
   );
 }
