@@ -2,13 +2,15 @@ import { useState } from "react";
 
 import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
 import { isExitQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/exitQuiz/schema";
-import { isGlossary } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
+import {
+  isGlossary,
+  readingAgeRefinement,
+} from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
 import {
   type RefinementOption,
   getResourceType,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { isStarterQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/starterQuiz/schema";
-import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { aiLogger } from "@oakai/logger";
 
 import {
@@ -58,6 +60,31 @@ const StepThree = () => {
   // Get resource type from configuration
   const resourceType = docType ? getResourceType(docType) : null;
   const refinementOptions = resourceType?.refinementOptions || [];
+  const handleDownloadMaterial = async () => {
+    if (!generation || !docType) {
+      return;
+    }
+    try {
+      await downloadMaterial();
+    } catch (err) {
+      log.error("Download failed", err);
+      Sentry.captureException(err);
+    } finally {
+      setIsResourceDownloading(false);
+    }
+  };
+
+  const getRefinementOptions = () => {
+    if (docType === "additional-glossary") {
+      return readingAgeRefinement;
+    }
+
+    if (docType === "additional-comprehension") {
+      return [];
+    }
+
+    return [];
+  };
 
   const renderGeneratedMaterial = () => {
     if (!generation) {
@@ -137,7 +164,9 @@ const StepThree = () => {
                 onClick={() => {
                   setIsFooterAdaptOpen(true);
                 }}
-                disabled={refinementOptions.length === 0 || isResourcesLoading}
+                disabled={
+                  refinementOptions.length === 0 || !generation || isDownloading
+                }
               >
                 Adapt
               </OakSecondaryButton>
@@ -145,7 +174,8 @@ const StepThree = () => {
                 onClick={() => void handleDownloadMaterial()}
                 iconName="download"
                 isTrailingIcon={true}
-                disabled={isResourcesLoading}
+                isLoading={isDownloading}
+                disabled={!generation || isResourcesLoading}
               >
                 Download (.zip)
               </OakPrimaryButton>
