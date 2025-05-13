@@ -1,14 +1,16 @@
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
-import { camelCaseToTitleCase } from "@oakai/exports/src/utils";
+import {
+  camelCaseToSentenceCase,
+  kebabCaseToSentenceCase,
+} from "@oakai/core/src/utils/camelCaseConversion";
 import { aiLogger } from "@oakai/logger";
 
 import {
   OakBox,
   OakFlex,
   OakIcon,
-  OakLink,
   OakP,
   OakPrimaryButton,
 } from "@oaknational/oak-components";
@@ -78,14 +80,15 @@ const StepTwo = () => {
   return (
     <>
       <OakFlex $flexDirection="column">
-        <OakFlex $flexDirection="column">
-          <OakP $font={"heading-5"}>Lesson details</OakP>
+        <OakFlex $flexDirection="column" $mb="space-between-m">
+          <OakP $font={"heading-5"}>Task details</OakP>
           {moderation?.categories && moderation.categories.length > 0 && (
             <ModerationMessage />
           )}
 
-          <OakBox $pa="inner-padding-m">
+          <OakBox $pv="inner-padding-m">
             <OakP>
+              {toTitleCase(docTypeName ?? "")},{" "}
               {kebabCaseToSentenceCase(pageData.lessonPlan.keyStage ?? "")},{" "}
               {pageData.lessonPlan.subject}, {pageData.lessonPlan.title}
             </OakP>
@@ -93,18 +96,22 @@ const StepTwo = () => {
         </OakFlex>
 
         {mapLessonPlanSections(pageData.lessonPlan).map((section) => {
-          const title = camelCaseToTitleCase(section.key) ?? "";
+          const title = camelCaseToSentenceCase(section.key) ?? "";
           if (
             section.key === "learningOutcome" ||
             section.key === "learningCycles"
           ) {
             return (
-              <OakFlex key={section.key} $flexDirection={"column"}>
-                <OakP $font={"heading-5"}>{section.key}</OakP>
+              <OakFlex
+                key={section.key}
+                $flexDirection={"column"}
+                $mb="space-between-m"
+              >
+                <OakP $font={"heading-5"}>{title}</OakP>
                 <OakFlex $pv="inner-padding-m">
                   <OakFlex $flexDirection="column">
                     <MemoizedReactMarkdownWithStyles
-                      markdown={`${sectionToMarkdown(title, section.data)}`}
+                      markdown={`${sectionToMarkdown(section.key, section.data)}`}
                     />
                   </OakFlex>
                 </OakFlex>
@@ -117,12 +124,12 @@ const StepTwo = () => {
 
       <ResourcesFooter>
         <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <OakLink onClick={() => setStepNumber(0)}>
+          <button onClick={() => setStepNumber(0)}>
             <OakFlex $alignItems="center" $gap="all-spacing-2">
               <OakIcon iconName="chevron-left" />
               Back a step
             </OakFlex>
-          </OakLink>
+          </button>
 
           <OakPrimaryButton
             onClick={() => {
@@ -141,8 +148,8 @@ const StepTwo = () => {
   );
 };
 
-function kebabCaseToSentenceCase(str: string) {
-  return str.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+function toTitleCase(str: string) {
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 export default StepTwo;
