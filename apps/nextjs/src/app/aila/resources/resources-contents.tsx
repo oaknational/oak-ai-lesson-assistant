@@ -4,7 +4,7 @@ import type { FC } from "react";
 import React, { useEffect } from "react";
 
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
-import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
+import { kebabCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 
 import { OakP, OakSpan } from "@oaknational/oak-components";
 
@@ -41,7 +41,6 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName || null;
-
   const { resetFormState } = useResourcesActions();
 
   useEffect(() => {
@@ -72,7 +71,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
       title: pageData.lessonPlan.title,
       subTitle: (
         <OakP $font="body-2" $color="grey70">
-          {toTitleCase(pageData.lessonPlan.keyStage ?? "")} •{" "}
+          {kebabCaseToSentenceCase(pageData.lessonPlan.keyStage ?? "")} •{" "}
           {pageData.lessonPlan.subject}
         </OakP>
       ),
@@ -106,10 +105,5 @@ const ResourcesContents: FC<AdditionalMaterialsUserProps> = (props) => {
     </ResourcesStoresProvider>
   );
 };
-
-// Helper function to convert to title case
-function toTitleCase(str: string) {
-  return str.replace(/\b\w/g, (char) => char.toUpperCase());
-}
 
 export default ResourcesContents;

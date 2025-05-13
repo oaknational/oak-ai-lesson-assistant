@@ -9,6 +9,7 @@ import {
 } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { isStarterQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/starterQuiz/schema";
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
+import { aiLogger } from "@oakai/logger";
 
 import {
   OakFlex,
@@ -18,6 +19,7 @@ import {
   OakSecondaryButton,
   OakSpan,
 } from "@oaknational/oak-components";
+import * as Sentry from "@sentry/nextjs";
 
 import {
   useResourcesActions,
@@ -26,6 +28,7 @@ import {
 import {
   docTypeSelector,
   generationSelector,
+  isResourcesDownloadingSelector,
   isResourcesLoadingSelector,
 } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
@@ -37,12 +40,17 @@ import { StarterQuiz } from "../../AdditionalMaterials/StarterQuiz";
 import InlineButton from "../InlineButton";
 import ResourcesFooter from "../ResourcesFooter";
 
+const log = aiLogger("additional-materials");
+
 const StepThree = () => {
   const generation = useResourcesStore(generationSelector);
+
   const docType = useResourcesStore(docTypeSelector);
   const isResourcesLoading = useResourcesStore(isResourcesLoadingSelector);
   const { setStepNumber, refineMaterial } = useResourcesActions();
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
+  const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
+  const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
 
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
@@ -134,7 +142,7 @@ const StepThree = () => {
                 Adapt
               </OakSecondaryButton>
               <OakPrimaryButton
-                onClick={() => null}
+                onClick={() => void handleDownloadMaterial()}
                 iconName="download"
                 isTrailingIcon={true}
                 disabled={isResourcesLoading}
