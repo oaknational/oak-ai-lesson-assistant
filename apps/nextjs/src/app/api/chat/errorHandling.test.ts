@@ -1,6 +1,6 @@
 import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
 import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
-import * as moderationErrorHandling from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
+import * as moderationErrorHandling from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
