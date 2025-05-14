@@ -36,34 +36,6 @@ export type BaseResourceTypeConfig = {
   version: number;
 };
 
-// Complete resource type configuration
-export type ResourceTypeConfig = {
-  "additional-glossary": BaseResourceTypeConfig & {
-    buildPrompt: (
-      context: ContextByMaterialType["additional-glossary"],
-      action: Action,
-    ) => string;
-  };
-  "additional-comprehension": BaseResourceTypeConfig & {
-    buildPrompt: (
-      context: ContextByMaterialType["additional-comprehension"],
-      action: Action,
-    ) => string;
-  };
-  "additional-starter-quiz": BaseResourceTypeConfig & {
-    buildPrompt: (
-      context: ContextByMaterialType["additional-starter-quiz"],
-      action: Action,
-    ) => string;
-  };
-  "additional-exit-quiz": BaseResourceTypeConfig & {
-    buildPrompt: (
-      context: ContextByMaterialType["additional-exit-quiz"],
-      action: Action,
-    ) => string;
-  };
-};
-
 const readingAgeRefinementOptions: RefinementOption[] = Array.from(
   readingAgeRefinement,
 ).map((id: AllowedReadingAgeRefinement) => ({
@@ -82,7 +54,6 @@ export const resourceTypesConfig = {
     displayName: "Glossary",
     description: "Additional lesson vocabulary with pupil friendly definitions",
     refinementOptions: readingAgeRefinementOptions,
-    componentType: "Glossary",
     isAvailable: true,
   },
   "additional-comprehension": {
@@ -94,7 +65,6 @@ export const resourceTypesConfig = {
     displayName: "Comprehension tasks",
     description: "Comprehension tasks which can be adapted for pupils",
     refinementOptions: readingAgeRefinementOptions,
-    componentType: "ComprehensionTask",
     isAvailable: true,
   },
   "additional-starter-quiz": {
@@ -103,10 +73,9 @@ export const resourceTypesConfig = {
 
     // Frontend config
     id: "additional-starter-quiz",
-    displayName: "Starter Quiz",
+    displayName: "Starter quiz",
     description: "A multiple-choice quiz to assess pupils' prior knowledge",
     refinementOptions: readingAgeRefinementOptions,
-    componentType: "StarterQuiz",
     isAvailable: true,
   },
   "additional-exit-quiz": {
@@ -115,11 +84,10 @@ export const resourceTypesConfig = {
 
     // Frontend config
     id: "additional-exit-quiz",
-    displayName: "Exit Quiz",
+    displayName: "Exit quiz",
     description:
       "A multiple-choice quiz to assess pupils' learning from the lesson",
     refinementOptions: readingAgeRefinementOptions,
-    componentType: "ExitQuiz",
     isAvailable: true,
   },
 } as const;
