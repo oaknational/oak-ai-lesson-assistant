@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import { type ExtractState, type StoreApi, useStore } from "zustand";
 
-import { useLessonPlanTracking } from "@/lib/analytics/lessonPlanTrackingContext";
+import useAnalytics from "@/lib/analytics/useAnalytics";
 import { createChatStore } from "@/stores/chatStore";
 import type { ChatState } from "@/stores/chatStore/types";
 import {
@@ -13,11 +13,16 @@ import {
 import { trpc } from "@/utils/trpc";
 
 import { type LessonPlanState, createLessonPlanStore } from "./lessonPlanStore";
+import {
+  type LessonPlanTrackingState,
+  createLessonPlanTrackingStore,
+} from "./lessonPlanTrackingStore";
 
 export type AilaStores = {
   chat: StoreApi<ChatState>;
   moderation: StoreApi<ModerationState>;
   lessonPlan: StoreApi<LessonPlanState>;
+  lessonPlanTracking: StoreApi<LessonPlanTrackingState>;
 };
 export type GetStore = <T extends keyof AilaStores>(
   storeName: T,
@@ -44,23 +49,20 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
   id,
 }) => {
   const trpcUtils = trpc.useUtils();
-  const lessonPlanTracking = useLessonPlanTracking();
+
+  const { track } = useAnalytics();
 
   const [stores] = useState(() => {
     const stores: Partial<AilaStores> = {};
     const getStore = buildStoreGetter(stores);
 
-    stores.moderation = createModerationStore({
-      id,
-      trpcUtils,
-      getStore,
-    });
+    stores.moderation = createModerationStore({ id, trpcUtils, getStore });
     stores.chat = createChatStore(id, getStore, trpcUtils);
-    stores.lessonPlan = createLessonPlanStore({
+    stores.lessonPlan = createLessonPlanStore({ id, trpcUtils });
+    stores.lessonPlanTracking = createLessonPlanTrackingStore({
       id,
-      trpcUtils,
-      lessonPlanTracking,
       getStore,
+      track,
     });
 
     return stores as AilaStores;
@@ -89,12 +91,15 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
         stores.moderation
           .getState()
           .actions.ailaStreamingStatusUpdated(streamingStatus);
+        stores.lessonPlanTracking
+          .getState()
+          .actions.ailaStreamingStatusUpdated(streamingStatus);
       }
     });
     return () => {
       unsubscribe();
     };
-  }, [stores.chat, stores.moderation]);
+  }, [stores.chat, stores.moderation, stores.lessonPlanTracking]);
 
   return (
     <AilaStoresContext.Provider value={stores}>
@@ -156,4 +161,22 @@ export const useLessonPlanActions = () => {
     throw new Error("Missing AilaStoresProvider");
   }
   return useStore(context.lessonPlan, (state) => state.actions);
+};
+
+export const useLessonPlanTrackingStore = <T,>(
+  selector: (store: LessonPlanTrackingState) => T,
+) => {
+  const context = useContext(AilaStoresContext);
+  if (!context) {
+    throw new Error("Missing AilaStoresProvider");
+  }
+  return useStore(context.lessonPlanTracking, selector);
+};
+
+export const useLessonPlanTrackingActions = () => {
+  const context = useContext(AilaStoresContext);
+  if (!context) {
+    throw new Error("Missing AilaStoresProvider");
+  }
+  return useStore(context.lessonPlanTracking, (state) => state.actions);
 };

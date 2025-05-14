@@ -2,6 +2,8 @@ import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/s
 
 import type { AilaUserModificationAction } from "@prisma/client";
 
+import { ComponentType } from "@/lib/avo/Avo";
+
 import ActionButtonWrapper from "./action-button-wrapper";
 import { additionalMaterialsModifyOptions } from "./action-button.types";
 import type { FeedbackOption } from "./drop-down-form-wrapper";
@@ -36,6 +38,7 @@ const AddAdditionalMaterialsButton = ({
       userSuggestionTitle="What additional materials would you like to add?"
       generateMessage={generateMessage}
       buttonText={"Add materials"}
+      trackingComponentType={ComponentType.ADD_ADDITIONAL_MATERIALS_BUTTON}
     />
   );
 };

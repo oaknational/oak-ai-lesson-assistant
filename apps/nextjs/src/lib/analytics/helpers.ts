@@ -11,27 +11,18 @@ import type {
 } from "../avo/Avo";
 import { ModeratedContentType } from "../avo/Avo";
 
-/**
- * These are the actions which a user could take which result in a message
- * being sent as part of the lesson plan generation.
- */
-export type UserAction =
-  | "start_from_example"
-  | "start_from_free_text"
-  | "button_continue"
-  | "button_retry"
-  | "submit_text";
+export type LessonTrackingProps = {
+  product: ProductValueType;
+  lessonPlanTitle: string;
+  subjectSlug: string;
+  keyStageSlug: string;
+};
 
 export function getLessonTrackingProps({
   lesson,
 }: {
   lesson: LooseLessonPlan;
-}): {
-  product: ProductValueType;
-  lessonPlanTitle: string;
-  subjectSlug: string;
-  keyStageSlug: string;
-} {
+}): LessonTrackingProps {
   return {
     product: "ai lesson assistant",
     lessonPlanTitle: lesson.title ?? "",

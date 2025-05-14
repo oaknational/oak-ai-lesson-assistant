@@ -1,11 +1,17 @@
 "use server";
 
+import {
+  oakOpenAiLessonSummarySchema,
+  oakOpenAiTranscriptSchema,
+} from "@oakai/additional-materials/src/schemas/oakOpenApi";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { chatSchema } from "@oakai/aila/src/protocol/schema";
 import type { Prisma } from "@oakai/db";
 import { prisma } from "@oakai/db";
 
 import * as Sentry from "@sentry/nextjs";
+
+const OPENAI_AUTH_TOKEN = process.env.OPENAI_AUTH_TOKEN;
 
 function parseChatAndReportError({
   sessionOutput,
@@ -71,3 +77,42 @@ export async function getSharedChatById(
 
   return chat;
 }
+
+export const getOakOpenAiLessonData = async (lessonSlug: string) => {
+  if (!OPENAI_AUTH_TOKEN) {
+    throw new Error("No OpenAI auth token found");
+  }
+  const [summaryRes, transcriptRes] = await Promise.all([
+    fetch(
+      `https://open-api.thenational.academy/api/v0/lessons/${lessonSlug}/summary`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${OPENAI_AUTH_TOKEN}`,
+          Accept: "application/json",
+        },
+      },
+    ),
+    fetch(
+      `https://open-api.thenational.academy/api/v0/lessons/${lessonSlug}/transcript`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${OPENAI_AUTH_TOKEN}`,
+          Accept: "application/json",
+        },
+      },
+    ),
+  ]);
+  const summaryData = oakOpenAiLessonSummarySchema.parse(
+    await summaryRes.json(),
+  );
+  const transcriptData = oakOpenAiTranscriptSchema.parse(
+    await transcriptRes.json(),
+  );
+
+  return {
+    lessonSummary: summaryData,
+    lessonTranscript: transcriptData,
+  };
+};

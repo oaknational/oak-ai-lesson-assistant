@@ -6,10 +6,12 @@ import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/s
 import { OakBox } from "@oaknational/oak-components";
 import type { AilaUserModificationAction } from "@prisma/client";
 
+import { ComponentType, type ComponentTypeValueType } from "@/lib/avo/Avo";
 import {
   useChatActions,
   useChatStore,
   useLessonPlanStore,
+  useLessonPlanTrackingActions,
 } from "@/stores/AilaStoresProvider";
 import { trpc } from "@/utils/trpc";
 
@@ -34,6 +36,7 @@ export type ActionButtonWrapperProps = Readonly<{
     option: FeedbackOption<AilaUserModificationAction>,
     userFeedbackText: string,
   ) => string;
+  trackingComponentType: ComponentTypeValueType;
 }>;
 
 const ActionButtonWrapper = ({
@@ -46,6 +49,7 @@ const ActionButtonWrapper = ({
   buttonText,
   userSuggestionTitle,
   generateMessage,
+  trackingComponentType,
 }: ActionButtonWrapperProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -55,6 +59,7 @@ const ActionButtonWrapper = ({
 
   const id = useLessonPlanStore((state) => state.id);
   const { append } = useChatActions();
+  const lessonPlanTracking = useLessonPlanTrackingActions();
   const { mutateAsync } = trpc.chat.chatFeedback.modifySection.useMutation();
 
   const messages = useChatStore((state) => state.stableMessages);
@@ -77,6 +82,18 @@ const ActionButtonWrapper = ({
 
   const handleSubmit = async () => {
     if (!selectedRadio) return;
+
+    if (trackingComponentType === ComponentType.MODIFY_BUTTON) {
+      lessonPlanTracking.clickedModify(selectedRadio, userFeedbackText);
+    } else if (
+      trackingComponentType === ComponentType.ADD_ADDITIONAL_MATERIALS_BUTTON
+    ) {
+      lessonPlanTracking.clickedAdditionalMaterials(
+        selectedRadio,
+        userFeedbackText,
+      );
+    }
+
     const message = generateMessage(selectedRadio, userFeedbackText);
     await Promise.all([append(message), recordUserModifySectionContent()]);
     setIsOpen(false);

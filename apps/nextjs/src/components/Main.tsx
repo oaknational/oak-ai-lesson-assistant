@@ -1,11 +1,20 @@
-import { OakBox, OakMaxWidth } from "@oaknational/oak-components";
+import {
+  OakBox,
+  type OakColorToken,
+  OakMaxWidth,
+} from "@oaknational/oak-components";
 
 type MainProps = {
   children: React.ReactNode;
-  bg?: string;
+  backgroundColor?: OakColorToken;
+  defaultMaxWidth?: boolean;
 };
 
-const Main = ({ children }: Readonly<MainProps>) => {
+const Main = ({
+  children,
+  defaultMaxWidth,
+  backgroundColor,
+}: Readonly<MainProps>) => {
   return (
     <OakBox
       as="main"
@@ -13,8 +22,9 @@ const Main = ({ children }: Readonly<MainProps>) => {
       $ph="inner-padding-m"
       $mt="space-between-xxl"
       $pt="inner-padding-xl7"
+      $background={backgroundColor ?? "transparent"}
     >
-      <OakMaxWidth>{children}</OakMaxWidth>
+      {defaultMaxWidth ? <OakMaxWidth>{children}</OakMaxWidth> : children}
     </OakBox>
   );
 };
