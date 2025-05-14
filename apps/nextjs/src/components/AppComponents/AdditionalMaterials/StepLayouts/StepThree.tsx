@@ -135,7 +135,7 @@ const StepThree = () => {
                   key={refinement.id}
                   onClick={() => {
                     void refineMaterial({
-                      refinement: refinement.value,
+                      refinement: [{ type: refinement.value }],
                       mutateAsync: async (input) => {
                         try {
                           return await fetchMaterial.mutateAsync(input);
