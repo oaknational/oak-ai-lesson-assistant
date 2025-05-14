@@ -6,6 +6,7 @@ import {
   readingAgeRefinement,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
+import { aiLogger } from "@oakai/logger";
 
 import {
   OakFlex,
@@ -15,6 +16,7 @@ import {
   OakSecondaryButton,
   OakSpan,
 } from "@oaknational/oak-components";
+import * as Sentry from "@sentry/nextjs";
 
 import {
   useResourcesActions,
@@ -23,6 +25,7 @@ import {
 import {
   docTypeSelector,
   generationSelector,
+  isResourcesDownloadingSelector,
   isResourcesLoadingSelector,
 } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
@@ -32,15 +35,34 @@ import { Glossary } from "../../AdditionalMaterials/Glossary";
 import InlineButton from "../InlineButton";
 import ResourcesFooter from "../ResourcesFooter";
 
+const log = aiLogger("additional-materials");
+
 const StepThree = () => {
   const generation = useResourcesStore(generationSelector);
+
   const docType = useResourcesStore(docTypeSelector);
   const isResourcesLoading = useResourcesStore(isResourcesLoadingSelector);
   const { setStepNumber, refineMaterial } = useResourcesActions();
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
+  const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
+  const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
 
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
+
+  const handleDownloadMaterial = async () => {
+    if (!generation || !docType) {
+      return;
+    }
+    try {
+      await downloadMaterial();
+    } catch (err) {
+      log.error("Download failed", err);
+      Sentry.captureException(err);
+    } finally {
+      setIsResourceDownloading(false);
+    }
+  };
 
   const getRefinementOptions = () => {
     if (docType === "additional-glossary") {
@@ -126,15 +148,18 @@ const StepThree = () => {
                 onClick={() => {
                   setIsFooterAdaptOpen(true);
                 }}
-                disabled={refinementOptions.length === 0 || isResourcesLoading}
+                disabled={
+                  refinementOptions.length === 0 || !generation || isDownloading
+                }
               >
                 Adapt
               </OakSecondaryButton>
               <OakPrimaryButton
-                onClick={() => null}
+                onClick={() => void handleDownloadMaterial()}
                 iconName="download"
                 isTrailingIcon={true}
-                disabled={isResourcesLoading}
+                isLoading={isDownloading}
+                disabled={!generation}
               >
                 Download (.zip)
               </OakPrimaryButton>

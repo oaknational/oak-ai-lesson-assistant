@@ -16,6 +16,7 @@ export async function getLink({
     const response = await drive.files.get({
       fileId,
       fields: "webViewLink",
+      supportsAllDrives: true,
     });
 
     const url = response.data.webViewLink;
