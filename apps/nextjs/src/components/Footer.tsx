@@ -191,9 +191,10 @@ const StyledFooter = styled.footer`
 `;
 
 const StyledOakLink = styled(OakLink)`
-  text-decoration: none;
+  display: block !important;
+  text-decoration: none !important;
   &:hover {
-    text-decoration: underline;
+    text-decoration: underline !important;
   }
 `;
 
