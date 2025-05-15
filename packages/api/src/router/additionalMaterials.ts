@@ -1,11 +1,7 @@
-import { generateAdditionalMaterialModeration } from "@oakai/additional-materials";
 import {
-  type AdditionalMaterialSchemas,
   actionEnum,
   generateAdditionalMaterialInputSchema,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import { generateAdditionalMaterialObject } from "@oakai/additional-materials/src/documents/additionalMaterials/generateAdditionalMaterialObject";
-import { generatePartialLessonPlanObject } from "@oakai/additional-materials/src/documents/partialLessonPlan/generateLessonPlan";
 import { partialLessonContextSchema } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import {
   type OakOpenAiLessonSummary,
@@ -20,9 +16,12 @@ import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { ZodError, z } from "zod";
 
-import type { LooseLessonPlan } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
+import {
+  generateAdditionalMaterial,
+  generatePartialLessonPlan,
+} from "./additionalMaterials/helpers";
 
 const log = aiLogger("additional-materials");
 const OPENAI_AUTH_TOKEN = process.env.OPENAI_AUTH_TOKEN;
@@ -34,9 +33,11 @@ export const additionalMaterialsRouter = router({
         action: z.string(),
         context: z.unknown(),
         documentType: z.string(),
+        resourceId: z.string().nullish(),
+        lessonId: z.string().nullish(),
       }),
     )
-    .mutation(async ({ ctx, input }): Promise<AdditionalMaterialSchemas> => {
+    .mutation(async ({ ctx, input }) => {
       log.info("fetching additional materials");
 
       try {
@@ -46,19 +47,19 @@ export const additionalMaterialsRouter = router({
           log.error("Failed to parse input", parsedInput.error);
           throw new ZodError(parsedInput.error.issues);
         }
-        const parsedAction = actionEnum.parse(input.action);
+        actionEnum.parse(input.action);
 
-        const result = await generateAdditionalMaterialObject({
-          provider: "openai",
-          parsedInput: parsedInput.data,
-          action: parsedAction,
+        const material = await generateAdditionalMaterial({
+          prisma: ctx.prisma,
+          userId: ctx.auth.userId,
+          input: parsedInput.data,
         });
 
-        if (!result) {
-          throw new Error("Failed to generate additional material", result);
+        if (!material.resource) {
+          throw new Error("Failed to generate additional material");
         }
 
-        return result;
+        return material?.resource;
       } catch (cause) {
         const TrpcError = new Error(
           "Failed to fetch additional material moderation",
@@ -69,37 +70,10 @@ export const additionalMaterialsRouter = router({
         throw TrpcError;
       }
     }),
-  generateAdditionalMaterialModeration: protectedProcedure
-    .input(
-      z.object({
-        generation: z.string(),
-      }),
-    )
-    .mutation(async ({ ctx, input }): Promise<string> => {
-      const { generation } = input;
-      log.info("Fetch additional material moderation", ctx);
 
-      try {
-        const result = await generateAdditionalMaterialModeration(generation);
-
-        if (!result) {
-          throw new Error("Failed to generate additional material");
-        }
-
-        return result;
-      } catch (cause) {
-        const TrpcError = new Error(
-          "Failed to fetch additional material moderation",
-          { cause },
-        );
-        log.error("Failed to fetch additional material moderation", cause);
-        Sentry.captureException(TrpcError);
-        throw TrpcError;
-      }
-    }),
   generatePartialLessonPlanObject: protectedProcedure
     .input(partialLessonContextSchema)
-    .mutation(async ({ ctx, input }): Promise<LooseLessonPlan> => {
+    .mutation(async ({ ctx, input }) => {
       log.info("Generate partial lesson plan", input);
       const parsedInput = partialLessonContextSchema.safeParse(input);
       if (!parsedInput.success) {
@@ -108,26 +82,21 @@ export const additionalMaterialsRouter = router({
       }
 
       try {
-        const result = await generatePartialLessonPlanObject({
-          provider: "openai",
-          parsedInput: { context: parsedInput.data },
+        const lesson = await generatePartialLessonPlan({
+          prisma: ctx.prisma,
+          userId: ctx.auth.userId,
+          input: parsedInput.data,
         });
-
-        if (!result) {
-          throw new Error("Failed to generate partial lesson plan", result);
-        }
-
-        return result;
+        return lesson?.lesson;
       } catch (cause) {
-        const TrpcError = new Error(
-          "Failed to fetch additional material moderation",
-          { cause },
-        );
-        log.error("Failed to fetch additional material moderation", cause);
+        const errorContext = `Failed to fetch additional material moderation for - ${parsedInput.data.title} - ${parsedInput.data.subject} `;
+        const TrpcError = new Error(errorContext, { cause });
+        log.error(errorContext, cause);
         Sentry.captureException(TrpcError);
         throw TrpcError;
       }
     }),
+
   fetchOWALessonData: protectedProcedure
     .input(
       z.object({
@@ -190,6 +159,7 @@ export const additionalMaterialsRouter = router({
         }
       },
     ),
+
   searchOWALesson: protectedProcedure
     .input(
       z.object({

@@ -48,6 +48,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
       },
       userEmail,
       onStateChange,
+      folderId: process.env.GOOGLE_DRIVE_OUTPUT_FOLDER_ID_ADDITIONAL_RESOURCES,
     });
     if ("error" in result) {
       onStateChange({ status: "error", error: result.error });

@@ -49,3 +49,6 @@
 
 # HAR files
 **/*.har
+
+# Local ingest data dir 
+packages/ingest/src/_data/

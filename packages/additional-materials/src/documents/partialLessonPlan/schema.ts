@@ -48,4 +48,5 @@ export const partialLessonContextSchema = z.object({
   subject: z.string(),
   title: z.string(),
   lessonParts: PartialLessonPlanFieldKeyArraySchema,
+  resourceId: z.string().optional(),
 });

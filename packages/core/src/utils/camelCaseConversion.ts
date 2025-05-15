@@ -11,3 +11,7 @@ export function camelCaseToTitleCase(str: string) {
     .replace(/^./, (str) => str.toUpperCase())
     .replace(/\s./g, (str) => str.toUpperCase());
 }
+
+export function kebabCaseToSentenceCase(str: string) {
+  return str.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+}

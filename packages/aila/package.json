@@ -24,7 +24,6 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^0.0.55",
     "@anatine/zod-mock": "^3.13.4",
     "@clerk/nextjs": "5.7.2",
     "@elastic/elasticsearch": "^8.13.1",
@@ -43,7 +42,7 @@
     "dotenv-cli": "^6.0.0",
     "immer": "^10.1.1",
     "jsonrepair": "^3.8.0",
-    "openai": "^4.58.1",
+    "openai": "^4.96.0",
     "remeda": "^1.29.0",
     "superjson": "^1.9.1",
     "tiny-invariant": "^1.3.1",

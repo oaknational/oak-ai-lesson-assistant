@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import { logStoreUpdates } from "../zustandHelpers";
+import { handleDownload } from "./actionFunctions/handleDownload";
 import {
   handleResetFormState,
   handleSetActiveDropdown,
@@ -31,6 +32,7 @@ export const createResourcesStore = ({ id }: CreateResourcesStoreParams) => {
     stepNumber: 0,
     isLoadingLessonPlan: false,
     isResourcesLoading: false,
+    isDownloading: false,
     pageData: {
       lessonPlan: {
         title: "",
@@ -68,6 +70,8 @@ export const createResourcesStore = ({ id }: CreateResourcesStoreParams) => {
       setDocType: handleSetDocType(set, get),
       setIsLoadingLessonPlan: handleSetIsLoadingLessonPlan(set, get),
       setIsResourcesLoading: handleSetIsResourcesLoading(set, get),
+      setIsResourceDownloading: (isDownloading: boolean) =>
+        set({ isDownloading }),
       // Form state setters
       setSubject: handleSetSubject(set, get),
       setTitle: handleSetTitle(set, get),
@@ -79,6 +83,7 @@ export const createResourcesStore = ({ id }: CreateResourcesStoreParams) => {
       submitLessonPlan: handleSubmitLessonPlan(set, get),
       generateMaterial: handleGenerateMaterial(set, get),
       refineMaterial: handleRefineMaterial(set, get),
+      downloadMaterial: handleDownload(set, get),
     },
   }));
 

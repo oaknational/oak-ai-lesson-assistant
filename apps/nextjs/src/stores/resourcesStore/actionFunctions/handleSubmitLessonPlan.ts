@@ -41,7 +41,7 @@ export const handleSubmitLessonPlan =
       setIsLoadingLessonPlan(true);
       // @todo move this to the backend
       const validLessonFields = lessonFieldKeys.filter(
-        (key) => get().pageData.lessonPlan[key],
+        (key) => key !== "title" && key !== "keyStage" && key !== "subject",
       );
 
       // Prepare API input
