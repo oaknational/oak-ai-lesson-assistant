@@ -33,6 +33,7 @@ import {
   isResourcesDownloadingSelector,
   isResourcesLoadingSelector,
 } from "@/stores/resourcesStore/selectors";
+import { pageDataSelector } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
 
 import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
@@ -53,7 +54,9 @@ const StepThree = () => {
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
   const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
   const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
-
+  const pageData = useResourcesStore(pageDataSelector);
+  const lessonPlan = pageData?.lessonPlan;
+  console.log("************lessonPlan", lessonPlan);
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 

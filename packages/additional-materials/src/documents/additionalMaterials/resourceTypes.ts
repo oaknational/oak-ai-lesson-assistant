@@ -28,7 +28,6 @@ export type BaseResourceTypeConfig = {
   displayName: string;
   description: string;
   refinementOptions: RefinementOption[];
-  componentType: string;
   isAvailable: boolean;
   systemMessage: () => string;
   schema: ZodType;
@@ -44,7 +43,10 @@ const readingAgeRefinementOptions: RefinementOption[] = Array.from(
   value: id,
 }));
 
-export const resourceTypesConfig = {
+export const resourceTypesConfig: Record<
+  AdditionalMaterialType,
+  BaseResourceTypeConfig
+> = {
   "additional-glossary": {
     // Backend config
     ...additionalMaterialsConfigMap["additional-glossary"],

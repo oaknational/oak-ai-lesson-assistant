@@ -12,10 +12,33 @@ export const extractDataFromBlocks = <T>(
         map[block.type] = block.text;
         break;
       case "labelValue":
-        for (const [i, item] of block.items.entries()) {
-          map[`label_${i + 1}`] = item.label;
-          map[`value_${i + 1}`] = item.value;
+        if (
+          block.items.length > 0 &&
+          block.items[0]?.label &&
+          typeof block.items[0].label === "string" &&
+          !block.items[0].label.includes("_")
+        ) {
+          for (const [i, item] of block.items.entries()) {
+            map[`label_${i + 1}`] = item.label;
+            map[`value_${i + 1}`] = item.value;
+          }
+        } else {
+          for (const item of block.items) {
+            map[item.label] = item.value;
+          }
         }
+        break;
+      case "quiz":
+        if (block.questions) {
+          for (const [i, question] of block.questions.entries()) {
+            map[`question_${i + 1}`] = question.question;
+            map[`answers_${i + 1}`] = JSON.stringify(question.answers);
+          }
+        }
+        break;
+      case "placeholders":
+        // For direct placeholder mapping, simply merge the map
+        Object.assign(map, block.map);
         break;
     }
 
