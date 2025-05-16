@@ -153,13 +153,6 @@ const StepOne = () => {
                     </OakFlex>
                   }
                 />
-                <button
-                  onClick={() =>
-                    setDialogWindow("additional-materials-moderation")
-                  }
-                >
-                  open dialog
-                </button>
               </OakLabel>
             </OakRadioGroup>
           </OakFlex>
