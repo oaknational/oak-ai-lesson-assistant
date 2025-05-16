@@ -8,8 +8,6 @@ import type {
 } from "@elastic/elasticsearch/lib/api/types";
 import { CohereClient } from "cohere-ai";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
-import type { RawQuiz } from "protocol/rawQuizSchema";
-import { keysToCamelCase } from "protocol/rawQuizSchema";
 import { z } from "zod";
 
 import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
@@ -17,6 +15,8 @@ import {
   JsonPatchDocumentSchema,
   PatchQuiz,
 } from "../../../protocol/jsonPatchProtocol";
+import type { RawQuiz } from "../../../protocol/rawQuizSchema";
+import { keysToCamelCase } from "../../../protocol/rawQuizSchema";
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
