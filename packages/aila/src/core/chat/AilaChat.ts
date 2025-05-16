@@ -307,17 +307,6 @@ export class AilaChat implements AilaChatService {
     return accumulated ?? "";
   }
 
-  private applyExperimentalPatches() {
-    const experimentalPatches = this._experimentalPatches;
-
-    log.info(
-      "Applying experimental extractAndApplyLlmPatches",
-      experimentalPatches,
-    );
-
-    this._aila.document.applyValidPatches(experimentalPatches);
-  }
-
   private async reportUsageMetrics() {
     await this._aila.analytics?.reportUsageMetrics(this.accumulatedText());
   }
@@ -372,7 +361,6 @@ export class AilaChat implements AilaChatService {
       return;
     }
     this._aila.document.extractAndApplyLlmPatches(llmPatches);
-    this.applyExperimentalPatches();
   }
 
   private appendAssistantMessage() {

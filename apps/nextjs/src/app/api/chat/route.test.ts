@@ -17,6 +17,11 @@ jest.mock("./user", () => ({
   fetchAndCheckUser: jest.fn().mockResolvedValue("test-user-id"),
 }));
 
+// Mock the serverSideFeatureFlag module
+jest.mock("@/utils/serverSideFeatureFlag", () => ({
+  serverSideFeatureFlag: jest.fn().mockResolvedValue(false),
+}));
+
 describe("Chat API Route", () => {
   let testConfig: Config;
   let mockLLMService: MockLLMService;
