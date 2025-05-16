@@ -4,12 +4,14 @@ import {
   additionalMaterialsConfigMap,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { generateAdditionalMaterialObject } from "@oakai/additional-materials/src/documents/additionalMaterials/generateAdditionalMaterialObject";
+import { notifyRateLimit } from "@oakai/core/src/functions/slack/notifyRateLimit";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import * as Sentry from "@sentry/nextjs";
+import type { RateLimitInfo } from "types";
 
 import { recordSafetyViolation } from "./safetyUtils";
 
@@ -18,10 +20,17 @@ const log = aiLogger("additional-materials");
 type GenerateAdditionalMaterialParams = {
   prisma: PrismaClientWithAccelerate;
   auth: SignedInAuthObject;
+  rateLimit: RateLimitInfo;
   userId: string;
   input: GenerateAdditionalMaterialInput & {
     lessonId?: string | null;
   };
+};
+
+const checkRateLimit = (rateLimit: RateLimitInfo) => {
+  if (rateLimit.isSubjectToRateLimiting) {
+    return rateLimit.remaining < rateLimit.limit;
+  }
 };
 
 /**
@@ -32,7 +41,17 @@ export async function generateAdditionalMaterial({
   userId,
   input,
   auth,
+  rateLimit,
 }: GenerateAdditionalMaterialParams) {
+  log.info("Checking rate limit");
+  if (checkRateLimit(rateLimit)) {
+    log.info("Rate limit exceeded");
+
+    return {
+      rateLimit,
+    };
+  }
+
   log.info("Generating additional material");
 
   const result = await generateAdditionalMaterialObject({
@@ -88,6 +107,7 @@ export async function generateAdditionalMaterial({
       resource: null,
       moderation,
       resourceId: interaction.id,
+      rateLimit,
     };
   }
 
@@ -95,5 +115,6 @@ export async function generateAdditionalMaterial({
     resource: result,
     moderation,
     resourceId: interaction.id,
+    rateLimit,
   };
 }

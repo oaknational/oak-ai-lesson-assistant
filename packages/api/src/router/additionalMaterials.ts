@@ -14,6 +14,7 @@ import {
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
+import type { RateLimitInfo } from "types";
 import { ZodError, z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
@@ -55,6 +56,7 @@ export const additionalMaterialsRouter = router({
           userId: ctx.auth.userId,
           input: parsedInput.data,
           auth: ctx.auth,
+          rateLimit: ctx.rateLimit,
         });
       } catch (cause) {
         const TrpcError = new Error(
