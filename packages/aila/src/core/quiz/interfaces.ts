@@ -114,9 +114,9 @@ export interface QuizSelector<T extends BaseType> {
   ratingFunction: RatingFunction<T>;
   maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
   selectBestQuiz(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizQuestionWithRawJson[][],
     ratingsSchemas: T[],
-  ): QuizQuestion[];
+  ): QuizQuestionWithRawJson[];
 }
 
 export type quizPatchType = "/starterQuiz" | "/exitQuiz";
