@@ -106,7 +106,7 @@ export interface FullQuizService {
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
     override?: boolean,
-  ): Promise<QuizQuestion[]>;
+  ): Promise<QuizQuestionWithRawJson[]>;
 }
 
 // Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
