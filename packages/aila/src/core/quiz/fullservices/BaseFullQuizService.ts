@@ -108,7 +108,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
     );
     if (basedOnRagQuizGenerator) {
       // We have based on generator.
-      let quizArray: Quiz[] = [];
+      let quizArray: QuizQuestionWithRawJson[][] = [];
       if (quizType === "/starterQuiz") {
         quizArray = await basedOnRagQuizGenerator.generateMathsStarterQuizPatch(
           lessonPlan,
