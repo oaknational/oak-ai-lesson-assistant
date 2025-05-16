@@ -78,15 +78,15 @@ export interface AilaQuizVariantService {
 }
 
 export interface AilaQuizReranker<T extends z.ZodType<BaseType>> {
-  rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]>;
+  rerankQuiz(quizzes: QuizQuestionWithRawJson[][]): Promise<number[]>;
   evaluateQuizArray(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizQuestionWithRawJson[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
   ): Promise<z.infer<T>[]>;
   cachedEvaluateQuizArray(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizQuestionWithRawJson[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
