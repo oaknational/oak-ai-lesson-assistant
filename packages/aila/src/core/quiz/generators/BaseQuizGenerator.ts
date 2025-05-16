@@ -427,7 +427,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
   protected async retrieveAndProcessQuestions(
     customIds: string[],
-  ): Promise<QuizQuestion[]> {
+  ): Promise<QuizQuestionWithRawJson[]> {
     const quizQuestions = await this.questionArrayFromCustomIds(customIds);
     return quizQuestions;
   }

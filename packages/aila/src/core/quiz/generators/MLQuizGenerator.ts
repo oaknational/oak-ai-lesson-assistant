@@ -104,7 +104,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   // This should return an array of questions - sometimes there are more than six questions, these are split later.
   private async generateMathsQuizML(
     lessonPlan: LooseLessonPlan,
-  ): Promise<QuizQuestion[]> {
+  ): Promise<QuizQuestionWithRawJson[]> {
     this.isValidLessonPlan(lessonPlan);
     const hits = await this.unpackAndSearch(lessonPlan);
     const qq = this.unpackLessonPlanForRecommender(lessonPlan);
