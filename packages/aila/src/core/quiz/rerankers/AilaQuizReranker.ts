@@ -14,7 +14,7 @@ import type {
 import { type BaseSchema, type BaseType } from "../ChoiceModels";
 import { evaluateQuiz } from "../OpenAIRanker";
 import { processArray, withRandomDelay } from "../apiCallingUtils";
-import type { AilaQuizReranker } from "../interfaces";
+import type { AilaQuizReranker, QuizQuestionWithRawJson } from "../interfaces";
 
 // import { evaluateQuiz } from "../OpenAIRanker";
 
@@ -34,16 +34,21 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
   //  This takes a quiz array and evaluates it using the rating schema and quiz type and returns an array of evaluation schema objects.
   //   TODO: GCLOMAX - move evaluate quiz out to use dependancy injection - can then pass the different types of reranker types.
   public async evaluateQuizArray(
-    quizArray: QuizQuestion[][],
+    quizArray: QuizQuestionWithRawJson[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
     useCache: boolean = true,
   ): Promise<z.infer<T>[]> {
     if (useCache) {
-      return this.cachedEvaluateQuizArray(quizArray, lessonPlan, ratingSchema, quizType);
+      return this.cachedEvaluateQuizArray(
+        quizArray,
+        lessonPlan,
+        ratingSchema,
+        quizType,
+      );
     }
-    
+
     // Decorates to delay the evaluation of each quiz. There is probably a better library for this.
     const delayedRetrieveQuiz = withRandomDelay<
       [QuizQuestion[]],
@@ -74,7 +79,7 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
     // In this case the output is coming from the openAI endpoint. We need to unpack the output and unparse it.
 
     const outputRatings = await processArray<
-      QuizQuestion[],
+      QuizQuestionWithRawJson[],
       ParsedChatCompletion<z.infer<T>>
     >(quizArray, delayedRetrieveQuiz);
     const extractedOutputRatings = outputRatings.map((item): z.infer<T> => {
@@ -105,7 +110,7 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
   // ): Promise<z.infer<T>[]>;
 
   public async cachedEvaluateQuizArray(
-    quizArray: QuizQuestion[][],
+    quizArray: QuizQuestionWithRawJson[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
@@ -142,7 +147,7 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
     }
 
     log.info(`Cache miss for key: ${cacheKey}, evaluating for openAI`);
-    // No caching otherwise we will get stuck in a loop. 
+    // No caching otherwise we will get stuck in a loop.
     const evaluatedQuizzes = await this.evaluateQuizArray(
       quizArray,
       lessonPlan,

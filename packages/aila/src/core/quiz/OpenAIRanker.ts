@@ -1,5 +1,6 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { aiLogger } from "@oakai/logger";
+
 import type { OpenAI } from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
@@ -12,11 +13,12 @@ import type {
 } from "../../protocol/schema";
 import type { BaseType } from "./ChoiceModels";
 import {
-  keyLearningPointsPrompt,
-  priorKnowledgePrompt,
   QuestionInspectionSystemPrompt,
   QuizInspectionSystemPrompt,
+  keyLearningPointsPrompt,
+  priorKnowledgePrompt,
 } from "./QuestionAssesmentPrompt";
+import type { QuizQuestionWithRawJson } from "./interfaces";
 import {
   starterQuizQuestionSuitabilityDescriptionSchema,
   testRatingSchema,
@@ -91,7 +93,7 @@ function processStringWithImages(text: string): ChatContent[] {
     .filter((part): part is ChatContent => part !== null);
 }
 
-function quizToLLMMessages(quizQuestion: QuizQuestion): ChatMessage {
+function quizToLLMMessages(quizQuestion: QuizQuestionWithRawJson): ChatMessage {
   const content: ChatContent[] = [];
 
   // Process question
@@ -164,7 +166,7 @@ function combinePrompts(
  * @returns {ChatMessage} A formatted ChatMessage object ready for use with OpenAI API.
  */
 function quizQuestionsToOpenAIMessageFormat(
-  questions: QuizQuestion[],
+  questions: QuizQuestionWithRawJson[],
 ): ChatMessage {
   const content: ChatContent[] = [];
   const promptList = questions.map((question) => quizToLLMMessages(question));
@@ -190,7 +192,7 @@ function quizQuestionsToOpenAIMessageFormat(
  */
 function combinePromptsAndQuestions(
   lessonPlan: LooseLessonPlan,
-  questions: QuizQuestion[],
+  questions: QuizQuestionWithRawJson[],
   systemPrompt: OpenAI.Chat.Completions.ChatCompletionSystemMessageParam,
   lessonPlanSectionForConsideration: sectionCategory,
 ): ChatMessage[] {
@@ -263,7 +265,7 @@ async function evaluateQuiz<
   T extends z.ZodType<BaseType & Record<string, unknown>>,
 >(
   lessonPlan: LooseLessonPlan,
-  questions: QuizQuestion[],
+  questions: QuizQuestionWithRawJson[],
   max_tokens: number = 1500,
   ranking_schema: T,
   quizType: QuizPath,
