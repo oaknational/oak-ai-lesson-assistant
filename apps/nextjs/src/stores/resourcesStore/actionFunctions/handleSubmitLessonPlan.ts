@@ -1,10 +1,13 @@
 import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { GeneratePartialLessonPlanResponse } from "@oakai/api/src/router/additionalMaterials/generatePartialLessonPlan";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
+import { TRPCError } from "@trpc/server";
 
 import type {
   ErrorResponse,
@@ -52,20 +55,22 @@ const buildLessonPlanInput = (
 /**
  * Determines the type of error that occurred during lesson plan generation
  */
-const determineErrorType = (error: unknown): ErrorResponse => {
+const determineErrorType = (error: TRPCError): ErrorResponse => {
   let errorType: ErrorType = "unknown";
   let errorMessage = "An unexpected error occurred.";
 
-  if (typeof error === "object" && error !== null && "code" in error) {
-    const code = (error as { code: string }).code;
+  const { cause } = error;
 
-    if (code === "TOO_MANY_REQUESTS") {
-      errorType = "rate_limit";
-      errorMessage = "You have been rate limited. Please try again later.";
-    } else if (code === "FORBIDDEN") {
-      errorType = "banned";
-      errorMessage = "Your account has been banned.";
-    }
+  if (cause instanceof RateLimitExceededError) {
+    errorType = "rate_limit";
+    errorMessage = "You have been rate limited. Please try again later.";
+  } else if (cause instanceof UserBannedError) {
+    errorType = "banned";
+    errorMessage = "Your account has been banned.";
+  } else if (cause instanceof Error) {
+    errorMessage = cause.message;
+  } else if (typeof cause === "string") {
+    errorMessage = cause;
   }
 
   return { type: errorType, message: errorMessage };
@@ -113,12 +118,13 @@ export const handleSubmitLessonPlan =
       const apiInput = buildLessonPlanInput(title, subject, keyStage, year);
       const result = await mutateAsync(apiInput);
       updateStoreWithLessonPlan(set, result);
-    } catch (error) {
-      const errorDetails = determineErrorType(error);
+    } catch (error: unknown) {
+      if (error instanceof TRPCError) {
+        const errorDetails = determineErrorType(error);
+        set({ error: errorDetails });
+      }
 
-      set({ error: errorDetails });
-
-      log.error("Error handling lesson plan", error);
+      log.error("Error handling lesson plan", (error as Error)?.cause);
       Sentry.captureException(error);
     } finally {
       setIsLoadingLessonPlan(false);

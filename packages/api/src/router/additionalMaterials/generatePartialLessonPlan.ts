@@ -107,6 +107,7 @@ export async function generatePartialLessonPlan({
       userAction: "PARTIAL_LESSON_GENERATION",
     });
     // @todo we should throw error here
+
     return {
       threatDetection: true,
       lesson: null,

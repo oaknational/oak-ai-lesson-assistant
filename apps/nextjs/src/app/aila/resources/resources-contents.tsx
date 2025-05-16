@@ -21,6 +21,7 @@ import {
 } from "@/stores/ResourcesStoreProvider";
 import {
   docTypeSelector,
+  moderationSelector,
   pageDataSelector,
   stepNumberSelector,
 } from "@/stores/resourcesStore/selectors";
@@ -41,6 +42,10 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const docType = useResourcesStore(docTypeSelector);
   const docTypeName = docType?.split("-")[1] ?? null;
   const { resetFormState } = useResourcesActions();
+  const moderation = useResourcesStore(moderationSelector);
+
+  const hasModerationCategories =
+    moderation?.categories && moderation.categories.length > 0;
 
   useEffect(() => {
     resetFormState();

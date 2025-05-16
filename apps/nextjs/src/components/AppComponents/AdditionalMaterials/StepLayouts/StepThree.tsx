@@ -27,7 +27,6 @@ import {
   generationSelector,
   isResourcesDownloadingSelector,
   isResourcesLoadingSelector,
-  moderationSelector,
 } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
 
@@ -41,13 +40,13 @@ import { handleDialogSelection } from "./helpers";
 
 const log = aiLogger("additional-materials");
 
-const StepThree = () => {
+const StepThree = (hasModerationCategories: boolean) => {
   const generation = useResourcesStore(generationSelector);
 
   const docType = useResourcesStore(docTypeSelector);
   const isResourcesLoading = useResourcesStore(isResourcesLoadingSelector);
   const { setStepNumber, refineMaterial } = useResourcesActions();
-  const moderation = useResourcesStore(moderationSelector);
+
   const error = useResourcesStore((state) => state.error);
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
   const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
@@ -103,15 +102,13 @@ const StepThree = () => {
   };
 
   const refinementOptions = getRefinementOptions();
-  const hasModeration =
-    moderation?.categories && moderation.categories.length > 0;
 
   handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
 
   return (
     <>
       {isResourcesLoading && <OakP>Loading...</OakP>}
-      {hasModeration && <ModerationMessage />}
+      {hasModerationCategories && <ModerationMessage />}
       <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       <ResourcesFooter>
         {isFooterAdaptOpen ? (

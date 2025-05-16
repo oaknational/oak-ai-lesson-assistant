@@ -11,7 +11,6 @@ export const handleDialogSelection = ({
   error: { type: string } | null;
   setDialogWindow: Dispatch<SetStateAction<DialogTypes>>;
 }) => {
-  setDialogWindow("additional-materials-moderation");
   if (threatDetected) {
     setDialogWindow("additional-materials-threat-detected");
     return;
@@ -19,7 +18,7 @@ export const handleDialogSelection = ({
 
   if (error) {
     if (error.type === "banned") {
-      setDialogWindow("additional-materials-moderation");
+      setDialogWindow("additional-materials-user-account-locked");
     } else if (error.type === "rate_limit") {
       setDialogWindow("additional-materials-rate-limit");
     }

@@ -130,6 +130,7 @@ export const additionalMaterialsRouter = router({
         if (clerkUser.banned) {
           throw new UserBannedError(ctx.auth.userId);
         }
+        // throw new UserBannedError(ctx.auth.userId);
       } catch (err) {
         if (err instanceof RateLimitExceededError) {
           const timeRemainingHours = Math.ceil(

@@ -28,7 +28,6 @@ import {
 } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
 
-import type { DialogTypes } from "../../Chat/Chat/types";
 import { MemoizedReactMarkdownWithStyles } from "../../Chat/markdown";
 import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
@@ -41,10 +40,9 @@ export function mapLessonPlanSections(
   return lessonFieldKeys.map((key) => ({ key, data: lessonPlan[key] ?? null }));
 }
 
-const StepTwo = () => {
+const StepTwo = (hasModerationCategories: boolean) => {
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
-  const moderation = useResourcesStore(moderationSelector);
   const error = useResourcesStore((state) => state.error);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
@@ -81,9 +79,7 @@ const StepTwo = () => {
       <OakFlex $flexDirection="column">
         <OakFlex $flexDirection="column" $mb="space-between-m">
           <OakP $font={"heading-5"}>Task details</OakP>
-          {moderation?.categories && moderation.categories.length > 0 && (
-            <ModerationMessage />
-          )}
+          {hasModerationCategories && <ModerationMessage />}
 
           <OakBox $pv="inner-padding-m">
             <OakP>

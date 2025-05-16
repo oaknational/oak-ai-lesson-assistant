@@ -162,6 +162,13 @@ const DialogContents = ({
                 closeDialog={closeDialog}
               />
             )}
+            {/* // awaiting designs - placeholder */}
+            {dialogWindow === "additional-materials-user-account-locked" && (
+              <AdditionalMaterialsThreatDetected
+                body={"banned"}
+                closeDialog={closeDialog}
+              />
+            )}
           </OakModalCenterBody>
         </OakModalAtTheFront>
       )}
