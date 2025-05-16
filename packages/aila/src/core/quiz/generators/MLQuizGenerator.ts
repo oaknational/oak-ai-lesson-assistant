@@ -1,9 +1,10 @@
 // ML-based Quiz Generator
+import { aiLogger } from "@oakai/logger";
+
 import type {
   SearchHit,
   SearchHitsMetadata,
 } from "@elastic/elasticsearch/lib/api/types";
-import { aiLogger } from "@oakai/logger";
 
 import type {
   LooseLessonPlan,
@@ -12,7 +13,11 @@ import type {
   QuizQuestion,
 } from "../../../protocol/schema";
 import { missingQuizQuestion } from "../fixtures/MissingQuiz";
-import type { CustomHit, CustomSource } from "../interfaces";
+import type {
+  CustomHit,
+  CustomSource,
+  QuizQuestionWithRawJson,
+} from "../interfaces";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");
@@ -22,7 +27,12 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   ): Promise<SearchHit<CustomSource>[]> {
     const qq = this.unpackLessonPlanForRecommender(lessonPlan);
     // TODO: GCLOMAX - change this to use the new search service.
-    const results = await this.searchWithBM25("oak-vector-2025-04-16", "text", qq, 100);
+    const results = await this.searchWithBM25(
+      "oak-vector-2025-04-16",
+      "text",
+      qq,
+      100,
+    );
     return results.hits;
   }
 
@@ -106,7 +116,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   // TODO: GCLOMAX - Change for starter and exit quizzes.
   public async generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
-  ): Promise<Quiz[]> {
+  ): Promise<QuizQuestionWithRawJson[][]> {
     const quiz: QuizQuestion[] = await this.generateMathsQuizML(lessonPlan);
     const quiz2DArray = this.splitQuestionsIntoSixAndPad(
       lessonPlan,
@@ -118,7 +128,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   }
   public async generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
-  ): Promise<Quiz[]> {
+  ): Promise<QuizQuestionWithRawJson[][]> {
     const quiz: QuizQuestion[] = await this.generateMathsQuizML(lessonPlan);
     const quiz2DArray = this.splitQuestionsIntoSixAndPad(
       lessonPlan,
