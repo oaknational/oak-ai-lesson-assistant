@@ -1,4 +1,5 @@
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
+import type { RawQuiz } from "protocol/rawQuizSchema";
 import type * as z from "zod";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
@@ -137,6 +138,10 @@ export interface QuizQuestionTextOnlySource {
     lessonSlug: string;
     raw_json?: unknown; // Allow for raw JSON data
   };
+}
+
+export interface QuizQuestionWithRawJson extends QuizQuestion {
+  rawQuiz: RawQuiz;
 }
 
 export interface CustomHit {
