@@ -3,8 +3,13 @@ import { aiLogger } from "@oakai/logger";
 import { compare } from "fast-json-patch";
 
 import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
-import { type LooseLessonPlan } from "../../protocol/schema";
-import { agents, sectionAgentMap } from "./agents";
+import { type LooseLessonPlan, type Quiz } from "../../protocol/schema";
+import {
+  type AgentDefinition,
+  type AgentName,
+  agents,
+  sectionAgentMap,
+} from "./agents";
 import { type InteractResult } from "./compatibility/streamHandling";
 import { messageToUserAgent } from "./messageToUser";
 import { promptAgentHandler } from "./promptAgentHandler";
@@ -80,18 +85,27 @@ export type InteractCallback = <Update extends InteractUpdate>(
   update: Update,
 ) => void;
 
+type CustomAgentAsyncFn<T> = (args: {
+  document: LooseLessonPlan;
+}) => Promise<T>;
+
 export async function interact({
   chatId,
   userId,
   initialDocument,
   messageHistory,
   onUpdate,
+  customAgents,
 }: {
   chatId: string;
   userId: string;
   initialDocument: LooseLessonPlan;
   messageHistory: { role: "user" | "assistant"; content: string }[];
   onUpdate?: InteractCallback;
+  customAgents: {
+    mathsStarterQuiz?: CustomAgentAsyncFn<Quiz>;
+    mathsExitQuiz?: CustomAgentAsyncFn<Quiz>;
+  };
 }): Promise<InteractResult> {
   log.info("Starting interaction with Aila agents");
   let document = initialDocument;
@@ -139,7 +153,7 @@ export async function interact({
     log.info("Processing action", action);
     const { sectionKey, action: actionType, context } = action;
     const agentName = sectionAgentMap[sectionKey];
-    const agentDefinition = agents[agentName];
+    const agentDefinition = agents[agentName({ lessonPlan: document })];
 
     // Notify about starting an action
     onUpdate?.({
@@ -160,9 +174,86 @@ export async function interact({
         break;
       case "add":
       case "replace": {
+        // handle asyncFunction agents
+        if (agentDefinition.type === "asyncFunction") {
+          if (agentDefinition.name) {
+            if (agentDefinition.name === "mathsStarterQuiz") {
+              const quiz = await customAgents.mathsStarterQuiz?.({
+                document,
+              });
+              if (!quiz) {
+                throw new Error("Maths starter quiz returned null");
+              }
+
+              const patch: JsonPatchDocumentOptional = {
+                type: "patch",
+                value: {
+                  path: `/${sectionKey}`,
+                  op: actionType,
+                  value: quiz,
+                },
+                status: "complete",
+                // @todo improve 'reasoning here
+                reasoning: `Updated ${sectionKey} based on user request`,
+              };
+              const patches = [patch];
+              document = {
+                ...document,
+                [sectionKey]: quiz,
+              };
+              // Send section update with current state
+              onUpdate?.({
+                type: "section_update",
+                data: {
+                  sectionKey,
+                  actionType,
+                  patches,
+                },
+              });
+
+              break;
+            } else if (agentDefinition.name === "mathsExitQuiz") {
+              const quiz = await customAgents.mathsExitQuiz?.({
+                document,
+              });
+              if (!quiz) {
+                throw new Error("Maths starter quiz returned null");
+              }
+
+              const patch: JsonPatchDocumentOptional = {
+                type: "patch",
+                value: {
+                  path: `/${sectionKey}`,
+                  op: actionType,
+                  value: quiz,
+                },
+                status: "complete",
+                // @todo improve 'reasoning here
+                reasoning: `Updated ${sectionKey} based on user request`,
+              };
+              const patches = [patch];
+              document = {
+                ...document,
+                [sectionKey]: quiz,
+              };
+              // Send section update with current state
+              onUpdate?.({
+                type: "section_update",
+                data: {
+                  sectionKey,
+                  actionType,
+                  patches,
+                },
+              });
+
+              break;
+            }
+          }
+        }
+
         if (!("prompt" in agentDefinition)) {
           throw new Error(
-            `Unable to process 'replace' action. No prompt found`,
+            `Unable to process '${actionType}' action. No prompt found`,
           );
         }
         // Add or edit the section in the document

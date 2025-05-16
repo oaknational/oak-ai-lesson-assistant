@@ -55,6 +55,26 @@ async function main() {
       userId,
       initialDocument: currentDocument,
       messageHistory,
+      customAgents: {
+        mathsStarterQuiz: () => {
+          return Promise.resolve([
+            {
+              question: "What is 2 + 2?",
+              answers: ["1", "2", "3", "4"],
+              distractors: ["4"],
+            },
+          ]);
+        },
+        mathsExitQuiz: () => {
+          return Promise.resolve([
+            {
+              question: "What is 2 + 3?",
+              answers: ["2", "3", "4", "5"],
+              distractors: ["5"],
+            },
+          ]);
+        },
+      },
     });
 
     // Update the document with the latest version

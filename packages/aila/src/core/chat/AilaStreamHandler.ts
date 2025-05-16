@@ -190,6 +190,24 @@ export class AilaStreamHandler {
           return m;
         }) as { role: "user" | "assistant"; content: string }[],
       onUpdate: streamHandler, // This is the new part
+      customAgents: {
+        mathsStarterQuiz: async ({ document }) => {
+          const quiz = await this._chat.fullQuizService.createBestQuiz(
+            "/starterQuiz",
+            document,
+          );
+
+          return quiz;
+        },
+        mathsExitQuiz: async ({ document }) => {
+          const quiz = await this._chat.fullQuizService.createBestQuiz(
+            "/exitQuiz",
+            document,
+          );
+
+          return quiz;
+        },
+      },
     });
 
     // Stream the final result to the client

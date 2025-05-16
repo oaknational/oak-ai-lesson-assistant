@@ -9,6 +9,7 @@ import {
   LearningOutcomeSchema,
   type LessonPlanKey,
   LessonTitleSchema,
+  type LooseLessonPlan,
   MisconceptionsSchemaWithoutLength,
   PriorKnowledgeSchema,
   QuizSchemaWithoutLength,
@@ -40,7 +41,8 @@ export const agentNames = z.enum([
   "starterQuiz",
   "cycle",
   "exitQuiz",
-  "mathsQuiz",
+  "mathsStarterQuiz",
+  "mathsExitQuiz",
   "deleteSection",
   "endTurn",
 ]);
@@ -77,6 +79,12 @@ export type AgentDefinition<Schema extends AgentResponse = AgentResponseAny> =
       name: AgentName;
       schema?: z.ZodTypeAny;
       whenToUse?: string[];
+    }
+  | {
+      type: "asyncFunction";
+      name: AgentName;
+      whenToUse?: string[];
+      // fn: <T>(args: T) => Promise<JsonPatchDocumentOptional>;
     };
 
 export const agents: Record<AgentName, AgentDefinition> = {
@@ -158,14 +166,13 @@ export const agents: Record<AgentName, AgentDefinition> = {
     prompt: [exitQuizInstructions, quizInstructions].join(`\n\n`),
     schema: z.object({ value: QuizSchemaWithoutLength }),
   },
-  mathsQuiz: {
-    type: "custom",
-    name: "mathsQuiz",
-    whenToUse: [
-      "do not use this agent if the subject is not maths/math/mathematics",
-      "only suggest this agent if the next appropriate task is the generation of a starter or exit quiz",
-      "if you select this agent, a quiz will be generated, and no other parts of the lesson will be affected",
-    ],
+  mathsStarterQuiz: {
+    type: "asyncFunction",
+    name: "mathsStarterQuiz",
+  },
+  mathsExitQuiz: {
+    type: "asyncFunction",
+    name: "mathsExitQuiz",
   },
   deleteSection: {
     type: "custom",
@@ -187,18 +194,28 @@ export const sectionAgentMap: Record<
     | "basedOn"
     | "additionalMaterials"
   >,
-  AgentName
+  (ctx: { lessonPlan: LooseLessonPlan }) => AgentName
 > = {
-  learningOutcome: "learningOutcome",
-  learningCycles: "learningCycles",
-  priorKnowledge: "priorKnowledge",
-  keyLearningPoints: "keyLearningPoints",
-  misconceptions: "misconceptions",
-  keywords: "keywords",
-  starterQuiz: "starterQuiz",
-  cycle1: "cycle",
-  cycle2: "cycle",
-  cycle3: "cycle",
-  exitQuiz: "exitQuiz",
+  learningOutcome: () => "learningOutcome",
+  learningCycles: () => "learningCycles",
+  priorKnowledge: () => "priorKnowledge",
+  keyLearningPoints: () => "keyLearningPoints",
+  misconceptions: () => "misconceptions",
+  keywords: () => "keywords",
+  starterQuiz: (ctx) => {
+    if (ctx.lessonPlan.subject === "maths") {
+      return "mathsStarterQuiz";
+    }
+    return "starterQuiz";
+  },
+  cycle1: () => "cycle",
+  cycle2: () => "cycle",
+  cycle3: () => "cycle",
+  exitQuiz: (ctx) => {
+    if (ctx.lessonPlan.subject === "maths") {
+      return "mathsExitQuiz";
+    }
+    return "exitQuiz";
+  },
   // additionalMaterials: ["additionalMaterials"],
 };
