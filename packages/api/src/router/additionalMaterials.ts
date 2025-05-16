@@ -50,21 +50,12 @@ export const additionalMaterialsRouter = router({
         }
         actionEnum.parse(input.action);
 
-        const material = await generateAdditionalMaterial({
+        return await generateAdditionalMaterial({
           prisma: ctx.prisma,
           userId: ctx.auth.userId,
           input: parsedInput.data,
           auth: ctx.auth,
         });
-
-        if (!material.resource) {
-          throw new Error("Failed to generate additional material");
-        }
-
-        console.log("RATE LIMIT", ctx.rateLimit);
-        log.info("Rate limit", ctx.rateLimit);
-
-        return material?.resource;
       } catch (cause) {
         const TrpcError = new Error(
           "Failed to fetch additional material moderation",
@@ -87,13 +78,12 @@ export const additionalMaterialsRouter = router({
       }
 
       try {
-        const lesson = await generatePartialLessonPlan({
+        return await generatePartialLessonPlan({
           prisma: ctx.prisma,
           userId: ctx.auth.userId,
           input: parsedInput.data,
           auth: ctx.auth,
         });
-        return lesson?.lesson;
       } catch (cause) {
         const errorContext = `Failed to fetch additional material moderation for - ${parsedInput.data.title} - ${parsedInput.data.subject} `;
         const TrpcError = new Error(errorContext, { cause });
