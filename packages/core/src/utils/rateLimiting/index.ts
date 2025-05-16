@@ -56,4 +56,32 @@ export const rateLimits = {
       window: "30 d",
     }),
   },
+  additionalMaterialSessions: {
+    demo: slidingWindowRateLimiter({
+      prefix: "rateLimit:additionalMaterial:demo",
+      limit: DEMO_APP_SESSIONS_PER_30D,
+      window: "30 d",
+    }),
+  },
+  additionalMaterial: {
+    standard: userBasedRateLimiter({
+      prefix: "rateLimit:additionalMaterial:standard",
+      limit: (isOakUser, privateMetadata) => {
+        const customRateLimit = privateMetadata["customRateLimit"];
+        if (typeof customRateLimit === "number") {
+          return customRateLimit;
+        }
+        if (isOakUser) {
+          return 1000;
+        }
+        return GENERATIONS_PER_24H;
+      },
+      window: "24 h",
+    }),
+    demo: slidingWindowRateLimiter({
+      prefix: "rateLimit:additionalMaterial:demo",
+      limit: DEMO_GENERATIONS_PER_30D,
+      window: "30 d",
+    }),
+  },
 } as const;

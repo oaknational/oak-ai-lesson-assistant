@@ -1,13 +1,10 @@
-import {
-  type AdditionalMaterialSchemas,
-  additionalMaterialTypeEnum,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { GenerateAdditionalMaterialInput } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import type { GenerateAdditionalMaterialResponse } from "@oakai/api/src/router/additionalMaterials/helpers";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
-import { z } from "zod";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
 
@@ -16,7 +13,7 @@ const log = aiLogger("additional-materials");
 export type GenerateMaterialParams = {
   message?: string;
   mutateAsync: UseMutateAsyncFunction<
-    AdditionalMaterialSchemas,
+    GenerateAdditionalMaterialResponse,
     Error,
     GenerateAdditionalMaterialInput
   >;
@@ -49,13 +46,18 @@ export const handleGenerateMaterial =
           previousOutput: null,
           options: null,
         },
+        lessonId: get().pageData.lessonPlan.lessonId,
       });
       get().actions.setIsResourcesLoading(false);
       // Update the store with the result
-      get().actions.setGeneration(result);
-      log.info("Material generated successfully");
+      set({
+        generation: result.resource,
+        moderation: result.moderation,
+        id: result.resourceId,
+      });
 
-      return result;
+      log.info("Material generated successfully");
+      get().actions.setStepNumber(2);
     } catch (error) {
       log.error("Error generating material", error);
       Sentry.captureException(error);

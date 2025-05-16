@@ -837,6 +837,8 @@ model SafetyViolation {
 enum SafetyViolationAction {
   CHAT_MESSAGE
   QUIZ_GENERATION
+  PARTIAL_LESSON_GENERATION
+  ADDITIONAL_MATERIAL_GENERATION
 
   @@schema("public")
 }
@@ -854,6 +856,7 @@ enum SafetyViolationRecordType {
   CHAT_SESSION
   GENERATION
   MODERATION
+  ADDITIONAL_MATERIAL_SESSION
 
   @@schema("public")
 }

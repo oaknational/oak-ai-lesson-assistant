@@ -1,6 +1,5 @@
 import { createContext, useContext, useState } from "react";
 
-import { nanoid } from "nanoid";
 import { type ExtractState, type StoreApi, useStore } from "zustand";
 
 import { createResourcesStore } from "./resourcesStore";
@@ -20,15 +19,14 @@ export const ResourcesStoresContext = createContext<
 
 export interface ResourcesStoresProviderProps {
   children: React.ReactNode;
-  id?: string;
 }
 
 export const ResourcesStoresProvider: React.FC<
   ResourcesStoresProviderProps
-> = ({ children, id = nanoid() }) => {
+> = ({ children }) => {
   const [stores] = useState(() => {
     const storesObj: ResourcesStores = {
-      resources: createResourcesStore({ id }),
+      resources: createResourcesStore(),
     };
     return storesObj;
   });

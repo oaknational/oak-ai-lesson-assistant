@@ -17,6 +17,7 @@ export const OpenAIProvider = {
       schema,
       model: openai("gpt-4o"),
       system: systemMessage,
+      mode: "json",
     });
 
     const parsedObject = schema.safeParse(object);

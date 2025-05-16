@@ -24,6 +24,7 @@ import {
 } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
 
+import { useDialog } from "../../DialogContext";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
 
@@ -44,7 +45,7 @@ const StepOne = () => {
     setYear,
     setActiveDropdown,
   } = useResourcesActions();
-
+  const { setDialogWindow } = useDialog();
   const subject = useResourcesStore(subjectSelector);
   const title = useResourcesStore(titleSelector);
   const year = useResourcesStore(yearSelector);
@@ -152,6 +153,13 @@ const StepOne = () => {
                     </OakFlex>
                   }
                 />
+                <button
+                  onClick={() =>
+                    setDialogWindow("additional-materials-moderation")
+                  }
+                >
+                  open dialog
+                </button>
               </OakLabel>
             </OakRadioGroup>
           </OakFlex>

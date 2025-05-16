@@ -27,13 +27,17 @@ import {
   generationSelector,
   isResourcesDownloadingSelector,
   isResourcesLoadingSelector,
+  moderationSelector,
 } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
 
 import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
 import { Glossary } from "../../AdditionalMaterials/Glossary";
+import { useDialog } from "../../DialogContext";
+import { ModerationMessage } from "../AdditionalMaterialMessage";
 import InlineButton from "../InlineButton";
 import ResourcesFooter from "../ResourcesFooter";
+import { handleDialogSelection } from "./helpers";
 
 const log = aiLogger("additional-materials");
 
@@ -43,9 +47,12 @@ const StepThree = () => {
   const docType = useResourcesStore(docTypeSelector);
   const isResourcesLoading = useResourcesStore(isResourcesLoadingSelector);
   const { setStepNumber, refineMaterial } = useResourcesActions();
+  const moderation = useResourcesStore(moderationSelector);
+  const error = useResourcesStore((state) => state.error);
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
   const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
   const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
+  const { setDialogWindow } = useDialog();
 
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
@@ -97,9 +104,14 @@ const StepThree = () => {
 
   const refinementOptions = getRefinementOptions();
 
+  handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
+
   return (
     <>
       {isResourcesLoading && <OakP>Loading...</OakP>}
+      {moderation?.categories && moderation.categories.length > 0 && (
+        <ModerationMessage />
+      )}
       <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       <ResourcesFooter>
         {isFooterAdaptOpen ? (
