@@ -1,3 +1,5 @@
+import type { Dispatch, SetStateAction } from "react";
+
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
@@ -5,7 +7,6 @@ import {
   camelCaseToSentenceCase,
   kebabCaseToSentenceCase,
 } from "@oakai/core/src/utils/camelCaseConversion";
-import { aiLogger } from "@oakai/logger";
 
 import {
   OakBox,
@@ -29,10 +30,12 @@ import {
 } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
 
+import type { DialogTypes } from "../../Chat/Chat/types";
 import { MemoizedReactMarkdownWithStyles } from "../../Chat/markdown";
 import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
+import { handleDialogSelection } from "./helpers";
 
 export function mapLessonPlanSections(
   lessonPlan: AilaPersistedChat["lessonPlan"],
@@ -40,12 +43,11 @@ export function mapLessonPlanSections(
   return lessonFieldKeys.map((key) => ({ key, data: lessonPlan[key] ?? null }));
 }
 
-const log = aiLogger("additional-materials");
-
 const StepTwo = () => {
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
   const moderation = useResourcesStore(moderationSelector);
+  const error = useResourcesStore((state) => state.error);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
   const docTypeName = docType?.split("-")[1] ?? null;
@@ -73,9 +75,8 @@ const StepTwo = () => {
   if (isLoadingLessonPlan) {
     return <OakP>Building lesson plan...</OakP>;
   }
-  if (threatDetected) {
-    setDialogWindow("additional-materials-threat-detected");
-  }
+
+  handleDialogSelection({ threatDetected, error, setDialogWindow });
 
   return (
     <>
