@@ -5,6 +5,7 @@ import type {
   LooseLessonPlan,
   Quiz,
 } from "../../../protocol/schema";
+import type { QuizQuestionWithRawJson } from "../interfaces";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");
@@ -15,7 +16,7 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
   async generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
     _ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<Quiz[]> {
+  ): Promise<QuizQuestionWithRawJson[][]> {
     // If quiz is basedOn, give them the default quiz as a starter quiz
     log.info(
       "Generating maths starter quiz for lesson plan id:",
@@ -37,7 +38,7 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
   async generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
     _ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<Quiz[]> {
+  ): Promise<QuizQuestionWithRawJson[][]> {
     // If quiz is basedOn, give them the default quiz as an exit quiz
     log.info(
       "Generating maths exit quiz for lesson plan id:",

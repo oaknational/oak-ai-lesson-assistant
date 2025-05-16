@@ -217,7 +217,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   public async questionArrayFromPlanIdLookUpTable(
     planId: string,
     quizType: QuizPath,
-  ): Promise<QuizQuestion[]> {
+  ): Promise<QuizQuestionWithRawJson[]> {
     const lessonSlug = await this.getLessonSlugFromPlanId(planId);
     if (!lessonSlug) {
       throw new Error("Lesson slug not found for planId: " + planId);
@@ -234,7 +234,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   public async questionArrayFromPlanId(
     planId: string,
     quizType: QuizPath = "/starterQuiz",
-  ): Promise<QuizQuestion[]> {
+  ): Promise<QuizQuestionWithRawJson[]> {
     return await this.questionArrayFromPlanIdLookUpTable(planId, quizType);
   }
 
