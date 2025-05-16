@@ -103,15 +103,15 @@ const StepThree = () => {
   };
 
   const refinementOptions = getRefinementOptions();
+  const hasModeration =
+    moderation?.categories && moderation.categories.length > 0;
 
   handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
 
   return (
     <>
       {isResourcesLoading && <OakP>Loading...</OakP>}
-      {moderation?.categories && moderation.categories.length > 0 && (
-        <ModerationMessage />
-      )}
+      {hasModeration && <ModerationMessage />}
       <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       <ResourcesFooter>
         {isFooterAdaptOpen ? (
