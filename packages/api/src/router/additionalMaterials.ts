@@ -17,6 +17,7 @@ import * as Sentry from "@sentry/nextjs";
 import { ZodError, z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
+import { additionalMaterialUserBasedRateLimitProcedure } from "../middleware/rateLimiter";
 import { router } from "../trpc";
 import {
   generateAdditionalMaterial,
@@ -27,7 +28,7 @@ const log = aiLogger("additional-materials");
 const OPENAI_AUTH_TOKEN = process.env.OPENAI_AUTH_TOKEN;
 
 export const additionalMaterialsRouter = router({
-  generateAdditionalMaterial: protectedProcedure
+  generateAdditionalMaterial: additionalMaterialUserBasedRateLimitProcedure
     .input(
       z.object({
         action: z.string(),
@@ -60,6 +61,9 @@ export const additionalMaterialsRouter = router({
           throw new Error("Failed to generate additional material");
         }
 
+        console.log("RATE LIMIT", ctx.rateLimit);
+        log.info("Rate limit", ctx.rateLimit);
+
         return material?.resource;
       } catch (cause) {
         const TrpcError = new Error(
@@ -72,7 +76,7 @@ export const additionalMaterialsRouter = router({
       }
     }),
 
-  generatePartialLessonPlanObject: protectedProcedure
+  generatePartialLessonPlanObject: additionalMaterialUserBasedRateLimitProcedure
     .input(partialLessonContextSchema)
     .mutation(async ({ ctx, input }) => {
       log.info("Generate partial lesson plan", input);
