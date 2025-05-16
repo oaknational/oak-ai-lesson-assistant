@@ -30,6 +30,7 @@ import type {
   CustomSource,
   LessonSlugQuizLookup,
   QuizQuestionTextOnlySource,
+  QuizQuestionWithRawJson,
   SimplifiedResult,
 } from "../interfaces";
 import { CohereReranker } from "../rerankers";
@@ -79,11 +80,11 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   abstract generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<Quiz[]>;
+  ): Promise<QuizQuestionWithRawJson[][]>;
   abstract generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<Quiz[]>;
+  ): Promise<QuizQuestionWithRawJson[][]>;
 
   public async generateMathsQuizFromRagPlanId(
     planIds: string,
