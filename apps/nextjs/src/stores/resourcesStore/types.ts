@@ -21,6 +21,12 @@ export type StepOneFormState = {
   activeDropdown: string | null;
 };
 
+export type ErrorType = "rate_limit" | "banned" | "unknown";
+
+export interface ErrorResponse {
+  type: ErrorType;
+  message: string;
+}
 export type ResourcesState = {
   id: string | null;
   stepNumber: number;
@@ -33,6 +39,7 @@ export type ResourcesState = {
   formState: StepOneFormState;
   moderation?: ModerationResult;
   threatDetection?: boolean;
+  error: ErrorResponse | null;
 
   actions: {
     // setters

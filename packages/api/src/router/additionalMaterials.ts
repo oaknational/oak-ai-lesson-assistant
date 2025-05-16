@@ -11,10 +11,15 @@ import {
   oakOpenAiTranscriptSchema,
   oakOpenApiSearchSchema,
 } from "@oakai/additional-materials/src/schemas/oakOpenApi";
+import { demoUsers } from "@oakai/core";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
+import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import { aiLogger } from "@oakai/logger";
 
+import { clerkClient } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/nextjs";
-import type { RateLimitInfo } from "types";
+import { TRPCError } from "@trpc/server";
 import { ZodError, z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
@@ -41,6 +46,43 @@ export const additionalMaterialsRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       log.info("fetching additional materials");
+
+      try {
+        if (!ctx.auth.userId) {
+          throw new Error("No user id");
+        }
+        const clerkUser = await clerkClient.users.getUser(ctx.auth.userId);
+        const isDemoUser = demoUsers.isDemoUser(clerkUser);
+        isDemoUser &&
+          (await rateLimits.additionalMaterialSessions.demo.check(
+            ctx.auth.userId,
+          ));
+
+        if (clerkUser.banned) {
+          throw new UserBannedError(ctx.auth.userId);
+        }
+      } catch (err) {
+        if (err instanceof RateLimitExceededError) {
+          const timeRemainingHours = Math.ceil(
+            (err.reset - Date.now()) / 1000 / 60 / 60,
+          );
+          const hours = timeRemainingHours === 1 ? "hour" : "hours";
+
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message: `**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in ${timeRemainingHours} ${hours}. If you require a higher limit, please [make a request](${process.env.RATELIMIT_FORM_URL}).`,
+            cause: err,
+          });
+        }
+        if (err instanceof UserBannedError) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "You account has been locked.",
+            cause: err,
+          });
+        }
+        throw err;
+      }
 
       try {
         const parsedInput =
@@ -77,6 +119,37 @@ export const additionalMaterialsRouter = router({
       if (!parsedInput.success) {
         log.error("Failed to parse input", parsedInput.error);
         throw new ZodError(parsedInput.error.issues);
+      }
+
+      try {
+        if (!ctx.auth.userId) {
+          throw new Error("No user id");
+        }
+        const clerkUser = await clerkClient.users.getUser(ctx.auth.userId);
+
+        if (clerkUser.banned) {
+          throw new UserBannedError(ctx.auth.userId);
+        }
+      } catch (err) {
+        if (err instanceof RateLimitExceededError) {
+          const timeRemainingHours = Math.ceil(
+            (err.reset - Date.now()) / 1000 / 60 / 60,
+          );
+          const hours = timeRemainingHours === 1 ? "hour" : "hours";
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message: `**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in ${timeRemainingHours} ${hours}. If you require a higher limit, please [make a request](${process.env.RATELIMIT_FORM_URL}).`,
+            cause: err,
+          });
+        }
+        if (err instanceof UserBannedError) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "You have been banned.",
+            cause: err,
+          });
+        }
+        throw err;
       }
 
       try {

@@ -3,11 +3,13 @@ import { generatePartialLessonPlanObject } from "@oakai/additional-materials/src
 import { type PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { performLakeraThreatCheck } from "@oakai/additional-materials/src/threatDetection/lakeraThreatCheck";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 
+import type { LooseLessonPlan } from "../../../../aila/src/protocol/schema";
 import { recordSafetyViolation } from "./safetyUtils";
 
 const log = aiLogger("additional-materials");
@@ -18,6 +20,20 @@ interface GeneratePartialLessonPlanParams {
   input: PartialLessonContextSchemaType;
   auth: SignedInAuthObject;
 }
+
+export type GeneratePartialLessonPlanResponse =
+  | {
+      threatDetection: boolean;
+      lesson: LooseLessonPlan | null;
+      lessonId: string;
+      moderation: ModerationResult;
+    }
+  | {
+      threatDetection: boolean;
+      lesson: null;
+      lessonId: string;
+      moderation: ModerationResult;
+    };
 
 /**
  * Generates a partial lesson plan based on the provided context
@@ -72,7 +88,7 @@ export async function generatePartialLessonPlan({
       interactionId: interaction.id,
       violationType: "MODERATION",
     });
-
+    // @todo we should throw error here
     return {
       threatDetection: true,
       lesson: null,
@@ -88,7 +104,7 @@ export async function generatePartialLessonPlan({
       interactionId: interaction.id,
       violationType: "THREAT",
     });
-
+    // @todo we should throw error here
     return {
       threatDetection: true,
       lesson: null,

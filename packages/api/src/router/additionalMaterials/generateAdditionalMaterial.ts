@@ -4,7 +4,6 @@ import {
   additionalMaterialsConfigMap,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { generateAdditionalMaterialObject } from "@oakai/additional-materials/src/documents/additionalMaterials/generateAdditionalMaterialObject";
-import { notifyRateLimit } from "@oakai/core/src/functions/slack/notifyRateLimit";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
@@ -27,12 +26,6 @@ type GenerateAdditionalMaterialParams = {
   };
 };
 
-const checkRateLimit = (rateLimit: RateLimitInfo) => {
-  if (rateLimit.isSubjectToRateLimiting) {
-    return rateLimit.remaining < rateLimit.limit;
-  }
-};
-
 /**
  * Generates additional educational material based on the provided input
  */
@@ -43,15 +36,6 @@ export async function generateAdditionalMaterial({
   auth,
   rateLimit,
 }: GenerateAdditionalMaterialParams) {
-  log.info("Checking rate limit");
-  if (checkRateLimit(rateLimit)) {
-    log.info("Rate limit exceeded");
-
-    return {
-      rateLimit,
-    };
-  }
-
   log.info("Generating additional material");
 
   const result = await generateAdditionalMaterialObject({

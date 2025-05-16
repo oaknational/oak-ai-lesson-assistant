@@ -27,6 +27,7 @@ const DEFAULT_STATE = {
   isLoadingLessonPlan: false,
   isResourcesLoading: false,
   isDownloading: false,
+  error: null,
   pageData: {
     lessonPlan: {
       lessonId: "",
