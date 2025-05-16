@@ -34,7 +34,6 @@ const LessonPlanMapToMarkDown = ({
 }) => {
   const {
     _experimental_starterQuizMathsV0,
-
     _experimental_exitQuizMathsV0,
     ...restOfLessonPlan
   } = lessonPlan;
@@ -56,7 +55,6 @@ const LessonPlanMapToMarkDown = ({
         return !excludedKeys.includes(k as ExcludedKeys);
       },
     )
-
     .filter(([_, v]) => notEmpty(v))
     .map(([key, value]) => {
       return { key, value };

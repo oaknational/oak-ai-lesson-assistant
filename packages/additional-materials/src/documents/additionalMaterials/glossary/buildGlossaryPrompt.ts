@@ -7,7 +7,6 @@ import {
 
 export const buildGlossaryPrompt = (
   context: ContextByMaterialType["additional-glossary"],
-  action: Action,
 ) => {
   const { lessonPlan } = context;
 
@@ -56,20 +55,10 @@ For example, "Cell Membrane": "A semi-permeable membrane that surrounds the cell
 Try to make your definitions as succinct as possible.
 The definition should be no longer than 200 characters.
 
-**c. Example:**
-
-Carbon dioxide: A gas absorbed by plants from the air, used in photosynthesis.
-Chlorophyll: A green pigment in chloroplasts that captures light energy.
-Glucose: A simple sugar produced by plants during photosynthesis, used for energy.
-Light: Energy from the sun that powers photosynthesis.
-Photosynthesis: The process by which plants make their own food using sunlight.
-Producers: Organisms that create their own food, forming the base of food chains.
-Reactants: Substances that start a chemical reaction to form new products.
-Water: A liquid absorbed by roots, vital for plant processes.
-
 **Rules**:
 - **Do not** include markdown in your response.
 - **Do not** include any americanisms.
-- definitions start with lower case (unless it is a known acronym or proper noun).
+- definitions start with lower case (unless it is a known acronym or proper noun) and end with a full stop.
+- terms start with capital letter.
   `;
 };

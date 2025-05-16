@@ -25,13 +25,14 @@ export const Glossary = ({
 
   return (
     <OakFlex $gap="space-between-s" $flexDirection="column">
-      <OakHeading $font="heading-5" tag="h2">
-        Glossary
-      </OakHeading>
       {generation.glossary.map((item, index) => (
-        <OakFlex key={`${item.term}-${index}`} $flexDirection="row">
+        <OakFlex
+          key={`${item.term}-${index}`}
+          $flexDirection="column"
+          $mb="space-between-s"
+        >
           <OakP $mr={"space-between-ssx"} $font="body-2-bold">
-            {item.term}:
+            {item.term}
           </OakP>
           <OakP $font={"body-2"}>{item.definition}</OakP>
         </OakFlex>
