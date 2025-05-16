@@ -1,5 +1,3 @@
-import type { Dispatch, SetStateAction } from "react";
-
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";

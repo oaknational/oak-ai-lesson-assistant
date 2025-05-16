@@ -15,17 +15,19 @@ export async function recordSafetyViolation({
   auth,
   interactionId,
   violationType,
+  userAction,
 }: {
   prisma: PrismaClientWithAccelerate;
   auth: SignedInAuthObject;
   interactionId: string;
   violationType: "MODERATION" | "THREAT";
+  userAction: "PARTIAL_LESSON_GENERATION" | "ADDITIONAL_MATERIAL_GENERATION";
 }) {
   const safetyViolations = new SafetyViolations(prisma, console);
   try {
     await safetyViolations.recordViolation(
       auth.userId,
-      "CHAT_MESSAGE",
+      userAction,
       violationType,
       "CHAT_SESSION",
       interactionId,

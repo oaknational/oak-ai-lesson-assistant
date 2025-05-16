@@ -87,6 +87,7 @@ export async function generatePartialLessonPlan({
       auth,
       interactionId: interaction.id,
       violationType: "MODERATION",
+      userAction: "PARTIAL_LESSON_GENERATION",
     });
     // @todo we should throw error here
     return {
@@ -103,6 +104,7 @@ export async function generatePartialLessonPlan({
       auth,
       interactionId: interaction.id,
       violationType: "THREAT",
+      userAction: "PARTIAL_LESSON_GENERATION",
     });
     // @todo we should throw error here
     return {

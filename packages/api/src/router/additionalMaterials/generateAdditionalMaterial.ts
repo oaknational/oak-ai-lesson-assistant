@@ -84,6 +84,7 @@ export async function generateAdditionalMaterial({
       auth,
       interactionId: interaction.id,
       violationType: "MODERATION",
+      userAction: "ADDITIONAL_MATERIAL_GENERATION",
     });
 
     log.error("Toxic content detected in moderation", moderation);
