@@ -136,7 +136,7 @@ export interface QuizQuestionTextOnlySource {
   metadata: {
     questionUid: string;
     lessonSlug: string;
-    raw_json?: unknown; // Allow for raw JSON data
+    raw_json: string; // Allow for raw JSON data
   };
 }
 

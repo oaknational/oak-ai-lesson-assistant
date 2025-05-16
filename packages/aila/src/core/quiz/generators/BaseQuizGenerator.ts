@@ -8,6 +8,8 @@ import type {
 } from "@elastic/elasticsearch/lib/api/types";
 import { CohereClient } from "cohere-ai";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
+import type { RawQuiz } from "protocol/rawQuizSchema";
+import { keysToCamelCase } from "protocol/rawQuizSchema";
 import { z } from "zod";
 
 import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
@@ -170,7 +172,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   }
   public async questionArrayFromCustomIds(
     questionUids: string[],
-  ): Promise<QuizQuestion[]> {
+  ): Promise<QuizQuestionWithRawJson[]> {
     const response = await this.client.search<QuizQuestionTextOnlySource>({
       index: "quiz-questions-text-only-2025-04-16",
       body: {
@@ -192,16 +194,22 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       return Promise.resolve([]);
     } else {
       // Gives us an array of quiz questions or null, which are then filtered out.
-      const filteredQuizQuestions: QuizQuestion[] = response.hits.hits
-        .map((hit) => {
-          if (!hit._source) {
-            log.error("Hit source is undefined");
-            return null;
-          }
-          const quizQuestion = this.parseQuizQuestion(hit._source.text);
-          return quizQuestion;
-        })
-        .filter((item): item is QuizQuestion => item !== null);
+      // We convert the raw json to a quiz question with raw json object
+      const filteredQuizQuestions: QuizQuestionWithRawJson[] =
+        response.hits.hits
+          .map((hit) => {
+            if (!hit._source) {
+              log.error("Hit source is undefined");
+              return null;
+            }
+            // const quizQuestion = this.parseQuizQuestion(hit._source.text);
+            const quizQuestion = this.parseQuizQuestionWithRawJson(
+              hit._source.text,
+              hit._source.metadata.raw_json,
+            );
+            return quizQuestion;
+          })
+          .filter((item): item is QuizQuestionWithRawJson => item !== null);
       return Promise.resolve(filteredQuizQuestions);
     }
   }
@@ -487,5 +495,21 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       }
       return null;
     }
+  }
+  private parseQuizQuestionWithRawJson(
+    jsonString: string,
+    rawQuizString: string,
+  ): QuizQuestionWithRawJson | null {
+    const quizQuestion = this.parseQuizQuestion(jsonString);
+    if (!quizQuestion) {
+      return null;
+    }
+    const parsedRawQuiz = JSON.parse(rawQuizString);
+    const rawQuiz = keysToCamelCase(parsedRawQuiz) as NonNullable<RawQuiz>;
+
+    return {
+      ...quizQuestion,
+      rawQuiz,
+    };
   }
 }
