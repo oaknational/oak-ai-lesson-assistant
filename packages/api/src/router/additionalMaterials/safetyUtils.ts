@@ -29,7 +29,7 @@ export async function recordSafetyViolation({
       auth.userId,
       userAction,
       violationType,
-      "CHAT_SESSION",
+      "ADDITIONAL_MATERIAL_SESSION",
       interactionId,
     );
   } catch (e) {

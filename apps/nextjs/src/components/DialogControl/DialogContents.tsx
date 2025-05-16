@@ -148,14 +148,14 @@ const DialogContents = ({
             {dialogWindow === "additional-materials-moderation" && (
               <AdditionalMaterialsModeration closeDialog={closeDialog} />
             )}
-            {/* // awaiting designs */}
+            {/* // awaiting designs - placeholder */}
             {dialogWindow === "additional-materials-threat-detected" && (
               <AdditionalMaterialsThreatDetected
                 body={"threat detected"}
                 closeDialog={closeDialog}
               />
             )}
-            {/* // awaiting designs */}
+            {/* // awaiting designs - placeholder */}
             {dialogWindow === "additional-materials-rate-limit" && (
               <AdditionalMaterialsThreatDetected
                 body={"rate-limit"}
