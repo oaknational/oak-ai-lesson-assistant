@@ -27,11 +27,13 @@ import {
   generationSelector,
   isResourcesDownloadingSelector,
   isResourcesLoadingSelector,
+  moderationSelector,
 } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
 
 import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
 import { Glossary } from "../../AdditionalMaterials/Glossary";
+import { ModerationMessage } from "../AdditionalMaterialMessage";
 import InlineButton from "../InlineButton";
 import ResourcesFooter from "../ResourcesFooter";
 
@@ -43,6 +45,7 @@ const StepThree = () => {
   const docType = useResourcesStore(docTypeSelector);
   const isResourcesLoading = useResourcesStore(isResourcesLoadingSelector);
   const { setStepNumber, refineMaterial } = useResourcesActions();
+  const moderation = useResourcesStore(moderationSelector);
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
   const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
   const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
@@ -100,6 +103,9 @@ const StepThree = () => {
   return (
     <>
       {isResourcesLoading && <OakP>Loading...</OakP>}
+      {moderation?.categories && moderation.categories.length > 0 && (
+        <ModerationMessage />
+      )}
       <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       <ResourcesFooter>
         {isFooterAdaptOpen ? (

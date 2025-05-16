@@ -1,5 +1,6 @@
 import { generateAdditionalMaterialModeration } from "@oakai/additional-materials";
 import {
+  type AdditionalMaterialSchemas,
   type GenerateAdditionalMaterialInput,
   additionalMaterialsConfigMap,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
@@ -24,6 +25,12 @@ type GenerateAdditionalMaterialParams = {
   input: GenerateAdditionalMaterialInput & {
     lessonId?: string | null;
   };
+};
+
+export type GenerateAdditionalMaterialResponse = {
+  resource: AdditionalMaterialSchemas | null;
+  moderation: ModerationResult;
+  resourceId: string;
 };
 
 export async function generateAdditionalMaterial({
@@ -53,6 +60,11 @@ export async function generateAdditionalMaterial({
     input: JSON.stringify(result),
     provider: "openai",
   });
+
+  // Ensure moderation includes required fields
+  if (!moderation.categories) {
+    moderation.categories = []; // Provide a default empty array if categories are missing
+  }
 
   const { resourceId, documentType } = input;
   const version = additionalMaterialsConfigMap[documentType].version;
@@ -116,6 +128,20 @@ function handleContentSafetyIssue({
     moderation,
   };
 }
+
+export type GeneratePartialLessonPlanResponse =
+  | {
+      threatDetection: boolean;
+      lesson: LooseLessonPlan | null;
+      lessonId: string;
+      moderation: ModerationResult;
+    }
+  | {
+      threatDetection: boolean;
+      lesson: null;
+      lessonId: string;
+      moderation: ModerationResult;
+    };
 
 export async function generatePartialLessonPlan({
   prisma,

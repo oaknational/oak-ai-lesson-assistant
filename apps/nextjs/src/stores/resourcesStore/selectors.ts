@@ -50,3 +50,12 @@ export const activeDropdownSelector = (state: ResourcesState) =>
 // Is loading lesson plan selector
 export const isLoadingLessonPlanSelector = (state: ResourcesState) =>
   state.isLoadingLessonPlan;
+
+export const moderationSelector = (state: ResourcesState) => state.moderation;
+
+/**
+ * Selector for the threat detection state in the resources workflow
+ * @example const threatDetection = useResourcesStore(threatDetectionSelector);
+ */
+export const threatDetectionSelector = (state: ResourcesState) =>
+  state.threatDetection;
