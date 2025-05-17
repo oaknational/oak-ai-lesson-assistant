@@ -4,7 +4,7 @@ import type { QuizQuestionWithRawJson } from "./interfaces";
 export function coerceQuizQuestionWithJson(
   quizQuestion: QuizQuestionWithRawJson,
 ): NonNullable<RawQuiz> {
-  return quizQuestion.rawQuiz;
+  return Array.isArray(quizQuestion.rawQuiz) ? quizQuestion.rawQuiz : [];
 }
 
 export function coerceQuizQuestionWithJsonArray(
