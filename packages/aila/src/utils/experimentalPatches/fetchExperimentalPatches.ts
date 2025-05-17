@@ -1,8 +1,12 @@
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { aiLogger } from "@oakai/logger";
 
+import { coerceQuizQuestionWithJsonArray } from "../../core/quiz/CoerceQuizQuestionWithJson";
 import { placeholderQuiz } from "../../core/quiz/fixtures/placeholderQuestion";
-import type { FullQuizService } from "../../core/quiz/interfaces";
+import type {
+  FullQuizService,
+  QuizQuestionWithRawJson,
+} from "../../core/quiz/interfaces";
 import type {
   ExperimentalPatchDocument,
   PatchDocument,
@@ -91,12 +95,13 @@ export async function fetchExperimentalPatches({
         }),
       );
     } else {
-      let mathsStarterQuiz: Quiz = await fullQuizService.createBestQuiz(
-        "/starterQuiz",
-        lessonPlan,
-        ailaRagRelevantLessons,
-        false,
-      );
+      let mathsStarterQuiz: QuizQuestionWithRawJson[] =
+        await fullQuizService.createBestQuiz(
+          "/starterQuiz",
+          lessonPlan,
+          ailaRagRelevantLessons,
+          false,
+        );
       if (mathsStarterQuiz.length === 0) {
         log.info("No starter quiz found. Creating placeholder starter quiz.");
         mathsStarterQuiz = placeholderQuiz;
@@ -111,11 +116,12 @@ export async function fetchExperimentalPatches({
       }
 
       if (mathsStarterQuiz) {
+        const rawQuiz = coerceQuizQuestionWithJsonArray(mathsStarterQuiz);
         await handlePatch(
           preparePatch({
             path: "/_experimental_starterQuizMathsV0",
             op,
-            value: annotateQuestions(mathsStarterQuiz),
+            value: rawQuiz,
           }),
         );
       }
@@ -135,12 +141,13 @@ export async function fetchExperimentalPatches({
       );
     } else {
       // TODO: GCLOMAX - Once this is deprecated we will need logic to not overwrite the original.
-      let mathsExitQuiz: Quiz = await fullQuizService.createBestQuiz(
-        "/exitQuiz",
-        lessonPlan,
-        ailaRagRelevantLessons,
-        false,
-      );
+      let mathsExitQuiz: QuizQuestionWithRawJson[] =
+        await fullQuizService.createBestQuiz(
+          "/exitQuiz",
+          lessonPlan,
+          ailaRagRelevantLessons,
+          false,
+        );
       if (mathsExitQuiz.length === 0) {
         log.info("No exit quiz found. Creating placeholder exit quiz.");
         mathsExitQuiz = placeholderQuiz;
@@ -155,11 +162,12 @@ export async function fetchExperimentalPatches({
       }
 
       if (mathsExitQuiz) {
+        const rawQuiz = coerceQuizQuestionWithJsonArray(mathsExitQuiz);
         await handlePatch(
           preparePatch({
             path: "/_experimental_exitQuizMathsV0",
             op,
-            value: annotateQuestions(mathsExitQuiz),
+            value: rawQuiz,
           }),
         );
       }
