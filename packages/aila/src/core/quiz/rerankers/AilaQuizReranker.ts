@@ -51,10 +51,10 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
 
     // Decorates to delay the evaluation of each quiz. There is probably a better library for this.
     const delayedRetrieveQuiz = withRandomDelay<
-      [QuizQuestion[]],
+      [QuizQuestionWithRawJson[]],
       ParsedChatCompletion<z.infer<T>>
     >(
-      async (quiz: QuizQuestion[]) => {
+      async (quiz: QuizQuestionWithRawJson[]) => {
         try {
           const result = await evaluateQuiz<T>(
             lessonPlan,
