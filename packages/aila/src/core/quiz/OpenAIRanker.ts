@@ -47,9 +47,7 @@ type LLMOutput = z.infer<typeof OutputSchema>;
 // TODO Change implementation to openai Provider
 type sectionCategory = "priorKnowledge" | "keyLearningPoints";
 
-type ChatContent =
-  | OpenAI.Chat.Completions.ChatCompletionContentPartText
-  | OpenAI.Chat.Completions.ChatCompletionContentPartImage;
+type ChatContent = OpenAI.Chat.Completions.ChatCompletionContentPart;
 
 // type ChatMessage = OpenAI.Chat.Completions.ChatCompletionMessageParam;
 
