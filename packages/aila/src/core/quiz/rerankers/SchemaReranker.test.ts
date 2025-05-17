@@ -7,6 +7,7 @@ import type {
 } from "../../../protocol/schema";
 import { cachedBadQuiz, cachedQuiz } from "../fixtures/CachedImageQuiz";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
+import type { QuizQuestionWithRawJson } from "../interfaces";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 import { TestSchemaReranker } from "./SchemaReranker";
 
@@ -15,7 +16,7 @@ const log = aiLogger("aila:quiz");
 describe("TestSchemaReranker", () => {
   jest.setTimeout(60000);
   let reranker: TestSchemaReranker<typeof testRatingSchema>;
-  let mockQuizzes: QuizQuestion[][];
+  let mockQuizzes: QuizQuestionWithRawJson[][];
   let mockLessonPlan: LooseLessonPlan;
   let mockQuizType: QuizPath;
 
@@ -64,7 +65,7 @@ describe("TestSchemaReranker", () => {
   });
 
   it("should handle empty quiz array", async () => {
-    const emptyQuizzes: QuizQuestion[][] = [];
+    const emptyQuizzes: QuizQuestionWithRawJson[][] = [];
     const result = await reranker.rerankQuiz(emptyQuizzes);
     expect(result).toEqual([]);
 
