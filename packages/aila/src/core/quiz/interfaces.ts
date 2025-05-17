@@ -1,8 +1,8 @@
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
-import type { RawQuiz } from "protocol/rawQuizSchema";
 import type * as z from "zod";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
+import type { RawQuiz } from "../../protocol/rawQuizSchema";
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
