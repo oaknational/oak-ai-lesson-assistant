@@ -95,6 +95,45 @@ describe("Test OpenAI Image Reranker with online image and quiz questions", () =
       feedback: "",
       hint: "",
       html: [""],
+      rawQuiz: [
+        {
+          questionId: 123456,
+          questionUid: "QUES-TEST-123456",
+          questionType: "short-answer" as const,
+          questionStem: [
+            {
+              text: "For 6 days in a row I spend \u00a311 on my lunch. How much did I spent in total?",
+              type: "text" as const,
+            },
+            {
+              type: "image" as const,
+              imageObject: {
+                secureUrl:
+                  "http://oaknationalacademy-res.cloudinary.com/image/upload/v1707171916/km6zbhuzhbirgqpnzgfx.png",
+                metadata: {
+                  attribution: "Money calculation question",
+                },
+              },
+            },
+          ],
+          answers: {
+            "short-answer": [
+              {
+                answer: [
+                  {
+                    text: "\u00a366",
+                    type: "text" as const,
+                  },
+                ],
+                answerIsDefault: true,
+              },
+            ],
+          },
+          feedback: "Correct! 6 × £11 = £66",
+          hint: "Multiply the daily amount by the number of days",
+          active: true,
+        },
+      ],
     };
     const result = combinePrompts(testLessonPlan, testInput);
     console.log(JSON.stringify(result));
