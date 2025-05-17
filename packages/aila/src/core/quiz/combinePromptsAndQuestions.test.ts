@@ -1,6 +1,48 @@
+import type { RawQuiz } from "../../protocol/rawQuizSchema";
+import { keysToCamelCase } from "../../protocol/rawQuizSchema";
 import { combinePrompts, combinePromptsAndQuestions } from "./OpenAIRanker";
 import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
 import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
+import { QuizQuestionWithRawJson } from "./interfaces";
+
+const parsedRawQuiz = [
+  {
+    hint: "Think about the words increase and decrease. You could think of adding and subtracting.",
+    active: false,
+    answers: {
+      "short-answer": [
+        {
+          answer: [
+            {
+              text: "8",
+              type: "text",
+            },
+          ],
+          answer_is_default: true,
+        },
+        {
+          answer: [
+            {
+              text: "eight",
+              type: "text",
+            },
+          ],
+          answer_is_default: false,
+        },
+      ],
+    },
+    feedback: "Yes, adjacent multiples have a difference of 8.",
+    questionId: 229205,
+    questionUid: "QUES-BPWF2-29205",
+    questionStem: [
+      {
+        text: "Adjacent multiples of 8 can be found by increasing or decreasing a multiple by {{ }}.",
+        type: "text",
+      },
+    ],
+    questionType: "short-answer",
+  },
+];
 
 describe("combinePromptsAndQuestions", () => {
   it("Should convert a lesson plan and quiz into valid OpenAI message format", () => {
@@ -14,6 +56,7 @@ describe("combinePromptsAndQuestions", () => {
         feedback: "",
         hint: "",
         html: [""],
+        rawQuiz: keysToCamelCase(parsedRawQuiz) as NonNullable<RawQuiz>,
       },
       {
         question:
@@ -23,6 +66,7 @@ describe("combinePromptsAndQuestions", () => {
         feedback: "",
         hint: "",
         html: [""],
+        rawQuiz: keysToCamelCase(parsedRawQuiz) as NonNullable<RawQuiz>,
       },
     ];
     const openAIMessage = combinePromptsAndQuestions(

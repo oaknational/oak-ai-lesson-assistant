@@ -141,7 +141,7 @@ export interface QuizQuestionTextOnlySource {
 }
 
 export interface QuizQuestionWithRawJson extends QuizQuestion {
-  rawQuiz: RawQuiz;
+  rawQuiz: NonNullable<RawQuiz>;
 }
 
 export interface CustomHit {
