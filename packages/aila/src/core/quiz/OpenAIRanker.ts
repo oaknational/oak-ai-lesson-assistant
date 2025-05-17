@@ -143,7 +143,7 @@ function contentListToUser(messages: ChatContent[]): ChatMessage {
 
 function combinePrompts(
   lessonPlan: LooseLessonPlan,
-  question: QuizQuestion,
+  question: QuizQuestionWithRawJson,
 ): ChatMessage[] {
   const Messages: ChatMessage[] = [];
   const Content: ChatContent[] = [];
@@ -228,7 +228,7 @@ async function evaluateStarterQuiz<
   T extends z.ZodType<BaseType & Record<string, unknown>>,
 >(
   lessonPlan: LooseLessonPlan,
-  questions: QuizQuestion[],
+  questions: QuizQuestionWithRawJson[],
   max_tokens: number = 1500,
   ranking_schema: T,
 ): Promise<OpenAI.Chat.Completions.ChatCompletion> {
