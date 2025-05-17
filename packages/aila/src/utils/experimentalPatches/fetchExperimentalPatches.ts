@@ -91,7 +91,7 @@ export async function fetchExperimentalPatches({
       await handlePatch(
         preparePatch({
           op,
-          path: "/_experimental_starterQuizMathsV0",
+          path: "/_experimental_starterQuizMathsV1",
         }),
       );
     } else {
@@ -119,7 +119,7 @@ export async function fetchExperimentalPatches({
         const rawQuiz = coerceQuizQuestionWithJsonArray(mathsStarterQuiz);
         await handlePatch(
           preparePatch({
-            path: "/_experimental_starterQuizMathsV0",
+            path: "/_experimental_starterQuizMathsV1",
             op,
             value: rawQuiz,
           }),
@@ -136,7 +136,7 @@ export async function fetchExperimentalPatches({
       await handlePatch(
         preparePatch({
           op,
-          path: "/_experimental_exitQuizMathsV0",
+          path: "/_experimental_exitQuizMathsV",
         }),
       );
     } else {
@@ -165,7 +165,7 @@ export async function fetchExperimentalPatches({
         const rawQuiz = coerceQuizQuestionWithJsonArray(mathsExitQuiz);
         await handlePatch(
           preparePatch({
-            path: "/_experimental_exitQuizMathsV0",
+            path: "/_experimental_exitQuizMathsV",
             op,
             value: rawQuiz,
           }),
