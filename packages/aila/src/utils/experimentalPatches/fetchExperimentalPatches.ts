@@ -136,7 +136,7 @@ export async function fetchExperimentalPatches({
       await handlePatch(
         preparePatch({
           op,
-          path: "/_experimental_exitQuizMathsV",
+          path: "/_experimental_exitQuizMathsV1",
         }),
       );
     } else {
@@ -165,7 +165,7 @@ export async function fetchExperimentalPatches({
         const rawQuiz = coerceQuizQuestionWithJsonArray(mathsExitQuiz);
         await handlePatch(
           preparePatch({
-            path: "/_experimental_exitQuizMathsV",
+            path: "/_experimental_exitQuizMathsV1",
             op,
             value: rawQuiz,
           }),
