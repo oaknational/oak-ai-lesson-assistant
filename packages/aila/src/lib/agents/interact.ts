@@ -3,7 +3,11 @@ import { aiLogger } from "@oakai/logger";
 import { compare } from "fast-json-patch";
 
 import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
-import { type LooseLessonPlan, type Quiz } from "../../protocol/schema";
+import {
+  type AilaRagRelevantLesson,
+  type LooseLessonPlan,
+  type Quiz,
+} from "../../protocol/schema";
 import {
   type AgentDefinition,
   type AgentName,
@@ -12,6 +16,7 @@ import {
 } from "./agents";
 import { type InteractResult } from "./compatibility/streamHandling";
 import { messageToUserAgent } from "./messageToUser";
+import { preRoutingLogic } from "./preRoutingLogic";
 import { promptAgentHandler } from "./promptAgentHandler";
 import { type TurnPlan, agentRouter } from "./router";
 
@@ -30,7 +35,7 @@ type InteractUpdate =
       data: {
         step: "routing";
         status: "completed";
-        plan: TurnPlan;
+        plan: TurnPlan | null;
       };
     }
   | {
@@ -96,6 +101,7 @@ export async function interact({
   messageHistory,
   onUpdate,
   customAgents,
+  relevantLessons,
 }: {
   chatId: string;
   userId: string;
@@ -105,16 +111,50 @@ export async function interact({
   customAgents: {
     mathsStarterQuiz?: CustomAgentAsyncFn<Quiz>;
     mathsExitQuiz?: CustomAgentAsyncFn<Quiz>;
+    fetchRelevantLessonPlans?: CustomAgentAsyncFn<AilaRagRelevantLesson[]>;
   };
+  relevantLessons: AilaRagRelevantLesson[] | null;
 }): Promise<InteractResult> {
   log.info("Starting interaction with Aila agents");
   let document = initialDocument;
-
   // Notify about starting the routing process
   onUpdate?.({
     type: "progress",
     data: { step: "routing", status: "started" },
   });
+
+  const preRouteLogic = await preRoutingLogic({ relevantLessons });
+
+  if (preRouteLogic?.result.type === "fetch_relevant_lessons") {
+    onUpdate?.({
+      type: "progress",
+      data: {
+        step: "routing",
+        status: "completed",
+        plan: null,
+      },
+    });
+    const _relevantLessons = await customAgents.fetchRelevantLessonPlans?.({
+      document,
+    });
+
+    if (!_relevantLessons) {
+      throw new Error("Error fetching relevant lessons");
+    }
+
+    const ailaMessage = _relevantLessons.length
+      ? `If you would like to base your lesson on one of the following:\n${_relevantLessons.map((rl, i) => `${i + 1}. ${rl.title}`).join(`\n`)}\n\nPlease reply with the number of the lesson you would like to use as a base.\n\nOtherwise click 'continue'.`
+      : `We couldn't find any relevant lessons!!`;
+    onUpdate?.({
+      type: "complete",
+      data: {
+        document,
+        ailaMessage,
+      },
+    });
+
+    return { document, ailaMessage };
+  }
 
   const routerResponse = await agentRouter({
     chatId,
@@ -130,6 +170,14 @@ export async function interact({
   }
 
   if (routerResponse.result.type === "end_turn") {
+    onUpdate?.({
+      type: "progress",
+      data: {
+        step: "routing",
+        status: "completed",
+        plan: null,
+      },
+    });
     // Notify about completion
     onUpdate?.({
       type: "complete",
@@ -235,6 +283,52 @@ export async function interact({
               document = {
                 ...document,
                 [sectionKey]: quiz,
+              };
+              // Send section update with current state
+              onUpdate?.({
+                type: "section_update",
+                data: {
+                  sectionKey,
+                  actionType,
+                  patches,
+                },
+              });
+
+              break;
+            } else if (agentDefinition.name === "basedOn") {
+              const userMessage = messageHistory.findLast(
+                (m) => m.role === "user",
+              );
+              const userBasedOnSelection = Number(userMessage?.content?.trim());
+              if (relevantLessons === null) {
+                continue;
+              }
+              const userBasedOnSelectionIsInvalid =
+                isNaN(userBasedOnSelection) ||
+                userBasedOnSelection < 1 ||
+                userBasedOnSelection > relevantLessons.length;
+              if (userBasedOnSelectionIsInvalid) {
+                continue;
+              }
+              const chosenBasedOn = relevantLessons[userBasedOnSelection];
+              if (!chosenBasedOn) {
+                throw new Error("Unexpected chosenBasedOn missing");
+              }
+              const patch: JsonPatchDocumentOptional = {
+                type: "patch",
+                value: {
+                  path: `/${sectionKey}`,
+                  op: actionType,
+                  value: chosenBasedOn,
+                },
+                status: "complete",
+                // @todo improve 'reasoning here
+                reasoning: `Updated ${sectionKey} based on user request`,
+              };
+              const patches = [patch];
+              document = {
+                ...document,
+                [sectionKey]: chosenBasedOn,
               };
               // Send section update with current state
               onUpdate?.({

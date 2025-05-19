@@ -45,6 +45,7 @@ export const agentNames = z.enum([
   "mathsExitQuiz",
   "deleteSection",
   "endTurn",
+  "basedOn",
 ]);
 
 export type AgentName = z.infer<typeof agentNames>;
@@ -182,20 +183,20 @@ export const agents: Record<AgentName, AgentDefinition> = {
     type: "custom",
     name: "endTurn",
   },
+  basedOn: {
+    type: "asyncFunction",
+    name: "basedOn",
+  },
 };
 
 export const sectionAgentMap: Record<
   Exclude<
     LessonPlanKey,
-    | "title"
-    | "subject"
-    | "keyStage"
-    | "topic"
-    | "basedOn"
-    | "additionalMaterials"
+    "title" | "subject" | "keyStage" | "topic" | "additionalMaterials"
   >,
   (ctx: { lessonPlan: LooseLessonPlan }) => AgentName
 > = {
+  basedOn: () => "basedOn",
   learningOutcome: () => "learningOutcome",
   learningCycles: () => "learningCycles",
   priorKnowledge: () => "priorKnowledge",
