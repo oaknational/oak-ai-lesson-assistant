@@ -1,7 +1,11 @@
-import type { AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import type {
+  AdditionalMaterialSchemas,
+  AdditionalMaterialType,
+} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
+import { z } from "zod";
 import type { StoreApi } from "zustand";
 
 import type { GenerateMaterialParams } from "./actionFunctions/handleGenerateMaterial";
@@ -21,12 +25,15 @@ export type StepOneFormState = {
   activeDropdown: string | null;
 };
 
-export type ErrorType = "rate_limit" | "banned" | "unknown";
+const errorType = z.enum(["rate_limit", "banned", "unknown"]);
+export type ErrorType = z.infer<typeof errorType>;
 
-export interface ErrorResponse {
-  type: ErrorType;
-  message: string;
-}
+export const errorResponse = z.object({
+  type: errorType,
+  message: z.string(),
+});
+type ErrorResponse = z.infer<typeof errorResponse>;
+
 export type ResourcesState = {
   id: string | null;
   stepNumber: number;
@@ -35,7 +42,7 @@ export type ResourcesState = {
   isDownloading: boolean;
   pageData: PageData;
   generation: AdditionalMaterialSchemas | null;
-  docType: string | null;
+  docType: AdditionalMaterialType | null;
   formState: StepOneFormState;
   moderation?: ModerationResult;
   threatDetection?: boolean;
