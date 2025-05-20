@@ -99,10 +99,8 @@ const StepTwo = () => {
 
         {mapLessonPlanSections(pageData.lessonPlan).map((section) => {
           const title = camelCaseToSentenceCase(section.key) ?? "";
-          if (
-            section.key === "learningOutcome" ||
-            section.key === "learningCycles"
-          ) {
+          // Check if the section should be displayed based on the resource type's lessonParts
+          if (resourceType?.lessonParts?.includes(section.key)) {
             return (
               <OakFlex
                 key={section.key}

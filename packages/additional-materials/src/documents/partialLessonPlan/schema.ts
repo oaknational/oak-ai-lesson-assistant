@@ -36,11 +36,15 @@ export type PartialLessonPlanFieldKeys = z.infer<
   typeof partialLessonPlanFieldKeys
 >;
 
-const PartialLessonPlanFieldKeySchema = z.enum(lessonFieldKeys);
+export const PartialLessonPlanFieldKeySchema = z.enum(lessonFieldKeys);
 
 export const PartialLessonPlanFieldKeyArraySchema = z
   .array(PartialLessonPlanFieldKeySchema)
   .nonempty();
+
+export type PartialLessonPlanFieldKeyArray = z.infer<
+  typeof PartialLessonPlanFieldKeyArraySchema
+>;
 
 export const partialLessonContextSchema = z.object({
   keyStage: z.string().optional(),
