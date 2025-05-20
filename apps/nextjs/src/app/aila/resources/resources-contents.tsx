@@ -48,9 +48,6 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const { resetFormState } = useResourcesActions();
   const moderation = useResourcesStore(moderationSelector);
 
-  const hasModerationCategories =
-    moderation?.categories && moderation.categories.length > 0;
-
   useEffect(() => {
     resetFormState();
   }, [resetFormState]);
@@ -99,7 +96,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
       title={title}
       subTitle={subTitle}
       step={stepNumber + 1}
-      docTypeName={docTypeName || ""}
+      docTypeName={docTypeName}
     >
       {stepComponents[stepNumber]}
     </ResourcesLayout>
@@ -111,7 +108,7 @@ const ResourcesContents: FC<AdditionalMaterialsUserProps> = (props) => {
     <ResourcesStoresProvider>
       <DialogProvider>
         <DialogRoot>
-          <DialogContents chatId={undefined} lesson={{}} submit={() => {}} />
+          <DialogContents chatId={undefined} lesson={{}} />
           <ResourcesContentsInner {...props} />
         </DialogRoot>
       </DialogProvider>
