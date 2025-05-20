@@ -40,10 +40,11 @@ export function mapLessonPlanSections(
   return lessonFieldKeys.map((key) => ({ key, data: lessonPlan[key] ?? null }));
 }
 
-const StepTwo = (hasModerationCategories: boolean) => {
+const StepTwo = () => {
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
   const error = useResourcesStore((state) => state.error);
+  const moderation = useResourcesStore(moderationSelector);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
   const docTypeName = docType?.split("-")[1] ?? null;
@@ -73,13 +74,15 @@ const StepTwo = (hasModerationCategories: boolean) => {
   }
 
   handleDialogSelection({ threatDetected, error, setDialogWindow });
+  const hasModeration =
+    moderation?.categories && moderation.categories.length > 0;
 
   return (
     <>
       <OakFlex $flexDirection="column">
         <OakFlex $flexDirection="column" $mb="space-between-m">
           <OakP $font={"heading-5"}>Task details</OakP>
-          {hasModerationCategories && <ModerationMessage />}
+          {hasModeration && <ModerationMessage />}
 
           <OakBox $pv="inner-padding-m">
             <OakP>
