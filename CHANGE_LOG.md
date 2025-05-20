@@ -1,3 +1,18 @@
+# [1.37.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.36.0...v1.37.0) (2025-05-20)
+
+
+### Bug Fixes
+
+* lakera persistence issue ([#656](https://github.com/oaknational/oak-ai-lesson-assistant/issues/656)) ([2bcd20a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2bcd20aa1858579caf6b5b76282d891eeb5ffe4d))
+
+
+### Features
+
+* add components for all quiz types ([#652](https://github.com/oaknational/oak-ai-lesson-assistant/issues/652)) ([26fd496](https://github.com/oaknational/oak-ai-lesson-assistant/commit/26fd496fa7c08f40b9716a87f198be07015138ac))
+* additional materials - connect frontend to exports - AI-1082 ([#667](https://github.com/oaknational/oak-ai-lesson-assistant/issues/667)) ([9d1f6eb](https://github.com/oaknational/oak-ai-lesson-assistant/commit/9d1f6eb437f86ca861cfb7e9a090e5dc839c34cf))
+* additional resources - threat detection and moderation - AI-1061 AI-1013 AI-860 [MIGRATION] ([#657](https://github.com/oaknational/oak-ai-lesson-assistant/issues/657)) ([63b9763](https://github.com/oaknational/oak-ai-lesson-assistant/commit/63b97632c3e3f0aca01f9576fdee89f98789573b))
+* styling to match designs ([#665](https://github.com/oaknational/oak-ai-lesson-assistant/issues/665)) ([86b5197](https://github.com/oaknational/oak-ai-lesson-assistant/commit/86b519711b863c24dc0746275a4c5dfd7574d6ad))
+
 # [1.36.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.35.0...v1.36.0) (2025-05-08)
 
 
