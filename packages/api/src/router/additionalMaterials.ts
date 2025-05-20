@@ -137,17 +137,19 @@ export const additionalMaterialsRouter = router({
             (err.reset - Date.now()) / 1000 / 60 / 60,
           );
           const hours = timeRemainingHours === 1 ? "hour" : "hours";
+          const errorMessage = `**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in ${timeRemainingHours} ${hours}. If you require a higher limit, please [make a request](${process.env.RATELIMIT_FORM_URL}).`;
           throw new TRPCError({
             code: "TOO_MANY_REQUESTS",
-            message: `**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in ${timeRemainingHours} ${hours}. If you require a higher limit, please [make a request](${process.env.RATELIMIT_FORM_URL}).`,
-            cause: err,
+            message: errorMessage,
+            cause: { type: "rate_limit", message: errorMessage },
           });
         }
         if (err instanceof UserBannedError) {
+          const errorMessage = "User account is locked.";
           throw new TRPCError({
             code: "FORBIDDEN",
-            message: "You have been banned.",
-            cause: err,
+            message: errorMessage,
+            cause: { type: "banned", message: errorMessage },
           });
         }
         throw err;
@@ -161,11 +163,18 @@ export const additionalMaterialsRouter = router({
           auth: ctx.auth,
         });
       } catch (cause) {
-        const errorContext = `Failed to fetch additional material moderation for - ${parsedInput.data.title} - ${parsedInput.data.subject} `;
-        const TrpcError = new Error(errorContext, { cause });
-        log.error(errorContext, cause);
-        Sentry.captureException(TrpcError);
-        throw TrpcError;
+        const errorMessage = `Failed to fetch additional material moderation for - ${parsedInput.data.title} - ${parsedInput.data.subject}`;
+        log.error(errorMessage, cause);
+        Sentry.captureException(cause);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: errorMessage,
+          cause: {
+            type: "partial_lesson_plan",
+            message: errorMessage,
+            original: cause,
+          },
+        });
       }
     }),
 
