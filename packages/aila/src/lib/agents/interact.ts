@@ -52,19 +52,6 @@ type InteractUpdate =
   | {
       type: "progress";
       data: {
-        step: "action";
-        status: "completed";
-        action: {
-          sectionKey: string;
-          actionType: string;
-          index: number;
-          total: number;
-        };
-      };
-    }
-  | {
-      type: "progress";
-      data: {
         step: "message";
         status: "started";
       };

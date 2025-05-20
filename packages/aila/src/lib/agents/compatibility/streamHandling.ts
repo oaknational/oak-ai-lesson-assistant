@@ -194,9 +194,12 @@ function onSectionUpdate({
       !("op" in patch.value) ||
       !patch.value.op
     ) {
+      // Filter out invalid patches (which should not happen)
       continue;
     }
     if (patch?.value?.op === "test" || patch?.value?.op === "_get") {
+      // Filter out test and _get operations
+      // These are not valid operations for our use case
       continue;
     }
     const patchJson = JSON.stringify(patch);
