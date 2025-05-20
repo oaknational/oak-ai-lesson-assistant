@@ -1,11 +1,13 @@
 import { useState } from "react";
 
 import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
+import { isExitQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/exitQuiz/schema";
+import { isGlossary } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
 import {
-  isGlossary,
-  readingAgeRefinement,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
-import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
+  type RefinementOption,
+  getResourceType,
+} from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import { isStarterQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/starterQuiz/schema";
 import { aiLogger } from "@oakai/logger";
 
 import {
@@ -32,7 +34,9 @@ import {
 import { trpc } from "@/utils/trpc";
 
 import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
+import { ExitQuiz } from "../../AdditionalMaterials/ExitQuiz";
 import { Glossary } from "../../AdditionalMaterials/Glossary";
+import { StarterQuiz } from "../../AdditionalMaterials/StarterQuiz";
 import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import InlineButton from "../InlineButton";
@@ -57,6 +61,9 @@ const StepThree = () => {
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 
+  // Get resource type from configuration
+  const resourceType = docType ? getResourceType(docType) : null;
+  const refinementOptions = resourceType?.refinementOptions || [];
   const handleDownloadMaterial = async () => {
     if (!generation || !docType) {
       return;
@@ -69,18 +76,6 @@ const StepThree = () => {
     } finally {
       setIsResourceDownloading(false);
     }
-  };
-
-  const getRefinementOptions = () => {
-    if (docType === "additional-glossary") {
-      return readingAgeRefinement;
-    }
-
-    if (docType === "additional-comprehension") {
-      return [];
-    }
-
-    return [];
   };
 
   const renderGeneratedMaterial = () => {
@@ -99,10 +94,18 @@ const StepThree = () => {
       return <ComprehensionTask action={docType} generation={generation} />;
     }
 
+    if (docType === "additional-starter-quiz" && isStarterQuiz(generation)) {
+      return <StarterQuiz action={docType} generation={generation} />;
+    }
+
+    if (docType === "additional-exit-quiz" && isExitQuiz(generation)) {
+      return <ExitQuiz action={docType} generation={generation} />;
+    }
+
     return null;
   };
 
-  const refinementOptions = getRefinementOptions();
+  // const refinementOptions = getRefinementOptions();
   const hasModeration =
     moderation?.categories && moderation.categories.length > 0;
 
@@ -110,7 +113,7 @@ const StepThree = () => {
 
   return (
     <>
-      {isResourcesLoading && <OakP>Loading...</OakP>}
+      {isResourcesLoading || (!generation && <OakP>Loading...</OakP>)}
       {hasModeration && <ModerationMessage />}
       <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       <ResourcesFooter>
@@ -126,12 +129,12 @@ const StepThree = () => {
             </button>
 
             <OakFlex $gap="all-spacing-2" $flexWrap="wrap">
-              {refinementOptions.map((refinement) => (
+              {refinementOptions.map((refinement: RefinementOption) => (
                 <InlineButton
-                  key={refinement}
+                  key={refinement.id}
                   onClick={() => {
                     void refineMaterial({
-                      refinement: [{ type: refinement }],
+                      refinement: [{ type: refinement.value }],
                       mutateAsync: async (input) => {
                         try {
                           return await fetchMaterial.mutateAsync(input);
@@ -145,7 +148,7 @@ const StepThree = () => {
                     setIsFooterAdaptOpen(false);
                   }}
                 >
-                  {camelCaseToSentenceCase(refinement as string)}
+                  {refinement.label}
                 </InlineButton>
               ))}
             </OakFlex>
@@ -171,7 +174,7 @@ const StepThree = () => {
                 iconName="download"
                 isTrailingIcon={true}
                 isLoading={isDownloading}
-                disabled={!generation}
+                disabled={!generation || isResourcesLoading}
               >
                 Download (.zip)
               </OakPrimaryButton>

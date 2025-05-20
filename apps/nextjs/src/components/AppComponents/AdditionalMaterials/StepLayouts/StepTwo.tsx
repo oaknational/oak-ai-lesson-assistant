@@ -1,3 +1,4 @@
+import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
@@ -47,8 +48,13 @@ const StepTwo = () => {
   const moderation = useResourcesStore(moderationSelector);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
-  const docTypeName = docType?.split("-")[1] ?? null;
   const { setDialogWindow } = useDialog();
+
+  // Get resource type from configuration
+  const resourceType = docType ? getResourceType(docType) : null;
+  const docTypeName = resourceType
+    ? resourceType.displayName.toLowerCase()
+    : null;
 
   const { setStepNumber, generateMaterial } = useResourcesActions();
   const fetchMaterial =
