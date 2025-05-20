@@ -173,7 +173,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
     prompt: learningCyclesInstructions,
     schema: z.object({ value: CycleSchemaWithoutLength }),
     extractRagData: (lp) => {
-      // Extract all cycle data
+      // @todo we probably only need one cycle (the relevant one)
       return JSON.stringify({
         cycle1: lp.cycle1,
         cycle2: lp.cycle2,
