@@ -6,7 +6,7 @@ import {
   mockRefetchSafetyViolations,
   mockSafetyViolations,
   userIds,
-} from "../../fixtures/safetyViolations";
+} from "../../fixtures/safetyViolations.fixture";
 import { AdminUserView } from "./view";
 
 const meta = {
