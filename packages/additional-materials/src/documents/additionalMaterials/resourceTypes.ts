@@ -62,7 +62,6 @@ export const resourceTypesConfig = {
       "keyLearningPoints",
       "misconceptions",
       "keywords",
-      "explanations",
     ],
   },
   "additional-comprehension": {
@@ -81,7 +80,6 @@ export const resourceTypesConfig = {
       "keyLearningPoints",
       "misconceptions",
       "keywords",
-      "explanations",
     ],
   },
   "additional-starter-quiz": {
@@ -101,7 +99,6 @@ export const resourceTypesConfig = {
       "keyLearningPoints",
       "misconceptions",
       "keywords",
-      "explanations",
     ],
   },
   "additional-exit-quiz": {
@@ -122,7 +119,6 @@ export const resourceTypesConfig = {
       "keyLearningPoints",
       "misconceptions",
       "keywords",
-      "explanations",
     ],
   },
 } as const;
