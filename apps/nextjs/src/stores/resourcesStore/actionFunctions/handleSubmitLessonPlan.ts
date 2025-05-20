@@ -1,19 +1,16 @@
 import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { GeneratePartialLessonPlanResponse } from "@oakai/api/src/router/additionalMaterials/generatePartialLessonPlan";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
-import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
 import { TRPCError } from "@trpc/server";
 
-import type {
-  ErrorResponse,
-  ErrorType,
-  ResourcesGetter,
-  ResourcesSetter,
+import {
+  type ResourcesGetter,
+  type ResourcesSetter,
+  errorResponse,
 } from "../types";
 
 const log = aiLogger("additional-materials");
@@ -53,30 +50,6 @@ const buildLessonPlanInput = (
 };
 
 /**
- * Determines the type of error that occurred during lesson plan generation
- */
-const determineErrorType = (error: TRPCError): ErrorResponse => {
-  let errorType: ErrorType = "unknown";
-  let errorMessage = "An unexpected error occurred.";
-
-  const { cause } = error;
-
-  if (cause instanceof RateLimitExceededError) {
-    errorType = "rate_limit";
-    errorMessage = "You have been rate limited. Please try again later.";
-  } else if (cause instanceof UserBannedError) {
-    errorType = "banned";
-    errorMessage = "Your account has been banned.";
-  } else if (cause instanceof Error) {
-    errorMessage = cause.message;
-  } else if (typeof cause === "string") {
-    errorMessage = cause;
-  }
-
-  return { type: errorType, message: errorMessage };
-};
-
-/**
  * Updates the store with successful lesson plan results
  */
 const updateStoreWithLessonPlan = (
@@ -95,9 +68,6 @@ const updateStoreWithLessonPlan = (
   log.info("Lesson plan updated successfully");
 };
 
-/**
- * Main function to handle lesson plan submission
- */
 export const handleSubmitLessonPlan =
   (set: ResourcesSetter, get: ResourcesGetter) =>
   async ({
@@ -120,8 +90,8 @@ export const handleSubmitLessonPlan =
       updateStoreWithLessonPlan(set, result);
     } catch (error: unknown) {
       if (error instanceof TRPCError) {
-        const errorDetails = determineErrorType(error);
-        set({ error: errorDetails });
+        const parsedErrorCause = errorResponse.parse(error.cause);
+        set({ error: parsedErrorCause });
       }
 
       log.error("Error handling lesson plan", (error as Error)?.cause);
