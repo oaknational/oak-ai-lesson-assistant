@@ -89,7 +89,7 @@ export async function generatePartialLessonPlan({
       violationType: "MODERATION",
       userAction: "PARTIAL_LESSON_GENERATION",
     });
-    // @todo we should throw error here
+
     return {
       threatDetection: true,
       lesson: null,
@@ -106,7 +106,6 @@ export async function generatePartialLessonPlan({
       violationType: "THREAT",
       userAction: "PARTIAL_LESSON_GENERATION",
     });
-    // @todo we should throw error here
 
     return {
       threatDetection: true,

@@ -21,7 +21,6 @@ import {
 const additionalMaterialDocType = [
   "additional-comprehension",
   "additional-glossary",
-  // "partial-lesson-plan",
 ] as const;
 
 export const actionEnum = z.enum(["generate", "refine", "translate"]);

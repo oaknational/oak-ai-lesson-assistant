@@ -1,6 +1,6 @@
 import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { GenerateAdditionalMaterialInput } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import type { GenerateAdditionalMaterialResponse } from "@oakai/api/src/router/additionalMaterials/helpers";
+import type { GenerateAdditionalMaterialResponse } from "@oakai/api/src/router/additionalMaterials/generateAdditionalMaterial";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
@@ -49,7 +49,7 @@ export const handleGenerateMaterial =
         lessonId: get().pageData.lessonPlan.lessonId,
       });
       get().actions.setIsResourcesLoading(false);
-      // Update the store with the result
+
       set({
         generation: result.resource,
         moderation: result.moderation,
