@@ -1,4 +1,6 @@
+import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
+import { getRagLessonPlansByIds } from "@oakai/rag";
 
 import type { AilaRagRelevantLesson } from "protocol/schema";
 import type { ReadableStreamDefaultController } from "stream/web";
@@ -215,18 +217,26 @@ export class AilaStreamHandler {
 
           return quiz;
         },
-        fetchRelevantLessonPlans: async ({ document }) => {
-          const { ragLessonPlans } = await fetchRelevantLessonPlans({
+        fetchRagData: async ({ document }) => {
+          if (this._chat.relevantLessons) {
+            const results = await getRagLessonPlansByIds({
+              lessonPlanIds: this._chat.relevantLessons.map(
+                (lesson) => lesson.lessonPlanId,
+              ),
+            });
+            return results;
+          }
+          const lessonPlanResults = await fetchRelevantLessonPlans({
             document,
           });
 
-          const relevantLessons = ragLessonPlans.map((lesson) => ({
-            lessonPlanId: lesson.id,
-            title: lesson.title,
+          const relevantLessons = lessonPlanResults.map((result) => ({
+            lessonPlanId: result.ragLessonPlanId,
+            title: result.lessonPlan.title,
           }));
           this._chat.relevantLessons = relevantLessons;
 
-          return relevantLessons;
+          return lessonPlanResults.map((l) => l.lessonPlan);
         },
       },
       relevantLessons: this._chat.relevantLessons,

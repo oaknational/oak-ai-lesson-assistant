@@ -5,6 +5,7 @@ import { compare } from "fast-json-patch";
 import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import {
   type AilaRagRelevantLesson,
+  type CompletedLessonPlan,
   type LooseLessonPlan,
   type Quiz,
 } from "../../protocol/schema";
@@ -111,7 +112,7 @@ export async function interact({
   customAgents: {
     mathsStarterQuiz?: CustomAgentAsyncFn<Quiz>;
     mathsExitQuiz?: CustomAgentAsyncFn<Quiz>;
-    fetchRelevantLessonPlans?: CustomAgentAsyncFn<AilaRagRelevantLesson[]>;
+    fetchRagData: CustomAgentAsyncFn<CompletedLessonPlan[]>;
   };
   relevantLessons: AilaRagRelevantLesson[] | null;
 }): Promise<InteractResult> {
@@ -123,9 +124,13 @@ export async function interact({
     data: { step: "routing", status: "started" },
   });
 
-  const preRouteLogic = await preRoutingLogic({ relevantLessons });
-
-  if (preRouteLogic?.result.type === "fetch_relevant_lessons") {
+  let ragData: CompletedLessonPlan[] = [];
+  if (relevantLessons === null) {
+    /**
+     * This means we haven't even tried to fetch relevant lessons yet
+     * So we need to do that first, and present them to the user
+     * to decide if they want to use one of them as a base.
+     */
     onUpdate?.({
       type: "progress",
       data: {
@@ -134,16 +139,13 @@ export async function interact({
         plan: null,
       },
     });
-    const _relevantLessons = await customAgents.fetchRelevantLessonPlans?.({
-      document,
-    });
+    ragData =
+      (await customAgents.fetchRagData({
+        document,
+      })) ?? [];
 
-    if (!_relevantLessons) {
-      throw new Error("Error fetching relevant lessons");
-    }
-
-    const ailaMessage = _relevantLessons.length
-      ? `If you would like to base your lesson on one of the following:\n${_relevantLessons.map((rl, i) => `${i + 1}. ${rl.title}`).join(`\n`)}\n\nPlease reply with the number of the lesson you would like to use as a base.\n\nOtherwise click 'continue'.`
+    const ailaMessage = ragData.length
+      ? `If you would like to base your lesson on one of the following:\n${ragData.map((rl, i) => `${i + 1}. ${rl.title}`).join(`\n`)}\n\nPlease reply with the number of the lesson you would like to use as a base.\n\nOtherwise click 'continue'.`
       : `We couldn't find any relevant lessons!!`;
     onUpdate?.({
       type: "complete",
@@ -314,12 +316,16 @@ export async function interact({
               if (!chosenBasedOn) {
                 throw new Error("Unexpected chosenBasedOn missing");
               }
+              const basedOnValue = {
+                id: chosenBasedOn.lessonPlanId,
+                title: chosenBasedOn.title,
+              };
               const patch: JsonPatchDocumentOptional = {
                 type: "patch",
                 value: {
                   path: `/${sectionKey}`,
                   op: actionType,
-                  value: chosenBasedOn,
+                  value: basedOnValue,
                 },
                 status: "complete",
                 // @todo improve 'reasoning here
@@ -328,7 +334,7 @@ export async function interact({
               const patches = [patch];
               document = {
                 ...document,
-                [sectionKey]: chosenBasedOn,
+                [sectionKey]: basedOnValue,
               };
               // Send section update with current state
               onUpdate?.({
@@ -358,6 +364,7 @@ export async function interact({
           chatId,
           userId,
           additionalInstructions: context,
+          ragData,
         });
 
         const patch: JsonPatchDocumentOptional = {

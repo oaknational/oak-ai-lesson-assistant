@@ -1,17 +1,14 @@
 import { parseKeyStage } from "@oakai/core/src/data/parseKeyStage";
 import { getRelevantLessonPlans, parseSubjectsForRagSearch } from "@oakai/rag";
+import type { RagLessonPlanResult } from "@oakai/rag/types";
 
 import type { LooseLessonPlan } from "protocol/schema";
-
-import type { RagLessonPlan } from "../../../utils/rag/fetchRagContent";
 
 export async function fetchRelevantLessonPlans({
   document,
 }: {
   document: LooseLessonPlan;
-}): Promise<{
-  ragLessonPlans: RagLessonPlan[];
-}> {
+}): Promise<RagLessonPlanResult[]> {
   const { title, keyStage, subject } = document;
   if (!title || !keyStage || !subject) {
     throw new Error(
@@ -27,10 +24,5 @@ export async function fetchRelevantLessonPlans({
     subjectSlugs,
   });
 
-  return {
-    ragLessonPlans: relevantLessonPlans.map((l) => ({
-      ...l.lessonPlan,
-      id: l.ragLessonPlanId,
-    })),
-  };
+  return relevantLessonPlans;
 }
