@@ -1,4 +1,8 @@
-import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
+import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import type {
+  PartialLessonContextSchemaType,
+  PartialLessonPlanFieldKeyArray,
+} from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
@@ -32,6 +36,10 @@ export const handleSubmitLessonPlan =
     mutateAsync,
   }: SubmitLessonPlanParams) => {
     const { setStepNumber, setIsLoadingLessonPlan } = get().actions;
+    const { docType } = get();
+
+    // Get the resource-specific lessonParts if available
+    const resourceType = docType ? getResourceType(docType) : null;
 
     // Change step first for immediate feedback
     setStepNumber(1);
@@ -39,10 +47,26 @@ export const handleSubmitLessonPlan =
     try {
       log.info("Processing lesson plan", { title, subject, keyStage, year });
       setIsLoadingLessonPlan(true);
-      // @todo move this to the backend
-      const validLessonFields = lessonFieldKeys.filter(
-        (key) => key !== "title" && key !== "keyStage" && key !== "subject",
-      );
+
+      // Always include these base fields
+      const baseFields = ["title", "keyStage", "subject"];
+
+      // Get resource-specific lesson parts or use all fields as fallback
+      let lessonPartsToGenerate = baseFields;
+
+      if (resourceType?.lessonParts) {
+        // Use resource-specific parts
+        lessonPartsToGenerate = [...baseFields, ...resourceType.lessonParts];
+      } else {
+        // Fallback to all fields
+        const validLessonFields = lessonFieldKeys.filter(
+          (key) => !baseFields.includes(key),
+        );
+        lessonPartsToGenerate = [...baseFields, ...validLessonFields];
+      }
+
+      // Remove duplicates
+      lessonPartsToGenerate = [...new Set(lessonPartsToGenerate)];
 
       // Prepare API input
       const apiInput: PartialLessonContextSchemaType = {
@@ -50,7 +74,7 @@ export const handleSubmitLessonPlan =
         subject: subject ?? "",
         keyStage: keyStage ?? "",
         year: year ?? "",
-        lessonParts: ["title", "keyStage", "subject", ...validLessonFields],
+        lessonParts: lessonPartsToGenerate as PartialLessonPlanFieldKeyArray,
       };
 
       // Make the API call
