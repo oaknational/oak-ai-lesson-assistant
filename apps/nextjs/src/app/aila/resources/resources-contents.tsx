@@ -14,7 +14,7 @@ import StepTwo from "@/components/AppComponents/AdditionalMaterials/StepLayouts/
 import { DialogProvider } from "@/components/AppComponents/DialogContext";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
-import ResourcesLayout from "@/components/ResroucesLayout";
+import ResourcesLayout from "@/components/ResourcesLayout";
 import {
   ResourcesStoresProvider,
   useResourcesActions,
@@ -46,7 +46,6 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName || null;
   const { resetFormState } = useResourcesActions();
-  const moderation = useResourcesStore(moderationSelector);
 
   useEffect(() => {
     resetFormState();
@@ -109,6 +108,7 @@ const ResourcesContents: FC<AdditionalMaterialsUserProps> = (props) => {
       <DialogProvider>
         <DialogRoot>
           <DialogContents chatId={undefined} lesson={{}} />
+
           <ResourcesContentsInner {...props} />
         </DialogRoot>
       </DialogProvider>

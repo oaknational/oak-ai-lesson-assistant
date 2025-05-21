@@ -3,10 +3,10 @@ import type { GenerateAdditionalMaterialInput } from "@oakai/additional-material
 import type { GenerateAdditionalMaterialResponse } from "@oakai/api/src/router/additionalMaterials/generateAdditionalMaterial";
 import { aiLogger } from "@oakai/logger";
 
-import * as Sentry from "@sentry/nextjs";
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
+import { handleStoreError } from "../utils/errorHandling";
 
 const log = aiLogger("additional-materials");
 
@@ -73,8 +73,11 @@ export const handleGenerateMaterial =
       log.info("Material generated successfully");
       get().actions.setStepNumber(2);
     } catch (error) {
-      log.error("Error generating material", error);
-      Sentry.captureException(error);
-      throw error;
+      get().actions.setIsResourcesLoading(false);
+      handleStoreError(set, error, {
+        context: "handleGenerateMaterial",
+        documentType: docType,
+      });
+      log.error("Error generating material");
     }
   };

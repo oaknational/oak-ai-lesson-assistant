@@ -70,14 +70,14 @@ export const additionalMaterialsRouter = router({
 
           throw new TRPCError({
             code: "TOO_MANY_REQUESTS",
-            message: `**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in ${timeRemainingHours} ${hours}. If you require a higher limit, please [make a request](${process.env.RATELIMIT_FORM_URL}).`,
+            message: `RateLimitExceededError: **Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in ${timeRemainingHours} ${hours}. If you require a higher limit, please [make a request](${process.env.RATELIMIT_FORM_URL}).`,
             cause: err,
           });
         }
         if (err instanceof UserBannedError) {
           throw new TRPCError({
             code: "FORBIDDEN",
-            message: "You account has been locked.",
+            message: "UserBannedError: You account has been locked.",
             cause: err,
           });
         }
@@ -126,18 +126,21 @@ export const additionalMaterialsRouter = router({
           throw new Error("No user id");
         }
         const clerkUser = await clerkClient.users.getUser(ctx.auth.userId);
-
+        const isDemoUser = demoUsers.isDemoUser(clerkUser);
+        isDemoUser &&
+          (await rateLimits.additionalMaterialSessions.demo.check(
+            ctx.auth.userId,
+          ));
         if (clerkUser.banned) {
           throw new UserBannedError(ctx.auth.userId);
         }
-        // throw new UserBannedError(ctx.auth.userId);
       } catch (err) {
         if (err instanceof RateLimitExceededError) {
           const timeRemainingHours = Math.ceil(
             (err.reset - Date.now()) / 1000 / 60 / 60,
           );
           const hours = timeRemainingHours === 1 ? "hour" : "hours";
-          const errorMessage = `**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in ${timeRemainingHours} ${hours}. If you require a higher limit, please [make a request](${process.env.RATELIMIT_FORM_URL}).`;
+          const errorMessage = `RateLimitExceededError: **Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in ${timeRemainingHours} ${hours}. If you require a higher limit, please [make a request](${process.env.RATELIMIT_FORM_URL}).`;
           throw new TRPCError({
             code: "TOO_MANY_REQUESTS",
             message: errorMessage,
@@ -145,7 +148,7 @@ export const additionalMaterialsRouter = router({
           });
         }
         if (err instanceof UserBannedError) {
-          const errorMessage = "User account is locked.";
+          const errorMessage = "UserBannedError: User account is locked.";
           throw new TRPCError({
             code: "FORBIDDEN",
             message: errorMessage,
@@ -177,6 +180,23 @@ export const additionalMaterialsRouter = router({
         });
       }
     }),
+  remainingLimit: protectedProcedure.query(async ({ ctx }) => {
+    const { userId } = ctx.auth;
+    const clerkUser = await clerkClient.users.getUser(userId);
+
+    const isDemoUser = demoUsers.isDemoUser(clerkUser);
+
+    if (!isDemoUser) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Not a demo user",
+      });
+    }
+
+    const remaining =
+      await rateLimits.additionalMaterialSessions.demo.getRemaining(userId);
+    return { remaining };
+  }),
 
   fetchOWALessonData: protectedProcedure
     .input(

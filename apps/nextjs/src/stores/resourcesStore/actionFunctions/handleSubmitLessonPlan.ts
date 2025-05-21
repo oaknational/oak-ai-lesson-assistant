@@ -3,15 +3,10 @@ import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/parti
 import type { GeneratePartialLessonPlanResponse } from "@oakai/api/src/router/additionalMaterials/generatePartialLessonPlan";
 import { aiLogger } from "@oakai/logger";
 
-import * as Sentry from "@sentry/nextjs";
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
-import { TRPCError } from "@trpc/server";
 
-import {
-  type ResourcesGetter,
-  type ResourcesSetter,
-  errorResponse,
-} from "../types";
+import { type ResourcesGetter, type ResourcesSetter } from "../types";
+import { handleStoreError } from "../utils/errorHandling";
 
 const log = aiLogger("additional-materials");
 
@@ -89,13 +84,8 @@ export const handleSubmitLessonPlan =
       const result = await mutateAsync(apiInput);
       updateStoreWithLessonPlan(set, result);
     } catch (error: unknown) {
-      if (error instanceof TRPCError) {
-        const parsedErrorCause = errorResponse.parse(error.cause);
-        set({ error: parsedErrorCause });
-      }
-
-      log.error("Error handling lesson plan", (error as Error)?.cause);
-      Sentry.captureException(error);
+      handleStoreError(set, error, { context: "handleSubmitLessonPlan" });
+      log.error("Error handling lesson plan");
     } finally {
       setIsLoadingLessonPlan(false);
     }

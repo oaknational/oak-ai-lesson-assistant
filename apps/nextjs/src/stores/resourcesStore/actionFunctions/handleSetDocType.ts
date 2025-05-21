@@ -9,7 +9,8 @@ export const handleSetDocType =
   (set: ResourcesSetter, get: ResourcesGetter) => (docType: string | null) => {
     log.info("Setting docType", { docType });
 
-    const parsedDoctype = additionalMaterialTypeEnum.parse(docType);
-
-    set({ docType: parsedDoctype });
+    if (docType !== null) {
+      const parsedDoctype = additionalMaterialTypeEnum.parse(docType);
+      set({ docType: parsedDoctype });
+    }
   };
