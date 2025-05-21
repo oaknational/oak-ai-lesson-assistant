@@ -45,6 +45,7 @@ export type AilaOptions = AilaPublicChatOptions & {
   useModeration?: boolean;
   useAnalytics?: boolean;
   useThreatDetection?: boolean;
+  useAgenticAila?: boolean;
   model?: string;
   mode?: AilaGenerateDocumentMode;
 };
