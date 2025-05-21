@@ -2,7 +2,7 @@ import { parseKeyStage } from "@oakai/core/src/data/parseKeyStage";
 import { getRelevantLessonPlans, parseSubjectsForRagSearch } from "@oakai/rag";
 import type { RagLessonPlanResult } from "@oakai/rag/types";
 
-import type { LooseLessonPlan } from "protocol/schema";
+import type { LooseLessonPlan } from "../../../protocol/schema";
 
 export async function fetchRelevantLessonPlans({
   document,

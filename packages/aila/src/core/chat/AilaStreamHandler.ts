@@ -1,8 +1,6 @@
-import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { getRagLessonPlansByIds } from "@oakai/rag";
 
-import type { AilaRagRelevantLesson } from "protocol/schema";
 import type { ReadableStreamDefaultController } from "stream/web";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
