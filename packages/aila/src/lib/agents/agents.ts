@@ -9,10 +9,7 @@ import {
   LearningOutcomeSchema,
   type LessonPlanKey,
   LessonTitleSchema,
-<<<<<<< HEAD
   type LooseLessonPlan,
-=======
->>>>>>> main
   MisconceptionsSchemaWithoutLength,
   PriorKnowledgeSchema,
   QuizSchemaWithoutLength,
@@ -44,12 +41,8 @@ export const agentNames = z.enum([
   "starterQuiz",
   "cycle",
   "exitQuiz",
-<<<<<<< HEAD
   "mathsStarterQuiz",
   "mathsExitQuiz",
-=======
-  "mathsQuiz",
->>>>>>> main
   "deleteSection",
   "endTurn",
 ]);
@@ -86,15 +79,12 @@ export type AgentDefinition<Schema extends AgentResponse = AgentResponseAny> =
       name: AgentName;
       schema?: z.ZodTypeAny;
       whenToUse?: string[];
-<<<<<<< HEAD
     }
   | {
       type: "asyncFunction";
       name: AgentName;
       whenToUse?: string[];
       // fn: <T>(args: T) => Promise<JsonPatchDocumentOptional>;
-=======
->>>>>>> main
     };
 
 export const agents: Record<AgentName, AgentDefinition> = {
@@ -176,7 +166,6 @@ export const agents: Record<AgentName, AgentDefinition> = {
     prompt: [exitQuizInstructions, quizInstructions].join(`\n\n`),
     schema: z.object({ value: QuizSchemaWithoutLength }),
   },
-<<<<<<< HEAD
   mathsStarterQuiz: {
     type: "asyncFunction",
     name: "mathsStarterQuiz",
@@ -184,16 +173,6 @@ export const agents: Record<AgentName, AgentDefinition> = {
   mathsExitQuiz: {
     type: "asyncFunction",
     name: "mathsExitQuiz",
-=======
-  mathsQuiz: {
-    type: "custom",
-    name: "mathsQuiz",
-    whenToUse: [
-      "do not use this agent if the subject is not maths/math/mathematics",
-      "only suggest this agent if the next appropriate task is the generation of a starter or exit quiz",
-      "if you select this agent, a quiz will be generated, and no other parts of the lesson will be affected",
-    ],
->>>>>>> main
   },
   deleteSection: {
     type: "custom",
@@ -215,7 +194,6 @@ export const sectionAgentMap: Record<
     | "basedOn"
     | "additionalMaterials"
   >,
-<<<<<<< HEAD
   (ctx: { lessonPlan: LooseLessonPlan }) => AgentName
 > = {
   learningOutcome: () => "learningOutcome",
@@ -239,20 +217,5 @@ export const sectionAgentMap: Record<
     }
     return "exitQuiz";
   },
-=======
-  AgentName
-> = {
-  learningOutcome: "learningOutcome",
-  learningCycles: "learningCycles",
-  priorKnowledge: "priorKnowledge",
-  keyLearningPoints: "keyLearningPoints",
-  misconceptions: "misconceptions",
-  keywords: "keywords",
-  starterQuiz: "starterQuiz",
-  cycle1: "cycle",
-  cycle2: "cycle",
-  cycle3: "cycle",
-  exitQuiz: "exitQuiz",
->>>>>>> main
   // additionalMaterials: ["additionalMaterials"],
 };
