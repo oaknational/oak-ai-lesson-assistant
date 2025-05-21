@@ -4,12 +4,7 @@ import { compare } from "fast-json-patch";
 
 import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import { type LooseLessonPlan, type Quiz } from "../../protocol/schema";
-import {
-  type AgentDefinition,
-  type AgentName,
-  agents,
-  sectionAgentMap,
-} from "./agents";
+import { agents, sectionAgentMap } from "./agents";
 import { type InteractResult } from "./compatibility/streamHandling";
 import { messageToUserAgent } from "./messageToUser";
 import { promptAgentHandler } from "./promptAgentHandler";
@@ -52,19 +47,6 @@ type InteractUpdate =
         sectionKey: string;
         actionType: string;
         patches: JsonPatchDocumentOptional[];
-      };
-    }
-  | {
-      type: "progress";
-      data: {
-        step: "action";
-        status: "completed";
-        action: {
-          sectionKey: string;
-          actionType: string;
-          index: number;
-          total: number;
-        };
       };
     }
   | {
