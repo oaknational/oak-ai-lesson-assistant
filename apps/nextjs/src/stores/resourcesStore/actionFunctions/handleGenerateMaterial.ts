@@ -33,6 +33,15 @@ export const handleGenerateMaterial =
       throw new Error("No document type selected");
     }
 
+    // Validate required lesson plan fields
+    const lessonPlan = get().pageData.lessonPlan;
+    if (!lessonPlan?.title || !lessonPlan?.subject || !lessonPlan?.keyStage) {
+      log.error("Missing required lesson plan fields", { lessonPlan });
+      throw new Error(
+        "Lesson plan is missing required fields (title, subject, or keyStage)",
+      );
+    }
+
     try {
       log.info("Generating material", { docType, hasMessage: !!message });
 
@@ -41,7 +50,12 @@ export const handleGenerateMaterial =
         documentType: docTypeParsed,
         action: message ? "refine" : "generate",
         context: {
-          lessonPlan: get().pageData.lessonPlan,
+          lessonPlan: {
+            ...lessonPlan,
+            title: lessonPlan.title,
+            subject: lessonPlan.subject,
+            keyStage: lessonPlan.keyStage,
+          },
           message: message ?? null,
           previousOutput: null,
           options: null,
