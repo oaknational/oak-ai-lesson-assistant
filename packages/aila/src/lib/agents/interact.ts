@@ -9,15 +9,9 @@ import {
   type LooseLessonPlan,
   type Quiz,
 } from "../../protocol/schema";
-import {
-  type AgentDefinition,
-  type AgentName,
-  agents,
-  sectionAgentMap,
-} from "./agents";
+import { agents, sectionAgentMap } from "./agents";
 import { type InteractResult } from "./compatibility/streamHandling";
 import { messageToUserAgent } from "./messageToUser";
-import { preRoutingLogic } from "./preRoutingLogic";
 import { promptAgentHandler } from "./promptAgentHandler";
 import { type TurnPlan, agentRouter } from "./router";
 
