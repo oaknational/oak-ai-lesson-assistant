@@ -271,30 +271,13 @@ export async function interact({
                 id: chosenBasedOn.lessonPlanId,
                 title: chosenBasedOn.title,
               };
-              const patch: JsonPatchDocumentOptional = {
-                type: "patch",
-                value: {
-                  path: `/${sectionKey}`,
-                  op: actionType,
-                  value: basedOnValue,
-                },
-                status: "complete",
-                // @todo improve 'reasoning here
-                reasoning: `Updated ${sectionKey} based on user request`,
-              };
-              const patches = [patch];
-              document = {
-                ...document,
-                [sectionKey]: basedOnValue,
-              };
-              // Send section update with current state
-              onUpdate?.({
-                type: "section_update",
-                data: {
-                  sectionKey,
-                  actionType,
-                  patches,
-                },
+
+              handleSectionGenerated({
+                sectionKey,
+                actionType,
+                value: basedOnValue,
+                document,
+                onUpdate,
               });
 
               break;

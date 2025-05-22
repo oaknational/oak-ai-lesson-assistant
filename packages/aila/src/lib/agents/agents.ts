@@ -74,7 +74,7 @@ export type PromptAgentDefinition<
   schema: Schema;
   extractRagData: (exampleLessonPlan: CompletedLessonPlan) => string;
 };
-export type AgentDefinition<Schema extends AgentResponse = AgentResponseAny> =
+export type AgentDefinition =
   | PromptAgentDefinition<SchemaWithValue>
   | {
       type: "custom";
@@ -86,7 +86,6 @@ export type AgentDefinition<Schema extends AgentResponse = AgentResponseAny> =
       type: "asyncFunction";
       name: AgentName;
       extractRagData?: (exampleLessonPlan: CompletedLessonPlan) => string;
-      // fn: <T>(args: T) => Promise<JsonPatchDocumentOptional>;
     };
 
 export const agents: Record<AgentName, AgentDefinition> = {

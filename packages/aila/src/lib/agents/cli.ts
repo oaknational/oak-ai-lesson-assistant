@@ -1,7 +1,11 @@
 #!/usr/bin/env ts-node
 import readline from "readline";
 
-import type { LooseLessonPlan } from "../../protocol/schema";
+import type {
+  AilaRagRelevantLesson,
+  CompletedLessonPlan,
+  LooseLessonPlan,
+} from "../../protocol/schema";
 import { interact } from "./interact";
 
 // Helper to prompt for input
@@ -74,7 +78,12 @@ async function main() {
             },
           ]);
         },
+        fetchRagData: () => {
+          // Simulate fetching RAG data
+          return Promise.resolve([] as CompletedLessonPlan[]);
+        },
       },
+      relevantLessons: [] as AilaRagRelevantLesson[],
     });
 
     // Update the document with the latest version
