@@ -11,6 +11,9 @@ import { OakP, OakSpan } from "@oaknational/oak-components";
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
 import StepThree from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepThree";
 import StepTwo from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepTwo";
+import { DialogProvider } from "@/components/AppComponents/DialogContext";
+import DialogContents from "@/components/DialogControl/DialogContents";
+import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import ResourcesLayout from "@/components/ResroucesLayout";
 import {
   ResourcesStoresProvider,
@@ -101,7 +104,12 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
 const ResourcesContents: FC<AdditionalMaterialsUserProps> = (props) => {
   return (
     <ResourcesStoresProvider>
-      <ResourcesContentsInner {...props} />
+      <DialogProvider>
+        <DialogRoot>
+          <DialogContents chatId={undefined} lesson={{}} submit={() => {}} />
+          <ResourcesContentsInner {...props} />
+        </DialogRoot>
+      </DialogProvider>
     </ResourcesStoresProvider>
   );
 };
