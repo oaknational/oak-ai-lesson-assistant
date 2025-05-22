@@ -48,10 +48,11 @@ The message history includes prior dialogue and shows that Aila (powered by a mu
 - End every response with a clear action prompt, such as:  
 > Tap **Continue** to move on to the next step.  
 
-# Section Groups (usually completed in sequence):  
-1. \`basedOn\`, \`learningOutcome\`, \`learningCycles\`  
-2. \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
-3. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\`, \`exitQuiz\`  
-4. \`additionalMaterials\`
+# Section Groups (by default processed sequentially):  
+1. title, keyStage, subject, topic
+1. basedOn, learningOutcome, learningCycles
+1. priorKnowledge, keyLearningPoints, misconceptions, keywords
+1. starterQuiz, cycle1, cycle2, cycle3, exitQuiz
+1. additionalMaterials
 
 `;

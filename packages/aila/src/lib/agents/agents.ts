@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import {
+  AdditionalMaterialsSchema,
   type CompletedLessonPlan,
   CycleSchemaWithoutLength,
   KeyLearningPointsSchema,
@@ -17,6 +18,7 @@ import {
   SubjectSchema,
   TopicSchema,
 } from "../../protocol/schema";
+import { additionalMaterialsInstructions } from "./prompts/additionalMaterialsInstructions";
 import { exitQuizInstructions } from "./prompts/exitQuizInstructions";
 import { keyLearningPointsInstructions } from "./prompts/keyLearningPointsInstructions";
 import { keywordsInstructions } from "./prompts/keywordsInstructions";
@@ -47,6 +49,7 @@ export const agentNames = z.enum([
   "deleteSection",
   "endTurn",
   "basedOn",
+  "additionalMaterials",
 ]);
 
 export type AgentName = z.infer<typeof agentNames>;
@@ -62,7 +65,6 @@ const _agentResponseAnySchema = z
   })
   .required();
 
-type AgentResponseAny = z.infer<typeof _agentResponseAnySchema>;
 export type SchemaWithValue = z.ZodObject<{ value: z.ZodTypeAny }>;
 
 export type PromptAgentDefinition<
@@ -207,15 +209,22 @@ export const agents: Record<AgentName, AgentDefinition> = {
     type: "asyncFunction",
     name: "basedOn",
   },
+  additionalMaterials: {
+    type: "prompt",
+    name: "additionalMaterials",
+    prompt: additionalMaterialsInstructions,
+    schema: z.object({ value: AdditionalMaterialsSchema }),
+    extractRagData: (lp) => JSON.stringify(lp.additionalMaterials),
+  },
 };
 
 export const sectionAgentMap: Record<
-  Exclude<
-    LessonPlanKey,
-    "title" | "subject" | "keyStage" | "topic" | "additionalMaterials"
-  >,
+  Exclude<LessonPlanKey, "topic">,
   (ctx: { lessonPlan: LooseLessonPlan }) => AgentName
 > = {
+  title: () => "title",
+  keyStage: () => "keyStage",
+  subject: () => "subject",
   basedOn: () => "basedOn",
   learningOutcome: () => "learningOutcome",
   learningCycles: () => "learningCycles",
@@ -238,5 +247,5 @@ export const sectionAgentMap: Record<
     }
     return "exitQuiz";
   },
-  // additionalMaterials: ["additionalMaterials"],
+  additionalMaterials: () => "additionalMaterials",
 };

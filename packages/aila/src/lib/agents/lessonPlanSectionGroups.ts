@@ -15,7 +15,7 @@ export const sectionKeysSchema = z.union([
   z.literal("cycle2"),
   z.literal("cycle3"),
   z.literal("exitQuiz"),
-  // z.literal("additionalMaterials"),
+  z.literal("additionalMaterials"),
 ]);
 
 type SectionGroups = LessonPlanKey[][];
