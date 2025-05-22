@@ -1,6 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import { compare } from "fast-json-patch";
+import invariant from "tiny-invariant";
 
 import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import {
@@ -164,12 +165,14 @@ export async function interact({
         if (agentDefinition.type === "asyncFunction") {
           if (agentDefinition.name) {
             if (agentDefinition.name === "mathsStarterQuiz") {
-              const quiz = await customAgents.mathsStarterQuiz?.({
+              invariant(
+                customAgents.mathsStarterQuiz,
+                "Custom agent for maths starter quiz is required",
+              );
+
+              const quiz = await customAgents.mathsStarterQuiz({
                 document,
               });
-              if (!quiz) {
-                throw new Error("Maths starter quiz returned null");
-              }
 
               document = handleSectionGenerated({
                 sectionKey,
@@ -181,12 +184,14 @@ export async function interact({
 
               break;
             } else if (agentDefinition.name === "mathsExitQuiz") {
-              const quiz = await customAgents.mathsExitQuiz?.({
+              invariant(
+                customAgents.mathsExitQuiz,
+                "Custom agent for maths exit quiz is required",
+              );
+
+              const quiz = await customAgents.mathsExitQuiz({
                 document,
               });
-              if (!quiz) {
-                throw new Error("Maths starter quiz returned null");
-              }
 
               document = handleSectionGenerated({
                 sectionKey,
