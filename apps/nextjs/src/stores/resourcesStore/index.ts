@@ -24,12 +24,16 @@ export * from "./types";
 
 export type CreateResourcesStoreParams = {
   id: string;
+  initialStep?: number;
 };
 
-export const createResourcesStore = ({ id }: CreateResourcesStoreParams) => {
+export const createResourcesStore = ({
+  id,
+  initialStep,
+}: CreateResourcesStoreParams) => {
   const resourcesStore = create<ResourcesState>()((set, get) => ({
     id,
-    stepNumber: 0,
+    stepNumber: initialStep ?? 0,
     isLoadingLessonPlan: false,
     isResourcesLoading: false,
     isDownloading: false,
