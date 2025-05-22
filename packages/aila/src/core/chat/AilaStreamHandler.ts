@@ -1,4 +1,5 @@
 import { aiLogger } from "@oakai/logger";
+import { getRagLessonPlansByIds } from "@oakai/rag";
 
 import type { ReadableStreamDefaultController } from "stream/web";
 
@@ -8,6 +9,7 @@ import {
   streamInteractResultToClient,
 } from "../../lib/agents/compatibility/streamHandling";
 import { interact } from "../../lib/agents/interact";
+import { fetchRelevantLessonPlans } from "../../lib/agents/rag/fetchReleventLessons.agent";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
@@ -81,9 +83,15 @@ export class AilaStreamHandler {
     log.info("Starting stream", { chatId: this._chat.id });
     this.setupController(controller);
     try {
-      log.info("Setting up generation");
-      await this._chat.setupGeneration();
-      this.logStreamingStep("Setup generation complete");
+      if (!this._chat.aila.options.useAgenticAila) {
+        log.info("Setting up generation");
+        await this._chat.setupGeneration();
+        this.logStreamingStep("Setup generation complete");
+      } else {
+        log.info("Initialising Chunks");
+        this._chat.initialiseChunks();
+        this.logStreamingStep("Initialised chunks");
+      }
 
       log.info("Checking for threats for the user input");
       await this.checkForThreats();
@@ -207,7 +215,29 @@ export class AilaStreamHandler {
 
           return quiz;
         },
+        fetchRagData: async ({ document }) => {
+          if (this._chat.relevantLessons) {
+            const results = await getRagLessonPlansByIds({
+              lessonPlanIds: this._chat.relevantLessons.map(
+                (lesson) => lesson.lessonPlanId,
+              ),
+            });
+            return results;
+          }
+          const lessonPlanResults = await fetchRelevantLessonPlans({
+            document,
+          });
+
+          const relevantLessons = lessonPlanResults.map((result) => ({
+            lessonPlanId: result.ragLessonPlanId,
+            title: result.lessonPlan.title,
+          }));
+          this._chat.relevantLessons = relevantLessons;
+
+          return lessonPlanResults.map((l) => l.lessonPlan);
+        },
       },
+      relevantLessons: this._chat.relevantLessons,
     });
 
     // Stream the final result to the client

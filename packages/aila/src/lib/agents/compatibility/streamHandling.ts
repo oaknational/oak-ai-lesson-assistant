@@ -116,6 +116,13 @@ export function createInteractStreamHandler(
               chat,
               sectionsToEdit,
             });
+          } else {
+            onTurnPlan({
+              turnPlan: null,
+              controller,
+              chat,
+              sectionsToEdit,
+            });
           }
         }
         break;
@@ -146,15 +153,15 @@ function onTurnPlan({
   chat,
   sectionsToEdit,
 }: {
-  turnPlan: TurnPlan;
+  turnPlan: TurnPlan | null;
   controller: ReadableStreamDefaultController;
   chat: AilaChat;
   sectionsToEdit: string[];
 }) {
   // Extract section keys from the plan
-  const newSections = turnPlan.plan.map(
-    (p: TurnPlan["plan"][number]) => p.sectionKey,
-  );
+  const newSections = turnPlan
+    ? turnPlan.plan.map((p: TurnPlan["plan"][number]) => p.sectionKey)
+    : [];
   sectionsToEdit.push(...newSections);
 
   // Stream the opening part of the message with sectionsToEdit

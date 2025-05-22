@@ -5,6 +5,8 @@ import invariant from "tiny-invariant";
 
 import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import {
+  type AilaRagRelevantLesson,
+  type CompletedLessonPlan,
   type LessonPlanKey,
   type LooseLessonPlan,
   type Quiz,
@@ -30,7 +32,7 @@ type InteractUpdate =
       data: {
         step: "routing";
         status: "completed";
-        plan: TurnPlan;
+        plan: TurnPlan | null;
       };
     }
   | {
@@ -83,6 +85,7 @@ export async function interact({
   messageHistory,
   onUpdate,
   customAgents,
+  relevantLessons,
 }: {
   chatId: string;
   userId: string;
@@ -92,16 +95,51 @@ export async function interact({
   customAgents: {
     mathsStarterQuiz?: CustomAgentAsyncFn<Quiz>;
     mathsExitQuiz?: CustomAgentAsyncFn<Quiz>;
+    fetchRagData: CustomAgentAsyncFn<CompletedLessonPlan[]>;
   };
+  relevantLessons: AilaRagRelevantLesson[] | null;
 }): Promise<InteractResult> {
   log.info("Starting interaction with Aila agents");
   let document = initialDocument;
-
   // Notify about starting the routing process
   onUpdate?.({
     type: "progress",
     data: { step: "routing", status: "started" },
   });
+
+  let ragData: CompletedLessonPlan[] = [];
+  if (relevantLessons === null) {
+    /**
+     * This means we haven't even tried to fetch relevant lessons yet
+     * So we need to do that first, and present them to the user
+     * to decide if they want to use one of them as a base.
+     */
+    onUpdate?.({
+      type: "progress",
+      data: {
+        step: "routing",
+        status: "completed",
+        plan: null,
+      },
+    });
+    ragData =
+      (await customAgents.fetchRagData({
+        document,
+      })) ?? [];
+
+    const ailaMessage = ragData.length
+      ? `If you would like to base your lesson on one of the following:\n${ragData.map((rl, i) => `${i + 1}. ${rl.title}`).join(`\n`)}\n\nPlease reply with the number of the lesson you would like to use as a base.\n\nOtherwise click 'continue'.`
+      : `We couldn't find any relevant lessons!!`;
+    onUpdate?.({
+      type: "complete",
+      data: {
+        document,
+        ailaMessage,
+      },
+    });
+
+    return { document, ailaMessage };
+  }
 
   const routerResponse = await agentRouter({
     chatId,
@@ -117,6 +155,14 @@ export async function interact({
   }
 
   if (routerResponse.result.type === "end_turn") {
+    onUpdate?.({
+      type: "progress",
+      data: {
+        step: "routing",
+        status: "completed",
+        plan: null,
+      },
+    });
     // Notify about completion
     onUpdate?.({
       type: "complete",
@@ -202,6 +248,56 @@ export async function interact({
               });
 
               break;
+            } else if (agentDefinition.name === "basedOn") {
+              const userMessage = messageHistory.findLast(
+                (m) => m.role === "user",
+              );
+              const userBasedOnSelection = Number(userMessage?.content?.trim());
+              if (relevantLessons === null) {
+                continue;
+              }
+              const userBasedOnSelectionIsInvalid =
+                isNaN(userBasedOnSelection) ||
+                userBasedOnSelection < 1 ||
+                userBasedOnSelection > relevantLessons.length;
+              if (userBasedOnSelectionIsInvalid) {
+                continue;
+              }
+              const chosenBasedOn = relevantLessons[userBasedOnSelection];
+              if (!chosenBasedOn) {
+                throw new Error("Unexpected chosenBasedOn missing");
+              }
+              const basedOnValue = {
+                id: chosenBasedOn.lessonPlanId,
+                title: chosenBasedOn.title,
+              };
+              const patch: JsonPatchDocumentOptional = {
+                type: "patch",
+                value: {
+                  path: `/${sectionKey}`,
+                  op: actionType,
+                  value: basedOnValue,
+                },
+                status: "complete",
+                // @todo improve 'reasoning here
+                reasoning: `Updated ${sectionKey} based on user request`,
+              };
+              const patches = [patch];
+              document = {
+                ...document,
+                [sectionKey]: basedOnValue,
+              };
+              // Send section update with current state
+              onUpdate?.({
+                type: "section_update",
+                data: {
+                  sectionKey,
+                  actionType,
+                  patches,
+                },
+              });
+
+              break;
             }
           }
         }
@@ -219,6 +315,7 @@ export async function interact({
           chatId,
           userId,
           additionalInstructions: context,
+          ragData,
         });
 
         document = handleSectionGenerated({

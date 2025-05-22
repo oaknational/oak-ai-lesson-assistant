@@ -36,7 +36,7 @@ export async function messageToUserAgent({
 
   const responseFormat = zodTextFormat(
     responseSchema,
-    "router_response_schema",
+    "message_to_user_response_schema",
   );
 
   const missingSections = sectionGroups
