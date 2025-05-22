@@ -26,6 +26,8 @@ import { captureException } from "@sentry/nextjs";
 import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
 
+import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
+
 import type { Config } from "./config";
 import { handleChatException } from "./errorHandling";
 import {
@@ -60,12 +62,15 @@ async function setupChatHandler(req: NextRequest) {
         options?: AilaPublicChatOptions;
       } = json;
 
+      const useAgenticAila = await serverSideFeatureFlag("agentic-aila-may-25");
+
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
         temperature: chatOptions.temperature ?? 0.7,
         numberOfRecordsInRag: chatOptions.numberOfRecordsInRag ?? 5,
         usePersistence: true,
         useModeration: true,
+        useAgenticAila,
       };
 
       const llmService = getFixtureLLMService(req.headers, chatId);
