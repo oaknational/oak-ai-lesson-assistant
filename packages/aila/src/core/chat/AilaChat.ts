@@ -91,7 +91,7 @@ export class AilaChat implements AilaChatService {
       });
     this._patchEnqueuer = new PatchEnqueuer();
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
-    this._relevantLessons = null;
+    this._relevantLessons = null; // null means not fetched yet, [] means fetched but none found
     this._experimentalPatches = [];
 
     this.fullQuizService = new CompositeFullQuizServiceBuilder().build({
