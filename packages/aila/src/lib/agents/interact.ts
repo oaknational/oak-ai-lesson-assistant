@@ -3,7 +3,11 @@ import { aiLogger } from "@oakai/logger";
 import { compare } from "fast-json-patch";
 
 import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
-import { type LooseLessonPlan, type Quiz } from "../../protocol/schema";
+import {
+  type LessonPlanKey,
+  type LooseLessonPlan,
+  type Quiz,
+} from "../../protocol/schema";
 import { agents, sectionAgentMap } from "./agents";
 import { type InteractResult } from "./compatibility/streamHandling";
 import { messageToUserAgent } from "./messageToUser";
@@ -167,30 +171,12 @@ export async function interact({
                 throw new Error("Maths starter quiz returned null");
               }
 
-              const patch: JsonPatchDocumentOptional = {
-                type: "patch",
-                value: {
-                  path: `/${sectionKey}`,
-                  op: actionType,
-                  value: quiz,
-                },
-                status: "complete",
-                // @todo improve 'reasoning here
-                reasoning: `Updated ${sectionKey} based on user request`,
-              };
-              const patches = [patch];
-              document = {
-                ...document,
-                [sectionKey]: quiz,
-              };
-              // Send section update with current state
-              onUpdate?.({
-                type: "section_update",
-                data: {
-                  sectionKey,
-                  actionType,
-                  patches,
-                },
+              document = handleSectionGenerated({
+                sectionKey,
+                actionType,
+                value: quiz,
+                document,
+                onUpdate,
               });
 
               break;
@@ -202,30 +188,12 @@ export async function interact({
                 throw new Error("Maths starter quiz returned null");
               }
 
-              const patch: JsonPatchDocumentOptional = {
-                type: "patch",
-                value: {
-                  path: `/${sectionKey}`,
-                  op: actionType,
-                  value: quiz,
-                },
-                status: "complete",
-                // @todo improve 'reasoning here
-                reasoning: `Updated ${sectionKey} based on user request`,
-              };
-              const patches = [patch];
-              document = {
-                ...document,
-                [sectionKey]: quiz,
-              };
-              // Send section update with current state
-              onUpdate?.({
-                type: "section_update",
-                data: {
-                  sectionKey,
-                  actionType,
-                  patches,
-                },
+              document = handleSectionGenerated({
+                sectionKey,
+                actionType,
+                value: quiz,
+                document,
+                onUpdate,
               });
 
               break;
@@ -248,33 +216,14 @@ export async function interact({
           additionalInstructions: context,
         });
 
-        const patch: JsonPatchDocumentOptional = {
-          type: "patch",
-          value: {
-            path: `/${sectionKey}`,
-            op: actionType,
-            value: response.content,
-          },
-          status: "complete",
-          // @todo improve 'reasoning here
-          reasoning: `Updated ${sectionKey} based on user request`,
-        };
-        const patches = [patch];
-
-        document = {
-          ...document,
-          [sectionKey]: response.content,
-        };
-
-        // Send section update with current state
-        onUpdate?.({
-          type: "section_update",
-          data: {
-            sectionKey,
-            actionType,
-            patches,
-          },
+        document = handleSectionGenerated({
+          sectionKey,
+          actionType,
+          value: response.content,
+          document,
+          onUpdate,
         });
+
         break;
       }
       default:
@@ -323,4 +272,91 @@ export async function interact({
   });
 
   return { document, ailaMessage: messageResult.message };
+}
+
+function handleSectionGenerated({
+  sectionKey,
+  actionType,
+  value,
+  document,
+  onUpdate,
+}: {
+  sectionKey: LessonPlanKey;
+  actionType: "add" | "replace";
+  value: string | number | string[] | object;
+  document: LooseLessonPlan;
+  onUpdate?: InteractCallback;
+}): LooseLessonPlan {
+  // call onUpdate with the action
+  onUpdate?.(
+    createSectionUpdatePayload({
+      sectionKey,
+      actionType,
+      value,
+    }),
+  );
+
+  //  return the updated document
+  return createUpdatedDocument({
+    document,
+    sectionKey,
+    value,
+  });
+}
+
+function createPatches({
+  sectionKey,
+  actionType,
+  value,
+}: {
+  sectionKey: string;
+  actionType: "add" | "replace";
+  value: string | number | string[] | object;
+}): JsonPatchDocumentOptional[] {
+  return [
+    {
+      type: "patch",
+      value: {
+        path: `/${sectionKey}`,
+        op: actionType,
+        value,
+      },
+      status: "complete",
+      reasoning: `Updated ${sectionKey} based on user request`,
+    },
+  ];
+}
+
+function createSectionUpdatePayload({
+  sectionKey,
+  actionType,
+  value,
+}: {
+  sectionKey: string;
+  actionType: "add" | "replace";
+  value: string | number | string[] | object;
+}): InteractUpdate {
+  return {
+    type: "section_update",
+    data: {
+      sectionKey,
+      actionType,
+      patches: createPatches({ sectionKey, actionType, value }),
+    },
+  };
+}
+
+function createUpdatedDocument({
+  document,
+  sectionKey,
+  value,
+}: {
+  document: LooseLessonPlan;
+  sectionKey: LessonPlanKey;
+  value: string | number | string[] | object;
+}): LooseLessonPlan {
+  return {
+    ...document,
+    [sectionKey]: value,
+  };
 }
