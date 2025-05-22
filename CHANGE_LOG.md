@@ -1,3 +1,13 @@
+# [1.38.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.37.0...v1.38.0) (2025-05-22)
+
+
+### Features
+
+* admin user safety violations [AI-1113] ([#662](https://github.com/oaknational/oak-ai-lesson-assistant/issues/662)) ([ba4bee5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ba4bee5ebb07dcf872f06ce58cbf40d8e32d561d))
+* am add exit quiz ([#673](https://github.com/oaknational/oak-ai-lesson-assistant/issues/673)) ([09ff4bc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/09ff4bc95c25a8c6f77d82985114af749555a383))
+* connect additional materials moderation and threat to modals and zustand ([#668](https://github.com/oaknational/oak-ai-lesson-assistant/issues/668)) ([1b3869a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1b3869a682cb9dd1f43d613d5bba27fb23c2b685))
+* quasi agentic first iteration [AI-1109] ([#671](https://github.com/oaknational/oak-ai-lesson-assistant/issues/671)) ([b44a02d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b44a02dc6e80d06163180c68726727df9728d8b5))
+
 # [1.37.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.36.0...v1.37.0) (2025-05-20)
 
 
