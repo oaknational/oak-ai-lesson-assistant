@@ -24,11 +24,15 @@ import {
 import {
   docTypeSelector,
   isLoadingLessonPlanSelector,
+  moderationSelector,
   pageDataSelector,
+  threatDetectionSelector,
 } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
 
 import { MemoizedReactMarkdownWithStyles } from "../../Chat/markdown";
+import { useDialog } from "../../DialogContext";
+import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
 
 export function mapLessonPlanSections(
@@ -42,8 +46,11 @@ const log = aiLogger("additional-materials");
 const StepTwo = () => {
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
-
+  const moderation = useResourcesStore(moderationSelector);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
+  const threatDetected = useResourcesStore(threatDetectionSelector);
+
+  const { setDialogWindow } = useDialog();
 
   // Get resource type from configuration
   const resourceType = docType ? getResourceType(docType) : null;
@@ -55,31 +62,26 @@ const StepTwo = () => {
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 
-  const handleSubmit = (message) => {
-    const generatePromise = generateMaterial({
-      message,
+  const handleSubmit = () => {
+    void generateMaterial({
       mutateAsync: async (input) => {
         try {
-          return fetchMaterial.mutateAsync(input);
-        } catch (error) {
-          throw error instanceof Error ? error : new Error(String(error));
+          return await fetchMaterial.mutateAsync(input);
+        } catch (e) {
+          const error = e instanceof Error ? e : new Error(String(e));
+          Sentry.captureException(error);
+
+          throw error;
         }
       },
     });
-
-    // Navigate to the next step
-    generatePromise
-      .then(() => setStepNumber(2))
-      .catch((error) => {
-        log.error("Failed to generate material", error);
-        Sentry.captureException(error);
-      });
-
-    return generatePromise;
   };
 
   if (isLoadingLessonPlan) {
     return <OakP>Building lesson plan...</OakP>;
+  }
+  if (threatDetected) {
+    setDialogWindow("additional-materials-threat-detected");
   }
 
   return (
@@ -87,6 +89,9 @@ const StepTwo = () => {
       <OakFlex $flexDirection="column">
         <OakFlex $flexDirection="column" $mb="space-between-m">
           <OakP $font={"heading-5"}>Task details</OakP>
+          {moderation?.categories && moderation.categories.length > 0 && (
+            <ModerationMessage />
+          )}
 
           <OakBox $pv="inner-padding-m">
             <OakP>
@@ -135,7 +140,7 @@ const StepTwo = () => {
 
           <OakPrimaryButton
             onClick={() => {
-              void handleSubmit("Create a lesson plan for this lesson");
+              void handleSubmit();
               setStepNumber(2);
               return null;
             }}

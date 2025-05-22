@@ -102,4 +102,27 @@ export const adminRouter = router({
       const safetyViolations = new SafetyViolations(prisma);
       await safetyViolations.removeViolationsByRecordId(recordId);
     }),
+
+  removeSafetyViolationById: adminProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const { id } = input;
+      const { prisma } = ctx;
+      const safetyViolations = new SafetyViolations(prisma);
+      await safetyViolations.removeViolationById(id);
+    }),
+
+  getSafetyViolationsForUser: adminProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }): Promise<SafetyViolation[]> => {
+      const { userId } = input;
+
+      const safetyViolations = await ctx.prisma.safetyViolation.findMany({
+        where: {
+          userId,
+        },
+      });
+
+      return safetyViolations;
+    }),
 });

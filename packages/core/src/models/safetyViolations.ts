@@ -123,6 +123,31 @@ export class SafetyViolations {
     });
   }
 
+  async removeViolationById(id: string): Promise<void> {
+    const safetyViolation = await this.prisma.safetyViolation.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!safetyViolation) {
+      this.logger.info(`No safety violation found for id ${id}`);
+      return;
+    }
+    const { userId } = safetyViolation;
+    await this.prisma.safetyViolation.delete({
+      where: {
+        id,
+      },
+    });
+    await this.conditionallyUnbanUser(userId);
+  }
+  /**
+   * Removes all safety violations associated with a recordId.
+   * If the user is under the threshold after removing the violations,
+   * the user is unbanned.
+   * @param recordId The recordId to remove violations for
+   */
+
   async removeViolationsByRecordId(recordId: string): Promise<void> {
     const safetyViolations = await this.prisma.safetyViolation.findMany({
       where: {
@@ -144,16 +169,16 @@ export class SafetyViolations {
        */
       safetyViolations.map(async (violation) => {
         const { userId } = violation;
-        const isUnderThreshold = !(await this.isOverThreshold(userId));
-
-        if (isUnderThreshold) {
-          await this.unbanUser(userId);
-        }
+        await this.conditionallyUnbanUser(userId);
       }),
     );
   }
 
-  async unbanUser(userId: string): Promise<void> {
+  async conditionallyUnbanUser(userId: string): Promise<void> {
+    const isUnderThreshold = !(await this.isOverThreshold(userId));
+    if (!isUnderThreshold) {
+      return;
+    }
     const user = await clerkClient.users.getUser(userId);
 
     if (user.banned) {

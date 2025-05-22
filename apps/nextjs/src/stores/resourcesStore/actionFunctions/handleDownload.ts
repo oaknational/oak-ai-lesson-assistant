@@ -1,13 +1,4 @@
-import {
-  type AdditionalMaterialSchemas,
-  additionalMaterialTypeEnum,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import type { GenerateAdditionalMaterialInput } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { aiLogger } from "@oakai/logger";
-
-import * as Sentry from "@sentry/nextjs";
-import type { UseMutateAsyncFunction } from "@tanstack/react-query";
-import { z } from "zod";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
 
