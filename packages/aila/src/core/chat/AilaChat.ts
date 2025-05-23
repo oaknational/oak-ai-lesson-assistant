@@ -98,7 +98,7 @@ export class AilaChat implements AilaChatService {
       quizSelector: "simple",
       quizReranker: "return-first", // schema-reranker
       // quizGenerators: ["rag", "basedOnRag", "ml"],
-      quizGenerators: ["rag"],
+      quizGenerators: ["ml"],
     });
   }
 
