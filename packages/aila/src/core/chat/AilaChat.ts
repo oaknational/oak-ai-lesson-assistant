@@ -45,7 +45,7 @@ const log = aiLogger("aila:chat");
 export class AilaChat implements AilaChatService {
   private readonly _id: string;
   private readonly _messages: Message[];
-  private _relevantLessons: AilaRagRelevantLesson[];
+  private _relevantLessons: AilaRagRelevantLesson[] | null;
   private _isShared: boolean | undefined;
   private readonly _userId: string | undefined;
   private readonly _aila: AilaServices;
@@ -90,7 +90,7 @@ export class AilaChat implements AilaChatService {
       });
     this._patchEnqueuer = new PatchEnqueuer();
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
-    this._relevantLessons = [];
+    this._relevantLessons = null; // null means not fetched yet, [] means fetched but none found
     this._experimentalPatches = [];
 
     this.fullQuizService = new CompositeFullQuizServiceBuilder().build({
@@ -146,7 +146,7 @@ export class AilaChat implements AilaChatService {
     return this._generation;
   }
 
-  public set relevantLessons(lessons: AilaRagRelevantLesson[]) {
+  public set relevantLessons(lessons: AilaRagRelevantLesson[] | null) {
     this._relevantLessons = lessons;
   }
 
@@ -156,6 +156,10 @@ export class AilaChat implements AilaChatService {
 
   public addMessage(message: Message) {
     this._messages.push(message);
+  }
+
+  public initialiseChunks() {
+    this._chunks = [];
   }
 
   public appendChunk(value?: string) {
@@ -188,8 +192,10 @@ export class AilaChat implements AilaChatService {
     } else if (error instanceof Error) {
       await this.enqueueError({ message: error.message });
     }
-    await this.persistGeneration("FAILED");
-    log.info("Generation marked as failed");
+    if (!this._aila.options.useAgenticAila) {
+      await this.persistGeneration("FAILED");
+      log.info("Generation marked as failed");
+    }
   }
 
   private async enqueueError({ message }: { message: string }) {
@@ -299,23 +305,13 @@ export class AilaChat implements AilaChatService {
       status: "PENDING",
     });
     await this._generation.setupPromptId();
+
     this._chunks = [];
   }
 
   private accumulatedText() {
     const accumulated = this._chunks?.join("");
     return accumulated ?? "";
-  }
-
-  private applyExperimentalPatches() {
-    const experimentalPatches = this._experimentalPatches;
-
-    log.info(
-      "Applying experimental extractAndApplyLlmPatches",
-      experimentalPatches,
-    );
-
-    this._aila.document.applyValidPatches(experimentalPatches);
   }
 
   private async reportUsageMetrics() {
@@ -358,7 +354,7 @@ export class AilaChat implements AilaChatService {
     const persistedChat = await persistenceFeature.loadChat();
 
     if (persistedChat) {
-      this._relevantLessons = persistedChat.relevantLessons ?? [];
+      this._relevantLessons = persistedChat.relevantLessons ?? null;
       this._isShared = persistedChat.isShared;
       this._iteration = persistedChat.iteration ?? 1;
       this._createdAt = new Date(persistedChat.createdAt);
@@ -372,7 +368,6 @@ export class AilaChat implements AilaChatService {
       return;
     }
     this._aila.document.extractAndApplyLlmPatches(llmPatches);
-    this.applyExperimentalPatches();
   }
 
   private appendAssistantMessage() {
@@ -432,7 +427,9 @@ export class AilaChat implements AilaChatService {
     await this.saveSnapshot({ messageId: assistantMessage.id });
     await this.moderate();
     await this.persistChat();
-    await this.persistGeneration("SUCCESS");
+    if (!this.aila.options.useAgenticAila) {
+      await this.persistGeneration("SUCCESS");
+    }
     await this.enqueue({
       type: "comment",
       value: "CHAT_COMPLETE",
