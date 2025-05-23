@@ -55,12 +55,12 @@ test.describe("Modify a lesson plan", () => {
       page.locator(
         "text=I can describe different software testing techniques.",
       ),
-    ).toBeVisible({ timeout: generationTimeout });
+    ).toBeVisible();
     await expect(
       page.locator(
         "text=I've simplified the learning outcome. If this is suitable, please let me know or suggest further changes. Otherwise, tap Continue to proceed.",
       ),
-    ).toBeVisible({ timeout: generationTimeout });
+    ).toBeVisible();
   }
 
   async function selectOtherModification(page: Page) {
@@ -92,11 +92,11 @@ test.describe("Modify a lesson plan", () => {
       page.getByText(
         "A homework task has been added to the additional materials section. If you have any more changes or are ready to finalise the lesson, please let me know!",
       ),
-    ).toBeVisible({ timeout: generationTimeout });
+    ).toBeVisible();
     await expect(
       page.getByText(
         "Research Activity: Investigate a real-world software application and identify which testing techniques you think were used during its development. Write a short paragraph explaining your reasoning.",
       ),
-    ).toBeVisible({ timeout: generationTimeout });
+    ).toBeVisible();
   }
 });

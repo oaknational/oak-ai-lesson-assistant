@@ -22,18 +22,23 @@ export function extractPromptTextFromMessages(
       return m;
     }
 
-    // Check if message has message.content.prompt.value
-    const parseResult = z
-      .object({ prompt: z.object({ value: z.string() }) })
-      .safeParse(JSON.parse(m.content));
+    try {
+      const parsedAssistantMessage = JSON.parse(m.content);
 
-    if (parseResult.success) {
-      return {
-        ...m,
-        content: parseResult.data.prompt.value,
-      };
+      // Check if message has message.content.prompt.value
+      const parseResult = z
+        .object({ prompt: z.object({ value: z.string() }) })
+        .safeParse(parsedAssistantMessage);
+
+      if (parseResult.success) {
+        return {
+          ...m,
+          content: parseResult.data.prompt.value,
+        };
+      }
+    } finally {
+      // If parsing fails, we just return the original message
     }
-
     return m;
   });
 }
