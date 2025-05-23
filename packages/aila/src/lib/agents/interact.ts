@@ -107,7 +107,6 @@ export async function interact({
     data: { step: "routing", status: "started" },
   });
 
-  let ragData: CompletedLessonPlan[] = [];
   if (relevantLessons === null) {
     /**
      * This means we haven't even tried to fetch relevant lessons yet
@@ -122,10 +121,12 @@ export async function interact({
         plan: null,
       },
     });
-    ragData =
+    const ragData =
       (await customAgents.fetchRagData({
         document,
       })) ?? [];
+
+    // @todo handle case when no relevant lessons are found
 
     const ailaMessage = ragData.length
       ? `If you would like to base your lesson on one of the following:\n${ragData.map((rl, i) => `${i + 1}. ${rl.title}`).join(`\n`)}\n\nPlease reply with the number of the lesson you would like to use as a base.\n\nOtherwise click 'continue'.`
@@ -140,6 +141,10 @@ export async function interact({
 
     return { document, ailaMessage };
   }
+
+  const ragData = await customAgents.fetchRagData({
+    document,
+  });
 
   const routerResponse = await agentRouter({
     chatId,

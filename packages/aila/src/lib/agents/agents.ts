@@ -219,12 +219,13 @@ export const agents: Record<AgentName, AgentDefinition> = {
 };
 
 export const sectionAgentMap: Record<
-  Exclude<LessonPlanKey, "topic">,
+  LessonPlanKey,
   (ctx: { lessonPlan: LooseLessonPlan }) => AgentName
 > = {
   title: () => "title",
   keyStage: () => "keyStage",
   subject: () => "subject",
+  topic: () => "topic",
   basedOn: () => "basedOn",
   learningOutcome: () => "learningOutcome",
   learningCycles: () => "learningCycles",

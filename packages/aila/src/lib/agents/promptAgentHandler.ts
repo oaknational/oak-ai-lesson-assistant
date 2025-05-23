@@ -1,4 +1,5 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
+import { aiLogger } from "@oakai/logger";
 
 import { zodTextFormat } from "openai/helpers/zod";
 import type { z } from "zod";
@@ -9,6 +10,8 @@ import type {
   LooseLessonPlan,
 } from "../../protocol/schema";
 import type { PromptAgentDefinition, SchemaWithValue } from "./agents";
+
+const log = aiLogger("aila:agents:prompts");
 
 export async function promptAgentHandler<Schema extends SchemaWithValue>({
   agent,
@@ -39,17 +42,24 @@ export async function promptAgentHandler<Schema extends SchemaWithValue>({
     `${agent.name}_response_schema`,
   );
 
-  const result = await openAIClient.responses.parse({
-    instructions: agent.prompt,
-    input: `### Examples from similar lessons
+  const instructions = agent.prompt;
+  const input = `### Examples from similar lessons
 
-${ragData.map((lesson) => `#### ${targetKey} ${lesson.title}\n\n${agent.extractRagData(lesson)}`).join("\n\n")}
+${ragData.map((lesson, i) => `#### Example ${i + 1}: ${targetKey} from lesson '${lesson.title}'\n\n${agent.extractRagData(lesson)}`).join("\n\n")}
  
     ### Document
 ${JSON.stringify(document, null, 2)}
 
 ### Additional Instructions
-${additionalInstructions}`,
+${additionalInstructions}`;
+
+  log.info(`Agent: ${agent.name}`);
+  log.info("Instructions:", instructions);
+  log.info("Input:", input);
+
+  const result = await openAIClient.responses.parse({
+    instructions,
+    input,
     stream: false,
     model: "gpt-4.1-2025-04-14",
     text: {
