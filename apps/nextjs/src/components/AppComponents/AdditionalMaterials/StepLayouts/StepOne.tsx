@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 
+import { getResourceTypes } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+
 import {
   OakFlex,
   OakIcon,
@@ -24,6 +26,7 @@ import {
 } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
 
+import { useDialog } from "../../DialogContext";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
 
@@ -44,7 +47,7 @@ const StepOne = () => {
     setYear,
     setActiveDropdown,
   } = useResourcesActions();
-
+  const { setDialogWindow } = useDialog();
   const subject = useResourcesStore(subjectSelector);
   const title = useResourcesStore(titleSelector);
   const year = useResourcesStore(yearSelector);
@@ -79,6 +82,10 @@ const StepOne = () => {
       },
     });
 
+  const resourceTypes = getResourceTypes().filter(
+    (resourceType) => resourceType.isAvailable,
+  );
+
   return (
     <>
       <OakFlex $flexDirection={"column"} $gap={"space-between-m"}>
@@ -112,47 +119,28 @@ const StepOne = () => {
               }}
               $flexDirection="column"
             >
-              <OakLabel>
-                <OakRadioButton
-                  id="additional-glossary"
-                  value="additional-glossary"
-                  radioInnerSize="all-spacing-6"
-                  radioOuterSize="all-spacing-7"
-                  label={
-                    <OakFlex
-                      $flexDirection="column"
-                      $gap="all-spacing-2"
-                      $ml="space-between-xs"
-                    >
-                      <OakP $font="heading-6">Glossary</OakP>
-                      <OakP>
-                        Additional lesson vocabulary with pupil friendly
-                        definitions
-                      </OakP>
-                    </OakFlex>
-                  }
-                />
-              </OakLabel>
-              <OakLabel>
-                <OakRadioButton
-                  id="additional-comprehension"
-                  value="additional-comprehension"
-                  radioInnerSize="all-spacing-6"
-                  radioOuterSize="all-spacing-7"
-                  label={
-                    <OakFlex
-                      $flexDirection="column"
-                      $gap="all-spacing-2"
-                      $ml="space-between-xs"
-                    >
-                      <OakP $font="heading-6">Comprehension tasks</OakP>
-                      <OakP>
-                        Comprehension tasks which can be adapted for pupils
-                      </OakP>
-                    </OakFlex>
-                  }
-                />
-              </OakLabel>
+              {resourceTypes.map((resourceType) => (
+                <OakLabel key={resourceType.id}>
+                  <OakRadioButton
+                    id={resourceType.id}
+                    value={resourceType.id}
+                    radioInnerSize="all-spacing-6"
+                    radioOuterSize="all-spacing-7"
+                    label={
+                      <OakFlex
+                        $flexDirection="column"
+                        $gap="all-spacing-2"
+                        $ml="space-between-xs"
+                      >
+                        <OakP $font="heading-6">
+                          {resourceType.displayName}
+                        </OakP>
+                        <OakP>{resourceType.description}</OakP>
+                      </OakFlex>
+                    }
+                  />
+                </OakLabel>
+              ))}
             </OakRadioGroup>
           </OakFlex>
         </OakFlex>

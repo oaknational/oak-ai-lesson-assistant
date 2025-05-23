@@ -20,6 +20,8 @@ export type LoggerKey =
   | "additional-materials"
   | "additional-materials-threat-detection"
   | "aila"
+  | "aila:agents"
+  | "aila:agents:stream"
   | "aila:analytics"
   | "aila:categorisation"
   | "aila:chat"
