@@ -1,4 +1,4 @@
-import type { Action, ContextByMaterialType } from "../configSchema";
+import type { ContextByMaterialType } from "../configSchema";
 import { getLessonDetails } from "../promptHelpers";
 import {
   type AllowedReadingAgeRefinement,

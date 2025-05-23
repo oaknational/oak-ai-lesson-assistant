@@ -61,3 +61,9 @@ const rateLimiter = rateLimits.generations.standard;
 export const userBasedRateLimitProcedure = t.procedure
   .use(isAuthedMiddleware)
   .use(createRateLimiterMiddleware(rateLimiter));
+
+const additionalMaterialRateLimiter = rateLimits.additionalMaterial.standard;
+
+export const additionalMaterialUserBasedRateLimitProcedure = t.procedure
+  .use(isAuthedMiddleware)
+  .use(createRateLimiterMiddleware(additionalMaterialRateLimiter));

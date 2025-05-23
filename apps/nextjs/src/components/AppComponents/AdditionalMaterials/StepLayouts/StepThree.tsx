@@ -2,10 +2,7 @@ import { useState } from "react";
 
 import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
 import { isExitQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/exitQuiz/schema";
-import {
-  isGlossary,
-  readingAgeRefinement,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
+import { isGlossary } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
 import {
   type RefinementOption,
   getResourceType,
@@ -32,6 +29,7 @@ import {
   generationSelector,
   isResourcesDownloadingSelector,
   isResourcesLoadingSelector,
+  moderationSelector,
 } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
 
@@ -39,8 +37,11 @@ import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
 import { ExitQuiz } from "../../AdditionalMaterials/ExitQuiz";
 import { Glossary } from "../../AdditionalMaterials/Glossary";
 import { StarterQuiz } from "../../AdditionalMaterials/StarterQuiz";
+import { useDialog } from "../../DialogContext";
+import { ModerationMessage } from "../AdditionalMaterialMessage";
 import InlineButton from "../InlineButton";
 import ResourcesFooter from "../ResourcesFooter";
+import { handleDialogSelection } from "./helpers";
 
 const log = aiLogger("additional-materials");
 
@@ -50,9 +51,12 @@ const StepThree = () => {
   const docType = useResourcesStore(docTypeSelector);
   const isResourcesLoading = useResourcesStore(isResourcesLoadingSelector);
   const { setStepNumber, refineMaterial } = useResourcesActions();
+  const moderation = useResourcesStore(moderationSelector);
+  const error = useResourcesStore((state) => state.error);
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
   const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
   const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
+  const { setDialogWindow } = useDialog();
 
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
@@ -72,18 +76,6 @@ const StepThree = () => {
     } finally {
       setIsResourceDownloading(false);
     }
-  };
-
-  const getRefinementOptions = () => {
-    if (docType === "additional-glossary") {
-      return readingAgeRefinement;
-    }
-
-    if (docType === "additional-comprehension") {
-      return [];
-    }
-
-    return [];
   };
 
   const renderGeneratedMaterial = () => {
@@ -113,9 +105,16 @@ const StepThree = () => {
     return null;
   };
 
+  // const refinementOptions = getRefinementOptions();
+  const hasModeration =
+    moderation?.categories && moderation.categories.length > 0;
+
+  handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
+
   return (
     <>
       {isResourcesLoading || (!generation && <OakP>Loading...</OakP>)}
+      {hasModeration && <ModerationMessage />}
       <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       <ResourcesFooter>
         {isFooterAdaptOpen ? (

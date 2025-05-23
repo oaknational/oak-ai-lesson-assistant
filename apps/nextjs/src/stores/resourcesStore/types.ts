@@ -1,6 +1,11 @@
-import type { AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import type {
+  AdditionalMaterialSchemas,
+  AdditionalMaterialType,
+} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
+import { z } from "zod";
 import type { StoreApi } from "zustand";
 
 import type { GenerateMaterialParams } from "./actionFunctions/handleGenerateMaterial";
@@ -8,7 +13,7 @@ import type { RefineMaterialParams } from "./actionFunctions/handleRefineMateria
 import type { SubmitLessonPlanParams } from "./actionFunctions/handleSubmitLessonPlan";
 
 export type PageData = {
-  lessonPlan: AilaPersistedChat["lessonPlan"];
+  lessonPlan: AilaPersistedChat["lessonPlan"] & { lessonId: string };
   transcript?: string | null;
 };
 
@@ -20,16 +25,28 @@ export type StepOneFormState = {
   activeDropdown: string | null;
 };
 
+const errorType = z.enum(["rate_limit", "banned", "unknown"]);
+export type ErrorType = z.infer<typeof errorType>;
+
+export const errorResponse = z.object({
+  type: errorType,
+  message: z.string(),
+});
+type ErrorResponse = z.infer<typeof errorResponse>;
+
 export type ResourcesState = {
-  id: string;
+  id: string | null;
   stepNumber: number;
   isLoadingLessonPlan: boolean;
   isResourcesLoading: boolean;
   isDownloading: boolean;
   pageData: PageData;
   generation: AdditionalMaterialSchemas | null;
-  docType: string | null;
+  docType: AdditionalMaterialType | null;
   formState: StepOneFormState;
+  moderation?: ModerationResult;
+  threatDetection?: boolean;
+  error: ErrorResponse | null;
 
   actions: {
     // setters
@@ -39,6 +56,7 @@ export type ResourcesState = {
     setDocType: (docType: string | null) => void;
     setIsLoadingLessonPlan: (isLoading: boolean) => void;
     setIsResourcesLoading: (isLoading: boolean) => void;
+    setThreatDetection: (threatDetection: boolean) => void;
 
     // Form state setters
     setSubject: (subject: string | null) => void;
@@ -51,16 +69,13 @@ export type ResourcesState = {
     resetFormState: () => void;
 
     // business logic actions
-    submitLessonPlan: (
-      params: SubmitLessonPlanParams,
-    ) => Promise<AilaPersistedChat["lessonPlan"]>;
-    generateMaterial: (
-      params: GenerateMaterialParams,
-    ) => Promise<AdditionalMaterialSchemas>;
-    refineMaterial: (
-      params: RefineMaterialParams,
-    ) => Promise<AdditionalMaterialSchemas>;
+    submitLessonPlan: (params: SubmitLessonPlanParams) => Promise<void>;
+    generateMaterial: (params: GenerateMaterialParams) => Promise<void>;
+    refineMaterial: (params: RefineMaterialParams) => Promise<void>;
     downloadMaterial: () => Promise<void>;
+
+    // Reset store to default state
+    resetToDefault: () => void;
   };
 };
 

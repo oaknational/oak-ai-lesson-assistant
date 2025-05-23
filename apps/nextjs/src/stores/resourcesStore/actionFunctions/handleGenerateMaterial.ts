@@ -1,22 +1,19 @@
-import {
-  type AdditionalMaterialSchemas,
-  additionalMaterialTypeEnum,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { GenerateAdditionalMaterialInput } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import type { GenerateAdditionalMaterialResponse } from "@oakai/api/src/router/additionalMaterials/generateAdditionalMaterial";
 import { aiLogger } from "@oakai/logger";
 
-import * as Sentry from "@sentry/nextjs";
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
-import { z } from "zod";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
+import { handleStoreError } from "../utils/errorHandling";
 
 const log = aiLogger("additional-materials");
 
 export type GenerateMaterialParams = {
   message?: string;
   mutateAsync: UseMutateAsyncFunction<
-    AdditionalMaterialSchemas,
+    GenerateAdditionalMaterialResponse,
     Error,
     GenerateAdditionalMaterialInput
   >;
@@ -63,16 +60,24 @@ export const handleGenerateMaterial =
           previousOutput: null,
           options: null,
         },
+        lessonId: get().pageData.lessonPlan.lessonId,
       });
       get().actions.setIsResourcesLoading(false);
-      // Update the store with the result
-      get().actions.setGeneration(result);
-      log.info("Material generated successfully");
 
-      return result;
+      set({
+        generation: result.resource,
+        moderation: result.moderation,
+        id: result.resourceId,
+      });
+
+      log.info("Material generated successfully");
+      get().actions.setStepNumber(2);
     } catch (error) {
-      log.error("Error generating material", error);
-      Sentry.captureException(error);
-      throw error;
+      get().actions.setIsResourcesLoading(false);
+      handleStoreError(set, error, {
+        context: "handleGenerateMaterial",
+        documentType: docType,
+      });
+      log.error("Error generating material");
     }
   };

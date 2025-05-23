@@ -1,14 +1,13 @@
 import {
-  type AdditionalMaterialSchemas,
   additionalMaterialTypeEnum,
   generateAdditionalMaterialInputSchema,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { GenerateAdditionalMaterialInput } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import type { GenerateAdditionalMaterialResponse } from "@oakai/api/src/router/additionalMaterials/generateAdditionalMaterial";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
-import { z } from "zod";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
 
@@ -22,7 +21,7 @@ type RefinementOption = {
 export type RefineMaterialParams = {
   refinement: RefinementOption[];
   mutateAsync: UseMutateAsyncFunction<
-    AdditionalMaterialSchemas,
+    GenerateAdditionalMaterialResponse,
     Error,
     GenerateAdditionalMaterialInput
   >;
@@ -31,9 +30,6 @@ export type RefineMaterialParams = {
 export const handleRefineMaterial =
   (set: ResourcesSetter, get: ResourcesGetter) =>
   async ({ refinement, mutateAsync }: RefineMaterialParams) => {
-    // Clear any existing generation
-    get().actions.setGeneration(null);
-
     const docType = get().docType;
     if (!docType) {
       log.error("No document type selected");
@@ -54,6 +50,8 @@ export const handleRefineMaterial =
           options: null,
           refinement: [{ type: refinement }],
         },
+        resourceId: get().id,
+        lessonId: get().pageData.lessonPlan.lessonId,
       };
 
       console.log("************payload", payload);
@@ -65,10 +63,12 @@ export const handleRefineMaterial =
       const result = await mutateAsync(parsedPayload);
 
       // Update the store with the result
-      get().actions.setGeneration(result);
+      set({
+        generation: result.resource,
+        moderation: result.moderation,
+        id: result.resourceId,
+      });
       log.info("Material refined successfully");
-
-      return result;
     } catch (error) {
       log.error("Error refining material", error);
       Sentry.captureException(error);

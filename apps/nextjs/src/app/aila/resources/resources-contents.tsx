@@ -11,7 +11,10 @@ import { OakP, OakSpan } from "@oaknational/oak-components";
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
 import StepThree from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepThree";
 import StepTwo from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepTwo";
-import ResourcesLayout from "@/components/ResroucesLayout";
+import { DialogProvider } from "@/components/AppComponents/DialogContext";
+import DialogContents from "@/components/DialogControl/DialogContents";
+import { DialogRoot } from "@/components/DialogControl/DialogRoot";
+import ResourcesLayout from "@/components/ResourcesLayout";
 import {
   ResourcesStoresProvider,
   useResourcesActions,
@@ -19,6 +22,7 @@ import {
 } from "@/stores/ResourcesStoreProvider";
 import {
   docTypeSelector,
+  moderationSelector,
   pageDataSelector,
   stepNumberSelector,
 } from "@/stores/resourcesStore/selectors";
@@ -91,7 +95,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
       title={title}
       subTitle={subTitle}
       step={stepNumber + 1}
-      docTypeName={docTypeName || ""}
+      docTypeName={docTypeName}
     >
       {stepComponents[stepNumber]}
     </ResourcesLayout>
@@ -101,7 +105,13 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
 const ResourcesContents: FC<AdditionalMaterialsUserProps> = (props) => {
   return (
     <ResourcesStoresProvider>
-      <ResourcesContentsInner {...props} />
+      <DialogProvider>
+        <DialogRoot>
+          <DialogContents chatId={undefined} lesson={{}} />
+
+          <ResourcesContentsInner {...props} />
+        </DialogRoot>
+      </DialogProvider>
     </ResourcesStoresProvider>
   );
 };
