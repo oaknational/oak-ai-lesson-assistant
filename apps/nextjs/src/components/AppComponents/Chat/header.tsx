@@ -18,6 +18,7 @@ import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
 import { useDialog } from "../DialogContext";
 import { BetaTagHeader } from "./beta-tag";
 import { ChatHistory } from "./chat-history";
+import { DemoBanner } from "./demo-banner";
 import { OpenSideBarButton } from "./open-side-bar-button";
 import { UserOrLogin } from "./user-or-login";
 
@@ -37,39 +38,12 @@ export function Header() {
       $width={"100%"}
     >
       {clerkMetadata.isSet && isDemoUser && (
-        <OakFlex
-          $alignItems={"center"}
-          $bb={"border-solid-m"}
-          $background={"lemon"}
-          $pv={["inner-padding-ssx", "inner-padding-xs"]}
-          $ph={"inner-padding-xl"}
-          data-testid="demo-banner"
-        >
-          <OakSpan $font={["body-3", "body-2", "body-1"]}>
-            <OakSpan $font={["body-3-bold", "body-2-bold", "body-1-bold"]}>
-              Create {demo.appSessionsPerMonth} lessons per month •
-            </OakSpan>{" "}
-            If you are a teacher in the UK,{" "}
-            <OakLink
-              iconName="chevron-right"
-              isTrailingIcon
-              color="black"
-              href={demo.contactHref}
-            >
-              contact us for full access
-            </OakLink>
-          </OakSpan>
-
-          <OakFlex $flexGrow={1} />
-          {demo.appSessionsRemaining !== undefined && (
-            <OakBox $display={["none", "none", "block"]}>
-              <OakSpan $font={"body-1-bold"}>
-                {demo.appSessionsRemaining} of {demo.appSessionsPerMonth}{" "}
-                lessons remaining
-              </OakSpan>
-            </OakBox>
-          )}
-        </OakFlex>
+        <DemoBanner
+          resourceType="lessons"
+          monthlyLimit={demo.appSessionsPerMonth}
+          remaining={demo.appSessionsRemaining}
+          contactHref={demo.contactHref}
+        />
       )}
 
       <OakFlex

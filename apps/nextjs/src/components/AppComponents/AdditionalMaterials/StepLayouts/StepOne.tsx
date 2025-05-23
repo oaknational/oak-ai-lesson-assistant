@@ -29,6 +29,7 @@ import { trpc } from "@/utils/trpc";
 import { useDialog } from "../../DialogContext";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
+import { handleDialogSelection } from "./helpers";
 
 type SubmitLessonPlanParams = {
   title: string;
@@ -47,12 +48,15 @@ const StepOne = () => {
     setYear,
     setActiveDropdown,
   } = useResourcesActions();
-  const { setDialogWindow } = useDialog();
+
   const subject = useResourcesStore(subjectSelector);
   const title = useResourcesStore(titleSelector);
   const year = useResourcesStore(yearSelector);
   const activeDropdown = useResourcesStore(activeDropdownSelector);
   const docType = useResourcesStore(docTypeSelector);
+  const error = useResourcesStore((state) => state.error);
+
+  const { setDialogWindow } = useDialog();
 
   useEffect(() => {
     // Reset the form when the component is mounted
@@ -85,6 +89,8 @@ const StepOne = () => {
   const resourceTypes = getResourceTypes().filter(
     (resourceType) => resourceType.isAvailable,
   );
+
+  handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
 
   return (
     <>

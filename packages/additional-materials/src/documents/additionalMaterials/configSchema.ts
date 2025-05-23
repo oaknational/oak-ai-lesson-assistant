@@ -36,7 +36,6 @@ const additionalMaterialDocType = [
   "additional-glossary",
   "additional-starter-quiz",
   "additional-exit-quiz",
-  // "partial-lesson-plan",
 ] as const;
 
 export const actionEnum = z.enum(["generate", "refine", "translate"]);

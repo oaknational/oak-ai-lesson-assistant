@@ -1,6 +1,9 @@
-import { OakFlex, OakP } from "@oaknational/oak-components";
+import { OakFlex, OakP, OakPrimaryButton } from "@oaknational/oak-components";
 
-import { useResourcesStore } from "@/stores/ResourcesStoreProvider";
+import {
+  useResourcesActions,
+  useResourcesStore,
+} from "@/stores/ResourcesStoreProvider";
 import { moderationSelector } from "@/stores/resourcesStore/selectors";
 
 import ModalFooterButtons from "./ModalFooterButtons";
@@ -13,6 +16,7 @@ const AdditionalMaterialsModeration = ({
   closeDialog,
 }: Readonly<AdditionalMaterialsModerationProps>) => {
   const moderation = useResourcesStore(moderationSelector);
+  const { resetToDefault } = useResourcesActions();
   return (
     <OakFlex
       data-testid="chat-share-dialog"
@@ -26,6 +30,14 @@ const AdditionalMaterialsModeration = ({
         before using. Learn more about moderation and content guidelines.
       </OakP>
       {moderation?.categories.map((category) => <OakP>{category}</OakP>)}
+      <OakPrimaryButton
+        onClick={() => {
+          resetToDefault();
+          closeDialog();
+        }}
+      >
+        Continue
+      </OakPrimaryButton>
 
       <ModalFooterButtons
         closeDialog={closeDialog}

@@ -6,7 +6,6 @@ import {
   camelCaseToSentenceCase,
   kebabCaseToSentenceCase,
 } from "@oakai/core/src/utils/camelCaseConversion";
-import { aiLogger } from "@oakai/logger";
 
 import {
   OakBox,
@@ -34,6 +33,7 @@ import { MemoizedReactMarkdownWithStyles } from "../../Chat/markdown";
 import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
+import { handleDialogSelection } from "./helpers";
 
 export function mapLessonPlanSections(
   lessonPlan: AilaPersistedChat["lessonPlan"],
@@ -41,11 +41,10 @@ export function mapLessonPlanSections(
   return lessonFieldKeys.map((key) => ({ key, data: lessonPlan[key] ?? null }));
 }
 
-const log = aiLogger("additional-materials");
-
 const StepTwo = () => {
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
+  const error = useResourcesStore((state) => state.error);
   const moderation = useResourcesStore(moderationSelector);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
@@ -84,14 +83,16 @@ const StepTwo = () => {
     setDialogWindow("additional-materials-threat-detected");
   }
 
+  handleDialogSelection({ threatDetected, error, setDialogWindow });
+  const hasModeration =
+    moderation?.categories && moderation.categories.length > 0;
+
   return (
     <>
       <OakFlex $flexDirection="column">
         <OakFlex $flexDirection="column" $mb="space-between-m">
           <OakP $font={"heading-5"}>Task details</OakP>
-          {moderation?.categories && moderation.categories.length > 0 && (
-            <ModerationMessage />
-          )}
+          {hasModeration && <ModerationMessage />}
 
           <OakBox $pv="inner-padding-m">
             <OakP>

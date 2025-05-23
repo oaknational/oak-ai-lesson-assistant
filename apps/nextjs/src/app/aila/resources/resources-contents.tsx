@@ -14,7 +14,7 @@ import StepTwo from "@/components/AppComponents/AdditionalMaterials/StepLayouts/
 import { DialogProvider } from "@/components/AppComponents/DialogContext";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
-import ResourcesLayout from "@/components/ResroucesLayout";
+import ResourcesLayout from "@/components/ResourcesLayout";
 import {
   ResourcesStoresProvider,
   useResourcesActions,
@@ -22,6 +22,7 @@ import {
 } from "@/stores/ResourcesStoreProvider";
 import {
   docTypeSelector,
+  moderationSelector,
   pageDataSelector,
   stepNumberSelector,
 } from "@/stores/resourcesStore/selectors";
@@ -94,7 +95,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
       title={title}
       subTitle={subTitle}
       step={stepNumber + 1}
-      docTypeName={docTypeName || ""}
+      docTypeName={docTypeName}
     >
       {stepComponents[stepNumber]}
     </ResourcesLayout>
@@ -106,7 +107,8 @@ const ResourcesContents: FC<AdditionalMaterialsUserProps> = (props) => {
     <ResourcesStoresProvider>
       <DialogProvider>
         <DialogRoot>
-          <DialogContents chatId={undefined} lesson={{}} submit={() => {}} />
+          <DialogContents chatId={undefined} lesson={{}} />
+
           <ResourcesContentsInner {...props} />
         </DialogRoot>
       </DialogProvider>
