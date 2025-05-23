@@ -2,6 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import { z } from "zod";
 
+import { extractPromptTextFromMessages } from "../../../../utils/extractPromptTextFromMessages";
 import {
   AilaThreatDetector,
   type ThreatCategory,
@@ -191,7 +192,9 @@ export class LakeraThreatDetector extends AilaThreatDetector {
       throw new Error("Input must be an array of Messages");
     }
 
-    const data = await this.callLakeraAPI(content);
+    const data = await this.callLakeraAPI(
+      extractPromptTextFromMessages(content),
+    );
 
     if (!data.flagged) {
       return {
