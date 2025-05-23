@@ -24,33 +24,87 @@ import {
   pageDataSelector,
   stepNumberSelector,
 } from "@/stores/resourcesStore/selectors";
+import { trpc } from "@/utils/trpc";
 
-interface AdditionalMaterialsUserProps {
-  lessonPlan: LooseLessonPlan;
+export type AdditionalMaterialsPageProps = {
+  lesson?: LooseLessonPlan;
+  transcript?: string;
   initialStep?: number;
-  docType?: string;
-}
+  docTypeFromQueryPrams?: string;
+};
 
 const log = aiLogger("additional-materials");
 
-const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = ({
+const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = ({
   initialStep,
-  lessonPlan,
+  lesson,
+  transcript,
+  docTypeFromQueryPrams,
 }) => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
-
-  log.info("lessonPlan", lessonPlan);
+  const fetchMaterial =
+    trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
+  log.info("lessonPlan", lesson);
 
   // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName || null;
-  const { resetFormState, setStepNumber } = useResourcesActions();
+  const {
+    resetFormState,
+    setStepNumber,
+    setPageData,
+    setDocType,
+    generateMaterial,
+  } = useResourcesActions();
 
-  useEffect(() => {
-    resetFormState();
-  }, [resetFormState]);
+  // useEffect(() => {
+  //   resetFormState();
+
+  //   const handleSubmit = (message) => {
+  //     const generatePromise = generateMaterial({
+  //       message,
+  //       mutateAsync: async (input) => {
+  //         try {
+  //           return fetchMaterial.mutateAsync(input);
+  //         } catch (error) {
+  //           throw error instanceof Error ? error : new Error(String(error));
+  //         }
+  //       },
+  //     });
+
+  //     // Navigate to the next step
+  //     generatePromise
+  //       .then(() => setStepNumber(2))
+  //       .catch((error) => {
+  //         log.error("Failed to generate material", error);
+  //         // Sentry.captureException(error);
+  //       });
+
+  //     return generatePromise;
+  //   };
+  //   if (lesson && transcript && docType) {
+  //     setPageData({
+  //       lessonPlan: lesson,
+  //       transcript: transcript,
+  //     });
+  //     setDocType(docType);
+
+  //     void handleSubmit("hi");
+  //   }
+  // }, [
+  //   docType,
+  //   fetchMaterial,
+  //   generateMaterial,
+  //   lesson,
+  //   pageData,
+  //   resetFormState,
+  //   setDocType,
+  //   setPageData,
+  //   setStepNumber,
+  //   transcript,
+  // ]);
 
   useEffect(() => {
     if (initialStep !== undefined && initialStep !== stepNumber) {
@@ -109,9 +163,9 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = ({
   );
 };
 
-const AdditionalMaterialsView: FC<AdditionalMaterialsUserProps> = (props) => {
+const AdditionalMaterialsView: FC<AdditionalMaterialsPageProps> = (props) => {
   return (
-    <ResourcesStoresProvider initialStep={0}>
+    <ResourcesStoresProvider>
       <ResourcesContentsInner {...props} />
     </ResourcesStoresProvider>
   );

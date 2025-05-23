@@ -1,6 +1,25 @@
 export const lessonOverviewQuery = `
-query lessonOverview($lesson_slug: String!) {
-  lessons: published_mv_lesson_content_published_5_0_0(
+query lessonOverview(
+$lesson_slug: String!
+$programme_slug: String!
+$browseDataWhere: published_mv_synthetic_unitvariant_lessons_by_keystage_13_1_0_bool_exp
+) {
+  browseData: published_mv_synthetic_unitvariant_lessons_by_keystage_13_1_0(
+    where: { programme_slug: { _eq: $programme_slug } }
+  ) {
+    lesson_slug
+    unit_slug
+    programme_slug
+    programme_slug_by_year
+    is_legacy
+    lesson_data
+    unit_data
+    programme_fields
+    actions
+    features
+    order_in_unit
+  }
+  content: published_mv_lesson_content_published_5_0_0(
     where: { lesson_slug: { _eq: $lesson_slug } }
   ) {
     lesson_id
@@ -17,24 +36,7 @@ query lessonOverview($lesson_slug: String!) {
     transcript_sentences
     starter_quiz
     exit_quiz
-    supervision_level
-    video_title
-    has_worksheet_google_drive_downloadable_version
-    has_slide_deck_asset_object
-    worksheet_asset_id
-    has_worksheet_asset_object
-    worksheet_answers_asset_id
-    has_worksheet_answers_asset_object
-    supplementary_asset_id
-    has_supplementary_asset_object
-    slide_deck_asset_id
-    slide_deck_asset_object_url
-    worksheet_asset_object_url
-    supplementary_asset_object_url
-    has_lesson_guide_google_drive_downloadable_version
-    lesson_guide_asset_object_url
-    has_lesson_guide_object
-    lesson_guide_asset_id
+ 
   }
 }
 `;

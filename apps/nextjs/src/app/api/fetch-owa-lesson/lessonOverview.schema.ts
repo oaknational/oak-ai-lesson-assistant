@@ -2,7 +2,7 @@ import {
   lessonContentSchema as lessonContentSchemaFull,
   syntheticUnitvariantLessonsSchema,
 } from "@oaknational/oak-curriculum-schema";
-import { z } from "zod";
+import type { z } from "zod";
 
 import { ConvertKeysToCamelCase } from "@/utils/snakeCaseConverter";
 
@@ -28,3 +28,16 @@ export const lessonContentSchema = lessonContentSchemaFull.pick({
   starter_quiz: true,
   exit_quiz: true,
 });
+
+export const lessonBrowseDataByKsSchema =
+  syntheticUnitvariantLessonsSchema.omit({
+    supplementary_data: true,
+    null_unitvariant_id: true,
+    lesson_data: true,
+  });
+
+export type LessonBrowseDataByKsSchema = z.infer<
+  typeof lessonBrowseDataByKsSchema
+>;
+
+export type LessonContentSchema = z.infer<typeof lessonContentSchema>;
