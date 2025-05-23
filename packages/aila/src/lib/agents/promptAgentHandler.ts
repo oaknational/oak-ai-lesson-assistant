@@ -38,7 +38,7 @@ export async function promptAgentHandler<Schema extends SchemaWithValue>({
     },
   });
   const responseFormat = zodTextFormat(
-    agent.schema,
+    agent.schemaForLLM,
     `${agent.name}_response_schema`,
   );
 
@@ -68,6 +68,19 @@ ${additionalInstructions}`;
   });
 
   const parsedResult = result.output_parsed;
+
+  const strictParseResult = agent.schemaStrict.safeParse(parsedResult);
+  if (!strictParseResult.success) {
+    /**
+     * Retry logic in the case that the agent response is not valid.
+     * The reason we need this is that structured output does not support
+     * all the schema validation that we need.
+     */
+    log.error("Strict parse error:", strictParseResult.error);
+    throw new Error(
+      `Agent response did not match the expected schema: ${strictParseResult.error}`,
+    );
+  }
 
   if (!targetKey) {
     throw new Error("No target key provided for agent response");

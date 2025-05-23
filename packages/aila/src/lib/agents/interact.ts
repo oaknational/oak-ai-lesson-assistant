@@ -11,6 +11,7 @@ import {
   type LooseLessonPlan,
   type Quiz,
 } from "../../protocol/schema";
+import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { agents, sectionAgentMap } from "./agents";
 import { type InteractResult } from "./compatibility/streamHandling";
 import { messageToUserAgent } from "./messageToUser";
@@ -82,7 +83,7 @@ export async function interact({
   chatId,
   userId,
   initialDocument,
-  messageHistory,
+  messageHistoryWithProtocol,
   onUpdate,
   customAgents,
   relevantLessons,
@@ -90,7 +91,7 @@ export async function interact({
   chatId: string;
   userId: string;
   initialDocument: LooseLessonPlan;
-  messageHistory: { role: "user" | "assistant"; content: string }[];
+  messageHistoryWithProtocol: { role: "user" | "assistant"; content: string }[];
   onUpdate?: InteractCallback;
   customAgents: {
     mathsStarterQuiz?: CustomAgentAsyncFn<Quiz>;
@@ -100,6 +101,9 @@ export async function interact({
   relevantLessons: AilaRagRelevantLesson[] | null;
 }): Promise<InteractResult> {
   log.info("Starting interaction with Aila agents");
+  const messageHistoryChatOnly = extractPromptTextFromMessages(
+    messageHistoryWithProtocol,
+  );
   let document = initialDocument;
   // Notify about starting the routing process
   onUpdate?.({
@@ -150,7 +154,7 @@ export async function interact({
     chatId,
     userId,
     document,
-    messageHistory,
+    messageHistoryChatOnly,
   });
 
   log.info("Router response", JSON.stringify(routerResponse, null, 2));
@@ -254,7 +258,7 @@ export async function interact({
 
               break;
             } else if (agentDefinition.name === "basedOn") {
-              const userMessage = messageHistory.findLast(
+              const userMessage = messageHistoryChatOnly.findLast(
                 (m) => m.role === "user",
               );
               const userBasedOnSelection = Number(userMessage?.content?.trim());
@@ -348,7 +352,7 @@ export async function interact({
     userId,
     document,
     jsonDiff,
-    messageHistory,
+    messageHistoryChatOnly,
   });
 
   if (!messageResult) {
