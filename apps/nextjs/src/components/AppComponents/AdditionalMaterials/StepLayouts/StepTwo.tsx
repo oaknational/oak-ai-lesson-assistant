@@ -48,6 +48,7 @@ const StepTwo = () => {
   const moderation = useResourcesStore(moderationSelector);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
+
   const { setDialogWindow } = useDialog();
 
   // Get resource type from configuration
@@ -77,6 +78,9 @@ const StepTwo = () => {
 
   if (isLoadingLessonPlan) {
     return <OakP>Building lesson plan...</OakP>;
+  }
+  if (threatDetected) {
+    setDialogWindow("additional-materials-threat-detected");
   }
 
   handleDialogSelection({ threatDetected, error, setDialogWindow });
