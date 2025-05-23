@@ -56,19 +56,13 @@ export const agentNames = z.enum([
   "additionalMaterials",
 ]);
 
-type AgentName = z.infer<typeof agentNames>;
-
-const _agentResponseAnySchema = z
-  .object({
-    value: z.any(),
-  })
-  .required();
+export type AgentName = z.infer<typeof agentNames>;
 
 export type SchemaWithValue = z.ZodObject<{ value: z.ZodTypeAny }>;
 
 export type PromptAgentDefinition<
-  SchemaForLLM extends SchemaWithValue,
-  SchemaStrict extends SchemaWithValue = typeof _agentResponseAnySchema,
+  SchemaForLLM extends z.ZodSchema = z.ZodSchema,
+  SchemaStrict extends z.ZodSchema = z.ZodSchema,
 > = {
   type: "prompt";
   name: AgentName;
@@ -78,7 +72,7 @@ export type PromptAgentDefinition<
   extractRagData: (exampleLessonPlan: CompletedLessonPlan) => string;
 };
 export type AgentDefinition =
-  | PromptAgentDefinition<SchemaWithValue, SchemaWithValue>
+  | PromptAgentDefinition
   | {
       type: "custom";
       name: AgentName;
@@ -96,96 +90,96 @@ export const agents: Record<AgentName, AgentDefinition> = {
     type: "prompt",
     name: "title",
     prompt: "Generate a title for the lesson plan.",
-    schemaForLLM: z.object({ value: LessonTitleSchema }),
-    schemaStrict: z.object({ value: LessonTitleSchema }),
+    schemaForLLM: LessonTitleSchema,
+    schemaStrict: LessonTitleSchema,
     extractRagData: (lp) => lp.title,
   },
   keyStage: {
     type: "prompt",
     name: "keyStage",
     prompt: "Specify the Key Stage for this lesson.",
-    schemaForLLM: z.object({ value: KeyStageSchema }),
-    schemaStrict: z.object({ value: KeyStageSchema }),
+    schemaForLLM: KeyStageSchema,
+    schemaStrict: KeyStageSchema,
     extractRagData: (lp) => lp.keyStage,
   },
   subject: {
     type: "prompt",
     name: "subject",
     prompt: "Specify the subject for this lesson.",
-    schemaForLLM: z.object({ value: SubjectSchema }),
-    schemaStrict: z.object({ value: SubjectSchema }),
+    schemaForLLM: SubjectSchema,
+    schemaStrict: SubjectSchema,
     extractRagData: (lp) => lp.subject,
   },
   topic: {
     type: "prompt",
     name: "topic",
     prompt: "Specify the topic for this lesson.",
-    schemaForLLM: z.object({ value: TopicSchema }),
-    schemaStrict: z.object({ value: TopicSchema }),
+    schemaForLLM: TopicSchema,
+    schemaStrict: TopicSchema,
     extractRagData: (lp) => lp.topic,
   },
   learningOutcome: {
     type: "prompt",
     name: "learningOutcome",
     prompt: learningOutcomeInstructions,
-    schemaForLLM: z.object({ value: LearningOutcomeSchema }),
-    schemaStrict: z.object({ value: LearningOutcomeSchema }),
+    schemaForLLM: LearningOutcomeSchema,
+    schemaStrict: LearningOutcomeSchema,
     extractRagData: (lp) => lp.learningOutcome,
   },
   learningCycles: {
     type: "prompt",
     name: "learningCycles",
     prompt: learningCycleTitlesInstructions,
-    schemaForLLM: z.object({ value: LearningCyclesSchema }),
-    schemaStrict: z.object({ value: LearningCyclesSchema }),
+    schemaForLLM: LearningCyclesSchema,
+    schemaStrict: LearningCyclesSchema,
     extractRagData: (lp) => JSON.stringify(lp.learningCycles),
   },
   priorKnowledge: {
     type: "prompt",
     name: "priorKnowledge",
     prompt: priorKnowledgeInstructions,
-    schemaForLLM: z.object({ value: PriorKnowledgeSchema }),
-    schemaStrict: z.object({ value: PriorKnowledgeSchema }),
+    schemaForLLM: PriorKnowledgeSchema,
+    schemaStrict: PriorKnowledgeSchema,
     extractRagData: (lp) => JSON.stringify(lp.priorKnowledge),
   },
   keyLearningPoints: {
     type: "prompt",
     name: "keyLearningPoints",
     prompt: keyLearningPointsInstructions,
-    schemaForLLM: z.object({ value: KeyLearningPointsSchema }),
-    schemaStrict: z.object({ value: KeyLearningPointsSchema }),
+    schemaForLLM: KeyLearningPointsSchema,
+    schemaStrict: KeyLearningPointsSchema,
     extractRagData: (lp) => JSON.stringify(lp.keyLearningPoints),
   },
   misconceptions: {
     type: "prompt",
     name: "misconceptions",
     prompt: misconceptionsInstructions,
-    schemaForLLM: z.object({ value: MisconceptionsSchemaWithoutLength }),
-    schemaStrict: z.object({ value: MisconceptionsSchema }),
+    schemaForLLM: MisconceptionsSchemaWithoutLength,
+    schemaStrict: MisconceptionsSchema,
     extractRagData: (lp) => JSON.stringify(lp.misconceptions),
   },
   keywords: {
     type: "prompt",
     name: "keywords",
     prompt: keywordsInstructions,
-    schemaForLLM: z.object({ value: KeywordsSchemaWithoutLength }),
-    schemaStrict: z.object({ value: KeywordsSchema }),
+    schemaForLLM: KeywordsSchemaWithoutLength,
+    schemaStrict: KeywordsSchema,
     extractRagData: (lp) => JSON.stringify(lp.keywords),
   },
   starterQuiz: {
     type: "prompt",
     name: "starterQuiz",
     prompt: [starterQuizInstructions, quizInstructions].join(`\n\n`),
-    schemaForLLM: z.object({ value: QuizSchemaWithoutLength }),
-    schemaStrict: z.object({ value: QuizSchema }),
+    schemaForLLM: QuizSchemaWithoutLength,
+    schemaStrict: QuizSchema,
     extractRagData: (lp) => JSON.stringify(lp.starterQuiz),
   },
   cycle: {
     type: "prompt",
     name: "cycle",
     prompt: learningCyclesInstructions,
-    schemaForLLM: z.object({ value: CycleSchemaWithoutLength }),
-    schemaStrict: z.object({ value: CycleSchema }),
+    schemaForLLM: CycleSchemaWithoutLength,
+    schemaStrict: CycleSchema,
     extractRagData: (lp) => {
       // @todo we probably only need one cycle (the relevant one)
       return JSON.stringify({
@@ -199,8 +193,8 @@ export const agents: Record<AgentName, AgentDefinition> = {
     type: "prompt",
     name: "exitQuiz",
     prompt: [exitQuizInstructions, quizInstructions].join(`\n\n`),
-    schemaForLLM: z.object({ value: QuizSchemaWithoutLength }),
-    schemaStrict: z.object({ value: QuizSchema }),
+    schemaForLLM: QuizSchemaWithoutLength,
+    schemaStrict: QuizSchema,
     extractRagData: (lp) => JSON.stringify(lp.exitQuiz),
   },
   mathsStarterQuiz: {
@@ -227,8 +221,8 @@ export const agents: Record<AgentName, AgentDefinition> = {
     type: "prompt",
     name: "additionalMaterials",
     prompt: additionalMaterialsInstructions,
-    schemaForLLM: z.object({ value: AdditionalMaterialsSchema }),
-    schemaStrict: z.object({ value: AdditionalMaterialsSchema }),
+    schemaForLLM: AdditionalMaterialsSchema,
+    schemaStrict: AdditionalMaterialsSchema,
     extractRagData: (lp) => JSON.stringify(lp.additionalMaterials),
   },
 };

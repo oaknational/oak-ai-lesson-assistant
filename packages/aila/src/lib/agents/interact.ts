@@ -310,6 +310,33 @@ export async function interact({
           ragData,
         });
 
+        if (!response.success) {
+          const jsonDiff = JSON.stringify(compare(initialDocument, document));
+          const messageResult = await messageToUserAgent({
+            chatId,
+            userId,
+            document,
+            jsonDiff,
+            messageHistoryChatOnly,
+            error: {
+              currentAgent: agentDefinition.name,
+              message: response.error,
+            },
+          });
+
+          if (!messageResult) {
+            throw new Error("Message to user agent returned null");
+          }
+
+          // Notify about completion
+          onUpdate?.({
+            type: "complete",
+            data: { document, ailaMessage: messageResult.message },
+          });
+
+          return { document, ailaMessage: messageResult.message };
+        }
+
         document = handleSectionGenerated({
           sectionKey,
           actionType,

@@ -5,6 +5,7 @@ import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
 import { type LooseLessonPlan } from "../../protocol/schema";
+import type { AgentName } from "./agents";
 import { sectionGroups } from "./lessonPlanSectionGroups";
 import { messageToUserInstructions } from "./prompts";
 
@@ -22,12 +23,17 @@ export async function messageToUserAgent({
   document,
   jsonDiff,
   messageHistoryChatOnly,
+  error,
 }: {
   chatId: string;
   userId: string;
   document: LooseLessonPlan;
   jsonDiff: string;
   messageHistoryChatOnly: { role: "user" | "assistant"; content: string }[];
+  error?: {
+    currentAgent: AgentName;
+    message: string;
+  };
 }): Promise<RouterResponse | null> {
   const openAIClient = createOpenAIClient({
     app: "lesson-assistant",
@@ -46,13 +52,17 @@ export async function messageToUserAgent({
     .flat()
     .filter((sectionKey) => !document[sectionKey]);
 
-  const input = JSON.stringify({
-    currentDocument: document,
-    jsonDiff,
-    missingSections,
-    messageHistoryChatOnly,
-  });
   const instructions = messageToUserInstructions;
+  const input =
+    JSON.stringify({
+      currentDocument: document,
+      jsonDiff,
+      missingSections,
+      messageHistoryChatOnly,
+    }) +
+    (error
+      ? `### 🚨 Error state\nThe current agent (${error.currentAgent}) has failed to complete. If there is a non-trivial jsonDiff, then some edits have been made to the document. It's most likely that the agent has failed because the user has made a request at odds with Aila's functionality. If so, construct a message explaining the issue to them. These are the details of the error from the agent:\n${error.message}`
+      : "");
 
   log.info("messageToUserAgent input:", input);
   log.info("messageToUserAgent instructions:", instructions);
