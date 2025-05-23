@@ -36,7 +36,7 @@ export function extractPromptTextFromMessages(
           content: parseResult.data.prompt.value,
         };
       }
-    } finally {
+    } catch {
       // If parsing fails, we just return the original message
     }
     return m;
