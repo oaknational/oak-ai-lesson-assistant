@@ -3,6 +3,11 @@ import { aiLogger } from "@oakai/logger";
 import type { ReadableStreamDefaultController } from "stream/web";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
+import {
+  createInteractStreamHandler,
+  streamInteractResultToClient,
+} from "../../lib/agents/compatibility/streamHandling";
+import { interact } from "../../lib/agents/interact";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
@@ -92,13 +97,18 @@ export class AilaStreamHandler {
       await this._chat.handleSubjectWarning();
       this.logStreamingStep("Handle subject warning complete");
 
-      log.info("Starting LLM stream");
-      await this.startLLMStream();
-      this.logStreamingStep("Start LLM stream complete");
-
-      log.info("Reading from stream");
-      await this.readFromStream(abortController);
-      this.logStreamingStep("Read from stream complete");
+      if (this._chat.aila.options.useAgenticAila) {
+        log.info("Start Agent stream");
+        await this.startAgentStream();
+        this.logStreamingStep("Agent stream complete");
+      } else {
+        log.info("Starting LLM stream");
+        await this.startLLMStream();
+        this.logStreamingStep("Start LLM stream complete");
+        log.info("Reading from stream");
+        await this.readFromStream(abortController);
+        this.logStreamingStep("Read from stream complete");
+      }
 
       log.info(
         "Finished reading from stream",
@@ -112,6 +122,7 @@ export class AilaStreamHandler {
       });
       if (e instanceof AilaThreatDetectionError) {
         log.info("Handling threat detection error");
+
         await this._chat.generationFailed(e);
         throw e;
       }
@@ -120,7 +131,7 @@ export class AilaStreamHandler {
     } finally {
       const status = this._chat.generation?.status;
       log.info("In finally block", { status, chatId: this._chat.id });
-      if (!(status === "FAILED")) {
+      if (status !== "FAILED") {
         try {
           log.info("Completing chat");
           await this._chat.complete();
@@ -141,6 +152,53 @@ export class AilaStreamHandler {
   private setupController(controller: ReadableStreamDefaultController) {
     this._controller = controller;
     this._patchEnqueuer.setController(controller);
+  }
+
+  private async startAgentStream() {
+    await this._chat.enqueue({
+      type: "comment",
+      value: "CHAT_START",
+    });
+
+    const initialDocument = {
+      ...this._chat.aila.document.content,
+    };
+
+    if (
+      !initialDocument.title ||
+      !initialDocument.subject ||
+      !initialDocument.keyStage
+    ) {
+      throw new Error("title subject keyStage required");
+    }
+
+    // Create a stream handler
+    const streamHandler = createInteractStreamHandler(
+      this._chat,
+      this._controller!,
+    );
+
+    // Call interact with the stream handler
+    const interactResult = await interact({
+      userId: this._chat.userId ?? "anonymous",
+      chatId: this._chat.id,
+      initialDocument: initialDocument,
+      messageHistory: this._chat.messages
+        .filter((m) => m.role === "user" || m.role === "assistant")
+        .map((m) => {
+          log.info(m);
+          return m;
+        }) as { role: "user" | "assistant"; content: string }[],
+      onUpdate: streamHandler, // This is the new part
+    });
+
+    // Stream the final result to the client
+    await streamInteractResultToClient(
+      this._chat,
+      this._controller!,
+      initialDocument,
+      interactResult,
+    );
   }
 
   private async startLLMStream() {

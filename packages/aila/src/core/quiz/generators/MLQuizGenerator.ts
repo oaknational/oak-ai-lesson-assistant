@@ -22,7 +22,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   ): Promise<SearchHit<CustomSource>[]> {
     const qq = this.unpackLessonPlanForRecommender(lessonPlan);
     // TODO: GCLOMAX - change this to use the new search service.
-    const results = await this.searchWithBM25("oak-vector", "text", qq, 100);
+    const results = await this.searchWithBM25("oak-vector-2025-04-16", "text", qq, 100);
     return results.hits;
   }
 
