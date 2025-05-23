@@ -1,14 +1,14 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
+import { aiLogger } from "@oakai/logger";
 
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
-import {
-  type AilaRagRelevantLesson,
-  type LooseLessonPlan,
-} from "../../protocol/schema";
+import { type LooseLessonPlan } from "../../protocol/schema";
 import { sectionKeysSchema } from "./lessonPlanSectionGroups";
 import { routerInstructions } from "./prompts";
+
+const log = aiLogger("aila:agents:prompts");
 
 const responseSchema = z.object({
   result: z.union([
@@ -40,12 +40,12 @@ export async function agentRouter({
   chatId,
   userId,
   document,
-  messageHistory,
+  messageHistoryChatOnly,
 }: {
   chatId: string;
   userId: string;
   document: LooseLessonPlan;
-  messageHistory: { role: "user" | "assistant"; content: string }[];
+  messageHistoryChatOnly: { role: "user" | "assistant"; content: string }[];
 }): Promise<RouterResponse | null> {
   const openAIClient = createOpenAIClient({
     app: "lesson-assistant",
@@ -62,8 +62,11 @@ export async function agentRouter({
 
   const input = JSON.stringify({
     currentDocument: document,
-    messageHistory,
+    messageHistoryChatOnly,
   });
+
+  log.info("Router instructions:", input);
+  log.info("Router input:", input);
 
   const result = await openAIClient.responses.parse({
     instructions: routerInstructions,

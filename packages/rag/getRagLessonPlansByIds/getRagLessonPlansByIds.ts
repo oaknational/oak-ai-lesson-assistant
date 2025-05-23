@@ -1,5 +1,7 @@
 import { prisma } from "@oakai/db";
 
+import { isTruthy } from "remeda";
+
 import {
   type CompletedLessonPlan,
   CompletedLessonPlanSchema,
@@ -21,7 +23,16 @@ export async function getRagLessonPlansByIds({
     },
   });
 
-  return lessonPlans.map((lp) =>
-    CompletedLessonPlanSchema.parse(lp.lessonPlan),
-  );
+  return lessonPlans
+    .map((lp) => {
+      const parseResult = CompletedLessonPlanSchema.safeParse(lp.lessonPlan);
+
+      if (!parseResult.success) {
+        // @todo error to sentry
+        return null;
+      }
+
+      return parseResult.data;
+    })
+    .filter(isTruthy);
 }

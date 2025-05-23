@@ -191,7 +191,7 @@ export class AilaStreamHandler {
       userId: this._chat.userId ?? "anonymous",
       chatId: this._chat.id,
       initialDocument: initialDocument,
-      messageHistory: this._chat.messages
+      messageHistoryWithProtocol: this._chat.messages
         .filter((m) => m.role === "user" || m.role === "assistant")
         .map((m) => {
           log.info(m);
