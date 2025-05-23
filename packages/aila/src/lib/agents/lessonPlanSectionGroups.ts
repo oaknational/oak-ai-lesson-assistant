@@ -3,6 +3,10 @@ import { z } from "zod";
 import type { LessonPlanKey } from "../../protocol/schema";
 
 export const sectionKeysSchema = z.union([
+  z.literal("title"),
+  z.literal("keyStage"),
+  z.literal("subject"),
+  z.literal("topic"),
   z.literal("basedOn"),
   z.literal("learningOutcome"),
   z.literal("learningCycles"),
