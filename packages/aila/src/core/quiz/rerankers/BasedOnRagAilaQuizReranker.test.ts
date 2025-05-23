@@ -1,4 +1,5 @@
 import { aiLogger } from "@oakai/logger";
+
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
 
 import type {
@@ -9,6 +10,7 @@ import type {
 import { evaluateQuiz } from "../OpenAIRanker";
 import { cachedQuiz } from "../fixtures/CachedImageQuiz";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
+import type { QuizQuestionWithRawJson } from "../interfaces";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 
@@ -26,7 +28,7 @@ class TestBasedOnRagReranker extends BasedOnRagAilaQuizReranker<
 
 describe("BasedOnRagAilaQuizReranker", () => {
   let reranker: TestBasedOnRagReranker;
-  let mockQuizzes: QuizQuestion[][];
+  let mockQuizzes: QuizQuestionWithRawJson[][];
   let mockLessonPlan: LooseLessonPlan;
   let mockQuizType: QuizPath;
 

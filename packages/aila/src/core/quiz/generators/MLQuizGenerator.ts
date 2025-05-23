@@ -1,9 +1,10 @@
 // ML-based Quiz Generator
+import { aiLogger } from "@oakai/logger";
+
 import type {
   SearchHit,
   SearchHitsMetadata,
 } from "@elastic/elasticsearch/lib/api/types";
-import { aiLogger } from "@oakai/logger";
 
 import type {
   LooseLessonPlan,
@@ -12,7 +13,11 @@ import type {
   QuizQuestion,
 } from "../../../protocol/schema";
 import { missingQuizQuestion } from "../fixtures/MissingQuiz";
-import type { CustomHit, CustomSource } from "../interfaces";
+import type {
+  CustomHit,
+  CustomSource,
+  QuizQuestionWithRawJson,
+} from "../interfaces";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");
@@ -22,7 +27,12 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   ): Promise<SearchHit<CustomSource>[]> {
     const qq = this.unpackLessonPlanForRecommender(lessonPlan);
     // TODO: GCLOMAX - change this to use the new search service.
-    const results = await this.searchWithBM25("oak-vector-2025-04-16", "text", qq, 100);
+    const results = await this.searchWithBM25(
+      "oak-vector-2025-04-16",
+      "text",
+      qq,
+      100,
+    );
     return results.hits;
   }
 
@@ -47,44 +57,44 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   // If there are no questions for padding, we pad with empty questions.
   private splitQuestionsIntoSixAndPad(
     lessonPlan: LooseLessonPlan,
-    quizQuestions: QuizQuestion[],
+    quizQuestions: QuizQuestionWithRawJson[],
     quizType: QuizPath,
-  ): QuizQuestion[][] {
-    const quizQuestions2DArray: QuizQuestion[][] = [];
+  ): QuizQuestionWithRawJson[][] {
+    const quizQuestions2DArray: QuizQuestionWithRawJson[][] = [];
     log.info(
       `MLQuizGenerator: Splitting ${quizQuestions.length} questions into chunks of 6`,
     );
     const chunkSize = 6;
 
-    const questionsForPadding =
-      quizType === "/starterQuiz"
-        ? lessonPlan.starterQuiz
-        : lessonPlan.exitQuiz;
-    // TODO: GCLOMAX - change this to make it consistent - put it out into fixtures.
+    // const questionsForPadding =
+    //   quizType === "/starterQuiz"
+    //     ? lessonPlan.starterQuiz
+    //     : lessonPlan.exitQuiz;
+    // // TODO: GCLOMAX - change this to make it consistent - put it out into fixtures.
     // Split questions into chunks of 6
     for (let i = 0; i < quizQuestions.length; i += chunkSize) {
       const chunk = quizQuestions.slice(i, i + chunkSize);
 
-      // If the last chunk has less than 6 questions, pad it with questions from lessonPlan, if not use a default question with a message explaining the issue.
-      if (chunk.length < chunkSize && i + chunkSize >= quizQuestions.length) {
-        const remainingCount = chunkSize - chunk.length;
+      // // If the last chunk has less than 6 questions, pad it with questions from lessonPlan, if not use a default question with a message explaining the issue.
+      // if (chunk.length < chunkSize && i + chunkSize >= quizQuestions.length) {
+      //   const remainingCount = chunkSize - chunk.length;
 
-        if (questionsForPadding) {
-          const paddingQuestions =
-            questionsForPadding
-              ?.filter(
-                (q): q is QuizQuestion =>
-                  !!q?.question && !!q?.answers && !!q?.distractors,
-              )
-              .slice(0, remainingCount) ||
-            Array(remainingCount).fill(missingQuizQuestion);
-          chunk.push(...paddingQuestions);
-        } else {
-          const paddingQuestions: QuizQuestion[] =
-            Array(remainingCount).fill(missingQuizQuestion);
-          chunk.push(...paddingQuestions);
-        }
-      }
+      //   if (questionsForPadding) {
+      //     const paddingQuestions =
+      //       questionsForPadding
+      //         ?.filter(
+      //           (q): q is QuizQuestion =>
+      //             !!q?.question && !!q?.answers && !!q?.distractors,
+      //         )
+      //         .slice(0, remainingCount) ||
+      //       Array(remainingCount).fill(missingQuizQuestion);
+      //     chunk.push(...paddingQuestions);
+      //   } else {
+      //     const paddingQuestions: QuizQuestion[] =
+      //       Array(remainingCount).fill(missingQuizQuestion);
+      //     chunk.push(...paddingQuestions);
+      //   }
+      // }
       quizQuestions2DArray.push(chunk);
     }
 
@@ -94,7 +104,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   // This should return an array of questions - sometimes there are more than six questions, these are split later.
   private async generateMathsQuizML(
     lessonPlan: LooseLessonPlan,
-  ): Promise<QuizQuestion[]> {
+  ): Promise<QuizQuestionWithRawJson[]> {
     this.isValidLessonPlan(lessonPlan);
     const hits = await this.unpackAndSearch(lessonPlan);
     const qq = this.unpackLessonPlanForRecommender(lessonPlan);
@@ -106,8 +116,8 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   // TODO: GCLOMAX - Change for starter and exit quizzes.
   public async generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
-  ): Promise<Quiz[]> {
-    const quiz: QuizQuestion[] = await this.generateMathsQuizML(lessonPlan);
+  ): Promise<QuizQuestionWithRawJson[][]> {
+    const quiz = await this.generateMathsQuizML(lessonPlan);
     const quiz2DArray = this.splitQuestionsIntoSixAndPad(
       lessonPlan,
       quiz,
@@ -118,8 +128,9 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   }
   public async generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
-  ): Promise<Quiz[]> {
-    const quiz: QuizQuestion[] = await this.generateMathsQuizML(lessonPlan);
+  ): Promise<QuizQuestionWithRawJson[][]> {
+    const quiz: QuizQuestionWithRawJson[] =
+      await this.generateMathsQuizML(lessonPlan);
     const quiz2DArray = this.splitQuestionsIntoSixAndPad(
       lessonPlan,
       quiz,

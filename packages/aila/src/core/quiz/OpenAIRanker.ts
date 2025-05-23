@@ -1,5 +1,6 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { aiLogger } from "@oakai/logger";
+
 import type { OpenAI } from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
@@ -12,11 +13,12 @@ import type {
 } from "../../protocol/schema";
 import type { BaseType } from "./ChoiceModels";
 import {
-  keyLearningPointsPrompt,
-  priorKnowledgePrompt,
   QuestionInspectionSystemPrompt,
   QuizInspectionSystemPrompt,
+  keyLearningPointsPrompt,
+  priorKnowledgePrompt,
 } from "./QuestionAssesmentPrompt";
+import type { QuizQuestionWithRawJson } from "./interfaces";
 import {
   starterQuizQuestionSuitabilityDescriptionSchema,
   testRatingSchema,
@@ -45,9 +47,7 @@ type LLMOutput = z.infer<typeof OutputSchema>;
 // TODO Change implementation to openai Provider
 type sectionCategory = "priorKnowledge" | "keyLearningPoints";
 
-type ChatContent =
-  | OpenAI.Chat.Completions.ChatCompletionContentPartText
-  | OpenAI.Chat.Completions.ChatCompletionContentPartImage;
+type ChatContent = OpenAI.Chat.Completions.ChatCompletionContentPart;
 
 // type ChatMessage = OpenAI.Chat.Completions.ChatCompletionMessageParam;
 
@@ -91,7 +91,7 @@ function processStringWithImages(text: string): ChatContent[] {
     .filter((part): part is ChatContent => part !== null);
 }
 
-function quizToLLMMessages(quizQuestion: QuizQuestion): ChatMessage {
+function quizToLLMMessages(quizQuestion: QuizQuestionWithRawJson): ChatMessage {
   const content: ChatContent[] = [];
 
   // Process question
@@ -141,7 +141,7 @@ function contentListToUser(messages: ChatContent[]): ChatMessage {
 
 function combinePrompts(
   lessonPlan: LooseLessonPlan,
-  question: QuizQuestion,
+  question: QuizQuestionWithRawJson,
 ): ChatMessage[] {
   const Messages: ChatMessage[] = [];
   const Content: ChatContent[] = [];
@@ -164,7 +164,7 @@ function combinePrompts(
  * @returns {ChatMessage} A formatted ChatMessage object ready for use with OpenAI API.
  */
 function quizQuestionsToOpenAIMessageFormat(
-  questions: QuizQuestion[],
+  questions: QuizQuestionWithRawJson[],
 ): ChatMessage {
   const content: ChatContent[] = [];
   const promptList = questions.map((question) => quizToLLMMessages(question));
@@ -190,7 +190,7 @@ function quizQuestionsToOpenAIMessageFormat(
  */
 function combinePromptsAndQuestions(
   lessonPlan: LooseLessonPlan,
-  questions: QuizQuestion[],
+  questions: QuizQuestionWithRawJson[],
   systemPrompt: OpenAI.Chat.Completions.ChatCompletionSystemMessageParam,
   lessonPlanSectionForConsideration: sectionCategory,
 ): ChatMessage[] {
@@ -226,7 +226,7 @@ async function evaluateStarterQuiz<
   T extends z.ZodType<BaseType & Record<string, unknown>>,
 >(
   lessonPlan: LooseLessonPlan,
-  questions: QuizQuestion[],
+  questions: QuizQuestionWithRawJson[],
   max_tokens: number = 1500,
   ranking_schema: T,
 ): Promise<OpenAI.Chat.Completions.ChatCompletion> {
@@ -263,7 +263,7 @@ async function evaluateQuiz<
   T extends z.ZodType<BaseType & Record<string, unknown>>,
 >(
   lessonPlan: LooseLessonPlan,
-  questions: QuizQuestion[],
+  questions: QuizQuestionWithRawJson[],
   max_tokens: number = 1500,
   ranking_schema: T,
   quizType: QuizPath,

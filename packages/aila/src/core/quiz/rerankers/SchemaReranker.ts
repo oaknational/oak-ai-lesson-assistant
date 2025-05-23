@@ -6,6 +6,7 @@ import type {
   QuizQuestion,
 } from "../../../protocol/schema";
 import type { BaseType } from "../ChoiceModels";
+import type { QuizQuestionWithRawJson } from "../interfaces";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 
@@ -17,7 +18,7 @@ export class TestSchemaReranker<
   }
   public inputSchema = testRatingSchema;
   public evaluateStarterQuiz(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizQuestionWithRawJson[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
@@ -25,7 +26,7 @@ export class TestSchemaReranker<
     return this.evaluateQuizArray(quizzes, lessonPlan, ratingSchema, quizType);
   }
   public evaluateExitQuiz(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizQuestionWithRawJson[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,

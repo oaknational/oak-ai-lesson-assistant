@@ -16,6 +16,7 @@ import type {
   AilaQuizGeneratorService,
   AilaQuizReranker,
   FullQuizService,
+  QuizQuestionWithRawJson,
   QuizSelector,
   quizPatchType,
 } from "../interfaces";
@@ -32,7 +33,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
     override: boolean = false,
-  ): Promise<QuizQuestion[]> {
+  ): Promise<QuizQuestionWithRawJson[]> {
     if (override) {
       return this.createBestQuizOverride(
         quizType,
@@ -51,7 +52,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
-  ): Promise<QuizQuestion[]> {
+  ): Promise<QuizQuestionWithRawJson[]> {
     const quizPromises = this.quizGenerators.map((quizGenerator) => {
       if (quizType === "/starterQuiz") {
         return quizGenerator.generateMathsStarterQuizPatch(
@@ -98,7 +99,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
-  ): Promise<QuizQuestion[]> {
+  ): Promise<QuizQuestionWithRawJson[]> {
     // If basedOnRag Quiz generator present: Generate a quiz, check it isnt empty, then return that.
     // In the absence of a basedOnRag Quiz generator, generate a quiz using the rest of default quiz generators and return a schema.
 
@@ -107,7 +108,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
     );
     if (basedOnRagQuizGenerator) {
       // We have based on generator.
-      let quizArray: Quiz[] = [];
+      let quizArray: QuizQuestionWithRawJson[][] = [];
       if (quizType === "/starterQuiz") {
         quizArray = await basedOnRagQuizGenerator.generateMathsStarterQuizPatch(
           lessonPlan,

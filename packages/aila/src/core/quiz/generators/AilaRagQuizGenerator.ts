@@ -6,6 +6,7 @@ import type {
   Quiz,
   QuizPath,
 } from "../../../protocol/schema";
+import type { QuizQuestionWithRawJson } from "../interfaces";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 
 const log = aiLogger("aila:quiz");
@@ -17,7 +18,7 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
     quizType: QuizPath = "/starterQuiz",
-  ): Promise<Quiz[]> {
+  ): Promise<QuizQuestionWithRawJson[][]> {
     log.info(
       "Getting quizzes for relevant lessons:",
       ailaRagRelevantLessons.map((lesson) => "\n- " + lesson.title),
@@ -34,7 +35,7 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
   async generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
-  ): Promise<Quiz[]> {
+  ): Promise<QuizQuestionWithRawJson[][]> {
     return await this.mappedQuizFromAilaRagRelevantLessons(
       lessonPlan,
       ailaRagRelevantLessons,
@@ -46,7 +47,7 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
   async generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
-  ): Promise<Quiz[]> {
+  ): Promise<QuizQuestionWithRawJson[][]> {
     return await this.mappedQuizFromAilaRagRelevantLessons(
       lessonPlan,
       ailaRagRelevantLessons,

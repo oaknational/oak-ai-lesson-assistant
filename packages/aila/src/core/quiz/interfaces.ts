@@ -2,6 +2,7 @@ import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import type * as z from "zod";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
+import type { RawQuiz } from "../../protocol/rawQuizSchema";
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
@@ -62,11 +63,11 @@ export interface AilaQuizGeneratorService {
   generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<Quiz[]>;
+  ): Promise<QuizQuestionWithRawJson[][]>;
   generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<Quiz[]>;
+  ): Promise<QuizQuestionWithRawJson[][]>;
 }
 
 export interface AilaQuizVariantService {
@@ -77,15 +78,15 @@ export interface AilaQuizVariantService {
 }
 
 export interface AilaQuizReranker<T extends z.ZodType<BaseType>> {
-  rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]>;
+  rerankQuiz(quizzes: QuizQuestionWithRawJson[][]): Promise<number[]>;
   evaluateQuizArray(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizQuestionWithRawJson[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
   ): Promise<z.infer<T>[]>;
   cachedEvaluateQuizArray(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizQuestionWithRawJson[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
@@ -105,7 +106,7 @@ export interface FullQuizService {
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
     override?: boolean,
-  ): Promise<QuizQuestion[]>;
+  ): Promise<QuizQuestionWithRawJson[]>;
 }
 
 // Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
@@ -113,9 +114,9 @@ export interface QuizSelector<T extends BaseType> {
   ratingFunction: RatingFunction<T>;
   maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
   selectBestQuiz(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizQuestionWithRawJson[][],
     ratingsSchemas: T[],
-  ): QuizQuestion[];
+  ): QuizQuestionWithRawJson[];
 }
 
 export type quizPatchType = "/starterQuiz" | "/exitQuiz";
@@ -135,8 +136,12 @@ export interface QuizQuestionTextOnlySource {
   metadata: {
     questionUid: string;
     lessonSlug: string;
-    raw_json?: unknown; // Allow for raw JSON data
+    raw_json: string; // Allow for raw JSON data
   };
+}
+
+export interface QuizQuestionWithRawJson extends QuizQuestion {
+  rawQuiz: NonNullable<RawQuiz>;
 }
 
 export interface CustomHit {

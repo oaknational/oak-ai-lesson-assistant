@@ -1,6 +1,48 @@
+import type { RawQuiz } from "../../protocol/rawQuizSchema";
+import { keysToCamelCase } from "../../protocol/rawQuizSchema";
 import { combinePrompts, combinePromptsAndQuestions } from "./OpenAIRanker";
 import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
 import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
+import { QuizQuestionWithRawJson } from "./interfaces";
+
+const parsedRawQuiz = [
+  {
+    hint: "Think about the words increase and decrease. You could think of adding and subtracting.",
+    active: false,
+    answers: {
+      "short-answer": [
+        {
+          answer: [
+            {
+              text: "8",
+              type: "text",
+            },
+          ],
+          answer_is_default: true,
+        },
+        {
+          answer: [
+            {
+              text: "eight",
+              type: "text",
+            },
+          ],
+          answer_is_default: false,
+        },
+      ],
+    },
+    feedback: "Yes, adjacent multiples have a difference of 8.",
+    questionId: 229205,
+    questionUid: "QUES-BPWF2-29205",
+    questionStem: [
+      {
+        text: "Adjacent multiples of 8 can be found by increasing or decreasing a multiple by {{ }}.",
+        type: "text",
+      },
+    ],
+    questionType: "short-answer",
+  },
+];
 
 describe("combinePromptsAndQuestions", () => {
   it("Should convert a lesson plan and quiz into valid OpenAI message format", () => {
@@ -14,6 +56,7 @@ describe("combinePromptsAndQuestions", () => {
         feedback: "",
         hint: "",
         html: [""],
+        rawQuiz: keysToCamelCase(parsedRawQuiz) as NonNullable<RawQuiz>,
       },
       {
         question:
@@ -23,6 +66,7 @@ describe("combinePromptsAndQuestions", () => {
         feedback: "",
         hint: "",
         html: [""],
+        rawQuiz: keysToCamelCase(parsedRawQuiz) as NonNullable<RawQuiz>,
       },
     ];
     const openAIMessage = combinePromptsAndQuestions(
@@ -51,6 +95,45 @@ describe("Test OpenAI Image Reranker with online image and quiz questions", () =
       feedback: "",
       hint: "",
       html: [""],
+      rawQuiz: [
+        {
+          questionId: 123456,
+          questionUid: "QUES-TEST-123456",
+          questionType: "short-answer" as const,
+          questionStem: [
+            {
+              text: "For 6 days in a row I spend \u00a311 on my lunch. How much did I spent in total?",
+              type: "text" as const,
+            },
+            {
+              type: "image" as const,
+              imageObject: {
+                secureUrl:
+                  "http://oaknationalacademy-res.cloudinary.com/image/upload/v1707171916/km6zbhuzhbirgqpnzgfx.png",
+                metadata: {
+                  attribution: "Money calculation question",
+                },
+              },
+            },
+          ],
+          answers: {
+            "short-answer": [
+              {
+                answer: [
+                  {
+                    text: "\u00a366",
+                    type: "text" as const,
+                  },
+                ],
+                answerIsDefault: true,
+              },
+            ],
+          },
+          feedback: "Correct! 6 × £11 = £66",
+          hint: "Multiply the daily amount by the number of days",
+          active: true,
+        },
+      ],
     };
     const result = combinePrompts(testLessonPlan, testInput);
     console.log(JSON.stringify(result));
