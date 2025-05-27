@@ -4,15 +4,6 @@ import {
 } from "@oaknational/oak-curriculum-schema";
 import type { z } from "zod";
 
-import { ConvertKeysToCamelCase } from "@/utils/snakeCaseConverter";
-
-import {
-  baseLessonOverviewSchema,
-  lessonPathwaySchema,
-} from "../../shared.schema";
-import { mediaClipsRecordCamelSchema } from "../lessonMediaClips/lessonMediaClips.schema";
-import { QuizQuestion } from "../pupilLesson/pupilLesson.schema";
-
 export const lessonContentSchema = lessonContentSchemaFull.pick({
   lesson_id: true,
   lesson_title: true,

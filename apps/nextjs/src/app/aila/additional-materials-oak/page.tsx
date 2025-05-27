@@ -1,22 +1,21 @@
 import { LessonPlanSchemaWhilstStreaming } from "@oakai/aila/src/protocol/schema";
-import { AdditionalMaterialsUserProps } from "@oakai/aila/src/protocol/schema";
-import { createTRPCContext } from "@oakai/api/src/context";
-import { oakAppRouter } from "@oakai/api/src/router";
+import { aiLogger } from "@oakai/logger";
 
+import * as Sentry from "@sentry/nextjs";
 import { redirect } from "next/navigation";
 
-import { AdditionalMaterials } from "@/components/AppComponents/Chat/lesson-plan-section/index.stories";
 import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
-import { trpc } from "@/utils/trpc";
 
 import AdditionalMaterialsView, {
   type AdditionalMaterialsPageProps,
 } from "./AdditionalMaterialsView";
 
+const log = aiLogger("additional-materials");
+
 export default async function AdditionalMaterialsTestPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: { [key: string]: string | undefined };
 }) {
   const canSeeAM = await serverSideFeatureFlag("additional-materials");
 
@@ -24,7 +23,18 @@ export default async function AdditionalMaterialsTestPage({
     redirect("/");
   }
 
-  const lessonSlug = searchParams?.lessonSlug || "lesson-slug";
+  const lessonSlug = searchParams?.lessonSlug;
+  const programmeSlug = searchParams?.programmeSlug;
+  const docType = searchParams?.docType;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+
+  log.info("AdditionalMaterialsTestPage", {
+    lessonSlug,
+    programmeSlug,
+    docType,
+    baseUrl,
+  });
+
   let pageProps: AdditionalMaterialsPageProps = {
     lesson: undefined,
     transcript: undefined,
@@ -32,18 +42,19 @@ export default async function AdditionalMaterialsTestPage({
     docTypeFromQueryPrams: undefined,
   };
 
-  if (lessonSlug) {
+  if (lessonSlug && programmeSlug && docType) {
     try {
       const baseUrl =
         process.env.NEXT_PUBLIC_APP_URL || "http://localhost:2525";
-      console.log("baseUrl", baseUrl);
+
       const res = await fetch(`${baseUrl}/api/fetch-owa-lesson`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          lessonSlug: "sluger",
+          lessonSlug: lessonSlug,
+          programmeSlug: programmeSlug,
         }),
       });
       const { lesson, transcript } = await res.json();
@@ -54,17 +65,30 @@ export default async function AdditionalMaterialsTestPage({
         lesson: parsedLesson,
         transcript: transcript,
         initialStep: 2,
-        docTypeFromQueryPrams: "additional-glossary",
+        docTypeFromQueryPrams: docType,
       };
 
-      console.log("pageProps", pageProps);
-
-      // console.log("res", res.json());
-      // const data = await res.json();
-      // console.log("lesson fetched", lesson);
-      // console.log("lesson fetched", transcript);
+      if (!parsedLesson) {
+        throw new Error("Failed to parse lesson data");
+      }
     } catch (error) {
-      console.error("Failed to fetch lesson data:", error);
+      Sentry.captureException(error, {
+        tags: {
+          component: "AdditionalMaterialsTestPage",
+          operation: "fetch-lesson-data",
+        },
+        extra: {
+          lessonSlug,
+          programmeSlug,
+          baseUrl: process.env.NEXT_PUBLIC_APP_URL,
+        },
+      });
+      pageProps = {
+        lesson: undefined,
+        transcript: undefined,
+        initialStep: 1,
+        docTypeFromQueryPrams: "additional-glossary",
+      };
     }
   }
 

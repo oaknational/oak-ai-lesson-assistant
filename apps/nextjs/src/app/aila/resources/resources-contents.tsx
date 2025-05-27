@@ -22,7 +22,6 @@ import {
 } from "@/stores/ResourcesStoreProvider";
 import {
   docTypeSelector,
-  moderationSelector,
   pageDataSelector,
   stepNumberSelector,
 } from "@/stores/resourcesStore/selectors";

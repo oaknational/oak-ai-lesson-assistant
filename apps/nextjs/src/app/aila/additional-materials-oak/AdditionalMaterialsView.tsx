@@ -1,22 +1,23 @@
 "use client";
 
 import type { FC } from "react";
-import React, { useEffect } from "react";
+import React from "react";
 
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { kebabCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
-import { aiLogger } from "@oakai/logger";
 
 import { OakP, OakSpan } from "@oaknational/oak-components";
 
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
 import StepThree from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepThree";
 import StepTwo from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepTwo";
-import ResourcesLayout from "@/components/ResroucesLayout";
+import { DialogProvider } from "@/components/AppComponents/DialogContext";
+import DialogContents from "@/components/DialogControl/DialogContents";
+import { DialogRoot } from "@/components/DialogControl/DialogRoot";
+import ResourcesLayout from "@/components/ResourcesLayout";
 import {
   ResourcesStoresProvider,
-  useResourcesActions,
   useResourcesStore,
 } from "@/stores/ResourcesStoreProvider";
 import {
@@ -24,7 +25,6 @@ import {
   pageDataSelector,
   stepNumberSelector,
 } from "@/stores/resourcesStore/selectors";
-import { trpc } from "@/utils/trpc";
 
 export type AdditionalMaterialsPageProps = {
   lesson?: LooseLessonPlan;
@@ -33,84 +33,14 @@ export type AdditionalMaterialsPageProps = {
   docTypeFromQueryPrams?: string;
 };
 
-const log = aiLogger("additional-materials");
-
-const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = ({
-  initialStep,
-  lesson,
-  transcript,
-  docTypeFromQueryPrams,
-}) => {
+const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = ({}) => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
-  const fetchMaterial =
-    trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
-  log.info("lessonPlan", lesson);
 
   // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName || null;
-  const {
-    resetFormState,
-    setStepNumber,
-    setPageData,
-    setDocType,
-    generateMaterial,
-  } = useResourcesActions();
-
-  // useEffect(() => {
-  //   resetFormState();
-
-  //   const handleSubmit = (message) => {
-  //     const generatePromise = generateMaterial({
-  //       message,
-  //       mutateAsync: async (input) => {
-  //         try {
-  //           return fetchMaterial.mutateAsync(input);
-  //         } catch (error) {
-  //           throw error instanceof Error ? error : new Error(String(error));
-  //         }
-  //       },
-  //     });
-
-  //     // Navigate to the next step
-  //     generatePromise
-  //       .then(() => setStepNumber(2))
-  //       .catch((error) => {
-  //         log.error("Failed to generate material", error);
-  //         // Sentry.captureException(error);
-  //       });
-
-  //     return generatePromise;
-  //   };
-  //   if (lesson && transcript && docType) {
-  //     setPageData({
-  //       lessonPlan: lesson,
-  //       transcript: transcript,
-  //     });
-  //     setDocType(docType);
-
-  //     void handleSubmit("hi");
-  //   }
-  // }, [
-  //   docType,
-  //   fetchMaterial,
-  //   generateMaterial,
-  //   lesson,
-  //   pageData,
-  //   resetFormState,
-  //   setDocType,
-  //   setPageData,
-  //   setStepNumber,
-  //   transcript,
-  // ]);
-
-  useEffect(() => {
-    if (initialStep !== undefined && initialStep !== stepNumber) {
-      setStepNumber(initialStep);
-    }
-  }, [initialStep, stepNumber, setStepNumber]);
 
   const titleAreaContent = {
     0: {
@@ -166,7 +96,13 @@ const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = ({
 const AdditionalMaterialsView: FC<AdditionalMaterialsPageProps> = (props) => {
   return (
     <ResourcesStoresProvider>
-      <ResourcesContentsInner {...props} />
+      <DialogProvider>
+        <DialogRoot>
+          <DialogContents chatId={undefined} lesson={{}} />
+
+          <ResourcesContentsInner {...props} />
+        </DialogRoot>
+      </DialogProvider>
     </ResourcesStoresProvider>
   );
 };
