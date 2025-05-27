@@ -118,10 +118,13 @@ invariant(
   "GOOGLE_DOCS_ADDITIONAL_QUIZ_ID is required",
 );
 
-export const getAdditionalResourcesTemplateId = (
-  docType: string,
-  withAnswers: boolean = false,
-) => {
+export const getAdditionalResourcesTemplateId = ({
+  docType,
+  withAnswers = false,
+}: {
+  docType: string;
+  withAnswers?: boolean;
+}) => {
   if (docType === "additional-glossary") {
     return process.env.GOOGLE_DOCS_GLOSSARY_TEMPLATE_ID as string;
   }
@@ -154,5 +157,5 @@ export const getAllTemplateIdsForDocType = (docType: string): string[] => {
   }
 
   // For other document types, just return the single template ID
-  return [getAdditionalResourcesTemplateId(docType)];
+  return [getAdditionalResourcesTemplateId({ docType: docType })];
 };

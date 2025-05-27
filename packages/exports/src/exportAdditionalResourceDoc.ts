@@ -1,6 +1,5 @@
 import { aiLogger } from "@oakai/logger";
 
-import { extractDataFromBlocks } from "./dataHelpers/extractDataFromBlocks";
 import { exportGeneric } from "./exportGeneric";
 import { dynamicPlaceholderTemplateIds } from "./gSuite/docs/cleanupUnusedPlaceholdersRequests";
 import { getDocsClient } from "./gSuite/docs/client";
@@ -12,6 +11,60 @@ import {
 import type { OutputData, Result, State } from "./types";
 
 const log = aiLogger("exports");
+
+// Simple function to extract data from blocks - replaces the complex extractDataFromBlocks
+const extractDataFromBlocks = <T>(
+  blocks: T,
+): Record<string, string | string[] | null | undefined> => {
+  const map: Record<string, string | string[] | null | undefined> = {};
+
+  // Parse blocks to ensure they match the expected schema
+  const parsedBlocks = Array.isArray(blocks) ? blocks : [];
+
+  for (const block of parsedBlocks) {
+    if (typeof block === "object" && block !== null && "type" in block) {
+      const typedBlock = block as { type: string; [key: string]: unknown };
+
+      switch (typedBlock.type) {
+        case "title":
+          if ("text" in typedBlock && typeof typedBlock.text === "string") {
+            map[typedBlock.type] = typedBlock.text;
+          }
+          break;
+        case "labelValue":
+          // Handle glossary terms - create individual key-value pairs
+          if ("items" in typedBlock && Array.isArray(typedBlock.items)) {
+            for (const item of typedBlock.items) {
+              if (
+                typeof item === "object" &&
+                item !== null &&
+                "label" in item &&
+                "value" in item &&
+                typeof (item as { label: unknown }).label === "string" &&
+                typeof (item as { value: unknown }).value === "string"
+              ) {
+                const typedItem = item as { label: string; value: string };
+                map[typedItem.label] = typedItem.value;
+              }
+            }
+          }
+          break;
+        case "placeholders":
+          // Direct placeholder mapping - just merge the map
+          if (
+            "map" in typedBlock &&
+            typeof typedBlock.map === "object" &&
+            typedBlock.map !== null
+          ) {
+            Object.assign(map, typedBlock.map);
+          }
+          break;
+      }
+    }
+  }
+
+  return map;
+};
 
 export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
   documentType,
@@ -33,10 +86,11 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
   try {
     // For comprehension tasks, we need to create both the questions and answers files
     if (documentType === "additional-comprehension") {
-      // Generate the regular document first (no answers)
-      const templateId = getAdditionalResourcesTemplateId(documentType);
+      // @todo we should think about having a mechnism here in the the future that is more flexible and not specific to the document type
+      const templateId = getAdditionalResourcesTemplateId({
+        docType: documentType,
+      });
 
-      // Create the main document
       const result = await exportGeneric<InputData, TemplateData>({
         newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${documentType} - ${Date.now()}`,
         data: inputData,
@@ -64,11 +118,10 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
         return result;
       }
 
-      // Create the answers document
-      const answersTemplateId = getAdditionalResourcesTemplateId(
-        documentType,
-        true,
-      );
+      const answersTemplateId = getAdditionalResourcesTemplateId({
+        docType: documentType,
+        withAnswers: true,
+      });
 
       const answersResult = await exportGeneric<InputData, TemplateData>({
         newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${documentType} Answers - ${Date.now()}`,
@@ -109,7 +162,9 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
       return { data };
     } else {
       // Regular document processing for other document types
-      const templateId = getAdditionalResourcesTemplateId(documentType);
+      const templateId = getAdditionalResourcesTemplateId({
+        docType: documentType,
+      });
 
       const result = await exportGeneric<InputData, TemplateData>({
         newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${documentType} - ${Date.now()}`,

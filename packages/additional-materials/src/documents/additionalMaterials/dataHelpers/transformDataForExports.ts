@@ -53,35 +53,24 @@ export const transformDataComprehension =
     // Extract the questions and answers
     const questions = comprehension.questions || [];
 
-    // Create a direct mapping from our data to the placeholder names
+    // Generate question and answer mappings programmatically
     const placeholderMap: Record<string, string> = {
       // Title and main content
       title: comprehension.lessonTitle,
       comprehension_text: comprehension.text,
 
-      // Questions - direct mapping for questions 1-10
-      question_1: questions[0]?.questionText || "",
-      question_2: questions[1]?.questionText || "",
-      question_3: questions[2]?.questionText || "",
-      question_4: questions[3]?.questionText || "",
-      question_5: questions[4]?.questionText || "",
-      question_6: questions[5]?.questionText || "",
-      question_7: questions[6]?.questionText || "",
-      question_8: questions[7]?.questionText || "",
-      question_9: questions[8]?.questionText || "",
-      question_10: questions[9]?.questionText || "",
-
-      // Answers - direct mapping for question answers 1-10
-      question_1_answer: questions[0]?.answer || "",
-      question_2_answer: questions[1]?.answer || "",
-      question_3_answer: questions[2]?.answer || "",
-      question_4_answer: questions[3]?.answer || "",
-      question_5_answer: questions[4]?.answer || "",
-      question_6_answer: questions[5]?.answer || "",
-      question_7_answer: questions[6]?.answer || "",
-      question_8_answer: questions[7]?.answer || "",
-      question_9_answer: questions[8]?.answer || "",
-      question_10_answer: questions[9]?.answer || "",
+      // Questions 1-10
+      ...Object.fromEntries([
+        ...Array.from({ length: 10 }, (_, i): [string, string] => [
+          `question_${i + 1}`,
+          (questions[i]?.questionText as string) || "",
+        ]),
+        // Answers 1-10
+        ...Array.from({ length: 10 }, (_, i): [string, string] => [
+          `question_${i + 1}_answer`,
+          (questions[i]?.answer as string) || "",
+        ]),
+      ]),
     };
 
     // Transform into the expected format
