@@ -1,5 +1,6 @@
 import { type ZodType } from "zod";
 
+import type { PartialLessonPlanFieldKeyArray } from "../partialLessonPlan/schema";
 import {
   type Action,
   type AdditionalMaterialType,
@@ -34,7 +35,7 @@ export type BaseResourceTypeConfig = {
   schema: ZodType;
   promptContextSchema: ZodType;
   version: number;
-  lessonParts: string[];
+  lessonParts: PartialLessonPlanFieldKeyArray;
 };
 
 const readingAgeRefinementOptions: RefinementOption[] = Array.from(

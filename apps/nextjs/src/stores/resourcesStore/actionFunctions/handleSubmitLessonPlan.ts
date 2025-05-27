@@ -1,7 +1,7 @@
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
-import type {
+import {
   PartialLessonContextSchemaType,
-  PartialLessonPlanFieldKeyArray,
+  PartialLessonPlanFieldKeyArraySchema,
 } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { GeneratePartialLessonPlanResponse } from "@oakai/api/src/router/additionalMaterials/helpers";
@@ -68,13 +68,14 @@ export const handleSubmitLessonPlan =
       // Remove duplicates
       lessonPartsToGenerate = [...new Set(lessonPartsToGenerate)];
 
-      // Prepare API input
+      const parsedLessonPartsToGenerate =
+        PartialLessonPlanFieldKeyArraySchema.parse(lessonPartsToGenerate);
       const apiInput: PartialLessonContextSchemaType = {
         title: title ?? "",
         subject: subject ?? "",
         keyStage: keyStage ?? "",
         year: year ?? "",
-        lessonParts: lessonPartsToGenerate as PartialLessonPlanFieldKeyArray,
+        lessonParts: parsedLessonPartsToGenerate,
       };
 
       // Make the API call

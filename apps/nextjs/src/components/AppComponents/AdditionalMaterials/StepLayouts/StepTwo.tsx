@@ -1,5 +1,6 @@
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
+import type { PartialLessonPlanFieldKeyArray } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import {
@@ -35,15 +36,19 @@ import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
 
+type LessonPlanSectionKey = (typeof lessonFieldKeys)[number];
+
 // Type guard to check if a key is a valid lesson part
 function isValidLessonPart(
-  key: string,
-): key is
+  key: LessonPlanSectionKey,
+): key is Extract<
+  LessonPlanSectionKey,
   | "learningOutcome"
   | "learningCycles"
   | "keyLearningPoints"
   | "misconceptions"
-  | "keywords" {
+  | "keywords"
+> {
   return [
     "learningOutcome",
     "learningCycles",
