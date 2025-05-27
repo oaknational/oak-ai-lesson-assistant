@@ -32,6 +32,7 @@ import {
   generationSelector,
   isResourcesDownloadingSelector,
   isResourcesLoadingSelector,
+  moderationSelector,
 } from "@/stores/resourcesStore/selectors";
 import { pageDataSelector } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
@@ -40,6 +41,7 @@ import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
 import { ExitQuiz } from "../../AdditionalMaterials/ExitQuiz";
 import { Glossary } from "../../AdditionalMaterials/Glossary";
 import { StarterQuiz } from "../../AdditionalMaterials/StarterQuiz";
+import { ModerationMessage } from "../AdditionalMaterialMessage";
 import InlineButton from "../InlineButton";
 import ResourcesFooter from "../ResourcesFooter";
 
@@ -51,12 +53,13 @@ const StepThree = () => {
   const docType = useResourcesStore(docTypeSelector);
   const isResourcesLoading = useResourcesStore(isResourcesLoadingSelector);
   const { setStepNumber, refineMaterial } = useResourcesActions();
+  const moderation = useResourcesStore(moderationSelector);
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
   const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
   const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const lessonPlan = pageData?.lessonPlan;
-  console.log("************lessonPlan", lessonPlan);
+
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 
@@ -75,18 +78,6 @@ const StepThree = () => {
     } finally {
       setIsResourceDownloading(false);
     }
-  };
-
-  const getRefinementOptions = () => {
-    if (docType === "additional-glossary") {
-      return readingAgeRefinement;
-    }
-
-    if (docType === "additional-comprehension") {
-      return [];
-    }
-
-    return [];
   };
 
   const renderGeneratedMaterial = () => {
@@ -119,6 +110,10 @@ const StepThree = () => {
   return (
     <>
       {isResourcesLoading || (!generation && <OakP>Loading...</OakP>)}
+
+      {moderation?.categories && moderation.categories.length > 0 && (
+        <ModerationMessage />
+      )}
       <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       <ResourcesFooter>
         {isFooterAdaptOpen ? (
