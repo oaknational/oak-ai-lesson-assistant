@@ -35,6 +35,24 @@ import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
 
+// Type guard to check if a key is a valid lesson part
+function isValidLessonPart(
+  key: string,
+): key is
+  | "learningOutcome"
+  | "learningCycles"
+  | "keyLearningPoints"
+  | "misconceptions"
+  | "keywords" {
+  return [
+    "learningOutcome",
+    "learningCycles",
+    "keyLearningPoints",
+    "misconceptions",
+    "keywords",
+  ].includes(key);
+}
+
 export function mapLessonPlanSections(
   lessonPlan: AilaPersistedChat["lessonPlan"],
 ) {
@@ -104,8 +122,11 @@ const StepTwo = () => {
 
         {mapLessonPlanSections(pageData.lessonPlan).map((section) => {
           const title = camelCaseToSentenceCase(section.key) ?? "";
-          // Check if the section should be displayed based on the resource type's lessonParts
-          if (resourceType?.lessonParts?.includes(section.key)) {
+          if (
+            resourceType?.lessonParts &&
+            isValidLessonPart(section.key) &&
+            resourceType.lessonParts.includes(section.key)
+          ) {
             return (
               <OakFlex
                 key={section.key}
