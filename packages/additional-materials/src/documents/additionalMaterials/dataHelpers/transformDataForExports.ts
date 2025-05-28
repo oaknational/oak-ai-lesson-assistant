@@ -55,28 +55,19 @@ export const transformDataComprehension =
   (data: unknown): Promise<TransformResult> => {
     const parsedData = comprehensionTaskSchema.parse(data);
     const { comprehension } = parsedData;
-
     const questions = comprehension.questions || [];
 
-    // Generate question and answer mappings programmatically
     const placeholderMap: Record<string, string> = {
-      // Title and main content
       title: comprehension.lessonTitle,
       comprehension_text: comprehension.text,
-
-      // Questions 1-10
-      ...Object.fromEntries([
-        ...Array.from({ length: 10 }, (_, i): [string, string] => [
-          `question_${i + 1}`,
-          (questions[i]?.questionText as string) || "",
-        ]),
-        // Answers 1-10
-        ...Array.from({ length: 10 }, (_, i): [string, string] => [
-          `question_${i + 1}_answer`,
-          (questions[i]?.answer as string) || "",
-        ]),
-      ]),
     };
+
+    // Add questions and answers up to 10 questions
+    for (let i = 1; i <= 10; i++) {
+      const question = questions[i - 1];
+      placeholderMap[`question_${i}`] = question?.questionText || "";
+      placeholderMap[`question_${i}_answer`] = question?.answer || "";
+    }
 
     const transformedData: TransformResult = [
       { type: "title", text: comprehension.lessonTitle },
@@ -90,19 +81,11 @@ export const transformDataStarterQuiz =
   () =>
   (data: unknown): Promise<TransformResult> => {
     const parsedData = starterQuizSchema.parse(data);
-    const { title, questions } = parsedData;
-
-    const quizPlaceholders = ["title"];
+    const { title } = parsedData;
 
     const placeholderMap: Record<string, string> = {
       title: `Starter Quiz: ${title}`,
     };
-
-    quizPlaceholders.forEach((placeholder) => {
-      if (!(placeholder in placeholderMap)) {
-        placeholderMap[placeholder] = "";
-      }
-    });
 
     const transformedData: TransformResult = [
       { type: "title", text: `Starter Quiz: ${title}` },
@@ -118,58 +101,15 @@ export const transformDataExitQuiz =
     const parsedData = exitQuizSchema.parse(data);
     const { title, questions } = parsedData;
 
-    const quizPlaceholders = [
-      "title",
-      "question_1",
-      "question_1_answer_1",
-      "question_1_answer_2",
-      "question_1_answer_3",
-      "question_2",
-      "question_2_answer_1",
-      "question_2_answer_2",
-      "question_2_answer_3",
-      "question_3",
-      "question_3_answer_1",
-      "question_3_answer_2",
-      "question_3_answer_3",
-      "question_4",
-      "question_4_answer_1",
-      "question_4_answer_2",
-      "question_4_answer_3",
-      "question_5",
-      "question_5_answer_1",
-      "question_5_answer_2",
-      "question_5_answer_3",
-      "question_6",
-      "question_6_answer_1",
-      "question_6_answer_2",
-      "question_6_answer_3",
-      "question_7",
-      "question_7_answer_1",
-      "question_7_answer_2",
-      "question_7_answer_3",
-      "question_8",
-      "question_8_answer_1",
-      "question_8_answer_2",
-      "question_8_answer_3",
-      "question_9",
-      "question_9_answer_1",
-      "question_9_answer_2",
-      "question_9_answer_3",
-      "question_10",
-      "question_10_answer_1",
-      "question_10_answer_2",
-      "question_10_answer_3",
-    ];
-
     const placeholderMap: Record<string, string> = {
-      // Title
       title: `Exit Quiz: ${title}`,
     };
 
+    // Add questions and answers up to 10 questions
     questions.slice(0, 10).forEach((q, qIndex) => {
       const questionNum = qIndex + 1;
       placeholderMap[`question_${questionNum}`] = q.question;
+
       q.options.forEach((option, aIndex) => {
         if (aIndex < 3) {
           const answerNum = aIndex + 1;
@@ -180,11 +120,17 @@ export const transformDataExitQuiz =
       });
     });
 
-    quizPlaceholders.forEach((placeholder) => {
-      if (!(placeholder in placeholderMap)) {
-        placeholderMap[placeholder] = "";
+    // Fill any missing placeholders with empty strings for up to 10 questions
+    for (let i = 1; i <= 10; i++) {
+      if (!placeholderMap[`question_${i}`]) {
+        placeholderMap[`question_${i}`] = "";
       }
-    });
+      for (let j = 1; j <= 3; j++) {
+        if (!placeholderMap[`question_${i}_answer_${j}`]) {
+          placeholderMap[`question_${i}_answer_${j}`] = "";
+        }
+      }
+    }
 
     const transformedData: TransformResult = [
       { type: "title", text: `Exit Quiz: ${title}` },
