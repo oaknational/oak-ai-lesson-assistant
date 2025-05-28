@@ -4,10 +4,12 @@ import { useResourcesActions } from "@/stores/ResourcesStoreProvider";
 
 type AdditionalMaterialsThreatDetectProps = {
   closeDialog: () => void;
+  body: string;
 };
 
 const AdditionalMaterialsThreatDetected = ({
   closeDialog,
+  body,
 }: Readonly<AdditionalMaterialsThreatDetectProps>) => {
   const { resetToDefault } = useResourcesActions();
   return (
@@ -18,7 +20,7 @@ const AdditionalMaterialsThreatDetected = ({
       $flexDirection="column"
       $justifyContent="space-between"
     >
-      <OakP>This content ..... threat detected.....</OakP>
+      <OakP>{body}</OakP>
 
       <OakPrimaryButton
         onClick={() => {

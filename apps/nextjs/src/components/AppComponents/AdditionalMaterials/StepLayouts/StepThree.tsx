@@ -41,9 +41,11 @@ import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
 import { ExitQuiz } from "../../AdditionalMaterials/ExitQuiz";
 import { Glossary } from "../../AdditionalMaterials/Glossary";
 import { StarterQuiz } from "../../AdditionalMaterials/StarterQuiz";
+import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import InlineButton from "../InlineButton";
 import ResourcesFooter from "../ResourcesFooter";
+import { handleDialogSelection } from "./helpers";
 
 const log = aiLogger("additional-materials");
 
@@ -54,11 +56,13 @@ const StepThree = () => {
   const isResourcesLoading = useResourcesStore(isResourcesLoadingSelector);
   const { setStepNumber, refineMaterial } = useResourcesActions();
   const moderation = useResourcesStore(moderationSelector);
+  const error = useResourcesStore((state) => state.error);
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
   const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
   const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const lessonPlan = pageData?.lessonPlan;
+  const { setDialogWindow } = useDialog();
 
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
@@ -107,13 +111,16 @@ const StepThree = () => {
     return null;
   };
 
+  // const refinementOptions = getRefinementOptions();
+  const hasModeration =
+    moderation?.categories && moderation.categories.length > 0;
+
+  handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
+
   return (
     <>
       {isResourcesLoading || (!generation && <OakP>Loading...</OakP>)}
-
-      {moderation?.categories && moderation.categories.length > 0 && (
-        <ModerationMessage />
-      )}
+      {hasModeration && <ModerationMessage />}
       <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       <ResourcesFooter>
         {isFooterAdaptOpen ? (
