@@ -1,5 +1,6 @@
 import { type ZodType } from "zod";
 
+import type { PartialLessonPlanFieldKeyArray } from "../partialLessonPlan/schema";
 import {
   type Action,
   type AdditionalMaterialType,
@@ -34,6 +35,7 @@ export type BaseResourceTypeConfig = {
   schema: ZodType;
   promptContextSchema: ZodType;
   version: number;
+  lessonParts: PartialLessonPlanFieldKeyArray;
 };
 
 const readingAgeRefinementOptions: RefinementOption[] = Array.from(
@@ -55,6 +57,13 @@ export const resourceTypesConfig = {
     description: "Additional lesson vocabulary with pupil friendly definitions",
     refinementOptions: readingAgeRefinementOptions,
     isAvailable: true,
+    lessonParts: [
+      "learningOutcome",
+      "learningCycles",
+      "keyLearningPoints",
+      "misconceptions",
+      "keywords",
+    ],
   },
   "additional-comprehension": {
     // Backend config
@@ -66,6 +75,13 @@ export const resourceTypesConfig = {
     description: "Comprehension tasks which can be adapted for pupils",
     refinementOptions: readingAgeRefinementOptions,
     isAvailable: true,
+    lessonParts: [
+      "learningOutcome",
+      "learningCycles",
+      "keyLearningPoints",
+      "misconceptions",
+      "keywords",
+    ],
   },
   "additional-starter-quiz": {
     // Backend config
@@ -77,6 +93,14 @@ export const resourceTypesConfig = {
     description: "A multiple-choice quiz to assess pupils' prior knowledge",
     refinementOptions: readingAgeRefinementOptions,
     isAvailable: true,
+    lessonParts: [
+      "learningOutcome",
+      "learningCycles",
+      "priorKnowledge",
+      "keyLearningPoints",
+      "misconceptions",
+      "keywords",
+    ],
   },
   "additional-exit-quiz": {
     // Backend config
@@ -89,6 +113,14 @@ export const resourceTypesConfig = {
       "A multiple-choice quiz to assess pupils' learning from the lesson",
     refinementOptions: readingAgeRefinementOptions,
     isAvailable: true,
+    lessonParts: [
+      "learningOutcome",
+      "learningCycles",
+      "priorKnowledge",
+      "keyLearningPoints",
+      "misconceptions",
+      "keywords",
+    ],
   },
 } as const;
 

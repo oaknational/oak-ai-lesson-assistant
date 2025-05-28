@@ -1,5 +1,6 @@
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
+import type { PartialLessonPlanFieldKeyArray } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import {
@@ -34,6 +35,28 @@ import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
 import { handleDialogSelection } from "./helpers";
+
+type LessonPlanSectionKey = (typeof lessonFieldKeys)[number];
+
+// Type guard to check if a key is a valid lesson part
+function isValidLessonPart(
+  key: LessonPlanSectionKey,
+): key is Extract<
+  LessonPlanSectionKey,
+  | "learningOutcome"
+  | "learningCycles"
+  | "keyLearningPoints"
+  | "misconceptions"
+  | "keywords"
+> {
+  return [
+    "learningOutcome",
+    "learningCycles",
+    "keyLearningPoints",
+    "misconceptions",
+    "keywords",
+  ].includes(key);
+}
 
 export function mapLessonPlanSections(
   lessonPlan: AilaPersistedChat["lessonPlan"],
@@ -106,8 +129,9 @@ const StepTwo = () => {
         {mapLessonPlanSections(pageData.lessonPlan).map((section) => {
           const title = camelCaseToSentenceCase(section.key) ?? "";
           if (
-            section.key === "learningOutcome" ||
-            section.key === "learningCycles"
+            resourceType?.lessonParts &&
+            isValidLessonPart(section.key) &&
+            resourceType.lessonParts.includes(section.key)
           ) {
             return (
               <OakFlex
