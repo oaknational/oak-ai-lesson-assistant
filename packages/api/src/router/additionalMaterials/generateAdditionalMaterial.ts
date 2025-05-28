@@ -70,9 +70,14 @@ export async function generateAdditionalMaterial({
   const { resourceId, documentType } = input;
   const version = additionalMaterialsConfigMap[documentType].version;
 
+  if (!input.lessonId) {
+    throw new Error("lessonId is required for additional material generation");
+  }
+
   const interaction = await prisma.additionalMaterialInteraction.create({
     data: {
       userId,
+      derivedFromLessonId: input.lessonId, // Now references the lesson table
       config: {
         resourceType: documentType,
         resourceTypeVersion: version,
@@ -82,7 +87,6 @@ export async function generateAdditionalMaterial({
         input.action === "refine" && resourceId ? resourceId : null,
       output: result,
       outputModeration: moderation,
-      derivedFromId: input.lessonId,
     },
   });
 

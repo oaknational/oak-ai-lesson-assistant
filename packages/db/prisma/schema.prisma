@@ -994,6 +994,13 @@ enum QuizAnswerStatus {
   @@schema("public")
 }
 
+enum LessonSourceType {
+  PARTIAL_LESSON_PLAN
+  OWA_TRANSFORMED_LESSON
+
+  @@schema("additional_materials")
+}
+
 model Ingest {
   id          String    @id @default(cuid())
   config      Json      @map("config") @db.JsonB
@@ -1158,13 +1165,43 @@ model RagLessonPlanPart {
   @@schema("rag")
 }
 
+model AdditionalMaterialLesson {
+  id           String           @id @default(uuid())
+  sourceType   LessonSourceType @map("source_type")
+  lessonData   Json             @map("lesson_data") @db.JsonB
+  schemaVersion Int             @default(1) @map("schema_version")
+  
+  // Only populated when sourceType = "OWA_TRANSFORMED_LESSON"
+  lessonSlug   String?          @map("lesson_slug")
+  programmeSlug String?         @map("programme_slug")
+  
+  // Soft delete support
+  deletedAt    DateTime?        @map("deleted_at")
+  
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+  
+  // Relations
+  interactions AdditionalMaterialInteraction[] @relation("LessonInteractions")
+  derivedInteractions AdditionalMaterialInteraction[] @relation("DerivedFromLesson")
+
+  @@unique([lessonSlug, programmeSlug])
+  @@index([sourceType])
+  @@index([createdAt])
+  @@map("AdditionalMaterialLessons")
+  @@schema("additional_materials")
+}
+
 model AdditionalMaterialInteraction {
   id     String @id @default(uuid())
   userId String @map("user_id")
 
-  derivedFromId String?                         @map("derived_from_id")
-  derivedFrom   AdditionalMaterialInteraction?  @relation("DerivedFrom", fields: [derivedFromId], references: [id])
-  derivatives   AdditionalMaterialInteraction[] @relation("DerivedFrom")
+  lessonId String? @map("lesson_id") 
+  lesson   AdditionalMaterialLesson? @relation("LessonInteractions", fields: [lessonId], references: [id])
+
+  // New foreign key to Lesson table
+  derivedFromLessonId String?                   @map("derived_from_lesson_id")
+  derivedFromLesson   AdditionalMaterialLesson? @relation("DerivedFromLesson",fields: [derivedFromLessonId], references: [id])
 
   adaptsOutputId String?                         @map("adapts_output_id")
   adaptsOutput   AdditionalMaterialInteraction?  @relation("AdaptedOutput", fields: [adaptsOutputId], references: [id])
@@ -1172,13 +1209,16 @@ model AdditionalMaterialInteraction {
 
   config               Json    @db.JsonB
   inputText            String? @map("input_text")
-  inputThreatDetection Json?   @map("input_threat_detection") @db.JsonB
+  inputThreatDetection Json?   @map("input_threat_detection") @db.JsonB 
 
   output           Json? @db.JsonB
   outputModeration Json? @map("output_moderation") @db.JsonB
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+    // Soft delete support
+  deletedAt    DateTime?        @map("deleted_at")
 
   @@map("AdditionalMaterialInteractions")
   @@schema("additional_materials")

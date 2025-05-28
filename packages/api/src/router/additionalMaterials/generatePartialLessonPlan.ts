@@ -64,15 +64,29 @@ export async function generatePartialLessonPlan({
     provider: "openai",
   });
 
+  // Create lesson record first
+  const lessonRecord = await prisma.additionalMaterialLesson.create({
+    data: {
+      sourceType: "PARTIAL_LESSON_PLAN",
+      lessonData: lesson,
+      schemaVersion: 1,
+    },
+  });
+
+  if (!lessonRecord.id) {
+    throw new Error("Failed to create lesson record");
+  }
+
+  // Create interaction record that references the lesson
   const interaction = await prisma.additionalMaterialInteraction.create({
     data: {
       userId,
+      lessonId: lessonRecord.id,
       inputText: `${input.subject} - ${input.title}`,
       config: {
         resourceType: "partial-lesson-plan",
         resourceTypeVersion: 1,
       },
-      output: lesson,
       outputModeration: moderation,
       inputThreatDetection: {
         flagged: lakeraResult.flagged,
@@ -110,7 +124,7 @@ export async function generatePartialLessonPlan({
     return {
       threatDetection: true,
       lesson: null,
-      lessonId: interaction.id,
+      lessonId: lessonRecord.id,
       moderation,
     };
   }
@@ -118,7 +132,7 @@ export async function generatePartialLessonPlan({
   return {
     threatDetection: false,
     lesson,
-    lessonId: interaction.id,
+    lessonId: lessonRecord.id,
     moderation,
   };
 }
