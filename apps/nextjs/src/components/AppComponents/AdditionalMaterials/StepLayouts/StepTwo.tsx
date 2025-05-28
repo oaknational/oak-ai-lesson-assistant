@@ -39,7 +39,6 @@ const StepTwo = () => {
     setYear,
     setActiveDropdown,
   } = useResourcesActions();
-  const { setDialogWindow } = useDialog();
   const subject = useResourcesStore(subjectSelector);
   const title = useResourcesStore(titleSelector);
   const year = useResourcesStore(yearSelector);

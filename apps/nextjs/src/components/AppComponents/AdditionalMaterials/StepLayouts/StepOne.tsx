@@ -18,11 +18,16 @@ import {
 } from "@/stores/ResourcesStoreProvider";
 import { docTypeSelector } from "@/stores/resourcesStore/selectors";
 
+import { useDialog } from "../../DialogContext";
 import ResourcesFooter from "../ResourcesFooter";
+import { handleDialogSelection } from "./helpers";
 
 const StepOne = () => {
   const { setStepNumber, setDocType, setGeneration } = useResourcesActions();
   const docType = useResourcesStore(docTypeSelector);
+  const error = useResourcesStore((state) => state.error);
+
+  const { setDialogWindow } = useDialog();
 
   useEffect(() => {
     // Reset the document type when the component is mounted
@@ -33,6 +38,8 @@ const StepOne = () => {
   const resourceTypes = getResourceTypes().filter(
     (resourceType) => resourceType.isAvailable,
   );
+
+  handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
 
   return (
     <>

@@ -35,6 +35,7 @@ import { MemoizedReactMarkdownWithStyles } from "../../Chat/markdown";
 import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
+import { handleDialogSelection } from "./helpers";
 
 type LessonPlanSectionKey = (typeof lessonFieldKeys)[number];
 
@@ -72,7 +73,7 @@ const StepThree = () => {
   const moderation = useResourcesStore(moderationSelector);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
-
+  const error = useResourcesStore((state) => state.error);
   const { setDialogWindow } = useDialog();
 
   // Get resource type from configuration
@@ -106,6 +107,12 @@ const StepThree = () => {
   if (threatDetected) {
     setDialogWindow("additional-materials-threat-detected");
   }
+
+  // const refinementOptions = getRefinementOptions();
+  const hasModeration =
+    moderation?.categories && moderation.categories.length > 0;
+
+  handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
 
   return (
     <>
