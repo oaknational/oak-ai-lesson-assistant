@@ -21,39 +21,41 @@ export const transformDataForExport = (
   }
 };
 
+type TransformResult = Array<
+  | { type: "title"; text: string }
+  | { type: "placeholders"; map: Record<string, string> }
+>;
+
 export const transformDataGlossary =
-  <InputData, TemplateData>() =>
-  (data: InputData): Promise<TemplateData> => {
+  () =>
+  (data: unknown): Promise<TransformResult> => {
     const parsedData = glossarySchema.parse(data);
     const { glossary, lessonTitle } = parsedData;
 
-    // Create a simple placeholder map like all other document types
     const placeholderMap: Record<string, string> = {
       title: lessonTitle,
     };
 
-    // Add glossary terms as numbered placeholders
     glossary.forEach((term, index) => {
       const termNum = index + 1;
       placeholderMap[`term_${termNum}`] = `${term.term}:`;
       placeholderMap[`definition_${termNum}`] = term.definition;
     });
 
-    const transformedData = [
+    const transformedData: TransformResult = [
       { type: "title", text: lessonTitle },
       { type: "placeholders", map: placeholderMap },
     ];
 
-    return Promise.resolve(transformedData) as Promise<TemplateData>;
+    return Promise.resolve(transformedData);
   };
 
 export const transformDataComprehension =
-  <InputData, TemplateData>() =>
-  (data: InputData): Promise<TemplateData> => {
+  () =>
+  (data: unknown): Promise<TransformResult> => {
     const parsedData = comprehensionTaskSchema.parse(data);
     const { comprehension } = parsedData;
 
-    // Extract the questions and answers
     const questions = comprehension.questions || [];
 
     // Generate question and answer mappings programmatically
@@ -76,52 +78,46 @@ export const transformDataComprehension =
       ]),
     };
 
-    // Transform into the expected format
-    const transformedData = [
+    const transformedData: TransformResult = [
       { type: "title", text: comprehension.lessonTitle },
       { type: "placeholders", map: placeholderMap },
     ];
 
-    return Promise.resolve(transformedData) as Promise<TemplateData>;
+    return Promise.resolve(transformedData);
   };
 
 export const transformDataStarterQuiz =
-  <InputData, TemplateData>() =>
-  (data: InputData): Promise<TemplateData> => {
+  () =>
+  (data: unknown): Promise<TransformResult> => {
     const parsedData = starterQuizSchema.parse(data);
     const { title, questions } = parsedData;
 
-    // Define quiz template placeholder names
     const quizPlaceholders = ["title"];
 
-    // Create a direct mapping from our data to the placeholder names
     const placeholderMap: Record<string, string> = {
-      // Just map the title for now
       title: `Starter Quiz: ${title}`,
     };
 
-    // Fill any remaining template placeholders with empty values
     quizPlaceholders.forEach((placeholder) => {
       if (!(placeholder in placeholderMap)) {
         placeholderMap[placeholder] = "";
       }
     });
 
-    const transformedData = [
+    const transformedData: TransformResult = [
       { type: "title", text: `Starter Quiz: ${title}` },
       { type: "placeholders", map: placeholderMap },
     ];
 
-    return Promise.resolve(transformedData) as Promise<TemplateData>;
+    return Promise.resolve(transformedData);
   };
 
 export const transformDataExitQuiz =
-  <InputData, TemplateData>() =>
-  (data: InputData): Promise<TemplateData> => {
+  () =>
+  (data: unknown): Promise<TransformResult> => {
     const parsedData = exitQuizSchema.parse(data);
     const { title, questions } = parsedData;
 
-    // Define quiz template placeholder names
     const quizPlaceholders = [
       "title",
       "question_1",
@@ -166,22 +162,16 @@ export const transformDataExitQuiz =
       "question_10_answer_3",
     ];
 
-    // Create a direct mapping from our data to the placeholder names
     const placeholderMap: Record<string, string> = {
       // Title
       title: `Exit Quiz: ${title}`,
     };
 
-    // Map individual questions and answers
     questions.slice(0, 10).forEach((q, qIndex) => {
       const questionNum = qIndex + 1;
-      // Add the question
       placeholderMap[`question_${questionNum}`] = q.question;
-
-      // Add each answer
       q.options.forEach((option, aIndex) => {
         if (aIndex < 3) {
-          // Only handle up to 3 answers
           const answerNum = aIndex + 1;
           const marker = option.isCorrect ? "✓ " : "";
           placeholderMap[`question_${questionNum}_answer_${answerNum}`] =
@@ -190,17 +180,16 @@ export const transformDataExitQuiz =
       });
     });
 
-    // Fill any remaining template placeholders with empty values
     quizPlaceholders.forEach((placeholder) => {
       if (!(placeholder in placeholderMap)) {
         placeholderMap[placeholder] = "";
       }
     });
 
-    const transformedData = [
+    const transformedData: TransformResult = [
       { type: "title", text: `Exit Quiz: ${title}` },
       { type: "placeholders", map: placeholderMap },
     ];
 
-    return Promise.resolve(transformedData) as Promise<TemplateData>;
+    return Promise.resolve(transformedData);
   };
