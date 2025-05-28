@@ -12,53 +12,31 @@ import type { OutputData, Result, State } from "./types";
 
 const log = aiLogger("exports");
 
-// Simple function to extract data from blocks - replaces the complex extractDataFromBlocks
+// Simple function to extract placeholder data - all document types now use placeholders
 const extractDataFromBlocks = <T>(
   blocks: T,
 ): Record<string, string | string[] | null | undefined> => {
   const map: Record<string, string | string[] | null | undefined> = {};
 
-  // Parse blocks to ensure they match the expected schema
   const parsedBlocks = Array.isArray(blocks) ? blocks : [];
 
   for (const block of parsedBlocks) {
     if (typeof block === "object" && block !== null && "type" in block) {
       const typedBlock = block as { type: string; [key: string]: unknown };
 
-      switch (typedBlock.type) {
-        case "title":
-          if ("text" in typedBlock && typeof typedBlock.text === "string") {
-            map[typedBlock.type] = typedBlock.text;
-          }
-          break;
-        case "labelValue":
-          // Handle glossary terms - create individual key-value pairs
-          if ("items" in typedBlock && Array.isArray(typedBlock.items)) {
-            for (const item of typedBlock.items) {
-              if (
-                typeof item === "object" &&
-                item !== null &&
-                "label" in item &&
-                "value" in item &&
-                typeof (item as { label: unknown }).label === "string" &&
-                typeof (item as { value: unknown }).value === "string"
-              ) {
-                const typedItem = item as { label: string; value: string };
-                map[typedItem.label] = typedItem.value;
-              }
-            }
-          }
-          break;
-        case "placeholders":
-          // Direct placeholder mapping - just merge the map
-          if (
-            "map" in typedBlock &&
-            typeof typedBlock.map === "object" &&
-            typedBlock.map !== null
-          ) {
-            Object.assign(map, typedBlock.map);
-          }
-          break;
+      if (
+        typedBlock.type === "title" &&
+        "text" in typedBlock &&
+        typeof typedBlock.text === "string"
+      ) {
+        map[typedBlock.type] = typedBlock.text;
+      } else if (
+        typedBlock.type === "placeholders" &&
+        "map" in typedBlock &&
+        typeof typedBlock.map === "object" &&
+        typedBlock.map !== null
+      ) {
+        Object.assign(map, typedBlock.map);
       }
     }
   }

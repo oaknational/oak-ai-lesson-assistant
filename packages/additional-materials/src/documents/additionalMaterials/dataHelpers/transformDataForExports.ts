@@ -1,5 +1,3 @@
-import { blocksSchema } from "@oakai/exports/src/schema/additionalResourceBlockSchema.schema";
-
 import { comprehensionTaskSchema } from "../comprehension/schema";
 import type { AdditionalMaterialType } from "../configSchema";
 import { exitQuizSchema } from "../exitQuiz/schema";
@@ -28,20 +26,25 @@ export const transformDataGlossary =
   (data: InputData): Promise<TemplateData> => {
     const parsedData = glossarySchema.parse(data);
     const { glossary, lessonTitle } = parsedData;
+
+    // Create a simple placeholder map like all other document types
+    const placeholderMap: Record<string, string> = {
+      title: lessonTitle,
+    };
+
+    // Add glossary terms as numbered placeholders
+    glossary.forEach((term, index) => {
+      const termNum = index + 1;
+      placeholderMap[`term_${termNum}`] = `${term.term}:`;
+      placeholderMap[`definition_${termNum}`] = term.definition;
+    });
+
     const transformedData = [
       { type: "title", text: lessonTitle },
-      {
-        type: "labelValue",
-        items: glossary.map(({ term, definition }) => ({
-          label: `${term}:`,
-          value: definition,
-        })),
-      },
+      { type: "placeholders", map: placeholderMap },
     ];
 
-    const parsedGlossaryTemplate = blocksSchema.parse(transformedData);
-
-    return Promise.resolve(parsedGlossaryTemplate) as Promise<TemplateData>;
+    return Promise.resolve(transformedData) as Promise<TemplateData>;
   };
 
 export const transformDataComprehension =
@@ -79,11 +82,7 @@ export const transformDataComprehension =
       { type: "placeholders", map: placeholderMap },
     ];
 
-    const parsedComprehensionTemplate = blocksSchema.parse(transformedData);
-
-    return Promise.resolve(
-      parsedComprehensionTemplate,
-    ) as Promise<TemplateData>;
+    return Promise.resolve(transformedData) as Promise<TemplateData>;
   };
 
 export const transformDataStarterQuiz =
@@ -113,9 +112,7 @@ export const transformDataStarterQuiz =
       { type: "placeholders", map: placeholderMap },
     ];
 
-    const parsedQuizTemplate = blocksSchema.parse(transformedData);
-
-    return Promise.resolve(parsedQuizTemplate) as Promise<TemplateData>;
+    return Promise.resolve(transformedData) as Promise<TemplateData>;
   };
 
 export const transformDataExitQuiz =
@@ -205,7 +202,5 @@ export const transformDataExitQuiz =
       { type: "placeholders", map: placeholderMap },
     ];
 
-    const parsedQuizTemplate = blocksSchema.parse(transformedData);
-
-    return Promise.resolve(parsedQuizTemplate) as Promise<TemplateData>;
+    return Promise.resolve(transformedData) as Promise<TemplateData>;
   };
