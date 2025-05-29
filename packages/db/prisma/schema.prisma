@@ -1181,5 +1181,5 @@ model AdditionalMaterialInteraction {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("AdditionalMaterialInteractions")
-  @@schema("additional_materials")
+  @@schema("public")
 }
