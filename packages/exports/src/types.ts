@@ -4,6 +4,7 @@
 export type OutputData = {
   fileUrl: string;
   fileId: string;
+  fileIds?: string[]; // Optional array of fileIds for multi-document exports
   templateId: string;
   userCanViewGdriveFile: boolean;
 };

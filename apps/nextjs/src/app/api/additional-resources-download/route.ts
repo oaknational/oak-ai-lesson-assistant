@@ -59,12 +59,12 @@ export async function POST(req: Request, res: NextApiResponse) {
     if ("error" in exportLink) {
       const error = new Error("Failed to generate export link");
       Sentry.captureException(error, { extra: { exportLink } });
-      res.status(500).end("Failed to generate export link");
-      return;
+      return new Response("Failed to generate export link", { status: 500 });
     }
 
     const stream = await getDriveDocsZipStream({
       fileId: exportLink.data.fileId,
+      fileIds: exportLink.data.fileIds,
       ext: ["pdf", "docx"],
       documentTitle: `${lessonTitle} - ${documentType}`,
     });
@@ -72,8 +72,7 @@ export async function POST(req: Request, res: NextApiResponse) {
     if ("error" in stream) {
       const error = new Error("Failed to create ZIP stream from Drive");
       Sentry.captureException(error, { extra: { stream } });
-      res.status(500).end("Failed to create ZIP stream");
-      return;
+      return new Response("Failed to create ZIP stream", { status: 500 });
     }
 
     const readableStream = nodePassThroughToReadableStream(stream);
@@ -81,8 +80,7 @@ export async function POST(req: Request, res: NextApiResponse) {
     if (!readableStream) {
       const error = new Error("Failed to create readable stream");
       Sentry.captureException(error, { extra: { readableStream } });
-      res.status(500).end("Failed to create readable stream");
-      return;
+      return new Response("Failed to create readable stream", { status: 500 });
     }
 
     return new Response(readableStream, {
@@ -95,6 +93,6 @@ export async function POST(req: Request, res: NextApiResponse) {
   } catch (error) {
     log.error("Unexpected error in export additional materials", { error });
     Sentry.captureException(error);
-    res.status(500).end("Internal Server Error");
+    return new Response("Internal Server Error", { status: 500 });
   }
 }
