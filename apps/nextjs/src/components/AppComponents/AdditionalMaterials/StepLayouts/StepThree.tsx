@@ -1,6 +1,5 @@
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
-import type { PartialLessonPlanFieldKeyArray } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import {
@@ -24,6 +23,7 @@ import {
 } from "@/stores/ResourcesStoreProvider";
 import {
   docTypeSelector,
+  errorSelector,
   isLoadingLessonPlanSelector,
   moderationSelector,
   pageDataSelector,
@@ -73,7 +73,7 @@ const StepThree = () => {
   const moderation = useResourcesStore(moderationSelector);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
-  const error = useResourcesStore((state) => state.error);
+  const error = useResourcesStore(errorSelector);
   const { setDialogWindow } = useDialog();
 
   // Get resource type from configuration
@@ -87,6 +87,9 @@ const StepThree = () => {
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 
   const handleSubmit = () => {
+    // Immediately navigate to next step to show loading
+    setStepNumber(3);
+    // Start material generation
     void generateMaterial({
       mutateAsync: async (input) => {
         try {
@@ -94,7 +97,6 @@ const StepThree = () => {
         } catch (e) {
           const error = e instanceof Error ? e : new Error(String(e));
           Sentry.captureException(error);
-
           throw error;
         }
       },
@@ -169,8 +171,6 @@ const StepThree = () => {
           <OakPrimaryButton
             onClick={() => {
               void handleSubmit();
-              setStepNumber(3);
-              return null;
             }}
             iconName="arrow-right"
             isTrailingIcon={true}
