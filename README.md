@@ -5,7 +5,7 @@
 > **Disclaimer**  
 > This project is intended primarily for internal use by Oak National Academy. While the repository is public, there is no expectation for external users to run the application. The installation instructions and other documentation are currently tailored for internal use and may not be comprehensive for external users.
 
-Oak AI Lesson Assistant is a project focused on experimenting with AI models and their applications. This repository contains several components designed to facilitate AI research and development.
+Oak AI Lesson Assistant is a project focused on experimenting with AI models and their applications. This repository contains several components designed to facilitate AI research and development..
 
 ## Table of contents
 
