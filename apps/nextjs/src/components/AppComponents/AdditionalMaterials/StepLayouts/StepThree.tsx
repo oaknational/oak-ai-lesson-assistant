@@ -108,20 +108,17 @@ const StepThree = () => {
     setDialogWindow("additional-materials-threat-detected");
   }
 
-  // const refinementOptions = getRefinementOptions();
+  handleDialogSelection({ threatDetected, error, setDialogWindow });
+
   const hasModeration =
     moderation?.categories && moderation.categories.length > 0;
-
-  handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
 
   return (
     <>
       <OakFlex $flexDirection="column">
         <OakFlex $flexDirection="column" $mb="space-between-m">
           <OakP $font={"heading-5"}>Task details</OakP>
-          {moderation?.categories && moderation.categories.length > 0 && (
-            <ModerationMessage />
-          )}
+          {hasModeration && <ModerationMessage />}
 
           <OakBox $pv="inner-padding-m">
             <OakP>

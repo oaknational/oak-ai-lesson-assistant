@@ -32,17 +32,39 @@ const buildLessonPlanInput = (
   subject: string,
   keyStage: string,
   year: string,
+  docType: string | null,
 ): PartialLessonContextSchemaType => {
-  const validLessonFields = lessonFieldKeys.filter(
-    (key) => key !== "title" && key !== "keyStage" && key !== "subject",
-  );
+  const resourceType = docType ? getResourceType(docType) : null;
+
+  // Always include these base fields
+  const baseFields = ["title", "keyStage", "subject"];
+
+  // Get resource-specific lesson parts or use all fields as fallback
+  let lessonPartsToGenerate = baseFields;
+
+  if (resourceType?.lessonParts) {
+    // Use resource-specific parts
+    lessonPartsToGenerate = [...baseFields, ...resourceType.lessonParts];
+  } else {
+    // Fallback to all fields
+    const validLessonFields = lessonFieldKeys.filter(
+      (key) => !baseFields.includes(key),
+    );
+    lessonPartsToGenerate = [...baseFields, ...validLessonFields];
+  }
+
+  // Remove duplicates
+  lessonPartsToGenerate = [...new Set(lessonPartsToGenerate)];
+
+  const parsedLessonPartsToGenerate =
+    PartialLessonPlanFieldKeyArraySchema.parse(lessonPartsToGenerate);
 
   return {
-    title: title ?? "",
-    subject: subject ?? "",
-    keyStage: keyStage ?? "",
-    year: year ?? "",
-    lessonParts: ["title", "keyStage", "subject", ...validLessonFields],
+    title: title,
+    subject: subject,
+    keyStage: keyStage,
+    year: year,
+    lessonParts: parsedLessonPartsToGenerate,
   };
 };
 
@@ -77,16 +99,19 @@ export const handleSubmitLessonPlan =
     const { setStepNumber, setIsLoadingLessonPlan } = get().actions;
     const { docType } = get();
 
-    // Get the resource-specific lessonParts if available
-    const resourceType = docType ? getResourceType(docType) : null;
-
     // Change step first for immediate feedback
     setStepNumber(1);
     setIsLoadingLessonPlan(true);
 
     try {
       log.info("Processing lesson plan", { title, subject, keyStage, year });
-      const apiInput = buildLessonPlanInput(title, subject, keyStage, year);
+      const apiInput = buildLessonPlanInput(
+        title,
+        subject,
+        keyStage,
+        year,
+        docType,
+      );
       const result = await mutateAsync(apiInput);
       updateStoreWithLessonPlan(set, result);
     } catch (error: unknown) {

@@ -22,6 +22,7 @@ import { trpc } from "@/utils/trpc";
 import { useDialog } from "../../DialogContext";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
+import { handleDialogSelection } from "./helpers";
 
 type SubmitLessonPlanParams = {
   title: string;
@@ -43,6 +44,8 @@ const StepTwo = () => {
   const title = useResourcesStore(titleSelector);
   const year = useResourcesStore(yearSelector);
   const activeDropdown = useResourcesStore(activeDropdownSelector);
+  const error = useResourcesStore((state) => state.error);
+  const { setDialogWindow } = useDialog();
 
   useEffect(() => {
     // Reset the form when the component is mounted
@@ -77,6 +80,8 @@ const StepTwo = () => {
       console.error("Failed to generate lesson plan:", error);
     }
   };
+
+  handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
 
   return (
     <>
