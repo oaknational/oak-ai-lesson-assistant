@@ -1,12 +1,12 @@
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
+import type { PartialLessonPlanFieldKeyArray } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import {
   camelCaseToSentenceCase,
   kebabCaseToSentenceCase,
 } from "@oakai/core/src/utils/camelCaseConversion";
-import { aiLogger } from "@oakai/logger";
 
 import {
   OakBox,
@@ -34,6 +34,29 @@ import { MemoizedReactMarkdownWithStyles } from "../../Chat/markdown";
 import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
+import { handleDialogSelection } from "./helpers";
+
+type LessonPlanSectionKey = (typeof lessonFieldKeys)[number];
+
+// Type guard to check if a key is a valid lesson part
+function isValidLessonPart(
+  key: LessonPlanSectionKey,
+): key is Extract<
+  LessonPlanSectionKey,
+  | "learningOutcome"
+  | "learningCycles"
+  | "keyLearningPoints"
+  | "misconceptions"
+  | "keywords"
+> {
+  return [
+    "learningOutcome",
+    "learningCycles",
+    "keyLearningPoints",
+    "misconceptions",
+    "keywords",
+  ].includes(key);
+}
 
 export function mapLessonPlanSections(
   lessonPlan: AilaPersistedChat["lessonPlan"],
@@ -41,11 +64,10 @@ export function mapLessonPlanSections(
   return lessonFieldKeys.map((key) => ({ key, data: lessonPlan[key] ?? null }));
 }
 
-const log = aiLogger("additional-materials");
-
 const StepTwo = () => {
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
+  const error = useResourcesStore((state) => state.error);
   const moderation = useResourcesStore(moderationSelector);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
@@ -84,14 +106,16 @@ const StepTwo = () => {
     setDialogWindow("additional-materials-threat-detected");
   }
 
+  handleDialogSelection({ threatDetected, error, setDialogWindow });
+  const hasModeration =
+    moderation?.categories && moderation.categories.length > 0;
+
   return (
     <>
       <OakFlex $flexDirection="column">
         <OakFlex $flexDirection="column" $mb="space-between-m">
           <OakP $font={"heading-5"}>Task details</OakP>
-          {moderation?.categories && moderation.categories.length > 0 && (
-            <ModerationMessage />
-          )}
+          {hasModeration && <ModerationMessage />}
 
           <OakBox $pv="inner-padding-m">
             <OakP>
@@ -105,8 +129,9 @@ const StepTwo = () => {
         {mapLessonPlanSections(pageData.lessonPlan).map((section) => {
           const title = camelCaseToSentenceCase(section.key) ?? "";
           if (
-            section.key === "learningOutcome" ||
-            section.key === "learningCycles"
+            resourceType?.lessonParts &&
+            isValidLessonPart(section.key) &&
+            resourceType.lessonParts.includes(section.key)
           ) {
             return (
               <OakFlex

@@ -1,4 +1,4 @@
-import type { ResourcesState } from "./types";
+import type { ErrorType, ResourcesState } from "./types";
 
 /**
  * Selector for the step number in the resources workflow
@@ -59,3 +59,9 @@ export const moderationSelector = (state: ResourcesState) => state.moderation;
  */
 export const threatDetectionSelector = (state: ResourcesState) =>
   state.threatDetection;
+
+/**
+ * Selector for the error state in the resources workflow
+ * @example const error = useResourcesStore(errorSelector);
+ */
+export const errorSelector = (state: ResourcesState) => state.error;
