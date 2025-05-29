@@ -2,7 +2,10 @@ import { useState } from "react";
 
 import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
 import { isExitQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/exitQuiz/schema";
-import { isGlossary } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
+import {
+  isGlossary,
+  readingAgeRefinement,
+} from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
 import {
   type RefinementOption,
   getResourceType,
@@ -31,6 +34,7 @@ import {
   isResourcesLoadingSelector,
   moderationSelector,
 } from "@/stores/resourcesStore/selectors";
+import { pageDataSelector } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
 
 import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
@@ -56,6 +60,8 @@ const StepThree = () => {
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
   const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
   const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
+  const pageData = useResourcesStore(pageDataSelector);
+  const lessonPlan = pageData?.lessonPlan;
   const { setDialogWindow } = useDialog();
 
   const fetchMaterial =
