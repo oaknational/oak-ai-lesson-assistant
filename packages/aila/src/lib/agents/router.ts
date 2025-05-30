@@ -3,7 +3,10 @@ import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
-import { type LooseLessonPlan } from "../../protocol/schema";
+import {
+  type AilaRagRelevantLesson,
+  type LooseLessonPlan,
+} from "../../protocol/schema";
 import { sectionKeysSchema } from "./lessonPlanSectionGroups";
 import { routerInstructions } from "./prompts";
 

@@ -45,8 +45,8 @@ export interface AilaChatService {
   readonly iteration: number | undefined;
   readonly createdAt: Date | undefined;
   readonly persistedChat: AilaPersistedChat | undefined;
-  get relevantLessons(): AilaRagRelevantLesson[];
-  set relevantLessons(lessons: AilaRagRelevantLesson[]);
+  get relevantLessons(): AilaRagRelevantLesson[] | null;
+  set relevantLessons(lessons: AilaRagRelevantLesson[] | null);
   readonly parsedMessages: MessagePart[][];
   readonly isShared: boolean | undefined;
   readonly fullQuizService: FullQuizService;

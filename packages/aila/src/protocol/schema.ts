@@ -456,7 +456,7 @@ export const chatSchema = z
     title: z.string(),
     userId: z.string(),
     lessonPlan: LessonPlanSchemaWhilstStreaming,
-    relevantLessons: z.array(AilaRagRelevantLessonSchema).optional(),
+    relevantLessons: z.array(AilaRagRelevantLessonSchema).nullish(),
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]),
     updatedAt: z.union([z.date(), z.number()]).optional(),

@@ -1,9 +1,16 @@
 import { aiLogger } from "@oakai/logger";
 
 import { compare } from "fast-json-patch";
+import invariant from "tiny-invariant";
 
 import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
-import { type LooseLessonPlan } from "../../protocol/schema";
+import {
+  type AilaRagRelevantLesson,
+  type CompletedLessonPlan,
+  type LessonPlanKey,
+  type LooseLessonPlan,
+  type Quiz,
+} from "../../protocol/schema";
 import { agents, sectionAgentMap } from "./agents";
 import { type InteractResult } from "./compatibility/streamHandling";
 import { messageToUserAgent } from "./messageToUser";
@@ -25,7 +32,7 @@ type InteractUpdate =
       data: {
         step: "routing";
         status: "completed";
-        plan: TurnPlan;
+        plan: TurnPlan | null;
       };
     }
   | {
@@ -67,27 +74,72 @@ export type InteractCallback = <Update extends InteractUpdate>(
   update: Update,
 ) => void;
 
+type CustomAgentAsyncFn<T> = (args: {
+  document: LooseLessonPlan;
+}) => Promise<T>;
+
 export async function interact({
   chatId,
   userId,
   initialDocument,
   messageHistory,
   onUpdate,
+  customAgents,
+  relevantLessons,
 }: {
   chatId: string;
   userId: string;
   initialDocument: LooseLessonPlan;
   messageHistory: { role: "user" | "assistant"; content: string }[];
   onUpdate?: InteractCallback;
+  customAgents: {
+    mathsStarterQuiz?: CustomAgentAsyncFn<Quiz>;
+    mathsExitQuiz?: CustomAgentAsyncFn<Quiz>;
+    fetchRagData: CustomAgentAsyncFn<CompletedLessonPlan[]>;
+  };
+  relevantLessons: AilaRagRelevantLesson[] | null;
 }): Promise<InteractResult> {
   log.info("Starting interaction with Aila agents");
   let document = initialDocument;
-
   // Notify about starting the routing process
   onUpdate?.({
     type: "progress",
     data: { step: "routing", status: "started" },
   });
+
+  let ragData: CompletedLessonPlan[] = [];
+  if (relevantLessons === null) {
+    /**
+     * This means we haven't even tried to fetch relevant lessons yet
+     * So we need to do that first, and present them to the user
+     * to decide if they want to use one of them as a base.
+     */
+    onUpdate?.({
+      type: "progress",
+      data: {
+        step: "routing",
+        status: "completed",
+        plan: null,
+      },
+    });
+    ragData =
+      (await customAgents.fetchRagData({
+        document,
+      })) ?? [];
+
+    const ailaMessage = ragData.length
+      ? `If you would like to base your lesson on one of the following:\n${ragData.map((rl, i) => `${i + 1}. ${rl.title}`).join(`\n`)}\n\nPlease reply with the number of the lesson you would like to use as a base.\n\nOtherwise click 'continue'.`
+      : `We couldn't find any relevant lessons!!`;
+    onUpdate?.({
+      type: "complete",
+      data: {
+        document,
+        ailaMessage,
+      },
+    });
+
+    return { document, ailaMessage };
+  }
 
   const routerResponse = await agentRouter({
     chatId,
@@ -103,6 +155,14 @@ export async function interact({
   }
 
   if (routerResponse.result.type === "end_turn") {
+    onUpdate?.({
+      type: "progress",
+      data: {
+        step: "routing",
+        status: "completed",
+        plan: null,
+      },
+    });
     // Notify about completion
     onUpdate?.({
       type: "complete",
@@ -126,7 +186,7 @@ export async function interact({
     log.info("Processing action", action);
     const { sectionKey, action: actionType, context } = action;
     const agentName = sectionAgentMap[sectionKey];
-    const agentDefinition = agents[agentName];
+    const agentDefinition = agents[agentName({ lessonPlan: document })];
 
     // Notify about starting an action
     onUpdate?.({
@@ -147,9 +207,87 @@ export async function interact({
         break;
       case "add":
       case "replace": {
+        // handle asyncFunction agents
+        if (agentDefinition.type === "asyncFunction") {
+          if (agentDefinition.name) {
+            if (agentDefinition.name === "mathsStarterQuiz") {
+              invariant(
+                customAgents.mathsStarterQuiz,
+                "Custom agent for maths starter quiz is required",
+              );
+
+              const quiz = await customAgents.mathsStarterQuiz({
+                document,
+              });
+
+              document = handleSectionGenerated({
+                sectionKey,
+                actionType,
+                value: quiz,
+                document,
+                onUpdate,
+              });
+
+              break;
+            } else if (agentDefinition.name === "mathsExitQuiz") {
+              invariant(
+                customAgents.mathsExitQuiz,
+                "Custom agent for maths exit quiz is required",
+              );
+
+              const quiz = await customAgents.mathsExitQuiz({
+                document,
+              });
+
+              document = handleSectionGenerated({
+                sectionKey,
+                actionType,
+                value: quiz,
+                document,
+                onUpdate,
+              });
+
+              break;
+            } else if (agentDefinition.name === "basedOn") {
+              const userMessage = messageHistory.findLast(
+                (m) => m.role === "user",
+              );
+              const userBasedOnSelection = Number(userMessage?.content?.trim());
+              if (relevantLessons === null) {
+                continue;
+              }
+              const userBasedOnSelectionIsInvalid =
+                isNaN(userBasedOnSelection) ||
+                userBasedOnSelection < 1 ||
+                userBasedOnSelection > relevantLessons.length;
+              if (userBasedOnSelectionIsInvalid) {
+                continue;
+              }
+              const chosenBasedOn = relevantLessons[userBasedOnSelection];
+              if (!chosenBasedOn) {
+                throw new Error("Unexpected chosenBasedOn missing");
+              }
+              const basedOnValue = {
+                id: chosenBasedOn.lessonPlanId,
+                title: chosenBasedOn.title,
+              };
+
+              handleSectionGenerated({
+                sectionKey,
+                actionType,
+                value: basedOnValue,
+                document,
+                onUpdate,
+              });
+
+              break;
+            }
+          }
+        }
+
         if (!("prompt" in agentDefinition)) {
           throw new Error(
-            `Unable to process 'replace' action. No prompt found`,
+            `Unable to process '${actionType}' action. No prompt found`,
           );
         }
         // Add or edit the section in the document
@@ -160,35 +298,17 @@ export async function interact({
           chatId,
           userId,
           additionalInstructions: context,
+          ragData,
         });
 
-        const patch: JsonPatchDocumentOptional = {
-          type: "patch",
-          value: {
-            path: `/${sectionKey}`,
-            op: actionType,
-            value: response.content,
-          },
-          status: "complete",
-          // @todo improve 'reasoning here
-          reasoning: `Updated ${sectionKey} based on user request`,
-        };
-        const patches = [patch];
-
-        document = {
-          ...document,
-          [sectionKey]: response.content,
-        };
-
-        // Send section update with current state
-        onUpdate?.({
-          type: "section_update",
-          data: {
-            sectionKey,
-            actionType,
-            patches,
-          },
+        document = handleSectionGenerated({
+          sectionKey,
+          actionType,
+          value: response.content,
+          document,
+          onUpdate,
         });
+
         break;
       }
       default:
@@ -237,4 +357,91 @@ export async function interact({
   });
 
   return { document, ailaMessage: messageResult.message };
+}
+
+function handleSectionGenerated({
+  sectionKey,
+  actionType,
+  value,
+  document,
+  onUpdate,
+}: {
+  sectionKey: LessonPlanKey;
+  actionType: "add" | "replace";
+  value: string | number | string[] | object;
+  document: LooseLessonPlan;
+  onUpdate?: InteractCallback;
+}): LooseLessonPlan {
+  // call onUpdate with the action
+  onUpdate?.(
+    createSectionUpdatePayload({
+      sectionKey,
+      actionType,
+      value,
+    }),
+  );
+
+  //  return the updated document
+  return createUpdatedDocument({
+    document,
+    sectionKey,
+    value,
+  });
+}
+
+function createPatches({
+  sectionKey,
+  actionType,
+  value,
+}: {
+  sectionKey: string;
+  actionType: "add" | "replace";
+  value: string | number | string[] | object;
+}): JsonPatchDocumentOptional[] {
+  return [
+    {
+      type: "patch",
+      value: {
+        path: `/${sectionKey}`,
+        op: actionType,
+        value,
+      },
+      status: "complete",
+      reasoning: `Updated ${sectionKey} based on user request`,
+    },
+  ];
+}
+
+function createSectionUpdatePayload({
+  sectionKey,
+  actionType,
+  value,
+}: {
+  sectionKey: string;
+  actionType: "add" | "replace";
+  value: string | number | string[] | object;
+}): InteractUpdate {
+  return {
+    type: "section_update",
+    data: {
+      sectionKey,
+      actionType,
+      patches: createPatches({ sectionKey, actionType, value }),
+    },
+  };
+}
+
+function createUpdatedDocument({
+  document,
+  sectionKey,
+  value,
+}: {
+  document: LooseLessonPlan;
+  sectionKey: LessonPlanKey;
+  value: string | number | string[] | object;
+}): LooseLessonPlan {
+  return {
+    ...document,
+    [sectionKey]: value,
+  };
 }
