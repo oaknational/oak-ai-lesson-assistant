@@ -71,7 +71,7 @@ export const handleGenerateMaterial =
       });
 
       log.info("Material generated successfully");
-      get().actions.setStepNumber(2);
+      // Step navigation is handled by the calling component
     } catch (error) {
       get().actions.setIsResourcesLoading(false);
       handleStoreError(set, error, {

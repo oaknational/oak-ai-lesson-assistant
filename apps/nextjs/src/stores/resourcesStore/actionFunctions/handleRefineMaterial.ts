@@ -54,8 +54,6 @@ export const handleRefineMaterial =
         lessonId: get().pageData.lessonPlan.lessonId,
       };
 
-      console.log("************payload", payload);
-
       const parsedPayload =
         generateAdditionalMaterialInputSchema.parse(payload);
 

@@ -53,6 +53,7 @@ const publicRoutes = [
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/webhooks/clerk",
+  "/api/fetch-owa-lesson",
 ];
 if (
   process.env.NODE_ENV === "development" ||
