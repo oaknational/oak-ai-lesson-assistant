@@ -13,6 +13,7 @@ import StepFour from "@/components/AppComponents/AdditionalMaterials/StepLayouts
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
 import StepThree from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepThree";
 import StepTwo from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepTwo";
+import useStepSubmitLogic from "@/components/AppComponents/AdditionalMaterials/hooks/useStepSubmitLogic";
 import { DialogProvider } from "@/components/AppComponents/DialogContext";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
@@ -54,55 +55,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const generateLessonPlan =
     trpc.additionalMaterials.generatePartialLessonPlanObject.useMutation();
 
-  // Handle submit for step 2
-  const handleSubmitLessonPlan = async (params: {
-    title: string;
-    subject: string;
-    keyStage: string;
-    year: string;
-  }) => {
-    try {
-      await submitLessonPlan({
-        ...params,
-        mutateAsync: async (input) => {
-          try {
-            const result = await generateLessonPlan.mutateAsync(input);
-            if (!result) {
-              throw new Error("Mutation returned null");
-            }
-            return result;
-          } catch (error) {
-            throw error instanceof Error ? error : new Error(String(error));
-          }
-        },
-      });
-      // Navigate to step 2 (lesson overview) after successful lesson plan generation
-      setStepNumber(2);
-    } catch (error) {
-      console.error("Failed to generate lesson plan:", error);
-    }
-  };
-
-  // Handle submit for step 3
-  const fetchMaterial =
-    trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
-
-  const handleSubmit = () => {
-    // Immediately navigate to next step to show loading
-    setStepNumber(3);
-    // Start material generation
-    void generateMaterial({
-      mutateAsync: async (input) => {
-        try {
-          return await fetchMaterial.mutateAsync(input);
-        } catch (e) {
-          const error = e instanceof Error ? e : new Error(String(e));
-          Sentry.captureException(error);
-          throw error;
-        }
-      },
-    });
-  };
+  const { handleSubmitLessonPlan, handleSubmit } = useStepSubmitLogic();
 
   useEffect(() => {
     resetFormState();
