@@ -49,11 +49,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName || null;
-  const { resetFormState, submitLessonPlan, setStepNumber, generateMaterial } =
-    useResourcesActions();
-
-  const generateLessonPlan =
-    trpc.additionalMaterials.generatePartialLessonPlanObject.useMutation();
+  const { resetFormState } = useResourcesActions();
 
   const { handleSubmitLessonPlan, handleSubmit } = useStepSubmitLogic();
 
