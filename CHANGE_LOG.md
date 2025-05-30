@@ -1,3 +1,16 @@
+# [1.39.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.38.0...v1.39.0) (2025-05-29)
+
+
+### Bug Fixes
+
+* lakera payload only to send message text [AI-1062] ([#679](https://github.com/oaknational/oak-ai-lesson-assistant/issues/679)) ([0dc574c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0dc574c22ad614a234c7340c67b3fece7d305eb9))
+
+
+### Features
+
+* am safety violation - AI-1107 [MIGRATION] ([#676](https://github.com/oaknational/oak-ai-lesson-assistant/issues/676)) ([3deb0e1](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3deb0e186fddc63fbb2d1c19256cbf434b243d2a))
+* download am ([#678](https://github.com/oaknational/oak-ai-lesson-assistant/issues/678)) ([70145f3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/70145f324e81d4bd7bf12151161c40350cf01e94))
+
 # [1.38.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.37.0...v1.38.0) (2025-05-22)
 
 
