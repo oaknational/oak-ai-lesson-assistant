@@ -67,7 +67,7 @@ export function mapLessonPlanSections(
 
 const log = aiLogger("additional-materials");
 
-const StepThree = () => {
+const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
   const moderation = useResourcesStore(moderationSelector);
@@ -82,26 +82,7 @@ const StepThree = () => {
     ? resourceType.displayName.toLowerCase()
     : null;
 
-  const { setStepNumber, generateMaterial } = useResourcesActions();
-  const fetchMaterial =
-    trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
-
-  const handleSubmit = () => {
-    // Immediately navigate to next step to show loading
-    setStepNumber(3);
-    // Start material generation
-    void generateMaterial({
-      mutateAsync: async (input) => {
-        try {
-          return await fetchMaterial.mutateAsync(input);
-        } catch (e) {
-          const error = e instanceof Error ? e : new Error(String(e));
-          Sentry.captureException(error);
-          throw error;
-        }
-      },
-    });
-  };
+  const { setStepNumber } = useResourcesActions();
 
   if (isLoadingLessonPlan) {
     return <OakP>Building lesson plan...</OakP>;

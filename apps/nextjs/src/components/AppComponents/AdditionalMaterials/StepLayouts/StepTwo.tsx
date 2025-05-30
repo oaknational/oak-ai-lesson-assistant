@@ -31,15 +31,13 @@ type SubmitLessonPlanParams = {
   year: string;
 };
 
-const StepTwo = () => {
-  const {
-    setStepNumber,
-    submitLessonPlan,
-    setSubject,
-    setTitle,
-    setYear,
-    setActiveDropdown,
-  } = useResourcesActions();
+const StepTwo = ({
+  handleSubmitLessonPlan,
+}: {
+  handleSubmitLessonPlan: (params: SubmitLessonPlanParams) => Promise<void>;
+}) => {
+  const { setStepNumber, setSubject, setTitle, setYear, setActiveDropdown } =
+    useResourcesActions();
   const subject = useResourcesStore(subjectSelector);
   const title = useResourcesStore(titleSelector);
   const year = useResourcesStore(yearSelector);
@@ -54,32 +52,6 @@ const StepTwo = () => {
     setTitle(null);
     setYear(null);
   }, [setSubject, setTitle, setYear]);
-
-  const generateLessonPlan =
-    trpc.additionalMaterials.generatePartialLessonPlanObject.useMutation();
-
-  const handleSubmitLessonPlan = async (params: SubmitLessonPlanParams) => {
-    try {
-      await submitLessonPlan({
-        ...params,
-        mutateAsync: async (input) => {
-          try {
-            const result = await generateLessonPlan.mutateAsync(input);
-            if (!result) {
-              throw new Error("Mutation returned null");
-            }
-            return result;
-          } catch (error) {
-            throw error instanceof Error ? error : new Error(String(error));
-          }
-        },
-      });
-      // Navigate to step 2 (lesson overview) after successful lesson plan generation
-      setStepNumber(2);
-    } catch (error) {
-      console.error("Failed to generate lesson plan:", error);
-    }
-  };
 
   handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
 

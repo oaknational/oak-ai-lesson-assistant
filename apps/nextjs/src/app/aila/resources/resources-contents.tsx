@@ -7,6 +7,7 @@ import { getResourceType } from "@oakai/additional-materials/src/documents/addit
 import { kebabCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 
 import { OakP, OakSpan } from "@oaknational/oak-components";
+import * as Sentry from "@sentry/nextjs";
 
 import StepFour from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepFour";
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
@@ -27,6 +28,7 @@ import {
   pageDataSelector,
   stepNumberSelector,
 } from "@/stores/resourcesStore/selectors";
+import { trpc } from "@/utils/trpc";
 
 interface AdditionalMaterialsUserProps {
   pageData?: {
@@ -46,7 +48,61 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName || null;
-  const { resetFormState } = useResourcesActions();
+  const { resetFormState, submitLessonPlan, setStepNumber, generateMaterial } =
+    useResourcesActions();
+
+  const generateLessonPlan =
+    trpc.additionalMaterials.generatePartialLessonPlanObject.useMutation();
+
+  // Handle submit for step 2
+  const handleSubmitLessonPlan = async (params: {
+    title: string;
+    subject: string;
+    keyStage: string;
+    year: string;
+  }) => {
+    try {
+      await submitLessonPlan({
+        ...params,
+        mutateAsync: async (input) => {
+          try {
+            const result = await generateLessonPlan.mutateAsync(input);
+            if (!result) {
+              throw new Error("Mutation returned null");
+            }
+            return result;
+          } catch (error) {
+            throw error instanceof Error ? error : new Error(String(error));
+          }
+        },
+      });
+      // Navigate to step 2 (lesson overview) after successful lesson plan generation
+      setStepNumber(2);
+    } catch (error) {
+      console.error("Failed to generate lesson plan:", error);
+    }
+  };
+
+  // Handle submit for step 3
+  const fetchMaterial =
+    trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
+
+  const handleSubmit = () => {
+    // Immediately navigate to next step to show loading
+    setStepNumber(3);
+    // Start material generation
+    void generateMaterial({
+      mutateAsync: async (input) => {
+        try {
+          return await fetchMaterial.mutateAsync(input);
+        } catch (e) {
+          const error = e instanceof Error ? e : new Error(String(e));
+          Sentry.captureException(error);
+          throw error;
+        }
+      },
+    });
+  };
 
   useEffect(() => {
     resetFormState();
@@ -94,8 +150,8 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
 
   const stepComponents = {
     0: <StepOne />,
-    1: <StepTwo />,
-    2: <StepThree />,
+    1: <StepTwo handleSubmitLessonPlan={handleSubmitLessonPlan} />,
+    2: <StepThree handleSubmit={handleSubmit} />,
     3: <StepFour />,
   };
   const stepNumberParsed = stepNumber as keyof typeof titleAreaContent;
