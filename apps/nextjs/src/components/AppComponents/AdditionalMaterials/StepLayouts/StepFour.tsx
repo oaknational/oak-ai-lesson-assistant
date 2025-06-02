@@ -13,6 +13,7 @@ import { aiLogger } from "@oakai/logger";
 import {
   OakFlex,
   OakIcon,
+  OakLoadingSpinner,
   OakP,
   OakPrimaryButton,
   OakSecondaryButton,
@@ -27,6 +28,7 @@ import {
 import {
   docTypeSelector,
   generationSelector,
+  isResourceRefiningSelector,
   isResourcesDownloadingSelector,
   isResourcesLoadingSelector,
   moderationSelector,
@@ -40,6 +42,7 @@ import { StarterQuiz } from "../../AdditionalMaterials/StarterQuiz";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import InlineButton from "../InlineButton";
 import ResourcesFooter from "../ResourcesFooter";
+import StepLoadingScreen from "../StepLoadingScreen";
 
 const log = aiLogger("additional-materials");
 
@@ -48,6 +51,8 @@ const StepFour = () => {
 
   const docType = useResourcesStore(docTypeSelector);
   const isResourcesLoading = useResourcesStore(isResourcesLoadingSelector);
+  const isResourceRefining = useResourcesStore(isResourceRefiningSelector);
+
   const { setStepNumber, refineMaterial } = useResourcesActions();
   const moderation = useResourcesStore(moderationSelector);
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
@@ -100,6 +105,14 @@ const StepFour = () => {
 
     return null;
   };
+  // if loading, show loading
+  if (isResourcesLoading || isResourceRefining) {
+    return (
+      <StepLoadingScreen
+        nameOfWhatIsBuilding={resourceType?.displayName ?? ""}
+      />
+    );
+  }
 
   return (
     <>

@@ -38,6 +38,13 @@ export const isResourcesLoadingSelector = (state: ResourcesState) =>
 export const isResourcesDownloadingSelector = (state: ResourcesState) =>
   state.isDownloading;
 
+/**
+ * Selector for the is resource refining in the resources workflow
+ * @example const isResourceRefining = useResourcesStore(isResourceRefiningSelector);
+ */
+export const isResourceRefiningSelector = (state: ResourcesState) =>
+  state.isResourceRefining;
+
 // Form state selectors
 export const formStateSelector = (state: ResourcesState) => state.formState;
 export const subjectSelector = (state: ResourcesState) =>

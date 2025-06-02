@@ -35,6 +35,7 @@ import { MemoizedReactMarkdownWithStyles } from "../../Chat/markdown";
 import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
+import StepLoadingScreen from "../StepLoadingScreen";
 import { handleDialogSelection } from "./helpers";
 
 type LessonPlanSectionKey = (typeof lessonFieldKeys)[number];
@@ -85,7 +86,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   const { setStepNumber } = useResourcesActions();
 
   if (isLoadingLessonPlan) {
-    return <OakP>Building lesson plan...</OakP>;
+    return <StepLoadingScreen nameOfWhatIsBuilding="lesson plan" />;
   }
   if (threatDetected) {
     setDialogWindow("additional-materials-threat-detected");
@@ -100,11 +101,11 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
     <>
       <OakFlex $flexDirection="column">
         <OakFlex $flexDirection="column" $mb="space-between-m">
-          <OakP $font={"heading-5"}>Task details</OakP>
+          <OakP $font={"heading-6"}>Task details</OakP>
           {hasModeration && <ModerationMessage />}
 
           <OakBox $pv="inner-padding-m">
-            <OakP>
+            <OakP $font="body-2">
               {toTitleCase(docTypeName ?? "")},{" "}
               {kebabCaseToSentenceCase(pageData.lessonPlan.keyStage ?? "")},{" "}
               {pageData.lessonPlan.subject}, {pageData.lessonPlan.title}
@@ -125,8 +126,8 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
                 $flexDirection={"column"}
                 $mb="space-between-m"
               >
-                <OakP $font={"heading-5"}>{title}</OakP>
-                <OakFlex $pv="inner-padding-m">
+                <OakP $font={"heading-6"}>{title}</OakP>
+                <OakFlex $pv="inner-padding-s">
                   <OakFlex $flexDirection="column">
                     <MemoizedReactMarkdownWithStyles
                       markdown={`${sectionToMarkdown(section.key, section.data)}`}

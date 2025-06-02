@@ -17,6 +17,7 @@ const useStepSubmitLogic = () => {
     keyStage: string;
     year: string;
   }) => {
+    setStepNumber(2);
     try {
       await submitLessonPlan({
         ...params,
@@ -32,8 +33,6 @@ const useStepSubmitLogic = () => {
           }
         },
       });
-
-      setStepNumber(2);
     } catch (error) {
       console.error("Failed to generate lesson plan:", error);
     }

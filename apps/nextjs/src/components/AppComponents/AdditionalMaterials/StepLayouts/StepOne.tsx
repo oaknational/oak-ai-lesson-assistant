@@ -45,7 +45,7 @@ const StepOne = () => {
     <>
       <OakFlex $gap={"space-between-m"} $flexDirection="column">
         <OakFlex $flexDirection={"column"}>
-          <OakFlex $mv={"space-between-l"}>
+          <OakFlex $mv={"space-between-s"}>
             <OakRadioGroup
               name="radio-group"
               onChange={(value) => {
@@ -59,18 +59,18 @@ const StepOne = () => {
                   <OakRadioButton
                     id={resourceType.id}
                     value={resourceType.id}
-                    radioInnerSize="all-spacing-6"
-                    radioOuterSize="all-spacing-7"
+                    radioInnerSize="all-spacing-5"
+                    radioOuterSize="all-spacing-6"
                     label={
                       <OakFlex
                         $flexDirection="column"
                         $gap="all-spacing-2"
-                        $ml="space-between-xs"
+                        $ml="space-between-ssx"
                       >
-                        <OakP $font="heading-6">
+                        <OakP $font="body-2-bold">
                           {resourceType.displayName}
                         </OakP>
-                        <OakP>{resourceType.description}</OakP>
+                        <OakP $font="body-2">{resourceType.description}</OakP>
                       </OakFlex>
                     }
                   />

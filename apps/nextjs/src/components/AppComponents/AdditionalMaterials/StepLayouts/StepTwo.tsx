@@ -17,7 +17,6 @@ import {
   titleSelector,
   yearSelector,
 } from "@/stores/resourcesStore/selectors";
-import { trpc } from "@/utils/trpc";
 
 import { useDialog } from "../../DialogContext";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
@@ -92,7 +91,7 @@ const StepTwo = ({
               void handleSubmitLessonPlan({
                 title: title || "",
                 subject: subject || "",
-                keyStage: "ks2",
+                keyStage: "",
                 year: year || "",
               })
             }

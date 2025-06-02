@@ -90,7 +90,7 @@ const ResourcesLayout = ({
                 $width="fit-content"
               >
                 <OakP $font="body-2">
-                  Step {step} of 3{" "}
+                  Step {step} of 4{" "}
                   {docTypeName && `- ${toSentenceCase(docTypeName)}`}
                 </OakP>
               </OakBox>

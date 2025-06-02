@@ -124,7 +124,6 @@ const ResourcesContents: FC<AdditionalMaterialsUserProps> = (props) => {
       <DialogProvider>
         <DialogRoot>
           <DialogContents chatId={undefined} lesson={{}} />
-
           <ResourcesContentsInner {...props} />
         </DialogRoot>
       </DialogProvider>
