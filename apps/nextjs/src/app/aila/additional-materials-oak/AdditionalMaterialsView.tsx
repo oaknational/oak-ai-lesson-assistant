@@ -9,6 +9,7 @@ import { kebabCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversi
 
 import { OakP, OakSpan } from "@oaknational/oak-components";
 
+import StepFour from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepFour";
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
 import StepThree from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepThree";
 import StepTwo from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepTwo";
@@ -75,8 +76,9 @@ const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = ({}) => {
 
   const stepComponents = {
     0: <StepOne />,
-    1: <StepTwo />,
-    2: <StepThree />,
+    1: <StepTwo handleSubmitLessonPlan={() => Promise.resolve()} />, // temp function to satisfy type
+    2: <StepThree handleSubmit={() => null} />, // temp function to satisfy type
+    3: <StepFour />,
   };
   const stepNumberParsed = stepNumber as keyof typeof titleAreaContent;
   const title = titleAreaContent?.[stepNumberParsed]?.title ?? "";
