@@ -28,7 +28,7 @@ jobs:
           DRY_RUN="${{ github.event.inputs.dry_run || 'true' }}"
           CLERK_USER_CLEANUP_URL="${{ secrets.CLERK_USER_CLEANUP_URL }}"
           CRON_SECRET="${{ secrets.CRON_SECRET }}"
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          VERCEL_AUTOMATION_BYPASS_SECRET="${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}"
 
           echo "Running clerk user cleanup on staging (dry-run: $DRY_RUN)"
 
