@@ -11,7 +11,7 @@ const DAY_IN_MS = 24 * 60 * 60 * 1000;
 const ONE_MONTH_MS = 30 * DAY_IN_MS;
 const THREE_MONTHS_MS = 90 * DAY_IN_MS;
 
-const OAK_EMAIL_WITH_NUMBER = /\d.*@thenational\.academy/;
+const OAK_EMAIL_WITH_NUMBER = /\d[^@]*@thenational\.academy$/;
 
 const shouldDeleteUser = (user: User): boolean => {
   const email = user.primaryEmailAddress?.emailAddress;
@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
     const result = await cleanupUsers(isDryRun);
 
     const completionMessage = `Clerk user cleanup completed: ${result.deletedCount} users ${isDryRun ? "would be " : ""}deleted, ${result.remainingUsers} users remaining`;
-    
+
     log.info(completionMessage);
 
     return new Response(completionMessage, { status: 200 });
