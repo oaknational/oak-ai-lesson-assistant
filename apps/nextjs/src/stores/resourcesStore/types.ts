@@ -39,6 +39,7 @@ export type ResourcesState = {
   stepNumber: number;
   isLoadingLessonPlan: boolean;
   isResourcesLoading: boolean;
+  isResourceRefining: boolean;
   isDownloading: boolean;
   pageData: PageData;
   generation: AdditionalMaterialSchemas | null;
@@ -56,6 +57,7 @@ export type ResourcesState = {
     setDocType: (docType: string | null) => void;
     setIsLoadingLessonPlan: (isLoading: boolean) => void;
     setIsResourcesLoading: (isLoading: boolean) => void;
+    setIsResourceRefining: (isRefining: boolean) => void;
     setThreatDetection: (threatDetection: boolean) => void;
 
     // Form state setters
