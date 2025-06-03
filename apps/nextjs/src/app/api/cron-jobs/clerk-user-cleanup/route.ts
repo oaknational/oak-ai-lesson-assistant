@@ -9,9 +9,8 @@ const log = aiLogger("cron");
 
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 const ONE_MONTH_MS = 30 * DAY_IN_MS;
-const THREE_MONTHS_MS = 90 * DAY_IN_MS;
 
-const OAK_EMAIL_WITH_NUMBER = /\d[^@]*@thenational\.academy$/;
+const OAK_EMAIL_WITH_NUMBER = /\d{2,}.*@thenational\.academy$/;
 
 const shouldDeleteUser = (user: User): boolean => {
   const email = user.primaryEmailAddress?.emailAddress;
@@ -33,7 +32,7 @@ const shouldDeleteUser = (user: User): boolean => {
     return timeSinceLastActive > ONE_MONTH_MS;
   }
 
-  return timeSinceLastActive > THREE_MONTHS_MS;
+  return false;
 };
 
 async function deleteUser(user: User, isDryRun: boolean): Promise<void> {
