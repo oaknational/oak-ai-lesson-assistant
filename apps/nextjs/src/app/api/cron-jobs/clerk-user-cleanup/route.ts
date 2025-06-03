@@ -4,6 +4,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import type { User } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/node";
 import type { NextRequest } from "next/server";
+import invariant from "tiny-invariant";
 
 const log = aiLogger("cron");
 
@@ -81,6 +82,12 @@ async function cleanupUsers(isDryRun: boolean) {
 }
 
 export async function GET(request: NextRequest) {
+  invariant(
+    process.env.NODE_ENV === "development" ||
+      process.env.VERCEL_ENV === "preview",
+    "This endpoint is only available in development or preview environments.",
+  );
+
   try {
     const authHeader = request.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
