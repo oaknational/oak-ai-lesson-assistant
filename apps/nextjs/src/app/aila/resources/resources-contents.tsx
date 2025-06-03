@@ -7,7 +7,6 @@ import { getResourceType } from "@oakai/additional-materials/src/documents/addit
 import { kebabCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 
 import { OakP, OakSpan } from "@oaknational/oak-components";
-import * as Sentry from "@sentry/nextjs";
 
 import StepFour from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepFour";
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
@@ -25,11 +24,9 @@ import {
 } from "@/stores/ResourcesStoreProvider";
 import {
   docTypeSelector,
-  moderationSelector,
   pageDataSelector,
   stepNumberSelector,
 } from "@/stores/resourcesStore/selectors";
-import { trpc } from "@/utils/trpc";
 
 interface AdditionalMaterialsUserProps {
   pageData?: {

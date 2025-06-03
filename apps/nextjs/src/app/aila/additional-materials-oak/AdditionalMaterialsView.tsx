@@ -34,7 +34,7 @@ export type AdditionalMaterialsPageProps = {
   docTypeFromQueryPrams?: string;
 };
 
-const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = ({}) => {
+const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = () => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
