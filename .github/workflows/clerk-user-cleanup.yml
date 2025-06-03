@@ -32,16 +32,20 @@ jobs:
 
           echo "Running clerk user cleanup on staging (dry-run: $DRY_RUN)"
 
-          response=$(curl -s -w "\n%{http_code}" \
+          echo "Requesting URL: $CLERK_USER_CLEANUP_URL?dry-run=$DRY_RUN"
+          
+          response=$(curl -s -w "\n%{http_code}\n%{redirect_url}" \
             -H "Authorization: Bearer $CRON_SECRET" \
             -H "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" \
             "$CLERK_USER_CLEANUP_URL?dry-run=$DRY_RUN")
 
-          http_code=$(echo "$response" | tail -n1)
-          body=$(echo "$response" | head -n -1)
+          http_code=$(echo "$response" | tail -n2 | head -n1)
+          redirect_url=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n -2)
 
           echo "Response: $body"
           echo "HTTP Status Code: $http_code"
+          echo "Redirect URL: $redirect_url"
 
           if [ "$http_code" -ne 200 ]; then
             echo "Error: HTTP $http_code"
