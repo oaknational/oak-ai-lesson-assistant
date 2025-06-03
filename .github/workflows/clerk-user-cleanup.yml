@@ -11,7 +11,7 @@ on:
         required: true
         default: true
         type: boolean
-  # TEMPORARY: For testing on feature branches before merge
+  # TEMPORARY: For testing non-dry run before merge
   push:
     branches:
       - feat/AI-1245-improve-clerk-user-deletion
@@ -21,31 +21,26 @@ permissions: {}
 jobs:
   clerk-user-cleanup:
     runs-on: ubuntu-latest
-    # TEMPORARY: Remove push trigger before merge to main
     steps:
       - name: Run Clerk User Cleanup on Staging
         run: |
-          DRY_RUN="${{ github.event.inputs.dry_run || 'true' }}"
+          DRY_RUN="${{ github.event.inputs.dry_run || 'false' }}"
           CLERK_USER_CLEANUP_URL="${{ secrets.CLERK_USER_CLEANUP_URL }}"
           CRON_SECRET="${{ secrets.CRON_SECRET }}"
           VERCEL_AUTOMATION_BYPASS_SECRET="${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}"
 
           echo "Running clerk user cleanup on staging (dry-run: $DRY_RUN)"
 
-          echo "Requesting URL: $CLERK_USER_CLEANUP_URL?dry-run=$DRY_RUN"
-          
-          response=$(curl -s -w "\n%{http_code}\n%{redirect_url}" \
+          response=$(curl -s -w "\n%{http_code}" \
             -H "Authorization: Bearer $CRON_SECRET" \
             -H "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" \
             "$CLERK_USER_CLEANUP_URL?dry-run=$DRY_RUN")
 
-          http_code=$(echo "$response" | tail -n2 | head -n1)
-          redirect_url=$(echo "$response" | tail -n1)
-          body=$(echo "$response" | head -n -2)
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n -1)
 
           echo "Response: $body"
           echo "HTTP Status Code: $http_code"
-          echo "Redirect URL: $redirect_url"
 
           if [ "$http_code" -ne 200 ]; then
             echo "Error: HTTP $http_code"
