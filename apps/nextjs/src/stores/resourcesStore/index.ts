@@ -14,7 +14,9 @@ import { handleRefineMaterial } from "./actionFunctions/handleRefineMaterial";
 import { handleSetDocType } from "./actionFunctions/handleSetDocType";
 import { handleSetGeneration } from "./actionFunctions/handleSetGeneration";
 import { handleSetIsLoadingLessonPlan } from "./actionFunctions/handleSetIsLoadingLessonPlan";
-import handleSetIsResourcesLoading from "./actionFunctions/handleSetIsResourcesLoading";
+import handleSetIsResourcesLoading, {
+  handleSetIsResourceRefining,
+} from "./actionFunctions/handleSetIsResourcesLoading";
 import { handleSetPageData } from "./actionFunctions/handleSetPageData";
 import { handleSetStepNumber } from "./actionFunctions/handleSetStepNumber";
 import { handleSubmitLessonPlan } from "./actionFunctions/handleSubmitLessonPlan";
@@ -26,6 +28,7 @@ const DEFAULT_STATE = {
   stepNumber: 0,
   isLoadingLessonPlan: false,
   isResourcesLoading: false,
+  isResourceRefining: false,
   isDownloading: false,
   error: null,
   pageData: {
@@ -74,6 +77,7 @@ export const createResourcesStore = () => {
       setDocType: handleSetDocType(set, get),
       setIsLoadingLessonPlan: handleSetIsLoadingLessonPlan(set, get),
       setIsResourcesLoading: handleSetIsResourcesLoading(set, get),
+      setIsResourceRefining: handleSetIsResourceRefining(set, get),
       setIsResourceDownloading: (isDownloading: boolean) =>
         set({ isDownloading }),
       setThreatDetection: (threatDetection: boolean) => {
