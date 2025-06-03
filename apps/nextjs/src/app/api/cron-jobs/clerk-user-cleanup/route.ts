@@ -75,8 +75,6 @@ async function cleanupUsers(isDryRun: boolean) {
     }
   }
 
-  log.info(`Cleanup completed: ${deletedCount} users deleted`);
-
   return {
     deletedCount,
     remainingUsers: result.data.length - deletedCount,
@@ -104,11 +102,11 @@ export async function GET(request: NextRequest) {
 
     const result = await cleanupUsers(isDryRun);
 
-    log.info(
-      `Clerk user cleanup completed: ${result.deletedCount} users ${isDryRun ? "would be" : ""} deleted, ${result.remainingUsers} users remaining`,
-    );
+    const completionMessage = `Clerk user cleanup completed: ${result.deletedCount} users ${isDryRun ? "would be " : ""}deleted, ${result.remainingUsers} users remaining`;
+    
+    log.info(completionMessage);
 
-    return new Response("Clerk user cleanup completed", { status: 200 });
+    return new Response(completionMessage, { status: 200 });
   } catch (error) {
     Sentry.captureException(error);
     log.error("Clerk user cleanup cron job failed:", error);
