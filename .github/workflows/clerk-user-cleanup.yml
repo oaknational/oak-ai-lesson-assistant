@@ -11,10 +11,6 @@ on:
         required: true
         default: true
         type: boolean
-  # TEMPORARY: For testing non-dry run before merge
-  push:
-    branches:
-      - feat/AI-1245-improve-clerk-user-deletion
 
 permissions: {}
 
