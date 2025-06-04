@@ -95,12 +95,12 @@ const AdditionalMaterialsInappropriateContent = ({
           Back to start
         </OakSecondaryLink>
         <OakPrimaryButton
-          onClick={() => {
+          onClick={(e) => {
             submitSurveyWithOutClosing({
               $survey_response: getSafetyResult(moderation),
               $survey_response_1: moderation.categories,
-              $survey_response_2: null, // moderation ID is not available in this context
-              $survey_response_3: null, // chatId is not available in this context, using additional materials id
+              $survey_response_2: "123", // moderation ID is not available in this context
+              $survey_response_3: "123", // chatId is not available in this context, using additional materials id
               $survey_response_4: feedback,
               $survey_response_5: id, // partial lesson plan ID
             });

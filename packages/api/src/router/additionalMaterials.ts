@@ -166,7 +166,15 @@ export const additionalMaterialsRouter = router({
           auth: ctx.auth,
         });
       } catch (cause) {
-        const errorMessage = `Failed to fetch additional material moderation for - ${parsedInput.data.title} - ${parsedInput.data.subject}`;
+        if (cause instanceof UserBannedError) {
+          const errorMessage = "UserBannedError: User account is locked.";
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: errorMessage,
+            cause: { type: "banned", message: errorMessage },
+          });
+        }
+        const errorMessage = `Failed to fetch additional material partial lesson for - ${parsedInput.data.title} - ${parsedInput.data.subject}`;
         log.error(errorMessage, cause);
         Sentry.captureException(cause);
         throw new TRPCError({

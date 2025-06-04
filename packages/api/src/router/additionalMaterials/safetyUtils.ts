@@ -1,4 +1,5 @@
-import { SafetyViolations } from "@oakai/core";
+import { SafetyViolations, inngest } from "@oakai/core";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
@@ -25,6 +26,18 @@ export async function recordSafetyViolation({
 }) {
   const safetyViolations = new SafetyViolations(prisma, console);
   try {
+    log.info("Sending slack notification");
+    await inngest.send({
+      name: "app/slack.notifyModeration",
+      user: {
+        id: auth.userId,
+      },
+      data: {
+        chatId: "test",
+        categories: ["safety"],
+        justification: "test",
+      },
+    });
     await safetyViolations.recordViolation(
       auth.userId,
       userAction,
@@ -33,6 +46,13 @@ export async function recordSafetyViolation({
       interactionId,
     );
   } catch (e) {
+    if (e instanceof UserBannedError) {
+      throw e;
+      // console.error("********************************", e);
+      // log.warn(
+      //   `User ${auth.userId} is banned due to exceeding safety violations`,
+      // );
+    }
     Sentry.captureException(e);
     log.error(
       `Failed to record ${violationType.toLowerCase()} safety violation`,
