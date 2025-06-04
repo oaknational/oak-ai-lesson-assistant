@@ -10,6 +10,7 @@ import styled from "styled-components";
 
 import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
 import { useDialog } from "../AppComponents/DialogContext";
+import AdditionalMaterialsError from "./ContentOptions/AdditionalMaterialError";
 import AdditionalMaterialsInappropriateContent from "./ContentOptions/AdditionalMaterialsInappropriateContent";
 import AdditionalMaterialsModeration from "./ContentOptions/AdditionalMaterialsModeration";
 import AdditionalMaterialsRateLimit from "./ContentOptions/AdditionalMaterialsRateLimit";
@@ -186,6 +187,9 @@ const DialogContents = ({
             )}
             {dialogWindow === "additional-materials-start-again" && (
               <AdditionalMaterialsStartAgain closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "additional-materials-error" && (
+              <AdditionalMaterialsError closeDialog={closeDialog} />
             )}
           </OakModalCenterBody>
         </OakModalAtTheFront>
