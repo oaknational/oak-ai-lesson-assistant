@@ -25,6 +25,33 @@
   - Coverage: `pnpm test-coverage`
 - **Dev**: `pnpm dev` (runs Next.js on port 2525)
 
+## Git Workflow
+
+### Branch Naming
+
+- **Feature branches**: `feat/description` or `feat/AI-XXXX-description`
+- **Bug fixes**: `fix/description`
+- **Chores**: `chore/description` (for project/config changes)
+- **Development**: `dev/description`
+- **Testing**: `test/description`
+- **Spikes**: `spike/description`
+- **Refactoring**: `refactor/description`
+
+### Commit Messages
+
+- **Format**: `type: description` (conventional commits)
+- **Types**: `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:`, `build:`, `ci:`, `chore:`, `revert:`
+- **Examples**: 
+  - `feat: add new lesson planner feature`
+  - `fix: resolve authentication bug`
+  - `docs: update API documentation`
+
+### Pull Requests
+
+- **Reviewers**: Ask before adding reviewers (team vs individual depends on context)
+- **Team reviews**: `gh pr edit <PR-number> --add-reviewer oaknational/ai-devs`
+- **Individual reviews**: `gh pr edit <PR-number> --add-reviewer username`
+
 ## Technology Stack
 
 ### Frontend
