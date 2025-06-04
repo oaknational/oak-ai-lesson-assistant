@@ -10,8 +10,8 @@ import styled from "styled-components";
 
 import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
 import { useDialog } from "../AppComponents/DialogContext";
+import AdditionalMaterialsInappropriateContent from "./ContentOptions/AdditionalMaterialsInappropriateContent";
 import AdditionalMaterialsModeration from "./ContentOptions/AdditionalMaterialsModeration";
-import AdditionalMaterialsThreatDetected from "./ContentOptions/AdditionalMaterialsThreatDetected";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
 import DemoInterstitialDialog from "./ContentOptions/DemoInterstitialDialog";
@@ -22,7 +22,7 @@ import ShareChatDialog from "./ContentOptions/ShareChatDialog";
 
 const dialogTitlesAndIcons: Record<
   Exclude<DialogTypes, "">,
-  { title: string; iconName: OakIconName | null }
+  { title: string; iconName: OakIconName | null; hideClosedButton?: boolean }
 > = {
   "share-chat": {
     title: "Share lesson",
@@ -58,18 +58,23 @@ const dialogTitlesAndIcons: Record<
   },
   "additional-materials-moderation": {
     title: "Guidance",
-    iconName: "warning",
+    iconName: "info",
   },
   "additional-materials-threat-detected": {
-    title: "Threat detected",
-    iconName: "warning",
+    title: "Inappropriate content detected",
+    iconName: null,
   },
   "additional-materials-rate-limit": {
     title: "Rate limit",
     iconName: "warning",
   },
-  "additional-materials-user-account-locked": {
-    title: "Account locked",
+  "additional-materials-toxic-moderation": {
+    title: "Inappropriate content detected",
+    iconName: null,
+    hideClosedButton: true,
+  },
+  "additional-materials-error": {
+    title: "An error occurred",
     iconName: "warning",
   },
 };
@@ -105,7 +110,13 @@ const DialogContents = ({
   return (
     <>
       {dialogWindow !== "" && (
-        <OakModalAtTheFront isOpen={!!dialogWindow} onClose={closeDialog}>
+        <OakModalAtTheFront
+          hideCloseButton={
+            dialogTitlesAndIcons[dialogWindow].hideClosedButton ?? false
+          }
+          isOpen={!!dialogWindow}
+          onClose={closeDialog}
+        >
           <OakModalCenterBody
             title={dialogTitlesAndIcons[dialogWindow].title}
             iconName={dialogTitlesAndIcons[dialogWindow].iconName ?? "warning"}
@@ -150,22 +161,26 @@ const DialogContents = ({
             )}
             {/* // awaiting designs - placeholder */}
             {dialogWindow === "additional-materials-threat-detected" && (
-              <AdditionalMaterialsThreatDetected
-                body={"threat detected"}
+              <AdditionalMaterialsInappropriateContent
+                body={
+                  "This request has been flagged as potentially inappropriate. Please amend lesson details. If this is an error, please give us feedback below."
+                }
                 closeDialog={closeDialog}
               />
             )}
             {/* // awaiting designs - placeholder */}
             {dialogWindow === "additional-materials-rate-limit" && (
-              <AdditionalMaterialsThreatDetected
+              <AdditionalMaterialsInappropriateContent
                 body={"rate-limit"}
                 closeDialog={closeDialog}
               />
             )}
             {/* // awaiting designs - placeholder */}
-            {dialogWindow === "additional-materials-user-account-locked" && (
-              <AdditionalMaterialsThreatDetected
-                body={"banned"}
+            {dialogWindow === "additional-materials-toxic-moderation" && (
+              <AdditionalMaterialsInappropriateContent
+                body={
+                  "Your account will be blocked if you persist in creating inappropriate content. If this is an error, please give us feedback below."
+                }
                 closeDialog={closeDialog}
               />
             )}

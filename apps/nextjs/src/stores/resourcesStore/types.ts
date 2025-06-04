@@ -25,7 +25,7 @@ export type StepOneFormState = {
   activeDropdown: string | null;
 };
 
-const errorType = z.enum(["rate_limit", "banned", "unknown"]);
+const errorType = z.enum(["rate_limit", "banned", "toxic", "unknown"]);
 export type ErrorType = z.infer<typeof errorType>;
 
 export const errorResponse = z.object({

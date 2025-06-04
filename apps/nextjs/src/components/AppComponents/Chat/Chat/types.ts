@@ -9,6 +9,7 @@ export type DialogTypes =
   | "clear-history"
   | "clear-single-chat"
   | "additional-materials-moderation"
+  | "additional-materials-toxic-moderation"
   | "additional-materials-threat-detected"
-  | "additional-materials-user-account-locked"
-  | "additional-materials-rate-limit";
+  | "additional-materials-rate-limit"
+  | "additional-materials-error";
