@@ -130,3 +130,46 @@
 - **Component Tests**: React Testing Library
 - **E2E Tests**: Playwright
 - **Mocking**: Mock external dependencies appropriately
+
+## Notion Integration
+
+### Aila Squad Tasks Database
+These IDs are stored in `.claude/env.local.json`:
+- **Tasks Database ID**: `NOTION_TASK_DATABASE_ID`
+- **Sprints Database ID**: `NOTION_SPRINT_DATABASE_ID`
+- **Access**: Use `mcp__notionApi__API-post-database-query` tool
+
+### How to find current sprint tasks:
+1. **Find current sprint**: Query sprints database with filter `{"property": "Sprint status", "status": {"equals": "Current"}}`
+2. **Get sprint ID** from the result (e.g., `13d26cc4-e1b1-8108-9fb3-d74429e520c6`)
+3. **Query tasks** with filter `{"property": "Sprint", "relation": {"contains": "SPRINT_ID"}}`
+
+### Efficient querying with filter_properties:
+- **Essential fields**: `["title", "pPPj", "FH@y", "RIV<", "pIdo"]` (Task, Status, Who, Type, ID)
+- **Use filter_properties**: Reduces response size significantly, allows larger page_size (50-100)
+- **Example**: 
+  ```json
+  {
+    "database_id": "NOTION_TASK_DATABASE_ID",
+    "filter": {"property": "Sprint", "relation": {"contains": "SPRINT_ID"}},
+    "filter_properties": ["title", "pPPj", "FH@y", "RIV<", "pIdo"],
+    "page_size": 50
+  }
+  ```
+
+### Common task filters:
+- In progress: `{"property": "Status", "status": {"equals": "In progress"}}`
+- Ready tasks: `{"property": "Status", "status": {"equals": "Ready"}}`
+- Ready for review: `{"property": "Status", "status": {"equals": "Ready for review"}}`
+- Current sprint tasks: First get current sprint ID, then filter by Sprint relation
+
+### Task Status Meanings:
+- **Ready**: Available to pick up and start development
+- **Backlog**: Not ready for development yet, needs planning/refinement
+- **Candidate**: Being evaluated, not ready for development
+- **Triage**: Needs assessment before development
+- **In progress**: Currently being worked on
+- **Ready for review**: Code complete, awaiting review
+- **Merged**: Code merged to main branch
+- **Done**: Task completed
+- **Blocked**: Cannot proceed due to dependencies
