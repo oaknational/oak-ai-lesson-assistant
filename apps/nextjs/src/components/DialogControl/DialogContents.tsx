@@ -12,6 +12,8 @@ import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
 import { useDialog } from "../AppComponents/DialogContext";
 import AdditionalMaterialsInappropriateContent from "./ContentOptions/AdditionalMaterialsInappropriateContent";
 import AdditionalMaterialsModeration from "./ContentOptions/AdditionalMaterialsModeration";
+import AdditionalMaterialsRateLimit from "./ContentOptions/AdditionalMaterialsRateLimit";
+import AdditionalMaterialsStartAgain from "./ContentOptions/AdditionalMaterialsStartAgain";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
 import DemoInterstitialDialog from "./ContentOptions/DemoInterstitialDialog";
@@ -76,6 +78,10 @@ const dialogTitlesAndIcons: Record<
   "additional-materials-error": {
     title: "An error occurred",
     iconName: "warning",
+  },
+  "additional-materials-start-again": {
+    title: "",
+    iconName: null,
   },
 };
 
@@ -159,7 +165,6 @@ const DialogContents = ({
             {dialogWindow === "additional-materials-moderation" && (
               <AdditionalMaterialsModeration closeDialog={closeDialog} />
             )}
-            {/* // awaiting designs - placeholder */}
             {dialogWindow === "additional-materials-threat-detected" && (
               <AdditionalMaterialsInappropriateContent
                 body={
@@ -168,14 +173,9 @@ const DialogContents = ({
                 closeDialog={closeDialog}
               />
             )}
-            {/* // awaiting designs - placeholder */}
             {dialogWindow === "additional-materials-rate-limit" && (
-              <AdditionalMaterialsInappropriateContent
-                body={"rate-limit"}
-                closeDialog={closeDialog}
-              />
+              <AdditionalMaterialsRateLimit closeDialog={closeDialog} />
             )}
-            {/* // awaiting designs - placeholder */}
             {dialogWindow === "additional-materials-toxic-moderation" && (
               <AdditionalMaterialsInappropriateContent
                 body={
@@ -183,6 +183,9 @@ const DialogContents = ({
                 }
                 closeDialog={closeDialog}
               />
+            )}
+            {dialogWindow === "additional-materials-start-again" && (
+              <AdditionalMaterialsStartAgain closeDialog={closeDialog} />
             )}
           </OakModalCenterBody>
         </OakModalAtTheFront>
