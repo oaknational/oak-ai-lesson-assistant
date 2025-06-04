@@ -48,6 +48,7 @@
 
 ### Pull Requests
 
+- **Template**: Follow the PR template in `.github/pull_request_template.md`
 - **Reviewers**: Ask before adding reviewers (team vs individual depends on context)
 - **Team reviews**: `gh pr edit <PR-number> --add-reviewer oaknational/ai-devs`
 - **Individual reviews**: `gh pr edit <PR-number> --add-reviewer username`
