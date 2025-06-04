@@ -74,7 +74,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   const moderation = useResourcesStore(moderationSelector);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
-  const error = useResourcesStore(errorSelector);
+
   const { setDialogWindow } = useDialog();
 
   // Get resource type from configuration
@@ -91,8 +91,6 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   if (threatDetected) {
     setDialogWindow("additional-materials-threat-detected");
   }
-
-  handleDialogSelection({ threatDetected, error, setDialogWindow });
 
   const hasModeration =
     moderation?.categories && moderation.categories.length > 0;

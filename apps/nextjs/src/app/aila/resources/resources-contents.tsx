@@ -12,8 +12,12 @@ import StepFour from "@/components/AppComponents/AdditionalMaterials/StepLayouts
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
 import StepThree from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepThree";
 import StepTwo from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepTwo";
+import { handleDialogSelection } from "@/components/AppComponents/AdditionalMaterials/StepLayouts/helpers";
 import useStepSubmitLogic from "@/components/AppComponents/AdditionalMaterials/hooks/useStepSubmitLogic";
-import { DialogProvider } from "@/components/AppComponents/DialogContext";
+import {
+  DialogProvider,
+  useDialog,
+} from "@/components/AppComponents/DialogContext";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import ResourcesLayout from "@/components/ResourcesLayout";
@@ -42,17 +46,25 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
+  const error = useResourcesStore((state) => state.error);
 
   // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
-  const docTypeName = resourceType?.displayName || null;
+  const docTypeName = resourceType?.displayName ?? null;
   const { resetFormState } = useResourcesActions();
+  const { setDialogWindow } = useDialog();
 
   const { handleSubmitLessonPlan, handleSubmit } = useStepSubmitLogic();
 
   useEffect(() => {
     resetFormState();
   }, [resetFormState]);
+
+  handleDialogSelection({
+    threatDetected: undefined,
+    error,
+    setDialogWindow,
+  });
 
   const titleAreaContent = {
     0: {
