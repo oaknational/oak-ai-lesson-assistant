@@ -72,3 +72,10 @@ export const threatDetectionSelector = (state: ResourcesState) =>
  * @example const error = useResourcesStore(errorSelector);
  */
 export const errorSelector = (state: ResourcesState) => state.error;
+
+/**
+ * Selector for the refinement generation history in the resources workflow
+ * @example const refinementHistory = useResourcesStore(refinementGenerationHistorySelector);
+ */
+export const refinementGenerationHistorySelector = (state: ResourcesState) =>
+  state.refinementGenerationHistory;
