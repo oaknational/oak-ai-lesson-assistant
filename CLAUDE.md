@@ -30,7 +30,7 @@
 
 ### Branch Naming
 
-- **Feature branches**: `feat/description` or `feat/AI-XXXX-description`
+- **Feature branches**: `feat/AI-XXXX-description` or `feat/description` (prefer ticket ID when available)
 - **Bug fixes**: `fix/description`
 - **Chores**: `chore/description` (for project/config changes)
 - **Development**: `dev/description`
