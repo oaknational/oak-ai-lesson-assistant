@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Run Clerk User Cleanup on Staging
         run: |
-          DRY_RUN="${{ github.event.inputs.dry_run || 'false' }}"
+          DRY_RUN="${{ github.event.inputs.dry_run || false }}"
           CLERK_USER_CLEANUP_URL="${{ secrets.CLERK_USER_CLEANUP_URL }}"
           CRON_SECRET="${{ secrets.CRON_SECRET }}"
           VERCEL_AUTOMATION_BYPASS_SECRET="${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}"
