@@ -12,4 +12,5 @@ export type DialogTypes =
   | "additional-materials-toxic-moderation"
   | "additional-materials-threat-detected"
   | "additional-materials-rate-limit"
-  | "additional-materials-error";
+  | "additional-materials-error"
+  | "additional-materials-start-again";

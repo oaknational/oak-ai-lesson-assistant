@@ -91,6 +91,7 @@ export async function generatePartialLessonPlan({
       interactionId: interaction.id,
       violationType: "MODERATION",
       userAction: "PARTIAL_LESSON_GENERATION",
+      moderation: mockModerationResult ?? moderation,
     });
 
     return {
@@ -108,6 +109,7 @@ export async function generatePartialLessonPlan({
       interactionId: interaction.id,
       violationType: "THREAT",
       userAction: "PARTIAL_LESSON_GENERATION",
+      moderation: mockModerationResult ?? moderation,
     });
 
     return {

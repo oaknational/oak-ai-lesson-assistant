@@ -1,5 +1,6 @@
 import { SafetyViolations, inngest } from "@oakai/core";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
@@ -8,34 +9,35 @@ import * as Sentry from "@sentry/nextjs";
 
 const log = aiLogger("additional-materials");
 
-/**
- * Records a safety violation in the database
- */
 export async function recordSafetyViolation({
   prisma,
   auth,
   interactionId,
   violationType,
   userAction,
+  moderation,
 }: {
   prisma: PrismaClientWithAccelerate;
   auth: SignedInAuthObject;
   interactionId: string;
   violationType: "MODERATION" | "THREAT";
   userAction: "PARTIAL_LESSON_GENERATION" | "ADDITIONAL_MATERIAL_GENERATION";
+  moderation: ModerationResult;
 }) {
   const safetyViolations = new SafetyViolations(prisma, console);
   try {
     log.info("Sending slack notification");
     await inngest.send({
-      name: "app/slack.notifyModeration",
+      name: "app/slack.notifyModerationTeachingMaterials",
       user: {
         id: auth.userId,
       },
       data: {
-        chatId: "test",
-        categories: ["safety"],
-        justification: "test",
+        id: interactionId,
+        categories: moderation.categories || [],
+        justification: moderation.justification ?? "No justification provided",
+        userAction,
+        violationType,
       },
     });
     await safetyViolations.recordViolation(
@@ -47,11 +49,8 @@ export async function recordSafetyViolation({
     );
   } catch (e) {
     if (e instanceof UserBannedError) {
+      log.info(`User ${auth.userId} is banned.`);
       throw e;
-      // console.error("********************************", e);
-      // log.warn(
-      //   `User ${auth.userId} is banned due to exceeding safety violations`,
-      // );
     }
     Sentry.captureException(e);
     log.error(
