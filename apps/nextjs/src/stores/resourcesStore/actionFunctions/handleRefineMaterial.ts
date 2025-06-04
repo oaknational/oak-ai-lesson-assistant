@@ -30,9 +30,15 @@ export type RefineMaterialParams = {
 export const handleRefineMaterial =
   (set: ResourcesSetter, get: ResourcesGetter) =>
   async ({ refinement, mutateAsync }: RefineMaterialParams) => {
+    const { setIsResourceRefining } = get().actions;
+
+    console.log("🔄 Setting isResourceRefining to TRUE");
+    setIsResourceRefining(true);
+
     const docType = get().docType;
     if (!docType) {
       log.error("No document type selected");
+      setIsResourceRefining(false);
       throw new Error("No document type selected");
     }
 
@@ -48,13 +54,11 @@ export const handleRefineMaterial =
           lessonPlan: get().pageData.lessonPlan,
           previousOutput: get().generation,
           options: null,
-          refinement: [{ type: refinement }],
+          refinement: refinement,
         },
         resourceId: get().id,
         lessonId: get().pageData.lessonPlan.lessonId,
       };
-
-      console.log("************payload", payload);
 
       const parsedPayload =
         generateAdditionalMaterialInputSchema.parse(payload);
@@ -73,5 +77,8 @@ export const handleRefineMaterial =
       log.error("Error refining material", error);
       Sentry.captureException(error);
       throw error;
+    } finally {
+      console.log("🔄 Setting isResourceRefining to FALSE");
+      setIsResourceRefining(false);
     }
   };
