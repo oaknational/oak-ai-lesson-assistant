@@ -9,13 +9,13 @@ import {
 } from "@/stores/ResourcesStoreProvider";
 import { docTypeSelector } from "@/stores/resourcesStore/selectors";
 
-type AdditionalMaterialsStartAgainProps = {
+type AdditionalMaterialsErrorProps = {
   closeDialog: () => void;
 };
 
-const AdditionalMaterialsStartAgain = ({
+const AdditionalMaterialsError = ({
   closeDialog,
-}: Readonly<AdditionalMaterialsStartAgainProps>) => {
+}: Readonly<AdditionalMaterialsErrorProps>) => {
   const docType = useResourcesStore(docTypeSelector);
   invariant(docType, "docType must be defined");
   const docTypeDisplayName =
@@ -23,7 +23,6 @@ const AdditionalMaterialsStartAgain = ({
   const { resetToDefault } = useResourcesActions();
   return (
     <OakFlex
-      data-testid="chat-share-dialog"
       $width="100%"
       $height="100%"
       $flexDirection="column"
@@ -54,4 +53,4 @@ const AdditionalMaterialsStartAgain = ({
   );
 };
 
-export default AdditionalMaterialsStartAgain;
+export default AdditionalMaterialsError;

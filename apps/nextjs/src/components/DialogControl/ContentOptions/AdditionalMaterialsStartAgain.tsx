@@ -29,7 +29,6 @@ const AdditionalMaterialsStartAgain = ({
   const { resetToDefault } = useResourcesActions();
   return (
     <OakFlex
-      data-testid="chat-share-dialog"
       $width="100%"
       $height="100%"
       $flexDirection="column"
@@ -40,7 +39,7 @@ const AdditionalMaterialsStartAgain = ({
         tag="h1"
         $textAlign="center"
         $mb={"space-between-m"}
-      >{`Have you downloaded your glossary?`}</OakHeading>
+      >{`Have you downloaded your ${docTypeDisplayName}?`}</OakHeading>
       <OakP $mb={"space-between-xl"}>
         {`Your lesson ${docTypeDisplayName} will not be saved if you choose to
         start again. Please download your ${docTypeDisplayName} if you want to

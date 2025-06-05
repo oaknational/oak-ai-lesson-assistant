@@ -10,7 +10,7 @@ import styled from "styled-components";
 
 import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
 import { useDialog } from "../AppComponents/DialogContext";
-import AdditionalMaterialsError from "./ContentOptions/AdditionalMaterialError";
+import AdditionalMaterialsError from "./ContentOptions/AdditionalMaterialsError";
 import AdditionalMaterialsInappropriateContent from "./ContentOptions/AdditionalMaterialsInappropriateContent";
 import AdditionalMaterialsModeration from "./ContentOptions/AdditionalMaterialsModeration";
 import AdditionalMaterialsRateLimit from "./ContentOptions/AdditionalMaterialsRateLimit";
