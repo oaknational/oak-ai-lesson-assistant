@@ -86,6 +86,14 @@ export function actionsBlock({
           },
           url: `https://dashboard.clerk.com/apps/${clerkAppId}/instances/${clerkInstanceId}/users/${userActionsProps.userId}`,
         },
+        {
+          type: "button",
+          text: {
+            type: "plain_text",
+            text: "Aila admin user",
+          },
+          url: `https://labs.thenational.academy/admin/users/${userActionsProps.userId}`,
+        },
       ]
     : [];
 

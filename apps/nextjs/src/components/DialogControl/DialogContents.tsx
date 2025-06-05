@@ -64,6 +64,14 @@ const dialogTitlesAndIcons: Record<
     title: "Threat detected",
     iconName: "warning",
   },
+  "additional-materials-rate-limit": {
+    title: "Rate limit",
+    iconName: "warning",
+  },
+  "additional-materials-user-account-locked": {
+    title: "Account locked",
+    iconName: "warning",
+  },
 };
 
 const OakModalAtTheFront = styled(OakModalCenter)`
@@ -140,8 +148,26 @@ const DialogContents = ({
             {dialogWindow === "additional-materials-moderation" && (
               <AdditionalMaterialsModeration closeDialog={closeDialog} />
             )}
+            {/* // awaiting designs - placeholder */}
             {dialogWindow === "additional-materials-threat-detected" && (
-              <AdditionalMaterialsThreatDetected closeDialog={closeDialog} />
+              <AdditionalMaterialsThreatDetected
+                body={"threat detected"}
+                closeDialog={closeDialog}
+              />
+            )}
+            {/* // awaiting designs - placeholder */}
+            {dialogWindow === "additional-materials-rate-limit" && (
+              <AdditionalMaterialsThreatDetected
+                body={"rate-limit"}
+                closeDialog={closeDialog}
+              />
+            )}
+            {/* // awaiting designs - placeholder */}
+            {dialogWindow === "additional-materials-user-account-locked" && (
+              <AdditionalMaterialsThreatDetected
+                body={"banned"}
+                closeDialog={closeDialog}
+              />
             )}
           </OakModalCenterBody>
         </OakModalAtTheFront>

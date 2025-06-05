@@ -8,13 +8,15 @@ import { kebabCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversi
 
 import { OakP, OakSpan } from "@oaknational/oak-components";
 
+import StepFour from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepFour";
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
 import StepThree from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepThree";
 import StepTwo from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepTwo";
+import useStepSubmitLogic from "@/components/AppComponents/AdditionalMaterials/hooks/useStepSubmitLogic";
 import { DialogProvider } from "@/components/AppComponents/DialogContext";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
-import ResourcesLayout from "@/components/ResroucesLayout";
+import ResourcesLayout from "@/components/ResourcesLayout";
 import {
   ResourcesStoresProvider,
   useResourcesActions,
@@ -46,12 +48,23 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const docTypeName = resourceType?.displayName || null;
   const { resetFormState } = useResourcesActions();
 
+  const { handleSubmitLessonPlan, handleSubmit } = useStepSubmitLogic();
+
   useEffect(() => {
     resetFormState();
   }, [resetFormState]);
 
   const titleAreaContent = {
     0: {
+      title: "What type of resource do you need?",
+      subTitle: (
+        <OakP $font="body-2" $color="grey70">
+          Choose the type of additional material you'd like to create for your
+          lesson.
+        </OakP>
+      ),
+    },
+    1: {
       title: "What do you want to teach?",
       subTitle: (
         <OakP $font="body-2" $color="grey70">
@@ -60,7 +73,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
         </OakP>
       ),
     },
-    1: {
+    2: {
       title: "Lesson overview",
       subTitle: (
         <OakP $font="body-2" $color="grey70">
@@ -70,7 +83,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
         </OakP>
       ),
     },
-    2: {
+    3: {
       title: pageData.lessonPlan.title,
       subTitle: (
         <OakP $font="body-2" $color="grey70">
@@ -83,8 +96,9 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
 
   const stepComponents = {
     0: <StepOne />,
-    1: <StepTwo />,
-    2: <StepThree />,
+    1: <StepTwo handleSubmitLessonPlan={handleSubmitLessonPlan} />,
+    2: <StepThree handleSubmit={handleSubmit} />,
+    3: <StepFour />,
   };
   const stepNumberParsed = stepNumber as keyof typeof titleAreaContent;
   const title = titleAreaContent?.[stepNumberParsed]?.title ?? "";
@@ -94,7 +108,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
       title={title}
       subTitle={subTitle}
       step={stepNumber + 1}
-      docTypeName={docTypeName || ""}
+      docTypeName={docTypeName}
     >
       {stepComponents[stepNumber]}
     </ResourcesLayout>
@@ -106,7 +120,7 @@ const ResourcesContents: FC<AdditionalMaterialsUserProps> = (props) => {
     <ResourcesStoresProvider>
       <DialogProvider>
         <DialogRoot>
-          <DialogContents chatId={undefined} lesson={{}} submit={() => {}} />
+          <DialogContents chatId={undefined} lesson={{}} />
           <ResourcesContentsInner {...props} />
         </DialogRoot>
       </DialogProvider>

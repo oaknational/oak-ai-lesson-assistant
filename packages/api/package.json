@@ -21,6 +21,7 @@
   "dependencies": {
     "@clerk/nextjs": "5.7.2",
     "@oakai/additional-materials": "*",
+    "@oakai/aila": "*",
     "@oakai/core": "*",
     "@oakai/db": "*",
     "@oakai/exports": "*",
