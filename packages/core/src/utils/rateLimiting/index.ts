@@ -1,3 +1,4 @@
+import { fixedWindowRateLimiter } from "./fixedWindowRateLimiter";
 import { slidingWindowRateLimiter } from "./slidingWindowRateLimiter";
 import { userBasedRateLimiter } from "./userBasedRateLimiter";
 
@@ -43,21 +44,21 @@ export const rateLimits = {
       },
       window: "24 h",
     }),
-    demo: slidingWindowRateLimiter({
+    demo: fixedWindowRateLimiter({
       prefix: "rateLimit:generations:demo",
       limit: DEMO_GENERATIONS_PER_30D,
       window: "30 d",
     }),
   },
   appSessions: {
-    demo: slidingWindowRateLimiter({
+    demo: fixedWindowRateLimiter({
       prefix: "rateLimit:lessons:demo",
       limit: DEMO_APP_SESSIONS_PER_30D,
       window: "30 d",
     }),
   },
   additionalMaterialSessions: {
-    demo: slidingWindowRateLimiter({
+    demo: fixedWindowRateLimiter({
       prefix: "rateLimit:additionalMaterial:demo",
       limit: DEMO_APP_SESSIONS_PER_30D,
       window: "30 d",
