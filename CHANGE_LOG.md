@@ -1,3 +1,10 @@
+## [1.40.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.40.0...v1.40.1) (2025-06-05)
+
+
+### Bug Fixes
+
+* force dynamic rendering for cron job routes ([#700](https://github.com/oaknational/oak-ai-lesson-assistant/issues/700)) ([79e280c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/79e280ca04b4b0d8552734340baf52d07b6a99c1))
+
 # [1.40.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.39.0...v1.40.0) (2025-06-05)
 
 
