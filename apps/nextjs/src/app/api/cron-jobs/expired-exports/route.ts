@@ -9,6 +9,8 @@ import { isTruthy } from "remeda";
 
 const log = aiLogger("cron");
 
+export const dynamic = 'force-dynamic';
+
 const requiredEnvVars = ["CRON_SECRET", "GOOGLE_DRIVE_OUTPUT_FOLDER_ID"];
 
 requiredEnvVars.forEach((envVar) => {
