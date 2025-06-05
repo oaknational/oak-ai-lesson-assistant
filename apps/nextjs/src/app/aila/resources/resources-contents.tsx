@@ -30,6 +30,7 @@ import {
   docTypeSelector,
   pageDataSelector,
   stepNumberSelector,
+  threatDetectionSelector,
 } from "@/stores/resourcesStore/selectors";
 
 interface AdditionalMaterialsUserProps {
@@ -45,6 +46,8 @@ interface AdditionalMaterialsUserProps {
 const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
+  const threatDetected = useResourcesStore(threatDetectionSelector);
+
   const docType = useResourcesStore(docTypeSelector);
   const error = useResourcesStore((state) => state.error);
 
@@ -61,7 +64,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   }, [resetFormState]);
 
   handleDialogSelection({
-    threatDetected: undefined,
+    threatDetected,
     error,
     setDialogWindow,
   });
