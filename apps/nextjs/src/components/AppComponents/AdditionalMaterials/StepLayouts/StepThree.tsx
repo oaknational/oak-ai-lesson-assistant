@@ -1,25 +1,19 @@
-import { useState } from "react";
-
-import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
-import { isExitQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/exitQuiz/schema";
+import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
+import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import {
-  isGlossary,
-  readingAgeRefinement,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
-import {
-  type RefinementOption,
-  getResourceType,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
-import { isStarterQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/starterQuiz/schema";
+  camelCaseToSentenceCase,
+  kebabCaseToSentenceCase,
+} from "@oakai/core/src/utils/camelCaseConversion";
 import { aiLogger } from "@oakai/logger";
 
 import {
+  OakBox,
   OakFlex,
   OakIcon,
   OakP,
   OakPrimaryButton,
-  OakSecondaryButton,
-  OakSpan,
 } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/nextjs";
 
@@ -29,167 +23,150 @@ import {
 } from "@/stores/ResourcesStoreProvider";
 import {
   docTypeSelector,
-  generationSelector,
-  isResourcesDownloadingSelector,
-  isResourcesLoadingSelector,
+  errorSelector,
+  isLoadingLessonPlanSelector,
   moderationSelector,
+  pageDataSelector,
+  threatDetectionSelector,
 } from "@/stores/resourcesStore/selectors";
-import { pageDataSelector } from "@/stores/resourcesStore/selectors";
 import { trpc } from "@/utils/trpc";
 
-import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
-import { ExitQuiz } from "../../AdditionalMaterials/ExitQuiz";
-import { Glossary } from "../../AdditionalMaterials/Glossary";
-import { StarterQuiz } from "../../AdditionalMaterials/StarterQuiz";
+import { MemoizedReactMarkdownWithStyles } from "../../Chat/markdown";
 import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
-import InlineButton from "../InlineButton";
 import ResourcesFooter from "../ResourcesFooter";
+import StepLoadingScreen from "../StepLoadingScreen";
 import { handleDialogSelection } from "./helpers";
+
+type LessonPlanSectionKey = (typeof lessonFieldKeys)[number];
+
+// Type guard to check if a key is a valid lesson part
+function isValidLessonPart(
+  key: LessonPlanSectionKey,
+): key is Extract<
+  LessonPlanSectionKey,
+  | "learningOutcome"
+  | "learningCycles"
+  | "keyLearningPoints"
+  | "misconceptions"
+  | "keywords"
+> {
+  return [
+    "learningOutcome",
+    "learningCycles",
+    "keyLearningPoints",
+    "misconceptions",
+    "keywords",
+  ].includes(key);
+}
+
+export function mapLessonPlanSections(
+  lessonPlan: AilaPersistedChat["lessonPlan"],
+) {
+  return lessonFieldKeys.map((key) => ({ key, data: lessonPlan[key] ?? null }));
+}
 
 const log = aiLogger("additional-materials");
 
-const StepThree = () => {
-  const generation = useResourcesStore(generationSelector);
-
-  const docType = useResourcesStore(docTypeSelector);
-  const isResourcesLoading = useResourcesStore(isResourcesLoadingSelector);
-  const { setStepNumber, refineMaterial } = useResourcesActions();
-  const moderation = useResourcesStore(moderationSelector);
-  const error = useResourcesStore((state) => state.error);
-  const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
-  const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
-  const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
+const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   const pageData = useResourcesStore(pageDataSelector);
-  const lessonPlan = pageData?.lessonPlan;
+  const docType = useResourcesStore(docTypeSelector);
+  const moderation = useResourcesStore(moderationSelector);
+  const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
+  const threatDetected = useResourcesStore(threatDetectionSelector);
+  const error = useResourcesStore(errorSelector);
   const { setDialogWindow } = useDialog();
-
-  const fetchMaterial =
-    trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 
   // Get resource type from configuration
   const resourceType = docType ? getResourceType(docType) : null;
-  const refinementOptions = resourceType?.refinementOptions || [];
-  const handleDownloadMaterial = async () => {
-    if (!generation || !docType) {
-      return;
-    }
-    try {
-      await downloadMaterial();
-    } catch (err) {
-      log.error("Download failed", err);
-      Sentry.captureException(err);
-    } finally {
-      setIsResourceDownloading(false);
-    }
-  };
+  const docTypeName = resourceType
+    ? resourceType.displayName.toLowerCase()
+    : null;
 
-  const renderGeneratedMaterial = () => {
-    if (!generation) {
-      return null;
-    }
+  const { setStepNumber } = useResourcesActions();
 
-    if (docType === "additional-glossary" && isGlossary(generation)) {
-      return <Glossary action={docType} generation={generation} />;
-    }
+  if (isLoadingLessonPlan) {
+    return <StepLoadingScreen nameOfWhatIsBuilding="lesson plan" />;
+  }
+  if (threatDetected) {
+    setDialogWindow("additional-materials-threat-detected");
+  }
 
-    if (
-      docType === "additional-comprehension" &&
-      isComprehensionTask(generation)
-    ) {
-      return <ComprehensionTask action={docType} generation={generation} />;
-    }
+  handleDialogSelection({ threatDetected, error, setDialogWindow });
 
-    if (docType === "additional-starter-quiz" && isStarterQuiz(generation)) {
-      return <StarterQuiz action={docType} generation={generation} />;
-    }
-
-    if (docType === "additional-exit-quiz" && isExitQuiz(generation)) {
-      return <ExitQuiz action={docType} generation={generation} />;
-    }
-
-    return null;
-  };
-
-  // const refinementOptions = getRefinementOptions();
   const hasModeration =
     moderation?.categories && moderation.categories.length > 0;
 
-  handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
-
   return (
     <>
-      {isResourcesLoading || (!generation && <OakP>Loading...</OakP>)}
-      {hasModeration && <ModerationMessage />}
-      <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
-      <ResourcesFooter>
-        {isFooterAdaptOpen ? (
-          <OakFlex $flexDirection="column" $gap="all-spacing-5" $width="100%">
-            <button onClick={() => setIsFooterAdaptOpen(false)}>
-              <OakFlex $alignItems="center" $gap="all-spacing-2">
-                <OakIcon iconName="cross" />
-                <OakSpan $color="black" $textDecoration="none" $font="body-2">
-                  Close
-                </OakSpan>
-              </OakFlex>
-            </button>
+      <OakFlex $flexDirection="column">
+        <OakFlex $flexDirection="column" $mb="space-between-m">
+          <OakP $font={"heading-6"}>Task details</OakP>
+          {hasModeration && <ModerationMessage />}
 
-            <OakFlex $gap="all-spacing-2" $flexWrap="wrap">
-              {refinementOptions.map((refinement: RefinementOption) => (
-                <InlineButton
-                  key={refinement.id}
-                  onClick={() => {
-                    void refineMaterial({
-                      refinement: [{ type: refinement.value }],
-                      mutateAsync: async (input) => {
-                        try {
-                          return await fetchMaterial.mutateAsync(input);
-                        } catch (error) {
-                          throw error instanceof Error
-                            ? error
-                            : new Error(String(error));
-                        }
-                      },
-                    });
-                    setIsFooterAdaptOpen(false);
-                  }}
-                >
-                  {refinement.label}
-                </InlineButton>
-              ))}
-            </OakFlex>
-          </OakFlex>
-        ) : (
-          <OakFlex $justifyContent="space-between" $width={"100%"}>
-            <OakSecondaryButton onClick={() => setStepNumber(0)}>
-              Start again
-            </OakSecondaryButton>
-            <OakFlex $gap="all-spacing-2">
-              <OakSecondaryButton
-                onClick={() => {
-                  setIsFooterAdaptOpen(true);
-                }}
-                disabled={
-                  refinementOptions.length === 0 || !generation || isDownloading
-                }
+          <OakBox $pv="inner-padding-m">
+            <OakP $font="body-2">
+              {toTitleCase(docTypeName ?? "")},{" "}
+              {kebabCaseToSentenceCase(pageData.lessonPlan.keyStage ?? "")},{" "}
+              {pageData.lessonPlan.subject}, {pageData.lessonPlan.title}
+            </OakP>
+          </OakBox>
+        </OakFlex>
+
+        {mapLessonPlanSections(pageData.lessonPlan).map((section) => {
+          const title = camelCaseToSentenceCase(section.key) ?? "";
+          if (
+            resourceType?.lessonParts &&
+            isValidLessonPart(section.key) &&
+            resourceType.lessonParts.includes(section.key)
+          ) {
+            return (
+              <OakFlex
+                key={section.key}
+                $flexDirection={"column"}
+                $mb="space-between-m"
               >
-                Adapt
-              </OakSecondaryButton>
-              <OakPrimaryButton
-                onClick={() => void handleDownloadMaterial()}
-                iconName="download"
-                isTrailingIcon={true}
-                isLoading={isDownloading}
-                disabled={!generation || isResourcesLoading}
-              >
-                Download (.zip)
-              </OakPrimaryButton>
+                <OakP $font={"heading-6"}>{title}</OakP>
+                <OakFlex $pv="inner-padding-s">
+                  <OakFlex $flexDirection="column">
+                    <MemoizedReactMarkdownWithStyles
+                      markdown={`${sectionToMarkdown(section.key, section.data)}`}
+                    />
+                  </OakFlex>
+                </OakFlex>
+              </OakFlex>
+            );
+          }
+          return null;
+        })}
+      </OakFlex>
+
+      <ResourcesFooter>
+        <OakFlex $justifyContent="space-between" $width={"100%"}>
+          <button onClick={() => setStepNumber(1)}>
+            <OakFlex $alignItems="center" $gap="all-spacing-2">
+              <OakIcon iconName="chevron-left" />
+              Back
             </OakFlex>
-          </OakFlex>
-        )}
+          </button>
+
+          <OakPrimaryButton
+            onClick={() => {
+              void handleSubmit();
+            }}
+            iconName="arrow-right"
+            isTrailingIcon={true}
+          >
+            Create {docTypeName}
+          </OakPrimaryButton>
+        </OakFlex>
       </ResourcesFooter>
     </>
   );
 };
+
+function toTitleCase(str: string) {
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+}
 
 export default StepThree;

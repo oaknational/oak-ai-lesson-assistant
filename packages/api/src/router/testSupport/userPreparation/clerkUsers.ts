@@ -10,10 +10,9 @@ export const deleteOldTestUser = async () => {
     limit: 500,
   });
 
-  const NUMBERS_USER = /\d{5,10}.*@/; // jim+010203@thenational.academy
   const testUsers = result.data.filter((u) => {
     const email = u.primaryEmailAddress?.emailAddress ?? "";
-    return email.startsWith("test+") || email.match(NUMBERS_USER);
+    return email.startsWith("test+");
   });
 
   if (testUsers.length < 100) {

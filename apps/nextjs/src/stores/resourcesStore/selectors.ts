@@ -38,6 +38,13 @@ export const isResourcesLoadingSelector = (state: ResourcesState) =>
 export const isResourcesDownloadingSelector = (state: ResourcesState) =>
   state.isDownloading;
 
+/**
+ * Selector for the is resource refining in the resources workflow
+ * @example const isResourceRefining = useResourcesStore(isResourceRefiningSelector);
+ */
+export const isResourceRefiningSelector = (state: ResourcesState) =>
+  state.isResourceRefining;
+
 // Form state selectors
 export const formStateSelector = (state: ResourcesState) => state.formState;
 export const subjectSelector = (state: ResourcesState) =>
@@ -65,3 +72,10 @@ export const threatDetectionSelector = (state: ResourcesState) =>
  * @example const error = useResourcesStore(errorSelector);
  */
 export const errorSelector = (state: ResourcesState) => state.error;
+
+/**
+ * Selector for the refinement generation history in the resources workflow
+ * @example const refinementHistory = useResourcesStore(refinementGenerationHistorySelector);
+ */
+export const refinementGenerationHistorySelector = (state: ResourcesState) =>
+  state.refinementGenerationHistory;

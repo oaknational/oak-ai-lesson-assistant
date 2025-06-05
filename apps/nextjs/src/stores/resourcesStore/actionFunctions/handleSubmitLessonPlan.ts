@@ -99,8 +99,7 @@ export const handleSubmitLessonPlan =
     const { setStepNumber, setIsLoadingLessonPlan } = get().actions;
     const { docType } = get();
 
-    // Change step first for immediate feedback
-    setStepNumber(1);
+    // Change step first for immediate feedback - stay on current step during loading
     setIsLoadingLessonPlan(true);
 
     try {
