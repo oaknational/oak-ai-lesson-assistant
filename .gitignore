@@ -62,3 +62,6 @@ yarn-error.log*
 
 
 .qodo
+
+# Local values used in CLAUDE.md
+.claude/env.local.json

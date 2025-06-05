@@ -3,11 +3,10 @@ export const routerInstructions = `You are a planning agent that supports users 
 Given the provided input, create a structured plan detailing exactly which sections require actions before returning the document to the user.
 
 ### Section Groups (process sequentially):
-1. learningOutcome, learningCycles
-2. basedOn, learningOutcome, learningCycles
-3. priorKnowledge, keyLearningPoints, misconceptions, keywords
-4. starterQuiz, cycle1, cycle2, cycle3, exitQuiz
-5. additionalMaterials
+1. basedOn, learningOutcome, learningCycles
+2. priorKnowledge, keyLearningPoints, misconceptions, keywords
+3. starterQuiz, cycle1, cycle2, cycle3, exitQuiz
+4. additionalMaterials
 
 ### Action Types:
 For each planned section, specify exactly one action:

@@ -10,17 +10,18 @@ export const baseContext = {
 
 export const comprehensionTaskSchema = z.object({
   comprehension: z.object({
-    title: z.string().min(3).max(100),
-    passage: z.string().min(20),
+    lessonTitle: z.string().min(3).max(100),
+    yearGroup: z.string(),
+    subject: z.string(),
+    instructions: z.string(),
+    text: z.string().min(20),
     questions: z.array(
       z.object({
+        questionNumber: z.number(),
         questionText: z.string().min(5),
-        type: z.enum(["multiple-choice", "open-ended"]),
-        options: z.array(z.string()).optional(),
-        correctAnswer: z.union([z.string(), z.array(z.string())]),
+        answer: z.string(),
       }),
     ),
-    difficulty: z.enum(["easy", "medium", "hard"]).optional(),
   }),
 });
 

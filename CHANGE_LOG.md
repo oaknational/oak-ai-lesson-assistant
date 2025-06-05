@@ -1,3 +1,32 @@
+# [1.40.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.39.0...v1.40.0) (2025-06-05)
+
+
+### Bug Fixes
+
+* add admin user button to slack alert when user banned ([#691](https://github.com/oaknational/oak-ai-lesson-assistant/issues/691)) ([d4ab295](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d4ab29534dc3555329ceb42196dd9251cd14c820))
+
+
+### Features
+
+* add scheduled clerk user cleanup cron job - AI-1245 ([#693](https://github.com/oaknational/oak-ai-lesson-assistant/issues/693)) ([cc8b7d9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cc8b7d90fc9a25983164339fa6bceddce7496d3a))
+* agentic maths quiz [AI-1189] [AI-1152] ([#677](https://github.com/oaknational/oak-ai-lesson-assistant/issues/677)) ([3b7725c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3b7725ced2453c96f1d40701801e4b85915075b4))
+* am mobile implementation ([#696](https://github.com/oaknational/oak-ai-lesson-assistant/issues/696)) ([c87981f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c87981f7ac730e4e36e81148630b56d456abe16a))
+* change the steps ([#685](https://github.com/oaknational/oak-ai-lesson-assistant/issues/685)) ([e48d5f7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e48d5f768908181430953b64ac78eea9ad4b6024))
+* update modify hover states copy - AI-1246 ([#692](https://github.com/oaknational/oak-ai-lesson-assistant/issues/692)) ([a3e3424](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a3e342457d4b3edd5dea8079f305f1b4d9ef15f3))
+
+# [1.39.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.38.0...v1.39.0) (2025-05-29)
+
+
+### Bug Fixes
+
+* lakera payload only to send message text [AI-1062] ([#679](https://github.com/oaknational/oak-ai-lesson-assistant/issues/679)) ([0dc574c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0dc574c22ad614a234c7340c67b3fece7d305eb9))
+
+
+### Features
+
+* am safety violation - AI-1107 [MIGRATION] ([#676](https://github.com/oaknational/oak-ai-lesson-assistant/issues/676)) ([3deb0e1](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3deb0e186fddc63fbb2d1c19256cbf434b243d2a))
+* download am ([#678](https://github.com/oaknational/oak-ai-lesson-assistant/issues/678)) ([70145f3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/70145f324e81d4bd7bf12151161c40350cf01e94))
+
 # [1.38.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.37.0...v1.38.0) (2025-05-22)
 
 

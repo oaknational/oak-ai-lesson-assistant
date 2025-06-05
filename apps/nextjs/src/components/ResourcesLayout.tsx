@@ -4,11 +4,13 @@ import {
   OakHeading,
   OakMaxWidth,
   OakP,
-  OakSpan,
 } from "@oaknational/oak-components";
 
+import { DemoBanner } from "@/components/AppComponents/Chat/demo-banner";
+import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
 import { toSentenceCase } from "@/utils/toSentenceCase";
 
+import { useDemoUser } from "./ContextProviders/Demo";
 import HeaderManager from "./HeaderManager";
 
 type LayoutProps = {
@@ -25,9 +27,27 @@ const ResourcesLayout = ({
   step,
   docTypeName,
 }: Readonly<LayoutProps>) => {
+  const { isDemoUser, demo } = useDemoUser();
+
+  // Check whether clerk metadata has loaded to prevent the banner from flashing
+  const clerkMetadata = useClerkDemoMetadata();
   return (
     <>
-      <OakBox $position="fixed" $left="all-spacing-0" $right="all-spacing-0">
+      {clerkMetadata.isSet && isDemoUser && (
+        <DemoBanner
+          resourceType="additionalMaterials"
+          monthlyLimit={demo.appSessionsPerMonth}
+          remaining={demo.additionalMaterialsSessionsRemaining}
+          contactHref={demo.contactHref}
+        />
+      )}
+
+      <OakBox
+        as={"header"}
+        $position={"fixed"}
+        $zIndex={"banner"}
+        $width={"100%"}
+      >
         <HeaderManager />
       </OakBox>
 
@@ -53,7 +73,7 @@ const ResourcesLayout = ({
           $pb="inner-padding-xl"
           $maxWidth={"all-spacing-23"}
         >
-          <OakBox $pa="inner-padding-xl4">
+          <OakBox $pa={["inner-padding-xl", "inner-padding-xl4"]}>
             <OakFlex
               $bb="border-solid-s"
               $borderColor="grey40"
@@ -70,7 +90,7 @@ const ResourcesLayout = ({
                 $width="fit-content"
               >
                 <OakP $font="body-2">
-                  Step {step} of 3{" "}
+                  Step {step} of 4{" "}
                   {docTypeName && `- ${toSentenceCase(docTypeName)}`}
                 </OakP>
               </OakBox>
