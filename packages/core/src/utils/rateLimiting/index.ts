@@ -1,5 +1,4 @@
 import { fixedWindowRateLimiter } from "./fixedWindowRateLimiter";
-import { slidingWindowRateLimiter } from "./slidingWindowRateLimiter";
 import { userBasedRateLimiter } from "./userBasedRateLimiter";
 
 if (!process.env.RATELIMIT_GENERATIONS_PER_24H) {
@@ -79,7 +78,7 @@ export const rateLimits = {
       },
       window: "24 h",
     }),
-    demo: slidingWindowRateLimiter({
+    demo: fixedWindowRateLimiter({
       prefix: "rateLimit:additionalMaterial:demo",
       limit: DEMO_GENERATIONS_PER_30D,
       window: "30 d",
