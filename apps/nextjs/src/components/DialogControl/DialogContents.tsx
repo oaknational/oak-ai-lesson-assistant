@@ -68,7 +68,7 @@ const dialogTitlesAndIcons: Record<
     iconName: null,
   },
   "additional-materials-rate-limit": {
-    title: "Rate limit",
+    title: "Demo teaching material limits",
     iconName: "warning",
   },
   "additional-materials-toxic-moderation": {

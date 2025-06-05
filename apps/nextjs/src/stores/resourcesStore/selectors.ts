@@ -1,4 +1,4 @@
-import type { ErrorType, ResourcesState } from "./types";
+import type { ResourcesState } from "./types";
 
 /**
  * Selector for the step number in the resources workflow

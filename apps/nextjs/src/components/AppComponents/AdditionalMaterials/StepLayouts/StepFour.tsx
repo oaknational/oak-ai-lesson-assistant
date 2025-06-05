@@ -88,8 +88,7 @@ const StepFour = () => {
     refinementGenerationHistorySelector,
   );
 
-  const { setStepNumber, refineMaterial, undoRefinement } =
-    useResourcesActions();
+  const { refineMaterial, undoRefinement } = useResourcesActions();
   const moderation = useResourcesStore(moderationSelector);
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
   const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();

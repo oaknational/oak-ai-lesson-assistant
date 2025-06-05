@@ -1,8 +1,12 @@
-import { OakFlex, OakP, OakPrimaryButton } from "@oaknational/oak-components";
+import {
+  OakFlex,
+  OakLink,
+  OakP,
+  OakPrimaryButton,
+} from "@oaknational/oak-components";
 
+import { useDemoUser } from "@/components/ContextProviders/Demo";
 import { useResourcesActions } from "@/stores/ResourcesStoreProvider";
-
-import ModalFooterButtons from "./ModalFooterButtons";
 
 type AdditionalMaterialsRateLimitProps = {
   closeDialog: () => void;
@@ -12,31 +16,36 @@ const AdditionalMaterialsRateLimit = ({
   closeDialog,
 }: Readonly<AdditionalMaterialsRateLimitProps>) => {
   const { resetToDefault } = useResourcesActions();
+  const { isDemoUser, demo } = useDemoUser();
+
+  if (!isDemoUser) {
+    return null;
+  }
   return (
-    <OakFlex
-      data-testid="chat-share-dialog"
-      $width="100%"
-      $height="100%"
-      $flexDirection="column"
-      $justifyContent="space-between"
-    >
-      <OakP>Rate limit - awaiting designs for this modal</OakP>
+    <>
+      <OakP>
+        You have {demo.additionalMaterialsSessionsRemaining} of your{" "}
+        {demo.appSessionsPerMonth} teaching materials available this month. If
+        you are a teacher in the UK, please{" "}
+        <OakLink href={demo.contactHref}>contact us for full access.</OakLink>
+      </OakP>
 
-      <OakPrimaryButton
-        onClick={() => {
-          resetToDefault();
-          closeDialog();
-        }}
+      <OakFlex
+        $width={"100%"}
+        $justifyContent={"center"}
+        $alignItems={"center"}
+        $mb={"space-between-m"}
       >
-        Continue
-      </OakPrimaryButton>
-
-      <ModalFooterButtons
-        closeDialog={closeDialog}
-        // TODO: Add action button states
-        actionButtonStates={() => <OakP>Submit</OakP>}
-      />
-    </OakFlex>
+        <OakPrimaryButton
+          onClick={() => {
+            resetToDefault();
+            closeDialog();
+          }}
+        >
+          Continue
+        </OakPrimaryButton>
+      </OakFlex>
+    </>
   );
 };
 
