@@ -8,7 +8,7 @@ import invariant from "tiny-invariant";
 
 const log = aiLogger("cron");
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 const ONE_MONTH_MS = 30 * DAY_IN_MS;
