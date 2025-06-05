@@ -48,6 +48,7 @@ export type ResourcesState = {
   moderation?: ModerationResult;
   threatDetection?: boolean;
   error: ErrorResponse | null;
+  refinementGenerationHistory: AdditionalMaterialSchemas[];
 
   actions: {
     // setters
@@ -75,6 +76,9 @@ export type ResourcesState = {
     generateMaterial: (params: GenerateMaterialParams) => Promise<void>;
     refineMaterial: (params: RefineMaterialParams) => Promise<void>;
     downloadMaterial: () => Promise<void>;
+
+    // History management actions
+    undoRefinement: () => void;
 
     // Reset store to default state
     resetToDefault: () => void;
