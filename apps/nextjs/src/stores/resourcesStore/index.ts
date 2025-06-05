@@ -14,10 +14,13 @@ import { handleRefineMaterial } from "./actionFunctions/handleRefineMaterial";
 import { handleSetDocType } from "./actionFunctions/handleSetDocType";
 import { handleSetGeneration } from "./actionFunctions/handleSetGeneration";
 import { handleSetIsLoadingLessonPlan } from "./actionFunctions/handleSetIsLoadingLessonPlan";
-import handleSetIsResourcesLoading from "./actionFunctions/handleSetIsResourcesLoading";
+import handleSetIsResourcesLoading, {
+  handleSetIsResourceRefining,
+} from "./actionFunctions/handleSetIsResourcesLoading";
 import { handleSetPageData } from "./actionFunctions/handleSetPageData";
 import { handleSetStepNumber } from "./actionFunctions/handleSetStepNumber";
 import { handleSubmitLessonPlan } from "./actionFunctions/handleSubmitLessonPlan";
+import { handleUndoRefinement } from "./actionFunctions/handleUndoRefinement";
 import type { ResourcesState } from "./types";
 
 export * from "./types";
@@ -26,6 +29,7 @@ const DEFAULT_STATE = {
   stepNumber: 0,
   isLoadingLessonPlan: false,
   isResourcesLoading: false,
+  isResourceRefining: false,
   isDownloading: false,
   error: null,
   pageData: {
@@ -59,6 +63,7 @@ const DEFAULT_STATE = {
   },
   moderation: undefined,
   threatDetection: undefined,
+  refinementGenerationHistory: [],
 };
 
 export const createResourcesStore = () => {
@@ -74,6 +79,7 @@ export const createResourcesStore = () => {
       setDocType: handleSetDocType(set, get),
       setIsLoadingLessonPlan: handleSetIsLoadingLessonPlan(set, get),
       setIsResourcesLoading: handleSetIsResourcesLoading(set, get),
+      setIsResourceRefining: handleSetIsResourceRefining(set, get),
       setIsResourceDownloading: (isDownloading: boolean) =>
         set({ isDownloading }),
       setThreatDetection: (threatDetection: boolean) => {
@@ -91,6 +97,9 @@ export const createResourcesStore = () => {
       generateMaterial: handleGenerateMaterial(set, get),
       refineMaterial: handleRefineMaterial(set, get),
       downloadMaterial: handleDownload(set, get),
+
+      // History management actions
+      undoRefinement: handleUndoRefinement(set, get),
 
       // Reset store to default state
       resetToDefault: () =>

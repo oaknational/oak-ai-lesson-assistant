@@ -39,6 +39,7 @@ export type ResourcesState = {
   stepNumber: number;
   isLoadingLessonPlan: boolean;
   isResourcesLoading: boolean;
+  isResourceRefining: boolean;
   isDownloading: boolean;
   pageData: PageData;
   generation: AdditionalMaterialSchemas | null;
@@ -47,6 +48,7 @@ export type ResourcesState = {
   moderation?: ModerationResult;
   threatDetection?: boolean;
   error: ErrorResponse | null;
+  refinementGenerationHistory: AdditionalMaterialSchemas[];
 
   actions: {
     // setters
@@ -56,6 +58,7 @@ export type ResourcesState = {
     setDocType: (docType: string | null) => void;
     setIsLoadingLessonPlan: (isLoading: boolean) => void;
     setIsResourcesLoading: (isLoading: boolean) => void;
+    setIsResourceRefining: (isRefining: boolean) => void;
     setThreatDetection: (threatDetection: boolean) => void;
 
     // Form state setters
@@ -73,6 +76,9 @@ export type ResourcesState = {
     generateMaterial: (params: GenerateMaterialParams) => Promise<void>;
     refineMaterial: (params: RefineMaterialParams) => Promise<void>;
     downloadMaterial: () => Promise<void>;
+
+    // History management actions
+    undoRefinement: () => void;
 
     // Reset store to default state
     resetToDefault: () => void;

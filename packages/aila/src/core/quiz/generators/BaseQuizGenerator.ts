@@ -95,18 +95,15 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
   public async getLessonSlugFromPlanId(planId: string): Promise<string | null> {
     try {
-      const result = await prisma.lessonPlan.findUnique({
+      const result = await prisma.ragLessonPlan.findUnique({
         where: { id: planId },
-        select: {
-          lesson: true,
-        },
       });
 
       if (!result) {
         log.warn("Lesson plan could not be retrieved for planId: ", planId);
         return null;
       }
-      return result?.lesson.slug;
+      return result.oakLessonSlug;
     } catch (error) {
       log.error("Error fetching lesson slug:", error);
       return null;

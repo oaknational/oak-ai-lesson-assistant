@@ -73,7 +73,7 @@ const ResourcesLayout = ({
           $pb="inner-padding-xl"
           $maxWidth={"all-spacing-23"}
         >
-          <OakBox $pa="inner-padding-xl4">
+          <OakBox $pa={["inner-padding-xl", "inner-padding-xl4"]}>
             <OakFlex
               $bb="border-solid-s"
               $borderColor="grey40"
@@ -90,7 +90,7 @@ const ResourcesLayout = ({
                 $width="fit-content"
               >
                 <OakP $font="body-2">
-                  Step {step} of 3{" "}
+                  Step {step} of 4{" "}
                   {docTypeName && `- ${toSentenceCase(docTypeName)}`}
                 </OakP>
               </OakBox>

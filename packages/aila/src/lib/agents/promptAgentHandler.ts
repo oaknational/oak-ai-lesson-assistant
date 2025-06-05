@@ -3,7 +3,11 @@ import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { zodTextFormat } from "openai/helpers/zod";
 import type { z } from "zod";
 
-import type { LessonPlanKey, LooseLessonPlan } from "../../protocol/schema";
+import type {
+  CompletedLessonPlan,
+  LessonPlanKey,
+  LooseLessonPlan,
+} from "../../protocol/schema";
 import type { PromptAgentDefinition, SchemaWithValue } from "./agents";
 
 export async function promptAgentHandler<Schema extends SchemaWithValue>({
@@ -13,6 +17,7 @@ export async function promptAgentHandler<Schema extends SchemaWithValue>({
   targetKey,
   chatId,
   userId,
+  ragData,
 }: {
   agent: PromptAgentDefinition<Schema>;
   document: LooseLessonPlan;
@@ -20,6 +25,7 @@ export async function promptAgentHandler<Schema extends SchemaWithValue>({
   additionalInstructions: string;
   chatId: string;
   userId: string;
+  ragData: CompletedLessonPlan[];
 }): Promise<{ content: z.infer<Schema>["value"] }> {
   const openAIClient = createOpenAIClient({
     app: "lesson-assistant",
@@ -35,7 +41,11 @@ export async function promptAgentHandler<Schema extends SchemaWithValue>({
 
   const result = await openAIClient.responses.parse({
     instructions: agent.prompt,
-    input: `### Document
+    input: `### Examples from similar lessons
+
+${ragData.map((lesson) => `#### ${targetKey} ${lesson.title}\n\n${agent.extractRagData(lesson)}`).join("\n\n")}
+ 
+    ### Document
 ${JSON.stringify(document, null, 2)}
 
 ### Additional Instructions
