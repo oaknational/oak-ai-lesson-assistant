@@ -40,13 +40,13 @@ const StepTwo = ({
   const year = useResourcesStore(yearSelector);
   const activeDropdown = useResourcesStore(activeDropdownSelector);
 
-  useEffect(() => {
-    // Reset the form when the component is mounted
-    // This should be removed once we are persisting in the database and the flow is based on an ID
-    setSubject(null);
-    setTitle(null);
-    setYear(null);
-  }, [setSubject, setTitle, setYear]);
+  // useEffect(() => {
+  //   // Reset the form when the component is mounted
+  //   // This should be removed once we are persisting in the database and the flow is based on an ID
+  //   setSubject(null);
+  //   setTitle(null);
+  //   setYear(null);
+  // }, [setSubject, setTitle, setYear]);
 
   return (
     <>
@@ -68,6 +68,7 @@ const StepTwo = ({
         <OakTextInput
           onChange={(value) => setTitle(value.target.value)}
           placeholder="Type a lesson title or learning outcome"
+          value={title ?? ""}
         />
       </OakFlex>
 

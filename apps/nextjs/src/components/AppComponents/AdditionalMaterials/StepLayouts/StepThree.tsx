@@ -15,7 +15,6 @@ import {
   OakP,
   OakPrimaryButton,
 } from "@oaknational/oak-components";
-import * as Sentry from "@sentry/nextjs";
 
 import {
   useResourcesActions,
@@ -23,20 +22,17 @@ import {
 } from "@/stores/ResourcesStoreProvider";
 import {
   docTypeSelector,
-  errorSelector,
   isLoadingLessonPlanSelector,
   moderationSelector,
   pageDataSelector,
   threatDetectionSelector,
 } from "@/stores/resourcesStore/selectors";
-import { trpc } from "@/utils/trpc";
 
 import { MemoizedReactMarkdownWithStyles } from "../../Chat/markdown";
 import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
 import StepLoadingScreen from "../StepLoadingScreen";
-import { handleDialogSelection } from "./helpers";
 
 type LessonPlanSectionKey = (typeof lessonFieldKeys)[number];
 
@@ -65,8 +61,6 @@ export function mapLessonPlanSections(
 ) {
   return lessonFieldKeys.map((key) => ({ key, data: lessonPlan[key] ?? null }));
 }
-
-const log = aiLogger("additional-materials");
 
 const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   const pageData = useResourcesStore(pageDataSelector);
