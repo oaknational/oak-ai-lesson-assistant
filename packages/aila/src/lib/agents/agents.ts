@@ -1,22 +1,28 @@
 import { z } from "zod";
 
 import {
+  AdditionalMaterialsSchema,
   type CompletedLessonPlan,
+  CycleSchema,
   CycleSchemaWithoutLength,
   KeyLearningPointsSchema,
   KeyStageSchema,
+  KeywordsSchema,
   KeywordsSchemaWithoutLength,
   LearningCyclesSchema,
   LearningOutcomeSchema,
   type LessonPlanKey,
   LessonTitleSchema,
   type LooseLessonPlan,
+  MisconceptionsSchema,
   MisconceptionsSchemaWithoutLength,
   PriorKnowledgeSchema,
+  QuizSchema,
   QuizSchemaWithoutLength,
   SubjectSchema,
   TopicSchema,
 } from "../../protocol/schema";
+import { additionalMaterialsInstructions } from "./prompts/additionalMaterialsInstructions";
 import { exitQuizInstructions } from "./prompts/exitQuizInstructions";
 import { keyLearningPointsInstructions } from "./prompts/keyLearningPointsInstructions";
 import { keywordsInstructions } from "./prompts/keywordsInstructions";
@@ -47,35 +53,26 @@ export const agentNames = z.enum([
   "deleteSection",
   "endTurn",
   "basedOn",
+  "additionalMaterials",
 ]);
 
 export type AgentName = z.infer<typeof agentNames>;
 
-const _unknownAgentResponseSchema = z.object({
-  value: z.unknown(),
-});
-export type AgentResponse = z.infer<typeof _unknownAgentResponseSchema>;
-
-const _agentResponseAnySchema = z
-  .object({
-    value: z.any(),
-  })
-  .required();
-
-type AgentResponseAny = z.infer<typeof _agentResponseAnySchema>;
 export type SchemaWithValue = z.ZodObject<{ value: z.ZodTypeAny }>;
 
 export type PromptAgentDefinition<
-  Schema extends SchemaWithValue = typeof _agentResponseAnySchema,
+  SchemaForLLM extends z.ZodSchema = z.ZodSchema,
+  SchemaStrict extends z.ZodSchema = z.ZodSchema,
 > = {
   type: "prompt";
   name: AgentName;
   prompt: string;
-  schema: Schema;
+  schemaForLLM: SchemaForLLM;
+  schemaStrict: SchemaStrict;
   extractRagData: (exampleLessonPlan: CompletedLessonPlan) => string;
 };
 export type AgentDefinition =
-  | PromptAgentDefinition<SchemaWithValue>
+  | PromptAgentDefinition
   | {
       type: "custom";
       name: AgentName;
@@ -93,84 +90,96 @@ export const agents: Record<AgentName, AgentDefinition> = {
     type: "prompt",
     name: "title",
     prompt: "Generate a title for the lesson plan.",
-    schema: z.object({ value: LessonTitleSchema }),
+    schemaForLLM: LessonTitleSchema,
+    schemaStrict: LessonTitleSchema,
     extractRagData: (lp) => lp.title,
   },
   keyStage: {
     type: "prompt",
     name: "keyStage",
     prompt: "Specify the Key Stage for this lesson.",
-    schema: z.object({ value: KeyStageSchema }),
+    schemaForLLM: KeyStageSchema,
+    schemaStrict: KeyStageSchema,
     extractRagData: (lp) => lp.keyStage,
   },
   subject: {
     type: "prompt",
     name: "subject",
     prompt: "Specify the subject for this lesson.",
-    schema: z.object({ value: SubjectSchema }),
+    schemaForLLM: SubjectSchema,
+    schemaStrict: SubjectSchema,
     extractRagData: (lp) => lp.subject,
   },
   topic: {
     type: "prompt",
     name: "topic",
     prompt: "Specify the topic for this lesson.",
-    schema: z.object({ value: TopicSchema }),
+    schemaForLLM: TopicSchema,
+    schemaStrict: TopicSchema,
     extractRagData: (lp) => lp.topic,
   },
   learningOutcome: {
     type: "prompt",
     name: "learningOutcome",
     prompt: learningOutcomeInstructions,
-    schema: z.object({ value: LearningOutcomeSchema }),
+    schemaForLLM: LearningOutcomeSchema,
+    schemaStrict: LearningOutcomeSchema,
     extractRagData: (lp) => lp.learningOutcome,
   },
   learningCycles: {
     type: "prompt",
     name: "learningCycles",
     prompt: learningCycleTitlesInstructions,
-    schema: z.object({ value: LearningCyclesSchema }),
+    schemaForLLM: LearningCyclesSchema,
+    schemaStrict: LearningCyclesSchema,
     extractRagData: (lp) => JSON.stringify(lp.learningCycles),
   },
   priorKnowledge: {
     type: "prompt",
     name: "priorKnowledge",
     prompt: priorKnowledgeInstructions,
-    schema: z.object({ value: PriorKnowledgeSchema }),
+    schemaForLLM: PriorKnowledgeSchema,
+    schemaStrict: PriorKnowledgeSchema,
     extractRagData: (lp) => JSON.stringify(lp.priorKnowledge),
   },
   keyLearningPoints: {
     type: "prompt",
     name: "keyLearningPoints",
     prompt: keyLearningPointsInstructions,
-    schema: z.object({ value: KeyLearningPointsSchema }),
+    schemaForLLM: KeyLearningPointsSchema,
+    schemaStrict: KeyLearningPointsSchema,
     extractRagData: (lp) => JSON.stringify(lp.keyLearningPoints),
   },
   misconceptions: {
     type: "prompt",
     name: "misconceptions",
     prompt: misconceptionsInstructions,
-    schema: z.object({ value: MisconceptionsSchemaWithoutLength }),
+    schemaForLLM: MisconceptionsSchemaWithoutLength,
+    schemaStrict: MisconceptionsSchema,
     extractRagData: (lp) => JSON.stringify(lp.misconceptions),
   },
   keywords: {
     type: "prompt",
     name: "keywords",
     prompt: keywordsInstructions,
-    schema: z.object({ value: KeywordsSchemaWithoutLength }),
+    schemaForLLM: KeywordsSchemaWithoutLength,
+    schemaStrict: KeywordsSchema,
     extractRagData: (lp) => JSON.stringify(lp.keywords),
   },
   starterQuiz: {
     type: "prompt",
     name: "starterQuiz",
     prompt: [starterQuizInstructions, quizInstructions].join(`\n\n`),
-    schema: z.object({ value: QuizSchemaWithoutLength }),
+    schemaForLLM: QuizSchemaWithoutLength,
+    schemaStrict: QuizSchema,
     extractRagData: (lp) => JSON.stringify(lp.starterQuiz),
   },
   cycle: {
     type: "prompt",
     name: "cycle",
     prompt: learningCyclesInstructions,
-    schema: z.object({ value: CycleSchemaWithoutLength }),
+    schemaForLLM: CycleSchemaWithoutLength,
+    schemaStrict: CycleSchema,
     extractRagData: (lp) => {
       // @todo we probably only need one cycle (the relevant one)
       return JSON.stringify({
@@ -184,7 +193,8 @@ export const agents: Record<AgentName, AgentDefinition> = {
     type: "prompt",
     name: "exitQuiz",
     prompt: [exitQuizInstructions, quizInstructions].join(`\n\n`),
-    schema: z.object({ value: QuizSchemaWithoutLength }),
+    schemaForLLM: QuizSchemaWithoutLength,
+    schemaStrict: QuizSchema,
     extractRagData: (lp) => JSON.stringify(lp.exitQuiz),
   },
   mathsStarterQuiz: {
@@ -207,15 +217,24 @@ export const agents: Record<AgentName, AgentDefinition> = {
     type: "asyncFunction",
     name: "basedOn",
   },
+  additionalMaterials: {
+    type: "prompt",
+    name: "additionalMaterials",
+    prompt: additionalMaterialsInstructions,
+    schemaForLLM: AdditionalMaterialsSchema,
+    schemaStrict: AdditionalMaterialsSchema,
+    extractRagData: (lp) => JSON.stringify(lp.additionalMaterials),
+  },
 };
 
 export const sectionAgentMap: Record<
-  Exclude<
-    LessonPlanKey,
-    "title" | "subject" | "keyStage" | "topic" | "additionalMaterials"
-  >,
+  LessonPlanKey,
   (ctx: { lessonPlan: LooseLessonPlan }) => AgentName
 > = {
+  title: () => "title",
+  keyStage: () => "keyStage",
+  subject: () => "subject",
+  topic: () => "topic",
   basedOn: () => "basedOn",
   learningOutcome: () => "learningOutcome",
   learningCycles: () => "learningCycles",
@@ -238,5 +257,5 @@ export const sectionAgentMap: Record<
     }
     return "exitQuiz";
   },
-  // additionalMaterials: ["additionalMaterials"],
+  additionalMaterials: () => "additionalMaterials",
 };
