@@ -82,7 +82,7 @@ const StepTwo = ({
           <button onClick={() => setStepNumber(0)}>
             <OakFlex $alignItems="center" $gap="all-spacing-2">
               <OakIcon iconName="chevron-left" />
-              Back a step
+              Back
             </OakFlex>
           </button>
 
