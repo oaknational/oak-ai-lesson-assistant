@@ -4,7 +4,7 @@ import type {
   ActionDocument,
   ErrorDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import { handleThreatDetectionError } from "@oakai/aila/src/utils/moderation/moderationErrorHandling";
+import { handleThreatDetectionError } from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";

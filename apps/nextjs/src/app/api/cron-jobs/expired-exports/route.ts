@@ -50,7 +50,7 @@ async function updateExpiredAtAndDelete(fileIds: string[]) {
 
       log.info(`Successfully updated expiredAt for file: ${id}`);
 
-      await googleDrive.files.delete({ fileId: id });
+      await googleDrive.files.delete({ fileId: id, supportsAllDrives: true });
       log.info(`Successfully deleted file: ${id}`);
     } catch (error) {
       log.error(`Error processing file with gdriveFileId: ${id}`, error);
@@ -87,6 +87,7 @@ async function fetchExpiredExports({
       q: query,
       fields: "files(id, name, modifiedTime, ownedByMe )",
       pageSize: 1000,
+      supportsAllDrives: true,
     });
 
     const files =
