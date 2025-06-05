@@ -15,7 +15,7 @@ const ResourcesFooter = ({ children }: ResourcesFooterProps) => {
       $right="all-spacing-4"
       $width="unset"
       $pv="inner-padding-l"
-      $ph="inner-padding-xl4"
+      $ph={["inner-padding-xl", "inner-padding-xl4"]}
       $zIndex="neutral"
       $maxWidth="all-spacing-23"
     >

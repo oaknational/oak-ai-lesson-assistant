@@ -20,6 +20,7 @@ import handleSetIsResourcesLoading, {
 import { handleSetPageData } from "./actionFunctions/handleSetPageData";
 import { handleSetStepNumber } from "./actionFunctions/handleSetStepNumber";
 import { handleSubmitLessonPlan } from "./actionFunctions/handleSubmitLessonPlan";
+import { handleUndoRefinement } from "./actionFunctions/handleUndoRefinement";
 import type { ResourcesState } from "./types";
 
 export * from "./types";
@@ -62,6 +63,7 @@ const DEFAULT_STATE = {
   },
   moderation: undefined,
   threatDetection: undefined,
+  refinementGenerationHistory: [],
 };
 
 export const createResourcesStore = () => {
@@ -95,6 +97,9 @@ export const createResourcesStore = () => {
       generateMaterial: handleGenerateMaterial(set, get),
       refineMaterial: handleRefineMaterial(set, get),
       downloadMaterial: handleDownload(set, get),
+
+      // History management actions
+      undoRefinement: handleUndoRefinement(set, get),
 
       // Reset store to default state
       resetToDefault: () =>

@@ -42,6 +42,10 @@ export const handleRefineMaterial =
       throw new Error("No document type selected");
     }
 
+    // Get current generation and history before making changes
+    const currentGeneration = get().generation;
+    const currentHistory = get().refinementGenerationHistory;
+
     try {
       log.info("Refining material", { docType, refinement });
 
@@ -66,13 +70,22 @@ export const handleRefineMaterial =
       // Make the API call
       const result = await mutateAsync(parsedPayload);
 
-      // Update the store with the result
+      // Add current generation to history before updating with new result
+      // This ensures we can undo back to the current state
+      const newHistory = currentGeneration
+        ? [...currentHistory, currentGeneration]
+        : currentHistory;
+
+      // Update the store with the result and new history
       set({
         generation: result.resource,
         moderation: result.moderation,
         id: result.resourceId,
+        refinementGenerationHistory: newHistory,
       });
-      log.info("Material refined successfully");
+      log.info("Material refined successfully", {
+        historyLength: newHistory.length,
+      });
     } catch (error) {
       log.error("Error refining material", error);
       Sentry.captureException(error);

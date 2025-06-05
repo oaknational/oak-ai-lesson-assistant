@@ -68,6 +68,7 @@ export const handleGenerateMaterial =
         generation: result.resource,
         moderation: result.moderation,
         id: result.resourceId,
+        refinementGenerationHistory: [],
       });
 
       log.info("Material generated successfully");
