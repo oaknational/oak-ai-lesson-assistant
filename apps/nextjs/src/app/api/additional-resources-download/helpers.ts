@@ -27,7 +27,7 @@ export async function getDriveDocsZipStream({
   archive.pipe(zipStream);
 
   // Use fileIds array if provided, otherwise use single fileId
-  const allFileIds = fileIds || [fileId];
+  const allFileIds = fileIds ?? [fileId];
 
   for (const currentFileId of allFileIds) {
     for (const e of ext) {
@@ -42,7 +42,7 @@ export async function getDriveDocsZipStream({
       // Generate a meaningful filename based on the file's position in the array
       const fileType =
         allFileIds.length > 1 && allFileIds.indexOf(currentFileId) > 0
-          ? "Answers"
+          ? "answers"
           : "";
       const filename = `${documentTitle}${fileType ? ` - ${fileType}` : ""} - ${currentFileId.slice(0, 5)}.${e}`;
 
