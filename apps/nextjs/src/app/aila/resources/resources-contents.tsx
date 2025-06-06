@@ -42,7 +42,6 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
-  const id = useResourcesStore((state) => state.id);
 
   // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
