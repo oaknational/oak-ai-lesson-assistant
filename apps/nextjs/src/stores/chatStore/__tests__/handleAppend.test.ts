@@ -22,7 +22,7 @@ describe("handleAppend", () => {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
 
-    store.getState().actions.append("Hello");
+    store.getState().actions.append({ type: "message", content: "Hello" });
 
     expect(mockAiSdkActions.append).not.toHaveBeenCalled();
   });
@@ -33,9 +33,9 @@ describe("handleAppend", () => {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
 
-    store.getState().actions.append("Hello");
+    store.getState().actions.append({ type: "message", content: "Hello" });
 
-    expect(store.getState().queuedUserAction).toBe("Hello");
+    expect(store.getState().queuedUserAction).toEqual({ type: "message", content: "Hello" });
     expect(mockAiSdkActions.append).not.toHaveBeenCalled();
   });
 
@@ -45,11 +45,43 @@ describe("handleAppend", () => {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
 
-    store.getState().actions.append("Hello");
+    store.getState().actions.append({ type: "message", content: "Hello" });
 
     expect(mockAiSdkActions.append).toHaveBeenCalledWith({
       content: "Hello",
       role: "user",
     });
+  });
+
+  test("should handle continue action when streaming is idle", () => {
+    const store = createChatStore(id, getStore, trpcUtils, {
+      ailaStreamingStatus: "Idle",
+      aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
+    });
+
+    store.getState().actions.append({ type: "continue" });
+
+    expect(mockAiSdkActions.append).toHaveBeenCalledWith({
+      content: "Continue",
+      role: "user",
+    });
+  });
+
+  test("should handle regenerate action when streaming is idle", () => {
+    const mockReload = jest.fn();
+    const mockAiSdkActionsWithReload = {
+      ...mockAiSdkActions,
+      reload: mockReload,
+    };
+
+    const store = createChatStore(id, getStore, trpcUtils, {
+      ailaStreamingStatus: "Idle",
+      aiSdkActions: mockAiSdkActionsWithReload as unknown as AiSdkActions,
+    });
+
+    store.getState().actions.append({ type: "regenerate" });
+
+    expect(mockReload).toHaveBeenCalled();
+    expect(mockAiSdkActions.append).not.toHaveBeenCalled();
   });
 });

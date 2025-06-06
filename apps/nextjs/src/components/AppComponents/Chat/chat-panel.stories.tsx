@@ -108,7 +108,7 @@ export const ModeratingWithRegenerateUserAction: Story = {
   args: {},
   parameters: {
     chatStoreState: {
-      queuedUserAction: "regenerate",
+      queuedUserAction: { type: "regenerate" },
       ailaStreamingStatus: "Moderating",
     },
   },
@@ -118,7 +118,7 @@ export const CustomQueuedUserAction: Story = {
   args: {},
   parameters: {
     chatStoreState: {
-      queuedUserAction: "Increase the reading age of that section",
+      queuedUserAction: { type: "message", content: "Increase the reading age of that section" },
       ailaStreamingStatus: "Moderating",
     },
   },

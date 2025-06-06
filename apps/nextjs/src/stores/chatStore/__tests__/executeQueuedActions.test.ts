@@ -38,7 +38,7 @@ describe("Chat Store executeQueuedAction", () => {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     const initialState = store.getState();
-    store.setState({ queuedUserAction: "continue" });
+    store.setState({ queuedUserAction: { type: "continue" } });
 
     store.getState().actions.executeQueuedAction();
 
@@ -56,7 +56,7 @@ describe("Chat Store executeQueuedAction", () => {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     const initialState = store.getState();
-    store.setState({ queuedUserAction: "regenerate" });
+    store.setState({ queuedUserAction: { type: "regenerate" } });
 
     store.getState().actions.executeQueuedAction();
 
@@ -72,7 +72,7 @@ describe("Chat Store executeQueuedAction", () => {
     });
     const initialState = store.getState();
     const customMessage = "Hello, world!";
-    store.setState({ queuedUserAction: customMessage });
+    store.setState({ queuedUserAction: { type: "message", content: customMessage } });
 
     store.getState().actions.executeQueuedAction();
 
@@ -90,7 +90,7 @@ describe("Chat Store executeQueuedAction", () => {
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     const initialState = store.getState();
-    store.setState({ queuedUserAction: "continue" });
+    store.setState({ queuedUserAction: { type: "continue" } });
     store.getState().actions.executeQueuedAction();
     expect(store.getState().queuedUserAction).toBeNull();
     expect(mockAiSdkActions.append).toHaveBeenCalledWith({
@@ -98,7 +98,7 @@ describe("Chat Store executeQueuedAction", () => {
       role: "user",
     });
 
-    store.setState({ queuedUserAction: "regenerate" });
+    store.setState({ queuedUserAction: { type: "regenerate" } });
     store.getState().actions.executeQueuedAction();
     const newState = store.getState();
     expect(store.getState().queuedUserAction).toBeNull();

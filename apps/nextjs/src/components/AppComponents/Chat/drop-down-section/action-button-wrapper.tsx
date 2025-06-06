@@ -95,7 +95,7 @@ const ActionButtonWrapper = ({
     }
 
     const message = generateMessage(selectedRadio, userFeedbackText);
-    await Promise.all([append(message), recordUserModifySectionContent()]);
+    await Promise.all([append({ type: "message", content: message }), recordUserModifySectionContent()]);
     setIsOpen(false);
   };
 
