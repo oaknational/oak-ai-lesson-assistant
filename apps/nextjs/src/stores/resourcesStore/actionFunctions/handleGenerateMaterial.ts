@@ -60,6 +60,7 @@ export const handleGenerateMaterial =
           previousOutput: null,
           options: null,
         },
+        resourceId: get().id, // Use existing resourceId
         lessonId: get().pageData.lessonPlan.lessonId,
       });
       get().actions.setIsResourcesLoading(false);
@@ -67,7 +68,6 @@ export const handleGenerateMaterial =
       set({
         generation: result.resource,
         moderation: result.moderation,
-        id: result.resourceId,
         refinementGenerationHistory: [],
       });
 
