@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 import {
   OakFlex,
   OakIcon,
@@ -39,7 +37,6 @@ const StepTwo = ({
   const title = useResourcesStore(titleSelector);
   const year = useResourcesStore(yearSelector);
   const activeDropdown = useResourcesStore(activeDropdownSelector);
-
 
   return (
     <>
