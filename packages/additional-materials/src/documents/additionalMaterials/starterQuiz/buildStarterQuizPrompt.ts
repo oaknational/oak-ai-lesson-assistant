@@ -1,5 +1,5 @@
 import type { Action, ContextByMaterialType } from "../configSchema";
-import { getLessonDetails } from "../promptHelpers";
+import { getLessonDetails, language } from "../promptHelpers";
 
 export const buildStarterQuizPrompt = (
   context: ContextByMaterialType["additional-starter-quiz"],
@@ -103,5 +103,7 @@ Avoid:
 - Negatively phrased questions (e.g., "Which is NOT…")
 - "All of the above" or "None of the above" options
 - True/false questions
+
+${language}
   `;
 };
