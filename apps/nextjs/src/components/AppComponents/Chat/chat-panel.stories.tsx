@@ -118,7 +118,10 @@ export const CustomQueuedUserAction: Story = {
   args: {},
   parameters: {
     chatStoreState: {
-      queuedUserAction: { type: "message", content: "Increase the reading age of that section" },
+      queuedUserAction: {
+        type: "message",
+        content: "Increase the reading age of that section",
+      },
       ailaStreamingStatus: "Moderating",
     },
   },

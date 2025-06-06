@@ -35,7 +35,10 @@ describe("handleAppend", () => {
 
     store.getState().actions.append({ type: "message", content: "Hello" });
 
-    expect(store.getState().queuedUserAction).toEqual({ type: "message", content: "Hello" });
+    expect(store.getState().queuedUserAction).toEqual({
+      type: "message",
+      content: "Hello",
+    });
     expect(mockAiSdkActions.append).not.toHaveBeenCalled();
   });
 

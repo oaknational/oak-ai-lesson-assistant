@@ -7,7 +7,7 @@ import type { StoreApi } from "zustand";
 
 export { AiMessage };
 
-export type ChatAction = 
+export type ChatAction =
   | { type: "message"; content: string }
   | { type: "continue" }
   | { type: "regenerate" };

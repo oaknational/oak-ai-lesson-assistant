@@ -88,11 +88,11 @@ export function PromptForm({
   );
 }
 
-function handlePlaceholder(hasMessages: boolean, queuedUserAction?: ChatAction) {
-  if (
-    queuedUserAction &&
-    queuedUserAction.type === "message"
-  ) {
+function handlePlaceholder(
+  hasMessages: boolean,
+  queuedUserAction?: ChatAction,
+) {
+  if (queuedUserAction && queuedUserAction.type === "message") {
     return queuedUserAction.content;
   }
   return hasMessages

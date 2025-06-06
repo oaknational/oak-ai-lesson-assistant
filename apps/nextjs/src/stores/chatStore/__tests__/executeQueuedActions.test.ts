@@ -72,7 +72,9 @@ describe("Chat Store executeQueuedAction", () => {
     });
     const initialState = store.getState();
     const customMessage = "Hello, world!";
-    store.setState({ queuedUserAction: { type: "message", content: customMessage } });
+    store.setState({
+      queuedUserAction: { type: "message", content: customMessage },
+    });
 
     store.getState().actions.executeQueuedAction();
 
