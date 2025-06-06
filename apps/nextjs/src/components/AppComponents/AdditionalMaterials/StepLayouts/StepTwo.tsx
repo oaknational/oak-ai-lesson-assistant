@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
   OakFlex,
@@ -19,6 +19,7 @@ import {
 } from "@/stores/resourcesStore/selectors";
 
 import { useDialog } from "../../DialogContext";
+import FormValidationWarning from "../../FormValidationWarning";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
 import { handleDialogSelection } from "./helpers";
@@ -43,7 +44,7 @@ const StepTwo = ({
   const activeDropdown = useResourcesStore(activeDropdownSelector);
   const error = useResourcesStore((state) => state.error);
   const { setDialogWindow } = useDialog();
-
+  const [showValidationError, setShowValidationError] = useState("");
   useEffect(() => {
     // Reset the form when the component is mounted
     // This should be removed once we are persisting in the database and the flow is based on an ID
@@ -75,6 +76,9 @@ const StepTwo = ({
           onChange={(value) => setTitle(value.target.value)}
           placeholder="Type a lesson title or learning outcome"
         />
+        {!!showValidationError && (
+          <FormValidationWarning errorMessage={showValidationError} />
+        )}
       </OakFlex>
 
       <ResourcesFooter>
@@ -87,17 +91,22 @@ const StepTwo = ({
           </button>
 
           <OakPrimaryButton
-            onClick={() =>
-              void handleSubmitLessonPlan({
-                title: title || "",
-                subject: subject || "",
-                keyStage: "",
-                year: year || "",
-              })
-            }
+            onClick={() => {
+              if (!title || !subject || !year) {
+                setShowValidationError(
+                  "Please provide a year group, subject and lesson title.",
+                );
+              } else {
+                void handleSubmitLessonPlan({
+                  title: title || "",
+                  subject: subject || "",
+                  keyStage: "",
+                  year: year || "",
+                });
+              }
+            }}
             iconName="arrow-right"
             isTrailingIcon={true}
-            disabled={!title || !subject || !year}
           >
             Generate overview
           </OakPrimaryButton>
