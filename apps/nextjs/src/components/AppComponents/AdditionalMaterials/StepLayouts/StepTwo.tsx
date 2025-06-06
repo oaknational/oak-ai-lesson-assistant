@@ -96,6 +96,8 @@ const StepTwo = ({
                 setShowValidationError(
                   "Please provide a year group, subject and lesson title.",
                 );
+              } else if (title.length < 10) {
+                setShowValidationError(`Please provide a longer lesson title.`);
               } else {
                 void handleSubmitLessonPlan({
                   title: title || "",
