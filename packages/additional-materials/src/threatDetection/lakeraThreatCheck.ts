@@ -38,6 +38,8 @@ export const lakeraGuardResponseSchema = z.object({
   ),
 });
 
+export type LakeraGuardResponse = z.infer<typeof lakeraGuardResponseSchema>;
+
 export async function performLakeraThreatCheck({
   messages,
   projectId = process.env.LAKERA_GUARD_PROJECT_ID_ADDITIONAL_RESOURCES,

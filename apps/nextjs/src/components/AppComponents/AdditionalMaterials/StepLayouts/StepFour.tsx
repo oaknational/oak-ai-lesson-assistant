@@ -41,6 +41,7 @@ import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
 import { ExitQuiz } from "../../AdditionalMaterials/ExitQuiz";
 import { Glossary } from "../../AdditionalMaterials/Glossary";
 import { StarterQuiz } from "../../AdditionalMaterials/StarterQuiz";
+import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import InlineButton from "../InlineButton";
 import ResourcesFooter from "../ResourcesFooter";
@@ -87,19 +88,19 @@ const StepFour = () => {
     refinementGenerationHistorySelector,
   );
 
-  const { setStepNumber, refineMaterial, undoRefinement } =
-    useResourcesActions();
+  const { refineMaterial, undoRefinement } = useResourcesActions();
   const moderation = useResourcesStore(moderationSelector);
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
   const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
   const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
+  const { setDialogWindow } = useDialog();
 
   const fetchMaterial =
     trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 
   // Get resource type from configuration
   const resourceType = docType ? getResourceType(docType) : null;
-  const refinementOptions = resourceType?.refinementOptions || [];
+  const refinementOptions = resourceType?.refinementOptions ?? [];
   const handleDownloadMaterial = async () => {
     if (!generation || !docType) {
       return;
@@ -235,7 +236,11 @@ const StepFour = () => {
                   $width={"100%"}
                   $gap="all-spacing-2"
                 >
-                  <OakSecondaryButton onClick={() => setStepNumber(0)}>
+                  <OakSecondaryButton
+                    onClick={() =>
+                      setDialogWindow("additional-materials-start-again")
+                    }
+                  >
                     Start again
                   </OakSecondaryButton>
                   <OakFlex $gap="all-spacing-2">
@@ -293,13 +298,13 @@ const StepFour = () => {
                   >
                     Adapt
                   </OakSecondaryButton>
-                  <OakPrimaryButton
-                    onClick={() => setStepNumber(0)}
-                    iconName="arrow-right"
-                    isTrailingIcon={true}
+                  <OakSecondaryButton
+                    onClick={() =>
+                      setDialogWindow("additional-materials-start-again")
+                    }
                   >
                     Start again
-                  </OakPrimaryButton>
+                  </OakSecondaryButton>
                 </OakFlex>
               </>
             )}

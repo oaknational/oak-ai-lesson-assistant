@@ -1,4 +1,4 @@
-import type { ErrorType, ResourcesState } from "./types";
+import type { ResourcesState } from "./types";
 
 /**
  * Selector for the step number in the resources workflow
@@ -59,6 +59,12 @@ export const isLoadingLessonPlanSelector = (state: ResourcesState) =>
   state.isLoadingLessonPlan;
 
 export const moderationSelector = (state: ResourcesState) => state.moderation;
+
+/**
+ * Selector for the id in the resources workflow
+ * @example const id = useResourcesStore(idSelector);
+ */
+export const idSelector = (state: ResourcesState) => state.id;
 
 /**
  * Selector for the threat detection state in the resources workflow

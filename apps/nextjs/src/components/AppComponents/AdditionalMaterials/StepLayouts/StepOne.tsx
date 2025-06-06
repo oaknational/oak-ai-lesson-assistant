@@ -23,7 +23,14 @@ import ResourcesFooter from "../ResourcesFooter";
 import { handleDialogSelection } from "./helpers";
 
 const StepOne = () => {
-  const { setStepNumber, setDocType, setGeneration } = useResourcesActions();
+  const {
+    setStepNumber,
+    setDocType,
+    setGeneration,
+    setSubject,
+    setTitle,
+    setYear,
+  } = useResourcesActions();
   const docType = useResourcesStore(docTypeSelector);
   const error = useResourcesStore((state) => state.error);
 
@@ -33,7 +40,10 @@ const StepOne = () => {
     // Reset the document type when the component is mounted
     setDocType(null);
     setGeneration(null);
-  }, [setDocType, setGeneration]);
+    setSubject(null);
+    setTitle(null);
+    setYear(null);
+  }, [setDocType, setGeneration, setSubject, setTitle, setYear]);
 
   const resourceTypes = getResourceTypes().filter(
     (resourceType) => resourceType.isAvailable,
