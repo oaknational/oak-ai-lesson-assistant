@@ -1,6 +1,9 @@
+import { aiLogger } from "@oakai/logger";
+
 import { create } from "zustand";
 
 import { logStoreUpdates } from "../zustandHelpers";
+import { handleCreateMaterialSession } from "./actionFunctions/handleCreateMaterialSession";
 import { handleDownload } from "./actionFunctions/handleDownload";
 import {
   handleResetFormState,
@@ -101,6 +104,8 @@ export const createResourcesStore = () => {
       // History management actions
       undoRefinement: handleUndoRefinement(set, get),
 
+      createMaterialSession: handleCreateMaterialSession(set, get),
+
       // Reset store to default state
       resetToDefault: () =>
         set((state) => ({ ...DEFAULT_STATE, id: state.id })),
@@ -109,5 +114,6 @@ export const createResourcesStore = () => {
 
   // Log store updates
   logStoreUpdates(resourcesStore, "additional-materials");
+
   return resourcesStore;
 };

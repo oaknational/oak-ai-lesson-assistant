@@ -42,13 +42,15 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
+  const id = useResourcesStore((state) => state.id);
 
   // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName || null;
   const { resetFormState } = useResourcesActions();
 
-  const { handleSubmitLessonPlan, handleSubmit } = useStepSubmitLogic();
+  const { handleSubmitLessonPlan, handleSubmit, handleCreateSession } =
+    useStepSubmitLogic();
 
   useEffect(() => {
     resetFormState();
@@ -95,7 +97,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   };
 
   const stepComponents = {
-    0: <StepOne />,
+    0: <StepOne handleCreateSession={handleCreateSession} />,
     1: <StepTwo handleSubmitLessonPlan={handleSubmitLessonPlan} />,
     2: <StepThree handleSubmit={handleSubmit} />,
     3: <StepFour />,

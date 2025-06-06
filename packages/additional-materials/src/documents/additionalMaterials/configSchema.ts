@@ -157,6 +157,7 @@ function makeInputVariant<T extends AdditionalMaterialType>(
     context,
     resourceId: z.string().nullish(),
     lessonId: z.string().nullish(),
+    adaptsOutputId: z.string().nullish(),
   });
 }
 

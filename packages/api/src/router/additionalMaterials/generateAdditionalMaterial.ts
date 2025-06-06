@@ -67,24 +67,48 @@ export async function generateAdditionalMaterial({
     provider: "openai",
   });
 
-  const { resourceId, documentType } = input;
+  const { resourceId, adaptsOutputId, documentType } = input;
   const version = additionalMaterialsConfigMap[documentType].version;
+  let interaction;
 
-  const interaction = await prisma.additionalMaterialInteraction.create({
-    data: {
-      userId,
-      config: {
-        resourceType: documentType,
-        resourceTypeVersion: version,
-        adaptation: input.context.refinement,
+  if (resourceId) {
+    log.info("Updating existing additional material interaction", {
+      resourceId,
+      adaptsOutputId,
+      documentType,
+      version,
+    });
+
+    interaction = await prisma.additionalMaterialInteraction.update({
+      where: { id: resourceId },
+      data: {
+        adaptsOutputId: adaptsOutputId ?? null,
+        output: result,
+        outputModeration: moderation,
       },
-      adaptsOutputId:
-        input.action === "refine" && resourceId ? resourceId : null,
-      output: result,
-      outputModeration: moderation,
-      derivedFromId: input.lessonId,
-    },
-  });
+    });
+  } else {
+    log.info("Creating new additional material interaction", {
+      adaptsOutputId,
+      documentType,
+      version,
+    });
+    // CREATE: Make new record for adapted materials - adaptsOutputId
+    interaction = await prisma.additionalMaterialInteraction.create({
+      data: {
+        userId,
+        config: {
+          resourceType: documentType,
+          resourceTypeVersion: version,
+          adaptation: input.context.refinement,
+        },
+        adaptsOutputId: adaptsOutputId ?? null,
+        output: result,
+        outputModeration: moderation,
+        derivedFromId: input.lessonId,
+      },
+    });
+  }
 
   if (isToxic(moderation)) {
     await recordSafetyViolation({

@@ -8,9 +8,11 @@ import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/mode
 import { z } from "zod";
 import type { StoreApi } from "zustand";
 
+import type { CreateMaterialSessionParams } from "./actionFunctions/handleCreateMaterialSession";
 import type { GenerateMaterialParams } from "./actionFunctions/handleGenerateMaterial";
 import type { RefineMaterialParams } from "./actionFunctions/handleRefineMaterial";
 import type { SubmitLessonPlanParams } from "./actionFunctions/handleSubmitLessonPlan";
+import type { UpdateMaterialSessionParams } from "./actionFunctions/handleUpdateMaterialSession";
 
 export type PageData = {
   lessonPlan: AilaPersistedChat["lessonPlan"] & { lessonId: string };
@@ -72,6 +74,8 @@ export type ResourcesState = {
     resetFormState: () => void;
 
     // business logic actions
+    createMaterialSession: (params: CreateMaterialSessionParams) => Promise<void>;
+    updateMaterialSession: (params: UpdateMaterialSessionParams) => Promise<void>;
     submitLessonPlan: (params: SubmitLessonPlanParams) => Promise<void>;
     generateMaterial: (params: GenerateMaterialParams) => Promise<void>;
     refineMaterial: (params: RefineMaterialParams) => Promise<void>;
