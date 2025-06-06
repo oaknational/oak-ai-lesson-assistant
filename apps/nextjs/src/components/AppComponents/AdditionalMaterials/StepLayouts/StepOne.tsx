@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { getResourceTypes } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 
@@ -10,6 +10,7 @@ import {
   OakPrimaryButton,
   OakRadioButton,
   OakRadioGroup,
+  OakSecondaryButton,
 } from "@oaknational/oak-components";
 
 import {
@@ -19,6 +20,7 @@ import {
 import { docTypeSelector } from "@/stores/resourcesStore/selectors";
 
 import { useDialog } from "../../DialogContext";
+import FormValidationWarning from "../../FormValidationWarning";
 import ResourcesFooter from "../ResourcesFooter";
 import { handleDialogSelection } from "./helpers";
 
@@ -26,7 +28,7 @@ const StepOne = () => {
   const { setStepNumber, setDocType, setGeneration } = useResourcesActions();
   const docType = useResourcesStore(docTypeSelector);
   const error = useResourcesStore((state) => state.error);
-
+  const [showValidationError, setShowValidationError] = useState("");
   const { setDialogWindow } = useDialog();
 
   useEffect(() => {
@@ -76,6 +78,9 @@ const StepOne = () => {
                   />
                 </OakLabel>
               ))}
+              {!!showValidationError && (
+                <FormValidationWarning errorMessage={showValidationError} />
+              )}
             </OakRadioGroup>
           </OakFlex>
         </OakFlex>
@@ -84,10 +89,15 @@ const StepOne = () => {
       <ResourcesFooter>
         <OakFlex $justifyContent="flex-end" $width={"100%"}>
           <OakPrimaryButton
-            onClick={() => setStepNumber(1)}
+            onClick={() => {
+              if (!docType) {
+                setShowValidationError("Please select a resource type");
+              } else {
+                setStepNumber(1);
+              }
+            }}
             iconName="arrow-right"
             isTrailingIcon={true}
-            disabled={!docType}
           >
             Continue
           </OakPrimaryButton>
