@@ -75,7 +75,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = () => {
   };
 
   const stepComponents = {
-    0: <StepOne />,
+    0: <StepOne handleCreateSession={() => Promise.resolve()} />,
     1: <StepTwo handleSubmitLessonPlan={() => Promise.resolve()} />, // temp function to satisfy type
     2: <StepThree handleSubmit={() => null} />, // temp function to satisfy type
     3: <StepFour />,
