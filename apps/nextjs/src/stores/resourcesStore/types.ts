@@ -74,8 +74,9 @@ export type ResourcesState = {
     resetFormState: () => void;
 
     // business logic actions
-    createMaterialSession: (params: CreateMaterialSessionParams) => Promise<void>;
-    updateMaterialSession: (params: UpdateMaterialSessionParams) => Promise<void>;
+    createMaterialSession: (
+      params: CreateMaterialSessionParams,
+    ) => Promise<void>;
     submitLessonPlan: (params: SubmitLessonPlanParams) => Promise<void>;
     generateMaterial: (params: GenerateMaterialParams) => Promise<void>;
     refineMaterial: (params: RefineMaterialParams) => Promise<void>;
