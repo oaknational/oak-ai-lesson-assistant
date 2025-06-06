@@ -165,4 +165,4 @@ export const getKeystageFromYearGroup = (yearGroup: string) => {
 };
 
 export const language = `LANGUAGE 
-  Use British English spelling and vocabulary (e.g. colour not color, centre not centre, rubbish not trash) unless the user sets a different primary language. This reflects our UK teacher audience.`;
+  Use British English spelling and vocabulary (e.g. colour not color, centre not center, rubbish not trash) unless the user sets a different primary language. This reflects our UK teacher audience.`;
