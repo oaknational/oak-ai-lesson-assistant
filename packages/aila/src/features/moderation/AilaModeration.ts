@@ -106,11 +106,13 @@ export class AilaModeration implements AilaModerationFeature {
       throw new Error(errorText);
     }
 
+    const startTime = Date.now();
     const moderationResult: ModerationResult = await this.performModeration({
       messages,
       content,
       retries: 3,
     });
+    const moderationDuration = Date.now() - startTime;
 
     if (this._shouldPersist) {
       const moderation = await this.persistModerationResult(
@@ -118,7 +120,7 @@ export class AilaModeration implements AilaModerationFeature {
         lastAssistantMessage,
         content,
       );
-      this.reportModerationToAnalytics(moderationResult, moderation);
+      this.reportModerationToAnalytics(moderationResult, moderation, moderationDuration);
 
       if (isToxic(moderationResult)) {
         for (const plugin of this._aila.plugins ?? []) {
@@ -144,6 +146,7 @@ export class AilaModeration implements AilaModerationFeature {
   public reportModerationToAnalytics(
     moderationResult: ModerationResult,
     moderation: Moderation,
+    durationMs?: number,
   ) {
     this._aila.analytics?.reportModerationResult({
       distinctId: this._aila.userId,
@@ -155,6 +158,7 @@ export class AilaModeration implements AilaModerationFeature {
         categories: moderationResult.categories,
         justification: moderationResult.justification,
         moderation_id: moderation.id,
+        duration_ms: durationMs,
       },
     });
   }
