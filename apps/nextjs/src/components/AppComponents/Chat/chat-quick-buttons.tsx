@@ -10,7 +10,7 @@ import {
   useLessonPlanStore,
   useLessonPlanTrackingActions,
 } from "@/stores/AilaStoresProvider";
-import type { AilaStreamingStatus } from "@/stores/chatStore";
+import type { AilaStreamingStatus, ChatAction } from "@/stores/chatStore";
 import { canAppendSelector } from "@/stores/chatStore/selectors";
 
 import { useDialog } from "../DialogContext";
@@ -20,7 +20,7 @@ import { IconRefresh, IconStop } from "./ui/icons";
 const shouldAllowStop = (
   ailaStreamingStatus: AilaStreamingStatus,
   hasMessages: boolean,
-  queuedUserAction: string | null,
+  queuedUserAction: ChatAction | null,
 ) => {
   if (!hasMessages) {
     return false;
@@ -67,13 +67,13 @@ const QuickActionButtons = () => {
     const lastUserMessage =
       findLast(stableMessages, (m) => m.role === "user")?.content ?? "";
     lessonPlanTracking.clickedRetry(lastUserMessage);
-    append("regenerate");
+    append({ type: "regenerate" });
   }, [append, lessonPlanTracking, stableMessages, trackEvent, id]);
 
   const handleContinue = useCallback(() => {
     trackEvent("chat:continue");
     lessonPlanTracking.clickedContinue();
-    append("continue");
+    append({ type: "continue" });
   }, [append, lessonPlanTracking, trackEvent]);
 
   return (

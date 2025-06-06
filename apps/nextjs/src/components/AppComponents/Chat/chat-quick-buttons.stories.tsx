@@ -99,7 +99,7 @@ export const StreamingWithQueuedUserAction: Story = {
   args: {},
   parameters: {
     chatStoreState: {
-      queuedUserAction: "regenerate",
+      queuedUserAction: { type: "regenerate" },
       ailaStreamingStatus: "StreamingLessonPlan",
     },
   },
@@ -109,7 +109,7 @@ export const ModeratingWithQueuedUserAction: Story = {
   args: {},
   parameters: {
     chatStoreState: {
-      queuedUserAction: "regenerate",
+      queuedUserAction: { type: "regenerate" },
       ailaStreamingStatus: "Moderating",
     },
   },
