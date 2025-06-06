@@ -16,7 +16,11 @@ debugBase.log = console.log.bind(console);
 
 export type LoggerKey =
   | "admin"
+  | "additional-materials"
+  | "additional-materials-threat-detection"
   | "aila"
+  | "aila:agents"
+  | "aila:agents:stream"
   | "aila:analytics"
   | "aila:categorisation"
   | "aila:chat"
@@ -75,11 +79,6 @@ export type LoggerKey =
   | "ui:performance"
   | "webhooks";
 
-const errorLogger =
-  typeof window === "undefined"
-    ? structuredLogger.error.bind(structuredLogger)
-    : browserLogger.error.bind(browserLogger);
-
 /**
  * The AI logger uses namespaces so that we can selectively toggle noisy logs.
  * Logs are selected with the DEBUG environment variable.
@@ -105,7 +104,7 @@ export function aiLogger(childKey: LoggerKey) {
   return {
     info: debugLogger,
     warn: debugLogger,
-    error: errorLogger.bind(structuredLogger),
+    error: console.error,
     table: tableLogger,
   };
 }

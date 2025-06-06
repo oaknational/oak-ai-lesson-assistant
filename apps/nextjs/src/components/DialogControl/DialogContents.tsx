@@ -10,6 +10,8 @@ import styled from "styled-components";
 
 import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
 import { useDialog } from "../AppComponents/DialogContext";
+import AdditionalMaterialsModeration from "./ContentOptions/AdditionalMaterialsModeration";
+import AdditionalMaterialsThreatDetected from "./ContentOptions/AdditionalMaterialsThreatDetected";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
 import DemoInterstitialDialog from "./ContentOptions/DemoInterstitialDialog";
@@ -53,6 +55,22 @@ const dialogTitlesAndIcons: Record<
   "clear-single-chat": {
     title: "Are you absolutely sure?",
     iconName: null,
+  },
+  "additional-materials-moderation": {
+    title: "Guidance",
+    iconName: "warning",
+  },
+  "additional-materials-threat-detected": {
+    title: "Threat detected",
+    iconName: "warning",
+  },
+  "additional-materials-rate-limit": {
+    title: "Rate limit",
+    iconName: "warning",
+  },
+  "additional-materials-user-account-locked": {
+    title: "Account locked",
+    iconName: "warning",
   },
 };
 
@@ -126,6 +144,30 @@ const DialogContents = ({
             )}
             {dialogWindow === "clear-single-chat" && (
               <ClearSingleChatFromChatHistory closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "additional-materials-moderation" && (
+              <AdditionalMaterialsModeration closeDialog={closeDialog} />
+            )}
+            {/* // awaiting designs - placeholder */}
+            {dialogWindow === "additional-materials-threat-detected" && (
+              <AdditionalMaterialsThreatDetected
+                body={"threat detected"}
+                closeDialog={closeDialog}
+              />
+            )}
+            {/* // awaiting designs - placeholder */}
+            {dialogWindow === "additional-materials-rate-limit" && (
+              <AdditionalMaterialsThreatDetected
+                body={"rate-limit"}
+                closeDialog={closeDialog}
+              />
+            )}
+            {/* // awaiting designs - placeholder */}
+            {dialogWindow === "additional-materials-user-account-locked" && (
+              <AdditionalMaterialsThreatDetected
+                body={"banned"}
+                closeDialog={closeDialog}
+              />
             )}
           </OakModalCenterBody>
         </OakModalAtTheFront>
