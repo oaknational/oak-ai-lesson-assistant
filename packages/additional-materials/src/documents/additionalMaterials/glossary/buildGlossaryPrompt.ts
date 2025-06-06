@@ -1,5 +1,5 @@
 import type { ContextByMaterialType } from "../configSchema";
-import { getLessonDetails } from "../promptHelpers";
+import { getLessonDetails, language } from "../promptHelpers";
 import {
   type AllowedReadingAgeRefinement,
   readingAgeRefinementMap,
@@ -57,8 +57,11 @@ The definition should be no longer than 200 characters.
 
 **Rules**:
 - **Do not** include markdown in your response.
-- **Do not** include any americanisms.
 - definitions start with lower case (unless it is a known acronym or proper noun) and end with a full stop.
 - terms start with capital letter.
+- minimum of 10 terms, maximum of 15 terms.
+- include the key words from the lesson plan.
+
+${language}
   `;
 };
