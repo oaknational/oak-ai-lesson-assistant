@@ -8,6 +8,7 @@ import {
 import { Icon } from "@/components/Icon";
 import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
 import { useChatStore } from "@/stores/AilaStoresProvider";
+import type { ChatAction } from "@/stores/chatStore";
 
 export interface PromptFormProps {
   input: string;
@@ -87,12 +88,12 @@ export function PromptForm({
   );
 }
 
-function handlePlaceholder(hasMessages: boolean, queuedUserAction?: string) {
-  if (
-    queuedUserAction &&
-    !["continue", "regenerate"].includes(queuedUserAction)
-  ) {
-    return queuedUserAction;
+function handlePlaceholder(
+  hasMessages: boolean,
+  queuedUserAction?: ChatAction,
+) {
+  if (queuedUserAction && queuedUserAction.type === "message") {
+    return queuedUserAction.content;
   }
   return hasMessages
     ? "Type your response here"
