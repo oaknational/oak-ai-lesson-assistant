@@ -1,15 +1,10 @@
-export const priorKnowledgeInstructions = `PRIOR KNOWLEDGE
-The prior knowledge section should describe the most relevant and recent knowledge that the pupils should already have before starting the lesson.
-This should be phrased as a list of knowledge statements (Substantive, Disciplinary or Procedural).
-Each item should be no more than 30 words.
-There should be no more than five items in this list.
-Do not start each item with "Pupils…". Just go straight to the statement.
-It should be the actual fact that the pupils should know.
-For instance:
-- The Earth is round.
-- A forest is a large area of land covered in trees.
-- A verb is a word that describes an action.
-Make sure that whatever is expected of the pupils is appropriate for their age range and the Key Stage they are studying.
-Do not include anything too advanced for them.
-Use language and concepts that are appropriate.
-Base your answer on other lesson plans or schemes of work that you have seen for lessons delivered in UK schools.`;
+export const priorKnowledgeInstructions = `List up to 5 relevant concepts that pupils should already know before this lesson. This knowledge should be necessary for success in the lesson being planned.
+- Max 30 words per statement.
+- Max 5 statements but aim for fewer
+- Use age-appropriate, key stage-relevant concepts and language.
+- Try to be specific with the concepts.
+- Do not start with “Pupils…”—just state the concept
+- May include substantive, disciplinary, or procedural concepts
+- Avoid content that’s too advanced
+- Examples: “Familiarity with the characters and plot of a common fairy tale.” “Understanding of a ‘ruler’ and ‘city-state’.” “Ability to recognise acceptable/unacceptable behaviour when using technology”.
+- Non-example: “Knowledge of fairy tales” (too broad).`;

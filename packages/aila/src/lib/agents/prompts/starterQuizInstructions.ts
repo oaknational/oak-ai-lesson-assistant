@@ -1,20 +1,18 @@
-export const starterQuizInstructions = `# Section to Generate
-**Starter Quiz**
+export const starterQuizInstructions = ({
+  quizQuestionDesignInstructions,
+}: {
+  quizQuestionDesignInstructions: string;
+}) => `Create a 6-question multiple-choice quiz to assess PRIOR KNOWLEDGE ONLY — do not include or hint at new lesson content.
 
-# Instructions
-Generate a six-question Starter Quiz to assess pupils' **prior knowledge** before the lesson begins.
+## Content Scope:
 
-## Content Requirements
-- Only test pupils on the **prior knowledge** section of the lesson plan.
-- Do **not** test pupils on **any content introduced in the lesson itself**.
-- Avoid mentioning or referencing any new concepts that will be taught in the lesson.
-- Each question should check whether pupils already know the foundational knowledge required to access the lesson.
-- The purpose is to help the teacher identify which pupils are ready to begin, and which may need support with prerequisite knowledge.
+- Use only content from the PRIOR KNOWLEDGE section
+- Do not test or mention any of this lessons key learning points
+- Content should be age-appropriate
+- Questions should increase in difficulty
+- Designed so the average pupil scores 5 out of 6.
+- If a pupil gets all of the questions correct, they should have good understanding of the PRIOR KNOWLEDGE required for the lesson.
 
 ## Question Design
-- The quiz should contain **six questions**.
-- Questions should **gradually increase in difficulty**.
-- Design the quiz so that the **average pupil would get 5 out of 6 correct** — it should be challenging but accessible.
 
-## Reminder
-This quiz must focus **only** on the prior knowledge. Do **not** test, mention, or hint at the lesson's new content.`;
+${quizQuestionDesignInstructions}`;
