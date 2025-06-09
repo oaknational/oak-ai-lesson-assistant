@@ -358,6 +358,8 @@ export const LearningOutcomeSchema = z
   .string()
   .describe(LESSON_PLAN_DESCRIPTIONS.learningOutcome);
 
+export const LearningOutcomeSchemaStrictMax190 = LearningOutcomeSchema.max(190);
+
 export const LearningCyclesSchema = z
   .array(z.string())
   .describe(LESSON_PLAN_DESCRIPTIONS.learningCycles);
@@ -369,9 +371,15 @@ export const PriorKnowledgeSchema = z
   .array(z.string())
   .describe(LESSON_PLAN_DESCRIPTIONS.priorKnowledge);
 
+export const PriorKnowledgeSctrictMax5Schema =
+  PriorKnowledgeSchema.min(1).max(5);
+
 export const KeyLearningPointsSchema = z
   .array(z.string())
   .describe(LESSON_PLAN_DESCRIPTIONS.keyLearningPoints);
+
+export const KeyLearningPointsStrictMax5Schema =
+  KeyLearningPointsSchema.min(3).max(5);
 
 export const AdditionalMaterialsSchema = z
   .string()
