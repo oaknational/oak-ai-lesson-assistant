@@ -36,7 +36,7 @@ export const handleFetchInitialMessages =
       if (startingMessage) {
         log.info("Appending starting message");
         getStore("lessonPlanTracking").actions.clickedStart(startingMessage);
-        get().actions.append(startingMessage);
+        get().actions.append({ type: "message", content: startingMessage });
       }
       log.info(`Set initial messages for AI SDK from DB`);
     } catch (err) {
