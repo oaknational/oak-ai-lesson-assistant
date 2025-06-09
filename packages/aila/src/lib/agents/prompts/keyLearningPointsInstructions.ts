@@ -1,4 +1,5 @@
 export const keyLearningPointsInstructions = `List the most important factual things pupils should learn in the lesson.
+
 - Voice: EXPERT_TEACHER
 - Use succinct, knowledge-rich statements
 - Focus on specific things that pupils will know or be able to do rather than the overall concepts or learning outcome.

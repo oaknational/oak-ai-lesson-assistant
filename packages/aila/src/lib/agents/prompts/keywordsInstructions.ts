@@ -3,6 +3,7 @@ export const keywordsInstructions = ({
 }: {
   tier2And3VocabularyDefinitions: string;
 }) => `List key Tier 2 or Tier 3 vocabulary pupils need to know to understand the lesson content. 
+
 - Voice: TEACHER_TO_PUPIL_WRITTEN
 - Provide a brief, age-appropriate definition for each
 - Do not include the keyword in its own definition

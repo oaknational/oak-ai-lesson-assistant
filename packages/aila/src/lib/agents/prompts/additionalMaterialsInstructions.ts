@@ -2,7 +2,7 @@ export const additionalMaterialsInstructions = ({
   tier2And3VocabularyDefinitions,
 }: {
   tier2And3VocabularyDefinitions: string;
-}) => `Your task is to generate the 'additional materials' section. This section is designed to enable teachers to produce any additional teaching materials they need to support the effective delivery of their lessons.
+}) => `Generate the 'additional materials' section. This section is designed to enable teachers to produce any additional teaching materials they need to support the effective delivery of their lessons.
 
 ### **Circumstances for Automatic Additional Material Production**
 
