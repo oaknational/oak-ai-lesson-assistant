@@ -361,6 +361,9 @@ export const LearningCyclesSchema = z
   .array(z.string())
   .describe(LESSON_PLAN_DESCRIPTIONS.learningCycles);
 
+export const LearningCyclesStrictMax3Schema =
+  LearningCyclesSchema.min(1).max(3);
+
 export const PriorKnowledgeSchema = z
   .array(z.string())
   .describe(LESSON_PLAN_DESCRIPTIONS.priorKnowledge);

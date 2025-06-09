@@ -10,6 +10,7 @@ import {
   KeywordsSchema,
   KeywordsSchemaWithoutLength,
   LearningCyclesSchema,
+  LearningCyclesStrictMax3Schema,
   LearningOutcomeSchema,
   type LessonPlanKey,
   LessonTitleSchema,
@@ -131,7 +132,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
     name: "learningCycles",
     prompt: learningCycleTitlesInstructions,
     schemaForLLM: LearningCyclesSchema,
-    schemaStrict: LearningCyclesSchema,
+    schemaStrict: LearningCyclesStrictMax3Schema,
     extractRagData: (lp) => JSON.stringify(lp.learningCycles),
   },
   priorKnowledge: {
