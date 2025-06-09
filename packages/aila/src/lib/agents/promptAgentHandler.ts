@@ -95,7 +95,7 @@ ${additionalInstructions}`;
           result.output_parsed.output.value,
         )}, however the strict schema is: ${JSON.stringify(
           agent.schemaStrict,
-        )}; the error was ${JSON.stringify(strictParseResult.error.errors)} If the user's request is at odds with the schema, please respond with a message explaining the issue. Another agent will handle messaging to the user.`;
+        )}; the error was ${JSON.stringify(strictParseResult.error.errors)} If the user's request is at odds with the schema, please respond with an internal message explaining the issue. Another agent will handle messaging to the user.`;
       const retryResult = await openAIClient.responses.parse({
         instructions,
         input: inputWithRetryInstructions,
