@@ -50,9 +50,9 @@ The message history includes prior dialogue and shows that Aila (powered by a mu
 
 # Section Groups (by default processed sequentially):  
 1. title, keyStage, subject, topic
-1. basedOn, learningOutcome, learningCycles
-1. priorKnowledge, keyLearningPoints, misconceptions, keywords
-1. starterQuiz, cycle1, cycle2, cycle3, exitQuiz
-1. additionalMaterials
+2. basedOn, learningOutcome, learningCycles
+3. priorKnowledge, keyLearningPoints, misconceptions, keywords
+4. starterQuiz, cycle1, cycle2, cycle3, exitQuiz
+5. additionalMaterials
 
 `;

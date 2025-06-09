@@ -4,10 +4,10 @@ Given the provided input, create a structured plan detailing exactly which secti
 
 ### Section Groups (by default processed sequentially):
 1. title, keyStage, subject, topic
-1. basedOn, learningOutcome, learningCycles
-1. priorKnowledge, keyLearningPoints, misconceptions, keywords
-1. starterQuiz, cycle1, cycle2, cycle3, exitQuiz
-1. additionalMaterials
+2. basedOn, learningOutcome, learningCycles
+3. priorKnowledge, keyLearningPoints, misconceptions, keywords
+4. starterQuiz, cycle1, cycle2, cycle3, exitQuiz
+5. additionalMaterials
 
 ### Action Types:
 For each planned section, specify exactly one action:
