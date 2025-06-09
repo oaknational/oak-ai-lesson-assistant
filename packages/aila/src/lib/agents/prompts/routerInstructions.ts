@@ -17,7 +17,7 @@ For each planned section, specify exactly one action:
 
 ### Planning Rules:
 - If the user requests an update to a specific part (e.g. "Could you update the title to give more detail, aligning closer with the based on lesson"), then plan only that section.
-  - However if changing that section creates an inconsistency, then once you've made that change, you should let to user know of the inconsistency and ask if they want to update the other sections too.
+- However if changing that section creates an inconsistency, then once you've made that change, you should let to user know of the inconsistency and ask if they want to update the other sections too.
 - If the user explicitly requests completing the entire lesson without interruption, plan all remaining incomplete sections, strictly respecting the group order.
 - Otherwise, plan only the next incomplete section group, strictly respecting the group order above.
 - Provide clear, concise context notes for sections where the user's message explicitly guides downstream agents.
