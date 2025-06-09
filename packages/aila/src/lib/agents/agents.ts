@@ -19,6 +19,7 @@ import {
   MisconceptionsSchemaWithoutLength,
   PriorKnowledgeSchema,
   QuizSchema,
+  QuizSchemaStrictMax6Schema,
   QuizSchemaWithoutLength,
   SubjectSchema,
   TopicSchema,
@@ -172,7 +173,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
     name: "starterQuiz",
     prompt: [starterQuizInstructions, quizInstructions].join(`\n\n`),
     schemaForLLM: QuizSchemaWithoutLength,
-    schemaStrict: QuizSchema,
+    schemaStrict: QuizSchemaStrictMax6Schema,
     extractRagData: (lp) => JSON.stringify(lp.starterQuiz),
   },
   cycle: {
@@ -195,7 +196,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
     name: "exitQuiz",
     prompt: [exitQuizInstructions, quizInstructions].join(`\n\n`),
     schemaForLLM: QuizSchemaWithoutLength,
-    schemaStrict: QuizSchema,
+    schemaStrict: QuizSchemaStrictMax6Schema,
     extractRagData: (lp) => JSON.stringify(lp.exitQuiz),
   },
   mathsStarterQuiz: {

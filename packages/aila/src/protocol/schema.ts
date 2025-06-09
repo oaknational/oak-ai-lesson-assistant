@@ -104,6 +104,7 @@ export type QuizQuestionOptional = z.infer<typeof QuizQuestionOptionalSchema>;
 
 export const QuizSchema = z.array(QuizQuestionSchema);
 export const QuizSchemaWithoutLength = z.array(QuizQuestionSchemaWithoutLength);
+export const QuizSchemaStrictMax6Schema = QuizSchema.min(1).max(6);
 export const QuizOptionalSchema = z.array(QuizQuestionOptionalSchema);
 
 export type Quiz = z.infer<typeof QuizSchema>;
