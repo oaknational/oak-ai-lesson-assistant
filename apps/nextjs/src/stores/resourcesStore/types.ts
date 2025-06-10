@@ -12,7 +12,6 @@ import type { CreateMaterialSessionParams } from "./actionFunctions/handleCreate
 import type { GenerateMaterialParams } from "./actionFunctions/handleGenerateMaterial";
 import type { RefineMaterialParams } from "./actionFunctions/handleRefineMaterial";
 import type { SubmitLessonPlanParams } from "./actionFunctions/handleSubmitLessonPlan";
-import type { UpdateMaterialSessionParams } from "./actionFunctions/handleUpdateMaterialSession";
 
 export type PageData = {
   lessonPlan: AilaPersistedChat["lessonPlan"] & { lessonId: string };
