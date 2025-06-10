@@ -24,6 +24,7 @@ import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { captureException } from "@sentry/nextjs";
+import * as Sentry from "@sentry/node";
 import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
 
@@ -111,10 +112,12 @@ async function generateChatStream(
   aila: Aila,
   abortController: AbortController,
 ): Promise<Response> {
-  return await startSpan(
-    "chat-aila-generate",
-    { chat_id: aila.chatId, user_id: aila.userId },
-    async () => {
+  return await Sentry.startSpanManual(
+    {
+      name: "chat-aila-generate",
+      attributes: { chat_id: aila.chatId, user_id: aila.userId },
+    },
+    async (_span, finishSpan) => {
       try {
         invariant(aila, "Aila instance is required");
         const result = await aila.generate({ abortController });
@@ -127,7 +130,15 @@ async function generateChatStream(
           },
         });
 
-        const stream = result.pipeThrough(transformStream);
+        const stream = result
+          .pipeThrough(transformStream)
+          // Manually finish the span when the stream closes, as we can't just await it like a normal automatic span
+          .pipeThrough(
+            new TransformStream({
+              flush: () => finishSpan(),
+            }),
+          );
+
         return new Response(stream, {
           headers: {
             "Content-Type": "text/event-stream",
