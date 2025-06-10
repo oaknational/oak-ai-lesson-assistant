@@ -82,12 +82,12 @@ export const additionalMaterialsRouter = router({
         log.info("Material session created", { resourceId: interaction.id });
         return { resourceId: interaction.id };
       } catch (cause) {
-        const TrpcError = new Error("Failed to create material session", {
+        const trpcError = new Error("Failed to create material session", {
           cause,
         });
         log.error("Failed to create material session", cause);
-        Sentry.captureException(TrpcError);
-        throw TrpcError;
+        Sentry.captureException(trpcError);
+        throw trpcError;
       }
     }),
 
