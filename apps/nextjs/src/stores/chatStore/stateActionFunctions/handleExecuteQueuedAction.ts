@@ -1,6 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { ChatGetter, ChatSetter } from "../types";
+import type { ChatAction, ChatGetter, ChatSetter } from "../types";
 
 const log = aiLogger("chat:store");
 
@@ -15,23 +15,23 @@ export function handleExecuteQueuedAction(set: ChatSetter, get: ChatGetter) {
       return;
     }
 
-    log.info("Executing queued action");
+    log.info("Executing queued action", queuedUserAction.type);
     const actionToExecute = queuedUserAction;
     set({ queuedUserAction: null });
 
     try {
-      if (actionToExecute === "continue") {
+      if (actionToExecute.type === "message") {
+        void aiSdkActions.append({
+          content: actionToExecute.content,
+          role: "user",
+        });
+      } else if (actionToExecute.type === "continue") {
         void aiSdkActions.append({
           content: "Continue",
           role: "user",
         });
-      } else if (actionToExecute === "regenerate") {
+      } else if (actionToExecute.type === "regenerate") {
         void aiSdkActions.reload();
-      } else {
-        void aiSdkActions.append({
-          content: actionToExecute,
-          role: "user",
-        });
       }
     } catch (error) {
       log.error("Error handling queued action:", error);
