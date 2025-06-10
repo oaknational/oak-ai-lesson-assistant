@@ -203,6 +203,7 @@ export class AilaStreamHandler {
           const quiz = await this._chat.fullQuizService.createBestQuiz(
             "/starterQuiz",
             document,
+            this._chat.relevantLessons ?? [],
           );
 
           return quiz;
@@ -211,6 +212,7 @@ export class AilaStreamHandler {
           const quiz = await this._chat.fullQuizService.createBestQuiz(
             "/exitQuiz",
             document,
+            this._chat.relevantLessons ?? [],
           );
 
           return quiz;
