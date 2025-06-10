@@ -11,6 +11,7 @@ import {
   OakRadioButton,
   OakRadioGroup,
 } from "@oaknational/oak-components";
+import invariant from "tiny-invariant";
 
 import {
   useResourcesActions,
@@ -90,9 +91,8 @@ const StepOne = ({
         <OakFlex $justifyContent="flex-end" $width={"100%"}>
           <OakPrimaryButton
             onClick={() => {
-              if (docType) {
-                handleCreateSession({ documentType: docType });
-              }
+              invariant(docType, "Document type must be selected");
+              handleCreateSession({ documentType: docType });
             }}
             iconName="arrow-right"
             isTrailingIcon={true}
