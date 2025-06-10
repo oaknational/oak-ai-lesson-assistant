@@ -86,36 +86,36 @@ export class AilaStreamHandler {
     this.setupController(controller);
     try {
       if (!this._chat.aila.options.useAgenticAila) {
-        await this.span("aila-set-up-generation", async () => {
+        await this.span("set-up-generation", async () => {
           await this._chat.setupGeneration();
         });
       } else {
-        await this.span("aila-initialise-chunks", async () => {
+        await this.span("initialise-chunks", async () => {
           this._chat.initialiseChunks();
         });
       }
 
-      await this.span("aila-check-threats", async () => {
+      await this.span("check-threats", async () => {
         await this.checkForThreats();
       });
 
-      await this.span("aila-set-initial-state", async () => {
+      await this.span("set-initial-state", async () => {
         await this._chat.handleSettingInitialState();
       });
 
-      await this.span("aila-handle-subject-warning", async () => {
+      await this.span("handle-subject-warning", async () => {
         await this._chat.handleSubjectWarning();
       });
 
       if (this._chat.aila.options.useAgenticAila) {
-        await this.span("aila-start-agent-stream", async () => {
+        await this.span("start-agent-stream", async () => {
           await this.startAgentStream();
         });
       } else {
-        await this.span("aila-start-llm-stream", async () => {
+        await this.span("start-llm-stream", async () => {
           await this.startLLMStream();
         });
-        await this.span("aila-read-from-stream", async () => {
+        await this.span("read-from-stream", async () => {
           await this.readFromStream(abortController);
         });
       }
@@ -143,7 +143,7 @@ export class AilaStreamHandler {
       log.info("In finally block", { status, chatId: this._chat.id });
       if (status !== "FAILED") {
         try {
-          await this.span("aila-chat-completion", async () => {
+          await this.span("chat-completion", async () => {
             await this._chat.complete();
           });
           log.info("Chat completed", this._chat.iteration, this._chat.id);
