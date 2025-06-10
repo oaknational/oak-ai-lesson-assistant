@@ -1,10 +1,8 @@
 import {
   actionEnum,
-  generateAdditionalMaterialInputSchema,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import {
   additionalMaterialTypeEnum,
   additionalMaterialsConfigMap,
+  generateAdditionalMaterialInputSchema,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { partialLessonContextSchema } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import {
