@@ -22,6 +22,7 @@ import {
 import * as Sentry from "@sentry/nextjs";
 import styled, { css } from "styled-components";
 
+import AiIcon from "@/components/AiIcon";
 import {
   useResourcesActions,
   useResourcesStore,
@@ -257,7 +258,10 @@ const StepFour = () => {
                         isDownloading
                       }
                     >
-                      Adapt
+                      <OakFlex $alignItems="center" $gap="all-spacing-1">
+                        <OakP $font="body-1-bold">Adapt</OakP>
+                        <AiIcon />
+                      </OakFlex>
                     </OakSecondaryButton>
                     <OakPrimaryButton
                       onClick={() => void handleDownloadMaterial()}
