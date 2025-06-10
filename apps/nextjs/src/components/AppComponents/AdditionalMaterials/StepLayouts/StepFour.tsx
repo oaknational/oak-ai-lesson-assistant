@@ -141,7 +141,7 @@ const StepFour = () => {
     return null;
   };
   // if loading, show loading
-  if (isResourcesLoading || isResourceRefining) {
+  if (isResourcesLoading) {
     return (
       <StepLoadingScreen
         nameOfWhatIsBuilding={resourceType?.displayName ?? ""}
@@ -202,28 +202,36 @@ const StepFour = () => {
                 </button>
 
                 <OakFlex $gap="all-spacing-2" $flexWrap="wrap">
-                  {refinementOptions.map((refinement: RefinementOption) => (
-                    <InlineButton
-                      key={refinement.id}
-                      onClick={() => {
-                        void refineMaterial({
-                          refinement: [{ type: refinement.value }],
-                          mutateAsync: async (input) => {
-                            try {
-                              return await fetchMaterial.mutateAsync(input);
-                            } catch (error) {
-                              throw error instanceof Error
-                                ? error
-                                : new Error(String(error));
-                            }
-                          },
-                        });
-                        setIsFooterAdaptOpen(false);
-                      }}
-                    >
-                      {refinement.label}
-                    </InlineButton>
-                  ))}
+                  {isResourceRefining ? (
+                    <OakFlex $alignItems="center" $gap="all-spacing-2">
+                      <OakP $font="body-2">Working on it...</OakP>
+                      <OakLoadingSpinner $width="all-spacing-6" />
+                    </OakFlex>
+                  ) : (
+                    <>
+                      {refinementOptions.map((refinement: RefinementOption) => (
+                        <InlineButton
+                          key={refinement.id}
+                          onClick={() => {
+                            void refineMaterial({
+                              refinement: [{ type: refinement.value }],
+                              mutateAsync: async (input) => {
+                                try {
+                                  return await fetchMaterial.mutateAsync(input);
+                                } catch (error) {
+                                  throw error instanceof Error
+                                    ? error
+                                    : new Error(String(error));
+                                }
+                              },
+                            });
+                          }}
+                        >
+                          {refinement.label}
+                        </InlineButton>
+                      ))}
+                    </>
+                  )}
                 </OakFlex>
               </OakFlex>
             ) : (
