@@ -82,7 +82,14 @@ const StepOne = () => {
       </OakFlex>
 
       <ResourcesFooter>
-        <OakFlex $justifyContent="flex-end" $width={"100%"}>
+        <OakFlex $justifyContent="space-between" $width={"100%"}>
+          <button onClick={() => setStepNumber(0)}>
+            {/* Todo: Link this up to the previous step when for launch */}
+            <OakFlex $alignItems="center" $gap="all-spacing-2">
+              <OakIcon iconName="chevron-left" />
+              Back
+            </OakFlex>
+          </button>
           <OakPrimaryButton
             onClick={() => setStepNumber(1)}
             iconName="arrow-right"
