@@ -172,14 +172,6 @@ export class AilaStreamHandler {
       ...this._chat.aila.document.content,
     };
 
-    if (
-      !initialDocument.title ||
-      !initialDocument.subject ||
-      !initialDocument.keyStage
-    ) {
-      throw new Error("title subject keyStage required");
-    }
-
     // Create a stream handler
     const streamHandler = createInteractStreamHandler(
       this._chat,

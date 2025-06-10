@@ -111,7 +111,11 @@ export async function interact({
     data: { step: "routing", status: "started" },
   });
 
-  if (relevantLessons === null) {
+  const lessonHasDetails = Boolean(
+    document.title && document.keyStage && document.subject,
+  );
+
+  if (relevantLessons === null && lessonHasDetails) {
     /**
      * This means we haven't even tried to fetch relevant lessons yet
      * So we need to do that first, and present them to the user
@@ -146,9 +150,11 @@ export async function interact({
     return { document, ailaMessage };
   }
 
-  const ragData = await customAgents.fetchRagData({
-    document,
-  });
+  const ragData = lessonHasDetails
+    ? await customAgents.fetchRagData({
+        document,
+      })
+    : [];
 
   const routerResponse = await agentRouter({
     chatId,
