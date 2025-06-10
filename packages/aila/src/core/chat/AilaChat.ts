@@ -335,9 +335,9 @@ export class AilaChat implements AilaChatService {
   }
 
   private async span(step: string, handler: () => Promise<void>) {
-    log.info(`Starting completion step: ${step}`);
-    await this.aila.tracing.span(step, { op: "function.aila.step" }, handler);
-    log.info(`Finished completion step: ${step}`);
+    log.info(`${step} started`);
+    await this.aila.tracing.span(step, { op: "aila.step" }, handler);
+    log.info(`${step} finished`);
   }
 
   /**

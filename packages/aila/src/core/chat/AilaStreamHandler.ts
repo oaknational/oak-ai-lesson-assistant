@@ -38,13 +38,9 @@ export class AilaStreamHandler {
   }
 
   private async span(step: string, handler: () => Promise<void>) {
-    log.info(`Streaming step: ${step}`);
-    await this._chat.aila.tracing.span(
-      step,
-      { op: "function.aila.step" },
-      handler,
-    );
-    log.info(`Streamed step: ${step}`);
+    log.info(`${step} started`);
+    await this._chat.aila.tracing.span(step, { op: "aila.step" }, handler);
+    log.info(`${step} finished`);
   }
 
   private async checkForThreats(
