@@ -67,7 +67,8 @@ export async function POST(req: Request, res: NextApiResponse) {
       fileId: exportLink.data.fileId,
       fileIds: exportLink.data.fileIds,
       ext: ["pdf", "docx"],
-      documentTitle: `${lessonTitle} - ${resourceTypesConfig[passedDocType].displayName.toLowerCase()}`,
+      documentTitle: lessonTitle,
+      docType: resourceTypesConfig[passedDocType].displayName.toLowerCase(),
     });
 
     if ("error" in stream) {

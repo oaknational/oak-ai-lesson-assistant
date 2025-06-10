@@ -15,11 +15,13 @@ export async function getDriveDocsZipStream({
   fileIds,
   ext,
   documentTitle,
+  docType,
 }: {
   fileId: string;
   fileIds?: string[];
   ext: Ext;
   documentTitle: string;
+  docType: string;
 }) {
   log.info("Zipping files", fileId, fileIds, ext);
   const zipStream = new PassThrough();
@@ -44,7 +46,7 @@ export async function getDriveDocsZipStream({
         allFileIds.length > 1 && allFileIds.indexOf(currentFileId) > 0
           ? "answers"
           : "";
-      const filename = `${documentTitle}${fileType ? ` - ${fileType}` : ""} - ${currentFileId.slice(0, 5)}.${e}`;
+      const filename = `${documentTitle} - ${currentFileId.slice(0, 8)} - ${docType}${fileType ? ` - ${fileType}` : ""}.${e}`;
 
       // @ts-expect-error @todo fix this
       archive.append(data.stream, { name: filename });
