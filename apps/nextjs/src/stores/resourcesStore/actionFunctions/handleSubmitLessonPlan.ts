@@ -7,6 +7,7 @@ import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
+import invariant from "tiny-invariant";
 
 import { type ResourcesGetter, type ResourcesSetter } from "../types";
 import { handleStoreError } from "../utils/errorHandling";
@@ -105,17 +106,21 @@ const updateMaterialSessionWithLessonId = async (
     { resourceId: string; lessonId: string }
   >,
 ) => {
-  if (resourceId && updateSessionMutateAsync) {
-    try {
-      await updateSessionMutateAsync({ resourceId, lessonId });
-      log.info("Material session updated with lesson ID", {
-        resourceId,
-        lessonId,
-      });
-    } catch (error) {
-      log.error("Failed to update material session with lesson ID", error);
-      Sentry.captureException(error);
-    }
+  invariant(resourceId, "Resource ID must be defined");
+  invariant(
+    updateSessionMutateAsync,
+    "Update session mutate function must be defined",
+  );
+
+  try {
+    await updateSessionMutateAsync({ resourceId, lessonId });
+    log.info("Material session updated with lesson ID", {
+      resourceId,
+      lessonId,
+    });
+  } catch (error) {
+    log.error("Failed to update material session with lesson ID", error);
+    Sentry.captureException(error);
   }
 };
 
@@ -132,6 +137,7 @@ export const handleSubmitLessonPlan =
     const { setIsLoadingLessonPlan } = get().actions;
     const { docType, id: resourceId } = get();
 
+    // Change step first for immediate feedback - stay on current step during loading
     setIsLoadingLessonPlan(true);
 
     try {

@@ -19,7 +19,7 @@ const useStepSubmitLogic = () => {
   const updateMaterialSession =
     trpc.additionalMaterials.updateMaterialSession.useMutation();
   const createSession =
-    trpc.additionalMaterials.createMaterialSession?.useMutation?.();
+    trpc.additionalMaterials.createMaterialSession.useMutation();
 
   // Handle submit for step 2
   const handleSubmitLessonPlan = async (params: {
