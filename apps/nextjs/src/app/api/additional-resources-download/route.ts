@@ -1,5 +1,6 @@
 import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { transformDataForExport } from "@oakai/additional-materials/src/documents/additionalMaterials/dataHelpers/transformDataForExports";
+import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { exportAdditionalResourceDoc } from "@oakai/exports/src/exportAdditionalResourceDoc";
 import { aiLogger } from "@oakai/logger";
 
@@ -66,7 +67,8 @@ export async function POST(req: Request, res: NextApiResponse) {
       fileId: exportLink.data.fileId,
       fileIds: exportLink.data.fileIds,
       ext: ["pdf", "docx"],
-      documentTitle: `${lessonTitle} - ${documentType}`,
+      documentTitle: lessonTitle,
+      docType: resourceTypesConfig[passedDocType].displayName.toLowerCase(),
     });
 
     if ("error" in stream) {

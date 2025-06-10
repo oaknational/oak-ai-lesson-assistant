@@ -1,3 +1,4 @@
+import { language } from "../additionalMaterials/promptHelpers";
 import { howToMakeAGoodQuiz, lessonPlanPromptParts } from "./lessonPromptParts";
 import { type PartialLessonPlanFieldKeys } from "./schema";
 
@@ -32,5 +33,7 @@ export const buildPartialLessonSystemMessage = ({
 }) => {
   return `You are an expert teacher in the UK. You are going to help me write a lesson plan for a class of pupils. 
    Subject: ${subject}, year group ${year}, key stage: ${keyStage}, title: ${title}. 
-   Return the lesson plan in JSON format matching the given schema.`;
+   Return the lesson plan in JSON format matching the given schema.
+   ${language}
+   `;
 };

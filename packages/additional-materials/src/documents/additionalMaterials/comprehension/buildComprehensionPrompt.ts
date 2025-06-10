@@ -1,5 +1,5 @@
 import type { Action, ContextByMaterialType } from "../configSchema";
-import { getLessonDetails } from "../promptHelpers";
+import { getLessonDetails, language } from "../promptHelpers";
 
 export const buildComprehensionPrompt = (
   context: ContextByMaterialType["additional-comprehension"],
@@ -172,7 +172,8 @@ You are an expert UK teacher generating a reading comprehension task.
 - Questions 6-10 should be longer response questions
 - Include answers for all questions
 - **Do not** include markdown in your response.
-- **Do not** include any americanisms.
-- Use only **British English** spellings and terminology.
+
+
+${language}
   `;
 };
