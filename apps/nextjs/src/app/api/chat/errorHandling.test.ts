@@ -30,11 +30,7 @@ describe("handleChatException", () => {
       const error = new AilaThreatDetectionError("user_abc", "test error");
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
-      const response = await handleChatException(
-        error,
-        "test-chat-id",
-        prisma,
-      );
+      const response = await handleChatException(error, "test-chat-id", prisma);
 
       expect(response.status).toBe(200);
 
@@ -55,11 +51,7 @@ describe("handleChatException", () => {
       const error = new AilaAuthenticationError("test error");
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
-      const response = await handleChatException(
-        error,
-        "test-chat-id",
-        prisma,
-      );
+      const response = await handleChatException(error, "test-chat-id", prisma);
 
       expect(response.status).toBe(401);
 
@@ -83,11 +75,7 @@ describe("handleChatException", () => {
       );
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
-      const response = await handleChatException(
-        error,
-        "test-chat-id",
-        prisma,
-      );
+      const response = await handleChatException(error, "test-chat-id", prisma);
 
       expect(response.status).toBe(200);
 
@@ -114,11 +102,7 @@ describe("handleChatException", () => {
       const error = new UserBannedError("test error");
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
-      const response = await handleChatException(
-        error,
-        "test-chat-id",
-        prisma,
-      );
+      const response = await handleChatException(error, "test-chat-id", prisma);
 
       expect(response.status).toBe(200);
 

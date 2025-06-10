@@ -7,7 +7,10 @@ export class SentryTracingService implements AilaTracingService {
 
   async span<T>(
     name: string,
-    options: { op?: string; [key: string]: string | number | boolean | undefined },
+    options: {
+      op?: string;
+      [key: string]: string | number | boolean | undefined;
+    },
     handler: () => Promise<T>,
   ): Promise<T> {
     return await this.startSpanFn(name, options, handler);
