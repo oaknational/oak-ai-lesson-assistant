@@ -2,7 +2,7 @@ import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
 import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
 import * as moderationErrorHandling from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
-import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
+import type { TracingSpan } from "@oakai/core/src/tracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
@@ -31,7 +31,6 @@ describe("handleChatException", () => {
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
       const response = await handleChatException(
-        span,
         error,
         "test-chat-id",
         prisma,
@@ -57,7 +56,6 @@ describe("handleChatException", () => {
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
       const response = await handleChatException(
-        span,
         error,
         "test-chat-id",
         prisma,
@@ -86,7 +84,6 @@ describe("handleChatException", () => {
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
       const response = await handleChatException(
-        span,
         error,
         "test-chat-id",
         prisma,
@@ -118,7 +115,6 @@ describe("handleChatException", () => {
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
       const response = await handleChatException(
-        span,
         error,
         "test-chat-id",
         prisma,
