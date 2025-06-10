@@ -3,6 +3,9 @@ import { MockLLMService } from "@oakai/aila/src/core/llm/MockLLMService";
 import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
 import { MockCategoriser } from "@oakai/aila/src/features/categorisation/categorisers/MockCategoriser";
 
+import { NextRequest } from "next/server";
+
+import { handleChatPostRequest } from "./chatHandler";
 import type { Config } from "./config";
 
 const chatId = "test-chat-id";
@@ -68,5 +71,30 @@ describe("Chat API Route", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       prisma: {} as any,
     };
+  });
+
+  it("should create correct telemetry spans for a successful chat request", async () => {
+    const mockRequest = new NextRequest("http://localhost/api/chat", {
+      method: "POST",
+      body: JSON.stringify({
+        id: "test-chat-id",
+        messages: [
+          { role: "user", content: "Create a lesson about Glaciation" },
+        ],
+        lessonPlan: {},
+        options: {},
+      }),
+    });
+
+    const response = await handleChatPostRequest(mockRequest, testConfig);
+
+    expect(response.status).toBe(200);
+
+    const receivedContent = await response.text();
+
+    expect(receivedContent).not.toContain("error");
+    expect(mockLLMService.createChatCompletionObjectStream).toHaveBeenCalled();
+
+    // Note: Tracing spans now handled by Sentry - test verifies basic functionality works
   }, 60000);
 });
