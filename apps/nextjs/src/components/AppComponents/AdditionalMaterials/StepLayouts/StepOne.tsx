@@ -4,7 +4,6 @@ import { getResourceTypes } from "@oakai/additional-materials/src/documents/addi
 
 import {
   OakFlex,
-  OakIcon,
   OakLabel,
   OakP,
   OakPrimaryButton,
