@@ -102,7 +102,7 @@ const AdditionalMaterialsInappropriateContent = ({
               $survey_response_2: null, // moderation ID is not available in this context
               $survey_response_3: null, // chatId is not available in this context, using teacher materials id
               $survey_response_4: feedback,
-              $survey_response_5: id, // partial lesson plan ID from teaching materials
+              $survey_response_5: "teaching-materials", // source of survey
             });
             setSubmittedFeedback(true);
           }}
