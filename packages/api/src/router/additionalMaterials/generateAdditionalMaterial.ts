@@ -69,7 +69,7 @@ export async function generateAdditionalMaterial({
 
   const { resourceId, adaptsOutputId, documentType } = input;
   const version = additionalMaterialsConfigMap[documentType].version;
-  let interaction;
+  let interaction: { id: string };
 
   if (resourceId) {
     log.info("Updating existing additional material interaction", {
