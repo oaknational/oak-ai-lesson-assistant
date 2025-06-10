@@ -130,7 +130,7 @@ export const handleSubmitLessonPlan =
   }: SubmitLessonPlanParams) => {
     const { setIsLoadingLessonPlan } = get().actions;
     const { docType, id: resourceId } = get();
-
+    setIsLoadingLessonPlan(true);
     invariant(resourceId, "Resource ID must be defined");
     invariant(
       updateSessionMutateAsync,
