@@ -153,7 +153,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     lessonPlan: LooseLessonPlan,
     quizType: QuizPath,
   ): Promise<z.infer<typeof SemanticSearchSchema>> {
-    const unpackedContent = this.unpackLessonPlanForRecommender(lessonPlan);
+    const unpackedContent = this.unpackLessonPlanForPrompt(lessonPlan);
 
     const prompt = `Based on the following lesson plan content, generate a series of semantic search queries that could be used to find relevant quiz questions from a question bank for questions from the UK mathematics curriculum.
 
