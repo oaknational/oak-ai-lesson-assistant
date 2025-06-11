@@ -41,9 +41,9 @@ import { trpc } from "@/utils/trpc";
 import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
 import { ExitQuiz } from "../../AdditionalMaterials/ExitQuiz";
 import { Glossary } from "../../AdditionalMaterials/Glossary";
-import { StarterQuiz } from "../../AdditionalMaterials/StarterQuiz";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import InlineButton from "../InlineButton";
+import { Quiz, StarterQuiz } from "../Quiz";
 import ResourcesFooter from "../ResourcesFooter";
 import StepLoadingScreen from "../StepLoadingScreen";
 
@@ -132,11 +132,13 @@ const StepFour = () => {
     }
 
     if (docType === "additional-starter-quiz" && isStarterQuiz(generation)) {
-      return <StarterQuiz action={docType} generation={generation} />;
+      return (
+        <Quiz action={docType} generation={generation} quizType="starter" />
+      );
     }
 
     if (docType === "additional-exit-quiz" && isExitQuiz(generation)) {
-      return <ExitQuiz action={docType} generation={generation} />;
+      return <Quiz action={docType} generation={generation} quizType="exit" />;
     }
 
     return null;
