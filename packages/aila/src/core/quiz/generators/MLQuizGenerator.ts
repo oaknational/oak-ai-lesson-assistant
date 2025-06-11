@@ -5,6 +5,8 @@ import type {
   SearchHit,
   SearchHitsMetadata,
 } from "@elastic/elasticsearch/lib/api/types";
+import { zodResponseFormat } from "openai/helpers/zod";
+import { z } from "zod";
 
 import type {
   LooseLessonPlan,
@@ -21,6 +23,11 @@ import type {
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");
+
+const SemanticSearchSchema = z.object({
+  queries: z.array(z.string()).describe("A list of semantic search queries"),
+});
+
 export class MLQuizGenerator extends BaseQuizGenerator {
   private async unpackAndSearch(
     lessonPlan: LooseLessonPlan,
@@ -111,6 +118,75 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     const customIds = await this.rerankAndExtractCustomIds(hits, qq);
     const quizQuestions = await this.retrieveAndProcessQuestions(customIds);
     return quizQuestions;
+  }
+
+  /**
+   * Generates semantic search queries from lesson plan content using OpenAI
+   */
+  public async generateSemanticSearchQueries(
+    lessonPlan: LooseLessonPlan,
+    quizType: QuizPath,
+  ): Promise<z.infer<typeof SemanticSearchSchema>> {
+    const unpackedContent = this.unpackLessonPlanForRecommender(lessonPlan);
+
+    const prompt = `Based on the following lesson plan content, generate a series of semantic search queries that could be used to find relevant quiz questions from a question bank for questions from the UK mathematics curriculum.
+
+The search queries should:
+- Focus on key concepts, topics, and learning outcomes
+- Use educational terminology appropriate for the subject and key stage
+- Be specific enough to find relevant questions but broad enough to capture variations
+- Include different question types (knowledge, understanding, application)
+- Consider prerequisite knowledge and common misconceptions
+
+Lesson plan content:
+${unpackedContent}
+
+You should generate queries for a ${quizType} quiz.
+
+Generate a list of 1-3 semantic search queries, each on a new line:`;
+
+    try {
+      const response = await this.openai.beta.chat.completions.parse({
+        model: "o3",
+        messages: [
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        max_completion_tokens: 1000,
+        response_format: zodResponseFormat(
+          SemanticSearchSchema,
+          "SemanticSearchQueries",
+        ),
+      });
+
+      const content = response.choices[0]?.message?.content;
+      if (!content) {
+        log.warn(
+          "OpenAI returned empty content for semantic search generation",
+        );
+        return { queries: [] };
+      }
+
+      // Parse the content through the schema to ensure type safety
+      const parsedContent = SemanticSearchSchema.parse({
+        queries: content
+          .split("\n")
+          .map((query) => query.trim())
+          .filter((query) => query.length > 0 && !query.match(/^\d+\.?\s*$/)),
+      });
+
+      log.info(
+        `Generated ${parsedContent.queries.length} semantic search queries for lesson plan`,
+      );
+      return parsedContent;
+    } catch (error) {
+      log.error("Failed to generate semantic search queries:", error);
+      throw new Error(
+        "Failed to generate semantic search queries from lesson plan",
+      );
+    }
   }
 
   // TODO: GCLOMAX - Change for starter and exit quizzes.
