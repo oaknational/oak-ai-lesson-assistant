@@ -143,7 +143,9 @@ export class Aila implements AilaServices {
     if (persistedLessonPlan) {
       this._document.content = persistedLessonPlan;
     }
-    await this._document.initialiseContentFromMessages(this._chat.messages);
+    if (!this.options.useAgenticAila) {
+      await this._document.initialiseContentFromMessages(this._chat.messages);
+    }
 
     this._initialised = true;
   }

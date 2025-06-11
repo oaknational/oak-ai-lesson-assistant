@@ -1,4 +1,12 @@
-export const keyLearningPointsInstructions = `List the most important factual things pupils should learn in the lesson.
+export const keyLearningPointsInstructions = ({
+  identity,
+}: {
+  identity: string;
+}) => `${identity}
+
+# Task
+
+List the most important factual things pupils should learn in the lesson.
 
 - Voice: EXPERT_TEACHER
 - Use succinct, knowledge-rich statements

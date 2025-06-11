@@ -35,6 +35,7 @@ import { learningCyclesInstructions } from "./prompts/learningCyclesInstructions
 import { learningOutcomeInstructions } from "./prompts/learningOutcomeInstructions";
 import { misconceptionsInstructions } from "./prompts/misconceptionsInstructions";
 import { priorKnowledgeInstructions } from "./prompts/priorKnowledgeInstructions";
+import { identity } from "./prompts/shared/identity";
 import { quizQuestionDesignInstructions } from "./prompts/shared/quizQuestionDesignInstructions";
 import { tier2And3VocabularyDefinitions } from "./prompts/shared/tier2And3VocabularyDefinitions";
 import { starterQuizInstructions } from "./prompts/starterQuizInstructions";
@@ -126,7 +127,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
   learningOutcome: {
     type: "prompt",
     name: "learningOutcome",
-    prompt: learningOutcomeInstructions,
+    prompt: learningOutcomeInstructions({ identity }),
     schemaForLLM: LearningOutcomeSchema,
     schemaStrict: LearningOutcomeSchemaStrictMax190,
     extractRagData: (lp) => lp.learningOutcome,
@@ -134,7 +135,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
   learningCycles: {
     type: "prompt",
     name: "learningCycles",
-    prompt: learningCycleTitlesInstructions,
+    prompt: learningCycleTitlesInstructions({ identity }),
     schemaForLLM: LearningCyclesSchema,
     schemaStrict: LearningCyclesStrictMax3Schema,
     extractRagData: (lp) => JSON.stringify(lp.learningCycles),
@@ -142,7 +143,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
   priorKnowledge: {
     type: "prompt",
     name: "priorKnowledge",
-    prompt: priorKnowledgeInstructions,
+    prompt: priorKnowledgeInstructions({ identity }),
     schemaForLLM: PriorKnowledgeSchema,
     schemaStrict: PriorKnowledgeSctrictMax5Schema,
     extractRagData: (lp) => JSON.stringify(lp.priorKnowledge),
@@ -150,7 +151,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
   keyLearningPoints: {
     type: "prompt",
     name: "keyLearningPoints",
-    prompt: keyLearningPointsInstructions,
+    prompt: keyLearningPointsInstructions({ identity }),
     schemaForLLM: KeyLearningPointsSchema,
     schemaStrict: KeyLearningPointsStrictMax5Schema,
     extractRagData: (lp) => JSON.stringify(lp.keyLearningPoints),
@@ -158,7 +159,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
   misconceptions: {
     type: "prompt",
     name: "misconceptions",
-    prompt: misconceptionsInstructions,
+    prompt: misconceptionsInstructions({ identity }),
     schemaForLLM: MisconceptionsSchemaWithoutLength,
     schemaStrict: MisconceptionsSchema,
     extractRagData: (lp) => JSON.stringify(lp.misconceptions),
@@ -166,7 +167,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
   keywords: {
     type: "prompt",
     name: "keywords",
-    prompt: keywordsInstructions({ tier2And3VocabularyDefinitions }),
+    prompt: keywordsInstructions({ identity, tier2And3VocabularyDefinitions }),
     schemaForLLM: KeywordsSchemaWithoutLength,
     schemaStrict: KeywordsSchema,
     extractRagData: (lp) => JSON.stringify(lp.keywords),
@@ -174,7 +175,10 @@ export const agents: Record<AgentName, AgentDefinition> = {
   starterQuiz: {
     type: "prompt",
     name: "starterQuiz",
-    prompt: starterQuizInstructions({ quizQuestionDesignInstructions }),
+    prompt: starterQuizInstructions({
+      identity,
+      quizQuestionDesignInstructions,
+    }),
     schemaForLLM: QuizSchemaWithoutLength,
     schemaStrict: QuizSchemaStrictMax6Schema,
     extractRagData: (lp) => JSON.stringify(lp.starterQuiz),
@@ -182,7 +186,10 @@ export const agents: Record<AgentName, AgentDefinition> = {
   cycle: {
     type: "prompt",
     name: "cycle",
-    prompt: learningCyclesInstructions({ quizQuestionDesignInstructions }),
+    prompt: learningCyclesInstructions({
+      identity,
+      quizQuestionDesignInstructions,
+    }),
     schemaForLLM: CycleSchemaWithoutLength,
     schemaStrict: CycleSchema,
     extractRagData: (lp) => {
@@ -197,7 +204,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
   exitQuiz: {
     type: "prompt",
     name: "exitQuiz",
-    prompt: exitQuizInstructions({ quizQuestionDesignInstructions }),
+    prompt: exitQuizInstructions({ identity, quizQuestionDesignInstructions }),
     schemaForLLM: QuizSchemaWithoutLength,
     schemaStrict: QuizSchemaStrictMax6Schema,
     extractRagData: (lp) => JSON.stringify(lp.exitQuiz),
@@ -225,7 +232,10 @@ export const agents: Record<AgentName, AgentDefinition> = {
   additionalMaterials: {
     type: "prompt",
     name: "additionalMaterials",
-    prompt: additionalMaterialsInstructions({ tier2And3VocabularyDefinitions }),
+    prompt: additionalMaterialsInstructions({
+      identity,
+      tier2And3VocabularyDefinitions,
+    }),
     schemaForLLM: AdditionalMaterialsSchema,
     schemaStrict: AdditionalMaterialsSchema,
     extractRagData: (lp) => JSON.stringify(lp.additionalMaterials),

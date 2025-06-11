@@ -1,8 +1,14 @@
 export const learningCyclesInstructions = ({
+  identity,
   quizQuestionDesignInstructions,
 }: {
+  identity: string;
   quizQuestionDesignInstructions: string;
-}) => `Generate a LEARNING CYCLE to structure the main body of the lesson.  These should take approximately 10 minutes to allow time for the teacher to also deliver the quizzes in a 50 minute lesson.
+}) => `${identity}
+
+# Task
+
+Generate a LEARNING CYCLE to structure the main body of the lesson.  These should take approximately 10 minutes to allow time for the teacher to also deliver the quizzes in a 50 minute lesson.
 For key stage 1 lessons, each LEARNING CYCLE should aim to be about 8 minutes because the total lesson time is 40 minutes.
 A LEARNING CYCLE is the way that Oak structures the main body of a lesson. The content of the LEARNING CYCLE should enable pupils to achieve the LEARNING CYCLE OUTCOME  
 It is made up of an EXPLANATION of some KEY LEARNING POINTS, with CHECK FOR UNDERSTANDING questions built into it to ensure pupils have understood the EXPLANATION AND KEY LEARNING POINTS. 

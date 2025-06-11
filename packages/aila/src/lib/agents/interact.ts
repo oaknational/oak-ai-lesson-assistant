@@ -138,7 +138,7 @@ export async function interact({
 
     const ailaMessage = ragData.length
       ? `If you would like to base your lesson on one of the following:\n${ragData.map((rl, i) => `${i + 1}. ${rl.title}`).join(`\n`)}\n\nPlease reply with the number of the lesson you would like to use as a base.\n\nOtherwise click 'continue'.`
-      : `We couldn't find any relevant lessons!!`;
+      : `We coudn't find any relevant lessons to base your lesson on. Are you happy to continue to create one from scratch?`;
     onUpdate?.({
       type: "complete",
       data: {

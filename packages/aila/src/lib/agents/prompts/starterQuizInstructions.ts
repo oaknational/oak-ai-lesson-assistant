@@ -1,8 +1,14 @@
 export const starterQuizInstructions = ({
+  identity,
   quizQuestionDesignInstructions,
 }: {
+  identity: string;
   quizQuestionDesignInstructions: string;
-}) => `Create a 6-question multiple-choice quiz to assess PRIOR KNOWLEDGE ONLY — do not include or hint at new lesson content.
+}) => `${identity}
+
+# Task
+
+Create a 6-question multiple-choice quiz to assess PRIOR KNOWLEDGE ONLY — do not include or hint at new lesson content.
 
 ## Content Scope:
 

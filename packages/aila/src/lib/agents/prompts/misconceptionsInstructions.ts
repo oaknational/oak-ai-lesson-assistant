@@ -1,4 +1,12 @@
-export const misconceptionsInstructions = `Identify 1–3 common misconceptions pupils may have about the topic.
+export const misconceptionsInstructions = ({
+  identity,
+}: {
+  identity: string;
+}) => `${identity}
+
+# Task
+
+Identify 1–3 common misconceptions pupils may have about the topic.
 
 - Each should be a succinct incorrect belief (max 200 characters)
 - Follow with a factually accurate correction (max 250 characters)

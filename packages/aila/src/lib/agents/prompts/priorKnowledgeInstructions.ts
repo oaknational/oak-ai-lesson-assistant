@@ -1,4 +1,12 @@
-export const priorKnowledgeInstructions = `List up to 5 relevant concepts that pupils should already know before this lesson. This knowledge should be necessary for success in the lesson being planned.
+export const priorKnowledgeInstructions = ({
+  identity,
+}: {
+  identity: string;
+}) => `${identity}
+
+# Task
+
+List up to 5 relevant concepts that pupils should already know before this lesson. This knowledge should be necessary for success in the lesson being planned.
 
 - Max 30 words per statement.
 - Max 5 statements but aim for fewer

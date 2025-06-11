@@ -97,19 +97,18 @@ export class AilaStreamHandler {
       await this.checkForThreats();
       this.logStreamingStep("Check for threats complete");
 
-      log.info("Setting initial state");
-      await this._chat.handleSettingInitialState();
-      this.logStreamingStep("Handle initial state complete");
-
-      log.info("Handling subject warning");
-      await this._chat.handleSubjectWarning();
-      this.logStreamingStep("Handle subject warning complete");
-
       if (this._chat.aila.options.useAgenticAila) {
         log.info("Start Agent stream");
         await this.startAgentStream();
         this.logStreamingStep("Agent stream complete");
       } else {
+        log.info("Setting initial state");
+        await this._chat.handleSettingInitialState();
+        this.logStreamingStep("Handle initial state complete");
+
+        log.info("Handling subject warning");
+        await this._chat.handleSubjectWarning();
+        this.logStreamingStep("Handle subject warning complete");
         log.info("Starting LLM stream");
         await this.startLLMStream();
         this.logStreamingStep("Start LLM stream complete");

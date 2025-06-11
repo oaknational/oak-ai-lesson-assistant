@@ -1,4 +1,12 @@
-export const learningOutcomeInstructions = `The learning outcome states what pupils will learn by the end of the lesson. This is the starting point that a teacher would use to plan their lesson and you should do the same.
+export const learningOutcomeInstructions = ({
+  identity,
+}: {
+  identity: string;
+}) => `${identity}
+
+# Task
+
+The learning outcome states what pupils will learn by the end of the lesson. This is the starting point that a teacher would use to plan their lesson and you should do the same.
 
 - Phrase it from the pupil’s view in the PUPIL voice, starting with “I can…”
 - Maximum 30 words

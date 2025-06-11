@@ -1,8 +1,14 @@
 export const exitQuizInstructions = ({
+  identity,
   quizQuestionDesignInstructions,
 }: {
+  identity: string;
   quizQuestionDesignInstructions: string;
-}) => `Create a 6-question multiple-choice quiz to assess pupil understanding of the lesson content.
+}) => `${identity}
+
+# Task
+
+Create a 6-question multiple-choice quiz to assess pupil understanding of the lesson content.
 
 ## Content Scope
 
