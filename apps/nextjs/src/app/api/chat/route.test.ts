@@ -2,11 +2,9 @@ import { Aila } from "@oakai/aila/src/core/Aila";
 import { MockLLMService } from "@oakai/aila/src/core/llm/MockLLMService";
 import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
 import { MockCategoriser } from "@oakai/aila/src/features/categorisation/categorisers/MockCategoriser";
-import { mockTracer } from "@oakai/core/src/tracing/mockTracer";
 
 import { NextRequest } from "next/server";
 
-import { expectTracingSpan } from "../../../utils/testHelpers/tracing";
 import { handleChatPostRequest } from "./chatHandler";
 import type { Config } from "./config";
 
@@ -27,7 +25,6 @@ describe("Chat API Route", () => {
   let mockLLMService: MockLLMService;
   let mockChatCategoriser: MockCategoriser;
   beforeEach(() => {
-    mockTracer.reset();
     jest.clearAllMocks();
 
     mockChatCategoriser = new MockCategoriser({
@@ -74,7 +71,7 @@ describe("Chat API Route", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       prisma: {} as any,
     };
-  }, 60000);
+  });
 
   it("should create correct telemetry spans for a successful chat request", async () => {
     const mockRequest = new NextRequest("http://localhost/api/chat", {
@@ -98,9 +95,6 @@ describe("Chat API Route", () => {
     expect(receivedContent).not.toContain("error");
     expect(mockLLMService.createChatCompletionObjectStream).toHaveBeenCalled();
 
-    expectTracingSpan("chat-aila-generate").toHaveBeenExecuted();
-    expectTracingSpan("chat-api").toHaveBeenExecutedWith({
-      chat_id: "test-chat-id",
-    });
+    // Note: Tracing spans now handled by Sentry - test verifies basic functionality works
   }, 60000);
 });
