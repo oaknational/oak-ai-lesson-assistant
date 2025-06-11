@@ -5,7 +5,9 @@ import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/parti
 import type { GeneratePartialLessonPlanResponse } from "@oakai/api/src/router/additionalMaterials/generatePartialLessonPlan";
 import { aiLogger } from "@oakai/logger";
 
+import * as Sentry from "@sentry/nextjs";
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
+import invariant from "tiny-invariant";
 
 import { type ResourcesGetter, type ResourcesSetter } from "../types";
 import { handleStoreError } from "../utils/errorHandling";
@@ -21,6 +23,11 @@ export type SubmitLessonPlanParams = {
     GeneratePartialLessonPlanResponse,
     Error,
     PartialLessonContextSchemaType
+  >;
+  updateSessionMutateAsync?: UseMutateAsyncFunction<
+    { success: boolean },
+    Error,
+    { resourceId: string; lessonId: string }
   >;
 };
 
@@ -87,6 +94,36 @@ const updateStoreWithLessonPlan = (
   log.info("Lesson plan updated successfully");
 };
 
+/**
+ * Updates the material session with the lesson ID
+ */
+const updateMaterialSessionWithLessonId = async (
+  resourceId: string | null,
+  lessonId: string,
+  updateSessionMutateAsync?: UseMutateAsyncFunction<
+    { success: boolean },
+    Error,
+    { resourceId: string; lessonId: string }
+  >,
+) => {
+  invariant(resourceId, "Resource ID must be defined");
+  invariant(
+    updateSessionMutateAsync,
+    "Update session mutate function must be defined",
+  );
+
+  try {
+    await updateSessionMutateAsync({ resourceId, lessonId });
+    log.info("Material session updated with lesson ID", {
+      resourceId,
+      lessonId,
+    });
+  } catch (error) {
+    log.error("Failed to update material session with lesson ID", error);
+    Sentry.captureException(error);
+  }
+};
+
 export const handleSubmitLessonPlan =
   (set: ResourcesSetter, get: ResourcesGetter) =>
   async ({
@@ -95,9 +132,10 @@ export const handleSubmitLessonPlan =
     keyStage,
     year,
     mutateAsync,
+    updateSessionMutateAsync,
   }: SubmitLessonPlanParams) => {
-    const { setStepNumber, setIsLoadingLessonPlan } = get().actions;
-    const { docType } = get();
+    const { setIsLoadingLessonPlan } = get().actions;
+    const { docType, id: resourceId } = get();
 
     // Change step first for immediate feedback - stay on current step during loading
     setIsLoadingLessonPlan(true);
@@ -113,6 +151,13 @@ export const handleSubmitLessonPlan =
       );
       const result = await mutateAsync(apiInput);
       updateStoreWithLessonPlan(set, result);
+
+      // Update material session with lesson ID
+      await updateMaterialSessionWithLessonId(
+        resourceId,
+        result.lessonId,
+        updateSessionMutateAsync,
+      );
     } catch (error: unknown) {
       handleStoreError(set, error, { context: "handleSubmitLessonPlan" });
       log.error("Error handling lesson plan");
