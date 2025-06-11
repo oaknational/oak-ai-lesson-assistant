@@ -29,7 +29,7 @@ const log = aiLogger("aila:quiz");
 
 // OpenAI model constant
 // const OPENAI_MODEL = "gpt-4o-2024-08-06";
-const OPENAI_MODEL = "gpt-4o-mini";
+const OPENAI_MODEL: string = "o4-mini";
 
 const ThoughtStep = z.object({
   step: z.number(),
@@ -418,13 +418,23 @@ export async function OpenAICallRerankerWithSchema(
   const chatId = "test-chat-id";
   const openai = createOpenAIClient({ app: "maths-reranker" });
   const startTime = Date.now();
-  const response = await openai.beta.chat.completions.parse({
-    model: OPENAI_MODEL,
-    max_tokens,
-    messages,
-    response_format: zodResponseFormat(schema, "QuizRatingResponse"),
-  });
-  return response;
+  if (OPENAI_MODEL === "o3" || OPENAI_MODEL === "o4-mini") {
+    const response = await openai.beta.chat.completions.parse({
+      model: OPENAI_MODEL,
+      max_completion_tokens: 4000,
+      messages,
+      response_format: zodResponseFormat(schema, "QuizRatingResponse"),
+    });
+    return response;
+  } else {
+    const response = await openai.beta.chat.completions.parse({
+      model: OPENAI_MODEL,
+      max_tokens,
+      messages,
+      response_format: zodResponseFormat(schema, "QuizRatingResponse"),
+    });
+    return response;
+  }
 }
 
 /**
