@@ -219,7 +219,10 @@ Generate a list of 1-3 semantic search queries, each on a new line:`;
   public async generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
   ): Promise<QuizQuestionWithRawJson[][]> {
-    const quiz = await this.generateMathsQuizML(lessonPlan);
+    const quiz = await this.generateMathsQuizMLWithSemanticQueries(
+      lessonPlan,
+      "/starterQuiz",
+    );
     const quiz2DArray = this.splitQuestionsIntoSixAndPad(
       lessonPlan,
       quiz,
@@ -232,7 +235,10 @@ Generate a list of 1-3 semantic search queries, each on a new line:`;
     lessonPlan: LooseLessonPlan,
   ): Promise<QuizQuestionWithRawJson[][]> {
     const quiz: QuizQuestionWithRawJson[] =
-      await this.generateMathsQuizML(lessonPlan);
+      await this.generateMathsQuizMLWithSemanticQueries(
+        lessonPlan,
+        "/exitQuiz",
+      );
     const quiz2DArray = this.splitQuestionsIntoSixAndPad(
       lessonPlan,
       quiz,
