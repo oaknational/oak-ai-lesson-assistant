@@ -1,3 +1,5 @@
+import { aiLogger } from "@oakai/logger";
+
 import type { z } from "zod";
 
 import type {
@@ -9,6 +11,8 @@ import type { BaseType } from "../ChoiceModels";
 import type { QuizQuestionWithRawJson } from "../interfaces";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
+
+const log = aiLogger("aila:quiz");
 
 export class TestSchemaReranker<
   T extends z.ZodType<BaseType & Record<string, unknown>>,

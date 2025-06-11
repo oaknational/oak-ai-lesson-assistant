@@ -366,7 +366,7 @@ async function evaluateQuizReasoningModel<
   );
   return response;
 }
-export { evaluateQuiz };
+export { evaluateQuiz, evaluateQuizReasoningModel };
 
 export {
   combinePrompts,

@@ -12,7 +12,7 @@ import type {
   QuizQuestion,
 } from "../../../protocol/schema";
 import { type BaseSchema, type BaseType } from "../ChoiceModels";
-import { evaluateQuiz } from "../OpenAIRanker";
+import { evaluateQuiz, evaluateQuizReasoningModel } from "../OpenAIRanker";
 import { processArray, withRandomDelay } from "../apiCallingUtils";
 import type { AilaQuizReranker, QuizQuestionWithRawJson } from "../interfaces";
 
@@ -56,10 +56,10 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
     >(
       async (quiz: QuizQuestionWithRawJson[]) => {
         try {
-          const result = await evaluateQuiz<T>(
+          const result = await evaluateQuizReasoningModel<T>(
             lessonPlan,
             quiz,
-            1500,
+            4000,
             ratingSchema,
             quizType,
           );
