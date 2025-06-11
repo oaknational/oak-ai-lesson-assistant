@@ -8,6 +8,7 @@ import type {
 } from "@elastic/elasticsearch/lib/api/types";
 import { CohereClient } from "cohere-ai";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
+import OpenAI from "openai";
 import { z } from "zod";
 
 import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
@@ -47,6 +48,7 @@ const log = aiLogger("aila:quiz");
 export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   protected client: Client;
   protected cohere: CohereClient;
+  public openai: OpenAI;
   protected rerankService: CohereReranker;
   protected quizLookup: LessonSlugQuizLookup;
 
@@ -71,6 +73,11 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
     this.cohere = new CohereClient({
       token: process.env.COHERE_API_KEY as string,
+    });
+
+    // Direct OpenAI client for embeddings (bypassing Helicone proxy)
+    this.openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
     });
 
     // This can be changed to use our hosted models - use this for dev simplicity.
@@ -365,6 +372,109 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       throw error;
     }
   }
+
+  /**
+   * Creates text embeddings using OpenAI
+   */
+  public async createEmbedding(text: string): Promise<number[]> {
+    try {
+      const response = await this.openai.embeddings.create({
+        model: "text-embedding-3-large",
+        input: text,
+        encoding_format: "float",
+        dimensions: 768,
+      });
+
+      return response.data[0]?.embedding || [];
+    } catch (error) {
+      log.error("Error creating embedding:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Performs hybrid search combining BM25 and vector similarity
+   */
+  protected async searchWithHybrid(
+    index: string,
+    query: string,
+    size: number = 100,
+    hybridWeight: number = 0.5,
+  ): Promise<SearchHitsMetadata<CustomSource>> {
+    try {
+      log.info(`Performing hybrid search on index: ${index}, query: ${query}`);
+
+      // Create embedding for the query
+      const queryEmbedding = await this.createEmbedding(query);
+
+      const response = await this.client.search<CustomSource>({
+        index,
+        size,
+        query: {
+          bool: {
+            must: [
+              {
+                // Hybrid query combining BM25 and vector search
+                function_score: {
+                  query: {
+                    bool: {
+                      should: [
+                        // BM25 text search
+                        {
+                          match: {
+                            text: {
+                              query,
+                              boost: 1 - hybridWeight,
+                            },
+                          },
+                        },
+                        // Vector similarity search
+                        {
+                          script_score: {
+                            query: { match_all: {} },
+                            script: {
+                              source: `
+                                if (doc['embedding'].size() == 0) {
+                                  return 0;
+                                }
+                                return cosineSimilarity(params.query_vector, 'embedding') + 1.0;
+                              `,
+                              params: {
+                                query_vector: queryEmbedding,
+                              },
+                            },
+                            boost: hybridWeight,
+                          },
+                        },
+                      ],
+                    },
+                  },
+                  boost_mode: "sum",
+                },
+              },
+            ],
+            filter: [{ term: { isLegacy: false } }], // filter out legacy items
+          },
+        },
+      });
+
+      if (!response.hits) {
+        throw new Error("No hits property in the search response");
+      }
+
+      log.info(`Hybrid search found ${response.hits.hits.length} hits`);
+
+      return response.hits;
+    } catch (error) {
+      log.error("Error performing hybrid search:", error);
+      if (error instanceof Error) {
+        log.error("Error message:", error.message);
+        log.error("Error stack:", error.stack);
+      }
+      throw error;
+    }
+  }
+
   // TODO: GCLOMAX abstract this into the reranker service / class so can easily swap out for hybrid once re-ingested.
   protected async rerankDocuments(
     query: string,

@@ -26,12 +26,12 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     lessonPlan: LooseLessonPlan,
   ): Promise<SearchHit<CustomSource>[]> {
     const qq = this.unpackLessonPlanForRecommender(lessonPlan);
-    // TODO: GCLOMAX - change this to use the new search service.
-    const results = await this.searchWithBM25(
+    // Using hybrid search combining BM25 and vector similarity
+    const results = await this.searchWithHybrid(
       "oak-vector-2025-04-16",
-      "text",
       qq,
       100,
+      0.5, // 50/50 weight between BM25 and vector search
     );
     return results.hits;
   }

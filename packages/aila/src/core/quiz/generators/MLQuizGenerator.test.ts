@@ -1,13 +1,28 @@
+import type { Client } from "@elastic/elasticsearch";
+import type { OpenAI } from "openai";
+
 import { QuizSchema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { MLQuizGenerator } from "./MLQuizGenerator";
 
-describe("MLQuizGenerator", () => {
+describe("IntegrationTests", () => {
   let mlQuizGenerator: MLQuizGenerator;
 
   beforeEach(() => {
     mlQuizGenerator = new MLQuizGenerator();
   });
+
+  it("should generate embedding", async () => {
+    const embedding = await mlQuizGenerator.createEmbedding(
+      "circle theorems and angles",
+    );
+    expect(embedding).toBeDefined();
+    expect(embedding.length).toBe(768);
+  });
+});
+
+describe("MLQuizGenerator", () => {
+  let mlQuizGenerator: MLQuizGenerator = new MLQuizGenerator();
 
   it("should generate a starter quiz", async () => {
     const result =
@@ -31,5 +46,13 @@ describe("MLQuizGenerator", () => {
     result.forEach((item) => {
       expect(QuizSchema.safeParse(item).success).toBe(true);
     });
+  });
+
+  it("should generate embedding", async () => {
+    const embedding = await mlQuizGenerator.createEmbedding(
+      "circle theorems and angles",
+    );
+    expect(embedding).toBeDefined();
+    expect(embedding.length).toBe(768);
   });
 });
