@@ -1,3 +1,26 @@
+## [1.40.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.40.0...v1.40.1) (2025-06-05)
+
+
+### Bug Fixes
+
+* force dynamic rendering for cron job routes ([#700](https://github.com/oaknational/oak-ai-lesson-assistant/issues/700)) ([79e280c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/79e280ca04b4b0d8552734340baf52d07b6a99c1))
+
+# [1.40.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.39.0...v1.40.0) (2025-06-05)
+
+
+### Bug Fixes
+
+* add admin user button to slack alert when user banned ([#691](https://github.com/oaknational/oak-ai-lesson-assistant/issues/691)) ([d4ab295](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d4ab29534dc3555329ceb42196dd9251cd14c820))
+
+
+### Features
+
+* add scheduled clerk user cleanup cron job - AI-1245 ([#693](https://github.com/oaknational/oak-ai-lesson-assistant/issues/693)) ([cc8b7d9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cc8b7d90fc9a25983164339fa6bceddce7496d3a))
+* agentic maths quiz [AI-1189] [AI-1152] ([#677](https://github.com/oaknational/oak-ai-lesson-assistant/issues/677)) ([3b7725c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3b7725ced2453c96f1d40701801e4b85915075b4))
+* am mobile implementation ([#696](https://github.com/oaknational/oak-ai-lesson-assistant/issues/696)) ([c87981f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c87981f7ac730e4e36e81148630b56d456abe16a))
+* change the steps ([#685](https://github.com/oaknational/oak-ai-lesson-assistant/issues/685)) ([e48d5f7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e48d5f768908181430953b64ac78eea9ad4b6024))
+* update modify hover states copy - AI-1246 ([#692](https://github.com/oaknational/oak-ai-lesson-assistant/issues/692)) ([a3e3424](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a3e342457d4b3edd5dea8079f305f1b4d9ef15f3))
+
 # [1.39.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.38.0...v1.39.0) (2025-05-29)
 
 
