@@ -104,4 +104,38 @@ describe("MLQuizGenerator", () => {
     // Log the actual queries for inspection
     console.log("Generated semantic search queries:", result);
   });
+
+  it("should generate quiz questions using semantic search queries", async () => {
+    // Set a longer timeout for this test as it makes multiple API calls
+    jest.setTimeout(60000); // 60 seconds
+
+    // This test makes real API calls to OpenAI and Elasticsearch
+    const result = await mlQuizGenerator.generateMathsQuizMLWithSemanticQueries(
+      CircleTheoremLesson,
+      "/starterQuiz",
+    );
+
+    // Check that we got a valid array of quiz questions
+    expect(Array.isArray(result)).toBe(true);
+    expect(result.length).toBeGreaterThan(0);
+
+    // Check that each question has the required properties
+    result.forEach((question) => {
+      expect(question).toHaveProperty("question");
+      expect(question).toHaveProperty("answers");
+      expect(question).toHaveProperty("distractors");
+      expect(Array.isArray(question.answers)).toBe(true);
+      expect(Array.isArray(question.distractors)).toBe(true);
+      expect(question.answers.length).toBeGreaterThan(0);
+      expect(question.distractors.length).toBeGreaterThan(0);
+    });
+
+    // Log the first question for inspection
+    if (result[0]) {
+      console.log(
+        "First generated question:",
+        JSON.stringify(result[0], null, 2),
+      );
+    }
+  });
 });

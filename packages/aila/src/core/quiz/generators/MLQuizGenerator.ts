@@ -120,6 +120,32 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     return quizQuestions;
   }
 
+  public async generateMathsQuizMLWithSemanticQueries(
+    lessonPlan: LooseLessonPlan,
+    quizType: QuizPath,
+  ): Promise<QuizQuestionWithRawJson[]> {
+    // Using hybrid search combining BM25 and vector similarity
+    const semanticQueries: z.infer<typeof SemanticSearchSchema> =
+      await this.generateSemanticSearchQueries(lessonPlan, quizType);
+
+    const concatenatedQueries: string = semanticQueries.queries.join(" ");
+
+    const results = await this.searchWithHybrid(
+      "oak-vector-2025-04-16",
+      concatenatedQueries,
+      100,
+      0.5, // 50/50 weight between BM25 and vector search
+    );
+
+    // const quizQuestions = await this.retrieveAndProcessQuestions(semanticQueries);
+    const customIds = await this.rerankAndExtractCustomIds(
+      results.hits,
+      concatenatedQueries,
+    );
+    const quizQuestions = await this.retrieveAndProcessQuestions(customIds);
+    return quizQuestions;
+  }
+
   /**
    * Generates semantic search queries from lesson plan content using OpenAI
    */
