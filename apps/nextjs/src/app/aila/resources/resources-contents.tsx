@@ -26,6 +26,7 @@ import {
   docTypeSelector,
   pageDataSelector,
   stepNumberSelector,
+  yearSelector,
 } from "@/stores/resourcesStore/selectors";
 
 interface AdditionalMaterialsUserProps {
@@ -42,7 +43,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
-
+  const year = useResourcesStore(yearSelector);
   // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName || null;
@@ -87,8 +88,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
       title: pageData.lessonPlan.title,
       subTitle: (
         <OakP $font="body-2" $color="grey70">
-          {kebabCaseToSentenceCase(pageData.lessonPlan.keyStage ?? "")} •{" "}
-          {pageData.lessonPlan.subject}
+          {`Year ${year}`} • {pageData.lessonPlan.subject}
         </OakP>
       ),
     },

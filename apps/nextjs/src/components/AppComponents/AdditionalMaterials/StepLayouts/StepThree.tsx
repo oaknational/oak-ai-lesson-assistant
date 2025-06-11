@@ -2,10 +2,7 @@ import { getResourceType } from "@oakai/additional-materials/src/documents/addit
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
-import {
-  camelCaseToSentenceCase,
-  kebabCaseToSentenceCase,
-} from "@oakai/core/src/utils/camelCaseConversion";
+import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 import { aiLogger } from "@oakai/logger";
 
 import {
@@ -15,7 +12,6 @@ import {
   OakP,
   OakPrimaryButton,
 } from "@oaknational/oak-components";
-import * as Sentry from "@sentry/nextjs";
 
 import {
   useResourcesActions,
@@ -28,8 +24,8 @@ import {
   moderationSelector,
   pageDataSelector,
   threatDetectionSelector,
+  yearSelector,
 } from "@/stores/resourcesStore/selectors";
-import { trpc } from "@/utils/trpc";
 
 import { MemoizedReactMarkdownWithStyles } from "../../Chat/markdown";
 import { useDialog } from "../../DialogContext";
@@ -74,6 +70,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   const moderation = useResourcesStore(moderationSelector);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
+  const year = useResourcesStore(yearSelector);
   const error = useResourcesStore(errorSelector);
   const { setDialogWindow } = useDialog();
 
@@ -106,8 +103,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
 
           <OakBox $pv="inner-padding-m">
             <OakP $font="body-2">
-              {toTitleCase(docTypeName ?? "")},{" "}
-              {kebabCaseToSentenceCase(pageData.lessonPlan.keyStage ?? "")},{" "}
+              {toTitleCase(docTypeName ?? "")}, {`Year ${year}`},{" "}
               {pageData.lessonPlan.subject}, {pageData.lessonPlan.title}
             </OakP>
           </OakBox>
