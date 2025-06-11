@@ -23,6 +23,7 @@ import {
   starterQuizQuestionSuitabilityDescriptionSchema,
   testRatingSchema,
 } from "./rerankers/RerankerStructuredOutputSchema";
+import { unpackLessonPlanForPrompt } from "./unpackLessonPlan";
 
 // Create a logger instance for the quiz module
 const log = aiLogger("aila:quiz");
@@ -211,6 +212,59 @@ function combinePromptsAndQuestions(
 }
 
 /**
+ * Combines a lesson plan, quiz questions, and a system prompt into a formatted array of messages for OpenAI.
+ * Includes the appropriate section of the lesson plan (prior knowledge or key learning points) based on the
+ * provided section category. Prompt is arranged for reasoning model.
+ *
+ * @param {LooseLessonPlan} lessonPlan - The lesson plan to be used in the prompts.
+ * @param {QuizQuestion[]} questions - An array of QuizQuestion objects to be converted.
+ * @param {OpenAI.Chat.Completions.ChatCompletionSystemMessageParam} systemPrompt - The system prompt to be used.
+ * @param {sectionCategory} lessonPlanSectionForConsideration - The section of the lesson plan to be considered.
+ * @returns {ChatMessage[]} An array of formatted messages ready for use with OpenAI API.
+ */
+
+function combinePromptsAndQuestionsReasoningModel(
+  lessonPlan: LooseLessonPlan,
+  questions: QuizQuestionWithRawJson[],
+  systemPrompt: OpenAI.Chat.Completions.ChatCompletionSystemMessageParam,
+  quizType: QuizPath,
+): ChatMessage[] {
+  const lessonPlanUnpacked: string = unpackLessonPlanForPrompt(lessonPlan);
+  const Messages: ChatMessage[] = [];
+  const Content: ChatContent[] = [];
+
+  Messages.push(systemPrompt);
+
+  Content.push({
+    type: "text" as const,
+    text: `I want you to evaluate the quiz questions based on the lesson plan provided. Rate the quizzes based on their suitability for inclusion in the lesson plan. Consider best practice pedagogy, as you are part of a maths lesson plan generator for Oak National Academy, leaders in UK teaching.`,
+  });
+
+  if (quizType === "/starterQuiz") {
+    Content.push({
+      type: "text" as const,
+      text: `You are generating a starter quiz for a lesson plan. The purpose of the starter quiz is to assess the prior knowledge of the students, identify misconceptions, and reactivate prior knowledge.`,
+    });
+  } else if (quizType === "/exitQuiz") {
+    Content.push({
+      type: "text" as const,
+      text: `You are generating an exit quiz for a lesson plan. The purpose of the exit quiz is to assess the learning outcomes of the students, identify misconceptions, and consolidate the learning.`,
+    });
+  }
+
+  Content.push({
+    type: "text" as const,
+    text: `The lesson plan is as follows: ${lessonPlanUnpacked}`,
+  });
+  const questionMessage = quizQuestionsToOpenAIMessageFormat(questions);
+  if (Array.isArray(questionMessage.content)) {
+    Content.push(...questionMessage.content);
+  }
+  Messages.push(contentListToUser(Content));
+  return Messages;
+}
+
+/**
  * Evaluates a starter quiz by combining lesson plan information, quiz questions, and a system prompt,
  * then sends this combined information to an OpenAI model for analysis.
  *
@@ -286,6 +340,32 @@ async function evaluateQuiz<
   return response;
 }
 
+async function evaluateQuizReasoningModel<
+  T extends z.ZodType<BaseType & Record<string, unknown>>,
+>(
+  lessonPlan: LooseLessonPlan,
+  questions: QuizQuestionWithRawJson[],
+  max_tokens: number = 4000,
+  ranking_schema: T,
+  quizType: QuizPath,
+): Promise<ParsedChatCompletion<z.infer<T>>> {
+  const lessonSectionSelection: sectionCategory =
+    quizType === "/starterQuiz" ? "priorKnowledge" : "keyLearningPoints";
+
+  const openAIMessage = combinePromptsAndQuestionsReasoningModel(
+    lessonPlan,
+    questions,
+    QuizInspectionSystemPrompt,
+    quizType,
+  );
+
+  const response = await OpenAICallRerankerWithSchema(
+    openAIMessage,
+    max_tokens,
+    ranking_schema,
+  );
+  return response;
+}
 export { evaluateQuiz };
 
 export {
