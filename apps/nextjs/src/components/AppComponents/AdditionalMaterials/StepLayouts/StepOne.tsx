@@ -4,13 +4,13 @@ import { getResourceTypes } from "@oakai/additional-materials/src/documents/addi
 
 import {
   OakFlex,
-  OakIcon,
   OakLabel,
   OakP,
   OakPrimaryButton,
   OakRadioButton,
   OakRadioGroup,
 } from "@oaknational/oak-components";
+import invariant from "tiny-invariant";
 
 import {
   useResourcesActions,
@@ -22,8 +22,12 @@ import { useDialog } from "../../DialogContext";
 import ResourcesFooter from "../ResourcesFooter";
 import { handleDialogSelection } from "./helpers";
 
-const StepOne = () => {
-  const { setStepNumber, setDocType, setGeneration } = useResourcesActions();
+const StepOne = ({
+  handleCreateSession,
+}: {
+  handleCreateSession: ({ documentType }: { documentType: string }) => void;
+}) => {
+  const { setDocType, setGeneration } = useResourcesActions();
   const docType = useResourcesStore(docTypeSelector);
   const error = useResourcesStore((state) => state.error);
 
@@ -49,7 +53,8 @@ const StepOne = () => {
             <OakRadioGroup
               name="radio-group"
               onChange={(value) => {
-                setDocType(value.target.value);
+                const selectedDocType = value.target.value;
+                setDocType(selectedDocType);
                 setGeneration(null);
               }}
               $flexDirection="column"
@@ -84,7 +89,10 @@ const StepOne = () => {
       <ResourcesFooter>
         <OakFlex $justifyContent="flex-end" $width={"100%"}>
           <OakPrimaryButton
-            onClick={() => setStepNumber(1)}
+            onClick={() => {
+              invariant(docType, "Document type must be selected");
+              handleCreateSession({ documentType: docType });
+            }}
             iconName="arrow-right"
             isTrailingIcon={true}
             disabled={!docType}
