@@ -83,7 +83,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   const { setStepNumber } = useResourcesActions();
 
   if (isLoadingLessonPlan) {
-    return <StepLoadingScreen nameOfWhatIsBuilding="lesson plan" />;
+    return <StepLoadingScreen />;
   }
   if (threatDetected) {
     setDialogWindow("additional-materials-threat-detected");

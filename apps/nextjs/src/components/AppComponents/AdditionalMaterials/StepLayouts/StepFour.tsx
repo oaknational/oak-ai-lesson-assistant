@@ -144,12 +144,8 @@ const StepFour = () => {
     return null;
   };
   // if loading, show loading
-  if (isResourcesLoading) {
-    return (
-      <StepLoadingScreen
-        nameOfWhatIsBuilding={resourceType?.displayName ?? ""}
-      />
-    );
+  if (isResourcesLoading || isResourceRefining) {
+    return <StepLoadingScreen docTypeName={resourceType?.displayName} />;
   }
 
   return (
