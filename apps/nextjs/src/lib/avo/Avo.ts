@@ -974,7 +974,7 @@ _avo_invoke = function _avo_invoke(env: AvoEnv, eventId: string, hash: string, m
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-          "ac": "gdNmbx1Vsf5LAzMowIFR",
+          "ac": "nrfYG5woZYXvOlujKS3c",
           "br": "cl5J_Q1Y_Uf8vI3SJ-53n",
           "en": env,
           "ev": eventId,
@@ -1001,7 +1001,7 @@ _avo_invoke_meta = function _avo_invoke_meta(env: AvoEnv, type: string, messages
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-          "ac": "gdNmbx1Vsf5LAzMowIFR",
+          "ac": "nrfYG5woZYXvOlujKS3c",
           "br": "cl5J_Q1Y_Uf8vI3SJ-53n",
           "en": env,
           "ty": type,
@@ -1221,6 +1221,7 @@ export const ResourceType = {
   'LESSON_FILES': 'lesson files',
   'LESSON_GUIDE': 'lesson guide',
   'TEACHING_MATERIAL': 'teaching material',
+  'ADDITIONAL_MATERIALS': 'additional materials',
 } as const;
 export type ResourceTypeType = typeof ResourceType;
 export type ResourceTypeValueType = ResourceTypeType[keyof ResourceTypeType];
@@ -1666,7 +1667,7 @@ export function lessonPlanResourcesDownloaded(properties: LessonPlanResourcesDow
     let messages: AvoAssertMessage[] = [];
     // debug console in Avo
     if (!__AVO_NOOP__) {
-      _avo_invoke(__AVO_ENV__, "3JLctzBEI", "3f2b68e08881d2fab7f07cbfeb450c05e92aab326b4510456897d68a6519de78", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
+      _avo_invoke(__AVO_ENV__, "3JLctzBEI", "a66e2b1efe9f9610ee1587dbbff1b5648990f9e748765d2344bea8601a771dc7", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
     }
     InternalAvoLogger.logEventSent("Lesson Plan Resources Downloaded", eventProperties, userProperties);
     if (__WEB_DEBUGGER__) {
@@ -1677,7 +1678,7 @@ export function lessonPlanResourcesDownloaded(properties: LessonPlanResourcesDow
   if (!__AVO_NOOP__) {
     if (__INSPECTOR__ != null) {
       // @ts-ignore
-      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Lesson Plan Resources Downloaded", eventProperties, "3JLctzBEI", "3f2b68e08881d2fab7f07cbfeb450c05e92aab326b4510456897d68a6519de78");
+      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Lesson Plan Resources Downloaded", eventProperties, "3JLctzBEI", "a66e2b1efe9f9610ee1587dbbff1b5648990f9e748765d2344bea8601a771dc7");
     }
     // destination PostHogEU
     PostHogEU.logEvent("Lesson Plan Resources Downloaded", (Object as any).assign({}, eventProperties));
@@ -2319,7 +2320,7 @@ export function teachingMaterialDownloaded(properties: TeachingMaterialDownloade
     let messages: AvoAssertMessage[] = [];
     // debug console in Avo
     if (!__AVO_NOOP__) {
-      _avo_invoke(__AVO_ENV__, "6E7DzaaR8xj-jTMeAu7TS", "b8215c624cd45b7bcb77ed07a7a2b544d280c74ea38aaaeda19375cc8900270b", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
+      _avo_invoke(__AVO_ENV__, "6E7DzaaR8xj-jTMeAu7TS", "315414646afebde941e6059a32729c8871dfcfdbb850e8242b15b33bd35d7502", messages.map(m => Object.assign({}, {tag: m.tag, propertyId: m.propertyId, additionalProperties: m.additionalProperties, actualType: m.actualType})), 'event');
     }
     InternalAvoLogger.logEventSent("Teaching Material Downloaded", eventProperties, userProperties);
     if (__WEB_DEBUGGER__) {
@@ -2330,7 +2331,7 @@ export function teachingMaterialDownloaded(properties: TeachingMaterialDownloade
   if (!__AVO_NOOP__) {
     if (__INSPECTOR__ != null) {
       // @ts-ignore
-      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Teaching Material Downloaded", eventProperties, "6E7DzaaR8xj-jTMeAu7TS", "b8215c624cd45b7bcb77ed07a7a2b544d280c74ea38aaaeda19375cc8900270b");
+      __INSPECTOR__._avoFunctionTrackSchemaFromEvent("Teaching Material Downloaded", eventProperties, "6E7DzaaR8xj-jTMeAu7TS", "315414646afebde941e6059a32729c8871dfcfdbb850e8242b15b33bd35d7502");
     }
     // destination PostHogEU
     PostHogEU.logEvent("Teaching Material Downloaded", (Object as any).assign({}, eventProperties));
