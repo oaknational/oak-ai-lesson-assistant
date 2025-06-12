@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 
 import type { APIKeyAuthObject } from "../context";
-import { t } from "../trpc";
+import { publicProcedure, t } from "../trpc";
 
 const OAI_INTERNAL_API_KEY = process.env.OAI_INTERNAL_API_KEY;
 const OAI_API_USER_ID = process.env.OAI_API_USER_ID;
@@ -43,6 +43,6 @@ export const requireApiKeyMiddleware = t.middleware(async ({ next, ctx }) => {
   });
 });
 
-export const apiKeyProtectedProcedure = t.procedure.use(
+export const apiKeyProtectedProcedure = publicProcedure.use(
   requireApiKeyMiddleware,
 );

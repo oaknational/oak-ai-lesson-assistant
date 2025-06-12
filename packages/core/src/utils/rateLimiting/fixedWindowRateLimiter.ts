@@ -9,31 +9,32 @@ import type { RateLimitDuration, RateLimiter } from "./types";
 
 const log = aiLogger("rate-limiting");
 
-export interface SlidingWindowRateLimiterArgs {
+export interface FixedWindowRateLimiterArgs {
   prefix: string;
   limit: number;
   window: RateLimitDuration;
 }
 
 /**
- * Function to create a rate limiter with a given rate limit
+ * Create a rate limiter with a given limit that resets on a fixed window
  * @returns A function enforcing user rate limits
  * @example
- * const rateLimiter = slidingWindowRateLimiter({
+ * const rateLimiter = fixedWindowRateLimiter({
  *   prefix: "rateLimit:myRateLimit",
  *   limit: 100,
+ *   window: "30 d",
  * }),
  * rateLimiter.check(userId)
  */
-export const slidingWindowRateLimiter = ({
+export const fixedWindowRateLimiter = ({
   prefix,
   limit,
   window,
-}: SlidingWindowRateLimiterArgs): RateLimiter => {
+}: FixedWindowRateLimiterArgs): RateLimiter => {
   const rateLimiter = new Ratelimit({
     redis: kv,
     prefix,
-    limiter: Ratelimit.slidingWindow(limit, window),
+    limiter: Ratelimit.fixedWindow(limit, window),
   });
 
   return {

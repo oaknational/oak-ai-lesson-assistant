@@ -24,14 +24,20 @@ export class AilaCategorisation implements AilaCategorisationFeature {
     messages: Message[],
     content: AilaDocumentContent,
   ): Promise<T | undefined> {
-    const { title, subject, keyStage, topic } = content;
-    const input = messages.map((i) => i.content).join("\n\n");
-    const categorisationInput = [title, subject, keyStage, topic, input]
-      .filter((i) => i)
-      .join(" ");
+    return this._aila.tracing.span(
+      "categorise",
+      { op: "aila.step" },
+      async () => {
+        const { title, subject, keyStage, topic } = content;
+        const input = messages.map((i) => i.content).join("\n\n");
+        const categorisationInput = [title, subject, keyStage, topic, input]
+          .filter((i) => i)
+          .join(" ");
 
-    const result = await this.fetchCategorisedInput(categorisationInput);
-    return result as T | undefined;
+        const result = await this.fetchCategorisedInput(categorisationInput);
+        return result as T | undefined;
+      },
+    );
   }
 
   private async categoriseKeyStageAndSubject(
@@ -72,7 +78,7 @@ The object you return should have the following shape:
 GUESSING AN APPROPRIATE KEY STAGE, SUBJECT OR TOPIC WHEN NOT SPECIFIED
 Where not specified by the user, you should attempt to come up with a reasonable title, key stage, subject and topic based on the input from the user.
 For instance, "Plate tectonics" is obviously something covered in Geography and based on your knowledge of the UK education system I'm sure you know that this is often taught in Key Stage 2.
-Imagine that you are a teacher who is trying to categorise the input. 
+Imagine that you are a teacher who is trying to categorise the input.
 You should use your knowledge of the UK education system to make an educated guess about the key stage and subject that the input is relevant to.
 
 EXAMPLE ALIASES
@@ -81,7 +87,7 @@ Often, teachers will use shorthand to refer to a key stage or subject. For examp
 The teacher might also say "Year 10". You should be able to handle this and return the correct slug for the key stage based on the teaching years that are part of the Key Stages in the UK National Curriculum.
 For subjects, you should also be able to handle the plural form of the subject. For example, "Maths" should be categorised as "maths" and "Mathematics" should be categorised as "maths".
 "PSHE" is often used to refer to "Personal, Social, Health and Economic education" and maps to "psed" in our database.
-"PE" is often used to refer to "Physical Education". 
+"PE" is often used to refer to "Physical Education".
 "DT" is often used to refer to "Design and Technology".
 "RSHE" is often used as a synonym for "PSHE" and "PSED" and maps to "rshe-pshe" in our database.
 You should be able to handle any of these aliases and return the correct slug for the subject.
