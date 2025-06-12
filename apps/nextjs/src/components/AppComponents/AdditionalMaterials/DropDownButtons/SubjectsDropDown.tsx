@@ -16,9 +16,9 @@ export const SubjectsDropDown = ({
   setActiveDropdown,
 }: SubjectsDropDownProps) => {
   const subjectOptions = [
-    ...Object.values(subjectNameMap).filter(
-      (subject): subject is string => subject !== undefined,
-    ),
+    ...Object.values(subjectNameMap)
+      .filter((subject): subject is string => subject !== undefined)
+      .sort((a, b) => a.localeCompare(b)),
     "Other",
   ];
 
