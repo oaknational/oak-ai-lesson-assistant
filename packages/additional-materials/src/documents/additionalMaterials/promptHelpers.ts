@@ -141,24 +141,28 @@ export const getLessonDetails = (lessonPlan: LooseLessonPlan) => {
 };
 
 export const getKeystageFromYearGroup = (yearGroup: string) => {
-  const yearGroupToKeyStageMap: Record<string, string> = {
-    reception: "Early Years",
-    "1": "key-stage-1",
-    "2": "key-stage-1",
-    "3": "key-stage-2",
-    "4": "key-stage-2",
-    "5": "key-stage-2",
-    "6": "key-stage-2",
-    "7": "key-stage-3",
-    "8": "key-stage-3",
-    "9": "key-stage-3",
-    "10": "key-stage-4",
-    "11": "key-stage-4",
+  // Extract the numeric part of the year group
+  const numericYearGroup = parseInt(yearGroup.replace(/[^0-9]/g, ""), 10);
+
+  const yearGroupToKeyStageMap: Record<number, string> = {
+    1: "key-stage-1",
+    2: "key-stage-1",
+    3: "key-stage-2",
+    4: "key-stage-2",
+    5: "key-stage-2",
+    6: "key-stage-2",
+    7: "key-stage-3",
+    8: "key-stage-3",
+    9: "key-stage-3",
+    10: "key-stage-4",
+    11: "key-stage-4",
+    12: "key-stage-5",
+    13: "key-stage-5",
   };
 
-  const keyStage = yearGroupToKeyStageMap[yearGroup];
+  const keyStage = yearGroupToKeyStageMap[numericYearGroup];
   if (!keyStage) {
-    throw new Error(`Invalid year group: ${yearGroup}`);
+    return "higher-education";
   }
 
   return keyStage;

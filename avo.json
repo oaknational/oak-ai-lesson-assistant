@@ -7,8 +7,8 @@
     "name": "Oak's Tracking Plan"
   },
   "branch": {
-    "id": "master",
-    "name": "main"
+    "id": "cl5J_Q1Y_Uf8vI3SJ-53n",
+    "name": "teaching-materials"
   },
   "sources": [
     {
@@ -16,9 +16,9 @@
       "name": "Aila Beta",
       "path": "apps/nextjs/src/lib/avo/Avo.ts",
       "interfacePath": "apps/nextjs/src/lib/avo/Avo.ts",
-      "actionId": "IK4lfTOvPGWHmk0ieLNw",
-      "branchId": "master",
-      "updatedAt": "2025-03-26T11:53:51.056Z"
+      "actionId": "gdNmbx1Vsf5LAzMowIFR",
+      "branchId": "cl5J_Q1Y_Uf8vI3SJ-53n",
+      "updatedAt": "2025-06-12T08:10:04.325Z"
     }
   ],
   "force": false

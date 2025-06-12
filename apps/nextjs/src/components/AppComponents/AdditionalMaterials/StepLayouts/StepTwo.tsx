@@ -6,6 +6,7 @@ import {
   OakPrimaryButton,
   OakTextInput,
 } from "@oaknational/oak-components";
+import invariant from "tiny-invariant";
 
 import {
   useResourcesActions,
@@ -26,7 +27,6 @@ import { handleDialogSelection } from "./helpers";
 type SubmitLessonPlanParams = {
   title: string;
   subject: string;
-  keyStage: string;
   year: string;
 };
 
@@ -44,14 +44,6 @@ const StepTwo = ({
   const error = useResourcesStore((state) => state.error);
   const { setDialogWindow } = useDialog();
 
-  useEffect(() => {
-    // Reset the form when the component is mounted
-    // This should be removed once we are persisting in the database and the flow is based on an ID
-    setSubject(null);
-    setTitle(null);
-    setYear(null);
-  }, [setSubject, setTitle, setYear]);
-
   handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
 
   return (
@@ -59,13 +51,13 @@ const StepTwo = ({
       <OakFlex $flexDirection={"column"} $gap={"space-between-m"}>
         <OakFlex $flexDirection={"row"} $gap={"space-between-m"}>
           <YearGroupDropDown
-            selectedYear={year || ""}
+            selectedYear={year}
             setSelectedYear={setYear}
             activeDropdown={activeDropdown}
             setActiveDropdown={setActiveDropdown}
           />
           <SubjectsDropDown
-            selectedSubject={subject || ""}
+            selectedSubject={subject}
             setSelectedSubject={setSubject}
             activeDropdown={activeDropdown}
             setActiveDropdown={setActiveDropdown}
@@ -74,12 +66,13 @@ const StepTwo = ({
         <OakTextInput
           onChange={(value) => setTitle(value.target.value)}
           placeholder="Type a lesson title or learning outcome"
+          value={title ?? ""}
         />
       </OakFlex>
 
       <ResourcesFooter>
         <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <button onClick={() => setStepNumber(0)}>
+          <button onClick={() => setStepNumber(0, "back_a_step_button")}>
             <OakFlex $alignItems="center" $gap="all-spacing-2">
               <OakIcon iconName="chevron-left" />
               Back
@@ -87,14 +80,17 @@ const StepTwo = ({
           </button>
 
           <OakPrimaryButton
-            onClick={() =>
+            onClick={() => {
+              invariant(
+                title && subject && year,
+                "Title, subject, and year must be provided to generate lesson plan",
+              );
               void handleSubmitLessonPlan({
-                title: title || "",
-                subject: subject || "",
-                keyStage: "",
-                year: year || "",
-              })
-            }
+                title: title,
+                subject: subject,
+                year: year,
+              });
+            }}
             iconName="arrow-right"
             isTrailingIcon={true}
             disabled={!title || !subject || !year}

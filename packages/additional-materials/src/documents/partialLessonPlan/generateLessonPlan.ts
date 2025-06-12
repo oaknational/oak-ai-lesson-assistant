@@ -13,13 +13,11 @@ import { type PartialLessonContextSchemaType, lessonFieldKeys } from "./schema";
 export const generatePartialLessonPlanObject = async ({
   parsedInput,
   provider = "openai",
-  // lessonParts,
 }: {
   provider?: ProviderKey;
   parsedInput: {
     context: PartialLessonContextSchemaType;
   };
-  // lessonParts: PartialLessonPlanFieldKeys[];
 }) => {
   const { context } = parsedInput;
 

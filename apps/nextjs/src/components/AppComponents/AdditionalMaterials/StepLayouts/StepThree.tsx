@@ -143,7 +143,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
 
       <ResourcesFooter>
         <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <button onClick={() => setStepNumber(1)}>
+          <button onClick={() => setStepNumber(1, "back_a_step_button")}>
             <OakFlex $alignItems="center" $gap="all-spacing-2">
               <OakIcon iconName="chevron-left" />
               Back
