@@ -1,17 +1,11 @@
 import type {
   subjectSlugs,
-  subjects,
   yearSlugs,
 } from "@oaknational/oak-curriculum-schema";
 import { type ZodType, type z } from "zod";
 
 import type { PartialLessonPlanFieldKeyArray } from "../partialLessonPlan/schema";
-import {
-  type Action,
-  type AdditionalMaterialType,
-  type ContextByMaterialType,
-  additionalMaterialsConfigMap,
-} from "./configSchema";
+import { additionalMaterialsConfigMap } from "./configSchema";
 import {
   type AllowedReadingAgeRefinement,
   readingAgeRefinement,

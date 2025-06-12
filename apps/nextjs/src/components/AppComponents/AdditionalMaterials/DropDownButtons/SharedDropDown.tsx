@@ -80,10 +80,7 @@ export const SharedDropDown = ({
               {errorMessage && <p className="text-red-500">{errorMessage}</p>}
               <OakSmallSecondaryButton
                 onClick={() => {
-                  if (
-                    dropdownType === "years" &&
-                    !/^[0-9]*$/.test(customValue)
-                  ) {
+                  if (dropdownType === "years" && !/^\d*$/.test(customValue)) {
                     setErrorMessage("Please enter a valid number.");
                     return;
                   }

@@ -185,7 +185,7 @@ export const handleSubmitLessonPlan =
         yearGroupSlug: yearSlugMap[formState.year] ?? formState.year,
         lessonPlanTitle: result.lesson?.title,
         moderatedContentType: getModerationTypes(
-          result.moderation && result.moderation.categories
+          result.moderation?.categories
             ? { ...result.moderation, type: "moderation" as const }
             : undefined,
         ),

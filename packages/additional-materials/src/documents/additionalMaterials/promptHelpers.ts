@@ -142,7 +142,7 @@ export const getLessonDetails = (lessonPlan: LooseLessonPlan) => {
 
 export const getKeystageFromYearGroup = (yearGroup: string) => {
   // Extract the numeric part of the year group
-  const numericYearGroup = parseInt(yearGroup.replace(/[^0-9]/g, ""), 10);
+  const numericYearGroup = parseInt(yearGroup.replace(/\D/g, ""), 10);
 
   const yearGroupToKeyStageMap: Record<number, string> = {
     1: "key-stage-1",
