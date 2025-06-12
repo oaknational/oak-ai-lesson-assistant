@@ -54,7 +54,7 @@ export const resourceTypesConfig = {
     // Frontend config
     id: "additional-glossary",
     displayName: "Glossary",
-    description: "Additional lesson vocabulary with pupil friendly definitions",
+    description: "Lesson vocabulary with pupil friendly definitions.",
     refinementOptions: readingAgeRefinementOptions,
     isAvailable: true,
     lessonParts: [
@@ -72,7 +72,7 @@ export const resourceTypesConfig = {
     // Frontend config
     id: "additional-comprehension",
     displayName: "Comprehension tasks",
-    description: "Comprehension tasks which can be adapted for pupils",
+    description: "Comprehension text with accompanying questions.",
     refinementOptions: readingAgeRefinementOptions,
     isAvailable: true,
     lessonParts: [
@@ -90,7 +90,7 @@ export const resourceTypesConfig = {
     // Frontend config
     id: "additional-starter-quiz",
     displayName: "Starter quiz",
-    description: "A multiple-choice quiz to assess pupils' prior knowledge",
+    description: "Multiple choice questions to check pupils' prior knowledge.",
     refinementOptions: readingAgeRefinementOptions,
     isAvailable: true,
     lessonParts: [
@@ -110,7 +110,7 @@ export const resourceTypesConfig = {
     id: "additional-exit-quiz",
     displayName: "Exit quiz",
     description:
-      "A multiple-choice quiz to assess pupils' learning from the lesson",
+      "Multiple choice questions to check what pupils have learnt in the lesson.",
     refinementOptions: readingAgeRefinementOptions,
     isAvailable: true,
     lessonParts: [

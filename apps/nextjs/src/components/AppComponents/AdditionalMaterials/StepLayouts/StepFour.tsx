@@ -39,11 +39,10 @@ import {
 import { trpc } from "@/utils/trpc";
 
 import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
-import { ExitQuiz } from "../../AdditionalMaterials/ExitQuiz";
 import { Glossary } from "../../AdditionalMaterials/Glossary";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import InlineButton from "../InlineButton";
-import { Quiz, StarterQuiz } from "../Quiz";
+import { Quiz } from "../Quiz";
 import ResourcesFooter from "../ResourcesFooter";
 import StepLoadingScreen from "../StepLoadingScreen";
 
@@ -145,7 +144,12 @@ const StepFour = () => {
   };
   // if loading, show loading
   if (isResourcesLoading || isResourceRefining) {
-    return <StepLoadingScreen docTypeName={resourceType?.displayName} />;
+    return (
+      <StepLoadingScreen
+        docTypeName={resourceType?.displayName}
+        source="teachingMaterial"
+      />
+    );
   }
 
   return (
@@ -301,7 +305,7 @@ const StepFour = () => {
                       isDownloading
                     }
                   >
-                    Adapt
+                    Modify
                   </OakSecondaryButton>
                   <OakPrimaryButton
                     onClick={() => setStepNumber(0)}

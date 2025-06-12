@@ -8,7 +8,11 @@ import { aiLogger } from "@oakai/logger";
 import {
   OakBox,
   OakFlex,
+  OakHeading,
   OakIcon,
+  OakLI,
+  OakLink,
+  OakOL,
   OakP,
   OakPrimaryButton,
 } from "@oaknational/oak-components";
@@ -83,7 +87,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   const { setStepNumber } = useResourcesActions();
 
   if (isLoadingLessonPlan) {
-    return <StepLoadingScreen />;
+    return <StepLoadingScreen source="lessonPlan" docTypeName={docTypeName} />;
   }
   if (threatDetected) {
     setDialogWindow("additional-materials-threat-detected");
@@ -97,44 +101,36 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   return (
     <>
       <OakFlex $flexDirection="column">
-        <OakFlex $flexDirection="column" $mb="space-between-m">
-          <OakP $font={"heading-6"}>Task details</OakP>
-          {hasModeration && <ModerationMessage />}
+        <OakFlex $flexDirection="column" $mb="space-between-xxl">
+          <OakHeading $mb={"space-between-xs"} tag="h2" $font={"heading-6"}>
+            Learning outcome
+          </OakHeading>
+          <OakP $mb={"space-between-m"} $font="body-2">
+            {pageData.lessonPlan.learningOutcome}
+          </OakP>
 
-          <OakBox $pv="inner-padding-m">
-            <OakP $font="body-2">
-              {toTitleCase(docTypeName ?? "")}, {`Year ${year}`},{" "}
-              {pageData.lessonPlan.subject}, {pageData.lessonPlan.title}
-            </OakP>
-          </OakBox>
+          <OakP $font="body-2" $mb={"space-between-m"}>
+            This lesson would include:
+          </OakP>
+
+          <OakOL>
+            {pageData.lessonPlan.keyLearningPoints?.map((point, index) => (
+              <OakLI $font="body-2" key={index}>
+                {point}
+              </OakLI>
+            ))}
+          </OakOL>
+
+          {hasModeration && <ModerationMessage />}
         </OakFlex>
 
-        {mapLessonPlanSections(pageData.lessonPlan).map((section) => {
-          const title = camelCaseToSentenceCase(section.key) ?? "";
-          if (
-            resourceType?.lessonParts &&
-            isValidLessonPart(section.key) &&
-            resourceType.lessonParts.includes(section.key)
-          ) {
-            return (
-              <OakFlex
-                key={section.key}
-                $flexDirection={"column"}
-                $mb="space-between-m"
-              >
-                <OakP $font={"heading-6"}>{title}</OakP>
-                <OakFlex $pv="inner-padding-s">
-                  <OakFlex $flexDirection="column">
-                    <MemoizedReactMarkdownWithStyles
-                      markdown={`${sectionToMarkdown(section.key, section.data)}`}
-                    />
-                  </OakFlex>
-                </OakFlex>
-              </OakFlex>
-            );
-          }
-          return null;
-        })}
+        <OakP $font="body-2">
+          {`If these details look right for your lesson, create your ${docTypeName}. If not return to the `}
+          <OakLink color="black" onClick={() => setStepNumber(1)}>
+            previous page
+          </OakLink>
+          {` and tell Aila what your lesson should include.`}
+        </OakP>
       </OakFlex>
 
       <ResourcesFooter>
@@ -142,7 +138,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
           <button onClick={() => setStepNumber(1)}>
             <OakFlex $alignItems="center" $gap="all-spacing-2">
               <OakIcon iconName="chevron-left" />
-              Back
+              Back a step
             </OakFlex>
           </button>
 
@@ -160,9 +156,5 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
     </>
   );
 };
-
-function toTitleCase(str: string) {
-  return str.replace(/\b\w/g, (char) => char.toUpperCase());
-}
 
 export default StepThree;

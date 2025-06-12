@@ -139,20 +139,19 @@ export function AilaStart({
           $gap="space-between-l"
           $ph={["inner-padding-l", "inner-padding-none"]}
         >
-          <OakFlex $flexDirection="column" $gap="all-spacing-2">
-            <OakHeading tag="h1" $font="heading-5">
-              Hello{userFirstName ? ", " + userFirstName : ""}
-            </OakHeading>
-            <OakP>
-              I&apos;m Aila, Oak&apos;s AI lesson assistant. Tell me what you
-              want to create.
-            </OakP>
-          </OakFlex>
           <OakFlex $flexDirection={["column", "row"]} $gap="space-between-l">
-            <Card>
+            <OakFlex
+              $background={"bg-primary"}
+              $flexDirection="column"
+              $gap="all-spacing-2"
+              $pa="inner-padding-xl2"
+            >
               <OakFlex $flexDirection="column" $gap="all-spacing-2">
-                <OakP $font="heading-5">Create an adaptable lesson</OakP>
-                <OakP>It takes 5 minutes to access these downloads.</OakP>
+                <OakP $font="heading-5">Create a lesson with AI</OakP>
+                <OakP $font="body-2">
+                  Aila will guide you step-by-step to create and download a
+                  tailor-made lesson, including:
+                </OakP>
               </OakFlex>
               <EmptyScreenAccordion />
               <OakPrimaryButton
@@ -163,10 +162,10 @@ export function AilaStart({
               >
                 Create lesson
               </OakPrimaryButton>
-            </Card>
+            </OakFlex>
             <Card>
               <OakFlex $flexDirection="column" $gap="all-spacing-2">
-                <OakP $font="heading-5">Create individual resources</OakP>
+                <OakP $font="heading-5">Create teaching materials with AI</OakP>
                 <OakP>
                   Create glossaries, quizzes, comprehension tasks to enhance
                   existing lessons, provide support for individual SEND
@@ -179,7 +178,7 @@ export function AilaStart({
                 iconName="arrow-right"
                 isTrailingIcon={true}
               >
-                Create resources
+                Create teaching materials
               </OakPrimaryButton>
             </Card>
           </OakFlex>

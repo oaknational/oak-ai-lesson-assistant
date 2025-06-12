@@ -87,7 +87,7 @@ const StepOne = () => {
             {/* Todo: Link this up to the previous step when for launch */}
             <OakFlex $alignItems="center" $gap="all-spacing-2">
               <OakIcon iconName="chevron-left" />
-              Back
+              Back a step
             </OakFlex>
           </button>
           <OakPrimaryButton
@@ -96,7 +96,7 @@ const StepOne = () => {
             isTrailingIcon={true}
             disabled={!docType}
           >
-            Continue
+            Next, provide lesson details
           </OakPrimaryButton>
         </OakFlex>
       </ResourcesFooter>

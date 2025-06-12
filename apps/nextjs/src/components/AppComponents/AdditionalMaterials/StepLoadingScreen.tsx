@@ -10,8 +10,10 @@ import {
 
 const StepLoadingScreen = ({
   docTypeName,
+  source,
 }: {
   docTypeName?: string | null;
+  source: "teachingMaterial" | "lessonPlan";
 }) => {
   return (
     <OakBox
@@ -30,7 +32,7 @@ const StepLoadingScreen = ({
         $height="100%"
         $width="100%"
       >
-        {docTypeName === undefined ? (
+        {source === "lessonPlan" ? (
           <>
             <OakP $font="heading-6">Generating lesson details</OakP>
             <OakP $mb={"space-between-m"} $font="body-2">
