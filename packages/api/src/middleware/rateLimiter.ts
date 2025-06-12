@@ -5,7 +5,7 @@ import type { RateLimiter } from "@oakai/core/src/utils/rateLimiting/types";
 
 import { TRPCError } from "@trpc/server";
 
-import { t } from "../trpc";
+import { publicProcedure, t } from "../trpc";
 import { isAuthedMiddleware } from "./auth";
 
 /**
@@ -58,12 +58,12 @@ function createRateLimiterMiddleware(rateLimiter: RateLimiter) {
 
 const rateLimiter = rateLimits.generations.standard;
 
-export const userBasedRateLimitProcedure = t.procedure
+export const userBasedRateLimitProcedure = publicProcedure
   .use(isAuthedMiddleware)
   .use(createRateLimiterMiddleware(rateLimiter));
 
 const additionalMaterialRateLimiter = rateLimits.additionalMaterial.standard;
 
-export const additionalMaterialUserBasedRateLimitProcedure = t.procedure
+export const additionalMaterialUserBasedRateLimitProcedure = publicProcedure
   .use(isAuthedMiddleware)
   .use(createRateLimiterMiddleware(additionalMaterialRateLimiter));

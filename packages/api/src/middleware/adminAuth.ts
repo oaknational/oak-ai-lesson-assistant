@@ -4,7 +4,7 @@ import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from "@trpc/server";
 
-import { t } from "../trpc";
+import { publicProcedure, t } from "../trpc";
 
 const log = aiLogger("auth");
 
@@ -43,4 +43,4 @@ const isAdminMiddleware = t.middleware(async ({ next, ctx }) => {
     },
   });
 });
-export const adminProcedure = t.procedure.use(isAdminMiddleware);
+export const adminProcedure = publicProcedure.use(isAdminMiddleware);
