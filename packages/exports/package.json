@@ -16,6 +16,7 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
+    "@oakai/additional-materials": "*",
     "@oakai/logger": "*",
     "typescript": "5.8.2"
   }

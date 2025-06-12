@@ -98,14 +98,20 @@ const updateStoreWithLessonPlan = (
  * Updates the material session with the lesson ID
  */
 const updateMaterialSessionWithLessonId = async (
-  resourceId: string,
+  resourceId: string | null,
   lessonId: string,
-  updateSessionMutateAsync: UseMutateAsyncFunction<
+  updateSessionMutateAsync?: UseMutateAsyncFunction<
     { success: boolean },
     Error,
     { resourceId: string; lessonId: string }
   >,
 ) => {
+  invariant(resourceId, "Resource ID must be defined");
+  invariant(
+    updateSessionMutateAsync,
+    "Update session mutate function must be defined",
+  );
+
   try {
     await updateSessionMutateAsync({ resourceId, lessonId });
     log.info("Material session updated with lesson ID", {
