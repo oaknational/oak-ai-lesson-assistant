@@ -26,6 +26,7 @@ import {
   docTypeSelector,
   pageDataSelector,
   stepNumberSelector,
+  yearSelector,
 } from "@/stores/resourcesStore/selectors";
 
 interface AdditionalMaterialsUserProps {
@@ -42,7 +43,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
-
+  const year = useResourcesStore(yearSelector);
   // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName || null;
@@ -57,30 +58,28 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
 
   const titleAreaContent = {
     0: {
-      title: "What type of resource do you need?",
+      title: "Select teaching material",
       subTitle: (
         <OakP $font="body-2" $color="grey70">
-          Choose the type of additional material you'd like to create for your
-          lesson.
+          Choose the downloadable resource you'd like to create with Aila for
+          your lesson.
         </OakP>
       ),
     },
     1: {
-      title: "What do you want to teach?",
+      title: "What are you teaching?",
       subTitle: (
         <OakP $font="body-2" $color="grey70">
-          These details will help Aila create a brief lesson overview, to
-          provide context for your selected resource.
+          The more detail you give, the better suited your resource will be for
+          your lesson.
         </OakP>
       ),
     },
     2: {
-      title: "Lesson overview",
+      title: pageData.lessonPlan.title,
       subTitle: (
         <OakP $font="body-2" $color="grey70">
-          This lesson overview will provide context for your{" "}
-          {<OakSpan $font="body-2-bold">{docTypeName}</OakSpan>}. If these
-          details are not quite right, try editing the previous page.
+          {`Year ${year}`} • {pageData.lessonPlan.subject}
         </OakP>
       ),
     },
@@ -88,8 +87,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
       title: pageData.lessonPlan.title,
       subTitle: (
         <OakP $font="body-2" $color="grey70">
-          {kebabCaseToSentenceCase(pageData.lessonPlan.keyStage ?? "")} •{" "}
-          {pageData.lessonPlan.subject}
+          {`Year ${year}`} • {pageData.lessonPlan.subject}
         </OakP>
       ),
     },
