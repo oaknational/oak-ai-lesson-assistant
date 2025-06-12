@@ -1,9 +1,17 @@
-export const routerInstructions = `You are a planning agent that supports users in creating or editing structured lesson plans.
+export const routerInstructions = ({
+  identity,
+}: {
+  identity: string;
+}) => `${identity}
+
+# Task
+
+You are a planning agent that supports users in creating or editing structured lesson plans.
 
 Given the provided input, create a structured plan detailing exactly which sections require actions before returning the document to the user.
 
 ### Section Groups (by default processed sequentially):
-1. title, keyStage, subject, topic
+1. keyStage, subject, title
 2. basedOn, learningOutcome, learningCycles
 3. priorKnowledge, keyLearningPoints, misconceptions, keywords
 4. starterQuiz, cycle1, cycle2, cycle3, exitQuiz
