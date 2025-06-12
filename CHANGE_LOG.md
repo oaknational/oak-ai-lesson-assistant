@@ -1,3 +1,24 @@
+# [1.41.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.40.1...v1.41.0) (2025-06-12)
+
+
+### Bug Fixes
+
+* continue button case inconsistency and regenerate action bugs (AI-1261) ([#704](https://github.com/oaknational/oak-ai-lesson-assistant/issues/704)) ([f9a843f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f9a843ff5cff70d150696799c0e9c2a5f005f9ca))
+* remove helicone threat detection from moderation calls ([#683](https://github.com/oaknational/oak-ai-lesson-assistant/issues/683)) ([fa37fb9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/fa37fb984cbba22d91f11553a4115623a1f971d1))
+
+
+### Features
+
+* improvements to glossary prompt and download file names AI-1264 ([#705](https://github.com/oaknational/oak-ai-lesson-assistant/issues/705)) ([edde171](https://github.com/oaknational/oak-ai-lesson-assistant/commit/edde171939cbf02dff5109abf6fb2b7188dfc786))
+* starter and exit quiz in slides ([#643](https://github.com/oaknational/oak-ai-lesson-assistant/issues/643)) ([b6a45fc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b6a45fc11b1f859db861b1ec6ad476501c4bf1a1))
+* title, subject, key-stage, topic agents, and error handling [AI-1217] ([#684](https://github.com/oaknational/oak-ai-lesson-assistant/issues/684)) ([e802922](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e802922e346eb1716092075c5f6638c8cc7c8be5))
+* use fixed window rate limiting for demo users ([#699](https://github.com/oaknational/oak-ai-lesson-assistant/issues/699)) ([7c6cbc2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7c6cbc2ffd83ed526ef36fad3770366577a18e4f))
+
+
+### Performance Improvements
+
+* add Sentry Tracing for Performance Monitoring ([#708](https://github.com/oaknational/oak-ai-lesson-assistant/issues/708)) ([d007aac](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d007aac3af01722b50224620851019270d89f465))
+
 ## [1.40.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.40.0...v1.40.1) (2025-06-05)
 
 
