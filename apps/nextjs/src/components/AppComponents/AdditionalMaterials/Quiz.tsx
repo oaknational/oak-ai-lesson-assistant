@@ -4,15 +4,20 @@ import type { StarterQuiz as StarterQuizType } from "@oakai/additional-materials
 
 import { OakBox, OakFlex, OakP, OakSpan } from "@oaknational/oak-components";
 
-type StarterQuizProps = {
+import { toSentenceCase } from "@/utils/toSentenceCase";
+
+type QuizProps = {
   action: string;
   generation: StarterQuizType;
+  quizType: "starter" | "exit";
 };
 
-export const StarterQuiz = ({ action, generation }: StarterQuizProps) => {
+export const Quiz = ({ action, generation, quizType }: QuizProps) => {
   return (
     <OakFlex $flexDirection={"column"} $width={"100%"}>
-      <OakP $font="heading-6">Starter Quiz</OakP>
+      <OakP $font="heading-6">
+        {quizType === "starter" ? "Starter Quiz" : "Exit Quiz"}
+      </OakP>
       <OakP $mb="space-between-s">
         {generation.year} • {generation.subject} • {generation.title}
       </OakP>
@@ -38,7 +43,7 @@ export const StarterQuiz = ({ action, generation }: StarterQuizProps) => {
                 </OakSpan>
                 <OakFlex $flexDirection="column">
                   <OakP $font="body-3">
-                    {option.text}
+                    {toSentenceCase(option.text)}
                     {option.isCorrect && <OakSpan $color="mint"> ✓</OakSpan>}
                   </OakP>
                 </OakFlex>

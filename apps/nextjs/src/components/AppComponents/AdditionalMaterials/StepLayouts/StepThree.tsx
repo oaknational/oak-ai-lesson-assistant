@@ -6,7 +6,6 @@ import {
   camelCaseToSentenceCase,
   kebabCaseToSentenceCase,
 } from "@oakai/core/src/utils/camelCaseConversion";
-import { aiLogger } from "@oakai/logger";
 
 import {
   OakBox,
@@ -80,7 +79,12 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   const { setStepNumber } = useResourcesActions();
 
   if (isLoadingLessonPlan) {
-    return <StepLoadingScreen nameOfWhatIsBuilding="lesson plan" />;
+    return (
+      <StepLoadingScreen
+        docTypeName={docTypeName}
+        source={"teachingMaterial"}
+      />
+    );
   }
   if (threatDetected) {
     setDialogWindow("additional-materials-threat-detected");
@@ -135,7 +139,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
 
       <ResourcesFooter>
         <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <button onClick={() => setStepNumber(1, "back_a_step_button")}>
+          <button onClick={() => setStepNumber(1)}>
             <OakFlex $alignItems="center" $gap="all-spacing-2">
               <OakIcon iconName="chevron-left" />
               Back

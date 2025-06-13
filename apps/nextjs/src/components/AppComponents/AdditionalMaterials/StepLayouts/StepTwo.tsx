@@ -82,7 +82,7 @@ const StepTwo = ({
           <button onClick={() => setStepNumber(0, "back_a_step_button")}>
             <OakFlex $alignItems="center" $gap="all-spacing-2">
               <OakIcon iconName="chevron-left" />
-              Back
+              Back a step
             </OakFlex>
           </button>
 
@@ -105,7 +105,7 @@ const StepTwo = ({
             iconName="arrow-right"
             isTrailingIcon={true}
           >
-            Generate overview
+            Next, review lesson details
           </OakPrimaryButton>
         </OakFlex>
       </ResourcesFooter>
