@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+
 import {
   OakFlex,
   OakIcon,
@@ -18,7 +20,6 @@ import {
   yearSelector,
 } from "@/stores/resourcesStore/selectors";
 
-import { useDialog } from "../../DialogContext";
 import FormValidationWarning from "../../FormValidationWarning";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
@@ -40,9 +41,15 @@ const StepTwo = ({
   const subject = useResourcesStore(subjectSelector);
   const title = useResourcesStore(titleSelector);
   const year = useResourcesStore(yearSelector);
+  const docType = useResourcesStore((state) => state.docType);
   const activeDropdown = useResourcesStore(activeDropdownSelector);
 
   const [showValidationError, setShowValidationError] = useState("");
+
+  const resourceType = docType ? getResourceType(docType) : null;
+  const docTypeName = resourceType
+    ? resourceType.displayName.toLowerCase()
+    : null;
 
   return (
     <>
@@ -84,7 +91,7 @@ const StepTwo = ({
             onClick={() => {
               if (!title || !subject || !year) {
                 setShowValidationError(
-                  "Please provide a year group, subject and lesson title.",
+                  `Please provide a year group, subject and lesson details, so that Aila has the right context for your ${docTypeName}.`,
                 );
               } else if (title.length < 10) {
                 setShowValidationError(`Please provide a longer lesson title.`);

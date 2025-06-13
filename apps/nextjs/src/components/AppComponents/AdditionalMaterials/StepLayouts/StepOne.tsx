@@ -11,7 +11,6 @@ import {
   OakRadioGroup,
   OakSecondaryButton,
 } from "@oaknational/oak-components";
-import invariant from "tiny-invariant";
 
 import {
   useResourcesActions,
@@ -99,7 +98,11 @@ const StepOne = ({
         <OakFlex $justifyContent="flex-end" $width={"100%"}>
           <OakPrimaryButton
             onClick={() => {
-              invariant(docType, "Document type must be selected");
+              if (!docType) {
+                setShowValidationError("Please select a document type.");
+                return;
+              }
+
               handleCreateSession({ documentType: docType });
             }}
             iconName="arrow-right"
