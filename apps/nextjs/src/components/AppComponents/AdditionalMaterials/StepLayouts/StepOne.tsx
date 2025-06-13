@@ -29,7 +29,8 @@ const StepOne = ({
 }: {
   handleCreateSession: ({ documentType }: { documentType: string }) => void;
 }) => {
-  const { setDocType, setGeneration } = useResourcesActions();
+  const { setDocType, setGeneration, setSubject, setTitle, setYear } =
+    useResourcesActions();
   const docType = useResourcesStore(docTypeSelector);
   const error = useResourcesStore((state) => state.error);
   const [showValidationError, setShowValidationError] = useState("");
@@ -39,7 +40,10 @@ const StepOne = ({
     // Reset the document type when the component is mounted
     setDocType(null);
     setGeneration(null);
-  }, [setDocType, setGeneration]);
+    setSubject(null);
+    setTitle(null);
+    setYear(null);
+  }, [setDocType, setGeneration, setSubject, setTitle, setYear]);
 
   const resourceTypes = getResourceTypes().filter(
     (resourceType) => resourceType.isAvailable,

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   OakFlex,
@@ -22,7 +22,6 @@ import { useDialog } from "../../DialogContext";
 import FormValidationWarning from "../../FormValidationWarning";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
-import { handleDialogSelection } from "./helpers";
 
 type SubmitLessonPlanParams = {
   title: string;
@@ -42,31 +41,21 @@ const StepTwo = ({
   const title = useResourcesStore(titleSelector);
   const year = useResourcesStore(yearSelector);
   const activeDropdown = useResourcesStore(activeDropdownSelector);
-  const error = useResourcesStore((state) => state.error);
-  const { setDialogWindow } = useDialog();
-  const [validationError, setValidationError] = useState("");
-  useEffect(() => {
-    // Reset the form when the component is mounted
-    // This should be removed once we are persisting in the database and the flow is based on an ID
-    setSubject(null);
-    setTitle(null);
-    setYear(null);
-  }, [setSubject, setTitle, setYear]);
 
-  handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
+  const [showValidationError, setShowValidationError] = useState("");
 
   return (
     <>
       <OakFlex $flexDirection={"column"} $gap={"space-between-m"}>
         <OakFlex $flexDirection={"row"} $gap={"space-between-m"}>
           <YearGroupDropDown
-            selectedYear={year || ""}
+            selectedYear={year ?? ""}
             setSelectedYear={setYear}
             activeDropdown={activeDropdown}
             setActiveDropdown={setActiveDropdown}
           />
           <SubjectsDropDown
-            selectedSubject={subject || ""}
+            selectedSubject={subject ?? ""}
             setSelectedSubject={setSubject}
             activeDropdown={activeDropdown}
             setActiveDropdown={setActiveDropdown}
@@ -75,6 +64,7 @@ const StepTwo = ({
         <OakTextInput
           onChange={(value) => setTitle(value.target.value)}
           placeholder="Type a lesson title or learning outcome"
+          value={title ?? ""}
         />
         {!!showValidationError && (
           <FormValidationWarning errorMessage={showValidationError} />
