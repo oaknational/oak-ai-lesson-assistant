@@ -44,7 +44,7 @@ const StepTwo = ({
   const activeDropdown = useResourcesStore(activeDropdownSelector);
   const error = useResourcesStore((state) => state.error);
   const { setDialogWindow } = useDialog();
-  const [showValidationError, setShowValidationError] = useState("");
+  const [validationError, setValidationError] = useState("");
   useEffect(() => {
     // Reset the form when the component is mounted
     // This should be removed once we are persisting in the database and the flow is based on an ID
