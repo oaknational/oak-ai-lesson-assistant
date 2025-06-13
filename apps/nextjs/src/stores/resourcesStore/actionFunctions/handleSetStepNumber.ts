@@ -28,7 +28,6 @@ export const handleSetStepNumber =
     } = get();
 
     log.info("Setting step number", { step, currentStep });
-    console.log(formState, "formState in handleSetStepNumber");
 
     if (
       (componentType === "continue_button" ||

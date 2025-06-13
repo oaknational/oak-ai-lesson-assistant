@@ -8,9 +8,10 @@ import { aiLogger } from "@oakai/logger";
 import { useUser } from "@clerk/nextjs";
 import {
   OakFlex,
-  OakHeading,
+  OakLI,
   OakP,
   OakPrimaryButton,
+  OakUL,
 } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 import * as Sentry from "@sentry/nextjs";
@@ -36,6 +37,15 @@ export const exampleMessages = [
   },
 ];
 
+// default styling is being overridden here by tailwind, we can remove this when re removing tailwind
+const StyledUL = styled(OakUL)`
+  list-style-type: disc;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  /* margin-left: 40px; */
+  padding-left: 20px;
+`;
+
 type AilaStartProps = {
   keyStage?: string;
   subject?: string;
@@ -50,7 +60,7 @@ export function AilaStart({
   searchExpression,
 }: Readonly<AilaStartProps>) {
   const { user } = useUser();
-  const userFirstName = user?.firstName;
+
   const { trackEvent } = useAnalytics();
   const [input, setInput] = useState("");
   const router = useRouter();
@@ -165,14 +175,17 @@ export function AilaStart({
               <OakFlex $flexDirection="column" $gap="all-spacing-2">
                 <OakP $font="heading-5">Create teaching materials with AI</OakP>
                 <OakP>
-                  Create glossaries, quizzes, comprehension tasks to enhance
-                  existing lessons, provide support for individual SEND
-                  learners, create stretch tasks and more.
+                  Enhance lessons with a range of teaching materials, including:
                 </OakP>
+                <StyledUL>
+                  <OakLI $mv={"space-between-xs"}>Glossaries</OakLI>
+                  <OakLI $mv={"space-between-xs"}>Comprehension tasks</OakLI>
+                  <OakLI $mt={"space-between-xs"}>Quizzes</OakLI>
+                </StyledUL>
               </OakFlex>
               <OakPrimaryButton
                 element={Link}
-                href="/aila/resources"
+                href="/aila/teaching-materials"
                 iconName="arrow-right"
                 isTrailingIcon={true}
                 onClick={() => {

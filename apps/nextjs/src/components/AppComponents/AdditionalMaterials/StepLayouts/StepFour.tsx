@@ -266,7 +266,7 @@ const StepFour = () => {
                       }
                     >
                       <OakFlex $alignItems="center" $gap="all-spacing-1">
-                        <OakP $font="body-1-bold">Adapt</OakP>
+                        <OakP $font="body-1-bold">Modify</OakP>
                         <AiIcon />
                       </OakFlex>
                     </OakSecondaryButton>

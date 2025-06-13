@@ -2,9 +2,8 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-import { AilaStart } from "@/components/AppComponents/Chat/aila-start";
+import { ChatStart } from "@/components/AppComponents/Chat/chat-start";
 import Layout from "@/components/AppComponents/Layout";
-import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
 interface IndexPageProps {
   searchParams: {
@@ -15,20 +14,13 @@ interface IndexPageProps {
   };
 }
 
-export default async function IndexPage({ searchParams }: IndexPageProps) {
+export default function IndexPage({ searchParams }: IndexPageProps) {
   const clerkAuthentication = auth();
   const { userId }: { userId: string | null } = clerkAuthentication;
   if (!userId) {
     redirect("/sign-in?next=/aila");
   }
 
-  const canSeeAM = await serverSideFeatureFlag("additional-materials");
-
-  if (!canSeeAM) {
-    redirect("/");
-  }
-
-  // Destructure searchParams with default values of null if not present
   const {
     keyStage = undefined,
     subject = undefined,
@@ -40,7 +32,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
     <>
       <SignedIn>
         <Layout>
-          <AilaStart
+          <ChatStart
             keyStage={keyStage}
             subject={subject}
             unitTitle={unitTitle}
