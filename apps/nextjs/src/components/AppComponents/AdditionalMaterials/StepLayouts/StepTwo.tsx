@@ -8,7 +8,6 @@ import {
   OakPrimaryButton,
   OakTextInput,
 } from "@oaknational/oak-components";
-import invariant from "tiny-invariant";
 
 import {
   useResourcesActions,
@@ -98,8 +97,8 @@ const StepTwo = ({
               } else {
                 void handleSubmitLessonPlan({
                   title: title,
-                subject: subject,
-                year: year,
+                  subject: subject,
+                  year: year,
                 });
               }
             }}
