@@ -1,16 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { getResourceTypes } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 
 import {
   OakFlex,
+  OakIcon,
   OakLabel,
   OakP,
   OakPrimaryButton,
+  OakPrimaryInvertedButton,
   OakRadioButton,
   OakRadioGroup,
 } from "@oaknational/oak-components";
-import invariant from "tiny-invariant";
 
 import {
   useResourcesActions,
@@ -19,6 +20,7 @@ import {
 import { docTypeSelector } from "@/stores/resourcesStore/selectors";
 
 import { useDialog } from "../../DialogContext";
+import FormValidationWarning from "../../FormValidationWarning";
 import ResourcesFooter from "../ResourcesFooter";
 import { handleDialogSelection } from "./helpers";
 
@@ -31,7 +33,7 @@ const StepOne = ({
     useResourcesActions();
   const docType = useResourcesStore(docTypeSelector);
   const error = useResourcesStore((state) => state.error);
-
+  const [showValidationError, setShowValidationError] = useState("");
   const { setDialogWindow } = useDialog();
 
   useEffect(() => {
@@ -85,23 +87,37 @@ const StepOne = ({
                   />
                 </OakLabel>
               ))}
+              {!!showValidationError && (
+                <FormValidationWarning errorMessage={showValidationError} />
+              )}
             </OakRadioGroup>
           </OakFlex>
         </OakFlex>
       </OakFlex>
 
       <ResourcesFooter>
-        <OakFlex $justifyContent="flex-end" $width={"100%"}>
+        <OakFlex $justifyContent="space-between" $width={"100%"}>
+          <OakPrimaryInvertedButton
+            element="a"
+            href="/aila"
+            iconName="chevron-left"
+          >
+            Back a step
+          </OakPrimaryInvertedButton>
+
           <OakPrimaryButton
             onClick={() => {
-              invariant(docType, "Document type must be selected");
+              if (!docType) {
+                setShowValidationError("Please select a document type.");
+                return;
+              }
+
               handleCreateSession({ documentType: docType });
             }}
             iconName="arrow-right"
             isTrailingIcon={true}
-            disabled={!docType}
           >
-            Continue
+            Next, provide lesson details
           </OakPrimaryButton>
         </OakFlex>
       </ResourcesFooter>

@@ -1,7 +1,12 @@
+import { useState } from "react";
+
+import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+
 import {
   OakFlex,
   OakIcon,
   OakPrimaryButton,
+  OakPrimaryInvertedButton,
   OakTextInput,
 } from "@oaknational/oak-components";
 
@@ -16,13 +21,13 @@ import {
   yearSelector,
 } from "@/stores/resourcesStore/selectors";
 
+import FormValidationWarning from "../../FormValidationWarning";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
 
 type SubmitLessonPlanParams = {
   title: string;
   subject: string;
-  keyStage: string;
   year: string;
 };
 
@@ -36,20 +41,28 @@ const StepTwo = ({
   const subject = useResourcesStore(subjectSelector);
   const title = useResourcesStore(titleSelector);
   const year = useResourcesStore(yearSelector);
+  const docType = useResourcesStore((state) => state.docType);
   const activeDropdown = useResourcesStore(activeDropdownSelector);
+
+  const [showValidationError, setShowValidationError] = useState("");
+
+  const resourceType = docType ? getResourceType(docType) : null;
+  const docTypeName = resourceType
+    ? resourceType.displayName.toLowerCase()
+    : null;
 
   return (
     <>
       <OakFlex $flexDirection={"column"} $gap={"space-between-m"}>
         <OakFlex $flexDirection={"row"} $gap={"space-between-m"}>
           <YearGroupDropDown
-            selectedYear={year ?? ""}
+            selectedYear={year}
             setSelectedYear={setYear}
             activeDropdown={activeDropdown}
             setActiveDropdown={setActiveDropdown}
           />
           <SubjectsDropDown
-            selectedSubject={subject ?? ""}
+            selectedSubject={subject}
             setSelectedSubject={setSubject}
             activeDropdown={activeDropdown}
             setActiveDropdown={setActiveDropdown}
@@ -60,31 +73,40 @@ const StepTwo = ({
           placeholder="Type a lesson title or learning outcome"
           value={title ?? ""}
         />
+        {!!showValidationError && (
+          <FormValidationWarning errorMessage={showValidationError} />
+        )}
       </OakFlex>
 
       <ResourcesFooter>
         <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <button onClick={() => setStepNumber(0)}>
-            <OakFlex $alignItems="center" $gap="all-spacing-2">
-              <OakIcon iconName="chevron-left" />
-              Back
-            </OakFlex>
-          </button>
+          <OakPrimaryInvertedButton
+            iconName="chevron-left"
+            onClick={() => setStepNumber(0, "back_a_step_button")}
+          >
+            Back a step
+          </OakPrimaryInvertedButton>
 
           <OakPrimaryButton
-            onClick={() =>
-              void handleSubmitLessonPlan({
-                title: title ?? "",
-                subject: subject ?? "",
-                keyStage: "",
-                year: year ?? "",
-              })
-            }
+            onClick={() => {
+              if (!title || !subject || !year) {
+                setShowValidationError(
+                  `Please provide a year group, subject and lesson details, so that Aila has the right context for your ${docTypeName}.`,
+                );
+              } else if (title.length < 10) {
+                setShowValidationError(`Please provide a longer lesson title.`);
+              } else {
+                void handleSubmitLessonPlan({
+                  title: title,
+                  subject: subject,
+                  year: year,
+                });
+              }
+            }}
             iconName="arrow-right"
             isTrailingIcon={true}
-            disabled={!title || !subject || !year}
           >
-            Generate overview
+            Next, review lesson details
           </OakPrimaryButton>
         </OakFlex>
       </ResourcesFooter>

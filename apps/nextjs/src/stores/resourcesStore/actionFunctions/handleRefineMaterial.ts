@@ -3,11 +3,20 @@ import {
   generateAdditionalMaterialInputSchema,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { GenerateAdditionalMaterialInput } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import {
+  resourceTypesConfig,
+  subjectSlugMap,
+  yearSlugMap,
+} from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import type { GenerateAdditionalMaterialResponse } from "@oakai/api/src/router/additionalMaterials/generateAdditionalMaterial";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
+import invariant from "tiny-invariant";
+
+import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
+import { getModerationTypes } from "@/lib/analytics/helpers";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
 
@@ -28,23 +37,27 @@ export type RefineMaterialParams = {
 };
 
 export const handleRefineMaterial =
-  (set: ResourcesSetter, get: ResourcesGetter) =>
+  (set: ResourcesSetter, get: ResourcesGetter, track: TrackFns) =>
   async ({ refinement, mutateAsync }: RefineMaterialParams) => {
-    const { setIsResourceRefining } = get().actions;
+    const {
+      actions: { setIsResourceRefining },
+      docType,
+      generation: currentGeneration,
+      refinementGenerationHistory: currentHistory,
+      id: originalId,
+      pageData: { lessonPlan },
+      formState,
+      moderation,
+    } = get();
 
     log.info("Setting isResourceRefining to TRUE");
     setIsResourceRefining(true);
 
-    const docType = get().docType;
     if (!docType) {
       log.error("No document type selected");
       setIsResourceRefining(false);
       throw new Error("No document type selected");
     }
-
-    // Get current generation and history before making changes
-    const currentGeneration = get().generation;
-    const currentHistory = get().refinementGenerationHistory;
 
     try {
       log.info("Refining material", { docType, refinement });
@@ -55,15 +68,13 @@ export const handleRefineMaterial =
         documentType: docTypeParsed,
         action: "refine",
         context: {
-          lessonPlan: get().pageData.lessonPlan,
-          previousOutput: get().generation,
+          lessonPlan,
+          previousOutput: currentGeneration,
           options: null,
-          refinement: refinement,
+          refinement,
         },
-        // Don't pass resourceId for refinements - this will create a new record
-        // The adaptsOutputId will be set to the current material's ID
-        adaptsOutputId: get().id, // ID of the material being refined
-        lessonId: get().pageData.lessonPlan.lessonId,
+        adaptsOutputId: originalId, // ID of the material being refined
+        lessonId: lessonPlan.lessonId,
       };
 
       const parsedPayload =
@@ -87,6 +98,38 @@ export const handleRefineMaterial =
       });
       log.info("Material refined successfully", {
         historyLength: newHistory.length,
+      });
+
+      // Track the refinement event
+      invariant(docType, "Document type is required for analytics");
+      invariant(result.resourceId, "Resource ID is required for analytics");
+      invariant(formState.subject, "Subject is required for analytics");
+      invariant(formState.year, "Year is required for analytics");
+      invariant(originalId, "Original ID is required for analytics");
+      invariant(
+        lessonPlan.title,
+        "Lesson plan title is required for analytics",
+      );
+
+      track.teachingMaterialsRefined({
+        teachingMaterialType: resourceTypesConfig[docType].analyticPropertyName,
+        interactionId: originalId, // ID of the material being refined
+        platform: "aila-beta",
+        product: "ai lesson assistant",
+        engagementIntent: "refine",
+        componentType: "modify_button",
+        eventVersion: "2.0.0",
+        analyticsUseCase: "Teacher",
+        subjectSlug: subjectSlugMap[formState.subject] ?? formState.subject,
+        subjectTitle: formState.subject,
+        yearGroupName: formState.year,
+        yearGroupSlug: yearSlugMap[formState.year] ?? formState.year,
+        lessonPlanTitle: lessonPlan.title,
+        moderatedContentType: getModerationTypes(
+          moderation
+            ? { ...moderation, type: "moderation" as const }
+            : undefined,
+        ),
       });
     } catch (error) {
       log.error("Error refining material", error);

@@ -47,7 +47,6 @@ export type PartialLessonPlanFieldKeyArray = z.infer<
 >;
 
 export const partialLessonContextSchema = z.object({
-  keyStage: z.string().optional(),
   year: z.string(),
   subject: z.string(),
   title: z.string(),
