@@ -1,3 +1,7 @@
+import { useState } from "react";
+
+import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+
 import {
   OakFlex,
   OakIcon,
@@ -16,6 +20,7 @@ import {
   yearSelector,
 } from "@/stores/resourcesStore/selectors";
 
+import FormValidationWarning from "../../FormValidationWarning";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
 
@@ -36,7 +41,15 @@ const StepTwo = ({
   const subject = useResourcesStore(subjectSelector);
   const title = useResourcesStore(titleSelector);
   const year = useResourcesStore(yearSelector);
+  const docType = useResourcesStore((state) => state.docType);
   const activeDropdown = useResourcesStore(activeDropdownSelector);
+
+  const [showValidationError, setShowValidationError] = useState("");
+
+  const resourceType = docType ? getResourceType(docType) : null;
+  const docTypeName = resourceType
+    ? resourceType.displayName.toLowerCase()
+    : null;
 
   return (
     <>
@@ -60,6 +73,9 @@ const StepTwo = ({
           placeholder="Type a lesson title or learning outcome"
           value={title ?? ""}
         />
+        {!!showValidationError && (
+          <FormValidationWarning errorMessage={showValidationError} />
+        )}
       </OakFlex>
 
       <ResourcesFooter>
@@ -72,17 +88,24 @@ const StepTwo = ({
           </button>
 
           <OakPrimaryButton
-            onClick={() =>
-              void handleSubmitLessonPlan({
-                title: title ?? "",
-                subject: subject ?? "",
-                keyStage: "",
-                year: year ?? "",
-              })
-            }
+            onClick={() => {
+              if (!title || !subject || !year) {
+                setShowValidationError(
+                  `Please provide a year group, subject and lesson details, so that Aila has the right context for your ${docTypeName}.`,
+                );
+              } else if (title.length < 10) {
+                setShowValidationError(`Please provide a longer lesson title.`);
+              } else {
+                void handleSubmitLessonPlan({
+                  title: title || "",
+                  subject: subject || "",
+                  keyStage: "",
+                  year: year || "",
+                });
+              }
+            }}
             iconName="arrow-right"
             isTrailingIcon={true}
-            disabled={!title || !subject || !year}
           >
             Generate overview
           </OakPrimaryButton>
