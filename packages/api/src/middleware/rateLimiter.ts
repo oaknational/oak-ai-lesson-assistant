@@ -7,7 +7,7 @@ import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/node";
 import { TRPCError } from "@trpc/server";
 
-import { t } from "../trpc";
+import { publicProcedure, t } from "../trpc";
 import { isAuthedMiddleware } from "./auth";
 
 const log = aiLogger("rate-limiting");
@@ -73,12 +73,12 @@ function createRateLimiterMiddleware(rateLimiter: RateLimiter) {
 
 const rateLimiter = rateLimits.generations.standard;
 
-export const userBasedRateLimitProcedure = t.procedure
+export const userBasedRateLimitProcedure = publicProcedure
   .use(isAuthedMiddleware)
   .use(createRateLimiterMiddleware(rateLimiter));
 
 const additionalMaterialRateLimiter = rateLimits.additionalMaterial.standard;
 
-export const additionalMaterialUserBasedRateLimitProcedure = t.procedure
+export const additionalMaterialUserBasedRateLimitProcedure = publicProcedure
   .use(isAuthedMiddleware)
   .use(createRateLimiterMiddleware(additionalMaterialRateLimiter));

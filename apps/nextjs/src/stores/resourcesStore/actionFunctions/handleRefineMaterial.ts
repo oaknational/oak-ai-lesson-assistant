@@ -23,7 +23,7 @@ export type RefineMaterialParams = {
   mutateAsync: UseMutateAsyncFunction<
     GenerateAdditionalMaterialResponse,
     Error,
-    GenerateAdditionalMaterialInput
+    GenerateAdditionalMaterialInput & { adaptsOutputId?: string | null }
   >;
 };
 
@@ -32,7 +32,7 @@ export const handleRefineMaterial =
   async ({ refinement, mutateAsync }: RefineMaterialParams) => {
     const { setIsResourceRefining } = get().actions;
 
-    console.log("🔄 Setting isResourceRefining to TRUE");
+    log.info("Setting isResourceRefining to TRUE");
     setIsResourceRefining(true);
 
     const docType = get().docType;
@@ -60,7 +60,9 @@ export const handleRefineMaterial =
           options: null,
           refinement: refinement,
         },
-        resourceId: get().id,
+        // Don't pass resourceId for refinements - this will create a new record
+        // The adaptsOutputId will be set to the current material's ID
+        adaptsOutputId: get().id, // ID of the material being refined
         lessonId: get().pageData.lessonPlan.lessonId,
       };
 
@@ -91,7 +93,7 @@ export const handleRefineMaterial =
       Sentry.captureException(error);
       throw error;
     } finally {
-      console.log("🔄 Setting isResourceRefining to FALSE");
+      log.info("Setting isResourceRefining to FALSE");
       setIsResourceRefining(false);
     }
   };

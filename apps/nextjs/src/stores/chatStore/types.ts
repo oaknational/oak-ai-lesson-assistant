@@ -7,6 +7,11 @@ import type { StoreApi } from "zustand";
 
 export { AiMessage };
 
+export type ChatAction =
+  | { type: "message"; content: string }
+  | { type: "continue" }
+  | { type: "regenerate" };
+
 export type AiSdkActions = {
   stop: () => void;
   reload: () => Promise<string | null | undefined>;
@@ -32,7 +37,7 @@ export type ChatState = {
   initialMessages: AiMessage[];
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
-  queuedUserAction: string | null;
+  queuedUserAction: ChatAction | null;
   lessonPlan: LooseLessonPlan | null;
   input: string;
   chatAreaRef: React.RefObject<HTMLDivElement> | null;
@@ -50,7 +55,7 @@ export type ChatState = {
 
     // Action functions
     executeQueuedAction: () => void;
-    append: (message: string) => void;
+    append: (action: ChatAction) => void;
     stop: () => void;
     streamingFinished: () => void;
     scrollToBottom: () => void;
