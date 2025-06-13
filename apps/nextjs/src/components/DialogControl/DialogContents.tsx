@@ -60,8 +60,8 @@ const dialogTitlesAndIcons: Record<
     iconName: null,
   },
   "additional-materials-moderation": {
-    title: "Guidance",
-    iconName: "info",
+    title: "",
+    iconName: null,
   },
   "additional-materials-threat-detected": {
     title: "Inappropriate content detected",
@@ -72,7 +72,7 @@ const dialogTitlesAndIcons: Record<
     iconName: "warning",
   },
   "additional-materials-toxic-moderation": {
-    title: "Inappropriate content detected",
+    title: "",
     iconName: null,
     hideClosedButton: true,
   },
@@ -168,9 +168,6 @@ const DialogContents = ({
             )}
             {dialogWindow === "additional-materials-threat-detected" && (
               <AdditionalMaterialsInappropriateContent
-                body={
-                  "This request has been flagged as potentially inappropriate. Please amend lesson details. If this is an error, please give us feedback below."
-                }
                 closeDialog={closeDialog}
               />
             )}
