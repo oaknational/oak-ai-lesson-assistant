@@ -10,6 +10,8 @@ import type { NextRequest } from "next/server";
 
 const log = aiLogger("cron");
 
+export const dynamic = "force-dynamic";
+
 const requiredEnvVars = ["CRON_SECRET", "SLACK_AI_OPS_NOTIFICATION_CHANNEL_ID"];
 
 requiredEnvVars.forEach((envVar) => {

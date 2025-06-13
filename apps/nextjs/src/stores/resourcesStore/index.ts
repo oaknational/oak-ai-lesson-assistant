@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import { logStoreUpdates } from "../zustandHelpers";
+import { handleCreateMaterialSession } from "./actionFunctions/handleCreateMaterialSession";
 import { handleDownload } from "./actionFunctions/handleDownload";
 import {
   handleResetFormState,
@@ -20,6 +21,7 @@ import handleSetIsResourcesLoading, {
 import { handleSetPageData } from "./actionFunctions/handleSetPageData";
 import { handleSetStepNumber } from "./actionFunctions/handleSetStepNumber";
 import { handleSubmitLessonPlan } from "./actionFunctions/handleSubmitLessonPlan";
+import { handleUndoRefinement } from "./actionFunctions/handleUndoRefinement";
 import type { ResourcesState } from "./types";
 
 export * from "./types";
@@ -62,6 +64,7 @@ const DEFAULT_STATE = {
   },
   moderation: undefined,
   threatDetection: undefined,
+  refinementGenerationHistory: [],
 };
 
 export const createResourcesStore = () => {
@@ -96,6 +99,11 @@ export const createResourcesStore = () => {
       refineMaterial: handleRefineMaterial(set, get),
       downloadMaterial: handleDownload(set, get),
 
+      // History management actions
+      undoRefinement: handleUndoRefinement(set, get),
+
+      createMaterialSession: handleCreateMaterialSession(set, get),
+
       // Reset store to default state
       resetToDefault: () =>
         set((state) => ({ ...DEFAULT_STATE, id: state.id })),
@@ -104,5 +112,6 @@ export const createResourcesStore = () => {
 
   // Log store updates
   logStoreUpdates(resourcesStore, "additional-materials");
+
   return resourcesStore;
 };

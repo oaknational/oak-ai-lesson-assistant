@@ -6,33 +6,14 @@ import type {
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { handleThreatDetectionError } from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
-import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
+import * as Sentry from "@sentry/node";
+
 import { streamingJSON } from "./protocol";
 
-function reportErrorTelemetry(
-  span: TracingSpan,
-  error: Error,
-  errorType: string,
-  statusMessage: string,
-  additionalAttributes: Record<
-    string,
-    string | number | boolean | undefined
-  > = {},
-) {
-  span.setTag("error", true);
-  span.setTag("error.type", errorType);
-  span.setTag("error.message", statusMessage);
-  span.setTag("error.stack", error.stack);
-  Object.entries(additionalAttributes).forEach(([key, value]) => {
-    span.setTag(key, value);
-  });
-}
-
 async function handleThreatError(
-  span: TracingSpan,
   e: AilaThreatDetectionError,
   id: string,
   prisma: PrismaClientWithAccelerate,
@@ -43,24 +24,16 @@ async function handleThreatError(
     error: e,
     prisma,
   });
-  reportErrorTelemetry(span, e, "AilaThreatDetectionError", "Threat detected");
   return streamingJSON(threatErrorMessage);
 }
 
-async function handleAilaAuthenticationError(
-  span: TracingSpan,
-  e: AilaAuthenticationError,
-): Promise<Response> {
-  reportErrorTelemetry(span, e, "AilaAuthenticationError", "Unauthorized");
+async function handleAilaAuthenticationError(): Promise<Response> {
   return Promise.resolve(new Response("Unauthorized", { status: 401 }));
 }
 
 export async function handleRateLimitError(
-  span: TracingSpan,
   error: RateLimitExceededError,
 ): Promise<Response> {
-  reportErrorTelemetry(span, error, "RateLimitExceededError", "Rate limited");
-
   const timeRemainingHours = Math.ceil(
     (error.reset - Date.now()) / 1000 / 60 / 60,
   );
@@ -84,11 +57,7 @@ async function handleUserBannedError(): Promise<Response> {
   );
 }
 
-async function handleGenericError(
-  span: TracingSpan,
-  e: Error,
-): Promise<Response> {
-  reportErrorTelemetry(span, e, e.name, e.message);
+async function handleGenericError(e: Error): Promise<Response> {
   return Promise.resolve(
     streamingJSON({
       type: "error",
@@ -99,29 +68,32 @@ async function handleGenericError(
 }
 
 export async function handleChatException(
-  span: TracingSpan,
   e: unknown,
   chatId: string,
   prisma: PrismaClientWithAccelerate,
 ): Promise<Response> {
   if (e instanceof AilaAuthenticationError) {
-    return handleAilaAuthenticationError(span, e);
+    return handleAilaAuthenticationError();
   }
 
   if (e instanceof AilaThreatDetectionError) {
-    return handleThreatError(span, e, chatId, prisma);
+    return handleThreatError(e, chatId, prisma);
   }
 
   if (e instanceof RateLimitExceededError) {
-    return handleRateLimitError(span, e);
+    return handleRateLimitError(e);
   }
 
   if (e instanceof UserBannedError) {
     return handleUserBannedError();
   }
 
+  Sentry.captureException(
+    new Error("Unexpected error in chat route", { cause: e }),
+  );
+
   if (e instanceof Error) {
-    return handleGenericError(span, e);
+    return handleGenericError(e);
   }
 
   throw e;

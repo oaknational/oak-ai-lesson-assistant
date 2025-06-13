@@ -4,7 +4,6 @@ import { getResourceTypes } from "@oakai/additional-materials/src/documents/addi
 
 import {
   OakFlex,
-  OakIcon,
   OakLabel,
   OakP,
   OakPrimaryButton,
@@ -12,6 +11,7 @@ import {
   OakRadioGroup,
   OakSecondaryButton,
 } from "@oaknational/oak-components";
+import invariant from "tiny-invariant";
 
 import {
   useResourcesActions,
@@ -24,8 +24,12 @@ import FormValidationWarning from "../../FormValidationWarning";
 import ResourcesFooter from "../ResourcesFooter";
 import { handleDialogSelection } from "./helpers";
 
-const StepOne = () => {
-  const { setStepNumber, setDocType, setGeneration } = useResourcesActions();
+const StepOne = ({
+  handleCreateSession,
+}: {
+  handleCreateSession: ({ documentType }: { documentType: string }) => void;
+}) => {
+  const { setDocType, setGeneration } = useResourcesActions();
   const docType = useResourcesStore(docTypeSelector);
   const error = useResourcesStore((state) => state.error);
   const [showValidationError, setShowValidationError] = useState("");
@@ -51,7 +55,8 @@ const StepOne = () => {
             <OakRadioGroup
               name="radio-group"
               onChange={(value) => {
-                setDocType(value.target.value);
+                const selectedDocType = value.target.value;
+                setDocType(selectedDocType);
                 setGeneration(null);
               }}
               $flexDirection="column"
@@ -90,11 +95,8 @@ const StepOne = () => {
         <OakFlex $justifyContent="flex-end" $width={"100%"}>
           <OakPrimaryButton
             onClick={() => {
-              if (!docType) {
-                setShowValidationError("Please select a resource type");
-              } else {
-                setStepNumber(1);
-              }
+              invariant(docType, "Document type must be selected");
+              handleCreateSession({ documentType: docType });
             }}
             iconName="arrow-right"
             isTrailingIcon={true}

@@ -46,10 +46,13 @@ async function main() {
     "Let's start creating a lesson plan.";
 
   let shouldContinue = true;
-  const messageHistory: { role: "user" | "assistant"; content: string }[] = [];
+  const messageHistoryWithProtocol: {
+    role: "user" | "assistant";
+    content: string;
+  }[] = [];
 
   while (shouldContinue) {
-    messageHistory.push({
+    messageHistoryWithProtocol.push({
       role: "user",
       content: userMessage,
     });
@@ -58,7 +61,7 @@ async function main() {
       chatId,
       userId,
       initialDocument: currentDocument,
-      messageHistory,
+      messageHistoryWithProtocol,
       customAgents: {
         mathsStarterQuiz: () => {
           return Promise.resolve([
@@ -88,7 +91,7 @@ async function main() {
 
     // Update the document with the latest version
     currentDocument = result.document || currentDocument;
-    messageHistory.push({
+    messageHistoryWithProtocol.push({
       role: "assistant",
       content: result.ailaMessage ?? "No message",
     });

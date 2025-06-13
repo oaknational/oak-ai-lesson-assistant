@@ -23,7 +23,7 @@ export type RefineMaterialParams = {
   mutateAsync: UseMutateAsyncFunction<
     GenerateAdditionalMaterialResponse,
     Error,
-    GenerateAdditionalMaterialInput
+    GenerateAdditionalMaterialInput & { adaptsOutputId?: string | null }
   >;
 };
 
@@ -32,7 +32,7 @@ export const handleRefineMaterial =
   async ({ refinement, mutateAsync }: RefineMaterialParams) => {
     const { setIsResourceRefining } = get().actions;
 
-    console.log("🔄 Setting isResourceRefining to TRUE");
+    log.info("Setting isResourceRefining to TRUE");
     setIsResourceRefining(true);
 
     const docType = get().docType;
@@ -41,6 +41,10 @@ export const handleRefineMaterial =
       setIsResourceRefining(false);
       throw new Error("No document type selected");
     }
+
+    // Get current generation and history before making changes
+    const currentGeneration = get().generation;
+    const currentHistory = get().refinementGenerationHistory;
 
     try {
       log.info("Refining material", { docType, refinement });
@@ -56,7 +60,9 @@ export const handleRefineMaterial =
           options: null,
           refinement: refinement,
         },
-        resourceId: get().id,
+        // Don't pass resourceId for refinements - this will create a new record
+        // The adaptsOutputId will be set to the current material's ID
+        adaptsOutputId: get().id, // ID of the material being refined
         lessonId: get().pageData.lessonPlan.lessonId,
       };
 
@@ -66,19 +72,28 @@ export const handleRefineMaterial =
       // Make the API call
       const result = await mutateAsync(parsedPayload);
 
-      // Update the store with the result
+      // Add current generation to history before updating with new result
+      // This ensures we can undo back to the current state
+      const newHistory = currentGeneration
+        ? [...currentHistory, currentGeneration]
+        : currentHistory;
+
+      // Update the store with the result and new history
       set({
         generation: result.resource,
         moderation: result.moderation,
         id: result.resourceId,
+        refinementGenerationHistory: newHistory,
       });
-      log.info("Material refined successfully");
+      log.info("Material refined successfully", {
+        historyLength: newHistory.length,
+      });
     } catch (error) {
       log.error("Error refining material", error);
       Sentry.captureException(error);
       throw error;
     } finally {
-      console.log("🔄 Setting isResourceRefining to FALSE");
+      log.info("Setting isResourceRefining to FALSE");
       setIsResourceRefining(false);
     }
   };

@@ -11,6 +11,7 @@ import {
   type LooseLessonPlan,
   type Quiz,
 } from "../../protocol/schema";
+import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { agents, sectionAgentMap } from "./agents";
 import { type InteractResult } from "./compatibility/streamHandling";
 import { messageToUserAgent } from "./messageToUser";
@@ -82,7 +83,7 @@ export async function interact({
   chatId,
   userId,
   initialDocument,
-  messageHistory,
+  messageHistoryWithProtocol,
   onUpdate,
   customAgents,
   relevantLessons,
@@ -90,7 +91,7 @@ export async function interact({
   chatId: string;
   userId: string;
   initialDocument: LooseLessonPlan;
-  messageHistory: { role: "user" | "assistant"; content: string }[];
+  messageHistoryWithProtocol: { role: "user" | "assistant"; content: string }[];
   onUpdate?: InteractCallback;
   customAgents: {
     mathsStarterQuiz?: CustomAgentAsyncFn<Quiz>;
@@ -100,6 +101,9 @@ export async function interact({
   relevantLessons: AilaRagRelevantLesson[] | null;
 }): Promise<InteractResult> {
   log.info("Starting interaction with Aila agents");
+  const messageHistoryChatOnly = extractPromptTextFromMessages(
+    messageHistoryWithProtocol,
+  );
   let document = initialDocument;
   // Notify about starting the routing process
   onUpdate?.({
@@ -107,7 +111,6 @@ export async function interact({
     data: { step: "routing", status: "started" },
   });
 
-  let ragData: CompletedLessonPlan[] = [];
   if (relevantLessons === null) {
     /**
      * This means we haven't even tried to fetch relevant lessons yet
@@ -122,10 +125,12 @@ export async function interact({
         plan: null,
       },
     });
-    ragData =
+    const ragData =
       (await customAgents.fetchRagData({
         document,
       })) ?? [];
+
+    // @todo handle case when no relevant lessons are found
 
     const ailaMessage = ragData.length
       ? `If you would like to base your lesson on one of the following:\n${ragData.map((rl, i) => `${i + 1}. ${rl.title}`).join(`\n`)}\n\nPlease reply with the number of the lesson you would like to use as a base.\n\nOtherwise click 'continue'.`
@@ -141,11 +146,15 @@ export async function interact({
     return { document, ailaMessage };
   }
 
+  const ragData = await customAgents.fetchRagData({
+    document,
+  });
+
   const routerResponse = await agentRouter({
     chatId,
     userId,
     document,
-    messageHistory,
+    messageHistoryChatOnly,
   });
 
   log.info("Router response", JSON.stringify(routerResponse, null, 2));
@@ -249,7 +258,7 @@ export async function interact({
 
               break;
             } else if (agentDefinition.name === "basedOn") {
-              const userMessage = messageHistory.findLast(
+              const userMessage = messageHistoryChatOnly.findLast(
                 (m) => m.role === "user",
               );
               const userBasedOnSelection = Number(userMessage?.content?.trim());
@@ -301,6 +310,33 @@ export async function interact({
           ragData,
         });
 
+        if (!response.success) {
+          const jsonDiff = JSON.stringify(compare(initialDocument, document));
+          const messageResult = await messageToUserAgent({
+            chatId,
+            userId,
+            document,
+            jsonDiff,
+            messageHistoryChatOnly,
+            error: {
+              currentAgent: agentDefinition.name,
+              message: response.error,
+            },
+          });
+
+          if (!messageResult) {
+            throw new Error("Message to user agent returned null");
+          }
+
+          // Notify about completion
+          onUpdate?.({
+            type: "complete",
+            data: { document, ailaMessage: messageResult.message },
+          });
+
+          return { document, ailaMessage: messageResult.message };
+        }
+
         document = handleSectionGenerated({
           sectionKey,
           actionType,
@@ -343,7 +379,7 @@ export async function interact({
     userId,
     document,
     jsonDiff,
-    messageHistory,
+    messageHistoryChatOnly,
   });
 
   if (!messageResult) {

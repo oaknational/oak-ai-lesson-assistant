@@ -73,7 +73,7 @@ const ResourcesLayout = ({
           $pb="inner-padding-xl"
           $maxWidth={"all-spacing-23"}
         >
-          <OakBox $pa="inner-padding-xl4">
+          <OakBox $pa={["inner-padding-xl", "inner-padding-xl4"]}>
             <OakFlex
               $bb="border-solid-s"
               $borderColor="grey40"

@@ -146,7 +146,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
           <button onClick={() => setStepNumber(1)}>
             <OakFlex $alignItems="center" $gap="all-spacing-2">
               <OakIcon iconName="chevron-left" />
-              Back a step
+              Back
             </OakFlex>
           </button>
 
