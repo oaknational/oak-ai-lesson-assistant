@@ -176,9 +176,6 @@ const DialogContents = ({
             )}
             {dialogWindow === "additional-materials-toxic-moderation" && (
               <AdditionalMaterialsInappropriateContent
-                body={
-                  "Your account will be blocked if you persist in creating inappropriate content. If this is an error, please give us feedback below."
-                }
                 closeDialog={closeDialog}
               />
             )}
