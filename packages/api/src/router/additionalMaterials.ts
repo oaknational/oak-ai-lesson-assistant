@@ -248,6 +248,14 @@ export const additionalMaterialsRouter = router({
             cause: { type: "rate_limit", message: errorMessage },
           });
         }
+        if (err instanceof TRPCError && err.code === "TOO_MANY_REQUESTS") {
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message:
+              "RateLimitExceededError: Too many requests, please try again later.",
+            cause: err,
+          });
+        }
         if (err instanceof UserBannedError) {
           const errorMessage = "UserBannedError: User account is locked.";
           throw new TRPCError({
@@ -267,7 +275,28 @@ export const additionalMaterialsRouter = router({
           auth: ctx.auth,
         });
       } catch (cause) {
-        const errorMessage = `Failed to fetch additional material moderation for - ${parsedInput.data.title} - ${parsedInput.data.subject}`;
+        if (cause instanceof UserBannedError) {
+          const errorMessage = "UserBannedError: User account is locked.";
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: errorMessage,
+            cause: { type: "banned", message: errorMessage },
+          });
+        }
+        if (cause instanceof RateLimitExceededError) {
+          const timeRemainingHours = Math.ceil(
+            (cause.reset - Date.now()) / 1000 / 60 / 60,
+          );
+          const hours = timeRemainingHours === 1 ? "hour" : "hours";
+
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message: `RateLimitExceededError: **Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in ${timeRemainingHours} ${hours}. If you require a higher limit, please [make a request](${process.env.RATELIMIT_FORM_URL}).`,
+            cause,
+          });
+        }
+
+        const errorMessage = `Failed to fetch additional material partial lesson for - ${parsedInput.data.title} - ${parsedInput.data.subject}`;
         log.error(errorMessage, cause);
         Sentry.captureException(cause);
         throw new TRPCError({

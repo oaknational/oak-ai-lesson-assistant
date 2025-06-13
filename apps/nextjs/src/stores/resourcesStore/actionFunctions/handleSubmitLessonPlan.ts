@@ -8,6 +8,7 @@ import type { PartialLessonContextSchemaType } from "@oakai/additional-materials
 import { PartialLessonPlanFieldKeyArraySchema } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { GeneratePartialLessonPlanResponse } from "@oakai/api/src/router/additionalMaterials/generatePartialLessonPlan";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
@@ -88,13 +89,27 @@ const updateStoreWithLessonPlan = (
   set: ResourcesSetter,
   result: GeneratePartialLessonPlanResponse,
 ) => {
+  if (isToxic(result.moderation)) {
+    set({
+      error: {
+        type: "toxic",
+        message: "Toxic content detected in lesson plan",
+      },
+      moderation: result.moderation,
+      pageData: {
+        lessonPlan: { lessonId: result.lessonId },
+      },
+    });
+    return;
+  }
+
   set({
     pageData: {
       lessonPlan: { ...result.lesson, lessonId: result.lessonId },
     },
     moderation: result.moderation,
     threatDetection: result.threatDetection,
-    error: null, // clear previous errors
+    error: null,
   });
 
   log.info("Lesson plan updated successfully");
@@ -155,6 +170,7 @@ export const handleSubmitLessonPlan =
       log.info("Processing lesson plan", { title, subject, year });
       const apiInput = buildLessonPlanInput(title, subject, year, docType);
       const result = await mutateAsync(apiInput);
+
       updateStoreWithLessonPlan(set, result);
 
       // Update material session with lesson ID

@@ -17,10 +17,8 @@ import {
   yearSelector,
 } from "@/stores/resourcesStore/selectors";
 
-import { useDialog } from "../../DialogContext";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
-import { handleDialogSelection } from "./helpers";
 
 type SubmitLessonPlanParams = {
   title: string;
@@ -39,10 +37,6 @@ const StepTwo = ({
   const title = useResourcesStore(titleSelector);
   const year = useResourcesStore(yearSelector);
   const activeDropdown = useResourcesStore(activeDropdownSelector);
-  const error = useResourcesStore((state) => state.error);
-  const { setDialogWindow } = useDialog();
-
-  handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
 
   return (
     <>
