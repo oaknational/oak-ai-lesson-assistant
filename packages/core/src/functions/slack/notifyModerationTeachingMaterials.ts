@@ -27,7 +27,7 @@ export const notifyModerationTeachingMaterials = inngest.createFunction(
             type: "header",
             text: {
               type: "plain_text",
-              text: "Toxic user input detected - Teaching materials",
+              text: `${args.violationType === "THREAT" ? "Threat " : "Toxic user input "}detected - Teaching materials`,
             },
           },
           userIdBlock(event.user.id),
