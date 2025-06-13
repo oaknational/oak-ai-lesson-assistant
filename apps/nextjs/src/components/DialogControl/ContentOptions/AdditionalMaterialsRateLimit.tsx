@@ -19,7 +19,30 @@ const AdditionalMaterialsRateLimit = ({
   const { isDemoUser, demo } = useDemoUser();
 
   if (!isDemoUser) {
-    return null;
+    return (
+      <>
+        <OakP>
+          You have used all of your teaching materials available this month. If
+          you are a teacher in the UK, please contact us for full access.
+        </OakP>
+
+        <OakFlex
+          $width={"100%"}
+          $justifyContent={"center"}
+          $alignItems={"center"}
+          $mb={"space-between-m"}
+        >
+          <OakPrimaryButton
+            onClick={() => {
+              resetToDefault();
+              closeDialog();
+            }}
+          >
+            Continue
+          </OakPrimaryButton>
+        </OakFlex>
+      </>
+    );
   }
   return (
     <>
