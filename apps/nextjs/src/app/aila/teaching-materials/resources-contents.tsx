@@ -94,7 +94,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
       title: pageData.lessonPlan.title,
       subTitle: (
         <OakP $font="body-2" $color="grey70">
-          {`Year ${year}`} • {pageData.lessonPlan.subject}
+          {`${year} • ${pageData.lessonPlan.subject}`}
         </OakP>
       ),
     },
@@ -102,7 +102,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
       title: pageData.lessonPlan.title,
       subTitle: (
         <OakP $font="body-2" $color="grey70">
-          {`Year ${year}`} • {pageData.lessonPlan.subject}
+          {`${year} • ${pageData.lessonPlan.subject}`}
         </OakP>
       ),
     },
