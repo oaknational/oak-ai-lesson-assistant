@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
+
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleCreateMaterialSession } from "./actionFunctions/handleCreateMaterialSession";
 import { handleDownload } from "./actionFunctions/handleDownload";
@@ -67,14 +69,14 @@ const DEFAULT_STATE = {
   refinementGenerationHistory: [],
 };
 
-export const createResourcesStore = () => {
+export const createResourcesStore = (track: TrackFns) => {
   const resourcesStore = create<ResourcesState>()((set, get) => ({
     id: null,
     ...DEFAULT_STATE,
 
     actions: {
       // Setters
-      setStepNumber: handleSetStepNumber(set, get),
+      setStepNumber: handleSetStepNumber(set, get, track),
       setPageData: handleSetPageData(set, get),
       setGeneration: handleSetGeneration(set, get),
       setDocType: handleSetDocType(set, get),
@@ -94,15 +96,15 @@ export const createResourcesStore = () => {
       resetFormState: handleResetFormState(set, get),
 
       // Business logic actions
-      submitLessonPlan: handleSubmitLessonPlan(set, get),
+      submitLessonPlan: handleSubmitLessonPlan(set, get, track),
       generateMaterial: handleGenerateMaterial(set, get),
-      refineMaterial: handleRefineMaterial(set, get),
-      downloadMaterial: handleDownload(set, get),
+      refineMaterial: handleRefineMaterial(set, get, track),
+      downloadMaterial: handleDownload(set, get, track),
 
       // History management actions
-      undoRefinement: handleUndoRefinement(set, get),
+      undoRefinement: handleUndoRefinement(set, get, track),
 
-      createMaterialSession: handleCreateMaterialSession(set, get),
+      createMaterialSession: handleCreateMaterialSession(set, get, track),
 
       // Reset store to default state
       resetToDefault: () =>

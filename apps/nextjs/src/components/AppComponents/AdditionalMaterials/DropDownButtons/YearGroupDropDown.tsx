@@ -1,14 +1,9 @@
-import { useState } from "react";
+import { yearNameMap } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 
-import { OakSmallSecondaryButton } from "@oaknational/oak-components";
-import styled from "styled-components";
-
-import { useOutsideClick } from "@/components/hooks/useOutsideClick";
-
-import { DropDownButton, DropDownItemButton, DropDownWrapper } from "./index";
+import { SharedDropDown } from "./SharedDropDown";
 
 interface YearGroupDropDownProps {
-  selectedYear: string;
+  selectedYear: string | null;
   setSelectedYear: (value: string) => void;
   activeDropdown: string | null;
   setActiveDropdown: (value: string | null) => void;
@@ -20,37 +15,23 @@ export const YearGroupDropDown = ({
   activeDropdown,
   setActiveDropdown,
 }: YearGroupDropDownProps) => {
-  // @todo this should probs be dynamic and come from the backend
-  const years = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
-  const dropdownRef = useOutsideClick(() => {
-    if (activeDropdown === "years") {
-      setActiveDropdown(null);
-    }
-  });
+  const yearOptions = [
+    ...Object.values(yearNameMap).filter(
+      (year): year is string => year !== undefined,
+    ),
+    "Other",
+  ];
+
   return (
-    <div className="relative" ref={dropdownRef}>
-      <DropDownButton
-        onClick={() =>
-          setActiveDropdown(activeDropdown === "years" ? null : "years")
-        }
-      >
-        {selectedYear || "Year group"}
-      </DropDownButton>
-      {activeDropdown === "years" && (
-        <DropDownWrapper>
-          {years.map((year) => (
-            <DropDownItemButton
-              key={year}
-              onClick={() => {
-                setSelectedYear(year);
-                setActiveDropdown(null);
-              }}
-            >
-              {year}
-            </DropDownItemButton>
-          ))}
-        </DropDownWrapper>
-      )}
-    </div>
+    <SharedDropDown
+      selectedValue={selectedYear}
+      setSelectedValue={setSelectedYear}
+      activeDropdown={activeDropdown}
+      setActiveDropdown={setActiveDropdown}
+      options={yearOptions}
+      dropdownType="years"
+      placeholder="Year group"
+      customPlaceholder="Enter your custom year group"
+    />
   );
 };

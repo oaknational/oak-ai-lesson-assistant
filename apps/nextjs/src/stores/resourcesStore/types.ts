@@ -8,6 +8,8 @@ import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/mode
 import { z } from "zod";
 import type { StoreApi } from "zustand";
 
+import type { ComponentTypeValueType } from "@/lib/avo/Avo";
+
 import type { CreateMaterialSessionParams } from "./actionFunctions/handleCreateMaterialSession";
 import type { GenerateMaterialParams } from "./actionFunctions/handleGenerateMaterial";
 import type { RefineMaterialParams } from "./actionFunctions/handleRefineMaterial";
@@ -53,7 +55,10 @@ export type ResourcesState = {
 
   actions: {
     // setters
-    setStepNumber: (step: number) => void;
+    setStepNumber: (
+      step: number,
+      componentType?: ComponentTypeValueType,
+    ) => void;
     setPageData: (pageData: PageData) => void;
     setGeneration: (generation: AdditionalMaterialSchemas | null) => void;
     setDocType: (docType: string | null) => void;
