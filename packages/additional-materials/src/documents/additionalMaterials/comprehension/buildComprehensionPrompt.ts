@@ -40,7 +40,7 @@ Instructions (Read the text carefully and use it to answer the questions below)
       : "Main Topic"
   }**
 
-[Comprehension text 1 - 500-600 words]
+[Comprehension text 1 - 500-600 words with clearly defined paragraphs separated by blank lines] 
 
 **Questions**
 
@@ -60,7 +60,9 @@ Instructions (Read the text carefully and use it to answer the questions below)
 This text should 
 
 - summarise the KEY LEARNING POINTS and understanding of this text should enable the pupil to achieve the LEARNING CYCLE OUTCOME.
-- use short, clear sentences and paragraphs.
+- use short, clear sentences and well-structured paragraphs.
+- format the text with proper paragraph breaks (each paragraph separated by a blank line).
+- include 4-6 paragraphs with logical transitions between ideas.
 - include tier two and three vocabulary and the KEYWORDS but these and any other unfamiliar words should be explained in the context of the COMPREHENSION TEXT.
 - use an informative, engaging, age-appropriate tone, similar to that in a textbook.
 - begin with a short introduction that hooks the pupil's interest, followed by a clear explanation.
@@ -167,6 +169,7 @@ You are an expert UK teacher generating a reading comprehension task.
 
 **Guidelines**:
 - Ensure tasks are **clear, subject-specific, and appropriate** for the given year group reading age.
+- Format comprehension text with proper paragraph structure (4-6 paragraphs with blank lines between them).
 - Keep questions **engaging and relevant** to reinforce learning.
 - Questions 1-5 should be multiple choice or short answer questions
 - Questions 6-10 should be longer response questions
