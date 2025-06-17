@@ -7,11 +7,11 @@ import { aiLogger } from "@oakai/logger";
 
 import { useUser } from "@clerk/nextjs";
 import {
-  OakBox,
   OakFlex,
-  OakHeading,
+  OakLI,
   OakP,
   OakPrimaryButton,
+  OakUL,
 } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 import * as Sentry from "@sentry/nextjs";
@@ -19,13 +19,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 
-import { useDemoUser } from "@/components/ContextProviders/Demo";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
 
-import { useDialog } from "../DialogContext";
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 import EmptyScreenAccordion from "./empty-screen-accordion";
 
@@ -38,6 +36,15 @@ export const exampleMessages = [
       "Create a lesson plan about the end of Roman Britain for key stage 3 history",
   },
 ];
+
+// default styling is being overridden here by tailwind, we can remove this when re removing tailwind
+const StyledUL = styled(OakUL)`
+  list-style-type: disc;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  /* margin-left: 40px; */
+  padding-left: 20px;
+`;
 
 type AilaStartProps = {
   keyStage?: string;
@@ -52,8 +59,6 @@ export function AilaStart({
   unitTitle,
   searchExpression,
 }: Readonly<AilaStartProps>) {
-  const { user } = useUser();
-  const userFirstName = user?.firstName;
   const { trackEvent } = useAnalytics();
   const [input, setInput] = useState("");
   const router = useRouter();
@@ -167,14 +172,17 @@ export function AilaStart({
               <OakFlex $flexDirection="column" $gap="all-spacing-2">
                 <OakP $font="heading-5">Create teaching materials with AI</OakP>
                 <OakP>
-                  Create glossaries, quizzes, comprehension tasks to enhance
-                  existing lessons, provide support for individual SEND
-                  learners, create stretch tasks and more.
+                  Enhance lessons with a range of teaching materials, including:
                 </OakP>
+                <StyledUL>
+                  <OakLI $mv={"space-between-xs"}>Glossaries</OakLI>
+                  <OakLI $mv={"space-between-xs"}>Comprehension tasks</OakLI>
+                  <OakLI $mt={"space-between-xs"}>Quizzes</OakLI>
+                </StyledUL>
               </OakFlex>
               <OakPrimaryButton
                 element={Link}
-                href="/aila/resources"
+                href="/aila/teaching-materials"
                 iconName="arrow-right"
                 isTrailingIcon={true}
               >
