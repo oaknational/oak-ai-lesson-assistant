@@ -45,11 +45,85 @@ const StepTwo = ({
   const activeDropdown = useResourcesStore(activeDropdownSelector);
 
   const [showValidationError, setShowValidationError] = useState("");
+  const [validationAttempted, setValidationAttempted] = useState(false);
 
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType
     ? resourceType.displayName.toLowerCase()
     : null;
+
+  const validateInputs = () => {
+    if (!title && !subject && !year) {
+      setShowValidationError(
+        `Please provide a year group, subject and lesson details, so that Aila has the right context for your ${docTypeName}.`,
+      );
+      return false;
+    } else if (!year && !subject) {
+      setShowValidationError(
+        `Please select a year group and subject, so that Aila has the right context for your ${docTypeName}.`,
+      );
+      return false;
+    } else if (!year) {
+      setShowValidationError(
+        `Please select a year group, so that Aila has the right context for your ${docTypeName}.`,
+      );
+      return false;
+    } else if (!subject) {
+      setShowValidationError(
+        `Please select a subject, so that Aila has the right context for your ${docTypeName}.`,
+      );
+      return false;
+    } else if (!title) {
+      setShowValidationError(
+        `Please provide your lesson details, so that Aila has the right context for your ${docTypeName}.`,
+      );
+      return false;
+    } else if (title.length < 10) {
+      setShowValidationError(`Please provide a longer lesson title.`);
+      return false;
+    }
+    return true;
+  };
+
+  const updateValidationMessage = (
+    updatedTitle?: string,
+    updatedYear?: string,
+    updatedSubject?: string,
+  ) => {
+    // Only update validation message if validation has been attempted
+    if (!validationAttempted) return;
+
+    // Use the updated values or fall back to current state values
+    const titleToCheck = updatedTitle ?? title;
+    const yearToCheck = updatedYear ?? year;
+    const subjectToCheck = updatedSubject ?? subject;
+
+    if (!titleToCheck && !subjectToCheck && !yearToCheck) {
+      setShowValidationError(
+        `Please provide a year group, subject and lesson details, so that Aila has the right context for your ${docTypeName}.`,
+      );
+    } else if (!yearToCheck && !subjectToCheck) {
+      setShowValidationError(
+        `Please select a year group and subject, so that Aila has the right context for your ${docTypeName}.`,
+      );
+    } else if (!yearToCheck) {
+      setShowValidationError(
+        `Please select a year group, so that Aila has the right context for your ${docTypeName}.`,
+      );
+    } else if (!subjectToCheck) {
+      setShowValidationError(
+        `Please select a subject, so that Aila has the right context for your ${docTypeName}.`,
+      );
+    } else if (!titleToCheck) {
+      setShowValidationError(
+        `Please provide your lesson details, so that Aila has the right context for your ${docTypeName}.`,
+      );
+    } else if (titleToCheck.length < 10) {
+      setShowValidationError(`Please provide a longer lesson title.`);
+    } else {
+      setShowValidationError(""); // Clear error if all validations pass
+    }
+  };
 
   return (
     <>
@@ -57,19 +131,29 @@ const StepTwo = ({
         <OakFlex $flexDirection={"row"} $gap={"space-between-m"}>
           <YearGroupDropDown
             selectedYear={year ?? ""}
-            setSelectedYear={setYear}
+            setSelectedYear={(year: string) => {
+              setYear(year);
+              updateValidationMessage(undefined, year, undefined);
+            }}
             activeDropdown={activeDropdown}
             setActiveDropdown={setActiveDropdown}
           />
           <SubjectsDropDown
             selectedSubject={subject ?? ""}
-            setSelectedSubject={setSubject}
+            setSelectedSubject={(subject: string) => {
+              setSubject(subject);
+              updateValidationMessage(undefined, undefined, subject);
+            }}
             activeDropdown={activeDropdown}
             setActiveDropdown={setActiveDropdown}
           />
         </OakFlex>
         <OakTextInput
-          onChange={(value) => setTitle(value.target.value)}
+          onChange={(value) => {
+            const newTitle = value.target.value;
+            setTitle(newTitle);
+            updateValidationMessage(newTitle, undefined, undefined);
+          }}
           placeholder="Type a lesson title or learning outcome"
           value={title ?? ""}
         />
@@ -89,20 +173,46 @@ const StepTwo = ({
 
           <OakPrimaryButton
             onClick={() => {
-              if (!title || !subject || !year) {
+              // Set validation as attempted to show messages going forward
+              setValidationAttempted(true);
+
+              // Check all validations directly without using updateValidationMessage
+              if (!title && !subject && !year) {
                 setShowValidationError(
                   `Please provide a year group, subject and lesson details, so that Aila has the right context for your ${docTypeName}.`,
                 );
+                return;
+              } else if (!year && !subject) {
+                setShowValidationError(
+                  `Please select a year group and subject, so that Aila has the right context for your ${docTypeName}.`,
+                );
+                return;
+              } else if (!year) {
+                setShowValidationError(
+                  `Please select a year group, so that Aila has the right context for your ${docTypeName}.`,
+                );
+                return;
+              } else if (!subject) {
+                setShowValidationError(
+                  `Please select a subject, so that Aila has the right context for your ${docTypeName}.`,
+                );
+                return;
+              } else if (!title) {
+                setShowValidationError(
+                  `Please provide your lesson details, so that Aila has the right context for your ${docTypeName}.`,
+                );
+                return;
               } else if (title.length < 10) {
                 setShowValidationError(`Please provide a longer lesson title.`);
-              } else {
-                void handleSubmitLessonPlan({
-                  title: title || "",
-                  subject: subject || "",
-                  keyStage: "",
-                  year: year || "",
-                });
+                return;
               }
+
+              void handleSubmitLessonPlan({
+                title: title || "",
+                subject: subject || "",
+                keyStage: "",
+                year: year || "",
+              });
             }}
             iconName="arrow-right"
             isTrailingIcon={true}
