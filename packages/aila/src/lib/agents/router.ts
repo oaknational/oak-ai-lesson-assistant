@@ -29,7 +29,20 @@ const responseSchema = z.object({
     }),
     z.object({
       type: z.literal("end_turn"),
-      message: z.string().describe("Message to the user"),
+      reason: z
+        .enum([
+          "out_of_scope", // Request is completely unrelated to lesson planning
+          "clarification_needed", // Request is ambiguous or unclear
+          "ethical_concern", // Request violates content policies
+          "capability_limitation", // Request is lesson-related but technically impossible
+          "task_complete", // Lesson is finished and user seems satisfied
+        ])
+        .describe("The reason for ending the turn"),
+      context: z
+        .string()
+        .describe(
+          "Context for the messageToUser agent to craft an appropriate response",
+        ),
     }),
   ]),
 });
