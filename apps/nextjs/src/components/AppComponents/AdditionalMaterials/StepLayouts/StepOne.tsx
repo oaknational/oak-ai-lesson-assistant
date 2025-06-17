@@ -53,14 +53,18 @@ const StepOne = ({
   return (
     <>
       <OakFlex $gap={"space-between-m"} $flexDirection="column">
-        <OakFlex $flexDirection={"column"}>
-          <OakFlex $mv={"space-between-s"}>
+        {!!showValidationError && (
+          <FormValidationWarning errorMessage={showValidationError} />
+        )}
+        <OakFlex $mv={"space-between-s"}>
+          <OakFlex $flexDirection={"column"}>
             <OakRadioGroup
               name="radio-group"
               onChange={(value) => {
                 const selectedDocType = value.target.value;
                 setDocType(selectedDocType);
                 setGeneration(null);
+                setShowValidationError("");
               }}
               $flexDirection="column"
             >
@@ -86,9 +90,6 @@ const StepOne = ({
                   />
                 </OakLabel>
               ))}
-              {!!showValidationError && (
-                <FormValidationWarning errorMessage={showValidationError} />
-              )}
             </OakRadioGroup>
           </OakFlex>
         </OakFlex>
@@ -99,7 +100,7 @@ const StepOne = ({
           <OakPrimaryButton
             onClick={() => {
               if (!docType) {
-                setShowValidationError("Please select a document type.");
+                setShowValidationError("Please select a teaching material.");
                 return;
               }
 
