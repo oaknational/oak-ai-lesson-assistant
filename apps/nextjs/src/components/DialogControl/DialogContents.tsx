@@ -15,6 +15,7 @@ import AdditionalMaterialsInappropriateContent from "./ContentOptions/Additional
 import AdditionalMaterialsModeration from "./ContentOptions/AdditionalMaterialsModeration";
 import AdditionalMaterialsRateLimit from "./ContentOptions/AdditionalMaterialsRateLimit";
 import AdditionalMaterialsStartAgain from "./ContentOptions/AdditionalMaterialsStartAgain";
+import AdditionalMaterialsThreatDetected from "./ContentOptions/AdditionalMaterialsThreatDetected";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
 import DemoInterstitialDialog from "./ContentOptions/DemoInterstitialDialog";
@@ -64,7 +65,7 @@ const dialogTitlesAndIcons: Record<
     iconName: null,
   },
   "additional-materials-threat-detected": {
-    title: "Inappropriate content detected",
+    title: "",
     iconName: null,
   },
   "additional-materials-rate-limit": {
@@ -167,9 +168,7 @@ const DialogContents = ({
               <AdditionalMaterialsModeration closeDialog={closeDialog} />
             )}
             {dialogWindow === "additional-materials-threat-detected" && (
-              <AdditionalMaterialsInappropriateContent
-                closeDialog={closeDialog}
-              />
+              <AdditionalMaterialsThreatDetected closeDialog={closeDialog} />
             )}
             {dialogWindow === "additional-materials-rate-limit" && (
               <AdditionalMaterialsRateLimit closeDialog={closeDialog} />
