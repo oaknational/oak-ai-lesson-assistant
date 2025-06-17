@@ -22,6 +22,8 @@ import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 import { ChatStartForm } from "./chat-start-form";
 import EmptyScreenAccordion from "./empty-screen-accordion";
 
+import { createStartingPromptFromSearchParams } from "./aila-start/search-params-utils";
+
 const log = aiLogger("chat");
 
 export const exampleMessages = [
@@ -215,31 +217,3 @@ export function ChatStart({
   );
 }
 
-function createStartingPromptFromSearchParams(
-  keyStage?: string,
-  subject?: string,
-  unitTitle?: string,
-  searchExpression?: string,
-): string {
-  let prompt = "Create a lesson plan";
-
-  if (keyStage) {
-    prompt += ` for ${keyStage}`;
-  }
-
-  if (subject) {
-    prompt += ` about ${subject}`;
-  }
-
-  if (unitTitle) {
-    prompt += `, focusing on the unit "${unitTitle}"`;
-  }
-
-  if (searchExpression) {
-    prompt += ` titled "${searchExpression}"`;
-  }
-
-  prompt += ".";
-
-  return prompt.trim();
-}

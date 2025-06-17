@@ -7,7 +7,6 @@ import { aiLogger } from "@oakai/logger";
 
 import { useUser } from "@clerk/nextjs";
 import {
-  OakBox,
   OakFlex,
   OakHeading,
   OakP,
@@ -19,15 +18,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 
-import { useDemoUser } from "@/components/ContextProviders/Demo";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
 
-import { useDialog } from "../DialogContext";
-import ChatPanelDisclaimer from "./chat-panel-disclaimer";
-import EmptyScreenAccordion from "./empty-screen-accordion";
+import ChatPanelDisclaimer from "../chat-panel-disclaimer";
+import EmptyScreenAccordion from "../empty-screen-accordion";
+
+import { createStartingPromptFromSearchParams } from "./search-params-utils";
 
 const log = aiLogger("chat");
 
@@ -218,31 +217,3 @@ const OakFlex50 = styled(OakFlex)`
   }
 `;
 
-function createStartingPromptFromSearchParams(
-  keyStage?: string,
-  subject?: string,
-  unitTitle?: string,
-  searchExpression?: string,
-): string {
-  let prompt = "Create a lesson plan";
-
-  if (keyStage) {
-    prompt += ` for ${keyStage}`;
-  }
-
-  if (subject) {
-    prompt += ` about ${subject}`;
-  }
-
-  if (unitTitle) {
-    prompt += `, focusing on the unit "${unitTitle}"`;
-  }
-
-  if (searchExpression) {
-    prompt += ` titled "${searchExpression}"`;
-  }
-
-  prompt += ".";
-
-  return prompt.trim();
-}
