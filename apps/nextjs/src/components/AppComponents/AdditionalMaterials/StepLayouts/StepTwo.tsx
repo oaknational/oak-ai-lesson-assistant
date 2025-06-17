@@ -52,37 +52,50 @@ const StepTwo = ({
     ? resourceType.displayName.toLowerCase()
     : null;
 
-  const validateInputs = () => {
-    if (!title && !subject && !year) {
-      setShowValidationError(
-        `Please provide a year group, subject and lesson details, so that Aila has the right context for your ${docTypeName}.`,
-      );
-      return false;
-    } else if (!year && !subject) {
-      setShowValidationError(
-        `Please select a year group and subject, so that Aila has the right context for your ${docTypeName}.`,
-      );
-      return false;
-    } else if (!year) {
-      setShowValidationError(
-        `Please select a year group, so that Aila has the right context for your ${docTypeName}.`,
-      );
-      return false;
-    } else if (!subject) {
-      setShowValidationError(
-        `Please select a subject, so that Aila has the right context for your ${docTypeName}.`,
-      );
-      return false;
-    } else if (!title) {
-      setShowValidationError(
-        `Please provide your lesson details, so that Aila has the right context for your ${docTypeName}.`,
-      );
-      return false;
-    } else if (title.length < 10) {
-      setShowValidationError(`Please provide a longer lesson title.`);
-      return false;
+  const validateForm = (
+    titleToCheck: string | null | undefined,
+    yearToCheck: string | null | undefined,
+    subjectToCheck: string | null | undefined,
+  ) => {
+    if (!titleToCheck && !subjectToCheck && !yearToCheck) {
+      return {
+        isValid: false,
+        errorMessage: `Please provide a year group, subject and lesson details, so that Aila has the right context for your ${docTypeName}.`,
+      };
+    } else if (!yearToCheck && !subjectToCheck) {
+      return {
+        isValid: false,
+        errorMessage: `Please select a year group and subject, so that Aila has the right context for your ${docTypeName}.`,
+      };
+    } else if (!yearToCheck) {
+      return {
+        isValid: false,
+        errorMessage: `Please select a year group, so that Aila has the right context for your ${docTypeName}.`,
+      };
+    } else if (!subjectToCheck) {
+      return {
+        isValid: false,
+        errorMessage: `Please select a subject, so that Aila has the right context for your ${docTypeName}.`,
+      };
+    } else if (!titleToCheck) {
+      return {
+        isValid: false,
+        errorMessage: `Please provide your lesson details, so that Aila has the right context for your ${docTypeName}.`,
+      };
+    } else if (titleToCheck.length < 10) {
+      return {
+        isValid: false,
+        errorMessage: `Please provide a longer lesson title.`,
+      };
     }
-    return true;
+
+    return { isValid: true, errorMessage: "" };
+  };
+
+  const validateInputs = () => {
+    const { isValid, errorMessage } = validateForm(title, year, subject);
+    setShowValidationError(errorMessage);
+    return isValid;
   };
 
   const updateValidationMessage = (
@@ -98,31 +111,12 @@ const StepTwo = ({
     const yearToCheck = updatedYear ?? year;
     const subjectToCheck = updatedSubject ?? subject;
 
-    if (!titleToCheck && !subjectToCheck && !yearToCheck) {
-      setShowValidationError(
-        `Please provide a year group, subject and lesson details, so that Aila has the right context for your ${docTypeName}.`,
-      );
-    } else if (!yearToCheck && !subjectToCheck) {
-      setShowValidationError(
-        `Please select a year group and subject, so that Aila has the right context for your ${docTypeName}.`,
-      );
-    } else if (!yearToCheck) {
-      setShowValidationError(
-        `Please select a year group, so that Aila has the right context for your ${docTypeName}.`,
-      );
-    } else if (!subjectToCheck) {
-      setShowValidationError(
-        `Please select a subject, so that Aila has the right context for your ${docTypeName}.`,
-      );
-    } else if (!titleToCheck) {
-      setShowValidationError(
-        `Please provide your lesson details, so that Aila has the right context for your ${docTypeName}.`,
-      );
-    } else if (titleToCheck.length < 10) {
-      setShowValidationError(`Please provide a longer lesson title.`);
-    } else {
-      setShowValidationError(""); // Clear error if all validations pass
-    }
+    const { errorMessage } = validateForm(
+      titleToCheck,
+      yearToCheck,
+      subjectToCheck,
+    );
+    setShowValidationError(errorMessage);
   };
 
   return (
@@ -176,42 +170,17 @@ const StepTwo = ({
               // Set validation as attempted to show messages going forward
               setValidationAttempted(true);
 
-              // Check all validations directly without using updateValidationMessage
-              if (!title && !subject && !year) {
-                setShowValidationError(
-                  `Please provide a year group, subject and lesson details, so that Aila has the right context for your ${docTypeName}.`,
-                );
-                return;
-              } else if (!year && !subject) {
-                setShowValidationError(
-                  `Please select a year group and subject, so that Aila has the right context for your ${docTypeName}.`,
-                );
-                return;
-              } else if (!year) {
-                setShowValidationError(
-                  `Please select a year group, so that Aila has the right context for your ${docTypeName}.`,
-                );
-                return;
-              } else if (!subject) {
-                setShowValidationError(
-                  `Please select a subject, so that Aila has the right context for your ${docTypeName}.`,
-                );
-                return;
-              } else if (!title) {
-                setShowValidationError(
-                  `Please provide your lesson details, so that Aila has the right context for your ${docTypeName}.`,
-                );
-                return;
-              } else if (title.length < 10) {
-                setShowValidationError(`Please provide a longer lesson title.`);
+              const { isValid } = validateForm(title, year, subject);
+              if (!isValid) {
+                validateInputs();
                 return;
               }
 
               void handleSubmitLessonPlan({
-                title: title || "",
-                subject: subject || "",
+                title: title ?? "",
+                subject: subject ?? "",
                 keyStage: "",
-                year: year || "",
+                year: year ?? "",
               });
             }}
             iconName="arrow-right"
