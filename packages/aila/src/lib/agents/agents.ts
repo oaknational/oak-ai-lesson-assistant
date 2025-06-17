@@ -39,6 +39,7 @@ import { identity } from "./prompts/shared/identity";
 import { quizQuestionDesignInstructions } from "./prompts/shared/quizQuestionDesignInstructions";
 import { tier2And3VocabularyDefinitions } from "./prompts/shared/tier2And3VocabularyDefinitions";
 import { starterQuizInstructions } from "./prompts/starterQuizInstructions";
+import { subjectInstructions } from "./prompts/subjectInstructions";
 
 export const agentNames = z.enum([
   "title",
@@ -111,7 +112,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
   subject: {
     type: "prompt",
     name: "subject",
-    prompt: "Specify the subject for this lesson.",
+    prompt: subjectInstructions(),
     schemaForLLM: SubjectSchema,
     schemaStrict: SubjectSchema,
     extractRagData: (lp) => lp.subject,
