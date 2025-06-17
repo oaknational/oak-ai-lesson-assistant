@@ -1,10 +1,7 @@
 import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { aiLogger } from "@oakai/logger";
 
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
-
-import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
 import { handleStoreError } from "../utils/errorHandling";
@@ -21,7 +18,7 @@ export type CreateMaterialSessionParams = {
 };
 
 export const handleCreateMaterialSession =
-  (set: ResourcesSetter, get: ResourcesGetter, track: TrackFns) =>
+  (set: ResourcesSetter, get: ResourcesGetter) =>
   async ({ documentType, mutateAsync }: CreateMaterialSessionParams) => {
     log.info("Creating material session", { documentType });
     const docTypeParsed = additionalMaterialTypeEnum.parse(documentType);
@@ -33,17 +30,13 @@ export const handleCreateMaterialSession =
       });
       set({ id: result.resourceId });
       log.info(get().id, "ID after creation");
-      track.teachingMaterialsSelected({
-        teachingMaterialType:
-          resourceTypesConfig[docTypeParsed].analyticPropertyName,
-        interactionId: result.resourceId,
-        platform: "aila-beta",
-        product: "ai lesson assistant",
-        engagementIntent: "use",
-        eventVersion: "2.0.0",
-        analyticsUseCase: "Teacher",
-        componentType: "create_additional_materials_button",
-      });
+
+      // Use the analytics action function from the store
+      // Pass resource ID directly since it was just created
+      get().actions.analytics.trackMaterialSelected(
+        result.resourceId,
+        docTypeParsed,
+      );
     } catch (error) {
       handleStoreError(set, error, {
         context: "handleCreateMaterialSession",

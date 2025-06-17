@@ -8,7 +8,11 @@ import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/mode
 import { z } from "zod";
 import type { StoreApi } from "zustand";
 
-import type { ComponentTypeValueType } from "@/lib/avo/Avo";
+import type {
+  ComponentTypeValueType,
+  ResourceFileTypeValueType,
+  ResourceTypeValueType,
+} from "@/lib/avo/Avo";
 
 import type { CreateMaterialSessionParams } from "./actionFunctions/handleCreateMaterialSession";
 import type { GenerateMaterialParams } from "./actionFunctions/handleGenerateMaterial";
@@ -88,6 +92,23 @@ export type ResourcesState = {
 
     // History management actions
     undoRefinement: () => void;
+
+    // Analytics actions
+    analytics: {
+      trackMaterialSelected: (
+        resourceId: string,
+        docType: AdditionalMaterialType,
+        componentType?: ComponentTypeValueType,
+      ) => void;
+      trackMaterialRefined: (componentType: ComponentTypeValueType) => void;
+      trackMaterialDownloaded: (
+        componentType?: ComponentTypeValueType,
+        options?: {
+          resourceType?: ResourceTypeValueType[];
+          resourceFileType?: ResourceFileTypeValueType;
+        },
+      ) => void;
+    };
 
     // Reset store to default state
     resetToDefault: () => void;

@@ -3,6 +3,7 @@ import { create } from "zustand";
 import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 
 import { logStoreUpdates } from "../zustandHelpers";
+import { handleAnalytics } from "./actionFunctions/handleAnalytics";
 import { handleCreateMaterialSession } from "./actionFunctions/handleCreateMaterialSession";
 import { handleDownload } from "./actionFunctions/handleDownload";
 import {
@@ -76,7 +77,7 @@ export const createResourcesStore = (track: TrackFns) => {
 
     actions: {
       // Setters
-      setStepNumber: handleSetStepNumber(set, get, track),
+      setStepNumber: handleSetStepNumber(set, get),
       setPageData: handleSetPageData(set, get),
       setGeneration: handleSetGeneration(set, get),
       setDocType: handleSetDocType(set, get),
@@ -96,15 +97,18 @@ export const createResourcesStore = (track: TrackFns) => {
       resetFormState: handleResetFormState(set, get),
 
       // Business logic actions
-      submitLessonPlan: handleSubmitLessonPlan(set, get, track),
+      submitLessonPlan: handleSubmitLessonPlan(set, get),
       generateMaterial: handleGenerateMaterial(set, get),
-      refineMaterial: handleRefineMaterial(set, get, track),
-      downloadMaterial: handleDownload(set, get, track),
+      refineMaterial: handleRefineMaterial(set, get),
+      downloadMaterial: handleDownload(set, get),
 
       // History management actions
-      undoRefinement: handleUndoRefinement(set, get, track),
+      undoRefinement: handleUndoRefinement(set, get),
 
-      createMaterialSession: handleCreateMaterialSession(set, get, track),
+      createMaterialSession: handleCreateMaterialSession(set, get),
+
+      // Analytics actions
+      analytics: handleAnalytics(set, get, track),
 
       // Reset store to default state
       resetToDefault: () =>

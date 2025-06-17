@@ -1,9 +1,4 @@
-import {
-  getResourceType,
-  resourceTypesConfig,
-  subjectSlugMap,
-  yearSlugMap,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { PartialLessonPlanFieldKeyArraySchema } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
@@ -14,9 +9,6 @@ import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
 import invariant from "tiny-invariant";
-
-import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
-import { getModerationTypes } from "@/lib/analytics/helpers";
 
 import { type ResourcesGetter, type ResourcesSetter } from "../types";
 import { handleStoreError } from "../utils/errorHandling";
@@ -146,7 +138,7 @@ const updateMaterialSessionWithLessonId = async (
 };
 
 export const handleSubmitLessonPlan =
-  (set: ResourcesSetter, get: ResourcesGetter, track: TrackFns) =>
+  (set: ResourcesSetter, get: ResourcesGetter) =>
   async ({
     title,
     subject,
@@ -156,7 +148,7 @@ export const handleSubmitLessonPlan =
     updateSessionMutateAsync,
   }: SubmitLessonPlanParams) => {
     const { setIsLoadingLessonPlan } = get().actions;
-    const { docType, id: resourceId, formState } = get();
+    const { docType, id: resourceId } = get();
 
     setIsLoadingLessonPlan(true);
 
@@ -179,33 +171,7 @@ export const handleSubmitLessonPlan =
         result.lessonId,
         updateSessionMutateAsync,
       );
-      invariant(docType, "Document type is required for analytics");
-      invariant(resourceId, "Resource ID is required for analytics");
-      invariant(formState.subject, "Subject is required for analytics");
-      invariant(formState.year, "Year is required for analytics");
-      invariant(result.moderation, "Moderation is required for analytics");
-      invariant(result.lesson?.title, "Lesson title is required for analytics");
-
-      track.teachingMaterialsRefined({
-        teachingMaterialType: resourceTypesConfig[docType].analyticPropertyName,
-        interactionId: resourceId, // ID of the material being refined
-        platform: "aila-beta",
-        product: "ai lesson assistant",
-        engagementIntent: "refine",
-        componentType: "generate_overview",
-        eventVersion: "2.0.0",
-        analyticsUseCase: "Teacher",
-        subjectSlug: subjectSlugMap[formState.subject] ?? formState.subject,
-        subjectTitle: formState.subject,
-        yearGroupName: formState.year,
-        yearGroupSlug: yearSlugMap[formState.year] ?? formState.year,
-        lessonPlanTitle: result.lesson?.title,
-        moderatedContentType: getModerationTypes(
-          result.moderation?.categories
-            ? { ...result.moderation, type: "moderation" as const }
-            : undefined,
-        ),
-      });
+      get().actions.analytics.trackMaterialRefined("generate_overview");
     } catch (error: unknown) {
       handleStoreError(set, error, { context: "handleSubmitLessonPlan" });
       log.error("Error handling lesson plan");

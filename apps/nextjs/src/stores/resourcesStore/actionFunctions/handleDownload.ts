@@ -1,21 +1,14 @@
-import {
-  resourceTypesConfig,
-  subjectSlugMap,
-  yearSlugMap,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { aiLogger } from "@oakai/logger";
 
 import invariant from "tiny-invariant";
-
-import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
-import { getModerationTypes } from "@/lib/analytics/helpers";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
 
 const log = aiLogger("additional-materials");
 
 export const handleDownload =
-  (set: ResourcesSetter, get: ResourcesGetter, track: TrackFns) => async () => {
+  (set: ResourcesSetter, get: ResourcesGetter) => async () => {
     // Clear any existing generation
     set({
       isDownloading: true,
@@ -26,16 +19,10 @@ export const handleDownload =
       docType,
       id,
       pageData: { lessonPlan },
-      formState,
-      moderation,
       generation,
     } = get();
 
     invariant(docType, "Document type is required for download");
-    invariant(id, "Resource ID is required for analytics");
-    invariant(formState.subject, "Resource ID is required for analytics");
-    invariant(formState.year, "Resource ID is required for analytics");
-    invariant(lessonPlan.title, "Lesson plan is required for analytics");
 
     const response = await fetch("/api/additional-resources-download", {
       method: "POST",
@@ -62,24 +49,5 @@ export const handleDownload =
     link.click();
     window.URL.revokeObjectURL(url);
 
-    track.teachingMaterialDownloaded({
-      teachingMaterialType: resourceTypesConfig[docType].analyticPropertyName,
-      interactionId: id,
-      platform: "aila-beta",
-      product: "ai lesson assistant",
-      engagementIntent: "use",
-      componentType: "download_button",
-      eventVersion: "2.0.0",
-      analyticsUseCase: "Teacher",
-      subjectSlug: subjectSlugMap[formState.subject] ?? formState.subject,
-      subjectTitle: formState.subject,
-      yearGroupName: formState.year,
-      yearGroupSlug: yearSlugMap[formState.year] ?? formState.year,
-      lessonPlanTitle: lessonPlan.title,
-      resourceType: ["teaching material"],
-      resourceFileType: "all",
-      moderatedContentType: getModerationTypes(
-        moderation ? { ...moderation, type: "moderation" as const } : undefined,
-      ),
-    });
+    get().actions.analytics.trackMaterialDownloaded("download_button");
   };
