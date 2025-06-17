@@ -23,22 +23,34 @@ export function createStartingPromptFromSearchParams(
   unitTitle?: string,
   searchExpression?: string,
 ): string {
-  let prompt = "Create a lesson plan";
-
-  if (keyStage) {
-    prompt += ` for ${keyStage}`;
-  }
-
-  if (subject) {
-    prompt += ` about ${subject}`;
-  }
-
-  if (unitTitle) {
-    prompt += `, focusing on the unit "${unitTitle}"`;
-  }
+  let prompt = "Create a lesson plan on";
 
   if (searchExpression) {
-    prompt += ` titled "${searchExpression}"`;
+    prompt += ` ${searchExpression}`;
+  } else {
+    prompt += ` [insert title here]`;
+  }
+
+  // Always add "for" if we have any context info
+  if (keyStage || subject || unitTitle) {
+    prompt += " for";
+
+    if (keyStage) {
+      prompt += ` ${keyStage.toUpperCase()}`;
+    }
+    
+    if (subject) {
+      const capitalizedSubject = subject.charAt(0).toUpperCase() + subject.slice(1);
+      prompt += ` ${capitalizedSubject}`;
+    }
+
+    if (unitTitle) {
+      if (keyStage || subject) {
+        prompt += ` unit "${unitTitle}"`;
+      } else {
+        prompt += ` the unit "${unitTitle}"`;
+      }
+    }
   }
 
   prompt += ".";
