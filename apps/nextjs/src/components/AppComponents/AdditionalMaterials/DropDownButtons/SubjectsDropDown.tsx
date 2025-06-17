@@ -9,19 +9,18 @@ interface SubjectsDropDownProps {
   setActiveDropdown: (value: string | null) => void;
 }
 
+const subjectOptions = [
+  ...Object.values(subjectNameMap)
+    .filter((subject): subject is string => subject !== undefined)
+    .sort((a, b) => a.localeCompare(b)),
+  "Other",
+];
 export const SubjectsDropDown = ({
   selectedSubject,
   setSelectedSubject,
   activeDropdown,
   setActiveDropdown,
 }: SubjectsDropDownProps) => {
-  const subjectOptions = [
-    ...Object.values(subjectNameMap)
-      .filter((subject): subject is string => subject !== undefined)
-      .sort((a, b) => a.localeCompare(b)),
-    "Other",
-  ];
-
   return (
     <SharedDropDown
       selectedValue={selectedSubject}

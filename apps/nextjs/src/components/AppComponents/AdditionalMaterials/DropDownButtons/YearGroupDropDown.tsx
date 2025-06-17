@@ -9,19 +9,18 @@ interface YearGroupDropDownProps {
   setActiveDropdown: (value: string | null) => void;
 }
 
+const yearOptions = [
+  ...Object.values(yearNameMap).filter(
+    (year): year is string => year !== undefined,
+  ),
+  "Other",
+];
 export const YearGroupDropDown = ({
   selectedYear,
   setSelectedYear,
   activeDropdown,
   setActiveDropdown,
 }: YearGroupDropDownProps) => {
-  const yearOptions = [
-    ...Object.values(yearNameMap).filter(
-      (year): year is string => year !== undefined,
-    ),
-    "Other",
-  ];
-
   return (
     <SharedDropDown
       selectedValue={selectedYear}
