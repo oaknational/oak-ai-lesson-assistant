@@ -16,8 +16,11 @@ import {
   OakLoadingSpinner,
   OakP,
   OakPrimaryButton,
+  OakPrimaryInvertedButton,
   OakSecondaryButton,
+  OakSmallTertiaryInvertedButton,
   OakSpan,
+  OakTertiaryInvertedButton,
 } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/nextjs";
 import styled, { css } from "styled-components";
@@ -143,7 +146,7 @@ const StepFour = () => {
     return null;
   };
   // if loading, show loading
-  if (isResourcesLoading || isResourceRefining) {
+  if (isResourcesLoading && !isResourceRefining) {
     return (
       <StepLoadingScreen
         docTypeName={resourceType?.displayName}
@@ -162,47 +165,45 @@ const StepFour = () => {
       <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       <ResourcesFooter>
         <OakFlex $flexDirection="column" $width="100%">
-          {refinementHistory.length > 0 && (
+          {refinementHistory.length > 0 && !isResourceRefining && (
             <OakFlex
               $gap="all-spacing-2"
               $alignItems="center"
               $mb="space-between-m"
             >
-              <OakP $font="body-2" $color="icon-success">
+              <OakP
+                $mr={"space-between-m"}
+                $font="body-2"
+                $color="icon-success"
+              >
                 Done!
               </OakP>
-              <button
+              <OakSmallTertiaryInvertedButton
                 onClick={undoRefinement}
                 disabled={
                   isResourcesLoading || isResourceRefining || isDownloading
                 }
+                iconName={"chevron-left"}
               >
-                <OakFlex $alignItems="center">
-                  <OakIcon iconName="cross" iconWidth="all-spacing-4" />
-                  <OakSpan $font="body-2">Undo</OakSpan>
-                </OakFlex>
-              </button>
+                Undo
+              </OakSmallTertiaryInvertedButton>
             </OakFlex>
           )}
           <OakFlex $justifyContent="space-between" $width="100%">
             {isFooterAdaptOpen ? (
               <OakFlex
-                $flexDirection="column"
+                $flexDirection="row-reverse"
                 $gap="all-spacing-5"
                 $width="100%"
+                $justifyContent="space-between"
+                $alignItems="center"
               >
-                <button onClick={() => setIsFooterAdaptOpen(false)}>
-                  <OakFlex $alignItems="center" $gap="all-spacing-2">
-                    <OakIcon iconName="cross" />
-                    <OakSpan
-                      $color="black"
-                      $textDecoration="none"
-                      $font="body-2"
-                    >
-                      Close
-                    </OakSpan>
-                  </OakFlex>
-                </button>
+                <OakPrimaryInvertedButton
+                  onClick={() => setIsFooterAdaptOpen(false)}
+                  iconName="cross"
+                >
+                  Close
+                </OakPrimaryInvertedButton>
 
                 <OakFlex $gap="all-spacing-2" $flexWrap="wrap">
                   {isResourceRefining ? (
@@ -261,7 +262,7 @@ const StepFour = () => {
                       }
                     >
                       <OakFlex $alignItems="center" $gap="all-spacing-1">
-                        <OakP $font="body-1-bold">Adapt</OakP>
+                        <OakP $font="body-1-bold">Modify</OakP>
                         <AiIcon />
                       </OakFlex>
                     </OakSecondaryButton>
@@ -282,6 +283,7 @@ const StepFour = () => {
                   $display={["flex", "none"]}
                   $width={"100%"}
                   $gap="all-spacing-2"
+                  $flexDirection={["row-reverse", "row"]}
                 >
                   <MockOakSecondaryButtonWithJustIcon
                     onClick={() => void handleDownloadMaterial()}
@@ -309,8 +311,7 @@ const StepFour = () => {
                   </OakSecondaryButton>
                   <OakPrimaryButton
                     onClick={() => setStepNumber(0)}
-                    iconName="arrow-right"
-                    isTrailingIcon={true}
+                    iconName="arrow-left"
                   >
                     Start again
                   </OakPrimaryButton>

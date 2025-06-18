@@ -32,7 +32,7 @@ export const handleRefineMaterial =
   async ({ refinement, mutateAsync }: RefineMaterialParams) => {
     const { setIsResourceRefining } = get().actions;
 
-    console.log("🔄 Setting isResourceRefining to TRUE");
+    log.info("🔄 Setting isResourceRefining to TRUE");
     setIsResourceRefining(true);
 
     const docType = get().docType;
@@ -91,7 +91,7 @@ export const handleRefineMaterial =
       Sentry.captureException(error);
       throw error;
     } finally {
-      console.log("🔄 Setting isResourceRefining to FALSE");
+      log.info("🔄 Setting isResourceRefining to FALSE");
       setIsResourceRefining(false);
     }
   };

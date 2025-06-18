@@ -14,6 +14,9 @@ const InlineButton = ({ onClick, children }: Readonly<InlineButtonProps>) => {
       $borderRadius="border-radius-m"
       $ph="inner-padding-xs"
       $pv="inner-padding-ssx"
+      $display="inline-flex"
+      $alignSelf="flex-start"
+      $width="fit-content"
       onClick={onClick}
     >
       <OakP $color="blue" $font="body-2">
