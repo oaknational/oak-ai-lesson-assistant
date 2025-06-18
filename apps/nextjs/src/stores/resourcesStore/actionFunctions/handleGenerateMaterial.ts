@@ -72,7 +72,9 @@ export const handleGenerateMaterial =
       });
 
       log.info("Material generated successfully");
-      // Step navigation is handled by the calling component
+      get().actions.analytics.trackMaterialRefined(
+        "create_teaching_material_button",
+      );
     } catch (error) {
       get().actions.setIsResourcesLoading(false);
       handleStoreError(set, error, {
