@@ -62,6 +62,7 @@ export function AilaStart({
   const { trackEvent } = useAnalytics();
   const [input, setInput] = useState("");
   const router = useRouter();
+  const { track } = useAnalytics();
 
   const createAppSession = trpc.chat.appSessions.create.useMutation();
   const trpcUtils = trpc.useUtils();
@@ -185,6 +186,17 @@ export function AilaStart({
                 href="/aila/teaching-materials"
                 iconName="arrow-right"
                 isTrailingIcon={true}
+                onClick={() => {
+                  track.createTeachingMaterialsInitiated({
+                    platform: "aila-beta",
+                    product: "ai lesson assistant",
+                    engagementIntent: "use",
+                    componentType: "create_additional_materials_button",
+                    eventVersion: "2.0.0",
+                    analyticsUseCase: "Teacher",
+                    isLoggedIn: Boolean(user),
+                  });
+                }}
               >
                 Create teaching materials
               </OakPrimaryButton>

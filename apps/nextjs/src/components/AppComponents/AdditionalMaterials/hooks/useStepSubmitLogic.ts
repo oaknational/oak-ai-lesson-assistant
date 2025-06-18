@@ -26,7 +26,6 @@ const useStepSubmitLogic = () => {
   const handleSubmitLessonPlan = async (params: {
     title: string;
     subject: string;
-    keyStage: string;
     year: string;
   }) => {
     setStepNumber(2);

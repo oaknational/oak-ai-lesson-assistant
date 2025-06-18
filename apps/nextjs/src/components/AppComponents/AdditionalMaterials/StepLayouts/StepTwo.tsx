@@ -8,6 +8,7 @@ import {
   OakPrimaryButton,
   OakTextInput,
 } from "@oaknational/oak-components";
+import invariant from "tiny-invariant";
 
 import {
   useResourcesActions,
@@ -27,7 +28,6 @@ import ResourcesFooter from "../ResourcesFooter";
 type SubmitLessonPlanParams = {
   title: string;
   subject: string;
-  keyStage: string;
   year: string;
 };
 
@@ -124,7 +124,7 @@ const StepTwo = ({
       <OakFlex $flexDirection={"column"} $gap={"space-between-m"}>
         <OakFlex $flexDirection={"row"} $gap={"space-between-m"}>
           <YearGroupDropDown
-            selectedYear={year ?? ""}
+            selectedYear={year}
             setSelectedYear={(year: string) => {
               setYear(year);
               updateValidationMessage(undefined, year, undefined);
@@ -133,7 +133,7 @@ const StepTwo = ({
             setActiveDropdown={setActiveDropdown}
           />
           <SubjectsDropDown
-            selectedSubject={subject ?? ""}
+            selectedSubject={subject}
             setSelectedSubject={(subject: string) => {
               setSubject(subject);
               updateValidationMessage(undefined, undefined, subject);
@@ -158,7 +158,7 @@ const StepTwo = ({
 
       <ResourcesFooter>
         <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <button onClick={() => setStepNumber(0)}>
+          <button onClick={() => setStepNumber(0, "back_a_step_button")}>
             <OakFlex $alignItems="center" $gap="all-spacing-2">
               <OakIcon iconName="chevron-left" />
               Back a step
@@ -175,12 +175,15 @@ const StepTwo = ({
                 validateInputs();
                 return;
               }
+              invariant(
+                title && subject && year,
+                "Title, subject, and year must be provided to generate lesson plan",
+              );
 
               void handleSubmitLessonPlan({
-                title: title ?? "",
-                subject: subject ?? "",
-                keyStage: "",
-                year: year ?? "",
+                title: title,
+                subject: subject,
+                year: year,
               });
             }}
             iconName="arrow-right"
