@@ -18,7 +18,6 @@ const log = aiLogger("additional-materials");
 export type SubmitLessonPlanParams = {
   title: string;
   subject: string;
-  keyStage: string;
   year: string;
   mutateAsync: UseMutateAsyncFunction<
     GeneratePartialLessonPlanResponse,
@@ -38,7 +37,7 @@ export type SubmitLessonPlanParams = {
 const buildLessonPlanInput = (
   title: string,
   subject: string,
-  keyStage: string,
+
   year: string,
   docType: string | null,
 ): PartialLessonContextSchemaType => {
@@ -70,7 +69,6 @@ const buildLessonPlanInput = (
   return {
     title: title,
     subject: subject,
-    keyStage: keyStage,
     year: year,
     lessonParts: parsedLessonPartsToGenerate,
   };
@@ -144,7 +142,7 @@ export const handleSubmitLessonPlan =
   async ({
     title,
     subject,
-    keyStage,
+
     year,
     mutateAsync,
     updateSessionMutateAsync,
@@ -152,18 +150,17 @@ export const handleSubmitLessonPlan =
     const { setIsLoadingLessonPlan } = get().actions;
     const { docType, id: resourceId } = get();
 
-    // Change step first for immediate feedback - stay on current step during loading
     setIsLoadingLessonPlan(true);
 
+    invariant(resourceId, "Resource ID must be defined");
+    invariant(
+      updateSessionMutateAsync,
+      "Update session mutate function must be defined",
+    );
+
     try {
-      log.info("Processing lesson plan", { title, subject, keyStage, year });
-      const apiInput = buildLessonPlanInput(
-        title,
-        subject,
-        keyStage,
-        year,
-        docType,
-      );
+      log.info("Processing lesson plan", { title, subject, year });
+      const apiInput = buildLessonPlanInput(title, subject, year, docType);
       const result = await mutateAsync(apiInput);
 
       updateStoreWithLessonPlan(set, result);
@@ -174,6 +171,7 @@ export const handleSubmitLessonPlan =
         result.lessonId,
         updateSessionMutateAsync,
       );
+      get().actions.analytics.trackMaterialRefined("generate_overview");
     } catch (error: unknown) {
       handleStoreError(set, error, { context: "handleSubmitLessonPlan" });
       log.error("Error handling lesson plan");
