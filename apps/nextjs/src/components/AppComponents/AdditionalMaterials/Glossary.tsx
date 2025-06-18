@@ -30,13 +30,12 @@ export const Glossary = ({
           key={`${item.term}-${index}`}
           $flexDirection="row"
           $alignItems="flex-start"
-          $mb="space-between-s"
+          $mb="space-between-xs"
           $flexWrap="wrap"
         >
           <OakP $font="body-2-bold">
             {item.term}
             <OakSpan $font="body-2">
-              {" "}
               -{" "}
               {item.definition.charAt(0).toUpperCase() +
                 item.definition.slice(1)}
