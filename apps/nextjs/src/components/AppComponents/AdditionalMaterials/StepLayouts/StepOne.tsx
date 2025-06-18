@@ -4,12 +4,12 @@ import { getResourceTypes } from "@oakai/additional-materials/src/documents/addi
 
 import {
   OakFlex,
+  OakIcon,
   OakLabel,
   OakP,
   OakPrimaryButton,
   OakRadioButton,
   OakRadioGroup,
-  OakSecondaryButton,
 } from "@oaknational/oak-components";
 
 import {
@@ -98,7 +98,7 @@ const StepOne = ({
 
       <ResourcesFooter>
         <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <button onClick={() => setStepNumber(0)}>
+          <button onClick={() => console.log("Back a step clicked")}>
             {/* Todo: Link this up to the previous step when for launch */}
             <OakFlex $alignItems="center" $gap="all-spacing-2">
               <OakIcon iconName="chevron-left" />
