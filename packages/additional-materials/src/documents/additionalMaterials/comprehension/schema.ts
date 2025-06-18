@@ -1,7 +1,11 @@
 import { z } from "zod";
 
 import { LessonPlanSchema } from "../../../../../aila/src/protocol/schema";
-import { readingAgeRefinement } from "../glossary/schema";
+
+export const readingAgeRefinement = [
+  "lowerReadingAge",
+  "increaseReadingAge",
+] as const;
 
 export const baseContext = {
   lessonPlan: LessonPlanSchema,

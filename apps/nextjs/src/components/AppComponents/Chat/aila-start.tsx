@@ -63,6 +63,7 @@ export function AilaStart({
   const [input, setInput] = useState("");
   const router = useRouter();
   const { track } = useAnalytics();
+  const { user } = useUser();
 
   const createAppSession = trpc.chat.appSessions.create.useMutation();
   const trpcUtils = trpc.useUtils();
