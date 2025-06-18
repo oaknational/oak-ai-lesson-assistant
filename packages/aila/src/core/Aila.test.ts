@@ -178,6 +178,7 @@ describe("Aila", () => {
     });
 
     // Calling initialise method successfully initializes the Aila instance
+    // TODO: looks like this is timing out
     it("should successfully initialize the Aila instance when calling the initialise method, and by default not set the lesson plan to initial values", async () => {
       const ailaInstance = new Aila({
         document: {
@@ -193,7 +194,9 @@ describe("Aila", () => {
         plugins: [],
       });
 
+      console.log("Initializing Aila instance...");
       await ailaInstance.initialise();
+      console.log("Aila instance initialized successfully.");
 
       expect(ailaInstance).toBeInstanceOf(Aila);
       expect(ailaInstance.document.content.title).not.toBeDefined();

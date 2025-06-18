@@ -25,7 +25,6 @@ import { trpc } from "@/utils/trpc";
 
 import ChatPanelDisclaimer from "../chat-panel-disclaimer";
 import EmptyScreenAccordion from "../empty-screen-accordion";
-
 import { createStartingPromptFromSearchParams } from "./search-params-utils";
 
 const log = aiLogger("chat");
@@ -216,4 +215,3 @@ const OakFlex50 = styled(OakFlex)`
     width: 100%;
   }
 `;
-
