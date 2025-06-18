@@ -1,5 +1,3 @@
-import React from "react";
-
 import type { StarterQuiz as StarterQuizType } from "@oakai/additional-materials/src/documents/additionalMaterials/starterQuiz/schema";
 
 import { OakBox, OakFlex, OakP, OakSpan } from "@oaknational/oak-components";
@@ -12,7 +10,7 @@ type QuizProps = {
   quizType: "starter" | "exit";
 };
 
-export const Quiz = ({ action, generation, quizType }: QuizProps) => {
+export const Quiz = ({ generation, quizType }: QuizProps) => {
   return (
     <OakFlex $flexDirection={"column"} $width={"100%"}>
       <OakP $font="heading-6">
@@ -23,7 +21,10 @@ export const Quiz = ({ action, generation, quizType }: QuizProps) => {
       </OakP>
 
       {generation.questions.map((question, questionIndex) => (
-        <OakBox key={questionIndex} $mb="space-between-m">
+        <OakBox
+          key={`${questionIndex}-${question.question}`}
+          $mb="space-between-m"
+        >
           <OakP $font="heading-7">
             {questionIndex + 1}. {question.question}
           </OakP>
@@ -34,7 +35,7 @@ export const Quiz = ({ action, generation, quizType }: QuizProps) => {
 
             return (
               <OakFlex
-                key={optionIndex}
+                key={`${option.text}-${optionIndex}`}
                 $alignItems="flex-start"
                 $mb="space-between-xs"
               >

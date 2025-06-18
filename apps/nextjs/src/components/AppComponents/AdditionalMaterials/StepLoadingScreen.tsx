@@ -1,6 +1,3 @@
-import type { AdditionalMaterialType } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
-
 import {
   OakBox,
   OakFlex,
@@ -36,7 +33,7 @@ const StepLoadingScreen = ({
           <>
             <OakP $font="heading-6">Generating lesson details</OakP>
             <OakP $mb={"space-between-m"} $font="body-2">
-              {`These details will ensure Aila has the right context for your ${docTypeName ? docTypeName : "teaching material"}.`}
+              {`These details will ensure Aila has the right context for your ${docTypeName ?? "teaching material"}.`}
             </OakP>
             <OakLoadingSpinner $width="all-spacing-10" />
           </>

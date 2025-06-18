@@ -80,7 +80,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
 
           <OakOL>
             {pageData.lessonPlan.keyLearningPoints?.map((point, index) => (
-              <OakLI $font="body-2" key={index}>
+              <OakLI $font="body-2" key={`${index}-${point}`}>
                 {point}
               </OakLI>
             ))}
