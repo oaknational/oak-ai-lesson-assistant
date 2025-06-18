@@ -53,6 +53,7 @@ const StepOne = () => {
                 setGeneration(null);
               }}
               $flexDirection="column"
+              $gap={"space-between-m"}
             >
               {resourceTypes.map((resourceType) => (
                 <OakLabel key={resourceType.id}>
@@ -64,7 +65,7 @@ const StepOne = () => {
                     label={
                       <OakFlex
                         $flexDirection="column"
-                        $gap="all-spacing-2"
+                        // $gap="all-spacing-2"
                         $ml="space-between-ssx"
                       >
                         <OakP $font="body-2-bold">
