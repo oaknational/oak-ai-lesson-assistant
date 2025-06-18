@@ -71,7 +71,7 @@ export const resourceTypesConfig = {
 
     // Frontend config
     id: "additional-comprehension",
-    displayName: "Comprehension tasks",
+    displayName: "Comprehension task",
     description: "Comprehension text with accompanying questions.",
     refinementOptions: readingAgeRefinementOptions,
     isAvailable: true,

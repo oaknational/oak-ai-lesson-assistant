@@ -165,7 +165,7 @@ export function AilaStart({
                 iconName="arrow-right"
                 isTrailingIcon={true}
               >
-                Create lesson
+                Create a lesson
               </OakPrimaryButton>
             </OakFlex>
             <Card>
