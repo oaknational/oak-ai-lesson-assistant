@@ -37,8 +37,10 @@ export class AilaStreamHandler {
     });
   }
 
-  private logStreamingStep(step: string) {
-    log.info(`Streaming step: ${step}`);
+  private async span(step: string, handler: () => Promise<void>) {
+    log.info(`${step} started`);
+    await this._chat.aila.tracing.span(step, { op: "aila.step" }, handler);
+    log.info(`${step} finished`);
   }
 
   private async checkForThreats(
@@ -84,38 +86,38 @@ export class AilaStreamHandler {
     this.setupController(controller);
     try {
       if (!this._chat.aila.options.useAgenticAila) {
-        log.info("Setting up generation");
-        await this._chat.setupGeneration();
-        this.logStreamingStep("Setup generation complete");
+        await this.span("set-up-generation", async () => {
+          await this._chat.setupGeneration();
+        });
       } else {
-        log.info("Initialising Chunks");
-        this._chat.initialiseChunks();
-        this.logStreamingStep("Initialised chunks");
+        await this.span("initialise-chunks", async () => {
+          this._chat.initialiseChunks();
+        });
       }
 
-      log.info("Checking for threats for the user input");
-      await this.checkForThreats();
-      this.logStreamingStep("Check for threats complete");
+      await this.span("check-threats", async () => {
+        await this.checkForThreats();
+      });
 
-      log.info("Setting initial state");
-      await this._chat.handleSettingInitialState();
-      this.logStreamingStep("Handle initial state complete");
+      await this.span("set-initial-state", async () => {
+        await this._chat.handleSettingInitialState();
+      });
 
-      log.info("Handling subject warning");
-      await this._chat.handleSubjectWarning();
-      this.logStreamingStep("Handle subject warning complete");
+      await this.span("handle-subject-warning", async () => {
+        await this._chat.handleSubjectWarning();
+      });
 
       if (this._chat.aila.options.useAgenticAila) {
-        log.info("Start Agent stream");
-        await this.startAgentStream();
-        this.logStreamingStep("Agent stream complete");
+        await this.span("start-agent-stream", async () => {
+          await this.startAgentStream();
+        });
       } else {
-        log.info("Starting LLM stream");
-        await this.startLLMStream();
-        this.logStreamingStep("Start LLM stream complete");
-        log.info("Reading from stream");
-        await this.readFromStream(abortController);
-        this.logStreamingStep("Read from stream complete");
+        await this.span("start-llm-stream", async () => {
+          await this.startLLMStream();
+        });
+        await this.span("read-from-stream", async () => {
+          await this.readFromStream(abortController);
+        });
       }
 
       log.info(
@@ -141,8 +143,9 @@ export class AilaStreamHandler {
       log.info("In finally block", { status, chatId: this._chat.id });
       if (status !== "FAILED") {
         try {
-          log.info("Completing chat");
-          await this._chat.complete();
+          await this.span("chat-completion", async () => {
+            await this._chat.complete();
+          });
           log.info("Chat completed", this._chat.iteration, this._chat.id);
         } catch (e) {
           log.error("Error in complete", e);
@@ -191,7 +194,7 @@ export class AilaStreamHandler {
       userId: this._chat.userId ?? "anonymous",
       chatId: this._chat.id,
       initialDocument: initialDocument,
-      messageHistory: this._chat.messages
+      messageHistoryWithProtocol: this._chat.messages
         .filter((m) => m.role === "user" || m.role === "assistant")
         .map((m) => {
           log.info(m);

@@ -2,6 +2,7 @@ import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import type { AilaErrorReporter } from "../features/errorReporting";
 import type { AilaSnapshotStore } from "../features/snapshotStore";
+import type { AilaTracingService } from "../features/tracing";
 import type {
   AilaAnalyticsFeature,
   AilaModerationFeature,
@@ -70,4 +71,5 @@ export interface AilaServices {
   readonly moderation?: AilaModerationFeature;
   readonly plugins: AilaPlugin[];
   readonly americanisms: AilaAmericanismsFeature;
+  readonly tracing: AilaTracingService;
 }

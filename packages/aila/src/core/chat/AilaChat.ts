@@ -334,6 +334,12 @@ export class AilaChat implements AilaChatService {
     );
   }
 
+  private async span(step: string, handler: () => Promise<void>) {
+    log.info(`${step} started`);
+    await this.aila.tracing.span(step, { op: "aila.step" }, handler);
+    log.info(`${step} finished`);
+  }
+
   /**
    * This method attempts to load the chat from the chosen store.
    * Applicable properties from the loaded chat are then set on the chat
@@ -389,6 +395,19 @@ export class AilaChat implements AilaChatService {
     });
   }
 
+  private async fetchExperimentalPatches() {
+    await fetchExperimentalPatches({
+      fullQuizService: this.fullQuizService,
+      lessonPlan: this._aila.document.content,
+      llmPatches: extractPatches(this.accumulatedText()).validPatches,
+      handlePatch: async (patch) => {
+        await this.enqueue(patch);
+        this.appendExperimentalPatch(patch);
+      },
+      userId: this._userId,
+    });
+  }
+
   public async createChatCompletionStream(messages: Message[]) {
     return this._llmService.createChatCompletionStream({
       model: this._aila.options.model ?? DEFAULT_MODEL,
@@ -409,25 +428,30 @@ export class AilaChat implements AilaChatService {
 
   public async complete() {
     log.info("Starting chat completion");
-    await this.reportUsageMetrics();
-    await fetchExperimentalPatches({
-      fullQuizService: this.fullQuizService,
-      lessonPlan: this._aila.document.content,
-      llmPatches: extractPatches(this.accumulatedText()).validPatches,
-      handlePatch: async (patch) => {
-        await this.enqueue(patch);
-        this.appendExperimentalPatch(patch);
-      },
-      userId: this._userId,
+    await this.span("reportUsageMetrics", async () => {
+      await this.reportUsageMetrics();
     });
-    this.applyEdits();
-    const assistantMessage = this.appendAssistantMessage();
-    await this.enqueueMessageId(assistantMessage.id);
-    await this.saveSnapshot({ messageId: assistantMessage.id });
-    await this.moderate();
-    await this.persistChat();
+    await this.span("fetchExperimentalPatches", async () => {
+      await this.fetchExperimentalPatches();
+    });
+    await this.span("applyEdits", async () => {
+      this.applyEdits();
+    });
+    await this.span("appendAssistantMessage", async () => {
+      const assistantMessage = this.appendAssistantMessage();
+      await this.enqueueMessageId(assistantMessage.id);
+      await this.saveSnapshot({ messageId: assistantMessage.id });
+    });
+    await this.span("moderate", async () => {
+      await this.moderate();
+    });
+    await this.span("persistChat", async () => {
+      await this.persistChat();
+    });
     if (!this.aila.options.useAgenticAila) {
-      await this.persistGeneration("SUCCESS");
+      await this.span("persistGeneration", async () => {
+        await this.persistGeneration("SUCCESS");
+      });
     }
     await this.enqueue({
       type: "comment",

@@ -1,12 +1,8 @@
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
-import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
-import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
-import { aiLogger } from "@oakai/logger";
 
 import {
-  OakBox,
   OakFlex,
   OakHeading,
   OakIcon,
@@ -23,42 +19,16 @@ import {
 } from "@/stores/ResourcesStoreProvider";
 import {
   docTypeSelector,
-  errorSelector,
   isLoadingLessonPlanSelector,
   moderationSelector,
   pageDataSelector,
   threatDetectionSelector,
-  yearSelector,
 } from "@/stores/resourcesStore/selectors";
 
-import { MemoizedReactMarkdownWithStyles } from "../../Chat/markdown";
 import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
 import StepLoadingScreen from "../StepLoadingScreen";
-import { handleDialogSelection } from "./helpers";
-
-type LessonPlanSectionKey = (typeof lessonFieldKeys)[number];
-
-// Type guard to check if a key is a valid lesson part
-function isValidLessonPart(
-  key: LessonPlanSectionKey,
-): key is Extract<
-  LessonPlanSectionKey,
-  | "learningOutcome"
-  | "learningCycles"
-  | "keyLearningPoints"
-  | "misconceptions"
-  | "keywords"
-> {
-  return [
-    "learningOutcome",
-    "learningCycles",
-    "keyLearningPoints",
-    "misconceptions",
-    "keywords",
-  ].includes(key);
-}
 
 export function mapLessonPlanSections(
   lessonPlan: AilaPersistedChat["lessonPlan"],
@@ -66,16 +36,13 @@ export function mapLessonPlanSections(
   return lessonFieldKeys.map((key) => ({ key, data: lessonPlan[key] ?? null }));
 }
 
-const log = aiLogger("additional-materials");
-
 const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
   const moderation = useResourcesStore(moderationSelector);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
-  const year = useResourcesStore(yearSelector);
-  const error = useResourcesStore(errorSelector);
+
   const { setDialogWindow } = useDialog();
 
   // Get resource type from configuration
@@ -92,8 +59,6 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   if (threatDetected) {
     setDialogWindow("additional-materials-threat-detected");
   }
-
-  handleDialogSelection({ threatDetected, error, setDialogWindow });
 
   const hasModeration =
     moderation?.categories && moderation.categories.length > 0;

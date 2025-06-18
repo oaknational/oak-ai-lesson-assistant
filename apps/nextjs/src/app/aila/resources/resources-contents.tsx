@@ -4,16 +4,19 @@ import type { FC } from "react";
 import React, { useEffect } from "react";
 
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
-import { kebabCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 
-import { OakP, OakSpan } from "@oaknational/oak-components";
+import { OakP } from "@oaknational/oak-components";
 
 import StepFour from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepFour";
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
 import StepThree from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepThree";
 import StepTwo from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepTwo";
+import { handleDialogSelection } from "@/components/AppComponents/AdditionalMaterials/StepLayouts/helpers";
 import useStepSubmitLogic from "@/components/AppComponents/AdditionalMaterials/hooks/useStepSubmitLogic";
-import { DialogProvider } from "@/components/AppComponents/DialogContext";
+import {
+  DialogProvider,
+  useDialog,
+} from "@/components/AppComponents/DialogContext";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import ResourcesLayout from "@/components/ResourcesLayout";
@@ -26,6 +29,7 @@ import {
   docTypeSelector,
   pageDataSelector,
   stepNumberSelector,
+  threatDetectionSelector,
   yearSelector,
 } from "@/stores/resourcesStore/selectors";
 
@@ -42,18 +46,30 @@ interface AdditionalMaterialsUserProps {
 const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
+  const threatDetected = useResourcesStore(threatDetectionSelector);
+
   const docType = useResourcesStore(docTypeSelector);
   const year = useResourcesStore(yearSelector);
+  const error = useResourcesStore((state) => state.error);
+
   // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
-  const docTypeName = resourceType?.displayName || null;
+  const docTypeName = resourceType?.displayName ?? null;
   const { resetFormState } = useResourcesActions();
+  const { setDialogWindow } = useDialog();
 
-  const { handleSubmitLessonPlan, handleSubmit } = useStepSubmitLogic();
+  const { handleSubmitLessonPlan, handleSubmit, handleCreateSession } =
+    useStepSubmitLogic();
 
   useEffect(() => {
     resetFormState();
   }, [resetFormState]);
+
+  handleDialogSelection({
+    threatDetected,
+    error,
+    setDialogWindow,
+  });
 
   const titleAreaContent = {
     0: {
@@ -93,7 +109,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   };
 
   const stepComponents = {
-    0: <StepOne />,
+    0: <StepOne handleCreateSession={handleCreateSession} />,
     1: <StepTwo handleSubmitLessonPlan={handleSubmitLessonPlan} />,
     2: <StepThree handleSubmit={handleSubmit} />,
     3: <StepFour />,

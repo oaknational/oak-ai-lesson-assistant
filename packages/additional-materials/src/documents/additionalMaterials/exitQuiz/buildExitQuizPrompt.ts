@@ -1,5 +1,5 @@
 import type { Action, ContextByMaterialType } from "../configSchema";
-import { getLessonDetails } from "../promptHelpers";
+import { getLessonDetails, language } from "../promptHelpers";
 
 export const buildExitQuizPrompt = (
   context: ContextByMaterialType["additional-exit-quiz"],
@@ -63,6 +63,8 @@ AVOID:
 - "All of the above" or "None of the above" options
 - True/false questions
 - Testing trivial or tangential information
+
+${language}
   `;
 };
 
