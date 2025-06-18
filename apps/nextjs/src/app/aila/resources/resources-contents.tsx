@@ -58,8 +58,12 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const { resetFormState } = useResourcesActions();
   const { setDialogWindow } = useDialog();
 
-  const { handleSubmitLessonPlan, handleSubmit, handleCreateSession, handleRefineMaterial } =
-    useStepSubmitLogic();
+  const {
+    handleSubmitLessonPlan,
+    handleSubmit,
+    handleCreateSession,
+    handleRefineMaterial,
+  } = useStepSubmitLogic();
 
   useEffect(() => {
     resetFormState();
@@ -75,7 +79,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
     0: {
       title: "Select teaching material",
       subTitle: (
-        <OakP $font="body-2" $color="grey70">
+        <OakP $font="body-2" $color="text-primary">
           Choose the downloadable resource you'd like to create with Aila for
           your lesson.
         </OakP>
@@ -84,7 +88,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
     1: {
       title: "What are you teaching?",
       subTitle: (
-        <OakP $font="body-2" $color="grey70">
+        <OakP $font="body-2" $color="text-primary">
           The more detail you give, the better suited your resource will be for
           your lesson.
         </OakP>
@@ -93,16 +97,16 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
     2: {
       title: pageData.lessonPlan.title,
       subTitle: (
-        <OakP $font="body-2" $color="grey70">
-          {`Year ${year}`} • {pageData.lessonPlan.subject}
+        <OakP $font="body-2" $color="text-primary">
+          {`${year} • ${pageData.lessonPlan.subject}`}
         </OakP>
       ),
     },
     3: {
       title: pageData.lessonPlan.title,
       subTitle: (
-        <OakP $font="body-2" $color="grey70">
-          {`Year ${year}`} • {pageData.lessonPlan.subject}
+        <OakP $font="body-2" $color="text-primary">
+          {`${year} • ${pageData.lessonPlan.subject}`}
         </OakP>
       ),
     },
