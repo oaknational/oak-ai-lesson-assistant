@@ -67,19 +67,21 @@ const ResourcesLayout = ({
           $left="all-spacing-4"
           $right="all-spacing-4"
           $width="unset"
-          $overflowY={"scroll"}
+          $overflowY={"auto"}
           $mb="space-between-xxxl"
           $pb="inner-padding-xl"
           $maxWidth={"all-spacing-23"}
         >
-          <OakBox $pa={["inner-padding-xl", "inner-padding-xl4"]}>
+          <OakBox
+            $ph={["inner-padding-xl", "inner-padding-xl8"]}
+            $pv={["inner-padding-xl", "inner-padding-xl4"]}
+          >
             <OakFlex
               $bb="border-solid-s"
               $borderColor="grey40"
               $pb="inner-padding-l"
               $mb="space-between-m"
               $flexDirection="column"
-              // $gap="all-spacing-6"
             >
               <OakBox
                 $background="bg-decorative2-subdued"
