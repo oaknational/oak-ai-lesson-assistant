@@ -58,7 +58,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   const { resetFormState } = useResourcesActions();
   const { setDialogWindow } = useDialog();
 
-  const { handleSubmitLessonPlan, handleSubmit, handleCreateSession } =
+  const { handleSubmitLessonPlan, handleSubmit, handleCreateSession, handleRefineMaterial } =
     useStepSubmitLogic();
 
   useEffect(() => {
@@ -112,7 +112,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
     0: <StepOne handleCreateSession={handleCreateSession} />,
     1: <StepTwo handleSubmitLessonPlan={handleSubmitLessonPlan} />,
     2: <StepThree handleSubmit={handleSubmit} />,
-    3: <StepFour />,
+    3: <StepFour handleRefineMaterial={handleRefineMaterial} />,
   };
   const stepNumberParsed = stepNumber as keyof typeof titleAreaContent;
   const title = titleAreaContent?.[stepNumberParsed]?.title ?? "";

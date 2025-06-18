@@ -19,8 +19,6 @@ import {
   OakPrimaryInvertedButton,
   OakSecondaryButton,
   OakSmallTertiaryInvertedButton,
-  OakSpan,
-  OakTertiaryInvertedButton,
 } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/nextjs";
 import styled, { css } from "styled-components";
@@ -39,11 +37,9 @@ import {
   moderationSelector,
   refinementGenerationHistorySelector,
 } from "@/stores/resourcesStore/selectors";
-import { trpc } from "@/utils/trpc";
 
 import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
 import { Glossary } from "../../AdditionalMaterials/Glossary";
-import { StarterQuiz } from "../../AdditionalMaterials/StarterQuiz";
 import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import InlineButton from "../InlineButton";
@@ -82,7 +78,11 @@ const MockOakSecondaryButtonWithJustIcon = styled.button<{
     `}
 `;
 
-const StepFour = () => {
+type StepFourProps = {
+  handleRefineMaterial: (refinementValue: string) => void;
+};
+
+const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
   const generation = useResourcesStore(generationSelector);
 
   const docType = useResourcesStore(docTypeSelector);
@@ -92,15 +92,12 @@ const StepFour = () => {
     refinementGenerationHistorySelector,
   );
 
-  const { refineMaterial, undoRefinement } = useResourcesActions();
+  const { undoRefinement } = useResourcesActions();
   const moderation = useResourcesStore(moderationSelector);
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
   const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
   const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
   const { setDialogWindow } = useDialog();
-
-  const fetchMaterial =
-    trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
 
   // Get resource type from configuration
   const resourceType = docType ? getResourceType(docType) : null;
@@ -218,20 +215,7 @@ const StepFour = () => {
                       {refinementOptions.map((refinement: RefinementOption) => (
                         <InlineButton
                           key={refinement.id}
-                          onClick={() => {
-                            void refineMaterial({
-                              refinement: [{ type: refinement.value }],
-                              mutateAsync: async (input) => {
-                                try {
-                                  return await fetchMaterial.mutateAsync(input);
-                                } catch (error) {
-                                  throw error instanceof Error
-                                    ? error
-                                    : new Error(String(error));
-                                }
-                              },
-                            });
-                          }}
+                          onClick={() => handleRefineMaterial(refinement.value)}
                         >
                           {refinement.label}
                         </InlineButton>
