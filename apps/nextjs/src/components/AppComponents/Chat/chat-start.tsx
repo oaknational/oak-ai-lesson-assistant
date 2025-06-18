@@ -18,11 +18,10 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
 
 import { useDialog } from "../DialogContext";
+import { createStartingPromptFromSearchParams } from "./aila-start/search-params-utils";
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 import { ChatStartForm } from "./chat-start-form";
 import EmptyScreenAccordion from "./empty-screen-accordion";
-
-import { createStartingPromptFromSearchParams } from "./aila-start/search-params-utils";
 
 const log = aiLogger("chat");
 
@@ -216,4 +215,3 @@ export function ChatStart({
     </DialogRoot>
   );
 }
-

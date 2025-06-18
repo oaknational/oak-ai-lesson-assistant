@@ -13,38 +13,59 @@ describe("createStartingPromptFromSearchParams", () => {
 
   it("creates prompt with only subject", () => {
     const result = createStartingPromptFromSearchParams(undefined, "english");
-    expect(result).toBe("Create a lesson plan on [insert title here] for English.");
+    expect(result).toBe(
+      "Create a lesson plan on [insert title here] for English.",
+    );
   });
 
   it("creates prompt with only unitTitle", () => {
-    const result = createStartingPromptFromSearchParams(undefined, undefined, "Medieval England");
-    expect(result).toBe('Create a lesson plan on [insert title here] for the unit "Medieval England".');
+    const result = createStartingPromptFromSearchParams(
+      undefined,
+      undefined,
+      "Medieval England",
+    );
+    expect(result).toBe(
+      'Create a lesson plan on [insert title here] for the unit "Medieval England".',
+    );
   });
 
   it("creates prompt with only searchExpression", () => {
-    const result = createStartingPromptFromSearchParams(undefined, undefined, undefined, "The Black Death");
+    const result = createStartingPromptFromSearchParams(
+      undefined,
+      undefined,
+      undefined,
+      "The Black Death",
+    );
     expect(result).toBe("Create a lesson plan on The Black Death.");
   });
 
   it("creates prompt with keyStage and subject", () => {
     const result = createStartingPromptFromSearchParams("ks3", "history");
-    expect(result).toBe("Create a lesson plan on [insert title here] for KS3 History.");
+    expect(result).toBe(
+      "Create a lesson plan on [insert title here] for KS3 History.",
+    );
   });
 
   it("creates prompt with keyStage, subject, and unitTitle", () => {
-    const result = createStartingPromptFromSearchParams("ks3", "history", "Medieval England");
-    expect(result).toBe('Create a lesson plan on [insert title here] for KS3 History unit "Medieval England".');
+    const result = createStartingPromptFromSearchParams(
+      "ks3",
+      "history",
+      "Medieval England",
+    );
+    expect(result).toBe(
+      'Create a lesson plan on [insert title here] for KS3 History unit "Medieval England".',
+    );
   });
 
   it("creates prompt with all parameters", () => {
     const result = createStartingPromptFromSearchParams(
       "ks3",
-      "history", 
+      "history",
       "Medieval England",
-      "The Black Death"
+      "The Black Death",
     );
     expect(result).toBe(
-      'Create a lesson plan on The Black Death for KS3 History unit "Medieval England".'
+      'Create a lesson plan on The Black Death for KS3 History unit "Medieval England".',
     );
   });
 
@@ -54,7 +75,12 @@ describe("createStartingPromptFromSearchParams", () => {
   });
 
   it("handles mixed empty and filled parameters", () => {
-    const result = createStartingPromptFromSearchParams("", "science", "", "Photosynthesis");
+    const result = createStartingPromptFromSearchParams(
+      "",
+      "science",
+      "",
+      "Photosynthesis",
+    );
     expect(result).toBe("Create a lesson plan on Photosynthesis for Science.");
   });
 
@@ -63,10 +89,10 @@ describe("createStartingPromptFromSearchParams", () => {
       "ks2",
       "english",
       "Shakespeare's Works",
-      "Romeo & Juliet - Act 1"
+      "Romeo & Juliet - Act 1",
     );
     expect(result).toBe(
-      'Create a lesson plan on Romeo & Juliet - Act 1 for KS2 English unit "Shakespeare\'s Works".'
+      'Create a lesson plan on Romeo & Juliet - Act 1 for KS2 English unit "Shakespeare\'s Works".',
     );
   });
 
@@ -75,11 +101,10 @@ describe("createStartingPromptFromSearchParams", () => {
       "ks4",
       "english",
       'Analysis of "To Kill a Mockingbird"',
-      'Chapter 1: "Maycomb County"'
+      'Chapter 1: "Maycomb County"',
     );
     expect(result).toBe(
-      'Create a lesson plan on Chapter 1: "Maycomb County" for KS4 English unit "Analysis of "To Kill a Mockingbird"".'
+      'Create a lesson plan on Chapter 1: "Maycomb County" for KS4 English unit "Analysis of "To Kill a Mockingbird"".',
     );
   });
-
 });
