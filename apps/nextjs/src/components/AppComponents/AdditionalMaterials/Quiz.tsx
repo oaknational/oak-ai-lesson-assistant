@@ -1,24 +1,30 @@
-import React from "react";
-
 import type { StarterQuiz as StarterQuizType } from "@oakai/additional-materials/src/documents/additionalMaterials/starterQuiz/schema";
 
 import { OakBox, OakFlex, OakP, OakSpan } from "@oaknational/oak-components";
 
-type StarterQuizProps = {
+import { toSentenceCase } from "@/utils/toSentenceCase";
+
+type QuizProps = {
   action: string;
   generation: StarterQuizType;
+  quizType: "starter" | "exit";
 };
 
-export const StarterQuiz = ({ action, generation }: StarterQuizProps) => {
+export const Quiz = ({ generation, quizType }: QuizProps) => {
   return (
     <OakFlex $flexDirection={"column"} $width={"100%"}>
-      <OakP $font="heading-6">Starter Quiz</OakP>
+      <OakP $font="heading-6">
+        {quizType === "starter" ? "Starter Quiz" : "Exit Quiz"}
+      </OakP>
       <OakP $mb="space-between-s">
         {generation.year} • {generation.subject} • {generation.title}
       </OakP>
 
       {generation.questions.map((question, questionIndex) => (
-        <OakBox key={questionIndex} $mb="space-between-m">
+        <OakBox
+          key={`${questionIndex}-${question.question}`}
+          $mb="space-between-m"
+        >
           <OakP $font="heading-7">
             {questionIndex + 1}. {question.question}
           </OakP>
@@ -29,7 +35,7 @@ export const StarterQuiz = ({ action, generation }: StarterQuizProps) => {
 
             return (
               <OakFlex
-                key={optionIndex}
+                key={`${option.text}-${optionIndex}`}
                 $alignItems="flex-start"
                 $mb="space-between-xs"
               >
@@ -38,7 +44,7 @@ export const StarterQuiz = ({ action, generation }: StarterQuizProps) => {
                 </OakSpan>
                 <OakFlex $flexDirection="column">
                   <OakP $font="body-3">
-                    {option.text}
+                    {toSentenceCase(option.text)}
                     {option.isCorrect && <OakSpan $color="mint"> ✓</OakSpan>}
                   </OakP>
                 </OakFlex>
