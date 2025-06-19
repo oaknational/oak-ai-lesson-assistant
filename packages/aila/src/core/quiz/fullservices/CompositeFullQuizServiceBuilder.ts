@@ -36,6 +36,7 @@ export class CompositeFullQuizServiceBuilder {
 
     log.info("Building Composite full quiz service with settings:", {
       ...settings,
+      quizRatingSchema: "[redacted]",
       quizSchema: "redacted to reduce log noise",
     });
     return new CompositeFullQuizService(generatorArray, selector, reranker);

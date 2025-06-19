@@ -11,7 +11,9 @@ import "@fontsource/lexend/800.css";
 import "@fontsource/lexend/900.css";
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
+import * as Sentry from "@sentry/nextjs";
 import { GeistMono } from "geist/font/mono";
+import type { Metadata } from "next";
 import { Lexend } from "next/font/google";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -37,8 +39,6 @@ const provided_vercel_url =
     ? process.env.VERCEL_URL
     : process.env.NEXT_PUBLIC_VERCEL_URL_FALLBACK;
 
-const vercel_url = `https://${provided_vercel_url}`;
-
 const reactScanApiKey = process.env.NEXT_PUBLIC_REACT_SCAN_KEY;
 const addReactScanMonitor =
   process.env.NEXT_PUBLIC_RENDER_MONITOR === "true" &&
@@ -50,20 +50,27 @@ const lexend = Lexend({
   variable: "--font-lexend",
 });
 
-export const metadata = {
-  metadataBase: new URL(vercel_url),
-  title: {
-    default: "Oak AI Experiments",
-    template: "%s - AI Lesson Planner",
-  },
-  description:
-    "Oak AI experiments offers some experimental generative AI tools designed for and freely available to teachers. We are actively looking for your feedback to refine and optimise these tools, making them more effective and time-saving.",
-  icons: {
-    icon: "/favicon/favicon.ico",
-    shortcut: "/favicon/favicon-16x16.png",
-    apple: "/favicon/apple-touch-icon.png",
-  },
-};
+export function generateMetadata(): Metadata {
+  const vercel_url = `https://${provided_vercel_url}`;
+  return {
+    metadataBase: new URL(vercel_url),
+    title: {
+      default: "Oak AI Experiments",
+      template: "%s - AI Lesson Planner",
+    },
+    description:
+      "Oak AI experiments offers some experimental generative AI tools designed for and freely available to teachers. We are actively looking for your feedback to refine and optimise these tools, making them more effective and time-saving.",
+    icons: {
+      icon: "/favicon/favicon.ico",
+      shortcut: "/favicon/favicon-16x16.png",
+      apple: "/favicon/apple-touch-icon.png",
+    },
+
+    other: {
+      ...Sentry.getTraceData(),
+    },
+  };
+}
 
 export const viewport = {
   themeColor: [

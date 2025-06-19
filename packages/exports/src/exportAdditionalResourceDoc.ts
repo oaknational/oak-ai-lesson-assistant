@@ -1,13 +1,12 @@
+import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { aiLogger } from "@oakai/logger";
 
 import { exportGeneric } from "./exportGeneric";
 import { dynamicPlaceholderTemplateIds } from "./gSuite/docs/cleanupUnusedPlaceholdersRequests";
 import { getDocsClient } from "./gSuite/docs/client";
 import { populateDoc } from "./gSuite/docs/populateDoc";
-import {
-  getAdditionalResourcesTemplateId,
-  getAllTemplateIdsForDocType,
-} from "./templates";
+import { getAdditionalResourcesTemplateId } from "./templates";
 import type { OutputData, Result, State } from "./types";
 
 const log = aiLogger("exports");
@@ -61,6 +60,8 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
   onStateChange: (state: State<OutputData>) => void;
   transformData: (data: InputData) => Promise<TemplateData>;
 }): Promise<Result<OutputData>> => {
+  const passedDocType = additionalMaterialTypeEnum.parse(documentType);
+
   try {
     // For comprehension tasks, we need to create both the questions and answers files
     if (documentType === "additional-comprehension") {
@@ -70,7 +71,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
       });
 
       const result = await exportGeneric<InputData, TemplateData>({
-        newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${documentType} - ${Date.now()}`,
+        newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${resourceTypesConfig[passedDocType].displayName.toLowerCase()} - ${Date.now()}`,
         data: inputData,
         prepData: transformData,
         templateId,
@@ -102,7 +103,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
       });
 
       const answersResult = await exportGeneric<InputData, TemplateData>({
-        newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${documentType} Answers - ${Date.now()}`,
+        newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${resourceTypesConfig[passedDocType].displayName.toLowerCase()} - answers - ${Date.now()}`,
         data: inputData,
         prepData: transformData,
         templateId: answersTemplateId,
@@ -145,7 +146,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
       });
 
       const result = await exportGeneric<InputData, TemplateData>({
-        newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${documentType} - ${Date.now()}`,
+        newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${resourceTypesConfig[passedDocType].displayName.toLowerCase()} - ${Date.now()}`,
         data: inputData,
         prepData: transformData,
         templateId,

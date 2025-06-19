@@ -15,14 +15,16 @@ import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
 import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetection";
 import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/helicone/HeliconeThreatDetector";
 import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
+import { SentryTracingService } from "@oakai/aila/src/features/tracing";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import type { TracingSpan } from "@oakai/core/src/tracing/serverTracing";
-import { withTelemetry } from "@oakai/core/src/tracing/serverTracing";
+import { startSpan } from "@oakai/core/src/tracing";
+import type { TracingSpan } from "@oakai/core/src/tracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { captureException } from "@sentry/nextjs";
+import * as Sentry from "@sentry/node";
 import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
 
@@ -47,7 +49,7 @@ export async function GET() {
 }
 
 async function setupChatHandler(req: NextRequest) {
-  return await withTelemetry(
+  return await startSpan(
     "chat-setup-chat-handler",
     {},
     async (span: TracingSpan) => {
@@ -84,10 +86,6 @@ async function setupChatHandler(req: NextRequest) {
         new LakeraThreatDetector(),
       ];
 
-      span.setTag("chat_id", chatId);
-      span.setTag("messages.count", messages.length);
-      span.setTag("options", JSON.stringify(options));
-
       return {
         chatId,
         messages,
@@ -98,29 +96,6 @@ async function setupChatHandler(req: NextRequest) {
       };
     },
   );
-}
-
-function setTelemetryMetadata({
-  span,
-  id,
-  messages,
-  lessonPlan,
-  options,
-}: {
-  span: TracingSpan;
-  id: string;
-  messages: Message[];
-  lessonPlan: LooseLessonPlan;
-  options: AilaOptions;
-}) {
-  span.setTag("chat_id", id);
-  span.setTag("messages.count", messages.length);
-  span.setTag("has_lesson_plan", Object.keys(lessonPlan).length > 0);
-  span.setTag("use_rag", options.useRag);
-  span.setTag("temperature", options.temperature);
-  span.setTag("number_of_records_in_rag", options.numberOfRecordsInRag);
-  span.setTag("use_persistence", options.usePersistence);
-  span.setTag("use_moderation", options.useModeration);
 }
 
 function handleConnectionAborted(req: NextRequest) {
@@ -137,10 +112,12 @@ async function generateChatStream(
   aila: Aila,
   abortController: AbortController,
 ): Promise<Response> {
-  return await withTelemetry(
-    "chat-aila-generate",
-    { chat_id: aila.chatId, user_id: aila.userId },
-    async () => {
+  return await Sentry.startSpanManual(
+    {
+      name: "chat-aila-generate",
+      attributes: { chat_id: aila.chatId, user_id: aila.userId },
+    },
+    async (_span, finishSpan) => {
       try {
         invariant(aila, "Aila instance is required");
         const result = await aila.generate({ abortController });
@@ -153,7 +130,15 @@ async function generateChatStream(
           },
         });
 
-        const stream = result.pipeThrough(transformStream);
+        const stream = result
+          .pipeThrough(transformStream)
+          // Manually finish the span when the stream closes, as we can't just await it like a normal automatic span
+          .pipeThrough(
+            new TransformStream({
+              flush: () => finishSpan(),
+            }),
+          );
+
         return new Response(stream, {
           headers: {
             "Content-Type": "text/event-stream",
@@ -319,7 +304,7 @@ async function createAilaInstance({
   moderationAiClient,
   threatDetectors,
 }: CreateAilaInstanceArguments): Promise<Aila> {
-  return await withTelemetry(
+  return await startSpan(
     "chat-create-aila",
     { chat_id: chatId, user_id: userId },
     async (): Promise<Aila> => {
@@ -340,6 +325,7 @@ async function createAilaInstance({
             new DatadogAnalyticsAdapter(aila),
           ],
           threatDetectors: () => threatDetectors,
+          tracingService: new SentryTracingService(startSpan),
         },
         document: {
           content: lessonPlan ?? {},
@@ -355,7 +341,7 @@ export async function handleChatPostRequest(
   req: NextRequest,
   config: Config,
 ): Promise<Response> {
-  return await withTelemetry("chat-api", {}, async (span: TracingSpan) => {
+  return await startSpan("chat-api", {}, async (span: TracingSpan) => {
     const {
       chatId,
       messages: frontendMessages,
@@ -364,26 +350,18 @@ export async function handleChatPostRequest(
       moderationAiClient,
       threatDetectors,
     } = await setupChatHandler(req);
+    span.setAttributes({ chat_id: chatId });
 
     let userId: string | undefined;
     let aila: Aila | undefined;
 
     try {
       userId = await fetchAndCheckUser(chatId);
-      span.setTag("user_id", userId);
 
       const { messages: dbMessages, lessonPlan: dbLessonPlan } =
         await loadChatDataFromDatabase(chatId, userId);
 
       const messages = prepareMessages(dbMessages, frontendMessages, chatId);
-
-      setTelemetryMetadata({
-        span,
-        id: chatId,
-        messages,
-        lessonPlan: dbLessonPlan,
-        options,
-      });
 
       aila = await createAilaInstance({
         config,
@@ -402,7 +380,7 @@ export async function handleChatPostRequest(
       const stream = await generateChatStream(aila, abortController);
       return stream;
     } catch (e) {
-      return handleChatException(span, e, chatId, prisma);
+      return handleChatException(e, chatId, prisma);
     } finally {
       if (aila) {
         await aila.ensureShutdown();
