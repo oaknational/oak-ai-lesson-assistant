@@ -3,7 +3,6 @@ import {
   subjects,
   unsupportedSubjects,
 } from "@oakai/core/src/utils/subjects";
-// TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { aiLogger } from "@oakai/logger";
 
 import invariant from "tiny-invariant";
@@ -97,8 +96,9 @@ export class AilaChat implements AilaChatService {
     this.fullQuizService = new CompositeFullQuizServiceBuilder().build({
       quizRatingSchema: testRatingSchema,
       quizSelector: "simple",
-      quizReranker: "return-first",
-      quizGenerators: ["basedOnRag"],
+      quizReranker: "schema-reranker", // "return-first"
+      // quizGenerators: ["rag", "basedOnRag", "ml"],
+      quizGenerators: ["ml", "rag", "basedOnRag"],
     });
   }
 
@@ -404,6 +404,7 @@ export class AilaChat implements AilaChatService {
         await this.enqueue(patch);
         this.appendExperimentalPatch(patch);
       },
+      ailaRagRelevantLessons: this._relevantLessons ?? [],
       userId: this._userId,
     });
   }

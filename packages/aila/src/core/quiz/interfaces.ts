@@ -2,6 +2,7 @@ import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import type * as z from "zod";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
+import type { RawQuiz } from "../../protocol/rawQuizSchema";
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
@@ -46,16 +47,27 @@ export interface AilaQuizService {
   ): Promise<JsonPatchDocument>;
 }
 
+// // TODO: GCLOMAX - move this to interfaces and rename.
+// export interface AilaQuizGeneratorService {
+//   generateMathsExitQuizPatch(
+//     lessonPlan: LooseLessonPlan,
+//     relevantLessons?: AilaRagRelevantLesson[],
+//   ): Promise<Quiz[]>;
+//   generateMathsStarterQuizPatch(
+//     lessonPlan: LooseLessonPlan,
+//     relevantLessons?: AilaRagRelevantLesson[],
+//   ): Promise<Quiz[]>;
+// }
+
 export interface AilaQuizGeneratorService {
   generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<Quiz[]>;
+  ): Promise<QuizQuestionWithRawJson[][]>;
   generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<Quiz[]>;
-  // invoke(lessonPlan: LooseLessonPlan): Promise<Quiz[]>;
+  ): Promise<QuizQuestionWithRawJson[][]>;
 }
 
 export interface AilaQuizVariantService {
@@ -66,15 +78,15 @@ export interface AilaQuizVariantService {
 }
 
 export interface AilaQuizReranker<T extends z.ZodType<BaseType>> {
-  rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]>;
+  rerankQuiz(quizzes: QuizQuestionWithRawJson[][]): Promise<number[]>;
   evaluateQuizArray(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizQuestionWithRawJson[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
   ): Promise<z.infer<T>[]>;
   cachedEvaluateQuizArray(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizQuestionWithRawJson[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
@@ -93,7 +105,8 @@ export interface FullQuizService {
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<QuizQuestion[]>;
+    override?: boolean,
+  ): Promise<QuizQuestionWithRawJson[]>;
 }
 
 // Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
@@ -101,22 +114,34 @@ export interface QuizSelector<T extends BaseType> {
   ratingFunction: RatingFunction<T>;
   maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
   selectBestQuiz(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizQuestionWithRawJson[][],
     ratingsSchemas: T[],
-  ): QuizQuestion[];
+  ): QuizQuestionWithRawJson[];
 }
 
 export type quizPatchType = "/starterQuiz" | "/exitQuiz";
 
 export interface CustomSource {
   text: string;
-  metadata: CustomMetadata;
+  questionUid: string;
+  lessonSlug: string;
+  quizPatchType: string;
+  isLegacy: boolean;
+  embedding: number[];
   [key: string]: unknown; // Allow for other unknown fields at the top level
 }
 
 export interface QuizQuestionTextOnlySource {
   text: string;
-  metadata: { questionUid: string; lessonSlug: string };
+  metadata: {
+    questionUid: string;
+    lessonSlug: string;
+    raw_json: string; // Allow for raw JSON data
+  };
+}
+
+export interface QuizQuestionWithRawJson extends QuizQuestion {
+  rawQuiz: NonNullable<RawQuiz>;
 }
 
 export interface CustomHit {
@@ -125,7 +150,7 @@ export interface CustomHit {
 
 export interface SimplifiedResult {
   text: string;
-  custom_id: string;
+  custom_id: string; // This will be populated with questionUid from the source
 }
 
 export interface Document {
