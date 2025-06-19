@@ -1,15 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { getResourceTypes } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 
 import {
   OakFlex,
-  OakIcon,
   OakLabel,
   OakP,
   OakPrimaryButton,
   OakRadioButton,
   OakRadioGroup,
+  OakSecondaryButton,
 } from "@oaknational/oak-components";
 
 import {
@@ -19,21 +19,30 @@ import {
 import { docTypeSelector } from "@/stores/resourcesStore/selectors";
 
 import { useDialog } from "../../DialogContext";
+import FormValidationWarning from "../../FormValidationWarning";
 import ResourcesFooter from "../ResourcesFooter";
 import { handleDialogSelection } from "./helpers";
 
-const StepOne = () => {
-  const { setStepNumber, setDocType, setGeneration } = useResourcesActions();
+const StepOne = ({
+  handleCreateSession,
+}: {
+  handleCreateSession: ({ documentType }: { documentType: string }) => void;
+}) => {
+  const { setDocType, setGeneration, setSubject, setTitle, setYear } =
+    useResourcesActions();
   const docType = useResourcesStore(docTypeSelector);
   const error = useResourcesStore((state) => state.error);
-
+  const [showValidationError, setShowValidationError] = useState("");
   const { setDialogWindow } = useDialog();
 
   useEffect(() => {
     // Reset the document type when the component is mounted
     setDocType(null);
     setGeneration(null);
-  }, [setDocType, setGeneration]);
+    setSubject(null);
+    setTitle(null);
+    setYear(null);
+  }, [setDocType, setGeneration, setSubject, setTitle, setYear]);
 
   const resourceTypes = getResourceTypes().filter(
     (resourceType) => resourceType.isAvailable,
@@ -44,13 +53,18 @@ const StepOne = () => {
   return (
     <>
       <OakFlex $gap={"space-between-m"} $flexDirection="column">
-        <OakFlex $flexDirection={"column"}>
-          <OakFlex $mv={"space-between-s"}>
+        {!!showValidationError && (
+          <FormValidationWarning errorMessage={showValidationError} />
+        )}
+        <OakFlex $mv={"space-between-s"}>
+          <OakFlex $flexDirection={"column"}>
             <OakRadioGroup
               name="radio-group"
               onChange={(value) => {
-                setDocType(value.target.value);
+                const selectedDocType = value.target.value;
+                setDocType(selectedDocType);
                 setGeneration(null);
+                setShowValidationError("");
               }}
               $flexDirection="column"
             >
@@ -84,10 +98,16 @@ const StepOne = () => {
       <ResourcesFooter>
         <OakFlex $justifyContent="flex-end" $width={"100%"}>
           <OakPrimaryButton
-            onClick={() => setStepNumber(1)}
+            onClick={() => {
+              if (!docType) {
+                setShowValidationError("Please select a teaching material.");
+                return;
+              }
+
+              handleCreateSession({ documentType: docType });
+            }}
             iconName="arrow-right"
             isTrailingIcon={true}
-            disabled={!docType}
           >
             Continue
           </OakPrimaryButton>

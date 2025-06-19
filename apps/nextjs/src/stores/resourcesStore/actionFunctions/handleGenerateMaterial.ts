@@ -60,6 +60,7 @@ export const handleGenerateMaterial =
           previousOutput: null,
           options: null,
         },
+        resourceId: get().id, // Use existing resourceId
         lessonId: get().pageData.lessonPlan.lessonId,
       });
       get().actions.setIsResourcesLoading(false);
@@ -67,12 +68,13 @@ export const handleGenerateMaterial =
       set({
         generation: result.resource,
         moderation: result.moderation,
-        id: result.resourceId,
         refinementGenerationHistory: [],
       });
 
       log.info("Material generated successfully");
-      // Step navigation is handled by the calling component
+      get().actions.analytics.trackMaterialRefined(
+        "create_teaching_material_button",
+      );
     } catch (error) {
       get().actions.setIsResourcesLoading(false);
       handleStoreError(set, error, {

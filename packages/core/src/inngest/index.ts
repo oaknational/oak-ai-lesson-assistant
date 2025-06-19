@@ -14,7 +14,9 @@ try {
   const { serverRuntimeConfig: nextServerRuntimeConfig } = getConfig();
   serverRuntimeConfig = nextServerRuntimeConfig;
 } catch (e) {
-  log.error("No Next environment", e);
+  if (process.env.NODE_ENV !== "test") {
+    log.error("No Next environment", e);
+  }
 }
 
 const CONTEXT = serverRuntimeConfig?.DEPLOY_CONTEXT as string | undefined;

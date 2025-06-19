@@ -10,6 +10,7 @@ import type {
   LooseLessonPlan,
 } from "../../protocol/schema";
 import type { PromptAgentDefinition } from "./agents";
+import { examplesFromSimilarLessons } from "./prompts/shared/examplesFromSimilarLessons";
 
 const log = aiLogger("aila:agents:prompts");
 
@@ -54,7 +55,7 @@ export async function promptAgentHandler<
   const instructions = agent.prompt;
   const input = `### Examples from similar lessons
 
-${ragData.map((lesson, i) => `#### Example ${i + 1}: ${targetKey} from lesson '${lesson.title}'\n\n${agent.extractRagData(lesson)}`).join("\n\n")}
+${examplesFromSimilarLessons(ragData, targetKey, agent.extractRagData)}
  
     ### Document
 ${JSON.stringify(document, null, 2)}

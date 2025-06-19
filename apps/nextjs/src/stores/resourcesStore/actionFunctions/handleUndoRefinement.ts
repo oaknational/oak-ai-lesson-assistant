@@ -1,12 +1,20 @@
 import { aiLogger } from "@oakai/logger";
 
+import invariant from "tiny-invariant";
+
 import type { ResourcesGetter, ResourcesSetter } from "../types";
 
 const log = aiLogger("additional-materials");
 
 export const handleUndoRefinement =
   (set: ResourcesSetter, get: ResourcesGetter) => () => {
-    const { refinementGenerationHistory, generation } = get();
+    const {
+      refinementGenerationHistory,
+      formState,
+      pageData: { lessonPlan },
+      docType,
+      id,
+    } = get();
 
     // Can't undo if there's no history
     if (refinementGenerationHistory.length === 0) {
@@ -26,8 +34,17 @@ export const handleUndoRefinement =
       newHistoryLength: newHistory.length,
     });
 
+    // Track the refinement event
     set({
       generation: previousGeneration,
       refinementGenerationHistory: newHistory,
     });
+
+    invariant(docType, "Document type is required for analytics");
+    invariant(id, "Resource ID is required for analytics");
+    invariant(formState.subject, "Subject is required for analytics");
+    invariant(formState.year, "Year is required for analytics");
+    invariant(lessonPlan.title, "Lesson plan title is required for analytics");
+
+    get().actions.analytics.trackMaterialRefined("undo_button");
   };

@@ -30,7 +30,7 @@ export type BasedOnOptional = z.infer<typeof BasedOnOptionalSchema>;
 // ********** MISCONCEPTIONS **********
 export const MISCONCEPTION_DESCRIPTIONS = {
   misconception: dedent`a single sentence describing a common misconception about the topic. Do not end with a full stop.`,
-  description: dedent`No more than 2 sentences addressing the reason for the misconception and how it can be addressed in the lesson.`,
+  description: dedent`No more than 2 'correction' sentences addressing the reason for the misconception and how it can be addressed in the lesson.`,
 } as const;
 
 export const MISCONCEPTIONS_DESCRIPTION = {
