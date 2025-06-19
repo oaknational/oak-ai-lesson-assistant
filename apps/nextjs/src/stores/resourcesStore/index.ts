@@ -70,10 +70,14 @@ const DEFAULT_STATE = {
   refinementGenerationHistory: [],
 };
 
-export const createResourcesStore = (track: TrackFns) => {
+export const createResourcesStore = (
+  track: TrackFns,
+  initState?: Partial<ResourcesState>,
+) => {
   const resourcesStore = create<ResourcesState>()((set, get) => ({
     id: null,
     ...DEFAULT_STATE,
+    ...initState,
 
     actions: {
       // Setters

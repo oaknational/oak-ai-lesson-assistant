@@ -6,7 +6,6 @@ import {
   camelCaseToSentenceCase,
   kebabCaseToSentenceCase,
 } from "@oakai/core/src/utils/camelCaseConversion";
-import { aiLogger } from "@oakai/logger";
 
 import {
   OakBox,
@@ -65,6 +64,7 @@ export function mapLessonPlanSections(
 const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
+  const error = useResourcesStore((state) => state.error);
   const moderation = useResourcesStore(moderationSelector);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
@@ -79,7 +79,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
 
   const { setStepNumber } = useResourcesActions();
 
-  if (isLoadingLessonPlan) {
+  if (isLoadingLessonPlan || error) {
     return <StepLoadingScreen nameOfWhatIsBuilding="lesson plan" />;
   }
   if (threatDetected) {

@@ -21,15 +21,16 @@ export const ResourcesStoresContext = createContext<
 
 export interface ResourcesStoresProviderProps {
   children: React.ReactNode;
+  initState?: Partial<ResourcesState>;
 }
 
 export const ResourcesStoresProvider: React.FC<
   ResourcesStoresProviderProps
-> = ({ children }) => {
+> = ({ children, initState }) => {
   const { track } = useAnalytics();
   const [stores] = useState(() => {
     const storesObj: ResourcesStores = {
-      resources: createResourcesStore(track),
+      resources: createResourcesStore(track, initState),
     };
     return storesObj;
   });
