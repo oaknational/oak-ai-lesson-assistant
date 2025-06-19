@@ -447,5 +447,59 @@
       }
     ],
     "questionType": "order"
+  },
+  {
+    "hint": "Remember that inline math should flow with the text, not break to new lines.",
+    "active": false,
+    "answers": {
+      "multiple-choice": [
+        {
+          "answer": [
+            {
+              "text": "$$ x = 5 $$",
+              "type": "text"
+            }
+          ],
+          "answer_is_correct": true
+        },
+        {
+          "answer": [
+            {
+              "text": "$$ x = 3 $$",
+              "type": "text"
+            }
+          ],
+          "answer_is_correct": false
+        },
+        {
+          "answer": [
+            {
+              "text": "\\( x = 7 \\)",
+              "type": "text"
+            }
+          ],
+          "answer_is_correct": false
+        },
+        {
+          "answer": [
+            {
+              "text": "$$ x = -2 $$",
+              "type": "text"
+            }
+          ],
+          "answer_is_correct": false
+        }
+      ]
+    },
+    "feedback": "Correct! When $$ 2x + 3 = 13 $$, solving gives us $$ x = 5 $$.",
+    "questionId": 229211,
+    "questionUid": "QUES-MATH-29211",
+    "questionStem": [
+      {
+        "text": "Solve the equation $$ 2x + 3 = 13 $$ for the value of $$ x $$. Notice how the math expressions should render inline with this text, not on separate lines.",
+        "type": "text"
+      }
+    ],
+    "questionType": "multiple-choice"
   }
 ]
