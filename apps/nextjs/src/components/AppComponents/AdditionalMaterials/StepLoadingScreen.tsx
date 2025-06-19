@@ -6,9 +6,11 @@ import {
 } from "@oaknational/oak-components";
 
 const StepLoadingScreen = ({
-  nameOfWhatIsBuilding,
+  docTypeName,
+  source,
 }: {
-  nameOfWhatIsBuilding: string;
+  docTypeName?: string | null;
+  source: "teachingMaterial" | "lessonPlan";
 }) => {
   return (
     <OakBox
@@ -23,12 +25,28 @@ const StepLoadingScreen = ({
         $flexDirection="column"
         $alignItems="center"
         $justifyContent="center"
-        $gap="all-spacing-6"
+        $gap="all-spacing-3"
         $height="100%"
         $width="100%"
       >
-        <OakP $font="heading-6">Building {nameOfWhatIsBuilding}</OakP>
-        <OakLoadingSpinner $width="all-spacing-10" />
+        {source === "lessonPlan" ? (
+          <>
+            <OakP $font="heading-6">Generating lesson details</OakP>
+            <OakP $mb={"space-between-m"} $font="body-2">
+              {`These details will ensure Aila has the right context for your ${docTypeName ?? "teaching material"}.`}
+            </OakP>
+            <OakLoadingSpinner $width="all-spacing-10" />
+          </>
+        ) : (
+          <>
+            <OakP $mb={"space-between-m"} $font="heading-6">
+              Creating your{" "}
+              {docTypeName ? docTypeName.toLowerCase() : "teaching material"}
+            </OakP>
+
+            <OakLoadingSpinner $width="all-spacing-10" />
+          </>
+        )}
       </OakFlex>
     </OakBox>
   );

@@ -1,70 +1,58 @@
-import React from "react";
+import type { StarterQuiz as StarterQuizType } from "@oakai/additional-materials/src/documents/additionalMaterials/starterQuiz/schema";
 
 import { OakBox, OakFlex, OakP, OakSpan } from "@oaknational/oak-components";
 
-export type QuizQuestion = {
-  question: string;
-  options: {
-    text: string;
-    isCorrect: boolean;
-  }[];
-};
-
-export type QuizGeneration = {
-  year?: string;
-  subject?: string;
-  title?: string;
-  questions: QuizQuestion[];
-};
+import { toSentenceCase } from "@/utils/toSentenceCase";
 
 type QuizProps = {
-  generation: QuizGeneration;
+  action: string;
+  generation: StarterQuizType;
+  quizType: "starter" | "exit";
 };
 
-export const Quiz = ({ generation }: QuizProps) => {
+export const Quiz = ({ generation, quizType }: QuizProps) => {
   return (
     <OakFlex $flexDirection={"column"} $width={"100%"}>
-      <OakFlex
-        $flexDirection={"column"}
-        $gap={"space-between-m2"}
-        $width={"100%"}
-      >
-        {generation.questions.map((question, questionIndex) => (
-          <OakBox key={questionIndex} $mb="space-between-m">
-            <OakP $font="body-2">
-              {questionIndex + 1}. {question.question}
-            </OakP>
-            <OakBox $mt="space-between-xs" />
+      <OakP $font="heading-6">
+        {quizType === "starter" ? "Starter Quiz" : "Exit Quiz"}
+      </OakP>
+      <OakP $mb="space-between-s">
+        {generation.year} • {generation.subject} • {generation.title}
+      </OakP>
 
-            {question.options.map((option, optionIndex) => {
-              const letter = String.fromCharCode(97 + optionIndex); // a, b, c
+      {generation.questions.map((question, questionIndex) => (
+        <OakBox
+          key={`${questionIndex}-${question.question}`}
+          $mb="space-between-m"
+        >
+          <OakP $font="heading-7">
+            {questionIndex + 1}. {question.question}
+          </OakP>
+          <OakBox $mt="space-between-xs" />
 
-              return (
-                <OakFlex
-                  key={optionIndex}
-                  $alignItems="flex-start"
-                  $mb="space-between-xs"
-                  $gap={"space-between-m"}
-                >
-                  <OakP $font="body-2">
-                    <OakSpan
-                      $font={option.isCorrect ? "body-2-bold" : "body-2"}
-                    >
-                      {`${letter}) `}
-                    </OakSpan>
-                    <OakSpan
-                      $font={option.isCorrect ? "body-2-bold" : "body-2"}
-                    >
-                      {option.text}
-                    </OakSpan>
-                    {option.isCorrect && <OakSpan> ✓</OakSpan>}
+          {question.options.map((option, optionIndex) => {
+            const letter = String.fromCharCode(97 + optionIndex); // a, b, c
+
+            return (
+              <OakFlex
+                key={`${option.text}-${optionIndex}`}
+                $alignItems="flex-start"
+                $mb="space-between-xs"
+              >
+                <OakSpan $font="body-3-bold" $mr="space-between-xs">
+                  {letter}.
+                </OakSpan>
+                <OakFlex $flexDirection="column">
+                  <OakP $font="body-3">
+                    {toSentenceCase(option.text)}
+                    {option.isCorrect && <OakSpan $color="mint"> ✓</OakSpan>}
                   </OakP>
                 </OakFlex>
-              );
-            })}
-          </OakBox>
-        ))}
-      </OakFlex>
+              </OakFlex>
+            );
+          })}
+        </OakBox>
+      ))}
     </OakFlex>
   );
 };
