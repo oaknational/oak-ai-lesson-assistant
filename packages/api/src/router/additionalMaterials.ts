@@ -1,5 +1,7 @@
 import {
   actionEnum,
+  additionalMaterialTypeEnum,
+  additionalMaterialsConfigMap,
   generateAdditionalMaterialInputSchema,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { partialLessonContextSchema } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
@@ -34,6 +36,104 @@ const log = aiLogger("additional-materials");
 const OPENAI_AUTH_TOKEN = process.env.OPENAI_AUTH_TOKEN;
 
 export const additionalMaterialsRouter = router({
+  createMaterialSession: protectedProcedure
+    .input(
+      z.object({
+        documentType: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      log.info("Creating material session", {
+        documentType: input.documentType,
+      });
+
+      try {
+        if (!ctx.auth.userId) {
+          throw new Error("No user id");
+        }
+
+        const clerkUser = await clerkClient.users.getUser(ctx.auth.userId);
+        if (clerkUser.banned) {
+          throw new UserBannedError(ctx.auth.userId);
+        }
+
+        const parsedDocType = additionalMaterialTypeEnum.parse(
+          input.documentType,
+        );
+        const version = additionalMaterialsConfigMap[parsedDocType]?.version;
+
+        if (!version) {
+          throw new Error(`Unknown document type: ${input.documentType}`);
+        }
+
+        const interaction =
+          await ctx.prisma.additionalMaterialInteraction.create({
+            data: {
+              userId: ctx.auth.userId,
+              config: {
+                resourceType: parsedDocType,
+                resourceTypeVersion: version,
+              },
+            },
+          });
+
+        log.info("Material session created", { resourceId: interaction.id });
+        return { resourceId: interaction.id };
+      } catch (cause) {
+        const trpcError = new Error("Failed to create material session", {
+          cause,
+        });
+        log.error("Failed to create material session", cause);
+        Sentry.captureException(trpcError);
+        throw trpcError;
+      }
+    }),
+
+  updateMaterialSession: protectedProcedure
+    .input(
+      z.object({
+        resourceId: z.string(),
+        lessonId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      log.info("Updating material session", {
+        resourceId: input.resourceId,
+        lessonId: input.lessonId,
+      });
+
+      try {
+        if (!ctx.auth.userId) {
+          throw new Error("No user id");
+        }
+
+        const clerkUser = await clerkClient.users.getUser(ctx.auth.userId);
+        if (clerkUser.banned) {
+          throw new UserBannedError(ctx.auth.userId);
+        }
+
+        await ctx.prisma.additionalMaterialInteraction.update({
+          where: {
+            id: input.resourceId,
+            userId: ctx.auth.userId,
+          },
+          data: {
+            derivedFromId: input.lessonId,
+          },
+        });
+
+        log.info("Material session updated", { resourceId: input.resourceId });
+        return { success: true };
+      } catch (cause) {
+        const TrpcError = new Error("Failed to update material session", {
+          cause,
+        });
+        log.error("Failed to update material session", cause);
+        Sentry.captureException(TrpcError);
+        throw TrpcError;
+      }
+    }),
+
   generateAdditionalMaterial: additionalMaterialUserBasedRateLimitProcedure
     .input(
       z.object({
@@ -41,6 +141,7 @@ export const additionalMaterialsRouter = router({
         context: z.unknown(),
         documentType: z.string(),
         resourceId: z.string().nullish(),
+        adaptsOutputId: z.string().nullish(),
         lessonId: z.string().nullish(),
       }),
     )
@@ -147,6 +248,14 @@ export const additionalMaterialsRouter = router({
             cause: { type: "rate_limit", message: errorMessage },
           });
         }
+        if (err instanceof TRPCError && err.code === "TOO_MANY_REQUESTS") {
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message:
+              "RateLimitExceededError: Too many requests, please try again later.",
+            cause: err,
+          });
+        }
         if (err instanceof UserBannedError) {
           const errorMessage = "UserBannedError: User account is locked.";
           throw new TRPCError({
@@ -166,7 +275,28 @@ export const additionalMaterialsRouter = router({
           auth: ctx.auth,
         });
       } catch (cause) {
-        const errorMessage = `Failed to fetch additional material moderation for - ${parsedInput.data.title} - ${parsedInput.data.subject}`;
+        if (cause instanceof UserBannedError) {
+          const errorMessage = "UserBannedError: User account is locked.";
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: errorMessage,
+            cause: { type: "banned", message: errorMessage },
+          });
+        }
+        if (cause instanceof RateLimitExceededError) {
+          const timeRemainingHours = Math.ceil(
+            (cause.reset - Date.now()) / 1000 / 60 / 60,
+          );
+          const hours = timeRemainingHours === 1 ? "hour" : "hours";
+
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message: `RateLimitExceededError: **Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in ${timeRemainingHours} ${hours}. If you require a higher limit, please [make a request](${process.env.RATELIMIT_FORM_URL}).`,
+            cause,
+          });
+        }
+
+        const errorMessage = `Failed to fetch additional material partial lesson for - ${parsedInput.data.title} - ${parsedInput.data.subject}`;
         log.error(errorMessage, cause);
         Sentry.captureException(cause);
         throw new TRPCError({

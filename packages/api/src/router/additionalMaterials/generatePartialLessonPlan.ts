@@ -10,6 +10,7 @@ import { aiLogger } from "@oakai/logger";
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 
 import type { LooseLessonPlan } from "../../../../aila/src/protocol/schema";
+import { getMockModerationResult } from "./moderationFixtures";
 import { recordSafetyViolation } from "./safetyUtils";
 
 const log = aiLogger("additional-materials");
@@ -34,7 +35,6 @@ export type GeneratePartialLessonPlanResponse =
       lessonId: string;
       moderation: ModerationResult;
     };
-
 /**
  * Generates a partial lesson plan based on the provided context
  */
@@ -45,6 +45,9 @@ export async function generatePartialLessonPlan({
   input,
 }: GeneratePartialLessonPlanParams) {
   log.info("Generating partial lesson plan");
+
+  const mockModerationResult = getMockModerationResult(input.title);
+  const mockToxicResult = mockModerationResult && isToxic(mockModerationResult);
 
   const lakeraResult = await performLakeraThreatCheck({
     messages: [{ role: "user", content: `${input.subject} - ${input.title}` }],
@@ -81,20 +84,21 @@ export async function generatePartialLessonPlan({
     },
   });
 
-  if (isToxic(moderation)) {
+  if (isToxic(moderation) || mockToxicResult) {
     await recordSafetyViolation({
       prisma,
       auth,
       interactionId: interaction.id,
       violationType: "MODERATION",
       userAction: "PARTIAL_LESSON_GENERATION",
+      moderation: mockModerationResult ?? moderation,
     });
 
     return {
-      threatDetection: true,
+      threatDetection: false,
       lesson: null,
       lessonId: interaction.id,
-      moderation,
+      moderation: mockModerationResult ?? moderation,
     };
   }
 
@@ -105,6 +109,7 @@ export async function generatePartialLessonPlan({
       interactionId: interaction.id,
       violationType: "THREAT",
       userAction: "PARTIAL_LESSON_GENERATION",
+      moderation: mockModerationResult ?? moderation,
     });
 
     return {
@@ -119,6 +124,6 @@ export async function generatePartialLessonPlan({
     threatDetection: false,
     lesson,
     lessonId: interaction.id,
-    moderation,
+    moderation: mockModerationResult ?? moderation,
   };
 }
