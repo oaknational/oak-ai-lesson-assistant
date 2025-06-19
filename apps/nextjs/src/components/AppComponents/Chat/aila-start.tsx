@@ -7,7 +7,6 @@ import { aiLogger } from "@oakai/logger";
 
 import { useUser } from "@clerk/nextjs";
 import {
-  OakBox,
   OakFlex,
   OakHeading,
   OakP,
@@ -19,13 +18,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 
-import { useDemoUser } from "@/components/ContextProviders/Demo";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
 
-import { useDialog } from "../DialogContext";
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 import EmptyScreenAccordion from "./empty-screen-accordion";
 
@@ -57,6 +54,7 @@ export function AilaStart({
   const { trackEvent } = useAnalytics();
   const [input, setInput] = useState("");
   const router = useRouter();
+  const { track } = useAnalytics();
 
   const createAppSession = trpc.chat.appSessions.create.useMutation();
   const trpcUtils = trpc.useUtils();
@@ -178,6 +176,17 @@ export function AilaStart({
                 href="/aila/resources"
                 iconName="arrow-right"
                 isTrailingIcon={true}
+                onClick={() => {
+                  track.createTeachingMaterialsInitiated({
+                    platform: "aila-beta",
+                    product: "ai lesson assistant",
+                    engagementIntent: "use",
+                    componentType: "create_additional_materials_button",
+                    eventVersion: "2.0.0",
+                    analyticsUseCase: "Teacher",
+                    isLoggedIn: Boolean(user),
+                  });
+                }}
               >
                 Create resources
               </OakPrimaryButton>
