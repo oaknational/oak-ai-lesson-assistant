@@ -115,7 +115,41 @@ export async function interact({
     document.title && document.keyStage && document.subject,
   );
 
-  // Get RAG data if lesson has details, for router context
+  if (relevantLessons === null && lessonHasDetails) {
+    /**
+     * This means we haven't even tried to fetch relevant lessons yet
+     * So we need to do that first, and present them to the user
+     * to decide if they want to use one of them as a base.
+     */
+    onUpdate?.({
+      type: "progress",
+      data: {
+        step: "routing",
+        status: "completed",
+        plan: null,
+      },
+    });
+    const ragData =
+      (await customAgents.fetchRagData({
+        document,
+      })) ?? [];
+
+    // @todo handle case when no relevant lessons are found
+
+    const ailaMessage = ragData.length
+      ? `If you would like to base your lesson on one of the following:\n${ragData.map((rl, i) => `${i + 1}. ${rl.title}`).join(`\n`)}\n\nPlease reply with the number of the lesson you would like to use as a base.\n\nOtherwise click 'continue'.`
+      : `We coudn't find any relevant lessons to base your lesson on. Are you happy to continue to create one from scratch?`;
+    onUpdate?.({
+      type: "complete",
+      data: {
+        document,
+        ailaMessage,
+      },
+    });
+
+    return { document, ailaMessage };
+  }
+
   const ragData = lessonHasDetails
     ? await customAgents.fetchRagData({
         document,
