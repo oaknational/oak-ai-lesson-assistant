@@ -36,22 +36,11 @@ export const Glossary = ({
           <OakP $font="body-2-bold">
             {item.term}
             <OakSpan $font="body-2">
-              -{" "}
-              {item.definition.charAt(0).toUpperCase() +
-                item.definition.slice(1)}
+              {` - ${item.definition.charAt(0).toUpperCase()}${item.definition.slice(1)}.`}
             </OakSpan>
           </OakP>
         </OakFlex>
       ))}
-      {generation &&
-        handleSubmit &&
-        readingAgeRefinement.map((refinement) => (
-          <OakFlex key={refinement}>
-            <OakPrimaryButton onClick={() => void handleSubmit(refinement)}>
-              {refinement}
-            </OakPrimaryButton>
-          </OakFlex>
-        ))}
     </OakFlex>
   );
 };

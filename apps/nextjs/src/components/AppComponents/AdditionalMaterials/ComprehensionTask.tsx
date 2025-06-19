@@ -42,7 +42,7 @@ export const ComprehensionTask = ({
         ))}
       </OakBox>
 
-      <OakHeading $font={"body-2-bold"} tag="h3" $mt="space-between-m">
+      <OakHeading $font={"heading-6"} tag="h3" $mt="space-between-m">
         Questions
       </OakHeading>
 
@@ -56,7 +56,7 @@ export const ComprehensionTask = ({
         </OakOL>
       </OakFlex>
 
-      <OakHeading $font={"body-2-bold"} tag="h3" $mt="space-between-m">
+      <OakHeading $font={"heading-6"} tag="h3" $mt="space-between-m">
         Answers
       </OakHeading>
 
