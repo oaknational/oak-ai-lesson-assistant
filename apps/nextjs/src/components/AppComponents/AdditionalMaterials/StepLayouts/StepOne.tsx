@@ -4,12 +4,12 @@ import { getResourceTypes } from "@oakai/additional-materials/src/documents/addi
 
 import {
   OakFlex,
+  OakIcon,
   OakLabel,
   OakP,
   OakPrimaryButton,
   OakRadioButton,
   OakRadioGroup,
-  OakSecondaryButton,
 } from "@oaknational/oak-components";
 
 import {
@@ -67,6 +67,7 @@ const StepOne = ({
                 setShowValidationError("");
               }}
               $flexDirection="column"
+              $gap={"space-between-m"}
             >
               {resourceTypes.map((resourceType) => (
                 <OakLabel key={resourceType.id}>
@@ -78,7 +79,7 @@ const StepOne = ({
                     label={
                       <OakFlex
                         $flexDirection="column"
-                        $gap="all-spacing-2"
+                        // $gap="all-spacing-2"
                         $ml="space-between-ssx"
                       >
                         <OakP $font="body-2-bold">
@@ -96,7 +97,14 @@ const StepOne = ({
       </OakFlex>
 
       <ResourcesFooter>
-        <OakFlex $justifyContent="flex-end" $width={"100%"}>
+        <OakFlex $justifyContent="space-between" $width={"100%"}>
+          <button onClick={() => console.log("Back a step clicked")}>
+            {/* Todo: Link this up to the previous step when for launch */}
+            <OakFlex $alignItems="center" $gap="all-spacing-2">
+              <OakIcon iconName="chevron-left" />
+              Back a step
+            </OakFlex>
+          </button>
           <OakPrimaryButton
             onClick={() => {
               if (!docType) {
@@ -109,7 +117,7 @@ const StepOne = ({
             iconName="arrow-right"
             isTrailingIcon={true}
           >
-            Continue
+            Next, provide lesson details
           </OakPrimaryButton>
         </OakFlex>
       </ResourcesFooter>
