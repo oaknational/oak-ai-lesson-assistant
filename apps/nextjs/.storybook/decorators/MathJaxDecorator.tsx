@@ -1,10 +1,11 @@
 import React from "react";
 
 import { Decorator } from "@storybook/react";
-import { MathJaxContext } from "better-react-mathjax";
+
+import { OakMathJaxContext } from "../../src/components/MathJax/MathJaxContext";
 
 export const MathJaxDecorator: Decorator = (Story) => (
-  <MathJaxContext>
+  <OakMathJaxContext>
     <Story />
-  </MathJaxContext>
+  </OakMathJaxContext>
 );

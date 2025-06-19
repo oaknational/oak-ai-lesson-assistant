@@ -3,7 +3,8 @@ import { Fragment } from "react";
 
 import { OakFlex } from "@oaknational/oak-components";
 
-import { MathJaxWrap } from "../MathJaxWrap";
+import { MathJaxWrap } from "@/components/MathJax";
+
 import { QuizQuestionsMCAnswers } from "../QuizQuestionsMCAnswers";
 import { QuizQuestionsMatchAnswers } from "../QuizQuestionsMatchAnswers";
 import { QuizQuestionsOrderAnswers } from "../QuizQuestionsOrderAnswers";
