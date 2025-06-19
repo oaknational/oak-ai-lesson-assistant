@@ -1,4 +1,7 @@
-import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/helpers";
+import {
+  getSafetyResult,
+  moderationSlugToDescription,
+} from "@oakai/core/src/utils/ailaModeration/helpers";
 
 import invariant from "tiny-invariant";
 
@@ -25,11 +28,16 @@ const AdditionalMaterialsModeration = ({
     surveyName: "Moderation feedback",
   });
 
+  const message = `  Contains 
+              ${moderation.categories.map(moderationSlugToDescription).join(", ")}.
+              Check content carefully. If you have feedback on this guidance,
+              please provide details below.`;
+
   return (
     <AdditionalMaterialsModerationFeedback
       closeDialog={closeDialog}
       heading="Content guidance"
-      message={moderation.justification}
+      message={message}
       submitSurvey={(feedback) => {
         submitSurveyWithOutClosing({
           $survey_response: getSafetyResult(moderation),
