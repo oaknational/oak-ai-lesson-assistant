@@ -29,7 +29,7 @@ export const subjectNameMap: Partial<Record<SubjectSlugs, string>> = {
   music: "Music",
   citizenship: "Citizenship",
   french: "French",
-  "physical-education": "Physical Education",
+  "physical-education": "Physical education",
   history: "History",
   latin: "Latin",
   "religious-education": "Religious education",
