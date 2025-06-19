@@ -41,8 +41,7 @@ export async function messageToUserAgent({
       | "out_of_scope"
       | "clarification_needed"
       | "ethical_concern"
-      | "capability_limitation"
-      | "task_complete";
+      | "capability_limitation";
     context: string;
   };
 }): Promise<RouterResponse | null> {

@@ -35,7 +35,6 @@ const responseSchema = z.object({
           "clarification_needed", // Request is ambiguous or unclear
           "ethical_concern", // Request violates content policies
           "capability_limitation", // Request is lesson-related but technically impossible
-          "task_complete", // Lesson is finished and user seems satisfied
         ])
         .describe("The reason for ending the turn"),
       context: z
