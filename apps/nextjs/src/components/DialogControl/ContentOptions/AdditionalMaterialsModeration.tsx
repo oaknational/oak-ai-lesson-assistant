@@ -28,7 +28,7 @@ const AdditionalMaterialsModeration = ({
   return (
     <AdditionalMaterialsModerationFeedback
       closeDialog={closeDialog}
-      heading="Guidance Required"
+      heading="Content guidance"
       message={moderation.justification}
       submitSurvey={(feedback) => {
         submitSurveyWithOutClosing({

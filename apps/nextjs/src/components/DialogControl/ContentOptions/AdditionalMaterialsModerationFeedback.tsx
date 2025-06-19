@@ -38,8 +38,9 @@ const AdditionalMaterialsModerationFeedback = ({
         $height="100%"
         $flexDirection="column"
         $justifyContent="space-between"
-        $gap={"space-between-m2"}
+        $gap={"space-between-m"}
       >
+        <OakP $font={"heading-6"}>{"Thank you"}</OakP>
         <OakP>Your feedback has been submitted.</OakP>
         <OakFlex $justifyContent={"flex-end"}>
           <OakPrimaryButton

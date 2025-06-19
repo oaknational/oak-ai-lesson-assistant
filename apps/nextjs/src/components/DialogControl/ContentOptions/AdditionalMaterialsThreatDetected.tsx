@@ -16,13 +16,11 @@ import AdditionalMaterialsModerationFeedback from "./AdditionalMaterialsModerati
 
 type AdditionalMaterialsThreatDetectedProps = {
   closeDialog: () => void;
-  heading: string;
-  message: string;
 };
 
 const AdditionalMaterialsThreatDetected = ({
   closeDialog,
-}: Readonly<AdditionalMaterialsInappropriateContentProps>) => {
+}: Readonly<AdditionalMaterialsThreatDetectedProps>) => {
   const { resetToDefault } = useResourcesActions();
   const moderation = useResourcesStore(moderationSelector);
   const id = useResourcesStore(pageDataSelector).lessonPlan.lessonId;
@@ -36,9 +34,9 @@ const AdditionalMaterialsThreatDetected = ({
     <AdditionalMaterialsModerationFeedback
       closeDialog={closeDialog}
       resetToDefault={resetToDefault}
-      heading="Inappropriate content detected"
+      heading="Potential misuse of Aila detected"
       message={
-        "This request has been flagged as potentially inappropriate. Please amend lesson details. If this is an error, please give us feedback below."
+        "This request has been identified as a potential misuse of Aila. Please rephrase or try a different request. If you think this is an error, please give us feedback below."
       }
       submitSurvey={(feedback) => {
         submitSurveyWithOutClosing({

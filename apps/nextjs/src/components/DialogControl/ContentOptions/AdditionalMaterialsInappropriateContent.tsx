@@ -33,9 +33,9 @@ const AdditionalMaterialsInappropriateContent = ({
     <AdditionalMaterialsModerationFeedback
       closeDialog={closeDialog}
       resetToDefault={resetToDefault}
-      heading="Guidance Required"
+      heading="Potential misuse of Aila detected"
       message={
-        "This request has been flagged as potentially inappropriate. Please amend lesson details. If this is an error, please give us feedback below."
+        "Aila is designed to create classroom-appropriate content. This topic has been identified as potentially unsuitable, preventing you from continuing to create teaching materials. Continuing to generate inappropriate content will result in your account being blocked. If you believe this is an error, please provide feedback."
       }
       submitSurvey={(feedback) => {
         submitSurveyWithOutClosing({
