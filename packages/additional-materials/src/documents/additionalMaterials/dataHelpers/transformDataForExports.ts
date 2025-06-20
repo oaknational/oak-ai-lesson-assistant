@@ -168,7 +168,7 @@ export const transformDataStarterQuiz =
       }
     }
 
-    sanitizePlaceholders(placeholderMap);
+    // sanitizePlaceholders(placeholderMap);
 
     log.info("Generated starter quiz placeholders", {
       placeholderCount: Object.keys(placeholderMap).length,
@@ -201,7 +201,9 @@ export const transformDataExitQuiz =
     });
 
     const placeholderMap: Record<string, string> = {
-      title: `Exit Quiz: ${title}`,
+      title: `${title}`,
+      ms_title: `${title} - mark scheme`,
+      type: "Exit",
     };
 
     // Add questions and answers up to 10 questions
@@ -212,9 +214,22 @@ export const transformDataExitQuiz =
       q.options.forEach((option, aIndex) => {
         if (aIndex < 3) {
           const answerNum = aIndex + 1;
-          const marker = option.isCorrect ? "✓ " : "";
           placeholderMap[`question_${questionNum}_answer_${answerNum}`] =
-            `${marker}${option.text}`;
+            `${option.text}`;
+        }
+      });
+    });
+
+    // Add mark scheme questions and answers up to 10 questions
+    questions.slice(0, 10).forEach((q, qIndex) => {
+      const questionNum = qIndex + 1;
+      placeholderMap[`ms_question_${questionNum}`] = q.question;
+      q.options.forEach((option, aIndex) => {
+        if (aIndex < 3) {
+          const marker = option.isCorrect ? "✓ " : "";
+          const answerNum = aIndex + 1;
+          placeholderMap[`ms_question_${questionNum}_answer_${answerNum}`] =
+            `${option.text} ${marker}`;
         }
       });
     });
@@ -231,7 +246,7 @@ export const transformDataExitQuiz =
       }
     }
 
-    sanitizePlaceholders(placeholderMap);
+    // sanitizePlaceholders(placeholderMap);
 
     log.info("Generated exit quiz placeholders", {
       placeholderCount: Object.keys(placeholderMap).length,

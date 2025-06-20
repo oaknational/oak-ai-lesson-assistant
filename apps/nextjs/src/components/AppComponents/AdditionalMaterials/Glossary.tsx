@@ -1,19 +1,10 @@
-import {
-  type GlossarySchema,
-  readingAgeRefinement,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
+import { type GlossarySchema } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
 
-import {
-  OakFlex,
-  OakP,
-  OakPrimaryButton,
-  OakSpan,
-} from "@oaknational/oak-components";
+import { OakFlex, OakP, OakSpan } from "@oaknational/oak-components";
 
 export const Glossary = ({
   action,
   generation,
-  handleSubmit,
 }: {
   action: string;
   generation: GlossarySchema;
