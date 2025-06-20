@@ -63,8 +63,14 @@ export const ComprehensionTask = ({
       <OakFlex $gap={"space-between-s"} $flexDirection="column">
         <OakOL>
           {generation.comprehension.questions.map((question, index) => (
-            <OakLI key={`${index}-${question.questionText}`} $font="body-2">
+            <OakLI
+              $pa={"inner-padding-none"}
+              key={`${index}-${question.questionText}`}
+              $font="body-2"
+              style={{ textIndent: "0px", padding: "0px" }}
+            >
               {question.questionText}
+
               <OakP $mv="space-between-s" $font="body-2-bold">
                 {question.answer}
               </OakP>

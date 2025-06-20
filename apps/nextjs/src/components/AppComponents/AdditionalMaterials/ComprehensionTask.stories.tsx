@@ -6,7 +6,7 @@ import { chromaticParams } from "@/storybook/chromatic";
 
 import { ComprehensionTask } from "./ComprehensionTask";
 
-const comprehensionFixture: ComprehensionTaskType = {
+export const comprehensionFixture: ComprehensionTaskType = {
   comprehension: {
     lessonTitle: "The End of Roman Britain",
     yearGroup: "Year 5",
@@ -65,7 +65,7 @@ It also requires evaluating the impact of this withdrawal on British society, wh
         questionText:
           "What impact did the withdrawal of Roman forces have on Britain?",
         answer:
-          "Britain became vulnerable to invasions and internal conflicts.",
+          "Britain became vulnerable to invasions and internal conflictsBritain became vulnerable to invasions and internal conflicts.Britain became vulnerable to invasions and internal conflicts.Britain became vulnerable to invasions and internal conflicts.",
       },
       {
         questionNumber: 6,

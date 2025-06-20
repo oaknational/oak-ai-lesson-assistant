@@ -30,6 +30,14 @@ type TransformResult = Array<
   | { type: "placeholders"; map: Record<string, string> }
 >;
 
+const sanitizePlaceholders = (placeholders: Record<string, string>) => {
+  Object.keys(placeholders).forEach((key) => {
+    if (placeholders[key] !== undefined) {
+      placeholders[key] = placeholders[key].replace(/\n{2,}/g, "\n");
+    }
+  });
+};
+
 export const transformDataGlossary =
   () =>
   (data: unknown): Promise<TransformResult> => {
@@ -54,7 +62,7 @@ export const transformDataGlossary =
     glossary.forEach((term, index) => {
       const termNum = index + 1;
       placeholderMap[`label_${termNum}`] = term.term;
-      placeholderMap[`value_${termNum}`] = term.definition;
+      placeholderMap[`value_${termNum}`] = `- ${term.definition}`;
     });
 
     // Fill any missing placeholders with empty strings for up to 15 terms
@@ -103,9 +111,11 @@ export const transformDataComprehension =
     // Add questions and answers up to 10 questions
     for (let i = 1; i <= 10; i++) {
       const question = questions[i - 1];
-      placeholderMap[`question_${i}`] = question?.questionText || "";
-      placeholderMap[`question_${i}_answer`] = question?.answer || "";
+      placeholderMap[`question_${i}`] = question?.questionText ?? "";
+      placeholderMap[`question_${i}_answer`] = question?.answer ?? "";
     }
+
+    sanitizePlaceholders(placeholderMap);
 
     const transformedData: TransformResult = [
       { type: "title", text: comprehension.lessonTitle },
@@ -157,6 +167,8 @@ export const transformDataStarterQuiz =
         }
       }
     }
+
+    sanitizePlaceholders(placeholderMap);
 
     log.info("Generated starter quiz placeholders", {
       placeholderCount: Object.keys(placeholderMap).length,
@@ -218,6 +230,8 @@ export const transformDataExitQuiz =
         }
       }
     }
+
+    sanitizePlaceholders(placeholderMap);
 
     log.info("Generated exit quiz placeholders", {
       placeholderCount: Object.keys(placeholderMap).length,

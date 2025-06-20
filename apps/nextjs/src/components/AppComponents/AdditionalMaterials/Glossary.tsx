@@ -29,6 +29,7 @@ export const Glossary = ({
         <OakFlex
           key={`${item.term}-${index}`}
           $flexDirection="row"
+          $justifyContent=""
           $alignItems="flex-start"
           $mb="space-between-xs"
           $flexWrap="wrap"
@@ -36,7 +37,7 @@ export const Glossary = ({
           <OakP $font="body-2-bold">
             {item.term}
             <OakSpan $font="body-2">
-              {` - ${item.definition.charAt(0).toUpperCase()}${item.definition.slice(1)}.`}
+              {` - ${item.definition.charAt(0).toUpperCase()}${item.definition.slice(1)}`}
             </OakSpan>
           </OakP>
         </OakFlex>

@@ -61,7 +61,7 @@ This text should
 
 - summarise the KEY LEARNING POINTS and understanding of this text should enable the pupil to achieve the LEARNING CYCLE OUTCOME.
 - use short, clear sentences and well-structured paragraphs.
-- format the text with proper paragraph breaks (each paragraph separated by a blank line).
+- format the text with proper paragraph breaks.
 - include 4-6 paragraphs with logical transitions between ideas.
 - include tier two and three vocabulary and the KEYWORDS but these and any other unfamiliar words should be explained in the context of the COMPREHENSION TEXT.
 - use an informative, engaging, age-appropriate tone, similar to that in a textbook.
