@@ -174,3 +174,5 @@ export const generateAdditionalMaterialInputSchema = z.discriminatedUnion(
 export type GenerateAdditionalMaterialInput = z.infer<
   typeof generateAdditionalMaterialInputSchema
 >;
+
+export { starterQuizSchema, exitQuizSchema };
