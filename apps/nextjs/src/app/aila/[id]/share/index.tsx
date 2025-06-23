@@ -7,13 +7,13 @@ import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModerati
 
 import { OakSmallPrimaryButton } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/react";
-import { MathJaxContext } from "better-react-mathjax";
 import Link from "next/link";
 
 import LessonPlanMapToMarkDown from "@/components/AppComponents/Chat/chat-lessonPlanMapToMarkDown";
 import { GuidanceRequired } from "@/components/AppComponents/Chat/guidance-required";
 import { Icon } from "@/components/Icon";
 import { Logo } from "@/components/Logo";
+import { OakMathJaxContext } from "@/components/MathJax";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 interface ShareChatProps {
@@ -100,9 +100,9 @@ export default function ShareChat({
           data-testid="lesson-plan-markdown"
           className="mb-14 border-b pb-14"
         >
-          <MathJaxContext>
+          <OakMathJaxContext>
             <LessonPlanMapToMarkDown lessonPlan={lessonPlan} />
-          </MathJaxContext>
+          </OakMathJaxContext>
         </div>
       </div>
     </div>
