@@ -28,11 +28,11 @@ export type ConvertKeysToCamelCase<T> =
 export function convertKey(key: string): string {
   return key.replace(/(_\w)/g, (_, [, m]) => (m as string)?.toUpperCase());
 }
-export type QuizQuestion = ConvertKeysToCamelCase<
+export type QuizRawQuestion = ConvertKeysToCamelCase<
   z.infer<typeof quizQuestionSchema>
 >;
 
-export type QuizQuestionAnswers = NonNullable<
+export type QuizRawQuestionAnswers = NonNullable<
   ConvertKeysToCamelCase<z.infer<typeof quizQuestionSchema>["answers"]>
 >;
 
@@ -91,6 +91,7 @@ const answersSchema = z.object({
 export const rawQuizQuestionSchema = z.object({
   questionId: z.number(),
   questionUid: z.string(),
+  // TODO
   questionType: z.enum([
     "multiple-choice",
     "match",

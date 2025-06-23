@@ -5,9 +5,9 @@ import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
-  Quiz,
   QuizPath,
-  QuizQuestion,
+  QuizV1,
+  QuizV1Question,
 } from "../../protocol/schema";
 import type {
   BaseType,
@@ -50,12 +50,12 @@ export interface AilaQuizGeneratorService {
   generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<Quiz[]>;
+  ): Promise<QuizV1[]>;
   generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<Quiz[]>;
-  // invoke(lessonPlan: LooseLessonPlan): Promise<Quiz[]>;
+  ): Promise<QuizV1[]>;
+  // invoke(lessonPlan: LooseLessonPlan): Promise<QuizV1[]>;
 }
 
 export interface AilaQuizVariantService {
@@ -66,15 +66,15 @@ export interface AilaQuizVariantService {
 }
 
 export interface AilaQuizReranker<T extends z.ZodType<BaseType>> {
-  rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]>;
+  rerankQuiz(quizzes: QuizV1Question[][]): Promise<number[]>;
   evaluateQuizArray(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizV1Question[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
   ): Promise<z.infer<T>[]>;
   cachedEvaluateQuizArray(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizV1Question[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
@@ -93,7 +93,7 @@ export interface FullQuizService {
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<QuizQuestion[]>;
+  ): Promise<QuizV1Question[]>;
 }
 
 // Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
@@ -101,9 +101,9 @@ export interface QuizSelector<T extends BaseType> {
   ratingFunction: RatingFunction<T>;
   maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
   selectBestQuiz(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizV1Question[][],
     ratingsSchemas: T[],
-  ): QuizQuestion[];
+  ): QuizV1Question[];
 }
 
 export type quizPatchType = "/starterQuiz" | "/exitQuiz";
@@ -188,3 +188,4 @@ export interface QuizSelectorFactory {
     selectorType: QuizSelectorType,
   ): QuizSelector<T>;
 }
+

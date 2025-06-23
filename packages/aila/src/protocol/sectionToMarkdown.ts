@@ -4,8 +4,8 @@ import { isArray, isNumber, isObject, isString } from "remeda";
 import { z } from "zod";
 
 import { toSentenceCase } from "../../../../apps/nextjs/src/utils/toSentenceCase";
-import type { QuizOptional } from "./schema";
-import { CycleOptionalSchema, QuizOptionalSchema } from "./schema";
+import type { QuizV1Optional } from "./schema";
+import { CycleOptionalSchema, QuizV1OptionalSchema } from "./schema";
 
 export function sortIgnoringSpecialChars(strings: string[]): string[] {
   // Function to normalize strings by removing *, -, and spaces
@@ -140,8 +140,8 @@ function renderArray(key: string, value: readonly unknown[]): string {
   }
 
   if (typeof value[0] === "object") {
-    if (key === "starterQuiz" || key === "exitQuiz") {
-      return organiseAnswersAndDistractors(value as QuizOptional);
+    if (key === "starterQuizV1" || key === "exitQuizV1") {
+      return organiseAnswersAndDistractors(value as QuizV1Optional);
     }
 
     if (key === "misconceptions") {
@@ -179,8 +179,8 @@ export function sectionToMarkdown(
   }
 }
 
-export function organiseAnswersAndDistractors(quiz: QuizOptional) {
-  return QuizOptionalSchema.parse(quiz)
+export function organiseAnswersAndDistractors(quiz: QuizV1Optional) {
+  return QuizV1OptionalSchema.parse(quiz)
     .map((v, i) => {
       // Combine answers and distractors into a single array
       const allOptions = [
