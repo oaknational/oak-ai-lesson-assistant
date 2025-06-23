@@ -24,6 +24,7 @@ export async function messageToUserAgent({
   jsonDiff,
   messageHistoryChatOnly,
   error,
+  routerDecision,
 }: {
   chatId: string;
   userId: string;
@@ -33,6 +34,15 @@ export async function messageToUserAgent({
   error?: {
     currentAgent: AgentName;
     message: string;
+  };
+  routerDecision?: {
+    type: "end_turn";
+    reason:
+      | "out_of_scope"
+      | "clarification_needed"
+      | "ethical_concern"
+      | "capability_limitation";
+    context: string;
   };
 }): Promise<RouterResponse | null> {
   const openAIClient = createOpenAIClient({
@@ -53,16 +63,20 @@ export async function messageToUserAgent({
     .filter((sectionKey) => !document[sectionKey]);
 
   const instructions = messageToUserInstructions;
-  const input =
-    JSON.stringify({
-      currentDocument: document,
-      jsonDiff,
-      missingSections,
-      messageHistoryChatOnly,
-    }) +
-    (error
-      ? `### 🚨 Error state\nThe current agent (${error.currentAgent}) has failed to complete. If there is a non-trivial jsonDiff, then some edits have been made to the document. It's most likely that the agent has failed because the user has made a request at odds with Aila's functionality. If so, construct a message explaining the issue to them. These are the details of the error from the agent:\n${error.message}`
-      : "");
+  let input = JSON.stringify({
+    currentDocument: document,
+    jsonDiff,
+    missingSections,
+    messageHistoryChatOnly,
+  });
+
+  if (error) {
+    input += `### 🚨 Error state\nThe current agent (${error.currentAgent}) has failed to complete. If there is a non-trivial jsonDiff, then some edits have been made to the document. It's most likely that the agent has failed because the user has made a request at odds with Aila's functionality. If so, construct a message explaining the issue to them. These are the details of the error from the agent:\n${error.message}`;
+  }
+
+  if (routerDecision) {
+    input += `### 📍 Router Decision\nThe router has decided to end the turn with reason: ${routerDecision.reason}\nRouter context: ${routerDecision.context}\n\nBased on this router decision, craft an appropriate user-facing message that addresses their request appropriately.`;
+  }
 
   log.info("messageToUserAgent input:", input);
   log.info("messageToUserAgent instructions:", instructions);

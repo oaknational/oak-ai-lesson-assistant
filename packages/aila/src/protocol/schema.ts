@@ -398,13 +398,13 @@ export const CompletedLessonPlanSchema = z.object({
   keyLearningPoints: KeyLearningPointsSchema,
   misconceptions: MisconceptionsSchema,
   keywords: KeywordsSchema,
-  basedOn: BasedOnSchema.optional(),
+  basedOn: BasedOnSchema.nullish(),
   starterQuiz: QuizSchema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
   cycle1: CycleSchema.describe("The first learning cycle"),
   cycle2: CycleSchema.describe("The second learning cycle"),
   cycle3: CycleSchema.describe("The third learning cycle"),
   exitQuiz: QuizSchema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
-  additionalMaterials: AdditionalMaterialsSchema,
+  additionalMaterials: AdditionalMaterialsSchema.nullable(),
 });
 
 export type CompletedLessonPlan = z.infer<typeof CompletedLessonPlanSchema>;
