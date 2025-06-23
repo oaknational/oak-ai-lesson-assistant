@@ -8,7 +8,8 @@ import {
   OakHeading,
   OakSpan,
 } from "@oaknational/oak-components";
-import { MathJaxContext } from "better-react-mathjax";
+
+import { OakMathJaxContext } from "@/components/MathJax";
 
 import QuizQuestionsList from "../QuizQuestionsList";
 import type { RawQuiz } from "../quizTypes";
@@ -21,7 +22,7 @@ export type QuizProps = {
 
 const LessonOverviewQuizContainer: FC<QuizProps> = (props) => {
   return props.questions && props.questions.length > 0 ? (
-    <MathJaxContext>
+    <OakMathJaxContext>
       <OakHeading $font={"heading-4"} tag={"h2"}>
         Starter quiz
       </OakHeading>
@@ -43,7 +44,7 @@ const LessonOverviewQuizContainer: FC<QuizProps> = (props) => {
           ))}
         </OakBox>
       )}
-    </MathJaxContext>
+    </OakMathJaxContext>
   ) : null;
 };
 
