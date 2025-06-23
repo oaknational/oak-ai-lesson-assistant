@@ -26,6 +26,9 @@ import {
   QuizV1OptionalSchema,
   QuizV1Schema,
   QuizV1SchemaWithoutLength,
+  QuizV2OptionalSchema,
+  QuizV2Schema,
+  QuizV2SchemaWithoutLength,
 } from "./schema";
 
 const log = aiLogger("aila:protocol");
@@ -140,6 +143,26 @@ export const PatchQuizV1ForLLM = z.object({
   value: QuizV1SchemaWithoutLength,
 });
 
+// V2 Quiz patches (discriminated union support)
+export const PatchQuizOptionalV2 = z.object({
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([z.literal("/starterQuizV2"), z.literal("/exitQuizV2")]),
+  value: QuizV2OptionalSchema,
+});
+
+export const PatchQuizV2 = z.object({
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([z.literal("/starterQuizV2"), z.literal("/exitQuizV2")]),
+  value: QuizV2Schema,
+});
+
+export const PatchQuizV2ForLLM = z.object({
+  type: z.literal("quizV2"),
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([z.literal("/starterQuizV2"), z.literal("/exitQuizV2")]),
+  value: QuizV2SchemaWithoutLength,
+});
+
 export const PatchBasedOnOptional = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.literal("/basedOn"),
@@ -239,6 +262,7 @@ export const JsonPatchValueSchema = z.union([
   PatchStringArray,
   PatchCycle,
   PatchQuizV1,
+  PatchQuizV2,
   PatchMisconceptions,
   PatchKeywords,
 ]);
@@ -254,6 +278,7 @@ export const JsonPatchValueForLLMSchema = z.union([
   PatchStringArrayForLLM,
   PatchCycleForLLM,
   PatchQuizV1ForLLM,
+  PatchQuizV2ForLLM,
   PatchMisconceptionsForLLM,
   PatchKeywordsForLLM,
 ]);
@@ -273,6 +298,7 @@ export const JsonPatchValueOptionalSchema = z.union([
   PatchStringArray,
   PatchCycleOptional,
   PatchQuizV1Optional,
+  PatchQuizOptionalV2,
   PatchMisconceptionsOptional,
   PatchKeywordsOptional,
 ]);
@@ -300,6 +326,7 @@ export const LLMPatchDocumentSchema = z.object({
     PatchBasedOnForLLM,
     PatchMisconceptionsForLLM,
     PatchQuizV1ForLLM,
+    PatchQuizV2ForLLM,
     PatchKeywordsForLLM,
     PatchCycleForLLM,
     JsonPatchRemoveSchemaForLLM,

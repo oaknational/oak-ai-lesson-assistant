@@ -3,11 +3,12 @@
  *
  * This module provides all protocol-related schemas organized by functionality:
  * - Quiz schemas (V1, V2, Raw Oak)
+ * - Other schemas can be added here as they are extracted
  */
 
-// Quiz schemas (all versions and conversion logic)
+// Quiz schemas (all versions)
 export * from "./quiz";
-export * from "./quiz/conversion/quizV1ToV2";
+export * from "./quiz/rawQuiz";
 
 // Re-export common types for backward compatibility
 export type {

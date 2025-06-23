@@ -3,10 +3,12 @@ import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
 import { minMaxText } from "./schemaHelpers";
-import {
-  type QuizV1Optional,
+import type {
+  QuizV1Optional,
   QuizV1Schema,
   QuizV1SchemaWithoutLength,
+  QuizV2OptionalSchema,
+  QuizV2Schema,
 } from "./schemas/quiz";
 import { type RawQuiz, rawQuizSchema } from "./schemas/quiz/rawQuiz";
 
@@ -77,6 +79,8 @@ export type MisconceptionsOptional = z.infer<
 >;
 
 // ********** QUIZ SCHEMAS **********
+// Quiz schemas have been moved to schemas/quiz/ subfolder for better organization
+// Export all quiz-related types and schemas from there
 export * from "./schemas/quiz";
 
 // ********** EXPLANATION **********
@@ -367,13 +371,13 @@ export const CompletedLessonPlanSchema = z.object({
   keyLearningPoints: KeyLearningPointsSchema,
   misconceptions: MisconceptionsSchema,
   keywords: KeywordsSchema,
-  basedOn: BasedOnSchema.nullish(),
+  basedOn: BasedOnSchema.optional(),
   starterQuiz: QuizV1Schema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
   cycle1: CycleSchema.describe("The first learning cycle"),
   cycle2: CycleSchema.describe("The second learning cycle"),
   cycle3: CycleSchema.describe("The third learning cycle"),
   exitQuiz: QuizV1Schema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
-  additionalMaterials: AdditionalMaterialsSchema.nullable(),
+  additionalMaterials: AdditionalMaterialsSchema,
 });
 
 export type CompletedLessonPlan = z.infer<typeof CompletedLessonPlanSchema>;
@@ -383,6 +387,9 @@ export const LessonPlanSchema = CompletedLessonPlanSchema.partial().extend({
   _experimental_exitQuizMathsV0: QuizV1Schema.optional(),
   _experimental_starterQuizMathsV1: rawQuizSchema.optional(),
   _experimental_exitQuizMathsV1: rawQuizSchema.optional(),
+  // V2 quiz schemas with discriminated union support
+  starterQuizV2: QuizV2Schema.optional(),
+  exitQuizV2: QuizV2Schema.optional(),
 });
 
 export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;
@@ -509,6 +516,8 @@ export type LessonPlanSectionWhileStreaming =
   | string[]
   | number
   | NonNullable<RawQuiz[]>;
+
+// Quiz path and operation types are now exported from ./schemas/quiz/ subfolder
 
 export const CompletedLessonPlanSchemaWithoutLength = z.object({
   title: LessonTitleSchema,

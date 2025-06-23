@@ -188,3 +188,4 @@ export interface QuizSelectorFactory {
     selectorType: QuizSelectorType,
   ): QuizSelector<T>;
 }
+

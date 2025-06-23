@@ -140,7 +140,11 @@ function renderArray(key: string, value: readonly unknown[]): string {
   }
 
   if (typeof value[0] === "object") {
+<<<<<<< HEAD
     if (key === "starterQuiz" || key === "exitQuiz") {
+=======
+    if (key === "starterQuizV1" || key === "exitQuizV1") {
+>>>>>>> e30f06df (feat: implement quiz schema namespace naming and organization)
       return organiseAnswersAndDistractors(value as QuizV1Optional);
     }
 

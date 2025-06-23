@@ -3,7 +3,7 @@ import { z } from "zod";
 // ********** QUIZ V2 (discriminated union for multiple quiz types) **********
 
 export const QUIZ_V2_DESCRIPTIONS = {
-  questionStem: "The question stem as markdown text",
+  questionStem: "The question stem containing text and/or images",
   questionType: "The type of quiz question",
   answers: "The answers specific to this question type",
   feedback: "Feedback to show after the question is answered",
@@ -21,16 +21,14 @@ export const QuizV2QuestionBaseSchema = z.object({
 export const QuizV2QuestionMultipleChoiceSchema =
   QuizV2QuestionBaseSchema.extend({
     questionType: z.literal("multiple-choice"),
-    answers: z.array(z.string()).describe("Correct answers as markdown"),
-    distractors: z
-      .array(z.string())
-      .describe("Incorrect answer options as markdown"),
+    answers: z.array(z.string()).describe("Correct answers"),
+    distractors: z.array(z.string()).describe("Incorrect answer options"),
   });
 
 // Short answer question
 export const QuizV2QuestionShortAnswerSchema = QuizV2QuestionBaseSchema.extend({
   questionType: z.literal("short-answer"),
-  answers: z.array(z.string()).describe("Acceptable answers as markdown"),
+  answers: z.array(z.string()).describe("Acceptable answers"),
 });
 
 // Match question
@@ -39,8 +37,8 @@ export const QuizV2QuestionMatchSchema = QuizV2QuestionBaseSchema.extend({
   pairs: z
     .array(
       z.object({
-        left: z.string().describe("Left side item to match as markdown"),
-        right: z.string().describe("Corresponding right side item as markdown"),
+        left: z.string().describe("Left side item to match"),
+        right: z.string().describe("Corresponding right side item"),
       }),
     )
     .describe("Pairs of items to match"),
@@ -49,10 +47,15 @@ export const QuizV2QuestionMatchSchema = QuizV2QuestionBaseSchema.extend({
 // Order question
 export const QuizV2QuestionOrderSchema = QuizV2QuestionBaseSchema.extend({
   questionType: z.literal("order"),
-  items: z
-    .array(z.string())
-    .describe("Items to be put in correct order as markdown"),
+  items: z.array(z.string()).describe("Items to be put in correct order"),
 });
+
+// Explanatory text question
+export const QuizV2QuestionExplanatoryTextSchema =
+  QuizV2QuestionBaseSchema.extend({
+    questionType: z.literal("explanatory-text"),
+    content: z.string().describe("Explanatory text content"),
+  });
 
 // Discriminated union of all question types
 export const QuizV2QuestionSchema = z.discriminatedUnion("questionType", [
@@ -60,16 +63,12 @@ export const QuizV2QuestionSchema = z.discriminatedUnion("questionType", [
   QuizV2QuestionShortAnswerSchema,
   QuizV2QuestionMatchSchema,
   QuizV2QuestionOrderSchema,
+  QuizV2QuestionExplanatoryTextSchema,
 ]);
 
-// Quiz V2 container with version field
-export const QuizV2Schema = z.object({
-  version: z.literal("v2").describe("Schema version identifier"),
-  questions: z.array(QuizV2QuestionSchema).describe("Array of quiz questions"),
-});
-
-export const QuizV2SchemaWithoutLength = QuizV2Schema;
-export const QuizV2OptionalSchema = QuizV2Schema.optional();
+export const QuizV2Schema = z.array(QuizV2QuestionSchema);
+export const QuizV2SchemaWithoutLength = z.array(QuizV2QuestionSchema);
+export const QuizV2OptionalSchema = z.array(QuizV2QuestionSchema).optional();
 
 export type QuizV2Question = z.infer<typeof QuizV2QuestionSchema>;
 export type QuizV2 = z.infer<typeof QuizV2Schema>;
@@ -84,3 +83,6 @@ export type QuizV2QuestionShortAnswer = z.infer<
 >;
 export type QuizV2QuestionMatch = z.infer<typeof QuizV2QuestionMatchSchema>;
 export type QuizV2QuestionOrder = z.infer<typeof QuizV2QuestionOrderSchema>;
+export type QuizV2QuestionExplanatoryText = z.infer<
+  typeof QuizV2QuestionExplanatoryTextSchema
+>;

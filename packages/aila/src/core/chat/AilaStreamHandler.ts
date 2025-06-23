@@ -201,7 +201,7 @@ export class AilaStreamHandler {
 
           return quiz;
         },
-        mathsExitQuiz: async ({ document }) => {
+        mathsExitQuizV1: async ({ document }) => {
           const quiz = await this._chat.fullQuizService.createBestQuiz(
             "/exitQuiz",
             document,

@@ -2,7 +2,11 @@ import type {
   Keyword,
   LooseLessonPlan,
   Misconception,
+<<<<<<< HEAD
   QuizV1Question,
+=======
+  QuizQuestionV1,
+>>>>>>> e30f06df (feat: implement quiz schema namespace naming and organization)
 } from "@oakai/aila/src/protocol/schema";
 
 import type { SyntheticUnitvariantLessonsByKs } from "@oaknational/oak-curriculum-schema/";
@@ -20,9 +24,25 @@ import type {
 type OwaLesson = z.infer<typeof lessonContentSchema>;
 
 /**
+ * Extracts text content from an answer array
+ */
+function extractTextFromAnswer(
+  answer: Array<{ type?: string; text?: string } | undefined>,
+): string {
+  return answer
+    .filter((item) => item?.type === "text")
+    .map((item) => item?.text)
+    .join("");
+}
+
+/**
  * Transforms Oak's quiz format to the format expected by LessonPlanSchemaWhilstStreaming
  */
+<<<<<<< HEAD
 export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV1Question[] {
+=======
+export function transformQuiz(quiz: OwaQuizQuestion[]): QuizQuestionV1[] {
+>>>>>>> e30f06df (feat: implement quiz schema namespace naming and organization)
   const quizData = z.array(quizQuestionSchema).parse(quiz);
   if (!quizData || !Array.isArray(quizData)) {
     return [];
@@ -50,22 +70,12 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV1Question[] {
       // Extract correct answers
       const correctAnswers = question.answers["multiple-choice"]
         .filter((answer) => answer.answer_is_correct)
-        .map((answer) =>
-          answer.answer
-            .filter((item) => item?.type === "text")
-            .map((item) => item.text)
-            .join(""),
-        );
+        .map((answer) => extractTextFromAnswer(answer.answer));
 
       // Extract distractors (incorrect answers)
       const distractors = question.answers["multiple-choice"]
         .filter((answer) => !answer.answer_is_correct)
-        .map((answer) =>
-          answer.answer
-            .filter((item) => item?.type === "text")
-            .map((item) => item?.text)
-            .join(""),
-        );
+        .map((answer) => extractTextFromAnswer(answer.answer));
 
       return {
         question: questionText,
@@ -79,31 +89,18 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV1Question[] {
     ) {
       // For short answer questions, treat all answers as correct
       const allAnswers = question.answers["short-answer"].map((answer) =>
-        answer.answer
-          .filter((item) => item?.type === "text")
-          .map((item) => item?.text)
-          .join(""),
+        extractTextFromAnswer(answer.answer),
       );
 
       // Default answers (primary answers) will be treated as the correct ones
       const correctAnswers = question.answers["short-answer"]
         .filter((answer) => answer.answer_is_default)
-        .map((answer) =>
-          answer.answer
-            .filter((item) => item?.type === "text")
-            .map((item) => item?.text)
-            .join(""),
-        );
+        .map((answer) => extractTextFromAnswer(answer.answer));
 
       // Non-default answers will be treated as distractors/alternative answers
       const distractors = question.answers["short-answer"]
         .filter((answer) => !answer.answer_is_default)
-        .map((answer) =>
-          answer.answer
-            .filter((item) => item?.type === "text")
-            .map((item) => item?.text)
-            .join(""),
-        );
+        .map((answer) => extractTextFromAnswer(answer.answer));
 
       return {
         question: questionText,
