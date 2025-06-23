@@ -16,12 +16,14 @@ import {
   OakLoadingSpinner,
   OakP,
   OakPrimaryButton,
+  OakPrimaryInvertedButton,
   OakSecondaryButton,
-  OakSpan,
+  OakSmallTertiaryInvertedButton,
 } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/nextjs";
 import styled, { css } from "styled-components";
 
+import AiIcon from "@/components/AiIcon";
 import {
   useResourcesActions,
   useResourcesStore,
@@ -35,14 +37,13 @@ import {
   moderationSelector,
   refinementGenerationHistorySelector,
 } from "@/stores/resourcesStore/selectors";
-import { trpc } from "@/utils/trpc";
 
 import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
-import { ExitQuiz } from "../../AdditionalMaterials/ExitQuiz";
 import { Glossary } from "../../AdditionalMaterials/Glossary";
-import { StarterQuiz } from "../../AdditionalMaterials/StarterQuiz";
+import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import InlineButton from "../InlineButton";
+import { Quiz } from "../Quiz";
 import ResourcesFooter from "../ResourcesFooter";
 import StepLoadingScreen from "../StepLoadingScreen";
 
@@ -77,7 +78,11 @@ const MockOakSecondaryButtonWithJustIcon = styled.button<{
     `}
 `;
 
-const StepFour = () => {
+type StepFourProps = {
+  handleRefineMaterial: (refinementValue: string) => void;
+};
+
+const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
   const generation = useResourcesStore(generationSelector);
 
   const docType = useResourcesStore(docTypeSelector);
@@ -87,19 +92,16 @@ const StepFour = () => {
     refinementGenerationHistorySelector,
   );
 
-  const { setStepNumber, refineMaterial, undoRefinement } =
-    useResourcesActions();
+  const { undoRefinement } = useResourcesActions();
   const moderation = useResourcesStore(moderationSelector);
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
   const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
   const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
-
-  const fetchMaterial =
-    trpc.additionalMaterials.generateAdditionalMaterial.useMutation();
+  const { setDialogWindow } = useDialog();
 
   // Get resource type from configuration
   const resourceType = docType ? getResourceType(docType) : null;
-  const refinementOptions = resourceType?.refinementOptions || [];
+  const refinementOptions = resourceType?.refinementOptions ?? [];
   const handleDownloadMaterial = async () => {
     if (!generation || !docType) {
       return;
@@ -131,20 +133,23 @@ const StepFour = () => {
     }
 
     if (docType === "additional-starter-quiz" && isStarterQuiz(generation)) {
-      return <StarterQuiz action={docType} generation={generation} />;
+      return (
+        <Quiz action={docType} generation={generation} quizType="starter" />
+      );
     }
 
     if (docType === "additional-exit-quiz" && isExitQuiz(generation)) {
-      return <ExitQuiz action={docType} generation={generation} />;
+      return <Quiz action={docType} generation={generation} quizType="exit" />;
     }
 
     return null;
   };
   // if loading, show loading
-  if (isResourcesLoading || isResourceRefining) {
+  if (isResourcesLoading && !isResourceRefining) {
     return (
       <StepLoadingScreen
-        nameOfWhatIsBuilding={resourceType?.displayName ?? ""}
+        docTypeName={resourceType?.displayName}
+        source="teachingMaterial"
       />
     );
   }
@@ -159,71 +164,64 @@ const StepFour = () => {
       <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       <ResourcesFooter>
         <OakFlex $flexDirection="column" $width="100%">
-          {refinementHistory.length > 0 && (
+          {refinementHistory.length > 0 && !isResourceRefining && (
             <OakFlex
               $gap="all-spacing-2"
               $alignItems="center"
               $mb="space-between-m"
             >
-              <OakP $font="body-2" $color="icon-success">
+              <OakP
+                $mr={"space-between-m"}
+                $font="body-2"
+                $color="icon-success"
+              >
                 Done!
               </OakP>
-              <button
+              <OakSmallTertiaryInvertedButton
                 onClick={undoRefinement}
                 disabled={
                   isResourcesLoading || isResourceRefining || isDownloading
                 }
+                iconName={"chevron-left"}
               >
-                <OakFlex $alignItems="center">
-                  <OakIcon iconName="cross" iconWidth="all-spacing-4" />
-                  <OakSpan $font="body-2">Undo</OakSpan>
-                </OakFlex>
-              </button>
+                Undo
+              </OakSmallTertiaryInvertedButton>
             </OakFlex>
           )}
           <OakFlex $justifyContent="space-between" $width="100%">
             {isFooterAdaptOpen ? (
               <OakFlex
-                $flexDirection="column"
+                $flexDirection="row-reverse"
                 $gap="all-spacing-5"
                 $width="100%"
+                $justifyContent="space-between"
+                $alignItems="center"
               >
-                <button onClick={() => setIsFooterAdaptOpen(false)}>
-                  <OakFlex $alignItems="center" $gap="all-spacing-2">
-                    <OakIcon iconName="cross" />
-                    <OakSpan
-                      $color="black"
-                      $textDecoration="none"
-                      $font="body-2"
-                    >
-                      Close
-                    </OakSpan>
-                  </OakFlex>
-                </button>
+                <OakPrimaryInvertedButton
+                  onClick={() => setIsFooterAdaptOpen(false)}
+                  iconName="cross"
+                >
+                  Close
+                </OakPrimaryInvertedButton>
 
                 <OakFlex $gap="all-spacing-2" $flexWrap="wrap">
-                  {refinementOptions.map((refinement: RefinementOption) => (
-                    <InlineButton
-                      key={refinement.id}
-                      onClick={() => {
-                        void refineMaterial({
-                          refinement: [{ type: refinement.value }],
-                          mutateAsync: async (input) => {
-                            try {
-                              return await fetchMaterial.mutateAsync(input);
-                            } catch (error) {
-                              throw error instanceof Error
-                                ? error
-                                : new Error(String(error));
-                            }
-                          },
-                        });
-                        setIsFooterAdaptOpen(false);
-                      }}
-                    >
-                      {refinement.label}
-                    </InlineButton>
-                  ))}
+                  {isResourceRefining ? (
+                    <OakFlex $alignItems="center" $gap="all-spacing-2">
+                      <OakP $font="body-2">Working on it...</OakP>
+                      <OakLoadingSpinner $width="all-spacing-6" />
+                    </OakFlex>
+                  ) : (
+                    <>
+                      {refinementOptions.map((refinement: RefinementOption) => (
+                        <InlineButton
+                          key={refinement.id}
+                          onClick={() => handleRefineMaterial(refinement.value)}
+                        >
+                          {refinement.label}
+                        </InlineButton>
+                      ))}
+                    </>
+                  )}
                 </OakFlex>
               </OakFlex>
             ) : (
@@ -235,7 +233,11 @@ const StepFour = () => {
                   $width={"100%"}
                   $gap="all-spacing-2"
                 >
-                  <OakSecondaryButton onClick={() => setStepNumber(0)}>
+                  <OakSecondaryButton
+                    onClick={() =>
+                      setDialogWindow("additional-materials-start-again")
+                    }
+                  >
                     Start again
                   </OakSecondaryButton>
                   <OakFlex $gap="all-spacing-2">
@@ -249,7 +251,10 @@ const StepFour = () => {
                         isDownloading
                       }
                     >
-                      Adapt
+                      <OakFlex $alignItems="center" $gap="all-spacing-1">
+                        <OakP $font="heading-7">Modify</OakP>
+                        <AiIcon />
+                      </OakFlex>
                     </OakSecondaryButton>
                     <OakPrimaryButton
                       onClick={() => void handleDownloadMaterial()}
@@ -268,6 +273,7 @@ const StepFour = () => {
                   $display={["flex", "none"]}
                   $width={"100%"}
                   $gap="all-spacing-2"
+                  $flexDirection={["row-reverse", "row"]}
                 >
                   <MockOakSecondaryButtonWithJustIcon
                     onClick={() => void handleDownloadMaterial()}
@@ -291,15 +297,15 @@ const StepFour = () => {
                       isDownloading
                     }
                   >
-                    Adapt
+                    Modify
                   </OakSecondaryButton>
-                  <OakPrimaryButton
-                    onClick={() => setStepNumber(0)}
-                    iconName="arrow-right"
-                    isTrailingIcon={true}
+                  <OakSecondaryButton
+                    onClick={() =>
+                      setDialogWindow("additional-materials-start-again")
+                    }
                   >
                     Start again
-                  </OakPrimaryButton>
+                  </OakSecondaryButton>
                 </OakFlex>
               </>
             )}

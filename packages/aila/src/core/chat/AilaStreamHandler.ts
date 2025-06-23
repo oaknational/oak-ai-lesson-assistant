@@ -99,19 +99,18 @@ export class AilaStreamHandler {
         await this.checkForThreats();
       });
 
-      await this.span("set-initial-state", async () => {
-        await this._chat.handleSettingInitialState();
-      });
-
-      await this.span("handle-subject-warning", async () => {
-        await this._chat.handleSubjectWarning();
-      });
-
       if (this._chat.aila.options.useAgenticAila) {
         await this.span("start-agent-stream", async () => {
           await this.startAgentStream();
         });
       } else {
+        await this.span("set-initial-state", async () => {
+          await this._chat.handleSettingInitialState();
+        });
+
+        await this.span("handle-subject-warning", async () => {
+          await this._chat.handleSubjectWarning();
+        });
         await this.span("start-llm-stream", async () => {
           await this.startLLMStream();
         });
@@ -174,14 +173,6 @@ export class AilaStreamHandler {
     const initialDocument = {
       ...this._chat.aila.document.content,
     };
-
-    if (
-      !initialDocument.title ||
-      !initialDocument.subject ||
-      !initialDocument.keyStage
-    ) {
-      throw new Error("title subject keyStage required");
-    }
 
     // Create a stream handler
     const streamHandler = createInteractStreamHandler(
