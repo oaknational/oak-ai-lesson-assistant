@@ -40,7 +40,7 @@ const AdditionalMaterialsStartAgain = ({
         $textAlign="center"
         $mb={"space-between-m"}
       >{`Have you downloaded your ${docTypeDisplayName}?`}</OakHeading>
-      <OakP $mb={"space-between-xl"}>
+      <OakP $font="body-2" $mb={"space-between-xl"}>
         {`Your lesson ${docTypeDisplayName} will not be saved if you choose to
         start again. Please download your ${docTypeDisplayName} if you want to
         keep a copy.`}

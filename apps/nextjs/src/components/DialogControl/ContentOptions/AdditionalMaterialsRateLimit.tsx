@@ -59,7 +59,7 @@ const AdditionalMaterialsRateLimit = ({
         <OakHeading $font={"heading-5"} tag="h1">
           Demo limit reached
         </OakHeading>
-        <OakP>
+        <OakP $font="body-2">
           You have {demo.additionalMaterialsSessionsRemaining} of your{" "}
           {demo.appSessionsPerMonth} teaching materials available this month. If
           you are a teacher in the UK, please{" "}

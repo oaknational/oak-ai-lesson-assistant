@@ -66,7 +66,7 @@ const AdditionalMaterialsModerationFeedback = ({
     >
       <OakIcon iconName={"warning"} />
       <OakP $font={"heading-6"}>{heading}</OakP>
-      <OakP>{message}</OakP>
+      <OakP $font="body-2">{message}</OakP>
       <OakTextInput
         value={feedback}
         $minHeight={"all-spacing-11"}
