@@ -30,7 +30,7 @@ export type BasedOnOptional = z.infer<typeof BasedOnOptionalSchema>;
 // ********** MISCONCEPTIONS **********
 export const MISCONCEPTION_DESCRIPTIONS = {
   misconception: dedent`a single sentence describing a common misconception about the topic. Do not end with a full stop.`,
-  description: dedent`No more than 2 sentences addressing the reason for the misconception and how it can be addressed in the lesson.`,
+  description: dedent`No more than 2 'correction' sentences addressing the reason for the misconception and how it can be addressed in the lesson.`,
 } as const;
 
 export const MISCONCEPTIONS_DESCRIPTION = {
@@ -117,10 +117,10 @@ export const EXPLANATION_DESCRIPTIONS = {
   In the spoken explanation, give guidance to the teacher on which key points should be covered in their explanation to students.
   This should be teacher facing and not include a script or narrative for the teacher.
   Should bear in mind the following requirements:
-  - teacher facing 
-  - outline the key points that the teacher should address during their explanation 
+  - teacher facing
+  - outline the key points that the teacher should address during their explanation
   - include as much detail as possible
-  - written in bullet points  
+  - written in bullet points
   - break concepts into small, manageable chunks
   - if appropriate, the method for explanation should be included for e.g. demonstrate to pupils how to set up the apparatus for the experiment or model how to complete the pass for students or use a bar model to show the addition of these three numbers.
   - abstract concepts are made concrete
@@ -197,9 +197,9 @@ export const CYCLE_DESCRIPTIONS = {
   Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
   checkForUnderstanding: dedent`Two or more questions to check that students have understood the content of this cycle.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
-  practice: dedent`The activity that the pupils are asked to do to practice what they have learnt. 
-    Should be pupil facing and include all details that the pupils need to complete the task. 
-    Should be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle. 
+  practice: dedent`The activity that the pupils are asked to do to practice what they have learnt.
+    Should be pupil facing and include all details that the pupils need to complete the task.
+    Should be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle.
     Should include calculations if this is appropriate.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
   feedback: dedent`Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task.
@@ -275,10 +275,10 @@ export type Keyword = z.infer<typeof KeywordSchema>;
 
 // ********** LESSON PLAN **********
 export const LESSON_PLAN_DESCRIPTIONS = {
-  title: dedent`The title of the lesson. Lesson titles should be a unique and succinct statement, not a question. 
-    Can include special characters if appropriate but should not use & sign instead of 'and'. 
+  title: dedent`The title of the lesson. Lesson titles should be a unique and succinct statement, not a question.
+    Can include special characters if appropriate but should not use & sign instead of 'and'.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.
-    The title should be in sentence case starting with a capital letter and not end with a full stop. 
+    The title should be in sentence case starting with a capital letter and not end with a full stop.
     ${minMaxText({
       max: 80,
       entity: "characters",
@@ -290,38 +290,38 @@ export const LESSON_PLAN_DESCRIPTIONS = {
   topic:
     "A topic that this lesson would sit within, which might cover several lessons with a shared theme.",
   learningOutcome: dedent`What the pupils will have learnt by the end of the lesson.
-    Should start with 'I can' and outline what pupils should be able to know/and or be able to do by the end of the lesson. 
-    Written in age appropriate language. 
-    May include a command word. 
-    Written in the PUPIL voice. 
+    Should start with 'I can' and outline what pupils should be able to know/and or be able to do by the end of the lesson.
+    Written in age appropriate language.
+    May include a command word.
+    Written in the PUPIL voice.
     ${minMaxText({ max: 190, entity: "characters" })}`,
-  learningCycles: dedent`An array of learning cycle outcomes. 
-    Should include a command word. 
-    Should be succinct. 
-    Should outline what pupils should be able to do/understand/know by the end of the learning cycle. 
-    Written in the TEACHER_TO_PUPIL_SLIDES voice. 
+  learningCycles: dedent`An array of learning cycle outcomes.
+    Should include a command word.
+    Should be succinct.
+    Should outline what pupils should be able to do/understand/know by the end of the learning cycle.
+    Written in the TEACHER_TO_PUPIL_SLIDES voice.
     ${minMaxText({
       min: 1,
       max: 3,
       entity: "elements",
     })}`,
-  priorKnowledge: dedent`An array of prior knowledge statements, each being a succinct sentence. 
-    Written in the EXPERT_TEACHER voice. 
+  priorKnowledge: dedent`An array of prior knowledge statements, each being a succinct sentence.
+    Written in the EXPERT_TEACHER voice.
     ${minMaxText({
       min: 1,
       max: 5,
       entity: "elements",
     })}`,
-  keyLearningPoints: dedent`An array of learning points, each being a succinct sentence. 
+  keyLearningPoints: dedent`An array of learning points, each being a succinct sentence.
     ${minMaxText({
       min: 3,
       max: 5,
       entity: "elements",
     })}`,
-  starterQuiz: dedent`The starter quiz for the lesson, which tests prior knowledge only, ignoring the content that is delivered in the lesson. 
-    Obey the rules as specified in the STARTER QUIZ section of the lesson plan guidance. 
+  starterQuiz: dedent`The starter quiz for the lesson, which tests prior knowledge only, ignoring the content that is delivered in the lesson.
+    Obey the rules as specified in the STARTER QUIZ section of the lesson plan guidance.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
-  exitQuiz: dedent`The exit quiz for the lesson, which tests the content that is delivered in the lesson. 
+  exitQuiz: dedent`The exit quiz for the lesson, which tests the content that is delivered in the lesson.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
   additionalMaterials:
     "Any additional materials or notes that are required or useful for the lesson",
