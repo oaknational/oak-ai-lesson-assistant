@@ -7,14 +7,15 @@ import {
 } from "@oaknational/oak-components";
 import { VisuallyHidden } from "@radix-ui/themes";
 
-import type { OrderAnswer } from "../quizTypes";
+import { z } from "zod";
+import type { QuizV2QuestionOrderSchema } from "@oakai/aila/src/protocol/schemas/quiz/quizV2";
 import { removeMarkdown } from "../quizUtils";
 
 export const QuizQuestionsOrderAnswers = ({
-  answers,
+  items,
   questionNumber,
 }: {
-  answers: OrderAnswer[];
+  items: z.infer<typeof QuizV2QuestionOrderSchema>["items"];
   questionNumber: number;
 }) => {
   return (
@@ -24,11 +25,10 @@ export const QuizQuestionsOrderAnswers = ({
       $alignItems={"start"}
       role="list"
     >
-      {answers.map((item, i) => {
-        const orderAnswer =
-          item.answer && item.answer.length > 0 ? item.answer[0] : undefined;
+      {items.map((item, i) => {
+        const itemText = item.find(contentItem => contentItem.type === "text")?.text;
         return (
-          orderAnswer && (
+          itemText && (
             <OakFlex
               key={`q-${questionNumber}-answer${i}`}
               $background={"lemon50"}
@@ -39,9 +39,9 @@ export const QuizQuestionsOrderAnswers = ({
               role="listitem"
             >
               <VisuallyHidden>
-                {item.correctOrder} -{" "}
+                {i + 1} -{" "}
                 <OakCodeRenderer
-                  string={removeMarkdown(orderAnswer.text)}
+                  string={removeMarkdown(itemText)}
                   $font="code-3"
                   $mt={"space-between-none"}
                 />
@@ -55,13 +55,13 @@ export const QuizQuestionsOrderAnswers = ({
               </OakBox>
 
               <OakTypography $font={["body-2-bold", "body-1-bold"]} aria-hidden>
-                {item.correctOrder}
+                {i + 1}
               </OakTypography>
 
               <OakTypography $font={["body-2", "body-1"]} aria-hidden>
                 -{" "}
                 <OakCodeRenderer
-                  string={removeMarkdown(orderAnswer.text)}
+                  string={removeMarkdown(itemText)}
                   $font={"code-3"}
                   $mt={"space-between-none"}
                 />

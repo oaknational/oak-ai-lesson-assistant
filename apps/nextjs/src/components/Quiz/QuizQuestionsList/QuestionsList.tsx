@@ -2,15 +2,18 @@ import type { FC } from "react";
 import React, { Fragment } from "react";
 
 import { OakFlex, OakHeading } from "@oaknational/oak-components";
+import type { QuizV2 } from "@oakai/aila/src/protocol/schemas";
 
 import QuizQuestionsListItem from "../QuizQuestionsListItem";
-import type { QuizProps } from "../quizTypes";
 
-export type QuizQuestionListProps = QuizProps & { isMathJaxLesson: boolean };
+export type QuizQuestionListProps = {
+  quiz: QuizV2;
+  isMathJaxLesson: boolean;
+};
 
 const QuestionsList: FC<QuizQuestionListProps> = (props) => {
-  const { questions, isMathJaxLesson } = props;
-  const questionCount = questions.length;
+  const { quiz, isMathJaxLesson } = props;
+  const questionCount = quiz.questions.length;
 
   return (
     <Fragment>
@@ -19,7 +22,7 @@ const QuestionsList: FC<QuizQuestionListProps> = (props) => {
       </OakHeading>
 
       <OakFlex $flexDirection={"column"} $gap={"all-spacing-10"} role="list">
-        {questions.map((question, i) => {
+        {quiz.questions.map((question, i) => {
           return (
             <QuizQuestionsListItem
               key={`QuestionsList-UL-QuestionListItem-${i}`}

@@ -2,12 +2,12 @@ import type { FC } from "react";
 import { useState } from "react";
 
 import { OakFlex } from "@oaknational/oak-components";
+import type { QuizV2ImageObject } from "@oakai/aila/src/protocol/schemas";
 
 import QuizOakImage from "../QuizOakImage";
-import type { StemImageObject } from "../quizTypes";
 import { calcDims } from "../quizUtils";
 
-type ImageProps = { src: StemImageObject["imageObject"]; alt?: string };
+type ImageProps = { src: QuizV2ImageObject; alt?: string };
 
 const QuizImage: FC<ImageProps> = ({ src, alt }) => {
   const [dims, setDims] = useState(calcDims(src.width, src.height));

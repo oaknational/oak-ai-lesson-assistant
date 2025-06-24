@@ -1,12 +1,12 @@
 import type { Dispatch, FC, SetStateAction } from "react";
 
 import { OakImage } from "@oaknational/oak-components";
+import type { QuizV2ImageObject } from "@oakai/aila/src/protocol/schemas";
 
-import type { StemImageObject } from "../quizTypes";
 import { calcDims } from "../quizUtils";
 
 type QuizOakImageProps = {
-  src: StemImageObject["imageObject"];
+  src: QuizV2ImageObject;
   alt?: string;
   dims:
     | {
@@ -37,7 +37,7 @@ const QuizOakImage: FC<QuizOakImageProps> = ({ src, alt, dims, setDims }) => {
       // $objectPosition={["center", "left"]}
       width={dims.width}
       height={dims.height}
-      src={src.secureUrl}
+      src={src.url}
       alt={alt ?? ""}
       style={{ objectFit: "contain" }}
     />
@@ -45,7 +45,7 @@ const QuizOakImage: FC<QuizOakImageProps> = ({ src, alt, dims, setDims }) => {
     <OakImage
       // $objectPosition={["center", "left"]}
       fill
-      src={src.secureUrl}
+      src={src.url}
       alt={alt ?? ""}
       style={{ objectFit: "contain" }}
       onLoad={(e) => {

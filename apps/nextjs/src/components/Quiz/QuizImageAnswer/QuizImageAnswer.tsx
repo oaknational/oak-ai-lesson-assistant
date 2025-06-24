@@ -4,12 +4,13 @@ import { useState } from "react";
 import { OakFlex, OakIcon } from "@oaknational/oak-components";
 import { VisuallyHidden } from "@radix-ui/themes";
 
+import type { QuizV2ImageObject } from "@oakai/aila/src/protocol/schemas";
+
 import QuizOakImage from "../QuizOakImage";
-import type { StemImageObject } from "../quizTypes";
 import { calcDims, removeMarkdown } from "../quizUtils";
 
 type ImageProps = {
-  src: StemImageObject["imageObject"];
+  src: QuizV2ImageObject;
   alt?: string;
   answerIsCorrect?: boolean;
 };

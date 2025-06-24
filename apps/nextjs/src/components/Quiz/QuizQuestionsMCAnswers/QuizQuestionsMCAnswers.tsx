@@ -5,25 +5,28 @@ import {
   OakIcon,
   OakTypography,
 } from "@oaknational/oak-components";
+import type { QuizV2ContentArray } from "@oakai/aila/src/protocol/schemas";
 import { VisuallyHidden } from "@radix-ui/themes";
 
 import QuizImage from "../QuizImage";
 import QuizImageAnswer from "../QuizImageAnswer";
-import type { MCAnswer } from "../quizTypes";
-import { removeMarkdown } from "../quizUtils";
 
 export const QuizQuestionsMCAnswers = (props: {
-  answers: MCAnswer[];
+  answers: QuizV2ContentArray[];
+  distractors: QuizV2ContentArray[];
   questionNumber: number;
 }) => {
-  const { answers, questionNumber } = props;
+  const { answers, distractors, questionNumber } = props;
 
-  const containsImages =
-    answers.filter(
-      (choice) =>
-        choice.answer.filter((answerItem) => answerItem?.type === "image")
-          .length > 0,
-    ).length > 0;
+  // Combine answers and distractors with their correctness status
+  const allChoices = [
+    ...answers.map(answer => ({ contentArray: answer, isCorrect: true })),
+    ...distractors.map(distractor => ({ contentArray: distractor, isCorrect: false }))
+  ];
+
+  const containsImages = allChoices.some(choice =>
+    choice.contentArray.some(item => item.type === "image")
+  );
 
   return (
     <OakFlex
@@ -31,47 +34,23 @@ export const QuizQuestionsMCAnswers = (props: {
       $alignItems={containsImages ? undefined : "start"}
       role="list"
     >
-      {answers.map((choice, i) => {
-        const imageAnswers = choice.answer.filter(
-          (answerItem) => answerItem?.type === "image",
-        );
-        const encloseAnswer = imageAnswers.length > 0;
-        const imageAnswer =
-          choice.answer.length === 1 && imageAnswers.length === 1;
+      {allChoices.map((choice, i) => {
+        const imageItems = choice.contentArray.filter(item => item.type === "image");
+        const encloseAnswer = imageItems.length > 0;
+        const imageAnswer = choice.contentArray.length === 1 && imageItems.length === 1;
 
         return (
           <OakFlex
             key={`q-${questionNumber}-answer-${i}`}
             $flexDirection={"column"}
-            // $gap={8}
             $alignItems={encloseAnswer ? "center" : "flex-start"}
             $borderStyle="solid"
             $borderColor="black"
-            // $borderRadius={8}
             role="listitem"
-            // $ph={encloseAnswer && !imageAnswer ? 10 : 0}
-            // $pv={encloseAnswer && !imageAnswer ? 16 : 0}
-            // $ba={encloseAnswer && !imageAnswer ? 1 : 0}
-            // $maxWidth={encloseAnswer ? 450 : "100%"}
           >
-            {choice.answer.map((answerItem, j) => {
-              if (!answerItem) return null;
-              if (answerItem.type === "text" && !choice.answerIsCorrect) {
-                return (
-                  // <Typography
-                  //   key={`q-${questionNumber}-answer-element-${j}`}
-                  //   $font={["body-2", "body-1"]}
-                  //   $ph={40}
-                  // >
-                  <OakCodeRenderer
-                    string={removeMarkdown(answerItem.text)}
-                    $font="code-3"
-                    $mt={"space-between-none"}
-                  />
-                  // </Typography>
-                );
-              } else if (answerItem.type === "text" && choice.answerIsCorrect) {
-                return (
+            {choice.contentArray.map((contentItem, j) => {
+              if (contentItem.type === "text") {
+                return choice.isCorrect ? (
                   <OakFlex
                     key={`q-${questionNumber}-answer-element-${j}`}
                     $background={"lemon50"}
@@ -87,33 +66,40 @@ export const QuizQuestionsMCAnswers = (props: {
                       />
                     </OakBox>
                     <VisuallyHidden>
-                      Correct answer: {removeMarkdown(answerItem.text)}
+                      Correct answer: {contentItem.text}
                     </VisuallyHidden>
-
                     <OakTypography $font={["body-2", "body-1"]} aria-hidden>
                       <OakCodeRenderer
-                        string={removeMarkdown(answerItem.text)}
+                        string={contentItem.text}
                         $font="code-3"
                         $mt={"space-between-none"}
                       />
                     </OakTypography>
                   </OakFlex>
+                ) : (
+                  <OakCodeRenderer
+                    key={`q-${questionNumber}-answer-element-${j}`}
+                    string={contentItem.text}
+                    $font="code-3"
+                    $mt={"space-between-none"}
+                  />
                 );
-              } else if (answerItem.type === "image") {
+              } else if (contentItem.type === "image") {
                 return imageAnswer ? (
                   <QuizImageAnswer
                     key={`q-${questionNumber}-answer-element-${j}`}
-                    src={answerItem.imageObject}
-                    answerIsCorrect={choice.answerIsCorrect && imageAnswer}
+                    src={contentItem.image}
+                    answerIsCorrect={choice.isCorrect && imageAnswer}
                     alt="An image in a quiz"
                   />
                 ) : (
                   <QuizImage
                     key={`q-${questionNumber}-answer-element-${j}`}
-                    src={answerItem.imageObject}
+                    src={contentItem.image}
                   />
                 );
               }
+              return null;
             })}
           </OakFlex>
         );

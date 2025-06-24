@@ -2,6 +2,7 @@ import type { FC } from "react";
 import { Fragment } from "react";
 
 import { OakFlex } from "@oaknational/oak-components";
+import type { QuizV2Question } from "@oakai/aila/src/protocol/schemas";
 
 import { MathJaxWrap } from "@/components/MathJax";
 
@@ -10,17 +11,15 @@ import { QuizQuestionsMatchAnswers } from "../QuizQuestionsMatchAnswers";
 import { QuizQuestionsOrderAnswers } from "../QuizQuestionsOrderAnswers";
 import { QuizQuestionsQuestionStem } from "../QuizQuestionsQuestionStem";
 import { QuizQuestionsShortAnswers } from "../QuizQuestionsShortAnswers";
-import type { RawQuiz } from "../quizTypes";
 
 export type QuizQuestionsListItemProps = {
-  question: NonNullable<RawQuiz>[number];
+  question: QuizV2Question;
   index: number;
   isMathJaxLesson: boolean;
 };
 
 const QuizQuestionsListItem: FC<QuizQuestionsListItemProps> = (props) => {
   const { question, index, isMathJaxLesson } = props;
-  const { questionStem, answers } = question;
   const MathJaxWrapper = isMathJaxLesson ? MathJaxWrap : Fragment;
 
   return (
@@ -32,40 +31,39 @@ const QuizQuestionsListItem: FC<QuizQuestionsListItemProps> = (props) => {
         $gap={"all-spacing-2"}
       >
         <QuizQuestionsQuestionStem
-          questionStem={questionStem}
+          questionStem={question.questionStem}
           index={index}
           showIndex={question.questionType !== "explanatory-text"}
         />
 
-        {answers && (
-          <>
-            {answers["multiple-choice"] &&
-              answers["multiple-choice"].length > 0 && (
-                <QuizQuestionsMCAnswers
-                  answers={answers["multiple-choice"]}
-                  questionNumber={index}
-                />
-              )}
-
-            {answers["match"] && answers["match"].length > 0 && (
-              <QuizQuestionsMatchAnswers
-                answers={answers["match"]}
-                questionNumber={index}
-              />
-            )}
-
-            {answers["order"] && answers["order"].length > 0 && (
-              <QuizQuestionsOrderAnswers
-                answers={answers["order"]}
-                questionNumber={index}
-              />
-            )}
-
-            {answers["short-answer"] && answers["short-answer"].length > 0 && (
-              <QuizQuestionsShortAnswers answers={answers["short-answer"]} />
-            )}
-          </>
+        {/* Render answers based on question type */}
+        {question.questionType === "multiple-choice" && (
+          <QuizQuestionsMCAnswers
+            answers={question.answers}
+            distractors={question.distractors}
+            questionNumber={index}
+          />
         )}
+
+        {question.questionType === "match" && (
+          <QuizQuestionsMatchAnswers
+            pairs={question.pairs}
+            questionNumber={index}
+          />
+        )}
+
+        {question.questionType === "order" && (
+          <QuizQuestionsOrderAnswers
+            items={question.items}
+            questionNumber={index}
+          />
+        )}
+
+        {question.questionType === "short-answer" && (
+          <QuizQuestionsShortAnswers answers={question.answers} />
+        )}
+
+        {/* Note: explanatory-text questions only show the question stem */}
       </OakFlex>
     </MathJaxWrapper>
   );

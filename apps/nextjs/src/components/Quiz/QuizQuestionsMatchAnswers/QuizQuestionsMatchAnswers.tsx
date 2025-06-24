@@ -7,14 +7,15 @@ import {
 } from "@oaknational/oak-components";
 import { VisuallyHidden } from "@radix-ui/themes";
 
-import type { MatchAnswer } from "../quizTypes";
+import { z } from "zod";
+import type { QuizV2QuestionMatchSchema } from "@oakai/aila/src/protocol/schemas/quiz/quizV2";
 import { removeMarkdown } from "../quizUtils";
 
 export const QuizQuestionsMatchAnswers = ({
-  answers,
+  pairs,
   questionNumber,
 }: {
-  answers: MatchAnswer[];
+  pairs: z.infer<typeof QuizV2QuestionMatchSchema>["pairs"];
   questionNumber: number;
 }) => {
   return (
@@ -25,12 +26,12 @@ export const QuizQuestionsMatchAnswers = ({
       role="list"
       $width={"100%"}
     >
-      {answers.map((item, i) => {
-        const matchOption = item.matchOption?.[0];
-        const correctChoice = item.correctChoice[0];
+      {pairs.map((pair, i) => {
+        const leftText = pair.left.find(item => item.type === "text")?.text;
+        const rightText = pair.right.find(item => item.type === "text")?.text;
         return (
-          matchOption &&
-          correctChoice && (
+          leftText &&
+          rightText && (
             <OakFlex
               $ph="inner-padding-xs"
               $borderRadius="border-radius-m2"
@@ -40,8 +41,8 @@ export const QuizQuestionsMatchAnswers = ({
             >
               <VisuallyHidden>
                 Correct Answer:
-                {removeMarkdown(matchOption.text)},
-                {removeMarkdown(correctChoice.text)}
+                {removeMarkdown(leftText)},
+                {removeMarkdown(rightText)}
               </VisuallyHidden>
               <OakIcon
                 $mr={"space-between-ssx"}
@@ -59,7 +60,7 @@ export const QuizQuestionsMatchAnswers = ({
                   aria-hidden
                 >
                   <OakCodeRenderer
-                    string={removeMarkdown(matchOption.text)}
+                    string={removeMarkdown(leftText)}
                     $font="code-3"
                     $mt={"space-between-none"}
                   />
@@ -70,7 +71,7 @@ export const QuizQuestionsMatchAnswers = ({
                   $font={["body-2", "body-1"]}
                 >
                   <OakCodeRenderer
-                    string={removeMarkdown(correctChoice.text)}
+                    string={removeMarkdown(rightText)}
                     $font="code-3"
                     $mt={"space-between-none"}
                   />

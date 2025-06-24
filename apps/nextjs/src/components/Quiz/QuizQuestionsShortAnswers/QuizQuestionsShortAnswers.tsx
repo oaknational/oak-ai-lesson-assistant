@@ -7,24 +7,22 @@ import {
 } from "@oaknational/oak-components";
 import { VisuallyHidden } from "@radix-ui/themes";
 
-import type { ShortAnswer } from "../quizTypes";
+import type { QuizV2ContentArray } from "@oakai/aila/src/protocol/schemas";
 import { removeMarkdown } from "../quizUtils";
 
 export const QuizQuestionsShortAnswers = ({
   answers,
 }: {
-  answers: ShortAnswer[];
+  answers: QuizV2ContentArray[];
 }) => {
   const answerString = answers.reduce((acc, cur) => {
-    const [answer] = cur.answer;
-    const text = answer?.type === "text" ? answer.text : null;
+    const textItem = cur.find(item => item.type === "text");
+    const text = textItem?.text;
     if (acc === "") {
       return text ?? acc;
     }
 
-    return answer?.type === "text" && answer.text
-      ? `${acc}, ${answer.text}`
-      : acc;
+    return text ? `${acc}, ${text}` : acc;
   }, "");
 
   return (

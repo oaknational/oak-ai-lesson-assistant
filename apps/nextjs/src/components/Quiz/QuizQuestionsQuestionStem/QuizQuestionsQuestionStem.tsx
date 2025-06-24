@@ -1,14 +1,14 @@
 import { OakFlex, OakTypography } from "@oaknational/oak-components";
+import type { QuizV2ContentArray } from "@oakai/aila/src/protocol/schemas";
 
-import type { StemImageObject, StemTextObject } from "../quizTypes";
-import { removeMarkdown, shortAnswerTitleFormatter } from "../quizUtils";
+import { shortAnswerTitleFormatter } from "../quizUtils";
 
 export const QuizQuestionsQuestionStem = ({
   questionStem,
   index,
   showIndex = true,
 }: {
-  questionStem: (StemImageObject | StemTextObject)[];
+  questionStem: QuizV2ContentArray;
   index: number;
   showIndex?: boolean;
 }) => {
@@ -29,7 +29,7 @@ export const QuizQuestionsQuestionStem = ({
             key={`q-${displayNumber}-stem-element-0`}
             $font={["body-2-bold", "body-1-bold"]}
           >
-            {shortAnswerTitleFormatter(removeMarkdown(questionStem[0].text))}
+            {shortAnswerTitleFormatter(questionStem[0].text)}
           </OakTypography>
         )}
       </OakFlex>
@@ -41,7 +41,7 @@ export const QuizQuestionsQuestionStem = ({
               key={`q-${displayNumber}-stem-element-${i}`}
               $font={["body-2-bold", "body-1-bold"]}
             >
-              {shortAnswerTitleFormatter(removeMarkdown(stemItem.text))}
+              {shortAnswerTitleFormatter(stemItem.text)}
             </OakTypography>
           );
         } else if (stemItem.type === "image") {
@@ -50,10 +50,16 @@ export const QuizQuestionsQuestionStem = ({
               $pv="inner-padding-xl"
               key={`q-${displayNumber}-stem-element-${i}`}
             >
-              <img src={stemItem.imageObject.url} />
+              <img 
+                src={stemItem.image.url} 
+                width={stemItem.image.width}
+                height={stemItem.image.height}
+                alt="Quiz question image"
+              />
             </OakFlex>
           );
         }
+        return null;
       })}
     </OakFlex>
   );

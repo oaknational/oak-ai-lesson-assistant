@@ -1,12 +1,12 @@
+import {
+  type RawQuiz,
+} from "@oakai/aila/src/protocol/schemas/quiz/rawQuiz";
+import { convertRawQuizToV2 } from "@oakai/aila/src/protocol/schemas/quiz/conversion/rawQuizIngest";
 import { isOakEmail } from "@oakai/core/src/utils/isOakEmail";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
-import LessonOverviewQuizContainer from "@/components/AppComponents/Chat/Quiz/LessonOverviewQuizContainer";
-import {
-  type RawQuiz,
-  keysToCamelCase,
-} from "@/components/AppComponents/Chat/Quiz/quizTypes";
+import LessonOverviewQuizContainer from "@/components/Quiz/LessonOverviewQuizContainer";
 
 import rawQuizFixture from "./rawQuizFixture.json";
 
@@ -21,10 +21,12 @@ export default async function TestQuizPage() {
     throw new Error("User is not an Oak user");
   }
 
+  const rawQuiz = rawQuizFixture as NonNullable<RawQuiz>;
+  const quizV2 = convertRawQuizToV2(rawQuiz);
+
   return (
     <LessonOverviewQuizContainer
-      questions={keysToCamelCase(rawQuizFixture) as NonNullable<RawQuiz>}
-      imageAttribution={[]}
+      quiz={quizV2}
       isMathJaxLesson={true}
     />
   );
