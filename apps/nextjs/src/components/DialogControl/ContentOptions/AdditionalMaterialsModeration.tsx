@@ -48,7 +48,7 @@ const AdditionalMaterialsModeration = ({
           $survey_response_5: "teaching-materials",
         });
       }}
-      backButtonLabel="Back to lesson"
+      backButtonLabel="Back"
       onBack={closeDialog}
     />
   );

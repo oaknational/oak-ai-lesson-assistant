@@ -47,7 +47,7 @@ const AdditionalMaterialsInappropriateContent = ({
           $survey_response_5: "teaching-materials",
         });
       }}
-      backButtonLabel="Back to start"
+      backButtonLabel="Back"
       onBack={() => {
         resetToDefault();
         closeDialog();

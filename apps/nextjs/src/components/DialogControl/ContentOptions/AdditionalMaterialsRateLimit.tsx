@@ -81,7 +81,7 @@ const AdditionalMaterialsRateLimit = ({
             Back
           </OakTertiaryInvertedButton>
           <OakPrimaryButton element="a" href={"/aila"}>
-            Back to Aila
+            Back
           </OakPrimaryButton>
         </OakFlex>
       </OakFlex>
