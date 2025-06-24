@@ -106,6 +106,7 @@ Make sure that:
 - The content is appropriate for UK schools
 - British English spelling and conventions are used throughout
 - Any academic vocabulary is appropriate for the age group
+- All answers should start with lower case letters unless they are a proper noun or a known acronym.
 
 Avoid:
 - Negatively phrased questions (e.g., "Which is NOT…")

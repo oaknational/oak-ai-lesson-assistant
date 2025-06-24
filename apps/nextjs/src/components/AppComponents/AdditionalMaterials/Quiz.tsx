@@ -2,8 +2,6 @@ import type { StarterQuiz as StarterQuizType } from "@oakai/additional-materials
 
 import { OakBox, OakFlex, OakP, OakSpan } from "@oaknational/oak-components";
 
-import { toSentenceCase } from "@/utils/toSentenceCase";
-
 type QuizProps = {
   action: string;
   generation: StarterQuizType;
@@ -40,7 +38,7 @@ export const Quiz = ({ generation }: QuizProps) => {
                 </OakSpan>
                 <OakFlex $flexDirection="column">
                   <OakP $font={option.isCorrect ? "body-2-bold" : "body-2"}>
-                    {toSentenceCase(option.text)}
+                    {option.text}
                     {option.isCorrect && <OakSpan> ✓</OakSpan>}
                   </OakP>
                 </OakFlex>
