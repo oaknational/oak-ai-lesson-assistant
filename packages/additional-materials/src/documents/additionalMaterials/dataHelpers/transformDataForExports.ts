@@ -143,7 +143,7 @@ const transformQuizData = <T extends StarterQuizData | ExitQuizData>(
 
   const placeholderMap: Record<string, string> = {
     title,
-    ms_title: `${title}: mark scheme`,
+    ms_title: `${title}: answers`,
     type,
   };
 
