@@ -70,7 +70,8 @@ export const transformDataGlossary =
     glossary.forEach((term, index) => {
       const termNum = index + 1;
       placeholderMap[`label_${termNum}`] = term.term;
-      placeholderMap[`value_${termNum}`] = `- ${term.definition}`;
+      placeholderMap[`value_${termNum}`] =
+        `- ${term.definition.charAt(0).toUpperCase()}${term.definition.slice(1)}`;
     });
 
     // Fill any missing placeholders with empty strings for up to 15 terms
