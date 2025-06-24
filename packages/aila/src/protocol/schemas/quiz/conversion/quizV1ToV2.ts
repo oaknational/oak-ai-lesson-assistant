@@ -1,0 +1,107 @@
+/**
+ * V1 to V2 Quiz Schema Conversion
+ *
+ * This module provides utilities to convert V1 quiz format (multiple choice only)
+ * to V2 format (discriminated union supporting multiple quiz types).
+ */
+import type { QuizV1, QuizV1Question, QuizV2, QuizV2Question } from "..";
+
+/**
+ * Convert a V1 quiz question (MC only) to V2 format
+ */
+export function convertQuizV1QuestionToV2(
+  questionV1: QuizV1Question,
+): QuizV2Question {
+  return {
+    questionType: "multiple-choice" as const,
+    questionStem: [{ type: "text", text: questionV1.question }],
+    answers: questionV1.answers.map(answer => [{ type: "text", text: answer }]),
+    distractors: questionV1.distractors.map(distractor => [{ type: "text", text: distractor }]),
+    feedback: undefined,
+    hint: undefined,
+  };
+}
+
+/**
+ * Convert an entire V1 quiz to V2 format
+ */
+export function convertQuizV1ToV2(quizV1: QuizV1): QuizV2 {
+  return {
+    version: "v2" as const,
+    questions: quizV1.map(convertQuizV1QuestionToV2),
+  };
+}
+
+/**
+ * Safely convert any quiz data to V2 format for enhanced functionality
+ * Handles both V1 (conversion) and V2 (passthrough) inputs
+ */
+export function ensureQuizV2Compatible(quiz: QuizV1 | QuizV2): QuizV2 {
+  // Check if it's already V2 format with version field
+  if (
+    typeof quiz === "object" &&
+    quiz !== null &&
+    "version" in quiz &&
+    "questions" in quiz
+  ) {
+    // This is already V2 format
+    return quiz as QuizV2;
+  }
+
+  // Check if it's V1 format (array)
+  if (Array.isArray(quiz)) {
+    if (quiz.length === 0) return { version: "v2", questions: [] };
+
+    const firstQuestion = quiz[0];
+    if (!firstQuestion) return { version: "v2", questions: [] };
+
+    // V1 questions have 'question', 'answers', 'distractors' properties
+    if (
+      "question" in firstQuestion &&
+      "answers" in firstQuestion &&
+      "distractors" in firstQuestion
+    ) {
+      // This is V1 format, convert to V2
+      return convertQuizV1ToV2(quiz as QuizV1);
+    }
+  }
+
+  return { version: "v2", questions: [] };
+}
+
+/**
+ * Detect the quiz schema version
+ */
+export function detectQuizVersion(
+  quiz: QuizV1 | QuizV2,
+): "v1" | "v2" | "unknown" {
+  // Check if it's V2 format with version field
+  if (
+    typeof quiz === "object" &&
+    quiz !== null &&
+    "version" in quiz &&
+    "questions" in quiz
+  ) {
+    return "v2";
+  }
+
+  // Check if it's V1 format (array)
+  if (Array.isArray(quiz)) {
+    if (quiz.length === 0) return "unknown";
+
+    const firstQuestion = quiz[0];
+    if (!firstQuestion) return "unknown";
+
+    if (
+      "question" in firstQuestion &&
+      "answers" in firstQuestion &&
+      "distractors" in firstQuestion
+    ) {
+      return "v1";
+    }
+  }
+
+  return "unknown";
+}
+
+

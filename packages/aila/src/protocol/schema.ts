@@ -3,8 +3,8 @@ import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
 import { minMaxText } from "./schemaHelpers";
-import type {
-  QuizV1Optional,
+import {
+  type QuizV1Optional,
   QuizV1Schema,
   QuizV1SchemaWithoutLength,
   QuizV2OptionalSchema,

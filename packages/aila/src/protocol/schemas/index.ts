@@ -6,10 +6,11 @@
  * - Other schemas can be added here as they are extracted
  */
 
-// Quiz schemas (all versions and bridge logic)
+// Quiz schemas (all versions and conversion logic)
 export * from "./quiz";
 export * from "./quiz/rawQuiz";
-export * from "./quiz/quizBridge";
+export * from "./quiz/conversion/quizV1ToV2";
+export * from "./quiz/conversion/rawQuizIngest";
 
 // Re-export common types for backward compatibility
 export type {

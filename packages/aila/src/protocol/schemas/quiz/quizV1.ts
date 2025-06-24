@@ -35,7 +35,7 @@ export const QuizV1Schema = z.array(QuizV1QuestionSchema);
 export const QuizV1SchemaWithoutLength = z.array(
   QuizV1QuestionSchemaWithoutLength,
 );
-export const QuizV1SchemaStrictMax6 = QuizV1Schema.min(1).max(6);
+export const QuizV1SchemaStrictMax6Schema = QuizV1Schema.min(1).max(6);
 export const QuizV1OptionalSchema = z.array(QuizV1QuestionOptionalSchema);
 
 export type QuizV1 = z.infer<typeof QuizV1Schema>;
