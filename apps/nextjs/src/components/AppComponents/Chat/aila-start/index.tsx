@@ -24,8 +24,9 @@ import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
 
-import ChatPanelDisclaimer from "./chat-panel-disclaimer";
-import EmptyScreenAccordion from "./empty-screen-accordion";
+import ChatPanelDisclaimer from "../chat-panel-disclaimer";
+import EmptyScreenAccordion from "../empty-screen-accordion";
+import { createStartingPromptFromSearchParams } from "./search-params-utils";
 
 const log = aiLogger("chat");
 
@@ -237,32 +238,3 @@ const OakFlex50 = styled(OakFlex)`
     width: 100%;
   }
 `;
-
-function createStartingPromptFromSearchParams(
-  keyStage?: string,
-  subject?: string,
-  unitTitle?: string,
-  searchExpression?: string,
-): string {
-  let prompt = "Create a lesson plan";
-
-  if (keyStage) {
-    prompt += ` for ${keyStage}`;
-  }
-
-  if (subject) {
-    prompt += ` about ${subject}`;
-  }
-
-  if (unitTitle) {
-    prompt += `, focusing on the unit "${unitTitle}"`;
-  }
-
-  if (searchExpression) {
-    prompt += ` titled "${searchExpression}"`;
-  }
-
-  prompt += ".";
-
-  return prompt.trim();
-}
