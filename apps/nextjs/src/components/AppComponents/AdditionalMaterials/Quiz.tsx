@@ -2,33 +2,24 @@ import type { StarterQuiz as StarterQuizType } from "@oakai/additional-materials
 
 import { OakBox, OakFlex, OakP, OakSpan } from "@oaknational/oak-components";
 
-import { toSentenceCase } from "@/utils/toSentenceCase";
-
 type QuizProps = {
   action: string;
   generation: StarterQuizType;
   quizType: "starter" | "exit";
 };
 
-export const Quiz = ({ generation, quizType }: QuizProps) => {
+export const Quiz = ({ generation }: QuizProps) => {
   return (
-    <OakFlex $flexDirection={"column"} $width={"100%"}>
-      <OakP $font="heading-6">
-        {quizType === "starter" ? "Starter Quiz" : "Exit Quiz"}
-      </OakP>
-      <OakP $mb="space-between-s">
-        {generation.year} • {generation.subject} • {generation.title}
-      </OakP>
-
+    <OakFlex $gap="space-between-m" $flexDirection={"column"} $width={"100%"}>
       {generation.questions.map((question, questionIndex) => (
         <OakBox
           key={`${questionIndex}-${question.question}`}
           $mb="space-between-m"
         >
-          <OakP $font="heading-7">
+          <OakP $font="body-2">
             {questionIndex + 1}. {question.question}
           </OakP>
-          <OakBox $mt="space-between-xs" />
+          <OakBox $mb="space-between-s" />
 
           {question.options.map((option, optionIndex) => {
             const letter = String.fromCharCode(97 + optionIndex); // a, b, c
@@ -37,15 +28,18 @@ export const Quiz = ({ generation, quizType }: QuizProps) => {
               <OakFlex
                 key={`${option.text}-${optionIndex}`}
                 $alignItems="flex-start"
-                $mb="space-between-xs"
+                $mb="space-between-s"
               >
-                <OakSpan $font="body-3-bold" $mr="space-between-xs">
-                  {letter}.
+                <OakSpan
+                  $font={option.isCorrect ? "body-2-bold" : "body-2"}
+                  $mr="space-between-xs"
+                >
+                  {letter}).
                 </OakSpan>
                 <OakFlex $flexDirection="column">
-                  <OakP $font="body-3">
-                    {toSentenceCase(option.text)}
-                    {option.isCorrect && <OakSpan $color="mint"> ✓</OakSpan>}
+                  <OakP $font={option.isCorrect ? "body-2-bold" : "body-2"}>
+                    {option.text}
+                    {option.isCorrect && <OakSpan> ✓</OakSpan>}
                   </OakP>
                 </OakFlex>
               </OakFlex>
