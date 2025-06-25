@@ -76,7 +76,7 @@ export type PromptAgentDefinition<
   prompt: string;
   schemaForLLM: SchemaForLLM;
   schemaStrict: SchemaStrict;
-  extractRagData: (exampleLessonPlan: CompletedLessonPlan) => string;
+  extractRagData: (exampleLessonPlan: CompletedLessonPlan) => string | null;
 };
 export type AgentDefinition =
   | PromptAgentDefinition

@@ -140,7 +140,6 @@ export const PatchQuizV1ForLLM = z.object({
   value: QuizV1SchemaWithoutLength,
 });
 
-
 export const PatchBasedOnOptional = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.literal("/basedOn"),

@@ -32,7 +32,6 @@ export function convertQuizV1ToV2(quizV1: QuizV1): QuizV2 {
   };
 }
 
-
 /**
  * Detect the quiz schema version
  */
@@ -51,5 +50,3 @@ export function detectQuizVersion(
 
   return "unknown";
 }
-
-

@@ -13,8 +13,8 @@ import { z } from "zod";
 
 // Direct types from Oak's schema without any conversion
 
-export type QuizRawQuestion = z.infer<typeof quizQuestionSchema>;
-export type QuizRawQuestionAnswers = NonNullable<
+export type QuizQuestion = z.infer<typeof quizQuestionSchema>;
+export type QuizQuestionAnswers = NonNullable<
   z.infer<typeof quizQuestionSchema>["answers"]
 >;
 

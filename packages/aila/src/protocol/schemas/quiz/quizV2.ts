@@ -22,7 +22,9 @@ export const QuizV2QuestionMultipleChoiceSchema =
   QuizV2QuestionBaseSchema.extend({
     questionType: z.literal("multiple-choice"),
     answers: z.array(z.string()).describe("Correct answers as markdown"),
-    distractors: z.array(z.string()).describe("Incorrect answer options as markdown"),
+    distractors: z
+      .array(z.string())
+      .describe("Incorrect answer options as markdown"),
   });
 
 // Short answer question
@@ -47,15 +49,10 @@ export const QuizV2QuestionMatchSchema = QuizV2QuestionBaseSchema.extend({
 // Order question
 export const QuizV2QuestionOrderSchema = QuizV2QuestionBaseSchema.extend({
   questionType: z.literal("order"),
-  items: z.array(z.string()).describe("Items to be put in correct order as markdown"),
+  items: z
+    .array(z.string())
+    .describe("Items to be put in correct order as markdown"),
 });
-
-// Explanatory text question
-export const QuizV2QuestionExplanatoryTextSchema =
-  QuizV2QuestionBaseSchema.extend({
-    questionType: z.literal("explanatory-text"),
-    content: z.string().describe("Explanatory text content as markdown"),
-  });
 
 // Discriminated union of all question types
 export const QuizV2QuestionSchema = z.discriminatedUnion("questionType", [
@@ -63,7 +60,6 @@ export const QuizV2QuestionSchema = z.discriminatedUnion("questionType", [
   QuizV2QuestionShortAnswerSchema,
   QuizV2QuestionMatchSchema,
   QuizV2QuestionOrderSchema,
-  QuizV2QuestionExplanatoryTextSchema,
 ]);
 
 // Quiz V2 container with version field
@@ -88,6 +84,3 @@ export type QuizV2QuestionShortAnswer = z.infer<
 >;
 export type QuizV2QuestionMatch = z.infer<typeof QuizV2QuestionMatchSchema>;
 export type QuizV2QuestionOrder = z.infer<typeof QuizV2QuestionOrderSchema>;
-export type QuizV2QuestionExplanatoryText = z.infer<
-  typeof QuizV2QuestionExplanatoryTextSchema
->;

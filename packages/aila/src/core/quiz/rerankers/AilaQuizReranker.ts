@@ -15,9 +15,8 @@ import { type BaseType } from "../ChoiceModels";
 import type { AilaQuizReranker } from "../interfaces";
 
 const log = aiLogger("aila:quiz");
-export abstract class BasedOnRagAilaQuizReranker<
-  T extends z.ZodType<BaseType>,
-> implements AilaQuizReranker<T>
+export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
+  implements AilaQuizReranker<T>
 {
   abstract rerankQuiz(quizzes: QuizV1Question[][]): Promise<number[]>;
   public ratingSchema?: T;

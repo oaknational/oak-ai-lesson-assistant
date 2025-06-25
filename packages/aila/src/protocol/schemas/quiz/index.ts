@@ -13,10 +13,6 @@ export * from "./quizV1";
 // V2 exports (modern)
 export * from "./quizV2";
 
-// Conversion utilities
-export * from "./conversion/quizV1ToV2";
-export * from "./conversion/rawQuizIngest";
-
 // Common type for paths
 export const quizPathSchema = z.union([
   z.literal("/starterQuiz"),
