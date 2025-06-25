@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
+import React,  from "react";
+
 
 import { aiLogger } from "@oakai/logger";
 
@@ -14,15 +14,14 @@ import {
   OakUL,
 } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
-import * as Sentry from "@sentry/nextjs";
+
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+
 import styled from "styled-components";
 
-import DialogContents from "@/components/DialogControl/DialogContents";
-import { DialogRoot } from "@/components/DialogControl/DialogRoot";
+
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { trpc } from "@/utils/trpc";
+
 
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 import EmptyScreenAccordion from "./empty-screen-accordion";
@@ -46,93 +45,12 @@ const StyledUL = styled(OakUL)`
   padding-left: 20px;
 `;
 
-type AilaStartProps = {
-  keyStage?: string;
-  subject?: string;
-  unitTitle?: string;
-  searchExpression?: string;
-};
-
-export function AilaStart({
-  keyStage,
-  subject,
-  unitTitle,
-  searchExpression,
-}: Readonly<AilaStartProps>) {
-  const { trackEvent } = useAnalytics();
-  const [input, setInput] = useState("");
-  const router = useRouter();
+export function AilaStart() {
   const { track } = useAnalytics();
   const { user } = useUser();
 
-  const createAppSession = trpc.chat.appSessions.create.useMutation();
-  const trpcUtils = trpc.useUtils();
-
-  useEffect(() => {
-    if (keyStage || subject || unitTitle || searchExpression) {
-      setInput(
-        createStartingPromptFromSearchParams(
-          keyStage,
-          subject,
-          unitTitle,
-          searchExpression,
-        ),
-      );
-    }
-  }, [keyStage, subject, unitTitle, searchExpression]);
-
-  const create = useCallback(
-    async (message: string) => {
-      try {
-        const result = await createAppSession.mutateAsync(
-          { appId: "lesson-planner", message },
-          {
-            onSuccess: () => {
-              trpcUtils.chat.appSessions.remainingLimit
-                .invalidate()
-                .catch((e) => {
-                  Sentry.captureException(e);
-                  toast.error("Failed to invalidate remaining limit");
-                });
-            },
-          },
-        );
-
-        log.info("App session created:", result);
-        trackEvent("chat:send_message", {
-          id: result.id,
-          message,
-        });
-
-        router.push(`/aila/${result.id}`);
-      } catch (error) {
-        log.error("Error creating app session:", error);
-        Sentry.captureException(error);
-        toast.error("Failed to start the chat");
-      }
-    },
-    [
-      createAppSession,
-      trpcUtils.chat.appSessions.remainingLimit,
-      trackEvent,
-      router,
-    ],
-  );
-
-  const interstitialSubmit = useCallback(() => {
-    create(input).catch((error) => {
-      Sentry.captureException(error);
-      toast.error("Failed to start the chat");
-    });
-  }, [create, input]);
-
   return (
-    <DialogRoot>
-      <DialogContents
-        chatId={undefined}
-        lesson={{}}
-        submit={interstitialSubmit}
-      />
+
       <Flex
         direction="column"
         justify="center"
@@ -163,7 +81,7 @@ export function AilaStart({
               <EmptyScreenAccordion />
               <OakPrimaryButton
                 element={Link}
-                href="/aila/lesson-plan"
+                href="/aila"
                 iconName="arrow-right"
                 isTrailingIcon={true}
               >
@@ -184,7 +102,7 @@ export function AilaStart({
               </OakFlex>
               <OakPrimaryButton
                 element={Link}
-                href="/aila/teaching-materials"
+                href="/aila/tools/teaching-materials"
                 iconName="arrow-right"
                 isTrailingIcon={true}
                 onClick={() => {
@@ -208,7 +126,7 @@ export function AilaStart({
           </OakFlex>
         </OakFlexWithHeight>
       </Flex>
-    </DialogRoot>
+
   );
 }
 
@@ -237,32 +155,3 @@ const OakFlex50 = styled(OakFlex)`
     width: 100%;
   }
 `;
-
-function createStartingPromptFromSearchParams(
-  keyStage?: string,
-  subject?: string,
-  unitTitle?: string,
-  searchExpression?: string,
-): string {
-  let prompt = "Create a lesson plan";
-
-  if (keyStage) {
-    prompt += ` for ${keyStage}`;
-  }
-
-  if (subject) {
-    prompt += ` about ${subject}`;
-  }
-
-  if (unitTitle) {
-    prompt += `, focusing on the unit "${unitTitle}"`;
-  }
-
-  if (searchExpression) {
-    prompt += ` titled "${searchExpression}"`;
-  }
-
-  prompt += ".";
-
-  return prompt.trim();
-}

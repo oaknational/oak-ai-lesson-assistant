@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
-import ResourcesContents from "./resources-contents";
+import TeachingMaterialsView from "./teachingMaterialsView";
 
 export default async function AdditionalMaterialsTestPage() {
   const canSeeAM = await serverSideFeatureFlag("additional-materials");
@@ -11,5 +11,5 @@ export default async function AdditionalMaterialsTestPage() {
     redirect("/");
   }
 
-  return <ResourcesContents />;
+  return <TeachingMaterialsView />;
 }
