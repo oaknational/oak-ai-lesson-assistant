@@ -4,7 +4,7 @@ import type { z } from "zod";
 import type {
   LooseLessonPlan,
   QuizPath,
-  QuizQuestion,
+  QuizV1Question,
 } from "../../../protocol/schema";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
@@ -14,11 +14,11 @@ import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 export class ReturnFirstReranker extends BasedOnRagAilaQuizReranker<
   typeof testRatingSchema
 > {
-  public rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]> {
+  public rerankQuiz(quizzes: QuizV1Question[][]): Promise<number[]> {
     return Promise.resolve([0]);
   }
   public evaluateQuizArray(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizV1Question[][],
     _lessonPlan: LooseLessonPlan,
     ratingSchema: typeof testRatingSchema,
     _quizType: QuizPath,

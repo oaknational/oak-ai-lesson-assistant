@@ -21,8 +21,8 @@ import {
   MisconceptionsSchemaWithoutLength,
   PriorKnowledgeSchema,
   PriorKnowledgeSctrictMax5Schema,
-  QuizSchemaStrictMax6Schema,
-  QuizSchemaWithoutLength,
+  QuizV1SchemaStrictMax6Schema,
+  QuizV1SchemaWithoutLength,
   SubjectSchema,
   TopicSchema,
 } from "../../protocol/schema";
@@ -180,8 +180,8 @@ export const agents: Record<AgentName, AgentDefinition> = {
       identity,
       quizQuestionDesignInstructions,
     }),
-    schemaForLLM: QuizSchemaWithoutLength,
-    schemaStrict: QuizSchemaStrictMax6Schema,
+    schemaForLLM: QuizV1SchemaWithoutLength,
+    schemaStrict: QuizV1SchemaStrictMax6Schema,
     extractRagData: (lp) => JSON.stringify(lp.starterQuiz),
   },
   cycle: {
@@ -206,8 +206,8 @@ export const agents: Record<AgentName, AgentDefinition> = {
     type: "prompt",
     name: "exitQuiz",
     prompt: exitQuizInstructions({ identity, quizQuestionDesignInstructions }),
-    schemaForLLM: QuizSchemaWithoutLength,
-    schemaStrict: QuizSchemaStrictMax6Schema,
+    schemaForLLM: QuizV1SchemaWithoutLength,
+    schemaStrict: QuizV1SchemaStrictMax6Schema,
     extractRagData: (lp) => JSON.stringify(lp.exitQuiz),
   },
   mathsStarterQuiz: {
