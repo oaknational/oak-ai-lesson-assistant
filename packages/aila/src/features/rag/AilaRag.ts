@@ -55,7 +55,7 @@ export class AilaRag implements AilaRagFeature {
               title,
               keyStage,
               subject,
-              topic,
+              topic: topic ?? undefined,
               k:
                 numberOfRecordsInRag ??
                 this._aila?.options.numberOfRecordsInRag ??

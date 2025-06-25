@@ -391,7 +391,7 @@ export const CompletedLessonPlanSchema = z.object({
   title: LessonTitleSchema,
   keyStage: KeyStageSchema,
   subject: SubjectSchema,
-  topic: TopicSchema,
+  topic: TopicSchema.nullable(),
   learningOutcome: LearningOutcomeSchema,
   learningCycles: LearningCyclesSchema,
   priorKnowledge: PriorKnowledgeSchema,
