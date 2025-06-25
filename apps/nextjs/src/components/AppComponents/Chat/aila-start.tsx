@@ -1,10 +1,5 @@
 "use client";
 
-import React,  from "react";
-
-
-import { aiLogger } from "@oakai/logger";
-
 import { useUser } from "@clerk/nextjs";
 import {
   OakFlex,
@@ -14,19 +9,13 @@ import {
   OakUL,
 } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
-
 import Link from "next/link";
-
 import styled from "styled-components";
-
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
-
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 import EmptyScreenAccordion from "./empty-screen-accordion";
-
-const log = aiLogger("chat");
 
 export const exampleMessages = [
   {
@@ -50,83 +39,81 @@ export function AilaStart() {
   const { user } = useUser();
 
   return (
-
-      <Flex
-        direction="column"
-        justify="center"
-        className="min-h-screen bg-lavender30 pt-26"
+    <Flex
+      direction="column"
+      justify="center"
+      className="min-h-screen bg-lavender30 pt-26"
+    >
+      <OakFlexWithHeight
+        $flexDirection="column"
+        $justifyContent="space-between"
+        $maxWidth="all-spacing-23"
+        $mh="auto"
+        $gap="space-between-l"
+        $ph={["inner-padding-l", "inner-padding-none"]}
       >
-        <OakFlexWithHeight
-          $flexDirection="column"
-          $justifyContent="space-between"
-          $maxWidth="all-spacing-23"
-          $mh="auto"
-          $gap="space-between-l"
-          $ph={["inner-padding-l", "inner-padding-none"]}
-        >
-          <OakFlex $flexDirection={["column", "row"]} $gap="space-between-l">
-            <OakFlex
-              $background={"bg-primary"}
-              $flexDirection="column"
-              $gap="all-spacing-2"
-              $pa="inner-padding-xl2"
-            >
-              <OakFlex $flexDirection="column" $gap="all-spacing-2">
-                <OakP $font="heading-5">Create a lesson with AI</OakP>
-                <OakP $font="body-2">
-                  Aila will guide you step-by-step to create and download a
-                  tailor-made lesson, including:
-                </OakP>
-              </OakFlex>
-              <EmptyScreenAccordion />
-              <OakPrimaryButton
-                element={Link}
-                href="/aila"
-                iconName="arrow-right"
-                isTrailingIcon={true}
-              >
-                Create a lesson
-              </OakPrimaryButton>
+        <OakFlex $flexDirection={["column", "row"]} $gap="space-between-l">
+          <OakFlex
+            $background={"bg-primary"}
+            $flexDirection="column"
+            $gap="all-spacing-2"
+            $pa="inner-padding-xl2"
+          >
+            <OakFlex $flexDirection="column" $gap="all-spacing-2">
+              <OakP $font="heading-5">Create a lesson with AI</OakP>
+              <OakP $font="body-2">
+                Aila will guide you step-by-step to create and download a
+                tailor-made lesson, including:
+              </OakP>
             </OakFlex>
-            <Card>
-              <OakFlex $flexDirection="column" $gap="all-spacing-2">
-                <OakP $font="heading-5">Create teaching materials with AI</OakP>
-                <OakP>
-                  Enhance lessons with a range of teaching materials, including:
-                </OakP>
-                <StyledUL>
-                  <OakLI $mv={"space-between-xs"}>Glossaries</OakLI>
-                  <OakLI $mv={"space-between-xs"}>Comprehension tasks</OakLI>
-                  <OakLI $mt={"space-between-xs"}>Quizzes</OakLI>
-                </StyledUL>
-              </OakFlex>
-              <OakPrimaryButton
-                element={Link}
-                href="/aila/tools/teaching-materials"
-                iconName="arrow-right"
-                isTrailingIcon={true}
-                onClick={() => {
-                  track.createTeachingMaterialsInitiated({
-                    platform: "aila-beta",
-                    product: "ai lesson assistant",
-                    engagementIntent: "use",
-                    componentType: "create_additional_materials_button",
-                    eventVersion: "2.0.0",
-                    analyticsUseCase: "Teacher",
-                    isLoggedIn: Boolean(user),
-                  });
-                }}
-              >
-                Create teaching materials
-              </OakPrimaryButton>
-            </Card>
+            <EmptyScreenAccordion />
+            <OakPrimaryButton
+              element={Link}
+              href="/aila"
+              iconName="arrow-right"
+              isTrailingIcon={true}
+            >
+              Create a lesson
+            </OakPrimaryButton>
           </OakFlex>
-          <OakFlex $mt="space-between-l">
-            <ChatPanelDisclaimer size="sm" />
-          </OakFlex>
-        </OakFlexWithHeight>
-      </Flex>
-
+          <Card>
+            <OakFlex $flexDirection="column" $gap="all-spacing-2">
+              <OakP $font="heading-5">Create teaching materials with AI</OakP>
+              <OakP>
+                Enhance lessons with a range of teaching materials, including:
+              </OakP>
+              <StyledUL>
+                <OakLI $mv={"space-between-xs"}>Glossaries</OakLI>
+                <OakLI $mv={"space-between-xs"}>Comprehension tasks</OakLI>
+                <OakLI $mt={"space-between-xs"}>Quizzes</OakLI>
+              </StyledUL>
+            </OakFlex>
+            <OakPrimaryButton
+              element={Link}
+              href="/aila/tools/teaching-materials"
+              iconName="arrow-right"
+              isTrailingIcon={true}
+              onClick={() => {
+                track.createTeachingMaterialsInitiated({
+                  platform: "aila-beta",
+                  product: "ai lesson assistant",
+                  engagementIntent: "use",
+                  componentType: "create_additional_materials_button",
+                  eventVersion: "2.0.0",
+                  analyticsUseCase: "Teacher",
+                  isLoggedIn: Boolean(user),
+                });
+              }}
+            >
+              Create teaching materials
+            </OakPrimaryButton>
+          </Card>
+        </OakFlex>
+        <OakFlex $mt="space-between-l">
+          <ChatPanelDisclaimer size="sm" />
+        </OakFlex>
+      </OakFlexWithHeight>
+    </Flex>
   );
 }
 
