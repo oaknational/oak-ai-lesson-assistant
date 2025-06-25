@@ -1,6 +1,6 @@
 import type { z } from "zod";
 
-import type { QuizQuestion } from "../../../protocol/schema";
+import type { QuizV1Question } from "../../../protocol/schema";
 import { cachedQuiz } from "../fixtures/CachedImageQuiz";
 import { testRatingSchema } from "./RerankerStructuredOutputSchema";
 import { ReturnFirstReranker } from "./ReturnFirstReranker";
@@ -21,7 +21,7 @@ describe("ReturnFirstReranker", () => {
 
   describe("evaluateQuizArray", () => {
     it("should return array of ratings with first item rated 1 and others 0", async () => {
-      const mockQuizzes: QuizQuestion[][] = [cachedQuiz, cachedQuiz];
+      const mockQuizzes: QuizV1Question[][] = [cachedQuiz, cachedQuiz];
 
       const mockLessonPlan = {
         title: "Test Lesson",
@@ -57,7 +57,7 @@ describe("ReturnFirstReranker", () => {
     });
 
     it("should populate schema fields correctly", async () => {
-      const mockQuizzes: QuizQuestion[][] = [cachedQuiz, cachedQuiz];
+      const mockQuizzes: QuizV1Question[][] = [cachedQuiz, cachedQuiz];
 
       const mockLessonPlan = {
         title: "Test Lesson",

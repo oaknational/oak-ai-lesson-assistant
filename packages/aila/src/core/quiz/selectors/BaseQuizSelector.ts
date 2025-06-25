@@ -1,4 +1,4 @@
-import type { QuizQuestion } from "../../../protocol/schema";
+import type { QuizV1Question } from "../../../protocol/schema";
 import type {
   BaseType,
   MaxRatingFunctionApplier,
@@ -12,9 +12,9 @@ export abstract class BaseQuizSelector<T extends BaseType>
   public abstract ratingFunction: RatingFunction<T>;
   public abstract maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
   public selectBestQuiz(
-    quizzes: QuizQuestion[][],
+    quizzes: QuizV1Question[][],
     ratingsSchemas: T[],
-  ): QuizQuestion[] {
+  ): QuizV1Question[] {
     const selectedIndex = this.maxRatingFunctionApplier(
       ratingsSchemas,
       this.ratingFunction,

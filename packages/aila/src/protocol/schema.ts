@@ -1,9 +1,14 @@
 import { dedent } from "ts-dedent";
-import z from "zod";
+import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
-import { type RawQuiz, rawQuizSchema } from "./rawQuizSchema";
 import { minMaxText } from "./schemaHelpers";
+import {
+  type QuizV1Optional,
+  QuizV1Schema,
+  QuizV1SchemaWithoutLength,
+} from "./schemas/quiz";
+import { type RawQuiz, rawQuizSchema } from "./schemas/quiz/rawQuiz";
 
 // ********** BASED_ON **********
 export const BASED_ON_DESCRIPTIONS = {
@@ -71,44 +76,8 @@ export type MisconceptionsOptional = z.infer<
   typeof MisconceptionsOptionalSchema
 >;
 
-// ********** QUIZ **********
-
-// Needs to be changed - to adapt for LLM handling.
-
-export const QUIZ_DESCRIPTIONS = {
-  question: "The question to be asked in the quiz.",
-  answers: "The correct answer. This should be an array of only one item.",
-  distractors: "A set of distractors. This must be an array with two items.",
-} as const as {
-  question: string;
-  answers: string;
-  distractors: string;
-};
-
-export const QuizQuestionSchemaWithoutLength = z.object({
-  question: z.string().describe(QUIZ_DESCRIPTIONS.question),
-  answers: z.array(z.string()).describe(QUIZ_DESCRIPTIONS.answers),
-  distractors: z.array(z.string()).describe(QUIZ_DESCRIPTIONS.distractors),
-});
-
-// TODO: MG - Double check this is allowable.
-export const QuizQuestionSchema = QuizQuestionSchemaWithoutLength; //.extend({
-//   answers: QuizQuestionSchemaWithoutLength.shape.answers.length(1),
-//   distractors: QuizQuestionSchemaWithoutLength.shape.distractors.length(2),
-// });
-
-export const QuizQuestionOptionalSchema = QuizQuestionSchema.partial();
-
-export type QuizQuestion = z.infer<typeof QuizQuestionSchema>;
-export type QuizQuestionOptional = z.infer<typeof QuizQuestionOptionalSchema>;
-
-export const QuizSchema = z.array(QuizQuestionSchema);
-export const QuizSchemaWithoutLength = z.array(QuizQuestionSchemaWithoutLength);
-export const QuizSchemaStrictMax6Schema = QuizSchema.min(1).max(6);
-export const QuizOptionalSchema = z.array(QuizQuestionOptionalSchema);
-
-export type Quiz = z.infer<typeof QuizSchema>;
-export type QuizOptional = z.infer<typeof QuizOptionalSchema>;
+// ********** QUIZ SCHEMAS **********
+export * from "./schemas/quiz";
 
 // ********** EXPLANATION **********
 export const EXPLANATION_DESCRIPTIONS = {
@@ -399,19 +368,19 @@ export const CompletedLessonPlanSchema = z.object({
   misconceptions: MisconceptionsSchema,
   keywords: KeywordsSchema,
   basedOn: BasedOnSchema.nullish(),
-  starterQuiz: QuizSchema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
+  starterQuiz: QuizV1Schema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
   cycle1: CycleSchema.describe("The first learning cycle"),
   cycle2: CycleSchema.describe("The second learning cycle"),
   cycle3: CycleSchema.describe("The third learning cycle"),
-  exitQuiz: QuizSchema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+  exitQuiz: QuizV1Schema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
   additionalMaterials: AdditionalMaterialsSchema.nullable(),
 });
 
 export type CompletedLessonPlan = z.infer<typeof CompletedLessonPlanSchema>;
 
 export const LessonPlanSchema = CompletedLessonPlanSchema.partial().extend({
-  _experimental_starterQuizMathsV0: QuizSchema.optional(),
-  _experimental_exitQuizMathsV0: QuizSchema.optional(),
+  _experimental_starterQuizMathsV0: QuizV1Schema.optional(),
+  _experimental_exitQuizMathsV0: QuizV1Schema.optional(),
   _experimental_starterQuizMathsV1: rawQuizSchema.optional(),
   _experimental_exitQuizMathsV1: rawQuizSchema.optional(),
 });
@@ -534,27 +503,12 @@ export type LessonPlanSectionWhileStreaming =
   | BasedOnOptional
   | MisconceptionsOptional
   | KeywordOptional[]
-  | QuizOptional
+  | QuizV1Optional
   | CycleOptional
   | string
   | string[]
   | number
   | NonNullable<RawQuiz[]>;
-
-// These are here due to zod refusing to infer the type of "add"
-export const quizPathSchema = z.union([
-  z.literal("/starterQuiz"),
-  z.literal("/exitQuiz"),
-]);
-
-export type QuizPath = z.infer<typeof quizPathSchema>;
-
-export const quizOperationTypeSchema = z.union([
-  z.literal("add"),
-  z.literal("replace"),
-]);
-
-export type QuizOperationType = z.infer<typeof quizOperationTypeSchema>;
 
 export const CompletedLessonPlanSchemaWithoutLength = z.object({
   title: LessonTitleSchema,
@@ -567,12 +521,14 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   keyLearningPoints: KeyLearningPointsSchema,
   misconceptions: MisconceptionsSchemaWithoutLength,
   keywords: KeywordsSchemaWithoutLength,
-  starterQuiz: QuizSchemaWithoutLength.describe(
+  starterQuiz: QuizV1SchemaWithoutLength.describe(
     LESSON_PLAN_DESCRIPTIONS.starterQuiz,
   ),
   cycle1: CycleSchemaWithoutLength.describe("The first learning cycle"),
   cycle2: CycleSchemaWithoutLength.describe("The second learning cycle"),
   cycle3: CycleSchemaWithoutLength.describe("The third learning cycle"),
-  exitQuiz: QuizSchemaWithoutLength.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+  exitQuiz: QuizV1SchemaWithoutLength.describe(
+    LESSON_PLAN_DESCRIPTIONS.exitQuiz,
+  ),
   additionalMaterials: AdditionalMaterialsSchema,
 });

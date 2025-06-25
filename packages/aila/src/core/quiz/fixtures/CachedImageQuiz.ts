@@ -1,7 +1,7 @@
 import type { PatchDocument } from "../../../protocol/jsonPatchProtocol";
-import type { Quiz } from "../../../protocol/schema";
+import type { QuizV1 } from "../../../protocol/schema";
 
-export const cachedQuiz: Quiz = [
+export const cachedQuiz: QuizV1 = [
   {
     question: "How many degrees in 2 right angles?",
     answers: ["180°"],
@@ -47,7 +47,7 @@ export const cachedQuiz: Quiz = [
   },
 ];
 
-export const cachedExitQuizPatch: PatchDocument = {
+export const cachedExitQuizV1Patch: PatchDocument = {
   type: "patch",
   reasoning: "adding maths quiz because i need to teach the kids about this",
   value: {
