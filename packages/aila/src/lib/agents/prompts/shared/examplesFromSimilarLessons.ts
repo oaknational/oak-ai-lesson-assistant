@@ -1,3 +1,8 @@
+export const decorateExample =
+  <T>(extractFn: (lesson: T) => string | null) =>
+  (lesson: T, i: number, targetKey: string) =>
+    `<example-${targetKey}-${i}>\n${extractFn(lesson)}\n</example-${targetKey}-${i}>`;
+
 export const examplesFromSimilarLessons = <T>(
   lessons: T[],
   targetKey: string,
@@ -9,10 +14,9 @@ export const examplesFromSimilarLessons = <T>(
     return `No relevant examples found.`;
   }
 
+  const decorateFn = decorateExample(extractRagDataAsText);
+
   return examples
-    .map(
-      (lesson, i) =>
-        `<example-${targetKey}-${i}>\n${extractRagDataAsText(lesson)}\n</example-${targetKey}-${i}>`,
-    )
+    .map((lesson, i) => decorateFn(lesson, i, targetKey))
     .join("\n\n");
 };
