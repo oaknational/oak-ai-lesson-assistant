@@ -117,7 +117,7 @@ describe("examplesFromSimilarLessons", () => {
     ];
 
     const extractContentOrEmpty = (lesson: MockLesson): string | null => {
-      return lesson.content === "" ? null : lesson.content ?? null;
+      return lesson.content === "" ? null : (lesson.content ?? null);
     };
 
     const result = examplesFromSimilarLessons(
@@ -155,7 +155,7 @@ describe("examplesFromSimilarLessons", () => {
       {
         id: "1",
         title: "Lesson 1",
-        content: "Content with <tags>, quotes \"test\", and & symbols",
+        content: 'Content with <tags>, quotes "test", and & symbols',
       },
     ];
 
