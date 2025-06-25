@@ -6,8 +6,8 @@ import { VisuallyHidden } from "@radix-ui/themes";
 
 import type { QuizV2ImageObject } from "@oakai/aila/src/protocol/schemas";
 
-import QuizOakImage from "../QuizOakImage";
-import { calcDims, removeMarkdown } from "../quizUtils";
+import QuizOakImage from "./QuizOakImage";
+import { calcDims, removeMarkdown } from "./utils";
 
 type ImageProps = {
   src: QuizV2ImageObject;

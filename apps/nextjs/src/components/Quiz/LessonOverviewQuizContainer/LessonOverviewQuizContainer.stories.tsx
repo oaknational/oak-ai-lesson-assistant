@@ -5,7 +5,7 @@ import {
 import { convertRawQuizToV2 } from "@oakai/aila/src/protocol/schemas/quiz/conversion/rawQuizIngest";
 import { chromaticParams } from "@/storybook/chromatic";
 
-import LessonOverviewQuizContainer from "./LessonOverviewQuizContainer";
+import { LessonOverviewQuizContainer } from "./LessonOverviewQuizContainer";
 
 const fullQuizFixture: NonNullable<RawQuiz> = [
   {

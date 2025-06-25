@@ -10,6 +10,7 @@ import { VisuallyHidden } from "@radix-ui/themes";
 
 import QuizImage from "../QuizImage";
 import QuizImageAnswer from "../QuizImageAnswer";
+import { shuffleMultipleChoiceAnswers } from "../utils";
 
 export const QuizQuestionsMCAnswers = (props: {
   answers: QuizV2ContentArray[];
@@ -18,11 +19,12 @@ export const QuizQuestionsMCAnswers = (props: {
 }) => {
   const { answers, distractors, questionNumber } = props;
 
-  // Combine answers and distractors with their correctness status
-  const allChoices = [
-    ...answers.map(answer => ({ contentArray: answer, isCorrect: true })),
-    ...distractors.map(distractor => ({ contentArray: distractor, isCorrect: false }))
-  ];
+  // Shuffle answers and distractors deterministically
+  const shuffledChoices = shuffleMultipleChoiceAnswers(answers, distractors);
+  const allChoices = shuffledChoices.map(choice => ({
+    contentArray: choice.content,
+    isCorrect: choice.isCorrect
+  }));
 
   const containsImages = allChoices.some(choice =>
     choice.contentArray.some(item => item.type === "image")

@@ -1,1 +1,1 @@
-export { default } from "./LessonOverviewQuizContainer";
+export { LessonOverviewQuizContainer } from "./LessonOverviewQuizContainer";

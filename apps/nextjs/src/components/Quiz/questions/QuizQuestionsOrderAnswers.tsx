@@ -7,9 +7,9 @@ import {
 } from "@oaknational/oak-components";
 import { VisuallyHidden } from "@radix-ui/themes";
 
-import { z } from "zod";
+import type { z } from "zod";
 import type { QuizV2QuestionOrderSchema } from "@oakai/aila/src/protocol/schemas/quiz/quizV2";
-import { removeMarkdown } from "../quizUtils";
+import { removeMarkdown, shuffleOrderItems } from "../utils";
 
 export const QuizQuestionsOrderAnswers = ({
   items,
@@ -18,6 +18,18 @@ export const QuizQuestionsOrderAnswers = ({
   items: z.infer<typeof QuizV2QuestionOrderSchema>["items"];
   questionNumber: number;
 }) => {
+  // Shuffle items to match student view while keeping correct order indicators
+  const shuffledItems = shuffleOrderItems(items);
+  
+  // Create mapping to track correct order positions
+  const correctOrderMap = new Map();
+  items.forEach((item, correctIndex) => {
+    const itemText = item.find(contentItem => contentItem.type === "text")?.text;
+    if (itemText) {
+      correctOrderMap.set(itemText, correctIndex + 1);
+    }
+  });
+
   return (
     <OakFlex
       $flexDirection={"column"}
@@ -25,10 +37,12 @@ export const QuizQuestionsOrderAnswers = ({
       $alignItems={"start"}
       role="list"
     >
-      {items.map((item, i) => {
+      {shuffledItems.map((item, i) => {
         const itemText = item.find(contentItem => contentItem.type === "text")?.text;
+        const correctPosition = itemText ? correctOrderMap.get(itemText) : null;
+        
         return (
-          itemText && (
+          itemText && correctPosition && (
             <OakFlex
               key={`q-${questionNumber}-answer${i}`}
               $background={"lemon50"}
@@ -39,7 +53,7 @@ export const QuizQuestionsOrderAnswers = ({
               role="listitem"
             >
               <VisuallyHidden>
-                {i + 1} -{" "}
+                Correct position {correctPosition} -{" "}
                 <OakCodeRenderer
                   string={removeMarkdown(itemText)}
                   $font="code-3"
@@ -55,7 +69,7 @@ export const QuizQuestionsOrderAnswers = ({
               </OakBox>
 
               <OakTypography $font={["body-2-bold", "body-1-bold"]} aria-hidden>
-                {i + 1}
+                {correctPosition}
               </OakTypography>
 
               <OakTypography $font={["body-2", "body-1"]} aria-hidden>

@@ -4,8 +4,8 @@ import { useState } from "react";
 import { OakFlex } from "@oaknational/oak-components";
 import type { QuizV2ImageObject } from "@oakai/aila/src/protocol/schemas";
 
-import QuizOakImage from "../QuizOakImage";
-import { calcDims } from "../quizUtils";
+import QuizOakImage from "./QuizOakImage";
+import { calcDims } from "./utils";
 
 type ImageProps = { src: QuizV2ImageObject; alt?: string };
 

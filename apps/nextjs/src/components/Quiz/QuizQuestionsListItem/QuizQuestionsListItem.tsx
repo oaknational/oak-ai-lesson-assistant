@@ -6,11 +6,11 @@ import type { QuizV2Question } from "@oakai/aila/src/protocol/schemas";
 
 import { MathJaxWrap } from "@/components/MathJax";
 
-import { QuizQuestionsMCAnswers } from "../QuizQuestionsMCAnswers";
-import { QuizQuestionsMatchAnswers } from "../QuizQuestionsMatchAnswers";
-import { QuizQuestionsOrderAnswers } from "../QuizQuestionsOrderAnswers";
-import { QuizQuestionsQuestionStem } from "../QuizQuestionsQuestionStem";
-import { QuizQuestionsShortAnswers } from "../QuizQuestionsShortAnswers";
+import { QuizQuestionsMCAnswers } from "../questions/QuizQuestionsMCAnswers";
+import { QuizQuestionsMatchAnswers } from "../questions/QuizQuestionsMatchAnswers";
+import { QuizQuestionsOrderAnswers } from "../questions/QuizQuestionsOrderAnswers";
+import { QuizQuestionsQuestionStem } from "../questions/QuizQuestionsQuestionStem";
+import { QuizQuestionsShortAnswers } from "../questions/QuizQuestionsShortAnswers";
 
 export type QuizQuestionsListItemProps = {
   question: QuizV2Question;
@@ -18,7 +18,7 @@ export type QuizQuestionsListItemProps = {
   isMathJaxLesson: boolean;
 };
 
-const QuizQuestionsListItem: FC<QuizQuestionsListItemProps> = (props) => {
+export const QuizQuestionsListItem: FC<QuizQuestionsListItemProps> = (props) => {
   const { question, index, isMathJaxLesson } = props;
   const MathJaxWrapper = isMathJaxLesson ? MathJaxWrap : Fragment;
 
@@ -68,5 +68,3 @@ const QuizQuestionsListItem: FC<QuizQuestionsListItemProps> = (props) => {
     </MathJaxWrapper>
   );
 };
-
-export default QuizQuestionsListItem;

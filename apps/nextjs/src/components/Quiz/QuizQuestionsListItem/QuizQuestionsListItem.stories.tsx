@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import type { QuizV2Question } from "@oakai/aila/src/protocol/schemas";
 import { chromaticParams } from "@/storybook/chromatic";
 
-import QuizQuestionsListItem from "./QuizQuestionsListItem";
+import { QuizQuestionsListItem } from "./QuizQuestionsListItem";
 
 const multipleChoiceQuestion: QuizV2Question = {
   questionType: "multiple-choice",

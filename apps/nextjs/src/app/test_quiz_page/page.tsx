@@ -6,7 +6,7 @@ import { isOakEmail } from "@oakai/core/src/utils/isOakEmail";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
-import LessonOverviewQuizContainer from "@/components/Quiz/LessonOverviewQuizContainer";
+import { LessonOverviewQuizContainer } from "@/components/Quiz/LessonOverviewQuizContainer";
 
 import rawQuizFixture from "./rawQuizFixture.json";
 

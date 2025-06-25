@@ -8,7 +8,7 @@ import {
 import { VisuallyHidden } from "@radix-ui/themes";
 
 import type { QuizV2ContentArray } from "@oakai/aila/src/protocol/schemas";
-import { removeMarkdown } from "../quizUtils";
+import { removeMarkdown } from "../utils";
 
 export const QuizQuestionsShortAnswers = ({
   answers,

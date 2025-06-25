@@ -14,14 +14,14 @@ import type { QuizV2 } from "@oakai/aila/src/protocol/schemas";
 import { OakMathJaxContext } from "@/components/MathJax";
 
 import QuizQuestionsList from "../QuizQuestionsList";
-import { extractImageAttributions } from "../quizUtils";
+import { extractImageAttributions } from "../utils";
 
 export type QuizProps = {
   quiz: QuizV2;
   isMathJaxLesson: boolean;
 };
 
-const LessonOverviewQuizContainer: FC<QuizProps> = (props) => {
+export const LessonOverviewQuizContainer: FC<QuizProps> = (props) => {
   const imageAttributions = useMemo(() => 
     extractImageAttributions(props.quiz), [props.quiz]
   );
@@ -53,4 +53,3 @@ const LessonOverviewQuizContainer: FC<QuizProps> = (props) => {
   ) : null;
 };
 
-export default LessonOverviewQuizContainer;

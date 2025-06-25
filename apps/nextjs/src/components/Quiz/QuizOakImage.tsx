@@ -3,7 +3,7 @@ import type { Dispatch, FC, SetStateAction } from "react";
 import { OakImage } from "@oaknational/oak-components";
 import type { QuizV2ImageObject } from "@oakai/aila/src/protocol/schemas";
 
-import { calcDims } from "../quizUtils";
+import { calcDims } from "./utils";
 
 type QuizOakImageProps = {
   src: QuizV2ImageObject;

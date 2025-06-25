@@ -1,7 +1,7 @@
 import { OakFlex, OakTypography } from "@oaknational/oak-components";
 import type { QuizV2ContentArray } from "@oakai/aila/src/protocol/schemas";
 
-import { shortAnswerTitleFormatter } from "../quizUtils";
+import { shortAnswerTitleFormatter } from "../utils";
 
 export const QuizQuestionsQuestionStem = ({
   questionStem,

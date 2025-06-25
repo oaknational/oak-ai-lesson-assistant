@@ -4,7 +4,7 @@ import React, { Fragment } from "react";
 import { OakFlex, OakHeading } from "@oaknational/oak-components";
 import type { QuizV2 } from "@oakai/aila/src/protocol/schemas";
 
-import QuizQuestionsListItem from "../QuizQuestionsListItem";
+import { QuizQuestionsListItem } from "./QuizQuestionsListItem";
 
 export type QuizQuestionListProps = {
   quiz: QuizV2;

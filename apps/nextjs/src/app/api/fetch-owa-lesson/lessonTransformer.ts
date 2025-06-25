@@ -2,11 +2,7 @@ import type {
   Keyword,
   LooseLessonPlan,
   Misconception,
-<<<<<<< HEAD
   QuizV1Question,
-=======
-  QuizQuestionV1,
->>>>>>> e30f06df (feat: implement quiz schema namespace naming and organization)
 } from "@oakai/aila/src/protocol/schema";
 
 import type { SyntheticUnitvariantLessonsByKs } from "@oaknational/oak-curriculum-schema/";
@@ -38,11 +34,7 @@ function extractTextFromAnswer(
 /**
  * Transforms Oak's quiz format to the format expected by LessonPlanSchemaWhilstStreaming
  */
-<<<<<<< HEAD
 export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV1Question[] {
-=======
-export function transformQuiz(quiz: OwaQuizQuestion[]): QuizQuestionV1[] {
->>>>>>> e30f06df (feat: implement quiz schema namespace naming and organization)
   const quizData = z.array(quizQuestionSchema).parse(quiz);
   if (!quizData || !Array.isArray(quizData)) {
     return [];
