@@ -2,7 +2,7 @@ import type {
   Keyword,
   LooseLessonPlan,
   Misconception,
-  QuizQuestionV1,
+  QuizQuestion,
 } from "@oakai/aila/src/protocol/schema";
 
 import type { SyntheticUnitvariantLessonsByKs } from "@oaknational/oak-curriculum-schema/";
@@ -20,21 +20,9 @@ import type {
 type OwaLesson = z.infer<typeof lessonContentSchema>;
 
 /**
- * Extracts text content from an answer array
- */
-function extractTextFromAnswer(
-  answer: Array<{ type?: string; text?: string } | undefined>,
-): string {
-  return answer
-    .filter((item) => item?.type === "text")
-    .map((item) => item?.text)
-    .join("");
-}
-
-/**
  * Transforms Oak's quiz format to the format expected by LessonPlanSchemaWhilstStreaming
  */
-export function transformQuiz(quiz: OwaQuizQuestion[]): QuizQuestionV1[] {
+export function transformQuiz(quiz: OwaQuizQuestion[]): QuizQuestion[] {
   const quizData = z.array(quizQuestionSchema).parse(quiz);
   if (!quizData || !Array.isArray(quizData)) {
     return [];
@@ -62,12 +50,22 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizQuestionV1[] {
       // Extract correct answers
       const correctAnswers = question.answers["multiple-choice"]
         .filter((answer) => answer.answer_is_correct)
-        .map((answer) => extractTextFromAnswer(answer.answer));
+        .map((answer) =>
+          answer.answer
+            .filter((item) => item?.type === "text")
+            .map((item) => item.text)
+            .join(""),
+        );
 
       // Extract distractors (incorrect answers)
       const distractors = question.answers["multiple-choice"]
         .filter((answer) => !answer.answer_is_correct)
-        .map((answer) => extractTextFromAnswer(answer.answer));
+        .map((answer) =>
+          answer.answer
+            .filter((item) => item?.type === "text")
+            .map((item) => item?.text)
+            .join(""),
+        );
 
       return {
         question: questionText,
@@ -81,18 +79,31 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizQuestionV1[] {
     ) {
       // For short answer questions, treat all answers as correct
       const allAnswers = question.answers["short-answer"].map((answer) =>
-        extractTextFromAnswer(answer.answer),
+        answer.answer
+          .filter((item) => item?.type === "text")
+          .map((item) => item?.text)
+          .join(""),
       );
 
       // Default answers (primary answers) will be treated as the correct ones
       const correctAnswers = question.answers["short-answer"]
         .filter((answer) => answer.answer_is_default)
-        .map((answer) => extractTextFromAnswer(answer.answer));
+        .map((answer) =>
+          answer.answer
+            .filter((item) => item?.type === "text")
+            .map((item) => item?.text)
+            .join(""),
+        );
 
       // Non-default answers will be treated as distractors/alternative answers
       const distractors = question.answers["short-answer"]
         .filter((answer) => !answer.answer_is_default)
-        .map((answer) => extractTextFromAnswer(answer.answer));
+        .map((answer) =>
+          answer.answer
+            .filter((item) => item?.type === "text")
+            .map((item) => item?.text)
+            .join(""),
+        );
 
       return {
         question: questionText,

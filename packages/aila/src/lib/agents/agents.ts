@@ -27,7 +27,7 @@ import {
   TopicSchema,
 } from "../../protocol/schema";
 import { additionalMaterialsInstructions } from "./prompts/additionalMaterialsInstructions";
-import { exitQuizV1Instructions } from "./prompts/exitQuizV1Instructions";
+import { exitQuizInstructions } from "./prompts/exitQuizInstructions";
 import { keyLearningPointsInstructions } from "./prompts/keyLearningPointsInstructions";
 import { keywordsInstructions } from "./prompts/keywordsInstructions";
 import { learningCycleTitlesInstructions } from "./prompts/learningCycleTitlesInstructions";
@@ -38,7 +38,7 @@ import { priorKnowledgeInstructions } from "./prompts/priorKnowledgeInstructions
 import { identity } from "./prompts/shared/identity";
 import { quizQuestionDesignInstructions } from "./prompts/shared/quizQuestionDesignInstructions";
 import { tier2And3VocabularyDefinitions } from "./prompts/shared/tier2And3VocabularyDefinitions";
-import { starterQuizV1Instructions } from "./prompts/starterQuizV1Instructions";
+import { starterQuizInstructions } from "./prompts/starterQuizInstructions";
 import { subjectInstructions } from "./prompts/subjectInstructions";
 
 export const agentNames = z.enum([
@@ -52,11 +52,11 @@ export const agentNames = z.enum([
   "keyLearningPoints",
   "misconceptions",
   "keywords",
-  "starterQuizV1",
+  "starterQuiz",
   "cycle",
-  "exitQuizV1",
-  "mathsStarterQuizV1",
-  "mathsExitQuizV1",
+  "exitQuiz",
+  "mathsStarterQuiz",
+  "mathsExitQuiz",
   "deleteSection",
   "endTurn",
   "basedOn",
@@ -173,16 +173,16 @@ export const agents: Record<AgentName, AgentDefinition> = {
     schemaStrict: KeywordsSchema,
     extractRagData: (lp) => JSON.stringify(lp.keywords),
   },
-  starterQuizV1: {
+  starterQuiz: {
     type: "prompt",
-    name: "starterQuizV1",
-    prompt: starterQuizV1Instructions({
+    name: "starterQuiz",
+    prompt: starterQuizInstructions({
       identity,
       quizQuestionDesignInstructions,
     }),
     schemaForLLM: QuizV1SchemaWithoutLength,
     schemaStrict: QuizV1SchemaStrictMax6Schema,
-    extractRagData: (lp) => JSON.stringify(lp.starterQuizV1),
+    extractRagData: (lp) => JSON.stringify(lp.starterQuiz),
   },
   cycle: {
     type: "prompt",
@@ -202,24 +202,24 @@ export const agents: Record<AgentName, AgentDefinition> = {
       });
     },
   },
-  exitQuizV1: {
+  exitQuiz: {
     type: "prompt",
-    name: "exitQuizV1",
-    prompt: exitQuizV1Instructions({
+    name: "exitQuiz",
+    prompt: exitQuizInstructions({
       identity,
       quizQuestionDesignInstructions,
     }),
     schemaForLLM: QuizV1SchemaWithoutLength,
     schemaStrict: QuizV1SchemaStrictMax6Schema,
-    extractRagData: (lp) => JSON.stringify(lp.exitQuizV1),
+    extractRagData: (lp) => JSON.stringify(lp.exitQuiz),
   },
-  mathsStarterQuizV1: {
+  mathsStarterQuiz: {
     type: "asyncFunction",
-    name: "mathsStarterQuizV1",
+    name: "mathsStarterQuiz",
   },
-  mathsExitQuizV1: {
+  mathsExitQuiz: {
     type: "asyncFunction",
-    name: "mathsExitQuizV1",
+    name: "mathsExitQuiz",
   },
   deleteSection: {
     type: "custom",
@@ -261,20 +261,20 @@ export const sectionAgentMap: Record<
   keyLearningPoints: () => "keyLearningPoints",
   misconceptions: () => "misconceptions",
   keywords: () => "keywords",
-  starterQuizV1: (ctx) => {
+  starterQuiz: (ctx) => {
     if (ctx.lessonPlan.subject === "maths") {
-      return "mathsStarterQuizV1";
+      return "mathsStarterQuiz";
     }
-    return "starterQuizV1";
+    return "starterQuiz";
   },
   cycle1: () => "cycle",
   cycle2: () => "cycle",
   cycle3: () => "cycle",
-  exitQuizV1: (ctx) => {
+  exitQuiz: (ctx) => {
     if (ctx.lessonPlan.subject === "maths") {
-      return "mathsExitQuizV1";
+      return "mathsExitQuiz";
     }
-    return "exitQuizV1";
+    return "exitQuiz";
   },
   additionalMaterials: () => "additionalMaterials",
 };

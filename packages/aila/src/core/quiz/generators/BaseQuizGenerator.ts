@@ -422,7 +422,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     quizType: QuizPath = "/starterQuiz",
     quizOperationType: QuizOperationType = "add",
   ): JsonPatchDocument {
-    const quizPatchObject: z.infer<typeof PatchQuiz> = {
+    const quizPatchObject: z.infer<typeof PatchQuizV1> = {
       op: quizOperationType,
       path: quizType,
       value: quizQuestions,

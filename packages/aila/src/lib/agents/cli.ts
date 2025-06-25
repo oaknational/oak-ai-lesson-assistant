@@ -72,7 +72,7 @@ async function main() {
             },
           ]);
         },
-        mathsExitQuizV1: () => {
+        mathsExitQuiz: () => {
           return Promise.resolve([
             {
               question: "What is 2 + 3?",

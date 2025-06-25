@@ -13,10 +13,10 @@ export function convertQuizV1QuestionToV2(
   questionV1: QuizV1Question,
 ): QuizV2Question {
   return {
-    questionType: "multiple-choice" as const,
-    questionStem: [{ type: "text", text: questionV1.question }],
-    answers: questionV1.answers.map(answer => [{ type: "text", text: answer }]),
-    distractors: questionV1.distractors.map(distractor => [{ type: "text", text: distractor }]),
+    questionType: "multiple-choice",
+    questionStem: questionV1.question,
+    answers: questionV1.answers,
+    distractors: questionV1.distractors,
     feedback: undefined,
     hint: undefined,
   };
@@ -27,7 +27,7 @@ export function convertQuizV1QuestionToV2(
  */
 export function convertQuizV1ToV2(quizV1: QuizV1): QuizV2 {
   return {
-    version: "v2" as const,
+    version: "v2",
     questions: quizV1.map(convertQuizV1QuestionToV2),
   };
 }
@@ -45,7 +45,7 @@ export function ensureQuizV2Compatible(quiz: QuizV1 | QuizV2): QuizV2 {
     "questions" in quiz
   ) {
     // This is already V2 format
-    return quiz as QuizV2;
+    return quiz;
   }
 
   // Check if it's V1 format (array)
@@ -62,7 +62,7 @@ export function ensureQuizV2Compatible(quiz: QuizV1 | QuizV2): QuizV2 {
       "distractors" in firstQuestion
     ) {
       // This is V1 format, convert to V2
-      return convertQuizV1ToV2(quiz as QuizV1);
+      return convertQuizV1ToV2(quiz);
     }
   }
 

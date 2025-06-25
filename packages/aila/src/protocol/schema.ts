@@ -7,8 +7,6 @@ import {
   type QuizV1Optional,
   QuizV1Schema,
   QuizV1SchemaWithoutLength,
-  QuizV2OptionalSchema,
-  QuizV2Schema,
 } from "./schemas/quiz";
 import { type RawQuiz, rawQuizSchema } from "./schemas/quiz/rawQuiz";
 
@@ -387,9 +385,6 @@ export const LessonPlanSchema = CompletedLessonPlanSchema.partial().extend({
   _experimental_exitQuizMathsV0: QuizV1Schema.optional(),
   _experimental_starterQuizMathsV1: rawQuizSchema.optional(),
   _experimental_exitQuizMathsV1: rawQuizSchema.optional(),
-  // V2 quiz schemas with discriminated union support
-  starterQuizV2: QuizV2Schema.optional(),
-  exitQuizV2: QuizV2Schema.optional(),
 });
 
 export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;
@@ -517,7 +512,6 @@ export type LessonPlanSectionWhileStreaming =
   | number
   | NonNullable<RawQuiz[]>;
 
-// Quiz path and operation types are now exported from ./schemas/quiz/ subfolder
 
 export const CompletedLessonPlanSchemaWithoutLength = z.object({
   title: LessonTitleSchema,

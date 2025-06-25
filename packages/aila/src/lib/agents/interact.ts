@@ -246,7 +246,7 @@ export async function interact({
               break;
             } else if (agentDefinition.name === "mathsExitQuiz") {
               invariant(
-                customAgents.mathsExitQuizV1,
+                customAgents.mathsExitQuiz,
                 "Custom agent for maths exit quiz is required",
               );
 

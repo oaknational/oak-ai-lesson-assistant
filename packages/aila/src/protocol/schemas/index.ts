@@ -8,9 +8,7 @@
 
 // Quiz schemas (all versions and conversion logic)
 export * from "./quiz";
-export * from "./quiz/rawQuiz";
 export * from "./quiz/conversion/quizV1ToV2";
-export * from "./quiz/conversion/rawQuizIngest";
 
 // Re-export common types for backward compatibility
 export type {

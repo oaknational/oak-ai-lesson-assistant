@@ -140,7 +140,7 @@ function renderArray(key: string, value: readonly unknown[]): string {
   }
 
   if (typeof value[0] === "object") {
-    if (key === "starterQuizV1" || key === "exitQuizV1") {
+    if (key === "starterQuiz" || key === "exitQuiz") {
       return organiseAnswersAndDistractors(value as QuizV1Optional);
     }
 

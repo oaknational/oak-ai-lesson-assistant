@@ -1,4 +1,4 @@
-export const exitQuizV1Instructions = ({
+export const exitQuizInstructions = ({
   identity,
   quizQuestionDesignInstructions,
 }: {

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "@jest/globals";
 
 import type { QuizV1, QuizV1Question } from "..";
 import {
@@ -21,9 +21,9 @@ describe("V1 to V2 Quiz Conversion", () => {
 
       expect(result).toEqual({
         questionType: "multiple-choice",
-        questionStem: [{ type: "text" as const, text: "What is 2 + 2?" }],
-        answers: [[{ type: "text" as const, text: "4" }]],
-        distractors: [[{ type: "text" as const, text: "3" }], [{ type: "text" as const, text: "5" }]],
+        questionStem: "What is 2 + 2?",
+        answers: ["4"],
+        distractors: ["3", "5"],
         feedback: undefined,
         hint: undefined,
       });
@@ -64,9 +64,9 @@ describe("V1 to V2 Quiz Conversion", () => {
         questions: [
           {
             questionType: "multiple-choice" as const,
-            questionStem: [{ type: "text" as const, text: "Q1" }],
-            answers: [[{ type: "text" as const, text: "A" }]],
-            distractors: [[{ type: "text" as const, text: "B" }]],
+            questionStem: "Q1",
+            answers: ["A"],
+            distractors: ["B"],
             feedback: undefined,
             hint: undefined,
           },
@@ -87,9 +87,9 @@ describe("V1 to V2 Quiz Conversion", () => {
         questions: [
           {
             questionType: "multiple-choice" as const,
-            questionStem: [{ type: "text" as const, text: "Q1" }],
-            answers: [[{ type: "text" as const, text: "A" }]],
-            distractors: [[{ type: "text" as const, text: "B" }], [{ type: "text" as const, text: "C" }]],
+            questionStem: "Q1",
+            answers: ["A"],
+            distractors: ["B", "C"],
             feedback: undefined,
             hint: undefined,
           },
@@ -111,7 +111,7 @@ describe("V1 to V2 Quiz Conversion", () => {
 
       const result = ensureQuizV2Compatible(v1Quiz);
       expect(result.questions[0]?.questionType).toBe("multiple-choice");
-      expect(result.questions[0]?.questionStem).toEqual([{ type: "text" as const, text: "What is 2 + 2?" }]);
+      expect(result.questions[0]?.questionStem).toBe("What is 2 + 2?");
     });
 
     it("should handle empty quizzes gracefully", () => {
