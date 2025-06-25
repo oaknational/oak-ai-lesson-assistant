@@ -4,19 +4,12 @@ import { redirect } from "next/navigation";
 
 import { AilaStart } from "@/components/AppComponents/Chat/aila-start";
 import Layout from "@/components/AppComponents/Layout";
-import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
-export default async function IndexPage() {
+export default function IndexPage() {
   const clerkAuthentication = auth();
   const { userId }: { userId: string | null } = clerkAuthentication;
   if (!userId) {
     redirect("/sign-in?next=/aila");
-  }
-
-  const canSeeAM = await serverSideFeatureFlag("additional-materials");
-
-  if (!canSeeAM) {
-    redirect("/");
   }
 
   return (
