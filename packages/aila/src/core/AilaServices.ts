@@ -11,11 +11,18 @@ import type {
 } from "../features/types";
 import type {
   MessagePart,
+  JsonPatchDocument,
   ValidPatchDocument,
+} from "../protocol/jsonPatchProtocol";
+import {
+  JsonPatchDocumentOptional,
+  PatchQuiz,
 } from "../protocol/jsonPatchProtocol";
 import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
+  LooseLessonPlan,
+  Quiz,
 } from "../protocol/schema";
 import type { Message } from "./chat";
 import type { AilaDocumentContent } from "./document/types";
@@ -54,6 +61,12 @@ export interface AilaChatService {
   loadChat({ store }: { store: string }): Promise<void>;
   addMessage(message: Message): void;
   startStreaming(abortController?: AbortController): ReadableStream;
+}
+
+export interface AilaQuizService {
+  generateMathsExitQuizPatch(
+    lessonPlan: LooseLessonPlan,
+  ): Promise<JsonPatchDocument>;
 }
 
 export interface AilaServices {
