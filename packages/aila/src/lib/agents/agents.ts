@@ -205,10 +205,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
   exitQuiz: {
     type: "prompt",
     name: "exitQuiz",
-    prompt: exitQuizInstructions({
-      identity,
-      quizQuestionDesignInstructions,
-    }),
+    prompt: exitQuizInstructions({ identity, quizQuestionDesignInstructions }),
     schemaForLLM: QuizV1SchemaWithoutLength,
     schemaStrict: QuizV1SchemaStrictMax6Schema,
     extractRagData: (lp) => JSON.stringify(lp.exitQuiz),

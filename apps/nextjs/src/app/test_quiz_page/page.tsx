@@ -1,7 +1,7 @@
 import {
   type RawQuiz,
   keysToCamelCase,
-} from "@oakai/aila/src/protocol/rawQuizSchema";
+} from "@oakai/aila/src/protocol/schemas/quiz/rawQuiz";
 import { isOakEmail } from "@oakai/core/src/utils/isOakEmail";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";

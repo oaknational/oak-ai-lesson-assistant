@@ -36,9 +36,9 @@ import type { SearchResponseBody } from "../types";
 const log = aiLogger("aila:quiz");
 
 // Base abstract class
-// QuizV1 generator takes a lesson plan and returns a quiz object.
-// QuizV1 rerankers take a lesson plan and returns a list of quiz objects ranked by suitability.
-// QuizV1 selectors take a list of quiz objects and rankings and select the best one according to some criteria or logic defined by a rating function.
+// Quiz generator takes a lesson plan and returns a quiz object.
+// Quiz rerankers take a lesson plan and returns a list of quiz objects ranked by suitability.
+// Quiz selectors take a list of quiz objects and rankings and select the best one according to some criteria or logic defined by a rating function.
 export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   protected client: Client;
   protected cohere: CohereClient;

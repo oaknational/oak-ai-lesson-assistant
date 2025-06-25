@@ -5,7 +5,6 @@ import {
   convertQuizV1QuestionToV2,
   convertQuizV1ToV2,
   detectQuizVersion,
-  ensureQuizV2Compatible,
 } from "./quizV1ToV2";
 
 describe("V1 to V2 Quiz Conversion", () => {
@@ -75,48 +74,7 @@ describe("V1 to V2 Quiz Conversion", () => {
 
       expect(detectQuizVersion(v1Quiz)).toBe("v1");
       expect(detectQuizVersion(v2Quiz)).toBe("v2");
-      expect(detectQuizVersion([])).toBe("unknown");
-    });
-  });
-
-
-  describe("Backward compatibility", () => {
-    it("should pass through V2 quiz when ensuring V2 compatibility", () => {
-      const v2Quiz = {
-        version: "v2" as const,
-        questions: [
-          {
-            questionType: "multiple-choice" as const,
-            questionStem: "Q1",
-            answers: ["A"],
-            distractors: ["B", "C"],
-            feedback: undefined,
-            hint: undefined,
-          },
-        ],
-      };
-
-      const result = ensureQuizV2Compatible(v2Quiz);
-      expect(result).toEqual(v2Quiz);
-    });
-
-    it("should convert V1 quiz to V2 when ensuring V2 compatibility", () => {
-      const v1Quiz: QuizV1 = [
-        {
-          question: "What is 2 + 2?",
-          answers: ["4"],
-          distractors: ["3", "5"],
-        },
-      ];
-
-      const result = ensureQuizV2Compatible(v1Quiz);
-      expect(result.questions[0]?.questionType).toBe("multiple-choice");
-      expect(result.questions[0]?.questionStem).toBe("What is 2 + 2?");
-    });
-
-    it("should handle empty quizzes gracefully", () => {
-      expect(ensureQuizV2Compatible([])).toEqual({ version: "v2", questions: [] });
-      expect(detectQuizVersion([])).toBe("unknown");
+      expect(detectQuizVersion([])).toBe("v1"); // Empty array is still V1 format
     });
   });
 });

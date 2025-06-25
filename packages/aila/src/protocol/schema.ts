@@ -77,8 +77,6 @@ export type MisconceptionsOptional = z.infer<
 >;
 
 // ********** QUIZ SCHEMAS **********
-// Quiz schemas have been moved to schemas/quiz/ subfolder for better organization
-// Export all quiz-related types and schemas from there
 export * from "./schemas/quiz";
 
 // ********** EXPLANATION **********
@@ -511,7 +509,6 @@ export type LessonPlanSectionWhileStreaming =
   | string[]
   | number
   | NonNullable<RawQuiz[]>;
-
 
 export const CompletedLessonPlanSchemaWithoutLength = z.object({
   title: LessonTitleSchema,

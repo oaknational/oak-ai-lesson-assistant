@@ -15,11 +15,11 @@ import type {
   StemObject,
   StemTextObject,
   TextItem,
-} from "@oakai/aila/src/protocol/rawQuizSchema";
+} from "@oakai/aila/src/protocol/schemas/quiz/rawQuiz";
 import {
   rawQuizQuestionSchema,
   rawQuizSchema,
-} from "@oakai/aila/src/protocol/rawQuizSchema";
+} from "@oakai/aila/src/protocol/schemas/quiz/rawQuiz";
 
 // Re-export everything
 export type {

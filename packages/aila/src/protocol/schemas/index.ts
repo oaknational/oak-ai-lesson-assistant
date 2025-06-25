@@ -2,8 +2,7 @@
  * Protocol schemas index
  *
  * This module provides all protocol-related schemas organized by functionality:
- * - Quiz schemas (V1, V2, Raw Oak, Bridge logic)
- * - Other schemas can be added here as they are extracted
+ * - Quiz schemas (V1, V2, Raw Oak)
  */
 
 // Quiz schemas (all versions and conversion logic)

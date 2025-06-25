@@ -32,42 +32,6 @@ export function convertQuizV1ToV2(quizV1: QuizV1): QuizV2 {
   };
 }
 
-/**
- * Safely convert any quiz data to V2 format for enhanced functionality
- * Handles both V1 (conversion) and V2 (passthrough) inputs
- */
-export function ensureQuizV2Compatible(quiz: QuizV1 | QuizV2): QuizV2 {
-  // Check if it's already V2 format with version field
-  if (
-    typeof quiz === "object" &&
-    quiz !== null &&
-    "version" in quiz &&
-    "questions" in quiz
-  ) {
-    // This is already V2 format
-    return quiz;
-  }
-
-  // Check if it's V1 format (array)
-  if (Array.isArray(quiz)) {
-    if (quiz.length === 0) return { version: "v2", questions: [] };
-
-    const firstQuestion = quiz[0];
-    if (!firstQuestion) return { version: "v2", questions: [] };
-
-    // V1 questions have 'question', 'answers', 'distractors' properties
-    if (
-      "question" in firstQuestion &&
-      "answers" in firstQuestion &&
-      "distractors" in firstQuestion
-    ) {
-      // This is V1 format, convert to V2
-      return convertQuizV1ToV2(quiz);
-    }
-  }
-
-  return { version: "v2", questions: [] };
-}
 
 /**
  * Detect the quiz schema version
@@ -75,30 +39,14 @@ export function ensureQuizV2Compatible(quiz: QuizV1 | QuizV2): QuizV2 {
 export function detectQuizVersion(
   quiz: QuizV1 | QuizV2,
 ): "v1" | "v2" | "unknown" {
-  // Check if it's V2 format with version field
-  if (
-    typeof quiz === "object" &&
-    quiz !== null &&
-    "version" in quiz &&
-    "questions" in quiz
-  ) {
+  // V2 format has version field
+  if (typeof quiz === "object" && quiz !== null && "version" in quiz) {
     return "v2";
   }
 
-  // Check if it's V1 format (array)
+  // V1 format is an array
   if (Array.isArray(quiz)) {
-    if (quiz.length === 0) return "unknown";
-
-    const firstQuestion = quiz[0];
-    if (!firstQuestion) return "unknown";
-
-    if (
-      "question" in firstQuestion &&
-      "answers" in firstQuestion &&
-      "distractors" in firstQuestion
-    ) {
-      return "v1";
-    }
+    return "v1";
   }
 
   return "unknown";
