@@ -233,7 +233,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
             you&apos;re ready, you can download everything in several editable
             formats to adapt as you like.
           </OakP>
-          <OakLink href="/aila"> Start creating with Aila</OakLink>
+          <OakLink href="/aila/tools"> Start creating with Aila</OakLink>
           <OakHeading
             id="creating-a-lesson"
             $mt={"space-between-m2"}
