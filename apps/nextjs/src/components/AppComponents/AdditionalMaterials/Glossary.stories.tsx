@@ -39,14 +39,5 @@ export const Default: Story = {
   args: {
     action: "view",
     generation: glossaryFixture,
-    handleSubmit: (refinement: string) => alert(`Refinement: ${refinement}`),
-  },
-};
-
-export const NoHandleSubmit: Story = {
-  args: {
-    action: "view",
-    generation: glossaryFixture,
-    handleSubmit: undefined,
   },
 };
