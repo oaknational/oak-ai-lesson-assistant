@@ -14,3 +14,21 @@ export const baseContext = {
   transcript: z.string().nullish(),
   message: z.string().nullish(),
 };
+
+// Shared quiz schemas
+export const quizAnswerSchema = z.object({
+  text: z.string(),
+  isCorrect: z.boolean(),
+});
+
+export const quizQuestionSchema = z.object({
+  question: z.string(),
+  options: z.array(quizAnswerSchema).length(3),
+});
+
+export const baseQuizSchema = z.object({
+  year: z.string(),
+  subject: z.string(),
+  title: z.string(),
+  questions: z.array(quizQuestionSchema).length(10),
+});

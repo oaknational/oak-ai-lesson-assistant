@@ -133,13 +133,11 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
     }
 
     if (docType === "additional-starter-quiz" && isStarterQuiz(generation)) {
-      return (
-        <Quiz action={docType} generation={generation} quizType="starter" />
-      );
+      return <Quiz action={docType} generation={generation} />;
     }
 
     if (docType === "additional-exit-quiz" && isExitQuiz(generation)) {
-      return <Quiz action={docType} generation={generation} quizType="exit" />;
+      return <Quiz action={docType} generation={generation} />;
     }
 
     return null;

@@ -1,27 +1,10 @@
 import { z } from "zod";
 
 import { refinementSchema } from "../refinement/schema";
-import { baseContext } from "../sharedSchema";
+import { baseContext, baseQuizSchema } from "../sharedSchema";
 
-// Quiz answer schema
-export const answerSchema = z.object({
-  text: z.string(),
-  isCorrect: z.boolean(),
-});
-
-// Quiz question schema
-export const questionSchema = z.object({
-  question: z.string(),
-  options: z.array(answerSchema).length(3),
-});
-
-// Quiz schema
-export const starterQuizSchema = z.object({
-  year: z.string(),
-  subject: z.string(),
-  title: z.string(),
-  questions: z.array(questionSchema).length(10),
-});
+// Starter quiz schema (uses shared base schema)
+export const starterQuizSchema = baseQuizSchema;
 
 // Context schema for starter quiz generation
 export const starterQuizContextSchema = z.object({
