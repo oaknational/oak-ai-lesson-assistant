@@ -7,10 +7,10 @@ import { type ZodType, type z } from "zod";
 import type { PartialLessonPlanFieldKeyArray } from "../partialLessonPlan/schema";
 import { additionalMaterialsConfigMap } from "./configSchema";
 import {
-  type AllowedReadingAgeRefinement,
-  readingAgeRefinement,
-  readingAgeRefinementMap,
-} from "./glossary/schema";
+  type AllowedRefinements,
+  refinements,
+  refinementMap,
+} from "./refinement/schema";
 
 // -----------------------
 //  Subjects Configuration
@@ -104,10 +104,10 @@ export type BaseResourceTypeConfig = {
 };
 
 const readingAgeRefinementOptions: RefinementOption[] = Array.from(
-  readingAgeRefinement,
-).map((id: AllowedReadingAgeRefinement) => ({
+  refinements,
+).map((id: AllowedRefinements) => ({
   id,
-  label: readingAgeRefinementMap[id],
+  label: refinementMap[id],
   value: id,
 }));
 

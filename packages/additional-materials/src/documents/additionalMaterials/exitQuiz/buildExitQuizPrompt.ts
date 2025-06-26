@@ -1,5 +1,6 @@
 import type { Action, ContextByMaterialType } from "../configSchema";
 import { getLessonDetails, language } from "../promptHelpers";
+import { refinementMap } from "../refinement/schema";
 
 export const buildExitQuizPrompt = (
   context: ContextByMaterialType["additional-exit-quiz"],
@@ -7,7 +8,7 @@ export const buildExitQuizPrompt = (
 ) => {
   const { lessonPlan } = context;
 
-  if (action === "refine") {
+  if (context.refinement) {
     return refineExitQuizPrompt(context);
   }
 
@@ -71,15 +72,19 @@ ${language}
 const refineExitQuizPrompt = (
   context: ContextByMaterialType["additional-exit-quiz"],
 ) => {
-  const { lessonPlan, previousOutput, message } = context;
-
+  const { lessonPlan, previousOutput } = context;
+  const userRequest =
+    context.refinement &&
+    context.refinement
+      .map((r) => (r.type === "custom" ? r.payload : refinementMap[r.type]))
+      .join("\n");
   return `Modify the following exit quiz based on user feedback.
 
 **Previous Output**:  
 ${JSON.stringify(previousOutput, null, 2)}
 
 **User Request**:  
-${message}
+${userRequest}
 
 Adapt the quiz to reflect the request while ensuring it aligns with the following lesson details:
 

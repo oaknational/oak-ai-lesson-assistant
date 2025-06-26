@@ -1,13 +1,13 @@
-import type { Action, ContextByMaterialType } from "../configSchema";
+import type { ContextByMaterialType } from "../configSchema";
 import { getLessonDetails, language } from "../promptHelpers";
+import { refinementMap } from "../refinement/schema";
 
 export const buildStarterQuizPrompt = (
   context: ContextByMaterialType["additional-starter-quiz"],
-  action: Action,
 ) => {
   const { lessonPlan } = context;
 
-  if (action === "refine") {
+  if (context.refinement) {
     return refineStarterQuizPrompt(context);
   }
 
@@ -64,15 +64,19 @@ AVOID:
 const refineStarterQuizPrompt = (
   context: ContextByMaterialType["additional-starter-quiz"],
 ) => {
-  const { lessonPlan, previousOutput, message } = context;
-
+  const { lessonPlan, previousOutput } = context;
+  const userRequest =
+    context.refinement &&
+    context.refinement
+      .map((r) => (r.type === "custom" ? r.payload : refinementMap[r.type]))
+      .join("\n");
   return `Modify the following starter quiz based on user feedback.
 
 **Previous Output**:  
 ${JSON.stringify(previousOutput, null, 2)}
 
 **User Request**:  
-${message}
+${userRequest}
 
 Adapt the quiz to reflect the request while ensuring it aligns with the following lesson details:
 

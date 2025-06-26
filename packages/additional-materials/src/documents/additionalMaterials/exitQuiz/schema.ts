@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+import { LessonPlanSchema } from "../../../../../aila/src/protocol/schema";
+import { refinementSchema } from "../refinement/schema";
+
 // Quiz answer schema
 export const answerSchema = z.object({
   text: z.string(),
@@ -20,39 +23,19 @@ export const exitQuizSchema = z.object({
   questions: z.array(questionSchema).length(10),
 });
 
-// Generic lesson plan schema for context
-const genericLessonPlanSchema = z
-  .object({
-    title: z.string(),
-    keyStage: z.string(),
-    subject: z.string(),
-    priorKnowledge: z.any().optional(),
-    keywords: z.any().optional(),
-    learningOutcome: z.any().optional(),
-    misconceptions: z.any().optional(),
-  })
-  .passthrough();
-
 // Context schema for exit quiz generation
 export const exitQuizContextSchema = z.object({
-  lessonPlan: genericLessonPlanSchema,
+  lessonPlan: LessonPlanSchema,
   previousOutput: exitQuizSchema.nullish(),
   options: z.any().nullish(),
-  refinement: z.any().nullish(),
+  refinement: z.array(refinementSchema).nullish(),
   message: z.string().nullish(),
 });
 
-// Type guard function for type checking
-export function isExitQuiz(
-  data: unknown,
-): data is z.infer<typeof exitQuizSchema> {
-  try {
-    exitQuizSchema.parse(data);
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
-
 // Export type
 export type ExitQuiz = z.infer<typeof exitQuizSchema>;
+
+export const isExitQuiz = (data: unknown): data is ExitQuiz => {
+  const result = exitQuizSchema.safeParse(data);
+  return result.success;
+};
