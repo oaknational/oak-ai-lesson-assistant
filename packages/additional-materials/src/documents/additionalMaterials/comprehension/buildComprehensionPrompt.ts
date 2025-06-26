@@ -14,7 +14,10 @@ export const buildComprehensionPrompt = (
   return `
 TASK: Make a COMPREHENSION TASK for a class of pupils in a UK school. 
 
-You should make the COMPREHENSION TASK appropriate for the age of pupils in ${lessonPlan.keyStage || ""} and the subject ${lessonPlan.subject || ""}. 
+You should make the COMPREHENSION TASK appropriate for the age of pupils in ${lessonPlan.keyStage ?? ""} and the subject ${lessonPlan.subject ?? ""}. 
+
+**Lesson Details**:
+${getLessonDetails(lessonPlan)}
 
 PURPOSE: Pupils will use the comprehension text and use it to answer the questions. This should enable them to understand the content of the lesson and achieve the KEY LEARNING POINTS, LEARNING CYCLE OUTCOMES and LEARNING OUTCOME.
 
@@ -25,20 +28,7 @@ PURPOSE: Pupils will use the comprehension text and use it to answer the questio
 
 The COMPREHENSION TASK should be structured and include all the following parts and should match the given schema:
 
-Lesson title: ${lessonPlan.title || ""}
-
-Year group: ${lessonPlan.keyStage ? lessonPlan.keyStage.replace("key-stage-", "") : ""}
-
-Subject: ${lessonPlan.subject || ""}
-
 Instructions (Read the text carefully and use it to answer the questions below)
-
-**${
-    Array.isArray(lessonPlan.learningCycles) &&
-    lessonPlan.learningCycles.length > 0
-      ? lessonPlan.learningCycles[0]
-      : "Main Topic"
-  }**
 
 [Comprehension text 1 - 500-600 words with clearly defined paragraphs separated by blank lines] 
 
@@ -141,8 +131,7 @@ For each LEARNING CYCLE, provide the comprehension answers.
 
 [answer 10]
 
-**Lesson Details**:
-${getLessonDetails(lessonPlan)}
+
   `;
 };
 
@@ -150,11 +139,9 @@ const refineComprehensionPrompt = (
   context: ContextByMaterialType["additional-comprehension"],
 ) => {
   const { lessonPlan, previousOutput } = context;
-  const userRequest =
-    context.refinement &&
-    context.refinement
-      .map((r) => (r.type === "custom" ? r.payload : refinementMap[r.type]))
-      .join("\n");
+  const userRequest = context.refinement
+    ?.map((r) => (r.type === "custom" ? r.payload : refinementMap[r.type]))
+    .join("\n");
   return `Modify the following comprehension task based on user feedback.
 
 **Previous Output**:  

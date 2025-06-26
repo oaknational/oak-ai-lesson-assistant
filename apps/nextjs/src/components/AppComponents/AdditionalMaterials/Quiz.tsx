@@ -5,7 +5,6 @@ import { OakBox, OakFlex, OakP, OakSpan } from "@oaknational/oak-components";
 type QuizProps = {
   action: string;
   generation: StarterQuizType;
-  quizType: "starter" | "exit";
 };
 
 export const Quiz = ({ generation }: QuizProps) => {

@@ -8,7 +8,6 @@ export const Glossary = ({
 }: {
   action: string;
   generation: GlossarySchema;
-  handleSubmit?: (refinement: string) => void;
 }) => {
   if (!generation || !action) {
     return null;

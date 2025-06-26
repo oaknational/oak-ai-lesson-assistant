@@ -67,16 +67,13 @@ const refineExitQuizPrompt = (
   context: ContextByMaterialType["additional-exit-quiz"],
 ) => {
   const { lessonPlan, previousOutput } = context;
-  const userRequest =
-    context.refinement &&
-    context.refinement
-      .map((r) => (r.type === "custom" ? r.payload : refinementMap[r.type]))
-      .join("\n");
+  const userRequest = context.refinement
+    ?.map((r) => (r.type === "custom" ? r.payload : refinementMap[r.type]))
+    .join("\n");
   return `Modify the following exit quiz based on user feedback.
 
 **Previous Output**:  
 ${JSON.stringify(previousOutput, null, 2)}
-
 
 **User Request**:  
 ${userRequest}

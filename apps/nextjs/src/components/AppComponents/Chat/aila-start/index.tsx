@@ -16,7 +16,6 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import ChatPanelDisclaimer from "../chat-panel-disclaimer";
 import EmptyScreenAccordion from "../empty-screen-accordion";
-import { createStartingPromptFromSearchParams } from "./search-params-utils";
 
 export const exampleMessages = [
   {

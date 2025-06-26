@@ -34,7 +34,7 @@ export const ComprehensionTask = ({
         {generation.comprehension.text.split("\n\n").map((paragraph, index) => (
           <OakP
             $font="body-2"
-            key={`paragraph-${index}`}
+            key={`${paragraph.trim().slice(0, 8)}-${index}`}
             $mb="space-between-xs"
           >
             {paragraph.trim()}
