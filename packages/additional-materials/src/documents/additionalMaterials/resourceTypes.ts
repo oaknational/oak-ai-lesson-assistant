@@ -93,7 +93,7 @@ export type BaseResourceTypeConfig = {
   displayName: string;
   description: string;
   refinementOptions: RefinementOption[];
-  analyticPropertyName: string;
+  analyticPropertyName: "comprehension task" | "exit quiz" | "glossary" | "starter quiz";
   isAvailable: boolean;
   systemMessage: () => string;
   schema: ZodType;
@@ -178,7 +178,7 @@ export const resourceTypesConfig: Record<
 
     // Frontend config
     id: "additional-exit-quiz",
-    analyticPropertyName: "starter quiz",
+    analyticPropertyName: "exit quiz",
     displayName: "Exit quiz",
     description:
       "Multiple choice questions to check what pupils have learnt in the lesson",
