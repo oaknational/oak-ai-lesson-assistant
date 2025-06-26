@@ -1,10 +1,9 @@
-import type { Action, ContextByMaterialType } from "../configSchema";
+import type { ContextByMaterialType } from "../configSchema";
 import { getLessonDetails, language } from "../promptHelpers";
 import { refinementMap } from "../refinement/schema";
 
 export const buildComprehensionPrompt = (
   context: ContextByMaterialType["additional-comprehension"],
-  action: Action,
 ) => {
   const { lessonPlan } = context;
 

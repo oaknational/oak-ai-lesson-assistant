@@ -137,7 +137,6 @@ export const additionalMaterialsRouter = router({
   generateAdditionalMaterial: additionalMaterialUserBasedRateLimitProcedure
     .input(
       z.object({
-        action: z.string(),
         context: z.unknown(),
         documentType: z.string(),
         resourceId: z.string().nullish(),
@@ -192,7 +191,6 @@ export const additionalMaterialsRouter = router({
           log.error("Failed to parse input", parsedInput.error);
           throw new ZodError(parsedInput.error.issues);
         }
-        actionEnum.parse(input.action);
 
         return await generateAdditionalMaterial({
           prisma: ctx.prisma,
