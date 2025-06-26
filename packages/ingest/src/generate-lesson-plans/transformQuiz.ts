@@ -1,12 +1,12 @@
-import type { Quiz } from "@oakai/aila/src/protocol/schema";
+import type { QuizV1 } from "@oakai/aila/src/protocol/schema";
 
 import { isTruthy, partition } from "remeda";
 
 import { IngestError } from "../IngestError";
 import type { OakLessonQuiz } from "../zod-schema/zodSchema";
 
-export function transformQuiz(oakQuiz: OakLessonQuiz): Quiz {
-  const quiz: Quiz = [];
+export function transformQuiz(oakQuiz: OakLessonQuiz): QuizV1 {
+  const quiz: QuizV1 = [];
 
   for (const question of oakQuiz) {
     if (question.questionType !== "multiple-choice") {

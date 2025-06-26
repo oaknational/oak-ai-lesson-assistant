@@ -9,7 +9,7 @@ import {
   type CompletedLessonPlan,
   type LessonPlanKey,
   type LooseLessonPlan,
-  type Quiz,
+  type QuizV1,
 } from "../../protocol/schema";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { agents, sectionAgentMap } from "./agents";
@@ -94,8 +94,8 @@ export async function interact({
   messageHistoryWithProtocol: { role: "user" | "assistant"; content: string }[];
   onUpdate?: InteractCallback;
   customAgents: {
-    mathsStarterQuiz?: CustomAgentAsyncFn<Quiz>;
-    mathsExitQuiz?: CustomAgentAsyncFn<Quiz>;
+    mathsStarterQuiz?: CustomAgentAsyncFn<QuizV1>;
+    mathsExitQuiz?: CustomAgentAsyncFn<QuizV1>;
     fetchRagData: CustomAgentAsyncFn<CompletedLessonPlan[]>;
   };
   relevantLessons: AilaRagRelevantLesson[] | null;

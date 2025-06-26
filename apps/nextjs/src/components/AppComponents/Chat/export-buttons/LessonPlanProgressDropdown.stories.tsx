@@ -2,7 +2,7 @@ import type {
   Cycle,
   Keyword,
   Misconception,
-  Quiz,
+  QuizV1,
 } from "@oakai/aila/src/protocol/schema";
 
 import type { Meta, StoryObj } from "@storybook/react";
@@ -175,7 +175,7 @@ function sampleKeyword(): Keyword {
   };
 }
 
-function sampleQuiz(): Quiz {
+function sampleQuiz(): QuizV1 {
   return [
     {
       question: "Sample question",
