@@ -1,9 +1,14 @@
 import { dedent } from "ts-dedent";
-import z from "zod";
+import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
-import { type RawQuiz, rawQuizSchema } from "./rawQuizSchema";
 import { minMaxText } from "./schemaHelpers";
+import {
+  type QuizV1Optional,
+  QuizV1Schema,
+  QuizV1SchemaWithoutLength,
+} from "./schemas/quiz";
+import { type RawQuiz, rawQuizSchema } from "./schemas/quiz/rawQuiz";
 
 // ********** BASED_ON **********
 export const BASED_ON_DESCRIPTIONS = {
@@ -71,44 +76,8 @@ export type MisconceptionsOptional = z.infer<
   typeof MisconceptionsOptionalSchema
 >;
 
-// ********** QUIZ **********
-
-// Needs to be changed - to adapt for LLM handling.
-
-export const QUIZ_DESCRIPTIONS = {
-  question: "The question to be asked in the quiz.",
-  answers: "The correct answer. This should be an array of only one item.",
-  distractors: "A set of distractors. This must be an array with two items.",
-} as const as {
-  question: string;
-  answers: string;
-  distractors: string;
-};
-
-export const QuizQuestionSchemaWithoutLength = z.object({
-  question: z.string().describe(QUIZ_DESCRIPTIONS.question),
-  answers: z.array(z.string()).describe(QUIZ_DESCRIPTIONS.answers),
-  distractors: z.array(z.string()).describe(QUIZ_DESCRIPTIONS.distractors),
-});
-
-// TODO: MG - Double check this is allowable.
-export const QuizQuestionSchema = QuizQuestionSchemaWithoutLength; //.extend({
-//   answers: QuizQuestionSchemaWithoutLength.shape.answers.length(1),
-//   distractors: QuizQuestionSchemaWithoutLength.shape.distractors.length(2),
-// });
-
-export const QuizQuestionOptionalSchema = QuizQuestionSchema.partial();
-
-export type QuizQuestion = z.infer<typeof QuizQuestionSchema>;
-export type QuizQuestionOptional = z.infer<typeof QuizQuestionOptionalSchema>;
-
-export const QuizSchema = z.array(QuizQuestionSchema);
-export const QuizSchemaWithoutLength = z.array(QuizQuestionSchemaWithoutLength);
-export const QuizSchemaStrictMax6Schema = QuizSchema.min(1).max(6);
-export const QuizOptionalSchema = z.array(QuizQuestionOptionalSchema);
-
-export type Quiz = z.infer<typeof QuizSchema>;
-export type QuizOptional = z.infer<typeof QuizOptionalSchema>;
+// ********** QUIZ SCHEMAS **********
+export * from "./schemas/quiz";
 
 // ********** EXPLANATION **********
 export const EXPLANATION_DESCRIPTIONS = {
@@ -117,10 +86,10 @@ export const EXPLANATION_DESCRIPTIONS = {
   In the spoken explanation, give guidance to the teacher on which key points should be covered in their explanation to students.
   This should be teacher facing and not include a script or narrative for the teacher.
   Should bear in mind the following requirements:
-  - teacher facing 
-  - outline the key points that the teacher should address during their explanation 
+  - teacher facing
+  - outline the key points that the teacher should address during their explanation
   - include as much detail as possible
-  - written in bullet points  
+  - written in bullet points
   - break concepts into small, manageable chunks
   - if appropriate, the method for explanation should be included for e.g. demonstrate to pupils how to set up the apparatus for the experiment or model how to complete the pass for students or use a bar model to show the addition of these three numbers.
   - abstract concepts are made concrete
@@ -197,9 +166,9 @@ export const CYCLE_DESCRIPTIONS = {
   Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
   checkForUnderstanding: dedent`Two or more questions to check that students have understood the content of this cycle.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
-  practice: dedent`The activity that the pupils are asked to do to practice what they have learnt. 
-    Should be pupil facing and include all details that the pupils need to complete the task. 
-    Should be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle. 
+  practice: dedent`The activity that the pupils are asked to do to practice what they have learnt.
+    Should be pupil facing and include all details that the pupils need to complete the task.
+    Should be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle.
     Should include calculations if this is appropriate.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
   feedback: dedent`Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task.
@@ -275,10 +244,10 @@ export type Keyword = z.infer<typeof KeywordSchema>;
 
 // ********** LESSON PLAN **********
 export const LESSON_PLAN_DESCRIPTIONS = {
-  title: dedent`The title of the lesson. Lesson titles should be a unique and succinct statement, not a question. 
-    Can include special characters if appropriate but should not use & sign instead of 'and'. 
+  title: dedent`The title of the lesson. Lesson titles should be a unique and succinct statement, not a question.
+    Can include special characters if appropriate but should not use & sign instead of 'and'.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.
-    The title should be in sentence case starting with a capital letter and not end with a full stop. 
+    The title should be in sentence case starting with a capital letter and not end with a full stop.
     ${minMaxText({
       max: 80,
       entity: "characters",
@@ -290,38 +259,38 @@ export const LESSON_PLAN_DESCRIPTIONS = {
   topic:
     "A topic that this lesson would sit within, which might cover several lessons with a shared theme.",
   learningOutcome: dedent`What the pupils will have learnt by the end of the lesson.
-    Should start with 'I can' and outline what pupils should be able to know/and or be able to do by the end of the lesson. 
-    Written in age appropriate language. 
-    May include a command word. 
-    Written in the PUPIL voice. 
+    Should start with 'I can' and outline what pupils should be able to know/and or be able to do by the end of the lesson.
+    Written in age appropriate language.
+    May include a command word.
+    Written in the PUPIL voice.
     ${minMaxText({ max: 190, entity: "characters" })}`,
-  learningCycles: dedent`An array of learning cycle outcomes. 
-    Should include a command word. 
-    Should be succinct. 
-    Should outline what pupils should be able to do/understand/know by the end of the learning cycle. 
-    Written in the TEACHER_TO_PUPIL_SLIDES voice. 
+  learningCycles: dedent`An array of learning cycle outcomes.
+    Should include a command word.
+    Should be succinct.
+    Should outline what pupils should be able to do/understand/know by the end of the learning cycle.
+    Written in the TEACHER_TO_PUPIL_SLIDES voice.
     ${minMaxText({
       min: 1,
       max: 3,
       entity: "elements",
     })}`,
-  priorKnowledge: dedent`An array of prior knowledge statements, each being a succinct sentence. 
-    Written in the EXPERT_TEACHER voice. 
+  priorKnowledge: dedent`An array of prior knowledge statements, each being a succinct sentence.
+    Written in the EXPERT_TEACHER voice.
     ${minMaxText({
       min: 1,
       max: 5,
       entity: "elements",
     })}`,
-  keyLearningPoints: dedent`An array of learning points, each being a succinct sentence. 
+  keyLearningPoints: dedent`An array of learning points, each being a succinct sentence.
     ${minMaxText({
       min: 3,
       max: 5,
       entity: "elements",
     })}`,
-  starterQuiz: dedent`The starter quiz for the lesson, which tests prior knowledge only, ignoring the content that is delivered in the lesson. 
-    Obey the rules as specified in the STARTER QUIZ section of the lesson plan guidance. 
+  starterQuiz: dedent`The starter quiz for the lesson, which tests prior knowledge only, ignoring the content that is delivered in the lesson.
+    Obey the rules as specified in the STARTER QUIZ section of the lesson plan guidance.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
-  exitQuiz: dedent`The exit quiz for the lesson, which tests the content that is delivered in the lesson. 
+  exitQuiz: dedent`The exit quiz for the lesson, which tests the content that is delivered in the lesson.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
   additionalMaterials:
     "Any additional materials or notes that are required or useful for the lesson",
@@ -391,27 +360,27 @@ export const CompletedLessonPlanSchema = z.object({
   title: LessonTitleSchema,
   keyStage: KeyStageSchema,
   subject: SubjectSchema,
-  topic: TopicSchema,
+  topic: TopicSchema.nullable(),
   learningOutcome: LearningOutcomeSchema,
   learningCycles: LearningCyclesSchema,
   priorKnowledge: PriorKnowledgeSchema,
   keyLearningPoints: KeyLearningPointsSchema,
   misconceptions: MisconceptionsSchema,
   keywords: KeywordsSchema,
-  basedOn: BasedOnSchema.optional(),
-  starterQuiz: QuizSchema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
+  basedOn: BasedOnSchema.nullish(),
+  starterQuiz: QuizV1Schema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
   cycle1: CycleSchema.describe("The first learning cycle"),
   cycle2: CycleSchema.describe("The second learning cycle"),
   cycle3: CycleSchema.describe("The third learning cycle"),
-  exitQuiz: QuizSchema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
-  additionalMaterials: AdditionalMaterialsSchema,
+  exitQuiz: QuizV1Schema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+  additionalMaterials: AdditionalMaterialsSchema.nullable(),
 });
 
 export type CompletedLessonPlan = z.infer<typeof CompletedLessonPlanSchema>;
 
 export const LessonPlanSchema = CompletedLessonPlanSchema.partial().extend({
-  _experimental_starterQuizMathsV0: QuizSchema.optional(),
-  _experimental_exitQuizMathsV0: QuizSchema.optional(),
+  _experimental_starterQuizMathsV0: QuizV1Schema.optional(),
+  _experimental_exitQuizMathsV0: QuizV1Schema.optional(),
   _experimental_starterQuizMathsV1: rawQuizSchema.optional(),
   _experimental_exitQuizMathsV1: rawQuizSchema.optional(),
 });
@@ -534,27 +503,12 @@ export type LessonPlanSectionWhileStreaming =
   | BasedOnOptional
   | MisconceptionsOptional
   | KeywordOptional[]
-  | QuizOptional
+  | QuizV1Optional
   | CycleOptional
   | string
   | string[]
   | number
   | NonNullable<RawQuiz[]>;
-
-// These are here due to zod refusing to infer the type of "add"
-export const quizPathSchema = z.union([
-  z.literal("/starterQuiz"),
-  z.literal("/exitQuiz"),
-]);
-
-export type QuizPath = z.infer<typeof quizPathSchema>;
-
-export const quizOperationTypeSchema = z.union([
-  z.literal("add"),
-  z.literal("replace"),
-]);
-
-export type QuizOperationType = z.infer<typeof quizOperationTypeSchema>;
 
 export const CompletedLessonPlanSchemaWithoutLength = z.object({
   title: LessonTitleSchema,
@@ -567,12 +521,14 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   keyLearningPoints: KeyLearningPointsSchema,
   misconceptions: MisconceptionsSchemaWithoutLength,
   keywords: KeywordsSchemaWithoutLength,
-  starterQuiz: QuizSchemaWithoutLength.describe(
+  starterQuiz: QuizV1SchemaWithoutLength.describe(
     LESSON_PLAN_DESCRIPTIONS.starterQuiz,
   ),
   cycle1: CycleSchemaWithoutLength.describe("The first learning cycle"),
   cycle2: CycleSchemaWithoutLength.describe("The second learning cycle"),
   cycle3: CycleSchemaWithoutLength.describe("The third learning cycle"),
-  exitQuiz: QuizSchemaWithoutLength.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+  exitQuiz: QuizV1SchemaWithoutLength.describe(
+    LESSON_PLAN_DESCRIPTIONS.exitQuiz,
+  ),
   additionalMaterials: AdditionalMaterialsSchema,
 });

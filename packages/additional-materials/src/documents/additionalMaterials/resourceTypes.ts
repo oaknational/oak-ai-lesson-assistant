@@ -29,7 +29,7 @@ export const subjectNameMap: Partial<Record<SubjectSlugs, string>> = {
   music: "Music",
   citizenship: "Citizenship",
   french: "French",
-  "physical-education": "Physical Education",
+  "physical-education": "Physical education",
   history: "History",
   latin: "Latin",
   "religious-education": "Religious education",
@@ -120,7 +120,7 @@ export const resourceTypesConfig = {
     id: "additional-glossary",
     analyticPropertyName: "glossary",
     displayName: "Glossary",
-    description: "Additional lesson vocabulary with pupil friendly definitions",
+    description: "Lesson vocabulary with pupil friendly definitions",
     refinementOptions: readingAgeRefinementOptions,
     isAvailable: true,
     lessonParts: [
@@ -137,9 +137,9 @@ export const resourceTypesConfig = {
 
     // Frontend config
     id: "additional-comprehension",
+    displayName: "Comprehension task",
+    description: "Comprehension text with accompanying questions",
     analyticPropertyName: "comprehension task",
-    displayName: "Comprehension tasks",
-    description: "Comprehension tasks which can be adapted for pupils",
     refinementOptions: readingAgeRefinementOptions,
     isAvailable: true,
     lessonParts: [
@@ -157,8 +157,8 @@ export const resourceTypesConfig = {
     // Frontend config
     id: "additional-starter-quiz",
     displayName: "Starter quiz",
+    description: "Multiple choice questions to check pupils' prior knowledge",
     analyticPropertyName: "starter quiz",
-    description: "A multiple-choice quiz to assess pupils' prior knowledge",
     refinementOptions: readingAgeRefinementOptions,
     isAvailable: true,
     lessonParts: [
@@ -179,7 +179,7 @@ export const resourceTypesConfig = {
     analyticPropertyName: "starter quiz",
     displayName: "Exit quiz",
     description:
-      "A multiple-choice quiz to assess pupils' learning from the lesson",
+      "Multiple choice questions to check what pupils have learnt in the lesson",
     refinementOptions: readingAgeRefinementOptions,
     isAvailable: true,
     lessonParts: [
