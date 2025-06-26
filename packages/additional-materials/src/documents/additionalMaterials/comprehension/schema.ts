@@ -1,13 +1,7 @@
 import { z } from "zod";
 
-import { LessonPlanSchema } from "../../../../../aila/src/protocol/schema";
 import { refinementSchema } from "../refinement/schema";
-
-export const baseContext = {
-  lessonPlan: LessonPlanSchema,
-  transcript: z.string().nullish(),
-  message: z.string().nullish(),
-};
+import { baseContext } from "../sharedSchema";
 
 export const comprehensionTaskSchema = z.object({
   comprehension: z.object({
@@ -34,7 +28,6 @@ export const isComprehensionTask = (
   const result = comprehensionTaskSchema.safeParse(data);
   return result.success;
 };
-
 
 const optionsSchema = z.object({
   difficulty: z.enum(["easy", "medium", "hard"]),

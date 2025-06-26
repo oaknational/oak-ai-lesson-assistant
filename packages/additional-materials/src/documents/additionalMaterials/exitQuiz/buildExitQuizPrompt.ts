@@ -11,7 +11,6 @@ export const buildExitQuizPrompt = (
     return refineExitQuizPrompt(context);
   }
 
-  const keyStage = lessonPlan.keyStage || (lessonPlan.year as string);
   return `
 TASK: Write a 10-question MULTIPLE CHOICE EXIT QUIZ for a class of pupils in a UK school.
 
@@ -20,16 +19,12 @@ PURPOSE: This EXIT QUIZ will assess pupils' understanding of the key learning fr
 2. Identify any misconceptions that remain
 3. Highlight areas where pupils may need further support
 
-The EXIT QUIZ should be appropriate for the age of pupils in ${keyStage} and the subject ${lessonPlan.subject}. 
-
-The quiz should use the following structure:
-
-- Year group: ${keyStage}
-- Subject: ${lessonPlan.subject}
-- Lesson title: ${lessonPlan.title}
+The EXIT QUIZ should be appropriate for the age of pupils in ${lessonPlan.keyStage} and the subject ${lessonPlan.subject}. 
 
 **Lesson Details**:
 ${getLessonDetails(lessonPlan)}
+
+The quiz should use the following structure:
 
 1. [question text here - max 200 characters]
 
@@ -81,6 +76,7 @@ const refineExitQuizPrompt = (
 
 **Previous Output**:  
 ${JSON.stringify(previousOutput, null, 2)}
+
 
 **User Request**:  
 ${userRequest}

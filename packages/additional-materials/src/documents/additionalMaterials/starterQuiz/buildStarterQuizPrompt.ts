@@ -11,22 +11,17 @@ export const buildStarterQuizPrompt = (
     return refineStarterQuizPrompt(context);
   }
 
-  const keyStage = lessonPlan.keyStage || (lessonPlan.year as string);
   return `
 TASK: Write a 10-question MULTIPLE CHOICE QUIZ for a class of pupils in a UK school.
 
 PURPOSE: This QUIZ will assess pupils' understanding of the PRIOR KNOWLEDGE required for the lesson. The QUIZ is designed to enable teachers to identify gaps in knowledge for individual pupils or groups of pupils that need to be addressed before the lesson starts. Pupils who get all questions correct have good understanding of the prior knowledge and are ready to start the lesson.
 
-The QUIZ should be appropriate for the age of pupils in ${keyStage} and the subject ${lessonPlan.subject}. 
-
-The quiz should use the following structure:
-
-- Year group: ${keyStage}
-- Subject: ${lessonPlan.subject}
-- Lesson title: ${lessonPlan.title}
+The QUIZ should be appropriate for the age of pupils in ${lessonPlan.keyStage} and the subject ${lessonPlan.subject}. 
 
 **Lesson Details**:
 ${getLessonDetails(lessonPlan)}
+
+The quiz should use the following structure:
 
 1. [question text here - max 200 characters]
 

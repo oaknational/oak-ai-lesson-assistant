@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { baseContext } from "../comprehension/schema";
 import { refinementSchema } from "../refinement/schema";
+import { baseContext } from "../sharedSchema";
 
 // Output from LLM
 
@@ -23,7 +23,6 @@ export const isGlossary = (data: unknown): data is GlossarySchema => {
   const result = glossarySchema.safeParse(data);
   return result.success;
 };
-
 
 // Prompt context
 

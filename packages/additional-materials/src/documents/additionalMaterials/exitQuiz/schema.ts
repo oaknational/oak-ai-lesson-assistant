@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { LessonPlanSchema } from "../../../../../aila/src/protocol/schema";
 import { refinementSchema } from "../refinement/schema";
+import { baseContext } from "../sharedSchema";
 
 // Quiz answer schema
 export const answerSchema = z.object({
@@ -25,11 +25,10 @@ export const exitQuizSchema = z.object({
 
 // Context schema for exit quiz generation
 export const exitQuizContextSchema = z.object({
-  lessonPlan: LessonPlanSchema,
+  ...baseContext,
   previousOutput: exitQuizSchema.nullish(),
   options: z.any().nullish(),
   refinement: z.array(refinementSchema).nullish(),
-  message: z.string().nullish(),
 });
 
 // Export type
