@@ -120,7 +120,7 @@ function renderTwoKeyObjectArray(value: readonly unknown[]): string {
     .map((v) => {
       const header = v[key1] ?? "…";
       const body = v[key2] ?? "…";
-      return `### ${toSentenceCase(header)}\n\n${toSentenceCase(body)}`;
+      return `### ${toSentenceCase(header)}\n\n${body}`;
     })
     .join("\n\n");
 }
