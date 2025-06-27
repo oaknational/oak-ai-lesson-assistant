@@ -72,10 +72,7 @@ export default async function AdditionalMaterialsTestPage({
   if (!userId) {
     redirect("/sign-in?next=/aila");
   }
-  const canSeeAM = await serverSideFeatureFlag("additional-materials");
-  if (!canSeeAM) {
-    redirect("/");
-  }
+  const canUseOWALink = await serverSideFeatureFlag("additional-materials");
 
   const lessonSlug = searchParams?.lessonSlug;
   const programmeSlug = searchParams?.programmeSlug;
@@ -97,7 +94,7 @@ export default async function AdditionalMaterialsTestPage({
     id: undefined,
   };
 
-  if (lessonSlug && programmeSlug && docType) {
+  if (lessonSlug && programmeSlug && docType && canUseOWALink) {
     // Linking from OWA lesson
     try {
       // Fetch lesson data
