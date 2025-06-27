@@ -55,7 +55,7 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = (props) => {
   const error = useResourcesStore((state) => state.error);
   const source = useResourcesStore((state) => state.source);
   const { loadOwaDataToStore } = useResourcesActions();
-  // Get resource type information from configuration
+
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName ?? null;
 
@@ -91,7 +91,6 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = (props) => {
     props.id,
     props.error,
     props.lessonId,
-    stepNumber,
   ]);
 
   handleDialogSelection({

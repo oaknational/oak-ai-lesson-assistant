@@ -147,6 +147,11 @@ export async function POST(req: Request, res: NextApiResponse) {
       parsedBrowseData,
     );
 
+    log.info("Transformed owa lesson data", {
+      transformedLesson,
+      userId,
+    });
+
     try {
       const interaction = await createLessonPlanInteraction(
         { userId },

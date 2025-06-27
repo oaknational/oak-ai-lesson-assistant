@@ -1,4 +1,8 @@
+import { aiLogger } from "@oakai/logger";
+
 import type { LessonBrowseDataByKsSchema } from "./lessonOverview.schema";
+
+const log = aiLogger("additional-materials");
 
 /**
  * Checks for restricted features in browseData array.
@@ -9,8 +13,7 @@ export function checkForRestrictedFeatures(
   browseData: LessonBrowseDataByKsSchema,
 ): Response | null {
   const features = browseData.features;
-  console.log("Checking features for restrictions:", features);
-  console.log("Browse Data:", browseData);
+
   if (
     features &&
     (features["agf__geo_restricted"] === true ||
@@ -19,7 +22,12 @@ export function checkForRestrictedFeatures(
       features["agf__has_copyright_restrictions"] === true ||
       browseData.is_legacy === true)
   ) {
-    console.log("Restricted features found:", features);
+    log.error("Restricted features detected in lesson browse data", {
+      features,
+      lesson_slug: browseData.lesson_slug,
+      unit_slug: browseData.unit_slug,
+      programme_slug: browseData.programme_slug,
+    });
     return Response.json(
       {
         error:

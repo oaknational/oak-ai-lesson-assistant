@@ -1,15 +1,15 @@
 import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import { LessonPlanSchemaWhilstStreaming } from "@oakai/aila/src/protocol/schema";
+import { lessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 
 import { string, z } from "zod";
 
-import type { AdditionalMaterialsPageProps } from "@/app/aila/resources/resources-contents";
+import type { TeachingMaterialsPageProps } from "@/app/aila/tools/teaching-materials/teachingMaterialsView";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
 import { handleStoreError } from "../utils/errorHandling";
 
 const dataFromOwaSchema = z.object({
-  lesson: LessonPlanSchemaWhilstStreaming,
+  lesson: lessonPlanSchemaTeachingMaterials,
   transcript: string().optional(),
   initialStep: z.number(),
   docTypeFromQueryPrams: additionalMaterialTypeEnum,
@@ -17,14 +17,15 @@ const dataFromOwaSchema = z.object({
   lessonId: z.string(),
 });
 
-export type LoadOwaDataParams = {
-  lesson?: AdditionalMaterialsPageProps["lesson"];
-  transcript?: AdditionalMaterialsPageProps["transcript"];
-  initialStep?: AdditionalMaterialsPageProps["initialStep"];
-  docTypeFromQueryPrams?: AdditionalMaterialsPageProps["docTypeFromQueryPrams"];
-  id?: AdditionalMaterialsPageProps["id"];
-  lessonId?: string;
-};
+export type LoadOwaDataParams = Pick<
+  TeachingMaterialsPageProps,
+  | "lesson"
+  | "transcript"
+  | "initialStep"
+  | "docTypeFromQueryPrams"
+  | "id"
+  | "lessonId"
+>;
 
 export const handleLoadOwaDataToStore =
   (set: ResourcesSetter, _get: ResourcesGetter) =>
@@ -41,11 +42,23 @@ export const handleLoadOwaDataToStore =
         lessonId,
       } = parsedParams;
 
+      const parsedFormProps = z
+        .object({
+          subject: z.string(),
+          title: z.string(),
+          year: z.string(),
+        })
+        .parse({
+          subject: lesson.subject,
+          title: lesson.title,
+          year: `Year ${lesson.year}`,
+        });
+
       // Load form state data (year/subject/lesson title)
       set((state) => ({
         formState: {
           ...state.formState,
-          ...parsedParams, // @todo we should have year in here
+          ...parsedFormProps,
         },
       }));
 
