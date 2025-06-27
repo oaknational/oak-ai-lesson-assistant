@@ -1,4 +1,5 @@
 import type { LooseLessonPlan } from "../../../../aila/src/protocol/schema";
+import type { LessonPlanSchemaTeachingMaterials } from "./sharedSchema";
 
 export const getLessonTranscript = (transcript: string) => {
   return transcript;
@@ -58,10 +59,13 @@ ${distractors.map((d) => `  - ${d}`).join("\n")}
     .join("\n");
 };
 
-export const getLessonDetails = (lessonPlan: LooseLessonPlan) => {
+export const getLessonDetails = (
+  lessonPlan: LessonPlanSchemaTeachingMaterials,
+) => {
   const lines = [
     `- **Lesson title**: ${lessonPlan.title}`,
-    `- **Key Stage**: ${lessonPlan.keyStage}`,
+    `- **Key stage**: ${lessonPlan.keyStage}`,
+    `- **Year**: ${lessonPlan.year}`,
     `- **Subject**: ${lessonPlan.subject}`,
     `- **Topic**: ${lessonPlan.topic ?? "N/A"}`,
     "",
@@ -166,6 +170,19 @@ export const getKeystageFromYearGroup = (yearGroup: string) => {
   }
 
   return keyStage;
+};
+
+export const getYearGroupsFromKeyStage = (keyStage: string): number[] => {
+  const keyStageToYearGroupsMap: Record<string, number[]> = {
+    "key-stage-1": [1, 2],
+    "key-stage-2": [3, 4, 5, 6],
+    "key-stage-3": [7, 8, 9],
+    "key-stage-4": [10, 11],
+    "key-stage-5": [12, 13],
+    "higher-education": [],
+  };
+
+  return keyStageToYearGroupsMap[keyStage] ?? [];
 };
 
 export const language = `LANGUAGE 
