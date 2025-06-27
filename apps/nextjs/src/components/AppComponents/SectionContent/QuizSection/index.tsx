@@ -25,7 +25,6 @@ const MultipleChoiceQuestion = ({
     question.distractors,
   );
 
-  const answerLabels = ["a", "b", "c", "d", "e", "f"];
   const correctAnswerCount = question.answers.length;
 
   const ensureEndsWithPeriod = (text: string) => {
@@ -67,7 +66,7 @@ const MultipleChoiceQuestion = ({
               )}
             </OakBox>
             <OakP $font={answer.isCorrect ? "body-2-bold" : "body-2"}>
-              {answerLabels[index] || index + 1}) {answer.text}
+              {String.fromCharCode(97 + index)}) {answer.text}
             </OakP>
           </OakFlex>
         ))}

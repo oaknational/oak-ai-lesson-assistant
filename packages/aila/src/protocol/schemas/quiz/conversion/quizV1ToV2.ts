@@ -4,7 +4,12 @@
  * This module provides utilities to convert V1 quiz format (multiple choice only)
  * to V2 format (discriminated union supporting multiple quiz types).
  */
-import type { QuizV1, QuizV1Question, QuizV2, QuizV2Question } from "..";
+import type {
+  QuizV1,
+  QuizV1Question,
+  QuizV2,
+  QuizV2Question,
+} from "..";
 
 /**
  * Convert a V1 quiz question (MC only) to V2 format
@@ -17,7 +22,6 @@ export function convertQuizV1QuestionToV2(
     questionStem: questionV1.question,
     answers: questionV1.answers,
     distractors: questionV1.distractors,
-    feedback: undefined,
     hint: undefined,
   };
 }

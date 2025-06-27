@@ -6,14 +6,13 @@ export const QUIZ_V2_DESCRIPTIONS = {
   questionStem: "The question stem as markdown text",
   questionType: "The type of quiz question",
   answers: "The answers specific to this question type",
-  feedback: "Feedback to show after the question is answered",
   hint: "Optional hint to help students",
 } as const;
 
 // Base question schema with common fields
 export const QuizV2QuestionBaseSchema = z.object({
+  // TODO: rename to question
   questionStem: z.string().describe(QUIZ_V2_DESCRIPTIONS.questionStem),
-  feedback: z.string().optional().describe(QUIZ_V2_DESCRIPTIONS.feedback),
   hint: z.string().optional().describe(QUIZ_V2_DESCRIPTIONS.hint),
 });
 
