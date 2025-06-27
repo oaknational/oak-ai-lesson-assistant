@@ -2,6 +2,8 @@ import { createContext, useContext, useState } from "react";
 
 import { type ExtractState, type StoreApi, useStore } from "zustand";
 
+import type { AdditionalMaterialsPageProps } from "@/app/aila/resources/resources-contents";
+
 import { createResourcesStore } from "./resourcesStore";
 import type { ResourcesState } from "./resourcesStore/types";
 
@@ -17,16 +19,16 @@ export const ResourcesStoresContext = createContext<
   ResourcesStores | undefined
 >(undefined);
 
-export interface ResourcesStoresProviderProps {
+export type ResourcesStoresProviderProps = {
   children: React.ReactNode;
-}
+} & AdditionalMaterialsPageProps;
 
 export const ResourcesStoresProvider: React.FC<
   ResourcesStoresProviderProps
-> = ({ children }) => {
+> = ({ children, ...props }) => {
   const [stores] = useState(() => {
     const storesObj: ResourcesStores = {
-      resources: createResourcesStore(),
+      resources: createResourcesStore(props),
     };
     return storesObj;
   });

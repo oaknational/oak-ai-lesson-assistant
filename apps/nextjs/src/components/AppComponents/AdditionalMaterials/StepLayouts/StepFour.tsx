@@ -151,8 +151,6 @@ const StepFour = () => {
 
   return (
     <>
-      {isResourcesLoading || (!generation && <OakP>Loading...</OakP>)}
-
       {moderation?.categories && moderation.categories.length > 0 && (
         <ModerationMessage />
       )}

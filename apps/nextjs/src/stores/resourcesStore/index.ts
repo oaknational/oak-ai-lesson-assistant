@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+import type { AdditionalMaterialsPageProps } from "@/app/aila/resources/resources-contents";
+
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleCreateMaterialSession } from "./actionFunctions/handleCreateMaterialSession";
 import { handleDownload } from "./actionFunctions/handleDownload";
@@ -11,6 +13,7 @@ import {
   handleSetYear,
 } from "./actionFunctions/handleFormState";
 import { handleGenerateMaterial } from "./actionFunctions/handleGenerateMaterial";
+import { handleLoadOwaDataToStore } from "./actionFunctions/handleLoadOwaDataToStore";
 import { handleRefineMaterial } from "./actionFunctions/handleRefineMaterial";
 import { handleSetDocType } from "./actionFunctions/handleSetDocType";
 import { handleSetGeneration } from "./actionFunctions/handleSetGeneration";
@@ -67,11 +70,13 @@ const DEFAULT_STATE = {
   refinementGenerationHistory: [],
 };
 
-export const createResourcesStore = () => {
+export const createResourcesStore = (props: AdditionalMaterialsPageProps) => {
   const resourcesStore = create<ResourcesState>()((set, get) => ({
     id: null,
     ...DEFAULT_STATE,
-
+    source: props.source ?? "aila",
+    stepNumber: props.initialStep ?? 0,
+    isResourcesLoading: props.source === "owa" && props.initialStep === 3,
     actions: {
       // Setters
       setStepNumber: handleSetStepNumber(set, get),
@@ -98,6 +103,9 @@ export const createResourcesStore = () => {
       generateMaterial: handleGenerateMaterial(set, get),
       refineMaterial: handleRefineMaterial(set, get),
       downloadMaterial: handleDownload(set, get),
+
+      // OWA data loading
+      loadOwaDataToStore: handleLoadOwaDataToStore(set, get),
 
       // History management actions
       undoRefinement: handleUndoRefinement(set, get),

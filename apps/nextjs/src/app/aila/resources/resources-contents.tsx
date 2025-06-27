@@ -1,9 +1,10 @@
 "use client";
 
 import type { FC } from "react";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { kebabCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 
 import { OakP, OakSpan } from "@oaknational/oak-components";
@@ -28,32 +29,63 @@ import {
   stepNumberSelector,
 } from "@/stores/resourcesStore/selectors";
 
-interface AdditionalMaterialsUserProps {
-  pageData?: {
-    lessonPlan: {
-      title: string;
-      keyStage: string;
-      subject: string;
-    };
-  };
-}
+export type AdditionalMaterialsPageProps = {
+  lesson?: LooseLessonPlan;
+  transcript?: string;
+  initialStep?: number;
+  docTypeFromQueryPrams?: string;
+  id?: string;
+  source?: "aila" | "owa";
+  error?: string;
+  lessonId?: string;
+};
 
-const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
+const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = (props) => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
+  const source = useResourcesStore((state) => state.source);
 
   // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName || null;
-  const { resetFormState } = useResourcesActions();
-
+  const { resetFormState, loadOwaDataToStore } = useResourcesActions();
+  const storeState = useResourcesStore((state) => state);
   const { handleSubmitLessonPlan, handleSubmit, handleCreateSession } =
     useStepSubmitLogic();
+  // console.log("ResourcesContentsInner storeState", storeState);
+  // console.log("djksdsdsdsd", props);
+
+  const handleSubmitRef = useRef(handleSubmit);
 
   useEffect(() => {
-    resetFormState();
-  }, [resetFormState]);
+    if (source === "owa" && !props.error && props.lesson) {
+      loadOwaDataToStore({
+        lesson: props.lesson,
+        transcript: props.transcript,
+        initialStep: props.initialStep,
+        docTypeFromQueryPrams: props.docTypeFromQueryPrams,
+        id: props.id,
+        lessonId: props.lessonId,
+      });
+      handleSubmitRef.current();
+    }
+  }, [
+    source,
+    loadOwaDataToStore,
+    props.lesson,
+    props.transcript,
+    props.initialStep,
+    props.docTypeFromQueryPrams,
+    props.id,
+    props.error,
+    props.lessonId,
+    stepNumber,
+  ]);
+
+  // useEffect(() => {
+  //   resetFormState();
+  // }, [resetFormState]);
 
   const titleAreaContent = {
     0: {
@@ -116,9 +148,9 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   );
 };
 
-const ResourcesContents: FC<AdditionalMaterialsUserProps> = (props) => {
+const ResourcesContents: FC<AdditionalMaterialsPageProps> = (props) => {
   return (
-    <ResourcesStoresProvider>
+    <ResourcesStoresProvider {...props}>
       <DialogProvider>
         <DialogRoot>
           <DialogContents chatId={undefined} lesson={{}} />
