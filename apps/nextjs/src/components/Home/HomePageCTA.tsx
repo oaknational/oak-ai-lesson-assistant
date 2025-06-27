@@ -14,7 +14,7 @@ export const HomePageCTA = () => {
     <OakBox $mt="space-between-s">
       <OakPrimaryButton
         element={Link}
-        href="/aila"
+        href="/aila/tools"
         iconName="arrow-right"
         isTrailingIcon={true}
         onClick={() => {
@@ -25,7 +25,7 @@ export const HomePageCTA = () => {
           });
         }}
       >
-        Get started
+        Start creating with AI
       </OakPrimaryButton>
     </OakBox>
   );

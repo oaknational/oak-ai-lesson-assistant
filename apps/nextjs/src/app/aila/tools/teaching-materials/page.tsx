@@ -1,4 +1,7 @@
-import { LessonPlanSchemaWhilstStreaming } from "@oakai/aila/src/protocol/schema";
+import {
+  type LessonPlanSchemaTeachingMaterials,
+  lessonPlanSchemaTeachingMaterials,
+} from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 import { aiLogger } from "@oakai/logger";
 
 import { auth } from "@clerk/nextjs/server";
@@ -9,16 +12,16 @@ import invariant from "tiny-invariant";
 import { createTeachingMaterialInteraction } from "@/app/actions";
 import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
-import ResourcesContents, {
-  type AdditionalMaterialsPageProps,
-} from "./resources-contents";
+import TeachingMaterialsView, {
+  type TeachingMaterialsPageProps,
+} from "./teachingMaterialsView";
 
 const log = aiLogger("additional-materials");
 
 // Helper to handle copyright errors
 function handleCopyrightError(
   fetchError: unknown,
-  pageProps: AdditionalMaterialsPageProps,
+  pageProps: TeachingMaterialsPageProps,
   lessonSlug: string,
   programmeSlug: string,
 ) {
@@ -34,7 +37,7 @@ function handleCopyrightError(
       programmeSlug,
     },
   });
-  return <ResourcesContents {...{ ...pageProps, error: "copyright" }} />;
+  return <TeachingMaterialsView {...{ ...pageProps, error: "copyright" }} />;
 }
 
 // Helper to fetch lesson data
@@ -69,24 +72,21 @@ export default async function AdditionalMaterialsTestPage({
   if (!userId) {
     redirect("/sign-in?next=/aila");
   }
-  const canSeeAM = await serverSideFeatureFlag("additional-materials");
-  if (!canSeeAM) {
-    redirect("/");
-  }
+  const canUseOWALink = await serverSideFeatureFlag("additional-materials");
 
   const lessonSlug = searchParams?.lessonSlug;
   const programmeSlug = searchParams?.programmeSlug;
   const docType = searchParams?.docType;
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:2525";
 
-  log.info("AdditionalMaterialsTestPage", {
+  log.info("Teaching materials - owa", {
     lessonSlug,
     programmeSlug,
     docType,
     baseUrl,
   });
 
-  let pageProps: AdditionalMaterialsPageProps = {
+  let pageProps: TeachingMaterialsPageProps = {
     lesson: undefined,
     transcript: undefined,
     initialStep: undefined,
@@ -94,7 +94,7 @@ export default async function AdditionalMaterialsTestPage({
     id: undefined,
   };
 
-  if (lessonSlug && programmeSlug && docType) {
+  if (lessonSlug && programmeSlug && docType && canUseOWALink) {
     // Linking from OWA lesson
     try {
       // Fetch lesson data
@@ -135,7 +135,7 @@ export default async function AdditionalMaterialsTestPage({
 
       const { lesson, transcript } = await res.json();
       const { lessonId } = lesson;
-      const parsedLesson = LessonPlanSchemaWhilstStreaming.parse(lesson);
+      const parsedLesson = lessonPlanSchemaTeachingMaterials.parse(lesson);
       invariant(lessonId, "lessonId must be defined");
 
       // Create interaction in db for teaching material
@@ -180,5 +180,5 @@ export default async function AdditionalMaterialsTestPage({
     }
   }
 
-  return <ResourcesContents {...pageProps} />;
+  return <TeachingMaterialsView {...pageProps} />;
 }

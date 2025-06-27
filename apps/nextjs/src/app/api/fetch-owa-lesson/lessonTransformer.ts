@@ -1,11 +1,10 @@
+import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 import type {
   Keyword,
-  LooseLessonPlan,
   Misconception,
   QuizV1Question,
 } from "@oakai/aila/src/protocol/schema";
 
-import type { SyntheticUnitvariantLessonsByKs } from "@oaknational/oak-curriculum-schema/";
 import {
   type QuizQuestion as OwaQuizQuestion,
   quizQuestionSchema,
@@ -172,42 +171,42 @@ export function transformKeywords(keywordsData: OwaKeyword[]): Keyword[] {
 export function transformOwaLessonToLessonPlan(
   owaLesson: OwaLesson,
   owaBrowseData: LessonBrowseDataByKsSchema,
-): LooseLessonPlan {
+): LessonPlanSchemaTeachingMaterials {
   // Create a base lesson plan object
-  const lessonPlan: LooseLessonPlan = {
-    title: owaLesson.lesson_title || "",
-    subject: owaBrowseData.programme_fields.subject || "",
-    keyStage: owaBrowseData.programme_fields.keystage || "",
-    topic: owaBrowseData.unit_data.title || "",
-
+  const lessonPlan: LessonPlanSchemaTeachingMaterials = {
+    title: owaLesson.lesson_title ?? "",
+    subject: owaBrowseData.programme_fields.subject ?? "",
+    keyStage: owaBrowseData.programme_fields.keystage ?? "",
+    topic: owaBrowseData.unit_data.title ?? "",
+    year: owaBrowseData.programme_fields.year ?? "",
     // Learning outcome
-    learningOutcome: owaLesson.pupil_lesson_outcome || "",
+    learningOutcome: owaLesson.pupil_lesson_outcome ?? "",
 
     // Key learning points
     keyLearningPoints: Array.isArray(owaLesson.key_learning_points)
       ? owaLesson.key_learning_points.map(
-          (item) => item.key_learning_point || "",
+          (item) => item.key_learning_point ?? "",
         )
       : [],
 
     // Transform misconceptions
     misconceptions: transformMisconceptions(
-      owaLesson.misconceptions_and_common_mistakes || [],
+      owaLesson.misconceptions_and_common_mistakes ?? [],
     ),
 
     // Transform keywords
-    keywords: transformKeywords(owaLesson.lesson_keywords || []),
+    keywords: transformKeywords(owaLesson.lesson_keywords ?? []),
 
     // Transform quizzes
-    starterQuiz: transformQuiz(owaLesson.starter_quiz || []),
-    exitQuiz: transformQuiz(owaLesson.exit_quiz || []),
+    starterQuiz: transformQuiz(owaLesson.starter_quiz ?? []),
+    exitQuiz: transformQuiz(owaLesson.exit_quiz ?? []),
 
     // Additional materials (equipment and resources)
     additionalMaterials:
       Array.isArray(owaLesson.equipment_and_resources) &&
       owaLesson.equipment_and_resources.length > 0
         ? owaLesson.equipment_and_resources
-            .map((item) => item.equipment || "")
+            .map((item) => item.equipment ?? "")
             .join("\n")
         : "",
 
