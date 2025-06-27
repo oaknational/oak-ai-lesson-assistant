@@ -1,20 +1,23 @@
-import type { Action, ContextByMaterialType } from "../configSchema";
+import type { ContextByMaterialType } from "../configSchema";
 import { getLessonDetails, language } from "../promptHelpers";
+import { refinementMap } from "../refinement/schema";
 
 export const buildComprehensionPrompt = (
   context: ContextByMaterialType["additional-comprehension"],
-  action: Action,
 ) => {
   const { lessonPlan } = context;
 
-  if (action === "refine") {
+  if (context.refinement) {
     return refineComprehensionPrompt(context);
   }
 
   return `
 TASK: Make a COMPREHENSION TASK for a class of pupils in a UK school. 
 
-You should make the COMPREHENSION TASK appropriate for the age of pupils in ${lessonPlan.keyStage || ""} and the subject ${lessonPlan.subject || ""}. 
+You should make the COMPREHENSION TASK appropriate for the age of pupils in ${lessonPlan.keyStage ?? ""} and the subject ${lessonPlan.subject ?? ""}. 
+
+**Lesson Details**:
+${getLessonDetails(lessonPlan)}
 
 PURPOSE: Pupils will use the comprehension text and use it to answer the questions. This should enable them to understand the content of the lesson and achieve the KEY LEARNING POINTS, LEARNING CYCLE OUTCOMES and LEARNING OUTCOME.
 
@@ -25,22 +28,9 @@ PURPOSE: Pupils will use the comprehension text and use it to answer the questio
 
 The COMPREHENSION TASK should be structured and include all the following parts and should match the given schema:
 
-Lesson title: ${lessonPlan.title || ""}
-
-Year group: ${lessonPlan.keyStage ? lessonPlan.keyStage.replace("key-stage-", "") : ""}
-
-Subject: ${lessonPlan.subject || ""}
-
 Instructions (Read the text carefully and use it to answer the questions below)
 
-**${
-    Array.isArray(lessonPlan.learningCycles) &&
-    lessonPlan.learningCycles.length > 0
-      ? lessonPlan.learningCycles[0]
-      : "Main Topic"
-  }**
-
-[Comprehension text 1 - 500-600 words]
+[Comprehension text 1 - 500-600 words with clearly defined paragraphs separated by blank lines] 
 
 **Questions**
 
@@ -60,7 +50,9 @@ Instructions (Read the text carefully and use it to answer the questions below)
 This text should 
 
 - summarise the KEY LEARNING POINTS and understanding of this text should enable the pupil to achieve the LEARNING CYCLE OUTCOME.
-- use short, clear sentences and paragraphs.
+- use short, clear sentences and well-structured paragraphs.
+- format the text with proper paragraph breaks.
+- include 4-6 paragraphs with logical transitions between ideas.
 - include tier two and three vocabulary and the KEYWORDS but these and any other unfamiliar words should be explained in the context of the COMPREHENSION TEXT.
 - use an informative, engaging, age-appropriate tone, similar to that in a textbook.
 - begin with a short introduction that hooks the pupil's interest, followed by a clear explanation.
@@ -94,6 +86,8 @@ For each LEARNING CYCLE, provide the comprehension answers.
 - You should include the QUESTION with the corresponding ANSWER.
 - Use **bullet points** for clarity.
 - Use **slashes ( / )** to indicate synonyms or acceptable alternative answers.
+- All answers should start with lower case letters unless they are a proper noun or a known acronym.
+
 
 **Answers**
 
@@ -137,23 +131,24 @@ For each LEARNING CYCLE, provide the comprehension answers.
 
 [answer 10]
 
-**Lesson Details**:
-${getLessonDetails(lessonPlan)}
+
   `;
 };
 
 const refineComprehensionPrompt = (
   context: ContextByMaterialType["additional-comprehension"],
 ) => {
-  const { lessonPlan, previousOutput, message } = context;
-
+  const { lessonPlan, previousOutput } = context;
+  const userRequest = context.refinement
+    ?.map((r) => (r.type === "custom" ? r.payload : refinementMap[r.type]))
+    .join("\n");
   return `Modify the following comprehension task based on user feedback.
 
 **Previous Output**:  
 ${JSON.stringify(previousOutput, null, 2)}
 
 **User Request**:  
-${message}
+${userRequest}
 
 Adapt the task to reflect the request while ensuring it aligns with the following lesson details:
 
@@ -167,10 +162,12 @@ You are an expert UK teacher generating a reading comprehension task.
 
 **Guidelines**:
 - Ensure tasks are **clear, subject-specific, and appropriate** for the given year group reading age.
+- Format comprehension text with proper paragraph structure (4-6 paragraphs with blank lines between them).
 - Keep questions **engaging and relevant** to reinforce learning.
 - Questions 1-5 should be multiple choice or short answer questions
 - Questions 6-10 should be longer response questions
 - Include answers for all questions
+- All answers should start with lower case letters unless they are a proper noun or a known acronym.
 - **Do not** include markdown in your response.
 
 

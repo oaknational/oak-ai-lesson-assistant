@@ -10,7 +10,11 @@ import styled from "styled-components";
 
 import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
 import { useDialog } from "../AppComponents/DialogContext";
+import AdditionalMaterialsError from "./ContentOptions/AdditionalMaterialsError";
+import AdditionalMaterialsInappropriateContent from "./ContentOptions/AdditionalMaterialsInappropriateContent";
 import AdditionalMaterialsModeration from "./ContentOptions/AdditionalMaterialsModeration";
+import AdditionalMaterialsRateLimit from "./ContentOptions/AdditionalMaterialsRateLimit";
+import AdditionalMaterialsStartAgain from "./ContentOptions/AdditionalMaterialsStartAgain";
 import AdditionalMaterialsThreatDetected from "./ContentOptions/AdditionalMaterialsThreatDetected";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
@@ -22,7 +26,7 @@ import ShareChatDialog from "./ContentOptions/ShareChatDialog";
 
 const dialogTitlesAndIcons: Record<
   Exclude<DialogTypes, "">,
-  { title: string; iconName: OakIconName | null }
+  { title: string; iconName: OakIconName | null; hideClosedButton?: boolean }
 > = {
   "share-chat": {
     title: "Share lesson",
@@ -57,20 +61,29 @@ const dialogTitlesAndIcons: Record<
     iconName: null,
   },
   "additional-materials-moderation": {
-    title: "Guidance",
-    iconName: "warning",
+    title: "",
+    iconName: null,
   },
   "additional-materials-threat-detected": {
-    title: "Threat detected",
-    iconName: "warning",
+    title: "",
+    iconName: null,
   },
   "additional-materials-rate-limit": {
-    title: "Rate limit",
+    title: "",
+    iconName: null,
+  },
+  "additional-materials-toxic-moderation": {
+    title: "",
+    iconName: null,
+    hideClosedButton: true,
+  },
+  "additional-materials-error": {
+    title: "An error occurred",
     iconName: "warning",
   },
-  "additional-materials-user-account-locked": {
-    title: "Account locked",
-    iconName: "warning",
+  "additional-materials-start-again": {
+    title: "",
+    iconName: null,
   },
 };
 
@@ -105,7 +118,13 @@ const DialogContents = ({
   return (
     <>
       {dialogWindow !== "" && (
-        <OakModalAtTheFront isOpen={!!dialogWindow} onClose={closeDialog}>
+        <OakModalAtTheFront
+          hideCloseButton={
+            dialogTitlesAndIcons[dialogWindow].hideClosedButton ?? false
+          }
+          isOpen={!!dialogWindow}
+          onClose={closeDialog}
+        >
           <OakModalCenterBody
             title={dialogTitlesAndIcons[dialogWindow].title}
             iconName={dialogTitlesAndIcons[dialogWindow].iconName ?? "warning"}
@@ -148,26 +167,22 @@ const DialogContents = ({
             {dialogWindow === "additional-materials-moderation" && (
               <AdditionalMaterialsModeration closeDialog={closeDialog} />
             )}
-            {/* // awaiting designs - placeholder */}
             {dialogWindow === "additional-materials-threat-detected" && (
-              <AdditionalMaterialsThreatDetected
-                body={"threat detected"}
-                closeDialog={closeDialog}
-              />
+              <AdditionalMaterialsThreatDetected closeDialog={closeDialog} />
             )}
-            {/* // awaiting designs - placeholder */}
             {dialogWindow === "additional-materials-rate-limit" && (
-              <AdditionalMaterialsThreatDetected
-                body={"rate-limit"}
+              <AdditionalMaterialsRateLimit closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "additional-materials-toxic-moderation" && (
+              <AdditionalMaterialsInappropriateContent
                 closeDialog={closeDialog}
               />
             )}
-            {/* // awaiting designs - placeholder */}
-            {dialogWindow === "additional-materials-user-account-locked" && (
-              <AdditionalMaterialsThreatDetected
-                body={"banned"}
-                closeDialog={closeDialog}
-              />
+            {dialogWindow === "additional-materials-start-again" && (
+              <AdditionalMaterialsStartAgain closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "additional-materials-error" && (
+              <AdditionalMaterialsError closeDialog={closeDialog} />
             )}
           </OakModalCenterBody>
         </OakModalAtTheFront>

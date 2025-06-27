@@ -1,17 +1,16 @@
-import type { Action, ContextByMaterialType } from "../configSchema";
+import type { ContextByMaterialType } from "../configSchema";
 import { getLessonDetails, language } from "../promptHelpers";
+import { refinementMap } from "../refinement/schema";
 
 export const buildExitQuizPrompt = (
   context: ContextByMaterialType["additional-exit-quiz"],
-  action: Action,
 ) => {
   const { lessonPlan } = context;
 
-  if (action === "refine") {
+  if (context.refinement) {
     return refineExitQuizPrompt(context);
   }
 
-  const keyStage = lessonPlan.keyStage || (lessonPlan.year as string);
   return `
 TASK: Write a 10-question MULTIPLE CHOICE EXIT QUIZ for a class of pupils in a UK school.
 
@@ -20,16 +19,12 @@ PURPOSE: This EXIT QUIZ will assess pupils' understanding of the key learning fr
 2. Identify any misconceptions that remain
 3. Highlight areas where pupils may need further support
 
-The EXIT QUIZ should be appropriate for the age of pupils in ${keyStage} and the subject ${lessonPlan.subject}. 
-
-The quiz should use the following structure:
-
-- Year group: ${keyStage}
-- Subject: ${lessonPlan.subject}
-- Lesson title: ${lessonPlan.title}
+The EXIT QUIZ should be appropriate for the age of pupils in ${lessonPlan.keyStage} and the subject ${lessonPlan.subject}. 
 
 **Lesson Details**:
 ${getLessonDetails(lessonPlan)}
+
+The quiz should use the following structure:
 
 1. [question text here - max 200 characters]
 
@@ -71,15 +66,17 @@ ${language}
 const refineExitQuizPrompt = (
   context: ContextByMaterialType["additional-exit-quiz"],
 ) => {
-  const { lessonPlan, previousOutput, message } = context;
-
+  const { lessonPlan, previousOutput } = context;
+  const userRequest = context.refinement
+    ?.map((r) => (r.type === "custom" ? r.payload : refinementMap[r.type]))
+    .join("\n");
   return `Modify the following exit quiz based on user feedback.
 
 **Previous Output**:  
 ${JSON.stringify(previousOutput, null, 2)}
 
 **User Request**:  
-${message}
+${userRequest}
 
 Adapt the quiz to reflect the request while ensuring it aligns with the following lesson details:
 
@@ -106,6 +103,7 @@ Make sure that:
 - The content is appropriate for UK schools
 - British English spelling and conventions are used throughout
 - Any academic vocabulary is appropriate for the age group
+- All answers should start with lower case letters unless they are a proper noun or a known acronym.
 
 Avoid:
 - Negatively phrased questions (e.g., "Which is NOT…")

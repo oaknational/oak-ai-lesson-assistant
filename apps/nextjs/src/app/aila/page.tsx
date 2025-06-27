@@ -13,21 +13,18 @@ interface IndexPageProps {
     searchExpression?: string;
   };
 }
-
 export default function IndexPage({ searchParams }: IndexPageProps) {
   const clerkAuthentication = auth();
   const { userId }: { userId: string | null } = clerkAuthentication;
   if (!userId) {
     redirect("/sign-in?next=/aila");
   }
-
   const {
     keyStage = undefined,
     subject = undefined,
     unitTitle = undefined,
     searchExpression = undefined,
   } = searchParams;
-
   return (
     <>
       <SignedIn>

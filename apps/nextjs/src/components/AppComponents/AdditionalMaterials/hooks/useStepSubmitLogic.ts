@@ -12,6 +12,7 @@ const useStepSubmitLogic = () => {
     setStepNumber,
     generateMaterial,
     createMaterialSession,
+    refineMaterial,
   } = useResourcesActions();
 
   const generateLessonPlan =
@@ -25,7 +26,6 @@ const useStepSubmitLogic = () => {
   const handleSubmitLessonPlan = async (params: {
     title: string;
     subject: string;
-    keyStage: string;
     year: string;
   }) => {
     setStepNumber(2);
@@ -95,10 +95,28 @@ const useStepSubmitLogic = () => {
     });
   };
 
+  // Handle refinement for step 4
+  const handleRefineMaterial = (refinementValue: string) => {
+    void refineMaterial({
+      refinement: [{ type: refinementValue }],
+      mutateAsync: async (input) => {
+        log.info("Submitting material refinement with input:", input);
+        try {
+          return await fetchMaterial.mutateAsync(input);
+        } catch (e) {
+          const error = e instanceof Error ? e : new Error(String(e));
+          Sentry.captureException(error);
+          throw error;
+        }
+      },
+    });
+  };
+
   return {
     handleSubmitLessonPlan,
     handleSubmit,
     handleCreateSession,
+    handleRefineMaterial,
   };
 };
 

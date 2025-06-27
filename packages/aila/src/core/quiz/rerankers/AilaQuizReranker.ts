@@ -8,7 +8,7 @@ import type { z } from "zod";
 import type {
   LooseLessonPlan,
   QuizPath,
-  QuizQuestion,
+  QuizV1Question,
 } from "../../../protocol/schema";
 import { type BaseType } from "../ChoiceModels";
 // import { evaluateQuiz } from "../OpenAIRanker";
@@ -18,7 +18,7 @@ const log = aiLogger("aila:quiz");
 export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
   implements AilaQuizReranker<T>
 {
-  abstract rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]>;
+  abstract rerankQuiz(quizzes: QuizV1Question[][]): Promise<number[]>;
   public ratingSchema?: T;
   public quizType?: QuizPath;
 
@@ -28,14 +28,14 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
   }
 
   public abstract evaluateQuizArray(
-    quizArray: QuizQuestion[][],
+    quizArray: QuizV1Question[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
   ): Promise<z.infer<T>[]>;
 
   public async cachedEvaluateQuizArray(
-    quizArray: QuizQuestion[][],
+    quizArray: QuizV1Question[][],
     lessonPlan: LooseLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,

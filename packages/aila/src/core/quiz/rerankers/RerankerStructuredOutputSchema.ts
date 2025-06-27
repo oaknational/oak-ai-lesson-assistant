@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { QuizQuestionSchema } from "../../../protocol/schema";
+import { QuizV1QuestionSchema } from "../../../protocol/schema";
 import type { BaseType } from "../ChoiceModels";
 
 export const ratingAndJustificationSchema = z.object({
@@ -68,10 +68,10 @@ export const quizConsiderationSchema = z.object({
       "The ids of the RAG lesson plans that are relevant to this lesson plan",
     ),
   mlQuizQuestions: z
-    .array(QuizQuestionSchema)
+    .array(QuizV1QuestionSchema)
     .describe("The questions in the ML quiz"),
 });
 
-export type QuizzesForConsideration = z.infer<typeof quizConsiderationSchema>;
+export type QuizConsideration = z.infer<typeof quizConsiderationSchema>;
 
 // export const output_option

@@ -1,36 +1,59 @@
-import { OakFlex, OakP, OakPrimaryButton } from "@oaknational/oak-components";
+import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/helpers";
 
-import { useResourcesActions } from "@/stores/ResourcesStoreProvider";
+import invariant from "tiny-invariant";
 
-type AdditionalMaterialsThreatDetectProps = {
+import { usePosthogFeedbackSurvey } from "@/hooks/surveys/usePosthogFeedbackSurvey";
+import {
+  useResourcesActions,
+  useResourcesStore,
+} from "@/stores/ResourcesStoreProvider";
+import {
+  moderationSelector,
+  pageDataSelector,
+} from "@/stores/resourcesStore/selectors";
+
+import AdditionalMaterialsModerationFeedback from "./AdditionalMaterialsModerationFeedback";
+
+type AdditionalMaterialsThreatDetectedProps = {
   closeDialog: () => void;
-  body: string;
 };
 
 const AdditionalMaterialsThreatDetected = ({
   closeDialog,
-  body,
-}: Readonly<AdditionalMaterialsThreatDetectProps>) => {
+}: Readonly<AdditionalMaterialsThreatDetectedProps>) => {
   const { resetToDefault } = useResourcesActions();
-  return (
-    <OakFlex
-      data-testid="chat-share-dialog"
-      $width="100%"
-      $height="100%"
-      $flexDirection="column"
-      $justifyContent="space-between"
-    >
-      <OakP>{body}</OakP>
+  const moderation = useResourcesStore(moderationSelector);
+  const id = useResourcesStore(pageDataSelector).lessonPlan.lessonId;
+  const setStepNumber = useResourcesActions().setStepNumber;
+  invariant(moderation, "Moderation data is required for this component");
+  const { submitSurveyWithOutClosing } = usePosthogFeedbackSurvey({
+    surveyName: "Moderation feedback",
+  });
 
-      <OakPrimaryButton
-        onClick={() => {
-          resetToDefault();
-          closeDialog();
-        }}
-      >
-        Continue
-      </OakPrimaryButton>
-    </OakFlex>
+  return (
+    <AdditionalMaterialsModerationFeedback
+      closeDialog={closeDialog}
+      resetToDefault={resetToDefault}
+      heading="Potential misuse of Aila detected"
+      message={
+        "This request has been identified as a potential misuse of Aila. Please rephrase or try a different request. If you think this is an error, please give us feedback below."
+      }
+      submitSurvey={(feedback) => {
+        submitSurveyWithOutClosing({
+          $survey_response: getSafetyResult(moderation),
+          $survey_response_1: moderation.categories,
+          $survey_response_2: null,
+          $survey_response_3: id,
+          $survey_response_4: feedback,
+          $survey_response_5: "teaching-materials",
+        });
+      }}
+      backButtonLabel="Back to lesson details"
+      onBack={() => {
+        setStepNumber(1);
+        closeDialog();
+      }}
+    />
   );
 };
 

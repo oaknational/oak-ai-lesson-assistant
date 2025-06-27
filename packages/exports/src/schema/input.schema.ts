@@ -130,7 +130,7 @@ export const exportableQuizAppStateSchema = z.object({
   status: quizAppStatusSchema,
   keyStage: z.string(),
   subject: z.string(),
-  topic: z.string().optional(),
+  topic: z.string().nullish(),
   questions: z.array(exportableQuizQuestionSchema),
 });
 

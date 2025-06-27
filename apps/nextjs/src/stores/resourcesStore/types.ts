@@ -8,9 +8,14 @@ import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/mode
 import { z } from "zod";
 import type { StoreApi } from "zustand";
 
+import type {
+  ComponentTypeValueType,
+  ResourceFileTypeValueType,
+  ResourceTypeValueType,
+} from "@/lib/avo/Avo";
+
 import type { CreateMaterialSessionParams } from "./actionFunctions/handleCreateMaterialSession";
 import type { GenerateMaterialParams } from "./actionFunctions/handleGenerateMaterial";
-import type { GenerateMaterialFromOWAParams } from "./actionFunctions/handleGenerateMaterialFromOWA";
 import type { LoadOwaDataParams } from "./actionFunctions/handleLoadOwaDataToStore";
 import type { RefineMaterialParams } from "./actionFunctions/handleRefineMaterial";
 import type { SubmitLessonPlanParams } from "./actionFunctions/handleSubmitLessonPlan";
@@ -28,7 +33,7 @@ export type StepOneFormState = {
   activeDropdown: string | null;
 };
 
-const errorType = z.enum(["rate_limit", "banned", "unknown"]);
+const errorType = z.enum(["rate_limit", "banned", "toxic", "unknown"]);
 export type ErrorType = z.infer<typeof errorType>;
 
 export const errorResponse = z.object({
@@ -56,7 +61,10 @@ export type ResourcesState = {
 
   actions: {
     // setters
-    setStepNumber: (step: number) => void;
+    setStepNumber: (
+      step: number,
+      componentType?: ComponentTypeValueType,
+    ) => void;
     setPageData: (pageData: PageData) => void;
     setGeneration: (generation: AdditionalMaterialSchemas | null) => void;
     setDocType: (docType: string | null) => void;
@@ -89,6 +97,23 @@ export type ResourcesState = {
 
     // History management actions
     undoRefinement: () => void;
+
+    // Analytics actions
+    analytics: {
+      trackMaterialSelected: (
+        resourceId: string,
+        docType: AdditionalMaterialType,
+        componentType?: ComponentTypeValueType,
+      ) => void;
+      trackMaterialRefined: (componentType: ComponentTypeValueType) => void;
+      trackMaterialDownloaded: (
+        componentType?: ComponentTypeValueType,
+        options?: {
+          resourceType?: ResourceTypeValueType[];
+          resourceFileType?: ResourceFileTypeValueType;
+        },
+      ) => void;
+    };
 
     // Reset store to default state
     resetToDefault: () => void;

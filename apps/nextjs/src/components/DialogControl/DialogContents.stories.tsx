@@ -7,6 +7,7 @@ import type { PostHog } from "posthog-js";
 import { chromaticParams } from "@/storybook/chromatic";
 import { AnalyticsDecorator } from "@/storybook/decorators/AnalyticsDecorator";
 import { DialogContentDecorator } from "@/storybook/decorators/DialogContentDecorator";
+import { ResourcesStoreDecorator } from "@/storybook/decorators/ResourcesStoreDecorator";
 
 import { DemoProvider } from "../ContextProviders/Demo";
 import DialogContents from "./DialogContents";
@@ -104,6 +105,77 @@ export const DemoInterstitialLimited: Story = {
       </DemoProvider>
     ),
   ],
+};
+
+export const AdditionalMaterialsModeration: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "additional-materials-moderation",
+  },
+  decorators: [ResourcesStoreDecorator],
+};
+
+export const AdditionalMaterialsThreatDetected: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "additional-materials-threat-detected",
+  },
+  decorators: [ResourcesStoreDecorator],
+};
+
+export const AdditionalMaterialsRateLimit: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "additional-materials-rate-limit",
+  },
+  decorators: [
+    ResourcesStoreDecorator,
+    (Story) => (
+      <DemoProvider>
+        <Story />
+      </DemoProvider>
+    ),
+  ],
+};
+
+export const AdditionalMaterialsRateLimitDemo: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "additional-materials-rate-limit",
+    auth: "signedInDemo",
+  },
+  decorators: [
+    ResourcesStoreDecorator,
+    (Story) => (
+      <DemoProvider>
+        <Story />
+      </DemoProvider>
+    ),
+  ],
+};
+
+export const AdditionalMaterialsInappropriateContent: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "additional-materials-toxic-moderation",
+  },
+  decorators: [ResourcesStoreDecorator],
+};
+
+export const AdditionalMaterialsStartAgain: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "additional-materials-start-again",
+  },
+  decorators: [ResourcesStoreDecorator],
+};
+
+export const AdditionalMaterialsError: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "additional-materials-error",
+  },
+  decorators: [ResourcesStoreDecorator],
 };
 
 export const Feedback: Story = {

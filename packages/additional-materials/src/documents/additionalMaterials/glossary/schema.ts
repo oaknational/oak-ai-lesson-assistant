@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-import { baseContext } from "../comprehension/schema";
+import { refinementSchema } from "../refinement/schema";
+import { baseContext } from "../sharedSchema";
 
 // Output from LLM
 
@@ -22,27 +23,6 @@ export const isGlossary = (data: unknown): data is GlossarySchema => {
   const result = glossarySchema.safeParse(data);
   return result.success;
 };
-
-// Refinements
-
-export const readingAgeRefinementMap = {
-  lowerReadingAge: "Lower the reading age of the text",
-  increaseReadingAge: "Increase the reading age of the text",
-} satisfies Record<AllowedReadingAgeRefinement, string>;
-
-export const readingAgeRefinement = [
-  "lowerReadingAge",
-  "increaseReadingAge",
-] as const;
-
-export type AllowedReadingAgeRefinement = (typeof readingAgeRefinement)[number];
-
-const refinementTypes = z.enum([...readingAgeRefinement, "custom"] as const);
-
-export const refinementSchema = z.object({
-  type: refinementTypes,
-  payload: z.string().optional(),
-});
 
 // Prompt context
 

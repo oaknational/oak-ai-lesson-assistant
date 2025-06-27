@@ -4,17 +4,20 @@ import type { FC } from "react";
 import React, { useEffect, useRef } from "react";
 
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import { kebabCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
+import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 
-import { OakP, OakSpan } from "@oaknational/oak-components";
+import { OakP } from "@oaknational/oak-components";
 
 import StepFour from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepFour";
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
 import StepThree from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepThree";
 import StepTwo from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepTwo";
+import { handleDialogSelection } from "@/components/AppComponents/AdditionalMaterials/StepLayouts/helpers";
 import useStepSubmitLogic from "@/components/AppComponents/AdditionalMaterials/hooks/useStepSubmitLogic";
-import { DialogProvider } from "@/components/AppComponents/DialogContext";
+import {
+  DialogProvider,
+  useDialog,
+} from "@/components/AppComponents/DialogContext";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import ResourcesLayout from "@/components/ResourcesLayout";
@@ -27,10 +30,12 @@ import {
   docTypeSelector,
   pageDataSelector,
   stepNumberSelector,
+  threatDetectionSelector,
+  yearSelector,
 } from "@/stores/resourcesStore/selectors";
 
-export type AdditionalMaterialsPageProps = {
-  lesson?: LooseLessonPlan;
+export type TeachingMaterialsPageProps = {
+  lesson?: LessonPlanSchemaTeachingMaterials;
   transcript?: string;
   initialStep?: number;
   docTypeFromQueryPrams?: string;
@@ -40,26 +45,31 @@ export type AdditionalMaterialsPageProps = {
   lessonId?: string;
 };
 
-const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = (props) => {
+const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = (props) => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
-  const docType = useResourcesStore(docTypeSelector);
-  const source = useResourcesStore((state) => state.source);
+  const threatDetected = useResourcesStore(threatDetectionSelector);
 
+  const docType = useResourcesStore(docTypeSelector);
+  const year = useResourcesStore(yearSelector);
+  const error = useResourcesStore((state) => state.error);
+  const source = useResourcesStore((state) => state.source);
+  const { loadOwaDataToStore } = useResourcesActions();
   // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
-  const docTypeName = resourceType?.displayName || null;
-  const { resetFormState, loadOwaDataToStore } = useResourcesActions();
-  const storeState = useResourcesStore((state) => state);
-  const { handleSubmitLessonPlan, handleSubmit, handleCreateSession } =
-    useStepSubmitLogic();
-  // console.log("ResourcesContentsInner storeState", storeState);
-  // console.log("djksdsdsdsd", props);
+  const docTypeName = resourceType?.displayName ?? null;
 
+  const { setDialogWindow } = useDialog();
+  const {
+    handleSubmitLessonPlan,
+    handleSubmit,
+    handleCreateSession,
+    handleRefineMaterial,
+  } = useStepSubmitLogic();
   const handleSubmitRef = useRef(handleSubmit);
 
   useEffect(() => {
-    if (source === "owa" && !props.error && props.lesson) {
+    if (source === "owa" && !props.error) {
       loadOwaDataToStore({
         lesson: props.lesson,
         transcript: props.transcript,
@@ -68,6 +78,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = (props) => {
         id: props.id,
         lessonId: props.lessonId,
       });
+
       handleSubmitRef.current();
     }
   }, [
@@ -83,45 +94,44 @@ const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = (props) => {
     stepNumber,
   ]);
 
-  // useEffect(() => {
-  //   resetFormState();
-  // }, [resetFormState]);
+  handleDialogSelection({
+    threatDetected,
+    error,
+    setDialogWindow,
+  });
 
   const titleAreaContent = {
     0: {
-      title: "What type of resource do you need?",
+      title: "Select teaching material",
       subTitle: (
-        <OakP $font="body-2" $color="grey70">
-          Choose the type of additional material you'd like to create for your
-          lesson.
+        <OakP $font="body-2" $color="text-primary">
+          Choose the downloadable resource you'd like to create with Aila for
+          your lesson.
         </OakP>
       ),
     },
     1: {
-      title: "What do you want to teach?",
+      title: "What are you teaching?",
       subTitle: (
-        <OakP $font="body-2" $color="grey70">
-          These details will help Aila create a brief lesson overview, to
-          provide context for your selected resource.
+        <OakP $font="body-2" $color="text-primary">
+          The more detail you give, the better suited your resource will be for
+          your lesson.
         </OakP>
       ),
     },
     2: {
-      title: "Lesson overview",
+      title: pageData.lessonPlan.title,
       subTitle: (
-        <OakP $font="body-2" $color="grey70">
-          This lesson overview will provide context for your{" "}
-          {<OakSpan $font="body-2-bold">{docTypeName}</OakSpan>}. If these
-          details are not quite right, try editing the previous page.
+        <OakP $font="body-2" $color="text-primary">
+          {`${year} • ${pageData.lessonPlan.subject}`}
         </OakP>
       ),
     },
     3: {
       title: pageData.lessonPlan.title,
       subTitle: (
-        <OakP $font="body-2" $color="grey70">
-          {kebabCaseToSentenceCase(pageData.lessonPlan.keyStage ?? "")} •{" "}
-          {pageData.lessonPlan.subject}
+        <OakP $font="body-2" $color="text-primary">
+          {`${year} • ${pageData.lessonPlan.subject}`}
         </OakP>
       ),
     },
@@ -131,7 +141,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = (props) => {
     0: <StepOne handleCreateSession={handleCreateSession} />,
     1: <StepTwo handleSubmitLessonPlan={handleSubmitLessonPlan} />,
     2: <StepThree handleSubmit={handleSubmit} />,
-    3: <StepFour />,
+    3: <StepFour handleRefineMaterial={handleRefineMaterial} />,
   };
   const stepNumberParsed = stepNumber as keyof typeof titleAreaContent;
   const title = titleAreaContent?.[stepNumberParsed]?.title ?? "";
@@ -148,17 +158,17 @@ const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = (props) => {
   );
 };
 
-const ResourcesContents: FC<AdditionalMaterialsPageProps> = (props) => {
+const TeachingMaterialsView: FC<TeachingMaterialsPageProps> = (props) => {
   return (
     <ResourcesStoresProvider {...props}>
       <DialogProvider>
         <DialogRoot>
           <DialogContents chatId={undefined} lesson={{}} />
-          <ResourcesContentsInner {...props} />
+          <TeachingMaterialsViewInner {...props} />
         </DialogRoot>
       </DialogProvider>
     </ResourcesStoresProvider>
   );
 };
 
-export default ResourcesContents;
+export default TeachingMaterialsView;

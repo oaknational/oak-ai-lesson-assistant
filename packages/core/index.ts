@@ -17,6 +17,7 @@ import { embedAllQuizQuestions } from "./src/functions/quizQuestion/embedAll";
 import { generateAllQuizQuestions } from "./src/functions/quizQuestion/generateAll";
 import { generateQuizQuestionEmbeddings } from "./src/functions/quizQuestion/generateQuizQuestionEmbeddings";
 import { notifyModeration } from "./src/functions/slack/notifyModeration";
+import { notifyModerationTeachingMaterials } from "./src/functions/slack/notifyModerationTeachingMaterials";
 import { notifyRateLimit } from "./src/functions/slack/notifyRateLimit";
 import { notifyUserBan } from "./src/functions/slack/notifyUserBan";
 import { embedAllSnippets } from "./src/functions/snippet/embedAll";
@@ -62,6 +63,7 @@ export const functions = [
   generatePlanForLesson,
   generateAllLessonPlans,
   notifyModeration,
+  notifyModerationTeachingMaterials,
   notifyRateLimit,
   notifyUserBan,
   populateDemoStatuses,

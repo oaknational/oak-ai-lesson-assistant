@@ -1,9 +1,6 @@
 import type { ContextByMaterialType } from "../configSchema";
 import { getLessonDetails, language } from "../promptHelpers";
-import {
-  type AllowedReadingAgeRefinement,
-  readingAgeRefinementMap,
-} from "./schema";
+import { refinementMap } from "../refinement/schema";
 
 export const buildGlossaryPrompt = (
   context: ContextByMaterialType["additional-glossary"],
@@ -26,13 +23,17 @@ const refineGlossaryPrompt = (
   context: ContextByMaterialType["additional-glossary"],
 ) => {
   const { lessonPlan, previousOutput } = context;
+  const userRequest = context.refinement
+    ?.map((r) => (r.type === "custom" ? r.payload : refinementMap[r.type]))
+    .join("\n");
+
   return `Modify the following glossary based on user feedback.
   
   **Previous Output**:  
   ${JSON.stringify(previousOutput, null, 2)}
   
   **User Request**:  
-  ${context.refinement && context.refinement.map((r) => readingAgeRefinementMap[r.type as AllowedReadingAgeRefinement]).join("\n")}
+  ${userRequest}
   
   Adapt the glossary to reflect the request while ensuring it continues to aligns with the following lesson details:
   

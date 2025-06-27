@@ -21,7 +21,7 @@ export type GenerateMaterialParams = {
 
 export const handleGenerateMaterial =
   (set: ResourcesSetter, get: ResourcesGetter) =>
-  async ({ message, mutateAsync }: GenerateMaterialParams) => {
+  async ({ mutateAsync }: GenerateMaterialParams) => {
     // Clear any existing generation
     get().actions.setGeneration(null);
     get().actions.setIsResourcesLoading(true);
@@ -35,7 +35,13 @@ export const handleGenerateMaterial =
 
     // Validate required lesson plan fields
     const lessonPlan = get().pageData.lessonPlan;
-    if (!lessonPlan?.title || !lessonPlan?.subject || !lessonPlan?.keyStage) {
+    const formState = get().formState;
+    if (
+      !lessonPlan?.title ||
+      !lessonPlan?.subject ||
+      !lessonPlan?.keyStage ||
+      !formState?.year
+    ) {
       log.error("Missing required lesson plan fields", { lessonPlan });
       throw new Error(
         "Lesson plan is missing required fields (title, subject, or keyStage)",
@@ -43,20 +49,17 @@ export const handleGenerateMaterial =
     }
 
     try {
-      log.info("Generating material", { docType, hasMessage: !!message });
+      log.info("Generating material", { docType });
 
       // Make the API call
       const result = await mutateAsync({
         documentType: docTypeParsed,
-        action: message ? "refine" : "generate",
+
         context: {
           lessonPlan: {
             ...lessonPlan,
-            title: lessonPlan.title,
-            subject: lessonPlan.subject,
-            keyStage: lessonPlan.keyStage,
+            year: formState.year,
           },
-          message: message ?? null,
           previousOutput: null,
           options: null,
         },
@@ -72,7 +75,9 @@ export const handleGenerateMaterial =
       });
 
       log.info("Material generated successfully");
-      // Step navigation is handled by the calling component
+      get().actions.analytics.trackMaterialRefined(
+        "create_teaching_material_button",
+      );
     } catch (error) {
       get().actions.setIsResourcesLoading(false);
       handleStoreError(set, error, {

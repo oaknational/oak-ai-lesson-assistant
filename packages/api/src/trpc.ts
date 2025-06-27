@@ -1,5 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
+import * as Sentry from "@sentry/node";
 import { initTRPC } from "@trpc/server";
 import { ZodError } from "zod";
 
@@ -8,7 +9,7 @@ import type { Context } from "./context";
 
 const log = aiLogger("trpc");
 
-export const t = initTRPC.context<Context>().create({
+const t = initTRPC.context<Context>().create({
   transformer: transformer,
   errorFormatter({ shape, error }) {
     log.error("trpc error", { shape, error });
@@ -62,6 +63,15 @@ export const t = initTRPC.context<Context>().create({
   },
 });
 
+const sentryMiddleware = t.middleware(
+  Sentry.trpcMiddleware({
+    attachRpcInput: false,
+  }),
+);
+
+t.procedure = t.procedure.use(sentryMiddleware);
+
+export { t };
 export const router = t.router;
 export const publicProcedure = t.procedure;
 export const mergeRouters = t.mergeRouters;

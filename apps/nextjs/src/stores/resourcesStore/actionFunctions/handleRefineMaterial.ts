@@ -30,21 +30,23 @@ export type RefineMaterialParams = {
 export const handleRefineMaterial =
   (set: ResourcesSetter, get: ResourcesGetter) =>
   async ({ refinement, mutateAsync }: RefineMaterialParams) => {
-    const { setIsResourceRefining } = get().actions;
+    const {
+      actions: { setIsResourceRefining },
+      docType,
+      generation: currentGeneration,
+      refinementGenerationHistory: currentHistory,
+      id: originalId,
+      pageData: { lessonPlan },
+    } = get();
 
     log.info("Setting isResourceRefining to TRUE");
     setIsResourceRefining(true);
 
-    const docType = get().docType;
     if (!docType) {
       log.error("No document type selected");
       setIsResourceRefining(false);
       throw new Error("No document type selected");
     }
-
-    // Get current generation and history before making changes
-    const currentGeneration = get().generation;
-    const currentHistory = get().refinementGenerationHistory;
 
     try {
       log.info("Refining material", { docType, refinement });
@@ -53,17 +55,14 @@ export const handleRefineMaterial =
 
       const payload = {
         documentType: docTypeParsed,
-        action: "refine",
         context: {
-          lessonPlan: get().pageData.lessonPlan,
-          previousOutput: get().generation,
+          lessonPlan,
+          previousOutput: currentGeneration,
           options: null,
-          refinement: refinement,
+          refinement,
         },
-        // Don't pass resourceId for refinements - this will create a new record
-        // The adaptsOutputId will be set to the current material's ID
-        adaptsOutputId: get().id, // ID of the material being refined
-        lessonId: get().pageData.lessonPlan.lessonId,
+        adaptsOutputId: originalId, // ID of the material being refined
+        lessonId: lessonPlan.lessonId,
       };
 
       const parsedPayload =
@@ -88,6 +87,8 @@ export const handleRefineMaterial =
       log.info("Material refined successfully", {
         historyLength: newHistory.length,
       });
+
+      get().actions.analytics.trackMaterialRefined("modify_button");
     } catch (error) {
       log.error("Error refining material", error);
       Sentry.captureException(error);
