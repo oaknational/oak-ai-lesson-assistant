@@ -54,7 +54,6 @@ export async function promptAgentHandler<
 
   const instructions = agent.prompt;
   const input = `### Examples from similar lessons
-
 ${examplesFromSimilarLessons(ragData, targetKey, agent.extractRagData)}
  
     ### Document
