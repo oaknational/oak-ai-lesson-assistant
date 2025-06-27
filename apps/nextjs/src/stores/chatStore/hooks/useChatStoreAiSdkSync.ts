@@ -22,6 +22,7 @@ export const useChatStoreAiSdkSync = (
   const { setMessages, setAiSdkActions } = useChatActions();
 
   useEffect(() => {
+    console.log("useChatStoreAiSdkSync", messages, isLoading);
     setMessages(messages, isLoading);
   }, [messages, isLoading, setMessages]);
 
