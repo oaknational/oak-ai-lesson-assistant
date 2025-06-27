@@ -25,7 +25,6 @@ export const SectionContent = ({ sectionKey, value }: SectionContentProps) => {
         </MathJax>
       );
     }
-    // Invalid quiz data, show error or empty
     return <div>Quiz data invalid or loading...</div>;
   }
   return (

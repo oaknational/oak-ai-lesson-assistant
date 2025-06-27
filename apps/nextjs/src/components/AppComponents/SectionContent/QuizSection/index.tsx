@@ -33,7 +33,7 @@ const MultipleChoiceQuestion = ({
   };
 
   const tickInstruction = `Tick ${correctAnswerCount} correct answer${correctAnswerCount !== 1 ? "s" : ""}.`;
-  const fullQuestionText = `${questionNumber}. ${ensureEndsWithPeriod(question.questionStem)} ${tickInstruction}`;
+  const fullQuestionText = `${questionNumber}. ${ensureEndsWithPeriod(question.question)} ${tickInstruction}`;
 
   return (
     <OakBox $mb="space-between-l">
@@ -71,7 +71,6 @@ const MultipleChoiceQuestion = ({
           </OakFlex>
         ))}
       </OakBox>
-
     </OakBox>
   );
 };
