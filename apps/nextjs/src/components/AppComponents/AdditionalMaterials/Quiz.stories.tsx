@@ -46,7 +46,6 @@ type Story = StoryObj<typeof Quiz>;
 export const Starter: Story = {
   args: {
     generation: quizFixture,
-    quizType: "starter",
     action: "view",
   },
 };
@@ -54,7 +53,6 @@ export const Starter: Story = {
 export const Exit: Story = {
   args: {
     generation: quizFixture,
-    quizType: "exit",
     action: "view",
   },
 };
