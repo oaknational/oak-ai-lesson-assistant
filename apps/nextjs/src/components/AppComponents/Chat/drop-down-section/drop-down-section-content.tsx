@@ -2,38 +2,28 @@ import type {
   LessonPlanKey,
   LessonPlanSectionWhileStreaming,
 } from "@oakai/aila/src/protocol/schema";
-import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 
 import { OakFlex } from "@oaknational/oak-components";
-import { MathJax } from "better-react-mathjax";
 
-import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
-
-import { MemoizedReactMarkdownWithStyles } from "../markdown";
+import { SectionContent } from "../../SectionContent";
 import AddAdditionalMaterialsButton from "./add-additional-materials-button";
 import FlagButton from "./flag-button";
 import ModifyButton from "./modify-button";
 import { sectionTitle } from "./sectionTitle";
 
-export type LessonPlanSectionContentProps = Readonly<{
+export type DropDownSectionContentProps = Readonly<{
   sectionKey: LessonPlanKey;
   value: LessonPlanSectionWhileStreaming;
 }>;
 
-export const LessonPlanSectionContent = ({
+export const DropDownSectionContent = ({
   sectionKey,
   value,
-}: LessonPlanSectionContentProps) => {
+}: DropDownSectionContentProps) => {
   return (
     <OakFlex $flexDirection="column">
-      <MathJax hideUntilTypeset="every" dynamic>
-        <MemoizedReactMarkdownWithStyles
-          lessonPlanSectionDescription={
-            lessonSectionTitlesAndMiniDescriptions[sectionKey]?.description
-          }
-          markdown={`${sectionToMarkdown(sectionKey, value)}`}
-        />
-      </MathJax>
+      <SectionContent sectionKey={sectionKey} value={value} />
+
       <OakFlex
         $gap="all-spacing-3"
         $mt="space-between-s"
