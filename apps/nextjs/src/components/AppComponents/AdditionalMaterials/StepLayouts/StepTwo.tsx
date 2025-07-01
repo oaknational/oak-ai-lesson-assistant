@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 
@@ -8,6 +8,7 @@ import {
   OakPrimaryInvertedButton,
   OakTextInput,
 } from "@oaknational/oak-components";
+import styled from "styled-components";
 import invariant from "tiny-invariant";
 
 import {
@@ -46,11 +47,33 @@ const StepTwo = ({
 
   const [showValidationError, setShowValidationError] = useState("");
   const [validationAttempted, setValidationAttempted] = useState(false);
+  const [placeholder, setPlaceholder] = useState(
+    "Type a lesson title or learning outcome",
+  );
 
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType
     ? resourceType.displayName.toLowerCase()
     : null;
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setPlaceholder("Type a learning objective");
+      } else {
+        setPlaceholder("Type a lesson title or learning outcome");
+      }
+    };
+
+    // Set initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Clean up
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const validateForm = (
     titleToCheck: string | null | undefined,
@@ -121,8 +144,12 @@ const StepTwo = ({
 
   return (
     <>
-      <OakFlex $flexDirection={"column"} $gap={"space-between-m"}>
-        <OakFlex $flexDirection={"row"} $gap={"space-between-m"}>
+      <OakFlex
+        $flexDirection={"column"}
+        $gap={"space-between-m"}
+        $mb={["space-between-l", "space-between-m"]}
+      >
+        <OakFlex $flexDirection={["column", "row"]} $gap={"space-between-m"}>
           <YearGroupDropDown
             selectedYear={year}
             setSelectedYear={(year: string) => {
@@ -148,8 +175,8 @@ const StepTwo = ({
             setTitle(newTitle);
             updateValidationMessage(newTitle, undefined, undefined);
           }}
-          placeholder="Type a lesson title or learning outcome"
           value={title ?? ""}
+          placeholder={placeholder}
         />
         {!!showValidationError && (
           <FormValidationWarning errorMessage={showValidationError} />
