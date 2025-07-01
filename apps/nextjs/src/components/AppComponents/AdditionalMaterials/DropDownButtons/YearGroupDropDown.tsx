@@ -30,7 +30,7 @@ export const YearGroupDropDown = ({
       options={yearOptions}
       dropdownType="years"
       placeholder="Year group"
-      customPlaceholder="Enter your custom year group"
+      customPlaceholder="Enter custom year group"
     />
   );
 };
