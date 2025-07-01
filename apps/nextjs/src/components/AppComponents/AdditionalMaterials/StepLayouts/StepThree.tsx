@@ -5,12 +5,12 @@ import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import {
   OakFlex,
   OakHeading,
-  OakIcon,
   OakLI,
   OakLink,
   OakOL,
   OakP,
   OakPrimaryButton,
+  OakPrimaryInvertedButton,
 } from "@oaknational/oak-components";
 
 import {
@@ -103,12 +103,12 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
 
       <ResourcesFooter>
         <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <button onClick={() => setStepNumber(1, "back_a_step_button")}>
-            <OakFlex $alignItems="center" $gap="all-spacing-2">
-              <OakIcon iconName="chevron-left" />
-              Back a step
-            </OakFlex>
-          </button>
+          <OakPrimaryInvertedButton
+            iconName="chevron-left"
+            onClick={() => setStepNumber(0, "back_a_step_button")}
+          >
+            Back a step
+          </OakPrimaryInvertedButton>
 
           <OakPrimaryButton
             onClick={() => {

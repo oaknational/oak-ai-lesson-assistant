@@ -4,8 +4,8 @@ import { getResourceType } from "@oakai/additional-materials/src/documents/addit
 
 import {
   OakFlex,
-  OakIcon,
   OakPrimaryButton,
+  OakPrimaryInvertedButton,
   OakTextInput,
 } from "@oaknational/oak-components";
 import invariant from "tiny-invariant";
@@ -158,12 +158,12 @@ const StepTwo = ({
 
       <ResourcesFooter>
         <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <button onClick={() => setStepNumber(0, "back_a_step_button")}>
-            <OakFlex $alignItems="center" $gap="all-spacing-2">
-              <OakIcon iconName="chevron-left" />
-              Back a step
-            </OakFlex>
-          </button>
+          <OakPrimaryInvertedButton
+            iconName="chevron-left"
+            onClick={() => setStepNumber(0, "back_a_step_button")}
+          >
+            Back a step
+          </OakPrimaryInvertedButton>
 
           <OakPrimaryButton
             onClick={() => {
