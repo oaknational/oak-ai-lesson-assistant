@@ -26,6 +26,9 @@ import {
   QuizV1OptionalSchema,
   QuizV1Schema,
   QuizV1SchemaWithoutLength,
+  QuizV2MultipleChoiceOnlySchemaWithoutLength,
+  QuizV2OptionalSchema,
+  QuizV2Schema,
 } from "./schema";
 
 const log = aiLogger("aila:protocol");
@@ -140,6 +143,27 @@ export const PatchQuizV1ForLLM = z.object({
   value: QuizV1SchemaWithoutLength,
 });
 
+// V2 Quiz Patch Schemas
+export const PatchQuizV2Optional = z.object({
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
+  value: QuizV2OptionalSchema,
+});
+
+export const PatchQuizV2 = z.object({
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
+  value: QuizV2Schema,
+});
+
+// For LLM - multiple choice only since LLM can only generate those
+export const PatchQuizV2ForLLM = z.object({
+  type: z.literal("quizV2"),
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
+  value: QuizV2MultipleChoiceOnlySchemaWithoutLength,
+});
+
 export const PatchBasedOnOptional = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.literal("/basedOn"),
@@ -239,6 +263,7 @@ export const JsonPatchValueSchema = z.union([
   PatchStringArray,
   PatchCycle,
   PatchQuizV1,
+  PatchQuizV2,
   PatchMisconceptions,
   PatchKeywords,
 ]);
@@ -254,6 +279,7 @@ export const JsonPatchValueForLLMSchema = z.union([
   PatchStringArrayForLLM,
   PatchCycleForLLM,
   PatchQuizV1ForLLM,
+  PatchQuizV2ForLLM,
   PatchMisconceptionsForLLM,
   PatchKeywordsForLLM,
 ]);
@@ -273,6 +299,7 @@ export const JsonPatchValueOptionalSchema = z.union([
   PatchStringArray,
   PatchCycleOptional,
   PatchQuizV1Optional,
+  PatchQuizV2Optional,
   PatchMisconceptionsOptional,
   PatchKeywordsOptional,
 ]);
@@ -300,6 +327,7 @@ export const LLMPatchDocumentSchema = z.object({
     PatchBasedOnForLLM,
     PatchMisconceptionsForLLM,
     PatchQuizV1ForLLM,
+    PatchQuizV2ForLLM,
     PatchKeywordsForLLM,
     PatchCycleForLLM,
     JsonPatchRemoveSchemaForLLM,

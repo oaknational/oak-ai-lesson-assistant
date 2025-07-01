@@ -2,7 +2,8 @@ import type {
   Keyword,
   LooseLessonPlan,
   Misconception,
-  QuizV1Question,
+  QuizV2,
+  QuizV2Question,
 } from "@oakai/aila/src/protocol/schema";
 
 import type { SyntheticUnitvariantLessonsByKs } from "@oaknational/oak-curriculum-schema/";
@@ -22,19 +23,23 @@ type OwaLesson = z.infer<typeof lessonContentSchema>;
 /**
  * Transforms Oak's quiz format to the format expected by LessonPlanSchemaWhilstStreaming
  */
-export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV1Question[] {
+export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV2 {
   const quizData = z.array(quizQuestionSchema).parse(quiz);
   if (!quizData || !Array.isArray(quizData)) {
-    return [];
+    return {
+      version: "v2",
+      questions: [],
+    };
   }
 
-  return quizData.map((question) => {
+  const questions: QuizV2Question[] = quizData.map((question) => {
     if (!question || !question.question_stem) {
       return {
+        questionType: "multiple-choice",
         question: "",
         answers: [],
         distractors: [],
-      };
+      } as QuizV2Question;
     }
     // Extract the question text from the stem
     const questionText = question.question_stem
@@ -68,10 +73,11 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV1Question[] {
         );
 
       return {
+        questionType: "multiple-choice",
         question: questionText,
         answers: correctAnswers,
         distractors: distractors,
-      };
+      } as QuizV2Question;
     } else if (
       question.question_type === "short-answer" &&
       question.answers &&
@@ -106,20 +112,27 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV1Question[] {
         );
 
       return {
+        questionType: "multiple-choice",
         question: questionText,
         answers:
           correctAnswers.length > 0 ? correctAnswers : allAnswers.slice(0, 1),
         distractors: distractors.length > 0 ? distractors : [],
-      };
+      } as QuizV2Question;
     }
 
     // Fallback for unsupported question types
     return {
+      questionType: "multiple-choice",
       question: questionText,
       answers: [],
       distractors: [],
-    };
+    } as QuizV2Question;
   });
+
+  return {
+    version: "v2",
+    questions,
+  };
 }
 
 interface OwaMisconception {

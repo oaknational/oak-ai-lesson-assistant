@@ -42,11 +42,14 @@ ${feedback}
 };
 
 export const renderQuiz = (quiz: LooseLessonPlan["starterQuiz"]): string => {
-  if (!quiz || quiz.length === 0) return "- N/A";
+  if (!quiz || quiz.questions?.length === 0) return "- N/A";
 
-  return quiz
-    .map(({ question, answers, distractors }, index) => {
-      return `
+  return quiz.questions
+    .map((q, index) => {
+      // Only handle multiple-choice questions for now
+      if (q.questionType === "multiple-choice") {
+        const { question, answers, distractors } = q;
+        return `
 **Q${index + 1}: ${question}**
 - ✅ Answer${answers.length > 1 ? "s" : ""}:
 ${answers.map((a) => `  - ${a}`).join("\n")}
@@ -54,6 +57,8 @@ ${answers.map((a) => `  - ${a}`).join("\n")}
 - ❌ Distractor${distractors.length > 1 ? "s" : ""}:
 ${distractors.map((d) => `  - ${d}`).join("\n")}
 `;
+      }
+      return `**Q${index + 1}: ${q.question}** (Type: ${q.questionType})`;
     })
     .join("\n");
 };

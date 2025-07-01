@@ -58,49 +58,64 @@ Students will understand:
 export const StartQuiz: Story = {
   args: {
     sectionKey: "starterQuiz",
-    value: [
-      {
-        question: "What is the capital of France?",
-        answers: ["Paris"],
-        distractors: ["London", "Berlin", "Madrid"],
-      },
-      {
-        question: "Which of the following is a prime number?",
-        answers: ["7"],
-        distractors: ["4", "6", "8"],
-      },
-    ],
+    value: {
+      version: "v2" as const,
+      questions: [
+        {
+          questionType: "multiple-choice" as const,
+          question: "What is the capital of France?",
+          answers: ["Paris"],
+          distractors: ["London", "Berlin", "Madrid"],
+        },
+        {
+          questionType: "multiple-choice" as const,
+          question: "Which of the following is a prime number?",
+          answers: ["7"],
+          distractors: ["4", "6", "8"],
+        },
+      ],
+    },
   },
 };
 
 export const StartQuizWithMath: Story = {
   args: {
     sectionKey: "starterQuiz",
-    value: [
-      {
-        question: "What is the value of $$x$$ in the equation $$2x + 5 = 13$$?",
-        answers: ["4"],
-        distractors: ["3", "5", "6"],
-      },
-      {
-        question:
-          "Calculate the area of a circle with radius $$r = 3$$cm using $$A = \\pi r^2$$",
-        answers: ["$$9\\pi$$ cm²"],
-        distractors: ["$$6\\pi$$ cm²", "$$12\\pi$$ cm²", "$$18\\pi$$ cm²"],
-      },
-    ],
+    value: {
+      version: "v2" as const,
+      questions: [
+        {
+          questionType: "multiple-choice" as const,
+          question:
+            "What is the value of $$x$$ in the equation $$2x + 5 = 13$$?",
+          answers: ["4"],
+          distractors: ["3", "5", "6"],
+        },
+        {
+          questionType: "multiple-choice" as const,
+          question:
+            "Calculate the area of a circle with radius $$r = 3$$cm using $$A = \\pi r^2$$",
+          answers: ["$$9\\pi$$ cm²"],
+          distractors: ["$$6\\pi$$ cm²", "$$12\\pi$$ cm²", "$$18\\pi$$ cm²"],
+        },
+      ],
+    },
   },
 };
 
 export const QuizWithHints: Story = {
   args: {
     sectionKey: "starterQuiz",
-    value: [
-      {
-        question: "What is the largest planet in our solar system?",
-        answers: ["Jupiter"],
-        distractors: ["Earth", "Saturn", "Neptune"],
-      },
-    ],
+    value: {
+      version: "v2" as const,
+      questions: [
+        {
+          questionType: "multiple-choice" as const,
+          question: "What is the largest planet in our solar system?",
+          answers: ["Jupiter"],
+          distractors: ["Earth", "Saturn", "Neptune"],
+        },
+      ],
+    },
   },
 };
