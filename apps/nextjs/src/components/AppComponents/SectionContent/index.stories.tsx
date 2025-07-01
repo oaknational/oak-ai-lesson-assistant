@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/react";
 import type { QuizV1Question } from "@oakai/aila/src/protocol/schema";
+
+import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { MathJaxDecorator } from "@/storybook/decorators/MathJaxDecorator";
@@ -111,17 +112,20 @@ export const QuizWithImages: Story = {
     sectionKey: "starterQuiz",
     value: [
       {
-        question: "40 is a multiple of 8. Which multiples of 8 are adjacent to 40?\n\n![Number squares showing 40](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266807/a3g7nwse0lqdvrggp1vt.png)",
+        question:
+          "40 is a multiple of 8. Which multiples of 8 are adjacent to 40?\n\n![Number squares showing 40](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266807/a3g7nwse0lqdvrggp1vt.png)",
         answers: ["32", "48"],
         distractors: ["34", "50", "47"],
       },
       {
-        question: "Which mixed operation equation can be used to calculate the missing multiple of 8?\n\n![Number line with missing value](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266808/pggweqwl9chfutuul4pm.png)",
+        question:
+          "Which mixed operation equation can be used to calculate the missing multiple of 8?\n\n![Number line with missing value](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266808/pggweqwl9chfutuul4pm.png)",
         answers: ["5 × 8 − 8", "3 × 8 + 8"],
         distractors: ["4 groups of 8", "8 x 4"],
       },
       {
-        question: "Here is part of the 8 times table grid. What could Izzy do to find 13 × 8 quickly?\n\n![8 times table grid](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png)",
+        question:
+          "Here is part of the 8 times table grid. What could Izzy do to find 13 × 8 quickly?\n\n![8 times table grid](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png)",
         answers: ["12 x 8 + 8", "Increase 96 by 8"],
         distractors: ["Count in eights from zero"],
       },
@@ -130,7 +134,9 @@ export const QuizWithImages: Story = {
         // and currently renders poorly. The images appear inline with text and need
         // proper layout/styling for a better visual presentation.
         question: "Which diagram shows 3 groups of 8?",
-        answers: ["![3 groups of 8 dots](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266807/a3g7nwse0lqdvrggp1vt.png)"],
+        answers: [
+          "![3 groups of 8 dots](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266807/a3g7nwse0lqdvrggp1vt.png)",
+        ],
         distractors: [
           "![2 groups of 8 dots](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266808/pggweqwl9chfutuul4pm.png)",
           "![4 groups of 8 dots](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png)",

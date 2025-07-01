@@ -117,7 +117,7 @@ export const StaticSection = ({
 
   return (
     <div ref={sectionRef}>
-      <Flex align="center" gap="3" className="mt-20">
+      <Flex align="center" gap="3" className="mb-11 mt-20">
         <Box>
           <h2 className="mb-0 mt-0 text-xl font-bold">{title}</h2>
         </Box>
