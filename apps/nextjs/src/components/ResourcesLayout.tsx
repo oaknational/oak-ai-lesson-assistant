@@ -40,7 +40,6 @@ const ResourcesLayout = ({
           contactHref={demo.contactHref}
         />
       )}
-
       <OakBox
         as={"header"}
         $position={"fixed"}
@@ -49,32 +48,35 @@ const ResourcesLayout = ({
       >
         <HeaderManager />
       </OakBox>
-
-      <OakBox
+      <OakFlex
         as="main"
-        $inset="all-spacing-0"
-        $position={"fixed"}
-        $mt="space-between-xxl"
+        $alignItems="center"
+        $justifyContent="center"
+        $minHeight="100vh"
         $pt="inner-padding-xl7"
+        $pb="inner-padding-xl"
+        $flexDirection="column"
         $background={"lavender30"}
+        $ph={["inner-padding-xl", "inner-padding-xl4"]}
       >
         <OakMaxWidth
+          $mt={["space-between-m"]}
+          $position={"relative"}
           $background="white"
           $borderRadius="border-radius-m"
-          $position={"fixed"}
-          $bottom={"all-spacing-0"}
-          $top="all-spacing-14"
-          $left="all-spacing-4"
-          $right="all-spacing-4"
-          $width="unset"
-          $overflowY={"auto"}
-          $mb="space-between-xxxl"
+          $mh="space-between-m"
+          $width="100%"
+          $mb="space-between-xl"
           $pb="inner-padding-xl"
           $maxWidth={"all-spacing-23"}
         >
-          <OakBox
+          <OakFlex
+            $flexDirection="column"
+            // $position={"relative"}
+            // $overflowY={"auto"}
             $ph={["inner-padding-xl", "inner-padding-xl8"]}
             $pv={["inner-padding-xl", "inner-padding-xl4"]}
+            $width={"100%"}
           >
             <OakFlex
               $bb="border-solid-s"
@@ -103,9 +105,9 @@ const ResourcesLayout = ({
               </OakP>
             </OakFlex>
             {children}
-          </OakBox>
+          </OakFlex>
         </OakMaxWidth>
-      </OakBox>
+      </OakFlex>
     </>
   );
 };

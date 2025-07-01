@@ -9,17 +9,24 @@ const ResourcesFooter = ({ children }: ResourcesFooterProps) => {
     <OakMaxWidth
       $position="fixed"
       $bottom="all-spacing-0"
-      $background="white"
+      $background={"lavender30"}
       $bt="border-solid-m"
-      $left="all-spacing-4"
-      $right="all-spacing-4"
+      $left={["space-between-m", "space-between-l", "space-between-l"]}
+      $right={["space-between-m", "space-between-l", "space-between-l"]}
       $width="unset"
-      $pv="inner-padding-l"
-      $ph={["inner-padding-xl", "inner-padding-xl4"]}
       $zIndex="neutral"
       $maxWidth="all-spacing-23"
+      $ph="inner-padding-none"
     >
-      <OakFlex $justifyContent="space-between">{children}</OakFlex>
+      <OakFlex
+        $pa={["inner-padding-s", "inner-padding-l"]}
+        $width={"100%"}
+        $background={"white"}
+      >
+        <OakFlex $width={"100%"} $justifyContent="space-between">
+          {children}
+        </OakFlex>
+      </OakFlex>
     </OakMaxWidth>
   );
 };
