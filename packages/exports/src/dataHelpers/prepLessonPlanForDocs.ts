@@ -2,6 +2,7 @@ import type { LessonPlanDocInputData } from "../schema/input.schema";
 import type { LessonPlanDocsTemplateData } from "../schema/lessonPlanDocsTemplate.schema";
 import {
   camelCaseToTitleCase,
+  filterToMcQuestions,
   processQuizAnswers,
   stringOrBullets,
 } from "../utils";
@@ -24,6 +25,19 @@ function processQuizAnswersForLessonPlanDoc(
 export async function prepLessonPlanForDocs(
   lessonPlan: LessonPlanDocInputData,
 ): Promise<LessonPlanDocsTemplateData> {
+  // TODO: Currently only multiple-choice questions are supported in exports
+  // Filter to only include multiple-choice questions
+  // Other question types (short-answer, match, order) are ignored
+  const starterMcQuestions = filterToMcQuestions(
+    lessonPlan.starterQuiz.questions,
+  );
+  const exitMcQuestions = filterToMcQuestions(lessonPlan.exitQuiz.questions);
+
+  // Get checkForUnderstanding questions from cycles (V1 format)
+  const cycle1Questions = lessonPlan.cycle1?.checkForUnderstanding || [];
+  const cycle2Questions = lessonPlan.cycle2?.checkForUnderstanding || [];
+  const cycle3Questions = lessonPlan.cycle3?.checkForUnderstanding || [];
+
   return Promise.resolve({
     lesson_title: lessonPlan.title,
     subject: lessonPlan.subject,
@@ -74,200 +88,200 @@ export async function prepLessonPlanForDocs(
       ? "4.     " + lessonPlan.keyLearningPoints[3]
       : " ",
 
-    starter_quiz_question_1: lessonPlan.starterQuiz[0]?.question ?? "",
+    starter_quiz_question_1: starterMcQuestions[0]?.question ?? "",
     starter_quiz_question_1_answer_1:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[0]?.answers,
-        lessonPlan.starterQuiz[0]?.distractors,
+        starterMcQuestions[0]?.answers,
+        starterMcQuestions[0]?.distractors,
       )[0] ?? "",
     starter_quiz_question_1_answer_2:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[0]?.answers,
-        lessonPlan.starterQuiz[0]?.distractors,
+        starterMcQuestions[0]?.answers,
+        starterMcQuestions[0]?.distractors,
       )[1] ?? "",
     starter_quiz_question_1_answer_3:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[0]?.answers,
-        lessonPlan.starterQuiz[0]?.distractors,
+        starterMcQuestions[0]?.answers,
+        starterMcQuestions[0]?.distractors,
       )[2] ?? "",
-    starter_quiz_question_2: lessonPlan.starterQuiz[1]?.question ?? "",
+    starter_quiz_question_2: starterMcQuestions[1]?.question ?? "",
     starter_quiz_question_2_answer_1:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[1]?.answers,
-        lessonPlan.starterQuiz[1]?.distractors,
+        starterMcQuestions[1]?.answers,
+        starterMcQuestions[1]?.distractors,
       )[0] ?? "",
     starter_quiz_question_2_answer_2:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[1]?.answers,
-        lessonPlan.starterQuiz[1]?.distractors,
+        starterMcQuestions[1]?.answers,
+        starterMcQuestions[1]?.distractors,
       )[1] ?? "",
     starter_quiz_question_2_answer_3:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[1]?.answers,
-        lessonPlan.starterQuiz[1]?.distractors,
+        starterMcQuestions[1]?.answers,
+        starterMcQuestions[1]?.distractors,
       )[2] ?? "",
-    starter_quiz_question_3: lessonPlan.starterQuiz[2]?.question ?? "",
+    starter_quiz_question_3: starterMcQuestions[2]?.question ?? "",
     starter_quiz_question_3_answer_1:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[2]?.answers,
-        lessonPlan.starterQuiz[2]?.distractors,
+        starterMcQuestions[2]?.answers,
+        starterMcQuestions[2]?.distractors,
       )[0] ?? "",
     starter_quiz_question_3_answer_2:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[2]?.answers,
-        lessonPlan.starterQuiz[2]?.distractors,
+        starterMcQuestions[2]?.answers,
+        starterMcQuestions[2]?.distractors,
       )[1] ?? "",
     starter_quiz_question_3_answer_3:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[2]?.answers,
-        lessonPlan.starterQuiz[2]?.distractors,
+        starterMcQuestions[2]?.answers,
+        starterMcQuestions[2]?.distractors,
       )[2] ?? "",
-    starter_quiz_question_4: lessonPlan.starterQuiz[3]?.question ?? "",
+    starter_quiz_question_4: starterMcQuestions[3]?.question ?? "",
     starter_quiz_question_4_answer_1:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[3]?.answers,
-        lessonPlan.starterQuiz[3]?.distractors,
+        starterMcQuestions[3]?.answers,
+        starterMcQuestions[3]?.distractors,
       )[0] ?? "",
     starter_quiz_question_4_answer_2:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[3]?.answers,
-        lessonPlan.starterQuiz[3]?.distractors,
+        starterMcQuestions[3]?.answers,
+        starterMcQuestions[3]?.distractors,
       )[1] ?? "",
     starter_quiz_question_4_answer_3:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[3]?.answers,
-        lessonPlan.starterQuiz[3]?.distractors,
+        starterMcQuestions[3]?.answers,
+        starterMcQuestions[3]?.distractors,
       )[2] ?? "",
-    starter_quiz_question_5: lessonPlan.starterQuiz[4]?.question ?? "",
+    starter_quiz_question_5: starterMcQuestions[4]?.question ?? "",
     starter_quiz_question_5_answer_1:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[4]?.answers,
-        lessonPlan.starterQuiz[4]?.distractors,
+        starterMcQuestions[4]?.answers,
+        starterMcQuestions[4]?.distractors,
       )[0] ?? "",
     starter_quiz_question_5_answer_2:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[4]?.answers,
-        lessonPlan.starterQuiz[4]?.distractors,
+        starterMcQuestions[4]?.answers,
+        starterMcQuestions[4]?.distractors,
       )[1] ?? "",
     starter_quiz_question_5_answer_3:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[4]?.answers,
-        lessonPlan.starterQuiz[4]?.distractors,
+        starterMcQuestions[4]?.answers,
+        starterMcQuestions[4]?.distractors,
       )[2] ?? "",
-    starter_quiz_question_6: lessonPlan.starterQuiz[5]?.question ?? "",
+    starter_quiz_question_6: starterMcQuestions[5]?.question ?? "",
     starter_quiz_question_6_answer_1:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[5]?.answers,
-        lessonPlan.starterQuiz[5]?.distractors,
+        starterMcQuestions[5]?.answers,
+        starterMcQuestions[5]?.distractors,
       )[0] ?? "",
     starter_quiz_question_6_answer_2:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[5]?.answers,
-        lessonPlan.starterQuiz[5]?.distractors,
+        starterMcQuestions[5]?.answers,
+        starterMcQuestions[5]?.distractors,
       )[1] ?? "",
     starter_quiz_question_6_answer_3:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.starterQuiz[5]?.answers,
-        lessonPlan.starterQuiz[5]?.distractors,
+        starterMcQuestions[5]?.answers,
+        starterMcQuestions[5]?.distractors,
       )[2] ?? "",
 
     ///
 
-    exit_quiz_question_1: lessonPlan.exitQuiz[0]?.question ?? "",
+    exit_quiz_question_1: exitMcQuestions[0]?.question ?? "",
     exit_quiz_question_1_answer_1:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[0]?.answers,
-        lessonPlan.exitQuiz[0]?.distractors,
+        exitMcQuestions[0]?.answers,
+        exitMcQuestions[0]?.distractors,
       )[0] ?? "",
     exit_quiz_question_1_answer_2:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[0]?.answers,
-        lessonPlan.exitQuiz[0]?.distractors,
+        exitMcQuestions[0]?.answers,
+        exitMcQuestions[0]?.distractors,
       )[1] ?? "",
     exit_quiz_question_1_answer_3:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[0]?.answers,
-        lessonPlan.exitQuiz[0]?.distractors,
+        exitMcQuestions[0]?.answers,
+        exitMcQuestions[0]?.distractors,
       )[2] ?? "",
-    exit_quiz_question_2: lessonPlan.exitQuiz[1]?.question ?? "",
+    exit_quiz_question_2: exitMcQuestions[1]?.question ?? "",
     exit_quiz_question_2_answer_1:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[1]?.answers,
-        lessonPlan.exitQuiz[1]?.distractors,
+        exitMcQuestions[1]?.answers,
+        exitMcQuestions[1]?.distractors,
       )[0] ?? "",
     exit_quiz_question_2_answer_2:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[1]?.answers,
-        lessonPlan.exitQuiz[1]?.distractors,
+        exitMcQuestions[1]?.answers,
+        exitMcQuestions[1]?.distractors,
       )[1] ?? "",
     exit_quiz_question_2_answer_3:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[1]?.answers,
-        lessonPlan.exitQuiz[1]?.distractors,
+        exitMcQuestions[1]?.answers,
+        exitMcQuestions[1]?.distractors,
       )[2] ?? "",
-    exit_quiz_question_3: lessonPlan.exitQuiz[2]?.question ?? "",
+    exit_quiz_question_3: exitMcQuestions[2]?.question ?? "",
     exit_quiz_question_3_answer_1:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[2]?.answers,
-        lessonPlan.exitQuiz[2]?.distractors,
+        exitMcQuestions[2]?.answers,
+        exitMcQuestions[2]?.distractors,
       )[0] ?? "",
     exit_quiz_question_3_answer_2:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[2]?.answers,
-        lessonPlan.exitQuiz[2]?.distractors,
+        exitMcQuestions[2]?.answers,
+        exitMcQuestions[2]?.distractors,
       )[1] ?? "",
     exit_quiz_question_3_answer_3:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[2]?.answers,
-        lessonPlan.exitQuiz[2]?.distractors,
+        exitMcQuestions[2]?.answers,
+        exitMcQuestions[2]?.distractors,
       )[2] ?? "",
-    exit_quiz_question_4: lessonPlan.exitQuiz[3]?.question ?? "",
+    exit_quiz_question_4: exitMcQuestions[3]?.question ?? "",
     exit_quiz_question_4_answer_1:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[3]?.answers,
-        lessonPlan.exitQuiz[3]?.distractors,
+        exitMcQuestions[3]?.answers,
+        exitMcQuestions[3]?.distractors,
       )[0] ?? "",
     exit_quiz_question_4_answer_2:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[3]?.answers,
-        lessonPlan.exitQuiz[3]?.distractors,
+        exitMcQuestions[3]?.answers,
+        exitMcQuestions[3]?.distractors,
       )[1] ?? "",
     exit_quiz_question_4_answer_3:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[3]?.answers,
-        lessonPlan.exitQuiz[3]?.distractors,
+        exitMcQuestions[3]?.answers,
+        exitMcQuestions[3]?.distractors,
       )[2] ?? "",
-    exit_quiz_question_5: lessonPlan.exitQuiz[4]?.question ?? "",
+    exit_quiz_question_5: exitMcQuestions[4]?.question ?? "",
     exit_quiz_question_5_answer_1:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[4]?.answers,
-        lessonPlan.exitQuiz[4]?.distractors,
+        exitMcQuestions[4]?.answers,
+        exitMcQuestions[4]?.distractors,
       )[0] ?? "",
     exit_quiz_question_5_answer_2:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[4]?.answers,
-        lessonPlan.exitQuiz[4]?.distractors,
+        exitMcQuestions[4]?.answers,
+        exitMcQuestions[4]?.distractors,
       )[1] ?? "",
     exit_quiz_question_5_answer_3:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[4]?.answers,
-        lessonPlan.exitQuiz[4]?.distractors,
+        exitMcQuestions[4]?.answers,
+        exitMcQuestions[4]?.distractors,
       )[2] ?? "",
-    exit_quiz_question_6: lessonPlan.exitQuiz[5]?.question ?? "",
+    exit_quiz_question_6: exitMcQuestions[5]?.question ?? "",
     exit_quiz_question_6_answer_1:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[5]?.answers,
-        lessonPlan.exitQuiz[5]?.distractors,
+        exitMcQuestions[5]?.answers,
+        exitMcQuestions[5]?.distractors,
       )[0] ?? "",
     exit_quiz_question_6_answer_2:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[5]?.answers,
-        lessonPlan.exitQuiz[5]?.distractors,
+        exitMcQuestions[5]?.answers,
+        exitMcQuestions[5]?.distractors,
       )[1] ?? "",
     exit_quiz_question_6_answer_3:
       processQuizAnswersForLessonPlanDoc(
-        lessonPlan.exitQuiz[5]?.answers,
-        lessonPlan.exitQuiz[5]?.distractors,
+        exitMcQuestions[5]?.answers,
+        exitMcQuestions[5]?.distractors,
       )[2] ?? "",
 
     ///

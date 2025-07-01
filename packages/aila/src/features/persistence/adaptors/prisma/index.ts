@@ -14,6 +14,7 @@ import type {
 } from "../../../../protocol/schema";
 import { chatSchema } from "../../../../protocol/schema";
 import type { AilaGeneration } from "../../../generation/AilaGeneration";
+import { upgradeChat } from "./chatUpgrader";
 
 const log = aiLogger("aila:persistence");
 
@@ -51,7 +52,12 @@ export class AilaPrismaPersistence extends AilaPersistence {
       throw new AilaAuthenticationError("User not authorised to access chat");
     }
 
-    const parsedChat = chatSchema.parse(appSession?.output);
+    const rawChat = appSession?.output;
+
+    // Upgrade V1 quizzes to V2 before parsing with the schema
+    const upgradedChat = upgradeChat(rawChat);
+
+    const parsedChat = chatSchema.parse(upgradedChat);
 
     return parsedChat;
   }

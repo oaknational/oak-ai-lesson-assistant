@@ -2,7 +2,7 @@ import type {
   LessonPlanKey,
   LessonPlanSectionWhileStreaming,
 } from "@oakai/aila/src/protocol/schema";
-import { QuizV1Schema } from "@oakai/aila/src/protocol/schema";
+import { QuizV2Schema } from "@oakai/aila/src/protocol/schema";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 
 import { MathJax } from "better-react-mathjax";
@@ -17,7 +17,7 @@ export type SectionContentProps = {
 
 export const SectionContent = ({ sectionKey, value }: SectionContentProps) => {
   if (sectionKey === "starterQuiz" || sectionKey === "exitQuiz") {
-    const quizResult = QuizV1Schema.safeParse(value);
+    const quizResult = QuizV2Schema.safeParse(value);
     if (quizResult.success) {
       return (
         <MathJax hideUntilTypeset="every" dynamic>
@@ -27,6 +27,7 @@ export const SectionContent = ({ sectionKey, value }: SectionContentProps) => {
     }
     return <div>Quiz data invalid or loading...</div>;
   }
+
   return (
     <MathJax hideUntilTypeset="every" dynamic>
       <MemoizedReactMarkdownWithStyles
