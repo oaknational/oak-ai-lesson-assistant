@@ -1,12 +1,40 @@
 import type { QuizV2QuestionMultipleChoice } from "@oakai/aila/src/protocol/schema";
 
-import { OakBox, OakFlex, OakIcon, OakP } from "@oaknational/oak-components";
+import { OakBox, OakFlex, OakIcon } from "@oaknational/oak-components";
+
+import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
 import { shuffleMultipleChoiceAnswers } from "./shuffle";
 
 type MultipleChoiceQuestionProps = {
   question: QuizV2QuestionMultipleChoice;
   questionNumber: number;
+};
+
+type AnswerCheckboxProps = {
+  isChecked: boolean;
+};
+
+const AnswerCheckbox = ({ isChecked }: AnswerCheckboxProps) => {
+  return (
+    <OakBox
+      $mr="space-between-xs"
+      $width="all-spacing-7"
+      $height="all-spacing-7"
+      $ba="border-solid-m"
+      $borderColor="black"
+    >
+      {isChecked && (
+        <OakIcon
+          iconName="tick"
+          $width="100%"
+          $height="100%"
+          $color="text-inverted"
+          $transform="scale(1.15)"
+        />
+      )}
+    </OakBox>
+  );
 };
 
 export const MultipleChoiceQuestion = ({
@@ -18,50 +46,35 @@ export const MultipleChoiceQuestion = ({
     question.distractors,
   );
 
-  const ensureEndsWithPeriod = (text: string) => {
-    const endsWithPunctuation = /[.!?]$/.test(text);
-    return endsWithPunctuation ? text : `${text}.`;
-  };
-
-  // NOTE: Tick instruction suppressed until design requirement is confirmed
-  // const correctAnswerCount = question.answers.length;
-  // const tickInstruction = `Tick ${correctAnswerCount} correct answer${correctAnswerCount !== 1 ? "s" : ""}.`;
-  const tickInstruction = "";
-  const fullQuestionText = `${questionNumber}. ${ensureEndsWithPeriod(question.question)} ${tickInstruction}`;
-
   return (
     <OakBox $mb="space-between-l">
-      <OakP $mb="space-between-s">{fullQuestionText}</OakP>
+      <OakFlex $mb="space-between-s">
+        <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
+        <MemoizedReactMarkdownWithStyles
+          markdown={question.question}
+          className="[&>p]:mb-0"
+        />
+      </OakFlex>
 
       {question.hint && (
-        <OakP $mb="space-between-s" $color="text-subdued">
-          {question.hint}
-        </OakP>
+        <OakBox $mb="space-between-s" $color="text-subdued">
+          <MemoizedReactMarkdownWithStyles
+            markdown={question.hint}
+            className="[&>p]:mb-0"
+          />
+        </OakBox>
       )}
 
       <OakBox>
         {answers.map((answer, index) => (
           <OakFlex key={index} $alignItems="center" $mb="space-between-xs">
-            <OakBox
-              $mr="space-between-xs"
-              $width="all-spacing-7"
-              $height="all-spacing-7"
-              $ba="border-solid-m"
-              $borderColor="black"
-            >
-              {answer.isCorrect && (
-                <OakIcon
-                  iconName="tick"
-                  $width="100%"
-                  $height="100%"
-                  $color="text-inverted"
-                  $transform="scale(1.15)"
-                />
-              )}
+            <AnswerCheckbox isChecked={answer.isCorrect} />
+            <OakBox $font={answer.isCorrect ? "body-2-bold" : "body-2"}>
+              <MemoizedReactMarkdownWithStyles
+                markdown={`${String.fromCharCode(97 + index)}) ${answer.text}`}
+                className="[&>p]:mb-0 [&>p]:inline"
+              />
             </OakBox>
-            <OakP $font={answer.isCorrect ? "body-2-bold" : "body-2"}>
-              {String.fromCharCode(97 + index)}) {answer.text}
-            </OakP>
           </OakFlex>
         ))}
       </OakBox>
