@@ -68,6 +68,7 @@ const AdditionalMaterialsStartAgain = ({
           Yes, I want to start again
         </OakPrimaryButton>
         <OakSecondaryLink
+          color="text-link-active"
           onClick={() => {
             closeDialog();
           }}
