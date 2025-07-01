@@ -2,13 +2,17 @@
 
 import { useUser } from "@clerk/nextjs";
 import {
+  OakBox,
   OakFlex,
+  OakGrid,
+  OakGridArea,
+  OakHeading,
   OakLI,
+  OakMaxWidth,
   OakP,
   OakPrimaryButton,
   OakUL,
 } from "@oaknational/oak-components";
-import { Flex } from "@radix-ui/themes";
 import Link from "next/link";
 import styled from "styled-components";
 
@@ -17,19 +21,10 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 import ChatPanelDisclaimer from "../chat-panel-disclaimer";
 import EmptyScreenAccordion from "../empty-screen-accordion";
 
-export const exampleMessages = [
-  {
-    heading: "History • Key stage 3 • The end of Roman Britain ",
-    message:
-      "Create a lesson plan about the end of Roman Britain for key stage 3 history",
-  },
-];
-
-// default styling is being overridden here by tailwind, we can remove this when re removing tailwind
 const StyledUL = styled(OakUL)`
   list-style-type: disc;
-  margin-top: 1em;
-  margin-bottom: 1em;
+  /* margin-top: 1em; */
+
   /* margin-left: 40px; */
   padding-left: 20px;
 `;
@@ -39,106 +34,118 @@ export function AilaStart() {
   const { user } = useUser();
 
   return (
-    <Flex
-      direction="column"
-      justify="center"
-      className="min-h-screen bg-lavender30 pt-26"
+    <OakFlex
+      $background="lavender30"
+      $flexDirection="column"
+      $alignItems="center"
+      // $width="100%"
+      // $flexGrow="1"
+      // $ph={["inner-padding-xl8"]}
+      // $pt={"inner-padding-m"}
+      // $justifyContent="flex-start"
+      // $alignItems={"center"} // This centers horizontally in a column flex
+      // $justifyContent={"flex-start"}
+      $minHeight={["100%", "100vh", "100vh"]}
     >
-      <OakFlexWithHeight
-        $flexDirection="column"
-        $justifyContent="space-between"
+      <OakMaxWidth
+        $mt={["space-between-xxxl"]}
         $maxWidth="all-spacing-23"
-        $mh="auto"
-        $gap="space-between-l"
-        $ph={["inner-padding-l", "inner-padding-none"]}
+        $background="lavender30"
+        $justifyContent={"space-between"}
       >
-        <OakFlex $flexDirection={["column", "row"]} $gap="space-between-l">
-          <OakFlex
-            $background={"bg-primary"}
-            $flexDirection="column"
-            $gap="all-spacing-2"
-            $pa="inner-padding-xl2"
-          >
-            <OakFlex $flexDirection="column" $gap="all-spacing-2">
-              <OakP $font="heading-5">Create a lesson with AI</OakP>
-              <OakP $font="body-2">
-                Aila will guide you step-by-step to create and download a
-                tailor-made lesson, including:
-              </OakP>
-            </OakFlex>
-            <EmptyScreenAccordion />
-            <OakPrimaryButton
-              element={Link}
-              href="/aila"
-              iconName="arrow-right"
-              isTrailingIcon={true}
+        <OakGrid
+          $height={"100%"}
+          $cg={["space-between-none", "space-between-m", "space-between-l"]}
+          $rg={["space-between-l", "space-between-none", "space-between-none"]}
+          $mh="auto"
+          $mt={["space-between-xxxl"]}
+          $ph={["inner-padding-s", "inner-padding-s", "inner-padding-none"]}
+
+          // $mh={["space-between-m", "space-between-s", "space-between-none"]} // Adjusted for responsiveness
+        >
+          <OakGridArea $alignContent={"center"} $colSpan={[12, 6, 7]}>
+            <OakBox
+              $background="white"
+              $pa="inner-padding-xl2"
+              $borderRadius="border-radius-s"
+              $position={"relative"}
             >
-              Create a lesson
-            </OakPrimaryButton>
-          </OakFlex>
-          <Card>
-            <OakFlex $flexDirection="column" $gap="all-spacing-2">
-              <OakP $font="heading-5">Create teaching materials with AI</OakP>
-              <OakP>
-                Enhance lessons with a range of teaching materials, including:
-              </OakP>
-              <StyledUL>
-                <OakLI $mv={"space-between-xs"}>Glossaries</OakLI>
-                <OakLI $mv={"space-between-xs"}>Comprehension tasks</OakLI>
-                <OakLI $mt={"space-between-xs"}>Quizzes</OakLI>
-              </StyledUL>
-            </OakFlex>
-            <OakPrimaryButton
-              element={Link}
-              href="/aila/tools/teaching-materials"
-              iconName="arrow-right"
-              isTrailingIcon={true}
-              onClick={() => {
-                track.createTeachingMaterialsInitiated({
-                  platform: "aila-beta",
-                  product: "ai lesson assistant",
-                  engagementIntent: "use",
-                  componentType: "create_additional_materials_button",
-                  eventVersion: "2.0.0",
-                  analyticsUseCase: "Teacher",
-                  isLoggedIn: Boolean(user),
-                });
-              }}
+              <OakFlex $flexDirection="column">
+                {/* Heading and description */}
+                <OakHeading $mb="space-between-s" $font="heading-5" tag="h2">
+                  Create a lesson with AI
+                </OakHeading>
+                <OakP $mb="space-between-s" $font="body-2">
+                  Aila will guide you step-by-step to create and download a
+                  tailor-made lesson, including:
+                </OakP>
+
+                <EmptyScreenAccordion />
+                <OakPrimaryButton
+                  element={Link}
+                  href="/aila"
+                  iconName="arrow-right"
+                  isTrailingIcon={true}
+                  $mt="space-between-l"
+                >
+                  Create a lesson
+                </OakPrimaryButton>
+              </OakFlex>
+            </OakBox>
+          </OakGridArea>
+          <OakGridArea $colSpan={[12, 6, 5]}>
+            <OakBox
+              $background="white"
+              $pa="inner-padding-xl2"
+              $borderRadius="border-radius-s"
             >
-              Create teaching materials
-            </OakPrimaryButton>
-          </Card>
+              <OakFlex $flexDirection="column">
+                {/* Heading, description, and list */}
+                <OakHeading $mb="space-between-xs" $font="heading-5" tag="h2">
+                  Create teaching materials with AI
+                </OakHeading>
+                <OakP $mb="space-between-xs" $font="body-2">
+                  Enhance lessons with a range of teaching materials, including:
+                </OakP>
+                <StyledUL>
+                  <OakLI $mv="space-between-xs">Glossaries</OakLI>
+                  <OakLI $mv="space-between-xs">Comprehension tasks</OakLI>
+                  <OakLI $mt="space-between-xs">Quizzes</OakLI>
+                </StyledUL>
+                <OakPrimaryButton
+                  element={Link}
+                  href="/aila/tools/teaching-materials"
+                  iconName="arrow-right"
+                  isTrailingIcon={true}
+                  $mt="space-between-m"
+                  onClick={() => {
+                    track.createTeachingMaterialsInitiated({
+                      platform: "aila-beta",
+                      product: "ai lesson assistant",
+                      engagementIntent: "use",
+                      componentType: "create_additional_materials_button",
+                      eventVersion: "2.0.0",
+                      analyticsUseCase: "Teacher",
+                      isLoggedIn: Boolean(user),
+                    });
+                  }}
+                >
+                  Create teaching materials
+                </OakPrimaryButton>
+              </OakFlex>
+            </OakBox>
+          </OakGridArea>
+        </OakGrid>
+        <OakFlex
+          $ph={["inner-padding-s", "inner-padding-s", "inner-padding-none"]}
+          // $alignItems={"flex-end"}
+          $justifyContent={"center"}
+        >
+          <OakBox $mt="space-between-l">
+            <ChatPanelDisclaimer size="sm" />
+          </OakBox>
         </OakFlex>
-        <OakFlex $mt="space-between-l">
-          <ChatPanelDisclaimer size="sm" />
-        </OakFlex>
-      </OakFlexWithHeight>
-    </Flex>
+      </OakMaxWidth>
+    </OakFlex>
   );
 }
-
-const OakFlexWithHeight = styled(OakFlex)`
-  height: 80%;
-`;
-
-const Card = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <OakFlex50
-      $flexDirection="column"
-      $gap="all-spacing-6"
-      $background="white"
-      $borderRadius="border-radius-s"
-      $pa="inner-padding-xl2"
-    >
-      {children}
-    </OakFlex50>
-  );
-};
-
-const OakFlex50 = styled(OakFlex)`
-  width: 50%;
-  height: fit-content;
-  @media (max-width: 768px) {
-    width: 100%;
-  }
-`;
