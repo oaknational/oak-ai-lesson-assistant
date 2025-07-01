@@ -33,7 +33,7 @@ export const Quiz = ({ generation }: QuizProps) => {
                   $font={option.isCorrect ? "body-2-bold" : "body-2"}
                   $mr="space-between-xs"
                 >
-                  {letter}).
+                  {letter})
                 </OakSpan>
                 <OakFlex $flexDirection="column">
                   <OakP $font={option.isCorrect ? "body-2-bold" : "body-2"}>
