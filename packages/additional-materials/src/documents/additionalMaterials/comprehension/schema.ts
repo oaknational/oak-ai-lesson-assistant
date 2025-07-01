@@ -2,6 +2,11 @@ import { z } from "zod";
 
 import { LessonPlanSchema } from "../../../../../aila/src/protocol/schema";
 
+export const readingAgeRefinement = [
+  "lowerReadingAge",
+  "increaseReadingAge",
+] as const;
+
 export const baseContext = {
   lessonPlan: LessonPlanSchema,
   transcript: z.string().nullish(),
@@ -34,7 +39,7 @@ export const isComprehensionTask = (
   return result.success;
 };
 
-const refinementTypes = z.enum(["custom"]);
+const refinementTypes = z.enum([...readingAgeRefinement, "custom"] as const);
 
 const refinementSchema = z.object({
   type: refinementTypes,

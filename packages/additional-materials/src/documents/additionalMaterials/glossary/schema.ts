@@ -26,8 +26,8 @@ export const isGlossary = (data: unknown): data is GlossarySchema => {
 // Refinements
 
 export const readingAgeRefinementMap = {
-  lowerReadingAge: "Lower the reading age of the text",
-  increaseReadingAge: "Increase the reading age of the text",
+  lowerReadingAge: "Lower reading age",
+  increaseReadingAge: "Increase reading age",
 } satisfies Record<AllowedReadingAgeRefinement, string>;
 
 export const readingAgeRefinement = [
