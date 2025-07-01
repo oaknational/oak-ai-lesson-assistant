@@ -37,7 +37,6 @@ const AnswerCheckbox = ({ isChecked }: AnswerCheckboxProps) => {
     </OakFlex>
   );
 };
-
 export const MultipleChoiceQuestion = ({
   question,
   questionNumber,
