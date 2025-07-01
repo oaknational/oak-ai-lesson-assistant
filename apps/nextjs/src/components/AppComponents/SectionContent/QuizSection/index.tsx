@@ -1,15 +1,14 @@
 import type {
-  QuizV1,
+  QuizV2,
   QuizV2QuestionMultipleChoice,
 } from "@oakai/aila/src/protocol/schema";
-import { convertQuizV1ToV2 } from "@oakai/aila/src/protocol/schemas/quiz/conversion/quizV1ToV2";
 
 import { OakBox, OakFlex, OakIcon, OakP } from "@oaknational/oak-components";
 
 import { shuffleMultipleChoiceAnswers } from "./shuffle";
 
 export type QuizSectionProps = {
-  quiz: QuizV1;
+  quiz: QuizV2;
 };
 
 type MultipleChoiceQuestionProps = {
@@ -76,11 +75,9 @@ const MultipleChoiceQuestion = ({
 };
 
 export const QuizSection = ({ quiz }: QuizSectionProps) => {
-  const quizV2 = convertQuizV1ToV2(quiz);
-  const questions = quizV2.questions;
   return (
     <>
-      {questions.map((question, index) => {
+      {quiz.questions.map((question, index) => {
         if (question.questionType === "multiple-choice") {
           return (
             <MultipleChoiceQuestion

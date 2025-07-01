@@ -82,3 +82,35 @@ export type QuizV2QuestionShortAnswer = z.infer<
 >;
 export type QuizV2QuestionMatch = z.infer<typeof QuizV2QuestionMatchSchema>;
 export type QuizV2QuestionOrder = z.infer<typeof QuizV2QuestionOrderSchema>;
+
+// ********** LLM-SPECIFIC SCHEMAS (MULTIPLE CHOICE ONLY) **********
+
+// LLM can only generate multiple choice questions, so we create specific schemas for that
+export const QuizV2MultipleChoiceOnlyQuestionSchema =
+  QuizV2QuestionMultipleChoiceSchema;
+
+export const QuizV2MultipleChoiceOnlySchema = z.object({
+  version: z.literal("v2").describe("Schema version identifier"),
+  questions: z
+    .array(QuizV2MultipleChoiceOnlyQuestionSchema)
+    .describe("Array of multiple choice quiz questions"),
+});
+
+export const QuizV2MultipleChoiceOnlySchemaWithoutLength =
+  QuizV2MultipleChoiceOnlySchema;
+
+export const QuizV2MultipleChoiceOnlyOptionalSchema =
+  QuizV2MultipleChoiceOnlySchema.optional();
+
+export const QuizV2MultipleChoiceOnlyStrictMax6Schema =
+  QuizV2MultipleChoiceOnlySchema.extend({
+    questions: z.array(QuizV2MultipleChoiceOnlyQuestionSchema).min(1).max(6),
+  });
+
+// Type exports for LLM-specific schemas
+export type QuizV2MultipleChoiceOnly = z.infer<
+  typeof QuizV2MultipleChoiceOnlySchema
+>;
+export type QuizV2MultipleChoiceOnlyOptional = z.infer<
+  typeof QuizV2MultipleChoiceOnlyOptionalSchema
+>;
