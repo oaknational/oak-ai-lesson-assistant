@@ -294,7 +294,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           <OakP $textAlign="left" $font="body-1">
             Already planned your lesson? You can ask Aila to create glossaries,
             comprehension tasks and quizzes in minutes to enhance an existing
-            Oak lesson or your own lesson.Simply tell Aila what you want to
+            Oak lesson or your own lesson. Simply tell Aila what you want to
             teach, choose your teaching material and create a tailored resource
             in minutes. Download your resource, or try asking Aila to modify it
             to better suit your pupils&apos; needs.
