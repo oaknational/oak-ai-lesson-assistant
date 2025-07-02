@@ -70,7 +70,6 @@ const AdditionalMaterialsStartAgain = ({
         <OakSecondaryLink
           element="button"
           aria-label={`Back to ${docTypeDisplayName}`}
-          color="text-link-active"
           onClick={closeDialog}
         >
           {`Back to ${docTypeDisplayName}`}
