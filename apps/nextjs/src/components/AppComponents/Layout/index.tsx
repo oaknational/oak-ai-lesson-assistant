@@ -1,6 +1,5 @@
 "use client";
 
-import { useDemoUser } from "@/components/ContextProviders/Demo";
 import Footer from "@/components/Footer";
 
 import { Header } from "../Chat/header";

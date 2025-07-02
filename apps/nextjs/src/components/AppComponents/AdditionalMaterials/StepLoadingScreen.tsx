@@ -1,9 +1,4 @@
-import {
-  OakBox,
-  OakFlex,
-  OakLoadingSpinner,
-  OakP,
-} from "@oaknational/oak-components";
+import { OakFlex, OakLoadingSpinner, OakP } from "@oaknational/oak-components";
 
 const StepLoadingScreen = ({
   docTypeName,

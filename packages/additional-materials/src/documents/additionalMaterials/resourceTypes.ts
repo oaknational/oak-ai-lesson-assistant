@@ -93,7 +93,11 @@ export type BaseResourceTypeConfig = {
   displayName: string;
   description: string;
   refinementOptions: RefinementOption[];
-  analyticPropertyName: "comprehension task" | "exit quiz" | "glossary" | "starter quiz";
+  analyticPropertyName:
+    | "comprehension task"
+    | "exit quiz"
+    | "glossary"
+    | "starter quiz";
   isAvailable: boolean;
   systemMessage: () => string;
   schema: ZodType;

@@ -1,7 +1,6 @@
 import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 
 import {
-  OakBox,
   OakFlex,
   OakHeading,
   OakP,
