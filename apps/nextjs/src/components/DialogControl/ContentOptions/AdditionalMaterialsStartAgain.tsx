@@ -68,10 +68,10 @@ const AdditionalMaterialsStartAgain = ({
           Yes, I want to start again
         </OakPrimaryButton>
         <OakSecondaryLink
+          element="button"
+          aria-label={`Back to ${docTypeDisplayName}`}
           color="text-link-active"
-          onClick={() => {
-            closeDialog();
-          }}
+          onClick={closeDialog}
         >
           {`Back to ${docTypeDisplayName}`}
         </OakSecondaryLink>

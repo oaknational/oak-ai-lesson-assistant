@@ -79,6 +79,7 @@ const AdditionalMaterialsModerationFeedback = ({
         $justifyContent="space-between"
       >
         <OakSecondaryLink
+          element="button"
           onClick={() => {
             if (resetToDefault) resetToDefault();
             onBack();

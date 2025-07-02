@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
 import { isExitQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/exitQuiz/schema";
@@ -110,6 +110,22 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
   // Get resource type from configuration
   const resourceType = docType ? getResourceType(docType) : null;
   const refinementOptions = resourceType?.refinementOptions ?? [];
+
+  const refinementRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  useEffect(() => {
+    if (isFooterAdaptOpen && refinementRefs.current[0]) {
+      refinementRefs.current[0].focus();
+    }
+  }, [isFooterAdaptOpen]);
+
+  useEffect(() => {
+    if (refinementHistory.length > 0 && !isResourceRefining) {
+      const btn = document.getElementById("undo-btn");
+      btn?.focus();
+    }
+  }, [isResourceRefining, refinementHistory.length]);
+
   const handleDownloadMaterial = async () => {
     if (!generation || !docType) {
       return;
@@ -184,6 +200,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                 Done!
               </OakP>
               <OakSmallTertiaryInvertedButton
+                id="undo-btn"
                 onClick={undoRefinement}
                 disabled={
                   isResourcesLoading || isResourceRefining || isDownloading
@@ -197,19 +214,12 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
           <OakFlex $justifyContent="space-between" $width="100%">
             {isFooterAdaptOpen ? (
               <OakFlex
-                $flexDirection="row-reverse"
+                $flexDirection="row"
                 $gap="all-spacing-5"
                 $width="100%"
                 $justifyContent="space-between"
                 $alignItems="center"
               >
-                <OakPrimaryInvertedButton
-                  onClick={() => setIsFooterAdaptOpen(false)}
-                  iconName="cross"
-                >
-                  Close
-                </OakPrimaryInvertedButton>
-
                 <OakFlex $gap="all-spacing-2" $flexWrap="wrap">
                   {isResourceRefining ? (
                     <OakFlex $alignItems="center" $gap="all-spacing-2">
@@ -218,17 +228,28 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                     </OakFlex>
                   ) : (
                     <>
-                      {refinementOptions.map((refinement: RefinementOption) => (
-                        <InlineButton
-                          key={refinement.id}
-                          onClick={() => handleRefineMaterial(refinement.value)}
-                        >
-                          {refinement.label}
-                        </InlineButton>
-                      ))}
+                      {refinementOptions.map(
+                        (refinement: RefinementOption, index) => (
+                          <InlineButton
+                            ref={(el) => (refinementRefs.current[index] = el)}
+                            key={refinement.id}
+                            onClick={() =>
+                              handleRefineMaterial(refinement.value)
+                            }
+                          >
+                            {refinement.label}
+                          </InlineButton>
+                        ),
+                      )}
                     </>
                   )}
                 </OakFlex>
+                <OakPrimaryInvertedButton
+                  onClick={() => setIsFooterAdaptOpen(false)}
+                  iconName="cross"
+                >
+                  Close
+                </OakPrimaryInvertedButton>
               </OakFlex>
             ) : (
               <>
