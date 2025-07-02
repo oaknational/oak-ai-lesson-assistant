@@ -78,6 +78,14 @@ const MockOakSecondaryButtonWithJustIcon = styled.button<{
     `}
 `;
 
+const MobileNoLetterSpacingButton = styled(OakSecondaryButton)`
+  @media (max-width: 600px) {
+    button div span {
+      letter-spacing: 0;
+    }
+  }
+`;
+
 type StepFourProps = {
   handleRefineMaterial: (refinementValue: string) => void;
 };
@@ -285,7 +293,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                       <OakIcon iconName="download" iconWidth="all-spacing-7" />
                     )}
                   </MockOakSecondaryButtonWithJustIcon>
-                  <OakSecondaryButton
+                  <MobileNoLetterSpacingButton
                     onClick={() => {
                       setIsFooterAdaptOpen(true);
                     }}
@@ -296,14 +304,14 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                     }
                   >
                     Modify
-                  </OakSecondaryButton>
-                  <OakSecondaryButton
+                  </MobileNoLetterSpacingButton>
+                  <MobileNoLetterSpacingButton
                     onClick={() =>
                       setDialogWindow("additional-materials-start-again")
                     }
                   >
                     Start again
-                  </OakSecondaryButton>
+                  </MobileNoLetterSpacingButton>
                 </OakFlex>
               </>
             )}
