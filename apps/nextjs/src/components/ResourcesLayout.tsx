@@ -6,9 +6,6 @@ import {
   OakP,
 } from "@oaknational/oak-components";
 
-import { DemoBanner } from "@/components/AppComponents/Chat/demo-banner";
-import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
-
 import { useDemoUser } from "./ContextProviders/Demo";
 import HeaderManager from "./HeaderManager";
 
@@ -19,34 +16,23 @@ type LayoutProps = {
   step: number;
   docTypeName: string | null;
 };
-const ResourcesLayout = ({
+const TeachingMaterialsLayout = ({
   children,
   title,
   subTitle,
   step,
   docTypeName,
 }: Readonly<LayoutProps>) => {
-  const { isDemoUser, demo } = useDemoUser();
-
-  // Check whether clerk metadata has loaded to prevent the banner from flashing
-  const clerkMetadata = useClerkDemoMetadata();
+  const { isDemoUser } = useDemoUser();
   return (
     <>
-      {clerkMetadata.isSet && isDemoUser && (
-        <DemoBanner
-          resourceType="additionalMaterials"
-          monthlyLimit={demo.appSessionsPerMonth}
-          remaining={demo.additionalMaterialsSessionsRemaining}
-          contactHref={demo.contactHref}
-        />
-      )}
       <OakBox
         as={"header"}
         $position={"fixed"}
         $zIndex={"banner"}
         $width={"100%"}
       >
-        <HeaderManager />
+        <HeaderManager page={"teachingMaterials"} />
       </OakBox>
       <OakFlex
         as="main"
@@ -60,7 +46,10 @@ const ResourcesLayout = ({
         $ph={["inner-padding-xl", "inner-padding-xl4"]}
       >
         <OakMaxWidth
-          $mt={["space-between-m"]}
+          $mt={[
+            isDemoUser ? "space-between-xxl" : "space-between-m",
+            "space-between-m",
+          ]}
           $position={"relative"}
           $background="white"
           $borderRadius="border-radius-m"
@@ -112,4 +101,4 @@ const ResourcesLayout = ({
   );
 };
 
-export default ResourcesLayout;
+export default TeachingMaterialsLayout;

@@ -23,9 +23,7 @@ import EmptyScreenAccordion from "../empty-screen-accordion";
 
 const StyledUL = styled(OakUL)`
   list-style-type: disc;
-  /* margin-top: 1em; */
 
-  /* margin-left: 40px; */
   padding-left: 20px;
 `;
 
@@ -38,13 +36,6 @@ export function AilaStart() {
       $background="lavender30"
       $flexDirection="column"
       $alignItems="center"
-      // $width="100%"
-      // $flexGrow="1"
-      // $ph={["inner-padding-xl8"]}
-      // $pt={"inner-padding-m"}
-      // $justifyContent="flex-start"
-      // $alignItems={"center"} // This centers horizontally in a column flex
-      // $justifyContent={"flex-start"}
       $minHeight={["100%", "100vh", "100vh"]}
     >
       <OakMaxWidth
@@ -60,8 +51,6 @@ export function AilaStart() {
           $mh="auto"
           $mt={["space-between-xxxl"]}
           $ph={["inner-padding-s", "inner-padding-s", "inner-padding-none"]}
-
-          // $mh={["space-between-m", "space-between-s", "space-between-none"]} // Adjusted for responsiveness
         >
           <OakGridArea $alignContent={"center"} $colSpan={[12, 6, 7]}>
             <OakBox

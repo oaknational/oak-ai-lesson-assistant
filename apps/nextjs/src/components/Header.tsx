@@ -2,11 +2,19 @@ import { OakBox, OakFlex, OakIcon, OakP } from "@oaknational/oak-components";
 import Link from "next/link";
 import styled from "styled-components";
 
+import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
+
+import { DemoBanner } from "./AppComponents/Chat/demo-banner";
+import { useDemoUser } from "./ContextProviders/Demo";
 import HeaderAuth from "./HeaderAuth";
 import { Logo } from "./Logo";
 import OakIconLogo from "./OakIconLogo";
 
-type HeaderProps = { menuOpen: boolean; setMenuOpen: (open: boolean) => void };
+type HeaderProps = {
+  menuOpen: boolean;
+  page?: "teachingMaterials" | "aila";
+  setMenuOpen: (open: boolean) => void;
+};
 
 const HamburgerButton = styled.button`
   display: inline-block;
@@ -14,7 +22,11 @@ const HamburgerButton = styled.button`
   height: 28px;
 `;
 
-const Header = ({ menuOpen, setMenuOpen }: Readonly<HeaderProps>) => {
+const Header = ({ menuOpen, setMenuOpen, page }: Readonly<HeaderProps>) => {
+  const { isDemoUser, demo } = useDemoUser();
+
+  // Check whether clerk metadata has loaded to prevent the banner from flashing
+  const clerkMetadata = useClerkDemoMetadata();
   return (
     <OakBox
       $position="absolute"
@@ -24,6 +36,14 @@ const Header = ({ menuOpen, setMenuOpen }: Readonly<HeaderProps>) => {
       $zIndex="fixed-header"
       $bb={"border-solid-m"}
     >
+      {clerkMetadata.isSet && isDemoUser && page && (
+        <DemoBanner
+          page={page}
+          monthlyLimit={demo.appSessionsPerMonth}
+          remaining={demo.additionalMaterialsSessionsRemaining}
+          contactHref={demo.contactHref}
+        />
+      )}
       <OakFlex
         as="header"
         $height="all-spacing-12"

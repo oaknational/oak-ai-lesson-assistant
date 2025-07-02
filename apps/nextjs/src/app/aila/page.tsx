@@ -28,7 +28,7 @@ export default function IndexPage({ searchParams }: IndexPageProps) {
   return (
     <>
       <SignedIn>
-        <Layout>
+        <Layout page={"aila"}>
           <ChatStart
             keyStage={keyStage}
             subject={subject}
