@@ -1,13 +1,17 @@
 import { generateAdditionalMaterialModeration } from "@oakai/additional-materials";
 import { generateAdditionalMaterialObject } from "@oakai/additional-materials/src/documents/additionalMaterials/generateAdditionalMaterialObject";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
-import type { moderationResponseSchema } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
-
-import type { SignedInAuthObject } from "@clerk/backend/internal";
-import type { z } from "zod";
 
 import { generateAdditionalMaterial } from "./generateAdditionalMaterial";
+import {
+  mockAuth,
+  mockGlossaryResult,
+  mockModerationResult,
+  mockPrisma,
+  mockPrismaInteraction,
+  mockRateLimit,
+  mockToxicModerationResult,
+} from "./testFixtures";
 
 // Cast the mocked functions
 const mockGenerateAdditionalMaterialObject =
@@ -52,77 +56,6 @@ jest.mock(
     },
   }),
 );
-
-// Mock fixture data
-const mockGlossaryResult = {
-  lessonTitle: "Test Lesson Title",
-  glossary: [
-    {
-      term: "Mock Term 1",
-      definition: "Mock definition for term 1",
-    },
-    {
-      term: "Mock Term 2",
-      definition: "Mock definition for term 2",
-    },
-  ],
-};
-
-const mockModerationResult = {
-  justification: "Content is safe for educational use",
-  scores: {
-    l: 5,
-    v: 5,
-    u: 5,
-    s: 5,
-    p: 5,
-    t: 5,
-  },
-  categories: [],
-};
-
-const mockPrismaInteraction = {
-  id: "mock-interaction-id",
-  userId: "test-user",
-  config: {
-    resourceType: "additional-glossary",
-    resourceTypeVersion: 1,
-  },
-  output: mockGlossaryResult,
-  outputModeration: mockModerationResult,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
-const mockPrisma = {
-  additionalMaterialInteraction: {
-    update: jest.fn(),
-    create: jest.fn(),
-  },
-} as unknown as PrismaClientWithAccelerate;
-
-const mockAuth: SignedInAuthObject = {
-  userId: "test-user-id",
-  user: { id: "test-user-id" },
-  sessionClaims: {},
-  sessionId: "session_123",
-  actor: undefined,
-  orgId: undefined,
-  orgRole: undefined,
-  orgSlug: undefined,
-  orgPermissions: undefined,
-  __experimental_factorVerificationAge: null,
-  debug: () => ({}),
-  getToken: jest.fn().mockResolvedValue("mock-token"),
-  has: jest.fn().mockReturnValue(false),
-} as unknown as SignedInAuthObject;
-
-const mockRateLimit = {
-  isSubjectToRateLimiting: true as const,
-  limit: 100,
-  remaining: 99,
-  reset: Date.now() + 3600000,
-};
 
 describe("generateAdditionalMaterial", () => {
   beforeEach(() => {
@@ -204,21 +137,8 @@ describe("generateAdditionalMaterial", () => {
   });
 
   it("should handle toxic moderation results", async () => {
-    const toxicModerationResult: z.infer<typeof moderationResponseSchema> = {
-      scores: {
-        l: 2,
-        v: 3,
-        u: 2,
-        s: 5,
-        p: 5,
-        t: 1,
-      },
-      justification: "Content contains inappropriate material",
-      categories: ["t/encouragement-harmful-behaviour"],
-    };
-
     mockGenerateAdditionalMaterialModeration.mockResolvedValueOnce(
-      toxicModerationResult,
+      mockToxicModerationResult,
     );
     mockIsToxic.mockReturnValueOnce(true); // Mock isToxic to return true for this test
 
@@ -244,7 +164,7 @@ describe("generateAdditionalMaterial", () => {
     const result = await generateAdditionalMaterial(params);
 
     expect(result.resource).toBeNull();
-    expect(result.moderation).toEqual(toxicModerationResult);
+    expect(result.moderation).toEqual(mockToxicModerationResult);
     expect(result.resourceId).toBe("mock-interaction-id");
     expect(result.rateLimit).toEqual(mockRateLimit);
   });
