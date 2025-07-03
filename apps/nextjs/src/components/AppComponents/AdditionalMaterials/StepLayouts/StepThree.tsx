@@ -9,8 +9,6 @@ import {
   OakLink,
   OakOL,
   OakP,
-  OakPrimaryButton,
-  OakPrimaryInvertedButton,
 } from "@oaknational/oak-components";
 
 import {
@@ -29,6 +27,7 @@ import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
 import StepLoadingScreen from "../StepLoadingScreen";
+import SharedNavigationButtons from "./SharedFooterNavigationButtons";
 
 export function mapLessonPlanSections(
   lessonPlan: AilaPersistedChat["lessonPlan"],
@@ -102,24 +101,15 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
       </OakFlex>
 
       <ResourcesFooter>
-        <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <OakPrimaryInvertedButton
-            iconName="chevron-left"
-            onClick={() => setStepNumber(0, "back_a_step_button")}
-          >
-            Back a step
-          </OakPrimaryInvertedButton>
-
-          <OakPrimaryButton
-            onClick={() => {
-              void handleSubmit();
-            }}
-            iconName="arrow-right"
-            isTrailingIcon={true}
-          >
-            Create {docTypeName}
-          </OakPrimaryButton>
-        </OakFlex>
+        <SharedNavigationButtons
+          backLabel="Back a step"
+          nextLabel={`Create ${docTypeName}`}
+          mobileNextLabel="Create"
+          onBackClick={() => setStepNumber(1, "back_a_step_button")}
+          onNextClick={() => {
+            void handleSubmit();
+          }}
+        />
       </ResourcesFooter>
     </>
   );

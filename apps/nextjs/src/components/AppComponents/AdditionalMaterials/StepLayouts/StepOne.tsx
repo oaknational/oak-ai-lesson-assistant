@@ -6,8 +6,6 @@ import {
   OakFlex,
   OakLabel,
   OakP,
-  OakPrimaryButton,
-  OakPrimaryInvertedButton,
   OakRadioButton,
   OakRadioGroup,
 } from "@oaknational/oak-components";
@@ -21,6 +19,7 @@ import { docTypeSelector } from "@/stores/resourcesStore/selectors";
 import { useDialog } from "../../DialogContext";
 import FormValidationWarning from "../../FormValidationWarning";
 import ResourcesFooter from "../ResourcesFooter";
+import SharedNavigationButtons from "./SharedFooterNavigationButtons";
 import { handleDialogSelection } from "./helpers";
 
 const StepOne = ({
@@ -97,29 +96,19 @@ const StepOne = ({
       </OakFlex>
 
       <ResourcesFooter>
-        <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <OakPrimaryInvertedButton
-            element="a"
-            href="/aila/tools"
-            iconName="chevron-left"
-          >
-            Back a step
-          </OakPrimaryInvertedButton>
-          <OakPrimaryButton
-            onClick={() => {
-              if (!docType) {
-                setShowValidationError("Please select a teaching material.");
-                return;
-              }
-
-              handleCreateSession({ documentType: docType });
-            }}
-            iconName="arrow-right"
-            isTrailingIcon={true}
-          >
-            Next, provide lesson details
-          </OakPrimaryButton>
-        </OakFlex>
+        <SharedNavigationButtons
+          backLabel="Back a step"
+          nextLabel="Next, provide lesson details"
+          onBackClick={() => {}} // href="/aila/tools"
+          backHref="/aila/tools"
+          onNextClick={() => {
+            if (!docType) {
+              setShowValidationError("Please select a teaching material.");
+              return;
+            }
+            handleCreateSession({ documentType: docType });
+          }}
+        />
       </ResourcesFooter>
     </>
   );

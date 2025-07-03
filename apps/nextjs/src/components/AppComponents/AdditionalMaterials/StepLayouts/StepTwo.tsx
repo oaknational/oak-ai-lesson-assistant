@@ -2,13 +2,7 @@ import { useEffect, useState } from "react";
 
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 
-import {
-  OakFlex,
-  OakPrimaryButton,
-  OakPrimaryInvertedButton,
-  OakTextInput,
-} from "@oaknational/oak-components";
-import styled from "styled-components";
+import { OakBox, OakFlex, OakTextInput } from "@oaknational/oak-components";
 import invariant from "tiny-invariant";
 
 import {
@@ -25,6 +19,7 @@ import {
 import FormValidationWarning from "../../FormValidationWarning";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
+import SharedNavigationButtons from "./SharedFooterNavigationButtons";
 
 type SubmitLessonPlanParams = {
   title: string;
@@ -55,25 +50,6 @@ const StepTwo = ({
   const docTypeName = resourceType
     ? resourceType.displayName.toLowerCase()
     : null;
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setPlaceholder("Type a learning objective");
-      } else {
-        setPlaceholder("Type a lesson title or learning outcome");
-      }
-    };
-
-    // Set initial value
-    handleResize();
-
-    // Add event listener
-    window.addEventListener("resize", handleResize);
-
-    // Clean up
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const validateForm = (
     titleToCheck: string | null | undefined,
@@ -169,56 +145,56 @@ const StepTwo = ({
             setActiveDropdown={setActiveDropdown}
           />
         </OakFlex>
-        <OakTextInput
-          onChange={(value) => {
-            const newTitle = value.target.value;
-            setTitle(newTitle);
-            updateValidationMessage(newTitle, undefined, undefined);
-          }}
-          value={title ?? ""}
-          placeholder={placeholder}
-        />
+        <OakBox $display={["block", "none"]}>
+          <OakTextInput
+            onChange={(value) => {
+              const newTitle = value.target.value;
+              setTitle(newTitle);
+              updateValidationMessage(newTitle, undefined, undefined);
+            }}
+            value={title ?? ""}
+            placeholder={"Type a learning objective"}
+          />
+        </OakBox>
+        <OakBox $display={["none", "block"]}>
+          <OakTextInput
+            onChange={(value) => {
+              const newTitle = value.target.value;
+              setTitle(newTitle);
+              updateValidationMessage(newTitle, undefined, undefined);
+            }}
+            placeholder={"Type a lesson title or learning outcome"}
+            value={title ?? ""}
+          />
+        </OakBox>
         {!!showValidationError && (
           <FormValidationWarning errorMessage={showValidationError} />
         )}
       </OakFlex>
 
       <ResourcesFooter>
-        <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <OakPrimaryInvertedButton
-            iconName="chevron-left"
-            onClick={() => setStepNumber(0, "back_a_step_button")}
-          >
-            Back a step
-          </OakPrimaryInvertedButton>
-
-          <OakPrimaryButton
-            onClick={() => {
-              // Set validation as attempted to show messages going forward
-              setValidationAttempted(true);
-
-              const { isValid } = validateForm(title, year, subject);
-              if (!isValid) {
-                validateInputs();
-                return;
-              }
-              invariant(
-                title && subject && year,
-                "Title, subject, and year must be provided to generate lesson plan",
-              );
-
-              void handleSubmitLessonPlan({
-                title: title,
-                subject: subject,
-                year: year,
-              });
-            }}
-            iconName="arrow-right"
-            isTrailingIcon={true}
-          >
-            Next, review lesson details
-          </OakPrimaryButton>
-        </OakFlex>
+        <SharedNavigationButtons
+          backLabel="Back a step"
+          nextLabel="Next, review lesson details"
+          onBackClick={() => setStepNumber(0, "back_a_step_button")}
+          onNextClick={() => {
+            setValidationAttempted(true);
+            const { isValid } = validateForm(title, year, subject);
+            if (!isValid) {
+              validateInputs();
+              return;
+            }
+            invariant(
+              title && subject && year,
+              "Title, subject, and year must be provided to generate lesson plan",
+            );
+            void handleSubmitLessonPlan({
+              title,
+              subject,
+              year,
+            });
+          }}
+        />
       </ResourcesFooter>
     </>
   );
