@@ -15,12 +15,12 @@ import {
   titleSelector,
   yearSelector,
 } from "@/stores/resourcesStore/selectors";
-import { validateForm } from "@/utils/validationHelpers";
 
 import FormValidationWarning from "../../FormValidationWarning";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
 import SharedNavigationButtons from "./SharedFooterNavigationButtons";
+import { validateForm } from "./helpers";
 
 type SubmitLessonPlanParams = {
   title: string;
@@ -63,17 +63,19 @@ const StepTwo = ({
   };
 
   const updateValidationMessage = (
-    updatedTitle?: string,
-    updatedYear?: string,
-    updatedSubject?: string,
+    updates: {
+      updatedTitle?: string;
+      updatedYear?: string;
+      updatedSubject?: string;
+    } = {},
   ) => {
     // Only update validation message if validation has been attempted
     if (!validationAttempted) return;
 
     // Use the updated values or fall back to current state values
-    const titleToCheck = updatedTitle ?? title;
-    const yearToCheck = updatedYear ?? year;
-    const subjectToCheck = updatedSubject ?? subject;
+    const titleToCheck = updates.updatedTitle ?? title;
+    const yearToCheck = updates.updatedYear ?? year;
+    const subjectToCheck = updates.updatedSubject ?? subject;
 
     const { errorMessage } = validateForm(
       titleToCheck,
@@ -96,7 +98,7 @@ const StepTwo = ({
             selectedYear={year}
             setSelectedYear={(year: string) => {
               setYear(year);
-              updateValidationMessage(undefined, year, undefined);
+              updateValidationMessage({ updatedYear: year });
             }}
             activeDropdown={activeDropdown}
             setActiveDropdown={setActiveDropdown}
@@ -105,7 +107,7 @@ const StepTwo = ({
             selectedSubject={subject}
             setSelectedSubject={(subject: string) => {
               setSubject(subject);
-              updateValidationMessage(undefined, undefined, subject);
+              updateValidationMessage({ updatedSubject: subject });
             }}
             activeDropdown={activeDropdown}
             setActiveDropdown={setActiveDropdown}
@@ -116,7 +118,7 @@ const StepTwo = ({
             onChange={(value) => {
               const newTitle = value.target.value;
               setTitle(newTitle);
-              updateValidationMessage(newTitle, undefined, undefined);
+              updateValidationMessage({ updatedTitle: newTitle });
             }}
             value={title ?? ""}
             placeholder={"Type a learning objective"}
@@ -127,7 +129,7 @@ const StepTwo = ({
             onChange={(value) => {
               const newTitle = value.target.value;
               setTitle(newTitle);
-              updateValidationMessage(newTitle, undefined, undefined);
+              updateValidationMessage({ updatedTitle: newTitle });
             }}
             placeholder={"Type a lesson title or learning outcome"}
             value={title ?? ""}
