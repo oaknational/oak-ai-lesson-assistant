@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 
@@ -15,6 +15,7 @@ import {
   titleSelector,
   yearSelector,
 } from "@/stores/resourcesStore/selectors";
+import { validateForm } from "@/utils/validationHelpers";
 
 import FormValidationWarning from "../../FormValidationWarning";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
@@ -42,57 +43,21 @@ const StepTwo = ({
 
   const [showValidationError, setShowValidationError] = useState("");
   const [validationAttempted, setValidationAttempted] = useState(false);
-  const [placeholder, setPlaceholder] = useState(
-    "Type a lesson title or learning outcome",
-  );
 
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType
     ? resourceType.displayName.toLowerCase()
     : null;
 
-  const validateForm = (
-    titleToCheck: string | null | undefined,
-    yearToCheck: string | null | undefined,
-    subjectToCheck: string | null | undefined,
-  ) => {
-    if (!titleToCheck && !subjectToCheck && !yearToCheck) {
-      return {
-        isValid: false,
-        errorMessage: `Please provide a year group, subject and lesson details, so that Aila has the right context for your ${docTypeName}.`,
-      };
-    } else if (!yearToCheck && !subjectToCheck) {
-      return {
-        isValid: false,
-        errorMessage: `Please select a year group and subject, so that Aila has the right context for your ${docTypeName}.`,
-      };
-    } else if (!yearToCheck) {
-      return {
-        isValid: false,
-        errorMessage: `Please select a year group, so that Aila has the right context for your ${docTypeName}.`,
-      };
-    } else if (!subjectToCheck) {
-      return {
-        isValid: false,
-        errorMessage: `Please select a subject, so that Aila has the right context for your ${docTypeName}.`,
-      };
-    } else if (!titleToCheck) {
-      return {
-        isValid: false,
-        errorMessage: `Please provide your lesson details, so that Aila has the right context for your ${docTypeName}.`,
-      };
-    } else if (titleToCheck.length < 10) {
-      return {
-        isValid: false,
-        errorMessage: `Please provide a longer lesson title.`,
-      };
-    }
-
-    return { isValid: true, errorMessage: "" };
-  };
+  // Using the imported validateForm utility
 
   const validateInputs = () => {
-    const { isValid, errorMessage } = validateForm(title, year, subject);
+    const { isValid, errorMessage } = validateForm(
+      title,
+      year,
+      subject,
+      docTypeName,
+    );
     setShowValidationError(errorMessage);
     return isValid;
   };
@@ -114,6 +79,7 @@ const StepTwo = ({
       titleToCheck,
       yearToCheck,
       subjectToCheck,
+      docTypeName,
     );
     setShowValidationError(errorMessage);
   };
@@ -179,7 +145,7 @@ const StepTwo = ({
           onBackClick={() => setStepNumber(0, "back_a_step_button")}
           onNextClick={() => {
             setValidationAttempted(true);
-            const { isValid } = validateForm(title, year, subject);
+            const { isValid } = validateForm(title, year, subject, docTypeName);
             if (!isValid) {
               validateInputs();
               return;
