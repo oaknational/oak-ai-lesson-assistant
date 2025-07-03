@@ -74,9 +74,9 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
             {pageData.lessonPlan.learningOutcome}
           </OakP>
 
-          <OakP $font="body-2" $mb={"space-between-m"}>
-            This lesson would include:
-          </OakP>
+          <OakHeading $mb={"space-between-xs"} tag="h2" $font={"heading-6"}>
+            Key learning points
+          </OakHeading>
 
           <OakOL>
             {pageData.lessonPlan.keyLearningPoints?.map((point, index) => (
