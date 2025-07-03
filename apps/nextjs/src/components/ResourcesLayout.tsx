@@ -6,6 +6,7 @@ import {
   OakP,
 } from "@oaknational/oak-components";
 
+import { Header } from "./AppComponents/Chat/header";
 import { useDemoUser } from "./ContextProviders/Demo";
 import HeaderManager from "./HeaderManager";
 
@@ -32,7 +33,7 @@ const TeachingMaterialsLayout = ({
         $zIndex={"banner"}
         $width={"100%"}
       >
-        <HeaderManager page={"teachingMaterials"} />
+        <Header page={"teachingMaterials"} />
       </OakBox>
       <OakFlex
         as="main"
