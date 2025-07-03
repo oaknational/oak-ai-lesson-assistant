@@ -8,7 +8,6 @@ import {
 
 import { Header } from "./AppComponents/Chat/header";
 import { useDemoUser } from "./ContextProviders/Demo";
-import HeaderManager from "./HeaderManager";
 
 type LayoutProps = {
   children: React.ReactNode;
