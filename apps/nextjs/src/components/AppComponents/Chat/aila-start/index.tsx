@@ -70,15 +70,16 @@ export function AilaStart() {
                 </OakP>
 
                 <EmptyScreenAccordion />
-                <OakPrimaryButton
-                  element={Link}
-                  href="/aila"
-                  iconName="arrow-right"
-                  isTrailingIcon={true}
-                  $mt="space-between-l"
-                >
-                  Create a lesson
-                </OakPrimaryButton>
+                <OakBox $mt="space-between-l">
+                  <OakPrimaryButton
+                    element={Link}
+                    href="/aila"
+                    iconName="arrow-right"
+                    isTrailingIcon={true}
+                  >
+                    Create a lesson
+                  </OakPrimaryButton>
+                </OakBox>
               </OakFlex>
             </OakBox>
           </OakGridArea>
@@ -101,26 +102,27 @@ export function AilaStart() {
                   <OakLI $mv="space-between-xs">Comprehension tasks</OakLI>
                   <OakLI $mt="space-between-xs">Quizzes</OakLI>
                 </StyledUL>
-                <OakPrimaryButton
-                  element={Link}
-                  href="/aila/tools/teaching-materials"
-                  iconName="arrow-right"
-                  isTrailingIcon={true}
-                  $mt="space-between-m"
-                  onClick={() => {
-                    track.createTeachingMaterialsInitiated({
-                      platform: "aila-beta",
-                      product: "ai lesson assistant",
-                      engagementIntent: "use",
-                      componentType: "create_additional_materials_button",
-                      eventVersion: "2.0.0",
-                      analyticsUseCase: "Teacher",
-                      isLoggedIn: Boolean(user),
-                    });
-                  }}
-                >
-                  Create teaching materials
-                </OakPrimaryButton>
+                <OakBox $mt="space-between-m">
+                  <OakPrimaryButton
+                    element={Link}
+                    href="/aila/tools/teaching-materials"
+                    iconName="arrow-right"
+                    isTrailingIcon={true}
+                    onClick={() => {
+                      track.createTeachingMaterialsInitiated({
+                        platform: "aila-beta",
+                        product: "ai lesson assistant",
+                        engagementIntent: "use",
+                        componentType: "create_additional_materials_button",
+                        eventVersion: "2.0.0",
+                        analyticsUseCase: "Teacher",
+                        isLoggedIn: Boolean(user),
+                      });
+                    }}
+                  >
+                    Create teaching materials
+                  </OakPrimaryButton>
+                </OakBox>
               </OakFlex>
             </OakBox>
           </OakGridArea>
