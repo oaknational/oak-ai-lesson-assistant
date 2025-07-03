@@ -59,12 +59,20 @@ export async function generateAdditionalMaterial({
       `Failed to generate additional material -  Doctype: ${input.documentType} - lessonId ${input.lessonId}`,
     );
     Sentry.captureException(error);
+    throw error;
   }
 
   const moderation = await generateAdditionalMaterialModeration({
     input: JSON.stringify(result),
     provider: "openai",
   });
+
+  if (!moderation) {
+    const error = new Error(
+      `Failed to generate moderation -  Doctype: ${input.documentType} - lessonId ${input.lessonId}`,
+    );
+    Sentry.captureException(error);
+  }
 
   const { resourceId, adaptsOutputId, documentType } = input;
   const version = additionalMaterialsConfigMap[documentType].version;
