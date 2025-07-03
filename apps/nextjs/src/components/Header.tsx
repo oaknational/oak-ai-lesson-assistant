@@ -40,7 +40,11 @@ const Header = ({ menuOpen, setMenuOpen, page }: Readonly<HeaderProps>) => {
         <DemoBanner
           page={page}
           monthlyLimit={demo.appSessionsPerMonth}
-          remaining={demo.additionalMaterialsSessionsRemaining}
+          remaining={
+            page == "teachingMaterials"
+              ? demo.additionalMaterialsSessionsRemaining
+              : demo.appSessionsRemaining
+          }
           contactHref={demo.contactHref}
         />
       )}

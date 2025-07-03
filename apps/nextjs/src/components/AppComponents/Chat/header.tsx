@@ -41,7 +41,11 @@ export function Header({ page }: { page?: "teachingMaterials" | "aila" }) {
         <DemoBanner
           page={page}
           monthlyLimit={demo.appSessionsPerMonth}
-          remaining={demo.appSessionsRemaining}
+          remaining={
+            page == "teachingMaterials"
+              ? demo.additionalMaterialsSessionsRemaining
+              : demo.appSessionsRemaining
+          }
           contactHref={demo.contactHref}
         />
       )}
