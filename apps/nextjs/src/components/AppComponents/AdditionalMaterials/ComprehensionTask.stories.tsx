@@ -6,7 +6,7 @@ import { chromaticParams } from "@/storybook/chromatic";
 
 import { ComprehensionTask } from "./ComprehensionTask";
 
-export const comprehensionFixture: ComprehensionTaskType = {
+const comprehensionFixture: ComprehensionTaskType = {
   comprehension: {
     lessonTitle: "The End of Roman Britain",
     yearGroup: "Year 5",
