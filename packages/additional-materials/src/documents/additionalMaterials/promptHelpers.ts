@@ -187,3 +187,31 @@ export const getYearGroupsFromKeyStage = (keyStage: string): number[] => {
 
 export const language = `LANGUAGE 
   Use British English spelling and vocabulary (e.g. colour not color, centre not center, rubbish not trash) unless the user sets a different primary language. This reflects our UK teacher audience.`;
+
+export const getQuizStructure = () => {
+  return `The quiz should use the following structure:
+
+1. [question text here - max 200 characters]
+
+a. [answer a - max 80 characters]
+
+b. [answer b - max 80 characters]
+
+c. [answer c - max 80 characters]`;
+};
+
+export const getQuizRequirements = () => {
+  return `REQUIREMENTS:
+- There should be 10 questions
+- Each question should have one correct answer and two PLAUSIBLE DISTRACTORS
+- Put answers in alphabetical order
+- Answers should start with lower-case letters unless they are proper nouns or acronyms. Cities and countries should be capitalised.
+- Questions should get progressively harder`;
+};
+
+export const getQuizAvoids = () => {
+  return `AVOID:
+- Negatively phrased questions (e.g., "Which is NOT…")
+- "All of the above" or "None of the above" options
+- True/false questions`;
+};
