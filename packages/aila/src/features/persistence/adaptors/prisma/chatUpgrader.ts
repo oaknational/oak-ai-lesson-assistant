@@ -36,7 +36,7 @@ const UpgradableLessonPlanSchema = z
 // Schema for a chat payload that might need upgrading
 const UpgradableChatSchema = z
   .object({
-    lessonPlan: z.unknown().optional(),
+    lessonPlan: UpgradableLessonPlanSchema.optional(),
     // All other fields are passed through
   })
   .passthrough();
@@ -61,20 +61,26 @@ function upgradeLessonPlanQuizzes(lessonPlan: unknown): unknown {
   }
 
   const upgradablePlan = parseResult.data;
-  const upgraded = { ...upgradablePlan };
   let hasUpgrades = false;
+  let upgraded = upgradablePlan;
 
   // Upgrade starterQuiz if it's V1 (array format)
   if (upgradablePlan.starterQuiz && Array.isArray(upgradablePlan.starterQuiz)) {
+    if (!hasUpgrades) {
+      upgraded = { ...upgradablePlan };
+      hasUpgrades = true;
+    }
     upgraded.starterQuiz = convertQuizV1ToV2(upgradablePlan.starterQuiz);
-    hasUpgrades = true;
     log.info("Upgraded starterQuiz from V1 to V2");
   }
 
   // Upgrade exitQuiz if it's V1 (array format)
   if (upgradablePlan.exitQuiz && Array.isArray(upgradablePlan.exitQuiz)) {
+    if (!hasUpgrades) {
+      upgraded = { ...upgradablePlan };
+      hasUpgrades = true;
+    }
     upgraded.exitQuiz = convertQuizV1ToV2(upgradablePlan.exitQuiz);
-    hasUpgrades = true;
     log.info("Upgraded exitQuiz from V1 to V2");
   }
 
