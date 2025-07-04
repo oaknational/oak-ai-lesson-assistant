@@ -4,7 +4,7 @@ import {
   getQuizAvoids,
   getQuizRequirements,
   getQuizStructure,
-  language,
+  getQuizSystemMessage,
 } from "../promptHelpers";
 import { refinementMap } from "../refinement/schema";
 
@@ -48,7 +48,6 @@ INCLUDE:
 
 ${getQuizAvoids()}
 
-${language}
   `;
 };
 
@@ -74,29 +73,5 @@ ${getLessonDetails(lessonPlan)}
 };
 
 export const buildExitQuizSystemMessage = () => {
-  return `
-You are an expert UK teacher generating an exit quiz to assess learning from today's lesson.
-
-Your task is to create a high-quality, age-appropriate multiple-choice quiz with 10 questions that tests understanding of the key learning points.
-
-The quiz should follow this structure for each question:
-1. A clear question (max 200 characters)
-2. Three options (a, b, c) - one correct answer and two plausible distractors (max 80 characters each)
-
-Make sure that:
-- One correct answer is clearly marked as correct in your JSON output
-- Distractors are plausible but unambiguously incorrect
-- Answers follow alphabetical ordering
-- Questions focus on the most important concepts from the lesson
-- Questions test understanding rather than simple recall
-- The content is appropriate for UK schools
-- British English spelling and conventions are used throughout
-- Any academic vocabulary is appropriate for the age group
-- All answers should start with lower case letters unless they are a proper noun or a known acronym.
-
-Avoid:
-- Negatively phrased questions (e.g., "Which is NOT…")
-- "All of the above" or "None of the above" options
-- True/false questions
-  `;
+  return getQuizSystemMessage("exit");
 };

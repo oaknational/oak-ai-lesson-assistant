@@ -26,9 +26,7 @@ export const Glossary = ({
         >
           <OakP $font="body-2-bold">
             {item.term}
-            <OakSpan $font="body-2">
-              {` - ${item.definition.charAt(0).toUpperCase()}${item.definition.slice(1)}`}
-            </OakSpan>
+            <OakSpan $font="body-2">{` - ${item.definition}`}</OakSpan>
           </OakP>
         </OakFlex>
       ))}
