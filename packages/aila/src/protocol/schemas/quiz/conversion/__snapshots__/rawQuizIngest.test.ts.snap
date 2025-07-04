@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`convertRawQuizToV2 should convert raw quiz to V2 format 1`] = `
+{
+  "questions": [
+    {
+      "answers": [
+        "Paris",
+      ],
+      "distractors": [
+        "London",
+        "Berlin",
+      ],
+      "question": "What is the capital of France?",
+      "questionType": "multiple-choice",
+    },
+    {
+      "answers": [
+        "red",
+        "blue",
+        "yellow",
+      ],
+      "question": "Name a primary color",
+      "questionType": "short-answer",
+    },
+    {
+      "answers": [
+        "Dog",
+      ],
+      "distractors": [
+        "Cat ![](https://example.com/cat.jpg)",
+      ],
+      "question": "Which animal is shown in the image? ![](https://example.com/dog.jpg)",
+      "questionType": "multiple-choice",
+    },
+    {
+      "pairs": [
+        {
+          "left": "France",
+          "right": "Paris",
+        },
+        {
+          "left": "Germany",
+          "right": "Berlin",
+        },
+      ],
+      "question": "Match the countries to their capitals",
+      "questionType": "match",
+    },
+    {
+      "items": [
+        "1",
+        "3",
+        "5",
+      ],
+      "question": "Put these numbers in ascending order",
+      "questionType": "order",
+    },
+  ],
+  "version": "v2",
+}
+`;

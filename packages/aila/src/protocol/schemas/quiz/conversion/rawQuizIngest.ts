@@ -124,8 +124,6 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
             question: questionStem,
             answers: correctAnswers,
             distractors,
-            imageAttributions:
-              allAttributions.length > 0 ? allAttributions : undefined,
           };
         }
 
@@ -145,8 +143,6 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
             questionType: "short-answer" as const,
             question: questionStem,
             answers,
-            imageAttributions:
-              allAttributions.length > 0 ? allAttributions : undefined,
           };
         }
 
@@ -175,8 +171,6 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
             questionType: "match" as const,
             question: questionStem,
             pairs,
-            imageAttributions:
-              attributions.length > 0 ? attributions : undefined,
           };
         }
 
@@ -196,8 +190,6 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
             questionType: "order" as const,
             question: questionStem,
             items,
-            imageAttributions:
-              allAttributions.length > 0 ? allAttributions : undefined,
           };
         }
 
@@ -208,8 +200,6 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
             question: questionStem,
             answers: ["N/A"],
             distractors: ["N/A"],
-            imageAttributions:
-              attributions.length > 0 ? attributions : undefined,
           };
       }
     });
