@@ -7,7 +7,7 @@ import InlineButton from "./InlineButton";
 const meta = {
   title: "Components/AdditionalMaterials/InlineButton",
   component: InlineButton,
-  tags: ["autodocs"],
+
   parameters: {
     ...chromaticParams(["desktop"]),
     layout: "centered",

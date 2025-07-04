@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/react";
 import React from "react";
+
+import type { Meta, StoryObj } from "@storybook/react";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
 import TeachingMaterialsLayout from "@/components/ResourcesLayout";
@@ -397,23 +398,28 @@ export const Glossary: Story = {
         glossary: [
           {
             term: "Fraction",
-            definition: "A number that represents part of a whole. Written as one number above another, separated by a line.",
+            definition:
+              "A number that represents part of a whole. Written as one number above another, separated by a line.",
           },
           {
             term: "Numerator",
-            definition: "The top number in a fraction. It tells you how many parts you have.",
+            definition:
+              "The top number in a fraction. It tells you how many parts you have.",
           },
           {
             term: "Denominator",
-            definition: "The bottom number in a fraction. It tells you how many equal parts the whole is divided into.",
+            definition:
+              "The bottom number in a fraction. It tells you how many equal parts the whole is divided into.",
           },
           {
             term: "Whole",
-            definition: "The complete object or amount before it is divided into parts.",
+            definition:
+              "The complete object or amount before it is divided into parts.",
           },
           {
             term: "Equal Parts",
-            definition: "Parts that are exactly the same size when something is divided.",
+            definition:
+              "Parts that are exactly the same size when something is divided.",
           },
           {
             term: "Half",
@@ -429,11 +435,13 @@ export const Glossary: Story = {
           },
           {
             term: "Unit Fraction",
-            definition: "A fraction where the numerator is 1, such as 1/2, 1/3, or 1/4.",
+            definition:
+              "A fraction where the numerator is 1, such as 1/2, 1/3, or 1/4.",
           },
           {
             term: "Equivalent Fractions",
-            definition: "Different fractions that represent the same amount, such as 1/2 and 2/4.",
+            definition:
+              "Different fractions that represent the same amount, such as 1/2 and 2/4.",
           },
         ],
       },
@@ -447,6 +455,614 @@ export const Glossary: Story = {
           subTitle="Year 4 • Mathematics"
           step={4}
           docTypeName="Glossary"
+        >
+          <Story />
+        </TeachingMaterialsLayout>
+      </DemoProvider>
+    ),
+  ],
+};
+
+// Stories covering the Modify button functionality
+
+export const WithModifyOptions: Story = {
+  args: {
+    handleRefineMaterial: (refinementValue: string) => {
+      // Mock handler for refinement
+      return refinementValue;
+    },
+  },
+  parameters: {
+    resourcesStoreState: {
+      pageData: {
+        lessonPlan: {
+          lessonId: "lesson-123",
+          title: "Introduction to Fractions",
+          keyStage: "KS2",
+          subject: "Mathematics",
+          topic: "Fractions",
+          learningOutcome: "Students will understand basic fraction concepts",
+        },
+      },
+      docType: "additional-starter-quiz",
+      generation: {
+        year: "Year 4",
+        subject: "Mathematics",
+        title: "Introduction to Fractions - Starter Quiz",
+        questions: [
+          {
+            question: "What is a fraction?",
+            options: [
+              { text: "A whole number", isCorrect: false },
+              { text: "A part of a whole", isCorrect: true },
+              { text: "A decimal number", isCorrect: false },
+            ],
+          },
+          {
+            question: "In the fraction 1/4, what does the number 4 represent?",
+            options: [
+              { text: "The numerator", isCorrect: false },
+              { text: "The denominator", isCorrect: true },
+              { text: "The whole number", isCorrect: false },
+            ],
+          },
+          {
+            question: "Which fraction represents half?",
+            options: [
+              { text: "1/4", isCorrect: false },
+              { text: "1/2", isCorrect: true },
+              { text: "1/3", isCorrect: false },
+            ],
+          },
+          {
+            question: "What does the numerator tell us?",
+            options: [
+              { text: "How many parts we have", isCorrect: true },
+              {
+                text: "How many equal parts the whole is divided into",
+                isCorrect: false,
+              },
+              { text: "The size of each part", isCorrect: false },
+            ],
+          },
+          {
+            question: "Which is larger: 1/2 or 1/3?",
+            options: [
+              { text: "1/2", isCorrect: true },
+              { text: "1/3", isCorrect: false },
+              { text: "They are equal", isCorrect: false },
+            ],
+          },
+          {
+            question: "What is 1/4 + 1/4?",
+            options: [
+              { text: "1/8", isCorrect: false },
+              { text: "2/4 or 1/2", isCorrect: true },
+              { text: "1/2", isCorrect: false },
+            ],
+          },
+          {
+            question: "In the fraction 3/5, what is the numerator?",
+            options: [
+              { text: "3", isCorrect: true },
+              { text: "5", isCorrect: false },
+              { text: "8", isCorrect: false },
+            ],
+          },
+          {
+            question: "How many quarters make a whole?",
+            options: [
+              { text: "2", isCorrect: false },
+              { text: "3", isCorrect: false },
+              { text: "4", isCorrect: true },
+            ],
+          },
+          {
+            question: "Which fraction is equivalent to 2/4?",
+            options: [
+              { text: "1/2", isCorrect: true },
+              { text: "1/4", isCorrect: false },
+              { text: "3/4", isCorrect: false },
+            ],
+          },
+          {
+            question:
+              "What fraction of this shape is shaded if 3 out of 6 parts are coloured?",
+            options: [
+              { text: "3/6 or 1/2", isCorrect: true },
+              { text: "6/3", isCorrect: false },
+              { text: "3/3", isCorrect: false },
+            ],
+          },
+        ],
+      },
+    },
+  },
+  decorators: [
+    (Story: React.ComponentType) => (
+      <DemoProvider>
+        <TeachingMaterialsLayout
+          title="Introduction to Fractions"
+          subTitle="Year 4 • Mathematics"
+          step={4}
+          docTypeName="Starter Quiz"
+        >
+          <Story />
+        </TeachingMaterialsLayout>
+      </DemoProvider>
+    ),
+  ],
+};
+
+export const LoadingState: Story = {
+  args: {
+    handleRefineMaterial: (refinementValue: string) => {
+      // Mock handler for refinement
+      return refinementValue;
+    },
+  },
+  parameters: {
+    resourcesStoreState: {
+      pageData: {
+        lessonPlan: {
+          lessonId: "lesson-123",
+          title: "Introduction to Fractions",
+          keyStage: "KS2",
+          subject: "Mathematics",
+          topic: "Fractions",
+          learningOutcome: "Students will understand basic fraction concepts",
+        },
+      },
+      docType: "additional-starter-quiz",
+      generation: null,
+      isResourcesLoading: true,
+    },
+  },
+  decorators: [
+    (Story: React.ComponentType) => (
+      <DemoProvider>
+        <TeachingMaterialsLayout
+          title="Introduction to Fractions"
+          subTitle="Year 4 • Mathematics"
+          step={4}
+          docTypeName="Starter Quiz"
+        >
+          <Story />
+        </TeachingMaterialsLayout>
+      </DemoProvider>
+    ),
+  ],
+};
+
+export const RefiningState: Story = {
+  args: {
+    handleRefineMaterial: (refinementValue: string) => {
+      // Mock handler for refinement
+      return refinementValue;
+    },
+  },
+  parameters: {
+    resourcesStoreState: {
+      pageData: {
+        lessonPlan: {
+          lessonId: "lesson-123",
+          title: "Introduction to Fractions",
+          keyStage: "KS2",
+          subject: "Mathematics",
+          topic: "Fractions",
+          learningOutcome: "Students will understand basic fraction concepts",
+        },
+      },
+      docType: "additional-starter-quiz",
+      generation: {
+        year: "Year 4",
+        subject: "Mathematics",
+        title: "Introduction to Fractions - Starter Quiz",
+        questions: [
+          {
+            question: "What is a fraction?",
+            options: [
+              { text: "A whole number", isCorrect: false },
+              { text: "A part of a whole", isCorrect: true },
+              { text: "A decimal number", isCorrect: false },
+            ],
+          },
+          {
+            question: "In the fraction 1/4, what does the number 4 represent?",
+            options: [
+              { text: "The numerator", isCorrect: false },
+              { text: "The denominator", isCorrect: true },
+              { text: "The whole number", isCorrect: false },
+            ],
+          },
+          {
+            question: "Which fraction represents half?",
+            options: [
+              { text: "1/4", isCorrect: false },
+              { text: "1/2", isCorrect: true },
+              { text: "1/3", isCorrect: false },
+            ],
+          },
+          {
+            question: "What does the numerator tell us?",
+            options: [
+              { text: "How many parts we have", isCorrect: true },
+              {
+                text: "How many equal parts the whole is divided into",
+                isCorrect: false,
+              },
+              { text: "The size of each part", isCorrect: false },
+            ],
+          },
+          {
+            question: "Which is larger: 1/2 or 1/3?",
+            options: [
+              { text: "1/2", isCorrect: true },
+              { text: "1/3", isCorrect: false },
+              { text: "They are equal", isCorrect: false },
+            ],
+          },
+          {
+            question: "What is 1/4 + 1/4?",
+            options: [
+              { text: "1/8", isCorrect: false },
+              { text: "2/4 or 1/2", isCorrect: true },
+              { text: "1/2", isCorrect: false },
+            ],
+          },
+          {
+            question: "In the fraction 3/5, what is the numerator?",
+            options: [
+              { text: "3", isCorrect: true },
+              { text: "5", isCorrect: false },
+              { text: "8", isCorrect: false },
+            ],
+          },
+          {
+            question: "How many quarters make a whole?",
+            options: [
+              { text: "2", isCorrect: false },
+              { text: "3", isCorrect: false },
+              { text: "4", isCorrect: true },
+            ],
+          },
+          {
+            question: "Which fraction is equivalent to 2/4?",
+            options: [
+              { text: "1/2", isCorrect: true },
+              { text: "1/4", isCorrect: false },
+              { text: "3/4", isCorrect: false },
+            ],
+          },
+          {
+            question:
+              "What fraction of this shape is shaded if 3 out of 6 parts are coloured?",
+            options: [
+              { text: "3/6 or 1/2", isCorrect: true },
+              { text: "6/3", isCorrect: false },
+              { text: "3/3", isCorrect: false },
+            ],
+          },
+        ],
+      },
+      isResourceRefining: true,
+      refinementGenerationHistory: [
+        {
+          year: "Year 4",
+          subject: "Mathematics", 
+          title: "Introduction to Fractions - Starter Quiz (Original)",
+          questions: [
+            {
+              question: "What is a fraction?",
+              options: [
+                { text: "A whole number", isCorrect: false },
+                { text: "A part of a whole", isCorrect: true },
+                { text: "A decimal number", isCorrect: false },
+              ],
+            },
+            {
+              question: "Which fraction represents half?",
+              options: [
+                { text: "1/4", isCorrect: false },
+                { text: "1/2", isCorrect: true },
+                { text: "1/3", isCorrect: false },
+              ],
+            },
+            {
+              question: "What is the numerator in 2/3?",
+              options: [
+                { text: "2", isCorrect: true },
+                { text: "3", isCorrect: false },
+                { text: "5", isCorrect: false },
+              ],
+            },
+            {
+              question: "How many equal parts are in a quarter?",
+              options: [
+                { text: "2", isCorrect: false },
+                { text: "3", isCorrect: false },
+                { text: "4", isCorrect: true },
+              ],
+            },
+            {
+              question: "Which is smaller: 1/3 or 1/5?",
+              options: [
+                { text: "1/3", isCorrect: false },
+                { text: "1/5", isCorrect: true },
+                { text: "They are equal", isCorrect: false },
+              ],
+            },
+            {
+              question: "What fraction shows three out of four parts?",
+              options: [
+                { text: "3/4", isCorrect: true },
+                { text: "4/3", isCorrect: false },
+                { text: "1/4", isCorrect: false },
+              ],
+            },
+            {
+              question: "In 5/8, what does 8 represent?",
+              options: [
+                { text: "Parts we have", isCorrect: false },
+                { text: "Total equal parts", isCorrect: true },
+                { text: "The whole number", isCorrect: false },
+              ],
+            },
+            {
+              question: "Which fraction is closest to 1 whole?",
+              options: [
+                { text: "1/2", isCorrect: false },
+                { text: "3/4", isCorrect: false },
+                { text: "9/10", isCorrect: true },
+              ],
+            },
+            {
+              question: "What is 1/2 + 1/2?",
+              options: [
+                { text: "1/4", isCorrect: false },
+                { text: "1", isCorrect: true },
+                { text: "2/2", isCorrect: false },
+              ],
+            },
+            {
+              question: "Which fraction represents zero parts?",
+              options: [
+                { text: "0/4", isCorrect: true },
+                { text: "4/0", isCorrect: false },
+                { text: "1/4", isCorrect: false },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  decorators: [
+    (Story: React.ComponentType) => (
+      <DemoProvider>
+        <TeachingMaterialsLayout
+          title="Introduction to Fractions"
+          subTitle="Year 4 • Mathematics"
+          step={4}
+          docTypeName="Starter Quiz"
+        >
+          <Story />
+        </TeachingMaterialsLayout>
+      </DemoProvider>
+    ),
+  ],
+};
+
+export const WithRefinementHistory: Story = {
+  args: {
+    handleRefineMaterial: (refinementValue: string) => {
+      // Mock handler for refinement
+      return refinementValue;
+    },
+  },
+  parameters: {
+    resourcesStoreState: {
+      pageData: {
+        lessonPlan: {
+          lessonId: "lesson-123",
+          title: "Introduction to Fractions",
+          keyStage: "KS2",
+          subject: "Mathematics",
+          topic: "Fractions",
+          learningOutcome: "Students will understand basic fraction concepts",
+        },
+      },
+      docType: "additional-starter-quiz",
+      generation: {
+        year: "Year 4",
+        subject: "Mathematics",
+        title: "Introduction to Fractions - Starter Quiz (Refined)",
+        questions: [
+          {
+            question: "What is a fraction?",
+            options: [
+              { text: "A whole number", isCorrect: false },
+              { text: "A part of a whole", isCorrect: true },
+              { text: "A decimal number", isCorrect: false },
+            ],
+          },
+          {
+            question: "In the fraction 1/4, what does the number 4 represent?",
+            options: [
+              { text: "The numerator", isCorrect: false },
+              { text: "The denominator", isCorrect: true },
+              { text: "The whole number", isCorrect: false },
+            ],
+          },
+          {
+            question: "Which fraction represents half?",
+            options: [
+              { text: "1/4", isCorrect: false },
+              { text: "1/2", isCorrect: true },
+              { text: "1/3", isCorrect: false },
+            ],
+          },
+          {
+            question: "What does the numerator tell us?",
+            options: [
+              { text: "How many parts we have", isCorrect: true },
+              {
+                text: "How many equal parts the whole is divided into",
+                isCorrect: false,
+              },
+              { text: "The size of each part", isCorrect: false },
+            ],
+          },
+          {
+            question: "Which is larger: 1/2 or 1/3?",
+            options: [
+              { text: "1/2", isCorrect: true },
+              { text: "1/3", isCorrect: false },
+              { text: "They are equal", isCorrect: false },
+            ],
+          },
+          {
+            question: "What is 1/4 + 1/4?",
+            options: [
+              { text: "1/8", isCorrect: false },
+              { text: "2/4 or 1/2", isCorrect: true },
+              { text: "1/2", isCorrect: false },
+            ],
+          },
+          {
+            question: "In the fraction 3/5, what is the numerator?",
+            options: [
+              { text: "3", isCorrect: true },
+              { text: "5", isCorrect: false },
+              { text: "8", isCorrect: false },
+            ],
+          },
+          {
+            question: "How many quarters make a whole?",
+            options: [
+              { text: "2", isCorrect: false },
+              { text: "3", isCorrect: false },
+              { text: "4", isCorrect: true },
+            ],
+          },
+          {
+            question: "Which fraction is equivalent to 2/4?",
+            options: [
+              { text: "1/2", isCorrect: true },
+              { text: "1/4", isCorrect: false },
+              { text: "3/4", isCorrect: false },
+            ],
+          },
+          {
+            question:
+              "What fraction of this shape is shaded if 3 out of 6 parts are coloured?",
+            options: [
+              { text: "3/6 or 1/2", isCorrect: true },
+              { text: "6/3", isCorrect: false },
+              { text: "3/3", isCorrect: false },
+            ],
+          },
+        ],
+      },
+      refinementGenerationHistory: [
+        {
+          year: "Year 4",
+          subject: "Mathematics", 
+          title: "Introduction to Fractions - Starter Quiz (First Refinement)",
+          questions: [
+            {
+              question: "What is a fraction?",
+              options: [
+                { text: "A whole number", isCorrect: false },
+                { text: "A part of a whole", isCorrect: true },
+                { text: "A decimal number", isCorrect: false },
+              ],
+            },
+            {
+              question: "Which fraction represents half?",
+              options: [
+                { text: "1/4", isCorrect: false },
+                { text: "1/2", isCorrect: true },
+                { text: "1/3", isCorrect: false },
+              ],
+            },
+            {
+              question: "What is the numerator in 2/3?",
+              options: [
+                { text: "2", isCorrect: true },
+                { text: "3", isCorrect: false },
+                { text: "5", isCorrect: false },
+              ],
+            },
+            {
+              question: "How many equal parts are in a quarter?",
+              options: [
+                { text: "2", isCorrect: false },
+                { text: "3", isCorrect: false },
+                { text: "4", isCorrect: true },
+              ],
+            },
+            {
+              question: "Which is smaller: 1/3 or 1/5?",
+              options: [
+                { text: "1/3", isCorrect: false },
+                { text: "1/5", isCorrect: true },
+                { text: "They are equal", isCorrect: false },
+              ],
+            },
+            {
+              question: "What fraction shows three out of four parts?",
+              options: [
+                { text: "3/4", isCorrect: true },
+                { text: "4/3", isCorrect: false },
+                { text: "1/4", isCorrect: false },
+              ],
+            },
+            {
+              question: "In 5/8, what does 8 represent?",
+              options: [
+                { text: "Parts we have", isCorrect: false },
+                { text: "Total equal parts", isCorrect: true },
+                { text: "The whole number", isCorrect: false },
+              ],
+            },
+            {
+              question: "Which fraction is closest to 1 whole?",
+              options: [
+                { text: "1/2", isCorrect: false },
+                { text: "3/4", isCorrect: false },
+                { text: "9/10", isCorrect: true },
+              ],
+            },
+            {
+              question: "What is 1/2 + 1/2?",
+              options: [
+                { text: "1/4", isCorrect: false },
+                { text: "1", isCorrect: true },
+                { text: "2/2", isCorrect: false },
+              ],
+            },
+            {
+              question: "Which fraction represents zero parts?",
+              options: [
+                { text: "0/4", isCorrect: true },
+                { text: "4/0", isCorrect: false },
+                { text: "1/4", isCorrect: false },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  decorators: [
+    (Story: React.ComponentType) => (
+      <DemoProvider>
+        <TeachingMaterialsLayout
+          title="Introduction to Fractions"
+          subTitle="Year 4 • Mathematics"
+          step={4}
+          docTypeName="Starter Quiz"
         >
           <Story />
         </TeachingMaterialsLayout>
