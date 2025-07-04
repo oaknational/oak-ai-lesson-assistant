@@ -2,6 +2,7 @@ import { upgradeLessonPlanQuizzes } from "@oakai/aila/src/features/persistence/a
 import { demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -17,6 +18,8 @@ import { chatSchema } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 import { checkMutationPermissions } from "./helpers/checkMutationPermissions";
+
+const log = aiLogger("appSessions");
 
 function userIsOwner(entity: { userId: string }, auth: SignedInAuthObject) {
   return entity.userId === auth.userId;
@@ -36,7 +39,9 @@ function parseChatAndReportError({
   }
 
   // Upgrade V1 quizzes to V2 before parsing
+  // NOTE: this logic can be removed once all quizzes are upgraded with a script
   let upgradedLessonPlan: unknown;
+  let isUpgraded = false;
   if (
     // Narrow JsonValue type
     sessionOutput &&
@@ -44,6 +49,7 @@ function parseChatAndReportError({
     "lessonPlan" in sessionOutput
   ) {
     upgradedLessonPlan = upgradeLessonPlanQuizzes(sessionOutput?.lessonPlan);
+    isUpgraded = upgradedLessonPlan !== sessionOutput?.lessonPlan;
   }
 
   const parseResult = chatSchema.safeParse({
@@ -55,6 +61,7 @@ function parseChatAndReportError({
 
   if (!parseResult.success) {
     const error = new Error("Failed to parse chat");
+    log.error(error);
     Sentry.captureException(error, {
       extra: {
         id,
@@ -65,7 +72,10 @@ function parseChatAndReportError({
     });
   }
 
-  return parseResult.data;
+  return {
+    chat: parseResult.data,
+    isUpgraded,
+  };
 }
 
 export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
@@ -79,11 +89,20 @@ export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
     return undefined;
   }
 
-  return parseChatAndReportError({
+  const { isUpgraded, chat } = parseChatAndReportError({
     id,
     userId: chatRecord.userId,
     sessionOutput: chatRecord.output,
   });
+
+  if (isUpgraded) {
+    await prisma.appSession.update({
+      where: { id },
+      data: { output: chat },
+    });
+  }
+
+  return chat;
 }
 
 export const appSessionsRouter = router({
