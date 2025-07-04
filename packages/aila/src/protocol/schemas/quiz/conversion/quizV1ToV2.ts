@@ -17,7 +17,6 @@ export function convertQuizV1QuestionToV2(
     question: questionV1.question,
     answers: questionV1.answers,
     distractors: questionV1.distractors,
-    hint: undefined,
   };
 }
 
