@@ -5,10 +5,7 @@ import type {
   LessonPlanSectionWhileStreaming,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
-import {
-  convertQuizV1ToV2,
-  detectQuizVersion,
-} from "@oakai/aila/src/protocol/schemas/quiz/conversion/quizV1ToV2";
+import { convertQuizV1ToV2 } from "@oakai/aila/src/protocol/schemas/quiz/conversion/quizV1ToV2";
 
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { Box, Flex } from "@radix-ui/themes";

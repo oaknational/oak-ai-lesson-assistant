@@ -1,3 +1,4 @@
+import { upgradeLessonPlanQuizzes } from "@oakai/aila/src/features/persistence/adaptors/prisma/chatUpgrader";
 import { demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
@@ -11,46 +12,14 @@ import { z } from "zod";
 
 import { getSessionModerations } from "../../../aila/src/features/moderation/getSessionModerations";
 import { generateChatId } from "../../../aila/src/helpers/chat/generateChatId";
-import type {
-  AilaPersistedChat,
-  LooseLessonPlan,
-} from "../../../aila/src/protocol/schema";
+import type { AilaPersistedChat } from "../../../aila/src/protocol/schema";
 import { chatSchema } from "../../../aila/src/protocol/schema";
-import {
-  convertQuizV1ToV2,
-  isQuizV1,
-} from "../../../aila/src/protocol/schemas/quiz/conversion/quizV1ToV2";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 import { checkMutationPermissions } from "./helpers/checkMutationPermissions";
 
 function userIsOwner(entity: { userId: string }, auth: SignedInAuthObject) {
   return entity.userId === auth.userId;
-}
-
-/**
- * Upgrades V1 quizzes to V2 format in a lesson plan
- * This ensures backward compatibility when loading existing lesson plans
- */
-function upgradeLessonPlanQuizzes(
-  lessonPlan: unknown,
-): LooseLessonPlan | null | undefined {
-  if (!lessonPlan || typeof lessonPlan !== "object") return null;
-
-  const lesson = lessonPlan as LooseLessonPlan;
-  const upgraded = { ...lesson };
-
-  // Upgrade starterQuiz if it's V1
-  if (isQuizV1(upgraded.starterQuiz)) {
-    upgraded.starterQuiz = convertQuizV1ToV2(upgraded.starterQuiz);
-  }
-
-  // Upgrade exitQuiz if it's V1
-  if (isQuizV1(upgraded.exitQuiz)) {
-    upgraded.exitQuiz = convertQuizV1ToV2(upgraded.exitQuiz);
-  }
-
-  return upgraded;
 }
 
 function parseChatAndReportError({
@@ -67,19 +36,19 @@ function parseChatAndReportError({
   }
 
   // Upgrade V1 quizzes to V2 before parsing
-  const upgradeableOutput = { ...sessionOutput } as Record<string, unknown>;
+  let upgradedLessonPlan: unknown;
   if (
-    upgradeableOutput &&
-    typeof upgradeableOutput === "object" &&
-    "lessonPlan" in upgradeableOutput
+    // Narrow JsonValue type
+    sessionOutput &&
+    typeof sessionOutput === "object" &&
+    "lessonPlan" in sessionOutput
   ) {
-    upgradeableOutput.lessonPlan = upgradeLessonPlanQuizzes(
-      upgradeableOutput.lessonPlan,
-    );
+    upgradedLessonPlan = upgradeLessonPlanQuizzes(sessionOutput?.lessonPlan);
   }
 
   const parseResult = chatSchema.safeParse({
-    ...upgradeableOutput,
+    ...sessionOutput,
+    lessonPlan: upgradedLessonPlan,
     userId,
     id,
   });

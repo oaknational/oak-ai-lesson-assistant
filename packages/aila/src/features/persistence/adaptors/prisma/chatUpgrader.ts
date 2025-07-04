@@ -49,7 +49,7 @@ export type UpgradableChat = z.infer<typeof UpgradableChatSchema>;
  * Upgrades V1 quizzes to V2 format in a lesson plan
  * This ensures backward compatibility when loading existing lesson plans
  */
-function upgradeLessonPlanQuizzes(lessonPlan: unknown): unknown {
+export function upgradeLessonPlanQuizzes(lessonPlan: unknown): unknown {
   if (!lessonPlan || typeof lessonPlan !== "object") return lessonPlan;
 
   // Parse the lesson plan with our upgradable schema
@@ -61,31 +61,24 @@ function upgradeLessonPlanQuizzes(lessonPlan: unknown): unknown {
   }
 
   const upgradablePlan = parseResult.data;
-  let hasUpgrades = false;
   let upgraded = upgradablePlan;
 
   // Upgrade starterQuiz if it's V1 (array format)
   if (upgradablePlan.starterQuiz && Array.isArray(upgradablePlan.starterQuiz)) {
-    if (!hasUpgrades) {
-      upgraded = { ...upgradablePlan };
-      hasUpgrades = true;
-    }
-    upgraded.starterQuiz = convertQuizV1ToV2(upgradablePlan.starterQuiz);
+    upgraded = {
+      ...upgraded,
+      starterQuiz: convertQuizV1ToV2(upgradablePlan.starterQuiz),
+    };
     log.info("Upgraded starterQuiz from V1 to V2");
   }
 
   // Upgrade exitQuiz if it's V1 (array format)
   if (upgradablePlan.exitQuiz && Array.isArray(upgradablePlan.exitQuiz)) {
-    if (!hasUpgrades) {
-      upgraded = { ...upgradablePlan };
-      hasUpgrades = true;
-    }
-    upgraded.exitQuiz = convertQuizV1ToV2(upgradablePlan.exitQuiz);
+    upgraded = {
+      ...upgraded,
+      exitQuiz: convertQuizV1ToV2(upgradablePlan.exitQuiz),
+    };
     log.info("Upgraded exitQuiz from V1 to V2");
-  }
-
-  if (hasUpgrades) {
-    log.info("Lesson plan quizzes upgraded from V1 to V2");
   }
 
   return upgraded;
