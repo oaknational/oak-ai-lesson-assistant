@@ -180,10 +180,10 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
     <>
       {isResourcesLoading || (!generation && <OakP>Loading...</OakP>)}
 
+      <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       {moderation?.categories && moderation.categories.length > 0 && (
         <ModerationMessage />
       )}
-      <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       <ResourcesFooter>
         <OakFlex $flexDirection="column" $width="100%">
           {refinementHistory.length > 0 && !isResourceRefining && (
