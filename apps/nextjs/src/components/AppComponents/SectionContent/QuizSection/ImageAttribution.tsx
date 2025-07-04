@@ -1,33 +1,48 @@
 import { useMemo } from "react";
 
-import type { QuizV2 } from "@oakai/aila/src/protocol/schema";
+import type { QuizV2, QuizV2Question } from "@oakai/aila/src/protocol/schema";
 import { OakBox, OakSpan } from "@oaknational/oak-components";
 
 export type ImageAttributionProps = {
   quiz: QuizV2;
 };
 
+function getUniqueAttributions(question: QuizV2Question): string[] {
+  if (!question.imageAttributions || question.imageAttributions.length === 0) {
+    return [];
+  }
+  
+  return Array.from(
+    new Set(question.imageAttributions.map((attr) => attr.attribution))
+  );
+}
+
 export const ImageAttribution = ({ quiz }: ImageAttributionProps) => {
-  const attributions = useMemo(() => {
-    return quiz.questions.flatMap((question, index) =>
-      (question.imageAttributions ?? []).map((imgAttr) => ({
+  const questionsWithAttributions = useMemo(() => {
+    return quiz.questions
+      .map((question, index) => ({
         questionNumber: index + 1,
-        attribution: imgAttr.attribution,
+        attributions: getUniqueAttributions(question),
       }))
-    );
+      .filter((item) => item.attributions.length > 0);
   }, [quiz.questions]);
 
-  if (attributions.length === 0) {
+  if (questionsWithAttributions.length === 0) {
     return null;
   }
 
   return (
     <OakBox $mt="space-between-m" $color="text-subdued">
-      {attributions.map((attr, index) => (
-        <OakSpan key={`image-attr-${index}`}>
-          <OakSpan $font="body-3-bold">Q{attr.questionNumber}. </OakSpan>
-          <OakSpan $font="body-3">{attr.attribution} </OakSpan>
-        </OakSpan>
+      {questionsWithAttributions.map(({ questionNumber, attributions }) => (
+        <OakBox key={`question-${questionNumber}-attributions`}>
+          <OakSpan $font="body-3-bold">Q{questionNumber}. </OakSpan>
+          {attributions.map((attribution, index) => (
+            <OakSpan key={`attr-${index}`} $font="body-3">
+              {attribution}
+              {index < attributions.length - 1 && " "}
+            </OakSpan>
+          ))}
+        </OakBox>
       ))}
     </OakBox>
   );
