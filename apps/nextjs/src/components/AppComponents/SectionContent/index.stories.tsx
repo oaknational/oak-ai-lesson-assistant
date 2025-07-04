@@ -132,3 +132,63 @@ export const QuizWithImages: Story = {
     ] satisfies QuizV1Question[],
   },
 };
+
+export const Cycle: Story = {
+  args: {
+    sectionKey: "cycle1",
+    value: {
+      title: "Understanding Photosynthesis",
+      durationInMinutes: 15,
+      explanation: {
+        spokenExplanation: `Photosynthesis is the process by which plants use sunlight, water, and carbon dioxide to create oxygen and energy in the form of sugar.
+
+The process occurs in two stages:
+- **Light-dependent reactions**: Occur in the thylakoid membranes
+- **Light-independent reactions** (Calvin cycle): Occur in the stroma
+
+The overall equation is:
+6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂`,
+      },
+      checkForUnderstanding: [
+        {
+          question: "What are the main inputs required for photosynthesis?",
+          answers: ["Sunlight, water, and carbon dioxide"],
+          distractors: [
+            "Oxygen and glucose",
+            "Sugar and minerals",
+            "Nitrogen and phosphorus",
+          ],
+        },
+        {
+          question: "Where do the light-dependent reactions occur?",
+          answers: ["In the thylakoid membranes"],
+          distractors: [
+            "In the stroma",
+            "In the cell nucleus",
+            "In the mitochondria",
+          ],
+        },
+      ] satisfies QuizV1Question[],
+      practice: `1. Draw a simple diagram of a chloroplast and label:
+   - Thylakoid membranes
+   - Stroma
+   - Outer membrane
+
+2. Create a flowchart showing the inputs and outputs of photosynthesis
+
+3. Explain why plants appear green to our eyes`,
+      feedback: `Well done! You've learned about photosynthesis. Remember:
+- Plants are producers that make their own food
+- Photosynthesis provides oxygen for all living things
+- The process converts light energy into chemical energy`,
+    },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Shows how learning cycles are rendered with check for understanding quizzes using V2 components. Demonstrates the visual consistency with other sections through the prose styling.",
+      },
+    },
+  },
+};

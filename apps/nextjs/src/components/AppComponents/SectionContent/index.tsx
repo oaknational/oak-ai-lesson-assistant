@@ -7,6 +7,7 @@ import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 import { MathJax } from "better-react-mathjax";
 
 import { MemoizedReactMarkdownWithStyles } from "../Chat/markdown";
+import { CycleSection } from "./CycleSection";
 import { QuizSection } from "./QuizSection";
 
 export type SectionContentProps = {
@@ -22,6 +23,11 @@ export const SectionContent = ({ sectionKey, value }: SectionContentProps) => {
       </MathJax>
     );
   }
+
+  if (sectionKey.startsWith("cycle")) {
+    return <CycleSection cycleSection={value} />;
+  }
+
   return (
     <MathJax hideUntilTypeset="every" dynamic>
       <MemoizedReactMarkdownWithStyles
