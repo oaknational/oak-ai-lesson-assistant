@@ -3,7 +3,6 @@ import React, { memo, useMemo } from "react";
 import type { Components, Options } from "react-markdown";
 import ReactMarkdown from "react-markdown";
 
-import { Box, Flex } from "@radix-ui/themes";
 import remarkGfm from "remark-gfm";
 
 import { cn } from "@/lib/utils";

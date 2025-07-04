@@ -42,7 +42,7 @@ Students will be able to:
   },
 };
 
-export const WithMath: Story = {
+export const WithMaths: Story = {
   args: {
     sectionKey: "learningOutcome",
     value: `# Mathematical Concepts
@@ -50,12 +50,12 @@ export const WithMath: Story = {
 Students will understand:
 - The formula for area: $A = \\pi r^2$
 - Basic algebra: $ax + b = c$
-- Complex equations: 
+- Complex equations:
   $$\\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$`,
   },
 };
 
-export const StartQuiz: Story = {
+export const Quiz: Story = {
   args: {
     sectionKey: "starterQuiz",
     value: {
@@ -78,7 +78,7 @@ export const StartQuiz: Story = {
   },
 };
 
-export const StartQuizWithMath: Story = {
+export const QuizWithMaths: Story = {
   args: {
     sectionKey: "starterQuiz",
     value: {
@@ -103,7 +103,7 @@ export const StartQuizWithMath: Story = {
   },
 };
 
-export const QuizWithHints: Story = {
+export const WithHints: Story = {
   args: {
     sectionKey: "starterQuiz",
     value: {
@@ -114,6 +114,52 @@ export const QuizWithHints: Story = {
           question: "What is the largest planet in our solar system?",
           answers: ["Jupiter"],
           distractors: ["Earth", "Saturn", "Neptune"],
+        },
+      ],
+    },
+  },
+};
+
+export const QuizWithImages: Story = {
+  args: {
+    sectionKey: "starterQuiz",
+    value: {
+      version: "v2" as const,
+      questions: [
+        {
+          questionType: "multiple-choice" as const,
+          question:
+            "40 is a multiple of 8. Which multiples of 8 are adjacent to 40?\n\n![Number squares showing 40](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266807/a3g7nwse0lqdvrggp1vt.png)",
+          answers: ["32", "48"],
+          distractors: ["34", "50", "47"],
+        },
+        {
+          questionType: "multiple-choice" as const,
+          question:
+            "Which mixed operation equation can be used to calculate the missing multiple of 8?\n\n![Number line with missing value](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266808/pggweqwl9chfutuul4pm.png)",
+          answers: ["5 × 8 − 8", "3 × 8 + 8"],
+          distractors: ["4 groups of 8", "8 x 4"],
+        },
+        {
+          questionType: "multiple-choice" as const,
+          question:
+            "Here is part of the 8 times table grid. What could Izzy do to find 13 × 8 quickly?\n\n![8 times table grid](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png)",
+          answers: ["12 x 8 + 8", "Increase 96 by 8"],
+          distractors: ["Count in eights from zero"],
+        },
+        {
+          // TODO: This use case (images in answer choices) is not fully implemented yet
+          // and currently renders poorly. The images appear inline with text and need
+          // proper layout/styling for a better visual presentation.
+          questionType: "multiple-choice" as const,
+          question: "Which diagram shows 3 groups of 8?",
+          answers: [
+            "![3 groups of 8 dots](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266807/a3g7nwse0lqdvrggp1vt.png)",
+          ],
+          distractors: [
+            "![2 groups of 8 dots](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266808/pggweqwl9chfutuul4pm.png)",
+            "![4 groups of 8 dots](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png)",
+          ],
         },
       ],
     },
