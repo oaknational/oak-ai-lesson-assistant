@@ -1,135 +1,221 @@
+import type { QuizV2, QuizV2Question } from "../quizV2";
 import type {
-  imageItemSchema,
-  quizQuestionSchema,
-  textItemSchema,
-} from "@oaknational/oak-curriculum-schema";
-import {
-  matchSchema,
-  multipleChoiceSchema,
-  orderSchema,
-  shortAnswerSchema,
-} from "@oaknational/oak-curriculum-schema";
-import { z } from "zod";
+  ImageItem,
+  ImageOrTextItem,
+  RawQuiz,
+  StemImageObject,
+  TextItem,
+} from "../rawQuiz";
 
-type SnakeToCamelCase<S extends string> =
-  S extends `${infer T}_${infer U}${infer Rest}`
-    ? `${T}${Uppercase<U>}${SnakeToCamelCase<Rest>}`
-    : S;
-export type ConvertKeysToCamelCase<T> =
-  T extends Array<infer U>
-    ? Array<ConvertKeysToCamelCase<U>>
-    : T extends object
-      ? {
-          [K in keyof T as SnakeToCamelCase<
-            K & string
-          >]: ConvertKeysToCamelCase<T[K]>;
-        }
-      : T;
-export function convertKey(key: string): string {
-  return key.replace(/(_\w)/g, (_, [, m]) => (m as string)?.toUpperCase());
+/**
+ * Check if an item is a text item
+ */
+function isTextItem(item: ImageOrTextItem): item is TextItem {
+  return item.type === "text";
 }
-export type QuizQuestion = ConvertKeysToCamelCase<
-  z.infer<typeof quizQuestionSchema>
->;
 
-export type QuizQuestionAnswers = NonNullable<
-  ConvertKeysToCamelCase<z.infer<typeof quizQuestionSchema>["answers"]>
->;
+/**
+ * Check if an item is an image item
+ */
+function isImageItem(item: ImageOrTextItem): item is ImageItem {
+  return item.type === "image";
+}
 
-export type MCAnswer = ConvertKeysToCamelCase<
-  z.infer<typeof multipleChoiceSchema>
->;
-export type ShortAnswer = ConvertKeysToCamelCase<
-  z.infer<typeof shortAnswerSchema>
->;
-export type OrderAnswer = ConvertKeysToCamelCase<z.infer<typeof orderSchema>>;
-export type MatchAnswer = ConvertKeysToCamelCase<z.infer<typeof matchSchema>>;
+/**
+ * Extract markdown content from Oak's content items array, inlining images
+ * Returns both the markdown content and attribution metadata
+ */
+function extractMarkdownFromContent(
+  contentItems: Array<TextItem | ImageItem | undefined>,
+): {
+  markdown: string;
+  attributions: Array<{ imageUrl: string; attribution: string }>;
+} {
+  const attributions: Array<{ imageUrl: string; attribution: string }> = [];
 
-export type ImageItem = ConvertKeysToCamelCase<z.infer<typeof imageItemSchema>>;
-export type TextItem = ConvertKeysToCamelCase<z.infer<typeof textItemSchema>>;
-export type ImageOrTextItem = ImageItem | TextItem;
+  const markdownParts = contentItems
+    .filter((item): item is TextItem | ImageItem => item !== undefined)
+    .map((item) => {
+      if (isTextItem(item)) {
+        return item.text || "";
+      } else if (isImageItem(item)) {
+        const imageUrl = item.image_object.secure_url;
 
-const stemTextObjectSchema = z.object({
-  text: z.string(),
-  type: z.literal("text"),
-});
+        // Extract attribution if available
+        if (
+          item.image_object.metadata &&
+          typeof item.image_object.metadata === "object" &&
+          !Array.isArray(item.image_object.metadata)
+        ) {
+          const attribution = item.image_object.metadata.attribution;
+          if (attribution) {
+            attributions.push({ imageUrl, attribution });
+          }
+        }
 
-export type StemTextObject = z.infer<typeof stemTextObjectSchema>;
+        // Return markdown image syntax
+        return `![](${imageUrl})`;
+      }
+      return "";
+    });
 
-const stemImageObjectSchema = z.object({
-  imageObject: z.object({
-    format: z.enum(["png", "jpg", "jpeg", "webp", "gif", "svg"]).optional(),
-    secureUrl: z.string().url(),
-    url: z.string().url().optional(),
-    height: z.number().optional(),
-    width: z.number().optional(),
-    metadata: z.union([
-      z.array(z.any()),
-      z.object({
-        attribution: z.string().optional(),
-        usageRestriction: z.string().optional(),
-      }),
-    ]),
-    publicId: z.string().optional(),
-    version: z.number().optional(),
-  }),
-  type: z.literal("image"),
-});
+  return {
+    markdown: markdownParts.join(" ").trim(),
+    attributions,
+  };
+}
 
-export type StemImageObject = z.infer<typeof stemImageObjectSchema>;
-
-export type StemObject = StemTextObject | StemImageObject;
-
-const answersSchema = z.object({
-  "multiple-choice": z.array(multipleChoiceSchema).nullable().optional(),
-  match: z.array(matchSchema).nullable().optional(),
-  order: z.array(orderSchema).nullable().optional(),
-  "short-answer": z.array(shortAnswerSchema).nullable().optional(),
-  "explanatory-text": z.null().optional(),
-});
-
-export const rawQuizQuestionSchema = z.object({
-  questionId: z.number(),
-  questionUid: z.string(),
-  questionType: z.enum([
-    "multiple-choice",
-    "match",
-    "order",
-    "short-answer",
-    "explanatory-text",
-  ]),
-  questionStem: z
-    .array(z.union([stemTextObjectSchema, stemImageObjectSchema]))
-    .min(1),
-  answers: answersSchema.nullable().optional(),
-  feedback: z.string(),
-  hint: z.string(),
-  active: z.boolean(),
-});
-
-export const rawQuizSchema = z
-  .array(rawQuizQuestionSchema)
-  .nullable()
-  .optional();
-
-export type RawQuiz = ConvertKeysToCamelCase<z.infer<typeof rawQuizSchema>>;
-export type QuizProps = {
-  questions: NonNullable<RawQuiz>;
-  imageAttribution: { attribution: string; questionNumber: string }[];
-  isMathJaxLesson: boolean;
-};
-
-export function keysToCamelCase<T>(obj: T): ConvertKeysToCamelCase<T> {
-  if (Array.isArray(obj)) {
-    return obj.map((item) =>
-      keysToCamelCase(item as unknown[]),
-    ) as ConvertKeysToCamelCase<T>;
-  } else if (obj && typeof obj === "object") {
-    return Object.entries(obj).reduce((acc, [key, value]) => {
-      const newKey = convertKey(key);
-      acc[newKey as keyof typeof acc] = keysToCamelCase(value);
-      return acc;
-    }, {} as ConvertKeysToCamelCase<T>);
+/**
+ * Convert raw quiz from Oak curriculum format to Quiz V2 format
+ */
+export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
+  if (!rawQuiz || !Array.isArray(rawQuiz)) {
+    return {
+      version: "v2",
+      questions: [],
+    };
   }
-  return obj as ConvertKeysToCamelCase<T>;
+
+  const questions = rawQuiz
+    .filter((rawQuestion) => rawQuestion.question_type !== "explanatory-text")
+    .map((rawQuestion): QuizV2Question => {
+      if (!rawQuestion) {
+        // Fallback for invalid questions
+        return {
+          questionType: "multiple-choice" as const,
+          question: "Invalid question",
+          answers: ["N/A"],
+          distractors: ["N/A"],
+        };
+      }
+
+      // Extract question stem as markdown with inlined images
+      const { markdown: questionStem, attributions } =
+        extractMarkdownFromContent(rawQuestion.question_stem);
+
+      // Handle different question types based on Oak's schema
+      switch (rawQuestion.question_type) {
+        case "multiple-choice": {
+          const mcAnswers = rawQuestion.answers?.["multiple-choice"] || [];
+
+          const correctAnswerResults = mcAnswers
+            .filter((answer) => answer.answer_is_correct)
+            .map((answer) => extractMarkdownFromContent(answer.answer || []));
+          const correctAnswers = correctAnswerResults.map(
+            (result) => result.markdown,
+          );
+
+          const distractorResults = mcAnswers
+            .filter((answer) => !answer.answer_is_correct)
+            .map((answer) => extractMarkdownFromContent(answer.answer || []));
+          const distractors = distractorResults.map(
+            (result) => result.markdown,
+          );
+
+          // Collect all attributions from question and answers
+          const allAttributions = [
+            ...attributions,
+            ...correctAnswerResults.flatMap((result) => result.attributions),
+            ...distractorResults.flatMap((result) => result.attributions),
+          ];
+
+          return {
+            questionType: "multiple-choice" as const,
+            question: questionStem,
+            answers: correctAnswers,
+            distractors,
+            imageAttributions:
+              allAttributions.length > 0 ? allAttributions : undefined,
+          };
+        }
+
+        case "short-answer": {
+          const saAnswers = rawQuestion.answers?.["short-answer"] || [];
+          const answerResults = saAnswers.map((answer) =>
+            extractMarkdownFromContent(answer.answer || []),
+          );
+          const answers = answerResults.map((result) => result.markdown);
+
+          const allAttributions = [
+            ...attributions,
+            ...answerResults.flatMap((result) => result.attributions),
+          ];
+
+          return {
+            questionType: "short-answer" as const,
+            question: questionStem,
+            answers,
+            imageAttributions:
+              allAttributions.length > 0 ? allAttributions : undefined,
+          };
+        }
+
+        case "match": {
+          const matchAnswers = rawQuestion.answers?.match || [];
+          const pairs = matchAnswers.map((matchItem) => {
+            const leftResult = extractMarkdownFromContent(
+              matchItem.match_option || [],
+            );
+            const rightResult = extractMarkdownFromContent(
+              matchItem.correct_choice || [],
+            );
+
+            attributions.push(
+              ...leftResult.attributions,
+              ...rightResult.attributions,
+            );
+
+            return {
+              left: leftResult.markdown,
+              right: rightResult.markdown,
+            };
+          });
+
+          return {
+            questionType: "match" as const,
+            question: questionStem,
+            pairs,
+            imageAttributions:
+              attributions.length > 0 ? attributions : undefined,
+          };
+        }
+
+        case "order": {
+          const orderAnswers = rawQuestion.answers?.order || [];
+          const itemResults = orderAnswers.map((orderItem) =>
+            extractMarkdownFromContent(orderItem.answer || []),
+          );
+          const items = itemResults.map((result) => result.markdown);
+
+          const allAttributions = [
+            ...attributions,
+            ...itemResults.flatMap((result) => result.attributions),
+          ];
+
+          return {
+            questionType: "order" as const,
+            question: questionStem,
+            items,
+            imageAttributions:
+              allAttributions.length > 0 ? allAttributions : undefined,
+          };
+        }
+
+        default:
+          // Fallback for unknown question types
+          return {
+            questionType: "multiple-choice" as const,
+            question: questionStem,
+            answers: ["N/A"],
+            distractors: ["N/A"],
+            imageAttributions:
+              attributions.length > 0 ? attributions : undefined,
+          };
+      }
+    });
+
+  return {
+    version: "v2",
+    questions,
+  };
 }
