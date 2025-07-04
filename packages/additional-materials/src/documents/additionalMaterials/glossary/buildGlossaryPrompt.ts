@@ -58,7 +58,7 @@ The definition should be no longer than 200 characters.
 
 **Rules**:
 - **Do not** include markdown in your response.
-- definitions start with lower case (unless it is a known acronym or proper noun) and end with a full stop.
+- definitions start with lower case (unless it is a known acronym, proper noun or city or country name) and end with a full stop.
 - terms start with capital letter.
 - minimum of 5 terms, maximum of 15 terms.
 - include the key words from the lesson plan.

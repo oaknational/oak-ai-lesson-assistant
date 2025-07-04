@@ -1,5 +1,11 @@
 import type { ContextByMaterialType } from "../configSchema";
-import { getLessonDetails, language } from "../promptHelpers";
+import {
+  getLessonDetails,
+  getQuizAvoids,
+  getQuizRequirements,
+  getQuizStructure,
+  getQuizSystemMessage,
+} from "../promptHelpers";
 import { refinementMap } from "../refinement/schema";
 
 export const buildExitQuizPrompt = (
@@ -24,22 +30,9 @@ The EXIT QUIZ should be appropriate for the age of pupils in ${lessonPlan.keySta
 **Lesson Details**:
 ${getLessonDetails(lessonPlan)}
 
-The quiz should use the following structure:
+${getQuizStructure()}
 
-1. [question text here - max 200 characters]
-
-a. [answer a - max 80 characters]
-
-b. [answer b - max 80 characters]
-
-c. [answer c - max 80 characters]
-
-REQUIREMENTS:
-- There should be 10 questions
-- Each question should have one correct answer and two PLAUSIBLE DISTRACTORS
-- Put answers in alphabetical order
-- Answers should start with lower-case letters unless they are proper nouns or acronyms
-- Questions should get progressively harder
+${getQuizRequirements()}
 
 INCLUDE:
 - Cover the MAIN LEARNING POINTS from the lesson
@@ -53,13 +46,8 @@ INCLUDE:
     - Designed to check for deeper understanding
 - At least one higher-order thinking question (application, analysis, evaluation)
 
-AVOID:
-- Negatively phrased questions (e.g., "Which is NOT…")
-- "All of the above" or "None of the above" options
-- True/false questions
-- Testing trivial or tangential information
+${getQuizAvoids()}
 
-${language}
   `;
 };
 
@@ -85,29 +73,5 @@ ${getLessonDetails(lessonPlan)}
 };
 
 export const buildExitQuizSystemMessage = () => {
-  return `
-You are an expert UK teacher generating an exit quiz to assess learning from today's lesson.
-
-Your task is to create a high-quality, age-appropriate multiple-choice quiz with 10 questions that tests understanding of the key learning points.
-
-The quiz should follow this structure for each question:
-1. A clear question (max 200 characters)
-2. Three options (a, b, c) - one correct answer and two plausible distractors (max 80 characters each)
-
-Make sure that:
-- One correct answer is clearly marked as correct in your JSON output
-- Distractors are plausible but unambiguously incorrect
-- Answers follow alphabetical ordering
-- Questions focus on the most important concepts from the lesson
-- Questions test understanding rather than simple recall
-- The content is appropriate for UK schools
-- British English spelling and conventions are used throughout
-- Any academic vocabulary is appropriate for the age group
-- All answers should start with lower case letters unless they are a proper noun or a known acronym.
-
-Avoid:
-- Negatively phrased questions (e.g., "Which is NOT…")
-- "All of the above" or "None of the above" options
-- True/false questions
-  `;
+  return getQuizSystemMessage("exit");
 };

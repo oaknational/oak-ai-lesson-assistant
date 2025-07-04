@@ -1,14 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 
-import {
-  OakFlex,
-  OakPrimaryButton,
-  OakPrimaryInvertedButton,
-  OakTextInput,
-} from "@oaknational/oak-components";
-import styled from "styled-components";
+import { OakBox, OakFlex, OakTextInput } from "@oaknational/oak-components";
 import invariant from "tiny-invariant";
 
 import {
@@ -25,6 +19,8 @@ import {
 import FormValidationWarning from "../../FormValidationWarning";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
 import ResourcesFooter from "../ResourcesFooter";
+import SharedNavigationButtons from "./SharedFooterNavigationButtons";
+import { validateForm } from "./helpers";
 
 type SubmitLessonPlanParams = {
   title: string;
@@ -47,97 +43,45 @@ const StepTwo = ({
 
   const [showValidationError, setShowValidationError] = useState("");
   const [validationAttempted, setValidationAttempted] = useState(false);
-  const [placeholder, setPlaceholder] = useState(
-    "Type a lesson title or learning outcome",
-  );
 
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType
     ? resourceType.displayName.toLowerCase()
     : null;
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setPlaceholder("Type a learning objective");
-      } else {
-        setPlaceholder("Type a lesson title or learning outcome");
-      }
-    };
-
-    // Set initial value
-    handleResize();
-
-    // Add event listener
-    window.addEventListener("resize", handleResize);
-
-    // Clean up
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const validateForm = (
-    titleToCheck: string | null | undefined,
-    yearToCheck: string | null | undefined,
-    subjectToCheck: string | null | undefined,
-  ) => {
-    if (!titleToCheck && !subjectToCheck && !yearToCheck) {
-      return {
-        isValid: false,
-        errorMessage: `Please provide a year group, subject and lesson details, so that Aila has the right context for your ${docTypeName}.`,
-      };
-    } else if (!yearToCheck && !subjectToCheck) {
-      return {
-        isValid: false,
-        errorMessage: `Please select a year group and subject, so that Aila has the right context for your ${docTypeName}.`,
-      };
-    } else if (!yearToCheck) {
-      return {
-        isValid: false,
-        errorMessage: `Please select a year group, so that Aila has the right context for your ${docTypeName}.`,
-      };
-    } else if (!subjectToCheck) {
-      return {
-        isValid: false,
-        errorMessage: `Please select a subject, so that Aila has the right context for your ${docTypeName}.`,
-      };
-    } else if (!titleToCheck) {
-      return {
-        isValid: false,
-        errorMessage: `Please provide your lesson details, so that Aila has the right context for your ${docTypeName}.`,
-      };
-    } else if (titleToCheck.length < 10) {
-      return {
-        isValid: false,
-        errorMessage: `Please provide a longer lesson title.`,
-      };
-    }
-
-    return { isValid: true, errorMessage: "" };
-  };
+  // Using the imported validateForm utility
 
   const validateInputs = () => {
-    const { isValid, errorMessage } = validateForm(title, year, subject);
+    const { isValid, errorMessage } = validateForm(
+      title,
+      year,
+      subject,
+      docTypeName,
+    );
     setShowValidationError(errorMessage);
     return isValid;
   };
 
   const updateValidationMessage = (
-    updatedTitle?: string,
-    updatedYear?: string,
-    updatedSubject?: string,
+    updates: {
+      updatedTitle?: string;
+      updatedYear?: string;
+      updatedSubject?: string;
+    } = {},
   ) => {
     // Only update validation message if validation has been attempted
     if (!validationAttempted) return;
 
     // Use the updated values or fall back to current state values
-    const titleToCheck = updatedTitle ?? title;
-    const yearToCheck = updatedYear ?? year;
-    const subjectToCheck = updatedSubject ?? subject;
+    const titleToCheck = updates.updatedTitle ?? title;
+    const yearToCheck = updates.updatedYear ?? year;
+    const subjectToCheck = updates.updatedSubject ?? subject;
 
     const { errorMessage } = validateForm(
       titleToCheck,
       yearToCheck,
       subjectToCheck,
+      docTypeName,
     );
     setShowValidationError(errorMessage);
   };
@@ -154,7 +98,7 @@ const StepTwo = ({
             selectedYear={year}
             setSelectedYear={(year: string) => {
               setYear(year);
-              updateValidationMessage(undefined, year, undefined);
+              updateValidationMessage({ updatedYear: year });
             }}
             activeDropdown={activeDropdown}
             setActiveDropdown={setActiveDropdown}
@@ -163,62 +107,62 @@ const StepTwo = ({
             selectedSubject={subject}
             setSelectedSubject={(subject: string) => {
               setSubject(subject);
-              updateValidationMessage(undefined, undefined, subject);
+              updateValidationMessage({ updatedSubject: subject });
             }}
             activeDropdown={activeDropdown}
             setActiveDropdown={setActiveDropdown}
           />
         </OakFlex>
-        <OakTextInput
-          onChange={(value) => {
-            const newTitle = value.target.value;
-            setTitle(newTitle);
-            updateValidationMessage(newTitle, undefined, undefined);
-          }}
-          value={title ?? ""}
-          placeholder={placeholder}
-        />
+        <OakBox $display={["block", "none"]}>
+          <OakTextInput
+            onChange={(value) => {
+              const newTitle = value.target.value;
+              setTitle(newTitle);
+              updateValidationMessage({ updatedTitle: newTitle });
+            }}
+            value={title ?? ""}
+            placeholder={"Type a learning objective"}
+          />
+        </OakBox>
+        <OakBox $display={["none", "block"]}>
+          <OakTextInput
+            onChange={(value) => {
+              const newTitle = value.target.value;
+              setTitle(newTitle);
+              updateValidationMessage({ updatedTitle: newTitle });
+            }}
+            placeholder={"Type a lesson title or learning outcome"}
+            value={title ?? ""}
+          />
+        </OakBox>
         {!!showValidationError && (
           <FormValidationWarning errorMessage={showValidationError} />
         )}
       </OakFlex>
 
       <ResourcesFooter>
-        <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <OakPrimaryInvertedButton
-            iconName="chevron-left"
-            onClick={() => setStepNumber(0, "back_a_step_button")}
-          >
-            Back a step
-          </OakPrimaryInvertedButton>
-
-          <OakPrimaryButton
-            onClick={() => {
-              // Set validation as attempted to show messages going forward
-              setValidationAttempted(true);
-
-              const { isValid } = validateForm(title, year, subject);
-              if (!isValid) {
-                validateInputs();
-                return;
-              }
-              invariant(
-                title && subject && year,
-                "Title, subject, and year must be provided to generate lesson plan",
-              );
-
-              void handleSubmitLessonPlan({
-                title: title,
-                subject: subject,
-                year: year,
-              });
-            }}
-            iconName="arrow-right"
-            isTrailingIcon={true}
-          >
-            Next, review lesson details
-          </OakPrimaryButton>
-        </OakFlex>
+        <SharedNavigationButtons
+          backLabel="Back a step"
+          nextLabel="Next, review lesson details"
+          onBackClick={() => setStepNumber(0, "back_a_step_button")}
+          onNextClick={() => {
+            setValidationAttempted(true);
+            const { isValid } = validateForm(title, year, subject, docTypeName);
+            if (!isValid) {
+              validateInputs();
+              return;
+            }
+            invariant(
+              title && subject && year,
+              "Title, subject, and year must be provided to generate lesson plan",
+            );
+            void handleSubmitLessonPlan({
+              title,
+              subject,
+              year,
+            });
+          }}
+        />
       </ResourcesFooter>
     </>
   );

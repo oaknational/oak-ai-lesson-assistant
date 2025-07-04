@@ -20,6 +20,7 @@ const ResourcesFooter = ({ children }: ResourcesFooterProps) => {
     >
       <OakFlex
         $pa={["inner-padding-s", "inner-padding-l"]}
+        $ph={["inner-padding-l"]}
         $width={"100%"}
         $background={"white"}
       >

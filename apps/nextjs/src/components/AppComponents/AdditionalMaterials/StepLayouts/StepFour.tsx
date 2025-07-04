@@ -53,7 +53,7 @@ const MockOakSecondaryButtonWithJustIcon = styled.button<{
   disabled: boolean;
 }>`
   background: none;
-  color: inherit;
+  color: white;
   border: none;
   padding: 0;
   font: inherit;
@@ -62,9 +62,9 @@ const MockOakSecondaryButtonWithJustIcon = styled.button<{
   font-family: unset;
   outline: none;
   font-family: --var(google-font), Lexend, sans-serif;
-  color: #222222;
-  background: #ffffff;
-  padding: 0.75rem;
+
+  background: #222222;
+
   padding-left: 1rem;
   padding-right: 1rem;
   border: 0.125rem solid;
@@ -300,32 +300,8 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                   $display={["flex", "none"]}
                   $width={"100%"}
                   $gap="all-spacing-2"
-                  $flexDirection={["row-reverse", "row"]}
+                  $flexDirection={["row", "row"]}
                 >
-                  <MockOakSecondaryButtonWithJustIcon
-                    onClick={() => void handleDownloadMaterial()}
-                    disabled={
-                      !generation || isResourcesLoading || isDownloading
-                    }
-                  >
-                    {isDownloading ? (
-                      <OakLoadingSpinner $width="all-spacing-6" />
-                    ) : (
-                      <OakIcon iconName="download" iconWidth="all-spacing-7" />
-                    )}
-                  </MockOakSecondaryButtonWithJustIcon>
-                  <MobileNoLetterSpacingButton
-                    onClick={() => {
-                      setIsFooterAdaptOpen(true);
-                    }}
-                    disabled={
-                      refinementOptions.length === 0 ||
-                      !generation ||
-                      isDownloading
-                    }
-                  >
-                    Modify
-                  </MobileNoLetterSpacingButton>
                   <MobileNoLetterSpacingButton
                     onClick={() =>
                       setDialogWindow("additional-materials-start-again")
@@ -333,6 +309,36 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                   >
                     Start again
                   </MobileNoLetterSpacingButton>
+                  <OakFlex $gap={"space-between-ssx"} $flexDirection={"row"}>
+                    <MobileNoLetterSpacingButton
+                      onClick={() => {
+                        setIsFooterAdaptOpen(true);
+                      }}
+                      disabled={
+                        refinementOptions.length === 0 ||
+                        !generation ||
+                        isDownloading
+                      }
+                    >
+                      Modify
+                    </MobileNoLetterSpacingButton>
+                    <MockOakSecondaryButtonWithJustIcon
+                      onClick={() => void handleDownloadMaterial()}
+                      disabled={
+                        !generation || isResourcesLoading || isDownloading
+                      }
+                    >
+                      {isDownloading ? (
+                        <OakLoadingSpinner $width="all-spacing-6" />
+                      ) : (
+                        <OakIcon
+                          iconName="download"
+                          iconWidth="all-spacing-7"
+                          $colorFilter={"white"}
+                        />
+                      )}
+                    </MockOakSecondaryButtonWithJustIcon>
+                  </OakFlex>
                 </OakFlex>
               </>
             )}

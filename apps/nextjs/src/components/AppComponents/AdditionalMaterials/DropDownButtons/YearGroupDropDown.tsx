@@ -13,7 +13,6 @@ const yearOptions = [
   ...Object.values(yearNameMap).filter(
     (year): year is string => year !== undefined,
   ),
-  "Other",
 ];
 export const YearGroupDropDown = ({
   selectedYear,
