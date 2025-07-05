@@ -269,6 +269,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                   </OakSecondaryButton>
                   <OakFlex $gap="all-spacing-2">
                     <OakSecondaryButton
+                      data-testid="modify-desktop"
                       onClick={() => {
                         setIsFooterAdaptOpen(true);
                       }}
@@ -311,6 +312,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                   </MobileNoLetterSpacingButton>
                   <OakFlex $gap={"space-between-ssx"} $flexDirection={"row"}>
                     <MobileNoLetterSpacingButton
+                      data-testid="modify-mobile"
                       onClick={() => {
                         setIsFooterAdaptOpen(true);
                       }}
