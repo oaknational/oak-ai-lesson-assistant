@@ -337,6 +337,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                           iconName="download"
                           iconWidth="all-spacing-7"
                           $colorFilter={"white"}
+                          data-testid="download-icon-button"
                         />
                       )}
                     </MockOakSecondaryButtonWithJustIcon>

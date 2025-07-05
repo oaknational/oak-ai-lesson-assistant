@@ -322,7 +322,7 @@ test.describe("Teaching Materials", () => {
     "Complete teaching materials flow - glossary",
     { tag: "@common-auth" },
     async ({ page }) => {
-      const generationTimeout = FIXTURE_MODE === "record" ? 60000 : 30000;
+      const generationTimeout = 30000;
       test.setTimeout(generationTimeout * 4);
 
       await test.step("Setup", async () => {
@@ -330,7 +330,7 @@ test.describe("Teaching Materials", () => {
         await page.goto(`${TEST_BASE_URL}/aila/tools`);
       });
 
-      await applyTeachingMaterialsFixtures(page, FIXTURE_MODE);
+      await applyTeachingMaterialsFixtures(page);
 
       await test.step("Navigate to teaching materials", async () => {
         await page.getByTestId("create-teaching-materials-button").click();
@@ -402,84 +402,80 @@ test.describe("Teaching Materials", () => {
     },
   );
 
-  // test(
-  //   "Teaching materials mobile flow - glossary",
-  //   { tag: "@mobile-common-auth" },
-  //   async ({ page }) => {
-  //     const generationTimeout = FIXTURE_MODE === "record" ? 60000 : 30000;
-  //     test.setTimeout(generationTimeout * 4);
+  test(
+    "Teaching materials mobile flow - glossary",
+    { tag: "@mobile-common-auth" },
+    async ({ page }) => {
+      const generationTimeout = 30000;
+      test.setTimeout(generationTimeout * 4);
 
-  //     await test.step("Setup", async () => {
-  //       await bypassVercelProtection(page);
-  //       await page.goto(`${TEST_BASE_URL}/aila/tools`);
-  //     });
+      await test.step("Setup", async () => {
+        await bypassVercelProtection(page);
+        await page.goto(`${TEST_BASE_URL}/aila/tools`);
+      });
 
-  //     const { setFixture } = await applyTeachingMaterialsFixtures(
-  //       page,
-  //       FIXTURE_MODE,
-  //     );
+      await applyTeachingMaterialsFixtures(page);
 
-  //     await test.step("Navigate to teaching materials", async () => {
-  //       await page.getByText("Create teaching materials").click();
-  //       await expect(page).toHaveURL(/\/aila\/tools\/teaching-materials/);
-  //     });
+      await test.step("Navigate to teaching materials", async () => {
+        await page.getByTestId("create-teaching-materials-button").click();
+        await expect(page).toHaveURL(/\/aila\/tools\/teaching-materials/);
+      });
 
-  //     await test.step("Step 0: Select material type", async () => {
-  //       setFixture("teaching-materials-session-1");
-  //       await page.locator('input[value="additional-glossary"]').click();
-  //       await page.getByText("Next, provide lesson details").click();
-  //     });
+      await test.step("Step 1: Select material type", async () => {
+        await page.getByText("Glossary").click();
+        await page.getByTestId("mobile-next-button").click();
+      });
 
-  //     await test.step("Step 1: Input lesson context", async () => {
-  //       // Mobile might have different placeholder text
-  //       const lessonInput = page.getByPlaceholder(
-  //         /Type a lesson title|Type a learning objective/,
-  //       );
-  //       await lessonInput.fill("I want a lesson about data representation");
+      await test.step("Step 2: Input lesson context", async () => {
+        const buttons = page.getByTestId("drop-down-button");
+        await buttons.first().click();
+        await page.getByText("Year 3").click();
+        await buttons.last().click();
+        await page.getByText("Biology").click();
+        await page
+          .getByPlaceholder("Type a learning objective")
+          .fill("I want a lesson about data representation");
+        await page.getByTestId("mobile-next-button").click();
+      });
 
-  //       // Select year group
-  //       await page
-  //         .getByRole("button", { name: /Year \d+|Select year group/ })
-  //         .click();
-  //       await page.getByText("Year 3").click();
+      await test.step("Step 3: Review lesson plan and create glossary", async () => {
+        await expect(page.getByText("Exploring animal habitats")).toBeVisible();
+        await page.getByTestId("mobile-next-button").click();
+      });
 
-  //       // Select subject
-  //       await page.getByRole("button", { name: /Select subject/ }).click();
-  //       await page.getByText("Computing").click();
+      await test.step("Step 4: Review generated glossary", async () => {
+        await expect(
+          page.getByText(
+            "a special feature that helps an animal survive in its habitat.",
+          ),
+        ).toBeVisible();
+        await expect(page.getByTestId("download-icon-button")).toBeVisible();
+      });
+      await test.step("Step 4: Modify glossary and lower reading age", async () => {
+        await page.getByTestId("modify-mobile").click();
 
-  //       // Set fixture before making the API call
-  //       setFixture("teaching-materials-lesson-plan-1");
+        await page.getByText("Lower reading age").click();
 
-  //       // Click next
-  //       await page.getByText("Next, review lesson details").click();
-  //     });
+        await expect(page.getByText("Adapt")).toBeVisible();
+        await expect(page.getByText("a feature.")).toBeVisible();
+      });
 
-  //     await test.step("Step 2: Review lesson plan and create glossary", async () => {
-  //       // Wait for lesson plan to load
-  //       await expect(
-  //         page.getByText("Data Representation Fundamentals"),
-  //       ).toBeVisible();
+      await test.step("Step 4: Undo glossary modification", async () => {
+        await page.getByText("Undo").click();
 
-  //       // Set fixture before creating glossary
-  //       setFixture("teaching-materials-glossary-1");
-
-  //       // Create glossary
-  //       await page.getByText("Create glossary").click();
-  //     });
-
-  //     await test.step("Step 3: Review generated glossary", async () => {
-  //       // Wait for glossary to generate
-  //       await expect(
-  //         page.getByText(
-  //           "a special feature that helps an animal survive in its habitat.",
-  //         ),
-  //       ).toBeVisible();
-
-  //       // Verify download functionality is available
-  //       await expect(page.getByText("Download")).toBeVisible();
-  //     });
-  //   },
-  // );
+        await expect(page.getByText("Adaptation")).toBeVisible();
+        await expect(
+          page.getByText(
+            "a special feature that helps an animal survive in its habitat.",
+          ),
+        ).toBeVisible();
+      });
+      await test.step("Step 4: Close modify footer", async () => {
+        await page.getByText("Close").click();
+        await expect(page.getByText("Lower reading text")).not.toBeVisible();
+      });
+    },
+  );
 
   test(
     "Teaching materials error handling",
