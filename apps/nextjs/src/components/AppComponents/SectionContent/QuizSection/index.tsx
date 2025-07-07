@@ -1,9 +1,13 @@
 import { useMemo } from "react";
 
-import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
+import type {
+  LessonPlanSectionWhileStreaming,
+  QuizV2,
+} from "@oakai/aila/src/protocol/schema";
 import { QuizV2Schema } from "@oakai/aila/src/protocol/schema";
 
 import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
+import { ShortAnswerQuestion } from "./ShortAnswerQuestion";
 
 export type QuizSectionProps = {
   // When we have agentic generation, we will know that sections are valid when streamed
@@ -25,16 +29,28 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
   return (
     <>
       {quiz.questions.map((question, index) => {
-        if (question.questionType === "multiple-choice") {
-          return (
-            <MultipleChoiceQuestion
-              key={index}
-              question={question}
-              questionNumber={index + 1}
-            />
-          );
+        const questionNumber = index + 1;
+
+        switch (question.questionType) {
+          case "multiple-choice":
+            return (
+              <MultipleChoiceQuestion
+                key={index}
+                question={question}
+                questionNumber={questionNumber}
+              />
+            );
+          case "short-answer":
+            return (
+              <ShortAnswerQuestion
+                key={index}
+                question={question}
+                questionNumber={questionNumber}
+              />
+            );
+          default:
+            return null;
         }
-        return null;
       })}
     </>
   );
