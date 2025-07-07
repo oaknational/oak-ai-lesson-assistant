@@ -122,12 +122,20 @@ export const PatchCycleForLLM = z.object({
   ),
 });
 
+/**
+ * @deprecated Use PatchQuizV2Optional instead. V1 quiz format is deprecated in favor of V2.
+ * This is only kept for backward compatibility with existing quiz generators.
+ */
 export const PatchQuizV1Optional = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
   value: QuizV1OptionalSchema,
 });
 
+/**
+ * @deprecated Use PatchQuizV2 instead. V1 quiz format is deprecated in favor of V2.
+ * This is only kept for backward compatibility with existing quiz generators.
+ */
 export const PatchQuizV1 = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
@@ -136,12 +144,6 @@ export const PatchQuizV1 = z.object({
 
 // When using Structured Outputs we cannot specify the length of arrays or strings
 // so we have to use a different schema and pass in the spec with a description and in the prompt
-export const PatchQuizV1ForLLM = z.object({
-  type: z.literal("quizV1"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
-  value: QuizV1SchemaWithoutLength,
-});
 
 // V2 Quiz Patch Schemas
 export const PatchQuizV2Optional = z.object({
@@ -158,7 +160,7 @@ export const PatchQuizV2 = z.object({
 
 // For LLM - multiple choice only since LLM can only generate those
 export const PatchQuizV2ForLLM = z.object({
-  type: z.literal("quizV2"),
+  type: z.literal("quiz"),
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
   value: QuizV2MultipleChoiceOnlySchemaWithoutLength,
@@ -278,7 +280,6 @@ export const JsonPatchValueForLLMSchema = z.union([
   PatchStringForLLM,
   PatchStringArrayForLLM,
   PatchCycleForLLM,
-  PatchQuizV1ForLLM,
   PatchQuizV2ForLLM,
   PatchMisconceptionsForLLM,
   PatchKeywordsForLLM,
@@ -326,7 +327,6 @@ export const LLMPatchDocumentSchema = z.object({
     PatchStringForLLM,
     PatchBasedOnForLLM,
     PatchMisconceptionsForLLM,
-    PatchQuizV1ForLLM,
     PatchQuizV2ForLLM,
     PatchKeywordsForLLM,
     PatchCycleForLLM,

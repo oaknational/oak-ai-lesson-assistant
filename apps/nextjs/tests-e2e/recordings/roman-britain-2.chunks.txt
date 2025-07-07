@@ -23,17 +23,13 @@ patch
 ","reasoning":"
 Ident
 ified
+ key
  prior
  knowledge
- that
- KS
-1
- pupils
- should
- have
- before
- starting
- this
+ necessary
+ for
+ understanding
+ the
  lesson
  on
  the
@@ -56,21 +52,21 @@ The
  Romans
  invaded
  Britain
- and
- ruled
- for
- several
- centuries
+ in
+ AD
+ 
+43
 .","
-Roman
- roads
+The
+ Roman
+ Empire
+ was
+ very
+ powerful
  and
- towns
- were
- built
- during
- their
- occupation
+ controlled
+ many
+ lands
 .","
 Brit
 ain
@@ -80,23 +76,34 @@ ain
  the
  Roman
  Empire
+ for
+ about
+ 
+400
+ years
 .","
 The
- concept
- of
- an
- empire
+ Romans
+ built
+ roads
+,
+ baths
+,
  and
- its
- importance
+ had
+ a
+ strong
+ army
 .","
-Basic
- understanding
+Roman
+ culture
+ influenced
+ many
+ aspects
  of
- what
- archae
-ologists
- do
+ life
+ in
+ Britain
 .
 "]},"status":"
 complete
@@ -106,17 +113,12 @@ patch
 ","reasoning":"
 Outlined
  key
- learning
  points
- that
+ for
  pupils
- should
- take
- away
- from
- the
- lesson
- on
+ to
+ learn
+ regarding
  the
  end
  of
@@ -135,19 +137,15 @@ Learning
 Points
 ","value":["
 The
- Romans
- left
+ Roman
+ Empire
+ withdrew
+ from
  Britain
  around
  AD
  
 410
- due
- to
- pressures
- on
- their
- empire
 .","
 After
  the
@@ -161,35 +159,46 @@ ions
  from
  other
  groups
- like
- the
- Sax
-ons
 .","
-Many
+Daily
+ life
+ changed
+ as
  Roman
- buildings
+ structures
  and
- roads
- influenced
- the
- landscape
- of
- Britain
+ systems
+ fell
+ into
+ dis
+use
 .","
 Ar
 chae
 ologists
- help
- uncover
- the
- history
+ study
+ arte
+facts
+ to
+ learn
+ about
+ this
+ period
+.","
+The
+ end
  of
  Roman
+ rule
+ marked
+ the
+ start
+ of
+ new
+ cultural
+ influences
+ in
  Britain
- through
- excav
-ations
 .
 "]},"status":"
 complete
@@ -207,14 +216,6 @@ ed
  of
  Roman
  Britain
- to
- help
- teachers
- correct
- them
- during
- the
- lesson
 .","
 value":{"
 type":"
@@ -248,53 +249,60 @@ The
  left
  due
  to
- internal
- problems
- within
- the
- empire
- and
- threats
+ pressures
  elsewhere
+ in
+ the
+ Empire
 ,
  not
- because
- they
- were
- defeated
- by
+ due
+ to
+ defeat
+ in
+ Britain
+.
+ Discuss
  the
- Brit
-ons
+ political
+ and
+ military
+ reasons
+ for
+ their
+ departure
 ."
 },{"
 misconception":"
-Roman
- Britain
- ended
- suddenly
- without
- any
- lasting
- impact
-","description":"
-Roman
- influence
- persisted
- in
- Britain's
- infrastructure
-,
- such
- as
- roads
- and
- towns
-,
- even
+All
+ Roman
+ structures
+ disappeared
+ immediately
  after
- their
- departure
+ they
+ left
+","description":"
+Explain
+ that
+ while
+ many
+ Roman
+ structures
+ fell
+ into
+ dis
+use
+,
+ some
+ remained
+ and
+ were
+ rep
+ur
+posed
+ over
+ time
 ."
 }]},"status":"
 complete
@@ -302,22 +310,14 @@ complete
 type":"
 patch
 ","reasoning":"
-Provided
+Selected
+ important
  keywords
- that
- will
- be
- used
- throughout
+ for
+ understanding
  the
  lesson
- to
- ensure
- pupils
- understand
- the
- key
- concepts
+ topic
 .","
 value":{"
 type":"
@@ -329,47 +329,35 @@ keywords
 ","value":[
 {"
 keyword":"
-Romans
-","definition":"
-People
- from
- the
- ancient
- city
- of
- Rome
- who
- ruled
- over
- Britain
- for
- several
- centuries
-."
-},{"
-keyword":"
 Empire
 ","definition":"
 A
- large
  group
  of
- territories
- and
- people
- ruled
- over
+ countries
+ or
+ regions
+ controlled
  by
+ one
+ ruler
+ or
+ government
+"},{"
+keyword":"
+Withdrawal
+","definition":"
+The
+ act
+ of
+ leaving
+ or
+ pulling
+ out
+ from
  a
- single
- authority
-,
- like
- the
- Roman
- Empire
-."
-},{"
+ place
+"},{"
 keyword":"
 Ar
 chae
@@ -381,17 +369,16 @@ A
  studies
  human
  history
- by
- digging
- up
- and
- examining
- ancient
+ through
+ excavation
+ of
  sites
  and
- objects
-."
-},{"
+ analysis
+ of
+ arte
+facts
+"},{"
 keyword":"
 In
 vasion
@@ -399,38 +386,35 @@ vasion
 An
  instance
  of
- invading
+ entering
  a
- country
- or
- region
- with
- an
- armed
+ place
+ by
  force
-."
-},{"
+,
+ especially
+ to
+ conquer
+ it
+"},{"
 keyword":"
-S
-ax
-ons
+Arte
+fact
 ","definition":"
-A
- group
+An
+ object
+ made
+ by
+ a
+ human
+,
+ typically
  of
- tribes
- from
- northern
- Europe
- who
- invaded
- Britain
- after
- the
- Romans
- left
-."
-}]},"status":"
+ cultural
+ or
+ historical
+ interest
+"}]},"status":"
 complete
 "}],"sectionsEdited":["
 prior

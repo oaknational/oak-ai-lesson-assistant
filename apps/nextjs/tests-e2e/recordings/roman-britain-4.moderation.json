@@ -1,30 +1,36 @@
 {
-  "id": "chatcmpl-ANdXxPFyq8YyfRXY85uI1uNrgJ0N9",
+  "id": "chatcmpl-BqhwAVIzaDM4dgdJR55ALoRVoEr0j",
   "object": "chat.completion",
-  "created": 1730196925,
+  "created": 1751901650,
   "model": "gpt-4o-2024-08-06",
   "choices": [
     {
       "index": 0,
       "message": {
         "role": "assistant",
-        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan for \\\"End of Roman Britain\\\" is appropriate for Key Stage 1 students, with content that is educational and age-appropriate. It focuses on historical events and changes without delving into any potentially offensive or sensitive topics. There is no discriminatory language or behavior. The lesson does not discuss or depict violence or crime, nor does it contain upsetting or sensitive content. There is no mention of nudity or sexual content. The lesson includes standard educational activities and discussions, without involving physical activities requiring safety considerations. Additionally, there is no toxic content, such as instructions or encouragement of harmful or illegal activities. Overall, the lesson is fully compliant with guidelines across all categories.\",\"categories\":[]}",
-        "refusal": null
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":4,\"t\":5},\"justification\":\"The lesson plan for \\\"The end of Roman Britain\\\" is fully compliant across most categories. It does not contain any discriminatory language, offensive language, or strong language, and it does not involve any depiction or discussion of violence, serious conflict, or sexual violence. There is no upsetting, sensitive, or distressing content present. There is no depiction or discussion of nudity or sexual content. The lesson plan involves some exploration of objects (artefacts) and the use of images, which may require guidance, hence a score of 4 for the physical category. However, there are no activities involving hazardous equipment or imitable behavior. The lesson plan does not contain any toxic content such as guides or encouragement of harmful or illegal activities.\",\"categories\":[\"p/exploration-of-objects\",\"p/external-content\"]}",
+        "refusal": null,
+        "annotations": []
       },
       "logprobs": null,
       "finish_reason": "stop"
     }
   ],
   "usage": {
-    "prompt_tokens": 4098,
-    "completion_tokens": 168,
-    "total_tokens": 4266,
+    "prompt_tokens": 4155,
+    "completion_tokens": 192,
+    "total_tokens": 4347,
     "prompt_tokens_details": {
-      "cached_tokens": 3584
+      "cached_tokens": 3840,
+      "audio_tokens": 0
     },
     "completion_tokens_details": {
-      "reasoning_tokens": 0
+      "reasoning_tokens": 0,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
     }
   },
-  "system_fingerprint": "fp_90354628f2"
+  "service_tier": "default",
+  "system_fingerprint": "fp_07871e2ad8"
 }
