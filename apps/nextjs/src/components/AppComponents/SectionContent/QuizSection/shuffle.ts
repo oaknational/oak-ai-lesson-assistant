@@ -41,3 +41,26 @@ export function shuffleMultipleChoiceAnswers(
       isCorrect: choice.isCorrect,
     }));
 }
+
+export interface ShuffledMatchItem {
+  text: string;
+  label: string;
+}
+
+/**
+ * Shuffle match question right-side items deterministically
+ */
+export function shuffleMatchItems(items: string[]): ShuffledMatchItem[] {
+  const itemsWithLabels = items.map((item, index) => ({
+    text: item,
+    label: String.fromCharCode(97 + index), // a, b, c, etc.
+    sortKey: simpleHash(item),
+  }));
+
+  return itemsWithLabels
+    .sort((a, b) => a.sortKey - b.sortKey)
+    .map((item) => ({
+      text: item.text,
+      label: item.label,
+    }));
+}
