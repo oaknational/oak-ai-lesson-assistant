@@ -94,19 +94,6 @@ export const QuizWithMaths: Story = {
   },
 };
 
-export const WithHints: Story = {
-  args: {
-    sectionKey: "starterQuiz",
-    value: [
-      {
-        question: "What is the largest planet in our solar system?",
-        answers: ["Jupiter"],
-        distractors: ["Earth", "Saturn", "Neptune"],
-      },
-    ] satisfies QuizV1Question[],
-  },
-};
-
 export const QuizWithImages: Story = {
   args: {
     sectionKey: "starterQuiz",

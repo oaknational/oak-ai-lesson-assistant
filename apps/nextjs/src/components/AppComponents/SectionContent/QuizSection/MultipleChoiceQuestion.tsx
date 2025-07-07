@@ -17,12 +17,13 @@ type AnswerCheckboxProps = {
 
 const AnswerCheckbox = ({ isChecked }: AnswerCheckboxProps) => {
   return (
-    <OakBox
+    <OakFlex
       $mr="space-between-xs"
       $width="all-spacing-7"
       $height="all-spacing-7"
       $ba="border-solid-m"
       $borderColor="black"
+      $flexShrink="0"
     >
       {isChecked && (
         <OakIcon
@@ -33,7 +34,7 @@ const AnswerCheckbox = ({ isChecked }: AnswerCheckboxProps) => {
           $transform="scale(1.15)"
         />
       )}
-    </OakBox>
+    </OakFlex>
   );
 };
 
@@ -67,9 +68,12 @@ export const MultipleChoiceQuestion = ({
 
       <OakBox>
         {answers.map((answer, index) => (
-          <OakFlex key={index} $alignItems="center" $mb="space-between-xs">
+          <OakFlex key={index} $alignItems="flex-start" $mb="space-between-xs">
             <AnswerCheckbox isChecked={answer.isCorrect} />
-            <OakBox $font={answer.isCorrect ? "body-2-bold" : "body-2"}>
+            <OakBox
+              $font={answer.isCorrect ? "body-2-bold" : "body-2"}
+              className="pt-[2px]"
+            >
               <MemoizedReactMarkdownWithStyles
                 markdown={`${String.fromCharCode(97 + index)}) ${answer.text}`}
                 className="[&>p]:mb-0 [&>p]:inline"
