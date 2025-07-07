@@ -308,11 +308,18 @@ export const appSessionsRouter = router({
         });
       }
 
-      const chat = parseChatAndReportError({
+      const { chat } = parseChatAndReportError({
         id,
         userId: session.userId,
         sessionOutput: session.output,
       });
+
+      if (!chat) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to parse chat",
+        });
+      }
 
       const sharedChat = {
         ...chat,
