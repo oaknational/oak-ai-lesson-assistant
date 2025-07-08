@@ -14,7 +14,7 @@ import type {
 } from "../../../../protocol/schema";
 import { chatSchema } from "../../../../protocol/schema";
 import type { AilaGeneration } from "../../../generation/AilaGeneration";
-import { upgradeChat } from "./chatUpgrader";
+import { upgradeQuizzes } from "../../../upgrades/quizUpgrader";
 
 const log = aiLogger("aila:persistence");
 
@@ -55,9 +55,17 @@ export class AilaPrismaPersistence extends AilaPersistence {
     const rawChat = appSession?.output;
 
     // Upgrade V1 quizzes to V2 before parsing with the schema
-    const upgradedChat = upgradeChat(rawChat);
+    const upgradeResult = await upgradeQuizzes({
+      data: rawChat,
+      persistUpgrade: async (upgradedData) => {
+        await this._prisma.appSession.update({
+          where: { id },
+          data: { output: upgradedData },
+        });
+      },
+    });
 
-    const parsedChat = chatSchema.parse(upgradedChat);
+    const parsedChat = chatSchema.parse(upgradeResult.data);
 
     return parsedChat;
   }

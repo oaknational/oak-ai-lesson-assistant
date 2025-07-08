@@ -1,4 +1,4 @@
-import { upgradeLessonPlanQuizzes } from "@oakai/aila/src/features/persistence/adaptors/prisma/chatUpgrader";
+import { upgradeQuizzes } from "@oakai/aila/src/features/upgrades/quizUpgrader";
 import { demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
@@ -38,23 +38,8 @@ function parseChatAndReportError({
     throw new Error("sessionOutput is not an object");
   }
 
-  // Upgrade V1 quizzes to V2 before parsing
-  // NOTE: this logic can be removed once all quizzes are upgraded with a script
-  let upgradedLessonPlan: unknown;
-  let isUpgraded = false;
-  if (
-    // Narrow JsonValue type
-    sessionOutput &&
-    typeof sessionOutput === "object" &&
-    "lessonPlan" in sessionOutput
-  ) {
-    upgradedLessonPlan = upgradeLessonPlanQuizzes(sessionOutput?.lessonPlan);
-    isUpgraded = upgradedLessonPlan !== sessionOutput?.lessonPlan;
-  }
-
   const parseResult = chatSchema.safeParse({
     ...sessionOutput,
-    lessonPlan: upgradedLessonPlan,
     userId,
     id,
   });
@@ -72,10 +57,7 @@ function parseChatAndReportError({
     });
   }
 
-  return {
-    chat: parseResult.data,
-    isUpgraded,
-  };
+  return parseResult.data;
 }
 
 export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
@@ -89,18 +71,22 @@ export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
     return undefined;
   }
 
-  const { isUpgraded, chat } = parseChatAndReportError({
-    id,
-    userId: chatRecord.userId,
-    sessionOutput: chatRecord.output,
+  // Upgrade V1 quizzes to V2 if needed
+  const upgradeResult = await upgradeQuizzes({
+    data: chatRecord.output,
+    persistUpgrade: async (upgradedData) => {
+      await prisma.appSession.update({
+        where: { id },
+        data: { output: upgradedData },
+      });
+    },
   });
 
-  if (isUpgraded) {
-    await prisma.appSession.update({
-      where: { id },
-      data: { output: chat },
-    });
-  }
+  const chat = parseChatAndReportError({
+    id,
+    userId: chatRecord.userId,
+    sessionOutput: upgradeResult.data,
+  });
 
   return chat;
 }
@@ -308,10 +294,16 @@ export const appSessionsRouter = router({
         });
       }
 
-      const { chat } = parseChatAndReportError({
+      // Upgrade V1 quizzes to V2 if needed (but don't persist yet)
+      const upgradeResult = await upgradeQuizzes({
+        data: session.output,
+        persistUpgrade: null,
+      });
+
+      const chat = parseChatAndReportError({
         id,
         userId: session.userId,
-        sessionOutput: session.output,
+        sessionOutput: upgradeResult.data,
       });
 
       if (!chat) {
@@ -326,6 +318,7 @@ export const appSessionsRouter = router({
         isShared: true,
       };
 
+      // Single update that includes both upgrade (if needed) and sharing
       await ctx.prisma?.appSession.update({
         where: { id },
         data: { output: sharedChat },
