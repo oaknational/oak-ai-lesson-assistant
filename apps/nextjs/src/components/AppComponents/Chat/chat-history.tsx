@@ -14,6 +14,7 @@ import {
 import { usePathname } from "next/navigation";
 
 import { SidebarList } from "@/components/AppComponents/Chat/sidebar-list";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { useDialog } from "../DialogContext";
 import { ClearHistory } from "./clear-history";
@@ -67,7 +68,7 @@ export function ChatHistory() {
       <div className="flex h-full flex-col">
         <div className="my-10 flex flex-col px-7">
           <ChatButton
-            href="/aila/tools"
+            href={getAilaUrl("start")}
             variant="text-link"
             onClick={() => setOpenSidebar(false)}
           >

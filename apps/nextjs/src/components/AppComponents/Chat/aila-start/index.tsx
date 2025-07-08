@@ -17,6 +17,7 @@ import Link from "next/link";
 import styled from "styled-components";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import ChatPanelDisclaimer from "../chat-panel-disclaimer";
 import EmptyScreenAccordion from "../empty-screen-accordion";
@@ -73,7 +74,7 @@ export function AilaStart() {
                 <OakBox $mt="space-between-l">
                   <OakPrimaryButton
                     element={Link}
-                    href="/aila"
+                    href={getAilaUrl("lesson")}
                     iconName="arrow-right"
                     isTrailingIcon={true}
                   >
@@ -105,7 +106,7 @@ export function AilaStart() {
                 <OakBox $mt="space-between-m">
                   <OakPrimaryButton
                     element={Link}
-                    href="/aila/tools/teaching-materials"
+                    href={getAilaUrl("teaching-materials")}
                     iconName="arrow-right"
                     isTrailingIcon={true}
                     onClick={() => {

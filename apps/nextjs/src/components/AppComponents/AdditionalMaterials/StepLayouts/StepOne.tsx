@@ -15,6 +15,7 @@ import {
   useResourcesStore,
 } from "@/stores/ResourcesStoreProvider";
 import { docTypeSelector } from "@/stores/resourcesStore/selectors";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { useDialog } from "../../DialogContext";
 import FormValidationWarning from "../../FormValidationWarning";
@@ -99,8 +100,8 @@ const StepOne = ({
         <SharedNavigationButtons
           backLabel="Back a step"
           nextLabel="Next, provide lesson details"
-          onBackClick={() => {}} // href="/aila/tools"
-          backHref="/aila/tools"
+          onBackClick={() => {}} // href used here instead
+          backHref={getAilaUrl("start")}
           onNextClick={() => {
             if (!docType) {
               setShowValidationError("Please select a teaching material.");

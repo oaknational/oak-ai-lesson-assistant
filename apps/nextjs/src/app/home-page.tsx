@@ -31,6 +31,7 @@ import {
   OakFlexCustomMaxWidth,
 } from "@/components/OakBoxCustomMaxWidth";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 export const metadata: Metadata = {
   title: "Oak ai experiments",
@@ -232,7 +233,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           you&apos;re ready, you can download everything in several editable
           formats to adapt as you like.
         </OakP>
-        <OakLink href="/aila/tools"> Start creating with Aila</OakLink>
+        <OakLink href={getAilaUrl("start")}> Start creating with Aila</OakLink>
         <OakHeading
           id="creating-a-lesson"
           $mt={"space-between-m2"}
@@ -265,7 +266,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
             pupils, and download the editable lesson resources.
           </OakP>
           <OakLink
-            href="/aila"
+            href={getAilaUrl("lesson")}
             element={Link}
             onClick={() => {
               track.lessonAssistantAccessed({
@@ -299,7 +300,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
             in minutes. Download your resource, or try asking Aila to modify it
             to better suit your pupils&apos; needs.
           </OakP>
-          <OakLink href="/aila/tools/teaching-materials">
+          <OakLink href={getAilaUrl("teaching-materials")}>
             Create teaching materials with Aila
           </OakLink>
         </OakFlex>
