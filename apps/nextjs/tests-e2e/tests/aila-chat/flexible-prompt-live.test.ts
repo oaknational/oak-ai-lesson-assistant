@@ -18,7 +18,7 @@ test(
       await bypassVercelProtection(page);
       await setupClerkTestingToken({ page });
 
-      await page.goto(`${TEST_BASE_URL}/aila`);
+      await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
       await expect(page.getByTestId("chat-h1")).toBeInViewport();
     });
 
