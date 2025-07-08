@@ -130,12 +130,8 @@ export const lessonPlanSectionsSchema = z.object({
   keyLearningPoints: z.array(z.string()).min(1),
   misconceptions: z.array(misconceptionSchema),
   keywords: z.array(keywordSchema),
-  starterQuiz: quizV2Schema.refine((quiz) => quiz.questions.length >= 1, {
-    message: "Quiz must have at least 1 question",
-  }),
-  exitQuiz: quizV2Schema.refine((quiz) => quiz.questions.length >= 1, {
-    message: "Quiz must have at least 1 question",
-  }),
+  starterQuiz: quizV2Schema,
+  exitQuiz: quizV2Schema,
   cycle1: cycleSchema,
   cycle2: cycleSchema.nullish(),
   cycle3: cycleSchema.nullish(),
