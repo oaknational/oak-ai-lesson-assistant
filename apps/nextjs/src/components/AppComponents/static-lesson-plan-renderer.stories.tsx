@@ -58,18 +58,11 @@ export const WithTooltips: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Wait for the component to render
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    const infoButton = canvas.getAllByText("i")?.[0];
 
-    // Find all info buttons (they contain "i" text)
-    const infoButtons = canvas.getAllByText("i");
-
-    if (infoButtons.length > 0) {
-      // Hover over the first info button to show tooltip
-      await userEvent.hover(infoButtons[0]!);
-
-      // Keep the tooltip visible for Chromatic snapshot
-      await new Promise((resolve) => setTimeout(resolve, 500));
+    // Hover over the first info button to show tooltip
+    if (infoButton) {
+      await userEvent.hover(infoButton);
     }
   },
 };
