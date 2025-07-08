@@ -13,8 +13,8 @@ import type {
   LessonPlanKey,
 } from "../../../../protocol/schema";
 import { chatSchema } from "../../../../protocol/schema";
+import { upgradeQuizzes } from "../../../../protocol/schemas/quiz/conversion/lessonPlanQuizMigrator";
 import type { AilaGeneration } from "../../../generation/AilaGeneration";
-import { upgradeQuizzes } from "../../../../protocol/schemas/quiz/conversion/quizUpgrader";
 
 const log = aiLogger("aila:persistence");
 

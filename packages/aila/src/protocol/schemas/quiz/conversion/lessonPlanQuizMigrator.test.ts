@@ -1,8 +1,7 @@
 import { describe, expect, it, jest } from "@jest/globals";
 
 import type { QuizV1, QuizV2 } from "..";
-import { upgradeQuizzes } from "./quizUpgrader";
-import type { UpgradeResult } from "./quizUpgrader";
+import { upgradeQuizzes } from "./lessonPlanQuizMigrator";
 
 describe("quiz upgrader", () => {
   describe("upgradeQuizzes", () => {

@@ -3,7 +3,6 @@ import { aiLogger } from "@oakai/logger";
 
 import { z } from "zod";
 
-import type { } from "..";
 import { QuizV1Schema, QuizV2Schema } from "..";
 import { convertQuizV1ToV2, isQuizV1 } from "./quizV1ToV2";
 

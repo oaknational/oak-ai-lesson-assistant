@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { minMaxText } from "../../schemaHelpers";
+
 // ********** QUIZ V2 (discriminated union for multiple quiz types) **********
 
 export const QUIZ_V2_DESCRIPTIONS = {
@@ -91,7 +93,9 @@ export const QuizV2MultipleChoiceOnlySchema = z.object({
   version: z.literal("v2").describe("Schema version identifier"),
   questions: z
     .array(QuizV2MultipleChoiceOnlyQuestionSchema)
-    .describe("Array of multiple choice quiz questions"),
+    .describe(
+      `Array of multiple choice quiz questions. ${minMaxText({ min: 1, entity: "elements" })}`,
+    ),
 });
 
 export const QuizV2MultipleChoiceOnlySchemaWithoutLength =

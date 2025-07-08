@@ -1,4 +1,4 @@
-import { upgradeQuizzes } from "@oakai/aila/src/protocol/schemas/quiz/conversion/quizUpgrader";
+import { upgradeQuizzes } from "@oakai/aila/src/protocol/schemas/quiz/conversion/lessonPlanQuizMigrator";
 import { demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
