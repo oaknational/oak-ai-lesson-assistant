@@ -1,9 +1,10 @@
 import { describe, expect, it, jest } from "@jest/globals";
 
-import type { QuizV1, QuizV2 } from "../../protocol/schemas/quiz";
+import type { QuizV1, QuizV2 } from "..";
 import { upgradeQuizzes } from "./quizUpgrader";
+import type { UpgradeResult } from "./quizUpgrader";
 
-describe("quizUpgrader", () => {
+describe("quiz upgrader", () => {
   describe("upgradeQuizzes", () => {
     const mockV1Quiz: QuizV1 = [
       {
@@ -72,12 +73,16 @@ describe("quizUpgrader", () => {
       });
 
       expect(result.wasUpgraded).toBe(true);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
       const upgradedData = result.data as any;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(upgradedData.lessonPlan.starterQuiz).toHaveProperty(
         "version",
         "v2",
       );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(upgradedData.lessonPlan.starterQuiz).toHaveProperty("questions");
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(upgradedData.lessonPlan.exitQuiz).toEqual(mockV2Quiz);
     });
 
@@ -133,7 +138,7 @@ describe("quizUpgrader", () => {
         },
       };
 
-      const mockPersistUpgrade = jest.fn().mockResolvedValue(undefined);
+      const mockPersistUpgrade = jest.fn<any>().mockResolvedValue(undefined);
 
       const result = await upgradeQuizzes({
         data: validData,
@@ -164,7 +169,7 @@ describe("quizUpgrader", () => {
       };
 
       const mockError = new Error("Persistence failed");
-      const mockPersistUpgrade = jest.fn().mockRejectedValue(mockError);
+      const mockPersistUpgrade = jest.fn<any>().mockRejectedValue(mockError);
 
       await expect(
         upgradeQuizzes({

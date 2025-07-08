@@ -3,12 +3,9 @@ import { aiLogger } from "@oakai/logger";
 
 import { z } from "zod";
 
-import type { QuizV1, QuizV2 } from "../../protocol/schemas/quiz";
-import { QuizV1Schema, QuizV2Schema } from "../../protocol/schemas/quiz";
-import {
-  convertQuizV1ToV2,
-  isQuizV1,
-} from "../../protocol/schemas/quiz/conversion/quizV1ToV2";
+import type { } from "..";
+import { QuizV1Schema, QuizV2Schema } from "..";
+import { convertQuizV1ToV2, isQuizV1 } from "./quizV1ToV2";
 
 const log = aiLogger("aila:protocol");
 

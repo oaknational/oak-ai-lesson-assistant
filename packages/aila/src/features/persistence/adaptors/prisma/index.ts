@@ -14,7 +14,7 @@ import type {
 } from "../../../../protocol/schema";
 import { chatSchema } from "../../../../protocol/schema";
 import type { AilaGeneration } from "../../../generation/AilaGeneration";
-import { upgradeQuizzes } from "../../../upgrades/quizUpgrader";
+import { upgradeQuizzes } from "../../../../protocol/schemas/quiz/conversion/quizUpgrader";
 
 const log = aiLogger("aila:persistence");
 
