@@ -132,6 +132,12 @@ export const QuizWithImages: Story = {
             "40 is a multiple of 8. Which multiples of 8 are adjacent to 40?\n\n![Number squares showing 40](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266807/a3g7nwse0lqdvrggp1vt.png)",
           answers: ["32", "48"],
           distractors: ["34", "50", "47"],
+          imageAttributions: [
+            {
+              imageUrl: "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266807/a3g7nwse0lqdvrggp1vt.png",
+              attribution: "© Oak National Academy 2024",
+            },
+          ],
         },
         {
           questionType: "multiple-choice" as const,
@@ -139,6 +145,12 @@ export const QuizWithImages: Story = {
             "Which mixed operation equation can be used to calculate the missing multiple of 8?\n\n![Number line with missing value](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266808/pggweqwl9chfutuul4pm.png)",
           answers: ["5 × 8 − 8", "3 × 8 + 8"],
           distractors: ["4 groups of 8", "8 x 4"],
+          imageAttributions: [
+            {
+              imageUrl: "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266808/pggweqwl9chfutuul4pm.png",
+              attribution: "© Oak National Academy 2024",
+            },
+          ],
         },
         {
           questionType: "multiple-choice" as const,
@@ -146,6 +158,12 @@ export const QuizWithImages: Story = {
             "Here is part of the 8 times table grid. What could Izzy do to find 13 × 8 quickly?\n\n![8 times table grid](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png)",
           answers: ["12 x 8 + 8", "Increase 96 by 8"],
           distractors: ["Count in eights from zero"],
+          imageAttributions: [
+            {
+              imageUrl: "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png",
+              attribution: "© Oak National Academy 2024",
+            },
+          ],
         },
         {
           // TODO: This use case (images in answer choices) is not fully implemented yet
@@ -159,6 +177,20 @@ export const QuizWithImages: Story = {
           distractors: [
             "![2 groups of 8 dots](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266808/pggweqwl9chfutuul4pm.png)",
             "![4 groups of 8 dots](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png)",
+          ],
+          imageAttributions: [
+            {
+              imageUrl: "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266807/a3g7nwse0lqdvrggp1vt.png",
+              attribution: "© Oak National Academy 2024",
+            },
+            {
+              imageUrl: "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266808/pggweqwl9chfutuul4pm.png",
+              attribution: "© Oak National Academy 2024",
+            },
+            {
+              imageUrl: "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png",
+              attribution: "© Oak National Academy 2024",
+            },
           ],
         },
       ],

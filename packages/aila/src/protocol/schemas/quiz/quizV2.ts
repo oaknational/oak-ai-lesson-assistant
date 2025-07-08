@@ -6,11 +6,23 @@ export const QUIZ_V2_DESCRIPTIONS = {
   question: "The question as markdown text",
   questionType: "The type of quiz question",
   answers: "The answers specific to this question type",
+  imageAttributions:
+    "Attribution metadata for any images referenced in this question",
 } as const;
+
+// Image attribution metadata
+export const ImageAttributionSchema = z.object({
+  imageUrl: z.string().describe("The URL of the image"),
+  attribution: z.string().describe("Attribution text for the image"),
+});
 
 // Base question schema with common fields
 export const QuizV2QuestionBaseSchema = z.object({
   question: z.string().describe(QUIZ_V2_DESCRIPTIONS.question),
+  imageAttributions: z
+    .array(ImageAttributionSchema)
+    .optional()
+    .describe(QUIZ_V2_DESCRIPTIONS.imageAttributions),
 });
 
 // Multiple choice question
@@ -67,6 +79,7 @@ export const QuizV2Schema = z.object({
 export const QuizV2SchemaWithoutLength = QuizV2Schema;
 export const QuizV2OptionalSchema = QuizV2Schema.optional();
 
+export type ImageAttribution = z.infer<typeof ImageAttributionSchema>;
 export type QuizV2Question = z.infer<typeof QuizV2QuestionSchema>;
 export type QuizV2 = z.infer<typeof QuizV2Schema>;
 export type QuizV2Optional = z.infer<typeof QuizV2OptionalSchema>;
