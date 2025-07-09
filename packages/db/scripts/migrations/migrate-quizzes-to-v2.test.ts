@@ -1,6 +1,6 @@
-import { upgradeQuizzes } from "@oakai/aila/src/protocol/schemas/quiz/conversion/lessonPlanQuizMigrator";
-
 import { describe, expect, it, jest } from "@jest/globals";
+
+import { upgradeQuizzes } from "../../../aila/src/protocol/schemas/quiz/conversion/lessonPlanQuizMigrator";
 
 // Mock the logger
 jest.mock("@oakai/logger", () => ({
@@ -161,7 +161,9 @@ describe("Quiz V2 Migration with lessonPlanQuizMigrator", () => {
       }
       const lessonPlan = result.data.lessonPlan;
       // Starter quiz should be upgraded
-      expect((lessonPlan.starterQuiz as { version: string }).version).toBe("v2");
+      expect((lessonPlan.starterQuiz as { version: string }).version).toBe(
+        "v2",
+      );
       // Exit quiz should remain unchanged
       expect(lessonPlan.exitQuiz).toEqual(mixedData.lessonPlan.exitQuiz);
     });
@@ -182,7 +184,9 @@ describe("Quiz V2 Migration with lessonPlanQuizMigrator", () => {
 
       await upgradeQuizzes({
         data: v1Data,
-        persistUpgrade: mockPersist as unknown as ((upgradedData: unknown) => Promise<void>) | null,
+        persistUpgrade: mockPersist as unknown as
+          | ((upgradedData: unknown) => Promise<void>)
+          | null,
       });
 
       expect(mockPersist).toHaveBeenCalledTimes(1);
