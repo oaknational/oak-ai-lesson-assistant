@@ -5,6 +5,7 @@ import { OakBox, OakPrimaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 export const HomePageCTA = () => {
   const user = useUser();
@@ -14,7 +15,7 @@ export const HomePageCTA = () => {
     <OakBox $mt="space-between-s">
       <OakPrimaryButton
         element={Link}
-        href="/aila/tools"
+        href={getAilaUrl("start")}
         iconName="arrow-right"
         isTrailingIcon={true}
         onClick={() => {

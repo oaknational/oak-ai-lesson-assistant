@@ -186,4 +186,72 @@ export const getYearGroupsFromKeyStage = (keyStage: string): number[] => {
 };
 
 export const language = `LANGUAGE 
-  Use British English spelling and vocabulary (e.g. colour not color, centre not center, rubbish not trash) unless the user sets a different primary language. This reflects our UK teacher audience.`;
+  Use British English spelling and vocabulary (e.g. colour not color, centre not center, rubbish not trash) unless the user sets a different primary language. This reflects our UK teacher audience.
+
+  `;
+
+export const getQuizStructure = () => {
+  return `The quiz should use the following structure:
+
+1. [question text here - max 200 characters]
+
+a. [answer a - max 80 characters]
+
+b. [answer b - max 80 characters]
+
+c. [answer c - max 80 characters]`;
+};
+
+export const getQuizRequirements = () => {
+  return `REQUIREMENTS:
+- There should be 10 questions
+- Each question should have one correct answer and two PLAUSIBLE DISTRACTORS
+- Put answers in alphabetical order
+- Questions should get progressively harder`;
+};
+
+export const getQuizAvoids = () => {
+  return `AVOID:
+- Negatively phrased questions (e.g., "Which is NOT…")
+- "All of the above" or "None of the above" options
+- True/false questions
+- Answers should always start with lower-case letters unless they are proper nouns or acronyms. Cities and countries should be capitalised.`;
+};
+
+export const getQuizSystemMessage = (quizType: "starter" | "exit") => {
+  const purpose =
+    quizType === "starter"
+      ? "a starter quiz to assess prior knowledge"
+      : "an exit quiz to assess learning from today's lesson";
+
+  const additionalInstructions =
+    quizType === "starter"
+      ? "- Questions increase in difficulty through the quiz\n- No jargon or overly technical language beyond the pupils' understanding"
+      : "- Questions focus on the most important concepts from the lesson";
+
+  return `
+You are an expert UK teacher generating ${purpose}.
+
+Your task is to create a high-quality, age-appropriate multiple-choice quiz with 10 questions.
+
+The quiz should follow this structure for each question:
+1. A clear question (max 200 characters)
+2. Three options (a, b, c) - one correct answer and two plausible distractors (max 80 characters each)
+
+Make sure that:
+- One correct answer is clearly marked as correct in your JSON output
+- Distractors are plausible but unambiguously incorrect
+- Answers follow alphabetical ordering
+${additionalInstructions}
+- The content is appropriate for UK schools
+- British English spelling and conventions are used throughout
+- All answers should start with lower case letters unless they are a proper noun or a known acronym, city and country names should always be capitalised.
+
+Avoid:
+- Negatively phrased questions (e.g., "Which is NOT…")
+- "All of the above" or "None of the above" options
+- True/false questions
+
+${language}
+  `;
+};

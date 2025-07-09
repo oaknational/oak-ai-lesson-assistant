@@ -1,5 +1,12 @@
 import type { ContextByMaterialType } from "../configSchema";
-import { getLessonDetails, language } from "../promptHelpers";
+import {
+  getLessonDetails,
+  getQuizAvoids,
+  getQuizRequirements,
+  getQuizStructure,
+  getQuizSystemMessage,
+  language,
+} from "../promptHelpers";
 import { refinementMap } from "../refinement/schema";
 
 export const buildStarterQuizPrompt = (
@@ -21,22 +28,9 @@ The QUIZ should be appropriate for the age of pupils in ${lessonPlan.keyStage} a
 **Lesson Details**:
 ${getLessonDetails(lessonPlan)}
 
-The quiz should use the following structure:
+${getQuizStructure()}
 
-1. [question text here - max 200 characters]
-
-a. [answer a - max 80 characters]
-
-b. [answer b - max 80 characters]
-
-c. [answer c - max 80 characters]
-
-REQUIREMENTS:
-- There should be 10 questions
-- Each question should have one correct answer and two PLAUSIBLE DISTRACTORS
-- Put answers in alphabetical order
-- Answers should start with lower-case letters unless they are proper nouns or acronyms
-- Questions should get harder as the quiz progresses
+${getQuizRequirements()}
 
 INCLUDE:
 - At least one question testing understanding of a KEYWORD
@@ -47,12 +41,10 @@ INCLUDE:
     - Check that pupils do not have common misconceptions or errors
 - Assess higher-order skills through application, analysis, or evaluation
 - Questions which assess understanding of the content rather than just recall
-
-AVOID:
-- Negatively phrased questions (e.g., "Which is NOT…")
-- "All of the above" or "None of the above" options
-- True/false questions
 - Questions about the content of the lesson
+
+${getQuizAvoids()}
+
   `;
 };
 
@@ -78,30 +70,5 @@ ${getLessonDetails(lessonPlan)}
 };
 
 export const buildStarterQuizSystemMessage = () => {
-  return `
-You are an expert UK teacher generating a starter quiz to assess prior knowledge.
-
-Your task is to create a high-quality, age-appropriate multiple-choice quiz with 10 questions.
-
-The quiz should follow this structure for each question:
-1. A clear question (max 200 characters)
-2. Three options (a, b, c) - one correct answer and two plausible distractors (max 80 characters each)
-
-Make sure that:
-- One correct answer is clearly marked as correct in your JSON output
-- Distractors are plausible but unambiguously incorrect
-- Answers follow alphabetical ordering
-- Questions increase in difficulty through the quiz
-- The content is appropriate for UK schools
-- British English spelling and conventions are used throughout
-- No jargon or overly technical language beyond the pupils' understanding
-- All answers should start with lower case letters unless they are a proper noun or a known acronym.
-
-Avoid:
-- Negatively phrased questions (e.g., "Which is NOT…")
-- "All of the above" or "None of the above" options
-- True/false questions
-
-${language}
-  `;
+  return getQuizSystemMessage("starter");
 };

@@ -1,7 +1,6 @@
 import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 
 import {
-  OakBox,
   OakFlex,
   OakHeading,
   OakP,
@@ -42,7 +41,7 @@ const AdditionalMaterialsStartAgain = ({
         $textAlign="center"
         $mb={"space-between-m"}
       >{`Have you downloaded your ${docTypeDisplayName}?`}</OakHeading>
-      <OakFlex $width={"all-spacing-22"}>
+      <OakFlex $width={["auto", "all-spacing-22"]}>
         <OakP $textAlign={"center"} $font="body-2" $mb={"space-between-xl"}>
           {`Your lesson ${docTypeDisplayName} will not be saved if you choose to
         start again. Please download your ${docTypeDisplayName} if you want to
@@ -68,9 +67,9 @@ const AdditionalMaterialsStartAgain = ({
           Yes, I want to start again
         </OakPrimaryButton>
         <OakSecondaryLink
-          onClick={() => {
-            closeDialog();
-          }}
+          element="button"
+          aria-label={`Back to ${docTypeDisplayName}`}
+          onClick={closeDialog}
         >
           {`Back to ${docTypeDisplayName}`}
         </OakSecondaryLink>

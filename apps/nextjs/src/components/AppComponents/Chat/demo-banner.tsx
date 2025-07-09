@@ -5,7 +5,7 @@ import * as React from "react";
 import { OakBox, OakFlex, OakLink, OakSpan } from "@oaknational/oak-components";
 
 type DemoBannerProps = {
-  resourceType: "lessons" | "additionalMaterials";
+  page: "aila" | "teachingMaterials";
   monthlyLimit: number;
   remaining?: number;
   contactHref: string;
@@ -13,14 +13,13 @@ type DemoBannerProps = {
 };
 
 export function DemoBanner({
-  resourceType,
+  page,
   monthlyLimit,
   remaining,
   contactHref,
   "data-testid": testId = "demo-banner",
 }: DemoBannerProps) {
-  const resourceLabel =
-    resourceType === "lessons" ? "lessons" : "additional materials";
+  const resourceLabel = page === "aila" ? "lesson" : "teaching material";
 
   return (
     <OakFlex
@@ -33,7 +32,7 @@ export function DemoBanner({
     >
       <OakSpan $font={["body-3", "body-2", "body-1"]}>
         <OakSpan $font={["body-3-bold", "body-2-bold", "body-1-bold"]}>
-          Create {monthlyLimit} {resourceLabel} per month •
+          Create {monthlyLimit} {resourceLabel}s per month •
         </OakSpan>{" "}
         If you are a teacher in the UK,{" "}
         <OakLink
@@ -50,7 +49,8 @@ export function DemoBanner({
       {remaining !== undefined && (
         <OakBox $display={["none", "none", "block"]}>
           <OakSpan $font={"body-1-bold"}>
-            {remaining} of {monthlyLimit} {resourceLabel} remaining
+            {monthlyLimit} {resourceLabel}
+            {remaining === 1 ? "" : "s"} remaining
           </OakSpan>
         </OakBox>
       )}
