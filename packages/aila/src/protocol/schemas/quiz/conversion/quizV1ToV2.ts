@@ -14,10 +14,9 @@ export function convertQuizV1QuestionToV2(
 ): QuizV2Question {
   return {
     questionType: "multiple-choice",
-    questionStem: questionV1.question,
+    question: questionV1.question,
     answers: questionV1.answers,
     distractors: questionV1.distractors,
-    feedback: undefined,
     hint: undefined,
   };
 }

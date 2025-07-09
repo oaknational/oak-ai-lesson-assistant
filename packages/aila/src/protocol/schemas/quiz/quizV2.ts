@@ -3,17 +3,15 @@ import { z } from "zod";
 // ********** QUIZ V2 (discriminated union for multiple quiz types) **********
 
 export const QUIZ_V2_DESCRIPTIONS = {
-  questionStem: "The question stem as markdown text",
+  question: "The question as markdown text",
   questionType: "The type of quiz question",
   answers: "The answers specific to this question type",
-  feedback: "Feedback to show after the question is answered",
   hint: "Optional hint to help students",
 } as const;
 
 // Base question schema with common fields
 export const QuizV2QuestionBaseSchema = z.object({
-  questionStem: z.string().describe(QUIZ_V2_DESCRIPTIONS.questionStem),
-  feedback: z.string().optional().describe(QUIZ_V2_DESCRIPTIONS.feedback),
+  question: z.string().describe(QUIZ_V2_DESCRIPTIONS.question),
   hint: z.string().optional().describe(QUIZ_V2_DESCRIPTIONS.hint),
 });
 
