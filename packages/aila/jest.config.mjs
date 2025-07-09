@@ -1,9 +1,15 @@
-import { readFile } from "fs/promises";
+import { readFileSync } from "fs";
+import { dirname, join } from "path";
 import { pathsToModuleNameMapper } from "ts-jest";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const tsconfig = JSON.parse(
-  await readFile(new URL("./tsconfig.test.json", import.meta.url)),
+  readFileSync(join(__dirname, "./tsconfig.test.json"), "utf8"),
 );
+
 // prettier-ignore
 const moduleNameMapper = Object.assign(
   pathsToModuleNameMapper(tsconfig.compilerOptions.paths, { prefix: "<rootDir>/" }),
@@ -11,6 +17,7 @@ const moduleNameMapper = Object.assign(
     "^(\\.{1,2}/.*)\\.js$": "$1",
   }
 );
+
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 const config = {
   transform: {

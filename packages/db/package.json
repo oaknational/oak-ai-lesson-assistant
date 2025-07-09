@@ -57,6 +57,9 @@
     "script-add-metadata-to-lesson-summaries": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/add_metadata_to_lesson_summaries.ts",
     "script-batch-process-clean-questions": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/batch_process_clean_questions.ts",
     "script-batch-update-clerk-users": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/processing/update_clerk_users.ts",
+    "script-migrate-quizzes-v2": "tsx ./scripts/migrations/migrate-quizzes-to-v2.ts",
+    "script-migrate-quizzes-v2:dry-run": "tsx ./scripts/migrations/migrate-quizzes-to-v2.ts --dry-run",
+    "test": "pnpm with-env jest --config jest.config.mjs",
     "type-check": "tsc --noEmit",
     "validate-data": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/import-export/validate_data.ts",
     "with-env": "dotenv -e ../../.env --"
@@ -86,8 +89,11 @@
   "devDependencies": {
     "@oakai/eslint-config": "*",
     "@oakai/prettier-config": "*",
+    "@types/jest": "^29.5.14",
     "dotenv-cli": "^6.0.0",
+    "jest": "^29.7.0",
     "prisma": "6.3.1",
+    "ts-jest": "^29.2.5",
     "typescript": "5.8.2",
     "zod-prisma": "^0.5.4"
   },
