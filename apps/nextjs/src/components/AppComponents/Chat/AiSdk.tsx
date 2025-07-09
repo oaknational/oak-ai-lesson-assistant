@@ -83,6 +83,9 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
         extra: { originalError: error },
       });
       log.error("UseChat error", { error, messages });
+
+      // Mark that an error occurred to prevent analytics tracking
+      chatActions.streamingFailed();
     },
     onResponse(response) {
       log.info("Chat: On Response");
