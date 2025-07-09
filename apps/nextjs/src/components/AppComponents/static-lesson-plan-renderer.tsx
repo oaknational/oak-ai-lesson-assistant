@@ -2,17 +2,18 @@ import { useRef } from "react";
 
 import type {
   LessonPlanKey,
+  LessonPlanSectionWhileStreaming,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
-import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
 
-import { MathJax } from "better-react-mathjax";
+import * as Tooltip from "@radix-ui/react-tooltip";
+import { Box, Flex } from "@radix-ui/themes";
 
 import { lessonSectionTitlesAndMiniDescriptions } from "@/data/lessonSectionTitlesAndMiniDescriptions";
 
-import { notEmpty } from "./chat-lessonPlanDisplay";
-import { sectionTitle } from "./drop-down-section/sectionTitle";
-import { MemoizedReactMarkdownWithStyles } from "./markdown";
+import { notEmpty } from "./Chat/chat-lessonPlanDisplay";
+import { sectionTitle } from "./Chat/drop-down-section/sectionTitle";
+import { SectionContent } from "./SectionContent";
 
 const excludedKeys = [
   "title",
@@ -25,7 +26,7 @@ const excludedKeys = [
 type ExcludedKeys = (typeof excludedKeys)[number];
 type ValidLessonPlanKey = Exclude<LessonPlanKey, ExcludedKeys>;
 
-const LessonPlanMapToMarkDown = ({
+const StaticLessonPlanRenderer = ({
   lessonPlan,
   sectionRefs,
 }: {
@@ -82,7 +83,7 @@ const LessonPlanMapToMarkDown = ({
     })
     .map(({ key, value }) => {
       return (
-        <ChatSection
+        <StaticSection
           key={key}
           sectionRefs={sectionRefs}
           objectKey={key}
@@ -92,33 +93,57 @@ const LessonPlanMapToMarkDown = ({
     });
 };
 
-export default LessonPlanMapToMarkDown;
+export default StaticLessonPlanRenderer;
 
-export interface ChatSectionProps {
+export interface StaticSectionProps {
   sectionRefs?: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
   objectKey: LessonPlanKey;
-  value: unknown;
+  value: LessonPlanSectionWhileStreaming;
 }
 
-const ChatSection = ({
+// Rendered in static contexts like the share page
+export const StaticSection = ({
   sectionRefs,
   objectKey,
   value,
-}: Readonly<ChatSectionProps>) => {
+}: Readonly<StaticSectionProps>) => {
   const sectionRef = useRef<HTMLDivElement | null>(null);
   if (sectionRefs) sectionRefs[objectKey] = sectionRef;
 
+  const title = sectionTitle(objectKey);
+  const sectionDescription = sectionTitle(
+    lessonSectionTitlesAndMiniDescriptions[objectKey].description,
+  );
+
   return (
     <div ref={sectionRef}>
-      <MathJax hideUntilTypeset="every" dynamic>
-        <MemoizedReactMarkdownWithStyles
-          lessonPlanSectionDescription={
-            lessonSectionTitlesAndMiniDescriptions[objectKey]?.description
-          }
-          markdown={`# ${sectionTitle(objectKey)}
-${sectionToMarkdown(objectKey, value)}`}
-        />
-      </MathJax>
+      <Flex align="center" gap="3" className="mb-11 mt-20">
+        <Box>
+          <h2 className="mb-0 mt-0 text-xl font-bold">{title}</h2>
+        </Box>
+        <Tooltip.Provider delayDuration={0}>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <Box className="mb-0 mt-0">
+                <button className="my-0 flex h-[24px] w-[24px] items-center justify-center overflow-hidden rounded-full bg-black p-4">
+                  <span className="p-3 text-xs text-white">i</span>
+                </button>
+              </Box>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content
+                className="max-w-[300px] rounded-lg bg-black p-7 text-center text-sm text-white"
+                sideOffset={5}
+              >
+                {sectionDescription}
+                <Tooltip.Arrow className="TooltipArrow" />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
+      </Flex>
+
+      <SectionContent sectionKey={objectKey} value={value} />
     </div>
   );
 };
