@@ -3,6 +3,13 @@ import { describe, expect, it, jest } from "@jest/globals";
 import type { QuizV1, QuizV2 } from "..";
 import { upgradeQuizzes } from "./lessonPlanQuizMigrator";
 
+type TestLessonPlanData = {
+  lessonPlan: {
+    starterQuiz?: QuizV1 | QuizV2;
+    exitQuiz?: QuizV1 | QuizV2;
+  } & Record<string, unknown>;
+} & Record<string, unknown>;
+
 describe("quiz upgrader", () => {
   describe("upgradeQuizzes", () => {
     const mockV1Quiz: QuizV1 = [
@@ -72,16 +79,12 @@ describe("quiz upgrader", () => {
       });
 
       expect(result.wasUpgraded).toBe(true);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-      const upgradedData = result.data as any;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const upgradedData = result.data as unknown as TestLessonPlanData;
       expect(upgradedData.lessonPlan.starterQuiz).toHaveProperty(
         "version",
         "v2",
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(upgradedData.lessonPlan.starterQuiz).toHaveProperty("questions");
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(upgradedData.lessonPlan.exitQuiz).toEqual(mockV2Quiz);
     });
 
@@ -99,7 +102,7 @@ describe("quiz upgrader", () => {
       });
 
       expect(result.wasUpgraded).toBe(true);
-      const upgradedData = result.data as any;
+      const upgradedData = result.data as unknown as TestLessonPlanData;
       expect(upgradedData.lessonPlan.starterQuiz).toEqual(mockV2Quiz);
       expect(upgradedData.lessonPlan.exitQuiz).toHaveProperty("version", "v2");
       expect(upgradedData.lessonPlan.exitQuiz).toHaveProperty("questions");
@@ -119,7 +122,7 @@ describe("quiz upgrader", () => {
       });
 
       expect(result.wasUpgraded).toBe(true);
-      const upgradedData = result.data as any;
+      const upgradedData = result.data as unknown as TestLessonPlanData;
       expect(upgradedData.lessonPlan.starterQuiz).toHaveProperty(
         "version",
         "v2",
@@ -137,7 +140,9 @@ describe("quiz upgrader", () => {
         },
       };
 
-      const mockPersistUpgrade = jest.fn<any>().mockResolvedValue(undefined);
+      const mockPersistUpgrade = jest
+        .fn<(data: unknown) => Promise<void>>()
+        .mockResolvedValue(undefined);
 
       const result = await upgradeQuizzes({
         data: validData,
@@ -168,7 +173,9 @@ describe("quiz upgrader", () => {
       };
 
       const mockError = new Error("Persistence failed");
-      const mockPersistUpgrade = jest.fn<any>().mockRejectedValue(mockError);
+      const mockPersistUpgrade = jest
+        .fn<(data: unknown) => Promise<void>>()
+        .mockRejectedValue(mockError);
 
       await expect(
         upgradeQuizzes({
@@ -213,7 +220,7 @@ describe("quiz upgrader", () => {
       });
 
       expect(result.wasUpgraded).toBe(true);
-      const upgradedData = result.data as any;
+      const upgradedData = result.data as unknown as TestLessonPlanData;
       expect(upgradedData.lessonPlan.title).toBe("My Lesson");
       expect(upgradedData.lessonPlan.objectives).toEqual([
         "Objective 1",

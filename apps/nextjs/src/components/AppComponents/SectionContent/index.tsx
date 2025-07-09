@@ -22,7 +22,6 @@ export const SectionContent = ({ sectionKey, value }: SectionContentProps) => {
       </MathJax>
     );
   }
-
   return (
     <MathJax hideUntilTypeset="every" dynamic>
       <MemoizedReactMarkdownWithStyles

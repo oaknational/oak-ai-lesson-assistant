@@ -5,7 +5,6 @@ import type {
   LessonPlanSectionWhileStreaming,
   LooseLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
-import { convertQuizV1ToV2 } from "@oakai/aila/src/protocol/schemas/quiz/conversion/quizV1ToV2";
 
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { Box, Flex } from "@radix-ui/themes";
@@ -34,26 +33,7 @@ const StaticLessonPlanRenderer = ({
   lessonPlan: LooseLessonPlan;
   sectionRefs?: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
 }) => {
-  const {
-    _experimental_starterQuizMathsV0,
-    _experimental_exitQuizMathsV0,
-    ...restOfLessonPlan
-  } = lessonPlan;
-  // Convert experimental V1 quizzes to V2 format if needed
-  const starterQuiz = lessonPlan._experimental_starterQuizMathsV0
-    ? convertQuizV1ToV2(lessonPlan._experimental_starterQuizMathsV0)
-    : lessonPlan.starterQuiz;
-
-  const exitQuiz = lessonPlan._experimental_exitQuizMathsV0
-    ? convertQuizV1ToV2(lessonPlan._experimental_exitQuizMathsV0)
-    : lessonPlan.exitQuiz;
-
-  const lessonPlanWithExperiments: LooseLessonPlan = {
-    ...restOfLessonPlan,
-    starterQuiz,
-    exitQuiz,
-  };
-  return Object.entries(lessonPlanWithExperiments)
+  return Object.entries(lessonPlan)
     .filter(
       (
         entry,
