@@ -10,7 +10,7 @@
  *
  * Safety: Run with --dry-run first to preview changes
  */
-import { upgradeQuizzes } from "@oakai/aila/src/protocol/schemas/quiz/conversion/lessonPlanQuizMigrator";
+import { upgradeQuizzes } from "../../../aila/src/protocol/schemas/quiz/conversion/lessonPlanQuizMigrator";
 import { aiLogger } from "@oakai/logger";
 
 import { PrismaClient } from "@prisma/client";
@@ -19,8 +19,10 @@ const log = aiLogger("db");
 
 function hasQuizzes(output: unknown): boolean {
   if (!output || typeof output !== "object") return false;
-  
-  const data = output as { lessonPlan?: { starterQuiz?: unknown; exitQuiz?: unknown } };
+
+  const data = output as {
+    lessonPlan?: { starterQuiz?: unknown; exitQuiz?: unknown };
+  };
   return Boolean(data.lessonPlan?.starterQuiz || data.lessonPlan?.exitQuiz);
 }
 
@@ -59,9 +61,13 @@ Options:
     });
 
     // Filter sessions that actually have quizzes
-    const sessionsWithQuizzes = allSessions.filter(session => hasQuizzes(session.output));
+    const sessionsWithQuizzes = allSessions.filter((session) =>
+      hasQuizzes(session.output),
+    );
 
-    log.info(`Found ${allSessions.length} total sessions, ${sessionsWithQuizzes.length} have quizzes`);
+    log.info(
+      `Found ${allSessions.length} total sessions, ${sessionsWithQuizzes.length} have quizzes`,
+    );
 
     let upgraded = 0;
     let failed = 0;
@@ -75,7 +81,7 @@ Options:
               log.info(`${session.id}: Would upgrade (dry run)`);
               return;
             }
-            
+
             await prisma.appSession.update({
               where: { id: session.id },
               data: { output: upgradedData as object },
