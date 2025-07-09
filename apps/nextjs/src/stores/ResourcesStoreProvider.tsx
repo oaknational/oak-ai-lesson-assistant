@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 
 import { type ExtractState, type StoreApi, useStore } from "zustand";
 
+import type { TeachingMaterialsPageProps } from "@/app/aila/tools/teaching-materials/teachingMaterialsView";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import { createResourcesStore } from "./resourcesStore";
@@ -19,18 +20,18 @@ export const ResourcesStoresContext = createContext<
   ResourcesStores | undefined
 >(undefined);
 
-export interface ResourcesStoresProviderProps {
+export type ResourcesStoresProviderProps = {
   children: React.ReactNode;
   initState?: Partial<ResourcesState>;
-}
+} & TeachingMaterialsPageProps;
 
 export const ResourcesStoresProvider: React.FC<
   ResourcesStoresProviderProps
-> = ({ children, initState }) => {
+> = ({ children, initState, ...props }) => {
   const { track } = useAnalytics();
   const [stores] = useState(() => {
     const storesObj: ResourcesStores = {
-      resources: createResourcesStore(track, initState),
+      resources: createResourcesStore(props, track, initState),
     };
     return storesObj;
   });

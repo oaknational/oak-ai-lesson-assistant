@@ -16,6 +16,7 @@ import type {
 
 import type { CreateMaterialSessionParams } from "./actionFunctions/handleCreateMaterialSession";
 import type { GenerateMaterialParams } from "./actionFunctions/handleGenerateMaterial";
+import type { LoadOwaDataParams } from "./actionFunctions/handleLoadOwaDataToStore";
 import type { RefineMaterialParams } from "./actionFunctions/handleRefineMaterial";
 import type { SubmitLessonPlanParams } from "./actionFunctions/handleSubmitLessonPlan";
 
@@ -43,6 +44,7 @@ type ErrorResponse = z.infer<typeof errorResponse>;
 
 export type ResourcesState = {
   id: string | null;
+  source: "aila" | "owa";
   stepNumber: number;
   isLoadingLessonPlan: boolean;
   isResourcesLoading: boolean;
@@ -89,6 +91,9 @@ export type ResourcesState = {
     generateMaterial: (params: GenerateMaterialParams) => Promise<void>;
     refineMaterial: (params: RefineMaterialParams) => Promise<void>;
     downloadMaterial: () => Promise<void>;
+
+    // OWA data loading
+    loadOwaDataToStore: (params: LoadOwaDataParams) => void;
 
     // History management actions
     undoRefinement: () => void;

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 
+import type { TeachingMaterialsPageProps } from "@/app/aila/tools/teaching-materials/teachingMaterialsView";
 import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 
 import { logStoreUpdates } from "../zustandHelpers";
@@ -14,6 +15,7 @@ import {
   handleSetYear,
 } from "./actionFunctions/handleFormState";
 import { handleGenerateMaterial } from "./actionFunctions/handleGenerateMaterial";
+import { handleLoadOwaDataToStore } from "./actionFunctions/handleLoadOwaDataToStore";
 import { handleRefineMaterial } from "./actionFunctions/handleRefineMaterial";
 import { handleSetDocType } from "./actionFunctions/handleSetDocType";
 import { handleSetGeneration } from "./actionFunctions/handleSetGeneration";
@@ -71,6 +73,7 @@ const DEFAULT_STATE = {
 };
 
 export const createResourcesStore = (
+  props: TeachingMaterialsPageProps,
   track: TrackFns,
   initState?: Partial<ResourcesState>,
 ) => {
@@ -78,7 +81,9 @@ export const createResourcesStore = (
     id: null,
     ...DEFAULT_STATE,
     ...initState,
-
+    source: props.source ?? "aila",
+    stepNumber: props.initialStep ?? 0,
+    isResourcesLoading: props.source === "owa" && props.initialStep === 3,
     actions: {
       // Setters
       setStepNumber: handleSetStepNumber(set, get),
@@ -105,6 +110,9 @@ export const createResourcesStore = (
       generateMaterial: handleGenerateMaterial(set, get),
       refineMaterial: handleRefineMaterial(set, get),
       downloadMaterial: handleDownload(set, get),
+
+      // OWA data loading
+      loadOwaDataToStore: handleLoadOwaDataToStore(set, get),
 
       // History management actions
       undoRefinement: handleUndoRefinement(set, get),

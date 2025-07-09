@@ -52,12 +52,11 @@ export async function generateAdditionalMaterial({
       documentType: input.documentType,
       context: input.context,
     },
-    action: input.action,
   });
 
   if (!result) {
     const error = new Error(
-      `Failed to generate additional material - Action: ${input.action} - Doctype: ${input.documentType} - lessonId ${input.lessonId}`,
+      `Failed to generate additional material -  Doctype: ${input.documentType} - lessonId ${input.lessonId}`,
     );
     Sentry.captureException(error);
   }

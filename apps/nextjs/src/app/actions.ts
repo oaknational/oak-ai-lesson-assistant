@@ -1,10 +1,17 @@
 "use server";
 
 import {
+  additionalMaterialTypeEnum,
+  additionalMaterialsConfigMap,
+} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import {
   oakOpenAiLessonSummarySchema,
   oakOpenAiTranscriptSchema,
 } from "@oakai/additional-materials/src/schemas/oakOpenApi";
-import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+import type {
+  AilaPersistedChat,
+  LooseLessonPlan,
+} from "@oakai/aila/src/protocol/schema";
 import { chatSchema } from "@oakai/aila/src/protocol/schema";
 import type { Prisma } from "@oakai/db";
 import { prisma } from "@oakai/db";
@@ -115,4 +122,46 @@ export const getOakOpenAiLessonData = async (lessonSlug: string) => {
     lessonSummary: summaryData,
     lessonTranscript: transcriptData,
   };
+};
+
+export const createTeachingMaterialInteraction = async (
+  input: { documentType: string },
+  auth: { userId: string },
+) => {
+  const parsedDocType = additionalMaterialTypeEnum.parse(input.documentType);
+  const version = additionalMaterialsConfigMap[parsedDocType]?.version;
+
+  if (!version) {
+    throw new Error(`Unknown document type: ${input.documentType}`);
+  }
+
+  const interaction = await prisma.additionalMaterialInteraction.create({
+    data: {
+      userId: auth.userId,
+      config: {
+        resourceType: parsedDocType,
+        resourceTypeVersion: version,
+      },
+    },
+  });
+
+  return interaction;
+};
+
+export const createLessonPlanInteraction = async (
+  auth: { userId: string },
+  lesson: Partial<LooseLessonPlan>,
+) => {
+  const interaction = await prisma.additionalMaterialInteraction.create({
+    data: {
+      userId: auth.userId,
+      config: {
+        resourceType: "partial-lesson-plan-owa",
+        resourceTypeVersion: 1,
+      },
+      output: lesson,
+    },
+  });
+
+  return interaction;
 };

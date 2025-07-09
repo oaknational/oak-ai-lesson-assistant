@@ -1,32 +1,27 @@
-import type { Action, ContextByMaterialType } from "../configSchema";
+import type { ContextByMaterialType } from "../configSchema";
 import { getLessonDetails, language } from "../promptHelpers";
+import { refinementMap } from "../refinement/schema";
 
 export const buildStarterQuizPrompt = (
   context: ContextByMaterialType["additional-starter-quiz"],
-  action: Action,
 ) => {
   const { lessonPlan } = context;
 
-  if (action === "refine") {
+  if (context.refinement) {
     return refineStarterQuizPrompt(context);
   }
 
-  const keyStage = lessonPlan.keyStage || (lessonPlan.year as string);
   return `
 TASK: Write a 10-question MULTIPLE CHOICE QUIZ for a class of pupils in a UK school.
 
 PURPOSE: This QUIZ will assess pupils' understanding of the PRIOR KNOWLEDGE required for the lesson. The QUIZ is designed to enable teachers to identify gaps in knowledge for individual pupils or groups of pupils that need to be addressed before the lesson starts. Pupils who get all questions correct have good understanding of the prior knowledge and are ready to start the lesson.
 
-The QUIZ should be appropriate for the age of pupils in ${keyStage} and the subject ${lessonPlan.subject}. 
-
-The quiz should use the following structure:
-
-- Year group: ${keyStage}
-- Subject: ${lessonPlan.subject}
-- Lesson title: ${lessonPlan.title}
+The QUIZ should be appropriate for the age of pupils in ${lessonPlan.keyStage} and the subject ${lessonPlan.subject}. 
 
 **Lesson Details**:
 ${getLessonDetails(lessonPlan)}
+
+The quiz should use the following structure:
 
 1. [question text here - max 200 characters]
 
@@ -64,15 +59,17 @@ AVOID:
 const refineStarterQuizPrompt = (
   context: ContextByMaterialType["additional-starter-quiz"],
 ) => {
-  const { lessonPlan, previousOutput, message } = context;
-
+  const { lessonPlan, previousOutput } = context;
+  const userRequest = context.refinement
+    ?.map((r) => (r.type === "custom" ? r.payload : refinementMap[r.type]))
+    .join("\n");
   return `Modify the following starter quiz based on user feedback.
 
 **Previous Output**:  
 ${JSON.stringify(previousOutput, null, 2)}
 
 **User Request**:  
-${message}
+${userRequest}
 
 Adapt the quiz to reflect the request while ensuring it aligns with the following lesson details:
 
@@ -98,6 +95,7 @@ Make sure that:
 - The content is appropriate for UK schools
 - British English spelling and conventions are used throughout
 - No jargon or overly technical language beyond the pupils' understanding
+- All answers should start with lower case letters unless they are a proper noun or a known acronym.
 
 Avoid:
 - Negatively phrased questions (e.g., "Which is NOT…")

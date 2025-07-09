@@ -77,23 +77,6 @@ const useStepSubmitLogic = () => {
       },
     });
   };
-
-  // Handle refinement for step 4
-  const handleRefineMaterial = (refinementValue: string) => {
-    void refineMaterial({
-      refinement: [{ type: refinementValue }],
-      mutateAsync: async (input) => {
-        log.info("Submitting material refinement with input:", input);
-        try {
-          return await fetchMaterial.mutateAsync(input);
-        } catch (e) {
-          const error = e instanceof Error ? e : new Error(String(e));
-          Sentry.captureException(error);
-          throw error;
-        }
-      },
-    });
-  };
   // Handle submit for step 1
   const handleCreateSession = ({ documentType }: { documentType: string }) => {
     setStepNumber(1);
@@ -103,6 +86,23 @@ const useStepSubmitLogic = () => {
         log.info("Creating session with:", documentType);
         try {
           return await createSession.mutateAsync(documentType);
+        } catch (e) {
+          const error = e instanceof Error ? e : new Error(String(e));
+          Sentry.captureException(error);
+          throw error;
+        }
+      },
+    });
+  };
+
+  // Handle refinement for step 4
+  const handleRefineMaterial = (refinementValue: string) => {
+    void refineMaterial({
+      refinement: [{ type: refinementValue }],
+      mutateAsync: async (input) => {
+        log.info("Submitting material refinement with input:", input);
+        try {
+          return await fetchMaterial.mutateAsync(input);
         } catch (e) {
           const error = e instanceof Error ? e : new Error(String(e));
           Sentry.captureException(error);
