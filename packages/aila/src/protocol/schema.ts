@@ -208,30 +208,28 @@ export const KEYWORD_DESCRIPTIONS = {
   schema: dedent`A keyword that is used in the lesson. Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
 
   keywords: dedent`the keywords that are used in the lesson.
-    written in TEACHER_TO_PUPIL_SLIDES voice.
-    ${minMaxText({ min: 1, max: 5, entity: "elements" })}`,
+    written in TEACHER_TO_PUPIL_SLIDES voice.`,
 } as const;
 
-export const KeywordSchemaWithoutLength = z
+export const KeywordSchema = z
   .object({
-    keyword: z.string().describe(KEYWORD_DESCRIPTIONS.keyword),
-    definition: z.string().describe(KEYWORD_DESCRIPTIONS.definition),
+    keyword: z.string().max(30).describe(KEYWORD_DESCRIPTIONS.keyword),
+    definition: z.string().max(200).describe(KEYWORD_DESCRIPTIONS.definition),
+    description: z.string().optional().describe(KEYWORD_DESCRIPTIONS.description),
   })
   .describe(KEYWORD_DESCRIPTIONS.schema);
-
-export const KeywordSchema = KeywordSchemaWithoutLength.extend({
-  keyword: KeywordSchemaWithoutLength.shape.keyword.max(30),
-  definition: KeywordSchemaWithoutLength.shape.definition.max(200),
-  description: z.string().optional().describe(KEYWORD_DESCRIPTIONS.description),
-});
 
 export const KeywordOptionalSchema = KeywordSchema.partial();
 
 export const KeywordsSchemaWithoutLength = z
-  .array(KeywordSchemaWithoutLength)
+  .array(KeywordSchema)
   .describe(KEYWORD_DESCRIPTIONS.keywords);
 
-export const KeywordsSchema = KeywordsSchemaWithoutLength.min(1).max(5);
+export const KeywordsSchema = z
+  .array(KeywordSchema)
+  .min(1)
+  .max(5)
+  .describe(KEYWORD_DESCRIPTIONS.keywords);
 
 export const KeywordsOptionalSchema = z.array(KeywordOptionalSchema);
 
@@ -516,7 +514,7 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   priorKnowledge: PriorKnowledgeSchema,
   keyLearningPoints: KeyLearningPointsSchema,
   misconceptions: MisconceptionsSchema,
-  keywords: KeywordsSchemaWithoutLength,
+  keywords: KeywordsSchema,
   starterQuiz: QuizV1Schema.describe(
     LESSON_PLAN_DESCRIPTIONS.starterQuiz,
   ),

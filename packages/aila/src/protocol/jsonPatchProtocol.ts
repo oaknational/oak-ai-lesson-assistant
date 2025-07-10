@@ -18,7 +18,6 @@ import {
   CycleSchemaWithoutLength,
   KeywordsOptionalSchema,
   KeywordsSchema,
-  KeywordsSchemaWithoutLength,
   LessonPlanSchemaWhilstStreaming,
   MisconceptionsOptionalSchema,
   MisconceptionsSchema,
@@ -199,7 +198,7 @@ export const PatchKeywordsForLLM = z.object({
   type: z.literal("keywords"),
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.literal("/keywords"),
-  value: KeywordsSchemaWithoutLength,
+  value: KeywordsSchema,
 });
 
 export const JsonPatchRemoveSchema = z.object({
