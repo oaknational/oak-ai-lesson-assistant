@@ -20,7 +20,6 @@ import {
   LessonPlanSchemaWhilstStreaming,
   MisconceptionsOptionalSchema,
   MisconceptionsSchema,
-  MisconceptionsSchemaWithoutLength,
   QuizV1OptionalSchema,
   QuizV1Schema,
 } from "./schema";
@@ -176,7 +175,7 @@ export const PatchMisconceptionsForLLM = z.object({
   type: z.literal("misconceptions"),
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.literal("/misconceptions"),
-  value: MisconceptionsSchemaWithoutLength,
+  value: MisconceptionsSchema,
 });
 
 export const PatchKeywordsOptional = z.object({

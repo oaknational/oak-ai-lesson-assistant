@@ -54,9 +54,6 @@ export const MisconceptionOptionalSchema = MisconceptionSchema.extend({
   definition: z.string().optional(),
 }).partial();
 
-export const MisconceptionsSchemaWithoutLength = z
-  .array(MisconceptionSchema)
-  .describe(MISCONCEPTIONS_DESCRIPTION.schema);
 
 export const MisconceptionsSchema = z
   .array(MisconceptionSchema)
