@@ -134,6 +134,18 @@ export const CHECK_FOR_UNDERSTANDING_DESCRIPTIONS = {
   These strings should be of similar length to ANSWER_LENGTH so that the correct answer does not stand out because it is obviously longer than the distractors.`,
 } as const;
 
+export const CheckForUnderstandingSchema = z.object({
+  question: z.string().describe(CHECK_FOR_UNDERSTANDING_DESCRIPTIONS.question),
+  answers: z
+    .array(z.string())
+    .length(1)
+    .describe(CHECK_FOR_UNDERSTANDING_DESCRIPTIONS.answers),
+  distractors: z
+    .array(z.string())
+    .min(2)
+    .describe(CHECK_FOR_UNDERSTANDING_DESCRIPTIONS.distractors),
+});
+
 export const CheckForUnderstandingSchemaWithoutLength = z.object({
   question: z.string().describe(CHECK_FOR_UNDERSTANDING_DESCRIPTIONS.question),
   answers: z
@@ -143,13 +155,6 @@ export const CheckForUnderstandingSchemaWithoutLength = z.object({
     .array(z.string())
     .describe(CHECK_FOR_UNDERSTANDING_DESCRIPTIONS.distractors),
 });
-
-export const CheckForUnderstandingSchema =
-  CheckForUnderstandingSchemaWithoutLength.extend({
-    answers: CheckForUnderstandingSchemaWithoutLength.shape.answers.length(1),
-    distractors:
-      CheckForUnderstandingSchemaWithoutLength.shape.distractors.min(2),
-  });
 
 export const CheckForUnderstandingOptionalSchema =
   CheckForUnderstandingSchema.partial();
@@ -172,6 +177,18 @@ export const CYCLE_DESCRIPTIONS = {
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
 } as const;
 
+export const CycleSchema = z.object({
+  title: z.string().describe(CYCLE_DESCRIPTIONS.title),
+  durationInMinutes: z.number().describe(CYCLE_DESCRIPTIONS.durationInMinutes),
+  explanation: ExplanationSchema.describe(CYCLE_DESCRIPTIONS.explanation),
+  checkForUnderstanding: z
+    .array(CheckForUnderstandingSchema)
+    .min(2)
+    .describe(CYCLE_DESCRIPTIONS.checkForUnderstanding),
+  practice: z.string().describe(CYCLE_DESCRIPTIONS.practice),
+  feedback: z.string().describe(CYCLE_DESCRIPTIONS.feedback),
+});
+
 export const CycleSchemaWithoutLength = z.object({
   title: z.string().describe(CYCLE_DESCRIPTIONS.title),
   durationInMinutes: z.number().describe(CYCLE_DESCRIPTIONS.durationInMinutes),
@@ -181,10 +198,6 @@ export const CycleSchemaWithoutLength = z.object({
     .describe(CYCLE_DESCRIPTIONS.checkForUnderstanding),
   practice: z.string().describe(CYCLE_DESCRIPTIONS.practice),
   feedback: z.string().describe(CYCLE_DESCRIPTIONS.feedback),
-});
-
-export const CycleSchema = CycleSchemaWithoutLength.extend({
-  checkForUnderstanding: z.array(CheckForUnderstandingSchema).min(2),
 });
 
 export const CycleOptionalSchema = CycleSchemaWithoutLength.extend({
@@ -518,9 +531,9 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   starterQuiz: QuizV1Schema.describe(
     LESSON_PLAN_DESCRIPTIONS.starterQuiz,
   ),
-  cycle1: CycleSchemaWithoutLength.describe("The first learning cycle"),
-  cycle2: CycleSchemaWithoutLength.describe("The second learning cycle"),
-  cycle3: CycleSchemaWithoutLength.describe("The third learning cycle"),
+  cycle1: CycleSchema.describe("The first learning cycle"),
+  cycle2: CycleSchema.describe("The second learning cycle"),
+  cycle3: CycleSchema.describe("The third learning cycle"),
   exitQuiz: QuizV1Schema.describe(
     LESSON_PLAN_DESCRIPTIONS.exitQuiz,
   ),

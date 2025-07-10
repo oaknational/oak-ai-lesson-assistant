@@ -4,7 +4,6 @@ import {
   AdditionalMaterialsSchema,
   type CompletedLessonPlan,
   CycleSchema,
-  CycleSchemaWithoutLength,
   KeyLearningPointsSchema,
   KeyLearningPointsStrictMax5Schema,
   KeyStageSchema,
@@ -189,7 +188,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
       identity,
       quizQuestionDesignInstructions,
     }),
-    schemaForLLM: CycleSchemaWithoutLength,
+    schemaForLLM: CycleSchema,
     schemaStrict: CycleSchema,
     extractRagData: (lp) => {
       // @todo we probably only need one cycle (the relevant one)
