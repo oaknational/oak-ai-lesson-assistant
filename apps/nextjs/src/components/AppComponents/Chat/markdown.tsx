@@ -3,8 +3,6 @@ import React, { memo, useMemo } from "react";
 import type { Components, Options } from "react-markdown";
 import ReactMarkdown from "react-markdown";
 
-import * as Tooltip from "@radix-ui/react-tooltip";
-import { Box, Flex } from "@radix-ui/themes";
 import remarkGfm from "remark-gfm";
 
 import { cn } from "@/lib/utils";
@@ -25,10 +23,7 @@ export type ReactMarkdownWithStylesProps = Readonly<{
 }>;
 
 // This could do with further refactoring to make it more readable
-const createComponents = (
-  className?: string,
-  lessonPlanSectionDescription?: string,
-): Partial<Components> => ({
+const createComponents = (className?: string): Partial<Components> => ({
   li: ({ children }) => (
     <li className={cn("marker:text-black", className)}>{children}</li>
   ),
@@ -36,33 +31,7 @@ const createComponents = (
     <p className={cn("mb-7 last:mb-0", className)}>{children}</p>
   ),
   h1: ({ children }) => (
-    <Flex align="center" gap="3" className="mt-20">
-      <Box>
-        <h2 className="mb-0 mt-0 text-xl font-bold">{children}</h2>
-      </Box>
-      {!!lessonPlanSectionDescription && (
-        <Tooltip.Provider delayDuration={0}>
-          <Tooltip.Root>
-            <Tooltip.Trigger asChild>
-              <Box className="mb-0 mt-0">
-                <button className="my-0 flex h-[24px] w-[24px] items-center justify-center overflow-hidden rounded-full bg-black p-4">
-                  <span className="p-3 text-xs text-white">i</span>
-                </button>
-              </Box>
-            </Tooltip.Trigger>
-            <Tooltip.Portal>
-              <Tooltip.Content
-                className="max-w-[300px] rounded-lg bg-black p-7 text-center text-sm text-white"
-                sideOffset={5}
-              >
-                {lessonPlanSectionDescription}
-                <Tooltip.Arrow className="TooltipArrow" />
-              </Tooltip.Content>
-            </Tooltip.Portal>
-          </Tooltip.Root>
-        </Tooltip.Provider>
-      )}
-    </Flex>
+    <h2 className="mb-0 mt-20 text-xl font-bold">{children}</h2>
   ),
   code: (props) => {
     const {
@@ -119,12 +88,11 @@ const createComponents = (
 
 export const MemoizedReactMarkdownWithStyles = ({
   markdown,
-  lessonPlanSectionDescription,
   className,
 }: ReactMarkdownWithStylesProps) => {
   const components: Partial<Components> = useMemo(() => {
-    return createComponents(className, lessonPlanSectionDescription);
-  }, [className, lessonPlanSectionDescription]);
+    return createComponents(className);
+  }, [className]);
   return (
     <MemoizedReactMarkdown
       className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
