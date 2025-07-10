@@ -234,10 +234,6 @@ export const KeywordSchema = z
 
 export const KeywordOptionalSchema = KeywordSchema.partial();
 
-export const KeywordsSchemaWithoutLength = z
-  .array(KeywordSchema)
-  .describe(KEYWORD_DESCRIPTIONS.keywords);
-
 export const KeywordsSchema = z
   .array(KeywordSchema)
   .min(1)
@@ -498,22 +494,3 @@ export type LessonPlanSectionWhileStreaming =
   | string[]
   | number
   | NonNullable<RawQuiz[]>;
-
-export const CompletedLessonPlanSchemaWithoutLength = z.object({
-  title: LessonTitleSchema,
-  keyStage: KeyStageSchema,
-  subject: SubjectSchema,
-  topic: TopicSchema,
-  learningOutcome: LearningOutcomeSchema,
-  learningCycles: LearningCyclesSchema,
-  priorKnowledge: PriorKnowledgeSchema,
-  keyLearningPoints: KeyLearningPointsSchema,
-  misconceptions: MisconceptionsSchema,
-  keywords: KeywordsSchema,
-  starterQuiz: QuizV1Schema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
-  cycle1: CycleSchema.describe("The first learning cycle"),
-  cycle2: CycleSchema.describe("The second learning cycle"),
-  cycle3: CycleSchema.describe("The third learning cycle"),
-  exitQuiz: QuizV1Schema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
-  additionalMaterials: AdditionalMaterialsSchema,
-});
