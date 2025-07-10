@@ -19,7 +19,10 @@ export const QuizV2QuestionBaseSchema = z.object({
 export const QuizV2QuestionMultipleChoiceSchema =
   QuizV2QuestionBaseSchema.extend({
     questionType: z.literal("multiple-choice"),
-    answers: z.array(z.string()).length(1).describe("Correct answers as markdown"),
+    answers: z
+      .array(z.string())
+      .length(1)
+      .describe("Correct answers as markdown"),
     distractors: z
       .array(z.string())
       .length(2)

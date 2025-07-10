@@ -2,10 +2,7 @@ import { dedent } from "ts-dedent";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
-import {
-  type QuizV1Optional,
-  QuizV1Schema,
-} from "./schemas/quiz";
+import { type QuizV1Optional, QuizV1Schema } from "./schemas/quiz";
 import { type RawQuiz, rawQuizSchema } from "./schemas/quiz/rawQuiz";
 
 // ********** BASED_ON **********
@@ -43,8 +40,14 @@ export const MISCONCEPTIONS_DESCRIPTION = {
 } as const as { schema: string };
 
 export const MisconceptionSchema = z.object({
-  misconception: z.string().max(200).describe(MISCONCEPTION_DESCRIPTIONS.misconception),
-  description: z.string().max(250).describe(MISCONCEPTION_DESCRIPTIONS.description),
+  misconception: z
+    .string()
+    .max(200)
+    .describe(MISCONCEPTION_DESCRIPTIONS.misconception),
+  description: z
+    .string()
+    .max(250)
+    .describe(MISCONCEPTION_DESCRIPTIONS.description),
 });
 
 export const MisconceptionOptionalSchema = MisconceptionSchema.extend({
@@ -227,7 +230,10 @@ export const KeywordSchema = z
   .object({
     keyword: z.string().max(30).describe(KEYWORD_DESCRIPTIONS.keyword),
     definition: z.string().max(200).describe(KEYWORD_DESCRIPTIONS.definition),
-    description: z.string().optional().describe(KEYWORD_DESCRIPTIONS.description),
+    description: z
+      .string()
+      .optional()
+      .describe(KEYWORD_DESCRIPTIONS.description),
   })
   .describe(KEYWORD_DESCRIPTIONS.schema);
 
@@ -320,15 +326,11 @@ export const LearningOutcomeSchema = z
   .max(190)
   .describe(LESSON_PLAN_DESCRIPTIONS.learningOutcome);
 
-export const LearningOutcomeSchemaStrictMax190 = LearningOutcomeSchema;
-
 export const LearningCyclesSchema = z
   .array(z.string())
   .min(1)
   .max(3)
   .describe(LESSON_PLAN_DESCRIPTIONS.learningCycles);
-
-export const LearningCyclesStrictMax3Schema = LearningCyclesSchema;
 
 export const PriorKnowledgeSchema = z
   .array(z.string())
@@ -336,15 +338,11 @@ export const PriorKnowledgeSchema = z
   .max(5)
   .describe(LESSON_PLAN_DESCRIPTIONS.priorKnowledge);
 
-export const PriorKnowledgeSctrictMax5Schema = PriorKnowledgeSchema;
-
 export const KeyLearningPointsSchema = z
   .array(z.string())
   .min(3)
   .max(5)
   .describe(LESSON_PLAN_DESCRIPTIONS.keyLearningPoints);
-
-export const KeyLearningPointsStrictMax5Schema = KeyLearningPointsSchema;
 
 export const AdditionalMaterialsSchema = z
   .string()
@@ -517,14 +515,10 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   keyLearningPoints: KeyLearningPointsSchema,
   misconceptions: MisconceptionsSchema,
   keywords: KeywordsSchema,
-  starterQuiz: QuizV1Schema.describe(
-    LESSON_PLAN_DESCRIPTIONS.starterQuiz,
-  ),
+  starterQuiz: QuizV1Schema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
   cycle1: CycleSchema.describe("The first learning cycle"),
   cycle2: CycleSchema.describe("The second learning cycle"),
   cycle3: CycleSchema.describe("The third learning cycle"),
-  exitQuiz: QuizV1Schema.describe(
-    LESSON_PLAN_DESCRIPTIONS.exitQuiz,
-  ),
+  exitQuiz: QuizV1Schema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
   additionalMaterials: AdditionalMaterialsSchema,
 });
