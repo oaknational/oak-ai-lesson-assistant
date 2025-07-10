@@ -30,8 +30,8 @@ export function mapOpenApiLessonToAilaLesson(
       };
     }),
     basedOn: undefined,
-    starterQuiz: [],
-    exitQuiz: [],
+    starterQuiz: undefined,
+    exitQuiz: undefined,
     additionalMaterials: "",
   };
 }

@@ -1,32 +1,29 @@
 {
   "type": "llmMessage",
-  "sectionsToEdit": [
-    "learningOutcome",
-    "learningCycles"
-  ],
+  "sectionsToEdit": [],
   "patches": [
     {
       "type": "patch",
-      "reasoning": "I have created new learning outcomes and learning cycles from scratch as there are no existing Oak lessons available for this topic.",
+      "reasoning": "No existing Oak lessons are available for this topic, so starting a new lesson plan from scratch.",
       "value": {
         "type": "string",
         "op": "add",
         "path": "/learningOutcome",
-        "value": "I can describe why the Romans left Britain and what happened afterwards."
+        "value": "I can describe the changes in Britain after the Romans left."
       },
       "status": "complete"
     },
     {
       "type": "patch",
-      "reasoning": "This patch adds learning cycles which break down the lesson into achievable tasks, focusing on Roman departure and its impact on Britain.",
+      "reasoning": "Created a structured overview of the learning cycles to build the lesson plan.",
       "value": {
         "type": "string-array",
         "op": "add",
         "path": "/learningCycles",
         "value": [
-          "Explain the reasons for the Romans leaving Britain.",
-          "Describe the changes that occurred in Britain after the Romans left.",
-          "Identify the role of archaeologists in uncovering Roman history."
+          "Identify reasons for the Roman Empire's departure from Britain.",
+          "Explore the changes in daily life for Britons after the Roman withdrawal.",
+          "Understand the role of archaeologists in discovering this period of history."
         ]
       },
       "status": "complete"

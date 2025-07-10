@@ -10,295 +10,313 @@
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Designed a starter quiz to assess pupils' prior knowledge on Roman Britain before the main lesson content.",
+      "reasoning": "Designed a starter quiz to assess pupils' prior knowledge about Roman Britain.",
       "value": {
         "type": "quiz",
         "op": "add",
         "path": "/starterQuiz",
-        "value": [
-          {
-            "question": "What did the Romans build in Britain during their rule?",
-            "answers": [
-              "Roads and towns"
-            ],
-            "distractors": [
-              "Castles and forts",
-              "Schools and hospitals"
-            ]
-          },
-          {
-            "question": "How long did the Romans rule over Britain?",
-            "answers": [
-              "Several centuries"
-            ],
-            "distractors": [
-              "A few years",
-              "A decade"
-            ]
-          },
-          {
-            "question": "What is an empire?",
-            "answers": [
-              "A large group of territories ruled by one authority"
-            ],
-            "distractors": [
-              "A small country",
-              "A type of government"
-            ]
-          },
-          {
-            "question": "What role do archaeologists play in history?",
-            "answers": [
-              "They study human history by digging up ancient sites"
-            ],
-            "distractors": [
-              "They write history books",
-              "They teach history in schools"
-            ]
-          },
-          {
-            "question": "Which empire did Britain belong to during Roman rule?",
-            "answers": [
-              "The Roman Empire"
-            ],
-            "distractors": [
-              "The Greek Empire",
-              "The Egyptian Empire"
-            ]
-          },
-          {
-            "question": "What is one thing pupils should understand before this lesson?",
-            "answers": [
-              "The concept of an empire"
-            ],
-            "distractors": [
-              "The history of the Saxons",
-              "The fall of the Roman Empire"
-            ]
-          }
-        ]
+        "value": {
+          "version": "v2",
+          "questions": [
+            {
+              "question": "When did the Romans invade Britain?",
+              "questionType": "multiple-choice",
+              "answers": [
+                "AD 43"
+              ],
+              "distractors": [
+                "AD 410",
+                "AD 1066"
+              ]
+            },
+            {
+              "question": "What was the Roman Empire known for?",
+              "questionType": "multiple-choice",
+              "answers": [
+                "Controlling many lands"
+              ],
+              "distractors": [
+                "Being a small kingdom",
+                "Having no influence"
+              ]
+            },
+            {
+              "question": "How long was Britain part of the Roman Empire?",
+              "questionType": "multiple-choice",
+              "answers": [
+                "About 400 years"
+              ],
+              "distractors": [
+                "About 100 years",
+                "About 1000 years"
+              ]
+            },
+            {
+              "question": "What did the Romans build in Britain?",
+              "questionType": "multiple-choice",
+              "answers": [
+                "Roads and baths"
+              ],
+              "distractors": [
+                "Skyscrapers",
+                "Pyramids"
+              ]
+            },
+            {
+              "question": "What was a key feature of Roman culture in Britain?",
+              "questionType": "multiple-choice",
+              "answers": [
+                "Strong army"
+              ],
+              "distractors": [
+                "Democratic government",
+                "Viking ships"
+              ]
+            },
+            {
+              "question": "When did the Romans leave Britain?",
+              "questionType": "multiple-choice",
+              "answers": [
+                "Around AD 410"
+              ],
+              "distractors": [
+                "Around AD 300",
+                "Around AD 800"
+              ]
+            }
+          ]
+        }
       },
       "status": "complete"
     },
     {
       "type": "patch",
-      "reasoning": "Developed the first learning cycle focusing on explaining why the Romans left Britain.",
+      "reasoning": "Created a learning cycle to explain the reasons for the Roman Empire's departure from Britain.",
       "value": {
         "type": "cycle",
         "op": "add",
         "path": "/cycle1",
         "value": {
-          "title": "Why the Romans Left Britain",
+          "title": "Reasons for the Roman Empire's departure",
           "durationInMinutes": 15,
           "explanation": {
             "spokenExplanation": [
-              "Discuss the pressures faced by the Roman Empire around AD 410.",
-              "Explain how internal conflicts weakened the Roman control over distant regions like Britain.",
-              "Describe the external threats from other tribes and groups that required Roman attention elsewhere.",
-              "Mention how resources and troops were needed more urgently in other parts of the empire.",
-              "Highlight that the decision to leave was strategic, not due to defeat by Britons."
+              "Explain that the Roman Empire was under attack from various tribes.",
+              "Discuss the need for Roman soldiers to defend other parts of the empire.",
+              "Introduce the idea of economic difficulties within the empire.",
+              "Highlight how the Roman government decided to withdraw troops from Britain.",
+              "Discuss the impact of these decisions on life in Britain."
             ],
-            "accompanyingSlideDetails": "A timeline showing key events leading to the Roman departure from Britain.",
-            "imagePrompt": "Roman Empire timeline AD 410",
-            "slideText": "The Romans left Britain around AD 410 due to internal and external pressures on their empire."
+            "accompanyingSlideDetails": "A map showing the Roman Empire and the regions under attack.",
+            "imagePrompt": "Roman Empire map with tribal invasions",
+            "slideText": "The Roman Empire faced attacks and economic issues, leading to the withdrawal of troops from Britain."
           },
           "checkForUnderstanding": [
             {
-              "question": "Why did the Romans decide to leave Britain?",
+              "question": "Why did the Romans leave Britain?",
               "answers": [
-                "Due to internal and external pressures"
+                "To defend other parts of the empire"
               ],
               "distractors": [
-                "They were defeated by Britons",
-                "They found new lands"
+                "Because of a peaceful agreement",
+                "Due to a natural disaster"
               ]
             },
             {
-              "question": "What was a major factor in the Roman departure from Britain?",
+              "question": "Which issue contributed to the Romans leaving Britain?",
               "answers": [
-                "Resource needs elsewhere"
+                "Economic difficulties"
               ],
               "distractors": [
-                "British rebellion",
-                "New Roman emperor"
+                "Cultural differences",
+                "Lack of interest"
               ]
             }
           ],
-          "practice": "List two reasons why the Romans left Britain and explain how these reasons impacted their empire.",
-          "feedback": "Model answer: The Romans left due to internal conflicts and external threats. These weakened their control, requiring resources elsewhere."
+          "practice": "Sort the reasons for the Roman withdrawal into categories: military, economic, and political. Use the provided word bank to help you.",
+          "feedback": "Model answer: Military - defending other parts of the empire; Economic - financial strain; Political - strategic decisions."
         }
       },
       "status": "complete"
     },
     {
       "type": "patch",
-      "reasoning": "Created the second learning cycle to describe changes in Britain post-Romans.",
+      "reasoning": "Developed a learning cycle to explore the changes in daily life for Britons after the Roman withdrawal.",
       "value": {
         "type": "cycle",
         "op": "add",
         "path": "/cycle2",
         "value": {
-          "title": "Changes in Post-Roman Britain",
+          "title": "Changes in daily life after Roman withdrawal",
           "durationInMinutes": 15,
           "explanation": {
             "spokenExplanation": [
-              "Explain how the departure of Romans led to power vacuums in Britain.",
-              "Discuss the arrival of the Saxons and other groups invading Britain.",
-              "Describe the changes in town structures and the decline of Roman-built infrastructure.",
-              "Highlight the blend of Roman and new cultural influences in Britain.",
-              "Show examples of Roman architecture that remained influential."
+              "Describe how Roman roads and infrastructure started to deteriorate.",
+              "Explain the change in trade and loss of Roman goods.",
+              "Discuss the emergence of new leaders and local governance.",
+              "Highlight how daily routines and occupations shifted.",
+              "Introduce the concept of cultural blending with incoming groups."
             ],
-            "accompanyingSlideDetails": "Images showing Roman roads and Saxon settlements.",
-            "imagePrompt": "Roman roads and Saxon settlements",
-            "slideText": "After the Romans left, Britain faced invasions and cultural changes with enduring Roman influences."
+            "accompanyingSlideDetails": "Images of Roman roads and artefacts, followed by images of Anglo-Saxon settlements.",
+            "imagePrompt": "Roman roads and Anglo-Saxon settlements",
+            "slideText": "After the Romans left, roads and infrastructure deteriorated, trade changed, and new leaders emerged."
           },
           "checkForUnderstanding": [
             {
-              "question": "What happened to Britain after the Romans left?",
+              "question": "What happened to Roman roads after their withdrawal?",
               "answers": [
-                "It faced invasions from other groups"
+                "They deteriorated"
               ],
               "distractors": [
-                "It became a Roman province",
-                "It remained peaceful"
+                "They became highways",
+                "They were improved"
               ]
             },
             {
-              "question": "Which group invaded Britain after the Romans?",
+              "question": "Who emerged as leaders after the Romans left?",
               "answers": [
-                "The Saxons"
+                "Local leaders"
               ],
               "distractors": [
-                "The Greeks",
-                "The Normans"
+                "Roman officials",
+                "Viking chiefs"
               ]
             }
           ],
-          "practice": "Draw a picture showing a Roman road. Label it and describe its importance in post-Roman Britain.",
-          "feedback": "Model answer: Roman roads remained important for trade and travel in post-Roman Britain, influencing settlement patterns."
+          "practice": "Write a short paragraph describing a day in the life of a Briton after the Romans left. Include at least three changes in daily life.",
+          "feedback": "Model answer: A Briton might have fewer imported goods, need to travel on poorly kept roads, and follow a local leader."
         }
       },
       "status": "complete"
     },
     {
       "type": "patch",
-      "reasoning": "Formulated the third learning cycle focusing on archaeological discoveries of Roman Britain.",
+      "reasoning": "Designed a learning cycle focused on the role of archaeologists in discovering the history of this period.",
       "value": {
         "type": "cycle",
         "op": "add",
         "path": "/cycle3",
         "value": {
-          "title": "Archaeologists and Roman Britain",
+          "title": "Role of archaeologists in discovering history",
           "durationInMinutes": 15,
           "explanation": {
             "spokenExplanation": [
-              "Define the role of archaeologists in studying history.",
-              "Explain how archaeologists uncover Roman artifacts through excavations.",
-              "Discuss the types of artifacts commonly found from Roman Britain.",
-              "Describe how these discoveries help us understand Roman life and influence.",
-              "Mention key archaeological sites in Britain linked to the Romans."
+              "Introduce the role of archaeologists in studying the past.",
+              "Explain how artefacts are found and preserved.",
+              "Discuss how archaeologists interpret artefacts to learn about daily life.",
+              "Highlight the importance of archaeological sites in Britain.",
+              "Describe how archaeology helps us understand the Roman period."
             ],
-            "accompanyingSlideDetails": "Images of Roman artifacts and archaeological sites in Britain.",
-            "imagePrompt": "Roman artifacts from Britain",
-            "slideText": "Archaeologists uncover Roman history through excavations, revealing insights into life in Roman Britain."
+            "accompanyingSlideDetails": "Images of archaeologists at work and artefacts from the Roman period.",
+            "imagePrompt": "Archaeologists excavating Roman sites",
+            "slideText": "Archaeologists study artefacts to learn about the past, helping us understand Roman Britain."
           },
           "checkForUnderstanding": [
             {
-              "question": "What do archaeologists do?",
+              "question": "What do archaeologists study?",
               "answers": [
-                "Study history through excavations"
+                "Artefacts"
               ],
               "distractors": [
-                "Write history books",
-                "Teach in schools"
+                "Stars",
+                "Weather"
               ]
             },
             {
-              "question": "Why are Roman artifacts important?",
+              "question": "Why is archaeology important?",
               "answers": [
-                "They help us understand Roman life"
+                "It helps us understand the past"
               ],
               "distractors": [
-                "They are decorative",
-                "They are made of gold"
+                "It predicts the future",
+                "It entertains people"
               ]
             }
           ],
-          "practice": "Match pictures of Roman artifacts with their descriptions and explain their significance in Roman history.",
-          "feedback": "Model answer: Roman coins, pottery, and tools reveal daily life and trade practices in Roman Britain."
+          "practice": "Draw a picture of an artefact that might have been used in Roman Britain and write a sentence about what it tells us about life at that time.",
+          "feedback": "Success criteria: 1. Clear drawing of an artefact. 2. Sentence explains the artefact's use and its historical significance."
         }
       },
       "status": "complete"
     },
     {
       "type": "patch",
-      "reasoning": "Designed an exit quiz to assess pupils' understanding of the lesson's key concepts.",
+      "reasoning": "Constructed an exit quiz to assess pupils' understanding of the lesson content.",
       "value": {
         "type": "quiz",
         "op": "add",
         "path": "/exitQuiz",
-        "value": [
-          {
-            "question": "When did the Romans leave Britain?",
-            "answers": [
-              "Around AD 410"
-            ],
-            "distractors": [
-              "Around AD 300",
-              "Around AD 500"
-            ]
-          },
-          {
-            "question": "What was one reason for the Roman departure?",
-            "answers": [
-              "Internal empire pressures"
-            ],
-            "distractors": [
-              "Defeat by Britons",
-              "Lack of interest in Britain"
-            ]
-          },
-          {
-            "question": "Who invaded Britain after the Romans left?",
-            "answers": [
-              "The Saxons"
-            ],
-            "distractors": [
-              "The Normans",
-              "The Vikings"
-            ]
-          },
-          {
-            "question": "What did archaeologists find in Roman Britain?",
-            "answers": [
-              "Artifacts like coins and pottery"
-            ],
-            "distractors": [
-              "Modern buildings",
-              "Ancient books"
-            ]
-          },
-          {
-            "question": "Why are Roman roads significant?",
-            "answers": [
-              "They influenced travel and trade"
-            ],
-            "distractors": [
-              "They were all destroyed",
-              "They were only decorative"
-            ]
-          },
-          {
-            "question": "What role do archaeologists play in history?",
-            "answers": [
-              "They uncover past through excavations"
-            ],
-            "distractors": [
-              "They build new sites",
-              "They rule ancient lands"
-            ]
-          }
-        ]
+        "value": {
+          "version": "v2",
+          "questions": [
+            {
+              "question": "When did the Roman Empire withdraw from Britain?",
+              "questionType": "multiple-choice",
+              "answers": [
+                "Around AD 410"
+              ],
+              "distractors": [
+                "Around AD 1066",
+                "Around AD 300"
+              ]
+            },
+            {
+              "question": "What was a reason for the Roman withdrawal?",
+              "questionType": "multiple-choice",
+              "answers": [
+                "Economic difficulties"
+              ],
+              "distractors": [
+                "Cultural differences",
+                "Peaceful negotiations"
+              ]
+            },
+            {
+              "question": "What change occurred in Britain after the Romans left?",
+              "questionType": "multiple-choice",
+              "answers": [
+                "New leaders emerged"
+              ],
+              "distractors": [
+                "Roman laws became stricter",
+                "Roads were repaired"
+              ]
+            },
+            {
+              "question": "Who studies artefacts to learn about the past?",
+              "questionType": "multiple-choice",
+              "answers": [
+                "Archaeologists"
+              ],
+              "distractors": [
+                "Astronomers",
+                "Geographers"
+              ]
+            },
+            {
+              "question": "What do artefacts tell us?",
+              "questionType": "multiple-choice",
+              "answers": [
+                "About daily life in the past"
+              ],
+              "distractors": [
+                "Future predictions",
+                "Weather patterns"
+              ]
+            },
+            {
+              "question": "Which keyword means 'to leave a place'?",
+              "questionType": "multiple-choice",
+              "answers": [
+                "Withdrawal"
+              ],
+              "distractors": [
+                "Invasion",
+                "Empire"
+              ]
+            }
+          ]
+        }
       },
       "status": "complete"
     }
@@ -312,7 +330,7 @@
   ],
   "prompt": {
     "type": "text",
-    "value": "Are the starter quiz, learning cycles, and exit quiz sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step."
+    "value": "Are the starter quiz, learning cycles, and exit quiz appropriate and suitably challenging for your pupils? If not, suggest any edits. Otherwise, tap **Continue** to move on to the next step."
   },
   "status": "complete"
 }

@@ -11,27 +11,23 @@ Materials
 type":"
 patch
 ","reasoning":"
-Providing
- additional
- materials
- in
- the
- form
- of
+Added
  a
  narrative
- script
  to
- support
+ help
  the
  teacher
- in
- delivering
- complex
- topics
- about
+ deliver
+ the
+ lesson
+ on
+ the
+ end
+ of
  Roman
  Britain
+ effectively
 .","
 value":{"
 type":"
@@ -43,10 +39,13 @@ additional
 Materials
 ","value":"
 ##
+ Teacher
  Narrative
- Script
- for
- Teachers
+\n
+\n
+**
+Introduction
+**
 \n
 \n
 \"
@@ -55,199 +54,209 @@ Today
  we're
  going
  to
- travel
- back
- in
- time
- to
- when
- the
- Romans
- were
- in
- Britain
-.
- Imagine
- you
- are
+ learn
+ about
  a
- Roman
- soldier
-,
- wearing
- your
- armour
- and
- sandals
-,
- walking
- the
- long
- roads
- they
- built
-.
- These
- roads
- were
  very
  important
- because
- they
- connected
- towns
- and
- made
- travel
- easier
-.
- But
- around
- AD
- 
-410
-,
- the
- Roman
- Empire
- was
- facing
- big
- problems
-.
- They
- needed
- their
- soldiers
- back
- home
- to
- help
- fight
- battles
- elsewhere
-.
- So
-,
- they
- decided
- to
- leave
- Britain
-.\
-n
-\n
-Now
-,
- picture
- the
- changes
+ time
  in
- Britain
+ history
  when
  the
  Romans
  left
+ Britain
 .
- New
- groups
- like
+ Imagine
  the
- Sax
-ons
- came
- and
- started
- to
- live
- here
-.
- The
- Roman
- buildings
- slowly
- changed
- or
- disappeared
-,
- but
- some
- things
-,
- like
  roads
  and
- towns
-,
- stayed
+ buildings
+ we
+ know
+ today
+ starting
+ to
+ change
  and
- influenced
+ fall
+ apart
+.
+ The
+ powerful
+ Roman
+ army
+ that
+ once
+ protected
+ the
+ land
+ is
+ called
+ back
+ to
+ Rome
+ to
+ defend
+ other
+ parts
+ of
+ the
+ empire
+.
+ Let's
+ explore
+ why
+ the
+ Romans
+ left
+ and
  how
+ life
+ changed
+ for
+ the
  people
- lived
-.\
+ living
+ in
+ Britain
+.
+\"\
 n
 \n
+**
+Main
+ Content
+**
+\n
+\n
+\"
+The
+ Roman
+ Empire
+ was
+ vast
+,
+ controlling
+ many
+ lands
+.
+ But
+ it
+ faced
+ attacks
+ from
+ various
+ tribes
+ and
+ economic
+ problems
+.
+ This
+ led
+ to
+ the
+ decision
+ to
+ withdraw
+ the
+ Roman
+ troops
+ from
+ Britain
+ around
+ AD
+ 
+410
+.
+ Without
+ their
+ presence
+,
+ local
+ leaders
+ began
+ to
+ emerge
+,
+ and
+ Roman
+ roads
+ and
+ structures
+ slowly
+ deterior
+ated
+.
+ The
+ people
+ of
+ Britain
+ had
+ to
+ adapt
+ to
+ new
+ ways
+ of
+ life
+,
+ and
+ different
+ cultures
+ started
+ blending
+ together
+.
+\"\
+n
+\n
+**
+Conclusion
+**
+\n
+\n
+\"
 Ar
 chae
 ologists
- are
- like
- detectives
+ help
+ us
+ understand
+ this
+ period
+ by
+ studying
+ arte
+facts
+ left
+ behind
 .
  They
- dig
- up
- old
- Roman
- coins
-,
- pottery
-,
- and
- tools
- to
- learn
- about
- how
- people
- lived
- back
- then
-.
- These
- discoveries
- tell
- us
- exciting
+ uncover
  stories
- about
+ of
  the
  past
 ,
- like
- what
+ teaching
+ us
+ about
  the
- Romans
- ate
-,
- the
- clothes
- they
- wore
-,
- and
- the
- games
- they
- played
-.\
-n
-\n
-Remember
+ daily
+ lives
+ of
+ people
+ during
+ Roman
+ times
+.
+ Remember
 ,
  history
  is
+ like
  a
  puzzle
 ,
@@ -256,12 +265,11 @@ Remember
  piece
  helps
  us
- understand
+ learn
  more
  about
  our
  world
- today
 .
 \"\
 n
@@ -269,78 +277,47 @@ n
 ###
  Key
  Points
- for
- Explanation
-\n
--
- Importance
- of
- Roman
- roads
- and
- infrastructure
-.\
+ to
+ Include
+:\
 n
--
+*
  Reasons
  for
  Roman
- departure
- due
- to
- empire
- pressures
-.\
-n
--
- Post
--R
-oman
- changes
- and
- Sax
-on
- invas
-ions
-.\
-n
--
+ withdrawal
+:
+ attacks
+,
+ economic
+ difficulties
+\n
+*
+ Changes
+ in
+ daily
+ life
+:
+ local
+ leaders
+,
+ deterior
+ating
+ infrastructure
+\n
+*
  Role
  of
  archae
 ologists
- in
- uncover
-ing
- history
-.\
-n
-\n
-Search
- terms
- for
- images
 :
- \"
-Roman
- soldier
- armour
-\",
- \"
-Roman
- roads
-\",
- \"
-S
-axon
- settlements
-\",
- \"
-Roman
- artifacts
-\"
-."
-},"status":"
+ studying
+ arte
+facts
+,
+ understanding
+ history
+"},"status":"
 complete
 "}],"sectionsEdited":["
 additional
@@ -349,33 +326,28 @@ Materials
 type":"
 text
 ","value":"
-I
- have
- added
- a
- narrative
- script
- to
- support
- the
- lesson
- delivery
-.
- Are
+Is
  the
  additional
- materials
- appropriate
+ narrative
+ material
+ helpful
  for
+ delivering
  your
- pupils
+ lesson
 ?
  If
  not
 ,
- suggest
- an
- edit
+ let
+ me
+ know
+ how
+ I
+ can
+ improve
+ it
 .
  Otherwise
 ,

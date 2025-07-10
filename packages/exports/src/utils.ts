@@ -94,3 +94,5 @@ export function stringOrBullets(input: undefined | string | string[]) {
   }
   return input.map((x) => `* ${x}`).join("\n");
 }
+
+export { filterToMcQuestions } from "./utils/filterToMcQuestions";

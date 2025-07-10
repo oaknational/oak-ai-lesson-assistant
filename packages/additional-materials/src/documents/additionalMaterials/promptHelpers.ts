@@ -42,18 +42,58 @@ ${feedback}
 };
 
 export const renderQuiz = (quiz: LooseLessonPlan["starterQuiz"]): string => {
-  if (!quiz || quiz.length === 0) return "- N/A";
+  if (!quiz || !quiz.questions?.length) return "- N/A";
 
-  return quiz
-    .map(({ question, answers, distractors }, index) => {
-      return `
-**Q${index + 1}: ${question}**
+  return quiz.questions
+    .map((q, index) => {
+      const baseQuestion = `**Q${index + 1}: ${q.question}**`;
+
+      switch (q.questionType) {
+        case "multiple-choice": {
+          const { answers, distractors } = q;
+          return `
+${baseQuestion}
 - ✅ Answer${answers.length > 1 ? "s" : ""}:
 ${answers.map((a) => `  - ${a}`).join("\n")}
 
 - ❌ Distractor${distractors.length > 1 ? "s" : ""}:
 ${distractors.map((d) => `  - ${d}`).join("\n")}
 `;
+        }
+
+        case "short-answer": {
+          const { answers } = q;
+          return `
+${baseQuestion}
+- ✅ Acceptable answer${answers.length > 1 ? "s" : ""}:
+${answers.map((a) => `  - ${a}`).join("\n")}
+`;
+        }
+
+        case "match": {
+          const { pairs } = q;
+          return `
+${baseQuestion}
+- Match the following pairs:
+${pairs.map((p) => `  - ${p.left} → ${p.right}`).join("\n")}
+`;
+        }
+
+        case "order": {
+          const { items } = q;
+          return `
+${baseQuestion}
+- Correct order:
+${items.map((item, i) => `  ${i + 1}. ${item}`).join("\n")}
+`;
+        }
+
+        default: {
+          // Fallback for any unhandled types
+          const _exhaustiveCheck: never = q;
+          return `${baseQuestion} (Type: unknown)`;
+        }
+      }
     })
     .join("\n");
 };
@@ -168,5 +208,5 @@ export const getKeystageFromYearGroup = (yearGroup: string) => {
   return keyStage;
 };
 
-export const language = `LANGUAGE 
+export const language = `LANGUAGE
   Use British English spelling and vocabulary (e.g. colour not color, centre not center, rubbish not trash) unless the user sets a different primary language. This reflects our UK teacher audience.`;

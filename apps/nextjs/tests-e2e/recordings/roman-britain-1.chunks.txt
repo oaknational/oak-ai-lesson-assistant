@@ -3,39 +3,30 @@ type":"
 ll
 m
 Message
-","sectionsToEdit":["
-learning
-Outcome
-","
-learning
-Cycles
-"],"patches":[
+","sectionsToEdit":[]
+,"patches":[
 {"
 type":"
 patch
 ","reasoning":"
-I
- have
- created
- new
- learning
- outcomes
- and
- learning
- cycles
- from
- scratch
- as
- there
- are
- no
+No
  existing
  Oak
  lessons
+ are
  available
  for
  this
  topic
+,
+ so
+ starting
+ a
+ new
+ lesson
+ plan
+ from
+ scratch
 .","
 value":{"
 type":"
@@ -49,15 +40,14 @@ Outcome
 I
  can
  describe
- why
+ the
+ changes
+ in
+ Britain
+ after
  the
  Romans
  left
- Britain
- and
- what
- happened
- afterwards
 ."
 },"status":"
 complete
@@ -65,29 +55,19 @@ complete
 type":"
 patch
 ","reasoning":"
-This
- patch
- adds
+Created
+ a
+ structured
+ overview
+ of
+ the
  learning
  cycles
- which
- break
- down
+ to
+ build
  the
  lesson
- into
- achievable
- tasks
-,
- focusing
- on
- Roman
- departure
- and
- its
- impact
- on
- Britain
+ plan
 .","
 value":{"
 type":"
@@ -99,37 +79,42 @@ add
 learning
 Cycles
 ","value":["
-Explain
- the
+Identify
  reasons
  for
  the
- Romans
- leaving
+ Roman
+ Empire
+'s
+ departure
+ from
  Britain
 .","
-Describe
+Explore
  the
  changes
- that
- occurred
  in
- Britain
+ daily
+ life
+ for
+ Brit
+ons
  after
  the
- Romans
- left
+ Roman
+ withdrawal
 .","
-Identify
+Understand
  the
  role
  of
  archae
 ologists
  in
- uncover
-ing
- Roman
+ discovering
+ this
+ period
+ of
  history
 .
 "]},"status":"
