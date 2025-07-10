@@ -6,6 +6,7 @@ import type {
 } from "@oakai/aila/src/protocol/schema";
 import { QuizV2Schema } from "@oakai/aila/src/protocol/schema";
 
+import { MatchQuestion } from "./MatchQuestion";
 import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
 
 export type QuizSectionProps = {
@@ -31,6 +32,15 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
         if (question.questionType === "multiple-choice") {
           return (
             <MultipleChoiceQuestion
+              key={index}
+              question={question}
+              questionNumber={index + 1}
+            />
+          );
+        }
+        if (question.questionType === "match") {
+          return (
+            <MatchQuestion
               key={index}
               question={question}
               questionNumber={index + 1}
