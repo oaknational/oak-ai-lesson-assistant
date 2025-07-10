@@ -255,10 +255,7 @@ export const LESSON_PLAN_DESCRIPTIONS = {
     Can include special characters if appropriate but should not use & sign instead of 'and'.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.
     The title should be in sentence case starting with a capital letter and not end with a full stop.
-    ${minMaxText({
-      max: 80,
-      entity: "characters",
-    })}`,
+`,
   keyStage:
     "The lesson's Key Stage as defined by UK educational standards. In slug format (kebab-case).",
   subject:
@@ -270,30 +267,18 @@ export const LESSON_PLAN_DESCRIPTIONS = {
     Written in age appropriate language.
     May include a command word.
     Written in the PUPIL voice.
-    ${minMaxText({ max: 190, entity: "characters" })}`,
+`,
   learningCycles: dedent`An array of learning cycle outcomes.
     Should include a command word.
     Should be succinct.
     Should outline what pupils should be able to do/understand/know by the end of the learning cycle.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.
-    ${minMaxText({
-      min: 1,
-      max: 3,
-      entity: "elements",
-    })}`,
+`,
   priorKnowledge: dedent`An array of prior knowledge statements, each being a succinct sentence.
     Written in the EXPERT_TEACHER voice.
-    ${minMaxText({
-      min: 1,
-      max: 5,
-      entity: "elements",
-    })}`,
+`,
   keyLearningPoints: dedent`An array of learning points, each being a succinct sentence.
-    ${minMaxText({
-      min: 3,
-      max: 5,
-      entity: "elements",
-    })}`,
+`,
   starterQuiz: dedent`The starter quiz for the lesson, which tests prior knowledge only, ignoring the content that is delivered in the lesson.
     Obey the rules as specified in the STARTER QUIZ section of the lesson plan guidance.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
@@ -305,6 +290,7 @@ export const LESSON_PLAN_DESCRIPTIONS = {
 
 export const LessonTitleSchema = z
   .string()
+  .max(80)
   .describe(LESSON_PLAN_DESCRIPTIONS.title);
 
 export const KeyStageSchema = z
@@ -332,30 +318,34 @@ export const TopicSchema = z.string().describe(LESSON_PLAN_DESCRIPTIONS.topic);
 
 export const LearningOutcomeSchema = z
   .string()
+  .max(190)
   .describe(LESSON_PLAN_DESCRIPTIONS.learningOutcome);
 
-export const LearningOutcomeSchemaStrictMax190 = LearningOutcomeSchema.max(190);
+export const LearningOutcomeSchemaStrictMax190 = LearningOutcomeSchema;
 
 export const LearningCyclesSchema = z
   .array(z.string())
+  .min(1)
+  .max(3)
   .describe(LESSON_PLAN_DESCRIPTIONS.learningCycles);
 
-export const LearningCyclesStrictMax3Schema =
-  LearningCyclesSchema.min(1).max(3);
+export const LearningCyclesStrictMax3Schema = LearningCyclesSchema;
 
 export const PriorKnowledgeSchema = z
   .array(z.string())
+  .min(1)
+  .max(5)
   .describe(LESSON_PLAN_DESCRIPTIONS.priorKnowledge);
 
-export const PriorKnowledgeSctrictMax5Schema =
-  PriorKnowledgeSchema.min(1).max(5);
+export const PriorKnowledgeSctrictMax5Schema = PriorKnowledgeSchema;
 
 export const KeyLearningPointsSchema = z
   .array(z.string())
+  .min(3)
+  .max(5)
   .describe(LESSON_PLAN_DESCRIPTIONS.keyLearningPoints);
 
-export const KeyLearningPointsStrictMax5Schema =
-  KeyLearningPointsSchema.min(3).max(5);
+export const KeyLearningPointsStrictMax5Schema = KeyLearningPointsSchema;
 
 export const AdditionalMaterialsSchema = z
   .string()
