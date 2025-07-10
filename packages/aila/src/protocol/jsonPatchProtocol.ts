@@ -196,7 +196,6 @@ export const JsonPatchValueSchema = z.union([
   PatchKeywords,
 ]);
 
-
 export const JsonPatchValueOptionalSchema = z.union([
   // These generate "add" and "replace" patches could potentially be
   // quite dangerous. Zod will validate anything you pass as a value
