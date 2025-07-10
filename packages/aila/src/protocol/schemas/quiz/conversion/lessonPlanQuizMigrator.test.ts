@@ -28,6 +28,7 @@ describe("quiz upgrader", () => {
           question: "What is the capital of France?",
           answers: ["Paris"],
           distractors: ["London", "Berlin"],
+          imageAttributions: [],
         },
       ],
     };

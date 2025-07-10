@@ -18,6 +18,7 @@ export function convertQuizV1QuestionToV2(
     answers: questionV1.answers,
     distractors: questionV1.distractors,
     hint: undefined,
+    imageAttributions: [],
   };
 }
 

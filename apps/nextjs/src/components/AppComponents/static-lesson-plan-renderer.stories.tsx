@@ -30,6 +30,7 @@ const meta = {
             question: "What do you know about frogs?",
             answers: ["They are amphibians"],
             distractors: ["They are reptiles", "They are fish"],
+            imageAttributions: [],
           },
         ],
       },

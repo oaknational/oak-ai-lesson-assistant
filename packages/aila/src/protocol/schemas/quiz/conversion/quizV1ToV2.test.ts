@@ -24,6 +24,7 @@ describe("V1 to V2 Quiz Conversion", () => {
         answers: ["4"],
         distractors: ["3", "5"],
         hint: undefined,
+        imageAttributions: [],
       });
     });
   });
@@ -66,6 +67,7 @@ describe("V1 to V2 Quiz Conversion", () => {
             answers: ["A"],
             distractors: ["B"],
             hint: undefined,
+            imageAttributions: [],
           },
         ],
       };

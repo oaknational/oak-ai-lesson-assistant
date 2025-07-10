@@ -39,6 +39,7 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV2 {
         question: "",
         answers: [],
         distractors: [],
+        imageAttributions: [],
       } as QuizV2Question;
     }
     // Extract the question text from the stem
@@ -77,6 +78,7 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV2 {
         question: questionText,
         answers: correctAnswers,
         distractors: distractors,
+        imageAttributions: [],
       } as QuizV2Question;
     } else if (
       question.question_type === "short-answer" &&
@@ -117,6 +119,7 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV2 {
         answers:
           correctAnswers.length > 0 ? correctAnswers : allAnswers.slice(0, 1),
         distractors: distractors.length > 0 ? distractors : [],
+        imageAttributions: [],
       } as QuizV2Question;
     }
 
@@ -126,6 +129,7 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV2 {
       question: questionText,
       answers: [],
       distractors: [],
+      imageAttributions: [],
     } as QuizV2Question;
   });
 

@@ -184,6 +184,7 @@ function sampleQuiz(): QuizV2 {
         question: "Sample question",
         answers: ["Sample answer"],
         distractors: ["Sample distractor"],
+        imageAttributions: [],
       },
     ],
   };
