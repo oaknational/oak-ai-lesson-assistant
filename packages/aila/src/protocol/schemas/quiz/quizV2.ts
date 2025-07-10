@@ -19,9 +19,10 @@ export const QuizV2QuestionBaseSchema = z.object({
 export const QuizV2QuestionMultipleChoiceSchema =
   QuizV2QuestionBaseSchema.extend({
     questionType: z.literal("multiple-choice"),
-    answers: z.array(z.string()).describe("Correct answers as markdown"),
+    answers: z.array(z.string()).length(1).describe("Correct answers as markdown"),
     distractors: z
       .array(z.string())
+      .length(2)
       .describe("Incorrect answer options as markdown"),
   });
 
@@ -66,7 +67,6 @@ export const QuizV2Schema = z.object({
   questions: z.array(QuizV2QuestionSchema).describe("Array of quiz questions"),
 });
 
-export const QuizV2SchemaWithoutLength = QuizV2Schema;
 export const QuizV2OptionalSchema = QuizV2Schema.optional();
 
 export type QuizV2Question = z.infer<typeof QuizV2QuestionSchema>;
