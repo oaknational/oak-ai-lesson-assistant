@@ -33,11 +33,6 @@ export async function prepLessonPlanForDocs(
   );
   const exitMcQuestions = filterToMcQuestions(lessonPlan.exitQuiz.questions);
 
-  // Get checkForUnderstanding questions from cycles (V1 format)
-  const cycle1Questions = lessonPlan.cycle1?.checkForUnderstanding || [];
-  const cycle2Questions = lessonPlan.cycle2?.checkForUnderstanding || [];
-  const cycle3Questions = lessonPlan.cycle3?.checkForUnderstanding || [];
-
   return Promise.resolve({
     lesson_title: lessonPlan.title,
     subject: lessonPlan.subject,
