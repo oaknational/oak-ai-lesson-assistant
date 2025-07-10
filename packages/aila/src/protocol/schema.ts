@@ -6,7 +6,6 @@ import { minMaxText } from "./schemaHelpers";
 import {
   type QuizV1Optional,
   QuizV1Schema,
-  QuizV1SchemaWithoutLength,
 } from "./schemas/quiz";
 import { type RawQuiz, rawQuizSchema } from "./schemas/quiz/rawQuiz";
 
@@ -521,13 +520,13 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   keyLearningPoints: KeyLearningPointsSchema,
   misconceptions: MisconceptionsSchemaWithoutLength,
   keywords: KeywordsSchemaWithoutLength,
-  starterQuiz: QuizV1SchemaWithoutLength.describe(
+  starterQuiz: QuizV1Schema.describe(
     LESSON_PLAN_DESCRIPTIONS.starterQuiz,
   ),
   cycle1: CycleSchemaWithoutLength.describe("The first learning cycle"),
   cycle2: CycleSchemaWithoutLength.describe("The second learning cycle"),
   cycle3: CycleSchemaWithoutLength.describe("The third learning cycle"),
-  exitQuiz: QuizV1SchemaWithoutLength.describe(
+  exitQuiz: QuizV1Schema.describe(
     LESSON_PLAN_DESCRIPTIONS.exitQuiz,
   ),
   additionalMaterials: AdditionalMaterialsSchema,

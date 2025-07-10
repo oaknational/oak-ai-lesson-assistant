@@ -25,7 +25,6 @@ import {
   MisconceptionsSchemaWithoutLength,
   QuizV1OptionalSchema,
   QuizV1Schema,
-  QuizV1SchemaWithoutLength,
 } from "./schema";
 
 const log = aiLogger("aila:protocol");
@@ -137,7 +136,7 @@ export const PatchQuizV1ForLLM = z.object({
   type: z.literal("quizV1"),
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
-  value: QuizV1SchemaWithoutLength,
+  value: QuizV1Schema,
 });
 
 export const PatchBasedOnOptional = z.object({
