@@ -2,12 +2,7 @@ import { dedent } from "ts-dedent";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
-import { minMaxText } from "./schemaHelpers";
-import {
-  type QuizV1Optional,
-  QuizV1Schema,
-  QuizV1SchemaWithoutLength,
-} from "./schemas/quiz";
+import { type QuizV1Optional, QuizV1Schema } from "./schemas/quiz";
 import { type RawQuiz, rawQuizSchema } from "./schemas/quiz/rawQuiz";
 
 // ********** BASED_ON **********
@@ -41,30 +36,29 @@ export const MISCONCEPTION_DESCRIPTIONS = {
 export const MISCONCEPTIONS_DESCRIPTION = {
   schema: dedent`
   A set of potential misconceptions which students might have about the content that is delivered in the lesson.
-  Written in the EXPERT_TEACHER voice.
-  ${minMaxText({ min: 1, max: 3, entity: "elements" })}`,
+  Written in the EXPERT_TEACHER voice.`,
 } as const as { schema: string };
 
-export const MisconceptionSchemaWithoutLength = z.object({
-  misconception: z.string().describe(MISCONCEPTION_DESCRIPTIONS.misconception),
-  description: z.string().describe(MISCONCEPTION_DESCRIPTIONS.description),
+export const MisconceptionSchema = z.object({
+  misconception: z
+    .string()
+    .max(200)
+    .describe(MISCONCEPTION_DESCRIPTIONS.misconception),
+  description: z
+    .string()
+    .max(250)
+    .describe(MISCONCEPTION_DESCRIPTIONS.description),
 });
 
-export const MisconceptionSchema = MisconceptionSchemaWithoutLength.extend({
-  description: MisconceptionSchemaWithoutLength.shape.description.max(250),
-});
+export const MisconceptionOptionalSchema = MisconceptionSchema.extend({
+  definition: z.string().optional(),
+}).partial();
 
-export const MisconceptionOptionalSchema =
-  MisconceptionSchemaWithoutLength.extend({
-    definition: z.string().optional(),
-  }).partial();
-
-export const MisconceptionsSchemaWithoutLength = z
-  .array(MisconceptionSchemaWithoutLength)
+export const MisconceptionsSchema = z
+  .array(MisconceptionSchema)
+  .min(1)
+  .max(3)
   .describe(MISCONCEPTIONS_DESCRIPTION.schema);
-
-export const MisconceptionsSchema =
-  MisconceptionsSchemaWithoutLength.min(1).max(3);
 
 export const MisconceptionsOptionalSchema = z.array(
   MisconceptionOptionalSchema,
@@ -112,7 +106,7 @@ export const EXPLANATION_DESCRIPTIONS = {
 export const ExplanationSchema = z
   .object({
     spokenExplanation: z
-      .union([z.string(), z.array(z.string())])
+      .union([z.string(), z.array(z.string()).min(1).max(5)])
       .describe(EXPLANATION_DESCRIPTIONS.spokenExplanation),
     accompanyingSlideDetails: z
       .string()
@@ -128,7 +122,6 @@ export const ExplanationOptionalSchema = ExplanationSchema.partial();
 export type ExplanationOptional = z.infer<typeof ExplanationOptionalSchema>;
 
 // ********** CHECK FOR UNDERSTANDING **********
-// When using Structured Outputs we cannot specify the length of arrays or strings
 export const CHECK_FOR_UNDERSTANDING_DESCRIPTIONS = {
   question: dedent`A multiple choice question to ask as a check to see if the students have understood the content of this cycle.
   Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
@@ -137,6 +130,18 @@ export const CHECK_FOR_UNDERSTANDING_DESCRIPTIONS = {
   distractors: dedent`Two incorrect distractors which could be the answer to the question but are not correct.
   These strings should be of similar length to ANSWER_LENGTH so that the correct answer does not stand out because it is obviously longer than the distractors.`,
 } as const;
+
+export const CheckForUnderstandingSchema = z.object({
+  question: z.string().describe(CHECK_FOR_UNDERSTANDING_DESCRIPTIONS.question),
+  answers: z
+    .array(z.string())
+    .length(1)
+    .describe(CHECK_FOR_UNDERSTANDING_DESCRIPTIONS.answers),
+  distractors: z
+    .array(z.string())
+    .min(2)
+    .describe(CHECK_FOR_UNDERSTANDING_DESCRIPTIONS.distractors),
+});
 
 export const CheckForUnderstandingSchemaWithoutLength = z.object({
   question: z.string().describe(CHECK_FOR_UNDERSTANDING_DESCRIPTIONS.question),
@@ -148,15 +153,8 @@ export const CheckForUnderstandingSchemaWithoutLength = z.object({
     .describe(CHECK_FOR_UNDERSTANDING_DESCRIPTIONS.distractors),
 });
 
-export const CheckForUnderstandingSchema =
-  CheckForUnderstandingSchemaWithoutLength.extend({
-    answers: CheckForUnderstandingSchemaWithoutLength.shape.answers.length(1),
-    distractors:
-      CheckForUnderstandingSchemaWithoutLength.shape.distractors.min(2),
-  });
-
 export const CheckForUnderstandingOptionalSchema =
-  CheckForUnderstandingSchema.partial();
+  CheckForUnderstandingSchemaWithoutLength.partial();
 
 // ********** CYCLE **********
 export const CYCLE_DESCRIPTIONS = {
@@ -176,6 +174,18 @@ export const CYCLE_DESCRIPTIONS = {
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
 } as const;
 
+export const CycleSchema = z.object({
+  title: z.string().describe(CYCLE_DESCRIPTIONS.title),
+  durationInMinutes: z.number().describe(CYCLE_DESCRIPTIONS.durationInMinutes),
+  explanation: ExplanationSchema.describe(CYCLE_DESCRIPTIONS.explanation),
+  checkForUnderstanding: z
+    .array(CheckForUnderstandingSchema)
+    .min(2)
+    .describe(CYCLE_DESCRIPTIONS.checkForUnderstanding),
+  practice: z.string().describe(CYCLE_DESCRIPTIONS.practice),
+  feedback: z.string().describe(CYCLE_DESCRIPTIONS.feedback),
+});
+
 export const CycleSchemaWithoutLength = z.object({
   title: z.string().describe(CYCLE_DESCRIPTIONS.title),
   durationInMinutes: z.number().describe(CYCLE_DESCRIPTIONS.durationInMinutes),
@@ -185,10 +195,6 @@ export const CycleSchemaWithoutLength = z.object({
     .describe(CYCLE_DESCRIPTIONS.checkForUnderstanding),
   practice: z.string().describe(CYCLE_DESCRIPTIONS.practice),
   feedback: z.string().describe(CYCLE_DESCRIPTIONS.feedback),
-});
-
-export const CycleSchema = CycleSchemaWithoutLength.extend({
-  checkForUnderstanding: z.array(CheckForUnderstandingSchema).min(2),
 });
 
 export const CycleOptionalSchema = CycleSchemaWithoutLength.extend({
@@ -212,30 +218,27 @@ export const KEYWORD_DESCRIPTIONS = {
   schema: dedent`A keyword that is used in the lesson. Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
 
   keywords: dedent`the keywords that are used in the lesson.
-    written in TEACHER_TO_PUPIL_SLIDES voice.
-    ${minMaxText({ min: 1, max: 5, entity: "elements" })}`,
+    written in TEACHER_TO_PUPIL_SLIDES voice.`,
 } as const;
 
-export const KeywordSchemaWithoutLength = z
+export const KeywordSchema = z
   .object({
-    keyword: z.string().describe(KEYWORD_DESCRIPTIONS.keyword),
-    definition: z.string().describe(KEYWORD_DESCRIPTIONS.definition),
+    keyword: z.string().max(30).describe(KEYWORD_DESCRIPTIONS.keyword),
+    definition: z.string().max(200).describe(KEYWORD_DESCRIPTIONS.definition),
+    description: z
+      .string()
+      .optional()
+      .describe(KEYWORD_DESCRIPTIONS.description),
   })
   .describe(KEYWORD_DESCRIPTIONS.schema);
 
-export const KeywordSchema = KeywordSchemaWithoutLength.extend({
-  keyword: KeywordSchemaWithoutLength.shape.keyword.max(30),
-  definition: KeywordSchemaWithoutLength.shape.definition.max(200),
-  description: z.string().optional().describe(KEYWORD_DESCRIPTIONS.description),
-});
-
 export const KeywordOptionalSchema = KeywordSchema.partial();
 
-export const KeywordsSchemaWithoutLength = z
-  .array(KeywordSchemaWithoutLength)
+export const KeywordsSchema = z
+  .array(KeywordSchema)
+  .min(1)
+  .max(5)
   .describe(KEYWORD_DESCRIPTIONS.keywords);
-
-export const KeywordsSchema = KeywordsSchemaWithoutLength.min(1).max(5);
 
 export const KeywordsOptionalSchema = z.array(KeywordOptionalSchema);
 
@@ -248,10 +251,7 @@ export const LESSON_PLAN_DESCRIPTIONS = {
     Can include special characters if appropriate but should not use & sign instead of 'and'.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.
     The title should be in sentence case starting with a capital letter and not end with a full stop.
-    ${minMaxText({
-      max: 80,
-      entity: "characters",
-    })}`,
+`,
   keyStage:
     "The lesson's Key Stage as defined by UK educational standards. In slug format (kebab-case).",
   subject:
@@ -263,30 +263,18 @@ export const LESSON_PLAN_DESCRIPTIONS = {
     Written in age appropriate language.
     May include a command word.
     Written in the PUPIL voice.
-    ${minMaxText({ max: 190, entity: "characters" })}`,
+`,
   learningCycles: dedent`An array of learning cycle outcomes.
     Should include a command word.
     Should be succinct.
     Should outline what pupils should be able to do/understand/know by the end of the learning cycle.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.
-    ${minMaxText({
-      min: 1,
-      max: 3,
-      entity: "elements",
-    })}`,
+`,
   priorKnowledge: dedent`An array of prior knowledge statements, each being a succinct sentence.
     Written in the EXPERT_TEACHER voice.
-    ${minMaxText({
-      min: 1,
-      max: 5,
-      entity: "elements",
-    })}`,
+`,
   keyLearningPoints: dedent`An array of learning points, each being a succinct sentence.
-    ${minMaxText({
-      min: 3,
-      max: 5,
-      entity: "elements",
-    })}`,
+`,
   starterQuiz: dedent`The starter quiz for the lesson, which tests prior knowledge only, ignoring the content that is delivered in the lesson.
     Obey the rules as specified in the STARTER QUIZ section of the lesson plan guidance.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
@@ -298,6 +286,7 @@ export const LESSON_PLAN_DESCRIPTIONS = {
 
 export const LessonTitleSchema = z
   .string()
+  .max(80)
   .describe(LESSON_PLAN_DESCRIPTIONS.title);
 
 export const KeyStageSchema = z
@@ -325,30 +314,26 @@ export const TopicSchema = z.string().describe(LESSON_PLAN_DESCRIPTIONS.topic);
 
 export const LearningOutcomeSchema = z
   .string()
+  .max(190)
   .describe(LESSON_PLAN_DESCRIPTIONS.learningOutcome);
-
-export const LearningOutcomeSchemaStrictMax190 = LearningOutcomeSchema.max(190);
 
 export const LearningCyclesSchema = z
   .array(z.string())
+  .min(1)
+  .max(3)
   .describe(LESSON_PLAN_DESCRIPTIONS.learningCycles);
-
-export const LearningCyclesStrictMax3Schema =
-  LearningCyclesSchema.min(1).max(3);
 
 export const PriorKnowledgeSchema = z
   .array(z.string())
+  .min(1)
+  .max(5)
   .describe(LESSON_PLAN_DESCRIPTIONS.priorKnowledge);
-
-export const PriorKnowledgeSctrictMax5Schema =
-  PriorKnowledgeSchema.min(1).max(5);
 
 export const KeyLearningPointsSchema = z
   .array(z.string())
+  .min(3)
+  .max(5)
   .describe(LESSON_PLAN_DESCRIPTIONS.keyLearningPoints);
-
-export const KeyLearningPointsStrictMax5Schema =
-  KeyLearningPointsSchema.min(3).max(5);
 
 export const AdditionalMaterialsSchema = z
   .string()
@@ -509,26 +494,3 @@ export type LessonPlanSectionWhileStreaming =
   | string[]
   | number
   | NonNullable<RawQuiz[]>;
-
-export const CompletedLessonPlanSchemaWithoutLength = z.object({
-  title: LessonTitleSchema,
-  keyStage: KeyStageSchema,
-  subject: SubjectSchema,
-  topic: TopicSchema,
-  learningOutcome: LearningOutcomeSchema,
-  learningCycles: LearningCyclesSchema,
-  priorKnowledge: PriorKnowledgeSchema,
-  keyLearningPoints: KeyLearningPointsSchema,
-  misconceptions: MisconceptionsSchemaWithoutLength,
-  keywords: KeywordsSchemaWithoutLength,
-  starterQuiz: QuizV1SchemaWithoutLength.describe(
-    LESSON_PLAN_DESCRIPTIONS.starterQuiz,
-  ),
-  cycle1: CycleSchemaWithoutLength.describe("The first learning cycle"),
-  cycle2: CycleSchemaWithoutLength.describe("The second learning cycle"),
-  cycle3: CycleSchemaWithoutLength.describe("The third learning cycle"),
-  exitQuiz: QuizV1SchemaWithoutLength.describe(
-    LESSON_PLAN_DESCRIPTIONS.exitQuiz,
-  ),
-  additionalMaterials: AdditionalMaterialsSchema,
-});

@@ -4,25 +4,17 @@ import {
   AdditionalMaterialsSchema,
   type CompletedLessonPlan,
   CycleSchema,
-  CycleSchemaWithoutLength,
   KeyLearningPointsSchema,
-  KeyLearningPointsStrictMax5Schema,
   KeyStageSchema,
   KeywordsSchema,
-  KeywordsSchemaWithoutLength,
   LearningCyclesSchema,
-  LearningCyclesStrictMax3Schema,
   LearningOutcomeSchema,
-  LearningOutcomeSchemaStrictMax190,
   type LessonPlanKey,
   LessonTitleSchema,
   type LooseLessonPlan,
   MisconceptionsSchema,
-  MisconceptionsSchemaWithoutLength,
   PriorKnowledgeSchema,
-  PriorKnowledgeSctrictMax5Schema,
-  QuizV1SchemaStrictMax6Schema,
-  QuizV1SchemaWithoutLength,
+  QuizV1Schema,
   SubjectSchema,
   TopicSchema,
 } from "../../protocol/schema";
@@ -67,15 +59,11 @@ export type AgentName = z.infer<typeof agentNames>;
 
 export type SchemaWithValue = z.ZodObject<{ value: z.ZodTypeAny }>;
 
-export type PromptAgentDefinition<
-  SchemaForLLM extends z.ZodSchema = z.ZodSchema,
-  SchemaStrict extends z.ZodSchema = z.ZodSchema,
-> = {
+export type PromptAgentDefinition<Schema extends z.ZodSchema = z.ZodSchema> = {
   type: "prompt";
   name: AgentName;
   prompt: string;
-  schemaForLLM: SchemaForLLM;
-  schemaStrict: SchemaStrict;
+  schema: Schema;
   extractRagData: (exampleLessonPlan: CompletedLessonPlan) => string | null;
 };
 export type AgentDefinition =
@@ -97,80 +85,70 @@ export const agents: Record<AgentName, AgentDefinition> = {
     type: "prompt",
     name: "title",
     prompt: "Generate a title for the lesson plan.",
-    schemaForLLM: LessonTitleSchema,
-    schemaStrict: LessonTitleSchema,
+    schema: LessonTitleSchema,
     extractRagData: (lp) => lp.title,
   },
   keyStage: {
     type: "prompt",
     name: "keyStage",
     prompt: "Specify the Key Stage for this lesson.",
-    schemaForLLM: KeyStageSchema,
-    schemaStrict: KeyStageSchema,
+    schema: KeyStageSchema,
     extractRagData: (lp) => lp.keyStage,
   },
   subject: {
     type: "prompt",
     name: "subject",
     prompt: subjectInstructions(),
-    schemaForLLM: SubjectSchema,
-    schemaStrict: SubjectSchema,
+    schema: SubjectSchema,
     extractRagData: (lp) => lp.subject,
   },
   topic: {
     type: "prompt",
     name: "topic",
     prompt: "Specify the topic for this lesson.",
-    schemaForLLM: TopicSchema,
-    schemaStrict: TopicSchema,
+    schema: TopicSchema,
     extractRagData: (lp) => lp.topic,
   },
   learningOutcome: {
     type: "prompt",
     name: "learningOutcome",
     prompt: learningOutcomeInstructions({ identity }),
-    schemaForLLM: LearningOutcomeSchema,
-    schemaStrict: LearningOutcomeSchemaStrictMax190,
+    schema: LearningOutcomeSchema,
     extractRagData: (lp) => lp.learningOutcome,
   },
   learningCycles: {
     type: "prompt",
     name: "learningCycles",
     prompt: learningCycleTitlesInstructions({ identity }),
-    schemaForLLM: LearningCyclesSchema,
-    schemaStrict: LearningCyclesStrictMax3Schema,
+    schema: LearningCyclesSchema,
     extractRagData: (lp) => JSON.stringify(lp.learningCycles),
   },
   priorKnowledge: {
     type: "prompt",
     name: "priorKnowledge",
     prompt: priorKnowledgeInstructions({ identity }),
-    schemaForLLM: PriorKnowledgeSchema,
-    schemaStrict: PriorKnowledgeSctrictMax5Schema,
+    schema: PriorKnowledgeSchema,
     extractRagData: (lp) => JSON.stringify(lp.priorKnowledge),
   },
   keyLearningPoints: {
     type: "prompt",
     name: "keyLearningPoints",
     prompt: keyLearningPointsInstructions({ identity }),
-    schemaForLLM: KeyLearningPointsSchema,
-    schemaStrict: KeyLearningPointsStrictMax5Schema,
+    schema: KeyLearningPointsSchema,
     extractRagData: (lp) => JSON.stringify(lp.keyLearningPoints),
   },
   misconceptions: {
     type: "prompt",
     name: "misconceptions",
     prompt: misconceptionsInstructions({ identity }),
-    schemaForLLM: MisconceptionsSchemaWithoutLength,
-    schemaStrict: MisconceptionsSchema,
+    schema: MisconceptionsSchema,
     extractRagData: (lp) => JSON.stringify(lp.misconceptions),
   },
   keywords: {
     type: "prompt",
     name: "keywords",
     prompt: keywordsInstructions({ identity, tier2And3VocabularyDefinitions }),
-    schemaForLLM: KeywordsSchemaWithoutLength,
-    schemaStrict: KeywordsSchema,
+    schema: KeywordsSchema,
     extractRagData: (lp) => JSON.stringify(lp.keywords),
   },
   starterQuiz: {
@@ -180,8 +158,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
       identity,
       quizQuestionDesignInstructions,
     }),
-    schemaForLLM: QuizV1SchemaWithoutLength,
-    schemaStrict: QuizV1SchemaStrictMax6Schema,
+    schema: QuizV1Schema,
     extractRagData: (lp) => JSON.stringify(lp.starterQuiz),
   },
   cycle: {
@@ -191,8 +168,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
       identity,
       quizQuestionDesignInstructions,
     }),
-    schemaForLLM: CycleSchemaWithoutLength,
-    schemaStrict: CycleSchema,
+    schema: CycleSchema,
     extractRagData: (lp) => {
       // @todo we probably only need one cycle (the relevant one)
       return JSON.stringify({
@@ -206,8 +182,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
     type: "prompt",
     name: "exitQuiz",
     prompt: exitQuizInstructions({ identity, quizQuestionDesignInstructions }),
-    schemaForLLM: QuizV1SchemaWithoutLength,
-    schemaStrict: QuizV1SchemaStrictMax6Schema,
+    schema: QuizV1Schema,
     extractRagData: (lp) => JSON.stringify(lp.exitQuiz),
   },
   mathsStarterQuiz: {
@@ -237,8 +212,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
       identity,
       tier2And3VocabularyDefinitions,
     }),
-    schemaForLLM: AdditionalMaterialsSchema,
-    schemaStrict: AdditionalMaterialsSchema,
+    schema: AdditionalMaterialsSchema,
     extractRagData: (lp) => JSON.stringify(lp.additionalMaterials),
   },
 };

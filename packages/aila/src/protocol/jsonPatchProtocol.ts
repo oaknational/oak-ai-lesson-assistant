@@ -15,17 +15,13 @@ import {
   BasedOnSchema,
   CycleOptionalSchema,
   CycleSchema,
-  CycleSchemaWithoutLength,
   KeywordsOptionalSchema,
   KeywordsSchema,
-  KeywordsSchemaWithoutLength,
   LessonPlanSchemaWhilstStreaming,
   MisconceptionsOptionalSchema,
   MisconceptionsSchema,
-  MisconceptionsSchemaWithoutLength,
   QuizV1OptionalSchema,
   QuizV1Schema,
-  QuizV1SchemaWithoutLength,
 } from "./schema";
 
 const log = aiLogger("aila:protocol");
@@ -46,18 +42,8 @@ export const PatchString = z.object({
 // When using Structured Outputs we must include a "type" attribute as the first
 // attribute in the object, otherwise it results in an error when generating the
 // JSON Schema
-export const PatchStringForLLM = z.object({
+export const PatchStringForLLM = PatchString.extend({
   type: z.literal("string"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.union([
-    z.literal("/title"),
-    z.literal("/keyStage"),
-    z.literal("/topic"),
-    z.literal("/subject"),
-    z.literal("/additionalMaterials"),
-    z.literal("/learningOutcome"),
-  ]),
-  value: z.string(),
 });
 
 export const PatchStringArray = z.object({
@@ -73,15 +59,8 @@ export const PatchStringArray = z.object({
 // When using Structured Outputs we must include a "type" attribute as the first
 // attribute in the object, otherwise it results in an error when generating the
 // JSON Schema
-export const PatchStringArrayForLLM = z.object({
+export const PatchStringArrayForLLM = PatchStringArray.extend({
   type: z.literal("string-array"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.union([
-    z.literal("/priorKnowledge"),
-    z.literal("/learningCycles"),
-    z.literal("/keyLearningPoints"),
-  ]),
-  value: z.array(z.string()),
 });
 
 export const PatchCycleOptional = z.object({
@@ -104,17 +83,10 @@ export const PatchCycle = z.object({
   value: CycleSchema,
 });
 
-// When using Structured Outputs we cannot specify the length of arrays or strings
-// so we have to use a different schema and pass in the spec with a description and in the prompt
-export const PatchCycleForLLM = z.object({
+// ForLLM schemas include a "type" field for discriminated unions in Structured Outputs
+export const PatchCycleForLLM = PatchCycle.extend({
   type: z.literal("cycle"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.union([
-    z.literal("/cycle1"),
-    z.literal("/cycle2"),
-    z.literal("/cycle3"),
-  ]),
-  value: CycleSchemaWithoutLength.describe(
+  value: CycleSchema.describe(
     "This is the definition of the learning cycle that you are proposing. You MUST include this definition for the patch to be valid. It should never be just an empty object {}.",
   ),
 });
@@ -131,13 +103,9 @@ export const PatchQuizV1 = z.object({
   value: QuizV1Schema,
 });
 
-// When using Structured Outputs we cannot specify the length of arrays or strings
-// so we have to use a different schema and pass in the spec with a description and in the prompt
-export const PatchQuizV1ForLLM = z.object({
+// ForLLM schemas include a "type" field for discriminated unions in Structured Outputs
+export const PatchQuizV1ForLLM = PatchQuizV1.extend({
   type: z.literal("quizV1"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
-  value: QuizV1SchemaWithoutLength,
 });
 
 export const PatchBasedOnOptional = z.object({
@@ -152,13 +120,9 @@ export const PatchBasedOn = z.object({
   value: BasedOnSchema,
 });
 
-// When using Structured Outputs we cannot specify the length of arrays or strings
-// so we have to use a different schema and pass in the spec with a description and in the prompt
-export const PatchBasedOnForLLM = z.object({
+// ForLLM schemas include a "type" field for discriminated unions in Structured Outputs
+export const PatchBasedOnForLLM = PatchBasedOn.extend({
   type: z.literal("basedOn"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.literal("/basedOn"),
-  value: BasedOnSchema,
 });
 
 export const PatchMisconceptionsOptional = z.object({
@@ -173,13 +137,9 @@ export const PatchMisconceptions = z.object({
   value: MisconceptionsSchema,
 });
 
-// When using Structured Outputs we cannot specify the length of arrays or strings
-// so we have to use a different schema and pass in the spec with a description and in the prompt
-export const PatchMisconceptionsForLLM = z.object({
+// ForLLM schemas include a "type" field for discriminated unions in Structured Outputs
+export const PatchMisconceptionsForLLM = PatchMisconceptions.extend({
   type: z.literal("misconceptions"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.literal("/misconceptions"),
-  value: MisconceptionsSchemaWithoutLength,
 });
 
 export const PatchKeywordsOptional = z.object({
@@ -194,13 +154,9 @@ export const PatchKeywords = z.object({
   value: KeywordsSchema,
 });
 
-// When using Structured Outputs we cannot specify the length of arrays or strings
-// so we have to use a different schema and pass in the spec with a description and in the prompt
-export const PatchKeywordsForLLM = z.object({
+// ForLLM schemas include a "type" field for discriminated unions in Structured Outputs
+export const PatchKeywordsForLLM = PatchKeywords.extend({
   type: z.literal("keywords"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.literal("/keywords"),
-  value: KeywordsSchemaWithoutLength,
 });
 
 export const JsonPatchRemoveSchema = z.object({
@@ -208,12 +164,9 @@ export const JsonPatchRemoveSchema = z.object({
   path: z.string(),
 });
 
-// When using Structured Outputs we cannot specify the length of arrays or strings
-// so we have to use a different schema and pass in the spec with a description and in the prompt
-export const JsonPatchRemoveSchemaForLLM = z.object({
+// ForLLM schemas include a "type" field for discriminated unions in Structured Outputs
+export const JsonPatchRemoveSchemaForLLM = JsonPatchRemoveSchema.extend({
   type: z.literal("remove"),
-  op: z.literal("remove"),
-  path: z.string(),
 });
 
 // Potentially remove this once stable
@@ -243,21 +196,6 @@ export const JsonPatchValueSchema = z.union([
   PatchKeywords,
 ]);
 
-// Because we cannot use min/max lengths for arrays and strings we have a separate schema
-// when we are using Structured Outputs
-export const JsonPatchValueForLLMSchema = z.union([
-  //JsonPatchAddSchema, // Generic add for any path
-  //JsonPatchReplaceSchema, // Generic replace for any path
-  JsonPatchRemoveSchemaForLLM, // Generic remove for any path
-  PatchBasedOnForLLM,
-  PatchStringForLLM,
-  PatchStringArrayForLLM,
-  PatchCycleForLLM,
-  PatchQuizV1ForLLM,
-  PatchMisconceptionsForLLM,
-  PatchKeywordsForLLM,
-]);
-
 export const JsonPatchValueOptionalSchema = z.union([
   // These generate "add" and "replace" patches could potentially be
   // quite dangerous. Zod will validate anything you pass as a value
@@ -284,13 +222,9 @@ export const PatchDocumentSchema = z.object({
   status: z.string().optional(),
 });
 
-// This is the schema that we send when requesting Structured Outputs
-// From the LLM. We are limited to not having min, max and we also
-// have constraints about ensuring each object has a type attribute
-// as its first attribute in the definition.
-// Note, that unless/until we migrate all past messages we won't be
-// able to use this to validate the patches currently in the database
-// because they would be missing a "type" attribute.
+// This is the schema that we send when requesting Structured Outputs from the LLM.
+// Each object must have a "type" attribute as its first field for discriminated unions.
+// Note: Past messages in the database may be missing the "type" attribute.
 export const LLMPatchDocumentSchema = z.object({
   type: z.literal("patch"),
   reasoning: z.string(),
