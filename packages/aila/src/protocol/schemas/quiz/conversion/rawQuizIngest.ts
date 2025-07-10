@@ -86,6 +86,7 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
           question: "Invalid question",
           answers: ["N/A"],
           distractors: ["N/A"],
+          imageAttributions: [],
         };
       }
 
@@ -124,6 +125,7 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
             question: questionStem,
             answers: correctAnswers,
             distractors,
+            imageAttributions: allAttributions,
           };
         }
 
@@ -143,6 +145,7 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
             questionType: "short-answer" as const,
             question: questionStem,
             answers,
+            imageAttributions: allAttributions,
           };
         }
 
@@ -171,6 +174,7 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
             questionType: "match" as const,
             question: questionStem,
             pairs,
+            imageAttributions: attributions,
           };
         }
 
@@ -190,6 +194,7 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
             questionType: "order" as const,
             question: questionStem,
             items,
+            imageAttributions: allAttributions,
           };
         }
 
@@ -200,6 +205,7 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
             question: questionStem,
             answers: ["N/A"],
             distractors: ["N/A"],
+            imageAttributions: attributions,
           };
       }
     });

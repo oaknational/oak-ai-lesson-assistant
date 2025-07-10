@@ -74,10 +74,15 @@ describe("convertRawQuizToV2", () => {
       },
     ];
     const result = convertRawQuizToV2(quizWithImages);
-    // Image attributions are now embedded in the markdown content
     expect(result.questions[0]?.question).toContain(
       "![](https://example.com/image1.jpg)",
     );
+    expect(result.questions[0]?.imageAttributions).toEqual([
+      {
+        imageUrl: "https://example.com/image1.jpg",
+        attribution: "Photo by Photographer",
+      },
+    ]);
   });
 
   it("should convert images to markdown syntax", () => {
