@@ -11,6 +11,7 @@ exports[`convertRawQuizToV2 should convert raw quiz to V2 format 1`] = `
         "London",
         "Berlin",
       ],
+      "imageAttributions": [],
       "question": "What is the capital of France?",
       "questionType": "multiple-choice",
     },
@@ -20,6 +21,7 @@ exports[`convertRawQuizToV2 should convert raw quiz to V2 format 1`] = `
         "blue",
         "yellow",
       ],
+      "imageAttributions": [],
       "question": "Name a primary color",
       "questionType": "short-answer",
     },
@@ -30,10 +32,21 @@ exports[`convertRawQuizToV2 should convert raw quiz to V2 format 1`] = `
       "distractors": [
         "Cat ![](https://example.com/cat.jpg)",
       ],
+      "imageAttributions": [
+        {
+          "attribution": "Photo by John Doe on Unsplash",
+          "imageUrl": "https://example.com/dog.jpg",
+        },
+        {
+          "attribution": "Image © Example Inc",
+          "imageUrl": "https://example.com/cat.jpg",
+        },
+      ],
       "question": "Which animal is shown in the image? ![](https://example.com/dog.jpg)",
       "questionType": "multiple-choice",
     },
     {
+      "imageAttributions": [],
       "pairs": [
         {
           "left": "France",
@@ -48,6 +61,7 @@ exports[`convertRawQuizToV2 should convert raw quiz to V2 format 1`] = `
       "questionType": "match",
     },
     {
+      "imageAttributions": [],
       "items": [
         "1",
         "3",
