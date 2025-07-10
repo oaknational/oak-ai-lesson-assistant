@@ -26,7 +26,6 @@ export type AilaStreamingStatus =
   | "RequestMade"
   | "StreamingLessonPlan"
   | "StreamingChatResponse"
-  | "StreamingExperimentalPatches"
   | "Moderating"
   | "Idle";
 

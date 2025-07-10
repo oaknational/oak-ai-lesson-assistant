@@ -383,12 +383,7 @@ export const CompletedLessonPlanSchema = z.object({
 
 export type CompletedLessonPlan = z.infer<typeof CompletedLessonPlanSchema>;
 
-export const LessonPlanSchema = CompletedLessonPlanSchema.partial().extend({
-  _experimental_starterQuizMathsV0: QuizV1Schema.optional(),
-  _experimental_exitQuizMathsV0: QuizV1Schema.optional(),
-  _experimental_starterQuizMathsV1: rawQuizSchema.optional(),
-  _experimental_exitQuizMathsV1: rawQuizSchema.optional(),
-});
+export const LessonPlanSchema = CompletedLessonPlanSchema.partial();
 
 export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;
 

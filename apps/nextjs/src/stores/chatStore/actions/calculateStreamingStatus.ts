@@ -10,8 +10,6 @@ export function calculateStreamingStatus(
     return "RequestMade";
   } else if (currentMessageData.content.includes("MODERATION_START")) {
     return "Moderating";
-  } else if (currentMessageData.content.includes("experimentalPatch")) {
-    return "StreamingExperimentalPatches";
   } else if (
     currentMessageData.content.includes('"type":"prompt"') ||
     currentMessageData.content.includes('\\"type\\":\\"prompt\\"')
