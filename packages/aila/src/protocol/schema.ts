@@ -40,30 +40,27 @@ export const MISCONCEPTION_DESCRIPTIONS = {
 export const MISCONCEPTIONS_DESCRIPTION = {
   schema: dedent`
   A set of potential misconceptions which students might have about the content that is delivered in the lesson.
-  Written in the EXPERT_TEACHER voice.
-  ${minMaxText({ min: 1, max: 3, entity: "elements" })}`,
+  Written in the EXPERT_TEACHER voice.`,
 } as const as { schema: string };
 
-export const MisconceptionSchemaWithoutLength = z.object({
-  misconception: z.string().describe(MISCONCEPTION_DESCRIPTIONS.misconception),
-  description: z.string().describe(MISCONCEPTION_DESCRIPTIONS.description),
+export const MisconceptionSchema = z.object({
+  misconception: z.string().max(200).describe(MISCONCEPTION_DESCRIPTIONS.misconception),
+  description: z.string().max(250).describe(MISCONCEPTION_DESCRIPTIONS.description),
 });
 
-export const MisconceptionSchema = MisconceptionSchemaWithoutLength.extend({
-  description: MisconceptionSchemaWithoutLength.shape.description.max(250),
-});
-
-export const MisconceptionOptionalSchema =
-  MisconceptionSchemaWithoutLength.extend({
-    definition: z.string().optional(),
-  }).partial();
+export const MisconceptionOptionalSchema = MisconceptionSchema.extend({
+  definition: z.string().optional(),
+}).partial();
 
 export const MisconceptionsSchemaWithoutLength = z
-  .array(MisconceptionSchemaWithoutLength)
+  .array(MisconceptionSchema)
   .describe(MISCONCEPTIONS_DESCRIPTION.schema);
 
-export const MisconceptionsSchema =
-  MisconceptionsSchemaWithoutLength.min(1).max(3);
+export const MisconceptionsSchema = z
+  .array(MisconceptionSchema)
+  .min(1)
+  .max(3)
+  .describe(MISCONCEPTIONS_DESCRIPTION.schema);
 
 export const MisconceptionsOptionalSchema = z.array(
   MisconceptionOptionalSchema,
@@ -518,7 +515,7 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   learningCycles: LearningCyclesSchema,
   priorKnowledge: PriorKnowledgeSchema,
   keyLearningPoints: KeyLearningPointsSchema,
-  misconceptions: MisconceptionsSchemaWithoutLength,
+  misconceptions: MisconceptionsSchema,
   keywords: KeywordsSchemaWithoutLength,
   starterQuiz: QuizV1Schema.describe(
     LESSON_PLAN_DESCRIPTIONS.starterQuiz,
