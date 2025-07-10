@@ -77,10 +77,10 @@ ${additionalInstructions}`;
     result.output_parsed?.output?.success &&
     "value" in result.output_parsed.output
   ) {
-    const strictParseResult = agent.schema.safeParse(
+    const schemaValidation = agent.schema.safeParse(
       result.output_parsed.output.value,
     );
-    if (!strictParseResult.success) {
+    if (!schemaValidation.success) {
       /**
        * Retry logic in the case that the initial agent response is not valid.
        * The reason we need this is that structured output does not support
@@ -90,9 +90,9 @@ ${additionalInstructions}`;
         input +
         `\n\n### Note\nThis is a retry because the previous response was not valid. Your previous response output was: ${JSON.stringify(
           result.output_parsed.output.value,
-        )}, however the strict schema is: ${JSON.stringify(
+        )}, however the schema is: ${JSON.stringify(
           agent.schema,
-        )}; the error was ${JSON.stringify(strictParseResult.error.errors)} If the user's request is at odds with the schema, please respond with an internal message explaining the issue. Another agent will handle messaging to the user.`;
+        )}; the error was ${JSON.stringify(schemaValidation.error.errors)} If the user's request is at odds with the schema, please respond with an internal message explaining the issue. Another agent will handle messaging to the user.`;
       const retryResult = await openAIClient.responses.parse({
         instructions,
         input: inputWithRetryInstructions,
@@ -107,11 +107,11 @@ ${additionalInstructions}`;
         retryResult.output_parsed?.output?.success &&
         "value" in retryResult.output_parsed.output
       ) {
-        const strictParseRetryResult = agent.schema.safeParse(
+        const schemaValidationRetry = agent.schema.safeParse(
           retryResult.output_parsed.output?.value,
         );
 
-        if (!strictParseRetryResult.success) {
+        if (!schemaValidationRetry.success) {
           /**
            * If the retry also fails, we need to return the error message
            * from the first attempt and the second attempt.
@@ -119,15 +119,15 @@ ${additionalInstructions}`;
           return {
             success: false,
             error: `Agent response was not valid after retry. The first attempt error was ${JSON.stringify(
-              strictParseResult.error.errors,
+              schemaValidation.error.errors,
             )}, the second attempt error was ${JSON.stringify(
-              strictParseRetryResult.error.errors,
+              schemaValidationRetry.error.errors,
             )}`,
           };
         } else {
           return {
             success: true,
-            content: strictParseRetryResult.data,
+            content: schemaValidationRetry.data,
           };
         }
       } else {
@@ -151,7 +151,7 @@ ${additionalInstructions}`;
        */
       return {
         success: true,
-        content: strictParseResult.data,
+        content: schemaValidation.data,
       };
     }
   } else {
