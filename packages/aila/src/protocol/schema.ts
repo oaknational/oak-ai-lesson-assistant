@@ -54,7 +54,6 @@ export const MisconceptionOptionalSchema = MisconceptionSchema.extend({
   definition: z.string().optional(),
 }).partial();
 
-
 export const MisconceptionsSchema = z
   .array(MisconceptionSchema)
   .min(1)
@@ -107,7 +106,7 @@ export const EXPLANATION_DESCRIPTIONS = {
 export const ExplanationSchema = z
   .object({
     spokenExplanation: z
-      .union([z.string(), z.array(z.string())])
+      .union([z.string(), z.array(z.string()).min(1).max(5)])
       .describe(EXPLANATION_DESCRIPTIONS.spokenExplanation),
     accompanyingSlideDetails: z
       .string()
@@ -123,7 +122,6 @@ export const ExplanationOptionalSchema = ExplanationSchema.partial();
 export type ExplanationOptional = z.infer<typeof ExplanationOptionalSchema>;
 
 // ********** CHECK FOR UNDERSTANDING **********
-// When using Structured Outputs we cannot specify the length of arrays or strings
 export const CHECK_FOR_UNDERSTANDING_DESCRIPTIONS = {
   question: dedent`A multiple choice question to ask as a check to see if the students have understood the content of this cycle.
   Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
@@ -156,7 +154,7 @@ export const CheckForUnderstandingSchemaWithoutLength = z.object({
 });
 
 export const CheckForUnderstandingOptionalSchema =
-  CheckForUnderstandingSchema.partial();
+  CheckForUnderstandingSchemaWithoutLength.partial();
 
 // ********** CYCLE **********
 export const CYCLE_DESCRIPTIONS = {

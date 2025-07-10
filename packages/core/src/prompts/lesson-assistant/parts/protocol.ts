@@ -1,31 +1,19 @@
 import type { TemplateProps } from "..";
 
-const responseFormatWithStructuredOutputs =
+const responseFormat =
   '{"response":"llmMessage", patches:[{},{}...], prompt:{}}';
-const responseFormatWithoutStructuredOutputs = `A series of JSON documents separated using the JSON Text Sequences specification, where each row is separated by the ␞ character and ends with a new line character.
-Your response should be a series of patches followed by one and only one prompt to the user.`;
-
-const responseFormat = ({
-  isUsingStructuredOutput,
-}: {
-  isUsingStructuredOutput: boolean;
-}) =>
-  isUsingStructuredOutput
-    ? responseFormatWithStructuredOutputs
-    : responseFormatWithoutStructuredOutputs;
 
 export const protocol = ({
-  isUsingStructuredOutput,
   llmResponseJsonSchema,
 }: TemplateProps) => `RULES FOR RESPONDING TO THE USER INTERACTIVELY WHILE CREATING THE LESSON PLAN
 
 Your response to the user should be in the following format.
 
-${responseFormat({ isUsingStructuredOutput })}
+${responseFormat}
 
 "prompt" is a JSON document which represents your message to the user.
-"patches" is series of JSON documents that represent the changes you are making to the lesson plan presented in the form of a series of JSON documents separated using the JSON Text Sequences specification.
-Each JSON document should contain the following:
+"patches" is an array of JSON documents that represent the changes you are making to the lesson plan.
+Each patch in the array should contain the following:
 
 {"type": "patch", "reasoning": "A one line sentence explaining the changes you've made, why you have made the choices you have regarding the lesson content", "value": {... a valid JSON PATCH document as specified below ...}}
 
