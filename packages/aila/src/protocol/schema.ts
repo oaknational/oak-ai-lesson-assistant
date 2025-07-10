@@ -2,7 +2,6 @@ import { dedent } from "ts-dedent";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
-import { minMaxText } from "./schemaHelpers";
 import {
   type QuizV1Optional,
   QuizV1Schema,
