@@ -11,7 +11,6 @@ import {
   interactingWithTheUser,
   protocol,
   rag,
-  schema,
   signOff,
   task,
 } from "./parts";
@@ -30,7 +29,6 @@ export interface TemplateProps {
   americanisms?: object[];
   lessonPlanJsonSchema: string;
   llmResponseJsonSchema: string;
-  isUsingStructuredOutput: boolean;
 }
 
 type TemplatePart = (props: TemplateProps) => string;
@@ -70,7 +68,6 @@ export const getPromptParts = (props: TemplateProps): TemplatePart[] => {
     props.baseLessonPlan ? basedOn : undefined,
     americanToBritishSection,
     languageAndVoice,
-    props.isUsingStructuredOutput ? undefined : schema,
     response,
     props.responseMode === "interactive" ? promptingTheUser : undefined,
     signOff,

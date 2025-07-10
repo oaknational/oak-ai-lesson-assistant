@@ -58,8 +58,6 @@ export const generateVariants = (): OakPromptVariant[] => {
         lessonPlanJsonSchema: "<lessonPlanJsonSchema>",
         llmResponseJsonSchema: "<llmResponseJsonSchema>",
         lessonPlan: {},
-        isUsingStructuredOutput:
-          process.env.NEXT_PUBLIC_STRUCTURED_OUTPUTS_ENABLED === "true",
       },
       slug,
     );
