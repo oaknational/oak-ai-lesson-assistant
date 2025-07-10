@@ -14,10 +14,7 @@ import { examplesFromSimilarLessons } from "./prompts/shared/examplesFromSimilar
 
 const log = aiLogger("aila:agents:prompts");
 
-export async function promptAgentHandler<
-  Schema extends z.ZodSchema,
-  SchemaStrict extends z.ZodSchema,
->({
+export async function promptAgentHandler<Schema extends z.ZodSchema>({
   agent,
   document,
   additionalInstructions,
@@ -26,7 +23,7 @@ export async function promptAgentHandler<
   userId,
   ragData,
 }: {
-  agent: PromptAgentDefinition<Schema, SchemaStrict>;
+  agent: PromptAgentDefinition<Schema>;
   document: LooseLessonPlan;
   targetKey: LessonPlanKey;
   additionalInstructions: string;
@@ -34,7 +31,7 @@ export async function promptAgentHandler<
   userId: string;
   ragData: CompletedLessonPlan[];
 }): Promise<
-  | { success: true; content: z.infer<SchemaStrict> }
+  | { success: true; content: z.infer<Schema> }
   | { success: false; error: string }
 > {
   const openAIClient = createOpenAIClient({
@@ -46,7 +43,7 @@ export async function promptAgentHandler<
   });
   const schema = z.object({
     output: z.union([
-      z.object({ success: z.literal(true), value: agent.schemaForLLM }),
+      z.object({ success: z.literal(true), value: agent.schema }),
       z.object({ success: z.literal(false), error: z.string() }),
     ]),
   });
@@ -80,7 +77,7 @@ ${additionalInstructions}`;
     result.output_parsed?.output?.success &&
     "value" in result.output_parsed.output
   ) {
-    const strictParseResult = agent.schemaStrict.safeParse(
+    const strictParseResult = agent.schema.safeParse(
       result.output_parsed.output.value,
     );
     if (!strictParseResult.success) {
@@ -94,7 +91,7 @@ ${additionalInstructions}`;
         `\n\n### Note\nThis is a retry because the previous response was not valid. Your previous response output was: ${JSON.stringify(
           result.output_parsed.output.value,
         )}, however the strict schema is: ${JSON.stringify(
-          agent.schemaStrict,
+          agent.schema,
         )}; the error was ${JSON.stringify(strictParseResult.error.errors)} If the user's request is at odds with the schema, please respond with an internal message explaining the issue. Another agent will handle messaging to the user.`;
       const retryResult = await openAIClient.responses.parse({
         instructions,
@@ -110,7 +107,7 @@ ${additionalInstructions}`;
         retryResult.output_parsed?.output?.success &&
         "value" in retryResult.output_parsed.output
       ) {
-        const strictParseRetryResult = agent.schemaStrict.safeParse(
+        const strictParseRetryResult = agent.schema.safeParse(
           retryResult.output_parsed.output?.value,
         );
 
