@@ -42,18 +42,8 @@ export const PatchString = z.object({
 // When using Structured Outputs we must include a "type" attribute as the first
 // attribute in the object, otherwise it results in an error when generating the
 // JSON Schema
-export const PatchStringForLLM = z.object({
+export const PatchStringForLLM = PatchString.extend({
   type: z.literal("string"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.union([
-    z.literal("/title"),
-    z.literal("/keyStage"),
-    z.literal("/topic"),
-    z.literal("/subject"),
-    z.literal("/additionalMaterials"),
-    z.literal("/learningOutcome"),
-  ]),
-  value: z.string(),
 });
 
 export const PatchStringArray = z.object({
@@ -69,15 +59,8 @@ export const PatchStringArray = z.object({
 // When using Structured Outputs we must include a "type" attribute as the first
 // attribute in the object, otherwise it results in an error when generating the
 // JSON Schema
-export const PatchStringArrayForLLM = z.object({
+export const PatchStringArrayForLLM = PatchStringArray.extend({
   type: z.literal("string-array"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.union([
-    z.literal("/priorKnowledge"),
-    z.literal("/learningCycles"),
-    z.literal("/keyLearningPoints"),
-  ]),
-  value: z.array(z.string()),
 });
 
 export const PatchCycleOptional = z.object({
@@ -101,14 +84,8 @@ export const PatchCycle = z.object({
 });
 
 // ForLLM schemas include a "type" field for discriminated unions in Structured Outputs
-export const PatchCycleForLLM = z.object({
+export const PatchCycleForLLM = PatchCycle.extend({
   type: z.literal("cycle"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.union([
-    z.literal("/cycle1"),
-    z.literal("/cycle2"),
-    z.literal("/cycle3"),
-  ]),
   value: CycleSchema.describe(
     "This is the definition of the learning cycle that you are proposing. You MUST include this definition for the patch to be valid. It should never be just an empty object {}.",
   ),
@@ -127,11 +104,8 @@ export const PatchQuizV1 = z.object({
 });
 
 // ForLLM schemas include a "type" field for discriminated unions in Structured Outputs
-export const PatchQuizV1ForLLM = z.object({
+export const PatchQuizV1ForLLM = PatchQuizV1.extend({
   type: z.literal("quizV1"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
-  value: QuizV1Schema,
 });
 
 export const PatchBasedOnOptional = z.object({
@@ -147,11 +121,8 @@ export const PatchBasedOn = z.object({
 });
 
 // ForLLM schemas include a "type" field for discriminated unions in Structured Outputs
-export const PatchBasedOnForLLM = z.object({
+export const PatchBasedOnForLLM = PatchBasedOn.extend({
   type: z.literal("basedOn"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.literal("/basedOn"),
-  value: BasedOnSchema,
 });
 
 export const PatchMisconceptionsOptional = z.object({
@@ -167,11 +138,8 @@ export const PatchMisconceptions = z.object({
 });
 
 // ForLLM schemas include a "type" field for discriminated unions in Structured Outputs
-export const PatchMisconceptionsForLLM = z.object({
+export const PatchMisconceptionsForLLM = PatchMisconceptions.extend({
   type: z.literal("misconceptions"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.literal("/misconceptions"),
-  value: MisconceptionsSchema,
 });
 
 export const PatchKeywordsOptional = z.object({
@@ -187,11 +155,8 @@ export const PatchKeywords = z.object({
 });
 
 // ForLLM schemas include a "type" field for discriminated unions in Structured Outputs
-export const PatchKeywordsForLLM = z.object({
+export const PatchKeywordsForLLM = PatchKeywords.extend({
   type: z.literal("keywords"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.literal("/keywords"),
-  value: KeywordsSchema,
 });
 
 export const JsonPatchRemoveSchema = z.object({
@@ -200,10 +165,8 @@ export const JsonPatchRemoveSchema = z.object({
 });
 
 // ForLLM schemas include a "type" field for discriminated unions in Structured Outputs
-export const JsonPatchRemoveSchemaForLLM = z.object({
+export const JsonPatchRemoveSchemaForLLM = JsonPatchRemoveSchema.extend({
   type: z.literal("remove"),
-  op: z.literal("remove"),
-  path: z.string(),
 });
 
 // Potentially remove this once stable
