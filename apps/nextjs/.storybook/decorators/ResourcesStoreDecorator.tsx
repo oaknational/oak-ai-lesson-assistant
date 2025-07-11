@@ -45,7 +45,7 @@ export const ResourcesStoreDecorator: Decorator = (Story, { parameters }) => {
     };
 
     // Create the store with merged initial values from parameters
-    const resourcesStore = createResourcesStore(trackEvents, {
+    const resourcesStore = createResourcesStore({}, trackEvents, {
       ...defaultState,
       ...parameters.resourcesStoreState,
     });
