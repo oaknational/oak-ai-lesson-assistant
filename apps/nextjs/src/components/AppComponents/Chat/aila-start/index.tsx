@@ -107,6 +107,7 @@ export function AilaStart() {
                   <OakPrimaryButton
                     element={Link}
                     href={getAilaUrl("teaching-materials")}
+                    data-testid={"create-teaching-materials-button"}
                     iconName="arrow-right"
                     isTrailingIcon={true}
                     onClick={() => {

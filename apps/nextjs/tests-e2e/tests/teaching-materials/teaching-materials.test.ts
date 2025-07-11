@@ -98,14 +98,14 @@ test.describe("Teaching Materials", () => {
 
       await test.step("Setup", async () => {
         await bypassVercelProtection(page);
-        await page.goto(`${TEST_BASE_URL}/aila/tools`);
+        await page.goto(`${TEST_BASE_URL}/aila`);
       });
 
       await applyTeachingMaterialsFixtures(page);
 
       await test.step("Navigate to teaching materials", async () => {
         await page.getByTestId("create-teaching-materials-button").click();
-        await expect(page).toHaveURL(/\/aila\/tools\/teaching-materials/);
+        await expect(page).toHaveURL(/\/aila\/teaching-materials/);
       });
 
       await test.step("Step 1: Select material type", async () => {
@@ -170,7 +170,7 @@ test.describe("Teaching Materials", () => {
     async ({ page }) => {
       await test.step("Setup", async () => {
         await bypassVercelProtection(page);
-        await page.goto(`${TEST_BASE_URL}/aila/tools/teaching-materials`);
+        await page.goto(`${TEST_BASE_URL}/aila/teaching-materials`);
       });
 
       await test.step("Test validation on empty form", async () => {
