@@ -3,7 +3,7 @@ import { lessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/s
 
 import { string, z } from "zod";
 
-import type { TeachingMaterialsPageProps } from "@/app/aila/tools/teaching-materials/teachingMaterialsView";
+import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
 import { handleStoreError } from "../utils/errorHandling";
