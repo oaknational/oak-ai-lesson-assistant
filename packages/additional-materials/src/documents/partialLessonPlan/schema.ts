@@ -28,6 +28,7 @@ export const lessonFieldKeys = [
   "cycle2",
   "cycle3",
   "exitQuiz",
+  "transcript",
 ] as const;
 
 export const partialLessonPlanFieldKeys = z.enum(lessonFieldKeys);

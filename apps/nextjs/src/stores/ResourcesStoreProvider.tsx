@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react";
 
 import { type ExtractState, type StoreApi, useStore } from "zustand";
 
-import type { TeachingMaterialsPageProps } from "@/app/aila/tools/teaching-materials/teachingMaterialsView";
+import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 
 import { createResourcesStore } from "./resourcesStore";

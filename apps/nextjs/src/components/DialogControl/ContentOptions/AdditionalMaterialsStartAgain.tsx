@@ -66,6 +66,16 @@ const AdditionalMaterialsStartAgain = ({
         >
           Yes, I want to start again
         </OakPrimaryButton>
+        <OakPrimaryButton
+          iconName="chevron-right"
+          isTrailingIcon
+          onClick={() => {
+            resetToDefault();
+            closeDialog();
+          }}
+        >
+          Create a different teaching material based on this lesson
+        </OakPrimaryButton>
         <OakSecondaryLink
           element="button"
           aria-label={`Back to ${docTypeDisplayName}`}

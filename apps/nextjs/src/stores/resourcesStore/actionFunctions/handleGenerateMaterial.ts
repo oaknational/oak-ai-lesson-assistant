@@ -1,5 +1,6 @@
 import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { GenerateAdditionalMaterialInput } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import type { GenerateAdditionalMaterialResponse } from "@oakai/api/src/router/additionalMaterials/generateAdditionalMaterial";
 import { aiLogger } from "@oakai/logger";
 
@@ -65,6 +66,7 @@ export const handleGenerateMaterial =
         },
         resourceId: get().id, // Use existing resourceId
         lessonId: get().pageData.lessonPlan.lessonId,
+        source: get().source,
       });
       get().actions.setIsResourcesLoading(false);
 

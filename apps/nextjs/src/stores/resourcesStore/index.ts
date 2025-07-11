@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import type { TeachingMaterialsPageProps } from "@/app/aila/tools/teaching-materials/teachingMaterialsView";
+import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";
 import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 
 import { logStoreUpdates } from "../zustandHelpers";

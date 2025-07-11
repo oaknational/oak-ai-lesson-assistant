@@ -4,6 +4,7 @@ import { LessonPlanSchema } from "../../../../aila/src/protocol/schema";
 
 export const lessonPlanSchemaTeachingMaterials = LessonPlanSchema.extend({
   year: z.string().optional(),
+  transcript: z.string().optional(),
 });
 export type LessonPlanSchemaTeachingMaterials = z.infer<
   typeof lessonPlanSchemaTeachingMaterials

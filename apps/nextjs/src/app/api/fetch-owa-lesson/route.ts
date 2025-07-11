@@ -160,8 +160,11 @@ export async function POST(req: Request, res: NextApiResponse) {
       const lessonId = interaction.id;
       return Response.json(
         {
-          lesson: { ...transformedLesson, lessonId },
-          transcript: lessonData?.transcript_sentences,
+          lesson: {
+            ...transformedLesson,
+            lessonId,
+            transcript: lessonData?.transcript_sentences,
+          },
         },
         { status: 200 },
       );

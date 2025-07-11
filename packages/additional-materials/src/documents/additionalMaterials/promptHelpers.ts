@@ -141,6 +141,11 @@ export const getLessonDetails = (
     lines.push("");
   }
 
+  if (lessonPlan.transcript) {
+    lines.push("**Transcript**:");
+    lines.push(lessonPlan.transcript);
+  }
+  console.log(lines);
   return lines.join("\n");
 };
 
