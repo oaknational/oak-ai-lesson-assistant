@@ -4,10 +4,6 @@ import {
   additionalMaterialTypeEnum,
   additionalMaterialsConfigMap,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import {
-  oakOpenAiLessonSummarySchema,
-  oakOpenAiTranscriptSchema,
-} from "@oakai/additional-materials/src/schemas/oakOpenApi";
 import type {
   AilaPersistedChat,
   LooseLessonPlan,
@@ -84,45 +80,6 @@ export async function getSharedChatById(
 
   return chat;
 }
-
-export const getOakOpenAiLessonData = async (lessonSlug: string) => {
-  if (!OPENAI_AUTH_TOKEN) {
-    throw new Error("No OpenAI auth token found");
-  }
-  const [summaryRes, transcriptRes] = await Promise.all([
-    fetch(
-      `https://open-api.thenational.academy/api/v0/lessons/${lessonSlug}/summary`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${OPENAI_AUTH_TOKEN}`,
-          Accept: "application/json",
-        },
-      },
-    ),
-    fetch(
-      `https://open-api.thenational.academy/api/v0/lessons/${lessonSlug}/transcript`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${OPENAI_AUTH_TOKEN}`,
-          Accept: "application/json",
-        },
-      },
-    ),
-  ]);
-  const summaryData = oakOpenAiLessonSummarySchema.parse(
-    await summaryRes.json(),
-  );
-  const transcriptData = oakOpenAiTranscriptSchema.parse(
-    await transcriptRes.json(),
-  );
-
-  return {
-    lessonSummary: summaryData,
-    lessonTranscript: transcriptData,
-  };
-};
 
 export const createTeachingMaterialInteraction = async (
   input: { documentType: string },
