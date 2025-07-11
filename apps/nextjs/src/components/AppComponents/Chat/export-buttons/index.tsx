@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { useDialog } from "../../DialogContext";
 import { LessonPlanProgressDropdown } from "./LessonPlanProgressDropdown";
@@ -46,7 +47,11 @@ const ExportButtons = () => {
               element={!isStreaming ? Link : "button"}
               disabled={isStreaming}
               data-testid="chat-download-resources"
-              href={demo.isSharingEnabled ? `/aila/download/${id}` : "#"}
+              href={
+                demo.isSharingEnabled
+                  ? `${getAilaUrl("lesson")}/${id}/download`
+                  : "#"
+              }
               title={demo.isSharingEnabled ? undefined : "Not available"}
               onClick={() => {
                 trackEvent("chat:open_chat_actions", {

@@ -9,8 +9,8 @@ import { OakSmallPrimaryButton } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/react";
 import Link from "next/link";
 
-import LessonPlanMapToMarkDown from "@/components/AppComponents/Chat/chat-lessonPlanMapToMarkDown";
 import { GuidanceRequired } from "@/components/AppComponents/Chat/guidance-required";
+import StaticLessonPlanRenderer from "@/components/AppComponents/static-lesson-plan-renderer";
 import { Icon } from "@/components/Icon";
 import { Logo } from "@/components/Logo";
 import { OakMathJaxContext } from "@/components/MathJax";
@@ -101,7 +101,7 @@ export default function ShareChat({
           className="mb-14 border-b pb-14"
         >
           <OakMathJaxContext>
-            <LessonPlanMapToMarkDown lessonPlan={lessonPlan} />
+            <StaticLessonPlanRenderer lessonPlan={lessonPlan} />
           </OakMathJaxContext>
         </div>
       </div>

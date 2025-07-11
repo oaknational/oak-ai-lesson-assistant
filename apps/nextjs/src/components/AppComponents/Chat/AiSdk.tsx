@@ -94,7 +94,7 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
         toast.error(response.statusText);
       }
       if (!path?.includes("chat/[id]")) {
-        window.history.pushState({}, "", `/aila/${id}`);
+        window.history.pushState({}, "", `/aila/lesson/${id}`);
       }
     },
     onFinish(response) {
