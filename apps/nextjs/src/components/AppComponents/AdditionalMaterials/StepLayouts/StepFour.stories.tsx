@@ -749,7 +749,7 @@ export const RefiningState: Story = {
       refinementGenerationHistory: [
         {
           year: "Year 4",
-          subject: "Mathematics", 
+          subject: "Mathematics",
           title: "Introduction to Fractions - Starter Quiz (Original)",
           questions: [
             {
@@ -967,7 +967,7 @@ export const WithRefinementHistory: Story = {
       refinementGenerationHistory: [
         {
           year: "Year 4",
-          subject: "Mathematics", 
+          subject: "Mathematics",
           title: "Introduction to Fractions - Starter Quiz (First Refinement)",
           questions: [
             {
