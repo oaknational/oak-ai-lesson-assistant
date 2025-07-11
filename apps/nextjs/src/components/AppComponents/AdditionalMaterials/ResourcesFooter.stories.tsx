@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from "@storybook/react";
-
 import { OakP } from "@oaknational/oak-components";
+import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
 

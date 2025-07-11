@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
+import TeachingMaterialsLayout from "@/components/ResourcesLayout";
 import { chromaticParams } from "@/storybook/chromatic";
 import { DialogContentDecorator } from "@/storybook/decorators/DialogContentDecorator";
 import { TeachingMaterialsStoreDecorator } from "@/storybook/decorators/TeachingMaterialsStoreDecorator";
-import TeachingMaterialsLayout from "@/components/ResourcesLayout";
 
 import StepTwo from "./StepTwo";
 
