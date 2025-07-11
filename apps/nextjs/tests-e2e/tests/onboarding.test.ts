@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { getAilaUrl } from "@/utils/getAilaUrl";
+
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
 import { bypassVercelProtection } from "../helpers/vercel";
@@ -8,7 +10,7 @@ test("Landing on the site when not onboarded", async ({ page }) => {
   await test.step("Setup", async () => {
     await bypassVercelProtection(page);
     await prepareUser(page, "needs-onboarding");
-    await page.goto(`${TEST_BASE_URL}/aila`);
+    await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
 
     await page.waitForURL(`${TEST_BASE_URL}/onboarding`);
     await expect(
@@ -40,7 +42,7 @@ test("Onboarded without a demo status", async ({ page }) => {
   await test.step("Setup", async () => {
     await bypassVercelProtection(page);
     await prepareUser(page, "needs-demo-status");
-    await page.goto(`${TEST_BASE_URL}/aila`);
+    await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
 
     await page.waitForURL(`${TEST_BASE_URL}/onboarding`);
     await expect(page.getByText("Preparing your account")).toBeVisible();

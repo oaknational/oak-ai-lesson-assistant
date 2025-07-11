@@ -26,9 +26,10 @@ const AdditionalMaterialsError = ({
       $width="100%"
       $height="100%"
       $flexDirection="column"
-      $justifyContent="space-between"
+      $justifyContent="center"
+      $gap={"space-between-m2"}
     >
-      <OakP $font="body-2" $mb={"space-between-xl"}>
+      <OakP $textAlign={"center"} $font="body-2">
         {`An error occurred while generating your ${docTypeDisplayName}.`}
       </OakP>
       <OakFlex
@@ -36,7 +37,7 @@ const AdditionalMaterialsError = ({
         $flexDirection={"column"}
         $justifyContent={"center"}
         $alignItems={"center"}
-        $gap={"space-between-m"}
+        $mb={"space-between-m"}
       >
         <OakPrimaryButton
           iconName="chevron-right"

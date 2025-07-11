@@ -9,8 +9,8 @@ export const aiTools: {
   description: string;
 }[] = [
   {
-    title: "Aila - AI lesson assistant",
-    href: "/aila",
+    title: "Create with AI",
+    href: "/aila/tools",
     id: "lesson-planner",
     image: oakSupporting,
     behindFeatureFlag: true,

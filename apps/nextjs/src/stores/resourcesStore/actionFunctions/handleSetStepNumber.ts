@@ -13,6 +13,8 @@ export const handleSetStepNumber =
 
     log.info("Setting step number", { step, currentStep });
 
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
     if (
       (componentType === "continue_button" ||
         componentType === "back_a_step_button") &&

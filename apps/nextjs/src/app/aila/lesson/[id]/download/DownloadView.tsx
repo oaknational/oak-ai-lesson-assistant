@@ -13,6 +13,7 @@ import Button from "@/components/Button";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import { Icon } from "@/components/Icon";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { SurveyDialogLauncher } from "./SurveyDialogLauncher";
 import { useDownloadView } from "./useDownloadView";
@@ -50,7 +51,7 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
           <Box className="w-full">
             <Button
               variant="text-link"
-              href={`/aila/${chat.id}`}
+              href={`${getAilaUrl("lesson")}/${chat.id}`}
               icon="chevron-left"
               iconPosition="leading"
               size="sm"

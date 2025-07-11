@@ -20,11 +20,15 @@ const Main = ({
       as="main"
       $position={"relative"}
       $ph="inner-padding-m"
-      $mt="space-between-xxl"
       $pt="inner-padding-xl7"
       $background={backgroundColor ?? "transparent"}
+      $overflowX={["hidden", "hidden", "visible"]}
     >
-      {defaultMaxWidth ? <OakMaxWidth>{children}</OakMaxWidth> : children}
+      {defaultMaxWidth ? (
+        <OakMaxWidth $mt="space-between-xxl">{children}</OakMaxWidth>
+      ) : (
+        children
+      )}
     </OakBox>
   );
 };

@@ -22,7 +22,7 @@ import { DemoBanner } from "./demo-banner";
 import { OpenSideBarButton } from "./open-side-bar-button";
 import { UserOrLogin } from "./user-or-login";
 
-export function Header() {
+export function Header({ page }: { page?: "teachingMaterials" | "aila" }) {
   const { isDemoUser, demo } = useDemoUser();
 
   // Check whether clerk metadata has loaded to prevent the banner from flashing
@@ -37,11 +37,15 @@ export function Header() {
       $zIndex={"banner"}
       $width={"100%"}
     >
-      {clerkMetadata.isSet && isDemoUser && (
+      {clerkMetadata.isSet && isDemoUser && page && (
         <DemoBanner
-          resourceType="lessons"
+          page={page}
           monthlyLimit={demo.appSessionsPerMonth}
-          remaining={demo.appSessionsRemaining}
+          remaining={
+            page == "teachingMaterials"
+              ? demo.additionalMaterialsSessionsRemaining
+              : demo.appSessionsRemaining
+          }
           contactHref={demo.contactHref}
         />
       )}
