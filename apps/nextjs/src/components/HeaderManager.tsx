@@ -5,12 +5,12 @@ import { useState } from "react";
 import Header from "./Header";
 import MainNavigation from "./MainNavigation";
 
-const HeaderManager = () => {
+const HeaderManager = ({ page }: { page?: "teachingMaterials" | "aila" }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
-      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <Header page={page} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MainNavigation menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
     </>
   );

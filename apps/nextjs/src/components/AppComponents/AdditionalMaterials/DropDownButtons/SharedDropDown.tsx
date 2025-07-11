@@ -1,6 +1,12 @@
 import { useState } from "react";
 
-import { OakSmallSecondaryButton } from "@oaknational/oak-components";
+import {
+  OakBox,
+  OakFlex,
+  OakP,
+  OakSmallSecondaryButton,
+  OakTextInput,
+} from "@oaknational/oak-components";
 
 import { useOutsideClick } from "@/components/hooks/useOutsideClick";
 
@@ -37,7 +43,7 @@ export const SharedDropDown = ({
   });
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <OakBox $position="relative" ref={dropdownRef}>
       <DropDownButton
         onClick={() =>
           setActiveDropdown(
@@ -67,39 +73,46 @@ export const SharedDropDown = ({
             ))}
 
           {selectedValue === "Other" && (
-            <div className="p-10">
-              <input
-                type="text"
+            <OakBox $pa="inner-padding-s">
+              <OakTextInput
                 value={customValue}
                 onChange={(e) => {
                   setCustomValue(e.target.value);
                 }}
-                className="border-black-2 w-full rounded-md border-2 border-black p-7"
                 placeholder={customPlaceholder}
+                style={{ width: "100%" }}
               />
-              {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-              <OakSmallSecondaryButton
-                onClick={() => {
-                  if (dropdownType === "years" && !/^\d*$/.test(customValue)) {
-                    setErrorMessage("Please enter a valid number.");
-                    return;
-                  }
-                  setErrorMessage("");
-                  setSelectedValue(
-                    dropdownType === "years"
-                      ? `Year ${customValue}`
-                      : customValue,
-                  );
-                  setActiveDropdown(null);
-                }}
-                $mt="space-between-s"
-              >
-                Confirm
-              </OakSmallSecondaryButton>
-            </div>
+              {errorMessage && (
+                <OakP $color="red" $font="body-3" $mt="space-between-xs">
+                  {errorMessage}
+                </OakP>
+              )}
+              <OakFlex $mt="space-between-s" $justifyContent="flex-end">
+                <OakSmallSecondaryButton
+                  onClick={() => {
+                    if (
+                      dropdownType === "years" &&
+                      !/^\d*$/.test(customValue)
+                    ) {
+                      setErrorMessage("Please enter a valid number.");
+                      return;
+                    }
+                    setErrorMessage("");
+                    setSelectedValue(
+                      dropdownType === "years"
+                        ? `Year ${customValue}`
+                        : customValue,
+                    );
+                    setActiveDropdown(null);
+                  }}
+                >
+                  Confirm
+                </OakSmallSecondaryButton>
+              </OakFlex>
+            </OakBox>
           )}
         </DropDownWrapper>
       )}
-    </div>
+    </OakBox>
   );
 };

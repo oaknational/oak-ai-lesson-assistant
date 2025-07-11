@@ -109,9 +109,40 @@ const getConfig = async (phase) => {
           permanent: true,
         },
         {
+          source: "/aila/:id/share",
+          destination: "/aila/lesson/:id/share",
+          permanent: true,
+        },
+        {
           source: "/aila/download/:id",
           destination: "/aila/:id/download",
           permanent: true,
+        },
+        {
+          source: "/aila/:id/download",
+          destination: "/aila/lesson/:id/download",
+          permanent: true,
+        },
+
+        // // This is for the link from OWA search results to AILA lessons, can be removed when we update the OWA link
+        // // Redirect /aila to /aila/lesson if ANY of keyStage, subject, or searchExpression are present as query params
+        {
+          source: "/aila",
+          destination: "/aila/lesson",
+          permanent: true,
+          has: [{ type: "query", key: "keyStage" }],
+        },
+        {
+          source: "/aila",
+          destination: "/aila/lesson",
+          permanent: true,
+          has: [{ type: "query", key: "subject" }],
+        },
+        {
+          source: "/aila",
+          destination: "/aila/lesson",
+          permanent: true,
+          has: [{ type: "query", key: "searchExpression" }],
         },
       ];
     },

@@ -14,7 +14,7 @@ const ChatPageContents = ({ id }: { readonly id: string }) => {
   useReactScan({ component: LessonPlanDisplay, interval: 10000 });
 
   return (
-    <Layout>
+    <Layout page="aila">
       <OakMathJaxContext>
         <AilaStoresProvider id={id}>
           <AiSdk id={id} />

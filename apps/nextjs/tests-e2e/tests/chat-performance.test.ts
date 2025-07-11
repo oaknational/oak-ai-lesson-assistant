@@ -1,5 +1,7 @@
 import { type Page, expect, test } from "@playwright/test";
 
+import { getAilaUrl } from "@/utils/getAilaUrl";
+
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
 import { cspSafeWaitForFunction } from "../helpers/auth/clerkHelpers";
@@ -22,7 +24,9 @@ test.describe("Component renders during lesson chat", () => {
       await bypassVercelProtection(page);
       const login = await prepareUser(page, "typical");
 
-      await page.goto(`${TEST_BASE_URL}/aila/${login.chatId}`);
+      await page.goto(
+        `${TEST_BASE_URL}${getAilaUrl("lesson")}/${login.chatId}`,
+      );
       await isFinished(page);
     });
   });

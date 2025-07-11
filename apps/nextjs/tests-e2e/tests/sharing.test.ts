@@ -1,6 +1,8 @@
 import type { Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+import { getAilaUrl } from "@/utils/getAilaUrl";
+
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
 import { bypassVercelProtection } from "../helpers/vercel";
@@ -35,7 +37,7 @@ test("sharing a lesson", async ({ page, context, browser }) => {
     await bypassVercelProtection(context);
     const login = await prepareUser(page, "sharing-chat");
 
-    await page.goto(`${TEST_BASE_URL}/aila/${login.chatId}`);
+    await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}/${login.chatId}`);
     await isFinished(page);
     return login.chatId;
   });
@@ -46,7 +48,9 @@ test("sharing a lesson", async ({ page, context, browser }) => {
 
     const anonymousPage = await context.newPage();
     await bypassVercelProtection(anonymousPage);
-    await anonymousPage.goto(`${TEST_BASE_URL}/aila/${chatId}/share`);
+    await anonymousPage.goto(
+      `${TEST_BASE_URL}${getAilaUrl("lesson")}/${chatId}/share`,
+    );
 
     const title = anonymousPage.locator("h1");
     await expect(title).toHaveText("404: Page not found");
@@ -73,7 +77,9 @@ test("sharing a lesson", async ({ page, context, browser }) => {
   });
 
   await test.step("Share page", async () => {
-    await sharePage.waitForURL(`${TEST_BASE_URL}/aila/${chatId}/share`);
+    await sharePage.waitForURL(
+      `${TEST_BASE_URL}${getAilaUrl("lesson")}/${chatId}/share`,
+    );
     await checkPage(sharePage);
   });
 
@@ -83,7 +89,9 @@ test("sharing a lesson", async ({ page, context, browser }) => {
 
     const anonymousPage = await context.newPage();
     await bypassVercelProtection(anonymousPage);
-    await anonymousPage.goto(`${TEST_BASE_URL}/aila/${chatId}/share`);
+    await anonymousPage.goto(
+      `${TEST_BASE_URL}${getAilaUrl("lesson")}/${chatId}/share`,
+    );
 
     await checkPage(anonymousPage);
 

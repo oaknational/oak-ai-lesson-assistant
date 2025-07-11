@@ -43,7 +43,7 @@ const publicRoutes = [
   /**
    * Only Lessons shared by the creator are available at this endpoint
    */
-  "/aila/:chatId/share",
+  "/aila/lesson/:chatId/share",
   "/",
   "/faqs",
   "/legal/(.*)",

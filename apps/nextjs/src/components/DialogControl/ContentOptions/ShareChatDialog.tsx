@@ -15,6 +15,7 @@ import type { DialogTypes } from "@/components/AppComponents/Chat/Chat/types";
 import LoadingWheel from "@/components/LoadingWheel";
 import { getLessonTrackingProps } from "@/lib/analytics/helpers";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 import { trpc } from "@/utils/trpc";
 
 import ModalFooterButtons from "./ModalFooterButtons";
@@ -65,7 +66,7 @@ const ShareChat = ({
       return (
         <OakPrimaryButton
           element={Link}
-          href={`/aila/${chatId}/share`}
+          href={`${getAilaUrl("lesson")}/${chatId}/share`}
           target="_blank"
           iconName="external"
           isTrailingIcon={true}

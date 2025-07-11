@@ -65,3 +65,4 @@ yarn-error.log*
 
 # Local values used in CLAUDE.md
 .claude/env.local.json
+.claude/prompts

@@ -1,5 +1,7 @@
 import { type Page, expect, test } from "@playwright/test";
 
+import { getAilaUrl } from "@/utils/getAilaUrl";
+
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
 import { bypassVercelProtection } from "../helpers/vercel";
@@ -16,7 +18,9 @@ test.describe("Modify a lesson plan", () => {
     await test.step("Setup", async () => {
       await bypassVercelProtection(page);
       const login = await prepareUser(page, "modify-lesson-plan");
-      await page.goto(`${TEST_BASE_URL}/aila/${login.chatId}`);
+      await page.goto(
+        `${TEST_BASE_URL}${getAilaUrl("lesson")}/${login.chatId}`,
+      );
       await isFinished(page);
     });
   });

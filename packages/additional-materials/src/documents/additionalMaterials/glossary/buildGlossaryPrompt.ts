@@ -1,9 +1,6 @@
 import type { ContextByMaterialType } from "../configSchema";
 import { getLessonDetails, language } from "../promptHelpers";
-import {
-  type AllowedReadingAgeRefinement,
-  readingAgeRefinementMap,
-} from "./schema";
+import { refinementMap } from "../refinement/schema";
 
 export const buildGlossaryPrompt = (
   context: ContextByMaterialType["additional-glossary"],
@@ -26,13 +23,17 @@ const refineGlossaryPrompt = (
   context: ContextByMaterialType["additional-glossary"],
 ) => {
   const { lessonPlan, previousOutput } = context;
+  const userRequest = context.refinement
+    ?.map((r) => (r.type === "custom" ? r.payload : refinementMap[r.type]))
+    .join("\n");
+
   return `Modify the following glossary based on user feedback.
   
   **Previous Output**:  
   ${JSON.stringify(previousOutput, null, 2)}
   
   **User Request**:  
-  ${context.refinement && context.refinement.map((r) => readingAgeRefinementMap[r.type as AllowedReadingAgeRefinement]).join("\n")}
+  ${userRequest}
   
   Adapt the glossary to reflect the request while ensuring it continues to aligns with the following lesson details:
   
@@ -57,7 +58,7 @@ The definition should be no longer than 200 characters.
 
 **Rules**:
 - **Do not** include markdown in your response.
-- definitions start with lower case (unless it is a known acronym or proper noun) and end with a full stop.
+- definitions start with lower case (unless it is a known acronym, proper noun or city or country name) and end with a full stop.
 - terms start with capital letter.
 - minimum of 5 terms, maximum of 15 terms.
 - include the key words from the lesson plan.

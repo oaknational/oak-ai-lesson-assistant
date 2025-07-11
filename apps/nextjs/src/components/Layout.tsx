@@ -5,11 +5,12 @@ import Main from "./Main";
 
 type LayoutProps = {
   children: React.ReactNode;
+  page?: "teachingMaterials" | "aila";
 };
-const Layout = ({ children }: Readonly<LayoutProps>) => {
+const Layout = ({ children, page }: Readonly<LayoutProps>) => {
   return (
     <DemoProvider>
-      <HeaderManager />
+      <HeaderManager page={page} />
       <Main defaultMaxWidth={true}>{children}</Main>
       <Footer />
     </DemoProvider>

@@ -32,7 +32,8 @@ const AdditionalMaterialsStartAgain = ({
       $width="100%"
       $height="100%"
       $flexDirection="column"
-      $justifyContent="space-between"
+      $justifyContent="center"
+      $alignItems="center"
     >
       <OakHeading
         $font={"heading-5"}
@@ -40,17 +41,20 @@ const AdditionalMaterialsStartAgain = ({
         $textAlign="center"
         $mb={"space-between-m"}
       >{`Have you downloaded your ${docTypeDisplayName}?`}</OakHeading>
-      <OakP $font="body-2" $mb={"space-between-xl"}>
-        {`Your lesson ${docTypeDisplayName} will not be saved if you choose to
+      <OakFlex $width={["auto", "all-spacing-22"]}>
+        <OakP $textAlign={"center"} $font="body-2" $mb={"space-between-xl"}>
+          {`Your lesson ${docTypeDisplayName} will not be saved if you choose to
         start again. Please download your ${docTypeDisplayName} if you want to
         keep a copy.`}
-      </OakP>
+        </OakP>
+      </OakFlex>
       <OakFlex
         $width={"100%"}
         $flexDirection={"column"}
         $justifyContent={"center"}
         $alignItems={"center"}
         $gap={"space-between-m"}
+        $mb={"space-between-m"}
       >
         <OakPrimaryButton
           iconName="chevron-right"
@@ -63,9 +67,9 @@ const AdditionalMaterialsStartAgain = ({
           Yes, I want to start again
         </OakPrimaryButton>
         <OakSecondaryLink
-          onClick={() => {
-            closeDialog();
-          }}
+          element="button"
+          aria-label={`Back to ${docTypeDisplayName}`}
+          onClick={closeDialog}
         >
           {`Back to ${docTypeDisplayName}`}
         </OakSecondaryLink>

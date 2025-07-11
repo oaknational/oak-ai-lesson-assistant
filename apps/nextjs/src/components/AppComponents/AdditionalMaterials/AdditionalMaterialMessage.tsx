@@ -13,6 +13,8 @@ export function ModerationMessage() {
           <OakP $ml="space-between-xs" $font={"body-3"}>
             {`This lesson may need additional `}
             <OakLink
+              element="button"
+              aria-label="Open content guidance dialog"
               onClick={() => setDialogWindow("additional-materials-moderation")}
               color={"primary"}
             >

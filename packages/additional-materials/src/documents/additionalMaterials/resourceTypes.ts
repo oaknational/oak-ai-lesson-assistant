@@ -5,12 +5,15 @@ import type {
 import { type ZodType, type z } from "zod";
 
 import type { PartialLessonPlanFieldKeyArray } from "../partialLessonPlan/schema";
-import { additionalMaterialsConfigMap } from "./configSchema";
 import {
-  type AllowedReadingAgeRefinement,
-  readingAgeRefinement,
-  readingAgeRefinementMap,
-} from "./glossary/schema";
+  type AdditionalMaterialType,
+  additionalMaterialsConfigMap,
+} from "./configSchema";
+import {
+  type AllowedRefinements,
+  refinementMap,
+  refinements,
+} from "./refinement/schema";
 
 // -----------------------
 //  Subjects Configuration
@@ -78,10 +81,6 @@ export const yearSlugMap: Record<string, string> = Object.fromEntries(
   Object.entries(yearNameMap).map(([slug, name]) => [name, slug]),
 );
 
-// -----------------------
-//  Resource Type Configuration
-// -----------------------
-
 export type RefinementOption = {
   id: string;
   label: string;
@@ -94,7 +93,11 @@ export type BaseResourceTypeConfig = {
   displayName: string;
   description: string;
   refinementOptions: RefinementOption[];
-  componentType: string;
+  analyticPropertyName:
+    | "comprehension task"
+    | "exit quiz"
+    | "glossary"
+    | "starter quiz";
   isAvailable: boolean;
   systemMessage: () => string;
   schema: ZodType;
@@ -103,15 +106,18 @@ export type BaseResourceTypeConfig = {
   lessonParts: PartialLessonPlanFieldKeyArray;
 };
 
-const readingAgeRefinementOptions: RefinementOption[] = Array.from(
-  readingAgeRefinement,
-).map((id: AllowedReadingAgeRefinement) => ({
-  id,
-  label: readingAgeRefinementMap[id],
-  value: id,
-}));
+const refinementOptions: RefinementOption[] = Array.from(refinements).map(
+  (id: AllowedRefinements) => ({
+    id,
+    label: refinementMap[id],
+    value: id,
+  }),
+);
 
-export const resourceTypesConfig = {
+export const resourceTypesConfig: Record<
+  AdditionalMaterialType,
+  BaseResourceTypeConfig
+> = {
   "additional-glossary": {
     // Backend config
     ...additionalMaterialsConfigMap["additional-glossary"],
@@ -121,7 +127,7 @@ export const resourceTypesConfig = {
     analyticPropertyName: "glossary",
     displayName: "Glossary",
     description: "Lesson vocabulary with pupil friendly definitions",
-    refinementOptions: readingAgeRefinementOptions,
+    refinementOptions: refinementOptions,
     isAvailable: true,
     lessonParts: [
       "learningOutcome",
@@ -140,7 +146,7 @@ export const resourceTypesConfig = {
     displayName: "Comprehension task",
     description: "Comprehension text with accompanying questions",
     analyticPropertyName: "comprehension task",
-    refinementOptions: readingAgeRefinementOptions,
+    refinementOptions: refinementOptions,
     isAvailable: true,
     lessonParts: [
       "learningOutcome",
@@ -159,7 +165,7 @@ export const resourceTypesConfig = {
     displayName: "Starter quiz",
     description: "Multiple choice questions to check pupils' prior knowledge",
     analyticPropertyName: "starter quiz",
-    refinementOptions: readingAgeRefinementOptions,
+    refinementOptions: refinementOptions,
     isAvailable: true,
     lessonParts: [
       "learningOutcome",
@@ -176,11 +182,11 @@ export const resourceTypesConfig = {
 
     // Frontend config
     id: "additional-exit-quiz",
-    analyticPropertyName: "starter quiz",
+    analyticPropertyName: "exit quiz",
     displayName: "Exit quiz",
     description:
       "Multiple choice questions to check what pupils have learnt in the lesson",
-    refinementOptions: readingAgeRefinementOptions,
+    refinementOptions: refinementOptions,
     isAvailable: true,
     lessonParts: [
       "learningOutcome",
