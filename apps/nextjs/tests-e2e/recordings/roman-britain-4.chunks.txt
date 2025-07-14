@@ -15,19 +15,19 @@ Added
  a
  narrative
  to
- help
+ support
  the
  teacher
- deliver
+ in
+ delivering
  the
  lesson
- on
- the
- end
- of
- Roman
- Britain
- effectively
+,
+ providing
+ specific
+ content
+ and
+ guidance
 .","
 value":{"
 type":"
@@ -39,237 +39,251 @@ additional
 Materials
 ","value":"
 ##
- Teacher
  Narrative
-\n
-\n
-**
-Introduction
-**
+ for
+ Teacher
 \n
 \n
 \"
 Today
 ,
- we're
+ we
+ are
  going
  to
- learn
- about
+ explore
  a
  very
- important
+ interesting
  time
  in
  history
  when
  the
  Romans
- left
+ decided
+ to
+ leave
  Britain
 .
  Imagine
- the
- roads
- and
- buildings
- we
- know
- today
- starting
- to
- change
- and
- fall
- apart
+ having
+ a
+ big
+ empire
+ that
+ stretches
+ across
+ many
+ countries
+,
+ just
+ like
+ a
+ giant
+ puzzle
+ with
+ many
+ pieces
 .
  The
- powerful
  Roman
- army
+ Empire
+ was
+ just
+ like
  that
- once
- protected
- the
- land
- is
- called
- back
+,
+ and
+ it
+ was
+ hard
  to
- Rome
- to
- defend
- other
- parts
- of
+ keep
+ all
  the
- empire
-.
- Let's
- explore
+ pieces
+ together
+.\
+n
+\n
+First
+,
+ we'll
+ learn
  why
  the
  Romans
  left
+.
+ They
+ didn't
+ leave
+ because
+ of
+ something
+ happening
+ just
+ in
+ Britain
+,
+ but
+ because
+ they
+ had
+ to
+ deal
+ with
+ problems
+ in
+ other
+ parts
+ of
+ their
+ empire
+.
+ Imagine
+ if
+ you
+ had
+ to
+ leave
+ a
+ toy
+ behind
+ because
+ you
+ needed
+ to
+ take
+ care
+ of
+ something
+ important
+ somewhere
+ else
+.\
+n
+\n
+Next
+,
+ we'll
+ see
+ what
+ happened
+ to
+ Britain
+ after
+ the
+ Romans
+ left
+.
+ It
+ was
+ like
+ removing
+ a
+ piece
+ from
+ the
+ puzzle
+.
+ New
+ people
+,
+ like
+ the
+ Sax
+ons
+,
+ started
+ to
+ come
+ in
  and
+ change
+ things
+.
+ Some
+ roads
+ and
+ towns
+ began
+ to
+ crumble
+ because
+ they
+ weren't
+ looked
+ after
+.\
+n
+\n
+Finally
+,
+ we'll
+ talk
+ about
  how
- life
- changed
- for
+ these
+ changes
+ affected
  the
  people
  living
  in
  Britain
 .
-\"\
+ Some
+ were
+ happy
+ to
+ have
+ more
+ freedom
+,
+ while
+ others
+ missed
+ the
+ order
+ that
+ the
+ Romans
+ brought
+.\
 n
 \n
-**
-Main
- Content
-**
-\n
-\n
-\"
-The
- Roman
- Empire
- was
- vast
-,
- controlling
- many
- lands
-.
- But
- it
- faced
- attacks
- from
- various
- tribes
- and
- economic
- problems
-.
- This
- led
- to
+As
+ we
+ go
+ through
  the
- decision
- to
- withdraw
- the
- Roman
- troops
- from
- Britain
- around
- AD
- 
-410
-.
- Without
- their
- presence
+ lesson
 ,
- local
- leaders
- began
- to
- emerge
-,
- and
- Roman
- roads
- and
- structures
- slowly
- deterior
-ated
-.
- The
- people
- of
- Britain
- had
- to
- adapt
- to
- new
- ways
- of
- life
-,
- and
- different
- cultures
- started
- blending
- together
-.
-\"\
-n
-\n
-**
-Conclusion
-**
-\n
-\n
-\"
-Ar
-chae
-ologists
- help
- us
- understand
- this
- period
- by
- studying
- arte
-facts
- left
- behind
-.
- They
- uncover
- stories
- of
- the
- past
-,
- teaching
- us
+ keep
+ thinking
  about
- the
- daily
- lives
- of
- people
- during
- Roman
- times
-.
- Remember
-,
- history
- is
+ how
+ these
+ changes
+ were
  like
  a
- puzzle
+ big
+ wave
+ that
+ washed
+ over
+ Britain
 ,
+ bringing
+ lots
+ of
+ new
+ things
  and
- each
- piece
- helps
- us
- learn
- more
- about
- our
- world
+ ideas
 .
 \"\
 n
@@ -277,47 +291,63 @@ n
 ###
  Key
  Points
- to
- Include
-:\
-n
-*
- Reasons
  for
+ Explanation
+\n
+-
+ The
  Roman
+ Empire
+ was
+ vast
+,
+ requiring
+ resources
+ and
+ defence
+.\
+n
+-
+ Press
+ures
+ on
+ the
+ empire
+ led
+ to
+ the
  withdrawal
-:
- attacks
-,
- economic
- difficulties
-\n
-*
- Changes
- in
- daily
- life
-:
- local
- leaders
-,
- deterior
-ating
+ from
+ Britain
+.\
+n
+-
+ Britain's
  infrastructure
-\n
-*
- Role
+ and
+ society
+ changed
+ with
+ new
+ settlers
+ like
+ the
+ Sax
+ons
+.\
+n
+-
+ The
+ blend
  of
- archae
-ologists
-:
- studying
- arte
-facts
-,
- understanding
- history
-"},"status":"
+ cultures
+ led
+ to
+ new
+ societal
+ norms
+."
+},"status":"
 complete
 "}],"sectionsEdited":["
 additional
@@ -326,28 +356,38 @@ Materials
 type":"
 text
 ","value":"
-Is
- the
+The
  additional
+ materials
+ section
+ has
+ been
+ updated
+ with
+ a
  narrative
- material
- helpful
- for
- delivering
- your
+ to
+ support
+ the
  lesson
-?
+ delivery
+.
  If
- not
+ you
+ would
+ like
+ any
+ changes
+ or
+ have
+ other
+ materials
+ to
+ add
 ,
  let
  me
  know
- how
- I
- can
- improve
- it
 .
  Otherwise
 ,
@@ -356,10 +396,7 @@ Is
 Continue
 **
  to
- complete
- the
- lesson
- plan
+ finish
 ."
 },"status":"
 complete

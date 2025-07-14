@@ -28,6 +28,7 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV2 {
   if (!quizData || !Array.isArray(quizData)) {
     return {
       version: "v2",
+      imageAttributions: [],
       questions: [],
     };
   }
@@ -39,7 +40,7 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV2 {
         question: "",
         answers: [],
         distractors: [],
-        imageAttributions: [],
+        hint: null,
       } as QuizV2Question;
     }
     // Extract the question text from the stem
@@ -78,8 +79,8 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV2 {
         question: questionText,
         answers: correctAnswers,
         distractors: distractors,
-        imageAttributions: [],
-      } as QuizV2Question;
+        hint: null,
+      };
     } else if (
       question.question_type === "short-answer" &&
       question.answers &&
@@ -119,8 +120,8 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV2 {
         answers:
           correctAnswers.length > 0 ? correctAnswers : allAnswers.slice(0, 1),
         distractors: distractors.length > 0 ? distractors : [],
-        imageAttributions: [],
-      } as QuizV2Question;
+        hint: null,
+      };
     }
 
     // Fallback for unsupported question types
@@ -129,12 +130,13 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV2 {
       question: questionText,
       answers: [],
       distractors: [],
-      imageAttributions: [],
-    } as QuizV2Question;
+      hint: null,
+    };
   });
 
   return {
     version: "v2",
+    imageAttributions: [],
     questions,
   };
 }

@@ -6,12 +6,12 @@
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Added a narrative to help the teacher deliver the lesson on the end of Roman Britain effectively.",
+      "reasoning": "Added a narrative to support the teacher in delivering the lesson, providing specific content and guidance.",
       "value": {
         "type": "string",
         "op": "add",
         "path": "/additionalMaterials",
-        "value": "## Teacher Narrative\n\n**Introduction**\n\n\"Today, we're going to learn about a very important time in history when the Romans left Britain. Imagine the roads and buildings we know today starting to change and fall apart. The powerful Roman army that once protected the land is called back to Rome to defend other parts of the empire. Let's explore why the Romans left and how life changed for the people living in Britain.\"\n\n**Main Content**\n\n\"The Roman Empire was vast, controlling many lands. But it faced attacks from various tribes and economic problems. This led to the decision to withdraw the Roman troops from Britain around AD 410. Without their presence, local leaders began to emerge, and Roman roads and structures slowly deteriorated. The people of Britain had to adapt to new ways of life, and different cultures started blending together.\"\n\n**Conclusion**\n\n\"Archaeologists help us understand this period by studying artefacts left behind. They uncover stories of the past, teaching us about the daily lives of people during Roman times. Remember, history is like a puzzle, and each piece helps us learn more about our world.\"\n\n### Key Points to Include:\n* Reasons for Roman withdrawal: attacks, economic difficulties\n* Changes in daily life: local leaders, deteriorating infrastructure\n* Role of archaeologists: studying artefacts, understanding history"
+        "value": "## Narrative for Teacher\n\n\"Today, we are going to explore a very interesting time in history when the Romans decided to leave Britain. Imagine having a big empire that stretches across many countries, just like a giant puzzle with many pieces. The Roman Empire was just like that, and it was hard to keep all the pieces together.\n\nFirst, we'll learn why the Romans left. They didn't leave because of something happening just in Britain, but because they had to deal with problems in other parts of their empire. Imagine if you had to leave a toy behind because you needed to take care of something important somewhere else.\n\nNext, we'll see what happened to Britain after the Romans left. It was like removing a piece from the puzzle. New people, like the Saxons, started to come in and change things. Some roads and towns began to crumble because they weren't looked after.\n\nFinally, we'll talk about how these changes affected the people living in Britain. Some were happy to have more freedom, while others missed the order that the Romans brought.\n\nAs we go through the lesson, keep thinking about how these changes were like a big wave that washed over Britain, bringing lots of new things and ideas.\"\n\n### Key Points for Explanation\n- The Roman Empire was vast, requiring resources and defence.\n- Pressures on the empire led to the withdrawal from Britain.\n- Britain's infrastructure and society changed with new settlers like the Saxons.\n- The blend of cultures led to new societal norms."
       },
       "status": "complete"
     }
@@ -21,7 +21,7 @@
   ],
   "prompt": {
     "type": "text",
-    "value": "Is the additional narrative material helpful for delivering your lesson? If not, let me know how I can improve it. Otherwise, tap **Continue** to complete the lesson plan."
+    "value": "The additional materials section has been updated with a narrative to support the lesson delivery. If you would like any changes or have other materials to add, let me know. Otherwise, tap **Continue** to finish."
   },
   "status": "complete"
 }

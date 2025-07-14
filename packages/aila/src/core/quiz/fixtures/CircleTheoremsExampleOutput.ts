@@ -70,13 +70,14 @@ export const CircleTheoremLesson = {
   ],
   starterQuiz: {
     version: "v2" as const,
+    imageAttributions: [],
     questions: [
       {
         questionType: "multiple-choice" as const,
         question: "How many degrees in 2 right angles?",
         answers: ["180°"],
         distractors: ["60°", "90°"],
-        imageAttributions: [],
+        hint: null,
       },
       {
         questionType: "multiple-choice" as const,
@@ -87,7 +88,7 @@ export const CircleTheoremLesson = {
           "No distractors for short answer",
           "No distractors for short answer",
         ],
-        imageAttributions: [],
+        hint: null,
       },
       {
         questionType: "multiple-choice" as const,
@@ -98,7 +99,7 @@ export const CircleTheoremLesson = {
           "No distractors for short answer",
           "No distractors for short answer",
         ],
-        imageAttributions: [],
+        hint: null,
       },
       {
         questionType: "multiple-choice" as const,
@@ -111,7 +112,7 @@ export const CircleTheoremLesson = {
           "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703163380/pz6cn5k4wmowycnjq5am.png)",
           "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/mr09mrwkqdtk1dvjdoi0.png)",
         ],
-        imageAttributions: [],
+        hint: null,
       },
       {
         questionType: "multiple-choice" as const,
@@ -122,7 +123,7 @@ export const CircleTheoremLesson = {
           "congruent as the three interior angles are all the same.",
           "neither similar nor congruent.",
         ],
-        imageAttributions: [],
+        hint: null,
       },
     ],
   },
@@ -215,6 +216,7 @@ export const CircleTheoremLesson = {
   },
   exitQuiz: {
     version: "v2" as const,
+    imageAttributions: [],
     questions: [
       {
         questionType: "multiple-choice" as const,
@@ -222,7 +224,7 @@ export const CircleTheoremLesson = {
           "Work out the length of BM. ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707157889/x0zkhtqmat2qjbeykaep.png)",
         answers: ["12 cm"],
         distractors: ["18 cm", "24 cm", "6 cm"],
-        imageAttributions: [],
+        hint: null,
       },
       {
         questionType: "multiple-choice" as const,
@@ -230,7 +232,7 @@ export const CircleTheoremLesson = {
           "The diagram shows a circle with centre O and M is the midpoint of chord AB. Which statement is INCORRECT? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707157891/jzj1whq88imewdz8moar.png)",
         answers: ["OA=AM"],
         distractors: ["AM=0.5AB", "AM=BM", "OA=OB"],
-        imageAttributions: [],
+        hint: null,
       },
       {
         questionType: "multiple-choice" as const,
@@ -238,7 +240,7 @@ export const CircleTheoremLesson = {
           "Which circle theorem is being shown in the diagram? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707163527/nudpmbhfucdchpb2jvvd.png)",
         answers: ["A"],
         distractors: ["B", "C", "D"],
-        imageAttributions: [],
+        hint: null,
       },
       {
         questionType: "multiple-choice" as const,
@@ -246,7 +248,7 @@ export const CircleTheoremLesson = {
           "Which circle theorem is being shown in the diagram? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707163529/szlbxsyihr4oxzt5xll3.png)",
         answers: ["D"],
         distractors: ["A", "B", "C"],
-        imageAttributions: [],
+        hint: null,
       },
       {
         questionType: "multiple-choice" as const,
@@ -254,7 +256,7 @@ export const CircleTheoremLesson = {
           "Which circle theorem is being shown in the diagram? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707163545/dfdqz5vcslzfnxke8j2g.png)",
         answers: ["B"],
         distractors: ["A", "C", "D"],
-        imageAttributions: [],
+        hint: null,
       },
     ],
   },

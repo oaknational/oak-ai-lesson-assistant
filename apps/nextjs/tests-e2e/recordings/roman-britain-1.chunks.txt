@@ -3,8 +3,13 @@ type":"
 ll
 m
 Message
-","sectionsToEdit":[]
-,"patches":[
+","sectionsToEdit":["
+learning
+Outcome
+","
+learning
+Cycles
+"],"patches":[
 {"
 type":"
 patch
@@ -20,11 +25,12 @@ No
  topic
 ,
  so
- starting
  a
  new
  lesson
- plan
+ is
+ being
+ created
  from
  scratch
 .","
@@ -40,14 +46,21 @@ Outcome
 I
  can
  describe
- the
- changes
- in
- Britain
- after
+ what
+ happened
+ when
  the
  Romans
  left
+ Britain
+ and
+ how
+ it
+ affected
+ the
+ people
+ living
+ there
 ."
 },"status":"
 complete
@@ -55,19 +68,24 @@ complete
 type":"
 patch
 ","reasoning":"
-Created
- a
- structured
- overview
- of
- the
+Added
  learning
  cycles
  to
- build
+ structure
  the
  lesson
- plan
+ and
+ break
+ down
+ the
+ learning
+ outcome
+ into
+ manageable
+ parts
+ for
+ pupils
 .","
 value":{"
 type":"
@@ -80,42 +98,36 @@ learning
 Cycles
 ","value":["
 Identify
- reasons
- for
  the
- Roman
- Empire
-'s
- departure
- from
+ reasons
+ why
+ the
+ Romans
+ left
  Britain
 .","
-Explore
+Describe
  the
  changes
  in
- daily
- life
- for
- Brit
-ons
+ Britain
  after
  the
- Roman
- withdrawal
+ Romans
+ left
 .","
-Understand
+Explain
+ how
  the
- role
+ end
  of
- archae
-ologists
+ Roman
+ rule
+ affected
+ different
+ people
  in
- discovering
- this
- period
- of
- history
+ Britain
 .
 "]},"status":"
 complete

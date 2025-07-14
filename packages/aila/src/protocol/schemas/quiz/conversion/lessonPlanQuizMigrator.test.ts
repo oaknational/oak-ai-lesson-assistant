@@ -28,9 +28,10 @@ describe("quiz upgrader", () => {
           question: "What is the capital of France?",
           answers: ["Paris"],
           distractors: ["London", "Berlin"],
-          imageAttributions: [],
+          hint: null,
         },
       ],
+      imageAttributions: [],
     };
 
     it("should throw an error if data doesn't have a lessonPlan property", async () => {

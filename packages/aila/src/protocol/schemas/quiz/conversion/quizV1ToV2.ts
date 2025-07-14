@@ -17,8 +17,7 @@ export function convertQuizV1QuestionToV2(
     question: questionV1.question,
     answers: questionV1.answers,
     distractors: questionV1.distractors,
-    hint: undefined,
-    imageAttributions: [],
+    hint: null,
   };
 }
 
@@ -29,6 +28,7 @@ export function convertQuizV1ToV2(quizV1: QuizV1): QuizV2 {
   return {
     version: "v2",
     questions: quizV1.map(convertQuizV1QuestionToV2),
+    imageAttributions: [],
   };
 }
 

@@ -1,9 +1,6 @@
 import { useMemo } from "react";
 
-import type {
-  LessonPlanSectionWhileStreaming,
-  QuizV2,
-} from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import { QuizV2Schema } from "@oakai/aila/src/protocol/schema";
 
 import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";

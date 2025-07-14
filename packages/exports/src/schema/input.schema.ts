@@ -19,21 +19,21 @@ const quizV2QuestionMultipleChoiceSchema = z.object({
   question: z.string(),
   answers: z.array(z.string()),
   distractors: z.array(z.string()),
-  hint: z.string().optional(),
+  hint: z.string().nullable(),
 });
 
 const quizV2QuestionShortAnswerSchema = z.object({
   questionType: z.literal("short-answer"),
   question: z.string(),
   answers: z.array(z.string()),
-  hint: z.string().optional(),
+  hint: z.string().nullable(),
 });
 
 const quizV2QuestionMatchSchema = z.object({
   questionType: z.literal("match"),
   question: z.string(),
   answers: z.array(z.tuple([z.string(), z.string()])),
-  hint: z.string().optional(),
+  hint: z.string().nullable(),
 });
 
 const quizV2QuestionOrderSchema = z.object({
@@ -41,7 +41,7 @@ const quizV2QuestionOrderSchema = z.object({
   question: z.string(),
   answers: z.array(z.string()),
   correctOrder: z.array(z.number()),
-  hint: z.string().optional(),
+  hint: z.string().nullable(),
 });
 
 export const quizV2QuestionSchema = z.union([

@@ -178,13 +178,14 @@ function sampleKeyword(): Keyword {
 function sampleQuiz(): QuizV2 {
   return {
     version: "v2" as const,
+    imageAttributions: [],
     questions: [
       {
         questionType: "multiple-choice" as const,
         question: "Sample question",
         answers: ["Sample answer"],
         distractors: ["Sample distractor"],
-        imageAttributions: [],
+        hint: null,
       },
     ],
   };

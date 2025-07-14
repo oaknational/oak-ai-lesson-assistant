@@ -16,15 +16,7 @@ export const QUIZ_V2_DESCRIPTIONS = {
 // Base question schema with common fields
 export const QuizV2QuestionBaseSchema = z.object({
   question: z.string().describe(QUIZ_V2_DESCRIPTIONS.question),
-  hint: z.string().optional().describe(QUIZ_V2_DESCRIPTIONS.hint),
-  imageAttributions: z
-    .array(
-      z.object({
-        imageUrl: z.string(),
-        attribution: z.string(),
-      }),
-    )
-    .describe(QUIZ_V2_DESCRIPTIONS.imageAttributions),
+  hint: z.string().nullable().describe(QUIZ_V2_DESCRIPTIONS.hint),
 });
 
 // Multiple choice question
@@ -76,6 +68,14 @@ export const QuizV2QuestionSchema = z.discriminatedUnion("questionType", [
 export const QuizV2Schema = z.object({
   version: z.literal("v2").describe("Schema version identifier"),
   questions: z.array(QuizV2QuestionSchema).describe("Array of quiz questions"),
+  imageAttributions: z
+    .array(
+      z.object({
+        imageUrl: z.string(),
+        attribution: z.string(),
+      }),
+    )
+    .describe(QUIZ_V2_DESCRIPTIONS.imageAttributions),
 });
 
 export const QuizV2SchemaWithoutLength = QuizV2Schema;
@@ -108,6 +108,14 @@ export const QuizV2MultipleChoiceOnlySchema = z.object({
     .describe(
       `Array of multiple choice quiz questions. ${minMaxText({ min: 1, entity: "elements" })}`,
     ),
+  imageAttributions: z
+    .array(
+      z.object({
+        imageUrl: z.string(),
+        attribution: z.string(),
+      }),
+    )
+    .describe(QUIZ_V2_DESCRIPTIONS.imageAttributions),
 });
 
 export const QuizV2MultipleChoiceOnlySchemaWithoutLength =

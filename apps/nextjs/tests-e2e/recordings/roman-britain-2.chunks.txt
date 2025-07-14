@@ -21,14 +21,19 @@ keywords
 type":"
 patch
 ","reasoning":"
-Ident
-ified
- key
+Added
  prior
  knowledge
- necessary
- for
+ to
+ ensure
+ pupils
+ have
+ the
+ foundational
  understanding
+ needed
+ before
+ beginning
  the
  lesson
  on
@@ -57,19 +62,8 @@ The
  
 43
 .","
-The
- Roman
- Empire
- was
- very
- powerful
- and
- controlled
- many
- lands
-.","
-Brit
-ain
+Roman
+ Britain
  was
  part
  of
@@ -77,7 +71,7 @@ ain
  Roman
  Empire
  for
- about
+ nearly
  
 400
  years
@@ -86,23 +80,17 @@ The
  Romans
  built
  roads
-,
- baths
-,
  and
- had
- a
- strong
- army
+ towns
+ in
+ Britain
 .","
 Roman
- culture
- influenced
- many
- aspects
- of
- life
+ soldiers
+ lived
  in
+ forts
+ throughout
  Britain
 .
 "]},"status":"
@@ -111,19 +99,23 @@ complete
 type":"
 patch
 ","reasoning":"
-Outlined
- key
+Key
+ learning
  points
- for
- pupils
+ are
+ added
  to
- learn
- regarding
+ focus
+ on
  the
- end
- of
- Roman
- Britain
+ essential
+ knowledge
+ pupils
+ should
+ acquire
+ during
+ the
+ lesson
 .","
 value":{"
 type":"
@@ -137,15 +129,21 @@ Learning
 Points
 ","value":["
 The
- Roman
- Empire
- withdrew
- from
+ Romans
+ left
  Britain
  around
  AD
  
 410
+ due
+ to
+ pressures
+ elsewhere
+ in
+ the
+ Roman
+ Empire
 .","
 After
  the
@@ -153,52 +151,59 @@ After
  left
 ,
  Britain
- faced
+ was
+ more
+ vulnerable
+ to
  invas
 ions
- from
- other
+ by
  groups
-.","
-Daily
- life
- changed
+ such
  as
- Roman
- structures
- and
- systems
- fell
- into
- dis
-use
-.","
-Ar
-chae
-ologists
- study
- arte
-facts
- to
- learn
- about
- this
- period
+ the
+ Sax
+ons
 .","
 The
- end
+ Roman
+ departure
+ led
+ to
+ changes
+ in
+ Britain's
+ infrastructure
+ and
+ society
+,
+ such
+ as
+ the
+ decline
  of
  Roman
- rule
- marked
- the
- start
- of
- new
- cultural
- influences
+ towns
+.","
+Different
+ groups
  in
  Britain
+ adapted
+ in
+ various
+ ways
+ after
+ the
+ Romans
+ left
+,
+ leading
+ to
+ new
+ cultures
+ and
+ societies
 .
 "]},"status":"
 complete
@@ -206,16 +211,22 @@ complete
 type":"
 patch
 ","reasoning":"
-Address
-ed
- common
+Ident
+ified
  misconceptions
+ to
+ address
+ common
+ errors
+ or
+ misunderstand
+ings
+ pupils
+ might
+ have
  about
  the
- end
- of
- Roman
- Britain
+ topic
 .","
 value":{"
 type":"
@@ -233,76 +244,100 @@ ceptions
 misconception":"
 The
  Romans
- left
- Britain
- because
- they
  were
- defeated
+ forced
+ to
+ leave
+ Britain
  by
  the
- Brit
+ Sax
 ons
 ","description":"
-The
+Explain
+ that
+ the
  Romans
  left
  due
  to
  pressures
- elsewhere
  in
- the
- Empire
+ other
+ parts
+ of
+ their
+ empire
 ,
  not
- due
- to
- defeat
- in
- Britain
-.
- Discuss
+ directly
+ because
+ of
  the
- political
- and
- military
- reasons
- for
- their
- departure
+ Sax
+ons
 ."
 },{"
 misconception":"
-All
- Roman
- structures
+Roman
+ roads
+ and
+ towns
  disappeared
  immediately
  after
  they
  left
 ","description":"
-Explain
+Clar
+ify
  that
  while
- many
- Roman
- structures
- fell
- into
- dis
-use
-,
  some
+ Roman
+ infrastructure
+ declined
+,
+ much
+ of
+ it
  remained
  and
+ influenced
+ later
+ developments
+."
+},{"
+misconception":"
+All
+ Brit
+ons
  were
- rep
-ur
-posed
- over
- time
+ sad
+ to
+ see
+ the
+ Romans
+ leave
+","description":"
+Discuss
+ how
+ some
+ groups
+ may
+ have
+ seen
+ the
+ Roman
+ departure
+ as
+ an
+ opportunity
+ to
+ gain
+ power
+ or
+ independence
 ."
 }]},"status":"
 complete
@@ -310,11 +345,18 @@ complete
 type":"
 patch
 ","reasoning":"
-Selected
- important
+Added
  keywords
- for
- understanding
+ to
+ help
+ pupils
+ understand
+ and
+ use
+ essential
+ vocabulary
+ related
+ to
  the
  lesson
  topic
@@ -337,54 +379,23 @@ A
  countries
  or
  regions
+ that
+ are
  controlled
  by
  one
  ruler
  or
+ one
  government
-"},{"
-keyword":"
-Withdrawal
-","definition":"
-The
- act
- of
- leaving
- or
- pulling
- out
- from
- a
- place
-"},{"
-keyword":"
-Ar
-chae
-ologist
-","definition":"
-A
- person
- who
- studies
- human
- history
- through
- excavation
- of
- sites
- and
- analysis
- of
- arte
-facts
-"},{"
+."
+},{"
 keyword":"
 In
 vasion
 ","definition":"
-An
- instance
+The
+ act
  of
  entering
  a
@@ -392,29 +403,57 @@ An
  by
  force
 ,
- especially
+ in
+ order
  to
- conquer
- it
-"},{"
-keyword":"
-Arte
-fact
-","definition":"
-An
- object
- made
- by
- a
- human
-,
- typically
+ take
+ control
  of
- cultural
- or
- historical
- interest
-"}]},"status":"
+ it
+."
+},{"
+keyword":"
+Infrastructure
+","definition":"
+The
+ basic
+ physical
+ systems
+ of
+ a
+ country
+,
+ such
+ as
+ roads
+ and
+ bridges
+."
+},{"
+keyword":"
+S
+axon
+","definition":"
+A
+ member
+ of
+ a
+ German
+ic
+ people
+ who
+ invaded
+ and
+ settled
+ in
+ Britain
+ in
+ the
+ early
+ Middle
+ Ages
+."
+}]},"status":"
 complete
 "}],"sectionsEdited":["
 prior

@@ -60,20 +60,21 @@ export const Quiz: Story = {
     sectionKey: "starterQuiz",
     value: {
       version: "v2" as const,
+      imageAttributions: [],
       questions: [
         {
           questionType: "multiple-choice" as const,
           question: "What is the capital of France?",
           answers: ["Paris"],
           distractors: ["London", "Berlin", "Madrid"],
-          imageAttributions: [],
+          hint: null,
         },
         {
           questionType: "multiple-choice" as const,
           question: "Which of the following is a prime number?",
           answers: ["7"],
           distractors: ["4", "6", "8"],
-          imageAttributions: [],
+          hint: null,
         },
       ],
     },
@@ -85,6 +86,7 @@ export const QuizWithMaths: Story = {
     sectionKey: "starterQuiz",
     value: {
       version: "v2" as const,
+      imageAttributions: [],
       questions: [
         {
           questionType: "multiple-choice" as const,
@@ -92,7 +94,7 @@ export const QuizWithMaths: Story = {
             "What is the value of $$x$$ in the equation $$2x + 5 = 13$$?",
           answers: ["4"],
           distractors: ["3", "5", "6"],
-          imageAttributions: [],
+          hint: null,
         },
         {
           questionType: "multiple-choice" as const,
@@ -100,7 +102,7 @@ export const QuizWithMaths: Story = {
             "Calculate the area of a circle with radius $$r = 3$$cm using $$A = \\pi r^2$$",
           answers: ["$$9\\pi$$ cm²"],
           distractors: ["$$6\\pi$$ cm²", "$$12\\pi$$ cm²", "$$18\\pi$$ cm²"],
-          imageAttributions: [],
+          hint: null,
         },
       ],
     },
@@ -112,6 +114,7 @@ export const QuizWithImages: Story = {
     sectionKey: "starterQuiz",
     value: {
       version: "v2" as const,
+      imageAttributions: [],
       questions: [
         {
           questionType: "multiple-choice" as const,
@@ -119,7 +122,7 @@ export const QuizWithImages: Story = {
             "40 is a multiple of 8. Which multiples of 8 are adjacent to 40?\n\n![Number squares showing 40](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266807/a3g7nwse0lqdvrggp1vt.png)",
           answers: ["32", "48"],
           distractors: ["34", "50", "47"],
-          imageAttributions: [],
+          hint: null,
         },
         {
           questionType: "multiple-choice" as const,
@@ -127,7 +130,7 @@ export const QuizWithImages: Story = {
             "Which mixed operation equation can be used to calculate the missing multiple of 8?\n\n![Number line with missing value](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266808/pggweqwl9chfutuul4pm.png)",
           answers: ["5 × 8 − 8", "3 × 8 + 8"],
           distractors: ["4 groups of 8", "8 x 4"],
-          imageAttributions: [],
+          hint: null,
         },
         {
           questionType: "multiple-choice" as const,
@@ -135,7 +138,7 @@ export const QuizWithImages: Story = {
             "Here is part of the 8 times table grid. What could Izzy do to find 13 × 8 quickly?\n\n![8 times table grid](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png)",
           answers: ["12 x 8 + 8", "Increase 96 by 8"],
           distractors: ["Count in eights from zero"],
-          imageAttributions: [],
+          hint: null,
         },
         {
           // TODO: This use case (images in answer choices) is not fully implemented yet
@@ -150,7 +153,7 @@ export const QuizWithImages: Story = {
             "![2 groups of 8 dots](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266808/pggweqwl9chfutuul4pm.png)",
             "![4 groups of 8 dots](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png)",
           ],
-          imageAttributions: [],
+          hint: null,
         },
       ],
     },

@@ -9,53 +9,55 @@
   "patches": [
     {
       "type": "patch",
-      "reasoning": "Identified key prior knowledge necessary for understanding the lesson on the end of Roman Britain.",
+      "reasoning": "Added prior knowledge to ensure pupils have the foundational understanding needed before beginning the lesson on the end of Roman Britain.",
       "value": {
         "type": "string-array",
         "op": "add",
         "path": "/priorKnowledge",
         "value": [
           "The Romans invaded Britain in AD 43.",
-          "The Roman Empire was very powerful and controlled many lands.",
-          "Britain was part of the Roman Empire for about 400 years.",
-          "The Romans built roads, baths, and had a strong army.",
-          "Roman culture influenced many aspects of life in Britain."
+          "Roman Britain was part of the Roman Empire for nearly 400 years.",
+          "The Romans built roads and towns in Britain.",
+          "Roman soldiers lived in forts throughout Britain."
         ]
       },
       "status": "complete"
     },
     {
       "type": "patch",
-      "reasoning": "Outlined key points for pupils to learn regarding the end of Roman Britain.",
+      "reasoning": "Key learning points are added to focus on the essential knowledge pupils should acquire during the lesson.",
       "value": {
         "type": "string-array",
         "op": "add",
         "path": "/keyLearningPoints",
         "value": [
-          "The Roman Empire withdrew from Britain around AD 410.",
-          "After the Romans left, Britain faced invasions from other groups.",
-          "Daily life changed as Roman structures and systems fell into disuse.",
-          "Archaeologists study artefacts to learn about this period.",
-          "The end of Roman rule marked the start of new cultural influences in Britain."
+          "The Romans left Britain around AD 410 due to pressures elsewhere in the Roman Empire.",
+          "After the Romans left, Britain was more vulnerable to invasions by groups such as the Saxons.",
+          "The Roman departure led to changes in Britain's infrastructure and society, such as the decline of Roman towns.",
+          "Different groups in Britain adapted in various ways after the Romans left, leading to new cultures and societies."
         ]
       },
       "status": "complete"
     },
     {
       "type": "patch",
-      "reasoning": "Addressed common misconceptions about the end of Roman Britain.",
+      "reasoning": "Identified misconceptions to address common errors or misunderstandings pupils might have about the topic.",
       "value": {
         "type": "misconceptions",
         "op": "add",
         "path": "/misconceptions",
         "value": [
           {
-            "misconception": "The Romans left Britain because they were defeated by the Britons",
-            "description": "The Romans left due to pressures elsewhere in the Empire, not due to defeat in Britain. Discuss the political and military reasons for their departure."
+            "misconception": "The Romans were forced to leave Britain by the Saxons",
+            "description": "Explain that the Romans left due to pressures in other parts of their empire, not directly because of the Saxons."
           },
           {
-            "misconception": "All Roman structures disappeared immediately after they left",
-            "description": "Explain that while many Roman structures fell into disuse, some remained and were repurposed over time."
+            "misconception": "Roman roads and towns disappeared immediately after they left",
+            "description": "Clarify that while some Roman infrastructure declined, much of it remained and influenced later developments."
+          },
+          {
+            "misconception": "All Britons were sad to see the Romans leave",
+            "description": "Discuss how some groups may have seen the Roman departure as an opportunity to gain power or independence."
           }
         ]
       },
@@ -63,7 +65,7 @@
     },
     {
       "type": "patch",
-      "reasoning": "Selected important keywords for understanding the lesson topic.",
+      "reasoning": "Added keywords to help pupils understand and use essential vocabulary related to the lesson topic.",
       "value": {
         "type": "keywords",
         "op": "add",
@@ -71,23 +73,19 @@
         "value": [
           {
             "keyword": "Empire",
-            "definition": "A group of countries or regions controlled by one ruler or government"
-          },
-          {
-            "keyword": "Withdrawal",
-            "definition": "The act of leaving or pulling out from a place"
-          },
-          {
-            "keyword": "Archaeologist",
-            "definition": "A person who studies human history through excavation of sites and analysis of artefacts"
+            "definition": "A group of countries or regions that are controlled by one ruler or one government."
           },
           {
             "keyword": "Invasion",
-            "definition": "An instance of entering a place by force, especially to conquer it"
+            "definition": "The act of entering a place by force, in order to take control of it."
           },
           {
-            "keyword": "Artefact",
-            "definition": "An object made by a human, typically of cultural or historical interest"
+            "keyword": "Infrastructure",
+            "definition": "The basic physical systems of a country, such as roads and bridges."
+          },
+          {
+            "keyword": "Saxon",
+            "definition": "A member of a Germanic people who invaded and settled in Britain in the early Middle Ages."
           }
         ]
       },
