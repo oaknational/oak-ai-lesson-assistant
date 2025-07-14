@@ -1,3 +1,30 @@
+# [1.43.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.42.0...v1.43.0) (2025-06-26)
+
+
+### Bug Fixes
+
+* configure MathJax $$ delimiters as inline math ([#726](https://github.com/oaknational/oak-ai-lesson-assistant/issues/726)) ([bbba493](https://github.com/oaknational/oak-ai-lesson-assistant/commit/bbba493847300c6eae93db5308779280baa2799c))
+
+
+### Features
+
+* improve search params prompt wording AI-1313 ([#721](https://github.com/oaknational/oak-ai-lesson-assistant/issues/721)) ([1011a11](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1011a117962b69c7c2284a1ab8b89662d8c2caa6))
+* introduce quiz schema versioning with V1/V2 split ([#727](https://github.com/oaknational/oak-ai-lesson-assistant/issues/727)) ([6fbe075](https://github.com/oaknational/oak-ai-lesson-assistant/commit/6fbe075ebfb34c57e8be1f22d4a4c87be4812204))
+
+# [1.42.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.41.0...v1.42.0) (2025-06-19)
+
+
+### Bug Fixes
+
+* moderation retry ([#715](https://github.com/oaknational/oak-ai-lesson-assistant/issues/715)) ([718fd4c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/718fd4ce37d755d7743f7ab5d6afbbf0f24a1aca))
+
+
+### Features
+
+* add form validation ([#703](https://github.com/oaknational/oak-ai-lesson-assistant/issues/703)) ([cbd944b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cbd944b24f23e0fde6d102df1592bd1bac727c69))
+* teaching materials avo AI-1285 AI-1286 ([#713](https://github.com/oaknational/oak-ai-lesson-assistant/issues/713)) ([0775fb2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0775fb24e9bb7dca8a9dd28d57e0522659ee5062))
+* teaching materials dialog modals and slack notifications - AI-1255 ([#694](https://github.com/oaknational/oak-ai-lesson-assistant/issues/694)) ([15864e4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/15864e45ac2f7695db8a65f212571a169a147587))
+
 # [1.41.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.40.1...v1.41.0) (2025-06-12)
 
 

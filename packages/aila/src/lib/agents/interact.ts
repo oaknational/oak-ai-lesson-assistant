@@ -9,7 +9,7 @@ import {
   type CompletedLessonPlan,
   type LessonPlanKey,
   type LooseLessonPlan,
-  type Quiz,
+  type QuizV1,
 } from "../../protocol/schema";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { agents, sectionAgentMap } from "./agents";
@@ -94,8 +94,8 @@ export async function interact({
   messageHistoryWithProtocol: { role: "user" | "assistant"; content: string }[];
   onUpdate?: InteractCallback;
   customAgents: {
-    mathsStarterQuiz?: CustomAgentAsyncFn<Quiz>;
-    mathsExitQuiz?: CustomAgentAsyncFn<Quiz>;
+    mathsStarterQuiz?: CustomAgentAsyncFn<QuizV1>;
+    mathsExitQuiz?: CustomAgentAsyncFn<QuizV1>;
     fetchRagData: CustomAgentAsyncFn<CompletedLessonPlan[]>;
   };
   relevantLessons: AilaRagRelevantLesson[] | null;
@@ -111,7 +111,11 @@ export async function interact({
     data: { step: "routing", status: "started" },
   });
 
-  if (relevantLessons === null) {
+  const lessonHasDetails = Boolean(
+    document.title && document.keyStage && document.subject,
+  );
+
+  if (relevantLessons === null && lessonHasDetails) {
     /**
      * This means we haven't even tried to fetch relevant lessons yet
      * So we need to do that first, and present them to the user
@@ -134,7 +138,7 @@ export async function interact({
 
     const ailaMessage = ragData.length
       ? `If you would like to base your lesson on one of the following:\n${ragData.map((rl, i) => `${i + 1}. ${rl.title}`).join(`\n`)}\n\nPlease reply with the number of the lesson you would like to use as a base.\n\nOtherwise click 'continue'.`
-      : `We couldn't find any relevant lessons!!`;
+      : `We coudn't find any relevant lessons to base your lesson on. Are you happy to continue to create one from scratch?`;
     onUpdate?.({
       type: "complete",
       data: {
@@ -146,10 +150,13 @@ export async function interact({
     return { document, ailaMessage };
   }
 
-  const ragData = await customAgents.fetchRagData({
-    document,
-  });
+  const ragData = lessonHasDetails
+    ? await customAgents.fetchRagData({
+        document,
+      })
+    : [];
 
+  // Always route through the router first to handle any non-lesson-planning requests
   const routerResponse = await agentRouter({
     chatId,
     userId,
@@ -172,13 +179,71 @@ export async function interact({
         plan: null,
       },
     });
+
+    // Route end_turn through messageToUser agent for proper user-facing response
+    onUpdate?.({
+      type: "progress",
+      data: { step: "message", status: "started" },
+    });
+
+    const jsonDiff = JSON.stringify(compare(initialDocument, document));
+
+    const messageResult = await messageToUserAgent({
+      chatId,
+      userId,
+      document,
+      jsonDiff,
+      messageHistoryChatOnly,
+      routerDecision: {
+        type: "end_turn",
+        reason: routerResponse.result.reason,
+        context: routerResponse.result.context,
+      },
+    });
+
+    if (!messageResult) {
+      throw new Error("Message to user agent returned null");
+    }
+
     // Notify about completion
     onUpdate?.({
       type: "complete",
-      data: { document, ailaMessage: routerResponse.result.message },
+      data: { document, ailaMessage: messageResult.message },
     });
 
-    return { document, ailaMessage: routerResponse.result.message };
+    return { document, ailaMessage: messageResult.message };
+  }
+
+  // If router decided to proceed with lesson planning, check if we need to show RAG options
+  if (relevantLessons === null && lessonHasDetails) {
+    /**
+     * This means we haven't even tried to fetch relevant lessons yet
+     * So we need to do that first, and present them to the user
+     * to decide if they want to use one of them as a base.
+     */
+    onUpdate?.({
+      type: "progress",
+      data: {
+        step: "routing",
+        status: "completed",
+        plan: null,
+      },
+    });
+
+    // @todo handle case when no relevant lessons are found
+
+    const ailaMessage = ragData.length
+      ? `If you would like to base your lesson on one of the following:\n${ragData.map((rl, i) => `${i + 1}. ${rl.title}`).join(`\n`)}\n\nPlease reply with the number of the lesson you would like to use as a base.\n\nOtherwise click 'continue'.`
+      : `We couldn't find any relevant lessons to base your lesson on. Are you happy to continue to create one from scratch?`;
+    onUpdate?.({
+      type: "complete",
+      data: {
+        document,
+        ailaMessage,
+      },
+    });
+
+    return { document, ailaMessage };
   }
 
   // Notify about completed routing

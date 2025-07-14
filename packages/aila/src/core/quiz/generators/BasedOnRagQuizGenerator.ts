@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
-  Quiz,
+  QuizV1,
 } from "../../../protocol/schema";
 import type { QuizQuestionWithRawJson } from "../interfaces";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";

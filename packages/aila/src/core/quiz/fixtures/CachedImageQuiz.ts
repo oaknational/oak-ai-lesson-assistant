@@ -1,5 +1,4 @@
 import type { PatchDocument } from "../../../protocol/jsonPatchProtocol";
-import type { Quiz } from "../../../protocol/schema";
 import type { QuizQuestionWithRawJson } from "../interfaces";
 
 export const cachedQuiz: QuizQuestionWithRawJson[] = [
@@ -252,7 +251,7 @@ export const cachedQuiz: QuizQuestionWithRawJson[] = [
   },
 ];
 
-export const cachedExitQuizPatch: PatchDocument = {
+export const cachedExitQuizV1Patch: PatchDocument = {
   type: "patch",
   reasoning: "adding maths quiz because i need to teach the kids about this",
   value: {

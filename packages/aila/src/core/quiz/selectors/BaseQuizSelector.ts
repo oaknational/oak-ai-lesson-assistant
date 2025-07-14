@@ -1,4 +1,4 @@
-import type { QuizQuestion } from "../../../protocol/schema";
+import type { QuizV1Question } from "../../../protocol/schema";
 import type {
   BaseType,
   MaxRatingFunctionApplier,

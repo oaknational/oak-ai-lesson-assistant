@@ -1,6 +1,6 @@
-import type { Quiz } from "../../protocol/schema";
+import type { QuizV1 } from "../../protocol/schema";
 
-export const mathsQuizFixture: Quiz = [
+export const mathsQuizFixture: QuizV1 = [
   {
     question: "How many degrees in 2 right angles?",
     answers: ["180°"],

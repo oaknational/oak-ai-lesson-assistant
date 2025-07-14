@@ -116,7 +116,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
       relevantLessonPlans = await fetchRagContent({
         title: title ?? "unknown",
         subject,
-        topic,
+        topic: topic ?? undefined,
         keyStage,
         id: chatId,
         k:

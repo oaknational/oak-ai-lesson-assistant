@@ -28,7 +28,7 @@ const AdditionalMaterialsError = ({
       $flexDirection="column"
       $justifyContent="space-between"
     >
-      <OakP $mb={"space-between-xl"}>
+      <OakP $font="body-2" $mb={"space-between-xl"}>
         {`An error occurred while generating your ${docTypeDisplayName}.`}
       </OakP>
       <OakFlex

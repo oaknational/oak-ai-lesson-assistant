@@ -14,19 +14,19 @@ import { z } from "zod";
 import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
 import {
   JsonPatchDocumentSchema,
-  PatchQuiz,
+  PatchQuizV1,
 } from "../../../protocol/jsonPatchProtocol";
-import type { RawQuiz } from "../../../protocol/rawQuizSchema";
-import { keysToCamelCase } from "../../../protocol/rawQuizSchema";
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
-  Quiz,
   QuizOperationType,
   QuizPath,
-  QuizQuestion,
+  QuizV1,
+  QuizV1Question,
 } from "../../../protocol/schema";
-import { QuizQuestionSchema } from "../../../protocol/schema";
+import { QuizV1QuestionSchema } from "../../../protocol/schema";
+import type { RawQuiz } from "../../../protocol/schemas/quiz/conversion/rawQuizIngest";
+import { keysToCamelCase } from "../../../protocol/schemas/quiz/conversion/rawQuizIngest";
 import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
 import type {
   AilaQuizGeneratorService,
@@ -172,7 +172,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     quizType: QuizPath = "/starterQuiz",
   ): Promise<JsonPatchDocument> {
     // Get the questions by searching for the questions with the custom IDs
-    const quizQuestions: Quiz =
+    const quizQuestions: QuizV1 =
       await this.questionArrayFromCustomIds(customIds);
     const patch = this.quizToJsonPatch(quizQuestions, quizType);
     return patch;
@@ -551,17 +551,17 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   }
 
   protected quizToJsonPatch(
-    quizQuestions: QuizQuestion[],
+    quizQuestions: QuizV1Question[],
     quizType: QuizPath = "/starterQuiz",
     quizOperationType: QuizOperationType = "add",
   ): JsonPatchDocument {
-    const quizPatchObject: z.infer<typeof PatchQuiz> = {
+    const quizPatchObject: z.infer<typeof PatchQuizV1> = {
       op: quizOperationType,
       path: quizType,
       value: quizQuestions,
     };
 
-    const result = PatchQuiz.safeParse(quizPatchObject);
+    const result = PatchQuizV1.safeParse(quizPatchObject);
     if (!result.success) {
       log.error("Failed to validate patch object");
       log.error("Failed Object: ", JSON.stringify(quizPatchObject, null, 2));
@@ -586,11 +586,11 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     log.info("FULL_QUIZ_PATCH: ", patch);
     return patch;
   }
-  private parseQuizQuestion(jsonString: string): QuizQuestion | null {
+  private parseQuizQuestion(jsonString: string): QuizV1Question | null {
     try {
       const data = JSON.parse(jsonString);
 
-      return QuizQuestionSchema.parse(data);
+      return QuizV1QuestionSchema.parse(data);
     } catch (error) {
       if (error instanceof z.ZodError) {
         log.error("Validation error:", error.errors);

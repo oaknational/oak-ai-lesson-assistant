@@ -9,7 +9,7 @@ import type { z } from "zod";
 import type {
   LooseLessonPlan,
   QuizPath,
-  QuizQuestion,
+  QuizV1Question,
 } from "../../../protocol/schema";
 import { type BaseSchema, type BaseType } from "../ChoiceModels";
 import { evaluateQuiz, evaluateQuizReasoningModel } from "../OpenAIRanker";
@@ -22,7 +22,7 @@ const log = aiLogger("aila:quiz");
 export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
   implements AilaQuizReranker<T>
 {
-  abstract rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]>;
+  abstract rerankQuiz(quizzes: QuizV1Question[][]): Promise<number[]>;
   public ratingSchema?: T;
   public quizType?: QuizPath;
 

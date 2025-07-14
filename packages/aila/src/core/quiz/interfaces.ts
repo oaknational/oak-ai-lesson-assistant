@@ -2,14 +2,13 @@ import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import type * as z from "zod";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
-import type { RawQuiz } from "../../protocol/rawQuizSchema";
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
-  Quiz,
   QuizPath,
-  QuizQuestion,
 } from "../../protocol/schema";
+import type { RawQuiz } from "../../protocol/schemas/quiz/conversion/rawQuizIngest";
+import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
 import type {
   BaseType,
   MaxRatingFunctionApplier,
@@ -140,7 +139,7 @@ export interface QuizQuestionTextOnlySource {
   };
 }
 
-export interface QuizQuestionWithRawJson extends QuizQuestion {
+export interface QuizQuestionWithRawJson extends QuizV1Question {
   rawQuiz: NonNullable<RawQuiz>;
 }
 

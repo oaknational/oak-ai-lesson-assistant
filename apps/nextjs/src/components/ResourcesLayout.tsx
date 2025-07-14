@@ -8,7 +8,6 @@ import {
 
 import { DemoBanner } from "@/components/AppComponents/Chat/demo-banner";
 import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
-import { toSentenceCase } from "@/utils/toSentenceCase";
 
 import { useDemoUser } from "./ContextProviders/Demo";
 import HeaderManager from "./HeaderManager";
@@ -64,40 +63,42 @@ const ResourcesLayout = ({
           $borderRadius="border-radius-m"
           $position={"fixed"}
           $bottom={"all-spacing-0"}
-          $top="all-spacing-17"
+          $top="all-spacing-14"
           $left="all-spacing-4"
           $right="all-spacing-4"
           $width="unset"
-          $overflowY={"scroll"}
+          $overflowY={"auto"}
           $mb="space-between-xxxl"
           $pb="inner-padding-xl"
           $maxWidth={"all-spacing-23"}
         >
-          <OakBox $pa={["inner-padding-xl", "inner-padding-xl4"]}>
+          <OakBox
+            $ph={["inner-padding-xl", "inner-padding-xl8"]}
+            $pv={["inner-padding-xl", "inner-padding-xl4"]}
+          >
             <OakFlex
               $bb="border-solid-s"
               $borderColor="grey40"
               $pb="inner-padding-l"
               $mb="space-between-m"
               $flexDirection="column"
-              $gap="all-spacing-4"
             >
               <OakBox
-                $background="lemon50"
+                $background="bg-decorative2-subdued"
                 $ph="inner-padding-m"
                 $pv="inner-padding-xs"
                 $borderRadius="border-radius-circle"
                 $width="fit-content"
+                $mb={"space-between-m"}
               >
                 <OakP $font="body-2">
-                  Step {step} of 4{" "}
-                  {docTypeName && `- ${toSentenceCase(docTypeName)}`}
+                  {step === 4 ? docTypeName : `Step ${step} of 4`}
                 </OakP>
               </OakBox>
               <OakHeading as="h1" tag="h1" $font="heading-5">
                 {title}
               </OakHeading>
-              <OakP $font="body-2" $color="grey70">
+              <OakP $mv="space-between-ssx" $font="body-2" $color="grey70">
                 {subTitle}
               </OakP>
             </OakFlex>

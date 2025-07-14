@@ -7,11 +7,11 @@ import { aiLogger } from "@oakai/logger";
 
 import { useUser } from "@clerk/nextjs";
 import {
-  OakBox,
   OakFlex,
-  OakHeading,
+  OakLI,
   OakP,
   OakPrimaryButton,
+  OakUL,
 } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 import * as Sentry from "@sentry/nextjs";
@@ -19,15 +19,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 
-import { useDemoUser } from "@/components/ContextProviders/Demo";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
 
-import { useDialog } from "../DialogContext";
-import ChatPanelDisclaimer from "./chat-panel-disclaimer";
-import EmptyScreenAccordion from "./empty-screen-accordion";
+import ChatPanelDisclaimer from "../chat-panel-disclaimer";
+import EmptyScreenAccordion from "../empty-screen-accordion";
+import { createStartingPromptFromSearchParams } from "./search-params-utils";
 
 const log = aiLogger("chat");
 
@@ -38,6 +37,15 @@ export const exampleMessages = [
       "Create a lesson plan about the end of Roman Britain for key stage 3 history",
   },
 ];
+
+// default styling is being overridden here by tailwind, we can remove this when re removing tailwind
+const StyledUL = styled(OakUL)`
+  list-style-type: disc;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  /* margin-left: 40px; */
+  padding-left: 20px;
+`;
 
 type AilaStartProps = {
   keyStage?: string;
@@ -52,11 +60,11 @@ export function AilaStart({
   unitTitle,
   searchExpression,
 }: Readonly<AilaStartProps>) {
-  const { user } = useUser();
-  const userFirstName = user?.firstName;
   const { trackEvent } = useAnalytics();
   const [input, setInput] = useState("");
   const router = useRouter();
+  const { track } = useAnalytics();
+  const { user } = useUser();
 
   const createAppSession = trpc.chat.appSessions.create.useMutation();
   const trpcUtils = trpc.useUtils();
@@ -139,20 +147,19 @@ export function AilaStart({
           $gap="space-between-l"
           $ph={["inner-padding-l", "inner-padding-none"]}
         >
-          <OakFlex $flexDirection="column" $gap="all-spacing-2">
-            <OakHeading tag="h1" $font="heading-5">
-              Hello{userFirstName ? ", " + userFirstName : ""}
-            </OakHeading>
-            <OakP>
-              I&apos;m Aila, Oak&apos;s AI lesson assistant. Tell me what you
-              want to create.
-            </OakP>
-          </OakFlex>
           <OakFlex $flexDirection={["column", "row"]} $gap="space-between-l">
-            <Card>
+            <OakFlex
+              $background={"bg-primary"}
+              $flexDirection="column"
+              $gap="all-spacing-2"
+              $pa="inner-padding-xl2"
+            >
               <OakFlex $flexDirection="column" $gap="all-spacing-2">
-                <OakP $font="heading-5">Create an adaptable lesson</OakP>
-                <OakP>It takes 5 minutes to access these downloads.</OakP>
+                <OakP $font="heading-5">Create a lesson with AI</OakP>
+                <OakP $font="body-2">
+                  Aila will guide you step-by-step to create and download a
+                  tailor-made lesson, including:
+                </OakP>
               </OakFlex>
               <EmptyScreenAccordion />
               <OakPrimaryButton
@@ -161,25 +168,39 @@ export function AilaStart({
                 iconName="arrow-right"
                 isTrailingIcon={true}
               >
-                Create lesson
+                Create a lesson
               </OakPrimaryButton>
-            </Card>
+            </OakFlex>
             <Card>
               <OakFlex $flexDirection="column" $gap="all-spacing-2">
-                <OakP $font="heading-5">Create individual resources</OakP>
+                <OakP $font="heading-5">Create teaching materials with AI</OakP>
                 <OakP>
-                  Create glossaries, quizzes, comprehension tasks to enhance
-                  existing lessons, provide support for individual SEND
-                  learners, create stretch tasks and more.
+                  Enhance lessons with a range of teaching materials, including:
                 </OakP>
+                <StyledUL>
+                  <OakLI $mv={"space-between-xs"}>Glossaries</OakLI>
+                  <OakLI $mv={"space-between-xs"}>Comprehension tasks</OakLI>
+                  <OakLI $mt={"space-between-xs"}>Quizzes</OakLI>
+                </StyledUL>
               </OakFlex>
               <OakPrimaryButton
                 element={Link}
-                href="/aila/resources"
+                href="/aila/teaching-materials"
                 iconName="arrow-right"
                 isTrailingIcon={true}
+                onClick={() => {
+                  track.createTeachingMaterialsInitiated({
+                    platform: "aila-beta",
+                    product: "ai lesson assistant",
+                    engagementIntent: "use",
+                    componentType: "create_additional_materials_button",
+                    eventVersion: "2.0.0",
+                    analyticsUseCase: "Teacher",
+                    isLoggedIn: Boolean(user),
+                  });
+                }}
               >
-                Create resources
+                Create teaching materials
               </OakPrimaryButton>
             </Card>
           </OakFlex>
@@ -217,32 +238,3 @@ const OakFlex50 = styled(OakFlex)`
     width: 100%;
   }
 `;
-
-function createStartingPromptFromSearchParams(
-  keyStage?: string,
-  subject?: string,
-  unitTitle?: string,
-  searchExpression?: string,
-): string {
-  let prompt = "Create a lesson plan";
-
-  if (keyStage) {
-    prompt += ` for ${keyStage}`;
-  }
-
-  if (subject) {
-    prompt += ` about ${subject}`;
-  }
-
-  if (unitTitle) {
-    prompt += `, focusing on the unit "${unitTitle}"`;
-  }
-
-  if (searchExpression) {
-    prompt += ` titled "${searchExpression}"`;
-  }
-
-  prompt += ".";
-
-  return prompt.trim();
-}

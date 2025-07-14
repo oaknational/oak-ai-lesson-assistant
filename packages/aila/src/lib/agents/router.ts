@@ -4,12 +4,10 @@ import { aiLogger } from "@oakai/logger";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
-import {
-  type AilaRagRelevantLesson,
-  type LooseLessonPlan,
-} from "../../protocol/schema";
+import { type LooseLessonPlan } from "../../protocol/schema";
 import { sectionKeysSchema } from "./lessonPlanSectionGroups";
 import { routerInstructions } from "./prompts";
+import { identity } from "./prompts/shared/identity";
 
 const log = aiLogger("aila:agents:prompts");
 
@@ -24,14 +22,26 @@ const responseSchema = z.object({
           context: z
             .string()
             .describe(
-              "Explicit guidance notes for downstream agent if applicable, otherwise empty string",
+              "Explicit guidance notes for downstream agent if applicable, otherwise empty string. User AGENT_TO_AGENT voice.",
             ),
         }),
       ),
     }),
     z.object({
       type: z.literal("end_turn"),
-      message: z.string().describe("Message to the user"),
+      reason: z
+        .enum([
+          "out_of_scope", // Request is completely unrelated to lesson planning
+          "clarification_needed", // Request is ambiguous or unclear
+          "ethical_concern", // Request violates content policies
+          "capability_limitation", // Request is lesson-related but technically impossible
+        ])
+        .describe("The reason for ending the turn"),
+      context: z
+        .string()
+        .describe(
+          "Context for the messageToUser agent to craft an appropriate response",
+        ),
     }),
   ]),
 });
@@ -72,7 +82,7 @@ export async function agentRouter({
   log.info("Router input:", input);
 
   const result = await openAIClient.responses.parse({
-    instructions: routerInstructions,
+    instructions: routerInstructions({ identity }),
     input,
     stream: false,
     model: "gpt-4.1-2025-04-14",

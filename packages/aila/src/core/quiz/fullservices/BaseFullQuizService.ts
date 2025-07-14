@@ -6,8 +6,7 @@ import type { z } from "zod";
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
-  Quiz,
-  QuizQuestion,
+  QuizV1Question,
 } from "../../../protocol/schema";
 import type { BaseType } from "../ChoiceModels";
 import { AilaRagQuizGenerator } from "../generators/AilaRagQuizGenerator";

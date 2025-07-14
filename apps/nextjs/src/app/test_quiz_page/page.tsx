@@ -1,12 +1,12 @@
-import {
-  type RawQuiz,
-  keysToCamelCase,
-} from "@oakai/aila/src/protocol/rawQuizSchema";
 import { isOakEmail } from "@oakai/core/src/utils/isOakEmail";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
 import LessonOverviewQuizContainer from "@/components/AppComponents/Chat/Quiz/LessonOverviewQuizContainer";
+import {
+  type RawQuiz,
+  keysToCamelCase,
+} from "@/components/AppComponents/Chat/Quiz/quizTypes";
 
 import rawQuizFixture from "./rawQuizFixture.json";
 

@@ -1,4 +1,4 @@
-import type { QuizQuestion } from "../../../protocol/schema";
+import type { QuizV1Question } from "../../../protocol/schema";
 import type { QuizQuestionWithRawJson } from "../interfaces";
 
 export const placeholderQuiz: QuizQuestionWithRawJson[] = [

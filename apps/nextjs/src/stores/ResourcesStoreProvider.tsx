@@ -2,6 +2,8 @@ import { createContext, useContext, useState } from "react";
 
 import { type ExtractState, type StoreApi, useStore } from "zustand";
 
+import useAnalytics from "@/lib/analytics/useAnalytics";
+
 import { createResourcesStore } from "./resourcesStore";
 import type { ResourcesState } from "./resourcesStore/types";
 
@@ -19,14 +21,16 @@ export const ResourcesStoresContext = createContext<
 
 export interface ResourcesStoresProviderProps {
   children: React.ReactNode;
+  initState?: Partial<ResourcesState>;
 }
 
 export const ResourcesStoresProvider: React.FC<
   ResourcesStoresProviderProps
-> = ({ children }) => {
+> = ({ children, initState }) => {
+  const { track } = useAnalytics();
   const [stores] = useState(() => {
     const storesObj: ResourcesStores = {
-      resources: createResourcesStore(),
+      resources: createResourcesStore(track, initState),
     };
     return storesObj;
   });

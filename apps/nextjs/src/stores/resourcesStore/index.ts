@@ -1,6 +1,9 @@
 import { create } from "zustand";
 
+import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
+
 import { logStoreUpdates } from "../zustandHelpers";
+import { handleAnalytics } from "./actionFunctions/handleAnalytics";
 import { handleCreateMaterialSession } from "./actionFunctions/handleCreateMaterialSession";
 import { handleDownload } from "./actionFunctions/handleDownload";
 import {
@@ -67,10 +70,14 @@ const DEFAULT_STATE = {
   refinementGenerationHistory: [],
 };
 
-export const createResourcesStore = () => {
+export const createResourcesStore = (
+  track: TrackFns,
+  initState?: Partial<ResourcesState>,
+) => {
   const resourcesStore = create<ResourcesState>()((set, get) => ({
     id: null,
     ...DEFAULT_STATE,
+    ...initState,
 
     actions: {
       // Setters
@@ -103,6 +110,9 @@ export const createResourcesStore = () => {
       undoRefinement: handleUndoRefinement(set, get),
 
       createMaterialSession: handleCreateMaterialSession(set, get),
+
+      // Analytics actions
+      analytics: handleAnalytics(set, get, track),
 
       // Reset store to default state
       resetToDefault: () =>

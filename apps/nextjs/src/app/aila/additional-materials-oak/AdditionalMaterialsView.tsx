@@ -78,7 +78,7 @@ const ResourcesContentsInner: FC<AdditionalMaterialsPageProps> = () => {
     0: <StepOne handleCreateSession={() => {}} />,
     1: <StepTwo handleSubmitLessonPlan={() => Promise.resolve()} />, // temp function to satisfy type
     2: <StepThree handleSubmit={() => null} />, // temp function to satisfy type
-    3: <StepFour />,
+    3: <StepFour handleRefineMaterial={(_refinementValue: string) => {}} />,
   };
   const stepNumberParsed = stepNumber as keyof typeof titleAreaContent;
   const title = titleAreaContent?.[stepNumberParsed]?.title ?? "";
