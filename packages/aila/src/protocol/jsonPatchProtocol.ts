@@ -25,7 +25,6 @@ import {
   MisconceptionsSchemaWithoutLength,
   QuizV1OptionalSchema,
   QuizV1Schema,
-  QuizV1SchemaWithoutLength,
   QuizV2MultipleChoiceOnlySchemaWithoutLength,
   QuizV2OptionalSchema,
   QuizV2Schema,

@@ -20,7 +20,7 @@ const isCorrectAnswer = (
 ): boolean => {
   if (!answers || answers.length === 0) return false;
 
-  const sortedAnswers = [...(answers || []), ...(distractors || [])].sort(
+  const sortedAnswers = [...(answers ?? []), ...(distractors ?? [])].sort(
     (a, b) => a.localeCompare(b),
   );
 

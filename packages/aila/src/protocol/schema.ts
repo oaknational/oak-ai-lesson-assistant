@@ -345,7 +345,7 @@ export const PriorKnowledgeSchema = z
   .array(z.string())
   .describe(LESSON_PLAN_DESCRIPTIONS.priorKnowledge);
 
-export const PriorKnowledgeSctrictMax5Schema =
+export const PriorKnowledgeStrictMax5Schema =
   PriorKnowledgeSchema.min(1).max(5);
 
 export const KeyLearningPointsSchema = z

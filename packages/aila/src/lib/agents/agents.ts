@@ -20,7 +20,7 @@ import {
   MisconceptionsSchema,
   MisconceptionsSchemaWithoutLength,
   PriorKnowledgeSchema,
-  PriorKnowledgeSctrictMax5Schema,
+  PriorKnowledgeStrictMax5Schema,
   QuizV2MultipleChoiceOnlySchemaWithoutLength,
   QuizV2MultipleChoiceOnlyStrictMax6Schema,
   SubjectSchema,
@@ -146,7 +146,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
     name: "priorKnowledge",
     prompt: priorKnowledgeInstructions({ identity }),
     schemaForLLM: PriorKnowledgeSchema,
-    schemaStrict: PriorKnowledgeSctrictMax5Schema,
+    schemaStrict: PriorKnowledgeStrictMax5Schema,
     extractRagData: (lp) => JSON.stringify(lp.priorKnowledge),
   },
   keyLearningPoints: {
