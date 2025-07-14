@@ -1,0 +1,46 @@
+
+> oak-ai-web-app@1.0.0 test-e2e /Users/adz/Documents/code/oak-ai-lesson-assistant-4
+> turbo test-e2e -- "--grep" "Full aila flow with Romans fixture"
+
+turbo 2.4.4
+
+• Packages in scope: @oakai/additional-materials, @oakai/aila, @oakai/api, @oakai/core, @oakai/db, @oakai/eslint-config, @oakai/exports, @oakai/ingest, @oakai/logger, @oakai/nextjs, @oakai/prettier-config, @oakai/rag
+• Running test-e2e in 12 packages
+• Remote caching disabled
+@oakai/nextjs:test-e2e: cache bypass, force executing aa50026a8aaa25bb
+@oakai/nextjs:test-e2e: 
+@oakai/nextjs:test-e2e: > @oakai/nextjs@1.0.0 test-e2e /Users/adz/Documents/code/oak-ai-lesson-assistant-4/apps/nextjs
+@oakai/nextjs:test-e2e: > pnpm with-env playwright test "--grep" "Full aila flow with Romans fixture"
+@oakai/nextjs:test-e2e: 
+@oakai/nextjs:test-e2e: 
+@oakai/nextjs:test-e2e: > @oakai/nextjs@1.0.0 with-env /Users/adz/Documents/code/oak-ai-lesson-assistant-4/apps/nextjs
+@oakai/nextjs:test-e2e: > dotenv -e ../../.env -- "playwright" "test" "--grep" "Full aila flow with Romans fixture"
+@oakai/nextjs:test-e2e: 
+@oakai/nextjs:test-e2e: 
+@oakai/nextjs:test-e2e: [2mRunning [22m4[2m tests using [22m2[2m workers[22m
+@oakai/nextjs:test-e2e: 
+@oakai/nextjs:test-e2e:   [32m✓[39m  [2m1 [22m[global-setup] › tests-e2e/config/global.setup.ts:4:6 › global setup[2m (375ms)[22m
+@oakai/nextjs:test-e2e:   [31m✘[39m  [2m2 [22m[31m[common-persona-setup] › tests-e2e/config/common-persona.setup.ts:21:6 › prepare common user with 'typical' variant[39m[2m (19.6s)[22m
+@oakai/nextjs:test-e2e: 
+@oakai/nextjs:test-e2e: 
+@oakai/nextjs:test-e2e: [31m  1) [common-persona-setup] › tests-e2e/config/common-persona.setup.ts:21:6 › prepare common user with 'typical' variant › Prepare user [39m
+@oakai/nextjs:test-e2e: 
+@oakai/nextjs:test-e2e:     TRPCClientError: Unexpected token '<', ..."          <pre>missi"... is not valid JSON
+@oakai/nextjs:test-e2e:     [2m    at Function.from (/Users/adz/Documents/code/oak-ai-lesson-assistant-4/node_modules/@trpc/client/dist/TRPCClientError-7e0c31e7.js:40:16)[22m
+@oakai/nextjs:test-e2e:     [2m    at /Users/adz/Documents/code/oak-ai-lesson-assistant-4/node_modules/@trpc/client/dist/httpUtils-4429f36e.js:130:52[22m
+@oakai/nextjs:test-e2e:     [2m[cause]: [22mSyntaxError: Unexpected token '<', ..."          <pre>missi"... is not valid JSON
+@oakai/nextjs:test-e2e: 
+@oakai/nextjs:test-e2e: [36m    attachment #1: trace (application/zip) [2m─────────────────────────────────────────────────────────[22m[39m
+@oakai/nextjs:test-e2e: [36m    tests-e2e/test-results/config-common-persona.setu-22ead-n-user-with-typical-variant-common-persona-setup/trace.zip[39m
+@oakai/nextjs:test-e2e: [36m    Usage:[39m
+@oakai/nextjs:test-e2e: 
+@oakai/nextjs:test-e2e: [36m        pnpm exec playwright show-trace tests-e2e/test-results/config-common-persona.setu-22ead-n-user-with-typical-variant-common-persona-setup/trace.zip[39m
+@oakai/nextjs:test-e2e: 
+@oakai/nextjs:test-e2e: [36m    [2m────────────────────────────────────────────────────────────────────────────────────────────────[22m[39m
+@oakai/nextjs:test-e2e: 
+@oakai/nextjs:test-e2e: [31m  1 failed[39m
+@oakai/nextjs:test-e2e: [31m    [common-persona-setup] › tests-e2e/config/common-persona.setup.ts:21:6 › prepare common user with 'typical' variant [39m
+@oakai/nextjs:test-e2e: [33m  2 did not run[39m
+@oakai/nextjs:test-e2e: [32m  1 passed[39m[2m (22.5s)[22m
+@oakai/nextjs:test-e2e: 
+@oakai/nextjs:test-e2e: [36m  Serving HTML report at http://localhost:9323. Press Ctrl+C to quit.[39m

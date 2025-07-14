@@ -1,0 +1,4283 @@
+diff --git a/apps/nextjs/src/app/api/fetch-owa-lesson/lessonTransformer.ts b/apps/nextjs/src/app/api/fetch-owa-lesson/lessonTransformer.ts
+index b62c6108..de45aea6 100644
+--- a/apps/nextjs/src/app/api/fetch-owa-lesson/lessonTransformer.ts
++++ b/apps/nextjs/src/app/api/fetch-owa-lesson/lessonTransformer.ts
+@@ -2,7 +2,7 @@ import type {
+   Keyword,
+   LooseLessonPlan,
+   Misconception,
+-  QuizQuestion,
++  QuizV1Question,
+ } from "@oakai/aila/src/protocol/schema";
+ 
+ import type { SyntheticUnitvariantLessonsByKs } from "@oaknational/oak-curriculum-schema/";
+@@ -22,7 +22,7 @@ type OwaLesson = z.infer<typeof lessonContentSchema>;
+ /**
+  * Transforms Oak's quiz format to the format expected by LessonPlanSchemaWhilstStreaming
+  */
+-export function transformQuiz(quiz: OwaQuizQuestion[]): QuizQuestion[] {
++export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV1Question[] {
+   const quizData = z.array(quizQuestionSchema).parse(quiz);
+   if (!quizData || !Array.isArray(quizData)) {
+     return [];
+diff --git a/apps/nextjs/src/app/test_quiz_page/page.tsx b/apps/nextjs/src/app/test_quiz_page/page.tsx
+index 36a0540a..0ead45b2 100644
+--- a/apps/nextjs/src/app/test_quiz_page/page.tsx
++++ b/apps/nextjs/src/app/test_quiz_page/page.tsx
+@@ -1,12 +1,10 @@
+-import {
+-  type RawQuiz,
+-  keysToCamelCase,
+-} from "@oakai/aila/src/protocol/rawQuizSchema";
++import { convertRawQuizToV2 } from "@oakai/aila/src/protocol/schemas/quiz/conversion/rawQuizIngest";
++import { type RawQuiz } from "@oakai/aila/src/protocol/schemas/quiz/rawQuiz";
+ import { isOakEmail } from "@oakai/core/src/utils/isOakEmail";
+ 
+ import { auth, clerkClient } from "@clerk/nextjs/server";
+ 
+-import LessonOverviewQuizContainer from "@/components/AppComponents/Chat/Quiz/LessonOverviewQuizContainer";
++import { LessonOverviewQuizContainer } from "@/components/Quiz/LessonOverviewQuizContainer";
+ 
+ import rawQuizFixture from "./rawQuizFixture.json";
+ 
+@@ -21,11 +19,8 @@ export default async function TestQuizPage() {
+     throw new Error("User is not an Oak user");
+   }
+ 
+-  return (
+-    <LessonOverviewQuizContainer
+-      questions={keysToCamelCase(rawQuizFixture) as NonNullable<RawQuiz>}
+-      imageAttribution={[]}
+-      isMathJaxLesson={true}
+-    />
+-  );
++  const rawQuiz = rawQuizFixture as NonNullable<RawQuiz>;
++  const quizV2 = convertRawQuizToV2(rawQuiz);
++
++  return <LessonOverviewQuizContainer quiz={quizV2} isMathJaxLesson={true} />;
+ }
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/LessonOverviewQuizContainer/index.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/LessonOverviewQuizContainer/index.tsx
+deleted file mode 100644
+index 5b1ad151..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/LessonOverviewQuizContainer/index.tsx
++++ /dev/null
+@@ -1 +0,0 @@
+-export { default } from "./LessonOverviewQuizContainer";
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizImage/QuizImage.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizImage/QuizImage.tsx
+deleted file mode 100644
+index ca48566a..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizImage/QuizImage.tsx
++++ /dev/null
+@@ -1,28 +0,0 @@
+-import type { FC } from "react";
+-import { useState } from "react";
+-
+-import { OakFlex } from "@oaknational/oak-components";
+-
+-import QuizOakImage from "../QuizOakImage";
+-import type { StemImageObject } from "../quizTypes";
+-import { calcDims } from "../quizUtils";
+-
+-type ImageProps = { src: StemImageObject["imageObject"]; alt?: string };
+-
+-const QuizImage: FC<ImageProps> = ({ src, alt }) => {
+-  const [dims, setDims] = useState(calcDims(src.width, src.height));
+-
+-  return (
+-    <OakFlex
+-      $overflow={"hidden"}
+-      $position={"relative"}
+-      $minWidth={dims.width ? undefined : "all-spacing-14"}
+-      $minHeight={dims.height ? undefined : "all-spacing-14"}
+-      $justifyContent={"center"}
+-    >
+-      <QuizOakImage src={src} dims={dims} setDims={setDims} alt={alt} />
+-    </OakFlex>
+-  );
+-};
+-
+-export default QuizImage;
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizImage/index.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizImage/index.tsx
+deleted file mode 100644
+index f6dcf6cb..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizImage/index.tsx
++++ /dev/null
+@@ -1 +0,0 @@
+-export { default } from "./QuizImage";
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizImageAnswer/QuizImageAnswer.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizImageAnswer/QuizImageAnswer.tsx
+deleted file mode 100644
+index 4dc06248..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizImageAnswer/QuizImageAnswer.tsx
++++ /dev/null
+@@ -1,68 +0,0 @@
+-import type { FC } from "react";
+-import { useState } from "react";
+-
+-import { OakFlex, OakIcon } from "@oaknational/oak-components";
+-import { VisuallyHidden } from "@radix-ui/themes";
+-
+-import QuizOakImage from "../QuizOakImage";
+-import type { StemImageObject } from "../quizTypes";
+-import { calcDims, removeMarkdown } from "../quizUtils";
+-
+-type ImageProps = {
+-  src: StemImageObject["imageObject"];
+-  alt?: string;
+-  answerIsCorrect?: boolean;
+-};
+-
+-const QuizImageAnswer: FC<ImageProps> = ({ src, alt, answerIsCorrect }) => {
+-  const [dims, setDims] = useState(calcDims(src.width, src.height));
+-  const containerBackgroundColor = answerIsCorrect ? "lemon50" : "white";
+-  return (
+-    <OakFlex
+-      // $borderRadius={8}
+-      $height={"100%"}
+-      // $pa={8}
+-      $background={containerBackgroundColor}
+-    >
+-      {answerIsCorrect && (
+-        <VisuallyHidden>Correct Answer: {removeMarkdown(alt)}</VisuallyHidden>
+-      )}
+-      <OakFlex
+-        $background={containerBackgroundColor}
+-        $alignItems={"center"}
+-        // $minWidth={32}
+-        aria-hidden
+-      >
+-        {answerIsCorrect && (
+-          <OakIcon
+-            data-testid={"answer-tick"}
+-            iconName={"tick"}
+-            $width={"all-spacing-6"}
+-            $height={"all-spacing-6"}
+-          />
+-        )}
+-      </OakFlex>
+-      <OakFlex
+-        // $ba={1}
+-        $background={"white"}
+-        // $borderRadius={8}
+-      >
+-        <OakFlex
+-          // $ph={10}
+-          // $pv={16}
+-          $overflow={"hidden"}
+-          $position={"relative"}
+-          // $minWidth={dims.width ? undefined : 96}
+-          // $minHeight={dims.height ? undefined : 96}
+-          $justifyContent={"center"}
+-          $borderColor={"grey50"}
+-          // $borderRadius={8}
+-        >
+-          <QuizOakImage src={src} dims={dims} setDims={setDims} alt={alt} />
+-        </OakFlex>
+-      </OakFlex>
+-    </OakFlex>
+-  );
+-};
+-
+-export default QuizImageAnswer;
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizImageAnswer/index.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizImageAnswer/index.tsx
+deleted file mode 100644
+index be6397e7..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizImageAnswer/index.tsx
++++ /dev/null
+@@ -1 +0,0 @@
+-export { default } from "./QuizImageAnswer";
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizOakImage/QuizOakImage.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizOakImage/QuizOakImage.tsx
+deleted file mode 100644
+index 1dd43136..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizOakImage/QuizOakImage.tsx
++++ /dev/null
+@@ -1,60 +0,0 @@
+-import type { Dispatch, FC, SetStateAction } from "react";
+-
+-import { OakImage } from "@oaknational/oak-components";
+-
+-import type { StemImageObject } from "../quizTypes";
+-import { calcDims } from "../quizUtils";
+-
+-type QuizOakImageProps = {
+-  src: StemImageObject["imageObject"];
+-  alt?: string;
+-  dims:
+-    | {
+-        width: number;
+-        height: number;
+-      }
+-    | {
+-        width: undefined;
+-        height: undefined;
+-      };
+-  setDims: Dispatch<
+-    SetStateAction<
+-      | {
+-          width: number;
+-          height: number;
+-        }
+-      | {
+-          width: undefined;
+-          height: undefined;
+-        }
+-    >
+-  >;
+-};
+-
+-const QuizOakImage: FC<QuizOakImageProps> = ({ src, alt, dims, setDims }) => {
+-  return dims.width && dims.height ? (
+-    <OakImage
+-      // $objectPosition={["center", "left"]}
+-      width={dims.width}
+-      height={dims.height}
+-      src={src.secureUrl}
+-      alt={alt ?? ""}
+-      style={{ objectFit: "contain" }}
+-    />
+-  ) : (
+-    <OakImage
+-      // $objectPosition={["center", "left"]}
+-      fill
+-      src={src.secureUrl}
+-      alt={alt ?? ""}
+-      style={{ objectFit: "contain" }}
+-      onLoad={(e) => {
+-        setDims(
+-          calcDims(e.currentTarget.naturalWidth, e.currentTarget.naturalHeight),
+-        );
+-      }}
+-    />
+-  );
+-};
+-
+-export default QuizOakImage;
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizOakImage/index.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizOakImage/index.tsx
+deleted file mode 100644
+index c1728caf..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizOakImage/index.tsx
++++ /dev/null
+@@ -1 +0,0 @@
+-export { default } from "./QuizOakImage";
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsList/index.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsList/index.tsx
+deleted file mode 100644
+index bc7abe84..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsList/index.tsx
++++ /dev/null
+@@ -1 +0,0 @@
+-export { default } from "./QuestionsList";
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsListItem/QuizQuestionsListItem.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsListItem/QuizQuestionsListItem.tsx
+deleted file mode 100644
+index 14362fba..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsListItem/QuizQuestionsListItem.tsx
++++ /dev/null
+@@ -1,74 +0,0 @@
+-import type { FC } from "react";
+-import { Fragment } from "react";
+-
+-import { OakFlex } from "@oaknational/oak-components";
+-
+-import { MathJaxWrap } from "@/components/MathJax";
+-
+-import { QuizQuestionsMCAnswers } from "../QuizQuestionsMCAnswers";
+-import { QuizQuestionsMatchAnswers } from "../QuizQuestionsMatchAnswers";
+-import { QuizQuestionsOrderAnswers } from "../QuizQuestionsOrderAnswers";
+-import { QuizQuestionsQuestionStem } from "../QuizQuestionsQuestionStem";
+-import { QuizQuestionsShortAnswers } from "../QuizQuestionsShortAnswers";
+-import type { RawQuiz } from "../quizTypes";
+-
+-export type QuizQuestionsListItemProps = {
+-  question: NonNullable<RawQuiz>[number];
+-  index: number;
+-  isMathJaxLesson: boolean;
+-};
+-
+-const QuizQuestionsListItem: FC<QuizQuestionsListItemProps> = (props) => {
+-  const { question, index, isMathJaxLesson } = props;
+-  const { questionStem, answers } = question;
+-  const MathJaxWrapper = isMathJaxLesson ? MathJaxWrap : Fragment;
+-
+-  return (
+-    <MathJaxWrapper>
+-      <OakFlex
+-        $flexDirection={"column"}
+-        $width={"100%"}
+-        role="listitem"
+-        $gap={"all-spacing-2"}
+-      >
+-        <QuizQuestionsQuestionStem
+-          questionStem={questionStem}
+-          index={index}
+-          showIndex={question.questionType !== "explanatory-text"}
+-        />
+-
+-        {answers && (
+-          <>
+-            {answers["multiple-choice"] &&
+-              answers["multiple-choice"].length > 0 && (
+-                <QuizQuestionsMCAnswers
+-                  answers={answers["multiple-choice"]}
+-                  questionNumber={index}
+-                />
+-              )}
+-
+-            {answers["match"] && answers["match"].length > 0 && (
+-              <QuizQuestionsMatchAnswers
+-                answers={answers["match"]}
+-                questionNumber={index}
+-              />
+-            )}
+-
+-            {answers["order"] && answers["order"].length > 0 && (
+-              <QuizQuestionsOrderAnswers
+-                answers={answers["order"]}
+-                questionNumber={index}
+-              />
+-            )}
+-
+-            {answers["short-answer"] && answers["short-answer"].length > 0 && (
+-              <QuizQuestionsShortAnswers answers={answers["short-answer"]} />
+-            )}
+-          </>
+-        )}
+-      </OakFlex>
+-    </MathJaxWrapper>
+-  );
+-};
+-
+-export default QuizQuestionsListItem;
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsMCAnswers/QuizQuestionsMCAnswers.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsMCAnswers/QuizQuestionsMCAnswers.tsx
+deleted file mode 100644
+index 9873a315..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsMCAnswers/QuizQuestionsMCAnswers.tsx
++++ /dev/null
+@@ -1,123 +0,0 @@
+-import {
+-  OakBox,
+-  OakCodeRenderer,
+-  OakFlex,
+-  OakIcon,
+-  OakTypography,
+-} from "@oaknational/oak-components";
+-import { VisuallyHidden } from "@radix-ui/themes";
+-
+-import QuizImage from "../QuizImage";
+-import QuizImageAnswer from "../QuizImageAnswer";
+-import type { MCAnswer } from "../quizTypes";
+-import { removeMarkdown } from "../quizUtils";
+-
+-export const QuizQuestionsMCAnswers = (props: {
+-  answers: MCAnswer[];
+-  questionNumber: number;
+-}) => {
+-  const { answers, questionNumber } = props;
+-
+-  const containsImages =
+-    answers.filter(
+-      (choice) =>
+-        choice.answer.filter((answerItem) => answerItem?.type === "image")
+-          .length > 0,
+-    ).length > 0;
+-
+-  return (
+-    <OakFlex
+-      $flexDirection={"column"}
+-      $alignItems={containsImages ? undefined : "start"}
+-      role="list"
+-    >
+-      {answers.map((choice, i) => {
+-        const imageAnswers = choice.answer.filter(
+-          (answerItem) => answerItem?.type === "image",
+-        );
+-        const encloseAnswer = imageAnswers.length > 0;
+-        const imageAnswer =
+-          choice.answer.length === 1 && imageAnswers.length === 1;
+-
+-        return (
+-          <OakFlex
+-            key={`q-${questionNumber}-answer-${i}`}
+-            $flexDirection={"column"}
+-            // $gap={8}
+-            $alignItems={encloseAnswer ? "center" : "flex-start"}
+-            $borderStyle="solid"
+-            $borderColor="black"
+-            // $borderRadius={8}
+-            role="listitem"
+-            // $ph={encloseAnswer && !imageAnswer ? 10 : 0}
+-            // $pv={encloseAnswer && !imageAnswer ? 16 : 0}
+-            // $ba={encloseAnswer && !imageAnswer ? 1 : 0}
+-            // $maxWidth={encloseAnswer ? 450 : "100%"}
+-          >
+-            {choice.answer.map((answerItem, j) => {
+-              if (!answerItem) return null;
+-              if (answerItem.type === "text" && !choice.answerIsCorrect) {
+-                return (
+-                  // <Typography
+-                  //   key={`q-${questionNumber}-answer-element-${j}`}
+-                  //   $font={["body-2", "body-1"]}
+-                  //   $ph={40}
+-                  // >
+-                  <OakCodeRenderer
+-                    string={removeMarkdown(answerItem.text)}
+-                    $font="code-3"
+-                    $mt={"space-between-none"}
+-                  />
+-                  // </Typography>
+-                );
+-              } else if (answerItem.type === "text" && choice.answerIsCorrect) {
+-                return (
+-                  <OakFlex
+-                    key={`q-${questionNumber}-answer-element-${j}`}
+-                    $background={"lemon50"}
+-                    $borderRadius="border-radius-m2"
+-                    $ph="inner-padding-xs"
+-                    $alignItems={"center"}
+-                  >
+-                    <OakBox $minWidth="all-spacing-7" aria-hidden>
+-                      <OakIcon
+-                        iconName={"tick"}
+-                        $width={"all-spacing-6"}
+-                        $height={"all-spacing-6"}
+-                      />
+-                    </OakBox>
+-                    <VisuallyHidden>
+-                      Correct answer: {removeMarkdown(answerItem.text)}
+-                    </VisuallyHidden>
+-
+-                    <OakTypography $font={["body-2", "body-1"]} aria-hidden>
+-                      <OakCodeRenderer
+-                        string={removeMarkdown(answerItem.text)}
+-                        $font="code-3"
+-                        $mt={"space-between-none"}
+-                      />
+-                    </OakTypography>
+-                  </OakFlex>
+-                );
+-              } else if (answerItem.type === "image") {
+-                return imageAnswer ? (
+-                  <QuizImageAnswer
+-                    key={`q-${questionNumber}-answer-element-${j}`}
+-                    src={answerItem.imageObject}
+-                    answerIsCorrect={choice.answerIsCorrect && imageAnswer}
+-                    alt="An image in a quiz"
+-                  />
+-                ) : (
+-                  <QuizImage
+-                    key={`q-${questionNumber}-answer-element-${j}`}
+-                    src={answerItem.imageObject}
+-                  />
+-                );
+-              }
+-            })}
+-          </OakFlex>
+-        );
+-      })}
+-    </OakFlex>
+-  );
+-};
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsMCAnswers/index.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsMCAnswers/index.tsx
+deleted file mode 100644
+index 2bf45acd..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsMCAnswers/index.tsx
++++ /dev/null
+@@ -1 +0,0 @@
+-export { QuizQuestionsMCAnswers } from "./QuizQuestionsMCAnswers";
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsMatchAnswers/QuizQuestionsMatchAnswers.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsMatchAnswers/QuizQuestionsMatchAnswers.tsx
+deleted file mode 100644
+index 64d9e552..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsMatchAnswers/QuizQuestionsMatchAnswers.tsx
++++ /dev/null
+@@ -1,85 +0,0 @@
+-import {
+-  OakCodeRenderer,
+-  OakFlex,
+-  OakIcon,
+-  OakP,
+-  OakSpan,
+-} from "@oaknational/oak-components";
+-import { VisuallyHidden } from "@radix-ui/themes";
+-
+-import type { MatchAnswer } from "../quizTypes";
+-import { removeMarkdown } from "../quizUtils";
+-
+-export const QuizQuestionsMatchAnswers = ({
+-  answers,
+-  questionNumber,
+-}: {
+-  answers: MatchAnswer[];
+-  questionNumber: number;
+-}) => {
+-  return (
+-    <OakFlex
+-      $flexDirection={"column"}
+-      $gap="all-spacing-1"
+-      $alignItems={"start"}
+-      role="list"
+-      $width={"100%"}
+-    >
+-      {answers.map((item, i) => {
+-        const matchOption = item.matchOption?.[0];
+-        const correctChoice = item.correctChoice[0];
+-        return (
+-          matchOption &&
+-          correctChoice && (
+-            <OakFlex
+-              $ph="inner-padding-xs"
+-              $borderRadius="border-radius-m2"
+-              role="listitem"
+-              key={`q-${questionNumber}-answer${i}`}
+-              $background={"lemon50"}
+-            >
+-              <VisuallyHidden>
+-                Correct Answer:
+-                {removeMarkdown(matchOption.text)},
+-                {removeMarkdown(correctChoice.text)}
+-              </VisuallyHidden>
+-              <OakIcon
+-                $mr={"space-between-ssx"}
+-                iconName={"tick"}
+-                $width={"all-spacing-6"}
+-                $height={"all-spacing-6"}
+-              />
+-              <OakFlex
+-                $flexWrap={"wrap"}
+-                $width={["100%", "100%", "max-content"]}
+-              >
+-                <OakP
+-                  $whiteSpace={"nowrap"}
+-                  $font={["body-2-bold", "body-1-bold"]}
+-                  aria-hidden
+-                >
+-                  <OakCodeRenderer
+-                    string={removeMarkdown(matchOption.text)}
+-                    $font="code-3"
+-                    $mt={"space-between-none"}
+-                  />
+-                  <OakSpan>{" -"}&nbsp;</OakSpan>
+-                </OakP>
+-                <OakP
+-                  $whiteSpace={["break-spaces", "nowrap"]}
+-                  $font={["body-2", "body-1"]}
+-                >
+-                  <OakCodeRenderer
+-                    string={removeMarkdown(correctChoice.text)}
+-                    $font="code-3"
+-                    $mt={"space-between-none"}
+-                  />
+-                </OakP>
+-              </OakFlex>
+-            </OakFlex>
+-          )
+-        );
+-      })}
+-    </OakFlex>
+-  );
+-};
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsMatchAnswers/index.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsMatchAnswers/index.tsx
+deleted file mode 100644
+index e3472a11..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsMatchAnswers/index.tsx
++++ /dev/null
+@@ -1 +0,0 @@
+-export { QuizQuestionsMatchAnswers } from "./QuizQuestionsMatchAnswers";
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsOrderAnswers/QuizQuestionsOrderAnswers.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsOrderAnswers/QuizQuestionsOrderAnswers.tsx
+deleted file mode 100644
+index 2d5e1648..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsOrderAnswers/QuizQuestionsOrderAnswers.tsx
++++ /dev/null
+@@ -1,75 +0,0 @@
+-import {
+-  OakBox,
+-  OakCodeRenderer,
+-  OakFlex,
+-  OakIcon,
+-  OakTypography,
+-} from "@oaknational/oak-components";
+-import { VisuallyHidden } from "@radix-ui/themes";
+-
+-import type { OrderAnswer } from "../quizTypes";
+-import { removeMarkdown } from "../quizUtils";
+-
+-export const QuizQuestionsOrderAnswers = ({
+-  answers,
+-  questionNumber,
+-}: {
+-  answers: OrderAnswer[];
+-  questionNumber: number;
+-}) => {
+-  return (
+-    <OakFlex
+-      $flexDirection={"column"}
+-      $gap="all-spacing-1"
+-      $alignItems={"start"}
+-      role="list"
+-    >
+-      {answers.map((item, i) => {
+-        const orderAnswer =
+-          item.answer && item.answer.length > 0 ? item.answer[0] : undefined;
+-        return (
+-          orderAnswer && (
+-            <OakFlex
+-              key={`q-${questionNumber}-answer${i}`}
+-              $background={"lemon50"}
+-              $borderRadius="border-radius-m2"
+-              $ph="inner-padding-xs"
+-              $alignItems={"flex-start"}
+-              $gap="all-spacing-2"
+-              role="listitem"
+-            >
+-              <VisuallyHidden>
+-                {item.correctOrder} -{" "}
+-                <OakCodeRenderer
+-                  string={removeMarkdown(orderAnswer.text)}
+-                  $font="code-3"
+-                  $mt={"space-between-none"}
+-                />
+-              </VisuallyHidden>
+-              <OakBox $minWidth="all-spacing-7" aria-hidden>
+-                <OakIcon
+-                  iconName={"tick"}
+-                  $width={"all-spacing-6"}
+-                  $height={"all-spacing-6"}
+-                />
+-              </OakBox>
+-
+-              <OakTypography $font={["body-2-bold", "body-1-bold"]} aria-hidden>
+-                {item.correctOrder}
+-              </OakTypography>
+-
+-              <OakTypography $font={["body-2", "body-1"]} aria-hidden>
+-                -{" "}
+-                <OakCodeRenderer
+-                  string={removeMarkdown(orderAnswer.text)}
+-                  $font={"code-3"}
+-                  $mt={"space-between-none"}
+-                />
+-              </OakTypography>
+-            </OakFlex>
+-          )
+-        );
+-      })}
+-    </OakFlex>
+-  );
+-};
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsOrderAnswers/index.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsOrderAnswers/index.tsx
+deleted file mode 100644
+index 29b82efe..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsOrderAnswers/index.tsx
++++ /dev/null
+@@ -1 +0,0 @@
+-export { QuizQuestionsOrderAnswers } from "./QuizQuestionsOrderAnswers";
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsQuestionStem/QuizQuestionsQuestionStem.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsQuestionStem/QuizQuestionsQuestionStem.tsx
+deleted file mode 100644
+index e0ee57e8..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsQuestionStem/QuizQuestionsQuestionStem.tsx
++++ /dev/null
+@@ -1,60 +0,0 @@
+-import { OakFlex, OakTypography } from "@oaknational/oak-components";
+-
+-import type { StemImageObject, StemTextObject } from "../quizTypes";
+-import { removeMarkdown, shortAnswerTitleFormatter } from "../quizUtils";
+-
+-export const QuizQuestionsQuestionStem = ({
+-  questionStem,
+-  index,
+-  showIndex = true,
+-}: {
+-  questionStem: (StemImageObject | StemTextObject)[];
+-  index: number;
+-  showIndex?: boolean;
+-}) => {
+-  const displayNumber = `Q${index + 1}.`;
+-  return (
+-    <OakFlex $flexDirection={"column"} $gap="all-spacing-1">
+-      <OakFlex key="stem-header">
+-        {showIndex && (
+-          <OakTypography
+-            $font={["body-2-bold", "body-1-bold"]}
+-            $mr="space-between-xs"
+-          >
+-            {displayNumber}
+-          </OakTypography>
+-        )}
+-        {questionStem[0]?.type === "text" && (
+-          <OakTypography
+-            key={`q-${displayNumber}-stem-element-0`}
+-            $font={["body-2-bold", "body-1-bold"]}
+-          >
+-            {shortAnswerTitleFormatter(removeMarkdown(questionStem[0].text))}
+-          </OakTypography>
+-        )}
+-      </OakFlex>
+-
+-      {questionStem.map((stemItem, i) => {
+-        if (stemItem.type === "text" && i > 0) {
+-          return (
+-            <OakTypography
+-              key={`q-${displayNumber}-stem-element-${i}`}
+-              $font={["body-2-bold", "body-1-bold"]}
+-            >
+-              {shortAnswerTitleFormatter(removeMarkdown(stemItem.text))}
+-            </OakTypography>
+-          );
+-        } else if (stemItem.type === "image") {
+-          return (
+-            <OakFlex
+-              $pv="inner-padding-xl"
+-              key={`q-${displayNumber}-stem-element-${i}`}
+-            >
+-              <img src={stemItem.imageObject.url} />
+-            </OakFlex>
+-          );
+-        }
+-      })}
+-    </OakFlex>
+-  );
+-};
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsQuestionStem/index.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsQuestionStem/index.tsx
+deleted file mode 100644
+index bfae9fe1..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsQuestionStem/index.tsx
++++ /dev/null
+@@ -1 +0,0 @@
+-export { QuizQuestionsQuestionStem } from "./QuizQuestionsQuestionStem";
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsShortAnswers/index.tsx b/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsShortAnswers/index.tsx
+deleted file mode 100644
+index 85641b9a..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsShortAnswers/index.tsx
++++ /dev/null
+@@ -1 +0,0 @@
+-export { QuizQuestionsShortAnswers } from "./QuizQuestionsShortAnswers";
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/quizTypes.ts b/apps/nextjs/src/components/AppComponents/Chat/Quiz/quizTypes.ts
+deleted file mode 100644
+index 15bfc860..00000000
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/quizTypes.ts
++++ /dev/null
+@@ -1,43 +0,0 @@
+-// Import all types and schemas from the central file
+-import type {
+-  ConvertKeysToCamelCase,
+-  ImageItem,
+-  ImageOrTextItem,
+-  MCAnswer,
+-  MatchAnswer,
+-  OrderAnswer,
+-  QuizProps,
+-  QuizQuestion,
+-  QuizQuestionAnswers,
+-  RawQuiz,
+-  ShortAnswer,
+-  StemImageObject,
+-  StemObject,
+-  StemTextObject,
+-  TextItem,
+-} from "@oakai/aila/src/protocol/rawQuizSchema";
+-import {
+-  rawQuizQuestionSchema,
+-  rawQuizSchema,
+-} from "@oakai/aila/src/protocol/rawQuizSchema";
+-
+-// Re-export everything
+-export type {
+-  ConvertKeysToCamelCase,
+-  ImageItem,
+-  ImageOrTextItem,
+-  MatchAnswer,
+-  MCAnswer,
+-  OrderAnswer,
+-  QuizProps,
+-  QuizQuestion,
+-  QuizQuestionAnswers,
+-  RawQuiz,
+-  ShortAnswer,
+-  StemImageObject,
+-  StemObject,
+-  StemTextObject,
+-  TextItem,
+-};
+-
+-export { rawQuizQuestionSchema, rawQuizSchema };
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/export-buttons/LessonPlanProgressDropdown.stories.tsx b/apps/nextjs/src/components/AppComponents/Chat/export-buttons/LessonPlanProgressDropdown.stories.tsx
+index 86c49b7a..c4844ce9 100644
+--- a/apps/nextjs/src/components/AppComponents/Chat/export-buttons/LessonPlanProgressDropdown.stories.tsx
++++ b/apps/nextjs/src/components/AppComponents/Chat/export-buttons/LessonPlanProgressDropdown.stories.tsx
+@@ -2,7 +2,7 @@ import type {
+   Cycle,
+   Keyword,
+   Misconception,
+-  Quiz,
++  QuizV1,
+ } from "@oakai/aila/src/protocol/schema";
+ 
+ import type { Meta, StoryObj } from "@storybook/react";
+@@ -175,7 +175,7 @@ function sampleKeyword(): Keyword {
+   };
+ }
+ 
+-function sampleQuiz(): Quiz {
++function sampleQuiz(): QuizV1 {
+   return [
+     {
+       question: "Sample question",
+diff --git a/apps/nextjs/src/components/Quiz/LessonOverviewQuizContainer/LessonOverviewQuizContainer.stories.tsx b/apps/nextjs/src/components/Quiz/LessonOverviewQuizContainer/LessonOverviewQuizContainer.stories.tsx
+new file mode 100644
+index 00000000..3c6b0ad9
+--- /dev/null
++++ b/apps/nextjs/src/components/Quiz/LessonOverviewQuizContainer/LessonOverviewQuizContainer.stories.tsx
+@@ -0,0 +1,354 @@
++import { convertRawQuizToV2 } from "@oakai/aila/src/protocol/schemas/quiz/conversion/rawQuizIngest";
++import { type RawQuiz } from "@oakai/aila/src/protocol/schemas/quiz/rawQuiz";
++
++import type { Meta, StoryObj } from "@storybook/react";
++
++import { chromaticParams } from "@/storybook/chromatic";
++
++import { LessonOverviewQuizContainer } from "./LessonOverviewQuizContainer";
++
++const fullQuizFixture: NonNullable<RawQuiz> = [
++  {
++    hint: "Think about the words increase and decrease. You could think of adding and subtracting.",
++    active: false,
++    answers: {
++      "short-answer": [
++        {
++          answer: [
++            {
++              text: "8",
++              type: "text",
++            },
++          ],
++          answer_is_default: true,
++        },
++        {
++          answer: [
++            {
++              text: "eight",
++              type: "text",
++            },
++          ],
++          answer_is_default: false,
++        },
++      ],
++    },
++    feedback: "Yes, adjacent multiples have a difference of 8.",
++    questionId: 229205,
++    questionUid: "QUES-BPWF2-29205",
++    questionStem: [
++      {
++        text: "Adjacent multiples of 8 can be found by increasing or decreasing a multiple by {{ }}.",
++        type: "text",
++      },
++    ],
++    questionType: "short-answer",
++  },
++  {
++    hint: "Adjacent multiples of 8 have a difference of 8. Which numbers have a difference of 8 when compared to 40?",
++    active: false,
++    answers: {
++      "multiple-choice": [
++        {
++          answer: [
++            {
++              text: "34",
++              type: "text",
++            },
++          ],
++          answer_is_correct: false,
++        },
++        {
++          answer: [
++            {
++              text: "32",
++              type: "text",
++            },
++          ],
++          answer_is_correct: true,
++        },
++        {
++          answer: [
++            {
++              text: "50",
++              type: "text",
++            },
++          ],
++          answer_is_correct: false,
++        },
++        {
++          answer: [
++            {
++              text: "48",
++              type: "text",
++            },
++          ],
++          answer_is_correct: true,
++        },
++      ],
++    },
++    feedback: "Yes, multiples of 8 which are adjacent to 40 are 32 and 48.",
++    questionId: 229206,
++    questionUid: "QUES-BPWF2-29206",
++    questionStem: [
++      {
++        text: "Which of these are adjacent multiples of 8 to 40?",
++        type: "text",
++      },
++    ],
++    questionType: "multiple-choice",
++  },
++  {
++    hint: "Match the word to its correct mathematical symbol.",
++    active: false,
++    answers: {
++      match: [
++        {
++          match_option: [
++            {
++              text: "Addition",
++              type: "text",
++            },
++          ],
++          correct_choice: [
++            {
++              text: "+",
++              type: "text",
++            },
++          ],
++        },
++        {
++          match_option: [
++            {
++              text: "Subtraction",
++              type: "text",
++            },
++          ],
++          correct_choice: [
++            {
++              text: "-",
++              type: "text",
++            },
++          ],
++        },
++      ],
++    },
++    feedback: "Well done! Addition uses + and subtraction uses -.",
++    questionId: 229207,
++    questionUid: "QUES-BPWF2-29207",
++    questionStem: [
++      {
++        text: "Match the mathematical operation to its symbol:",
++        type: "text",
++      },
++    ],
++    questionType: "match",
++  },
++  {
++    hint: "Put these steps in the correct order for solving an equation.",
++    active: false,
++    answers: {
++      order: [
++        {
++          answer: [
++            {
++              text: "Isolate the variable",
++              type: "text",
++            },
++          ],
++          correct_order: 2,
++        },
++        {
++          answer: [
++            {
++              text: "Identify the equation",
++              type: "text",
++            },
++          ],
++          correct_order: 1,
++        },
++        {
++          answer: [
++            {
++              text: "Check your answer",
++              type: "text",
++            },
++          ],
++          correct_order: 3,
++        },
++      ],
++    },
++    feedback: "Correct! The proper order is: identify, isolate, check.",
++    questionId: 229208,
++    questionUid: "QUES-BPWF2-29208",
++    questionStem: [
++      {
++        text: "Put these equation-solving steps in the correct order:",
++        type: "text",
++      },
++    ],
++    questionType: "order",
++  },
++];
++
++const quizWithImagesFixture: NonNullable<RawQuiz> = [
++  {
++    hint: "Look at the diagram carefully.",
++    active: false,
++    answers: {
++      "multiple-choice": [
++        {
++          answer: [
++            {
++              text: "Triangle",
++              type: "text",
++            },
++          ],
++          answer_is_correct: true,
++        },
++        {
++          answer: [
++            {
++              text: "Circle",
++              type: "text",
++            },
++          ],
++          answer_is_correct: false,
++        },
++      ],
++    },
++    feedback: "Correct! The shape shown is a triangle.",
++    questionId: 229209,
++    questionUid: "QUES-BPWF2-29209",
++    questionStem: [
++      {
++        text: "What shape is shown in the diagram?",
++        type: "text",
++      },
++      {
++        type: "image",
++        image_object: {
++          secure_url:
++            "https://images.unsplash.com/photo-1611696798014-07e00b2d3b1e?w=400&h=300",
++          url: "https://images.unsplash.com/photo-1611696798014-07e00b2d3b1e?w=400&h=300",
++          width: 400,
++          height: 300,
++          format: "jpg",
++          metadata: {
++            attribution: "Photo by Antoine Dautry on Unsplash",
++            usageRestriction: "Creative Commons",
++          },
++          public_id: "triangle_diagram",
++          version: 1,
++        },
++      },
++    ],
++    questionType: "multiple-choice",
++  },
++  {
++    hint: "Count the objects in the image.",
++    active: false,
++    answers: {
++      "short-answer": [
++        {
++          answer: [
++            {
++              text: "5",
++              type: "text",
++            },
++          ],
++          answer_is_default: true,
++        },
++      ],
++    },
++    feedback: "Yes, there are 5 objects in the image.",
++    questionId: 229210,
++    questionUid: "QUES-BPWF2-29210",
++    questionStem: [
++      {
++        text: "How many objects are shown?",
++        type: "text",
++      },
++      {
++        type: "image",
++        image_object: {
++          secure_url:
++            "https://images.unsplash.com/photo-1509909756405-be0199881695?w=400&h=300",
++          url: "https://images.unsplash.com/photo-1509909756405-be0199881695?w=400&h=300",
++          width: 400,
++          height: 300,
++          format: "jpg",
++          metadata: {
++            attribution: "Photo by Michał Parzuchowski on Unsplash",
++          },
++          public_id: "counting_objects",
++          version: 1,
++        },
++      },
++    ],
++    questionType: "short-answer",
++  },
++];
++
++const meta: Meta<typeof LessonOverviewQuizContainer> = {
++  title: "Components/Quiz/LessonOverviewQuizContainer",
++  component: LessonOverviewQuizContainer,
++  parameters: {
++    layout: "padded",
++    ...chromaticParams(["mobile", "desktop"]),
++  },
++  decorators: [
++    (Story) => (
++      <div style={{ maxWidth: "800px", margin: "0 auto" }}>
++        <Story />
++      </div>
++    ),
++  ],
++};
++
++export default meta;
++type Story = StoryObj<typeof meta>;
++
++export const AllQuestionTypes: Story = {
++  args: {
++    quiz: convertRawQuizToV2(fullQuizFixture),
++    isMathJaxLesson: true,
++  },
++  parameters: {
++    docs: {
++      description: {
++        story:
++          "Shows all supported question types: short-answer, multiple-choice, match, and order questions.",
++      },
++    },
++  },
++};
++
++export const WithImageAttributions: Story = {
++  args: {
++    quiz: convertRawQuizToV2(quizWithImagesFixture),
++    isMathJaxLesson: true,
++  },
++  parameters: {
++    docs: {
++      description: {
++        story:
++          "Demonstrates how image attributions are automatically extracted from images and displayed. Check the console for attribution extraction.",
++      },
++    },
++  },
++};
++
++export const EmptyQuiz: Story = {
++  args: {
++    quiz: { version: "v2", questions: [] },
++    isMathJaxLesson: true,
++  },
++  parameters: {
++    docs: {
++      description: {
++        story: "Shows the container behavior when no questions are provided.",
++      },
++    },
++  },
++};
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/LessonOverviewQuizContainer/LessonOverviewQuizContainer.tsx b/apps/nextjs/src/components/Quiz/LessonOverviewQuizContainer/LessonOverviewQuizContainer.tsx
+similarity index 57%
+rename from apps/nextjs/src/components/AppComponents/Chat/Quiz/LessonOverviewQuizContainer/LessonOverviewQuizContainer.tsx
+rename to apps/nextjs/src/components/Quiz/LessonOverviewQuizContainer/LessonOverviewQuizContainer.tsx
+index 45d6aad9..4410da6e 100644
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/LessonOverviewQuizContainer/LessonOverviewQuizContainer.tsx
++++ b/apps/nextjs/src/components/Quiz/LessonOverviewQuizContainer/LessonOverviewQuizContainer.tsx
+@@ -1,6 +1,9 @@
+ "use client";
+ 
+ import type { FC } from "react";
++import { useMemo } from "react";
++
++import type { QuizV2 } from "@oakai/aila/src/protocol/schemas";
+ 
+ import {
+   OakBox,
+@@ -12,16 +15,27 @@ import {
+ import { OakMathJaxContext } from "@/components/MathJax";
+ 
+ import QuizQuestionsList from "../QuizQuestionsList";
+-import type { RawQuiz } from "../quizTypes";
+ 
+ export type QuizProps = {
+-  questions: NonNullable<RawQuiz>;
+-  imageAttribution: { attribution: string; questionNumber: string }[];
++  quiz: QuizV2;
+   isMathJaxLesson: boolean;
+ };
+ 
+-const LessonOverviewQuizContainer: FC<QuizProps> = (props) => {
+-  return props.questions && props.questions.length > 0 ? (
++export const LessonOverviewQuizContainer: FC<QuizProps> = (props) => {
++  const imageAttributions = useMemo(
++    () =>
++      // TODO: Check if question number is correct - might need to match attribution to specific image by URL
++      props.quiz.questions.flatMap(
++        (question, index) =>
++          question.imageAttributions?.map(({ attribution }) => ({
++            attribution,
++            questionNumber: `Q${index + 1}`,
++          })) ?? [],
++      ),
++    [props.quiz],
++  );
++
++  return props.quiz.questions.length > 0 ? (
+     <OakMathJaxContext>
+       <OakHeading $font={"heading-4"} tag={"h2"}>
+         Starter quiz
+@@ -34,9 +48,9 @@ const LessonOverviewQuizContainer: FC<QuizProps> = (props) => {
+       >
+         <QuizQuestionsList {...props} />
+       </OakFlex>
+-      {props.imageAttribution.length > 0 && (
++      {imageAttributions.length > 0 && (
+         <OakBox $mt="space-between-m">
+-          {props.imageAttribution.map(({ attribution, questionNumber }) => (
++          {imageAttributions.map(({ attribution, questionNumber }) => (
+             <OakSpan key={`image-attr-${attribution}-${questionNumber}`}>
+               <OakSpan $font={"body-3-bold"}>{`${questionNumber} `}</OakSpan>
+               <OakSpan $font={"body-3"}>{`${attribution} `}</OakSpan>
+@@ -47,5 +61,3 @@ const LessonOverviewQuizContainer: FC<QuizProps> = (props) => {
+     </OakMathJaxContext>
+   ) : null;
+ };
+-
+-export default LessonOverviewQuizContainer;
+diff --git a/apps/nextjs/src/components/Quiz/LessonOverviewQuizContainer/index.tsx b/apps/nextjs/src/components/Quiz/LessonOverviewQuizContainer/index.tsx
+new file mode 100644
+index 00000000..710eda84
+--- /dev/null
++++ b/apps/nextjs/src/components/Quiz/LessonOverviewQuizContainer/index.tsx
+@@ -0,0 +1 @@
++export { LessonOverviewQuizContainer } from "./LessonOverviewQuizContainer";
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsList/QuestionsList.tsx b/apps/nextjs/src/components/Quiz/QuizQuestionsList.tsx
+similarity index 68%
+rename from apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsList/QuestionsList.tsx
+rename to apps/nextjs/src/components/Quiz/QuizQuestionsList.tsx
+index 1a373cd0..982ebf81 100644
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsList/QuestionsList.tsx
++++ b/apps/nextjs/src/components/Quiz/QuizQuestionsList.tsx
+@@ -1,16 +1,20 @@
+ import type { FC } from "react";
+ import React, { Fragment } from "react";
+ 
++import type { QuizV2 } from "@oakai/aila/src/protocol/schemas";
++
+ import { OakFlex, OakHeading } from "@oaknational/oak-components";
+ 
+-import QuizQuestionsListItem from "../QuizQuestionsListItem";
+-import type { QuizProps } from "../quizTypes";
++import { QuizQuestionsListItem } from "./QuizQuestionsListItem";
+ 
+-export type QuizQuestionListProps = QuizProps & { isMathJaxLesson: boolean };
++export type QuizQuestionListProps = {
++  quiz: QuizV2;
++  isMathJaxLesson: boolean;
++};
+ 
+ const QuestionsList: FC<QuizQuestionListProps> = (props) => {
+-  const { questions, isMathJaxLesson } = props;
+-  const questionCount = questions.length;
++  const { quiz, isMathJaxLesson } = props;
++  const questionCount = quiz.questions.length;
+ 
+   return (
+     <Fragment>
+@@ -19,7 +23,7 @@ const QuestionsList: FC<QuizQuestionListProps> = (props) => {
+       </OakHeading>
+ 
+       <OakFlex $flexDirection={"column"} $gap={"all-spacing-10"} role="list">
+-        {questions.map((question, i) => {
++        {quiz.questions.map((question, i) => {
+           return (
+             <QuizQuestionsListItem
+               key={`QuestionsList-UL-QuestionListItem-${i}`}
+diff --git a/apps/nextjs/src/components/Quiz/QuizQuestionsListItem/QuizQuestionsListItem.stories.tsx b/apps/nextjs/src/components/Quiz/QuizQuestionsListItem/QuizQuestionsListItem.stories.tsx
+new file mode 100644
+index 00000000..c87bcacf
+--- /dev/null
++++ b/apps/nextjs/src/components/Quiz/QuizQuestionsListItem/QuizQuestionsListItem.stories.tsx
+@@ -0,0 +1,171 @@
++import type { QuizV2Question } from "@oakai/aila/src/protocol/schemas";
++
++import type { Meta, StoryObj } from "@storybook/react";
++
++import { chromaticParams } from "@/storybook/chromatic";
++
++import { QuizQuestionsListItem } from "./QuizQuestionsListItem";
++
++const multipleChoiceQuestion: QuizV2Question = {
++  questionType: "multiple-choice",
++  question: "What is 2 + 2?",
++  answers: ["4"],
++  distractors: ["3", "5", "6"],
++  feedback: "Correct! 2 + 2 = 4",
++  hint: "Think about basic addition",
++};
++
++const shortAnswerQuestion: QuizV2Question = {
++  questionType: "short-answer",
++  question: "What is the capital of France?",
++  answers: ["Paris", "paris"],
++  feedback: "Correct! Paris is the capital of France.",
++  hint: "It's known as the City of Light",
++};
++
++const matchQuestion: QuizV2Question = {
++  questionType: "match",
++  question: "Match the animals to their sounds:",
++  pairs: [
++    { left: "Dog", right: "Bark" },
++    { left: "Cat", right: "Meow" },
++    { left: "Cow", right: "Moo" },
++  ],
++  feedback: "Great job matching the animals to their sounds!",
++  hint: "Think about what sounds these animals make",
++};
++
++const orderQuestion: QuizV2Question = {
++  questionType: "order",
++  question: "Put these numbers in ascending order:",
++  items: ["1", "3", "5", "7"],
++  feedback: "Perfect! You've ordered them correctly: 1, 3, 5, 7",
++  hint: "Start with the smallest number",
++};
++
++const richContentQuestion: QuizV2Question = {
++  questionType: "multiple-choice",
++  question:
++    "What shape is shown below? ![](https://images.unsplash.com/photo-1611696798014-07e00b2d3b1e?w=200&h=150)",
++  answers: ["Triangle"],
++  distractors: [
++    "Square ![](https://images.unsplash.com/photo-1509909756405-be0199881695?w=100&h=100)",
++    "Circle",
++  ],
++  feedback: "Correct! The image shows a triangle.",
++  hint: "Count the sides and corners",
++  imageAttributions: [
++    {
++      imageUrl:
++        "https://images.unsplash.com/photo-1611696798014-07e00b2d3b1e?w=200&h=150",
++      attribution: "Photo by Antoine Dautry on Unsplash",
++    },
++  ],
++};
++
++const meta: Meta<typeof QuizQuestionsListItem> = {
++  title: "Components/Quiz/QuizQuestionsListItem",
++  component: QuizQuestionsListItem,
++  parameters: {
++    layout: "padded",
++    ...chromaticParams(["mobile", "desktop"]),
++  },
++  argTypes: {
++    index: {
++      control: "number",
++      description: "Question number (0-indexed)",
++    },
++    isMathJaxLesson: {
++      control: "boolean",
++      description: "Whether to enable MathJax rendering",
++    },
++  },
++  decorators: [
++    (Story) => (
++      <div style={{ maxWidth: "600px", margin: "0 auto" }}>
++        <Story />
++      </div>
++    ),
++  ],
++};
++
++export default meta;
++type Story = StoryObj<typeof meta>;
++
++export const MultipleChoice: Story = {
++  args: {
++    question: multipleChoiceQuestion,
++    index: 0,
++    isMathJaxLesson: true,
++  },
++  parameters: {
++    docs: {
++      description: {
++        story:
++          "A multiple choice question with one correct answer and multiple distractors.",
++      },
++    },
++  },
++};
++
++export const ShortAnswer: Story = {
++  args: {
++    question: shortAnswerQuestion,
++    index: 0,
++    isMathJaxLesson: true,
++  },
++  parameters: {
++    docs: {
++      description: {
++        story: "A short answer question with multiple acceptable answers.",
++      },
++    },
++  },
++};
++
++export const Match: Story = {
++  args: {
++    question: matchQuestion,
++    index: 0,
++    isMathJaxLesson: true,
++  },
++  parameters: {
++    docs: {
++      description: {
++        story: "A matching question where students pair left and right items.",
++      },
++    },
++  },
++};
++
++export const Order: Story = {
++  args: {
++    question: orderQuestion,
++    index: 0,
++    isMathJaxLesson: true,
++  },
++  parameters: {
++    docs: {
++      description: {
++        story:
++          "An ordering question where students arrange items in the correct sequence.",
++      },
++    },
++  },
++};
++
++export const RichContentWithImages: Story = {
++  args: {
++    question: richContentQuestion,
++    index: 0,
++    isMathJaxLesson: true,
++  },
++  parameters: {
++    docs: {
++      description: {
++        story:
++          "A question with rich content including both text and images in the question stem and answer choices.",
++      },
++    },
++  },
++};
+diff --git a/apps/nextjs/src/components/Quiz/QuizQuestionsListItem/QuizQuestionsListItem.tsx b/apps/nextjs/src/components/Quiz/QuizQuestionsListItem/QuizQuestionsListItem.tsx
+new file mode 100644
+index 00000000..a92773f1
+--- /dev/null
++++ b/apps/nextjs/src/components/Quiz/QuizQuestionsListItem/QuizQuestionsListItem.tsx
+@@ -0,0 +1,69 @@
++import type { FC } from "react";
++import { Fragment } from "react";
++
++import type { QuizV2Question } from "@oakai/aila/src/protocol/schemas";
++
++import { OakFlex } from "@oaknational/oak-components";
++
++import { MathJaxWrap } from "@/components/MathJax";
++
++import { QuizQuestionsMCAnswers } from "../questions/QuizQuestionsMCAnswers";
++import { QuizQuestionsMatchAnswers } from "../questions/QuizQuestionsMatchAnswers";
++import { QuizQuestionsOrderAnswers } from "../questions/QuizQuestionsOrderAnswers";
++import { QuizQuestionsQuestionStem } from "../questions/QuizQuestionsQuestionStem";
++import { QuizQuestionsShortAnswers } from "../questions/QuizQuestionsShortAnswers";
++
++export type QuizQuestionsListItemProps = {
++  question: QuizV2Question;
++  index: number;
++  isMathJaxLesson: boolean;
++};
++
++export const QuizQuestionsListItem: FC<QuizQuestionsListItemProps> = (
++  props,
++) => {
++  const { question, index, isMathJaxLesson } = props;
++  const MathJaxWrapper = isMathJaxLesson ? MathJaxWrap : Fragment;
++
++  return (
++    <MathJaxWrapper>
++      <OakFlex
++        $flexDirection={"column"}
++        $width={"100%"}
++        role="listitem"
++        $gap={"all-spacing-2"}
++      >
++        <QuizQuestionsQuestionStem question={question.question} index={index} />
++
++        {/* Render answers based on question type */}
++        {question.questionType === "multiple-choice" && (
++          <QuizQuestionsMCAnswers
++            answers={question.answers}
++            distractors={question.distractors}
++            questionNumber={index}
++          />
++        )}
++
++        {question.questionType === "match" && (
++          <QuizQuestionsMatchAnswers
++            pairs={question.pairs}
++            questionNumber={index}
++          />
++        )}
++
++        {question.questionType === "order" && (
++          <QuizQuestionsOrderAnswers
++            items={question.items}
++            questionNumber={index}
++          />
++        )}
++
++        {question.questionType === "short-answer" && (
++          <QuizQuestionsShortAnswers answers={question.answers} />
++        )}
++
++        {/* Note: explanatory-text questions only show the question stem */}
++      </OakFlex>
++    </MathJaxWrapper>
++  );
++};
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsListItem/index.tsx b/apps/nextjs/src/components/Quiz/QuizQuestionsListItem/index.tsx
+similarity index 60%
+rename from apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsListItem/index.tsx
+rename to apps/nextjs/src/components/Quiz/QuizQuestionsListItem/index.tsx
+index 7b403ddb..0e9ba1d9 100644
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsListItem/index.tsx
++++ b/apps/nextjs/src/components/Quiz/QuizQuestionsListItem/index.tsx
+@@ -1,2 +1,2 @@
+-export { default } from "./QuizQuestionsListItem";
++export { QuizQuestionsListItem } from "./QuizQuestionsListItem";
+ export type { QuizQuestionsListItemProps as QuestionListItemProps } from "./QuizQuestionsListItem";
+diff --git a/apps/nextjs/src/components/Quiz/questions/QuizQuestionsMCAnswers.tsx b/apps/nextjs/src/components/Quiz/questions/QuizQuestionsMCAnswers.tsx
+new file mode 100644
+index 00000000..893d93f4
+--- /dev/null
++++ b/apps/nextjs/src/components/Quiz/questions/QuizQuestionsMCAnswers.tsx
+@@ -0,0 +1,69 @@
++import {
++  OakBox,
++  OakCodeRenderer,
++  OakFlex,
++  OakIcon,
++  OakTypography,
++} from "@oaknational/oak-components";
++import { VisuallyHidden } from "@radix-ui/themes";
++
++import { shuffleMultipleChoiceAnswers } from "../utils/shuffle";
++
++export const QuizQuestionsMCAnswers = (props: {
++  answers: string[];
++  distractors: string[];
++  questionNumber: number;
++}) => {
++  const { answers, distractors, questionNumber } = props;
++
++  // Shuffle answers and distractors deterministically
++  const shuffledChoices = shuffleMultipleChoiceAnswers(answers, distractors);
++
++  return (
++    <OakFlex $flexDirection={"column"} $alignItems="start" role="list">
++      {shuffledChoices.map((choice, i) => {
++        return (
++          <OakFlex
++            key={`q-${questionNumber}-answer-${i}`}
++            $flexDirection={"column"}
++            $alignItems="flex-start"
++            $borderStyle="solid"
++            $borderColor="black"
++            role="listitem"
++          >
++            {choice.isCorrect ? (
++              <OakFlex
++                $background={"lemon50"}
++                $borderRadius="border-radius-m2"
++                $ph="inner-padding-xs"
++                $alignItems={"center"}
++              >
++                <OakBox $minWidth="all-spacing-7" aria-hidden>
++                  <OakIcon
++                    iconName={"tick"}
++                    $width={"all-spacing-6"}
++                    $height={"all-spacing-6"}
++                  />
++                </OakBox>
++                <VisuallyHidden>Correct answer: {choice.text}</VisuallyHidden>
++                <OakTypography $font={["body-2", "body-1"]} aria-hidden>
++                  <OakCodeRenderer
++                    string={choice.text}
++                    $font="code-3"
++                    $mt={"space-between-none"}
++                  />
++                </OakTypography>
++              </OakFlex>
++            ) : (
++              <OakCodeRenderer
++                string={choice.text}
++                $font="code-3"
++                $mt={"space-between-none"}
++              />
++            )}
++          </OakFlex>
++        );
++      })}
++    </OakFlex>
++  );
++};
+diff --git a/apps/nextjs/src/components/Quiz/questions/QuizQuestionsMatchAnswers.tsx b/apps/nextjs/src/components/Quiz/questions/QuizQuestionsMatchAnswers.tsx
+new file mode 100644
+index 00000000..7388feea
+--- /dev/null
++++ b/apps/nextjs/src/components/Quiz/questions/QuizQuestionsMatchAnswers.tsx
+@@ -0,0 +1,118 @@
++import type { QuizV2QuestionMatchSchema } from "@oakai/aila/src/protocol/schemas/quiz/quizV2";
++
++import {
++  OakCodeRenderer,
++  OakFlex,
++  OakIcon,
++  OakP,
++} from "@oaknational/oak-components";
++import { VisuallyHidden } from "@radix-ui/themes";
++import type { z } from "zod";
++
++import { removeMarkdown } from "../utils/formatters";
++import { createMatchPairings, findMatchingLeftLabel } from "../utils/pairing";
++import { shuffleMatchingPairs } from "../utils/shuffle";
++
++export const QuizQuestionsMatchAnswers = ({
++  pairs,
++  questionNumber,
++}: {
++  pairs: z.infer<typeof QuizV2QuestionMatchSchema>["pairs"];
++  questionNumber: number;
++}) => {
++  // Shuffle pairs to match student view while keeping answer indicators
++  const { leftItems, rightItems } = shuffleMatchingPairs(pairs);
++
++  // Create mapping from original pairs to track correct matches
++  const correctMatches = createMatchPairings(pairs);
++
++  return (
++    <OakFlex
++      $flexDirection={"row"}
++      $gap="all-spacing-4"
++      $alignItems={"start"}
++      role="list"
++      $width={"100%"}
++    >
++      {/* Left column */}
++      <OakFlex $flexDirection={"column"} $gap="all-spacing-1" $flexGrow={1}>
++        {leftItems.map((leftItem, i) => {
++          const leftLabel = String.fromCharCode(65 + i); // A, B, C, etc.
++
++          return (
++            <OakFlex
++              key={`q-${questionNumber}-left-${i}`}
++              $ph="inner-padding-xs"
++              $borderRadius="border-radius-m2"
++              $background={"lemon50"}
++              $alignItems={"center"}
++              role="listitem"
++            >
++              <OakIcon
++                $mr={"space-between-ssx"}
++                iconName={"tick"}
++                $width={"all-spacing-6"}
++                $height={"all-spacing-6"}
++              />
++              <OakP
++                $font={["body-2-bold", "body-1-bold"]}
++                $mr="space-between-xs"
++              >
++                {leftLabel}.
++              </OakP>
++              <OakCodeRenderer
++                string={removeMarkdown(leftItem)}
++                $font="code-3"
++                $mt={"space-between-none"}
++              />
++            </OakFlex>
++          );
++        })}
++      </OakFlex>
++
++      {/* Right column */}
++      <OakFlex $flexDirection={"column"} $gap="all-spacing-1" $flexGrow={1}>
++        {rightItems.map((rightItem, i) => {
++          const rightLabel = (i + 1).toString(); // 1, 2, 3, etc.
++
++          // Find which left item this right item matches with
++          const matchingLeftLabel = findMatchingLeftLabel(
++            rightItem,
++            correctMatches,
++            leftItems,
++          );
++
++          return (
++            <OakFlex
++              key={`q-${questionNumber}-right-${i}`}
++              $ph="inner-padding-xs"
++              $borderRadius="border-radius-m2"
++              $background={"lemon50"}
++              $alignItems={"center"}
++              role="listitem"
++            >
++              <OakIcon
++                $mr={"space-between-ssx"}
++                iconName={"tick"}
++                $width={"all-spacing-6"}
++                $height={"all-spacing-6"}
++              />
++              <OakP
++                $font={["body-2-bold", "body-1-bold"]}
++                $mr="space-between-xs"
++              >
++                {rightLabel}. ({matchingLeftLabel})
++              </OakP>
++              <OakCodeRenderer
++                string={removeMarkdown(rightItem)}
++                $font="code-3"
++                $mt={"space-between-none"}
++              />
++              <VisuallyHidden>Matches with {matchingLeftLabel}</VisuallyHidden>
++            </OakFlex>
++          );
++        })}
++      </OakFlex>
++    </OakFlex>
++  );
++};
+diff --git a/apps/nextjs/src/components/Quiz/questions/QuizQuestionsOrderAnswers.tsx b/apps/nextjs/src/components/Quiz/questions/QuizQuestionsOrderAnswers.tsx
+new file mode 100644
+index 00000000..d080a771
+--- /dev/null
++++ b/apps/nextjs/src/components/Quiz/questions/QuizQuestionsOrderAnswers.tsx
+@@ -0,0 +1,83 @@
++import type { QuizV2QuestionOrderSchema } from "@oakai/aila/src/protocol/schemas/quiz/quizV2";
++
++import {
++  OakBox,
++  OakCodeRenderer,
++  OakFlex,
++  OakIcon,
++  OakTypography,
++} from "@oaknational/oak-components";
++import { VisuallyHidden } from "@radix-ui/themes";
++import type { z } from "zod";
++
++import { removeMarkdown } from "../utils/formatters";
++import { createOrderMapping, getItemPosition } from "../utils/pairing";
++import { shuffleOrderItems } from "../utils/shuffle";
++
++export const QuizQuestionsOrderAnswers = ({
++  items,
++  questionNumber,
++}: {
++  items: z.infer<typeof QuizV2QuestionOrderSchema>["items"];
++  questionNumber: number;
++}) => {
++  // Shuffle items to match student view while keeping correct order indicators
++  const shuffledItems = shuffleOrderItems(items);
++
++  // Create mapping to track correct order positions
++  const correctOrderMap = createOrderMapping(items);
++
++  return (
++    <OakFlex
++      $flexDirection={"column"}
++      $gap="all-spacing-1"
++      $alignItems={"start"}
++      role="list"
++    >
++      {shuffledItems.map((item, i) => {
++        const correctPosition = getItemPosition(item, correctOrderMap);
++
++        return correctPosition ? (
++          <OakFlex
++            key={`q-${questionNumber}-answer${i}`}
++            $background={"lemon50"}
++            $borderRadius="border-radius-m2"
++            $ph="inner-padding-xs"
++            $alignItems={"flex-start"}
++            $gap="all-spacing-2"
++            role="listitem"
++          >
++            <VisuallyHidden>
++              Correct position {correctPosition} -{" "}
++              <OakCodeRenderer
++                string={removeMarkdown(item)}
++                $font="code-3"
++                $mt={"space-between-none"}
++              />
++            </VisuallyHidden>
++            <OakBox $minWidth="all-spacing-7" aria-hidden>
++              <OakIcon
++                iconName={"tick"}
++                $width={"all-spacing-6"}
++                $height={"all-spacing-6"}
++              />
++            </OakBox>
++
++            <OakTypography $font={["body-2-bold", "body-1-bold"]} aria-hidden>
++              {correctPosition}
++            </OakTypography>
++
++            <OakTypography $font={["body-2", "body-1"]} aria-hidden>
++              -{" "}
++              <OakCodeRenderer
++                string={removeMarkdown(item)}
++                $font={"code-3"}
++                $mt={"space-between-none"}
++              />
++            </OakTypography>
++          </OakFlex>
++        ) : null;
++      })}
++    </OakFlex>
++  );
++};
+diff --git a/apps/nextjs/src/components/Quiz/questions/QuizQuestionsQuestionStem.tsx b/apps/nextjs/src/components/Quiz/questions/QuizQuestionsQuestionStem.tsx
+new file mode 100644
+index 00000000..38ab84cb
+--- /dev/null
++++ b/apps/nextjs/src/components/Quiz/questions/QuizQuestionsQuestionStem.tsx
+@@ -0,0 +1,35 @@
++import { OakFlex, OakTypography } from "@oaknational/oak-components";
++
++import { shortAnswerTitleFormatter } from "../utils/formatters";
++
++export const QuizQuestionsQuestionStem = ({
++  question,
++  index,
++  showIndex = true,
++}: {
++  question: string;
++  index: number;
++  showIndex?: boolean;
++}) => {
++  const displayNumber = `Q${index + 1}.`;
++  return (
++    <OakFlex $flexDirection={"column"} $gap="all-spacing-1">
++      <OakFlex key="stem-header">
++        {showIndex && (
++          <OakTypography
++            $font={["body-2-bold", "body-1-bold"]}
++            $mr="space-between-xs"
++          >
++            {displayNumber}
++          </OakTypography>
++        )}
++        <OakTypography
++          key={`q-${displayNumber}-stem-element-0`}
++          $font={["body-2-bold", "body-1-bold"]}
++        >
++          {shortAnswerTitleFormatter(question)}
++        </OakTypography>
++      </OakFlex>
++    </OakFlex>
++  );
++};
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsShortAnswers/QuizQuestionsShortAnswers.tsx b/apps/nextjs/src/components/Quiz/questions/QuizQuestionsShortAnswers.tsx
+similarity index 72%
+rename from apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsShortAnswers/QuizQuestionsShortAnswers.tsx
+rename to apps/nextjs/src/components/Quiz/questions/QuizQuestionsShortAnswers.tsx
+index c04ca891..38642400 100644
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/QuizQuestionsShortAnswers/QuizQuestionsShortAnswers.tsx
++++ b/apps/nextjs/src/components/Quiz/questions/QuizQuestionsShortAnswers.tsx
+@@ -7,25 +7,14 @@ import {
+ } from "@oaknational/oak-components";
+ import { VisuallyHidden } from "@radix-ui/themes";
+ 
+-import type { ShortAnswer } from "../quizTypes";
+-import { removeMarkdown } from "../quizUtils";
++import { removeMarkdown } from "../utils/formatters";
+ 
+ export const QuizQuestionsShortAnswers = ({
+   answers,
+ }: {
+-  answers: ShortAnswer[];
++  answers: string[];
+ }) => {
+-  const answerString = answers.reduce((acc, cur) => {
+-    const [answer] = cur.answer;
+-    const text = answer?.type === "text" ? answer.text : null;
+-    if (acc === "") {
+-      return text ?? acc;
+-    }
+-
+-    return answer?.type === "text" && answer.text
+-      ? `${acc}, ${answer.text}`
+-      : acc;
+-  }, "");
++  const answerString = answers.join(", ");
+ 
+   return (
+     <OakFlex
+diff --git a/apps/nextjs/src/components/AppComponents/Chat/Quiz/quizUtils.tsx b/apps/nextjs/src/components/Quiz/utils/formatters.tsx
+similarity index 78%
+rename from apps/nextjs/src/components/AppComponents/Chat/Quiz/quizUtils.tsx
+rename to apps/nextjs/src/components/Quiz/utils/formatters.tsx
+index f7b58673..ed45cfb5 100644
+--- a/apps/nextjs/src/components/AppComponents/Chat/Quiz/quizUtils.tsx
++++ b/apps/nextjs/src/components/Quiz/utils/formatters.tsx
+@@ -48,16 +48,3 @@ export const shortAnswerTitleFormatter = (
+ export const removeMarkdown = (title: string | null | undefined): string => {
+   return title ? title.replace(/\*{1,2}(.*?)\*{1,2}/g, "$1") : "";
+ };
+-
+-export const constrainHeight = (h?: number) =>
+-  h ? Math.max(Math.min(200, h), 96) : undefined;
+-
+-export const calcDims = (w?: number, h?: number) => {
+-  const constrainedHeight = constrainHeight(h);
+-  return w && h && constrainedHeight
+-    ? {
+-        width: Math.round((w / h) * constrainedHeight),
+-        height: constrainedHeight,
+-      }
+-    : { width: undefined, height: undefined };
+-};
+diff --git a/apps/nextjs/src/components/Quiz/utils/imageUtils.tsx b/apps/nextjs/src/components/Quiz/utils/imageUtils.tsx
+new file mode 100644
+index 00000000..2387f60d
+--- /dev/null
++++ b/apps/nextjs/src/components/Quiz/utils/imageUtils.tsx
+@@ -0,0 +1,12 @@
++export const constrainHeight = (h?: number) =>
++  h ? Math.max(Math.min(200, h), 96) : undefined;
++
++export const calcDims = (w?: number, h?: number) => {
++  const constrainedHeight = constrainHeight(h);
++  return w && h && constrainedHeight
++    ? {
++        width: Math.round((w / h) * constrainedHeight),
++        height: constrainedHeight,
++      }
++    : { width: undefined, height: undefined };
++};
+diff --git a/apps/nextjs/src/components/Quiz/utils/pairing.test.ts b/apps/nextjs/src/components/Quiz/utils/pairing.test.ts
+new file mode 100644
+index 00000000..6b7c041e
+--- /dev/null
++++ b/apps/nextjs/src/components/Quiz/utils/pairing.test.ts
+@@ -0,0 +1,150 @@
++/**
++ * Tests for quiz pairing utility functions
++ */
++import {
++  type MatchMap,
++  type MatchPair,
++  type OrderMap,
++  createMatchPairings,
++  createOrderMapping,
++  findMatchingLeftLabel,
++  getItemPosition,
++} from "./pairing";
++
++describe("createMatchPairings", () => {
++  it("should create correct pairings for valid pairs", () => {
++    const pairs: MatchPair[] = [
++      { left: "Dog", right: "Bark" },
++      { left: "Cat", right: "Meow" },
++      { left: "Cow", right: "Moo" },
++    ];
++
++    const result = createMatchPairings(pairs);
++
++    expect(result.size).toBe(3);
++    expect(result.get("Dog")).toEqual({ rightText: "Bark", originalIndex: 0 });
++    expect(result.get("Cat")).toEqual({ rightText: "Meow", originalIndex: 1 });
++    expect(result.get("Cow")).toEqual({ rightText: "Moo", originalIndex: 2 });
++  });
++
++  it("should handle empty pairs array", () => {
++    const pairs: MatchPair[] = [];
++    const result = createMatchPairings(pairs);
++
++    expect(result.size).toBe(0);
++  });
++});
++
++describe("findMatchingLeftLabel", () => {
++  let correctMatches: MatchMap;
++  let leftItems: string[];
++
++  beforeEach(() => {
++    const pairs: MatchPair[] = [
++      { left: "Dog", right: "Bark" },
++      { left: "Cat", right: "Meow" },
++      { left: "Cow", right: "Moo" },
++    ];
++    correctMatches = createMatchPairings(pairs);
++    leftItems = ["Dog", "Cat", "Cow"];
++  });
++
++  it("should return correct left label for valid right item", () => {
++    expect(findMatchingLeftLabel("Bark", correctMatches, leftItems)).toBe("A");
++    expect(findMatchingLeftLabel("Meow", correctMatches, leftItems)).toBe("B");
++    expect(findMatchingLeftLabel("Moo", correctMatches, leftItems)).toBe("C");
++  });
++
++  it("should handle shuffled left items correctly", () => {
++    const shuffledLeftItems = ["Cat", "Cow", "Dog"]; // Different order
++
++    expect(
++      findMatchingLeftLabel("Bark", correctMatches, shuffledLeftItems),
++    ).toBe("C"); // Dog is now at index 2
++    expect(
++      findMatchingLeftLabel("Meow", correctMatches, shuffledLeftItems),
++    ).toBe("A"); // Cat is now at index 0
++    expect(
++      findMatchingLeftLabel("Moo", correctMatches, shuffledLeftItems),
++    ).toBe("B"); // Cow is now at index 1
++  });
++});
++
++describe("createOrderMapping", () => {
++  it("should create correct 1-indexed position mapping", () => {
++    const items = ["First", "Second", "Third", "Fourth"];
++    const result = createOrderMapping(items);
++
++    expect(result.size).toBe(4);
++    expect(result.get("First")).toBe(1);
++    expect(result.get("Second")).toBe(2);
++    expect(result.get("Third")).toBe(3);
++    expect(result.get("Fourth")).toBe(4);
++  });
++
++  it("should handle empty items array", () => {
++    const items: string[] = [];
++    const result = createOrderMapping(items);
++
++    expect(result.size).toBe(0);
++  });
++
++  it("should handle single item", () => {
++    const items = ["Only"];
++    const result = createOrderMapping(items);
++
++    expect(result.size).toBe(1);
++    expect(result.get("Only")).toBe(1);
++  });
++});
++
++describe("getItemPosition", () => {
++  let orderMap: OrderMap;
++
++  beforeEach(() => {
++    const items = ["First", "Second", "Third"];
++    orderMap = createOrderMapping(items);
++  });
++
++  it("should return correct position for valid items", () => {
++    expect(getItemPosition("First", orderMap)).toBe(1);
++    expect(getItemPosition("Second", orderMap)).toBe(2);
++    expect(getItemPosition("Third", orderMap)).toBe(3);
++  });
++});
++
++describe("Performance tests", () => {
++  it("should handle large datasets efficiently", () => {
++    // Create 1000 pairs
++    const largePairs: MatchPair[] = Array.from({ length: 1000 }, (_, i) => ({
++      left: `Left${i}`,
++      right: `Right${i}`,
++    }));
++
++    const start = performance.now();
++    const matches = createMatchPairings(largePairs);
++    const leftItems = largePairs.map((p) => p.left);
++
++    // Find a label in the middle
++    const label = findMatchingLeftLabel("Right500", matches, leftItems);
++    const end = performance.now();
++
++    expect(matches.size).toBe(1000);
++    expect(label).toBe("UG"); // String.fromCharCode(65 + 500) = "UG" (500 -> U=85, 500-26*19=6 -> G=71)
++    expect(end - start).toBeLessThan(100); // Should complete in under 100ms
++  });
++
++  it("should handle large order mapping efficiently", () => {
++    // Create 1000 items
++    const largeItems = Array.from({ length: 1000 }, (_, i) => `Item${i}`);
++
++    const start = performance.now();
++    const orderMap = createOrderMapping(largeItems);
++    const position = getItemPosition("Item500", orderMap);
++    const end = performance.now();
++
++    expect(orderMap.size).toBe(1000);
++    expect(position).toBe(501); // 0-indexed to 1-indexed
++    expect(end - start).toBeLessThan(50); // Should complete in under 50ms
++  });
++});
+diff --git a/apps/nextjs/src/components/Quiz/utils/pairing.ts b/apps/nextjs/src/components/Quiz/utils/pairing.ts
+new file mode 100644
+index 00000000..fc96fabe
+--- /dev/null
++++ b/apps/nextjs/src/components/Quiz/utils/pairing.ts
+@@ -0,0 +1,72 @@
++/**
++ * Quiz Pairing Utilities
++ *
++ * Pure functions for handling quiz question pairing logic:
++ * - Match questions: pairing left and right items
++ * - Order questions: mapping items to their correct positions
++ */
++
++// Type definitions
++export type MatchPair = { left: string; right: string };
++export type MatchInfo = { rightText: string; originalIndex: number };
++export type MatchMap = Map<string, MatchInfo>;
++export type OrderMap = Map<string, number>;
++
++/**
++ * Creates a mapping from left items to their correct right matches
++ */
++export function createMatchPairings(pairs: MatchPair[]): MatchMap {
++  const correctMatches = new Map<string, MatchInfo>();
++
++  pairs.forEach((pair, originalIndex) => {
++    const leftText = pair.left;
++    const rightText = pair.right;
++    if (leftText && rightText) {
++      correctMatches.set(leftText, { rightText, originalIndex });
++    }
++  });
++
++  return correctMatches;
++}
++
++/**
++ * Finds the left label (A, B, C, etc.) that corresponds to a given right item
++ */
++export function findMatchingLeftLabel(
++  rightItem: string,
++  correctMatches: MatchMap,
++  leftItems: string[],
++): string {
++  for (const [leftText, matchInfo] of correctMatches.entries()) {
++    if (matchInfo.rightText === rightItem) {
++      const leftIndex = leftItems.findIndex((item) => item === leftText);
++      if (leftIndex !== -1) {
++        return String.fromCharCode(65 + leftIndex); // A, B, C, etc.
++      }
++    }
++  }
++  return "";
++}
++
++/**
++ * Creates a mapping from items to their correct positions (1-indexed)
++ */
++export function createOrderMapping(items: string[]): OrderMap {
++  const correctOrderMap = new Map<string, number>();
++
++  items.forEach((item, correctIndex) => {
++    correctOrderMap.set(item, correctIndex + 1);
++  });
++
++  return correctOrderMap;
++}
++
++/**
++ * Gets the correct position for an item from the order mapping
++ */
++export function getItemPosition(
++  item: string,
++  orderMap: OrderMap,
++): number | undefined {
++  return orderMap.get(item);
++}
+diff --git a/apps/nextjs/src/components/Quiz/utils/shuffle.tsx b/apps/nextjs/src/components/Quiz/utils/shuffle.tsx
+new file mode 100644
+index 00000000..e2989a41
+--- /dev/null
++++ b/apps/nextjs/src/components/Quiz/utils/shuffle.tsx
+@@ -0,0 +1,85 @@
++/**
++ * Simple hash function for deterministic randomization
++ * Uses built-in JavaScript operations for fast, consistent hashing
++ */
++function simpleHash(str: string): number {
++  let hash = 0;
++  if (str.length === 0) return hash;
++  for (let i = 0; i < str.length; i++) {
++    const char = str.charCodeAt(i);
++    hash = (hash << 5) - hash + char;
++    hash = hash & hash; // Convert to 32-bit integer
++  }
++  return Math.abs(hash);
++}
++
++export interface ShuffledChoice {
++  text: string;
++  isCorrect: boolean;
++  sortKey: number;
++}
++
++/**
++ * Shuffle multiple choice answers and distractors deterministically
++ * Uses content-based hashing to ensure same content always produces same order
++ */
++export function shuffleMultipleChoiceAnswers(
++  answers: string[],
++  distractors: string[],
++): ShuffledChoice[] {
++  const allChoices: ShuffledChoice[] = [
++    ...answers.map((answer) => ({
++      text: answer,
++      isCorrect: true,
++      sortKey: simpleHash(answer),
++    })),
++    ...distractors.map((distractor) => ({
++      text: distractor,
++      isCorrect: false,
++      sortKey: simpleHash(distractor),
++    })),
++  ];
++
++  return allChoices.sort((a, b) => a.sortKey - b.sortKey);
++}
++
++export interface ShuffledMatchingPairs {
++  leftItems: string[];
++  rightItems: string[];
++}
++
++/**
++ * Shuffle matching question pairs deterministically
++ * Keeps left items in original order, shuffles right items to break patterns
++ */
++export function shuffleMatchingPairs(
++  pairs: Array<{ left: string; right: string }>,
++): ShuffledMatchingPairs {
++  // Keep left items in original order for better usability
++  const leftItems = pairs.map((pair) => pair.left);
++
++  // Shuffle right items to break up matching patterns
++  const rightItems = pairs
++    .map((pair) => ({
++      item: pair.right,
++      sortKey: simpleHash(pair.right),
++    }))
++    .sort((a, b) => a.sortKey - b.sortKey)
++    .map((x) => x.item);
++
++  return { leftItems, rightItems };
++}
++
++/**
++ * Shuffle order question items deterministically
++ * Note: This shuffles the display order, not the correct solution order
++ */
++export function shuffleOrderItems(items: string[]): string[] {
++  return items
++    .map((item) => ({
++      item,
++      sortKey: simpleHash(item),
++    }))
++    .sort((a, b) => a.sortKey - b.sortKey)
++    .map((x) => x.item);
++}
+diff --git a/packages/aila/src/core/prompt/builders/AilaLessonPromptBuilder.ts b/packages/aila/src/core/prompt/builders/AilaLessonPromptBuilder.ts
+index 24002c14..0634fdc6 100644
+--- a/packages/aila/src/core/prompt/builders/AilaLessonPromptBuilder.ts
++++ b/packages/aila/src/core/prompt/builders/AilaLessonPromptBuilder.ts
+@@ -116,7 +116,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
+       relevantLessonPlans = await fetchRagContent({
+         title: title ?? "unknown",
+         subject,
+-        topic,
++        topic: topic ?? undefined,
+         keyStage,
+         id: chatId,
+         k:
+diff --git a/packages/aila/src/core/quiz/fixtures/CachedImageQuiz.ts b/packages/aila/src/core/quiz/fixtures/CachedImageQuiz.ts
+index 189f92d7..cfda6424 100644
+--- a/packages/aila/src/core/quiz/fixtures/CachedImageQuiz.ts
++++ b/packages/aila/src/core/quiz/fixtures/CachedImageQuiz.ts
+@@ -1,7 +1,7 @@
+ import type { PatchDocument } from "../../../protocol/jsonPatchProtocol";
+-import type { Quiz } from "../../../protocol/schema";
++import type { QuizV1 } from "../../../protocol/schema";
+ 
+-export const cachedQuiz: Quiz = [
++export const cachedQuiz: QuizV1 = [
+   {
+     question: "How many degrees in 2 right angles?",
+     answers: ["180°"],
+@@ -47,7 +47,7 @@ export const cachedQuiz: Quiz = [
+   },
+ ];
+ 
+-export const cachedExitQuizPatch: PatchDocument = {
++export const cachedExitQuizV1Patch: PatchDocument = {
+   type: "patch",
+   reasoning: "adding maths quiz because i need to teach the kids about this",
+   value: {
+diff --git a/packages/aila/src/core/quiz/fixtures/placeholderQuestion.ts b/packages/aila/src/core/quiz/fixtures/placeholderQuestion.ts
+index 23e310b0..0cb8abb3 100644
+--- a/packages/aila/src/core/quiz/fixtures/placeholderQuestion.ts
++++ b/packages/aila/src/core/quiz/fixtures/placeholderQuestion.ts
+@@ -1,6 +1,6 @@
+-import type { QuizQuestion } from "../../../protocol/schema";
++import type { QuizV1Question } from "../../../protocol/schema";
+ 
+-export const placeholderQuiz: QuizQuestion[] = [
++export const placeholderQuiz: QuizV1Question[] = [
+   {
+     question: "No questions found",
+     answers: [
+diff --git a/packages/aila/src/core/quiz/fullservices/BaseFullQuizService.ts b/packages/aila/src/core/quiz/fullservices/BaseFullQuizService.ts
+index 2a8f8623..9d99fb4a 100644
+--- a/packages/aila/src/core/quiz/fullservices/BaseFullQuizService.ts
++++ b/packages/aila/src/core/quiz/fullservices/BaseFullQuizService.ts
+@@ -5,7 +5,7 @@ import type { z } from "zod";
+ import type {
+   AilaRagRelevantLesson,
+   LooseLessonPlan,
+-  QuizQuestion,
++  QuizV1Question,
+ } from "../../../protocol/schema";
+ import type { BaseType } from "../ChoiceModels";
+ import type {
+@@ -27,7 +27,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
+     quizType: quizPatchType,
+     lessonPlan: LooseLessonPlan,
+     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
+-  ): Promise<QuizQuestion[]> {
++  ): Promise<QuizV1Question[]> {
+     const quizPromises = this.quizGenerators.map((quizGenerator) => {
+       if (quizType === "/starterQuiz") {
+         return quizGenerator.generateMathsStarterQuizPatch(
+diff --git a/packages/aila/src/core/quiz/generators/BaseQuizGenerator.ts b/packages/aila/src/core/quiz/generators/BaseQuizGenerator.ts
+index ed73ffdd..caca86fe 100644
+--- a/packages/aila/src/core/quiz/generators/BaseQuizGenerator.ts
++++ b/packages/aila/src/core/quiz/generators/BaseQuizGenerator.ts
+@@ -10,17 +10,17 @@ import { z } from "zod";
+ import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
+ import {
+   JsonPatchDocumentSchema,
+-  PatchQuiz,
++  PatchQuizV1,
+ } from "../../../protocol/jsonPatchProtocol";
+ import type {
+   AilaRagRelevantLesson,
+   LooseLessonPlan,
+-  Quiz,
+   QuizOperationType,
+   QuizPath,
+-  QuizQuestion,
++  QuizV1,
++  QuizV1Question,
+ } from "../../../protocol/schema";
+-import { QuizQuestionSchema } from "../../../protocol/schema";
++import { QuizV1QuestionSchema } from "../../../protocol/schema";
+ import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
+ import type {
+   AilaQuizGeneratorService,
+@@ -36,9 +36,9 @@ import type { SearchResponseBody } from "../types";
+ const log = aiLogger("aila:quiz");
+ 
+ // Base abstract class
+-// Quiz generator takes a lesson plan and returns a quiz object.
+-// Quiz rerankers take a lesson plan and returns a list of quiz objects ranked by suitability.
+-// Quiz selectors take a list of quiz objects and rankings and select the best one according to some criteria or logic defined by a rating function.
++// QuizV1 generator takes a lesson plan and returns a quiz object.
++// QuizV1 rerankers take a lesson plan and returns a list of quiz objects ranked by suitability.
++// QuizV1 selectors take a list of quiz objects and rankings and select the best one according to some criteria or logic defined by a rating function.
+ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
+   protected client: Client;
+   protected cohere: CohereClient;
+@@ -77,11 +77,11 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
+   abstract generateMathsStarterQuizPatch(
+     lessonPlan: LooseLessonPlan,
+     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+-  ): Promise<Quiz[]>;
++  ): Promise<QuizV1[]>;
+   abstract generateMathsExitQuizPatch(
+     lessonPlan: LooseLessonPlan,
+     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+-  ): Promise<Quiz[]>;
++  ): Promise<QuizV1[]>;
+ 
+   public async generateMathsQuizFromRagPlanId(
+     planIds: string,
+@@ -160,14 +160,14 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
+     quizType: QuizPath = "/starterQuiz",
+   ): Promise<JsonPatchDocument> {
+     // Get the questions by searching for the questions with the custom IDs
+-    const quizQuestions: Quiz =
++    const quizQuestions: QuizV1 =
+       await this.questionArrayFromCustomIds(customIds);
+     const patch = this.quizToJsonPatch(quizQuestions, quizType);
+     return patch;
+   }
+   public async questionArrayFromCustomIds(
+     questionUids: string[],
+-  ): Promise<QuizQuestion[]> {
++  ): Promise<QuizV1Question[]> {
+     const response = await this.client.search<QuizQuestionTextOnlySource>({
+       index: "quiz-questions-text-only",
+       body: {
+@@ -189,7 +189,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
+       return Promise.resolve([]);
+     } else {
+       // Gives us an array of quiz questions or null, which are then filtered out.
+-      const filteredQuizQuestions: QuizQuestion[] = response.hits.hits
++      const filteredQuizQuestions: QuizV1Question[] = response.hits.hits
+         .map((hit) => {
+           if (!hit._source) {
+             log.error("Hit source is undefined");
+@@ -198,7 +198,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
+           const quizQuestion = this.parseQuizQuestion(hit._source.text);
+           return quizQuestion;
+         })
+-        .filter((item): item is QuizQuestion => item !== null);
++        .filter((item): item is QuizV1Question => item !== null);
+       return Promise.resolve(filteredQuizQuestions);
+     }
+   }
+@@ -206,7 +206,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
+   public async questionArrayFromPlanIdLookUpTable(
+     planId: string,
+     quizType: QuizPath,
+-  ): Promise<QuizQuestion[]> {
++  ): Promise<QuizV1Question[]> {
+     const lessonSlug = await this.getLessonSlugFromPlanId(planId);
+     if (!lessonSlug) {
+       throw new Error("Lesson slug not found for planId: " + planId);
+@@ -223,7 +223,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
+   public async questionArrayFromPlanId(
+     planId: string,
+     quizType: QuizPath = "/starterQuiz",
+-  ): Promise<QuizQuestion[]> {
++  ): Promise<QuizV1Question[]> {
+     return await this.questionArrayFromPlanIdLookUpTable(planId, quizType);
+   }
+ 
+@@ -412,23 +412,23 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
+ 
+   protected async retrieveAndProcessQuestions(
+     customIds: string[],
+-  ): Promise<QuizQuestion[]> {
++  ): Promise<QuizV1Question[]> {
+     const quizQuestions = await this.questionArrayFromCustomIds(customIds);
+     return quizQuestions;
+   }
+ 
+   protected quizToJsonPatch(
+-    quizQuestions: QuizQuestion[],
++    quizQuestions: QuizV1Question[],
+     quizType: QuizPath = "/starterQuiz",
+     quizOperationType: QuizOperationType = "add",
+   ): JsonPatchDocument {
+-    const quizPatchObject: z.infer<typeof PatchQuiz> = {
++    const quizPatchObject: z.infer<typeof PatchQuizV1> = {
+       op: quizOperationType,
+       path: quizType,
+       value: quizQuestions,
+     };
+ 
+-    const result = PatchQuiz.safeParse(quizPatchObject);
++    const result = PatchQuizV1.safeParse(quizPatchObject);
+     if (!result.success) {
+       log.error("Failed to validate patch object");
+       log.error("Failed Object: ", JSON.stringify(quizPatchObject, null, 2));
+@@ -453,11 +453,11 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
+     log.info("FULL_QUIZ_PATCH: ", patch);
+     return patch;
+   }
+-  private parseQuizQuestion(jsonString: string): QuizQuestion | null {
++  private parseQuizQuestion(jsonString: string): QuizV1Question | null {
+     try {
+       const data = JSON.parse(jsonString);
+ 
+-      return QuizQuestionSchema.parse(data);
++      return QuizV1QuestionSchema.parse(data);
+     } catch (error) {
+       if (error instanceof z.ZodError) {
+         log.error("Validation error:", error.errors);
+diff --git a/packages/aila/src/core/quiz/generators/BasedOnRagQuizGenerator.test.ts b/packages/aila/src/core/quiz/generators/BasedOnRagQuizGenerator.test.ts
+index 22db67aa..5a25ea65 100644
+--- a/packages/aila/src/core/quiz/generators/BasedOnRagQuizGenerator.test.ts
++++ b/packages/aila/src/core/quiz/generators/BasedOnRagQuizGenerator.test.ts
+@@ -1,7 +1,7 @@
+ import { aiLogger } from "@oakai/logger";
+ 
+ import type { LooseLessonPlan } from "../../../protocol/schema";
+-import { QuizSchema } from "../../../protocol/schema";
++import { QuizV1Schema } from "../../../protocol/schema";
+ import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
+ import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
+ 
+@@ -23,6 +23,6 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
+       await quizGenerator.generateMathsStarterQuizPatch(mockLessonPlan);
+     log.info(JSON.stringify(quiz));
+     log.info("QUIZ ABOVE");
+-    expect(QuizSchema.safeParse(quiz[0]).success).toBe(true);
++    expect(QuizV1Schema.safeParse(quiz[0]).success).toBe(true);
+   });
+ });
+diff --git a/packages/aila/src/core/quiz/generators/BasedOnRagQuizGenerator.ts b/packages/aila/src/core/quiz/generators/BasedOnRagQuizGenerator.ts
+index 3f64ffbe..4142e9c3 100644
+--- a/packages/aila/src/core/quiz/generators/BasedOnRagQuizGenerator.ts
++++ b/packages/aila/src/core/quiz/generators/BasedOnRagQuizGenerator.ts
+@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
+ import type {
+   AilaRagRelevantLesson,
+   LooseLessonPlan,
+-  Quiz,
++  QuizV1,
+ } from "../../../protocol/schema";
+ import { BaseQuizGenerator } from "./BaseQuizGenerator";
+ 
+@@ -15,7 +15,7 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
+   async generateMathsStarterQuizPatch(
+     lessonPlan: LooseLessonPlan,
+     _ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+-  ): Promise<Quiz[]> {
++  ): Promise<QuizV1[]> {
+     // If quiz is basedOn, give them the default quiz as a starter quiz
+     log.info(
+       "Generating maths starter quiz for lesson plan id:",
+@@ -37,7 +37,7 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
+   async generateMathsExitQuizPatch(
+     lessonPlan: LooseLessonPlan,
+     _ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+-  ): Promise<Quiz[]> {
++  ): Promise<QuizV1[]> {
+     // If quiz is basedOn, give them the default quiz as an exit quiz
+     log.info(
+       "Generating maths exit quiz for lesson plan id:",
+diff --git a/packages/aila/src/core/quiz/interfaces.ts b/packages/aila/src/core/quiz/interfaces.ts
+index 6ce74936..14408a71 100644
+--- a/packages/aila/src/core/quiz/interfaces.ts
++++ b/packages/aila/src/core/quiz/interfaces.ts
+@@ -5,9 +5,9 @@ import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
+ import type {
+   AilaRagRelevantLesson,
+   LooseLessonPlan,
+-  Quiz,
+   QuizPath,
+-  QuizQuestion,
++  QuizV1,
++  QuizV1Question,
+ } from "../../protocol/schema";
+ import type {
+   BaseType,
+@@ -50,12 +50,12 @@ export interface AilaQuizGeneratorService {
+   generateMathsExitQuizPatch(
+     lessonPlan: LooseLessonPlan,
+     relevantLessons?: AilaRagRelevantLesson[],
+-  ): Promise<Quiz[]>;
++  ): Promise<QuizV1[]>;
+   generateMathsStarterQuizPatch(
+     lessonPlan: LooseLessonPlan,
+     relevantLessons?: AilaRagRelevantLesson[],
+-  ): Promise<Quiz[]>;
+-  // invoke(lessonPlan: LooseLessonPlan): Promise<Quiz[]>;
++  ): Promise<QuizV1[]>;
++  // invoke(lessonPlan: LooseLessonPlan): Promise<QuizV1[]>;
+ }
+ 
+ export interface AilaQuizVariantService {
+@@ -66,15 +66,15 @@ export interface AilaQuizVariantService {
+ }
+ 
+ export interface AilaQuizReranker<T extends z.ZodType<BaseType>> {
+-  rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]>;
++  rerankQuiz(quizzes: QuizV1Question[][]): Promise<number[]>;
+   evaluateQuizArray(
+-    quizzes: QuizQuestion[][],
++    quizzes: QuizV1Question[][],
+     lessonPlan: LooseLessonPlan,
+     ratingSchema: T,
+     quizType: QuizPath,
+   ): Promise<z.infer<T>[]>;
+   cachedEvaluateQuizArray(
+-    quizzes: QuizQuestion[][],
++    quizzes: QuizV1Question[][],
+     lessonPlan: LooseLessonPlan,
+     ratingSchema: T,
+     quizType: QuizPath,
+@@ -93,7 +93,7 @@ export interface FullQuizService {
+     quizType: quizPatchType,
+     lessonPlan: LooseLessonPlan,
+     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+-  ): Promise<QuizQuestion[]>;
++  ): Promise<QuizV1Question[]>;
+ }
+ 
+ // Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
+@@ -101,9 +101,9 @@ export interface QuizSelector<T extends BaseType> {
+   ratingFunction: RatingFunction<T>;
+   maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
+   selectBestQuiz(
+-    quizzes: QuizQuestion[][],
++    quizzes: QuizV1Question[][],
+     ratingsSchemas: T[],
+-  ): QuizQuestion[];
++  ): QuizV1Question[];
+ }
+ 
+ export type quizPatchType = "/starterQuiz" | "/exitQuiz";
+diff --git a/packages/aila/src/core/quiz/rerankers/AilaQuizReranker.ts b/packages/aila/src/core/quiz/rerankers/AilaQuizReranker.ts
+index 06c6ff77..37ba23df 100644
+--- a/packages/aila/src/core/quiz/rerankers/AilaQuizReranker.ts
++++ b/packages/aila/src/core/quiz/rerankers/AilaQuizReranker.ts
+@@ -8,7 +8,7 @@ import type { z } from "zod";
+ import type {
+   LooseLessonPlan,
+   QuizPath,
+-  QuizQuestion,
++  QuizV1Question,
+ } from "../../../protocol/schema";
+ import { type BaseType } from "../ChoiceModels";
+ // import { evaluateQuiz } from "../OpenAIRanker";
+@@ -18,7 +18,7 @@ const log = aiLogger("aila:quiz");
+ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
+   implements AilaQuizReranker<T>
+ {
+-  abstract rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]>;
++  abstract rerankQuiz(quizzes: QuizV1Question[][]): Promise<number[]>;
+   public ratingSchema?: T;
+   public quizType?: QuizPath;
+ 
+@@ -28,14 +28,14 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
+   }
+ 
+   public abstract evaluateQuizArray(
+-    quizArray: QuizQuestion[][],
++    quizArray: QuizV1Question[][],
+     lessonPlan: LooseLessonPlan,
+     ratingSchema: T,
+     quizType: QuizPath,
+   ): Promise<z.infer<T>[]>;
+ 
+   public async cachedEvaluateQuizArray(
+-    quizArray: QuizQuestion[][],
++    quizArray: QuizV1Question[][],
+     lessonPlan: LooseLessonPlan,
+     ratingSchema: T,
+     quizType: QuizPath,
+diff --git a/packages/aila/src/core/quiz/rerankers/RerankerStructuredOutputSchema.ts b/packages/aila/src/core/quiz/rerankers/RerankerStructuredOutputSchema.ts
+index e6e4ec50..93b2eb8b 100644
+--- a/packages/aila/src/core/quiz/rerankers/RerankerStructuredOutputSchema.ts
++++ b/packages/aila/src/core/quiz/rerankers/RerankerStructuredOutputSchema.ts
+@@ -1,6 +1,6 @@
+ import { z } from "zod";
+ 
+-import { QuizQuestionSchema } from "../../../protocol/schema";
++import { QuizV1QuestionSchema } from "../../../protocol/schema";
+ import type { BaseType } from "../ChoiceModels";
+ 
+ export const ratingAndJustificationSchema = z.object({
+@@ -68,10 +68,10 @@ export const quizConsiderationSchema = z.object({
+       "The ids of the RAG lesson plans that are relevant to this lesson plan",
+     ),
+   mlQuizQuestions: z
+-    .array(QuizQuestionSchema)
++    .array(QuizV1QuestionSchema)
+     .describe("The questions in the ML quiz"),
+ });
+ 
+-export type QuizzesForConsideration = z.infer<typeof quizConsiderationSchema>;
++export type QuizConsideration = z.infer<typeof quizConsiderationSchema>;
+ 
+ // export const output_option
+diff --git a/packages/aila/src/core/quiz/rerankers/ReturnFirstReranker.test.ts b/packages/aila/src/core/quiz/rerankers/ReturnFirstReranker.test.ts
+index 267bcce0..cbbceacd 100644
+--- a/packages/aila/src/core/quiz/rerankers/ReturnFirstReranker.test.ts
++++ b/packages/aila/src/core/quiz/rerankers/ReturnFirstReranker.test.ts
+@@ -1,6 +1,6 @@
+ import type { z } from "zod";
+ 
+-import type { QuizQuestion } from "../../../protocol/schema";
++import type { QuizV1Question } from "../../../protocol/schema";
+ import { cachedQuiz } from "../fixtures/CachedImageQuiz";
+ import { testRatingSchema } from "./RerankerStructuredOutputSchema";
+ import { ReturnFirstReranker } from "./ReturnFirstReranker";
+@@ -21,7 +21,7 @@ describe("ReturnFirstReranker", () => {
+ 
+   describe("evaluateQuizArray", () => {
+     it("should return array of ratings with first item rated 1 and others 0", async () => {
+-      const mockQuizzes: QuizQuestion[][] = [cachedQuiz, cachedQuiz];
++      const mockQuizzes: QuizV1Question[][] = [cachedQuiz, cachedQuiz];
+ 
+       const mockLessonPlan = {
+         title: "Test Lesson",
+@@ -57,7 +57,7 @@ describe("ReturnFirstReranker", () => {
+     });
+ 
+     it("should populate schema fields correctly", async () => {
+-      const mockQuizzes: QuizQuestion[][] = [cachedQuiz, cachedQuiz];
++      const mockQuizzes: QuizV1Question[][] = [cachedQuiz, cachedQuiz];
+ 
+       const mockLessonPlan = {
+         title: "Test Lesson",
+diff --git a/packages/aila/src/core/quiz/rerankers/ReturnFirstReranker.ts b/packages/aila/src/core/quiz/rerankers/ReturnFirstReranker.ts
+index 49b0bc39..84fd9a7e 100644
+--- a/packages/aila/src/core/quiz/rerankers/ReturnFirstReranker.ts
++++ b/packages/aila/src/core/quiz/rerankers/ReturnFirstReranker.ts
+@@ -4,7 +4,7 @@ import type { z } from "zod";
+ import type {
+   LooseLessonPlan,
+   QuizPath,
+-  QuizQuestion,
++  QuizV1Question,
+ } from "../../../protocol/schema";
+ import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
+ import { testRatingSchema } from "./RerankerStructuredOutputSchema";
+@@ -14,11 +14,11 @@ import { testRatingSchema } from "./RerankerStructuredOutputSchema";
+ export class ReturnFirstReranker extends BasedOnRagAilaQuizReranker<
+   typeof testRatingSchema
+ > {
+-  public rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]> {
++  public rerankQuiz(quizzes: QuizV1Question[][]): Promise<number[]> {
+     return Promise.resolve([0]);
+   }
+   public evaluateQuizArray(
+-    quizzes: QuizQuestion[][],
++    quizzes: QuizV1Question[][],
+     _lessonPlan: LooseLessonPlan,
+     ratingSchema: typeof testRatingSchema,
+     _quizType: QuizPath,
+diff --git a/packages/aila/src/core/quiz/selectors/BaseQuizSelector.ts b/packages/aila/src/core/quiz/selectors/BaseQuizSelector.ts
+index a63544be..5e081b2f 100644
+--- a/packages/aila/src/core/quiz/selectors/BaseQuizSelector.ts
++++ b/packages/aila/src/core/quiz/selectors/BaseQuizSelector.ts
+@@ -1,4 +1,4 @@
+-import type { QuizQuestion } from "../../../protocol/schema";
++import type { QuizV1Question } from "../../../protocol/schema";
+ import type {
+   BaseType,
+   MaxRatingFunctionApplier,
+@@ -12,9 +12,9 @@ export abstract class BaseQuizSelector<T extends BaseType>
+   public abstract ratingFunction: RatingFunction<T>;
+   public abstract maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
+   public selectBestQuiz(
+-    quizzes: QuizQuestion[][],
++    quizzes: QuizV1Question[][],
+     ratingsSchemas: T[],
+-  ): QuizQuestion[] {
++  ): QuizV1Question[] {
+     const selectedIndex = this.maxRatingFunctionApplier(
+       ratingsSchemas,
+       this.ratingFunction,
+diff --git a/packages/aila/src/features/persistence/AilaPersistence.ts b/packages/aila/src/features/persistence/AilaPersistence.ts
+index 9070da04..13d97894 100644
+--- a/packages/aila/src/features/persistence/AilaPersistence.ts
++++ b/packages/aila/src/features/persistence/AilaPersistence.ts
+@@ -134,7 +134,7 @@ export abstract class AilaPersistence {
+ export type ChatPersistencePayload = AilaPersistedChat & {
+   subject: string;
+   keyStage: string;
+-  topic: string;
++  topic: string | null;
+   options: AilaOptionsWithDefaultFallbackValues;
+ };
+ 
+diff --git a/packages/aila/src/features/rag/AilaRag.ts b/packages/aila/src/features/rag/AilaRag.ts
+index 25f1921f..4ec9cf47 100644
+--- a/packages/aila/src/features/rag/AilaRag.ts
++++ b/packages/aila/src/features/rag/AilaRag.ts
+@@ -55,7 +55,7 @@ export class AilaRag implements AilaRagFeature {
+               title,
+               keyStage,
+               subject,
+-              topic,
++              topic: topic ?? undefined,
+               k:
+                 numberOfRecordsInRag ??
+                 this._aila?.options.numberOfRecordsInRag ??
+diff --git a/packages/aila/src/lib/agents/agents.ts b/packages/aila/src/lib/agents/agents.ts
+index 9e68940c..a30fb27c 100644
+--- a/packages/aila/src/lib/agents/agents.ts
++++ b/packages/aila/src/lib/agents/agents.ts
+@@ -21,8 +21,8 @@ import {
+   MisconceptionsSchemaWithoutLength,
+   PriorKnowledgeSchema,
+   PriorKnowledgeSctrictMax5Schema,
+-  QuizSchemaStrictMax6Schema,
+-  QuizSchemaWithoutLength,
++  QuizV1SchemaStrictMax6Schema,
++  QuizV1SchemaWithoutLength,
+   SubjectSchema,
+   TopicSchema,
+ } from "../../protocol/schema";
+@@ -76,7 +76,7 @@ export type PromptAgentDefinition<
+   prompt: string;
+   schemaForLLM: SchemaForLLM;
+   schemaStrict: SchemaStrict;
+-  extractRagData: (exampleLessonPlan: CompletedLessonPlan) => string;
++  extractRagData: (exampleLessonPlan: CompletedLessonPlan) => string | null;
+ };
+ export type AgentDefinition =
+   | PromptAgentDefinition
+@@ -180,8 +180,8 @@ export const agents: Record<AgentName, AgentDefinition> = {
+       identity,
+       quizQuestionDesignInstructions,
+     }),
+-    schemaForLLM: QuizSchemaWithoutLength,
+-    schemaStrict: QuizSchemaStrictMax6Schema,
++    schemaForLLM: QuizV1SchemaWithoutLength,
++    schemaStrict: QuizV1SchemaStrictMax6Schema,
+     extractRagData: (lp) => JSON.stringify(lp.starterQuiz),
+   },
+   cycle: {
+@@ -205,9 +205,12 @@ export const agents: Record<AgentName, AgentDefinition> = {
+   exitQuiz: {
+     type: "prompt",
+     name: "exitQuiz",
+-    prompt: exitQuizInstructions({ identity, quizQuestionDesignInstructions }),
+-    schemaForLLM: QuizSchemaWithoutLength,
+-    schemaStrict: QuizSchemaStrictMax6Schema,
++    prompt: exitQuizInstructions({
++      identity,
++      quizQuestionDesignInstructions,
++    }),
++    schemaForLLM: QuizV1SchemaWithoutLength,
++    schemaStrict: QuizV1SchemaStrictMax6Schema,
+     extractRagData: (lp) => JSON.stringify(lp.exitQuiz),
+   },
+   mathsStarterQuiz: {
+diff --git a/packages/aila/src/lib/agents/interact.ts b/packages/aila/src/lib/agents/interact.ts
+index 80bd1885..de5c1037 100644
+--- a/packages/aila/src/lib/agents/interact.ts
++++ b/packages/aila/src/lib/agents/interact.ts
+@@ -9,7 +9,7 @@ import {
+   type CompletedLessonPlan,
+   type LessonPlanKey,
+   type LooseLessonPlan,
+-  type Quiz,
++  type QuizV1,
+ } from "../../protocol/schema";
+ import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
+ import { agents, sectionAgentMap } from "./agents";
+@@ -94,8 +94,8 @@ export async function interact({
+   messageHistoryWithProtocol: { role: "user" | "assistant"; content: string }[];
+   onUpdate?: InteractCallback;
+   customAgents: {
+-    mathsStarterQuiz?: CustomAgentAsyncFn<Quiz>;
+-    mathsExitQuiz?: CustomAgentAsyncFn<Quiz>;
++    mathsStarterQuiz?: CustomAgentAsyncFn<QuizV1>;
++    mathsExitQuiz?: CustomAgentAsyncFn<QuizV1>;
+     fetchRagData: CustomAgentAsyncFn<CompletedLessonPlan[]>;
+   };
+   relevantLessons: AilaRagRelevantLesson[] | null;
+diff --git a/packages/aila/src/lib/agents/promptAgentHandler.ts b/packages/aila/src/lib/agents/promptAgentHandler.ts
+index 9e4511b0..1581f3fc 100644
+--- a/packages/aila/src/lib/agents/promptAgentHandler.ts
++++ b/packages/aila/src/lib/agents/promptAgentHandler.ts
+@@ -54,7 +54,6 @@ export async function promptAgentHandler<
+ 
+   const instructions = agent.prompt;
+   const input = `### Examples from similar lessons
+-
+ ${examplesFromSimilarLessons(ragData, targetKey, agent.extractRagData)}
+  
+     ### Document
+diff --git a/packages/aila/src/lib/agents/prompts/shared/examplesFromSimilarLessons.test.ts b/packages/aila/src/lib/agents/prompts/shared/examplesFromSimilarLessons.test.ts
+new file mode 100644
+index 00000000..dc80a284
+--- /dev/null
++++ b/packages/aila/src/lib/agents/prompts/shared/examplesFromSimilarLessons.test.ts
+@@ -0,0 +1,218 @@
++import { examplesFromSimilarLessons } from "./examplesFromSimilarLessons";
++
++interface MockLesson {
++  id: string;
++  title: string;
++  content?: string;
++  description?: string;
++}
++
++describe("examplesFromSimilarLessons", () => {
++  const mockLessons: MockLesson[] = [
++    {
++      id: "1",
++      title: "Lesson 1",
++      content: "This is lesson 1 content",
++      description: "A basic lesson",
++    },
++    {
++      id: "2",
++      title: "Lesson 2",
++      content: "This is lesson 2 content",
++      description: "Another lesson",
++    },
++    {
++      id: "3",
++      title: "Lesson 3",
++      // No content field
++      description: "Lesson without content",
++    },
++  ];
++
++  const extractContent = (lesson: MockLesson): string | null => {
++    return lesson.content ?? null;
++  };
++
++  const extractDescription = (lesson: MockLesson): string | null => {
++    return lesson.description ?? null;
++  };
++
++  it("should format examples correctly with valid data", () => {
++    const result = examplesFromSimilarLessons(
++      mockLessons,
++      "content",
++      extractContent,
++    );
++
++    expect(result).toBe(
++      `<example-content-0>\nThis is lesson 1 content\n</example-content-0>\n\n<example-content-1>\nThis is lesson 2 content\n</example-content-1>`,
++    );
++  });
++
++  it("should use the correct targetKey in the example tags", () => {
++    const result = examplesFromSimilarLessons(
++      mockLessons.slice(0, 1),
++      "quiz",
++      extractContent,
++    );
++
++    expect(result).toBe(
++      `<example-quiz-0>\nThis is lesson 1 content\n</example-quiz-0>`,
++    );
++  });
++
++  it("should filter out lessons where extractRagDataAsText returns null", () => {
++    const result = examplesFromSimilarLessons(
++      mockLessons,
++      "content",
++      extractContent,
++    );
++
++    // Should only include lessons 1 and 2, not lesson 3 (which has no content)
++    expect(result).toContain("This is lesson 1 content");
++    expect(result).toContain("This is lesson 2 content");
++    expect(result).not.toContain("Lesson without content");
++  });
++
++  it("should return 'No relevant examples found.' when no lessons have extractable data", () => {
++    const lessonsWithoutContent = [
++      { id: "1", title: "Lesson 1", description: "A lesson" },
++      { id: "2", title: "Lesson 2", description: "Another lesson" },
++    ];
++
++    const result = examplesFromSimilarLessons(
++      lessonsWithoutContent,
++      "content",
++      extractContent,
++    );
++
++    expect(result).toBe("No relevant examples found.");
++  });
++
++  it("should return 'No relevant examples found.' when lessons array is empty", () => {
++    const result = examplesFromSimilarLessons([], "content", extractContent);
++
++    expect(result).toBe("No relevant examples found.");
++  });
++
++  it("should handle different extraction functions", () => {
++    const result = examplesFromSimilarLessons(
++      mockLessons,
++      "description",
++      extractDescription,
++    );
++
++    expect(result).toContain("A basic lesson");
++    expect(result).toContain("Another lesson");
++    expect(result).toContain("Lesson without content");
++    expect(result).toContain("<example-description-0>");
++    expect(result).toContain("<example-description-1>");
++    expect(result).toContain("<example-description-2>");
++  });
++
++  it("should handle lessons with empty string content", () => {
++    const lessonsWithEmptyContent = [
++      { id: "1", title: "Lesson 1", content: "" },
++      { id: "2", title: "Lesson 2", content: "Valid content" },
++    ];
++
++    const extractContentOrEmpty = (lesson: MockLesson): string | null => {
++      return lesson.content === "" ? null : (lesson.content ?? null);
++    };
++
++    const result = examplesFromSimilarLessons(
++      lessonsWithEmptyContent,
++      "content",
++      extractContentOrEmpty,
++    );
++
++    expect(result).toBe(
++      `<example-content-0>\nValid content\n</example-content-0>`,
++    );
++  });
++
++  it("should maintain correct indexing when filtering", () => {
++    const mixedLessons = [
++      { id: "1", title: "Lesson 1" }, // No content
++      { id: "2", title: "Lesson 2", content: "Content 2" },
++      { id: "3", title: "Lesson 3" }, // No content
++      { id: "4", title: "Lesson 4", content: "Content 4" },
++    ];
++
++    const result = examplesFromSimilarLessons(
++      mixedLessons,
++      "test",
++      extractContent,
++    );
++
++    expect(result).toBe(
++      `<example-test-0>\nContent 2\n</example-test-0>\n\n<example-test-1>\nContent 4\n</example-test-1>`,
++    );
++  });
++
++  it("should handle special characters in content", () => {
++    const lessonsWithSpecialChars = [
++      {
++        id: "1",
++        title: "Lesson 1",
++        content: 'Content with <tags>, quotes "test", and & symbols',
++      },
++    ];
++
++    const result = examplesFromSimilarLessons(
++      lessonsWithSpecialChars,
++      "special",
++      extractContent,
++    );
++
++    expect(result).toBe(
++      `<example-special-0>\nContent with <tags>, quotes "test", and & symbols\n</example-special-0>`,
++    );
++  });
++
++  it("should work with different generic types", () => {
++    interface DifferentLesson {
++      name: string;
++      data: string;
++    }
++
++    const differentLessons: DifferentLesson[] = [
++      { name: "Test", data: "Some data" },
++      { name: "Another", data: "More data" },
++    ];
++
++    const extractData = (lesson: DifferentLesson): string | null => {
++      return lesson.data;
++    };
++
++    const result = examplesFromSimilarLessons(
++      differentLessons,
++      "data",
++      extractData,
++    );
++
++    expect(result).toBe(
++      `<example-data-0>\nSome data\n</example-data-0>\n\n<example-data-1>\nMore data\n</example-data-1>`,
++    );
++  });
++
++  it("should handle multiline content correctly", () => {
++    const lessonsWithMultilineContent = [
++      {
++        id: "1",
++        title: "Lesson 1",
++        content: "Line 1\nLine 2\nLine 3",
++      },
++    ];
++
++    const result = examplesFromSimilarLessons(
++      lessonsWithMultilineContent,
++      "multiline",
++      extractContent,
++    );
++
++    expect(result).toBe(
++      `<example-multiline-0>\nLine 1\nLine 2\nLine 3\n</example-multiline-0>`,
++    );
++  });
++});
+diff --git a/packages/aila/src/lib/agents/prompts/shared/examplesFromSimilarLessons.ts b/packages/aila/src/lib/agents/prompts/shared/examplesFromSimilarLessons.ts
+index 43bb0fdc..d78ea573 100644
+--- a/packages/aila/src/lib/agents/prompts/shared/examplesFromSimilarLessons.ts
++++ b/packages/aila/src/lib/agents/prompts/shared/examplesFromSimilarLessons.ts
+@@ -1,11 +1,22 @@
++export const decorateExample =
++  <T>(extractFn: (lesson: T) => string | null) =>
++  (lesson: T, i: number, targetKey: string) =>
++    `<example-${targetKey}-${i}>\n${extractFn(lesson)}\n</example-${targetKey}-${i}>`;
++
+ export const examplesFromSimilarLessons = <T>(
+   lessons: T[],
+   targetKey: string,
+-  extractRagDataAsText: (lesson: T) => string,
+-) =>
+-  lessons
+-    .map(
+-      (lesson, i) =>
+-        `<example-${targetKey}-${i}>\n${extractRagDataAsText(lesson)}\n</example-${targetKey}-${i}>`,
+-    )
++  extractRagDataAsText: (lesson: T) => string | null,
++) => {
++  const examples = lessons.filter(extractRagDataAsText);
++
++  if (!examples.length) {
++    return `No relevant examples found.`;
++  }
++
++  const decorateFn = decorateExample(extractRagDataAsText);
++
++  return examples
++    .map((lesson, i) => decorateFn(lesson, i, targetKey))
+     .join("\n\n");
++};
+diff --git a/packages/aila/src/protocol/jsonPatchProtocol.ts b/packages/aila/src/protocol/jsonPatchProtocol.ts
+index 13412332..f0445d05 100644
+--- a/packages/aila/src/protocol/jsonPatchProtocol.ts
++++ b/packages/aila/src/protocol/jsonPatchProtocol.ts
+@@ -23,9 +23,12 @@ import {
+   MisconceptionsOptionalSchema,
+   MisconceptionsSchema,
+   MisconceptionsSchemaWithoutLength,
+-  QuizOptionalSchema,
+-  QuizSchema,
+-  QuizSchemaWithoutLength,
++  QuizV1OptionalSchema,
++  QuizV1Schema,
++  QuizV1SchemaWithoutLength,
++  QuizV2OptionalSchema,
++  QuizV2Schema,
++  QuizV2SchemaWithoutLength,
+ } from "./schema";
+ 
+ const log = aiLogger("aila:protocol");
+@@ -119,25 +122,45 @@ export const PatchCycleForLLM = z.object({
+   ),
+ });
+ 
+-export const PatchQuizOptional = z.object({
++export const PatchQuizV1Optional = z.object({
+   op: z.union([z.literal("add"), z.literal("replace")]),
+   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
+-  value: QuizOptionalSchema,
++  value: QuizV1OptionalSchema,
+ });
+ 
+-export const PatchQuiz = z.object({
++export const PatchQuizV1 = z.object({
+   op: z.union([z.literal("add"), z.literal("replace")]),
+   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
+-  value: QuizSchema,
++  value: QuizV1Schema,
+ });
+ 
+ // When using Structured Outputs we cannot specify the length of arrays or strings
+ // so we have to use a different schema and pass in the spec with a description and in the prompt
+-export const PatchQuizForLLM = z.object({
+-  type: z.literal("quiz"),
++export const PatchQuizV1ForLLM = z.object({
++  type: z.literal("quizV1"),
+   op: z.union([z.literal("add"), z.literal("replace")]),
+   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
+-  value: QuizSchemaWithoutLength,
++  value: QuizV1SchemaWithoutLength,
++});
++
++// V2 Quiz patches (discriminated union support)
++export const PatchQuizOptionalV2 = z.object({
++  op: z.union([z.literal("add"), z.literal("replace")]),
++  path: z.union([z.literal("/starterQuizV2"), z.literal("/exitQuizV2")]),
++  value: QuizV2OptionalSchema,
++});
++
++export const PatchQuizV2 = z.object({
++  op: z.union([z.literal("add"), z.literal("replace")]),
++  path: z.union([z.literal("/starterQuizV2"), z.literal("/exitQuizV2")]),
++  value: QuizV2Schema,
++});
++
++export const PatchQuizV2ForLLM = z.object({
++  type: z.literal("quizV2"),
++  op: z.union([z.literal("add"), z.literal("replace")]),
++  path: z.union([z.literal("/starterQuizV2"), z.literal("/exitQuizV2")]),
++  value: QuizV2SchemaWithoutLength,
+ });
+ 
+ export const PatchBasedOnOptional = z.object({
+@@ -238,7 +261,8 @@ export const JsonPatchValueSchema = z.union([
+   PatchString,
+   PatchStringArray,
+   PatchCycle,
+-  PatchQuiz,
++  PatchQuizV1,
++  PatchQuizV2,
+   PatchMisconceptions,
+   PatchKeywords,
+ ]);
+@@ -253,7 +277,8 @@ export const JsonPatchValueForLLMSchema = z.union([
+   PatchStringForLLM,
+   PatchStringArrayForLLM,
+   PatchCycleForLLM,
+-  PatchQuizForLLM,
++  PatchQuizV1ForLLM,
++  PatchQuizV2ForLLM,
+   PatchMisconceptionsForLLM,
+   PatchKeywordsForLLM,
+ ]);
+@@ -272,7 +297,8 @@ export const JsonPatchValueOptionalSchema = z.union([
+   PatchString,
+   PatchStringArray,
+   PatchCycleOptional,
+-  PatchQuizOptional,
++  PatchQuizV1Optional,
++  PatchQuizOptionalV2,
+   PatchMisconceptionsOptional,
+   PatchKeywordsOptional,
+ ]);
+@@ -299,7 +325,8 @@ export const LLMPatchDocumentSchema = z.object({
+     PatchStringForLLM,
+     PatchBasedOnForLLM,
+     PatchMisconceptionsForLLM,
+-    PatchQuizForLLM,
++    PatchQuizV1ForLLM,
++    PatchQuizV2ForLLM,
+     PatchKeywordsForLLM,
+     PatchCycleForLLM,
+     JsonPatchRemoveSchemaForLLM,
+diff --git a/packages/aila/src/protocol/schema.ts b/packages/aila/src/protocol/schema.ts
+index 720bb121..847b4baf 100644
+--- a/packages/aila/src/protocol/schema.ts
++++ b/packages/aila/src/protocol/schema.ts
+@@ -1,9 +1,16 @@
+ import { dedent } from "ts-dedent";
+-import z from "zod";
++import { z } from "zod";
+ import { zodToJsonSchema } from "zod-to-json-schema";
+ 
+-import { type RawQuiz, rawQuizSchema } from "./rawQuizSchema";
+ import { minMaxText } from "./schemaHelpers";
++import {
++  type QuizV1Optional,
++  QuizV1Schema,
++  QuizV1SchemaWithoutLength,
++  QuizV2OptionalSchema,
++  QuizV2Schema,
++} from "./schemas/quiz";
++import { type RawQuiz, rawQuizSchema } from "./schemas/quiz/rawQuiz";
+ 
+ // ********** BASED_ON **********
+ export const BASED_ON_DESCRIPTIONS = {
+@@ -71,44 +78,10 @@ export type MisconceptionsOptional = z.infer<
+   typeof MisconceptionsOptionalSchema
+ >;
+ 
+-// ********** QUIZ **********
+-
+-// Needs to be changed - to adapt for LLM handling.
+-
+-export const QUIZ_DESCRIPTIONS = {
+-  question: "The question to be asked in the quiz.",
+-  answers: "The correct answer. This should be an array of only one item.",
+-  distractors: "A set of distractors. This must be an array with two items.",
+-} as const as {
+-  question: string;
+-  answers: string;
+-  distractors: string;
+-};
+-
+-export const QuizQuestionSchemaWithoutLength = z.object({
+-  question: z.string().describe(QUIZ_DESCRIPTIONS.question),
+-  answers: z.array(z.string()).describe(QUIZ_DESCRIPTIONS.answers),
+-  distractors: z.array(z.string()).describe(QUIZ_DESCRIPTIONS.distractors),
+-});
+-
+-// TODO: MG - Double check this is allowable.
+-export const QuizQuestionSchema = QuizQuestionSchemaWithoutLength; //.extend({
+-//   answers: QuizQuestionSchemaWithoutLength.shape.answers.length(1),
+-//   distractors: QuizQuestionSchemaWithoutLength.shape.distractors.length(2),
+-// });
+-
+-export const QuizQuestionOptionalSchema = QuizQuestionSchema.partial();
+-
+-export type QuizQuestion = z.infer<typeof QuizQuestionSchema>;
+-export type QuizQuestionOptional = z.infer<typeof QuizQuestionOptionalSchema>;
+-
+-export const QuizSchema = z.array(QuizQuestionSchema);
+-export const QuizSchemaWithoutLength = z.array(QuizQuestionSchemaWithoutLength);
+-export const QuizSchemaStrictMax6Schema = QuizSchema.min(1).max(6);
+-export const QuizOptionalSchema = z.array(QuizQuestionOptionalSchema);
+-
+-export type Quiz = z.infer<typeof QuizSchema>;
+-export type QuizOptional = z.infer<typeof QuizOptionalSchema>;
++// ********** QUIZ SCHEMAS **********
++// Quiz schemas have been moved to schemas/quiz/ subfolder for better organization
++// Export all quiz-related types and schemas from there
++export * from "./schemas/quiz";
+ 
+ // ********** EXPLANATION **********
+ export const EXPLANATION_DESCRIPTIONS = {
+@@ -391,7 +364,7 @@ export const CompletedLessonPlanSchema = z.object({
+   title: LessonTitleSchema,
+   keyStage: KeyStageSchema,
+   subject: SubjectSchema,
+-  topic: TopicSchema,
++  topic: TopicSchema.nullable(),
+   learningOutcome: LearningOutcomeSchema,
+   learningCycles: LearningCyclesSchema,
+   priorKnowledge: PriorKnowledgeSchema,
+@@ -399,21 +372,24 @@ export const CompletedLessonPlanSchema = z.object({
+   misconceptions: MisconceptionsSchema,
+   keywords: KeywordsSchema,
+   basedOn: BasedOnSchema.optional(),
+-  starterQuiz: QuizSchema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
++  starterQuiz: QuizV1Schema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
+   cycle1: CycleSchema.describe("The first learning cycle"),
+   cycle2: CycleSchema.describe("The second learning cycle"),
+   cycle3: CycleSchema.describe("The third learning cycle"),
+-  exitQuiz: QuizSchema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
++  exitQuiz: QuizV1Schema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+   additionalMaterials: AdditionalMaterialsSchema,
+ });
+ 
+ export type CompletedLessonPlan = z.infer<typeof CompletedLessonPlanSchema>;
+ 
+ export const LessonPlanSchema = CompletedLessonPlanSchema.partial().extend({
+-  _experimental_starterQuizMathsV0: QuizSchema.optional(),
+-  _experimental_exitQuizMathsV0: QuizSchema.optional(),
++  _experimental_starterQuizMathsV0: QuizV1Schema.optional(),
++  _experimental_exitQuizMathsV0: QuizV1Schema.optional(),
+   _experimental_starterQuizMathsV1: rawQuizSchema.optional(),
+   _experimental_exitQuizMathsV1: rawQuizSchema.optional(),
++  // V2 quiz schemas with discriminated union support
++  starterQuizV2: QuizV2Schema.optional(),
++  exitQuizV2: QuizV2Schema.optional(),
+ });
+ 
+ export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;
+@@ -534,27 +510,14 @@ export type LessonPlanSectionWhileStreaming =
+   | BasedOnOptional
+   | MisconceptionsOptional
+   | KeywordOptional[]
+-  | QuizOptional
++  | QuizV1Optional
+   | CycleOptional
+   | string
+   | string[]
+   | number
+   | NonNullable<RawQuiz[]>;
+ 
+-// These are here due to zod refusing to infer the type of "add"
+-export const quizPathSchema = z.union([
+-  z.literal("/starterQuiz"),
+-  z.literal("/exitQuiz"),
+-]);
+-
+-export type QuizPath = z.infer<typeof quizPathSchema>;
+-
+-export const quizOperationTypeSchema = z.union([
+-  z.literal("add"),
+-  z.literal("replace"),
+-]);
+-
+-export type QuizOperationType = z.infer<typeof quizOperationTypeSchema>;
++// Quiz path and operation types are now exported from ./schemas/quiz/ subfolder
+ 
+ export const CompletedLessonPlanSchemaWithoutLength = z.object({
+   title: LessonTitleSchema,
+@@ -567,12 +530,14 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
+   keyLearningPoints: KeyLearningPointsSchema,
+   misconceptions: MisconceptionsSchemaWithoutLength,
+   keywords: KeywordsSchemaWithoutLength,
+-  starterQuiz: QuizSchemaWithoutLength.describe(
++  starterQuiz: QuizV1SchemaWithoutLength.describe(
+     LESSON_PLAN_DESCRIPTIONS.starterQuiz,
+   ),
+   cycle1: CycleSchemaWithoutLength.describe("The first learning cycle"),
+   cycle2: CycleSchemaWithoutLength.describe("The second learning cycle"),
+   cycle3: CycleSchemaWithoutLength.describe("The third learning cycle"),
+-  exitQuiz: QuizSchemaWithoutLength.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
++  exitQuiz: QuizV1SchemaWithoutLength.describe(
++    LESSON_PLAN_DESCRIPTIONS.exitQuiz,
++  ),
+   additionalMaterials: AdditionalMaterialsSchema,
+ });
+diff --git a/packages/aila/src/protocol/schemas/index.ts b/packages/aila/src/protocol/schemas/index.ts
+new file mode 100644
+index 00000000..44a0aa99
+--- /dev/null
++++ b/packages/aila/src/protocol/schemas/index.ts
+@@ -0,0 +1,23 @@
++/**
++ * Protocol schemas index
++ *
++ * This module provides all protocol-related schemas organized by functionality:
++ * - Quiz schemas (V1, V2, Raw Oak)
++ * - Other schemas can be added here as they are extracted
++ */
++
++// Quiz schemas (all versions)
++export * from "./quiz";
++export * from "./quiz/rawQuiz";
++
++// Re-export common types for backward compatibility
++export type {
++  QuizV1Question,
++  QuizV2Question,
++  QuizV1,
++  QuizV2,
++  QuizPath,
++  QuizOperationType,
++} from "./quiz";
++
++export type { RawQuiz } from "./quiz/rawQuiz";
+diff --git a/packages/aila/src/protocol/schemas/quiz/conversion/quizV1ToV2.test.ts b/packages/aila/src/protocol/schemas/quiz/conversion/quizV1ToV2.test.ts
+new file mode 100644
+index 00000000..ce7306ac
+--- /dev/null
++++ b/packages/aila/src/protocol/schemas/quiz/conversion/quizV1ToV2.test.ts
+@@ -0,0 +1,80 @@
++import { describe, expect, it } from "@jest/globals";
++
++import type { QuizV1, QuizV1Question } from "..";
++import {
++  convertQuizV1QuestionToV2,
++  convertQuizV1ToV2,
++  detectQuizVersion,
++} from "./quizV1ToV2";
++
++describe("V1 to V2 Quiz Conversion", () => {
++  describe("Question conversion", () => {
++    it("should convert a V1 multiple choice question to V2", () => {
++      const questionV1: QuizV1Question = {
++        question: "What is 2 + 2?",
++        answers: ["4"],
++        distractors: ["3", "5"],
++      };
++
++      const result = convertQuizV1QuestionToV2(questionV1);
++
++      expect(result).toEqual({
++        questionType: "multiple-choice",
++        question: "What is 2 + 2?",
++        answers: ["4"],
++        distractors: ["3", "5"],
++        feedback: undefined,
++        hint: undefined,
++      });
++    });
++  });
++
++  describe("Quiz conversion", () => {
++    it("should convert an entire V1 quiz to V2", () => {
++      const quizV1: QuizV1 = [
++        {
++          question: "What is 2 + 2?",
++          answers: ["4"],
++          distractors: ["3", "5"],
++        },
++        {
++          question: "What is the capital of France?",
++          answers: ["Paris"],
++          distractors: ["London", "Berlin"],
++        },
++      ];
++
++      const result = convertQuizV1ToV2(quizV1);
++
++      expect(result.version).toBe("v2");
++      expect(result.questions).toHaveLength(2);
++      expect(result.questions[0]?.questionType).toBe("multiple-choice");
++      expect(result.questions[1]?.questionType).toBe("multiple-choice");
++    });
++  });
++
++  describe("Version detection", () => {
++    it("should correctly detect quiz versions", () => {
++      const v1Quiz: QuizV1 = [
++        { question: "Q1", answers: ["A"], distractors: ["B"] },
++      ];
++      const v2Quiz = {
++        version: "v2" as const,
++        questions: [
++          {
++            questionType: "multiple-choice" as const,
++            question: "Q1",
++            answers: ["A"],
++            distractors: ["B"],
++            feedback: undefined,
++            hint: undefined,
++          },
++        ],
++      };
++
++      expect(detectQuizVersion(v1Quiz)).toBe("v1");
++      expect(detectQuizVersion(v2Quiz)).toBe("v2");
++      expect(detectQuizVersion([])).toBe("v1"); // Empty array is still V1 format
++    });
++  });
++});
+diff --git a/packages/aila/src/protocol/schemas/quiz/conversion/quizV1ToV2.ts b/packages/aila/src/protocol/schemas/quiz/conversion/quizV1ToV2.ts
+new file mode 100644
+index 00000000..6ab49f38
+--- /dev/null
++++ b/packages/aila/src/protocol/schemas/quiz/conversion/quizV1ToV2.ts
+@@ -0,0 +1,52 @@
++/**
++ * V1 to V2 Quiz Schema Conversion
++ *
++ * This module provides utilities to convert V1 quiz format (multiple choice only)
++ * to V2 format (discriminated union supporting multiple quiz types).
++ */
++import type { QuizV1, QuizV1Question, QuizV2, QuizV2Question } from "..";
++
++/**
++ * Convert a V1 quiz question (MC only) to V2 format
++ */
++export function convertQuizV1QuestionToV2(
++  questionV1: QuizV1Question,
++): QuizV2Question {
++  return {
++    questionType: "multiple-choice",
++    question: questionV1.question,
++    answers: questionV1.answers,
++    distractors: questionV1.distractors,
++    feedback: undefined,
++    hint: undefined,
++  };
++}
++
++/**
++ * Convert an entire V1 quiz to V2 format
++ */
++export function convertQuizV1ToV2(quizV1: QuizV1): QuizV2 {
++  return {
++    version: "v2",
++    questions: quizV1.map(convertQuizV1QuestionToV2),
++  };
++}
++
++/**
++ * Detect the quiz schema version
++ */
++export function detectQuizVersion(
++  quiz: QuizV1 | QuizV2,
++): "v1" | "v2" | "unknown" {
++  // V2 format has version field
++  if (typeof quiz === "object" && quiz !== null && "version" in quiz) {
++    return "v2";
++  }
++
++  // V1 format is an array
++  if (Array.isArray(quiz)) {
++    return "v1";
++  }
++
++  return "unknown";
++}
+diff --git a/packages/aila/src/protocol/schemas/quiz/conversion/rawQuizIngest.ts b/packages/aila/src/protocol/schemas/quiz/conversion/rawQuizIngest.ts
+new file mode 100644
+index 00000000..7aa1d726
+--- /dev/null
++++ b/packages/aila/src/protocol/schemas/quiz/conversion/rawQuizIngest.ts
+@@ -0,0 +1,247 @@
++import type {
++  imageItemSchema,
++  textItemSchema,
++} from "@oaknational/oak-curriculum-schema";
++import type { z } from "zod";
++
++import type { QuizV2, QuizV2Question } from "../quizV2";
++import { type RawQuiz, rawQuizSchema } from "../rawQuiz";
++
++type TextItem = z.infer<typeof textItemSchema>;
++type ImageItem = z.infer<typeof imageItemSchema>;
++
++/**
++ * Convert Oak's raw quiz schema to our V2 format
++ * This bridges the gap between Oak's curriculum schema and Aila's internal schema
++ */
++export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
++  // Validate the entire input with Oak's schema first - throw if invalid
++  const validatedQuiz = rawQuizSchema.parse(rawQuiz);
++
++  if (!validatedQuiz || !Array.isArray(validatedQuiz)) {
++    return {
++      version: "v2",
++      questions: [],
++    };
++  }
++
++  const questions = validatedQuiz
++    .filter((rawQuestion) => rawQuestion.questionType !== "explanatory-text")
++    .map((rawQuestion): QuizV2Question => {
++      if (!rawQuestion) {
++        // Fallback for invalid questions
++        return {
++          questionType: "multiple-choice" as const,
++          question: "Invalid question",
++          answers: ["N/A"],
++          distractors: ["N/A"],
++          feedback: undefined,
++          hint: undefined,
++        };
++      }
++
++      // Extract question stem as markdown with inlined images
++      const { markdown: questionStem, attributions } =
++        extractMarkdownFromContent(rawQuestion.questionStem);
++
++      const feedback = rawQuestion.feedback || undefined;
++      const hint = rawQuestion.hint || undefined;
++
++      // Handle different question types based on Oak's schema
++      switch (rawQuestion.questionType) {
++        case "multiple-choice": {
++          const mcAnswers = rawQuestion.answers?.["multiple-choice"] || [];
++
++          const correctAnswerResults = mcAnswers
++            .filter((answer) => answer.answer_is_correct)
++            .map((answer) => extractMarkdownFromContent(answer.answer || []));
++          const correctAnswers = correctAnswerResults.map(
++            (result) => result.markdown,
++          );
++
++          const distractorResults = mcAnswers
++            .filter((answer) => !answer.answer_is_correct)
++            .map((answer) => extractMarkdownFromContent(answer.answer || []));
++          const distractors = distractorResults.map(
++            (result) => result.markdown,
++          );
++
++          // Collect all attributions from question and answers
++          const allAttributions = [
++            ...attributions,
++            ...correctAnswerResults.flatMap((result) => result.attributions),
++            ...distractorResults.flatMap((result) => result.attributions),
++          ];
++
++          return {
++            questionType: "multiple-choice" as const,
++            question: questionStem,
++            answers: correctAnswers,
++            distractors,
++            feedback,
++            hint,
++            imageAttributions:
++              allAttributions.length > 0 ? allAttributions : undefined,
++          };
++        }
++
++        case "short-answer": {
++          const saAnswers = rawQuestion.answers?.["short-answer"] || [];
++          const answerResults = saAnswers.map((answer) =>
++            extractMarkdownFromContent(answer.answer || []),
++          );
++          const answers = answerResults.map((result) => result.markdown);
++
++          const allAttributions = [
++            ...attributions,
++            ...answerResults.flatMap((result) => result.attributions),
++          ];
++
++          return {
++            questionType: "short-answer" as const,
++            question: questionStem,
++            answers,
++            feedback,
++            hint,
++            imageAttributions:
++              allAttributions.length > 0 ? allAttributions : undefined,
++          };
++        }
++
++        case "match": {
++          const matchAnswers = rawQuestion.answers?.match || [];
++          const pairResults = matchAnswers.map((match) => {
++            const leftResult = extractMarkdownFromContent(
++              match.match_option || [],
++            );
++            const rightResult = extractMarkdownFromContent(
++              match.correct_choice || [],
++            );
++            return {
++              pair: { left: leftResult.markdown, right: rightResult.markdown },
++              attributions: [
++                ...leftResult.attributions,
++                ...rightResult.attributions,
++              ],
++            };
++          });
++
++          const pairs = pairResults.map((result) => result.pair);
++          const allAttributions = [
++            ...attributions,
++            ...pairResults.flatMap((result) => result.attributions),
++          ];
++
++          return {
++            questionType: "match" as const,
++            question: questionStem,
++            pairs,
++            feedback,
++            hint,
++            imageAttributions:
++              allAttributions.length > 0 ? allAttributions : undefined,
++          };
++        }
++
++        case "order": {
++          // TODO why are all of these types optional
++          const orderAnswers = rawQuestion.answers?.order || [];
++          const itemResults = orderAnswers
++            .sort((a, b) => (a.correct_order || 0) - (b.correct_order || 0))
++            .map((order) => extractMarkdownFromContent(order.answer || []));
++
++          const items = itemResults.map((result) => result.markdown);
++          const allAttributions = [
++            ...attributions,
++            ...itemResults.flatMap((result) => result.attributions),
++          ];
++
++          return {
++            questionType: "order" as const,
++            question: questionStem,
++            items,
++            feedback,
++            hint,
++            imageAttributions:
++              allAttributions.length > 0 ? allAttributions : undefined,
++          };
++        }
++
++        default:
++          // Fallback to multiple choice for unknown types
++          return {
++            questionType: "multiple-choice" as const,
++            question: questionStem,
++            answers: ["Unknown question type"],
++            distractors: ["N/A", "N/A"],
++            feedback,
++            hint,
++          };
++      }
++    });
++
++  return {
++    version: "v2",
++    questions,
++  };
++}
++
++/**
++ * Type guard to check if an item is a text item
++ */
++function isTextItem(item: TextItem | ImageItem | undefined): item is TextItem {
++  return item?.type === "text";
++}
++
++/**
++ * Type guard to check if an item is an image item
++ */
++function isImageItem(
++  item: TextItem | ImageItem | undefined,
++): item is ImageItem {
++  return item?.type === "image";
++}
++
++/**
++ * Extract markdown content from Oak's content items array, inlining images
++ * Returns both the markdown content and attribution metadata
++ */
++function extractMarkdownFromContent(
++  contentItems: Array<TextItem | ImageItem | undefined>,
++): {
++  markdown: string;
++  attributions: Array<{ imageUrl: string; attribution: string }>;
++} {
++  const attributions: Array<{ imageUrl: string; attribution: string }> = [];
++
++  const markdownParts = contentItems
++    .filter((item): item is TextItem | ImageItem => item !== undefined)
++    .map((item) => {
++      if (isTextItem(item)) {
++        return item.text || "";
++      } else if (isImageItem(item)) {
++        const imageUrl = item.image_object.secure_url;
++
++        // Extract attribution if available
++        if (
++          item.image_object.metadata &&
++          typeof item.image_object.metadata === "object" &&
++          !Array.isArray(item.image_object.metadata)
++        ) {
++          const attribution = item.image_object.metadata.attribution;
++          if (attribution) {
++            attributions.push({ imageUrl, attribution });
++          }
++        }
++
++        // Return markdown image syntax
++        return `![](${imageUrl})`;
++      }
++      return "";
++    });
++
++  return {
++    markdown: markdownParts.join(" ").trim(),
++    attributions,
++  };
++}
+diff --git a/packages/aila/src/protocol/schemas/quiz/index.ts b/packages/aila/src/protocol/schemas/quiz/index.ts
+new file mode 100644
+index 00000000..92799c0e
+--- /dev/null
++++ b/packages/aila/src/protocol/schemas/quiz/index.ts
+@@ -0,0 +1,33 @@
++/**
++ * Quiz schema exports - both V1 (legacy) and V2 (discriminated union)
++ *
++ * This module provides all quiz-related schemas:
++ * - V1: Multiple choice only (legacy, used by LLM)
++ * - V2: Discriminated union for all quiz types (modern, used by frontend/export)
++ */
++import { z } from "zod";
++
++// V1 exports (legacy)
++export * from "./quizV1";
++
++// V2 exports (modern)
++export * from "./quizV2";
++
++// Conversion utilities
++export * from "./conversion/quizV1ToV2";
++export * from "./conversion/rawQuizIngest";
++
++// Common type for paths
++export const quizPathSchema = z.union([
++  z.literal("/starterQuiz"),
++  z.literal("/exitQuiz"),
++]);
++
++export type QuizPath = z.infer<typeof quizPathSchema>;
++
++export const quizOperationTypeSchema = z.union([
++  z.literal("add"),
++  z.literal("replace"),
++]);
++
++export type QuizOperationType = z.infer<typeof quizOperationTypeSchema>;
+diff --git a/packages/aila/src/protocol/schemas/quiz/quizV1.ts b/packages/aila/src/protocol/schemas/quiz/quizV1.ts
+new file mode 100644
+index 00000000..f5c5d821
+--- /dev/null
++++ b/packages/aila/src/protocol/schemas/quiz/quizV1.ts
+@@ -0,0 +1,42 @@
++import { z } from "zod";
++
++// ********** QUIZ V1 (legacy with only multiple-choice) **********
++
++export const QUIZ_V1_DESCRIPTIONS = {
++  question: "The question to be asked in the quiz.",
++  answers: "The correct answer. This should be an array of only one item.",
++  distractors: "A set of distractors. This must be an array with two items.",
++} satisfies {
++  question: string;
++  answers: string;
++  distractors: string;
++};
++
++export const QuizV1QuestionSchemaWithoutLength = z.object({
++  question: z.string().describe(QUIZ_V1_DESCRIPTIONS.question),
++  answers: z.array(z.string()).describe(QUIZ_V1_DESCRIPTIONS.answers),
++  distractors: z.array(z.string()).describe(QUIZ_V1_DESCRIPTIONS.distractors),
++});
++
++// TODO: MG - Double check this is allowable.
++export const QuizV1QuestionSchema = QuizV1QuestionSchemaWithoutLength; //.extend({
++//   answers: QuizV1QuestionSchemaWithoutLength.shape.answers.length(1),
++//   distractors: QuizV1QuestionSchemaWithoutLength.shape.distractors.length(2),
++// });
++
++export const QuizV1QuestionOptionalSchema = QuizV1QuestionSchema.partial();
++
++export type QuizV1Question = z.infer<typeof QuizV1QuestionSchema>;
++export type QuizV1QuestionOptional = z.infer<
++  typeof QuizV1QuestionOptionalSchema
++>;
++
++export const QuizV1Schema = z.array(QuizV1QuestionSchema);
++export const QuizV1SchemaWithoutLength = z.array(
++  QuizV1QuestionSchemaWithoutLength,
++);
++export const QuizV1SchemaStrictMax6Schema = QuizV1Schema.min(1).max(6);
++export const QuizV1OptionalSchema = z.array(QuizV1QuestionOptionalSchema);
++
++export type QuizV1 = z.infer<typeof QuizV1Schema>;
++export type QuizV1Optional = z.infer<typeof QuizV1OptionalSchema>;
+diff --git a/packages/aila/src/protocol/schemas/quiz/quizV2.ts b/packages/aila/src/protocol/schemas/quiz/quizV2.ts
+new file mode 100644
+index 00000000..a792763e
+--- /dev/null
++++ b/packages/aila/src/protocol/schemas/quiz/quizV2.ts
+@@ -0,0 +1,100 @@
++import { z } from "zod";
++
++// ********** QUIZ V2 (discriminated union for multiple quiz types) **********
++
++export const QUIZ_V2_DESCRIPTIONS = {
++  question: "The main question text containing markdown with embedded images",
++  questionType: "The type of quiz question",
++  answers: "The answers specific to this question type",
++  feedback: "Feedback to show after the question is answered",
++  hint: "Optional hint to help students",
++  imageAttributions:
++    "Attribution metadata for any images referenced in this question",
++} as const;
++
++// Image attribution metadata
++export const ImageAttributionSchema = z.object({
++  imageUrl: z.string().describe("The URL of the image"),
++  attribution: z.string().describe("Attribution text for the image"),
++});
++
++// Base question schema with common fields
++export const QuizV2QuestionBaseSchema = z.object({
++  question: z.string().describe(QUIZ_V2_DESCRIPTIONS.question),
++  feedback: z.string().optional().describe(QUIZ_V2_DESCRIPTIONS.feedback),
++  hint: z.string().optional().describe(QUIZ_V2_DESCRIPTIONS.hint),
++  imageAttributions: z
++    .array(ImageAttributionSchema)
++    .optional()
++    .describe(QUIZ_V2_DESCRIPTIONS.imageAttributions),
++});
++
++// Multiple choice question
++export const QuizV2QuestionMultipleChoiceSchema =
++  QuizV2QuestionBaseSchema.extend({
++    questionType: z.literal("multiple-choice"),
++    answers: z.array(z.string()).describe("Correct answers as markdown"),
++    distractors: z
++      .array(z.string())
++      .describe("Incorrect answer options as markdown"),
++  });
++
++// Short answer question
++export const QuizV2QuestionShortAnswerSchema = QuizV2QuestionBaseSchema.extend({
++  questionType: z.literal("short-answer"),
++  answers: z.array(z.string()).describe("Acceptable answers as markdown"),
++});
++
++// Match question
++export const QuizV2QuestionMatchSchema = QuizV2QuestionBaseSchema.extend({
++  questionType: z.literal("match"),
++  pairs: z
++    .array(
++      z.object({
++        left: z.string().describe("Left side item to match as markdown"),
++        right: z.string().describe("Corresponding right side item as markdown"),
++      }),
++    )
++    .describe("Pairs of items to match"),
++});
++
++// Order question
++export const QuizV2QuestionOrderSchema = QuizV2QuestionBaseSchema.extend({
++  questionType: z.literal("order"),
++  items: z
++    .array(z.string())
++    .describe("Items to be put in correct order as markdown"),
++});
++
++// Discriminated union of all question types
++export const QuizV2QuestionSchema = z.discriminatedUnion("questionType", [
++  QuizV2QuestionMultipleChoiceSchema,
++  QuizV2QuestionShortAnswerSchema,
++  QuizV2QuestionMatchSchema,
++  QuizV2QuestionOrderSchema,
++]);
++
++export const QuizV2Schema = z.object({
++  version: z.literal("v2"),
++  questions: z.array(QuizV2QuestionSchema),
++});
++export const QuizV2SchemaWithoutLength = z.object({
++  version: z.literal("v2"),
++  questions: z.array(QuizV2QuestionSchema),
++});
++export const QuizV2OptionalSchema = QuizV2Schema.optional();
++
++export type ImageAttribution = z.infer<typeof ImageAttributionSchema>;
++export type QuizV2Question = z.infer<typeof QuizV2QuestionSchema>;
++export type QuizV2 = z.infer<typeof QuizV2Schema>;
++export type QuizV2Optional = z.infer<typeof QuizV2OptionalSchema>;
++
++// Individual question type exports for convenience
++export type QuizV2QuestionMultipleChoice = z.infer<
++  typeof QuizV2QuestionMultipleChoiceSchema
++>;
++export type QuizV2QuestionShortAnswer = z.infer<
++  typeof QuizV2QuestionShortAnswerSchema
++>;
++export type QuizV2QuestionMatch = z.infer<typeof QuizV2QuestionMatchSchema>;
++export type QuizV2QuestionOrder = z.infer<typeof QuizV2QuestionOrderSchema>;
+diff --git a/packages/aila/src/protocol/rawQuizSchema.ts b/packages/aila/src/protocol/schemas/quiz/rawQuiz.ts
+similarity index 51%
+rename from packages/aila/src/protocol/rawQuizSchema.ts
+rename to packages/aila/src/protocol/schemas/quiz/rawQuiz.ts
+index 00dd71a1..b5ef7116 100644
+--- a/packages/aila/src/protocol/rawQuizSchema.ts
++++ b/packages/aila/src/protocol/schemas/quiz/rawQuiz.ts
+@@ -11,44 +11,24 @@ import {
+ } from "@oaknational/oak-curriculum-schema";
+ import { z } from "zod";
+ 
+-type SnakeToCamelCase<S extends string> =
+-  S extends `${infer T}_${infer U}${infer Rest}`
+-    ? `${T}${Uppercase<U>}${SnakeToCamelCase<Rest>}`
+-    : S;
+-export type ConvertKeysToCamelCase<T> =
+-  T extends Array<infer U>
+-    ? Array<ConvertKeysToCamelCase<U>>
+-    : T extends object
+-      ? {
+-          [K in keyof T as SnakeToCamelCase<
+-            K & string
+-          >]: ConvertKeysToCamelCase<T[K]>;
+-        }
+-      : T;
+-export function convertKey(key: string): string {
+-  return key.replace(/(_\w)/g, (_, [, m]) => (m as string)?.toUpperCase());
+-}
+-export type QuizQuestion = ConvertKeysToCamelCase<
+-  z.infer<typeof quizQuestionSchema>
+->;
++// Direct types from Oak's schema without any conversion
+ 
+-export type QuizQuestionAnswers = NonNullable<
+-  ConvertKeysToCamelCase<z.infer<typeof quizQuestionSchema>["answers"]>
++export type QuizRawQuestion = z.infer<typeof quizQuestionSchema>;
++export type QuizRawQuestionAnswers = NonNullable<
++  z.infer<typeof quizQuestionSchema>["answers"]
+ >;
+ 
+-export type MCAnswer = ConvertKeysToCamelCase<
+-  z.infer<typeof multipleChoiceSchema>
+->;
+-export type ShortAnswer = ConvertKeysToCamelCase<
+-  z.infer<typeof shortAnswerSchema>
+->;
+-export type OrderAnswer = ConvertKeysToCamelCase<z.infer<typeof orderSchema>>;
+-export type MatchAnswer = ConvertKeysToCamelCase<z.infer<typeof matchSchema>>;
++export type MCAnswer = z.infer<typeof multipleChoiceSchema>;
++export type ShortAnswer = z.infer<typeof shortAnswerSchema>;
++export type OrderAnswer = z.infer<typeof orderSchema>;
++export type MatchAnswer = z.infer<typeof matchSchema>;
+ 
+-export type ImageItem = ConvertKeysToCamelCase<z.infer<typeof imageItemSchema>>;
+-export type TextItem = ConvertKeysToCamelCase<z.infer<typeof textItemSchema>>;
++export type ImageItem = z.infer<typeof imageItemSchema>;
++export type TextItem = z.infer<typeof textItemSchema>;
+ export type ImageOrTextItem = ImageItem | TextItem;
+ 
++// TODO: understand why these exist
++
+ const stemTextObjectSchema = z.object({
+   text: z.string(),
+   type: z.literal("text"),
+@@ -57,27 +37,26 @@ const stemTextObjectSchema = z.object({
+ export type StemTextObject = z.infer<typeof stemTextObjectSchema>;
+ 
+ const stemImageObjectSchema = z.object({
+-  imageObject: z.object({
++  image_object: z.object({
+     format: z.enum(["png", "jpg", "jpeg", "webp", "gif", "svg"]).optional(),
+-    secureUrl: z.string().url(),
++    secure_url: z.string().url(),
+     url: z.string().url().optional(),
+     height: z.number().optional(),
+     width: z.number().optional(),
+     metadata: z.union([
+-      z.array(z.any()),
++      z.array(z.unknown()),
+       z.object({
+         attribution: z.string().optional(),
+         usageRestriction: z.string().optional(),
+       }),
+     ]),
+-    publicId: z.string().optional(),
++    public_id: z.string().optional(),
+     version: z.number().optional(),
+   }),
+   type: z.literal("image"),
+ });
+ 
+ export type StemImageObject = z.infer<typeof stemImageObjectSchema>;
+-
+ export type StemObject = StemTextObject | StemImageObject;
+ 
+ const answersSchema = z.object({
+@@ -112,24 +91,9 @@ export const rawQuizSchema = z
+   .nullable()
+   .optional();
+ 
+-export type RawQuiz = ConvertKeysToCamelCase<z.infer<typeof rawQuizSchema>>;
++export type RawQuiz = z.infer<typeof rawQuizSchema>;
+ export type QuizProps = {
+   questions: NonNullable<RawQuiz>;
+   imageAttribution: { attribution: string; questionNumber: string }[];
+   isMathJaxLesson: boolean;
+ };
+-
+-export function keysToCamelCase<T>(obj: T): ConvertKeysToCamelCase<T> {
+-  if (Array.isArray(obj)) {
+-    return obj.map((item) =>
+-      keysToCamelCase(item as unknown[]),
+-    ) as ConvertKeysToCamelCase<T>;
+-  } else if (obj && typeof obj === "object") {
+-    return Object.entries(obj).reduce((acc, [key, value]) => {
+-      const newKey = convertKey(key);
+-      acc[newKey as keyof typeof acc] = keysToCamelCase(value);
+-      return acc;
+-    }, {} as ConvertKeysToCamelCase<T>);
+-  }
+-  return obj as ConvertKeysToCamelCase<T>;
+-}
+diff --git a/packages/aila/src/protocol/sectionToMarkdown.ts b/packages/aila/src/protocol/sectionToMarkdown.ts
+index d6e04de5..855b1b65 100644
+--- a/packages/aila/src/protocol/sectionToMarkdown.ts
++++ b/packages/aila/src/protocol/sectionToMarkdown.ts
+@@ -4,8 +4,8 @@ import { isArray, isNumber, isObject, isString } from "remeda";
+ import { z } from "zod";
+ 
+ import { toSentenceCase } from "../../../../apps/nextjs/src/utils/toSentenceCase";
+-import type { QuizOptional } from "./schema";
+-import { CycleOptionalSchema, QuizOptionalSchema } from "./schema";
++import type { QuizV1Optional } from "./schema";
++import { CycleOptionalSchema, QuizV1OptionalSchema } from "./schema";
+ 
+ export function sortIgnoringSpecialChars(strings: string[]): string[] {
+   // Function to normalize strings by removing *, -, and spaces
+@@ -141,7 +141,7 @@ function renderArray(key: string, value: readonly unknown[]): string {
+ 
+   if (typeof value[0] === "object") {
+     if (key === "starterQuiz" || key === "exitQuiz") {
+-      return organiseAnswersAndDistractors(value as QuizOptional);
++      return organiseAnswersAndDistractors(value as QuizV1Optional);
+     }
+ 
+     if (key === "misconceptions") {
+@@ -179,8 +179,8 @@ export function sectionToMarkdown(
+   }
+ }
+ 
+-export function organiseAnswersAndDistractors(quiz: QuizOptional) {
+-  return QuizOptionalSchema.parse(quiz)
++export function organiseAnswersAndDistractors(quiz: QuizV1Optional) {
++  return QuizV1OptionalSchema.parse(quiz)
+     .map((v, i) => {
+       // Combine answers and distractors into a single array
+       const allOptions = [
+diff --git a/packages/aila/src/utils/experimentalPatches/fetchExperimentalPatches.ts b/packages/aila/src/utils/experimentalPatches/fetchExperimentalPatches.ts
+index b05bef3f..627a4df4 100644
+--- a/packages/aila/src/utils/experimentalPatches/fetchExperimentalPatches.ts
++++ b/packages/aila/src/utils/experimentalPatches/fetchExperimentalPatches.ts
+@@ -9,8 +9,8 @@ import type {
+ } from "../../protocol/jsonPatchProtocol";
+ import type {
+   LooseLessonPlan,
+-  Quiz,
+-  QuizQuestion,
++  QuizV1,
++  QuizV1Question,
+ } from "../../protocol/schema";
+ 
+ const log = aiLogger("aila:experimental-patches");
+@@ -27,7 +27,7 @@ function preparePatch(
+   };
+ }
+ 
+-function annotateQuestions(questions: QuizQuestion[]): QuizQuestion[] {
++function annotateQuestions(questions: QuizV1Question[]): QuizV1Question[] {
+   return questions.map((question) => ({
+     ...question,
+     question: question.question + " Question generated by recommender method.",
+@@ -88,7 +88,7 @@ export async function fetchExperimentalPatches({
+         }),
+       );
+     } else {
+-      let mathsStarterQuiz: Quiz = await fullQuizService.createBestQuiz(
++      let mathsStarterQuiz: QuizV1 = await fullQuizService.createBestQuiz(
+         "/starterQuiz",
+         lessonPlan,
+       );
+@@ -130,7 +130,7 @@ export async function fetchExperimentalPatches({
+       );
+     } else {
+       // TODO: GCLOMAX - Once this is deprecated we will need logic to not overwrite the original.
+-      let mathsExitQuiz: Quiz = await fullQuizService.createBestQuiz(
++      let mathsExitQuiz: QuizV1 = await fullQuizService.createBestQuiz(
+         "/exitQuiz",
+         lessonPlan,
+       );
+diff --git a/packages/aila/src/utils/experimentalPatches/mathsQuiz.fixture.ts b/packages/aila/src/utils/experimentalPatches/mathsQuiz.fixture.ts
+index 281b27ed..c75a6945 100644
+--- a/packages/aila/src/utils/experimentalPatches/mathsQuiz.fixture.ts
++++ b/packages/aila/src/utils/experimentalPatches/mathsQuiz.fixture.ts
+@@ -1,6 +1,6 @@
+-import type { Quiz } from "../../protocol/schema";
++import type { QuizV1 } from "../../protocol/schema";
+ 
+-export const mathsQuizFixture: Quiz = [
++export const mathsQuizFixture: QuizV1 = [
+   {
+     question: "How many degrees in 2 right angles?",
+     answers: ["180°"],
+diff --git a/packages/exports/src/schema/input.schema.ts b/packages/exports/src/schema/input.schema.ts
+index 19645e7f..38817431 100644
+--- a/packages/exports/src/schema/input.schema.ts
++++ b/packages/exports/src/schema/input.schema.ts
+@@ -130,7 +130,7 @@ export const exportableQuizAppStateSchema = z.object({
+   status: quizAppStatusSchema,
+   keyStage: z.string(),
+   subject: z.string(),
+-  topic: z.string().optional(),
++  topic: z.string().nullish(),
+   questions: z.array(exportableQuizQuestionSchema),
+ });
+ 
+diff --git a/packages/ingest/src/generate-lesson-plans/transformQuiz.ts b/packages/ingest/src/generate-lesson-plans/transformQuiz.ts
+index 50bb9fec..32ded75f 100644
+--- a/packages/ingest/src/generate-lesson-plans/transformQuiz.ts
++++ b/packages/ingest/src/generate-lesson-plans/transformQuiz.ts
+@@ -1,12 +1,12 @@
+-import type { Quiz } from "@oakai/aila/src/protocol/schema";
++import type { QuizV1 } from "@oakai/aila/src/protocol/schema";
+ 
+ import { isTruthy, partition } from "remeda";
+ 
+ import { IngestError } from "../IngestError";
+ import type { OakLessonQuiz } from "../zod-schema/zodSchema";
+ 
+-export function transformQuiz(oakQuiz: OakLessonQuiz): Quiz {
+-  const quiz: Quiz = [];
++export function transformQuiz(oakQuiz: OakLessonQuiz): QuizV1 {
++  const quiz: QuizV1 = [];
+ 
+   for (const question of oakQuiz) {
+     if (question.questionType !== "multiple-choice") {
