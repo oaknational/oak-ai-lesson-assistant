@@ -19,10 +19,7 @@ export const QuizV2QuestionBaseSchema = z.object({
 export const QuizV2QuestionMultipleChoiceSchema =
   QuizV2QuestionBaseSchema.extend({
     questionType: z.literal("multiple-choice"),
-    answers: z
-      .array(z.string())
-      .min(1)
-      .describe("Correct answers as markdown"),
+    answers: z.array(z.string()).min(1).describe("Correct answers as markdown"),
     distractors: z
       .array(z.string())
       .min(2)
@@ -32,7 +29,10 @@ export const QuizV2QuestionMultipleChoiceSchema =
 // Short answer question
 export const QuizV2QuestionShortAnswerSchema = QuizV2QuestionBaseSchema.extend({
   questionType: z.literal("short-answer"),
-  answers: z.array(z.string()).min(1).describe("Acceptable answers as markdown"),
+  answers: z
+    .array(z.string())
+    .min(1)
+    .describe("Acceptable answers as markdown"),
 });
 
 // Match question

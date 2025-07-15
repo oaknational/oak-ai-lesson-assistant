@@ -40,9 +40,7 @@ export const MISCONCEPTIONS_DESCRIPTION = {
 } as const as { schema: string };
 
 export const MisconceptionSchema = z.object({
-  misconception: z
-    .string()
-    .describe(MISCONCEPTION_DESCRIPTIONS.misconception),
+  misconception: z.string().describe(MISCONCEPTION_DESCRIPTIONS.misconception),
   description: z
     .string()
     .max(250)
