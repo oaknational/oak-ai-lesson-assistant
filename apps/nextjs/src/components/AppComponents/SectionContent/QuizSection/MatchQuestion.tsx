@@ -29,42 +29,70 @@ export const MatchQuestion = ({
         />
       </OakFlex>
 
-      <OakFlex $gap="space-between-m" $flexWrap="wrap">
+      {/* Desktop layout */}
+      <OakFlex
+        $gap="space-between-l"
+        $flexWrap="wrap"
+        $display={["none", "flex"]}
+      >
         {/* Left column */}
-        <OakBox $minWidth="all-spacing-20">
+        <OakBox $minWidth="all-spacing-15">
           {question.pairs.map((pair, index) => {
-            const correctLabel =
-              shuffledRight.find((r) => r.text === pair.right)?.label || "";
             return (
-              <OakFlex key={index} $alignItems="center" $mb="space-between-s">
+              <OakBox key={index} $mb="space-between-s">
                 <MemoizedReactMarkdownWithStyles
                   markdown={`${String.fromCharCode(97 + index)}) ${pair.left}`}
                   className="[&>p]:mb-0 [&>p]:inline"
                 />
-                <OakBox
-                  $ml="space-between-m"
-                  $mr="space-between-m"
-                  $font="body-2-bold"
-                >
-                  [{correctLabel}]
-                </OakBox>
-              </OakFlex>
+              </OakBox>
             );
           })}
         </OakBox>
 
         {/* Right column */}
-        <OakBox $minWidth="all-spacing-20">
+        <OakBox>
           {shuffledRight.map((item, index) => (
             <OakBox key={index} $mb="space-between-s">
               <MemoizedReactMarkdownWithStyles
-                markdown={`[${item.label}] ${item.text}`}
+                markdown={`**[${item.label}]** ${item.text}`}
                 className="[&>p]:mb-0 [&>p]:inline"
               />
             </OakBox>
           ))}
         </OakBox>
       </OakFlex>
+
+      {/* Mobile layout: interleave questions with their correct answers */}
+      <OakBox $display={["block", "none"]}>
+        {question.pairs.map((pair, pairIndex) => {
+          // Find the corresponding answer with its shuffled label
+          const answerItem = shuffledRight.find(
+            (item) => item.text === pair.right,
+          );
+
+          return (
+            <OakBox key={pairIndex} $mb="space-between-m">
+              {/* Question */}
+              <OakBox $mb="space-between-xs">
+                <MemoizedReactMarkdownWithStyles
+                  markdown={`${String.fromCharCode(97 + pairIndex)}) ${pair.left}`}
+                  className="[&>p]:mb-0 [&>p]:inline"
+                />
+              </OakBox>
+
+              {/* Correct answer indented below */}
+              {answerItem && (
+                <OakBox $ml="space-between-m">
+                  <MemoizedReactMarkdownWithStyles
+                    markdown={`**[${answerItem.label}]** ${answerItem.text}`}
+                    className="[&>p]:mb-0 [&>p]:inline"
+                  />
+                </OakBox>
+              )}
+            </OakBox>
+          );
+        })}
+      </OakBox>
     </OakBox>
   );
 };

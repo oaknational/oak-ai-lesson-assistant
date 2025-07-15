@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "@/storybook/chromatic";
+
 import { MatchQuestion } from "./MatchQuestion";
 
 const meta = {
@@ -7,24 +9,23 @@ const meta = {
   component: MatchQuestion,
   parameters: {
     layout: "padded",
+    ...chromaticParams(["mobile", "desktop"]),
   },
 } satisfies Meta<typeof MatchQuestion>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const BasicMatch: Story = {
+export const CapitalCities: Story = {
   args: {
     question: {
       questionType: "match",
-      question: "Match question stem. Write the matching letter in each box.",
+      question: "Match the countries to their capital cities.",
       pairs: [
-        { left: "Match item one", right: "Match item three" },
-        {
-          left: "Match item two",
-          right: "Match item one with a long option here",
-        },
-        { left: "Match item three", right: "Match item two" },
+        { left: "France", right: "Paris" },
+        { left: "Germany", right: "Berlin" },
+        { left: "Spain", right: "Madrid" },
+        { left: "Italy", right: "Rome" },
       ],
       hint: null,
     },
@@ -32,16 +33,32 @@ export const BasicMatch: Story = {
   },
 };
 
-export const CapitalCities: Story = {
+export const LiteraryTerms: Story = {
   args: {
     question: {
       questionType: "match",
-      question: "Match the capital cities to their countries.",
+      question: "Match the literary terms to their definitions.",
       pairs: [
-        { left: "France", right: "Paris" },
-        { left: "Germany", right: "Berlin" },
-        { left: "Spain", right: "Madrid" },
-        { left: "Italy", right: "Rome" },
+        {
+          left: "Alliteration",
+          right: "Repetition of consonant sounds at the beginning of words",
+        },
+        {
+          left: "Metaphor",
+          right: "A direct comparison between two unlike things",
+        },
+        {
+          left: "Personification",
+          right: "Giving human qualities to non-human things",
+        },
+        {
+          left: "Onomatopoeia",
+          right: "Words that imitate the sound they describe",
+        },
+        {
+          left: "Hyperbole",
+          right: "Extreme exaggeration for emphasis",
+        },
       ],
       hint: null,
     },
