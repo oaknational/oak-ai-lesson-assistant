@@ -62,7 +62,7 @@ export const MatchQuestion = ({
         </OakBox>
       </OakFlex>
 
-      {/* Mobile layout: interleave questions with their correct answers */}
+      {/* Mobile layout: interleaved with correct answer pairings */}
       <OakBox $display={["block", "none"]}>
         {question.pairs.map((pair, pairIndex) => {
           // Find the corresponding answer with its shuffled label
@@ -80,11 +80,11 @@ export const MatchQuestion = ({
                 />
               </OakBox>
 
-              {/* Correct answer indented below */}
+              {/* Correct answer with left margin */}
               {answerItem && (
-                <OakBox $ml="space-between-m">
+                <OakBox $ml="space-between-l">
                   <MemoizedReactMarkdownWithStyles
-                    markdown={`**[${answerItem.label}]** ${answerItem.text}`}
+                    markdown={`**${answerItem.text}**`}
                     className="[&>p]:mb-0 [&>p]:inline"
                   />
                 </OakBox>
