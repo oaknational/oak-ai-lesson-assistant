@@ -37,6 +37,7 @@ export const DemoUser: Story = {
     page: "aila",
   },
   parameters: {
+    page: "aila",
     ...demoParams({
       isDemoUser: true,
       demo: {
@@ -72,7 +73,7 @@ export const TeachingMaterials: Story = {
       isDemoUser: true,
       demo: {
         appSessionsPerMonth: 3,
-        appSessionsRemaining: 2,
+        additionalMaterialsSessionsRemaining: 1,
       },
     }),
     ...chromaticParams(["desktop"]),
