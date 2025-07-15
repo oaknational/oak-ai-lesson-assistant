@@ -42,7 +42,6 @@ export const MISCONCEPTIONS_DESCRIPTION = {
 export const MisconceptionSchema = z.object({
   misconception: z
     .string()
-    .max(200)
     .describe(MISCONCEPTION_DESCRIPTIONS.misconception),
   description: z
     .string()
@@ -135,7 +134,7 @@ export const CheckForUnderstandingSchema = z.object({
   question: z.string().describe(CHECK_FOR_UNDERSTANDING_DESCRIPTIONS.question),
   answers: z
     .array(z.string())
-    .length(1)
+    .min(1)
     .describe(CHECK_FOR_UNDERSTANDING_DESCRIPTIONS.answers),
   distractors: z
     .array(z.string())
@@ -286,7 +285,6 @@ export const LESSON_PLAN_DESCRIPTIONS = {
 
 export const LessonTitleSchema = z
   .string()
-  .max(80)
   .describe(LESSON_PLAN_DESCRIPTIONS.title);
 
 export const KeyStageSchema = z

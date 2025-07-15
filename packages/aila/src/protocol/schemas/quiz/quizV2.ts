@@ -21,18 +21,18 @@ export const QuizV2QuestionMultipleChoiceSchema =
     questionType: z.literal("multiple-choice"),
     answers: z
       .array(z.string())
-      .length(1)
+      .min(1)
       .describe("Correct answers as markdown"),
     distractors: z
       .array(z.string())
-      .length(2)
+      .min(2)
       .describe("Incorrect answer options as markdown"),
   });
 
 // Short answer question
 export const QuizV2QuestionShortAnswerSchema = QuizV2QuestionBaseSchema.extend({
   questionType: z.literal("short-answer"),
-  answers: z.array(z.string()).describe("Acceptable answers as markdown"),
+  answers: z.array(z.string()).min(1).describe("Acceptable answers as markdown"),
 });
 
 // Match question

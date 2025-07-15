@@ -4,8 +4,8 @@ import { z } from "zod";
 
 export const QUIZ_V1_DESCRIPTIONS = {
   question: "The question to be asked in the quiz.",
-  answers: "The correct answer.",
-  distractors: "A set of distractors.",
+  answers: "The correct answer. This should be an array of only one item.",
+  distractors: "A set of distractors. This must be an array with two items.",
 } satisfies {
   question: string;
   answers: string;
@@ -14,10 +14,10 @@ export const QUIZ_V1_DESCRIPTIONS = {
 
 export const QuizV1QuestionSchema = z.object({
   question: z.string().describe(QUIZ_V1_DESCRIPTIONS.question),
-  answers: z.array(z.string()).length(1).describe(QUIZ_V1_DESCRIPTIONS.answers),
+  answers: z.array(z.string()).min(1).describe(QUIZ_V1_DESCRIPTIONS.answers),
   distractors: z
     .array(z.string())
-    .length(2)
+    .min(2)
     .describe(QUIZ_V1_DESCRIPTIONS.distractors),
 });
 
