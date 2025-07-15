@@ -61,8 +61,6 @@ const TeachingMaterialsLayout = ({
         >
           <OakFlex
             $flexDirection="column"
-            // $position={"relative"}
-            // $overflowY={"auto"}
             $ph={["inner-padding-xl", "inner-padding-xl8"]}
             $pv={["inner-padding-xl", "inner-padding-xl4"]}
             $width={"100%"}
