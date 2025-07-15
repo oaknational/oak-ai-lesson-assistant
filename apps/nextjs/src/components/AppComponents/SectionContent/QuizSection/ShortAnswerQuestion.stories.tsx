@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { chromaticParams } from "@/storybook/chromatic";
+
 import { ShortAnswerQuestion } from "./ShortAnswerQuestion";
 
 const meta = {
@@ -7,6 +9,7 @@ const meta = {
   component: ShortAnswerQuestion,
   parameters: {
     layout: "padded",
+    ...chromaticParams(["desktop"]),
   },
 } satisfies Meta<typeof ShortAnswerQuestion>;
 

@@ -16,13 +16,19 @@ export const ShortAnswerQuestion = ({
   // Check if answer should be inline (within the text) or on a separate line
   const hasInlineAnswer = question.question.includes("[answer]");
 
+  // Get the first answer to display
+  const displayAnswer = question.answers?.[0] || "";
+
   return (
     <OakBox $mb="space-between-l">
       <OakFlex $mb="space-between-s">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
         {hasInlineAnswer ? (
           <MemoizedReactMarkdownWithStyles
-            markdown={question.question.replace("[answer]", "**[answer]**")}
+            markdown={question.question.replace(
+              "[answer]",
+              `**${displayAnswer}**`,
+            )}
             className="[&>p]:mb-0"
           />
         ) : (
@@ -35,7 +41,7 @@ export const ShortAnswerQuestion = ({
 
       {!hasInlineAnswer && (
         <OakBox $mb="space-between-m">
-          <OakBox $font="body-2-bold">[Answer]</OakBox>
+          <OakBox $font="body-2-bold">{displayAnswer}</OakBox>
         </OakBox>
       )}
     </OakBox>
