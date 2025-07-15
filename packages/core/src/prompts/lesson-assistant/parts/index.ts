@@ -6,7 +6,6 @@ export { endingTheInteraction } from "./endingTheInteraction";
 export { generateResponse } from "./generateResponse";
 export { protocol } from "./protocol";
 export { rag } from "./rag";
-export { schema } from "./schema";
 export { signOff } from "./signOff";
 export { task } from "./task";
 export { interactingWithTheUser } from "./interactingWithTheUser";

@@ -19,6 +19,5 @@ export function getSystemPrompt({ rawLesson }: { rawLesson: RawLesson }) {
     responseMode: "generate",
     lessonPlanJsonSchema: JSON.stringify(LessonPlanJsonSchema),
     llmResponseJsonSchema: "",
-    isUsingStructuredOutput: true,
   });
 }

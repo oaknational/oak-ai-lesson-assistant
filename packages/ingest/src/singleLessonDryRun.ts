@@ -1,4 +1,4 @@
-import { CompletedLessonPlanSchemaWithoutLength } from "@oakai/aila/src/protocol/schema";
+import { CompletedLessonPlanSchema } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 
 import fs from "node:fs";
@@ -54,7 +54,7 @@ async function singleLessonDryRun() {
     });
 
     const responseFormat = zodResponseFormat(
-      CompletedLessonPlanSchemaWithoutLength,
+      CompletedLessonPlanSchema,
       "lesson_plan",
     );
 

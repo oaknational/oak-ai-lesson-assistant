@@ -114,7 +114,7 @@ export const QuizWithImages: Story = {
         question:
           "Here is part of the 8 times table grid. What could Izzy do to find 13 × 8 quickly?\n\n![8 times table grid](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png)",
         answers: ["12 x 8 + 8", "Increase 96 by 8"],
-        distractors: ["Count in eights from zero"],
+        distractors: ["Count in eights from zero", "Double 96"],
       },
       {
         // TODO: This use case (images in answer choices) is not fully implemented yet
