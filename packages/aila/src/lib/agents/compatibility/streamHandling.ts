@@ -2,6 +2,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import { compare } from "fast-json-patch";
+import { isTruthy } from "remeda";
 import type { ReadableStreamDefaultController } from "stream/web";
 
 import type { AilaChat } from "../../../core/chat/AilaChat";
@@ -54,7 +55,9 @@ export function createPatchesFromInteractResult(
   }
 
   // Identify which sections were edited
-  const sectionsEdited = [...new Set(patches.map((p) => p.path.substring(1)))];
+  const sectionsEdited = [
+    ...new Set(patches.map((p) => p.path.split("/")[1])),
+  ].filter(isTruthy);
 
   return {
     patches: patchesWithMetadata,
