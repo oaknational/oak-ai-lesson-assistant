@@ -1,5 +1,6 @@
-import { OakBox, OakFlex, OakIcon } from "@oaknational/oak-components";
 import type { ReactNode } from "react";
+
+import { OakBox, OakFlex, OakIcon } from "@oaknational/oak-components";
 
 type AnswerCheckboxProps = {
   children?: ReactNode;
@@ -16,7 +17,7 @@ const AnswerCheckboxBase = ({ children }: AnswerCheckboxProps) => {
       $flexShrink="0"
       $alignItems="center"
       $justifyContent="center"
-      $font="body-2-bold"
+      $font="body-1-bold"
       $color="icon-success"
     >
       {children}
@@ -30,7 +31,7 @@ const Check = () => {
       iconName="tick"
       $width="100%"
       $height="100%"
-      $color="icon-success"
+      $colorFilter="icon-success"
       $transform="scale(1.15)"
     />
   );

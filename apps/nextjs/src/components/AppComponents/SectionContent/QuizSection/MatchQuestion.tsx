@@ -5,6 +5,7 @@ import { OakBox, OakFlex } from "@oaknational/oak-components";
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
 import { AnswerCheckbox } from "./AnswerCheckbox";
+import { addInstruction } from "./helpers";
 import { shuffleMatchItems } from "./shuffle";
 
 type MatchQuestionProps = {
@@ -20,19 +21,25 @@ export const MatchQuestion = ({
   const rightItems = question.pairs.map((pair) => pair.right);
   const shuffledRight = shuffleMatchItems(rightItems);
 
+  // Add instruction to question
+  const questionWithInstruction = addInstruction(
+    question.question,
+    "Write the matching letter in each box.",
+  );
+
   return (
     <OakBox $mb="space-between-l">
       <OakFlex $mb="space-between-s">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
         <MemoizedReactMarkdownWithStyles
-          markdown={question.question}
+          markdown={questionWithInstruction}
           className="[&>p]:mb-0"
         />
       </OakFlex>
 
       {/* Desktop layout */}
       <OakFlex
-        $gap="space-between-l"
+        $gap="space-between-xl"
         $flexWrap="wrap"
         $display={["none", "flex"]}
       >
@@ -40,12 +47,17 @@ export const MatchQuestion = ({
         <OakBox $minWidth="all-spacing-15">
           {question.pairs.map((pair, index) => {
             return (
-              <OakBox key={index} $mb="space-between-s">
+              <OakFlex
+                key={index}
+                $alignItems="center"
+                $mb="space-between-s"
+                $minHeight="all-spacing-7"
+              >
                 <MemoizedReactMarkdownWithStyles
                   markdown={`${String.fromCharCode(97 + index)}) ${pair.left}`}
                   className="[&>p]:mb-0 [&>p]:inline"
                 />
-              </OakBox>
+              </OakFlex>
             );
           })}
         </OakBox>
@@ -53,7 +65,12 @@ export const MatchQuestion = ({
         {/* Right column */}
         <OakBox>
           {shuffledRight.map((item, index) => (
-            <OakFlex key={index} $alignItems="flex-start" $mb="space-between-s">
+            <OakFlex
+              key={index}
+              $alignItems="center"
+              $mb="space-between-s"
+              $minHeight="all-spacing-7"
+            >
               <AnswerCheckbox>{item.label}</AnswerCheckbox>
               <OakBox>
                 <MemoizedReactMarkdownWithStyles

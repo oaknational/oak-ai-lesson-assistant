@@ -5,13 +5,13 @@ import { OakBox, OakFlex, OakIcon } from "@oaknational/oak-components";
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
 import { AnswerCheckbox } from "./AnswerCheckbox";
+import { addInstruction } from "./helpers";
 import { shuffleMultipleChoiceAnswers } from "./shuffle";
 
 type MultipleChoiceQuestionProps = {
   question: QuizV2QuestionMultipleChoice;
   questionNumber: number;
 };
-
 
 export const MultipleChoiceQuestion = ({
   question,
@@ -22,12 +22,17 @@ export const MultipleChoiceQuestion = ({
     question.distractors,
   );
 
+  const questionWithInstruction = addInstruction(
+    question.question,
+    `Tick ${question.answers.length > 1 ? `${question.answers.length} correct answers` : "1 correct answer"}.`,
+  );
+
   return (
     <OakBox $mb="space-between-l">
       <OakFlex $mb="space-between-s">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
         <MemoizedReactMarkdownWithStyles
-          markdown={question.question}
+          markdown={questionWithInstruction}
           className="[&>p]:mb-0"
         />
       </OakFlex>

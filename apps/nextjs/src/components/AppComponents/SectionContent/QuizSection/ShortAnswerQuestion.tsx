@@ -1,8 +1,10 @@
 import type { QuizV2QuestionShortAnswer } from "@oakai/aila/src/protocol/schema";
 
-import { OakBox, OakFlex } from "@oaknational/oak-components";
+import { OakBox, OakFlex, OakSpan } from "@oaknational/oak-components";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
+
+import { addInstruction } from "./helpers";
 
 type ShortAnswerQuestionProps = {
   question: QuizV2QuestionShortAnswer;
@@ -19,21 +21,29 @@ export const ShortAnswerQuestion = ({
   // Get the first answer to display
   const displayAnswer = question.answers?.[0] || "";
 
+  // Add instruction to question
+  const questionWithInstruction = addInstruction(
+    question.question,
+    "Fill in the blank.",
+  );
+
   return (
     <OakBox $mb="space-between-l">
       <OakFlex $mb="space-between-s">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
         {hasInlineAnswer ? (
-          <MemoizedReactMarkdownWithStyles
-            markdown={question.question.replace(
-              "[answer]",
-              `**${displayAnswer}**`,
-            )}
-            className="[&>p]:mb-0"
-          />
+          <OakBox className="[&_strong]:border-b-2 [&_strong]:border-black [&_strong]:px-[4px] [&_strong]:font-bold [&_strong]:text-[#2B8848]">
+            <MemoizedReactMarkdownWithStyles
+              markdown={questionWithInstruction.replace(
+                "[answer]",
+                `**${displayAnswer}**`,
+              )}
+              className="[&>p]:mb-0"
+            />
+          </OakBox>
         ) : (
           <MemoizedReactMarkdownWithStyles
-            markdown={question.question}
+            markdown={questionWithInstruction}
             className="[&>p]:mb-0"
           />
         )}
@@ -41,7 +51,13 @@ export const ShortAnswerQuestion = ({
 
       {!hasInlineAnswer && (
         <OakBox $mb="space-between-m">
-          <OakBox $font="body-2-bold">{displayAnswer}</OakBox>
+          <OakBox
+            $font="body-2-bold"
+            $color="icon-success"
+            className="inline-block border-b-2 border-black px-[4px]"
+          >
+            {displayAnswer}
+          </OakBox>
         </OakBox>
       )}
     </OakBox>
