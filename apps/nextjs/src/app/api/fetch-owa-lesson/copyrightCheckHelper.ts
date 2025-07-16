@@ -1,8 +1,46 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { LessonBrowseDataByKsSchema } from "./lessonOverview.schema";
+import type {
+  LessonBrowseDataByKsSchema,
+  LessonContentSchema,
+} from "./lessonOverview.schema";
 
 const log = aiLogger("additional-materials");
+
+export function checkForRestrictedContentGuidance(
+  content: LessonContentSchema["content_guidance"],
+) {
+  if (content === null) {
+    return null;
+  }
+  const contentGuidanceLabels = content.map((item) => ({
+    contentGuidanceLabel: item.contentguidance_label ?? "",
+    // contentGuidanceDescription: item.contentguidanceDescription ?? "",
+    // contentGuidanceArea: item.contentguidanceArea ?? "",
+  }));
+  console.log("Content Guidance Labels:", contentGuidanceLabels);
+  if (
+    contentGuidanceLabels.some(
+      (item) =>
+        item.contentGuidanceLabel ===
+          "Depiction or discussion of discriminatory behaviour" ||
+        item.contentGuidanceLabel ===
+          "Depiction or discussion of sensitive content",
+    )
+  ) {
+    log.error("Restricted content guidance detected", {
+      contentGuidanceLabels,
+    });
+    return Response.json(
+      {
+        error:
+          "This lesson contains restricted content-guidance themes and cannot be exported.",
+        contentGuidanceLabels,
+      },
+      { status: 403 },
+    );
+  }
+}
 
 /**
  * Checks for restricted features in browseData array.

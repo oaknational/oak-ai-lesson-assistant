@@ -43,7 +43,6 @@ export function exportToCSV(data: LessonOverviewResponse["data"]): void {
     if (data?.browseData) {
       log.info(`Processing ${data.browseData.length} browseData items.`);
       data.browseData.forEach((item) => {
-        // Check if any of the required feature flags are true
         const features = item.features as Record<string, unknown>;
         const hasRestrictedFeatures =
           features &&
@@ -93,5 +92,68 @@ export function exportToCSV(data: LessonOverviewResponse["data"]): void {
     }
   } catch (error) {
     log.error("Error exporting to CSV:", error);
+  }
+}
+
+type LessonItem = {
+  slug: string;
+  features: Record<string, unknown>;
+  _state: string;
+  copyright_content?: Record<string, unknown>;
+};
+
+// Function to export lessons array to CSV
+export function exportLessonsToCSV(lessons: LessonItem[]): void {
+  log.info("Starting lessons CSV export...");
+  try {
+    const csvRows: string[] = [];
+
+    // CSV header
+    csvRows.push("slug,features");
+    log.info("CSV header added.");
+
+    // Process the lessons
+    if (lessons && lessons.length > 0) {
+      log.info(`Processing ${lessons.length} lesson items.`);
+
+      lessons.forEach((lesson) => {
+        const hasRestrictedFeatures =
+          lesson.features &&
+          (lesson.features["agf__geo_restricted"] === true ||
+            lesson.features["agf__login_required"] === true ||
+            lesson.features["agf__restricted_download"] === true ||
+            lesson.features["agf__has_copyright_restrictions"] === true);
+        const slug = escapeCSVValue(String(lesson.slug || ""));
+        const featuresJson = escapeCSVValue(
+          JSON.stringify(lesson.features ?? {}),
+        );
+        const copyrightContent = escapeCSVValue(
+          JSON.stringify(lesson.copyright_content || ""),
+        );
+        if (hasRestrictedFeatures) {
+          csvRows.push(`${slug},${featuresJson},${copyrightContent}`);
+          log.info(`Processed lesson: ${slug}`);
+        }
+      });
+    } else {
+      log.warn("No lessons found to export.");
+    }
+
+    // Only write to file if we have lessons (excluding header)
+    if (lessons.length > 0) {
+      const csvContent = csvRows.join("\n");
+
+      // Write to file
+      const filePath = path.join(process.cwd(), "lessons_export.csv");
+      fs.writeFileSync(filePath, csvContent, "utf8");
+
+      log.info(
+        `Lessons CSV export completed with ${lessons.length} items: ${filePath}`,
+      );
+    } else {
+      log.info("No lessons found. CSV file not created.");
+    }
+  } catch (error) {
+    log.error("Error exporting lessons to CSV:", error);
   }
 }

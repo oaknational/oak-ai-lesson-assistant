@@ -7,7 +7,13 @@ import type { NextApiResponse } from "next";
 
 import { createLessonPlanInteraction } from "@/app/actions";
 
-import { checkForRestrictedFeatures } from "./copyrightCheckHelper";
+import {
+  checkForRestrictedContentGuidance,
+  checkForRestrictedFeatures,
+} from "./copyrightCheckHelper";
+import { copyrightLesson, tcpMediaByLessonSlug } from "./copyrightLesson";
+import { copyrightLessons } from "./copyrightLessonsQuery";
+import { exportLessonsToCSV, exportToCSV } from "./csvExportHelper";
 import {
   type LessonContentSchema,
   lessonBrowseDataByKsSchema,
@@ -101,17 +107,68 @@ export async function POST(req: Request, res: NextApiResponse) {
     //     query: copyrightLessons,
     //   }),
     // });
-
     // const { data: copyrightData }: LessonOverviewResponse =
     //   await copyrightLessonsResults.json();
 
+    // const copyrightLessonQuery = await fetch(GRAPHQL_ENDPOINT, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "x-oak-auth-key": AUTH_KEY,
+    //     "x-oak-auth-type": AUTH_TYPE,
+    //   },
+    //   body: JSON.stringify({
+    //     query: copyrightLesson,
+    //     // variables: {
+    //     //   lesson_slug: lessonSlug,
+    //     // },
+    //   }),
+    // });
+
+    // const { data: copyrightLessonData }: LessonOverviewResponse =
+    //   await copyrightLessonQuery.json();
+
+    // console.log("Copyright lesson data", copyrightLessonData);
+    // // console.log("Copyright data", copyrightLessonData.lessons[0].features);
+    // exportLessonsToCSV(copyrightLessonData.lessons);
     // const lessonTest = copyrightData?.browseData?.filter(
     //   (item) =>
     //     item.lesson_slug ===
     //     "chapter-10-henry-jekylls-full-statement-of-the-case",
     // );
 
-    // exportToCSV(copyrightData);
+    // const tcpData = await fetch(GRAPHQL_ENDPOINT, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "x-oak-auth-key": AUTH_KEY,
+    //     "x-oak-auth-type": AUTH_TYPE,
+    //   },
+    //   body: JSON.stringify({
+    //     query: tcpMediaByLessonSlug,
+    //     variables: {
+    //       lesson_slug: lessonSlug,
+    //     },
+    //   }),
+    // });
+
+    // if (!tcpData.ok) {
+    //   log.error("Failed to fetch TCP data", {
+    //     status: tcpData.status,
+    //     statusText: tcpData.statusText,
+    //   });
+    //   return Response.json(
+    //     { error: "Failed to fetch TCP data" },
+    //     { status: tcpData.status },
+    //   );
+    // }
+
+    // const tcpResponse = await tcpData.json();
+    // console.log("TCP Response", JSON.stringify(tcpResponse));
+
+    // const tcpMediaData =
+    //   tcpResponse?.data?.mv_get_tpc_media_by_lesson_slug_1_0_0[0];
+    // console.log("TCP Media Data", tcpMediaData);
 
     const { data }: LessonOverviewResponse = await lesson.json();
 
@@ -138,6 +195,12 @@ export async function POST(req: Request, res: NextApiResponse) {
     const restrictionResponse = checkForRestrictedFeatures(browseData[0]);
     if (restrictionResponse) {
       return restrictionResponse;
+    }
+    const contentGuidanceResponse = checkForRestrictedContentGuidance(
+      parsedLesson.content_guidance,
+    );
+    if (contentGuidanceResponse) {
+      return contentGuidanceResponse;
     }
 
     const parsedBrowseData = lessonBrowseDataByKsSchema.parse(browseData[0]);
