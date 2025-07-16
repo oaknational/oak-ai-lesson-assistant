@@ -336,36 +336,7 @@ export const LLMPatchDocumentSchema = z.object({
 
 export type PatchDocument = z.infer<typeof PatchDocumentSchema>;
 
-const ExperimentalPatchMessagePartSchema = z.union([
-  z.object({
-    op: z.union([z.literal("add"), z.literal("replace")]),
-    path: z.union([
-      z.literal("/_experimental_starterQuizMathsV0"),
-      z.literal("/_experimental_exitQuizMathsV0"),
-    ]),
-    value: z.array(z.object({}).passthrough()),
-  }),
-  z.object({
-    op: z.literal("remove"),
-    path: z.union([
-      z.literal("/_experimental_starterQuizMathsV0"),
-      z.literal("/_experimental_exitQuizMathsV0"),
-    ]),
-  }),
-]);
-// This is the schema for experimental patches, which are part of our prototype agent system
-const ExperimentalPatchDocumentSchema = z.object({
-  type: z.literal("experimentalPatch"),
-  value: ExperimentalPatchMessagePartSchema,
-});
-export type ExperimentalPatchDocument = z.infer<
-  typeof ExperimentalPatchDocumentSchema
->;
-
-export const ValidPatchDocumentSchema = z.union([
-  PatchDocumentSchema,
-  ExperimentalPatchDocumentSchema,
-]);
+export const ValidPatchDocumentSchema = PatchDocumentSchema;
 export type ValidPatchDocument = z.infer<typeof ValidPatchDocumentSchema>;
 
 const PatchDocumentOptionalSchema = z.object({
@@ -486,7 +457,6 @@ export const JsonPatchDocumentOptionalSchema = z.discriminatedUnion("type", [
   ActionDocumentSchema,
   ModerationDocumentSchema,
   MessageIdDocumentSchema,
-  ExperimentalPatchDocumentSchema,
 ]);
 
 export type JsonPatchDocumentOptional = z.infer<
@@ -517,7 +487,6 @@ export const MessagePartDocumentSchema = z.discriminatedUnion("type", [
   ModerationDocumentSchema,
   ErrorDocumentSchema,
   PatchDocumentSchema,
-  ExperimentalPatchDocumentSchema,
   StateDocumentSchema,
   CommentDocumentSchema,
   PromptDocumentSchema,
@@ -534,7 +503,6 @@ export type MessagePartType =
   | "moderation"
   | "error"
   | "patch"
-  | "experimentalPatch"
   | "state"
   | "comment"
   | "prompt"
@@ -551,7 +519,6 @@ export const MessagePartDocumentSchemaByType: {
   moderation: ModerationDocumentSchema,
   error: ErrorDocumentSchema,
   patch: PatchDocumentSchema,
-  experimentalPatch: ExperimentalPatchDocumentSchema,
   state: StateDocumentSchema,
   comment: CommentDocumentSchema,
   prompt: PromptDocumentSchema,
@@ -684,7 +651,6 @@ function tryParseText(obj: object): TextDocument | UnknownDocument {
 // Each Message that is sent back from the server contains the following
 // (separated by the record-separator character and a newline):
 // * An llmMessage matching the LLMMessageSchema, and containing multiple messageParts
-// * An experimentalPatch messagePart
 // * A moderation messagePart
 // * An ID messagePart
 // * A state messagePart
@@ -815,8 +781,7 @@ export function extractPatches(edit: string): {
     }
 
     const patchMessageParts: MessagePart[] = parts.filter(
-      (p) =>
-        p.document.type === "patch" || p.document.type === "experimentalPatch",
+      (p) => p.document.type === "patch",
     );
     const validPatches: PatchDocument[] = patchMessageParts
       .filter((p) => !p.isPartial)
@@ -849,11 +814,11 @@ function isValidPatch(patch: Operation): boolean {
 }
 export function applyLessonPlanPatch(
   lessonPlan: LooseLessonPlan,
-  command: JsonPatchDocument | ExperimentalPatchDocument,
+  command: JsonPatchDocument,
 ) {
   log.info("Apply patch (old)", JSON.stringify(command));
   let updatedLessonPlan = { ...lessonPlan };
-  if (command.type !== "patch" && command.type !== "experimentalPatch") {
+  if (command.type !== "patch") {
     log.error("Invalid patch document type", command.type);
     return lessonPlan;
   }
@@ -902,10 +867,10 @@ export function applyLessonPlanPatch(
  */
 export function applyLessonPlanPatchImmutable(
   lessonPlan: LooseLessonPlan,
-  command: JsonPatchDocument | ExperimentalPatchDocument,
+  command: JsonPatchDocument,
 ) {
   log.info("Apply patch (immutable)", JSON.stringify(command));
-  if (command.type !== "patch" && command.type !== "experimentalPatch") {
+  if (command.type !== "patch") {
     log.error("Invalid patch document type", command.type);
     return;
   }
