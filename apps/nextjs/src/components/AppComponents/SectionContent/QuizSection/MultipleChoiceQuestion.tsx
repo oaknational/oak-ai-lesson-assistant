@@ -4,6 +4,7 @@ import { OakBox, OakFlex, OakIcon } from "@oaknational/oak-components";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
+import { AnswerCheckbox } from "./AnswerCheckbox";
 import { shuffleMultipleChoiceAnswers } from "./shuffle";
 
 type MultipleChoiceQuestionProps = {
@@ -11,32 +12,6 @@ type MultipleChoiceQuestionProps = {
   questionNumber: number;
 };
 
-type AnswerCheckboxProps = {
-  isChecked: boolean;
-};
-
-const AnswerCheckbox = ({ isChecked }: AnswerCheckboxProps) => {
-  return (
-    <OakFlex
-      $mr="space-between-xs"
-      $width="all-spacing-7"
-      $height="all-spacing-7"
-      $ba="border-solid-m"
-      $borderColor="black"
-      $flexShrink="0"
-    >
-      {isChecked && (
-        <OakIcon
-          iconName="tick"
-          $width="100%"
-          $height="100%"
-          $color="text-inverted"
-          $transform="scale(1.15)"
-        />
-      )}
-    </OakFlex>
-  );
-};
 
 export const MultipleChoiceQuestion = ({
   question,
@@ -60,7 +35,9 @@ export const MultipleChoiceQuestion = ({
       <OakBox>
         {answers.map((answer, index) => (
           <OakFlex key={index} $alignItems="flex-start" $mb="space-between-xs">
-            <AnswerCheckbox isChecked={answer.isCorrect} />
+            <AnswerCheckbox>
+              {answer.isCorrect && <AnswerCheckbox.Check />}
+            </AnswerCheckbox>
             <OakBox
               $font={answer.isCorrect ? "body-2-bold" : "body-2"}
               className="pt-[2px]"

@@ -4,6 +4,7 @@ import { OakBox, OakFlex } from "@oaknational/oak-components";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
+import { AnswerCheckbox } from "./AnswerCheckbox";
 import { shuffleMatchItems } from "./shuffle";
 
 type MatchQuestionProps = {
@@ -52,12 +53,15 @@ export const MatchQuestion = ({
         {/* Right column */}
         <OakBox>
           {shuffledRight.map((item, index) => (
-            <OakBox key={index} $mb="space-between-s">
-              <MemoizedReactMarkdownWithStyles
-                markdown={`**[${item.label}]** ${item.text}`}
-                className="[&>p]:mb-0 [&>p]:inline"
-              />
-            </OakBox>
+            <OakFlex key={index} $alignItems="flex-start" $mb="space-between-s">
+              <AnswerCheckbox>{item.label}</AnswerCheckbox>
+              <OakBox>
+                <MemoizedReactMarkdownWithStyles
+                  markdown={item.text}
+                  className="[&>p]:mb-0 [&>p]:inline"
+                />
+              </OakBox>
+            </OakFlex>
           ))}
         </OakBox>
       </OakFlex>
